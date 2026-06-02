@@ -45,7 +45,9 @@ spec §10 原计划 Charts=Tremor（`@tremor/react`）。brainstorm 实证后**�
 ```
 
 - **纯增量**（无既有消费者受影响），是数据可视化批应有的 token 基建，**不破「只消费语义 token」——而是补齐 token**。
-- Tailwind v4 自动暴露 `--color-*` 为 `bg-chart-1` 等类；图表 SVG 经 `var(--color-chart-N)` 直接消费（recharts `fill`/`stroke` 吃 CSS 变量）。
+- **图表 SVG 经 `var(--color-chart-N)` 直接消费**（recharts `fill`/`stroke` 吃 CSS 变量）→ 颜色随 `[data-theme]` 切换天然明暗自适应（套 [[tailwind-v4-shadcn-dark-variant-data-theme-bridge]]），**绝不写死 hex**。
+- ⚠️ **token→工具类机制实证**：`preset.css` 用 `@theme inline { --color-X: var(--color-X); }` **逐条显式映射**才生成 `bg-X`/`text-X` 工具类。图表走 `var()` **不需要工具类**，故 chart token 只需进 `semantic.css`；但为正规化（未来 legend 色块可用 `bg-chart-1`）**顺带在 preset.css 的 `@theme inline` 注册 `--color-chart-1..4`**。
+- ⚠️ **不加 `--color-success`**（用户硬约束：语义 token 集无 success）。Stat 升降趋势色见 §5.1。
 
 ## 4. faker 扩时间序列工厂（spec §10 授权「faker 扩时间序列工厂」）
 
@@ -82,8 +84,7 @@ export interface StatProps extends Omit<HTMLAttributes<HTMLDivElement>, "title">
   icon?: ReactNode;               // 可选前置图标
 }
 ```
-- 皮肤：`Card` 气质（`rounded-[var(--radius)] border border-border bg-surface p-5`）；label `text-sm text-muted`；value `text-2xl font-semibold text-foreground`；delta 用小 chip——**升 `text-success`（token 有 `--success-500`？否→见下）/ 降 `text-danger`**，带 lucide `TrendingUp`/`TrendingDown`。
-  - ⚠️ 语义层**无 `--color-success`**（只 primitive 有 `--success-500`，semantic 未暴露）。Stat 的「升」绿色：本批**顺带在 semantic.css 暴露 `--color-success: var(--success-500)` 明 + 暗值**（KPI 升降是 success/danger 的天然场景，补齐合理）；或退而用 chart-2 绿。**裁决：暴露 `--color-success`**（明 `--success-500` / 暗提亮），与 chart token 同批加。
+- 皮肤：`Card` 气质（`rounded-[var(--radius)] border border-border bg-surface p-5`）；label `text-sm text-muted`；value `text-2xl font-semibold text-foreground`；delta 用小行——**升 `text-primary` + lucide `TrendingUp` / 降 `text-danger` + `TrendingDown`**（用户硬约束：无 success，升用 primary 降用 danger）。
 - 纯静态 → **Stat 本体不加 "use client"**（同 Alert/Badge/Card 纪律），仅 showcase 加。
 
 ### 5.2 AreaChart / BarChart（recharts 薄裹 + token 皮肤）
@@ -117,13 +118,13 @@ export interface ChartProps<TDatum = Record<string, unknown>> {
 
 ## 8. 测试
 
-- **Stat**：label/value 渲染；`delta>0`→`text-success`+TrendingUp、`delta<0`→`text-danger`+TrendingDown、无 delta 不渲染趋势；`title` 不落 DOM 属性（同 Alert）。
+- **Stat**：label/value 渲染；`delta>=0`→`text-primary`+TrendingUp+正号、`delta<0`→`text-danger`+TrendingDown、无 delta 不渲染趋势行（无 svg）。
 - **Chart**（mock ResponsiveContainer）：AreaChart/BarChart 渲染不抛；多序列各产出节点；`chartColor(0)`==`var(--color-chart-1)`、越界回绕。
 - **chart-theme 纯函数**：`chartColor` 索引/token 名两种入参。
 
 ## 9. 验收（done 的标志）
 
-1. Stat + Chart(Area+Bar) 四件套齐 + 主 barrel 导出 + manifest/registry 双文件各 +2；token 层加 `--color-chart-1..4` + `--color-success`（明暗）。
+1. Stat + Chart(Area+Bar) 四件套齐 + 主 barrel 导出 + manifest/registry 双文件各 +2；token 层加 `--color-chart-1..4`（明暗 semantic.css + preset.css @theme inline 注册）。**不加 success**。
 2. 三道门 `--force` 全绿：typecheck + 自己 vitest + `build --filter=www --force`（recharts 进 bundle + SSG 不抛 + 新依赖 lockfile 一并 commit）。
 3. Playwright/隔离 chromium 截图**明暗两态**存 cwd 根 Read 看像素：Stat 卡（数值/升降色）、AreaChart（多序列填充 + 轴/网格 token 色 + tooltip）、BarChart（柱 + 间距），验**明暗两态序列色都可见可读**、坐标轴/网格不刺眼、图不溢出卡片。端口 5512/5514（桌面 app 跑 5514 则用 5514）。
 4. 桌面 app 加载 stat/chart 页正常（recharts 在 WKWebView 出图）。
