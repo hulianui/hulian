@@ -8,3 +8,7 @@ dist/
 # www
 .next/
 next-env.d.ts
+
+# tauri
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/

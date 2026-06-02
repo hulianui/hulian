@@ -1,0 +1,47 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "瑚琏 Hulian",
+  "version": "0.0.0",
+  "identifier": "com.haloritual.hulian",
+  "build": {
+    "frontendDist": "../../www/out",
+    "devUrl": "http://localhost:5512",
+    "beforeDevCommand": "pnpm --filter www dev",
+    "beforeBuildCommand": "pnpm --filter www build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "瑚琏 Hulian",
+        "width": 1200,
+        "height": 820,
+        "minWidth": 920,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "theme": "Dark",
+        "backgroundColor": "#0a0a0b"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    }
+  }
+}

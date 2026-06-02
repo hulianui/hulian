@@ -5,7 +5,7 @@ import { cn } from "../lib/cn";
 import type { ButtonProps } from "./button.types";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-[var(--radius)] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius)] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none",
   {
     variants: {
       variant: {
