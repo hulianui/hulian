@@ -23,7 +23,7 @@ import type { ChartProps } from "./chart.types";
 const MARGIN = { top: 8, right: 8, bottom: 0, left: -8 };
 
 // recharts 引擎（坐标系/比例尺/路径）+ 瑚琏皮肤（SVG 色走 var(--color-chart-N)/token，明暗自适应）。
-export function AreaChart<TDatum extends Record<string, unknown>>({
+export function AreaChart<TDatum>({
   data,
   series,
   xKey,
@@ -59,7 +59,7 @@ export function AreaChart<TDatum extends Record<string, unknown>>({
   );
 }
 
-export function BarChart<TDatum extends Record<string, unknown>>({
+export function BarChart<TDatum>({
   data,
   series,
   xKey,
