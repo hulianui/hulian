@@ -40,7 +40,7 @@ A2 启动时面对两个事实：(a) 只有 3 个标杆组件，远未铺开；(
 |------|-------------|---------------|------|
 | Select / Combobox / Autocomplete | React Aria Components | **Base UI**（后续批次） | 守 overlay 红线，避免第二套 Portal/FocusScope 引擎 |
 | DatePicker / Calendar | React Aria Components | **暂缓 / 后议** | Base UI rc 暂无成熟 DatePicker；不为它单独破红线 |
-| Input / Field / Form | React Aria Components | **原生 `<input>` + 皮肤 + 手写 a11y** | 文本录入本不需要 headless 引擎；React Aria 的价值是其行为引擎，引它=破红线 |
+| Input / Field / Form | React Aria Components | **Base UI Field/Input（a11y 自动串联）** | 不引 React Aria（守 overlay 红线）；Step 2 实测 Base UI rc.0 自带 field/input/fieldset/form → 用 Base UI Field 做 a11y 串联比手写更稳（详见 Step 2 spec `2026-06-02-hulian-a2-step2-form-inputs-design.md`）|
 
 > 第一性原理记录：React Aria 的「最佳」不可「抄结构换 token」（不像 HeroUI 是纯 Tailwind），要用就得装整套 `react-aria-components` 的 overlay/Portal 体系。在 Base UI 之外再引第二套 overlay 引擎与「overlay 全 Base UI」硬约束直接冲突。守红线 = 单一 overlay 引擎、bundle 最小、与已落地的 Dialog 同源。代价是放弃 React Aria 的部分复杂键盘交互，由 Base UI 顶级 a11y（Radix/MUI 团队出品）兜底。
 
@@ -117,9 +117,9 @@ export const specBySlug: Record<string, ShowcaseSpec> = { button: buttonShowcase
 
 | 组件 | 分类 | 选源（修正后） | 命脉 / 要点 |
 |------|------|---------------|-------------|
-| **Input** | inputs | 原生 `<input>` + HeroUI/shadcn 皮肤 + CVA | size / disabled / invalid 态；前后缀 slot |
-| **Textarea** | inputs | 原生 `<textarea>` + 同皮肤 | 行高；可选自适应高度 |
-| **Field** | inputs | 自造组合 | Label + 内容 slot + help + error；a11y 串联（`htmlFor`/`aria-describedby`/`aria-invalid`） |
+| **Input** | inputs | **Base UI** Input(≡Field.Control) + 瑚琏外壳皮肤 + CVA | size / disabled / invalid 态；前后缀 slot（详见 Step 2 spec）|
+| **Textarea** | inputs | **Base UI** Field.Control render textarea + 同皮肤 | 行高；自适应高度(JS scrollHeight)（详见 Step 2 spec）|
+| **Field** | inputs | **Base UI** Field(Root/Label/Control/Description/Error)，a11y 自动串联 | Label + 内容 slot + help + error；error 用 `match={true}` 强制渲染避免「框红字没」（详见 Step 2 spec）|
 | **Checkbox** | inputs | **Base UI** Checkbox | 受控 + ARIA + 焦点环（同 Switch 族）；indeterminate |
 | **Radio** | inputs | **Base UI** RadioGroup | 单选组 + 键盘方向键 |
 | **Card** | data-display | shadcn/HeroUI 皮肤 + CVA | header/body/footer 插槽；hover 微阴影（HeroUI 气质，用 motion） |
@@ -146,7 +146,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = { button: buttonShowcase
 ## 6. 继承的硬约束（plan/实现阶段逐条守）
 
 1. **只消费语义 token**：禁写死颜色/间距裸值（明暗自动适配的根本）。Tailwind v4 dark variant 套 skill `tailwind-v4-shadcn-dark-variant-data-theme-bridge`。
-2. **a11y 不可绕过**：焦点环 / 键盘 / ARIA 靠 Base UI 兜底（Checkbox/Radio/Tabs/Avatar）；Input/Field 的表单态 a11y 手写并测（`aria-invalid`/`aria-describedby`）。
+2. **a11y 不可绕过**：焦点环 / 键盘 / ARIA 靠 Base UI 兜底（Checkbox/Radio/Tabs/Avatar）；Input/Field 的表单态 a11y 由 **Base UI Field 自动串联**（`aria-invalid`/`aria-describedby`/`htmlFor`）并测（Step 2 改判 Base UI Field，原「手写」方案已废）。
 3. **变体收敛**：所有外观差异走 CVA 的 `variant/size/tone`，不靠散落 className 覆盖。
 4. **四件套**：每组件 `*.tsx` / `*.types.ts` / `*.showcase.tsx`（手写 control schema，**非** TS 自动抽取，**非** `.stories`）/ `index.ts`，并桶导出到 `packages/ui/src/index.ts`。
 5. **overlay 全 Base UI**：本批唯一带交互浮层倾向的是 Tabs，但 Tabs 无浮层（纯面板切换），不触发 overlay 红线。

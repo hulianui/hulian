@@ -25,4 +25,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "card", name: "Card", description: "卡片 · Header/Body/Footer 插槽", category: "data-display", status: "new" },
   { slug: "skeleton", name: "Skeleton", description: "骨架屏 · shimmer 高光占位", category: "data-display", status: "new" },
   { slug: "avatar", name: "Avatar", description: "头像 · Base UI 图片+fallback", category: "data-display", status: "new" },
+  { slug: "input", name: "Input", description: "输入框 · Base UI Field + 前后缀 + invalid", category: "inputs", status: "new" },
+  { slug: "textarea", name: "Textarea", description: "多行输入 · 自适应高度", category: "inputs", status: "new" },
+  { slug: "field", name: "Field", description: "字段包装 · label/help/error a11y 串联", category: "inputs", status: "new" },
 ];
