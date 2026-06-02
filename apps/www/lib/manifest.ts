@@ -41,4 +41,6 @@ export const manifest: ComponentMeta[] = [
   { slug: "drawer", name: "Drawer", description: "抽屉 · Base UI Dialog 引擎 + 四向侧滑", category: "feedback", status: "new" },
   { slug: "menu", name: "Menu", description: "下拉菜单 · Base UI 命令式 + Item/分隔/分组 + danger", category: "navigation", status: "new" },
   { slug: "toast", name: "Toast", description: "命令式轻提示 · 自动消失 + 队列堆叠 + 手动关闭", category: "feedback", status: "new" },
+  { slug: "stat", name: "Stat", description: "指标卡 · KPI 数值/标签/升降趋势(无图表库)", category: "data-display", status: "new" },
+  { slug: "chart", name: "Chart", description: "图表 · recharts 直裹 + chart token 皮肤(Area/Bar)", category: "data-display", status: "new" },
 ];
