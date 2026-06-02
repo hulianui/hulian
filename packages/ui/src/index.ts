@@ -20,6 +20,8 @@ export * from "./select";
 export * from "./accordion";
 export * from "./breadcrumb";
 export * from "./table";
+export * from "./stat";
+export * from "./chart";
 export * from "./drawer";
 export * from "./menu";
 export * from "./toast";
