@@ -206,4 +206,5 @@ export const specBySlug: Record<string, ShowcaseSpec> = { button: buttonShowcase
   - ⚠️ **实际改判**：Charts **未用 Tremor**，改 **`recharts` 直裹 + 瑚琏 token 皮肤**（否决 `@tremor/react`：停在 Tailwind v3、自带调色板与瑚琏 TW v4 + 只消费语义 token 红线打架；recharts 本就是 Tremor 底层引擎，SVG 走 `var(--color-chart-N)` 天然明暗自适应）。多序列调色板在 token 层加 `--color-chart-1..4`。详见 charts spec §2/§3。
 - **A2.4 — 动效组件**：Magic UI（确认 `magic` = magicui.design；copy-paste 模式，换瑚琏 token 类）。
 - **A3 — 付代价家族桥接**：MUI（emotion theme 桥）+ Ant（ConfigProvider 桥），各取最佳组件。
+  - ✅ **MUI 桥 spike 已落**（`…-a3-mui-bridge-design.md`）：emotion theme palette 全设瑚琏 `var(--color-*)` 单一真源（每槽给齐 main/light/dark/contrastText 跳过 augmentColor 对 var() 的解析）+ `@mui/material-nextjs` `AppRouterCacheProvider`(v16)；**只取非 overlay 件**（Rating/Stepper，守 overlay 全 Base UI 红线——MUI overlay 件将引第二套 Portal 引擎，需用户确认才破）；桥接产物隔离 `packages/ui/src/_mui/`。明暗经 `data-theme` 单一真源同步、无 FOUC（像素自证）。Ant 桥（ConfigProvider）待续。
 - **A4 — prod 打包**：www 静态导出（处理 MSW dev-only）+ Tauri dmg。
