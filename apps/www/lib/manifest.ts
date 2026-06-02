@@ -48,4 +48,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "chart", name: "Chart", description: "图表 · recharts 直裹 + chart token 皮肤(Area/Bar)", category: "data-display", status: "new" },
   { slug: "select", name: "Select", description: "下拉选择 · Base UI overlay 单选 + items 自动 label", category: "inputs", status: "new" },
   { slug: "combobox", name: "Combobox", description: "自动补全 · Base UI overlay 文本输入 + 实时过滤 typeahead", category: "inputs", status: "new" },
+  { slug: "progress", name: "Progress", description: "进度条 · linear/circular + 不定态 · 几何自有(reduced-motion)", category: "feedback", status: "new" },
 ];

@@ -31,6 +31,7 @@ import {
   chartShowcase,
   selectShowcase,
   comboboxShowcase,
+  progressShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -65,4 +66,5 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   chart: chartShowcase,
   select: selectShowcase,
   combobox: comboboxShowcase,
+  progress: progressShowcase,
 };
