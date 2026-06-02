@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@hulian/ui";
 import { themeScript } from "./theme-script";
+import { MswProvider } from "../components/msw-provider";
 
 export const metadata: Metadata = {
   title: "瑚琏 Hulian",
@@ -16,7 +17,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <ThemeProvider defaultSetting="system">{children}</ThemeProvider>
+        <ThemeProvider defaultSetting="system">
+          <MswProvider>{children}</MswProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
