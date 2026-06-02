@@ -29,8 +29,8 @@ function Demo({
 }) {
   return (
     <div className="w-60">
-      <Select items={FONTS} defaultValue={defaultValue} disabled={disabled}>
-        <SelectTrigger placeholder={placeholder} size={size} invalid={invalid} />
+      <Select items={FONTS} placeholder={placeholder} defaultValue={defaultValue} disabled={disabled}>
+        <SelectTrigger size={size} invalid={invalid} />
         <SelectContent side={side}>
           {FONTS.map((f) => (
             <SelectItem key={f.value} value={f.value}>
@@ -69,5 +69,5 @@ export const selectShowcase: ShowcaseSpec = {
     />
   ),
   toCode: (p) =>
-    `<Select items={items} defaultValue="…">\n  <SelectTrigger placeholder="${p.placeholder}" size="${p.size}" />\n  <SelectContent side="${p.side}">\n    {items.map((it) => <SelectItem key={it.value} value={it.value}>{it.label}</SelectItem>)}\n  </SelectContent>\n</Select>`,
+    `<Select items={items} placeholder="${p.placeholder}" defaultValue="…">\n  <SelectTrigger size="${p.size}" />\n  <SelectContent side="${p.side}">\n    {items.map((it) => <SelectItem key={it.value} value={it.value}>{it.label}</SelectItem>)}\n  </SelectContent>\n</Select>`,
 };

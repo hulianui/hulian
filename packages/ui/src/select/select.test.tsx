@@ -15,8 +15,8 @@ function Basic(props: {
   invalid?: boolean;
 }) {
   return (
-    <Select items={items} defaultValue={props.defaultValue} open={props.open}>
-      <SelectTrigger placeholder="请选择字体" size={props.size} invalid={props.invalid} />
+    <Select items={items} placeholder="请选择字体" defaultValue={props.defaultValue} open={props.open}>
+      <SelectTrigger size={props.size} invalid={props.invalid} />
       <SelectContent>
         {items.map((it) => (
           <SelectItem key={it.value} value={it.value}>
@@ -28,25 +28,20 @@ function Basic(props: {
   );
 }
 
-// Base UI Select.Value 在 placeholder 态渲染为空 <span placeholder="..." data-placeholder="">
-// 文本不在 DOM 内容中，而是通过 placeholder attribute 传递；改用 role="combobox" 找 Trigger。
+// Base UI Select Trigger 渲染 role="combobox" 的 button。
 const getTrigger = () => screen.getByRole("combobox");
 
 describe("Select", () => {
   it("闭合态: 触发器在, 选项不在 DOM", () => {
     render(<Basic />);
     expect(getTrigger()).toBeTruthy();
-    expect(screen.queryByText("衬线")).toBeNull();
+    expect(screen.queryByText("等宽")).toBeNull();
   });
 
-  it("placeholder: 无值时 Trigger 显示占位 + Value 带 data-placeholder", () => {
+  it("placeholder: 无值时 Trigger 可见文本即占位（rc.0 经注入 value:null 项实现）", () => {
     render(<Basic />);
-    // Base UI Select.Value 在 placeholder 态：渲染空 <span data-placeholder="" placeholder="...">
-    // button 本身也有 data-placeholder=""；用 span[data-placeholder] 精确找 Value span
-    const phSpan = document.querySelector("span[data-placeholder]");
-    expect(phSpan).not.toBeNull();
-    expect(phSpan!.getAttribute("placeholder")).toBe("请选择字体");
-    expect(phSpan!.getAttribute("data-placeholder")).toBe("");
+    // 验「可见文本」而非 attribute —— rc.0 无 Value.placeholder prop，靠注入的 null 项 label 显示。
+    expect(getTrigger().textContent).toContain("请选择字体");
   });
 
   it("受控 open: Popup mount + surface 皮肤 + 选项渲染", () => {
@@ -57,11 +52,13 @@ describe("Select", () => {
     expect(popup).not.toBeNull();
   });
 
-  it("选中态: defaultValue 对应 Item 带 data-selected", () => {
+  it("选中态: defaultValue 对应 Item 带 data-selected + Trigger 显示该 label", () => {
     render(<Basic defaultValue="serif" open />);
     const selected = document.querySelector("[role='option'][data-selected]");
     expect(selected).not.toBeNull();
     expect(selected!.textContent).toContain("衬线");
+    // items 自动映射：Trigger 显示选中项 label（而非 raw value "serif"）。
+    expect(getTrigger().textContent).toContain("衬线");
   });
 
   it("size=lg: Trigger 应用 lg 高度类", () => {

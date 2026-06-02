@@ -1,10 +1,9 @@
 "use client";
-import type { ComponentProps } from "react";
 import { Select as BaseSelect } from "@base-ui-components/react/select";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
-import type { SelectContentProps, SelectItemProps, SelectTriggerProps } from "./select.types";
+import type { SelectContentProps, SelectItemProps, SelectProps, SelectTriggerProps } from "./select.types";
 
 // overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（同 Dialog/Tooltip/Popover）。
 const overlayTransition = {
@@ -45,18 +44,26 @@ export const selectTriggerVariants = cva(
   },
 );
 
-export function Select(props: ComponentProps<typeof BaseSelect.Root>) {
-  return <BaseSelect.Root {...props} />;
+// placeholder 经注入一个 value:null 的 items 项实现（rc.0 Select.Value 无 placeholder prop）。
+// 无值时 Base UI 自动显示该 null 项 label（占位）；有值时显示选中项 label。Value 因此不写 children。
+export function Select({ items, placeholder, children, ...props }: SelectProps) {
+  const finalItems =
+    placeholder != null && items != null ? [{ value: null, label: placeholder }, ...items] : items;
+  return (
+    <BaseSelect.Root items={finalItems} {...props}>
+      {children}
+    </BaseSelect.Root>
+  );
 }
 
-export function SelectTrigger({ placeholder, size, invalid, className }: SelectTriggerProps) {
+export function SelectTrigger({ size, invalid, className }: SelectTriggerProps) {
   return (
     <BaseSelect.Trigger
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
     >
-      {/* placeholder 是运行时 Base UI 读取的 HTML attribute（SelectValue 渲染 <span>），类型层没有声明；用 spread any 绕过。 */}
-      <BaseSelect.Value {...({ placeholder } as object)} className="truncate data-[placeholder]:text-muted" />
+      {/* 不写 children：有值显示选中 label，无值显示注入的 null 项 label（=placeholder）；data-placeholder 态置 muted。 */}
+      <BaseSelect.Value className="truncate data-[placeholder]:text-muted" />
       <BaseSelect.Icon className="flex shrink-0 text-muted transition-transform data-[popup-open]:rotate-180">
         <ChevronDownIcon />
       </BaseSelect.Icon>
