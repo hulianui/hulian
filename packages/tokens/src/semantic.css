@@ -24,8 +24,8 @@
   --color-border: var(--gray-800);
   --color-ring: var(--brand-400);
   --color-primary: var(--brand-500);
-  --color-primary-foreground: var(--gray-950);
+  --color-primary-foreground: var(--white);
   --color-primary-hover: var(--brand-400);
   --color-danger: var(--danger-500);
-  --color-danger-foreground: var(--gray-950);
+  --color-danger-foreground: var(--white);
 }
