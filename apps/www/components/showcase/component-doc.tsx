@@ -24,7 +24,7 @@ export function ComponentDoc({ slug }: { slug: string }) {
       </header>
 
       <ComponentPreview code={spec.toCode(defaultProps(spec))}>
-        {spec.states[0].render()}
+        {spec.states[0]?.render()}
       </ComponentPreview>
 
       <section>
