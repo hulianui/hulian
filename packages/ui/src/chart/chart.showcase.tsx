@@ -17,24 +17,24 @@ export const chartShowcase: ShowcaseSpec = {
   states: [
     {
       name: "面积图（多序列）",
-      render: () => <AreaChart data={data} series={series} xKey="month" className="max-w-xl" />,
+      render: () => <AreaChart data={data} series={series} xKey="month" className="w-[32rem] max-w-full" />,
     },
     {
       name: "柱状图（多序列）",
-      render: () => <BarChart data={data} series={series} xKey="month" className="max-w-xl" />,
+      render: () => <BarChart data={data} series={series} xKey="month" className="w-[32rem] max-w-full" />,
     },
     {
       name: "单序列面积",
       render: () => (
-        <AreaChart data={data} series={[{ key: "revenue", label: "营收" }]} xKey="month" className="max-w-xl" />
+        <AreaChart data={data} series={[{ key: "revenue", label: "营收" }]} xKey="month" className="w-[32rem] max-w-full" />
       ),
     },
   ],
   renderWithProps: (p) =>
     p.type === "bar" ? (
-      <BarChart data={data} series={series} xKey="month" className="max-w-xl" />
+      <BarChart data={data} series={series} xKey="month" className="w-[32rem] max-w-full" />
     ) : (
-      <AreaChart data={data} series={series} xKey="month" className="max-w-xl" />
+      <AreaChart data={data} series={series} xKey="month" className="w-[32rem] max-w-full" />
     ),
   toCode: (p) =>
     `<${p.type === "bar" ? "BarChart" : "AreaChart"}\n  data={series}\n  series={[{ key: "revenue", label: "营收" }, { key: "orders", label: "订单" }]}\n  xKey="month"\n/>`,
