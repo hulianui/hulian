@@ -20,6 +20,7 @@ import {
   popoverShowcase,
   accordionShowcase,
   breadcrumbShowcase,
+  paginationShowcase,
   tableShowcase,
   numberTickerShowcase,
   drawerShowcase,
@@ -28,6 +29,7 @@ import {
   statShowcase,
   chartShowcase,
   selectShowcase,
+  comboboxShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -51,6 +53,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   popover: popoverShowcase,
   accordion: accordionShowcase,
   breadcrumb: breadcrumbShowcase,
+  pagination: paginationShowcase,
   table: tableShowcase,
   "number-ticker": numberTickerShowcase,
   drawer: drawerShowcase,
@@ -59,4 +62,5 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   stat: statShowcase,
   chart: chartShowcase,
   select: selectShowcase,
+  combobox: comboboxShowcase,
 };

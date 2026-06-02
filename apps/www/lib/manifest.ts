@@ -37,6 +37,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "popover", name: "Popover", description: "气泡卡片 · click 触发 + 标题/描述/Close", category: "feedback", status: "new" },
   { slug: "accordion", name: "Accordion", description: "手风琴 · Base UI 单/多开 + 高度过渡", category: "navigation", status: "new" },
   { slug: "breadcrumb", name: "Breadcrumb", description: "面包屑 · 纯皮肤静态 + aria-current 当前页语义", category: "navigation", status: "new" },
+  { slug: "pagination", name: "Pagination", description: "分页器 · 纯皮肤受控 + 页码区间算法(省略号)", category: "navigation", status: "new" },
   { slug: "table", name: "Table", description: "表格 · TanStack headless + 列排序 + 空态", category: "data-display", status: "new" },
   { slug: "number-ticker", name: "NumberTicker", description: "数字滚动 · 进入视口 tween 到目标值 + reduced-motion", category: "effects", status: "new" },
   { slug: "drawer", name: "Drawer", description: "抽屉 · Base UI Dialog 引擎 + 四向侧滑", category: "feedback", status: "new" },
@@ -45,4 +46,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "stat", name: "Stat", description: "指标卡 · KPI 数值/标签/升降趋势(无图表库)", category: "data-display", status: "new" },
   { slug: "chart", name: "Chart", description: "图表 · recharts 直裹 + chart token 皮肤(Area/Bar)", category: "data-display", status: "new" },
   { slug: "select", name: "Select", description: "下拉选择 · Base UI overlay 单选 + items 自动 label", category: "inputs", status: "new" },
+  { slug: "combobox", name: "Combobox", description: "自动补全 · Base UI overlay 文本输入 + 实时过滤 typeahead", category: "inputs", status: "new" },
 ];
