@@ -25,9 +25,16 @@ describe("Input", () => {
     expect(input.getAttribute("aria-invalid")).toBe("true");
     expect(input.hasAttribute("invalid")).toBe(false); // 关键：自定义 invalid 不渲到 DOM
   });
-  it("无 invalid 时不加 data-invalid", () => {
-    const { container } = render(<Input placeholder="x" />);
-    expect(container.querySelector("input")!.hasAttribute("data-invalid")).toBe(false);
+  it("无 invalid / invalid={false} 都不加 data-invalid", () => {
+    const a = render(<Input placeholder="x" />);
+    expect(a.container.querySelector("input")!.hasAttribute("data-invalid")).toBe(false);
+    const b = render(<Input invalid={false} placeholder="x" />);
+    expect(b.container.querySelector("input")!.hasAttribute("data-invalid")).toBe(false);
+    expect(b.container.querySelector("input")!.hasAttribute("invalid")).toBe(false);
+  });
+  it("disabled 透传到内层 input（驱动外壳 has-[:disabled]）", () => {
+    const { container } = render(<Input disabled placeholder="x" />);
+    expect(container.querySelector("input")!.disabled).toBe(true);
   });
   it("渲染前后缀", () => {
     const { getByText } = render(<Input prefix="¥" suffix=".00" />);
