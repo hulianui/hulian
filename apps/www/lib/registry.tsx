@@ -16,6 +16,8 @@ import {
   alertShowcase,
   sliderShowcase,
   tabsShowcase,
+  tooltipShowcase,
+  popoverShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -35,4 +37,6 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   alert: alertShowcase,
   slider: sliderShowcase,
   tabs: tabsShowcase,
+  tooltip: tooltipShowcase,
+  popover: popoverShowcase,
 };

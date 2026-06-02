@@ -33,4 +33,6 @@ export const manifest: ComponentMeta[] = [
   { slug: "alert", name: "Alert", description: "提示条 · tone×variant 皮肤 + a11y role", category: "feedback", status: "new" },
   { slug: "slider", name: "Slider", description: "滑块 · Base UI 单值/range + 键盘步进", category: "inputs", status: "new" },
   { slug: "tabs", name: "Tabs", description: "选项卡 · Base UI 无浮层 + underline/solid 滑块", category: "navigation", status: "new" },
+  { slug: "tooltip", name: "Tooltip", description: "提示浮层 · Base UI Positioner + 箭头 + hover 触发", category: "feedback", status: "new" },
+  { slug: "popover", name: "Popover", description: "气泡卡片 · click 触发 + 标题/描述/Close", category: "feedback", status: "new" },
 ];
