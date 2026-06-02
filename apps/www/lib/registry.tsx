@@ -27,6 +27,7 @@ import {
   toastShowcase,
   statShowcase,
   chartShowcase,
+  selectShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -57,4 +58,5 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   toast: toastShowcase,
   stat: statShowcase,
   chart: chartShowcase,
+  select: selectShowcase,
 };

@@ -44,4 +44,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "toast", name: "Toast", description: "命令式轻提示 · 自动消失 + 队列堆叠 + 手动关闭", category: "feedback", status: "new" },
   { slug: "stat", name: "Stat", description: "指标卡 · KPI 数值/标签/升降趋势(无图表库)", category: "data-display", status: "new" },
   { slug: "chart", name: "Chart", description: "图表 · recharts 直裹 + chart token 皮肤(Area/Bar)", category: "data-display", status: "new" },
+  { slug: "select", name: "Select", description: "下拉选择 · Base UI overlay 单选 + items 自动 label", category: "inputs", status: "new" },
 ];
