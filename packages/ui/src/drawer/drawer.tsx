@@ -60,7 +60,7 @@ export function DrawerContent({
             {description}
           </BaseDialog.Description>
         )}
-        <div className="mt-2 flex-1">{children}</div>
+        <div className="mt-2 flex flex-1 flex-col">{children}</div>
       </BaseDialog.Popup>
     </BaseDialog.Portal>
   );
