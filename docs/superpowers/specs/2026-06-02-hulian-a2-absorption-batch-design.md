@@ -202,7 +202,8 @@ export const specBySlug: Record<string, ShowcaseSpec> = { button: buttonShowcase
 ## 10. 后续批次预告（不在本 spec 范围，各自再开 spec）
 
 - **A2.2 — Base UI overlay 族**：Select / Combobox / Menu / Popover / Tooltip / Toast（全 Base UI，先解决 overlay 族在 registry/文档页里的承载）。
-- **A2.3 — 数据可视化**：Table（TanStack headless + 瑚琏皮肤）、Charts/KPI（Tremor，引 `@tremor/react`，faker 扩时间序列工厂）。
+- **A2.3 — 数据可视化**：Table（TanStack headless + 瑚琏皮肤，✅ 已落 `…-a2-3-table-design.md`）、Charts/KPI（✅ 已落 `…-a2-3-charts-design.md`）。
+  - ⚠️ **实际改判**：Charts **未用 Tremor**，改 **`recharts` 直裹 + 瑚琏 token 皮肤**（否决 `@tremor/react`：停在 Tailwind v3、自带调色板与瑚琏 TW v4 + 只消费语义 token 红线打架；recharts 本就是 Tremor 底层引擎，SVG 走 `var(--color-chart-N)` 天然明暗自适应）。多序列调色板在 token 层加 `--color-chart-1..4`。详见 charts spec §2/§3。
 - **A2.4 — 动效组件**：Magic UI（确认 `magic` = magicui.design；copy-paste 模式，换瑚琏 token 类）。
 - **A3 — 付代价家族桥接**：MUI（emotion theme 桥）+ Ant（ConfigProvider 桥），各取最佳组件。
 - **A4 — prod 打包**：www 静态导出（处理 MSW dev-only）+ Tauri dmg。
