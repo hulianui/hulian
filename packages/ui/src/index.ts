@@ -24,6 +24,7 @@ export * from "./pagination";
 export * from "./table";
 export * from "./stat";
 export * from "./chart";
+export * from "./_mui";
 export * from "./number-ticker";
 export * from "./marquee";
 export * from "./drawer";
