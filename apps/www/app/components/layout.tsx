@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { ToastProvider } from "@hulian/ui";
 import { ComponentTree } from "../../components/component-tree";
 import { ThemeToggle } from "../../components/theme-toggle";
 
@@ -39,6 +40,9 @@ export default function ComponentsLayout({ children }: { children: ReactNode }) 
         </aside>
         <main className="min-w-0 flex-1 px-6 py-10">{children}</main>
       </div>
+
+      {/* Toast 全局单挂：含 Viewport，命令式 toast() 在任意组件页触发都进此处（见 spec §3.2）。 */}
+      <ToastProvider />
     </div>
   );
 }
