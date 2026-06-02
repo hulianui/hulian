@@ -22,3 +22,20 @@ export function makeUsers(count = 24, seed = 42): DemoUser[] {
     avatar: faker.image.avatar(),
   }));
 }
+
+export interface DemoSeriesPoint {
+  month: string;
+  revenue: number;
+  orders: number;
+}
+
+/** 确定性时间序列样例（图表 demo 用），同 seed 永远同一批，防 hydration mismatch。 */
+export function makeTimeseries(count = 12, seed = 7): DemoSeriesPoint[] {
+  faker.seed(seed);
+  const months = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+  return Array.from({ length: count }, (_, i) => ({
+    month: months[i % 12],
+    revenue: faker.number.int({ min: 20, max: 120 }),
+    orders: faker.number.int({ min: 50, max: 400 }),
+  }));
+}

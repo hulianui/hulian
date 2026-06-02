@@ -12,6 +12,11 @@
   --color-primary-hover: var(--brand-500);
   --color-danger: var(--danger-600);
   --color-danger-foreground: var(--white);
+  /* 图表分类色板（数据序列用，SVG 经 var() 直接消费 → 明暗自适应） */
+  --color-chart-1: oklch(0.62 0.19 255);
+  --color-chart-2: oklch(0.7 0.16 155);
+  --color-chart-3: oklch(0.75 0.15 70);
+  --color-chart-4: oklch(0.62 0.19 300);
   --radius: 0.625rem;
 }
 
@@ -28,4 +33,9 @@
   --color-primary-hover: var(--brand-400);
   --color-danger: var(--danger-500);
   --color-danger-foreground: var(--white);
+  /* 暗态图表色提亮以保对比 */
+  --color-chart-1: oklch(0.7 0.17 255);
+  --color-chart-2: oklch(0.76 0.16 155);
+  --color-chart-3: oklch(0.8 0.15 70);
+  --color-chart-4: oklch(0.72 0.18 300);
 }

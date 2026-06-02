@@ -16,5 +16,9 @@
   --color-primary-hover: var(--color-primary-hover);
   --color-danger: var(--color-danger);
   --color-danger-foreground: var(--color-danger-foreground);
+  --color-chart-1: var(--color-chart-1);
+  --color-chart-2: var(--color-chart-2);
+  --color-chart-3: var(--color-chart-3);
+  --color-chart-4: var(--color-chart-4);
   --radius: var(--radius);
 }
