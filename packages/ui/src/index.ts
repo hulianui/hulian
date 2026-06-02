@@ -29,6 +29,7 @@ export * from "./marquee";
 export * from "./drawer";
 export * from "./menu";
 export * from "./toast";
+export * from "./progress";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
