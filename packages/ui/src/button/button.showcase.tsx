@@ -1,3 +1,4 @@
+"use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "./button";
 
