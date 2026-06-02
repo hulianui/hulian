@@ -1,13 +1,7 @@
 import Link from "next/link";
-import {
-  Button,
-  Switch,
-  Dialog,
-  DialogTrigger,
-  DialogClose,
-  DialogContent,
-} from "@hulian/ui";
+import { Button, Switch } from "@hulian/ui";
 import { ThemeToggle } from "../components/theme-toggle";
+import { DialogDemo } from "../components/dialog-demo";
 
 export default function Home() {
   return (
@@ -41,18 +35,7 @@ export default function Home() {
 
       <section className="space-y-5">
         <h2 className="text-sm font-medium text-muted">Dialog</h2>
-        <Dialog>
-          <DialogTrigger render={<Button variant="outline">打开对话框</Button>} />
-          <DialogContent
-            title="瑚琏对话框"
-            description="Portal + focus trap：Tab 不出框，Esc 关闭，焦点归还触发按钮。"
-          >
-            <div className="flex justify-end gap-2">
-              <DialogClose render={<Button variant="ghost">取消</Button>} />
-              <DialogClose render={<Button>确定</Button>} />
-            </div>
-          </DialogContent>
-        </Dialog>
+        <DialogDemo />
       </section>
 
       <footer className="border-t border-border pt-6">
