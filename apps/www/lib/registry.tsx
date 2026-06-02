@@ -22,6 +22,7 @@ import {
   breadcrumbShowcase,
   tableShowcase,
   drawerShowcase,
+  menuShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -47,4 +48,5 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   breadcrumb: breadcrumbShowcase,
   table: tableShowcase,
   drawer: drawerShowcase,
+  menu: menuShowcase,
 };
