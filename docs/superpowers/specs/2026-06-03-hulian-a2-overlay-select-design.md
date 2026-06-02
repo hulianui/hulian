@@ -24,7 +24,7 @@
 |--------|------|---------|------|
 | **受控/非受控** | 只做一种 / 全透传 | **全透传** | 家风一致（Slider/Tabs/Switch/Dialog 皆透传 Root props）。`Select` = Root 薄包，`value/defaultValue/onValueChange/open/defaultOpen/onOpenChange/name/disabled/required/items/modal` 全直达。默认非受控。 |
 | **多选 multiple** | 本批做全皮肤 / 完全阉割 / 透传不背书 | **单选一等公民；multiple 透传不阻止但本批不做皮肤/不测/不截图** | 单选是 Select 核心语义；多选 value 变数组、Trigger 显示要 join、placeholder/Indicator 语义不同 → 显著增量。照 Slider 推迟 marks/vertical、Tabs 不引 context 的 YAGNI 节奏。Root 透传天然带 `multiple` 类型，不主动删（不阉割 API），但皮肤只保证单选完美。 |
-| **label 显示 + placeholder** | raw value 显示 / items 自动 label / render prop 自映射 | **推荐配 `items` prop（`Array<{label,value}>`）→ `Select.Value` 自动显示选中 label；placeholder 接法实现首步实证 `SelectValue.js` 定夺** | Base UI Root `items` 指定后 Value 自动渲染 label 而非 raw value（实证 d.ts 注释）。Value 源码 `placeholder: !serializedValue` 暗示无值带 placeholder 态。**首步实证**：children 传纯 ReactNode 是否即作 placeholder（Radix 语义）→ 是则 `<Select.Value>{placeholder}</Select.Value>`；否则回退 render prop。API 形状（`SelectTrigger placeholder` prop）不受影响。 |
+| **label 显示 + placeholder** | raw value / items 自动 label / Value.placeholder prop / 注入 null 项 | **配 `items`（`{value,label}[]`）→ Value 自动显示选中 label；placeholder 提升到 `Select`，内部注入 `{value:null,label:placeholder}` 项** | ⚠️ **实证（probe）：rc.0 `Select.Value` 仅 `children` prop，无 `placeholder` prop**（context7 给的是 v1.2+ 文档，与项目 rc.0 不符，一度误导 → 见复盘坑）。rc.0 正解：`resolveSelectedLabel` 无值时命中 `items` 里 `value:null` 项显示其 label → 瑚琏 `Select` 解构 `placeholder` 自动注入该 null 项；`SelectTrigger` 无 placeholder prop、`Value` 不写 children（有值 label / 无值占位）。 |
 | **弹层定位** | `alignItemWithTrigger` 默认 true（原生覆盖式）/ false（现代下方弹出） | **`alignItemWithTrigger={false}` + `side="bottom"`** | 现代下拉气质（shadcn/Radix 风），定位可预测、便于截图验证碰撞翻转；覆盖式原生风会让弹层压住 trigger，文档展示不直观。消费者可覆盖。 |
 | **焦点环挂点** | self `focus-visible:` / `data-[open]` / has-内嵌input | **Trigger 自身 button → 优先 self `focus-visible:ring-2`；截图 + DOM 实证定** | 实证 Trigger=`<button>`（NativeButton），可聚焦元素是 Trigger 本身（**不同于** Slider 焦点在内嵌 hidden input → 那里才用 `has-[:focus-visible]`）。hidden input 仅 form 提交用（`inputRef`/`name`），不受焦点。实证为准，不凭记忆。 |
 | **分组 Group/Separator** | 本批做 / 推迟 | **推迟（扁平列表）** | Base UI 有 `Group/GroupLabel/Separator`，但本批先做扁平单选；纯增量可后补。YAGNI。 |
@@ -40,15 +40,17 @@
 // select.tsx —— "use client"（overlay 本体必加）
 import { Select as BaseSelect } from "@base-ui-components/react/select";
 
-// ① Select = Root 薄包，全透传（含 items/value/defaultValue/onValueChange/name/disabled/multiple/open/modal…）
-export function Select<Value>(props: ComponentProps<typeof BaseSelect.Root<Value>>) {
-  return <BaseSelect.Root {...props} />;
+// ① Select = Root 薄包 + placeholder 注入（rc.0 无 Value.placeholder prop → 注入 value:null 项做占位 label）
+//    透传 items/value/defaultValue/onValueChange/name/disabled/multiple/open/modal…
+export function Select({ items, placeholder, children, ...props }: SelectProps) {
+  const finalItems = placeholder != null && items != null ? [{ value: null, label: placeholder }, ...items] : items;
+  return <BaseSelect.Root items={finalItems} {...props}>{children}</BaseSelect.Root>;
 }
 
 // ② SelectTrigger = button 外壳皮肤（input 外壳气质：border/bg/radius/focus-ring/disabled/invalid）
-//    内嵌 Select.Value(placeholder) + Select.Icon(chevron, data-[open]:rotate-180)
-//    props: placeholder / size(sm|md|lg) / invalid / className
-export function SelectTrigger({ placeholder, size, invalid, className }: SelectTriggerProps) { … }
+//    内嵌 Select.Value(不写 children → 有值 label/无值占位) + Select.Icon(chevron, data-[popup-open]:rotate-180)
+//    props: size(sm|md|lg) / invalid / className（placeholder 在 Select 上，非此处）
+export function SelectTrigger({ size, invalid, className }: SelectTriggerProps) { … }
 
 // ③ SelectContent = Portal > Positioner(side/align/sideOffset, alignItemWithTrigger=false) > Popup(surface 皮肤+motion CSS 镜像过渡) > List
 //    props: side / align / sideOffset / className / children
@@ -61,7 +63,7 @@ export function SelectItem({ value, disabled, children, className }: SelectItemP
 ```
 
 **皮肤要点**：
-- **SelectTrigger**：复用 Input 外壳气质（`inputShellVariants` 同款 token：`border-border bg-surface rounded-[var(--radius)]` + size 高度 + `has-[:disabled]`/disabled），但**焦点环落 Trigger 自身**（`focus-visible:ring-2 ring-ring ring-offset-2 ring-offset-bg`，实证定）+ `data-[open]:` 可加开启态描边。invalid → `data-invalid`/`aria-invalid` 翻译（照 Input：destructure 后翻译，禁裸 spread）。右侧 `Select.Icon` 放 chevron-down，`data-[open]:rotate-180 transition-transform`。
+- **SelectTrigger**：复用 Input 外壳气质（同款 token：`border-border bg-surface rounded-[var(--radius)]` + size 高度 + `disabled:`），**焦点环落 Trigger 自身**（`focus-visible:ring-2 ring-ring ring-offset-2 ring-offset-bg`，button 原生 self）+ `data-[popup-open]:border-ring` 开启态描边。invalid → `data-invalid`/`aria-invalid` 翻译（照 Input：destructure 后翻译，禁裸 spread）。右侧 `Select.Icon` 放 chevron-down，`data-[popup-open]:rotate-180 transition-transform`。
 - **SelectContent**：Popup 皮肤照 Popover（`bg-surface border-border rounded shadow-xl` + `data-[starting-style]/[ending-style]` scale/opacity 过渡 + `overlayTransition`=motionDurationCss/EaseCss）；`max-h` + `overflow-auto` 让长列表滚动；`min-w-[var(--anchor-width)]`（Base UI 暴露锚宽 CSS 变量，实证变量名）让列表至少与 trigger 等宽。
 - **SelectItem**：`data-[highlighted]:bg-muted/40`（键盘/hover 高亮）、`data-[selected]:font-medium`、`data-[disabled]:opacity-50 data-[disabled]:pointer-events-none`；左/右留 `ItemIndicator` 勾位（`data-[selected]` 显示 check 图标）。
 - **几何禁区**：Positioner 定位由 Base UI inline 自算，皮肤只给外观（bg/border/radius/shadow/max-h），**禁写 left/top/width/transform**（除 `--anchor-width` 消费）。
@@ -74,15 +76,15 @@ export function SelectItem({ value, disabled, children, className }: SelectItemP
 |------|-----------|---------|------|
 | `Select.Item` | `selected`/`highlighted`/`disabled` | `data-selected`・`data-highlighted`・`data-disabled` | **`data-selected`（≠ Tabs 的 `data-active`！同库不同组件命名不一致，故实证）**；`highlighted`=键盘/指针高亮（非 hover，`highlightItemOnHover` 默认 true） |
 | `Select.ItemIndicator` | `selected` | 仅 `selected` 时渲染 | 勾打在选中项；放 check 图标 |
-| `Select.Trigger` | `extends FieldRoot.State` + `open` | `data-open` + 继承 Field invalid/valid/dirty | 在 `Field.Root` 内自动得 `data-invalid` |
-| `Select.Icon` | `open` | `data-[open]:rotate-180` | chevron 翻转 |
+| `Select.Trigger` | `extends FieldRoot.State` + `open` | **`data-popup-open`**（pressableTriggerOpenStateMapping）+ 继承 Field invalid/valid/dirty | **非 `data-open`！** 在 `Field.Root` 内自动得 `data-invalid` |
+| `Select.Icon` | `open` | **`data-[popup-open]:rotate-180`**（triggerOpenStateMapping） | chevron 翻转 |
 | `Select.Popup`/`Positioner` | `open`/`side`/`align` | `data-open`/`data-side`/`data-align` + `data-[starting-style]`/`data-[ending-style]` | 过渡同 tooltip/popover |
 
 ---
 
 ## 5. showcase 承载（ShowcaseSpec 零改 · 照 tooltip/popover 写法）
 
-- **Demo 组件**内组装完整 Select：`items` 数据 + `<SelectTrigger placeholder>` + `<SelectContent>{options.map(o => <SelectItem value={o.value}>{o.label}</SelectItem>)}</SelectContent>`。同一份 `options` 同时喂 `items` 与渲染 Item（消费者一次定义）。
+- **Demo 组件**内组装完整 Select：`<Select items placeholder>` + `<SelectTrigger>` + `<SelectContent>{options.map(o => <SelectItem value={o.value}>{o.label}</SelectItem>)}</SelectContent>`。`items` 喂 Root（Value label 映射 + placeholder null 项），同份 `options` 渲染 Item。
 - **controls**（标量）：`placeholder`(text)、`size`(select sm/md/lg)、`disabled`(boolean)、`invalid`(boolean)、`side`(select top/bottom)。
 - **states**（预置 demo）：默认（placeholder）、已选值（`defaultValue`）、禁用、invalid、长列表（验滚动）、向上弹（`side="top"`）。
 - **renderWithProps**：标量调 Demo。**toCode**：示意复合结构。
