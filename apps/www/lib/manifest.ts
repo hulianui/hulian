@@ -21,4 +21,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "button", name: "Button", description: "按钮 · CVA 变体 + press 动效", category: "inputs", status: "stable" },
   { slug: "switch", name: "Switch", description: "开关 · Base UI 受控 + ARIA", category: "inputs", status: "stable" },
   { slug: "dialog", name: "Dialog", description: "对话框 · Base UI Portal + focus trap", category: "feedback", status: "stable" },
+  { slug: "badge", name: "Badge", description: "徽标 · solid/soft/outline × tone", category: "data-display", status: "new" },
+  { slug: "card", name: "Card", description: "卡片 · Header/Body/Footer 插槽", category: "data-display", status: "new" },
+  { slug: "skeleton", name: "Skeleton", description: "骨架屏 · shimmer 高光占位", category: "data-display", status: "new" },
+  { slug: "avatar", name: "Avatar", description: "头像 · Base UI 图片+fallback", category: "data-display", status: "new" },
 ];
