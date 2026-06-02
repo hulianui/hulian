@@ -14,6 +14,7 @@ export * from "./radio";
 export * from "./slider";
 export * from "./alert";
 export * from "./tabs";
+export * from "./tooltip";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
