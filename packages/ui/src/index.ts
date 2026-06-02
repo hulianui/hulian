@@ -19,6 +19,7 @@ export * from "./popover";
 export * from "./accordion";
 export * from "./breadcrumb";
 export * from "./table";
+export * from "./drawer";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
