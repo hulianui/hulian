@@ -16,6 +16,7 @@ export * from "./alert";
 export * from "./tabs";
 export * from "./tooltip";
 export * from "./popover";
+export * from "./accordion";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
