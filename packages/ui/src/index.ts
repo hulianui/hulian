@@ -11,6 +11,7 @@ export * from "./textarea";
 export * from "./field";
 export * from "./slider";
 export * from "./alert";
+export * from "./tabs";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
