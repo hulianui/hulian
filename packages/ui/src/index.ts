@@ -8,6 +8,7 @@ export * from "./skeleton";
 export * from "./avatar";
 export * from "./input";
 export * from "./textarea";
+export * from "./field";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
