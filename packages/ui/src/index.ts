@@ -16,6 +16,7 @@ export {
   motionEaseCss,
   pressable,
   fadeScale,
+  shimmer,
 } from "./motion";
 
 // 工具 + showcase 约定

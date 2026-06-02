@@ -4,4 +4,4 @@ export {
   motionEase,
   motionEaseCss,
 } from "./tokens";
-export { pressable, fadeScale } from "./variants";
+export { pressable, fadeScale, shimmer } from "./variants";

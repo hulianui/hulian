@@ -18,3 +18,9 @@ export const fadeScale = {
   exit: { opacity: 0, scale: 0.96 },
   transition: { duration: motionDuration.base, ease: motionEase.out } satisfies Transition,
 };
+
+// shimmer：循环高光扫过的占位动效，给 Skeleton 用。配渐变背景 + backgroundSize:200%。
+export const shimmer = {
+  animate: { backgroundPosition: ["200% 0", "-200% 0"] as string[] },
+  transition: { repeat: Infinity, duration: 1.4, ease: "linear" as const },
+};
