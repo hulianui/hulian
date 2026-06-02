@@ -6,7 +6,8 @@ import type { CheckboxProps } from "./checkbox.types";
 // 方盒皮肤：复用 Switch 配方（data-[checked] 驱动 + focus-visible:ring + 语义 token）。
 // disabled 用 data-[disabled]（Root 是 span，不是 button → :disabled 伪类不命中）。
 const boxClass = cn(
-  "size-5 shrink-0 grid place-items-center rounded-[var(--radius)] border border-border bg-surface text-primary-foreground transition-colors outline-none",
+  // 圆角封顶 0.375rem：--radius=0.625rem(10px) 落到 20px 方盒会变正圆、与 radio 混淆 → min() 钉死方盒
+  "size-5 shrink-0 grid place-items-center rounded-[min(var(--radius),0.375rem)] border border-border bg-surface text-primary-foreground transition-colors outline-none",
   "data-[checked]:bg-primary data-[checked]:border-primary",
   "data-[indeterminate]:bg-primary data-[indeterminate]:border-primary",
   "data-[invalid]:border-danger",
