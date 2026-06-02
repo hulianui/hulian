@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="apps/www/app/opengraph-image.png" alt="瑚琏 Hulian —— 颜值 + 好用的 React 设计系统" width="820">
+</p>
+
 # 瑚琏 Hulian
 
 > 颜值 + 好用的 React 设计系统。
