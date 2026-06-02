@@ -1,0 +1,30 @@
+{
+  "name": "www",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 5512",
+    "build": "next build",
+    "start": "next start -p 5512",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^16.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@hulian/ui": "workspace:*",
+    "@hulian/tokens": "workspace:*",
+    "@hulian/mocks": "workspace:*",
+    "@base-ui-components/react": "1.0.0-rc.0",
+    "lucide-react": "^1.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.3.0",
+    "@tailwindcss/postcss": "^4.3.0",
+    "typescript": "^5.5.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/node": "^22.0.0",
+    "@next/mdx": "^16.2.0",
+    "@mdx-js/react": "^3.1.0"
+  }
+}

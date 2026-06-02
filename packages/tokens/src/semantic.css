@@ -1,0 +1,31 @@
+/* 瑚琏 语义层 — 组件只消费这一层；明暗在此切，只换值不换结构 */
+:root {
+  --color-bg: var(--gray-50);
+  --color-surface: var(--white);
+  --color-surface-hover: var(--gray-100);
+  --color-foreground: var(--gray-900);
+  --color-muted: var(--gray-500);
+  --color-border: var(--gray-200);
+  --color-ring: var(--brand-500);
+  --color-primary: var(--brand-600);
+  --color-primary-foreground: var(--white);
+  --color-primary-hover: var(--brand-500);
+  --color-danger: var(--danger-600);
+  --color-danger-foreground: var(--white);
+  --radius: 0.625rem;
+}
+
+[data-theme="dark"] {
+  --color-bg: var(--gray-950);
+  --color-surface: var(--gray-900);
+  --color-surface-hover: var(--gray-800);
+  --color-foreground: var(--gray-50);
+  --color-muted: var(--gray-400);
+  --color-border: var(--gray-800);
+  --color-ring: var(--brand-400);
+  --color-primary: var(--brand-500);
+  --color-primary-foreground: var(--gray-950);
+  --color-primary-hover: var(--brand-400);
+  --color-danger: var(--danger-500);
+  --color-danger-foreground: var(--gray-950);
+}

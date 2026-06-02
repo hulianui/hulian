@@ -1,0 +1,20 @@
+{
+  "name": "@hulian/mocks",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/browser.ts"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "msw": "^2.14.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

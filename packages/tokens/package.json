@@ -1,0 +1,11 @@
+{
+  "name": "@hulian/tokens",
+  "version": "0.0.0",
+  "exports": {
+    "./tokens.css": "./src/tokens.css",
+    "./preset.css": "./src/preset.css",
+    "./primitives.css": "./src/primitives.css",
+    "./semantic.css": "./src/semantic.css"
+  },
+  "files": ["src"]
+}
