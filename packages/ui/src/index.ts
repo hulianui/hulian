@@ -3,6 +3,7 @@ export * from "./button";
 export * from "./switch";
 export * from "./dialog";
 export * from "./badge";
+export * from "./card";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
