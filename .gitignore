@@ -4,3 +4,7 @@ dist/
 .turbo/
 *.log
 .DS_Store
+
+# www
+.next/
+next-env.d.ts

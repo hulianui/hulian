@@ -1,0 +1,17 @@
+/* 瑚琏 token 在最前（anti-FOUC inline script 依赖变量已就位） */
+@import "@hulian/tokens/tokens.css";
+/* Tailwind v4 + 瑚琏 preset（语义 token → 工具类，dark variant 绑 data-theme） */
+@import "@hulian/tokens/preset.css";
+
+/* 模型 A 核心：让消费方 Tailwind 扫到 @hulian/ui 源码里的 className */
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-foreground);
+}
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
