@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@hulian/ui";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
+import { ThemeProvider, MuiBridgeProvider } from "@hulian/ui";
 import { themeScript } from "./theme-script";
 import { MswProvider } from "../components/msw-provider";
 
@@ -18,7 +19,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <ThemeProvider defaultSetting="system">
-          <MswProvider>{children}</MswProvider>
+          <AppRouterCacheProvider options={{ key: "mui" }}>
+            <MuiBridgeProvider>
+              <MswProvider>{children}</MswProvider>
+            </MuiBridgeProvider>
+          </AppRouterCacheProvider>
         </ThemeProvider>
       </body>
     </html>

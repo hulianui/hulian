@@ -49,4 +49,6 @@ export const manifest: ComponentMeta[] = [
   { slug: "select", name: "Select", description: "下拉选择 · Base UI overlay 单选 + items 自动 label", category: "inputs", status: "new" },
   { slug: "combobox", name: "Combobox", description: "自动补全 · Base UI overlay 文本输入 + 实时过滤 typeahead", category: "inputs", status: "new" },
   { slug: "progress", name: "Progress", description: "进度条 · linear/circular + 不定态 · 几何自有(reduced-motion)", category: "feedback", status: "new" },
+  { slug: "rating", name: "Rating", description: "评分 · MUI 桥(emotion theme 读瑚琏 token) + 受控星级", category: "inputs", status: "new" },
+  { slug: "stepper", name: "Stepper", description: "步骤条 · MUI 桥 + active/completed 走瑚琏 token", category: "navigation", status: "new" },
 ];
