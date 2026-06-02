@@ -25,6 +25,7 @@ export * from "./table";
 export * from "./stat";
 export * from "./chart";
 export * from "./number-ticker";
+export * from "./marquee";
 export * from "./drawer";
 export * from "./menu";
 export * from "./toast";
