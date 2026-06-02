@@ -10,6 +10,7 @@ export * from "./input";
 export * from "./textarea";
 export * from "./field";
 export * from "./checkbox";
+export * from "./radio";
 export * from "./slider";
 export * from "./alert";
 export * from "./tabs";
