@@ -5,6 +5,7 @@ export * from "./dialog";
 export * from "./badge";
 export * from "./card";
 export * from "./skeleton";
+export * from "./avatar";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
