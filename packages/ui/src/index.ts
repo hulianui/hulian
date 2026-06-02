@@ -9,6 +9,7 @@ export * from "./avatar";
 export * from "./input";
 export * from "./textarea";
 export * from "./field";
+export * from "./alert";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
