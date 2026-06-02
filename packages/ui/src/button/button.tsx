@@ -1,7 +1,10 @@
+"use client";
 import { forwardRef } from "react";
 import { cva } from "class-variance-authority";
+import { motion, type HTMLMotionProps } from "motion/react";
 import { Loader2 } from "lucide-react";
 import { cn } from "../lib/cn";
+import { pressable } from "../motion";
 import type { ButtonProps } from "./button.types";
 
 export const buttonVariants = cva(
@@ -9,8 +12,8 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        solid: "bg-primary text-primary-foreground hover:bg-primary-hover",
-        outline: "border border-border bg-surface text-foreground hover:bg-surface-hover",
+        solid: "bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover hover:shadow",
+        outline: "border border-border bg-surface text-foreground shadow-sm hover:bg-surface-hover",
         ghost: "text-foreground hover:bg-surface-hover",
       },
       tone: { brand: "", danger: "" },
@@ -30,16 +33,22 @@ export const buttonVariants = cva(
 );
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, tone, size, loading, disabled, children, ...props }, ref) => (
-    <button
-      ref={ref}
-      className={cn(buttonVariants({ variant, tone, size }), className)}
-      disabled={disabled || loading}
-      {...props}
-    >
-      {loading && <Loader2 className="size-4 animate-spin" aria-hidden />}
-      {children}
-    </button>
-  ),
+  ({ className, variant, tone, size, loading, disabled, children, ...props }, ref) => {
+    const isDisabled = disabled || loading;
+    return (
+      <motion.button
+        ref={ref}
+        className={cn(buttonVariants({ variant, tone, size }), className)}
+        disabled={isDisabled}
+        // press 反馈走 motion 的 transform scale，与 CSS 的颜色过渡互不干扰；禁用态不缩放
+        whileTap={isDisabled ? undefined : pressable.whileTap}
+        transition={pressable.transition}
+        {...(props as HTMLMotionProps<"button">)}
+      >
+        {loading && <Loader2 className="size-4 animate-spin" aria-hidden />}
+        {children}
+      </motion.button>
+    );
+  },
 );
 Button.displayName = "Button";
