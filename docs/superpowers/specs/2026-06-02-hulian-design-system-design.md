@@ -24,7 +24,7 @@
 
 ## 2. 技术地基（基于扫描用户 code/ 下真实 React 项目得出）
 
-扫描 8 个用户在用的 React 项目，技术指纹：Tailwind v4（7/8）、shadcn/ui（5）、**Base UI `@base-ui/react`（4-5，正从 Radix 迁向它）**、HeroUI v3（4，生产用，观感参考）、Lucide React（6，图标永远用它）、motion / Framer Motion fork（5，动效）、几乎无 CSS-in-JS。
+扫描 8 个用户在用的 React 项目，技术指纹：Tailwind v4（7/8）、shadcn/ui（5）、**Base UI `@base-ui-components/react`（4-5，正从 Radix 迁向它）**、HeroUI v3（4，生产用，观感参考）、Lucide React（6，图标永远用它）、motion / Framer Motion fork（5，动效）、几乎无 CSS-in-JS。
 
 **瑚琏地基 = 把用户既有审美与骨架揉成一套：**
 
@@ -38,6 +38,8 @@
 | 观感参考 | HeroUI v3 的视觉气质 | 用户生产项目偏好 |
 
 口诀：**审美取 HeroUI v3 的观感，骨架取 Base UI 的 headless，手感取 shadcn 的 CVA 组织方式。**
+
+**混库红线（避免两套 headless 打架）**：同一交互族（尤其所有 overlay：Dialog / Popover / Tooltip / Menu）**只用一套库**，不在单个组件内混用两套 Portal / FocusScope。Radix 仅在 Base UI 确实缺某 primitive 时，作为**整组件级** fallback 引入，**禁止行级混用**。Base UI 与 Radix 各自的 Portal 容器、z-index 层叠、focus 管理不可在一棵子树里交叉。
 
 ---
 
@@ -56,6 +58,26 @@ hulian/
 ```
 
 **为什么 monorepo**：组件库、文档站、桌面壳共用同一份组件源码，monorepo 是唯一不重复造的方式（shadcn / Radix / Base UI 标准结构）。
+
+---
+
+## 3A. 分发 / 消费模型（外部 import 怎么拿到样式）—— 决定 tokens preset 与 peerDeps 形态
+
+> 这是发布一个 Tailwind 组件库**最难、且最早影响 token/preset 写法**的决定，不是 P3 才想的事。P0 写 tokens preset 的产出形态、写各包的 peerDependencies，都由本节定。
+
+**两条互斥路：**
+- **A. 消费方也用 Tailwind v4 + 引入瑚琏 preset**：`@hulian/ui` 只发**源码 + className 字符串**，实际 CSS 由消费方的 Tailwind 扫描 `node_modules/@hulian/ui` 源码生成。体积小、**与"运行时换肤"一致**；代价是强约束消费方技术栈，且消费方 Tailwind v4 的 `@source` 必须能扫到本包源码。
+- **B. 预编译 CSS 随包发**：消费方 `import '@hulian/ui/styles.css'` 即用，不要求 Tailwind。即插即用；但换肤只能靠预编译进去的 token 变量，灵活性低。
+
+**本项目选 A**（与 §5「运行时换肤」一致；§6「组件只消费语义 token」本就默认 A）。据此：
+
+**包形态与依赖契约：**
+- `@hulian/ui`：发 **ESM 源码 + 类型**（不预编译 CSS）。`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 全部进 **`peerDependencies`**，不进 `dependencies`（避免版本双装与重复实例）。CVA / clsx / tailwind-merge 这类纯工具可进 `dependencies`。
+- `@hulian/tokens`：产出两份资产 —— ① **`tokens.css`**（`:root` + `[data-theme=dark]` 的 CSS 变量，消费方全局引入一次）；② **Tailwind v4 preset**（把语义 token 映射成工具类，供消费方 `@import` / 配置引用）。
+- 消费方接入三步：装 `@hulian/ui` + peer → 全局引 `@hulian/tokens/tokens.css` → Tailwind 配置引瑚琏 preset 并把 `@hulian/ui` 源码加入 `@source` 扫描范围。
+- **`apps/www` 是这套接入方式的第一个真实消费者**（dogfooding），P0/P1 即验证此链路。
+
+**§9 验收 5「可被外部 import」据此具体化为**：在一个全新的最小 Tailwind v4 工程里按上述三步接入，Button 能正确出样式 + 类型提示可用。
 
 ---
 
@@ -92,7 +114,12 @@ hulian/
 **Tailwind v4 桥接**：v4 用 `@theme` 把语义 token 映射成工具类（`bg-surface` / `text-foreground`），并把 `dark:` variant 绑到 `[data-theme=dark]`。
 > ⚠️ 已知坑：Tailwind v4 + shadcn dark variant 桥接到 data-theme，实施时套用 skill `tailwind-v4-shadcn-dark-variant-data-theme-bridge` 规避。
 
-**ThemeProvider**（在 `@hulian/ui`）：① 持久化 localStorage；② 默认跟随系统 `prefers-color-scheme`；③ SSR 注入 inline script 在 hydration 前定主题，**消灭首屏白闪**。
+**ThemeProvider 的库/应用接缝（必须切开，否则污染框架无关库）：**
+- **框架无关部分 → 留 `@hulian/ui`**：localStorage 持久化、跟随系统 `prefers-color-scheme`、`data-theme` 切换 context/hook。纯 React，不依赖 Next。
+- **防首屏白闪的 inline script → 归 `apps/www` 的 root layout**，**不塞进库**。这是 Next.js SSR/hydration 专属问题，写进通用库会污染边界。
+- **build-vs-buy**：`next-themes` 已把 inline-script + system + storage 做到无 FOUC（但 Next 专属）。`apps/www` 可直接用 `next-themes` 或抄它的 inline script；`@hulian/ui` 只保留框架无关 context。这条接缝正好印证上面的切分。
+
+**token 加载顺序（anti-FOUC 依赖）**：`apps/www` root layout 里 `@hulian/tokens` 的 `tokens.css` **必须在最前**加载，inline anti-FOUC script 依赖 CSS 变量已就位才能在 first paint 正确定色。
 
 **留余量不过度**：token 结构支持未来加第三套主题（品牌色变体），结构不用改；但**现在只做 light/dark 两套**（YAGNI）。
 
@@ -104,16 +131,20 @@ hulian/
 
 ```
 packages/ui/src/button/
-├── button.tsx          # Base UI 行为 + Tailwind 皮肤，CVA 管变体(variant/size/tone)
-├── button.types.ts     # 导出的 props 类型(TS 智能提示)
-├── button.stories.tsx  # showcase 规格:变体矩阵 + 全状态 + 样例数据
-└── index.ts            # 桶导出
+├── button.tsx           # Base UI 行为 + Tailwind 皮肤，CVA 管变体(variant/size/tone)
+├── button.types.ts      # 导出的 props 类型(TS 智能提示)
+├── button.showcase.tsx  # 展示规格:变体矩阵 + 全状态 + 样例数据 + 手写 control schema
+└── index.ts             # 桶导出
 ```
+
+> **命名注意**：文件名是 `*.showcase.tsx`，**不是** `*.stories.tsx`。本项目**不用 Storybook**，展示由 `apps/www` 里的自定义展示组件渲染；避免 `.stories` 暗示 Storybook CSF 运行时误导后续接手者。5513 端口虽为 Storybook 预留，但当前不启用。
 
 **"优化后" = 三条硬规范：**
 1. **只消费语义 token**，禁止写死颜色/间距裸值（明暗自动适配的根本）。
 2. **a11y 不可绕过** —— 焦点环、键盘导航、ARIA 全靠 Base UI 兜底，不手写。
 3. **变体收敛** —— 所有外观差异走 CVA 的 `variant/size/tone`，不靠散落 className 覆盖。
+
+**第四条约定（playground 数据来源）**：每个组件在 `*.showcase.tsx` 里**手写 control schema**（声明哪些 prop 可调、类型、取值范围/枚举、默认值），供 `<Playground>` 渲染 controls。**不走从 TS 类型自动抽取**（react-docgen-typescript 那套是 Storybook 级工具链，成本高易碎、会引发 scope 爆炸）。
 
 ---
 
@@ -124,9 +155,9 @@ packages/ui/src/button/
 | mock 类型 | 实现 |
 |----------|------|
 | ① 真实样例数据 | `@hulian/mocks` 用 **faker** 造数据工厂（人名/头像/表格行/图表序列），一眼看"填满后"真实观感 |
-| ② 全状态展示 | `stories` 声明状态矩阵，`<StatesGallery>` 自动铺开 default/hover/focus/disabled/loading/error/empty/超长 |
+| ② 全状态展示 | `*.showcase.tsx` 声明状态矩阵，`<StatesGallery>` 自动铺开 default/hover/focus/disabled/loading/error/empty/超长 |
 | ③ API mock | `@hulian/mocks` 出 **MSW handlers**，浏览器内 Service Worker（不占端口），异步加载/分页/表单提交站内真跑 |
-| ④ 可调参 playground | `<Playground>` 读组件 args schema → controls 面板，实时改 props/文案/尺寸看效果 + 同步显示生成代码（一键复制） |
+| ④ 可调参 playground | `<Playground>` 读组件 `*.showcase.tsx` 里**手写的 control schema**（非 TS 自动抽取）→ controls 面板，实时改 props/文案/尺寸看效果 + 同步显示生成代码（一键复制） |
 
 **三个核心展示组件（全站复用）：**
 - `<ComponentPreview>`：实时 demo + 代码 Tab（随当前主题明暗）
@@ -141,11 +172,16 @@ packages/ui/src/button/
 
 | 阶段 | 内容 | 产出标志 |
 |------|------|---------|
-| **P0 脊柱** | monorepo + `@hulian/tokens` + 主题层 + ThemeProvider + **Button 一个组件**端到端 + `www` 最小站点 + 明暗开关（5512） | 切主题 0 闪烁、Button 站内跑起来 |
-| **P1 展示基建** | `<ComponentPreview>` / `<StatesGallery>` / `<Playground>` + `@hulian/mocks`（faker + MSW） + MDX 体系 | Button 页四种 mock 全亮 |
+| **P0 脊柱** | monorepo + `@hulian/tokens`（含 preset+tokens.css） + 主题层 + ThemeProvider（库/应用接缝切开） + **Button + Switch + Dialog 三个标杆组件**端到端 + `www` 最小站点（dogfood 模型 A 接入） + 明暗开关（5512） | 切主题 0 闪烁、三组件站内跑起来、Base UI 命脉(Portal/focus trap)验证通过 |
+| **P1 展示基建** | `<ComponentPreview>` / `<StatesGallery>` / `<Playground>` + `@hulian/mocks`（faker + MSW） + MDX 体系 | 三组件页四种 mock 全亮 |
 | **P2 组件扩量** | 批量补 Input/Dialog/Switch/Select/DataTable… 套 P0/P1 模具 | 覆盖面铺开 |
 | **P3 发布** | changesets + npm 发包 + 部署 www | `npm i @hulian/ui` 可用、站上线 |
 | **P4 桌面壳** | Tauri 包 www（5514） | dmg 可装 |
+
+**P0 三标杆组件分工（每个验证一条独立命脉，故不止 Button 一个）：**
+- **Button** → token / CVA 变体 / 构建 / 发布 / 模型 A 接入链路（近似原生 `<button>`，验证不到 headless）。
+- **Switch** → Base UI **受控状态 + ARIA + 焦点环**（成本低，也是 P1 playground/states 的好样本）。
+- **Dialog** → Base UI **Portal + focus trap + overlay 层叠**（脊柱里最易出坑、Base UI 真正发力处；把"Base UI 是不是对的赌注"在 P0 就验掉，避免推迟到 P2 改方向的高成本）。
 
 **本 spec 覆盖 P0 + P1**（架构定型的最高杠杆部分）。P2 起各自再开 spec。
 
@@ -155,9 +191,10 @@ packages/ui/src/button/
 
 1. `pnpm dev` 在 **5512** 起 `www`，不与本地其它项目撞口。
 2. 站点右上角明暗开关：切换 **0 闪烁**，首屏无白闪，刷新后保持上次选择，默认跟随系统。
-3. `@hulian/ui` 的 Button 组件：CVA 变体（variant/size/tone）齐全，只消费语义 token，键盘可达、有焦点环。
-4. Button 文档页四种 mock 全亮：真实样例数据 / 全状态 gallery / 一个 MSW 异步 demo / Playground 可调参且显示生成代码。
-5. `@hulian/ui` 可被外部 `import`（包导出正确，类型提示可用）。
+   - **0 闪烁/无白闪的客观验收法**：Chrome DevTools 网络节流（Slow 4G）下硬刷 + 录屏 / 抓 first paint 截图，确认首帧即为正确主题底色，无白底闪现；切换主题录屏确认无中间白帧。
+3. `@hulian/ui` 三组件：Button（CVA 变体 variant/size/tone 齐全，只消费语义 token，键盘可达有焦点环）；Switch（Base UI 受控 + ARIA + 焦点环）；Dialog（Base UI Portal + focus trap，Esc/点遮罩关闭、焦点归还触发元素）。
+4. 三组件文档页四种 mock 全亮：真实样例数据 / 全状态 gallery / 一个 MSW 异步 demo / Playground 可调参且显示生成代码。
+5. `@hulian/ui` 可被外部 `import`：在一个全新最小 Tailwind v4 工程里按 §3A 三步接入（装包+peer → 引 tokens.css → preset+`@source` 扫描），三组件正确出样式、类型提示可用。
 
 ---
 
@@ -165,6 +202,6 @@ packages/ui/src/button/
 
 - 不做第三套主题（结构留口，现在只 light/dark）。
 - 不做 shadcn 式复制粘贴 registry（走 npm 包直发；registry 留作未来选项）。
-- P0/P1 不扩组件量（只打通 Button 一个标杆，证明全链路）。
+- P0/P1 不扩组件量（只做 Button + Switch + Dialog 三个标杆，各验一条命脉，证明全链路；不堆 Input/Select/DataTable 等，那是 P2）。
 - P0/P1 不做 Tauri 桌面壳（仅占位目录）。
 - 不引入 CSS-in-JS。
