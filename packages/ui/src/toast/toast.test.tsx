@@ -1,15 +1,15 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { toast, ToastProvider } from "./toast";
 
 // 全局单例 manager 跨测试持有 toast；RTL render 跨测试累积 DOM → 每个用例后清掉挂载。
 // 各用例用唯一 title 文案隔离（limit=3 会挤出旧条，最新条始终可查）。
-// Base UI 另渲一份 aria-live 播报副本 → title 文案出现两次，用 getAllByText 取带皮肤的 <h2>。
+// Base UI 另渲一份 aria-live 播报副本 → title 文案出现两次，用 queryAllByText 取带皮肤的 <h2>。
 afterEach(cleanup);
 
+/** 取带指定皮肤类的标题元素（跳过 aria-live 播报副本）；不存在返回 undefined。 */
 function titleEl(text: string, mustContain: string) {
-  const matches = screen.getAllByText(text);
-  return matches.find((el) => el.className.includes(mustContain));
+  return screen.queryAllByText(text).find((el) => el.className.includes(mustContain));
 }
 
 describe("Toast", () => {
@@ -47,5 +47,36 @@ describe("Toast", () => {
       toast({ title: "普通" });
     });
     expect(titleEl("普通", "text-foreground")).toBeTruthy();
+  });
+
+  it("点 Close 按钮后该 toast 移除", async () => {
+    render(<ToastProvider />);
+    act(() => {
+      toast({ title: "可关闭项", timeout: 0 }); // 0=不自动消失，隔离计时干扰
+    });
+    const title = titleEl("可关闭项", "text-foreground");
+    expect(title).toBeTruthy();
+    const root = title!.closest("[class*='bg-surface']") as HTMLElement;
+    // Base UI 在 toast 未聚焦时给 Close 加 aria-hidden（移出 a11y 树）→ getByRole 找不到，直接查 DOM。
+    const closeBtn = root.querySelector('button[aria-label="关闭"]') as HTMLButtonElement;
+    expect(closeBtn).toBeTruthy();
+    fireEvent.click(closeBtn);
+    await waitFor(() => expect(titleEl("可关闭项", "text-foreground")).toBeFalsy());
+  });
+
+  it("timeout:0 不自动消失（fake timers 推进 10s 仍在）", () => {
+    vi.useFakeTimers();
+    try {
+      render(<ToastProvider />);
+      act(() => {
+        toast({ title: "常驻项", timeout: 0 });
+      });
+      act(() => {
+        vi.advanceTimersByTime(10000);
+      });
+      expect(titleEl("常驻项", "text-foreground")).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
