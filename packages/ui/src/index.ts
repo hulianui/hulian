@@ -15,6 +15,7 @@ export * from "./slider";
 export * from "./alert";
 export * from "./tabs";
 export * from "./tooltip";
+export * from "./popover";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
