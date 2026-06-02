@@ -29,4 +29,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "textarea", name: "Textarea", description: "多行输入 · 自适应高度", category: "inputs", status: "new" },
   { slug: "field", name: "Field", description: "字段包装 · label/help/error a11y 串联", category: "inputs", status: "new" },
   { slug: "alert", name: "Alert", description: "提示条 · tone×variant 皮肤 + a11y role", category: "feedback", status: "new" },
+  { slug: "slider", name: "Slider", description: "滑块 · Base UI 单值/range + 键盘步进", category: "inputs", status: "new" },
 ];
