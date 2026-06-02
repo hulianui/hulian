@@ -38,4 +38,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "accordion", name: "Accordion", description: "手风琴 · Base UI 单/多开 + 高度过渡", category: "navigation", status: "new" },
   { slug: "breadcrumb", name: "Breadcrumb", description: "面包屑 · 纯皮肤静态 + aria-current 当前页语义", category: "navigation", status: "new" },
   { slug: "table", name: "Table", description: "表格 · TanStack headless + 列排序 + 空态", category: "data-display", status: "new" },
+  { slug: "drawer", name: "Drawer", description: "抽屉 · Base UI Dialog 引擎 + 四向侧滑", category: "feedback", status: "new" },
 ];
