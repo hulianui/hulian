@@ -3,7 +3,10 @@
   "private": true,
   "packageManager": "pnpm@8.15.5",
   "scripts": {
-    "dev": "turbo run dev",
+    "kill:stale": "pkill -f '[h]ulian-desktop' 2>/dev/null; lsof -t -i:5512 -i:5514 2>/dev/null | xargs kill -9 2>/dev/null; true",
+    "dev": "pnpm kill:stale; turbo run dev --filter=www",
+    "app": "pnpm kill:stale; pnpm --filter desktop dev",
+    "app:build": "pnpm --filter desktop build",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test"

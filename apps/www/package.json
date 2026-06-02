@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 5512",
+    "dev:desktop": "next dev -p 5514",
     "build": "next build",
     "start": "next start -p 5512",
     "typecheck": "tsc --noEmit"

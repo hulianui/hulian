@@ -5,8 +5,8 @@
   "identifier": "com.haloritual.hulian",
   "build": {
     "frontendDist": "../../www/out",
-    "devUrl": "http://localhost:5512",
-    "beforeDevCommand": "pnpm --filter www dev",
+    "devUrl": "http://localhost:5514",
+    "beforeDevCommand": "pnpm --filter www dev:desktop",
     "beforeBuildCommand": "pnpm --filter www build"
   },
   "app": {
