@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -9,13 +10,15 @@ import type { MarkdownEditorProps } from "./markdown-editor.types";
 export function MarkdownEditor({
   defaultValue,
   value,
+  onChange,
   placeholder,
   minRows = 6,
   className,
   "aria-label": ariaLabel = "Markdown 编辑器",
 }: MarkdownEditorProps) {
-  // placeholder 将在 Task 7 接入；此处解构以避免透传到 DOM
-  void placeholder;
+  void placeholder; // Task 7 接入
+
+  const lastEmitted = useRef<string>(value ?? defaultValue ?? "");
 
   const editor = useEditor({
     immediatelyRender: false, // Next SSR：防服务端立即渲染导致水合错
@@ -33,7 +36,21 @@ export function MarkdownEditor({
         class: cn("min-h-[calc(var(--mde-min-rows)*1.75rem)] w-full px-3 py-2 outline-none"),
       },
     },
+    onUpdate: ({ editor }) => {
+      const md = (editor.storage as unknown as { markdown: { getMarkdown(): string } }).markdown.getMarkdown();
+      lastEmitted.current = md;
+      onChange?.(md);
+    },
   });
+
+  // 受控 value 外部变更同步进编辑器，防回环：相同内容不 setContent
+  useEffect(() => {
+    if (!editor || value === undefined || value === lastEmitted.current) return;
+    lastEmitted.current = value;
+    // TipTap v3 setContent 第二参数为 options 对象；{ emitUpdate: false } 防止触发 onUpdate 回环
+    // 若 v3 实际不支持该选项（编译报错），退为无 options，靠 lastEmitted 去重防回环
+    editor.commands.setContent(value, { emitUpdate: false } as Parameters<typeof editor.commands.setContent>[1]);
+  }, [editor, value]);
 
   if (!editor) return null;
 
