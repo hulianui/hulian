@@ -72,6 +72,8 @@ export * from "./spinner";
 export * from "./chip";
 export * from "./link";
 export * from "./kbd";
+export * from "./code";
+export * from "./snippet";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
