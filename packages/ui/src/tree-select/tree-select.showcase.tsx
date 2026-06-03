@@ -4,28 +4,56 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { TreeSelect } from "./tree-select";
 import type { TreeNode } from "../tree/tree-core";
 
+// 真实组织架构树：集团 → 中心 → 部门 → 小组，足够深，多选时父级勾选会级联到叶、
+// 取消单个叶又会让父级落到半选态，单选 + 搜索也能在多层里命中跳转。
 const NODES: TreeNode[] = [
   {
-    key: "zhejiang",
-    label: "浙江",
+    key: "rd",
+    label: "研发中心",
     children: [
       {
-        key: "hangzhou",
-        label: "杭州",
+        key: "frontend",
+        label: "前端部",
         children: [
-          { key: "xihu", label: "西湖区" },
-          { key: "yuhang", label: "余杭区" },
+          { key: "fe-web", label: "Web 组" },
+          { key: "fe-mini", label: "小程序组" },
+          { key: "fe-design", label: "设计系统组" },
         ],
       },
-      { key: "ningbo", label: "宁波" },
+      {
+        key: "backend",
+        label: "后端部",
+        children: [
+          { key: "be-trade", label: "交易组" },
+          { key: "be-pay", label: "支付组" },
+          { key: "be-infra", label: "基础架构组" },
+        ],
+      },
+      {
+        key: "qa",
+        label: "质量保障部",
+        children: [
+          { key: "qa-auto", label: "自动化测试组" },
+          { key: "qa-manual", label: "功能测试组" },
+        ],
+      },
     ],
   },
   {
-    key: "jiangsu",
-    label: "江苏",
+    key: "product",
+    label: "产品中心",
     children: [
-      { key: "nanjing", label: "南京" },
-      { key: "suzhou", label: "苏州" },
+      { key: "pm-c", label: "C 端产品组" },
+      { key: "pm-b", label: "B 端产品组" },
+      { key: "pm-data", label: "数据产品组" },
+    ],
+  },
+  {
+    key: "market",
+    label: "市场中心",
+    children: [
+      { key: "mk-brand", label: "品牌组" },
+      { key: "mk-growth", label: "增长组" },
     ],
   },
 ];
@@ -34,15 +62,15 @@ function Single() {
   const [v, setV] = useState<string | string[]>("");
   return (
     <div className="w-72">
-      <TreeSelect nodes={NODES} value={v} onChange={setV} placeholder="选择地区" searchable />
+      <TreeSelect nodes={NODES} value={v} onChange={setV} placeholder="选择归属部门" searchable />
     </div>
   );
 }
 function Multi() {
-  const [v, setV] = useState<string | string[]>([]);
+  const [v, setV] = useState<string | string[]>(["fe-web", "fe-mini"]);
   return (
     <div className="w-72">
-      <TreeSelect nodes={NODES} multiple value={v} onChange={setV} placeholder="多选地区" />
+      <TreeSelect nodes={NODES} multiple value={v} onChange={setV} placeholder="勾选可见部门" />
     </div>
   );
 }

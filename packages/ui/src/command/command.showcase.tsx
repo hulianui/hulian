@@ -1,26 +1,56 @@
 "use client";
 import { useState } from "react";
-import { Calculator, Calendar, FileText, Plus, Settings, User } from "lucide-react";
+import {
+  Calendar,
+  FilePlus,
+  LayoutDashboard,
+  LogOut,
+  Moon,
+  Package,
+  Plus,
+  Search,
+  Settings,
+  ShoppingCart,
+  Sun,
+  Upload,
+  User,
+  Users,
+} from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button/button";
 import { Command } from "./command";
 import type { CommandGroupData } from "./command.types";
 
+// 真实中后台命令面板：跳转 / 操作 / 主题 三组、十余条命令，带描述/快捷键/图标/关键词。
+// 在搜索框输入「订单」「dd」「主题」「new」都能看到跨组过滤——这才体现命令面板的价值。
 const groups: CommandGroupData[] = [
   {
-    heading: "常用",
+    heading: "快速跳转",
     items: [
-      { value: "new", label: "新建文件", keywords: "create file 文件", icon: <Plus />, shortcut: "⌘N" },
-      { value: "search", label: "搜索文档", keywords: "search docs 文档", icon: <FileText /> },
-      { value: "calendar", label: "打开日历", keywords: "calendar 日程", icon: <Calendar /> },
+      { value: "go-dashboard", label: "仪表盘", description: "总览今日数据", keywords: "dashboard 首页 概览 db", icon: <LayoutDashboard /> },
+      { value: "go-orders", label: "订单管理", description: "查看与处理订单", keywords: "order 订单 dd 交易", icon: <ShoppingCart /> },
+      { value: "go-products", label: "商品库", description: "SKU 与库存", keywords: "product sku 商品 库存", icon: <Package /> },
+      { value: "go-customers", label: "客户列表", description: "会员与画像", keywords: "customer 客户 会员 user", icon: <Users /> },
     ],
   },
   {
-    heading: "设置",
+    heading: "操作",
     items: [
-      { value: "profile", label: "个人资料", keywords: "profile account 账户", icon: <User /> },
-      { value: "settings", label: "偏好设置", keywords: "settings preferences", icon: <Settings />, shortcut: "⌘," },
-      { value: "calc", label: "计算器（禁用）", keywords: "calculator", icon: <Calculator />, disabled: true },
+      { value: "new-order", label: "新建订单", keywords: "create order 新建 下单", icon: <Plus />, shortcut: "⌘N" },
+      { value: "new-doc", label: "新建文档", keywords: "create doc 文档 new", icon: <FilePlus /> },
+      { value: "import", label: "导入数据", description: "上传 CSV / Excel", keywords: "import upload 导入 上传", icon: <Upload /> },
+      { value: "search-all", label: "全局搜索", keywords: "search 搜索 查找", icon: <Search />, shortcut: "⌘F" },
+      { value: "schedule", label: "排期日历", keywords: "calendar 日历 日程 排期", icon: <Calendar /> },
+    ],
+  },
+  {
+    heading: "账户与主题",
+    items: [
+      { value: "theme-light", label: "切换浅色主题", keywords: "theme light 主题 浅色 亮", icon: <Sun /> },
+      { value: "theme-dark", label: "切换深色主题", keywords: "theme dark 主题 深色 暗", icon: <Moon /> },
+      { value: "profile", label: "个人资料", keywords: "profile account 账户 个人", icon: <User /> },
+      { value: "settings", label: "偏好设置", keywords: "settings preferences 设置 偏好", icon: <Settings />, shortcut: "⌘," },
+      { value: "logout", label: "退出登录", description: "结束当前会话", keywords: "logout 退出 登出 signout", icon: <LogOut /> },
     ],
   },
 ];

@@ -1,10 +1,29 @@
 "use client";
-import { makeUsers, type DemoUser } from "@hulian/mocks";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Table } from "./table";
 import type { ColumnDef } from "./table.types";
 
-// mock① 真实样例数据：复用项目 faker 工厂（确定性种子，防 SSR/CSR hydration mismatch）
+// 内联确定性样例数据（按 index 派生，防 SSR/CSR hydration mismatch）——
+// 刻意不依赖 @hulian/mocks/faker：demo 数据不该把 dev-only 依赖带进组件库导出图。
+export interface DemoUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar: string;
+}
+const SURNAME = ["王", "李", "张", "刘", "陈", "杨", "赵", "黄", "周", "吴", "徐", "孙", "马", "朱", "胡", "郭", "何", "高", "林", "郑"];
+const GIVEN = ["伟", "敏", "静", "丽", "强", "磊", "军", "洋", "勇", "艳", "杰", "娟", "涛", "明", "超", "霞", "平", "刚", "桂英", "秀兰"];
+const ROLES = ["管理员", "编辑", "访客"];
+function makeUsers(count: number): DemoUser[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `u${(i + 1).toString().padStart(4, "0")}`,
+    name: SURNAME[i % SURNAME.length] + GIVEN[(i * 7 + 3) % GIVEN.length],
+    email: `user${i + 1}@hulian.dev`,
+    role: ROLES[i % ROLES.length],
+    avatar: `https://i.pravatar.cc/64?img=${(i % 70) + 1}`,
+  }));
+}
 const users = makeUsers(8);
 const manyUsers = makeUsers(200);
 

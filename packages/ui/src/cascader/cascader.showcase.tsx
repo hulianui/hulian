@@ -4,26 +4,89 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Cascader } from "./cascader";
 import type { TreeNode } from "../tree/tree-core";
 
+// 真实省/市/区三级行政区划：三个省、多市、多区，足够拖出三列联动浮层，
+// hover 逐列展开、changeOnSelect 任意层提交、disabled 节点都能肉眼跑通。
 const NODES: TreeNode[] = [
   {
     key: "zhejiang",
-    label: "浙江",
+    label: "浙江省",
     children: [
       {
         key: "hangzhou",
-        label: "杭州",
+        label: "杭州市",
         children: [
           { key: "xihu", label: "西湖区" },
           { key: "binjiang", label: "滨江区" },
+          { key: "yuhang", label: "余杭区" },
+          { key: "xiaoshan", label: "萧山区" },
         ],
       },
-      { key: "ningbo", label: "宁波", children: [{ key: "haishu", label: "海曙区" }] },
+      {
+        key: "ningbo",
+        label: "宁波市",
+        children: [
+          { key: "haishu", label: "海曙区" },
+          { key: "yinzhou", label: "鄞州区" },
+          { key: "jiangbei", label: "江北区" },
+        ],
+      },
+      {
+        key: "wenzhou",
+        label: "温州市",
+        children: [
+          { key: "lucheng", label: "鹿城区" },
+          { key: "ouhai", label: "瓯海区" },
+        ],
+      },
     ],
   },
   {
     key: "jiangsu",
-    label: "江苏",
-    children: [{ key: "nanjing", label: "南京", children: [{ key: "xuanwu", label: "玄武区" }] }],
+    label: "江苏省",
+    children: [
+      {
+        key: "nanjing",
+        label: "南京市",
+        children: [
+          { key: "xuanwu", label: "玄武区" },
+          { key: "gulou", label: "鼓楼区" },
+          { key: "jiangning", label: "江宁区" },
+        ],
+      },
+      {
+        key: "suzhou",
+        label: "苏州市",
+        children: [
+          { key: "gusu", label: "姑苏区" },
+          { key: "wuzhong", label: "吴中区" },
+          { key: "kunshan", label: "昆山市" },
+        ],
+      },
+    ],
+  },
+  {
+    key: "guangdong",
+    label: "广东省",
+    children: [
+      {
+        key: "guangzhou",
+        label: "广州市",
+        children: [
+          { key: "tianhe", label: "天河区" },
+          { key: "yuexiu", label: "越秀区" },
+          { key: "haizhu", label: "海珠区" },
+        ],
+      },
+      {
+        key: "shenzhen",
+        label: "深圳市",
+        children: [
+          { key: "futian", label: "福田区" },
+          { key: "nanshan", label: "南山区" },
+          { key: "qianhai", label: "前海合作区（暂未开放）", disabled: true },
+        ],
+      },
+    ],
   },
 ];
 
