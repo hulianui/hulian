@@ -56,4 +56,13 @@ export const manifest: ComponentMeta[] = [
   { slug: "retro-grid", name: "RetroGrid", description: "复古透视网格 · CSS 滚动 + reduced-motion", category: "effects", status: "new" },
   { slug: "ripple", name: "Ripple", description: "同心脉冲圆环 · CSS 逐圈延迟 + reduced-motion", category: "effects", status: "new" },
   { slug: "striped-pattern", name: "StripedPattern", description: "斜条纹背景 · 纯 CSS 渐变 + currentColor", category: "effects", status: "new" },
+  { slug: "separator", name: "Separator", description: "分隔线 · Base UI role=separator + 横/竖几何", category: "data-display", status: "new" },
+  { slug: "number-field", name: "NumberField", description: "数字步进 · Base UI ±按钮 + 键盘步进 + min/max", category: "inputs", status: "new" },
+  { slug: "alert-dialog", name: "AlertDialog", description: "确认对话框 · Base UI 强制决策(不点遮罩/Esc 关) + Dialog 引擎", category: "feedback", status: "new" },
+  { slug: "toggle", name: "Toggle", description: "切换按钮 · Base UI pressed 态 + ToggleGroup 单/多选", category: "inputs", status: "new" },
+  { slug: "toolbar", name: "Toolbar", description: "工具栏 · Base UI role=toolbar + 键盘漫游 + Button/Group/Separator", category: "navigation", status: "new" },
+  { slug: "meter", name: "Meter", description: "度量条 · Base UI role=meter(静态量占比，区别 Progress)", category: "data-display", status: "new" },
+  { slug: "form", name: "Form", description: "表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同", category: "inputs", status: "new" },
+  { slug: "scroll-area", name: "ScrollArea", description: "滚动区 · Base UI 自定义细滚动条 + 竖/横/双向", category: "data-display", status: "new" },
+  { slug: "checkbox-group", name: "CheckboxGroup", description: "复选组 · Base UI 值数组协调 + 复用瑚琏 Checkbox", category: "inputs", status: "new" },
 ];
