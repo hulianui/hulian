@@ -1,7 +1,12 @@
 # 瑚琏 Hulian — MagicUI 全目录 → `effects` 分类缺口对照
 
 - **日期**: 2026-06-03
-- **状态**: 缺口分析 / roadmap（**纯对照文档，非实现**）。用户诉求：「扫 MagicUI 官网，把 hulian 缺失的组件对应到 hulian」，本次只产出对照，不写组件代码。
+- **状态**: 缺口分析 / roadmap。原为纯对照，**后续已按 roadmap 落地多批**（见文末「落地进度」回写）。
+- **落地进度（2026-06-03 回写）**:
+  - ✅ **背景批 ×5**（commit `5af4bb8`）：DotPattern/GridPattern/RetroGrid/Ripple/StripedPattern
+  - ✅ **零依赖合集 ×18**（commit `281f513`）：文字动画 6(AuroraText/AnimatedShinyText/AnimatedGradientText/WordRotate/TypingAnimation/SparklesText) + 特效按钮 4(Shimmer/Rainbow/Pulsating/Ripple Button) + 特效核心 5(BorderBeam/ShineBorder/Meteors/MagicCard/GlareHover) + 设备外壳 3(Safari/iPhone/Android，新增 `mockups` 分类)
+  - **effects 分类累计 22 件 + mockups 3 件**。
+  - ⏳ **仍延后（需新增第三方依赖或低价值，守确认过的依赖策略）**: Globe(cobe) · Particles/IconCloud(canvas) · Confetti(canvas-confetti) · SmoothCursor/Pointer(全局光标侵入式) · TweetCard(外部数据) · Terminal/Dock/OrbitingCircles/Lens/AvatarCircles/HeroVideoDialog(P2 可纯 CSS 后续可补) · Blur Fade/Text Reveal/Hyper Text/Number Ticker(已落) 等其余文字动画(可增量)。
 - **依赖策略裁决**（用户已确认）: **沿用现有 `motion/react`**。MagicUI 文字/列表/位移动画类直接复用 motion（NumberTicker 已在用，A1 已装）；纯 CSS/SVG 能实现的优先纯实现（同 Marquee 范式，零运行时）；需 `cobe`/`three`/`canvas-confetti` 等重三方库的组件**标注但本阶段不强制引入**，逐件评估。
 - **上游依据**:
   - `2026-06-03-hulian-a2-4-effects-number-ticker-marquee-design.md`（`effects` 分类起步：吸取模式 = 抄实现骨架 + 换瑚琏 token + 统一 API + 复用 `packages/ui/src/motion`，**不新增 npm 依赖**）
