@@ -2,7 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Avatar } from "./avatar";
 
-const IMG = "https://i.pravatar.cc/100?img=12";
+const IMG = "/demo/avatar-12.jpg";
 
 export const avatarShowcase: ShowcaseSpec = {
   controls: [

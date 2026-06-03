@@ -3,10 +3,10 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { AvatarCircles } from "./avatar-circles";
 
 const avatars = [
-  { src: "https://i.pravatar.cc/64?img=1", alt: "u1" },
-  { src: "https://i.pravatar.cc/64?img=2", alt: "u2" },
-  { src: "https://i.pravatar.cc/64?img=3", alt: "u3" },
-  { src: "https://i.pravatar.cc/64?img=4", alt: "u4" },
+  { src: "/demo/avatar-1.jpg", alt: "u1" },
+  { src: "/demo/avatar-2.jpg", alt: "u2" },
+  { src: "/demo/avatar-3.jpg", alt: "u3" },
+  { src: "/demo/avatar-4.jpg", alt: "u4" },
 ];
 
 export const avatarCirclesShowcase: ShowcaseSpec = {

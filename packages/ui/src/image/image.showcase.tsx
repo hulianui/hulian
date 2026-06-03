@@ -3,7 +3,7 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Image } from "./image";
 
 type Radius = "none" | "sm" | "md" | "lg" | "full";
-const DEMO = "https://images.unsplash.com/photo-1503424886307-b090341d25d1?w=400&q=70";
+const DEMO = "/demo/photo-image.jpg";
 
 export const imageShowcase: ShowcaseSpec = {
   controls: [

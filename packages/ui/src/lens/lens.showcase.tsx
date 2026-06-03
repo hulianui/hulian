@@ -2,7 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Lens } from "./lens";
 
-const IMG = "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=600&q=70";
+const IMG = "/demo/photo-lens.jpg";
 
 function Demo({ zoom = 1.8 }: { zoom?: number }) {
   return (

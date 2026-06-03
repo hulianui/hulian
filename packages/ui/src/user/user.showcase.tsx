@@ -11,7 +11,7 @@ export const userShowcase: ShowcaseSpec = {
         <User
           name="瑚琏"
           description="zhangzhiwei@hulian.dev"
-          avatarProps={{ src: "https://i.pravatar.cc/96?img=12", alt: "瑚琏" }}
+          avatarProps={{ src: "/demo/avatar-12.jpg", alt: "瑚琏" }}
         />
       ),
     },
@@ -28,7 +28,7 @@ export const userShowcase: ShowcaseSpec = {
     <User
       name="瑚琏"
       description="组件库设计系统"
-      avatarProps={{ src: "https://i.pravatar.cc/96?img=12", alt: "瑚琏" }}
+      avatarProps={{ src: "/demo/avatar-12.jpg", alt: "瑚琏" }}
     />
   ),
   toCode: () =>

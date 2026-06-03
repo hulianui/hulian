@@ -2,7 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { HeroVideoDialog } from "./hero-video-dialog";
 
-const THUMB = "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=70";
+const THUMB = "/demo/photo-hero.jpg";
 const VIDEO = "https://www.youtube.com/embed/dQw4w9WgXcQ";
 
 export const heroVideoDialogShowcase: ShowcaseSpec = {
