@@ -12,7 +12,7 @@ export type AffixTarget =
  * children 滚动越过阈值后切 `position:fixed` 吸附；原位用等高占位元素撑住防布局跳动。
  * offsetTop / offsetBottom 二选一（同时给则 offsetTop 优先），都不给默认 offsetTop=0。
  */
-export interface AffixProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+export interface AffixProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onChange"> {
   /** 被固定的内容。 */
   children: ReactNode;
   /** 距容器顶部多少 px 时吸附固定（吸顶）。默认 0。 */
