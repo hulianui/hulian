@@ -96,6 +96,7 @@ export * from "./user";
 export * from "./comment";
 export * from "./image";
 export * from "./navbar";
+export * from "./nav-menu";
 export * from "./input-otp";
 export * from "./listbox";
 export * from "./mentions";

@@ -147,4 +147,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "search-form", name: "SearchForm", description: "查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)", category: "inputs", status: "new" },
   { slug: "watermark", name: "Watermark", description: "水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)", category: "data-display", status: "new" },
   { slug: "layout", name: "Layout", description: "整页布局 · 复合 Header/Sider/Content/Footer + Sider 可折叠(受控/断点/trigger) + 宽度过渡(零依赖·尽量 RSC·复用 ScrollArea)", category: "navigation", status: "new" },
+  { slug: "nav-menu", name: "NavMenu", description: "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游", category: "navigation", status: "new" },
 ];

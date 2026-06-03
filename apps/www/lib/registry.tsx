@@ -91,6 +91,7 @@ import {
   commentShowcase,
   imageShowcase,
   navbarShowcase,
+  navMenuShowcase,
   inputOtpShowcase,
   listboxShowcase,
   mentionsShowcase,
@@ -261,4 +262,5 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   prose: proseShowcase,
   watermark: watermarkShowcase,
   layout: layoutShowcase,
+  "nav-menu": navMenuShowcase,
 };
