@@ -96,6 +96,7 @@ export * from "./image";
 export * from "./navbar";
 export * from "./input-otp";
 export * from "./listbox";
+export * from "./mentions";
 export * from "./command";
 export * from "./colorpicker";
 export * from "./color-swatch-picker";

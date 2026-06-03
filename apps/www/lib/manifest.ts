@@ -106,6 +106,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "navbar", name: "Navbar", description: "导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换", category: "navigation", status: "new" },
   { slug: "input-otp", name: "InputOTP", description: "验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)", category: "inputs", status: "new" },
   { slug: "listbox", name: "Listbox", description: "可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)", category: "inputs", status: "new" },
+  { slug: "mentions", name: "Mentions", description: "@提及输入 · 复用 Textarea 皮肤 + 触发符唤起候选(镜像 div 测光标像素坐标) + aria-activedescendant 虚拟焦点(零依赖)", category: "inputs", status: "new" },
   { slug: "calendar", name: "Calendar", description: "日历 · MUI X 桥(DateCalendar) + 对外 ISO 字符串受控 + 瑚琏 token", category: "inputs", status: "new" },
   { slug: "date-picker", name: "DatePicker", description: "日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max", category: "inputs", status: "new" },
   { slug: "date-time-picker", name: "DateTimePicker", description: "日期时间选择 · MUI X 桥(年月日+时钟一体弹层) + ISO 受控 + 步进/秒", category: "inputs", status: "new" },
