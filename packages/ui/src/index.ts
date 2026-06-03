@@ -91,6 +91,9 @@ export * from "./dock";
 export * from "./lens";
 export * from "./terminal";
 export * from "./bento-grid";
+export * from "./animated-theme-toggler";
+export * from "./animated-beam";
+export * from "./hero-video-dialog";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

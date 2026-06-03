@@ -90,6 +90,9 @@ import {
   lensShowcase,
   terminalShowcase,
   bentoGridShowcase,
+  animatedThemeTogglerShowcase,
+  animatedBeamShowcase,
+  heroVideoDialogShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -183,4 +186,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   lens: lensShowcase,
   terminal: terminalShowcase,
   "bento-grid": bentoGridShowcase,
+  "animated-theme-toggler": animatedThemeTogglerShowcase,
+  "animated-beam": animatedBeamShowcase,
+  "hero-video-dialog": heroVideoDialogShowcase,
 };

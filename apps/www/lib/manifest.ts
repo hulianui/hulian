@@ -108,4 +108,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "lens", name: "Lens", description: "放大镜 · 悬停光标处圆形放大任意 children(零依赖 mask+scale)", category: "effects", status: "new" },
   { slug: "terminal", name: "Terminal", description: "终端框 · mac 窗口外壳 + 命令行逐行揭示(motion + tone)", category: "effects", status: "new" },
   { slug: "bento-grid", name: "BentoGrid", description: "错落栅格 · BentoGrid/BentoCard 复合 + 跨列跨行 + hover CTA(纯 CSS·RSC)", category: "data-display", status: "new" },
+  { slug: "animated-theme-toggler", name: "AnimatedThemeToggler", description: "主题切换 · View Transitions 圆形揭示明暗(复用瑚琏 useTheme + 降级)", category: "effects", status: "new" },
+  { slug: "animated-beam", name: "AnimatedBeam", description: "动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver)", category: "effects", status: "new" },
+  { slug: "hero-video-dialog", name: "HeroVideoDialog", description: "视频弹层 · 缩略图+播放钮→Portal 模态(Esc/遮罩关 + 锁滚)", category: "feedback", status: "new" },
 ];
