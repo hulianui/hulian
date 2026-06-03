@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ToastProvider } from "@hulian/ui";
+import { ToastProvider, AnimatedThemeToggler } from "@hulian/ui";
 import { ComponentTree } from "../../components/component-tree";
-import { ThemeToggle } from "../../components/theme-toggle";
 
 export default function ComponentsLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +12,7 @@ export default function ComponentsLayout({ children }: { children: ReactNode }) 
           <Link href="/" className="text-sm font-semibold">
             瑚琏 Hulian
           </Link>
-          <ThemeToggle />
+          <AnimatedThemeToggler />
         </div>
         <details className="border-b border-border">
           <summary className="cursor-pointer px-4 py-2 text-sm text-muted">组件导航</summary>
@@ -23,22 +22,23 @@ export default function ComponentsLayout({ children }: { children: ReactNode }) 
         </details>
       </div>
 
-      {/* 桌面：两栏 */}
-      <div className="mx-auto flex max-w-7xl">
-        <aside className="hidden w-60 shrink-0 border-r border-border md:block">
-          <div className="sticky top-0 flex h-dvh flex-col">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
-              <Link href="/" className="text-sm font-semibold">
-                瑚琏 Hulian
-              </Link>
-              <ThemeToggle />
-            </div>
-            <div className="flex-1 overflow-y-auto p-3">
-              <ComponentTree />
-            </div>
+      {/* 桌面：两栏 app-shell —— 外壳定高不滚（h-dvh + overflow-hidden），
+          仅侧栏树与内容区各自滚动且 overscroll-contain，body 不产生回弹 → overscroll 不露根层黑底 */}
+      <div className="mx-auto hidden h-dvh max-w-7xl overflow-hidden md:flex">
+        <aside className="flex w-60 shrink-0 flex-col border-r border-border">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <Link href="/" className="text-sm font-semibold">
+              瑚琏 Hulian
+            </Link>
+            <AnimatedThemeToggler />
+          </div>
+          <div className="flex-1 overflow-y-auto overscroll-contain p-3">
+            <ComponentTree />
           </div>
         </aside>
-        <main className="min-w-0 flex-1 px-6 py-10">{children}</main>
+        <main className="min-w-0 flex-1 overflow-y-auto overscroll-contain px-6 py-10">
+          {children}
+        </main>
       </div>
 
       {/* Toast 全局单挂：含 Viewport，命令式 toast() 在任意组件页触发都进此处（见 spec §3.2）。 */}
