@@ -58,6 +58,9 @@ export * from "./toolbar";
 export * from "./alert-dialog";
 export * from "./scroll-area";
 export * from "./form";
+export * from "./modal";
+export * from "./notification";
+export * from "./spin";
 // effects: MagicUI 文字动画批
 export * from "./aurora-text";
 export * from "./animated-shiny-text";

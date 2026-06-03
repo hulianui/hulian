@@ -2,6 +2,8 @@
 import { useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Form } from "./form";
+import { useForm } from "./use-form";
+import { FormList } from "./form-list";
 import { Field } from "../field";
 import { Input } from "../input";
 import { Button } from "../button";
@@ -24,10 +26,88 @@ function Demo() {
   );
 }
 
+// 校验规则引擎 + 字段联动（useForm 控制器）
+function ValidationDemo() {
+  const form = useForm({ initialValues: { email: "", pwd: "", confirm: "" } });
+  const [done, setDone] = useState<string | null>(null);
+  const email = form.register("email", { rules: [{ required: true, message: "请填邮箱" }, { pattern: /^[^@]+@[^@]+$/, message: "邮箱格式不正确" }] });
+  const pwd = form.register("pwd", { rules: [{ required: true, min: 6, message: "至少 6 位" }] });
+  const confirm = form.register("confirm", {
+    dependencies: ["pwd"],
+    rules: [{ validator: (v, values) => { if (v !== values.pwd) throw new Error("两次密码不一致"); } }],
+  });
+  return (
+    <form
+      className="w-72 space-y-4"
+      onSubmit={form.submit(
+        (values) => setDone(JSON.stringify(values)),
+        () => setDone(null),
+      )}
+      noValidate
+    >
+      <Field label="邮箱" error={email.error}>
+        <Input value={email.value as string} onChange={email.onChange} onBlur={email.onBlur} placeholder="you@example.com" />
+      </Field>
+      <Field label="密码" error={pwd.error}>
+        <Input type="password" value={pwd.value as string} onChange={pwd.onChange} onBlur={pwd.onBlur} />
+      </Field>
+      <Field label="确认密码" error={confirm.error}>
+        <Input type="password" value={confirm.value as string} onChange={confirm.onChange} onBlur={confirm.onBlur} />
+      </Field>
+      <Button type="submit" size="sm">
+        提交
+      </Button>
+      {done && <p className="text-xs text-muted">通过：{done}</p>}
+    </form>
+  );
+}
+
+// 动态列表 FormList（增删行 + 移动）
+function FormListDemo() {
+  const [rows, setRows] = useState<{ name: string }[]>([{ name: "" }]);
+  return (
+    <div className="w-80 space-y-3">
+      <FormList<{ name: string }> value={rows} onChange={setRows}>
+        {(fields, ops, value) => (
+          <>
+            {fields.map((f) => (
+              <div key={f.key} className="flex items-center gap-2">
+                <Input
+                  className="flex-1"
+                  placeholder={`联系人 ${f.name + 1}`}
+                  value={value[f.name]?.name ?? ""}
+                  onChange={(e) => {
+                    const next = [...value];
+                    next[f.name] = { name: (e.target as HTMLInputElement).value };
+                    setRows(next);
+                  }}
+                />
+                <Button type="button" variant="ghost" size="sm" onClick={() => ops.move(f.name, Math.max(0, f.name - 1))}>
+                  上移
+                </Button>
+                <Button type="button" variant="outline" size="sm" tone="danger" onClick={() => ops.remove(f.name)}>
+                  删除
+                </Button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={() => ops.add({ name: "" })}>
+              + 添加联系人
+            </Button>
+          </>
+        )}
+      </FormList>
+    </div>
+  );
+}
+
 export const formShowcase: ShowcaseSpec = {
   controls: [],
-  states: [{ name: "default", render: () => <Demo /> }],
+  states: [
+    { name: "基础(Base UI 提交)", render: () => <Demo /> },
+    { name: "校验规则 + 字段联动", render: () => <ValidationDemo /> },
+    { name: "FormList 动态列表", render: () => <FormListDemo /> },
+  ],
   renderWithProps: () => <Demo />,
   toCode: () =>
-    `<Form onFormSubmit={(values) => console.log(values)}>\n  <Field label="邮箱" name="email">\n    <Input name="email" type="email" required />\n  </Field>\n  <Button type="submit">提交</Button>\n</Form>`,
+    `const form = useForm({ initialValues: { email: "" } });\nconst email = form.register("email", { rules: [{ required: true }] });\n<form onSubmit={form.submit(onFinish, onFinishFailed)}>\n  <Field label="邮箱" error={email.error}>\n    <Input value={email.value} onChange={email.onChange} onBlur={email.onBlur} />\n  </Field>\n</form>`,
 };

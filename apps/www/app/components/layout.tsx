@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ToastProvider, AnimatedThemeToggler } from "@hulian/ui";
+import { ToastProvider, ModalProvider, NotificationProvider, AnimatedThemeToggler } from "@hulian/ui";
 import { ComponentTree } from "../../components/component-tree";
 
 export default function ComponentsLayout({ children }: { children: ReactNode }) {
@@ -43,6 +43,8 @@ export default function ComponentsLayout({ children }: { children: ReactNode }) 
 
       {/* Toast 全局单挂：含 Viewport，命令式 toast() 在任意组件页触发都进此处（见 spec §3.2）。 */}
       <ToastProvider />
+      <ModalProvider />
+      <NotificationProvider />
     </div>
   );
 }
