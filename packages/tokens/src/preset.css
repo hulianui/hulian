@@ -33,3 +33,24 @@
     transform: translateX(calc(-100% - var(--hulian-marquee-gap, 1rem)));
   }
 }
+
+/* effects/RetroGrid 透视网格滚动：每轮平移一个单元高即无缝循环 */
+@keyframes hulian-retro-grid {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(var(--hulian-retro-grid-cell-size, 60px));
+  }
+}
+
+/* effects/Ripple 同心圆脉冲：放大 + 淡出（translate 居中保持） */
+@keyframes hulian-ripple {
+  from {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
+}

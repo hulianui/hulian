@@ -51,4 +51,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "progress", name: "Progress", description: "进度条 · linear/circular + 不定态 · 几何自有(reduced-motion)", category: "feedback", status: "new" },
   { slug: "rating", name: "Rating", description: "评分 · MUI 桥(emotion theme 读瑚琏 token) + 受控星级", category: "inputs", status: "new" },
   { slug: "stepper", name: "Stepper", description: "步骤条 · MUI 桥 + active/completed 走瑚琏 token", category: "navigation", status: "new" },
+  { slug: "dot-pattern", name: "DotPattern", description: "点阵背景 · 纯 SVG pattern + currentColor token + RSC", category: "effects", status: "new" },
+  { slug: "grid-pattern", name: "GridPattern", description: "网格背景 · 纯 SVG 线 + 虚线可配 + currentColor", category: "effects", status: "new" },
+  { slug: "retro-grid", name: "RetroGrid", description: "复古透视网格 · CSS 滚动 + reduced-motion", category: "effects", status: "new" },
+  { slug: "ripple", name: "Ripple", description: "同心脉冲圆环 · CSS 逐圈延迟 + reduced-motion", category: "effects", status: "new" },
+  { slug: "striped-pattern", name: "StripedPattern", description: "斜条纹背景 · 纯 CSS 渐变 + currentColor", category: "effects", status: "new" },
 ];
