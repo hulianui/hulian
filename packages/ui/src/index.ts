@@ -139,6 +139,9 @@ export * from "./heading";
 export * from "./text";
 export * from "./prose";
 export * from "./layout";
+export * from "./popconfirm";
+export * from "./menubar";
+export * from "./navigation-menu";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

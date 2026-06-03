@@ -133,6 +133,9 @@ import {
   textShowcase,
   proseShowcase,
   layoutShowcase,
+  popconfirmShowcase,
+  menubarShowcase,
+  navigationMenuShowcase,
 } from "@hulian/ui";
   dateRangePickerShowcase,
 
@@ -270,5 +273,8 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   prose: proseShowcase,
   watermark: watermarkShowcase,
   layout: layoutShowcase,
+  popconfirm: popconfirmShowcase,
+  menubar: menubarShowcase,
+  "navigation-menu": navigationMenuShowcase,
   "nav-menu": navMenuShowcase,
 };

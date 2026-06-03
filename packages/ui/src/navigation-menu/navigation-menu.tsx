@@ -1,0 +1,127 @@
+"use client";
+import type { CSSProperties } from "react";
+import { NavigationMenu as BaseNav } from "@base-ui-components/react/navigation-menu";
+import { ChevronDown } from "lucide-react";
+import { cn } from "../lib/cn";
+import { motionDurationCss, motionEaseCss } from "../motion";
+import type {
+  NavigationMenuContentProps,
+  NavigationMenuItemProps,
+  NavigationMenuLinkProps,
+  NavigationMenuListProps,
+  NavigationMenuProps,
+  NavigationMenuTriggerProps,
+} from "./navigation-menu.types";
+
+// transition 简写避 shorthand/longhand 混用警告（同 popover/menu）。
+const overlayTransition: CSSProperties = {
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
+};
+
+// Popup 尺寸形变：宽高跟随 Base UI 实测的 --popup-width/height 平滑过渡，配 --transform-origin。
+const popupMorph: CSSProperties = {
+  width: "var(--popup-width)",
+  height: "var(--popup-height)",
+  transformOrigin: "var(--transform-origin)",
+  transition: `width ${motionDurationCss.base} ${motionEaseCss.out}, height ${motionDurationCss.base} ${motionEaseCss.out}, opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
+};
+
+/**
+ * 导航菜单（mega-menu）：Root + 消费者写的 List 之后自动 bundle Portal/Positioner/Popup/Viewport
+ * 共享浮层（活动 Item 的 Content 渲入 Viewport，尺寸随面板形变）。消费者只需写 List/Item/Trigger/Content/Link。
+ */
+export function NavigationMenu({ children, className, ...props }: NavigationMenuProps) {
+  return (
+    <BaseNav.Root className={cn("relative", className)} {...props}>
+      {children}
+      <BaseNav.Portal>
+        <BaseNav.Positioner sideOffset={8} className="z-50 outline-none">
+          <BaseNav.Popup
+            className={cn(
+              "relative rounded-[var(--radius)] border border-border bg-surface text-foreground shadow-xl outline-none",
+              "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+            )}
+            style={popupMorph}
+          >
+            <BaseNav.Arrow
+              className={cn(
+                "-z-10",
+                "data-[side=top]:bottom-[-4px] data-[side=top]:rotate-45",
+                "data-[side=bottom]:top-[-4px] data-[side=bottom]:rotate-[225deg]",
+                "data-[side=left]:right-[-4px] data-[side=left]:rotate-[315deg]",
+                "data-[side=right]:left-[-4px] data-[side=right]:rotate-[135deg]",
+              )}
+            >
+              <span className="block h-2 w-2 border-b border-r border-border bg-surface" />
+            </BaseNav.Arrow>
+            {/* Viewport：活动 Content 的容器，overflow-hidden 裁切形变过程。 */}
+            <BaseNav.Viewport className="relative h-full w-full overflow-hidden rounded-[inherit]" />
+          </BaseNav.Popup>
+        </BaseNav.Positioner>
+      </BaseNav.Portal>
+    </BaseNav.Root>
+  );
+}
+
+export function NavigationMenuList({ className, ...props }: NavigationMenuListProps) {
+  return <BaseNav.List className={cn("flex flex-wrap items-center gap-1", className)} {...props} />;
+}
+
+export function NavigationMenuItem({ className, ...props }: NavigationMenuItemProps) {
+  return <BaseNav.Item className={className} {...props} />;
+}
+
+// 顶层触发器：导航项皮肤 + chevron 随 data-popup-open 旋转。
+export function NavigationMenuTrigger({ className, children, ...props }: NavigationMenuTriggerProps) {
+  return (
+    <BaseNav.Trigger
+      className={cn(
+        "group flex cursor-default select-none items-center gap-1 rounded-[min(var(--radius),0.5rem)] px-3 py-2 text-sm font-medium text-foreground outline-none transition-colors",
+        "hover:bg-surface-hover data-[popup-open]:bg-surface-hover",
+        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronDown
+        aria-hidden
+        className="size-4 text-muted transition-transform duration-200 group-data-[popup-open]:rotate-180"
+      />
+    </BaseNav.Trigger>
+  );
+}
+
+// 面板内容：绝对填充 Viewport，进出场淡入 + 按激活方向轻微横移。
+export function NavigationMenuContent({ className, ...props }: NavigationMenuContentProps) {
+  return (
+    <BaseNav.Content
+      style={overlayTransition}
+      className={cn(
+        "absolute left-0 top-0 w-full p-4",
+        "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+        "data-[activation-direction=left]:data-[starting-style]:-translate-x-3",
+        "data-[activation-direction=right]:data-[starting-style]:translate-x-3",
+        "data-[activation-direction=left]:data-[ending-style]:translate-x-3",
+        "data-[activation-direction=right]:data-[ending-style]:-translate-x-3",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+// 链接：默认导航项内联皮肤（顶层纯链接项用）；面板内链接列表传 className 改 block 即可。
+export function NavigationMenuLink({ className, ...props }: NavigationMenuLinkProps) {
+  return (
+    <BaseNav.Link
+      className={cn(
+        "flex cursor-pointer select-none items-center rounded-[min(var(--radius),0.5rem)] px-3 py-2 text-sm font-medium text-foreground no-underline outline-none transition-colors",
+        "hover:bg-surface-hover",
+        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+        className,
+      )}
+      {...props}
+    />
+  );
+}

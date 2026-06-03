@@ -150,6 +150,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "search-form", name: "SearchForm", description: "查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)", category: "inputs", status: "new" },
   { slug: "watermark", name: "Watermark", description: "水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)", category: "data-display", status: "new" },
   { slug: "layout", name: "Layout", description: "整页布局 · 复合 Header/Sider/Content/Footer + Sider 可折叠(受控/断点/trigger) + 宽度过渡(零依赖·尽量 RSC·复用 ScrollArea)", category: "navigation", status: "new" },
+  { slug: "popconfirm", name: "Popconfirm", description: "气泡确认 · dogfood Popover 引擎 + 危险操作就地确认(标题/图标/确认取消) + async onConfirm loading + 受控开合", category: "feedback", status: "new" },
+  { slug: "menubar", name: "Menubar", description: "菜单条 · Base UI menubar 薄包(File/Edit/View 顶层项+下拉) + dogfood Menu 皮肤 + 键盘切换/方向键漫游", category: "navigation", status: "new" },
+  { slug: "navigation-menu", name: "NavigationMenu", description: "导航菜单 · Base UI navigation-menu 薄包(mega 面板/共享 Viewport 尺寸形变) + 触发器/内容/链接 + chevron 旋转", category: "navigation", status: "new" },
   { slug: "nav-menu", name: "NavMenu", description: "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游", category: "navigation", status: "new" },
   { slug: "date-range-picker", name: "DateRangePicker", description: "日期区间 · 自研零依赖双月范围日历(避开 MUI Pro 收费) + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控", category: "inputs", status: "new" },
 ];
