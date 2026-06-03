@@ -4,6 +4,11 @@ import { MarkdownEditor } from "./markdown-editor";
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = vi.fn();
+  // @tiptap/extension-placeholder ≥3.24 的 viewportTracking 插件在初始化时调用
+  // document.elementFromPoint；jsdom 未实现该 API，mock 为返回 null 即可通过
+  if (!document.elementFromPoint) {
+    document.elementFromPoint = vi.fn(() => null);
+  }
 });
 afterEach(cleanup);
 
@@ -61,5 +66,12 @@ describe("MarkdownEditor", () => {
     render(<MarkdownEditor disabled defaultValue="abc" aria-label="ed6" />);
     await screen.findByRole("textbox", { name: "ed6" });
     expect(screen.queryByRole("button", { name: "加粗" })).toBeNull();
+  });
+
+  it("空内容显示 placeholder", async () => {
+    render(<MarkdownEditor placeholder="请输入内容" aria-label="ed7" />);
+    const region = await screen.findByRole("textbox", { name: "ed7" });
+    // Placeholder 扩展给空首段加 data-placeholder 属性
+    expect(region.querySelector("[data-placeholder='请输入内容']")).toBeTruthy();
   });
 });

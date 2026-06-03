@@ -4,9 +4,36 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { Markdown } from "tiptap-markdown";
+import Placeholder from "@tiptap/extension-placeholder";
 import { cn } from "../lib/cn";
 import type { MarkdownEditorProps } from "./markdown-editor.types";
 import { MarkdownEditorToolbar } from "./markdown-editor-toolbar";
+
+// 内容区排版：从 prose.tsx proseBase 复制的后代选择器（去掉首尾子元素边距类）
+const editorProseClass = cn(
+  "leading-7",
+  // 标题
+  "[&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:font-bold [&_h1]:tracking-tight [&_h1]:text-foreground",
+  "[&_h2]:mb-3 [&_h2]:mt-8 [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-foreground",
+  "[&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-semibold [&_h3]:tracking-tight [&_h3]:text-foreground",
+  "[&_h4]:mb-2 [&_h4]:mt-4 [&_h4]:font-semibold [&_h4]:text-foreground",
+  // 段落
+  "[&_p]:my-4",
+  // 强调
+  "[&_strong]:font-semibold [&_strong]:text-foreground [&_em]:italic",
+  // 链接
+  "[&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary-hover",
+  // 列表
+  "[&_ul]:my-4 [&_ul]:ml-6 [&_ul]:list-disc [&_ol]:my-4 [&_ol]:ml-6 [&_ol]:list-decimal",
+  "[&_li]:my-1 [&_li]:marker:text-muted",
+  // 行内代码（排除 pre 内的 code）
+  "[&_:not(pre)>code]:rounded-[min(var(--radius),0.375rem)] [&_:not(pre)>code]:bg-surface-hover [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:font-mono [&_:not(pre)>code]:text-[0.85em]",
+  // 代码块
+  "[&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-[var(--radius)] [&_pre]:border [&_pre]:border-border [&_pre]:bg-surface [&_pre]:p-4 [&_pre]:text-sm",
+  "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-mono",
+  // 引用
+  "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted",
+);
 
 export function MarkdownEditor({
   defaultValue,
@@ -20,8 +47,6 @@ export function MarkdownEditor({
   className,
   "aria-label": ariaLabel = "Markdown 编辑器",
 }: MarkdownEditorProps) {
-  void placeholder; // Task 7 接入
-
   const init = value ?? defaultValue ?? "";
   const lastEmitted = useRef<string>(init);
   const [mdValue, setMdValue] = useState(init);
@@ -33,6 +58,7 @@ export function MarkdownEditor({
       StarterKit.configure({ link: false }), // StarterKit v3 自带 link，关掉用单独 Link
       Link.configure({ openOnClick: false, autolink: true }),
       Markdown,
+      Placeholder.configure({ placeholder: placeholder ?? "" }),
     ],
     content: init,
     editorProps: {
@@ -40,7 +66,12 @@ export function MarkdownEditor({
         role: "textbox",
         "aria-multiline": "true",
         "aria-label": ariaLabel,
-        class: cn("min-h-[calc(var(--mde-min-rows)*1.75rem)] w-full px-3 py-2 outline-none"),
+        class: cn(
+          "min-h-[calc(var(--mde-min-rows)*1.75rem)] w-full px-3 py-2 outline-none",
+          editorProseClass,
+          // placeholder 空态：Tiptap Placeholder 扩展给空首段加 .is-editor-empty + data-placeholder
+          "[&_.is-editor-empty]:before:pointer-events-none [&_.is-editor-empty]:before:float-left [&_.is-editor-empty]:before:h-0 [&_.is-editor-empty]:before:text-muted [&_.is-editor-empty]:before:content-[attr(data-placeholder)]",
+        ),
       },
     },
     onUpdate: ({ editor }) => {

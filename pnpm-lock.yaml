@@ -151,6 +151,9 @@ importers:
       '@tiptap/extension-link':
         specifier: ^3
         version: 3.25.0(@tiptap/core@3.25.0)(@tiptap/pm@3.25.0)
+      '@tiptap/extension-placeholder':
+        specifier: ^3
+        version: 3.24.0(@tiptap/extensions@3.24.0)
       '@tiptap/pm':
         specifier: ^3
         version: 3.25.0
@@ -3185,6 +3188,14 @@ packages:
       '@tiptap/core': 3.25.0(@tiptap/pm@3.25.0)
     dev: false
 
+  /@tiptap/extension-placeholder@3.24.0(@tiptap/extensions@3.24.0):
+    resolution: {integrity: sha512-3jfYYCIuwMADhvZ92vB6c80YiTmgTSFR23JqyLps8qkQtV59Va5CBYpwJtSs1+VrbCVnNxhZBHhVXusZO3uRkA==}
+    peerDependencies:
+      '@tiptap/extensions': 3.24.0
+    dependencies:
+      '@tiptap/extensions': 3.24.0(@tiptap/core@3.25.0)(@tiptap/pm@3.25.0)
+    dev: false
+
   /@tiptap/extension-strike@3.25.0(@tiptap/core@3.25.0):
     resolution: {integrity: sha512-rtM9tkqH8XWay7TplUcXPjlBiNg/dbEOuaCvZGvNxTw8xbH+cmEGPxojWVW6oVMsQodBlUoNveATE2yzhiUB1A==}
     peerDependencies:
@@ -3207,6 +3218,16 @@ packages:
       '@tiptap/core': 3.25.0
     dependencies:
       '@tiptap/core': 3.25.0(@tiptap/pm@3.25.0)
+    dev: false
+
+  /@tiptap/extensions@3.24.0(@tiptap/core@3.25.0)(@tiptap/pm@3.25.0):
+    resolution: {integrity: sha512-z6gRYzy2ucJp07OQ0F2W07NxyhMTxPYH1ia2eGiQkWax1i56oExpjMsDHP8THWlg8Tb7NnbfKpkfh881EsmofA==}
+    peerDependencies:
+      '@tiptap/core': 3.24.0
+      '@tiptap/pm': 3.24.0
+    dependencies:
+      '@tiptap/core': 3.25.0(@tiptap/pm@3.25.0)
+      '@tiptap/pm': 3.25.0
     dev: false
 
   /@tiptap/extensions@3.25.0(@tiptap/core@3.25.0)(@tiptap/pm@3.25.0):
