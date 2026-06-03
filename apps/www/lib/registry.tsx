@@ -131,9 +131,11 @@ import {
   proseShowcase,
   layoutShowcase,
 } from "@hulian/ui";
+  dateRangePickerShowcase,
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
 export const specBySlug: Record<string, ShowcaseSpec> = {
+  "date-range-picker": dateRangePickerShowcase,
   button: buttonShowcase,
   switch: switchShowcase,
   dialog: dialogShowcase,

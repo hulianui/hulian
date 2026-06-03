@@ -35,6 +35,7 @@ export * from "./affix";
 export * from "./stat";
 export * from "./chart";
 export * from "./_mui";
+export * from "./date-range-picker";
 export * from "./number-ticker";
 export * from "./marquee";
 export * from "./dot-pattern";
