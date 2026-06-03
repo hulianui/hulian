@@ -586,6 +586,15 @@ describe("Tree", () => {
 Run: `pnpm --filter @hulian/ui test -- --run src/tree/tree.test.tsx`
 Expected: FAIL（`./tree` 不存在）。
 
+- [ ] **Step 4a: 给瑚琏 Checkbox 加 tabIndex 透传（additive）**
+
+`CheckboxProps` 是白名单签名，不含 `tabIndex`。Tree 需把行内 Checkbox `tabIndex={-1}` 以保 roving 纯净。在 `packages/ui/src/checkbox/checkbox.types.ts` 的 `CheckboxProps` 内加一行（`onCheckedChange` 已存在，用它做切换；`onClick` 不需要）：
+```ts
+  /** 透传到 Checkbox.Root（树等场景置 -1 退出 Tab 序，焦点由容器 roving 接管）。 */
+  tabIndex?: number;
+```
+`checkbox.tsx` 的 `{...props}` 已运行时透传，无需改实现。
+
 - [ ] **Step 4: 写实现**
 
 `packages/ui/src/tree/tree.tsx`（完整）：
@@ -840,16 +849,15 @@ export function Tree({
               ) : null}
             </span>
             {checkable ? (
-              <Checkbox
-                checked={checkState === "checked"}
-                indeterminate={checkState === "indeterminate"}
-                disabled={node.disabled}
-                tabIndex={-1}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!node.disabled) onToggleCheck(node.key);
-                }}
-              />
+              <span onClick={(e) => e.stopPropagation()} className="flex shrink-0">
+                <Checkbox
+                  checked={checkState === "checked"}
+                  indeterminate={checkState === "indeterminate"}
+                  disabled={node.disabled}
+                  tabIndex={-1}
+                  onCheckedChange={() => onToggleCheck(node.key)}
+                />
+              </span>
             ) : null}
             {node.icon ? (
               <span aria-hidden className="shrink-0 text-muted [&>svg]:size-4">
@@ -916,16 +924,15 @@ export function Tree({
           >
             <span className="size-4 shrink-0" aria-hidden />
             {checkable ? (
-              <Checkbox
-                checked={checkState === "checked"}
-                indeterminate={checkState === "indeterminate"}
-                disabled={node.disabled}
-                tabIndex={-1}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!node.disabled) onToggleCheck(node.key);
-                }}
-              />
+              <span onClick={(e) => e.stopPropagation()} className="flex shrink-0">
+                <Checkbox
+                  checked={checkState === "checked"}
+                  indeterminate={checkState === "indeterminate"}
+                  disabled={node.disabled}
+                  tabIndex={-1}
+                  onCheckedChange={() => onToggleCheck(node.key)}
+                />
+              </span>
             ) : null}
             <span className="truncate">{node.label}</span>
           </div>
@@ -975,7 +982,7 @@ Expected: 无错误（若报 `getNodePath`/`FlatRow` unused → 按 Step4 注释
 - [ ] **Step 7: 提交**
 
 ```bash
-git add packages/ui/src/tree/tree.tsx packages/ui/src/tree/tree.types.ts packages/ui/src/tree/tree.test.tsx
+git add packages/ui/src/tree/tree.tsx packages/ui/src/tree/tree.types.ts packages/ui/src/tree/tree.test.tsx packages/ui/src/checkbox/checkbox.types.ts
 git commit -m "feat(ui): Tree 组件（Layer B · roving/键盘/grid-rows 过渡/checkable 级联/连接线/搜索）
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
