@@ -38,7 +38,7 @@ export function NavigationMenu({ children, className, ...props }: NavigationMenu
         <BaseNav.Positioner sideOffset={8} className="z-50 outline-none">
           <BaseNav.Popup
             className={cn(
-              "relative rounded-[var(--radius)] border border-border bg-surface text-foreground shadow-xl outline-none",
+              "relative overflow-hidden rounded-[var(--radius)] border border-border bg-surface text-foreground shadow-xl outline-none",
               "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
             style={popupMorph}
@@ -54,8 +54,9 @@ export function NavigationMenu({ children, className, ...props }: NavigationMenu
             >
               <span className="block h-2 w-2 border-b border-r border-border bg-surface" />
             </BaseNav.Arrow>
-            {/* Viewport：活动 Content 的容器，overflow-hidden 裁切形变过程。 */}
-            <BaseNav.Viewport className="relative h-full w-full overflow-hidden rounded-[inherit]" />
+            {/* Viewport：活动 Content 容器；relative 作退出态内容的绝对定位上下文。
+                Popup 已 overflow-hidden 裁切形变；尺寸由 Content(正常流) 自然撑开 → Popup 测得。 */}
+            <BaseNav.Viewport className="relative rounded-[inherit]" />
           </BaseNav.Popup>
         </BaseNav.Positioner>
       </BaseNav.Portal>
@@ -98,7 +99,9 @@ export function NavigationMenuContent({ className, ...props }: NavigationMenuCon
     <BaseNav.Content
       style={overlayTransition}
       className={cn(
-        "absolute left-0 top-0 w-full p-4",
+        // 当前内容在正常流(让 Popup 测得自然尺寸)；仅退出态转 absolute 让进入内容定尺寸。
+        "w-max max-w-[calc(100vw-2rem)] p-4",
+        "data-[ending-style]:absolute data-[ending-style]:left-0 data-[ending-style]:top-0",
         "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
         "data-[activation-direction=left]:data-[starting-style]:-translate-x-3",
         "data-[activation-direction=right]:data-[starting-style]:translate-x-3",
