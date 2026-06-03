@@ -54,3 +54,126 @@
     opacity: 0;
   }
 }
+
+/* ===== MagicUI 零依赖合集关键帧（文字动画 / 特效按钮 / 特效核心） ===== */
+
+/* effects/AuroraText·AnimatedGradientText 渐变流动（bg-size 200% 平移背景位置） */
+@keyframes hulian-aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* effects/AnimatedShinyText 高光横扫（背景位置往返，--hulian-shiny-width 控宽） */
+@keyframes hulian-shiny-text {
+  0%,
+  90%,
+  100% {
+    background-position: calc(-100% - var(--hulian-shiny-width, 100px)) 0;
+  }
+  30%,
+  60% {
+    background-position: calc(100% + var(--hulian-shiny-width, 100px)) 0;
+  }
+}
+
+/* effects/ShimmerButton 火花滑动（@container 宽度内平移） */
+@keyframes hulian-shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+/* effects/ShimmerButton 火花自转（四停旋转，配合 conic-gradient 绕边） */
+@keyframes hulian-spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%,
+  35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%,
+  85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+/* effects/Meteors 流星斜向下落 + 淡出（--hulian-meteor-angle 控角度） */
+@keyframes hulian-meteor {
+  0% {
+    transform: rotate(var(--hulian-meteor-angle, 215deg)) translateX(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(var(--hulian-meteor-angle, 215deg)) translateX(-500px);
+    opacity: 0;
+  }
+}
+
+/* effects/TypingAnimation 光标闪烁 */
+@keyframes hulian-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* effects/RainbowButton 彩虹流光（bg-size 200% 平移） */
+@keyframes hulian-rainbow {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 200%;
+  }
+}
+
+/* effects/PulsatingButton 脉冲光环（box-shadow 外扩淡出） */
+@keyframes hulian-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 var(--hulian-pulse-color, color-mix(in srgb, var(--color-primary) 70%, transparent));
+  }
+  70% {
+    box-shadow: 0 0 0 var(--hulian-pulse-size, 8px) transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* effects/ShineBorder 边框流光（径向渐变背景位置往返） */
+@keyframes hulian-shine-border {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+/* effects/RippleButton 点击波纹（放大 + 淡出） */
+@keyframes hulian-button-ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

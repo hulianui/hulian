@@ -1,5 +1,5 @@
 // 瑚琏文档站 IA 元数据 —— 纯数据 SSOT，零 @hulian/ui import，server / client 皆可安全读。
-export type CategoryKey = "inputs" | "data-display" | "feedback" | "navigation" | "effects";
+export type CategoryKey = "inputs" | "data-display" | "feedback" | "navigation" | "effects" | "mockups";
 
 export interface ComponentMeta {
   slug: string;
@@ -15,6 +15,7 @@ export const CATEGORIES: { key: CategoryKey; label: string }[] = [
   { key: "feedback", label: "反馈" },
   { key: "navigation", label: "导航" },
   { key: "effects", label: "动效" },
+  { key: "mockups", label: "设备外壳" },
 ];
 
 export const manifest: ComponentMeta[] = [
@@ -65,6 +66,24 @@ export const manifest: ComponentMeta[] = [
   { slug: "form", name: "Form", description: "表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同", category: "inputs", status: "new" },
   { slug: "scroll-area", name: "ScrollArea", description: "滚动区 · Base UI 自定义细滚动条 + 竖/横/双向", category: "data-display", status: "new" },
   { slug: "checkbox-group", name: "CheckboxGroup", description: "复选组 · Base UI 值数组协调 + 复用瑚琏 Checkbox", category: "inputs", status: "new" },
+  { slug: "aurora-text", name: "AuroraText", description: "极光文字 · bg-clip 流动渐变 + chart token + RSC", category: "effects", status: "new" },
+  { slug: "animated-shiny-text", name: "AnimatedShinyText", description: "高光文字 · 横扫高光 + 徽标气质 + RSC", category: "effects", status: "new" },
+  { slug: "animated-gradient-text", name: "AnimatedGradientText", description: "渐变文字 · 行内 chart 渐变流动 + RSC", category: "effects", status: "new" },
+  { slug: "word-rotate", name: "WordRotate", description: "轮换词 · motion 进出场 + reduced-motion", category: "effects", status: "new" },
+  { slug: "typing-animation", name: "TypingAnimation", description: "打字机 · 逐字 + 闪烁光标 + 进入视口触发", category: "effects", status: "new" },
+  { slug: "sparkles-text", name: "SparklesText", description: "星闪文字 · 随机小星脉冲(客户端生成) + token", category: "effects", status: "new" },
+  { slug: "shimmer-button", name: "ShimmerButton", description: "微光按钮 · 边缘游走火花(conic) + token + RSC", category: "effects", status: "new" },
+  { slug: "rainbow-button", name: "RainbowButton", description: "彩虹按钮 · chart 流光底 + 模糊光晕 + RSC", category: "effects", status: "new" },
+  { slug: "pulsating-button", name: "PulsatingButton", description: "脉冲按钮 · 外扩光环(box-shadow) + RSC", category: "effects", status: "new" },
+  { slug: "ripple-button", name: "RippleButton", description: "波纹按钮 · 点击落点扩散(Material) + reduced-motion", category: "effects", status: "new" },
+  { slug: "border-beam", name: "BorderBeam", description: "边框光束 · motion offsetPath 绕边 + mask 只露边框", category: "effects", status: "new" },
+  { slug: "shine-border", name: "ShineBorder", description: "流光边框 · 渐变 mask 只留边框区 + chart token + RSC", category: "effects", status: "new" },
+  { slug: "meteors", name: "Meteors", description: "流星雨 · 随机斜落拖尾(客户端生成) + currentColor", category: "effects", status: "new" },
+  { slug: "magic-card", name: "MagicCard", description: "魔法卡片 · 鼠标跟随径向高光(motion) + surface token", category: "effects", status: "new" },
+  { slug: "glare-hover", name: "GlareHover", description: "反光悬停 · hover 斜向扫光 + reduced-motion + RSC", category: "effects", status: "new" },
+  { slug: "safari", name: "Safari", description: "浏览器外壳 · 顶栏红绿灯+地址栏包裹截图 + RSC", category: "mockups", status: "new" },
+  { slug: "iphone", name: "iPhone", description: "手机外壳 · 灵动岛机身包裹屏幕(token themeable) + RSC", category: "mockups", status: "new" },
+  { slug: "android", name: "Android", description: "安卓外壳 · 打孔摄像头机身包裹屏幕 + RSC", category: "mockups", status: "new" },
   { slug: "spinner", name: "Spinner", description: "加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + RSC", category: "feedback", status: "new" },
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", status: "new" },
   { slug: "link", name: "Link", description: "链接 · tone×underline + external 自动 target/rel/图标 + RSC", category: "navigation", status: "new" },
