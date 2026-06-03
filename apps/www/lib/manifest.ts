@@ -123,6 +123,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "animated-theme-toggler", name: "AnimatedThemeToggler", description: "主题切换 · View Transitions 圆形揭示明暗(复用瑚琏 useTheme + 降级)", category: "effects", status: "new" },
   { slug: "animated-beam", name: "AnimatedBeam", description: "动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver)", category: "effects", status: "new" },
   { slug: "hero-video-dialog", name: "HeroVideoDialog", description: "视频弹层 · 缩略图+播放钮→Portal 模态(Esc/遮罩关 + 锁滚)", category: "feedback", status: "new" },
+  { slug: "tour", name: "Tour", description: "漫游引导 · 自研零依赖 SVG mask 镂空高亮 + 自定位气泡卡(标题/描述/上一步/下一步/跳过/进度) + resize/scroll 重算", category: "feedback", status: "new" },
   { slug: "world-map", name: "WorldMap", description: "点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲)", category: "effects", status: "new" },
   { slug: "stack", name: "Stack", description: "弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)", category: "data-display", status: "new" },
   { slug: "grid", name: "Grid", description: "栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC)", category: "data-display", status: "new" },
