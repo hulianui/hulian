@@ -133,6 +133,7 @@ export * from "./transfer";
 export * from "./heading";
 export * from "./text";
 export * from "./prose";
+export * from "./layout";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
