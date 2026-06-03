@@ -128,4 +128,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "command", name: "Command", description: "命令面板 · ⌘K 模态(复用 Dialog 引擎) + 实时过滤 + 分组 + 键盘漫游(零依赖)", category: "navigation", status: "new" },
   { slug: "context-menu", name: "ContextMenu", description: "右键菜单 · Base UI context-menu 原语薄包(锚到光标) + 复用 Menu 皮肤/data-highlighted + danger", category: "navigation", status: "new" },
   { slug: "hover-card", name: "HoverCard", description: "悬停卡片 · Popover 引擎自研 hover 开/移出延迟关(复刻 Tooltip delay 范式) + 富内容", category: "feedback", status: "new" },
+  { slug: "resizable", name: "Resizable", description: "拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator)", category: "data-display", status: "new" },
 ];
