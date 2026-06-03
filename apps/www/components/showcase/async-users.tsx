@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@hulian/ui";
-import type { DemoUser } from "@hulian/mocks";
+import { makeUsers, type DemoUser } from "@hulian/mocks";
 
 interface UsersResponse {
   items: DemoUser[];
@@ -10,7 +10,25 @@ interface UsersResponse {
   page: number;
 }
 
-// mock③ MSW 异步加载 + 分页：经 Service Worker 拦截，无需真后端
+const PAGE_SIZE = 8;
+
+// 静态导出(prod)无后端 + 不启 MSW → 直接用 @hulian/mocks 客户端分页（与 handler 同口径：makeUsers(60)/PAGE_SIZE=8）。
+// dev 仍走 fetch 经 MSW Service Worker 拦截，保留「MSW 演示」语义。
+function loadPage(page: number): Promise<UsersResponse> {
+  if (process.env.NODE_ENV === "production") {
+    const all = makeUsers(60);
+    const start = (page - 1) * PAGE_SIZE;
+    return new Promise((resolve) =>
+      setTimeout(
+        () => resolve({ total: all.length, pageSize: PAGE_SIZE, page, items: all.slice(start, start + PAGE_SIZE) }),
+        500,
+      ),
+    );
+  }
+  return fetch(`/api/users?page=${page}`).then((r) => r.json() as Promise<UsersResponse>);
+}
+
+// mock③ 异步加载 + 分页：dev 经 MSW Service Worker 拦截、prod 静态导出客户端分页，皆无需真后端
 export function AsyncUsers() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<UsersResponse | null>(null);
@@ -19,14 +37,12 @@ export function AsyncUsers() {
   useEffect(() => {
     let active = true;
     setLoading(true);
-    fetch(`/api/users?page=${page}`)
-      .then((r) => r.json())
-      .then((d: UsersResponse) => {
-        if (active) {
-          setData(d);
-          setLoading(false);
-        }
-      });
+    loadPage(page).then((d) => {
+      if (active) {
+        setData(d);
+        setLoading(false);
+      }
+    });
     return () => {
       active = false;
     };
