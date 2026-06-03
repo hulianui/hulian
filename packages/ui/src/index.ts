@@ -74,6 +74,12 @@ export * from "./link";
 export * from "./kbd";
 export * from "./code";
 export * from "./snippet";
+// HeroUI 缺口零依赖合集（皮肤/布局/轻交互）
+export * from "./spacer";
+export * from "./user";
+export * from "./image";
+export * from "./navbar";
+export * from "./input-otp";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

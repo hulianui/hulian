@@ -90,4 +90,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "kbd", name: "Kbd", description: "按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC", category: "data-display", status: "new" },
   { slug: "code", name: "Code", description: "行内代码 · <code> 等宽皮肤 + tone(default/primary/danger) + RSC", category: "data-display", status: "new" },
   { slug: "snippet", name: "Snippet", description: "代码片段 · 命令提示符 + 一键复制(剪贴板+反馈)", category: "data-display", status: "new" },
+  { slug: "spacer", name: "Spacer", description: "间距 · x/y × 0.25rem 布局留白 + aria-hidden + RSC", category: "data-display", status: "new" },
+  { slug: "user", name: "User", description: "用户卡 · Avatar + 名称/描述组合(复用瑚琏 Avatar) + RSC", category: "data-display", status: "new" },
+  { slug: "image", name: "Image", description: "图片 · 加载淡入 + 失败回退/占位 + isZoomed hover 放大 + radius", category: "data-display", status: "new" },
+  { slug: "navbar", name: "Navbar", description: "导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换", category: "navigation", status: "new" },
+  { slug: "input-otp", name: "InputOTP", description: "验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)", category: "inputs", status: "new" },
 ];
