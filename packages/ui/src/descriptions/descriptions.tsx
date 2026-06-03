@@ -1,0 +1,112 @@
+import { Children, isValidElement, type ReactElement } from "react";
+import { cn } from "../lib/cn";
+import type {
+  DescriptionsItemData,
+  DescriptionsItemProps,
+  DescriptionsProps,
+} from "./descriptions.types";
+
+// 纯皮肤 + CSS Grid 布局（零 Base UI、零浮层、零依赖，纯静态可 RSC，照 breadcrumb/badge 范式）：
+// 详情页键值对。数据源二选一——items 数组 prop 优先，否则读 DescriptionsItem 子节点的 props。
+// 全吃语义 token：label=text-muted / value=text-foreground / border=border-border，明暗自适配。
+
+// DescriptionsItem 仅作数据载体：由父级 Descriptions 读取其 props 渲染；单独渲染时降级显示内容。
+export function DescriptionsItem({ children }: DescriptionsItemProps) {
+  return <>{children}</>;
+}
+
+export function Descriptions({
+  title,
+  extra,
+  column = 3,
+  layout = "horizontal",
+  bordered = false,
+  items,
+  className,
+  children,
+  ...props
+}: DescriptionsProps) {
+  // 归一化数据源
+  const data: DescriptionsItemData[] = items
+    ? items
+    : Children.toArray(children)
+        .filter((c): c is ReactElement<DescriptionsItemProps> => isValidElement(c))
+        .map((c) => ({
+          label: c.props.label,
+          children: c.props.children,
+          span: c.props.span,
+        }));
+
+  const vertical = layout === "vertical";
+
+  return (
+    <div className={cn("w-full text-sm", className)} {...props}>
+      {(title != null || extra != null) && (
+        <div className="mb-3 flex items-center justify-between gap-3">
+          {title != null ? (
+            <div className="text-base font-medium text-foreground">{title}</div>
+          ) : (
+            <span />
+          )}
+          {extra != null ? <div className="text-muted">{extra}</div> : null}
+        </div>
+      )}
+
+      <div
+        className={cn(
+          "grid",
+          bordered &&
+            "overflow-hidden rounded-[var(--radius)] border-t border-l border-border",
+        )}
+        style={{ gridTemplateColumns: `repeat(${column}, minmax(0, 1fr))` }}
+      >
+        {data.map((item, i) => {
+          const span = Math.min(Math.max(item.span ?? 1, 1), column);
+          const hasLabel = item.label != null;
+
+          return (
+            <div
+              key={i}
+              style={{ gridColumn: `span ${span} / span ${span}` }}
+              className={cn(
+                "min-w-0",
+                bordered
+                  ? cn("flex border-r border-b border-border", vertical && "flex-col")
+                  : cn("py-1.5", vertical ? "flex flex-col gap-1" : "flex items-baseline gap-2"),
+              )}
+            >
+              {hasLabel &&
+                (bordered ? (
+                  <div
+                    className={cn(
+                      "bg-surface px-4 py-2.5 font-medium text-muted",
+                      vertical
+                        ? "border-b border-border"
+                        : "min-w-[6rem] shrink-0 whitespace-nowrap border-r border-border",
+                    )}
+                  >
+                    {item.label}
+                  </div>
+                ) : (
+                  <span
+                    className={cn(
+                      "text-muted",
+                      vertical ? "text-sm" : "shrink-0 whitespace-nowrap",
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                ))}
+
+              {bordered ? (
+                <div className="min-w-0 flex-1 px-4 py-2.5 text-foreground">{item.children}</div>
+              ) : (
+                <span className="min-w-0 text-foreground">{item.children}</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
