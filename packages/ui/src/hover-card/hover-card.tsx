@@ -92,9 +92,18 @@ export function HoverCardContent({
           style={overlayTransition}
         >
           {children}
-          {/* 箭头：surface 方块 + 外两边 border（同 Popover）。 */}
-          <BasePopover.Arrow className="-z-10">
-            <span className="block h-2 w-2 rotate-45 border-b border-r border-border bg-surface" />
+          {/* 箭头：同 Popover —— Base UI arrowStyles 只管交叉轴居中，垂直于边那轴要自己按 data-side
+              补偏移 + 旋转，让带 border-b/r 的角朝外续上 popup 边线；内层 span 不再自转。 */}
+          <BasePopover.Arrow
+            className={cn(
+              "-z-10",
+              "data-[side=top]:bottom-[-4px] data-[side=top]:rotate-45",
+              "data-[side=bottom]:top-[-4px] data-[side=bottom]:rotate-[225deg]",
+              "data-[side=left]:right-[-4px] data-[side=left]:rotate-[315deg]",
+              "data-[side=right]:left-[-4px] data-[side=right]:rotate-[135deg]",
+            )}
+          >
+            <span className="block h-2 w-2 border-b border-r border-border bg-surface" />
           </BasePopover.Arrow>
         </BasePopover.Popup>
       </BasePopover.Positioner>

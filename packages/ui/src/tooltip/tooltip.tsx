@@ -6,9 +6,10 @@ import { motionDurationCss, motionEaseCss } from "../motion";
 import type { TooltipContentProps } from "./tooltip.types";
 
 // overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（与 Dialog 同手感）。
+// transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 过渡期会往内联 style 注入
+// transition 简写，与长写混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。
 const overlayTransition = {
-  transitionDuration: motionDurationCss.base,
-  transitionTimingFunction: motionEaseCss.out,
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
 export function Tooltip(props: ComponentProps<typeof BaseTooltip.Root>) {
@@ -31,14 +32,23 @@ export function TooltipContent({
         <BaseTooltip.Popup
           className={cn(
             "rounded-[var(--radius)] bg-foreground px-2.5 py-1 text-xs text-bg shadow-md outline-none",
-            "transition-[opacity,transform] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+            "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
           style={overlayTransition}
         >
           {children}
-          {/* 箭头：Base UI Positioner 沿边居中定位，瑚琏给皮肤；旋转方块成尖。几何在 D3 Playwright 调。 */}
-          <BaseTooltip.Arrow className="-z-10">
+          {/* 箭头：Base UI 的 arrowStyles 只设交叉轴居中(top/bottom→left，left/right→top)，
+              垂直于边的那一轴它不管 → 必须按 data-side 自己把箭头推到 popup 边缘外，否则缩在
+              内部被 -z-10 盖住("缺箭头")。方块 8px 旋 45° 成菱形，偏移 -4px 让中心落在边上，
+              内半被 popup 盖住、外半露成尖。 */}
+          <BaseTooltip.Arrow
+            className={cn(
+              "-z-10",
+              "data-[side=top]:bottom-[-4px] data-[side=bottom]:top-[-4px]",
+              "data-[side=left]:right-[-4px] data-[side=right]:left-[-4px]",
+            )}
+          >
             <span className="block h-2 w-2 rotate-45 bg-foreground" />
           </BaseTooltip.Arrow>
         </BaseTooltip.Popup>
