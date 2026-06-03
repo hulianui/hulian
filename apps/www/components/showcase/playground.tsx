@@ -1,6 +1,15 @@
 "use client";
 import { useState } from "react";
-import type { ShowcaseSpec } from "@hulian/ui";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  Input,
+  Switch,
+  type ShowcaseSpec,
+} from "@hulian/ui";
+import { CodeBlock } from "./code-block";
 
 export function Playground({ spec }: { spec: ShowcaseSpec }) {
   const [props, setProps] = useState<Record<string, unknown>>(
@@ -14,46 +23,45 @@ export function Playground({ spec }: { spec: ShowcaseSpec }) {
         <div className="flex min-h-32 items-center justify-center rounded-[var(--radius)] border border-border bg-bg p-8">
           {spec.renderWithProps(props)}
         </div>
-        <pre className="overflow-auto rounded-[var(--radius)] bg-surface p-4 text-sm">
-          <code className="text-foreground">{spec.toCode(props)}</code>
-        </pre>
+        <CodeBlock code={spec.toCode(props)} className="rounded-[var(--radius)]" />
       </div>
       <div className="space-y-3 rounded-[var(--radius)] border border-border bg-surface p-4">
         {spec.controls.map((c) => (
           <label key={c.prop} className="block text-sm">
             <span className="mb-1 block text-muted">{c.label ?? c.prop}</span>
             {c.type === "select" && (
-              <select
-                className="w-full rounded border border-border bg-bg px-2 py-1.5 text-foreground"
+              <Select
+                items={c.options!.map((o) => ({ value: o, label: o }))}
                 value={String(props[c.prop])}
-                onChange={(e) => set(c.prop, e.target.value)}
+                onValueChange={(v) => set(c.prop, v)}
               >
-                {c.options!.map((o) => (
-                  <option key={o} value={o}>
-                    {o}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger size="sm" />
+                <SelectContent>
+                  {c.options!.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
             {c.type === "boolean" && (
-              <input
-                type="checkbox"
+              <Switch
                 checked={Boolean(props[c.prop])}
-                onChange={(e) => set(c.prop, e.target.checked)}
-                className="size-4 accent-[var(--color-primary)]"
+                onCheckedChange={(checked) => set(c.prop, checked)}
               />
             )}
             {c.type === "text" && (
-              <input
-                className="w-full rounded border border-border bg-bg px-2 py-1.5 text-foreground"
+              <Input
+                size="sm"
                 value={String(props[c.prop])}
                 onChange={(e) => set(c.prop, e.target.value)}
               />
             )}
             {c.type === "number" && (
-              <input
+              <Input
                 type="number"
-                className="w-full rounded border border-border bg-bg px-2 py-1.5 text-foreground"
+                size="sm"
                 value={Number(props[c.prop])}
                 onChange={(e) => set(c.prop, Number(e.target.value))}
               />

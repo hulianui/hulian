@@ -1,5 +1,6 @@
 "use client";
 import { useState, type ReactNode } from "react";
+import { CodeBlock } from "./code-block";
 
 export function ComponentPreview({ children, code }: { children: ReactNode; code: string }) {
   const [tab, setTab] = useState<"preview" | "code">("preview");
@@ -21,9 +22,7 @@ export function ComponentPreview({ children, code }: { children: ReactNode; code
       {tab === "preview" ? (
         <div className="flex flex-wrap items-center gap-4 bg-bg p-8">{children}</div>
       ) : (
-        <pre className="overflow-auto bg-surface p-4 text-sm leading-relaxed">
-          <code className="text-foreground">{code}</code>
-        </pre>
+        <CodeBlock code={code} />
       )}
     </div>
   );
