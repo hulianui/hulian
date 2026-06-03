@@ -61,6 +61,9 @@ export * from "./form";
 export * from "./modal";
 export * from "./notification";
 export * from "./spin";
+export * from "./divider";
+export * from "./back-top";
+export * from "./statistic";
 // effects: MagicUI 文字动画批
 export * from "./aurora-text";
 export * from "./animated-shiny-text";

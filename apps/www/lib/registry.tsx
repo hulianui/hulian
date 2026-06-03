@@ -136,6 +136,9 @@ import {
   popconfirmShowcase,
   menubarShowcase,
   navigationMenuShowcase,
+  dividerShowcase,
+  backTopShowcase,
+  statisticShowcase,
 } from "@hulian/ui";
   dateRangePickerShowcase,
 
@@ -277,4 +280,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   menubar: menubarShowcase,
   "navigation-menu": navigationMenuShowcase,
   "nav-menu": navMenuShowcase,
+  divider: dividerShowcase,
+  "back-top": backTopShowcase,
+  statistic: statisticShowcase,
 };
