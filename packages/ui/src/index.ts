@@ -22,6 +22,7 @@ export * from "./accordion";
 export * from "./breadcrumb";
 export * from "./pagination";
 export * from "./table";
+export * from "./carousel";
 export * from "./resizable";
 export * from "./stat";
 export * from "./chart";

@@ -40,6 +40,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "breadcrumb", name: "Breadcrumb", description: "面包屑 · 纯皮肤静态 + aria-current 当前页语义", category: "navigation", status: "new" },
   { slug: "pagination", name: "Pagination", description: "分页器 · 纯皮肤受控 + 页码区间算法(省略号)", category: "navigation", status: "new" },
   { slug: "table", name: "Table", description: "表格 · TanStack headless + 列排序 + 空态", category: "data-display", status: "new" },
+  { slug: "carousel", name: "Carousel", description: "轮播 · 自研零依赖 scroll-snap + 箭头/圆点/autoplay/loop + 拖拽/键盘(reduced-motion)", category: "data-display", status: "new" },
   { slug: "number-ticker", name: "NumberTicker", description: "数字滚动 · 进入视口 tween 到目标值 + reduced-motion", category: "effects", status: "new" },
   { slug: "marquee", name: "Marquee", description: "跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向", category: "effects", status: "new" },
   { slug: "drawer", name: "Drawer", description: "抽屉 · Base UI Dialog 引擎 + 四向侧滑", category: "feedback", status: "new" },
