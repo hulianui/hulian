@@ -111,4 +111,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "animated-theme-toggler", name: "AnimatedThemeToggler", description: "主题切换 · View Transitions 圆形揭示明暗(复用瑚琏 useTheme + 降级)", category: "effects", status: "new" },
   { slug: "animated-beam", name: "AnimatedBeam", description: "动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver)", category: "effects", status: "new" },
   { slug: "hero-video-dialog", name: "HeroVideoDialog", description: "视频弹层 · 缩略图+播放钮→Portal 模态(Esc/遮罩关 + 锁滚)", category: "feedback", status: "new" },
+  { slug: "world-map", name: "WorldMap", description: "点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲)", category: "effects", status: "new" },
 ];

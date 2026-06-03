@@ -94,6 +94,7 @@ export * from "./bento-grid";
 export * from "./animated-theme-toggler";
 export * from "./animated-beam";
 export * from "./hero-video-dialog";
+export * from "./world-map";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
