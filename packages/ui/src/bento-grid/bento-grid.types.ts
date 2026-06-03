@@ -4,7 +4,7 @@ export interface BentoGridProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-export interface BentoCardProps extends HTMLAttributes<HTMLDivElement> {
+export interface BentoCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   /** 卡片标题。 */
   title?: ReactNode;
   /** 描述。 */
