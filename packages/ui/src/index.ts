@@ -95,6 +95,13 @@ export * from "./animated-theme-toggler";
 export * from "./animated-beam";
 export * from "./hero-video-dialog";
 export * from "./world-map";
+// 布局/结构批（零依赖·RSC 友好）
+export * from "./stack";
+export * from "./grid";
+export * from "./aspect-ratio";
+export * from "./empty";
+// 表单录入补充（零依赖自研·吸取 Ant Upload 概念）
+export * from "./upload";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

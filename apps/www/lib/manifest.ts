@@ -112,4 +112,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "animated-beam", name: "AnimatedBeam", description: "动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver)", category: "effects", status: "new" },
   { slug: "hero-video-dialog", name: "HeroVideoDialog", description: "视频弹层 · 缩略图+播放钮→Portal 模态(Esc/遮罩关 + 锁滚)", category: "feedback", status: "new" },
   { slug: "world-map", name: "WorldMap", description: "点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲)", category: "effects", status: "new" },
+  { slug: "stack", name: "Stack", description: "弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "grid", name: "Grid", description: "栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "aspect-ratio", name: "AspectRatio", description: "比例容器 · CSS aspect-ratio 锁宽高比 + 图片/视频自动铺满(零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "empty", name: "Empty", description: "空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "upload", name: "Upload", description: "文件上传 · 拖拽落区/按钮形态 + accept/maxSize 校验 + 受控文件列表(状态/进度)，零依赖自研只发 onSelect", category: "inputs", status: "new" },
 ];
