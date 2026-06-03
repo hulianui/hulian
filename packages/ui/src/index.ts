@@ -3,6 +3,8 @@ export * from "./button";
 export * from "./switch";
 export * from "./dialog";
 export * from "./badge";
+export * from "./tag";
+export * from "./steps";
 export * from "./card";
 export * from "./skeleton";
 export * from "./avatar";
@@ -27,6 +29,7 @@ export * from "./page-header";
 export * from "./descriptions";
 export * from "./pagination";
 export * from "./table";
+export * from "./pro-table";
 export * from "./watermark";
 export * from "./carousel";
 export * from "./resizable";
@@ -109,6 +112,7 @@ export * from "./tree-select";
 export * from "./cascader";
 export * from "./input-otp";
 export * from "./listbox";
+export * from "./markdown-editor";
 export * from "./mentions";
 export * from "./command";
 export * from "./colorpicker";
@@ -145,6 +149,7 @@ export * from "./heading";
 export * from "./text";
 export * from "./prose";
 export * from "./layout";
+export * from "./admin-layout";
 export * from "./popconfirm";
 export * from "./menubar";
 export * from "./navigation-menu";
@@ -166,6 +171,7 @@ export {
 } from "./motion";
 
 export * from "./search-form";
+export * from "./sortable";
 
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";

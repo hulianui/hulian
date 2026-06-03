@@ -16,6 +16,8 @@ import {
   alertShowcase,
   sliderShowcase,
   tabsShowcase,
+  tagShowcase,
+  stepsShowcase,
   tooltipShowcase,
   popoverShowcase,
   accordionShowcase,
@@ -27,6 +29,7 @@ import {
   pageHeaderShowcase,
   paginationShowcase,
   tableShowcase,
+  proTableShowcase,
   watermarkShowcase,
   carouselShowcase,
   resizableShowcase,
@@ -98,6 +101,7 @@ import {
   treeShowcase,
   treeSelectShowcase,
   cascaderShowcase,
+  markdownEditorShowcase,
   inputOtpShowcase,
   listboxShowcase,
   mentionsShowcase,
@@ -136,6 +140,7 @@ import {
   textShowcase,
   proseShowcase,
   layoutShowcase,
+  adminLayoutShowcase,
   popconfirmShowcase,
   menubarShowcase,
   navigationMenuShowcase,
@@ -143,7 +148,8 @@ import {
   dividerShowcase,
   backTopShowcase,
   statisticShowcase,
-} from "@hulian/ui";
+  sortableShowcase,
+} from "@hulian/ui/showcase";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
 export const specBySlug: Record<string, ShowcaseSpec> = {
@@ -163,6 +169,8 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   alert: alertShowcase,
   slider: sliderShowcase,
   tabs: tabsShowcase,
+  tag: tagShowcase,
+  steps: stepsShowcase,
   tooltip: tooltipShowcase,
   popover: popoverShowcase,
   accordion: accordionShowcase,
@@ -174,6 +182,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   "page-header": pageHeaderShowcase,
   pagination: paginationShowcase,
   table: tableShowcase,
+  "pro-table": proTableShowcase,
   carousel: carouselShowcase,
   resizable: resizableShowcase,
   affix: affixShowcase,
@@ -279,6 +288,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   prose: proseShowcase,
   watermark: watermarkShowcase,
   layout: layoutShowcase,
+  "admin-layout": adminLayoutShowcase,
   popconfirm: popconfirmShowcase,
   menubar: menubarShowcase,
   "navigation-menu": navigationMenuShowcase,
@@ -286,7 +296,9 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   "tree": treeShowcase,
   "tree-select": treeSelectShowcase,
   "cascader": cascaderShowcase,
+  "markdown-editor": markdownEditorShowcase,
   divider: dividerShowcase,
   "back-top": backTopShowcase,
   statistic: statisticShowcase,
+  sortable: sortableShowcase,
 };
