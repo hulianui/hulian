@@ -26,6 +26,7 @@ export * from "./anchor";
 export * from "./descriptions";
 export * from "./pagination";
 export * from "./table";
+export * from "./watermark";
 export * from "./carousel";
 export * from "./resizable";
 export * from "./timeline";

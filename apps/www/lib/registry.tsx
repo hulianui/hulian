@@ -26,6 +26,7 @@ import {
   descriptionsShowcase,
   paginationShowcase,
   tableShowcase,
+  watermarkShowcase,
   carouselShowcase,
   resizableShowcase,
   timelineShowcase,
@@ -250,4 +251,5 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   heading: headingShowcase,
   text: textShowcase,
   prose: proseShowcase,
+  watermark: watermarkShowcase,
 };

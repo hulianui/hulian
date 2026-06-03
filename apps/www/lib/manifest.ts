@@ -143,4 +143,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "collapsible", name: "Collapsible", description: "折叠区 · Base UI collapsible 薄包 + 高度过渡(复用 Accordion --collapsible-panel-height)", category: "navigation", status: "new" },
   { slug: "segmented", name: "Segmented", description: "分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖)", category: "inputs", status: "new" },
   { slug: "search-form", name: "SearchForm", description: "查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)", category: "inputs", status: "new" },
+  { slug: "watermark", name: "Watermark", description: "水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)", category: "data-display", status: "new" },
 ];
