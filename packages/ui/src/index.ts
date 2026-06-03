@@ -106,6 +106,7 @@ export * from "./navbar";
 export * from "./nav-menu";
 export * from "./tree";
 export * from "./tree-select";
+export * from "./cascader";
 export * from "./input-otp";
 export * from "./listbox";
 export * from "./mentions";
