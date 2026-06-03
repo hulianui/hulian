@@ -16,5 +16,7 @@ export interface CheckboxProps {
   label?: ReactNode;
   /** 落在盒子 Checkbox.Root。 */
   className?: string;
+  /** 透传到 Checkbox.Root（树等场景置 -1 退出 Tab 序，焦点由容器 roving 接管）。 */
+  tabIndex?: number;
   "aria-label"?: string;
 }
