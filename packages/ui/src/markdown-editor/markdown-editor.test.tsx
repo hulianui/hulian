@@ -47,4 +47,19 @@ describe("MarkdownEditor", () => {
     const region = screen.getByRole("textbox", { name: "ed4" });
     expect(region.getAttribute("contenteditable")).toBe("false");
   });
+
+  it("渲染工具栏标准集按钮", async () => {
+    render(<MarkdownEditor defaultValue="abc" aria-label="ed5" />);
+    await screen.findByRole("textbox", { name: "ed5" });
+    expect(screen.getByRole("button", { name: "加粗" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "标题 1" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "无序列表" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "链接" })).toBeTruthy();
+  });
+
+  it("disabled 时不渲染工具栏", async () => {
+    render(<MarkdownEditor disabled defaultValue="abc" aria-label="ed6" />);
+    await screen.findByRole("textbox", { name: "ed6" });
+    expect(screen.queryByRole("button", { name: "加粗" })).toBeNull();
+  });
 });

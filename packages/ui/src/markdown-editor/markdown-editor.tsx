@@ -6,6 +6,7 @@ import Link from "@tiptap/extension-link";
 import { Markdown } from "tiptap-markdown";
 import { cn } from "../lib/cn";
 import type { MarkdownEditorProps } from "./markdown-editor.types";
+import { MarkdownEditorToolbar } from "./markdown-editor-toolbar";
 
 export function MarkdownEditor({
   defaultValue,
@@ -82,6 +83,7 @@ export function MarkdownEditor({
       )}
       style={{ ["--mde-min-rows" as string]: String(minRows) }}
     >
+      {!disabled && <MarkdownEditorToolbar editor={editor} />}
       <EditorContent editor={editor} />
       {name != null && <input type="hidden" name={name} value={mdValue} readOnly />}
     </div>
