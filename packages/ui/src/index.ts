@@ -91,6 +91,7 @@ export * from "./snippet";
 // HeroUI 缺口零依赖合集（皮肤/布局/轻交互）
 export * from "./spacer";
 export * from "./user";
+export * from "./comment";
 export * from "./image";
 export * from "./navbar";
 export * from "./input-otp";
