@@ -189,6 +189,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "tree", name: "Tree", description: "递归树 · 自研零依赖引擎 + WAI-ARIA tree(roving/方向键/typeahead) + checkable 父子级联半选 + 连接线 + 树内搜索 + grid-rows 高度过渡", category: "data-display", group: "collection", status: "new" },
   { slug: "card", name: "Card", description: "卡片 · Header/Body/Footer 插槽", category: "data-display", group: "collection", status: "new" },
   { slug: "carousel", name: "Carousel", description: "轮播 · 自研零依赖 scroll-snap + 箭头/圆点/autoplay/loop + 拖拽/键盘(reduced-motion)", category: "data-display", group: "collection", status: "new" },
+  { slug: "video", name: "Video", description: "视频播放器 · Vidstack 引擎 + 瑚琏 token 自搓皮肤(播放/进度/音量/倍速/PiP/全屏) + 文件/HLS", category: "data-display", group: "collection", status: "new" },
   { slug: "bento-grid", name: "BentoGrid", description: "错落栅格 · BentoGrid/BentoCard 复合 + 跨列跨行 + hover CTA(纯 CSS·RSC)", category: "data-display", group: "collection", status: "new" },
   { slug: "image", name: "Image", description: "图片 · 加载淡入 + 失败回退/占位 + isZoomed hover 放大 + radius", category: "data-display", group: "collection", status: "new" },
   { slug: "magic-card", name: "MagicCard", description: "魔法卡片 · 鼠标跟随径向高光(motion) + surface token", category: "data-display", group: "collection", tags: ["animated"], status: "new" },

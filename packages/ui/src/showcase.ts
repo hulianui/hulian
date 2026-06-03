@@ -59,6 +59,7 @@ export { gridPatternShowcase } from "./grid-pattern/grid-pattern.showcase";
 export { gridShowcase } from "./grid/grid.showcase";
 export { headingShowcase } from "./heading/heading.showcase";
 export { heroVideoDialogShowcase } from "./hero-video-dialog/hero-video-dialog.showcase";
+export { videoShowcase } from "./video/video.showcase";
 export { hoverCardShowcase } from "./hover-card/hover-card.showcase";
 export { imageShowcase } from "./image/image.showcase";
 export { inputOtpShowcase } from "./input-otp/input-otp.showcase";

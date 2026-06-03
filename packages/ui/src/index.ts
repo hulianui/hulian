@@ -129,6 +129,7 @@ export * from "./bento-grid";
 export * from "./animated-theme-toggler";
 export * from "./animated-beam";
 export * from "./hero-video-dialog";
+export * from "./video";
 export * from "./tour";
 export * from "./world-map";
 // 布局/结构批（零依赖·RSC 友好）
