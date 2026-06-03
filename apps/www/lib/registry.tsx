@@ -116,6 +116,9 @@ import {
   transferShowcase,
   contextMenuShowcase,
   hoverCardShowcase,
+  headingShowcase,
+  textShowcase,
+  proseShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
