@@ -134,6 +134,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "heading", name: "Heading", description: "标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC)", category: "data-display", status: "new" },
   { slug: "text", name: "Text", description: "文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)", category: "data-display", status: "new" },
   { slug: "prose", name: "Prose", description: "排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "timeline", name: "Timeline", description: "时间线 · 复合 Timeline/Item + items 数组 + 彩色节点/自定义 dot + left/right/alternate + pending 加载态(纯皮肤·零依赖·RSC)", category: "data-display", status: "new" },
   { slug: "collapsible", name: "Collapsible", description: "折叠区 · Base UI collapsible 薄包 + 高度过渡(复用 Accordion --collapsible-panel-height)", category: "navigation", status: "new" },
   { slug: "segmented", name: "Segmented", description: "分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖)", category: "inputs", status: "new" },
 ];
