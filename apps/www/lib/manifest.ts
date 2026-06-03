@@ -65,4 +65,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "form", name: "Form", description: "表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同", category: "inputs", status: "new" },
   { slug: "scroll-area", name: "ScrollArea", description: "滚动区 · Base UI 自定义细滚动条 + 竖/横/双向", category: "data-display", status: "new" },
   { slug: "checkbox-group", name: "CheckboxGroup", description: "复选组 · Base UI 值数组协调 + 复用瑚琏 Checkbox", category: "inputs", status: "new" },
+  { slug: "spinner", name: "Spinner", description: "加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + RSC", category: "feedback", status: "new" },
+  { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", status: "new" },
+  { slug: "link", name: "Link", description: "链接 · tone×underline + external 自动 target/rel/图标 + RSC", category: "navigation", status: "new" },
+  { slug: "kbd", name: "Kbd", description: "按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC", category: "data-display", status: "new" },
 ];

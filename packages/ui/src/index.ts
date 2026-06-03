@@ -45,6 +45,11 @@ export * from "./toolbar";
 export * from "./alert-dialog";
 export * from "./scroll-area";
 export * from "./form";
+// B 档纯皮肤基础件批
+export * from "./spinner";
+export * from "./chip";
+export * from "./link";
+export * from "./kbd";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

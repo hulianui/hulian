@@ -48,6 +48,10 @@ import {
   formShowcase,
   scrollAreaShowcase,
   checkboxGroupShowcase,
+  spinnerShowcase,
+  chipShowcase,
+  linkShowcase,
+  kbdShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -99,4 +103,8 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   form: formShowcase,
   "scroll-area": scrollAreaShowcase,
   "checkbox-group": checkboxGroupShowcase,
+  spinner: spinnerShowcase,
+  chip: chipShowcase,
+  link: linkShowcase,
+  kbd: kbdShowcase,
 };
