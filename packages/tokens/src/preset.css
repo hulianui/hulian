@@ -16,6 +16,10 @@
   --color-primary-hover: var(--color-primary-hover);
   --color-danger: var(--color-danger);
   --color-danger-foreground: var(--color-danger-foreground);
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
+  --color-warning: var(--color-warning);
+  --color-warning-foreground: var(--color-warning-foreground);
   --color-chart-1: var(--color-chart-1);
   --color-chart-2: var(--color-chart-2);
   --color-chart-3: var(--color-chart-3);
@@ -190,4 +194,22 @@
       translateY(calc(var(--hulian-orbit-radius) * 1px))
       rotate(calc(var(--hulian-orbit-angle) * -1deg - 360deg));
   }
+}
+
+/* magicui/AnimatedThemeToggler 圆形揭示切主题的全局前置：
+   关掉 View Transitions 对 root 的 UA 默认 cross-fade（old/new 各 ~250ms 淡入淡出），
+   否则新视图一边淡入一边裁圆、旧视图在底下淡出，圆形擦除被冲淡成渐变。
+   组件用 WAAPI .animate() 追加 clipPath 到 ::view-transition-new(root)，
+   .animate() 不会替换 CSS 默认动画，必须在此显式 animation:none 让只有圆形揭示生效。
+   new 置顶 + 不透明，old 垫底静止，得到干净的圆形擦除。 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
 }
