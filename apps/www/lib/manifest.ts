@@ -131,6 +131,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "grid", name: "Grid", description: "栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC)", category: "data-display", status: "new" },
   { slug: "aspect-ratio", name: "AspectRatio", description: "比例容器 · CSS aspect-ratio 锁宽高比 + 图片/视频自动铺满(零依赖·RSC)", category: "data-display", status: "new" },
   { slug: "empty", name: "Empty", description: "空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "list", name: "List", description: "数据列表 · 复合 List/ListItem/ListItem.Meta + actions/size/bordered/split/grid + 空态/分页/加载更多(零依赖·复用 Empty/Pagination/Avatar/User)", category: "data-display", status: "new" },
   { slug: "upload", name: "Upload", description: "文件上传 · 拖拽落区/按钮形态 + accept/maxSize 校验 + 受控文件列表(状态/进度)，零依赖自研只发 onSelect", category: "inputs", status: "new" },
   { slug: "transfer", name: "Transfer", description: "穿梭框 · 左右双 listbox 面板 + 移动按钮(选中/全部) + 可选搜索 + 空态(零依赖·复用 Listbox/Empty)", category: "inputs", status: "new" },
   { slug: "command", name: "Command", description: "命令面板 · ⌘K 模态(复用 Dialog 引擎) + 实时过滤 + 分组 + 键盘漫游(零依赖)", category: "navigation", status: "new" },
