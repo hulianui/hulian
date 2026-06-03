@@ -1,3 +1,11 @@
 export { Table } from "./table";
-export type { TableProps, ColumnDef, SortingState } from "./table.types";
+export type {
+  TableProps,
+  VirtualOptions,
+  ColumnDef,
+  SortingState,
+  RowSelectionState,
+  ExpandedState,
+  ColumnFiltersState,
+} from "./table.types";
 export { tableShowcase } from "./table.showcase";
