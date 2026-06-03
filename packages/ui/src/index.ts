@@ -22,6 +22,7 @@ export * from "./accordion";
 export * from "./collapsible";
 export * from "./segmented";
 export * from "./breadcrumb";
+export * from "./page-header";
 export * from "./anchor";
 export * from "./descriptions";
 export * from "./pagination";
