@@ -1,14 +1,16 @@
 import type { CSSProperties } from "react";
 import { cn } from "../lib/cn";
-import type { AndroidProps } from "./android.types";
+import { ANDROID_MODELS, type AndroidProps } from "./android.types";
 
 // 吸取自 magicui.design Android（瑚琏风 CSS 框，非 verbatim 巨型 SVG）：含居中打孔摄像头的手机外壳。
 // 瑚琏化：纯 CSS（RSC 安全）；机身 foreground token；区别 iPhone——打孔摄像头(非灵动岛) + 稍小圆角 + 稍细边框。
-export function Android({ imageSrc, children, width = 280, className, style, ...props }: AndroidProps) {
+// 注意：aspectRatio 用机身比例 9/18.5（≈0.486），而非 19.5:9 屏占比——含上下边框后整机更宽，才像真机。
+export function Android({ imageSrc, children, width, model, className, style, ...props }: AndroidProps) {
+  const resolvedWidth = width ?? (model ? ANDROID_MODELS[model] : 280);
   return (
     <div
       {...props}
-      style={{ width, aspectRatio: "9 / 19.5", ...style } as CSSProperties}
+      style={{ width: resolvedWidth, aspectRatio: "9 / 18.5", ...style } as CSSProperties}
       className={cn(
         "relative rounded-[2rem] border-[8px] border-foreground bg-foreground shadow-2xl",
         className,

@@ -1,5 +1,8 @@
 /* 瑚琏 语义层 — 组件只消费这一层；明暗在此切，只换值不换结构 */
 :root {
+  /* 把当前主题告知浏览器：否则 OS 为暗色而页面切亮色时，UA 会用系统暗色画
+     overscroll 回弹区/原生滚动条/表单控件 → 下拉回弹露出黑底。随 data-theme 同步。 */
+  color-scheme: light;
   --color-bg: var(--gray-50);
   --color-surface: var(--white);
   --color-surface-hover: var(--gray-100);
@@ -12,6 +15,10 @@
   --color-primary-hover: var(--brand-500);
   --color-danger: var(--danger-600);
   --color-danger-foreground: var(--white);
+  --color-success: var(--success-600);
+  --color-success-foreground: var(--white);
+  --color-warning: var(--warning-600);
+  --color-warning-foreground: var(--white);
   /* 图表分类色板（数据序列用，SVG 经 var() 直接消费 → 明暗自适应） */
   --color-chart-1: oklch(0.62 0.19 255);
   --color-chart-2: oklch(0.7 0.16 155);
@@ -21,6 +28,7 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
   --color-bg: var(--gray-950);
   --color-surface: var(--gray-900);
   --color-surface-hover: var(--gray-800);
@@ -33,6 +41,10 @@
   --color-primary-hover: var(--brand-400);
   --color-danger: var(--danger-500);
   --color-danger-foreground: var(--white);
+  --color-success: var(--success-500);
+  --color-success-foreground: var(--white);
+  --color-warning: var(--warning-500);
+  --color-warning-foreground: var(--gray-950);
   /* 暗态图表色提亮以保对比 */
   --color-chart-1: oklch(0.7 0.17 255);
   --color-chart-2: oklch(0.76 0.16 155);

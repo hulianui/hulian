@@ -1,10 +1,10 @@
 "use client";
 import { cva } from "class-variance-authority";
-import { X } from "lucide-react";
+import { X } from "../_icons";
 import { cn } from "../lib/cn";
 import type { ChipProps } from "./chip.types";
 
-// Chip = 可移除标签/令牌（比 Badge 大、可带 dot 与关闭按钮）。CVA 配方同 Badge tone/variant，
+// Chip = 可移除标签/令牌（比 Badge 大、可带 dot/头像/前后缀与关闭按钮）。CVA 配方同 Badge tone/variant，
 // 但 size 更大、含 onClose 交互（故 "use client"）。只消费语义 token。
 export const chipVariants = cva("inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-medium", {
   variants: {
@@ -27,18 +27,49 @@ export const chipVariants = cva("inline-flex items-center gap-1.5 whitespace-now
 });
 
 const dotByTone = { brand: "bg-primary", danger: "bg-danger", neutral: "bg-muted" } as const;
+// avatar 存在时缩小左内边距让头像贴边，并按 size 把头像约束为正方形。
+const avatarPadBySize = { sm: "pl-0.5", md: "pl-1" } as const;
+const avatarSizeBySize = { sm: "[&>*]:size-5", md: "[&>*]:size-6" } as const;
 
-export function Chip({ variant, tone = "brand", size, onClose, dot, className, children }: ChipProps) {
+export function Chip({
+  variant,
+  tone = "brand",
+  size = "md",
+  onClose,
+  dot,
+  avatar,
+  startContent,
+  endContent,
+  isDisabled,
+  className,
+  children,
+}: ChipProps) {
   return (
-    <span className={cn(chipVariants({ variant, tone, size }), className)}>
-      {dot && <span className={cn("size-1.5 rounded-full", dotByTone[tone])} aria-hidden />}
+    <span
+      className={cn(
+        chipVariants({ variant, tone, size }),
+        avatar && avatarPadBySize[size],
+        isDisabled && "pointer-events-none opacity-50",
+        className,
+      )}
+      aria-disabled={isDisabled || undefined}
+    >
+      {avatar ? (
+        <span className={cn("-ml-0.5 flex shrink-0 items-center", avatarSizeBySize[size])}>{avatar}</span>
+      ) : startContent ? (
+        <span className="flex shrink-0 items-center">{startContent}</span>
+      ) : (
+        dot && <span className={cn("size-1.5 rounded-full", dotByTone[tone])} aria-hidden />
+      )}
       {children}
+      {endContent && <span className="flex shrink-0 items-center">{endContent}</span>}
       {onClose && (
         <button
           type="button"
           onClick={onClose}
+          disabled={isDisabled}
           aria-label="移除"
-          className="-mr-1 inline-flex size-4 items-center justify-center rounded-full opacity-60 outline-none transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring"
+          className="-mr-1 inline-flex size-4 items-center justify-center rounded-full opacity-60 outline-none transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed"
         >
           <X className="size-3" />
         </button>

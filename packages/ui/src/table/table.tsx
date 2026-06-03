@@ -16,7 +16,7 @@ import {
   type ColumnFiltersState,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
 import { cn } from "../lib/cn";
 import type { TableProps } from "./table.types";

@@ -7,9 +7,9 @@ import {
   SelectItem,
   Input,
   Switch,
+  CodeBlock,
   type ShowcaseSpec,
 } from "@hulian/ui";
-import { CodeBlock } from "./code-block";
 
 export function Playground({ spec }: { spec: ShowcaseSpec }) {
   const [props, setProps] = useState<Record<string, unknown>>(
@@ -18,15 +18,11 @@ export function Playground({ spec }: { spec: ShowcaseSpec }) {
   const set = (k: string, v: unknown) => setProps((p) => ({ ...p, [k]: v }));
 
   return (
-    <div className="grid gap-4 md:grid-cols-[1fr_16rem]">
-      <div className="space-y-4">
-        <div className="flex min-h-32 items-center justify-center rounded-[var(--radius)] border border-border bg-bg p-8">
-          {spec.renderWithProps(props)}
-        </div>
-        <CodeBlock code={spec.toCode(props)} className="rounded-[var(--radius)]" />
-      </div>
-      <div className="space-y-3 rounded-[var(--radius)] border border-border bg-surface p-4">
-        {spec.controls.map((c) => (
+    // 竖排：配置 → 组件 → 代码（替代旧的左右两列）
+    <div className="space-y-4">
+      {spec.controls.length > 0 && (
+        <div className="grid gap-3 rounded-[var(--radius)] border border-border bg-surface p-4 sm:grid-cols-2 lg:grid-cols-3">
+          {spec.controls.map((c) => (
           <label key={c.prop} className="block text-sm">
             <span className="mb-1 block text-muted">{c.label ?? c.prop}</span>
             {c.type === "select" && (
@@ -67,8 +63,13 @@ export function Playground({ spec }: { spec: ShowcaseSpec }) {
               />
             )}
           </label>
-        ))}
+          ))}
+        </div>
+      )}
+      <div className="flex min-h-32 items-center justify-center rounded-[var(--radius)] border border-border bg-bg p-8">
+        {spec.renderWithProps(props)}
       </div>
+      <CodeBlock code={spec.toCode(props)} className="rounded-[var(--radius)]" />
     </div>
   );
 }

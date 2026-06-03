@@ -11,11 +11,17 @@ describe("Android", () => {
     // 摄像头 punch-hole（屏幕内 size-2.5 圆点）
     expect(root.querySelector(".size-2\\.5")).not.toBeNull();
   });
-  it("width 落 style + 9/19.5 比例", () => {
+  it("width 落 style + 机身 9/18.5 比例", () => {
     const { container } = render(<Android width={300} />);
     const root = container.firstElementChild as HTMLElement;
     expect(root.style.width).toBe("300px");
-    expect(root.style.aspectRatio).toBe("9 / 19.5");
+    expect(root.style.aspectRatio).toBe("9 / 18.5");
+  });
+  it("model 预设决定宽度；width 显式传入时优先", () => {
+    const preset = render(<Android model="galaxy-s24" />);
+    expect((preset.container.firstElementChild as HTMLElement).style.width).toBe("285px");
+    const override = render(<Android model="galaxy-s24" width={400} />);
+    expect((override.container.firstElementChild as HTMLElement).style.width).toBe("400px");
   });
   it("imageSrc 优先渲染 img；否则 children", () => {
     const withImg = render(<Android imageSrc="/a.png" />);

@@ -41,7 +41,7 @@ export default function ComponentsLayout({ children }: { children: ReactNode }) 
         </main>
       </div>
 
-      {/* Toast 全局单挂：含 Viewport，命令式 toast() 在任意组件页触发都进此处（见 spec §3.2）。 */}
+      {/* 命令式 overlay 全局单挂：含各自 Viewport，toast()/modal.*()/notification.*() 在任意组件页触发都进此处。 */}
       <ToastProvider />
       <ModalProvider />
       <NotificationProvider />

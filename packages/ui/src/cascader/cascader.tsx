@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 import { cva } from "class-variance-authority";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { getNodePath, type TreeNode } from "../tree/tree-core";

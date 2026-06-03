@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { flushSync } from "react-dom";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "../_icons";
 import { cn } from "../lib/cn";
 import { useTheme } from "../theme/use-theme";
 import type { AnimatedThemeTogglerProps } from "./animated-theme-toggler.types";

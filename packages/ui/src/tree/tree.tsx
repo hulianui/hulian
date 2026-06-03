@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useReducedMotion } from "motion/react";
-import { Search } from "lucide-react";
+import { Search } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { Checkbox } from "../checkbox";

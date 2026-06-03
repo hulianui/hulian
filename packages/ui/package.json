@@ -29,7 +29,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.21",
-    "lucide-react": "^1.0.0",
     "react-colorful": "^5.7.0",
     "recharts": "^3.8.1",
     "tailwind-merge": "^3.6.0"
@@ -42,6 +41,7 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^4.7.0",
     "jsdom": "^25.0.0",
+    "lucide-react": "^1.0.0",
     "motion": "^12.40.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

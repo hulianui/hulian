@@ -1,5 +1,5 @@
 "use client";
-import { Menu, X } from "lucide-react";
+import { Menu, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type {
   NavbarProps,

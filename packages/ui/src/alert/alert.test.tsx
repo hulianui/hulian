@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, fireEvent } from "@testing-library/react";
 import { alertVariants, Alert } from "./alert";
 
 describe("alertVariants", () => {
@@ -22,6 +22,14 @@ describe("alertVariants", () => {
   it("compound: neutral 用 surface/foreground 系（不引未注册色）", () => {
     expect(alertVariants({ variant: "soft", tone: "neutral" })).toContain("bg-surface-hover");
     expect(alertVariants({ variant: "outline", tone: "neutral" })).toContain("border-border");
+  });
+  it("compound: success 用 success token（soft /12 + outline border）", () => {
+    expect(alertVariants({ variant: "soft", tone: "success" })).toContain("bg-success/12");
+    expect(alertVariants({ variant: "outline", tone: "success" })).toContain("border-success");
+  });
+  it("compound: warning 用 warning token（soft /12 + outline border）", () => {
+    expect(alertVariants({ variant: "soft", tone: "warning" })).toContain("bg-warning/12");
+    expect(alertVariants({ variant: "outline", tone: "warning" })).toContain("border-warning");
   });
 });
 
@@ -73,5 +81,36 @@ describe("Alert", () => {
     const { container } = render(<Alert>只有正文</Alert>);
     // 根容器内直接子节点只有 content 容器（无 icon span）
     expect(container.querySelector("svg")).toBeNull();
+  });
+
+  it("传 action 时渲染动作 slot", () => {
+    const { getByText } = render(
+      <Alert title="更新" action={<button>刷新</button>}>
+        x
+      </Alert>,
+    );
+    expect(getByText("刷新")).toBeTruthy();
+  });
+
+  it("传 onClose 渲染关闭按钮，点击触发回调", () => {
+    const onClose = vi.fn();
+    const { getByLabelText } = render(
+      <Alert title="成功" onClose={onClose}>
+        x
+      </Alert>,
+    );
+    const btn = getByLabelText("关闭");
+    fireEvent.click(btn);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("closeLabel 可自定义关闭按钮无障碍标签", () => {
+    const { getByLabelText } = render(<Alert onClose={() => {}} closeLabel="dismiss" />);
+    expect(getByLabelText("dismiss")).toBeTruthy();
+  });
+
+  it("不传 action / onClose 时不渲染右侧操作区", () => {
+    const { queryByRole } = render(<Alert title="纯提示">x</Alert>);
+    expect(queryByRole("button")).toBeNull();
   });
 });

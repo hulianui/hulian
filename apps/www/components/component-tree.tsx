@@ -19,22 +19,19 @@ export function ComponentTree() {
               {items.map((m) => {
                 const href = `/components/${m.slug}`;
                 const active = pathname === href;
+                const nameCn = m.description.split(" · ")[0];
                 return (
                   <li key={m.slug}>
                     <Link
                       href={href}
-                      className={`flex items-center justify-between rounded-[var(--radius)] px-2 py-1.5 text-sm transition-colors ${
+                      className={`flex items-center justify-between gap-2 rounded-[var(--radius)] px-2 py-1.5 text-sm transition-colors ${
                         active
                           ? "bg-surface-hover font-medium text-foreground"
                           : "text-muted hover:bg-surface-hover hover:text-foreground"
                       }`}
                     >
-                      {m.name}
-                      {m.status === "new" && (
-                        <span className="rounded border border-primary px-1.5 py-0.5 text-[10px] font-medium text-primary">
-                          new
-                        </span>
-                      )}
+                      <span>{nameCn}</span>
+                      <span className="shrink-0 text-xs text-muted/70">{m.name}</span>
                     </Link>
                   </li>
                 );

@@ -15,7 +15,7 @@ export default function ComponentsIndexPage() {
         const items = manifest.filter((m) => m.category === cat.key);
         if (items.length === 0) return null;
         return (
-          <section key={cat.key} className="space-y-3">
+          <section key={cat.key} id={cat.key} className="scroll-mt-24 space-y-3">
             <h2 className="text-sm font-medium text-muted">{cat.label}</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((m) => (
@@ -26,11 +26,6 @@ export default function ComponentsIndexPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-foreground">{m.name}</span>
-                    {m.status === "new" && (
-                      <span className="rounded border border-primary px-1.5 py-0.5 text-[10px] font-medium text-primary">
-                        new
-                      </span>
-                    )}
                   </div>
                   <p className="mt-1 text-sm text-muted">{m.description}</p>
                 </Link>

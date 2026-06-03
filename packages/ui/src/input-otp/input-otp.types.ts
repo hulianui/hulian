@@ -13,7 +13,7 @@ export interface InputOTPProps {
   disabled?: boolean;
   /** 校验失败态。 */
   invalid?: boolean;
-  /** 中间分隔点（如 3-3 分组视觉）。 */
+  /** 中间插入横线分隔符（3-3 分组视觉，如 XXX–XXX）。 */
   groupGap?: boolean;
   className?: string;
   "aria-label"?: string;

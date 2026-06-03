@@ -29,10 +29,9 @@ describe("drawerVariants", () => {
     expect(c).toContain("border-t");
     expect(c).toContain("data-[starting-style]:translate-y-full");
   });
-  it("base 始终带 fixed + transition-transform + 语义皮肤", () => {
+  it("base 始终带 fixed + 语义皮肤（过渡走内联 transition 简写，不再用 transition-transform 类）", () => {
     const c = drawerVariants({});
     expect(c).toContain("fixed");
-    expect(c).toContain("transition-transform");
     expect(c).toContain("bg-surface");
   });
 });

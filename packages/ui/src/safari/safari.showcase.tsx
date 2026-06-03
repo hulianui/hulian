@@ -15,14 +15,14 @@ export const safariShowcase: ShowcaseSpec = {
     {
       name: "default（浏览器外壳包裹内容）",
       render: () => (
-        <Safari className="w-96">
+        <Safari style={{ width: 375 }}>
           <Demo />
         </Safari>
       ),
     },
   ],
   renderWithProps: (p) => (
-    <Safari className="w-96" url={p.url as string}>
+    <Safari style={{ width: 375 }} url={p.url as string}>
       <Demo />
     </Safari>
   ),

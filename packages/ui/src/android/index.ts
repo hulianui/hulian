@@ -1,3 +1,4 @@
 export { Android } from "./android";
-export type { AndroidProps } from "./android.types";
+export { ANDROID_MODELS } from "./android.types";
+export type { AndroidProps, AndroidModel } from "./android.types";
 export { androidShowcase } from "./android.showcase";

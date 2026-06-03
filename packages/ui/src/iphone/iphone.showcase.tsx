@@ -1,5 +1,6 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { IPhone } from "./iphone";
+import type { IPhoneModel } from "./iphone.types";
 
 function Screen() {
   return (
@@ -11,21 +12,45 @@ function Screen() {
 }
 
 export const iphoneShowcase: ShowcaseSpec = {
-  controls: [{ prop: "width", type: "number", defaultValue: 240 }],
+  controls: [
+    {
+      prop: "model",
+      type: "select",
+      options: ["16-pro-max", "16-pro", "16-plus", "16", "15-pro", "13-mini"],
+      defaultValue: "15-pro",
+      label: "机型",
+    },
+  ],
   states: [
     {
-      name: "default（灵动岛手机外壳）",
+      name: "15 Pro（默认）",
       render: () => (
-        <IPhone width={220}>
+        <IPhone model="15-pro">
+          <Screen />
+        </IPhone>
+      ),
+    },
+    {
+      name: "16 Pro Max（最大）",
+      render: () => (
+        <IPhone model="16-pro-max">
+          <Screen />
+        </IPhone>
+      ),
+    },
+    {
+      name: "13 mini（最小）",
+      render: () => (
+        <IPhone model="13-mini">
           <Screen />
         </IPhone>
       ),
     },
   ],
   renderWithProps: (p) => (
-    <IPhone width={p.width as number}>
+    <IPhone model={p.model as IPhoneModel}>
       <Screen />
     </IPhone>
   ),
-  toCode: (p) => `<IPhone width={${p.width}}>\n  <img src="/app.png" />\n</IPhone>`,
+  toCode: (p) => `<IPhone model="${p.model}">\n  <img src="/app.png" />\n</IPhone>`,
 };

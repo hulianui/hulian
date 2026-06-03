@@ -5,10 +5,11 @@ import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { SelectContentProps, SelectItemProps, SelectProps, SelectTriggerProps } from "./select.types";
 
-// overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（同 Dialog/Tooltip/Popover）。
+// overlay 自管 mount/unmount；用瑚琏 motion token 驱动 Base UI 原生过渡（同 Dialog/Tooltip/Popover）。
+// 用 transition 简写(而非长写)：Base UI 在过渡生命周期会往内联 style 注入 transition 简写，与长写
+// 混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。简写同属性覆盖无混用 → 警告消除。
 const overlayTransition = {
-  transitionDuration: motionDurationCss.base,
-  transitionTimingFunction: motionEaseCss.out,
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
 const ChevronDownIcon = () => (
@@ -90,7 +91,7 @@ export function SelectContent({
         <BaseSelect.Popup
           className={cn(
             "max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] overflow-y-auto rounded-[var(--radius)] border border-border bg-surface p-1 text-foreground shadow-xl outline-none",
-            "transition-[opacity,transform] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+            "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
           style={overlayTransition}

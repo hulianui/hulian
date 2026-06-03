@@ -1,7 +1,7 @@
 "use client";
 import type { CSSProperties } from "react";
 import { NavigationMenu as BaseNav } from "@base-ui-components/react/navigation-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type {

@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@8.15.5",
   "scripts": {
-    "kill:stale": "pkill -f '[h]ulian-desktop' 2>/dev/null; lsof -t -i:5512 -i:5514 2>/dev/null | xargs kill -9 2>/dev/null; true",
+    "kill:stale": "pkill -f '[h]ulian-desktop' 2>/dev/null; lsof -t -i:5512 -i:5514 2>/dev/null | xargs kill -9 2>/dev/null; for pid in $(pgrep -f 'next dev'); do cwd=$(lsof -a -p $pid -d cwd -Fn 2>/dev/null | sed -n 's/^n//p' | head -1); case $cwd in $PWD/apps/www*) kill -9 $pid 2>/dev/null;; esac; done; true",
     "dev": "pnpm kill:stale; turbo run dev --filter=www",
     "app": "pnpm kill:stale; pnpm --filter desktop dev",
     "app:build": "pnpm --filter desktop build",

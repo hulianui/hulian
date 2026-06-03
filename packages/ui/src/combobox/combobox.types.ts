@@ -25,10 +25,22 @@ export interface ComboboxInputProps {
   className?: string;
 }
 
+/** 图4 范式触发按钮：显示已选 label / placeholder，点击展开「弹层内搜索」式浮层。 */
+export interface ComboboxTriggerProps {
+  size?: ComboboxSize;
+  /** 未选中时占位文案。 */
+  placeholder?: string;
+  /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
+  invalid?: boolean;
+  className?: string;
+}
+
 export interface ComboboxContentProps {
   /** render fn：List 自动遍历已过滤项调用。 */
   children: (item: ComboboxItemData, index: number) => ReactNode;
   emptyMessage?: ReactNode;
+  /** 设置后在浮层顶部渲染搜索框（图4 范式，配合 ComboboxTrigger 使用）。不设则无内置搜索框（内联自动补全态）。 */
+  searchPlaceholder?: string;
   side?: "top" | "bottom";
   align?: "start" | "center" | "end";
   sideOffset?: number;

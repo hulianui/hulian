@@ -1,14 +1,16 @@
 import type { CSSProperties } from "react";
 import { cn } from "../lib/cn";
-import type { IPhoneProps } from "./iphone.types";
+import { IPHONE_MODELS, type IPhoneProps } from "./iphone.types";
 
 // 吸取自 magicui.design iPhone（瑚琏风 CSS 框，非 verbatim 巨型 SVG）：含灵动岛的手机外壳包裹屏幕内容。
 // 瑚琏化：纯 CSS（RSC 安全）；机身边框用 foreground token（themeable）；屏幕区 bg token。
-export function IPhone({ imageSrc, children, width = 280, className, style, ...props }: IPhoneProps) {
+// 注意：aspectRatio 用机身比例 9/18.5（≈0.486），而非 19.5:9 屏占比——含上下边框后整机更宽，才像真机。
+export function IPhone({ imageSrc, children, width, model, className, style, ...props }: IPhoneProps) {
+  const resolvedWidth = width ?? (model ? IPHONE_MODELS[model] : 280);
   return (
     <div
       {...props}
-      style={{ width, aspectRatio: "9 / 19.5", ...style } as CSSProperties}
+      style={{ width: resolvedWidth, aspectRatio: "9 / 18.5", ...style } as CSSProperties}
       className={cn(
         "relative rounded-[3rem] border-[10px] border-foreground bg-foreground shadow-2xl",
         className,

@@ -6,7 +6,7 @@
 // loop = 索引回绕（非克隆式无缝无限）：零依赖下克隆会与原生 snap 打架，回绕是诚实取舍。
 // reduced-motion：关 autoplay + scrollTo behavior:"auto"（无平滑动画）。
 import { Children, useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "../_icons";
 import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";

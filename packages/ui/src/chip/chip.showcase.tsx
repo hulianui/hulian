@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { Check, Sparkles } from "lucide-react";
+import { Avatar } from "../avatar";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Chip } from "./chip";
 
@@ -60,6 +62,43 @@ export const chipShowcase: ShowcaseSpec = {
         <div className="flex gap-2">
           <Chip dot tone="brand">在线</Chip>
           <Chip dot tone="danger">离线</Chip>
+        </div>
+      ),
+    },
+    {
+      name: "avatar",
+      render: () => (
+        <div className="flex gap-2">
+          <Chip tone="brand" avatar={<Avatar fallback="安" />}>
+            安娜
+          </Chip>
+          <Chip variant="outline" tone="neutral" avatar={<Avatar fallback="B" src="https://i.pravatar.cc/40?img=5" />} onClose={() => {}}>
+            Bob
+          </Chip>
+        </div>
+      ),
+    },
+    {
+      name: "startContent",
+      render: () => (
+        <div className="flex gap-2">
+          <Chip tone="brand" startContent={<Sparkles className="size-3.5" />}>
+            New
+          </Chip>
+          <Chip variant="solid" tone="brand" startContent={<Check className="size-3.5" />}>
+            已完成
+          </Chip>
+        </div>
+      ),
+    },
+    {
+      name: "disabled",
+      render: () => (
+        <div className="flex gap-2">
+          <Chip isDisabled>禁用</Chip>
+          <Chip isDisabled onClose={() => {}}>
+            禁用可关闭
+          </Chip>
         </div>
       ),
     },

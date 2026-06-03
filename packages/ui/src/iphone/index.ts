@@ -1,3 +1,4 @@
 export { IPhone } from "./iphone";
-export type { IPhoneProps } from "./iphone.types";
+export { IPHONE_MODELS } from "./iphone.types";
+export type { IPhoneProps, IPhoneModel } from "./iphone.types";
 export { iphoneShowcase } from "./iphone.showcase";

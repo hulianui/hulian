@@ -31,9 +31,10 @@ const toneTitle: Record<ToastTone, string> = {
   neutral: "text-foreground",
 };
 
+// transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 过渡期会往内联 style 注入
+// transition 简写，与长写混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。
 const overlayTransition = {
-  transitionDuration: motionDurationCss.base,
-  transitionTimingFunction: motionEaseCss.out,
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
 function ToastList() {
@@ -48,7 +49,7 @@ function ToastList() {
           "flex items-start gap-3 rounded-[var(--radius)] border border-l-2 border-border bg-surface p-4 shadow-lg",
           toneBorder[tone] ?? toneBorder.neutral,
           // 进出场：滑入 + 淡入，用 motion-token CSS 镜像驱动 Base UI data-* 过渡
-          "transition-[opacity,transform] data-[starting-style]:translate-x-4 data-[starting-style]:opacity-0 data-[ending-style]:translate-x-4 data-[ending-style]:opacity-0",
+          "data-[starting-style]:translate-x-4 data-[starting-style]:opacity-0 data-[ending-style]:translate-x-4 data-[ending-style]:opacity-0",
         )}
         style={overlayTransition}
       >

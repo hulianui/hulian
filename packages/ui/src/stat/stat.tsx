@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown } from "../_icons";
 import { cn } from "../lib/cn";
 import type { StatProps } from "./stat.types";
 

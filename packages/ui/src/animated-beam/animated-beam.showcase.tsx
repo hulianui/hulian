@@ -15,10 +15,11 @@ function Node({ refEl, children }: { refEl: React.RefObject<HTMLDivElement | nul
   );
 }
 
-// mode 决定四条光束的流向（光束总是从 fromRef 流向 toRef）：
-//  - "ltr"  左到右：左两点 → 中枢，中枢 → 右两点（一条贯穿管线）
-//  - "hub"  四周汇聚：四个外点全部 → 中枢（中心为汇聚点）
-//  - "rtl"  右到左：右两点 → 中枢，中枢 → 左两点（管线反向）
+// 流光扫描方向由 reverse 控制（沿容器水平方向，与 path 端点顺序无关）：
+//  reverse=false → 光束从左向右扫；reverse=true → 从右向左扫。
+//  - "ltr"  左到右：四条全部左→右扫
+//  - "hub"  四周汇聚：左两点左→右(流入中枢)，右两点右→左(流入中枢)，中心为汇聚点
+//  - "rtl"  右到左：四条全部右→左扫
 type Mode = "ltr" | "hub" | "rtl";
 
 function Demo({ mode = "ltr" }: { mode?: Mode }) {
@@ -29,10 +30,10 @@ function Demo({ mode = "ltr" }: { mode?: Mode }) {
   const r2 = useRef<HTMLDivElement>(null);
   const hub = useRef<HTMLDivElement>(null);
 
-  // 左侧两点是否流入中枢（否则中枢流向它们）
-  const leftIn = mode === "ltr" || mode === "hub";
-  // 右侧两点是否流入中枢（否则中枢流向它们）
-  const rightIn = mode === "rtl" || mode === "hub";
+  // 左侧两条光束是否右→左扫（rtl 时整体反向）
+  const leftReverse = mode === "rtl";
+  // 右侧两条光束是否右→左扫（汇聚 / rtl 时反向，使其流入/流出中枢方向正确）
+  const rightReverse = mode === "hub" || mode === "rtl";
 
   return (
     <div ref={container} className="relative mx-auto flex h-56 w-full max-w-md items-center justify-between px-10">
@@ -45,11 +46,10 @@ function Demo({ mode = "ltr" }: { mode?: Mode }) {
         <Node refEl={r1}><Smartphone className="size-5" /></Node>
         <Node refEl={r2}><Globe className="size-5" /></Node>
       </div>
-      {/* 曲率按几何走向固定（上点正、下点负），方向只由 from/to 顺序决定 */}
-      <AnimatedBeam containerRef={container} fromRef={leftIn ? l1 : hub} toRef={leftIn ? hub : l1} curvature={30} />
-      <AnimatedBeam containerRef={container} fromRef={leftIn ? l2 : hub} toRef={leftIn ? hub : l2} curvature={-30} />
-      <AnimatedBeam containerRef={container} fromRef={rightIn ? r1 : hub} toRef={rightIn ? hub : r1} curvature={-30} />
-      <AnimatedBeam containerRef={container} fromRef={rightIn ? r2 : hub} toRef={rightIn ? hub : r2} curvature={30} />
+      <AnimatedBeam containerRef={container} fromRef={l1} toRef={hub} curvature={30} reverse={leftReverse} />
+      <AnimatedBeam containerRef={container} fromRef={l2} toRef={hub} curvature={-30} reverse={leftReverse} />
+      <AnimatedBeam containerRef={container} fromRef={hub} toRef={r1} curvature={-30} reverse={rightReverse} />
+      <AnimatedBeam containerRef={container} fromRef={hub} toRef={r2} curvature={30} reverse={rightReverse} />
     </div>
   );
 }
@@ -63,5 +63,5 @@ export const animatedBeamShowcase: ShowcaseSpec = {
   ],
   renderWithProps: () => <Demo mode="hub" />,
   toCode: () =>
-    `<div ref={container} className="relative">\n  <div ref={from} /> <div ref={to} />\n  {/* 光束从 fromRef 流向 toRef；多点汇聚把各外点的 toRef 都指向中枢 */}\n  <AnimatedBeam containerRef={container} fromRef={from} toRef={to} />\n</div>`,
+    `<div ref={container} className="relative">\n  <div ref={from} /> <div ref={to} />\n  {/* 流向用 reverse 控制：false=左→右、true=右→左；汇聚时让右侧光束 reverse */}\n  <AnimatedBeam containerRef={container} fromRef={from} toRef={to} reverse={false} />\n</div>`,
 };

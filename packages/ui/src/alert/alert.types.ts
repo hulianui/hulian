@@ -9,4 +9,10 @@ export interface AlertProps
   icon?: ReactNode;
   /** 标题（可选）；children 为正文 description。 */
   title?: ReactNode;
+  /** 右侧动作 slot（如 <Button>Retry</Button>），与关闭按钮并排。 */
+  action?: ReactNode;
+  /** 传入则渲染右上角关闭按钮，点击触发回调（关闭/消隐由调用方控制）。 */
+  onClose?: () => void;
+  /** 关闭按钮的无障碍标签（默认「关闭」）。 */
+  closeLabel?: string;
 }

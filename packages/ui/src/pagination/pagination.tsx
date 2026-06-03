@@ -3,7 +3,7 @@
 // 页码/上下页按钮复用 Button 气质（hover/focus-ring/disabled/press），覆写为定方形。
 // 当前页 aria-current="page" + solid 填充；省略号为不可点装饰位。
 // 含 onClick 交互回调 → 必 "use client"（区别于纯链接的 Breadcrumb）。
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "../_icons";
 import { Button } from "../button";
 import { cn } from "../lib/cn";
 import { getPaginationRange } from "./pagination.range";

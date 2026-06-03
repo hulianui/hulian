@@ -45,15 +45,25 @@ export function WorldMap({
     [dotColor],
   );
 
-  // 端点去重（多条弧共用同一城市时只画一个脉冲）
+  // 逐条解析颜色：dot.color 优先，回退全局 lineColor → 同组件内可混色
+  const resolved = useMemo(
+    () => dots.map((d) => ({ ...d, color: d.color ?? lineColor })),
+    [dots, lineColor],
+  );
+
+  // 出现过的颜色去重 → 每色一条渐变（弧线 stroke 按色引用对应渐变）
+  const colors = useMemo(() => [...new Set(resolved.map((d) => d.color))], [resolved]);
+  const gradIdFor = (color: string) => `${gradId}-${colors.indexOf(color)}`;
+
+  // 端点去重（多条弧共用同一城市时只画一个脉冲）；颜色取首条触及它的连线
   const endpoints = useMemo(() => {
-    const seen = new Map<string, WorldMapPoint>();
-    for (const d of dots) {
-      seen.set(pointKey(d.start), d.start);
-      seen.set(pointKey(d.end), d.end);
+    const seen = new Map<string, { p: WorldMapPoint; color: string }>();
+    for (const d of resolved) {
+      if (!seen.has(pointKey(d.start))) seen.set(pointKey(d.start), { p: d.start, color: d.color });
+      if (!seen.has(pointKey(d.end))) seen.set(pointKey(d.end), { p: d.end, color: d.color });
     }
-    return [...seen.values()].map((p) => ({ p, ...projectPoint(p.lat, p.lng) }));
-  }, [dots]);
+    return [...seen.values()].map(({ p, color }) => ({ p, color, ...projectPoint(p.lat, p.lng) }));
+  }, [resolved]);
 
   return (
     <svg
@@ -66,7 +76,7 @@ export function WorldMap({
       <g>{dotCircles}</g>
 
       {/* 弧线 */}
-      {dots.map((d, i) => {
+      {resolved.map((d, i) => {
         const s = projectPoint(d.start.lat, d.start.lng);
         const e = projectPoint(d.end.lat, d.end.lng);
         const path = arcPath(s, e);
@@ -75,7 +85,7 @@ export function WorldMap({
             key={i}
             d={path}
             fill="none"
-            stroke={`url(#${gradId})`}
+            stroke={`url(#${gradIdFor(d.color)})`}
             strokeWidth={0.28}
             strokeLinecap="round"
             initial={reduced ? false : { pathLength: 0 }}
@@ -95,16 +105,16 @@ export function WorldMap({
         );
       })}
 
-      {/* 端点：实心点 + 脉冲环 */}
-      {endpoints.map(({ p, x, y }) => (
+      {/* 端点：实心点 + 脉冲环（用各自连线的颜色） */}
+      {endpoints.map(({ p, x, y, color }) => (
         <g key={pointKey(p)}>
-          <circle cx={x} cy={y} r={0.45} fill={lineColor} />
+          <circle cx={x} cy={y} r={0.45} fill={color} />
           {!reduced && (
             <motion.circle
               cx={x}
               cy={y}
               fill="none"
-              stroke={lineColor}
+              stroke={color}
               strokeWidth={0.16}
               initial={{ r: 0.45, opacity: 0.7 }}
               animate={{ r: 2.2, opacity: 0 }}
@@ -115,13 +125,15 @@ export function WorldMap({
       ))}
 
       <defs>
-        {/* 沿弧线方向(用 objectBoundingBox)两端渐隐 → "光线扫过"观感 */}
-        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor={lineColor} stopOpacity={0} />
-          <stop offset="12%" stopColor={lineColor} stopOpacity={1} />
-          <stop offset="88%" stopColor={lineColor} stopOpacity={1} />
-          <stop offset="100%" stopColor={lineColor} stopOpacity={0} />
-        </linearGradient>
+        {/* 每种连线颜色一条渐变：沿弧线方向(objectBoundingBox)两端渐隐 → "光线扫过"观感 */}
+        {colors.map((color) => (
+          <linearGradient key={color} id={gradIdFor(color)} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={color} stopOpacity={0} />
+            <stop offset="12%" stopColor={color} stopOpacity={1} />
+            <stop offset="88%" stopColor={color} stopOpacity={1} />
+            <stop offset="100%" stopColor={color} stopOpacity={0} />
+          </linearGradient>
+        ))}
       </defs>
     </svg>
   );

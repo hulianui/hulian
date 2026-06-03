@@ -38,4 +38,39 @@ describe("Chip", () => {
     const { container } = render(<Chip className="my-chip">x</Chip>);
     expect(container.firstElementChild!.classList.contains("my-chip")).toBe(true);
   });
+
+  it("渲染 startContent / endContent", () => {
+    const { getByText } = render(
+      <Chip startContent={<i>start</i>} endContent={<i>end</i>}>
+        标签
+      </Chip>,
+    );
+    expect(getByText("start")).toBeTruthy();
+    expect(getByText("end")).toBeTruthy();
+  });
+
+  it("avatar 存在时不渲染 dot 也不渲染 startContent", () => {
+    const { getByText, queryByText, container } = render(
+      <Chip dot avatar={<span>头像</span>} startContent={<i>start</i>}>
+        标签
+      </Chip>,
+    );
+    expect(getByText("头像")).toBeTruthy();
+    expect(queryByText("start")).toBeNull();
+    expect(container.querySelector(".size-1\\.5")).toBeNull();
+  });
+
+  it("isDisabled 降透明度且关闭按钮禁用", () => {
+    const fn = vi.fn();
+    const { getByLabelText, container } = render(
+      <Chip isDisabled onClose={fn}>
+        标签
+      </Chip>,
+    );
+    expect(container.firstElementChild!.className).toContain("opacity-50");
+    const btn = getByLabelText("移除") as HTMLButtonElement;
+    expect(btn.disabled).toBe(true);
+    fireEvent.click(btn);
+    expect(fn).not.toHaveBeenCalled();
+  });
 });

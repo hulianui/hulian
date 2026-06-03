@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Play, X } from "lucide-react";
+import { Play, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type { HeroVideoDialogProps } from "./hero-video-dialog.types";
 

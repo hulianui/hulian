@@ -2,7 +2,7 @@
 import { forwardRef } from "react";
 import { cva } from "class-variance-authority";
 import { motion, type HTMLMotionProps } from "motion/react";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "../_icons";
 import { cn } from "../lib/cn";
 import { pressable } from "../motion";
 import type { ButtonProps } from "./button.types";

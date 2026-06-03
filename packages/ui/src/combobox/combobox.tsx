@@ -1,4 +1,5 @@
 "use client";
+import { createContext, useContext, useRef, type RefObject } from "react";
 import { Combobox as BaseCombobox } from "@base-ui-components/react/combobox";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
@@ -6,15 +7,25 @@ import { motionDurationCss, motionEaseCss } from "../motion";
 import type {
   ComboboxContentProps,
   ComboboxInputProps,
+  ComboboxItemData,
   ComboboxItemProps,
   ComboboxProps,
+  ComboboxTriggerProps,
 } from "./combobox.types";
 
-// overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（同 Select/Dialog）。
+// overlay 自管 mount/unmount；用瑚琏 motion token 驱动 Base UI 原生过渡（同 Select/Dialog）。
+// 用 transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 在过渡生命周期会往内联
+// style 注入 transition 简写，与长写混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。
+// 简写对简写同属性覆盖，无混用 → 警告消除。属性写进简写里，故 className 不再需要 transition-[…] 类。
 const overlayTransition = {
-  transitionDuration: motionDurationCss.base,
-  transitionTimingFunction: motionEaseCss.out,
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
+
+// 锚点 context：可见字段(内联外壳 span / 图4 Trigger 按钮)把自身 ref 注册进来，
+// 供 ComboboxContent 的 Positioner anchor=，确保浮层锚到「整个可见字段」而非裸 <input>。
+// 不做这步时 Base UI 默认锚到 Combobox.Input(裸 input)，它被外壳的 padding+图标内缩，
+// 导致浮层比字段窄、左缩进、且 sideOffset 从 input 底边起算会压住外壳底边(遮挡)。
+const AnchorContext = createContext<RefObject<HTMLElement | null> | null>(null);
 
 const ChevronDownIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -31,6 +42,13 @@ const CheckIcon = () => (
 const ClearIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -54,13 +72,44 @@ export const comboboxInputShellVariants = cva(
   },
 );
 
+// Trigger 外壳：复用 Select.Trigger 气质（button 自身 focus-visible）；图4 范式的可见字段。
+export const comboboxTriggerVariants = cva(
+  [
+    "inline-flex w-full items-center justify-between gap-2 rounded-[var(--radius)] border border-border bg-surface text-foreground transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+    "data-[popup-open]:border-ring",
+    "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+  ],
+  {
+    variants: {
+      size: {
+        sm: "h-8 px-2.5 text-sm",
+        md: "h-10 px-3 text-sm",
+        lg: "h-12 px-3.5 text-base",
+      },
+    },
+    defaultVariants: { size: "md" },
+  },
+);
+
 export function Combobox({ children, ...props }: ComboboxProps) {
-  return <BaseCombobox.Root {...props}>{children}</BaseCombobox.Root>;
+  const anchorRef = useRef<HTMLElement>(null);
+  return (
+    <AnchorContext.Provider value={anchorRef}>
+      <BaseCombobox.Root {...props}>{children}</BaseCombobox.Root>
+    </AnchorContext.Provider>
+  );
 }
 
+// 内联自动补全：输入框本身即可见字段，直接打字过滤。外壳 span 注册为浮层锚点。
 export function ComboboxInput({ size, placeholder, invalid, clearable, className }: ComboboxInputProps) {
+  const anchorRef = useContext(AnchorContext);
   return (
-    <span className={cn(comboboxInputShellVariants({ size }), className)}>
+    <span
+      ref={anchorRef as RefObject<HTMLSpanElement> | null}
+      className={cn(comboboxInputShellVariants({ size }), className)}
+    >
       <BaseCombobox.Input
         placeholder={placeholder}
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
@@ -81,29 +130,73 @@ export function ComboboxInput({ size, placeholder, invalid, clearable, className
   );
 }
 
+// 图4 范式触发按钮：显示已选 label / placeholder + chevron；点击展开「弹层内搜索」式浮层。
+// 按钮自身注册为浮层锚点 → 浮层与按钮等宽对齐。搭配 ComboboxContent 的 searchPlaceholder 使用。
+export function ComboboxTrigger({ size, placeholder, invalid, className }: ComboboxTriggerProps) {
+  const anchorRef = useContext(AnchorContext);
+  return (
+    <BaseCombobox.Trigger
+      ref={anchorRef as RefObject<HTMLButtonElement> | null}
+      {...(invalid && { "data-invalid": "", "aria-invalid": true })}
+      className={cn(comboboxTriggerVariants({ size }), className)}
+    >
+      <BaseCombobox.Value>
+        {(value: ComboboxItemData | null) => (
+          <span className={cn("truncate", value == null && "text-muted")}>{value?.label ?? placeholder}</span>
+        )}
+      </BaseCombobox.Value>
+      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted transition-transform data-[popup-open]:rotate-180">
+        <ChevronDownIcon />
+      </BaseCombobox.Icon>
+    </BaseCombobox.Trigger>
+  );
+}
+
 export function ComboboxContent({
   children,
   emptyMessage = "无匹配项",
+  searchPlaceholder,
   side = "bottom",
   align = "start",
   sideOffset = 6,
   className,
 }: ComboboxContentProps) {
+  const anchorRef = useContext(AnchorContext);
   return (
     <BaseCombobox.Portal>
-      <BaseCombobox.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
+      <BaseCombobox.Positioner
+        anchor={anchorRef ?? undefined}
+        side={side}
+        align={align}
+        sideOffset={sideOffset}
+        className="z-50"
+      >
         <BaseCombobox.Popup
           className={cn(
-            "max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] overflow-y-auto rounded-[var(--radius)] border border-border bg-surface p-1 text-foreground shadow-xl outline-none",
-            "transition-[opacity,transform] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+            "flex max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] flex-col rounded-[var(--radius)] border border-border bg-surface p-1 text-foreground shadow-xl outline-none",
+            "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
           style={overlayTransition}
         >
-          <BaseCombobox.Empty className="px-2 py-6 text-center text-sm text-muted">
+          {/* 弹层内搜索框(图4 范式)：图标 + Base UI Input；Base UI 自动在打开时聚焦并接管过滤。 */}
+          {searchPlaceholder != null && (
+            <span className="mb-1 flex h-9 shrink-0 items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-surface px-2.5 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-bg">
+              <span className="flex shrink-0 items-center text-muted">
+                <SearchIcon />
+              </span>
+              <BaseCombobox.Input
+                placeholder={searchPlaceholder}
+                className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+              />
+            </span>
+          )}
+          {/* Base UI 的 Empty 始终渲染 <div role=status>(aria-live 播报用)，有匹配项时 children=null。
+              empty:py-0 让它在为空时塌缩高度，避免弹层顶部留白；保留在 DOM 不破坏 a11y。 */}
+          <BaseCombobox.Empty className="shrink-0 px-2 py-6 text-center text-sm text-muted empty:py-0">
             {emptyMessage}
           </BaseCombobox.Empty>
-          <BaseCombobox.List>{children}</BaseCombobox.List>
+          <BaseCombobox.List className="overflow-y-auto">{children}</BaseCombobox.List>
         </BaseCombobox.Popup>
       </BaseCombobox.Positioner>
     </BaseCombobox.Portal>

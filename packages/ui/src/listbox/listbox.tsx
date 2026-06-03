@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState, type KeyboardEvent } from "react";
-import { Check } from "lucide-react";
+import { Check } from "../_icons";
 import { cn } from "../lib/cn";
 import type { ListboxProps, ListboxItemData } from "./listbox.types";
 

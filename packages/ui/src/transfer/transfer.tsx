@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "../_icons";
 import { cn } from "../lib/cn";
 import { Listbox } from "../listbox/listbox";
 import type { ListboxItemData } from "../listbox/listbox.types";

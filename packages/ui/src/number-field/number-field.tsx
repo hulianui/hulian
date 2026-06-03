@@ -1,13 +1,15 @@
 "use client";
 import { NumberField as BaseNumberField } from "@base-ui-components/react/number-field";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "../_icons";
 import { cn } from "../lib/cn";
 import type { NumberFieldProps } from "./number-field.types";
 
 // 外壳复刻 Input 家风（focus-within ring）；±按钮居两侧；Input 居中 tabular-nums。
 // 键盘 ↑↓/PageUp/Down/Home/End + 到达 min/max 时按钮自动禁用，全由 Base UI 兜底。
+// select-none：±按钮内是 SVG 图标无文本，双击/连点时浏览器会把选区蔓延到附近整块(整个 Playground)，故禁选。
+// Input 不加，保留数字可选。
 const btnClass =
-  "inline-flex size-9 shrink-0 items-center justify-center text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
+  "inline-flex size-9 shrink-0 select-none items-center justify-center text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
 
 export function NumberField({ className, "aria-label": ariaLabel, onValueChange, ...props }: NumberFieldProps) {
   return (

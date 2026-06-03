@@ -25,8 +25,13 @@ export function WordRotate({ words, duration = 2500, className, ...props }: Word
         transition: { duration: 0.25, ease: "easeOut" as const },
       };
 
+  // 内联用法对齐坑：inline-block + overflow-hidden 会把盒子「基线」改成下边缘，
+  // 默认 vertical-align:baseline 于是把该下边缘对到相邻文字基线 →「更稳」被顶高错位，
+  // 叠加 py-1 底部内边距再加重偏移。改用 align-bottom 让盒底对齐行盒底部
+  //（轮换词与相邻文字同字号 → 行盒一致 → 字形底对底即视觉对齐），并去掉 py-1。
+  // overflow-hidden 仍按行盒裁切进/出场的 y 位移，无需额外 padding。
   return (
-    <span className="inline-block overflow-hidden py-1">
+    <span className="inline-block overflow-hidden align-bottom">
       <AnimatePresence mode="wait">
         <motion.span
           key={words[index]}

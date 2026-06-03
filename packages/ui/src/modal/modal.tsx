@@ -1,7 +1,7 @@
 "use client";
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
 import { useState, useSyncExternalStore } from "react";
-import { CircleCheck, CircleHelp, CircleX, Info, TriangleAlert } from "lucide-react";
+import { CircleCheck, CircleHelp, CircleX, Info, TriangleAlert } from "../_icons";
 import { Button } from "../button/button";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";

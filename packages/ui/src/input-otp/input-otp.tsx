@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, type KeyboardEvent, type ClipboardEvent, type ChangeEvent } from "react";
+import { Fragment, useRef, useState, type KeyboardEvent, type ClipboardEvent, type ChangeEvent } from "react";
 import { cn } from "../lib/cn";
 import type { InputOTPProps } from "./input-otp.types";
 
@@ -84,30 +84,33 @@ export function InputOTP({
   return (
     <div role="group" aria-label={ariaLabel} className={cn("inline-flex items-center gap-2", className)}>
       {chars.map((ch, i) => (
-        <input
-          key={i}
-          ref={(el) => {
-            refs.current[i] = el;
-          }}
-          type="text"
-          inputMode={type === "numeric" ? "numeric" : "text"}
-          autoComplete={i === 0 ? "one-time-code" : "off"}
-          maxLength={1}
-          disabled={disabled}
-          aria-invalid={invalid || undefined}
-          value={ch}
-          onChange={(e) => onInput(i, e)}
-          onKeyDown={(e) => onKeyDown(i, e)}
-          onPaste={(e) => onPaste(i, e)}
-          onFocus={(e) => e.target.select()}
-          className={cn(
-            "size-10 rounded-[var(--radius)] border bg-surface text-center font-mono text-base text-foreground outline-none transition-colors",
-            "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring",
-            invalid ? "border-danger" : "border-border",
-            disabled && "cursor-not-allowed opacity-50",
-            groupGap && i === Math.floor(length / 2) && "ml-3",
+        <Fragment key={i}>
+          {groupGap && i === Math.floor(length / 2) && (
+            <span aria-hidden="true" className="mx-1 h-0.5 w-3 rounded-full bg-border" />
           )}
-        />
+          <input
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            type="text"
+            inputMode={type === "numeric" ? "numeric" : "text"}
+            autoComplete={i === 0 ? "one-time-code" : "off"}
+            maxLength={1}
+            disabled={disabled}
+            aria-invalid={invalid || undefined}
+            value={ch}
+            onChange={(e) => onInput(i, e)}
+            onKeyDown={(e) => onKeyDown(i, e)}
+            onPaste={(e) => onPaste(i, e)}
+            onFocus={(e) => e.target.select()}
+            className={cn(
+              "size-10 rounded-[var(--radius)] border bg-surface text-center font-mono text-base text-foreground outline-none transition-colors",
+              "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring",
+              invalid ? "border-danger" : "border-border",
+              disabled && "cursor-not-allowed opacity-50",
+            )}
+          />
+        </Fragment>
       ))}
     </div>
   );

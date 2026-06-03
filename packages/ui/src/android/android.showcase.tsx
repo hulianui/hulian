@@ -1,5 +1,6 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Android } from "./android";
+import type { AndroidModel } from "./android.types";
 
 function Screen() {
   return (
@@ -11,21 +12,45 @@ function Screen() {
 }
 
 export const androidShowcase: ShowcaseSpec = {
-  controls: [{ prop: "width", type: "number", defaultValue: 240 }],
+  controls: [
+    {
+      prop: "model",
+      type: "select",
+      options: ["pixel-9-pro-xl", "pixel-9-pro", "pixel-9", "galaxy-s24-ultra", "galaxy-s24"],
+      defaultValue: "pixel-9-pro",
+      label: "机型",
+    },
+  ],
   states: [
     {
-      name: "default（打孔摄像头手机外壳）",
+      name: "Pixel 9 Pro（默认）",
       render: () => (
-        <Android width={220}>
+        <Android model="pixel-9-pro">
+          <Screen />
+        </Android>
+      ),
+    },
+    {
+      name: "Galaxy S24 Ultra（最大）",
+      render: () => (
+        <Android model="galaxy-s24-ultra">
+          <Screen />
+        </Android>
+      ),
+    },
+    {
+      name: "Galaxy S24（最小）",
+      render: () => (
+        <Android model="galaxy-s24">
           <Screen />
         </Android>
       ),
     },
   ],
   renderWithProps: (p) => (
-    <Android width={p.width as number}>
+    <Android model={p.model as AndroidModel}>
       <Screen />
     </Android>
   ),
-  toCode: (p) => `<Android width={${p.width}}>\n  <img src="/app.png" />\n</Android>`,
+  toCode: (p) => `<Android model="${p.model}">\n  <img src="/app.png" />\n</Android>`,
 };

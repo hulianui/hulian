@@ -9,6 +9,8 @@ export interface WorldMapPoint {
 export interface WorldMapDot {
   start: WorldMapPoint;
   end: WorldMapPoint;
+  /** 该条连线（及其两端点）的颜色，不传则用全局 lineColor。同组件内可逐条配色。 */
+  color?: string;
 }
 
 export interface WorldMapProps {

@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp } from "../_icons";
 import { cn } from "../lib/cn";
 import type { BackTopProps } from "./back-top.types";
 

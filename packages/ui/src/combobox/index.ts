@@ -1,7 +1,8 @@
-export { Combobox, ComboboxInput, ComboboxContent, ComboboxItem } from "./combobox";
+export { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem } from "./combobox";
 export type {
   ComboboxProps,
   ComboboxInputProps,
+  ComboboxTriggerProps,
   ComboboxContentProps,
   ComboboxItemProps,
   ComboboxItemData,

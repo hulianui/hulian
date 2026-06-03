@@ -10,7 +10,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useReducedMotion } from "motion/react";
-import { X } from "lucide-react";
+import { X } from "../_icons";
 import { cn } from "../lib/cn";
 import { Button } from "../button";
 import { motionDurationCss, motionEaseCss } from "../motion";

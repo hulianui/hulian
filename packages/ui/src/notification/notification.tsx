@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { CircleCheck, CircleX, Info, TriangleAlert } from "lucide-react";
+import { CircleCheck, CircleX, Info, TriangleAlert } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDuration, motionDurationCss, motionEaseCss } from "../motion";
 import type {

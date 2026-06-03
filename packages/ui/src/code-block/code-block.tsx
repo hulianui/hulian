@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
 import type { CodeBlockProps } from "./code-block.types";
 

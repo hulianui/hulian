@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 import dayjs, { type Dayjs } from "dayjs";
-import { Calendar, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, X } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DateRangePickerProps, DateRangePreset, DateRangeValue } from "./date-range-picker.types";

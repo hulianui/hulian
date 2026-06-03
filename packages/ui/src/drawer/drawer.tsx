@@ -7,16 +7,16 @@ import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DrawerContentProps } from "./drawer.types";
 
 // 同 dialog.tsx：overlay 自管 mount/unmount，用 motion token CSS 镜像驱动原生过渡，零 motion 运行时。
+// transition 简写(而非长写)：Base UI 过渡期会往内联 style 注入 transition 简写，与长写混用 →
+// React "shorthand/longhand 混用" 警告并丢弃长写。简写同时覆盖 transform(panel 滑动)+opacity(backdrop 淡入)。
 const overlayTransition = {
-  transitionDuration: motionDurationCss.base,
-  transitionTimingFunction: motionEaseCss.out,
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
 // side 决定贴边定位 + 尺寸 + 内边框 + 关闭态 translate（落在 starting/ending-style → 滑入/滑出）。
 export const drawerVariants = cva(
   [
     "fixed z-50 flex flex-col gap-1 bg-surface border-border p-6 text-foreground shadow-xl outline-none",
-    "transition-transform",
   ],
   {
     variants: {
@@ -50,7 +50,7 @@ export function DrawerContent({
   return (
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
         style={overlayTransition}
       />
       <BaseDialog.Popup className={cn(drawerVariants({ side }), className)} style={overlayTransition}>

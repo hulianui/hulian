@@ -43,4 +43,29 @@ describe("WorldMap", () => {
     const { container } = render(<WorldMap dots={dots} />);
     expect(container.querySelector("linearGradient")).toBeTruthy();
   });
+
+  it("逐条 color：不同色各生成一条渐变，端点吃各自色", () => {
+    const sh = { lat: 31.2, lng: 121.5 };
+    const dots = [
+      { start: sh, end: { lat: 51.5, lng: -0.1 }, color: "var(--color-chart-1)" },
+      { start: sh, end: { lat: -33.9, lng: 151.2 }, color: "var(--color-chart-2)" },
+    ];
+    const { container } = render(<WorldMap dots={dots} />);
+    // 两种不同颜色 → 两条渐变
+    expect(container.querySelectorAll("linearGradient").length).toBe(2);
+    // 终点端点用各自连线色（伦敦=chart-1，悉尼=chart-2）
+    const byFill = (c: string) =>
+      [...container.querySelectorAll("circle")].filter((el) => el.getAttribute("fill") === c).length;
+    expect(byFill("var(--color-chart-2)")).toBeGreaterThan(0);
+  });
+
+  it("同色复用一条渐变（去重）", () => {
+    const sh = { lat: 31.2, lng: 121.5 };
+    const dots = [
+      { start: sh, end: { lat: 51.5, lng: -0.1 }, color: "var(--color-chart-1)" },
+      { start: sh, end: { lat: -33.9, lng: 151.2 }, color: "var(--color-chart-1)" },
+    ];
+    const { container } = render(<WorldMap dots={dots} />);
+    expect(container.querySelectorAll("linearGradient").length).toBe(1);
+  });
 });

@@ -11,11 +11,17 @@ describe("IPhone", () => {
     // 灵动岛
     expect(root.querySelector(".rounded-full")).not.toBeNull();
   });
-  it("width 落 style + 9/19.5 比例", () => {
+  it("width 落 style + 机身 9/18.5 比例", () => {
     const { container } = render(<IPhone width={320} />);
     const root = container.firstElementChild as HTMLElement;
     expect(root.style.width).toBe("320px");
-    expect(root.style.aspectRatio).toBe("9 / 19.5");
+    expect(root.style.aspectRatio).toBe("9 / 18.5");
+  });
+  it("model 预设决定宽度；width 显式传入时优先", () => {
+    const preset = render(<IPhone model="13-mini" />);
+    expect((preset.container.firstElementChild as HTMLElement).style.width).toBe("270px");
+    const override = render(<IPhone model="13-mini" width={400} />);
+    expect((override.container.firstElementChild as HTMLElement).style.width).toBe("400px");
   });
   it("imageSrc 优先渲染 img；否则 children", () => {
     const withImg = render(<IPhone imageSrc="/s.png" />);

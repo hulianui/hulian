@@ -7,9 +7,10 @@ import { motionDurationCss, motionEaseCss } from "../motion";
 import type { MenuContentProps, MenuItemProps } from "./menu.types";
 
 // overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（与 Dialog/Popover 同手感）。
+// transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 过渡期会往内联 style 注入
+// transition 简写，与长写混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。
 const overlayTransition = {
-  transitionDuration: motionDurationCss.base,
-  transitionTimingFunction: motionEaseCss.out,
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
 export function Menu(props: ComponentProps<typeof BaseMenu.Root>) {
@@ -32,7 +33,7 @@ export function MenuContent({
         <BaseMenu.Popup
           className={cn(
             "min-w-[8rem] rounded-[var(--radius)] border border-border bg-surface p-1 text-foreground shadow-xl outline-none",
-            "transition-[opacity,transform] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+            "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
           style={overlayTransition}

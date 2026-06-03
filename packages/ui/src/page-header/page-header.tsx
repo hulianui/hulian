@@ -2,7 +2,7 @@
 // 纯皮肤布局件、只消费语义 token，dogfood 复用瑚琏 Breadcrumb/Button/Separator。
 // 无 "use client"：本体无 hook/无浏览器 API → 可 RSC；返回按钮的 onClick 由 onBack 守卫，
 // 仅在传入 onBack（消费侧必为 client）时渲染，server 用法下不产出事件处理器（同 Breadcrumb 纯皮肤范式）。
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "../_icons";
 import { Button } from "../button";
 import { Separator } from "../separator";
 import { cn } from "../lib/cn";

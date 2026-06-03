@@ -1,5 +1,5 @@
 import { cva } from "class-variance-authority";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink } from "../_icons";
 import { cn } from "../lib/cn";
 import type { LinkProps } from "./link.types";
 
