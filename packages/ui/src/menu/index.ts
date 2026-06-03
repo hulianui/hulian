@@ -9,4 +9,3 @@ export {
   menuItemVariants,
 } from "./menu";
 export type { MenuContentProps, MenuItemProps } from "./menu.types";
-export { menuShowcase } from "./menu.showcase";

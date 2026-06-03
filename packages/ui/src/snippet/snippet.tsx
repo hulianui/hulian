@@ -2,12 +2,15 @@
 import { useState } from "react";
 import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
+import { HighlightedCode } from "../code-block/highlighted-code";
 import type { SnippetProps } from "./snippet.types";
 
 // 可复制命令/代码片段（含剪贴板交互故 "use client"）。复制成功反馈 1.5s 切回。
-export function Snippet({ children, text, symbol = "$", className }: SnippetProps) {
+// children 为字符串时默认语法着色（命令多为纯色，JS 片段会着色）；非字符串原样渲染。
+export function Snippet({ children, text, symbol = "$", lang, highlight = true, className }: SnippetProps) {
   const [copied, setCopied] = useState(false);
   const copyText = text ?? (typeof children === "string" ? children : "");
+  const colorable = highlight && typeof children === "string";
 
   const onCopy = () => {
     void navigator.clipboard?.writeText(copyText);
@@ -23,7 +26,9 @@ export function Snippet({ children, text, symbol = "$", className }: SnippetProp
       )}
     >
       {symbol != null && <span className="select-none text-muted">{symbol}</span>}
-      <code className="text-foreground">{children}</code>
+      <code className="text-foreground">
+        {colorable ? <HighlightedCode code={children as string} lang={lang} /> : children}
+      </code>
       <button
         type="button"
         onClick={onCopy}

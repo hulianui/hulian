@@ -14,4 +14,3 @@ export type {
   NavigationMenuContentProps,
   NavigationMenuLinkProps,
 } from "./navigation-menu.types";
-export { navigationMenuShowcase } from "./navigation-menu.showcase";

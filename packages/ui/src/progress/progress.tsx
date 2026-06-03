@@ -1,7 +1,7 @@
 "use client";
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEase, motionEaseCss } from "../motion";
+import { motionDurationCss, motionEase, motionEaseCss, LazyMotionProvider, m } from "../motion";
 import type { ProgressProps } from "./progress.types";
 
 // value/max → 0..100；indeterminate(undefined/NaN) → null（不定态）
@@ -64,7 +64,8 @@ export function Progress({
         className={cn("relative inline-flex items-center justify-center", className)}
         {...rest}
       >
-        <motion.svg
+        <LazyMotionProvider>
+        <m.svg
           width={size}
           height={size}
           animate={spin ? { rotate: 360 } : undefined}
@@ -91,7 +92,8 @@ export function Progress({
             className={strokeByTone[tone]}
             style={{ transitionProperty: "stroke-dashoffset", ...fillTransition }}
           />
-        </motion.svg>
+        </m.svg>
+        </LazyMotionProvider>
         {showValue && !indeterminate && (
           <span className="absolute text-xs font-medium tabular-nums text-foreground">
             {`${Math.round(pct as number)}%`}
@@ -106,14 +108,16 @@ export function Progress({
     <div {...aria} className={cn("flex items-center gap-3", className)} {...rest}>
       <div className="relative h-2 w-full overflow-hidden rounded-full bg-surface-hover">
         {indeterminate ? (
-          <motion.div
-            className={cn("absolute inset-y-0 w-1/3 rounded-full", barByTone[tone])}
-            style={reduce ? { left: "33%" } : undefined}
-            animate={reduce ? undefined : { x: ["-110%", "320%"] }}
-            transition={
-              reduce ? undefined : { repeat: Infinity, duration: LOOP, ease: motionEase.inOut }
-            }
-          />
+          <LazyMotionProvider>
+            <m.div
+              className={cn("absolute inset-y-0 w-1/3 rounded-full", barByTone[tone])}
+              style={reduce ? { left: "33%" } : undefined}
+              animate={reduce ? undefined : { x: ["-110%", "320%"] }}
+              transition={
+                reduce ? undefined : { repeat: Infinity, duration: LOOP, ease: motionEase.inOut }
+              }
+            />
+          </LazyMotionProvider>
         ) : (
           <div
             className={cn("h-full rounded-full", barByTone[tone])}

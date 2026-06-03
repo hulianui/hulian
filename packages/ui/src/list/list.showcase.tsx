@@ -23,7 +23,7 @@ const PEOPLE: Person[] = [
 
 function PersonItem({ p }: { p: Person }) {
   return (
-    <ListItem actions={[<Button key="e" variant="ghost" size="sm">编辑</Button>, <a key="m" className="text-primary">详情</a>]}>
+    <ListItem actions={[<Button key="e" variant="ghost" size="sm">编辑</Button>, <a key="m" className="cursor-pointer text-primary hover:underline">详情</a>]}>
       <ListItem.Meta
         avatar={<Avatar fallback={p.initials} />}
         title={p.name}

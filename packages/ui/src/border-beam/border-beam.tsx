@@ -1,6 +1,7 @@
 "use client";
-import { motion, type MotionStyle } from "motion/react";
+import { type MotionStyle } from "motion/react";
 import type { CSSProperties } from "react";
+import { LazyMotionProvider, m } from "../motion";
 import { cn } from "../lib/cn";
 import type { BorderBeamProps } from "./border-beam.types";
 
@@ -30,7 +31,8 @@ export function BorderBeam({
         WebkitMaskComposite: "source-in",
       } as CSSProperties}
     >
-      <motion.div
+      <LazyMotionProvider>
+      <m.div
         className={cn(
           "absolute aspect-square bg-gradient-to-l from-[var(--hulian-beam-from)] via-[var(--hulian-beam-to)] to-transparent",
           className,
@@ -52,6 +54,7 @@ export function BorderBeam({
         }}
         transition={{ repeat: Infinity, ease: "linear", duration, delay: -delay }}
       />
+      </LazyMotionProvider>
     </div>
   );
 }

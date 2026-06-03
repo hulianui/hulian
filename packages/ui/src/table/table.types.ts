@@ -52,6 +52,8 @@ export interface TableProps<TData> {
   onSortingChange?: OnChangeFn<SortingState>;
   /** 默认 true：偶数行斑马纹 */
   striped?: boolean;
+  /** 行密度：default 宽松 / middle 中等 / compact 紧凑（仅调单元格内边距，默认 default）。 */
+  density?: "default" | "middle" | "compact";
   /** 行稳定 key；默认按行 index */
   getRowId?: (row: TData, index: number) => string;
   className?: string;

@@ -4,4 +4,3 @@ export type {
   CollapsibleTriggerProps,
   CollapsiblePanelProps,
 } from "./collapsible.types";
-export { collapsibleShowcase } from "./collapsible.showcase";

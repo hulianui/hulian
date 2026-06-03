@@ -40,7 +40,7 @@ export function Meteors({
           style={style}
           className={cn(
             "pointer-events-none absolute size-0.5 rounded-full bg-current text-muted shadow-[0_0_0_1px_rgba(255,255,255,0.1)]",
-            "rotate-[var(--hulian-meteor-angle)] [animation:hulian-meteor_linear_infinite] motion-reduce:hidden",
+            "rotate-[var(--hulian-meteor-angle)] [animation:hulian-meteor_linear_infinite_backwards] motion-reduce:hidden",
             className,
           )}
         >

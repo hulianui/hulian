@@ -18,6 +18,18 @@ export interface ToolbarButtonProps {
   "aria-label"?: string;
 }
 
+export interface ToolbarToggleProps {
+  /** 受控选中态（按下=开）。 */
+  pressed?: boolean;
+  /** 非受控初始选中态，默认 false。 */
+  defaultPressed?: boolean;
+  onPressedChange?: (pressed: boolean) => void;
+  disabled?: boolean;
+  className?: string;
+  children?: ReactNode;
+  "aria-label"?: string;
+}
+
 export interface ToolbarGroupProps {
   disabled?: boolean;
   className?: string;

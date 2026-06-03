@@ -2,11 +2,13 @@
 import { useState } from "react";
 import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
+import { HighlightedCode } from "./highlighted-code";
 import type { CodeBlockProps } from "./code-block.types";
 
 // 多行代码块（区别于行内 Code、单行命令 Snippet）：<pre> 容器 + 右上角复制按钮 + 可选语言标签。
 // 含剪贴板交互故 "use client"；复制成功反馈 1.5s 切回。皮肤走语义 token。
-export function CodeBlock({ code, lang, copyable = true, className }: CodeBlockProps) {
+// 语法着色由零依赖 tokenizeCode 产出 token 列表，逐段套 <span>（见 code-highlight.ts）。
+export function CodeBlock({ code, lang, copyable = true, highlight = true, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const onCopy = () => {
@@ -39,7 +41,9 @@ export function CodeBlock({ code, lang, copyable = true, className }: CodeBlockP
         </button>
       )}
       <pre className={cn("overflow-auto p-4 text-sm leading-relaxed", lang != null && "pt-8")}>
-        <code className="font-mono text-foreground">{code}</code>
+        <code className="font-mono text-foreground">
+          {highlight ? <HighlightedCode code={code} lang={lang} /> : code}
+        </code>
       </pre>
     </div>
   );

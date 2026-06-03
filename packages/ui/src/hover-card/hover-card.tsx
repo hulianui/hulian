@@ -82,6 +82,11 @@ export function HoverCardContent({
     <BasePopover.Portal>
       <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
         <BasePopover.Popup
+          // hover 卡片是非交互信息卡，绝不能抢焦点：否则「开→popup 抢焦点→触发器 onBlur 关
+          // →Popover 关闭还原焦点回触发器→onFocus 又开」无限乒乓闪烁。initialFocus=false 开时不夺焦、
+          // finalFocus=false 关时不还原 → 焦点始终留在触发器，与 Tooltip 同款焦点语义。
+          initialFocus={false}
+          finalFocus={false}
           onMouseEnter={ctx?.open}
           onMouseLeave={ctx?.close}
           className={cn(

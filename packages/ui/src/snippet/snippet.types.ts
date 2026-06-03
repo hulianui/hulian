@@ -7,5 +7,9 @@ export interface SnippetProps {
   text?: string;
   /** 命令提示符（默认 "$"；传 null 不显示，适合代码片段）。 */
   symbol?: string | null;
+  /** 语法着色用的语言（如 "tsx"/"bash"）。仅当 children 为字符串时生效。 */
+  lang?: string;
+  /** 是否语法着色（默认 true，仅 children 为字符串时生效）。命令多为纯色，JS 片段会着色。 */
+  highlight?: boolean;
   className?: string;
 }

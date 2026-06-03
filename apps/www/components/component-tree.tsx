@@ -1,42 +1,140 @@
 "use client";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { manifest, CATEGORIES } from "../lib/manifest";
+import { Search, ChevronRight, Sparkles } from "lucide-react";
+import { Input } from "@hulian/ui";
+import { manifest, CATEGORIES, type CategoryKey } from "../lib/manifest";
+
+const nameCn = (description: string) => description.split(" · ")[0];
 
 export function ComponentTree() {
   const pathname = usePathname();
+  const activeSlug = pathname.startsWith("/components/") ? pathname.slice("/components/".length) : "";
+  const activeCat = useMemo<CategoryKey | undefined>(
+    () => manifest.find((m) => m.slug === activeSlug)?.category,
+    [activeSlug],
+  );
+
+  const [query, setQuery] = useState("");
+  const [animatedOnly, setAnimatedOnly] = useState(false);
+  // 折叠态：默认只展开「当前所在大类」，其余收起 → 落地页滚动从 142 行降到个位数。
+  const [openCats, setOpenCats] = useState<Set<CategoryKey>>(() =>
+    activeCat ? new Set([activeCat]) : new Set(),
+  );
+
+  // 跨大类跳转时，自动展开新落点所在大类（不动用户手动展开的其它组）。
+  useEffect(() => {
+    if (activeCat) setOpenCats((prev) => (prev.has(activeCat) ? prev : new Set(prev).add(activeCat)));
+  }, [activeCat]);
+
+  const q = query.trim().toLowerCase();
+  const filtering = q !== "" || animatedOnly;
+  const matches = (m: (typeof manifest)[number]) =>
+    (!animatedOnly || m.tags?.includes("animated")) &&
+    (!q || m.name.toLowerCase().includes(q) || nameCn(m.description).includes(q) || m.slug.includes(q));
+
+  // 大类 → 命中的小类分组（空组/空大类直接剔除）
+  const tree = CATEGORIES.map((cat) => {
+    const groups = cat.groups
+      .map((g) => ({
+        ...g,
+        items: manifest.filter((m) => m.category === cat.key && m.group === g.key && matches(m)),
+      }))
+      .filter((g) => g.items.length > 0);
+    const count = groups.reduce((n, g) => n + g.items.length, 0);
+    return { cat, groups, count };
+  }).filter((t) => t.count > 0);
+
+  const toggle = (key: CategoryKey) =>
+    setOpenCats((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+
   return (
-    <nav className="space-y-6">
-      {CATEGORIES.map((cat) => {
-        const items = manifest.filter((m) => m.category === cat.key);
-        if (items.length === 0) return null;
+    <nav className="space-y-3">
+      {/* 搜索 + 过滤：解决「我知道要哪个」的滚动 —— 输名直达，跨分组筛动效 */}
+      <div className="space-y-2">
+        <Input
+          size="sm"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="搜索组件…"
+          aria-label="搜索组件"
+          prefix={<Search className="size-3.5" aria-hidden />}
+        />
+        <button
+          type="button"
+          onClick={() => setAnimatedOnly((v) => !v)}
+          aria-pressed={animatedOnly}
+          className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-colors ${
+            animatedOnly
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-muted hover:bg-surface-hover hover:text-foreground"
+          }`}
+        >
+          <Sparkles className="size-3" aria-hidden />
+          动效
+        </button>
+      </div>
+
+      {tree.length === 0 && <p className="px-2 py-6 text-sm text-muted">无匹配组件</p>}
+
+      {tree.map(({ cat, groups, count }) => {
+        const open = filtering || openCats.has(cat.key);
         return (
           <div key={cat.key}>
-            <h3 className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-muted">
-              {cat.label}
-            </h3>
-            <ul className="space-y-0.5">
-              {items.map((m) => {
-                const href = `/components/${m.slug}`;
-                const active = pathname === href;
-                const nameCn = m.description.split(" · ")[0];
-                return (
-                  <li key={m.slug}>
-                    <Link
-                      href={href}
-                      className={`flex items-center justify-between gap-2 rounded-[var(--radius)] px-2 py-1.5 text-sm transition-colors ${
-                        active
-                          ? "bg-surface-hover font-medium text-foreground"
-                          : "text-muted hover:bg-surface-hover hover:text-foreground"
-                      }`}
-                    >
-                      <span>{nameCn}</span>
-                      <span className="shrink-0 text-xs text-muted/70">{m.name}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            <button
+              type="button"
+              onClick={() => toggle(cat.key)}
+              aria-expanded={open}
+              className="flex w-full items-center gap-1.5 rounded-[var(--radius)] px-2 py-1.5 text-xs font-medium uppercase tracking-wide text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+            >
+              <ChevronRight
+                className={`size-3.5 shrink-0 transition-transform ${open ? "rotate-90" : ""}`}
+                aria-hidden
+              />
+              <span>{cat.label}</span>
+              <span className="ml-auto tabular-nums text-muted/60">{count}</span>
+            </button>
+
+            {open && (
+              <div className="mt-1 space-y-2">
+                {groups.map((g) => (
+                  <div key={g.key}>
+                    <h4 className="px-2 pb-0.5 pl-7 text-[11px] font-medium text-muted/60">{g.label}</h4>
+                    <ul className="space-y-0.5">
+                      {g.items.map((m) => {
+                        const href = `/components/${m.slug}`;
+                        const active = pathname === href;
+                        return (
+                          <li key={m.slug}>
+                            <Link
+                              href={href}
+                              className={`flex items-center gap-2 rounded-[var(--radius)] py-1.5 pl-7 pr-2 text-sm transition-colors ${
+                                active
+                                  ? "bg-surface-hover font-medium text-foreground"
+                                  : "text-muted hover:bg-surface-hover hover:text-foreground"
+                              }`}
+                            >
+                              <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
+                                {nameCn(m.description)}
+                                {m.tags?.includes("animated") && (
+                                  <Sparkles className="size-3 shrink-0 text-primary/60" aria-label="动效" />
+                                )}
+                              </span>
+                              <span className="ml-auto min-w-0 truncate text-xs text-muted/70">{m.name}</span>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
       })}

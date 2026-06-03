@@ -5,4 +5,3 @@ export type {
   TimelineMode,
   TimelineDotColor,
 } from "./timeline.types";
-export { timelineShowcase } from "./timeline.showcase";

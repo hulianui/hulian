@@ -1,4 +1,10 @@
-export { AreaChart, BarChart } from "./chart";
+export { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart } from "./chart";
 export { chartColor } from "./chart-theme";
-export type { ChartProps, ChartSeries } from "./chart.types";
-export { chartShowcase } from "./chart.showcase";
+export type {
+  ChartProps,
+  BarChartProps,
+  ChartSeries,
+  ChartDatum,
+  PieChartProps,
+  RadialChartProps,
+} from "./chart.types";

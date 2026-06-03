@@ -5,4 +5,3 @@ export type {
   AccordionTriggerProps,
   AccordionPanelProps,
 } from "./accordion.types";
-export { accordionShowcase } from "./accordion.showcase";

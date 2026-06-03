@@ -15,5 +15,8 @@ export interface TerminalProps {
   lineDelay?: number;
   /** 标题栏文字。 */
   title?: string;
+  /** 命令行/输出行语法着色（命令名/--flag/URL/数字/引号串走 --code-* token）。默认 true；
+   *  仅对 text 为字符串的 command/muted 行生效，success 等整行 tone 色不拆。 */
+  highlight?: boolean;
   className?: string;
 }

@@ -8,4 +8,3 @@ export type {
   ComboboxItemData,
   ComboboxSize,
 } from "./combobox.types";
-export { comboboxShowcase } from "./combobox.showcase";

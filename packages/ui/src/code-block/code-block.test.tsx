@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { CodeBlock } from "./code-block";
+import { tokenizeCode } from "./code-highlight";
 
 const writeText = vi.fn().mockResolvedValue(undefined);
 beforeEach(() => {
@@ -9,10 +10,19 @@ beforeEach(() => {
 });
 
 describe("CodeBlock", () => {
-  it("渲染代码文本于 <pre><code>", () => {
-    const { container, getByText } = render(<CodeBlock code="const x = 1" />);
-    expect(container.querySelector("pre code")).toBeTruthy();
-    expect(getByText("const x = 1")).toBeTruthy();
+  it("渲染代码文本于 <pre><code>（着色切分后 textContent 仍为原文）", () => {
+    const { container } = render(<CodeBlock code="const x = 1" />);
+    const code = container.querySelector("pre code");
+    expect(code).toBeTruthy();
+    expect(code!.textContent).toBe("const x = 1");
+  });
+
+  it("highlight 切分出着色 span，关掉则纯文本", () => {
+    const { container, rerender } = render(<CodeBlock code="const x = 1" copyable={false} />);
+    expect(container.querySelectorAll("pre code span").length).toBeGreaterThan(0);
+    rerender(<CodeBlock code="const x = 1" copyable={false} highlight={false} />);
+    expect(container.querySelectorAll("pre code span").length).toBe(0);
+    expect(container.querySelector("pre code")!.textContent).toBe("const x = 1");
   });
 
   it("默认渲染复制按钮，点击调用 clipboard.writeText(code)", () => {
@@ -40,5 +50,42 @@ describe("CodeBlock", () => {
   it("透传 className 到外壳", () => {
     const { container } = render(<CodeBlock code="x" className="my-cb" />);
     expect(container.firstElementChild!.classList.contains("my-cb")).toBe(true);
+  });
+});
+
+describe("tokenizeCode", () => {
+  const typesOf = (code: string, lang?: string) =>
+    Object.fromEntries(
+      tokenizeCode(code, lang)
+        .filter((t) => t.type !== "plain")
+        .map((t) => [t.value, t.type]),
+    );
+
+  it("拼接所有 token 还原原文（无丢字）", () => {
+    const code = `import { x } from "y"; // 注释\nconst n = 1.8;`;
+    expect(tokenizeCode(code).map((t) => t.value).join("")).toBe(code);
+  });
+
+  it("识别关键字 / 字符串 / 注释 / 数字 / JSX 标签 / 属性", () => {
+    const t = typesOf(`<Lens zoom={1.8}>{/* c */}</Lens>\nimport "a"`);
+    expect(t["<Lens"]).toBe("tag");
+    expect(t["</Lens"]).toBe("tag");
+    expect(t["zoom"]).toBe("attr");
+    expect(t["1.8"]).toBe("number");
+    expect(t["import"]).toBe("keyword");
+    expect(t['"a"']).toBe("string");
+  });
+
+  it("字符串内的关键字不被二次着色", () => {
+    const toks = tokenizeCode(`const s = "import const"`);
+    const str = toks.find((t) => t.value === '"import const"');
+    expect(str?.type).toBe("string");
+    // 字符串整体作为一个 string token，内部不再拆出 keyword
+    expect(toks.filter((t) => t.type === "keyword").map((t) => t.value)).toEqual(["const"]);
+  });
+
+  it("Shell 语言走 # 注释与 shell 关键字", () => {
+    const t = typesOf(`# 装依赖\npnpm add x`, "bash");
+    expect(t["# 装依赖"]).toBe("comment");
   });
 });

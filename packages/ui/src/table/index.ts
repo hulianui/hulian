@@ -8,4 +8,3 @@ export type {
   ExpandedState,
   ColumnFiltersState,
 } from "./table.types";
-export { tableShowcase } from "./table.showcase";

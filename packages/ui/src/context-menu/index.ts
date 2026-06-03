@@ -6,6 +6,13 @@ export {
   ContextMenuSeparator,
   ContextMenuGroup,
   ContextMenuGroupLabel,
+  ContextMenuSub,
+  ContextMenuSubTrigger,
+  ContextMenuSubContent,
 } from "./context-menu";
-export type { ContextMenuContentProps, ContextMenuItemProps } from "./context-menu.types";
-export { contextMenuShowcase } from "./context-menu.showcase";
+export type {
+  ContextMenuContentProps,
+  ContextMenuItemProps,
+  ContextMenuSubTriggerProps,
+  ContextMenuSubContentProps,
+} from "./context-menu.types";

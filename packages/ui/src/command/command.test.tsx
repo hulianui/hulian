@@ -80,17 +80,22 @@ describe("Command", () => {
     expect(screen.getByText("啥也没有")).toBeTruthy();
   });
 
-  it("初始高亮首个可用项（aria-selected）", () => {
+  it("初始无高亮（无默认高亮，无项 aria-selected）", () => {
     render(<Command open onOpenChange={noop} groups={groups} />);
     const opts = screen.getAllByRole("option");
-    expect(opts[0].getAttribute("aria-selected")).toBe("true");
+    expect(opts.every((o) => o.getAttribute("aria-selected") !== "true")).toBe(true);
+    // 无 activedescendant
+    expect(screen.getByRole("combobox").getAttribute("aria-activedescendant")).toBeNull();
   });
 
-  it("ArrowDown 下移高亮、跨组、跳过禁用项", () => {
+  it("ArrowDown 从无高亮起步落首项、下移、跨组、跳过禁用项", () => {
     render(<Command open onOpenChange={noop} groups={groups} />);
     const input = screen.getByRole("combobox");
-    fireEvent.keyDown(input, { key: "ArrowDown" }); // 0→1
+    fireEvent.keyDown(input, { key: "ArrowDown" }); // -1→0(无高亮→首项)
     let opts = screen.getAllByRole("option");
+    expect(opts[0].getAttribute("aria-selected")).toBe("true");
+    fireEvent.keyDown(input, { key: "ArrowDown" }); // 0→1
+    opts = screen.getAllByRole("option");
     expect(opts[1].getAttribute("aria-selected")).toBe("true");
     fireEvent.keyDown(input, { key: "ArrowDown" }); // 1→2(跨组到「设置」)
     opts = screen.getAllByRole("option");
@@ -98,6 +103,14 @@ describe("Command", () => {
     fireEvent.keyDown(input, { key: "ArrowDown" }); // 2→跳过禁用(3)→回绕到 0
     opts = screen.getAllByRole("option");
     expect(opts[0].getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("ArrowUp 从无高亮起步落末个可用项", () => {
+    render(<Command open onOpenChange={noop} groups={groups} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.keyDown(input, { key: "ArrowUp" }); // -1→末个可用(index2，index3 禁用)
+    const opts = screen.getAllByRole("option");
+    expect(opts[2].getAttribute("aria-selected")).toBe("true");
   });
 
   it("End/Home 跳到末/首个可用项", () => {
@@ -117,7 +130,9 @@ describe("Command", () => {
     const onOpenChange = vi.fn();
     const g: CommandGroupData[] = [{ items: [{ value: "new", label: "新建", onSelect }] }];
     render(<Command open onOpenChange={onOpenChange} groups={g} onSelectItem={onSelectItem} />);
-    fireEvent.keyDown(screen.getByRole("combobox"), { key: "Enter" });
+    const input = screen.getByRole("combobox");
+    fireEvent.keyDown(input, { key: "ArrowDown" }); // 先点亮首项（无默认高亮）
+    fireEvent.keyDown(input, { key: "Enter" });
     expect(onSelect).toHaveBeenCalledWith("new");
     expect(onSelectItem).toHaveBeenCalledWith("new");
     expect(onOpenChange).toHaveBeenCalledWith(false);
@@ -127,7 +142,9 @@ describe("Command", () => {
     const onOpenChange = vi.fn();
     const g: CommandGroupData[] = [{ items: [{ value: "new", label: "新建" }] }];
     render(<Command open onOpenChange={onOpenChange} groups={g} closeOnSelect={false} />);
-    fireEvent.keyDown(screen.getByRole("combobox"), { key: "Enter" });
+    const input = screen.getByRole("combobox");
+    fireEvent.keyDown(input, { key: "ArrowDown" }); // 先点亮首项
+    fireEvent.keyDown(input, { key: "Enter" });
     expect(onOpenChange).not.toHaveBeenCalled();
   });
 

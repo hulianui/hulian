@@ -2,34 +2,40 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
+  LayoutGrid,
+  Type,
   TextCursorInput,
   BarChart3,
-  Megaphone,
   Compass,
+  Megaphone,
   Sparkles,
   Smartphone,
   type LucideIcon,
 } from "lucide-react";
-import { AnimatedThemeToggler } from "@hulian/ui";
+import { AnimatedThemeToggler, Button } from "@hulian/ui";
 import { manifest, CATEGORIES, type CategoryKey } from "../lib/manifest";
 
 // 每个分类一枚线性图标 —— 承担导航语义，而非标题上方的装饰圆角盒
 const CATEGORY_ICON: Record<CategoryKey, LucideIcon> = {
-  inputs: TextCursorInput,
+  layout: LayoutGrid,
+  typography: Type,
+  forms: TextCursorInput,
   "data-display": BarChart3,
-  feedback: Megaphone,
   navigation: Compass,
-  effects: Sparkles,
+  feedback: Megaphone,
+  decoration: Sparkles,
   mockups: Smartphone,
 };
 
 // 一句话剧透每类装了什么（渐进式呈现，帮用户在点进去前就建立预期）
 const CATEGORY_BLURB: Record<CategoryKey, string> = {
-  inputs: "按钮 · 输入 · 选择 · 滑块",
+  layout: "容器 · 栅格 · 分栏 · 间距",
+  typography: "文本 · 标题 · 代码 · 按键",
+  forms: "按钮 · 输入 · 选择 · 日期",
   "data-display": "表格 · 图表 · 指标 · 卡片",
+  navigation: "选项卡 · 面包屑 · 分页 · 菜单",
   feedback: "对话框 · 提示 · 抽屉 · 进度",
-  navigation: "选项卡 · 面包屑 · 分页 · 步骤",
-  effects: "动效文字 · 特效按钮 · 光束背景",
+  decoration: "光束 · 背景 · 边框流光",
   mockups: "浏览器 · 手机外壳",
 };
 
@@ -74,18 +80,25 @@ export default function Home() {
           className="hl-rise mt-9 flex flex-wrap items-center gap-x-5 gap-y-3"
           style={rise(5)}
         >
-          <Link
-            href="/components"
-            className="group inline-flex h-11 items-center gap-2 rounded-[var(--radius)] bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm outline-none transition-colors hover:bg-primary-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-          >
+          {/* dogfood 自家 Button —— render 成 Next <Link>（按钮样式的链接 CTA） */}
+          <Button render={<Link href="/components" />} className="group h-11 px-5">
             浏览 {total} 个组件
             <ArrowRight
               className="size-4 transition-transform group-hover:translate-x-0.5"
               aria-hidden
             />
-          </Link>
-          <span className="text-sm text-muted">明暗双主题 0 闪烁 · 键盘可达 · 可发布 npm 包</span>
+          </Button>
+          <Button variant="outline" render={<Link href="/theme" />} className="group h-11 px-5">
+            主题 Token
+            <ArrowRight
+              className="size-4 transition-transform group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </Button>
         </div>
+        <p className="hl-rise mt-4 text-sm text-muted" style={rise(5)}>
+          明暗双主题 0 闪烁 · 键盘可达 · 可发布 npm 包
+        </p>
       </section>
 
       {/* 分类导航：编辑式发丝线列表（非同质卡片网格），每行 icon + 内容剧透 + 计数 */}

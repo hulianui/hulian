@@ -12,7 +12,7 @@ vi.mock("recharts", async (importOriginal) => {
   };
 });
 
-import { AreaChart, BarChart } from "./chart";
+import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart } from "./chart";
 import { chartColor } from "./chart-theme";
 
 const data = [
@@ -23,6 +23,10 @@ const data = [
 const series = [
   { key: "revenue", label: "营收" },
   { key: "orders", label: "订单" },
+];
+const flat = [
+  { name: "搜索", value: 420 },
+  { name: "直接", value: 280 },
 ];
 
 describe("chartColor", () => {
@@ -43,6 +47,40 @@ describe("AreaChart", () => {
 describe("BarChart", () => {
   it("多序列渲染不抛 + 产出 svg", () => {
     const { container } = render(<BarChart data={data} series={series} xKey="month" />);
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+  it("堆叠 + 横向不抛", () => {
+    const { container } = render(
+      <BarChart data={data} series={series} xKey="month" stacked horizontal />,
+    );
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+});
+
+describe("LineChart", () => {
+  it("多序列渲染不抛 + 产出 svg", () => {
+    const { container } = render(<LineChart data={data} series={series} xKey="month" />);
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+});
+
+describe("PieChart", () => {
+  it("饼图/环形渲染不抛 + 产出 svg", () => {
+    const { container } = render(<PieChart data={flat} donut />);
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+});
+
+describe("RadarChart", () => {
+  it("渲染不抛 + 产出 svg", () => {
+    const { container } = render(<RadarChart data={data} series={series} xKey="month" />);
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+});
+
+describe("RadialChart", () => {
+  it("渲染不抛 + 产出 svg", () => {
+    const { container } = render(<RadialChart data={flat} />);
     expect(container.querySelector("svg")).toBeTruthy();
   });
 });

@@ -9,4 +9,3 @@ export {
   MenubarGroupLabel,
 } from "./menubar";
 export type { MenubarProps, MenubarMenuProps, MenubarTriggerProps } from "./menubar.types";
-export { menubarShowcase } from "./menubar.showcase";

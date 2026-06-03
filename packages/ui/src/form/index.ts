@@ -1,6 +1,5 @@
 export { Form } from "./form";
 export type { FormProps } from "./form.types";
-export { formShowcase } from "./form.showcase";
 // 增强：受控控制器 + 校验规则引擎 + 动态列表
 export { useForm } from "./use-form";
 export type {

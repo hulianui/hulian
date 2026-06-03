@@ -60,7 +60,8 @@ export function Command({
   const baseId = useId();
   const listId = `${baseId}-list`;
   const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
+  // active = -1 表示无高亮（无默认高亮：仅方向键/鼠标移入才点亮某项）。
+  const [active, setActive] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -92,10 +93,9 @@ export function Command({
     return { visibleGroups: vg, flatItems: flat };
   }, [groups, query, filter]);
 
-  // 过滤结果变化 → 高亮回到首个可用项。
+  // 过滤结果变化 → 清空高亮（无默认高亮，回到「未点亮」态）。
   useEffect(() => {
-    const first = flatItems.findIndex((it) => !it.disabled);
-    setActive(first >= 0 ? first : 0);
+    setActive(-1);
   }, [flatItems]);
 
   // 高亮项滚动进视口。
@@ -106,7 +106,8 @@ export function Command({
   const stepActive = (dir: 1 | -1) => {
     const n = flatItems.length;
     if (n === 0) return;
-    let i = active;
+    // 从「无高亮」(active=-1) 起步：↓ 落首项、↑ 落末项。
+    let i = active < 0 ? (dir === 1 ? -1 : 0) : active;
     for (let s = 0; s < n; s++) {
       i = (i + dir + n) % n;
       if (!flatItems[i]?.disabled) {
@@ -157,7 +158,7 @@ export function Command({
     }
   };
 
-  const activeId = flatItems.length ? `${baseId}-opt-${active}` : undefined;
+  const activeId = active >= 0 && flatItems.length ? `${baseId}-opt-${active}` : undefined;
   let flatIdx = -1; // 渲染时与 flatItems 同序递增，得到每项的展平索引（驱动 id/ref/高亮）。
 
   return (

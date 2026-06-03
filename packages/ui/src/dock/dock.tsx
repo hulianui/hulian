@@ -1,13 +1,13 @@
 "use client";
 import { createContext, useContext, useRef, type CSSProperties } from "react";
 import {
-  motion,
   useMotionValue,
   useSpring,
   useTransform,
   useReducedMotion,
   type MotionValue,
 } from "motion/react";
+import { LazyMotionProvider, m } from "../motion";
 import { cn } from "../lib/cn";
 import type { DockProps, DockIconProps } from "./dock.types";
 
@@ -35,16 +35,18 @@ export function Dock({
 
   return (
     <DockContext.Provider value={{ mouseX, magnification, distance, iconSize, reduce }}>
-      <motion.div
-        onMouseMove={(e) => mouseX.set(e.pageX)}
-        onMouseLeave={() => mouseX.set(Infinity)}
-        className={cn(
-          "mx-auto flex h-16 items-end gap-3 rounded-2xl border border-border bg-surface/80 px-3 pb-2 backdrop-blur-md",
-          className,
-        )}
-      >
-        {children}
-      </motion.div>
+      <LazyMotionProvider>
+        <m.div
+          onMouseMove={(e) => mouseX.set(e.pageX)}
+          onMouseLeave={() => mouseX.set(Infinity)}
+          className={cn(
+            "mx-auto flex h-16 items-end gap-3 rounded-2xl border border-border bg-surface/80 px-3 pb-2 backdrop-blur-md",
+            className,
+          )}
+        >
+          {children}
+        </m.div>
+      </LazyMotionProvider>
     </DockContext.Provider>
   );
 }
@@ -69,15 +71,17 @@ export function DockIcon({ children, className }: DockIconProps) {
   const size = useSpring(sizeTarget, { mass: 0.1, stiffness: 150, damping: 12 });
 
   return (
-    <motion.div
-      ref={ref}
-      style={reduce ? ({ width: iconSize, height: iconSize } as CSSProperties) : { width: size, height: size }}
-      className={cn(
-        "flex aspect-square items-center justify-center rounded-full bg-surface-hover text-foreground",
-        className,
-      )}
-    >
-      {children}
-    </motion.div>
+    <LazyMotionProvider>
+      <m.div
+        ref={ref}
+        style={reduce ? ({ width: iconSize, height: iconSize } as CSSProperties) : { width: size, height: size }}
+        className={cn(
+          "flex aspect-square items-center justify-center rounded-full bg-surface-hover text-foreground",
+          className,
+        )}
+      >
+        {children}
+      </m.div>
+    </LazyMotionProvider>
   );
 }

@@ -1,7 +1,14 @@
 "use client";
 import { Toolbar as BaseToolbar } from "@base-ui-components/react/toolbar";
+import { Toggle } from "@base-ui-components/react/toggle";
 import { cn } from "../lib/cn";
-import type { ToolbarProps, ToolbarButtonProps, ToolbarGroupProps, ToolbarSeparatorProps } from "./toolbar.types";
+import type {
+  ToolbarProps,
+  ToolbarButtonProps,
+  ToolbarToggleProps,
+  ToolbarGroupProps,
+  ToolbarSeparatorProps,
+} from "./toolbar.types";
 
 // 容器 role=toolbar，键盘漫游内置。本批做 Root/Button/Group/Separator（Link/Input YAGNI）。
 export function Toolbar({ className, ...props }: ToolbarProps) {
@@ -25,6 +32,36 @@ export function ToolbarButton({ className, ...props }: ToolbarButtonProps) {
         "inline-flex h-8 items-center justify-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2.5 text-sm text-foreground outline-none transition-colors",
         "hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
         "data-[pressed]:bg-surface-hover disabled:pointer-events-none disabled:opacity-50",
+        className,
+      )}
+    />
+  );
+}
+
+// 可切换工具按钮（加粗/斜体/对齐等）：Toolbar.Button 渲染为 Base UI Toggle，
+// 自带 data-pressed=开。选中态用主色填充，明确区别于 hover（仅底色微变），否则「选中」与「悬浮」无法分辨。
+export function ToolbarToggle({
+  className,
+  pressed,
+  defaultPressed,
+  onPressedChange,
+  ...props
+}: ToolbarToggleProps) {
+  return (
+    <BaseToolbar.Button
+      {...props}
+      render={
+        <Toggle
+          pressed={pressed}
+          defaultPressed={defaultPressed}
+          onPressedChange={onPressedChange}
+        />
+      }
+      className={cn(
+        "inline-flex h-8 items-center justify-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2.5 text-sm text-foreground outline-none transition-colors",
+        "hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+        "data-[pressed]:bg-primary data-[pressed]:text-primary-foreground data-[pressed]:hover:bg-primary",
+        "disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
     />

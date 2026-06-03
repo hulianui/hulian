@@ -61,6 +61,7 @@ export function Table<TData>({
   sorting: sortingProp,
   onSortingChange,
   striped = true,
+  density = "default",
   getRowId,
   className,
   // 行选择
@@ -199,6 +200,9 @@ export function Table<TData>({
   const colCount = table.getAllLeafColumns().length;
   const rows = table.getRowModel().rows;
 
+  // 密度：仅作用于单元格内边距（表头/表体共用），default 维持原 px-3 py-2。
+  const cellPad = { default: "px-3 py-2", middle: "px-3 py-1.5", compact: "px-2 py-1" }[density];
+
   // 虚拟滚动（可选）：hook 恒调用（无虚拟时 getScrollElement 返回 null → 闲置）。
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualEnabled = Boolean(virtual?.enabled);
@@ -224,7 +228,7 @@ export function Table<TData>({
           <td
             key={cell.id}
             style={stickyStyle(cell.column)}
-            className={cn("px-3 py-2 align-middle", stickyClass(cell.column))}
+            className={cn(cellPad, "align-middle", stickyClass(cell.column))}
           >
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </td>
@@ -306,7 +310,8 @@ export function Table<TData>({
                             : "none"
                     }
                     className={cn(
-                      "px-3 py-2 text-left font-medium",
+                      cellPad,
+                      "text-left font-medium",
                       stickyClass(header.column),
                       virtualEnabled && header.column.getIsPinned() && "bg-bg",
                     )}

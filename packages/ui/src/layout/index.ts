@@ -8,4 +8,3 @@ export type {
   LayoutBreakpoint,
   LayoutCollapseType,
 } from "./layout.types";
-export { layoutShowcase } from "./layout.showcase";

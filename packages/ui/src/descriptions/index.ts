@@ -4,4 +4,3 @@ export type {
   DescriptionsItemProps,
   DescriptionsItemData,
 } from "./descriptions.types";
-export { descriptionsShowcase } from "./descriptions.showcase";

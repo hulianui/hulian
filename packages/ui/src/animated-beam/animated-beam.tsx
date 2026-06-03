@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useId, useState } from "react";
-import { motion } from "motion/react";
+import { LazyMotionProvider, m } from "../motion";
 import { cn } from "../lib/cn";
 import type { AnimatedBeamProps } from "./animated-beam.types";
 
@@ -61,30 +61,32 @@ export function AnimatedBeam({
     : { x1: ["10%", "110%"], x2: ["0%", "100%"] };
 
   return (
-    <svg
-      fill="none"
-      width={dim.w}
-      height={dim.h}
-      viewBox={`0 0 ${dim.w} ${dim.h}`}
-      className={cn("pointer-events-none absolute left-0 top-0", className)}
-      aria-hidden
-    >
-      <path d={pathD} stroke={pathColor} strokeWidth={pathWidth} strokeOpacity={pathOpacity} strokeLinecap="round" />
-      <path d={pathD} stroke={`url(#${id})`} strokeWidth={pathWidth} strokeLinecap="round" />
-      <defs>
-        <motion.linearGradient
-          id={id}
-          gradientUnits="userSpaceOnUse"
-          initial={{ x1: "0%", x2: "0%", y1: "0%", y2: "0%" }}
-          animate={{ x1: grad.x1, x2: grad.x2, y1: ["0%", "0%"], y2: ["0%", "0%"] }}
-          transition={{ delay, duration, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <stop stopColor={gradientStartColor} stopOpacity={0} />
-          <stop stopColor={gradientStartColor} />
-          <stop offset="32.5%" stopColor={gradientStopColor} />
-          <stop offset="100%" stopColor={gradientStopColor} stopOpacity={0} />
-        </motion.linearGradient>
-      </defs>
-    </svg>
+    <LazyMotionProvider>
+      <svg
+        fill="none"
+        width={dim.w}
+        height={dim.h}
+        viewBox={`0 0 ${dim.w} ${dim.h}`}
+        className={cn("pointer-events-none absolute left-0 top-0", className)}
+        aria-hidden
+      >
+        <path d={pathD} stroke={pathColor} strokeWidth={pathWidth} strokeOpacity={pathOpacity} strokeLinecap="round" />
+        <path d={pathD} stroke={`url(#${id})`} strokeWidth={pathWidth} strokeLinecap="round" />
+        <defs>
+          <m.linearGradient
+            id={id}
+            gradientUnits="userSpaceOnUse"
+            initial={{ x1: "0%", x2: "0%", y1: "0%", y2: "0%" }}
+            animate={{ x1: grad.x1, x2: grad.x2, y1: ["0%", "0%"], y2: ["0%", "0%"] }}
+            transition={{ delay, duration, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <stop stopColor={gradientStartColor} stopOpacity={0} />
+            <stop stopColor={gradientStartColor} />
+            <stop offset="32.5%" stopColor={gradientStopColor} />
+            <stop offset="100%" stopColor={gradientStopColor} stopOpacity={0} />
+          </m.linearGradient>
+        </defs>
+      </svg>
+    </LazyMotionProvider>
   );
 }

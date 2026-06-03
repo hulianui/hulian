@@ -1,10 +1,10 @@
 "use client";
-import { forwardRef } from "react";
+import { cloneElement, forwardRef, type ReactNode } from "react";
+import { type HTMLMotionProps } from "motion/react";
 import { cva } from "class-variance-authority";
-import { motion, type HTMLMotionProps } from "motion/react";
 import { Loader2 } from "../_icons";
 import { cn } from "../lib/cn";
-import { pressable } from "../motion";
+import { pressable, LazyMotionProvider, m } from "../motion";
 import type { ButtonProps } from "./button.types";
 
 export const buttonVariants = cva(
@@ -33,21 +33,53 @@ export const buttonVariants = cva(
 );
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, tone, size, loading, disabled, children, ...props }, ref) => {
+  ({ className, variant, tone, size, loading, disabled, children, render, ...props }, ref) => {
     const isDisabled = disabled || loading;
-    return (
-      <motion.button
-        ref={ref}
-        className={cn(buttonVariants({ variant, tone, size }), className)}
-        disabled={isDisabled}
-        // press 反馈走 motion 的 transform scale，与 CSS 的颜色过渡互不干扰；禁用态不缩放
-        whileTap={isDisabled ? undefined : pressable.whileTap}
-        transition={pressable.transition}
-        {...(props as HTMLMotionProps<"button">)}
-      >
+    const content = (
+      <>
         {loading && <Loader2 className="size-4 animate-spin" aria-hidden />}
-        {children}
-      </motion.button>
+        {children ?? (render?.props as { children?: ReactNode } | undefined)?.children}
+      </>
+    );
+
+    // render：渲染为自定义元素（<a>/<Link>）。:disabled 伪类只对表单元素有效，故非 button
+    // 用 aria-disabled + 显式 pointer-events/opacity 表达禁用；不套 motion（无 press 缩放）。
+    if (render) {
+      const renderProps = render.props as Record<string, unknown>;
+      return cloneElement(
+        render,
+        {
+          ...props,
+          ref,
+          className: cn(
+            buttonVariants({ variant, tone, size }),
+            isDisabled && "pointer-events-none opacity-50",
+            className,
+            renderProps.className as string | undefined,
+          ),
+          "aria-disabled": isDisabled || undefined,
+          "data-disabled": isDisabled ? "" : undefined,
+        } as Record<string, unknown>,
+        content,
+      );
+    }
+
+    return (
+      // 减包：m + LazyMotionProvider(domAnimation) 取代全量 motion
+      <LazyMotionProvider>
+        <m.button
+          ref={ref}
+          className={cn(buttonVariants({ variant, tone, size }), className)}
+          disabled={isDisabled}
+          // press 反馈走 motion 的 transform scale，与 CSS 的颜色过渡互不干扰；禁用态不缩放
+          whileTap={isDisabled ? undefined : pressable.whileTap}
+          transition={pressable.transition}
+          {...(props as HTMLMotionProps<"button">)}
+        >
+          {loading && <Loader2 className="size-4 animate-spin" aria-hidden />}
+          {children}
+        </m.button>
+      </LazyMotionProvider>
     );
   },
 );

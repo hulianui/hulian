@@ -5,4 +5,3 @@ export type {
   CommentActionProps,
   CommentType,
 } from "./comment.types";
-export { commentShowcase } from "./comment.showcase";

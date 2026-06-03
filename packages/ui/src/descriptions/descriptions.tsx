@@ -1,10 +1,27 @@
-import { Children, isValidElement, type ReactElement } from "react";
+import { Children, Fragment, isValidElement, type ReactElement, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import type {
   DescriptionsItemData,
   DescriptionsItemProps,
   DescriptionsProps,
 } from "./descriptions.types";
+
+// 递归收集 DescriptionsItem 子节点的 props。
+// 关键：Children.toArray 不会展开 Fragment（<>...</> 会被当成单个节点），
+// 必须手动下钻，否则 Fragment 包裹的多个 item 会被误并成一格（label 丢失、值全挤一起）。
+function collectItems(children: ReactNode): DescriptionsItemData[] {
+  const out: DescriptionsItemData[] = [];
+  Children.toArray(children).forEach((c) => {
+    if (!isValidElement(c)) return;
+    const el = c as ReactElement<DescriptionsItemProps>;
+    if (el.type === Fragment) {
+      out.push(...collectItems((el.props as { children?: ReactNode }).children));
+      return;
+    }
+    out.push({ label: el.props.label, children: el.props.children, span: el.props.span });
+  });
+  return out;
+}
 
 // 纯皮肤 + CSS Grid 布局（零 Base UI、零浮层、零依赖，纯静态可 RSC，照 breadcrumb/badge 范式）：
 // 详情页键值对。数据源二选一——items 数组 prop 优先，否则读 DescriptionsItem 子节点的 props。
@@ -26,16 +43,8 @@ export function Descriptions({
   children,
   ...props
 }: DescriptionsProps) {
-  // 归一化数据源
-  const data: DescriptionsItemData[] = items
-    ? items
-    : Children.toArray(children)
-        .filter((c): c is ReactElement<DescriptionsItemProps> => isValidElement(c))
-        .map((c) => ({
-          label: c.props.label,
-          children: c.props.children,
-          span: c.props.span,
-        }));
+  // 归一化数据源：items 数组 prop 优先，否则下钻 DescriptionsItem 子节点（含 Fragment 展开）
+  const data: DescriptionsItemData[] = items ?? collectItems(children);
 
   const vertical = layout === "vertical";
 

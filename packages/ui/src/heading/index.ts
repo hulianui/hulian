@@ -5,4 +5,3 @@ export type {
   HeadingSize,
   HeadingWeight,
 } from "./heading.types";
-export { headingShowcase } from "./heading.showcase";

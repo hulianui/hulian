@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
 import { manifest, CATEGORIES } from "../../lib/manifest";
 import { SampleTable } from "../../components/showcase/sample-table";
 import { AsyncUsers } from "../../components/showcase/async-users";
@@ -12,25 +13,40 @@ export default function ComponentsIndexPage() {
       </header>
 
       {CATEGORIES.map((cat) => {
-        const items = manifest.filter((m) => m.category === cat.key);
-        if (items.length === 0) return null;
+        const catItems = manifest.filter((m) => m.category === cat.key);
+        if (catItems.length === 0) return null;
         return (
-          <section key={cat.key} id={cat.key} className="scroll-mt-24 space-y-3">
-            <h2 className="text-sm font-medium text-muted">{cat.label}</h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((m) => (
-                <Link
-                  key={m.slug}
-                  href={`/components/${m.slug}`}
-                  className="rounded-[var(--radius)] border border-border bg-surface p-4 transition-colors hover:bg-surface-hover"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-foreground">{m.name}</span>
+          <section key={cat.key} id={cat.key} className="scroll-mt-24 space-y-6">
+            <h2 className="text-base font-semibold text-foreground">
+              {cat.label}
+              <span className="ml-2 text-sm font-normal tabular-nums text-muted">{catItems.length}</span>
+            </h2>
+            {cat.groups.map((g) => {
+              const items = catItems.filter((m) => m.group === g.key);
+              if (items.length === 0) return null;
+              return (
+                <div key={g.key} className="space-y-3">
+                  <h3 className="text-xs font-medium uppercase tracking-wide text-muted">{g.label}</h3>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {items.map((m) => (
+                      <Link
+                        key={m.slug}
+                        href={`/components/${m.slug}`}
+                        className="rounded-[var(--radius)] border border-border bg-surface p-4 transition-colors hover:bg-surface-hover"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-medium text-foreground">{m.name}</span>
+                          {m.tags?.includes("animated") && (
+                            <Sparkles className="size-3.5 shrink-0 text-primary/60" aria-label="动效" />
+                          )}
+                        </div>
+                        <p className="mt-1 text-sm text-muted">{m.description}</p>
+                      </Link>
+                    ))}
                   </div>
-                  <p className="mt-1 text-sm text-muted">{m.description}</p>
-                </Link>
-              ))}
-            </div>
+                </div>
+              );
+            })}
           </section>
         );
       })}

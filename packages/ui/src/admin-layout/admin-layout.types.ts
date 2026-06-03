@@ -1,0 +1,57 @@
+import type { ReactNode } from "react";
+import type { NavMenuItem, NavMenuNode } from "../nav-menu/nav-menu.types";
+
+/** 一个打开的页签。 */
+export interface AdminTab {
+  key: string;
+  label: ReactNode;
+  /** 是否可关闭（默认：当打开页签 >1 时可关，最后一个不可关）。 */
+  closable?: boolean;
+}
+
+export interface AdminLayoutProps {
+  /** 侧边菜单数据（复用 NavMenu）。 */
+  menuItems: NavMenuNode[];
+  /** 品牌区（展开态）。 */
+  logo?: ReactNode;
+  /** 品牌区（收起态，默认复用 logo）。 */
+  logoCollapsed?: ReactNode;
+
+  // —— 菜单选中（受控/非受控）——
+  selectedKey?: string;
+  defaultSelectedKey?: string;
+  /** 点击菜单叶子项触发。 */
+  onMenuSelect?: (key: string, item: NavMenuItem) => void;
+  // —— 菜单展开 ——
+  openKeys?: string[];
+  defaultOpenKeys?: string[];
+  onOpenChange?: (openKeys: string[]) => void;
+
+  // —— 侧栏折叠（受控/非受控）——
+  collapsed?: boolean;
+  defaultCollapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
+
+  // —— 多页签 ——
+  /** 关闭多页签条（默认 true）。 */
+  showTabs?: boolean;
+  /** 受控页签列表。不传则由菜单点击自动维护（非受控）。 */
+  tabs?: AdminTab[];
+  /** 受控当前激活页签 key。 */
+  activeKey?: string;
+  /** 非受控时的初始激活页签（亦决定首屏自动打开的页签）。 */
+  defaultActiveKey?: string;
+  onTabChange?: (key: string) => void;
+  onTabClose?: (key: string) => void;
+
+  // —— 顶栏 ——
+  /** 顶栏面包屑区。 */
+  breadcrumb?: ReactNode;
+  /** 顶栏右侧扩展区（用户菜单 / 通知 / 主题切换等）。 */
+  headerExtra?: ReactNode;
+
+  /** 主内容（当前激活页内容，由上层按 activeKey 决定）。 */
+  children?: ReactNode;
+  className?: string;
+  contentClassName?: string;
+}

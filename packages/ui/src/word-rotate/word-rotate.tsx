@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
+import { LazyMotionProvider, m } from "../motion";
 import type { WordRotateProps } from "./word-rotate.types";
 
 // 吸取自 magicui.design Word Rotate：AnimatePresence mode=wait 轮换词，进出场 y 位移淡入淡出。
 // 瑚琏化：motion 运行时（必 "use client"）；reduced-motion → 仍轮换但去动画（DOM 两态一致，避 reveal 不可见坑）。
+// 减包：m + LazyMotionProvider(domAnimation) 取代全量 motion（AnimatePresence 不受 LazyMotion 影响）。
 export function WordRotate({ words, duration = 2500, className, ...props }: WordRotateProps) {
   const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
@@ -32,16 +34,18 @@ export function WordRotate({ words, duration = 2500, className, ...props }: Word
   // overflow-hidden 仍按行盒裁切进/出场的 y 位移，无需额外 padding。
   return (
     <span className="inline-block overflow-hidden align-bottom">
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={words[index]}
-          className={cn("inline-block", className)}
-          {...anim}
-          {...props}
-        >
-          {words[index]}
-        </motion.span>
-      </AnimatePresence>
+      <LazyMotionProvider>
+        <AnimatePresence mode="wait">
+          <m.span
+            key={words[index]}
+            className={cn("inline-block", className)}
+            {...anim}
+            {...props}
+          >
+            {words[index]}
+          </m.span>
+        </AnimatePresence>
+      </LazyMotionProvider>
     </span>
   );
 }

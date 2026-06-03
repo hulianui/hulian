@@ -25,8 +25,8 @@ export function PageHeader({
     <header className={cn("w-full", className)} {...props}>
       {breadcrumb && <div className="mb-2">{breadcrumb}</div>}
 
-      {/* 主行：左侧标题群 / 右侧操作区；窄屏 extra 自动换行到下方 */}
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+      {/* 主行：左侧标题群 / 右侧操作区垂直居中对齐；窄屏 extra 自动换行到下方 */}
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div className="flex min-w-0 items-center gap-3">
           {onBack && (
             <Button

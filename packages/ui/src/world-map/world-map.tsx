@@ -1,7 +1,8 @@
 "use client";
 import { useId, useMemo } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
+import { LazyMotionProvider, m } from "../motion";
 import { WORLD_DOTS, VIEWBOX, projectPoint } from "./world-map.dots";
 import type { WorldMapPoint, WorldMapProps } from "./world-map.types";
 
@@ -66,6 +67,7 @@ export function WorldMap({
   }, [resolved]);
 
   return (
+    <LazyMotionProvider>
     <svg
       viewBox={`0 0 ${VIEWBOX.w} ${VIEWBOX.h}`}
       className={cn("h-auto w-full select-none", className)}
@@ -81,7 +83,7 @@ export function WorldMap({
         const e = projectPoint(d.end.lat, d.end.lng);
         const path = arcPath(s, e);
         return (
-          <motion.path
+          <m.path
             key={i}
             d={path}
             fill="none"
@@ -110,7 +112,7 @@ export function WorldMap({
         <g key={pointKey(p)}>
           <circle cx={x} cy={y} r={0.45} fill={color} />
           {!reduced && (
-            <motion.circle
+            <m.circle
               cx={x}
               cy={y}
               fill="none"
@@ -136,5 +138,6 @@ export function WorldMap({
         ))}
       </defs>
     </svg>
+    </LazyMotionProvider>
   );
 }

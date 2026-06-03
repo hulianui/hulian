@@ -1,6 +1,5 @@
 export { Tree } from "./tree";
 export type { TreeProps, TreeNode } from "./tree.types";
-export { treeShowcase } from "./tree.showcase";
 // Layer A 核：供 tree-select / cascader 复用，并对外暴露工具
 export {
   buildIndex,

@@ -5,4 +5,3 @@ export type {
   NotificationInstance,
 } from "./notification.types";
 export { notification, NotificationProvider, hulianNotificationManager } from "./notification";
-export { notificationShowcase } from "./notification.showcase";

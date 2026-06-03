@@ -13,6 +13,12 @@ describe("IA SSOT manifest↔registry 契约", () => {
     for (const m of manifest) expect(keys.has(m.category)).toBe(true);
   });
 
+  it("每个 manifest 条目的 group 属于其 category 的 groups", () => {
+    const groupsByCat = new Map(CATEGORIES.map((c) => [c.key, new Set(c.groups.map((g) => g.key))]));
+    for (const m of manifest)
+      expect(groupsByCat.get(m.category)?.has(m.group), `${m.slug} 的 group「${m.group}」不在 ${m.category}`).toBe(true);
+  });
+
   it("每个 manifest 条目都有对应 spec（漏注册会在此失败）", () => {
     for (const m of manifest) expect(specBySlug[m.slug], `缺 spec: ${m.slug}`).toBeDefined();
   });

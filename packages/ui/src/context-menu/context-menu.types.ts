@@ -16,3 +16,17 @@ export interface ContextMenuItemProps {
   variant?: "default" | "danger";
   className?: string;
 }
+
+export interface ContextMenuSubTriggerProps {
+  children?: ReactNode;
+  disabled?: boolean;
+  /** 键盘 type-ahead 用文案覆盖。 */
+  label?: string;
+  variant?: "default" | "danger";
+  className?: string;
+}
+
+export interface ContextMenuSubContentProps {
+  children: ReactNode;
+  className?: string;
+}

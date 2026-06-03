@@ -5,4 +5,3 @@ export type {
   ResizablePanelProps,
   ResizableHandleProps,
 } from "./resizable.types";
-export { resizableShowcase } from "./resizable.showcase";

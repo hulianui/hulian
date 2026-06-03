@@ -9,9 +9,11 @@
     "app:build": "pnpm --filter desktop build",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "doctor": "react-doctor -y --diff false --lint --no-score"
   },
   "devDependencies": {
+    "react-doctor": "^0.2.14",
     "turbo": "^2.0.0",
     "typescript": "^5.5.0"
   }

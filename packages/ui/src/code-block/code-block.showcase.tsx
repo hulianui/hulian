@@ -3,7 +3,8 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { CodeBlock } from "./code-block";
 
 const sample = `<Lens zoom={1.8}>\n  <img src="/photo.jpg" />\n</Lens>`;
-const longer = `import { Button } from "@hulian/ui";\n\nexport function Demo() {\n  return <Button>点我</Button>;\n}`;
+const longer = `import { Button } from "@hulian/ui";\n\n// 点击计数示例\nexport function Demo() {\n  const [n, setN] = useState(0);\n  return <Button onClick={() => setN(n + 1)}>点了 {n} 次</Button>;\n}`;
+const shell = `# 安装并构建\npnpm add @hulian/ui\npnpm --filter @hulian/ui build`;
 
 export const codeBlockShowcase: ShowcaseSpec = {
   controls: [
@@ -13,6 +14,8 @@ export const codeBlockShowcase: ShowcaseSpec = {
   states: [
     { name: "默认", render: () => <CodeBlock code={sample} /> },
     { name: "带语言标签", render: () => <CodeBlock code={longer} lang="tsx" /> },
+    { name: "Shell", render: () => <CodeBlock code={shell} lang="bash" /> },
+    { name: "关闭着色", render: () => <CodeBlock code={longer} highlight={false} /> },
     { name: "不可复制", render: () => <CodeBlock code={sample} copyable={false} /> },
   ],
   renderWithProps: (p) => (

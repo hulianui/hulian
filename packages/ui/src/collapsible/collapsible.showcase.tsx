@@ -7,7 +7,7 @@ function Demo(p: Record<string, unknown>) {
     <Collapsible
       defaultOpen={p.defaultOpen as boolean}
       disabled={p.disabled as boolean}
-      className="max-w-sm"
+      className="w-80"
     >
       <CollapsibleTrigger>瑚琏设计系统是什么？</CollapsibleTrigger>
       <CollapsiblePanel>
@@ -26,7 +26,7 @@ export const collapsibleShowcase: ShowcaseSpec = {
     {
       name: "closed",
       render: () => (
-        <Collapsible className="max-w-sm">
+        <Collapsible className="w-80">
           <CollapsibleTrigger>展开查看详情</CollapsibleTrigger>
           <CollapsiblePanel>这里是默认折叠起来的补充内容，点击标题即可展开。</CollapsiblePanel>
         </Collapsible>
@@ -35,7 +35,7 @@ export const collapsibleShowcase: ShowcaseSpec = {
     {
       name: "open",
       render: () => (
-        <Collapsible defaultOpen className="max-w-sm">
+        <Collapsible defaultOpen className="w-80">
           <CollapsibleTrigger>收起详情</CollapsibleTrigger>
           <CollapsiblePanel>这里是默认展开的补充内容，再次点击标题即可收起。</CollapsiblePanel>
         </Collapsible>
@@ -44,7 +44,7 @@ export const collapsibleShowcase: ShowcaseSpec = {
     {
       name: "disabled",
       render: () => (
-        <Collapsible disabled className="max-w-sm">
+        <Collapsible disabled className="w-80">
           <CollapsibleTrigger>已禁用</CollapsibleTrigger>
           <CollapsiblePanel>禁用态下不可展开。</CollapsiblePanel>
         </Collapsible>

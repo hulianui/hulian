@@ -11,4 +11,3 @@ export type {
   NavbarItemProps,
   NavbarMenuToggleProps,
 } from "./navbar.types";
-export { navbarShowcase } from "./navbar.showcase";

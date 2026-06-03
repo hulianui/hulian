@@ -123,16 +123,12 @@ export function Affix({
       raf = requestAnimationFrame(measure);
     };
 
-    const t = resolveTarget(target);
-    const scrollTarget: HTMLElement | Window =
-      typeof HTMLElement !== "undefined" && t instanceof HTMLElement ? t : window;
-
-    scrollTarget.addEventListener("scroll", schedule, { passive: true });
+    // scroll 事件不冒泡，但在捕获阶段从 window 向下传播 → 用 capture 监听 window
+    // 即可捕获页面上任意滚动源：target 容器自身、window，以及二者之间的中间滚动
+    // 祖先（如文档站把整页内容放进 <main overflow-auto> 滚动）。若只监听 target 与
+    // window 的冒泡阶段，中间祖先滚动时不会重测 → fixed 吸附条钉死在旧视口坐标、跑出容器。
+    window.addEventListener("scroll", schedule, { capture: true, passive: true });
     window.addEventListener("resize", schedule);
-    // 容器是元素时，窗口滚动也会改变其在视口中的位置 → 一并监听。
-    if (scrollTarget !== window) {
-      window.addEventListener("scroll", schedule, { passive: true });
-    }
 
     const ro =
       typeof ResizeObserver !== "undefined" ? new ResizeObserver(schedule) : null;
@@ -145,9 +141,8 @@ export function Affix({
 
     return () => {
       cancelAnimationFrame(raf);
-      scrollTarget.removeEventListener("scroll", schedule);
+      window.removeEventListener("scroll", schedule, { capture: true });
       window.removeEventListener("resize", schedule);
-      if (scrollTarget !== window) window.removeEventListener("scroll", schedule);
       ro?.disconnect();
     };
   }, [measure, target]);
