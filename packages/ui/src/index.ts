@@ -19,6 +19,8 @@ export * from "./popover";
 export * from "./select";
 export * from "./combobox";
 export * from "./accordion";
+export * from "./collapsible";
+export * from "./segmented";
 export * from "./breadcrumb";
 export * from "./pagination";
 export * from "./table";
