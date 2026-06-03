@@ -93,6 +93,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", status: "new" },
   { slug: "link", name: "Link", description: "链接 · tone×underline + external 自动 target/rel/图标 + RSC", category: "navigation", status: "new" },
   { slug: "kbd", name: "Kbd", description: "按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC", category: "data-display", status: "new" },
+  { slug: "affix", name: "Affix", description: "固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器", category: "navigation", status: "new" },
   { slug: "code", name: "Code", description: "行内代码 · <code> 等宽皮肤 + tone(default/primary/danger) + RSC", category: "data-display", status: "new" },
   { slug: "code-block", name: "CodeBlock", description: "代码块 · 多行 <pre> + 一键复制(剪贴板+反馈) + 可选语言标签", category: "data-display", status: "new" },
   { slug: "snippet", name: "Snippet", description: "代码片段 · 命令提示符 + 一键复制(剪贴板+反馈)", category: "data-display", status: "new" },

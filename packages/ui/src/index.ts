@@ -26,6 +26,7 @@ export * from "./pagination";
 export * from "./table";
 export * from "./carousel";
 export * from "./resizable";
+export * from "./affix";
 export * from "./stat";
 export * from "./chart";
 export * from "./_mui";
