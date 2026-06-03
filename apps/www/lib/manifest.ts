@@ -96,4 +96,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "navbar", name: "Navbar", description: "导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换", category: "navigation", status: "new" },
   { slug: "input-otp", name: "InputOTP", description: "验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)", category: "inputs", status: "new" },
   { slug: "listbox", name: "Listbox", description: "可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)", category: "inputs", status: "new" },
+  { slug: "calendar", name: "Calendar", description: "日历 · MUI X 桥(DateCalendar) + 对外 ISO 字符串受控 + 瑚琏 token", category: "inputs", status: "new" },
+  { slug: "date-picker", name: "DatePicker", description: "日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max", category: "inputs", status: "new" },
+  { slug: "time-field", name: "TimeField", description: "时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控", category: "inputs", status: "new" },
+  { slug: "colorpicker", name: "ColorPicker", description: "颜色选择 · react-colorful 内核 + hex 输入 + 瑚琏 token 皮肤", category: "inputs", status: "new" },
 ];

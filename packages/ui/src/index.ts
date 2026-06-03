@@ -81,6 +81,7 @@ export * from "./image";
 export * from "./navbar";
 export * from "./input-otp";
 export * from "./listbox";
+export * from "./colorpicker";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

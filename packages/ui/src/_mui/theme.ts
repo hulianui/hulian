@@ -37,3 +37,12 @@ export const hulianMuiTheme = createTheme({
   shape: { borderRadius: 10 },
   typography: { fontFamily: "inherit" },
 });
+
+// ⚠️ MUI 核心组件（如 IconButton：日期族头部箭头/打开日历按钮）的 root 样式经 memoTheme **eager**
+//    对每个 palette 颜色调用 theme.alpha(palette[c].main / action.active, hoverOpacity) 算 hover 底色。
+//    桥主题这些槽位是 var(--color-*)，MUI colorManipulator 解析不了 var() → 抛 "Unsupported color"
+//    （真实浏览器同样触发，非仅 jsdom；disableRipple 无效——变体在序列化时已全量求值）。
+//    集中把 theme.alpha 重写为 color-mix（与上面 action.* 同款手法），保留 var() 单一真源，
+//    令所有桥件（现有 Rating/Stepper + 日期族 + 未来件）一处受益、无需 per-component 克隆主题。
+hulianMuiTheme.alpha = (color: string, coefficient: string | number) =>
+  `color-mix(in srgb, ${color} ${Math.round(Number(coefficient) * 100)}%, transparent)`;

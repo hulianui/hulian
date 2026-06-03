@@ -23,10 +23,13 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.0.1",
+    "@mui/x-date-pickers": "^9.3.0",
     "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.21",
     "lucide-react": "^1.0.0",
+    "react-colorful": "^5.7.0",
     "recharts": "^3.8.1",
     "tailwind-merge": "^3.6.0"
   },
