@@ -22,6 +22,7 @@ export * from "./accordion";
 export * from "./breadcrumb";
 export * from "./pagination";
 export * from "./table";
+export * from "./resizable";
 export * from "./stat";
 export * from "./chart";
 export * from "./_mui";
@@ -34,6 +35,8 @@ export * from "./ripple";
 export * from "./striped-pattern";
 export * from "./drawer";
 export * from "./menu";
+export * from "./context-menu";
+export * from "./hover-card";
 export * from "./toast";
 export * from "./progress";
 export * from "./separator";
@@ -65,14 +68,18 @@ export * from "./magic-card";
 export * from "./glare-hover";
 // mockups: MagicUI 设备外壳批
 export * from "./safari";
+export * from "./chrome";
 export * from "./iphone";
 export * from "./android";
+export * from "./tablet";
+export * from "./watch";
 // B 档纯皮肤基础件批
 export * from "./spinner";
 export * from "./chip";
 export * from "./link";
 export * from "./kbd";
 export * from "./code";
+export * from "./code-block";
 export * from "./snippet";
 // HeroUI 缺口零依赖合集（皮肤/布局/轻交互）
 export * from "./spacer";
@@ -81,7 +88,9 @@ export * from "./image";
 export * from "./navbar";
 export * from "./input-otp";
 export * from "./listbox";
+export * from "./command";
 export * from "./colorpicker";
+export * from "./color-swatch-picker";
 // MagicUI 缺口收尾批（零依赖：纯 CSS/SVG/motion）
 export * from "./avatar-circles";
 export * from "./orbiting-circles";
@@ -102,6 +111,8 @@ export * from "./aspect-ratio";
 export * from "./empty";
 // 表单录入补充（零依赖自研·吸取 Ant Upload 概念）
 export * from "./upload";
+// 穿梭框（零依赖自研·复用 Listbox 双面板 + Empty 空态）
+export * from "./transfer";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
