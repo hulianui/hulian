@@ -177,3 +177,17 @@
     opacity: 0;
   }
 }
+
+/* effects/OrbitingCircles 轨道环绕（绕中心圆周运动，子元素自身反旋保持正向） */
+@keyframes hulian-orbit {
+  0% {
+    transform: rotate(calc(var(--hulian-orbit-angle) * 1deg))
+      translateY(calc(var(--hulian-orbit-radius) * 1px))
+      rotate(calc(var(--hulian-orbit-angle) * -1deg));
+  }
+  100% {
+    transform: rotate(calc(var(--hulian-orbit-angle) * 1deg + 360deg))
+      translateY(calc(var(--hulian-orbit-radius) * 1px))
+      rotate(calc(var(--hulian-orbit-angle) * -1deg - 360deg));
+  }
+}

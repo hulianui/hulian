@@ -100,4 +100,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "date-picker", name: "DatePicker", description: "日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max", category: "inputs", status: "new" },
   { slug: "time-field", name: "TimeField", description: "时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控", category: "inputs", status: "new" },
   { slug: "colorpicker", name: "ColorPicker", description: "颜色选择 · react-colorful 内核 + hex 输入 + 瑚琏 token 皮肤", category: "inputs", status: "new" },
+  { slug: "avatar-circles", name: "AvatarCircles", description: "堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC)", category: "data-display", status: "new" },
+  { slug: "orbiting-circles", name: "OrbitingCircles", description: "轨道环绕 · 子元素沿圆周匀速公转 + 自身反旋正立(纯 CSS·RSC)", category: "effects", status: "new" },
+  { slug: "animated-list", name: "AnimatedList", description: "动效列表 · 子项逐个淡入上移入场(motion + 进入视口)", category: "effects", status: "new" },
+  { slug: "progressive-blur", name: "ProgressiveBlur", description: "渐进模糊 · 分层 backdrop-blur + mask 渐变(纯 CSS·RSC)", category: "effects", status: "new" },
 ];

@@ -82,6 +82,11 @@ export * from "./navbar";
 export * from "./input-otp";
 export * from "./listbox";
 export * from "./colorpicker";
+// MagicUI 缺口收尾批（零依赖：纯 CSS/SVG/motion）
+export * from "./avatar-circles";
+export * from "./orbiting-circles";
+export * from "./animated-list";
+export * from "./progressive-blur";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
