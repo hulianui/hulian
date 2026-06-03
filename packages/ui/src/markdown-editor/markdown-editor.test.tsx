@@ -30,4 +30,21 @@ describe("MarkdownEditor", () => {
     await Promise.resolve();
     expect(region.querySelector("h1")?.textContent).toBe("二");
   });
+
+  it("隐藏 input 携带 name 与当前 markdown 值", async () => {
+    const { container } = render(<MarkdownEditor name="detail" defaultValue="# 标题" aria-label="ed3" />);
+    await screen.findByRole("textbox", { name: "ed3" });
+    const hidden = container.querySelector('input[type="hidden"][name="detail"]') as HTMLInputElement;
+    expect(hidden).toBeTruthy();
+    expect(hidden.value).toContain("# 标题");
+  });
+
+  it("invalid 落 data-invalid；disabled 不可编辑", async () => {
+    const { container, rerender } = render(<MarkdownEditor invalid aria-label="ed4" />);
+    await screen.findByRole("textbox", { name: "ed4" });
+    expect(container.querySelector("[data-invalid]")).toBeTruthy();
+    rerender(<MarkdownEditor disabled aria-label="ed4" />);
+    const region = screen.getByRole("textbox", { name: "ed4" });
+    expect(region.getAttribute("contenteditable")).toBe("false");
+  });
 });
