@@ -11,6 +11,7 @@ export function CheckboxGroup({
   defaultValue,
   onValueChange,
   disabled,
+  orientation = "vertical",
   children,
   "aria-label": ariaLabel,
 }: CheckboxGroupProps) {
@@ -21,7 +22,11 @@ export function CheckboxGroup({
       onValueChange={onValueChange ? (v) => onValueChange(v as string[]) : undefined}
       disabled={disabled}
       aria-label={ariaLabel}
-      className={cn("flex flex-col gap-2.5", className)}
+      className={cn(
+        "flex",
+        orientation === "horizontal" ? "flex-row flex-wrap gap-x-5 gap-y-2.5" : "flex-col gap-2.5",
+        className,
+      )}
     >
       {children}
     </BaseCheckboxGroup>

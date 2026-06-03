@@ -7,7 +7,12 @@ import { Checkbox } from "../checkbox";
 function Controlled(p: Record<string, unknown>) {
   const [v, setV] = useState<string[]>(["apple"]);
   return (
-    <CheckboxGroup value={v} onValueChange={setV} disabled={p.disabled as boolean}>
+    <CheckboxGroup
+      value={v}
+      onValueChange={setV}
+      disabled={p.disabled as boolean}
+      orientation={(p.orientation as "vertical" | "horizontal") ?? "vertical"}
+    >
       <Checkbox value="apple" label="苹果" />
       <Checkbox value="banana" label="香蕉" />
       <Checkbox value="cherry" label="樱桃" />
@@ -16,12 +21,31 @@ function Controlled(p: Record<string, unknown>) {
 }
 
 export const checkboxGroupShowcase: ShowcaseSpec = {
-  controls: [{ prop: "disabled", type: "boolean", defaultValue: false }],
+  controls: [
+    {
+      prop: "orientation",
+      type: "select",
+      options: ["vertical", "horizontal"],
+      defaultValue: "vertical",
+      label: "方向",
+    },
+    { prop: "disabled", type: "boolean", defaultValue: false },
+  ],
   states: [
     {
       name: "default",
       render: () => (
         <CheckboxGroup defaultValue={["apple"]}>
+          <Checkbox value="apple" label="苹果" />
+          <Checkbox value="banana" label="香蕉" />
+          <Checkbox value="cherry" label="樱桃" />
+        </CheckboxGroup>
+      ),
+    },
+    {
+      name: "横排",
+      render: () => (
+        <CheckboxGroup defaultValue={["apple"]} orientation="horizontal">
           <Checkbox value="apple" label="苹果" />
           <Checkbox value="banana" label="香蕉" />
           <Checkbox value="cherry" label="樱桃" />

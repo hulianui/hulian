@@ -21,7 +21,7 @@ export function RadioGroup({
       {...props}
       className={cn(
         "flex",
-        orientation === "horizontal" ? "flex-row flex-wrap gap-4" : "flex-col gap-2",
+        orientation === "horizontal" ? "flex-row flex-wrap gap-x-5 gap-y-2.5" : "flex-col gap-2.5",
         className,
       )}
     >
