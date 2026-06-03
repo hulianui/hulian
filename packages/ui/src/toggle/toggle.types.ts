@@ -1,0 +1,32 @@
+import type { ReactNode } from "react";
+
+export interface ToggleProps {
+  /** 受控按下态。 */
+  pressed?: boolean;
+  /** 非受控初始按下态。 */
+  defaultPressed?: boolean;
+  /** 瑚琏收敛签名（丢 Base UI eventDetails，同 Switch 风格）。 */
+  onPressedChange?: (pressed: boolean) => void;
+  disabled?: boolean;
+  /** 在 ToggleGroup 内标识该项。 */
+  value?: string;
+  variant?: "default" | "outline";
+  size?: "sm" | "md";
+  className?: string;
+  children?: ReactNode;
+  "aria-label"?: string;
+}
+
+export interface ToggleGroupProps {
+  /** 受控：已按下项 value 数组。 */
+  value?: string[];
+  /** 非受控初始按下项数组。 */
+  defaultValue?: string[];
+  onValueChange?: (value: string[]) => void;
+  disabled?: boolean;
+  /** true=多选共存；false(默认)=单选互斥。 */
+  multiple?: boolean;
+  orientation?: "horizontal" | "vertical";
+  className?: string;
+  children?: ReactNode;
+}

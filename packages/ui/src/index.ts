@@ -36,6 +36,15 @@ export * from "./drawer";
 export * from "./menu";
 export * from "./toast";
 export * from "./progress";
+export * from "./separator";
+export * from "./toggle";
+export * from "./meter";
+export * from "./number-field";
+export * from "./checkbox-group";
+export * from "./toolbar";
+export * from "./alert-dialog";
+export * from "./scroll-area";
+export * from "./form";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

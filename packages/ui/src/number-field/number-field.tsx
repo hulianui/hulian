@@ -1,0 +1,39 @@
+"use client";
+import { NumberField as BaseNumberField } from "@base-ui-components/react/number-field";
+import { Minus, Plus } from "lucide-react";
+import { cn } from "../lib/cn";
+import type { NumberFieldProps } from "./number-field.types";
+
+// 外壳复刻 Input 家风（focus-within ring）；±按钮居两侧；Input 居中 tabular-nums。
+// 键盘 ↑↓/PageUp/Down/Home/End + 到达 min/max 时按钮自动禁用，全由 Base UI 兜底。
+const btnClass =
+  "inline-flex size-9 shrink-0 items-center justify-center text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
+
+export function NumberField({ className, "aria-label": ariaLabel, onValueChange, ...props }: NumberFieldProps) {
+  return (
+    <BaseNumberField.Root
+      {...props}
+      onValueChange={onValueChange ? (v) => onValueChange(v) : undefined}
+      className={className}
+    >
+      <BaseNumberField.Group
+        className={cn(
+          "inline-flex items-center overflow-hidden rounded-[var(--radius)] border border-border bg-surface",
+          "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg",
+          "data-[disabled]:opacity-50",
+        )}
+      >
+        <BaseNumberField.Decrement className={cn(btnClass, "border-r border-border")} aria-label="减少">
+          <Minus className="size-4" />
+        </BaseNumberField.Decrement>
+        <BaseNumberField.Input
+          aria-label={ariaLabel}
+          className="h-9 w-16 bg-transparent text-center text-sm tabular-nums text-foreground outline-none"
+        />
+        <BaseNumberField.Increment className={cn(btnClass, "border-l border-border")} aria-label="增加">
+          <Plus className="size-4" />
+        </BaseNumberField.Increment>
+      </BaseNumberField.Group>
+    </BaseNumberField.Root>
+  );
+}
