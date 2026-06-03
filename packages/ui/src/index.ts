@@ -87,6 +87,10 @@ export * from "./avatar-circles";
 export * from "./orbiting-circles";
 export * from "./animated-list";
 export * from "./progressive-blur";
+export * from "./dock";
+export * from "./lens";
+export * from "./terminal";
+export * from "./bento-grid";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

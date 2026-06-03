@@ -104,4 +104,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "orbiting-circles", name: "OrbitingCircles", description: "轨道环绕 · 子元素沿圆周匀速公转 + 自身反旋正立(纯 CSS·RSC)", category: "effects", status: "new" },
   { slug: "animated-list", name: "AnimatedList", description: "动效列表 · 子项逐个淡入上移入场(motion + 进入视口)", category: "effects", status: "new" },
   { slug: "progressive-blur", name: "ProgressiveBlur", description: "渐进模糊 · 分层 backdrop-blur + mask 渐变(纯 CSS·RSC)", category: "effects", status: "new" },
+  { slug: "dock", name: "Dock", description: "放大坞 · macOS 式按鼠标距离放大图标(motion 弹簧 + context 下发 mouseX)", category: "navigation", status: "new" },
+  { slug: "lens", name: "Lens", description: "放大镜 · 悬停光标处圆形放大任意 children(零依赖 mask+scale)", category: "effects", status: "new" },
+  { slug: "terminal", name: "Terminal", description: "终端框 · mac 窗口外壳 + 命令行逐行揭示(motion + tone)", category: "effects", status: "new" },
+  { slug: "bento-grid", name: "BentoGrid", description: "错落栅格 · BentoGrid/BentoCard 复合 + 跨列跨行 + hover CTA(纯 CSS·RSC)", category: "data-display", status: "new" },
 ];
