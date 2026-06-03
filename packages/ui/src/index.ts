@@ -80,6 +80,7 @@ export * from "./user";
 export * from "./image";
 export * from "./navbar";
 export * from "./input-otp";
+export * from "./listbox";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

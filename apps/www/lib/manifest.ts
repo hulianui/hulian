@@ -95,4 +95,5 @@ export const manifest: ComponentMeta[] = [
   { slug: "image", name: "Image", description: "图片 · 加载淡入 + 失败回退/占位 + isZoomed hover 放大 + radius", category: "data-display", status: "new" },
   { slug: "navbar", name: "Navbar", description: "导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换", category: "navigation", status: "new" },
   { slug: "input-otp", name: "InputOTP", description: "验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)", category: "inputs", status: "new" },
+  { slug: "listbox", name: "Listbox", description: "可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)", category: "inputs", status: "new" },
 ];
