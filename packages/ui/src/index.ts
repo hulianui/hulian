@@ -142,6 +142,8 @@ export {
   shimmer,
 } from "./motion";
 
+export * from "./search-form";
+
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";
 export type { ShowcaseSpec, Control, StateSpec, ControlType } from "./showcase/types";

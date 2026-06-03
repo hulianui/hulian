@@ -117,6 +117,7 @@ import {
   transferShowcase,
   contextMenuShowcase,
   hoverCardShowcase,
+  searchFormShowcase,
 } from "@hulian/ui";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -237,6 +238,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   transfer: transferShowcase,
   "context-menu": contextMenuShowcase,
   "hover-card": hoverCardShowcase,
+  "search-form": searchFormShowcase,
   heading: headingShowcase,
   text: textShowcase,
   prose: proseShowcase,
