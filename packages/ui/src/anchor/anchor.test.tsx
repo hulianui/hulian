@@ -136,6 +136,19 @@ describe("Anchor 点击平滑滚动", () => {
     fireEvent.click(container.querySelector('a[href="#api"]')!);
     expect(window.scrollTo).not.toHaveBeenCalled();
   });
+
+  it("传 getContainer 时滚动落到容器而非 window", () => {
+    mountSections();
+    const scroller = document.createElement("div");
+    scroller.scrollTo = vi.fn() as unknown as typeof scroller.scrollTo;
+    document.body.appendChild(scroller);
+    const { container } = render(<Anchor items={items} getContainer={() => scroller} />);
+
+    fireEvent.click(container.querySelector('a[href="#api"]')!);
+
+    expect(scroller.scrollTo).toHaveBeenCalledTimes(1);
+    expect(window.scrollTo).not.toHaveBeenCalled();
+  });
 });
 
 describe("Anchor scrollspy（IntersectionObserver 驱动）", () => {

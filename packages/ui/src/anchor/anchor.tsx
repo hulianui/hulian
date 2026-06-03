@@ -25,6 +25,7 @@ export function Anchor({
   items,
   offsetTop = 0,
   onChange,
+  getContainer,
   className,
   "aria-label": ariaLabel = "锚点导航",
   ...props
@@ -55,19 +56,21 @@ export function Anchor({
   // scrollspy：观测各 section，取文档顺序最靠前的可见项为当前锚点
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") return;
+    // 自定义容器作 IO root（内层滚动体场景）；否则 null = 视口
+    const root = getContainer?.() ?? null;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const e of entries) visibleRef.current[(e.target as HTMLElement).id] = e.isIntersecting;
         const first = ids.find((id) => visibleRef.current[id]);
         if (first) updateActive(`#${first}`);
       },
-      // 上沿收缩 offsetTop（与固定页头对齐），下沿收缩 55% → 仅当 section 顶部进入视口上 ~45% 才算当前
-      { rootMargin: `-${offsetTop}px 0px -55% 0px`, threshold: 0 },
+      // 上沿收缩 offsetTop（与固定页头对齐），下沿收缩 55% → 仅当 section 顶部进入根上 ~45% 才算当前
+      { root, rootMargin: `-${offsetTop}px 0px -55% 0px`, threshold: 0 },
     );
     const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [ids, offsetTop, updateActive]);
+  }, [ids, offsetTop, updateActive, getContainer]);
 
   // 滑块测量：active 变化时读取激活链接的 offsetTop/offsetHeight（相对定位的 <ul>）写进 CSS 变量
   useLayoutEffect(() => {
@@ -87,8 +90,17 @@ export function Anchor({
     const el = document.getElementById(hrefToId(href));
     if (!el) return; // 容错：目标不存在则交给默认行为/不处理
     e.preventDefault();
-    const top = el.getBoundingClientRect().top + window.scrollY - offsetTop;
-    window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+    const behavior: ScrollBehavior = reduced ? "auto" : "smooth";
+    const container = getContainer?.() ?? null;
+    if (container) {
+      // 目标相对容器内容顶部的距离 = 两者视口 rect 差 + 容器已滚距离 - 偏移
+      const top =
+        el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - offsetTop;
+      container.scrollTo({ top, behavior });
+    } else {
+      const top = el.getBoundingClientRect().top + window.scrollY - offsetTop;
+      window.scrollTo({ top, behavior });
+    }
     updateActive(href);
   };
 
