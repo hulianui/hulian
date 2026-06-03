@@ -130,6 +130,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "context-menu", name: "ContextMenu", description: "右键菜单 · Base UI context-menu 原语薄包(锚到光标) + 复用 Menu 皮肤/data-highlighted + danger", category: "navigation", status: "new" },
   { slug: "hover-card", name: "HoverCard", description: "悬停卡片 · Popover 引擎自研 hover 开/移出延迟关(复刻 Tooltip delay 范式) + 富内容", category: "feedback", status: "new" },
   { slug: "resizable", name: "Resizable", description: "拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator)", category: "data-display", status: "new" },
+  { slug: "heading", name: "Heading", description: "标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "text", name: "Text", description: "文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)", category: "data-display", status: "new" },
+  { slug: "prose", name: "Prose", description: "排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC)", category: "data-display", status: "new" },
   { slug: "collapsible", name: "Collapsible", description: "折叠区 · Base UI collapsible 薄包 + 高度过渡(复用 Accordion --collapsible-panel-height)", category: "navigation", status: "new" },
   { slug: "segmented", name: "Segmented", description: "分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖)", category: "inputs", status: "new" },
 ];

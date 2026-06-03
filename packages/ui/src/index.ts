@@ -118,6 +118,10 @@ export * from "./result";
 export * from "./upload";
 // 穿梭框（零依赖自研·复用 Listbox 双面板 + Empty 空态）
 export * from "./transfer";
+// 排版族（纯皮肤·零依赖·RSC 友好·全吃语义 token）
+export * from "./heading";
+export * from "./text";
+export * from "./prose";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

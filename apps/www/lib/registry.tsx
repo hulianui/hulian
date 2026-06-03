@@ -231,4 +231,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   transfer: transferShowcase,
   "context-menu": contextMenuShowcase,
   "hover-card": hoverCardShowcase,
+  heading: headingShowcase,
+  text: textShowcase,
+  prose: proseShowcase,
 };
