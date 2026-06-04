@@ -22,6 +22,7 @@ import {
   BentoCard,
   BentoGrid,
   Button,
+  DotPattern,
   Heading,
   Marquee,
   NumberTicker,
@@ -108,15 +109,19 @@ export default function Home() {
         <AnimatedThemeToggler />
       </Stack>
 
-      {/* Hero —— 左对齐、非对称，靠层级与留白说话；isolate 让辉光锁在本段内 */}
+      {/* Hero —— 左对齐、非对称，靠层级与留白说话；isolate 让背景层锁在本段内 */}
       <section className="relative isolate pt-20 sm:pt-28">
-        {/* 品牌辉光：server 安全的纯 CSS 径向渐变，柔化空旷的顶部 */}
+        {/* 纹理层：dogfood 自家 DotPattern，径向遮罩向四周淡出（库无「辉光」件，渐变仍走 CSS） */}
+        <DotPattern
+          className="-z-10 text-border/70 [mask-image:radial-gradient(40%_50%_at_30%_10%,black,transparent)]"
+        />
+        {/* 品牌辉光：径向渐变叠在纹理上做层次（纯 CSS，无库对应件） */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-64 blur-2xl"
           style={{
             background:
-              "radial-gradient(50% 60% at 30% 0%, color-mix(in oklch, var(--color-primary) 20%, transparent), transparent 70%)",
+              "radial-gradient(50% 60% at 30% 0%, color-mix(in oklch, var(--color-primary) 18%, transparent), transparent 70%)",
           }}
         />
 
