@@ -7,7 +7,7 @@ import {
   Avatar,
   Button,
   Toggle,
-  Badge,
+  Tag,
   Stack,
   Heading,
   Text,
@@ -41,6 +41,14 @@ import {
   TypingDots,
   Empty,
   CodeBlock,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+  Popconfirm,
+  Kbd,
 } from "@hulian/ui";
 import {
   Plus,
@@ -54,9 +62,12 @@ import {
   Search,
   PanelLeft,
   MoreHorizontal,
+  Trash2,
 } from "lucide-react";
 import { CONVERSATIONS, CONVERSATION_GROUPS, type ConversationStub } from "./conversations";
 import { useChatStream } from "./use-chat-stream";
+import { useMockData } from "../lib/async";
+import { ListSkeleton } from "../lib/skeletons";
 import type { AssistantMessage } from "./chat-types";
 
 const MODELS = [
@@ -83,12 +94,16 @@ function Rail({
   onSelect,
   onNew,
   onCollapse,
+  onDelete,
+  loadingConvos,
 }: {
   convos: ConversationStub[];
   activeId: string;
-  onSelect: (id: string) => void;
+  onSelect: (id: string) => void | Promise<void>;
   onNew: () => void;
   onCollapse: () => void;
+  onDelete: (id: string) => void;
+  loadingConvos: boolean;
 }) {
   const navItems: NavMenuNode[] = CONVERSATION_GROUPS.map((group) => ({
     type: "group" as const,
@@ -96,7 +111,35 @@ function Rail({
     label: group,
     children: convos
       .filter((c) => c.group === group)
-      .map((c) => ({ key: c.id, label: c.title })),
+      .map((c) => ({
+        key: c.id,
+        label: (
+          <span className="group/item flex w-full items-center justify-between gap-1">
+            <span className="truncate">{c.title}</span>
+            {/* 删除按钮：hover 才显；Popconfirm 二次确认 */}
+            <Popconfirm
+              title="删除对话？"
+              description="此操作不可撤销，对话记录将永久删除。"
+              danger
+              okText="删除"
+              onConfirm={async () => {
+                await new Promise<void>((r) => setTimeout(r, 400));
+                onDelete(c.id);
+                toast({ title: "对话已删除", tone: "info" });
+              }}
+            >
+              <button
+                type="button"
+                aria-label={`删除对话：${c.title}`}
+                onClick={(e) => e.stopPropagation()}
+                className="invisible shrink-0 rounded p-0.5 text-muted opacity-0 transition-opacity hover:text-danger group-hover/item:visible group-hover/item:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <Trash2 className="size-3.5" />
+              </button>
+            </Popconfirm>
+          </span>
+        ),
+      })),
   })).filter((g) => g.children.length > 0);
 
   return (
@@ -115,18 +158,32 @@ function Rail({
           </Text>
         </Stack>
         <Stack direction="row" align="center" gap={1}>
-          <Button variant="ghost" size="iconSm" aria-label="搜索对话" className="text-muted hover:text-foreground">
-            <Search className="size-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="iconSm"
-            onClick={onCollapse}
-            aria-label="收起侧栏"
-            className="text-muted hover:text-foreground"
-          >
-            <PanelLeft className="size-4" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button variant="ghost" size="iconSm" aria-label="搜索对话" className="text-muted hover:text-foreground">
+                  <Search className="size-4" />
+                </Button>
+              }
+            />
+            <TooltipContent>搜索对话</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="iconSm"
+                  onClick={onCollapse}
+                  aria-label="收起侧栏"
+                  className="text-muted hover:text-foreground"
+                >
+                  <PanelLeft className="size-4" />
+                </Button>
+              }
+            />
+            <TooltipContent>收起侧栏</TooltipContent>
+          </Tooltip>
         </Stack>
       </Stack>
 
@@ -135,12 +192,17 @@ function Rail({
         <Button variant="outline" onClick={onNew} className="w-full justify-center gap-2 rounded-full">
           <Plus className="size-4" aria-hidden /> 新建对话
         </Button>
-        <NavMenu
-          className="w-full"
-          items={navItems}
-          selectedKeys={[activeId]}
-          onSelect={(key) => onSelect(key)}
-        />
+        {/* 加载态：useMockData 驱动骨架，模拟初始会话列表加载 */}
+        {loadingConvos ? (
+          <ListSkeleton rows={4} />
+        ) : (
+          <NavMenu
+            className="w-full"
+            items={navItems}
+            selectedKeys={[activeId]}
+            onSelect={(key) => { void onSelect(key); }}
+          />
+        )}
       </div>
 
       {/* 底部用户档：用户信息区 + 账户菜单 各自独立可点（非一体） */}
@@ -218,12 +280,45 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
       {m.citations.length > 0 ? (
         <Stack direction="row" wrap gap={2}>
           {m.citations.map((c) => (
-            <Citation key={c.index} index={c.index} title={c.title} source={c.source} href={c.href} />
+            // HoverCard 悬浮预览：hover 在 Citation chip 上时，弹出卡片显示引用原文摘要
+            <HoverCard key={c.index}>
+              <HoverCardTrigger render={<span />}>
+                <Citation index={c.index} title={c.title} source={c.source} href={c.href} />
+              </HoverCardTrigger>
+              <HoverCardContent side="top" className="w-72 p-3">
+                <Stack gap={1.5}>
+                  <Text as="p" size="xs" weight="semibold" className="line-clamp-1">
+                    {c.title}
+                  </Text>
+                  {c.source && (
+                    <Text as="p" size="xs" className="text-muted">
+                      来源：{c.source}
+                    </Text>
+                  )}
+                  <Text as="p" size="xs" className="line-clamp-4 text-muted leading-relaxed">
+                    {/* demo 占位原文摘要——真实场景接引用正文 */}
+                    这是引用来源的原文摘要。悬停在引用标签上可预览文章摘要，帮助读者快速判断引用内容的相关性和可信度，无需跳转即可获得上下文。
+                  </Text>
+                  {c.href && (
+                    <a
+                      href={c.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary underline-offset-2 hover:underline"
+                    >
+                      查看原文 →
+                    </a>
+                  )}
+                </Stack>
+              </HoverCardContent>
+            </HoverCard>
           ))}
         </Stack>
       ) : null}
 
       {m.phase === "done" ? (
+        // MessageActions 组件内置 title 属性（原生 tooltip），此处包裹 TooltipProvider
+        // 以确保多个图标钮共享 delay 分组，改善快速扫过时的体验
         <MessageActions
           content={m.text}
           onCopy={() => toast({ title: "已复制到剪贴板", tone: "info" })}
@@ -249,9 +344,19 @@ export default function AiChatDemo() {
   const [railCollapsed, setRailCollapsed] = useState(false);
   const { messages, loading, send, stop, reset } = useChatStream();
 
-  const selectConvo = (id: string) => {
-    setActiveId(id);
+  // 模拟初始会话列表异步加载（驱动 Rail 的 ListSkeleton 骨架）
+  const { loading: loadingConvos } = useMockData(CONVERSATIONS, { delay: 700 });
+
+  // 切换会话时有短暂 loading 态，模拟历史消息加载
+  const [switchingConvo, setSwitchingConvo] = useState(false);
+
+  const selectConvo = async (id: string) => {
+    if (id === activeId) return;
+    setSwitchingConvo(true);
     reset();
+    await new Promise<void>((r) => setTimeout(r, 450));
+    setActiveId(id);
+    setSwitchingConvo(false);
     setDrawerOpen(false);
   };
   const newConvo = () => {
@@ -260,6 +365,18 @@ export default function AiChatDemo() {
     setActiveId(id);
     reset();
     setDrawerOpen(false);
+  };
+
+  // 删除会话：若删除的是当前活跃会话则切到第一条剩余会话
+  const deleteConvo = (id: string) => {
+    setConvos((cs) => {
+      const next = cs.filter((c) => c.id !== id);
+      if (id === activeId && next.length > 0) {
+        setActiveId(next[0].id);
+        reset();
+      }
+      return next;
+    });
   };
   // 发消息：让会话列表“活”起来 —— 新对话的首条消息自动成为其标题（同 DeepSeek/ChatGPT）
   const handleSend = (text: string) => {
@@ -290,6 +407,8 @@ export default function AiChatDemo() {
                 onSelect={selectConvo}
                 onNew={newConvo}
                 onCollapse={() => setDrawerOpen(false)}
+                onDelete={deleteConvo}
+                loadingConvos={loadingConvos}
               />
             </DrawerContent>
           </Drawer>
@@ -311,9 +430,9 @@ export default function AiChatDemo() {
         <Heading as="span" size="base" weight="semibold">
           AI 对话工具
         </Heading>
-        <Badge variant="soft" size="sm">
+        <Tag variant="soft" size="sm">
           demo
-        </Badge>
+        </Tag>
       </Stack>
       <Select
         items={MODELS}
@@ -353,11 +472,42 @@ export default function AiChatDemo() {
                 onSelect={selectConvo}
                 onNew={newConvo}
                 onCollapse={() => setRailCollapsed(true)}
+                onDelete={deleteConvo}
+                loadingConvos={loadingConvos}
               />
             </aside>
           )}
           <Layout.Content className="flex min-h-0 flex-col p-0">
-            {messages.length === 0 ? (
+            {/* 切换会话时：气泡骨架占位，模拟历史消息加载 */}
+            {switchingConvo ? (
+              <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+                <div className="mx-auto max-w-3xl space-y-6">
+                  {/* 助手气泡骨架 */}
+                  <div className="flex gap-3">
+                    <div className="size-8 shrink-0 rounded-full bg-surface-hover" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-3.5 w-16 rounded bg-surface-hover" />
+                      <div className="h-4 w-full rounded bg-surface-hover" />
+                      <div className="h-4 w-4/5 rounded bg-surface-hover" />
+                      <div className="h-4 w-2/3 rounded bg-surface-hover" />
+                    </div>
+                  </div>
+                  {/* 用户气泡骨架 */}
+                  <div className="flex justify-end">
+                    <div className="h-10 w-48 rounded-2xl bg-surface-hover" />
+                  </div>
+                  {/* 助手气泡骨架 */}
+                  <div className="flex gap-3">
+                    <div className="size-8 shrink-0 rounded-full bg-surface-hover" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-3.5 w-16 rounded bg-surface-hover" />
+                      <div className="h-4 w-full rounded bg-surface-hover" />
+                      <div className="h-4 w-3/4 rounded bg-surface-hover" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : messages.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6">
                 <Empty
                   icon={<Bot className="size-10" aria-hidden />}
@@ -446,18 +596,32 @@ export default function AiChatDemo() {
                     </>
                   }
                   trailing={
-                    <Button
-                      variant="ghost"
-                      size="iconSm"
-                      className="shrink-0 text-muted hover:text-foreground"
-                      aria-label="添加附件"
-                    >
-                      <Paperclip className="size-4" />
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="iconSm"
+                            className="shrink-0 text-muted hover:text-foreground"
+                            aria-label="添加附件"
+                          >
+                            <Paperclip className="size-4" />
+                          </Button>
+                        }
+                      />
+                      <TooltipContent>添加附件</TooltipContent>
+                    </Tooltip>
                   }
                 />
-                <p className="mt-2 text-center text-xs text-muted">
-                  瑚琏助手可能会出错 · 本 demo 为纯前端交互演示，未接入真实模型
+                <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-xs text-muted">
+                  <span>瑚琏助手可能会出错 · 本 demo 为纯前端交互演示，未接入真实模型</span>
+                  <span className="hidden items-center gap-1 sm:inline-flex">
+                    ·
+                    <Kbd>⌘</Kbd>
+                    <span>+</span>
+                    <Kbd>↵</Kbd>
+                    <span>发送</span>
+                  </span>
                 </p>
               </div>
             </div>
