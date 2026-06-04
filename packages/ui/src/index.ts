@@ -160,6 +160,14 @@ export { ThemeProvider } from "./theme/theme-provider";
 export { useTheme } from "./theme/use-theme";
 export type { Theme, ThemeSetting } from "./theme/use-theme";
 
+// 权限（基础设施·不进组件画廊·同 ThemeProvider 先例）
+export { AccessProvider } from "./access/access-provider";
+export type { AccessProviderProps } from "./access/access-provider";
+export { Access } from "./access/access";
+export type { AccessProps } from "./access/access";
+export { useAccess } from "./access/use-access";
+export type { AccessContextValue } from "./access/use-access";
+
 // 动效基元（时长/曲线 token + 预设）
 export {
   motionDuration,
