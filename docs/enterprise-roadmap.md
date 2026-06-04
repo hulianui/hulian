@@ -51,10 +51,12 @@
 
 ## 🟡 P1 — 中优先级
 
-- [ ] **ProForm / Form.List**：动态增减字段 + 字段联动依赖 + 分步表单（结合已交付的 Steps）。
+- [x] ~~**ProForm**~~ ✅ 2026-06-04（内联表单编排·useForm + footer + async submit）
+- [x] ~~**StepsForm**~~ ✅ 2026-06-04（分步表单·复用 Steps + 逐步校验）
+- [x] ~~**Form.List**~~ ✅ 已存在（form/ 内 useForm/FormList/validateValue 引擎）
+- [x] ~~**登录模板 LoginForm**~~ ✅ 2026-06-04（账号/密码/记住我·异常页 403/404/500 由 Result 原子件直接覆盖）
 - [ ] **VirtualList**：独立虚拟滚动列表（Table 已支持虚拟，列表场景另需）。企业数据动辄上万行。
 - [ ] **ProDescriptions**：详情页 schema 驱动 + 编辑态联动（扩展已有 Descriptions）。
-- [ ] **登录页 / 异常页模板**：Login 模板 + 403/404/500 成品页（已有 Result 原子件，缺成品页）。
 - [ ] **ProTable 增强**：列拖拽排序、行拖拽、`pageSize` 切换器、导出 CSV、列固定与设置持久化。
 - [ ] **AdminLayout 增强**：页签右键菜单、页签持久化(localStorage)、多级面包屑自动从菜单派生、用户菜单成品件。
 
@@ -76,8 +78,8 @@
 落地企业管理系统的推荐顺序：
 
 ```
-已完成：AdminLayout + ProTable + EditableTable + ModalForm/DrawerForm + Steps + Tag + Access + ConfigProvider/i18n
-P0 基本收口。剩余偏 P1：ProForm/Form.List(已有 useForm/FormList 底座) · VirtualList · 登录/异常页模板 · i18n 续(原子件文案) · ConfigProvider 全局 size
+已完成：AdminLayout + ProTable + EditableTable + ModalForm/DrawerForm + ProForm + StepsForm + LoginForm + Steps + Tag + Access + ConfigProvider/i18n
+P0 + 大部分 P1 表单族收口。剩余：VirtualList · ProDescriptions · ProTable/AdminLayout 增强 · i18n 续(原子件文案) · ConfigProvider 全局 size · 浏览器视觉验收(6+3 新组件截图)
 ```
 
 一个 ProTable + AdminLayout(多页签) 带来的「能搭系统」感知，远超再加 20 个原子组件——
