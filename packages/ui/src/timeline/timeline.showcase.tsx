@@ -20,7 +20,7 @@ const approval: TimelineItemProps[] = [
 
 // 物流轨迹。
 const logistics: TimelineItemProps[] = [
-  { label: "06-01 08:00", children: "包裹已揽收 · 杭州转运中心" },
+  { label: "06-01 08:00", children: "包裹已揽收 · 杭州转运中心", color: "success" },
   { label: "06-01 22:30", children: "运输中 · 已发往上海", color: "primary" },
   { label: "06-02 09:15", children: "已到达 · 上海浦东派送点", color: "primary" },
 ];

@@ -11,9 +11,22 @@ import {
 } from "react";
 import { cn } from "../lib/cn";
 import { textareaVariants } from "../textarea/textarea";
-import { findTrigger, insertMention, defaultFilter, type ActiveTrigger } from "./mentions.logic";
+import {
+  findTrigger,
+  insertMention,
+  defaultFilter,
+  segmentMentions,
+  type ActiveTrigger,
+} from "./mentions.logic";
 import { getCaretCoordinates } from "./mentions.caret";
 import type { MentionsProps, MentionOption } from "./mentions.types";
+
+// 高亮背板与 textarea 必须逐像素对齐：字号/行高/内边距同源（与 textareaVariants 的 size 映射一致）。
+const BACKDROP_PAD: Record<"sm" | "md" | "lg", string> = {
+  sm: "px-2.5 py-1.5 text-sm",
+  md: "px-3 py-2 text-sm",
+  lg: "px-3.5 py-2.5 text-base",
+};
 
 // 自研 @提及 输入（零依赖·"use client"）：
 //  - 基于受控/非受控 textarea，复用 Textarea 的 `textareaVariants` 皮肤。
@@ -46,6 +59,7 @@ export function Mentions({
   const text = isControlled ? value! : internal;
 
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
   const listId = useId();
   const optionId = (i: number) => `${listId}-opt-${i}`;
 
@@ -65,6 +79,14 @@ export function Mentions({
   }, [trigger, options, filter]);
 
   const open = trigger !== null && candidates.length > 0;
+
+  // 高亮背板分段：已提交的 @提及 套色 chip；背板随 textarea 内部滚动平移保持对齐。
+  const segments = useMemo(() => segmentMentions(text, prefix), [text, prefix]);
+  const syncScroll = () => {
+    const el = taRef.current;
+    const bd = backdropRef.current;
+    if (el && bd) bd.style.transform = `translateY(${-el.scrollTop}px)`;
+  };
 
   const commit = (next: string) => {
     if (!isControlled) setInternal(next);
@@ -97,6 +119,7 @@ export function Mentions({
     const next = e.target.value;
     commit(next);
     syncTrigger(next, e.target.selectionStart ?? next.length);
+    syncScroll();
   };
 
   const select = (opt: MentionOption | undefined) => {
@@ -111,6 +134,7 @@ export function Mentions({
   };
 
   // 选中后把光标落到插入文本之后（在值 commit 触发的重渲之后执行，避免被旧值覆盖）。
+  // 同时每次渲染后校正背板滚动位移（受控值变更 / resize 等路径也覆盖）。
   useEffect(() => {
     if (pendingCaret.current != null && taRef.current) {
       const el = taRef.current;
@@ -118,6 +142,7 @@ export function Mentions({
       el.setSelectionRange(pendingCaret.current, pendingCaret.current);
       pendingCaret.current = null;
     }
+    syncScroll();
   });
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -159,8 +184,40 @@ export function Mentions({
     if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) refreshFromCaret();
   };
 
+  const pad = BACKDROP_PAD[size ?? "md"];
+
   return (
     <div className={cn("relative w-full", className)}>
+      {/* 高亮背板：与 textarea 同字号/行高/内边距镜像文本，已提交 @提及 套色 chip。
+          textarea 文本透明、仅留光标，故真正可见的彩色字形来自这一层（背板在下、textarea 在上）。 */}
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-0 overflow-hidden rounded-[var(--radius)] border border-transparent bg-surface",
+          disabled && "opacity-50",
+        )}
+      >
+        <div
+          ref={backdropRef}
+          className={cn("whitespace-pre-wrap break-words text-foreground", pad)}
+        >
+          {segments.map((seg, i) =>
+            seg.mention ? (
+              <mark
+                key={i}
+                className="rounded-[0.25rem] bg-primary/12 text-primary"
+              >
+                {seg.text}
+              </mark>
+            ) : (
+              <span key={i}>{seg.text}</span>
+            ),
+          )}
+          {/* 末行为换行时补一字符，保证背板末行高度与 textarea 一致（pre-wrap 末尾空行不撑高）。 */}
+          {text.endsWith("\n") ? " " : null}
+        </div>
+      </div>
+
       <textarea
         {...rest}
         ref={taRef}
@@ -176,13 +233,15 @@ export function Mentions({
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         onClick={handleClick}
+        onScroll={syncScroll}
         onBlur={(e) => {
           rest.onBlur?.(e);
           // 失焦关闭（候选项用 onMouseDown 抢在 blur 前选中，故不丢选择）。
           close();
         }}
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
-        className={cn(textareaVariants({ size }), "resize-y")}
+        // 文本透明、背景透明（露出背板），仅保留光标色；彩色字形交给背板渲染。
+        className={cn(textareaVariants({ size }), "relative resize-y bg-transparent text-transparent caret-foreground")}
       />
 
       {open && (

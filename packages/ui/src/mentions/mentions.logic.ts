@@ -41,6 +41,46 @@ export function insertMention(
   return { value: next, caret: triggerStart + inserted.length };
 }
 
+export interface MentionSegment {
+  text: string;
+  /** 是否为一段提及（prefix + 非空白串），供高亮背板着色用。 */
+  mention: boolean;
+}
+
+/**
+ * 把整段文本切成「普通文本 / 提及」交替片段，供高亮背板逐段套色。
+ * 提及判定与 findTrigger 同口径：prefix 前为行首或空白（避开 a@b 邮件），prefix 后取非空白串
+ * （遇空白即结束），且至少含一个字符。返回片段拼接后等于原文（无丢字）。
+ */
+export function segmentMentions(value: string, prefix: string): MentionSegment[] {
+  if (!prefix || !value) return value ? [{ text: value, mention: false }] : [];
+  const out: MentionSegment[] = [];
+  let i = 0;
+  let plainStart = 0;
+  const flushPlain = (end: number) => {
+    if (end > plainStart) out.push({ text: value.slice(plainStart, end), mention: false });
+  };
+  while (i < value.length) {
+    if (value.startsWith(prefix, i)) {
+      const prev = i === 0 ? "" : value[i - 1];
+      if (!prev || /\s/.test(prev)) {
+        let j = i + prefix.length;
+        while (j < value.length && !/\s/.test(value[j])) j++;
+        if (j > i + prefix.length) {
+          flushPlain(i);
+          out.push({ text: value.slice(i, j), mention: true });
+          i = j;
+          plainStart = i;
+          continue;
+        }
+      }
+    }
+    i++;
+  }
+  flushPlain(value.length);
+  return out;
+}
+
 /** 内置默认过滤：大小写不敏感子串匹配 label 或 value。 */
 export function defaultFilter(option: { label: string; value: string }, query: string): boolean {
   const q = query.toLowerCase();

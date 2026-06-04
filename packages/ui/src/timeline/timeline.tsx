@@ -21,6 +21,16 @@ const dotColorClass: Record<TimelineDotColor, string> = {
   warning: "bg-warning",
 };
 
+// 节点容器文字色 —— 自定义 dot（多用 currentColor 的 SVG）靠它上色，与 color 语气对齐。
+// 默认圆点走 bg-* 自带色，不依赖此项（故 default 仍取 muted 不影响）。
+const dotTextClass: Record<TimelineDotColor, string> = {
+  default: "text-muted",
+  primary: "text-primary",
+  success: "text-success",
+  danger: "text-danger",
+  warning: "text-warning",
+};
+
 function DefaultDot({ color, pending }: { color: TimelineDotColor; pending: boolean }) {
   // pending=加载态旋转环（纯 CSS animate-spin，reduced-motion 降级静止）。
   if (pending) {
@@ -47,7 +57,7 @@ export function TimelineItem({
   // mt-0.5 让小圆点大致对齐首行文字中线；最后一项不画线。
   const node = (
     <div className="flex shrink-0 flex-col items-center">
-      <span className="mt-0.5 flex items-center justify-center text-muted [&>svg]:size-4">
+      <span className={cn("mt-0.5 flex items-center justify-center [&>svg]:size-4", dotTextClass[color])}>
         {dot ?? <DefaultDot color={color} pending={pending} />}
       </span>
       {!_last && (

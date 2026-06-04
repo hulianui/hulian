@@ -1,7 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Mentions } from "./mentions";
-import { findTrigger, insertMention, defaultFilter } from "./mentions.logic";
+import {
+  findTrigger,
+  insertMention,
+  defaultFilter,
+  segmentMentions,
+} from "./mentions.logic";
 import type { MentionOption } from "./mentions.types";
 
 const PEOPLE: MentionOption[] = [
@@ -46,6 +51,32 @@ describe("insertMention（纯逻辑）", () => {
   });
   it("句中插入保留前后文", () => {
     expect(insertMention("嗨 @bo!", 2, 5, "@", "陈航")).toEqual({ value: "嗨 @陈航 !", caret: 6 });
+  });
+});
+
+describe("segmentMentions（纯逻辑·高亮分段）", () => {
+  it("把 @提及 切成 mention 段、其余为 plain，拼接还原原文", () => {
+    const segs = segmentMentions("缺少 @负责人 跟进", "@");
+    expect(segs).toEqual([
+      { text: "缺少 ", mention: false },
+      { text: "@负责人", mention: true },
+      { text: " 跟进", mention: false },
+    ]);
+    expect(segs.map((s) => s.text).join("")).toBe("缺少 @负责人 跟进");
+  });
+  it("行首 @ 命中；a@b 邮件式不命中", () => {
+    expect(segmentMentions("@林晓", "@")).toEqual([{ text: "@林晓", mention: true }]);
+    expect(segmentMentions("a@b", "@")).toEqual([{ text: "a@b", mention: false }]);
+  });
+  it("孤立 prefix（@ 后无字符）不算提及", () => {
+    expect(segmentMentions("打个 @ 招呼", "@")).toEqual([{ text: "打个 @ 招呼", mention: false }]);
+  });
+  it("多个提及 + 多字符触发符", () => {
+    const segs = segmentMentions("@@a 和 @@b", "@@");
+    expect(segs.filter((s) => s.mention).map((s) => s.text)).toEqual(["@@a", "@@b"]);
+  });
+  it("空串返回空数组", () => {
+    expect(segmentMentions("", "@")).toEqual([]);
   });
 });
 

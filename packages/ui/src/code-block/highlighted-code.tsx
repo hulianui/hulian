@@ -9,6 +9,9 @@ const TOKEN_STYLE: Partial<Record<CodeTokenType, CSSProperties>> = {
   number: { color: "var(--code-number)" },
   tag: { color: "var(--code-tag)" },
   attr: { color: "var(--code-attr)" },
+  // Shell：命令名复用 keyword（brand）色突出，flag/选项复用 attr（紫）色与命令区分。
+  command: { color: "var(--code-keyword)", fontWeight: 500 },
+  flag: { color: "var(--code-attr)" },
 };
 
 // 把代码文本切分着色，逐段套 <span>（纯文本段直接返回，避免无谓节点）。

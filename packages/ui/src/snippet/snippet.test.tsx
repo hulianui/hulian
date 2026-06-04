@@ -9,9 +9,11 @@ beforeEach(() => {
 });
 
 describe("Snippet", () => {
-  it("渲染内容 + 默认提示符 $", () => {
-    const { getByText } = render(<Snippet>pnpm install</Snippet>);
-    expect(getByText("pnpm install")).toBeTruthy();
+  it("渲染内容 + 默认提示符 $（命令名 shell 着色后文本仍完整）", () => {
+    const { getByText, container } = render(<Snippet>pnpm install</Snippet>);
+    // 着色把命令名拆成 span，故按 <code> 整体 textContent 校验文本无丢失。
+    expect(container.querySelector("code")!.textContent).toBe("pnpm install");
+    expect(getByText("pnpm")).toBeTruthy(); // 命令名独立成着色 span
     expect(getByText("$")).toBeTruthy();
   });
 

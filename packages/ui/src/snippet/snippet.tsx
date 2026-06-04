@@ -11,6 +11,8 @@ export function Snippet({ children, text, symbol = "$", lang, highlight = true, 
   const [copied, setCopied] = useState(false);
   const copyText = text ?? (typeof children === "string" ? children : "");
   const colorable = highlight && typeof children === "string";
+  // 带 `$`/`>` 等提示符的片段默认按 shell 着色（命令名+flag 上色）；symbol={null} 视作代码片段走默认(JS)。
+  const effLang = lang ?? (symbol != null ? "bash" : undefined);
 
   const onCopy = () => {
     void navigator.clipboard?.writeText(copyText);
@@ -27,7 +29,7 @@ export function Snippet({ children, text, symbol = "$", lang, highlight = true, 
     >
       {symbol != null && <span className="select-none text-muted">{symbol}</span>}
       <code className="text-foreground">
-        {colorable ? <HighlightedCode code={children as string} lang={lang} /> : children}
+        {colorable ? <HighlightedCode code={children as string} lang={effLang} /> : children}
       </code>
       <button
         type="button"

@@ -1,6 +1,7 @@
 import { cva } from "class-variance-authority";
 import { Avatar } from "../avatar/avatar";
 import { Link } from "../link/link";
+import { MentionText } from "../mentions/mention-text";
 import { cn } from "../lib/cn";
 import type {
   CommentActionProps,
@@ -56,6 +57,8 @@ export function Comment({
   ...props
 }: CommentProps) {
   const isLog = type === "log";
+  // 字符串正文自动高亮 @提及（chip）；传入 JSX 则原样渲染，把控制权交还消费者。
+  const body = typeof content === "string" ? <MentionText text={content} /> : content;
   return (
     <article
       data-type={type}
@@ -80,12 +83,12 @@ export function Comment({
           <span className={cn("text-foreground", isLog ? "text-sm" : "text-sm font-medium")}>
             {author}
           </span>
-          {isLog && content != null && <span className="text-sm text-muted">{content}</span>}
+          {isLog && content != null && <span className="text-sm text-muted">{body}</span>}
           {datetime != null && <span className="text-xs text-muted">{datetime}</span>}
         </div>
 
         {!isLog && content != null && (
-          <div className="mt-1 text-sm leading-relaxed text-foreground">{content}</div>
+          <div className="mt-1 text-sm leading-relaxed text-foreground">{body}</div>
         )}
 
         {actions != null && <CommentActions className="mt-1.5">{actions}</CommentActions>}

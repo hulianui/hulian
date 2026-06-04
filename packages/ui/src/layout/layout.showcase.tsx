@@ -1,38 +1,65 @@
 "use client";
+import { useState } from "react";
 import { Gauge, LayoutGrid, Settings, Users } from "lucide-react";
 import type { ReactNode } from "react";
+import { cn } from "../lib/cn";
+import { NavMenu } from "../nav-menu/nav-menu";
+import type { NavMenuNode } from "../nav-menu/nav-menu.types";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Layout } from "./layout";
 
-// 侧栏示意菜单：icon 常驻、label 在收起态被窄宽度裁切（真实消费者会按 collapsed 隐藏 label）。
-const navItems: { icon: ReactNode; label: string; active?: boolean }[] = [
-  { icon: <Gauge className="size-5 shrink-0" />, label: "仪表盘", active: true },
-  { icon: <LayoutGrid className="size-5 shrink-0" />, label: "工作台" },
-  { icon: <Users className="size-5 shrink-0" />, label: "用户管理" },
-  { icon: <Settings className="size-5 shrink-0" />, label: "系统设置" },
+// 侧栏菜单：dogfood 瑚琏 NavMenu —— 收起态直接切到组件自带的 collapsed 图标轨（悬浮飞出），
+// 不再手搓「窄宽裁切 label」。Sider 受控持 collapsed，故 mode 与品牌全/简切换都走 React 条件（零 CSS hack）。
+const menu: NavMenuNode[] = [
+  { key: "dashboard", label: "仪表盘", icon: <Gauge /> },
+  { key: "apps", label: "工作台", icon: <LayoutGrid /> },
+  { key: "users", label: "用户管理", icon: <Users /> },
+  { key: "settings", label: "系统设置", icon: <Settings /> },
 ];
 
-function SiderNav() {
+// Sider + NavMenu 一体演示件：自管 collapsed（受控传给 Sider，trigger/断点回写本地态），
+// 并据此驱动 NavMenu 的 mode 与品牌全称/单字标记。
+function DemoSider({
+  collapsed: collapsedProp,
+  collapsible = true,
+  defaultCollapsed,
+  collapsedWidth,
+  width,
+  breakpoint,
+}: {
+  collapsed?: boolean;
+  collapsible?: boolean;
+  defaultCollapsed?: boolean;
+  collapsedWidth?: number;
+  width?: number;
+  breakpoint?: "md";
+}) {
+  const [internal, setInternal] = useState(defaultCollapsed ?? false);
+  const collapsed = collapsedProp ?? internal;
   return (
-    <nav className="flex flex-col gap-1 p-2">
-      <div className="px-3 py-3 text-sm font-semibold text-foreground">瑚琏控制台</div>
-      {navItems.map((it) => (
-        <a
-          key={it.label}
-          href="#"
-          onClick={(e) => e.preventDefault()}
-          className={
-            "flex items-center gap-3 whitespace-nowrap rounded-[min(var(--radius),0.5rem)] px-3 py-2 text-sm transition-colors " +
-            (it.active
-              ? "bg-primary/12 font-medium text-primary"
-              : "text-muted hover:bg-surface-hover hover:text-foreground")
-          }
-        >
-          {it.icon}
-          <span>{it.label}</span>
-        </a>
-      ))}
-    </nav>
+    <Layout.Sider
+      collapsible={collapsible}
+      collapsed={collapsed}
+      collapsedWidth={collapsedWidth}
+      width={width}
+      breakpoint={breakpoint}
+      onCollapse={(c) => setInternal(c)}
+    >
+      <div
+        className={cn(
+          "flex h-12 shrink-0 items-center font-semibold text-primary",
+          collapsed ? "justify-center" : "px-4",
+        )}
+      >
+        {collapsed ? "瑚" : "瑚琏控制台"}
+      </div>
+      <NavMenu
+        items={menu}
+        mode={collapsed ? "collapsed" : "inline"}
+        selectedKeys={["dashboard"]}
+        className={collapsed ? "mx-auto py-2" : "w-full p-2"}
+      />
+    </Layout.Sider>
   );
 }
 
@@ -73,15 +100,13 @@ function ClassicShell({
 }) {
   return (
     <Layout className="h-full">
-      <Layout.Sider
+      <DemoSider
         collapsible={collapsible}
         collapsed={collapsed}
         defaultCollapsed={defaultCollapsed}
         collapsedWidth={collapsedWidth}
         breakpoint={breakpoint}
-      >
-        <SiderNav />
-      </Layout.Sider>
+      />
       <Layout>
         <Layout.Header sticky>
           <span className="font-medium text-foreground">中后台外壳</span>
@@ -118,9 +143,7 @@ export const layoutShowcase: ShowcaseSpec = {
               <span className="font-medium text-foreground">通栏头部</span>
             </Layout.Header>
             <Layout>
-              <Layout.Sider collapsible width={200}>
-                <SiderNav />
-              </Layout.Sider>
+              <DemoSider width={200} />
               <Layout.Content>
                 <FillerContent />
               </Layout.Content>
@@ -154,7 +177,8 @@ export const layoutShowcase: ShowcaseSpec = {
   ),
   toCode: (p) => `<Layout>
   <Layout.Sider collapsible${p.collapsed ? " collapsed" : ""}>
-    <SiderNav />
+    {/* dogfood NavMenu：收起态自动切图标轨 */}
+    <NavMenu items={items} mode={${p.collapsed ? '"collapsed"' : '"inline"'}} />
   </Layout.Sider>
   <Layout>
     <Layout.Header sticky>顶栏</Layout.Header>

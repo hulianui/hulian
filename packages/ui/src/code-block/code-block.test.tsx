@@ -88,4 +88,24 @@ describe("tokenizeCode", () => {
     const t = typesOf(`# 装依赖\npnpm add x`, "bash");
     expect(t["# 装依赖"]).toBe("comment");
   });
+
+  it("Shell：命令名着 command、flag 着 flag、命令参数不着色", () => {
+    const t = typesOf(`pnpm --filter @hulian/ui build`, "bash");
+    expect(t["pnpm"]).toBe("command");
+    expect(t["--filter"]).toBe("flag");
+    expect(t["build"]).toBeUndefined(); // 命令参数为 plain
+    expect(t["@hulian/ui"]).toBeUndefined();
+  });
+
+  it("Shell：管道/列表操作符后重回命令位，sudo 前缀词不占命令槽", () => {
+    const t = typesOf(`cd /app && sudo pnpm i`, "bash");
+    expect(t["cd"]).toBe("command");
+    expect(t["sudo"]).toBe("command"); // sudo 自身着色
+    expect(t["pnpm"]).toBe("command"); // sudo 后仍是命令位
+  });
+
+  it("Shell：拼接所有 token 还原原文（无丢字）", () => {
+    const code = `# c\npnpm --filter x build\necho "hi" | grep h`;
+    expect(tokenizeCode(code, "bash").map((t) => t.value).join("")).toBe(code);
+  });
 });

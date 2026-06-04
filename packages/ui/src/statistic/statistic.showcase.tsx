@@ -39,7 +39,7 @@ export const statisticShowcase: ShowcaseSpec = {
     {
       name: "自定义颜色",
       render: () => (
-        <Statistic title="较昨日" value={11.28} precision={2} prefix="↑" suffix="%" valueStyle={{ color: "var(--success)" }} />
+        <Statistic title="较昨日" value={11.28} precision={2} prefix="↑" suffix="%" valueStyle={{ color: "var(--color-success)" }} />
       ),
     },
     { name: "倒计时", render: () => <CountdownDemo /> },

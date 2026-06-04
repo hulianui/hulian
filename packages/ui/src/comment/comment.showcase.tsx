@@ -23,7 +23,7 @@ export const commentShowcase: ShowcaseSpec = {
           author="瑚琏"
           datetime="2 小时前"
           avatar={{ fallback: "瑚" }}
-          content="工单已分配，请相关同事跟进处理。"
+          content="工单已分配，请 @李四 @王五 跟进处理。"
           actions={actions}
           connector
         >
@@ -31,7 +31,7 @@ export const commentShowcase: ShowcaseSpec = {
             author="李四"
             datetime="1 小时前"
             avatar={{ fallback: "李" }}
-            content="收到，正在排查根因，预计今天内给结论。"
+            content="收到 @瑚琏，正在排查根因，预计今天内给结论。"
             actions={<CommentAction href="#reply">回复</CommentAction>}
           />
           <Comment
@@ -55,7 +55,7 @@ export const commentShowcase: ShowcaseSpec = {
             actions={<CommentAction>👍 赞</CommentAction>}
           />
           <Comment type="log" author="系统" content="将工单状态改为「处理中」" datetime="昨天 14:25" />
-          <Comment type="log" author="张三" content="指派给 李四" datetime="昨天 14:26" />
+          <Comment type="log" author="张三" content="指派给 @李四" datetime="昨天 14:26" />
           <Comment type="log" author="系统" content="将工单状态改为「已解决」" datetime="今天 09:10" />
         </div>
       ),

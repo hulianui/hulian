@@ -9,6 +9,25 @@ describe("Comment", () => {
     expect(getByText("一条评论")).toBeTruthy();
   });
 
+  it("字符串正文里的 @提及 自动高亮为 chip（mark），纯文本保持原样", () => {
+    const { container, getByText } = render(
+      <Comment author="瑚琏" content="请 @李四 跟进" />,
+    );
+    const mark = container.querySelector("mark");
+    expect(mark?.textContent).toBe("@李四");
+    expect(getByText("@李四")).toBeTruthy();
+    // 整段文本无丢失
+    expect(container.querySelector(".leading-relaxed")!.textContent).toBe("请 @李四 跟进");
+  });
+
+  it("JSX 正文原样渲染，不做高亮", () => {
+    const { container } = render(
+      <Comment author="瑚琏" content={<em>自定义 @不高亮</em>} />,
+    );
+    expect(container.querySelector("em")).toBeTruthy();
+    expect(container.querySelector("mark")).toBeNull();
+  });
+
   it("渲染时间戳", () => {
     const { getByText } = render(<Comment author="瑚琏" datetime="2 小时前" />);
     expect(getByText("2 小时前")).toBeTruthy();
