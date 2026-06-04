@@ -9,6 +9,8 @@ import {
   Badge,
   Stack,
   Heading,
+  Text,
+  Segmented,
   Select,
   SelectTrigger,
   SelectContent,
@@ -30,8 +32,8 @@ import {
   Empty,
   CodeBlock,
 } from "@hulian/ui";
-import { Plus, Menu, Bot, Paperclip, Sparkles, Globe, type LucideIcon } from "lucide-react";
-import { CONVERSATIONS, type ConversationStub } from "./conversations";
+import { Plus, Menu, Bot, Paperclip, Sparkles, Globe, Zap, Gem, type LucideIcon } from "lucide-react";
+import { CONVERSATIONS, CONVERSATION_GROUPS, type ConversationStub } from "./conversations";
 import { useChatStream } from "./use-chat-stream";
 import type { AssistantMessage } from "./chat-types";
 
@@ -51,7 +53,8 @@ const SUGGESTIONS = [
 let convoSeq = 0;
 const newConvoId = () => `new${++convoSeq}`;
 
-// 左侧会话 rail：新建钮 + 可点击切换的会话列表（dogfood List/ListItem.Meta/Avatar）。桌面常驻 / 移动端进抽屉。
+// 左侧会话 rail：新建钮 + 按时间分组的纯标题清单（仿 DeepSeek/ChatGPT 极简风：无头像/无副文案）。
+// dogfood List/ListItem(单行标题) + Text(分组标签)。桌面常驻 / 移动端进抽屉。
 function Rail({
   convos,
   activeId,
@@ -64,29 +67,39 @@ function Rail({
   onNew: () => void;
 }) {
   return (
-    <Stack gap={3} className="p-3">
-      <Button variant="outline" onClick={onNew} className="w-full justify-start gap-2">
+    <Stack gap={4} className="p-3">
+      <Button variant="outline" onClick={onNew} className="w-full justify-center gap-2 rounded-full">
         <Plus className="size-4" aria-hidden /> 新建对话
       </Button>
-      <List
-        items={convos}
-        split={false}
-        renderItem={(c) => (
-          <ListItem
-            onClick={() => onSelect(c.id)}
-            className={
-              "cursor-pointer rounded-[var(--radius)] px-2 transition-colors " +
-              (c.id === activeId ? "bg-surface-hover" : "hover:bg-surface-hover/60")
-            }
-          >
-            <ListItem.Meta
-              avatar={<Avatar size="sm" fallback={c.title.slice(0, 1)} />}
-              title={c.title}
-              description={c.preview}
+      {CONVERSATION_GROUPS.map((group) => {
+        const items = convos.filter((c) => c.group === group);
+        if (items.length === 0) return null;
+        return (
+          <div key={group}>
+            <Text as="div" size="xs" tone="muted" className="px-2 pb-1.5 font-medium">
+              {group}
+            </Text>
+            <List
+              size="sm"
+              split={false}
+              items={items}
+              renderItem={(c) => (
+                <ListItem
+                  onClick={() => onSelect(c.id)}
+                  className={
+                    "cursor-pointer truncate rounded-lg px-2.5 py-2 text-sm transition-colors " +
+                    (c.id === activeId
+                      ? "bg-surface-hover font-medium text-foreground"
+                      : "text-foreground/80 hover:bg-surface-hover/60")
+                  }
+                >
+                  {c.title}
+                </ListItem>
+              )}
             />
-          </ListItem>
-        )}
-      />
+          </div>
+        );
+      })}
     </Stack>
   );
 }
@@ -180,6 +193,7 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
 
 export default function AiChatDemo() {
   const [model, setModel] = useState("gpt-4o");
+  const [mode, setMode] = useState("fast");
   const [deepThink, setDeepThink] = useState(false);
   const [webSearch, setWebSearch] = useState(false);
   const [convos, setConvos] = useState<ConversationStub[]>(CONVERSATIONS);
@@ -196,19 +210,17 @@ export default function AiChatDemo() {
   };
   const newConvo = () => {
     const id = newConvoId();
-    setConvos((cs) => [{ id, title: "新对话", preview: "开始一段新的对话" }, ...cs]);
+    setConvos((cs) => [{ id, title: "新对话", group: "今天" }, ...cs]);
     setActiveId(id);
     reset();
     setDrawerOpen(false);
   };
-  // 发消息：让会话列表“活”起来 —— 首条消息把当前会话的标题(若是新对话)/预览更新掉
+  // 发消息：让会话列表“活”起来 —— 新对话的首条消息自动成为其标题（同 DeepSeek/ChatGPT）
   const handleSend = (text: string) => {
     send(text);
     setConvos((cs) =>
       cs.map((c) =>
-        c.id === activeId
-          ? { ...c, title: c.title === "新对话" ? text.slice(0, 16) : c.title, preview: text }
-          : c,
+        c.id === activeId && c.title === "新对话" ? { ...c, title: text.slice(0, 18) } : c,
       ),
     );
   };
@@ -265,6 +277,30 @@ export default function AiChatDemo() {
                   icon={<Bot className="size-10" aria-hidden />}
                   title="开始一段对话"
                   description="问我天气、让我写代码、或解释一个概念"
+                />
+                <Segmented
+                  size="sm"
+                  value={mode}
+                  onValueChange={setMode}
+                  aria-label="对话模式"
+                  items={[
+                    {
+                      value: "fast",
+                      label: (
+                        <span className="flex items-center gap-1.5">
+                          <Zap className="size-3.5" aria-hidden /> 快速模式
+                        </span>
+                      ),
+                    },
+                    {
+                      value: "expert",
+                      label: (
+                        <span className="flex items-center gap-1.5">
+                          <Gem className="size-3.5" aria-hidden /> 专家模式
+                        </span>
+                      ),
+                    },
+                  ]}
                 />
                 <PromptSuggestions
                   suggestions={SUGGESTIONS}
