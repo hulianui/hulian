@@ -78,6 +78,20 @@ describe("segmentMentions（纯逻辑·高亮分段）", () => {
   it("空串返回空数组", () => {
     expect(segmentMentions("", "@")).toEqual([]);
   });
+  it("紧跟中文标点的提及只着色名字，不吞正文", () => {
+    const segs = segmentMentions("收到 @瑚琏，正在排查根因。", "@");
+    expect(segs).toEqual([
+      { text: "收到 ", mention: false },
+      { text: "@瑚琏", mention: true },
+      { text: "，正在排查根因。", mention: false },
+    ]);
+  });
+  it("名字内的 _ - . 不视为边界", () => {
+    expect(segmentMentions("@john.doe-x_y 提交", "@")).toEqual([
+      { text: "@john.doe-x_y", mention: true },
+      { text: " 提交", mention: false },
+    ]);
+  });
 });
 
 describe("defaultFilter（纯逻辑）", () => {

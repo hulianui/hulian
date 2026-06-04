@@ -1,6 +1,11 @@
 // Mentions 纯逻辑（零 React/零 DOM 几何）——可独立单测。
 // caret 像素几何在 mentions.caret.ts（需 DOM 布局，靠截图验证）。
 
+// 一段提及在「边界字符」处结束：空白或中英文标点。CJK 正文常紧跟全角标点（@瑚琏，…）而无空格，
+// 仅靠 \s 收尾会把整句吞进高亮。刻意放行 _ - . 作为名字内字符（@user_name / @john.doe / @a-b）。
+const MENTION_BOUNDARY =
+  /[\s,;:!?'"`()\[\]{}<>|\\/，。、；：！？…·“”‘’「」『』（）【】《》〈〉]/u;
+
 export interface ActiveTrigger {
   /** 触发符 prefix 起始下标。 */
   start: number;
@@ -11,7 +16,7 @@ export interface ActiveTrigger {
 /**
  * 从光标回看是否正处在一次 @提及输入中。
  * 命中条件：① prefix 子串存在于光标前；② prefix 前一字符为行首或空白（避免 a@b 邮件误触）；
- * ③ prefix 与光标之间（query）不含空白/换行（一旦打了空格即结束本次提及）。
+ * ③ prefix 与光标之间（query）不含边界字符（空白或中英文标点；一旦打了空格/标点即结束本次提及）。
  */
 export function findTrigger(value: string, caretPos: number, prefix: string): ActiveTrigger | null {
   if (!prefix) return null;
@@ -21,7 +26,7 @@ export function findTrigger(value: string, caretPos: number, prefix: string): Ac
   const prevChar = start === 0 ? "" : value[start - 1];
   if (prevChar && !/\s/.test(prevChar)) return null;
   const query = before.slice(start + prefix.length);
-  if (/\s/.test(query)) return null;
+  if (MENTION_BOUNDARY.test(query)) return null;
   return { start, query };
 }
 
@@ -49,8 +54,8 @@ export interface MentionSegment {
 
 /**
  * 把整段文本切成「普通文本 / 提及」交替片段，供高亮背板逐段套色。
- * 提及判定与 findTrigger 同口径：prefix 前为行首或空白（避开 a@b 邮件），prefix 后取非空白串
- * （遇空白即结束），且至少含一个字符。返回片段拼接后等于原文（无丢字）。
+ * 提及判定与 findTrigger 同口径：prefix 前为行首或空白（避开 a@b 邮件），prefix 后取名字串
+ * （遇空白或中英文标点即结束），且至少含一个字符。返回片段拼接后等于原文（无丢字）。
  */
 export function segmentMentions(value: string, prefix: string): MentionSegment[] {
   if (!prefix || !value) return value ? [{ text: value, mention: false }] : [];
@@ -65,7 +70,7 @@ export function segmentMentions(value: string, prefix: string): MentionSegment[]
       const prev = i === 0 ? "" : value[i - 1];
       if (!prev || /\s/.test(prev)) {
         let j = i + prefix.length;
-        while (j < value.length && !/\s/.test(value[j])) j++;
+        while (j < value.length && !MENTION_BOUNDARY.test(value[j])) j++;
         if (j > i + prefix.length) {
           flushPlain(i);
           out.push({ text: value.slice(i, j), mention: true });
