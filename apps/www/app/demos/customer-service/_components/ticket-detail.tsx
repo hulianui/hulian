@@ -38,14 +38,9 @@ export function TicketDetail({ id }: { id: string }) {
 
   if (!ticket) {
     return (
-      <Result
-        status="404"
-        title="工单不存在"
-        description={`未找到工单 #${id}，可能已被删除。`}
-        extra={
-          <Button render={<Link href={`${CS_ROOT}/tickets`} />}>返回工单列表</Button>
-        }
-      />
+      <Result status="404" title="工单不存在" subTitle={`未找到工单 #${id}，可能已被删除。`}>
+        <Button render={<Link href={`${CS_ROOT}/tickets`} />}>返回工单列表</Button>
+      </Result>
     );
   }
 
