@@ -10,6 +10,7 @@ const LEVEL_CLASS: Record<LogLevel, string> = {
   error: "text-danger",
   debug: "text-muted",
   success: "text-success",
+  command: "text-primary font-medium",
 };
 
 export function levelClass(level: LogLevel = "info"): string {

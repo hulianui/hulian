@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
-export type LogLevel = "info" | "warn" | "error" | "debug" | "success";
+export type LogLevel = "info" | "warn" | "error" | "debug" | "success" | "command";
 
 export interface LogLine {
-  /** 日志级别，驱动行着色。@default "info" */
+  /** 日志级别，驱动行着色；command 用于高亮被执行的命令/提示符行。@default "info" */
   level?: LogLevel;
   /** 日志正文。 */
   message: ReactNode;

@@ -5,7 +5,7 @@ import { LogViewer } from "./log-viewer";
 import type { LogLine } from "./log-viewer.types";
 
 const STATIC: LogLine[] = [
-  { level: "info", timestamp: "12:00:01", message: "▸ npm run build" },
+  { level: "command", timestamp: "12:00:01", message: "▸ npm run build" },
   { level: "debug", timestamp: "12:00:01", source: "[turbo]", message: "scope: 1 package" },
   { level: "info", timestamp: "12:00:02", message: "compiling 248 modules…" },
   { level: "warn", timestamp: "12:00:05", source: "[ts]", message: "unused var 'x' at app.tsx:42" },
@@ -55,7 +55,7 @@ export const logViewerShowcase: ShowcaseSpec = {
   ],
   renderWithProps: () => <LogViewer lines={STATIC} showTimestamp height={220} />,
   toCode: () => `<LogViewer
-  lines={[{ level: "info", timestamp: "12:00:01", message: "▸ npm run build" }, …]}
+  lines={[{ level: "command", timestamp: "12:00:01", message: "▸ npm run build" }, …]}
   showTimestamp
 />`,
 };
