@@ -8,13 +8,15 @@
   },
   "files": ["src"],
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
     "msw": "^2.14.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "vitest": "^3.2.6"
   }
 }
