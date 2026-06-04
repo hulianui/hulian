@@ -1,12 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-import { Button, Card, CardBody, Heading, Tag, Text, cn, toast } from "@hulian/ui";
+import { Button, Card, CardBody, CardSkeleton, Heading, Tag, Text, cn, toast } from "@hulian/ui";
 import { ACCENT, NODE_KIND_MAP } from "../../_data/node-kinds";
 import { TEMPLATES } from "../../_data/templates";
 import { topoOrder } from "../../_lib/use-flow-run";
 import { useMockData } from "../../../lib/async";
-import { CardSkeleton } from "../../../lib/skeletons";
 import type { WorkflowTemplate } from "../../_data/types";
 
 const CATEGORY_TONE: Record<WorkflowTemplate["category"], "brand" | "success" | "warning" | "danger"> = {

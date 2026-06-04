@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardBody,
+  CardSkeleton,
   Drawer,
   DrawerContent,
   Heading,
@@ -22,7 +23,6 @@ import {
 import { articles as seed, KB_CATEGORIES } from "../../_data/knowledge";
 import type { KnowledgeArticle } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
-import { CardSkeleton } from "../../../lib/skeletons";
 
 export default function KnowledgePage() {
   const { data, loading } = useMockData(seed);

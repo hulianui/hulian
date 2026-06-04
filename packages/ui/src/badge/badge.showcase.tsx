@@ -1,31 +1,77 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
+import { Avatar } from "../avatar";
+import { Check } from "../_icons";
 import { Badge } from "./badge";
+import type { BadgePlacement, BadgeTone } from "./badge.types";
+
+// 演示用宿主：一个圆角方块，代表 App 图标 / 头像。
+function Host() {
+  return <span className="block size-10 rounded-xl bg-surface-hover" aria-hidden />;
+}
 
 export const badgeShowcase: ShowcaseSpec = {
   controls: [
-    { prop: "variant", type: "select", options: ["solid", "soft", "outline"], defaultValue: "solid" },
-    { prop: "tone", type: "select", options: ["brand", "danger", "neutral"], defaultValue: "brand" },
+    { prop: "count", type: "number", defaultValue: 5, label: "计数" },
+    { prop: "max", type: "number", defaultValue: 99, label: "上限" },
+    { prop: "dot", type: "boolean", defaultValue: false, label: "纯点" },
+    { prop: "showZero", type: "boolean", defaultValue: false, label: "显示 0" },
+    {
+      prop: "tone",
+      type: "select",
+      options: ["danger", "brand", "success", "warning", "neutral"],
+      defaultValue: "danger",
+    },
     { prop: "size", type: "select", options: ["sm", "md"], defaultValue: "md" },
-    { prop: "children", type: "text", defaultValue: "标签", label: "文案" },
+    {
+      prop: "placement",
+      type: "select",
+      options: ["top-right", "top-left", "bottom-right", "bottom-left"],
+      defaultValue: "top-right",
+    },
   ],
   states: [
-    { name: "solid", render: () => <Badge>品牌</Badge> },
-    { name: "soft", render: () => <Badge variant="soft">柔和</Badge> },
-    { name: "outline", render: () => <Badge variant="outline">描边</Badge> },
-    { name: "danger", render: () => <Badge tone="danger">危险</Badge> },
-    { name: "neutral", render: () => <Badge tone="neutral">中性</Badge> },
-    { name: "sm", render: () => <Badge size="sm">小号</Badge> },
+    { name: "独立计数", render: () => <Badge count={5} /> },
+    { name: "溢出 99+", render: () => <Badge count={1000} max={99} /> },
+    { name: "纯点", render: () => <Badge dot /> },
+    {
+      name: "图标 + 计数",
+      render: () => (
+        <Badge count={1}>
+          <Host />
+        </Badge>
+      ),
+    },
+    {
+      name: "头像 + 绿勾",
+      render: () => (
+        <Badge tone="success" placement="bottom-right" content={<Check className="size-2.5" />}>
+          <Avatar fallback="EM" />
+        </Badge>
+      ),
+    },
+    {
+      name: "头像 + 在线点",
+      render: () => (
+        <Badge dot tone="success" placement="bottom-right">
+          <Avatar fallback="瑚" />
+        </Badge>
+      ),
+    },
   ],
   renderWithProps: (p) => (
     <Badge
-      variant={p.variant as "solid" | "soft" | "outline"}
-      tone={p.tone as "brand" | "danger" | "neutral"}
+      count={p.count as number}
+      max={p.max as number}
+      dot={p.dot as boolean}
+      showZero={p.showZero as boolean}
+      tone={p.tone as BadgeTone}
       size={p.size as "sm" | "md"}
+      placement={p.placement as BadgePlacement}
     >
-      {p.children as string}
+      <Host />
     </Badge>
   ),
   toCode: (p) =>
-    `<Badge variant="${p.variant}" tone="${p.tone}" size="${p.size}">${p.children}</Badge>`,
+    `<Badge count={${p.count}} max={${p.max}} tone="${p.tone}" placement="${p.placement}">\n  <Icon />\n</Badge>`,
 };

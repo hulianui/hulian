@@ -73,9 +73,7 @@ function Demo() {
         breadcrumb={<span className="text-sm text-muted">首页 / {LABEL[active] ?? active}</span>}
         headerExtra={
           <>
-            <Badge tone="danger" size="sm">
-              3
-            </Badge>
+            <Badge count={3} size="sm" />
             <Avatar fallback="瑚" />
           </>
         }

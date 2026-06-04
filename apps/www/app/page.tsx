@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import {
   AnimatedThemeToggler,
-  Badge,
   BentoCard,
   BentoGrid,
   Button,
@@ -32,6 +31,7 @@ import {
   Separator,
   Snippet,
   Stack,
+  Tag,
   Text,
 } from "@hulian/ui";
 import { manifest, CATEGORIES, type CategoryKey } from "../lib/manifest";
@@ -109,9 +109,9 @@ export default function Home() {
           <Text as="span" weight="medium" className="tracking-tight">
             瑚琏 Hulian
           </Text>
-          <Badge variant="soft" size="sm">
+          <Tag variant="soft" size="sm">
             v0.1
-          </Badge>
+          </Tag>
         </Stack>
         <AnimatedThemeToggler />
       </Stack>
@@ -284,9 +284,9 @@ export default function Home() {
           className="w-full [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
         >
           {STACK_TAGS.map((tag) => (
-            <Badge key={tag} variant="soft" className="mx-1 whitespace-nowrap">
+            <Tag key={tag} variant="soft" className="mx-1 whitespace-nowrap">
               {tag}
-            </Badge>
+            </Tag>
           ))}
         </Marquee>
       </section>

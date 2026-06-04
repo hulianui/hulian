@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Kanban } from "./kanban";
 import type { KanbanColumn, KanbanMoveEvent } from "./kanban.types";
-import { Badge } from "../badge";
+import { Tag } from "../tag";
 
 interface Card {
   id: string;
@@ -52,9 +52,9 @@ function BoardDemo() {
       renderColumnHeader={(col, its) => (
         <div className="mb-1 flex items-center justify-between">
           <span className="text-sm font-semibold text-foreground">{col.title}</span>
-          <Badge tone="neutral" size="sm">
+          <Tag tone="neutral" size="sm">
             {its.length}
-          </Badge>
+          </Tag>
         </div>
       )}
       renderItem={(c) => (

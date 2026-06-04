@@ -1,6 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Skeleton } from "./skeleton";
+import { CardSkeleton, ListSkeleton } from "./skeleton-presets";
 
 export const skeletonShowcase: ShowcaseSpec = {
   controls: [
@@ -11,14 +12,18 @@ export const skeletonShowcase: ShowcaseSpec = {
     { name: "circle", render: () => <Skeleton shape="circle" className="size-10" /> },
     { name: "rect", render: () => <Skeleton shape="rect" className="h-16 w-32" /> },
     {
-      name: "卡片骨架",
+      name: "ListSkeleton 列表",
       render: () => (
-        <div className="flex w-48 items-center gap-3">
-          <Skeleton shape="circle" className="size-10" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="w-3/4" />
-            <Skeleton className="w-1/2" />
-          </div>
+        <div className="w-72">
+          <ListSkeleton rows={3} />
+        </div>
+      ),
+    },
+    {
+      name: "CardSkeleton 卡片网格",
+      render: () => (
+        <div className="w-full max-w-md">
+          <CardSkeleton count={2} />
         </div>
       ),
     },

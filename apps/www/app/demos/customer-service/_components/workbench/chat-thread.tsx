@@ -9,6 +9,7 @@ import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
+  ListSkeleton,
   Popconfirm,
   PromptInput,
   PromptSuggestions,
@@ -20,7 +21,6 @@ import {
 } from "@hulian/ui";
 import type { Conversation as Conv, Customer, Message } from "../../_data/types";
 import { QUICK_REPLIES } from "../../_data/types";
-import { ListSkeleton } from "../../../lib/skeletons";
 
 const STATUS_TAG: Record<Conv["status"], { tone: "success" | "warning" | "neutral"; label: string }> = {
   active: { tone: "success", label: "进行中" },
