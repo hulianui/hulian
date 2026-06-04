@@ -19,6 +19,7 @@ export function PromptInput({
   disabled,
   maxRows = 8,
   actions,
+  trailing,
   className,
 }: PromptInputProps) {
   const [inner, setInner] = useState(defaultValue);
@@ -48,15 +49,13 @@ export function PromptInput({
   return (
     <div
       className={cn(
-        // 内联单行：actions(左) + textarea(中·自增高) + 发送/停止(右)，底对齐 → 单行紧凑(~48px)、多行按钮跟随底部。
-        "flex items-end gap-1.5 rounded-[1.25rem] border border-border bg-surface py-2 pl-3.5 pr-2 shadow-sm transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10",
+        // flex-col：textarea 整行铺满在上 + 底部工具栏(actions 左 / trailing+发送 右)。
+        // 文本区始终满宽，操作不挤压输入；工具栏填满底部不显空（DeepSeek/ChatGPT 式）。
+        "flex flex-col gap-2 rounded-2xl border border-border bg-surface px-3 py-2.5 shadow-sm transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10",
         disabled && "pointer-events-none opacity-60",
         className,
       )}
     >
-      {actions ? (
-        <div className="flex shrink-0 items-center gap-0.5 self-end pb-0.5">{actions}</div>
-      ) : null}
       <Textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -66,31 +65,37 @@ export function PromptInput({
         autoResize
         rows={1}
         style={{ maxHeight: `${maxRows * 1.5}rem` }}
-        className="flex-1 resize-none border-0 bg-transparent px-0 py-1 shadow-none focus-visible:ring-0"
+        className="w-full resize-none border-0 bg-transparent px-1 py-0.5 shadow-none focus-visible:ring-0"
       />
-      {loading ? (
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={onStop}
-          aria-label="停止生成"
-          className="size-8 shrink-0 self-end rounded-full px-0"
-        >
-          <Square className="size-3.5" />
-        </Button>
-      ) : (
-        <Button
-          type="button"
-          size="sm"
-          onClick={submit}
-          disabled={disabled || !text.trim()}
-          aria-label="发送"
-          className="size-8 shrink-0 self-end rounded-full px-0"
-        >
-          <ArrowUp className="size-4" />
-        </Button>
-      )}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-1.5">{actions}</div>
+        <div className="flex shrink-0 items-center gap-1">
+          {trailing}
+          {loading ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={onStop}
+              aria-label="停止生成"
+              className="size-8 shrink-0 rounded-full px-0"
+            >
+              <Square className="size-3.5" />
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              onClick={submit}
+              disabled={disabled || !text.trim()}
+              aria-label="发送"
+              className="size-8 shrink-0 rounded-full px-0"
+            >
+              <ArrowUp className="size-4" />
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

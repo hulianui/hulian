@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Prose } from "../prose";
 import { CodeBlock } from "../code-block";
-import { parseBlocks } from "./parse";
+import { parseBlocks, type MdBlock } from "./parse";
 import type { MarkdownProps } from "./markdown.types";
 
 // 零依赖只读 Markdown 渲染：parseBlocks 切块 → Prose 排版皮肤 + 围栏代码块委托 CodeBlock。
@@ -50,39 +50,62 @@ function renderText(text: string): ReactNode[] {
   );
 }
 
+type ProseBlock = Exclude<MdBlock, { type: "code" }>;
+
+// 渲染单个非代码块（在 Prose 排版作用域内，吃 Prose 的标题/段落/列表/引用样式）。
+function renderProseBlock(b: ProseBlock, key: number) {
+  switch (b.type) {
+    case "heading": {
+      const H = `h${b.level}` as "h1" | "h2" | "h3";
+      return <H key={key}>{renderInline(b.text)}</H>;
+    }
+    case "list":
+      return b.ordered ? (
+        <ol key={key}>
+          {b.items.map((it, j) => (
+            <li key={j}>{renderInline(it)}</li>
+          ))}
+        </ol>
+      ) : (
+        <ul key={key}>
+          {b.items.map((it, j) => (
+            <li key={j}>{renderInline(it)}</li>
+          ))}
+        </ul>
+      );
+    case "quote":
+      return <blockquote key={key}>{renderInline(b.text)}</blockquote>;
+    default:
+      return <p key={key}>{renderText(b.text)}</p>;
+  }
+}
+
 export function Markdown({ children = "", size = "base", className }: MarkdownProps) {
   const blocks = parseBlocks(children);
-  return (
-    <Prose size={size} className={cn(className)}>
-      {blocks.map((b, i) => {
-        switch (b.type) {
-          case "code":
-            // 跳出 Prose 文字流，交给 CodeBlock（自带高亮 + 复制）
-            return <CodeBlock key={i} code={b.code} lang={b.lang} className="my-3" />;
-          case "heading": {
-            const H = (`h${b.level}` as "h1" | "h2" | "h3");
-            return <H key={i}>{renderInline(b.text)}</H>;
-          }
-          case "list":
-            return b.ordered ? (
-              <ol key={i}>
-                {b.items.map((it, j) => (
-                  <li key={j}>{renderInline(it)}</li>
-                ))}
-              </ol>
-            ) : (
-              <ul key={i}>
-                {b.items.map((it, j) => (
-                  <li key={j}>{renderInline(it)}</li>
-                ))}
-              </ul>
-            );
-          case "quote":
-            return <blockquote key={i}>{renderInline(b.text)}</blockquote>;
-          default:
-            return <p key={i}>{renderText(b.text)}</p>;
-        }
-      })}
-    </Prose>
-  );
+  // 连续文本块分组进 Prose，围栏代码块作为独立 CodeBlock 夹在中间 ——
+  // 关键：CodeBlock 不能当 Prose 的后代 pre，否则 Prose 的 [&_pre] 样式(p-4/border/bg)会覆盖
+  // CodeBlock 自己的 pt-8 避让与边框，导致语言标签/复制钮压住首行 + 双重边框。
+  const out: ReactNode[] = [];
+  let run: ProseBlock[] = [];
+  let key = 0;
+  const flush = () => {
+    if (!run.length) return;
+    const items = run;
+    out.push(
+      <Prose key={`p${key++}`} size={size}>
+        {items.map((b, j) => renderProseBlock(b, j))}
+      </Prose>,
+    );
+    run = [];
+  };
+  for (const b of blocks) {
+    if (b.type === "code") {
+      flush();
+      out.push(<CodeBlock key={`c${key++}`} code={b.code} lang={b.lang} />);
+    } else {
+      run.push(b);
+    }
+  }
+  flush();
+  return <div className={cn("space-y-3", className)}>{out}</div>;
 }

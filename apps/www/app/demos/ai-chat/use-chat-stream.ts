@@ -15,6 +15,11 @@ export function useChatStream() {
     abortRef.current?.abort();
   }, []);
 
+  const reset = useCallback(() => {
+    abortRef.current?.abort();
+    dispatch({ kind: "reset" });
+  }, []);
+
   const send = useCallback(
     async (text: string) => {
       if (loading) return;
@@ -63,5 +68,5 @@ export function useChatStream() {
     [loading],
   );
 
-  return { messages, loading, send, stop };
+  return { messages, loading, send, stop, reset };
 }

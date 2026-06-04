@@ -38,7 +38,8 @@ export type ChatAction =
   | { kind: "user_send"; id: string; text: string }
   | { kind: "assistant_start"; id: string }
   | { kind: "event"; id: string; event: ChatEvent }
-  | { kind: "aborted"; id: string };
+  | { kind: "aborted"; id: string }
+  | { kind: "reset" };
 
 export function emptyAssistant(id: string): AssistantMessage {
   return {
@@ -55,6 +56,8 @@ export function emptyAssistant(id: string): AssistantMessage {
 
 export function chatReducer(state: ChatMsg[], action: ChatAction): ChatMsg[] {
   switch (action.kind) {
+    case "reset":
+      return [];
     case "user_send":
       return [...state, { id: action.id, role: "user", text: action.text }];
     case "assistant_start":

@@ -18,7 +18,9 @@ export interface PromptInputProps {
   disabled?: boolean;
   /** 自增高最大行数（超出滚动）。@default 8 */
   maxRows?: number;
-  /** 左侧附加操作槽（附件 / 模型切换等按钮）。 */
+  /** 底部工具栏左侧操作槽（深度思考 / 智能搜索等开关 chip）。 */
   actions?: ReactNode;
+  /** 底部工具栏右侧、发送键之前的尾随槽（附件 / 语音等图标按钮）。 */
+  trailing?: ReactNode;
   className?: string;
 }
