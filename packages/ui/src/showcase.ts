@@ -127,6 +127,7 @@ export { stripedPatternShowcase } from "./striped-pattern/striped-pattern.showca
 export { switchShowcase } from "./switch/switch.showcase";
 export { tableShowcase } from "./table/table.showcase";
 export { proTableShowcase } from "./pro-table/pro-table.showcase";
+export { editableTableShowcase } from "./editable-table/editable-table.showcase";
 export { adminLayoutShowcase } from "./admin-layout/admin-layout.showcase";
 export { tabletShowcase } from "./tablet/tablet.showcase";
 export { tabsShowcase } from "./tabs/tabs.showcase";

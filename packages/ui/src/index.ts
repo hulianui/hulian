@@ -30,6 +30,7 @@ export * from "./descriptions";
 export * from "./pagination";
 export * from "./table";
 export * from "./pro-table";
+export * from "./editable-table";
 export * from "./watermark";
 export * from "./carousel";
 export * from "./resizable";

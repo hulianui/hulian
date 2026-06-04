@@ -29,6 +29,15 @@ export interface Locale {
     submit: string;
     cancel: string;
   };
+  editableTable: {
+    edit: string;
+    save: string;
+    cancel: string;
+    delete: string;
+    add: string;
+    actions: string;
+    empty: string;
+  };
 }
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */
@@ -54,6 +63,15 @@ export const zhCN: Locale = {
     submit: "提交",
     cancel: "取消",
   },
+  editableTable: {
+    edit: "编辑",
+    save: "保存",
+    cancel: "取消",
+    delete: "删除",
+    add: "新增一行",
+    actions: "操作",
+    empty: "暂无数据",
+  },
 };
 
 /** 英文（en-US），演示 i18n 可切换；消费者亦可 spread zhCN/enUS 自定义。 */
@@ -78,6 +96,15 @@ export const enUS: Locale = {
   modalForm: {
     submit: "Submit",
     cancel: "Cancel",
+  },
+  editableTable: {
+    edit: "Edit",
+    save: "Save",
+    cancel: "Cancel",
+    delete: "Delete",
+    add: "Add row",
+    actions: "Actions",
+    empty: "No data",
   },
 };
 
