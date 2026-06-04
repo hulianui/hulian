@@ -179,6 +179,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "time-field", name: "TimeField", description: "时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控", category: "forms", group: "datetime", status: "new" },
   { slug: "form", name: "Form", description: "表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同", category: "forms", group: "framework", status: "new" },
   { slug: "form-dialog", name: "ModalForm / DrawerForm", description: "弹窗/抽屉表单 · 列表页新增/编辑编排件(复用 Dialog/Drawer + useForm + Button footer) · 提交前自动 validate · async onFinish 成功关闭/失败保持 · 文案接 i18n", category: "forms", group: "framework", status: "new" },
+  { slug: "pro-form", name: "ProForm", description: "内联表单编排 · useForm + 自动 footer(提交/重置) + async onFinish loading + 自定义 footer(ModalForm 的内联姊妹件·文案接 i18n)", category: "forms", group: "framework", status: "new" },
+  { slug: "steps-form", name: "StepsForm", description: "分步表单 · 复用 Steps 指示器 + 上一步/下一步/提交导航 + onStepValidate 逐步校验 + 跨步保值(消费者 useForm 持有·文案接 i18n)", category: "forms", group: "framework", status: "new" },
+  { slug: "login-form", name: "LoginForm", description: "登录模板 · 自管 useForm(账号/密码必填+记住我) + 提交 loading + logo/footer 插槽(复用 Field/Input/Checkbox/Button·文案接 i18n)", category: "forms", group: "framework", status: "new" },
   { slug: "field", name: "Field", description: "字段包装 · label/help/error a11y 串联", category: "forms", group: "framework", status: "new" },
   { slug: "search-form", name: "SearchForm", description: "查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)", category: "forms", group: "framework", status: "new" },
 

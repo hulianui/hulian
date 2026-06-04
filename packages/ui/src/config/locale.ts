@@ -38,6 +38,24 @@ export interface Locale {
     actions: string;
     empty: string;
   };
+  proForm: {
+    submit: string;
+    reset: string;
+  };
+  stepsForm: {
+    prev: string;
+    next: string;
+    submit: string;
+  };
+  loginForm: {
+    title: string;
+    username: string;
+    password: string;
+    remember: string;
+    submit: string;
+    usernameRequired: string;
+    passwordRequired: string;
+  };
 }
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */
@@ -72,6 +90,24 @@ export const zhCN: Locale = {
     actions: "操作",
     empty: "暂无数据",
   },
+  proForm: {
+    submit: "提交",
+    reset: "重置",
+  },
+  stepsForm: {
+    prev: "上一步",
+    next: "下一步",
+    submit: "提交",
+  },
+  loginForm: {
+    title: "登录",
+    username: "账号",
+    password: "密码",
+    remember: "记住我",
+    submit: "登录",
+    usernameRequired: "请输入账号",
+    passwordRequired: "请输入密码",
+  },
 };
 
 /** 英文（en-US），演示 i18n 可切换；消费者亦可 spread zhCN/enUS 自定义。 */
@@ -105,6 +141,24 @@ export const enUS: Locale = {
     add: "Add row",
     actions: "Actions",
     empty: "No data",
+  },
+  proForm: {
+    submit: "Submit",
+    reset: "Reset",
+  },
+  stepsForm: {
+    prev: "Previous",
+    next: "Next",
+    submit: "Submit",
+  },
+  loginForm: {
+    title: "Sign in",
+    username: "Username",
+    password: "Password",
+    remember: "Remember me",
+    submit: "Sign in",
+    usernameRequired: "Username is required",
+    passwordRequired: "Password is required",
   },
 };
 
