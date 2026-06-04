@@ -54,6 +54,7 @@ export { drawerShowcase } from "./drawer/drawer.showcase";
 export { emptyShowcase } from "./empty/empty.showcase";
 export { fieldShowcase } from "./field/field.showcase";
 export { formShowcase } from "./form/form.showcase";
+export { formDialogShowcase } from "./form-dialog/form-dialog.showcase";
 export { glareHoverShowcase } from "./glare-hover/glare-hover.showcase";
 export { gridPatternShowcase } from "./grid-pattern/grid-pattern.showcase";
 export { gridShowcase } from "./grid/grid.showcase";

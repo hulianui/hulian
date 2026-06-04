@@ -178,6 +178,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "date-range-picker", name: "DateRangePicker", description: "日期区间 · 自研零依赖双月范围日历(避开 MUI Pro 收费) + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控", category: "forms", group: "datetime", status: "new" },
   { slug: "time-field", name: "TimeField", description: "时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控", category: "forms", group: "datetime", status: "new" },
   { slug: "form", name: "Form", description: "表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同", category: "forms", group: "framework", status: "new" },
+  { slug: "form-dialog", name: "ModalForm / DrawerForm", description: "弹窗/抽屉表单 · 列表页新增/编辑编排件(复用 Dialog/Drawer + useForm + Button footer) · 提交前自动 validate · async onFinish 成功关闭/失败保持 · 文案接 i18n", category: "forms", group: "framework", status: "new" },
   { slug: "field", name: "Field", description: "字段包装 · label/help/error a11y 串联", category: "forms", group: "framework", status: "new" },
   { slug: "search-form", name: "SearchForm", description: "查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)", category: "forms", group: "framework", status: "new" },
 

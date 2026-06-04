@@ -25,6 +25,10 @@ export interface Locale {
     closeOthers: string;
     closeAll: string;
   };
+  modalForm: {
+    submit: string;
+    cancel: string;
+  };
 }
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */
@@ -46,6 +50,10 @@ export const zhCN: Locale = {
     closeOthers: "关闭其他",
     closeAll: "关闭全部",
   },
+  modalForm: {
+    submit: "提交",
+    cancel: "取消",
+  },
 };
 
 /** 英文（en-US），演示 i18n 可切换；消费者亦可 spread zhCN/enUS 自定义。 */
@@ -66,6 +74,10 @@ export const enUS: Locale = {
     tabActions: "Tab actions",
     closeOthers: "Close others",
     closeAll: "Close all",
+  },
+  modalForm: {
+    submit: "Submit",
+    cancel: "Cancel",
   },
 };
 
