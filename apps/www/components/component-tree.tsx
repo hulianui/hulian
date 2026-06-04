@@ -32,7 +32,10 @@ export function ComponentTree() {
   const filtering = q !== "" || animatedOnly;
   const matches = (m: (typeof manifest)[number]) =>
     (!animatedOnly || m.tags?.includes("animated")) &&
-    (!q || m.name.toLowerCase().includes(q) || nameCn(m.description).includes(q) || m.slug.includes(q));
+    (!q ||
+      m.name.toLowerCase().includes(q) ||
+      m.description.toLowerCase().includes(q) ||
+      m.slug.includes(q));
 
   // 大类 → 命中的小类分组（空组/空大类直接剔除）
   const tree = CATEGORIES.map((cat) => {
