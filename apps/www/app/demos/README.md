@@ -39,6 +39,13 @@ demo 里的每个 UI 元素都必须来自 `@hulian/ui`。**禁止**在 demo 里
 
 宁可在合理场景里多塞一个组件，也不要漏。**唯一的边界是「合理」**——不为凑数把组件硬塞进不搭的场景（堆砌是另一种不真实）。判断标准：这个场景里真实产品会不会用它？会就上。
 
+### 铁律四 · 资源全本地化，零外链
+demo 要离线可跑、可静态导出、语义可控。**禁止**任何外链资源——头像、图片、视频、字体一律走 `public/`（本地文件）或**程序化生成**（data-URI SVG / canvas）。
+- **反模式**：`i.pravatar.cc` 头像、`picsum.photos` 占位图、`*.unsplash.com` 配图。断网 / 内网 / 被墙即碎图，且随机图与文案语义不符（"电缆点验"配城市夜景）。
+- **头像**：用 `public/demo/avatar-*.jpg`，或直接 `Avatar` 的 `fallback` 首字母。
+- **内容图**：程序化生成（参考 `projects/_data/photos.ts` 的 `photoArt()` 按语义配色 SVG、`ai-workflow/_lib/artwork.ts` 的 mesh gradient）。
+- 由 `demos:coverage` 门禁强制（命中外链即 exit 1，见 §4）。
+
 ## 2. 强制交互态清单（验收门槛）
 
 新建 / 改造任一 demo，提交前逐条自检：
@@ -49,6 +56,7 @@ demo 里的每个 UI 元素都必须来自 `@hulian/ui`。**禁止**在 demo 里
 - [ ] **纯图标按钮**全部有 `Tooltip`。
 - [ ] 列表筛选无结果显示 `Empty`；模拟一次加载失败显示 `Alert` / `Result` + 重试按钮。
 - [ ] 该场景真实产品会用到的高频件尽量都有用例（搜索→Command/Combobox，日期→DatePicker，多端预览→设备外壳 mockups …）。
+- [ ] **零外链资源**：头像 / 图片 / 视频全本地化或程序化生成，`demos:coverage` 门禁「远程资源外链 = 0」（铁律四）。
 
 ## 3. 共享基建（统一用，别各搓一套）
 
@@ -71,6 +79,10 @@ pnpm --filter www demos:coverage -- --min 60   # 低于阈值 exit 1，可进 CI
 
 口径：分母 = `lib/manifest.ts` 公开组件；分子 = demos 里 `from "@hulian/ui"` 命中的条目。
 **当前 48%，目标 ≥ 60%。** 提交新 demo / 改造后必须让覆盖率只升不降。
+
+脚本含**两道门禁**，任一不过 exit 1：
+1. **覆盖率**（仅 `--min N` 时卡阈值）。
+2. **远程资源外链 = 0**（始终硬失败）——扫已知占位图服务域名 + 带图片/媒体扩展名的 http(s) URL（铁律四）。
 
 ## 5. 验证要求（眼见为实）
 

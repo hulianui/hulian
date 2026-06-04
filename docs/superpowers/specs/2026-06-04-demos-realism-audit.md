@@ -243,3 +243,14 @@ export function usePending() {
 > 「补多了没关系——能把组件塞进真实场景，说明它做对了、有用途。**漏了才是最危险的信号**。」
 
 落地为常驻规范见 `apps/www/app/demos/README.md`（demo 制作要求）+ 覆盖率自检脚本 `apps/www/scripts/demos-coverage.mjs`。
+
+---
+
+## 10. 资源本地化 —— 已完成（2026-06-04 本会话）
+
+第三轮发现 demo 资源全是外链（断网/内网/被墙即碎图，且 picsum 随机图语义错位）。**已修复，勿重做：**
+
+- **门禁加固**：`scripts/demos-coverage.mjs` 新增第二道硬门禁「远程资源外链 = 0」（命中即 exit 1）。识别口径 = 已知占位图服务域名（pravatar/picsum/unsplash/…）+ 带图片/媒体扩展名的 http(s) URL。规范写入 README 铁律四。
+- **头像 16 处**（pravatar.cc → 本地）：按 `img` 编号确定性映射到 `public/demo/avatar-{1,2,3,4,12}.jpg`，同 `img#` 同脸（坐席「琏」等同一人到处一致）。涉及 crm/cs/projects/ai-workflow 的 shell + cs `customers.ts`/`metrics.ts`。
+- **工作照片 24 张**（picsum.photos → 程序化）：`projects/_data/photos.ts` 新增 `photoArt()`，按 tag 配色（进度=蓝/材料=琥珀/验收=绿/隐患=红）+ 蓝图网格 + 居中文案生成 data-URI SVG，离线零素材、语义贴合。
+- 验证：`demos:coverage` 远程外链 0、node exit 0；`Image`/`Avatar` 均裸 `<img src>` 接受 data-URI 与本地路径；typecheck 我方文件零错（仅 `app/theme/doc-kit.tsx` 别的会话 WIP 报错，与此无关）。

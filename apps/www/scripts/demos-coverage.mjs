@@ -13,7 +13,7 @@
 
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -76,6 +76,53 @@ function isCovered(comp, used) {
   return false;
 }
 
+// ── 门禁 2：禁止 demo 引远程资源 ───────────────────────────────────────────
+// 命题：demo 要离线可跑、可静态导出、语义可控。任何外链头像/图片都会在断网/内网/
+// 被墙时碎图，且 picsum 之类随机图与文案语义不符。一律本地化（public/ 或程序化生成）。
+//
+// 识别口径（命中即违规）：
+//   a) 已知占位/外链资源服务域名（pravatar/picsum/unsplash/...）
+//   b) 任意带图片/媒体扩展名的 http(s) URL（.jpg/.png/.webp/.gif/.svg/.avif/.mp4/.webm）
+// 刻意放行：非资源类业务 URL（如 https://pay.hulian.demo 支付占位串、纯站点链接）。
+const REMOTE_HOSTS = [
+  "pravatar.cc",
+  "picsum.photos",
+  "unsplash.com",
+  "placehold.co",
+  "placekitten.com",
+  "dicebear.com",
+  "gravatar.com",
+  "loremflickr.com",
+  "robohash.org",
+  "ui-avatars.com",
+  "placeimg.com",
+  "via.placeholder.com",
+];
+const REMOTE_HOST_RE = new RegExp(
+  `https?://[^"'\\s)]*(?:${REMOTE_HOSTS.map((h) => h.replace(/\./g, "\\.")).join("|")})[^"'\\s)]*`,
+  "g",
+);
+const REMOTE_ASSET_RE = /https?:\/\/[^"'\s)]+\.(?:jpe?g|png|webp|gif|svg|avif|mp4|webm)(?:\?[^"'\s)]*)?/gi;
+
+function remoteAssetViolations() {
+  const files = execSync(`grep -rlE 'https?://' "${demosDir}"`, { encoding: "utf8" })
+    .trim()
+    .split("\n")
+    .filter(Boolean);
+  const hits = [];
+  for (const f of files) {
+    const lines = readFileSync(f, "utf8").split("\n");
+    lines.forEach((line, i) => {
+      const found = new Set([
+        ...(line.match(REMOTE_HOST_RE) ?? []),
+        ...(line.match(REMOTE_ASSET_RE) ?? []),
+      ]);
+      for (const url of found) hits.push({ file: relative(wwwRoot, f), line: i + 1, url });
+    });
+  }
+  return hits;
+}
+
 const comps = parseManifest();
 const used = usedIdentifiers();
 const missing = comps.filter((c) => !isCovered(c, used));
@@ -90,12 +137,33 @@ for (const cat of Object.keys(byCat).sort()) {
   console.log(`  [${cat}] ${byCat[cat].length}：${byCat[cat].join(", ")}`);
 }
 
+// ── 门禁 2 输出：远程资源（命中即硬失败，不依赖阈值）──────────────────────
+const remoteHits = remoteAssetViolations();
+console.log(`\n远程资源外链（必须本地化）：${remoteHits.length} 处`);
+for (const h of remoteHits) {
+  console.log(`  ✗ ${h.file}:${h.line}  ${h.url}`);
+}
+
+let failed = false;
+
 const minArg = process.argv.indexOf("--min");
 if (minArg !== -1) {
   const min = Number(process.argv[minArg + 1]);
   if (rate < min) {
     console.error(`\n✗ 覆盖率 ${rate.toFixed(0)}% 低于阈值 ${min}%`);
-    process.exit(1);
+    failed = true;
+  } else {
+    console.log(`\n✓ 覆盖率 ${rate.toFixed(0)}% ≥ 阈值 ${min}%`);
   }
-  console.log(`\n✓ 覆盖率 ${rate.toFixed(0)}% ≥ 阈值 ${min}%`);
 }
+
+if (remoteHits.length > 0) {
+  console.error(
+    `\n✗ demo 存在 ${remoteHits.length} 处远程资源外链 —— 一律本地化（public/ 或程序化生成）。`,
+  );
+  failed = true;
+} else {
+  console.log(`\n✓ 无远程资源外链`);
+}
+
+if (failed) process.exit(1);
