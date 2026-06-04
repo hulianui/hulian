@@ -28,7 +28,9 @@
 | 能力 | 层 | 说明 |
 |------|----|------|
 | **Access** 权限控制 | 🔴 基础设施 | `AccessProvider`(下发用户权限集) + `useAccess()`(has/hasAny/hasAll·缺 Provider 即抛) + `<Access permission\|accessible mode fallback>`(声明式门禁)。按 ThemeProvider 先例·不进画廊 |
-| **ConfigProvider / i18n** | 🔴 基础设施 | `ConfigProvider`(下发 locale) + `useLocale()`(缺 Provider 回退 zhCN·不抛) + `zhCN`/`enUS` 字典。已接入 ProTable/AdminLayout 文案(包 enUS 即切英文)。后续可扩 size/主题 |
+| **ConfigProvider / i18n** | 🔴 基础设施 | `ConfigProvider`(下发 locale) + `useLocale()`(缺 Provider 回退 zhCN·不抛) + `zhCN`/`enUS` 字典。已接入 ProTable/AdminLayout/ModalForm/EditableTable 文案(包 enUS 即切英文)。后续可扩 size/主题 |
+| **ModalForm / DrawerForm** | 🔴 Pro 区块 | 弹窗/抽屉表单(复用 Dialog/Drawer + useForm + Button footer)·提交前自动 validate·async onFinish 成功关闭/失败保持 |
+| **EditableTable** | 🔴 Pro 区块 | 行内编辑表格·行级编辑(草稿/保存校验/取消还原) + 自定义编辑器逃生舱 + 增删行 |
 
 ---
 
@@ -41,9 +43,9 @@
 - [ ] **ConfigProvider 续**：全局默认 `size`（控件尺寸）+ 表单校验配置（需各表单控件读 context，是较大 retrofit）。
 
 ### Pro 区块（继 ProTable 之后）
-- [ ] **QueryFilter 独立件**：当前查询区借 SearchForm；可抽独立的折叠式高级搜索区（响应式列 + 展开/收起 + 重置/查询）作为一等公民。
-- [ ] **ModalForm / DrawerForm**：弹窗/抽屉表单。列表页「新增/编辑」基本都走这个。
-- [ ] **EditableTable**：行内编辑表格（可编辑单元格 + 增删行），企业录入高频。
+- [x] ~~**ModalForm / DrawerForm**~~ ✅ 2026-06-04
+- [x] ~~**EditableTable**~~ ✅ 2026-06-04
+- [ ] **QueryFilter 独立件**：当前查询区借 SearchForm(已能折叠/响应式列/重置查询)；如需一等公民可再抽，但 **SearchForm 已基本覆盖**，优先级降低。
 
 ---
 
@@ -74,8 +76,8 @@
 落地企业管理系统的推荐顺序：
 
 ```
-已完成：AdminLayout(骨架) + ProTable(列表页) + Steps + Tag + Access(权限) + ConfigProvider/i18n
-下一步：ModalForm/DrawerForm(弹窗表单)  →  QueryFilter 独立件  →  EditableTable
+已完成：AdminLayout + ProTable + EditableTable + ModalForm/DrawerForm + Steps + Tag + Access + ConfigProvider/i18n
+P0 基本收口。剩余偏 P1：ProForm/Form.List(已有 useForm/FormList 底座) · VirtualList · 登录/异常页模板 · i18n 续(原子件文案) · ConfigProvider 全局 size
 ```
 
 一个 ProTable + AdminLayout(多页签) 带来的「能搭系统」感知，远超再加 20 个原子组件——
