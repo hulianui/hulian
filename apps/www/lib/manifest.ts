@@ -155,6 +155,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "text", name: "Text", description: "文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)", category: "typography", group: "text", status: "new" },
   { slug: "heading", name: "Heading", description: "标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC)", category: "typography", group: "text", status: "new" },
   { slug: "prose", name: "Prose", description: "排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC)", category: "typography", group: "text", status: "new" },
+  { slug: "markdown", name: "Markdown", description: "只读 Markdown 渲染 · 零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC 安全", category: "typography", group: "text", status: "new" },
   { slug: "aurora-text", name: "AuroraText", description: "极光文字 · bg-clip 流动渐变 + chart token + RSC", category: "typography", group: "text", tags: ["animated"], status: "new" },
   { slug: "animated-shiny-text", name: "AnimatedShinyText", description: "高光文字 · 横扫高光 + 徽标气质 + RSC", category: "typography", group: "text", tags: ["animated"], status: "new" },
   { slug: "animated-gradient-text", name: "AnimatedGradientText", description: "渐变文字 · 行内 chart 渐变流动 + RSC", category: "typography", group: "text", tags: ["animated"], status: "new" },
