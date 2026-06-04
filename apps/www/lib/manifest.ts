@@ -14,7 +14,8 @@ export type CategoryKey =
   | "feedback"
   | "ai"
   | "decoration"
-  | "mockups";
+  | "mockups"
+  | "mobile";
 
 /** 横切属性标签：不决定组件归属，仅供侧栏过滤芯片跨分组筛选。 */
 export type ComponentTag = "animated";
@@ -123,6 +124,17 @@ export const CATEGORIES: Category[] = [
       { key: "device", label: "设备" },
     ],
   },
+  {
+    key: "mobile",
+    label: "移动端",
+    groups: [
+      { key: "nav", label: "导航" },
+      { key: "overlay", label: "浮层" },
+      { key: "input", label: "录入" },
+      { key: "gesture", label: "手势交互" },
+      { key: "layout", label: "布局" },
+    ],
+  },
 ];
 
 export const manifest: ComponentMeta[] = [
@@ -130,6 +142,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "layout", name: "Layout", description: "整页布局 · 复合 Header/Sider/Content/Footer + Sider 可折叠(受控/断点/trigger) + 宽度过渡(零依赖·尽量 RSC·复用 ScrollArea)", category: "layout", group: "container", status: "new" },
   { slug: "admin-layout", name: "AdminLayout", description: "中后台骨架 · 侧栏(品牌+NavMenu可折叠) + 顶栏(折叠/面包屑/扩展区) + 多页签导航(开/切/关·关闭其他/全部·受控接路由或菜单点击自动维护) + 内容区(复用 NavMenu/ScrollArea/Popover·企业应用外壳)", category: "layout", group: "container", status: "new" },
   { slug: "scroll-area", name: "ScrollArea", description: "滚动区 · Base UI 自定义细滚动条 + 竖/横/双向", category: "layout", group: "container", status: "new" },
+  { slug: "viewport", name: "Viewport", description: "响应式容器 · container-type 容器查询上下文 + web/平板/手机 预设宽度(可 width 覆盖) + 可选设备切换器(dogfood Segmented) · 内部组件用 @md/@5xl 等容器变体按【容器宽度】自适应而非页面视口(跨设备同套布局自动重排)", category: "layout", group: "container", status: "new" },
   { slug: "resizable", name: "Resizable", description: "拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator)", category: "layout", group: "container", status: "new" },
   { slug: "aspect-ratio", name: "AspectRatio", description: "比例容器 · CSS aspect-ratio 锁宽高比 + 图片/视频自动铺满(零依赖·RSC)", category: "layout", group: "container", status: "new" },
   { slug: "stack", name: "Stack", description: "弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)", category: "layout", group: "arrange", status: "new" },
@@ -213,6 +226,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "animated-list", name: "AnimatedList", description: "动效列表 · 子项逐个淡入上移入场(motion + 进入视口)", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "marquee", name: "Marquee", description: "跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "sortable", name: "Sortable", description: "拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove)", category: "data-display", group: "collection", status: "new" },
+  { slug: "kanban", name: "Kanban", description: "看板 · @dnd-kit headless 多容器 + 跨列/列内拖拽 + 键盘可拖 + 列头统计槽 + 空列占位 · 受控 onMove(消费者改业务字段) · 商机看板/任务流转旗舰", category: "data-display", group: "collection", status: "new" },
+  { slug: "virtual-list", name: "VirtualList", description: "虚拟滚动 · 包 @tanstack/react-virtual 仅渲染可见区 + 定高/变高(measureElement)双模 + initialRect 首帧可算 + 末行触发 onReachEnd(万行列表/长列表刚需)", category: "data-display", group: "collection", status: "new" },
+  { slug: "infinite-scroll", name: "InfiniteScroll", description: "无限滚动 · IntersectionObserver 底部哨兵 + 自动定位可滚祖先作 root + 加载锁防重入 + hasMore 完结态(零依赖·分页加载)", category: "data-display", group: "collection", status: "new" },
   { slug: "badge", name: "Badge", description: "徽标 · solid/soft/outline × tone", category: "data-display", group: "info", status: "new" },
   { slug: "dot", name: "Dot", description: "状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", group: "info", status: "new" },
@@ -220,6 +236,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "avatar", name: "Avatar", description: "头像 · Base UI 图片+fallback", category: "data-display", group: "info", status: "new" },
   { slug: "avatar-circles", name: "AvatarCircles", description: "堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "user", name: "User", description: "用户卡 · Avatar + 名称/描述组合(复用瑚琏 Avatar) + RSC", category: "data-display", group: "info", status: "new" },
+  { slug: "qrcode", name: "QRCode", description: "二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题 + UTF-8 中文 + 纠错级别 + 中心 logo(可 RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "comment", name: "Comment", description: "评论 · 嵌套回复缩进 + 可选连接线 + 操作区 + comment/log 类型(复用 Avatar/Link·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "stat", name: "Stat", description: "指标卡 · KPI 数值/标签/升降趋势(无图表库)", category: "data-display", group: "stat", status: "new" },
   { slug: "statistic", name: "Statistic", description: "统计数值 · 千分位/precision/前后缀/valueStyle + 可选 NumberTicker 入场滚动 + Statistic.Countdown 倒计时(SSR 安全·零依赖·与 Stat 互补)", category: "data-display", group: "stat", status: "new" },
@@ -311,4 +328,13 @@ export const manifest: ComponentMeta[] = [
   { slug: "android", name: "Android", description: "安卓外壳 · 打孔摄像头机身包裹屏幕 + RSC", category: "mockups", group: "device", status: "new" },
   { slug: "tablet", name: "Tablet", description: "平板外壳 · iPad 系机身(model 预设尺寸/比例·token themeable) + RSC", category: "mockups", group: "device", status: "new" },
   { slug: "watch", name: "Watch", description: "手表外壳 · Apple Watch 系 squircle 表壳+数码表冠(model 预设尺寸) + RSC", category: "mockups", group: "device", status: "new" },
+
+  // ── 移动端 mobile ──────────────────────────────────────────────
+  { slug: "tab-bar", name: "TabBar", description: "底部导航栏 · items 驱动受控/非受控 + 激活 text-primary/aria-current + 角标/红点 + 吃底部安全区(零依赖·H5 主导航)", category: "mobile", group: "nav", status: "new" },
+  { slug: "fab", name: "Fab", description: "悬浮操作钮 · fixed 贴边 + speed-dial 子动作错峰展开/主钮旋 45°(零依赖·reduced-motion)", category: "mobile", group: "nav", status: "new" },
+  { slug: "action-sheet", name: "ActionSheet", description: "动作面板 · 建在 Base UI Dialog 底滑(同 Drawer 范式·motion token CSS 镜像) + 动作即 Close + 危险态 + 独立取消块 + 安全区", category: "mobile", group: "overlay", status: "new" },
+  { slug: "picker", name: "Picker", description: "滚轮选择器 · 多列 CSS scroll-snap 吸附 + 即时高亮居中项 + 停稳防抖 emit + 受控滚定位(零依赖·H5 选时间/地区)", category: "mobile", group: "input", status: "new" },
+  { slug: "swipe-action", name: "SwipeAction", description: "列表项滑动操作 · 内容层 translateX 跟手 + 左/右动作面板 + 过半吸附全开/回弹 + 主轴判定放行纵向滚动(零依赖·Pointer Events)", category: "mobile", group: "gesture", status: "new" },
+  { slug: "pull-to-refresh", name: "PullToRefresh", description: "下拉刷新 · 置顶下拉带阻尼 + 过阈进 armed + 松手触发并保持刷新态至 Promise 结束回弹(零依赖·Pointer Events)", category: "mobile", group: "gesture", status: "new" },
+  { slug: "safe-area", name: "SafeArea", description: "安全区适配 · env(safe-area-inset-*) 作 padding/margin 应用到指定边 + min 兜底 + as 多态(零依赖·RSC·刘海/底部横条)", category: "mobile", group: "layout", status: "new" },
 ];

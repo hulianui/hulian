@@ -4,6 +4,7 @@
 
 export { accordionShowcase } from "./accordion/accordion.showcase";
 export { sortableShowcase } from "./sortable/sortable.showcase";
+export { kanbanShowcase } from "./kanban/kanban.showcase";
 export { affixShowcase } from "./affix/affix.showcase";
 export { alertDialogShowcase } from "./alert-dialog/alert-dialog.showcase";
 export { alertShowcase } from "./alert/alert.showcase";
@@ -171,3 +172,16 @@ export { promptSuggestionsShowcase } from "./prompt-suggestions/prompt-suggestio
 export { messageActionsShowcase } from "./message-actions/message-actions.showcase";
 export { citationShowcase } from "./citation/citation.showcase";
 export { streamingTextShowcase } from "./streaming-text/streaming-text.showcase";
+// 移动端 / H5
+export { safeAreaShowcase } from "./safe-area/safe-area.showcase";
+export { fabShowcase } from "./fab/fab.showcase";
+export { tabBarShowcase } from "./tab-bar/tab-bar.showcase";
+export { actionSheetShowcase } from "./action-sheet/action-sheet.showcase";
+export { swipeActionShowcase } from "./swipe-action/swipe-action.showcase";
+export { pullToRefreshShowcase } from "./pull-to-refresh/pull-to-refresh.showcase";
+export { pickerShowcase } from "./picker/picker.showcase";
+// 数据展示补充
+export { virtualListShowcase } from "./virtual-list/virtual-list.showcase";
+export { infiniteScrollShowcase } from "./infinite-scroll/infinite-scroll.showcase";
+export { qrcodeShowcase } from "./qrcode/qrcode.showcase";
+export { viewportShowcase } from "./viewport/viewport.showcase";

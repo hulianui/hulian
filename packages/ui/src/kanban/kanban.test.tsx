@@ -1,0 +1,101 @@
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, cleanup } from "@testing-library/react";
+import { Kanban, resolveKanbanMove } from "./kanban";
+import type { KanbanColumn } from "./kanban.types";
+
+afterEach(cleanup);
+
+interface Task {
+  id: string;
+  title: string;
+  status: string;
+}
+const columns: KanbanColumn[] = [
+  { id: "todo", title: "待办" },
+  { id: "doing", title: "进行中" },
+  { id: "done", title: "已完成" },
+];
+const tasks: Task[] = [
+  { id: "t1", title: "甲", status: "todo" },
+  { id: "t2", title: "乙", status: "todo" },
+  { id: "t3", title: "丙", status: "doing" },
+  // done 列故意留空，验证空列渲染
+];
+
+const baseProps = {
+  columns,
+  items: tasks,
+  getId: (t: Task) => t.id,
+  getColumnId: (t: Task) => t.status,
+  onMove: () => {},
+  renderItem: (t: Task) => <span>{t.title}</span>,
+};
+
+describe("Kanban 渲染", () => {
+  it("按 getColumnId 把卡片分桶到对应列", () => {
+    const { container } = render(<Kanban {...baseProps} />);
+    const cols = container.querySelectorAll("section");
+    expect(cols.length).toBe(3);
+    const todoCards = cols[0].querySelectorAll("[role='button'], li");
+    // todo 列含「甲」「乙」
+    expect(cols[0].textContent).toContain("甲");
+    expect(cols[0].textContent).toContain("乙");
+    // doing 列含「丙」，不含「甲」
+    expect(cols[1].textContent).toContain("丙");
+    expect(cols[1].textContent).not.toContain("甲");
+    expect(todoCards.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("空列渲染占位区（done 列无卡片）", () => {
+    const { container } = render(<Kanban {...baseProps} />);
+    const done = container.querySelectorAll("section")[2];
+    expect(done.textContent).toContain("拖拽卡片到此");
+  });
+
+  it("renderColumnHeader 拿到该列卡片做统计", () => {
+    const { container } = render(
+      <Kanban {...baseProps} renderColumnHeader={(c, its) => <div>{`${c.title}-${its.length}`}</div>} />,
+    );
+    const cols = container.querySelectorAll("section");
+    expect(cols[0].textContent).toContain("待办-2");
+    expect(cols[1].textContent).toContain("进行中-1");
+    expect(cols[2].textContent).toContain("已完成-0");
+  });
+
+  it("挂载时不触发 onMove", () => {
+    const onMove = vi.fn();
+    render(<Kanban {...baseProps} onMove={onMove} />);
+    expect(onMove).not.toHaveBeenCalled();
+  });
+});
+
+describe("resolveKanbanMove", () => {
+  const getId = (t: Task) => t.id;
+  const getColumnId = (t: Task) => t.status;
+
+  it("拖到另一列的卡片之前：toColumn 切换，toIndex 为该卡在目标列(剔除自身)的下标", () => {
+    // 把 t1(todo) 拖到 t3(doing) 之前
+    const e = resolveKanbanMove("t1", "t3", columns, tasks, getId, getColumnId);
+    expect(e).toEqual({ id: "t1", fromColumn: "todo", toColumn: "doing", toIndex: 0 });
+  });
+
+  it("拖到空列（over 是列容器 id）：追加到列尾", () => {
+    const e = resolveKanbanMove("t1", "kbcol:done", columns, tasks, getId, getColumnId);
+    expect(e).toEqual({ id: "t1", fromColumn: "todo", toColumn: "done", toIndex: 0 });
+  });
+
+  it("列内重排：拖到同列另一卡之前", () => {
+    // t2(todo) 拖到 t1(todo) 之前 → 目标列剔除 t2 后为 [t1]，t1 下标 0
+    const e = resolveKanbanMove("t2", "t1", columns, tasks, getId, getColumnId);
+    expect(e).toEqual({ id: "t2", fromColumn: "todo", toColumn: "todo", toIndex: 0 });
+  });
+
+  it("拖回自身 / over 为空 → 返回 null（不触发移动）", () => {
+    expect(resolveKanbanMove("t1", "t1", columns, tasks, getId, getColumnId)).toBeNull();
+    expect(resolveKanbanMove("t1", null, columns, tasks, getId, getColumnId)).toBeNull();
+  });
+
+  it("未知目标列 → null", () => {
+    expect(resolveKanbanMove("t1", "kbcol:ghost", columns, tasks, getId, getColumnId)).toBeNull();
+  });
+});

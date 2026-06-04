@@ -32,6 +32,7 @@ export * from "./pagination";
 export * from "./table";
 export * from "./pro-table";
 export * from "./editable-table";
+export * from "./kanban";
 export * from "./watermark";
 export * from "./carousel";
 export * from "./resizable";
@@ -208,6 +209,23 @@ export {
 
 export * from "./search-form";
 export * from "./sortable";
+
+// 移动端 / H5（触屏交互 + 安全区）
+export * from "./safe-area";
+export * from "./fab";
+export * from "./tab-bar";
+export * from "./action-sheet";
+export * from "./swipe-action";
+export * from "./pull-to-refresh";
+export * from "./picker";
+
+// 数据展示补充（虚拟滚动 / 无限加载 / 二维码）
+export * from "./virtual-list";
+export * from "./infinite-scroll";
+export * from "./qrcode";
+
+// 响应式容器（容器查询上下文 + web/平板/手机 预设）
+export * from "./viewport";
 
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";
