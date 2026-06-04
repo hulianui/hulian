@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Columns3, Maximize, Minimize, RefreshCw, Rows3 } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
+import { useLocale } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Pagination } from "../pagination/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
@@ -44,6 +45,8 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     className,
     ...tableProps
   } = props;
+
+  const t = useLocale().proTable;
 
   const features: ProTableToolbarFeatures | null =
     toolbar === false
@@ -104,7 +107,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             {features?.reload && (
               <button
                 type="button"
-                aria-label="刷新"
+                aria-label={t.reload}
                 onClick={onReload}
                 className={iconBtn}
               >
@@ -114,8 +117,8 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             {features?.density && (
               <button
                 type="button"
-                aria-label={`密度：${density}`}
-                title={`密度：${density}`}
+                aria-label={`${t.density}：${density}`}
+                title={`${t.density}：${density}`}
                 onClick={cycleDensity}
                 className={iconBtn}
               >
@@ -124,10 +127,10 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             )}
             {features?.columnSetting && (
               <Popover>
-                <PopoverTrigger aria-label="列设置" className={iconBtn}>
+                <PopoverTrigger aria-label={t.columnSetting} className={iconBtn}>
                   <Columns3 className="size-4" />
                 </PopoverTrigger>
-                <PopoverContent title="列展示" align="end" className="w-[min(90vw,14rem)]">
+                <PopoverContent title={t.columnsTitle} align="end" className="w-[min(90vw,14rem)]">
                   <div className="flex max-h-72 flex-col gap-2 overflow-auto">
                     {columns.map((c) => {
                       const id = colId(c);
@@ -145,7 +148,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             {features?.fullscreen && (
               <button
                 type="button"
-                aria-label={fullscreen ? "退出全屏" : "全屏"}
+                aria-label={fullscreen ? t.exitFullscreen : t.fullscreen}
                 onClick={() => setFullscreen((f) => !f)}
                 className={iconBtn}
               >
@@ -160,7 +163,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
       {pagination && (
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-sm text-muted">共 {pagination.total} 条</span>
+          <span className="text-sm text-muted">{t.total(pagination.total)}</span>
           <Pagination
             page={pagination.page}
             total={Math.max(1, Math.ceil(pagination.total / pagination.pageSize))}

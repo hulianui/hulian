@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState, type CSSProperties } from "react";
 import { Menu, X } from "../_icons";
+import { useLocale } from "../config/locale";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { NavMenu } from "../nav-menu/nav-menu";
@@ -41,6 +42,7 @@ interface TabBarProps {
 }
 
 function TabBar({ tabs, active, onActivate, onClose, onCloseOthers, onCloseAll }: TabBarProps) {
+  const loc = useLocale().adminLayout;
   return (
     <div className="flex h-10 shrink-0 items-center gap-1 border-b border-border bg-surface px-2">
       <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
@@ -73,7 +75,7 @@ function TabBar({ tabs, active, onActivate, onClose, onCloseOthers, onCloseAll }
               {closable && (
                 <button
                   type="button"
-                  aria-label="关闭页签"
+                  aria-label={loc.closeTab}
                   onClick={(e) => {
                     e.stopPropagation();
                     onClose(t.key);
@@ -89,7 +91,7 @@ function TabBar({ tabs, active, onActivate, onClose, onCloseOthers, onCloseAll }
       </div>
       <Popover>
         <PopoverTrigger
-          aria-label="页签操作"
+          aria-label={loc.tabActions}
           className="inline-grid size-7 shrink-0 place-items-center rounded-[calc(var(--radius)-0.25rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Ellipsis className="size-4" />
@@ -100,13 +102,13 @@ function TabBar({ tabs, active, onActivate, onClose, onCloseOthers, onCloseAll }
               onClick={() => active && onCloseOthers(active)}
               className="rounded-[calc(var(--radius)-0.25rem)] px-2.5 py-1.5 text-left text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover"
             >
-              关闭其他
+              {loc.closeOthers}
             </PopoverClose>
             <PopoverClose
               onClick={onCloseAll}
               className="rounded-[calc(var(--radius)-0.25rem)] px-2.5 py-1.5 text-left text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover"
             >
-              关闭全部
+              {loc.closeAll}
             </PopoverClose>
           </div>
         </PopoverContent>
@@ -142,6 +144,7 @@ export function AdminLayout({
   className,
   contentClassName,
 }: AdminLayoutProps) {
+  const t = useLocale().adminLayout;
   const leaves = useMemo(() => collectLeaves(menuItems, new Map()), [menuItems]);
 
   const [collapsedI, setCollapsedI] = useState(defaultCollapsed);
@@ -239,7 +242,7 @@ export function AdminLayout({
         <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-surface px-4">
           <button
             type="button"
-            aria-label={collapsed ? "展开侧栏" : "收起侧栏"}
+            aria-label={collapsed ? t.expand : t.collapse}
             aria-expanded={!collapsed}
             onClick={() => setCollapsed(!collapsed)}
             className="inline-grid size-9 shrink-0 place-items-center rounded-[var(--radius)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"

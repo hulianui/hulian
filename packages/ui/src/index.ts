@@ -168,6 +168,12 @@ export type { AccessProps } from "./access/access";
 export { useAccess } from "./access/use-access";
 export type { AccessContextValue } from "./access/use-access";
 
+// 全局配置 / i18n（基础设施·不进组件画廊）
+export { ConfigProvider } from "./config/config-provider";
+export type { ConfigProviderProps } from "./config/config-provider";
+export { useLocale, zhCN, enUS } from "./config/locale";
+export type { Locale } from "./config/locale";
+
 // 动效基元（时长/曲线 token + 预设）
 export {
   motionDuration,
