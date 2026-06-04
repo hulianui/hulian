@@ -1,0 +1,103 @@
+import type { Customer } from "./types";
+
+// 6 个客户档案，与会话 / 工单关联（customerId）。
+export const customers: Customer[] = [
+  {
+    id: "CU01",
+    name: "林婉如",
+    avatar: "https://i.pravatar.cc/100?img=45",
+    level: "金卡",
+    phone: "138-0011-2233",
+    region: "上海·浦东",
+    since: "2023-04-18",
+    totalSpend: 28640,
+    orders: 37,
+    tags: ["高价值", "复购", "服饰"],
+    history: [
+      { id: "h1", at: "2026-05-30", text: "工单 #T-2087 退货已完结" },
+      { id: "h2", at: "2026-05-12", text: "咨询尺码，已引导下单" },
+      { id: "h3", at: "2026-04-21", text: "金卡会员升级" },
+    ],
+  },
+  {
+    id: "CU02",
+    name: "赵铁柱",
+    avatar: "https://i.pravatar.cc/100?img=12",
+    level: "普通",
+    phone: "139-2244-5566",
+    region: "河北·石家庄",
+    since: "2025-11-03",
+    totalSpend: 860,
+    orders: 3,
+    tags: ["数码", "新客"],
+    history: [
+      { id: "h1", at: "2026-06-01", text: "咨询发货时效" },
+      { id: "h2", at: "2025-11-03", text: "首单注册" },
+    ],
+  },
+  {
+    id: "CU03",
+    name: "孙悦",
+    avatar: "https://i.pravatar.cc/100?img=32",
+    level: "银卡",
+    phone: "137-7788-9900",
+    region: "四川·成都",
+    since: "2024-09-14",
+    totalSpend: 6420,
+    orders: 14,
+    tags: ["美妆", "活跃"],
+    history: [
+      { id: "h1", at: "2026-05-28", text: "工单 #T-2090 物流投诉处理中" },
+      { id: "h2", at: "2026-03-09", text: "参与 38 大促" },
+    ],
+  },
+  {
+    id: "CU04",
+    name: "周杰",
+    avatar: "https://i.pravatar.cc/100?img=68",
+    level: "黑卡",
+    phone: "135-3322-1100",
+    region: "广东·深圳",
+    since: "2022-01-22",
+    totalSpend: 96800,
+    orders: 88,
+    tags: ["VIP", "高客单", "家电"],
+    history: [
+      { id: "h1", at: "2026-05-21", text: "专属客服一对一" },
+      { id: "h2", at: "2026-02-14", text: "黑卡权益续期" },
+      { id: "h3", at: "2025-12-01", text: "大额订单 ¥12,800" },
+    ],
+  },
+  {
+    id: "CU05",
+    name: "吴敏",
+    avatar: "https://i.pravatar.cc/100?img=24",
+    level: "普通",
+    phone: "136-9988-7766",
+    region: "北京·朝阳",
+    since: "2026-05-26",
+    totalSpend: 199,
+    orders: 1,
+    tags: ["新客", "母婴"],
+    history: [{ id: "h1", at: "2026-05-26", text: "新用户注册并下首单" }],
+  },
+  {
+    id: "CU06",
+    name: "郑凯",
+    avatar: "https://i.pravatar.cc/100?img=51",
+    level: "银卡",
+    phone: "133-4455-6677",
+    region: "浙江·杭州",
+    since: "2024-06-30",
+    totalSpend: 5210,
+    orders: 11,
+    tags: ["运动", "退换多"],
+    history: [
+      { id: "h1", at: "2026-06-02", text: "咨询售后政策" },
+      { id: "h2", at: "2026-01-19", text: "工单 #T-2061 换货完结" },
+    ],
+  },
+];
+
+export const customerById = (id: string): Customer | undefined =>
+  customers.find((c) => c.id === id);
