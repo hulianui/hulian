@@ -21,6 +21,13 @@ import {
   Drawer,
   DrawerTrigger,
   DrawerContent,
+  Menu,
+  MenuTrigger,
+  MenuContent,
+  MenuItem,
+  MenuSeparator,
+  toast,
+  ToastProvider,
   Conversation,
   ChatMessage,
   ThinkingBlock,
@@ -37,7 +44,7 @@ import {
 } from "@hulian/ui";
 import {
   Plus,
-  Menu,
+  Menu as MenuIcon,
   Bot,
   Paperclip,
   Sparkles,
@@ -136,18 +143,38 @@ function Rail({
         />
       </div>
 
-      {/* 底部用户档 */}
-      <div className="border-t border-border p-2">
-        <Stack direction="row" align="center" justify="between" className="rounded-lg px-1.5 py-1.5 hover:bg-surface-hover">
-          <User
-            name="瑚琏用户"
-            description="免费版"
-            avatarProps={{ size: "sm", fallback: "瑚" }}
+      {/* 底部用户档：用户信息区 + 账户菜单 各自独立可点（非一体） */}
+      <div className="flex items-center gap-1 border-t border-border p-2">
+        <button
+          type="button"
+          onClick={() => toast({ title: "账户", description: "demo 演示，未接入真实账户体系" })}
+          className="flex flex-1 items-center rounded-lg px-1.5 py-1.5 text-left outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+        >
+          <User name="瑚琏用户" description="免费版" avatarProps={{ size: "sm", fallback: "瑚" }} />
+        </button>
+        <Menu>
+          <MenuTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="iconSm"
+                aria-label="账户菜单"
+                className="text-muted hover:text-foreground"
+              >
+                <MoreHorizontal className="size-4" />
+              </Button>
+            }
           />
-          <Button variant="ghost" size="iconSm" aria-label="账户菜单" className="text-muted hover:text-foreground">
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </Stack>
+          <MenuContent side="top" align="end">
+            <MenuItem onClick={() => toast({ title: "个人设置", tone: "info" })}>个人设置</MenuItem>
+            <MenuItem onClick={() => toast({ title: "升级到 Pro", tone: "info" })}>升级到 Pro</MenuItem>
+            <MenuItem onClick={() => toast({ title: "帮助与反馈", tone: "info" })}>帮助与反馈</MenuItem>
+            <MenuSeparator />
+            <MenuItem variant="danger" onClick={() => toast({ title: "已退出登录", tone: "info" })}>
+              退出登录
+            </MenuItem>
+          </MenuContent>
+        </Menu>
       </div>
     </div>
   );
@@ -199,9 +226,10 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
       {m.phase === "done" ? (
         <MessageActions
           content={m.text}
-          onLike={() => {}}
-          onDislike={() => {}}
-          onRegenerate={() => {}}
+          onCopy={() => toast({ title: "已复制到剪贴板", tone: "info" })}
+          onRegenerate={() => toast({ title: "重新生成中…", tone: "info" })}
+          onLike={() => toast({ title: "感谢你的反馈 👍", tone: "info" })}
+          onDislike={() => toast({ title: "已记录，我们会继续改进", tone: "info" })}
         />
       ) : null}
     </Stack>
@@ -251,7 +279,7 @@ export default function AiChatDemo() {
             <DrawerTrigger
               render={
                 <Button variant="ghost" size="iconSm" aria-label="会话列表">
-                  <Menu className="size-4" />
+                  <MenuIcon className="size-4" />
                 </Button>
               }
             />
@@ -287,7 +315,15 @@ export default function AiChatDemo() {
           demo
         </Badge>
       </Stack>
-      <Select items={MODELS} value={model} onValueChange={(v) => setModel(v as string)}>
+      <Select
+        items={MODELS}
+        value={model}
+        onValueChange={(v) => {
+          setModel(v as string);
+          const picked = MODELS.find((x) => x.value === v);
+          toast({ title: `已切换到 ${picked?.label ?? v}`, tone: "info" });
+        }}
+      >
         <SelectTrigger size="sm" className="w-36" />
         <SelectContent>
           {MODELS.map((m) => (
@@ -302,6 +338,8 @@ export default function AiChatDemo() {
 
   return (
     <div className="mx-auto h-[calc(100dvh-3.25rem)] max-w-[1280px] overflow-hidden">
+      {/* 命令式 toast 单挂：模型切换 / 消息操作 / 账户菜单的反馈都进此 Viewport */}
+      <ToastProvider />
       <Layout className="h-full">
         <Layout.Header className="px-4">{header}</Layout.Header>
         <Layout hasSider className="min-h-0 flex-auto">

@@ -8,19 +8,27 @@ import type { MessageActionsProps } from "./message-actions.types";
 function IconBtn({
   label,
   onClick,
+  active,
   children,
 }: {
   label: string;
   onClick?: () => void;
+  active?: boolean;
   children: ReactNode;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
+      aria-pressed={active}
       title={label}
       onClick={onClick}
-      className="inline-flex size-7 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&>svg]:size-3.5"
+      className={cn(
+        "inline-flex size-7 items-center justify-center rounded-[var(--radius)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&>svg]:size-3.5",
+        active
+          ? "bg-primary/10 text-primary"
+          : "text-muted hover:bg-surface-hover hover:text-foreground",
+      )}
     >
       {children}
     </button>
@@ -38,6 +46,7 @@ export function MessageActions({
   ...props
 }: MessageActionsProps) {
   const [copied, setCopied] = useState(false);
+  const [feeling, setFeeling] = useState<"like" | "dislike" | null>(null);
   const showCopy = content != null || !!onCopy;
 
   const copy = async () => {
@@ -66,12 +75,26 @@ export function MessageActions({
         </IconBtn>
       )}
       {onLike && (
-        <IconBtn label="赞" onClick={onLike}>
+        <IconBtn
+          label="赞"
+          active={feeling === "like"}
+          onClick={() => {
+            setFeeling((f) => (f === "like" ? null : "like"));
+            onLike();
+          }}
+        >
           <ThumbsUp />
         </IconBtn>
       )}
       {onDislike && (
-        <IconBtn label="踩" onClick={onDislike}>
+        <IconBtn
+          label="踩"
+          active={feeling === "dislike"}
+          onClick={() => {
+            setFeeling((f) => (f === "dislike" ? null : "dislike"));
+            onDislike();
+          }}
+        >
           <ThumbsDown />
         </IconBtn>
       )}
