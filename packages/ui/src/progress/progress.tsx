@@ -17,10 +17,17 @@ export function dashOffset(circumference: number, percent: number): number {
 }
 
 // tone → 字面 class（Tailwind @source 只扫字面量，禁动态拼类）
-const barByTone = { primary: "bg-primary", danger: "bg-danger" } as const;
+const barByTone = {
+  primary: "bg-primary",
+  danger: "bg-danger",
+  success: "bg-success",
+  warning: "bg-warning",
+} as const;
 const strokeByTone = {
   primary: "stroke-[var(--color-primary)]",
   danger: "stroke-[var(--color-danger)]",
+  success: "stroke-[var(--color-success)]",
+  warning: "stroke-[var(--color-warning)]",
 } as const;
 
 // 确定态填充过渡：复用 motion-token CSS 镜像（零散写 transition）

@@ -16,7 +16,7 @@ export const progressShowcase: ShowcaseSpec = {
     {
       prop: "tone",
       type: "select",
-      options: ["primary", "danger"],
+      options: ["primary", "success", "warning", "danger"],
       defaultValue: "primary",
       label: "色调",
     },
@@ -27,6 +27,14 @@ export const progressShowcase: ShowcaseSpec = {
     { name: "linear 25%", render: () => <Progress value={25} className="w-64" /> },
     { name: "linear 60% + 数值", render: () => <Progress value={60} showValue className="w-64" /> },
     { name: "linear 100%", render: () => <Progress value={100} className="w-64" /> },
+    {
+      name: "linear success 100%",
+      render: () => <Progress value={100} tone="success" showValue className="w-64" />,
+    },
+    {
+      name: "linear warning 70%",
+      render: () => <Progress value={70} tone="warning" showValue className="w-64" />,
+    },
     {
       name: "linear danger 90%",
       render: () => <Progress value={90} tone="danger" showValue className="w-64" />,
@@ -46,7 +54,7 @@ export const progressShowcase: ShowcaseSpec = {
         value={indeterminate ? undefined : (p.value as number)}
         max={p.max as number}
         variant={p.variant as "linear" | "circular"}
-        tone={p.tone as "primary" | "danger"}
+        tone={p.tone as "primary" | "danger" | "success" | "warning"}
         showValue={p.showValue as boolean}
         className={p.variant === "circular" ? undefined : "w-64"}
       />
@@ -56,7 +64,7 @@ export const progressShowcase: ShowcaseSpec = {
     const indeterminate = p.indeterminate as boolean;
     const valueAttr = indeterminate ? "" : ` value={${p.value}}`;
     const variantAttr = p.variant === "circular" ? ` variant="circular"` : "";
-    const toneAttr = p.tone === "danger" ? ` tone="danger"` : "";
+    const toneAttr = p.tone && p.tone !== "primary" ? ` tone="${p.tone}"` : "";
     return `<Progress${variantAttr}${valueAttr}${toneAttr}${p.showValue ? " showValue" : ""} />`;
   },
 };

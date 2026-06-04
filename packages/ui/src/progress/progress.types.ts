@@ -8,7 +8,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement> {
   /** 形态，默认 "linear" */
   variant?: "linear" | "circular";
   /** 进度色调，默认 "primary" */
-  tone?: "primary" | "danger";
+  tone?: "primary" | "danger" | "success" | "warning";
   /** circular 直径 px，默认 40（linear 忽略） */
   size?: number;
   /** circular 描边 px，默认 4（linear 忽略） */

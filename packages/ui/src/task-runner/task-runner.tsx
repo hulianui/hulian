@@ -7,14 +7,14 @@ import { Dot } from "../dot";
 import type { DotTone } from "../dot";
 import type { TaskRunnerProps, TaskRunStatus } from "./task-runner.types";
 
-// 状态派生：Dot 语气色 + Progress tone（Progress 仅 primary|danger）+ 默认徽标文字。
+// 状态派生：Dot 语气色 + Progress tone + 默认徽标文字。
 const STATUS_META: Record<
   TaskRunStatus,
-  { tone: DotTone; progressTone: "primary" | "danger"; label: string; pulse: boolean }
+  { tone: DotTone; progressTone: "primary" | "danger" | "success"; label: string; pulse: boolean }
 > = {
   idle: { tone: "neutral", progressTone: "primary", label: "Idle", pulse: false },
   running: { tone: "brand", progressTone: "primary", label: "Running", pulse: true },
-  success: { tone: "success", progressTone: "primary", label: "Done", pulse: false },
+  success: { tone: "success", progressTone: "success", label: "Done", pulse: false },
   error: { tone: "danger", progressTone: "danger", label: "Failed", pulse: false },
 };
 

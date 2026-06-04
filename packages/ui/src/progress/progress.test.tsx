@@ -66,6 +66,22 @@ describe("Progress 组件", () => {
     const progressCircle = container.querySelectorAll("circle")[1];
     expect(progressCircle.getAttribute("class")).toContain("var(--color-danger)");
   });
+  it("tone=success/warning：linear 填充用对应 bg 字面类", () => {
+    const ok = render(<Progress value={100} tone="success" />);
+    expect(ok.container.querySelector('[role="progressbar"] > div > div')!.className).toContain(
+      "bg-success",
+    );
+    const warn = render(<Progress value={70} tone="warning" />);
+    expect(warn.container.querySelector('[role="progressbar"] > div > div')!.className).toContain(
+      "bg-warning",
+    );
+  });
+  it("circular tone=success：进度环用 success stroke 变量", () => {
+    const { container } = render(<Progress variant="circular" value={50} tone="success" />);
+    expect(container.querySelectorAll("circle")[1].getAttribute("class")).toContain(
+      "var(--color-success)",
+    );
+  });
   it("showValue：渲染百分比文本", () => {
     const { getByText } = render(<Progress value={60} showValue />);
     expect(getByText("60%")).toBeTruthy();
