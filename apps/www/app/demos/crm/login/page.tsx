@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { BarChart3, ShieldCheck, Workflow } from "lucide-react";
-import { Heading, Link, LoginForm, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, Spotlight, Text } from "@hulian/ui";
 
 const FEATURES = [
   { icon: Workflow, title: "全流程客户管理", desc: "线索 → 商机 → 成交，跟进有迹可循" },
@@ -15,21 +15,16 @@ export default function CrmLoginPage() {
   return (
     <main className="flex h-dvh bg-bg">
       {/* 左：品牌面板 */}
-      <aside
-        className="relative hidden w-1/2 flex-col justify-between overflow-hidden p-12 lg:flex"
-        style={{
-          background:
-            "radial-gradient(125% 125% at 30% 0%, color-mix(in oklab, var(--color-primary) 14%, var(--color-bg)) 0%, var(--color-bg) 55%)",
-        }}
-      >
-        <div className="flex items-center gap-2">
+      <aside className="relative hidden w-1/2 flex-col justify-between overflow-hidden p-12 lg:flex">
+        <Spotlight x="30%" intensity={14} />
+        <div className="relative z-10 flex items-center gap-2">
           <span className="grid size-8 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
             瑚
           </span>
           <span className="text-base font-semibold tracking-tight">瑚琏 CRM</span>
         </div>
 
-        <div className="max-w-md">
+        <div className="relative z-10 max-w-md">
           <Heading level={1} size="3xl" balance>
             让每一次客户跟进
             <br />
@@ -56,7 +51,7 @@ export default function CrmLoginPage() {
           </ul>
         </div>
 
-        <Text size="sm" tone="muted">
+        <Text size="sm" tone="muted" className="relative z-10">
           © 2026 瑚琏 Hulian · 内置示例
         </Text>
       </aside>

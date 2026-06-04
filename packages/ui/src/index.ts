@@ -49,6 +49,7 @@ export * from "./grid-pattern";
 export * from "./retro-grid";
 export * from "./ripple";
 export * from "./striped-pattern";
+export * from "./spotlight";
 export * from "./drawer";
 export * from "./menu";
 export * from "./context-menu";

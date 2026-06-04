@@ -310,6 +310,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "dot-pattern", name: "DotPattern", description: "点阵背景 · 纯 SVG pattern + currentColor token + RSC", category: "decoration", group: "backdrop", status: "new" },
   { slug: "grid-pattern", name: "GridPattern", description: "网格背景 · 纯 SVG 线 + 虚线可配 + currentColor", category: "decoration", group: "backdrop", status: "new" },
   { slug: "striped-pattern", name: "StripedPattern", description: "斜条纹背景 · 纯 CSS 渐变 + currentColor", category: "decoration", group: "backdrop", status: "new" },
+  { slug: "spotlight", name: "Spotlight", description: "径向辉光背景 · token 驱动 radial-gradient + 明暗自适应 + RSC", category: "decoration", group: "backdrop", status: "new" },
   { slug: "retro-grid", name: "RetroGrid", description: "复古透视网格 · CSS 滚动 + reduced-motion", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
   { slug: "ripple", name: "Ripple", description: "同心脉冲圆环 · CSS 逐圈延迟 + reduced-motion", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
   { slug: "meteors", name: "Meteors", description: "流星雨 · 随机斜落拖尾(客户端生成) + currentColor", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },

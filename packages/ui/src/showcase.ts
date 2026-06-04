@@ -132,6 +132,7 @@ export { statisticShowcase } from "./statistic/statistic.showcase";
 export { statShowcase } from "./stat/stat.showcase";
 export { stepperShowcase } from "./_mui/stepper.showcase";
 export { stripedPatternShowcase } from "./striped-pattern/striped-pattern.showcase";
+export { spotlightShowcase } from "./spotlight/spotlight.showcase";
 export { switchShowcase } from "./switch/switch.showcase";
 export { tableShowcase } from "./table/table.showcase";
 export { proTableShowcase } from "./pro-table/pro-table.showcase";
