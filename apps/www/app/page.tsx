@@ -11,6 +11,7 @@ import {
   Bot,
   Sparkles,
   Smartphone,
+  Hand,
   Zap,
   ShieldCheck,
   Package,
@@ -46,6 +47,7 @@ const CATEGORY_ICON: Record<CategoryKey, LucideIcon> = {
   ai: Bot,
   decoration: Sparkles,
   mockups: Smartphone,
+  mobile: Hand,
 };
 
 // 一句话剧透每类装了什么（渐进式呈现，帮用户在点进去前就建立预期）
@@ -59,6 +61,7 @@ const CATEGORY_BLURB: Record<CategoryKey, string> = {
   ai: "对话 · 气泡 · 工具调用 · 流式",
   decoration: "光束 · 背景 · 边框流光",
   mockups: "浏览器 · 手机外壳",
+  mobile: "导航 · 浮层 · 滚轮 · 滑动手势",
 };
 
 // 为什么用瑚琏 —— 四条立得住的承诺（dogfood BentoGrid 呈现）
@@ -182,6 +185,13 @@ export default function Home() {
           </Button>
           <Button variant="outline" render={<Link href="/theme" />} className="group h-11 px-5">
             主题 Token
+            <ArrowRight
+              className="size-4 transition-transform group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </Button>
+          <Button variant="ghost" render={<Link href="/demos" />} className="group h-11 px-5">
+            看示例
             <ArrowRight
               className="size-4 transition-transform group-hover:translate-x-0.5"
               aria-hidden
