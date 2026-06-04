@@ -121,6 +121,7 @@ export * from "./country-select";
 export * from "./input-otp";
 export * from "./listbox";
 export * from "./markdown-editor";
+export * from "./markdown";
 export * from "./mentions";
 export * from "./command";
 export * from "./colorpicker";
