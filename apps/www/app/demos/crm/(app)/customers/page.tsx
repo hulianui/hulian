@@ -15,6 +15,7 @@ import {
   SelectItem,
   SelectTrigger,
   Tag,
+  toast,
   useForm,
   type ColumnDef,
 } from "@hulian/ui";
@@ -91,6 +92,7 @@ export default function CustomersPage() {
     const val = v as FormState;
     if (editing) {
       setRows((rs) => rs.map((r) => (r.id === editing.id ? { ...r, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus } : r)));
+      toast({ title: "客户已更新", description: val.name, tone: "info" });
     } else {
       const nextId = `C${1000 + rows.length + 1}`;
       setRows((rs) => [
@@ -101,6 +103,7 @@ export default function CustomersPage() {
         ...rs,
       ]);
       setPage(1);
+      toast({ title: "已新建客户", description: val.name, tone: "info" });
     }
   };
 
@@ -175,7 +178,10 @@ export default function CustomersPage() {
             description="删除后数据不可恢复（demo 内存态，刷新还原）。"
             danger
             okText="删除"
-            onConfirm={() => setRows((rs) => rs.filter((r) => r.id !== row.original.id))}
+            onConfirm={() => {
+              setRows((rs) => rs.filter((r) => r.id !== row.original.id));
+              toast({ title: "已删除客户", description: row.original.name, tone: "danger" });
+            }}
           >
             <Button variant="ghost" size="sm" tone="danger">
               <Trash2 className="size-3.5" />

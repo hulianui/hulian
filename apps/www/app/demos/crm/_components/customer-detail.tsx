@@ -24,6 +24,7 @@ import {
   Tag,
   Textarea,
   Timeline,
+  toast,
   useForm,
   type TimelineDotColor,
 } from "@hulian/ui";
@@ -86,7 +87,12 @@ export function CustomerDetail({ id }: { id: string }) {
             <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
               新增跟进
             </Button>
-            <Button size="sm">编辑客户</Button>
+            <Button
+              size="sm"
+              onClick={() => toast({ title: "编辑客户", description: "演示环境，编辑入口见客户列表", tone: "neutral" })}
+            >
+              编辑客户
+            </Button>
           </>
         }
       />
@@ -214,6 +220,7 @@ export function CustomerDetail({ id }: { id: string }) {
             ...prev,
           ]);
           form.resetFields();
+          toast({ title: "跟进已记录", description: `${customer.name} · ${v.type}`, tone: "info" });
         }}
       >
         <Field label="跟进方式">

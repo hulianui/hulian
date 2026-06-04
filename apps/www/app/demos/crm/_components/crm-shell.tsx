@@ -2,7 +2,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, Moon, Sun } from "lucide-react";
-import { AdminLayout, Breadcrumb, Button, User, useTheme, type AdminTab } from "@hulian/ui";
+import { AdminLayout, Breadcrumb, Button, User, toast, useTheme, type AdminTab } from "@hulian/ui";
 import { CRM_ROOT, breadcrumbFor, labelOf, menuItems, selectedKeyFor } from "./nav-config";
 
 function Brand() {
@@ -43,7 +43,13 @@ function HeaderExtra() {
   return (
     <div className="flex items-center gap-1.5">
       <ThemeToggle />
-      <Button variant="ghost" size="sm" aria-label="通知" className="size-9 px-0">
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label="通知"
+        className="size-9 px-0"
+        onClick={() => toast({ title: "暂无新通知", description: "新商机、跟进到期等提醒会在此汇总", tone: "neutral" })}
+      >
         <Bell className="size-[18px]" />
       </Button>
       <div className="mx-1 h-6 w-px bg-border" aria-hidden />
