@@ -27,4 +27,30 @@ describe("AgentPlan", () => {
     const { queryByText } = render(<AgentPlan tasks={tasks} title={null} />);
     expect(queryByText("执行计划")).toBeNull();
   });
+  it("meta 渲染在行右侧", () => {
+    const { getByText } = render(
+      <AgentPlan tasks={[{ title: "分配 microVM", status: "done", meta: "180ms" }]} />,
+    );
+    expect(getByText("180ms")).toBeTruthy();
+  });
+  it("running 行带高亮底色", () => {
+    const { getByText } = render(<AgentPlan tasks={tasks} />);
+    const li = getByText("替换排版原语").closest("li");
+    expect(li?.className).toContain("bg-surface-hover");
+  });
+  it("pending 渲染空心环（非实心 Dot）", () => {
+    const { container } = render(<AgentPlan tasks={[{ title: "回收沙箱", status: "pending" }]} />);
+    expect(container.querySelector(".rounded-full.border-2")).toBeTruthy();
+  });
+  it("strikeDone=false 时 done 不加删除线（执行日志语义）", () => {
+    const { getByText } = render(
+      <AgentPlan strikeDone={false} tasks={[{ title: "已完成步骤", status: "done" }]} />,
+    );
+    expect(getByText("已完成步骤").className).not.toContain("line-through");
+  });
+  it("bare 去掉外层边框", () => {
+    const { container } = render(<AgentPlan bare tasks={tasks} />);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).not.toContain("border-border");
+  });
 });
