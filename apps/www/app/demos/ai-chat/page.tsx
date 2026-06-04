@@ -181,7 +181,7 @@ export default function AiChatDemo() {
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <DrawerTrigger
               render={
-                <Button variant="ghost" size="sm" aria-label="会话列表" className="size-8 px-0">
+                <Button variant="ghost" size="iconSm" aria-label="会话列表">
                   <Menu className="size-4" />
                 </Button>
               }
@@ -311,8 +311,8 @@ export default function AiChatDemo() {
                   trailing={
                     <Button
                       variant="ghost"
-                      size="sm"
-                      className="size-8 shrink-0 px-0 text-muted hover:text-foreground"
+                      size="iconSm"
+                      className="shrink-0 text-muted hover:text-foreground"
                       aria-label="添加附件"
                     >
                       <Paperclip className="size-4" />

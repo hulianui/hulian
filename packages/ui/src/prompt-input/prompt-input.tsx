@@ -74,22 +74,22 @@ export function PromptInput({
           {loading ? (
             <Button
               type="button"
-              size="sm"
+              size="iconSm"
               variant="outline"
               onClick={onStop}
               aria-label="停止生成"
-              className="size-8 shrink-0 rounded-full px-0"
+              className="shrink-0 rounded-full"
             >
               <Square className="size-3.5" />
             </Button>
           ) : (
             <Button
               type="button"
-              size="sm"
+              size="iconSm"
               onClick={submit}
               disabled={disabled || !text.trim()}
               aria-label="发送"
-              className="size-8 shrink-0 rounded-full px-0"
+              className="shrink-0 rounded-full"
             >
               <ArrowUp className="size-4" />
             </Button>

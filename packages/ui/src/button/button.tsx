@@ -23,6 +23,8 @@ export const buttonVariants = cva(
         lg: "h-12 px-6 text-base",
         // 纯图标方形按钮（无文字内边距）：免去消费方手贴 size-9 px-0 之类补丁。
         icon: "size-9 p-0",
+        // 紧凑图标按钮（对齐 sm 档高度 32px，用于 AI 工具栏/输入区等密集场景）。
+        iconSm: "size-8 p-0",
       },
     },
     compoundVariants: [

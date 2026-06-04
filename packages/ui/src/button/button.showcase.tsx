@@ -6,7 +6,7 @@ export const buttonShowcase: ShowcaseSpec = {
   controls: [
     { prop: "variant", type: "select", options: ["solid", "outline", "ghost"], defaultValue: "solid" },
     { prop: "tone", type: "select", options: ["brand", "danger"], defaultValue: "brand" },
-    { prop: "size", type: "select", options: ["sm", "md", "lg", "icon"], defaultValue: "md" },
+    { prop: "size", type: "select", options: ["sm", "md", "lg", "icon", "iconSm"], defaultValue: "md" },
     { prop: "loading", type: "boolean", defaultValue: false },
     { prop: "children", type: "text", defaultValue: "瑚琏按钮", label: "文案" },
   ],
@@ -22,7 +22,7 @@ export const buttonShowcase: ShowcaseSpec = {
     <Button
       variant={p.variant as "solid" | "outline" | "ghost"}
       tone={p.tone as "brand" | "danger"}
-      size={p.size as "sm" | "md" | "lg" | "icon"}
+      size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm"}
       loading={p.loading as boolean}
     >
       {p.children as string}
