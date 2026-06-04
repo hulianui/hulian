@@ -18,6 +18,16 @@ export interface DemoMeta {
 
 export const demos: DemoMeta[] = [
   {
+    slug: "website",
+    title: "瀚云 HanCloud 公司官网",
+    description:
+      "Hero、能力 Bento、产品演示、客户证言、定价、FAQ、联系表单 —— 100% 由 @hulian/ui 搭建的营销官网示例。",
+    href: "/demos/website",
+    category: "营销官网",
+    status: "wip",
+    tags: ["Navbar", "BentoGrid", "Marquee", "Accordion"],
+  },
+  {
     slug: "crm",
     title: "CRM 客户管理后台",
     description: "工作台、客户、商机看板、订单、系统设置 —— 100% 由 @hulian/ui 搭建的完整中后台示例。",
@@ -25,5 +35,15 @@ export const demos: DemoMeta[] = [
     category: "中后台",
     status: "wip",
     tags: ["AdminLayout", "ProTable", "Chart", "ProForm"],
+  },
+  {
+    slug: "customer-service",
+    title: "客服中心",
+    description:
+      "实时会话工作台、工单流转、知识库、服务看板 —— 100% 由 @hulian/ui 搭建的坐席台示例，含进线提醒、输入状态与已读回执。",
+    href: "/demos/customer-service",
+    category: "中后台",
+    status: "wip",
+    tags: ["实时会话", "ProTable", "Timeline", "Chart"],
   },
 ];
