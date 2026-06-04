@@ -5,6 +5,8 @@ import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type {
+  ComboboxChipProps,
+  ComboboxChipsProps,
   ComboboxContentProps,
   ComboboxInputProps,
   ComboboxItemData,
@@ -93,11 +95,12 @@ export const comboboxTriggerVariants = cva(
   },
 );
 
-export function Combobox({ children, ...props }: ComboboxProps) {
+export function Combobox<Multiple extends boolean = false>({ children, ...props }: ComboboxProps<Multiple>) {
   const anchorRef = useRef<HTMLElement>(null);
   return (
     <AnchorContext.Provider value={anchorRef}>
-      <BaseCombobox.Root {...props}>{children}</BaseCombobox.Root>
+      {/* Root 是泛型函数组件，spread 泛型 props 推断不稳 → 在边界 as any，对外类型仍由 ComboboxProps 保证。 */}
+      <BaseCombobox.Root {...(props as Record<string, unknown>)}>{children}</BaseCombobox.Root>
     </AnchorContext.Provider>
   );
 }
@@ -220,5 +223,48 @@ export function ComboboxItem({ value, disabled, children, className }: ComboboxI
         <CheckIcon />
       </BaseCombobox.ItemIndicator>
     </BaseCombobox.Item>
+  );
+}
+
+// 多选可见字段：chips 容器（自身即外壳皮肤 + 浮层锚点），内放 ComboboxChip 列 + 输入框 + chevron。
+// 高度随 chips 换行自适应（h-auto + min-h 保持与单选 md 等高）。
+export function ComboboxChips({ size, invalid, placeholder, className, children }: ComboboxChipsProps) {
+  const anchorRef = useContext(AnchorContext);
+  return (
+    <BaseCombobox.Chips
+      ref={anchorRef as RefObject<HTMLDivElement> | null}
+      {...(invalid && { "data-invalid": "", "aria-invalid": true })}
+      className={cn(comboboxInputShellVariants({ size }), "h-auto min-h-10 flex-wrap gap-1.5 py-1.5", className)}
+    >
+      {children}
+      <BaseCombobox.Input
+        placeholder={placeholder}
+        className="min-w-16 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+      />
+      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted">
+        <ChevronDownIcon />
+      </BaseCombobox.Icon>
+    </BaseCombobox.Chips>
+  );
+}
+
+// 单个已选 chip：pill + 删除 ×。删除由 Base UI 按 chip 在容器内的渲染序绑定 selectedValue[index]，
+// 故消费者须按 value 顺序渲染 chip（CountrySelect 即如此）。
+export function ComboboxChip({ children, className }: ComboboxChipProps) {
+  return (
+    <BaseCombobox.Chip
+      className={cn(
+        "inline-flex items-center gap-1 rounded-[calc(var(--radius)-0.25rem)] bg-muted/15 py-0.5 pl-2 pr-1 text-sm text-foreground",
+        className,
+      )}
+    >
+      {children}
+      <BaseCombobox.ChipRemove
+        aria-label="移除"
+        className="flex size-4 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+      >
+        <ClearIcon />
+      </BaseCombobox.ChipRemove>
+    </BaseCombobox.Chip>
   );
 }

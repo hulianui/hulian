@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Cascader } from "./cascader";
+import { flattenLeafPaths, filterLeafPaths } from "./cascader.logic";
 import type { TreeNode } from "../tree/tree-core";
 
 const NODES: TreeNode[] = [
@@ -29,5 +30,31 @@ describe("Cascader", () => {
     fireEvent.click(screen.getByText("杭州"));
     fireEvent.click(screen.getByText("西湖区"));
     expect(onChange).toHaveBeenCalledWith(["zj", "hz", "xh"], expect.any(Array));
+  });
+
+  it("showSearch：搜索命中叶子路径，点击提交全路径", () => {
+    const onChange = vi.fn();
+    render(<Cascader nodes={NODES} onChange={onChange} showSearch placeholder="选择" />);
+    fireEvent.click(screen.getByRole("button"));
+    fireEvent.change(screen.getByPlaceholderText("搜索…"), { target: { value: "西湖" } });
+    const hit = screen.getByText("浙江 / 杭州 / 西湖区");
+    fireEvent.click(hit);
+    expect(onChange).toHaveBeenCalledWith(["zj", "hz", "xh"], expect.any(Array));
+  });
+});
+
+describe("cascader.logic（纯逻辑）", () => {
+  it("flattenLeafPaths 产出每条叶子的 key/label 全路径", () => {
+    const paths = flattenLeafPaths(NODES);
+    expect(paths).toEqual([
+      { keys: ["zj", "hz", "xh"], labels: ["浙江", "杭州", "西湖区"] },
+      { keys: ["js", "nj"], labels: ["江苏", "南京"] },
+    ]);
+  });
+  it("filterLeafPaths 命中任一层 label 或整条路径，空 query 返回空", () => {
+    const paths = flattenLeafPaths(NODES);
+    expect(filterLeafPaths(paths, "西湖").map((p) => p.keys.join("/"))).toEqual(["zj/hz/xh"]);
+    expect(filterLeafPaths(paths, "南京").map((p) => p.keys.join("/"))).toEqual(["js/nj"]);
+    expect(filterLeafPaths(paths, "")).toEqual([]);
   });
 });

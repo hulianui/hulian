@@ -179,6 +179,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "transfer", name: "Transfer", description: "穿梭框 · 左右双 listbox 面板 + 移动按钮(选中/全部) + 可选搜索 + 空态(零依赖·复用 Listbox/Empty)", category: "forms", group: "advanced", status: "new" },
   { slug: "cascader", name: "Cascader", description: "级联选择 · 触发器 + Popover 横向逐级面板列 + 路径数组受控 + click/hover 展开 + changeOnSelect · 复用树引擎核", category: "forms", group: "advanced", status: "new" },
   { slug: "tree-select", name: "TreeSelect", description: "树选择器 · 触发器 + Popover 浮层内嵌 Tree + 单选/多选(checkable)对称 + 树内搜索 · 复用树引擎核", category: "forms", group: "advanced", status: "new" },
+  { slug: "region-cascader", name: "RegionCascader", description: "中国省市区级联 · 内置全量行政区划(国家统计局口径·3级) + 浮层搜索直达 + onChange 同回码与名 · dogfood Cascader", category: "forms", group: "advanced", status: "new" },
+  { slug: "country-select", name: "CountrySelect", description: "国家/地区选择 · 内置 250 国(旗+中英文名+区号) + 单/多选 chips + 中英文/码/区号搜索 · dogfood Combobox(新增多选)", category: "forms", group: "advanced", status: "new" },
   { slug: "markdown-editor", name: "MarkdownEditor", description: "Markdown 编辑器 · WYSIWYG 罩 TipTap + 值进出 markdown 字符串 + 隐藏 input 桥 Field + 标准集工具栏", category: "forms", group: "advanced", status: "new" },
   { slug: "colorpicker", name: "ColorPicker", description: "颜色选择 · react-colorful 内核 + HEX/RGB/HSL 多格式输出与切换器(零依赖派生) + 瑚琏 token 皮肤", category: "forms", group: "advanced", status: "new" },
   { slug: "color-swatch-picker", name: "ColorSwatchPicker", description: "预设色块单选 · base-ui RadioGroup 换皮(方向键 a11y) + 选中 ring + mix-blend 勾(零依赖)", category: "forms", group: "advanced", status: "new" },

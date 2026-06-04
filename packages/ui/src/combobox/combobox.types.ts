@@ -9,11 +9,29 @@ export interface ComboboxItemData {
   label: ReactNode;
 }
 
-// 透明转发 Combobox.Root（单选，Multiple 固定 false）。
-// 用 BaseCombobox.Root.Props<Value,Multiple> 显式钉死泛型（Root 是泛型函数，ComponentProps 推不准）。
-export type ComboboxProps = Omit<BaseCombobox.Root.Props<ComboboxItemData, false>, "multiple"> & {
+// 透明转发 Combobox.Root。泛型 Multiple 默认 false（单选）→ 旧用法零变化、向后兼容；
+// 传 multiple 即推断为 true，value/onValueChange 自动变数组（Base UI 原生支持）。
+export type ComboboxProps<Multiple extends boolean = false> =
+  BaseCombobox.Root.Props<ComboboxItemData, Multiple> & {
+    children?: ReactNode;
+  };
+
+/** 多选 chips 外壳（可见字段）：内含 chip 列 + 输入框 + chevron；注册为浮层锚点。 */
+export interface ComboboxChipsProps {
+  size?: ComboboxSize;
+  /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
+  invalid?: boolean;
+  /** 输入框占位（一般仅在无选中时给）。 */
+  placeholder?: string;
+  className?: string;
   children?: ReactNode;
-};
+}
+
+/** 单个已选 chip（pill + 删除 ×，删除按 chips 内渲染顺序绑定 selectedValue[index]）。 */
+export interface ComboboxChipProps {
+  children: ReactNode;
+  className?: string;
+}
 
 export interface ComboboxInputProps {
   size?: ComboboxSize;
