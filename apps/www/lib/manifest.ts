@@ -278,6 +278,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "chat-message", name: "ChatMessage", description: "对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽·纯皮肤RSC", category: "ai", group: "conversation", status: "new" },
   { slug: "prompt-input", name: "PromptInput", description: "提示输入 · 自增高Textarea + 发送/停止键 + Enter提交/Shift+Enter换行/IME合成保护 + 受控非受控两用 + 左侧操作槽", category: "ai", group: "conversation", status: "new" },
   { slug: "typing-dots", name: "TypingDots", description: "打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading", category: "ai", group: "conversation", tags: ["animated"], status: "new" },
+  { slug: "thinking-block", name: "ThinkingBlock", description: "思考折叠块 · dogfood Collapsible(自带chevron+平滑高度) + thinking态(转圈+AnimatedShinyText高光+默认展开) + 耗时标记·收起隐藏 chain-of-thought", category: "ai", group: "agent", tags: ["animated"], status: "new" },
+  { slug: "tool-call", name: "ToolCall", description: "工具调用卡 · dogfood Collapsible + Dot状态色 + Spinner(运行中) · pending/running/success/error 四态 + 参数/结果折叠面板 + 工具图标", category: "ai", group: "agent", status: "new" },
+  { slug: "agent-plan", name: "AgentPlan", description: "执行计划 · 数据驱动任务清单 + 状态图标(Dot待办/Spinner进行/Check完成删除线/X失败) · 复用 Dot/Spinner·纯皮肤RSC", category: "ai", group: "agent", status: "new" },
 
   // ── 装饰 decoration（纯视觉、无功能本体）────────────────────────
   { slug: "dot-pattern", name: "DotPattern", description: "点阵背景 · 纯 SVG pattern + currentColor token + RSC", category: "decoration", group: "backdrop", status: "new" },

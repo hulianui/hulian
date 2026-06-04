@@ -162,3 +162,6 @@ export { typingDotsShowcase } from "./typing-dots/typing-dots.showcase";
 export { chatMessageShowcase } from "./chat-message/chat-message.showcase";
 export { conversationShowcase } from "./conversation/conversation.showcase";
 export { promptInputShowcase } from "./prompt-input/prompt-input.showcase";
+export { thinkingBlockShowcase } from "./thinking-block/thinking-block.showcase";
+export { toolCallShowcase } from "./tool-call/tool-call.showcase";
+export { agentPlanShowcase } from "./agent-plan/agent-plan.showcase";

@@ -165,6 +165,9 @@ export * from "./typing-dots";
 export * from "./chat-message";
 export * from "./conversation";
 export * from "./prompt-input";
+export * from "./thinking-block";
+export * from "./tool-call";
+export * from "./agent-plan";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
