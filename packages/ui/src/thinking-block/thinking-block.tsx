@@ -42,7 +42,7 @@ export function ThinkingBlock({
     <Collapsible
       open={resolvedOpen}
       onOpenChange={handleOpenChange}
-      className={cn("rounded-[var(--radius)] border border-border bg-surface/60", className)}
+      className={cn("w-fit max-w-full rounded-[var(--radius)] border border-border bg-surface/60", className)}
     >
       <CollapsibleTrigger>
         <span className="flex min-w-0 items-center gap-2">

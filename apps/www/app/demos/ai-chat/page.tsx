@@ -10,6 +10,9 @@ import {
   Badge,
   Stack,
   Heading,
+  Text,
+  Dot,
+  User,
   Segmented,
   Select,
   SelectTrigger,
@@ -32,7 +35,19 @@ import {
   Empty,
   CodeBlock,
 } from "@hulian/ui";
-import { Plus, Menu, Bot, Paperclip, Sparkles, Globe, Zap, Gem } from "lucide-react";
+import {
+  Plus,
+  Menu,
+  Bot,
+  Paperclip,
+  Sparkles,
+  Globe,
+  Zap,
+  Gem,
+  Search,
+  PanelLeft,
+  MoreHorizontal,
+} from "lucide-react";
 import { CONVERSATIONS, CONVERSATION_GROUPS, type ConversationStub } from "./conversations";
 import { useChatStream } from "./use-chat-stream";
 import type { AssistantMessage } from "./chat-types";
@@ -53,18 +68,20 @@ const SUGGESTIONS = [
 let convoSeq = 0;
 const newConvoId = () => `new${++convoSeq}`;
 
-// 左侧会话 rail：新建钮 + 按时间分组的会话导航（dogfood NavMenu：原生分组/选中态/点击切换，
-// 仿 DeepSeek/ChatGPT 极简风）。空组自动跳过。桌面常驻 / 移动端进抽屉。
+// 左侧会话 rail（全高列）：顶部品牌+工具 / 新建钮 / 时间分组会话导航(NavMenu·滚动) / 底部用户档。
+// 仿 DeepSeek/ChatGPT。dogfood NavMenu/User/Avatar/Dot/Button。桌面常驻 / 移动端进抽屉。
 function Rail({
   convos,
   activeId,
   onSelect,
   onNew,
+  onCollapse,
 }: {
   convos: ConversationStub[];
   activeId: string;
   onSelect: (id: string) => void;
   onNew: () => void;
+  onCollapse: () => void;
 }) {
   const navItems: NavMenuNode[] = CONVERSATION_GROUPS.map((group) => ({
     type: "group" as const,
@@ -76,12 +93,63 @@ function Rail({
   })).filter((g) => g.children.length > 0);
 
   return (
-    <Stack gap={3} className="p-3">
-      <Button variant="outline" onClick={onNew} className="w-full justify-center gap-2 rounded-full">
-        <Plus className="size-4" aria-hidden /> 新建对话
-      </Button>
-      <NavMenu items={navItems} selectedKeys={[activeId]} onSelect={(key) => onSelect(key)} />
-    </Stack>
+    <div className="flex h-full flex-col">
+      {/* 顶部：品牌 + 搜索 + 折叠 */}
+      <Stack
+        direction="row"
+        align="center"
+        justify="between"
+        className="px-3 py-3"
+      >
+        <Stack direction="row" align="center" gap={2}>
+          <Dot tone="brand" />
+          <Text as="span" weight="semibold" className="tracking-tight">
+            瑚琏助手
+          </Text>
+        </Stack>
+        <Stack direction="row" align="center" gap={1}>
+          <Button variant="ghost" size="iconSm" aria-label="搜索对话" className="text-muted hover:text-foreground">
+            <Search className="size-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="iconSm"
+            onClick={onCollapse}
+            aria-label="收起侧栏"
+            className="text-muted hover:text-foreground"
+          >
+            <PanelLeft className="size-4" />
+          </Button>
+        </Stack>
+      </Stack>
+
+      {/* 新建 + 会话导航（滚动区） */}
+      <div className="flex-1 space-y-3 overflow-y-auto px-3 pb-2">
+        <Button variant="outline" onClick={onNew} className="w-full justify-center gap-2 rounded-full">
+          <Plus className="size-4" aria-hidden /> 新建对话
+        </Button>
+        <NavMenu
+          className="w-full"
+          items={navItems}
+          selectedKeys={[activeId]}
+          onSelect={(key) => onSelect(key)}
+        />
+      </div>
+
+      {/* 底部用户档 */}
+      <div className="border-t border-border p-2">
+        <Stack direction="row" align="center" justify="between" className="rounded-lg px-1.5 py-1.5 hover:bg-surface-hover">
+          <User
+            name="瑚琏用户"
+            description="免费版"
+            avatarProps={{ size: "sm", fallback: "瑚" }}
+          />
+          <Button variant="ghost" size="iconSm" aria-label="账户菜单" className="text-muted hover:text-foreground">
+            <MoreHorizontal className="size-4" />
+          </Button>
+        </Stack>
+      </div>
+    </div>
   );
 }
 
@@ -150,6 +218,7 @@ export default function AiChatDemo() {
     CONVERSATIONS.find((c) => c.active)?.id ?? CONVERSATIONS[0].id,
   );
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [railCollapsed, setRailCollapsed] = useState(false);
   const { messages, loading, send, stop, reset } = useChatStream();
 
   const selectConvo = (id: string) => {
@@ -187,10 +256,30 @@ export default function AiChatDemo() {
               }
             />
             <DrawerContent side="left" className="w-72 p-0">
-              <Rail convos={convos} activeId={activeId} onSelect={selectConvo} onNew={newConvo} />
+              <Rail
+                convos={convos}
+                activeId={activeId}
+                onSelect={selectConvo}
+                onNew={newConvo}
+                onCollapse={() => setDrawerOpen(false)}
+              />
             </DrawerContent>
           </Drawer>
         </span>
+        {/* 桌面：侧栏收起时显示展开钮 */}
+        {railCollapsed ? (
+          <span className="hidden md:block">
+            <Button
+              variant="ghost"
+              size="iconSm"
+              onClick={() => setRailCollapsed(false)}
+              aria-label="展开侧栏"
+              className="text-muted hover:text-foreground"
+            >
+              <PanelLeft className="size-4" />
+            </Button>
+          </span>
+        ) : null}
         <Heading as="span" size="base" weight="semibold">
           AI 对话工具
         </Heading>
@@ -216,9 +305,19 @@ export default function AiChatDemo() {
       <Layout className="h-full">
         <Layout.Header className="px-4">{header}</Layout.Header>
         <Layout hasSider className="min-h-0 flex-auto">
-          <Layout.Sider width={280} className="hidden md:block">
-            <Rail convos={convos} activeId={activeId} onSelect={selectConvo} onNew={newConvo} />
-          </Layout.Sider>
+          {railCollapsed ? null : (
+            // 聊天侧栏壳：用 aside 布局容器(顶/底固定 + 中间滚动)，Layout.Sider 的整体 ScrollArea
+            // 模型无法固定底部用户档，故此处用布局原语自管；内容全是 hulian 组件(Rail)。
+            <aside className="hidden w-[280px] shrink-0 flex-col border-r border-border bg-surface md:flex">
+              <Rail
+                convos={convos}
+                activeId={activeId}
+                onSelect={selectConvo}
+                onNew={newConvo}
+                onCollapse={() => setRailCollapsed(true)}
+              />
+            </aside>
+          )}
           <Layout.Content className="flex min-h-0 flex-col p-0">
             {messages.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6">
