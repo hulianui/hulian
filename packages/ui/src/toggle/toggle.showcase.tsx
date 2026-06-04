@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, Sparkles, Globe } from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Toggle, ToggleGroup } from "./toggle";
 
@@ -10,7 +10,7 @@ function SingleToggle(p: Record<string, unknown>) {
     <Toggle
       pressed={on}
       onPressedChange={setOn}
-      variant={(p.variant as "default" | "outline") ?? "default"}
+      variant={(p.variant as "default" | "outline" | "pill") ?? "default"}
       disabled={p.disabled as boolean}
       aria-label="bold"
     >
@@ -21,7 +21,7 @@ function SingleToggle(p: Record<string, unknown>) {
 
 export const toggleShowcase: ShowcaseSpec = {
   controls: [
-    { prop: "variant", type: "select", options: ["default", "outline"], defaultValue: "default" },
+    { prop: "variant", type: "select", options: ["default", "outline", "pill"], defaultValue: "default" },
     { prop: "disabled", type: "boolean", defaultValue: false },
   ],
   states: [
@@ -48,6 +48,19 @@ export const toggleShowcase: ShowcaseSpec = {
       ),
     },
     { name: "disabled", render: () => <Toggle disabled defaultPressed aria-label="bold"><Bold className="size-4" /></Toggle> },
+    {
+      name: "pill（AI 工具栏开关）",
+      render: () => (
+        <div className="flex gap-2">
+          <Toggle variant="pill" size="sm" defaultPressed aria-label="深度思考">
+            <Sparkles className="size-3.5" /> 深度思考
+          </Toggle>
+          <Toggle variant="pill" size="sm" aria-label="智能搜索">
+            <Globe className="size-3.5" /> 智能搜索
+          </Toggle>
+        </div>
+      ),
+    },
   ],
   renderWithProps: (p) => <SingleToggle {...p} />,
   toCode: (p) =>

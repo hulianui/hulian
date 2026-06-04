@@ -1,15 +1,15 @@
 "use client";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import {
   Layout,
-  List,
-  ListItem,
+  NavMenu,
+  type NavMenuNode,
   Avatar,
   Button,
+  Toggle,
   Badge,
   Stack,
   Heading,
-  Text,
   Segmented,
   Select,
   SelectTrigger,
@@ -32,7 +32,7 @@ import {
   Empty,
   CodeBlock,
 } from "@hulian/ui";
-import { Plus, Menu, Bot, Paperclip, Sparkles, Globe, Zap, Gem, type LucideIcon } from "lucide-react";
+import { Plus, Menu, Bot, Paperclip, Sparkles, Globe, Zap, Gem } from "lucide-react";
 import { CONVERSATIONS, CONVERSATION_GROUPS, type ConversationStub } from "./conversations";
 import { useChatStream } from "./use-chat-stream";
 import type { AssistantMessage } from "./chat-types";
@@ -53,8 +53,8 @@ const SUGGESTIONS = [
 let convoSeq = 0;
 const newConvoId = () => `new${++convoSeq}`;
 
-// 左侧会话 rail：新建钮 + 按时间分组的纯标题清单（仿 DeepSeek/ChatGPT 极简风：无头像/无副文案）。
-// dogfood List/ListItem(单行标题) + Text(分组标签)。桌面常驻 / 移动端进抽屉。
+// 左侧会话 rail：新建钮 + 按时间分组的会话导航（dogfood NavMenu：原生分组/选中态/点击切换，
+// 仿 DeepSeek/ChatGPT 极简风）。空组自动跳过。桌面常驻 / 移动端进抽屉。
 function Rail({
   convos,
   activeId,
@@ -66,73 +66,22 @@ function Rail({
   onSelect: (id: string) => void;
   onNew: () => void;
 }) {
+  const navItems: NavMenuNode[] = CONVERSATION_GROUPS.map((group) => ({
+    type: "group" as const,
+    key: group,
+    label: group,
+    children: convos
+      .filter((c) => c.group === group)
+      .map((c) => ({ key: c.id, label: c.title })),
+  })).filter((g) => g.children.length > 0);
+
   return (
-    <Stack gap={4} className="p-3">
+    <Stack gap={3} className="p-3">
       <Button variant="outline" onClick={onNew} className="w-full justify-center gap-2 rounded-full">
         <Plus className="size-4" aria-hidden /> 新建对话
       </Button>
-      {CONVERSATION_GROUPS.map((group) => {
-        const items = convos.filter((c) => c.group === group);
-        if (items.length === 0) return null;
-        return (
-          <div key={group}>
-            <Text as="div" size="xs" tone="muted" className="px-2 pb-1.5 font-medium">
-              {group}
-            </Text>
-            <List
-              size="sm"
-              split={false}
-              items={items}
-              renderItem={(c) => (
-                <ListItem
-                  onClick={() => onSelect(c.id)}
-                  className={
-                    "cursor-pointer truncate rounded-lg px-2.5 py-2 text-sm transition-colors " +
-                    (c.id === activeId
-                      ? "bg-surface-hover font-medium text-foreground"
-                      : "text-foreground/80 hover:bg-surface-hover/60")
-                  }
-                >
-                  {c.title}
-                </ListItem>
-              )}
-            />
-          </div>
-        );
-      })}
+      <NavMenu items={navItems} selectedKeys={[activeId]} onSelect={(key) => onSelect(key)} />
     </Stack>
-  );
-}
-
-// 工具栏开关 chip（DeepSeek 式：圆角描边 pill，激活态品牌色填充）。
-function ToolChip({
-  active,
-  onClick,
-  icon: Icon,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  icon: LucideIcon;
-  children: ReactNode;
-}) {
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="sm"
-      onClick={onClick}
-      aria-pressed={active}
-      className={
-        "h-8 shrink-0 gap-1.5 rounded-full border px-3 text-xs font-normal " +
-        (active
-          ? "border-primary/30 bg-primary/10 text-primary hover:bg-primary/15"
-          : "border-border text-muted hover:bg-surface-hover hover:text-foreground")
-      }
-    >
-      <Icon className="size-3.5" aria-hidden />
-      {children}
-    </Button>
   );
 }
 
@@ -337,20 +286,26 @@ export default function AiChatDemo() {
                   placeholder="给瑚琏助手发消息…"
                   actions={
                     <>
-                      <ToolChip
-                        active={deepThink}
-                        onClick={() => setDeepThink((v) => !v)}
-                        icon={Sparkles}
+                      <Toggle
+                        variant="pill"
+                        size="sm"
+                        pressed={deepThink}
+                        onPressedChange={setDeepThink}
+                        aria-label="深度思考"
                       >
+                        <Sparkles className="size-3.5" aria-hidden />
                         深度思考
-                      </ToolChip>
-                      <ToolChip
-                        active={webSearch}
-                        onClick={() => setWebSearch((v) => !v)}
-                        icon={Globe}
+                      </Toggle>
+                      <Toggle
+                        variant="pill"
+                        size="sm"
+                        pressed={webSearch}
+                        onPressedChange={setWebSearch}
+                        aria-label="智能搜索"
                       >
+                        <Globe className="size-3.5" aria-hidden />
                         智能搜索
-                      </ToolChip>
+                      </Toggle>
                     </>
                   }
                   trailing={

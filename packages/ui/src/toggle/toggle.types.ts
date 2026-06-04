@@ -10,7 +10,8 @@ export interface ToggleProps {
   disabled?: boolean;
   /** 在 ToggleGroup 内标识该项。 */
   value?: string;
-  variant?: "default" | "outline";
+  /** default=灰底软选中 / outline=主色实心 / pill=圆角描边 + soft 主色选中(AI 工具栏开关风) */
+  variant?: "default" | "outline" | "pill";
   size?: "sm" | "md";
   className?: string;
   children?: ReactNode;
