@@ -25,7 +25,7 @@ export default function CategoriesPage() {
   const filtered = (data ?? services).filter((s) => s.category === selected);
 
   return (
-    <div className="flex h-[580px] overflow-hidden">
+    <div className="flex h-full overflow-hidden">
       {/* 左侧分类导航 */}
       <div className="w-[88px] shrink-0 overflow-y-auto border-r border-border bg-surface-hover">
         {CATEGORIES.map((cat) => (

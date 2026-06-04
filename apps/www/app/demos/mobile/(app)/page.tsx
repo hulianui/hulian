@@ -44,7 +44,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative h-[580px]">
+    <div className="relative h-full">
       <PullToRefresh onRefresh={handleRefresh} className="h-full">
         {/* 顶部搜索栏 */}
         <div className="sticky top-0 z-10 bg-surface px-4 pb-3 pt-2">
@@ -115,6 +115,8 @@ export default function HomePage() {
       {/* FAB：多动作展开（底部偏移避与 TabBar 重叠） */}
       <Fab
         aria-label="快捷操作"
+        size="sm"
+        className="bottom-24 right-4"
         actions={[
           {
             key: "order",
@@ -136,7 +138,6 @@ export default function HomePage() {
           },
         ]}
         position="bottom-right"
-        className="bottom-4 right-4"
       />
     </div>
   );

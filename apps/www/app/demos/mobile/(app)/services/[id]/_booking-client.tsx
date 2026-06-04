@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ActionSheet, ActionSheetContent, Avatar, Divider, Picker, Rating, Tag, toast } from "@hulian/ui";
+import { Avatar, Divider, Picker, Rating, Tag, toast } from "@hulian/ui";
 import type { ServiceWithCover } from "../../../_data/services";
 
 // Stepper 组件（简单实现，NumberField 替代）
@@ -64,7 +64,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
   };
 
   return (
-    <div className="h-[580px] overflow-y-auto">
+    <div className="h-full overflow-y-auto">
       {/* 封面 */}
       <div className="relative h-40 overflow-hidden">
         <img src={service.cover} alt={service.title} className="h-full w-full object-cover" />
@@ -119,23 +119,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
           </svg>
         </button>
 
-        {/* ActionSheet 包裹 Picker */}
-        <ActionSheet open={pickerOpen} onOpenChange={setPickerOpen}>
-          <ActionSheetContent
-            title="选择预约时间"
-            actions={[
-              {
-                key: "confirm",
-                label: "确认预约时间",
-                onClick: () => toast({ title: `已选：${selectedDate} ${selectedTime}`, tone: "neutral" }),
-              },
-            ]}
-            cancelText="取消"
-          />
-          {/* Picker 嵌在 ActionSheet portal 内无法直接放，改用独立底部抽屉感知 open */}
-        </ActionSheet>
-
-        {/* 直接展示 Picker（open 时显示，贴近预约区域） */}
+        {/* 展开式 Picker（贴预约区内联展开，不弹外层）*/}
         {pickerOpen && (
           <div className="mt-2">
             <Picker

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { MoreHorizontal } from "lucide-react";
 import {
   ActionSheet,
   ActionSheetContent,
@@ -12,17 +13,10 @@ import {
   toast,
 } from "@hulian/ui";
 import { useMockData } from "../../../lib/async";
+import { useMobileFrame } from "../../_components/mobile-shell";
 import { ORDER_STATUS_TONE, SEED_ORDERS } from "../../_data/orders";
 import type { Order } from "../../_data/types";
 
-// 三点图标
-function MoreIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden>
-      <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
-    </svg>
-  );
-}
 // 电话图标
 function PhoneIcon() {
   return (
@@ -43,6 +37,7 @@ function TrashIcon() {
 function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) => void }) {
   const [cancelOpen, setCancelOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const frame = useMobileFrame(); // overlay portal 进手机框，避免逃逸桌面外层
 
   return (
     <>
@@ -99,9 +94,10 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
                 {/* ActionSheet 更多操作 */}
                 <ActionSheet open={moreOpen} onOpenChange={setMoreOpen}>
                   <ActionSheetTrigger className="flex items-center justify-center rounded-lg border border-border p-1.5 text-muted hover:bg-surface-hover">
-                    <MoreIcon />
+                    <MoreHorizontal className="size-[18px]" aria-hidden />
                   </ActionSheetTrigger>
                   <ActionSheetContent
+                    container={frame}
                     title={order.serviceTitle}
                     description={`预约时间：${order.appointedAt}`}
                     actions={[
@@ -139,6 +135,7 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
       {/* 取消确认 ActionSheet */}
       <ActionSheet open={cancelOpen} onOpenChange={setCancelOpen}>
         <ActionSheetContent
+          container={frame}
           title="取消订单"
           description="取消后无法恢复，确定要取消吗？"
           actions={[
@@ -173,7 +170,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="h-[580px] overflow-y-auto">
+    <div className="h-full overflow-y-auto">
       {/* 顶部标题 */}
       <div className="sticky top-0 z-10 bg-surface px-4 py-3 shadow-sm">
         <h1 className="text-base font-semibold">我的订单</h1>

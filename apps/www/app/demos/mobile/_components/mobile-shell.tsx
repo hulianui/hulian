@@ -1,7 +1,13 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useState } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 import { SafeArea, TabBar } from "@hulian/ui";
+
+// 手机框元素 context：框内 overlay（ActionSheet）portal 进此元素，配合框的 transform/overflow-hidden
+// 把遮罩+面板约束在手机框内，而非逃逸到桌面外层。
+const MobileFrameContext = createContext<HTMLElement | null>(null);
+/** demo 内任意 overlay 取手机框作 portal 容器。 */
+export const useMobileFrame = () => useContext(MobileFrameContext);
 
 // 手机外壳图标（内联 SVG，零依赖 lucide，减小 bundle）
 function HomeIcon({ filled }: { filled?: boolean }) {
@@ -66,6 +72,8 @@ const TABS = [
 export function MobileShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  // 手机框 DOM 元素（供框内 overlay portal）。
+  const [frame, setFrame] = useState<HTMLElement | null>(null);
 
   // 底部 tab 路由匹配（服务详情页不高亮任何 tab，保持首页选中）
   const activeTab =
@@ -75,13 +83,14 @@ export function MobileShell({ children }: { children: ReactNode }) {
   return (
     // 外层：桌面居中 + 手机宽度约束
     <div className="flex min-h-dvh items-start justify-center bg-gradient-to-br from-background to-surface-hover py-6 px-4">
-      {/* 手机外壳 */}
+      {/* 手机外壳：定长 flex 列；transform 形成 containing block → 框内 fixed/portal 弹层（Fab/ActionSheet）相对此框定位并被 overflow-hidden 裁剪，不再逃逸桌面视口 */}
+      <MobileFrameContext.Provider value={frame}>
       <div
-        className="relative w-full max-w-[390px] overflow-hidden rounded-[2.5rem] border-[3px] border-border bg-surface shadow-2xl"
-        style={{ minHeight: 720 }}
+        ref={setFrame}
+        className="relative flex h-[780px] w-full max-w-[390px] flex-col overflow-hidden rounded-[2.5rem] border-[3px] border-border bg-surface shadow-2xl [transform:translateZ(0)]"
       >
         {/* 模拟刘海状态栏 */}
-        <div className="flex items-center justify-between bg-surface px-5 pt-3 pb-1 text-xs text-muted select-none">
+        <div className="flex shrink-0 items-center justify-between bg-surface px-5 pt-3 pb-1 text-xs text-muted select-none">
           <span className="font-medium">9:41</span>
           <div className="absolute left-1/2 top-2 -translate-x-1/2">
             <div className="h-1.5 w-20 rounded-full bg-foreground/20" />
@@ -96,20 +105,23 @@ export function MobileShell({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        {/* SafeArea top + 主内容 */}
-        <SafeArea edges={["top"]} mode="padding" className="flex flex-col" style={{ minHeight: 640 }}>
-          <main className="flex-1 overflow-hidden">{children}</main>
+        {/* SafeArea top + 主内容：flex-1 min-h-0 撑满状态栏与 TabBar 之间，消除底部白底；内部页面 h-full 自行滚动 */}
+        <SafeArea edges={["top"]} mode="padding" className="flex min-h-0 flex-1 flex-col">
+          <main className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</main>
         </SafeArea>
 
         {/* 底部 TabBar */}
-        <TabBar
-          items={TABS}
-          value={activeTab}
-          onChange={(key) => router.push(key)}
-          safeArea
-          fixed={false}
-        />
+        <div className="shrink-0">
+          <TabBar
+            items={TABS}
+            value={activeTab}
+            onChange={(key) => router.push(key)}
+            safeArea
+            fixed={false}
+          />
+        </div>
       </div>
+      </MobileFrameContext.Provider>
     </div>
   );
 }
