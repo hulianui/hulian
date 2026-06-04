@@ -75,44 +75,42 @@ export function ChatThread({ conversation, customer, typing, onSend }: Props) {
 
       {/* 对话流 */}
       <Conversation className="min-h-0 flex-1 px-5 py-4">
-        <div className="mx-auto flex max-w-3xl flex-col gap-4">
-          {conversation.messages.map((m) => {
-            const role = roleOf(m.author);
-            if (role === "system") {
-              return (
-                <ChatMessage key={m.id} role="system">
-                  {m.text}
-                </ChatMessage>
-              );
-            }
+        {conversation.messages.map((m) => {
+          const role = roleOf(m.author);
+          if (role === "system") {
             return (
-              <ChatMessage
-                key={m.id}
-                role={role}
-                timestamp={m.at}
-                status={role === "user" ? m.status : undefined}
-                avatar={
-                  role === "assistant" ? (
-                    <Avatar src={customer?.avatar} fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />
-                  ) : (
-                    <Avatar src="https://i.pravatar.cc/80?img=15" fallback="琏" size="sm" />
-                  )
-                }
-              >
+              <ChatMessage key={m.id} role="system">
                 {m.text}
               </ChatMessage>
             );
-          })}
-          {typing && (
+          }
+          return (
             <ChatMessage
-              role="assistant"
-              avatar={<Avatar src={customer?.avatar} fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />}
-              loading
+              key={m.id}
+              role={role}
+              timestamp={m.at}
+              status={role === "user" ? m.status : undefined}
+              avatar={
+                role === "assistant" ? (
+                  <Avatar src={customer?.avatar} fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />
+                ) : (
+                  <Avatar src="https://i.pravatar.cc/80?img=15" fallback="琏" size="sm" />
+                )
+              }
             >
-              正在输入
+              {m.text}
             </ChatMessage>
-          )}
-        </div>
+          );
+        })}
+        {typing && (
+          <ChatMessage
+            role="assistant"
+            avatar={<Avatar src={customer?.avatar} fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />}
+            loading
+          >
+            正在输入
+          </ChatMessage>
+        )}
       </Conversation>
 
       {/* 底部：快捷回复 + 输入 */}

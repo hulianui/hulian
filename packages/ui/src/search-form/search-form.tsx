@@ -148,7 +148,7 @@ export function SearchForm({
             <button
               type="button"
               onClick={() => setCollapsed((c) => !c)}
-              className="inline-flex shrink-0 items-center gap-1 text-sm text-primary hover:underline"
+              className="inline-flex h-10 shrink-0 items-center gap-1 text-sm text-primary hover:underline"
             >
               {collapsed ? "展开" : "收起"}
               <ChevronDown className={cn("transition-transform", !collapsed && "rotate-180")} />
