@@ -10,9 +10,26 @@ import {
   Megaphone,
   Sparkles,
   Smartphone,
+  Zap,
+  ShieldCheck,
+  Package,
+  Palette,
   type LucideIcon,
 } from "lucide-react";
-import { AnimatedThemeToggler, Button } from "@hulian/ui";
+import {
+  AnimatedThemeToggler,
+  Badge,
+  BentoCard,
+  BentoGrid,
+  Button,
+  Heading,
+  Marquee,
+  NumberTicker,
+  Separator,
+  Snippet,
+  Stack,
+  Text,
+} from "@hulian/ui";
 import { manifest, CATEGORIES, type CategoryKey } from "../lib/manifest";
 
 // 每个分类一枚线性图标 —— 承担导航语义，而非标题上方的装饰圆角盒
@@ -39,7 +56,30 @@ const CATEGORY_BLURB: Record<CategoryKey, string> = {
   mockups: "浏览器 · 手机外壳",
 };
 
+// 为什么用瑚琏 —— 四条立得住的承诺（dogfood BentoGrid 呈现）
+const FEATURES: { icon: LucideIcon; title: string; desc: string }[] = [
+  { icon: Zap, title: "0 闪烁双主题", desc: "明暗切换无白屏，SSR 注入变量先于绘制" },
+  { icon: ShieldCheck, title: "键盘可达", desc: "Base UI 底座 · WAI-ARIA · 测试覆盖" },
+  { icon: Package, title: "可发布 npm", desc: "import 即用，按需 tree-shake 不拖体积" },
+  { icon: Palette, title: "Token 驱动", desc: "OKLCH 明暗双层语义 token，换肤只改一处" },
+];
+
+// 站在巨人肩上 —— 吸取式聚合的底座（dogfood Marquee 滚动呈现）
+const STACK_TAGS = [
+  "Base UI",
+  "TanStack Table",
+  "Recharts",
+  "Tailwind v4",
+  "Motion",
+  "MagicUI",
+  "MUI 桥",
+  "OKLCH Token",
+];
+
 const total = manifest.length;
+const liveCategories = CATEGORIES.filter(
+  (cat) => manifest.some((m) => m.category === cat.key),
+);
 
 // 入场逐级揭示的延迟（prefers-reduced-motion 下由 globals.css 整体禁用）
 const rise = (i: number): CSSProperties => ({ animationDelay: `${i * 70}ms` });
@@ -47,40 +87,83 @@ const rise = (i: number): CSSProperties => ({ animationDelay: `${i * 70}ms` });
 export default function Home() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-10 sm:py-14">
-      {/* 顶栏：极简 wordmark + 主题切换 */}
-      <header className="hl-rise flex items-center justify-between" style={rise(0)}>
-        <span className="flex items-center gap-2 text-sm font-medium tracking-tight">
+      {/* 顶栏：极简 wordmark + 版本徽标 + 主题切换 */}
+      <Stack
+        as="header"
+        direction="row"
+        align="center"
+        justify="between"
+        className="hl-rise"
+        style={rise(0)}
+      >
+        <Stack direction="row" align="center" gap={2} className="text-sm">
           <span className="size-2 rounded-full bg-primary" aria-hidden />
-          瑚琏 Hulian
-        </span>
+          <Text as="span" weight="medium" className="tracking-tight">
+            瑚琏 Hulian
+          </Text>
+          <Badge variant="soft" size="sm">
+            v0.1
+          </Badge>
+        </Stack>
         <AnimatedThemeToggler />
-      </header>
+      </Stack>
 
-      {/* Hero —— 左对齐、非对称，靠层级与留白说话 */}
-      <section className="pt-20 sm:pt-28">
-        <h1 className="hl-rise text-6xl font-semibold tracking-tight sm:text-7xl" style={rise(1)}>
-          瑚琏
-        </h1>
-        <p
-          className="hl-rise mt-3 text-sm font-medium uppercase tracking-[0.25em] text-muted"
-          style={rise(2)}
+      {/* Hero —— 左对齐、非对称，靠层级与留白说话；isolate 让辉光锁在本段内 */}
+      <section className="relative isolate pt-20 sm:pt-28">
+        {/* 品牌辉光：server 安全的纯 CSS 径向渐变，柔化空旷的顶部 */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-64 blur-2xl"
+          style={{
+            background:
+              "radial-gradient(50% 60% at 30% 0%, color-mix(in oklch, var(--color-primary) 20%, transparent), transparent 70%)",
+          }}
+        />
+
+        <Heading
+          as="p"
+          size="sm"
+          weight="medium"
+          className="hl-rise uppercase tracking-[0.25em] text-muted"
+          style={rise(1)}
         >
           Hulian · React 设计系统
-        </p>
+        </Heading>
 
-        <p className="hl-rise mt-8 max-w-xl text-xl text-foreground sm:text-2xl" style={rise(3)}>
+        <Heading
+          level={1}
+          size="4xl"
+          className="hl-rise mt-3 text-6xl tracking-tight sm:text-7xl"
+          style={rise(2)}
+        >
+          瑚琏
+        </Heading>
+
+        <Heading
+          as="p"
+          level={2}
+          size="2xl"
+          weight="semibold"
+          balance
+          className="hl-rise mt-8 max-w-xl"
+          style={rise(3)}
+        >
           颜值 + 好用，是软件的第一生产力。
-        </p>
-        <p className="hl-rise mt-3 max-w-xl text-sm leading-relaxed text-muted" style={rise(4)}>
+        </Heading>
+        <Text tone="muted" className="hl-rise mt-3 max-w-xl leading-relaxed" style={rise(4)}>
           名出《论语》宗庙之玉器——至贵至美，而确有大用。站在 Base UI · TanStack · Recharts
           肩上博采众长，聚成一套可直接 import 的 React 组件。
-        </p>
+        </Text>
 
-        <div
-          className="hl-rise mt-9 flex flex-wrap items-center gap-x-5 gap-y-3"
+        {/* CTA：dogfood 自家 Button —— render 成 Next <Link>（按钮样式的链接） */}
+        <Stack
+          direction="row"
+          wrap
+          align="center"
+          gap={4}
+          className="hl-rise mt-9"
           style={rise(5)}
         >
-          {/* dogfood 自家 Button —— render 成 Next <Link>（按钮样式的链接 CTA） */}
           <Button render={<Link href="/components" />} className="group h-11 px-5">
             浏览 {total} 个组件
             <ArrowRight
@@ -95,34 +178,71 @@ export default function Home() {
               aria-hidden
             />
           </Button>
+        </Stack>
+
+        {/* 安装命令：dogfood Snippet，一行复制即用 */}
+        <div className="hl-rise mt-6 max-w-xs" style={rise(6)}>
+          <Snippet>pnpm add @hulian/ui</Snippet>
         </div>
-        <p className="hl-rise mt-4 text-sm text-muted" style={rise(5)}>
-          明暗双主题 0 闪烁 · 键盘可达 · 可发布 npm 包
-        </p>
       </section>
 
-      {/* 分类导航：编辑式发丝线列表（非同质卡片网格），每行 icon + 内容剧透 + 计数 */}
+      {/* 数据条：dogfood NumberTicker 滚动计数，立住「有料」的第一印象 */}
+      <Stack
+        direction="row"
+        wrap
+        gap={10}
+        className="hl-rise mt-14 border-t border-border pt-8"
+        style={rise(7)}
+      >
+        <Stat value={total} suffix="+" label="组件" />
+        <Stat value={liveCategories.length} label="分类" />
+        <Stat value={2} label="主题" />
+        <Stat value={0} label="切换闪烁" />
+      </Stack>
+
+      {/* 特性亮点（新区块）：dogfood BentoGrid 四张承诺卡 */}
+      <section className="hl-rise mt-20 sm:mt-24" style={rise(8)}>
+        <Heading level={2} size="base" className="mb-5">
+          为什么用瑚琏
+        </Heading>
+        <BentoGrid className="auto-rows-[10rem] sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map(({ icon: Icon, title, desc }) => (
+            <BentoCard key={title} icon={<Icon aria-hidden />} title={title} description={desc} />
+          ))}
+        </BentoGrid>
+      </section>
+
+      {/* 分类导航：编辑式发丝线列表（dogfood Heading/Text/Stack 排版原语） */}
       <nav className="mt-20 border-t border-border sm:mt-24" aria-label="组件分类">
-        {CATEGORIES.map((cat, i) => {
+        {liveCategories.map((cat, i) => {
           const Icon = CATEGORY_ICON[cat.key];
           const count = manifest.filter((m) => m.category === cat.key).length;
-          if (count === 0) return null;
           return (
             <Link
               key={cat.key}
               href={`/components#${cat.key}`}
               className="hl-rise group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
-              style={rise(6 + i)}
+              style={rise(9 + i)}
             >
               <Icon
                 className="size-5 shrink-0 text-muted transition-colors group-hover:text-primary"
                 aria-hidden
               />
-              <span className="w-20 shrink-0 font-medium text-foreground">{cat.label}</span>
-              <span className="hidden flex-1 truncate text-sm text-muted sm:block">
+              <Text as="span" weight="medium" className="w-20 shrink-0">
+                {cat.label}
+              </Text>
+              <Text
+                as="span"
+                size="sm"
+                tone="muted"
+                truncate
+                className="hidden flex-1 sm:block"
+              >
                 {CATEGORY_BLURB[cat.key]}
-              </span>
-              <span className="ml-auto text-sm tabular-nums text-muted">{count}</span>
+              </Text>
+              <Text as="span" size="sm" tone="muted" className="ml-auto tabular-nums">
+                {count}
+              </Text>
               <ArrowRight
                 className="size-4 shrink-0 text-muted/50 transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
                 aria-hidden
@@ -132,10 +252,52 @@ export default function Home() {
         })}
       </nav>
 
+      {/* 技术底座（新区块）：dogfood Marquee 滚动展示吸取的上游 */}
+      <section
+        className="hl-rise mt-20 sm:mt-24"
+        style={rise(9 + liveCategories.length)}
+      >
+        <Heading as="p" size="sm" weight="medium" className="mb-4 text-muted">
+          站在巨人肩上 · 吸取式聚合
+        </Heading>
+        <Marquee
+          pauseOnHover
+          className="w-full [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+        >
+          {STACK_TAGS.map((tag) => (
+            <Badge key={tag} variant="soft" className="mx-1 whitespace-nowrap">
+              {tag}
+            </Badge>
+          ))}
+        </Marquee>
+      </section>
+
       {/* 一句品牌宣言，立住调性 */}
-      <footer className="hl-rise mt-12" style={rise(6 + CATEGORIES.length)}>
-        <p className="text-sm text-muted">人不该油头满面地对着丑软件干活。</p>
+      <footer className="hl-rise mt-16" style={rise(10 + liveCategories.length)}>
+        <Separator className="mb-6" />
+        <Text size="sm" tone="muted">
+          人不该油头满面地对着丑软件干活。
+        </Text>
       </footer>
     </main>
+  );
+}
+
+// 单个数据项：滚动数字 + 弱化标签
+function Stat({ value, label, suffix }: { value: number; label: string; suffix?: string }) {
+  return (
+    <Stack gap={1}>
+      <Stack direction="row" align="baseline" gap={0} as="span">
+        <NumberTicker value={value} className="text-3xl font-semibold tabular-nums text-foreground" />
+        {suffix ? (
+          <Text as="span" size="xl" weight="semibold">
+            {suffix}
+          </Text>
+        ) : null}
+      </Stack>
+      <Text as="span" size="sm" tone="muted">
+        {label}
+      </Text>
+    </Stack>
   );
 }
