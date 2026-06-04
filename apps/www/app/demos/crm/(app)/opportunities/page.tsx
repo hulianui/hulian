@@ -64,12 +64,8 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
       <CardBody className="flex flex-col gap-2 p-3.5">
         <span className="text-sm leading-snug font-medium">{o.title}</span>
 
-        <Link
-          href={`/demos/crm/customers/${o.customerId}`}
-          // 卡片整体可拖；链接是无移动的纯点击（PointerSensor distance 阈值放行 click）
-          onPointerDown={(e) => e.stopPropagation()}
-          className="w-fit text-xs text-muted hover:text-primary"
-        >
+        {/* Kanban 组件内部已放行交互子元素（链接/按钮）的拖拽劫持，这里无需 stopPropagation 补丁 */}
+        <Link href={`/demos/crm/customers/${o.customerId}`} className="w-fit text-xs text-muted hover:text-primary">
           {o.customerName}
         </Link>
 

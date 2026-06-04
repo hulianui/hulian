@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
-import { Kanban, resolveKanbanMove } from "./kanban";
+import { Kanban, resolveKanbanMove, isInteractiveDragTarget } from "./kanban";
 import type { KanbanColumn } from "./kanban.types";
 
 afterEach(cleanup);
@@ -97,5 +97,32 @@ describe("resolveKanbanMove", () => {
 
   it("未知目标列 → null", () => {
     expect(resolveKanbanMove("t1", "kbcol:ghost", columns, tasks, getId, getColumnId)).toBeNull();
+  });
+});
+
+describe("isInteractiveDragTarget（卡片内交互元素放行拖拽）", () => {
+  it("链接/按钮/表单控件 → true（不发起拖拽，让 click/输入工作）", () => {
+    for (const tag of ["a", "button", "input", "textarea", "select", "label"]) {
+      const el = document.createElement(tag);
+      expect(isInteractiveDragTarget(el)).toBe(true);
+    }
+  });
+
+  it("交互元素的内层子节点也算（closest 命中祖先）", () => {
+    const link = document.createElement("a");
+    const span = document.createElement("span");
+    link.appendChild(span);
+    expect(isInteractiveDragTarget(span)).toBe(true);
+  });
+
+  it("data-no-drag 逃生舱 → true", () => {
+    const el = document.createElement("div");
+    el.setAttribute("data-no-drag", "");
+    expect(isInteractiveDragTarget(el)).toBe(true);
+  });
+
+  it("普通卡片内容（div/span）→ false（整卡可拖）", () => {
+    expect(isInteractiveDragTarget(document.createElement("div"))).toBe(false);
+    expect(isInteractiveDragTarget(null)).toBe(false);
   });
 });

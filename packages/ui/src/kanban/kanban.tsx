@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type PointerEvent as ReactPointerEvent } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -24,6 +24,16 @@ import type { KanbanColumn, KanbanMoveEvent, KanbanProps } from "./kanban.types"
 
 // 列 droppable id 加前缀，避免与卡片 id（无前缀）撞车 —— 拖到空列/列尾空白时 over.id 是列 id。
 const COL_PREFIX = "kbcol:";
+
+// 卡片里的交互元素（链接/按钮/表单控件）按下时不应触发整卡拖拽——否则点链接/按钮会被拖拽劫持，
+// 消费者就得在每个元素上手写 stopPropagation。组件内部统一放行，卡片可塞任意交互内容而无需补丁。
+// 留 data-no-drag 逃生舱给自定义元素显式声明「我不拖」。
+const INTERACTIVE_SELECTOR = "a,button,input,textarea,select,label,[role='button'],[role='link'],[data-no-drag]";
+
+/** 判断 pointerdown 的目标是否落在卡片内的交互元素上（落在则不发起拖拽）。 */
+export function isInteractiveDragTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest(INTERACTIVE_SELECTOR) != null;
+}
 
 /** 解析拖拽落点为 KanbanMoveEvent（纯函数，便于单测）。over 可能是卡片 id 或带前缀的列 id。 */
 export function resolveKanbanMove<T>(
@@ -70,12 +80,20 @@ function KanbanCard<T>({
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   const style = { transform: CSS.Translate.toString(transform), transition };
+  // 放行交互子元素：pointerdown 落在链接/按钮等上时不进 dnd 传感器，clicks/输入正常工作。
+  const guardedListeners = listeners && {
+    ...listeners,
+    onPointerDown: (e: ReactPointerEvent) => {
+      if (isInteractiveDragTarget(e.target)) return;
+      listeners.onPointerDown?.(e);
+    },
+  };
   return (
     <li
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
+      {...guardedListeners}
       className={cn(
         "cursor-grab touch-none select-none rounded-[var(--radius)] outline-none active:cursor-grabbing",
         "focus-visible:ring-2 focus-visible:ring-ring",
