@@ -55,7 +55,7 @@ export function LoginForm({
       onSubmit={handleSubmit}
       className={cn(
         // 左对齐 + 放大圆角 + 柔和分层阴影(非生硬单层 drop shadow) + 舒展留白
-        "flex w-full max-w-sm flex-col rounded-[calc(var(--radius)+0.375rem)] border border-border bg-surface p-8 text-foreground",
+        "flex w-full max-w-md flex-col rounded-[calc(var(--radius)+0.375rem)] border border-border bg-surface p-8 sm:p-10 text-foreground",
         "shadow-[0_1px_3px_rgba(15,23,42,0.04),0_16px_40px_-20px_rgba(15,23,42,0.18)]",
         className,
       )}

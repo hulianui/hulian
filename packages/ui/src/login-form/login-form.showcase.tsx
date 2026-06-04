@@ -7,8 +7,15 @@ import { LoginForm } from "./login-form";
 function Demo() {
   const [user, setUser] = useState<string | null>(null);
   return (
-    <div className="flex w-full justify-center rounded-[var(--radius)] bg-surface-hover/30 p-8">
-      <div className="flex flex-col items-stretch gap-3">
+    <div
+      className="flex min-h-[560px] w-full items-center justify-center rounded-[var(--radius)] border border-border p-6"
+      // 有意图的登录页背景：primary 微染径向辉光自顶部渐隐到 bg（token 驱动·自动适配明暗）
+      style={{
+        background:
+          "radial-gradient(125% 125% at 50% 0%, color-mix(in oklab, var(--color-primary) 8%, var(--color-bg)) 0%, var(--color-bg) 60%)",
+      }}
+    >
+      <div className="flex w-full max-w-md flex-col items-stretch gap-3">
         <LoginForm
           logo={
             <span className="inline-flex items-center gap-2">
