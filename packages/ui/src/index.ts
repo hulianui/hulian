@@ -229,6 +229,10 @@ export * from "./qrcode";
 // 响应式容器（容器查询上下文 + web/平板/手机 预设）
 export * from "./viewport";
 
+// devtools / 执行态 批（运行输出可视化·承 TaskRunner 品类）
+export * from "./log-viewer";
+export * from "./code-diff";
+export * from "./file-tree";
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";
 export type { ShowcaseSpec, Control, StateSpec, ControlType } from "./showcase/types";

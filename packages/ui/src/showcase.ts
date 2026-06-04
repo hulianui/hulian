@@ -188,3 +188,7 @@ export { virtualListShowcase } from "./virtual-list/virtual-list.showcase";
 export { infiniteScrollShowcase } from "./infinite-scroll/infinite-scroll.showcase";
 export { qrcodeShowcase } from "./qrcode/qrcode.showcase";
 export { viewportShowcase } from "./viewport/viewport.showcase";
+// devtools / 执行态 批
+export { logViewerShowcase } from "./log-viewer/log-viewer.showcase";
+export { codeDiffShowcase } from "./code-diff/code-diff.showcase";
+export { fileTreeShowcase } from "./file-tree/file-tree.showcase";

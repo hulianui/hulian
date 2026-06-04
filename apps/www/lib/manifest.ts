@@ -165,6 +165,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "code", name: "Code", description: "行内代码 · <code> 等宽皮肤 + tone(default/primary/danger) + RSC", category: "typography", group: "code", status: "new" },
   { slug: "code-block", name: "CodeBlock", description: "代码块 · 多行 <pre> + 一键复制(剪贴板+反馈) + 可选语言标签", category: "typography", group: "code", status: "new" },
   { slug: "snippet", name: "Snippet", description: "代码片段 · 命令提示符 + 一键复制(剪贴板+反馈)", category: "typography", group: "code", status: "new" },
+  { slug: "code-diff", name: "CodeDiff", description: "代码对比 · 零依赖行级 LCS diff(纯函数 diffLines 可测) + unified 单栏/split 双栏 + 增绿删红行底色 + 双行号槽 + filename 头条与 +/− 摘要 · agent 改动/PR 评审", category: "typography", group: "code", status: "new" },
   { slug: "kbd", name: "Kbd", description: "按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC", category: "typography", group: "code", status: "new" },
 
   // ── 表单 forms ───────────────────────────────────────────────
@@ -228,9 +229,10 @@ export const manifest: ComponentMeta[] = [
   { slug: "marquee", name: "Marquee", description: "跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "sortable", name: "Sortable", description: "拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove)", category: "data-display", group: "collection", status: "new" },
   { slug: "kanban", name: "Kanban", description: "看板 · @dnd-kit headless 多容器 + 跨列/列内拖拽 + 键盘可拖 + 列头统计槽 + 空列占位 · 受控 onMove(消费者改业务字段) · 商机看板/任务流转旗舰", category: "data-display", group: "collection", status: "new" },
+  { slug: "log-viewer", name: "LogViewer", description: "日志查看器 · 数据驱动行 lines(level/message/timestamp/source) + info/warn/error/debug/success 级别着色(纯函数 levelClass 可测) + autoScroll 新行贴底(复用 Conversation 法) + showTimestamp + wrap 折行/横滚 · 区别 Terminal mockup·真·流式输出", category: "data-display", group: "collection", status: "new" },
+  { slug: "file-tree", name: "FileTree", description: "文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义) + selectedPath 受控高亮 + onSelect 回传 node+path · 复用 _icons Folder/File(新补)·devtools 左栏", category: "data-display", group: "collection", status: "new" },
   { slug: "virtual-list", name: "VirtualList", description: "虚拟滚动 · 包 @tanstack/react-virtual 仅渲染可见区 + 定高/变高(measureElement)双模 + initialRect 首帧可算 + 末行触发 onReachEnd(万行列表/长列表刚需)", category: "data-display", group: "collection", status: "new" },
   { slug: "infinite-scroll", name: "InfiniteScroll", description: "无限滚动 · IntersectionObserver 底部哨兵 + 自动定位可滚祖先作 root + 加载锁防重入 + hasMore 完结态(零依赖·分页加载)", category: "data-display", group: "collection", status: "new" },
-  { slug: "badge", name: "Badge", description: "徽标 · solid/soft/outline × tone", category: "data-display", group: "info", status: "new" },
   { slug: "dot", name: "Dot", description: "状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", group: "info", status: "new" },
   { slug: "tag", name: "Tag", description: "状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)", category: "data-display", group: "info", status: "new" },

@@ -80,6 +80,15 @@ export const Code2 = createIcon("code-xml", [
   ["path", { d: "m14.5 4-5 16", key: "e7oirm" }],
 ]);
 
+export const Folder = createIcon("folder", [
+  ["path", { d: "M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z", key: "1kt360" }],
+]);
+
+export const File = createIcon("file", [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1couwa" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+]);
+
 export const Heading1 = createIcon("heading-1", [
   ["path", { d: "M4 12h8", key: "17cfdx" }],
   ["path", { d: "M4 18V6", key: "1rz3zl" }],
