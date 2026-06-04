@@ -156,6 +156,10 @@ import {
   backTopShowcase,
   statisticShowcase,
   sortableShowcase,
+  typingDotsShowcase,
+  chatMessageShowcase,
+  conversationShowcase,
+  promptInputShowcase,
 } from "@hulian/ui/showcase";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -315,4 +319,8 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   "back-top": backTopShowcase,
   statistic: statisticShowcase,
   sortable: sortableShowcase,
+  "typing-dots": typingDotsShowcase,
+  "chat-message": chatMessageShowcase,
+  conversation: conversationShowcase,
+  "prompt-input": promptInputShowcase,
 };

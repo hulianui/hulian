@@ -8,6 +8,7 @@ import {
   BarChart3,
   Compass,
   Megaphone,
+  Bot,
   Sparkles,
   Smartphone,
   Zap,
@@ -42,6 +43,7 @@ const CATEGORY_ICON: Record<CategoryKey, LucideIcon> = {
   "data-display": BarChart3,
   navigation: Compass,
   feedback: Megaphone,
+  ai: Bot,
   decoration: Sparkles,
   mockups: Smartphone,
 };
@@ -54,6 +56,7 @@ const CATEGORY_BLURB: Record<CategoryKey, string> = {
   "data-display": "表格 · 图表 · 指标 · 卡片",
   navigation: "选项卡 · 面包屑 · 分页 · 菜单",
   feedback: "对话框 · 提示 · 抽屉 · 进度",
+  ai: "对话 · 气泡 · 工具调用 · 流式",
   decoration: "光束 · 背景 · 边框流光",
   mockups: "浏览器 · 手机外壳",
 };

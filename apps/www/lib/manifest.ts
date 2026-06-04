@@ -12,6 +12,7 @@ export type CategoryKey =
   | "data-display"
   | "navigation"
   | "feedback"
+  | "ai"
   | "decoration"
   | "mockups";
 
@@ -95,6 +96,15 @@ export const CATEGORIES: Category[] = [
       { key: "message", label: "提示" },
       { key: "loading", label: "加载与进度" },
       { key: "guide", label: "引导" },
+    ],
+  },
+  {
+    key: "ai",
+    label: "AI 智能体",
+    groups: [
+      { key: "conversation", label: "对话" },
+      { key: "agent", label: "推理与工具" },
+      { key: "assist", label: "辅助" },
     ],
   },
   {
@@ -262,6 +272,12 @@ export const manifest: ComponentMeta[] = [
   { slug: "spinner", name: "Spinner", description: "加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + RSC", category: "feedback", group: "loading", status: "new" },
   { slug: "progress", name: "Progress", description: "进度条 · linear/circular + 不定态 · 几何自有(reduced-motion)", category: "feedback", group: "loading", status: "new" },
   { slug: "tour", name: "Tour", description: "漫游引导 · 自研零依赖 SVG mask 镂空高亮 + 自定位气泡卡(标题/描述/上一步/下一步/跳过/进度) + resize/scroll 重算", category: "feedback", group: "guide", status: "new" },
+
+  // ── AI 智能体 ai ─────────────────────────────────────────────
+  { slug: "conversation", name: "Conversation", description: "消息流容器 · 纵向堆叠 ChatMessage + 内容增长自动贴底(新消息/流式 token)·消费侧给高度获独立滚动区", category: "ai", group: "conversation", status: "new" },
+  { slug: "chat-message", name: "ChatMessage", description: "对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽·纯皮肤RSC", category: "ai", group: "conversation", status: "new" },
+  { slug: "prompt-input", name: "PromptInput", description: "提示输入 · 自增高Textarea + 发送/停止键 + Enter提交/Shift+Enter换行/IME合成保护 + 受控非受控两用 + 左侧操作槽", category: "ai", group: "conversation", status: "new" },
+  { slug: "typing-dots", name: "TypingDots", description: "打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading", category: "ai", group: "conversation", tags: ["animated"], status: "new" },
 
   // ── 装饰 decoration（纯视觉、无功能本体）────────────────────────
   { slug: "dot-pattern", name: "DotPattern", description: "点阵背景 · 纯 SVG pattern + currentColor token + RSC", category: "decoration", group: "backdrop", status: "new" },

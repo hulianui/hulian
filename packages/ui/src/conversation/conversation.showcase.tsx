@@ -1,0 +1,29 @@
+"use client";
+import type { ShowcaseSpec } from "../showcase/types";
+import { Conversation } from "./conversation";
+import { ChatMessage } from "../chat-message";
+
+const Demo = () => (
+  <Conversation className="h-72 w-full max-w-lg rounded-[var(--radius)] border border-border p-4">
+    <ChatMessage role="user" name="我">
+      瑚琏支持暗色吗？
+    </ChatMessage>
+    <ChatMessage role="assistant" name="瑚琏 AI">
+      支持，明暗双主题 0 闪烁，SSR 注入变量先于绘制。
+    </ChatMessage>
+    <ChatMessage role="user" name="我">
+      怎么切换？
+    </ChatMessage>
+    <ChatMessage role="assistant" name="瑚琏 AI" loading>
+      占位
+    </ChatMessage>
+  </Conversation>
+);
+
+export const conversationShowcase: ShowcaseSpec = {
+  controls: [],
+  states: [{ name: "对话流（自动贴底）", render: () => <Demo /> }],
+  renderWithProps: () => <Demo />,
+  toCode: () =>
+    `<Conversation className="h-72">\n  <ChatMessage role="user">…</ChatMessage>\n  <ChatMessage role="assistant">…</ChatMessage>\n</Conversation>`,
+};

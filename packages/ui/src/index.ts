@@ -160,6 +160,11 @@ export * from "./admin-layout";
 export * from "./popconfirm";
 export * from "./menubar";
 export * from "./navigation-menu";
+// AI 智能体（对话 / 推理与工具 / 辅助·复用 Avatar/Textarea/Collapsible/Dot/Prose）
+export * from "./typing-dots";
+export * from "./chat-message";
+export * from "./conversation";
+export * from "./prompt-input";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

@@ -366,6 +366,42 @@ export const VolumeX = createIcon("volume-x", [
   ["line", { x1: "16", x2: "22", y1: "9", y2: "15", key: "5ykzw1" }],
 ]);
 
+export const Square = createIcon("square", [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+]);
+
+export const ThumbsUp = createIcon("thumbs-up", [
+  [
+    "path",
+    {
+      d: "M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z",
+      key: "emmmcr",
+    },
+  ],
+  ["path", { d: "M7 10v12", key: "1qc93n" }],
+]);
+
+export const ThumbsDown = createIcon("thumbs-down", [
+  [
+    "path",
+    {
+      d: "M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z",
+      key: "m61m77",
+    },
+  ],
+  ["path", { d: "M17 14V2", key: "8ymqnk" }],
+]);
+
+export const Wrench = createIcon("wrench", [
+  [
+    "path",
+    {
+      d: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z",
+      key: "1ngwbx",
+    },
+  ],
+]);
+
 export const X = createIcon("x", [
   ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
   ["path", { d: "m6 6 12 12", key: "d8bk6v" }],

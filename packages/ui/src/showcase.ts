@@ -157,3 +157,8 @@ export { watchShowcase } from "./watch/watch.showcase";
 export { watermarkShowcase } from "./watermark/watermark.showcase";
 export { wordRotateShowcase } from "./word-rotate/word-rotate.showcase";
 export { worldMapShowcase } from "./world-map/world-map.showcase";
+// AI 智能体
+export { typingDotsShowcase } from "./typing-dots/typing-dots.showcase";
+export { chatMessageShowcase } from "./chat-message/chat-message.showcase";
+export { conversationShowcase } from "./conversation/conversation.showcase";
+export { promptInputShowcase } from "./prompt-input/prompt-input.showcase";
