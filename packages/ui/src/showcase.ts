@@ -165,3 +165,7 @@ export { promptInputShowcase } from "./prompt-input/prompt-input.showcase";
 export { thinkingBlockShowcase } from "./thinking-block/thinking-block.showcase";
 export { toolCallShowcase } from "./tool-call/tool-call.showcase";
 export { agentPlanShowcase } from "./agent-plan/agent-plan.showcase";
+export { promptSuggestionsShowcase } from "./prompt-suggestions/prompt-suggestions.showcase";
+export { messageActionsShowcase } from "./message-actions/message-actions.showcase";
+export { citationShowcase } from "./citation/citation.showcase";
+export { streamingTextShowcase } from "./streaming-text/streaming-text.showcase";

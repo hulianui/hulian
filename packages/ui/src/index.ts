@@ -168,6 +168,10 @@ export * from "./prompt-input";
 export * from "./thinking-block";
 export * from "./tool-call";
 export * from "./agent-plan";
+export * from "./prompt-suggestions";
+export * from "./message-actions";
+export * from "./citation";
+export * from "./streaming-text";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";

@@ -281,6 +281,10 @@ export const manifest: ComponentMeta[] = [
   { slug: "thinking-block", name: "ThinkingBlock", description: "思考折叠块 · dogfood Collapsible(自带chevron+平滑高度) + thinking态(转圈+AnimatedShinyText高光+默认展开) + 耗时标记·收起隐藏 chain-of-thought", category: "ai", group: "agent", tags: ["animated"], status: "new" },
   { slug: "tool-call", name: "ToolCall", description: "工具调用卡 · dogfood Collapsible + Dot状态色 + Spinner(运行中) · pending/running/success/error 四态 + 参数/结果折叠面板 + 工具图标", category: "ai", group: "agent", status: "new" },
   { slug: "agent-plan", name: "AgentPlan", description: "执行计划 · 数据驱动任务清单 + 状态图标(Dot待办/Spinner进行/Check完成删除线/X失败) · 复用 Dot/Spinner·纯皮肤RSC", category: "ai", group: "agent", status: "new" },
+  { slug: "streaming-text", name: "StreamingText", description: "流式文本 · 渲染父级累积 text(随token增长) + 流式中尾随闪烁光标(hulian-blink) · 区别 TypingAnimation 自驱定时 · 纯皮肤RSC", category: "ai", group: "assist", tags: ["animated"], status: "new" },
+  { slug: "prompt-suggestions", name: "PromptSuggestions", description: "建议提示 · 可点击 pill 列表 + string/{label,value} 两式 + onSelect 回传 value 填充输入或发起对话", category: "ai", group: "assist", status: "new" },
+  { slug: "message-actions", name: "MessageActions", description: "消息操作条 · 复制(剪贴板+Check反馈)/重新生成/赞/踩 · 各键按需渲染 · 复用内联图标 · 挂 ChatMessage actions 槽", category: "ai", group: "assist", status: "new" },
+  { slug: "citation", name: "Citation", description: "引用来源 · 序号角标 + 标题/来源 + href 新标签页外链 · 内联标注 agent 回答信息出处 · 纯皮肤RSC", category: "ai", group: "assist", status: "new" },
 
   // ── 装饰 decoration（纯视觉、无功能本体）────────────────────────
   { slug: "dot-pattern", name: "DotPattern", description: "点阵背景 · 纯 SVG pattern + currentColor token + RSC", category: "decoration", group: "backdrop", status: "new" },
