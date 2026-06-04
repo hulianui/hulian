@@ -156,6 +156,11 @@ export const Calendar = createIcon("calendar", [
 
 export const Check = createIcon("check", [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]]);
 
+export const CheckCheck = createIcon("check-check", [
+  ["path", { d: "M18 6 7 17l-5-5", key: "116fxf" }],
+  ["path", { d: "m22 10-7.5 7.5L13 16", key: "1q7czp" }],
+]);
+
 export const ChevronDown = createIcon("chevron-down", [
   ["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }],
 ]);

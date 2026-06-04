@@ -27,4 +27,28 @@ describe("ChatMessage", () => {
     expect(el.className).toContain("text-center");
     expect(el.className).not.toContain("bg-primary");
   });
+  it("status=read 在 user 气泡渲双勾回执(aria-label 已读)", () => {
+    const { getByLabelText } = render(
+      <ChatMessage role="user" status="read">
+        在
+      </ChatMessage>,
+    );
+    expect(getByLabelText("已读")).toBeTruthy();
+  });
+  it("status=sending 渲发送中回执", () => {
+    const { getByLabelText } = render(
+      <ChatMessage role="user" status="sending">
+        在
+      </ChatMessage>,
+    );
+    expect(getByLabelText("发送中")).toBeTruthy();
+  });
+  it("status 在 assistant 气泡不渲染回执", () => {
+    const { queryByLabelText } = render(
+      <ChatMessage role="assistant" status="read">
+        在
+      </ChatMessage>,
+    );
+    expect(queryByLabelText("已读")).toBeNull();
+  });
 });

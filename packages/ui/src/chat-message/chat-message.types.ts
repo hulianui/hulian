@@ -15,6 +15,8 @@ export interface ChatMessageProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   loading?: boolean;
   /** 底部操作区槽（放 <MessageActions/>，仅气泡下方）。 */
   actions?: ReactNode;
+  /** 已读回执：仅 role=user（右气泡）渲染。sending 转圈 / sent 单勾 / read 双蓝勾。 */
+  status?: "sending" | "sent" | "read";
   /** 正文：markdown 建议外层包 <Prose/>，纯文本直接传。 */
   children?: ReactNode;
 }

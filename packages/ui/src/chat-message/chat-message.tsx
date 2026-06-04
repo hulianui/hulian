@@ -1,6 +1,7 @@
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
 import { TypingDots } from "../typing-dots";
+import { Check, CheckCheck, Loader2 } from "../_icons";
 import type { ChatMessageProps, ChatRole } from "./chat-message.types";
 
 // 对话气泡：复用 Avatar(头像) + TypingDots(加载态)。纯皮肤·RSC（无 hook）。
@@ -11,6 +12,17 @@ const fallbackByRole: Record<ChatRole, string> = {
   system: "⚙",
 };
 
+// 已读回执（仅右气泡）：发送中转圈 / 已送达单勾 / 已读双蓝勾。
+function Receipt({ status }: { status: NonNullable<ChatMessageProps["status"]> }) {
+  if (status === "sending") {
+    return <Loader2 aria-label="发送中" className="size-3.5 animate-spin text-muted" />;
+  }
+  if (status === "sent") {
+    return <Check aria-label="已送达" className="size-3.5 text-muted" />;
+  }
+  return <CheckCheck aria-label="已读" className="size-3.5 text-primary" />;
+}
+
 export function ChatMessage({
   role,
   avatar,
@@ -18,6 +30,7 @@ export function ChatMessage({
   timestamp,
   loading,
   actions,
+  status,
   className,
   children,
   ...props
@@ -55,6 +68,11 @@ export function ChatMessage({
         >
           {loading ? <TypingDots /> : children}
         </div>
+        {isUser && status && (
+          <div className="px-0.5 leading-none">
+            <Receipt status={status} />
+          </div>
+        )}
         {actions && <div className="px-0.5">{actions}</div>}
       </div>
     </div>

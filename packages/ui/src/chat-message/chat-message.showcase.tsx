@@ -7,6 +7,13 @@ export const chatMessageShowcase: ShowcaseSpec = {
     { prop: "role", type: "select", options: ["user", "assistant", "system"], defaultValue: "assistant" },
     { prop: "children", type: "text", defaultValue: "你好，我能帮你做什么？", label: "正文" },
     { prop: "loading", type: "boolean", defaultValue: false },
+    {
+      prop: "status",
+      type: "select",
+      options: ["", "sending", "sent", "read"],
+      defaultValue: "",
+      label: "回执(仅右气泡)",
+    },
   ],
   states: [
     {
@@ -14,6 +21,14 @@ export const chatMessageShowcase: ShowcaseSpec = {
       render: () => (
         <ChatMessage role="user" name="我" timestamp="刚刚">
           帮我把首页重写成 100% dogfood
+        </ChatMessage>
+      ),
+    },
+    {
+      name: "已读回执（坐席发送·已读）",
+      render: () => (
+        <ChatMessage role="user" name="坐席·小琏" timestamp="刚刚" status="read">
+          您好，已为您处理退款，预计 1-3 个工作日到账。
         </ChatMessage>
       ),
     },
@@ -36,9 +51,14 @@ export const chatMessageShowcase: ShowcaseSpec = {
     { name: "system", render: () => <ChatMessage role="system">已切换到 Opus 4.8</ChatMessage> },
   ],
   renderWithProps: (p) => (
-    <ChatMessage role={p.role as "user" | "assistant" | "system"} loading={p.loading as boolean}>
+    <ChatMessage
+      role={p.role as "user" | "assistant" | "system"}
+      loading={p.loading as boolean}
+      status={(p.status as "sending" | "sent" | "read" | "") || undefined}
+    >
       {p.children as string}
     </ChatMessage>
   ),
-  toCode: (p) => `<ChatMessage role="${p.role}"${p.loading ? " loading" : ""}>${p.children}</ChatMessage>`,
+  toCode: (p) =>
+    `<ChatMessage role="${p.role}"${p.loading ? " loading" : ""}${p.status ? ` status="${p.status}"` : ""}>${p.children}</ChatMessage>`,
 };
