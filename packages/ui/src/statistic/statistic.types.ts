@@ -17,6 +17,8 @@ export interface StatisticProps {
   animate?: boolean;
   /** 数值行内联样式（如自定义颜色/字号）。 */
   valueStyle?: CSSProperties;
+  /** 水平对齐（标题 + 数值行）。默认 start。数值行是 flex，故 className text-center 无效，须用此 prop。 */
+  align?: "start" | "center" | "end";
   className?: string;
 }
 

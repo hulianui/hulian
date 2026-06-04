@@ -49,6 +49,8 @@ export function formatCountdown(ms: number, format = "HH:mm:ss"): string {
 
 const valueRow = "flex items-baseline gap-1 text-2xl font-semibold text-foreground tabular-nums";
 const affix = "text-base font-normal";
+const alignJustify = { start: "justify-start", center: "justify-center", end: "justify-end" } as const;
+const alignText = { start: "text-left", center: "text-center", end: "text-right" } as const;
 
 export function Statistic({
   title,
@@ -59,13 +61,14 @@ export function Statistic({
   groupSeparator = true,
   animate = false,
   valueStyle,
+  align = "start",
   className,
 }: StatisticProps) {
   const animated = animate && typeof value === "number";
   return (
     <div className={cn("flex flex-col gap-1", className)}>
-      {title && <div className="text-sm text-muted">{title}</div>}
-      <div className={valueRow} style={valueStyle}>
+      {title && <div className={cn("text-sm text-muted", alignText[align])}>{title}</div>}
+      <div className={cn(valueRow, alignJustify[align])} style={valueStyle}>
         {prefix && <span className={affix}>{prefix}</span>}
         <span>
           {animated ? (
