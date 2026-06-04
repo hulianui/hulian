@@ -46,4 +46,14 @@ export const demos: DemoMeta[] = [
     status: "wip",
     tags: ["实时会话", "ProTable", "Timeline", "Chart"],
   },
+  {
+    slug: "ai-chat",
+    title: "AI 对话工具",
+    description:
+      "会话列表、流式回复、思考过程、工具调用、引用来源 —— 100% 由 @hulian/ui 搭建的 AI agent 对话产品，走 MSW 真流式。",
+    href: "/demos/ai-chat",
+    category: "AI 应用",
+    status: "done",
+    tags: ["Conversation", "StreamingText", "ToolCall", "Markdown"],
+  },
 ];
