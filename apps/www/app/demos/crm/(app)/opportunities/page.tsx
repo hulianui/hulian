@@ -1,25 +1,27 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { MoreHorizontal } from "lucide-react";
 import {
   Badge,
-  Button,
   Card,
   CardBody,
   Heading,
-  Menu,
-  MenuContent,
-  MenuGroup,
-  MenuGroupLabel,
-  MenuItem,
-  MenuTrigger,
+  Kanban,
+  type KanbanColumn,
+  type KanbanMoveEvent,
+  Progress,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
   Tag,
   Text,
+  cn,
+  toast,
 } from "@hulian/ui";
 import { opportunities as seed } from "../../_data/opportunities";
 import { oppStageTone, yuan } from "../../_data/status";
-import { OPP_STAGES, type Opportunity, type OppStage } from "../../_data/types";
+import { OPP_STAGES, OWNERS, type Opportunity, type OppStage } from "../../_data/types";
 
 const stageDotClass: Record<OppStage, string> = {
   线索: "bg-muted",
@@ -30,34 +32,35 @@ const stageDotClass: Record<OppStage, string> = {
   输单: "bg-danger",
 };
 
-function OppCard({ o, onMove }: { o: Opportunity; onMove: (id: string, stage: OppStage) => void }) {
-  return (
-    <Card variant="outline" className="transition-shadow hover:shadow-sm">
-      <CardBody className="flex flex-col gap-2 p-3.5">
-        <div className="flex items-start justify-between gap-2">
-          <span className="text-sm leading-snug font-medium">{o.title}</span>
-          <Menu>
-            <MenuTrigger
-              render={
-                <Button variant="ghost" size="sm" aria-label="移动商机" className="-mt-1 -mr-1 size-7 shrink-0 px-0">
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              }
-            />
-            <MenuContent align="end">
-              <MenuGroup>
-                <MenuGroupLabel>移动到</MenuGroupLabel>
-                {OPP_STAGES.filter((s) => s !== o.stage).map((s) => (
-                  <MenuItem key={s} onClick={() => onMove(o.id, s)}>
-                    {s}
-                  </MenuItem>
-                ))}
-              </MenuGroup>
-            </MenuContent>
-          </Menu>
-        </div>
+const COLUMNS: KanbanColumn[] = OPP_STAGES.map((s) => ({ id: s, title: s }));
 
-        <Link href={`/demos/crm/customers/${o.customerId}`} className="w-fit text-xs text-muted hover:text-primary">
+/** 把拖拽事件落到受控数组：改 stage + 按 toIndex 插回目标列（anchor 取自当前可见视图，与 Kanban 看到的列表一致）。 */
+function applyMove(all: Opportunity[], view: Opportunity[], e: KanbanMoveEvent): Opportunity[] {
+  const moving = all.find((o) => o.id === e.id);
+  if (!moving) return all;
+  const updated: Opportunity = { ...moving, stage: e.toColumn as OppStage };
+  const without = all.filter((o) => o.id !== e.id);
+  const anchor = view.filter((o) => o.stage === e.toColumn && o.id !== e.id)[e.toIndex];
+  if (!anchor) return [...without, updated];
+  const at = without.findIndex((o) => o.id === anchor.id);
+  return [...without.slice(0, at), updated, ...without.slice(at)];
+}
+
+function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
+  return (
+    <Card
+      variant="outline"
+      className={cn("transition-shadow hover:shadow-sm", dragging && "shadow-lg ring-1 ring-ring")}
+    >
+      <CardBody className="flex flex-col gap-2 p-3.5">
+        <span className="text-sm leading-snug font-medium">{o.title}</span>
+
+        <Link
+          href={`/demos/crm/customers/${o.customerId}`}
+          // 卡片整体可拖；链接是无移动的纯点击（PointerSensor distance 阈值放行 click）
+          onPointerDown={(e) => e.stopPropagation()}
+          className="w-fit text-xs text-muted hover:text-primary"
+        >
           {o.customerName}
         </Link>
 
@@ -67,6 +70,7 @@ function OppCard({ o, onMove }: { o: Opportunity; onMove: (id: string, stage: Op
             赢率 {o.probability}%
           </Tag>
         </div>
+        <Progress value={o.probability} size={4} tone={o.stage === "输单" ? "danger" : "primary"} aria-label={`赢率 ${o.probability}%`} />
 
         <div className="flex items-center justify-between border-t border-border pt-2 text-xs text-muted">
           <span className="inline-flex items-center gap-1.5">
@@ -84,57 +88,79 @@ function OppCard({ o, onMove }: { o: Opportunity; onMove: (id: string, stage: Op
 
 export default function OpportunitiesPage() {
   const [opps, setOpps] = useState<Opportunity[]>(seed);
-  const move = (id: string, stage: OppStage) => setOpps((os) => os.map((o) => (o.id === id ? { ...o, stage } : o)));
+  const [owner, setOwner] = useState("");
+
+  const view = useMemo(() => (owner ? opps.filter((o) => o.owner === owner) : opps), [opps, owner]);
 
   const activeTotal = opps
     .filter((o) => o.stage !== "赢单" && o.stage !== "输单")
     .reduce((s, o) => s + o.amount, 0);
 
+  const handleMove = (e: KanbanMoveEvent) => {
+    if (e.fromColumn !== e.toColumn) {
+      const o = opps.find((x) => x.id === e.id);
+      if (o) toast({ title: "已移动商机", description: `${o.title} → ${e.toColumn}` });
+    }
+    setOpps((prev) => applyMove(prev, view, e));
+  };
+
   return (
     <div className="flex h-full flex-col gap-5">
-      <header className="flex items-end justify-between">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <Heading level={2} size="xl">
             商机看板
           </Heading>
           <Text tone="muted" size="sm" className="mt-1">
-            共 {opps.length} 个商机 · 进行中金额 {yuan(activeTotal)} · 通过卡片「⋯」移动阶段
+            共 {opps.length} 个商机 · 进行中金额 {yuan(activeTotal)} · 拖拽卡片跨列移动阶段（亦支持键盘：聚焦后空格抓起·方向键移动）
           </Text>
+        </div>
+        <div className="w-44">
+          <Select
+            items={[{ value: "", label: "全部负责人" }, ...OWNERS.map((o) => ({ value: o, label: o }))]}
+            value={owner}
+            onValueChange={(v) => setOwner((v as string) ?? "")}
+          >
+            <SelectTrigger size="sm" />
+            <SelectContent>
+              <SelectItem value="">全部负责人</SelectItem>
+              {OWNERS.map((o) => (
+                <SelectItem key={o} value={o}>
+                  {o}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 gap-4 overflow-x-auto pb-2">
-        {OPP_STAGES.map((stage) => {
-          const col = opps.filter((o) => o.stage === stage);
-          const total = col.reduce((s, o) => s + o.amount, 0);
-          return (
-            <section key={stage} className="flex w-[280px] shrink-0 flex-col gap-3">
-              <div className="flex items-center justify-between rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
+      <div className="min-h-0 flex-1">
+        <Kanban<Opportunity>
+          columns={COLUMNS}
+          items={view}
+          getId={(o) => o.id}
+          getColumnId={(o) => o.stage}
+          onMove={handleMove}
+          renderColumnHeader={(col, items) => {
+            const stage = col.id as OppStage;
+            const total = items.reduce((s, o) => s + o.amount, 0);
+            return (
+              <div className="flex items-center justify-between pb-1">
                 <div className="flex items-center gap-2">
                   <span className={`size-2 rounded-full ${stageDotClass[stage]}`} aria-hidden />
-                  <span className="text-sm font-medium">{stage}</span>
+                  <span className="text-sm font-medium">{col.title}</span>
                   <Badge variant="soft" tone="neutral">
-                    {col.length}
+                    {items.length}
                   </Badge>
                 </div>
                 <Text size="xs" tone="muted" className="tabular-nums">
                   {yuan(total)}
                 </Text>
               </div>
-
-              <div className="flex flex-col gap-2.5">
-                {col.map((o) => (
-                  <OppCard key={o.id} o={o} onMove={move} />
-                ))}
-                {col.length === 0 && (
-                  <div className="rounded-[var(--radius)] border border-dashed border-border py-8 text-center text-xs text-muted">
-                    暂无商机
-                  </div>
-                )}
-              </div>
-            </section>
-          );
-        })}
+            );
+          }}
+          renderItem={(o, { dragging }) => <OppCard o={o} dragging={dragging} />}
+        />
       </div>
     </div>
   );
