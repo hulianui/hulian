@@ -1,19 +1,18 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Badge,
   Card,
   CardBody,
   Heading,
   Kanban,
   type KanbanColumn,
   type KanbanMoveEvent,
-  Progress,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
+  Spin,
   Tag,
   Text,
   cn,
@@ -22,6 +21,7 @@ import {
 import { opportunities as seed } from "../../_data/opportunities";
 import { yuan } from "../../_data/status";
 import { OPP_STAGES, OWNERS, type Opportunity, type OppStage } from "../../_data/types";
+import { useMockData } from "../../../lib/async";
 
 const stageDotClass: Record<OppStage, string> = {
   线索: "bg-muted",
@@ -32,12 +32,11 @@ const stageDotClass: Record<OppStage, string> = {
   输单: "bg-danger",
 };
 
-// 赢率徽章按「赢率高低」着色（语义=数值好坏），不按阶段——高赢率是好事应偏 success，
-// 旧实现用 oppStageTone 导致商务谈判等高赢率商机落 warning(橙=警示)，语义相反。
-function winRateTone(o: Opportunity): "neutral" | "brand" | "success" | "danger" {
+// 赢率徽章着色克制：只对「高赢率」点绿（正向信号），普通一律中性灰，输单红。
+// 不再给中间档上蓝色——一屏内灰/蓝/绿三色并存太花，弱化了真正该被看见的高赢率商机。
+function winRateTone(o: Opportunity): "neutral" | "success" | "danger" {
   if (o.stage === "输单") return "danger";
   if (o.probability >= 60) return "success";
-  if (o.probability >= 30) return "brand";
   return "neutral";
 }
 
@@ -61,23 +60,24 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
       variant="outline"
       className={cn("transition-shadow hover:shadow-sm", dragging && "shadow-lg ring-1 ring-ring")}
     >
-      <CardBody className="flex flex-col gap-2 p-3.5">
-        <span className="text-sm leading-snug font-medium">{o.title}</span>
+      <CardBody className="flex flex-col gap-3 p-3.5">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-sm leading-snug font-medium">{o.title}</span>
+          {/* Kanban 组件内部已放行交互子元素（链接/按钮）的拖拽劫持，这里无需 stopPropagation 补丁 */}
+          <Link href={`/demos/crm/customers/${o.customerId}`} className="w-fit text-xs text-muted hover:text-primary">
+            {o.customerName}
+          </Link>
+        </div>
 
-        {/* Kanban 组件内部已放行交互子元素（链接/按钮）的拖拽劫持，这里无需 stopPropagation 补丁 */}
-        <Link href={`/demos/crm/customers/${o.customerId}`} className="w-fit text-xs text-muted hover:text-primary">
-          {o.customerName}
-        </Link>
-
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold tabular-nums">{yuan(o.amount)}</span>
+        {/* 金额为主、赢率为辅——赢率只用带语义色的小标签表达一次，不再叠一条进度条重复画同一数据 */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-base font-semibold tabular-nums">{yuan(o.amount)}</span>
           <Tag tone={winRateTone(o)} size="sm">
             赢率 {o.probability}%
           </Tag>
         </div>
-        <Progress value={o.probability} size={4} tone={o.stage === "输单" ? "danger" : "primary"} aria-label={`赢率 ${o.probability}%`} />
 
-        <div className="flex items-center justify-between border-t border-border pt-2 text-xs text-muted">
+        <div className="flex items-center justify-between text-xs text-muted">
           <span className="inline-flex items-center gap-1.5">
             <span className="grid size-5 place-items-center rounded-full bg-surface-hover text-[10px] font-medium text-foreground">
               {o.owner.slice(0, 1)}
@@ -92,8 +92,13 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
 }
 
 export default function OpportunitiesPage() {
-  const [opps, setOpps] = useState<Opportunity[]>(seed);
+  const { data, loading } = useMockData(seed);
+  const [opps, setOpps] = useState<Opportunity[]>([]);
   const [owner, setOwner] = useState("");
+
+  useEffect(() => {
+    if (data) setOpps(data);
+  }, [data]);
 
   const view = useMemo(() => (owner ? opps.filter((o) => o.owner === owner) : opps), [opps, owner]);
 
@@ -140,6 +145,7 @@ export default function OpportunitiesPage() {
       </header>
 
       <div className="min-h-0 flex-1">
+        <Spin spinning={loading} tip="加载商机中…" className="h-full">
         <Kanban<Opportunity>
           columns={COLUMNS}
           items={view}
@@ -154,9 +160,9 @@ export default function OpportunitiesPage() {
                 <div className="flex items-center gap-2">
                   <span className={`size-2 rounded-full ${stageDotClass[stage]}`} aria-hidden />
                   <span className="text-sm font-medium">{col.title}</span>
-                  <Badge variant="soft" tone="neutral">
+                  <Tag variant="soft" tone="neutral">
                     {items.length}
-                  </Badge>
+                  </Tag>
                 </div>
                 <Text size="xs" tone="muted" className="tabular-nums">
                   {yuan(total)}
@@ -166,6 +172,7 @@ export default function OpportunitiesPage() {
           }}
           renderItem={(o, { dragging }) => <OppCard o={o} dragging={dragging} />}
         />
+        </Spin>
       </div>
     </div>
   );

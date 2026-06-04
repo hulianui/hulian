@@ -1,8 +1,9 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import {
+  Alert,
   Avatar,
   Button,
   Field,
@@ -15,6 +16,9 @@ import {
   SelectItem,
   SelectTrigger,
   Tag,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   toast,
   useForm,
   type ColumnDef,
@@ -22,6 +26,7 @@ import {
 import { customers as seed } from "../../_data/customers";
 import { customerLevelTone, customerStatusTone, yuan } from "../../_data/status";
 import { OWNERS, type Customer, type CustomerLevel, type CustomerStatus } from "../../_data/types";
+import { useMockData, usePending } from "../../../lib/async";
 
 const LEVELS: CustomerLevel[] = ["重要", "普通", "潜在"];
 const STATUSES: CustomerStatus[] = ["待分配", "跟进中", "已成交", "已流失"];
@@ -52,11 +57,17 @@ const EMPTY: FormState = {
 };
 
 export default function CustomersPage() {
-  const [rows, setRows] = useState<Customer[]>(seed);
+  const { data, loading, error, reload } = useMockData(seed, { failOnce: true });
+  const [rows, setRows] = useState<Customer[]>([]);
   const [filters, setFilters] = useState<Record<string, unknown>>({});
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Customer | null>(null);
+  const [, run] = usePending();
+
+  useEffect(() => {
+    if (data) setRows(data);
+  }, [data]);
 
   const form = useForm<FormState>({ initialValues: EMPTY });
 
@@ -90,21 +101,23 @@ export default function CustomersPage() {
 
   const handleFinish = (v: Record<string, unknown>) => {
     const val = v as FormState;
-    if (editing) {
-      setRows((rs) => rs.map((r) => (r.id === editing.id ? { ...r, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus } : r)));
-      toast({ title: "客户已更新", description: val.name, tone: "info" });
-    } else {
-      const nextId = `C${1000 + rows.length + 1}`;
-      setRows((rs) => [
-        {
-          id: nextId, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus,
-          amount: 0, lastFollowAt: "2026-06-04", createdAt: "2026-06-04", tags: ["新建"],
-        },
-        ...rs,
-      ]);
-      setPage(1);
-      toast({ title: "已新建客户", description: val.name, tone: "info" });
-    }
+    return run(() => {
+      if (editing) {
+        setRows((rs) => rs.map((r) => (r.id === editing.id ? { ...r, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus } : r)));
+        toast({ title: "客户已更新", description: val.name, tone: "info" });
+      } else {
+        const nextId = `C${1000 + rows.length + 1}`;
+        setRows((rs) => [
+          {
+            id: nextId, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus,
+            amount: 0, lastFollowAt: "2026-06-04", createdAt: "2026-06-04", tags: ["新建"],
+          },
+          ...rs,
+        ]);
+        setPage(1);
+        toast({ title: "已新建客户", description: val.name, tone: "info" });
+      }
+    });
   };
 
   const columns: ColumnDef<Customer>[] = [
@@ -170,9 +183,14 @@ export default function CustomersPage() {
           <Button variant="ghost" size="sm" render={<Link href={`/demos/crm/customers/${row.original.id}`} />}>
             查看
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => openEdit(row.original)}>
-            <Pencil className="size-3.5" /> 编辑
-          </Button>
+          <Tooltip>
+            <TooltipTrigger render={
+              <Button variant="ghost" size="iconSm" onClick={() => openEdit(row.original)}>
+                <Pencil className="size-3.5" />
+              </Button>
+            } />
+            <TooltipContent>编辑客户</TooltipContent>
+          </Tooltip>
           <Popconfirm
             title="删除该客户？"
             description="删除后数据不可恢复（demo 内存态，刷新还原）。"
@@ -183,9 +201,14 @@ export default function CustomersPage() {
               toast({ title: "已删除客户", description: row.original.name, tone: "danger" });
             }}
           >
-            <Button variant="ghost" size="sm" tone="danger">
-              <Trash2 className="size-3.5" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger render={
+                <Button variant="ghost" size="iconSm" tone="danger">
+                  <Trash2 className="size-3.5" />
+                </Button>
+              } />
+              <TooltipContent>删除客户</TooltipContent>
+            </Tooltip>
           </Popconfirm>
         </div>
       ),
@@ -208,10 +231,19 @@ export default function CustomersPage() {
 
   return (
     <>
+      {error && (
+        <Alert tone="danger" className="mb-3">
+          {error}{" "}
+          <Button size="sm" variant="ghost" onClick={reload}>
+            重试
+          </Button>
+        </Alert>
+      )}
       <ProTable<Customer>
         title="客户列表"
         columns={columns}
         data={paged}
+        loading={loading}
         getRowId={(r) => r.id}
         toolbarActions={
           <Button size="sm" onClick={openCreate}>

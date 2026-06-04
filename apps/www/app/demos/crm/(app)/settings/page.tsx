@@ -1,7 +1,11 @@
 "use client";
 import { useState } from "react";
-import { UserPlus } from "lucide-react";
+import { RotateCcw, UserPlus } from "lucide-react";
 import {
+  AlertDialog,
+  AlertDialogClose,
+  AlertDialogContent,
+  AlertDialogTrigger,
   Avatar,
   Button,
   Card,
@@ -14,6 +18,7 @@ import {
   ListItemMeta,
   ModalForm,
   ProForm,
+  Progress,
   Select,
   SelectContent,
   SelectItem,
@@ -121,8 +126,14 @@ export default function SettingsPage() {
     onBlur: f.onBlur,
   });
 
+  // 企业资料完整度：随输入实时变化，演示右侧信息栏的「填写引导」价值
+  const companyKeys = ["name", "short", "industry", "size", "site", "phone", "address", "intro"] as const;
+  const filledCount = companyKeys.filter((k) => String((form.values as Record<string, unknown>)[k] ?? "").trim()).length;
+  const completeness = Math.round((filledCount / companyKeys.length) * 100);
+
   return (
-    <div className="flex flex-col gap-5">
+    // 设置页内容限宽，卡片贴合内容宽度；企业资料用「表单 + 右信息栏」两栏把宽屏空间用起来
+    <div className="flex max-w-5xl flex-col gap-5">
       <Heading level={2} size="xl">
         系统设置
       </Heading>
@@ -137,16 +148,18 @@ export default function SettingsPage() {
             </TabsList>
 
             {/* 企业资料 */}
-            <TabsPanel value="company" className="max-w-2xl pt-6">
-              <ProForm
-                form={form}
-                submitText="保存修改"
-                resetText="重置"
-                onFinish={(v) => {
-                  toast({ title: "企业资料已保存", description: String(v.name), tone: "info" });
-                }}
-              >
-                <div className="grid grid-cols-2 gap-x-4">
+            <TabsPanel value="company" className="pt-6">
+              <div className="flex flex-col gap-8 lg:flex-row">
+                <ProForm
+                  form={form}
+                  columns={2}
+                  className="flex-1"
+                  submitText="保存修改"
+                  resetText="重置"
+                  onFinish={(v) => {
+                    toast({ title: "企业资料已保存", description: String(v.name), tone: "info" });
+                  }}
+                >
                   <Field label="公司名称" error={reg.name.error}>
                     <Input {...bindInput(reg.name)} />
                   </Field>
@@ -191,14 +204,44 @@ export default function SettingsPage() {
                   <Field label="联系电话">
                     <Input {...bindInput(reg.phone)} />
                   </Field>
-                  <Field label="公司地址" className="col-span-2">
+                  <Field label="公司地址" colSpan="full">
                     <Input {...bindInput(reg.address)} />
                   </Field>
-                  <Field label="公司简介" className="col-span-2">
+                  <Field label="公司简介" colSpan="full">
                     <Textarea value={reg.intro.value as string} onChange={reg.intro.onChange} onBlur={reg.intro.onBlur} rows={3} />
                   </Field>
-                </div>
-              </ProForm>
+                </ProForm>
+
+                <aside className="flex shrink-0 flex-col gap-6 lg:w-64">
+                  <div>
+                    <div className="text-sm font-medium">公司 Logo</div>
+                    <div className="mt-2.5 flex items-center gap-3">
+                      <div className="grid size-14 shrink-0 place-items-center rounded-[var(--radius)] bg-primary/10 text-lg font-semibold text-primary">
+                        瑚
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => toast({ title: "上传 Logo", description: "demo 占位，未接真实上传", tone: "neutral" })}
+                        className="flex-1 rounded-[var(--radius)] border border-dashed border-border px-3 py-2.5 text-center text-xs text-muted transition-colors hover:border-primary hover:text-primary"
+                      >
+                        点击上传
+                        <br />
+                        PNG / JPG ≤ 2MB
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">资料完整度</span>
+                      <span className="text-sm tabular-nums text-muted">{completeness}%</span>
+                    </div>
+                    <Progress value={completeness} size={6} tone="primary" className="mt-2.5" aria-label="资料完整度" />
+                    <Text size="xs" tone="muted" className="mt-2">
+                      完善企业资料有助于在客户侧建立信任。
+                    </Text>
+                  </div>
+                </aside>
+              </div>
             </TabsPanel>
 
             {/* 成员管理 */}
@@ -254,7 +297,7 @@ export default function SettingsPage() {
             </TabsPanel>
 
             {/* 通知设置 */}
-            <TabsPanel value="notify" className="max-w-2xl pt-6">
+            <TabsPanel value="notify" className="pt-6">
               <div className="flex flex-col divide-y divide-border">
                 {NOTIF_ITEMS.map((n) => (
                   <div key={n.key} className="flex items-center justify-between py-4">
@@ -289,6 +332,43 @@ export default function SettingsPage() {
               </div>
             </TabsPanel>
           </Tabs>
+        </CardBody>
+      </Card>
+
+      {/* 危险区：重置演示数据（演示 AlertDialog 高危二次确认件） */}
+      <Card variant="outline" className="border-danger/40">
+        <CardBody>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-sm font-medium text-danger">危险操作</div>
+              <Text size="sm" tone="muted" className="mt-0.5">
+                重置演示数据将清空所有内存态变更（客户 / 商机 / 订单），刷新页面即可还原，本操作仅在 demo 中生效。
+              </Text>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger render={
+                <Button variant="outline" tone="danger" size="sm" className="shrink-0">
+                  <RotateCcw className="size-3.5" /> 重置演示数据
+                </Button>
+              } />
+              <AlertDialogContent
+                title="确认重置演示数据？"
+                description="此操作将清空所有内存态变更，刷新页面可还原。仅影响当前 demo 会话，不涉及真实数据。"
+              >
+                <AlertDialogClose render={<Button variant="outline">取消</Button>} />
+                <AlertDialogClose
+                  render={
+                    <Button
+                      tone="danger"
+                      onClick={() => toast({ title: "演示数据已重置", description: "刷新页面后完全还原", tone: "danger" })}
+                    >
+                      确认重置
+                    </Button>
+                  }
+                />
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </CardBody>
       </Card>
 

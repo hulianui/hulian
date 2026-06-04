@@ -54,7 +54,7 @@ function HeaderExtra() {
       <User
         name="林晚晴"
         description="销售总监"
-        avatarProps={{ fallback: "林", src: "https://i.pravatar.cc/80?img=47" }}
+        avatarProps={{ fallback: "林", src: "/demo/avatar-3.jpg" }}
       />
     </div>
   );

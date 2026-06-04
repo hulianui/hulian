@@ -1,10 +1,11 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Card, CardBody, ProTable, Stat, Tag, type ColumnDef } from "@hulian/ui";
 import { orders as seed } from "../../_data/orders";
 import { orderStatusTone, yuan } from "../../_data/status";
 import type { Order, OrderStatus } from "../../_data/types";
+import { useMockData } from "../../../lib/async";
 
 const ORDER_STATUSES: OrderStatus[] = ["待付款", "已付款", "已发货", "已完成", "已退款"];
 const PAGE_SIZE = 10;
@@ -43,31 +44,37 @@ const columns: ColumnDef<Order>[] = [
 ];
 
 export default function OrdersPage() {
+  const { data, loading } = useMockData(seed);
+  const [rows, setRows] = useState<Order[]>([]);
   const [filters, setFilters] = useState<Record<string, unknown>>({});
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    if (data) setRows(data);
+  }, [data]);
+
   const filtered = useMemo(() => {
     const kw = String(filters.keyword ?? "").trim();
-    return seed.filter((o) => {
+    return rows.filter((o) => {
       if (kw && !`${o.orderNo}${o.customerName}`.includes(kw)) return false;
       if (filters.status && o.status !== filters.status) return false;
       return true;
     });
-  }, [filters]);
+  }, [rows, filters]);
 
   const total = filtered.length;
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const revenue = seed
+  const revenue = rows
     .filter((o) => o.status === "已完成" || o.status === "已发货" || o.status === "已付款")
     .reduce((s, o) => s + o.amount, 0);
-  const pending = seed.filter((o) => o.status === "待付款").length;
-  const done = seed.filter((o) => o.status === "已完成").length;
+  const pendingCount = rows.filter((o) => o.status === "待付款").length;
+  const done = rows.filter((o) => o.status === "已完成").length;
 
   const stats = [
-    { label: "订单总数", value: seed.length },
+    { label: "订单总数", value: rows.length },
     { label: "成交金额", value: yuan(revenue) },
-    { label: "待付款", value: pending },
+    { label: "待付款", value: pendingCount },
     { label: "已完成", value: done },
   ];
 
@@ -87,6 +94,7 @@ export default function OrdersPage() {
         title="订单列表"
         columns={columns}
         data={paged}
+        loading={loading}
         getRowId={(r) => r.id}
         search={{
           fields: [
