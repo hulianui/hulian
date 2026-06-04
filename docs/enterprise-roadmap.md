@@ -23,14 +23,22 @@
 
 附带：给 `Table` 增加了 `density` prop（default/middle/compact），ProTable 与未来组件共用。
 
+### ✅ 续批基础设施（2026-06-04）
+
+| 能力 | 层 | 说明 |
+|------|----|------|
+| **Access** 权限控制 | 🔴 基础设施 | `AccessProvider`(下发用户权限集) + `useAccess()`(has/hasAny/hasAll·缺 Provider 即抛) + `<Access permission\|accessible mode fallback>`(声明式门禁)。按 ThemeProvider 先例·不进画廊 |
+| **ConfigProvider / i18n** | 🔴 基础设施 | `ConfigProvider`(下发 locale) + `useLocale()`(缺 Provider 回退 zhCN·不抛) + `zhCN`/`enUS` 字典。已接入 ProTable/AdminLayout 文案(包 enUS 即切英文)。后续可扩 size/主题 |
+
 ---
 
 ## 🔴 P0 — 仍缺的高优先级（决定「能不能当框架用」）
 
 ### 基础设施
-- [ ] **ConfigProvider**：全局统一 尺寸(size)/主题/语言/表单校验 的单一配置入口。企业系统必备，目前完全没有。
-- [ ] **i18n / Locale**：多语言方案（至少中/英）。组件内置文案（「暂无数据」「查询」「关闭页签」等）需可覆写。
-- [ ] **权限体系（Access / Authorized）**：按角色控制 按钮/菜单/路由 的可见性运行时组件。这是「管理系统」区别于普通 web 的核心。
+- [x] ~~**权限体系（Access）**~~ ✅ 2026-06-04
+- [x] ~~**ConfigProvider + i18n（基础）**~~ ✅ 2026-06-04（locale 已落；ProTable/AdminLayout 已接）
+- [ ] **i18n 续**：原子组件文案渐进迁移到 `Locale`（Table 暂无数据 / Pagination / 表单校验等仍硬编码 zh）。
+- [ ] **ConfigProvider 续**：全局默认 `size`（控件尺寸）+ 表单校验配置（需各表单控件读 context，是较大 retrofit）。
 
 ### Pro 区块（继 ProTable 之后）
 - [ ] **QueryFilter 独立件**：当前查询区借 SearchForm；可抽独立的折叠式高级搜索区（响应式列 + 展开/收起 + 重置/查询）作为一等公民。
@@ -66,8 +74,8 @@
 落地企业管理系统的推荐顺序：
 
 ```
-已完成：AdminLayout(骨架) + ProTable(列表页) + Steps + Tag
-下一步：ConfigProvider + 权限(Access)  →  ModalForm/DrawerForm  →  QueryFilter 独立件
+已完成：AdminLayout(骨架) + ProTable(列表页) + Steps + Tag + Access(权限) + ConfigProvider/i18n
+下一步：ModalForm/DrawerForm(弹窗表单)  →  QueryFilter 独立件  →  EditableTable
 ```
 
 一个 ProTable + AdminLayout(多页签) 带来的「能搭系统」感知，远超再加 20 个原子组件——
