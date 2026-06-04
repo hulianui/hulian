@@ -9,7 +9,9 @@ export interface LoginValues {
 export interface LoginFormProps {
   /** 标题（默认 locale.loginForm.title）。 */
   title?: ReactNode;
-  /** 品牌 logo（标题上方居中）。 */
+  /** 副标题（标题下方的引导文案，左对齐·muted）。 */
+  subtitle?: ReactNode;
+  /** 品牌 logo（头部左上·作为品牌标）。 */
   logo?: ReactNode;
   /** 提交回调（校验通过后）。返回 Promise → 提交按钮 loading。 */
   onFinish?: (values: LoginValues) => void | Promise<void>;

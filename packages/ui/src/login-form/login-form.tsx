@@ -12,6 +12,7 @@ import type { LoginFormProps } from "./login-form.types";
 // LoginForm = 登录页模板（自管 useForm：账号/密码必填 + 记住我）。复用 Field/Input/Checkbox/Button。
 export function LoginForm({
   title,
+  subtitle,
   logo,
   onFinish,
   loading: loadingProp,
@@ -53,39 +54,48 @@ export function LoginForm({
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "flex w-full max-w-sm flex-col gap-5 rounded-[var(--radius)] border border-border bg-surface p-6 text-foreground",
+        // 左对齐 + 放大圆角 + 柔和分层阴影(非生硬单层 drop shadow) + 舒展留白
+        "flex w-full max-w-sm flex-col rounded-[calc(var(--radius)+0.375rem)] border border-border bg-surface p-8 text-foreground",
+        "shadow-[0_1px_3px_rgba(15,23,42,0.04),0_16px_40px_-20px_rgba(15,23,42,0.18)]",
         className,
       )}
     >
-      {(logo != null || title !== null) && (
-        <div className="flex flex-col items-center gap-2">
-          {logo}
-          <h2 className="text-lg font-semibold">{title ?? loc.title}</h2>
-        </div>
-      )}
-      <Field label={loc.username} error={username.error}>
-        <Input value={username.value as string} onChange={username.onChange} onBlur={username.onBlur} autoComplete="username" />
-      </Field>
-      <Field label={loc.password} error={password.error}>
-        <Input
-          type="password"
-          value={password.value as string}
-          onChange={password.onChange}
-          onBlur={password.onBlur}
-          autoComplete="current-password"
-        />
-      </Field>
-      {showRemember && (
-        <Checkbox
-          label={loc.remember}
-          checked={remember}
-          onCheckedChange={(v) => form.setFieldValue("remember", v)}
-        />
-      )}
-      <Button type="submit" loading={loading} className="w-full">
-        {loc.submit}
-      </Button>
-      {footer}
+      <header className="mb-7 flex flex-col items-start gap-1.5">
+        {logo != null && <div className="mb-3">{logo}</div>}
+        {title !== null && (
+          <h2 className="text-2xl font-semibold tracking-tight">{title ?? loc.title}</h2>
+        )}
+        {subtitle != null && <p className="text-sm text-muted">{subtitle}</p>}
+      </header>
+
+      <div className="flex flex-col gap-4">
+        <Field label={loc.username} error={username.error}>
+          <Input value={username.value as string} onChange={username.onChange} onBlur={username.onBlur} autoComplete="username" />
+        </Field>
+        <Field label={loc.password} error={password.error}>
+          <Input
+            type="password"
+            value={password.value as string}
+            onChange={password.onChange}
+            onBlur={password.onBlur}
+            autoComplete="current-password"
+          />
+        </Field>
+        {showRemember && (
+          <div className="flex items-center justify-between pt-0.5">
+            <Checkbox
+              label={loc.remember}
+              checked={remember}
+              onCheckedChange={(v) => form.setFieldValue("remember", v)}
+            />
+          </div>
+        )}
+        <Button type="submit" loading={loading} className="mt-2 w-full">
+          {loc.submit}
+        </Button>
+      </div>
+
+      {footer != null && <div className="mt-6 border-t border-border pt-4">{footer}</div>}
     </form>
   );
 }
