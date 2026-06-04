@@ -24,7 +24,7 @@ export const demos: DemoMeta[] = [
       "Hero、能力 Bento、产品演示、客户证言、定价、FAQ、联系表单 —— 100% 由 @hulian/ui 搭建的营销官网示例。",
     href: "/demos/website",
     category: "营销官网",
-    status: "wip",
+    status: "done",
     tags: ["Navbar", "BentoGrid", "Marquee", "Accordion"],
   },
   {
@@ -33,7 +33,7 @@ export const demos: DemoMeta[] = [
     description: "工作台、客户、商机看板、订单、系统设置 —— 100% 由 @hulian/ui 搭建的完整中后台示例。",
     href: "/demos/crm",
     category: "中后台",
-    status: "wip",
+    status: "done",
     tags: ["AdminLayout", "ProTable", "Chart", "ProForm"],
   },
   {
@@ -43,7 +43,7 @@ export const demos: DemoMeta[] = [
       "实时会话工作台、工单流转、知识库、服务看板 —— 100% 由 @hulian/ui 搭建的坐席台示例，含进线提醒、输入状态与已读回执。",
     href: "/demos/customer-service",
     category: "中后台",
-    status: "wip",
+    status: "done",
     tags: ["实时会话", "ProTable", "Timeline", "Chart"],
   },
   {
@@ -55,5 +55,25 @@ export const demos: DemoMeta[] = [
     category: "AI 应用",
     status: "done",
     tags: ["Conversation", "StreamingText", "ToolCall", "Markdown"],
+  },
+  {
+    slug: "projects",
+    title: "工程项目协同后台",
+    description:
+      "工作台、项目追踪、报价生成器、开票回款、在线收款、工作照片 —— 上下游工程服务商全流程，100% 由 @hulian/ui 搭建，含报价实时算价、单据打印态、施工甘特、扫码收银台与全屏照片查看器。",
+    href: "/demos/projects",
+    category: "中后台",
+    status: "done",
+    tags: ["Gantt", "DocumentSheet", "EditableTable", "ImageViewer", "收银台", "QRCode"],
+  },
+  {
+    slug: "ai-workflow",
+    title: "AI 生图 / 视频工作流",
+    description:
+      "可视化节点画布编排 AI 生图与视频流水线：提示词 → 模型 → 放大 → 图生视频 → 输出，拖拽连线即可运行 —— 100% 由 @hulian/ui 搭建，含全新 Flow 节点画布组件、模拟执行与产物画廊。",
+    href: "/demos/ai-workflow",
+    category: "AI 应用",
+    status: "done",
+    tags: ["Flow", "节点编排", "Upload", "Video"],
   },
 ];

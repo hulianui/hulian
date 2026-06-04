@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+// demos-coverage —— 内置 demo 的「组件覆盖率」自检。
+//
+// 命题（用户定调）：demo 是给用户照抄的教学材料，每个 manifest 公开组件都该有真实用例。
+// 「漏才是最危险的信号」——本脚本把「从没在任何 demo 出现过的组件」列出来，逼着补。
+//
+// 用法：
+//   node scripts/demos-coverage.mjs            # 打印覆盖率 + 未覆盖清单
+//   node scripts/demos-coverage.mjs --min 60   # 覆盖率低于阈值则 exit 1（可进 CI）
+//
+// 口径：分母 = apps/www/lib/manifest.ts 公开组件条目；分子 = demos/** 里 `from "@hulian/ui"`
+// 的具名 import 命中的条目（ProTable 不算覆盖 Table —— 用户看的是 manifest 条目本身）。
+
+import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const here = dirname(fileURLToPath(import.meta.url));
+const wwwRoot = resolve(here, "..");
+const demosDir = resolve(wwwRoot, "app/demos");
+const manifestPath = resolve(wwwRoot, "lib/manifest.ts");
+
+// 部分组件以「子件/工厂/变体」名在 demo 出现，但本质就是该 manifest 条目 —— 视为已覆盖。
+const ALIASES = {
+  Toast: ["toast", "ToastProvider"],
+  Notification: ["NotificationProvider"],
+  Chart: ["AreaChart", "BarChart", "PieChart", "LineChart"],
+  Form: ["ProForm", "useForm"],
+  "ModalForm / DrawerForm": ["ModalForm", "DrawerForm"],
+};
+
+function parseManifest() {
+  const src = readFileSync(manifestPath, "utf8");
+  const re = /\{\s*slug:\s*"([^"]+)",\s*name:\s*"([^"]+)"[\s\S]*?category:\s*"([^"]+)"/g;
+  const comps = [];
+  let m;
+  while ((m = re.exec(src))) comps.push({ slug: m[1], name: m[2], category: m[3] });
+  return comps;
+}
+
+function usedIdentifiers() {
+  const files = execSync(`grep -rl '@hulian/ui' "${demosDir}"`, { encoding: "utf8" })
+    .trim()
+    .split("\n")
+    .filter(Boolean);
+  const used = new Set();
+  const re = /import\s+(?:type\s+)?\{([^}]*)\}\s+from\s+["']@hulian\/ui["']/g;
+  for (const f of files) {
+    const s = readFileSync(f, "utf8");
+    let m;
+    while ((m = re.exec(s))) {
+      for (const part of m[1].split(",")) {
+        const name = part.trim().split(/\s+as\s+/)[0].trim().replace(/^type\s+/, "");
+        if (name) used.add(name);
+      }
+    }
+  }
+  return used;
+}
+
+const pascal = (s) =>
+  s
+    .split(/[-_ /]+/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join("");
+
+function isCovered(comp, used) {
+  const candidates = new Set([
+    comp.name,
+    comp.name.replace(/\s+/g, ""),
+    pascal(comp.slug),
+    ...(ALIASES[comp.name] ?? []),
+  ]);
+  for (const c of candidates) if (used.has(c)) return true;
+  return false;
+}
+
+const comps = parseManifest();
+const used = usedIdentifiers();
+const missing = comps.filter((c) => !isCovered(c, used));
+const rate = ((comps.length - missing.length) / comps.length) * 100;
+
+const byCat = {};
+for (const c of missing) (byCat[c.category] ??= []).push(c.name);
+
+console.log(`\n瑚琏 Demo 组件覆盖率：${comps.length - missing.length}/${comps.length} = ${rate.toFixed(0)}%`);
+console.log(`未在任何 demo 出现（危险盲区）：${missing.length} 个\n`);
+for (const cat of Object.keys(byCat).sort()) {
+  console.log(`  [${cat}] ${byCat[cat].length}：${byCat[cat].join(", ")}`);
+}
+
+const minArg = process.argv.indexOf("--min");
+if (minArg !== -1) {
+  const min = Number(process.argv[minArg + 1]);
+  if (rate < min) {
+    console.error(`\n✗ 覆盖率 ${rate.toFixed(0)}% 低于阈值 ${min}%`);
+    process.exit(1);
+  }
+  console.log(`\n✓ 覆盖率 ${rate.toFixed(0)}% ≥ 阈值 ${min}%`);
+}
