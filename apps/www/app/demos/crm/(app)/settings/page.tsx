@@ -12,6 +12,7 @@ import {
   List,
   ListItem,
   ListItemMeta,
+  ModalForm,
   ProForm,
   Select,
   SelectContent,
@@ -32,13 +33,23 @@ import {
 const INDUSTRIES = ["互联网", "制造", "金融", "医疗", "教育", "零售", "物流", "能源", "咨询"];
 const SIZES = ["1-50 人", "50-200 人", "200-500 人", "500-1000 人", "1000 人以上"];
 
-const members = [
-  { name: "林晚晴", role: "销售总监", email: "lin@hulian.com", status: "在职", roleTone: "brand" as const },
-  { name: "周明远", role: "高级销售", email: "zhou@hulian.com", status: "在职", roleTone: "neutral" as const },
-  { name: "高敏", role: "销售专员", email: "gao@hulian.com", status: "在职", roleTone: "neutral" as const },
-  { name: "陈策", role: "大客户经理", email: "chen@hulian.com", status: "在职", roleTone: "brand" as const },
-  { name: "苏晓", role: "销售助理", email: "su@hulian.com", status: "试用期", roleTone: "neutral" as const },
+type Member = {
+  name: string;
+  role: string;
+  email: string;
+  status: "在职" | "试用期" | "邀请中";
+  roleTone: "brand" | "neutral";
+};
+
+const INITIAL_MEMBERS: Member[] = [
+  { name: "林晚晴", role: "销售总监", email: "lin@hulian.com", status: "在职", roleTone: "brand" },
+  { name: "周明远", role: "高级销售", email: "zhou@hulian.com", status: "在职", roleTone: "neutral" },
+  { name: "高敏", role: "销售专员", email: "gao@hulian.com", status: "在职", roleTone: "neutral" },
+  { name: "陈策", role: "大客户经理", email: "chen@hulian.com", status: "在职", roleTone: "brand" },
+  { name: "苏晓", role: "销售助理", email: "su@hulian.com", status: "试用期", roleTone: "neutral" },
 ];
+
+const ROLES = ["销售总监", "高级销售", "大客户经理", "销售专员", "销售助理"];
 
 const NOTIF_ITEMS = [
   { key: "assign", title: "新商机分配提醒", desc: "有新商机分配给我时，站内 + 邮件通知" },
@@ -80,6 +91,29 @@ export default function SettingsPage() {
     security: true,
   });
   const [savingNotif, setSavingNotif] = useState(false);
+
+  // 成员管理：改为 state，邀请表单提交后真加进列表
+  const [members, setMembers] = useState<Member[]>(INITIAL_MEMBERS);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const inviteForm = useForm({ initialValues: { name: "", email: "", role: "销售专员" } });
+  const invReg = {
+    name: inviteForm.register("name", { rules: [{ required: true, message: "请输入成员姓名" }] }),
+    email: inviteForm.register("email", {
+      rules: [
+        { required: true, message: "请输入邮箱" },
+        { pattern: /@/, message: "邮箱需含 @" },
+      ],
+    }),
+    role: inviteForm.register("role"),
+  };
+  const handleInvite = (v: Record<string, unknown>) => {
+    const val = v as { name: string; email: string; role: string };
+    setMembers((ms) => [
+      ...ms,
+      { name: val.name, role: val.role, email: val.email, status: "邀请中", roleTone: "neutral" },
+    ]);
+    toast({ title: "邀请已发送", description: `已邀请 ${val.name}（${val.email}）加入团队`, tone: "info" });
+  };
 
   const bindInput = (f: typeof reg.name) => ({
     value: f.value as string,
@@ -175,7 +209,10 @@ export default function SettingsPage() {
                 </Text>
                 <Button
                   size="sm"
-                  onClick={() => toast({ title: "邀请已发送", description: "成员接受后将加入团队", tone: "info" })}
+                  onClick={() => {
+                    inviteForm.resetFields();
+                    setInviteOpen(true);
+                  }}
                 >
                   <UserPlus className="size-4" /> 邀请成员
                 </Button>
@@ -254,6 +291,41 @@ export default function SettingsPage() {
           </Tabs>
         </CardBody>
       </Card>
+
+      <ModalForm
+        title="邀请成员"
+        form={inviteForm}
+        open={inviteOpen}
+        onOpenChange={setInviteOpen}
+        onFinish={handleInvite}
+        submitText="发送邀请"
+        className="w-[460px]"
+      >
+        <div className="flex flex-col gap-1">
+          <Field label="成员姓名" error={invReg.name.error}>
+            <Input {...bindInput(invReg.name)} placeholder="如：王磊" />
+          </Field>
+          <Field label="邮箱" error={invReg.email.error}>
+            <Input {...bindInput(invReg.email)} placeholder="邀请链接将发送至此邮箱" />
+          </Field>
+          <Field label="角色">
+            <Select
+              items={ROLES.map((r) => ({ value: r, label: r }))}
+              value={invReg.role.value as string}
+              onValueChange={(v) => invReg.role.onChange(v as string)}
+            >
+              <SelectTrigger />
+              <SelectContent>
+                {ROLES.map((r) => (
+                  <SelectItem key={r} value={r}>
+                    {r}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+        </div>
+      </ModalForm>
     </div>
   );
 }

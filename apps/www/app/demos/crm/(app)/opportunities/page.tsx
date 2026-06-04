@@ -20,7 +20,7 @@ import {
   toast,
 } from "@hulian/ui";
 import { opportunities as seed } from "../../_data/opportunities";
-import { oppStageTone, yuan } from "../../_data/status";
+import { yuan } from "../../_data/status";
 import { OPP_STAGES, OWNERS, type Opportunity, type OppStage } from "../../_data/types";
 
 const stageDotClass: Record<OppStage, string> = {
@@ -31,6 +31,15 @@ const stageDotClass: Record<OppStage, string> = {
   赢单: "bg-success",
   输单: "bg-danger",
 };
+
+// 赢率徽章按「赢率高低」着色（语义=数值好坏），不按阶段——高赢率是好事应偏 success，
+// 旧实现用 oppStageTone 导致商务谈判等高赢率商机落 warning(橙=警示)，语义相反。
+function winRateTone(o: Opportunity): "neutral" | "brand" | "success" | "danger" {
+  if (o.stage === "输单") return "danger";
+  if (o.probability >= 60) return "success";
+  if (o.probability >= 30) return "brand";
+  return "neutral";
+}
 
 const COLUMNS: KanbanColumn[] = OPP_STAGES.map((s) => ({ id: s, title: s }));
 
@@ -66,7 +75,7 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
 
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold tabular-nums">{yuan(o.amount)}</span>
-          <Tag tone={oppStageTone[o.stage]} size="sm">
+          <Tag tone={winRateTone(o)} size="sm">
             赢率 {o.probability}%
           </Tag>
         </div>
