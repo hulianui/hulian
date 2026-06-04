@@ -76,4 +76,14 @@ export const demos: DemoMeta[] = [
     status: "done",
     tags: ["Flow", "节点编排", "Upload", "Video"],
   },
+  {
+    slug: "mobile",
+    title: "同城到家服务 App",
+    description:
+      "家政 / 维修 / 美甲上门下单全流程移动端 App —— 100% 由 @hulian/ui 搭建，含 TabBar 底部导航、下拉刷新 feed、左右滑订单操作、滚轮选择预约时间、ActionSheet 二次确认、Fab 悬浮钮与安全区适配。",
+    href: "/demos/mobile",
+    category: "移动端",
+    status: "done",
+    tags: ["TabBar", "SwipeAction", "Picker", "PullToRefresh"],
+  },
 ];
