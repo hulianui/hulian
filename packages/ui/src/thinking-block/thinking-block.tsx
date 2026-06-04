@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "../_icons";
 import { cn } from "../lib/cn";
 import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "../collapsible";
@@ -6,7 +7,9 @@ import { AnimatedShinyText } from "../animated-shiny-text";
 import type { ThinkingBlockProps } from "./thinking-block.types";
 
 // 思考折叠块：dogfood Collapsible(自带 chevron + 平滑高度)，头部承载思考态。
-// thinking 时标题转圈 + AnimatedShinyText 高光流动 + 默认展开；收起后 chain-of-thought 隐藏。
+// thinking 时标题转圈 + AnimatedShinyText 高光流动 + 默认展开；思考结束自动收起 chain-of-thought。
+// 内部始终受控（避免 thinking 翻转改非受控 defaultOpen 触发 Base UI 警告）：
+// open 透传 = 全受控；否则内部 state 跟随 thinking 生命周期自动开合，用户点击亦可手动切换。
 export function ThinkingBlock({
   title = "思考过程",
   thinking,
@@ -17,11 +20,28 @@ export function ThinkingBlock({
   className,
   children,
 }: ThinkingBlockProps) {
+  const isControlled = open !== undefined;
+  const [internalOpen, setInternalOpen] = useState(defaultOpen ?? thinking ?? false);
+  // thinking 翻转时同步开合：开始思考→展开，思考结束→自动收起（标准 agent UX）
+  const prevThinking = useRef(thinking);
+  useEffect(() => {
+    if (isControlled) return;
+    if (prevThinking.current !== thinking) {
+      setInternalOpen(thinking ?? false);
+      prevThinking.current = thinking;
+    }
+  }, [thinking, isControlled]);
+
+  const resolvedOpen = isControlled ? open : internalOpen;
+  const handleOpenChange = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
+
   return (
     <Collapsible
-      defaultOpen={defaultOpen ?? thinking}
-      open={open}
-      onOpenChange={onOpenChange}
+      open={resolvedOpen}
+      onOpenChange={handleOpenChange}
       className={cn("rounded-[var(--radius)] border border-border bg-surface/60", className)}
     >
       <CollapsibleTrigger>
