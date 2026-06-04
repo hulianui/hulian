@@ -1,18 +1,11 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, Moon, Sun } from "lucide-react";
-import {
-  AdminLayout,
-  Badge,
-  Breadcrumb,
-  Button,
-  Segmented,
-  User,
-  useTheme,
-  type AdminTab,
-} from "@hulian/ui";
+import { Moon, Sun } from "lucide-react";
+import { AdminLayout, Breadcrumb, Button, Segmented, useTheme, type AdminTab } from "@hulian/ui";
 import { CS_ROOT, breadcrumbFor, labelOf, menuItems, selectedKeyFor } from "./nav-config";
+import { NotificationBell } from "./notification-bell";
+import { AccountMenu } from "./account-menu";
 
 function Brand() {
   return (
@@ -74,24 +67,9 @@ function HeaderExtra() {
         />
       </span>
       <ThemeToggle />
-      <span className="relative inline-flex">
-        <Button variant="ghost" size="sm" aria-label="通知（3 条未读）" className="size-9 px-0">
-          <Bell className="size-[18px]" />
-        </Button>
-        <Badge
-          tone="danger"
-          size="sm"
-          className="pointer-events-none absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] leading-none"
-        >
-          3
-        </Badge>
-      </span>
+      <NotificationBell />
       <div className="mx-1 h-6 w-px bg-border" aria-hidden />
-      <User
-        name="小琏"
-        description="高级客服"
-        avatarProps={{ fallback: "琏", src: "https://i.pravatar.cc/80?img=15" }}
-      />
+      <AccountMenu />
     </div>
   );
 }
