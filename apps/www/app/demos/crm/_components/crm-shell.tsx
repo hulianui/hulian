@@ -29,10 +29,9 @@ function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="sm"
+      size="icon"
       onClick={toggle}
       aria-label={theme === "dark" ? "切换到亮色" : "切换到暗色"}
-      className="size-9 px-0"
     >
       {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
     </Button>
@@ -45,9 +44,8 @@ function HeaderExtra() {
       <ThemeToggle />
       <Button
         variant="ghost"
-        size="sm"
+        size="icon"
         aria-label="通知"
-        className="size-9 px-0"
         onClick={() => toast({ title: "暂无新通知", description: "新商机、跟进到期等提醒会在此汇总", tone: "neutral" })}
       >
         <Bell className="size-[18px]" />
