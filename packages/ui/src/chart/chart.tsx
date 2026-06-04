@@ -48,7 +48,7 @@ export function AreaChart<TDatum>({
 }: ChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <ReAreaChart data={data} margin={MARGIN}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
@@ -87,7 +87,7 @@ export function BarChart<TDatum>({
 }: BarChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <ReBarChart
           data={data}
           margin={MARGIN}
@@ -137,7 +137,7 @@ export function LineChart<TDatum>({
 }: ChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <ReLineChart data={data} margin={MARGIN}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
@@ -168,7 +168,7 @@ export function LineChart<TDatum>({
 export function PieChart({ data, donut, height = 280, className }: PieChartProps) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <RePieChart>
           <Pie
             data={data}
@@ -204,7 +204,7 @@ export function RadarChart<TDatum>({
 }: ChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <ReRadarChart data={data} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
           <PolarGrid stroke="var(--color-border)" />
           <PolarAngleAxis dataKey={xKey} tick={polarAngleTick} />
@@ -235,7 +235,7 @@ export function RadarChart<TDatum>({
 export function RadialChart({ data, height = 280, className }: RadialChartProps) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <ReRadialBarChart
           data={data}
           cx="50%"
