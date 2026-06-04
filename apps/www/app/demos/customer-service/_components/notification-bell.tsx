@@ -65,18 +65,11 @@ export function NotificationBell() {
             variant="ghost"
             size="sm"
             aria-label={`通知${unread > 0 ? `（${unread} 条未读）` : ""}`}
-            className="relative size-9 px-0"
+            className="size-9 px-0"
           >
-            <Bell className="size-[18px]" />
-            {unread > 0 && (
-              <Badge
-                tone="danger"
-                size="sm"
-                className="pointer-events-none absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] leading-none"
-              >
-                {unread}
-              </Badge>
-            )}
+            <Badge count={unread} size="sm" className="pointer-events-none">
+              <Bell className="size-[18px]" />
+            </Badge>
           </Button>
         }
       />

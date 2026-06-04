@@ -111,15 +111,7 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
                         <span className="truncate text-[11px] text-muted">
                           {conv.channel} · {conv.subject}
                         </span>
-                        {conv.unread > 0 && (
-                          <Badge
-                            tone="danger"
-                            size="sm"
-                            className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full px-1 text-[10px] leading-none"
-                          >
-                            {conv.unread}
-                          </Badge>
-                        )}
+                        <Badge count={conv.unread} size="sm" className="shrink-0" />
                       </span>
                     </span>
                   }

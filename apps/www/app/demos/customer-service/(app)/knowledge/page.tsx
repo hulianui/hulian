@@ -1,7 +1,8 @@
 "use client";
-import { useMemo, useState } from "react";
-import { Search, Eye, Clock } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, Eye, Clock, Plus, Trash2 } from "lucide-react";
 import {
+  Button,
   Card,
   CardBody,
   Drawer,
@@ -9,17 +10,30 @@ import {
   Heading,
   Input,
   Markdown,
+  Popconfirm,
   Segmented,
   Tag,
   Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  toast,
 } from "@hulian/ui";
-import { articles, KB_CATEGORIES } from "../../_data/knowledge";
+import { articles as seed, KB_CATEGORIES } from "../../_data/knowledge";
 import type { KnowledgeArticle } from "../../_data/types";
+import { useMockData } from "../../../lib/async";
+import { CardSkeleton } from "../../../lib/skeletons";
 
 export default function KnowledgePage() {
+  const { data, loading } = useMockData(seed);
+  const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [keyword, setKeyword] = useState("");
   const [category, setCategory] = useState("全部");
   const [active, setActive] = useState<KnowledgeArticle | null>(null);
+
+  useEffect(() => {
+    if (data) setArticles(data);
+  }, [data]);
 
   const list = useMemo(() => {
     const kw = keyword.trim();
@@ -28,17 +42,39 @@ export default function KnowledgePage() {
       if (kw && !`${a.title}${a.excerpt}${a.body}`.includes(kw)) return false;
       return true;
     });
-  }, [keyword, category]);
+  }, [articles, keyword, category]);
+
+  const deleteArticle = (id: string) => {
+    setArticles((prev) => prev.filter((a) => a.id !== id));
+    setActive((prev) => (prev?.id === id ? null : prev));
+    toast({ title: "文章已删除", description: "知识库条目已移除（demo 内存态，刷新还原）", tone: "info" });
+  };
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <Heading level={1} size="xl">
-          知识库
-        </Heading>
-        <Text tone="muted" className="mt-1">
-          坐席自助检索的标准应答与处理流程，沉淀团队服务经验。
-        </Text>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <Heading level={1} size="xl">
+            知识库
+          </Heading>
+          <Text tone="muted" className="mt-1">
+            坐席自助检索的标准应答与处理流程，沉淀团队服务经验。
+          </Text>
+        </div>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                size="sm"
+                aria-label="新增文章"
+                onClick={() => toast({ title: "新增文章", description: "demo 暂未提供编辑器，敬请期待", tone: "neutral" })}
+              >
+                <Plus className="size-4" /> 新增文章
+              </Button>
+            }
+          />
+          <TooltipContent>新增知识库文章</TooltipContent>
+        </Tooltip>
       </div>
 
       {/* 检索区 */}
@@ -59,8 +95,10 @@ export default function KnowledgePage() {
         />
       </div>
 
-      {/* 卡片网格 */}
-      {list.length === 0 ? (
+      {/* 骨架 / 卡片网格 */}
+      {loading ? (
+        <CardSkeleton count={6} />
+      ) : list.length === 0 ? (
         <div className="grid place-items-center rounded-[var(--radius)] border border-dashed border-border py-16 text-sm text-muted">
           没有匹配「{keyword || category}」的文章
         </div>
@@ -92,13 +130,40 @@ export default function KnowledgePage() {
                 <Text size="sm" tone="muted" className="line-clamp-2 flex-1">
                   {a.excerpt}
                 </Text>
-                <div className="mt-1 flex items-center gap-4 text-xs text-muted">
-                  <span className="inline-flex items-center gap-1">
-                    <Eye className="size-3.5" /> {a.views.toLocaleString("zh-CN")}
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <Clock className="size-3.5" /> {a.updatedAt}
-                  </span>
+                <div className="mt-1 flex items-center justify-between gap-4 text-xs text-muted">
+                  <div className="flex items-center gap-4">
+                    <span className="inline-flex items-center gap-1">
+                      <Eye className="size-3.5" /> {a.views.toLocaleString("zh-CN")}
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <Clock className="size-3.5" /> {a.updatedAt}
+                    </span>
+                  </div>
+                  {/* 删除：独立拦截点击冒泡，避免触发卡片打开 */}
+                  <Popconfirm
+                    title="确认删除此文章？"
+                    description="删除后从知识库移除，坐席将无法检索。"
+                    danger
+                    okText="删除"
+                    onConfirm={() => deleteArticle(a.id)}
+                  >
+                    <Tooltip>
+                      <TooltipTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="size-6 px-0 text-muted hover:text-danger"
+                            aria-label="删除文章"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        }
+                      />
+                      <TooltipContent>删除文章</TooltipContent>
+                    </Tooltip>
+                  </Popconfirm>
                 </div>
               </CardBody>
             </Card>

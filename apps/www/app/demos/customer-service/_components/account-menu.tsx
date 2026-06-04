@@ -29,7 +29,7 @@ export function AccountMenu() {
             <User
               name="小琏"
               description="高级客服"
-              avatarProps={{ fallback: "琏", src: "https://i.pravatar.cc/80?img=15" }}
+              avatarProps={{ fallback: "琏", src: "/demo/avatar-1.jpg" }}
             />
           </Button>
         }

@@ -6,6 +6,9 @@ import {
   Card,
   CardBody,
   CardHeader,
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
   Heading,
   PieChart,
   Progress,
@@ -113,7 +116,24 @@ export default function AnalyticsPage() {
                 <span className="w-4 shrink-0 text-center text-sm font-semibold text-muted tabular-nums">
                   {i + 1}
                 </span>
-                <Avatar src={a.avatar} fallback={a.agent.slice(0, 1)} size="sm" />
+                {/* 坐席头像 → HoverCard 资料卡预览 */}
+                <HoverCard>
+                  <HoverCardTrigger
+                    render={<Avatar fallback={a.agent.slice(0, 1)} size="sm" className="cursor-pointer" />}
+                  />
+                  <HoverCardContent>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Avatar fallback={a.agent.slice(0, 1)} size="sm" />
+                        <span className="text-sm font-semibold">{a.agent}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-1 text-xs text-muted">
+                        <span>接待量：{a.served} 单</span>
+                        <span>满意度：{a.csat}%</span>
+                      </div>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate text-sm font-medium">{a.agent}</span>

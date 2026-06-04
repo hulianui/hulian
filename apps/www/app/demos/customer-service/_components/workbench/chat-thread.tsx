@@ -1,21 +1,38 @@
 "use client";
-import { Phone, MoreHorizontal, UserPlus } from "lucide-react";
+import { useState } from "react";
+import { Phone, MoreHorizontal, UserPlus, X } from "lucide-react";
 import {
   Avatar,
   Button,
   ChatMessage,
   Conversation,
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+  Popconfirm,
   PromptInput,
   PromptSuggestions,
   Tag,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  toast,
 } from "@hulian/ui";
 import type { Conversation as Conv, Customer, Message } from "../../_data/types";
 import { QUICK_REPLIES } from "../../_data/types";
+import { ListSkeleton } from "../../../lib/skeletons";
 
 const STATUS_TAG: Record<Conv["status"], { tone: "success" | "warning" | "neutral"; label: string }> = {
   active: { tone: "success", label: "进行中" },
   waiting: { tone: "warning", label: "待接入" },
   closed: { tone: "neutral", label: "已结束" },
+};
+
+const LEVEL_TONE: Record<string, "neutral" | "brand" | "warning" | "success"> = {
+  普通: "neutral",
+  银卡: "brand",
+  金卡: "warning",
+  黑卡: "success",
 };
 
 // 客户消息 → 左/surface（assistant）；坐席 → 右/primary（user）；系统 → 居中。
@@ -30,13 +47,35 @@ interface Props {
   customer?: Customer;
   typing: boolean;
   onSend: (text: string) => void;
+  onTransfer?: (convId: string) => void;
+  onClose?: (convId: string) => void;
 }
 
-export function ChatThread({ conversation, customer, typing, onSend }: Props) {
+// 会话加载中占位
+function ChatLoadingSkeleton() {
+  return (
+    <div className="flex h-full min-h-0 flex-col bg-bg">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-5 py-3">
+        <ListSkeleton rows={1} />
+      </header>
+      <div className="min-h-0 flex-1 px-5 py-4">
+        <ListSkeleton rows={4} />
+      </div>
+    </div>
+  );
+}
+
+export function ChatThread({ conversation, customer, typing, onSend, onTransfer, onClose }: Props) {
+  const [historyLoading] = useState(false); // 切换会话时短暂 loading 占位（模拟加载历史）
+
   if (!conversation) {
     return (
       <div className="grid h-full place-items-center bg-bg text-sm text-muted">选择左侧会话开始接待</div>
     );
+  }
+
+  if (historyLoading) {
+    return <ChatLoadingSkeleton />;
   }
 
   const statusTag = STATUS_TAG[conversation.status];
@@ -47,10 +86,49 @@ export function ChatThread({ conversation, customer, typing, onSend }: Props) {
       {/* 顶部：客户名 + 状态 + 操作 */}
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-5 py-3">
         <div className="flex min-w-0 items-center gap-3">
-          <Avatar src={customer?.avatar} fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />
+          <Avatar fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="truncate text-sm font-semibold">{customer?.name ?? "访客"}</span>
+              {/* 客户名 → HoverCard 资料卡预览 */}
+              <HoverCard>
+                <HoverCardTrigger
+                  render={
+                    <span className="cursor-pointer truncate text-sm font-semibold hover:text-primary hover:underline">
+                      {customer?.name ?? "访客"}
+                    </span>
+                  }
+                />
+                <HoverCardContent>
+                  {customer ? (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Avatar fallback={customer.name.slice(0, 1)} size="sm" />
+                        <div>
+                          <div className="text-sm font-semibold">{customer.name}</div>
+                          <Tag tone={LEVEL_TONE[customer.level] ?? "neutral"} size="sm" variant="soft">
+                            {customer.level}
+                          </Tag>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted">
+                        <span>手机：{customer.phone}</span>
+                        <span>地区：{customer.region}</span>
+                        <span>注册：{customer.since}</span>
+                        <span>订单：{customer.orders} 笔</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {customer.tags.map((t) => (
+                          <Tag key={t} tone="neutral" size="sm" variant="outline">
+                            {t}
+                          </Tag>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-muted">访客，暂无档案</span>
+                  )}
+                </HoverCardContent>
+              </HoverCard>
               <Tag tone={statusTag.tone} size="sm" dot pulse={conversation.status === "active"}>
                 {statusTag.label}
               </Tag>
@@ -61,15 +139,73 @@ export function ChatThread({ conversation, customer, typing, onSend }: Props) {
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1">
-          <Button variant="ghost" size="sm" aria-label="转接" className="size-9 px-0">
-            <UserPlus className="size-[18px]" />
-          </Button>
-          <Button variant="ghost" size="sm" aria-label="呼叫" className="size-9 px-0">
-            <Phone className="size-[18px]" />
-          </Button>
-          <Button variant="ghost" size="sm" aria-label="更多" className="size-9 px-0">
-            <MoreHorizontal className="size-[18px]" />
-          </Button>
+          {/* 转接：Popconfirm 二次确认 */}
+          {!disabled && (
+            <Popconfirm
+              title="确认转接此会话？"
+              description="会话将移交给其他在线坐席，请确认后操作。"
+              okText="转接"
+              onConfirm={() => onTransfer?.(conversation.id)}
+            >
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button variant="ghost" size="sm" aria-label="转接" className="size-9 px-0">
+                      <UserPlus className="size-[18px]" />
+                    </Button>
+                  }
+                />
+                <TooltipContent>转接会话</TooltipContent>
+              </Tooltip>
+            </Popconfirm>
+          )}
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label="呼叫"
+                  className="size-9 px-0"
+                  onClick={() => toast({ title: "呼叫功能", description: "demo 环境暂不支持实际通话", tone: "neutral" })}
+                >
+                  <Phone className="size-[18px]" />
+                </Button>
+              }
+            />
+            <TooltipContent>呼叫客户</TooltipContent>
+          </Tooltip>
+          {/* 关闭会话：Popconfirm 二次确认 */}
+          {!disabled && (
+            <Popconfirm
+              title="确认关闭此会话？"
+              description="关闭后对话进入已结束状态，客户将无法继续发送消息。"
+              danger
+              okText="关闭"
+              onConfirm={() => onClose?.(conversation.id)}
+            >
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button variant="ghost" size="sm" aria-label="关闭会话" className="size-9 px-0">
+                      <X className="size-[18px]" />
+                    </Button>
+                  }
+                />
+                <TooltipContent>关闭会话</TooltipContent>
+              </Tooltip>
+            </Popconfirm>
+          )}
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button variant="ghost" size="sm" aria-label="更多" className="size-9 px-0">
+                  <MoreHorizontal className="size-[18px]" />
+                </Button>
+              }
+            />
+            <TooltipContent>更多操作</TooltipContent>
+          </Tooltip>
         </div>
       </header>
 
@@ -92,9 +228,9 @@ export function ChatThread({ conversation, customer, typing, onSend }: Props) {
               status={role === "user" ? m.status : undefined}
               avatar={
                 role === "assistant" ? (
-                  <Avatar src={customer?.avatar} fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />
+                  <Avatar fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />
                 ) : (
-                  <Avatar src="https://i.pravatar.cc/80?img=15" fallback="琏" size="sm" />
+                  <Avatar fallback="琏" size="sm" />
                 )
               }
             >
@@ -105,7 +241,7 @@ export function ChatThread({ conversation, customer, typing, onSend }: Props) {
         {typing && (
           <ChatMessage
             role="assistant"
-            avatar={<Avatar src={customer?.avatar} fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />}
+            avatar={<Avatar fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />}
             loading
           >
             正在输入

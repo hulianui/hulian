@@ -5,7 +5,7 @@ export const customers: Customer[] = [
   {
     id: "CU01",
     name: "林婉如",
-    avatar: "https://i.pravatar.cc/100?img=45",
+    avatar: "/demo/avatar-1.jpg",
     level: "金卡",
     phone: "138-0011-2233",
     region: "上海·浦东",
@@ -22,7 +22,7 @@ export const customers: Customer[] = [
   {
     id: "CU02",
     name: "赵铁柱",
-    avatar: "https://i.pravatar.cc/100?img=12",
+    avatar: "/demo/avatar-3.jpg",
     level: "普通",
     phone: "139-2244-5566",
     region: "河北·石家庄",
@@ -38,7 +38,7 @@ export const customers: Customer[] = [
   {
     id: "CU03",
     name: "孙悦",
-    avatar: "https://i.pravatar.cc/100?img=32",
+    avatar: "/demo/avatar-3.jpg",
     level: "银卡",
     phone: "137-7788-9900",
     region: "四川·成都",
@@ -54,7 +54,7 @@ export const customers: Customer[] = [
   {
     id: "CU04",
     name: "周杰",
-    avatar: "https://i.pravatar.cc/100?img=68",
+    avatar: "/demo/avatar-4.jpg",
     level: "黑卡",
     phone: "135-3322-1100",
     region: "广东·深圳",
@@ -71,7 +71,7 @@ export const customers: Customer[] = [
   {
     id: "CU05",
     name: "吴敏",
-    avatar: "https://i.pravatar.cc/100?img=24",
+    avatar: "/demo/avatar-12.jpg",
     level: "普通",
     phone: "136-9988-7766",
     region: "北京·朝阳",
@@ -84,7 +84,7 @@ export const customers: Customer[] = [
   {
     id: "CU06",
     name: "郑凯",
-    avatar: "https://i.pravatar.cc/100?img=51",
+    avatar: "/demo/avatar-2.jpg",
     level: "银卡",
     phone: "133-4455-6677",
     region: "浙江·杭州",

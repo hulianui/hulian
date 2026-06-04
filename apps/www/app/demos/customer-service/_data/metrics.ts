@@ -40,10 +40,10 @@ export function csatTrend() {
 
 /** 坐席接待排行（接待量 + 满意度）。 */
 export const agentLeaderboard = [
-  { agent: "小琏", served: 186, csat: 98.1, avatar: "https://i.pravatar.cc/60?img=15" },
-  { agent: "阿瑚", served: 172, csat: 96.4, avatar: "https://i.pravatar.cc/60?img=33" },
-  { agent: "晚晴", served: 158, csat: 97.2, avatar: "https://i.pravatar.cc/60?img=47" },
-  { agent: "周明", served: 134, csat: 95.0, avatar: "https://i.pravatar.cc/60?img=60" },
+  { agent: "小琏", served: 186, csat: 98.1 },
+  { agent: "阿瑚", served: 172, csat: 96.4 },
+  { agent: "晚晴", served: 158, csat: 97.2 },
+  { agent: "周明", served: 134, csat: 95.0 },
 ];
 
 export const liveStats = {
