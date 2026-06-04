@@ -22,6 +22,7 @@ import {
   BentoCard,
   BentoGrid,
   Button,
+  Dot,
   DotPattern,
   Heading,
   Marquee,
@@ -98,7 +99,7 @@ export default function Home() {
         style={rise(0)}
       >
         <Stack direction="row" align="center" gap={2} className="text-sm">
-          <span className="size-2 rounded-full bg-primary" aria-hidden />
+          <Dot tone="brand" pulse label="瑚琏" />
           <Text as="span" weight="medium" className="tracking-tight">
             瑚琏 Hulian
           </Text>

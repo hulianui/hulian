@@ -3,6 +3,7 @@ export * from "./button";
 export * from "./switch";
 export * from "./dialog";
 export * from "./badge";
+export * from "./dot";
 export * from "./tag";
 export * from "./steps";
 export * from "./card";

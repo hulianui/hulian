@@ -199,6 +199,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "marquee", name: "Marquee", description: "跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "sortable", name: "Sortable", description: "拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove)", category: "data-display", group: "collection", status: "new" },
   { slug: "badge", name: "Badge", description: "徽标 · solid/soft/outline × tone", category: "data-display", group: "info", status: "new" },
+  { slug: "dot", name: "Dot", description: "状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", group: "info", status: "new" },
   { slug: "tag", name: "Tag", description: "状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)", category: "data-display", group: "info", status: "new" },
   { slug: "avatar", name: "Avatar", description: "头像 · Base UI 图片+fallback", category: "data-display", group: "info", status: "new" },

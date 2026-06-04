@@ -22,6 +22,7 @@ export { backTopShowcase } from "./back-top/back-top.showcase";
 export { badgeShowcase } from "./badge/badge.showcase";
 export { bentoGridShowcase } from "./bento-grid/bento-grid.showcase";
 export { borderBeamShowcase } from "./border-beam/border-beam.showcase";
+export { dotShowcase } from "./dot/dot.showcase";
 export { breadcrumbShowcase } from "./breadcrumb/breadcrumb.showcase";
 export { buttonShowcase } from "./button/button.showcase";
 export { calendarShowcase } from "./_mui/calendar.showcase";
