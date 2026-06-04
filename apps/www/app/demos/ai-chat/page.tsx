@@ -14,10 +14,11 @@ import {
   Dot,
   User,
   Segmented,
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
+  Combobox,
+  ComboboxTrigger,
+  ComboboxContent,
+  ComboboxItem,
+  type ComboboxItemData,
   Drawer,
   DrawerTrigger,
   DrawerContent,
@@ -49,6 +50,7 @@ import {
   HoverCardContent,
   Popconfirm,
   Kbd,
+  ListSkeleton,
 } from "@hulian/ui";
 import {
   Plus,
@@ -67,12 +69,17 @@ import {
 import { CONVERSATIONS, CONVERSATION_GROUPS, type ConversationStub } from "./conversations";
 import { useChatStream } from "./use-chat-stream";
 import { useMockData } from "../lib/async";
-import { ListSkeleton } from "../lib/skeletons";
 import type { AssistantMessage } from "./chat-types";
 
-const MODELS = [
+const MODELS: ComboboxItemData[] = [
   { value: "gpt-4o", label: "GPT-4o" },
-  { value: "claude", label: "Claude Opus" },
+  { value: "gpt-4o-mini", label: "GPT-4o mini" },
+  { value: "o3", label: "OpenAI o3" },
+  { value: "claude-opus", label: "Claude Opus 4" },
+  { value: "claude-sonnet", label: "Claude Sonnet 4" },
+  { value: "claude-haiku", label: "Claude Haiku" },
+  { value: "gemini-pro", label: "Gemini 2.5 Pro" },
+  { value: "gemini-flash", label: "Gemini 2.5 Flash" },
   { value: "hulian", label: "瑚琏 1.0" },
 ];
 
@@ -434,24 +441,25 @@ export default function AiChatDemo() {
           demo
         </Tag>
       </Stack>
-      <Select
+      <Combobox
         items={MODELS}
-        value={model}
-        onValueChange={(v) => {
-          setModel(v as string);
-          const picked = MODELS.find((x) => x.value === v);
-          toast({ title: `已切换到 ${picked?.label ?? v}`, tone: "info" });
+        value={MODELS.find((m) => m.value === model) ?? undefined}
+        onValueChange={(item) => {
+          if (item) {
+            setModel(item.value);
+            toast({ title: `已切换到 ${String(item.label)}`, tone: "info" });
+          }
         }}
       >
-        <SelectTrigger size="sm" className="w-36" />
-        <SelectContent>
-          {MODELS.map((m) => (
-            <SelectItem key={m.value} value={m.value}>
-              {m.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <ComboboxTrigger size="sm" placeholder="选择模型" className="w-40" />
+        <ComboboxContent searchPlaceholder="搜索模型…">
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>
     </Stack>
   );
 

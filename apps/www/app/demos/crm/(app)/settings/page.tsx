@@ -10,6 +10,8 @@ import {
   Button,
   Card,
   CardBody,
+  Checkbox,
+  CheckboxGroup,
   Field,
   Heading,
   Input,
@@ -19,10 +21,13 @@ import {
   ModalForm,
   ProForm,
   Progress,
+  Radio,
+  RadioGroup,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
+  Separator,
   Switch,
   Tabs,
   TabsList,
@@ -96,6 +101,10 @@ export default function SettingsPage() {
     security: true,
   });
   const [savingNotif, setSavingNotif] = useState(false);
+  // 通知渠道多选（CheckboxGroup）
+  const [notifChannels, setNotifChannels] = useState<string[]>(["email", "inapp"]);
+  // 默认首页视图单选（RadioGroup）
+  const [defaultView, setDefaultView] = useState("workbench");
 
   // 成员管理：改为 state，邀请表单提交后真加进列表
   const [members, setMembers] = useState<Member[]>(INITIAL_MEMBERS);
@@ -298,6 +307,48 @@ export default function SettingsPage() {
 
             {/* 通知设置 */}
             <TabsPanel value="notify" className="pt-6">
+              {/* 通知渠道多选 */}
+              <div className="mb-5">
+                <div className="mb-2 text-sm font-medium">通知渠道</div>
+                <Text size="sm" tone="muted" className="mb-3">
+                  选择接收通知的渠道，可同时开启多个。
+                </Text>
+                <CheckboxGroup
+                  value={notifChannels}
+                  onValueChange={setNotifChannels}
+                  orientation="horizontal"
+                  aria-label="通知渠道"
+                >
+                  <Checkbox value="email" label="邮件" />
+                  <Checkbox value="sms" label="短信" />
+                  <Checkbox value="inapp" label="站内信" />
+                  <Checkbox value="dingtalk" label="钉钉" />
+                </CheckboxGroup>
+              </div>
+
+              <Separator className="my-5" />
+
+              {/* 默认首页视图单选 */}
+              <div className="mb-5">
+                <div className="mb-2 text-sm font-medium">默认首页视图</div>
+                <Text size="sm" tone="muted" className="mb-3">
+                  登录后默认跳转的页面。
+                </Text>
+                <RadioGroup
+                  value={defaultView}
+                  onValueChange={setDefaultView}
+                  orientation="horizontal"
+                  aria-label="默认首页视图"
+                >
+                  <Radio value="workbench" label="工作台" />
+                  <Radio value="customers" label="客户列表" />
+                  <Radio value="opportunities" label="商机看板" />
+                </RadioGroup>
+              </div>
+
+              <Separator className="my-5" />
+
+              {/* 通知事件开关列表 */}
               <div className="flex flex-col divide-y divide-border">
                 {NOTIF_ITEMS.map((n) => (
                   <div key={n.key} className="flex items-center justify-between py-4">
@@ -323,7 +374,13 @@ export default function SettingsPage() {
                     setTimeout(() => {
                       setSavingNotif(false);
                       const on = Object.values(notif).filter(Boolean).length;
-                      toast({ title: "通知设置已保存", description: `已开启 ${on} / ${NOTIF_ITEMS.length} 项`, tone: "info" });
+                      const channelLabels: Record<string, string> = { email: "邮件", sms: "短信", inapp: "站内信", dingtalk: "钉钉" };
+                      const viewLabels: Record<string, string> = { workbench: "工作台", customers: "客户列表", opportunities: "商机看板" };
+                      toast({
+                        title: "通知设置已保存",
+                        description: `渠道：${notifChannels.map((c) => channelLabels[c]).join("/")} · 首页：${viewLabels[defaultView]} · 已开启 ${on}/${NOTIF_ITEMS.length} 项`,
+                        tone: "info",
+                      });
                     }, 500);
                   }}
                 >

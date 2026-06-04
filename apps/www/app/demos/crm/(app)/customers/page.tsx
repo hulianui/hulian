@@ -11,10 +11,12 @@ import {
   ModalForm,
   Popconfirm,
   ProTable,
+  RegionCascader,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
+  Separator,
   Tag,
   Tooltip,
   TooltipContent,
@@ -49,11 +51,12 @@ type FormState = {
   owner: string;
   industry: string;
   region: string;
+  regionCodes: string[];
 };
 
 const EMPTY: FormState = {
   name: "", company: "", contactName: "", phone: "", email: "",
-  level: "普通", status: "待分配", owner: OWNERS[0], industry: "制造", region: "",
+  level: "普通", status: "待分配", owner: OWNERS[0], industry: "制造", region: "", regionCodes: [],
 };
 
 export default function CustomersPage() {
@@ -93,7 +96,7 @@ export default function CustomersPage() {
   const openEdit = (c: Customer) => {
     form.setFieldsValue({
       name: c.name, company: c.company, contactName: c.contactName, phone: c.phone, email: c.email,
-      level: c.level, status: c.status, owner: c.owner, industry: c.industry, region: c.region,
+      level: c.level, status: c.status, owner: c.owner, industry: c.industry, region: c.region, regionCodes: [],
     });
     setEditing(c);
     setOpen(true);
@@ -223,6 +226,7 @@ export default function CustomersPage() {
     phone: form.register("phone", { rules: [{ pattern: /\d/, message: "电话需含数字" }] }),
     email: form.register("email", { rules: [{ pattern: /@/, message: "邮箱需含 @" }] }),
     region: form.register("region"),
+    regionCodes: form.register("regionCodes"),
     owner: form.register("owner"),
     level: form.register("level"),
     status: form.register("status"),
@@ -296,9 +300,21 @@ export default function CustomersPage() {
           <Field label="邮箱" error={reg.email.error}>
             <Input {...bind(reg.email)} placeholder="name@company.com" />
           </Field>
-          <Field label="所在地区">
-            <Input {...bind(reg.region)} placeholder="城市" />
+          <Field label="所在地区" className="col-span-2">
+            <RegionCascader
+              value={reg.regionCodes.value as string[]}
+              onChange={(codes, names) => {
+                reg.regionCodes.onChange(codes);
+                // 将省/市/区名拼成 region 文本字段
+                reg.region.onChange(names.join("/"));
+              }}
+              placeholder="省 / 市 / 区县"
+              showSearch
+            />
           </Field>
+          <div className="col-span-2 py-1">
+            <Separator />
+          </div>
           <Field label="客户等级">
             <FormSelect field={reg.level} options={LEVELS} />
           </Field>

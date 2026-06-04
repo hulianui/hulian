@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Card, CardBody, ProTable, Stat, Tag, type ColumnDef } from "@hulian/ui";
+import { Card, CardBody, DateRangePicker, ProTable, Stat, Tag, type ColumnDef } from "@hulian/ui";
+import type { DateRangeValue } from "@hulian/ui";
 import { orders as seed } from "../../_data/orders";
 import { orderStatusTone, yuan } from "../../_data/status";
 import type { Order, OrderStatus } from "../../_data/types";
@@ -47,6 +48,7 @@ export default function OrdersPage() {
   const { data, loading } = useMockData(seed);
   const [rows, setRows] = useState<Order[]>([]);
   const [filters, setFilters] = useState<Record<string, unknown>>({});
+  const [dateRange, setDateRange] = useState<DateRangeValue | null>(null);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -58,9 +60,14 @@ export default function OrdersPage() {
     return rows.filter((o) => {
       if (kw && !`${o.orderNo}${o.customerName}`.includes(kw)) return false;
       if (filters.status && o.status !== filters.status) return false;
+      if (dateRange) {
+        const [start, end] = dateRange;
+        const created = o.createdAt.slice(0, 10);
+        if (created < start || created > end) return false;
+      }
       return true;
     });
-  }, [rows, filters]);
+  }, [rows, filters, dateRange]);
 
   const total = filtered.length;
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -105,6 +112,21 @@ export default function OrdersPage() {
               type: "select",
               options: [{ value: "", label: "全部" }, ...ORDER_STATUSES.map((s) => ({ value: s, label: s }))],
             },
+            {
+              name: "dateRange",
+              label: "下单日期",
+              render: ({ value, onChange }) => (
+                <DateRangePicker
+                  value={(value as DateRangeValue | null) ?? null}
+                  onValueChange={(range) => {
+                    onChange(range);
+                    setDateRange(range);
+                    setPage(1);
+                  }}
+                  placeholder={["开始日期", "结束日期"]}
+                />
+              ),
+            },
           ],
           onSearch: (v) => {
             setFilters(v);
@@ -112,6 +134,7 @@ export default function OrdersPage() {
           },
           onReset: () => {
             setFilters({});
+            setDateRange(null);
             setPage(1);
           },
         }}
