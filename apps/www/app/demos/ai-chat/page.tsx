@@ -30,7 +30,7 @@ import {
   Empty,
   CodeBlock,
 } from "@hulian/ui";
-import { Plus, Menu, Bot } from "lucide-react";
+import { Plus, Menu, Bot, Paperclip, Sparkles } from "lucide-react";
 import { CONVERSATIONS } from "./conversations";
 import { useChatStream } from "./use-chat-stream";
 import type { AssistantMessage } from "./chat-types";
@@ -129,6 +129,7 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
 
 export default function AiChatDemo() {
   const [model, setModel] = useState("gpt-4o");
+  const [deepThink, setDeepThink] = useState(false);
   const { messages, loading, send, stop } = useChatStream();
 
   const header = (
@@ -210,14 +211,46 @@ export default function AiChatDemo() {
                 )}
               </Conversation>
             )}
-            <div className="border-t border-border p-3 sm:p-4">
-              <PromptInput
-                onSubmit={(t) => send(t)}
-                loading={loading}
-                onStop={stop}
-                placeholder="给瑚琏助手发消息…"
-                className="mx-auto max-w-3xl"
-              />
+            <div className="border-t border-border bg-bg px-3 py-3 sm:px-4">
+              <div className="mx-auto max-w-3xl">
+                <PromptInput
+                  onSubmit={(t) => send(t)}
+                  loading={loading}
+                  onStop={stop}
+                  placeholder="给瑚琏助手发消息…"
+                  actions={
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="size-8 shrink-0 px-0 text-muted hover:text-foreground"
+                        aria-label="添加附件"
+                      >
+                        <Paperclip className="size-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setDeepThink((v) => !v)}
+                        aria-pressed={deepThink}
+                        className={
+                          "h-8 shrink-0 gap-1 rounded-full px-2.5 text-xs " +
+                          (deepThink
+                            ? "bg-primary/10 text-primary hover:bg-primary/15"
+                            : "text-muted hover:text-foreground")
+                        }
+                      >
+                        <Sparkles className="size-3.5" />
+                        深度思考
+                      </Button>
+                    </>
+                  }
+                />
+                <p className="mt-2 text-center text-xs text-muted">
+                  瑚琏助手可能会出错 · 本 demo 为纯前端交互演示，未接入真实模型
+                </p>
+              </div>
             </div>
           </Layout.Content>
         </Layout>

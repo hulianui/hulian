@@ -48,11 +48,15 @@ export function PromptInput({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-[var(--radius)] border border-border bg-surface p-2 transition-colors focus-within:border-primary",
+        // 内联单行：actions(左) + textarea(中·自增高) + 发送/停止(右)，底对齐 → 单行紧凑(~48px)、多行按钮跟随底部。
+        "flex items-end gap-1.5 rounded-[1.25rem] border border-border bg-surface py-2 pl-3.5 pr-2 shadow-sm transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10",
         disabled && "pointer-events-none opacity-60",
         className,
       )}
     >
+      {actions ? (
+        <div className="flex shrink-0 items-center gap-0.5 self-end pb-0.5">{actions}</div>
+      ) : null}
       <Textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -62,34 +66,31 @@ export function PromptInput({
         autoResize
         rows={1}
         style={{ maxHeight: `${maxRows * 1.5}rem` }}
-        className="resize-none border-0 bg-transparent px-1.5 shadow-none focus-visible:ring-0"
+        className="flex-1 resize-none border-0 bg-transparent px-0 py-1 shadow-none focus-visible:ring-0"
       />
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1">{actions}</div>
-        {loading ? (
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={onStop}
-            aria-label="停止生成"
-            className="size-8 shrink-0 px-0"
-          >
-            <Square className="size-3.5" />
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            size="sm"
-            onClick={submit}
-            disabled={disabled || !text.trim()}
-            aria-label="发送"
-            className="size-8 shrink-0 px-0"
-          >
-            <ArrowUp className="size-4" />
-          </Button>
-        )}
-      </div>
+      {loading ? (
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={onStop}
+          aria-label="停止生成"
+          className="size-8 shrink-0 self-end rounded-full px-0"
+        >
+          <Square className="size-3.5" />
+        </Button>
+      ) : (
+        <Button
+          type="button"
+          size="sm"
+          onClick={submit}
+          disabled={disabled || !text.trim()}
+          aria-label="发送"
+          className="size-8 shrink-0 self-end rounded-full px-0"
+        >
+          <ArrowUp className="size-4" />
+        </Button>
+      )}
     </div>
   );
 }
