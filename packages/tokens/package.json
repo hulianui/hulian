@@ -1,6 +1,6 @@
 {
   "name": "@hulianui/tokens",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hulianui/hulian.git",
@@ -16,5 +16,7 @@
     "./primitives.css": "./src/primitives.css",
     "./semantic.css": "./src/semantic.css"
   },
-  "files": ["src"]
+  "files": [
+    "src"
+  ]
 }
