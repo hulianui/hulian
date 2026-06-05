@@ -206,7 +206,7 @@ export function SchedulerShell() {
   return (
     <div className="flex h-full min-h-0 gap-3 p-3">
       {/* 侧栏 */}
-      <aside className="flex w-72 shrink-0 flex-col gap-3 overflow-y-auto">
+      <aside className="flex w-80 shrink-0 flex-col gap-3 overflow-y-auto">
         <Card className="p-2">
           <Calendar
             value={date}
@@ -266,10 +266,10 @@ export function SchedulerShell() {
 
         <div className="grid grid-cols-2 gap-3">
           <Card className="p-3">
-            <Stat label="今日预约" value={todayCount} deltaLabel="人次" />
+            <Stat label="今日预约" value={todayCount} delta={12} deltaLabel="人次" />
           </Card>
           <Card className="p-3">
-            <Stat label="本周利用率" value={`${utilization}%`} delta={utilization >= 50 ? 6 : -4} deltaLabel="号源" />
+            <Stat label="利用率" value={`${utilization}%`} delta={utilization >= 50 ? 6 : -4} />
           </Card>
         </div>
       </aside>

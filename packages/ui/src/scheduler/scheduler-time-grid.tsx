@@ -80,12 +80,15 @@ export function TimeGrid({
 
   const gridRef = useRef<HTMLDivElement>(null);
   const moved = useRef(false);
-  const [drag, setDrag] = useState<Drag | null>(null);
+  // pending：拖拽意图的权威数据（pointerdown 即写，move 更新，commit 读）。
+  // activeDrag：仅用于「渲染幽灵块 + 本体变暗」的可见态——只有真正移动超阈值才置位，
+  // 故纯点选（0 位移）不会闪现幽灵/不会让事件块瞬间变全列宽。
+  const pending = useRef<Drag | null>(null);
+  const [activeDrag, setActiveDrag] = useState<Drag | null>(null);
 
   // latest ref：window 监听里读最新值，避过期闭包（照 Flow 范式）。
   // 回调 props 也并入，让 commit 空依赖即稳定，up 闭包永远调到最新回调。
   const latest = useRef({
-    drag,
     columns,
     slotMinutes,
     dayStartMin,
@@ -98,7 +101,6 @@ export function TimeGrid({
     onEventCommit,
   });
   latest.current = {
-    drag,
     columns,
     slotMinutes,
     dayStartMin,
@@ -130,7 +132,7 @@ export function TimeGrid({
     (e: React.PointerEvent, init: Drag, startX: number, startY: number) => {
       e.preventDefault();
       moved.current = false;
-      setDrag(init);
+      pending.current = init;
 
       const move = (ev: PointerEvent) => {
         if (Math.abs(ev.clientX - startX) > DRAG_THRESHOLD || Math.abs(ev.clientY - startY) > DRAG_THRESHOLD) {
@@ -138,15 +140,19 @@ export function TimeGrid({
         }
         const r = resolve(ev.clientX, ev.clientY);
         if (!r) return;
-        const d = latest.current.drag;
+        const d = pending.current;
         if (!d) return;
+        let nd: Drag;
         if (d.kind === "create") {
-          setDrag({ ...d, curMin: r.min });
+          nd = { ...d, curMin: r.min };
         } else if (d.kind === "move") {
-          setDrag({ ...d, colIdx: r.colIdx, curMin: r.min });
-        } else if (d.kind === "resize") {
-          setDrag({ ...d, curMin: Math.max(r.min, d.startMin + latest.current.slotMinutes) });
+          nd = { ...d, colIdx: r.colIdx, curMin: r.min };
+        } else {
+          nd = { ...d, curMin: Math.max(r.min, d.startMin + latest.current.slotMinutes) };
         }
+        pending.current = nd;
+        // 仅在真正移动后才渲染可见拖拽态（幽灵块 + 本体变暗）；点选不闪
+        if (moved.current) setActiveDrag(nd);
       };
 
       const up = () => {
@@ -163,7 +169,6 @@ export function TimeGrid({
 
   const commit = useCallback(() => {
     const {
-      drag: d,
       columns: cs,
       slotMinutes: step,
       dayStartMin: ds,
@@ -174,7 +179,9 @@ export function TimeGrid({
       onEventClick: onEC,
       onEventCommit: onECommit,
     } = latest.current;
-    setDrag(null);
+    const d = pending.current;
+    pending.current = null;
+    setActiveDrag(null);
     handlers.current = null;
     if (!d) return;
 
@@ -288,7 +295,8 @@ export function TimeGrid({
     nowMin != null && nowDate === col.dateISO && nowMin >= dayStartMin && nowMin <= dayEndMin;
 
   // 拖拽中的事件：用 ghost 显示新位置，本体半透明
-  const draggingId = drag && (drag.kind === "move" || drag.kind === "resize") ? drag.event.id : null;
+  const draggingId =
+    activeDrag && (activeDrag.kind === "move" || activeDrag.kind === "resize") ? activeDrag.event.id : null;
 
   return (
     <div className="flex flex-col overflow-hidden">
@@ -422,7 +430,7 @@ export function TimeGrid({
             })}
 
             {/* 拖拽幽灵层 */}
-            <DragGhost drag={drag} columns={columns} cols={cols} dayStartMin={dayStartMin} pxPerMin={pxPerMin} />
+            <DragGhost drag={activeDrag} columns={columns} cols={cols} dayStartMin={dayStartMin} pxPerMin={pxPerMin} />
           </div>
         </div>
       </div>

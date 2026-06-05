@@ -15,15 +15,17 @@ export function Stat({ label, value, delta, deltaLabel, icon, className, ...prop
         <span className="text-sm text-muted">{label}</span>
         {icon ? <span className="text-muted">{icon}</span> : null}
       </div>
-      <div className="mt-2 text-2xl font-semibold text-foreground">{value}</div>
+      <div className="mt-2 truncate text-2xl font-semibold text-foreground">{value}</div>
       {hasDelta ? (
-        <div className={cn("mt-1 flex items-center gap-1 text-sm", up ? "text-primary" : "text-danger")}>
-          {up ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
-          <span>
+        // flex-wrap + 子项 whitespace-nowrap：窄容器下「+x% / 标签」整块换行，
+        // 不再把数字或 CJK 标签逐字裂行（健壮自适应）。
+        <div className={cn("mt-1 flex flex-wrap items-center gap-x-1 text-sm", up ? "text-primary" : "text-danger")}>
+          <span className="inline-flex items-center gap-1 whitespace-nowrap">
+            {up ? <TrendingUp className="size-4 shrink-0" /> : <TrendingDown className="size-4 shrink-0" />}
             {up ? "+" : ""}
             {delta}%
           </span>
-          {deltaLabel ? <span className="text-muted">{deltaLabel}</span> : null}
+          {deltaLabel ? <span className="whitespace-nowrap text-muted">{deltaLabel}</span> : null}
         </div>
       ) : null}
     </div>

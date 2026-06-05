@@ -31,6 +31,14 @@ export function Calendar({
       readOnly={readOnly}
       onChange={(v) => onValueChange?.(v ? v.toISOString() : null)}
       sx={{
+        // 自适应容器：默认 MUI DateCalendar 固定 320px，塞进窄容器（侧栏等）会溢出、
+        // 裁掉头部「下个月」箭头。改为占满容器（上限 320 保持宽容器下不被拉散），
+        // 日格行均分铺满 → 任意宽度都不裁箭头、不溢出。
+        width: "100%",
+        maxWidth: 320,
+        "& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer": {
+          justifyContent: "space-between",
+        },
         // 选中日：瑚琏主色 + 前景
         "& .MuiPickersDay-root.Mui-selected": {
           backgroundColor: "var(--color-primary)",

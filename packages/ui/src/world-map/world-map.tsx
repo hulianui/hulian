@@ -6,11 +6,12 @@ import { LazyMotionProvider, m } from "../motion";
 import { WORLD_DOTS, VIEWBOX, projectPoint } from "./world-map.dots";
 import type { WorldMapPoint, WorldMapProps } from "./world-map.types";
 
-// 独立节点半径（viewBox 单位）：基准 + 按 value 归一化插值到 [NODE_R_MIN, NODE_R_MAX]。
-const NODE_R_MIN = 0.7;
-const NODE_R_MAX = 2.2;
-const NODE_R_BASE = 1.0;
-const NODE_LABEL_SIZE = 1.9;
+// 独立节点半径（viewBox 单位，整图 69×35；底图点 r=0.28、飞线端点 r=0.45 作参照）。
+// 节点比端点略大以承载 value 区分，但封顶 ~0.85 避免盖住地图。按 value 归一化插值到 [MIN, MAX]。
+const NODE_R_MIN = 0.4;
+const NODE_R_MAX = 0.85;
+const NODE_R_BASE = 0.55;
+const NODE_LABEL_SIZE = 1.05;
 
 // 吸取自 ui.aceternity.com World Map：点阵世界地图 + 经纬度间的动画弧线。
 // 瑚琏化：① 底图点阵预烘成静态坐标(world-map.dots.ts)，运行时渲染内联 <circle>，
@@ -194,7 +195,7 @@ export function WorldMap({
                 style={interactive ? { cursor: "pointer", outline: "none" } : undefined}
               >
                 {/* 隐形大命中区，便于点击小节点 */}
-                {interactive && <circle cx={x} cy={y} r={r + 1.6} fill="transparent" />}
+                {interactive && <circle cx={x} cy={y} r={r + 0.9} fill="transparent" />}
                 {/* 脉冲环 */}
                 {!reduced && (
                   <m.circle
@@ -202,9 +203,9 @@ export function WorldMap({
                     cy={y}
                     fill="none"
                     stroke={color}
-                    strokeWidth={0.18}
-                    initial={{ r, opacity: 0.6 }}
-                    animate={{ r: r + 2.4, opacity: 0 }}
+                    strokeWidth={0.12}
+                    initial={{ r, opacity: 0.55 }}
+                    animate={{ r: r + 1.1, opacity: 0 }}
                     transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
                   />
                 )}
@@ -213,7 +214,7 @@ export function WorldMap({
                 {showLabels && node.label && (
                   <text
                     x={x}
-                    y={y - r - 0.8}
+                    y={y - r - 0.55}
                     fontSize={NODE_LABEL_SIZE}
                     textAnchor="middle"
                     fill="var(--color-muted)"
