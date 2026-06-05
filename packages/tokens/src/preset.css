@@ -403,3 +403,170 @@
   }
 }
 
+/* —— react-bits 移植批 keyframes —— */
+@keyframes hulian-crosshair {
+  0% {
+    filter: blur(2px) brightness(1.8);
+  }
+  60% {
+    filter: blur(0.6px) brightness(1.25);
+  }
+  100% {
+    filter: blur(0) brightness(1);
+  }
+}
+
+@keyframes hulian-orbit-images {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes hulian-star-border {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100%, 0%);
+    opacity: 0;
+  }
+}
+
+/* 准星光标空闲自转：四角括号绕中心匀速旋转一圈，时长由 --hulian-tc-spin 控（悬停目标时 animation-play-state:paused 暂停）。
+   只动 rotate（独立于 rAF 写入的 translate transform，互不覆盖）。 */
+@keyframes hulian-target-cursor {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes hulian-flowing-menu {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes hulian-gooey-nav-particle {
+  0% {
+    transform: rotate(0deg) translate(var(--gn-sx, 0px), var(--gn-sy, 0px));
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  70% {
+    transform: rotate(calc(var(--gn-rot, 0deg) * 0.5))
+      translate(calc(var(--gn-ex, 0px) * 1.2), calc(var(--gn-ey, 0px) * 1.2));
+    opacity: 1;
+    animation-timing-function: ease;
+  }
+  85% {
+    transform: rotate(calc(var(--gn-rot, 0deg) * 0.66))
+      translate(var(--gn-ex, 0px), var(--gn-ey, 0px));
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(calc(var(--gn-rot, 0deg) * 1.2))
+      translate(calc(var(--gn-ex, 0px) * 0.5), calc(var(--gn-ey, 0px) * 0.5));
+    opacity: 1;
+  }
+}
+
+@keyframes hulian-gooey-nav-point {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  25% {
+    transform: scale(calc(var(--gn-scale, 1) * 0.25));
+  }
+  38% {
+    opacity: 1;
+  }
+  65% {
+    transform: scale(var(--gn-scale, 1));
+    opacity: 1;
+    animation-timing-function: ease;
+  }
+  85% {
+    transform: scale(var(--gn-scale, 1));
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes hulian-pill-nav-pop {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes hulian-pill-nav-grow {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes hulian-chroma-grid {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hulian-magic-bento {
+  0%, 100% {
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--hl-mb-glow, var(--color-primary)) 8%, transparent);
+  }
+  50% {
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--hl-mb-glow, var(--color-primary)) 20%, transparent);
+  }
+}
+
+@keyframes hulian-profile-card {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+/* components/ReflectiveCard 金属高光横扫：一道对角反光带沿卡面往复平移（transform 平移，
+   GPU 合成，不逐帧重绘）模拟转动卡片时反光流动。时长由 --hl-rc-duration 控。 */
+@keyframes hulian-reflective-card {
+  0% {
+    transform: translate3d(-30%, -30%, 0);
+  }
+  50% {
+    transform: translate3d(30%, 30%, 0);
+  }
+  100% {
+    transform: translate3d(-30%, -30%, 0);
+  }
+}

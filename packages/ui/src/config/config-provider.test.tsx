@@ -40,6 +40,7 @@ describe("ProTable × ConfigProvider 文案切换（端到端）", () => {
       <ProTable
         columns={columns}
         data={data}
+        onReload={() => {}}
         pagination={{ page: 1, pageSize: 10, total: 3, onPageChange: () => {} }}
       />,
     );
@@ -53,6 +54,7 @@ describe("ProTable × ConfigProvider 文案切换（端到端）", () => {
         <ProTable
           columns={columns}
           data={data}
+          onReload={() => {}}
           pagination={{ page: 1, pageSize: 10, total: 3, onPageChange: () => {} }}
         />
       </ConfigProvider>,
