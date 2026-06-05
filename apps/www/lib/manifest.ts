@@ -222,6 +222,7 @@ export const manifest: ComponentMeta[] = [
   // ── 数据展示 data-display ────────────────────────────────────
   { slug: "table", name: "Table", description: "表格 · TanStack headless + 列排序 + 空态", category: "data-display", group: "collection", status: "new" },
   { slug: "pro-table", name: "ProTable", description: "高级表格 · 列表页编排层(复用 Table/SearchForm/Pagination) · 查询区 + 工具栏(密度/列设置/刷新/全屏) + 行选择 + 集成分页(企业中后台列表页旗舰)", category: "data-display", group: "collection", status: "new" },
+  { slug: "pricing-table", name: "PricingTable", description: "定价对比矩阵 · 行列转置(列=被比项/模型·行=属性/价目) + 列高亮描边 + 角标(推荐/最佳性价比) + 表头吸顶 + 窄屏横滚(复用 ScrollArea·区别 Table 行=记录·模型市场定价对照刚需)", category: "data-display", group: "collection", status: "new" },
   { slug: "editable-table", name: "EditableTable", description: "行内编辑表格 · 行级编辑(草稿副本/保存校验/取消还原) + 自定义编辑器(editor 逃生舱) + 增删行 + 列对齐/宽度(企业录入场景·文案接 i18n)", category: "data-display", group: "collection", status: "new" },
   { slug: "list", name: "List", description: "数据列表 · 复合 List/ListItem/ListItem.Meta + actions/size/bordered/split/grid + 空态/分页/加载更多(零依赖·复用 Empty/Pagination/Avatar/User)", category: "data-display", group: "collection", status: "new" },
   { slug: "descriptions", name: "Descriptions", description: "描述列表 · 详情页键值对 + horizontal/vertical + bordered + span 跨列(纯皮肤·RSC)", category: "data-display", group: "collection", status: "new" },

@@ -142,6 +142,7 @@ export { spotlightShowcase } from "./spotlight/spotlight.showcase";
 export { switchShowcase } from "./switch/switch.showcase";
 export { tableShowcase } from "./table/table.showcase";
 export { proTableShowcase } from "./pro-table/pro-table.showcase";
+export { pricingTableShowcase } from "./pricing-table/pricing-table.showcase";
 export { editableTableShowcase } from "./editable-table/editable-table.showcase";
 export { adminLayoutShowcase } from "./admin-layout/admin-layout.showcase";
 export { tabletShowcase } from "./tablet/tablet.showcase";
