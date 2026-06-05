@@ -1,0 +1,11 @@
+{
+  "lint": true,
+  "rules": {
+    "react-doctor/only-export-components": "off",
+    "react-doctor/no-barrel-import": "off",
+    "react-doctor/no-multi-comp": "off",
+    "react-doctor/no-generic-handler-names": "off",
+    "react-doctor/design-no-em-dash-in-jsx-text": "off",
+    "react-doctor/design-no-redundant-size-axes": "off"
+  }
+}
