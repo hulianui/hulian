@@ -42,12 +42,15 @@ function renderInline(text: string): ReactNode[] {
   return out;
 }
 
-// 段落内软换行 \n → <br/>
+// 段落内软换行 \n → <br/>。每行包一层带唯一 key 的 Fragment——
+// 否则各行 renderInline 的内部 key 都从 0 起，平铺进同一 <p> 会撞 key（重复 key 警告）。
 function renderText(text: string): ReactNode[] {
-  const segs = text.split("\n");
-  return segs.flatMap((seg, i) =>
-    i === 0 ? renderInline(seg) : [<br key={`br${i}`} />, ...renderInline(seg)],
-  );
+  return text.split("\n").map((seg, i) => (
+    <Fragment key={i}>
+      {i > 0 && <br />}
+      {renderInline(seg)}
+    </Fragment>
+  ));
 }
 
 type ProseBlock = Exclude<MdBlock, { type: "code" }>;
@@ -75,6 +78,36 @@ function renderProseBlock(b: ProseBlock, key: number) {
       );
     case "quote":
       return <blockquote key={key}>{renderInline(b.text)}</blockquote>;
+    case "table":
+      return (
+        <div key={key} className="my-3 overflow-x-auto">
+          <table className="w-full border-collapse text-[0.92em]">
+            <thead>
+              <tr>
+                {b.header.map((h, j) => (
+                  <th
+                    key={j}
+                    className="border border-border bg-surface px-3 py-1.5 text-left font-semibold"
+                  >
+                    {renderInline(h)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {b.rows.map((row, r) => (
+                <tr key={r}>
+                  {row.map((cell, c) => (
+                    <td key={c} className="border border-border px-3 py-1.5 align-top">
+                      {renderInline(cell)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
     default:
       return <p key={key}>{renderText(b.text)}</p>;
   }

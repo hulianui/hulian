@@ -9,6 +9,27 @@ import { PricingTableBlock } from "./_blocks/pricing-table";
 import { FaqBlock } from "./_blocks/faq";
 import { CtaBlock } from "./_blocks/cta";
 import { ContactFormBlock } from "./_blocks/contact-form";
+// 应用骨架（中后台）
+import { PageHeaderBlock } from "./_blocks/page-header";
+import { KpiRailBlock } from "./_blocks/kpi-rail";
+import { ChartGridBlock } from "./_blocks/chart-grid";
+import { DataTableBlock } from "./_blocks/data-table";
+import { DetailDrawerBlock } from "./_blocks/detail-drawer";
+import { ActivityTimelineBlock } from "./_blocks/activity-timeline";
+import { KanbanBoardBlock } from "./_blocks/kanban-board";
+import { SettingsPanelBlock } from "./_blocks/settings-panel";
+import { EmptyStateBlock } from "./_blocks/empty-state";
+// 电商 / C 端
+import { ProductGridBlock } from "./_blocks/product-grid";
+import { ProductDetailBlock } from "./_blocks/product-detail";
+import { CartSummaryBlock } from "./_blocks/cart-summary";
+import { ReviewSectionBlock } from "./_blocks/review-section";
+import { UserProfileBlock } from "./_blocks/user-profile";
+// AI 应用
+import { ChatPanelBlock } from "./_blocks/chat-panel";
+import { PromptInputBlock } from "./_blocks/prompt-input";
+import { AgentCardBlock } from "./_blocks/agent-card";
+import { FlowCanvasBlock } from "./_blocks/flow-canvas";
 
 // Blocks 注册表（server-only：聚合 RSC/client block 组件 → 预览渲染）。
 // 元数据是纯数据，住在 _meta.ts（client 侧栏可安全读）；本文件只补 slug→预览组件映射。
@@ -27,4 +48,25 @@ export const blockPreviews: Record<string, () => ReactNode> = {
   faq: () => <FaqBlock />,
   cta: () => <CtaBlock />,
   "contact-form": () => <ContactFormBlock />,
+  // 应用骨架
+  "page-header": () => <PageHeaderBlock />,
+  "kpi-rail": () => <KpiRailBlock />,
+  "chart-grid": () => <ChartGridBlock />,
+  "data-table": () => <DataTableBlock />,
+  "detail-drawer": () => <DetailDrawerBlock />,
+  "activity-timeline": () => <ActivityTimelineBlock />,
+  "kanban-board": () => <KanbanBoardBlock />,
+  "settings-panel": () => <SettingsPanelBlock />,
+  "empty-state": () => <EmptyStateBlock />,
+  // 电商 / C 端
+  "product-grid": () => <ProductGridBlock />,
+  "product-detail": () => <ProductDetailBlock />,
+  "cart-summary": () => <CartSummaryBlock />,
+  "review-section": () => <ReviewSectionBlock />,
+  "user-profile": () => <UserProfileBlock />,
+  // AI 应用
+  "chat-panel": () => <ChatPanelBlock />,
+  "prompt-input": () => <PromptInputBlock />,
+  "agent-card": () => <AgentCardBlock />,
+  "flow-canvas": () => <FlowCanvasBlock />,
 };
