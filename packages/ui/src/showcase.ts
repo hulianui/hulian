@@ -136,6 +136,7 @@ export { sparklesTextShowcase } from "./sparkles-text/sparkles-text.showcase";
 export { spinnerShowcase } from "./spinner/spinner.showcase";
 export { spinShowcase } from "./spin/spin.showcase";
 export { stackShowcase } from "./stack/stack.showcase";
+export { containerShowcase } from "./container/container.showcase";
 export { statisticShowcase } from "./statistic/statistic.showcase";
 export { statShowcase } from "./stat/stat.showcase";
 export { stepperShowcase } from "./_mui/stepper.showcase";

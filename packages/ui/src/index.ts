@@ -165,6 +165,7 @@ export * from "./tour";
 export * from "./world-map";
 // 布局/结构批（零依赖·RSC 友好）
 export * from "./stack";
+export * from "./container";
 export * from "./grid";
 export * from "./aspect-ratio";
 export * from "./fit-screen";

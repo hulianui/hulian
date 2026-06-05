@@ -148,6 +148,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "fit-screen", name: "FitScreen", description: "大屏适配 · 固定设计尺寸(默认 1920×1080)等比缩放铺满父容器并居中 + fit/cover/stretch 三模式(纯函数 computeFit 可测·ResizeObserver 监听·SSR 安全·数据可视化大屏刚需)", category: "layout", group: "container", status: "new" },
   { slug: "masonry", name: "Masonry", description: "瀑布流布局 · 确定性 round-robin 分列(item[i]→第 i%列·SSR 安全·顺序稳定·非 CSS columns 抖动) + 响应式列数(base/sm/md/lg·首帧 base 防 hydration mismatch·挂载后 matchMedia 调整) + 列内外统一 gap(泛型·token 主题)", category: "layout", group: "container", status: "new" },
   { slug: "stack", name: "Stack", description: "弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)", category: "layout", group: "arrange", status: "new" },
+  { slug: "container", name: "Container", description: "内容容器 · 限制最大宽度(sm/md/lg/xl/full) + 居中 + 左右安全内距 + as 多态(收口全站 mx-auto max-w-Nxl px-6 样板·零依赖·RSC)", category: "layout", group: "container", status: "new" },
   { slug: "grid", name: "Grid", description: "栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC)", category: "layout", group: "arrange", status: "new" },
   { slug: "spacer", name: "Spacer", description: "间距 · x/y × 0.25rem 布局留白 + aria-hidden + RSC", category: "layout", group: "arrange", status: "new" },
   { slug: "divider", name: "Divider", description: "带文字分隔 · orientation 左/中/右 + dashed/plain + 行内垂直(纯皮肤·零依赖·RSC·与 Separator 互补)", category: "layout", group: "arrange", status: "new" },
