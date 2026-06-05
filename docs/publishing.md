@@ -44,7 +44,7 @@ pnpm update @hulianui/ui @hulianui/tokens   # 一行更新到最新
 项目根 `.npmrc`：
 
 ```
-@hulian:registry=https://npm.pkg.github.com
+@hulianui:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${HULIAN_NPM_TOKEN}
 ```
 
@@ -107,7 +107,33 @@ export default () => <Button>你好</Button>;
 
 ---
 
-## 四、已知后续优化（非阻塞）
+## 四、私有 → 公有 / 换 registry
+
+### 反直觉点：GitHub Packages 包设公开，安装仍要 token
+
+GitHub Packages 的 npm registry **即便把包设为 public，`npm install` 仍强制鉴权**（和 npmjs 不同，这是 GH Packages 的已知限制）。把包从 private 改 public 只带来：
+
+- 任何人都能看到 / 安装（不再限组织成员）；
+- 消费方 `.npmrc` 里的 token 不再需要特定权限，任意有效 GitHub token 即可——但**那两行 `.npmrc` 仍省不掉**。
+
+操作：包页面 → Package settings → Change visibility → Public（或组织 Packages 设置批量改）。代码/流程无需改动。
+
+### 真正免 token 公开：换到 npmjs.com
+
+要做到 `pnpm add @hulianui/ui` **零配置零 token** 安装，必须把 registry 从 GitHub Packages 换成公共 **npmjs.com**：
+
+1. 在 npmjs.com 注册组织 `hulianui`（scope `@hulianui` 对应组织名）。
+2. 删除各包 `package.json` 里的 `publishConfig.registry`（或改成 `https://registry.npmjs.org`），`access` 改 `public`：
+   ```jsonc
+   "publishConfig": { "access": "public" }   // registry 缺省即 npmjs
+   ```
+3. 删根 `.npmrc` 里的 `@hulianui:registry=...github...` 行（让它走默认 npmjs）。
+4. CI（`release.yml`）改用 **npm token**：在 npmjs 生成 Automation token → 存仓库 secret `NPM_TOKEN` → workflow 把 `NODE_AUTH_TOKEN` 换成 `${{ secrets.NPM_TOKEN }}`，并去掉 `packages: write`（npmjs 不用 GITHUB_TOKEN）。
+5. 消费方此后**无需 `.npmrc`、无需 token**，直接 `pnpm add @hulianui/ui`。
+
+> 注意：包名一旦在 npmjs 占用即公开可见，且 npmjs 与 GitHub Packages 是两套 registry、版本号不互通（迁移时建议从当前版本继续递增，避免下游困惑）。
+
+## 五、已知后续优化（非阻塞）
 
 - **重依赖**：`@hulianui/ui` 现把 MUI/recharts/tiptap/vidstack/ogl 全捆在 `dependencies`，下游装一个拖一坨。后续可拆子包或降级为 optional/peer。
 - **发 dist**：若将来要给不能转译 node_modules 的环境用，再加 tsup/rollup 构建产物（与本管道正交，不影响版本/发布流程）。

@@ -47,7 +47,7 @@ function usedIdentifiers() {
     .split("\n")
     .filter(Boolean);
   const used = new Set();
-  const re = /import\s+(?:type\s+)?\{([^}]*)\}\s+from\s+["']@hulian\/ui["']/g;
+  const re = /import\s+(?:type\s+)?\{([^}]*)\}\s+from\s+["']@hulianui\/ui["']/g;
   for (const f of files) {
     const s = readFileSync(f, "utf8");
     let m;

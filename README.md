@@ -51,12 +51,18 @@ hulian/
 
 `@hulianui/*` 发布在 **GitHub Packages 私有 registry**（组织 `hulianui`），不是公共 npmjs。消费方需先配 registry + 鉴权，再用 Tailwind v4 接入：
 
-0. 项目根 `.npmrc` 把 `@hulianui` 作用域指向 GitHub Packages（鉴权用一个有 `read:packages` 权限的 PAT，存环境变量、勿提交）：
+0. **配 registry + 鉴权**（GitHub Packages 即使包公开也要求 token，见下方「私有 → 公有」）：
+
+   a. 建一个有 `read:packages` 权限的 PAT —— GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → 勾 **`read:packages`**，生成后存环境变量（勿写进文件提交）：
+   ```bash
+   export GITHUB_TOKEN=ghp_xxxxx
+   ```
+   b. 目标项目根建 `.npmrc`，把 `@hulianui` 作用域指向 GitHub Packages：
    ```ini
    @hulianui:registry=https://npm.pkg.github.com
    //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
    ```
-1. 装包：`pnpm add @hulianui/ui @hulianui/tokens`（`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 为 peer，自行安装）
+1. 装包：`pnpm add @hulianui/ui @hulianui/tokens`（npm / yarn 同理 `install`；`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 为 peer，自行安装）
 2. 全局引入 token + preset，并把 `@hulianui/ui` 源码加入 Tailwind 扫描：
    ```css
    @import "@hulianui/tokens/tokens.css";
@@ -69,6 +75,12 @@ hulian/
    <ThemeProvider defaultSetting="system"><Button>瑚琏</Button></ThemeProvider>
    ```
    防首屏白闪的 inline script 由各应用的入口注入（见 `apps/www/app/theme-script.tsx`），不入库。
+
+### 私有 → 公有？
+
+注意一个反直觉点：**把 GitHub Packages 上的包设为 public，安装时仍然要求 token**（GH Packages 的 npm registry 即便公开也强制鉴权，和 npmjs 不同）。设公开只是让任何人可见、任何 GitHub 账号的 token 都能装，省不掉第 0 步的 `.npmrc`。
+
+要**真正免 token 公开安装**，得把 registry 换成公共 **npmjs.com**（scope 仍 `@hulianui`，需在 npmjs 注册同名组织 + 配 `NPM_TOKEN`）。切换步骤见 `docs/publishing.md`。
 
 > 发布形态是**源码包**（发 `src/`，不编译 dist）——消费方需能转译 TSX（Next / Vite 可）。版本管理 + 发布流程见 `docs/publishing.md`。
 
