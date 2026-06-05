@@ -11,10 +11,10 @@ interface Job extends QueueItem {
 
 // —— 优先级队列（P0-P3） ——
 const priorityLanes: QueueLaneDef[] = [
-  { id: "p0", label: "P0 紧急", tone: "var(--chart-3)", meta: "均等 0.4s" },
-  { id: "p1", label: "P1 高", tone: "var(--chart-4)", meta: "均等 1.2s" },
-  { id: "p2", label: "P2 普通", tone: "var(--primary)", meta: "均等 3.5s" },
-  { id: "p3", label: "P3 低", tone: "var(--muted-foreground)", meta: "均等 12s" },
+  { id: "p0", label: "P0 紧急", tone: "var(--color-chart-3)", meta: "均等 0.4s" },
+  { id: "p1", label: "P1 高", tone: "var(--color-chart-4)", meta: "均等 1.2s" },
+  { id: "p2", label: "P2 普通", tone: "var(--color-primary)", meta: "均等 3.5s" },
+  { id: "p3", label: "P3 低", tone: "var(--color-muted-foreground)", meta: "均等 12s" },
 ];
 
 const priorityJobs: Job[] = [
@@ -33,10 +33,10 @@ const priorityJobs: Job[] = [
 
 // —— 分类队列（按任务类型） ——
 const categoryLanes: QueueLaneDef[] = [
-  { id: "text", label: "文本生成", tone: "var(--primary)", meta: "吞吐 42/min" },
-  { id: "code", label: "代码", tone: "var(--chart-4)", meta: "吞吐 18/min" },
-  { id: "image", label: "图像", tone: "var(--chart-3)", meta: "吞吐 9/min" },
-  { id: "rag", label: "检索增强", tone: "var(--chart-2)", meta: "吞吐 65/min" },
+  { id: "text", label: "文本生成", tone: "var(--color-primary)", meta: "吞吐 42/min" },
+  { id: "code", label: "代码", tone: "var(--color-chart-4)", meta: "吞吐 18/min" },
+  { id: "image", label: "图像", tone: "var(--color-chart-3)", meta: "吞吐 9/min" },
+  { id: "rag", label: "检索增强", tone: "var(--color-chart-2)", meta: "吞吐 65/min" },
 ];
 
 const categoryJobs: Job[] = [
@@ -116,8 +116,8 @@ export const queueLaneShowcase: ShowcaseSpec = {
   ),
   toCode: () => `<QueueLane
   lanes={[
-    { id: "p0", label: "P0 紧急", tone: "var(--chart-3)", meta: "均等 0.4s" },
-    { id: "p1", label: "P1 高", tone: "var(--chart-4)" },
+    { id: "p0", label: "P0 紧急", tone: "var(--color-chart-3)", meta: "均等 0.4s" },
+    { id: "p1", label: "P1 高", tone: "var(--color-chart-4)" },
   ]}
   items={queue}
   maxVisible={4}

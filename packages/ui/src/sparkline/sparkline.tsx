@@ -9,7 +9,7 @@ import type { SparklineProps } from "./sparkline.types";
 
 /**
  * Sparkline 内联趋势迷你图：无轴无网格的极简 SVG 趋势，区别于重量级 Chart（recharts）。
- * 纯 SVG 零依赖，token 驱动配色（默认 var(--primary)）。
+ * 纯 SVG 零依赖，token 驱动配色（默认 var(--color-primary)）。
  * 整体 RSC 安全——renderTooltip 走原生 <title>（零 JS），无需 "use client"。
  */
 export function Sparkline({
@@ -17,7 +17,7 @@ export function Sparkline({
   variant = "line",
   width = 80,
   height = 24,
-  tone = "var(--primary)",
+  tone = "var(--color-primary)",
   highlightLast = false,
   min,
   max,
@@ -106,7 +106,7 @@ export function Sparkline({
           : null}
 
         {highlightLast && last ? (
-          <circle cx={last.x} cy={last.y} r={2} fill={tone} stroke="var(--surface)" strokeWidth={1} />
+          <circle cx={last.x} cy={last.y} r={2} fill={tone} stroke="var(--color-surface)" strokeWidth={1} />
         ) : null}
       </g>
     </svg>

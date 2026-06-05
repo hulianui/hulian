@@ -101,7 +101,7 @@ export function Sankey({
           {layout.links.map((l, i) => {
             const hot = isLinkHot(l);
             const dimmed = anyHover && !hot;
-            const color = l.tone ?? "var(--primary)";
+            const color = l.tone ?? "var(--color-primary)";
             return (
               <path
                 key={`${l.source}-${l.target}-${i}`}
@@ -132,7 +132,7 @@ export function Sankey({
         {layout.nodes.map((n) => {
           const hot = isNodeHot(n);
           const dimmed = anyHover && !hot;
-          const fill = n.tone ?? "var(--foreground)";
+          const fill = n.tone ?? "var(--color-primary)";
           const labelEl = renderNodeLabel ? (
             renderNodeLabel(n)
           ) : (
@@ -165,7 +165,7 @@ export function Sankey({
                 rx={2}
                 fill={fill}
                 fillOpacity={hot ? 1 : 0.85}
-                stroke="var(--bg)"
+                stroke="var(--color-bg)"
                 strokeWidth={1}
               />
               <foreignObject

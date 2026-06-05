@@ -5,13 +5,13 @@ import type { SankeyLink, SankeyNode } from "./sankey.types";
 
 // 调度流向：任务类型 → 路由器 → 执行器池（三层）。
 const dispatchNodes: SankeyNode[] = [
-  { id: "text", label: "文本生成", tone: "var(--chart-1)" },
-  { id: "code", label: "代码任务", tone: "var(--chart-2)" },
-  { id: "image", label: "图像任务", tone: "var(--chart-3)" },
-  { id: "router", label: "智能路由器", tone: "var(--primary)" },
-  { id: "haiku", label: "Haiku 池", tone: "var(--chart-4)" },
-  { id: "sonnet", label: "Sonnet 池", tone: "var(--chart-5)" },
-  { id: "opus", label: "Opus 池", tone: "var(--chart-1)" },
+  { id: "text", label: "文本生成", tone: "var(--color-chart-1)" },
+  { id: "code", label: "代码任务", tone: "var(--color-chart-2)" },
+  { id: "image", label: "图像任务", tone: "var(--color-chart-3)" },
+  { id: "router", label: "智能路由器", tone: "var(--color-primary)" },
+  { id: "haiku", label: "Haiku 池", tone: "var(--color-chart-4)" },
+  { id: "sonnet", label: "Sonnet 池", tone: "var(--color-chart-5)" },
+  { id: "opus", label: "Opus 池", tone: "var(--color-chart-1)" },
 ];
 
 const dispatchLinks: SankeyLink[] = [
@@ -25,12 +25,12 @@ const dispatchLinks: SankeyLink[] = [
 
 // 预算分配：总预算 → 各能力域 → 模型供应商。
 const budgetNodes: SankeyNode[] = [
-  { id: "budget", label: "月度预算", tone: "var(--primary)" },
-  { id: "infer", label: "推理", tone: "var(--chart-2)" },
-  { id: "embed", label: "向量检索", tone: "var(--chart-3)" },
-  { id: "tool", label: "工具调用", tone: "var(--chart-4)" },
-  { id: "anthropic", label: "Anthropic", tone: "var(--chart-1)" },
-  { id: "deepseek", label: "DeepSeek", tone: "var(--chart-5)" },
+  { id: "budget", label: "月度预算", tone: "var(--color-primary)" },
+  { id: "infer", label: "推理", tone: "var(--color-chart-2)" },
+  { id: "embed", label: "向量检索", tone: "var(--color-chart-3)" },
+  { id: "tool", label: "工具调用", tone: "var(--color-chart-4)" },
+  { id: "anthropic", label: "Anthropic", tone: "var(--color-chart-1)" },
+  { id: "deepseek", label: "DeepSeek", tone: "var(--color-chart-5)" },
 ];
 
 const budgetLinks: SankeyLink[] = [
@@ -100,9 +100,9 @@ export const sankeyShowcase: ShowcaseSpec = {
   ),
   toCode: (p) => `<Sankey
   nodes={[
-    { id: "text", label: "文本生成", tone: "var(--chart-1)" },
-    { id: "router", label: "智能路由器", tone: "var(--primary)" },
-    { id: "haiku", label: "Haiku 池", tone: "var(--chart-4)" },
+    { id: "text", label: "文本生成", tone: "var(--color-chart-1)" },
+    { id: "router", label: "智能路由器", tone: "var(--color-primary)" },
+    { id: "haiku", label: "Haiku 池", tone: "var(--color-chart-4)" },
   ]}
   links={[
     { source: "text", target: "router", value: 42 },

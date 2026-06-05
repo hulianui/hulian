@@ -10,7 +10,7 @@ interface Job extends QueueItem {
 }
 
 const lanes: QueueLaneDef[] = [
-  { id: "p0", label: "P0 紧急", tone: "var(--chart-3)" },
+  { id: "p0", label: "P0 紧急", tone: "var(--color-chart-3)" },
   { id: "p1", label: "P1 高" },
   { id: "p2", label: "P2 普通" }, // 故意留空，验证空道
 ];

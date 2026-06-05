@@ -9,7 +9,7 @@ export interface SankeyNode {
   label?: ReactNode;
   /** 不给则按 links 拓扑推导。 */
   layer?: number;
-  /** CSS 颜色或 token 变量（如 "var(--chart-3)"）；默认走主题。 */
+  /** CSS 颜色或 token 变量（如 "var(--color-chart-3)"）；默认走主题。 */
   tone?: string;
 }
 

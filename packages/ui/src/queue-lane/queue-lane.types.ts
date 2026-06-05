@@ -7,7 +7,7 @@ export interface QueueLaneDef {
   /** 道头主标题。 */
   label: ReactNode;
   /**
-   * 道头左色条的语义色（CSS 颜色值或 token 变量，如 `var(--chart-3)` / `#ef4444`）。
+   * 道头左色条的语义色（CSS 颜色值或 token 变量，如 `var(--color-chart-3)` / `#ef4444`）。
    * 缺省不染色条。组件原样写入 inline style，不做枚举映射 —— 调用方决定优先级配色。
    */
   tone?: string;

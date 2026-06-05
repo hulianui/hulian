@@ -14,10 +14,10 @@ interface Row {
 }
 
 const rows: Row[] = [
-  { name: "请求量 QPS", value: "1,284", trend: [8, 9, 7, 11, 10, 13, 12, 15], tone: "var(--primary)", up: true },
-  { name: "平均时延 ms", value: "62", trend: [80, 78, 74, 70, 66, 64, 63, 62], tone: "var(--chart-2)", up: false },
-  { name: "错误率 ‰", value: "0.4", trend: [2, 1.5, 1.8, 1.2, 0.9, 0.6, 0.5, 0.4], tone: "var(--danger)", up: false },
-  { name: "Token 消耗", value: "3.2M", trend: [1, 1.4, 1.2, 2, 2.6, 2.4, 3, 3.2], tone: "var(--chart-4)", up: true },
+  { name: "请求量 QPS", value: "1,284", trend: [8, 9, 7, 11, 10, 13, 12, 15], tone: "var(--color-primary)", up: true },
+  { name: "平均时延 ms", value: "62", trend: [80, 78, 74, 70, 66, 64, 63, 62], tone: "var(--color-chart-2)", up: false },
+  { name: "错误率 ‰", value: "0.4", trend: [2, 1.5, 1.8, 1.2, 0.9, 0.6, 0.5, 0.4], tone: "var(--color-danger)", up: false },
+  { name: "Token 消耗", value: "3.2M", trend: [1, 1.4, 1.2, 2, 2.6, 2.4, 3, 3.2], tone: "var(--color-chart-4)", up: true },
 ];
 
 function InlineTable() {
@@ -78,13 +78,13 @@ export const sparklineShowcase: ShowcaseSpec = {
     {
       name: "Area（面积渐隐填充）",
       render: () => (
-        <Sparkline data={series} variant="area" tone="var(--chart-2)" width={140} height={36} />
+        <Sparkline data={series} variant="area" tone="var(--color-chart-2)" width={140} height={36} />
       ),
     },
     {
       name: "Bar（等宽柱 · 下行趋势）",
       render: () => (
-        <Sparkline data={dipSeries} variant="bar" tone="var(--chart-4)" width={140} height={36} />
+        <Sparkline data={dipSeries} variant="bar" tone="var(--color-chart-4)" width={140} height={36} />
       ),
     },
     {
