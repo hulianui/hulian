@@ -30,7 +30,12 @@
    - Root directory: 留空（仓库根）
    - 环境变量加 `NODE_VERSION = 22`（或靠 `.nvmrc`）
 3. Save and Deploy。首发后给一个 `*.pages.dev` 子域。
-4. 自定义域：Pages 项目 → Custom domains → 加 `hulian.haloritual.com`（haloritual.com 若在 Cloudflare DNS，一键加 CNAME；否则去 DNS 商加 CNAME 指向 `*.pages.dev`）。
+4. 自定义域 `hulianui.haloritual.com`（域在阿里云，非 Cloudflare）：
+   - Pages 项目 → Custom domains → Set up a domain → 填 `hulianui.haloritual.com`。
+   - Cloudflare 给一条 CNAME 目标（`<project>.pages.dev`）→ 去**阿里云 DNS**给主机记录 `hulianui` 加 **CNAME → `<project>.pages.dev`**。
+   - **SSL 全自动**：CF 检测到 CNAME 后通过 Cloudflare for SaaS 自动签发免费证书（Universal SSL），几分钟内 HTTPS 生效，**无需手动配证书**。
+   - 注：Pages 支持外部域 CNAME（域不必托管在 CF）；这正是 Pages 相对 Workers 自定义域的优势——Workers 自定义域要求整个 zone 在 CF。见 skill `cloudflare-workers-git-static-deploy-needs-wrangler-assets-config`。
+5. **删掉旧的 Workers 部署**：之前用 Workers 流程建过一个 `hulian` Worker（连着同一仓库，会随 push 自动构建）。切 Pages 后 `wrangler.jsonc` 已删，旧 Worker 的 `npx wrangler deploy` 会失败 → 去 Workers & Pages 把那个 `hulian` Worker 删掉，避免每次 push 报错 + 双份部署。
 
 ## B. Vercel
 
@@ -40,7 +45,7 @@
    - Root Directory: `apps/www`（Vercel 会自动识别 pnpm workspace，从根装依赖）
    - Build/Install/Output: 一般自动；若需手填 → Build `pnpm --filter www build`、Output `out`
 3. Deploy。给一个 `*.vercel.app` 域。
-4. 自定义域：Project → Settings → Domains → 加 `hulian.haloritual.com`，按提示配 DNS。
+4. 自定义域：Project → Settings → Domains → 加 `hulianui.haloritual.com`，按提示在阿里云配 CNAME，SSL 自动签发。
 
 ---
 
