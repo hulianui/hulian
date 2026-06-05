@@ -1,6 +1,6 @@
 "use client";
 import "@vidstack/react/player/styles/base.css";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MediaPlayer, MediaProvider, Poster, type MediaPlayerInstance } from "@vidstack/react";
 import { cn } from "../lib/cn";
 import { VideoControls } from "./video-controls";
@@ -29,6 +29,10 @@ export function Video({
 }: VideoProps) {
   const rates = playbackRates ?? [...DEFAULT_PLAYBACK_RATES];
   const playerRef = useRef<MediaPlayerInstance>(null);
+  // SSR 安全：Vidstack 在服务端构造 MediaPlayer 会摸 window（静态导出预渲染即崩）。
+  // 首帧渲同比例占位，挂载后再渲真播放器；对 SPA/CSR 无感，对 SSG/SSR 不再炸。
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   // 续播：仅首次 can-play 时 seek 一次，避免与用户后续拖拽/换源冲突。
   const seekedRef = useRef(false);
   // VideoProps.crossOrigin 是 boolean | string；Vidstack 接受 true | '' | 'anonymous' | 'use-credentials' | null。
@@ -39,6 +43,17 @@ export function Video({
         ? true
         : undefined
       : (crossOrigin as "" | "anonymous" | "use-credentials" | undefined);
+  if (!mounted) {
+    return (
+      <div
+        className={cn(
+          "relative w-full overflow-hidden rounded-[var(--radius)] border border-border bg-black",
+          className,
+        )}
+        style={{ aspectRatio }}
+      />
+    );
+  }
   return (
     <MediaPlayer
       ref={playerRef}
