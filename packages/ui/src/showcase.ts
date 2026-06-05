@@ -205,6 +205,10 @@ export { imageViewerShowcase } from "./image-viewer/image-viewer.showcase";
 // devtools / 执行态 批
 export { logViewerShowcase } from "./log-viewer/log-viewer.showcase";
 export { codeDiffShowcase } from "./code-diff/code-diff.showcase";
+export { diffStatShowcase } from "./diff-stat/diff-stat.showcase";
+export { scoreRingShowcase } from "./score-ring/score-ring.showcase";
+export { heatmapShowcase } from "./heatmap/heatmap.showcase";
+export { codeReviewThreadShowcase } from "./code-review-thread/code-review-thread.showcase";
 export { fileTreeShowcase } from "./file-tree/file-tree.showcase";
 // 设计感背景批（复刻 react-bits/Aceternity·canvas + WebGL/ogl·吃 chart token）
 export { auroraShowcase } from "./aurora/aurora.showcase";

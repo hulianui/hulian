@@ -258,6 +258,11 @@ export * from "./image-viewer";
 // devtools / 执行态 批（运行输出可视化·承 TaskRunner 品类）
 export * from "./log-viewer";
 export * from "./code-diff";
+// 代码审查质检批（瀚审 HanReview demo dogfood）
+export * from "./diff-stat";
+export * from "./score-ring";
+export * from "./heatmap";
+export * from "./code-review-thread";
 export * from "./file-tree";
 
 // shadcnblocks 缺口补齐批（按钮组/第三方登录/公告条/相对时间/卡片选择/银行卡/表情/链接预览）
