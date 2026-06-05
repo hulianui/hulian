@@ -176,4 +176,14 @@ export const demos: DemoMeta[] = [
     status: "done",
     tags: ["Danmaku", "LivePlayer", "GiftFeed", "FloatingReactions", "LiveChat", "AI 副驾"],
   },
+  {
+    slug: "hanreview",
+    title: "瀚审 HanReview AI 代码审查质检平台",
+    description:
+      "PR/提交进来 → AI 审查员(带智能选模型)逐文件审 → 行内批注问题、给质量分、跑质量门禁 —— 100% 由 @hulian/ui 搭建的研发质量中枢。点亮全新 CodeReviewThread 行内批注线程、Heatmap 代码热点、ScoreRing 质量分环、DiffStat 改动条，并增强 code-diff 行锚定批注，含审查过程回放(AgentPlan/ToolCall/ThinkingBlock)、门禁模拟器与智能路由分发流向(Flow)。",
+    href: "/demos/hanreview",
+    category: "中后台",
+    status: "done",
+    tags: ["CodeReviewThread", "code-diff", "Heatmap", "ScoreRing", "代码审查", "质量门禁"],
+  },
 ];
