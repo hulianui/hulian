@@ -1,6 +1,6 @@
 import { cn } from "../lib/cn";
 import { diffLines, diffStat, type DiffRow } from "./code-diff.diff";
-import type { CodeDiffProps } from "./code-diff.types";
+import type { CodeDiffAnnotation, CodeDiffProps } from "./code-diff.types";
 
 // 行底色（字面类）：add 绿 / del 红 / context 透明。
 const ROW_BG: Record<DiffRow["type"], string> = {
@@ -23,16 +23,24 @@ function Gutter({ no }: { no: number | null }) {
   );
 }
 
+// 按行匹配 annotation：new 侧比 newNo、old 侧比 oldNo（默认 new）。
+function findAnno(annos: CodeDiffAnnotation[] | undefined, r: DiffRow): CodeDiffAnnotation | undefined {
+  if (!annos) return undefined;
+  return annos.find((a) => ((a.side ?? "new") === "new" ? r.newNo === a.line : r.oldNo === a.line));
+}
+
 export function CodeDiff({
   oldText,
   newText,
   mode = "unified",
   filename,
   showLineNumbers = true,
+  annotations,
   className,
 }: CodeDiffProps) {
   const rows = diffLines(oldText, newText);
   const { added, removed } = diffStat(rows);
+  const hasGutterSlot = annotations?.some((a) => a.gutter != null) ?? false;
 
   return (
     <div
@@ -54,20 +62,38 @@ export function CodeDiff({
       <div className="overflow-x-auto">
         {mode === "unified" ? (
           <div className="min-w-max">
-            {rows.map((r, i) => (
-              <div key={i} className={cn("flex whitespace-pre px-2 leading-relaxed", ROW_BG[r.type])}>
-                {showLineNumbers && (
-                  <>
-                    <Gutter no={r.oldNo} />
-                    <Gutter no={r.newNo} />
-                  </>
-                )}
-                <span className={cn("w-4 shrink-0 select-none text-center", SIGN_COLOR[r.type])}>
-                  {SIGN[r.type]}
-                </span>
-                <span className="text-foreground">{r.text || " "}</span>
-              </div>
-            ))}
+            {rows.map((r, i) => {
+              const anno = findAnno(annotations, r);
+              return (
+                <div key={i}>
+                  <div className={cn("flex whitespace-pre px-2 leading-relaxed", ROW_BG[r.type])}>
+                    {showLineNumbers && (
+                      <>
+                        <Gutter no={r.oldNo} />
+                        <Gutter no={r.newNo} />
+                      </>
+                    )}
+                    {hasGutterSlot && (
+                      <span className="inline-flex w-4 shrink-0 select-none items-center justify-center">
+                        {anno?.gutter}
+                      </span>
+                    )}
+                    <span className={cn("w-4 shrink-0 select-none text-center", SIGN_COLOR[r.type])}>
+                      {SIGN[r.type]}
+                    </span>
+                    <span className="text-foreground">{r.text || " "}</span>
+                  </div>
+                  {anno?.content && (
+                    <div
+                      data-cd-annotation
+                      className="whitespace-normal border-y border-border bg-muted/5 px-2 py-2 font-sans"
+                    >
+                      {anno.content}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="min-w-max">
@@ -83,7 +109,7 @@ export function CodeDiff({
                         {left.type === "del" ? "-" : " "}
                       </span>
                     )}
-                    <span className="text-foreground">{left ? left.text || " " : ""}</span>
+                    <span className="text-foreground">{left ? left.text || " " : ""}</span>
                   </div>
                   <div className={cn("flex whitespace-pre px-2", right ? ROW_BG[right.type] : "")}>
                     {showLineNumbers && <Gutter no={right?.newNo ?? null} />}
@@ -92,7 +118,7 @@ export function CodeDiff({
                         {right.type === "add" ? "+" : " "}
                       </span>
                     )}
-                    <span className="text-foreground">{right ? right.text || " " : ""}</span>
+                    <span className="text-foreground">{right ? right.text || " " : ""}</span>
                   </div>
                 </div>
               );

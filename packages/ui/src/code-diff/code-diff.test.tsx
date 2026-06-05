@@ -64,3 +64,44 @@ describe("CodeDiff 组件", () => {
     expect(getByText("app.tsx")).toBeTruthy();
   });
 });
+
+describe("CodeDiff annotations", () => {
+  it("在匹配的 new 行下方渲染 content 槽", () => {
+    const { getByText, container } = render(
+      <CodeDiff
+        oldText={"a\nb"}
+        newText={"a\nB"}
+        annotations={[{ side: "new", line: 2, content: <span>批注X</span> }]}
+      />,
+    );
+    expect(getByText("批注X")).toBeTruthy();
+    expect(container.querySelector("[data-cd-annotation]")).toBeTruthy();
+  });
+
+  it("不传 annotations 时不渲染批注容器（向后兼容）", () => {
+    const { container } = render(<CodeDiff oldText="a" newText="a" />);
+    expect(container.querySelector("[data-cd-annotation]")).toBeNull();
+  });
+
+  it("gutter 标记渲染在行内", () => {
+    const { getByText } = render(
+      <CodeDiff
+        oldText={"a"}
+        newText={"a\nb"}
+        annotations={[{ side: "new", line: 2, gutter: <i>★</i>, content: <span>c</span> }]}
+      />,
+    );
+    expect(getByText("★")).toBeTruthy();
+  });
+
+  it("old 侧锚定按 oldNo 匹配删除行", () => {
+    const { getByText } = render(
+      <CodeDiff
+        oldText={"a\nx\nb"}
+        newText={"a\nb"}
+        annotations={[{ side: "old", line: 2, content: <span>删除批注</span> }]}
+      />,
+    );
+    expect(getByText("删除批注")).toBeTruthy();
+  });
+});
