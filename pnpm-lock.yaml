@@ -178,6 +178,9 @@ importers:
       dayjs:
         specifier: ^1.11.21
         version: 1.11.21
+      ogl:
+        specifier: ^1.0.11
+        version: 1.0.11
       qrcode-generator:
         specifier: ^2.0.4
         version: 2.0.4
@@ -5247,6 +5250,10 @@ packages:
   /object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /ogl@1.0.11:
+    resolution: {integrity: sha512-kUpC154AFfxi16pmZUK4jk3J+8zxwTWGPo03EoYA8QPbzikHoaC82n6pNTbd+oEaJonaE8aPWBlX7ad9zrqLsA==}
     dev: false
 
   /optionator@0.9.4:

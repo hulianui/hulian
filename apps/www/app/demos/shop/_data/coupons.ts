@@ -1,0 +1,71 @@
+import type { CouponData } from "./types";
+
+// 优惠券池：首页领券中心 + 结算选券 + 会员中心「我的券」。
+export const coupons: CouponData[] = [
+  {
+    id: "cp-1",
+    kind: "amount",
+    amount: 50,
+    threshold: 299,
+    title: "全场通用满减券",
+    scope: "支持全部品类",
+    validUntil: "2026.06.30 前有效",
+    status: "available",
+    tone: "danger",
+  },
+  {
+    id: "cp-2",
+    kind: "amount",
+    amount: 120,
+    threshold: 599,
+    title: "数码 3C 专享券",
+    scope: "仅限数码 3C 品类",
+    validUntil: "2026.06.18 前有效",
+    status: "available",
+    tone: "brand",
+  },
+  {
+    id: "cp-3",
+    kind: "discount",
+    discount: 8.5,
+    threshold: 199,
+    title: "美妆个护折扣券",
+    scope: "仅限美妆个护品类",
+    validUntil: "2026.06.20 前有效",
+    status: "available",
+    tone: "danger",
+  },
+  {
+    id: "cp-4",
+    kind: "shipping",
+    title: "全国包邮券",
+    scope: "偏远地区除外",
+    validUntil: "2026.07.31 前有效",
+    status: "available",
+    tone: "neutral",
+  },
+  {
+    id: "cp-5",
+    kind: "amount",
+    amount: 30,
+    threshold: 199,
+    title: "新人首单券",
+    scope: "全场可用 · 仅限新用户",
+    validUntil: "2026.06.15 前有效",
+    status: "claimed",
+    tone: "brand",
+  },
+  {
+    id: "cp-6",
+    kind: "amount",
+    amount: 20,
+    threshold: 99,
+    title: "食品生鲜券",
+    scope: "仅限食品生鲜品类",
+    validUntil: "已于 2026.05.31 过期",
+    status: "expired",
+    tone: "neutral",
+  },
+];
+
+export const couponById = Object.fromEntries(coupons.map((c) => [c.id, c]));
