@@ -16,6 +16,7 @@ export { animatedListShowcase } from "./animated-list/animated-list.showcase";
 export { animatedShinyTextShowcase } from "./animated-shiny-text/animated-shiny-text.showcase";
 export { animatedThemeTogglerShowcase } from "./animated-theme-toggler/animated-theme-toggler.showcase";
 export { aspectRatioShowcase } from "./aspect-ratio/aspect-ratio.showcase";
+export { fitScreenShowcase } from "./fit-screen/fit-screen.showcase";
 export { auroraTextShowcase } from "./aurora-text/aurora-text.showcase";
 export { avatarCirclesShowcase } from "./avatar-circles/avatar-circles.showcase";
 export { avatarShowcase } from "./avatar/avatar.showcase";

@@ -147,6 +147,7 @@ export * from "./world-map";
 export * from "./stack";
 export * from "./grid";
 export * from "./aspect-ratio";
+export * from "./fit-screen";
 export * from "./empty";
 // 中后台数据列表（零依赖自研·复合 List/ListItem/ListItem.Meta·复用 Empty/Pagination/Avatar/User）
 export * from "./list";

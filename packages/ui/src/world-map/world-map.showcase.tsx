@@ -1,7 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { WorldMap } from "./world-map";
-import type { WorldMapDot } from "./world-map.types";
+import type { WorldMapDot, WorldMapNode } from "./world-map.types";
 
 const BEIJING = { lat: 39.9, lng: 116.4, label: "北京" };
 const NEW_YORK = { lat: 40.7, lng: -74, label: "纽约" };
@@ -26,6 +26,15 @@ const multiColor: WorldMapDot[] = [
   { start: SHANGHAI, end: { lat: 37.8, lng: -122.4, label: "旧金山" }, color: "var(--color-chart-4)" },
 ];
 
+// 独立节点：全球 PoP 分布，value 驱动大小，逐节点配色
+const NODES: WorldMapNode[] = [
+  { id: "sh", lat: 31.2, lng: 121.5, label: "上海", value: 92, color: "var(--color-chart-1)" },
+  { id: "sg", lat: 1.35, lng: 103.8, label: "新加坡", value: 64, color: "var(--color-chart-2)" },
+  { id: "fra", lat: 50.1, lng: 8.7, label: "法兰克福", value: 48, color: "var(--color-chart-3)" },
+  { id: "sfo", lat: 37.8, lng: -122.4, label: "旧金山", value: 73, color: "var(--color-chart-4)" },
+  { id: "syd", lat: -33.9, lng: 151.2, label: "悉尼", value: 30, color: "var(--color-chart-2)" },
+];
+
 function Frame({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto w-full max-w-2xl rounded-lg border border-border bg-surface p-4">{children}</div>;
 }
@@ -42,6 +51,14 @@ export const worldMapShowcase: ShowcaseSpec = {
     { name: "主色强调", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-primary)" dotColor="var(--color-muted)" /></Frame> },
     // 逐条 color 覆盖：同一组件内多色并存
     { name: "混色连线", render: () => <Frame><WorldMap dots={multiColor} /></Frame> },
+    // 独立节点：value 驱动大小 + 逐节点配色（不依赖飞线）
+    { name: "节点分布", render: () => <Frame><WorldMap points={NODES} /></Frame> },
+    // 节点 + 标签
+    { name: "节点标签", render: () => <Frame><WorldMap points={NODES} showLabels /></Frame> },
+    // 节点 + 飞线叠加（指挥中心常见）
+    { name: "节点叠飞线", render: () => <Frame><WorldMap points={NODES} dots={radial} /></Frame> },
+    // 可点击下钻（传 onPointClick → 节点可聚焦/Enter 触发，svg 放开 aria-hidden）
+    { name: "可点击下钻", render: () => <Frame><WorldMap points={NODES} showLabels onPointClick={(n) => alert(`下钻：${n.label}`)} /></Frame> },
     { name: "纯底图", render: () => <Frame><WorldMap /></Frame> },
   ],
   renderWithProps: () => (

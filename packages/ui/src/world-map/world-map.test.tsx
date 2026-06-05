@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, fireEvent } from "@testing-library/react";
 import { WorldMap } from "./world-map";
 import { WORLD_DOTS } from "./world-map.dots";
 
@@ -67,5 +67,60 @@ describe("WorldMap", () => {
     ];
     const { container } = render(<WorldMap dots={dots} />);
     expect(container.querySelectorAll("linearGradient").length).toBe(1);
+  });
+
+  // ── 独立节点 points（反哺：全球节点分布 + 下钻）──────────────────
+  const NODES = [
+    { id: "a", lat: 31.2, lng: 121.5, label: "上海", value: 80 },
+    { id: "b", lat: 51.5, lng: -0.1, label: "伦敦", value: 40 },
+    { id: "c", lat: 40.7, lng: -74, label: "纽约", value: 60 },
+  ];
+
+  it("无 points 时不多画 circle（保持纯底图计数）", () => {
+    const { container } = render(<WorldMap />);
+    expect(container.querySelectorAll("[data-wm-node]").length).toBe(0);
+    expect(container.querySelectorAll("svg circle").length).toBe(WORLD_DOTS.length);
+  });
+
+  it("传 N 个 points：渲染 N 个独立节点", () => {
+    const { container } = render(<WorldMap points={NODES} />);
+    expect(container.querySelectorAll("[data-wm-node]").length).toBe(NODES.length);
+  });
+
+  it("showLabels：渲染节点标签文字", () => {
+    const { getByText, container } = render(<WorldMap points={NODES} showLabels />);
+    expect(getByText("上海")).toBeTruthy();
+    expect(container.querySelectorAll("svg text").length).toBe(NODES.length);
+  });
+
+  it("默认不渲染标签", () => {
+    const { container } = render(<WorldMap points={NODES} />);
+    expect(container.querySelectorAll("svg text").length).toBe(0);
+  });
+
+  it("onPointClick：点击节点触发回调 (node, index)", () => {
+    const onPointClick = vi.fn();
+    const { container } = render(<WorldMap points={NODES} onPointClick={onPointClick} />);
+    const nodes = container.querySelectorAll('[role="button"]');
+    expect(nodes.length).toBe(NODES.length);
+    fireEvent.click(nodes[1]);
+    expect(onPointClick).toHaveBeenCalledTimes(1);
+    expect(onPointClick.mock.calls[0][0]).toMatchObject({ id: "b" });
+    expect(onPointClick.mock.calls[0][1]).toBe(1);
+  });
+
+  it("onPointClick：键盘 Enter 触发", () => {
+    const onPointClick = vi.fn();
+    const { container } = render(<WorldMap points={NODES} onPointClick={onPointClick} />);
+    const node = container.querySelectorAll('[role="button"]')[0];
+    fireEvent.keyDown(node, { key: "Enter" });
+    expect(onPointClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("可交互时 svg 放开 aria-hidden；纯展示时保持", () => {
+    const { container: plain } = render(<WorldMap points={NODES} />);
+    expect(plain.querySelector("svg")!.getAttribute("aria-hidden")).toBe("true");
+    const { container: interactive } = render(<WorldMap points={NODES} onPointClick={() => {}} />);
+    expect(interactive.querySelector("svg")!.getAttribute("aria-hidden")).toBeNull();
   });
 });

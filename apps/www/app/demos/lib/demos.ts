@@ -38,6 +38,16 @@ export const demos: DemoMeta[] = [
     tags: ["FileTree", "Tree", "MarkdownEditor", "ImageViewer", "TreeSelect", "Transfer"],
   },
   {
+    slug: "dashboard",
+    title: "瀚云全球调度指挥中心",
+    description:
+      "全球节点分布 + 跨境调度飞线、实时 KPI 跳数、密集图表(折线/柱状/环形/堆叠面积)、滚动告警事件流 —— 16:9 等比铺满的数据可视化大屏，100% 由 @hulian/ui 搭建。点亮可点击下钻的 WorldMap 与全新 FitScreen，含实时刷新 loading 帧、数据源异常 Alert+重试、点节点开 Drawer 下钻。",
+    href: "/demos/dashboard",
+    category: "数据可视化",
+    status: "done",
+    tags: ["WorldMap", "FitScreen", "实时大屏", "飞线", "NumberTicker"],
+  },
+  {
     slug: "learn",
     title: "瀚学 在线课程平台",
     description:

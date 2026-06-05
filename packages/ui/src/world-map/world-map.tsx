@@ -6,6 +6,12 @@ import { LazyMotionProvider, m } from "../motion";
 import { WORLD_DOTS, VIEWBOX, projectPoint } from "./world-map.dots";
 import type { WorldMapPoint, WorldMapProps } from "./world-map.types";
 
+// 独立节点半径（viewBox 单位）：基准 + 按 value 归一化插值到 [NODE_R_MIN, NODE_R_MAX]。
+const NODE_R_MIN = 0.7;
+const NODE_R_MAX = 2.2;
+const NODE_R_BASE = 1.0;
+const NODE_LABEL_SIZE = 1.9;
+
 // 吸取自 ui.aceternity.com World Map：点阵世界地图 + 经纬度间的动画弧线。
 // 瑚琏化：① 底图点阵预烘成静态坐标(world-map.dots.ts)，运行时渲染内联 <circle>，
 //   点色/线色走 token、吃 light/dark 主题，零运行时依赖(不引 dotted-map)；
@@ -27,8 +33,18 @@ function pointKey(p: WorldMapPoint) {
   return `${p.lat},${p.lng}`;
 }
 
+function nodeRadius(value: number | undefined, range: { min: number; max: number } | null) {
+  if (value == null || !range) return NODE_R_BASE;
+  if (range.max === range.min) return (NODE_R_MIN + NODE_R_MAX) / 2;
+  const t = (value - range.min) / (range.max - range.min);
+  return NODE_R_MIN + t * (NODE_R_MAX - NODE_R_MIN);
+}
+
 export function WorldMap({
   dots = [],
+  points = [],
+  showLabels = false,
+  onPointClick,
   lineColor = "var(--color-chart-1)",
   dotColor = "var(--color-border)",
   duration = 1,
@@ -36,6 +52,27 @@ export function WorldMap({
 }: WorldMapProps) {
   const gradId = useId();
   const reduced = useReducedMotion();
+  const interactive = typeof onPointClick === "function";
+
+  // 节点 value 范围 → 半径归一化
+  const valueRange = useMemo(() => {
+    const vals = points.map((p) => p.value).filter((v): v is number => typeof v === "number");
+    if (!vals.length) return null;
+    return { min: Math.min(...vals), max: Math.max(...vals) };
+  }, [points]);
+
+  // 投影后的节点几何（含解析色 + 半径）
+  const projectedNodes = useMemo(
+    () =>
+      points.map((n, i) => ({
+        node: n,
+        index: i,
+        color: n.color ?? "var(--color-chart-1)",
+        r: nodeRadius(n.value, valueRange),
+        ...projectPoint(n.lat, n.lng),
+      })),
+    [points, valueRange],
+  );
 
   // 底图圆点只随 dotColor 变化 → memo 掉 1k 个节点的重建
   const dotCircles = useMemo(
@@ -72,12 +109,14 @@ export function WorldMap({
       viewBox={`0 0 ${VIEWBOX.w} ${VIEWBOX.h}`}
       className={cn("h-auto w-full select-none", className)}
       style={{ overflow: "visible" }}
-      aria-hidden
+      aria-hidden={interactive ? undefined : true}
+      role={interactive ? "group" : undefined}
     >
-      {/* 底图点阵 */}
-      <g>{dotCircles}</g>
+      {/* 底图点阵（装饰，永远对 AT 隐藏） */}
+      <g aria-hidden>{dotCircles}</g>
 
       {/* 弧线 */}
+      <g aria-hidden>
       {resolved.map((d, i) => {
         const s = projectPoint(d.start.lat, d.start.lng);
         const e = projectPoint(d.end.lat, d.end.lng);
@@ -106,8 +145,10 @@ export function WorldMap({
           />
         );
       })}
+      </g>
 
-      {/* 端点：实心点 + 脉冲环（用各自连线的颜色） */}
+      {/* 飞线端点：实心点 + 脉冲环（用各自连线的颜色） */}
+      <g aria-hidden>
       {endpoints.map(({ p, x, y, color }) => (
         <g key={pointKey(p)}>
           <circle cx={x} cy={y} r={0.45} fill={color} />
@@ -125,6 +166,67 @@ export function WorldMap({
           )}
         </g>
       ))}
+      </g>
+
+      {/* 独立节点：分布 + 可选标签 + 可点击下钻 */}
+      {projectedNodes.length > 0 && (
+        <g role={interactive ? "list" : undefined}>
+          {projectedNodes.map(({ node, index, color, r, x, y }) => {
+            const key = node.id ?? `${node.lat},${node.lng},${index}`;
+            const activate = () => onPointClick?.(node, index);
+            return (
+              <g
+                key={key}
+                role={interactive ? "button" : undefined}
+                tabIndex={interactive ? 0 : undefined}
+                aria-label={interactive ? (node.label ?? `节点 ${index + 1}`) : undefined}
+                onClick={interactive ? activate : undefined}
+                onKeyDown={
+                  interactive
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          activate();
+                        }
+                      }
+                    : undefined
+                }
+                style={interactive ? { cursor: "pointer", outline: "none" } : undefined}
+              >
+                {/* 隐形大命中区，便于点击小节点 */}
+                {interactive && <circle cx={x} cy={y} r={r + 1.6} fill="transparent" />}
+                {/* 脉冲环 */}
+                {!reduced && (
+                  <m.circle
+                    cx={x}
+                    cy={y}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={0.18}
+                    initial={{ r, opacity: 0.6 }}
+                    animate={{ r: r + 2.4, opacity: 0 }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+                  />
+                )}
+                {/* 实心节点 */}
+                <circle data-wm-node="" cx={x} cy={y} r={r} fill={color} />
+                {showLabels && node.label && (
+                  <text
+                    x={x}
+                    y={y - r - 0.8}
+                    fontSize={NODE_LABEL_SIZE}
+                    textAnchor="middle"
+                    fill="var(--color-muted)"
+                    style={{ pointerEvents: "none", userSelect: "none" }}
+                  >
+                    {node.label}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </g>
+      )}
 
       <defs>
         {/* 每种连线颜色一条渐变：沿弧线方向(objectBoundingBox)两端渐隐 → "光线扫过"观感 */}
