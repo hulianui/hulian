@@ -189,6 +189,14 @@ import {
   schedulerShowcase,
   codeDiffShowcase,
   fileTreeShowcase,
+  buttonGroupShowcase,
+  socialButtonShowcase,
+  bannerShowcase,
+  relativeTimeShowcase,
+  choiceboxShowcase,
+  creditCardShowcase,
+  emojiPickerShowcase,
+  glimpseShowcase,
 } from "@hulian/ui/showcase";
 
 // 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -381,4 +389,12 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   scheduler: schedulerShowcase,
   "code-diff": codeDiffShowcase,
   "file-tree": fileTreeShowcase,
+  "button-group": buttonGroupShowcase,
+  "social-button": socialButtonShowcase,
+  banner: bannerShowcase,
+  "relative-time": relativeTimeShowcase,
+  choicebox: choiceboxShowcase,
+  "credit-card": creditCardShowcase,
+  "emoji-picker": emojiPickerShowcase,
+  glimpse: glimpseShowcase,
 };

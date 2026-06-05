@@ -194,3 +194,12 @@ export { viewportShowcase } from "./viewport/viewport.showcase";
 export { logViewerShowcase } from "./log-viewer/log-viewer.showcase";
 export { codeDiffShowcase } from "./code-diff/code-diff.showcase";
 export { fileTreeShowcase } from "./file-tree/file-tree.showcase";
+// shadcnblocks 缺口补齐批
+export { buttonGroupShowcase } from "./button-group/button-group.showcase";
+export { socialButtonShowcase } from "./social-button/social-button.showcase";
+export { bannerShowcase } from "./banner/banner.showcase";
+export { relativeTimeShowcase } from "./relative-time/relative-time.showcase";
+export { choiceboxShowcase } from "./choicebox/choicebox.showcase";
+export { creditCardShowcase } from "./credit-card/credit-card.showcase";
+export { emojiPickerShowcase } from "./emoji-picker/emoji-picker.showcase";
+export { glimpseShowcase } from "./glimpse/glimpse.showcase";

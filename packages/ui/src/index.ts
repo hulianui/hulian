@@ -235,6 +235,16 @@ export * from "./scheduler";
 export * from "./log-viewer";
 export * from "./code-diff";
 export * from "./file-tree";
+
+// shadcnblocks 缺口补齐批（按钮组/第三方登录/公告条/相对时间/卡片选择/银行卡/表情/链接预览）
+export * from "./button-group";
+export * from "./social-button";
+export * from "./banner";
+export * from "./relative-time";
+export * from "./choicebox";
+export * from "./credit-card";
+export * from "./emoji-picker";
+export * from "./glimpse";
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";
 // 日期 SSoT（消费者需 dayjs 做日期数学时从这里取，避免各自装一份/版本漂移）
