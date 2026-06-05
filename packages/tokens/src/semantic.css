@@ -9,6 +9,11 @@
   --color-foreground: var(--gray-900);
   --color-muted: var(--gray-500);
   --color-border: var(--gray-200);
+  /* 发丝边框：仅用于「有阴影的 elevation/浮层/按钮」表面。亮色 transparent(靠阴影自带的
+     1px 发丝边分隔，避免与显式 border 形成「双线」显脏)；暗色回落到 --color-border(投影在
+     深底偏弱，需细线勾边)。宽度恒为 1px、只切颜色 → 切主题零布局抖动。
+     真功能 border(输入 affordance / Kbd 键帽 / Toast accent / 分隔线)仍用 --color-border。 */
+  --color-hairline: transparent;
   --color-ring: var(--brand-500);
   --color-primary: var(--brand-600);
   --color-primary-foreground: var(--white);
@@ -58,6 +63,8 @@
   --color-foreground: var(--gray-50);
   --color-muted: var(--gray-400);
   --color-border: var(--gray-800);
+  /* 暗色：发丝边回落到可见细线(=现状 border)，因深底投影偏弱、需 border 分隔。 */
+  --color-hairline: var(--color-border);
   --color-ring: var(--brand-400);
   --color-primary: var(--brand-500);
   --color-primary-foreground: var(--white);

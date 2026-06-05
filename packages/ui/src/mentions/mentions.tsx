@@ -251,7 +251,7 @@ export function Mentions({
           aria-label="提及候选"
           style={{ top: coords.top, left: coords.left }}
           className={cn(
-            "absolute z-50 flex max-h-60 w-56 flex-col gap-0.5 overflow-y-auto rounded-[var(--radius)] border border-border bg-surface p-1 shadow-lg",
+            "absolute z-50 flex max-h-60 w-56 flex-col gap-0.5 overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 shadow-lg",
             popupClassName,
           )}
         >

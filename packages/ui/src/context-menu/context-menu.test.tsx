@@ -41,7 +41,7 @@ describe("ContextMenu", () => {
     expect(screen.getByText("编辑")).toBeTruthy();
     expect(screen.getByText("操作")).toBeTruthy();
     expect(screen.getByText("删除").className).toContain("text-danger");
-    expect(document.querySelector(".bg-surface.border-border")).not.toBeNull();
+    expect(document.querySelector(".bg-surface.border-hairline")).not.toBeNull();
     expect(document.querySelector('[role="separator"]')).not.toBeNull();
   });
 

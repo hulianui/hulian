@@ -57,7 +57,7 @@ export const DocumentSheet = forwardRef<HTMLDivElement, DocumentSheetProps>(
               <button
                 type="button"
                 onClick={handlePrint}
-                className="inline-flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-3 text-sm font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                className="inline-flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-hairline bg-surface px-3 text-sm font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 <svg
                   viewBox="0 0 24 24"

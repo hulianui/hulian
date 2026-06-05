@@ -27,7 +27,7 @@ describe("Popover", () => {
     expect(screen.getByText("标题")).toBeTruthy();
     expect(screen.getByText("说明")).toBeTruthy();
     expect(screen.getByText("正文")).toBeTruthy();
-    const popup = document.querySelector(".bg-surface.border-border");
+    const popup = document.querySelector(".bg-surface.border-hairline");
     expect(popup).not.toBeNull();
   });
 

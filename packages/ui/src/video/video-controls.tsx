@@ -41,7 +41,7 @@ function PlaybackRateMenu({ rates }: { rates: number[] }) {
         {rate}×
       </Menu.Button>
       <Menu.Content
-        className="z-10 flex min-w-28 flex-col rounded-[var(--radius)] border border-border bg-surface p-1 shadow-lg outline-none"
+        className="z-10 flex min-w-28 flex-col rounded-[var(--radius)] border border-hairline bg-surface p-1 shadow-lg outline-none"
         placement="top end"
       >
         <Menu.RadioGroup className="flex flex-col" value={String(rate)}>

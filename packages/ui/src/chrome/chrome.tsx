@@ -16,7 +16,7 @@ export function Chrome({
   return (
     <div
       {...props}
-      className={cn("overflow-hidden rounded-xl border border-border bg-surface shadow-lg", className)}
+      className={cn("overflow-hidden rounded-xl border border-hairline bg-surface shadow-lg", className)}
     >
       {/* 标签页条：红绿灯 + 单个激活标签 */}
       <div className="flex items-end gap-2 bg-bg px-3 pt-2">

@@ -63,7 +63,7 @@ export function Fab({
               }}
               className={cn(
                 sz.action,
-                "flex items-center justify-center rounded-full border border-border bg-surface text-foreground shadow-lg outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                "flex items-center justify-center rounded-full border border-hairline bg-surface text-foreground shadow-lg outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               )}
             >
               {a.icon}

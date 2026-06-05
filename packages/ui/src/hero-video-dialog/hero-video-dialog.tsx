@@ -60,7 +60,7 @@ export function HeroVideoDialog({ thumbnailSrc, thumbnailAlt = "", videoSrc, cla
             </button>
             <div
               onClick={(e) => e.stopPropagation()}
-              className="aspect-video w-full max-w-3xl overflow-hidden rounded-[var(--radius)] border border-border bg-black shadow-2xl"
+              className="aspect-video w-full max-w-3xl overflow-hidden rounded-[var(--radius)] border border-hairline bg-black shadow-2xl"
             >
               <iframe
                 src={videoSrc}

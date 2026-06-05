@@ -16,7 +16,7 @@ const overlayTransition = {
 // side 决定贴边定位 + 尺寸 + 内边框 + 关闭态 translate（落在 starting/ending-style → 滑入/滑出）。
 export const drawerVariants = cva(
   [
-    "fixed z-50 flex flex-col gap-1 bg-surface border-border p-6 text-foreground shadow-xl outline-none",
+    "fixed z-50 flex flex-col gap-1 bg-surface border-hairline p-6 text-foreground shadow-xl outline-none",
   ],
   {
     variants: {

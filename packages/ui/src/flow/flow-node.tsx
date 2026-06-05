@@ -95,7 +95,7 @@ export function FlowNodeView<T>({
             e.stopPropagation();
             onDelete(node.id);
           }}
-          className="absolute -right-2.5 -top-2.5 grid size-5 place-items-center rounded-full border border-border bg-surface text-muted shadow-sm transition-colors hover:border-danger hover:text-danger"
+          className="absolute -right-2.5 -top-2.5 grid size-5 place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm transition-colors hover:border-danger hover:text-danger"
         >
           <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
             <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />

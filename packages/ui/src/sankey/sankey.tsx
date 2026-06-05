@@ -192,7 +192,7 @@ export function Sankey({
       {/* tooltip（复用宿主层 div，跟随指针） */}
       {renderTooltip && hover && tip && (
         <div
-          className="pointer-events-none absolute z-10 max-w-[220px] rounded-[var(--radius)] border border-border bg-surface px-2.5 py-1.5 text-xs text-foreground shadow-md"
+          className="pointer-events-none absolute z-10 max-w-[220px] rounded-[var(--radius)] border border-hairline bg-surface px-2.5 py-1.5 text-xs text-foreground shadow-md"
           style={tooltipStyle(tip)}
         >
           {renderTooltip(hover)}

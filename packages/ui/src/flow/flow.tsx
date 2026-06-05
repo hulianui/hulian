@@ -420,7 +420,7 @@ export function Flow<T>({
                         onEdgesDelete([edge.id]);
                         setSelectedEdge(null);
                       }}
-                      className="grid size-[18px] place-items-center rounded-full border border-border bg-surface text-muted shadow-sm hover:border-danger hover:text-danger"
+                      className="grid size-[18px] place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm hover:border-danger hover:text-danger"
                     >
                       <svg viewBox="0 0 16 16" className="size-2.5" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden>
                         <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
@@ -470,7 +470,7 @@ export function Flow<T>({
 
       {/* 缩放控制条 */}
       {controls && (
-        <div className="absolute bottom-3 right-3 flex flex-col overflow-hidden rounded-[var(--radius)] border border-border bg-surface shadow-sm">
+        <div className="absolute bottom-3 right-3 flex flex-col overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface shadow-sm">
           <ControlBtn label="放大" onClick={() => zoomBy(ZOOM_STEP)}>
             <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
               <path d="M10 5v10M5 10h10" strokeLinecap="round" />

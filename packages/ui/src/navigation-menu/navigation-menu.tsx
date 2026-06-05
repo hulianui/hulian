@@ -38,7 +38,7 @@ export function NavigationMenu({ children, className, ...props }: NavigationMenu
         <BaseNav.Positioner sideOffset={8} className="z-50 outline-none">
           <BaseNav.Popup
             className={cn(
-              "relative overflow-hidden rounded-[var(--radius)] border border-border bg-surface text-foreground shadow-xl outline-none",
+              "relative overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
               "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
             style={popupMorph}

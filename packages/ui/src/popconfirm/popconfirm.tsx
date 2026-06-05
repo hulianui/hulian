@@ -87,7 +87,7 @@ export function Popconfirm({
         <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
           <BasePopover.Popup
             className={cn(
-              "w-[min(90vw,18rem)] rounded-[var(--radius)] border border-border bg-surface p-4 text-foreground shadow-xl outline-none",
+              "w-[min(90vw,18rem)] rounded-[var(--radius)] border border-hairline bg-surface p-4 text-foreground shadow-xl outline-none",
               "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
               className,
             )}

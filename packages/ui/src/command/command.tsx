@@ -171,7 +171,7 @@ export function Command({
         <BaseDialog.Popup
           initialFocus={inputRef}
           className={cn(
-            "fixed left-1/2 top-[15vh] z-50 flex max-h-[70vh] w-[min(92vw,40rem)] -translate-x-1/2 flex-col overflow-hidden rounded-[var(--radius)] border border-border bg-surface text-foreground shadow-xl outline-none",
+            "fixed left-1/2 top-[15vh] z-50 flex max-h-[70vh] w-[min(92vw,40rem)] -translate-x-1/2 flex-col overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
             "data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0 data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0",
             className,
           )}

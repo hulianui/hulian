@@ -90,7 +90,7 @@ export function HoverCardContent({
           onMouseEnter={ctx?.open}
           onMouseLeave={ctx?.close}
           className={cn(
-            "w-[min(90vw,20rem)] rounded-[var(--radius)] border border-border bg-surface p-4 text-foreground shadow-xl outline-none",
+            "w-[min(90vw,20rem)] rounded-[var(--radius)] border border-hairline bg-surface p-4 text-foreground shadow-xl outline-none",
             "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}

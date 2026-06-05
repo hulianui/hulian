@@ -156,7 +156,7 @@ export function Carousel({
 
   const hasControls = count > 1;
   const arrowBase =
-    "absolute top-1/2 z-10 grid size-9 -translate-y-1/2 place-items-center rounded-full border border-border bg-surface/80 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-40";
+    "absolute top-1/2 z-10 grid size-9 -translate-y-1/2 place-items-center rounded-full border border-hairline bg-surface/80 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-40";
 
   return (
     <div

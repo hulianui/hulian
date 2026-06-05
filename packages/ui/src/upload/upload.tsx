@@ -138,7 +138,7 @@ export function Upload({
           type="button"
           disabled={disabled}
           onClick={openDialog}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius)] border border-border bg-surface px-4 text-sm font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-4 text-sm font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50"
         >
           <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
             <path d="M10 13V4M6 8l4-4 4 4M4 15h12" strokeLinecap="round" strokeLinejoin="round" />

@@ -32,7 +32,7 @@ describe("HoverCard", () => {
     // 越过 delay 后打开
     act(() => void vi.advanceTimersByTime(150));
     expect(screen.getByText("简介卡片")).toBeTruthy();
-    expect(document.querySelector(".bg-surface.border-border")).not.toBeNull();
+    expect(document.querySelector(".bg-surface.border-hairline")).not.toBeNull();
   });
 
   it("移出后经过 closeDelay 关闭卡片", () => {

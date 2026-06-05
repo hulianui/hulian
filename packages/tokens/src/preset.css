@@ -10,6 +10,7 @@
   --color-foreground: var(--color-foreground);
   --color-muted: var(--color-muted);
   --color-border: var(--color-border);
+  --color-hairline: var(--color-hairline);
   --color-ring: var(--color-ring);
   --color-primary: var(--color-primary);
   --color-primary-foreground: var(--color-primary-foreground);

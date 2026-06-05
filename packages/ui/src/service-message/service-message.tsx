@@ -48,7 +48,7 @@ export function ServiceMessage({
   return (
     <div
       className={cn(
-        "w-full max-w-sm overflow-hidden rounded-[var(--radius)] border border-border bg-surface text-foreground shadow-sm",
+        "w-full max-w-sm overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-sm",
         className,
       )}
       {...props}

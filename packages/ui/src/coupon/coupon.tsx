@@ -100,7 +100,7 @@ export function Coupon({
       }
       className={cn(
         // 对齐项目 elevated 卡片的描边+阴影（resting shadow-sm，selected 时 border-primary 经 twMerge 覆盖）
-        "relative isolate flex overflow-hidden rounded-xl border border-border bg-surface text-left shadow-sm",
+        "relative isolate flex overflow-hidden rounded-xl border border-hairline bg-surface text-left shadow-sm",
         HEIGHT[size],
         selected && "border-primary ring-2 ring-ring",
         inactive && "opacity-60 grayscale",

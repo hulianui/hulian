@@ -146,7 +146,7 @@ function NotificationCard({ record }: { record: NotificationRecord }) {
   return (
     <div
       className={cn(
-        "pointer-events-auto w-full rounded-[var(--radius)] border border-l-2 border-border bg-surface p-4 shadow-lg",
+        "pointer-events-auto w-full rounded-[var(--radius)] border border-l-2 border-hairline bg-surface p-4 shadow-lg",
         typeBorder[type],
         slide,
       )}

@@ -146,7 +146,7 @@ function ModalDialog({ record }: { record: ModalRecord }) {
         />
         <BaseDialog.Popup
           className={cn(
-            "fixed left-1/2 top-1/2 w-[min(90vw,26rem)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius)] border border-border bg-surface p-6 text-foreground shadow-xl outline-none",
+            "fixed left-1/2 top-1/2 w-[min(90vw,26rem)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius)] border border-hairline bg-surface p-6 text-foreground shadow-xl outline-none",
             "data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0 data-[ending-style]:scale-[0.96] data-[ending-style]:opacity-0",
           )}
           style={overlayTransition}

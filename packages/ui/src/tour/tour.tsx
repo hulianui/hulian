@@ -191,7 +191,7 @@ export function Tour({
         aria-labelledby={step.title != null ? titleId : undefined}
         aria-describedby={step.description != null ? descId : undefined}
         className={cn(
-          "fixed w-[min(90vw,20rem)] rounded-[var(--radius)] border border-border bg-surface p-4 shadow-xl",
+          "fixed w-[min(90vw,20rem)] rounded-[var(--radius)] border border-hairline bg-surface p-4 shadow-xl",
           card ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         style={{

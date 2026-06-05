@@ -46,7 +46,7 @@ function ToastList() {
         key={t.id}
         toast={t}
         className={cn(
-          "flex items-start gap-3 rounded-[var(--radius)] border border-l-2 border-border bg-surface p-4 shadow-lg",
+          "flex items-start gap-3 rounded-[var(--radius)] border border-l-2 border-hairline bg-surface p-4 shadow-lg",
           toneBorder[tone] ?? toneBorder.neutral,
           // 进出场：滑入 + 淡入，用 motion-token CSS 镜像驱动 Base UI data-* 过渡
           "data-[starting-style]:translate-x-4 data-[starting-style]:opacity-0 data-[ending-style]:translate-x-4 data-[ending-style]:opacity-0",

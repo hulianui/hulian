@@ -48,7 +48,7 @@ describe("Select", () => {
     render(<Basic open />);
     expect(screen.getByText("无衬线")).toBeTruthy();
     expect(screen.getByText("等宽")).toBeTruthy();
-    const popup = document.querySelector(".bg-surface.border-border");
+    const popup = document.querySelector(".bg-surface.border-hairline");
     expect(popup).not.toBeNull();
   });
 

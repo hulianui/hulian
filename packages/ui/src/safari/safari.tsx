@@ -8,7 +8,7 @@ export function Safari({ url = "hulian.design", imageSrc, children, className, .
   return (
     <div
       {...props}
-      className={cn("overflow-hidden rounded-xl border border-border bg-surface shadow-lg", className)}
+      className={cn("overflow-hidden rounded-xl border border-hairline bg-surface shadow-lg", className)}
     >
       {/* 顶栏：红绿灯 + 地址胶囊 */}
       <div className="flex items-center gap-2 border-b border-border bg-bg px-3 py-2">

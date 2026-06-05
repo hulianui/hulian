@@ -32,7 +32,7 @@ export function MenuContent({
       <BaseMenu.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
         <BaseMenu.Popup
           className={cn(
-            "min-w-[8rem] rounded-[var(--radius)] border border-border bg-surface p-1 text-foreground shadow-xl outline-none",
+            "min-w-[8rem] rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none",
             "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}

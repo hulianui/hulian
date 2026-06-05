@@ -13,7 +13,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         solid: "bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover hover:shadow",
-        outline: "border border-border bg-surface text-foreground shadow-sm hover:bg-surface-hover",
+        outline: "border border-hairline bg-surface text-foreground shadow-sm hover:bg-surface-hover",
         ghost: "text-foreground hover:bg-surface-hover",
         // 文字链接按钮：零横向内边距，文字直接贴单元格/容器左缘，用于表格行内操作（查看/编辑）等。
         link: "text-primary underline-offset-4 hover:underline",

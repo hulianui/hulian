@@ -141,7 +141,7 @@ export function Cascader({
         <BasePopover.Positioner side="bottom" align="start" sideOffset={6} className="z-50">
           <BasePopover.Popup
             className={cn(
-              "flex max-h-[min(20rem,var(--available-height))] flex-col rounded-[var(--radius)] border border-border bg-surface text-foreground shadow-xl outline-none",
+              "flex max-h-[min(20rem,var(--available-height))] flex-col rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
               "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
             style={overlayTransition}
