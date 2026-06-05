@@ -18,7 +18,7 @@ export function TrustBar() {
       <Text tone="muted" size="sm" className="mb-6 text-center">
         已有 18,000+ 团队在瀚云上构建与交付
       </Text>
-      <Marquee pauseOnHover duration={32} gap="3rem">
+      <Marquee fade pauseOnHover duration={32} gap="3rem">
         {companies.map((name) => (
           <span
             key={name}

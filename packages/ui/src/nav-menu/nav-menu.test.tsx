@@ -136,4 +136,37 @@ describe("NavMenu", () => {
     // 飞出层里的子项（用户）也在 DOM（CSS hover 控制可见，DOM 恒在）
     expect(screen.getByText("用户")).toBeTruthy();
   });
+
+  it("actions 行尾操作渲染在 treeitem 按钮【之外】（不形成 <button> 嵌套）且可独立点击", () => {
+    const onAction = vi.fn();
+    const onSelect = vi.fn();
+    const items: NavMenuNode[] = [
+      {
+        key: "c1",
+        label: "对话一",
+        actions: (
+          <button
+            type="button"
+            aria-label="删除"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAction();
+            }}
+          >
+            x
+          </button>
+        ),
+      },
+    ];
+    render(<NavMenu items={items} onSelect={onSelect} />);
+    const treeitem = screen.getByText("对话一").closest('[role="treeitem"]') as HTMLElement;
+    const del = screen.getByLabelText("删除");
+    // 关键：操作按钮不是 treeitem 按钮的后代 —— 否则就是非法的 <button> 套 <button>
+    expect(treeitem.contains(del)).toBe(false);
+    expect(treeitem.querySelector("button")).toBeNull();
+    // 点击操作触发自身回调，且不触发行 onSelect
+    fireEvent.click(del);
+    expect(onAction).toHaveBeenCalledOnce();
+    expect(onSelect).not.toHaveBeenCalled();
+  });
 });

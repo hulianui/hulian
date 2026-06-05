@@ -42,8 +42,8 @@ function stickyClass<TData>(column: Column<TData, unknown>): string | undefined 
   // 固定列须实心底色（否则横滚时下层内容透出来）；边缘列加投影分隔（防 [[element-ui-table-fixed-right-overflow-leak]] 那类溢出/透漏）
   return cn(
     "bg-bg",
-    pinned === "left" && column.getIsLastColumn("left") && "shadow-[2px_0_5px_-2px_rgba(0,0,0,0.25)]",
-    pinned === "right" && column.getIsFirstColumn("right") && "shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.25)]",
+    pinned === "left" && column.getIsLastColumn("left") && "shadow-pin-left",
+    pinned === "right" && column.getIsFirstColumn("right") && "shadow-pin-right",
   );
 }
 

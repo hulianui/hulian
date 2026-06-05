@@ -7,14 +7,21 @@ import {
   CardBody,
   CardSkeleton,
   Drawer,
+  DrawerClose,
   DrawerContent,
+  Field,
   Heading,
   Input,
   Markdown,
   Popconfirm,
   Segmented,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
   Tag,
   Text,
+  Textarea,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -24,16 +31,57 @@ import { articles as seed, KB_CATEGORIES } from "../../_data/knowledge";
 import type { KnowledgeArticle } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
 
+// 表单可选分类（去掉「全部」这个仅用于检索的伪分类）
+const FORM_CATEGORIES = KB_CATEGORIES.filter((c) => c !== "全部");
+interface ArticleDraft {
+  title: string;
+  category: string;
+  excerpt: string;
+  body: string;
+}
+const EMPTY_DRAFT: ArticleDraft = { title: "", category: FORM_CATEGORIES[0], excerpt: "", body: "" };
+
 export default function KnowledgePage() {
   const { data, loading } = useMockData(seed);
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [keyword, setKeyword] = useState("");
   const [category, setCategory] = useState("全部");
   const [active, setActive] = useState<KnowledgeArticle | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [draft, setDraft] = useState(EMPTY_DRAFT);
+  const [titleError, setTitleError] = useState("");
 
   useEffect(() => {
     if (data) setArticles(data);
   }, [data]);
+
+  const openCreate = () => {
+    setDraft(EMPTY_DRAFT);
+    setTitleError("");
+    setCreating(true);
+  };
+
+  const submitDraft = () => {
+    const title = draft.title.trim();
+    if (!title) {
+      setTitleError("请填写文章标题");
+      return;
+    }
+    const body = draft.body.trim();
+    const excerpt = draft.excerpt.trim() || body.slice(0, 48) || "（暂无摘要）";
+    const article: KnowledgeArticle = {
+      id: `kb-${Date.now()}`,
+      title,
+      category: draft.category,
+      excerpt,
+      body: body || excerpt,
+      views: 0,
+      updatedAt: new Date().toISOString().slice(0, 10),
+    };
+    setArticles((prev) => [article, ...prev]);
+    toast({ title: "文章已发布", description: `「${title}」已加入知识库（demo 内存态）`, tone: "info" });
+    setCreating(false);
+  };
 
   const list = useMemo(() => {
     const kw = keyword.trim();
@@ -64,11 +112,7 @@ export default function KnowledgePage() {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button
-                size="sm"
-                aria-label="新增文章"
-                onClick={() => toast({ title: "新增文章", description: "demo 暂未提供编辑器，敬请期待", tone: "neutral" })}
-              >
+              <Button size="sm" aria-label="新增文章" onClick={openCreate}>
                 <Plus className="size-4" /> 新增文章
               </Button>
             }
@@ -173,7 +217,28 @@ export default function KnowledgePage() {
 
       {/* 文章详情抽屉 */}
       <Drawer open={active != null} onOpenChange={(o) => !o && setActive(null)}>
-        <DrawerContent side="right" title={active?.title} className="w-full max-w-xl">
+        <DrawerContent
+          side="right"
+          title={active?.title}
+          className="w-full max-w-xl"
+          footer={
+            <>
+              <DrawerClose render={<Button variant="outline">关闭</Button>} />
+              <Button
+                onClick={() => {
+                  if (active) {
+                    setDraft({ title: active.title, category: active.category, excerpt: active.excerpt, body: active.body });
+                    setTitleError("");
+                    setActive(null);
+                    setCreating(true);
+                  }
+                }}
+              >
+                编辑
+              </Button>
+            </>
+          }
+        >
           {active && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3 text-xs text-muted">
@@ -190,6 +255,78 @@ export default function KnowledgePage() {
               <Markdown>{active.body}</Markdown>
             </div>
           )}
+        </DrawerContent>
+      </Drawer>
+
+      {/* 新增文章抽屉（表单 + 钉底操作区） */}
+      <Drawer open={creating} onOpenChange={setCreating}>
+        <DrawerContent
+          side="right"
+          title="新增知识库文章"
+          description="填写标准应答内容，发布后坐席即可检索。"
+          className="w-full max-w-xl"
+          footer={
+            <>
+              <Button variant="outline" onClick={() => setCreating(false)}>
+                取消
+              </Button>
+              <Button onClick={submitDraft}>
+                <Plus className="size-4" /> 发布文章
+              </Button>
+            </>
+          }
+        >
+          <div className="flex flex-col gap-4">
+            <Field
+              label={
+                <>
+                  文章标题 <span className="text-danger">*</span>
+                </>
+              }
+              error={titleError}
+            >
+              <Input
+                value={draft.title}
+                onChange={(e) => {
+                  setDraft((d) => ({ ...d, title: e.target.value }));
+                  if (titleError) setTitleError("");
+                }}
+                placeholder="例如：退货退款政策与时效说明"
+              />
+            </Field>
+            <Field label="所属分类">
+              <Select
+                items={FORM_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                value={draft.category}
+                onValueChange={(v) => setDraft((d) => ({ ...d, category: (v as string) ?? d.category }))}
+              >
+                <SelectTrigger className="w-full" />
+                <SelectContent>
+                  {FORM_CATEGORIES.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="摘要" description="列表卡片展示，留空则自动截取正文前 48 字。">
+              <Textarea
+                value={draft.excerpt}
+                onChange={(e) => setDraft((d) => ({ ...d, excerpt: e.target.value }))}
+                rows={2}
+                placeholder="一句话概括文章要点…"
+              />
+            </Field>
+            <Field label="正文" description="支持 Markdown 语法。">
+              <Textarea
+                value={draft.body}
+                onChange={(e) => setDraft((d) => ({ ...d, body: e.target.value }))}
+                rows={8}
+                placeholder={"## 处理流程\n1. …\n2. …"}
+              />
+            </Field>
+          </div>
         </DrawerContent>
       </Drawer>
     </div>

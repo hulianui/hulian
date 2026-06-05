@@ -25,6 +25,17 @@
   --color-chart-3: var(--color-chart-3);
   --color-chart-4: var(--color-chart-4);
   --radius: var(--radius);
+  /* 阴影：映射到 semantic.css 的运行时 --hl-shadow-*（明暗在 [data-theme] 切值）。
+     inline 让 shadow-sm/md/lg/xl/2xl 工具类直接吐 var(--hl-shadow-*) →
+     现存所有 shadow-* 零改动随主题自动切。覆盖 Tailwind 默认同名 token。 */
+  --shadow-sm: var(--hl-shadow-sm);
+  --shadow-md: var(--hl-shadow-md);
+  --shadow-lg: var(--hl-shadow-lg);
+  --shadow-xl: var(--hl-shadow-xl);
+  --shadow-2xl: var(--hl-shadow-2xl);
+  /* 冻结列水平分隔影 → shadow-pin-left / shadow-pin-right 工具类 */
+  --shadow-pin-left: var(--hl-shadow-pin-left);
+  --shadow-pin-right: var(--hl-shadow-pin-right);
 }
 
 /* 响应式断点 SSOT —— 显式声明（与 Tailwind v4 默认对齐），供 sm:/md:/lg:/xl:/2xl: 工具类与

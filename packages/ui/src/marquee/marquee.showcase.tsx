@@ -1,5 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
+import { Code2, Folder, File, Gauge, Search, Calendar, Wrench, Link } from "../_icons";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Marquee } from "./marquee";
 
@@ -12,13 +13,24 @@ function Chip({ children }: { children: ReactNode }) {
   );
 }
 
+// logo 墙圆形图标位：中性容器 + 语义色图标，配合 fade 渐隐成「图标墙」观感。
+function LogoTile({ children }: { children: ReactNode }) {
+  return (
+    <span className="flex size-12 items-center justify-center rounded-2xl border border-border bg-surface text-muted shadow-sm">
+      {children}
+    </span>
+  );
+}
+
 const items = ["React", "Vue", "Svelte", "Solid", "Angular", "Qwik"];
+const logos = [Code2, Folder, File, Gauge, Search, Calendar, Wrench, Link];
 
 export const marqueeShowcase: ShowcaseSpec = {
   controls: [
     { prop: "direction", type: "select", options: ["left", "right"], defaultValue: "left" },
     { prop: "duration", type: "number", defaultValue: 20 },
     { prop: "pauseOnHover", type: "boolean", defaultValue: true },
+    { prop: "fade", type: "boolean", defaultValue: true },
   ],
   states: [
     {
@@ -32,9 +44,31 @@ export const marqueeShowcase: ShowcaseSpec = {
       ),
     },
     {
-      name: "向右 · 慢速",
+      name: "图标墙（fade 渐隐 · icon 子项）",
       render: () => (
-        <Marquee className="w-80" direction="right" duration={30}>
+        <Marquee className="w-80" fade pauseOnHover gap="1.25rem">
+          {logos.map((Icon, i) => (
+            <LogoTile key={i}>
+              <Icon className="size-6" />
+            </LogoTile>
+          ))}
+        </Marquee>
+      ),
+    },
+    {
+      name: "向右 · 慢速 · fade",
+      render: () => (
+        <Marquee className="w-80" direction="right" duration={30} fade>
+          {items.map((c) => (
+            <Chip key={c}>{c}</Chip>
+          ))}
+        </Marquee>
+      ),
+    },
+    {
+      name: "竖向（vertical · fade）",
+      render: () => (
+        <Marquee className="h-56" vertical fade pauseOnHover>
           {items.map((c) => (
             <Chip key={c}>{c}</Chip>
           ))}
@@ -48,6 +82,7 @@ export const marqueeShowcase: ShowcaseSpec = {
       direction={p.direction as "left" | "right"}
       duration={p.duration as number}
       pauseOnHover={p.pauseOnHover as boolean}
+      fade={p.fade as boolean}
     >
       {items.map((c) => (
         <Chip key={c}>{c}</Chip>
@@ -55,5 +90,5 @@ export const marqueeShowcase: ShowcaseSpec = {
     </Marquee>
   ),
   toCode: (p) =>
-    `<Marquee direction="${p.direction}" duration={${p.duration}} pauseOnHover={${p.pauseOnHover}}>\n  {items}\n</Marquee>`,
+    `<Marquee direction="${p.direction}" duration={${p.duration}} pauseOnHover={${p.pauseOnHover}} fade={${p.fade}}>\n  {items}\n</Marquee>`,
 };

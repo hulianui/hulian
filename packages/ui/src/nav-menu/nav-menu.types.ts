@@ -10,6 +10,12 @@ export interface NavMenuItem {
   /** 叶子链接：提供则渲染 `<a>`（点击导航），否则渲染 `<button>`。父项忽略。 */
   href?: string;
   disabled?: boolean;
+  /**
+   * 行尾操作区（如删除/更多按钮）。渲染在该行 treeitem 按钮/链接【之外】（绝对覆盖行右侧），
+   * 避免把 `<button>` 等交互元素嵌进 treeitem 按钮造成非法 HTML / hydration 报错。
+   * 可用 NavMenu 暴露的 `group-hover/nav-row` 钩子做「hover 才显」。仅 inline 态生效。
+   */
+  actions?: ReactNode;
   /** 子菜单；非空即视为可展开父项。 */
   children?: NavMenuItem[];
 }

@@ -8,7 +8,7 @@ export default function DemosPage() {
     <main className="mx-auto max-w-5xl px-6 py-16">
       <header className="mb-10">
         <Heading level={1} size="3xl">
-          内置示例
+          内置模版
         </Heading>
         <Text tone="muted" className="mt-2">
           用 @hulianui/ui 100% 搭建的真实业务场景 —— 以 dogfood 驱动组件库迭代。

@@ -45,6 +45,7 @@ export function DrawerContent({
   title,
   description,
   children,
+  footer,
   className,
 }: DrawerContentProps) {
   return (
@@ -60,7 +61,13 @@ export function DrawerContent({
             {description}
           </BaseDialog.Description>
         )}
-        <div className="mt-2 flex flex-1 flex-col">{children}</div>
+        {/* 正文独立滚动，长内容不挤压 footer，footer 始终钉底可见 */}
+        <div className="mt-2 min-h-0 flex-1 overflow-y-auto">{children}</div>
+        {footer != null && (
+          <div className="mt-4 flex shrink-0 items-center justify-end gap-2 border-t border-border pt-4">
+            {footer}
+          </div>
+        )}
       </BaseDialog.Popup>
     </BaseDialog.Portal>
   );

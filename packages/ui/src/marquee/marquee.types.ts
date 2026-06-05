@@ -12,4 +12,10 @@ export interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
   pauseOnHover?: boolean;
   /** 子项复制份数，默认 4（窄内容也铺满不露缝） */
   repeat?: number;
+  /** 竖向滚动，默认 false（横向）。竖向时 direction="left" 视为向上滚、"right" 向下滚 */
+  vertical?: boolean;
+  /** 两端渐隐遮罩（mask-image），默认 false。开启后边缘淡入淡出，适合 logo / 图标墙 */
+  fade?: boolean;
+  /** 渐隐区宽度（CSS 长度），默认 "15%"。仅 fade 为真时生效 */
+  fadeWidth?: string;
 }

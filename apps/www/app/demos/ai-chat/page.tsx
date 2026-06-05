@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import {
+  AnimatedThemeToggler,
   Layout,
   NavMenu,
   type NavMenuNode,
@@ -120,31 +121,30 @@ function Rail({
       .filter((c) => c.group === group)
       .map((c) => ({
         key: c.id,
-        label: (
-          <span className="group/item flex w-full items-center justify-between gap-1">
-            <span className="truncate">{c.title}</span>
-            {/* 删除按钮：hover 才显；Popconfirm 二次确认 */}
-            <Popconfirm
-              title="删除对话？"
-              description="此操作不可撤销，对话记录将永久删除。"
-              danger
-              okText="删除"
-              onConfirm={async () => {
-                await new Promise<void>((r) => setTimeout(r, 400));
-                onDelete(c.id);
-                toast({ title: "对话已删除", tone: "info" });
-              }}
+        label: c.title,
+        // 删除按钮放进 NavMenu 行尾 actions 槽——渲染在 treeitem 按钮【外】，避免 <button> 套 <button>
+        // 的非法嵌套 / hydration 报错。hover/聚焦才显，用 NavMenu 暴露的 group-hover/nav-row 行级钩子。
+        actions: (
+          <Popconfirm
+            title="删除对话？"
+            description="此操作不可撤销，对话记录将永久删除。"
+            danger
+            okText="删除"
+            onConfirm={async () => {
+              await new Promise<void>((r) => setTimeout(r, 400));
+              onDelete(c.id);
+              toast({ title: "对话已删除", tone: "info" });
+            }}
+          >
+            <button
+              type="button"
+              aria-label={`删除对话：${c.title}`}
+              onClick={(e) => e.stopPropagation()}
+              className="invisible rounded p-0.5 text-muted opacity-0 transition-opacity hover:text-danger group-hover/nav-row:visible group-hover/nav-row:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              <button
-                type="button"
-                aria-label={`删除对话：${c.title}`}
-                onClick={(e) => e.stopPropagation()}
-                className="invisible shrink-0 rounded p-0.5 text-muted opacity-0 transition-opacity hover:text-danger group-hover/item:visible group-hover/item:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            </Popconfirm>
-          </span>
+              <Trash2 className="size-3.5" />
+            </button>
+          </Popconfirm>
         ),
       })),
   })).filter((g) => g.children.length > 0);
@@ -441,7 +441,8 @@ export default function AiChatDemo() {
           demo
         </Tag>
       </Stack>
-      <Combobox
+      <Stack direction="row" align="center" className="gap-2">
+        <Combobox
         items={MODELS}
         value={MODELS.find((m) => m.value === model) ?? undefined}
         onValueChange={(item) => {
@@ -459,12 +460,14 @@ export default function AiChatDemo() {
             </ComboboxItem>
           )}
         </ComboboxContent>
-      </Combobox>
+        </Combobox>
+        <AnimatedThemeToggler />
+      </Stack>
     </Stack>
   );
 
   return (
-    <div className="mx-auto h-[calc(100dvh-3.25rem)] max-w-[1280px] overflow-hidden">
+    <div className="mx-auto h-dvh max-w-[1280px] overflow-hidden">
       {/* 命令式 toast 单挂：模型切换 / 消息操作 / 账户菜单的反馈都进此 Viewport */}
       <ToastProvider />
       <Layout className="h-full">

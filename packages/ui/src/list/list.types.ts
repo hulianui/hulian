@@ -38,6 +38,13 @@ export interface ListProps<T = unknown> extends Omit<HTMLAttributes<HTMLDivEleme
   size?: ListSize;
   /** 外层边框 + 圆角容器（栅格态下忽略，由卡片自带边框）。@default false */
   bordered?: boolean;
+  /**
+   * 行 / 头尾插槽的水平内边距（与 bordered 解耦）。
+   * 无框 List 放进侧栏、面板等已有容器时设 `inset` 让内容不贴边；
+   * 反之放进自带内边距的 CardBody 时保持默认 flush 即可。
+   * 不传时回退到 bordered 的值（有框必内缩，无框默认贴边）。
+   */
+  inset?: boolean;
   /** 行分隔线（栅格态下忽略）。@default true */
   split?: boolean;
   /** 栅格卡片态（复用 Grid）；传 true 用默认配置。 */

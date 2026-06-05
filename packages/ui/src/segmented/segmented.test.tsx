@@ -84,6 +84,22 @@ describe("Segmented", () => {
     expect(radios[2].getAttribute("aria-checked")).toBe("true");
   });
 
+  it("富 label 段：ariaLabel 优先；缺省时降级取 value", () => {
+    const rich: SegmentedItem[] = [
+      { value: "monthly", label: "按月付费" },
+      { value: "yearly", ariaLabel: "按年付费，立省 2 个月", label: <span>按年付费🏷️</span> },
+      { value: "lifetime", label: <span>永久</span> },
+    ];
+    const { getAllByRole } = render(<Segmented items={rich} aria-label="计费周期" />);
+    const radios = getAllByRole("radio");
+    // 字符串 label：不强加 aria-label（可见文本即名称）
+    expect(radios[0].getAttribute("aria-label")).toBeNull();
+    // 富 label + ariaLabel：用 ariaLabel
+    expect(radios[1].getAttribute("aria-label")).toBe("按年付费，立省 2 个月");
+    // 富 label 无 ariaLabel：降级取 value
+    expect(radios[2].getAttribute("aria-label")).toBe("lifetime");
+  });
+
   it("单段禁用 → 该 button disabled", () => {
     const withDisabled: SegmentedItem[] = [
       { value: "a", label: "甲" },

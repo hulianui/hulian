@@ -5,6 +5,8 @@ export interface SegmentedItem {
   value: string;
   /** 段内容（文字或图标）。 */
   label: ReactNode;
+  /** 无障碍名称：label 为富节点（图标/徽标）时必填，否则降级取 value（英文键，念读不友好）。 */
+  ariaLabel?: string;
   /** 单段禁用（整体 disabled 之外的细粒度控制）。 */
   disabled?: boolean;
 }

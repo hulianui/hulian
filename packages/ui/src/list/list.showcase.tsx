@@ -115,6 +115,19 @@ export const listShowcase: ShowcaseSpec = {
   states: [
     { name: "基础(meta + 操作)", render: () => <BasicDemo bordered split /> },
     { name: "无边框 + 无分隔", render: () => <BasicDemo bordered={false} split={false} /> },
+    {
+      name: "无框 + inset（放进侧栏/面板）",
+      render: () => (
+        <div className="w-72 max-w-full rounded-[var(--radius)] border border-border bg-surface">
+          <List
+            inset
+            items={PEOPLE}
+            renderItem={(p) => <PersonItem p={p} />}
+            header={<span className="text-sm text-muted">团队成员</span>}
+          />
+        </div>
+      ),
+    },
     { name: "栅格卡片态", render: () => <GridDemo /> },
     { name: "加载更多", render: () => <LoadMoreDemo /> },
     { name: "分页", render: () => <PaginationDemo /> },

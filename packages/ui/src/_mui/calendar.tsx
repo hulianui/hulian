@@ -1,10 +1,7 @@
 "use client";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import dayjs from "dayjs";
+import { toDayjs } from "../lib/date";
 import type { CalendarProps } from "./calendar.types";
-
-// ISO 字符串 → dayjs（内部用，不向消费者泄漏 dayjs）
-const toDJ = (s?: string | null) => (s ? dayjs(s) : null);
 
 // 瑚琏 Calendar = MUI DateCalendar 罩瑚琏受控 API（对外 ISO 字符串）+ token 皮肤。
 // 大部分配色由 hulianMuiTheme palette 继承（含 theme.alpha 集中重写规避 var() 抛错，见 theme.ts），
@@ -23,10 +20,10 @@ export function Calendar({
     <DateCalendar
       className={className}
       // 受控：value === undefined 时不传（走非受控），否则转 dayjs
-      value={value === undefined ? undefined : toDJ(value)}
-      defaultValue={toDJ(defaultValue) ?? undefined}
-      minDate={toDJ(minDate) ?? undefined}
-      maxDate={toDJ(maxDate) ?? undefined}
+      value={value === undefined ? undefined : toDayjs(value)}
+      defaultValue={toDayjs(defaultValue) ?? undefined}
+      minDate={toDayjs(minDate) ?? undefined}
+      maxDate={toDayjs(maxDate) ?? undefined}
       disabled={disabled}
       readOnly={readOnly}
       onChange={(v) => onValueChange?.(v ? v.toISOString() : null)}

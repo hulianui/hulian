@@ -12,5 +12,10 @@ export interface DrawerContentProps {
   title?: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
+  /**
+   * 钉底操作区（放按钮组）。带上分隔线，正文区独立滚动，footer 始终可见。
+   * 表单 / 详情类抽屉的「取消 / 保存」「关闭」应放这里而非正文末尾。
+   */
+  footer?: ReactNode;
   className?: string;
 }

@@ -140,6 +140,7 @@ export function AdminLayout({
   onTabClose,
   breadcrumb,
   headerExtra,
+  fitViewport = true,
   children,
   className,
   contentClassName,
@@ -219,7 +220,15 @@ export function AdminLayout({
   };
 
   return (
-    <div className={cn("flex h-full min-h-0 w-full bg-bg text-foreground", className)}>
+    <div
+      className={cn(
+        "flex min-h-0 w-full overflow-hidden bg-bg text-foreground",
+        // 整页骨架固定视口高度、自我撑高，内容区内部滚动，不依赖祖先元素定高度；
+        // 嵌入定高容器预览时用 h-full 跟随父容器。
+        fitViewport ? "h-dvh" : "h-full",
+        className,
+      )}
+    >
       <aside data-collapsed={collapsed || undefined} style={siderStyle} className="flex flex-col border-r border-border bg-surface">
         <div className="flex h-16 shrink-0 items-center gap-2 overflow-hidden border-b border-border px-4 font-semibold">
           {collapsed ? (logoCollapsed ?? logo) : logo}

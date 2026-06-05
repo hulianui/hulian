@@ -19,9 +19,10 @@ const TXT: Record<ListSize, string> = { sm: "text-sm", md: "text-sm", lg: "text-
 interface ListCtx {
   size: ListSize;
   grid: boolean;
-  bordered: boolean;
+  /** 已解析的行水平内边距开关（inset ?? bordered）。 */
+  inset: boolean;
 }
-const ListContext = createContext<ListCtx>({ size: "md", grid: false, bordered: false });
+const ListContext = createContext<ListCtx>({ size: "md", grid: false, inset: false });
 
 const DEFAULT_GRID = { cols: 3, gap: 4 };
 
@@ -31,6 +32,7 @@ export function List<T,>({
   children,
   size = "md",
   bordered = false,
+  inset,
   split = true,
   grid,
   header,
@@ -44,6 +46,8 @@ export function List<T,>({
   const isGrid = Boolean(grid);
   const gridCfg = grid && typeof grid === "object" ? grid : {};
   const framed = bordered && !isGrid;
+  // 行/插槽水平内边距与 bordered 解耦：显式 inset 优先，否则回退 bordered。
+  const resolvedInset = inset ?? bordered;
 
   const hasItems = items != null;
   const itemNodes: ReactNode = hasItems
@@ -56,7 +60,7 @@ export function List<T,>({
   let body: ReactNode;
   if (isEmpty) {
     body = (
-      <div className={cn(framed && PAD_X[size])}>
+      <div className={cn(!isGrid && resolvedInset && PAD_X[size])}>
         {empty ?? <Empty title="暂无数据" size={size === "sm" ? "sm" : "md"} />}
       </div>
     );
@@ -83,10 +87,10 @@ export function List<T,>({
     );
   }
 
-  const slotPadX = framed ? PAD_X[size] : "px-0";
+  const slotPadX = !isGrid && resolvedInset ? PAD_X[size] : "px-0";
 
   return (
-    <ListContext.Provider value={{ size, grid: isGrid, bordered }}>
+    <ListContext.Provider value={{ size, grid: isGrid, inset: resolvedInset }}>
       <>
         <div
           className={cn(
@@ -126,8 +130,8 @@ export function List<T,>({
 }
 
 function ListItemBase({ actions, children, className, ...props }: ListItemProps) {
-  const { size, grid, bordered } = useContext(ListContext);
-  const framePadX = grid ? PAD_X[size] : bordered ? PAD_X[size] : "px-0";
+  const { size, grid, inset } = useContext(ListContext);
+  const framePadX = grid || inset ? PAD_X[size] : "px-0";
   return (
     <li
       className={cn(

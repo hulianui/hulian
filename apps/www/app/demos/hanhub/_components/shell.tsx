@@ -106,28 +106,26 @@ export function HanHubShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="h-dvh">
-      <AdminLayout
-        menuItems={MENU}
-        logo={<Logo />}
-        logoCollapsed={<Logo collapsed />}
-        defaultOpenKeys={["g-model", "g-usage", "g-ops"]}
-        selectedKey={active}
-        activeKey={active}
-        tabs={tabs}
-        onMenuSelect={(key: string, _item: NavMenuItem) => go(key)}
-        onTabChange={go}
-        onTabClose={onTabClose}
-        headerExtra={
-          <div className="flex items-center gap-1.5">
-            <BalancePill />
-            <ThemeToggle />
-            <UserMenu />
-          </div>
-        }
-      >
-        {children}
-      </AdminLayout>
-    </div>
+    <AdminLayout
+      menuItems={MENU}
+      logo={<Logo />}
+      logoCollapsed={<Logo collapsed />}
+      defaultOpenKeys={["g-model", "g-usage", "g-ops"]}
+      selectedKey={active}
+      activeKey={active}
+      tabs={tabs}
+      onMenuSelect={(key: string, _item: NavMenuItem) => go(key)}
+      onTabChange={go}
+      onTabClose={onTabClose}
+      headerExtra={
+        <div className="flex items-center gap-1.5">
+          <BalancePill />
+          <ThemeToggle />
+          <UserMenu />
+        </div>
+      }
+    >
+      {children}
+    </AdminLayout>
   );
 }

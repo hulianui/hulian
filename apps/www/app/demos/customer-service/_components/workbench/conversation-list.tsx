@@ -65,6 +65,7 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
       <div className="min-h-0 flex-1 overflow-y-auto">
         <List<Conversation>
           items={visible}
+          inset
           empty={<div className="p-6 text-center text-sm text-muted">该分类暂无会话</div>}
           renderItem={(conv) => {
             const cust = customerById(conv.customerId);

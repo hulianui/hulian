@@ -22,7 +22,7 @@ export function useMockData<T>(seed: T, opts?: { delay?: number; failOnce?: bool
     await sleep(opts?.delay ?? jitter());
     if (opts?.failOnce && !failedRef.current) {
       failedRef.current = true;
-      setError("加载失败，请重试（demo 模拟）");
+      setError("加载失败，请重试（这里报错是故意设计展示组件的）");
       setLoading(false);
       return;
     }

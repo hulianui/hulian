@@ -83,6 +83,57 @@ describe("Marquee", () => {
     expect(root.style.getPropertyValue("--hulian-marquee-duration")).toBe("20s");
     expect(root.style.getPropertyValue("--hulian-marquee-gap")).toBe("2rem");
   });
+  it("vertical → 外层与轨道带 flex-col + 竖向关键帧", () => {
+    const { container } = render(
+      <Marquee vertical>
+        <span>x</span>
+      </Marquee>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).toContain("flex-col");
+    const track = tracksOf(container)[0];
+    expect(track.className).toContain("flex-col");
+    expect(track.className).toContain("hulian-marquee-vertical");
+  });
+  it("默认横向 → 轨道用横向关键帧（非 vertical）", () => {
+    const { container } = render(
+      <Marquee>
+        <span>x</span>
+      </Marquee>,
+    );
+    const track = tracksOf(container)[0];
+    expect(track.className).toContain("[animation:hulian-marquee_");
+    expect(track.className).not.toContain("hulian-marquee-vertical");
+  });
+  it("fade → 外层落 mask-image + fade 宽度变量（横向沿 to right）", () => {
+    const { container } = render(
+      <Marquee fade fadeWidth="20%">
+        <span>x</span>
+      </Marquee>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.getPropertyValue("--hulian-marquee-fade")).toBe("20%");
+    expect(root.style.maskImage).toContain("linear-gradient");
+    expect(root.style.maskImage).toContain("to right");
+  });
+  it("vertical + fade → mask 沿 to bottom", () => {
+    const { container } = render(
+      <Marquee vertical fade>
+        <span>x</span>
+      </Marquee>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.maskImage).toContain("to bottom");
+  });
+  it("默认不 fade → 无 mask-image", () => {
+    const { container } = render(
+      <Marquee>
+        <span>x</span>
+      </Marquee>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.maskImage).toBe("");
+  });
   it("className 与 props 透传", () => {
     const { container } = render(
       <Marquee className="my-4" data-testid="m">

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { LayoutDashboard, Users, Settings, FileText, BarChart3, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Users, Settings, FileText, BarChart3, ShieldCheck, Trash2 } from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { NavMenu } from "./nav-menu";
 import type { NavMenuNode } from "./nav-menu.types";
@@ -45,6 +45,50 @@ const ITEMS: NavMenuNode[] = [
   },
 ];
 
+// 行尾操作（actions 槽）演示用删除按钮：hover/聚焦才显，用 NavMenu 暴露的 group-hover/nav-row 钩子。
+function DeleteAction({ label }: { label: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={`删除：${label}`}
+      onClick={(e) => e.stopPropagation()}
+      className="invisible rounded p-0.5 text-muted opacity-0 transition-opacity hover:text-danger group-hover/nav-row:visible group-hover/nav-row:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+    >
+      <Trash2 className="size-3.5" />
+    </button>
+  );
+}
+
+// 仿 ChatGPT/DeepSeek 会话列表：分时间组 + 每行尾部 hover 显删除（删除按钮渲在行按钮外，无嵌套）。
+const CONVO_ITEMS: NavMenuNode[] = [
+  {
+    type: "group",
+    key: "today",
+    label: "今天",
+    children: [
+      { key: "c1", label: "瑚琏组件库怎么接入", actions: <DeleteAction label="瑚琏组件库怎么接入" /> },
+      { key: "c2", label: "帮我润色一封周报", actions: <DeleteAction label="帮我润色一封周报" /> },
+    ],
+  },
+  {
+    type: "group",
+    key: "yesterday",
+    label: "昨天",
+    children: [
+      { key: "c3", label: "解释 React Server Components", actions: <DeleteAction label="解释 RSC" /> },
+    ],
+  },
+];
+
+function ConvoDemo() {
+  const [sel, setSel] = useState<string[]>(["c1"]);
+  return (
+    <div className="w-60 rounded-[var(--radius)] border border-border bg-surface p-2">
+      <NavMenu items={CONVO_ITEMS} selectedKeys={sel} onSelect={(k) => setSel([k])} />
+    </div>
+  );
+}
+
 function Demo(props: {
   mode?: "inline" | "collapsed";
   defaultOpenKeys?: string[];
@@ -81,6 +125,10 @@ export const navMenuShowcase: ShowcaseSpec = {
       render: () => (
         <Demo mode="inline" defaultOpenKeys={["users"]} defaultSelectedKeys={["users-roles"]} />
       ),
+    },
+    {
+      name: "inline · 行尾操作 actions（hover 显删除 · 会话列表）",
+      render: () => <ConvoDemo />,
     },
     { name: "collapsed（图标轨 · 悬浮飞出）", render: () => <Demo mode="collapsed" /> },
   ],

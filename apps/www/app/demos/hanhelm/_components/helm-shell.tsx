@@ -103,28 +103,26 @@ export function HanHelmShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="h-dvh">
-      <AdminLayout
-        menuItems={MENU}
-        logo={<Logo />}
-        logoCollapsed={<Logo collapsed />}
-        defaultOpenKeys={["g-dispatch", "g-resource", "g-ops"]}
-        selectedKey={active}
-        activeKey={active}
-        tabs={tabs}
-        onMenuSelect={(key: string, _item: NavMenuItem) => go(key)}
-        onTabChange={go}
-        onTabClose={onTabClose}
-        headerExtra={
-          <div className="flex items-center gap-1.5">
-            <SchedulerPill />
-            <ThemeToggle />
-            <UserMenu />
-          </div>
-        }
-      >
-        {children}
-      </AdminLayout>
-    </div>
+    <AdminLayout
+      menuItems={MENU}
+      logo={<Logo />}
+      logoCollapsed={<Logo collapsed />}
+      defaultOpenKeys={["g-dispatch", "g-resource", "g-ops"]}
+      selectedKey={active}
+      activeKey={active}
+      tabs={tabs}
+      onMenuSelect={(key: string, _item: NavMenuItem) => go(key)}
+      onTabChange={go}
+      onTabClose={onTabClose}
+      headerExtra={
+        <div className="flex items-center gap-1.5">
+          <SchedulerPill />
+          <ThemeToggle />
+          <UserMenu />
+        </div>
+      }
+    >
+      {children}
+    </AdminLayout>
   );
 }

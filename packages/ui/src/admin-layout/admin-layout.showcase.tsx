@@ -63,6 +63,7 @@ function Demo() {
   return (
     <div className="h-[560px] w-full overflow-hidden rounded-[var(--radius)] border border-border">
       <AdminLayout
+        fitViewport={false}
         menuItems={menu}
         logo={<span className="text-base font-bold text-primary">瑚琏 Admin</span>}
         logoCollapsed={<span className="text-base font-bold text-primary">瑚</span>}

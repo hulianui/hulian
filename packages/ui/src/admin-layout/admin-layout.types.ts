@@ -50,6 +50,12 @@ export interface AdminLayoutProps {
   /** 顶栏右侧扩展区（用户菜单 / 通知 / 主题切换等）。 */
   headerExtra?: ReactNode;
 
+  /**
+   * 是否自占满视口高度（默认 true）。作为整页应用骨架时保持 true：
+   * 骨架固定 100dvh、内容区内部滚动，不靠祖先元素撑高度。
+   * 嵌入到有固定高度的容器里预览时（如文档示例卡）置 false，改为 `h-full` 跟随父容器。
+   */
+  fitViewport?: boolean;
   /** 主内容（当前激活页内容，由上层按 activeKey 决定）。 */
   children?: ReactNode;
   className?: string;

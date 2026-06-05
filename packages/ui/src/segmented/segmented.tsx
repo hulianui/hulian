@@ -153,7 +153,7 @@ export function Segmented({
             type="button"
             role="radio"
             aria-checked={isSelected}
-            aria-label={typeof item.label === "string" ? undefined : item.value}
+            aria-label={item.ariaLabel ?? (typeof item.label === "string" ? undefined : item.value)}
             ref={(el) => {
               btnRefs.current[idx] = el;
             }}

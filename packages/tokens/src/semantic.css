@@ -32,6 +32,22 @@
   --code-tag: var(--danger-600);
   --code-attr: oklch(0.55 0.2 300);
   --radius: 0.625rem;
+
+  /* ===== 阴影体系 · 折中·结构升级（当前启用 · 亮色）=====
+     三层：① 环境光晕(0 0 · 无偏移纯模糊·极淡) ② 柔主投影(blur 收紧·负 spread 防外溢)
+     ③ 1px 发丝边(勾轮廓·柔影不糊)。比 HeroUI 更克制，适合中后台密集表格/弹层。
+     经 preset.css @theme inline 映射给 shadow-sm/md/lg/xl/2xl 工具类 →
+     现存所有 shadow-* 零改动随 [data-theme] 自动切明暗。
+     备选方案(HeroUI忠实 / 瑚琏品牌微染)见本文件尾，整组替换即可切换。 */
+  --hl-shadow-sm: 0 0 4px 0 rgb(0 0 0 / 0.02), 0 2px 6px -1px rgb(0 0 0 / 0.08), 0 0 1px 0 rgb(0 0 0 / 0.22);
+  --hl-shadow-md: 0 0 8px 0 rgb(0 0 0 / 0.03), 0 6px 14px -2px rgb(0 0 0 / 0.1), 0 0 1px 0 rgb(0 0 0 / 0.22);
+  --hl-shadow-lg: 0 0 14px 0 rgb(0 0 0 / 0.04), 0 16px 30px -6px rgb(0 0 0 / 0.13), 0 0 1px 0 rgb(0 0 0 / 0.22);
+  --hl-shadow-xl: 0 0 22px 0 rgb(0 0 0 / 0.05), 0 26px 48px -10px rgb(0 0 0 / 0.16), 0 0 1px 0 rgb(0 0 0 / 0.22);
+  --hl-shadow-2xl: 0 0 32px 0 rgb(0 0 0 / 0.06), 0 40px 72px -14px rgb(0 0 0 / 0.2), 0 0 1px 0 rgb(0 0 0 / 0.22);
+  /* 冻结列分隔影（水平方向·非高度投影）：表格固定列横滚时与滚动区分隔。
+     工具类 shadow-pin-left / shadow-pin-right（经 preset.css @theme inline 映射）。 */
+  --hl-shadow-pin-left: 2px 0 6px -2px rgb(0 0 0 / 0.15);
+  --hl-shadow-pin-right: -2px 0 6px -2px rgb(0 0 0 / 0.15);
 }
 
 [data-theme="dark"] {
@@ -64,6 +80,17 @@
   --code-number: var(--warning-500);
   --code-tag: var(--danger-500);
   --code-attr: oklch(0.74 0.16 300);
+
+  /* 阴影 · 折中·结构升级（当前启用 · 暗色）：抬黑度(深底需更重投影) +
+     第 3 层换成白色 inset 轮缘光(暗底靠顶边受光勾出元素，纯黑投影在深底几乎不可见)。 */
+  --hl-shadow-sm: 0 0 4px 0 rgb(0 0 0 / 0.06), 0 2px 6px -1px rgb(0 0 0 / 0.28), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
+  --hl-shadow-md: 0 0 8px 0 rgb(0 0 0 / 0.07), 0 6px 14px -2px rgb(0 0 0 / 0.32), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
+  --hl-shadow-lg: 0 0 14px 0 rgb(0 0 0 / 0.08), 0 16px 30px -6px rgb(0 0 0 / 0.38), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
+  --hl-shadow-xl: 0 0 22px 0 rgb(0 0 0 / 0.09), 0 26px 48px -10px rgb(0 0 0 / 0.44), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
+  --hl-shadow-2xl: 0 0 32px 0 rgb(0 0 0 / 0.1), 0 40px 72px -14px rgb(0 0 0 / 0.5), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
+  /* 冻结列分隔影 · 暗色：深底需更重才看得见（原纯黑 .25 在暗色几乎不可见）。 */
+  --hl-shadow-pin-left: 2px 0 8px -2px rgb(0 0 0 / 0.55);
+  --hl-shadow-pin-right: -2px 0 8px -2px rgb(0 0 0 / 0.55);
 }
 
 /* 反色表面作用域 — 放在彩色/深色面板（如 bg-primary 的 CTA 横幅、深色页脚）上时，
@@ -79,3 +106,45 @@
   --color-surface-hover: color-mix(in oklab, var(--color-primary-foreground) 22%, transparent);
   --color-border: color-mix(in oklab, var(--color-primary-foreground) 38%, transparent);
 }
+
+/* ============================================================================
+   阴影备选方案（未启用 · 留作日后切换）
+   切换方式：把对应方案的 :root 组替换上面 :root 里的 --hl-shadow-*，
+   dark 组替换 [data-theme="dark"] 里的 --hl-shadow-*。命名/工具类映射都不变。
+   ----------------------------------------------------------------------------
+
+   ① HeroUI 忠实 —— 通用 / C 端 / 营销页。最稳妥，气质轻盈高级。
+      与「折中」的差别：主投影 blur 更大、无负 spread → 更柔更「飘」。
+
+   :root（亮）
+     --hl-shadow-sm: 0 0 5px 0 rgb(0 0 0 / 0.02), 0 2px 10px 0 rgb(0 0 0 / 0.06), 0 0 1px 0 rgb(0 0 0 / 0.3);
+     --hl-shadow-md: 0 0 15px 0 rgb(0 0 0 / 0.03), 0 2px 30px 0 rgb(0 0 0 / 0.08), 0 0 1px 0 rgb(0 0 0 / 0.3);
+     --hl-shadow-lg: 0 0 30px 0 rgb(0 0 0 / 0.04), 0 30px 60px 0 rgb(0 0 0 / 0.12), 0 0 1px 0 rgb(0 0 0 / 0.3);
+     --hl-shadow-xl: 0 0 45px 0 rgb(0 0 0 / 0.05), 0 45px 90px 0 rgb(0 0 0 / 0.16), 0 0 1px 0 rgb(0 0 0 / 0.3);
+     --hl-shadow-2xl: 0 0 60px 0 rgb(0 0 0 / 0.06), 0 60px 120px 0 rgb(0 0 0 / 0.2), 0 0 1px 0 rgb(0 0 0 / 0.3);
+   [data-theme="dark"]（暗）
+     --hl-shadow-sm: 0 0 5px 0 rgb(0 0 0 / 0.05), 0 2px 10px 0 rgb(0 0 0 / 0.2), inset 0 0 1px 0 rgb(255 255 255 / 0.15);
+     --hl-shadow-md: 0 0 15px 0 rgb(0 0 0 / 0.06), 0 2px 30px 0 rgb(0 0 0 / 0.22), inset 0 0 1px 0 rgb(255 255 255 / 0.15);
+     --hl-shadow-lg: 0 0 30px 0 rgb(0 0 0 / 0.07), 0 30px 60px 0 rgb(0 0 0 / 0.26), inset 0 0 1px 0 rgb(255 255 255 / 0.15);
+     --hl-shadow-xl: 0 0 45px 0 rgb(0 0 0 / 0.08), 0 45px 90px 0 rgb(0 0 0 / 0.32), inset 0 0 1px 0 rgb(255 255 255 / 0.15);
+     --hl-shadow-2xl: 0 0 60px 0 rgb(0 0 0 / 0.09), 0 60px 120px 0 rgb(0 0 0 / 0.4), inset 0 0 1px 0 rgb(255 255 255 / 0.15);
+
+   ----------------------------------------------------------------------------
+
+   ② 瑚琏品牌微染 —— 想要差异化、与主题色绑定。锦上添花；
+      暗色下品牌色掺得很微弱、亮色才看得出。投影色 = 近黑掺一丝主色冷调(color-mix)，
+      会随 --color-primary 主题色联动。
+
+   :root（亮）
+     --hl-shadow-sm: 0 0 5px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 3%, transparent), 0 2px 10px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 8%, transparent), 0 0 1px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 34%, transparent);
+     --hl-shadow-md: 0 0 15px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 4%, transparent), 0 2px 30px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 10%, transparent), 0 0 1px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 34%, transparent);
+     --hl-shadow-lg: 0 0 30px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 5%, transparent), 0 30px 60px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 15%, transparent), 0 0 1px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 34%, transparent);
+     --hl-shadow-xl: 0 0 45px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 6%, transparent), 0 45px 90px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 19%, transparent), 0 0 1px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 34%, transparent);
+     --hl-shadow-2xl: 0 0 60px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 7%, transparent), 0 60px 120px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 24%, transparent), 0 0 1px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 24%, rgb(2 6 23)) 34%, transparent);
+   [data-theme="dark"]（暗 · 基色掺主色后偏纯黑，第 3 层用白色 inset 轮缘光）
+     --hl-shadow-sm: 0 0 5px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 8%, transparent), 0 2px 10px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 26%, transparent), inset 0 0 1px 0 rgb(255 255 255 / 0.16);
+     --hl-shadow-md: 0 0 15px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 9%, transparent), 0 2px 30px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 28%, transparent), inset 0 0 1px 0 rgb(255 255 255 / 0.16);
+     --hl-shadow-lg: 0 0 30px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 10%, transparent), 0 30px 60px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 32%, transparent), inset 0 0 1px 0 rgb(255 255 255 / 0.16);
+     --hl-shadow-xl: 0 0 45px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 11%, transparent), 0 45px 90px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 38%, transparent), inset 0 0 1px 0 rgb(255 255 255 / 0.16);
+     --hl-shadow-2xl: 0 0 60px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 12%, transparent), 0 60px 120px 0 color-mix(in srgb, color-mix(in srgb, var(--color-primary) 32%, rgb(0 0 0)) 46%, transparent), inset 0 0 1px 0 rgb(255 255 255 / 0.16);
+   ============================================================================ */
