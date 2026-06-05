@@ -1,4 +1,5 @@
 import { cn } from "../lib/cn";
+import { resolveTone } from "../lib/tone";
 import {
   areaPath,
   barRects,
@@ -37,6 +38,8 @@ export function Sparkline({
   const pts = normalize(data, innerScale);
   const values = data.map((d) => (typeof d === "number" ? d : d.y));
   const last = pts[pts.length - 1];
+  // 归一颜色：吃语义色名 / 容错漏前缀的 var(--primary) → var(--color-primary)
+  const color = resolveTone(tone);
 
   return (
     <svg
@@ -53,14 +56,14 @@ export function Sparkline({
           <>
             <path
               d={areaPath(data, innerScale)}
-              fill={tone}
+              fill={color}
               fillOpacity={0.16}
               stroke="none"
             />
             <path
               d={linePath(data, innerScale)}
               fill="none"
-              stroke={tone}
+              stroke={color}
               strokeWidth={1.5}
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -72,7 +75,7 @@ export function Sparkline({
           <path
             d={linePath(data, innerScale)}
             fill="none"
-            stroke={tone}
+            stroke={color}
             strokeWidth={1.5}
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -88,7 +91,7 @@ export function Sparkline({
                 width={r.width}
                 height={r.height}
                 rx={Math.min(1, r.width / 4)}
-                fill={tone}
+                fill={color}
                 fillOpacity={0.85}
               >
                 {renderTooltip ? <title>{renderTooltip(values[i], i)}</title> : null}
@@ -106,7 +109,7 @@ export function Sparkline({
           : null}
 
         {highlightLast && last ? (
-          <circle cx={last.x} cy={last.y} r={2} fill={tone} stroke="var(--color-surface)" strokeWidth={1} />
+          <circle cx={last.x} cy={last.y} r={2} fill={color} stroke="var(--color-surface)" strokeWidth={1} />
         ) : null}
       </g>
     </svg>

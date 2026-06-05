@@ -29,6 +29,8 @@
   --color-chart-2: oklch(0.7 0.16 155);
   --color-chart-3: oklch(0.75 0.15 70);
   --color-chart-4: oklch(0.62 0.19 300);
+  --color-chart-5: oklch(0.64 0.2 25);
+  --color-chart-6: oklch(0.68 0.12 200);
   /* 代码语法着色（零依赖着色器消费 · 复用色相，明暗各调亮度保对比） */
   --code-keyword: var(--brand-600);
   --code-string: var(--success-600);
@@ -80,6 +82,8 @@
   --color-chart-2: oklch(0.76 0.16 155);
   --color-chart-3: oklch(0.8 0.15 70);
   --color-chart-4: oklch(0.72 0.18 300);
+  --color-chart-5: oklch(0.72 0.19 25);
+  --color-chart-6: oklch(0.74 0.12 200);
   /* 暗态代码着色提亮以在深底上保对比 */
   --code-keyword: var(--brand-400);
   --code-string: var(--success-500);

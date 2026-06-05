@@ -33,7 +33,9 @@ describe("chartColor", () => {
   it("索引映射 chart token，越界回绕", () => {
     expect(chartColor(0)).toBe("var(--color-chart-1)");
     expect(chartColor(1)).toBe("var(--color-chart-2)");
-    expect(chartColor(4)).toBe("var(--color-chart-1)");
+    expect(chartColor(5)).toBe("var(--color-chart-6)");
+    // 6 色板越界回绕：index 6 → chart-1
+    expect(chartColor(6)).toBe("var(--color-chart-1)");
   });
 });
 

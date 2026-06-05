@@ -20,7 +20,9 @@ export function NumberField({ className, "aria-label": ariaLabel, onValueChange,
     >
       <BaseNumberField.Group
         className={cn(
-          "inline-flex items-center overflow-hidden rounded-[var(--radius)] border border-border bg-surface",
+          // max-w-full：外部 className 给的宽度（如 w-32）小于内容固有宽时，夹住自身不溢出容器；
+          // 配合 Input 的 min-w-0 flex-1，多余/不足的宽度都由中间输入框吸收，±按钮恒定 size-9。
+          "inline-flex max-w-full items-center overflow-hidden rounded-[var(--radius)] border border-border bg-surface",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg",
           "data-[disabled]:opacity-50",
         )}
@@ -30,7 +32,7 @@ export function NumberField({ className, "aria-label": ariaLabel, onValueChange,
         </BaseNumberField.Decrement>
         <BaseNumberField.Input
           aria-label={ariaLabel}
-          className="h-9 w-16 bg-transparent text-center text-sm tabular-nums text-foreground outline-none"
+          className="h-9 w-16 min-w-0 flex-1 bg-transparent text-center text-sm tabular-nums text-foreground outline-none"
         />
         <BaseNumberField.Increment className={cn(btnClass, "border-l border-border")} aria-label="增加">
           <Plus className="size-4" />

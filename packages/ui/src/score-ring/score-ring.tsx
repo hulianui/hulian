@@ -1,4 +1,5 @@
 import { cn } from "../lib/cn";
+import { resolveTone } from "../lib/tone";
 import { resolveGrade, DEFAULT_GRADES } from "./score-ring.grade";
 import type { ScoreRingProps } from "./score-ring.types";
 
@@ -19,6 +20,7 @@ export function ScoreRing({
   const r = (size - thickness) / 2;
   const c = 2 * Math.PI * r;
   const grade = resolveGrade(value, grades);
+  const toneColor = resolveTone(grade.tone);
 
   return (
     <div
@@ -47,14 +49,14 @@ export function ScoreRing({
           strokeLinecap="round"
           strokeDasharray={c}
           strokeDashoffset={c * (1 - pct)}
-          style={{ stroke: grade.tone }}
+          style={{ stroke: toneColor }}
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center leading-none">
         <div>
           <div className="text-xl font-bold tabular-nums text-foreground">{Math.round(value)}</div>
           {showGrade && (
-            <div className="mt-0.5 text-xs font-semibold" style={{ color: grade.tone }}>
+            <div className="mt-0.5 text-xs font-semibold" style={{ color: toneColor }}>
               {grade.label}
             </div>
           )}

@@ -1,7 +1,10 @@
 export interface ChartSeries {
   key: string;
   label?: string;
-  /** 缺省按序列 index 取 var(--color-chart-N)；可传任意 CSS 颜色/变量覆盖 */
+  /**
+   * 缺省按序列 index 取 var(--color-chart-N)。可传语义色名（"primary"/"success"/"chart-2" 等，
+   * 经 resolveTone 解析为 var(--color-*)）、任意 CSS 颜色或变量覆盖。
+   */
   color?: string;
 }
 

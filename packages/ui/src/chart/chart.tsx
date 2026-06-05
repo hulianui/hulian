@@ -24,6 +24,7 @@ import {
   Legend,
 } from "recharts";
 import { cn } from "../lib/cn";
+import { resolveTone } from "../lib/tone";
 import {
   chartColor,
   axisProps,
@@ -55,7 +56,7 @@ export function AreaChart<TDatum>({
           <YAxis {...axisProps} />
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
           {series.map((s, i) => {
-            const color = s.color ?? chartColor(i);
+            const color = resolveTone(s.color) ?? chartColor(i);
             return (
               <Area
                 key={s.key}
@@ -116,7 +117,7 @@ export function BarChart<TDatum>({
               dataKey={s.key}
               name={s.label ?? s.key}
               stackId={stacked ? "a" : undefined}
-              fill={s.color ?? chartColor(i)}
+              fill={resolveTone(s.color) ?? chartColor(i)}
               radius={
                 horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0]
               }
@@ -144,7 +145,7 @@ export function LineChart<TDatum>({
           <YAxis {...axisProps} />
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
           {series.map((s, i) => {
-            const color = s.color ?? chartColor(i);
+            const color = resolveTone(s.color) ?? chartColor(i);
             return (
               <Line
                 key={s.key}
@@ -183,7 +184,7 @@ export function PieChart({ data, donut, height = 280, className }: PieChartProps
             strokeWidth={2}
           >
             {data.map((d, i) => (
-              <Cell key={d.name} fill={d.color ?? chartColor(i)} />
+              <Cell key={d.name} fill={resolveTone(d.color) ?? chartColor(i)} />
             ))}
           </Pie>
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
@@ -210,7 +211,7 @@ export function RadarChart<TDatum>({
           <PolarAngleAxis dataKey={xKey} tick={polarAngleTick} />
           <PolarRadiusAxis tick={polarAngleTick} axisLine={false} />
           {series.map((s, i) => {
-            const color = s.color ?? chartColor(i);
+            const color = resolveTone(s.color) ?? chartColor(i);
             return (
               <Radar
                 key={s.key}
@@ -247,7 +248,7 @@ export function RadialChart({ data, height = 280, className }: RadialChartProps)
         >
           <RadialBar dataKey="value" background cornerRadius={6}>
             {data.map((d, i) => (
-              <Cell key={d.name} fill={d.color ?? chartColor(i)} />
+              <Cell key={d.name} fill={resolveTone(d.color) ?? chartColor(i)} />
             ))}
           </RadialBar>
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />

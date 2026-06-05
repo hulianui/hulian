@@ -25,6 +25,8 @@
   --color-chart-2: var(--color-chart-2);
   --color-chart-3: var(--color-chart-3);
   --color-chart-4: var(--color-chart-4);
+  --color-chart-5: var(--color-chart-5);
+  --color-chart-6: var(--color-chart-6);
   --radius: var(--radius);
   /* 阴影：映射到 semantic.css 的运行时 --hl-shadow-*（明暗在 [data-theme] 切值）。
      inline 让 shadow-sm/md/lg/xl/2xl 工具类直接吐 var(--hl-shadow-*) →

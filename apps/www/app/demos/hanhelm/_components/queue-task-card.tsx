@@ -25,9 +25,9 @@ export function QueueTaskCard({ task, index }: { task: Task; index: number }) {
           <div className="mt-0.5 text-[11px] text-muted">{task.type}</div>
         </div>
         {/* 队列位次（0 = 队首 FIFO） */}
-        <span className="shrink-0 rounded-full bg-muted px-1.5 text-[11px] tabular-nums text-muted">
+        <Tag tone="neutral" variant="soft" size="sm" className="shrink-0 tabular-nums">
           #{index + 1}
-        </span>
+        </Tag>
       </div>
 
       <div className="mt-1.5">

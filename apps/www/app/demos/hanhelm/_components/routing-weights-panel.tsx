@@ -11,12 +11,12 @@ export const WEIGHT_DIMS: {
   hint: string;
   tone: string;
 }[] = [
-  { key: "capability", label: "能力匹配", hint: "覆盖任务所需能力，越全越优", tone: "var(--chart-1)" },
-  { key: "cost", label: "成本", hint: "混合单价越低越优", tone: "var(--chart-2)" },
-  { key: "latency", label: "延迟", hint: "端到端延迟越低越优", tone: "var(--chart-3)" },
-  { key: "load", label: "负载", hint: "当前占用率越低越优", tone: "var(--chart-4)" },
-  { key: "priority", label: "优先级", hint: "高优任务偏好能力更全者", tone: "var(--chart-5)" },
-  { key: "sla", label: "SLA 余量", hint: "相对 SLA 阈值越宽裕越优", tone: "var(--primary)" },
+  { key: "capability", label: "能力匹配", hint: "覆盖任务所需能力，越全越优", tone: "var(--color-chart-1)" },
+  { key: "cost", label: "成本", hint: "混合单价越低越优", tone: "var(--color-chart-2)" },
+  { key: "latency", label: "延迟", hint: "端到端延迟越低越优", tone: "var(--color-chart-3)" },
+  { key: "load", label: "负载", hint: "当前占用率越低越优", tone: "var(--color-chart-4)" },
+  { key: "priority", label: "优先级", hint: "高优任务偏好能力更全者", tone: "var(--color-chart-5)" },
+  { key: "sla", label: "SLA 余量", hint: "相对 SLA 阈值越宽裕越优", tone: "var(--color-primary)" },
 ];
 
 interface Props {

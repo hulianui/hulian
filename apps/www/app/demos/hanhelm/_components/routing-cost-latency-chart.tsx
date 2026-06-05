@@ -27,8 +27,8 @@ export function RoutingCostLatencyChart({ executors }: Props) {
     <BarChart
       data={data}
       series={[
-        { key: "成本指数", color: "var(--chart-2)" },
-        { key: "延迟指数", color: "var(--chart-3)" },
+        { key: "成本指数", color: "var(--color-chart-2)" },
+        { key: "延迟指数", color: "var(--color-chart-3)" },
       ]}
       xKey="name"
       height={280}

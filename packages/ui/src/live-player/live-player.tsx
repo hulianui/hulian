@@ -96,7 +96,8 @@ export function LivePlayer({
                   <path d="M12 5c-5 0-9 5-9 7s4 7 9 7 9-5 9-7-4-7-9-7Z" />
                   <circle cx="12" cy="12" r="2.5" />
                 </svg>
-                <NumberTicker value={viewers} className="tabular-nums" />
+                {/* 视频浮层恒为白字：覆盖 NumberTicker 默认的 text-foreground（浅色主题下会变深色） */}
+                <NumberTicker value={viewers} className="tabular-nums text-white" />
               </span>
             )}
             {qualities && qualities.length > 0 && (

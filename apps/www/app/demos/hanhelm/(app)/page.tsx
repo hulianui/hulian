@@ -196,10 +196,10 @@ export default function OverviewPage() {
             {/* 内联趋势群 */}
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {[
-                { key: "qps", label: "吞吐 QPS", last: lastQps, tone: "var(--primary)" },
-                { key: "p50", label: "P50 延迟", last: lastP50, tone: "var(--chart-2)" },
-                { key: "queue", label: "队列深度", last: lastQueue, tone: "var(--warning)" },
-                { key: "cost", label: "本时成本", last: lastCost, tone: "var(--chart-4)" },
+                { key: "qps", label: "吞吐 QPS", last: lastQps, tone: "var(--color-primary)" },
+                { key: "p50", label: "P50 延迟", last: lastP50, tone: "var(--color-chart-2)" },
+                { key: "queue", label: "队列深度", last: lastQueue, tone: "var(--color-warning)" },
+                { key: "cost", label: "本时成本", last: lastCost, tone: "var(--color-chart-4)" },
               ].map((m) => (
                 <div
                   key={m.key}

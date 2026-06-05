@@ -38,9 +38,10 @@ export function ControlBoard() {
   const ask = (q: string) => send({ type: "ASK_AI", id: `ask-${askSeq.current++}`, question: q });
 
   return (
-    <div className="grid gap-4 p-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.95fr)_minmax(0,1.05fr)]">
+    // xl 下整盘填满视口高度、各列内部滚动（弹幕/副驾不再撑高整页）；窄屏回退为自然流。
+    <div className="grid gap-4 p-4 xl:h-full xl:min-h-0 xl:overflow-hidden xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.95fr)_minmax(0,1.05fr)]">
       {/* 左列：预览 + KPI + 趋势 */}
-      <div className="space-y-4">
+      <div className="space-y-4 xl:min-h-0 xl:overflow-y-auto xl:pr-1">
         <LivePlayer
           src="/demo/sample-video.mp4"
           viewers={state.viewers}
@@ -83,8 +84,8 @@ export function ControlBoard() {
         </div>
       </div>
 
-      {/* 中列：弹幕监看 */}
-      <div className="flex min-h-[560px] flex-col rounded-[var(--radius)] border border-border bg-surface">
+      {/* 中列：弹幕监看（定高 + 内部滚动，弹幕只在框内滚不撑高整页） */}
+      <div className="flex h-[70vh] min-h-0 flex-col overflow-hidden rounded-[var(--radius)] border border-border bg-surface xl:h-full">
         <div className="flex shrink-0 items-center justify-between border-b border-border px-3.5 py-3">
           <span className="text-sm font-semibold text-foreground">弹幕监看 · 公屏</span>
           <span className="text-[11px] text-muted">实时</span>
@@ -96,8 +97,8 @@ export function ControlBoard() {
         />
       </div>
 
-      {/* 右列：AI 副驾 */}
-      <div className="min-h-[560px]">
+      {/* 右列：AI 副驾（定高 + 内部滚动） */}
+      <div className="h-[70vh] min-h-0 overflow-hidden xl:h-full">
         <CopilotPanel
           suggestions={state.suggestions}
           comments={state.comments}

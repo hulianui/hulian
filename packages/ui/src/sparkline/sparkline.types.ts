@@ -13,7 +13,10 @@ export interface SparklineProps
   width?: number;
   /** 视口高，默认 24 */
   height?: number;
-  /** 描边/填充色，默认 var(--color-primary)；传任意 CSS 颜色或变量 */
+  /**
+   * 描边/填充色，默认 var(--color-primary)。可传语义色名（"primary"/"success"/"danger"/"chart-2"
+   * 等，经 resolveTone 解析为 var(--color-*)）、任意 CSS 颜色或变量。
+   */
   tone?: string;
   /** 在末点画强调圆点，默认 false */
   highlightLast?: boolean;

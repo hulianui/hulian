@@ -19,10 +19,10 @@ const HEALTH_LABEL: Record<ExecutorHealth, string> = {
 // 负载越高越红：用满分 100、按负载值反推「健康度」反而绕，这里直接以负载值驱动等级带
 // （高负载 = 危险红，低负载 = 富余绿），与「饱和度」语义一致。
 const LOAD_GRADES = [
-  { min: 0, label: "富余", tone: "var(--success)" },
-  { min: 50, label: "适中", tone: "var(--chart-2)" },
-  { min: 75, label: "偏高", tone: "var(--warning)" },
-  { min: 90, label: "饱和", tone: "var(--danger)" },
+  { min: 0, label: "富余", tone: "var(--color-success)" },
+  { min: 50, label: "适中", tone: "var(--color-chart-2)" },
+  { min: 75, label: "偏高", tone: "var(--color-warning)" },
+  { min: 90, label: "饱和", tone: "var(--color-danger)" },
 ];
 
 /** 用 QPS 时序的一段作为各执行器的「负载趋势」mock 波形（确定性：按 index 切片）。 */
@@ -69,10 +69,10 @@ export function OverviewLoadGrid({ executors }: { executors: Executor[] }) {
                 variant="area"
                 tone={
                   tone === "danger"
-                    ? "var(--danger)"
+                    ? "var(--color-danger)"
                     : tone === "warning"
-                      ? "var(--warning)"
-                      : "var(--primary)"
+                      ? "var(--color-warning)"
+                      : "var(--color-primary)"
                 }
                 width={120}
                 height={26}

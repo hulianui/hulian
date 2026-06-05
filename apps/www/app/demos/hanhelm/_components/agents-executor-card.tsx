@@ -41,10 +41,10 @@ const CAP_LABEL: Record<Capability, string> = {
 
 // 负载等级带（高负载红）。
 const LOAD_GRADES = [
-  { min: 0, label: "富余", tone: "var(--success)" },
-  { min: 50, label: "适中", tone: "var(--chart-2)" },
-  { min: 75, label: "偏高", tone: "var(--warning)" },
-  { min: 90, label: "饱和", tone: "var(--danger)" },
+  { min: 0, label: "富余", tone: "var(--color-success)" },
+  { min: 50, label: "适中", tone: "var(--color-chart-2)" },
+  { min: 75, label: "偏高", tone: "var(--color-warning)" },
+  { min: 90, label: "饱和", tone: "var(--color-danger)" },
 ];
 
 function loadTrend(index: number): number[] {
@@ -63,7 +63,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
     <Card className="flex flex-col">
       <CardHeader className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="grid size-8 shrink-0 place-items-center rounded-[var(--radius)] bg-muted text-foreground">
+          <span className="grid size-8 shrink-0 place-items-center rounded-[var(--radius)] bg-surface-hover text-muted">
             {e.kind === "agent" ? <Bot className="size-4" /> : <Cpu className="size-4" />}
           </span>
           <div className="min-w-0">
@@ -101,10 +101,10 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
               variant="area"
               tone={
                 loadPct >= 90
-                  ? "var(--danger)"
+                  ? "var(--color-danger)"
                   : loadPct >= 75
-                    ? "var(--warning)"
-                    : "var(--primary)"
+                    ? "var(--color-warning)"
+                    : "var(--color-primary)"
               }
               width={160}
               height={36}
@@ -143,7 +143,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
         </div>
 
         {/* 降级链 */}
-        <div className="rounded-[var(--radius)] border border-border bg-muted/30 px-3 py-2">
+        <div className="rounded-[var(--radius)] border border-border bg-surface-hover px-3 py-2">
           <div className="mb-1 text-[11px] text-muted">降级链</div>
           {e.fallbackChain.length === 0 ? (
             <span className="text-xs text-muted">无（唯一能力执行器）</span>
@@ -185,7 +185,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
             step={1}
             disabled={!enabled}
             aria-label={`${e.name} 并发上限`}
-            className="w-24"
+            className="w-32"
           />
         </label>
       </div>

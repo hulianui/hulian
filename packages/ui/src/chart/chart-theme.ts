@@ -1,6 +1,13 @@
 import type { CSSProperties } from "react";
 
-const CHART_TOKENS = ["--color-chart-1", "--color-chart-2", "--color-chart-3", "--color-chart-4"];
+const CHART_TOKENS = [
+  "--color-chart-1",
+  "--color-chart-2",
+  "--color-chart-3",
+  "--color-chart-4",
+  "--color-chart-5",
+  "--color-chart-6",
+];
 
 /** 序列 index → var(--color-chart-N) CSS 变量；越界回绕 */
 export function chartColor(i: number): string {

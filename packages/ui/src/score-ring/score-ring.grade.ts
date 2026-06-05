@@ -3,7 +3,7 @@ export interface Grade {
   min: number;
   /** 等级标签（A/B/C/D/F 等）。 */
   label: string;
-  /** 等级颜色（CSS 颜色或 var()，吃语义 token）。 */
+  /** 等级颜色。可传语义色名（"success"/"warning"/"danger"/"chart-2" 等，经 resolveTone 解析）、CSS 颜色或 var()。 */
   tone?: string;
 }
 

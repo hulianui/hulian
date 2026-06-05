@@ -19,9 +19,9 @@ export const CAPABILITY_LABEL: Record<Capability, string> = {
 
 /** 优先级泳道配色（token 驱动）。 */
 export const PRIORITY_TONE: Record<Priority, string> = {
-  P0: "var(--chart-3)",
-  P1: "var(--chart-4)",
-  P2: "var(--primary)",
+  P0: "var(--color-chart-3)",
+  P1: "var(--color-chart-4)",
+  P2: "var(--color-primary)",
   P3: "var(--muted-foreground)",
 };
 
