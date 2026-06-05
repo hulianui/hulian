@@ -18,6 +18,16 @@ export interface DemoMeta {
 
 export const demos: DemoMeta[] = [
   {
+    slug: "billing",
+    title: "瀚付 HanPay 订阅结算控制台",
+    description:
+      "SaaS 订阅计费 + 账户中心：账户概览(消费走势/用量/默认卡)、订阅套餐(档位切换+席位步进+增值项)、支付方式(银行卡实时预览+钱包绑定)、账单与发票(筛选+悬停预览+详情抽屉)、账户设置(工作状态表情/团队/通知) —— 100% 由 @hulian/ui 搭建的精致 fintech 控制台，dogfood 全新 8 组件 ButtonGroup / SocialButton / Banner / RelativeTime / Choicebox / CreditCard / EmojiPicker / Glimpse。",
+    href: "/demos/billing",
+    category: "中后台",
+    status: "done",
+    tags: ["Choicebox", "CreditCard", "SocialButton", "Banner", "订阅计费"],
+  },
+  {
     slug: "scheduler",
     title: "瀚约 诊所预约管理台",
     description:
