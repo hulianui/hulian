@@ -18,6 +18,16 @@ export interface DemoMeta {
 
 export const demos: DemoMeta[] = [
   {
+    slug: "hanship",
+    title: "瀚舰 HanShip 部署平台",
+    description:
+      "连 Git 自动部署到全球边缘网络 —— 仿 Cloudflare Pages / Vercel 的发布控制台。项目列表(框架/当前部署态)、项目概览(生产面板 + 域名 + 部署列表)、部署历史(ProTable 多维筛选)、部署详情(构建步骤 Steps + 实时构建日志 LogViewer + 生命周期 Timeline + Safari 预览 + 一键回滚)、域名(SSL/DNS 状态 + 待配置记录)、环境变量(SecretField 密文)、构建设置。100% 由 @hulianui/ui 搭建，dogfood 全新 GitCommit / DeployStatus 两件，并复用 ProTable / Steps / LogViewer / Timeline / Descriptions / SecretField / Safari。",
+    href: "/demos/hanship",
+    category: "中后台",
+    status: "done",
+    tags: ["GitCommit", "DeployStatus", "ProTable", "LogViewer", "Steps", "CI/CD"],
+  },
+  {
     slug: "hanhelm",
     title: "瀚舵 HanHelm 智能体任务调度平台",
     description:
