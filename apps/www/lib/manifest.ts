@@ -221,6 +221,7 @@ export const manifest: ComponentMeta[] = [
 
   // ── 数据展示 data-display ────────────────────────────────────
   { slug: "table", name: "Table", description: "表格 · TanStack headless + 列排序 + 空态", category: "data-display", group: "collection", status: "new" },
+  { slug: "book-3d", name: "Book3D", description: "3D 立体书 · CSS 3D transform 透视书体(前封/书脊/页块/后封) + 渐变或图封面 + 封面标题副标 + 角标缎带 + hover 翻正(纯 transform·GPU 合成·reduced-motion 降级) · 作品集书架/封面墙", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "pro-table", name: "ProTable", description: "高级表格 · 列表页编排层(复用 Table/SearchForm/Pagination) · 查询区 + 工具栏(密度/列设置/刷新/全屏) + 行选择 + 集成分页(企业中后台列表页旗舰)", category: "data-display", group: "collection", status: "new" },
   { slug: "pricing-table", name: "PricingTable", description: "定价对比矩阵 · 行列转置(列=被比项/模型·行=属性/价目) + 列高亮描边 + 角标(推荐/最佳性价比) + 表头吸顶 + 窄屏横滚(复用 ScrollArea·区别 Table 行=记录·模型市场定价对照刚需)", category: "data-display", group: "collection", status: "new" },
   { slug: "json-viewer", name: "JsonViewer", description: "折叠 JSON 树(只读) · 递归零依赖 + 语法着色(key/string/number/bool/null) + 行级展开折叠 + 折叠态 {…} N keys/[…] N items + depth<阈值初始展开/大对象懒展开 + hover 复制节点值与 JSON path(网关请求/响应日志检查器刚需·导出 valueType/jsonPath 纯函数)", category: "data-display", group: "collection", status: "new" },

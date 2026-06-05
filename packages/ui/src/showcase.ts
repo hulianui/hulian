@@ -28,6 +28,7 @@ export { borderBeamShowcase } from "./border-beam/border-beam.showcase";
 export { dotShowcase } from "./dot/dot.showcase";
 export { statusDotShowcase } from "./status-dot/status-dot.showcase";
 export { beianFooterShowcase } from "./beian-footer/beian-footer.showcase";
+export { book3dShowcase } from "./book-3d/book-3d.showcase";
 export { breadcrumbShowcase } from "./breadcrumb/breadcrumb.showcase";
 export { buttonShowcase } from "./button/button.showcase";
 export { calendarShowcase } from "./_mui/calendar.showcase";
