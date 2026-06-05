@@ -84,11 +84,32 @@ hulian/
 
 > 发布形态是**源码包**（发 `src/`，不编译 dist）——消费方需能转译 TSX（Next / Vite 可）。版本管理 + 发布流程见 `docs/publishing.md`。
 
+## 发版（维护者）
+
+用 **changesets** 管版本，**GitHub Actions 自动发布**到 GitHub Packages（CI 内用内置 `GITHUB_TOKEN`，零 PAT）。改完代码后三步：
+
+```bash
+# 1. 记一条变更（交互：选包 @hulianui/ui / @hulianui/tokens + patch/minor + 写说明）
+pnpm changeset
+# 2. 本地落版本号 + 写 CHANGELOG（消费掉 changeset）
+pnpm version-packages
+# 3. 提交并推送（特性 commit 可单独先提，这步只提 package.json + CHANGELOG）
+git add -A && git commit -m "chore(release): bump" && git push
+```
+
+push 到 `master` 后 `release.yml` 自动 `changeset publish` 发布版本号高于 registry 的包，并打 git tag。下游 `pnpm update @hulianui/ui @hulianui/tokens` 即可。
+
+> **关键：务必本地先 `pnpm version-packages` 再 push**（上面第 2 步不能省）。
+> 原因：若只 push 了 `.changeset/*.md` 而没 version，CI 会去开「Version Packages」PR；而本组织当前**关着「允许 Actions 创建 PR」**，那条路会卡住。本地先落版本 → CI 看到没有待消费 changeset → 直接 publish，绕开 PR。
+>
+> 已验证版本：ui `0.1.0 → 0.1.1 → 0.1.2`、tokens `0.1.0 → 0.1.1`。完整说明 + 私有/公有切换见 `docs/publishing.md`。
+
 ## 当前状态
 
 **已发布、CI/CD 上线、组件大批量铺开**：
 
-- 📦 **已发 GitHub Packages**：`@hulianui/ui@0.1.1` + `@hulianui/tokens@0.1.0`（私有 registry · changesets 管版本 · GitHub Actions 自动发布，用内置 `GITHUB_TOKEN` 零 PAT）
+- 📦 **已发 GitHub Packages**：`@hulianui/ui@0.1.2` + `@hulianui/tokens@0.1.1`（私有 registry · changesets 管版本 · GitHub Actions 自动发布，用内置 `GITHUB_TOKEN` 零 PAT）
+- 🌐 **文档站上线**：[hulianui.haloritual.com](https://hulianui.haloritual.com)（Cloudflare Pages · 静态导出 · push 自动重发）
 - 🧩 **~228 个组件**：基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …
 - 🏗️ **18 个内置 demo**（全 dogfood）：CRM · 商城 · 客服 · 数据大屏 · 知识库 · 直播 · AI 工作流 · API 网关 · 智能体调度 · 项目协同 · LMS · 个人站 · 官网 · 订阅结算 · 代码审查 · 排期 · 移动端 · AI 对话
 - ✅ **三道门 CI 全绿**：typecheck + 1884 单测（vitest）+ www 静态导出
