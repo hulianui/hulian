@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write # 允许 action 创建 "Version Packages" 提交/PR
+  pull-requests: write # 允许开版本 PR
+  packages: write # 允许发布到 GitHub Packages
+
+jobs:
+  release:
+    name: Version or Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.5
+
+      - name: Setup Node (GitHub Packages registry)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: "@hulianui"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # changesets/action 的两种行为:
+      #  - 若存在未消费的 .changeset/*.md → 开/更新 "Version Packages" PR(bump 版本 + 写 changelog)
+      #  - 若没有待消费 changeset 且 package.json 版本高于已发布版本 → 跑 `pnpm release` 发布
+      - name: Create Release PR or Publish
+        uses: changesets/action@v1
+        with:
+          version: pnpm version-packages
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
