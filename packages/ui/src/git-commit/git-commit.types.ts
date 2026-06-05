@@ -18,6 +18,11 @@ export interface GitCommitProps {
   href?: string;
   /** 短哈希显示位数。@default 7 */
   shaLength?: number;
+  /**
+   * 是否给分支名加色值标识（按分支类型/名称稳定取色的 soft badge），让不同分支一眼可分。
+   * @default true
+   */
+  colorBranch?: boolean;
   /** @default "inline" */
   layout?: GitCommitLayout;
   /** @default "md" */

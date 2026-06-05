@@ -33,11 +33,11 @@ import { ROOT } from "./nav-config";
 
 function EnvTag({ env }: { env: Deploy["env"] }) {
   return env === "production" ? (
-    <Tag tone="brand" size="sm">
+    <Tag tone="success" size="sm">
       生产
     </Tag>
   ) : (
-    <Tag tone="neutral" size="sm">
+    <Tag tone="warning" size="sm">
       预览
     </Tag>
   );
@@ -152,7 +152,7 @@ export function ProjectOverview({ id }: { id: string }) {
                 cancelText="取消"
                 onConfirm={() => rollback(d)}
               >
-                <Button size="sm" variant="ghost" disabled={pending}>
+                <Button size="sm" variant="ghost" tone="danger" disabled={pending}>
                   <RotateCcw className="size-4" />
                   回滚
                 </Button>

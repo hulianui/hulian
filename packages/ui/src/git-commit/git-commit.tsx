@@ -1,5 +1,7 @@
 import { cn } from "../lib/cn";
+import { resolveTone } from "../lib/tone";
 import { GitBranch, GitCommit as GitCommitIcon } from "../_icons";
+import { branchTone } from "./branch-tone";
 import type { GitCommitProps } from "./git-commit.types";
 
 // GitCommit = git 提交引用原语：分支 chip + 短哈希(等宽) + 提交信息 + 作者。
@@ -19,6 +21,7 @@ export function GitCommit({
   avatar,
   href,
   shaLength = 7,
+  colorBranch = true,
   layout = "inline",
   size = "md",
   className,
@@ -27,12 +30,31 @@ export function GitCommit({
   const text = size === "sm" ? "text-xs" : "text-sm";
   const short = shortSha(sha, shaLength);
 
-  const branchChip = branch != null && (
-    <span className="inline-flex min-w-0 items-center gap-1 text-muted-foreground">
-      <GitBranch className={cn(iconSize, "shrink-0")} />
-      <span className="truncate font-medium text-foreground">{branch}</span>
-    </span>
-  );
+  // 分支着色：按类型/名称稳定取色，渲染成 soft badge（彩色文字 + 同色 12% 底）。
+  const branchColor =
+    branch != null && colorBranch ? resolveTone(branchTone(branch)) : undefined;
+
+  const branchChip =
+    branch != null &&
+    (branchColor ? (
+      <span
+        className="inline-flex min-w-0 items-center gap-1 rounded-[var(--radius-sm)] px-1.5 py-0.5 font-medium leading-none"
+        style={{
+          color: branchColor,
+          // 12% 同色底（color-mix 让任意 chart token 也能得到柔和填充）。
+          backgroundColor: `color-mix(in oklab, ${branchColor} 12%, transparent)`,
+        }}
+        title={branch}
+      >
+        <GitBranch className={cn(iconSize, "shrink-0")} />
+        <span className="truncate">{branch}</span>
+      </span>
+    ) : (
+      <span className="inline-flex min-w-0 items-center gap-1 text-muted-foreground">
+        <GitBranch className={cn(iconSize, "shrink-0")} />
+        <span className="truncate font-medium text-foreground">{branch}</span>
+      </span>
+    ));
 
   const shaNode = (
     <span

@@ -103,7 +103,7 @@ export default function DeploymentsPage() {
         id: "env",
         header: "环境",
         cell: ({ row }) => (
-          <Tag tone={row.original.env === "production" ? "brand" : "neutral"} size="sm">
+          <Tag tone={row.original.env === "production" ? "success" : "warning"} size="sm">
             {row.original.env === "production" ? "生产" : "预览"}
           </Tag>
         ),

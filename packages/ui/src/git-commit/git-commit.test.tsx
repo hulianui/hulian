@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { GitCommit, shortSha } from "./git-commit";
+import { branchTone } from "./branch-tone";
 
 describe("shortSha", () => {
   it("默认截 7 位", () => {
@@ -49,5 +50,45 @@ describe("GitCommit", () => {
       <GitCommit sha="abc1234" author="瑚琏" avatar={<span data-testid="av" />} />,
     );
     expect(getByText("瑚琏")).toBeTruthy();
+  });
+
+  it("colorBranch 给分支着色（彩色文字 + soft 底）", () => {
+    const { getByText } = render(
+      <GitCommit sha="abc1234" branch="feat/sku-g" />,
+    );
+    const el = getByText("feat/sku-g").closest("span[style]") as HTMLElement;
+    expect(el).toBeTruthy();
+    expect(el.style.color).toContain("--color-");
+    expect(el.style.backgroundColor).toContain("color-mix");
+  });
+
+  it("colorBranch=false 退回中性文本（无 style 着色）", () => {
+    const { getByText } = render(
+      <GitCommit sha="abc1234" branch="main" colorBranch={false} />,
+    );
+    const el = getByText("main").closest("span[style]");
+    expect(el).toBeNull();
+  });
+});
+
+describe("branchTone", () => {
+  it("主干分支 → success", () => {
+    expect(branchTone("main")).toBe("success");
+    expect(branchTone("master")).toBe("success");
+    expect(branchTone("release/1.2")).toBe("success");
+  });
+
+  it("约定式前缀固定取色", () => {
+    expect(branchTone("feat/sku-g")).toBe("chart-1");
+    expect(branchTone("fix/checkout")).toBe("warning");
+    expect(branchTone("perf/render")).toBe("chart-4");
+    expect(branchTone("hotfix/oom")).toBe("danger");
+  });
+
+  it("未知分支按名称稳定哈希落到 chart-1..6", () => {
+    const a = branchTone("zhangsan/spike");
+    const b = branchTone("zhangsan/spike");
+    expect(a).toBe(b);
+    expect(a).toMatch(/^chart-[1-6]$/);
   });
 });

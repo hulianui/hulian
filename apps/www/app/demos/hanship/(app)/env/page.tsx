@@ -129,7 +129,7 @@ export default function EnvPage() {
       cell: ({ row }) => (
         <div className="flex flex-wrap gap-1">
           {row.original.targets.map((t) => (
-            <Tag key={t} tone="neutral" size="sm">
+            <Tag key={t} tone={t === "production" ? "success" : "warning"} size="sm">
               {envLabel[t]}
             </Tag>
           ))}

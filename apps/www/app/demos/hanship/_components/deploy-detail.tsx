@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardBody,
   Breadcrumb,
+  Tag,
   GitCommit,
   DeployStatus,
   RelativeTime,
@@ -15,7 +16,6 @@ import {
   LogViewer,
   Timeline,
   Descriptions,
-  Safari,
   Skeleton,
   Result,
   Popconfirm,
@@ -94,32 +94,52 @@ function buildLogLines(status: DeployState): ViewerLine[] {
 }
 
 // —— 部署生命周期 Timeline ——
+// 五个生命周期节点严格单调推进：已完成=success(绿) / 当前进行中=primary+pending(蓝) /
+// 其后未开始=default(灰)。activeStage = 当前正进行的节点 index（done 态为 5 表示全完成）。
 function lifecycleItems(status: DeployState): TimelineItemProps[] {
-  const reached = (...states: DeployState[]) => states.includes(status);
-  const done = status === "ready";
   const failed = status === "error";
 
+  // 各状态下「已推进到第几个节点」：
+  //   ready    → 5（全部完成，无进行中节点）
+  //   building → 1（构建中，"构建开始"节点为当前进行中）
+  //   error    → 2（在"构建完成"节点失败）
+  //   queued   → 1（已入队=完成，"构建开始"等待中）
+  //   canceled/skipped → 1（入队后中止）
+  const activeStage =
+    status === "ready"
+      ? 5
+      : status === "building"
+        ? 1
+        : status === "error"
+          ? 2
+          : 1; // queued / canceled / skipped
+
+  // 单个节点按其 index 与 activeStage 的关系着色（done…active…pending 单调）。
+  const stage = (index: number): { color: TimelineItemProps["color"]; pending?: boolean } => {
+    if (failed && index === activeStage) return { color: "danger" };
+    if (index < activeStage) return { color: "success" };
+    if (index === activeStage && status === "building") return { color: "primary", pending: true };
+    return { color: "default" };
+  };
+
   return [
-    { color: "success", label: "已入队", children: "部署排队" },
+    { ...stage(0), label: "已入队", children: "部署排队" },
     {
-      color: failed ? "danger" : reached("building", "ready", "error") ? "primary" : "default",
-      pending: status === "building",
+      ...stage(1),
       label: status === "queued" ? "等待中" : undefined,
       children: "构建开始",
     },
     {
-      color: failed ? "danger" : done ? "success" : "default",
-      pending: false,
+      ...stage(2),
       children: failed ? "构建失败" : "构建完成",
     },
     {
-      color: done ? "success" : "default",
+      ...stage(3),
       children: "分发到边缘网络",
     },
     {
-      color: done ? "success" : "default",
-      pending: status === "building",
-      children: done ? "部署就绪" : "等待就绪",
+      ...stage(4),
+      children: status === "ready" ? "部署就绪" : "等待就绪",
     },
   ];
 }
@@ -198,7 +218,11 @@ export function DeployDetail({ id }: { id: string }) {
     { label: "部署 ID", children: <span className="font-mono text-xs">{deploy.id}</span> },
     {
       label: "环境",
-      children: deploy.env === "production" ? "生产" : "预览",
+      children: (
+        <Tag tone={deploy.env === "production" ? "success" : "warning"} size="sm">
+          {deploy.env === "production" ? "生产" : "预览"}
+        </Tag>
+      ),
     },
     { label: "分支", children: <span className="font-mono text-xs">{deploy.branch}</span> },
     { label: "提交", children: <span className="font-mono text-xs">{deploy.sha.slice(0, 12)}</span> },
@@ -289,7 +313,7 @@ export function DeployDetail({ id }: { id: string }) {
                 });
               }}
             >
-              <Button variant="outline" size="sm">
+              <Button variant="outline" tone="danger" size="sm">
                 <RotateCcw className="size-4" />
                 回滚到此
               </Button>
@@ -324,17 +348,6 @@ export function DeployDetail({ id }: { id: string }) {
             <CardHeader>部署生命周期</CardHeader>
             <CardBody>
               <Timeline items={timeline} />
-            </CardBody>
-          </Card>
-
-          <Card>
-            <CardHeader>预览</CardHeader>
-            <CardBody>
-              <Safari url={deploy.url}>
-                <div className="grid h-40 place-items-center bg-gradient-to-br from-primary/20 to-primary/5 text-sm text-muted">
-                  {project.name}
-                </div>
-              </Safari>
             </CardBody>
           </Card>
         </div>
