@@ -110,6 +110,7 @@ push 到 `master` 后 `release.yml` 自动 `changeset publish` 发布版本号�
 
 - 📦 **已发 GitHub Packages**：`@hulianui/ui@0.1.2` + `@hulianui/tokens@0.1.1`（私有 registry · changesets 管版本 · GitHub Actions 自动发布，用内置 `GITHUB_TOKEN` 零 PAT）
 - 🌐 **文档站上线**：[hulianui.haloritual.com](https://hulianui.haloritual.com)（Cloudflare Pages · 静态导出 · push 自动重发）
+  - 🇨🇳 **中国镜像**：[hulianui-zh.haloritual.com](https://hulianui-zh.haloritual.com)（阿里云直连 · 绕开 Cloudflare · push 到 master 后 `deploy-zh` job 自动 rsync 同一份静态产物 · 与 Cloudflare 双发）
 - 🧩 **~228 个组件**：基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …
 - 🏗️ **18 个内置 demo**（全 dogfood）：CRM · 商城 · 客服 · 数据大屏 · 知识库 · 直播 · AI 工作流 · API 网关 · 智能体调度 · 项目协同 · LMS · 个人站 · 官网 · 订阅结算 · 代码审查 · 排期 · 移动端 · AI 对话
 - ✅ **三道门 CI 全绿**：typecheck + 1884 单测（vitest）+ www 静态导出

@@ -6,6 +6,7 @@ import { ThemeProvider, MuiBridgeProvider } from "@hulianui/ui";
 import { themeScript } from "./theme-script";
 import { MswProvider } from "../components/msw-provider";
 import { RouteProgress } from "../components/route-progress";
+import { RegionMirrorBanner } from "../components/region-mirror-banner";
 
 export const metadata: Metadata = {
   title: "瑚琏 Hulian",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <ThemeProvider defaultSetting="system">
           <RouteProgress />
+          <RegionMirrorBanner />
           <AppRouterCacheProvider options={{ key: "mui" }}>
             <MuiBridgeProvider>
               <MswProvider>{children}</MswProvider>
