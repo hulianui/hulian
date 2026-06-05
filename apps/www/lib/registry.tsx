@@ -185,6 +185,7 @@ import {
   qrcodeShowcase,
   viewportShowcase,
   logViewerShowcase,
+  schedulerShowcase,
   codeDiffShowcase,
   fileTreeShowcase,
 } from "@hulian/ui/showcase";
@@ -375,6 +376,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   qrcode: qrcodeShowcase,
   viewport: viewportShowcase,
   "log-viewer": logViewerShowcase,
+  scheduler: schedulerShowcase,
   "code-diff": codeDiffShowcase,
   "file-tree": fileTreeShowcase,
 };

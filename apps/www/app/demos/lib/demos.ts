@@ -18,6 +18,16 @@ export interface DemoMeta {
 
 export const demos: DemoMeta[] = [
   {
+    slug: "scheduler",
+    title: "瀚约 诊所预约管理台",
+    description:
+      "医生排班 / 号源 / 患者预约全流程 —— 月/周/日/资源四视图时间轴排班台，拖空白建预约、拖事件改期、拖下缘改时长，100% 由 @hulian/ui 搭建。点亮整个日期时间族（Calendar 导航 / DatePicker 跳转 / DateTimePicker 起诊 / TimeField 结束 / DateRangePicker 停诊登记），并新造全功能 Scheduler 事件日历组件。",
+    href: "/demos/scheduler",
+    category: "中后台",
+    status: "done",
+    tags: ["Scheduler", "Calendar", "DateTimePicker", "排班", "拖拽"],
+  },
+  {
     slug: "knowledge",
     title: "瀚库 HanVault 团队知识库",
     description:

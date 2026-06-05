@@ -187,6 +187,7 @@ export { pickerShowcase } from "./picker/picker.showcase";
 export { virtualListShowcase } from "./virtual-list/virtual-list.showcase";
 export { infiniteScrollShowcase } from "./infinite-scroll/infinite-scroll.showcase";
 export { qrcodeShowcase } from "./qrcode/qrcode.showcase";
+export { schedulerShowcase } from "./scheduler/scheduler.showcase";
 export { viewportShowcase } from "./viewport/viewport.showcase";
 // devtools / 执行态 批
 export { logViewerShowcase } from "./log-viewer/log-viewer.showcase";

@@ -228,6 +228,7 @@ export * from "./qrcode";
 
 // 响应式容器（容器查询上下文 + web/平板/手机 预设）
 export * from "./viewport";
+export * from "./scheduler";
 
 // devtools / 执行态 批（运行输出可视化·承 TaskRunner 品类）
 export * from "./log-viewer";
@@ -235,4 +236,7 @@ export * from "./code-diff";
 export * from "./file-tree";
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";
+// 日期 SSoT（消费者需 dayjs 做日期数学时从这里取，避免各自装一份/版本漂移）
+export { dayjs, DATE_FORMAT, TIME_FORMAT, DATE_TIME_FORMAT } from "./lib/date";
+export type { Dayjs } from "./lib/date";
 export type { ShowcaseSpec, Control, StateSpec, ControlType } from "./showcase/types";
