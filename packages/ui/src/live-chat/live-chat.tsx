@@ -66,7 +66,17 @@ export function LiveChat({
           ))}
         </div>
       )}
-      <div ref={scrollRef} onScroll={onScroll} className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        className={cn(
+          "min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1",
+          // overlay（叠在视频上的 C 端公屏）：藏滚动条 + 顶部渐隐，像真实直播间的被动消息流，
+          // 不显丑陋滚动条；非 overlay（中控监看面板）保留滚动条供主动回看。
+          overlay &&
+            "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_bottom,transparent,#000_14%)]",
+        )}
+      >
         {windowed.map((it) => (
           <div key={it.id}>{renderItem ? renderItem(it) : <DefaultRow item={it} overlay={overlay} />}</div>
         ))}

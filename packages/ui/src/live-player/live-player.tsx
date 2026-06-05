@@ -82,7 +82,7 @@ export function LivePlayer({
 
           <div className="pointer-events-auto flex items-center gap-1.5">
             {live && (
-              <span className="flex items-center gap-1 rounded-full bg-danger px-2 py-0.5 text-[11px] font-bold tracking-wide text-danger-foreground">
+              <span className="flex items-center gap-1 rounded-full bg-danger px-2 py-0.5 text-[11px] font-bold leading-none tracking-wide text-danger-foreground">
                 <span className="relative flex size-1.5">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-white/80" />
                   <span className="relative inline-flex size-1.5 rounded-full bg-white" />
@@ -91,7 +91,7 @@ export function LivePlayer({
               </span>
             )}
             {viewers != null && (
-              <span className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[11px] backdrop-blur-sm">
+              <span className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[11px] leading-none backdrop-blur-sm">
                 <svg viewBox="0 0 24 24" className="size-3 fill-none stroke-current" strokeWidth={2}>
                   <path d="M12 5c-5 0-9 5-9 7s4 7 9 7 9-5 9-7-4-7-9-7Z" />
                   <circle cx="12" cy="12" r="2.5" />
@@ -101,11 +101,12 @@ export function LivePlayer({
               </span>
             )}
             {qualities && qualities.length > 0 && (
-              <div className="relative">
+              // flex：使包裹层高度=按钮高（而非继承 ~1.5 行高的行盒），与 LIVE/观看数药丸等高居中。
+              <div className="relative flex items-center">
                 <button
                   type="button"
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="rounded-full bg-black/40 px-2 py-0.5 text-[11px] backdrop-blur-sm"
+                  className="inline-flex items-center rounded-full bg-black/40 px-2 py-0.5 text-[11px] leading-none backdrop-blur-sm"
                 >
                   {quality ?? qualities[0]} ▾
                 </button>

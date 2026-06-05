@@ -17,5 +17,11 @@ export interface DrawerContentProps {
    * 表单 / 详情类抽屉的「取消 / 保存」「关闭」应放这里而非正文末尾。
    */
   footer?: ReactNode;
+  /**
+   * 就地挂载目标（元素或 ref）。提供后抽屉 portal 进该容器并改用 absolute 贴其边，
+   * 而非默认 fixed 贴视口——适合手机框预览等需把抽屉收进局部容器的场景。
+   * 容器须 position:relative + overflow-hidden。
+   */
+  container?: ComponentProps<typeof BaseDialog.Portal>["container"];
   className?: string;
 }

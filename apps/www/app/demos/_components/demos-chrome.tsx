@@ -25,6 +25,7 @@ export function DemosChrome() {
       label="返回示例库"
       icon={<LayoutGrid className="size-5" aria-hidden />}
       position="bottom-left"
+      draggable
       aria-label="返回示例库"
       onClick={() => router.push("/demos")}
     />

@@ -25,6 +25,11 @@ export interface FabProps {
   position?: FabPosition;
   /** 尺寸，默认 md（56px 主钮）。sm（48px）更适合手机框内等紧凑场景。 */
   size?: "sm" | "md";
+  /**
+   * 可拖拽：按住主钮拖动重定位（指针位移 > 3px 视为拖拽，该次不触发 onClick）。
+   * 适合悬浮钮可能遮挡内容、需用户自行挪开的场景（如 demo 预览）。默认 false。
+   */
+  draggable?: boolean;
   /** 无 actions 时的主按钮点击。 */
   onClick?: () => void;
   /** 主按钮无障碍标签，默认「操作」。 */

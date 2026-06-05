@@ -29,10 +29,11 @@ describe("drawerVariants", () => {
     expect(c).toContain("border-t");
     expect(c).toContain("data-[starting-style]:translate-y-full");
   });
-  it("base 始终带 fixed + 语义皮肤（过渡走内联 transition 简写，不再用 transition-transform 类）", () => {
+  it("base 带 z-50 + 语义皮肤；定位(fixed/absolute)由 DrawerContent 按 container 决定，不写死在变体里", () => {
     const c = drawerVariants({});
-    expect(c).toContain("fixed");
+    expect(c).toContain("z-50");
     expect(c).toContain("bg-surface");
+    expect(c).not.toContain("fixed");
   });
 });
 

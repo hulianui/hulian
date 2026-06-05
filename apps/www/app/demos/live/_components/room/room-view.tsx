@@ -32,6 +32,7 @@ interface CsMessage {
 
 export function RoomView() {
   const { state, send } = useLiveSim();
+  const frameRef = useRef<HTMLDivElement>(null);
   const hearts = useRef<FloatingReactionsHandle>(null);
   const seq = useRef(0);
   const combo = useRef<{ name: string; count: number; id: string } | null>(null);
@@ -76,7 +77,10 @@ export function RoomView() {
 
   return (
     <div className="flex h-dvh items-center justify-center bg-neutral-950 sm:p-4">
-      <div className="relative h-full w-full overflow-hidden bg-black sm:h-[844px] sm:max-h-[94vh] sm:w-[400px] sm:rounded-[28px] sm:ring-8 sm:ring-black/80">
+      <div
+        ref={frameRef}
+        className="relative h-full w-full overflow-hidden bg-black sm:h-[844px] sm:max-h-[94vh] sm:w-[400px] sm:rounded-[28px] sm:ring-8 sm:ring-black/80"
+      >
         <LivePlayer
           src="/demo/sample-video.mp4"
           aspectRatio="fill"
@@ -86,17 +90,25 @@ export function RoomView() {
           overlay={
             <>
               <Danmaku items={state.danmaku} tracks={4} speed={92} area={0.42} className="top-14" />
-              <GiftFeed events={state.gifts} className="absolute bottom-44 left-3 w-56" />
-              <FloatingReactions ref={hearts} className="right-4 left-auto translate-x-0" rise={300} />
-              {/* 公屏：左下半屏 overlay 浅色态 */}
-              <div className="pointer-events-auto absolute bottom-[88px] left-2 right-20 h-40">
+              {/* 真实直播版式（自下而上）：公屏弹幕铺满底部 → 上方依次浮「讲解商品角标 / 礼物横幅」。 */}
+              {/* 公屏：底部近铺满、overlay 浅色态（藏滚动条 + 顶部渐隐，被动消息流观感） */}
+              <div className="pointer-events-auto absolute bottom-[68px] left-2 right-3 h-44">
                 <LiveChat items={state.chat} overlay className="h-full" maxItems={40} />
               </div>
-              {/* 讲解中小黄车角标 */}
+              {/* 礼物横幅：弹幕上方 */}
+              <GiftFeed events={state.gifts} className="absolute bottom-[300px] left-3 w-60" />
+              {/* 飘心：从点赞钮一侧上浮，收在右侧条带内不溢出手机框 */}
+              <FloatingReactions
+                ref={hearts}
+                className="bottom-16 right-6 left-auto translate-x-0"
+                rise={300}
+                drift={16}
+              />
+              {/* 讲解中小黄车角标（弹幕上方） */}
               <button
                 type="button"
                 onClick={() => setCartOpen(true)}
-                className="pointer-events-auto absolute bottom-[136px] left-2 flex max-w-[160px] items-center gap-1.5 rounded-full bg-black/55 py-1 pl-1 pr-2.5 text-left text-white backdrop-blur-sm"
+                className="pointer-events-auto absolute bottom-[252px] left-2 flex max-w-[160px] items-center gap-1.5 rounded-full bg-black/55 py-1 pl-1 pr-2.5 text-left text-white backdrop-blur-sm"
               >
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-chart-4 text-xs font-bold">
                   {explaining.index}
@@ -163,7 +175,7 @@ export function RoomView() {
 
       {/* 小黄车抽屉 */}
       <Drawer open={cartOpen} onOpenChange={setCartOpen}>
-        <DrawerContent side="bottom" title="小黄车" className="mx-auto max-w-[420px]">
+        <DrawerContent side="bottom" title="小黄车" container={frameRef} className="rounded-t-[20px]">
           <div className="max-h-[60vh] space-y-2 overflow-y-auto p-1">
             {PRODUCTS.map((p) => (
               <LiveProductCard
@@ -190,7 +202,7 @@ export function RoomView() {
 
       {/* 礼物面板 */}
       <Drawer open={giftOpen} onOpenChange={setGiftOpen}>
-        <DrawerContent side="bottom" title="送礼物" className="mx-auto max-w-[420px]">
+        <DrawerContent side="bottom" title="送礼物" container={frameRef} className="rounded-t-[20px]">
           <div className="grid grid-cols-4 gap-2 p-2">
             {GIFT_PANEL.map((g) => (
               <button
@@ -211,7 +223,7 @@ export function RoomView() {
 
       {/* AI 客服 */}
       <Drawer open={csOpen} onOpenChange={setCsOpen}>
-        <DrawerContent side="bottom" title="AI 客服" className="mx-auto flex h-[70vh] max-w-[420px] flex-col">
+        <DrawerContent side="bottom" title="AI 客服" container={frameRef} className="flex h-[70%] flex-col rounded-t-[20px]">
           <Conversation className="flex-1 space-y-3 overflow-y-auto px-1 py-2">
             {cs.map((m) =>
               m.role === "user" ? (

@@ -16,7 +16,8 @@ const overlayTransition = {
 // side 决定贴边定位 + 尺寸 + 内边框 + 关闭态 translate（落在 starting/ending-style → 滑入/滑出）。
 export const drawerVariants = cva(
   [
-    "fixed z-50 flex flex-col gap-1 bg-surface border-hairline p-6 text-foreground shadow-xl outline-none",
+    // 定位（fixed/absolute）由 DrawerContent 按 container 决定，故不写死在这里。
+    "z-50 flex flex-col gap-1 bg-surface border-hairline p-6 text-foreground shadow-xl outline-none",
   ],
   {
     variants: {
@@ -46,15 +47,23 @@ export function DrawerContent({
   description,
   children,
   footer,
+  container,
   className,
 }: DrawerContentProps) {
+  // 提供 container（如手机框 ref）→ 抽屉就地 portal 进该元素并改用 absolute 定位，
+  // 贴该容器的边而非视口（容器须 position:relative + overflow-hidden）。否则默认 fixed 贴视口。
+  const contained = container != null;
+  const place = contained ? "absolute" : "fixed";
   return (
-    <BaseDialog.Portal>
+    <BaseDialog.Portal container={container}>
       <BaseDialog.Backdrop
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className={cn(
+          place,
+          "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+        )}
         style={overlayTransition}
       />
-      <BaseDialog.Popup className={cn(drawerVariants({ side }), className)} style={overlayTransition}>
+      <BaseDialog.Popup className={cn(place, drawerVariants({ side }), className)} style={overlayTransition}>
         {title && <BaseDialog.Title className="text-lg font-semibold">{title}</BaseDialog.Title>}
         {description && (
           <BaseDialog.Description className="text-sm text-muted">
