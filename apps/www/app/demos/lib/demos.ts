@@ -18,6 +18,16 @@ export interface DemoMeta {
 
 export const demos: DemoMeta[] = [
   {
+    slug: "knowledge",
+    title: "瀚库 HanVault 团队知识库",
+    description:
+      "经典三栏文件中心 / 网盘：左栏目录树(搜索+右键菜单+上传)、中栏文档在线编辑(Markdown)与文件网格、右栏协作者/版本/标签/访问权限 —— 100% 由 @hulian/ui 搭建，点亮 FileTree/Tree/TreeSelect 树族与 MarkdownEditor 主角，含图片全屏预览、批量移动与完整增删改生命周期。",
+    href: "/demos/knowledge",
+    category: "中后台",
+    status: "done",
+    tags: ["FileTree", "Tree", "MarkdownEditor", "ImageViewer", "TreeSelect", "Transfer"],
+  },
+  {
     slug: "learn",
     title: "瀚学 在线课程平台",
     description:
