@@ -17,6 +17,7 @@ export function Book3D({
   title,
   subtitle,
   cover,
+  logo,
   coverColor = { from: "var(--color-primary)", to: "color-mix(in oklab, var(--color-primary) 60%, #000)" },
   spineColor = "#efe9dd",
   thickness = "2.25rem",
@@ -70,9 +71,30 @@ export function Book3D({
         >
           {/* 封脊高光：左侧装订暗带 */}
           <span aria-hidden className="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/30 to-transparent" />
-          <span className="relative text-[1.6rem] font-bold leading-tight tracking-tight drop-shadow">{title}</span>
-          {subtitle != null && (
-            <span className="relative text-sm font-medium uppercase tracking-widest text-white/85">{subtitle}</span>
+          {logo ? (
+            <>
+              {/* 产品 logo / app icon 居中，标题落到封底 */}
+              <span className="flex flex-1 items-center justify-center py-3">
+                <img
+                  src={logo}
+                  alt=""
+                  className="aspect-square w-[46%] rounded-[22%] object-cover shadow-[0_10px_24px_-8px_rgba(0,0,0,.6)] ring-1 ring-white/15"
+                />
+              </span>
+              <span className="relative">
+                <span className="block text-[1.35rem] font-bold leading-tight tracking-tight drop-shadow">{title}</span>
+                {subtitle != null && (
+                  <span className="mt-0.5 block text-xs font-medium uppercase tracking-widest text-white/80">{subtitle}</span>
+                )}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="relative text-[1.6rem] font-bold leading-tight tracking-tight drop-shadow">{title}</span>
+              {subtitle != null && (
+                <span className="relative text-sm font-medium uppercase tracking-widest text-white/85">{subtitle}</span>
+              )}
+            </>
           )}
         </span>
         {/* 角标缎带 */}

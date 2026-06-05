@@ -12,6 +12,8 @@ export interface Book3DProps {
   subtitle?: ReactNode;
   /** 封面图 url；提供时覆盖 coverColor 渐变 */
   cover?: string;
+  /** 封面中心叠加的产品 logo / app icon（图 url）；叠在渐变背景上居中展示，标题落到底部。 */
+  logo?: string;
   /** 封面渐变色；默认品牌渐变 */
   coverColor?: Book3DCoverColor;
   /** 书脊/页厚颜色（CSS color），默认浅纸色 */
