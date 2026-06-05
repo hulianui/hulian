@@ -66,3 +66,28 @@ describe("FileTree", () => {
     expect(unselTokens).not.toContain("bg-surface-hover");
   });
 });
+
+describe("FileTree 受控 / 搜索 / 右键", () => {
+  it("searchable 过滤出命中并自动展开祖先", () => {
+    const { getByPlaceholderText, getByText, queryByText } = render(<FileTree nodes={nodes} searchable />);
+    fireEvent.change(getByPlaceholderText("搜索文件"), { target: { value: "old" } });
+    expect(getByText("old.ts")).toBeTruthy(); // lib 自动展开
+    expect(queryByText("index.ts")).toBeNull(); // 未命中隐藏
+  });
+  it("onContextMenu 右键回传 node+path", () => {
+    const onCtx = vi.fn();
+    const { getByText } = render(<FileTree nodes={nodes} onContextMenu={onCtx} />);
+    fireEvent.contextMenu(getByText("index.ts"));
+    expect(onCtx).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "index.ts" }),
+      "src/index.ts",
+      expect.anything(),
+    );
+  });
+  it("受控 expandedPaths 控制展开", () => {
+    const { queryByText, rerender } = render(<FileTree nodes={nodes} expandedPaths={[]} />);
+    expect(queryByText("index.ts")).toBeNull();
+    rerender(<FileTree nodes={nodes} expandedPaths={["src"]} />);
+    expect(queryByText("index.ts")).toBeTruthy();
+  });
+});

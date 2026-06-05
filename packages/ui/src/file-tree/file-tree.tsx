@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
 import { ChevronRight, Folder, File } from "../_icons";
 import { cn } from "../lib/cn";
+import { filterFileTree } from "./file-tree-core";
 import type { FileNode, FileStatus, FileTreeProps } from "./file-tree.types";
 
 // 状态 → 字母 + 字面色类（git status 习惯）。
@@ -27,17 +28,34 @@ function StatusBadge({ status }: { status?: FileStatus }) {
   );
 }
 
+// 收集所有 defaultExpanded folder 的 path（向后兼容初值）。
+function collectDefaultExpanded(nodes: FileNode[], parent: string, acc: Set<string>) {
+  for (const n of nodes) {
+    const path = parent ? `${parent}/${n.name}` : n.name;
+    if (n.type === "folder") {
+      if (n.defaultExpanded) acc.add(path);
+      if (n.children) collectDefaultExpanded(n.children, path, acc);
+    }
+  }
+}
+
 interface RowProps {
   node: FileNode;
   depth: number;
   path: string;
   selectedPath?: string;
+  expandedSet: Set<string>;
+  toggle: (path: string) => void;
   onSelect?: FileTreeProps["onSelect"];
+  onContextMenu?: FileTreeProps["onContextMenu"];
+  /** 搜索激活时的可见 path 白名单（null = 不过滤）。 */
+  visible: Set<string> | null;
 }
 
-function Row({ node, depth, path, selectedPath, onSelect }: RowProps) {
-  const [open, setOpen] = useState(node.defaultExpanded ?? false);
+function Row({ node, depth, path, selectedPath, expandedSet, toggle, onSelect, onContextMenu, visible }: RowProps) {
+  if (visible && !visible.has(path)) return null;
   const isFolder = node.type === "folder";
+  const open = isFolder && expandedSet.has(path);
   const selected = selectedPath === path;
 
   return (
@@ -45,9 +63,10 @@ function Row({ node, depth, path, selectedPath, onSelect }: RowProps) {
       <button
         type="button"
         onClick={() => {
-          if (isFolder) setOpen((o) => !o);
+          if (isFolder) toggle(path);
           onSelect?.(node, path);
         }}
+        onContextMenu={(e: MouseEvent) => onContextMenu?.(node, path, e)}
         aria-expanded={isFolder ? open : undefined}
         className={cn(
           "flex w-full items-center gap-1.5 rounded-md py-1 pr-2 text-left text-sm text-foreground hover:bg-surface-hover",
@@ -78,7 +97,11 @@ function Row({ node, depth, path, selectedPath, onSelect }: RowProps) {
               depth={depth + 1}
               path={`${path}/${child.name}`}
               selectedPath={selectedPath}
+              expandedSet={expandedSet}
+              toggle={toggle}
               onSelect={onSelect}
+              onContextMenu={onContextMenu}
+              visible={visible}
             />
           ))}
         </ul>
@@ -87,24 +110,88 @@ function Row({ node, depth, path, selectedPath, onSelect }: RowProps) {
   );
 }
 
-export function FileTree({ nodes, selectedPath, onSelect, className }: FileTreeProps) {
+export function FileTree({
+  nodes,
+  selectedPath,
+  onSelect,
+  onContextMenu,
+  className,
+  expandedPaths,
+  defaultExpandedPaths,
+  onExpandedChange,
+  searchable,
+  searchPlaceholder = "搜索文件",
+}: FileTreeProps) {
+  const [query, setQuery] = useState("");
+
+  // 向后兼容初值：各 folder defaultExpanded 收集的 path ∪ defaultExpandedPaths。
+  const defaultExpanded = useMemo(() => {
+    const s = new Set<string>(defaultExpandedPaths ?? []);
+    collectDefaultExpanded(nodes, "", s);
+    return s;
+  }, [nodes, defaultExpandedPaths]);
+
+  const [uncontrolled, setUncontrolled] = useState<Set<string>>(defaultExpanded);
+  const controlled = expandedPaths != null;
+  const userExpanded = controlled ? new Set(expandedPaths) : uncontrolled;
+
+  const search = useMemo(
+    () => (searchable ? filterFileTree(nodes, query) : null),
+    [searchable, nodes, query],
+  );
+
+  // 搜索激活：可见集 = 命中 path + 其所有祖先；展开集 = 用户展开 ∪ 自动展开。
+  const { visible, expandedSet } = useMemo<{ visible: Set<string> | null; expandedSet: Set<string> }>(() => {
+    if (!search || query.trim() === "") return { visible: null, expandedSet: userExpanded };
+    const vis = new Set<string>();
+    for (const p of search.matchedPaths) {
+      const parts = p.split("/");
+      let acc = "";
+      for (const part of parts) {
+        acc = acc ? `${acc}/${part}` : part;
+        vis.add(acc);
+      }
+    }
+    for (const p of search.autoExpandPaths) vis.add(p);
+    return { visible: vis, expandedSet: new Set([...userExpanded, ...search.autoExpandPaths]) };
+  }, [search, query, userExpanded]);
+
+  const toggle = (path: string) => {
+    const next = new Set(userExpanded);
+    if (next.has(path)) next.delete(path);
+    else next.add(path);
+    if (!controlled) setUncontrolled(next);
+    onExpandedChange?.([...next]);
+  };
+
   return (
-    <ul
-      className={cn(
-        "rounded-[var(--radius)] border border-border bg-surface p-1.5",
-        className,
-      )}
-    >
-      {nodes.map((node, i) => (
-        <Row
-          key={i}
-          node={node}
-          depth={0}
-          path={node.name}
-          selectedPath={selectedPath}
-          onSelect={onSelect}
+    <div className={cn("flex flex-col gap-1.5", className)}>
+      {searchable && (
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={searchPlaceholder}
+          aria-label={searchPlaceholder}
+          className="w-full rounded-[var(--radius)] border border-border bg-surface px-2.5 py-1.5 text-sm outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         />
-      ))}
-    </ul>
+      )}
+      <ul className="rounded-[var(--radius)] border border-border bg-surface p-1.5">
+        {nodes.map((node, i) => (
+          <Row
+            key={i}
+            node={node}
+            depth={0}
+            path={node.name}
+            selectedPath={selectedPath}
+            expandedSet={expandedSet}
+            toggle={toggle}
+            onSelect={onSelect}
+            onContextMenu={onContextMenu}
+            visible={visible}
+          />
+        ))}
+      </ul>
+    </div>
   );
 }
