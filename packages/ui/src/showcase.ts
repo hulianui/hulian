@@ -173,6 +173,13 @@ export { watchShowcase } from "./watch/watch.showcase";
 export { watermarkShowcase } from "./watermark/watermark.showcase";
 export { wordRotateShowcase } from "./word-rotate/word-rotate.showcase";
 export { worldMapShowcase } from "./world-map/world-map.showcase";
+export { splitTextShowcase } from "./split-text/split-text.showcase";
+export { blurTextShowcase } from "./blur-text/blur-text.showcase";
+export { decryptedTextShowcase } from "./decrypted-text/decrypted-text.showcase";
+export { glitchTextShowcase } from "./glitch-text/glitch-text.showcase";
+export { circularTextShowcase } from "./circular-text/circular-text.showcase";
+export { scrollRevealShowcase } from "./scroll-reveal/scroll-reveal.showcase";
+export { trueFocusShowcase } from "./true-focus/true-focus.showcase";
 // AI 智能体
 export { typingDotsShowcase } from "./typing-dots/typing-dots.showcase";
 export { chatMessageShowcase } from "./chat-message/chat-message.showcase";

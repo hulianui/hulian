@@ -90,6 +90,14 @@ export * from "./animated-gradient-text";
 export * from "./word-rotate";
 export * from "./typing-animation";
 export * from "./sparkles-text";
+// reactbits 文字动画批
+export * from "./split-text";
+export * from "./blur-text";
+export * from "./decrypted-text";
+export * from "./glitch-text";
+export * from "./circular-text";
+export * from "./scroll-reveal";
+export * from "./true-focus";
 // effects: MagicUI 特效按钮批
 export * from "./shimmer-button";
 export * from "./rainbow-button";

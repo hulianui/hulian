@@ -337,3 +337,69 @@
 ::view-transition-new(root) {
   z-index: 2;
 }
+
+/* ===== reactbits 文字动画批关键帧 ===== */
+
+/* typography/CircularText 环形文字整体匀速自转一圈（时长由内联 animation 控） */
+@keyframes hulian-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* typography/GlitchText 撕裂层 1：clip-path 切片 + 微平移，制造数字故障错位（chart-1 着色层） */
+@keyframes hulian-glitch-1 {
+  0% {
+    clip-path: inset(20% 0 50% 0);
+    transform: translateX(-2px);
+  }
+  20% {
+    clip-path: inset(60% 0 10% 0);
+    transform: translateX(2px);
+  }
+  40% {
+    clip-path: inset(40% 0 40% 0);
+    transform: translateX(-1px);
+  }
+  60% {
+    clip-path: inset(80% 0 5% 0);
+    transform: translateX(1px);
+  }
+  80% {
+    clip-path: inset(10% 0 70% 0);
+    transform: translateX(-2px);
+  }
+  100% {
+    clip-path: inset(30% 0 30% 0);
+    transform: translateX(2px);
+  }
+}
+
+/* typography/GlitchText 撕裂层 2：与层 1 错相切片（chart-3 着色层），两层叠加成 RGB 抖动 */
+@keyframes hulian-glitch-2 {
+  0% {
+    clip-path: inset(70% 0 10% 0);
+    transform: translateX(2px);
+  }
+  20% {
+    clip-path: inset(15% 0 60% 0);
+    transform: translateX(-2px);
+  }
+  40% {
+    clip-path: inset(50% 0 30% 0);
+    transform: translateX(1px);
+  }
+  60% {
+    clip-path: inset(5% 0 80% 0);
+    transform: translateX(-1px);
+  }
+  80% {
+    clip-path: inset(60% 0 20% 0);
+    transform: translateX(2px);
+  }
+  100% {
+    clip-path: inset(25% 0 45% 0);
+    transform: translateX(-2px);
+  }
+}
+

@@ -21,3 +21,23 @@ for (const m of ["setPointerCapture", "releasePointerCapture", "hasPointerCaptur
     HTMLElement.prototype[m] = m === "hasPointerCapture" ? () => false : () => {};
   }
 }
+
+// 3) jsdom 无 IntersectionObserver → motion useInView 在挂载 effect 里 new IntersectionObserver 直接抛
+//    ReferenceError。补永不触发的 no-op 桩（observe/disconnect 空实现）：useInView 恒返回 false，
+//    进场类组件（SplitText / BlurText / ScrollReveal / DecryptedText(view) 等）落静息/初态、DOM 仍完整渲染。
+//    个别测试若已自带本地 beforeAll 桩，重复赋值无害。
+if (typeof globalThis.IntersectionObserver === "undefined") {
+  class IntersectionObserverStub {
+    readonly root = null;
+    readonly rootMargin = "";
+    readonly thresholds = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  }
+  globalThis.IntersectionObserver =
+    IntersectionObserverStub as unknown as typeof IntersectionObserver;
+}
