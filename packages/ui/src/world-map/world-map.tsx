@@ -4,7 +4,7 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import { WORLD_DOTS, VIEWBOX, projectPoint } from "./world-map.dots";
-import type { WorldMapPoint, WorldMapProps } from "./world-map.types";
+import type { WorldMapMarker, WorldMapPoint, WorldMapProps } from "./world-map.types";
 
 // 独立节点半径（viewBox 单位，整图 69×35；底图点 r=0.28、飞线端点 r=0.45 作参照）。
 // 节点比端点略大以承载 value 区分，但封顶 ~0.85 避免盖住地图。按 value 归一化插值到 [MIN, MAX]。
@@ -41,8 +41,37 @@ function nodeRadius(value: number | undefined, range: { min: number; max: number
   return NODE_R_MIN + t * (NODE_R_MAX - NODE_R_MIN);
 }
 
+// 飞线标记形状（viewBox 单位·以原点为中心·朝 +x；offset-rotate:auto 时 +x 对齐飞行方向）。
+function MarkerShape({ shape, color }: { shape: WorldMapMarker; color: string }) {
+  if (shape === "comet") {
+    return (
+      <g>
+        {/* 彗尾：从头部向 -x 渐隐 */}
+        <path d="M 0,-0.3 L -2,0 L 0,0.3 Z" fill={color} opacity={0.4} />
+        <circle r={0.52} fill={color} />
+        <circle r={0.52} fill={color} opacity={0.35}>
+          <animate attributeName="r" values="0.52;1.1;0.52" dur="1.2s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.35;0;0.35" dur="1.2s" repeatCount="indefinite" />
+        </circle>
+      </g>
+    );
+  }
+  if (shape === "arrow") {
+    // 箭头 chevron
+    return <path d="M -0.45,-0.5 L 0.55,0 L -0.45,0.5 L -0.12,0 Z" fill={color} />;
+  }
+  // plane：纸飞机✈️ 朝 +x
+  return (
+    <g fill={color}>
+      <path d="M 0.95,0 L -0.7,0.6 L -0.28,0.08 L -0.7,-0.6 Z" />
+      <path d="M -0.28,0.08 L -0.7,0.6 L -0.18,0.22 Z" opacity={0.6} />
+    </g>
+  );
+}
+
 export function WorldMap({
   dots = [],
+  flyingMarker,
   points = [],
   showLabels = false,
   onPointClick,
@@ -147,6 +176,37 @@ export function WorldMap({
         );
       })}
       </g>
+
+      {/* 飞线标记：沿弧循环移动（offset-path + 动 offset-distance，offset-rotate 贴合方向） */}
+      {flyingMarker && (
+        <g aria-hidden>
+          {resolved.map((d, i) => {
+            const s = projectPoint(d.start.lat, d.start.lng);
+            const e = projectPoint(d.end.lat, d.end.lng);
+            const path = arcPath(s, e);
+            return (
+              <m.g
+                key={`mk-${i}`}
+                data-wm-marker=""
+                style={{
+                  offsetPath: `path('${path}')`,
+                  offsetRotate: "auto",
+                  ...(reduced ? { offsetDistance: "50%" } : null),
+                }}
+                initial={reduced ? false : { offsetDistance: "0%" }}
+                animate={reduced ? undefined : { offsetDistance: "100%" }}
+                transition={
+                  reduced
+                    ? undefined
+                    : { duration: duration * 2.8, delay: i * 0.35, repeat: Infinity, ease: "linear" }
+                }
+              >
+                <MarkerShape shape={flyingMarker} color={d.color} />
+              </m.g>
+            );
+          })}
+        </g>
+      )}
 
       {/* 飞线端点：实心点 + 脉冲环（用各自连线的颜色） */}
       <g aria-hidden>

@@ -249,7 +249,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "meter", name: "Meter", description: "度量条 · Base UI role=meter(静态量占比，区别 Progress)", category: "data-display", group: "stat", status: "new" },
   { slug: "timeline", name: "Timeline", description: "时间线 · 复合 Timeline/Item + items 数组 + 彩色节点/自定义 dot + left/right/alternate + pending 加载态(纯皮肤·零依赖·RSC)", category: "data-display", group: "stat", status: "new" },
   { slug: "number-ticker", name: "NumberTicker", description: "数字滚动 · 进入视口 tween 到目标值 + reduced-motion", category: "data-display", group: "stat", tags: ["animated"], status: "new" },
-  { slug: "world-map", name: "WorldMap", description: "点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交互态放开 aria-hidden)", category: "data-display", group: "stat", tags: ["animated"], status: "new" },
+  { slug: "world-map", name: "WorldMap", description: "点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交互态放开 aria-hidden) + flyingMarker 沿飞线移动标记(✈️飞机/光点彗尾/箭头·offset-path 动效自动转向)", category: "data-display", group: "stat", tags: ["animated"], status: "new" },
   { slug: "empty", name: "Empty", description: "空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)", category: "data-display", group: "placeholder", status: "new" },
   { slug: "skeleton", name: "Skeleton", description: "骨架屏 · shimmer 高光占位", category: "data-display", group: "placeholder", status: "new" },
   { slug: "watermark", name: "Watermark", description: "水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)", category: "data-display", group: "placeholder", status: "new" },

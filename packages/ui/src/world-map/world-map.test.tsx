@@ -117,6 +117,21 @@ describe("WorldMap", () => {
     expect(onPointClick).toHaveBeenCalledTimes(1);
   });
 
+  it("flyingMarker：每条飞线渲染一个移动标记", () => {
+    const dots = [
+      { start: { lat: 39.9, lng: 116.4 }, end: { lat: 40.7, lng: -74 } },
+      { start: { lat: 51.5, lng: -0.1 }, end: { lat: -33.9, lng: 151.2 } },
+    ];
+    const { container } = render(<WorldMap dots={dots} flyingMarker="plane" />);
+    expect(container.querySelectorAll("[data-wm-marker]").length).toBe(dots.length);
+  });
+
+  it("不传 flyingMarker 时无移动标记", () => {
+    const dots = [{ start: { lat: 0, lng: 0 }, end: { lat: 10, lng: 10 } }];
+    const { container } = render(<WorldMap dots={dots} />);
+    expect(container.querySelectorAll("[data-wm-marker]").length).toBe(0);
+  });
+
   it("可交互时 svg 放开 aria-hidden；纯展示时保持", () => {
     const { container: plain } = render(<WorldMap points={NODES} />);
     expect(plain.querySelector("svg")!.getAttribute("aria-hidden")).toBe("true");

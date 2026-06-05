@@ -59,6 +59,11 @@ export const worldMapShowcase: ShowcaseSpec = {
     { name: "节点叠飞线", render: () => <Frame><WorldMap points={NODES} dots={radial} /></Frame> },
     // 可点击下钻（传 onPointClick → 节点可聚焦/Enter 触发，svg 放开 aria-hidden）
     { name: "可点击下钻", render: () => <Frame><WorldMap points={NODES} showLabels onPointClick={(n) => alert(`下钻：${n.label}`)} /></Frame> },
+    // 飞线标记：沿弧循环移动（✈️ 飞机 / 光点彗尾 / 箭头，自动贴合飞行方向）
+    { name: "飞机✈️", render: () => <Frame><WorldMap dots={radial} flyingMarker="plane" /></Frame> },
+    { name: "光点彗尾", render: () => <Frame><WorldMap dots={multiColor} flyingMarker="comet" /></Frame> },
+    { name: "箭头", render: () => <Frame><WorldMap dots={radial} flyingMarker="arrow" /></Frame> },
+    { name: "节点+飞机", render: () => <Frame><WorldMap points={NODES} dots={radial} flyingMarker="plane" /></Frame> },
     { name: "纯底图", render: () => <Frame><WorldMap /></Frame> },
   ],
   renderWithProps: () => (

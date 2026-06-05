@@ -23,9 +23,14 @@ export interface WorldMapNode extends WorldMapPoint {
   color?: string;
 }
 
+/** 沿飞线循环移动的标记形态。plane 飞机✈️ / comet 光点彗尾 / arrow 箭头（plane/arrow 自动转向贴合飞行方向）。 */
+export type WorldMapMarker = "plane" | "comet" | "arrow";
+
 export interface WorldMapProps {
   /** 要画的连线对（经纬度）。不传 / 空数组则只显示点阵底图。 */
   dots?: WorldMapDot[];
+  /** 沿每条飞线循环移动的标记（如 ✈️ 沿航线飞）。不传则无（保持旧行为）。用各自连线色。 */
+  flyingMarker?: WorldMapMarker;
   /** 独立节点（节点分布）。与 dots 互不依赖，可单独使用。 */
   points?: WorldMapNode[];
   /** 是否渲染节点标签文字（默认 false，保持旧行为）。 */

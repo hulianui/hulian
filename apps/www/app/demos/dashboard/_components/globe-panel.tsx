@@ -46,6 +46,7 @@ export function GlobePanel({
             points={toMapNodes(snapshot.nodes)}
             dots={snapshot.dots}
             showLabels
+            flyingMarker="plane"
             duration={1.4}
             onPointClick={(node) => node.id && onPick(node.id)}
           />
