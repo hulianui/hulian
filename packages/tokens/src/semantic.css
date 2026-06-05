@@ -24,6 +24,13 @@
   --color-chart-2: oklch(0.7 0.16 155);
   --color-chart-3: oklch(0.75 0.15 70);
   --color-chart-4: oklch(0.62 0.19 300);
+  /* 代码语法着色（零依赖着色器消费 · 复用色相，明暗各调亮度保对比） */
+  --code-keyword: var(--brand-600);
+  --code-string: var(--success-600);
+  --code-comment: var(--gray-500);
+  --code-number: var(--warning-600);
+  --code-tag: var(--danger-600);
+  --code-attr: oklch(0.55 0.2 300);
   --radius: 0.625rem;
 }
 
@@ -50,4 +57,25 @@
   --color-chart-2: oklch(0.76 0.16 155);
   --color-chart-3: oklch(0.8 0.15 70);
   --color-chart-4: oklch(0.72 0.18 300);
+  /* 暗态代码着色提亮以在深底上保对比 */
+  --code-keyword: var(--brand-400);
+  --code-string: var(--success-500);
+  --code-comment: var(--gray-400);
+  --code-number: var(--warning-500);
+  --code-tag: var(--danger-500);
+  --code-attr: oklch(0.74 0.16 300);
+}
+
+/* 反色表面作用域 — 放在彩色/深色面板（如 bg-primary 的 CTA 横幅、深色页脚）上时，
+   给该子树重映射「中性」语义 token（foreground/muted/surface/border），里面的
+   Heading/Text/Button/Tag 等只消费语义层 → 自动反色，无需逐元素堆 text-primary-foreground。
+   反色基准用 --color-primary-foreground（=白），明暗两态皆适用（面板本身是主色，两态都偏深）。
+   注意：不改 --color-primary/--color-danger 等「强调色」——强调按钮在反色面板上应改用
+   ShimmerButton 显式色或 outline(透明玻璃态)，故强调 token 保持原值。 */
+[data-surface="inverse"] {
+  --color-foreground: var(--color-primary-foreground);
+  --color-muted: color-mix(in oklab, var(--color-primary-foreground) 72%, transparent);
+  --color-surface: color-mix(in oklab, var(--color-primary-foreground) 12%, transparent);
+  --color-surface-hover: color-mix(in oklab, var(--color-primary-foreground) 22%, transparent);
+  --color-border: color-mix(in oklab, var(--color-primary-foreground) 38%, transparent);
 }

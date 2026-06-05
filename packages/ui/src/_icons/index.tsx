@@ -229,6 +229,12 @@ export const Copy = createIcon("copy", [
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }],
 ]);
 
+export const Ellipsis = createIcon("ellipsis", [
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "2eseyk" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "avwj6e" }],
+]);
+
 export const ExternalLink = createIcon("external-link", [
   ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
   ["path", { d: "M10 14 21 3", key: "gplh6r" }],

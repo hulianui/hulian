@@ -5,6 +5,7 @@
 export { accordionShowcase } from "./accordion/accordion.showcase";
 export { sortableShowcase } from "./sortable/sortable.showcase";
 export { kanbanShowcase } from "./kanban/kanban.showcase";
+export { flowShowcase } from "./flow/flow.showcase";
 export { affixShowcase } from "./affix/affix.showcase";
 export { alertDialogShowcase } from "./alert-dialog/alert-dialog.showcase";
 export { alertShowcase } from "./alert/alert.showcase";
@@ -37,6 +38,7 @@ export { chartShowcase } from "./chart/chart.showcase";
 export { checkboxGroupShowcase } from "./checkbox-group/checkbox-group.showcase";
 export { checkboxShowcase } from "./checkbox/checkbox.showcase";
 export { chipShowcase } from "./chip/chip.showcase";
+export { couponShowcase } from "./coupon/coupon.showcase";
 export { chromeShowcase } from "./chrome/chrome.showcase";
 export { codeBlockShowcase } from "./code-block/code-block.showcase";
 export { codeShowcase } from "./code/code.showcase";
@@ -188,12 +190,28 @@ export { pickerShowcase } from "./picker/picker.showcase";
 export { virtualListShowcase } from "./virtual-list/virtual-list.showcase";
 export { infiniteScrollShowcase } from "./infinite-scroll/infinite-scroll.showcase";
 export { qrcodeShowcase } from "./qrcode/qrcode.showcase";
-export { schedulerShowcase } from "./scheduler/scheduler.showcase";
 export { viewportShowcase } from "./viewport/viewport.showcase";
+// 工程/单据/排期 批（demo dogfood 驱动）
+export { masonryShowcase } from "./masonry/masonry.showcase";
+export { documentSheetShowcase } from "./document-sheet/document-sheet.showcase";
+export { ganttShowcase } from "./gantt/gantt.showcase";
+export { schedulerShowcase } from "./scheduler/scheduler.showcase";
+export { imageViewerShowcase } from "./image-viewer/image-viewer.showcase";
 // devtools / 执行态 批
 export { logViewerShowcase } from "./log-viewer/log-viewer.showcase";
 export { codeDiffShowcase } from "./code-diff/code-diff.showcase";
 export { fileTreeShowcase } from "./file-tree/file-tree.showcase";
+// 设计感背景批（复刻 react-bits/Aceternity·canvas + WebGL/ogl·吃 chart token）
+export { auroraShowcase } from "./aurora/aurora.showcase";
+export { particlesShowcase } from "./particles/particles.showcase";
+export { flickeringGridShowcase } from "./flickering-grid/flickering-grid.showcase";
+export { wavyBackgroundShowcase } from "./wavy-background/wavy-background.showcase";
+export { cardSpotlightShowcase } from "./card-spotlight/card-spotlight.showcase";
+export { silkShowcase } from "./silk/silk.showcase";
+export { iridescenceShowcase } from "./iridescence/iridescence.showcase";
+export { threadsShowcase } from "./threads/threads.showcase";
+export { orbShowcase } from "./orb/orb.showcase";
+export { liquidChromeShowcase } from "./liquid-chrome/liquid-chrome.showcase";
 // shadcnblocks 缺口补齐批
 export { buttonGroupShowcase } from "./button-group/button-group.showcase";
 export { socialButtonShowcase } from "./social-button/social-button.showcase";

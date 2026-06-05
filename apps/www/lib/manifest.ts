@@ -18,7 +18,7 @@ export type CategoryKey =
   | "mobile";
 
 /** 横切属性标签：不决定组件归属，仅供侧栏过滤芯片跨分组筛选。 */
-export type ComponentTag = "animated";
+export type ComponentTag = "animated" | "webgl";
 
 export interface CategoryGroup {
   key: string;
@@ -146,6 +146,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "resizable", name: "Resizable", description: "拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator)", category: "layout", group: "container", status: "new" },
   { slug: "aspect-ratio", name: "AspectRatio", description: "比例容器 · CSS aspect-ratio 锁宽高比 + 图片/视频自动铺满(零依赖·RSC)", category: "layout", group: "container", status: "new" },
   { slug: "fit-screen", name: "FitScreen", description: "大屏适配 · 固定设计尺寸(默认 1920×1080)等比缩放铺满父容器并居中 + fit/cover/stretch 三模式(纯函数 computeFit 可测·ResizeObserver 监听·SSR 安全·数据可视化大屏刚需)", category: "layout", group: "container", status: "new" },
+  { slug: "masonry", name: "Masonry", description: "瀑布流布局 · 确定性 round-robin 分列(item[i]→第 i%列·SSR 安全·顺序稳定·非 CSS columns 抖动) + 响应式列数(base/sm/md/lg·首帧 base 防 hydration mismatch·挂载后 matchMedia 调整) + 列内外统一 gap(泛型·token 主题)", category: "layout", group: "container", status: "new" },
   { slug: "stack", name: "Stack", description: "弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)", category: "layout", group: "arrange", status: "new" },
   { slug: "grid", name: "Grid", description: "栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC)", category: "layout", group: "arrange", status: "new" },
   { slug: "spacer", name: "Spacer", description: "间距 · x/y × 0.25rem 布局留白 + aria-hidden + RSC", category: "layout", group: "arrange", status: "new" },
@@ -234,14 +235,19 @@ export const manifest: ComponentMeta[] = [
   { slug: "marquee", name: "Marquee", description: "跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "sortable", name: "Sortable", description: "拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove)", category: "data-display", group: "collection", status: "new" },
   { slug: "kanban", name: "Kanban", description: "看板 · @dnd-kit headless 多容器 + 跨列/列内拖拽 + 键盘可拖 + 列头统计槽 + 空列占位 · 受控 onMove(消费者改业务字段) · 商机看板/任务流转旗舰", category: "data-display", group: "collection", status: "new" },
-  { slug: "log-viewer", name: "LogViewer", description: "日志查看器 · 数据驱动行 lines(level/message/timestamp/source) + info/warn/error/debug/success 级别着色(纯函数 levelClass 可测) + autoScroll 新行贴底(复用 Conversation 法) + showTimestamp + wrap 折行/横滚 · 区别 Terminal mockup·真·流式输出", category: "data-display", group: "collection", status: "new" },
+  { slug: "flow", name: "Flow", description: "节点画布编排器 · 零依赖原生 Pointer Events + SVG 贝塞尔连线 · 拖节点/拖桩连线/平移缩放/适配视图 + 受控 nodes/edges(onNodesChange/onConnect/删点删线) + renderNode 自定义节点内容 · 几何抽纯函数带单测 · AI 工作流/流程编排旗舰", category: "data-display", group: "collection", status: "new" },
+  { slug: "document-sheet", name: "DocumentSheet", description: "单据纸张 · A4 居中纸面(白底/暗色近黑纸·shadow·210mm 宽) + 打印态隔离(工具栏/阴影/外边距 print:hidden·data-document-sheet 钩子) + 内置打印按钮(onPrint ?? window.print) + 子件 Header(左右抬头)/Section(带小标题段)/Footer(签章位) · 报价单/发票等单据容器", category: "data-display", group: "collection", status: "new" },
+  { slug: "gantt", name: "Gantt", description: "甘特图(只读) · 项目排期可视化 · 左固定列(按 group 分组小标题) + 右时间轴(day/week/month 刻度) · CSS grid + 百分比定位条形 + progress 深色填充层 + today 竖线 · 自带 UTC 日期数学(零依赖) · 横向滚动", category: "data-display", group: "collection", status: "new" },
   { slug: "scheduler", name: "Scheduler", description: "事件日历/排班 · 库首个事件日历件 · 月/周/日/资源四视图(横轴资源·纵轴时间) + 时间轴网格事件块 + 重叠并排 + 当前时间红线 · 零依赖原生 PointerEvents 拖空白建预约/拖事件改期/拖下缘改时长(全 snap 到 slot) · 受控 events/view/date(onEventsChange/onSlotDragCreate/onEventClick) + 内置 toolbar(前/今/后 + Segmented 视图) + renderEvent 自定义事件块 · 几何抽纯函数带单测 · 预约/排班旗舰", category: "data-display", group: "collection", status: "new" },
+  { slug: "image-viewer", name: "ImageViewer", description: "图片查看器 · 全屏 Lightbox(portal+锁滚复用 dialog) · 受控 index 翻页(箭头/← →/序号) + 滚轮指针锚定缩放/双击 1x↔2x/拖拽平移(切图重置) + 底部缩略图条 + role=dialog aria-modal/Esc 关闭(仅渲当前图·零依赖)", category: "data-display", group: "info", status: "new" },
+  { slug: "log-viewer", name: "LogViewer", description: "日志查看器 · 数据驱动行 lines(level/message/timestamp/source) + info/warn/error/debug/success 级别着色(纯函数 levelClass 可测) + autoScroll 新行贴底(复用 Conversation 法) + showTimestamp + wrap 折行/横滚 · 区别 Terminal mockup·真·流式输出", category: "data-display", group: "collection", status: "new" },
   { slug: "file-tree", name: "FileTree", description: "文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义) + selectedPath 受控高亮 + onSelect 回传 node+path · 复用 _icons Folder/File(新补)·devtools 左栏", category: "data-display", group: "collection", status: "new" },
   { slug: "virtual-list", name: "VirtualList", description: "虚拟滚动 · 包 @tanstack/react-virtual 仅渲染可见区 + 定高/变高(measureElement)双模 + initialRect 首帧可算 + 末行触发 onReachEnd(万行列表/长列表刚需)", category: "data-display", group: "collection", status: "new" },
   { slug: "infinite-scroll", name: "InfiniteScroll", description: "无限滚动 · IntersectionObserver 底部哨兵 + 自动定位可滚祖先作 root + 加载锁防重入 + hasMore 完结态(零依赖·分页加载)", category: "data-display", group: "collection", status: "new" },
+  { slug: "badge", name: "Badge", description: "计数角标 · count/max 溢出 + dot + 自定义内容 + 包裹叠加(四角/offset)", category: "data-display", group: "info", status: "new" },
   { slug: "dot", name: "Dot", description: "状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", group: "info", status: "new" },
-  { slug: "badge", name: "Badge", description: "计数角标 · count/max 溢出 + dot + 自定义内容 + 包裹叠加(四角/offset)", category: "data-display", group: "info", status: "new" },
+  { slug: "coupon", name: "Coupon", description: "优惠券 · 撕票造型(中缝虚线+上下半圆穿孔·纯CSS) + 满减/折扣/包邮三类 + 可领/已领/已用/过期四态 + 选券高亮(电商标配·只消费 token)", category: "data-display", group: "info", status: "new" },
   { slug: "tag", name: "Tag", description: "状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)", category: "data-display", group: "info", status: "new" },
   { slug: "avatar", name: "Avatar", description: "头像 · Base UI 图片+fallback", category: "data-display", group: "info", status: "new" },
   { slug: "avatar-circles", name: "AvatarCircles", description: "堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC)", category: "data-display", group: "info", status: "new" },
@@ -258,7 +264,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "number-ticker", name: "NumberTicker", description: "数字滚动 · 进入视口 tween 到目标值 + reduced-motion", category: "data-display", group: "stat", tags: ["animated"], status: "new" },
   { slug: "world-map", name: "WorldMap", description: "点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交互态放开 aria-hidden) + flyingMarker 沿飞线移动标记(✈️飞机/光点彗尾/箭头·offset-path 动效自动转向)", category: "data-display", group: "stat", tags: ["animated"], status: "new" },
   { slug: "empty", name: "Empty", description: "空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)", category: "data-display", group: "placeholder", status: "new" },
-  { slug: "skeleton", name: "Skeleton", description: "骨架屏 · shimmer 高光占位", category: "data-display", group: "placeholder", status: "new" },
+  { slug: "skeleton", name: "Skeleton", description: "骨架屏 · shimmer 高光占位(text/circle/rect) + 无边框组合预设 CardSkeleton/ListSkeleton/TableSkeleton", category: "data-display", group: "placeholder", status: "new" },
   { slug: "watermark", name: "Watermark", description: "水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)", category: "data-display", group: "placeholder", status: "new" },
 
   // ── 导航 navigation ──────────────────────────────────────────
@@ -328,6 +334,16 @@ export const manifest: ComponentMeta[] = [
   { slug: "retro-grid", name: "RetroGrid", description: "复古透视网格 · CSS 滚动 + reduced-motion", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
   { slug: "ripple", name: "Ripple", description: "同心脉冲圆环 · CSS 逐圈延迟 + reduced-motion", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
   { slug: "meteors", name: "Meteors", description: "流星雨 · 随机斜落拖尾(客户端生成) + currentColor", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
+  // 设计感背景批（复刻 react-bits/Aceternity·canvas 零依赖 + WebGL/ogl 懒加载·全吃 chart token·reduced-motion 降级）
+  { slug: "aurora", name: "Aurora", description: "极光渐变背景 · 双层 repeating-linear-gradient 横移干涉 + 径向 mask 聚焦 + chart token(纯 CSS·RSC)", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
+  { slug: "particles", name: "Particles", description: "交互粒子场 · canvas 星尘漂浮 + 鼠标排斥位移 + DPR 自适应 + 颜色吃主题前景 token(明暗跟随)", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
+  { slug: "flickering-grid", name: "FlickeringGrid", description: "闪烁网格 · canvas 像素方格随机明灭 + ResizeObserver 自适应 + 颜色吃主题 token(逐帧现取)", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
+  { slug: "wavy-background", name: "WavyBackground", description: "噪声波浪 · canvas 多彩波浪带叠加 + 内联零依赖 value noise + chart token + reduced-motion 静态", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
+  { slug: "silk", name: "Silk", description: "丝绸流动背景 · WebGL/ogl 懒加载 shader(复刻 react-bits) + chart token 主色 + reduced-motion 渐变兜底", category: "decoration", group: "backdrop", tags: ["animated", "webgl"], status: "new" },
+  { slug: "iridescence", name: "Iridescence", description: "虹彩光泽背景 · WebGL/ogl shader 连续光谱干涉 + 鼠标光流扰动 + chart token + 静态 fallback", category: "decoration", group: "backdrop", tags: ["animated", "webgl"], status: "new" },
+  { slug: "threads", name: "Threads", description: "流动丝线背景 · WebGL/ogl Perlin 波动线随鼠标摆动 + 透明底叠加 + chart token + 静态 fallback", category: "decoration", group: "backdrop", tags: ["animated", "webgl"], status: "new" },
+  { slug: "orb", name: "Orb", description: "指针交互光球 · WebGL/ogl 发光能量球 + hover 增亮/旋转 + hue 色相 + reduced-motion 径向渐变球", category: "decoration", group: "backdrop", tags: ["animated", "webgl"], status: "new" },
+  { slug: "liquid-chrome", name: "LiquidChrome", description: "液态铬背景 · WebGL/ogl 金属流动反光 + 鼠标涟漪 + chart token 基色 + 静态金属渐变 fallback", category: "decoration", group: "backdrop", tags: ["animated", "webgl"], status: "new" },
   { slug: "border-beam", name: "BorderBeam", description: "边框光束 · motion offsetPath 绕边 + mask 只露边框", category: "decoration", group: "overlay-fx", tags: ["animated"], status: "new" },
   { slug: "shine-border", name: "ShineBorder", description: "流光边框 · 渐变 mask 只留边框区 + chart token + RSC", category: "decoration", group: "overlay-fx", tags: ["animated"], status: "new" },
   { slug: "glare-hover", name: "GlareHover", description: "反光悬停 · hover 斜向扫光 + reduced-motion + RSC", category: "decoration", group: "overlay-fx", tags: ["animated"], status: "new" },
@@ -335,6 +351,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "animated-beam", name: "AnimatedBeam", description: "动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver)", category: "decoration", group: "overlay-fx", tags: ["animated"], status: "new" },
   { slug: "orbiting-circles", name: "OrbitingCircles", description: "轨道环绕 · 子元素沿圆周匀速公转 + 自身反旋正立(纯 CSS·RSC)", category: "decoration", group: "overlay-fx", tags: ["animated"], status: "new" },
   { slug: "progressive-blur", name: "ProgressiveBlur", description: "渐进模糊 · 分层 backdrop-blur + mask 渐变(纯 CSS·RSC)", category: "decoration", group: "overlay-fx", status: "new" },
+  { slug: "card-spotlight", name: "CardSpotlight", description: "聚光卡片 · 鼠标跟随径向高光(纯 CSS 变量 + radial-gradient) + color-mix 高光色 + surface token(零依赖)", category: "decoration", group: "overlay-fx", tags: ["animated"], status: "new" },
 
   // ── 设备外壳 mockups ─────────────────────────────────────────
   { slug: "safari", name: "Safari", description: "浏览器外壳 · 顶栏红绿灯+地址栏包裹截图 + RSC", category: "mockups", group: "window", status: "new" },

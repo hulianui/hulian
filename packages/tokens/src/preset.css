@@ -27,6 +27,16 @@
   --radius: var(--radius);
 }
 
+/* 响应式断点 SSOT —— 显式声明（与 Tailwind v4 默认对齐），供 sm:/md:/lg:/xl:/2xl: 工具类与
+   /theme/breakpoints 文档共享同一真源。改这里即同时改全站断点 + 文档展示。 */
+@theme {
+  --breakpoint-sm: 40rem; /* 640px · 横屏手机 */
+  --breakpoint-md: 48rem; /* 768px · 竖屏平板 */
+  --breakpoint-lg: 64rem; /* 1024px · 横屏平板 / 小笔记本 */
+  --breakpoint-xl: 80rem; /* 1280px · 桌面 */
+  --breakpoint-2xl: 96rem; /* 1536px · 大桌面 */
+}
+
 /* effects/Marquee 无缝跑马灯关键帧（CSS 侧动效 SSOT；JS 侧动效见 @hulian/ui motion/variants.ts）。
    每份子项平移 -100% - gap，配合复制 N 份实现无缝循环。 */
 @keyframes hulian-marquee {
@@ -35,6 +45,16 @@
   }
   to {
     transform: translateX(calc(-100% - var(--hulian-marquee-gap, 1rem)));
+  }
+}
+
+/* 竖向跑马灯：同理沿 Y 轴平移，配合 flex-col + 复制 N 份实现无缝循环 */
+@keyframes hulian-marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--hulian-marquee-gap, 1rem)));
   }
 }
 
@@ -74,6 +94,21 @@
   }
 }
 
+/* decoration/Aurora 极光流动：渐变纹理静态，只动 transform（translate/rotate/scale）→
+   GPU 合成层缓存模糊位图后仅平移，不触发逐帧重绘/重 blur（避免 background-position 动画
+   在大面积 filter:blur 下每帧重光栅化的卡顿）。时长由 --hulian-aurora-bg-duration 控。 */
+@keyframes hulian-aurora-bg {
+  0% {
+    transform: translate3d(-6%, -3%, 0) rotate(-4deg) scale(1.08);
+  }
+  50% {
+    transform: translate3d(6%, 3%, 0) rotate(4deg) scale(1.14);
+  }
+  100% {
+    transform: translate3d(-6%, -3%, 0) rotate(-4deg) scale(1.08);
+  }
+}
+
 /* effects/AnimatedShinyText 高光横扫（背景位置往返，--hulian-shiny-width 控宽） */
 @keyframes hulian-shiny-text {
   0%,
@@ -91,6 +126,17 @@
 @keyframes hulian-shimmer-slide {
   to {
     transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+/* data-display/Coupon 券面吸睛：斜向高光带周期性扫过面额区（引导领取，扫完停顿再循环） */
+@keyframes hulian-coupon-shine {
+  0% {
+    transform: translateX(-160%) skewX(-12deg);
+  }
+  55%,
+  100% {
+    transform: translateX(320%) skewX(-12deg);
   }
 }
 
@@ -116,6 +162,9 @@
 @keyframes hulian-meteor {
   0% {
     transform: rotate(var(--hulian-meteor-angle, 215deg)) translateX(0);
+    opacity: 0;
+  }
+  5% {
     opacity: 1;
   }
   70% {
@@ -193,6 +242,13 @@
     transform: rotate(calc(var(--hulian-orbit-angle) * 1deg + 360deg))
       translateY(calc(var(--hulian-orbit-radius) * 1px))
       rotate(calc(var(--hulian-orbit-angle) * -1deg - 360deg));
+  }
+}
+
+/* data-display/Flow 连线流光：虚线沿路径流动（dasharray 6 6 → 偏移一个周期 12） */
+@keyframes hulian-flow-dash {
+  to {
+    stroke-dashoffset: -12;
   }
 }
 

@@ -33,6 +33,7 @@ export * from "./table";
 export * from "./pro-table";
 export * from "./editable-table";
 export * from "./kanban";
+export * from "./flow";
 export * from "./watermark";
 export * from "./carousel";
 export * from "./resizable";
@@ -93,6 +94,17 @@ export * from "./shine-border";
 export * from "./meteors";
 export * from "./magic-card";
 export * from "./glare-hover";
+// effects: 设计感背景批（复刻 react-bits/Aceternity·canvas 零依赖 + WebGL/ogl 懒加载·全吃 chart token）
+export * from "./aurora";
+export * from "./particles";
+export * from "./flickering-grid";
+export * from "./wavy-background";
+export * from "./card-spotlight";
+export * from "./silk";
+export * from "./iridescence";
+export * from "./threads";
+export * from "./orb";
+export * from "./liquid-chrome";
 // mockups: MagicUI 设备外壳批
 export * from "./safari";
 export * from "./chrome";
@@ -103,6 +115,7 @@ export * from "./watch";
 // B 档纯皮肤基础件批
 export * from "./spinner";
 export * from "./chip";
+export * from "./coupon";
 export * from "./link";
 export * from "./kbd";
 export * from "./code";
@@ -229,7 +242,13 @@ export * from "./qrcode";
 
 // 响应式容器（容器查询上下文 + web/平板/手机 预设）
 export * from "./viewport";
+
+// 工程/单据/排期 批（demo dogfood 驱动）
+export * from "./masonry";
+export * from "./document-sheet";
+export * from "./gantt";
 export * from "./scheduler";
+export * from "./image-viewer";
 
 // devtools / 执行态 批（运行输出可视化·承 TaskRunner 品类）
 export * from "./log-viewer";
@@ -245,6 +264,7 @@ export * from "./choicebox";
 export * from "./credit-card";
 export * from "./emoji-picker";
 export * from "./glimpse";
+
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";
 // 日期 SSoT（消费者需 dayjs 做日期数学时从这里取，避免各自装一份/版本漂移）
