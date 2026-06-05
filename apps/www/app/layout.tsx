@@ -5,6 +5,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { ThemeProvider, MuiBridgeProvider } from "@hulianui/ui";
 import { themeScript } from "./theme-script";
 import { MswProvider } from "../components/msw-provider";
+import { RouteProgress } from "../components/route-progress";
 
 export const metadata: Metadata = {
   title: "瑚琏 Hulian",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <ThemeProvider defaultSetting="system">
+          <RouteProgress />
           <AppRouterCacheProvider options={{ key: "mui" }}>
             <MuiBridgeProvider>
               <MswProvider>{children}</MswProvider>
