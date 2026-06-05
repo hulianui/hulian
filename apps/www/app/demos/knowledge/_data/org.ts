@@ -45,6 +45,23 @@ export const ORG_TREE: TreeNode[] = [
   },
 ];
 
+// 全体成员（协作者管理 Transfer 的数据源）。name 与 VaultNode.collaborators 对齐。
+export interface Member {
+  name: string;
+  role: string;
+}
+export const MEMBERS: Member[] = [
+  { name: "林屿", role: "前端 Lead" },
+  { name: "陈墨", role: "前端工程师" },
+  { name: "赵一", role: "前端工程师" },
+  { name: "孙昊", role: "后端工程师" },
+  { name: "钱文", role: "后端工程师" },
+  { name: "杨舒", role: "设计负责人" },
+  { name: "墨瑾", role: "视觉设计" },
+  { name: "周琦", role: "产品经理" },
+  { name: "王雅", role: "产品经理" },
+];
+
 // 协作者池（详情面板 AvatarCircles + 版本作者），头像走本地 jpg（零外链）。
 export const COLLABORATORS: Record<string, Collaborator> = {
   林屿: { name: "林屿", role: "前端 Lead", avatar: "/demo/avatar-1.jpg" },

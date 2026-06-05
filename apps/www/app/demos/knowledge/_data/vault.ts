@@ -299,6 +299,10 @@ export function useVault() {
     setNodes((prev) => (prev[id] ? { ...prev, [id]: { ...prev[id], tags } } : prev));
   }, []);
 
+  const updateCollaborators = useCallback((id: string, collaborators: string[]) => {
+    setNodes((prev) => (prev[id] ? { ...prev, [id]: { ...prev[id], collaborators } } : prev));
+  }, []);
+
   return {
     nodes,
     list,
@@ -317,6 +321,7 @@ export function useVault() {
     upload,
     updateContent,
     updateTags,
+    updateCollaborators,
   };
 }
 
