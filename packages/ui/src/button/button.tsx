@@ -15,6 +15,8 @@ export const buttonVariants = cva(
         solid: "bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover hover:shadow",
         outline: "border border-border bg-surface text-foreground shadow-sm hover:bg-surface-hover",
         ghost: "text-foreground hover:bg-surface-hover",
+        // 文字链接按钮：零横向内边距，文字直接贴单元格/容器左缘，用于表格行内操作（查看/编辑）等。
+        link: "text-primary underline-offset-4 hover:underline",
       },
       tone: { brand: "", danger: "" },
       size: {
@@ -31,6 +33,9 @@ export const buttonVariants = cva(
       { variant: "solid", tone: "danger", class: "bg-danger text-danger-foreground hover:bg-danger" },
       { variant: "outline", tone: "danger", class: "border-danger text-danger" },
       { variant: "ghost", tone: "danger", class: "text-danger" },
+      // link：去掉 size 档的固定高度与横向内边距，回归纯文字链接（不影响行高，文字左缘对齐表头）。
+      { variant: "link", class: "h-auto px-0" },
+      { variant: "link", tone: "danger", class: "text-danger" },
     ],
     defaultVariants: { variant: "solid", tone: "brand", size: "md" },
   },

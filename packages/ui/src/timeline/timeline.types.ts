@@ -11,7 +11,7 @@ export interface TimelineItemProps {
   dot?: ReactNode;
   /** 默认圆点的语气色；自定义 dot 时忽略 */
   color?: TimelineDotColor;
-  /** 次要标签（如时间戳），渲染在主内容上方、中性弱化 */
+  /** 次要标签（如时间戳/元信息），渲染在主内容（children）下方、中性弱化；圆点对齐主内容首行 */
   label?: ReactNode;
   /** 标记为进行中：默认圆点变加载态（旋转环）；连入此项的竖线由 Timeline 自动转虚线 */
   pending?: boolean;

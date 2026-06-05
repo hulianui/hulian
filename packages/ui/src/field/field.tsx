@@ -10,6 +10,7 @@ export function Field({
   invalid,
   disabled,
   name,
+  colSpan,
   className,
   children,
 }: FieldProps) {
@@ -20,7 +21,7 @@ export function Field({
       name={name}
       invalid={isInvalid}
       disabled={disabled}
-      className={cn("flex flex-col gap-1.5", className)}
+      className={cn("flex flex-col gap-1.5", colSpan === "full" && "col-span-full", className)}
     >
       {label && (
         <BaseField.Label className="text-sm font-medium text-foreground">{label}</BaseField.Label>

@@ -1,10 +1,7 @@
 "use client";
 import { DatePicker as MuiDatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
+import { toDayjs } from "../lib/date";
 import type { DatePickerProps } from "./date-picker.types";
-
-// ISO 字符串 → dayjs（内部用，不向消费者泄漏 dayjs）
-const toDJ = (s?: string | null) => (s ? dayjs(s) : null);
 
 // 瑚琏 DatePicker = MUI DatePicker 罩瑚琏受控 API（对外 ISO 字符串）+ token 皮肤。
 // 弹出的日历继承 hulianMuiTheme palette（含 theme.alpha 集中重写规避 var() 抛错，见 theme.ts），
@@ -24,10 +21,10 @@ export function DatePicker({
     <MuiDatePicker
       className={className}
       label={label}
-      value={value === undefined ? undefined : toDJ(value)}
-      defaultValue={toDJ(defaultValue) ?? undefined}
-      minDate={toDJ(minDate) ?? undefined}
-      maxDate={toDJ(maxDate) ?? undefined}
+      value={value === undefined ? undefined : toDayjs(value)}
+      defaultValue={toDayjs(defaultValue) ?? undefined}
+      minDate={toDayjs(minDate) ?? undefined}
+      maxDate={toDayjs(maxDate) ?? undefined}
       disabled={disabled}
       readOnly={readOnly}
       onChange={(v) => onValueChange?.(v ? v.toISOString() : null)}

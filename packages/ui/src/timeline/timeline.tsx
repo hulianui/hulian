@@ -54,10 +54,10 @@ export function TimelineItem({
   _lineDashed = false,
 }: TimelineItemInternalProps) {
   // 节点列：圆点在上 + 向下连线（flex-1 填满本项剩余高度，连到下一项圆点）。
-  // mt-0.5 让小圆点大致对齐首行文字中线；最后一项不画线。
+  // mt-1 让小圆点对齐正文（children）首行中线（text-sm 行高 20px → 圆点 12px 居中）；最后一项不画线。
   const node = (
     <div className="flex shrink-0 flex-col items-center">
-      <span className={cn("mt-0.5 flex items-center justify-center [&>svg]:size-4", dotTextClass[color])}>
+      <span className={cn("mt-1 flex items-center justify-center [&>svg]:size-4", dotTextClass[color])}>
         {dot ?? <DefaultDot color={color} pending={pending} />}
       </span>
       {!_last && (
@@ -73,16 +73,18 @@ export function TimelineItem({
 
   // 内容对齐：left/alternate-right 靠左，right/alternate-left 靠右（贴近中轴/节点）。
   const alignRight = _mode === "right" || (_mode === "alternate" && _side === "left");
+  // 正文（children）在上 + 时间戳/元信息（label）在下：圆点对齐正文首行（而非次要的时间戳），
+  // 时间戳作元信息行紧贴其正文下方（mt-1=4px 成组），与项间距 pb-5（20px）形成清晰节奏。
   const content = (
     <div
       className={cn(
         "min-w-0 flex-1",
-        !_last && "pb-6",
+        !_last && "pb-5",
         alignRight ? "text-right" : "text-left",
       )}
     >
-      {label != null && <div className="mb-0.5 text-xs text-muted">{label}</div>}
       {children != null && <div className="text-sm text-foreground">{children}</div>}
+      {label != null && <div className="mt-1 text-xs text-muted">{label}</div>}
     </div>
   );
 
@@ -146,8 +148,9 @@ export function Timeline({ items, mode = "left", pending, className, children, .
   }
 
   const count = nodes.length;
+  // py-1：给时间轴自带少量上下呼吸，置于卡片/容器内时首末项不贴边（不依赖消费者补 padding）。
   return (
-    <ol className={cn("flex flex-col", className)} {...props}>
+    <ol className={cn("flex flex-col py-1", className)} {...props}>
       {nodes.map((node, i) => {
         const isLast = i === count - 1;
         // 连入「下一项 pending」的那条线（由本项向下画）转虚线。

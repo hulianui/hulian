@@ -7,12 +7,21 @@ import { cn } from "../lib/cn";
 import type { ProFormProps } from "./pro-form.types";
 
 // ProForm = 内联表单编排（ModalForm 的内联姊妹件）。useForm + 自动 footer(提交/重置) + async onFinish loading。
+// 字段区栅格：用容器查询（@container）按「表单实际宽度」而非视口断点决定列数，
+// 这样表单放进窄侧栏自动单列、放进宽主区才多列——响应式由组件内化，消费者不再手搓 grid。
+const GRID_BY_COLUMNS: Record<1 | 2 | 3, string> = {
+  1: "space-y-4",
+  2: "grid grid-cols-1 gap-x-4 gap-y-4 @lg:grid-cols-2",
+  3: "grid grid-cols-1 gap-x-4 gap-y-4 @md:grid-cols-2 @4xl:grid-cols-3",
+};
+
 export function ProForm({
   form,
   onFinish,
   submitText,
   resetText,
   showReset = true,
+  columns = 1,
   footerAlign = "left",
   footer,
   className,
@@ -43,8 +52,8 @@ export function ProForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={cn("flex flex-col gap-5", className)}>
-      <div className="space-y-4">{children}</div>
+    <form onSubmit={handleSubmit} className={cn("@container flex flex-col gap-5", className)}>
+      <div className={GRID_BY_COLUMNS[columns]}>{children}</div>
       {footer !== undefined ? (
         footer
       ) : (

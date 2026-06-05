@@ -11,6 +11,19 @@ describe("buttonVariants", () => {
   it("danger solid swaps to danger bg", () => {
     expect(buttonVariants({ variant: "solid", tone: "danger" })).toContain("bg-danger");
   });
+  it("link 变体去掉横向内边距（文字贴单元格左缘，对齐表头）", () => {
+    // cva 原串里 size 档的 px-3 与 compound 的 px-0 同时存在，靠组件内 cn(twMerge) 去重，
+    // 故在真实渲染的元素上断言：最终只剩 px-0，且不含 px-3。
+    const { container } = rtlRender(
+      <Button variant="link" size="sm">
+        查看
+      </Button>,
+    );
+    const cls = container.querySelector("button")!.className;
+    expect(cls).toContain("px-0");
+    expect(cls).not.toContain("px-3");
+    expect(cls).toContain("text-primary");
+  });
 });
 
 describe("Button render（按钮样式的链接）", () => {

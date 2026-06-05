@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Boxes, LayoutDashboard, Settings, ShoppingCart, Users } from "lucide-react";
+import { Bell, Boxes, LayoutDashboard, Settings, ShoppingCart, Users } from "lucide-react";
 import { Avatar } from "../avatar";
 import { Badge } from "../badge";
 import type { NavMenuNode } from "../nav-menu/nav-menu.types";
@@ -73,7 +73,9 @@ function Demo() {
         breadcrumb={<span className="text-sm text-muted">首页 / {LABEL[active] ?? active}</span>}
         headerExtra={
           <>
-            <Badge count={3} size="sm" />
+            <Badge count={3} size="sm">
+              <Bell className="size-5 text-muted" />
+            </Badge>
             <Avatar fallback="瑚" />
           </>
         }

@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
 
 export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
   /** 火花高光色，默认 var(--color-primary-foreground) */
@@ -11,4 +11,9 @@ export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
   shimmerDuration?: string;
   /** 按钮底色，默认 var(--color-primary) */
   background?: string;
+  /**
+   * 渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「闪光样式的链接」CTA。
+   * 样式/内部火花结构会合并进该元素；文案仍取 ShimmerButton 的 children。
+   */
+  render?: ReactElement;
 }

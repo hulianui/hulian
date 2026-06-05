@@ -31,5 +31,10 @@ export interface EditableTableProps<T> {
   deletable?: boolean;
   /** 保存前校验整行，返回错误信息则拦截保存（行内提示由消费者自理，这里仅阻断）。 */
   validateRow?: (row: T) => boolean;
+  /**
+   * 合计页脚：拿到当前完整数据，返回 tfoot 内的行内容（消费者自备 `<tr><td colSpan=…>`，
+   * 跨列对齐由消费者掌控）。用于报价/账单等需要总计行的录入场景。
+   */
+  summary?: (data: T[]) => ReactNode;
   className?: string;
 }

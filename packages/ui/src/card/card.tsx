@@ -8,6 +8,9 @@ export const cardVariants = cva("rounded-[var(--radius)] bg-surface text-foregro
     variant: {
       outline: "border border-border",
       elevated: "border border-border shadow-sm hover:shadow-md",
+      // 推荐/高亮卡片：清晰的 primary 双线描边 + 干净中性投影。
+      // border-box 下 border-2 不改变外框尺寸（只内缩 1px），网格里与其余卡片对齐不偏移。
+      featured: "border-2 border-primary shadow-md",
     },
   },
   defaultVariants: { variant: "outline" },

@@ -8,4 +8,7 @@ describe("cardVariants", () => {
   it("elevated 带 hover 阴影", () => {
     expect(cardVariants({ variant: "elevated" })).toContain("hover:shadow-md");
   });
+  it("featured 带 primary 描边", () => {
+    expect(cardVariants({ variant: "featured" })).toContain("border-primary");
+  });
 });

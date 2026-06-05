@@ -8,6 +8,8 @@ export interface FieldProps {
   disabled?: boolean;
   /** 提交标识，透传 Field.Root（YAGNI 逃生口；validate/validationMode 本批不暴露）。 */
   name?: string;
+  /** 在 ProForm columns 栅格中跨整行（占满所有列）；栅格外无副作用。 */
+  colSpan?: "full";
   className?: string; // 落在 Field.Root（纵向布局容器）
   children: ReactNode; // 控件：hulian Input / Textarea（= Field.Control）
 }

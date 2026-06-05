@@ -15,6 +15,12 @@ export interface ProFormProps {
   resetText?: string;
   /** 是否显示重置按钮，默认 true（需 form 才有意义）。 */
   showReset?: boolean;
+  /**
+   * 字段栅格列数，默认 1（纵向单列）。≥2 时按容器宽度自适应：
+   * 容器窄自动塌为单列，够宽才展开到目标列数——不再逼消费者手搓 grid + 断点。
+   * 单个字段跨整行用 `<Field colSpan="full">`。
+   */
+  columns?: 1 | 2 | 3;
   /** 底部操作区对齐，默认 left。 */
   footerAlign?: "left" | "right";
   /** 自定义底部操作区（覆盖默认提交/重置按钮）。 */

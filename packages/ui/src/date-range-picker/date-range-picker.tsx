@@ -1,18 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
-import dayjs, { type Dayjs } from "dayjs";
+// 内部一律用 YYYY-MM-DD 文本作日期标识（toISO/normISO 出自 lib/date）：
+// 定宽 → 字典序即时间序，区间判定可直接字符串比较，避开时区/UTC 偏移日界坑。
+import { DATE_FORMAT, dayjs, type Dayjs, normISODate as normISO, toISODate as toISO } from "../lib/date";
 import { Calendar, ChevronLeft, ChevronRight, X } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DateRangePickerProps, DateRangePreset, DateRangeValue } from "./date-range-picker.types";
 
-const ISO_FMT = "YYYY-MM-DD";
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
-
-// 内部一律用 YYYY-MM-DD 文本作日期标识：定宽 → 字典序即时间序，区间判定可直接字符串比较，避开时区/UTC 偏移日界坑。
-const toISO = (d: Dayjs) => d.format(ISO_FMT);
-const normISO = (s?: string) => (s ? toISO(dayjs(s)) : undefined);
 
 // 6 周 × 7 列 = 42 格，含本月前后补位（补位格渲染为 invisible，不参与交互）。
 function monthMatrix(month: Dayjs): Dayjs[] {
@@ -42,7 +39,7 @@ export function DateRangePicker({
   disabledDate,
   presets,
   placeholder = ["开始日期", "结束日期"],
-  displayFormat = ISO_FMT,
+  displayFormat = DATE_FORMAT,
   disabled,
   readOnly,
   className,

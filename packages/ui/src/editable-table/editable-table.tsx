@@ -19,6 +19,7 @@ export function EditableTable<T>({
   newRow,
   deletable,
   validateRow,
+  summary,
   className,
 }: EditableTableProps<T>) {
   const loc = useLocale().editableTable;
@@ -148,6 +149,11 @@ export function EditableTable<T>({
               })
             )}
           </tbody>
+          {summary && data.length > 0 && (
+            <tfoot className="border-t border-border bg-surface-hover/50 font-medium text-foreground">
+              {summary(data)}
+            </tfoot>
+          )}
         </table>
       </div>
       {addable && newRow && (

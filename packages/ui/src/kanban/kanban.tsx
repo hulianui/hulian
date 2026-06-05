@@ -125,7 +125,8 @@ function KanbanColumnView<T>({
   return (
     <section
       className={cn(
-        "flex w-72 shrink-0 flex-col rounded-[calc(var(--radius)+0.25rem)] border border-border bg-muted/30",
+        // 列只用极淡底色圈出泳道，不描边——描边叠白卡边框会形成「框中框」的脏感。
+        "flex w-72 shrink-0 flex-col rounded-[calc(var(--radius)+0.25rem)] bg-muted/40",
         columnClassName,
       )}
     >
@@ -202,7 +203,8 @@ export function Kanban<T>({
       onDragEnd={handleDragEnd}
       onDragCancel={() => setActiveId(null)}
     >
-      <div className={cn("flex gap-4 overflow-x-auto pb-2", className)}>
+      {/* items-start：列高随各自卡片数收缩，不强行等高——否则矮列底部会拖出大片空泳道灰块 */}
+      <div className={cn("flex items-start gap-4 overflow-x-auto pb-2", className)}>
         {columns.map((column) => (
           <KanbanColumnView
             key={column.id}
