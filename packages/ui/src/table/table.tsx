@@ -292,10 +292,11 @@ export function Table<TData>({
       <table className="w-full border-collapse text-sm">
         <thead
           className={cn(
+            // 表头：muted + medium 文字 + 行底分隔线（见下 tr），透明背景。
+            // 不加填充色——表格已是 surface 卡片（ProTable）或带框原语，灰底带反而割裂、压观感。
             "text-muted",
-            // 表头淡色带：与正文区分、提升可扫读性（主题感知，亮 gray-100 / 暗 gray-800）。
-            // 虚拟滚动时表头 sticky，需 opaque 背景遮住滚动到下方的行，故用 bg-bg 不透明。
-            virtualEnabled ? "sticky top-0 z-[2] bg-bg" : "bg-surface-hover",
+            // 虚拟滚动时表头 sticky，需 opaque 背景遮住滚到下方的行；用 bg-surface 匹配卡片表面。
+            virtualEnabled && "sticky top-0 z-[2] bg-surface",
           )}
         >
           {table.getHeaderGroups().map((hg) => (
