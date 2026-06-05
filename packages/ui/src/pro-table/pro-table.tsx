@@ -107,7 +107,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             {(toolbarActions != null && (features?.reload || features?.density || features?.columnSetting || features?.fullscreen)) && (
               <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
             )}
-            {features?.reload && (
+            {features?.reload && onReload && (
               <button
                 type="button"
                 aria-label={t.reload}

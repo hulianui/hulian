@@ -25,11 +25,18 @@ describe("ProTable", () => {
   });
 
   it("默认渲染内置工具栏四件（刷新/密度/列设置/全屏）", () => {
-    const { getByLabelText } = render(<ProTable columns={columns} data={data} />);
+    // 刷新键仅在传 onReload 时渲染（避免无 handler 的死按钮）。
+    const { getByLabelText } = render(<ProTable columns={columns} data={data} onReload={() => {}} />);
     expect(getByLabelText("刷新")).toBeTruthy();
     expect(getByLabelText(/密度/)).toBeTruthy();
     expect(getByLabelText("列设置")).toBeTruthy();
     expect(getByLabelText("全屏")).toBeTruthy();
+  });
+
+  it("未传 onReload 时不渲染刷新键（避免死按钮）", () => {
+    const { queryByLabelText } = render(<ProTable columns={columns} data={data} />);
+    expect(queryByLabelText("刷新")).toBeNull();
+    expect(queryByLabelText("列设置")).toBeTruthy();
   });
 
   it("toolbar=false 不渲染内置工具栏", () => {
@@ -40,7 +47,7 @@ describe("ProTable", () => {
 
   it("toolbar 对象逐项关闭（关全屏）", () => {
     const { queryByLabelText, getByLabelText } = render(
-      <ProTable columns={columns} data={data} toolbar={{ fullscreen: false }} />,
+      <ProTable columns={columns} data={data} toolbar={{ fullscreen: false }} onReload={() => {}} />,
     );
     expect(getByLabelText("刷新")).toBeTruthy();
     expect(queryByLabelText("全屏")).toBeNull();
@@ -54,7 +61,7 @@ describe("ProTable", () => {
   });
 
   it("loading 时刷新图标旋转", () => {
-    const { getByLabelText } = render(<ProTable columns={columns} data={data} loading />);
+    const { getByLabelText } = render(<ProTable columns={columns} data={data} loading onReload={() => {}} />);
     expect(getByLabelText("刷新").querySelector(".animate-spin")).toBeTruthy();
   });
 

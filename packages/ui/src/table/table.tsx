@@ -292,9 +292,9 @@ export function Table<TData>({
       <table className="w-full border-collapse text-sm">
         <thead
           className={cn(
-            // 表头：muted + medium 文字 + 行底分隔线（见下 tr），透明背景。
+            // 表头：foreground 黑/白 + semibold 加粗文字 + 行底分隔线（见下 tr），透明背景。
             // 不加填充色——表格已是 surface 卡片（ProTable）或带框原语，灰底带反而割裂、压观感。
-            "text-muted",
+            "text-foreground",
             // 虚拟滚动时表头 sticky，需 opaque 背景遮住滚到下方的行；用 bg-surface 匹配卡片表面。
             virtualEnabled && "sticky top-0 z-[2] bg-surface",
           )}
@@ -321,7 +321,7 @@ export function Table<TData>({
                     }
                     className={cn(
                       cellPad,
-                      "text-left font-medium",
+                      "text-left font-semibold",
                       stickyClass(header.column),
                       virtualEnabled && header.column.getIsPinned() && "bg-bg",
                     )}
