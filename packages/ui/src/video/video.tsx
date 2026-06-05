@@ -1,6 +1,7 @@
 "use client";
 import "@vidstack/react/player/styles/base.css";
-import { MediaPlayer, MediaProvider, Poster } from "@vidstack/react";
+import { useRef } from "react";
+import { MediaPlayer, MediaProvider, Poster, type MediaPlayerInstance } from "@vidstack/react";
 import { cn } from "../lib/cn";
 import { VideoControls } from "./video-controls";
 import { DEFAULT_PLAYBACK_RATES, formatTime, normalizeSrc, type VideoProps } from "./video.types";
@@ -17,6 +18,9 @@ export function Video({
   crossOrigin,
   aspectRatio = "16/9",
   playbackRates,
+  chapters,
+  startTime,
+  endScreen,
   className,
   onPlay,
   onPause,
@@ -24,6 +28,9 @@ export function Video({
   onTimeUpdate,
 }: VideoProps) {
   const rates = playbackRates ?? [...DEFAULT_PLAYBACK_RATES];
+  const playerRef = useRef<MediaPlayerInstance>(null);
+  // 续播：仅首次 can-play 时 seek 一次，避免与用户后续拖拽/换源冲突。
+  const seekedRef = useRef(false);
   // VideoProps.crossOrigin 是 boolean | string；Vidstack 接受 true | '' | 'anonymous' | 'use-credentials' | null。
   // boolean → true/undefined；字符串原样透传（按 MediaCrossOrigin 取，非法值由运行时容忍）。
   const resolvedCrossOrigin =
@@ -34,6 +41,7 @@ export function Video({
       : (crossOrigin as "" | "anonymous" | "use-credentials" | undefined);
   return (
     <MediaPlayer
+      ref={playerRef}
       className={cn(
         "relative w-full overflow-hidden rounded-[var(--radius)] border border-border bg-black text-white",
         className,
@@ -50,6 +58,12 @@ export function Video({
       onPlay={onPlay}
       onPause={onPause}
       onEnded={onEnded}
+      onCanPlay={() => {
+        if (startTime && startTime > 0 && !seekedRef.current && playerRef.current) {
+          playerRef.current.currentTime = startTime;
+          seekedRef.current = true;
+        }
+      }}
       onTimeUpdate={(detail) => onTimeUpdate?.(detail.currentTime)}
     >
       <MediaProvider>
@@ -61,7 +75,7 @@ export function Video({
           />
         ) : null}
       </MediaProvider>
-      <VideoControls playbackRates={rates} />
+      <VideoControls playbackRates={rates} chapters={chapters} endScreen={endScreen} />
     </MediaPlayer>
   );
 }

@@ -23,7 +23,7 @@ vi.mock("@vidstack/react", () => {
 });
 import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
-import { formatTime, normalizeSrc, DEFAULT_PLAYBACK_RATES } from "./video.types";
+import { formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES } from "./video.types";
 import { Video } from "./video";
 
 describe("video pure logic", () => {
@@ -51,19 +51,44 @@ describe("video pure logic", () => {
   it("默认倍速档位", () => {
     expect(DEFAULT_PLAYBACK_RATES).toEqual([0.5, 0.75, 1, 1.25, 1.5, 2]);
   });
+
+  it("chapterMarkers 按 time/duration 算百分比", () => {
+    const out = chapterMarkers([{ time: 0, title: "A" }, { time: 50, title: "B" }], 100);
+    expect(out).toEqual([
+      { percent: 0, title: "A" },
+      { percent: 50, title: "B" },
+    ]);
+  });
+  it("chapterMarkers duration 非正/NaN 返回空（无从定位）", () => {
+    expect(chapterMarkers([{ time: 10, title: "A" }], 0)).toEqual([]);
+    expect(chapterMarkers([{ time: 10, title: "A" }], NaN)).toEqual([]);
+    expect(chapterMarkers(undefined, 100)).toEqual([]);
+    expect(chapterMarkers([], 100)).toEqual([]);
+  });
+  it("chapterMarkers time 夹取到 [0,duration] 且按位置升序", () => {
+    const out = chapterMarkers(
+      [{ time: 200, title: "超界" }, { time: -5, title: "负" }, { time: 30, title: "中" }],
+      100,
+    );
+    expect(out).toEqual([
+      { percent: 0, title: "负" },
+      { percent: 30, title: "中" },
+      { percent: 100, title: "超界" },
+    ]);
+  });
 });
 
 afterEach(() => cleanup());
 
 describe("<Video> 渲染冒烟", () => {
   it("挂载不抛错且渲出播放钮", () => {
-    render(<Video src="https://files.vidstack.io/sprite-fight/720p.mp4" title="演示" />);
+    render(<Video src="/demo/sample-video.mp4" title="演示" />);
     // 锚定全词，避免误匹配 aria-label="播放速度" 的倍速菜单按钮
     expect(screen.getByLabelText(/^(播放|暂停)$/)).toBeTruthy();
   });
 
   it("HLS .m3u8 src 也能挂载", () => {
-    render(<Video src="https://files.vidstack.io/sprite-fight/hls/stream.m3u8" />);
+    render(<Video src="/demo/hls/stream.m3u8" />);
     expect(screen.getByLabelText(/^(静音|取消静音)$/)).toBeTruthy();
   });
 });
