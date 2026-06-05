@@ -62,6 +62,7 @@ export function Table<TData>({
   onSortingChange,
   striped = true,
   density = "default",
+  bordered = true,
   getRowId,
   className,
   // 行选择
@@ -282,7 +283,8 @@ export function Table<TData>({
       ref={scrollRef}
       style={virtualEnabled ? { height: virtual?.height ?? 480, overflow: "auto" } : undefined}
       className={cn(
-        "rounded-[var(--radius)] border border-border",
+        // bordered=false：去掉自身描边框（如被 ProTable 卡片包裹时，由卡片提供外框，避免双框）。
+        bordered && "rounded-[var(--radius)] border border-border",
         !virtualEnabled && "overflow-x-auto",
         className,
       )}

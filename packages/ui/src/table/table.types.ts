@@ -52,6 +52,8 @@ export interface TableProps<TData> {
   onSortingChange?: OnChangeFn<SortingState>;
   /** 默认 true：偶数行斑马纹 */
   striped?: boolean;
+  /** 默认 true：表格外层描边框 + 圆角。被 ProTable 卡片包裹时置 false，由卡片提供外框，避免双框。 */
+  bordered?: boolean;
   /** 行密度：default 宽松 / middle 中等 / compact 紧凑（仅调单元格内边距，默认 default）。 */
   density?: "default" | "middle" | "compact";
   /** 行稳定 key；默认按行 index */

@@ -90,6 +90,9 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     <div
       className={cn(
         "flex flex-col gap-4",
+        // 列表页旗舰：整体即一张浮起卡片（表面 + 发丝边 + 阴影），与 Card 同层级，
+        // 不再是漂在页面底色上的透明描边框。内层 Table 关掉自身边框避免双框。
+        !fullscreen && "rounded-[var(--radius)] border border-hairline bg-surface p-4 shadow-sm",
         fullscreen && "fixed inset-0 z-50 overflow-auto bg-bg p-6",
         rootClassName,
       )}
@@ -159,7 +162,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
         </div>
       )}
 
-      <Table<TData> columns={visibleColumns} density={density} className={className} {...tableProps} />
+      <Table<TData> columns={visibleColumns} density={density} bordered={false} className={className} {...tableProps} />
 
       {pagination && (
         <div className="flex flex-wrap items-center justify-between gap-3">
