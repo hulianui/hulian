@@ -1,6 +1,6 @@
 import { http, HttpResponse, delay } from "msw";
 import { makeUsers } from "./factories";
-import { selectScript, scriptToEvents } from "./chat-script";
+import { selectScript, scriptToEvents, chatEventDelayMs } from "./chat-script";
 
 const ALL = makeUsers(60);
 const PAGE_SIZE = 8;
@@ -28,18 +28,7 @@ export const handlers = [
       async start(controller) {
         for (const ev of events) {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(ev)}\n\n`));
-          // 思考/正文吐字快，工具调用与收尾留出节奏感
-          const ms =
-            ev.type === "tool"
-              ? 600
-              : ev.type === "tool_result"
-                ? 500
-                : ev.type === "thinking_delta"
-                  ? 18
-                  : ev.type === "text_delta"
-                    ? 22
-                    : 120;
-          await delay(ms);
+          await delay(chatEventDelayMs(ev));
         }
         controller.close();
       },

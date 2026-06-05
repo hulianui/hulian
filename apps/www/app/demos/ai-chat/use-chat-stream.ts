@@ -1,10 +1,11 @@
 "use client";
 import { useCallback, useReducer, useRef, useState } from "react";
-import type { ChatEvent } from "@hulianui/mocks";
+import { selectScript, scriptToEvents, chatEventDelayMs, type ChatEvent } from "@hulianui/mocks";
 import { chatReducer, type ChatMsg } from "./chat-types";
 
 let seq = 0;
 const nextId = () => `m${++seq}`;
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export function useChatStream() {
   const [messages, dispatch] = useReducer(chatReducer, [] as ChatMsg[]);
@@ -30,6 +31,17 @@ export function useChatStream() {
       const ac = new AbortController();
       abortRef.current = ac;
       try {
+        // 静态导出(prod)无后端 + 不启 MSW → 客户端内存生成同款事件流
+        // （与 MSW handler 同口径：selectScript/scriptToEvents/chatEventDelayMs 单一真源）。
+        // dev 仍走 fetch 经 MSW Service Worker 拦截，保留「真流式」语义。同 async-users 的 prod 回退模式。
+        if (process.env.NODE_ENV === "production") {
+          for (const event of scriptToEvents(selectScript(text))) {
+            if (ac.signal.aborted) throw new DOMException("Aborted", "AbortError");
+            dispatch({ kind: "event", id: assistantId, event });
+            await sleep(chatEventDelayMs(event));
+          }
+          return;
+        }
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

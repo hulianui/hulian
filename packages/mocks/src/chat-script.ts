@@ -121,3 +121,22 @@ export function scriptToEvents(script: ChatScript): ChatEvent[] {
   events.push({ type: "done" });
   return events;
 }
+
+/**
+ * 单帧之间的节奏（ms）。思考/正文吐字快，工具调用与收尾留节奏感。
+ * 抽出来作单一真源：MSW handler（dev）与客户端内存回退（prod）共用，保证手感一致。
+ */
+export function chatEventDelayMs(ev: ChatEvent): number {
+  switch (ev.type) {
+    case "tool":
+      return 600;
+    case "tool_result":
+      return 500;
+    case "thinking_delta":
+      return 18;
+    case "text_delta":
+      return 22;
+    default:
+      return 120;
+  }
+}
