@@ -115,6 +115,7 @@ export function HeaderBar({ source, onSourceChange, running, onToggleRunning, on
                 variant="ghost"
                 size="iconSm"
                 aria-label="停止实时刷新"
+                title="停止实时刷新"
                 className="text-muted hover:text-foreground"
               >
                 <Pause className="size-4" />
