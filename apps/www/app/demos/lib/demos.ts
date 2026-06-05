@@ -18,6 +18,16 @@ export interface DemoMeta {
 
 export const demos: DemoMeta[] = [
   {
+    slug: "hanhelm",
+    title: "瀚舵 HanHelm 智能体任务调度平台",
+    description:
+      "异构 AI 任务涌入任务总线 → 智能路由按「能力+成本+延迟+负载+优先级+SLA」六维打分派给 agent/模型池 → 多 agent 编排 + 降级/failover + 全链路可观测 —— 100% 由 @hulian/ui 搭建的调度控制台。调度总览(任务漏斗)、优先级泳道队列、任务详情多 agent 编排 DAG、智能路由桑基流向 + 六维决策回放、执行器池负载、SLA 告警模拟，dogfood 全新 Sankey / Sparkline / Funnel / QueueLane 4 组件。",
+    href: "/demos/hanhelm",
+    category: "AI 应用",
+    status: "done",
+    tags: ["Sankey", "QueueLane", "Funnel", "Flow", "智能路由", "多 agent 编排"],
+  },
+  {
     slug: "billing",
     title: "瀚付 HanPay 订阅结算控制台",
     description:
