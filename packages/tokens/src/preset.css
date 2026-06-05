@@ -252,6 +252,60 @@
   }
 }
 
+/* Danmaku 弹幕滚动：从容器右缘(left:100%)向左平移整段距离(--dm-x 为负值=容器宽+自身宽)。 */
+@keyframes hulian-danmaku-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--dm-x));
+  }
+}
+
+/* FloatingReactions 飘心上浮：边升边横向漂移、放大后渐隐。--fr-rise/--fr-drift 由组件注入。 */
+@keyframes hulian-float-rise {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translate(calc(var(--fr-drift) * 0.3), calc(var(--fr-rise) * -0.15)) scale(1.1);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--fr-drift), calc(var(--fr-rise) * -1)) scale(1);
+    opacity: 0;
+  }
+}
+
+/* GiftFeed 礼物横幅滑入：从左侧滑入并淡现。 */
+@keyframes hulian-gift-in {
+  from {
+    transform: translateX(-16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* GiftFeed combo 数字弹跳。 */
+@keyframes hulian-gift-combo {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* magicui/AnimatedThemeToggler 圆形揭示切主题的全局前置：
    关掉 View Transitions 对 root 的 UA 默认 cross-fade（old/new 各 ~250ms 淡入淡出），
    否则新视图一边淡入一边裁圆、旧视图在底下淡出，圆形擦除被冲淡成渐变。

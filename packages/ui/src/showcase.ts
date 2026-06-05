@@ -202,6 +202,13 @@ export { documentSheetShowcase } from "./document-sheet/document-sheet.showcase"
 export { ganttShowcase } from "./gantt/gantt.showcase";
 export { schedulerShowcase } from "./scheduler/scheduler.showcase";
 export { imageViewerShowcase } from "./image-viewer/image-viewer.showcase";
+// 实时直播批（demo 瀚播 dogfood 驱动）
+export { danmakuShowcase } from "./danmaku/danmaku.showcase";
+export { liveChatShowcase } from "./live-chat/live-chat.showcase";
+export { giftFeedShowcase } from "./gift-feed/gift-feed.showcase";
+export { floatingReactionsShowcase } from "./floating-reactions/floating-reactions.showcase";
+export { livePlayerShowcase } from "./live-player/live-player.showcase";
+export { liveProductCardShowcase } from "./live-product-card/live-product-card.showcase";
 // devtools / 执行态 批
 export { logViewerShowcase } from "./log-viewer/log-viewer.showcase";
 export { codeDiffShowcase } from "./code-diff/code-diff.showcase";

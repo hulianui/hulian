@@ -255,6 +255,14 @@ export * from "./gantt";
 export * from "./scheduler";
 export * from "./image-viewer";
 
+// 实时直播批（demo 瀚播 dogfood 驱动·零依赖）
+export * from "./danmaku";
+export * from "./live-chat";
+export * from "./gift-feed";
+export * from "./floating-reactions";
+export * from "./live-player";
+export * from "./live-product-card";
+
 // devtools / 执行态 批（运行输出可视化·承 TaskRunner 品类）
 export * from "./log-viewer";
 export * from "./code-diff";

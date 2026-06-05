@@ -166,4 +166,14 @@ export const demos: DemoMeta[] = [
     status: "done",
     tags: ["JsonViewer", "SecretField", "PricingTable", "StatusDot", "健康探测", "Token 计费"],
   },
+  {
+    slug: "live",
+    title: "瀚播 HanLive AI 实时直播工作站",
+    description:
+      "一套实时引擎驱动两张脸：主播 AI 中控台（LivePlayer 预览 + 实时 KPI/趋势 + 弹幕监看 + AI 副驾自动答弹幕/提词/上小黄车/情绪转化分析）、小黄车讲解排序、数据复盘，以及 C 端竖屏观众直播间（弹幕覆盖 + 礼物连击 + 飘心点赞 + 小黄车抢购 + AI 客服）—— 100% 由 @hulian/ui 搭建，dogfood 全新 Danmaku / LiveChat / GiftFeed / FloatingReactions / LivePlayer / LiveProductCard 六组件，纯 reducer + 种子模拟实时流。",
+    href: "/demos/live",
+    category: "直播电商",
+    status: "done",
+    tags: ["Danmaku", "LivePlayer", "GiftFeed", "FloatingReactions", "LiveChat", "AI 副驾"],
+  },
 ];
