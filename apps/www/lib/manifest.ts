@@ -189,6 +189,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "segmented", name: "Segmented", description: "分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖)", category: "forms", group: "basic", status: "new" },
   { slug: "slider", name: "Slider", description: "滑块 · Base UI 单值/range + 键盘步进", category: "forms", group: "basic", status: "new" },
   { slug: "number-field", name: "NumberField", description: "数字步进 · Base UI ±按钮 + 键盘步进 + min/max", category: "forms", group: "basic", status: "new" },
+  { slug: "secret-field", name: "SecretField", description: "密钥掩码字段 · sk-abc…wxyz 掩码(full/prefix-suffix) + 眼睛 toggle 显形 + 一键复制原值(同 Snippet idiom·1.5s 反馈) + 尾部动作槽(重置/吊销) + 受控 revealed(API key 管理刚需·复用 _icons Eye/Copy)", category: "forms", group: "advanced", status: "new" },
   { slug: "combobox", name: "Combobox", description: "自动补全 · 触发按钮 + 弹层内搜索(图4 范式)，亦支持内联输入；浮层锚到字段等宽", category: "forms", group: "advanced", status: "new" },
   { slug: "listbox", name: "Listbox", description: "可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)", category: "forms", group: "advanced", status: "new" },
   { slug: "mentions", name: "Mentions", description: "@提及输入 · 复用 Textarea 皮肤 + 触发符唤起候选(镜像 div 测光标像素坐标) + aria-activedescendant 虚拟焦点(零依赖)", category: "forms", group: "advanced", status: "new" },

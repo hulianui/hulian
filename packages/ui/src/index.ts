@@ -13,6 +13,7 @@ export * from "./avatar";
 export * from "./input";
 export * from "./textarea";
 export * from "./field";
+export * from "./secret-field";
 export * from "./checkbox";
 export * from "./radio";
 export * from "./slider";

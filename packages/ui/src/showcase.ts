@@ -61,6 +61,7 @@ export { dotPatternShowcase } from "./dot-pattern/dot-pattern.showcase";
 export { drawerShowcase } from "./drawer/drawer.showcase";
 export { emptyShowcase } from "./empty/empty.showcase";
 export { fieldShowcase } from "./field/field.showcase";
+export { secretFieldShowcase } from "./secret-field/secret-field.showcase";
 export { formShowcase } from "./form/form.showcase";
 export { formDialogShowcase } from "./form-dialog/form-dialog.showcase";
 export { proFormShowcase } from "./pro-form/pro-form.showcase";
