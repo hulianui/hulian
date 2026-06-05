@@ -21,7 +21,7 @@ export function Dialog(props: ComponentProps<typeof BaseDialog.Root>) {
 export const DialogTrigger = BaseDialog.Trigger;
 export const DialogClose = BaseDialog.Close;
 
-export function DialogContent({ title, description, children, className }: DialogContentProps) {
+export function DialogContent({ title, description, children, footer, className }: DialogContentProps) {
   return (
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
@@ -43,6 +43,11 @@ export function DialogContent({ title, description, children, className }: Dialo
           </BaseDialog.Description>
         )}
         <div className="mt-4">{children}</div>
+        {footer != null && (
+          <div className="mt-6 flex items-center justify-end gap-2 border-t border-border pt-4">
+            {footer}
+          </div>
+        )}
       </BaseDialog.Popup>
     </BaseDialog.Portal>
   );
