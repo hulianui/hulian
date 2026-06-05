@@ -17,7 +17,7 @@
 
 - **Base UI**（`@base-ui-components/react`，headless 行为 / a11y）+ Radix 补缺
 - **Tailwind v4 + 两层 CSS 变量 token**（原始 OKLCH 层 + 语义层，切 `[data-theme]` 0 闪烁）
-- **class-variance-authority** 管变体 · **lucide-react** 图标 · **motion** 动效（后续）
+- **class-variance-authority** 管变体 · **lucide-react** 图标 · **motion** 动效
 - monorepo：**pnpm + Turborepo** · **Next.js 16** 文档站 · **React 19**
 
 ## 快速开始
@@ -41,7 +41,7 @@ pnpm --filter www build   # 生产构建
 hulian/
 ├── packages/
 │   ├── tokens/   @hulianui/tokens   设计 token（tokens.css + Tailwind v4 preset）— 明暗主题唯一源头
-│   ├── ui/       @hulianui/ui       组件库本体（Base UI + Tailwind 皮肤）— 可发 npm
+│   ├── ui/       @hulianui/ui       组件库本体（Base UI + Tailwind 皮肤）— 已发 GitHub Packages
 │   └── mocks/    @hulianui/mocks    faker 数据工厂 + MSW handlers — 喂给 showcase
 └── apps/
     └── www/      Next.js 文档站（5512）— 首个 dogfood 消费者
@@ -49,8 +49,13 @@ hulian/
 
 ## 接入方式（分发模型 A）
 
-消费方需用 Tailwind v4，三步接入：
+`@hulianui/*` 发布在 **GitHub Packages 私有 registry**（组织 `hulianui`），不是公共 npmjs。消费方需先配 registry + 鉴权，再用 Tailwind v4 接入：
 
+0. 项目根 `.npmrc` 把 `@hulianui` 作用域指向 GitHub Packages（鉴权用一个有 `read:packages` 权限的 PAT，存环境变量、勿提交）：
+   ```ini
+   @hulianui:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+   ```
 1. 装包：`pnpm add @hulianui/ui @hulianui/tokens`（`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 为 peer，自行安装）
 2. 全局引入 token + preset，并把 `@hulianui/ui` 源码加入 Tailwind 扫描：
    ```css
@@ -65,15 +70,18 @@ hulian/
    ```
    防首屏白闪的 inline script 由各应用的入口注入（见 `apps/www/app/theme-script.tsx`），不入库。
 
+> 发布形态是**源码包**（发 `src/`，不编译 dist）——消费方需能转译 TSX（Next / Vite 可）。版本管理 + 发布流程见 `docs/publishing.md`。
+
 ## 当前状态
 
-**P0 脊柱 + P1 展示基建 已完成并验证**（截图 + 三道门：typecheck / test / build 全绿）：
+**已发布、CI/CD 上线、组件大批量铺开**：
 
-- ✅ monorepo + OKLCH 两层 token + Tailwind v4 preset
-- ✅ ThemeProvider（框架无关）+ 明暗切换 0 闪烁
-- ✅ 三标杆组件：**Button**（CVA 变体）/ **Switch**（受控+ARIA）/ **Dialog**（Portal+focus trap，验证 Base UI 命脉）
-- ✅ showcase 四 mock：真实样例数据(faker) / 全状态 gallery / MSW 异步分页 / 可调参 playground
+- 📦 **已发 GitHub Packages**：`@hulianui/ui@0.1.1` + `@hulianui/tokens@0.1.0`（私有 registry · changesets 管版本 · GitHub Actions 自动发布，用内置 `GITHUB_TOKEN` 零 PAT）
+- 🧩 **~228 个组件**：基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …
+- 🏗️ **18 个内置 demo**（全 dogfood）：CRM · 商城 · 客服 · 数据大屏 · 知识库 · 直播 · AI 工作流 · API 网关 · 智能体调度 · 项目协同 · LMS · 个人站 · 官网 · 订阅结算 · 代码审查 · 排期 · 移动端 · AI 对话
+- ✅ **三道门 CI 全绿**：typecheck + 1884 单测（vitest）+ www 静态导出
+- 🎨 OKLCH 两层 token + Tailwind v4 preset + ThemeProvider 明暗 0 闪烁 + 运行时换肤
 
-**后续**：P2 组件扩量（Input/Select/DataTable…）· P3 npm 发布 + 部署 · P4 Tauri 桌面壳。
+**后续**：组件持续扩量 + 文档站打磨 · Tauri 桌面壳。
 
-设计文档见 `docs/superpowers/specs/`，实施计划见 `docs/superpowers/plans/`。
+设计文档见 `docs/superpowers/specs/`，实施计划见 `docs/superpowers/plans/`，发布指南见 `docs/publishing.md`。
