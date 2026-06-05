@@ -6,6 +6,7 @@ export * from "./badge";
 export * from "./dot";
 export * from "./status-dot";
 export * from "./tag";
+export * from "./beian-footer";
 export * from "./steps";
 export * from "./card";
 export * from "./skeleton";
@@ -287,6 +288,10 @@ export * from "./choicebox";
 export * from "./credit-card";
 export * from "./emoji-picker";
 export * from "./glimpse";
+
+// 部署 / CI-CD 批（瀚舰 HanShip demo dogfood）
+export * from "./git-commit";
+export * from "./deploy-status";
 
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";

@@ -271,6 +271,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "qrcode", name: "QRCode", description: "二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题 + UTF-8 中文 + 纠错级别 + 中心 logo(可 RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "comment", name: "Comment", description: "评论 · 嵌套回复缩进 + 可选连接线 + 操作区 + comment/log 类型(复用 Avatar/Link·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "relative-time", name: "RelativeTime", description: "相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> 语义 + title 绝对时间 + SSR 安全(suppressHydrationWarning)", category: "data-display", group: "info", status: "new" },
+  { slug: "git-commit", name: "GitCommit", description: "git 提交引用 · 分支 chip(GitBranch) + 短哈希等宽(纯函数 shortSha 可测·可定制位数/href 跳链) + 提交信息单行截断 + 作者头像槽 · inline 单行/stacked 两行(表格单元格) · 部署列表/PR 列表/活动流「Source」列刚需(零依赖·RSC)", category: "data-display", group: "info", status: "new" },
+  { slug: "deploy-status", name: "DeployStatus", description: "部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "credit-card", name: "CreditCard", description: "银行卡展示 · 卡号前缀识别品牌(visa/mastercard/amex/银联/jcb/discover) + 分组格式化/打码(纯函数可测) + token 渐变卡面 + 芯片/品牌字标 + 正反面(磁条/CVC) · 结算确认/钱包(纯展示·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "stat", name: "Stat", description: "指标卡 · KPI 数值/标签/升降趋势(无图表库)", category: "data-display", group: "stat", status: "new" },
   { slug: "statistic", name: "Statistic", description: "统计数值 · 千分位/precision/前后缀/valueStyle + 可选 NumberTicker 入场滚动 + Statistic.Countdown 倒计时(SSR 安全·零依赖·与 Stat 互补)", category: "data-display", group: "stat", status: "new" },
@@ -285,6 +287,7 @@ export const manifest: ComponentMeta[] = [
 
   // ── 导航 navigation ──────────────────────────────────────────
   { slug: "navbar", name: "Navbar", description: "导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换", category: "navigation", group: "global", status: "new" },
+  { slug: "beian-footer", name: "BeianFooter", description: "备案页脚 · ICP 备案号(可多个·默认链 miit) + 公网安备(警徽 icon·默认链 mps) + 版权行 · 中国大陆合规底栏(发丝边卡片·语义 token·外链新窗·RSC)", category: "navigation", group: "global", status: "new" },
   { slug: "nav-menu", name: "NavMenu", description: "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游", category: "navigation", group: "global", status: "new" },
   { slug: "navigation-menu", name: "NavigationMenu", description: "导航菜单 · Base UI navigation-menu 薄包(mega 面板/共享 Viewport 尺寸形变) + 触发器/内容/链接 + chevron 旋转", category: "navigation", group: "global", status: "new" },
   { slug: "menu", name: "Menu", description: "下拉菜单 · Base UI 命令式 + Item/分隔/分组 + danger", category: "navigation", group: "global", status: "new" },

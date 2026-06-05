@@ -7,6 +7,7 @@ import {
   badgeShowcase,
   dotShowcase,
   statusDotShowcase,
+  beianFooterShowcase,
   cardShowcase,
   skeletonShowcase,
   avatarShowcase,
@@ -232,6 +233,8 @@ import {
   creditCardShowcase,
   emojiPickerShowcase,
   glimpseShowcase,
+  gitCommitShowcase,
+  deployStatusShowcase,
 } from "@hulianui/ui/showcase";
 
 // 唯一 import @hulianui/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
@@ -243,6 +246,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   badge: badgeShowcase,
   dot: dotShowcase,
   "status-dot": statusDotShowcase,
+  "beian-footer": beianFooterShowcase,
   card: cardShowcase,
   skeleton: skeletonShowcase,
   avatar: avatarShowcase,
@@ -467,4 +471,6 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   "credit-card": creditCardShowcase,
   "emoji-picker": emojiPickerShowcase,
   glimpse: glimpseShowcase,
+  "git-commit": gitCommitShowcase,
+  "deploy-status": deployStatusShowcase,
 };

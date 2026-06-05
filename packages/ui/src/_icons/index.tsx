@@ -80,6 +80,29 @@ export const Code2 = createIcon("code-xml", [
   ["path", { d: "m14.5 4-5 16", key: "e7oirm" }],
 ]);
 
+export const Clock = createIcon("clock", [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }],
+]);
+
+export const Ban = createIcon("ban", [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m4.9 4.9 14.2 14.2", key: "1m5liu" }],
+]);
+
+export const GitBranch = createIcon("git-branch", [
+  ["line", { x1: "6", x2: "6", y1: "3", y2: "15", key: "17qcm7" }],
+  ["circle", { cx: "18", cy: "6", r: "3", key: "1h7g24" }],
+  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
+  ["path", { d: "M18 9a9 9 0 0 1-9 9", key: "n2h4wq" }],
+]);
+
+export const GitCommit = createIcon("git-commit-horizontal", [
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }],
+  ["line", { x1: "3", x2: "9", y1: "12", y2: "12", key: "1jdjyz" }],
+  ["line", { x1: "15", x2: "21", y1: "12", y2: "12", key: "1u9yp9" }],
+]);
+
 export const Folder = createIcon("folder", [
   ["path", { d: "M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z", key: "1kt360" }],
 ]);
@@ -437,4 +460,11 @@ export const Wrench = createIcon("wrench", [
 export const X = createIcon("x", [
   ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
   ["path", { d: "m6 6 12 12", key: "d8bk6v" }],
+]);
+
+// 公网安备警徽（线性盾形 + 十字，hulianui 线性风格，非彩色像素复刻）
+export const PoliceBadge = createIcon("police-badge", [
+  ["path", { d: "M12 2 4 5v6c0 5 3.4 8.4 8 10 4.6-1.6 8-5 8-10V5l-8-3Z", key: "shield" }],
+  ["path", { d: "M12 8v6", key: "v" }],
+  ["path", { d: "M9 11h6", key: "h" }],
 ]);
