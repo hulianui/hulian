@@ -1,5 +1,5 @@
 import { MonitorPlay, ShoppingBag, BarChart3 } from "lucide-react";
-import type { NavMenuNode, BreadcrumbItem } from "@hulian/ui";
+import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
 
 export const LIVE_ROOT = "/demos/live";
 

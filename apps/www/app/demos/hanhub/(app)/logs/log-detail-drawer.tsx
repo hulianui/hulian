@@ -14,7 +14,7 @@ import {
   toast,
   type ChannelStatus,
   type TimelineItemProps,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type { RequestLog } from "../../_data/types";
 import { modelOf, providerOf } from "../../_data/providers";
 import { costOf, formatUsd } from "../../_lib/pricing";

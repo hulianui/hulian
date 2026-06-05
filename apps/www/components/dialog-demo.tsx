@@ -5,7 +5,7 @@ import {
   DialogTrigger,
   DialogClose,
   DialogContent,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 // 客户端岛：Base UI 的 `render={<Button>}` 把一个 client 组件元素当 prop 传入，
 // 这种"client 元素作 prop"在 RSC 下必须诞生于 client 边界内 —— 否则从 server 父级

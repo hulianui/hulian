@@ -17,8 +17,8 @@
 ## 1. 三条铁律
 
 ### 铁律一 · 100% dogfood，零手搓等价物
-demo 里的每个 UI 元素都必须来自 `@hulian/ui`。**禁止**在 demo 里手搓一个库里已有的东西（自己写 toast、自己写 modal、自己写 table）。
-撞到组件缺口（必须 CSS override / 行为 hack 才好用）→ **回 `@hulian/ui` 修组件**，不在 demo 打补丁。
+demo 里的每个 UI 元素都必须来自 `@hulianui/ui`。**禁止**在 demo 里手搓一个库里已有的东西（自己写 toast、自己写 modal、自己写 table）。
+撞到组件缺口（必须 CSS override / 行为 hack 才好用）→ **回 `@hulianui/ui` 修组件**，不在 demo 打补丁。
 （依据见记忆 `fix-component-not-demo-css-patch`。）
 
 ### 铁律二 · 演完整交互生命周期，不许只摆 happy-path
@@ -77,7 +77,7 @@ pnpm --filter www demos:coverage          # 打印覆盖率 + 未覆盖（危险
 pnpm --filter www demos:coverage -- --min 60   # 低于阈值 exit 1，可进 CI
 ```
 
-口径：分母 = `lib/manifest.ts` 公开组件；分子 = demos 里 `from "@hulian/ui"` 命中的条目。
+口径：分母 = `lib/manifest.ts` 公开组件；分子 = demos 里 `from "@hulianui/ui"` 命中的条目。
 **当前 48%，目标 ≥ 60%。** 提交新 demo / 改造后必须让覆盖率只升不降。
 
 脚本含**两道门禁**，任一不过 exit 1：

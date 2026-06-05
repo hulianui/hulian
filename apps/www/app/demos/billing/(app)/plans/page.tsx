@@ -8,7 +8,7 @@ import {
   Banner,
   Divider,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Zap, Rocket, Gauge, Building2, Minus, Plus, Info } from "lucide-react";
 import { plans, addons, planById, addonById, unitPrice, formatMoney } from "../../_data/plans";
 import type { BillingCycle } from "../../_data/types";

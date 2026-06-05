@@ -13,7 +13,7 @@ import {
   MenuTrigger,
   cn,
   useTheme,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { NAV, ROOT, activeKey } from "./nav-config";
 
 function Brand() {

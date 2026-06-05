@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Boxes, Activity, ScrollText } from "lucide-react";
-import { Heading, Link, LoginForm, GridPattern, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, GridPattern, Text } from "@hulianui/ui";
 
 const FEATURES = [
   { icon: Boxes, title: "一个 base_url，十余家上游", desc: "OpenAI / Claude / Gemini / DeepSeek / Qwen 全 OpenAI 兼容" },

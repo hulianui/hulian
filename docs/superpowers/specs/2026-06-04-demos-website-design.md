@@ -1,6 +1,6 @@
 # 公司官网 Demo 设计规格（2026-06-04）
 
-> 目标：在 `apps/www/app/demos/website/` 下，**100% 使用 `@hulian/ui`** 搭一个可信的现代 B2B SaaS 公司官网。
+> 目标：在 `apps/www/app/demos/website/` 下，**100% 使用 `@hulianui/ui`** 搭一个可信的现代 B2B SaaS 公司官网。
 > 任何缺失/不够好的组件，回 `packages/ui` 造或改 —— 这是本 demo 的核心 dogfood 目的。
 
 ## 1. 虚构品牌
@@ -49,7 +49,7 @@
 
 ## 6. 100% hulian 硬约束
 
-- 所有 UI 构件必须来自 `@hulian/ui`。原生 HTML 仅用于无对应原语的语义/布局骨架，且优先用 `Stack`/`Grid`/`Spacer`/`Divider`/`Text`/`Heading`/`Link` 等 hulian 原语。
+- 所有 UI 构件必须来自 `@hulianui/ui`。原生 HTML 仅用于无对应原语的语义/布局骨架，且优先用 `Stack`/`Grid`/`Spacer`/`Divider`/`Text`/`Heading`/`Link` 等 hulian 原语。
 - 缺组件 → 回 `packages/ui/src/` 新建并走 manifest/showcase/index 注册流程。
 - 组件不好用 → 直接改组件源（补 prop / 修样式），不在 demo 里 workaround。
 - 预期可能补强：Footer 组合模式、PricingCard 模式（评估是否值得抽组件，倾向 demo 内组合）、LogoCloud（用 Marquee 组合即可）。

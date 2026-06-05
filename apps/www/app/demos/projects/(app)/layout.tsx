@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BackTop, Watermark } from "@hulian/ui";
+import { BackTop, Watermark } from "@hulianui/ui";
 import { ProjectsShell } from "../_components/projects-shell";
 
 // 工程协同后台外壳：route group (app) 把侧栏/顶栏/页签套在所有业务页上。

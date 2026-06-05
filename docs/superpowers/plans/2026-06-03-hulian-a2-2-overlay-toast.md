@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 给瑚琏 `@hulian/ui` 加第一个 imperative 组件 Toast —— `toast({title,description,tone})` 任意处触发、自动消失 + 队列堆叠 + 手动关闭，挂一个全局 `<ToastProvider/>` 即工作。
+**Goal:** 给瑚琏 `@hulianui/ui` 加第一个 imperative 组件 Toast —— `toast({title,description,tone})` 任意处触发、自动消失 + 队列堆叠 + 手动关闭，挂一个全局 `<ToastProvider/>` 即工作。
 
 **Architecture:** Base UI rc.0 `toast`，用 `createToastManager()` 建模块级全局单例 manager（触发与渲染解耦）；`toast()` 薄函数调 `manager.add()`；`<ToastProvider/>` 自闭合组件内含 `Toast.Provider(toastManager=单例) + Toast.Viewport + 遍历 toasts 渲瑚琏皮肤 Toast.Root`，在 `apps/www/app/components/layout.tsx` 单挂一次。皮肤=抬升 surface + tone 左边条。
 
@@ -480,12 +480,12 @@ git commit -m "feat(ui): Toast showcase — 触发器画廊(info/danger/neutral/
 
 - [ ] **Step 2: registry import + map**
 
-`apps/www/lib/registry.tsx`：在 import 段加 `toastShowcase`（与其他 showcase 同一 `from "@hulian/ui"` 解构），在 `specBySlug` 映射加 `toast: toastShowcase,`。
+`apps/www/lib/registry.tsx`：在 import 段加 `toastShowcase`（与其他 showcase 同一 `from "@hulianui/ui"` 解构），在 `specBySlug` 映射加 `toast: toastShowcase,`。
 
 - [ ] **Step 3: layout 单挂 ToastProvider**
 
 `apps/www/app/components/layout.tsx`：
-1. 顶部 import 加：`import { ToastProvider } from "@hulian/ui";`
+1. 顶部 import 加：`import { ToastProvider } from "@hulianui/ui";`
 2. 在最外层 `<div>` 内、与两栏结构并列处加一行自闭合 `<ToastProvider />`（放在 return 的根 `<div>` 内末尾即可）：
 ```tsx
   return (

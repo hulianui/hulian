@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   Switch,
   Tag,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { SANKEY_LINKS, SANKEY_NODES } from "../../_data/metrics";
 import { ROUTING_RULES } from "../../_data/routing-rules";
 import { EXECUTORS } from "../../_data/executors";

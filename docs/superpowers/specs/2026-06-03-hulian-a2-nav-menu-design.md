@@ -99,7 +99,7 @@ export function MenuGroupLabel({ className, ...p }) { return <BaseMenu.GroupLabe
 - **danger variant**：item className 含 `text-danger`。
 - 定位/碰撞/`data-highlighted` 实际高亮/焦点环 → Playwright 截图。
 
-**门禁**（沿用）：`pnpm --filter @hulian/ui exec vitest run menu`（TDD）+ `pnpm typecheck` + commit 前；接 IA 后 `pnpm typecheck && pnpm test && pnpm build --filter=www --force`（`--force` 防 turbo 缓存掩盖、套 [[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。**git add 只列自己文件**（[[parallel-session-git-add-all-sweeps-your-staged-files]]，且 commit 用 `git commit -- <pathspec>` 防并发 index 竞争）。
+**门禁**（沿用）：`pnpm --filter @hulianui/ui exec vitest run menu`（TDD）+ `pnpm typecheck` + commit 前；接 IA 后 `pnpm typecheck && pnpm test && pnpm build --filter=www --force`（`--force` 防 turbo 缓存掩盖、套 [[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。**git add 只列自己文件**（[[parallel-session-git-add-all-sweeps-your-staged-files]]，且 commit 用 `git commit -- <pathspec>` 防并发 index 竞争）。
 
 ---
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Layout, ToastProvider, ModalProvider, NotificationProvider, AnimatedThemeToggler } from "@hulian/ui";
+import { Layout, ToastProvider, ModalProvider, NotificationProvider, AnimatedThemeToggler } from "@hulianui/ui";
 import { ThemeSidebar } from "../../components/theme-sidebar";
 import { SectionTabs } from "../../components/section-tabs";
 

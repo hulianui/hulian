@@ -1,7 +1,7 @@
 "use client";
 // 智能路由 · 六维权重控制面板：6 个 Slider 调 capability/cost/latency/load/priority/sla，
 // 受控持 SixWeights，任一维变更回吐父级（父级据此重算决策回放）。
-import { Slider, Tag } from "@hulian/ui";
+import { Slider, Tag } from "@hulianui/ui";
 import type { SixWeights } from "../_data/types";
 
 /** 六维元数据：键、显示名、语义提示、色调（与决策回放表分项条配色一致）。 */

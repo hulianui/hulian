@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useMemo, useRef, useState } from "react";
-import type { FileNode } from "@hulian/ui";
+import type { FileNode } from "@hulianui/ui";
 import { vaultImage } from "./images";
 import type { VaultKind, VaultNode, VersionEntry, ViewMode } from "./types";
 
@@ -10,7 +10,7 @@ import type { VaultKind, VaultNode, VersionEntry, ViewMode } from "./types";
 
 const ARCH_MD = `# 前端架构总览
 
-瀚库前端基于 **Next.js App Router** + \`@hulian/ui\` 组件库，强约束「100% dogfood」。
+瀚库前端基于 **Next.js App Router** + \`@hulianui/ui\` 组件库，强约束「100% dogfood」。
 
 ## 分层
 

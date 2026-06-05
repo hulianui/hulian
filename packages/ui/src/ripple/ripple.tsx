@@ -4,7 +4,7 @@ import type { RippleProps } from "./ripple.types";
 
 // 吸取自 magicui.design Ripple：N 个绝对居中、尺寸递增的圆环 div，逐圈延迟脉冲（scale + 淡出）。
 // 瑚琏化：纯 CSS（RSC 安全）；边框 currentColor（根 text-border，可 className 覆盖）；
-// 关键帧 hulian-ripple 落 @hulian/tokens preset.css（含 translate(-50%,-50%) 居中 + scale + opacity）；
+// 关键帧 hulian-ripple 落 @hulianui/tokens preset.css（含 translate(-50%,-50%) 居中 + scale + opacity）；
 // 圆环静态 transform 也带 translate(-50%,-50%)，故 motion-reduce:[animation:none] 停后仍同心居中。
 export function Ripple({
   mainCircleSize = 210,

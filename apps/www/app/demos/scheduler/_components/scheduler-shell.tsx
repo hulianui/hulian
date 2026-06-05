@@ -31,7 +31,7 @@ import {
   type SchedulerEvent,
   type SchedulerSlot,
   type SchedulerView,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { CalendarPlus, RotateCw } from "lucide-react";
 import {
   buildAppointments,

@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Descriptions, Heading, Tag, Timeline } from "@hulian/ui";
+import { Avatar, Descriptions, Heading, Tag, Timeline } from "@hulianui/ui";
 import type { Customer } from "../../_data/types";
 
 const LEVEL_TONE: Record<Customer["level"], "neutral" | "brand" | "warning" | "success"> = {

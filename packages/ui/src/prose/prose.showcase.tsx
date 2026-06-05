@@ -21,7 +21,7 @@ const Article = () => (
     </ul>
     <h2>代码块</h2>
     <pre>
-      <code>{`import { Prose } from "@hulian/ui";\n\n<Prose>{htmlContent}</Prose>;`}</code>
+      <code>{`import { Prose } from "@hulianui/ui";\n\n<Prose>{htmlContent}</Prose>;`}</code>
     </pre>
     <blockquote>排版即沉默的设计——容器统一规则，内容只管语义。</blockquote>
     <hr />

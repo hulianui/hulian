@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import { Tabs, TabsList, TabsTab, TabsPanel, CodeBlock } from "@hulian/ui";
+import { Tabs, TabsList, TabsTab, TabsPanel, CodeBlock } from "@hulianui/ui";
 
 export function ComponentPreview({ children, code }: { children: ReactNode; code: string }) {
   return (

@@ -1,5 +1,5 @@
 import { Dice5, Trash2, Sliders } from "lucide-react";
-import type { FlowEdge, FlowNode } from "@hulian/ui";
+import type { FlowEdge, FlowNode } from "@hulianui/ui";
 import {
   Button,
   Field,
@@ -20,7 +20,7 @@ import {
   Upload,
   Video,
   cn,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { meshGradient, randomSeed, seedLabel } from "../../_lib/artwork";
 import { MODELS, MOTION_LEVELS, RATIOS, SAMPLERS, STYLE_PRESETS } from "../../_data/models";
 import { NODE_KIND_MAP } from "../../_data/node-kinds";

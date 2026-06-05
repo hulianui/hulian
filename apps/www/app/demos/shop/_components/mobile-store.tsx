@@ -13,7 +13,7 @@ import {
   TabBar,
   Tag,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import {
   Home,
   LayoutGrid,
@@ -26,7 +26,7 @@ import {
   Package,
   Star,
 } from "lucide-react";
-import type { TabBarItem } from "@hulian/ui";
+import type { TabBarItem } from "@hulianui/ui";
 import { products, productImage, formatPrice } from "../_data/products";
 import { categories } from "../_data/categories";
 import { useShop } from "../_lib/shop-store";

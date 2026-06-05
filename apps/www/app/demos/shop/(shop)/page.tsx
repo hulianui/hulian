@@ -14,7 +14,7 @@ import {
   Card,
   CardBody,
   Tag,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { heroBg } from "../_data/art";
 import { products } from "../_data/products";
 import { categories } from "../_data/categories";

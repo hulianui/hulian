@@ -1,5 +1,5 @@
 // 「瀚学」在线课程平台 mock 数据类型。全内存、零外链。
-import type { VideoChapter } from "@hulian/ui";
+import type { VideoChapter } from "@hulianui/ui";
 
 export type CourseCategoryKey = "frontend" | "design" | "ai" | "career";
 

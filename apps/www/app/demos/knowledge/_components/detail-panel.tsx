@@ -16,7 +16,7 @@ import {
   toast,
   type AvatarCirclesItem,
   type TransferItem,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { useKnowledge } from "./knowledge-shell";
 import { versionsOf } from "../_data/vault";
 import { COLLABORATORS, MEMBERS, ORG_TREE } from "../_data/org";

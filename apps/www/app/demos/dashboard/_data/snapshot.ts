@@ -1,6 +1,6 @@
 // 瀚云全球调度指挥中心 · 数据层（全程序化、零外链、确定性）。
 // mulberry32 确定性 PRNG：同一 seed 必出同一快照，SSR / 静态导出安全，不用 Date.now()/Math.random()。
-import type { WorldMapDot, WorldMapNode } from "@hulian/ui";
+import type { WorldMapDot, WorldMapNode } from "@hulianui/ui";
 
 function mulberry32(seed: number) {
   let a = seed >>> 0;

@@ -90,11 +90,11 @@ describe("tokenizeCode", () => {
   });
 
   it("Shell：命令名着 command、flag 着 flag、命令参数不着色", () => {
-    const t = typesOf(`pnpm --filter @hulian/ui build`, "bash");
+    const t = typesOf(`pnpm --filter @hulianui/ui build`, "bash");
     expect(t["pnpm"]).toBe("command");
     expect(t["--filter"]).toBe("flag");
     expect(t["build"]).toBeUndefined(); // 命令参数为 plain
-    expect(t["@hulian/ui"]).toBeUndefined();
+    expect(t["@hulianui/ui"]).toBeUndefined();
   });
 
   it("Shell：管道/列表操作符后重回命令位，sudo 前缀词不占命令槽", () => {

@@ -12,7 +12,7 @@ import {
   User,
   useTheme,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { useMockData } from "../../lib/async";
 import { useVault, type VaultApi } from "../_data/vault";
 import type { ViewMode } from "../_data/types";

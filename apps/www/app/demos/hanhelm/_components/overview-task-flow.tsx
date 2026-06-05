@@ -1,7 +1,7 @@
 "use client";
 // 调度总览 · 最近任务流：精简任务条，点击跳详情；失败/临期红色高亮。
 import { useRouter } from "next/navigation";
-import { StatusDot, Tag } from "@hulian/ui";
+import { StatusDot, Tag } from "@hulianui/ui";
 import type { Priority, Task, TaskStatus } from "../_data/types";
 import { executorName } from "../_data/executors";
 import { ROOT } from "./nav-config";

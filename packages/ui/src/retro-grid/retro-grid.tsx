@@ -4,7 +4,7 @@ import type { RetroGridProps } from "./retro-grid.types";
 
 // 吸取自 magicui.design Retro Grid：perspective 容器 → rotateX 倾斜层 → 无限 translateY 滚动的网格层。
 // 瑚琏化：纯 CSS（RSC 安全）；网格线 currentColor（根 text-border，可 className 覆盖）；
-// 关键帧 hulian-retro-grid 落 @hulian/tokens preset.css（平移一个 cell-size 即无缝）；
+// 关键帧 hulian-retro-grid 落 @hulianui/tokens preset.css（平移一个 cell-size 即无缝）；
 // motion-reduce:[animation:none] 尊重 prefers-reduced-motion；几何 config 走内联 CSS 变量。
 export function RetroGrid({
   angle = 65,

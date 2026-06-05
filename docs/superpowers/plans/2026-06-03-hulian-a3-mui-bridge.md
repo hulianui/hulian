@@ -27,7 +27,7 @@
 
 ```bash
 cd /Users/zhangzhiwei/Desktop/code/hulian
-pnpm --filter @hulian/ui add @mui/material @emotion/react @emotion/styled
+pnpm --filter @hulianui/ui add @mui/material @emotion/react @emotion/styled
 pnpm --filter www add @mui/material-nextjs @emotion/cache @emotion/react
 ```
 Expected: ui deps 多三者、www deps 多三者；lockfile 更新。peer warning（React 版本）可继续，硬失败则加 `@latest`。
@@ -51,7 +51,7 @@ describe("hulianMuiTheme（MUI 桥主题读瑚琏 var 单一真源）", () => {
 
 - [ ] **Step 3: 跑测试验证失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/_mui/theme.test.ts`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/_mui/theme.test.ts`
 Expected: FAIL（`./theme` 不存在）。
 
 - [ ] **Step 4: 写 theme.ts**
@@ -100,7 +100,7 @@ export const hulianMuiTheme = createTheme({
 
 - [ ] **Step 5: 跑测试验证通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/_mui/theme.test.ts`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/_mui/theme.test.ts`
 Expected: PASS。
 
 - [ ] **Step 6: 写 provider.tsx**
@@ -190,7 +190,7 @@ describe("Rating（MUI 桥）", () => {
 
 - [ ] **Step 3: 跑测试验证失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/_mui/rating.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/_mui/rating.test.tsx`
 Expected: FAIL（`./rating` 不存在）。
 
 - [ ] **Step 4: rating.tsx**
@@ -235,7 +235,7 @@ export function Rating({
 
 - [ ] **Step 5: 跑测试验证通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/_mui/rating.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/_mui/rating.test.tsx`
 Expected: PASS（3 用例绿）。若 `input[value="3"]` 找不到，改 `getByLabelText(/3 Star/i)`（MUI 版本默认 label 文案）。
 
 - [ ] **Step 6: Commit**
@@ -302,7 +302,7 @@ describe("Stepper（MUI 桥）", () => {
 
 - [ ] **Step 3: 跑测试验证失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/_mui/stepper.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/_mui/stepper.test.tsx`
 Expected: FAIL（`./stepper` 不存在）。
 
 - [ ] **Step 4: stepper.tsx**
@@ -344,7 +344,7 @@ export function Stepper({ steps, activeStep, className }: StepperProps) {
 
 - [ ] **Step 5: 跑测试验证通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/_mui/stepper.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/_mui/stepper.test.tsx`
 Expected: PASS（2 用例绿）。
 
 - [ ] **Step 6: Commit**
@@ -433,7 +433,7 @@ export * from "./_mui";
 
 - [ ] **Step 5: typecheck**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit 2>&1 | grep -E "_mui/" || echo "✅ _mui 零报错"`
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit 2>&1 | grep -E "_mui/" || echo "✅ _mui 零报错"`
 Expected: ✅ _mui 零报错（其余他人 WIP 报错隔离不管）。
 
 - [ ] **Step 6: Commit**
@@ -455,7 +455,7 @@ git commit -m "feat(ui): MUI 桥 Rating/Stepper showcase + _mui 桶导出 + 主 
 把 body 内改为（在现有 `<ThemeProvider>` 内嵌入）：
 ```tsx
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { MuiBridgeProvider } from "@hulian/ui";
+import { MuiBridgeProvider } from "@hulianui/ui";
 // …
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -498,7 +498,7 @@ python3 - <<'PY'
 p = "apps/www/lib/registry.tsx"
 s = open(p, encoding="utf-8").read()
 if "ratingShowcase" not in s:
-    s = s.replace("\n} from \"@hulian/ui\";", "\n  ratingShowcase,\n  stepperShowcase,\n} from \"@hulian/ui\";", 1)
+    s = s.replace("\n} from \"@hulianui/ui\";", "\n  ratingShowcase,\n  stepperShowcase,\n} from \"@hulianui/ui\";", 1)
     idx = s.rfind("};")
     s = s[:idx] + "  rating: ratingShowcase,\n  stepper: stepperShowcase,\n" + s[idx:]
     open(p,"w",encoding="utf-8").write(s); print("inserted")
@@ -512,7 +512,7 @@ grep -n "ratingShowcase\|stepperShowcase\|rating: \|stepper: " apps/www/lib/regi
 ```bash
 cd /Users/zhangzhiwei/Desktop/code/hulian
 pnpm typecheck 2>&1 | tail -6
-pnpm --filter @hulian/ui exec vitest run src/_mui 2>&1 | tail -6
+pnpm --filter @hulianui/ui exec vitest run src/_mui 2>&1 | tail -6
 pnpm build --filter=www --force 2>&1 | tail -20
 ```
 Expected: typecheck PASS（_mui 我 scope）；_mui 测试全绿（theme 1 + rating 3 + stepper 2）；**`build --filter=www` PASS**——重点确认 MUI+emotion+AppRouterCacheProvider 在 `next build` SSR 下不报错（`/components/rating`+`/components/stepper` SSG 生成）。他人 WIP 致全量 typecheck 红则隔离判定。

@@ -51,7 +51,7 @@
 
 ## 3. 回库增强 FileTree（撞缺口反哺，非 demo 打补丁）
 
-依据记忆 `fix-component-not-demo-css-patch`：demo 撞缺口 → 回 `@hulian/ui` 修组件。
+依据记忆 `fix-component-not-demo-css-patch`：demo 撞缺口 → 回 `@hulianui/ui` 修组件。
 
 1. **`searchable?` + `searchPlaceholder?`** —— 内置搜索框，过滤 + 祖先保留 + 命中自动展开。
    新增纯函数 **`filterFileTree(nodes, query): { matchedPaths: Set<string>; autoExpandPaths: Set<string> }`** + 单测（仿 `tree-core.ts` 的 `filterTree`）。

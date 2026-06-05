@@ -1,4 +1,4 @@
-// 瑚琏文档站 IA 元数据 —— 纯数据 SSOT，零 @hulian/ui import，server / client 皆可安全读。
+// 瑚琏文档站 IA 元数据 —— 纯数据 SSOT，零 @hulianui/ui import，server / client 皆可安全读。
 //
 // 分区原则（2026-06 重构）：按「组件本质 / 你拿它干什么」分两级（大类 category → 小类 group），
 // 而非按「会不会动」这种技术属性分。"动效" 不再是一个货架位置，而是横切标签 tags:["animated"]——

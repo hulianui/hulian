@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, CardBody, Heading, Tag, Text } from "@hulian/ui";
+import { Card, CardBody, Heading, Tag, Text } from "@hulianui/ui";
 import { demos } from "./lib/demos";
 
 // /demos 画廊占位页（正式版由另一会话做）。读 lib/demos.ts 清单渲染最简卡片网格。
@@ -11,7 +11,7 @@ export default function DemosPage() {
           内置示例
         </Heading>
         <Text tone="muted" className="mt-2">
-          用 @hulian/ui 100% 搭建的真实业务场景 —— 以 dogfood 驱动组件库迭代。
+          用 @hulianui/ui 100% 搭建的真实业务场景 —— 以 dogfood 驱动组件库迭代。
         </Text>
       </header>
 

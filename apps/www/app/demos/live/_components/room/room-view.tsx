@@ -19,7 +19,7 @@ import {
   StreamingText,
   toast,
   type FloatingReactionsHandle,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { GIFT_PANEL, PRODUCTS, STREAMER } from "../../_data/content";
 import { replyFor } from "../../_lib/live-sim";
 import { useLiveSim } from "../../_lib/use-live-sim";

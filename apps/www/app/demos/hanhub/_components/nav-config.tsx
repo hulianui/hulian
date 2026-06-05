@@ -9,7 +9,7 @@ import {
   Settings,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import type { NavMenuNode } from "@hulian/ui";
+import type { NavMenuNode } from "@hulianui/ui";
 
 export const ROOT = "/demos/hanhub";
 

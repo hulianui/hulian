@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Radio, Sparkles, ShoppingBag, Bot } from "lucide-react";
-import { Heading, Link, LoginForm, Meteors, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, Meteors, Text } from "@hulianui/ui";
 
 const FEATURES = [
   { icon: Radio, title: "一键开播中控", desc: "实时弹幕 / 在线 / 带货数据尽在掌握" },

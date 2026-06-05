@@ -51,7 +51,7 @@
 **四件套**：`x.tsx`+`x.types.ts`+`x.showcase.tsx`(必 `"use client"`)+`x.test.tsx`+`index.ts`（桶导出组件/类型/showcase）。两组件本体都用 Base UI(client) → 都加 `"use client"`。
 
 **门禁节奏**（沿用 Step 2 已验证模式）：
-- 每个组件 Task 的 TDD 循环：`pnpm --filter @hulian/ui exec vitest run <名>`（先红后绿）。
+- 每个组件 Task 的 TDD 循环：`pnpm --filter @hulianui/ui exec vitest run <名>`（先红后绿）。
 - 每个组件 Task commit 前：`pnpm typecheck`（快，守类型/导出）。
 - **完整三道门 + 生产 build 只在 D3 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**——全包 build 撞 desktop tauri `beforeBuildCommand` 二次 build www 并发冲突，skill `turbo-monorepo-desktop-shell-beforebuild-double-builds-frontend`）。组件 Task 不单独 build。
 - **Playwright 截图实测只在 D3**：每组件明暗两态各一张，存 cwd 根 `/Users/zhangzhiwei/Desktop/code/hulian/*.png`（**不在 .playwright-mcp/**），Read 看像素（不靠 `browser_evaluate` 读 DOM，会漏几何/显色 bug）。
@@ -146,7 +146,7 @@ describe("Checkbox", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run checkbox`
+Run: `pnpm --filter @hulianui/ui exec vitest run checkbox`
 Expected: FAIL —— `./checkbox` 不存在。
 
 - [ ] **Step 3: 实现 checkbox.types.ts**
@@ -318,7 +318,7 @@ export * from "./checkbox";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run checkbox`
+Run: `pnpm --filter @hulianui/ui exec vitest run checkbox`
 Expected: PASS（六条用例全绿，尤其 `input.indeterminate===true` + `data-icon` 勾/横线分支 + Field `data-invalid`）。
 
 - [ ] **Step 9: typecheck + Commit**
@@ -428,7 +428,7 @@ describe("RadioGroup / Radio", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run radio`
+Run: `pnpm --filter @hulianui/ui exec vitest run radio`
 Expected: FAIL —— `./radio` 不存在。
 
 - [ ] **Step 3: 实现 radio.types.ts**
@@ -616,7 +616,7 @@ export * from "./radio";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run radio`
+Run: `pnpm --filter @hulianui/ui exec vitest run radio`
 Expected: PASS（六条用例全绿；若受控点击未回调，按 Step 4 注记换点 input）。
 
 - [ ] **Step 9: typecheck + Commit**

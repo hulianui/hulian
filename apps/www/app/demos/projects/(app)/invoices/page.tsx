@@ -27,7 +27,7 @@ import {
   TooltipTrigger,
   toast,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { dueAmount, invoices as seed, paidAmount } from "../../_data/invoices";
 import { invoiceStatusTone, paymentStatusTone, rmbUpper, wan, yuan } from "../../_data/status";
 import type { Invoice, InvoiceStatus, PaymentStatus } from "../../_data/types";

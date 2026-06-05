@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Avatar, Fab, ListSkeleton, PullToRefresh, Rating, Tag, toast } from "@hulian/ui";
+import { Avatar, Fab, ListSkeleton, PullToRefresh, Rating, Tag, toast } from "@hulianui/ui";
 import { useMockData, sleep } from "../../lib/async";
 import { services } from "../_data/services";
 

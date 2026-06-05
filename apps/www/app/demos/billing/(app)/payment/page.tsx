@@ -13,7 +13,7 @@ import {
   Divider,
   detectBrand,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { CreditCard as CardIcon, Wallet, Trash2, ShieldCheck } from "lucide-react";
 import { useBilling } from "../../_lib/billing-store";
 

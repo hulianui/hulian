@@ -17,7 +17,7 @@ import {
   Tag,
   toast,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { account, billingRows, usageTrend } from "../../_data/usage";
 import { formatUsd, topupFee } from "../../_lib/pricing";
 

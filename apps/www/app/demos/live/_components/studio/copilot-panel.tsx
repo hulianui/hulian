@@ -8,7 +8,7 @@ import {
   ThinkingBlock,
   ToolCall,
   type AgentTask,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type { AiSuggestion } from "../../_data/types";
 
 const PLAN: AgentTask[] = [

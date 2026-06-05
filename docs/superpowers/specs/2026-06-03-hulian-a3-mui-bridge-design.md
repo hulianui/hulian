@@ -32,9 +32,9 @@ MUI bundle 重，A3 本就是「付代价家族」。桥接产物全部隔离在
 
 ## 3. 依赖
 
-- `@hulian/ui` deps：`@mui/material`、`@emotion/react`、`@emotion/styled`（组件 + theme 所在）。
+- `@hulianui/ui` deps：`@mui/material`、`@emotion/react`、`@emotion/styled`（组件 + theme 所在）。
 - `apps/www` deps：`@mui/material-nextjs`、`@emotion/cache`、`@emotion/react`（app 级 emotion registry）。
-- 装：`pnpm --filter @hulian/ui add @mui/material @emotion/react @emotion/styled` + `pnpm --filter www add @mui/material-nextjs @emotion/cache @emotion/react`。lockfile 随实现 commit。MUI v7 / emotion 11 兼容 React 19 + Next 16。
+- 装：`pnpm --filter @hulianui/ui add @mui/material @emotion/react @emotion/styled` + `pnpm --filter www add @mui/material-nextjs @emotion/cache @emotion/react`。lockfile 随实现 commit。MUI v7 / emotion 11 兼容 React 19 + Next 16。
 
 ## 4. 瑚琏 API 罩住 MUI（外部看是瑚琏件，不是裸 MUI）
 

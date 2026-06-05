@@ -13,7 +13,7 @@ import {
   DescriptionsItem,
   Empty,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { TriangleAlert, Download, FileText } from "lucide-react";
 import { invoices, invoiceStatusMeta } from "../../_data/invoices";
 import { formatMoney } from "../../_data/plans";

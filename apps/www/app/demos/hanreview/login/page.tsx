@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, GitPullRequest, Sparkles } from "lucide-react";
-import { Heading, Link, LoginForm, Meteors, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, Meteors, Text } from "@hulianui/ui";
 
 const FEATURES = [
   { icon: GitPullRequest, title: "逐文件 AI 审查", desc: "PR 进来自动逐文件审，行内批注问题" },

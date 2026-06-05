@@ -1,5 +1,5 @@
 // AI 生图/视频工作流的节点数据模型（SSoT）。
-// 节点 = @hulian/ui 的 FlowNode<FlowNodeData>；data 按 kind 区分参数。组件只管画布几何/交互，
+// 节点 = @hulianui/ui 的 FlowNode<FlowNodeData>；data 按 kind 区分参数。组件只管画布几何/交互，
 // 业务参数与运行态全在这套类型里，由画布页面（消费者）持有并回写。
 
 export type NodeKind = "prompt" | "image-input" | "model" | "upscale" | "i2v" | "output";
@@ -101,6 +101,6 @@ export interface WorkflowTemplate {
   desc: string;
   category: "文生图" | "图生图" | "文生视频" | "图生视频";
   tags: string[];
-  nodes: import("@hulian/ui").FlowNode<FlowNodeData>[];
-  edges: import("@hulian/ui").FlowEdge[];
+  nodes: import("@hulianui/ui").FlowNode<FlowNodeData>[];
+  edges: import("@hulianui/ui").FlowEdge[];
 }

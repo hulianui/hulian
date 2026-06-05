@@ -22,7 +22,7 @@ import {
   NumberTicker,
   Sparkline,
   Stat,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { EXECUTORS } from "../_data/executors";
 import { FUNNEL_STAGES, METRICS, seriesValues } from "../_data/metrics";
 import { TASKS } from "../_data/tasks";

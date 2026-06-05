@@ -1,11 +1,11 @@
 "use client";
-// 任务详情中栏：多 agent 编排 DAG（复用 @hulian/ui Flow，只读快照）。
+// 任务详情中栏：多 agent 编排 DAG（复用 @hulianui/ui Flow，只读快照）。
 // 把 task.subtasks 转成 Flow 节点（position 由分层算法计算），task.edges 转成 Flow 连线。
 // 节点实时状态由 useDispatchRun 的 statusById / activeId 驱动着色。
 
 import { useMemo, useRef } from "react";
-import { Flow, Spinner, cn } from "@hulian/ui";
-import type { FlowApi, FlowEdge, FlowHandleSpec, FlowNode } from "@hulian/ui";
+import { Flow, Spinner, cn } from "@hulianui/ui";
+import type { FlowApi, FlowEdge, FlowHandleSpec, FlowNode } from "@hulianui/ui";
 import type { SubTask, SubTaskStatus, Task } from "../_data/types";
 import { executorName } from "../_data/executors";
 import { topoOrderSubtasks } from "../_lib/use-dispatch-run";

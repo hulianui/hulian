@@ -38,7 +38,7 @@ import {
   Textarea,
   toast,
   useForm,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 const INDUSTRIES = ["互联网", "制造", "金融", "医疗", "教育", "零售", "物流", "能源", "咨询"];
 const SIZES = ["1-50 人", "50-200 人", "200-500 人", "500-1000 人", "1000 人以上"];

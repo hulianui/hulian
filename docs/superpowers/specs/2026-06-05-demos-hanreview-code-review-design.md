@@ -16,7 +16,7 @@
 与已规划但未建的「瀚枢 HanHub 网关」无关，HanHub spec/plan 暂搁置。
 
 **硬约束（来自用户指令 + CLAUDE.md）**
-- 100% 由 `@hulian/ui` 搭建，**禁止在 demo 里打 CSS 补丁 / 行为 hack**；缺能力 → 回库修组件 / 造组件。
+- 100% 由 `@hulianui/ui` 搭建，**禁止在 demo 里打 CSS 补丁 / 行为 hack**；缺能力 → 回库修组件 / 造组件。
 - demo 是「寻求真实场景拓展 UI 库」的载体，不是做着玩；不怕引入新组件。
 - 全 mock 内存态，`output: export` 静态导出。
 - 所有面向交付的输出中文。
@@ -190,7 +190,7 @@ app/demos/hanreview/
 
 ## 6. 验证策略
 
-1. **组件层**：4 新组件 + code-diff 增强各自 `.test.tsx`（纯函数 + 渲染 + 交互），`pnpm --filter @hulian/ui test` 全绿。
+1. **组件层**：4 新组件 + code-diff 增强各自 `.test.tsx`（纯函数 + 渲染 + 交互），`pnpm --filter @hulianui/ui test` 全绿。
    code-diff 增强需补 annotations 渲染测，保证向后兼容旧测不挂。
 2. **画廊层**：4 新组件 showcase 进画廊，doc 页零 console error。
 3. **demo 层**：CDP 隔离 Chrome-for-Testing 实机逐页截图（7 页 + login）+ 关键交互

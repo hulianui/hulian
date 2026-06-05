@@ -1,7 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
-import { Tag } from "@hulian/ui";
-import type { TagTone } from "@hulian/ui";
+import { Tag } from "@hulianui/ui";
+import type { TagTone } from "@hulianui/ui";
 import type { Capability, Priority, TaskStatus } from "../_data/types";
 import { evaluateSla, type SlaStatus } from "../_lib/sla";
 

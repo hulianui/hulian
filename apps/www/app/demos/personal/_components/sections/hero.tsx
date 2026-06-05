@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
   TooltipContent,
   cn,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ArrowDown, MessageCircle, MapPin, Sparkles } from "lucide-react";
 import { profile } from "../../_data/profile";
 import { works } from "../../_data/works";

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { BarChart3, ShieldCheck, Workflow } from "lucide-react";
-import { Heading, Link, LoginForm, Spotlight, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, Spotlight, Text } from "@hulianui/ui";
 
 const FEATURES = [
   { icon: Workflow, title: "全流程客户管理", desc: "线索 → 商机 → 成交，跟进有迹可循" },

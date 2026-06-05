@@ -1,4 +1,4 @@
-import { makeUsers } from "@hulian/mocks";
+import { makeUsers } from "@hulianui/mocks";
 
 // mock① 真实样例数据：faker 确定性种子，一眼看"填满后"的真实观感
 const users = makeUsers(8);

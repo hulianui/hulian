@@ -24,7 +24,7 @@ import {
   toast,
   useForm,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { customers as seed } from "../../_data/customers";
 import { customerLevelTone, customerStatusTone, yuan } from "../../_data/status";
 import { OWNERS, type Customer, type CustomerLevel, type CustomerStatus } from "../../_data/types";

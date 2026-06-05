@@ -6,7 +6,7 @@
 
 **Architecture:** 单组件 `variant="linear"|"circular"`。确定态几何由组件自己算（linear 填充 `width%` / circular `stroke-dasharray/dashoffset`），用 inline style + CSS transition（复用 motion-token CSS 镜像）。不定态用 motion JS 循环（linear 光带横扫 / circular 整体旋转），受 `useReducedMotion()` 门控、reduced 时退化为静态指示。a11y 走 WAI-ARIA `role=progressbar` + `aria-value*`（不定态省略 valuenow）。
 
-**Tech Stack:** React 19 + TypeScript + Tailwind v4（语义 token）+ `motion/react`（已是 `@hulian/ui` deps）+ CVA 非必需（用 literal class 查表）。测试 vitest + @testing-library/react（jsdom，无 jest-dom）。
+**Tech Stack:** React 19 + TypeScript + Tailwind v4（语义 token）+ `motion/react`（已是 `@hulianui/ui` deps）+ CVA 非必需（用 literal class 查表）。测试 vitest + @testing-library/react（jsdom，无 jest-dom）。
 
 参考 spec：`docs/superpowers/specs/2026-06-03-hulian-a2-feedback-progress-design.md`
 
@@ -68,7 +68,7 @@ describe("dashOffset", () => {
 
 - [ ] **Step 2: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/progress/progress.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/progress/progress.test.tsx`
 Expected: FAIL（`progress` 模块不存在 / 函数未定义）
 
 - [ ] **Step 3: 写 types**
@@ -99,7 +99,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement> {
 
 - [ ] **Step 5: 跑测试确认纯函数过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/progress/progress.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/progress/progress.test.tsx`
 Expected: 纯函数 6 测试 PASS
 
 ---
@@ -290,7 +290,7 @@ describe("Progress 组件", () => {
 
 - [ ] **Step 2: 跑测试确认（实现已在上文，应直接 PASS）**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/progress/progress.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/progress/progress.test.tsx`
 Expected: 全部 PASS（纯函数 6 + 组件 7 = 13）。若 circular danger 那条因 SVGAnimatedString 取类方式不稳，改断言 `getAttribute("class")` 包含 `var(--color-danger)`。
 
 - [ ] **Step 3: Commit**
@@ -385,12 +385,12 @@ git commit -m "feat(ui): Progress showcase + 桶导出 + 主 barrel" -- packages
 
 - [ ] **Step 1: typecheck**
 
-Run: `pnpm --filter @hulian/ui typecheck`（或根 `pnpm typecheck`）
+Run: `pnpm --filter @hulianui/ui typecheck`（或根 `pnpm typecheck`）
 Expected: 0 error（他人 WIP 致全量红时 isolate，只认我 scope）
 
 - [ ] **Step 2: 我 scope vitest**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/progress/progress.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/progress/progress.test.tsx`
 Expected: 13 PASS
 
 - [ ] **Step 3: build（必 --filter=www --force）**

@@ -12,7 +12,7 @@ export function MswProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
     let active = true;
-    import("@hulian/mocks/browser").then(async ({ worker }) => {
+    import("@hulianui/mocks/browser").then(async ({ worker }) => {
       await worker.start({ onUnhandledRequest: "bypass", quiet: true });
       if (active) setReady(true);
     });

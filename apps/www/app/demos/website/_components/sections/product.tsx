@@ -9,7 +9,7 @@ import {
   Button,
   Stack,
   Divider,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { CheckCircle2, ArrowRight, GitBranch, Rocket, Smartphone, Wifi } from "lucide-react";
 
 const highlights = [

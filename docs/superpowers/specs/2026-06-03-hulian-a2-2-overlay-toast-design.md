@@ -192,7 +192,7 @@ IA（apps/www）：
 
 ## 10. 验收口径（done 的标志）
 
-1. `import { toast, ToastProvider } from "@hulian/ui"`；`toast({title,description,tone})` 在文档站任意组件页可触发右上角提示，自动消失 + 手动 Close + 多条堆叠（limit 3）。
+1. `import { toast, ToastProvider } from "@hulianui/ui"`；`toast({title,description,tone})` 在文档站任意组件页可触发右上角提示，自动消失 + 手动 Close + 多条堆叠（limit 3）。
 2. tone=info/danger/neutral 左边条配色明暗两态正确，无 success。
 3. 四件套齐 + 主 barrel 导出 + manifest/registry/layout 三处 IA 接入，左树 feedback 组出现 Toast(new)。
 4. 三道门（typecheck + toast vitest + build --filter=www --force）全绿；Playwright/CDP 明暗两态像素自证（先触发再截）。

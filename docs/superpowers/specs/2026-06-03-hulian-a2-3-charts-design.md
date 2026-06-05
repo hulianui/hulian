@@ -19,7 +19,7 @@ spec §10 原计划 Charts=Tremor（`@tremor/react`）。brainstorm 实证后**�
 
 - **`@tremor/react@3.18.7` 停在 Tailwind v3 时代**（最后大版本 ~2025-01），需 `tailwind.config.js` 颜色 preset + `safelist` + 自带命名调色板（"blue"/"emerald"→TW 类）。**瑚琏是 Tailwind v4 + CSS-first + 只消费语义 token** → Tremor 的 config preset 机制与自带调色板**与瑚琏红线正面冲突**；Tremor next-gen（TW v4/React 19）仍 beta。来源：npmjs `@tremor/react`、tremor X 公告 next-gen beta、npm.tremor.so。
 - **Tremor 本身就是裹 `recharts`**。直接用 recharts = 去掉中间不兼容层，`stroke`/`fill` 直接吃 CSS 变量 `var(--color-chart-1)` → **天然明暗自适应**（data-theme 切 CSS 变量即换色）、TW v4 干净（零 config preset）、引擎本身活跃维护、React 19 兼容（recharts ≥2.15）。
-- **依赖**：`recharts` 进 `@hulian/ui` 的 **`dependencies`**。装：`pnpm --filter @hulian/ui add recharts`。lockfile 随实现 commit。
+- **依赖**：`recharts` 进 `@hulianui/ui` 的 **`dependencies`**。装：`pnpm --filter @hulianui/ui add recharts`。lockfile 随实现 commit。
 - Stat 不引任何图表库（纯 Card/Badge 气质皮肤）。
 
 > 这是对主 spec §10 的实质偏离。落地后需回写主 spec §10：「Charts = recharts 直裹 + 瑚琏 token 皮肤（否决 Tremor，因 TW v4 不兼容 + 调色板打架 token）」。
@@ -69,7 +69,7 @@ export function makeTimeseries(count = 12, seed = 7): DemoSeriesPoint[] {
   }));
 }
 ```
-确定性种子防 hydration mismatch。`@hulian/mocks` 已是 ui 的 devDep（Table 批已接），showcase 直接 import。
+确定性种子防 hydration mismatch。`@hulianui/mocks` 已是 ui 的 devDep（Table 批已接），showcase 直接 import。
 
 ## 5. 组件 API 与皮肤
 

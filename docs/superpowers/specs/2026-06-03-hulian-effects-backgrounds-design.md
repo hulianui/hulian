@@ -5,7 +5,7 @@
 - **本 spec 覆盖范围**: `effects` 分类「特效背景」批 **5 件** —— **DotPattern · GridPattern · RetroGrid · Ripple · StripedPattern**。源自 magicui.design Backgrounds 区，按 MagicUI 缺口对照 roadmap 的 **P1-A** 首批。
 - **上游依据**:
   - `2026-06-03-hulian-magicui-gap-analysis.md`（缺口对照；P1-A = 特效背景批，纯 CSS/SVG 零依赖优先）
-  - `2026-06-03-hulian-a2-4-effects-number-ticker-marquee-design.md`（`effects` 起步范式：抄实现骨架 + 换瑚琏 token + 统一 API + 复用 `motion` + 关键帧落 `@hulian/tokens` preset.css，**不新增 npm 依赖**）
+  - `2026-06-03-hulian-a2-4-effects-number-ticker-marquee-design.md`（`effects` 起步范式：抄实现骨架 + 换瑚琏 token + 统一 API + 复用 `motion` + 关键帧落 `@hulianui/tokens` preset.css，**不新增 npm 依赖**）
   - `2026-06-02-hulian-a2-absorption-batch-design.md`（§3.4 `effects` 分类；§6 硬约束）
   - 项目记忆 `hulian-phase-status`（固化坑：三道门 / 精确 git add 禁 -A / 别碰他人 WIP）
 
@@ -15,7 +15,7 @@
 
 延续 A2.4 「Magic UI = copy-paste 源码」吸取范式，本批 5 件**全部纯 CSS/SVG，零运行时**：
 
-> 吸取 = 抄 MagicUI 背景实现骨架 → **换瑚琏语义 token（颜色走 `currentColor`，由 `text-*` 类驱动，默认 `text-border`）** → 统一成瑚琏 API → 动画关键帧落 `@hulian/tokens` preset.css（CSS 侧动效 SSOT，同 `hulian-marquee`）。
+> 吸取 = 抄 MagicUI 背景实现骨架 → **换瑚琏语义 token（颜色走 `currentColor`，由 `text-*` 类驱动，默认 `text-border`）** → 统一成瑚琏 API → 动画关键帧落 `@hulianui/tokens` preset.css（CSS 侧动效 SSOT，同 `hulian-marquee`）。
 
 **全批共性硬约束**：
 

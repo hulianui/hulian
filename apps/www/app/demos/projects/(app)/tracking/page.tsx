@@ -15,7 +15,7 @@ import {
   Tag,
   Text,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ROOT } from "../../_components/nav-config";
 import { projects as seed } from "../../_data/projects";
 import { projectStatusTone, wan, yuan } from "../../_data/status";

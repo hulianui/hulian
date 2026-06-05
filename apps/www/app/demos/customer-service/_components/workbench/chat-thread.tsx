@@ -18,7 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type { Conversation as Conv, Customer, Message } from "../../_data/types";
 import { QUICK_REPLIES } from "../../_data/types";
 

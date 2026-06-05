@@ -9,7 +9,7 @@ import {
   Tag,
   toast,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { PRODUCTS } from "../../_data/content";
 import type { LiveProduct } from "../../_data/types";
 

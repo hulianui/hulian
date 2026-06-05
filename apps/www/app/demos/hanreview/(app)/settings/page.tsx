@@ -18,7 +18,7 @@ import {
   Tag,
   User,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { REPOS } from "../../_data/repos";
 import { MEMBERS } from "../../_data/members";
 

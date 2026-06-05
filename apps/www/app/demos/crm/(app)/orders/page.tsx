@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Card, CardBody, DateRangePicker, ProTable, Stat, Tag, type ColumnDef } from "@hulian/ui";
-import type { DateRangeValue } from "@hulian/ui";
+import { Card, CardBody, DateRangePicker, ProTable, Stat, Tag, type ColumnDef } from "@hulianui/ui";
+import type { DateRangeValue } from "@hulianui/ui";
 import { orders as seed } from "../../_data/orders";
 import { orderStatusTone, yuan } from "../../_data/status";
 import type { Order, OrderStatus } from "../../_data/types";

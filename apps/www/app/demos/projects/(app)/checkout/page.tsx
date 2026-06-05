@@ -24,7 +24,7 @@ import {
   toast,
   useForm,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { checkouts as seed } from "../../_data/checkouts";
 import { dueAmount, invoiceById, invoices } from "../../_data/invoices";
 import { checkoutStatusTone, yuan } from "../../_data/status";

@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement task-by-task. Steps use checkbox (`- [ ]`) syntax.
 
-**Goal:** 建第 12 个内置 demo `/demos/hanhub`（开发者 LLM 网关控制台 8 页），并借此给 `@hulian/ui` 新增 4 个组件（JsonViewer / SecretField / PricingTable / StatusDot）。
+**Goal:** 建第 12 个内置 demo `/demos/hanhub`（开发者 LLM 网关控制台 8 页），并借此给 `@hulianui/ui` 新增 4 个组件（JsonViewer / SecretField / PricingTable / StatusDot）。
 
 **Architecture:** 组件先行（页面的依赖），每个组件遵循库 5 文件约定 + 双 barrel + manifest + registry 注册，TDD。再搭 8 页 demo（AdminLayout 外壳 + `(app)` 路由组 + 全 mock + `output: export`），100% dogfood，禁 CSS 补丁。
 
-**Tech Stack:** Next.js 16(App Router, output export) · React 19 · @hulian/ui · vitest · CDP Chrome-for-Testing 实机自证。
+**Tech Stack:** Next.js 16(App Router, output export) · React 19 · @hulianui/ui · vitest · CDP Chrome-for-Testing 实机自证。
 
 **核心目的（goal）：用 demo 驱动 UI 库成长 —— 4 个新组件是这次的主产出，页面是逼真载体。**
 
@@ -19,7 +19,7 @@
 3. `packages/ui/src/showcase.ts` 加 `export { <name>Showcase } from "./<slug>/<slug>.showcase";`
 4. `apps/www/lib/manifest.ts` 加 `ComponentMeta`（category/group 见 spec §5）
 5. `apps/www/lib/registry.tsx` import `<name>Showcase` + map 里加 `"<slug>": <name>Showcase`
-6. 跑 `pnpm --filter @hulian/ui test`（含 manifest.test 校验 category/group 合法）
+6. 跑 `pnpm --filter @hulianui/ui test`（含 manifest.test 校验 category/group 合法）
 
 ---
 
@@ -65,12 +65,12 @@ describe("StatusDot", () => {
   });
 });
 ```
-- [ ] **Step 2: 跑测试看失败** `pnpm --filter @hulian/ui test status-dot` → FAIL（模块不存在）
+- [ ] **Step 2: 跑测试看失败** `pnpm --filter @hulianui/ui test status-dot` → FAIL（模块不存在）
 - [ ] **Step 3: 实现** `status-dot.types.ts` + `status-dot.tsx`（复用 Dot，映射表），`index.ts` 导出。
 - [ ] **Step 4: 跑测试看通过** → PASS
 - [ ] **Step 5: showcase**（controls: status select / pulse boolean；states: 四态 + extra 例；renderWithProps + toCode）
 - [ ] **Step 6: 注册**（index.ts / showcase.ts / manifest[`status-dot`, data-display/info] / registry.tsx）
-- [ ] **Step 7: 跑全量** `pnpm --filter @hulian/ui test` → 全绿（含 manifest.test）
+- [ ] **Step 7: 跑全量** `pnpm --filter @hulianui/ui test` → 全绿（含 manifest.test）
 - [ ] **Step 8: commit** `feat(ui): 新增 StatusDot 健康状态点(语义 tone 封装 Dot)`
 
 ## Task 2: SecretField 组件
@@ -286,7 +286,7 @@ describe("JsonViewer", () => {
 
 ## Task 7-14: 八个页面（每页一 commit，dogfood 对应新组件）
 
-每页 server page（output export 安全）+ 必要 client 子组件。100% @hulian/ui，禁 CSS 补丁。完成即 commit。
+每页 server page（output export 安全）+ 必要 client 子组件。100% @hulianui/ui，禁 CSS 补丁。完成即 commit。
 
 - [ ] **Task 7 概览** `(app)/page.tsx` —— KPI(Stat/NumberTicker) + 趋势(Chart) + Top模型 + **StatusDot 健康墙** + 最近请求 + 余额 Banner。
 - [ ] **Task 8 模型市场** `models/page.tsx` —— 筛选 + 模型卡网格 + **PricingTable 对比矩阵** + 详情 Drawer(code-block SDK 示例)。
@@ -302,7 +302,7 @@ describe("JsonViewer", () => {
 - [ ] **Step 1:** `apps/www/app/demos/lib/demos.ts` 加 hanhub 条目（category "AI 应用"，tags: JsonViewer/SecretField/PricingTable/StatusDot/健康探测/计费）。
 - [ ] **Step 2:** 跑 `node apps/www/scripts/demos-coverage.mjs` 验证 4 新组件点亮计入覆盖率（应上升）。
 - [ ] **Step 3:** CDP 隔离 Chrome-for-Testing 实机：8 页 + login 截图 + 关键交互（密钥显形/复制、日志 JsonViewer 展开、Playground 流式+代码、健康一键测速、定价矩阵），**零 console error**。
-- [ ] **Step 4:** `pnpm --filter @hulian/ui test` 全绿 + `pnpm --filter www build`（或 typecheck）通过。
+- [ ] **Step 4:** `pnpm --filter @hulianui/ui test` 全绿 + `pnpm --filter www build`（或 typecheck）通过。
 - [ ] **Step 5: commit** `feat(demos): 第12个 demo 瀚枢 HanHub 大模型 API 中转网关(8页·dogfood 4新组件)`。
 
 ## 自查（spec 覆盖）

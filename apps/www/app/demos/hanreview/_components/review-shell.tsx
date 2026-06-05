@@ -2,7 +2,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, Moon, Sun } from "lucide-react";
-import { AdminLayout, Breadcrumb, Button, User, toast, useTheme, type AdminTab } from "@hulian/ui";
+import { AdminLayout, Breadcrumb, Button, User, toast, useTheme, type AdminTab } from "@hulianui/ui";
 import { HR_ROOT, breadcrumbFor, labelOf, menuItems, selectedKeyFor } from "./nav-config";
 
 function Brand() {

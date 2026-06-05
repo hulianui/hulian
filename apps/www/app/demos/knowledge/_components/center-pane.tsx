@@ -1,6 +1,6 @@
 "use client";
-import { Breadcrumb, Segmented } from "@hulian/ui";
-import type { BreadcrumbItem } from "@hulian/ui";
+import { Breadcrumb, Segmented } from "@hulianui/ui";
+import type { BreadcrumbItem } from "@hulianui/ui";
 import { useKnowledge, NothingSelected } from "./knowledge-shell";
 import { DocEditor } from "./doc-editor";
 import { FileGrid } from "./file-grid";

@@ -1,5 +1,5 @@
 "use client";
-import { IPhone } from "@hulian/ui";
+import { IPhone } from "@hulianui/ui";
 import { MobileStore } from "../../_components/mobile-store";
 
 // 瀚选 HanShop · H5 商城移动端预览页

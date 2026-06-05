@@ -14,7 +14,7 @@ import {
   type ColumnDef,
   type DiffStatStatus,
   type TagTone,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { REVIEWS } from "../../_data/reviews";
 import { REPOS } from "../../_data/repos";
 import { MODELS } from "../../_data/models";

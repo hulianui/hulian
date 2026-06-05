@@ -45,7 +45,7 @@ apps/www/lib/manifest.ts          # 3 行（Task 4/5/6）
 apps/www/lib/registry.tsx         # 3 import+map（Task 4/5/6）
 ```
 
-命令前缀：仓库根 `/Users/zhangzhiwei/Desktop/code/hulian`。UI 包测试：`pnpm --filter @hulian/ui test -- --run <file>`。
+命令前缀：仓库根 `/Users/zhangzhiwei/Desktop/code/hulian`。UI 包测试：`pnpm --filter @hulianui/ui test -- --run <file>`。
 
 ---
 
@@ -126,7 +126,7 @@ describe("getNodePath", () => {
 
 - [ ] **Step 2: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree/tree-core.test.ts`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree/tree-core.test.ts`
 Expected: FAIL（模块/导出不存在）。
 
 - [ ] **Step 3: 写实现**
@@ -245,7 +245,7 @@ export function getNodePath(nodes: TreeNode[], key: string): TreeNode[] {
 
 - [ ] **Step 4: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree/tree-core.test.ts`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree/tree-core.test.ts`
 Expected: PASS（8 测试）。
 
 - [ ] **Step 5: 提交**
@@ -350,7 +350,7 @@ describe("filterTree", () => {
 
 - [ ] **Step 2: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree/tree-core.test.ts`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree/tree-core.test.ts`
 Expected: FAIL（新函数未导出）。
 
 - [ ] **Step 3: 写实现**（追加到 `tree-core.ts` 末尾）
@@ -441,7 +441,7 @@ export function filterTree(
 
 - [ ] **Step 4: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree/tree-core.test.ts`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree/tree-core.test.ts`
 Expected: PASS（全部，含新 10 测试）。
 
 - [ ] **Step 5: 提交**
@@ -583,7 +583,7 @@ describe("Tree", () => {
 
 - [ ] **Step 3: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree/tree.test.tsx`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree/tree.test.tsx`
 Expected: FAIL（`./tree` 不存在）。
 
 - [ ] **Step 4a: 给瑚琏 Checkbox 加 tabIndex 透传（additive）**
@@ -971,12 +971,12 @@ export function Tree({
 
 - [ ] **Step 5: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree/tree.test.tsx`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree/tree.test.tsx`
 Expected: PASS（7 测试）。
 
 - [ ] **Step 6: typecheck（ui 包）**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit`
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit`
 Expected: 无错误（若报 `getNodePath`/`FlatRow` unused → 按 Step4 注释删除）。
 
 - [ ] **Step 7: 提交**
@@ -1154,7 +1154,7 @@ cd /Users/zhangzhiwei/Desktop/code/hulian
 grep -q 'treeShowcase' apps/www/lib/registry.tsx || python3 - <<'PY'
 p = "apps/www/lib/registry.tsx"
 s = open(p, encoding="utf-8").read()
-# 1) import：在 "} from \"@hulian/ui\";" 前插一行（找第一处 import 列表）
+# 1) import：在 "} from \"@hulianui/ui\";" 前插一行（找第一处 import 列表）
 imp = "  treeShowcase,\n"
 i = s.index("navMenuShowcase,")
 eol = s.index("\n", i) + 1
@@ -1172,7 +1172,7 @@ PY
 
 - [ ] **Step 7: 验证契约测试 + 构建**
 
-Run: `pnpm --filter @hulian/ui test -- --run && pnpm --filter @hulian/www build`
+Run: `pnpm --filter @hulianui/ui test -- --run && pnpm --filter @hulianui/www build`
 Expected: ui 测试全绿；www SSG 含 `/components/tree`。
 > 若 www build 因并行 session 占共享 `.next` 锁失败，用 skill `nextjs-build-verify-isolated-distdir-when-shared-next-lock-contended` 隔离 distDir。
 
@@ -1262,7 +1262,7 @@ describe("TreeSelect", () => {
 
 - [ ] **Step 3: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree-select/tree-select.test.tsx`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree-select/tree-select.test.tsx`
 Expected: FAIL。
 
 - [ ] **Step 4: 写实现**
@@ -1399,7 +1399,7 @@ export function TreeSelect({
 
 - [ ] **Step 5: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/tree-select/tree-select.test.tsx`
+Run: `pnpm --filter @hulianui/ui test -- --run src/tree-select/tree-select.test.tsx`
 Expected: PASS（3 测试）。
 
 - [ ] **Step 6: showcase + index + 接线**
@@ -1465,7 +1465,7 @@ registry：import `treeSelectShowcase` + map `"tree-select": treeSelectShowcase`
 - [ ] **Step 7: 测试 + 构建 + 提交**
 
 ```bash
-pnpm --filter @hulian/ui test -- --run && pnpm --filter @hulian/www build
+pnpm --filter @hulianui/ui test -- --run && pnpm --filter @hulianui/www build
 git add packages/ui/src/tree-select/ packages/ui/src/index.ts apps/www/lib/manifest.ts apps/www/lib/registry.tsx
 git commit -m "feat(ui): TreeSelect（Popover 浮层 + 内嵌 Tree · 单选/多选 checkable · 复用树引擎核）
 
@@ -1544,7 +1544,7 @@ describe("Cascader", () => {
 
 - [ ] **Step 3: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/cascader/cascader.test.tsx`
+Run: `pnpm --filter @hulianui/ui test -- --run src/cascader/cascader.test.tsx`
 Expected: FAIL。
 
 - [ ] **Step 4: 写实现**
@@ -1717,7 +1717,7 @@ export function Cascader({
 
 - [ ] **Step 5: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui test -- --run src/cascader/cascader.test.tsx`
+Run: `pnpm --filter @hulianui/ui test -- --run src/cascader/cascader.test.tsx`
 Expected: PASS（2 测试）。
 
 - [ ] **Step 6: showcase + index + 接线**
@@ -1783,7 +1783,7 @@ export { cascaderShowcase } from "./cascader.showcase";
 - [ ] **Step 7: 测试 + 构建 + 提交**
 
 ```bash
-pnpm --filter @hulian/ui test -- --run && pnpm --filter @hulian/www build
+pnpm --filter @hulianui/ui test -- --run && pnpm --filter @hulianui/www build
 git add packages/ui/src/cascader/ packages/ui/src/index.ts apps/www/lib/manifest.ts apps/www/lib/registry.tsx
 git commit -m "feat(ui): Cascader（Popover 横向逐级面板列 · 路径数组受控 · click/hover · 复用树引擎核）
 
@@ -1798,18 +1798,18 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 
 - [ ] **Step 1: 两包 typecheck**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit && pnpm --filter @hulian/www exec tsc --noEmit`
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit && pnpm --filter @hulianui/www exec tsc --noEmit`
 Expected: 无错误。
 > www tsc 比 ui tsc 严格（含 next 类型）；若 `value: string|string[]` 在 showcase 触发联合类型报错，按报错收窄。
 
 - [ ] **Step 2: 全量 vitest（--force 拿真实态）**
 
-Run: `pnpm --filter @hulian/ui test -- --run`
+Run: `pnpm --filter @hulianui/ui test -- --run`
 Expected: 全绿。并行 session WIP 致瞬时红时按 skill `turbo-test-red-isolate-untracked-wip-not-your-regression` 隔离判断——只看 `tree`/`tree-select`/`cascader` 三目录测试。
 
 - [ ] **Step 3: www 构建 SSG**
 
-Run: `pnpm --filter @hulian/www build`
+Run: `pnpm --filter @hulianui/www build`
 Expected: `/components/tree`、`/components/tree-select`、`/components/cascader` 三页 prerendered。共享锁竞争见 skill `nextjs-build-verify-isolated-distdir-when-shared-next-lock-contended`。
 
 - [ ] **Step 4: 明暗两态截图**

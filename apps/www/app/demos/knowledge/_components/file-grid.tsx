@@ -22,7 +22,7 @@ import {
   Tag,
   toast,
   type ImageViewerImage,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { useKnowledge } from "./knowledge-shell";
 import type { VaultNode } from "../_data/types";
 

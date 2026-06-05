@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, CardBody, Empty, QRCode, Result, Segmented, Spin, Spinner, Statistic, Tag, toast } from "@hulian/ui";
+import { Button, Card, CardBody, Empty, QRCode, Result, Segmented, Spin, Spinner, Statistic, Tag, toast } from "@hulianui/ui";
 import { Wallet } from "lucide-react";
 import { checkoutById, payUrl, settlePayment } from "../_data/checkouts";
 import { checkoutStatusTone, rmbUpper, yuan } from "../_data/status";

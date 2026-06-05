@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BackTop, ModalProvider, NotificationProvider, ToastProvider, Watermark } from "@hulian/ui";
+import { BackTop, ModalProvider, NotificationProvider, ToastProvider, Watermark } from "@hulianui/ui";
 import { CrmShell } from "../_components/crm-shell";
 
 // CRM 后台外壳：route group (app) 把侧栏/顶栏/页签套在所有业务页上（登录页在 group 外，无外壳）。

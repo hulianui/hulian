@@ -1,5 +1,5 @@
 "use client";
-import { Meter, NumberTicker, Skeleton } from "@hulian/ui";
+import { Meter, NumberTicker, Skeleton } from "@hulianui/ui";
 import { Activity, Gauge, Globe2, Link2, Radio, Timer } from "lucide-react";
 import type { Snapshot } from "../_data/snapshot";
 import { Panel } from "./panel";

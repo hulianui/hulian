@@ -40,9 +40,9 @@ pnpm --filter www build   # 生产构建
 ```
 hulian/
 ├── packages/
-│   ├── tokens/   @hulian/tokens   设计 token（tokens.css + Tailwind v4 preset）— 明暗主题唯一源头
-│   ├── ui/       @hulian/ui       组件库本体（Base UI + Tailwind 皮肤）— 可发 npm
-│   └── mocks/    @hulian/mocks    faker 数据工厂 + MSW handlers — 喂给 showcase
+│   ├── tokens/   @hulianui/tokens   设计 token（tokens.css + Tailwind v4 preset）— 明暗主题唯一源头
+│   ├── ui/       @hulianui/ui       组件库本体（Base UI + Tailwind 皮肤）— 可发 npm
+│   └── mocks/    @hulianui/mocks    faker 数据工厂 + MSW handlers — 喂给 showcase
 └── apps/
     └── www/      Next.js 文档站（5512）— 首个 dogfood 消费者
 ```
@@ -51,16 +51,16 @@ hulian/
 
 消费方需用 Tailwind v4，三步接入：
 
-1. 装包：`pnpm add @hulian/ui @hulian/tokens`（`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 为 peer，自行安装）
-2. 全局引入 token + preset，并把 `@hulian/ui` 源码加入 Tailwind 扫描：
+1. 装包：`pnpm add @hulianui/ui @hulianui/tokens`（`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 为 peer，自行安装）
+2. 全局引入 token + preset，并把 `@hulianui/ui` 源码加入 Tailwind 扫描：
    ```css
-   @import "@hulian/tokens/tokens.css";
-   @import "@hulian/tokens/preset.css";
-   @source "../node_modules/@hulian/ui/src/**/*.{ts,tsx}";
+   @import "@hulianui/tokens/tokens.css";
+   @import "@hulianui/tokens/preset.css";
+   @source "../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";
    ```
 3. 用组件 + 包一层 `ThemeProvider`：
    ```tsx
-   import { ThemeProvider, Button } from "@hulian/ui";
+   import { ThemeProvider, Button } from "@hulianui/ui";
    <ThemeProvider defaultSetting="system"><Button>瑚琏</Button></ThemeProvider>
    ```
    防首屏白闪的 inline script 由各应用的入口注入（见 `apps/www/app/theme-script.tsx`），不入库。

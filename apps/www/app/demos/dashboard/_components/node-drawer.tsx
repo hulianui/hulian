@@ -1,5 +1,5 @@
 "use client";
-import { Button, Drawer, DrawerClose, DrawerContent, LineChart, Meter, Tag, Timeline } from "@hulian/ui";
+import { Button, Drawer, DrawerClose, DrawerContent, LineChart, Meter, Tag, Timeline } from "@hulianui/ui";
 import { Activity, Radio, Signal, Timer } from "lucide-react";
 import type { NodeStatus, PopNode } from "../_data/snapshot";
 

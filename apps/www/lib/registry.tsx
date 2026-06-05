@@ -1,5 +1,5 @@
 "use client";
-import type { ShowcaseSpec } from "@hulian/ui";
+import type { ShowcaseSpec } from "@hulianui/ui";
 import {
   buttonShowcase,
   switchShowcase,
@@ -232,9 +232,9 @@ import {
   creditCardShowcase,
   emojiPickerShowcase,
   glimpseShowcase,
-} from "@hulian/ui/showcase";
+} from "@hulianui/ui/showcase";
 
-// 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
+// 唯一 import @hulianui/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
 export const specBySlug: Record<string, ShowcaseSpec> = {
   "date-range-picker": dateRangePickerShowcase,
   button: buttonShowcase,

@@ -97,7 +97,7 @@ export interface SearchFormProps {
 
 - [ ] **Step 2: typecheck 这个文件能编译**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit`
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit`
 Expected: PASS（仅类型文件，无引用错误；其它并行 WIP 报错按 isolate 处理，只要无 `search-form.types.ts` 相关错误即可）
 
 - [ ] **Step 3: Commit**
@@ -169,7 +169,7 @@ describe("planLayout", () => {
 
 - [ ] **Step 2: 运行测试确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/search-form/search-form.layout.test.ts`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/search-form/search-form.layout.test.ts`
 Expected: FAIL（`planLayout`/`canCollapse`/`totalSpan` 未定义，Cannot find module）
 
 - [ ] **Step 3: 写最小实现**
@@ -223,7 +223,7 @@ export function planLayout(fields: SearchField[], columns: number, collapsed: bo
 
 - [ ] **Step 4: 运行测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/search-form/search-form.layout.test.ts`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/search-form/search-form.layout.test.ts`
 Expected: PASS（8 测试全绿）
 
 - [ ] **Step 5: Commit**
@@ -410,7 +410,7 @@ export function SearchForm({
 
 - [ ] **Step 2: typecheck**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit`
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit`
 Expected: PASS（无 search-form 相关类型错误；并行 WIP 错误 isolate）
 
 - [ ] **Step 3: Commit**
@@ -522,7 +522,7 @@ describe("SearchForm", () => {
 
 - [ ] **Step 2: 运行测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/search-form/search-form.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/search-form/search-form.test.tsx`
 Expected: PASS（8 测试全绿）。若 select 测试因 Base UI Select portal/jsdom 报错，降级断言为 `container.querySelector("button")` 存在。
 
 - [ ] **Step 3: Commit**
@@ -685,7 +685,7 @@ Expected: PASS（ui + www）。并行 WIP 致红 → 确认非 search-form，iso
 
 - [ ] **Step 2: 全量测试（--force 拿真实态）**
 
-Run: `pnpm test -- --force` 或 `pnpm --filter @hulian/ui exec vitest run`
+Run: `pnpm test -- --force` 或 `pnpm --filter @hulianui/ui exec vitest run`
 Expected: PASS（含 search-form layout 8 + 组件 8 = 16 新测试）。他人 untracked WIP 红 → isolate 不碰。
 
 - [ ] **Step 3: build www**

@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
   TooltipContent,
   type AnchorItem,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Home, User, Cpu, Package, Rocket, Mail, ArrowUp } from "lucide-react";
 import { Hero } from "../_components/sections/hero";
 import { About } from "../_components/sections/about";

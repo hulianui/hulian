@@ -11,7 +11,7 @@
 
 **题材**：复用既有「瀚云 HanCloud」品牌 →「**瀚云全球调度指挥中心**」（全球 CDN / 跨境流量调度大屏）。
 
-**第一性约束（来自用户）**：缺组件/组件有问题一律回 `@hulian/ui` 加/修，绝不在 demo 里打 CSS 补丁，100% 用 `@hulian/ui` 组件实现。demo 是用真实场景拓展 UI 库的载体。
+**第一性约束（来自用户）**：缺组件/组件有问题一律回 `@hulianui/ui` 加/修，绝不在 demo 里打 CSS 补丁，100% 用 `@hulianui/ui` 组件实现。demo 是用真实场景拓展 UI 库的载体。
 
 ## 2. 组件库改动（反哺，共 2 件）
 
@@ -166,7 +166,7 @@ demos/dashboard/
 - README §2 强制交互态清单逐条过（加载帧/toast/危险确认/图标钮 Tooltip/Empty+Alert 重试/高频件/零外链）。
 - 真实浏览器（非 headless CLI，记忆 `www-msw-gate-blanks-headless-screenshots`）实机截图自证：亮 + 暗、飞线动画、刷新 loading 态、节点下钻 Drawer、数据源异常 Alert——零 console error。
 - 起预览用 `pnpm --filter www dev`（非根 `pnpm dev`，记忆 `hulian-pnpm-dev-killstale-kills-5514`）。
-- `pnpm --filter @hulian/ui test` 全绿（含 world-map 扩展 + fit-screen 新测）。
+- `pnpm --filter @hulianui/ui test` 全绿（含 world-map 扩展 + fit-screen 新测）。
 - 本地 commit（message 引用本 demo）。
 
 ## 9. 风险与缓解

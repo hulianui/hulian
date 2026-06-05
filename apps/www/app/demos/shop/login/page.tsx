@@ -1,5 +1,5 @@
 "use client";
-import { LoginForm, Text, Spotlight, toast } from "@hulian/ui";
+import { LoginForm, Text, Spotlight, toast } from "@hulianui/ui";
 import { brand } from "../_components/nav-config";
 
 // 瀚选商城登录页。不在 (shop) 路由组内，无 ShopShell，自己做极简居中布局。

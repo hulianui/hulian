@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在 `@hulian/ui` 仓库新建第 16 个内置 demo「瀚舵 HanHelm」智能体任务调度平台（7 页 + login），并为支撑它新造 4 个库组件（Sankey/Sparkline/Funnel/QueueLane），100% dogfood、全 mock、output:export。
+**Goal:** 在 `@hulianui/ui` 仓库新建第 16 个内置 demo「瀚舵 HanHelm」智能体任务调度平台（7 页 + login），并为支撑它新造 4 个库组件（Sankey/Sparkline/Funnel/QueueLane），100% dogfood、全 mock、output:export。
 
 **Architecture:** 先把 4 个新组件按库内「四件套 + 10 接入点」约定造好并单测，再写 demo 数据层 + `_lib` 纯函数调度引擎，最后 AdminLayout 外壳 + 七页 dogfood。详情页拆 server(`generateStaticParams`)+client 子件以适配 `output: export`。负载仪表软依赖瀚审 ScoreRing（不存在则 meter 兜底），流向 DAG 复用既有 Flow。
 
-**Tech Stack:** Next.js 15 App Router · TypeScript · `@hulian/ui` · Tailwind(token 驱动) · vitest · 零依赖 SVG 几何。
+**Tech Stack:** Next.js 15 App Router · TypeScript · `@hulianui/ui` · Tailwind(token 驱动) · vitest · 零依赖 SVG 几何。
 
 ---
 
@@ -26,7 +26,7 @@
 
 **ShowcaseSpec 契约**：`{ controls: Control[]; states: StateSpec[]; renderWithProps(props); toCode(props): string }`。
 
-**测试命令**：`pnpm --filter @hulian/ui test`（vitest）。整库全绿基线 1278+。
+**测试命令**：`pnpm --filter @hulianui/ui test`（vitest）。整库全绿基线 1278+。
 
 ---
 
@@ -150,7 +150,7 @@ describe("computeSankeyLayout", () => {
 });
 ```
 
-- [ ] **Step 3: 运行测试确认失败** — `pnpm --filter @hulian/ui test sankey-geometry`，预期 FAIL（模块不存在）。
+- [ ] **Step 3: 运行测试确认失败** — `pnpm --filter @hulianui/ui test sankey-geometry`，预期 FAIL（模块不存在）。
 
 - [ ] **Step 4: 写 `sankey-geometry.ts`**
 
@@ -164,7 +164,7 @@ describe("computeSankeyLayout", () => {
   5. link 用三次贝塞尔：`M sx,sy C mx,sy mx,ty tx,ty`（sx=源右沿，tx=目标左沿，mx 中点），`width = value / maxLinkValue * maxRibbon`（maxRibbon 取 nodePadding 量级或按比例）；实际 ribbon 用 stroke-width=按端口高度的描边线，width 直接= value 端口高度。
   6. 返回 `{ nodes, links, layers }`。
 
-- [ ] **Step 5: 运行测试确认通过** — `pnpm --filter @hulian/ui test sankey-geometry`，预期 PASS。
+- [ ] **Step 5: 运行测试确认通过** — `pnpm --filter @hulianui/ui test sankey-geometry`，预期 PASS。
 
 - [ ] **Step 6: 写组件 `sankey.tsx`**
 
@@ -205,7 +205,7 @@ describe("Sankey", () => {
 - [ ] **Step 11: 全库测试 + 提交**
 
 ```bash
-pnpm --filter @hulian/ui test
+pnpm --filter @hulianui/ui test
 git add packages/ui/src/sankey apps/www/lib/manifest.ts apps/www/lib/registry.tsx
 git apply --cached <(git diff packages/ui/src/index.ts packages/ui/src/showcase.ts)  # 仅暂存本组件相关 hunk（若共享文件含他人 WIP）
 git commit -m "feat(ui): 新增 Sankey 桑基图(库内首个 · 拓扑分层 + 流宽按 value + ribbon 几何纯函数)"
@@ -253,7 +253,7 @@ describe("paths", () => {
 });
 ```
 
-- [ ] **Step 2: 确认失败** — `pnpm --filter @hulian/ui test sparkline-geometry` → FAIL。
+- [ ] **Step 2: 确认失败** — `pnpm --filter @hulianui/ui test sparkline-geometry` → FAIL。
 - [ ] **Step 3: 写 `sparkline-geometry.ts`** — `normalize(data, {w,h,min?,max?})` 支持 `number[]` 与 `{x,y}[]`（内部归一为 y 数组 + 均匀 x）；`linePath`/`areaPath`/`barRects`。常量数据 y 居中（range=0 时取 h/2）。
 - [ ] **Step 4: 确认通过** → PASS。
 - [ ] **Step 5: 写 `sparkline.tsx`** — `"use client"` 非必需（纯 SVG 可 RSC 安全，但 tooltip 交互需 client；默认做成无交互 RSC 安全，`renderTooltip` 时才 client）。props 见 spec 4.2。`highlightLast` 画末点圆点；tone 默认 `var(--primary)`。
@@ -446,7 +446,7 @@ describe("scoreExecutors", () => {
 - [ ] **Step 12: 测试 + 提交**
 
 ```bash
-pnpm --filter @hulian/ui test   # 确保库测仍绿
+pnpm --filter @hulianui/ui test   # 确保库测仍绿
 git add apps/www/app/demos/hanhelm/_data apps/www/app/demos/hanhelm/_lib
 git commit -m "feat(www): 瀚舵 demo 数据层 + 六维路由/SLA/failover 调度引擎纯函数 + 单测"
 ```
@@ -473,7 +473,7 @@ git commit -m "feat(www): 瀚舵 demo 数据层 + 六维路由/SLA/failover 调�
   slug: "hanhelm",
   title: "瀚舵 HanHelm 智能体任务调度平台",
   description:
-    "异构 AI 任务涌入任务总线 → 智能路由按「能力+成本+延迟+负载+优先级+SLA」六维打分派给 agent/模型池 → 多 agent 编排 + 降级/failover + 全链路可观测 —— 100% 由 @hulian/ui 搭建的调度控制台。调度总览(任务漏斗)、优先级泳道队列、任务详情多 agent 编排 DAG、智能路由桑基流向 + 六维决策回放、执行器池负载、SLA 告警模拟，dogfood 全新 Sankey/Sparkline/Funnel/QueueLane 4 组件。",
+    "异构 AI 任务涌入任务总线 → 智能路由按「能力+成本+延迟+负载+优先级+SLA」六维打分派给 agent/模型池 → 多 agent 编排 + 降级/failover + 全链路可观测 —— 100% 由 @hulianui/ui 搭建的调度控制台。调度总览(任务漏斗)、优先级泳道队列、任务详情多 agent 编排 DAG、智能路由桑基流向 + 六维决策回放、执行器池负载、SLA 告警模拟，dogfood 全新 Sankey/Sparkline/Funnel/QueueLane 4 组件。",
   href: "/demos/hanhelm",
   category: "AI 应用",
   status: "wip",
@@ -488,7 +488,7 @@ git commit -m "feat(www): 瀚舵 demo 数据层 + 六维路由/SLA/failover 调�
 
 ## Task 7: 七页 dogfood（可并行派 subagent）
 
-每页 100% `@hulian/ui`，禁 CSS 补丁/hack；缺能力回库（罕见，组件已就位）。参考 spec §3。详情页 client 子件用 `use-dispatch-run`。
+每页 100% `@hulianui/ui`，禁 CSS 补丁/hack；缺能力回库（罕见，组件已就位）。参考 spec §3。详情页 client 子件用 `use-dispatch-run`。
 
 - [ ] **Step 1: 调度总览 `page.tsx`** — KPI(Stat+NumberTicker) + Funnel 任务漏斗 + 执行器负载(ScoreRing 软依赖/meter 兜底)+Sparkline 群 + 实时任务流 List + 告警 Banner。
 - [ ] **Step 2: 任务队列 `queue/page.tsx`** — QueueLane 优先级泳道 ⇄ ProTable（Segmented 切换）+ 查询区 + 顶部分段。
@@ -509,7 +509,7 @@ git commit -m "feat(www): 瀚舵 demo 数据层 + 六维路由/SLA/failover 调�
 - [ ] **Step 4: 4 组件 doc 页自证** — 访问 `/components/sankey`(等) doc 页零 error。
 - [ ] **Step 5: 覆盖率** — `node apps/www/scripts/demos-coverage.mjs`（或对应命令），确认 4 新组件点亮计入、覆盖率上升。
 - [ ] **Step 6: demos.ts 状态改 done** — hunk 级暂存提交。
-- [ ] **Step 7: 全库测试终检** — `pnpm --filter @hulian/ui test` 全绿。
+- [ ] **Step 7: 全库测试终检** — `pnpm --filter @hulianui/ui test` 全绿。
 - [ ] **Step 8: 最终提交** — 残余文件（共享文件 hunk 级），不 push。
 - [ ] **Step 9: 更新 memory** — 写 `hulian-demo-hanhelm.md` + MEMORY.md 指针（含命名/4 组件/坑）。
 

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Card, CardBody, Button, Tag, Rating, Progress, Image, toast } from "@hulian/ui";
+import { Card, CardBody, Button, Tag, Rating, Progress, Image, toast } from "@hulianui/ui";
 import { Users } from "lucide-react";
 import type { Course } from "../_data/types";
 import { coursePoster } from "../_data/poster";

@@ -1,4 +1,4 @@
-import type { FileStatus } from "@hulian/ui";
+import type { FileStatus } from "@hulianui/ui";
 
 /** 节点种类：文件夹 / 文档(markdown) / 图片 / 其它文件。 */
 export type VaultKind = "folder" | "doc" | "image" | "file";

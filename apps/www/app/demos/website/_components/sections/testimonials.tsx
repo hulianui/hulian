@@ -1,4 +1,4 @@
-import { Marquee, Card, CardBody, Avatar, Text } from "@hulian/ui";
+import { Marquee, Card, CardBody, Avatar, Text } from "@hulianui/ui";
 import { Section } from "../section";
 import { testimonials, type Testimonial } from "../../_data/site";
 

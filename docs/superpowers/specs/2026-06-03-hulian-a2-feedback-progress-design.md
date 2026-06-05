@@ -116,7 +116,7 @@ export function dashOffset(circumference: number, percent: number): number;
 - `controls`：`value`(number 40)、`max`(number 100)、`variant`(select linear/circular)、`tone`(select primary/danger)、`showValue`(boolean)、`indeterminate`(boolean —— UI 便利开关，为 true 时 `renderWithProps` 不传 value)。
 - `states`：linear 25%/60%/100% 三档 + linear indeterminate + circular 75% + circular showValue + circular indeterminate + danger 态（覆盖各档值 + 两形态 + 不定态 + tone）。
 - `renderWithProps`：按 `indeterminate` 决定是否传 `value`；`toCode` 对应。
-- **不改 `@hulian/ui` 的 `ShowcaseSpec` 类型**（§9 沿用既有承载）。
+- **不改 `@hulianui/ui` 的 `ShowcaseSpec` 类型**（§9 沿用既有承载）。
 
 ---
 
@@ -124,7 +124,7 @@ export function dashOffset(circumference: number, percent: number): number;
 
 - 不做 buffer/分段进度、label 模板字符串、value 数字 tween（NumberTicker 的活）。
 - 不做 `success`/`warning` tone（token 未注册）、垂直 linear、circular 端点圆点/刻度、striped/渐变填充。
-- 不引任何新依赖（motion 已在 `@hulian/ui` deps）。
+- 不引任何新依赖（motion 已在 `@hulianui/ui` deps）。
 - 不发明瑚琏平行 a11y（progressbar role + aria-value* 是 WAI-ARIA 标准，直接写）。
 
 ---

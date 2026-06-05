@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@hulian/ui";
+import { Button } from "@hulianui/ui";
 import { ArrowRight } from "lucide-react";
 import { Section } from "../section";
 import { PricingCards } from "../pricing-cards";

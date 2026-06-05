@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, type ReactNode, useContext, useState } from "react";
-import { SafeArea, TabBar } from "@hulian/ui";
+import { SafeArea, TabBar } from "@hulianui/ui";
 
 // 手机框元素 context：框内 overlay（ActionSheet）portal 进此元素，配合框的 transform/overflow-hidden
 // 把遮罩+面板约束在手机框内，而非逃逸到桌面外层。

@@ -1,4 +1,4 @@
-import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel, Text } from "@hulian/ui";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel, Text } from "@hulianui/ui";
 import { Section } from "../section";
 import { faqs } from "../../_data/site";
 

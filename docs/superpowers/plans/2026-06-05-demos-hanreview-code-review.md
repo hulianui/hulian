@@ -2,19 +2,19 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 建一个 100% 由 @hulian/ui 搭建的「AI 代码审查质检平台」内置 demo（7 页 + login），过程中增强 code-diff、新造 4 个真缺口组件（CodeReviewThread / DiffStat / Heatmap / ScoreRing），用真实场景驱动组件库成长。
+**Goal:** 建一个 100% 由 @hulianui/ui 搭建的「AI 代码审查质检平台」内置 demo（7 页 + login），过程中增强 code-diff、新造 4 个真缺口组件（CodeReviewThread / DiffStat / Heatmap / ScoreRing），用真实场景驱动组件库成长。
 
 **Architecture:** 沿用 ai-workflow/crm demo 范式——`(app)/` 路由组 + AdminLayout 外壳 + `_components`/`_data`/`_lib` 分层 + 全 mock 内存态 + `output:export` 静态导出（动态 `[id]` 拆 server+client）。组件先造（TDD）再被页面 dogfood。质量分/选模型/门禁三套纯函数可单测。
 
-**Tech Stack:** Next.js 15 App Router · TypeScript · @hulian/ui · Base UI · Tailwind(token 驱动) · vitest + @testing-library/react · lucide-react 图标。
+**Tech Stack:** Next.js 15 App Router · TypeScript · @hulianui/ui · Base UI · Tailwind(token 驱动) · vitest + @testing-library/react · lucide-react 图标。
 
 ---
 
 ## ⚠️ 全局铁律（每个 commit 都适用）
 
 1. **共享文件 hunk 级暂存**：`packages/ui/src/index.ts`、`packages/ui/src/showcase.ts`、`apps/www/lib/manifest.ts`、`apps/www/lib/registry.tsx`、`app/demos/lib/demos.ts` 这些文件**已带其它会话未提交 WIP**（如 secret-field 的导出）。禁止 `git add <整文件>` 或 `git add -A`——会卷走别人的 WIP。提交这些文件时用 hunk 级：`git add -p <file>` 只选自己新增的 hunk，或先 `git stash` 风险高不用。**新建的整目录文件可整体 add**（如 `packages/ui/src/heatmap/`）。
-2. **100% @hulian/ui，禁 demo 内 CSS 补丁/行为 hack**：demo 里要 override 才好用 = 组件缺口，回库修组件。
-3. 新组件页面 import 一律走 `from "@hulian/ui"`（覆盖率脚本只认具名 import），不走深路径。
+2. **100% @hulianui/ui，禁 demo 内 CSS 补丁/行为 hack**：demo 里要 override 才好用 = 组件缺口，回库修组件。
+3. 新组件页面 import 一律走 `from "@hulianui/ui"`（覆盖率脚本只认具名 import），不走深路径。
 4. 组件零依赖优先、token 驱动配色（`bg-primary`/`text-success`/`text-danger`/`text-warning`/`text-muted` 等语义类）、纯几何/逻辑抽 `.ts` 文件可单测、尽量 RSC 安全（仅交互件加 `"use client"`）。
 5. 中文交付。commit 用 `<type>(<scope>): <subject>`，末尾 `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`，**不 push**（本仓无 remote）。
 
@@ -112,7 +112,7 @@ describe("CodeDiff annotations", () => {
 });
 ```
 
-- [ ] **Step 3: 运行测试确认失败** — `pnpm --filter @hulian/ui test code-diff` → annotations 用例 FAIL。
+- [ ] **Step 3: 运行测试确认失败** — `pnpm --filter @hulianui/ui test code-diff` → annotations 用例 FAIL。
 
 - [ ] **Step 4: 实现（仅 unified 模式支持 content 下插；split 模式至少不报错）**
 
@@ -152,7 +152,7 @@ unified 分支每行包成 `<div>` 片段，行 div 后条件插入 content：
 
 > 注：gutter slot 只在有 anno.gutter 时占位，避免影响无批注行对齐（无批注时不渲染该 span）。若对齐有问题，gutter span 始终渲染（空内容）保持列宽一致——实现时实测取齐。split 模式本期不插 content（YAGNI），但要保证传 annotations 不抛错。
 
-- [ ] **Step 5: 运行测试确认通过 + 旧测不挂** — `pnpm --filter @hulian/ui test code-diff` → all PASS。
+- [ ] **Step 5: 运行测试确认通过 + 旧测不挂** — `pnpm --filter @hulianui/ui test code-diff` → all PASS。
 
 - [ ] **Step 6: commit**（code-diff 目录整体 add 安全；types/tsx/test 都在该目录内）
 
@@ -198,7 +198,7 @@ describe("splitBlocks", () => {
 });
 ```
 
-- [ ] **Step 2: 运行确认失败** — `pnpm --filter @hulian/ui test diff-stat`。
+- [ ] **Step 2: 运行确认失败** — `pnpm --filter @hulianui/ui test diff-stat`。
 
 - [ ] **Step 3: types + 组件**
 
@@ -266,7 +266,7 @@ describe("DiffStat", () => {
 
 - [ ] **Step 5: showcase** `diff-stat.showcase.tsx`（参照 status-dot.showcase 结构：controls + states + renderWithProps + toCode）。controls: additions(number)/deletions(number)/status(select)/blocks(number)。states: 全增 / 全删 / 混合 / 新增文件 / 删除文件。
 
-- [ ] **Step 6: 运行测试全绿** — `pnpm --filter @hulian/ui test diff-stat`。
+- [ ] **Step 6: 运行测试全绿** — `pnpm --filter @hulianui/ui test diff-stat`。
 
 - [ ] **Step 7: 登记 4 处**（index.ts ✓已在目录内；showcase.ts / manifest.ts / registry.tsx 三处 hunk 暂存）
   - manifest 条目：`{ slug: "diff-stat", name: "DiffStat", description: "改动统计条 · +N −M 绿红格子条按比例填充 + A/M/D/R 状态徽标(代码审查/PR 列表刚需·纯函数 splitBlocks 可测·零依赖·RSC)", category: "data-display", group: "info", status: "new" }`
@@ -453,7 +453,7 @@ export function Heatmap({ data, xLabels, yLabels, colorScale = 5, max, cellSize 
 }
 ```
 
-> 实现注意：先查 `Tooltip` 在 @hulian/ui 的真实 API（`content` prop 还是 children 组合）。若 Tooltip 包裹增加复杂度，可先不强依赖 Tooltip，用原生 `title` 属性兜底，showcase 再演示 renderTooltip。**禁为对齐打 hack**——grid `contents` 行模式实测取齐，不行就换显式二维 grid。
+> 实现注意：先查 `Tooltip` 在 @hulianui/ui 的真实 API（`content` prop 还是 children 组合）。若 Tooltip 包裹增加复杂度，可先不强依赖 Tooltip，用原生 `title` 属性兜底，showcase 再演示 renderTooltip。**禁为对齐打 hack**——grid `contents` 行模式实测取齐，不行就换显式二维 grid。
 
 - [ ] **Step 4: 渲染测试** —— 格子数 = xs*ys；value 高的格 background alpha 更高（或 bucketize 已单测，渲染只验格子数 + onCellClick 触发 + aria-label）。
 - [ ] **Step 5: showcase** —— states: 贡献热力(7×N)/模块×周问题密度/覆盖率；renderWithProps 控 colorScale/cellSize。
@@ -523,7 +523,7 @@ export interface CodeReviewThreadProps {
 - [ ] **Step 7: 登记**（manifest: `{ slug:"code-review-thread", name:"CodeReviewThread", description:"代码审查评论线程 · 行锚定批注卡(severity 左边色条+四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠(嵌 code-diff annotations 槽或独立用·复用 Avatar/Tag/CodeDiff)", category:"data-display", group:"collection", status:"new" }`）
 - [ ] **Step 8: commit** `feat(ui): 新增 CodeReviewThread 代码审查评论线程组件（旗舰）`。
 
-- [ ] **Phase 1 收尾：跑全量组件测试** `pnpm --filter @hulian/ui test` 全绿（含旧测无回归）。
+- [ ] **Phase 1 收尾：跑全量组件测试** `pnpm --filter @hulianui/ui test` 全绿（含旧测无回归）。
 
 ---
 
@@ -538,7 +538,7 @@ export interface CodeReviewThreadProps {
 - [ ] **Step 2: quality-score.ts + 测试**
 
 ```ts
-import type { ReviewSeverity } from "@hulian/ui"; // 若未导出该类型则本地定义同名联合
+import type { ReviewSeverity } from "@hulianui/ui"; // 若未导出该类型则本地定义同名联合
 const WEIGHT: Record<string, number> = { critical: 25, major: 10, minor: 4, info: 1 };
 export function qualityScore(counts: Record<string, number>): number {
   const penalty = Object.entries(counts).reduce((s, [k, n]) => s + (WEIGHT[k] ?? 0) * n, 0);
@@ -650,7 +650,7 @@ export function evalGate(t: GateThreshold, x: GateInput): { pass: boolean; reaso
 {
   slug: "hanreview",
   title: "瀚审 HanReview AI 代码审查质检平台",
-  description: "PR/提交进来 → AI 审查员(带智能选模型)逐文件审 → 行内批注问题、给质量分、跑质量门禁 —— 100% 由 @hulian/ui 搭建的研发质量中枢。点亮全新 CodeReviewThread 行内批注线程、Heatmap 代码热点、ScoreRing 质量分环、DiffStat 改动条，并增强 code-diff 行锚定批注，含审查过程回放、门禁模拟器与智能路由分发流向。",
+  description: "PR/提交进来 → AI 审查员(带智能选模型)逐文件审 → 行内批注问题、给质量分、跑质量门禁 —— 100% 由 @hulianui/ui 搭建的研发质量中枢。点亮全新 CodeReviewThread 行内批注线程、Heatmap 代码热点、ScoreRing 质量分环、DiffStat 改动条，并增强 code-diff 行锚定批注，含审查过程回放、门禁模拟器与智能路由分发流向。",
   href: "/demos/hanreview",
   category: "中后台",
   status: "done",
@@ -658,8 +658,8 @@ export function evalGate(t: GateThreshold, x: GateInput): { pass: boolean; reaso
 },
 ```
 
-- [ ] **组件全量测试** `pnpm --filter @hulian/ui test` 全绿。
-- [ ] **类型检查/构建**：`pnpm --filter @hulian/ui build`（或 typecheck）+ `pnpm --filter www build`（确认 output:export 通过、generateStaticParams 正确）。
+- [ ] **组件全量测试** `pnpm --filter @hulianui/ui test` 全绿。
+- [ ] **类型检查/构建**：`pnpm --filter @hulianui/ui build`（或 typecheck）+ `pnpm --filter www build`（确认 output:export 通过、generateStaticParams 正确）。
 - [ ] **覆盖率** `node apps/www/scripts/demos-coverage.mjs` —— 确认 4 新组件 + code-diff 被点亮、覆盖率不降（理想升）。
 - [ ] **画廊 doc 页**：起 `pnpm --filter www dev`，CDP 访问 4 新组件 doc 页（/components/diff-stat 等）零 console error。
 - [ ] **demo 实机像素自证**：CDP 隔离 Chrome-for-Testing 逐页截图（7 页 + login，亮/暗）+ 关键交互（批注展开/采纳、门禁滑块、路由回放、Heatmap hover、ScoreRing 等级）零 console error。
@@ -668,7 +668,7 @@ export function evalGate(t: GateThreshold, x: GateInput): { pass: boolean; reaso
 - [ ] commit `feat(www): 注册瀚审 HanReview demo + 覆盖率验证`（demos.ts hunk 暂存）。
 
 ### Task 15: 收尾
-- [ ] 复查无 demo 内 CSS 补丁/hack；无 `from "@hulian/ui/..."` 深路径 import。
+- [ ] 复查无 demo 内 CSS 补丁/hack；无 `from "@hulianui/ui/..."` 深路径 import。
 - [ ] 更新 memory（hulian-phase-status 追加本 demo + 4 组件）。
 - [ ] 汇总通知用户：建了什么、新增组件、覆盖率变化、自证截图、未 push。
 

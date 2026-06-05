@@ -1,6 +1,6 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { NavMenu, type NavMenuNode } from "@hulian/ui";
+import { NavMenu, type NavMenuNode } from "@hulianui/ui";
 import { THEME_NAV } from "../lib/theme-manifest";
 
 const keyOf = (slug: string) => slug || "overview";

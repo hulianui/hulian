@@ -1,6 +1,6 @@
 import { LayoutDashboard, Users, KanbanSquare, ShoppingCart, Settings } from "lucide-react";
-import type { NavMenuNode } from "@hulian/ui";
-import type { BreadcrumbItem } from "@hulian/ui";
+import type { NavMenuNode } from "@hulianui/ui";
+import type { BreadcrumbItem } from "@hulianui/ui";
 
 export const CRM_ROOT = "/demos/crm";
 

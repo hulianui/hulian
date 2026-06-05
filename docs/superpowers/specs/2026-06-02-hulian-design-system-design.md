@@ -8,7 +8,7 @@
 
 ## 0. 名字与立意
 
-**瑚琏 / Hulian**，npm 包 scope `@hulian/*`。
+**瑚琏 / Hulian**，npm 包 scope `@hulianui/*`。
 
 出处《论语·公冶长》：子贡问"赐也何如"，孔子答"汝，器也"，问"何器也"，曰"**瑚琏也**"。瑚琏是宗庙盛黍稷的**玉器**，至贵至美又确有大用。"瑚琏之器"= 既有**颜值**（美玉）又**好用**（重器）—— 正是本项目信条："颜值审美 + 好用 = 软件商业化第一生产力"。组件本身即"器"。
 
@@ -48,9 +48,9 @@
 ```
 hulian/
 ├── packages/
-│   ├── tokens/      @hulian/tokens   设计 token（CSS 变量 + Tailwind v4 preset）—— 明暗主题唯一源头
-│   ├── ui/          @hulian/ui       组件库本体（Base UI + Tailwind 皮肤）—— 可发 npm、能 import
-│   └── mocks/       @hulian/mocks    MSW handlers + faker 样例数据工厂 —— 喂给 showcase
+│   ├── tokens/      @hulianui/tokens   设计 token（CSS 变量 + Tailwind v4 preset）—— 明暗主题唯一源头
+│   ├── ui/          @hulianui/ui       组件库本体（Base UI + Tailwind 皮肤）—— 可发 npm、能 import
+│   └── mocks/       @hulianui/mocks    MSW handlers + faker 样例数据工厂 —— 喂给 showcase
 ├── apps/
 │   ├── www/         Next.js + MDX    showcase / 文档站（web 先行，端口 5512）
 │   └── desktop/     Tauri 壳         包 www（P4 阶段，先占位不实现，devUrl 5514）
@@ -66,15 +66,15 @@ hulian/
 > 这是发布一个 Tailwind 组件库**最难、且最早影响 token/preset 写法**的决定，不是 P3 才想的事。P0 写 tokens preset 的产出形态、写各包的 peerDependencies，都由本节定。
 
 **两条互斥路：**
-- **A. 消费方也用 Tailwind v4 + 引入瑚琏 preset**：`@hulian/ui` 只发**源码 + className 字符串**，实际 CSS 由消费方的 Tailwind 扫描 `node_modules/@hulian/ui` 源码生成。体积小、**与"运行时换肤"一致**；代价是强约束消费方技术栈，且消费方 Tailwind v4 的 `@source` 必须能扫到本包源码。
-- **B. 预编译 CSS 随包发**：消费方 `import '@hulian/ui/styles.css'` 即用，不要求 Tailwind。即插即用；但换肤只能靠预编译进去的 token 变量，灵活性低。
+- **A. 消费方也用 Tailwind v4 + 引入瑚琏 preset**：`@hulianui/ui` 只发**源码 + className 字符串**，实际 CSS 由消费方的 Tailwind 扫描 `node_modules/@hulianui/ui` 源码生成。体积小、**与"运行时换肤"一致**；代价是强约束消费方技术栈，且消费方 Tailwind v4 的 `@source` 必须能扫到本包源码。
+- **B. 预编译 CSS 随包发**：消费方 `import '@hulianui/ui/styles.css'` 即用，不要求 Tailwind。即插即用；但换肤只能靠预编译进去的 token 变量，灵活性低。
 
 **本项目选 A**（与 §5「运行时换肤」一致；§6「组件只消费语义 token」本就默认 A）。据此：
 
 **包形态与依赖契约：**
-- `@hulian/ui`：发 **ESM 源码 + 类型**（不预编译 CSS）。`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 全部进 **`peerDependencies`**，不进 `dependencies`（避免版本双装与重复实例）。CVA / clsx / tailwind-merge 这类纯工具可进 `dependencies`。
-- `@hulian/tokens`：产出两份资产 —— ① **`tokens.css`**（`:root` + `[data-theme=dark]` 的 CSS 变量，消费方全局引入一次）；② **Tailwind v4 preset**（把语义 token 映射成工具类，供消费方 `@import` / 配置引用）。
-- 消费方接入三步：装 `@hulian/ui` + peer → 全局引 `@hulian/tokens/tokens.css` → Tailwind 配置引瑚琏 preset 并把 `@hulian/ui` 源码加入 `@source` 扫描范围。
+- `@hulianui/ui`：发 **ESM 源码 + 类型**（不预编译 CSS）。`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 全部进 **`peerDependencies`**，不进 `dependencies`（避免版本双装与重复实例）。CVA / clsx / tailwind-merge 这类纯工具可进 `dependencies`。
+- `@hulianui/tokens`：产出两份资产 —— ① **`tokens.css`**（`:root` + `[data-theme=dark]` 的 CSS 变量，消费方全局引入一次）；② **Tailwind v4 preset**（把语义 token 映射成工具类，供消费方 `@import` / 配置引用）。
+- 消费方接入三步：装 `@hulianui/ui` + peer → 全局引 `@hulianui/tokens/tokens.css` → Tailwind 配置引瑚琏 preset 并把 `@hulianui/ui` 源码加入 `@source` 扫描范围。
 - **`apps/www` 是这套接入方式的第一个真实消费者**（dogfooding），P0/P1 即验证此链路。
 
 **§9 验收 5「可被外部 import」据此具体化为**：在一个全新的最小 Tailwind v4 工程里按上述三步接入，Button 能正确出样式 + 类型提示可用。
@@ -98,7 +98,7 @@ hulian/
 
 ## 5. 主题层（硬需求"全局明暗"的核心）
 
-唯一真相源 `@hulian/tokens`，组件永不写死颜色，只引用语义 token。
+唯一真相源 `@hulianui/tokens`，组件永不写死颜色，只引用语义 token。
 
 **两层 token：**
 - **原始层 primitives**：`--blue-500: oklch(...)`、`--gray-900`…… 用 **OKLCH** 色彩空间（明暗下感知亮度更均匀，2026 主流）。
@@ -115,11 +115,11 @@ hulian/
 > ⚠️ 已知坑：Tailwind v4 + shadcn dark variant 桥接到 data-theme，实施时套用 skill `tailwind-v4-shadcn-dark-variant-data-theme-bridge` 规避。
 
 **ThemeProvider 的库/应用接缝（必须切开，否则污染框架无关库）：**
-- **框架无关部分 → 留 `@hulian/ui`**：localStorage 持久化、跟随系统 `prefers-color-scheme`、`data-theme` 切换 context/hook。纯 React，不依赖 Next。
+- **框架无关部分 → 留 `@hulianui/ui`**：localStorage 持久化、跟随系统 `prefers-color-scheme`、`data-theme` 切换 context/hook。纯 React，不依赖 Next。
 - **防首屏白闪的 inline script → 归 `apps/www` 的 root layout**，**不塞进库**。这是 Next.js SSR/hydration 专属问题，写进通用库会污染边界。
-- **build-vs-buy**：`next-themes` 已把 inline-script + system + storage 做到无 FOUC（但 Next 专属）。`apps/www` 可直接用 `next-themes` 或抄它的 inline script；`@hulian/ui` 只保留框架无关 context。这条接缝正好印证上面的切分。
+- **build-vs-buy**：`next-themes` 已把 inline-script + system + storage 做到无 FOUC（但 Next 专属）。`apps/www` 可直接用 `next-themes` 或抄它的 inline script；`@hulianui/ui` 只保留框架无关 context。这条接缝正好印证上面的切分。
 
-**token 加载顺序（anti-FOUC 依赖）**：`apps/www` root layout 里 `@hulian/tokens` 的 `tokens.css` **必须在最前**加载，inline anti-FOUC script 依赖 CSS 变量已就位才能在 first paint 正确定色。
+**token 加载顺序（anti-FOUC 依赖）**：`apps/www` root layout 里 `@hulianui/tokens` 的 `tokens.css` **必须在最前**加载，inline anti-FOUC script 依赖 CSS 变量已就位才能在 first paint 正确定色。
 
 **留余量不过度**：token 结构支持未来加第三套主题（品牌色变体），结构不用改；但**现在只做 light/dark 两套**（YAGNI）。
 
@@ -154,9 +154,9 @@ packages/ui/src/button/
 
 | mock 类型 | 实现 |
 |----------|------|
-| ① 真实样例数据 | `@hulian/mocks` 用 **faker** 造数据工厂（人名/头像/表格行/图表序列），一眼看"填满后"真实观感 |
+| ① 真实样例数据 | `@hulianui/mocks` 用 **faker** 造数据工厂（人名/头像/表格行/图表序列），一眼看"填满后"真实观感 |
 | ② 全状态展示 | `*.showcase.tsx` 声明状态矩阵，`<StatesGallery>` 自动铺开 default/hover/focus/disabled/loading/error/empty/超长 |
-| ③ API mock | `@hulian/mocks` 出 **MSW handlers**，浏览器内 Service Worker（不占端口），异步加载/分页/表单提交站内真跑 |
+| ③ API mock | `@hulianui/mocks` 出 **MSW handlers**，浏览器内 Service Worker（不占端口），异步加载/分页/表单提交站内真跑 |
 | ④ 可调参 playground | `<Playground>` 读组件 `*.showcase.tsx` 里**手写的 control schema**（非 TS 自动抽取）→ controls 面板，实时改 props/文案/尺寸看效果 + 同步显示生成代码（一键复制） |
 
 **三个核心展示组件（全站复用）：**
@@ -172,10 +172,10 @@ packages/ui/src/button/
 
 | 阶段 | 内容 | 产出标志 |
 |------|------|---------|
-| **P0 脊柱** | monorepo + `@hulian/tokens`（含 preset+tokens.css） + 主题层 + ThemeProvider（库/应用接缝切开） + **Button + Switch + Dialog 三个标杆组件**端到端 + `www` 最小站点（dogfood 模型 A 接入） + 明暗开关（5512） | 切主题 0 闪烁、三组件站内跑起来、Base UI 命脉(Portal/focus trap)验证通过 |
-| **P1 展示基建** | `<ComponentPreview>` / `<StatesGallery>` / `<Playground>` + `@hulian/mocks`（faker + MSW） + MDX 体系 | 三组件页四种 mock 全亮 |
+| **P0 脊柱** | monorepo + `@hulianui/tokens`（含 preset+tokens.css） + 主题层 + ThemeProvider（库/应用接缝切开） + **Button + Switch + Dialog 三个标杆组件**端到端 + `www` 最小站点（dogfood 模型 A 接入） + 明暗开关（5512） | 切主题 0 闪烁、三组件站内跑起来、Base UI 命脉(Portal/focus trap)验证通过 |
+| **P1 展示基建** | `<ComponentPreview>` / `<StatesGallery>` / `<Playground>` + `@hulianui/mocks`（faker + MSW） + MDX 体系 | 三组件页四种 mock 全亮 |
 | **P2 组件扩量** | 批量补 Input/Dialog/Switch/Select/DataTable… 套 P0/P1 模具 | 覆盖面铺开 |
-| **P3 发布** | changesets + npm 发包 + 部署 www | `npm i @hulian/ui` 可用、站上线 |
+| **P3 发布** | changesets + npm 发包 + 部署 www | `npm i @hulianui/ui` 可用、站上线 |
 | **P4 桌面壳** | Tauri 包 www（5514） | dmg 可装 |
 
 **P0 三标杆组件分工（每个验证一条独立命脉，故不止 Button 一个）：**
@@ -192,9 +192,9 @@ packages/ui/src/button/
 1. `pnpm dev` 在 **5512** 起 `www`，不与本地其它项目撞口。
 2. 站点右上角明暗开关：切换 **0 闪烁**，首屏无白闪，刷新后保持上次选择，默认跟随系统。
    - **0 闪烁/无白闪的客观验收法**：Chrome DevTools 网络节流（Slow 4G）下硬刷 + 录屏 / 抓 first paint 截图，确认首帧即为正确主题底色，无白底闪现；切换主题录屏确认无中间白帧。
-3. `@hulian/ui` 三组件：Button（CVA 变体 variant/size/tone 齐全，只消费语义 token，键盘可达有焦点环）；Switch（Base UI 受控 + ARIA + 焦点环）；Dialog（Base UI Portal + focus trap，Esc/点遮罩关闭、焦点归还触发元素）。
+3. `@hulianui/ui` 三组件：Button（CVA 变体 variant/size/tone 齐全，只消费语义 token，键盘可达有焦点环）；Switch（Base UI 受控 + ARIA + 焦点环）；Dialog（Base UI Portal + focus trap，Esc/点遮罩关闭、焦点归还触发元素）。
 4. 三组件文档页四种 mock 全亮：真实样例数据 / 全状态 gallery / 一个 MSW 异步 demo / Playground 可调参且显示生成代码。
-5. `@hulian/ui` 可被外部 `import`：在一个全新最小 Tailwind v4 工程里按 §3A 三步接入（装包+peer → 引 tokens.css → preset+`@source` 扫描），三组件正确出样式、类型提示可用。
+5. `@hulianui/ui` 可被外部 `import`：在一个全新最小 Tailwind v4 工程里按 §3A 三步接入（装包+peer → 引 tokens.css → preset+`@source` 扫描），三组件正确出样式、类型提示可用。
 
 ---
 

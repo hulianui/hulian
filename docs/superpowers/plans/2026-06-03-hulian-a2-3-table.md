@@ -6,12 +6,12 @@
 
 **Architecture:** 数据驱动单组件 `<Table columns data />`，内部 `useReactTable`（`getCoreRowModel` + `getSortedRowModel`）封装 headless 逻辑；render 段是只消费语义 token 的瑚琏皮肤（外壳圆角+横滚、斑马纹、行 hover、排序箭头）。受控/非受控排序对称（家风同 Tabs/Slider）。列定义直接复用 TanStack `ColumnDef`，不另起 API。
 
-**Tech Stack:** React 19 + TypeScript（strict）+ `@tanstack/react-table`（**新依赖**，进 `@hulian/ui` 的 `dependencies`）+ Tailwind v4 语义 token + lucide-react 箭头 + vitest/jsdom + `@hulian/mocks`（faker，加为 ui 的 devDependency）。
+**Tech Stack:** React 19 + TypeScript（strict）+ `@tanstack/react-table`（**新依赖**，进 `@hulianui/ui` 的 `dependencies`）+ Tailwind v4 语义 token + lucide-react 箭头 + vitest/jsdom + `@hulianui/mocks`（faker，加为 ui 的 devDependency）。
 
 **关键约束（继承项目硬规则）：**
 - 只消费语义 token（无 success/warning）；明暗自适应。
 - 四件套 `*.tsx`(必 `"use client"`)/`*.types.ts`/`*.showcase.tsx`(必 `"use client"`)/`*.test.tsx`/`index.ts` 桶导出 → 主 `index.ts` `export * from "./table"` → www `registry.tsx` import+map → `manifest.ts` +1（`data-display`/`new`）。
-- 三道门用 `--force`：`pnpm typecheck` + `pnpm --filter @hulian/ui test`（自己 scope）+ `pnpm build --filter=www --force`。**别信 turbo cache-hit**（[[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。
+- 三道门用 `--force`：`pnpm typecheck` + `pnpm --filter @hulianui/ui test`（自己 scope）+ `pnpm build --filter=www --force`。**别信 turbo cache-hit**（[[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。
 - 截图明暗两态存 cwd 根、Read 看像素（[[ui-layout-verify-needs-screenshot-not-dom-eval]]）；端口 5512/5514，桌面 app 已跑 5514 则用 5514。
 - **不触碰他人 untracked WIP**：根目录现有 `*.png`/`.playwright-mcp/`/`cdp-shot.mjs` 是并行 session 产物，`git add` 只点名自己的文件，禁 `git add -A`（[[parallel-session-git-add-all-sweeps-your-staged-files]]）。
 - 新依赖装好后 **lockfile 变更随实现 commit 一并提**。
@@ -22,7 +22,7 @@
 - 新建 `packages/ui/src/table/table.showcase.tsx` — faker 数据 + ColumnDef demo + ShowcaseSpec。
 - 新建 `packages/ui/src/table/table.test.tsx` — vitest。
 - 新建 `packages/ui/src/table/index.ts` — 桶导出。
-- 改 `packages/ui/package.json` — 加 `@tanstack/react-table` dep + `@hulian/mocks` devDep。
+- 改 `packages/ui/package.json` — 加 `@tanstack/react-table` dep + `@hulianui/mocks` devDep。
 - 改 `packages/ui/src/index.ts` — `export * from "./table"`。
 - 改 `apps/www/lib/manifest.ts` — 加 table 一行。
 - 改 `apps/www/lib/registry.tsx` — import + map `tableShowcase`。
@@ -39,10 +39,10 @@
 
 ```bash
 cd /Users/zhangzhiwei/Desktop/code/hulian
-pnpm --filter @hulian/ui add @tanstack/react-table
-pnpm --filter @hulian/ui add -D @hulian/mocks@workspace:*
+pnpm --filter @hulianui/ui add @tanstack/react-table
+pnpm --filter @hulianui/ui add -D @hulianui/mocks@workspace:*
 ```
-Expected: `package.json` 多 `@tanstack/react-table` 进 dependencies、`@hulian/mocks` 进 devDependencies；`pnpm-lock.yaml` 更新。
+Expected: `package.json` 多 `@tanstack/react-table` 进 dependencies、`@hulianui/mocks` 进 devDependencies；`pnpm-lock.yaml` 更新。
 
 - [ ] **Step 2: 写 table.types.ts**
 
@@ -72,7 +72,7 @@ export interface TableProps<TData> {
 
 - [ ] **Step 3: typecheck（types 文件先单独过）**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit`
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit`
 Expected: PASS（无 table.tsx 时 types 文件自身能解析 `@tanstack/react-table` 类型即可；若报 "Cannot find module" 说明依赖未装好，回 Step 1）。
 
 - [ ] **Step 4: Commit**
@@ -188,7 +188,7 @@ describe("皮肤钩子（防漂移）", () => {
 
 - [ ] **Step 2: 跑测试验证失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/table/table.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/table/table.test.tsx`
 Expected: FAIL（`./table` 模块不存在 / Table is not defined）。
 
 - [ ] **Step 3: 写 table.tsx 最小实现**
@@ -321,7 +321,7 @@ export function Table<TData>({
 
 - [ ] **Step 4: 跑测试验证通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/table/table.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/table/table.test.tsx`
 Expected: PASS（全部 7 用例绿）。
 
 - [ ] **Step 5: Commit**
@@ -344,7 +344,7 @@ git commit -m "feat(ui): Table 组件 — TanStack headless + 瑚琏皮肤(列�
 
 ```tsx
 "use client";
-import { makeUsers, type DemoUser } from "@hulian/mocks";
+import { makeUsers, type DemoUser } from "@hulianui/mocks";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Table } from "./table";
 import type { ColumnDef } from "./table.types";
@@ -411,8 +411,8 @@ export * from "./table";
 
 - [ ] **Step 4: typecheck**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit`
-Expected: PASS（`@hulian/mocks` 经 devDep + workspace 符号链接解析；ShowcaseSpec/ColumnDef 类型对齐）。
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit`
+Expected: PASS（`@hulianui/mocks` 经 devDep + workspace 符号链接解析；ShowcaseSpec/ColumnDef 类型对齐）。
 
 - [ ] **Step 5: Commit**
 
@@ -442,7 +442,7 @@ git commit -m "feat(ui): Table showcase(faker 数据复用 makeUsers) + 桶导�
 ```ts
   accordionShowcase,
   tableShowcase,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 ```
 ```ts
   accordion: accordionShowcase,
@@ -455,7 +455,7 @@ git commit -m "feat(ui): Table showcase(faker 数据复用 makeUsers) + 桶导�
 ```bash
 cd /Users/zhangzhiwei/Desktop/code/hulian
 pnpm typecheck
-pnpm --filter @hulian/ui test
+pnpm --filter @hulianui/ui test
 pnpm build --filter=www --force
 ```
 Expected: typecheck PASS；ui 测试我 scope 全绿（其余族测试若有他人 untracked WIP 红，按 [[turbo-test-red-isolate-untracked-wip-not-your-regression]] 隔离判定，非我引入）；`build --filter=www` PASS（含新依赖 + faker showcase 在 next build 下不报错，`/components/table` SSG 生成）。

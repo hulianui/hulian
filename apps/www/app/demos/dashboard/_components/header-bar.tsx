@@ -12,7 +12,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Maximize, Pause, Play, RefreshCw, Satellite } from "lucide-react";
 
 export type DataSource = "正常" | "异常";

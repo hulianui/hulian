@@ -15,7 +15,7 @@ import {
   Stat,
   Tag,
   Text,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { customers } from "../_data/customers";
 import { metrics, monthlyTrend, stageDistribution } from "../_data/metrics";
 import { customerStatusTone, yuan } from "../_data/status";

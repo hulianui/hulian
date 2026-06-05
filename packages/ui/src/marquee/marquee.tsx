@@ -3,7 +3,7 @@ import { cn } from "../lib/cn";
 import type { MarqueeProps } from "./marquee.types";
 
 // 吸取自 magicui.design Marquee：复制子项 N 份、每份 CSS 平移 -100% - gap → 无缝循环。
-// 瑚琏化：纯 CSS（无 "use client"，可 RSC，同 Breadcrumb/Alert）；关键帧在 @hulian/tokens preset.css；
+// 瑚琏化：纯 CSS（无 "use client"，可 RSC，同 Breadcrumb/Alert）；关键帧在 @hulianui/tokens preset.css；
 // reduced-motion 用 Tailwind motion-reduce: 变体停；容器中性、子项自带色（只消费语义 token）。
 export function Marquee({
   children,

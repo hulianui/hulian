@@ -12,7 +12,7 @@ import {
   StatusDot,
   Switch,
   Tag,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type { Capability, Executor, ExecutorHealth } from "../_data/types";
 import { executorName } from "../_data/executors";
 import { seriesValues } from "../_data/metrics";

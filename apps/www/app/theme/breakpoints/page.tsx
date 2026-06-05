@@ -80,7 +80,7 @@ export default function BreakpointsPage() {
       <Section title="真源与定制">
         <Note>
           <p>
-            5 档断点在 <Code>@hulian/tokens/preset.css</Code> 的 <Code>@theme</Code> 块里声明为{" "}
+            5 档断点在 <Code>@hulianui/tokens/preset.css</Code> 的 <Code>@theme</Code> 块里声明为{" "}
             <Code>--breakpoint-sm…2xl</Code>。改这里即同时改全站工具类断点 + 本页表格——单一真源。
           </p>
           <pre className="mt-3 overflow-x-auto font-mono text-[0.78rem] leading-relaxed text-foreground">

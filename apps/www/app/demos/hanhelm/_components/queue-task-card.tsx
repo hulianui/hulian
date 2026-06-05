@@ -1,5 +1,5 @@
 "use client";
-import { Tag } from "@hulian/ui";
+import { Tag } from "@hulianui/ui";
 import type { Task } from "../_data/types";
 import { executorName } from "../_data/executors";
 import {

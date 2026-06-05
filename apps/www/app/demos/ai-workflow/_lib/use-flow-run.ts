@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { FlowEdge, FlowNode } from "@hulian/ui";
-import { toast } from "@hulian/ui";
+import type { FlowEdge, FlowNode } from "@hulianui/ui";
+import { toast } from "@hulianui/ui";
 import { ratioMeta } from "../_data/models";
 import type { FlowNodeData, NodeResult } from "../_data/types";
 

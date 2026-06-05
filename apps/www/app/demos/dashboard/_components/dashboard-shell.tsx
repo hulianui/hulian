@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Button, Spinner, toast } from "@hulian/ui";
+import { Alert, Button, Spinner, toast } from "@hulianui/ui";
 import { sleep } from "../../lib/async";
 import { buildSnapshot, type Snapshot, tickSnapshot } from "../_data/snapshot";
 import { useTicker } from "../_lib/use-live";

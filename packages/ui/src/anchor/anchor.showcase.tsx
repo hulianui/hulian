@@ -50,7 +50,7 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     title: "安装",
     level: 3,
     paras: [
-      "通过包管理器安装组件库后即可按需引入：import { Anchor } from \"@hulian/ui\"。组件自带 \"use client\" 标记，可直接在 React Server Component 的页面里作为客户端孤岛使用。",
+      "通过包管理器安装组件库后即可按需引入：import { Anchor } from \"@hulianui/ui\"。组件自带 \"use client\" 标记，可直接在 React Server Component 的页面里作为客户端孤岛使用。",
       "无需引入额外的样式文件或动画运行时——指示条与高亮全部走语义 token，自动适配明暗主题。",
     ],
   },

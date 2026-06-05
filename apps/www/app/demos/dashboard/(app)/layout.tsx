@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { FitScreen, GridPattern } from "@hulian/ui";
+import { FitScreen, GridPattern } from "@hulianui/ui";
 
 // 大屏外壳：全屏深色底 + 细网格纹理 + FitScreen 把 1920×1080 设计稿等比缩放铺满视口。
 // 深色为默认观感，但全程走 token，跟随站点全局明暗切换。

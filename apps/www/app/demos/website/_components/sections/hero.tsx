@@ -7,7 +7,7 @@ import {
   Heading,
   Text,
   DotPattern,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ArrowRight, Zap } from "lucide-react";
 import { brand } from "../../_data/site";
 

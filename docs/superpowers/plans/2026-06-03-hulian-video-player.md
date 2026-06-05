@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在 `@hulian/ui` 新增一个真正的 `Video` 播放器组件，以 Vidstack 为引擎、瑚琏 token 自搓皮肤，支持文件 + HLS，核心控件集齐全。
+**Goal:** 在 `@hulianui/ui` 新增一个真正的 `Video` 播放器组件，以 Vidstack 为引擎、瑚琏 token 自搓皮肤，支持文件 + HLS，核心控件集齐全。
 
 **Architecture:** 沿用 recharts/Chart 的「引擎 + 皮肤」分层。`@vidstack/react` 的 `MediaPlayer`/`MediaProvider` + primitives 提供媒体引擎与状态；控件条用 Tailwind + 瑚琏语义 token 自搓，图标走自有 `../_icons`，交互态吃 Vidstack 暴露的 `data-*`。纯逻辑（时间格式化、src 归一化、默认倍速）抽成可单测的纯函数。
 
@@ -29,8 +29,8 @@
 - `apps/www/lib/manifest.ts` — 加 Video 条目（`data-display` / `collection`）
 - `apps/www/lib/registry.tsx` — import `videoShowcase` + `specBySlug` 加 `video: videoShowcase`
 
-**测试命令（单文件）：** `pnpm --filter @hulian/ui exec vitest run src/video/video.test.tsx`
-**类型检查：** `pnpm --filter @hulian/ui typecheck`
+**测试命令（单文件）：** `pnpm --filter @hulianui/ui exec vitest run src/video/video.test.tsx`
+**类型检查：** `pnpm --filter @hulianui/ui typecheck`
 
 ---
 
@@ -45,7 +45,7 @@
 
 Run:
 ```bash
-pnpm --filter @hulian/ui add @vidstack/react
+pnpm --filter @hulianui/ui add @vidstack/react
 ```
 Expected: `packages/ui/package.json` 的 `dependencies` 出现 `"@vidstack/react": "^1.x"`，lockfile 更新。
 
@@ -91,7 +91,7 @@ describe("video pure logic", () => {
 
 - [ ] **Step 3: 运行测试确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/video/video.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/video/video.test.tsx`
 Expected: FAIL —「Failed to resolve import "./video.types"」或函数未定义。
 
 - [ ] **Step 4: 写 types + 纯逻辑实现**
@@ -152,7 +152,7 @@ export function normalizeSrc(src: VideoSource): VideoSource {
 
 - [ ] **Step 5: 运行测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/video/video.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/video/video.test.tsx`
 Expected: PASS（6 个 it 全绿）。
 
 - [ ] **Step 6: 提交**
@@ -404,7 +404,7 @@ export type { VideoProps, VideoSource } from "./video.types";
 
 - [ ] **Step 3: 类型检查**
 
-Run: `pnpm --filter @hulian/ui typecheck`
+Run: `pnpm --filter @hulianui/ui typecheck`
 Expected: PASS。**若报 Vidstack API 签名错**，按 Step 1 校验说明就地修正（仅调 prop/回调取值，不改组件结构），直到 PASS。
 
 - [ ] **Step 4: 提交**
@@ -449,7 +449,7 @@ describe("<Video> 渲染冒烟", () => {
 
 - [ ] **Step 2: 运行测试**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/video/video.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/video/video.test.tsx`
 Expected: PASS。
 
 **若 Vidstack 在 jsdom 下挂载抛错**（如 `customElements`/`HTMLMediaElement` 相关），在测试文件顶部（import 之前）加入下面的 mock 把 Vidstack 降级为透传 host 元素，再跑通：
@@ -534,7 +534,7 @@ export const videoShowcase: ShowcaseSpec = {
 
 - [ ] **Step 2: 类型检查**
 
-Run: `pnpm --filter @hulian/ui typecheck`
+Run: `pnpm --filter @hulianui/ui typecheck`
 Expected: PASS（showcase 的 `ShowcaseSpec` 形态对齐）。
 
 - [ ] **Step 3: 提交**
@@ -590,9 +590,9 @@ export { videoShowcase } from "./video/video.showcase";
 
 Run:
 ```bash
-pnpm --filter @hulian/ui exec vitest run src/video/video.test.tsx
+pnpm --filter @hulianui/ui exec vitest run src/video/video.test.tsx
 pnpm --filter www exec vitest run lib/manifest.test.ts
-pnpm --filter @hulian/ui typecheck
+pnpm --filter @hulianui/ui typecheck
 ```
 Expected: 全 PASS。manifest.test 校验 group 合法（`collection` 在 `data-display` 的 groups 内）。
 
@@ -613,7 +613,7 @@ git commit -m "feat(ui): Video 接线(主桶/showcase 桶/manifest/registry)"
 
 Run:
 ```bash
-pnpm --filter @hulian/ui typecheck && pnpm --filter @hulian/ui test
+pnpm --filter @hulianui/ui typecheck && pnpm --filter @hulianui/ui test
 pnpm --filter www build
 ```
 Expected: 三者皆 PASS（`www build` 能把 Video 文档页静态产出，证明 base.css 引入与 RSC/client 边界无误）。

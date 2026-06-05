@@ -16,7 +16,7 @@ import {
   Tag,
   Text,
   Timeline,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ROOT } from "../_components/nav-config";
 import { activeProgress, metrics, monthlyTrend, stageDistribution } from "../_data/metrics";
 import { projectEvents } from "../_data/projects";

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, ChevronRight, Sparkles } from "lucide-react";
-import { Input } from "@hulian/ui";
+import { Input } from "@hulianui/ui";
 import { manifest, CATEGORIES, type CategoryKey } from "../lib/manifest";
 
 const nameCn = (description: string) => description.split(" · ")[0];

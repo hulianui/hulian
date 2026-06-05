@@ -8,7 +8,7 @@ import {
   Breadcrumb,
   Stack,
   Divider,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { MapPin, Mail, Phone, Clock } from "lucide-react";
 import { ContactForm } from "../../_components/contact-form";
 

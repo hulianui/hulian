@@ -21,7 +21,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { AlertCircle, RotateCw, Send, Trash2 } from "lucide-react";
 import { guestbookSeed, recentVisitors, type GuestEntry } from "../_data/guestbook";
 import { avatarArt } from "../_lib/art";

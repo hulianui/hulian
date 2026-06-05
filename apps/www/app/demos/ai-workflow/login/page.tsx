@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Sparkles, Wand2, Clapperboard } from "lucide-react";
-import { Heading, Link, LoginForm, Meteors, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, Meteors, Text } from "@hulianui/ui";
 
 const FEATURES = [
   { icon: Wand2, title: "可视化节点编排", desc: "拖拽连线即可搭出生图/视频流水线" },

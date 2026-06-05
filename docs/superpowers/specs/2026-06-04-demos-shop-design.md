@@ -8,7 +8,7 @@
 这是瑚琏第 7 个内置 demo，也是**首个 C 端电商**。它的根本目的不是「做个好看的商城」，而是**用一个真实电商全链路把当前 87 个零覆盖组件尽可能多地塞进合理场景**，以 dogfood 驱动组件库迭代并暴露缺口。
 
 - 当前覆盖率 **54%（101/188）**。本 demo 目标把覆盖率拉到 **≥ 72%**。
-- 缺口在 build 过程中浮现就回 `@hulian/ui` 补，**demo 内零 CSS 补丁**（铁律一）。
+- 缺口在 build 过程中浮现就回 `@hulianui/ui` 补，**demo 内零 CSS 补丁**（铁律一）。
 - 全 mock 内存态，无后端；所有「网络」走 `demos/lib/async.ts` 的 `useMockData` / `usePending` 异步化（铁律二）。
 - 所有图片/头像/banner **程序化生成**（语义配色 SVG / data-URI），零外链（铁律四）。
 
@@ -83,7 +83,7 @@
 ## 6. 验证
 
 - 真实浏览器/隔离 Chrome-for-Testing 截图（headless CLI 全站空白，见记忆 `www-msw-gate-blanks-headless-screenshots`）。
-- `pnpm --filter @hulian/ui test`（Coupon 测试随全套绿）。
+- `pnpm --filter @hulianui/ui test`（Coupon 测试随全套绿）。
 - `pnpm --filter www demos:coverage`（覆盖率 + 外链门禁）。
 - 起预览 `pnpm --filter www dev`（勿在根目录 `pnpm dev`，会杀桌面 app 5514）。
 

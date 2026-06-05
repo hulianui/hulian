@@ -10,7 +10,7 @@ import {
   User,
   useTheme,
   type AdminTab,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { LIVE_ROOT, breadcrumbFor, labelOf, menuItems, selectedKeyFor } from "./nav-config";
 
 function Brand() {

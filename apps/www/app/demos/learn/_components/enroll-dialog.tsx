@@ -8,7 +8,7 @@ import {
   RadioGroup,
   Tag,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type { Course } from "../_data/types";
 import { priceLabel, lessonCount, totalMinutes, firstLessonId } from "../_data/courses";
 import { useLearn } from "../_lib/learn-store";

@@ -14,7 +14,7 @@ import {
   TooltipContent,
   TooltipProvider,
   cn,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Check, HelpCircle } from "lucide-react";
 import { plans, type Plan } from "../_data/site";
 

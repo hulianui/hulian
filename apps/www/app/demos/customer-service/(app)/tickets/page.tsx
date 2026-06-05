@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
   toast,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { tickets as seed } from "../../_data/tickets";
 import type { Ticket, TicketPriority, TicketStatus } from "../../_data/types";
 import { CS_ROOT } from "../../_components/nav-config";

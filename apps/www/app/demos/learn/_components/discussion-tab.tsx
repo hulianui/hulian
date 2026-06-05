@@ -9,7 +9,7 @@ import {
   Empty,
   toast,
   type MentionOption,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ThumbsUp, MessageSquare } from "lucide-react";
 import type { Course, Discussion } from "../_data/types";
 import { discussionsOf } from "../_data/courses";

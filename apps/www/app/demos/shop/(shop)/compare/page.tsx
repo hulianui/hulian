@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Empty, Chip, Rating, Tag, toast } from "@hulian/ui";
+import { Button, Empty, Chip, Rating, Tag, toast } from "@hulianui/ui";
 import { products, productById, productImage, formatPrice } from "../../_data/products";
 import { useShop } from "../../_lib/shop-store";
 import type { Product } from "../../_data/types";

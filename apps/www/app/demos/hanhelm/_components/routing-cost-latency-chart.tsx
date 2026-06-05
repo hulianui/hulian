@@ -2,7 +2,7 @@
 // 智能路由 · 成本/延迟分布：各执行器的「混合单价」与「典型延迟」对照。
 // 库的 Chart 家族（recharts 皮肤）无 XY 散点型，这里用 BarChart 双序列做成本×延迟对照，
 // 两序列各自归一到 0-100 同轴可比，便于一眼看出「贵且慢」「便宜且快」象限。
-import { BarChart } from "@hulian/ui";
+import { BarChart } from "@hulianui/ui";
 import { useMemo } from "react";
 import type { Executor } from "../_data/types";
 

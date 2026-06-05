@@ -11,7 +11,7 @@ import {
   SwipeAction,
   Tag,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { useMockData } from "../../../lib/async";
 import { useMobileFrame } from "../../_components/mobile-shell";
 import { ORDER_STATUS_TONE, SEED_ORDERS } from "../../_data/orders";

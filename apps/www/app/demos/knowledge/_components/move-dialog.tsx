@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Button, Drawer, DrawerContent, TreeSelect, type TreeNode } from "@hulian/ui";
+import { Button, Drawer, DrawerContent, TreeSelect, type TreeNode } from "@hulianui/ui";
 import { useKnowledge } from "./knowledge-shell";
 
 const ROOT_KEY = "__root__";

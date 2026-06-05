@@ -1,8 +1,8 @@
 // 直播实时引擎：纯 reducer（可单测）。随机性由 action 携带的 seed + mulberry32 派生 → 确定性可复现。
 // 范式参照 customer-service：纯 reducer + 定时器 hook（见 use-live-sim.ts）。
-import type { DanmakuItem } from "@hulian/ui";
-import type { GiftEvent } from "@hulian/ui";
-import type { LiveChatItem } from "@hulian/ui";
+import type { DanmakuItem } from "@hulianui/ui";
+import type { GiftEvent } from "@hulianui/ui";
+import type { LiveChatItem } from "@hulianui/ui";
 import {
   AI_ACTIONS,
   AI_REPLIES,

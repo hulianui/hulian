@@ -17,7 +17,7 @@
    充值 5.5% 手续费、BYOK 5%、免费档 20 req/min·200 req/day）。
 
 **硬约束（来自用户指令 + CLAUDE.md）**
-- 100% 由 `@hulian/ui` 搭建，**禁止在 demo 里打 CSS 补丁 / 行为 hack**；缺能力 → 回库修组件。
+- 100% 由 `@hulianui/ui` 搭建，**禁止在 demo 里打 CSS 补丁 / 行为 hack**；缺能力 → 回库修组件。
 - 全 mock 内存态，`output: export` 静态导出。
 - 所有面向交付的输出中文。
 - demo 是「寻求真实场景拓展 UI 库」的载体，不是做着玩。
@@ -180,7 +180,7 @@ app/demos/hanhub/
 
 ## 7. 验证策略
 
-1. **组件层**：4 组件各自 `.test.tsx`（纯函数 + 渲染 + 交互），`pnpm --filter @hulian/ui test` 全绿。
+1. **组件层**：4 组件各自 `.test.tsx`（纯函数 + 渲染 + 交互），`pnpm --filter @hulianui/ui test` 全绿。
 2. **画廊层**：4 组件 showcase 进画廊，doc 页零 console error。
 3. **demo 层**：CDP 隔离 Chrome-for-Testing 实机逐页截图（8 页 + login）+ 关键交互
    （密钥显形/复制、日志 JsonViewer 展开、Playground 流式+代码生成、健康一键测速、定价矩阵对比），

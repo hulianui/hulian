@@ -15,7 +15,7 @@ import {
   BackTop,
   Command,
   type CommandGroupData,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { GraduationCap, Search } from "lucide-react";
 import { courses, CATEGORY_NAME, priceLabel } from "../_data/courses";
 import { brand, primaryNav, LEARN_BASE } from "./nav-config";
@@ -173,7 +173,7 @@ function LearnFooter() {
           <div className="max-w-xs">
             <Logo />
             <Text tone="muted" size="sm" className="mt-3">
-              {brand.slogan} —— 本平台为 @hulian/ui 演示，课程与讲师均为虚构。
+              {brand.slogan} —— 本平台为 @hulianui/ui 演示，课程与讲师均为虚构。
             </Text>
           </div>
           <Stack direction="row" gap={10} wrap>

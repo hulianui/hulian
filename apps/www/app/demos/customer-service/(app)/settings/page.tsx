@@ -14,7 +14,7 @@ import {
   Text,
   Textarea,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 export default function SettingsPage() {
   const [nickname, setNickname] = useState("小琏");

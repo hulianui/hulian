@@ -19,7 +19,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { articles as seed, KB_CATEGORIES } from "../../_data/knowledge";
 import type { KnowledgeArticle } from "../../_data/types";
 import { useMockData } from "../../../lib/async";

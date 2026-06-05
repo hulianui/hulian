@@ -1,5 +1,5 @@
 "use client";
-import { Marquee } from "@hulian/ui";
+import { Marquee } from "@hulianui/ui";
 import { AlertTriangle, CheckCircle2, Info, Megaphone } from "lucide-react";
 import type { DashEvent } from "../_data/snapshot";
 

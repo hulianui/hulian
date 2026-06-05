@@ -6,12 +6,12 @@
 
 **Architecture:** 先建一份共享异步基建 `demos/lib/async.ts`（`useMockData` / `usePending`），把同步内存 mock 包成带延迟的异步态，驱动 Skeleton / Spinner / ProTable loading；再逐 demo 按统一「转换配方」补 toast / Popconfirm / AlertDialog / Tooltip / Skeleton 等。每个 demo 独立可执行、独立 commit（建议各起一个 session 控成本）。
 
-**Tech Stack:** Next 16 + React 19 + `@hulian/ui`（Base UI 桥）+ vitest/jsdom + @testing-library/react。
+**Tech Stack:** Next 16 + React 19 + `@hulianui/ui`（Base UI 桥）+ vitest/jsdom + @testing-library/react。
 
 **执行依据：** 本计划是 `docs/superpowers/specs/2026-06-04-demos-realism-audit.md` 的落地。每个 demo 的「改什么」以报告 §6 为准，本计划给「怎么改」的配方 + Phase 0 完整代码 + CRM 完整范例。
 
 **全局约束（每个 task 都适用）：**
-- 100% dogfood，禁止手搓库里已有的东西；撞缺口回 `@hulian/ui` 修组件（记忆 `fix-component-not-demo-css-patch`）。
+- 100% dogfood，禁止手搓库里已有的东西；撞缺口回 `@hulianui/ui` 修组件（记忆 `fix-component-not-demo-css-patch`）。
 - 视觉验证用真实浏览器，不用 headless CLI（记忆 `www-msw-gate-blanks-headless-screenshots`）；MCP 浏览器被占起隔离 Chrome-for-Testing（记忆 `mcp-browser-busy-launch-isolated-chromium-via-executablepath`）。
 - 起预览用 `pnpm --filter www dev`，不在根目录 `pnpm dev`（记忆 `hulian-pnpm-dev-killstale-kills-5514`）。
 - 落盘用显式 pathspec `git add <files>`，不 `git add -A`（共享文件常带他会话 WIP）。
@@ -167,10 +167,10 @@ git commit -m "feat(demo): 共享异步 mock 基建 useMockData/usePending + 测
 **Files:**
 - Create: `apps/www/app/demos/lib/skeletons.tsx`
 
-- [ ] **Step 1: 实现（基于 @hulian/ui 的 Skeleton，无需测试——纯展示，靠浏览器验）**
+- [ ] **Step 1: 实现（基于 @hulianui/ui 的 Skeleton，无需测试——纯展示，靠浏览器验）**
 
 ```tsx
-import { Skeleton } from "@hulian/ui";
+import { Skeleton } from "@hulianui/ui";
 
 /** 表格加载骨架：rows×cols 个灰块。配 ProTable 外或独立列表用。 */
 export function TableSkeleton({ rows = 6, cols = 4 }: { rows?: number; cols?: number }) {
@@ -269,7 +269,7 @@ const { data, loading, error, reload } = useMockData(seed);
 const [rows, setRows] = useState<Customer[]>([]);
 useEffect(() => { if (data) setRows(data); }, [data]);
 ```
-import 顶部加：`import { useEffect } from "react";`（若未引）、`import { useMockData } from "../../../lib/async";`、`Alert`、`Spinner` 从 `@hulian/ui`。
+import 顶部加：`import { useEffect } from "react";`（若未引）、`import { useMockData } from "../../../lib/async";`、`Alert`、`Spinner` 从 `@hulianui/ui`。
 给 `<ProTable ... />` 加 `loading={loading}`。
 表格上方插失败条：
 ```tsx
@@ -415,7 +415,7 @@ git commit -m "feat(demo/crm): Watermark 水印 + BackTop 回顶"
 ## 收尾 · Task 13: 覆盖率与全局验收
 
 - [ ] **Step 1:** `pnpm --filter www demos:coverage` —— 确认覆盖率 ≥ 60%（从 48% 升），打印剩余盲区。
-- [ ] **Step 2:** `pnpm --filter www test` 全绿；`pnpm --filter @hulian/ui test` 全绿（若动过组件）。
+- [ ] **Step 2:** `pnpm --filter www test` 全绿；`pnpm --filter @hulianui/ui test` 全绿（若动过组件）。
 - [ ] **Step 3:** 逐 demo 真实浏览器跑一遍，确认报告 §7 六条验收全满足、零 console error。
 - [ ] **Step 4:** mobile 整类盲区确认仍记在 README §7 backlog（本轮不做）。
 - [ ] **Step 5:** 若覆盖率未及 60%，从剩余盲区里挑自然场景的件补到现有 demo（不堆砌），再验。

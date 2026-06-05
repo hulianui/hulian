@@ -1,5 +1,5 @@
 import { MessagesSquare, Ticket, BookOpen, BarChart3, Settings } from "lucide-react";
-import type { NavMenuNode, BreadcrumbItem } from "@hulian/ui";
+import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
 
 export const CS_ROOT = "/demos/customer-service";
 

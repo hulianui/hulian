@@ -1,5 +1,5 @@
 import { LayoutDashboard, GitPullRequest, ListChecks, ShieldCheck, Network, Settings } from "lucide-react";
-import type { NavMenuNode, BreadcrumbItem } from "@hulian/ui";
+import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
 
 export const HR_ROOT = "/demos/hanreview";
 

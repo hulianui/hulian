@@ -10,7 +10,7 @@ import {
   MenuTrigger,
   User,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { CS_ROOT } from "./nav-config";
 
 // 头像账号菜单：点击头像 → 个人中心 / 客服设置 / 退出登录。

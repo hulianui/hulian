@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Prose, Chip, Text, FlickeringGrid } from "@hulian/ui";
+import { Avatar, Prose, Chip, Text, FlickeringGrid } from "@hulianui/ui";
 import { MapPin, AtSign } from "lucide-react";
 import { Section } from "./section";
 import { profile } from "../../_data/profile";

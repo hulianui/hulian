@@ -10,7 +10,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Menu, X, ChevronLeft, ArrowUpRight } from "lucide-react";
 import { account } from "../_data/account";
 import { planById, formatMoney } from "../_data/plans";

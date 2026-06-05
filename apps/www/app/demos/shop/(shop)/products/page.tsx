@@ -20,8 +20,8 @@ import {
   Skeleton,
   Slider,
   toast,
-} from "@hulian/ui";
-import type { ComboboxItemData } from "@hulian/ui";
+} from "@hulianui/ui";
+import type { ComboboxItemData } from "@hulianui/ui";
 import { products, formatPrice } from "../../_data/products";
 import { categories } from "../../_data/categories";
 import type { CategoryKey, Product } from "../../_data/types";

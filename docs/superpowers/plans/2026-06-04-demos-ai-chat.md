@@ -2,15 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在文档站 `apps/www` 新增 `/demos` 区，首发一个可交互、走 MSW 真流式的 AI 对话工具，100% 用 `@hulian/ui` 搭建。
+**Goal:** 在文档站 `apps/www` 新增 `/demos` 区，首发一个可交互、走 MSW 真流式的 AI 对话工具，100% 用 `@hulianui/ui` 搭建。
 
 **Architecture:** `demos.ts` 元数据 SSoT → `/demos` 画廊 → `/demos/ai-chat` 详情页。详情页用 dogfood `Layout`（Sider=会话 rail + Content=对话区）搭壳；对话编排靠一个 `useReducer` 状态机消费 MSW `/api/chat` 的 SSE 流，驱动 AI 组件渲染。Mock 端的脚本选择 + SSE 编码抽成纯函数单测。
 
-**Tech Stack:** Next.js App Router · `@hulian/ui`（AI 组件 + Layout/List/Select/Empty/Drawer/Prose）· `@hulian/mocks`（MSW handler + ReadableStream SSE）· Vitest（纯逻辑单测）· lucide-react（app 级图标，www 已用）。
+**Tech Stack:** Next.js App Router · `@hulianui/ui`（AI 组件 + Layout/List/Select/Empty/Drawer/Prose）· `@hulianui/mocks`（MSW handler + ReadableStream SSE）· Vitest（纯逻辑单测）· lucide-react（app 级图标，www 已用）。
 
 ## 硬门禁（每个 UI 任务都适用）
 
-- **100% `@hulian/ui`**：页面里凡是"本应是组件"的东西（按钮/输入/列表项/气泡/选择器/抽屉/空状态…）必须用库组件或布局原语拼，禁止手搓 styled `<div>` 替代组件。
+- **100% `@hulianui/ui`**：页面里凡是"本应是组件"的东西（按钮/输入/列表项/气泡/选择器/抽屉/空状态…）必须用库组件或布局原语拼，禁止手搓 styled `<div>` 替代组件。
 - 撞到**缺口或不顺手** → 停下，先去 `packages/ui` 造/优化组件（含 `*.types.ts` + `index.ts` 导出 + `*.showcase.tsx`），再回页面消费。库改动单独 commit。
 - 排版/间距用 `Stack`/`Layout`/Tailwind 工具类是允许的（这就是"用 hulian 布局原语"）。
 
@@ -46,7 +46,7 @@
 
 ```ts
 // apps/www/lib/demos.ts
-// 内置 Demo 项目元数据 —— 纯数据 SSoT，零 @hulian/ui import，server/client 皆可读。
+// 内置 Demo 项目元数据 —— 纯数据 SSoT，零 @hulianui/ui import，server/client 皆可读。
 // 仿 manifest.ts：画廊卡片从此渲染；每个 demo 是具名路由文件夹（非 [slug] 动态注册）。
 export type DemoStatus = "live" | "coming-soon";
 
@@ -169,10 +169,10 @@ describe("scriptToEvents", () => {
 
 - [ ] **Step 2: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/mocks test`（若无 test script，用 `pnpm --filter @hulian/mocks exec vitest run chat-script`）
+Run: `pnpm --filter @hulianui/mocks test`（若无 test script，用 `pnpm --filter @hulianui/mocks exec vitest run chat-script`）
 Expected: FAIL —「Cannot find module './chat-script'」。
 
-> 注：若 `@hulian/mocks` 无 vitest 配置，本步附带在 package.json 加 `"test": "vitest run"` 并装 `vitest` devDep（与仓库其他包一致），单独 commit。
+> 注：若 `@hulianui/mocks` 无 vitest 配置，本步附带在 package.json 加 `"test": "vitest run"` 并装 `vitest` devDep（与仓库其他包一致），单独 commit。
 
 - [ ] **Step 3: 写 chat-script.ts**
 
@@ -301,7 +301,7 @@ export function scriptToEvents(script: ChatScript): ChatEvent[] {
 
 - [ ] **Step 4: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/mocks exec vitest run chat-script`
+Run: `pnpm --filter @hulianui/mocks exec vitest run chat-script`
 Expected: PASS（全部用例绿）。
 
 - [ ] **Step 5: Commit**
@@ -362,7 +362,7 @@ export type { ChatEvent } from "./chat-script";
 
 - [ ] **Step 3: 构建验证**
 
-Run: `pnpm --filter @hulian/mocks build`（若该包无 build 则跳过，靠 www 端 dev 验证）
+Run: `pnpm --filter @hulianui/mocks build`（若该包无 build 则跳过，靠 www 端 dev 验证）
 Expected: 类型通过。
 
 - [ ] **Step 4: Commit**
@@ -384,7 +384,7 @@ git commit -m "feat(mocks): /api/chat 流式 SSE handler"
 ```ts
 // apps/www/app/demos/ai-chat/chat-types.ts
 // 对话状态机：消费 ChatEvent 流，累积成可渲染的消息列表。纯函数 reducer，便于推理与测试。
-import type { ChatEvent } from "@hulian/mocks";
+import type { ChatEvent } from "@hulianui/mocks";
 
 export type TurnPhase = "waiting" | "thinking" | "tool" | "streaming" | "done";
 
@@ -473,7 +473,7 @@ function applyEvent(m: AssistantMessage, e: ChatEvent): AssistantMessage {
 - [ ] **Step 2: 类型检查**
 
 Run: `pnpm --filter www exec tsc --noEmit`（或随后 dev 编译）
-Expected: 无类型错误（依赖 `@hulian/mocks` 已导出 `ChatEvent`）。
+Expected: 无类型错误（依赖 `@hulianui/mocks` 已导出 `ChatEvent`）。
 
 - [ ] **Step 3: Commit**
 
@@ -514,7 +514,7 @@ export const CONVERSATIONS: ConversationStub[] = [
 // apps/www/app/demos/ai-chat/use-chat-stream.ts
 "use client";
 import { useCallback, useReducer, useRef, useState } from "react";
-import type { ChatEvent } from "@hulian/mocks";
+import type { ChatEvent } from "@hulianui/mocks";
 import { chatReducer, type ChatMsg } from "./chat-types";
 
 let seq = 0;
@@ -604,7 +604,7 @@ git commit -m "feat(www): 流式消费 hook + rail 假会话数据"
 // apps/www/app/demos/layout.tsx
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { AnimatedThemeToggler, Stack, Text } from "@hulian/ui";
+import { AnimatedThemeToggler, Stack, Text } from "@hulianui/ui";
 import { ArrowLeft } from "lucide-react";
 
 export default function DemosLayout({ children }: { children: ReactNode }) {
@@ -635,7 +635,7 @@ export default function DemosLayout({ children }: { children: ReactNode }) {
 // apps/www/app/demos/page.tsx
 import Link from "next/link";
 import { Bot, LayoutDashboard, Table2, Sparkles, type LucideIcon } from "lucide-react";
-import { BentoCard, BentoGrid, Badge, Heading, Stack, Text } from "@hulian/ui";
+import { BentoCard, BentoGrid, Badge, Heading, Stack, Text } from "@hulianui/ui";
 import { DEMOS, DEMO_COMING_SOON, type DemoMeta } from "../../lib/demos";
 
 const ICONS: Record<DemoMeta["icon"], LucideIcon> = {
@@ -649,7 +649,7 @@ export default function DemosGallery() {
     <main className="mx-auto max-w-4xl px-6 py-12">
       <Heading level={1} size="3xl" className="tracking-tight">内置 Demo 项目</Heading>
       <Text tone="muted" className="mt-3 max-w-xl leading-relaxed">
-        不只是组件孤岛——用瑚琏拼出能跑的真实产品。每个 demo 100% 由 @hulian/ui 搭建。
+        不只是组件孤岛——用瑚琏拼出能跑的真实产品。每个 demo 100% 由 @hulianui/ui 搭建。
       </Text>
 
       <BentoGrid className="mt-10 auto-rows-[12rem] sm:grid-cols-2">
@@ -716,7 +716,7 @@ import {
   Layout, List, ListItem, Avatar, Button, Badge, Stack, Text, Heading,
   Select, SelectTrigger, SelectContent, SelectItem,
   Drawer, DrawerTrigger, DrawerContent,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Plus, Menu } from "lucide-react";
 import { CONVERSATIONS } from "./conversations";
 
@@ -825,7 +825,7 @@ git commit -m "feat(www): AI 对话页产品壳 + 会话 rail(Layout/List/Select
 import {
   Conversation, ChatMessage, ThinkingBlock, ToolCall, StreamingText,
   Citation, MessageActions, PromptInput, PromptSuggestions, Empty, Prose, CodeBlock,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Bot, Sparkles } from "lucide-react";
 import { useChatStream } from "./use-chat-stream";
 import type { AssistantMessage } from "./chat-types";
@@ -878,7 +878,7 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
 }
 ```
 
-> **markdown 渲染决策（实现时定夺，硬门禁）**：`done` 后正文含 ```` ``` ```` 代码块，需要 markdown→HTML。检查 `@hulian/ui` 是否已有 markdown 渲染件（`markdown-editor` 含解析？`Prose` 仅排版皮肤不解析）。
+> **markdown 渲染决策（实现时定夺，硬门禁）**：`done` 后正文含 ```` ``` ```` 代码块，需要 markdown→HTML。检查 `@hulianui/ui` 是否已有 markdown 渲染件（`markdown-editor` 含解析？`Prose` 仅排版皮肤不解析）。
 > - 若库已有可复用的 markdown 渲染：直接用，删掉 `StreamingTextMarkdown` 占位。
 > - 若没有：这是**真实库缺口** → 去 `packages/ui` 新增一个轻量 `Markdown` 渲染组件（或给 `Prose` 加 `markdown` 能力，复用仓库已有的 markdown 依赖，如 `markdown-editor` 的解析栈），补 showcase + 导出，再回页面用。**禁止在页面里塞第三方 markdown 库手搓。**
 > - 临时占位 `StreamingTextMarkdown` 仅为让计划自洽：实现时必被替换为真实库组件，不得留存。
@@ -960,11 +960,11 @@ git commit -m "feat(www): AI 对话渲染——空状态/流式/思考/工具/�
 
 - [ ] **Step 1: 硬门禁审计**
 
-通读 `apps/www/app/demos/**`，确认：无手搓的"本应是组件"的 UI；所有交互元素来自 `@hulian/ui`；任何实现中做的库改动（如 `Markdown` 组件、`BentoCard.title` 放宽）都有对应 `packages/ui` commit + showcase + 导出。
+通读 `apps/www/app/demos/**`，确认：无手搓的"本应是组件"的 UI；所有交互元素来自 `@hulianui/ui`；任何实现中做的库改动（如 `Markdown` 组件、`BentoCard.title` 放宽）都有对应 `packages/ui` commit + showcase + 导出。
 
 - [ ] **Step 2: 全量构建**
 
-Run: `pnpm --filter @hulian/ui build && pnpm --filter @hulian/mocks exec vitest run && pnpm --filter www build`
+Run: `pnpm --filter @hulianui/ui build && pnpm --filter @hulianui/mocks exec vitest run && pnpm --filter www build`
 Expected: UI 库构建通过、mocks 单测绿、www 构建通过。
 
 - [ ] **Step 3: 主题/响应式抽检**

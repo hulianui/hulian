@@ -12,7 +12,7 @@ import {
   Chip,
   Snippet,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Send, MessageCircle, Coffee, Sparkles } from "lucide-react";
 import { Section } from "./section";
 import { profile } from "../../_data/profile";

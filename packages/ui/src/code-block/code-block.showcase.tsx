@@ -3,8 +3,8 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { CodeBlock } from "./code-block";
 
 const sample = `<Lens zoom={1.8}>\n  <img src="/photo.jpg" />\n</Lens>`;
-const longer = `import { Button } from "@hulian/ui";\n\n// 点击计数示例\nexport function Demo() {\n  const [n, setN] = useState(0);\n  return <Button onClick={() => setN(n + 1)}>点了 {n} 次</Button>;\n}`;
-const shell = `# 安装并构建\npnpm add @hulian/ui\npnpm --filter @hulian/ui build`;
+const longer = `import { Button } from "@hulianui/ui";\n\n// 点击计数示例\nexport function Demo() {\n  const [n, setN] = useState(0);\n  return <Button onClick={() => setN(n + 1)}>点了 {n} 次</Button>;\n}`;
+const shell = `# 安装并构建\npnpm add @hulianui/ui\npnpm --filter @hulianui/ui build`;
 
 export const codeBlockShowcase: ShowcaseSpec = {
   controls: [

@@ -6,7 +6,7 @@ import {
   ProTable,
   Tag,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ROOT } from "../../_components/nav-config";
 import { quotes as seed, quoteTotals } from "../../_data/quotes";
 import { quoteStatusTone, yuan } from "../../_data/status";

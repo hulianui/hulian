@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { AnimatedThemeToggler, Fab, Stack, Text } from "@hulian/ui";
+import { AnimatedThemeToggler, Fab, Stack, Text } from "@hulianui/ui";
 import { ArrowLeft, LayoutGrid } from "lucide-react";
 
 // /demos 路由的统一外壳 chrome（client，单挂在 demos/layout）：

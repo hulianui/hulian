@@ -1,4 +1,4 @@
-import { BentoGrid, BentoCard, BorderBeam } from "@hulian/ui";
+import { BentoGrid, BentoCard, BorderBeam } from "@hulianui/ui";
 import { Section } from "../section";
 import { features } from "../../_data/site";
 

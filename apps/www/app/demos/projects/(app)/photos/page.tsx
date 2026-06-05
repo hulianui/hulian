@@ -19,7 +19,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { photos as all, PHOTO_TAGS } from "../../_data/photos";
 import { projects } from "../../_data/projects";
 import { photoTagTone } from "../../_data/status";

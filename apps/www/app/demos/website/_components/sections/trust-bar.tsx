@@ -1,4 +1,4 @@
-import { Marquee, Text } from "@hulian/ui";
+import { Marquee, Text } from "@hulianui/ui";
 
 const companies = [
   "极光科技",

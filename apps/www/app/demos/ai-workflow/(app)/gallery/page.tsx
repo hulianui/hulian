@@ -22,7 +22,7 @@ import {
   Video,
   cn,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { meshGradient } from "../../_lib/artwork";
 import { ratioMeta } from "../../_data/models";
 import { ARTIFACTS } from "../../_data/artifacts";

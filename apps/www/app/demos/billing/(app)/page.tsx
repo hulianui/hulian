@@ -11,7 +11,7 @@ import {
   Tag,
   Button,
   ButtonGroup,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Sparkles, Users, CalendarClock, Wallet, TrendingUp, ArrowRight } from "lucide-react";
 import { account, usage } from "../_data/account";
 import { planById, formatMoney } from "../_data/plans";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Segmented, Tag, Stack } from "@hulian/ui";
+import { Segmented, Tag, Stack } from "@hulianui/ui";
 import { PricingCards } from "./pricing-cards";
 
 // 定价表：Segmented 控制月付/年付，驱动 PricingCards 的 period。

@@ -1,4 +1,4 @@
-import { dayjs, type SchedulerEvent, type SchedulerResource, type SchedulerTone } from "@hulian/ui";
+import { dayjs, type SchedulerEvent, type SchedulerResource, type SchedulerTone } from "@hulianui/ui";
 
 // 「瀚约 诊所预约管理台」内存 mock —— 全本地、零外链（铁律四）。
 // 预约即 SchedulerEvent，resourceId 绑医生；附带 type/patient 元字段供详情/取消用。

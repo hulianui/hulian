@@ -1,4 +1,4 @@
-// 团队成员（mock）。avatar 用首字（@hulian/ui Avatar 文字兜底，无远程图）。
+// 团队成员（mock）。avatar 用首字（@hulianui/ui Avatar 文字兜底，无远程图）。
 
 import type { Member } from "./types";
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Heading, Text, Tag, cn } from "@hulian/ui";
+import { Heading, Text, Tag, cn } from "@hulianui/ui";
 
 interface SectionProps {
   id?: string;

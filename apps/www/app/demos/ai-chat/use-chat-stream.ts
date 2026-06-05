@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useReducer, useRef, useState } from "react";
-import type { ChatEvent } from "@hulian/mocks";
+import type { ChatEvent } from "@hulianui/mocks";
 import { chatReducer, type ChatMsg } from "./chat-types";
 
 let seq = 0;

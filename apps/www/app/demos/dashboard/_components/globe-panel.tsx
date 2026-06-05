@@ -1,5 +1,5 @@
 "use client";
-import { Skeleton, WorldMap } from "@hulian/ui";
+import { Skeleton, WorldMap } from "@hulianui/ui";
 import { MousePointerClick } from "lucide-react";
 import { type Snapshot, toMapNodes } from "../_data/snapshot";
 import { Panel } from "./panel";

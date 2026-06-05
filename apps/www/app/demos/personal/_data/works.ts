@@ -3,7 +3,7 @@
 // 第 6 个（留白·浏览器扩展）复用 chrome 外壳 + iridescence 背景，作为作品集自然生长的一笔。
 
 export type DeviceKind = "chrome" | "iphone" | "tablet" | "terminal" | "watch";
-/** 详情页 hero 背景：对应 @hulian/ui 的设计感背景组件 */
+/** 详情页 hero 背景：对应 @hulianui/ui 的设计感背景组件 */
 export type BgKind = "silk" | "iridescence" | "wavy" | "threads" | "liquid-chrome";
 
 export interface WorkShot {

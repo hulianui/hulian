@@ -45,7 +45,7 @@
 **语义 token**（无 success）：`bg-surface` `bg-bg` `text-foreground` `text-muted` `border-border` `ring-ring` `bg-primary`；圆角 `rounded-[var(--radius)]`。Backdrop `bg-black/40`（同 Dialog）。
 **import**：`import { cn } from "../lib/cn"`；`import { motionDurationCss, motionEaseCss } from "../motion"`；`import { Dialog as BaseDialog } from "@base-ui-components/react/dialog"`。
 **四件套** + `"use client"`（drawer.tsx + showcase 都加，Base UI client）+ 桶导出 + 主 index export + showcase 从主 barrel 导出。
-**门禁**：组件 TDD `pnpm --filter @hulian/ui exec vitest run drawer`（先红后绿）；commit 前 `pnpm typecheck`；完整门禁只在 E2 跑 `pnpm typecheck && pnpm test && pnpm build --filter=www --force`（`--force` 拿真实态、绕并行 WIP 的 turbo cache 假象，见 [[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。
+**门禁**：组件 TDD `pnpm --filter @hulianui/ui exec vitest run drawer`（先红后绿）；commit 前 `pnpm typecheck`；完整门禁只在 E2 跑 `pnpm typecheck && pnpm test && pnpm build --filter=www --force`（`--force` 拿真实态、绕并行 WIP 的 turbo cache 假象，见 [[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。
 **截图只在 E2**：被占用则 CDP 自起隔离 chromium（见 [[mcp-browser-busy-launch-isolated-chromium-via-executablepath]]），存 cwd 根，**先点开 drawer 再截**，明暗两态。
 **trunk-based**：master 小步 commit，`git add` **只列自己文件**（绝不 `-A`，见 [[parallel-session-git-add-all-sweeps-your-staged-files]]），不碰他人 WIP。
 
@@ -138,7 +138,7 @@ describe("Drawer (defaultOpen 渲染)", () => {
 });
 ```
 
-- [ ] **Step 2: 跑确认失败** `pnpm --filter @hulian/ui exec vitest run drawer` → FAIL（模块不存在）。
+- [ ] **Step 2: 跑确认失败** `pnpm --filter @hulianui/ui exec vitest run drawer` → FAIL（模块不存在）。
 
 - [ ] **Step 3: drawer.types.ts**
 ```ts
@@ -280,7 +280,7 @@ export { drawerShowcase } from "./drawer.showcase";
 
 - [ ] **Step 7: 主 index** 加 `export * from "./drawer";`（紧跟现有 overlay 族导出之后，自己一行；用 Edit 防 clobber）。
 
-- [ ] **Step 8: 跑测试绿** `pnpm --filter @hulian/ui exec vitest run drawer` → PASS。
+- [ ] **Step 8: 跑测试绿** `pnpm --filter @hulianui/ui exec vitest run drawer` → PASS。
 
 - [ ] **Step 9: typecheck + commit（只列自己文件）**
 ```bash

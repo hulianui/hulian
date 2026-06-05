@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 // dogfood：行内代码直接复用库 Code（纯皮肤·RSC 安全），不再本地重复一份。
-export { Code } from "@hulian/ui";
+export { Code } from "@hulianui/ui";
 
 // Theme 文档区共享原语 —— 纯皮肤、server 安全（无 hooks）。下划线目录 = 私有不路由。
 

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
-import { ThemeProvider, MuiBridgeProvider } from "@hulian/ui";
+import { ThemeProvider, MuiBridgeProvider } from "@hulianui/ui";
 import { themeScript } from "./theme-script";
 import { MswProvider } from "../components/msw-provider";
 

@@ -157,7 +157,7 @@ width/height: var(--active-tab-{width,height}); transform: translate(var(--activ
 
 ## 8. 三道门 + Playwright 验收
 
-- **门禁节奏**（沿用 Step 2）：组件 Task 内 TDD 循环 `pnpm --filter @hulian/ui exec vitest run tabs`（先红后绿）；commit 前 `pnpm typecheck`。
+- **门禁节奏**（沿用 Step 2）：组件 Task 内 TDD 循环 `pnpm --filter @hulianui/ui exec vitest run tabs`（先红后绿）；commit 前 `pnpm typecheck`。
 - **完整三道门只在接 IA 那步跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**，否则撞 desktop tauri `beforeBuildCommand` 二次 build www）。
 - **Playwright 截图实测**（接 IA 后）：访问 `/components/tabs`，**明暗两态各截**，存 cwd 根 `/Users/zhangzhiwei/Desktop/code/hulian/*.png`（不在 `.playwright-mcp/`），**Read 看像素**逐项验：
   - 左树新增「导航」分组、内含 Tabs（`new` 标记）；

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: superpowers:subagent-driven-development。本计划由主线 orchestrator 派发并行子代理执行，逐组件 review。Steps 用 `- [ ]`。
 
-**Goal:** 从 react-bits/Aceternity/MagicUI 复刻 10 个设计感组件进 `@hulian/ui`（瑚琏化），并搭第 7 个内置 demo `/demos/personal`（独立开发者作品集）把它们用进真实场景。
+**Goal:** 从 react-bits/Aceternity/MagicUI 复刻 10 个设计感组件进 `@hulianui/ui`（瑚琏化），并搭第 7 个内置 demo `/demos/personal`（独立开发者作品集）把它们用进真实场景。
 
 **Architecture:** 库主线 10 个组件互相独立 → 并行子代理（每个只建自己文件夹 + 测试，**回报**共享文件待加行，不自己改共享文件）；orchestrator 串行收口 4 个共享文件（`src/index.ts`/`src/showcase.ts`/`apps/www/lib/manifest.ts`/`packages/tokens/src/preset.css`）避免并发冲突；demo 主线在库就绪后搭三路由。
 
@@ -39,7 +39,7 @@ apps/www/app/demos/personal/           ← demo 三路由（Phase 3）
 
 - [ ] **Step 1:** `packages/ui/package.json` 的 `dependencies` 加 `"ogl": "^1.0.11"`（按字母位插在 `motion` 之后/`qrcode-generator` 之前；注意 motion 是 peer，ogl 是 dep）。
 - [ ] **Step 2:** 仓库根 `pnpm install`（不要在根跑 `pnpm dev`，会误杀 5514，见记忆 `hulian-pnpm-dev-killstale-kills-5514`）。
-- [ ] **Step 3:** 验证：`node -e "require.resolve('ogl', {paths:['packages/ui/node_modules','node_modules']})"` 或 `pnpm --filter @hulian/ui exec node -e "import('ogl').then(m=>console.log(Object.keys(m).slice(0,5)))"`，预期打印 `Renderer/Program/...`。
+- [ ] **Step 3:** 验证：`node -e "require.resolve('ogl', {paths:['packages/ui/node_modules','node_modules']})"` 或 `pnpm --filter @hulianui/ui exec node -e "import('ogl').then(m=>console.log(Object.keys(m).slice(0,5)))"`，预期打印 `Renderer/Program/...`。
 
 ---
 
@@ -144,7 +144,7 @@ export function useGlCanvas(
 ```
 组件 <Name> 完成。
 - 文件夹：packages/ui/src/<slug>/（5 文件已建）
-- 测试：pnpm --filter @hulian/ui test <slug> → <PASS, N 用例>
+- 测试：pnpm --filter @hulianui/ui test <slug> → <PASS, N 用例>
 - index.ts 加：export * from "./<slug>";
 - showcase.ts 加：export { <camel>Showcase } from "./<slug>/<slug>.showcase";
 - manifest.ts 加：{ slug:"<slug>", name:"<Name>", description:"…", category:"decoration", group:"<backdrop|overlay-fx>", tags:[…], status:"new" }
@@ -209,7 +209,7 @@ export function useGlCanvas(
 - [ ] Step 1: WebFetch 来源源码，读懂结构。
 - [ ] Step 2: 建 `<slug>/` 5 文件，按作者契约 A/B(/C) 瑚琏化。
 - [ ] Step 3: 写 `<slug>.test.tsx` ≥3 断言（先写预期失败的，再实现）。
-- [ ] Step 4: `pnpm --filter @hulian/ui test <slug>` → 绿。
+- [ ] Step 4: `pnpm --filter @hulianui/ui test <slug>` → 绿。
 - [ ] Step 5: 不改共享文件，按「回报格式」返回。
 
 ---
@@ -220,8 +220,8 @@ export function useGlCanvas(
 - [ ] **Step 2:** 编辑 `packages/ui/src/showcase.ts` 加 10 行 `export { <camel>Showcase } from "./<slug>/<slug>.showcase";`（字母位）。
 - [ ] **Step 3:** 编辑 `packages/tokens/src/preset.css` 追加各件关键帧（`hulian-aurora-bg` 等），确认无重名。
 - [ ] **Step 4:** 编辑 `apps/www/lib/manifest.ts` 加 10 条目（放各自 category/group 区块，参照既有 decoration 区）。
-- [ ] **Step 5:** `pnpm --filter @hulian/ui typecheck` → 通过。
-- [ ] **Step 6:** `pnpm --filter @hulian/ui test` → 全绿（基线 1278+，新增 ~30+ 用例）。
+- [ ] **Step 5:** `pnpm --filter @hulianui/ui typecheck` → 通过。
+- [ ] **Step 6:** `pnpm --filter @hulianui/ui test` → 全绿（基线 1278+，新增 ~30+ 用例）。
 - [ ] **Step 7:** 若红：用 `turbo-test-red-isolate-untracked-wip-not-your-regression` 思路区分是否他人 WIP 引入，只修自己引入的。
 
 ---
@@ -239,7 +239,7 @@ export function useGlCanvas(
 ### Task 12: 主页单页 `personal/(site)/page.tsx` + sections
 - [ ] 外壳 `_components/site-shell.tsx`：顶栏 + Anchor scrollspy + Affix 吸顶 + Dock 悬浮 + ThemeToggle。
 - [ ] sections（各一文件，client）：`hero.tsx`(Aurora+SparklesText/TypingAnimation+WordRotate+AnimatedGradientText+社交Button+Tooltip+AvatarCircles+NumberTicker)、`about.tsx`(Prose+Avatar+FlickeringGrid)、`stack.tsx`(Meter+Chip+Marquee+AnimatedBeam)、`work.tsx`(Particles+CardSpotlight×5+MagicCard/BentoGrid+ShineBorder/GlareHover→Link 详情)、`journey.tsx`(Timeline)、`contact.tsx`(Orb+ProForm+DatePicker+提交toast+CTA)、`footer.tsx`(WavyBackground)。
-- [ ] **Anchor 风险**：若主页内层滚动导致 scrollspy 失效（记忆 `scrollspy-anchor-hardcoded-window-scroll`）→ 优先让主页走 window 滚动；必须内层容器则**回 @hulian/ui 给 Anchor 加自定义容器支持**（修组件，不在 demo hack）。
+- [ ] **Anchor 风险**：若主页内层滚动导致 scrollspy 失效（记忆 `scrollspy-anchor-hardcoded-window-scroll`）→ 优先让主页走 window 滚动；必须内层容器则**回 @hulianui/ui 给 Anchor 加自定义容器支持**（修组件，不在 demo hack）。
 
 ### Task 13: 作品详情 `personal/(site)/work/[slug]/page.tsx`（server）+ client 子组件
 - [ ] `generateStaticParams` 导出 5 slug；page 是 server component，交互下沉 client 子组件（记忆 `nextjs-output-export-dynamic-route`）。

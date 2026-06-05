@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Check, CloudUpload, FileText } from "lucide-react";
-import { MarkdownEditor, Tag } from "@hulian/ui";
+import { MarkdownEditor, Tag } from "@hulianui/ui";
 import { useKnowledge } from "./knowledge-shell";
 
 type SaveState = "idle" | "saving" | "saved";

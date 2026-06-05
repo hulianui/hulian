@@ -33,7 +33,7 @@ import {
   Stack,
   Tag,
   Text,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { manifest, CATEGORIES, type CategoryKey } from "../lib/manifest";
 
 // 每个分类一枚线性图标 —— 承担导航语义，而非标题上方的装饰圆角盒
@@ -201,7 +201,7 @@ export default function Home() {
 
         {/* 安装命令：dogfood Snippet，一行复制即用 */}
         <div className="hl-rise mt-6 max-w-xs" style={rise(6)}>
-          <Snippet>pnpm add @hulian/ui</Snippet>
+          <Snippet>pnpm add @hulianui/ui</Snippet>
         </div>
       </section>
 

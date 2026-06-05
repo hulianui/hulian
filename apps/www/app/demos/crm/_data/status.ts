@@ -1,4 +1,4 @@
-import type { TagTone } from "@hulian/ui";
+import type { TagTone } from "@hulianui/ui";
 import type { CustomerLevel, CustomerStatus, OppStage, OrderStatus } from "./types";
 
 // 业务状态 → Tag 语气色（全 CRM 统一口径，避免各页各自映射漂移）。

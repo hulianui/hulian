@@ -19,7 +19,7 @@ import {
   Timeline,
   toast,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { providerOf, modelOf } from "../../_data/providers";
 import type { Channel } from "../../_data/types";
 import { useProbe } from "./use-probe";

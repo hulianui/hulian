@@ -15,7 +15,7 @@ import {
   Spinner,
   Alert,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Send, AlertCircle } from "lucide-react";
 import { usePending } from "../../lib/async";
 

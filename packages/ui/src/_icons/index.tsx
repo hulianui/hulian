@@ -4,7 +4,7 @@
  * 内联图标集 —— 瑚琏 UI 库自身结构性图标的单一来源。
  *
  * 这些 SVG path 数据原样取自 lucide-react v1.17.0（ISC License），
- * 内联到库内以消除对 lucide-react 的运行时依赖：消费者安装 @hulian/ui
+ * 内联到库内以消除对 lucide-react 的运行时依赖：消费者安装 @hulianui/ui
  * 时不再被迫拉入一个图标库，组件外观也不受 lucide 升级影响。
  *
  * 仅收录组件运行时真正需要的图标。装饰性 / 演示用图标请在 showcase 里

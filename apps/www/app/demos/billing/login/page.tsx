@@ -9,9 +9,9 @@ import {
   Spotlight,
   Text,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Mail, Lock } from "lucide-react";
-import type { SocialProvider } from "@hulian/ui";
+import type { SocialProvider } from "@hulianui/ui";
 import { brand, BILLING_BASE } from "../_components/nav-config";
 
 const socials: { provider: SocialProvider; label: string }[] = [

@@ -27,7 +27,7 @@
 - Root 受控 `open` + Trigger/Close 用 `render={<Button/>}`（同 Dialog 范式）。
 - **jsdom 实测**：带 Portal 的受控 `open` 浮层能 mount，`screen.getByText(内容)` 通过 → open 态结构/皮肤/a11y 可单测，无需 polyfill。
 
-**门禁节奏**（沿用批次一/Step2）：每组件 TDD 先红后绿 `pnpm --filter @hulian/ui exec vitest run <名>`；commit 前 `pnpm typecheck`。**完整三道门 + 生产 build 只在 D3 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（build 必 `--filter=www`）。
+**门禁节奏**（沿用批次一/Step2）：每组件 TDD 先红后绿 `pnpm --filter @hulianui/ui exec vitest run <名>`；commit 前 `pnpm typecheck`。**完整三道门 + 生产 build 只在 D3 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（build 必 `--filter=www`）。
 
 **⚠️ 并行 WIP 隔离（本次特有，套 `turbo-test-red-isolate-untracked-wip-not-your-regression`）**：
 - 全程 `git add` **精确路径**，**绝不 `git add -A`**（未跟踪 accordion/slider/tabs/`*.png`/`.playwright-mcp/` 不得卷入）。
@@ -104,7 +104,7 @@ describe("Tooltip", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run tooltip`
+Run: `pnpm --filter @hulianui/ui exec vitest run tooltip`
 Expected: FAIL —— `./tooltip` 不存在。
 
 - [ ] **Step 3: 实现 tooltip.types.ts**
@@ -241,7 +241,7 @@ export * from "./tooltip";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run tooltip`
+Run: `pnpm --filter @hulianui/ui exec vitest run tooltip`
 Expected: PASS（3 用例绿；若 `aria-describedby` 在受控 open 下 Base UI 未串，按实测改断言为「存在 role=tooltip 浮层」并记录——TDD 实测优先）。
 
 - [ ] **Step 9: typecheck + Commit（精确路径）**
@@ -331,7 +331,7 @@ describe("Popover", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run popover`
+Run: `pnpm --filter @hulianui/ui exec vitest run popover`
 Expected: FAIL —— `./popover` 不存在。
 
 - [ ] **Step 3: 实现 popover.types.ts**
@@ -487,7 +487,7 @@ export * from "./popover";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run popover`
+Run: `pnpm --filter @hulianui/ui exec vitest run popover`
 Expected: PASS（4 用例绿；aria-haspopup/expanded 若值不符按实测调）。
 
 - [ ] **Step 9: typecheck + Commit（精确路径）**

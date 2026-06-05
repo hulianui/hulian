@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { ScrollArea, Text, cn } from "@hulian/ui";
+import { ScrollArea, Text, cn } from "@hulianui/ui";
 import { ACCENT, NODE_KINDS } from "../../_data/node-kinds";
 import type { NodeKind } from "../../_data/types";
 

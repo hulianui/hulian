@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button } from "@hulian/ui";
-import { makeUsers, type DemoUser } from "@hulian/mocks";
+import { Button } from "@hulianui/ui";
+import { makeUsers, type DemoUser } from "@hulianui/mocks";
 
 interface UsersResponse {
   items: DemoUser[];
@@ -12,7 +12,7 @@ interface UsersResponse {
 
 const PAGE_SIZE = 8;
 
-// 静态导出(prod)无后端 + 不启 MSW → 直接用 @hulian/mocks 客户端分页（与 handler 同口径：makeUsers(60)/PAGE_SIZE=8）。
+// 静态导出(prod)无后端 + 不启 MSW → 直接用 @hulianui/mocks 客户端分页（与 handler 同口径：makeUsers(60)/PAGE_SIZE=8）。
 // dev 仍走 fetch 经 MSW Service Worker 拦截，保留「MSW 演示」语义。
 function loadPage(page: number): Promise<UsersResponse> {
   if (process.env.NODE_ENV === "production") {

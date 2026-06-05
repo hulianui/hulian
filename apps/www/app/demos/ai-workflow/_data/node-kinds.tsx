@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { FlowHandleSpec } from "@hulian/ui";
+import type { FlowHandleSpec } from "@hulianui/ui";
 import { Type, ImageIcon, Sparkles, Maximize, Clapperboard, Download } from "lucide-react";
 import { randomSeed } from "../_lib/artwork";
 import type { FlowNodeData, NodeKind } from "./types";

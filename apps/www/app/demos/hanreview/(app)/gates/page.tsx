@@ -20,7 +20,7 @@ import {
   Tag,
   toast,
   useForm,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type { FindingType } from "../../_data/types";
 import { GATE_RULES } from "../../_data/rules";
 import { REPOS } from "../../_data/repos";

@@ -6,9 +6,9 @@ import {
   FileTree,
   Avatar,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type { Course, CourseFile } from "../_data/types";
-import type { FileNode } from "@hulian/ui";
+import type { FileNode } from "@hulianui/ui";
 import { CATEGORY_NAME, lessonCount, totalMinutes } from "../_data/courses";
 
 function toFileNodes(files: CourseFile[]): FileNode[] {

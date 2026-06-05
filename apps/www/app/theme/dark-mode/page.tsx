@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AnimatedThemeToggler } from "@hulian/ui";
+import { AnimatedThemeToggler } from "@hulianui/ui";
 import { DocHeader, Section, Code, Note } from "../_components/doc-kit";
 
 export const metadata: Metadata = { title: "暗色模式 Dark mode · 瑚琏 Hulian" };

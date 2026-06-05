@@ -18,7 +18,7 @@ import {
   BackTop,
   Command,
   type CommandGroupData,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Cloud, Search, Rocket, BookOpen, CreditCard, Phone, Globe, Cpu, Activity } from "lucide-react";
 import { brand, navLinks, footerColumns } from "../_data/site";
 
@@ -225,7 +225,7 @@ function SiteFooter() {
           className="text-sm text-muted"
         >
           <Text size="sm" tone="muted">
-            © 2026 {brand.name} {brand.nameEn} · 本页为 @hulian/ui 演示，公司与数据均为虚构。
+            © 2026 {brand.name} {brand.nameEn} · 本页为 @hulianui/ui 演示，公司与数据均为虚构。
           </Text>
           <Stack direction="row" gap={4}>
             <Link href="/demos/website" className="hover:text-foreground">

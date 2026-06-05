@@ -17,8 +17,8 @@
 
 A2 批次一 spec §1/§9 明列「Table（TanStack）」推迟到 A2.3，A2.3 预告（§10）明确**允许引入 TanStack**。本 spec 据此引入：
 
-- `@tanstack/react-table`（runtime 逻辑库，进 `@hulian/ui` 的 **`dependencies`**）。
-- 安装：`pnpm --filter @hulian/ui add @tanstack/react-table`；**lockfile 变更随实现 commit 一起提**。
+- `@tanstack/react-table`（runtime 逻辑库，进 `@hulianui/ui` 的 **`dependencies`**）。
+- 安装：`pnpm --filter @hulianui/ui add @tanstack/react-table`；**lockfile 变更随实现 commit 一起提**。
 
 ## 2. MVP scope 裁决（YAGNI）
 
@@ -96,9 +96,9 @@ const table = useReactTable({
 
 ## 5. faker 样例数据（复用，不另起）
 
-复用 `@hulian/mocks` 的 `makeUsers(count, seed)` → `DemoUser[]`（`{id,name,email,role,avatar}`，确定性种子防 hydration mismatch）。**不扩工厂、不另写第二套** —— 任务硬约束。
+复用 `@hulianui/mocks` 的 `makeUsers(count, seed)` → `DemoUser[]`（`{id,name,email,role,avatar}`，确定性种子防 hydration mismatch）。**不扩工厂、不另写第二套** —— 任务硬约束。
 
-- **依赖接线**：`@hulian/mocks` 加为 `@hulian/ui` 的 **devDependency**（`workspace:*`）。showcase 是 dev 产物，www 已 bundle mocks，pnpm 符号链接 + `moduleResolution:Bundler` 解析无虞；不污染 ui 的运行时 `dependencies`（faker 不进组件库 runtime）。
+- **依赖接线**：`@hulianui/mocks` 加为 `@hulianui/ui` 的 **devDependency**（`workspace:*`）。showcase 是 dev 产物，www 已 bundle mocks，pnpm 符号链接 + `moduleResolution:Bundler` 解析无虞；不污染 ui 的运行时 `dependencies`（faker 不进组件库 runtime）。
 - showcase 列定义（`ColumnDef<DemoUser>[]`）：姓名（带 avatar）/ 邮箱 / 角色，三列均可排序。排序 demo 用字符串排序（姓名 A→Z）即清晰，无需给 DemoUser 加数字列。
 
 ## 6. 四件套 + showcase（不改 ShowcaseSpec 类型）

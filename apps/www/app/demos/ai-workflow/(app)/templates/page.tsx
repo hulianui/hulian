@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-import { Button, Card, CardBody, CardSkeleton, Heading, Tag, Text, cn, toast } from "@hulian/ui";
+import { Button, Card, CardBody, CardSkeleton, Heading, Tag, Text, cn, toast } from "@hulianui/ui";
 import { ACCENT, NODE_KIND_MAP } from "../../_data/node-kinds";
 import { TEMPLATES } from "../../_data/templates";
 import { topoOrder } from "../../_lib/use-flow-run";

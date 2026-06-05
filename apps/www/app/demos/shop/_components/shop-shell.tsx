@@ -26,7 +26,7 @@ import {
   BackTop,
   Command,
   type CommandGroupData,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ShoppingCart, Heart, User, Search, Menu, Store } from "lucide-react";
 import { categories } from "../_data/categories";
 import { products, formatPrice } from "../_data/products";
@@ -300,7 +300,7 @@ function ShopFooter() {
           <div className="max-w-xs">
             <Logo />
             <Text tone="muted" size="sm" className="mt-3">
-              {brand.slogan} —— 本商城为 @hulian/ui 演示，商品与价格均为虚构。
+              {brand.slogan} —— 本商城为 @hulianui/ui 演示，商品与价格均为虚构。
             </Text>
           </div>
           <Stack direction="row" gap={10} wrap>

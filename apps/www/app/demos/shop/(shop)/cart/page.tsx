@@ -14,7 +14,7 @@ import {
   Popconfirm,
   Skeleton,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { productById, productImage, formatPrice } from "../../_data/products";
 import { useMockData } from "../../../lib/async";
 import { useShop } from "../../_lib/shop-store";

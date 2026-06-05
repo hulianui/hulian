@@ -12,7 +12,7 @@ import {
   Particles,
   cn,
   type TagTone,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ArrowUpRight } from "lucide-react";
 import { Section } from "./section";
 import { works, type Work } from "../../_data/works";

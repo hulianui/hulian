@@ -48,7 +48,7 @@
 **四件套**：`accordion.tsx` + `accordion.types.ts` + `accordion.showcase.tsx`（必 `"use client"`）+ `accordion.test.tsx` + `index.ts`（桶导出组件/类型/showcase）。本体用 Base UI(client) → 加 `"use client"`。
 
 **门禁节奏**（沿用既验证模式）：
-- 组件 Task TDD 循环：`pnpm --filter @hulian/ui exec vitest run accordion`（先红后绿）。
+- 组件 Task TDD 循环：`pnpm --filter @hulianui/ui exec vitest run accordion`（先红后绿）。
 - 组件 Task commit 前：`pnpm typecheck`。
 - **完整三道门 + 生产 build 只在 D2 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**——全包 build 撞 desktop tauri `beforeBuildCommand` 二次 build www）。
 - **Playwright 截图实测只在 D2**：明暗两态各一张，存 cwd 根 `/Users/zhangzhiwei/Desktop/code/hulian/*.png`，Read 看像素（验 panel 展开/收起、箭头旋转、多 item 间距、focus ring；别只读 DOM）。端口 5512/5514（桌面 app 已跑 5514 则用 5514）。
@@ -171,7 +171,7 @@ describe("Accordion", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run accordion`
+Run: `pnpm --filter @hulianui/ui exec vitest run accordion`
 Expected: FAIL —— `./accordion` 不存在。
 
 - [ ] **Step 3: 实现 accordion.types.ts**
@@ -347,7 +347,7 @@ export * from "./accordion";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run accordion`
+Run: `pnpm --filter @hulianui/ui exec vitest run accordion`
 Expected: PASS（结构 + 开合 + 单/多开 + 折叠 + 皮肤钩子全绿）。
 
 - [ ] **Step 9: typecheck + Commit**

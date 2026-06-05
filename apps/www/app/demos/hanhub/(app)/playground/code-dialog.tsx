@@ -8,7 +8,7 @@ import {
   TabsList,
   TabsPanel,
   TabsTab,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { genCode, type ChatMessage, type CodeLang } from "../../_lib/code-gen";
 
 const LANGS: { value: CodeLang; label: string; lang: string }[] = [

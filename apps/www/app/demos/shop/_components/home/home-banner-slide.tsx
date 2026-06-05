@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Button } from "@hulian/ui";
+import { Button } from "@hulianui/ui";
 
 interface BannerSlideProps {
   imgSrc: string;

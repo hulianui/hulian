@@ -6,7 +6,7 @@
 
 **Architecture:** Stat 是纯 Card 气质皮肤（无图表库），升=`text-primary`/降=`text-danger`。Charts 用 `recharts`（Tremor 的底层引擎，否决 Tremor 因 TW v4 不兼容 + 调色板打架 token）薄裹，SVG `fill/stroke` 直接吃 `var(--color-chart-N)` CSS 变量 → 明暗自适应。多序列调色板在 token 层新增 `--color-chart-1..4`（无 success）。
 
-**Tech Stack:** React 19 + TS strict + `recharts`（新依赖，进 `@hulian/ui` dependencies）+ Tailwind v4 语义 token + lucide-react + vitest/jsdom（mock ResponsiveContainer）+ `@hulian/mocks`（faker，已是 ui devDep）。
+**Tech Stack:** React 19 + TS strict + `recharts`（新依赖，进 `@hulianui/ui` dependencies）+ Tailwind v4 语义 token + lucide-react + vitest/jsdom（mock ResponsiveContainer）+ `@hulianui/mocks`（faker，已是 ui devDep）。
 
 **关键约束（继承）：** 只消费语义 token（图表色走 `var(--color-chart-N)`，绝不写死 hex；**无 success**）；四件套 + 图表本体必 `"use client"` + showcase 必 `"use client"`；桶导出 + 主 index export + showcase 从主 barrel 导出；三道门 `--force`（[[turbo-test-red-isolate-untracked-wip-not-your-regression]]）；精确 `git add <路径>` 不碰他人 untracked WIP（drawer/select 等，[[parallel-session-git-add-all-sweeps-your-staged-files]]）；截图明暗两态存 cwd 根 Read 看像素（[[ui-layout-verify-needs-screenshot-not-dom-eval]]）；新依赖 lockfile 随 commit。
 
@@ -56,9 +56,9 @@
 
 ```bash
 cd /Users/zhangzhiwei/Desktop/code/hulian
-pnpm --filter @hulian/ui add recharts
+pnpm --filter @hulianui/ui add recharts
 ```
-Expected: `package.json` dependencies 多 `recharts`；lockfile 更新。peer 若警告 React 版本（recharts ≥2.15 支持 React 19）只是 warning，可继续；若硬失败则 `pnpm --filter @hulian/ui add recharts@latest`。
+Expected: `package.json` dependencies 多 `recharts`；lockfile 更新。peer 若警告 React 版本（recharts ≥2.15 支持 React 19）只是 warning，可继续；若硬失败则 `pnpm --filter @hulianui/ui add recharts@latest`。
 
 - [ ] **Step 4: mocks 加时间序列工厂（factories.ts 末尾追加）**
 
@@ -87,7 +87,7 @@ export type { DemoUser, DemoSeriesPoint } from "./factories";
 
 - [ ] **Step 5: typecheck mocks + ui**
 
-Run: `pnpm --filter @hulian/mocks exec tsc --noEmit && pnpm --filter @hulian/ui exec tsc --noEmit`
+Run: `pnpm --filter @hulianui/mocks exec tsc --noEmit && pnpm --filter @hulianui/ui exec tsc --noEmit`
 Expected: PASS（recharts 类型解析，makeTimeseries 类型对）。
 
 - [ ] **Step 6: Commit**
@@ -154,7 +154,7 @@ describe("Stat", () => {
 
 - [ ] **Step 3: 跑测试验证失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/stat/stat.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/stat/stat.test.tsx`
 Expected: FAIL（`./stat` 不存在）。
 
 - [ ] **Step 4: stat.tsx 实现**
@@ -194,7 +194,7 @@ export function Stat({ label, value, delta, deltaLabel, icon, className, ...prop
 
 - [ ] **Step 5: 跑测试验证通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/stat/stat.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/stat/stat.test.tsx`
 Expected: PASS（4 用例绿）。
 
 - [ ] **Step 6: Commit**
@@ -319,7 +319,7 @@ describe("BarChart", () => {
 
 - [ ] **Step 4: 跑测试验证失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/chart/chart.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/chart/chart.test.tsx`
 Expected: FAIL（`./chart` 不存在）。
 
 - [ ] **Step 5: chart.tsx 实现**
@@ -422,7 +422,7 @@ export function BarChart<TDatum extends Record<string, unknown>>({
 
 - [ ] **Step 6: 跑测试验证通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run src/chart/chart.test.tsx`
+Run: `pnpm --filter @hulianui/ui exec vitest run src/chart/chart.test.tsx`
 Expected: PASS（chartColor 3 断言 + Area/Bar smoke 各 svg 存在）。若 svg 为 null，确认 mock 的 `cloneElement` 注入了 width/height。
 
 - [ ] **Step 7: Commit**
@@ -485,7 +485,7 @@ export { statShowcase } from "./stat.showcase";
 
 ```tsx
 "use client";
-import { makeTimeseries } from "@hulian/mocks";
+import { makeTimeseries } from "@hulianui/mocks";
 import type { ShowcaseSpec } from "../showcase/types";
 import { AreaChart, BarChart } from "./chart";
 
@@ -536,7 +536,7 @@ export * from "./chart";
 
 - [ ] **Step 6: typecheck**
 
-Run: `pnpm --filter @hulian/ui exec tsc --noEmit`
+Run: `pnpm --filter @hulianui/ui exec tsc --noEmit`
 Expected: PASS（makeTimeseries 经 mocks devDep 解析；ShowcaseSpec/Chart 类型对齐）。
 
 - [ ] **Step 7: Commit**
@@ -584,9 +584,9 @@ cd /Users/zhangzhiwei/Desktop/code/hulian
 python3 - <<'PY'
 p = "apps/www/lib/registry.tsx"
 s = open(p, encoding="utf-8").read()
-# import 块：在 "} from "@hulian/ui";" 前插
+# import 块：在 "} from "@hulianui/ui";" 前插
 if "statShowcase" not in s:
-    s = s.replace("\n} from \"@hulian/ui\";", "\n  statShowcase,\n  chartShowcase,\n} from \"@hulian/ui\";", 1)
+    s = s.replace("\n} from \"@hulianui/ui\";", "\n  statShowcase,\n  chartShowcase,\n} from \"@hulianui/ui\";", 1)
 # map：在最后一个 "};" 前插
     idx = s.rfind("};")
     s = s[:idx] + "  stat: statShowcase,\n  chart: chartShowcase,\n" + s[idx:]
@@ -603,7 +603,7 @@ grep -n "statShowcase\|chartShowcase\|stat: \|chart: " apps/www/lib/registry.tsx
 ```bash
 cd /Users/zhangzhiwei/Desktop/code/hulian
 pnpm typecheck
-pnpm --filter @hulian/ui exec vitest run
+pnpm --filter @hulianui/ui exec vitest run
 pnpm build --filter=www --force
 ```
 Expected: typecheck PASS；ui 我 scope 测试全绿（Stat 4 + Chart 5；他人族测试若因 untracked WIP 红则按 [[turbo-test-red-isolate-untracked-wip-not-your-regression]] 隔离，非我引入）；`build --filter=www` PASS（recharts 进 bundle、`/components/stat` + `/components/chart` SSG 生成、ResponsiveContainer 在预渲染下不抛错）。

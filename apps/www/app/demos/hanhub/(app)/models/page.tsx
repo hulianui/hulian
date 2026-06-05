@@ -16,8 +16,8 @@ import {
   PricingTable,
   Segmented,
   Tag,
-} from "@hulian/ui";
-import type { PricingColumn, PricingRow } from "@hulian/ui";
+} from "@hulianui/ui";
+import type { PricingColumn, PricingRow } from "@hulianui/ui";
 import { capabilityLabel, models, providerOf, providers } from "../../_data/providers";
 import type { Capability, ModelMeta } from "../../_data/types";
 import { formatPrice } from "../../_lib/pricing";

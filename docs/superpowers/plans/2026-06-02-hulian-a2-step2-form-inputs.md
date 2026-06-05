@@ -46,7 +46,7 @@
 **四件套**：`x.tsx` + `x.types.ts` + `x.showcase.tsx`（必 `"use client"`）+ `x.test.tsx` + `index.ts`（桶导出组件/类型/showcase）。三组件本体都用 Base UI(client) → 都加 `"use client"`。
 
 **门禁节奏**（沿用批次一已验证模式）：
-- 每个组件 Task 的 TDD 循环：`pnpm --filter @hulian/ui exec vitest run <名>`（先红后绿）。
+- 每个组件 Task 的 TDD 循环：`pnpm --filter @hulianui/ui exec vitest run <名>`（先红后绿）。
 - 每个组件 Task commit 前：`pnpm typecheck`（快，守类型/导出）。
 - **完整三道门 + 生产 build 只在 C4 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**——全包 `pnpm build` 会因 desktop tauri `beforeBuildCommand` 二次 build www 并发冲突）。组件 Task 不单独 build（www 到 C4 才消费组件，提前 build 无意义且慢）。
 - **Playwright 截图实测只在 C4**：每组件明暗两态各一张，存 cwd 根 `/Users/zhangzhiwei/Desktop/code/hulian/*.png`（**不在 .playwright-mcp/**），Read 看像素（不靠 `browser_evaluate` 读 DOM，会漏几何 bug）。
@@ -124,7 +124,7 @@ describe("Input", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run input`
+Run: `pnpm --filter @hulianui/ui exec vitest run input`
 Expected: FAIL —— `./input` 不存在。
 
 - [ ] **Step 3: 实现 input.types.ts**
@@ -250,7 +250,7 @@ export * from "./input";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run input`
+Run: `pnpm --filter @hulianui/ui exec vitest run input`
 Expected: PASS（全部用例绿，含 `hasAttribute("invalid") === false`）。
 
 - [ ] **Step 9: typecheck + Commit**
@@ -338,7 +338,7 @@ describe("Textarea", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run textarea`
+Run: `pnpm --filter @hulianui/ui exec vitest run textarea`
 Expected: FAIL —— `./textarea` 不存在。
 
 - [ ] **Step 3: 实现 textarea.types.ts**
@@ -504,7 +504,7 @@ export * from "./textarea";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run textarea`
+Run: `pnpm --filter @hulianui/ui exec vitest run textarea`
 Expected: PASS（含 autoResize 三红线用例）。
 
 - [ ] **Step 9: typecheck + Commit**
@@ -596,7 +596,7 @@ describe("Field", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run field`
+Run: `pnpm --filter @hulianui/ui exec vitest run field`
 Expected: FAIL —— `./field` 不存在。
 
 - [ ] **Step 3: 实现 field.types.ts**
@@ -752,7 +752,7 @@ export * from "./field";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run field`
+Run: `pnpm --filter @hulianui/ui exec vitest run field`
 Expected: PASS（五条用例全绿，尤其「error 文字真渲染」+「aria-describedby 串 error id」）。
 
 - [ ] **Step 9: typecheck + Commit**
@@ -799,7 +799,7 @@ import {
   inputShowcase,
   textareaShowcase,
   fieldShowcase,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 export const specBySlug: Record<string, ShowcaseSpec> = {
   button: buttonShowcase,

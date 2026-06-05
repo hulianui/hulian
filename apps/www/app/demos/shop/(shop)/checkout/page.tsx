@@ -15,8 +15,8 @@ import {
   Steps,
   Textarea,
   toast,
-} from "@hulian/ui";
-import type { StepsItem } from "@hulian/ui";
+} from "@hulianui/ui";
+import type { StepsItem } from "@hulianui/ui";
 import { productById, productImage, formatPrice } from "../../_data/products";
 import { coupons, couponById } from "../../_data/coupons";
 import { useShop } from "../../_lib/shop-store";

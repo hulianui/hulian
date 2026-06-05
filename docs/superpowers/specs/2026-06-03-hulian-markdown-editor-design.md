@@ -3,11 +3,11 @@
 - 日期：2026-06-03
 - 状态：已确认设计，待写实现 plan
 - 组件：`MarkdownEditor` · slug `markdown-editor` · 分类 `forms` / group `advanced` · status `new`
-- 包：`@hulian/ui`（`packages/ui`）
+- 包：`@hulianui/ui`（`packages/ui`）
 
 ## 背景与定位
 
-`@hulian/ui` 此前**没有任何富文本/markdown 编辑器**——表单分类只有 input/textarea/mentions 等纯文本录入；
+`@hulianui/ui` 此前**没有任何富文本/markdown 编辑器**——表单分类只有 input/textarea/mentions 等纯文本录入；
 `prose` 是**展示层**排版容器（吃 token 渲染已生成的 HTML/JSX），不编辑、不解析。
 
 本组件补齐「WYSIWYG markdown 编辑」这一中后台高频缺口。范式与契约（与用户确认）：

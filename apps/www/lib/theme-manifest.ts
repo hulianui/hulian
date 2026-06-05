@@ -1,5 +1,5 @@
-// 瑚琏「Theme」文档区 IA + 设计 token 数据 SSOT —— 纯数据，零 @hulian/ui import，server/client 皆可读。
-// 数值真源在 @hulian/tokens（preset.css / semantic.css）；此处镜像用于文档可视化，改 token 时同步。
+// 瑚琏「Theme」文档区 IA + 设计 token 数据 SSOT —— 纯数据，零 @hulianui/ui import，server/client 皆可读。
+// 数值真源在 @hulianui/tokens（preset.css / semantic.css）；此处镜像用于文档可视化，改 token 时同步。
 
 export interface ThemeNavItem {
   slug: string; // 空串 = Overview（/theme 根）
@@ -20,7 +20,7 @@ export const THEME_NAV: ThemeNavItem[] = [
   { slug: "cursors", label: "光标", en: "Cursors", blurb: "交互态指针语义" },
 ];
 
-// ===== 断点 SSOT 镜像（真源：@hulian/tokens preset.css @theme --breakpoint-*）=====
+// ===== 断点 SSOT 镜像（真源：@hulianui/tokens preset.css @theme --breakpoint-*）=====
 export interface Breakpoint {
   name: string; // sm/md/lg/xl/2xl
   px: number;

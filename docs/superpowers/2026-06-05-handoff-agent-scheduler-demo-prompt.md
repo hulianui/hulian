@@ -9,9 +9,9 @@
 
 ## 目的（务必先读）
 
-这个 demo 的根本目的是**用真实场景驱动 @hulian/ui 组件库成长**——demo 是寻求真实场景拓展 UI 库的载体，不是做着玩。
-- 没组件就去 @hulian/ui 加组件；组件有问题就去 @hulian/ui 修组件、丰富组件。
-- **100% 用 @hulian/ui 组件实现，禁止在 demo 里打 CSS 补丁 / 行为 hack**——demo 里需要 override 或 hack 才好用 = 组件有缺口，回库修组件，别在 demo 打补丁。
+这个 demo 的根本目的是**用真实场景驱动 @hulianui/ui 组件库成长**——demo 是寻求真实场景拓展 UI 库的载体，不是做着玩。
+- 没组件就去 @hulianui/ui 加组件；组件有问题就去 @hulianui/ui 修组件、丰富组件。
+- **100% 用 @hulianui/ui 组件实现，禁止在 demo 里打 CSS 补丁 / 行为 hack**——demo 里需要 override 或 hack 才好用 = 组件有缺口，回库修组件，别在 demo 打补丁。
 - 不要担心引入新组件，允许 web search 找真实业界形态。
 
 ## 产品概念
@@ -40,7 +40,7 @@
 - 所有面向交付输出**中文**。
 - 新组件标配：源码 + `.showcase.tsx`（进画廊）+ `.test.tsx` + `index.ts` barrel + `lib/manifest.ts` 登记 + `lib/registry.tsx`（画廊需要时）。零依赖优先、token 驱动配色、纯几何/逻辑抽纯函数可单测、尽量 RSC 安全。
 - demo 注册进 `app/demos/lib/demos.ts`；跑 `demos-coverage.mjs` 让新组件点亮计入覆盖率。
-- 验证：`pnpm --filter @hulian/ui test` 全绿 + 画廊 doc 页零 console error + **CDP 隔离 Chrome-for-Testing 实机逐页截图自证**（别反复起新 Chrome profile，会连环弹钥匙串——复用单实例或用 executablePath 起独立 chromium）。
+- 验证：`pnpm --filter @hulianui/ui test` 全绿 + 画廊 doc 页零 console error + **CDP 隔离 Chrome-for-Testing 实机逐页截图自证**（别反复起新 Chrome profile，会连环弹钥匙串——复用单实例或用 executablePath 起独立 chromium）。
 - **并行会话 git 卫生**：本仓常有多会话未提交 WIP，`git add -A` 会卷走别人的暂存。**只 add 自己改的具体文件**，或用 hunk 级 `git apply --cached` 只暂存自己改动。commit 不 push（本仓无 remote 惯例）。
 - 起 www 预览用 `pnpm --filter www dev`（根 `pnpm dev` 的 kill:stale 会误杀别的桌面 app）。
 - Next dev 下 headless CLI 截图可能全空白——视觉验证走真实浏览器 / Playwright MCP / curl SSR HTML。

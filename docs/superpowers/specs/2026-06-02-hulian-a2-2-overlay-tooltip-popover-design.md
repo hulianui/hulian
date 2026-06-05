@@ -171,7 +171,7 @@ export interface PopoverContentProps {
 
 **不单测、交 Playwright（jsdom 无布局）**：浮层相对触发器的定位、碰撞翻转、箭头几何朝向、明暗像素对比、z 层级。
 
-**门禁节奏**（沿用批次一/Step 2）：每组件 TDD 先红后绿（`pnpm --filter @hulian/ui exec vitest run <名>`）+ commit 前 `pnpm typecheck`；**完整三道门 + 生产 build 只在接 IA 那步跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**，避免 desktop tauri `beforeBuildCommand` 二次 build www 并发冲突）。**Playwright 截图只在接 IA 后**，存 cwd 根 `*.png`、Read 看像素。
+**门禁节奏**（沿用批次一/Step 2）：每组件 TDD 先红后绿（`pnpm --filter @hulianui/ui exec vitest run <名>`）+ commit 前 `pnpm typecheck`；**完整三道门 + 生产 build 只在接 IA 那步跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**，避免 desktop tauri `beforeBuildCommand` 二次 build www 并发冲突）。**Playwright 截图只在接 IA 后**，存 cwd 根 `*.png`、Read 看像素。
 
 ---
 

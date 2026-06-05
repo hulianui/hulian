@@ -8,7 +8,7 @@
 //   node scripts/demos-coverage.mjs            # 打印覆盖率 + 未覆盖清单
 //   node scripts/demos-coverage.mjs --min 60   # 覆盖率低于阈值则 exit 1（可进 CI）
 //
-// 口径：分母 = apps/www/lib/manifest.ts 公开组件条目；分子 = demos/** 里 `from "@hulian/ui"`
+// 口径：分母 = apps/www/lib/manifest.ts 公开组件条目；分子 = demos/** 里 `from "@hulianui/ui"`
 // 的具名 import 命中的条目（ProTable 不算覆盖 Table —— 用户看的是 manifest 条目本身）。
 
 import { execSync } from "node:child_process";
@@ -42,7 +42,7 @@ function parseManifest() {
 }
 
 function usedIdentifiers() {
-  const files = execSync(`grep -rl '@hulian/ui' "${demosDir}"`, { encoding: "utf8" })
+  const files = execSync(`grep -rl '@hulianui/ui' "${demosDir}"`, { encoding: "utf8" })
     .trim()
     .split("\n")
     .filter(Boolean);

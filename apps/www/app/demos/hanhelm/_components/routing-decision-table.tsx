@@ -2,8 +2,8 @@
 // 智能路由 · 决策回放表：对所选任务用当前六维权重重算的 RoutingDecision，
 // 逐候选执行器展示六维分项打分（迷你 Sparkline 条）+ 综合分；淘汰者标灰 + 原因 Tag，
 // 选中者（chosenId）高亮 + reason 文案。
-import { Sparkline, Table, Tag } from "@hulian/ui";
-import type { ColumnDef } from "@hulian/ui";
+import { Sparkline, Table, Tag } from "@hulianui/ui";
+import type { ColumnDef } from "@hulianui/ui";
 import { useMemo } from "react";
 import type { Executor, RoutingCandidate, RoutingDecision } from "../_data/types";
 import { executorName } from "../_data/executors";

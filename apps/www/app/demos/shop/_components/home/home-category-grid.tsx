@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Card, CardBody, Heading } from "@hulian/ui";
+import { Card, CardBody, Heading } from "@hulianui/ui";
 import type { Category } from "../../_data/types";
 import { SHOP_BASE } from "../nav-config";
 

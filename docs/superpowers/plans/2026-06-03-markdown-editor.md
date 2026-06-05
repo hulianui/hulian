@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 给 `@hulian/ui` 新增 `MarkdownEditor`——WYSIWYG markdown 编辑器，value 进出皆 markdown 字符串，可放进 `<Field>` 校验。
+**Goal:** 给 `@hulianui/ui` 新增 `MarkdownEditor`——WYSIWYG markdown 编辑器，value 进出皆 markdown 字符串，可放进 `<Field>` 校验。
 
 **Architecture:** 瑚琏皮肤罩 TipTap v3（ProseMirror）。`'use client'` + `useEditor({immediatelyRender:false})`；`tiptap-markdown` 做 md↔doc 序列化；外壳复刻 `Input` 的 token 皮肤 + `has-[[data-invalid]]`；隐藏 `<input>` 桥给原生表单/Field；工具栏 dogfood 自家 Toolbar/Button/Tooltip/Popover。
 
@@ -659,7 +659,7 @@ ProseMirror 空文档 placeholder 用 CSS：给 `editorProps.attributes` 注入 
       },
 ```
 并在 class 串加（仅在 `.ProseMirror p.is-empty:first-child::before` 起效需要 placeholder 扩展，简化方案下 placeholder 可能不显）——
-> **决策**：placeholder 体验依赖 `.is-editor-empty` 类，该类由 `@tiptap/extension-placeholder` 提供。首版**接该扩展**（轻量，~3KB）：`pnpm --filter @hulian/ui add @tiptap/extension-placeholder@^3`，extensions 加 `Placeholder.configure({ placeholder: placeholder ?? "" })`，class 加 `[&_.is-editor-empty]:before:content-[attr(data-placeholder)] [&_.is-editor-empty]:before:text-muted [&_.is-editor-empty]:before:float-left [&_.is-editor-empty]:before:h-0 [&_.is-editor-empty]:before:pointer-events-none`。提交时把该依赖一并加入 package.json。
+> **决策**：placeholder 体验依赖 `.is-editor-empty` 类，该类由 `@tiptap/extension-placeholder` 提供。首版**接该扩展**（轻量，~3KB）：`pnpm --filter @hulianui/ui add @tiptap/extension-placeholder@^3`，extensions 加 `Placeholder.configure({ placeholder: placeholder ?? "" })`，class 加 `[&_.is-editor-empty]:before:content-[attr(data-placeholder)] [&_.is-editor-empty]:before:text-muted [&_.is-editor-empty]:before:float-left [&_.is-editor-empty]:before:h-0 [&_.is-editor-empty]:before:pointer-events-none`。提交时把该依赖一并加入 package.json。
 
 - [ ] **Step 3: 跑测试确认未回归**
 

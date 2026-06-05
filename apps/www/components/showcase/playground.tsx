@@ -9,7 +9,7 @@ import {
   Switch,
   CodeBlock,
   type ShowcaseSpec,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 export function Playground({ spec }: { spec: ShowcaseSpec }) {
   const [props, setProps] = useState<Record<string, unknown>>(

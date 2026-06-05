@@ -20,7 +20,7 @@ import {
   Choicebox,
   ChoiceboxGroup,
   type TimelineItemProps,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { BellRing, BellOff, CheckCircle2, Activity } from "lucide-react";
 import { ALERT_EVENTS, ALERT_RULES } from "../../_data/alerts";
 import { seriesValues } from "../../_data/metrics";

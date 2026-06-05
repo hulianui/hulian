@@ -1,5 +1,5 @@
 "use client";
-import { Statistic, Tag, Heading, Text, Skeleton } from "@hulian/ui";
+import { Statistic, Tag, Heading, Text, Skeleton } from "@hulianui/ui";
 import { Clock } from "lucide-react";
 import Link from "next/link";
 import { ProductCard } from "../product-card";

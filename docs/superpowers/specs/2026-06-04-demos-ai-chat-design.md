@@ -1,7 +1,7 @@
 # 内置 Demo 项目 · 首发 AI 对话工具 — 设计
 
 > 日期：2026-06-04 · 状态：已与用户确认，待写实现计划
-> 核心约束：**100% 用 `@hulian/ui` 搭建**。撞到组件缺口/不满足 → 就地扩库或加新组件，禁止在页面手搓本应是组件的 UI。
+> 核心约束：**100% 用 `@hulianui/ui` 搭建**。撞到组件缺口/不满足 → 就地扩库或加新组件，禁止在页面手搓本应是组件的 UI。
 
 ## 1. 目标
 
@@ -13,7 +13,7 @@
 
 | 文件 | 职责 |
 |---|---|
-| `apps/www/lib/demos.ts` | Demo 元数据 SSoT（纯数据，零 `@hulian/ui` import，仿 `manifest.ts`）：`{ slug, title, tagline, desc, icon, tags, status, href }[]` |
+| `apps/www/lib/demos.ts` | Demo 元数据 SSoT（纯数据，零 `@hulianui/ui` import，仿 `manifest.ts`）：`{ slug, title, tagline, desc, icon, tags, status, href }[]` |
 | `apps/www/app/demos/layout.tsx` | 区级外壳：返回首页链接 + wordmark + `AnimatedThemeToggler`，复用 `/components` 的壳模式 |
 | `apps/www/app/demos/page.tsx` | **画廊索引**：读 `demos.ts`，`BentoGrid`/`Card` 渲染 demo 卡片 + 「更多 demo·敬请期待」占位卡 |
 | `apps/www/app/demos/ai-chat/page.tsx` | **AI 对话详情页**（具名路由文件夹，非 `[slug]` 动态注册——demo 是定制重页面而非数据驱动文档；URL 仍是 `/demos/ai-chat`） |
@@ -74,7 +74,7 @@ Hero 的 CTA `Stack` 行新增第三个按钮：
 
 ### 4.3 数据流（真流式 · 走 MSW）
 
-**Mock 端**（`@hulian/mocks`，workspace 基建包，非 UI 库）：
+**Mock 端**（`@hulianui/mocks`，workspace 基建包，非 UI 库）：
 - 新增 `POST /api/chat` handler，返回 chunked `ReadableStream`（SSE 风格 `data: {json}\n\n`）。
 - 把一段**预设脚本**编码成有序事件流：
   `thinking`（增量）→ `tool_call` → `tool_result` → `text`（逐 token）→ `citation` → `done`。
@@ -111,7 +111,7 @@ Hero 的 CTA `Stack` 行新增第三个按钮：
 
 - 首页红框处出现「看示例 →」，点击进 `/demos` 画廊。
 - `/demos` 画廊展示 AI 对话卡片 + 占位卡。
-- `/demos/ai-chat` 可输入发送，依次看到 TypingDots → ThinkingBlock → ToolCall → StreamingText 逐字 → Citation → MessageActions，全程组件来自 `@hulian/ui`。
+- `/demos/ai-chat` 可输入发送，依次看到 TypingDots → ThinkingBlock → ToolCall → StreamingText 逐字 → Citation → MessageActions，全程组件来自 `@hulianui/ui`。
 - 「停止生成」可中断流。
 - 明暗主题切换无异常，移动端 rail 折叠可用。
 - 任何手搓的本应是组件的 UI = 不合格，需回填为 hulian 组件。

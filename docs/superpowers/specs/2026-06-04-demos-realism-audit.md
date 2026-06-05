@@ -20,7 +20,7 @@
 - 服务的 CSS（`/_next/static/chunks/apps_www_app_globals_*.css`）里 **15 个 `@keyframes hulian-*` 全在**。
 - `/demos/website` 页面 HTML 里动画工具类实打实生成：`hulian-marquee`×44、`hulian-orbit`×18、`hulian-aurora`×3、`hulian-shimmer-slide`×3。
 
-机制四层全通：keyframes 加载 ✓ / Tailwind `@source "../../../packages/ui/src/**/*.{ts,tsx}"` 扫到组件源 ✓ / 组件 `[animation:hulian-…]` 引用 ✓ / `@hulian/tokens` 的 `exports` 直接指向 `src/preset.css` 无陈旧 dist ✓。
+机制四层全通：keyframes 加载 ✓ / Tailwind `@source "../../../packages/ui/src/**/*.{ts,tsx}"` 扫到组件源 ✓ / 组件 `[animation:hulian-…]` 引用 ✓ / `@hulianui/tokens` 的 `exports` 直接指向 `src/preset.css` 无陈旧 dist ✓。
 
 **"看不到动画"的两个真实解释（不是 bug）：**
 - crm / projects / customer-service / ai-workflow 是中后台 dashboard，**刻意**几乎不用入场动画（企业台要稳）。动画密集的是 `website`。
@@ -208,14 +208,14 @@ export function usePending() {
 3. 危险操作（删除 / 作废 / 清空 / 注销）有 Popconfirm 或 AlertDialog 二次确认。
 4. **纯图标按钮**全部有 Tooltip。
 5. 列表筛选无结果时显示 Empty；模拟一次加载失败时显示 Alert/Result + 重试。
-6. `pnpm --filter @hulian/ui test` 全绿；6 个 demo 页面 + 子页在 dev server 实机零 console error（用隔离 Chrome-for-Testing，见记忆 [[mcp-browser-busy-launch-isolated-chromium-via-executablepath]]）。
+6. `pnpm --filter @hulianui/ui test` 全绿；6 个 demo 页面 + 子页在 dev server 实机零 console error（用隔离 Chrome-for-Testing，见记忆 [[mcp-browser-busy-launch-isolated-chromium-via-executablepath]]）。
 
 ---
 
 ## 8. 执行注意
 
 - 共享文件（`demos/lib/*`、`manifest.ts`、`registry.tsx`）当前带其它会话未提交 WIP，落盘用 **hunk 级 `git apply --cached`** 只暂存自己改动（见记忆）。
-- 不要为了 demo 好用在 demo 里打 CSS 补丁——撞到组件缺口就去修 `@hulian/ui` 组件（见记忆 [[fix-component-not-demo-css-patch]]）。
+- 不要为了 demo 好用在 demo 里打 CSS 补丁——撞到组件缺口就去修 `@hulianui/ui` 组件（见记忆 [[fix-component-not-demo-css-patch]]）。
 - 验视觉用真实浏览器，别用 headless CLI（apps/www 在 headless 下截图空白，见记忆 [[www-msw-gate-blanks-headless-screenshots]]）。
 
 ---

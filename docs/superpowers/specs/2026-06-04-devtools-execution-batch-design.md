@@ -1,7 +1,7 @@
 # Devtools / 执行态 组件批：LogViewer · CodeDiff · FileTree
 
 > 日期：2026-06-04 · 状态：已批准（用户"都做"）· 承 TaskRunner 打开的"执行/运行态"品类
-> 准则：缺件就加、件有问题就修、100% dogfood @hulian/ui、绝不在 demo 打 CSS 补丁
+> 准则：缺件就加、件有问题就修、100% dogfood @hulianui/ui、绝不在 demo 打 CSS 补丁
 
 ## 背景
 

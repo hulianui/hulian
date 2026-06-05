@@ -1,5 +1,5 @@
 // 瀚付 HanPay 数据模型（SSoT）。纯展示 demo，所有金额以「元」为单位的 number。
-import type { CardBrand } from "@hulian/ui";
+import type { CardBrand } from "@hulianui/ui";
 
 export type BillingCycle = "monthly" | "yearly";
 

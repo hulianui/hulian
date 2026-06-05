@@ -12,7 +12,7 @@ import {
   Star,
   Ticket,
 } from "lucide-react";
-import { Avatar, Divider, List, ListItem, Rating, Statistic, Tag, toast } from "@hulian/ui";
+import { Avatar, Divider, List, ListItem, Rating, Statistic, Tag, toast } from "@hulianui/ui";
 
 // 功能菜单行：左侧彩色图标芯片 + 文案 + 右值 + chevron。用库 List/ListItem 承载，图标走 lucide 线性图标（非 emoji）。
 function SettingRow({

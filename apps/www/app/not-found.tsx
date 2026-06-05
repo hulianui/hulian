@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Home } from "lucide-react";
-import { Button, DotPattern, Result } from "@hulian/ui";
+import { Button, DotPattern, Result } from "@hulianui/ui";
 
 // 自定义 404 —— Next.js 默认 not-found 没有任何返回入口，进去就出不来。
 // dogfood 自家 Result 组件（status="404" 内置放大镜图标 + muted 语义色 + 居中版式），

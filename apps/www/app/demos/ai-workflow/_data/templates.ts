@@ -1,4 +1,4 @@
-import type { FlowEdge, FlowNode } from "@hulian/ui";
+import type { FlowEdge, FlowNode } from "@hulianui/ui";
 import type { FlowNodeData, WorkflowTemplate } from "./types";
 
 // 预置工作流模板（固定 seed/位置 → SSR 稳定）。点「使用模板」即把这份 nodes/edges 灌入画布。

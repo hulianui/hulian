@@ -1,5 +1,5 @@
 import { LayoutDashboard, FolderKanban, Images, FileText, Receipt, Wallet } from "lucide-react";
-import type { BreadcrumbItem, NavMenuNode } from "@hulian/ui";
+import type { BreadcrumbItem, NavMenuNode } from "@hulianui/ui";
 
 export const ROOT = "/demos/projects";
 

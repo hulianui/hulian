@@ -22,7 +22,7 @@ import {
   Switch,
   Tag,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 const BASE_URL = "https://api.hanhub.cn/v1";
 

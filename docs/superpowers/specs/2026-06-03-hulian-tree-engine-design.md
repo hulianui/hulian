@@ -213,7 +213,7 @@ export interface CascaderProps {
 
 - **每件五件套** + 桶 `index.ts` + 主 `packages/ui/src/index.ts` export + `apps/www/lib/manifest.ts` 一行 + `apps/www/lib/registry.tsx` import&map。
 - **slug/分类**：`tree`→data-display；`tree-select`→inputs；`cascader`→inputs。status `new`。
-- **零新依赖**：Base UI 已是 `@hulian/ui` dep，仅借 Popover 定位；lucide 图标已在用。
+- **零新依赖**：Base UI 已是 `@hulianui/ui` dep，仅借 Popover 定位；lucide 图标已在用。
 - **三道门全绿**：`tsc`(ui + www 两包) + vitest(`--force` 拿真实态) + `build --filter=www` SSG。
 - **精确提交**：master 有他人未提交 WIP → 禁 `git add -A`；逐件 `git commit -- <具体路径>`，提交前核 diff 仅自己增量（见 skill `git-commit-head-plus-mine-via-plumbing-without-touching-worktree` / `parallel-session-git-add-all-sweeps-your-staged-files`）。manifest/registry 用幂等读改写插入缩竞争窗口。
 

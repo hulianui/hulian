@@ -7,7 +7,7 @@ import {
   Tag,
   type ChannelStatus,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { requestLogs } from "../../_data/logs";
 import { models, modelOf, providerOf } from "../../_data/providers";
 import { apiKeys } from "../../_data/keys";

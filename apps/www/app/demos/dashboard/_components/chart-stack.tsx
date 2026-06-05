@@ -1,5 +1,5 @@
 "use client";
-import { AreaChart, BarChart, LineChart, PieChart, Skeleton } from "@hulian/ui";
+import { AreaChart, BarChart, LineChart, PieChart, Skeleton } from "@hulianui/ui";
 import type { Snapshot } from "../_data/snapshot";
 import { Panel } from "./panel";
 

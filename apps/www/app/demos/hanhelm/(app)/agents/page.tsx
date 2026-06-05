@@ -1,7 +1,7 @@
 "use client";
 // 执行器池：顶部统计条（池容量/平均利用率/健康数） + 执行器卡网格（能力/价位/负载/健康/降级链/启停限流）。
 import { Boxes, Gauge, HeartPulse } from "lucide-react";
-import { Card, CardBody, Stat } from "@hulian/ui";
+import { Card, CardBody, Stat } from "@hulianui/ui";
 import { EXECUTORS } from "../../_data/executors";
 import { AgentsExecutorCard } from "../../_components/agents-executor-card";
 

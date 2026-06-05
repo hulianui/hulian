@@ -15,7 +15,7 @@ import {
   Field,
   Input,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Pencil, ShieldAlert } from "lucide-react";
 import { account } from "../../_data/account";
 import { planById, formatMoney } from "../../_data/plans";

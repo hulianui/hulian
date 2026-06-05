@@ -27,7 +27,7 @@ import {
   toast,
   useForm,
   type TimelineDotColor,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { customerById } from "../_data/customers";
 import { followsByCustomer } from "../_data/follows";
 import { opportunities } from "../_data/opportunities";

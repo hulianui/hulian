@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Card, CardBody, Rating, Tag, Chip, toast } from "@hulian/ui";
+import { Card, CardBody, Rating, Tag, Chip, toast } from "@hulianui/ui";
 import { Heart, ShoppingCart } from "lucide-react";
 import { productImage, formatPrice } from "../_data/products";
 import type { Product } from "../_data/types";

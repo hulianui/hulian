@@ -51,7 +51,7 @@
 **四件套**：`x.tsx` + `x.types.ts` + `x.showcase.tsx`（必 `"use client"`）+ `x.test.tsx` + `index.ts`（桶导出组件/类型/showcase）。本体用 Base UI(client) → `tabs.tsx`/`tabs.showcase.tsx` 都加 `"use client"`。
 
 **门禁节奏**（沿用批次一/Step2 已验证模式）：
-- 组件 Task 的 TDD 循环：`pnpm --filter @hulian/ui exec vitest run tabs`（先红后绿）。
+- 组件 Task 的 TDD 循环：`pnpm --filter @hulianui/ui exec vitest run tabs`（先红后绿）。
 - 组件 Task commit 前：`pnpm typecheck`（守类型/导出）。
 - **完整三道门 + 生产 build 只在 T2 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**——全包 build 会撞 desktop tauri `beforeBuildCommand` 二次 build www）。
 - **Playwright 截图实测只在 T2**：明暗两态 + 两皮肤，存 cwd 根 `/Users/zhangzhiwei/Desktop/code/hulian/*.png`（**不在 .playwright-mcp/**），Read 看像素（不靠 `browser_evaluate` 读 DOM，会漏几何 bug）。
@@ -189,7 +189,7 @@ describe("受控/非受控行为", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run tabs`
+Run: `pnpm --filter @hulianui/ui exec vitest run tabs`
 Expected: FAIL —— `./tabs` 不存在。
 
 - [ ] **Step 3: 实现 tabs.types.ts**
@@ -390,7 +390,7 @@ export * from "./tabs";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run tabs`
+Run: `pnpm --filter @hulianui/ui exec vitest run tabs`
 Expected: PASS（变体类 + 结构/a11y + Indicator 注入 + data-active 钩子 + 受控/非受控全绿）。若点击用例红，按 Step 1 注记兜底微调后再绿。
 
 - [ ] **Step 9: typecheck + Commit**
@@ -435,7 +435,7 @@ import {
   textareaShowcase,
   fieldShowcase,
   tabsShowcase,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 export const specBySlug: Record<string, ShowcaseSpec> = {
   button: buttonShowcase,

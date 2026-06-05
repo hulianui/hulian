@@ -1,7 +1,7 @@
 "use client";
 // 瀚舵 HanHelm —— 任务详情（旗舰页）。
 // 多 agent 编排 DAG（复用 Flow 只读）+ 执行过程帧回放 + 全链路 Timeline。
-// 100% @hulian/ui；运行态由 useDispatchRun 驱动（逐节点点亮 + 逐帧流出 + 进度 + failover）。
+// 100% @hulianui/ui；运行态由 useDispatchRun 驱动（逐节点点亮 + 逐帧流出 + 进度 + failover）。
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ import {
   Empty,
   Text,
   cn,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import {
   Play,
   RotateCcw,

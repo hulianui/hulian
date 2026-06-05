@@ -4,9 +4,9 @@
 
 **Goal:** 在 `apps/www/app/demos/knowledge/` 建一个三栏知识库/网盘 demo，点亮零使用的 Tree/FileTree/TreeSelect，让 MarkdownEditor 当主角，并回库增强 FileTree（搜索/右键/受控展开）。
 
-**Architecture:** 单路由客户端 SPA。FileTree 先回库增强（TDD），再建数据层（VaultNode + useVault 内存态 + 程序化 SVG），最后三栏 UI 组合，全 dogfood `@hulian/ui`。
+**Architecture:** 单路由客户端 SPA。FileTree 先回库增强（TDD），再建数据层（VaultNode + useVault 内存态 + 程序化 SVG），最后三栏 UI 组合，全 dogfood `@hulianui/ui`。
 
-**Tech Stack:** Next.js App Router（output:export）, React client components, `@hulian/ui`, vitest（FileTree 单测）。
+**Tech Stack:** Next.js App Router（output:export）, React client components, `@hulianui/ui`, vitest（FileTree 单测）。
 
 ---
 
@@ -59,7 +59,7 @@ describe("filterFileTree", () => {
 });
 ```
 
-- [ ] **Step 2: 跑测试确认失败** `pnpm --filter @hulian/ui test file-tree-core` → FAIL（filterFileTree 未定义）
+- [ ] **Step 2: 跑测试确认失败** `pnpm --filter @hulianui/ui test file-tree-core` → FAIL（filterFileTree 未定义）
 
 - [ ] **Step 3: 实现** `file-tree-core.ts`
 
@@ -98,7 +98,7 @@ export function filterFileTree(
 }
 ```
 
-- [ ] **Step 4: 跑测试确认通过** `pnpm --filter @hulian/ui test file-tree-core` → PASS
+- [ ] **Step 4: 跑测试确认通过** `pnpm --filter @hulianui/ui test file-tree-core` → PASS
 
 - [ ] **Step 5: Commit** `git add packages/ui/src/file-tree/file-tree-core.* && git commit -m "feat(ui): FileTree 新增 filterFileTree 纯函数(树内搜索+祖先自动展开)"`
 
@@ -304,7 +304,7 @@ describe("FileTree 受控/搜索/右键", () => {
 });
 ```
 
-- [ ] **Step 5: 跑全量 file-tree 测试 + 确认旧测试不破** `pnpm --filter @hulian/ui test file-tree` → 全 PASS（含旧 5 项）
+- [ ] **Step 5: 跑全量 file-tree 测试 + 确认旧测试不破** `pnpm --filter @hulianui/ui test file-tree` → 全 PASS（含旧 5 项）
 
 - [ ] **Step 6: Commit** `git add packages/ui/src/file-tree/ && git commit -m "feat(ui): FileTree 接入 searchable/onContextMenu/受控展开(向后兼容 per-node defaultExpanded)"`
 
@@ -319,7 +319,7 @@ describe("FileTree 受控/搜索/右键", () => {
 
 - [ ] **Step 1: types.ts** —— VaultNode（见 spec §4）+ 视图态类型（ViewMode="doc"|"file"、Collaborator、VersionEntry）。
 - [ ] **Step 2: images.ts** —— 仿 `projects/_data/photos.ts` 的 `photoArt()`：`vaultImage(seed,w,h): string` 返回 data-URI SVG（mesh 渐变 + 居中标题 + 类别配色），导出若干命名图（封面/海报/截图）。零外链。
-- [ ] **Step 3: org.ts** —— 权限 Tree 的 TreeNode 组织架构（产品部/研发中心/设计组 → 成员），导出 `ORG_TREE: TreeNode[]`（来自 `@hulian/ui` 的 TreeNode 类型）。
+- [ ] **Step 3: org.ts** —— 权限 Tree 的 TreeNode 组织架构（产品部/研发中心/设计组 → 成员），导出 `ORG_TREE: TreeNode[]`（来自 `@hulianui/ui` 的 TreeNode 类型）。
 - [ ] **Step 4: Commit** `git commit -m "feat(www): knowledge demo 数据层 types/程序化图片/org"`
 
 ---
@@ -394,7 +394,7 @@ describe("FileTree 受控/搜索/右键", () => {
 
 - [ ] **Step 1:** demos.ts 追加 `knowledge` 条目（category 中后台，tags `["FileTree","Tree","MarkdownEditor","ImageViewer","TreeSelect"]`，status done）。
 - [ ] **Step 2:** `pnpm --filter www demos:coverage` —— 确认 Tree/FileTree/TreeSelect/MarkdownEditor 从未覆盖变覆盖，覆盖率较改造前只升不降；远程资源门禁过（0 外链）。
-- [ ] **Step 3:** `pnpm --filter @hulian/ui test`（FileTree 增强不破其它）+ www typecheck/build 局部验证。
+- [ ] **Step 3:** `pnpm --filter @hulianui/ui test`（FileTree 增强不破其它）+ www typecheck/build 局部验证。
 - [ ] **Step 4: 实机自证** —— `pnpm --filter www dev` 起预览；隔离 Chrome-for-Testing（记忆 mcp-browser-busy…）截：三栏首屏 / 文档编辑 / 文件 ImageViewer 全屏 / 上传态 / 右键菜单 / 权限 Tree / 移动选择器，确认零 console error；加载态截加载中帧。
 - [ ] **Step 5: 收尾 commit** —— demo 全量 + demos.ts（hunk 级 `git apply --cached` 避卷他人 WIP），message `feat(www): 瀚库 HanVault 知识库 demo(点亮 Tree/FileTree/TreeSelect + MarkdownEditor 主角)`。
 

@@ -9,7 +9,7 @@
 课程播放页就是「一块大屏 + 围绕它的学习态」。本 demo 的存在价值不是「又一个卡片网格」（shop/personal
 已演透），而是：
 
-1. **把 Video 从「画廊片段」升级为「教学主角」**——并据此给 `@hulian/ui` 的 Video 组件补三个真实
+1. **把 Video 从「画廊片段」升级为「教学主角」**——并据此给 `@hulianui/ui` 的 Video 组件补三个真实
    LMS 特性（章节标记 / 结束屏 / 续播）。
 2. **点亮 Tree**（当前 0 覆盖的最大危险盲区）——用作课程章节树。
 3. 顺带在合理场景点亮 Stepper/Steps（报名）、Mentions（讨论 @）、Meter（难度/完成占比）等盲区。
@@ -44,7 +44,7 @@
 - **报名/购买轻流程**：目录卡 / 播放页「报名」→ ModalForm（或 Drawer）内嵌 **Steps**
   （确认课程 → 选套餐 → 完成）→ 报名成功 toast。不开独立路由。
 
-## 3. Video 组件增强（本次拓展 @hulian/ui 的核心，全部 additive 向后兼容）
+## 3. Video 组件增强（本次拓展 @hulianui/ui 的核心，全部 additive 向后兼容）
 
 改 `packages/ui/src/video/`：
 
@@ -109,7 +109,7 @@ endScreen?: ReactNode;                         // 播完(ended)浮现的结束�
   `mcp-browser-busy-launch-isolated-chromium-via-executablepath`；headless 全空白记忆
   `www-msw-gate-blanks-headless-screenshots`）。
 - 必截：目录筛选、播放页（章节标记可见）、章节切换、续播/结束屏、报名流。零 console error。
-- ui 包 `pnpm --filter @hulian/ui test` 全绿（含新增 chapterMarkers 测试）。
+- ui 包 `pnpm --filter @hulianui/ui test` 全绿（含新增 chapterMarkers 测试）。
 
 ## 8. 落盘
 

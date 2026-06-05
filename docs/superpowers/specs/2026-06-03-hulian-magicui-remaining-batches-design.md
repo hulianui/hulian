@@ -15,7 +15,7 @@
 ## 1. 全合集共性范式（延续 effects 背景批）
 
 1. **颜色走瑚琏 token，不写死 magicui 的 hex**：magicui 默认 `#ffaa40`/`#9c40ff`/`zinc-500` 等 → 瑚琏改默认 `var(--color-primary)` / `var(--color-chart-1..4)` / `currentColor`，自动吃明暗主题。彩色渐变类默认用 chart 调色板。
-2. **动画件关键帧落 `@hulian/tokens preset.css`**（CSS 侧动效 SSOT，统一 `hulian-` 前缀），不散落组件内。
+2. **动画件关键帧落 `@hulianui/tokens preset.css`**（CSS 侧动效 SSOT，统一 `hulian-` 前缀），不散落组件内。
 3. **`motion-reduce:[animation:none]` / `useReducedMotion()` 恒挂**（纯 CSS 件用 Tailwind 变体；motion 件用 hook）。
 4. **RSC 优先**：纯 CSS/SVG 件不加 `"use client"`（AuroraText/AnimatedShinyText/AnimatedGradientText/ShimmerButton/RainbowButton/PulsatingButton/ShineBorder/GlareHover/Safari/iPhone/Android）；用 motion/useState/useEffect 的件必 `"use client"`（WordRotate/TypingAnimation/SparklesText/Meteors/BorderBeam/MagicCard/RippleButton）。
 5. **API 瑚琏化统一**：`...props` 透传、`cn()` 合并 className、四件套 + 桶 + 主 barrel + manifest + registry。
@@ -74,4 +74,4 @@
 
 ## 6. 测试 & 验证
 - 每件 ≥4 TDD 用例（结构/类/CSS 变量/reduced-motion/透传，对齐 effects 批粒度）；动画时序/视觉交隔离 chromium 截图（每批边界截一轮）。
-- 三道门：`pnpm --filter @hulian/ui test` + ui/www typecheck（build --filter=www 视情况）。
+- 三道门：`pnpm --filter @hulianui/ui test` + ui/www typecheck（build --filter=www 视情况）。

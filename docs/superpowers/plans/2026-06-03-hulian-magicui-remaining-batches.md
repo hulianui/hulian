@@ -10,7 +10,7 @@
 - [ ] AuroraText / AnimatedShinyText / AnimatedGradientText（纯 CSS RSC）
 - [ ] WordRotate / TypingAnimation / SparklesText（motion client）
 - [ ] 各四件套 + 桶；barrel ×6 + manifest ×6 + registry ×6
-- [ ] `pnpm --filter @hulian/ui test` 绿 + ui typecheck
+- [ ] `pnpm --filter @hulianui/ui test` 绿 + ui typecheck
 
 ## 批 3 特效按钮（4 · effects）— commit B
 - [ ] ShimmerButton / RainbowButton / PulsatingButton（纯 CSS RSC）+ RippleButton（client）

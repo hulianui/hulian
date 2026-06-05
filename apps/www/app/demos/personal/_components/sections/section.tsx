@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Heading, Text, cn } from "@hulian/ui";
+import { Heading, Text, cn } from "@hulianui/ui";
 
 interface SectionProps {
   /** 锚点 id（供首页 Anchor scrollspy + Dock 跳转） */

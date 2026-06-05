@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ThumbsUp } from "lucide-react";
-import { AvatarCircles, Card, CardBody, Comment, CommentAction, Meter, Rating, Tag } from "@hulian/ui";
+import { AvatarCircles, Card, CardBody, Comment, CommentAction, Meter, Rating, Tag } from "@hulianui/ui";
 import { reviewsOf, ratingDistribution } from "../_data/reviews";
 import { productImage } from "../_data/products";
 import { avatarArt } from "../_data/art";

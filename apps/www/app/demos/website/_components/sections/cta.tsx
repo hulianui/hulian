@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShimmerButton, Button, Heading, Text, Meteors } from "@hulian/ui";
+import { ShimmerButton, Button, Heading, Text, Meteors } from "@hulianui/ui";
 import { ArrowRight } from "lucide-react";
 
 // 结尾行动号召：主色面板 + Meteors 流星 + 双 CTA。

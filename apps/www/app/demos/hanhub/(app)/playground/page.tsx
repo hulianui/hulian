@@ -21,7 +21,7 @@ import {
   Tag,
   Textarea,
   type SelectProps,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { models, modelOf, providerOf } from "../../_data/providers";
 import { apiKeys } from "../../_data/keys";
 import { costOfModel, formatUsd, formatPrice } from "../../_lib/pricing";

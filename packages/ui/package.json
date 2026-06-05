@@ -1,8 +1,17 @@
 {
-  "name": "@hulian/ui",
-  "version": "0.0.0",
+  "name": "@hulianui/ui",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hulianui/hulian.git",
+    "directory": "packages/ui"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./showcase": "./src/showcase.ts"

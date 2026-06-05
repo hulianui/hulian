@@ -1,9 +1,9 @@
 "use client";
 // 任务详情右栏：执行过程帧回放。
-// 按 RunFrame.kind 分发到 @hulian/ui 的 AI 过程帧组件：
+// 按 RunFrame.kind 分发到 @hulianui/ui 的 AI 过程帧组件：
 //   thinking → ThinkingBlock、tool → ToolCall、stream → StreamingText、event → 事件行。
 
-import { ThinkingBlock, ToolCall, StreamingText, Text, cn } from "@hulian/ui";
+import { ThinkingBlock, ToolCall, StreamingText, Text, cn } from "@hulianui/ui";
 import type { RunFrame } from "../_data/types";
 
 /** 事件帧里以 ⚠ 开头视为告警（failover 触发等）。 */

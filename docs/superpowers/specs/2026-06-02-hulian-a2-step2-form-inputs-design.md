@@ -145,7 +145,7 @@ disabled：内层控件收真 `disabled`，外壳 `has-[:disabled]:opacity-50 ha
 
 ## 8. token 皮肤（只消费语义 token，已核验全集，无 success）
 
-`@hulian/tokens/preset.css` 的 `@theme inline` 注册：`bg / surface / surface-hover / foreground / muted / border / ring / primary[/-foreground/-hover] / danger[/-foreground] / radius`。因 `--color-danger`/`--color-ring` 已注册，Tailwind v4 自动生成 `ring-danger`/`border-danger`/`ring-ring` 等全套；`@source "packages/ui/src/**"` 已扫新组件 class。
+`@hulianui/tokens/preset.css` 的 `@theme inline` 注册：`bg / surface / surface-hover / foreground / muted / border / ring / primary[/-foreground/-hover] / danger[/-foreground] / radius`。因 `--color-danger`/`--color-ring` 已注册，Tailwind v4 自动生成 `ring-danger`/`border-danger`/`ring-ring` 等全套；`@source "packages/ui/src/**"` 已扫新组件 class。
 
 - 外壳：`bg-surface border border-border rounded-[var(--radius)] transition-colors` + focus：`focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg`（复用 Switch 验证过的配方）+ invalid：`has-[[data-invalid]]:border-danger has-[[data-invalid]]:focus-within:ring-danger` + disabled：`has-[:disabled]:opacity-50 has-[:disabled]:pointer-events-none`。
 - 内层控件：`bg-transparent outline-none text-foreground placeholder:text-muted`。

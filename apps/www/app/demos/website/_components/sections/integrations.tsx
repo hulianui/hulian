@@ -4,7 +4,7 @@ import {
   Text,
   Tag,
   Stack,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Cloud } from "lucide-react";
 import { integrations } from "../../_data/site";
 

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { QueueLane, Tag } from "@hulian/ui";
-import type { QueueLaneDef, QueueItem } from "@hulian/ui";
+import { QueueLane, Tag } from "@hulianui/ui";
+import type { QueueLaneDef, QueueItem } from "@hulianui/ui";
 import type { Priority, Task } from "../_data/types";
 import { ROOT } from "./nav-config";
 import { PRIORITY_TONE, fmtDuration } from "./queue-shared";

@@ -35,7 +35,7 @@ export const glimpseShowcase: ShowcaseSpec = {
       render: () => (
         <p className="max-w-md leading-7 text-foreground">
           这是一个{" "}
-          <Glimpse title="Dogfood" description="自己用自己的产品。文档站全部用 @hulian/ui 自身组件搭建。">
+          <Glimpse title="Dogfood" description="自己用自己的产品。文档站全部用 @hulianui/ui 自身组件搭建。">
             dogfood
           </Glimpse>{" "}
           的例子。

@@ -11,7 +11,7 @@ import {
   Card,
   CardBody,
   Meter,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { BookOpen, Compass } from "lucide-react";
 import { courses, CATEGORIES } from "../_data/courses";
 import { CourseCard } from "./course-card";

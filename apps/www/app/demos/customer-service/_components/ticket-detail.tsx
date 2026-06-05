@@ -14,7 +14,7 @@ import {
   Textarea,
   Timeline,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ticketById } from "../_data/tickets";
 import type { TicketPriority, TicketStatus } from "../_data/types";
 import { CS_ROOT } from "./nav-config";

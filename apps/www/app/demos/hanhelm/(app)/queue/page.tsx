@@ -9,7 +9,7 @@ import {
   Segmented,
   Tag,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ROOT } from "../../_components/nav-config";
 import { TASKS } from "../../_data/tasks";
 import { executorName } from "../../_data/executors";

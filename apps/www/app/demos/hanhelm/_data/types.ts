@@ -239,7 +239,7 @@ export interface AlertEvent {
 export interface Member {
   id: string;
   name: string;
-  /** 头像：用首字（@hulian/ui Avatar 走文字兜底，无远程图）。 */
+  /** 头像：用首字（@hulianui/ui Avatar 走文字兜底，无远程图）。 */
   avatar: string;
   role: string;
   /** 在线状态。 */

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Play } from "lucide-react";
-import { AspectRatio, Dot, Image, Spinner, Tag, cn } from "@hulian/ui";
-import type { FlowNode } from "@hulian/ui";
+import { AspectRatio, Dot, Image, Spinner, Tag, cn } from "@hulianui/ui";
+import type { FlowNode } from "@hulianui/ui";
 import { meshGradient } from "../../_lib/artwork";
 import { ACCENT, NODE_KIND_MAP } from "../../_data/node-kinds";
 import { modelName, ratioMeta } from "../../_data/models";

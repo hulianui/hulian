@@ -1,6 +1,6 @@
 "use client";
 // 调度总览 · 执行器负载概览网格：每个执行器一张卡，ScoreRing 显当前负载 + Sparkline 负载趋势。
-import { Card, CardBody, ScoreRing, Sparkline, StatusDot, Tag } from "@hulian/ui";
+import { Card, CardBody, ScoreRing, Sparkline, StatusDot, Tag } from "@hulianui/ui";
 import type { Executor, ExecutorHealth } from "../_data/types";
 import { seriesValues } from "../_data/metrics";
 

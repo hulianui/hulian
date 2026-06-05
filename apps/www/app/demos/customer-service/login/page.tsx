@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { MessagesSquare, Headphones, Gauge } from "lucide-react";
-import { Heading, Link, LoginForm, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, Text } from "@hulianui/ui";
 import { CS_ROOT } from "../_components/nav-config";
 
 const FEATURES = [

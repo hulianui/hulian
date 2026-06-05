@@ -15,7 +15,7 @@ import {
   Text,
   Textarea,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { meshGradient } from "../../_lib/artwork";
 import { ARTIFACTS } from "../../_data/artifacts";
 import { usePending } from "../../../lib/async";

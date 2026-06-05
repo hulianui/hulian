@@ -53,7 +53,7 @@ export default function ThemeOverviewPage() {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <h3 className="font-medium">{l.name}</h3>
-                  <Code>@hulian/tokens/{l.file}</Code>
+                  <Code>@hulianui/tokens/{l.file}</Code>
                 </div>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted">{l.desc}</p>
               </div>
@@ -65,8 +65,8 @@ export default function ThemeOverviewPage() {
       <Section title="如何消费" desc="任意 React 项目，全局引一次即可。">
         <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
           <span className="text-muted">{"/* app/globals.css */"}</span>
-          {"\n"}@import "@hulian/tokens/tokens.css";  <span className="text-muted">{"/* 原始 + 语义 */"}</span>
-          {"\n"}@import "@hulian/tokens/preset.css"; <span className="text-muted">{"/* Tailwind v4 + 工具类 */"}</span>
+          {"\n"}@import "@hulianui/tokens/tokens.css";  <span className="text-muted">{"/* 原始 + 语义 */"}</span>
+          {"\n"}@import "@hulianui/tokens/preset.css"; <span className="text-muted">{"/* Tailwind v4 + 工具类 */"}</span>
         </pre>
       </Section>
 

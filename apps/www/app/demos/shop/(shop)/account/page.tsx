@@ -9,7 +9,7 @@ import {
   Descriptions, DescriptionsItem,
   RegionCascader,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { avatarArt } from "../../_data/art";
 import { coupons } from "../../_data/coupons";
 import { useShop } from "../../_lib/shop-store";

@@ -19,7 +19,7 @@ import {
   toast,
   formatTime,
   type TreeNode,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ChevronLeft, CheckCircle2, Lock, PlayCircle, Circle, Share2, Bookmark } from "lucide-react";
 import type { Course, Lesson } from "../_data/types";
 import { coursePoster } from "../_data/poster";

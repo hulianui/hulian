@@ -1,4 +1,4 @@
-import type { StateSpec } from "@hulian/ui";
+import type { StateSpec } from "@hulianui/ui";
 
 export function StatesGallery({ states }: { states: StateSpec[] }) {
   return (

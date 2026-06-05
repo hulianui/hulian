@@ -1,6 +1,6 @@
 "use client";
 
-import { Meter, Chip, Marquee, Heading, Text, cn } from "@hulian/ui";
+import { Meter, Chip, Marquee, Heading, Text, cn } from "@hulianui/ui";
 import { Section } from "./section";
 import { skills, stacks } from "../../_data/profile";
 

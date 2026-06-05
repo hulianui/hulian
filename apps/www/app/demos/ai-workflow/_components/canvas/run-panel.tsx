@@ -1,5 +1,5 @@
 import { X, CheckCircle2 } from "lucide-react";
-import { Dot, Progress, Spinner, Text, cn } from "@hulian/ui";
+import { Dot, Progress, Spinner, Text, cn } from "@hulianui/ui";
 import type { RunLogEntry } from "../../_lib/use-flow-run";
 
 interface RunPanelProps {

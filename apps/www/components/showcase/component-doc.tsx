@@ -1,7 +1,7 @@
 "use client";
 import { useCallback } from "react";
 import { notFound } from "next/navigation";
-import { Anchor, type ShowcaseSpec, type AnchorItem } from "@hulian/ui";
+import { Anchor, type ShowcaseSpec, type AnchorItem } from "@hulianui/ui";
 import { manifest } from "../../lib/manifest";
 import { specBySlug } from "../../lib/registry";
 import { ComponentPreview } from "./component-preview";

@@ -7,9 +7,9 @@
 
 - 库的 `Calendar` 是 **MUI DateCalendar 单选月面板**（date picker），挂不了事件标记——它是「选一天」，不是「事件日历」。
 - datetime 组现有 5 件全是日期/时间**选择器**（Calendar / DatePicker / DateTimePicker / TimeField / DateRangePicker），库里**没有任何 event-calendar / scheduler / 时间轴网格**。
-- 「周/日时间轴网格 + 资源排班网格」是每个预约/中后台/诊所产品都要的**高频 archetype**。按 demo 铁律一（撞缺口修库，不在 demo 打 CSS 补丁），决策为**回 `@hulian/ui` 补一个全功能 `Scheduler`**（用户已确认扩库 + 全交互档）。
+- 「周/日时间轴网格 + 资源排班网格」是每个预约/中后台/诊所产品都要的**高频 archetype**。按 demo 铁律一（撞缺口修库，不在 demo 打 CSS 补丁），决策为**回 `@hulianui/ui` 补一个全功能 `Scheduler`**（用户已确认扩库 + 全交互档）。
 
-## 1. 组件 `Scheduler`（@hulian/ui）
+## 1. 组件 `Scheduler`（@hulianui/ui）
 
 定位 data-display / collection，照 **Flow / Gantt / Kanban 受控范式**：受控数据 + 消费者接交互。零依赖原生 PointerEvents；日期数学复用库内 dayjs（`lib/date`）。
 
@@ -158,7 +158,7 @@ apps/www/app/demos/scheduler/
 
 1. TDD `scheduler-geometry`（纯函数全测绿）。
 2. 实现 Scheduler（time-grid + month + 拖拽状态机 + toolbar）+ 组件测试。
-3. 接库四处布线，`pnpm --filter @hulian/ui test` 全绿。
+3. 接库四处布线，`pnpm --filter @hulianui/ui test` 全绿。
 4. 建 demo，接 `lib/demos.ts`。
 5. `pnpm --filter www demos:coverage`：四件从未覆盖变覆盖，覆盖率只升不降，外链门禁 0。
 6. **实机自证**（真浏览器，非 headless——记忆 `www-msw-gate-blanks-headless-screenshots`；MCP 占用起隔离 Chrome-for-Testing——记忆 `mcp-browser-busy-launch-isolated-chromium-via-executablepath`）：月/周/日/资源视图 + 建预约弹层 + 拖拽改期 + 取消确认，console 零 error。预览 `pnpm --filter www dev`（非根目录，记忆 `hulian-pnpm-dev-killstale-kills-5514`）。

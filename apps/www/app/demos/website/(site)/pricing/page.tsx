@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Heading, Text, Tag, Breadcrumb } from "@hulian/ui";
+import { Heading, Text, Tag, Breadcrumb } from "@hulianui/ui";
 import { PricingTable } from "../../_components/pricing-table";
 import { Faq } from "../../_components/sections/faq";
 

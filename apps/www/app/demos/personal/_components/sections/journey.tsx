@@ -1,6 +1,6 @@
 "use client";
 
-import { Timeline, type TimelineItemProps } from "@hulian/ui";
+import { Timeline, type TimelineItemProps } from "@hulianui/ui";
 import { Section } from "./section";
 import { journey } from "../../_data/profile";
 

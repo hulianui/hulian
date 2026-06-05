@@ -9,7 +9,7 @@ import {
   LivePlayer,
   NumberTicker,
   Stat,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { useLiveSim } from "../../_lib/use-live-sim";
 import { STREAMER } from "../../_data/content";
 import { CopilotPanel } from "./copilot-panel";

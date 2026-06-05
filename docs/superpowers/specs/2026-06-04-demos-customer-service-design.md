@@ -1,7 +1,7 @@
 # 客服中心 Demo —— 设计 spec
 
 > 2026-06-04 · 内置 demo 项目之一（与 `crm`、`ai-chat` 并列），落点 `apps/www/app/demos/customer-service/`。
-> **硬约束：100% 由 `@hulian/ui` 搭建。缺组件 / 组件不够好用 → 去 `packages/ui` 造或优化，不在 demo 里手搓。**
+> **硬约束：100% 由 `@hulianui/ui` 搭建。缺组件 / 组件不够好用 → 去 `packages/ui` 造或优化，不在 demo 里手搓。**
 
 ## 1. 目标与定位
 
@@ -41,7 +41,7 @@ route group `(app)` 套 `AdminLayout` 外壳；`login` 在 group 外（无外壳
 └──────────────┴────────────────────────────┴──────────────┘
 ```
 
-**三栏组成**（demo `_components/workbench/`，全部由 `@hulian/ui` 拼）：
+**三栏组成**（demo `_components/workbench/`，全部由 `@hulianui/ui` 拼）：
 - **会话列表 `conversation-list.tsx`**：每项 = Avatar + 客户名 + 末条消息预览 + 时间 + 未读 Badge + 状态点（在线/待接入/已结束）。顶部 Segmented 切「全部 / 待接入 / 我的」。
 - **对话流 `chat-thread.tsx`**：用 `Conversation` 容器 + `ChatMessage`。客户=role `assistant`（左/surface），坐席=role `user`（右/primary）。客户输入中显 `TypingDots`。底部 `PromptSuggestions`（快捷回复）+ `PromptInput`。
 - **客户档案 `customer-panel.tsx`**：Avatar + 等级 Tag + `Descriptions`（手机/地区/注册时长/累计消费）+ `Timeline`（历史工单/互动）。
@@ -56,7 +56,7 @@ route group `(app)` 套 `AdminLayout` 外壳；`login` 在 group 外（无外壳
 
 > 实时只为「活起来」的观感，不追求真实协议。`Math.random` 仅用于进线/typing 概率。
 
-## 4. 对 `@hulian/ui` 的增强（dogfood 产出）
+## 4. 对 `@hulianui/ui` 的增强（dogfood 产出）
 
 按「缺了就造、不够好用就优化」逐项落到 `packages/ui`，每个带 showcase + test：
 
@@ -64,7 +64,7 @@ route group `(app)` 套 `AdminLayout` 外壳；`login` 在 group 外（无外壳
    - 新增 prop `status?: "sending" | "sent" | "read"`；仅右对齐（role=user）气泡渲染。
    - 视觉：`sending`=单灰勾/转圈、`sent`=单勾、`read`=双蓝勾（用 `_icons` 的 Check / CheckCheck，缺则补图标）。
    - 不破坏现有 API（status 默认 undefined → 不渲染）。
-2. **会话列表项**：先在 demo `_components` 内用 List/Avatar/Badge 组合实现；若收敛得干净且通用，再评估提升为 `@hulian/ui` 的 `ConversationItem` 原语（不强求，避免为单 demo 过度抽象）。
+2. **会话列表项**：先在 demo `_components` 内用 List/Avatar/Badge 组合实现；若收敛得干净且通用，再评估提升为 `@hulianui/ui` 的 `ConversationItem` 原语（不强求，避免为单 demo 过度抽象）。
 3. 其余缺口（满意度评分展示、坐席状态切换器等）优先用现有组件（Statistic/Progress/Segmented/Switch）组合；确为通用且现有组件别扭时才下沉组件库。
 
 > 原则：**清晰可复用的增强才下沉组件库**（如 ChatMessage.status）；单 demo 专用编排留在 demo `_components`。不为凑数硬造组件。
@@ -91,15 +91,15 @@ route group `(app)` 套 `AdminLayout` 外壳；`login` 在 group 外（无外壳
 
 `apps/www/app/demos/lib/demos.ts` 追加一条：
 ```ts
-{ slug: "customer-service", title: "客服中心", description: "实时会话工作台 + 工单 + 知识库 + 数据看板 —— 100% 由 @hulian/ui 搭建的坐席台示例。", href: "/demos/customer-service", category: "中后台", status: "wip", tags: ["实时会话", "ProTable", "Timeline", "Chart"] }
+{ slug: "customer-service", title: "客服中心", description: "实时会话工作台 + 工单 + 知识库 + 数据看板 —— 100% 由 @hulianui/ui 搭建的坐席台示例。", href: "/demos/customer-service", category: "中后台", status: "wip", tags: ["实时会话", "ProTable", "Timeline", "Chart"] }
 ```
 
 ## 8. 验收
 
-- `pnpm --filter @hulian/ui build` + `pnpm --filter @hulian/ui test`（组件增强的 showcase/test 通过）
+- `pnpm --filter @hulianui/ui build` + `pnpm --filter @hulianui/ui test`（组件增强的 showcase/test 通过）
 - `pnpm --filter www build`（demo 全路由可构建，类型通过）
 - 工作台三栏在桌面宽度正常；实时进线/typing/已读回执观感成立
-- 全程零手搓基础组件（grep demo 目录无裸 `<button`/`<input` 等，UI 元素均来自 `@hulian/ui`）
+- 全程零手搓基础组件（grep demo 目录无裸 `<button`/`<input` 等，UI 元素均来自 `@hulianui/ui`）
 
 ## 9. 不做（YAGNI）
 

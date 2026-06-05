@@ -21,7 +21,7 @@ import {
   type FlowConnection,
   type FlowEdge,
   type FlowNode,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Palette } from "../_components/canvas/palette";
 import { Inspector } from "../_components/canvas/inspector";
 import { NodeCard } from "../_components/canvas/node-card";

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Avatar, Divider, Picker, Rating, Tag, toast } from "@hulian/ui";
+import { Avatar, Divider, Picker, Rating, Tag, toast } from "@hulianui/ui";
 import type { ServiceWithCover } from "../../../_data/services";
 
 // Stepper 组件（简单实现，NumberField 替代）

@@ -4,7 +4,7 @@
 - **对应 spec**: `2026-06-03-hulian-effects-backgrounds-design.md`
 - **范围**: `effects` 5 件 —— DotPattern · GridPattern · RetroGrid · Ripple · StripedPattern
 - **模式**: TDD（先红后绿，对齐 Marquee 测试粒度），自主推进，收尾统一通知
-- **基线**: 启动前 `@hulian/ui` 测试 36 文件 / 206 用例全绿
+- **基线**: 启动前 `@hulianui/ui` 测试 36 文件 / 206 用例全绿
 
 ## 工序（每件四件套 + 桶，统一接线收尾）
 
@@ -35,8 +35,8 @@
 - [ ] `apps/www/lib/registry.tsx` — 5 个 showcase import + slug 映射
 
 ### Step 7 — 三道门验证
-- [ ] `pnpm --filter @hulian/ui test` 全绿（206 + ~25 = ~231）
-- [ ] `pnpm --filter @hulian/ui typecheck` 干净
+- [ ] `pnpm --filter @hulianui/ui test` 全绿（206 + ~25 = ~231）
+- [ ] `pnpm --filter @hulianui/ui typecheck` 干净
 - [ ] `pnpm --filter www typecheck` 干净（registry/manifest 接线无类型错）
 
 ### Step 8 — 收尾

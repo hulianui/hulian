@@ -1,8 +1,8 @@
 # 内置 Demo · CRM 客户管理后台（slice 2-6）— 设计
 
 > 日期：2026-06-04 · 状态：已与用户确认范围，待用户复核本规格 → writing-plans
-> 核心约束：**100% 用 `@hulian/ui` 搭建**。撞到组件缺口/不满足 → 就地扩库或加新组件，禁止在页面手搓本应是组件的 UI。
-> 用户拍板：**全交互**（增删改/拖拽/筛选真生效，刷新即还原）；商机看板的跨列拖拽 → **新增 `@hulian/ui` Kanban 组件**。
+> 核心约束：**100% 用 `@hulianui/ui` 搭建**。撞到组件缺口/不满足 → 就地扩库或加新组件，禁止在页面手搓本应是组件的 UI。
+> 用户拍板：**全交互**（增删改/拖拽/筛选真生效，刷新即还原）；商机看板的跨列拖拽 → **新增 `@hulianui/ui` Kanban 组件**。
 
 ## 1. 现状与本次范围
 
@@ -32,7 +32,7 @@ slice 1 已完成并 committed：CRM 区外壳（`AdminLayout` + 路由绑定页
 
 > 运行时 `Date.now()/Math.random()` 不受限（限制只针对 Workflow 脚本），但 mock 已用固定日期保证 SSR/CSR 一致，新增数据用计数器派生 id（不用随机），避免 hydration 警告。
 
-## 3. 各页组件映射（全部 `@hulian/ui`）
+## 3. 各页组件映射（全部 `@hulianui/ui`）
 
 ### 3.1 客户列表 `/customers`
 - 容器 `ProTable<Customer>`：`search`（SearchForm：关键词 + 状态 Select + 等级 Select + 负责人 Select）、`toolbar`（刷新/密度/列设置/全屏全开）、`toolbarActions`（「新增客户」按钮）、`pagination`（每页 10）。
@@ -128,13 +128,13 @@ interface KanbanProps<T> {
 
 ## 7. 验收
 
-- 6 个页面全部为真实 `@hulian/ui` 页面，无 `Placeholder`/`Empty` 桩残留（空数据态除外）。
+- 6 个页面全部为真实 `@hulianui/ui` 页面，无 `Placeholder`/`Empty` 桩残留（空数据态除外）。
 - 客户列表：搜索/三筛选/分页/列设置/密度切换真生效；新增客户出现在列表；编辑改值；删除有 `Popconfirm`。
 - 详情页：三 Tab 数据正确；不存在 id 显示 `Result`。
 - 看板：卡片可跨列拖拽改阶段，列头统计实时更新，`toast` 提示；键盘可拖。
 - 订单：状态/日期筛选真态；详情 Drawer 正常。
 - 设置：表单可填可提交 toast。
 - 登录：分栏版式，提交进后台。
-- `Kanban` 组件进 `index.ts` + showcase + manifest + 通过测试；`pnpm --filter @hulian/ui test` 绿。
+- `Kanban` 组件进 `index.ts` + showcase + manifest + 通过测试；`pnpm --filter @hulianui/ui test` 绿。
 - 明暗主题切换、移动端断点全页无异常。
 - 任何手搓的本应是组件的 UI = 不合格，需回填为 hulian 组件。

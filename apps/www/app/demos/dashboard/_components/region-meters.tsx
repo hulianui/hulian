@@ -1,5 +1,5 @@
 "use client";
-import { Meter, Skeleton } from "@hulian/ui";
+import { Meter, Skeleton } from "@hulianui/ui";
 import type { Snapshot } from "../_data/snapshot";
 import { Panel } from "./panel";
 

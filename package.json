@@ -10,9 +10,13 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "doctor": "react-doctor -y --diff false --lint --no-score"
+    "doctor": "react-doctor -y --diff false --lint --no-score",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "react-doctor": "^0.2.14",
     "turbo": "^2.0.0",
     "typescript": "^5.5.0"

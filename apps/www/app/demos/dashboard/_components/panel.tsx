@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@hulian/ui";
+import { cn } from "@hulianui/ui";
 
 // 大屏面板外壳：玻璃质感卡片 + 角标题。统一各区视觉，吃明暗 token。
 export function Panel({

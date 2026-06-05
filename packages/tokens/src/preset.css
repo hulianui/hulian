@@ -37,7 +37,7 @@
   --breakpoint-2xl: 96rem; /* 1536px · 大桌面 */
 }
 
-/* effects/Marquee 无缝跑马灯关键帧（CSS 侧动效 SSOT；JS 侧动效见 @hulian/ui motion/variants.ts）。
+/* effects/Marquee 无缝跑马灯关键帧（CSS 侧动效 SSOT；JS 侧动效见 @hulianui/ui motion/variants.ts）。
    每份子项平移 -100% - gap，配合复制 N 份实现无缝循环。 */
 @keyframes hulian-marquee {
   from {

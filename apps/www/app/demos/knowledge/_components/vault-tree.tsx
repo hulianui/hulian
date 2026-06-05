@@ -23,7 +23,7 @@ import {
   toast,
   type FileNode,
   type UploadFile,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { usePending } from "../../lib/async";
 import { useKnowledge } from "./knowledge-shell";
 

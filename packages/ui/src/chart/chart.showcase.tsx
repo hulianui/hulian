@@ -3,7 +3,7 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart } from "./chart";
 
 // 内联静态样例（确定性，防 SSR/CSR hydration mismatch）——
-// 刻意不依赖 @hulian/mocks/faker：demo 数据不该把 dev-only 依赖带进组件库导出图。
+// 刻意不依赖 @hulianui/mocks/faker：demo 数据不该把 dev-only 依赖带进组件库导出图。
 const data = [
   { month: "1月", revenue: 42, orders: 168 },
   { month: "2月", revenue: 55, orders: 142 },

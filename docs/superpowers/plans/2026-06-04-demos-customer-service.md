@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在 `apps/www/app/demos/customer-service/` 建一个完整 helpdesk 后台 demo，以实时三栏会话工作台为旗舰，100% 由 `@hulian/ui` 搭建，并为坐席台品类增强组件库（ChatMessage 已读回执）。
+**Goal:** 在 `apps/www/app/demos/customer-service/` 建一个完整 helpdesk 后台 demo，以实时三栏会话工作台为旗舰，100% 由 `@hulianui/ui` 搭建，并为坐席台品类增强组件库（ChatMessage 已读回执）。
 
-**Architecture:** route group `(app)` 套 `AdminLayout` 外壳（照 crm-shell 受控绑 Next 路由）；登录页在 group 外。会话工作台三栏由 `@hulian/ui` 的 Conversation/ChatMessage/PromptInput/TypingDots 等拼成，实时感由纯前端 `useReducer` + 定时器引擎驱动。数据全静态 mock。
+**Architecture:** route group `(app)` 套 `AdminLayout` 外壳（照 crm-shell 受控绑 Next 路由）；登录页在 group 外。会话工作台三栏由 `@hulianui/ui` 的 Conversation/ChatMessage/PromptInput/TypingDots 等拼成，实时感由纯前端 `useReducer` + 定时器引擎驱动。数据全静态 mock。
 
-**Tech Stack:** Next.js 15 App Router · React · TypeScript · `@hulian/ui` · lucide-react
+**Tech Stack:** Next.js 15 App Router · React · TypeScript · `@hulianui/ui` · lucide-react
 
 ---
 
@@ -58,7 +58,7 @@ it("status=sending 渲染发送中回执", () => {
 });
 ```
 
-- [ ] **Step 3: 跑测试确认失败** `pnpm --filter @hulian/ui test chat-message`，预期 FAIL（status 未实现）。
+- [ ] **Step 3: 跑测试确认失败** `pnpm --filter @hulianui/ui test chat-message`，预期 FAIL（status 未实现）。
 - [ ] **Step 4: types 加字段**
 
 ```ts
@@ -75,7 +75,7 @@ status?: "sending" | "sent" | "read";
     - `read` → `aria-label="已读"`，双蓝勾 `CheckCheck`（text-primary）。
   - 若 `_icons` 缺 Check/CheckCheck，先在 `_icons` 补（参照库内其它图标定义方式）。
 
-- [ ] **Step 6: 跑测试确认通过** `pnpm --filter @hulian/ui test chat-message`，预期 PASS。
+- [ ] **Step 6: 跑测试确认通过** `pnpm --filter @hulianui/ui test chat-message`，预期 PASS。
 - [ ] **Step 7: showcase 加 status 态**（在 states 数组追加一个「坐席发送·已读」示例，并给 controls 加 status select）。
 - [ ] **Step 8: 提交** `git commit -m "feat(ui): ChatMessage 加已读回执 status —— 坐席台进线/已读观感"`
 
@@ -172,7 +172,7 @@ it("DELIVER_QUEUED 从 queued 取一条进 messages 并加未读(非 active 时)
 
 **Files:** Create `_components/workbench/{conversation-list,chat-thread,customer-panel,workbench}.tsx`; `(app)/page.tsx`
 
-- [ ] **Step 1: conversation-list.tsx** —— 顶部 `Segmented`（全部/待接入/我的）；列表每项 Avatar + 名 + 末条预览 + 时间 + 未读 `Badge` + 状态点；选中高亮；点击 `onSelect(id)`。全部用 `@hulian/ui`。
+- [ ] **Step 1: conversation-list.tsx** —— 顶部 `Segmented`（全部/待接入/我的）；列表每项 Avatar + 名 + 末条预览 + 时间 + 未读 `Badge` + 状态点；选中高亮；点击 `onSelect(id)`。全部用 `@hulianui/ui`。
 - [ ] **Step 2: chat-thread.tsx** —— `Conversation` 容器内 map `ChatMessage`（customer→role assistant 左、agent→role user 右 + `status`）；客户 typing 时尾部 `TypingDots`；底部 `PromptSuggestions`（快捷回复）+ `PromptInput`（回车/点发 → `onSend(text)`）。
 - [ ] **Step 3: customer-panel.tsx** —— Avatar + 等级 `Tag` + `Descriptions`（手机/地区/注册/消费）+ 历史工单 `Timeline`。
 - [ ] **Step 4: workbench.tsx** —— `"use client"`；调 `useLiveConversations()`；三栏 grid 布局（`grid-cols-[280px_1fr_320px]`，`h-full`，中栏内部滚动）；接线三个子组件。
@@ -196,9 +196,9 @@ it("DELIVER_QUEUED 从 queued 取一条进 messages 并加未读(非 active 时)
 
 ## Task 7: 验收
 
-- [ ] **Step 1: 组件库** `pnpm --filter @hulian/ui test` + `pnpm --filter @hulian/ui build` 全绿。
+- [ ] **Step 1: 组件库** `pnpm --filter @hulianui/ui test` + `pnpm --filter @hulianui/ui build` 全绿。
 - [ ] **Step 2: www 类型/构建** `pnpm --filter www build`（关注 customer-service 全路由编译通过、无类型错误）。
-- [ ] **Step 3: dogfood 自检** `grep -rnE "<(button|input|table|select)[ >]" apps/www/app/demos/customer-service`，确认无裸 HTML 控件（应均来自 `@hulian/ui`；语义化容器如 div/span/section 允许）。
+- [ ] **Step 3: dogfood 自检** `grep -rnE "<(button|input|table|select)[ >]" apps/www/app/demos/customer-service`，确认无裸 HTML 控件（应均来自 `@hulianui/ui`；语义化容器如 div/span/section 允许）。
 - [ ] **Step 4: 起 dev 实机观感**（`pnpm --filter www dev`）：工作台三栏、进线高亮、typing、已读回执、各页可达。
 - [ ] **Step 5: 收尾提交**（如有微调）。
 

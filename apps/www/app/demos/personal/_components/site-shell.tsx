@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
   TooltipContent,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Code2, AtSign, Mail, Rss, Palette, ArrowUpRight } from "lucide-react";
 import { profile, type SocialKind } from "../_data/profile";
 
@@ -140,7 +140,7 @@ function SiteFooter() {
           <div>
             <Brand />
             <Text tone="muted" size="sm" className="mt-3 max-w-xs">
-              {profile.tagline} 本站 100% 由 @hulian/ui 搭建，人物与产品均为虚构。
+              {profile.tagline} 本站 100% 由 @hulianui/ui 搭建，人物与产品均为虚构。
             </Text>
           </div>
           <Stack direction="row" gap={1.5} wrap>

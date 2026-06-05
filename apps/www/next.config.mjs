@@ -7,7 +7,7 @@ const nextConfig = {
   // export 模式禁用 Next 图片优化服务端；本站皆用原生 <img>，标注 unoptimized 兜底。
   images: { unoptimized: true },
   // 工作区包以 TS 源码形式发布，需让 Next 转译
-  transpilePackages: ["@hulian/ui", "@hulian/mocks"],
+  transpilePackages: ["@hulianui/ui", "@hulianui/mocks"],
 };
 
 export default nextConfig;

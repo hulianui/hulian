@@ -22,7 +22,7 @@ import {
   type CodeDiffAnnotation,
   type ReviewSeverity,
   type TagTone,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import type {
   ChangedFile,
   InlineAnnotation,

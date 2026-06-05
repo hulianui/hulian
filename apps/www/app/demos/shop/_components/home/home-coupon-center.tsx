@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Coupon, Heading, Text } from "@hulian/ui";
-import { toast } from "@hulian/ui";
+import { Coupon, Heading, Text } from "@hulianui/ui";
+import { toast } from "@hulianui/ui";
 import type { CouponData } from "../../_data/types";
 import { useShop } from "../../_lib/shop-store";
 

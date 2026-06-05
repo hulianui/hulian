@@ -16,7 +16,7 @@ import {
   useForm,
   type ComboboxItemData,
   type FormValues,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { DOCTORS, PATIENTS, ROOMS, type ApptType, type ClinicAppt } from "../_data/clinic";
 
 const TYPES: ApptType[] = ["初诊", "复诊", "检查", "处置"];

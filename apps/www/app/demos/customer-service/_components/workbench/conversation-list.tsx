@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState, type KeyboardEvent } from "react";
-import { Avatar, Badge, List, ListItem, ListItemMeta, Segmented } from "@hulian/ui";
+import { Avatar, Badge, List, ListItem, ListItemMeta, Segmented } from "@hulianui/ui";
 import type { Conversation } from "../../_data/types";
 import { customerById } from "../../_data/customers";
 

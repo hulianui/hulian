@@ -33,8 +33,8 @@ import {
   Tag,
   Text,
   toast,
-} from "@hulian/ui";
-import type { ChannelStatus } from "@hulian/ui";
+} from "@hulianui/ui";
+import type { ChannelStatus } from "@hulianui/ui";
 import { MEMBERS } from "../../_data/members";
 
 const MOCK_TOKEN = "whk_hanhelm_live_8c1f4a92e7d6b035af18cd24ef60ab73";

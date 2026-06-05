@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Alert, toast } from "@hulian/ui";
+import { Alert, toast } from "@hulianui/ui";
 import { conversations as seed } from "../../_data/conversations";
 import { customerById } from "../../_data/customers";
 import { liveStats } from "../../_data/metrics";

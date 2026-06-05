@@ -19,7 +19,7 @@ import {
   Tag,
   toast,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { FINDINGS } from "../../_data/findings";
 import { REPOS } from "../../_data/repos";
 import type { Finding } from "../../_data/types";

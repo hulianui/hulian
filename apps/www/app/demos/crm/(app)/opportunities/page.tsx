@@ -17,7 +17,7 @@ import {
   Text,
   cn,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { opportunities as seed } from "../../_data/opportunities";
 import { yuan } from "../../_data/status";
 import { OPP_STAGES, OWNERS, type Opportunity, type OppStage } from "../../_data/types";

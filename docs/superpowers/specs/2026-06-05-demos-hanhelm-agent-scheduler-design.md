@@ -17,7 +17,7 @@
 - 区别 **瀚枢 HanHub**（API 网关）：网关核心是请求转发/配额/限流；本 demo 核心是**任务级智能调度与多 agent 编排**。
 
 **硬约束（来自用户指令 + CLAUDE.md）**
-- 100% 由 `@hulian/ui` 搭建，**禁止在 demo 里打 CSS 补丁 / 行为 hack**；缺能力 → 回库修组件 / 造组件，不怕引入新组件，可 web search。
+- 100% 由 `@hulianui/ui` 搭建，**禁止在 demo 里打 CSS 补丁 / 行为 hack**；缺能力 → 回库修组件 / 造组件，不怕引入新组件，可 web search。
 - demo 是「寻求真实场景拓展 UI 库」的载体；全 mock 内存态，`output: export` 静态导出（动态路由拆 server/client）。
 - 所有面向交付的输出中文。
 - 新组件标配：源码 + `.showcase.tsx` + `.test.tsx` + `index.ts` barrel + `manifest.ts` 登记 + `registry.tsx`。
@@ -181,7 +181,7 @@ app/demos/hanhelm/
 
 ## 6. 验证策略
 
-1. **组件层**：4 新组件各 `.test.tsx`（纯函数 + 渲染 + 交互），`pnpm --filter @hulian/ui test` 全绿。
+1. **组件层**：4 新组件各 `.test.tsx`（纯函数 + 渲染 + 交互），`pnpm --filter @hulianui/ui test` 全绿。
 2. **画廊层**：4 新组件 showcase 进画廊，doc 页零 console error。
 3. **demo 层**：CDP 隔离 Chrome-for-Testing 实机逐页截图（7 页 + login）+ 关键交互
    （Sankey hover/点击下钻、QueueLane 泳道、任务详情 DAG + failover 过程帧推进、路由六维回放、告警滑块模拟、Funnel），

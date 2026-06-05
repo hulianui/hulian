@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在 projects demo 增加第 6 个模块「在线收款」（收款单列表 + 收银台），复用既有 `@hulian/ui` 组件（含 `Statistic.Countdown`），支付成功联动回写既有发票回款记录。
+**Goal:** 在 projects demo 增加第 6 个模块「在线收款」（收款单列表 + 收银台），复用既有 `@hulianui/ui` 组件（含 `Statistic.Countdown`），支付成功联动回写既有发票回款记录。
 
 **Architecture:** 纯 demo 增量，0 新组件。镜像现有 `invoices`（ProTable+Statistic+Drawer）与 `quotes/[id]`（server 壳 + client 子组件 + `generateStaticParams`）范式。内存态 mock，收款单 `useState`，发票回写直接 mutate 共享 `invoices` 数组并重算 `paymentStatus`。
 
-**Tech Stack:** Next.js App Router（`output:export` 静态导出）+ React + `@hulian/ui` + Tailwind v4。
+**Tech Stack:** Next.js App Router（`output:export` 静态导出）+ React + `@hulianui/ui` + Tailwind v4。
 
 **验证口径**：本仓库 demo 页无单测，验证走 **类型检查 + 真实浏览器像素自证**（隔离 chromium，见 `mcp-browser-busy-launch-isolated-chromium-via-executablepath`）。组件改动（若有缺口）才补 vitest。
 
@@ -282,7 +282,7 @@ import {
   toast,
   useForm,
   type ColumnDef,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { useRouter } from "next/navigation";
 import { checkouts as seed, payUrl } from "../../_data/checkouts";
 import { dueAmount, invoices, invoiceById } from "../../_data/invoices";
@@ -571,7 +571,7 @@ import {
   Spin,
   Statistic,
   Tag,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Wallet } from "lucide-react";
 import { checkoutById, payUrl, settlePayment } from "../_data/checkouts";
 import { checkoutStatusTone, rmbUpper, yuan } from "../_data/status";

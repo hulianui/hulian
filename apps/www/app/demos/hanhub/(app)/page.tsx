@@ -12,7 +12,7 @@ import {
   NumberTicker,
   Stat,
   StatusDot,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { account, todayKpi, topModels, usageTrend } from "../_data/usage";
 import { channels } from "../_data/channels";
 import { requestLogs } from "../_data/logs";

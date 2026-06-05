@@ -8,9 +8,9 @@
 > **「我做 demo 的意义就是寻求真实场景，然后拓展 UI 库。」**
 > **「自家 UI 库就是要够全，省得用户到处 import 别人的库。」**
 
-所以本任务的**真正交付物是更全的 `@hulian/ui`**，个人站 demo 是「寻找真实场景 → 暴露库缺口 → 沉淀组件」的载体。两条主线：
+所以本任务的**真正交付物是更全的 `@hulianui/ui`**，个人站 demo 是「寻找真实场景 → 暴露库缺口 → 沉淀组件」的载体。两条主线：
 
-1. **库主线（重点）**：从 GitHub（react-bits / Aceternity / MagicUI）复刻 **10 个设计感组件**进 `@hulian/ui`，瑚琏化（吃 token、reduced-motion、SSR 安全、关键帧 `hulian-` 前缀、来源标注）。
+1. **库主线（重点）**：从 GitHub（react-bits / Aceternity / MagicUI）复刻 **10 个设计感组件**进 `@hulianui/ui`，瑚琏化（吃 token、reduced-motion、SSR 安全、关键帧 `hulian-` 前缀、来源标注）。
 2. **demo 主线**：第 7 个内置 demo `/demos/personal`（独立开发者作品集），把这批新组件 + 大量现有盲区组件塞进真实场景，并走完整交互生命周期。
 
 ## 1. 库主线：10 个新组件
@@ -57,8 +57,8 @@
 
 ### 1.4 验收（库主线）
 
-- `pnpm --filter @hulian/ui test` 全绿（新增件各自测试通过）。
-- `pnpm --filter @hulian/ui typecheck` 通过。
+- `pnpm --filter @hulianui/ui test` 全绿（新增件各自测试通过）。
+- `pnpm --filter @hulianui/ui typecheck` 通过。
 - 文档站画廊每个新 slug 页可渲染、无 console error（WebGL 件需真实浏览器 + GPU/swiftshader，见 §4）。
 - `demos:coverage` 分母 +10，且这 10 件在 demo 主线被覆盖（见 §2.4 映射）。
 
@@ -142,7 +142,7 @@ AvatarCircles 显示最近访客。背景用 FlickeringGrid（轻）。
 
 - **WebGL 件实机**：headless 默认无 GPU → 用隔离 Chrome-for-Testing + `--enable-unsafe-swiftshader`（软件 WebGL），或带 GPU 的真实浏览器；照记忆 `mcp-browser-busy-launch-isolated-chromium-via-executablepath` 起独立 chromium，避 MCP 争用。
 - **www 截图坑**：记忆 `www-msw-gate-blanks-headless-screenshots` —— dev 下 headless CLI 截图可能全空白；视觉自证走真实浏览器 / Playwright MCP / CDP / curl SSR HTML。
-- `pnpm --filter @hulian/ui test` + `typecheck` 全绿。
+- `pnpm --filter @hulianui/ui test` + `typecheck` 全绿。
 - `pnpm --filter www build`（output:export）通过，`[slug]` 静态导出无误。
 - `node apps/www/scripts/demos-coverage.mjs`：外链=0；覆盖率较 53% 显著提升（10 新件 + 大量现有盲区被 demo 命中）。
 - 实机逐页像素自证：主页 6 区 + 5 详情页（各自背景）+ 留言板 3 态（加载/空或错/已写）+ 暗色模式。
@@ -151,7 +151,7 @@ AvatarCircles 显示最近访客。背景用 FlickeringGrid（轻）。
 
 | 风险 | 预案 |
 |---|---|
-| **Anchor scrollspy** 只认 window scroll，主页若内层滚动失效 | 记忆 `scrollspy-anchor-hardcoded-window-scroll`；优先让主页用 window 滚动；若必须内层容器→**回 @hulian/ui 给 Anchor 加自定义容器支持**（修组件，不在 demo hack） |
+| **Anchor scrollspy** 只认 window scroll，主页若内层滚动失效 | 记忆 `scrollspy-anchor-hardcoded-window-scroll`；优先让主页用 window 滚动；若必须内层容器→**回 @hulianui/ui 给 Anchor 加自定义容器支持**（修组件，不在 demo hack） |
 | 多 WebGL 同屏 → context 超限/掉帧 | §1.2 一页≤1；IntersectionObserver 离屏停；卸载 loseContext |
 | WebGL SSR/hydration mismatch | `"use client"` + 仅 effect 内建 GL；首帧 fallback；随机量在 effect 生成（照 Meteors 范式） |
 | reduced-motion / 无障碍 | 每个动效件提供静态 fallback + `prefers-reduced-motion` 分支 |

@@ -1,4 +1,4 @@
-// 瑚琏 showcase 子入口 —— 仅供文档站 registry 消费（@hulian/ui/showcase）。
+// 瑚琏 showcase 子入口 —— 仅供文档站 registry 消费（@hulianui/ui/showcase）。
 // 刻意与主 barrel(./index.ts)隔离：showcase 携带 demo-only 数据/依赖，不得进对外组件导出面。
 // 由脚本从各组件 index 的 showcase re-export 收拢生成。
 

@@ -1,5 +1,5 @@
 // 对话状态机：消费 ChatEvent 流，累积成可渲染的消息列表。纯函数 reducer，便于推理与测试。
-import type { ChatEvent } from "@hulian/mocks";
+import type { ChatEvent } from "@hulianui/mocks";
 
 export type TurnPhase = "waiting" | "thinking" | "tool" | "streaming" | "done";
 

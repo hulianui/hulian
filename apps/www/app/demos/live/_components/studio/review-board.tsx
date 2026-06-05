@@ -1,5 +1,5 @@
 "use client";
-import { AreaChart, BarChart, Card, CardBody, CardHeader, PieChart, Stat } from "@hulian/ui";
+import { AreaChart, BarChart, Card, CardBody, CardHeader, PieChart, Stat } from "@hulianui/ui";
 import { mulberry32 } from "../../_lib/rng";
 
 const r = mulberry32(20260605);

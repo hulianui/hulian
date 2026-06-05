@@ -21,7 +21,7 @@
 - Create: `apps/www/vitest.config.ts` — www 测试环境（jsdom）。
 - Modify: `apps/www/package.json` — 加 `test` script + 测试 devDeps。
 - Create: `apps/www/lib/manifest.ts` — 纯数据 IA SSOT（CategoryKey / CATEGORIES / ComponentMeta / manifest）。
-- Create: `apps/www/lib/registry.tsx` — `"use client"`，`specBySlug` 映射（唯一 import `@hulian/ui` spec 处）。
+- Create: `apps/www/lib/registry.tsx` — `"use client"`，`specBySlug` 映射（唯一 import `@hulianui/ui` spec 处）。
 - Create: `apps/www/lib/manifest.test.ts` — manifest↔registry 契约测试（守护 SSOT 一致）。
 - Create: `apps/www/components/showcase/component-doc.tsx` — `"use client"` 单组件文档岛（preview + states + playground）。
 - Create: `apps/www/app/components/[slug]/page.tsx` — 动态路由 server 页（`generateStaticParams` + `generateMetadata` + 渲染 `<ComponentDoc>`）。
@@ -54,7 +54,7 @@
 ```bash
 pnpm typecheck && pnpm test && pnpm build
 ```
-**单包测试**（TDD 跑单文件）：`pnpm --filter @hulian/ui exec vitest run <名>`（如 `badge`）。
+**单包测试**（TDD 跑单文件）：`pnpm --filter @hulianui/ui exec vitest run <名>`（如 `badge`）。
 **浏览器实测**：`pnpm dev`（起 www 于 5512），访问页面，右上明暗开关切换看两态。
 
 ---
@@ -186,7 +186,7 @@ Expected: FAIL —— 无法解析 `./manifest` / `./registry`。
 
 Create `apps/www/lib/manifest.ts`:
 ```ts
-// 瑚琏文档站 IA 元数据 —— 纯数据 SSOT，零 @hulian/ui import，server / client 皆可安全读。
+// 瑚琏文档站 IA 元数据 —— 纯数据 SSOT，零 @hulianui/ui import，server / client 皆可安全读。
 export type CategoryKey = "inputs" | "data-display" | "feedback" | "navigation" | "effects";
 
 export interface ComponentMeta {
@@ -217,10 +217,10 @@ export const manifest: ComponentMeta[] = [
 Create `apps/www/lib/registry.tsx`:
 ```tsx
 "use client";
-import type { ShowcaseSpec } from "@hulian/ui";
-import { buttonShowcase, switchShowcase, dialogShowcase } from "@hulian/ui";
+import type { ShowcaseSpec } from "@hulianui/ui";
+import { buttonShowcase, switchShowcase, dialogShowcase } from "@hulianui/ui";
 
-// 唯一 import @hulian/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
+// 唯一 import @hulianui/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
 export const specBySlug: Record<string, ShowcaseSpec> = {
   button: buttonShowcase,
   switch: switchShowcase,
@@ -254,7 +254,7 @@ Create `apps/www/components/showcase/component-doc.tsx`:
 ```tsx
 "use client";
 import { notFound } from "next/navigation";
-import type { ShowcaseSpec } from "@hulian/ui";
+import type { ShowcaseSpec } from "@hulianui/ui";
 import { manifest } from "../../lib/manifest";
 import { specBySlug } from "../../lib/registry";
 import { ComponentPreview } from "./component-preview";
@@ -591,7 +591,7 @@ describe("shimmer 预设", () => {
 
 - [ ] **Step 2: 跑测试确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run variants`
+Run: `pnpm --filter @hulianui/ui exec vitest run variants`
 Expected: FAIL —— `shimmer` 未导出。
 
 - [ ] **Step 3: 加 shimmer 预设**
@@ -629,7 +629,7 @@ export {
 
 - [ ] **Step 6: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run variants`
+Run: `pnpm --filter @hulianui/ui exec vitest run variants`
 Expected: PASS。
 
 - [ ] **Step 7: Commit**
@@ -675,7 +675,7 @@ describe("badgeVariants", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run badge`
+Run: `pnpm --filter @hulianui/ui exec vitest run badge`
 Expected: FAIL —— `./badge` 不存在。
 
 - [ ] **Step 3: 实现 badge.tsx**
@@ -785,7 +785,7 @@ export * from "./badge";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run badge`
+Run: `pnpm --filter @hulianui/ui exec vitest run badge`
 Expected: PASS。
 
 - [ ] **Step 9: Commit**
@@ -828,7 +828,7 @@ describe("cardVariants", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run card`
+Run: `pnpm --filter @hulianui/ui exec vitest run card`
 Expected: FAIL。
 
 - [ ] **Step 3: 实现 card.tsx（Card + Header/Body/Footer）**
@@ -936,7 +936,7 @@ export * from "./card";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run card`
+Run: `pnpm --filter @hulianui/ui exec vitest run card`
 Expected: PASS。
 
 - [ ] **Step 9: Commit**
@@ -977,7 +977,7 @@ describe("skeletonVariants", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run skeleton`
+Run: `pnpm --filter @hulianui/ui exec vitest run skeleton`
 Expected: FAIL。
 
 - [ ] **Step 3: 实现 skeleton.tsx（motion shimmer）**
@@ -1085,7 +1085,7 @@ export * from "./skeleton";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run skeleton`
+Run: `pnpm --filter @hulianui/ui exec vitest run skeleton`
 Expected: PASS。
 
 - [ ] **Step 9: Commit**
@@ -1130,7 +1130,7 @@ describe("Avatar", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run avatar`
+Run: `pnpm --filter @hulianui/ui exec vitest run avatar`
 Expected: FAIL。
 
 - [ ] **Step 3: 实现 avatar.tsx（Base UI Avatar）**
@@ -1235,7 +1235,7 @@ export * from "./avatar";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run avatar`
+Run: `pnpm --filter @hulianui/ui exec vitest run avatar`
 Expected: PASS（含 jsdom 下 fallback 文本渲染）。
 
 - [ ] **Step 9: Commit**
@@ -1268,7 +1268,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 修改 `apps/www/lib/registry.tsx`——更新 import 与映射:
 ```tsx
 "use client";
-import type { ShowcaseSpec } from "@hulian/ui";
+import type { ShowcaseSpec } from "@hulianui/ui";
 import {
   buttonShowcase,
   switchShowcase,
@@ -1277,7 +1277,7 @@ import {
   cardShowcase,
   skeletonShowcase,
   avatarShowcase,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 export const specBySlug: Record<string, ShowcaseSpec> = {
   button: buttonShowcase,

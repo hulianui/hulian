@@ -1,18 +1,18 @@
 # CRM 后台 Demo 设计 — 用真实场景 dogfood 倒逼组件库迭代
 
 - 日期：2026-06-04
-- 团队：hulian（@hulian/ui 组件库 + apps/www 文档站）
+- 团队：hulian（@hulianui/ui 组件库 + apps/www 文档站）
 - 状态：设计已与用户对齐，待落地
 
 ## 0. 目的（第一性）
 
 这个内置 demo **不是为了展示一个 CRM**，而是为了：
 
-> 用一个真实、完整的中后台业务场景持续 dogfood @hulian/ui，把"用起来才暴露的缺口/不好用"变成组件库的迭代驱动力。
+> 用一个真实、完整的中后台业务场景持续 dogfood @hulianui/ui，把"用起来才暴露的缺口/不好用"变成组件库的迭代驱动力。
 
 因此最高优先级约束是：
 
-- **100% 用 @hulian/ui 组件搭**。不允许在 demo 层手搓库本该提供的通用件、不允许绕过库直接写原生控件凑数。
+- **100% 用 @hulianui/ui 组件搭**。不允许在 demo 层手搓库本该提供的通用件、不允许绕过库直接写原生控件凑数。
 - **缺口处理优先级**：
   1. 现有组件能组合 → 在 demo 的 `_components/` 里做**业务级组装**（业务拼装本就属于 demo 层，不算违规）。
   2. 库里组件**能力不足/不好用** → **改 `packages/ui` 对应组件**补能力或优化体验，同步其 `*.types.ts` / `*.showcase.tsx` / 测试。
@@ -64,9 +64,9 @@ Next 行为校验：route group `(app)` 不进 URL，故 `(app)/page.tsx` → `/
 - 业务页均为 `'use client'`（ProTable/看板/表单皆交互件）。
 - 列表与详情之间通过 `_data` 同一份数组的 id 关联；详情页用 `customerId` 反查商机/订单/跟进。
 
-## 4. 消费 @hulian/ui 的方式（沿用文档站既有约定）
+## 4. 消费 @hulianui/ui 的方式（沿用文档站既有约定）
 
-- `import { ... } from "@hulian/ui"`；token 已由 `apps/www/app/globals.css` 全局引入，无需额外处理。
+- `import { ... } from "@hulianui/ui"`；token 已由 `apps/www/app/globals.css` 全局引入，无需额外处理。
 - 主题切换、`MuiBridgeProvider` 等 Provider 由 `apps/www/app/layout.tsx` 顶层提供，demo 页直接享用。
 - demos 段如需局部约束（如固定满高、隐藏文档站导航），在 `demos/layout.tsx` 或 `crm/(app)/layout.tsx` 内处理。
 
@@ -104,7 +104,7 @@ Dashboard 统计由以上数据现算：客户总数、本月新增、商机金�
 ## 9. 测试与验收
 
 - 验收以**实物为准**：`pnpm --filter www dev` 起文档站，逐页人工走查（不可用根 `pnpm dev`，会误杀桌面 app 5514）。
-- 动到 `packages/ui` 的组件，补/改其单测，跑 `pnpm --filter @hulian/ui test`。
+- 动到 `packages/ui` 的组件，补/改其单测，跑 `pnpm --filter @hulianui/ui test`。
 - 每页交付时附"用到的库组件 + 本页触发的库改动"清单。
 
 ## 10. 非目标（YAGNI）

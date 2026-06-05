@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Bell, MessageSquarePlus, Ticket, Star, CheckCheck } from "lucide-react";
-import { Badge, Button, Popover, PopoverContent, PopoverTrigger } from "@hulian/ui";
+import { Badge, Button, Popover, PopoverContent, PopoverTrigger } from "@hulianui/ui";
 
 interface Notice {
   id: string;

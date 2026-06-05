@@ -23,8 +23,8 @@ import {
   Tag,
   toast,
   useForm,
-} from "@hulian/ui";
-import type { ColumnDef } from "@hulian/ui";
+} from "@hulianui/ui";
+import type { ColumnDef } from "@hulianui/ui";
 import { apiKeys as seedKeys, keyGroups } from "../../_data/keys";
 import { models } from "../../_data/providers";
 import type { ApiKey } from "../../_data/types";

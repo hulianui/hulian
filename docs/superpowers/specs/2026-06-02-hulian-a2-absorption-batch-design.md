@@ -30,7 +30,7 @@ A2 启动时面对两个事实：(a) 只有 3 个标杆组件，远未铺开；(
 | overlay 引擎红线 | **守红线·全 Base UI**：所有 overlay 族（Dialog/Select/Combobox/Menu/Popover/Tooltip/Tabs/Accordion）只用 Base UI 一套库，**本阶段不引入 React Aria** |
 | 本批 scope | IA 树 + 第一批「零新依赖」组件 |
 | IA 路由结构 | 每组件一页（`/components/[slug]` 动态路由）+ 持久左侧分类树 + registry |
-| registry 形态 | **www 单一 registry**（全部 IA 元数据集中在 `apps/www`，`@hulian/ui` 保持纯净） |
+| registry 形态 | **www 单一 registry**（全部 IA 元数据集中在 `apps/www`，`@hulianui/ui` 保持纯净） |
 | 第一批清单 | **全量 10 个含 Tabs** |
 | 表单录入范围 | **Input + Textarea + Field 三件**（含 Field a11y 包装） |
 
@@ -56,22 +56,22 @@ A2 启动时面对两个事实：(a) 只有 3 个标杆组件，远未铺开；(
 | `page.tsx`（改） | `/components` 索引概览页：按分类列组件卡片（不再堆全部 demo） | server，只读 `manifest`（纯数据） |
 | `[slug]/page.tsx`（新） | 单组件页：导出 `generateStaticParams`（读 `manifest`）+ `metadata`，内部渲染 client 岛 `<ComponentDoc slug={slug} />` | server 页 + client 岛 |
 
-- `generateStaticParams` 从 **`manifest`**（纯数据，见 §3.3）取 `slug[]` → 全部组件页 **SSG**（顺带利好 A4 静态导出）。server 模块图里**不出现**任何 `@hulian/ui` 渲染代码。
+- `generateStaticParams` 从 **`manifest`**（纯数据，见 §3.3）取 `slug[]` → 全部组件页 **SSG**（顺带利好 A4 静态导出）。server 模块图里**不出现**任何 `@hulianui/ui` 渲染代码。
 
 ### 3.2 RSC 边界（**结构性**隔离，非纪律性）
 
-`ShowcaseSpec` 含 `render()` / `renderWithProps()` 函数与 JSX。风险**不止**「跨 server→client 序列化」，更在于**模块图污染**：若 server 端（如 `generateStaticParams`）`import` 一个同时持有 spec 的 registry 模块，会把整个 `@hulian/ui` 的 showcase 渲染代码静态拉进 SSG 模块图——只要某个 `*.showcase` 不是 client 模块、且其顶层有 browser-only 副作用，SSG 就会在「加到第 N 个组件时」隐性炸裂。这正是 v3 选这条路要避免的回归。
+`ShowcaseSpec` 含 `render()` / `renderWithProps()` 函数与 JSX。风险**不止**「跨 server→client 序列化」，更在于**模块图污染**：若 server 端（如 `generateStaticParams`）`import` 一个同时持有 spec 的 registry 模块，会把整个 `@hulianui/ui` 的 showcase 渲染代码静态拉进 SSG 模块图——只要某个 `*.showcase` 不是 client 模块、且其顶层有 browser-only 副作用，SSG 就会在「加到第 N 个组件时」隐性炸裂。这正是 v3 选这条路要避免的回归。
 
 **对策 = 把保证从「自觉」变「架构强制」：拆两个文件（详见 §3.3）**
 
-- server 侧只能 `import` `manifest`（纯数据，零 `@hulian/ui` 依赖）→ **server 根本 import 不到 spec**，函数无从跨界，模块图里也没有渲染代码。
+- server 侧只能 `import` `manifest`（纯数据，零 `@hulianui/ui` 依赖）→ **server 根本 import 不到 spec**，函数无从跨界，模块图里也没有渲染代码。
 - spec 渲染映射（`registry.tsx`，`"use client"`）只被 `ComponentDoc` client 岛 `import`。
 - 套用 skill `rsc-client-element-as-render-prop-undefined-type`（治 render-prop 跨界）——此处治的是**模块图跨界**，与之同源；motion 相关注意 `motion-reveal-invisible-after-wrapper-becomes-client`。
 
 ### 3.3 IA SSOT = manifest + registry **双文件**（结构性隔离 server/client）
 
 ```ts
-// lib/manifest.ts —— 纯数据 SSOT，零 @hulian/ui import。server / client 皆可安全读。
+// lib/manifest.ts —— 纯数据 SSOT，零 @hulianui/ui import。server / client 皆可安全读。
 interface ComponentMeta {
   slug: string;            // URL 段，如 "card"
   name: string;            // 显示名，如 "Card"
@@ -82,13 +82,13 @@ interface ComponentMeta {
 export const manifest: ComponentMeta[] = [ /* ... */ ];
 
 // lib/registry.tsx —— "use client"，只被 ComponentDoc 岛 import。
-import { buttonShowcase, /* ... */ } from "@hulian/ui";
+import { buttonShowcase, /* ... */ } from "@hulianui/ui";
 export const specBySlug: Record<string, ShowcaseSpec> = { button: buttonShowcase, /* ... */ };
 ```
 
 - **`manifest.ts`**（纯数据）：`generateStaticParams`、索引页卡片、`<ComponentTree>` 只 import 它 → server 模块图无渲染代码。
 - **`registry.tsx`**（`"use client"`，spec 映射）：只被 `ComponentDoc` client 岛 import。
-- `@hulian/ui` 保持纯净——**不**加 slug/category 这类文档概念，`ShowcaseSpec` 类型不动。
+- `@hulianui/ui` 保持纯净——**不**加 slug/category 这类文档概念，`ShowcaseSpec` 类型不动。
 - **加一个组件 = 库里写四件套 + `manifest` 加一行 + `registry` 映射加一行**（唯一入口，后续批次照此扩）。
 - **status 约定**：本批接入的存量 Button/Switch/Dialog 标 `"stable"`；本批新增 10 个标 `"new"`（后续批次稳定后再降为 `stable`，由该批 plan 决定）。
 - **扩展钩子（YAGNI，本批不做）**：当前 `registry.tsx` 静态 import 全部 spec → 每个 `[slug]` 页 client bundle 含全部组件 showcase 代码（10 个无所谓）。后续批次膨胀到数十个时，把 `specBySlug` 改为 `Record<string, () => Promise<ShowcaseSpec>>`（`dynamic(() => import(...))`）按 slug 懒加载、code-split。
@@ -193,7 +193,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = { button: buttonShowcase
 - **不做** overlay 浮层族（Menu/Popover/Tooltip/Toast/Drawer）——后续批次。
 - **不做** Table/DataTable（TanStack）、Charts（Tremor）、动效组件（Magic UI）——各自后续批次。
 - **不做** MUI/Ant 桥接（A3）、prod 静态导出 + dmg 打包（A4）。
-- **不改** `@hulian/ui` 的 `ShowcaseSpec` 类型（用 showcase 写法承载插槽组件）。
+- **不改** `@hulianui/ui` 的 `ShowcaseSpec` 类型（用 showcase 写法承载插槽组件）。
 - **不做** 移动端花哨抽屉动画（左树窄屏简单折叠即可）。
 - **不做** 从 TS 类型自动抽取 control schema（沿用手写，见主 spec §6 第四条）。
 

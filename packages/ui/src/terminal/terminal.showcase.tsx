@@ -4,7 +4,7 @@ import { Terminal } from "./terminal";
 import type { TerminalLine } from "./terminal.types";
 
 const lines: TerminalLine[] = [
-  { prompt: "$", text: "pnpm add @hulian/ui", tone: "command" },
+  { prompt: "$", text: "pnpm add @hulianui/ui", tone: "command" },
   { text: "Packages: +1", tone: "muted" },
   { text: "Progress: resolved 1, reused 1, done", tone: "muted" },
   { text: "✓ 安装完成", tone: "success" },

@@ -1,4 +1,4 @@
-import { NumberTicker, Text } from "@hulian/ui";
+import { NumberTicker, Text } from "@hulianui/ui";
 import { stats } from "../../_data/site";
 
 // 核心数据：NumberTicker 进视口动画 + 后缀。四列网格，移动端两列。

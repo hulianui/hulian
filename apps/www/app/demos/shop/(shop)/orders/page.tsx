@@ -4,7 +4,7 @@ import {
   Tabs, TabsList, TabsTab, TabsPanel,
   Tag, Button, Empty, Skeleton, Drawer, DrawerContent,
   Timeline, Popconfirm, Rating, toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { useMockData, usePending } from "../../../lib/async";
 import { orders, STATUS_LABEL, STATUS_TONE } from "../../_data/orders";
 import { productById, productImage, formatPrice } from "../../_data/products";

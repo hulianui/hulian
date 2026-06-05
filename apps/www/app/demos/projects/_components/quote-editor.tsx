@@ -33,7 +33,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ROOT } from "./nav-config";
 import { lineTotal, quoteById, quoteTotals } from "../_data/quotes";
 import { quoteStatusTone, rmbUpper, yuan } from "../_data/status";

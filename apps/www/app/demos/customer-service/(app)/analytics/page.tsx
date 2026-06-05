@@ -15,7 +15,7 @@ import {
   Stat,
   Tag,
   Text,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import {
   todayMetrics,
   hourlyVolume,

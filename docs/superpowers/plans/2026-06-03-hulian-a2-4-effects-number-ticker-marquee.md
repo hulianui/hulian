@@ -4,9 +4,9 @@
 
 **Goal:** 给瑚琏新增动效族首两件 NumberTicker（数字滚动）+ Marquee（无缝跑马灯），左树「动效」分类首现。
 
-**Architecture:** Magic UI copy-paste 吸取模式——抄实现骨架 + 换瑚琏语义 token + 统一瑚琏 API + 复用 `packages/ui/src/motion` 时长/曲线。NumberTicker 走 motion-runtime（`"use client"`，tween 复用 `motionEase.out` + `useReducedMotion`）；Marquee 走纯 CSS keyframe（无 `"use client"`，关键帧落 `@hulian/tokens` preset.css，`motion-reduce:` 变体停）。
+**Architecture:** Magic UI copy-paste 吸取模式——抄实现骨架 + 换瑚琏语义 token + 统一瑚琏 API + 复用 `packages/ui/src/motion` 时长/曲线。NumberTicker 走 motion-runtime（`"use client"`，tween 复用 `motionEase.out` + `useReducedMotion`）；Marquee 走纯 CSS keyframe（无 `"use client"`，关键帧落 `@hulianui/tokens` preset.css，`motion-reduce:` 变体停）。
 
-**Tech Stack:** React 19 + motion v12 + Tailwind v4（`@hulian/tokens` preset）+ Base UI 无关 + vitest(jsdom) + 四件套 + manifest/registry 双文件 IA。
+**Tech Stack:** React 19 + motion v12 + Tailwind v4（`@hulianui/tokens` preset）+ Base UI 无关 + vitest(jsdom) + 四件套 + manifest/registry 双文件 IA。
 
 **Spec:** `docs/superpowers/specs/2026-06-03-hulian-a2-4-effects-number-ticker-marquee-design.md`
 
@@ -336,7 +336,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>" -- package
 `packages/tokens/src/preset.css` —— 在文件末尾（`@theme inline { ... }` 块之后）追加：
 ```css
 
-/* effects/Marquee 无缝跑马灯关键帧（CSS 侧动效 SSOT；JS 侧动效见 @hulian/ui motion/variants.ts）。
+/* effects/Marquee 无缝跑马灯关键帧（CSS 侧动效 SSOT；JS 侧动效见 @hulianui/ui motion/variants.ts）。
    每份子项平移 -100% - gap，配合复制 N 份实现无缝循环。 */
 @keyframes hulian-marquee {
   from {
@@ -485,7 +485,7 @@ import { cn } from "../lib/cn";
 import type { MarqueeProps } from "./marquee.types";
 
 // 吸取自 magicui.design Marquee：复制子项 N 份、每份 CSS 平移 -100% - gap → 无缝循环。
-// 瑚琏化：纯 CSS（无 "use client"，可 RSC，同 Breadcrumb/Alert）；关键帧在 @hulian/tokens preset.css；
+// 瑚琏化：纯 CSS（无 "use client"，可 RSC，同 Breadcrumb/Alert）；关键帧在 @hulianui/tokens preset.css；
 // reduced-motion 用 Tailwind motion-reduce: 变体停；容器中性、子项自带色（只消费语义 token）。
 export function Marquee({
   children,

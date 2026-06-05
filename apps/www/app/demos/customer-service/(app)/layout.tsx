@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ModalProvider, NotificationProvider, ToastProvider, Watermark } from "@hulian/ui";
+import { ModalProvider, NotificationProvider, ToastProvider, Watermark } from "@hulianui/ui";
 import { CsShell } from "../_components/cs-shell";
 
 // 客服中心外壳：route group (app) 把侧栏/顶栏/页签套在所有业务页上（登录页在 group 外，无外壳）。

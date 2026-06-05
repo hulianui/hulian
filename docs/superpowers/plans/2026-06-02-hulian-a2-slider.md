@@ -37,7 +37,7 @@
 **四件套**：`slider.tsx` + `slider.types.ts` + `slider.showcase.tsx`（必 `"use client"`）+ `slider.test.tsx` + `index.ts`（桶导出组件/类型/showcase）。本体用 Base UI(client) → 加 `"use client"`。
 
 **门禁节奏**（沿用已验证模式）：
-- TDD 循环：`pnpm --filter @hulian/ui exec vitest run slider`（先红后绿）。
+- TDD 循环：`pnpm --filter @hulianui/ui exec vitest run slider`（先红后绿）。
 - commit 前：`pnpm typecheck`（守类型/导出）。
 - **完整三道门 + 生产 build 只在 S2 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（**build 必 `--filter=www`**——全包 build 会撞 desktop tauri `beforeBuildCommand` 二次 build www）。
 - **Playwright 截图实测只在 S2**：明暗两态各一张，存 cwd 根 `/Users/zhangzhiwei/Desktop/code/hulian/*.png`，Read 看像素（不靠 `browser_evaluate` 读 DOM）。
@@ -129,7 +129,7 @@ describe("Slider", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run slider`
+Run: `pnpm --filter @hulianui/ui exec vitest run slider`
 Expected: FAIL —— `./slider` 不存在。
 
 - [ ] **Step 3: 实现 slider.types.ts**
@@ -261,7 +261,7 @@ export * from "./slider";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run slider`
+Run: `pnpm --filter @hulianui/ui exec vitest run slider`
 Expected: PASS（7 条用例全绿：单/双 thumb 计数、min/max/step 透传、disabled、showValue 有/无、className）。
 
 - [ ] **Step 9: typecheck + Commit**
@@ -306,7 +306,7 @@ import {
   textareaShowcase,
   fieldShowcase,
   sliderShowcase,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 export const specBySlug: Record<string, ShowcaseSpec> = {
   button: buttonShowcase,

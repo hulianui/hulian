@@ -1,4 +1,4 @@
-import type { TreeNode } from "@hulian/ui";
+import type { TreeNode } from "@hulianui/ui";
 import type { Collaborator } from "./types";
 
 // 右栏「访问权限」Tree 的数据源：瀚库公司组织架构（部门 → 小组 → 成员）。

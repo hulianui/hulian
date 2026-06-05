@@ -15,7 +15,7 @@ import {
   type FlowEdge,
   type FlowHandleSpec,
   type FlowNode,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { MODELS } from "../../_data/models";
 import { ROUTING_RULES } from "../../_data/rules";
 import { REVIEWS } from "../../_data/reviews";

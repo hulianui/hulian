@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Avatar, CardSkeleton, Divider, Rating, Tag } from "@hulian/ui";
+import { Avatar, CardSkeleton, Divider, Rating, Tag } from "@hulianui/ui";
 import { useMockData } from "../../../lib/async";
 import { CATEGORIES, services } from "../../_data/services";
 import type { ServiceCategory } from "../../_data/types";

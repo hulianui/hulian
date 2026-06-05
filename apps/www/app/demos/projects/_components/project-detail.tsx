@@ -17,7 +17,7 @@ import {
   Tag,
   Text,
   Timeline,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ROOT } from "./nav-config";
 import { eventsFor, milestonesFor, projectById, scheduleFor } from "../_data/projects";
 import { quotes } from "../_data/quotes";

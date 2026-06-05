@@ -7,7 +7,7 @@
 
 ## 1. 命题与目的
 
-**根本目的：用 demo 驱动 @hulian/ui 库成长。** 这个 demo 的真正交付物不是页面，而是它从「实时直播」这个真实场景里逼出来的一批新组件。库里此前**没有任何直播类组件**（grep 仅命中 emoji-data），`Video` 是 vidstack 的 VOD 播放器，撑不了直播态——这是一整块空白。
+**根本目的：用 demo 驱动 @hulianui/ui 库成长。** 这个 demo 的真正交付物不是页面，而是它从「实时直播」这个真实场景里逼出来的一批新组件。库里此前**没有任何直播类组件**（grep 仅命中 emoji-data），`Video` 是 vidstack 的 VOD 播放器，撑不了直播态——这是一整块空白。
 
 场景采用「主播中控 + C 端观众」**融合**：一套实时引擎驱动两张脸。
 
@@ -16,7 +16,7 @@
 
 ## 2. 硬约束（来自用户 + 项目规范）
 
-1. **100% 由 @hulian/ui 组件实现**，demo 里**不允许打 CSS 补丁 / 行为 hack**。需要补丁 = 组件有缺口 → 去库里修组件/造组件（参考既有 skill `fix-component-not-demo-css-patch`）。
+1. **100% 由 @hulianui/ui 组件实现**，demo 里**不允许打 CSS 补丁 / 行为 hack**。需要补丁 = 组件有缺口 → 去库里修组件/造组件（参考既有 skill `fix-component-not-demo-css-patch`）。
 2. **禁止远程资源**（gallery 门禁）：图片/视频/字体全本地化。直播画面复用现成本地 `public/demo/sample-video.mp4`。
 3. **static export 友好**：动态路由须 `generateStaticParams` + server page 拆 client 子组件（skill `nextjs-output-export-dynamic-route-server-static-params`）。
 4. 新组件遵循库工程约定：四件套 + 5 处注册链（见 §6）。

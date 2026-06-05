@@ -23,8 +23,8 @@ import {
   Stat,
   StatusDot,
   Tag,
-} from "@hulian/ui";
-import type { ChannelStatus } from "@hulian/ui";
+} from "@hulianui/ui";
+import type { ChannelStatus } from "@hulianui/ui";
 import { COST_TREND, HOTSPOT, MODEL_USAGE, QUALITY_TREND, SEVERITY_DIST } from "../_data/metrics";
 import { MODELS } from "../_data/models";
 import { REPOS } from "../_data/repos";

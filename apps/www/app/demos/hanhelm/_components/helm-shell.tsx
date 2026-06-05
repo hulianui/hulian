@@ -15,7 +15,7 @@ import {
   MenuTrigger,
   StatusDot,
   useTheme,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { MENU, NAV_LABEL, ROOT, hrefFromKey, keyFromPath } from "./nav-config";
 
 function Logo({ collapsed }: { collapsed?: boolean }) {

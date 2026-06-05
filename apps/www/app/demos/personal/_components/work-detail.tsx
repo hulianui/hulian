@@ -28,7 +28,7 @@ import {
   type TagTone,
   type TerminalLine,
   cn,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { ArrowLeft, ArrowRight, ExternalLink, Code2 } from "lucide-react";
 import { useMockData } from "../../lib/async";
 import { workBySlug, workNav, type Work } from "../_data/works";

@@ -1,5 +1,5 @@
 "use client";
-import { Button, Empty, Skeleton, toast } from "@hulian/ui";
+import { Button, Empty, Skeleton, toast } from "@hulianui/ui";
 import { useMockData } from "../../../lib/async";
 import { productById } from "../../_data/products";
 import { useShop } from "../../_lib/shop-store";

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Share2, Boxes, ShieldCheck } from "lucide-react";
-import { Heading, Link, LoginForm, GridPattern, Text } from "@hulian/ui";
+import { Heading, Link, LoginForm, GridPattern, Text } from "@hulianui/ui";
 
 const FEATURES = [
   { icon: Share2, title: "六维智能路由", desc: "按能力 + 成本 + 延迟 + 负载 + 优先级 + SLA 打分，把任务派给最优执行器" },

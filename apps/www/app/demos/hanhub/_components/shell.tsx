@@ -14,7 +14,7 @@ import {
   MenuSeparator,
   MenuTrigger,
   useTheme,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { MENU, NAV_LABEL, ROOT, hrefFromKey, keyFromPath } from "./nav-config";
 import { account } from "../_data/usage";
 import { formatUsd } from "../_lib/pricing";

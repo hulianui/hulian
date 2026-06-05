@@ -1,5 +1,5 @@
 "use client";
-import { Skeleton, Heading, Text, Result, Button } from "@hulian/ui";
+import { Skeleton, Heading, Text, Result, Button } from "@hulianui/ui";
 import { ProductCard } from "../product-card";
 import type { Product } from "../../_data/types";
 

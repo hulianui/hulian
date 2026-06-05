@@ -29,8 +29,8 @@ spec：`docs/superpowers/specs/2026-06-03-hulian-a-tier-base-ui-thin-wrappers-de
 
 ## 验收门（全 9 件落完后统一跑）
 
-- `pnpm --filter @hulian/ui typecheck`（或 turbo `typecheck --force`）全绿。
-- `pnpm --filter @hulian/ui test --force` 全绿（含新增 ~50 测试 + manifest 契约 4 条）。
+- `pnpm --filter @hulianui/ui typecheck`（或 turbo `typecheck --force`）全绿。
+- `pnpm --filter @hulianui/ui test --force` 全绿（含新增 ~50 测试 + manifest 契约 4 条）。
 - `pnpm build --filter=www`（SSG，42 component 页全过；recharts 类 0 宽 warning 无害）。
 - 隔离 chromium CDP 截图：抽查 ≥4 件（separator/toggle/meter/alert-dialog）明暗两态像素自证，AlertDialog 先触发再截。
 

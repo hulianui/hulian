@@ -1,6 +1,6 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { Segmented } from "@hulian/ui";
+import { Segmented } from "@hulianui/ui";
 
 const TABS = [
   { value: "/components", label: "组件" },

@@ -12,13 +12,13 @@
 ## 约定速查
 - token：item 高亮 `data-[highlighted]:bg-surface-hover`；danger `text-danger`+`data-[highlighted]:bg-danger/10`；面板 `bg-surface border-border shadow-xl`；圆角 item 用 `rounded-[min(var(--radius),0.375rem)]`。
 - import：`import { Menu as BaseMenu } from "@base-ui-components/react/menu"`；`cn`/`motion` 同 popover。
-- 门禁：`pnpm --filter @hulian/ui exec vitest run menu`（TDD）+ commit 前 `pnpm typecheck`；接 IA 后 `pnpm typecheck && pnpm test && pnpm build --filter=www --force`。**git add 只列自己文件 + `git commit -- <pathspec>`**（并发 index 竞争防护，[[parallel-session-git-add-all-sweeps-your-staged-files]]）。trunk master 直 commit。
+- 门禁：`pnpm --filter @hulianui/ui exec vitest run menu`（TDD）+ commit 前 `pnpm typecheck`；接 IA 后 `pnpm typecheck && pnpm test && pnpm build --filter=www --force`。**git add 只列自己文件 + `git commit -- <pathspec>`**（并发 index 竞争防护，[[parallel-session-git-add-all-sweeps-your-staged-files]]）。trunk master 直 commit。
 - jsdom：受控 open 测试传 `modal={false}`（避 modal 的 scroll-lock/focus-manager 在 jsdom 抛错；测 items 非 modality）。
 
 ---
 
 ## Task 0：基线
-- [ ] `pnpm typecheck && pnpm test --filter @hulian/ui` 用 `--force` 记录真实绿/红；红的失败文件若 ∈ 未跟踪他人 WIP → isolate 不碰（[[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。
+- [ ] `pnpm typecheck && pnpm test --filter @hulianui/ui` 用 `--force` 记录真实绿/红；红的失败文件若 ∈ 未跟踪他人 WIP → isolate 不碰（[[turbo-test-red-isolate-untracked-wip-not-your-regression]]）。
 
 ## Task M1：Menu 组件（四件套 TDD）
 **Files:** `packages/ui/src/menu/{menu.test.tsx,menu.tsx,menu.types.ts,menu.showcase.tsx,index.ts}` + 改 `packages/ui/src/index.ts`
@@ -88,7 +88,7 @@ describe("Menu", () => {
   });
 });
 ```
-- [ ] **Step 2 跑确认失败** `pnpm --filter @hulian/ui exec vitest run menu` → FAIL（`./menu` 不存在）。
+- [ ] **Step 2 跑确认失败** `pnpm --filter @hulianui/ui exec vitest run menu` → FAIL（`./menu` 不存在）。
 - [ ] **Step 3 menu.types.ts**：
 ```ts
 import type { MouseEventHandler, ReactNode } from "react";

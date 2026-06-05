@@ -4,7 +4,7 @@ import { Table } from "./table";
 import type { ColumnDef } from "./table.types";
 
 // 内联确定性样例数据（按 index 派生，防 SSR/CSR hydration mismatch）——
-// 刻意不依赖 @hulian/mocks/faker：demo 数据不该把 dev-only 依赖带进组件库导出图。
+// 刻意不依赖 @hulianui/mocks/faker：demo 数据不该把 dev-only 依赖带进组件库导出图。
 export interface DemoUser {
   id: string;
   name: string;

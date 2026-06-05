@@ -8,7 +8,7 @@ import {
   Empty,
   Tag,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { Trash2, NotebookPen } from "lucide-react";
 import type { Course, Lesson } from "../_data/types";
 import { useLearn } from "../_lib/learn-store";

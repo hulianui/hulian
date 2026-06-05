@@ -449,7 +449,7 @@ export * from "./combobox";
 Run:
 ```bash
 cd /Users/zhangzhiwei/Desktop/code/hulian
-pnpm typecheck && pnpm --filter @hulian/ui exec vitest run src/combobox && pnpm build --filter=www --force
+pnpm typecheck && pnpm --filter @hulianui/ui exec vitest run src/combobox && pnpm build --filter=www --force
 ```
 Expected: typecheck 0 error（若全量红是并行 session WIP → isolate 不碰，确认 combobox 自身绿即可）；combobox 6 测试 PASS；build www SSG 成功（组件页 +1）。
 

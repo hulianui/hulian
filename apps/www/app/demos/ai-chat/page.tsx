@@ -51,7 +51,7 @@ import {
   Popconfirm,
   Kbd,
   ListSkeleton,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import {
   Plus,
   Menu as MenuIcon,
@@ -250,7 +250,7 @@ function Rail({
 }
 
 // assistant 气泡正文：思考块 → 工具调用 → 正文(流式中 StreamingText 逐字 / done 后 Markdown 富文本)
-// → 引用来源 → 消息操作。全部 @hulian/ui 组件。
+// → 引用来源 → 消息操作。全部 @hulianui/ui 组件。
 function AssistantBody({ m }: { m: AssistantMessage }) {
   const idle = m.phase === "waiting" && !m.thinking && m.tools.length === 0;
   return (

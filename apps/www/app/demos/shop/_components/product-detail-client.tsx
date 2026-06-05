@@ -21,7 +21,7 @@ import {
   Tag,
   modal,
   toast,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 import { productById, productGallery, formatPrice } from "../_data/products";
 import { ReviewSection } from "./review-section";
 import { SHOP_BASE } from "./nav-config";

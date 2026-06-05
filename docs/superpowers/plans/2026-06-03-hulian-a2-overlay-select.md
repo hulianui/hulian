@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在 `@hulian/ui` 落地全 Base UI 的单选 Select（overlay 录入族），接入 www 文档站 IA。
+**Goal:** 在 `@hulianui/ui` 落地全 Base UI 的单选 Select（overlay 录入族），接入 www 文档站 IA。
 
 **Architecture:** 复合组件薄包装 Base UI `@base-ui-components/react/select`（同 Dialog/Tooltip/Popover overlay 引擎）：`Select`(Root 透传) + `SelectTrigger`(button 外壳皮肤 + Value placeholder + Icon chevron) + `SelectContent`(Portal→Positioner→Popup→List) + `SelectItem`(Item + ItemText + ItemIndicator)。过渡用 motion token CSS 镜像，零 motion 运行时。守 overlay 红线、只消费语义 token、a11y 全 Base UI 兜底。
 
@@ -168,7 +168,7 @@ describe("Select", () => {
 
 - [ ] **Step 3: 跑测试确认失败**
 
-Run: `cd /Users/zhangzhiwei/Desktop/code/hulian && pnpm --filter @hulian/ui exec vitest run src/select/select.test.tsx 2>&1 | tail -20`
+Run: `cd /Users/zhangzhiwei/Desktop/code/hulian && pnpm --filter @hulianui/ui exec vitest run src/select/select.test.tsx 2>&1 | tail -20`
 Expected: FAIL（`./select` 模块不存在 / 导出缺失）。
 
 - [ ] **Step 4: 写实现 `select.tsx`**
@@ -383,7 +383,7 @@ Read `packages/ui/src/index.ts`，照已有 tooltip/popover 行的**完全相同
 
 - [ ] **Step 8: 跑 select 单测确认通过**
 
-Run: `cd /Users/zhangzhiwei/Desktop/code/hulian && pnpm --filter @hulian/ui exec vitest run src/select/select.test.tsx 2>&1 | tail -20`
+Run: `cd /Users/zhangzhiwei/Desktop/code/hulian && pnpm --filter @hulianui/ui exec vitest run src/select/select.test.tsx 2>&1 | tail -20`
 Expected: PASS（6 测试全绿）。若某断言因 Base UI 真实 DOM 偏差，按 Step 2 的"实证断言点"用 systematic-debugging 调。
 
 - [ ] **Step 9: typecheck**
@@ -430,7 +430,7 @@ Read `apps/www/lib/manifest.ts`，在 `inputs` 分类相邻条目处照 `Compone
 Read `apps/www/lib/registry.tsx`，照现有 import + map 风格追加：
 ```ts
 // import 区（与其它 showcase 同处）：
-import { selectShowcase } from "@hulian/ui";
+import { selectShowcase } from "@hulianui/ui";
 // specBySlug 映射区：
 select: selectShowcase,
 ```

@@ -37,7 +37,7 @@
 **四件套**：`alert.tsx`（**不加** "use client"——纯静态）+ `alert.types.ts` + `alert.showcase.tsx`（**必** "use client"）+ `alert.test.tsx` + `index.ts`（桶导出 `Alert`/`alertVariants`/`AlertProps`/`alertShowcase`）。
 
 **门禁节奏**（沿用批次一/Step2 模式）：
-- A1 的 TDD 循环：`pnpm --filter @hulian/ui exec vitest run alert`（先红后绿）；commit 前 `pnpm typecheck`。
+- A1 的 TDD 循环：`pnpm --filter @hulianui/ui exec vitest run alert`（先红后绿）；commit 前 `pnpm typecheck`。
 - **完整三道门只在 A2 跑一次**：`pnpm typecheck && pnpm test && pnpm build --filter=www`（build **必** `--filter=www`，否则撞 desktop tauri beforeBuildCommand 二次 build www）。
 - **Playwright 截图只在 A2**：明暗两态各一张，存 cwd 根 `/Users/zhangzhiwei/Desktop/code/hulian/*.png`（不在 .playwright-mcp/），Read 看像素（不靠 browser_evaluate 读 DOM）。桌面 app 已跑 5514 则用 5514 截图。
 
@@ -154,7 +154,7 @@ describe("Alert", () => {
 
 - [ ] **Step 2: 跑确认失败**
 
-Run: `pnpm --filter @hulian/ui exec vitest run alert`
+Run: `pnpm --filter @hulianui/ui exec vitest run alert`
 Expected: FAIL —— `./alert` 不存在。
 
 - [ ] **Step 3: 实现 alert.tsx**
@@ -358,7 +358,7 @@ export * from "./alert";
 
 - [ ] **Step 8: 跑测试确认通过**
 
-Run: `pnpm --filter @hulian/ui exec vitest run alert`
+Run: `pnpm --filter @hulianui/ui exec vitest run alert`
 Expected: PASS（全部用例绿，含 role 派生 + title 不落 DOM 属性 + neutral 不引未注册色）。
 
 - [ ] **Step 9: typecheck + Commit**
@@ -403,7 +403,7 @@ import {
   textareaShowcase,
   fieldShowcase,
   alertShowcase,
-} from "@hulian/ui";
+} from "@hulianui/ui";
 
 export const specBySlug: Record<string, ShowcaseSpec> = {
   button: buttonShowcase,
