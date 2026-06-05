@@ -35,6 +35,7 @@ export * from "./table";
 export * from "./pro-table";
 export * from "./editable-table";
 export * from "./pricing-table";
+export * from "./json-viewer";
 export * from "./kanban";
 export * from "./flow";
 export * from "./watermark";
