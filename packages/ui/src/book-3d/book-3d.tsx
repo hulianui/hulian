@@ -26,6 +26,7 @@ export function Book3D({
   href,
   onClick,
   target,
+  inside,
   className,
 }: Book3DProps) {
   const coverStyle: CSSProperties = cover
@@ -33,6 +34,7 @@ export function Book3D({
     : { backgroundImage: `linear-gradient(135deg, ${coverColor.from}, ${coverColor.to})` };
 
   const vars = { "--book-thk": thickness, "--book-spine": spineColor } as CSSProperties;
+  const openable = inside != null;
 
   const body = (
     <span
@@ -44,9 +46,9 @@ export function Book3D({
     >
       <span
         className={cn(
-          "relative block h-full w-full [transform-style:preserve-3d]",
-          "[transform:rotateY(-25deg)] transition-transform duration-700 ease-out",
-          "group-hover:[transform:rotateY(0deg)] motion-reduce:transition-none",
+          "relative block h-full w-full [transform-style:preserve-3d] [transform:rotateY(-25deg)] transition-transform duration-700 ease-out motion-reduce:transition-none",
+          // 翻开模式：hover 仅把书微微转正，主体动作交给前封绕书脊翻开露内页；否则整本转正。
+          openable ? "group-hover:[transform:rotateY(-16deg)]" : "group-hover:[transform:rotateY(0deg)]",
         )}
       >
         {/* 右侧页块（纸张厚度） */}
@@ -64,55 +66,82 @@ export function Book3D({
           aria-hidden
           className="absolute inset-0 rounded-r-[3px] rounded-l-sm bg-foreground/80 [transform:translateZ(calc(var(--book-thk)/-2))]"
         />
-        {/* 前封 */}
+        {/* 前封：翻开模式下是绕左缘(书脊)开门的【双面】封面——正面封面图、背面浅色内衬纸；
+            翻开后内衬朝外＝左侧翻起的封面页，右侧露出内页。非翻开模式即普通单面封面。 */}
         <span
-          className="absolute inset-0 flex flex-col justify-between overflow-hidden rounded-r-[3px] rounded-l-sm p-4 text-white shadow-[0_22px_40px_-18px_rgba(0,0,0,.55)] [transform:translateZ(calc(var(--book-thk)/2))]"
-          style={coverStyle}
+          className={cn(
+            "absolute inset-0 [transform:translateZ(calc(var(--book-thk)/2))]",
+            openable &&
+              "[transform-style:preserve-3d] origin-left transition-transform duration-700 ease-out group-hover:[transform:translateZ(calc(var(--book-thk)/2))_rotateY(-150deg)] motion-reduce:transition-none",
+          )}
         >
-          {/* 封脊高光：左侧装订暗带 */}
-          <span aria-hidden className="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/30 to-transparent" />
-          {logo ? (
-            <>
-              {/* 产品 logo / app icon 居中，标题落到封底 */}
-              <span className="flex flex-1 items-center justify-center py-3">
-                <img
-                  src={logo}
-                  alt=""
-                  className="aspect-square w-[46%] rounded-[22%] object-cover shadow-[0_10px_24px_-8px_rgba(0,0,0,.6)] ring-1 ring-white/15"
-                />
+          {/* 封面正面 */}
+          <span
+            className={cn(
+              "absolute inset-0 flex flex-col justify-between overflow-hidden rounded-r-[3px] rounded-l-sm p-4 text-white shadow-[0_22px_40px_-18px_rgba(0,0,0,.55)]",
+              openable && "[backface-visibility:hidden]",
+            )}
+            style={coverStyle}
+          >
+            {/* 封脊高光：左侧装订暗带 */}
+            <span aria-hidden className="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/30 to-transparent" />
+            {/* 角标缎带：贴封面右上，随封面一起翻开（不再独立悬空穿帮） */}
+            {ribbon && (
+              <span className="pointer-events-none absolute -right-px top-[6px] z-10" aria-hidden>
+                <span
+                  className={cn(
+                    "block px-3 py-0.5 text-[11px] font-bold tracking-wide shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,8px_100%)]",
+                    ribbonToneClass[ribbonTone],
+                  )}
+                >
+                  {ribbon}
+                </span>
               </span>
-              <span className="relative">
-                <span className="block text-[1.35rem] font-bold leading-tight tracking-tight drop-shadow">{title}</span>
+            )}
+            {logo ? (
+              <>
+                {/* 产品 logo / app icon 居中，标题落到封底 */}
+                <span className="flex flex-1 items-center justify-center py-3">
+                  <img
+                    src={logo}
+                    alt=""
+                    className="aspect-square w-[46%] rounded-[22%] object-cover shadow-[0_10px_24px_-8px_rgba(0,0,0,.6)] ring-1 ring-white/15"
+                  />
+                </span>
+                <span className="relative">
+                  <span className="block text-[1.35rem] font-bold leading-tight tracking-tight drop-shadow">{title}</span>
+                  {subtitle != null && (
+                    <span className="mt-0.5 block text-xs font-medium uppercase tracking-widest text-white/80">{subtitle}</span>
+                  )}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="relative text-[1.6rem] font-bold leading-tight tracking-tight drop-shadow">{title}</span>
                 {subtitle != null && (
-                  <span className="mt-0.5 block text-xs font-medium uppercase tracking-widest text-white/80">{subtitle}</span>
+                  <span className="relative text-sm font-medium uppercase tracking-widest text-white/85">{subtitle}</span>
                 )}
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="relative text-[1.6rem] font-bold leading-tight tracking-tight drop-shadow">{title}</span>
-              {subtitle != null && (
-                <span className="relative text-sm font-medium uppercase tracking-widest text-white/85">{subtitle}</span>
-              )}
-            </>
+              </>
+            )}
+          </span>
+          {/* 封面背面内衬（翻开后朝外＝左侧翻起封面的内侧纸） */}
+          {openable && (
+            <span
+              aria-hidden
+              className="absolute inset-0 rounded-r-[3px] rounded-l-sm bg-[color-mix(in_oklab,var(--color-surface)_90%,#000)] [transform:rotateY(180deg)] [backface-visibility:hidden]"
+            >
+              {/* 装订侧内阴影（翻开后位于右缘＝书脊一侧，模拟衬纸贴脊的暗角） */}
+              <span aria-hidden className="absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-black/12 to-transparent" />
+            </span>
           )}
         </span>
-        {/* 角标缎带 */}
-        {ribbon && (
-          <span
-            className="pointer-events-none absolute -right-px top-[6px] z-10 [transform:translateZ(calc(var(--book-thk)/2))]"
-            aria-hidden
-          >
-            <span
-              className={cn(
-                "block px-3 py-0.5 text-[11px] font-bold tracking-wide shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,8px_100%)]",
-                ribbonToneClass[ribbonTone],
-              )}
-            >
-              {ribbon}
-            </span>
+        {/* 内页（翻开模式）：白纸印产品理念，被前封盖住，hover 前封翻开后露出 */}
+        {openable && (
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-r-[3px] rounded-l-sm bg-surface px-5 text-center text-foreground [transform:translateZ(calc(var(--book-thk)/2_-_1px))]">
+            {inside}
           </span>
         )}
+        {/* 角标缎带已并入封面正面（随封面翻开），此处不再独立渲染以免穿帮 */}
       </span>
     </span>
   );

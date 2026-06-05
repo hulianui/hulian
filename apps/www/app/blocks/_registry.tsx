@@ -9,6 +9,34 @@ import { PricingTableBlock } from "./_blocks/pricing-table";
 import { FaqBlock } from "./_blocks/faq";
 import { CtaBlock } from "./_blocks/cta";
 import { ContactFormBlock } from "./_blocks/contact-form";
+import { FeatureSplitBlock } from "./_blocks/feature-split";
+import { TeamGridBlock } from "./_blocks/team-grid";
+import { BlogListBlock } from "./_blocks/blog-list";
+import { ArticleBodyBlock } from "./_blocks/article-body";
+import { ChangelogBlock } from "./_blocks/changelog";
+import { MilestoneTimelineBlock } from "./_blocks/milestone-timeline";
+import { ArticleTocBlock } from "./_blocks/article-toc";
+import { NavbarBlock } from "./_blocks/navbar";
+import { BannerBlock } from "./_blocks/banner";
+import { LogoCloudBlock } from "./_blocks/logo-cloud";
+import { AboutBlock } from "./_blocks/about";
+import { LoginBlock } from "./_blocks/login";
+import { SignupBlock } from "./_blocks/signup";
+import { ErrorPageBlock } from "./_blocks/error-page";
+import { FooterBlock } from "./_blocks/footer";
+// 批二：高流量 archetype 变体
+import { HeroSplitBlock } from "./_blocks/hero-split";
+import { HeroVideoBlock } from "./_blocks/hero-video";
+import { HeroTerminalBlock } from "./_blocks/hero-terminal";
+import { HeroWaitlistBlock } from "./_blocks/hero-waitlist";
+import { FeatureTabsBlock } from "./_blocks/feature-tabs";
+import { FeatureSpotlightBlock } from "./_blocks/feature-spotlight";
+import { PricingCompareBlock } from "./_blocks/pricing-compare";
+import { PricingUsageBlock } from "./_blocks/pricing-usage";
+import { PricingCreditsBlock } from "./_blocks/pricing-credits";
+import { CtaNewsletterBlock } from "./_blocks/cta-newsletter";
+import { CtaCardBlock } from "./_blocks/cta-card";
+import { CtaBannerBlock } from "./_blocks/cta-banner";
 // 应用骨架（中后台）
 import { PageHeaderBlock } from "./_blocks/page-header";
 import { KpiRailBlock } from "./_blocks/kpi-rail";
@@ -19,6 +47,8 @@ import { ActivityTimelineBlock } from "./_blocks/activity-timeline";
 import { KanbanBoardBlock } from "./_blocks/kanban-board";
 import { SettingsPanelBlock } from "./_blocks/settings-panel";
 import { EmptyStateBlock } from "./_blocks/empty-state";
+import { SidebarNavBlock } from "./_blocks/sidebar-nav";
+import { OnboardingBlock } from "./_blocks/onboarding";
 // 电商 / C 端
 import { ProductGridBlock } from "./_blocks/product-grid";
 import { ProductDetailBlock } from "./_blocks/product-detail";
@@ -39,15 +69,42 @@ export { blocks, getBlock, CATEGORY_LABEL, type BlockMeta } from "./_meta";
 // slug → 预览渲染。block 自身是 client/RSC 组件，server detail 页可直接渲染。
 export const blockPreviews: Record<string, () => ReactNode> = {
   hero: () => <HeroBlock />,
+  "hero-split": () => <HeroSplitBlock />,
+  "hero-video": () => <HeroVideoBlock />,
+  "hero-terminal": () => <HeroTerminalBlock />,
+  "hero-waitlist": () => <HeroWaitlistBlock />,
   "trust-bar": () => <TrustBarBlock />,
   features: () => <FeaturesBlock />,
+  "feature-tabs": () => <FeatureTabsBlock />,
+  "feature-spotlight": () => <FeatureSpotlightBlock />,
   stats: () => <StatsBlock />,
   integrations: () => <IntegrationsBlock />,
   testimonials: () => <TestimonialsBlock />,
   "pricing-table": () => <PricingTableBlock />,
+  "pricing-compare": () => <PricingCompareBlock />,
+  "pricing-usage": () => <PricingUsageBlock />,
+  "pricing-credits": () => <PricingCreditsBlock />,
   faq: () => <FaqBlock />,
   cta: () => <CtaBlock />,
+  "cta-newsletter": () => <CtaNewsletterBlock />,
+  "cta-card": () => <CtaCardBlock />,
+  "cta-banner": () => <CtaBannerBlock />,
   "contact-form": () => <ContactFormBlock />,
+  "feature-split": () => <FeatureSplitBlock />,
+  "team-grid": () => <TeamGridBlock />,
+  "blog-list": () => <BlogListBlock />,
+  "article-body": () => <ArticleBodyBlock />,
+  changelog: () => <ChangelogBlock />,
+  "milestone-timeline": () => <MilestoneTimelineBlock />,
+  "article-toc": () => <ArticleTocBlock />,
+  navbar: () => <NavbarBlock />,
+  banner: () => <BannerBlock />,
+  "logo-cloud": () => <LogoCloudBlock />,
+  about: () => <AboutBlock />,
+  login: () => <LoginBlock />,
+  signup: () => <SignupBlock />,
+  "error-page": () => <ErrorPageBlock />,
+  footer: () => <FooterBlock />,
   // 应用骨架
   "page-header": () => <PageHeaderBlock />,
   "kpi-rail": () => <KpiRailBlock />,
@@ -58,6 +115,8 @@ export const blockPreviews: Record<string, () => ReactNode> = {
   "kanban-board": () => <KanbanBoardBlock />,
   "settings-panel": () => <SettingsPanelBlock />,
   "empty-state": () => <EmptyStateBlock />,
+  "sidebar-nav": () => <SidebarNavBlock />,
+  onboarding: () => <OnboardingBlock />,
   // 电商 / C 端
   "product-grid": () => <ProductGridBlock />,
   "product-detail": () => <ProductDetailBlock />,

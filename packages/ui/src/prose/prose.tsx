@@ -10,11 +10,12 @@ const proseBase = cn(
   "text-foreground leading-7",
   // 首尾子元素去外边距，间距由容器自身控制
   "[&>:first-child]:mt-0 [&>:last-child]:mb-0",
-  // 标题
-  "[&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:font-bold [&_h1]:tracking-tight [&_h1]:text-foreground",
-  "[&_h2]:mb-3 [&_h2]:mt-8 [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-foreground",
-  "[&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-semibold [&_h3]:tracking-tight [&_h3]:text-foreground",
-  "[&_h4]:mb-2 [&_h4]:mt-4 [&_h4]:font-semibold [&_h4]:text-foreground",
+  // 标题：Tailwind preflight 把标题字号重置为继承（=正文），故必须显式给字号，
+  // 否则 h1~h4 仅字重不同、字号全等于正文，标题层级塌成一片。
+  "[&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:leading-tight [&_h1]:tracking-tight [&_h1]:text-foreground",
+  "[&_h2]:mb-3 [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:leading-snug [&_h2]:tracking-tight [&_h2]:text-foreground",
+  "[&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:tracking-tight [&_h3]:text-foreground",
+  "[&_h4]:mb-2 [&_h4]:mt-4 [&_h4]:text-base [&_h4]:font-semibold [&_h4]:text-foreground",
   // 段落
   "[&_p]:my-4",
   // 强调

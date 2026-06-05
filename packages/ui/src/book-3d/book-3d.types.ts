@@ -14,6 +14,8 @@ export interface Book3DProps {
   cover?: string;
   /** 封面中心叠加的产品 logo / app icon（图 url）；叠在渐变背景上居中展示，标题落到底部。 */
   logo?: string;
+  /** 内页内容（产品理念等寥寥数字）；提供则 hover 时前封绕书脊翻开、露出印着内页的白纸。 */
+  inside?: ReactNode;
   /** 封面渐变色；默认品牌渐变 */
   coverColor?: Book3DCoverColor;
   /** 书脊/页厚颜色（CSS color），默认浅纸色 */

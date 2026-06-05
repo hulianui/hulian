@@ -20,6 +20,7 @@ export * from "./checkbox";
 export * from "./radio";
 export * from "./slider";
 export * from "./alert";
+export * from "./callout";
 export * from "./tabs";
 export * from "./tooltip";
 export * from "./popover";
@@ -98,6 +99,8 @@ export * from "./glitch-text";
 export * from "./circular-text";
 export * from "./scroll-reveal";
 export * from "./true-focus";
+// 通用逐级揭示原语（块级·非文字）：Reveal / Stagger / StaggerItem
+export * from "./reveal";
 // effects: MagicUI 特效按钮批
 export * from "./shimmer-button";
 export * from "./rainbow-button";

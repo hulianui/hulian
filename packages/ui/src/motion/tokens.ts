@@ -10,6 +10,7 @@ export const motionDuration = {
   fast: 0.15, // press 反馈等贴身微交互
   base: 0.2, // 进出场、overlay
   slow: 0.3, // 大块转场
+  entrance: 0.6, // 首屏逐级揭示 / 滚动入场（比 slow 长：进场动画 500-800ms 才有从容感）
 } as const;
 
 // 时长（毫秒字符串，CSS transitionDuration 口径）。
@@ -17,6 +18,7 @@ export const motionDurationCss = {
   fast: "150ms",
   base: "200ms",
   slow: "300ms",
+  entrance: "600ms",
 } as const;
 
 // 缓动曲线（motion 口径：4 段 cubic-bezier 控制点）。

@@ -2,6 +2,14 @@ import type { ReactNode } from "react";
 import { LandingPage } from "./_pages/landing";
 import { PricingPage } from "./_pages/pricing";
 import { ContactPage } from "./_pages/contact";
+import { FeaturePage } from "./_pages/feature";
+import { IntegrationsPage } from "./_pages/integrations";
+import { FaqPage } from "./_pages/faq";
+import { AboutPage } from "./_pages/about";
+import { BlogPage } from "./_pages/blog";
+import { BlogPostPage } from "./_pages/blog-post";
+import { BlogPostGuidePage } from "./_pages/blog-post-guide";
+import { ChangelogPage } from "./_pages/changelog";
 // 应用骨架（中后台）
 import { DashboardPage } from "./_pages/dashboard";
 import { AdminListPage } from "./_pages/admin-list";
@@ -24,6 +32,14 @@ export const pagePreviews: Record<string, () => ReactNode> = {
   landing: () => <LandingPage />,
   pricing: () => <PricingPage />,
   contact: () => <ContactPage />,
+  feature: () => <FeaturePage />,
+  integrations: () => <IntegrationsPage />,
+  faq: () => <FaqPage />,
+  about: () => <AboutPage />,
+  blog: () => <BlogPage />,
+  "blog-post": () => <BlogPostPage />,
+  "blog-post-guide": () => <BlogPostGuidePage />,
+  changelog: () => <ChangelogPage />,
   // 应用骨架
   dashboard: () => <DashboardPage />,
   "admin-list": () => <AdminListPage />,

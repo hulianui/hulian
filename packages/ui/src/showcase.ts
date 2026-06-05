@@ -260,6 +260,7 @@ export { fallingTextShowcase } from "./falling-text/falling-text.showcase";
 export { fuzzyTextShowcase } from "./fuzzy-text/fuzzy-text.showcase";
 export { scrambledTextShowcase } from "./scrambled-text/scrambled-text.showcase";
 export { scrollFloatShowcase } from "./scroll-float/scroll-float.showcase";
+export { revealShowcase } from "./reveal/reveal.showcase";
 export { scrollVelocityShowcase } from "./scroll-velocity/scroll-velocity.showcase";
 export { shuffleShowcase } from "./shuffle/shuffle.showcase";
 export { textCursorShowcase } from "./text-cursor/text-cursor.showcase";
