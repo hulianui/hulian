@@ -68,6 +68,16 @@ export const demos: DemoMeta[] = [
     tags: ["Video", "Tree", "章节树", "学习进度", "MarkdownEditor"],
   },
   {
+    slug: "shop",
+    title: "瀚选 HanShop 买家商城",
+    description:
+      "首页轮播秒杀、商品列表筛选、商品详情(图廊放大镜+SKU+评价)、购物车、结算全链路、订单物流、商品对比、收藏、会员中心、移动端店铺预览 —— 100% 由 @hulian/ui 搭建的 C 端电商，含优惠券、限时倒计时、地址级联与完整 H5 触屏交互。",
+    href: "/demos/shop",
+    category: "电商",
+    status: "done",
+    tags: ["Carousel", "Lens", "Coupon", "SKU", "结算", "移动端"],
+  },
+  {
     slug: "website",
     title: "瀚云 HanCloud 公司官网",
     description:
@@ -135,5 +145,25 @@ export const demos: DemoMeta[] = [
     category: "移动端",
     status: "done",
     tags: ["TabBar", "SwipeAction", "Picker", "PullToRefresh"],
+  },
+  {
+    slug: "personal",
+    title: "独立开发者个人站 / 作品集",
+    description:
+      "Hero 极光 + 打字动画、作品集设备外壳展示、技能条、留言板 —— 虚构独立 maker「林屿」的个人作品集，100% 由 @hulian/ui 搭建，dogfood 全新复刻的 Aurora / Silk / WebGL 等设计感背景与五种设备外壳。",
+    href: "/demos/personal",
+    category: "个人站",
+    status: "done",
+    tags: ["Aurora", "Silk", "CardSpotlight", "Dock", "设备外壳"],
+  },
+  {
+    slug: "hanhub",
+    title: "瀚枢 HanHub 大模型 API 中转网关",
+    description:
+      "开发者自托管的多厂商 LLM 网关控制台：概览、模型市场(定价对比矩阵)、API 密钥、用量日志(请求/响应 JSON 检查器)、Playground(流式调试+查看为代码)、健康探测(渠道测速/熔断转移)、计费充值、接入设置 —— 一个 base_url 路由十余家上游，100% 由 @hulian/ui 搭建，dogfood 全新 JsonViewer / SecretField / PricingTable / StatusDot 四组件，费用与健康探测两条主线贯穿全站。",
+    href: "/demos/hanhub",
+    category: "AI 应用",
+    status: "done",
+    tags: ["JsonViewer", "SecretField", "PricingTable", "StatusDot", "健康探测", "Token 计费"],
   },
 ];
