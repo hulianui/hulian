@@ -45,3 +45,46 @@ jobs:
       # 排除 desktop#build —— 那是 Tauri 构建，需 Rust + 系统库，且会与 www build 抢 next 锁，不适合本 CI。
       - name: Build
         run: pnpm --filter www build
+
+      # 把静态导出产物传给下游 deploy-zh job（避免二次构建）
+      - name: Upload static export
+        uses: actions/upload-artifact@v4
+        with:
+          name: www-out
+          path: apps/www/out
+          retention-days: 1
+          if-no-files-found: error
+
+  # 中国镜像站点：push 到 master 时把静态产物 rsync 到阿里云服务器
+  # （hulianui-zh.haloritual.com · 直连阿里云绕开 Cloudflare）。
+  # 与 Cloudflare Pages 自动发布并行 —— 双发，同一份产物。
+  deploy-zh:
+    name: Deploy · hulianui-zh.haloritual.com
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download static export
+        uses: actions/download-artifact@v4
+        with:
+          name: www-out
+          path: out
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ZH_DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.ZH_DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      # --delete 镜像同步：服务器站点目录 = out/ 内容的精确副本
+      - name: Rsync to server
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+            out/ \
+            "${{ secrets.ZH_DEPLOY_USER }}@${{ secrets.ZH_DEPLOY_HOST }}:${{ secrets.ZH_DEPLOY_PATH }}/"
+
+      - name: Cleanup key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
