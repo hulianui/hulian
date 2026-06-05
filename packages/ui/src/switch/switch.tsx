@@ -15,7 +15,9 @@ export function Switch({ className, ...props }: SwitchProps) {
         className,
       )}
     >
-      <BaseSwitch.Thumb className="block size-5 translate-x-0.5 rounded-full bg-surface shadow transition-transform data-[checked]:translate-x-[1.125rem]" />
+      {/* 旋钮恒为白色：在灰色 off 轨道与蓝色 on 轨道上、亮暗两态都保证对比。
+          曾用 bg-surface（暗色=gray-900）→ 比轨道还暗且与面板同色，暗色 off 态整体「黑融黑」不可见。 */}
+      <BaseSwitch.Thumb className="block size-5 translate-x-0.5 rounded-full bg-white shadow transition-transform data-[checked]:translate-x-[1.125rem]" />
     </BaseSwitch.Root>
   );
 }

@@ -288,7 +288,14 @@ export function Table<TData>({
       )}
     >
       <table className="w-full border-collapse text-sm">
-        <thead className={cn("text-muted", virtualEnabled && "sticky top-0 z-[2] bg-bg")}>
+        <thead
+          className={cn(
+            "text-muted",
+            // 表头淡色带：与正文区分、提升可扫读性（主题感知，亮 gray-100 / 暗 gray-800）。
+            // 虚拟滚动时表头 sticky，需 opaque 背景遮住滚动到下方的行，故用 bg-bg 不透明。
+            virtualEnabled ? "sticky top-0 z-[2] bg-bg" : "bg-surface-hover",
+          )}
+        >
           {table.getHeaderGroups().map((hg) => (
             <tr key={hg.id} className="border-b border-border">
               {hg.headers.map((header) => {
