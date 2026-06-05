@@ -2,7 +2,7 @@
 import { type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, ChevronDown, LogOut, Moon, Settings, Sun, UserRound } from "lucide-react";
+import { Bell, ChevronDown, LayoutGrid, LogOut, Moon, Settings, Sun, UserRound } from "lucide-react";
 import {
   Avatar,
   Button,
@@ -128,8 +128,8 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const active = activeKey(pathname);
 
   return (
-    // 高度扣掉外层 demos/layout 的"瑚琏 Demo"返回头条(61px)，否则全幅工作室会超出视口、底部缩放控件被切。
-    <div className="flex h-[calc(100dvh-61px)] flex-col bg-bg">
+    // demos/layout 已移除顶部返回头条，工作室独占满屏视口（「返回示例库」改为悬浮 Fab，不占布局）。
+    <div className="flex h-dvh flex-col bg-bg">
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border px-4">
         <Brand />
 
@@ -154,6 +154,12 @@ export function StudioShell({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="flex items-center gap-0.5">
+          {/* 全屏工作室底部有运行面板，「返回示例库」改放顶栏（其余 demo 用悬浮 Fab，见 DemosChrome）。 */}
+          <Button variant="ghost" size="sm" render={<Link href="/demos" />} className="gap-1.5 px-2.5">
+            <LayoutGrid className="size-4" />
+            <span className="hidden lg:inline">返回示例库</span>
+          </Button>
+          <div className="mx-1 hidden h-6 w-px bg-border sm:block" aria-hidden />
           <ThemeToggle />
           <Notifications />
           <div className="mx-1.5 hidden h-6 w-px bg-border sm:block" aria-hidden />

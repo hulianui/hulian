@@ -28,6 +28,8 @@ const ALIASES = {
   Chart: ["AreaChart", "BarChart", "PieChart", "LineChart"],
   Form: ["ProForm", "useForm"],
   "ModalForm / DrawerForm": ["ModalForm", "DrawerForm"],
+  // 设备外壳 iPhone 的导出标识符是 IPhone（大写 I），manifest 用品牌正确写法 iPhone 作显示名。
+  iPhone: ["IPhone"],
 };
 
 function parseManifest() {

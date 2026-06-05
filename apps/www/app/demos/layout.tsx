@@ -1,29 +1,11 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
-import { AnimatedThemeToggler, Stack, Text } from "@hulian/ui";
-import { ArrowLeft } from "lucide-react";
+import { DemosChrome } from "./_components/demos-chrome";
 
 export default function DemosLayout({ children }: { children: ReactNode }) {
+  // 不再强加顶栏：画廊页自带页眉、demo 子页用「返回示例库」悬浮 Fab —— 二者都由 DemosChrome 按路由切换。
   return (
     <div className="min-h-dvh">
-      <Stack
-        as="header"
-        direction="row"
-        align="center"
-        justify="between"
-        className="border-b border-border px-6 py-3"
-      >
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" aria-hidden />
-          <Text as="span" weight="medium">
-            瑚琏 Demo
-          </Text>
-        </Link>
-        <AnimatedThemeToggler />
-      </Stack>
+      <DemosChrome />
       {children}
     </div>
   );
