@@ -2,10 +2,19 @@ import type { ElementType, HTMLAttributes, ReactNode } from "react";
 
 export type StackAlign = "start" | "center" | "end" | "stretch" | "baseline";
 export type StackJustify = "start" | "center" | "end" | "between" | "around" | "evenly";
+export type StackDirection = "row" | "column";
+
+/** 响应式方向：按断点给主轴方向（base 为默认/最小屏）。 */
+export interface ResponsiveDirection {
+  base?: StackDirection;
+  sm?: StackDirection;
+  md?: StackDirection;
+  lg?: StackDirection;
+}
 
 export interface StackProps extends HTMLAttributes<HTMLElement> {
-  /** 主轴方向。@default "column" */
-  direction?: "row" | "column";
+  /** 主轴方向。传字符串=固定；传 {base,sm,md,lg}=响应式。@default "column" */
+  direction?: StackDirection | ResponsiveDirection;
   /** 子项间距（× 0.25rem，同 Tailwind spacing 刻度）。@default 0 */
   gap?: number;
   /** 交叉轴对齐。 */

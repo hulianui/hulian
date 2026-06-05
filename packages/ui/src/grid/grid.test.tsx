@@ -42,4 +42,12 @@ describe("Grid", () => {
     expect(el.style.gridColumn).toBe("span 2 / span 2");
     expect(el.style.gridRow).toBe("span 3 / span 3");
   });
+
+  it("响应式 cols 出断点类、不写 inline 模板列", () => {
+    const { container } = render(<Grid cols={{ base: 1, sm: 2 }} />);
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.className).toContain("grid-cols-1");
+    expect(el.className).toContain("sm:grid-cols-2");
+    expect(el.style.gridTemplateColumns).toBe("");
+  });
 });

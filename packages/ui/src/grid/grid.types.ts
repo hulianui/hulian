@@ -1,8 +1,16 @@
 import type { ElementType, HTMLAttributes, ReactNode } from "react";
 
+/** 响应式列数：按断点给列数（base 为默认/最小屏）。 */
+export interface ResponsiveCols {
+  base?: number;
+  sm?: number;
+  md?: number;
+  lg?: number;
+}
+
 export interface GridProps extends HTMLAttributes<HTMLElement> {
-  /** 列数。@default 1 */
-  cols?: number;
+  /** 列数。传数字=固定列数（任意值·inline style）；传 {base,sm,md,lg}=响应式（静态类）。@default 1 */
+  cols?: number | ResponsiveCols;
   /** 行数（不填则按内容自动）。 */
   rows?: number;
   /** 行列间距（× 0.25rem）。@default 0 */

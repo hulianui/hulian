@@ -43,4 +43,11 @@ describe("Stack", () => {
     const { container } = render(<Stack as="section" />);
     expect(container.firstElementChild!.tagName).toBe("SECTION");
   });
+
+  it("响应式 direction 出断点类", () => {
+    const { container } = render(<Stack direction={{ base: "column", sm: "row" }} />);
+    const cls = container.firstElementChild!.className;
+    expect(cls).toContain("flex-col");
+    expect(cls).toContain("sm:flex-row");
+  });
 });
