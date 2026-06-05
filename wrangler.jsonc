@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers 静态资源部署（纯静态站，无 Worker 脚本/无 main）。
+  // 文档站 apps/www 经 `pnpm --filter www build` 静态导出到 apps/www/out，
+  // `npx wrangler deploy` 据此配置把 out/ 作为静态资源上传并由 Cloudflare 边缘托管。
+  "name": "hulian",
+  "compatibility_date": "2026-06-05",
+  "assets": {
+    "directory": "./apps/www/out",
+    // 干净 URL：/components/button → /components/button/index.html（Next export 产物结构）
+    "html_handling": "auto-trailing-slash",
+    // 未命中走 Next 导出的 404.html
+    "not_found_handling": "404-page"
+  }
+}
