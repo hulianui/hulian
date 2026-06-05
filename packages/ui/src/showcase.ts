@@ -209,6 +209,11 @@ export { diffStatShowcase } from "./diff-stat/diff-stat.showcase";
 export { scoreRingShowcase } from "./score-ring/score-ring.showcase";
 export { heatmapShowcase } from "./heatmap/heatmap.showcase";
 export { codeReviewThreadShowcase } from "./code-review-thread/code-review-thread.showcase";
+// 智能体任务调度可视化批（瀚舵 HanHelm demo dogfood）
+export { sankeyShowcase } from "./sankey/sankey.showcase";
+export { sparklineShowcase } from "./sparkline/sparkline.showcase";
+export { funnelShowcase } from "./funnel/funnel.showcase";
+export { queueLaneShowcase } from "./queue-lane/queue-lane.showcase";
 export { fileTreeShowcase } from "./file-tree/file-tree.showcase";
 // 设计感背景批（复刻 react-bits/Aceternity·canvas + WebGL/ogl·吃 chart token）
 export { auroraShowcase } from "./aurora/aurora.showcase";

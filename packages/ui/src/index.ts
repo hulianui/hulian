@@ -263,6 +263,11 @@ export * from "./diff-stat";
 export * from "./score-ring";
 export * from "./heatmap";
 export * from "./code-review-thread";
+// 智能体任务调度可视化批（瀚舵 HanHelm demo dogfood）
+export * from "./sankey";
+export * from "./sparkline";
+export * from "./funnel";
+export * from "./queue-lane";
 export * from "./file-tree";
 
 // shadcnblocks 缺口补齐批（按钮组/第三方登录/公告条/相对时间/卡片选择/银行卡/表情/链接预览）
