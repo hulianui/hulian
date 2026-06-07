@@ -36,6 +36,16 @@ describe("AccessProvider / useAccess", () => {
     expect(result.current.has("x")).toBe(true);
   });
 
+  it("'*' 通配授予一切（superadmin），但非通配集合仍精确判定", () => {
+    const star = renderHook(() => useAccess(), { wrapper: wrap(["*"]) });
+    expect(star.result.current.has("user:write")).toBe(true);
+    expect(star.result.current.hasAny(["a", "b"])).toBe(true);
+    expect(star.result.current.hasAll(["a", "b"])).toBe(true);
+    const plain = renderHook(() => useAccess(), { wrapper: wrap(["item:read"]) });
+    expect(plain.result.current.has("user:write")).toBe(false);
+    expect(plain.result.current.hasAll(["item:read", "user:write"])).toBe(false);
+  });
+
   it("缺 Provider 时 useAccess 抛错", () => {
     // 抑制 React 错误边界噪声
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});

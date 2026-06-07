@@ -15,11 +15,14 @@ export interface AccessProviderProps {
 export function AccessProvider({ permissions, children }: AccessProviderProps) {
   const value = useMemo<AccessContextValue>(() => {
     const set: ReadonlySet<string> = permissions instanceof Set ? permissions : new Set(permissions);
+    // "*" is a grant-all wildcard (superadmin convention): holding it satisfies any check.
+    const wildcard = set.has("*");
+    const has = (p: string) => wildcard || set.has(p);
     return {
       permissions: set,
-      has: (p) => set.has(p),
-      hasAny: (ps) => ps.length === 0 || ps.some((p) => set.has(p)),
-      hasAll: (ps) => ps.every((p) => set.has(p)),
+      has,
+      hasAny: (ps) => ps.length === 0 || ps.some(has),
+      hasAll: (ps) => ps.every(has),
     };
   }, [permissions]);
 
