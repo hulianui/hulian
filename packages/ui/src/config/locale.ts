@@ -16,6 +16,10 @@ export interface Locale {
     exitFullscreen: string;
     /** 列设置浮层标题。 */
     columnsTitle: string;
+    /** 批量条：已选 N 项（参数化）。 */
+    selected: (count: number) => string;
+    /** 批量条：清空选择。 */
+    clearSelection: string;
   };
   adminLayout: {
     collapse: string;
@@ -68,6 +72,8 @@ export const zhCN: Locale = {
     fullscreen: "全屏",
     exitFullscreen: "退出全屏",
     columnsTitle: "列展示",
+    selected: (n) => `已选 ${n} 项`,
+    clearSelection: "清空",
   },
   adminLayout: {
     collapse: "收起侧栏",
@@ -120,6 +126,8 @@ export const enUS: Locale = {
     fullscreen: "Fullscreen",
     exitFullscreen: "Exit fullscreen",
     columnsTitle: "Columns",
+    selected: (n) => `${n} selected`,
+    clearSelection: "Clear",
   },
   adminLayout: {
     collapse: "Collapse",

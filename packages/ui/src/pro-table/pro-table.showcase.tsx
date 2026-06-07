@@ -6,6 +6,7 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button";
 import { Tag, type TagTone } from "../tag";
 import { ProTable } from "./pro-table";
+import type { ProTableRequestParams } from "./pro-table.types";
 
 interface Row {
   id: number;
@@ -147,9 +148,45 @@ function Minimal() {
   );
 }
 
+// 托管模式：传 request 即由 ProTable 自管 page/sort/filters/loading/data（此处用本地内存模拟服务端）。
+function Managed() {
+  const request = async (p: ProTableRequestParams) => {
+    const name = String(p.filters.name ?? "").trim();
+    let rows = ALL.filter((r) => (name ? r.name.includes(name) : true));
+    if (p.sort) {
+      const f = p.sort.field as keyof Row;
+      rows = [...rows].sort((a, b) => (a[f] < b[f] ? -1 : a[f] > b[f] ? 1 : 0));
+      if (p.sort.order === "desc") rows.reverse();
+    }
+    const total = rows.length;
+    const start = (p.page - 1) * p.pageSize;
+    await new Promise((r) => setTimeout(r, 300));
+    return { data: rows.slice(start, start + p.pageSize), total };
+  };
+  return (
+    <div className="w-full">
+      <ProTable<Row>
+        title="托管模式（服务端 request）"
+        columns={columns}
+        request={request}
+        defaultPageSize={8}
+        getRowId={(r) => String(r.id)}
+        enableRowSelection
+        batchActions={({ selectedRowKeys, clearSelection }) => (
+          <Button size="sm" tone="danger" onClick={clearSelection}>
+            删除选中 {selectedRowKeys.length}
+          </Button>
+        )}
+        search={{ fields: searchFields, collapsible: false, columns: 3, onSearch: () => {} }}
+      />
+    </div>
+  );
+}
+
 export const proTableShowcase: ShowcaseSpec = {
   controls: [],
   states: [
+    { name: "托管模式（服务端 request + 批量）", render: () => <Managed /> },
     { name: "完整（查询区 + 工具栏 + 行选择 + 分页）", render: () => <Demo /> },
     { name: "精简（紧凑密度 · 无查询区）", render: () => <Minimal /> },
   ],

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import type { TableProps } from "../table/table.types";
 import type { SearchFormProps } from "../search-form/search-form.types";
 
@@ -27,7 +27,45 @@ export interface ProTablePagination {
   showFirstLast?: boolean;
 }
 
-export interface ProTableProps<TData> extends TableProps<TData> {
+/** 服务端排序参数（单列）。 */
+export interface ProTableSort {
+  field: string;
+  order: "asc" | "desc";
+}
+
+/** 托管模式 request 入参：分页 + 排序 + 查询区筛选值。 */
+export interface ProTableRequestParams {
+  page: number;
+  pageSize: number;
+  sort: ProTableSort | null;
+  filters: Record<string, unknown>;
+}
+
+/** 托管模式 request 返回：当前页数据 + 总条数。 */
+export interface ProTableRequestResult<TData> {
+  data: TData[];
+  total: number;
+}
+
+/** actionRef 命令式句柄。 */
+export interface ProTableActions {
+  /** 用当前 page/sort/filters 重新请求。 */
+  reload: () => void;
+  /** 清空行选择。 */
+  clearSelection: () => void;
+}
+
+/** 批量操作区渲染上下文。 */
+export interface ProTableBatchCtx {
+  /** 选中行 key（来自 getRowId）。 */
+  selectedRowKeys: string[];
+  /** 清空选择。 */
+  clearSelection: () => void;
+}
+
+export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
+  /** 表格数据（展示模式必传；托管模式由 request 提供，忽略此项）。 */
+  data?: TData[];
   /** 卡片标题（工具栏左侧）。 */
   title?: ReactNode;
   /** 工具栏右侧自定义操作（新增按钮等），位于内置图标按钮左侧。 */
@@ -44,4 +82,16 @@ export interface ProTableProps<TData> extends TableProps<TData> {
   pagination?: ProTablePagination;
   /** 外层容器 className（区别 tableClassName 透传给内部 Table）。 */
   rootClassName?: string;
+  /**
+   * 服务端受控数据源。提供则进入「托管模式」：ProTable 自管
+   * page/pageSize/sort/filters/loading/data/选择 生命周期，按需调 request；
+   * 此时忽略 data/pagination/loading props。不提供则维持现有展示模式。
+   */
+  request?: (params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>;
+  /** 托管模式初始每页条数。@default 10 */
+  defaultPageSize?: number;
+  /** 命令式句柄：reload() 重新请求 / clearSelection() 清空选择。 */
+  actionRef?: Ref<ProTableActions>;
+  /** 选中行时渲染的批量操作区（需 enableRowSelection + 有选中才显示警示条）。 */
+  batchActions?: (ctx: ProTableBatchCtx) => ReactNode;
 }

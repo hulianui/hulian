@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
+import { useRef } from "react";
 import type { ColumnDef } from "../table/table.types";
 import { ProTable } from "./pro-table";
+import type { ProTableActions, ProTableRequestParams } from "./pro-table.types";
 
 interface Row {
   id: number;
@@ -102,5 +104,135 @@ describe("ProTable", () => {
       <ProTable columns={columns} data={data} enableRowSelection getRowId={(r) => String(r.id)} />,
     );
     expect(getByLabelText("全选")).toBeTruthy();
+  });
+});
+
+describe("ProTable 托管模式", () => {
+  const cols: ColumnDef<Row, any>[] = [
+    { accessorKey: "id", header: "工号" },
+    { accessorKey: "name", header: "姓名" },
+  ];
+
+  it("挂载即调 request 并渲染返回数据 + 总条数", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({
+      data: [{ id: 1, name: "甲" }],
+      total: 1,
+    }));
+    const { getByText } = render(
+      <ProTable<Row> columns={cols} request={request} getRowId={(r) => String(r.id)} />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(request.mock.calls[0][0]).toMatchObject({ page: 1, pageSize: 10, sort: null });
+    expect(getByText("共 1 条")).toBeTruthy();
+  });
+
+  it("查询区 onSearch 把 filters 传入 request 并复位到第 1 页", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data: [], total: 0 }));
+    const { getByText, getByLabelText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        getRowId={(r) => String(r.id)}
+        search={{
+          fields: [{ name: "name", label: "姓名" }],
+          collapsible: false,
+          onSearch: () => {},
+        }}
+      />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    fireEvent.change(getByLabelText("姓名"), { target: { value: "甲" } });
+    fireEvent.click(getByText("查询"));
+    await waitFor(() =>
+      expect(request.mock.calls.at(-1)![0]).toMatchObject({ page: 1, filters: { name: "甲" } }),
+    );
+  });
+
+  it("点表头排序把 sort 传入 request", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({
+      data: [{ id: 1, name: "甲" }],
+      total: 1,
+    }));
+    const { getByText } = render(
+      <ProTable<Row> columns={cols} request={request} getRowId={(r) => String(r.id)} />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    fireEvent.click(getByText("姓名"));
+    await waitFor(() =>
+      expect(request.mock.calls.at(-1)![0]).toMatchObject({
+        sort: { field: "name", order: "asc" },
+      }),
+    );
+  });
+
+  it("actionRef.reload() 触发重新请求", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data: [], total: 0 }));
+    function Host() {
+      const ref = useRef<ProTableActions>(null);
+      return (
+        <>
+          <button onClick={() => ref.current?.reload()}>外部刷新</button>
+          <ProTable<Row>
+            columns={cols}
+            request={request}
+            actionRef={ref}
+            getRowId={(r) => String(r.id)}
+          />
+        </>
+      );
+    }
+    const { getByText } = render(<Host />);
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    fireEvent.click(getByText("外部刷新"));
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(2));
+  });
+
+  it("选中行时渲染批量操作区（含已选计数与自定义动作）", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({
+      data: [{ id: 1, name: "甲" }],
+      total: 1,
+    }));
+    const onBatch = vi.fn();
+    const { getByLabelText, getByText, queryByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        batchActions={({ selectedRowKeys }) => (
+          <button onClick={() => onBatch(selectedRowKeys)}>批量删除</button>
+        )}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(queryByText("批量删除")).toBeNull();
+    fireEvent.click(getByLabelText("选择行"));
+    await waitFor(() => expect(getByText("已选 1 项")).toBeTruthy());
+    fireEvent.click(getByText("批量删除"));
+    expect(onBatch).toHaveBeenCalledWith(["1"]);
+  });
+
+  it("竞态守卫：后发先至时只采纳最新一次 request 结果", async () => {
+    const resolvers: Array<(v: { data: Row[]; total: number }) => void> = [];
+    const request = vi.fn(
+      (_p: ProTableRequestParams) =>
+        new Promise<{ data: Row[]; total: number }>((res) => resolvers.push(res)),
+    );
+    const { getByLabelText, getByText, queryByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        onReload={() => {}}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    fireEvent.click(getByLabelText("刷新"));
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(2));
+    resolvers[1]({ data: [{ id: 2, name: "新" }], total: 1 });
+    resolvers[0]({ data: [{ id: 1, name: "旧" }], total: 1 });
+    await waitFor(() => expect(getByText("新")).toBeTruthy());
+    expect(queryByText("旧")).toBeNull();
   });
 });

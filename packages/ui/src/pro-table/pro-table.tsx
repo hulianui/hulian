@@ -1,6 +1,6 @@
 "use client";
-import { useMemo, useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import type { ColumnDef, RowSelectionState, SortingState } from "@tanstack/react-table";
 import { Columns3, Maximize, Minimize, RefreshCw, Rows3 } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
 import { useLocale } from "../config/locale";
@@ -8,8 +8,13 @@ import { cn } from "../lib/cn";
 import { Pagination } from "../pagination/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { SearchForm } from "../search-form/search-form";
+import { Spin } from "../spin/spin";
 import { Table } from "../table/table";
-import type { ProTableProps, ProTableToolbarFeatures } from "./pro-table.types";
+import type {
+  ProTableProps,
+  ProTableSort,
+  ProTableToolbarFeatures,
+} from "./pro-table.types";
 
 const DENSITY_ORDER = ["default", "middle", "compact"] as const;
 type Density = (typeof DENSITY_ORDER)[number];
@@ -27,9 +32,16 @@ function colLabel<TData>(c: ColumnDef<TData, any>): string {
   return colId(c) || "—";
 }
 
-// ProTable = 列表页编排层（区别原子 Table）：查询区(复用 SearchForm) + 工具栏(密度/列设置/刷新/全屏)
-// + Table + 分页(复用 Pagination)。状态(密度/列显隐/全屏)由 ProTable 自持，列显隐通过过滤 columns 实现
-// （不侵入 Table）；其余表格能力全量透传给内部 Table。
+// SortingState（TanStack）→ 服务端单列 sort 协议。
+function toProSort(s: SortingState): ProTableSort | null {
+  if (!s.length) return null;
+  return { field: s[0].id, order: s[0].desc ? "desc" : "asc" };
+}
+
+// ProTable = 列表页编排层。两种模式：
+//  · 展示模式（不传 request）：data/pagination/loading 由消费者控制（向后兼容旧用法）。
+//  · 托管模式（传 request）：ProTable 自管 page/pageSize/sort/filters/loading/data/选择，
+//    任一变化即调 request（带竞态守卫，后发先至只采纳最新）。
 export function ProTable<TData>(props: ProTableProps<TData>) {
   const {
     columns,
@@ -38,15 +50,29 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     toolbar = true,
     search,
     onReload,
-    loading,
-    pagination,
+    loading: loadingProp,
+    pagination: paginationProp,
     density: densityProp,
     rootClassName,
     className,
+    // 托管模式
+    request,
+    defaultPageSize = 10,
+    actionRef,
+    batchActions,
+    // 行选择（展示模式下原样透传；托管模式 / 批量条 时由本层接管）
+    enableRowSelection,
+    rowSelection: rowSelectionProp,
+    onRowSelectionChange,
+    data: dataProp,
+    sorting: sortingProp,
+    onSortingChange,
+    getRowId,
     ...tableProps
   } = props;
 
   const t = useLocale().proTable;
+  const managed = Boolean(request);
 
   const features: ProTableToolbarFeatures | null =
     toolbar === false
@@ -62,6 +88,49 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   const [density, setDensity] = useState<Density>(densityProp ?? "default");
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [fullscreen, setFullscreen] = useState(false);
+
+  // —— 托管模式状态 ——
+  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState<Record<string, unknown>>({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [fetched, setFetched] = useState<{ data: TData[]; total: number }>({ data: [], total: 0 });
+  const [fetching, setFetching] = useState(false);
+  const reqSeq = useRef(0);
+
+  // 行选择：托管模式（或需要批量条）由本层持有，以便观测选中集合。
+  const selfControlSelection = managed || batchActions != null;
+  const [internalSelection, setInternalSelection] = useState<RowSelectionState>({});
+  const rowSelection = selfControlSelection ? internalSelection : rowSelectionProp;
+  const setSelection = selfControlSelection ? setInternalSelection : onRowSelectionChange;
+
+  const sortParam = useMemo(() => toProSort(sorting), [sorting]);
+  const filtersKey = JSON.stringify(filters);
+
+  // 托管模式拉数（竞态守卫：只接受最新一次 seq 的结果）。
+  useEffect(() => {
+    if (!request) return;
+    const seq = ++reqSeq.current;
+    setFetching(true);
+    request({ page, pageSize: defaultPageSize, sort: sortParam, filters })
+      .then((res) => {
+        if (seq !== reqSeq.current) return;
+        setFetched({ data: res.data, total: res.total });
+      })
+      .finally(() => {
+        if (seq === reqSeq.current) setFetching(false);
+      });
+    // filters 用 filtersKey 稳定依赖；sortParam 已 memo。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [request, page, defaultPageSize, sortParam, filtersKey, reloadKey]);
+
+  const clearSelection = () => setInternalSelection({});
+  const doReload = () => {
+    if (managed) setReloadKey((k) => k + 1);
+    else onReload?.();
+  };
+
+  useImperativeHandle(actionRef, () => ({ reload: doReload, clearSelection }), [managed]);
 
   const visibleColumns = useMemo(
     () => columns.filter((c) => !hidden.has(colId(c))),
@@ -86,34 +155,66 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
   const showToolbar = features !== null || title != null || toolbarActions != null;
 
+  // 解析最终数据 / 分页 / loading（托管 vs 展示）。
+  const tableData = managed ? fetched.data : (dataProp ?? []);
+  const loading = managed ? fetching : loadingProp;
+  const pagination = managed
+    ? { page, pageSize: defaultPageSize, total: fetched.total, onPageChange: setPage }
+    : paginationProp;
+
+  // 选中行 key 集合（批量条用）。
+  const selectedRowKeys = useMemo(
+    () =>
+      Object.keys(rowSelection ?? {}).filter((k) => (rowSelection as RowSelectionState)[k]),
+    [rowSelection],
+  );
+  const showBatch = batchActions != null && selectedRowKeys.length > 0;
+
+  const reloadVisible = features?.reload && (managed || onReload != null);
+
   return (
     <div
       className={cn(
         "flex flex-col gap-4",
-        // 列表页旗舰：整体即一张浮起卡片（表面 + 发丝边 + 阴影），与 Card 同层级，
-        // 不再是漂在页面底色上的透明描边框。内层 Table 关掉自身边框避免双框。
+        // 列表页旗舰：整体即一张浮起卡片（表面 + 发丝边 + 阴影），与 Card 同层级。
         !fullscreen && "rounded-[var(--radius)] border border-hairline bg-surface p-4 shadow-sm",
         fullscreen && "fixed inset-0 z-50 overflow-auto bg-bg p-6",
         rootClassName,
       )}
     >
-      {search && <SearchForm {...search} className={cn("m-0", search.className)} />}
+      {search && (
+        <SearchForm
+          {...search}
+          className={cn("m-0", search.className)}
+          loading={managed ? fetching : search.loading}
+          onSearch={(values) => {
+            if (managed) {
+              setFilters(values);
+              setPage(1);
+            }
+            search.onSearch?.(values);
+          }}
+          onReset={(values) => {
+            if (managed) {
+              setFilters(values);
+              setPage(1);
+            }
+            search.onReset?.(values);
+          }}
+        />
+      )}
 
       {showToolbar && (
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0 truncate text-base font-medium text-foreground">{title}</div>
           <div className="flex shrink-0 items-center gap-1.5">
             {toolbarActions}
-            {(toolbarActions != null && (features?.reload || features?.density || features?.columnSetting || features?.fullscreen)) && (
-              <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
-            )}
-            {features?.reload && onReload && (
-              <button
-                type="button"
-                aria-label={t.reload}
-                onClick={onReload}
-                className={iconBtn}
-              >
+            {toolbarActions != null &&
+              (features?.reload || features?.density || features?.columnSetting || features?.fullscreen) && (
+                <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
+              )}
+            {reloadVisible && (
+              <button type="button" aria-label={t.reload} onClick={doReload} className={iconBtn}>
                 <RefreshCw className={cn("size-4", loading && "animate-spin")} />
               </button>
             )}
@@ -162,7 +263,43 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
         </div>
       )}
 
-      <Table<TData> columns={visibleColumns} density={density} bordered={false} className={className} {...tableProps} />
+      {showBatch && (
+        <div className="flex flex-wrap items-center gap-3 rounded-[var(--radius)] border border-primary/30 bg-primary/5 px-3 py-2 text-sm">
+          <span className="text-foreground">{t.selected(selectedRowKeys.length)}</span>
+          <button
+            type="button"
+            onClick={clearSelection}
+            className="text-muted underline-offset-2 transition-colors hover:text-foreground hover:underline"
+          >
+            {t.clearSelection}
+          </button>
+          <div className="ml-auto flex items-center gap-2">
+            {batchActions!({ selectedRowKeys, clearSelection })}
+          </div>
+        </div>
+      )}
+
+      <div className="relative">
+        <Table<TData>
+          columns={visibleColumns}
+          data={tableData}
+          density={density}
+          bordered={false}
+          className={className}
+          enableRowSelection={enableRowSelection}
+          rowSelection={rowSelection}
+          onRowSelectionChange={setSelection}
+          sorting={managed ? sorting : sortingProp}
+          onSortingChange={managed ? setSorting : onSortingChange}
+          getRowId={getRowId}
+          {...tableProps}
+        />
+        {loading && (
+          <div className="absolute inset-0 z-10 grid place-items-center rounded-[var(--radius)] bg-surface/60">
+            <Spin />
+          </div>
+        )}
+      </div>
 
       {pagination && (
         <div className="flex flex-wrap items-center justify-between gap-3">
