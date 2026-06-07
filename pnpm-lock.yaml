@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@base-ui-components/react@1.0.0-rc.0':
+    hash: oqp7cfk6eq2uyqfv5bq6vmygza
+    path: patches/@base-ui-components__react@1.0.0-rc.0.patch
+
 importers:
 
   .:
@@ -35,7 +40,7 @@ importers:
     dependencies:
       '@base-ui-components/react':
         specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
+        version: 1.0.0-rc.0(patch_hash=oqp7cfk6eq2uyqfv5bq6vmygza)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
       '@emotion/cache':
         specifier: ^11.14.0
         version: 11.14.0
@@ -206,7 +211,7 @@ importers:
     devDependencies:
       '@base-ui-components/react':
         specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
+        version: 1.0.0-rc.0(patch_hash=oqp7cfk6eq2uyqfv5bq6vmygza)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
       '@testing-library/react':
         specifier: ^16.3.0
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
@@ -425,7 +430,7 @@ packages:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  /@base-ui-components/react@1.0.0-rc.0(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7):
+  /@base-ui-components/react@1.0.0-rc.0(patch_hash=oqp7cfk6eq2uyqfv5bq6vmygza)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7):
     resolution: {integrity: sha512-9lhUFbJcbXvc9KulLev1WTFxS/alJRBWDH/ibKSQaNvmDwMFS2gKp1sTeeldYSfKuS/KC1w2MZutc0wHu2hRHQ==}
     engines: {node: '>=14.0.0'}
     deprecated: Package was renamed to @base-ui/react
@@ -447,6 +452,7 @@ packages:
       reselect: 5.2.0
       tabbable: 6.4.0
       use-sync-external-store: 1.6.0(react@19.2.7)
+    patched: true
 
   /@base-ui-components/utils@0.2.2(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7):
     resolution: {integrity: sha512-rNJCD6TFy3OSRDKVHJDzLpxO3esTV1/drRtWNUpe7rCpPN9HZVHUCuP+6rdDYDGWfXnQHbqi05xOyRP2iZAlkw==}
