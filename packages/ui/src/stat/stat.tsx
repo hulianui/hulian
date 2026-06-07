@@ -3,7 +3,7 @@ import { cn } from "../lib/cn";
 import type { StatProps } from "./stat.types";
 
 // KPI 指标卡：纯瑚琏皮肤（无图表库）。升=text-primary / 降=text-danger（无 success）。
-export function Stat({ label, value, delta, deltaLabel, icon, className, ...props }: StatProps) {
+export function Stat({ label, value, delta, deltaLabel, icon, chart, className, ...props }: StatProps) {
   const hasDelta = typeof delta === "number";
   const up = hasDelta && (delta as number) >= 0;
   return (
@@ -16,6 +16,7 @@ export function Stat({ label, value, delta, deltaLabel, icon, className, ...prop
         {icon ? <span className="text-muted">{icon}</span> : null}
       </div>
       <div className="mt-2 truncate text-2xl font-semibold text-foreground">{value}</div>
+      {chart ? <div className="mt-3">{chart}</div> : null}
       {hasDelta ? (
         // flex-wrap + 子项 whitespace-nowrap：窄容器下「+x% / 标签」整块换行，
         // 不再把数字或 CJK 标签逐字裂行（健壮自适应）。

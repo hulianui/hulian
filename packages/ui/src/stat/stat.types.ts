@@ -7,4 +7,6 @@ export interface StatProps extends HTMLAttributes<HTMLDivElement> {
   delta?: number;
   deltaLabel?: ReactNode;
   icon?: ReactNode;
+  /** 可选图表插槽（如 KPI 趋势 sparkline），渲染在数值行下方、delta 上方。 */
+  chart?: ReactNode;
 }

@@ -26,4 +26,11 @@ describe("Stat", () => {
     const { container } = render(<Stat label="x" value="1" />);
     expect(container.querySelector("svg")).toBeNull();
   });
+
+  it("传 chart → 渲染图表插槽", () => {
+    const { getByTestId } = render(
+      <Stat label="条目" value={12} chart={<div data-testid="spark">spark</div>} />,
+    );
+    expect(getByTestId("spark")).toBeTruthy();
+  });
 });
