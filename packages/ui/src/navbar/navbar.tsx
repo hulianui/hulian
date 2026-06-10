@@ -77,7 +77,8 @@ export function NavbarMenuToggle({
       aria-expanded={isOpen}
       aria-label={ariaLabel ?? (isOpen ? "关闭菜单" : "打开菜单")}
       className={cn(
-        "inline-flex size-9 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring sm:hidden",
+        // size-11 = 44px：移动端专属控件（sm:hidden），满足触控目标 ≥44px
+        "inline-flex size-11 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring sm:hidden",
         className,
       )}
     >

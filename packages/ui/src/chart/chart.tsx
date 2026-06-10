@@ -22,6 +22,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  useChartWidth,
 } from "recharts";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
@@ -38,6 +39,64 @@ import type { ChartProps, BarChartProps, PieChartProps, RadialChartProps } from 
 
 const MARGIN = { top: 8, right: 8, bottom: 0, left: -8 };
 
+// ResponsiveContainer 首帧用 initialDimension {-1,-1} 渲染，宽高全 -1 会触发
+// "width(-1) and height(-1) should be greater than 0" 的 dev warning。
+// 我们的高度始终是显式数值（height prop），把它直接交给 ResponsiveContainer
+//（而非 "100%"），首帧 calculatedHeight > 0 即不再告警，行为不变（宽仍等实测）。
+//
+// 雷达图角轴长 CJK 标签在窄容器（H5 375px）会越出 SVG 左右边被裁。
+// PolarAngleWrapTick 按「锚点方向上的剩余空间」检测溢出，溢出时把标签均分折两行。
+const POLAR_TICK_FONT = 12;
+
+interface PolarAngleWrapTickProps {
+  x?: number;
+  y?: number;
+  textAnchor?: "start" | "middle" | "end";
+  verticalAnchor?: "start" | "middle" | "end";
+  payload?: { value?: unknown };
+}
+
+// 首行 dy：单行尽量贴近 recharts 默认 Text 的垂直锚点；两行时整体向锚点反方向让位
+function firstLineDy(verticalAnchor: string, twoLine: boolean): number {
+  if (verticalAnchor === "start") return 11; // 图下方标签：向下排
+  if (verticalAnchor === "end") return twoLine ? -15 : -2; // 图上方标签：向上让位
+  return twoLine ? -2 : 4; // 两侧标签：绕 y 居中
+}
+
+function PolarAngleWrapTick({
+  x = 0,
+  y = 0,
+  textAnchor = "middle",
+  verticalAnchor = "middle",
+  payload,
+}: PolarAngleWrapTickProps) {
+  // useChartWidth 在图表上下文缺失时可能返回 undefined → 视为不限宽（不折行）
+  const chartWidth = useChartWidth() ?? Number.POSITIVE_INFINITY;
+  const value = String(payload?.value ?? "");
+  // CJK 全角字符宽 ≈ fontSize；按锚点方向估算可用横向空间
+  const textWidth = value.length * POLAR_TICK_FONT;
+  const available =
+    textAnchor === "end"
+      ? x
+      : textAnchor === "start"
+        ? chartWidth - x
+        : Math.min(x, chartWidth - x) * 2;
+  const half = Math.ceil(value.length / 2);
+  const lines =
+    value.length > 3 && textWidth > available - 4
+      ? [value.slice(0, half), value.slice(half)]
+      : [value];
+  return (
+    <text x={x} y={y} textAnchor={textAnchor} fill="var(--color-muted)" fontSize={POLAR_TICK_FONT}>
+      {lines.map((line, i) => (
+        <tspan key={line} x={x} dy={i === 0 ? firstLineDy(verticalAnchor, lines.length === 2) : 13}>
+          {line}
+        </tspan>
+      ))}
+    </text>
+  );
+}
+
 // recharts 引擎（坐标系/比例尺/路径）+ 瑚琏皮肤（SVG 色走 var(--color-chart-N)/token，明暗自适应）。
 export function AreaChart<TDatum>({
   data,
@@ -49,7 +108,7 @@ export function AreaChart<TDatum>({
 }: ChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
         <ReAreaChart data={data} margin={MARGIN}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
@@ -88,7 +147,7 @@ export function BarChart<TDatum>({
 }: BarChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
         <ReBarChart
           data={data}
           margin={MARGIN}
@@ -138,7 +197,7 @@ export function LineChart<TDatum>({
 }: ChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
         <ReLineChart data={data} margin={MARGIN}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
@@ -169,7 +228,7 @@ export function LineChart<TDatum>({
 export function PieChart({ data, donut, height = 280, className }: PieChartProps) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
         <RePieChart>
           <Pie
             data={data}
@@ -205,10 +264,10 @@ export function RadarChart<TDatum>({
 }: ChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-        <ReRadarChart data={data} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
+        <ReRadarChart data={data} margin={{ top: 12, right: 12, bottom: 12, left: 12 }}>
           <PolarGrid stroke="var(--color-border)" />
-          <PolarAngleAxis dataKey={xKey} tick={polarAngleTick} />
+          <PolarAngleAxis dataKey={xKey} tick={<PolarAngleWrapTick />} />
           <PolarRadiusAxis tick={polarAngleTick} axisLine={false} />
           {series.map((s, i) => {
             const color = resolveTone(s.color) ?? chartColor(i);
@@ -236,7 +295,7 @@ export function RadarChart<TDatum>({
 export function RadialChart({ data, height = 280, className }: RadialChartProps) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
         <ReRadialBarChart
           data={data}
           cx="50%"
