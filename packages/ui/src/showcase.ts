@@ -189,6 +189,8 @@ export { thinkingBlockShowcase } from "./thinking-block/thinking-block.showcase"
 export { toolCallShowcase } from "./tool-call/tool-call.showcase";
 export { agentPlanShowcase } from "./agent-plan/agent-plan.showcase";
 export { dossierShowcase } from "./dossier/dossier.showcase";
+export { artifactShowcase } from "./artifact/artifact.showcase";
+export { confirmCardShowcase } from "./confirm-card/confirm-card.showcase";
 export { taskRunnerShowcase } from "./task-runner/task-runner.showcase";
 export { promptSuggestionsShowcase } from "./prompt-suggestions/prompt-suggestions.showcase";
 export { messageActionsShowcase } from "./message-actions/message-actions.showcase";
