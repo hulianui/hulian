@@ -7,6 +7,7 @@ import type { ConversationProps } from "./conversation.types";
 // 无依赖布局滚动；消费者给定高度（如 h-[60vh]）即获得独立滚动区。
 export function Conversation({
   autoScroll = true,
+  hideScrollbar = false,
   className,
   children,
   ...props
@@ -21,7 +22,11 @@ export function Conversation({
   return (
     <div
       ref={ref}
-      className={cn("flex flex-col gap-5 overflow-y-auto", className)}
+      className={cn(
+        "flex flex-col gap-5 overflow-y-auto",
+        hideScrollbar && "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        className,
+      )}
       {...props}
     >
       {children}
