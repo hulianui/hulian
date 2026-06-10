@@ -204,6 +204,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "input-otp", name: "InputOTP", description: "验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)", category: "forms", group: "advanced", status: "new" },
   { slug: "rating", name: "Rating", description: "评分 · MUI 桥(emotion theme 读瑚琏 token) + 受控星级", category: "forms", group: "advanced", status: "new" },
   { slug: "upload", name: "Upload", description: "文件上传 · 拖拽落区/按钮形态 + accept/maxSize 校验 + 受控文件列表(状态/进度)，零依赖自研只发 onSelect", category: "forms", group: "advanced", status: "new" },
+  { slug: "image-cropper", name: "ImageCropper", description: "图片裁剪 · 固定比例框(默认证件照 5:7) + 触屏双指捏合/拖拽对位 + 缩放滑杆 + canvas 出 Blob(尺寸/质量/字节上限可配·react-easy-crop MIT)", category: "forms", group: "advanced", status: "new" },
   { slug: "transfer", name: "Transfer", description: "穿梭框 · 左右双 listbox 面板 + 移动按钮(选中/全部) + 可选搜索 + 空态(零依赖·复用 Listbox/Empty)", category: "forms", group: "advanced", status: "new" },
   { slug: "cascader", name: "Cascader", description: "级联选择 · 触发器 + Popover 横向逐级面板列 + 路径数组受控 + click/hover 展开 + changeOnSelect · 复用树引擎核", category: "forms", group: "advanced", status: "new" },
   { slug: "tree-select", name: "TreeSelect", description: "树选择器 · 触发器 + Popover 浮层内嵌 Tree + 单选/多选(checkable)对称 + 树内搜索 · 复用树引擎核", category: "forms", group: "advanced", status: "new" },

@@ -52,6 +52,7 @@
     "ogl": "^1.0.11",
     "qrcode-generator": "^2.0.4",
     "react-colorful": "^5.7.0",
+    "react-easy-crop": "^5.5.7",
     "recharts": "^3.8.1",
     "tailwind-merge": "^3.6.0",
     "tiptap-markdown": "^0.8.10"

@@ -187,6 +187,8 @@ export * from "./list";
 export * from "./result";
 // 表单录入补充（零依赖自研·吸取 Ant Upload 概念）
 export * from "./upload";
+// 图片裁剪（react-easy-crop·固定比例框 + 触屏双指缩放·证件照场景）
+export * from "./image-cropper";
 // 穿梭框（零依赖自研·复用 Listbox 双面板 + Empty 空态）
 export * from "./transfer";
 // 排版族（纯皮肤·零依赖·RSC 友好·全吃语义 token）
