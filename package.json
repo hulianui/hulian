@@ -11,6 +11,8 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "doctor": "react-doctor -y --diff false --lint --no-score",
+    "skill-index": "node scripts/gen-skill-index.mjs",
+    "install-hooks": "sh scripts/install-hooks.sh",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "changeset publish"

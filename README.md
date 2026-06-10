@@ -33,6 +33,8 @@ pnpm dev            # 文档站起在 http://localhost:5512（非常规端口，
 pnpm typecheck      # 全量类型检查
 pnpm test           # 全量单测（vitest）
 pnpm --filter www build   # 生产构建
+pnpm run install-hooks    # 装 git hooks（clone 后跑一次；post-commit 自动再生成 ~/.claude/skills/hulianui-index）
+pnpm run skill-index      # 手动再生成 AI 组件索引 skill
 ```
 
 ## 目录结构
