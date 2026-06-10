@@ -92,10 +92,15 @@ function flattenChildren(children: ReactNode): ReactNode[] {
  * （motion v12 JSAnimation/NativeAnimation 的 stop() 均不 notifyFinished），
  * 纯 await 会把整条 swap 链吊死、order 永不轮转（见文件头注释 9）。
  */
-function settle(animation: PromiseLike<unknown>, capSeconds: number): Promise<void> {
+function settle(
+  // motion 的 AnimationPlaybackControlsWithThen.then 回调签名是 VoidFunction（不带参数），
+  // 不满足 PromiseLike<unknown>，按其实际 thenable 形状收参。
+  animation: { then(onResolve: () => void, onReject?: () => void): unknown },
+  capSeconds: number,
+): Promise<void> {
   return new Promise<void>((resolve) => {
     const timer = setTimeout(resolve, capSeconds * 1000);
-    void Promise.resolve(animation).then(
+    animation.then(
       () => {
         clearTimeout(timer);
         resolve();
