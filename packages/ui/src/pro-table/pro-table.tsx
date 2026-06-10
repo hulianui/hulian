@@ -7,6 +7,7 @@ import { useLocale } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Pagination } from "../pagination/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
 import { SearchForm } from "../search-form/search-form";
 import { Spin } from "../spin/spin";
 import { Table } from "../table/table";
@@ -58,6 +59,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     // 托管模式
     request,
     defaultPageSize = 10,
+    pageSizeOptions,
     actionRef,
     batchActions,
     // 行选择（展示模式下原样透传；托管模式 / 批量条 时由本层接管）
@@ -91,6 +93,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
   // —— 托管模式状态 ——
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
   const [filters, setFilters] = useState<Record<string, unknown>>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [reloadKey, setReloadKey] = useState(0);
@@ -112,7 +115,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     if (!request) return;
     const seq = ++reqSeq.current;
     setFetching(true);
-    request({ page, pageSize: defaultPageSize, sort: sortParam, filters })
+    request({ page, pageSize, sort: sortParam, filters })
       .then((res) => {
         if (seq !== reqSeq.current) return;
         setFetched({ data: res.data, total: res.total });
@@ -122,7 +125,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
       });
     // filters 用 filtersKey 稳定依赖；sortParam 已 memo。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [request, page, defaultPageSize, sortParam, filtersKey, reloadKey]);
+  }, [request, page, pageSize, sortParam, filtersKey, reloadKey]);
 
   const clearSelection = () => setInternalSelection({});
   const doReload = () => {
@@ -159,7 +162,16 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   const tableData = managed ? fetched.data : (dataProp ?? []);
   const loading = managed ? fetching : loadingProp;
   const pagination = managed
-    ? { page, pageSize: defaultPageSize, total: fetched.total, onPageChange: setPage }
+    ? {
+        page,
+        pageSize,
+        total: fetched.total,
+        onPageChange: setPage,
+        onPageSizeChange: (size: number) => {
+          setPageSize(size);
+          setPage(1); // 切每页条数回到第 1 页，避免落在超出新总页数的页码上
+        },
+      }
     : paginationProp;
 
   // 选中行 key 集合（批量条用）。
@@ -304,12 +316,32 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
       {pagination && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="text-sm text-muted">{t.total(pagination.total)}</span>
-          <Pagination
-            page={pagination.page}
-            total={Math.max(1, Math.ceil(pagination.total / pagination.pageSize))}
-            onPageChange={pagination.onPageChange}
-            showFirstLast={pagination.showFirstLast ?? true}
-          />
+          <div className="flex flex-wrap items-center gap-3">
+            {pageSizeOptions != null &&
+              pageSizeOptions.length > 0 &&
+              pagination.onPageSizeChange != null && (
+                <Select
+                  items={pageSizeOptions.map((n) => ({ value: String(n), label: t.pageSize(n) }))}
+                  value={String(pagination.pageSize)}
+                  onValueChange={(v) => pagination.onPageSizeChange!(Number(v))}
+                >
+                  <SelectTrigger size="sm" aria-label={t.pageSize(pagination.pageSize)} className="w-28" />
+                  <SelectContent>
+                    {pageSizeOptions.map((n) => (
+                      <SelectItem key={n} value={String(n)}>
+                        {t.pageSize(n)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            <Pagination
+              page={pagination.page}
+              total={Math.max(1, Math.ceil(pagination.total / pagination.pageSize))}
+              onPageChange={pagination.onPageChange}
+              showFirstLast={pagination.showFirstLast ?? true}
+            />
+          </div>
         </div>
       )}
     </div>

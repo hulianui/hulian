@@ -235,4 +235,30 @@ describe("ProTable 托管模式", () => {
     await waitFor(() => expect(getByText("新")).toBeTruthy());
     expect(queryByText("旧")).toBeNull();
   });
+
+  it("pageSizeOptions：渲染每页条数切换器，request 带当前 pageSize", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 40 }));
+    const { getByRole } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        defaultPageSize={20}
+        pageSizeOptions={[10, 20, 50, 100]}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    expect(request.mock.calls[0][0]).toMatchObject({ page: 1, pageSize: 20 });
+    // 切换器 Trigger 显示当前每页条数
+    expect(getByRole("combobox").textContent).toContain("20 条/页");
+  });
+
+  it("不传 pageSizeOptions 时不渲染切换器（向后兼容）", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 40 }));
+    const { queryByRole } = render(
+      <ProTable<Row> columns={cols} request={request} getRowId={(r) => String(r.id)} />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    expect(queryByRole("combobox")).toBeNull();
+  });
 });

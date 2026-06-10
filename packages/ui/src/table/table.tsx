@@ -18,6 +18,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
+import { Empty } from "../empty";
 import { cn } from "../lib/cn";
 import type { TableProps } from "./table.types";
 
@@ -83,6 +84,9 @@ export function Table<TData>({
   onColumnFiltersChange,
   // 虚拟滚动
   virtual,
+  // 空态
+  emptyText,
+  renderEmpty,
 }: TableProps<TData>) {
   const selectionEnabled = Boolean(enableRowSelection);
   const treeMode = Boolean(getSubRows);
@@ -250,8 +254,8 @@ export function Table<TData>({
   if (rows.length === 0) {
     body = (
       <tr>
-        <td colSpan={colCount} className="py-10 text-center text-muted">
-          暂无数据
+        <td colSpan={colCount} className="py-4">
+          {renderEmpty ? renderEmpty() : <Empty size="sm" title={emptyText ?? "暂无数据"} />}
         </td>
       </tr>
     );

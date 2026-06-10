@@ -69,6 +69,22 @@ describe("空态", () => {
     expect(getByText("暂无数据")).toBeTruthy();
     expect(container.querySelectorAll("tbody tr td:first-child")[0]?.getAttribute("colspan")).toBe("2");
   });
+
+  it("emptyText 自定义空态文案", () => {
+    const { getByText, queryByText } = render(
+      <Table columns={columns} data={[]} emptyText="没有匹配的结果" />,
+    );
+    expect(getByText("没有匹配的结果")).toBeTruthy();
+    expect(queryByText("暂无数据")).toBeNull();
+  });
+
+  it("renderEmpty 完全自定义空态（优先于 emptyText）", () => {
+    const { getByText, queryByText } = render(
+      <Table columns={columns} data={[]} emptyText="忽略我" renderEmpty={() => <div>自定义空态</div>} />,
+    );
+    expect(getByText("自定义空态")).toBeTruthy();
+    expect(queryByText("忽略我")).toBeNull();
+  });
 });
 
 describe("皮肤钩子（防漂移）", () => {

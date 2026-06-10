@@ -25,6 +25,8 @@ export interface ProTablePagination {
   onPageChange: (page: number) => void;
   /** 显示首/末页按钮，默认 true。 */
   showFirstLast?: boolean;
+  /** 每页条数变化（展示模式下与 pageSizeOptions 搭配才显示切换器）。 */
+  onPageSizeChange?: (pageSize: number) => void;
 }
 
 /** 服务端排序参数（单列）。 */
@@ -90,6 +92,12 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
   request?: (params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>;
   /** 托管模式初始每页条数。@default 10 */
   defaultPageSize?: number;
+  /**
+   * 每页条数可选项（如 [10, 20, 50, 100]）。提供则在分页区渲染「每页条数」切换器：
+   * 托管模式由 ProTable 自管 pageSize（切换后回到第 1 页并重新 request）；
+   * 展示模式需配合 pagination.onPageSizeChange 受控。
+   */
+  pageSizeOptions?: number[];
   /** 命令式句柄：reload() 重新请求 / clearSelection() 清空选择。 */
   actionRef?: Ref<ProTableActions>;
   /** 选中行时渲染的批量操作区（需 enableRowSelection + 有选中才显示警示条）。 */

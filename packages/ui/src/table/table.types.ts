@@ -90,4 +90,10 @@ export interface TableProps<TData> {
 
   // —— 虚拟滚动（不传=关·可选依赖）——
   virtual?: VirtualOptions;
+
+  // —— 空态（data 为空时）——
+  /** 空态文案（渲染进内置 <Empty> 标题）。@default "暂无数据" */
+  emptyText?: ReactNode;
+  /** 完全自定义空态渲染（优先级高于 emptyText）。 */
+  renderEmpty?: () => ReactNode;
 }

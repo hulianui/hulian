@@ -20,6 +20,8 @@ export interface Locale {
     selected: (count: number) => string;
     /** 批量条：清空选择。 */
     clearSelection: string;
+    /** 每页条数选项文案（参数化，如「10 条/页」）。 */
+    pageSize: (count: number) => string;
   };
   adminLayout: {
     collapse: string;
@@ -74,6 +76,7 @@ export const zhCN: Locale = {
     columnsTitle: "列展示",
     selected: (n) => `已选 ${n} 项`,
     clearSelection: "清空",
+    pageSize: (n) => `${n} 条/页`,
   },
   adminLayout: {
     collapse: "收起侧栏",
@@ -128,6 +131,7 @@ export const enUS: Locale = {
     columnsTitle: "Columns",
     selected: (n) => `${n} selected`,
     clearSelection: "Clear",
+    pageSize: (n) => `${n} / page`,
   },
   adminLayout: {
     collapse: "Collapse",
