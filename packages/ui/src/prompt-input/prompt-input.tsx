@@ -65,7 +65,8 @@ export function PromptInput({
         autoResize
         rows={1}
         style={{ maxHeight: `${maxRows * 1.5}rem` }}
-        className="w-full resize-none border-0 bg-transparent px-1 py-0.5 shadow-none focus-visible:ring-0"
+        // ring-0 只清环宽，ring-offset-2 的 offset shadow 仍会画出一圈 → 必须同时归零
+        className="w-full resize-none border-0 bg-transparent px-1 py-0.5 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
       />
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-1.5">{actions}</div>
