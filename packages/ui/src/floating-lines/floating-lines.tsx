@@ -144,7 +144,11 @@ void main() {
     col += lineCol * wave(ruv + vec2(uLineDistance * fi + 10.0, 0.5), 1.0 + 0.2 * fi, baseUv, mouseUv, uInteractive) * 0.1;
   }
 
-  gl_FragColor = vec4(col, 1.0);
+  // alpha 按线条亮度输出（同 line-waves 范式）：线外区域 alpha≈0 透明露出页面背景，
+  // 明暗主题通用。原版 alpha=1.0 会让整个画布成不透明黑底（仅适配深色页）。
+  // length(col) ≥ 各分量 → col 天然满足 premultiplied 约束，浏览器合成正确。
+  float alpha = clamp(length(col), 0.0, 1.0);
+  gl_FragColor = vec4(col, alpha);
 }
 `.trim();
 
