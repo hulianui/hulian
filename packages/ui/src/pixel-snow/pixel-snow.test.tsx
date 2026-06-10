@@ -126,7 +126,7 @@ describe("PixelSnow · reduced-motion 路径（静态 fallback）", () => {
     });
   });
 
-  it("渲染静态点阵 fallback div（无 canvas，foreground token 着色，DOM 仍为单 div）", async () => {
+  it("渲染静态点阵 fallback div（无 canvas，白点+difference 混合自适应底色，DOM 仍为单 div）", async () => {
     const { container } = render(<PixelSnow />);
     await act(async () => {});
     const div = container.querySelector("div")!;
@@ -135,8 +135,9 @@ describe("PixelSnow · reduced-motion 路径（静态 fallback）", () => {
     expect(div.className).toContain("inset-0");
     expect(div.className).toContain("z-0");
     expect(div.getAttribute("aria-hidden")).toBe("true");
-    // 静态雪花用 foreground token 点阵渐变
-    expect(div.className).toContain("var(--color-foreground)");
+    // 静态雪花点阵走 before: 伪元素：白点 + mix-blend-difference 对任意底色自动取反
+    expect(div.className).toContain("before:mix-blend-difference");
+    expect(div.className).toContain("radial-gradient(circle,white_1px");
   });
 
   it("className 与自定义 fallback 内容均生效", async () => {

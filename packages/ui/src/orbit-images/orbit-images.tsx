@@ -1,3 +1,5 @@
+"use client";
+import { useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { cn } from "../lib/cn";
 import type { OrbitImagesProps, OrbitShape } from "./orbit-images.types";
@@ -9,12 +11,16 @@ import type { OrbitImagesProps, OrbitShape } from "./orbit-images.types";
 // 瑚琏化要点：
 // 1. 去 motion/react 依赖——原版用 useMotionValue + animate 跑 JS 插值驱动 offsetDistance，
 //    这里改为纯 CSS @keyframes hulian-orbit-images（0%→100% 扫 offset-distance），
-//    fill 分布靠负 animation-delay（index/total × duration）错峰，零运行时、RSC 安全（无 "use client"）。
-// 2. 路径几何函数照搬原版（椭圆/圆/方/矩/三角/星/心/无穷/波浪），坐标基于 baseWidth 方画布，
-//    容器用 CSS scale 等比铺满父级宽度（aspect-ratio 1/1），无需 ResizeObserver。
+//    fill 分布靠负 animation-delay（index/total × duration）错峰。
+// 2. 路径几何函数照搬原版（椭圆/圆/方/矩/三角/星/心/无穷/波浪），坐标基于 baseWidth 方画布。
+//    offset-path: path() 的坐标是绝对 px、不会随容器缩放，所以必须有一层真实的缩放层：
+//    内层固定 baseWidth×baseWidth，ResizeObserver 量容器宽 → transform: scale(w/baseWidth)
+//    等比铺满；子项尺寸按 itemSize/scale 反向补偿，保证 itemSize 语义是最终 CSS 像素。
 // 3. 颜色吃 token——轨道描边默认 var(--color-border) 随主题明暗，替原版写死 rgba(0,0,0,0.1)。
-// 4. reduced-motion：motion-reduce:[animation:none] 冻结在初始分布（DOM 两态一致，子项不消失）。
-// 5. 关键帧 hulian-orbit-images 落 preset.css。
+// 4. 子项带基值 offset-distance（fill 时 index/total）——动画被禁用（reduced-motion）或
+//    关键帧缺失时也保持沿轨道静态均匀分布，不会全部堆在路径起点不可见。
+// 5. reduced-motion：motion-reduce:[animation:none] 冻结在初始分布（DOM 两态一致，子项不消失）。
+// 6. 关键帧 hulian-orbit-images 落 preset.css。
 
 function ellipsePath(cx: number, cy: number, rx: number, ry: number): string {
   return `M ${cx - rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx + rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx - rx} ${cy}`;
@@ -149,6 +155,26 @@ export function OrbitImages({
   className,
   style,
 }: OrbitImagesProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  // null = 尚未测量（SSR / 首帧），先隐藏缩放层避免 1400px 设计画布原尺寸闪现。
+  const [scale, setScale] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    // 防御 Offscreen/Activity 重连时 ref 失效（库内已知坑）
+    if (!el) return;
+    const measure = () => {
+      const w = el.offsetWidth;
+      // jsdom / display:none 下 offsetWidth=0 → 退回 1:1，保证子项仍在 DOM 可断言
+      setScale(w > 0 ? w / baseWidth : 1);
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [baseWidth]);
+
   const center = baseWidth / 2;
   const path = buildPath(
     shape,
@@ -164,15 +190,28 @@ export function OrbitImages({
 
   const total = items.length;
   const animDirection = direction === "reverse" ? "reverse" : "normal";
+  const s = scale ?? 1;
+  // itemSize 语义是最终 CSS 像素：缩放层把设计坐标缩到 s 倍，子项尺寸反向补偿。
+  const itemBox = itemSize / s;
 
   return (
     <div
+      ref={containerRef}
       aria-hidden
       className={cn("relative mx-auto aspect-square w-full", className)}
       style={style}
     >
-      {/* 缩放层：把 baseWidth 设计画布等比铺满容器（无需 ResizeObserver） */}
-      <div className="absolute inset-0">
+      {/* 缩放层：固定 baseWidth×baseWidth 设计画布，scale(容器宽/baseWidth) 等比铺满。
+          offset-path: path() 的坐标是绝对 px，必须靠这层把设计坐标映射进真实容器。 */}
+      <div
+        className="absolute left-0 top-0 origin-top-left"
+        style={{
+          width: baseWidth,
+          height: baseWidth,
+          transform: `scale(${s})`,
+          visibility: scale == null ? "hidden" : undefined,
+        }}
+      >
         {/* 旋转层：整条轨道倾斜 rotation 度 */}
         <div
           className="absolute inset-0 origin-center"
@@ -195,19 +234,23 @@ export function OrbitImages({
           )}
 
           {items.map((item, index) => {
-            // fill：用「负延迟」把每个子项错峰到路径不同百分比位置（index/total 圈）。
-            const delaySec = fill ? -(index / total) * duration : 0;
+            // fill：用「负延迟」把每个子项错峰到路径不同百分比位置（index/total 圈）；
+            // 同时给同百分比的基值 offset-distance——动画一旦不跑（reduced-motion /
+            // 关键帧缺失）子项仍静态均匀分布在轨道上，不会全堆在起点。
+            const progress = fill ? index / total : 0;
             const itemStyle: CSSProperties = {
-              width: itemSize,
-              height: itemSize,
-              // baseWidth 设计坐标 → 容器百分比：子项中心锚定在路径起点
-              left: `calc(${(center / baseWidth) * 100}% - ${itemSize / 2}px)`,
-              top: `calc(${(center / baseWidth) * 100}% - ${itemSize / 2}px)`,
+              width: itemBox,
+              height: itemBox,
+              // 子项锚定在缩放层原点 (0,0)：path() 坐标原点与元素盒原点重合，
+              // 由 offset-anchor: center 把子项中心吸到路径当前点上。
+              left: 0,
+              top: 0,
               offsetPath: `path("${path}")`,
               offsetAnchor: "center center",
+              offsetDistance: `${progress * 100}%`,
               animationDuration: `${duration}s`,
               animationDirection: animDirection,
-              animationDelay: `${delaySec}s`,
+              animationDelay: `${-progress * duration}s`,
               // offsetRotate 不在部分 csstype 版本的强类型表里，用自定义属性式写法注入。
               ["offsetRotate" as string]: "0deg",
             } as CSSProperties;

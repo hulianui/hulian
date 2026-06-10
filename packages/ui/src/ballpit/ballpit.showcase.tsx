@@ -52,7 +52,9 @@ export const ballpitShowcase: ShowcaseSpec = {
       name: "大球少量（壁纸级）",
       render: () => (
         <Stage>
-          <Ballpit count={28} sizeRange={[24, 44]} gravity={700} />
+          {/* 窄卡下原 count=28 / r∈[24,44] 面积占用 >100% 必抖；
+              调到 14 颗 r∈[20,36]（组件内部另有面积/短边双重自适应兜底） */}
+          <Ballpit count={14} sizeRange={[20, 36]} gravity={700} />
         </Stage>
       ),
     },

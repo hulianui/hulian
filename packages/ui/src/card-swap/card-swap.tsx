@@ -1,15 +1,14 @@
 "use client";
 import {
   Children,
-  cloneElement,
+  Fragment,
   forwardRef,
   isValidElement,
   useEffect,
   useMemo,
   useRef,
-  type CSSProperties,
   type HTMLAttributes,
-  type ReactElement,
+  type ReactNode,
 } from "react";
 import { useAnimate, useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
@@ -25,8 +24,19 @@ import type { CardSwapEasing, CardSwapProps } from "./card-swap.types";
 // 3. token：卡片缺省皮肤用 bg-surface / border-border / text-foreground 语义 token，替原始写死 #000/#fff。
 // 4. reduced-motion：不轮换、直接把每张卡静置于初始堆叠槽位（DOM 两态一致，仅去动效）。
 // 5. RSC 不安全（用 ref / useAnimate / 定时器）→ "use client"。
+// 6. 每张卡由组件自有的定位 wrapper 承载（ref / 宽高 / 居中负 margin / 动画都打在 wrapper 上），
+//    children 可以是任意元素（包括不转发 ref 的包装组件）——不再用 cloneElement 注 ref，
+//    否则 children 一旦是函数组件包装层，ref 全空 → 初始落位与轮换静默失效（曾发生）。
+// 7. placement="center"：原版右下锚定 + 5%/18% 外溢是营销页贴边设计，在画廊/普通容器里
+//    会被裁掉大半；center 模式按错位距离计算整摞包围盒、把堆叠完整居中框进容器。
+// 8. children 先递归展开 Fragment：用户惯用 <>…</> 包多张卡，而 Children.toArray 不拆
+//    Fragment——不展开则 total=1，`total < 2` 门控直接退出，轮换静默全灭（曾发生）。
+// 9. motion v12 已知行为：动画被中断（同元素同值的新 animate / scope stop）时，其
+//    finished promise 永不 settle（JSAnimation.stop→teardown 不调 notifyFinished）。
+//    纯 await 链会被吊死 → 每段动画都套 raceTimeout 兜底；并加 in-flight 守卫，
+//    防 delay < 三段总时长时下一轮 swap 中断上一轮（中断即吊死 + 视觉撕裂）。
 
-/** 单张卡片：absolute 居中定位 + 3D 保留 + 默认瑚琏皮肤，可被 className 覆盖。 */
+/** 单张卡片：填满所属槽位 + 3D 保留 + 默认瑚琏皮肤，可被 className 覆盖。 */
 export const CardSwapCard = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   function CardSwapCard({ className, style, ...rest }, ref) {
     return (
@@ -35,8 +45,7 @@ export const CardSwapCard = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEle
         {...rest}
         style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden", ...style }}
         className={cn(
-          "absolute left-1/2 top-1/2 rounded-xl border border-border bg-surface text-foreground",
-          "[will-change:transform]",
+          "h-full w-full rounded-xl border border-border bg-surface text-foreground",
           className,
         )}
       />
@@ -69,6 +78,39 @@ function easingConfig(easing: CardSwapEasing): EasingConfig {
     : { type: "tween", durDrop: 0.55, durMove: 0.55, durReturn: 0.55, promoteOverlap: 0.45, returnDelay: 0.2 };
 }
 
+/** 递归展开 Fragment：<>…</> 包裹的多张卡也要数成多个 children（见文件头注释 8）。 */
+function flattenChildren(children: ReactNode): ReactNode[] {
+  return Children.toArray(children).flatMap((child) =>
+    isValidElement(child) && child.type === Fragment
+      ? flattenChildren((child.props as { children?: ReactNode }).children)
+      : [child],
+  );
+}
+
+/**
+ * await 一段 motion 动画，但以超时兜底：被中断的动画 finished promise 永不 settle
+ * （motion v12 JSAnimation/NativeAnimation 的 stop() 均不 notifyFinished），
+ * 纯 await 会把整条 swap 链吊死、order 永不轮转（见文件头注释 9）。
+ */
+function settle(animation: PromiseLike<unknown>, capSeconds: number): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const timer = setTimeout(resolve, capSeconds * 1000);
+    void Promise.resolve(animation).then(
+      () => {
+        clearTimeout(timer);
+        resolve();
+      },
+      () => {
+        clearTimeout(timer);
+        resolve();
+      },
+    );
+  });
+}
+
+/** 弹性 spring 不吃 duration（物理参数优先），真实安定 ~1.1s；超时上限统一加冗余。 */
+const SETTLE_MARGIN = 2;
+
 function CardSwapRoot({
   width = 380,
   height = 280,
@@ -78,6 +120,7 @@ function CardSwapRoot({
   pauseOnHover = false,
   skewAmount = 5,
   easing = "elastic",
+  placement = "bottom-right",
   onCardClick,
   children,
   className,
@@ -87,7 +130,7 @@ function CardSwapRoot({
   const [scope, animate] = useAnimate();
   const config = useMemo(() => easingConfig(easing), [easing]);
 
-  const childArr = useMemo(() => Children.toArray(children), [children]);
+  const childArr = useMemo(() => flattenChildren(children), [children]);
   const total = childArr.length;
 
   // refs 数量随卡片数变化重建；存放每张卡片 DOM。
@@ -126,50 +169,66 @@ function CardSwapRoot({
     if (reduced || total < 2) return;
 
     let cancelled = false;
+    // in-flight 守卫：上一轮三段还没走完时跳过本次 tick，避免同元素动画互相中断
+    //（中断方造成被中断方 promise 吊死 + 前卡半路被拽走的视觉撕裂）。
+    let swapping = false;
 
     const swap = async () => {
-      if (cancelled || order.current.length < 2) return;
+      if (cancelled || swapping || order.current.length < 2) return;
       const [front, ...rest] = order.current;
       const elFront = refs[front]?.current;
       if (!elFront?.style) return;
+      swapping = true;
+      try {
+        const frontBaseSlot = makeSlot(0, cardDistance, verticalDistance, total);
 
-      const frontBaseSlot = makeSlot(0, cardDistance, verticalDistance, total);
+        // ① drop：最前卡片向下坠落 500px（仅叠加 Y 偏移，X/Z/skew 不变）。
+        await settle(
+          animate(
+            elFront,
+            { y: frontBaseSlot.y + 500 },
+            { ...motionTransition, duration: config.durDrop },
+          ),
+          config.durDrop + SETTLE_MARGIN,
+        );
+        if (cancelled) return;
 
-      // ① drop：最前卡片向下坠落 500px（仅叠加 Y 偏移，X/Z/skew 不变）。
-      await animate(
-        elFront,
-        { y: frontBaseSlot.y + 500 },
-        { ...motionTransition, duration: config.durDrop },
-      );
-      if (cancelled) return;
+        // ② promote：其余卡片逐级向前递进，错峰 0.06s 制造层叠波纹。
+        await Promise.all(
+          rest.map((idx, i) => {
+            const el = refs[idx]?.current;
+            if (!el?.style) return Promise.resolve();
+            const slot = makeSlot(i, cardDistance, verticalDistance, total);
+            el.style.zIndex = String(slot.zIndex);
+            return settle(
+              animate(
+                el,
+                { x: slot.x, y: slot.y, z: slot.z },
+                { ...motionTransition, duration: config.durMove, delay: i * 0.06 },
+              ),
+              config.durMove + i * 0.06 + SETTLE_MARGIN,
+            );
+          }),
+        );
+        if (cancelled) return;
 
-      // ② promote：其余卡片逐级向前递进，错峰 0.06s 制造层叠波纹。
-      await Promise.all(
-        rest.map((idx, i) => {
-          const el = refs[idx]?.current;
-          if (!el?.style) return Promise.resolve();
-          const slot = makeSlot(i, cardDistance, verticalDistance, total);
-          el.style.zIndex = String(slot.zIndex);
-          return animate(
-            el,
-            { x: slot.x, y: slot.y, z: slot.z },
-            { ...motionTransition, duration: config.durMove, delay: i * 0.06 },
-          );
-        }),
-      );
-      if (cancelled) return;
+        // ③ return：坠落卡片绕回队尾槽位。
+        const backSlot = makeSlot(total - 1, cardDistance, verticalDistance, total);
+        elFront.style.zIndex = String(backSlot.zIndex);
+        await settle(
+          animate(
+            elFront,
+            { x: backSlot.x, y: backSlot.y, z: backSlot.z },
+            { ...motionTransition, duration: config.durReturn },
+          ),
+          config.durReturn + SETTLE_MARGIN,
+        );
+        if (cancelled) return;
 
-      // ③ return：坠落卡片绕回队尾槽位。
-      const backSlot = makeSlot(total - 1, cardDistance, verticalDistance, total);
-      elFront.style.zIndex = String(backSlot.zIndex);
-      await animate(
-        elFront,
-        { x: backSlot.x, y: backSlot.y, z: backSlot.z },
-        { ...motionTransition, duration: config.durReturn },
-      );
-      if (cancelled) return;
-
-      order.current = [...rest, front];
+        order.current = [...rest, front];
+      } finally {
+        swapping = false;
+      }
     };
 
     let timer: ReturnType<typeof setInterval> | undefined;
@@ -207,35 +266,51 @@ function CardSwapRoot({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [total, cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, reduced]);
 
-  const rendered = childArr.map((child, i) => {
-    if (!isValidElement(child)) return child;
-    const el = child as ReactElement<{
-      style?: CSSProperties;
-      onClick?: (e: React.MouseEvent) => void;
-    }>;
-    return cloneElement(el, {
-      key: i,
-      ref: (node: HTMLDivElement | null) => {
+  // 槽位 wrapper 归组件所有：ref / 宽高 / 负 margin 居中 / 点击回调全打在 wrapper 上，
+  // children 可以是任意元素（含不转发 ref 的包装组件），动画驱动不依赖 children 配合。
+  const rendered = childArr.map((child, i) => (
+    <div
+      key={i}
+      ref={(node: HTMLDivElement | null) => {
         refs[i].current = node;
-      },
+      }}
+      className="absolute left-1/2 top-1/2 [will-change:transform]"
       // 负 margin 完成自居中（left/top 50% + 负半宽高），把 x/y/z/skew 留给 motion 独立驱动。
-      style: { width, height, marginLeft: -width / 2, marginTop: -height / 2, ...(el.props.style ?? {}) },
-      onClick: (e: React.MouseEvent) => {
-        el.props.onClick?.(e);
-        onCardClick?.(i);
-      },
-    } as Record<string, unknown>);
-  });
+      style={{
+        width,
+        height,
+        marginLeft: -width / 2,
+        marginTop: -height / 2,
+        transformStyle: "preserve-3d",
+        backfaceVisibility: "hidden",
+      }}
+      onClick={() => onCardClick?.(i)}
+    >
+      {child}
+    </div>
+  ));
+
+  // center 模式：整摞包围盒（卡片中心散布在 0..spreadX / 0..-spreadY）平移回容器正中。
+  const spreadX = Math.max(0, total - 1) * cardDistance;
+  const spreadY = Math.max(0, total - 1) * verticalDistance;
+  const centerTransform = `translate(calc(-50% - ${spreadX / 2}px), calc(-50% + ${spreadY / 2}px))`;
 
   return (
     <div
       ref={scope}
       className={cn(
-        "absolute bottom-0 right-0 origin-bottom-right",
-        "[perspective:900px] [transform:translate(5%,18%)]",
+        "[perspective:900px]",
+        placement === "center"
+          ? "absolute left-1/2 top-1/2"
+          : "absolute bottom-0 right-0 origin-bottom-right [transform:translate(5%,18%)]",
         className,
       )}
-      style={{ width, height, ...style }}
+      style={{
+        width,
+        height,
+        ...(placement === "center" ? { transform: centerTransform } : null),
+        ...style,
+      }}
     >
       {rendered}
     </div>

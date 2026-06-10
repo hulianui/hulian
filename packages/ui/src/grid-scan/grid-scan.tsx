@@ -16,10 +16,15 @@ import type { GridScanProps } from "./grid-scan.types";
 //    毒化）、IntersectionObserver 离屏暂停；reduced-motion / 无 WebGL 自动降级为静态等距网格底纹。
 // 4. reduced-motion：useGlCanvas 内置 prefers-reduced-motion 探测，命中即不建 GL、渲染静态 fallback。
 
-const VERT = /* glsl */ `
-attribute vec2 position;
-attribute vec2 uv;
-varying vec2 vUv;
+// GLSL ES 3.00（#version 300 es 必须是首行）：ogl Renderer 默认创建 WebGL2 上下文，
+// 而 WebGL2 下 ES 1.00 shader 不能用 fwidth（OES_standard_derivatives 扩展在 WebGL2
+// 不存在，导数函数仅在 ES 3.00 shader 中是核心函数）。fragment 用了 fwidth 做屏幕
+// 空间抗锯齿格线，故全套升 300 es（in/out + 显式 fragColor），与 meta-balls 同模式。
+const VERT = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 position;
+in vec2 uv;
+out vec2 vUv;
 void main() {
   vUv = uv;
   gl_Position = vec4(position, 0.0, 1.0);
@@ -30,9 +35,10 @@ void main() {
 //   ① 透视射线投射打到四面网格平面，算出格线 mask（含 dashed/dotted 变体 + 距离衰减 fade）
 //   ② 沿 z 轴推进的扫描带：高斯光带 exp(-dz²/σ²) × 相位窗口，叠加更宽的 aura 项近似 bloom
 // 删除：MAX_SCANS 点击爆发数组、bloom/chroma 后期、人脸 uniform。保留 uSkew/uTilt 由鼠标驱动。
-const FRAG = /* glsl */ `
+const FRAG = /* glsl */ `#version 300 es
 precision highp float;
-varying vec2 vUv;
+in vec2 vUv;
+out vec4 fragColor;
 
 uniform vec3  iResolution;
 uniform float iTime;
@@ -160,7 +166,7 @@ void main() {
   color = clamp(color, 0.0, 1.0);
 
   float alpha = clamp(max(lineMask * fade, pulse + aura), 0.0, 1.0);
-  gl_FragColor = vec4(color, alpha);
+  fragColor = vec4(color, alpha);
 }
 `.trim();
 
@@ -240,10 +246,9 @@ export function GridScan({
         typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
         2,
       );
+      // shader 为 GLSL ES 3.00，依赖 ogl 默认的 WebGL2 上下文（fwidth 在 300 es 是核心函数）
       const renderer = new Renderer({ canvas, alpha: true, dpr });
       const gl = renderer.gl;
-      // 启用 fwidth（OES_standard_derivatives）—— WebGL2 内建，WebGL1 尝试取扩展
-      gl.getExtension("OES_standard_derivatives");
 
       const [lr, lg, lb] = linesColor
         ? cssColorToRgb01(linesColor)

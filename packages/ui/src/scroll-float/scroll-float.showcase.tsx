@@ -2,13 +2,18 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { ScrollFloat } from "./scroll-float";
 
-/** 滚动舞台：内部可滚动容器，上下留白让标题在滚过视口时逐字符拔起 */
+/**
+ * 滚动舞台：内部可滚动容器（组件会自动绑定最近可滚动祖先，无需手动传 scrollContainerRef）。
+ * 顶部留白收到 h-40：首帧标题已部分拔起、清晰可辨，向下滚动可看完整逐字符浮现。
+ */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="max-h-72 w-full max-w-xl overflow-auto rounded-xl border border-border bg-surface p-6">
-      <div className="h-48" />
+    <div className="relative max-h-72 w-full max-w-xl overflow-auto rounded-xl border border-border bg-surface p-6">
+      <p className="flex h-40 items-end justify-center pb-6 text-sm text-muted">
+        ↓ 滚动此区域，标题逐字符拔起
+      </p>
       {children}
-      <div className="h-48" />
+      <div className="h-56" />
     </div>
   );
 }
@@ -65,8 +70,9 @@ export const scrollFloatShowcase: ShowcaseSpec = {
 
   toCode: (p) =>
     [
+      `{/* 组件自动绑定最近可滚动祖先；无任何滚动上下文时降级为进入视口自动浮现 */}`,
       `<div className="max-h-72 overflow-auto p-6">`,
-      `  <div className="h-48" />`,
+      `  <div className="h-40" />`,
       `  <ScrollFloat`,
       `    stagger={${p.stagger}}`,
       `    yPercent={${p.yPercent}}`,
@@ -75,7 +81,7 @@ export const scrollFloatShowcase: ShowcaseSpec = {
       `  >`,
       `    瑚琏组件库`,
       `  </ScrollFloat>`,
-      `  <div className="h-48" />`,
+      `  <div className="h-56" />`,
       `</div>`,
     ].join("\n"),
 };

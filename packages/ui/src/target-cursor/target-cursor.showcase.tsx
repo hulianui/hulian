@@ -3,8 +3,8 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { TargetCursor } from "./target-cursor";
 
 // 展示用深色舞台：放几个 .cursor-target 命中块，移入即被四角准星框住。
-// 注意：组件是全屏 fixed 图层 + 接管 body 光标，展示里不隐藏系统光标（hideDefaultCursor=false），
-// 避免预览页整屏失去默认指针。
+// 组件默认容器作用域（absolute 锚到父容器、只响应容器内指针、离开即隐藏），
+// 画廊多 state 多实例互不干扰；hideDefaultCursor 只隐藏舞台内的系统光标，可放心保持默认。
 function Stage({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -48,7 +48,7 @@ export const targetCursorShowcase: ShowcaseSpec = {
         <Stage>
           <Target label="瞄准我" />
           <Target label="也试试这个" />
-          <TargetCursor hideDefaultCursor={false} />
+          <TargetCursor />
         </Stage>
       ),
     },
@@ -58,11 +58,7 @@ export const targetCursorShowcase: ShowcaseSpec = {
         <Stage>
           <Target label="primary" />
           <Target label="spin 0.8s" />
-          <TargetCursor
-            hideDefaultCursor={false}
-            color="var(--color-primary)"
-            spinDuration={0.8}
-          />
+          <TargetCursor color="var(--color-primary)" spinDuration={0.8} />
         </Stage>
       ),
     },
@@ -71,11 +67,7 @@ export const targetCursorShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <Target label="慢慢黏过来" />
-          <TargetCursor
-            hideDefaultCursor={false}
-            color="var(--color-chart-1)"
-            hoverDuration={0.6}
-          />
+          <TargetCursor color="var(--color-chart-1)" hoverDuration={0.6} />
         </Stage>
       ),
     },
@@ -86,7 +78,6 @@ export const targetCursorShowcase: ShowcaseSpec = {
       <Target label="瞄准我" />
       <Target label="再来一个" />
       <TargetCursor
-        hideDefaultCursor={false}
         spinDuration={p.spinDuration as number}
         hoverDuration={p.hoverDuration as number}
         color={p.color as string}

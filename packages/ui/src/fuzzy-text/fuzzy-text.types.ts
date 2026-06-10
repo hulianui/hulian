@@ -20,8 +20,10 @@ export interface FuzzyTextProps
    */
   fontFamily?: string;
   /**
-   * 文字填充色，默认取瑚琏前景 token var(--color-foreground)（自动随明暗主题）。
-   * 可传任意 CSS 颜色字符串。
+   * 文字填充色，默认取瑚琏前景 token var(--color-foreground)（自动随明暗主题，
+   * 含局部 [data-theme] 作用域）。可传任意 CSS 颜色字符串（含 var()/currentColor，
+   * 内部经元素 computed style 解析为真颜色值后再喂 canvas）。
+   * 也可通过 style.color 覆盖（优先级高于本 prop）。
    */
   color?: string;
   /**

@@ -3,6 +3,13 @@ import type { CSSProperties, ReactNode } from "react";
 /** 缓动风格：弹性回弹（elastic）或顺滑平移（smooth）。 */
 export type CardSwapEasing = "elastic" | "smooth";
 
+/**
+ * 堆叠在父容器中的定位方式：
+ * - "bottom-right"：React Bits 原版——右下角锚定并向外溢出 5%/18%，适合营销页贴边构图。
+ * - "center"：按错位距离计算整摞包围盒并居中，堆叠完整可见，适合画廊/普通容器。
+ */
+export type CardSwapPlacement = "bottom-right" | "center";
+
 export interface CardSwapProps {
   /**
    * 卡片堆叠尺寸——单张卡片的宽度（px），默认 380。
@@ -42,6 +49,11 @@ export interface CardSwapProps {
    * "smooth" 为顺滑无回弹（节奏更克制，适合企业场景）。
    */
   easing?: CardSwapEasing;
+  /**
+   * 堆叠在父容器中的定位方式，默认 "bottom-right"（原版右下锚定外溢）。
+   * 在画廊预览 / 普通卡片容器等需要完整看到整摞卡片的场景请用 "center"。
+   */
+  placement?: CardSwapPlacement;
   /**
    * 点击某张卡片时回调，参数为该卡片在 children 中的原始索引。
    */

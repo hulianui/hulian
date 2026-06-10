@@ -22,6 +22,22 @@ describe("RippleButton", () => {
     expect(ripple).not.toBeNull();
     expect(ripple!.getAttribute("class")).toContain("motion-reduce:hidden");
   });
+  it("波纹基础样式 transform: scale(0)（隐式 from 起点，缺它=出生即满钮白罩无扩散感）", () => {
+    const { container } = render(<RippleButton>x</RippleButton>);
+    fireEvent.click(container.querySelector("button")!);
+    const ripple = container.querySelector('[class*="hulian-button-ripple"]') as HTMLElement;
+    expect(ripple.style.transform).toBe("scale(0)");
+    // 不许用 Tailwind scale-0 类（独立 scale 属性与关键帧 transform 相乘 → 全程不可见）
+    expect(ripple.getAttribute("class")).not.toMatch(/\bscale-0\b/);
+  });
+  it("动画结束后波纹 span 自移除", () => {
+    const { container } = render(<RippleButton>x</RippleButton>);
+    const btn = container.querySelector("button")!;
+    fireEvent.click(btn);
+    const ripple = container.querySelector('[class*="hulian-button-ripple"]')!;
+    fireEvent.animationEnd(ripple);
+    expect(container.querySelector('[class*="hulian-button-ripple"]')).toBeNull();
+  });
   it("透传原 onClick + className", () => {
     const onClick = vi.fn();
     const { container } = render(<RippleButton onClick={onClick} className="w-40">x</RippleButton>);

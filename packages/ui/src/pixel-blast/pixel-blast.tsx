@@ -26,23 +26,22 @@ const SHAPE_MAP: Record<PixelBlastVariant, number> = {
 };
 
 // OGL Triangle 提供全屏覆盖几何 + 内建 uv；直接写裁剪空间坐标。
-const VERT = /* glsl */ `
-attribute vec2 position;
+// #version 300 es 必须是 shader 首行（ogl 不会自动加）。
+const VERT = /* glsl */ `#version 300 es
+in vec2 position;
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
-`.trim();
+`;
 
 // 片元 shader：移植自 react-bits PixelBlast 的核心抖动点阵逻辑。
-// Three.js GLSL3（out fragColor）→ OGL GLSL ES 1.0（gl_FragColor）；
-// fwidth 需 GL_OES_standard_derivatives 扩展（OGL 在 WebGL1 下会启用）。
-const FRAG = /* glsl */ `
-#ifdef GL_ES
-#ifdef GL_OES_standard_derivatives
-#extension GL_OES_standard_derivatives : enable
-#endif
-#endif
+// ogl Renderer 默认建 WebGL2 上下文，ES 1.00 + GL_OES_standard_derivatives 在
+// WebGL2/ANGLE 下不被认可（fwidth 报 no matching overloaded function）——
+// 故升级为 GLSL ES 3.0（#version 300 es，fwidth 内建），gl_FragColor → out fragColor。
+const FRAG = /* glsl */ `#version 300 es
 precision highp float;
+
+out vec4 fragColor;
 
 uniform vec3  uColor;
 uniform vec2  uResolution;
@@ -173,9 +172,9 @@ void main(){
     step(vec3(0.0031308), color)
   );
 
-  gl_FragColor = vec4(srgbColor, M);
+  fragColor = vec4(srgbColor, M);
 }
-`.trim();
+`;
 
 // ---------------------------------------------------------------------------
 // CSS 颜色 → [r, g, b]（各值 0–1）：离屏 1×1 canvas 2D context 作万能解析器，

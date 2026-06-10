@@ -9,6 +9,12 @@ import type { FuzzyTextProps } from "./fuzzy-text.types";
 // 瑚琏化：去除 gsap/glitch 等冗余开关，保留核心扫描算法；颜色默认吃 var(--color-foreground)（随明暗主题）；
 // "use client" + RAF；reduced-motion 时关掉抖动只画一帧静态字形（DOM 不变，仍渲染同一 canvas）；
 // jsdom 下 getContext 返回 null 直接静默返回，测试安全。
+//
+// 颜色解析：canvas2d fillStyle 不解析 var()/currentColor 字符串（非法赋值被静默忽略、
+// 退回默认黑）。因此 color prop 先落到 canvas 元素自身的 CSS color（render 处
+// style={{ color, ...style }}，用户 style.color 可覆盖），绘制前经 getComputedStyle
+// 在元素上下文里解析出真颜色值（rgb()/oklch() 等浏览器 computed 形态）再喂 fillStyle——
+// token 随明暗主题（含局部 [data-theme] 作用域）自动取对值，文字与所处背景对比可读。
 export function FuzzyText({
   children,
   fontSize = "clamp(2rem, 10vw, 10rem)",
@@ -40,10 +46,16 @@ export function FuzzyText({
       // jsdom / 不支持 2d context 的环境直接退出，不抛错
       if (!ctx) return;
 
+      const computedStyle = window.getComputedStyle(canvas);
       const computedFontFamily =
         fontFamily === "inherit"
-          ? window.getComputedStyle(canvas).fontFamily || "sans-serif"
+          ? computedStyle.fontFamily || "sans-serif"
           : fontFamily;
+
+      // canvas2d fillStyle 不认 var()/currentColor —— color prop 已落在 canvas 的
+      // CSS color 上（见 render 处），这里读 computed 值拿解析后的真颜色。
+      // 浏览器 computed color 永远是合法颜色字符串，fillStyle 可直接消费。
+      const resolvedColor = computedStyle.color || "#808080";
 
       const fontSizeStr = typeof fontSize === "number" ? `${fontSize}px` : fontSize;
       const fontString = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
@@ -97,7 +109,7 @@ export function FuzzyText({
 
       offCtx.font = fontString;
       offCtx.textBaseline = "alphabetic";
-      offCtx.fillStyle = color;
+      offCtx.fillStyle = resolvedColor;
       offCtx.fillText(text, xOffset - actualLeft, actualAscent);
 
       const horizontalMargin = fuzzRange + 20;
@@ -214,7 +226,9 @@ export function FuzzyText({
     <canvas
       ref={canvasRef}
       className={cn("max-w-full", className)}
-      style={style}
+      // color prop 落到元素 CSS color，供 effect 内 getComputedStyle 解析
+      // var()/currentColor 为真颜色值；用户 style.color 优先级更高可覆盖。
+      style={{ color, ...style }}
       {...props}
     />
   );

@@ -2,11 +2,11 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { CardSwap } from "./card-swap";
 
-/** 卡片堆叠以右下角为锚点 → 用一个有内边距的深色舞台给它留出展开空间。 */
+/** 深色舞台：placement="center" 让整摞卡片完整框进容器（原版右下锚定外溢只适合营销页贴边）。 */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="relative h-80 w-full max-w-xl overflow-hidden rounded-xl border border-border"
+      className="relative h-96 w-full max-w-xl overflow-hidden rounded-xl border border-border"
       style={{ background: "oklch(0.16 0.02 255)" }}
     >
       <div className="absolute left-6 top-6 max-w-[45%]">
@@ -57,7 +57,7 @@ export const cardSwapShowcase: ShowcaseSpec = {
       name: "default（弹性 · 自动轮换）",
       render: () => (
         <Stage>
-          <CardSwap width={300} height={200} delay={3000} pauseOnHover>
+          <CardSwap width={300} height={200} delay={3000} placement="center" pauseOnHover>
             {cards}
           </CardSwap>
         </Stage>
@@ -67,7 +67,7 @@ export const cardSwapShowcase: ShowcaseSpec = {
       name: "顺滑缓动（smooth · 企业克制）",
       render: () => (
         <Stage>
-          <CardSwap width={300} height={200} delay={2600} easing="smooth" skewAmount={4} pauseOnHover>
+          <CardSwap width={300} height={200} delay={2600} easing="smooth" skewAmount={4} placement="center" pauseOnHover>
             {cards}
           </CardSwap>
         </Stage>
@@ -77,7 +77,7 @@ export const cardSwapShowcase: ShowcaseSpec = {
       name: "紧凑贴合（小错位 + 无倾斜）",
       render: () => (
         <Stage>
-          <CardSwap width={300} height={190} cardDistance={32} verticalDistance={40} skewAmount={0} delay={2800}>
+          <CardSwap width={300} height={190} cardDistance={32} verticalDistance={40} skewAmount={0} delay={2800} placement="center">
             {cards}
           </CardSwap>
         </Stage>
@@ -90,6 +90,7 @@ export const cardSwapShowcase: ShowcaseSpec = {
       <CardSwap
         width={300}
         height={200}
+        placement="center"
         delay={p.delay as number}
         cardDistance={p.cardDistance as number}
         verticalDistance={p.verticalDistance as number}
@@ -104,11 +105,12 @@ export const cardSwapShowcase: ShowcaseSpec = {
 
   toCode: (p) =>
     [
-      `<div className="relative h-80 overflow-hidden rounded-xl"`,
+      `<div className="relative h-96 overflow-hidden rounded-xl"`,
       `     style={{ background: "oklch(0.16 0.02 255)" }}>`,
       `  <CardSwap`,
       `    width={300}`,
       `    height={200}`,
+      `    placement="center"`,
       `    delay={${p.delay}}`,
       `    cardDistance={${p.cardDistance}}`,
       `    verticalDistance={${p.verticalDistance}}`,

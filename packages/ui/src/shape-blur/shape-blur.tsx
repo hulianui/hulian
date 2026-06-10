@@ -13,34 +13,39 @@ import type { ShapeBlurProps, ShapeBlurVariation } from "./shape-blur.types";
 
 // ---------------------------------------------------------------------------
 // 全屏三角顶点 shader（ogl Triangle 已覆盖整个 clip-space，无需投影矩阵）
+// GLSL ES 3.00：与片元 shader 版本必须一致（ogl Renderer 默认 WebGL2 context）。
 // ---------------------------------------------------------------------------
-const VERT = /* glsl */ `
-attribute vec2 position;
-attribute vec2 uv;
-varying vec2 vUv;
+const VERT = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 position;
+in vec2 uv;
+out vec2 vUv;
 
 void main() {
   vUv = uv;
   gl_Position = vec4(position, 0.0, 1.0);
 }
-`.trim();
+`;
 
 // ---------------------------------------------------------------------------
 // 片元 shader —— 移植自 react-bits ShapeBlur 原版 GLSL。
 // 移植要点（Three.js → OGL）：
 //   ① 去掉 Three.js 内建 varying v_texcoord（原版基于 gl_FragCoord，未真正用 uv）；
 //      coord() 直接吃 gl_FragCoord.xy + u_resolution，与几何体无关，故全屏三角照样工作。
-//   ② #extension GL_OES_standard_derivatives：WebGL2 下 dFdx/dFdy 为核心能力，
-//      该指令在 WebGL2 中无害；WebGL1 下启用导数扩展，最大化兼容。
+//   ② 升级为 #version 300 es（GLSL ES 3.00）：ogl Renderer 默认拿 WebGL2 context，
+//      ES 1.00 shader 在 WebGL2/ANGLE 下无法启用 GL_OES_standard_derivatives 扩展，
+//      dFdx/dFdy 编译报 no matching overloaded function，ogl 仅 console.warn 静默失败
+//      → 画面全黑。ES 3.00 中导数函数是核心能力，无需任何扩展指令。
+//      （同库 meta-balls / pixel-blast / grid-scan 用导数函数的件均为 300 es。）
 //   ③ VAR 分支保留原版 0..3 四形态，由 JS 端按 variation 写入 #define。
 //   ④ 颜色不再写死 vec3(1.0)，改吃 u_color uniform（来自瑚琏 token）。
 // ---------------------------------------------------------------------------
 function buildFragment(varIndex: number): string {
-  return /* glsl */ `
-#extension GL_OES_standard_derivatives : enable
+  return /* glsl */ `#version 300 es
 precision highp float;
 
-varying vec2 vUv;
+in vec2 vUv;
+out vec4 fragColor;
 
 uniform vec2  u_mouse;
 uniform vec2  u_resolution;
@@ -135,9 +140,9 @@ void main() {
   }
 
   float alpha = clamp(sdf, 0.0, 1.0);
-  gl_FragColor = vec4(u_color, alpha);
+  fragColor = vec4(u_color, alpha);
 }
-`.trim();
+`;
 }
 
 // ---------------------------------------------------------------------------

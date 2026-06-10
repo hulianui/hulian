@@ -47,6 +47,24 @@ describe("ScrollFloat", () => {
     expect(h2.firstElementChild!.getAttribute("class")).toContain("text-2xl");
   });
 
+  it("显式传 scrollContainerRef 不抛错，结构不变", () => {
+    const containerRef = { current: document.createElement("div") };
+    const { container } = render(<ScrollFloat scrollContainerRef={containerRef}>ab</ScrollFloat>);
+    expect(container.textContent).toBe("ab");
+    expect(container.querySelectorAll("span.will-change-transform").length).toBe(2);
+  });
+
+  it("放进可滚动祖先时自动探测绑定该容器（不抛错、文本完整）", () => {
+    const host = document.createElement("div");
+    host.style.overflowY = "auto";
+    Object.defineProperty(host, "scrollHeight", { value: 400, configurable: true });
+    Object.defineProperty(host, "clientHeight", { value: 100, configurable: true });
+    document.body.appendChild(host);
+    const { container } = render(<ScrollFloat>滚动</ScrollFloat>, { container: host });
+    expect(container.textContent).toBe("滚动");
+    document.body.removeChild(host);
+  });
+
   it("reduced-motion：渲染清晰标题且文本两态一致，不抛错", () => {
     vi.stubGlobal(
       "matchMedia",

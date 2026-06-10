@@ -10,7 +10,10 @@ import type { PixelSnowProps } from "./pixel-snow.types";
 //      StrictMode 安全 remount / 离屏暂停 / 卸载兜底 loseContext）。
 //   ② GLSL 片元 shader 与引擎无关，原样移植；因依赖 uint 位运算哈希，升级为 GLSL ES 3.0
 //      (#version 300 es)，gl_FragColor → out vec4 fragColor。
-//   ③ 默认颜色吃 --color-foreground token（明暗自适应，替原版写死 #ffffff）。
+//   ③ 默认颜色按画布身后真实底色亮度自适应：先解析 --color-foreground token，与向上
+//      查找到的实际 backdrop 底色做亮度对比；对比不足（如亮色主题的深色 hero 容器里
+//      前景是近黑 → 撞色）则取反改用 --color-background token 或纯白/纯黑兜底，
+//      保证任意主题 × 任意底色组合下雪都清晰可见（替原版写死 #ffffff）。
 //   ④ reduced-motion / 无 WebGL 自动降级为 token 化静态点阵雪花，DOM 不抖。
 // 用法：放在 relative 容器里，组件自带 absolute inset-0 z-0。
 
@@ -155,7 +158,10 @@ void main() {
           float flakeSizeRatio = uFlakeSize / flakeSize;
           float intensity = exp2(-(t + toIntersection) * invDepthFade) *
                            min(1.0, flakeSizeRatio * flakeSizeRatio) * uBrightness;
-          fragColor = vec4(uColor * pow(vec3(intensity), vec3(uGamma)), 1.0);
+          // 景深淡出走 alpha 而非把颜色乘暗（原版 uColor*intensity, alpha=1 只在
+          // 纯黑底上等价；浅色底上深色雪会"越远越黑越显眼"，方向反了）。
+          // 在深色底上两者数学等价：c*a + bg*(1-a) ≈ c*a（bg≈0）。
+          fragColor = vec4(uColor, clamp(pow(intensity, uGamma), 0.0, 1.0));
           return;
         }
       }
@@ -173,29 +179,89 @@ void main() {
 `;
 
 // ---------------------------------------------------------------------------
-// CSS 颜色 → [r,g,b]（0–1）：离屏 1×1 canvas 让浏览器负责全格式解析。
+// CSS 颜色 → [r,g,b,a]（0–1）：离屏 1×1 canvas 让浏览器负责全格式解析
+//（hex / rgb / oklch / 计算后的 backgroundColor 串均可，WebGL 不认 CSS 字符串）。
 // ---------------------------------------------------------------------------
-function cssColorToRgb01(css: string): [number, number, number] {
+function cssColorToRgba01(css: string): [number, number, number, number] | null {
   try {
     const off = document.createElement("canvas");
     off.width = 1;
     off.height = 1;
     const ctx = off.getContext("2d");
-    if (!ctx) return [1, 1, 1];
+    if (!ctx) return null;
+    ctx.clearRect(0, 0, 1, 1);
     ctx.fillStyle = css;
     ctx.fillRect(0, 0, 1, 1);
     const d = ctx.getImageData(0, 0, 1, 1).data;
-    return [d[0]! / 255, d[1]! / 255, d[2]! / 255];
+    return [d[0]! / 255, d[1]! / 255, d[2]! / 255, d[3]! / 255];
   } catch {
-    return [1, 1, 1];
+    return null;
   }
 }
 
-// 从 canvas 计算样式读 --color-foreground（当前主题前景色）。
-function resolveForeground(canvas: HTMLCanvasElement): [number, number, number] {
-  const raw = getComputedStyle(canvas).getPropertyValue("--color-foreground").trim();
-  if (!raw) return [1, 1, 1];
-  return cssColorToRgb01(raw);
+function cssColorToRgb01(css: string): [number, number, number] {
+  const rgba = cssColorToRgba01(css);
+  return rgba ? [rgba[0], rgba[1], rgba[2]] : [1, 1, 1];
+}
+
+// sRGB → 相对亮度（WCAG 线性化），0=纯黑 1=纯白，用于对比度判定。
+function relLuminance([r, g, b]: [number, number, number]): number {
+  const lin = (c: number) =>
+    c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+// 沿祖先链找画布身后第一个不透明背景色（雪真正画在谁上面）。
+function resolveBackdropRgb(el: HTMLElement): [number, number, number] | null {
+  let node: HTMLElement | null = el;
+  while (node) {
+    const bg = getComputedStyle(node).backgroundColor;
+    if (bg) {
+      const rgba = cssColorToRgba01(bg);
+      if (rgba && rgba[3] > 0.05) return [rgba[0], rgba[1], rgba[2]];
+    }
+    node = node.parentElement;
+  }
+  return null;
+}
+
+// 默认雪色 = 与实际 backdrop 底色对比足够的主题色：
+//   ① 优先 --color-foreground token（保持 token 着色、明暗自适应）；
+//   ② 前景与底色撞色（如亮色主题 × 深色 hero 容器：前景近黑画在深底上）→
+//      取反改用 --color-background token；
+//   ③ token 都不可用 / 都撞色 → 按底色亮度兜底纯白（深底）或近黑（浅底）。
+function resolveAutoColor(canvas: HTMLCanvasElement): [number, number, number] {
+  const style = getComputedStyle(canvas);
+  const readToken = (name: string): [number, number, number] | null => {
+    const raw = style.getPropertyValue(name).trim();
+    if (!raw) return null;
+    const rgba = cssColorToRgba01(raw);
+    return rgba && rgba[3] > 0 ? [rgba[0], rgba[1], rgba[2]] : null;
+  };
+  const fg = readToken("--color-foreground");
+  const bgToken = readToken("--color-background");
+  const backdrop = resolveBackdropRgb(canvas) ?? bgToken;
+  if (!backdrop) return fg ?? [1, 1, 1];
+
+  const MIN_CONTRAST = 0.3; // 相对亮度差阈值，低于此视为撞色不可见
+  const bdLum = relLuminance(backdrop);
+  if (fg && Math.abs(relLuminance(fg) - bdLum) >= MIN_CONTRAST) return fg;
+  if (bgToken && Math.abs(relLuminance(bgToken) - bdLum) >= MIN_CONTRAST)
+    return bgToken;
+  return bdLum < 0.5 ? [1, 1, 1] : [0.08, 0.09, 0.11];
+}
+
+// 显式 color prop：借宿主元素 color 属性让浏览器解析（var(--…) / oklch / hex 均可，
+// 裸 var() 串直接喂离屏 canvas fillStyle 会解析失败回退黑）。
+function resolveExplicitColor(
+  el: HTMLElement,
+  css: string,
+): [number, number, number] {
+  const prev = el.style.color;
+  el.style.color = css;
+  const computed = getComputedStyle(el).color;
+  el.style.color = prev;
+  return cssColorToRgb01(computed || css);
 }
 
 const VARIANT_VALUE: Record<NonNullable<PixelSnowProps["variant"]>, number> = {
@@ -208,7 +274,8 @@ const VARIANT_VALUE: Record<NonNullable<PixelSnowProps["variant"]>, number> = {
  * PixelSnow — 像素化体素雪场 WebGL 背景。
  *
  * 基于 react-bits PixelSnow 原版 GLSL 光线步进 shader（逐网格哈希生雪 + 景深淡出），
- * 瑚琏化：去 three.js 改 ogl；默认颜色吃 `--color-foreground` token（明暗自适应）；
+ * 瑚琏化：去 three.js 改 ogl；默认颜色按画布身后实际底色亮度自适应取色
+ *（优先 `--color-foreground` token，撞色时自动取反，深底亮雪 / 浅底暗雪）；
  * reduced-motion / 无 WebGL 自动降级为静态点阵雪花。
  *
  * @example
@@ -244,7 +311,9 @@ export function PixelSnow({
       const renderer = new Renderer({ canvas, alpha: true, dpr });
       const gl = renderer.gl;
 
-      const [r, g, b] = color ? cssColorToRgb01(color) : resolveForeground(canvas);
+      const [r, g, b] = color
+        ? resolveExplicitColor(canvas, color)
+        : resolveAutoColor(canvas);
 
       const program = new Program(gl, {
         vertex: VERT,
@@ -308,18 +377,21 @@ export function PixelSnow({
   );
 
   // -------------------------------------------------------------------------
-  // reduced-motion / 无 WebGL：静态点阵雪花 fallback（radial-gradient 点阵，
-  // 用 foreground token 着色，明暗自适应；DOM 与正常路径同为单 div，不抖）。
+  // reduced-motion / 无 WebGL：静态点阵雪花 fallback（radial-gradient 点阵）。
+  // 白点 + mix-blend-difference：对任意底色自动取反（深底显白点、浅底显暗点），
+  // 与 WebGL 路径的底色自适应取色策略一致。点阵走 before: 伪元素，blend/透明度
+  // 不波及自定义 fallback 内容；DOM 与正常路径同为单 div，不抖。
   // -------------------------------------------------------------------------
   if (reduced) {
     return (
       <div
         className={cn(
           "pointer-events-none absolute inset-0 z-0",
-          "[background-image:radial-gradient(circle,var(--color-foreground)_1px,transparent_1.5px),radial-gradient(circle,var(--color-foreground)_1px,transparent_1.5px)]",
-          "[background-size:28px_28px,44px_44px]",
-          "[background-position:0_0,14px_22px]",
-          "opacity-30",
+          "before:pointer-events-none before:absolute before:inset-0 before:content-['']",
+          "before:mix-blend-difference before:opacity-30",
+          "before:[background-image:radial-gradient(circle,white_1px,transparent_1.5px),radial-gradient(circle,white_1px,transparent_1.5px)]",
+          "before:[background-size:28px_28px,44px_44px]",
+          "before:[background-position:0_0,14px_22px]",
           className,
         )}
         aria-hidden

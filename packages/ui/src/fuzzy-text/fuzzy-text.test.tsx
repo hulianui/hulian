@@ -41,6 +41,28 @@ describe("FuzzyText", () => {
     );
   });
 
+  it("color prop 落到 canvas 内联 CSS color（供 effect 解析 var() 为真颜色值）", () => {
+    const { container } = render(
+      <FuzzyText color="var(--color-chart-1)">x</FuzzyText>,
+    );
+    expect((container.firstElementChild as HTMLElement).style.color).toBe(
+      "var(--color-chart-1)",
+    );
+  });
+
+  it("默认 color 为 var(--color-foreground)，且 style.color 可覆盖 color prop", () => {
+    const { container: a } = render(<FuzzyText>x</FuzzyText>);
+    expect((a.firstElementChild as HTMLElement).style.color).toBe(
+      "var(--color-foreground)",
+    );
+    const { container: b } = render(
+      <FuzzyText color="red" style={{ color: "white" }}>
+        x
+      </FuzzyText>,
+    );
+    expect((b.firstElementChild as HTMLElement).style.color).toBe("white");
+  });
+
   it("不同 direction / color 参数下均能稳定渲染（不抛错）", () => {
     const { container } = render(
       <FuzzyText direction="both" color="var(--color-primary)" fontSize={64}>

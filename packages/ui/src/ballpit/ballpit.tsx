@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../lib/cn";
+import { fitToContainer, stepPhysics } from "./ballpit.physics";
 import type { BallpitProps } from "./ballpit.types";
 
 // 吸取自 React Bits Ballpit：一坑彩色小球受重力下落、撞墙回弹、彼此挤碰，
@@ -15,6 +16,9 @@ import type { BallpitProps } from "./ballpit.types";
 // 4. reduced-motion：useReducedMotion 不可用于"读后再决定建不建循环"——这里用 matchMedia 探测，
 //    reduced=true 时不启动 RAF 物理，渲染静态小球占位（DOM 仍在，不卸载内容）。
 // 5. canvas getContext 为 null（jsdom / 无 2D 支持）时静默降级，绝不抛错。
+// 6. 容器自适应（治窄卡抖动）：物理与容量约束抽到 ballpit.physics.ts 纯函数 ——
+//    球数/半径随容器面积自适应（球总面积 ≤ 容器 MAX_FILL），初始与每次 resize 都重约束；
+//    重叠分离只做位置校正（松弛 + slop），低速碰撞非弹性 + 触底静置，堆积可真正收敛。
 
 const DEFAULT_COLORS = [
   "var(--color-chart-1)",
@@ -30,6 +34,8 @@ interface Ball {
   vx: number;
   vy: number;
   r: number;
+  /** 半径单位样本 [0,1]：容器变化时按当前 fit 的 [rMin, rMax] 重映射，保持相对大小 */
+  u: number;
   color: string;
 }
 
@@ -103,20 +109,38 @@ export function Ballpit({
 
     const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-    const balls: Ball[] = Array.from(
-      { length: Math.max(0, Math.floor(count)) },
-      (_, i) => {
-        const r = rand(rMin, rMax);
-        return {
-          x: rand(r, Math.max(r, w - r)),
-          y: rand(r, Math.max(r, h - r)),
-          vx: rand(-60, 60),
-          vy: rand(-60, 60),
-          r,
-          color: palette[i % palette.length] ?? "#888",
-        };
-      },
-    );
+    // 球池：先建满额"候选球"（只定相对大小与颜色），实际激活多少由容器面积决定
+    const total = Math.max(0, Math.floor(count));
+    const balls: Ball[] = Array.from({ length: total }, (_, i) => ({
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      r: 0,
+      u: Math.random(),
+      color: palette[i % palette.length] ?? "#888",
+    }));
+    let active: Ball[] = [];
+
+    // 按当前容器尺寸重约束：半径/数量随面积自适应（初始与每次 resize 都走这里）
+    const applyFit = () => {
+      const fit = fitToContainer(total, rMin, rMax, w, h);
+      for (const b of balls) b.r = fit.rMin + b.u * (fit.rMax - fit.rMin);
+      // 新激活的球（初始 / 容器变大）随机落位
+      for (let i = active.length; i < fit.count; i++) {
+        const b = balls[i]!;
+        b.x = rand(b.r, Math.max(b.r, w - b.r));
+        b.y = rand(b.r, Math.max(b.r, h - b.r));
+        b.vx = rand(-60, 60);
+        b.vy = rand(-60, 60);
+      }
+      active = balls.slice(0, fit.count);
+      // 已有球 clamp 回新边界（只动位置，不注速度）
+      for (const b of active) {
+        b.x = Math.min(Math.max(b.x, b.r), Math.max(b.r, w - b.r));
+        b.y = Math.min(Math.max(b.y, b.r), Math.max(b.r, h - b.r));
+      }
+    };
 
     // 光标排斥球（容器内移动时激活）
     const pointer = { x: -1e4, y: -1e4, active: false };
@@ -143,6 +167,7 @@ export function Ballpit({
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      applyFit(); // 响应式宽度变化时重新约束球数/半径
     };
     setSize();
 
@@ -173,79 +198,22 @@ export function Ballpit({
         last = t;
         if (!visible) return;
 
-        // 积分：重力 + 阻尼
-        for (const b of balls) {
-          b.vy += gravity * dt;
-          b.vx *= 0.999;
-          b.x += b.vx * dt;
-          b.y += b.vy * dt;
-
-          // 墙壁回弹
-          if (b.x - b.r < 0) {
-            b.x = b.r;
-            b.vx = -b.vx * bounce;
-          } else if (b.x + b.r > w) {
-            b.x = w - b.r;
-            b.vx = -b.vx * bounce;
-          }
-          if (b.y - b.r < 0) {
-            b.y = b.r;
-            b.vy = -b.vy * bounce;
-          } else if (b.y + b.r > h) {
-            b.y = h - b.r;
-            b.vy = -b.vy * bounce;
-          }
-
-          // 光标排斥
-          if (pointer.active) {
-            const dx = b.x - pointer.x;
-            const dy = b.y - pointer.y;
-            const d2 = dx * dx + dy * dy;
-            const reach = POINTER_R + b.r;
-            if (d2 < reach * reach && d2 > 0.01) {
-              const d = Math.sqrt(d2);
-              const push = ((reach - d) / reach) * 1400;
-              b.vx += (dx / d) * push * dt;
-              b.vy += (dy / d) * push * dt;
-            }
-          }
-        }
-
-        // 球球弹性碰撞（O(n²)，count 限量内可接受）
-        for (let i = 0; i < balls.length; i++) {
-          const a = balls[i]!;
-          for (let j = i + 1; j < balls.length; j++) {
-            const c = balls[j]!;
-            const dx = c.x - a.x;
-            const dy = c.y - a.y;
-            const dist = Math.hypot(dx, dy);
-            const min = a.r + c.r;
-            if (dist > 0 && dist < min) {
-              const nx = dx / dist;
-              const ny = dy / dist;
-              const overlap = (min - dist) / 2;
-              a.x -= nx * overlap;
-              a.y -= ny * overlap;
-              c.x += nx * overlap;
-              c.y += ny * overlap;
-              // 沿法线方向交换部分动量
-              const rvx = c.vx - a.vx;
-              const rvy = c.vy - a.vy;
-              const sep = rvx * nx + rvy * ny;
-              if (sep < 0) {
-                const imp = -sep * bounce;
-                a.vx -= nx * imp;
-                a.vy -= ny * imp;
-                c.vx += nx * imp;
-                c.vy += ny * imp;
-              }
-            }
-          }
-        }
+        // 物理推进（纯函数：重力/墙壁/位置校正碰撞/速度上限/低速收敛，见 ballpit.physics.ts）
+        stepPhysics(active, {
+          dt,
+          w,
+          h,
+          gravity,
+          bounce,
+          pointer:
+            followCursor && pointer.active
+              ? { x: pointer.x, y: pointer.y, r: POINTER_R, strength: 1400 }
+              : null,
+        });
 
         // 绘制
         ctx.clearRect(0, 0, w, h);
-        for (const b of balls) {
+        for (const b of active) {
           // 轻微高光：径向渐变模拟球面光泽
           const grad = ctx.createRadialGradient(
             b.x - b.r * 0.35,

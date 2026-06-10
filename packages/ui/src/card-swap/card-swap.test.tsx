@@ -35,7 +35,7 @@ describe("CardSwap", () => {
     expect(card.style.transformStyle).toBe("preserve-3d");
   });
 
-  it("width/height 落到每张卡片内联样式", () => {
+  it("width/height 落到组件自有的槽位 wrapper（卡片填满 wrapper）", () => {
     const { container } = render(
       <CardSwap width={320} height={200}>
         <CardSwap.Card>A</CardSwap.Card>
@@ -43,8 +43,72 @@ describe("CardSwap", () => {
       </CardSwap>,
     );
     const card = container.querySelector("[class*='bg-surface']") as HTMLElement;
-    expect(card.style.width).toBe("320px");
-    expect(card.style.height).toBe("200px");
+    const wrapper = card.parentElement as HTMLElement;
+    expect(wrapper.style.width).toBe("320px");
+    expect(wrapper.style.height).toBe("200px");
+    // 负 margin 自居中由 wrapper 承担
+    expect(wrapper.style.marginLeft).toBe("-160px");
+    expect(wrapper.style.marginTop).toBe("-100px");
+    // 卡片本体填满槽位
+    expect(card.className).toContain("h-full");
+    expect(card.className).toContain("w-full");
+  });
+
+  it("children 是不转发 ref 的包装组件时，仍有组件自有 wrapper 承载定位（轮换不依赖 children 配合）", () => {
+    function Wrapped({ label }: { label: string }) {
+      return <CardSwap.Card>{label}</CardSwap.Card>;
+    }
+    const { container } = render(
+      <CardSwap width={300} height={180}>
+        <Wrapped label="A" />
+        <Wrapped label="B" />
+        <Wrapped label="C" />
+      </CardSwap>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    // 每个 child 外面都有一个组件自有的 absolute wrapper，宽高/居中 margin 齐备
+    const wrappers = Array.from(root.children) as HTMLElement[];
+    expect(wrappers.length).toBe(3);
+    for (const w of wrappers) {
+      expect(w.className).toContain("absolute");
+      expect(w.style.width).toBe("300px");
+      expect(w.style.marginLeft).toBe("-150px");
+    }
+  });
+
+  it("Fragment 包裹的多张卡被展开为多个槽位 wrapper（total 数对、轮换门控不被骗过）", () => {
+    const { container } = render(
+      <CardSwap width={300} height={180}>
+        <>
+          <CardSwap.Card>A</CardSwap.Card>
+          <CardSwap.Card>B</CardSwap.Card>
+          <CardSwap.Card>C</CardSwap.Card>
+        </>
+      </CardSwap>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    // Children.toArray 不拆 Fragment，组件须自行展开：3 张卡 = 3 个独立 wrapper
+    expect(root.children.length).toBe(3);
+    for (const w of Array.from(root.children) as HTMLElement[]) {
+      expect(w.className).toContain("absolute");
+      expect(w.style.width).toBe("300px");
+    }
+  });
+
+  it('placement="center" 按错位距离把整摞包围盒居中（默认仍为右下锚定）', () => {
+    const { container } = render(
+      <CardSwap placement="center" cardDistance={56} verticalDistance={64}>
+        <CardSwap.Card>A</CardSwap.Card>
+        <CardSwap.Card>B</CardSwap.Card>
+        <CardSwap.Card>C</CardSwap.Card>
+      </CardSwap>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).toContain("left-1/2");
+    expect(root.className).toContain("top-1/2");
+    expect(root.className).not.toContain("origin-bottom-right");
+    // spreadX = 2*56 = 112 → -56px；spreadY = 2*64 = 128 → +64px
+    expect(root.style.transform).toBe("translate(calc(-50% - 56px), calc(-50% + 64px))");
   });
 
   it("onCardClick 透传原始索引", () => {

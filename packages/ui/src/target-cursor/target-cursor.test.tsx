@@ -4,14 +4,25 @@ import { TargetCursor } from "./target-cursor";
 
 // jsdom 安全：无真实 rAF 视觉，仅断言根节点渲染、token/动画类、结构、prop 透传。
 describe("TargetCursor", () => {
-  it("渲染 fixed 指针图层根 + 圆点 + 四角，不抛错", () => {
+  it("默认容器作用域：根为 absolute 指针图层 + 圆点 + 四角，初始隐藏，不抛错", () => {
     const { container } = render(<TargetCursor />);
     const root = container.firstElementChild as HTMLElement;
     expect(root).not.toBeNull();
-    expect(root.className).toContain("fixed");
+    expect(root.className).toContain("absolute");
+    expect(root.className).not.toContain("fixed");
     expect(root.className).toContain("pointer-events-none");
+    // 容器作用域初始隐藏，指针进入容器才现身
+    expect(root.style.opacity).toBe("0");
     // 圆点 1 + 四角 4 = 5 个子 div
     expect(root.querySelectorAll(":scope > div").length).toBe(5);
+  });
+
+  it("fullScreen 模式：根为 fixed 全屏图层且不强制初始隐藏", () => {
+    const { container } = render(<TargetCursor fullScreen />);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).toContain("fixed");
+    expect(root.className).not.toContain("absolute z-50");
+    expect(root.style.opacity).toBe("");
   });
 
   it("自转动画类 + 目标态暂停 + motion-reduce 禁用类", () => {

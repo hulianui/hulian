@@ -125,6 +125,31 @@ const FRAG = /* glsl */ `
 
 const DEFAULT_COLOR = "var(--color-chart-1)";
 
+// ---------------------------------------------------------------------------
+// CSS 颜色 → [r, g, b]（0–1）：离屏 1×1 canvas2d 解析（hex/named/rgb/oklch 全格式）。
+// 注意：ogl 的 Color 只认 hex/named/rgb，遇 var(--…)/oklch() 只 warn 不 throw 且返回
+// (0,0,0) —— 黑色在 mix-blend-mode:screen 下完全不可见（文档站"纯黑无拖尾"根因）。
+// 故颜色解析一律走 canvas2d（与 ripple-grid / plasma 同模式），不走 ogl Color。
+// ---------------------------------------------------------------------------
+function cssColorToRgb01(css: string): [number, number, number] | null {
+  try {
+    const off = document.createElement("canvas");
+    off.width = 1;
+    off.height = 1;
+    const ctx = off.getContext("2d");
+    if (!ctx) return null;
+    // 哨兵：无效颜色赋值会被 canvas 静默忽略（fillStyle 保持原值），先放哨兵即可甄别。
+    ctx.fillStyle = "#ff00fe";
+    ctx.fillStyle = css;
+    if (ctx.fillStyle === "#ff00fe") return null;
+    ctx.fillRect(0, 0, 1, 1);
+    const d = ctx.getImageData(0, 0, 1, 1).data;
+    return [d[0]! / 255, d[1]! / 255, d[2]! / 255];
+  } catch {
+    return null;
+  }
+}
+
 export function GhostCursor({
   trailLength = 32,
   inertia = 0.5,
@@ -153,7 +178,7 @@ export function GhostCursor({
 
   const { ref, reduced } = useGlCanvas(
     ({ ogl, canvas }) => {
-      const { Renderer, Program, Mesh, Triangle, Vec2, Vec3, Color } = ogl;
+      const { Renderer, Program, Mesh, Triangle, Vec2, Vec3 } = ogl;
 
       const renderer = new Renderer({
         canvas,
@@ -165,16 +190,18 @@ export function GhostCursor({
       const gl = renderer.gl;
       gl.clearColor(0, 0, 0, 0);
 
-      // 解析颜色字符串 → RGB float。var(--color-…) 等无法解析的值兜底蓝紫。
+      // 解析颜色字符串 → RGB float：
+      // var(--…) 先从挂载中的 canvas 计算样式取 token 真值（随明暗主题），
+      // 真值/直接值（hex/rgb/oklch/named）再经离屏 canvas2d 转 rgb。
+      // 全部失败兜底原版默认蓝紫（≈ #B497CF）。
       const parseColor = (input: string): [number, number, number] => {
-        try {
-          const c = new Color(input);
-          if (Number.isFinite(c.r)) return [c.r, c.g, c.b];
-        } catch {
-          /* fallthrough */
+        let css = input.trim();
+        const varMatch = /^var\(\s*(--[\w-]+)\s*(?:,\s*([^)]+))?\)$/.exec(css);
+        if (varMatch) {
+          const resolved = getComputedStyle(canvas).getPropertyValue(varMatch[1]!).trim();
+          css = resolved || (varMatch[2]?.trim() ?? "");
         }
-        // ogl Color 无法解析 var(--…) / oklch() → 退原版默认蓝紫（≈ #B497CF）安全兜底。
-        return [0.71, 0.59, 0.81];
+        return (css ? cssColorToRgb01(css) : null) ?? [0.71, 0.59, 0.81];
       };
 
       const baseColor = parseColor(colorRef.current);
@@ -233,22 +260,41 @@ export function GhostCursor({
       const FADE_DELAY = 800; // ms 停止后多久开始渐隐
       const FADE_DURATION = 1200; // ms 渐隐时长
 
+      // 监听挂 window（同 splash-cursor 模式）：根容器是 pointer-events-none 的装饰
+      // overlay，canvas 永远不会成为事件目标——挂 canvas 上的监听一次都不会触发。
+      // 在 window 层收事件后按 canvas rect 判定进出 + 换算 UV。
       const onPointerMove = (e: PointerEvent) => {
         const rect = canvas.getBoundingClientRect();
-        const x = Math.min(1, Math.max(0, (e.clientX - rect.left) / Math.max(1, rect.width)));
-        const y = Math.min(1, Math.max(0, 1 - (e.clientY - rect.top) / Math.max(1, rect.height)));
-        target[0] = x;
-        target[1] = y;
+        const inside =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+        if (!inside) {
+          if (pointerActive) {
+            pointerActive = false;
+            lastMove = performance.now();
+          }
+          return;
+        }
+        target[0] = Math.min(1, Math.max(0, (e.clientX - rect.left) / Math.max(1, rect.width)));
+        target[1] = Math.min(
+          1,
+          Math.max(0, 1 - (e.clientY - rect.top) / Math.max(1, rect.height)),
+        );
         pointerActive = true;
         lastMove = performance.now();
       };
-      const onPointerLeave = () => {
-        pointerActive = false;
-        lastMove = performance.now();
+      // 指针离开整个窗口（relatedTarget 为空）→ 视为离场，开始惯性滑行 + 渐隐。
+      const onPointerOut = (e: PointerEvent) => {
+        if (!e.relatedTarget) {
+          pointerActive = false;
+          lastMove = performance.now();
+        }
       };
 
-      canvas.addEventListener("pointermove", onPointerMove);
-      canvas.addEventListener("pointerleave", onPointerLeave);
+      window.addEventListener("pointermove", onPointerMove, { passive: true });
+      window.addEventListener("pointerout", onPointerOut, { passive: true });
 
       const render = (t: number) => {
         // 同步运行时 props。
@@ -299,8 +345,8 @@ export function GhostCursor({
       };
 
       const dispose = () => {
-        canvas.removeEventListener("pointermove", onPointerMove);
-        canvas.removeEventListener("pointerleave", onPointerLeave);
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerout", onPointerOut);
       };
 
       return { render, resize, dispose };

@@ -84,6 +84,31 @@ describe("OrbitImages", () => {
     expect((path?.getAttribute("d") ?? "").length).toBeGreaterThan(0);
   });
 
+  it("缩放层固定 baseWidth 设计画布（jsdom 量不到宽度时回退 scale(1) 仍可见）", () => {
+    const { container } = render(
+      <OrbitImages items={sample(2)} baseWidth={1400} />,
+    );
+    const scaleLayer = rootOf(container).firstElementChild as HTMLElement;
+    expect(scaleLayer.className).toContain("origin-top-left");
+    expect(scaleLayer.style.width).toBe("1400px");
+    expect(scaleLayer.style.height).toBe("1400px");
+    // jsdom offsetWidth=0 → 回退 scale(1)，缩放层不得停留在隐藏态
+    expect(scaleLayer.style.transform).toBe("scale(1)");
+    expect(scaleLayer.style.visibility).not.toBe("hidden");
+  });
+
+  it("itemSize 语义是最终 CSS 像素：scale=1 时子项盒尺寸直出 itemSize", () => {
+    const { container } = render(
+      <OrbitImages items={sample(2)} itemSize={48} />,
+    );
+    const item = orbitItems(container)[0];
+    expect(item.style.width).toBe("48px");
+    expect(item.style.height).toBe("48px");
+    // 子项锚定缩放层原点，由 offset-anchor 把中心吸到路径点上
+    expect(item.style.left).toBe("0px");
+    expect(item.style.top).toBe("0px");
+  });
+
   it("centerContent 渲染在 z-10 居中层", () => {
     const { getByText } = render(
       <OrbitImages items={sample(2)} centerContent={<b>LOGO</b>} />,

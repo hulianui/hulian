@@ -6,8 +6,10 @@ export type PixelSnowVariant = "square" | "round" | "snowflake";
 export interface PixelSnowProps {
   /**
    * 雪花主色，CSS 颜色字符串（hex / oklch / rgb / var(--…) 均可）。
-   * 默认从 CSS 变量 `--color-foreground` 取主题前景色，实现明暗自适应
-   * （深色底吃近白前景，浅色底吃近黑前景）。
+   * 默认按画布身后实际底色亮度自适应取色：优先 `--color-foreground` token；
+   * 若前景与底色撞色（如亮色主题下放进深色容器，前景近黑画在深底上不可见）
+   * 则自动取反改用 `--color-background` token 或纯白/纯黑兜底，
+   * 保证深底亮雪、浅底暗雪，任意主题组合下都清晰可见。
    */
   color?: string;
 
@@ -77,7 +79,7 @@ export interface PixelSnowProps {
 
   /**
    * reduced-motion / 无 WebGL 时渲染的静态替代内容。
-   * 默认：吃 foreground token 的静态点阵雪花装饰。
+   * 默认：白点 + difference 混合的静态点阵雪花装饰（对任意底色自动取反）。
    */
   fallback?: ReactNode;
 }

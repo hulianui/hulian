@@ -2,8 +2,10 @@ import type { CSSProperties, ReactNode } from "react";
 
 export interface BallpitProps {
   /**
-   * 小球数量，默认 80。
-   * 越多越密集越热闹，但碰撞为 O(n²)，建议 ≤ 200。
+   * 小球数量上限，默认 80。
+   * 实际生效数量随容器面积自适应：球总面积 ≤ 容器面积约 42%，
+   * 窄小容器会先等比缩小球径、仍超则减少数量（resize 时同样重新约束），
+   * 保证再窄的卡片也不会超填充抖动。碰撞为 O(n²)，建议 ≤ 200。
    */
   count?: number;
   /**
@@ -24,7 +26,8 @@ export interface BallpitProps {
   bounce?: number;
   /**
    * 小球半径范围 [最小, 最大]（px），默认 [10, 26]。
-   * 每个球在该范围内随机取半径。
+   * 每个球在该范围内随机取半径；另受容器约束 ——
+   * 单球半径不超过容器短边约 22%，整体超填充时按面积占用率等比缩小。
    */
   sizeRange?: [number, number];
   /**

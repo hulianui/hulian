@@ -10,8 +10,10 @@ export interface ScrollFloatProps
   /** 要逐字符滚动浮现的文本（仅字符串，非字符串会被忽略为空） */
   children: string;
   /**
-   * 自定义滚动容器引用。默认绑定标题自身相对视口的滚动进度；
-   * 传入可滚动祖先（如弹层/抽屉内的滚动区）时，进度改按该容器测量。
+   * 自定义滚动容器引用。不传时自动探测：优先绑定最近的可滚动祖先
+   * （overflow auto/scroll 且内容溢出，如弹层/抽屉/画廊预览内的滚动区），
+   * 其次绑定视口；若完全没有滚动上下文，则降级为进入视口后自动浮现，
+   * 文字不会卡在 0 进度的隐形初始态。
    */
   scrollContainerRef?: RefObject<HTMLElement | null>;
   /**

@@ -2,12 +2,18 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { FuzzyText } from "./fuzzy-text";
 
-/** 展示用深色底容器，让噪点字效在高对比下清晰可见 */
+/**
+ * 展示用深色底容器，让噪点字效在高对比下清晰可见。
+ * data-theme="dark" 把子树 token 锁定为暗色主题值：FuzzyText 默认的
+ * var(--color-foreground)（及 chart-* token）在此作用域内解析为亮色，
+ * 亮色主题浏览页面时也不会出现深字撞深底。
+ */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
     <div
+      data-theme="dark"
       className="flex min-h-44 w-full max-w-xl items-center justify-center overflow-hidden rounded-xl border border-border p-6"
-      style={{ background: "oklch(0.14 0.02 255)" }}
+      style={{ background: "var(--color-bg)" }}
     >
       {children}
     </div>
@@ -34,9 +40,8 @@ export const fuzzyTextShowcase: ShowcaseSpec = {
       name: "default（默认横向扫描）",
       render: () => (
         <Stage>
-          <FuzzyText fontSize="clamp(2rem, 8vw, 5rem)" style={{ color: "white" }}>
-            瑚琏
-          </FuzzyText>
+          {/* 不显式传色：默认 var(--color-foreground) 在 Stage 的 dark 作用域内解析为亮色 */}
+          <FuzzyText fontSize="clamp(2rem, 8vw, 5rem)">瑚琏</FuzzyText>
         </Stage>
       ),
     },
@@ -95,7 +100,6 @@ export const fuzzyTextShowcase: ShowcaseSpec = {
         fuzzRange={p.fuzzRange as number}
         direction={p.direction as "horizontal" | "vertical" | "both"}
         enableHover={p.enableHover as boolean}
-        style={{ color: "white" }}
       >
         瑚琏
       </FuzzyText>

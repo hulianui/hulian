@@ -81,19 +81,32 @@ const FRAG = /* glsl */ `
 const DEFAULT_COLOR = "var(--color-chart-1)";
 const DEFAULT_COLOR_TWO = "var(--color-chart-4)";
 
-/** 把任意 CSS 颜色字符串经探针元素解析为归一化 RGB（0–1）三元组。
- *  探针挂进真实容器，var(--…) token 才能按级联解析；失败回退到一个中性紫蓝色。 */
+/** 把任意 CSS 颜色字符串解析为归一化 RGB（0–1）三元组。
+ *  两步走（库内 WebGL 件通用做法，参见 ripple-grid 等）：
+ *  ① 探针挂进真实容器读 getComputedStyle().color —— var(--…) token 按级联解析；
+ *     注意：瑚琏 token 是 oklch，现代浏览器计算值原样返回 "oklch(L C H)"，
+ *     不能用正则按 "rgb(r,g,b)" 拆数字（会把 L/C/H 当 0–255 通道 → 近黑）。
+ *  ② 计算值喂离屏 1×1 canvas2d 的 fillStyle → getImageData 取真实 RGB 字节，
+ *     hex / rgb / oklch / color() 全格式通吃。失败回退到一个中性紫蓝色。 */
 function resolveRgb(color: string, host: HTMLElement): [number, number, number] {
   try {
     const probe = document.createElement("span");
     probe.style.color = color;
     probe.style.display = "none";
     host.appendChild(probe);
-    const computed = getComputedStyle(probe).color; // "rgb(r, g, b)" / "rgba(...)"
+    const computed = getComputedStyle(probe).color; // "rgb(…)" 或 "oklch(…)" 等计算值
     host.removeChild(probe);
-    const m = computed.match(/[\d.]+/g);
-    if (m && m.length >= 3) {
-      return [Number(m[0]) / 255, Number(m[1]) / 255, Number(m[2]) / 255];
+    if (computed) {
+      const off = document.createElement("canvas");
+      off.width = 1;
+      off.height = 1;
+      const ctx = off.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = computed;
+        ctx.fillRect(0, 0, 1, 1);
+        const d = ctx.getImageData(0, 0, 1, 1).data;
+        return [d[0]! / 255, d[1]! / 255, d[2]! / 255];
+      }
     }
   } catch {
     /* 解析失败：落到默认色 */

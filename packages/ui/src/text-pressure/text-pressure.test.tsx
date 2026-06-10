@@ -34,6 +34,16 @@ describe("TextPressure", () => {
     expect(container.querySelector("style")).toBeNull();
   });
 
+  it("span 钉左侧缩放原点且禁 flex 收缩（盒宽跟随防叠字的结构前提）", () => {
+    const { container } = render(<TextPressure text="Ab" />);
+    const span = container.querySelector("h1 > span")!;
+    const cls = span.getAttribute("class")!;
+    // scaleX 模拟 wdth 时盒宽逐帧喂给 style.width，origin 必须钉左、盒子不许被 flex 压缩，
+    // 否则画出来的字形与布局盒错位 → 相邻字符重叠。
+    expect(cls).toContain("origin-left");
+    expect(cls).toContain("flex-none");
+  });
+
   it("传入 fontUrl 时注入 @font-face（本地/自托管字体）", () => {
     const { container } = render(
       <TextPressure text="Q" fontFamily="MyVF" fontUrl="/fonts/my.woff2" />,
