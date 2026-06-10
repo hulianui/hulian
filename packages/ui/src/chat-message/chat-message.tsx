@@ -60,7 +60,8 @@ export function ChatMessage({
         )}
         <div
           className={cn(
-            "w-fit max-w-prose rounded-[var(--radius)] px-3.5 py-2.5 text-sm leading-relaxed",
+            // prose 上限同时受可用宽度约束：窄屏（移动端）气泡不得溢出消息列
+            "w-fit max-w-[min(65ch,100%)] rounded-[var(--radius)] px-3.5 py-2.5 text-sm leading-relaxed",
             isUser
               ? "rounded-tr-sm bg-primary text-primary-foreground"
               : "rounded-tl-sm bg-surface text-foreground",
