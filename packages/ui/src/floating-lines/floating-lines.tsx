@@ -217,7 +217,10 @@ export function FloatingLines({
         typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
         2,
       );
-      const renderer = new Renderer({ canvas, alpha: false, dpr });
+      // alpha: true —— 透明画布让线条叠加在页面背景上（React Bits 原版假设深色页用不透明
+      // 黑底；瑚琏组件须明暗主题通用，浅色页面会被不透明黑底整块涂黑）。shader 已输出
+      // alpha=length(col)，线外区域 alpha≈0，透明合成正确，同 line-waves。
+      const renderer = new Renderer({ canvas, alpha: true, dpr });
       const gl = renderer.gl;
 
       // 解析渐变色带（最多 MAX_STOPS 段），不足处用最后一段补齐。
