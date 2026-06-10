@@ -35,7 +35,7 @@ export function ThreadList({
                 onClick={() => onSelect?.(it.id)}
                 className={cn(
                   "w-full rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-surface-hover",
-                  onDelete && "pr-8",
+                  onDelete && "pr-11",
                   it.active && "bg-surface-hover",
                 )}
               >
@@ -59,7 +59,8 @@ export function ThreadList({
                     e.stopPropagation();
                     onDelete(it.id);
                   }}
-                  className="absolute right-1.5 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-muted/60 transition-colors hover:bg-surface-hover hover:text-danger"
+                  // 视觉保持 size-6，伪元素外扩 10px → 44px 触控命中区（移动端拇指友好）
+                  className="absolute right-1.5 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-muted/60 transition-colors before:absolute before:-inset-2.5 before:content-[''] hover:bg-surface-hover hover:text-danger"
                 >
                   <X className="size-3.5" aria-hidden />
                 </button>
