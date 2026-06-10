@@ -95,7 +95,10 @@ float wave(vec2 uv, float offset, vec2 screenUv, vec2 mouseUv, float shouldBend)
   }
 
   float m = uv.y - y;
-  return 0.0175 / max(abs(m) + 0.01, 1e-3) + 0.01;
+  // 注：不加原版的 +0.01 环境底光——它会在整幅画布积累成半透明薄雾，
+  // 浅色主题下表现为脏灰罩（深色页才显得"有氛围"）。光晕系数较原版收细
+  // （0.0175→0.012），长尾叠加是雾感的主要来源。
+  return 0.012 / max(abs(m) + 0.008, 1e-3);
 }
 
 void main() {
@@ -146,7 +149,11 @@ void main() {
 
   // alpha 按线条亮度输出（同 line-waves 范式）：线外区域 alpha≈0 透明露出页面背景，
   // 明暗主题通用。原版 alpha=1.0 会让整个画布成不透明黑底（仅适配深色页）。
-  // length(col) ≥ 各分量 → col 天然满足 premultiplied 约束，浏览器合成正确。
+  // 低强度平滑截断：1/x 光晕长尾在大面积上叠成薄雾（浅色底显脏灰），cut 同乘 col 与 alpha
+  // 保持 premultiplied 约束（col ≤ alpha 分量恒成立）。
+  // 幂次 tone-map：压低低强度雾区、保留亮核（浅色底上雾区即"脏灰"）
+  col = pow(col, vec3(1.5)) * 1.35;
+  col *= smoothstep(0.01, 0.08, length(col));
   float alpha = clamp(length(col), 0.0, 1.0);
   gl_FragColor = vec4(col, alpha);
 }
