@@ -206,6 +206,7 @@ export * from "./prompt-input";
 export * from "./thinking-block";
 export * from "./tool-call";
 export * from "./agent-plan";
+export * from "./dossier";
 export * from "./task-runner";
 export * from "./prompt-suggestions";
 export * from "./message-actions";
