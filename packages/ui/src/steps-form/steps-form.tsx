@@ -22,8 +22,11 @@ export function StepsForm({
   const [internal, setInternal] = useState(defaultCurrent);
   const current = currentProp ?? internal;
   const [loading, setLoading] = useState(false);
+  // onStepValidate 异步进行中：前进按钮 loading（防重复点击/双提交）。
+  const [validating, setValidating] = useState(false);
 
   const last = steps.length - 1;
+  const step = steps[current];
 
   const setCurrent = (n: number) => {
     if (currentProp === undefined) setInternal(n);
@@ -49,11 +52,18 @@ export function StepsForm({
   };
 
   // 无 onStepValidate → 同步推进（状态即时更新）；有 → 经异步校验，通过才推进。
+  // 校验期间 validating=true（前进按钮 loading）；reject 视同 false（错误反馈交消费者）。
   const runGuarded = (action: () => void) => {
     if (onStepValidate) {
-      Promise.resolve(onStepValidate(current)).then((ok) => {
-        if (ok) action();
-      });
+      setValidating(true);
+      Promise.resolve(onStepValidate(current))
+        .then((ok) => {
+          if (ok) action();
+        })
+        .catch(() => {
+          /* reject = 阻止前进 */
+        })
+        .finally(() => setValidating(false));
     } else {
       action();
     }
@@ -69,21 +79,25 @@ export function StepsForm({
         current={current}
         items={steps.map((s) => ({ title: s.title, description: s.description }))}
       />
-      <div>{steps[current]?.content}</div>
-      <div className="flex gap-2">
-        {current > 0 && (
-          <Button variant="outline" onClick={prev} disabled={loading}>
-            {loc.prev}
-          </Button>
-        )}
-        {current < last ? (
-          <Button onClick={next}>{loc.next}</Button>
-        ) : (
-          <Button onClick={finish} loading={loading}>
-            {loc.submit}
-          </Button>
-        )}
-      </div>
+      <div>{step?.content}</div>
+      {step?.showNav !== false && (
+        <div className="flex gap-2">
+          {current > 0 && (
+            <Button variant="outline" onClick={prev} disabled={loading || validating}>
+              {loc.prev}
+            </Button>
+          )}
+          {current < last ? (
+            <Button onClick={next} disabled={step?.nextDisabled} loading={validating}>
+              {step?.nextText ?? loc.next}
+            </Button>
+          ) : (
+            <Button onClick={finish} disabled={step?.nextDisabled} loading={loading || validating}>
+              {step?.nextText ?? loc.submit}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

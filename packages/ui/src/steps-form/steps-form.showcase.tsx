@@ -63,9 +63,70 @@ function Demo() {
   );
 }
 
+/** per-step 导航控制：nextDisabled 闸门 + nextText 自定义文案 + 末步 showNav=false 自带操作。 */
+function NavControlDemo() {
+  const [agreed, setAgreed] = useState(false);
+  const [current, setCurrent] = useState(0);
+  return (
+    <div className="w-full max-w-xl">
+      <StepsForm
+        current={current}
+        onCurrentChange={setCurrent}
+        onStepValidate={async (step) => {
+          // 模拟异步校验/提交：pending 期间前进按钮 loading
+          if (step === 1) await new Promise((res) => setTimeout(res, 800));
+          return true;
+        }}
+        steps={[
+          {
+            title: "确认协议",
+            nextDisabled: !agreed,
+            content: (
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+                我已阅读并同意导入协议（勾选后才能继续）
+              </label>
+            ),
+          },
+          {
+            title: "执行导入",
+            nextText: "开始导入",
+            content: <p className="text-sm text-muted">点击「开始导入」触发异步校验，期间按钮 loading。</p>,
+          },
+          {
+            title: "完成",
+            showNav: false,
+            content: (
+              <div className="flex flex-col gap-3 text-sm">
+                <p>导入完成（本步 showNav=false，导航由内容自带）。</p>
+                <button
+                  type="button"
+                  className="self-start text-primary underline"
+                  onClick={() => {
+                    setAgreed(false);
+                    setCurrent(0);
+                  }}
+                >
+                  再来一遍
+                </button>
+              </div>
+            ),
+          },
+        ]}
+      />
+    </div>
+  );
+}
+
 export const stepsFormShowcase: ShowcaseSpec = {
   controls: [],
-  states: [{ name: "分步表单 · 逐步校验 + 跨步保值 + 提交", render: () => <Demo /> }],
+  states: [
+    { name: "分步表单 · 逐步校验 + 跨步保值 + 提交", render: () => <Demo /> },
+    {
+      name: "per-step 导航控制 · nextDisabled / nextText / showNav=false + 校验 loading",
+      render: () => <NavControlDemo />,
+    },
+  ],
   renderWithProps: () => <Demo />,
   toCode: () =>
     `<StepsForm
