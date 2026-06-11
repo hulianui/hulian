@@ -28,9 +28,12 @@ export function ConfirmCard({
         <Button size="sm" disabled={acted !== null} onClick={onConfirm}>
           {acted === "confirmed" ? "已确认" : confirmText}
         </Button>
-        <Button size="sm" variant="ghost" disabled={acted !== null} onClick={onEdit}>
-          {acted === "edited" ? "修改中" : editText}
-        </Button>
+        {/* 单动作场景（如仅「去充值」）：不传 onEdit 即不渲染修改钮，避免出现无响应的死按钮 */}
+        {onEdit && (
+          <Button size="sm" variant="ghost" disabled={acted !== null} onClick={onEdit}>
+            {acted === "edited" ? "修改中" : editText}
+          </Button>
+        )}
       </div>
     </div>
   );
