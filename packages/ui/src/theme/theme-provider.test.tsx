@@ -31,4 +31,19 @@ describe("ThemeProvider", () => {
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
     expect(localStorage.getItem("hulian-theme")).toBe("dark");
   });
+
+  it("forcedTheme overrides stored preference and ignores toggle", async () => {
+    localStorage.setItem("hulian-theme", "dark");
+    render(
+      <ThemeProvider defaultSetting="dark" forcedTheme="light">
+        <Probe />
+      </ThemeProvider>,
+    );
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    expect(screen.getByText("t").getAttribute("data-theme-value")).toBe("light");
+    await act(async () => {
+      screen.getByText("t").click();
+    });
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+  });
 });
