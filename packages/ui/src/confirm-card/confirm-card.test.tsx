@@ -8,11 +8,16 @@ const items = [
 ];
 
 describe("ConfirmCard", () => {
-  it("渲染条目与两个动作", () => {
-    const { container, getByText } = render(<ConfirmCard items={items} />);
+  it("渲染条目与两个动作（onEdit 提供时）", () => {
+    const { container, getByText } = render(<ConfirmCard items={items} onEdit={() => {}} />);
     expect(container.textContent).toContain("林晚晴");
     expect(getByText("确认无误")).toBeTruthy();
     expect(getByText("需要修改")).toBeTruthy();
+  });
+  it("不传 onEdit 时不渲染修改钮（单动作场景）", () => {
+    const { container, queryByText } = render(<ConfirmCard items={items} />);
+    expect(queryByText("需要修改")).toBeNull();
+    expect(container.querySelectorAll("button").length).toBe(1);
   });
   it("点击触发回调", () => {
     const onConfirm = vi.fn();
