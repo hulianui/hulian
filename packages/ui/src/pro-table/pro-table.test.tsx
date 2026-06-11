@@ -277,3 +277,142 @@ describe("ProTable 托管模式", () => {
     expect(queryByRole("combobox")).toBeNull();
   });
 });
+
+describe("ProTable 托管模式 · cursor 分页", () => {
+  const cols: ColumnDef<Row, any>[] = [
+    { accessorKey: "id", header: "工号" },
+    { accessorKey: "name", header: "姓名" },
+  ];
+  // 两页数据：第 1 页（cursor=null）→ nextCursor "c1"；第 2 页（cursor="c1"）→ 末页。
+  const twoPages = (p: ProTableRequestParams) =>
+    p.cursor === "c1"
+      ? Promise.resolve({ data: [{ id: 2, name: "乙" }], nextCursor: null, hasMore: false })
+      : Promise.resolve({ data: [{ id: 1, name: "甲" }], nextCursor: "c1", hasMore: true });
+
+  it("首次请求 cursor=null；渲染上一页/下一页按钮对，不渲染 total 文案与数字分页", async () => {
+    const request = vi.fn(twoPages);
+    const { getByText, queryByText, queryByLabelText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        paginationMode="cursor"
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(request.mock.calls[0][0]).toMatchObject({ page: 1, cursor: null });
+    expect(getByText("上一页")).toBeTruthy();
+    expect(getByText("下一页")).toBeTruthy();
+    expect(queryByText(/共 \d+ 条/)).toBeNull();
+    expect(queryByLabelText("第 1 页")).toBeNull(); // 数字 Pagination 不渲染
+    // 第 1 页上一页禁用，有下一页可点
+    expect((getByText("上一页") as HTMLButtonElement).closest("button")!.disabled).toBe(true);
+    expect((getByText("下一页") as HTMLButtonElement).closest("button")!.disabled).toBe(false);
+  });
+
+  it("下一页推进游标、上一页弹栈回退", async () => {
+    const request = vi.fn(twoPages);
+    const { getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        paginationMode="cursor"
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByText("下一页"));
+    await waitFor(() => expect(getByText("乙")).toBeTruthy());
+    expect(request.mock.calls.at(-1)![0]).toMatchObject({ page: 2, cursor: "c1" });
+    // 末页：下一页禁用、上一页可用
+    expect(getByText("下一页").closest("button")!.disabled).toBe(true);
+    expect(getByText("上一页").closest("button")!.disabled).toBe(false);
+    fireEvent.click(getByText("上一页"));
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(request.mock.calls.at(-1)![0]).toMatchObject({ page: 1, cursor: null });
+  });
+
+  it("hasMore 缺省时按 nextCursor != null 推断", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({
+      data: [{ id: 1, name: "甲" }],
+      nextCursor: null,
+    }));
+    const { getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        paginationMode="cursor"
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(getByText("下一页").closest("button")!.disabled).toBe(true);
+  });
+
+  it("查询条件变化重置游标栈回第 1 页", async () => {
+    const request = vi.fn(twoPages);
+    const { getByText, getByLabelText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        paginationMode="cursor"
+        getRowId={(r) => String(r.id)}
+        search={{ fields: [{ name: "name", label: "姓名" }], collapsible: false }}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByText("下一页"));
+    await waitFor(() => expect(getByText("乙")).toBeTruthy());
+    fireEvent.change(getByLabelText("姓名"), { target: { value: "甲" } });
+    fireEvent.click(getByText("查询"));
+    await waitFor(() =>
+      expect(request.mock.calls.at(-1)![0]).toMatchObject({
+        page: 1,
+        cursor: null,
+        filters: { name: "甲" },
+      }),
+    );
+  });
+
+  it("表头排序变化重置游标栈回第 1 页", async () => {
+    const request = vi.fn(twoPages);
+    const { getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        paginationMode="cursor"
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByText("下一页"));
+    await waitFor(() => expect(getByText("乙")).toBeTruthy());
+    fireEvent.click(getByText("姓名"));
+    await waitFor(() =>
+      expect(request.mock.calls.at(-1)![0]).toMatchObject({
+        page: 1,
+        cursor: null,
+        sort: { field: "name", order: "asc" },
+      }),
+    );
+  });
+
+  it("cursor 模式渲染 pageSizeOptions 切换器（显示当前每页条数）", async () => {
+    // 交互级（选项点选→重置栈）在 jsdom 不可靠（Base UI Select 先例皆用受控 open），
+    // 重置语义已由 filter/sort 两条覆盖，此处验切换器在 cursor footer 可用。
+    const request = vi.fn(twoPages);
+    const { getByText, getByRole } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        paginationMode="cursor"
+        defaultPageSize={10}
+        pageSizeOptions={[10, 20]}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(request.mock.calls[0][0]).toMatchObject({ pageSize: 10, cursor: null });
+    expect(getByRole("combobox").textContent).toContain("10 条/页");
+  });
+});

@@ -183,10 +183,43 @@ function Managed() {
   );
 }
 
+// cursor 分页托管模式：request 入参带 cursor、返回 { data, nextCursor, hasMore }，
+// 底部为「上一页/下一页」按钮对（keyset 分页无 total）。此处用数组下标模拟服务端游标。
+function CursorManaged() {
+  const request = async (p: ProTableRequestParams) => {
+    const name = String(p.filters.name ?? "").trim();
+    const rows = ALL.filter((r) => (name ? r.name.includes(name) : true));
+    const start = p.cursor == null ? 0 : Number(p.cursor);
+    const page = rows.slice(start, start + p.pageSize);
+    const next = start + p.pageSize;
+    await new Promise((r) => setTimeout(r, 300));
+    return {
+      data: page,
+      nextCursor: next < rows.length ? String(next) : null,
+      hasMore: next < rows.length,
+    };
+  };
+  return (
+    <div className="w-full">
+      <ProTable<Row>
+        title="cursor 分页（上一页/下一页 · 无 total）"
+        columns={columns}
+        request={request}
+        paginationMode="cursor"
+        defaultPageSize={8}
+        pageSizeOptions={[8, 16, 32]}
+        getRowId={(r) => String(r.id)}
+        search={{ fields: searchFields.slice(0, 1), collapsible: false, columns: 3 }}
+      />
+    </div>
+  );
+}
+
 export const proTableShowcase: ShowcaseSpec = {
   controls: [],
   states: [
     { name: "托管模式（服务端 request + 批量）", render: () => <Managed /> },
+    { name: "cursor 分页托管模式（上一页/下一页）", render: () => <CursorManaged /> },
     { name: "完整（查询区 + 工具栏 + 行选择 + 分页）", render: () => <Demo /> },
     { name: "精简（紧凑密度 · 无查询区）", render: () => <Minimal /> },
   ],

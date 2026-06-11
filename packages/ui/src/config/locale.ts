@@ -26,6 +26,10 @@ export interface Locale {
     clearSelection: string;
     /** 每页条数选项文案（参数化，如「10 条/页」）。 */
     pageSize: (count: number) => string;
+    /** cursor 分页模式：上一页按钮。 */
+    prevPage: string;
+    /** cursor 分页模式：下一页按钮。 */
+    nextPage: string;
   };
   adminLayout: {
     collapse: string;
@@ -84,6 +88,8 @@ export const zhCN: Locale = {
     selected: (n) => `已选 ${n} 项`,
     clearSelection: "清空",
     pageSize: (n) => `${n} 条/页`,
+    prevPage: "上一页",
+    nextPage: "下一页",
   },
   adminLayout: {
     collapse: "收起侧栏",
@@ -142,6 +148,8 @@ export const enUS: Locale = {
     selected: (n) => `${n} selected`,
     clearSelection: "Clear",
     pageSize: (n) => `${n} / page`,
+    prevPage: "Previous",
+    nextPage: "Next",
   },
   adminLayout: {
     collapse: "Collapse",

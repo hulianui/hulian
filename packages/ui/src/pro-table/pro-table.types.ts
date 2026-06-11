@@ -35,18 +35,31 @@ export interface ProTableSort {
   order: "asc" | "desc";
 }
 
+/** 托管分页协议：page=页码分页（默认）；cursor=游标分页（上一页/下一页导航，无 total）。 */
+export type ProTablePaginationMode = "page" | "cursor";
+
 /** 托管模式 request 入参：分页 + 排序 + 查询区筛选值。 */
 export interface ProTableRequestParams {
   page: number;
   pageSize: number;
   sort: ProTableSort | null;
   filters: Record<string, unknown>;
+  /**
+   * cursor 模式：本页入参游标（第 1 页恒为 null）。
+   * page 模式不携带此字段（undefined）。
+   */
+  cursor?: string | null;
 }
 
-/** 托管模式 request 返回：当前页数据 + 总条数。 */
+/** 托管模式 request 返回：当前页数据 + 分页元信息。 */
 export interface ProTableRequestResult<TData> {
   data: TData[];
-  total: number;
+  /** 总条数。page 模式必须返回（驱动页码计算）；cursor 模式可省略。 */
+  total?: number;
+  /** cursor 模式：下一页游标（null/缺省 = 无下一页）。page 模式忽略。 */
+  nextCursor?: string | null;
+  /** cursor 模式：是否还有下一页。缺省时按 `nextCursor != null` 推断。 */
+  hasMore?: boolean;
 }
 
 /** actionRef 命令式句柄。 */
@@ -94,6 +107,15 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
    * 此时忽略 data/pagination/loading props。不提供则维持现有展示模式。
    */
   request?: (params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>;
+  /**
+   * 托管模式分页协议。"page"（默认）：request 返回 `{ data, total }`，底部渲染
+   * 总条数文案 + 数字分页。"cursor"：request 入参带 `cursor`、返回
+   * `{ data, nextCursor, hasMore }`，底部渲染「上一页/下一页」按钮对（keyset
+   * 分页无 total/随机跳页）；组件内维护游标栈支持上一页回退，
+   * filters/sort/pageSize 任一变化自动重置回第 1 页。展示模式忽略此项。
+   * @default "page"
+   */
+  paginationMode?: ProTablePaginationMode;
   /** 托管模式初始每页条数。@default 10 */
   defaultPageSize?: number;
   /**

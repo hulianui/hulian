@@ -2,6 +2,7 @@
 import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import type { ColumnDef, RowSelectionState, SortingState } from "@tanstack/react-table";
 import { Columns3, Maximize, Minimize, RefreshCw, Rows3 } from "../_icons";
+import { Button } from "../button/button";
 import { Checkbox } from "../checkbox/checkbox";
 import { useLocale } from "../config/locale";
 import { cn } from "../lib/cn";
@@ -13,6 +14,7 @@ import { Spin } from "../spin/spin";
 import { Table } from "../table/table";
 import type {
   ProTableProps,
+  ProTableRequestParams,
   ProTableSort,
   ProTableToolbarFeatures,
 } from "./pro-table.types";
@@ -58,6 +60,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     className,
     // 托管模式
     request,
+    paginationMode = "page",
     defaultPageSize = 10,
     pageSizeOptions,
     actionRef,
@@ -75,6 +78,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
   const t = useLocale().proTable;
   const managed = Boolean(request);
+  const cursorMode = managed && paginationMode === "cursor";
 
   const features: ProTableToolbarFeatures | null =
     toolbar === false
@@ -97,9 +101,19 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   const [filters, setFilters] = useState<Record<string, unknown>>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [reloadKey, setReloadKey] = useState(0);
-  const [fetched, setFetched] = useState<{ data: TData[]; total: number }>({ data: [], total: 0 });
+  const [fetched, setFetched] = useState<{
+    data: TData[];
+    total: number;
+    nextCursor: string | null;
+    hasMore: boolean;
+  }>({ data: [], total: 0, nextCursor: null, hasMore: false });
   const [fetching, setFetching] = useState(false);
   const reqSeq = useRef(0);
+  // cursor 模式游标栈：stack[i] = 第 i+1 页的入参 cursor（第 1 页恒为 null）。
+  // 上一页 = 弹栈；filters/sort/pageSize 变化 = 重置为 [null]（旧游标钉死了
+  // 签发时的排序/筛选语义，跨条件复用会拿到错页或被服务端 422）。
+  const [cursorStack, setCursorStack] = useState<(string | null)[]>([null]);
+  const resetCursor = () => setCursorStack([null]);
 
   // 行选择：托管模式（或需要批量条）由本层持有，以便观测选中集合。
   const selfControlSelection = managed || batchActions != null;
@@ -109,28 +123,52 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
   const sortParam = useMemo(() => toProSort(sorting), [sorting]);
   const filtersKey = JSON.stringify(filters);
+  // cursor 模式下驱动拉数的键（page 模式恒空串，不触发多余请求）。
+  const cursorKey = cursorMode
+    ? `${cursorStack.length}:${cursorStack[cursorStack.length - 1] ?? ""}`
+    : "";
 
   // 托管模式拉数（竞态守卫：只接受最新一次 seq 的结果）。
   useEffect(() => {
     if (!request) return;
     const seq = ++reqSeq.current;
     setFetching(true);
-    request({ page, pageSize, sort: sortParam, filters })
+    const params: ProTableRequestParams = cursorMode
+      ? {
+          page: cursorStack.length,
+          pageSize,
+          sort: sortParam,
+          filters,
+          cursor: cursorStack[cursorStack.length - 1],
+        }
+      : { page, pageSize, sort: sortParam, filters };
+    request(params)
       .then((res) => {
         if (seq !== reqSeq.current) return;
-        setFetched({ data: res.data, total: res.total });
+        setFetched({
+          data: res.data,
+          total: res.total ?? 0,
+          nextCursor: res.nextCursor ?? null,
+          hasMore: res.hasMore ?? res.nextCursor != null,
+        });
       })
       .finally(() => {
         if (seq === reqSeq.current) setFetching(false);
       });
-    // filters 用 filtersKey 稳定依赖；sortParam 已 memo。
+    // filters 用 filtersKey 稳定依赖；sortParam 已 memo；cursor 栈用 cursorKey 稳定依赖。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [request, page, pageSize, sortParam, filtersKey, reloadKey]);
+  }, [request, page, pageSize, sortParam, filtersKey, reloadKey, cursorKey]);
 
   const clearSelection = () => setInternalSelection({});
   const doReload = () => {
     if (managed) setReloadKey((k) => k + 1);
     else onReload?.();
+  };
+
+  // 托管模式排序变化：cursor 模式必须重置游标栈（游标钉死签发时排序）。
+  const handleSortingChange: typeof setSorting = (updater) => {
+    setSorting(updater);
+    if (cursorMode) resetCursor();
   };
 
   useImperativeHandle(actionRef, () => ({ reload: doReload, clearSelection }), [managed]);
@@ -161,7 +199,10 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   // 解析最终数据 / 分页 / loading（托管 vs 展示）。
   const tableData = managed ? fetched.data : (dataProp ?? []);
   const loading = managed ? fetching : loadingProp;
-  const pagination = managed
+  // cursor 模式不走数字分页（keyset 无 total/随机跳页），由专属 footer 渲染。
+  const pagination = cursorMode
+    ? undefined
+    : managed
     ? {
         page,
         pageSize,
@@ -203,6 +244,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             if (managed) {
               setFilters(values);
               setPage(1);
+              if (cursorMode) resetCursor();
             }
             search.onSearch?.(values);
           }}
@@ -210,6 +252,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             if (managed) {
               setFilters(values);
               setPage(1);
+              if (cursorMode) resetCursor();
             }
             search.onReset?.(values);
           }}
@@ -302,7 +345,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
           rowSelection={rowSelection}
           onRowSelectionChange={setSelection}
           sorting={managed ? sorting : sortingProp}
-          onSortingChange={managed ? setSorting : onSortingChange}
+          onSortingChange={managed ? handleSortingChange : onSortingChange}
           getRowId={getRowId}
           {...tableProps}
         />
@@ -341,6 +384,52 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
               onPageChange={pagination.onPageChange}
               showFirstLast={pagination.showFirstLast ?? true}
             />
+          </div>
+        </div>
+      )}
+
+      {cursorMode && (
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          {pageSizeOptions != null && pageSizeOptions.length > 0 && (
+            <Select
+              items={pageSizeOptions.map((n) => ({ value: String(n), label: t.pageSize(n) }))}
+              value={String(pageSize)}
+              onValueChange={(v) => {
+                setPageSize(Number(v));
+                resetCursor(); // 换页长回到第 1 页：旧游标对应的页边界已失效
+              }}
+            >
+              <SelectTrigger size="sm" aria-label={t.pageSize(pageSize)} className="w-28" />
+              <SelectContent>
+                {pageSizeOptions.map((n) => (
+                  <SelectItem key={n} value={String(n)}>
+                    {t.pageSize(n)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={cursorStack.length <= 1 || fetching}
+              onClick={() => setCursorStack((s) => (s.length > 1 ? s.slice(0, -1) : s))}
+            >
+              {t.prevPage}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!fetched.hasMore || fetched.nextCursor == null || fetching}
+              onClick={() =>
+                setCursorStack((s) =>
+                  fetched.nextCursor == null ? s : [...s, fetched.nextCursor],
+                )
+              }
+            >
+              {t.nextPage}
+            </Button>
           </div>
         </div>
       )}
