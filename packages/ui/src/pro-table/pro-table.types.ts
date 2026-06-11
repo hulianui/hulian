@@ -74,8 +74,12 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
   toolbarActions?: ReactNode;
   /** 内置工具栏：true=全开（默认）/ false=不渲染工具栏 / 对象=逐项开关。 */
   toolbar?: boolean | ProTableToolbarFeatures;
-  /** 集成查询区（复用 SearchForm）。不传则不渲染。 */
-  search?: SearchFormProps;
+  /**
+   * 集成查询区（复用 SearchForm）。不传则不渲染。
+   * onSearch 在此可选（运行时本就可缺省）：托管模式由 ProTable 接管 filters/翻页，
+   * 消费者无需再写 noop onSearch。
+   */
+  search?: Omit<SearchFormProps, "onSearch"> & { onSearch?: SearchFormProps["onSearch"] };
   /** 刷新回调（点击工具栏刷新图标触发）。 */
   onReload?: () => void;
   /** 加载态：刷新图标旋转。 */
