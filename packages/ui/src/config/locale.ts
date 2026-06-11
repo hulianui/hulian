@@ -6,6 +6,10 @@ import { createContext, useContext } from "react";
  * 后续组件接入 i18n 时在此扩展（原子件文案为渐进迁移项，见 docs/enterprise-roadmap.md）。
  */
 export interface Locale {
+  table: {
+    /** 空态默认标题（emptyText 未传时使用）。 */
+    empty: string;
+  };
   proTable: {
     /** 底部总条数文案（参数化）。 */
     total: (count: number) => string;
@@ -66,6 +70,9 @@ export interface Locale {
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */
 export const zhCN: Locale = {
+  table: {
+    empty: "暂无数据",
+  },
   proTable: {
     total: (n) => `共 ${n} 条`,
     reload: "刷新",
@@ -121,6 +128,9 @@ export const zhCN: Locale = {
 
 /** 英文（en-US），演示 i18n 可切换；消费者亦可 spread zhCN/enUS 自定义。 */
 export const enUS: Locale = {
+  table: {
+    empty: "No data",
+  },
   proTable: {
     total: (n) => `${n} items`,
     reload: "Refresh",

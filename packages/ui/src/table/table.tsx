@@ -18,6 +18,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
+import { useLocale } from "../config/locale";
 import { Empty } from "../empty";
 import { cn } from "../lib/cn";
 import type { TableProps } from "./table.types";
@@ -65,6 +66,7 @@ export function Table<TData>({
   density = "default",
   bordered = true,
   getRowId,
+  rowClassName,
   className,
   // 行选择
   enableRowSelection,
@@ -88,6 +90,7 @@ export function Table<TData>({
   emptyText,
   renderEmpty,
 }: TableProps<TData>) {
+  const loc = useLocale().table;
   const selectionEnabled = Boolean(enableRowSelection);
   const treeMode = Boolean(getSubRows);
   const panelMode = Boolean(renderExpandedRow);
@@ -226,9 +229,12 @@ export function Table<TData>({
       selected && "bg-primary/10 hover:bg-primary/10",
     );
 
-  const renderRow = (row: (typeof rows)[number]) => (
+  const renderRow = (row: (typeof rows)[number], index: number) => (
     <Fragment key={row.id}>
-      <tr className={rowClass(row.getIsSelected())} data-selected={row.getIsSelected() || undefined}>
+      <tr
+        className={cn(rowClass(row.getIsSelected()), rowClassName?.(row.original, index))}
+        data-selected={row.getIsSelected() || undefined}
+      >
         {row.getVisibleCells().map((cell) => (
           <td
             key={cell.id}
@@ -255,7 +261,7 @@ export function Table<TData>({
     body = (
       <tr>
         <td colSpan={colCount} className="py-4">
-          {renderEmpty ? renderEmpty() : <Empty size="sm" title={emptyText ?? "暂无数据"} />}
+          {renderEmpty ? renderEmpty() : <Empty size="sm" title={emptyText ?? loc.empty} />}
         </td>
       </tr>
     );
@@ -270,7 +276,7 @@ export function Table<TData>({
             <td colSpan={colCount} style={{ height: padTop, padding: 0 }} />
           </tr>
         )}
-        {items.map((vi) => renderRow(rows[vi.index]))}
+        {items.map((vi) => renderRow(rows[vi.index], vi.index))}
         {padBottom > 0 && (
           <tr aria-hidden>
             <td colSpan={colCount} style={{ height: padBottom, padding: 0 }} />
@@ -279,7 +285,7 @@ export function Table<TData>({
       </>
     );
   } else {
-    body = rows.map(renderRow);
+    body = rows.map((row, index) => renderRow(row, index));
   }
 
   return (

@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { Table } from "./table";
 import type { ColumnDef } from "./table.types";
 
@@ -240,5 +242,51 @@ describe("固定列（meta.sticky·position:sticky 几何）", () => {
     const { container } = render(<Table columns={columns} data={data} />);
     const header = container.querySelector("thead th") as HTMLElement;
     expect(header.style.position).toBe("");
+  });
+});
+
+describe("rowClassName（行级状态着色）", () => {
+  it("按行数据派生 class：命中行含、未命中行不含，且不破坏既有行类", () => {
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        rowClassName={(row) => (row.name === "Alice" ? "row-bad" : undefined)}
+      />,
+    );
+    const trs = Array.from(container.querySelectorAll("tbody tr"));
+    const alice = trs.find((tr) => tr.textContent?.includes("Alice")) as HTMLElement;
+    const bob = trs.find((tr) => tr.textContent?.includes("Bob")) as HTMLElement;
+    expect(alice.className).toContain("row-bad");
+    expect(bob.className).not.toContain("row-bad");
+    // 既有斑马纹/分隔线类保留
+    expect(alice.className).toContain("border-b");
+    expect(alice.className).toContain("even:bg-surface-hover/40");
+  });
+
+  it("回调收到行号（渲染序）", () => {
+    const seen: number[] = [];
+    render(
+      <Table
+        columns={columns}
+        data={data}
+        rowClassName={(_row, index) => {
+          seen.push(index);
+          return undefined;
+        }}
+      />,
+    );
+    expect(seen).toEqual([0, 1, 2]);
+  });
+});
+
+describe("空态文案接 locale", () => {
+  it("ConfigProvider locale=enUS 时默认空态为 No data", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <Table columns={columns} data={[]} />
+      </ConfigProvider>,
+    );
+    expect(getByText("No data")).toBeTruthy();
   });
 });

@@ -58,6 +58,11 @@ export interface TableProps<TData> {
   density?: "default" | "middle" | "compact";
   /** 行稳定 key；默认按行 index */
   getRowId?: (row: TData, index: number) => string;
+  /**
+   * 行级附加 className（按行数据/行号派生，如导入预览错误行标红、状态行着色）。
+   * 返回 undefined 则该行不加；与斑马纹/选中态类合并，不覆盖。
+   */
+  rowClassName?: (row: TData, index: number) => string | undefined;
   className?: string;
 
   // —— 行选择（不传=关）——
@@ -92,7 +97,7 @@ export interface TableProps<TData> {
   virtual?: VirtualOptions;
 
   // —— 空态（data 为空时）——
-  /** 空态文案（渲染进内置 <Empty> 标题）。@default "暂无数据" */
+  /** 空态文案（渲染进内置 <Empty> 标题）。默认取 locale.table.empty（zhCN「暂无数据」）。 */
   emptyText?: ReactNode;
   /** 完全自定义空态渲染（优先级高于 emptyText）。 */
   renderEmpty?: () => ReactNode;

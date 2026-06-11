@@ -99,6 +99,21 @@ describe("ProTable", () => {
     expect(container.firstElementChild!.classList.contains("my-pro")).toBe(true);
   });
 
+  it("展示模式透传 rowClassName 给内部 Table（行级错误高亮承载）", () => {
+    const { container } = render(
+      <ProTable
+        columns={columns}
+        data={data}
+        rowClassName={(row) => (row.name === "乙" ? "row-bad" : undefined)}
+      />,
+    );
+    const trs = Array.from(container.querySelectorAll("tbody tr"));
+    const hit = trs.find((tr) => tr.textContent?.includes("乙")) as HTMLElement;
+    const miss = trs.find((tr) => tr.textContent?.includes("甲")) as HTMLElement;
+    expect(hit.className).toContain("row-bad");
+    expect(miss.className).not.toContain("row-bad");
+  });
+
   it("透传 enableRowSelection 给 Table（前插全选列）", () => {
     const { getByLabelText } = render(
       <ProTable columns={columns} data={data} enableRowSelection getRowId={(r) => String(r.id)} />,
