@@ -1,5 +1,23 @@
 # @hulianui/ui
 
+## 0.3.0
+
+### Minor Changes
+
+- Admin-grade data component growth, driven by the admin-starter vertical slices:
+
+  - **pro-table**: cursor pagination mode for managed requests (`paginationMode="cursor"`, prev/next navigation with internal cursor stack, resets on filter/sort/pageSize changes); `pageSizeOptions` with per-page switcher; managed request rejections are now caught (`onRequestError` prop, defaults to console.error); `search.onSearch` is now optional in types (runtime was already optional).
+  - **table**: `rowClassName` row-level styling hook (merges with zebra/selection classes); customizable empty state via `emptyText`/`renderEmpty`, default text now flows through the locale system (`table.empty`, zh/en).
+  - **steps-form**: per-step navigation control (`nextDisabled`/`nextText`/`showNav`) and async `onStepValidate` with loading state on the forward button; all new props optional, default behavior unchanged.
+
+  Note: `Locale` gained a required `table.empty` field — consumers spreading `zhCN`/`enUS` are unaffected; hand-built full `Locale` objects need the new key.
+
+- New agent/conversation building blocks: `Dossier` (slot-filling progress panel), `Artifact` + `ConfirmCard` (inline conversation cards), `ThreadList` (conversation history sidebar), `ImageCropper` (react-easy-crop wrapper with fixed-ratio frame and pinch zoom), `Conversation` `hideScrollbar` prop, and `ThemeProvider` `forcedTheme` for route-level forced theming.
+
+### Patch Changes
+
+- Fixes: chat-message bubble max-width constrained by available width (mobile overflow); prompt-input focus ring-offset residue (ring-0 paired with ring-offset-0); thread-list delete button 44px touch target.
+
 ## 0.2.3
 
 ### Patch Changes
