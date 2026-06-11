@@ -116,6 +116,12 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
    * @default "page"
    */
   paginationMode?: ProTablePaginationMode;
+  /**
+   * 托管模式 request 失败回调（page / cursor 两种分页协议均生效）。
+   * 失败时 loading 复位、保留上一次成功数据；不传则默认 `console.error`，
+   * 保证 rejection 不会变成 unhandled。消费者可在此弹 toast / 上报。
+   */
+  onRequestError?: (error: unknown) => void;
   /** 托管模式初始每页条数。@default 10 */
   defaultPageSize?: number;
   /**

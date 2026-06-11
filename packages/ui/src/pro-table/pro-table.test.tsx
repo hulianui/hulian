@@ -276,6 +276,66 @@ describe("ProTable 托管模式", () => {
     await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
     expect(queryByRole("combobox")).toBeNull();
   });
+
+  it("request 失败：onRequestError 收到错误，loading 复位且保留上次成功数据", async () => {
+    const boom = new Error("network down");
+    const onRequestError = vi.fn();
+    let fail = false;
+    const request = vi.fn(async (_p: ProTableRequestParams) => {
+      if (fail) throw boom;
+      return { data, total: 2 };
+    });
+    const { container, getByText, getByLabelText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        onRequestError={onRequestError}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fail = true;
+    fireEvent.click(getByLabelText("刷新"));
+    await waitFor(() => expect(onRequestError).toHaveBeenCalledWith(boom));
+    // loading 复位（无遮罩 spinner / 刷新图标不再旋转）+ 上次数据仍在
+    await waitFor(() => expect(container.querySelector(".animate-spin")).toBeNull());
+    expect(getByText("甲")).toBeTruthy();
+  });
+
+  it("request 失败且未传 onRequestError：默认 console.error 兜底（不抛 unhandled）", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const boom = new Error("default path");
+    const request = vi.fn(async (_p: ProTableRequestParams) => {
+      throw boom;
+    });
+    const { container } = render(
+      <ProTable<Row> columns={cols} request={request} getRowId={(r) => String(r.id)} />,
+    );
+    await waitFor(() =>
+      expect(spy).toHaveBeenCalledWith("[ProTable] request failed:", boom),
+    );
+    await waitFor(() => expect(container.querySelector(".animate-spin")).toBeNull());
+    spy.mockRestore();
+  });
+
+  it("cursor 模式 request 失败同样走 onRequestError 且 loading 复位", async () => {
+    const boom = new Error("cursor fail");
+    const onRequestError = vi.fn();
+    const request = vi.fn(async (_p: ProTableRequestParams) => {
+      throw boom;
+    });
+    const { container } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        paginationMode="cursor"
+        onRequestError={onRequestError}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(onRequestError).toHaveBeenCalledWith(boom));
+    await waitFor(() => expect(container.querySelector(".animate-spin")).toBeNull());
+  });
 });
 
 describe("ProTable 托管模式 · cursor 分页", () => {

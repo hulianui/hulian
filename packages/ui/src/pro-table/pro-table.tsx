@@ -60,6 +60,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     className,
     // 托管模式
     request,
+    onRequestError,
     paginationMode = "page",
     defaultPageSize = 10,
     pageSizeOptions,
@@ -109,6 +110,9 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   }>({ data: [], total: 0, nextCursor: null, hasMore: false });
   const [fetching, setFetching] = useState(false);
   const reqSeq = useRef(0);
+  // ref 持有错误回调：回调身份变化不应重发请求（effect 依赖里不放它）。
+  const onRequestErrorRef = useRef(onRequestError);
+  onRequestErrorRef.current = onRequestError;
   // cursor 模式游标栈：stack[i] = 第 i+1 页的入参 cursor（第 1 页恒为 null）。
   // 上一页 = 弹栈；filters/sort/pageSize 变化 = 重置为 [null]（旧游标钉死了
   // 签发时的排序/筛选语义，跨条件复用会拿到错页或被服务端 422）。
@@ -151,6 +155,13 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
           nextCursor: res.nextCursor ?? null,
           hasMore: res.hasMore ?? res.nextCursor != null,
         });
+      })
+      // 失败兜底（page / cursor 两模式同路径）：不让 rejection 变 unhandled，
+      // 保留上一次成功数据；loading 由下方 finally 统一复位。
+      .catch((err) => {
+        if (seq !== reqSeq.current) return;
+        if (onRequestErrorRef.current) onRequestErrorRef.current(err);
+        else console.error("[ProTable] request failed:", err);
       })
       .finally(() => {
         if (seq === reqSeq.current) setFetching(false);
