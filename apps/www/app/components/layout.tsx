@@ -30,7 +30,7 @@ export default function ComponentsLayout({ children }: { children: ReactNode }) 
               <ComponentTree />
             </div>
           </Layout.Sider>
-          <Layout.Content className="px-6 py-10">
+          <Layout.Content className="bg-muted/[0.045] px-6 py-10">
             {children}
             {/* dogfood：回顶钮挂到本滚动体（Layout.Content，非 window）*/}
             <DocsBackTop />

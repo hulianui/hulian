@@ -29,10 +29,13 @@ export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null 
 
   return (
     <div className="mx-auto flex max-w-6xl gap-10">
-      <article className="min-w-0 flex-1 space-y-8">
-        <header>
-          <h1 className="text-2xl font-semibold">{meta.name}</h1>
-          <p className="mt-1 text-sm text-muted">{meta.description}</p>
+      <article className="min-w-0 flex-1 space-y-6">
+        <header className="pb-1">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 className="text-[1.7rem] font-semibold tracking-tight">{meta.name}</h1>
+            <span className="rounded-md bg-muted/10 px-2 py-0.5 font-mono text-xs text-muted">{slug}</span>
+          </div>
+          <p className="mt-2 text-sm leading-relaxed text-muted">{meta.description}</p>
         </header>
 
         <section id="sec-preview" className="scroll-mt-6">
@@ -42,19 +45,28 @@ export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null 
         </section>
 
         {doc && (
-          <section id="sec-doc" className="scroll-mt-6">
+          <section
+            id="sec-doc"
+            className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7"
+          >
             <Markdown size="sm">{doc}</Markdown>
           </section>
         )}
 
-        <section id="sec-states" className="scroll-mt-6">
-          <h2 className="mb-3 text-sm font-medium text-muted">全状态</h2>
+        <section
+          id="sec-states"
+          className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm"
+        >
+          <h2 className="mb-4 text-sm font-medium text-muted">全状态</h2>
           <StatesGallery states={spec.states} />
         </section>
 
         {hasPlayground && (
-          <section id="sec-playground" className="scroll-mt-6">
-            <h2 className="mb-3 text-sm font-medium text-muted">Playground</h2>
+          <section
+            id="sec-playground"
+            className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm"
+          >
+            <h2 className="mb-4 text-sm font-medium text-muted">Playground</h2>
             <Playground spec={spec} />
           </section>
         )}

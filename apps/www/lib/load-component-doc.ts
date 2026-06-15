@@ -25,7 +25,9 @@ export function loadComponentDoc(slug: string): string | null {
   if (!p) return null;
   let md = readFileSync(p, "utf8");
   md = md.replace(/^---\n[\s\S]*?\n---\n/, ""); // strip frontmatter
+  md = md.trimStart(); // frontmatter block leaves a leading blank line
   md = md.replace(/^#\s+.*\n+/, ""); // drop leading H1 (page header already shows name)
+  md = md.replace(/^>\s.*\n+/, ""); // drop the blurb quote (page header already shows description)
   // rewrite "相关" links (../slug/slug.md | ../_mui/slug.md) → in-site /components/slug
   md = md.replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, "](/components/$1)");
   return md.trim();

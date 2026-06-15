@@ -79,33 +79,36 @@ function renderProseBlock(b: ProseBlock, key: number) {
     case "quote":
       return <blockquote key={key}>{renderInline(b.text)}</blockquote>;
     case "table":
+      // 圆角描边容器 + 表头浅色底 + 行斑马纹 + 仅横向分隔（去满格网格线，主题感知）。
       return (
-        <div key={key} className="my-3 overflow-x-auto">
-          <table className="w-full border-collapse text-[0.92em]">
-            <thead>
-              <tr>
-                {b.header.map((h, j) => (
-                  <th
-                    key={j}
-                    className="border border-border bg-surface px-3 py-1.5 text-left font-semibold"
-                  >
-                    {renderInline(h)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {b.rows.map((row, r) => (
-                <tr key={r}>
-                  {row.map((cell, c) => (
-                    <td key={c} className="border border-border px-3 py-1.5 align-top">
-                      {renderInline(cell)}
-                    </td>
+        <div key={key} className="my-4 overflow-hidden rounded-lg border border-border">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-[0.92em] [&_tr:last-child>td]:border-b-0">
+              <thead>
+                <tr className="bg-muted/[0.06]">
+                  {b.header.map((h, j) => (
+                    <th
+                      key={j}
+                      className="border-b border-border px-3.5 py-2 text-left font-semibold whitespace-nowrap"
+                    >
+                      {renderInline(h)}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {b.rows.map((row, r) => (
+                  <tr key={r} className="even:bg-muted/[0.03]">
+                    {row.map((cell, c) => (
+                      <td key={c} className="border-b border-border/60 px-3.5 py-2 align-top">
+                        {renderInline(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       );
     default:

@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, CodeBlock } from "@hulianui/ui";
 
 export function ComponentPreview({ children, code }: { children: ReactNode; code: string }) {
   return (
-    <div className="overflow-hidden rounded-[var(--radius)] border border-border">
+    <div className="overflow-hidden rounded-[var(--radius)] border border-border bg-surface shadow-sm">
       <Tabs defaultValue="preview">
         <div className="border-b border-border bg-surface px-2 py-1.5">
           <TabsList variant="solid">
