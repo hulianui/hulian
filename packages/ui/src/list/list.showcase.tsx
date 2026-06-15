@@ -107,6 +107,63 @@ function PaginationDemo() {
 }
 
 export const listShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "数据驱动：items + renderItem，配 ListItem.Meta 放头像/标题/描述，actions 放右侧操作。",
+      code: `<List
+  bordered
+  items={people}
+  header={<span>团队成员</span>}
+  footer={<span>共 {people.length} 人</span>}
+  renderItem={(p) => (
+    <ListItem actions={[<Button key="e" variant="ghost" size="sm">编辑</Button>]}>
+      <ListItem.Meta avatar={<Avatar fallback={p.initials} />} title={p.name} description={p.role} />
+    </ListItem>
+  )}
+/>`,
+      render: () => <BasicDemo bordered split />,
+    },
+    {
+      title: "无边框 + 无分隔",
+      description: "去掉外框与行分隔线，适合嵌入已有卡片/面板内部。",
+      code: `<List
+  bordered={false}
+  split={false}
+  items={people}
+  renderItem={(p) => (
+    <ListItem>
+      <ListItem.Meta avatar={<Avatar fallback={p.initials} />} title={p.name} description={p.role} />
+    </ListItem>
+  )}
+/>`,
+      render: () => <BasicDemo bordered={false} split={false} />,
+    },
+    {
+      title: "栅格卡片态",
+      description: "grid 切换为卡片网格（复用 Grid 原语），每张卡片自带边框。",
+      code: `<List
+  grid={{ cols: 2, gap: 4 }}
+  items={people}
+  renderItem={(p) => (
+    <ListItem actions={[<Button key="v" variant="outline" size="sm">查看</Button>]}>
+      <User name={p.name} description={p.role} avatarProps={{ fallback: p.initials }} />
+    </ListItem>
+  )}
+/>`,
+      render: () => <GridDemo />,
+    },
+    {
+      title: "空态",
+      description: "items 为空数组时内置 <Empty> 占位。",
+      code: `<List bordered items={[]} header={<span>团队成员</span>} renderItem={(p) => ...} />`,
+      render: () => (
+        <div className="w-96 max-w-full">
+          <List bordered items={[]} renderItem={(p: Person) => <PersonItem p={p} />} header={<span>团队成员</span>} />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "尺寸" },
     { prop: "bordered", type: "boolean", defaultValue: true, label: "边框" },

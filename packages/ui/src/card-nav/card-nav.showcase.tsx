@@ -53,6 +53,87 @@ function ControlledCardNav({
 }
 
 export const cardNavShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "顶栏汉堡 / 品牌 / CTA，点汉堡整条胶囊展开，内部卡片逐张错峰浮现。非受控时组件自管开合，点汉堡即可展开。",
+      code: `<CardNav
+  brand="瑚琏 UI"
+  ctaLabel="开始使用"
+  items={[
+    { label: "产品", bgColor: "var(--color-chart-1)", links: [{ label: "概览", href: "#" }] },
+    { label: "公司", bgColor: "var(--color-chart-2)", links: [{ label: "关于", href: "#" }] },
+    { label: "资源", bgColor: "var(--color-chart-4)", links: [{ label: "文档", href: "#" }] },
+  ]}
+/>`,
+      render: () => (
+        <Stage>
+          <CardNav brand="瑚琏 UI" items={items} ctaLabel="开始使用" />
+        </Stage>
+      ),
+    },
+    {
+      title: "默认展开（受控）",
+      description: "传入 open + onOpenChange 由外部接管开合；这里默认展开以展示卡片错峰浮现。",
+      code: `const [open, setOpen] = useState(true);
+
+<CardNav
+  brand="瑚琏 UI"
+  ctaLabel="开始使用"
+  items={items}
+  open={open}
+  onOpenChange={setOpen}
+/>`,
+      render: () => (
+        <Stage>
+          <ControlledCardNav
+            brand="瑚琏 UI"
+            items={items}
+            ctaLabel="开始使用"
+            defaultOpen
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "无 CTA",
+      description: "ctaLabel 传 null 隐藏右侧 CTA 按钮，纯文字品牌 + 卡片导航。",
+      code: `<CardNav brand="HanShip" items={items} ctaLabel={null} />`,
+      render: () => (
+        <Stage>
+          <ControlledCardNav
+            brand="HanShip"
+            items={items}
+            ctaLabel={null}
+            defaultOpen
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "token 卡片（吃主题）",
+      description: "卡片不指定 bgColor / textColor 时吃瑚琏 token，自动随明暗主题。",
+      code: `<CardNav
+  brand="瑚琏"
+  items={[
+    { label: "产品", links: [{ label: "概览", href: "#" }] },
+    { label: "公司", links: [{ label: "关于我们", href: "#" }] },
+    { label: "资源", links: [{ label: "文档", href: "#" }] },
+  ]}
+/>`,
+      render: () => (
+        <Stage>
+          <ControlledCardNav
+            brand="瑚琏"
+            items={items.map(({ bgColor, textColor, ...rest }) => rest)}
+            defaultOpen
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "ctaLabel", type: "text", defaultValue: "开始使用", label: "CTA 文案" },
     { prop: "duration", type: "number", defaultValue: 0.4, label: "动画秒数" },

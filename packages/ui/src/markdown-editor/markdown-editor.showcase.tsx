@@ -20,6 +20,40 @@ function ControlledDemo() {
 }
 
 export const markdownEditorShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "非受控写法，用 defaultValue 灌初始 markdown，自带工具栏。",
+      code: `<MarkdownEditor defaultValue="# 标题\\n\\n正文段落" className="w-[32rem]" />`,
+      render: () => <MarkdownEditor defaultValue={SAMPLE} className="w-[32rem]" />,
+    },
+    {
+      title: "占位符 + 行高",
+      description: "placeholder 提示空态，minRows 控制内容区最小高度。",
+      code: `<MarkdownEditor placeholder="写点什么…" minRows={3} className="w-[32rem]" />`,
+      render: () => (
+        <MarkdownEditor placeholder="写点什么…" minRows={3} className="w-[32rem]" />
+      ),
+    },
+    {
+      title: "表单内（Field）",
+      description: "配 Field 用，invalid 触发 danger 外壳，name 桥接原生表单。",
+      code: `<Field label="订单详情（必填）" error="详情不能为空" className="w-[32rem]">
+  <MarkdownEditor name="detail" invalid placeholder="必填" />
+</Field>`,
+      render: () => (
+        <Field label="订单详情（必填）" error="详情不能为空" className="w-[32rem]">
+          <MarkdownEditor name="detail" invalid placeholder="必填" />
+        </Field>
+      ),
+    },
+    {
+      title: "禁用",
+      description: "disabled 隐藏工具栏并锁定编辑，整体降透明度。",
+      code: `<MarkdownEditor disabled defaultValue="# 只读内容" className="w-[32rem]" />`,
+      render: () => <MarkdownEditor disabled defaultValue={SAMPLE} className="w-[32rem]" />,
+    },
+  ],
   controls: [
     { prop: "placeholder", type: "text", defaultValue: "输入 markdown…", label: "占位符" },
     { prop: "minRows", type: "number", defaultValue: 6, label: "最小行数" },

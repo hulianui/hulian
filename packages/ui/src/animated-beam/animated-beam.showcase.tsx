@@ -55,6 +55,32 @@ function Demo({ mode = "ltr" }: { mode?: Mode }) {
 }
 
 export const animatedBeamShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "左到右流动",
+      description: "在容器内连接两组节点，光束沿曲线自左向右扫过（reverse=false）。",
+      code: `<div ref={container} className="relative flex items-center justify-between">
+  <div ref={l1}>...</div>
+  <div ref={hub}>...</div>
+  <AnimatedBeam containerRef={container} fromRef={l1} toRef={hub} curvature={30} reverse={false} />
+</div>`,
+      render: () => <Demo mode="ltr" />,
+    },
+    {
+      title: "四周汇聚",
+      description: "左侧光束流入中枢、右侧反向流入，营造数据汇聚到中心的观感。",
+      code: `{/* 左两条 reverse=false 流入中枢，右两条 reverse=true 流入中枢 */}
+<AnimatedBeam containerRef={container} fromRef={l1} toRef={hub} curvature={30} reverse={false} />
+<AnimatedBeam containerRef={container} fromRef={hub} toRef={r1} curvature={-30} reverse={true} />`,
+      render: () => <Demo mode="hub" />,
+    },
+    {
+      title: "右到左流动",
+      description: "整体反向，光束自右向左扫，表达回流/响应方向。",
+      code: `<AnimatedBeam containerRef={container} fromRef={l1} toRef={hub} curvature={30} reverse={true} />`,
+      render: () => <Demo mode="rtl" />,
+    },
+  ],
   controls: [],
   states: [
     { name: "左到右", render: () => <Demo mode="ltr" /> },

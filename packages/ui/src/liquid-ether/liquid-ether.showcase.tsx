@@ -15,6 +15,87 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const liquidEtherShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "放进 relative 容器即可，组件自带 absolute inset-0；默认自动巡游搅动液面，颜色吃 chart token 明暗自适应。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
+  <LiquidEther />
+  <div className="relative z-10 flex h-full items-center justify-center text-white/85">
+    LiquidEther
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <LiquidEther />
+          <div className="pointer-events-none relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/85">
+            LiquidEther
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义调色板 · 大团块",
+      description:
+        "colors 接任意 CSS 颜色（hex / oklch / var token）；scale 越大色团越融合宏观，speed 控制翻涌速度。",
+      code: `<LiquidEther
+  colors={[
+    "var(--color-chart-3)",
+    "oklch(0.72 0.22 30)",
+    "var(--color-chart-1)",
+  ]}
+  scale={1.6}
+  speed={0.7}
+/>`,
+      render: () => (
+        <Stage>
+          <LiquidEther
+            colors={[
+              "var(--color-chart-3)",
+              "oklch(0.72 0.22 30)",
+              "var(--color-chart-1)",
+            ]}
+            scale={1.6}
+            speed={0.7}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "静止待交互",
+      description:
+        "autoDemo={false} 关掉自动巡游，画面静止等待真实指针；mouseForce 调大让搅动更跟手。",
+      code: `<LiquidEther autoDemo={false} mouseForce={1.5} />`,
+      render: () => (
+        <Stage>
+          <LiquidEther autoDemo={false} mouseForce={1.5} />
+        </Stage>
+      ),
+    },
+    {
+      title: "壁纸级叠底",
+      description:
+        "慢速 + 半透明（opacity）压低视觉重量，作为标题区背景叠在文字下方。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
+  <LiquidEther speed={0.3} scale={1.2} opacity={0.7} />
+  <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2">
+    <p className="text-lg font-semibold text-white">瑚琏组件库</p>
+    <p className="text-xs text-white/60">液态色域 · 鼠标驱动</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <LiquidEther speed={0.3} scale={1.2} opacity={0.7} />
+          <div className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center gap-2">
+            <p className="text-lg font-semibold text-white">瑚琏组件库</p>
+            <p className="text-xs text-white/60">液态色域 · 鼠标驱动</p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "speed", type: "number", defaultValue: 0.5, label: "流动速度" },
     { prop: "scale", type: "number", defaultValue: 1, label: "团块尺度" },

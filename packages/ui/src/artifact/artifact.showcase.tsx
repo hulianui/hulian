@@ -40,6 +40,64 @@ const Demo = () => (
 );
 
 export const artifactShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "带标题/图标/版本 chip/操作区，长内容默认折叠（限高 + 渐隐 + 展开按钮）。",
+      code: `<Artifact
+  title="简历草稿 · 林晚晴"
+  icon={<File className="size-4" />}
+  version="v2"
+  actions={<Button size="sm" variant="ghost">导出</Button>}
+>
+  {body}
+</Artifact>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <Artifact
+            title="简历草稿 · 林晚晴"
+            icon={<File className="size-4" />}
+            version="v2"
+            actions={
+              <Button size="sm" variant="ghost">
+                导出
+              </Button>
+            }
+          >
+            {LONG_BODY}
+          </Artifact>
+        </div>
+      ),
+    },
+    {
+      title: "默认展开",
+      description: "defaultExpanded 让产出初始就摊开全文。",
+      code: `<Artifact title="简历草稿" version="v1" defaultExpanded>
+  {body}
+</Artifact>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <Artifact title="简历草稿" version="v1" defaultExpanded>
+            {LONG_BODY}
+          </Artifact>
+        </div>
+      ),
+    },
+    {
+      title: "不可折叠",
+      description: "collapsedHeight={0} 关闭折叠，适合短产出。",
+      code: `<Artifact title="简短产出" collapsedHeight={0}>
+  <p className="text-sm">一段不需要折叠的简短内容。</p>
+</Artifact>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <Artifact title="简短产出" collapsedHeight={0}>
+            <p className="text-sm">一段不需要折叠的简短内容。</p>
+          </Artifact>
+        </div>
+      ),
+    },
+  ],
   controls: [],
   states: [
     { name: "折叠态（限高 + 渐隐 + 展开按钮）", render: () => <Demo /> },

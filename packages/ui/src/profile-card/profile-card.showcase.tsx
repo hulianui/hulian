@@ -15,6 +15,81 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const profileCardShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "无头像时落「姓名首字母」占位，默认开启指针倾斜 + 全息光泽。",
+      code: `<ProfileCard name="林屿" title="独立开发者" handle="linyu" />`,
+      render: () => (
+        <Stage>
+          <ProfileCard name="林屿" title="独立开发者" handle="linyu" />
+        </Stage>
+      ),
+    },
+    {
+      title: "光晕配色",
+      description: "glowColor 喂带 --color- 前缀的 chart token，驱动径向光晕与边缘炫彩。",
+      code: `<ProfileCard
+  name="苏晚"
+  title="产品设计师"
+  handle="suwan"
+  status="忙碌"
+  glowColor="var(--color-chart-3)"
+/>`,
+      render: () => (
+        <Stage>
+          <ProfileCard
+            name="苏晚"
+            title="产品设计师"
+            handle="suwan"
+            status="忙碌"
+            glowColor="var(--color-chart-3)"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "静态卡片",
+      description: "enableTilt={false} 关闭倾斜与指针交互，保留渐变与底部信息条。",
+      code: `<ProfileCard
+  name="瑚琏"
+  title="前端工程师"
+  handle="hulianui"
+  enableTilt={false}
+/>`,
+      render: () => (
+        <Stage>
+          <ProfileCard
+            name="瑚琏"
+            title="前端工程师"
+            handle="hulianui"
+            enableTilt={false}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "隐藏信息条",
+      description: "showUserInfo={false} 去掉底部毛玻璃信息条，仅留主标题与头像。",
+      code: `<ProfileCard
+  name="Javi Torres"
+  title="Software Engineer"
+  showUserInfo={false}
+  glowColor="var(--color-chart-2)"
+/>`,
+      render: () => (
+        <Stage>
+          <ProfileCard
+            name="Javi Torres"
+            title="Software Engineer"
+            showUserInfo={false}
+            glowColor="var(--color-chart-2)"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "name", type: "text", defaultValue: "林屿", label: "姓名" },
     { prop: "title", type: "text", defaultValue: "独立开发者", label: "职位" },

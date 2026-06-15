@@ -121,7 +121,120 @@ function ClassicShell({
   );
 }
 
+// 纯静态侧栏（不含 useState，供 examples 活预览用）：非受控初始展开。
+function StaticSider({ collapsed = false }: { collapsed?: boolean }) {
+  return (
+    <Layout.Sider collapsible defaultCollapsed={collapsed}>
+      <div
+        className={cn(
+          "flex h-12 shrink-0 items-center font-semibold text-primary",
+          collapsed ? "justify-center" : "px-4",
+        )}
+      >
+        {collapsed ? "瑚" : "瑚琏控制台"}
+      </div>
+      <NavMenu
+        items={menu}
+        mode={collapsed ? "collapsed" : "inline"}
+        selectedKeys={["dashboard"]}
+        className={collapsed ? "mx-auto py-2" : "w-full p-2"}
+      />
+    </Layout.Sider>
+  );
+}
+
 export const layoutShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "经典中后台外壳",
+      description: "左侧 Sider + 右侧 Header / Content / Footer，含侧栏时自动横向布局。",
+      code: `<Layout className="h-full">
+  <Layout.Sider collapsible>
+    <NavMenu items={items} selectedKeys={["dashboard"]} />
+  </Layout.Sider>
+  <Layout>
+    <Layout.Header sticky>
+      <span className="font-medium">中后台外壳</span>
+      <span className="ml-auto text-sm text-muted">user@hulian</span>
+    </Layout.Header>
+    <Layout.Content>{/* 页面内容 */}</Layout.Content>
+    <Layout.Footer>瑚琏 Layout · © 2026</Layout.Footer>
+  </Layout>
+</Layout>`,
+      render: () => (
+        <Frame>
+          <Layout className="h-full">
+            <StaticSider />
+            <Layout>
+              <Layout.Header sticky>
+                <span className="font-medium text-foreground">中后台外壳</span>
+                <span className="ml-auto text-sm text-muted">user@hulian</span>
+              </Layout.Header>
+              <Layout.Content>
+                <FillerContent />
+              </Layout.Content>
+              <Layout.Footer>瑚琏 Layout · © 2026</Layout.Footer>
+            </Layout>
+          </Layout>
+        </Frame>
+      ),
+    },
+    {
+      title: "通栏头部在上",
+      description: "Header 横跨全宽，下方再分 Sider + Content，最外层为纵向布局。",
+      code: `<Layout className="h-full">
+  <Layout.Header>
+    <span className="font-medium">通栏头部</span>
+  </Layout.Header>
+  <Layout>
+    <Layout.Sider collapsible>
+      <NavMenu items={items} />
+    </Layout.Sider>
+    <Layout.Content>{/* 页面内容 */}</Layout.Content>
+  </Layout>
+  <Layout.Footer>底部通栏 · © 2026</Layout.Footer>
+</Layout>`,
+      render: () => (
+        <Frame>
+          <Layout className="h-full">
+            <Layout.Header>
+              <span className="font-medium text-foreground">通栏头部</span>
+            </Layout.Header>
+            <Layout>
+              <StaticSider />
+              <Layout.Content>
+                <FillerContent />
+              </Layout.Content>
+            </Layout>
+            <Layout.Footer>底部通栏 · © 2026</Layout.Footer>
+          </Layout>
+        </Frame>
+      ),
+    },
+    {
+      title: "默认收起侧栏",
+      description: "defaultCollapsed 让侧栏初始收起，NavMenu 切到 collapsed 图标轨。",
+      code: `<Layout.Sider collapsible defaultCollapsed>
+  <NavMenu items={items} mode="collapsed" />
+</Layout.Sider>`,
+      render: () => (
+        <Frame>
+          <Layout className="h-full">
+            <StaticSider collapsed />
+            <Layout>
+              <Layout.Header sticky>
+                <span className="font-medium text-foreground">收起态</span>
+              </Layout.Header>
+              <Layout.Content>
+                <FillerContent />
+              </Layout.Content>
+              <Layout.Footer>瑚琏 Layout · © 2026</Layout.Footer>
+            </Layout>
+          </Layout>
+        </Frame>
+      ),
+    },
+  ],
   controls: [
     { prop: "collapsed", type: "boolean", defaultValue: false, label: "收起侧栏" },
   ],

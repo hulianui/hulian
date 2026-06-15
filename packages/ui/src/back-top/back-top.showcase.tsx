@@ -29,6 +29,37 @@ function BackTopBox({ children }: { children?: ReactNode }) {
 }
 
 export const backTopShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "默认监听 window，滚动超过 visibilityHeight 后右下角淡入回顶钮，点击平滑滚回顶部。",
+      code: `<BackTop visibilityHeight={400} />`,
+      render: () => <BackTopBox />,
+    },
+    {
+      title: "自定义内容",
+      description: "children 替换默认上箭头图标，可放文字或自定义节点。",
+      code: `<BackTop visibilityHeight={400}>
+  <span className="px-2 text-xs font-medium">顶部</span>
+</BackTop>`,
+      render: () => (
+        <BackTopBox>
+          <span className="px-2 text-xs font-medium">顶部</span>
+        </BackTopBox>
+      ),
+    },
+    {
+      title: "指定滚动容器",
+      description:
+        "页面滚动体不是 window 时，target 返回该容器元素，监听与回顶都落到它身上。",
+      code: `const ref = useRef<HTMLDivElement>(null);
+
+<div ref={ref} className="h-44 overflow-y-auto">{/* 长内容 */}</div>
+<BackTop target={() => ref.current} visibilityHeight={80} />`,
+      render: () => <BackTopBox />,
+    },
+  ],
   controls: [],
   states: [
     { name: "默认（滚动框内）", render: () => <BackTopBox /> },

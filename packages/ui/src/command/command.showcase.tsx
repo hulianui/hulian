@@ -83,6 +83,58 @@ function Demo({
 }
 
 export const commandShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "Command 为受控模态：用 useState 持有 open，按钮触发打开。groups 提供分组命令，输入框实时跨组过滤（试输「订单」「dd」「主题」）。",
+      code: `const [open, setOpen] = useState(false);
+
+const groups = [
+  {
+    heading: "快速跳转",
+    items: [
+      { value: "go-dashboard", label: "仪表盘", description: "总览今日数据",
+        keywords: "dashboard 首页", icon: <LayoutDashboard /> },
+      { value: "go-orders", label: "订单管理", keywords: "order 订单 dd",
+        icon: <ShoppingCart /> },
+    ],
+  },
+  {
+    heading: "操作",
+    items: [
+      { value: "new-order", label: "新建订单", icon: <Plus />, shortcut: "⌘N" },
+      { value: "import", label: "导入数据", description: "上传 CSV / Excel",
+        icon: <Upload /> },
+    ],
+  },
+];
+
+<Button variant="outline" onClick={() => setOpen(true)}>打开命令面板</Button>
+<Command open={open} onOpenChange={setOpen} groups={groups} />`,
+      render: () => <Demo />,
+    },
+    {
+      title: "内置 ⌘K 快捷键",
+      description: "shortcut 开启后，组件内置 ⌘K / Ctrl+K 全局监听切换开合，无需自行绑定。",
+      code: `<Button variant="outline" onClick={() => setOpen(true)}>
+  打开命令面板（或 ⌘K）
+</Button>
+<Command open={open} onOpenChange={setOpen} groups={groups} shortcut />`,
+      render: () => <Demo shortcut />,
+    },
+    {
+      title: "选中后保持打开",
+      description: "closeOnSelect={false} 时执行命令后面板不关闭，适合连续多次操作的场景。",
+      code: `<Command
+  open={open}
+  onOpenChange={setOpen}
+  groups={groups}
+  closeOnSelect={false}
+/>`,
+      render: () => <Demo closeOnSelect={false} />,
+    },
+  ],
   controls: [
     { prop: "placeholder", type: "text", defaultValue: "输入命令或搜索…" },
     { prop: "shortcut", type: "boolean", defaultValue: false, label: "内置 ⌘K" },

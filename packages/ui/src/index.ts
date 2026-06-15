@@ -419,4 +419,4 @@ export { cn } from "./lib/cn";
 // 日期 SSoT（消费者需 dayjs 做日期数学时从这里取，避免各自装一份/版本漂移）
 export { dayjs, DATE_FORMAT, TIME_FORMAT, DATE_TIME_FORMAT } from "./lib/date";
 export type { Dayjs } from "./lib/date";
-export type { ShowcaseSpec, Control, StateSpec, ControlType } from "./showcase/types";
+export type { ShowcaseSpec, Control, StateSpec, ExampleSpec, ControlType } from "./showcase/types";

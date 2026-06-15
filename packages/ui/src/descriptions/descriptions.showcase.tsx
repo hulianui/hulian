@@ -23,6 +23,72 @@ const profile = (
 );
 
 export const descriptionsShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "horizontal 布局：键左值右；用 DescriptionsItem 子节点声明，span 控制跨列。",
+      code: `<Descriptions title="用户信息">
+  <DescriptionsItem label="姓名">张三</DescriptionsItem>
+  <DescriptionsItem label="性别">男</DescriptionsItem>
+  <DescriptionsItem label="生日">1995-08-12</DescriptionsItem>
+  <DescriptionsItem label="备注" span={3}>VIP 客户，优先处理售后工单</DescriptionsItem>
+</Descriptions>`,
+      render: () => <Descriptions title="用户信息">{profile}</Descriptions>,
+    },
+    {
+      title: "竖排布局",
+      description: "layout=vertical 键上值下，适合移动端或值较长的场景。",
+      code: `<Descriptions layout="vertical" column={3}>
+  <DescriptionsItem label="姓名">张三</DescriptionsItem>
+  <DescriptionsItem label="备注" span={3}>VIP 客户，优先处理售后工单</DescriptionsItem>
+</Descriptions>`,
+      render: () => (
+        <Descriptions layout="vertical" column={3}>
+          {profile}
+        </Descriptions>
+      ),
+    },
+    {
+      title: "边框表格态",
+      description: "bordered 渲染为带分隔的表格样式，extra 放右上操作区。",
+      code: `<Descriptions
+  bordered
+  title="订单详情"
+  extra={<a href="#edit">编辑</a>}
+  items={[
+    { label: "用户名", children: "zhangsan" },
+    { label: "地址", children: "广东省广州市天河区某某路 88 号 A 座 1203", span: 3 },
+  ]}
+/>`,
+      render: () => <Descriptions bordered title="订单详情" extra={<a href="#edit">编辑</a>} items={items} />,
+    },
+    {
+      title: "单列长详情",
+      description: "column=1 每项独占一行，适合合同/凭证类纵向键值。",
+      code: `<Descriptions
+  bordered
+  column={1}
+  items={[
+    { label: "合同编号", children: "HT-2026-000812" },
+    { label: "签约方", children: "广州瑚琏科技有限公司" },
+    { label: "金额", children: "¥ 128,000.00" },
+    { label: "状态", children: "已生效" },
+  ]}
+/>`,
+      render: () => (
+        <Descriptions
+          bordered
+          column={1}
+          items={[
+            { label: "合同编号", children: "HT-2026-000812" },
+            { label: "签约方", children: "广州瑚琏科技有限公司" },
+            { label: "金额", children: "¥ 128,000.00" },
+            { label: "状态", children: "已生效" },
+          ]}
+        />
+      ),
+    },
+  ],
   controls: [
     {
       prop: "layout",

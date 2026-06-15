@@ -24,6 +24,54 @@ function Stage({
 }
 
 export const crosshairShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "组件自渲染 absolute inset-0 铺满父级的准星层，鼠标移入即出现跟随十字线。",
+      code: `<div
+  className="relative h-56 overflow-hidden rounded-xl"
+  style={{ background: "oklch(0.14 0.02 255)" }}
+>
+  <Crosshair />
+</div>`,
+      render: () => (
+        <Stage>
+          <Crosshair />
+        </Stage>
+      ),
+    },
+    {
+      title: "颜色与粗细",
+      description: "color 走 token，thickness 控制线条粗细。",
+      code: `<Crosshair color="var(--color-chart-1)" thickness={2} />`,
+      render: () => (
+        <Stage>
+          <Crosshair color="var(--color-chart-1)" thickness={2} />
+        </Stage>
+      ),
+    },
+    {
+      title: "高黏滞拖尾",
+      description: "调小 smoothing 让十字线跟随更迟滞、拖尾更明显。",
+      code: `<Crosshair smoothing={0.06} color="var(--color-chart-3)" />`,
+      render: () => (
+        <Stage hint="慢速跟随 · 拖尾更明显">
+          <Crosshair smoothing={0.06} color="var(--color-chart-3)" />
+        </Stage>
+      ),
+    },
+    {
+      title: "关闭进入脉冲",
+      description: "pulseOnEnter={false} 去掉进入时的抖动脉冲，只保留平滑跟随。",
+      code: `<Crosshair pulseOnEnter={false} color="var(--color-foreground)" />`,
+      render: () => (
+        <Stage>
+          <Crosshair pulseOnEnter={false} color="var(--color-foreground)" />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "smoothing", type: "number", defaultValue: 0.15, label: "跟随平滑 0–1" },
     { prop: "thickness", type: "number", defaultValue: 1, label: "线条粗细 px" },

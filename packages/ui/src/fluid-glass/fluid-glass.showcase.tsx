@@ -12,6 +12,103 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const fluidGlassShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "放进 relative 容器，组件自带 absolute inset-0；移动指针看玻璃透镜跟随折射。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  <FluidGlass className="absolute inset-0">
+    <div className="flex h-full items-center justify-center text-lg font-semibold text-white drop-shadow">
+      Fluid Glass
+    </div>
+  </FluidGlass>
+</div>`,
+      render: () => (
+        <Stage>
+          <FluidGlass className="absolute inset-0">
+            <div className="flex h-full items-center justify-center text-lg font-semibold text-white drop-shadow">
+              Fluid Glass
+            </div>
+          </FluidGlass>
+        </Stage>
+      ),
+    },
+    {
+      title: "强折射 + 强色散",
+      description: "调大 size/refraction/dispersion 模拟更厚、彩边更明显的玻璃。",
+      code: `<FluidGlass
+  size={0.32}
+  refraction={0.85}
+  dispersion={0.7}
+  className="absolute inset-0"
+/>`,
+      render: () => (
+        <Stage>
+          <FluidGlass
+            size={0.32}
+            refraction={0.85}
+            dispersion={0.7}
+            className="absolute inset-0"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "不跟随指针",
+      description: "followPointer={false} 时透镜停在中心做缓慢自漂移。",
+      code: `<FluidGlass
+  followPointer={false}
+  size={0.24}
+  className="absolute inset-0"
+/>`,
+      render: () => (
+        <Stage>
+          <FluidGlass
+            followPointer={false}
+            size={0.24}
+            className="absolute inset-0"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义配色",
+      description: "colors 传任意三色覆盖默认 chart token 的流动底图。",
+      code: `<FluidGlass
+  colors={[
+    "oklch(0.72 0.2 30)",
+    "oklch(0.78 0.16 70)",
+    "var(--color-chart-3)",
+  ]}
+  refraction={0.6}
+  className="absolute inset-0"
+>
+  <div className="flex h-full flex-col items-center justify-center gap-1">
+    <p className="text-base font-semibold text-white">瑚琏组件库</p>
+    <p className="text-xs text-white/70">流体玻璃 · 实时折射</p>
+  </div>
+</FluidGlass>`,
+      render: () => (
+        <Stage>
+          <FluidGlass
+            colors={[
+              "oklch(0.72 0.2 30)",
+              "oklch(0.78 0.16 70)",
+              "var(--color-chart-3)",
+            ]}
+            refraction={0.6}
+            className="absolute inset-0"
+          >
+            <div className="flex h-full flex-col items-center justify-center gap-1">
+              <p className="text-base font-semibold text-white">瑚琏组件库</p>
+              <p className="text-xs text-white/70">流体玻璃 · 实时折射</p>
+            </div>
+          </FluidGlass>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "size", type: "number", defaultValue: 0.26, label: "透镜大小" },
     { prop: "refraction", type: "number", defaultValue: 0.5, label: "折射强度" },

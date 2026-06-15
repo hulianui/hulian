@@ -11,6 +11,115 @@ const actions = (
 );
 
 export const commentShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "头像 + 作者 + 时间 + 正文，字符串正文自动高亮 @提及。",
+      code: `<Comment
+  author="瑚琏"
+  avatar={{ fallback: "瑚" }}
+  datetime="2 小时前"
+  content="工单已分配，请 @李四 跟进处理。"
+/>`,
+      render: () => (
+        <Comment
+          author="瑚琏"
+          avatar={{ fallback: "瑚" }}
+          datetime="2 小时前"
+          content="工单已分配，请 @李四 跟进处理。"
+        />
+      ),
+    },
+    {
+      title: "操作区",
+      description: "actions 槽放 CommentAction，传 href 渲染为链接型操作。",
+      code: `<Comment
+  author="瑚琏"
+  avatar={{ fallback: "瑚" }}
+  datetime="2 小时前"
+  content="这条评论带点赞与回复操作。"
+  actions={
+    <>
+      <CommentAction>👍 赞 12</CommentAction>
+      <CommentAction href="#reply">回复</CommentAction>
+    </>
+  }
+/>`,
+      render: () => (
+        <Comment
+          author="瑚琏"
+          avatar={{ fallback: "瑚" }}
+          datetime="2 小时前"
+          content="这条评论带点赞与回复操作。"
+          actions={actions}
+        />
+      ),
+    },
+    {
+      title: "嵌套回复 + 连接线",
+      description: "children 递归 Comment 自动缩进，connector 画左侧连接线。",
+      code: `<Comment
+  author="瑚琏"
+  avatar={{ fallback: "瑚" }}
+  datetime="2 小时前"
+  content="问题已复现。"
+  connector
+>
+  <Comment
+    author="李四"
+    avatar={{ fallback: "李" }}
+    datetime="1 小时前"
+    content="收到，正在排查根因。"
+  />
+</Comment>`,
+      render: () => (
+        <Comment
+          author="瑚琏"
+          avatar={{ fallback: "瑚" }}
+          datetime="2 小时前"
+          content="问题已复现。"
+          connector
+        >
+          <Comment
+            author="李四"
+            avatar={{ fallback: "李" }}
+            datetime="1 小时前"
+            content="收到，正在排查根因。"
+          />
+        </Comment>
+      ),
+    },
+    {
+      title: "系统日志",
+      description: "type=\"log\" 弱化为点标记 + 单行内联（工单状态变更等）。",
+      code: `<>
+  <Comment type="log" author="系统" content="将工单状态改为「处理中」" datetime="14:25" />
+  <Comment type="log" author="张三" content="指派给 @李四" datetime="14:26" />
+</>`,
+      render: () => (
+        <div className="space-y-2">
+          <Comment type="log" author="系统" content="将工单状态改为「处理中」" datetime="14:25" />
+          <Comment type="log" author="张三" content="指派给 @李四" datetime="14:26" />
+        </div>
+      ),
+    },
+    {
+      title: "复用 User 作者卡",
+      description: "author 可直接传入瑚琏 User 组合件。",
+      code: `<Comment
+  author={<User name="瑚琏" description="@hulian" avatarProps={{ fallback: "瑚", size: "sm" }} />}
+  datetime="刚刚"
+  content="作者区可直接传入瑚琏 User 组合件。"
+/>`,
+      render: () => (
+        <Comment
+          author={<User name="瑚琏" description="@hulian" avatarProps={{ fallback: "瑚", size: "sm" }} />}
+          datetime="刚刚"
+          content="作者区可直接传入瑚琏 User 组合件。"
+        />
+      ),
+    },
+  ],
   controls: [
     { prop: "type", type: "select", options: ["comment", "log"], defaultValue: "comment", label: "类型" },
     { prop: "connector", type: "boolean", defaultValue: true, label: "连接线" },

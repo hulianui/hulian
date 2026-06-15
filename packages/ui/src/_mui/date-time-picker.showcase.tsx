@@ -9,6 +9,40 @@ function Demo() {
 }
 
 export const dateTimePickerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "一体弹层同时选「年月日 + 时间」，24 小时制。",
+      code: `<DateTimePicker label="选择日期时间" defaultValue="2026-06-03T14:30:00" />`,
+      render: () => <DateTimePicker label="选择日期时间" defaultValue="2026-06-03T14:30:00" />,
+    },
+    {
+      title: "受控",
+      description: "对外受控值为含日期+时间的 ISO 字符串。",
+      code: `const [dt, setDt] = useState<string | null>("2026-06-03T14:30:00");
+
+<DateTimePicker label="选择日期时间" value={dt} onValueChange={setDt} />`,
+      render: () => <DateTimePicker label="选择日期时间" defaultValue="2026-06-03T14:30:00" />,
+    },
+    {
+      title: "分钟步进",
+      description: "minutesStep 约束分钟列的步进（如预约场景 15 分钟一档）。",
+      code: `<DateTimePicker label="预约时间" defaultValue="2026-06-15T09:00:00" minutesStep={15} />`,
+      render: () => <DateTimePicker label="预约时间" defaultValue="2026-06-15T09:00:00" minutesStep={15} />,
+    },
+    {
+      title: "精确到秒",
+      description: "withSeconds 启用秒列，格式变为 YYYY-MM-DD HH:mm:ss。",
+      code: `<DateTimePicker label="时间戳" defaultValue="2026-06-15T09:00:30" withSeconds />`,
+      render: () => <DateTimePicker label="时间戳" defaultValue="2026-06-15T09:00:30" withSeconds />,
+    },
+    {
+      title: "禁用",
+      description: "整体置灰，不可打开也不可编辑。",
+      code: `<DateTimePicker label="选择日期时间" value="2026-06-03T14:30:00" disabled />`,
+      render: () => <DateTimePicker label="选择日期时间" value="2026-06-03T14:30:00" disabled />,
+    },
+  ],
   controls: [
     { prop: "label", type: "text", defaultValue: "选择日期时间", label: "标签" },
     { prop: "withSeconds", type: "boolean", defaultValue: false, label: "精确到秒" },

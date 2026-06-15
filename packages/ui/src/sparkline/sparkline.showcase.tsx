@@ -56,6 +56,68 @@ function InlineTable() {
 }
 
 export const sparklineShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "折线（基础用法）",
+      description: "默认 line 形态，data 传纯数字序列即可，零依赖纯 SVG。",
+      code: `<Sparkline data={[4, 6, 5, 8, 7, 10, 9, 12, 11, 14]} />`,
+      render: () => <Sparkline data={series} width={140} height={36} />,
+    },
+    {
+      title: "强调末点",
+      description: "highlightLast 在末点画强调圆点，突出最新值。",
+      code: `<Sparkline
+  data={[4, 6, 5, 8, 7, 10, 9, 12, 11, 14]}
+  highlightLast
+  width={140}
+  height={36}
+/>`,
+      render: () => (
+        <Sparkline data={series} highlightLast width={140} height={36} />
+      ),
+    },
+    {
+      title: "形态：面积 / 柱",
+      description: "variant 切换 line / area / bar；tone 吃语义色或 token 变量。",
+      code: `<>
+  <Sparkline data={series} variant="area" tone="var(--color-chart-2)" width={140} height={36} />
+  <Sparkline data={dipSeries} variant="bar" tone="var(--color-chart-4)" width={140} height={36} />
+</>`,
+      render: () => (
+        <div className="flex items-center gap-6">
+          <Sparkline
+            data={series}
+            variant="area"
+            tone="var(--color-chart-2)"
+            width={140}
+            height={36}
+          />
+          <Sparkline
+            data={dipSeries}
+            variant="bar"
+            tone="var(--color-chart-4)"
+            width={140}
+            height={36}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "表格内联",
+      description:
+        "每行一条趋势，配 renderTooltip（原生 <title>，零 JS、RSC 安全）做逐点说明。",
+      code: `<Sparkline
+  data={row.trend}
+  variant="line"
+  tone={row.tone}
+  highlightLast
+  width={96}
+  height={22}
+  renderTooltip={(v, i) => \`第 \${i + 1} 周期：\${v}\`}
+/>`,
+      render: () => <InlineTable />,
+    },
+  ],
   controls: [
     {
       prop: "variant",

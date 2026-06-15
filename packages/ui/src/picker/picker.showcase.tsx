@@ -23,7 +23,49 @@ function Demo() {
   );
 }
 
+const fruits: PickerColumn = {
+  options: [
+    { value: "apple", label: "苹果" },
+    { value: "banana", label: "香蕉" },
+    { value: "orange", label: "橙子" },
+    { value: "grape", label: "葡萄" },
+    { value: "melon", label: "西瓜" },
+  ],
+};
+
 export const pickerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "单列选择",
+      description: "单列滚轮，非受控用 defaultValue 设初始项。",
+      code: `<Picker columns={[fruits]} defaultValue={["orange"]} />`,
+      render: () => (
+        <div className="w-40">
+          <Picker columns={[fruits]} defaultValue={["orange"]} />
+        </div>
+      ),
+    },
+    {
+      title: "多列联动",
+      description: "columns 传多列即多滚轮（如时:分），value 为各列选中值数组。",
+      code: `<Picker columns={[hours, minutes]} defaultValue={["9", "30"]} />`,
+      render: () => (
+        <div className="w-56">
+          <Picker columns={[hours, minutes]} defaultValue={["9", "30"]} />
+        </div>
+      ),
+    },
+    {
+      title: "可见行数",
+      description: "visibleCount 控制窗口高度（建议奇数），itemHeight 控制行高。",
+      code: `<Picker columns={[fruits]} visibleCount={3} itemHeight={36} />`,
+      render: () => (
+        <div className="w-40">
+          <Picker columns={[fruits]} visibleCount={3} itemHeight={36} defaultValue={["banana"]} />
+        </div>
+      ),
+    },
+  ],
   controls: [],
   states: [{ name: "时间滚轮（时:分）", render: () => <Demo /> }],
   renderWithProps: () => <Demo />,

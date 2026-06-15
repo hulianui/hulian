@@ -34,6 +34,74 @@ function NavbarDemo({ justify = "end" }: { justify?: "start" | "center" | "end" 
 }
 
 export const navbarShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "NavbarBrand 放品牌，NavbarContent 排导航项，isActive 高亮当前页。",
+      code: `<Navbar bordered>
+  <NavbarBrand>瑚琏</NavbarBrand>
+  <NavbarContent justify="end">
+    <NavbarItem isActive>组件</NavbarItem>
+    <NavbarItem>文档</NavbarItem>
+    <NavbarItem>主题</NavbarItem>
+  </NavbarContent>
+</Navbar>`,
+      render: () => (
+        <div className="w-full overflow-hidden rounded-[var(--radius)] border border-border">
+          <Navbar bordered={false}>
+            <NavbarBrand>瑚琏</NavbarBrand>
+            <NavbarContent justify="end">
+              <NavbarItem isActive>组件</NavbarItem>
+              <NavbarItem>文档</NavbarItem>
+              <NavbarItem>主题</NavbarItem>
+            </NavbarContent>
+          </Navbar>
+        </div>
+      ),
+    },
+    {
+      title: "内容居中",
+      description: "NavbarContent 的 justify 控制导航项对齐方向。",
+      code: `<Navbar bordered>
+  <NavbarBrand>瑚琏</NavbarBrand>
+  <NavbarContent justify="center">
+    <NavbarItem isActive>组件</NavbarItem>
+    <NavbarItem>文档</NavbarItem>
+    <NavbarItem>主题</NavbarItem>
+  </NavbarContent>
+</Navbar>`,
+      render: () => (
+        <div className="w-full overflow-hidden rounded-[var(--radius)] border border-border">
+          <Navbar bordered={false}>
+            <NavbarBrand>瑚琏</NavbarBrand>
+            <NavbarContent justify="center">
+              <NavbarItem isActive>组件</NavbarItem>
+              <NavbarItem>文档</NavbarItem>
+              <NavbarItem>主题</NavbarItem>
+            </NavbarContent>
+          </Navbar>
+        </div>
+      ),
+    },
+    {
+      title: "响应式菜单",
+      description: "窄屏用 NavbarMenuToggle 受控展开折叠菜单（缩小窗口查看）。",
+      code: `function App() {
+  const [open, setOpen] = useState(false);
+  return (
+    <Navbar bordered>
+      <NavbarMenuToggle isOpen={open} onToggle={() => setOpen((v) => !v)} />
+      <NavbarBrand>瑚琏</NavbarBrand>
+      <NavbarContent justify="end" className="hidden sm:flex">
+        <NavbarItem isActive>组件</NavbarItem>
+        <NavbarItem>文档</NavbarItem>
+      </NavbarContent>
+    </Navbar>
+  );
+}`,
+      render: () => <NavbarDemo justify="end" />,
+    },
+  ],
   controls: [
     { prop: "justify", type: "select", options: ["start", "center", "end"], defaultValue: "end" },
   ],

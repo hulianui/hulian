@@ -47,6 +47,70 @@ const FROM = "'wght' 400, 'opsz' 9";
 const TO = "'wght' 900, 'opsz' 40";
 
 export const variableProximityShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "用 containerRef 让距离基于容器坐标系；鼠标移近字形即逐字插值字重/视觉尺寸。",
+      code: `const ref = useRef<HTMLDivElement>(null);
+
+<div ref={ref} className="relative">
+  <VariableProximity
+    label="把鼠标移到这里 Hover me"
+    fromFontVariationSettings="'wght' 400, 'opsz' 9"
+    toFontVariationSettings="'wght' 900, 'opsz' 40"
+    containerRef={ref}
+    radius={90}
+    falloff="linear"
+  />
+</div>`,
+      render: () => <Stage from={FROM} to={TO} radius={90} falloff="linear" />,
+    },
+    {
+      title: "高斯衰减",
+      description: 'falloff="gaussian" 让中心更聚拢、过渡更柔和，配合较大半径更自然。',
+      code: `<VariableProximity
+  label="把鼠标移到这里 Hover me"
+  fromFontVariationSettings="'wght' 400, 'opsz' 9"
+  toFontVariationSettings="'wght' 900, 'opsz' 40"
+  containerRef={ref}
+  radius={120}
+  falloff="gaussian"
+/>`,
+      render: () => <Stage from={FROM} to={TO} radius={120} falloff="gaussian" />,
+    },
+    {
+      title: "指数衰减 · 小半径",
+      description: 'falloff="exponential" 增长更陡，配合小半径只有贴近字形时才明显变化。',
+      code: `<VariableProximity
+  label="把鼠标移到这里 Hover me"
+  fromFontVariationSettings="'wght' 400, 'opsz' 9"
+  toFontVariationSettings="'wght' 900, 'opsz' 40"
+  containerRef={ref}
+  radius={55}
+  falloff="exponential"
+/>`,
+      render: () => <Stage from={FROM} to={TO} radius={55} falloff="exponential" />,
+    },
+    {
+      title: "浅色底",
+      description: "在浅色背景上同样可用，文字色走 token 自动适配明暗。",
+      code: `<div ref={ref} className="relative">
+  <VariableProximity
+    label="把鼠标移到这里 Hover me"
+    fromFontVariationSettings="'wght' 400, 'opsz' 9"
+    toFontVariationSettings="'wght' 900, 'opsz' 40"
+    containerRef={ref}
+    radius={90}
+    falloff="linear"
+    className="text-3xl font-medium"
+  />
+</div>`,
+      render: () => (
+        <Stage from={FROM} to={TO} radius={90} falloff="linear" dark={false} />
+      ),
+    },
+  ],
+
   controls: [
     { prop: "radius", type: "number", defaultValue: 90, label: "影响半径 px" },
     {

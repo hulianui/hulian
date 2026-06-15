@@ -34,6 +34,54 @@ function FullscreenDemo() {
 }
 
 export const spinShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "包裹内容",
+      description: "spinning 时给被包裹的内容盖一层半透明遮罩 + 居中指示器，内容降透明且不可交互。",
+      code: `<Spin spinning tip="加载中…">
+  <YourContent />
+</Spin>`,
+      render: () => (
+        <Spin spinning tip="加载中…">
+          <SampleBox />
+        </Spin>
+      ),
+    },
+    {
+      title: "加载完成（直出内容）",
+      description: "spinning=false 时不渲染遮罩，children 正常显示。",
+      code: `<Spin spinning={false}>
+  <YourContent />
+</Spin>`,
+      render: () => (
+        <Spin spinning={false}>
+          <SampleBox />
+        </Spin>
+      ),
+    },
+    {
+      title: "纯指示器",
+      description: "不传 children 时 Spin 作为独立加载指示器（无遮罩），可带提示文案。",
+      code: `<Spin spinning tip="处理中" />`,
+      render: () => <Spin spinning tip="处理中" />,
+    },
+    {
+      title: "三尺寸",
+      description: "size 透传内部 Spinner，控制指示器大小。",
+      code: `<>
+  <Spin spinning size="sm" />
+  <Spin spinning size="md" />
+  <Spin spinning size="lg" />
+</>`,
+      render: () => (
+        <div className="flex items-center gap-8">
+          <Spin spinning size="sm" />
+          <Spin spinning size="md" />
+          <Spin spinning size="lg" />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "spinning", type: "boolean", defaultValue: true, label: "加载中" },
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "尺寸" },

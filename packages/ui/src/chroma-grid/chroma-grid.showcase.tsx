@@ -47,6 +47,60 @@ const TEAM: ChromaGridItem[] = [
 ];
 
 export const chromaGridShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "不传 items 时回退内置占位卡墙；移入鼠标在光标周围揭示出全彩窗口。",
+      code: `<ChromaGrid columns={3} />`,
+      render: () => (
+        <Stage>
+          <ChromaGrid columns={3} />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义团队卡",
+      description: "传 items 数组，每项含标题/副标题/句柄与 chart token 描边渐变。",
+      code: `const team = [
+  {
+    title: "林屿",
+    subtitle: "全栈工程师",
+    handle: "@linyu",
+    borderColor: "var(--color-chart-1)",
+    gradient: "linear-gradient(145deg, var(--color-chart-1), transparent)",
+  },
+  // …
+];
+
+<ChromaGrid items={team} columns={2} radius={260} />`,
+      render: () => (
+        <Stage>
+          <ChromaGrid items={TEAM} columns={2} radius={260} />
+        </Stage>
+      ),
+    },
+    {
+      title: "小半径聚焦",
+      description: "调小 radius 收紧揭示窗口，聚光更集中。",
+      code: `<ChromaGrid items={team} columns={2} radius={180} />`,
+      render: () => (
+        <Stage>
+          <ChromaGrid items={TEAM} columns={2} radius={180} />
+        </Stage>
+      ),
+    },
+    {
+      title: "高阻尼慢跟随",
+      description: "调大 damping 让揭示窗更黏地跟随光标，fadeOut 控制移出后的淡出时长。",
+      code: `<ChromaGrid items={team} columns={2} damping={0.8} fadeOut={1.2} />`,
+      render: () => (
+        <Stage>
+          <ChromaGrid items={TEAM} columns={2} damping={0.8} fadeOut={1.2} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "radius", type: "number", defaultValue: 300, label: "揭示半径 px" },
     { prop: "columns", type: "number", defaultValue: 3, label: "列数" },

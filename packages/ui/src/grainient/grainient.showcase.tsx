@@ -12,6 +12,69 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const grainientShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认吃 chart token 三色，自带 absolute inset-0 z-0；放进 relative 容器即铺满。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl bg-neutral-950">
+  <Grainient />
+  <div className="relative z-10 flex h-full items-center justify-center text-white/85">
+    内容层
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Grainient />
+          <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/85">
+            内容层
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "纯净渐变（无颗粒）",
+      description: "grainAmount={0} 关闭胶片颗粒，得到干净的域扭曲色场。",
+      code: `<Grainient grainAmount={0} timeSpeed={0.18} />`,
+      render: () => (
+        <Stage>
+          <Grainient grainAmount={0} timeSpeed={0.18} />
+        </Stage>
+      ),
+    },
+    {
+      title: "重颗粒胶片感",
+      description: "grainAmount 调高 + grainAnimated 让颗粒随时间闪动，营造胶片噪点。",
+      code: `<Grainient grainAmount={0.22} grainAnimated contrast={1.7} />`,
+      render: () => (
+        <Stage>
+          <Grainient grainAmount={0.22} grainAnimated contrast={1.7} />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义三色 + 放大取景",
+      description: "color1/2/3 传任意 CSS 颜色，zoom 越小看到的色场范围越大。",
+      code: `<Grainient
+  color1="oklch(0.82 0.16 70)"
+  color2="oklch(0.62 0.2 30)"
+  color3="oklch(0.32 0.06 300)"
+  zoom={1.3}
+  timeSpeed={0.35}
+/>`,
+      render: () => (
+        <Stage>
+          <Grainient
+            color1="oklch(0.82 0.16 70)"
+            color2="oklch(0.62 0.2 30)"
+            color3="oklch(0.32 0.06 300)"
+            zoom={1.3}
+            timeSpeed={0.35}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "timeSpeed", type: "number", defaultValue: 0.25, label: "时间流速" },
     { prop: "grainAmount", type: "number", defaultValue: 0.1, label: "颗粒强度" },

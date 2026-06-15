@@ -150,6 +150,53 @@ function AnchorDemo({ offsetTop = 8 }: { offsetTop?: number }) {
 }
 
 export const anchorShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "目录与长文联动",
+      description:
+        "左侧 sticky 目录 + 右侧独立滚动容器。滚动正文时高亮与指示条跟随当前章节，点击目录平滑跳转。",
+      code: `const ref = useRef<HTMLDivElement>(null);
+
+<div className="flex gap-6">
+  <Anchor items={items} getContainer={() => ref.current} className="sticky top-0 w-40" />
+  <div ref={ref} className="h-80 overflow-y-auto">
+    {/* 每个章节带与 href 对应的 id */}
+  </div>
+</div>`,
+      render: () => <AnchorDemo />,
+    },
+    {
+      title: "二级锚点",
+      description: "在某项上提供 children 即形成一层二级目录，渲染时自动缩进，scrollspy 扁平参与计算。",
+      code: `<Anchor
+  items={[
+    { href: "#sec-overview", title: "概述" },
+    {
+      href: "#sec-guide",
+      title: "快速上手",
+      children: [
+        { href: "#sec-install", title: "安装" },
+        { href: "#sec-usage", title: "基础用法" },
+      ],
+    },
+  ]}
+  className="w-48"
+/>`,
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-border p-4">
+          <Anchor items={docItems} className="w-48" />
+        </div>
+      ),
+    },
+    {
+      title: "避开固定页头",
+      description: "页面有固定页头时设置 offsetTop=页头高度，点击滚动预留这段距离，高亮判定同步对齐。",
+      code: `const ref = useRef<HTMLDivElement>(null);
+
+<Anchor items={items} offsetTop={64} getContainer={() => ref.current} />`,
+      render: () => <AnchorDemo offsetTop={32} />,
+    },
+  ],
   controls: [
     {
       prop: "offsetTop",

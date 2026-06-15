@@ -18,6 +18,58 @@ function Demo() {
 }
 
 export const ratingShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "非受控默认 3 星，点击/悬停可改分；受控时用 value + onValueChange。",
+      code: `<Rating defaultValue={3} onValueChange={setValue} />`,
+      render: () => <Rating defaultValue={3} />,
+    },
+    {
+      title: "只读",
+      description: "readOnly 仅展示评分，禁止交互。",
+      code: `<Rating value={4} readOnly />`,
+      render: () => <Rating value={4} readOnly />,
+    },
+    {
+      title: "尺寸",
+      description: "size 控制图标大小（sm / md / lg）。",
+      code: `<>
+  <Rating defaultValue={3} size="sm" />
+  <Rating defaultValue={3} size="md" />
+  <Rating defaultValue={3} size="lg" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-2">
+          <Rating defaultValue={3} size="sm" />
+          <Rating defaultValue={3} size="md" />
+          <Rating defaultValue={3} size="lg" />
+        </div>
+      ),
+    },
+    {
+      title: "自定义颜色",
+      description: "color 接受 token var() 或任意 CSS 颜色，hover 自动派生。",
+      code: `<Rating defaultValue={4} color="var(--color-warning)" />`,
+      render: () => <Rating defaultValue={4} color="var(--color-warning)" />,
+    },
+    {
+      title: "自定义图标",
+      description: "icon 透传任意图标（如 ❤️），空状态复用同形状。",
+      code: `<Rating
+  defaultValue={3}
+  color="var(--color-danger)"
+  icon={<Heart size="1em" fill="currentColor" />}
+/>`,
+      render: () => (
+        <Rating
+          defaultValue={3}
+          color="var(--color-danger)"
+          icon={<Heart size="1em" fill="currentColor" />}
+        />
+      ),
+    },
+  ],
   controls: [
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "尺寸" },
     {

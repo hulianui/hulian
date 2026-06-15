@@ -27,6 +27,52 @@ function Mark() {
 }
 
 export const pillNavShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传入 items 与 activeHref，激活项常驻反相态并点亮指示圆点。",
+      code: `<PillNav
+  items={[
+    { href: "#home", label: "Home" },
+    { href: "#features", label: "Features" },
+    { href: "#pricing", label: "Pricing" },
+    { href: "#docs", label: "Docs" },
+  ]}
+  activeHref="#home"
+/>`,
+      render: () => (
+        <Stage>
+          <PillNav items={items} activeHref="#home" />
+        </Stage>
+      ),
+    },
+    {
+      title: "带品牌 logo",
+      description: "传 logo 槽渲染左侧圆形标识，悬停时整枚 logo 旋转一圈。",
+      code: `<PillNav items={items} activeHref="#features" logo={<Mark />} />`,
+      render: () => (
+        <Stage>
+          <PillNav items={items} activeHref="#features" logo={<Mark />} />
+        </Stage>
+      ),
+    },
+    {
+      title: "关闭入场动画",
+      description: "initialLoadAnimation={false} 跳过首次加载的弹入/展开动效。",
+      code: `<PillNav
+  items={items}
+  activeHref="#pricing"
+  logo={<Mark />}
+  initialLoadAnimation={false}
+/>`,
+      render: () => (
+        <Stage>
+          <PillNav items={items} activeHref="#pricing" logo={<Mark />} initialLoadAnimation={false} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "activeHref", type: "select", options: ["#home", "#features", "#pricing", "#docs"], defaultValue: "#home", label: "激活项" },
     { prop: "withLogo", type: "boolean", defaultValue: true, label: "显示 logo" },

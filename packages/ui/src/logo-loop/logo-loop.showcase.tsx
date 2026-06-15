@@ -38,6 +38,71 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const logoLoopShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "传入 logos 列表（图标或图片混排），序列自动复制实现无缝无限滚动；fadeOut 给两端加渐隐遮罩（吃 surface token）。",
+      code: `const logos = [
+  { node: <Hexagon />, ariaLabel: "Hexagon" },
+  { node: <Cloud />, ariaLabel: "Cloud" },
+  { node: <Database />, ariaLabel: "Database" },
+];
+
+<LogoLoop logos={logos} fadeOut />`,
+      render: () => (
+        <Stage>
+          <LogoLoop logos={NODE_LOGOS} fadeOut />
+        </Stage>
+      ),
+    },
+    {
+      title: "悬停暂停 + 放大",
+      description:
+        "direction 控制方向；pauseOnHover 悬停停滚，scaleOnHover 悬停放大被指向的单个 logo。",
+      code: `<LogoLoop
+  logos={logos}
+  direction="right"
+  fadeOut
+  pauseOnHover
+  scaleOnHover
+/>`,
+      render: () => (
+        <Stage>
+          <LogoLoop
+            logos={NODE_LOGOS}
+            direction="right"
+            fadeOut
+            pauseOnHover
+            scaleOnHover
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "速度与间距",
+      description: "speed 调滚动速度（px/s，负值反向），gap 调项间距，logoHeight 调 logo 高度。",
+      code: `<LogoLoop logos={logos} speed={220} gap={56} logoHeight={32} />`,
+      render: () => (
+        <Stage>
+          <LogoLoop logos={NODE_LOGOS} speed={220} gap={56} logoHeight={32} />
+        </Stage>
+      ),
+    },
+    {
+      title: "纵向滚动",
+      description: 'direction="up" / "down" 改为纵向滚动，需放在有高度的容器内。',
+      code: `<div className="h-56 overflow-hidden px-8">
+  <LogoLoop logos={logos} direction="up" fadeOut />
+</div>`,
+      render: () => (
+        <div className="h-56 overflow-hidden rounded-xl border border-border bg-surface px-8">
+          <LogoLoop logos={NODE_LOGOS} direction="up" fadeOut />
+        </div>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "speed", type: "number", defaultValue: 120, label: "速度 px/s" },
     {

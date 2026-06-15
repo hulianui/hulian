@@ -27,6 +27,113 @@ const ORIGINS: LightRaysOrigin[] = [
 ];
 
 export const lightRaysShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认 top-center 自顶部中央向下放射，组件自带 absolute inset-0 z-0。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.13 0.02 265)" }}>
+  <LightRays raysOrigin="top-center" className="opacity-90" />
+  <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+    LightRays
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <LightRays raysOrigin="top-center" className="opacity-90" />
+          <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+            LightRays
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "左侧射入 · 暖色",
+      description: "raysOrigin 改方向，raysColor 传暖色，lightSpread 调聚拢。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.13 0.02 265)" }}>
+  <LightRays
+    raysOrigin="left"
+    raysColor="oklch(0.78 0.16 70)"
+    lightSpread={0.8}
+    className="opacity-90"
+  />
+</div>`,
+      render: () => (
+        <Stage>
+          <LightRays
+            raysOrigin="left"
+            raysColor="oklch(0.78 0.16 70)"
+            lightSpread={0.8}
+            className="opacity-90"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "脉动 + 噪点质感",
+      description: "pulsating 整体亮度呼吸，noiseAmount 叠加细微噪点。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.13 0.02 265)" }}>
+  <LightRays
+    raysOrigin="top-center"
+    pulsating
+    noiseAmount={0.25}
+    raysSpeed={1.4}
+    className="opacity-90"
+  />
+</div>`,
+      render: () => (
+        <Stage>
+          <LightRays
+            raysOrigin="top-center"
+            pulsating
+            noiseAmount={0.25}
+            raysSpeed={1.4}
+            className="opacity-90"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "底部上射 · 聚拢窄束",
+      description: "bottom-center + 小 lightSpread 聚成窄束，children 叠标题（注：组件根 aria-hidden）。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.13 0.02 265)" }}>
+  <LightRays
+    raysOrigin="bottom-center"
+    lightSpread={0.4}
+    rayLength={2.6}
+    distortion={0.3}
+    followMouse={false}
+    className="opacity-90"
+  >
+    <div className="flex h-full flex-col items-center justify-center gap-1">
+      <p className="text-lg font-semibold text-white">瑚琏组件库</p>
+      <p className="text-xs text-white/60">体积光束 · WebGL · token 着色</p>
+    </div>
+  </LightRays>
+</div>`,
+      render: () => (
+        <Stage>
+          <LightRays
+            raysOrigin="bottom-center"
+            lightSpread={0.4}
+            rayLength={2.6}
+            distortion={0.3}
+            followMouse={false}
+            className="opacity-90"
+          >
+            <div className="flex h-full flex-col items-center justify-center gap-1">
+              <p className="text-lg font-semibold text-white">瑚琏组件库</p>
+              <p className="text-xs text-white/60">体积光束 · WebGL · token 着色</p>
+            </div>
+          </LightRays>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "raysOrigin",

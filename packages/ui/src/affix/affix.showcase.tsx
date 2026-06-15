@@ -56,6 +56,32 @@ function AffixDemo({
 }
 
 export const affixShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "吸顶",
+      description: "offsetTop 设定距容器顶多少 px 时吸附固定。原位由等高占位元素撑住防布局跳动。",
+      code: `<Affix offsetTop={8}>
+  <div className="rounded border bg-primary px-4 py-2 text-bg">操作栏</div>
+</Affix>`,
+      render: () => <AffixDemo offsetTop={8} />,
+    },
+    {
+      title: "吸底",
+      description: "改用 offsetBottom，内容滚动越过容器底部阈值时钉到底部（仅在未给 offsetTop 时生效）。",
+      code: `<Affix offsetBottom={8}>
+  <div className="rounded border bg-primary px-4 py-2 text-bg">操作栏</div>
+</Affix>`,
+      render: () => <AffixDemo offsetBottom={8} />,
+    },
+    {
+      title: "吸附时加阴影",
+      description: "affixedClassName 在吸附态附加类名，常用于吸附时浮起阴影；onChange 可同步吸附态。",
+      code: `<Affix offsetTop={8} affixedClassName="shadow-lg" onChange={setAffixed}>
+  <div className="rounded border bg-primary px-4 py-2 text-bg">操作栏</div>
+</Affix>`,
+      render: () => <AffixDemo offsetTop={8} affixedClassName="shadow-lg" />,
+    },
+  ],
   controls: [
     { prop: "offsetTop", type: "number", defaultValue: 8, label: "offsetTop" },
   ],

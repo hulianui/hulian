@@ -30,6 +30,69 @@ const logo =
   );
 
 export const watermarkShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "包裹内容区即平铺单行水印，pointer-events:none 不挡交互。",
+      code: `<Watermark content="瑚琏 · 机密">
+  <YourContent />
+</Watermark>`,
+      render: () => (
+        <Watermark content="瑚琏 · 机密" className="w-full max-w-xl">
+          <Sheet />
+        </Watermark>
+      ),
+    },
+    {
+      title: "多行文字",
+      description: "content 传数组渲染为多行水印。",
+      code: `<Watermark content={["瑚琏机密", "zhangzhiwei"]}>
+  <YourContent />
+</Watermark>`,
+      render: () => (
+        <Watermark content={["瑚琏机密", "zhangzhiwei"]} className="w-full max-w-xl">
+          <Sheet />
+        </Watermark>
+      ),
+    },
+    {
+      title: "密集 + 自定义颜色",
+      description: "gap 收紧间距，color / rotate / opacity 自定义观感。",
+      code: `<Watermark
+  content="DO NOT SHARE"
+  gap={48}
+  rotate={-30}
+  color="var(--color-danger)"
+  opacity={0.18}
+>
+  <YourContent />
+</Watermark>`,
+      render: () => (
+        <Watermark
+          content="DO NOT SHARE"
+          gap={48}
+          rotate={-30}
+          color="var(--color-danger)"
+          opacity={0.18}
+          className="w-full max-w-xl"
+        >
+          <Sheet />
+        </Watermark>
+      ),
+    },
+    {
+      title: "图片水印",
+      description: "传 image（dataURL / 链接）即用图片平铺，width 控制宽度。",
+      code: `<Watermark image={logoDataUrl} width={84}>
+  <YourContent />
+</Watermark>`,
+      render: () => (
+        <Watermark image={logo} width={84} className="w-full max-w-xl">
+          <Sheet />
+        </Watermark>
+      ),
+    },
+  ],
   controls: [
     { prop: "content", type: "text", defaultValue: "瑚琏 · 机密", label: "水印文字" },
     { prop: "rotate", type: "number", defaultValue: -22, label: "旋转角度" },

@@ -28,6 +28,7 @@ export function loadComponentDoc(slug: string): string | null {
   md = md.trimStart(); // frontmatter block leaves a leading blank line
   md = md.replace(/^#\s+.*\n+/, ""); // drop leading H1 (page header already shows name)
   md = md.replace(/^>\s.*\n+/, ""); // drop the blurb quote (page header already shows description)
+  md = md.replace(/\n## 示例\n[\s\S]*?(?=\n## |$)/, ""); // page shows live 用法 examples instead of static 示例
   // rewrite "相关" links (../slug/slug.md | ../_mui/slug.md) → in-site /components/slug
   md = md.replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, "](/components/$1)");
   return md.trim();

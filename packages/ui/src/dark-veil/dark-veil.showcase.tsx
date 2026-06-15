@@ -15,6 +15,71 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const darkVeilShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认冷调暗色帷幕，放进 relative 容器即可铺满。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 280)" }}>
+  <DarkVeil />
+</div>`,
+      render: () => (
+        <Stage>
+          <DarkVeil />
+          <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+            DarkVeil
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "色相偏移 + 扭曲",
+      description: "hueShift 旋转基调，warpAmount 让帷幕产生波动折射感。",
+      code: `<DarkVeil hueShift={120} warpAmount={0.08} speed={0.6} />`,
+      render: () => (
+        <Stage>
+          <DarkVeil hueShift={120} warpAmount={0.08} speed={0.6} />
+        </Stage>
+      ),
+    },
+    {
+      title: "复古显示器",
+      description: "scanline + noise 叠出 CRT 扫描线与胶片颗粒质感。",
+      code: `<DarkVeil
+  hueShift={200}
+  scanlineIntensity={0.35}
+  scanlineFrequency={1.6}
+  noiseIntensity={0.04}
+  speed={0.4}
+/>`,
+      render: () => (
+        <Stage>
+          <DarkVeil
+            hueShift={200}
+            scanlineIntensity={0.35}
+            scanlineFrequency={1.6}
+            noiseIntensity={0.04}
+            speed={0.4}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "壁纸级（省电）",
+      description: "慢速 + resolutionScale 降采样省电，作内容承托背景。",
+      code: `<DarkVeil hueShift={60} speed={0.25} resolutionScale={0.6} />`,
+      render: () => (
+        <Stage>
+          <DarkVeil hueShift={60} speed={0.25} resolutionScale={0.6} />
+          <div className="relative z-10 flex h-full flex-col items-center justify-center gap-1">
+            <p className="text-lg font-semibold text-white">瑚琏组件库</p>
+            <p className="text-xs text-white/60">深邃 · 克制 · 原生适配</p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "hueShift", type: "number", defaultValue: 0, label: "色相偏移 °" },
     { prop: "speed", type: "number", defaultValue: 0.5, label: "流动速度" },

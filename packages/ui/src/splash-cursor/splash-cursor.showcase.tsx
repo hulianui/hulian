@@ -34,6 +34,51 @@ function Stage({
 }
 
 export const splashCursorShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "放在 relative 容器里，指针拖动溅射彩色染料，默认彩虹模式。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  <SplashCursor />
+</div>`,
+      render: () => (
+        <Stage>
+          <SplashCursor />
+        </Stage>
+      ),
+    },
+    {
+      title: "固定主题色",
+      description: "rainbow={false} 关闭色相循环，单色染料默认吃 chart-1 token。",
+      code: `<SplashCursor rainbow={false} />`,
+      render: () => (
+        <Stage hint="单色染料 · 吃 chart-1 token">
+          <SplashCursor rainbow={false} />
+        </Stage>
+      ),
+    },
+    {
+      title: "猛烈拖尾",
+      description: "高 splatForce + 高 dissipation 保留率 + 大半径，快速划过看长拖尾。",
+      code: `<SplashCursor splatForce={1.8} dissipation={0.97} splatRadius={72} />`,
+      render: () => (
+        <Stage hint="快速划过看长拖尾">
+          <SplashCursor splatForce={1.8} dissipation={0.97} splatRadius={72} />
+        </Stage>
+      ),
+    },
+    {
+      title: "浅底柔和",
+      description: "opacity 调暗叠在浅色内容下方，免喧宾夺主。",
+      code: `<SplashCursor opacity={0.7} splatRadius={48} />`,
+      render: () => (
+        <Stage dark={false} hint="浅底也能叠色">
+          <SplashCursor opacity={0.7} splatRadius={48} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "rainbow", type: "boolean", defaultValue: true, label: "彩虹模式" },
     { prop: "splatRadius", type: "number", defaultValue: 56, label: "溅射半径 px" },

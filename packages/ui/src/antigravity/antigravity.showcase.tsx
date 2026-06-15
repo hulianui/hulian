@@ -18,6 +18,88 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const antigravityShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认短棒粒子铺满容器，移动鼠标即把附近粒子吸入环绕光标的轨道。",
+      code: `<div
+  className="relative h-64 overflow-hidden rounded-xl"
+  style={{ background: "oklch(0.14 0.02 255)" }}
+>
+  <Antigravity className="absolute inset-0" />
+</div>`,
+      render: () => (
+        <Stage>
+          <Antigravity className="absolute inset-0" />
+        </Stage>
+      ),
+    },
+    {
+      title: "形状与颜色",
+      description: "shape 可选 bar / dot / square；color 接受任意 CSS 颜色或主题 token。",
+      code: `<Antigravity
+  className="absolute inset-0"
+  shape="dot"
+  color="oklch(0.72 0.22 30)"
+  count={320}
+/>`,
+      render: () => (
+        <Stage>
+          <Antigravity
+            className="absolute inset-0"
+            shape="dot"
+            color="oklch(0.72 0.22 30)"
+            count={320}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "自动巡游",
+      description: "autoAnimate 让光标静止 2s 后粒子自行巡游，适合无人值守的大屏展示。",
+      code: `<Antigravity
+  className="absolute inset-0"
+  autoAnimate
+  rotationSpeed={0.4}
+  shape="square"
+  color="var(--color-chart-2)"
+/>`,
+      render: () => (
+        <Stage>
+          <Antigravity
+            className="absolute inset-0"
+            autoAnimate
+            rotationSpeed={0.4}
+            shape="square"
+            color="var(--color-chart-2)"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "大磁场 · 大环",
+      description: "调大 magnetRadius / ringRadius / waveAmplitude 得到更舒展、更有机的轨道。",
+      code: `<Antigravity
+  className="absolute inset-0"
+  magnetRadius={200}
+  ringRadius={90}
+  waveAmplitude={18}
+  color="var(--color-chart-4)"
+/>`,
+      render: () => (
+        <Stage>
+          <Antigravity
+            className="absolute inset-0"
+            magnetRadius={200}
+            ringRadius={90}
+            waveAmplitude={18}
+            color="var(--color-chart-4)"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "count", type: "number", defaultValue: 240, label: "粒子数" },
     { prop: "magnetRadius", type: "number", defaultValue: 130, label: "磁吸半径 px" },

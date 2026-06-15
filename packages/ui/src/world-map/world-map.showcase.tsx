@@ -40,6 +40,78 @@ function Frame({ children }: { children: React.ReactNode }) {
 }
 
 export const worldMapShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "单条连线",
+      description: "传入起点 / 终点经纬度，弧线自动画入并循环。",
+      code: `<WorldMap
+  dots={[{ start: { lat: 39.9, lng: 116.4 }, end: { lat: 40.7, lng: -74 } }]}
+/>`,
+      render: () => (
+        <Frame>
+          <WorldMap dots={single} />
+        </Frame>
+      ),
+    },
+    {
+      title: "多点辐射",
+      description: "同一起点连向多个城市，构成辐射网络。",
+      code: `<WorldMap
+  dots={[
+    { start: shanghai, end: london },
+    { start: shanghai, end: singapore },
+    { start: shanghai, end: sydney },
+    { start: shanghai, end: sanFrancisco },
+  ]}
+/>`,
+      render: () => (
+        <Frame>
+          <WorldMap dots={radial} />
+        </Frame>
+      ),
+    },
+    {
+      title: "逐条配色",
+      description: "每条连线用 dot.color 覆盖全局色，同图多色并存。",
+      code: `<WorldMap
+  dots={[
+    { start: shanghai, end: london, color: "var(--color-chart-1)" },
+    { start: shanghai, end: singapore, color: "var(--color-chart-2)" },
+  ]}
+/>`,
+      render: () => (
+        <Frame>
+          <WorldMap dots={multiColor} />
+        </Frame>
+      ),
+    },
+    {
+      title: "节点分布",
+      description: "points 独立于飞线，value 驱动节点大小，showLabels 显示标签。",
+      code: `<WorldMap
+  points={[
+    { id: "sh", lat: 31.2, lng: 121.5, label: "上海", value: 92 },
+    { id: "sg", lat: 1.35, lng: 103.8, label: "新加坡", value: 64 },
+  ]}
+  showLabels
+/>`,
+      render: () => (
+        <Frame>
+          <WorldMap points={NODES} showLabels />
+        </Frame>
+      ),
+    },
+    {
+      title: "飞线标记",
+      description: "flyingMarker 让标记沿弧线循环移动并贴合方向（plane / comet / arrow）。",
+      code: `<WorldMap dots={radial} flyingMarker="plane" />`,
+      render: () => (
+        <Frame>
+          <WorldMap dots={radial} flyingMarker="plane" />
+        </Frame>
+      ),
+    },
+  ],
   controls: [],
   states: [
     { name: "单条连线", render: () => <Frame><WorldMap dots={single} /></Frame> },

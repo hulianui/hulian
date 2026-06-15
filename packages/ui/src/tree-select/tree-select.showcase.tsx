@@ -76,6 +76,48 @@ function Multi() {
 }
 
 export const treeSelectShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "单选 + 搜索",
+      description: "默认单选：点叶子即提交并收起。searchable 在浮层顶部出搜索框，可在多层里命中跳转。非受控用 defaultValue 设初值。",
+      code: `<TreeSelect
+  nodes={nodes}
+  searchable
+  placeholder="选择归属部门"
+  onChange={(v) => setValue(v)}
+/>`,
+      render: () => (
+        <div className="w-72">
+          <TreeSelect nodes={NODES} searchable placeholder="选择归属部门" />
+        </div>
+      ),
+    },
+    {
+      title: "多选（父子级联）",
+      description: "multiple 时节点出复选框，勾父级联到叶，取消单个叶让父级落半选态；value 收敛为叶子键集合。",
+      code: `<TreeSelect
+  nodes={nodes}
+  multiple
+  defaultValue={["fe-web", "fe-mini"]}
+  placeholder="勾选可见部门"
+  onChange={(v) => setValue(v)}
+/>`,
+      render: () => (
+        <div className="w-72">
+          <TreeSelect nodes={NODES} multiple defaultValue={["fe-web", "fe-mini"]} placeholder="勾选可见部门" />
+        </div>
+      ),
+    },
+    {
+      title: "禁用态",
+      code: `<TreeSelect nodes={nodes} disabled defaultValue="fe-web" />`,
+      render: () => (
+        <div className="w-72">
+          <TreeSelect nodes={NODES} disabled defaultValue="fe-web" />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "multiple", type: "boolean", defaultValue: false, label: "multiple（多选）" },
     { prop: "searchable", type: "boolean", defaultValue: true, label: "searchable" },

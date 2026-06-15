@@ -12,6 +12,51 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const domeGalleryShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "不传 images 时用内置占位渐变瓦片，可拖拽旋转球面、点开放大查看。",
+      code: `<div className="relative h-80 overflow-hidden rounded-xl bg-background">
+  <DomeGallery />
+</div>`,
+      render: () => (
+        <Stage>
+          <DomeGallery />
+        </Stage>
+      ),
+    },
+    {
+      title: "自动自转",
+      description: "autoRotate 让球面在无拖拽时缓慢自转，适合壁纸 / 展示场景。",
+      code: `<DomeGallery autoRotate />`,
+      render: () => (
+        <Stage>
+          <DomeGallery autoRotate />
+        </Stage>
+      ),
+    },
+    {
+      title: "彩色瓦片",
+      description: "grayscale={false} 关闭灰度滤镜，瓦片直接显示原色。",
+      code: `<DomeGallery grayscale={false} segments={20} />`,
+      render: () => (
+        <Stage>
+          <DomeGallery grayscale={false} segments={20} />
+        </Stage>
+      ),
+    },
+    {
+      title: "高密度球面",
+      description: "segments 提高经向分段数，瓦片更密、单格更小；fit 调球面曲率。",
+      code: `<DomeGallery segments={32} fit={0.55} />`,
+      render: () => (
+        <Stage>
+          <DomeGallery segments={32} fit={0.55} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "segments", type: "number", defaultValue: 24, label: "经向分段数" },
     { prop: "fit", type: "number", defaultValue: 0.5, label: "半径比例" },

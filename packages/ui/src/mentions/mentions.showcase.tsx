@@ -21,6 +21,59 @@ const PEOPLE: MentionOption[] = [
 ];
 
 export const mentionsShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "输入 @ 唤起候选浮层，方向键选、Enter/Tab 插入提及。",
+      code: `<Mentions
+  options={people}
+  placeholder="输入 @ 提及同事…"
+  onChange={setValue}
+  onSelect={(o) => console.log(o)}
+/>`,
+      render: () => (
+        <Mentions options={PEOPLE} placeholder="输入 @ 提及同事…" className="w-72" />
+      ),
+    },
+    {
+      title: "自定义触发符",
+      description: 'prefix 改为 "#" 关联工单等非人员实体。',
+      code: `<Mentions
+  prefix="#"
+  options={tickets}
+  placeholder="输入 # 关联工单…"
+/>`,
+      render: () => (
+        <Mentions
+          prefix="#"
+          options={[
+            { value: "t1", label: "工单-1024", description: "登录失败" },
+            { value: "t2", label: "工单-1031", description: "支付超时" },
+            { value: "t3", label: "工单-1042", description: "数据导出" },
+          ]}
+          defaultValue="关联 "
+          placeholder="输入 # 关联工单…"
+          className="w-72"
+        />
+      ),
+    },
+    {
+      title: "无效态",
+      description: "invalid 标红边框，配合表单校验提示缺少提及。",
+      code: `<Mentions options={people} invalid defaultValue="缺少 @负责人" />`,
+      render: () => (
+        <Mentions options={PEOPLE} invalid defaultValue="缺少 @负责人" className="w-72" />
+      ),
+    },
+    {
+      title: "禁用态",
+      description: "disabled 禁止编辑，已提交提及仍套色展示。",
+      code: `<Mentions options={people} disabled defaultValue="禁用态 @林晓 " />`,
+      render: () => (
+        <Mentions options={PEOPLE} disabled defaultValue="禁用态 @林晓 " className="w-72" />
+      ),
+    },
+  ],
   controls: [
     { prop: "prefix", type: "text", defaultValue: "@", label: "触发符" },
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },

@@ -88,6 +88,46 @@ function QueueLaneDemo({
 }
 
 export const queueLaneShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "lanes 定义泳道（id/label/tone 色条/meta 指标），items 按 laneId 分组，道内顺序即 FIFO。道头缺省渲染条数 + meta。",
+      code: `<QueueLane
+  lanes={[
+    { id: "p0", label: "P0 紧急", tone: "var(--color-chart-3)", meta: "均等 0.4s" },
+    { id: "p1", label: "P1 高", tone: "var(--color-chart-4)", meta: "均等 1.2s" },
+    { id: "p2", label: "P2 普通", tone: "var(--color-primary)", meta: "均等 3.5s" },
+  ]}
+  items={jobs}
+  renderItem={(job, i) => <JobCard job={job} index={i} />}
+/>`,
+      render: () => <QueueLaneDemo variant="priority" />,
+    },
+    {
+      title: "超长队列折叠",
+      description: "maxVisible 限制每道直显条数，超出折叠为「还有 N 条」。",
+      code: `<QueueLane
+  lanes={lanes}
+  items={jobs}
+  maxVisible={4}
+  renderItem={(job, i) => <JobCard job={job} index={i} />}
+/>`,
+      render: () => <QueueLaneDemo variant="priority" maxVisible={4} />,
+    },
+    {
+      title: "点击下钻",
+      description:
+        "卡片默认只读；传 onItemClick 后卡片可点击 / 键盘可达（Enter / Space），用于查看详情，不改变队列顺序。",
+      code: `<QueueLane
+  lanes={lanes}
+  items={jobs}
+  onItemClick={(job) => openDetail(job.id)}
+  renderItem={(job, i) => <JobCard job={job} index={i} />}
+/>`,
+      render: () => <QueueLaneDemo variant="category" />,
+    },
+  ],
   controls: [
     {
       prop: "variant",

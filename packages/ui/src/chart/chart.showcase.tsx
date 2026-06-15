@@ -77,6 +77,62 @@ const CODE: Record<string, string> = {
 };
 
 export const chartShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "面积图",
+      description: "data + series + xKey 三件套；多序列叠加，色彩走 chart token 自适应明暗。",
+      code: `<AreaChart
+  data={data}
+  series={[{ key: "revenue", label: "营收(千元)" }, { key: "orders", label: "订单" }]}
+  xKey="month"
+/>`,
+      render: () => <AreaChart data={data} series={series} xKey="month" className={W} />,
+    },
+    {
+      title: "折线 / 柱状",
+      description: "同一份数据可换 LineChart / BarChart 渲染。",
+      code: `<>
+  <LineChart data={data} series={series} xKey="month" />
+  <BarChart data={data} series={series} xKey="month" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-4">
+          <LineChart data={data} series={series} xKey="month" className={W} />
+          <BarChart data={data} series={series} xKey="month" className={W} />
+        </div>
+      ),
+    },
+    {
+      title: "堆叠",
+      description: "stacked 让多序列堆叠（Area/Bar 生效）。",
+      code: `<BarChart data={data} series={series} xKey="month" stacked />`,
+      render: () => <BarChart data={data} series={series} xKey="month" stacked className={W} />,
+    },
+    {
+      title: "饼图 / 环形",
+      description: "扁平 {name,value} 数据；donut 中心挖空。",
+      code: `<>
+  <PieChart data={[{ name: "搜索", value: 420 }, { name: "直接", value: 280 }]} />
+  <PieChart donut data={[{ name: "搜索", value: 420 }, { name: "直接", value: 280 }]} />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <PieChart data={pieData} className="w-64 max-w-full" />
+          <PieChart data={pieData} donut className="w-64 max-w-full" />
+        </div>
+      ),
+    },
+    {
+      title: "雷达图",
+      description: "多维能力对比，xKey 为维度字段，多序列叠加。",
+      code: `<RadarChart
+  data={radarData}
+  series={[{ key: "当前" }, { key: "基准" }]}
+  xKey="dim"
+/>`,
+      render: () => <RadarChart data={radarData} series={radarSeries} xKey="dim" className={W} />,
+    },
+  ],
   controls: [
     { prop: "type", type: "select", options: [...TYPES], defaultValue: "area", label: "图表类型" },
   ],

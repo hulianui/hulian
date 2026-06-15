@@ -15,6 +15,62 @@ function CountdownDayDemo() {
 }
 
 export const statisticShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "number 走千分位格式化，string 原样输出。",
+      code: `<Statistic title="活跃用户" value={112893} />`,
+      render: () => <Statistic title="活跃用户" value={112893} />,
+    },
+    {
+      title: "精度与前后缀",
+      description: "precision 控制小数位，prefix/suffix 接货币符号或单位。",
+      code: `<>
+  <Statistic title="账户余额" value={89234.56} precision={2} prefix="￥" />
+  <Statistic title="转化率" value={68.4} precision={1} suffix="%" />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-10">
+          <Statistic title="账户余额" value={89234.56} precision={2} prefix="￥" />
+          <Statistic title="转化率" value={68.4} precision={1} suffix="%" />
+        </div>
+      ),
+    },
+    {
+      title: "入场滚动",
+      description: "animate 接 NumberTicker 做数值滚动入场（仅 number 生效）。",
+      code: `<Statistic title="总订单" value={45219} animate />`,
+      render: () => <Statistic title="总订单" value={45219} animate />,
+    },
+    {
+      title: "自定义颜色",
+      description: "valueStyle 覆盖数值行样式，可表达涨跌色。",
+      code: `<Statistic
+  title="较昨日"
+  value={11.28}
+  precision={2}
+  prefix="↑"
+  suffix="%"
+  valueStyle={{ color: "var(--color-success)" }}
+/>`,
+      render: () => (
+        <Statistic
+          title="较昨日"
+          value={11.28}
+          precision={2}
+          prefix="↑"
+          suffix="%"
+          valueStyle={{ color: "var(--color-success)" }}
+        />
+      ),
+    },
+    {
+      title: "倒计时",
+      description: "Statistic.Countdown 按 deadline 实时倒数，format 控制模板（支持 D/H/m/s/S）。",
+      code: `<Statistic.Countdown title="距活动结束" deadline={Date.now() + 1000 * 60 * 60} />`,
+      render: () => <CountdownDemo />,
+    },
+  ],
   controls: [
     { prop: "value", type: "number", defaultValue: 112893, label: "数值" },
     { prop: "precision", type: "number", defaultValue: 0, label: "小数位" },

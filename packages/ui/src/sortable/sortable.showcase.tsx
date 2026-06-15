@@ -67,6 +67,51 @@ function TagSortDemo() {
 }
 
 export const sortableShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "列设置 · 手柄拖拽（垂直）",
+      description: "受控 items + onChange 回吐新顺序；handle 时仅左侧手柄可拖，键盘可达。",
+      code: `const [fields, setFields] = useState(initialFields);
+
+<Sortable
+  items={fields}
+  onChange={setFields}
+  handle
+  renderItem={(f) => (
+    <div className="flex items-center justify-between gap-3">
+      <span className="font-medium text-foreground">{f.label}</span>
+      <span className="shrink-0 text-xs text-muted">{f.hint}</span>
+    </div>
+  )}
+/>`,
+      render: () => <ColumnSettingDemo handle />,
+    },
+    {
+      title: "整项可拖（无手柄）",
+      description: "handle={false} 时整行可拖，适合行内无交互元素的简单列表。",
+      code: `const [fields, setFields] = useState(initialFields);
+
+<Sortable
+  items={fields}
+  onChange={setFields}
+  renderItem={(f) => <span className="font-medium text-foreground">{f.label}</span>}
+/>`,
+      render: () => <ColumnSettingDemo handle={false} />,
+    },
+    {
+      title: "横向排序（orientation）",
+      description: "orientation=\"horizontal\" 横向排列，适合看板列 / 筛选标签。",
+      code: `const [tags, setTags] = useState(initialTags);
+
+<Sortable
+  items={tags}
+  orientation="horizontal"
+  onChange={setTags}
+  renderItem={(t) => <span className="font-medium text-foreground">{t.name}</span>}
+/>`,
+      render: () => <TagSortDemo />,
+    },
+  ],
   controls: [{ prop: "handle", type: "boolean", defaultValue: true, label: "仅手柄可拖" }],
   states: [
     { name: "列设置 · 手柄拖拽（垂直 · 键盘可达）", render: () => <ColumnSettingDemo handle /> },

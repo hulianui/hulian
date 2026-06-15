@@ -7,6 +7,85 @@ const longLine =
   "瑚琏设计系统的 Text 组件支持单行省略号与多行截断，这段文本足够长以触发截断效果观察省略号位置。";
 
 export const textShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "语义色调",
+      description: "tone 走语义 token，明暗主题自动适配。",
+      code: `<Text>默认正文</Text>
+<Text tone="muted">辅助说明</Text>
+<Text tone="primary">强调文本</Text>
+<Text tone="danger">危险提示</Text>`,
+      render: () => (
+        <div className="flex flex-col gap-1.5">
+          <Text>默认正文</Text>
+          <Text tone="muted">辅助说明</Text>
+          <Text tone="primary">强调文本</Text>
+          <Text tone="danger">危险提示</Text>
+        </div>
+      ),
+    },
+    {
+      title: "字号阶梯",
+      description: "size 提供 xs/sm/base/lg/xl 五档。",
+      code: `<Text size="xs">xs 最小辅助</Text>
+<Text size="sm">sm 次要</Text>
+<Text size="base">base 正文基准</Text>
+<Text size="lg">lg 偏大正文</Text>
+<Text size="xl">xl 引导语</Text>`,
+      render: () => (
+        <div className="flex flex-col gap-1.5">
+          <Text size="xs">xs 最小辅助</Text>
+          <Text size="sm">sm 次要</Text>
+          <Text size="base">base 正文基准</Text>
+          <Text size="lg">lg 偏大正文</Text>
+          <Text size="xl">xl 引导语</Text>
+        </div>
+      ),
+    },
+    {
+      title: "字重",
+      description: "weight 提供 normal/medium/semibold/bold。",
+      code: `<Text weight="normal">常规</Text>
+<Text weight="medium">中等</Text>
+<Text weight="semibold">半粗</Text>
+<Text weight="bold">粗体</Text>`,
+      render: () => (
+        <div className="flex flex-col gap-1.5">
+          <Text weight="normal">常规</Text>
+          <Text weight="medium">中等</Text>
+          <Text weight="semibold">半粗</Text>
+          <Text weight="bold">粗体</Text>
+        </div>
+      ),
+    },
+    {
+      title: "单行省略号",
+      description: "truncate 在容器收窄时单行截断并显示省略号。",
+      code: `<div className="max-w-xs">
+  <Text truncate>{longLine}</Text>
+</div>`,
+      render: () => (
+        <div className="max-w-xs">
+          <Text truncate>{longLine}</Text>
+        </div>
+      ),
+    },
+    {
+      title: "多行截断",
+      description: "lineClamp 限制最多 n 行后省略，优先于 truncate。",
+      code: `<div className="max-w-xs">
+  <Text tone="muted" lineClamp={2}>{longText}</Text>
+</div>`,
+      render: () => (
+        <div className="max-w-xs">
+          <Text tone="muted" lineClamp={2}>
+            {longLine}
+            {longLine}
+          </Text>
+        </div>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "tone",

@@ -26,6 +26,36 @@ function Demo({ size = "md", disabled = false }: { size?: SwatchSize; disabled?:
 }
 
 export const colorSwatchPickerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "离散预设色块单选，非受控用 defaultValue 给初始选中。",
+      code: `const PALETTE = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"];
+
+<ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" />`,
+      render: () => <ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" />,
+    },
+    {
+      title: "尺寸",
+      description: "size 支持 sm / md / lg。",
+      code: `<>
+  <ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" size="sm" />
+  <ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" size="lg" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-3">
+          <ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" size="sm" />
+          <ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" size="lg" />
+        </div>
+      ),
+    },
+    {
+      title: "禁用",
+      description: "disabled 整组降透明度并屏蔽交互。",
+      code: `<ColorSwatchPicker colors={PALETTE} defaultValue="#8b5cf6" disabled />`,
+      render: () => <ColorSwatchPicker colors={PALETTE} defaultValue="#8b5cf6" disabled />,
+    },
+  ],
   controls: [
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "尺寸" },
     { prop: "disabled", type: "boolean", defaultValue: false, label: "禁用" },

@@ -21,6 +21,55 @@ function Stage({
 }
 
 export const ballpitShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认参数即可，移动光标会推开周围小球。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.14 0.02 255)" }}>
+  <Ballpit />
+</div>`,
+      render: () => (
+        <Stage>
+          <Ballpit />
+          <div className="pointer-events-none relative z-10 flex h-full items-end justify-center pb-4 text-sm font-medium text-white/70">
+            移动光标推开小球
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "失重漂浮",
+      description: "gravity=0 让小球不下沉，bounce=1 完全弹性永不停。",
+      code: `<Ballpit gravity={0} bounce={1} count={60} />`,
+      render: () => (
+        <Stage>
+          <Ballpit gravity={0} bounce={1} count={60} />
+        </Stage>
+      ),
+    },
+    {
+      title: "大球少量",
+      description: "sizeRange 加大、count 减少，营造壁纸级稀疏大球。",
+      code: `<Ballpit count={14} sizeRange={[20, 36]} gravity={700} />`,
+      render: () => (
+        <Stage>
+          <Ballpit count={14} sizeRange={[20, 36]} gravity={700} />
+        </Stage>
+      ),
+    },
+    {
+      title: "纯背景（不跟光标）",
+      description: "followCursor=false 关闭交互，纯装饰背景；浅色底亦可用。",
+      code: `<Ballpit followCursor={false} count={100} sizeRange={[8, 18]} />`,
+      render: () => (
+        <Stage dark={false}>
+          <Ballpit followCursor={false} count={100} sizeRange={[8, 18]} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "count", type: "number", defaultValue: 80, label: "小球数量" },
     { prop: "gravity", type: "number", defaultValue: 900, label: "重力" },

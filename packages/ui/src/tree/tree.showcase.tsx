@@ -46,6 +46,57 @@ function Box({ children }: { children: React.ReactNode }) {
 }
 
 export const treeShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "单选高亮 + 方向键导航；defaultExpandedKeys 控制初始展开枝。",
+      code: `<Tree
+  nodes={nodes}
+  defaultExpandedKeys={["design", "components"]}
+  defaultSelectedKeys={["theme"]}
+/>`,
+      render: () => (
+        <Box>
+          <Tree nodes={NODES} defaultExpandedKeys={["design", "components"]} defaultSelectedKeys={["theme"]} />
+        </Box>
+      ),
+    },
+    {
+      title: "复选",
+      description: "checkable 开启父子级联勾选，半选自动呈 indeterminate。",
+      code: `<Tree
+  nodes={nodes}
+  checkable
+  defaultExpandedKeys={["design", "components", "form"]}
+  defaultCheckedKeys={["tokens"]}
+/>`,
+      render: () => (
+        <Box>
+          <Tree nodes={NODES} checkable defaultExpandedKeys={["design", "components", "form"]} defaultCheckedKeys={["tokens"]} />
+        </Box>
+      ),
+    },
+    {
+      title: "连接线",
+      description: "showLine 显示层级连接线，结构层次更清晰。",
+      code: `<Tree nodes={nodes} showLine defaultExpandedKeys={["components", "form"]} />`,
+      render: () => (
+        <Box>
+          <Tree nodes={NODES} showLine defaultExpandedKeys={["components", "form"]} />
+        </Box>
+      ),
+    },
+    {
+      title: "树内搜索",
+      description: "searchable 提供搜索框，命中节点高亮、祖先路径自动展开。",
+      code: `<Tree nodes={nodes} searchable searchPlaceholder="搜索组件" />`,
+      render: () => (
+        <Box>
+          <Tree nodes={NODES} searchable searchPlaceholder="搜索组件" />
+        </Box>
+      ),
+    },
+  ],
   controls: [
     { prop: "checkable", type: "boolean", defaultValue: false, label: "checkable（复选）" },
     { prop: "showLine", type: "boolean", defaultValue: false, label: "showLine（连接线）" },

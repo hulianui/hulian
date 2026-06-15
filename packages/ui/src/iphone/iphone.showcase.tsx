@@ -12,6 +12,54 @@ function Screen() {
 }
 
 export const iphoneShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "含灵动岛的 iPhone 外壳包裹屏幕内容，默认机型 15 Pro。",
+      code: `<IPhone>
+  <img src="/app.png" alt="" />
+</IPhone>`,
+      render: () => (
+        <IPhone>
+          <Screen />
+        </IPhone>
+      ),
+    },
+    {
+      title: "选择机型",
+      description: "model 切换预设机型，决定默认宽度。",
+      code: `<IPhone model="16-pro-max">
+  <img src="/app.png" alt="" />
+</IPhone>`,
+      render: () => (
+        <IPhone model="16-pro-max">
+          <Screen />
+        </IPhone>
+      ),
+    },
+    {
+      title: "自定义宽度",
+      description: "width 显式传入时优先于机型预设宽度。",
+      code: `<IPhone width={220}>
+  <img src="/app.png" alt="" />
+</IPhone>`,
+      render: () => (
+        <IPhone width={220}>
+          <Screen />
+        </IPhone>
+      ),
+    },
+    {
+      title: "图片内容",
+      description: "传 imageSrc 直接渲染 App 截图（优先于 children）。",
+      code: `<IPhone model="15-pro" imageSrc="/app.png" />`,
+      render: () => (
+        <IPhone model="15-pro">
+          <Screen />
+        </IPhone>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "model",

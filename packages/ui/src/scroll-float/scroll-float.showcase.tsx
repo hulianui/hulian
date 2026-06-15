@@ -19,6 +19,49 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const scrollFloatShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "组件自动绑定最近可滚动祖先，滚动时标题逐字符随进度拔起。",
+      code: `<div className="max-h-72 overflow-auto p-6">
+  <div className="h-40" />
+  <ScrollFloat>瑚琏组件库</ScrollFloat>
+  <div className="h-56" />
+</div>`,
+      render: () => (
+        <Stage>
+          <ScrollFloat>瑚琏组件库</ScrollFloat>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义字号",
+      description: "textClassName 控制文本层字号 / 字重 / 对齐，适配长标题。",
+      code: `<ScrollFloat textClassName="text-3xl md:text-5xl">
+  Scroll Float
+</ScrollFloat>`,
+      render: () => (
+        <Stage>
+          <ScrollFloat textClassName="text-3xl md:text-5xl">Scroll Float</ScrollFloat>
+        </Stage>
+      ),
+    },
+    {
+      title: "强错峰 + 主色文本",
+      description: "stagger 越大字符逐个拔起的错峰越明显，可叠加 text-primary 上色。",
+      code: `<ScrollFloat stagger={0.7} textClassName="text-primary text-3xl md:text-5xl">
+  HULIAN
+</ScrollFloat>`,
+      render: () => (
+        <Stage>
+          <ScrollFloat stagger={0.7} textClassName="text-primary text-3xl md:text-5xl">
+            HULIAN
+          </ScrollFloat>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "stagger", type: "number", defaultValue: 0.4, label: "字符错峰 0~1" },
     { prop: "yPercent", type: "number", defaultValue: 120, label: "初始下沉 %" },

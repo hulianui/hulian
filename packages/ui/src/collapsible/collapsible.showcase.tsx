@@ -18,6 +18,50 @@ function Demo(p: Record<string, unknown>) {
 }
 
 export const collapsibleShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "点击标题展开 / 收起补充内容，默认折叠。",
+      code: `<Collapsible className="w-80">
+  <CollapsibleTrigger>展开查看详情</CollapsibleTrigger>
+  <CollapsiblePanel>这里是默认折叠起来的补充内容，点击标题即可展开。</CollapsiblePanel>
+</Collapsible>`,
+      render: () => (
+        <Collapsible className="w-80">
+          <CollapsibleTrigger>展开查看详情</CollapsibleTrigger>
+          <CollapsiblePanel>这里是默认折叠起来的补充内容，点击标题即可展开。</CollapsiblePanel>
+        </Collapsible>
+      ),
+    },
+    {
+      title: "默认展开",
+      description: "非受控用 defaultOpen 让面板初始即展开。",
+      code: `<Collapsible defaultOpen className="w-80">
+  <CollapsibleTrigger>收起详情</CollapsibleTrigger>
+  <CollapsiblePanel>这里是默认展开的补充内容，再次点击标题即可收起。</CollapsiblePanel>
+</Collapsible>`,
+      render: () => (
+        <Collapsible defaultOpen className="w-80">
+          <CollapsibleTrigger>收起详情</CollapsibleTrigger>
+          <CollapsiblePanel>这里是默认展开的补充内容，再次点击标题即可收起。</CollapsiblePanel>
+        </Collapsible>
+      ),
+    },
+    {
+      title: "禁用态",
+      description: "disabled 下触发器置灰且不可展开。",
+      code: `<Collapsible disabled className="w-80">
+  <CollapsibleTrigger>已禁用</CollapsibleTrigger>
+  <CollapsiblePanel>禁用态下不可展开。</CollapsiblePanel>
+</Collapsible>`,
+      render: () => (
+        <Collapsible disabled className="w-80">
+          <CollapsibleTrigger>已禁用</CollapsibleTrigger>
+          <CollapsiblePanel>禁用态下不可展开。</CollapsiblePanel>
+        </Collapsible>
+      ),
+    },
+  ],
   controls: [
     { prop: "defaultOpen", type: "boolean", defaultValue: false },
     { prop: "disabled", type: "boolean", defaultValue: false },

@@ -12,6 +12,78 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const folderShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "点击文件夹展开/收起，纸张扇形铺开，展开后纸张磁吸跟随鼠标。",
+      code: `<Folder />`,
+      render: () => (
+        <Stage>
+          <Folder />
+        </Stage>
+      ),
+    },
+    {
+      title: "带内容纸张",
+      description: "items 最多 3 张纸（多余截断、不足补空），展开后各自铺开承载内容。",
+      code: `<Folder
+  size={1.4}
+  items={[
+    <span key="1" className="flex h-full w-full items-center justify-center text-[8px] text-foreground">文档</span>,
+    <span key="2" className="flex h-full w-full items-center justify-center text-[8px] text-foreground">图片</span>,
+    <span key="3" className="flex h-full w-full items-center justify-center text-[8px] text-foreground">视频</span>,
+  ]}
+/>`,
+      render: () => (
+        <Stage>
+          <Folder
+            size={1.4}
+            items={[
+              <span
+                key="1"
+                className="flex h-full w-full items-center justify-center text-[8px] text-foreground"
+              >
+                文档
+              </span>,
+              <span
+                key="2"
+                className="flex h-full w-full items-center justify-center text-[8px] text-foreground"
+              >
+                图片
+              </span>,
+              <span
+                key="3"
+                className="flex h-full w-full items-center justify-center text-[8px] text-foreground"
+              >
+                视频
+              </span>,
+            ]}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义主体色",
+      description: "color 喂任意 CSS 颜色（推荐 token），defaultOpen 让文件夹初始即展开。",
+      code: `<Folder color="var(--color-chart-4)" defaultOpen size={1.2} />`,
+      render: () => (
+        <Stage>
+          <Folder color="var(--color-chart-4)" defaultOpen size={1.2} />
+        </Stage>
+      ),
+    },
+    {
+      title: "关闭磁吸",
+      description: "disableMagnet 时展开后纸张不再随鼠标偏移，仅保留悬停放大。",
+      code: `<Folder size={1.4} disableMagnet defaultOpen />`,
+      render: () => (
+        <Stage>
+          <Folder size={1.4} disableMagnet defaultOpen />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "size", type: "number", defaultValue: 1, label: "缩放倍数" },
     {

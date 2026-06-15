@@ -33,6 +33,113 @@ function chips(n: number) {
 }
 
 export const orbitImagesShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "椭圆轨道等距铺满子项，匀速环绕；centerContent 叠静态中心。",
+      code: `<OrbitImages
+  items={images.map((src) => (
+    <img key={src} src={src} alt="" className="h-full w-full rounded-full object-cover" />
+  ))}
+  shape="ellipse"
+  duration={24}
+  itemSize={48}
+  showPath
+  centerContent={<span className="text-sm font-semibold">瑚琏</span>}
+/>`,
+      render: () => (
+        <Stage>
+          <OrbitImages
+            items={chips(6)}
+            shape="ellipse"
+            duration={24}
+            itemSize={48}
+            showPath
+            centerContent={
+              <span className="text-sm font-semibold text-foreground">瑚琏</span>
+            }
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "圆形轨道",
+      description: "shape=circle 配 radius 控制圈径，更多子项均匀分布。",
+      code: `<OrbitImages
+  items={avatars}
+  shape="circle"
+  radius={260}
+  duration={30}
+  itemSize={44}
+/>`,
+      render: () => (
+        <Stage>
+          <OrbitImages
+            items={chips(8)}
+            shape="circle"
+            radius={260}
+            duration={30}
+            itemSize={44}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "星形轨道·反向",
+      description: "shape=star 走星形路径，direction=reverse 让子项反向流转。",
+      code: `<OrbitImages
+  items={avatars}
+  shape="star"
+  radius={300}
+  duration={28}
+  itemSize={40}
+  direction="reverse"
+  showPath
+/>`,
+      render: () => (
+        <Stage>
+          <OrbitImages
+            items={chips(5)}
+            shape="star"
+            radius={300}
+            duration={28}
+            itemSize={40}
+            direction="reverse"
+            showPath
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "无穷符号·鱼贯出发",
+      description: "shape=infinity 走 ∞ 路径；fill=false 让子项从同一起点鱼贯出发。",
+      code: `<OrbitImages
+  items={avatars}
+  shape="infinity"
+  radiusX={620}
+  radiusY={220}
+  duration={20}
+  itemSize={44}
+  fill={false}
+  showPath
+/>`,
+      render: () => (
+        <Stage>
+          <OrbitImages
+            items={chips(4)}
+            shape="infinity"
+            radiusX={620}
+            radiusY={220}
+            duration={20}
+            itemSize={44}
+            fill={false}
+            showPath
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "shape",

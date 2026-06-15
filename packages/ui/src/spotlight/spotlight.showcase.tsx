@@ -12,6 +12,60 @@ function Frame({ children }: { children: React.ReactNode }) {
 }
 
 export const spotlightShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "父容器 relative，Spotlight 作背景层，内容以 relative z-10 叠加其上。默认顶部品牌辉光。",
+      code: `<div className="relative ...">
+  <Spotlight />
+  <div className="relative z-10">…内容…</div>
+</div>`,
+      render: () => (
+        <Frame>
+          <Spotlight />
+        </Frame>
+      ),
+    },
+    {
+      title: "辉光位置",
+      description: "x/y 定位辉光中心，intensity 调亮度——左上角强辉光即 x=\"20%\"、加大 intensity。",
+      code: `<div className="relative ...">
+  <Spotlight x="20%" intensity={18} />
+  <div className="relative z-10">…内容…</div>
+</div>`,
+      render: () => (
+        <Frame>
+          <Spotlight x="20%" intensity={18} />
+        </Frame>
+      ),
+    },
+    {
+      title: "语义色辉光",
+      description: "color 接任意 CSS 颜色/变量，换成成功色即可作正向反馈的 hero/空状态背景。",
+      code: `<div className="relative ...">
+  <Spotlight color="var(--color-success)" y="50%" size="100%" intensity={16} />
+  <div className="relative z-10">…内容…</div>
+</div>`,
+      render: () => (
+        <Frame>
+          <Spotlight color="var(--color-success)" y="50%" size="100%" intensity={16} />
+        </Frame>
+      ),
+    },
+    {
+      title: "聚拢辉光",
+      description: "fade 越小辉光越聚拢——配合居中位置可作弹窗/卡片的局部强调光。",
+      code: `<div className="relative ...">
+  <Spotlight y="50%" size="80%" intensity={20} fade={40} />
+  <div className="relative z-10">…内容…</div>
+</div>`,
+      render: () => (
+        <Frame>
+          <Spotlight y="50%" size="80%" intensity={20} fade={40} />
+        </Frame>
+      ),
+    },
+  ],
   controls: [
     { prop: "intensity", type: "number", defaultValue: 14, label: "强度" },
     { prop: "fade", type: "number", defaultValue: 55, label: "渐隐" },

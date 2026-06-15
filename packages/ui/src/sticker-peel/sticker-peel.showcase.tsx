@@ -43,6 +43,70 @@ function Stage({
 }
 
 export const stickerPeelShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "放在 relative 容器里，hover/按住卷边翻起；imageSrc 必填，rotate 制造歪斜感。",
+      code: `<div className="relative grid h-64 place-items-center overflow-hidden rounded-xl">
+  <StickerPeel imageSrc="/sticker.png" width={150} rotate={14} />
+</div>`,
+      render: () => (
+        <Stage>
+          <StickerPeel imageSrc={STAR} width={150} rotate={14} />
+        </Stage>
+      ),
+    },
+    {
+      title: "卷边方向",
+      description: "peelDirection 让整张贴纸连同卷边一起旋转，改变揭起方向。",
+      code: `<StickerPeel
+  imageSrc="/bolt.png"
+  width={150}
+  rotate={-10}
+  peelDirection={20}
+/>`,
+      render: () => (
+        <Stage dark={false}>
+          <StickerPeel imageSrc={BOLT} width={150} rotate={-10} peelDirection={20} />
+        </Stage>
+      ),
+    },
+    {
+      title: "大幅卷边 + 强高光",
+      description: "调大 hover/active 揭开比例，lightingIntensity 增强鼠标跟随高光。",
+      code: `<StickerPeel
+  imageSrc="/sticker.png"
+  width={170}
+  rotate={8}
+  peelBackHoverPct={42}
+  peelBackActivePct={55}
+  lightingIntensity={0.7}
+/>`,
+      render: () => (
+        <Stage>
+          <StickerPeel
+            imageSrc={STAR}
+            width={170}
+            rotate={8}
+            peelBackHoverPct={42}
+            peelBackActivePct={55}
+            lightingIntensity={0.7}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "锁定不可拖",
+      description: "draggable={false} 仅保留卷边交互，禁止拖动。",
+      code: `<StickerPeel imageSrc="/bolt.png" width={150} rotate={20} draggable={false} />`,
+      render: () => (
+        <Stage>
+          <StickerPeel imageSrc={BOLT} width={150} rotate={20} draggable={false} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "width", type: "number", defaultValue: 160, label: "宽度 px" },
     { prop: "rotate", type: "number", defaultValue: 16, label: "图案旋转 deg" },

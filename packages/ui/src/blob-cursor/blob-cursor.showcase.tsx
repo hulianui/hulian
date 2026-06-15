@@ -15,6 +15,62 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const blobCursorShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "包裹任意内容，鼠标移入即出现果冻水滴跟随；children 层叠在水滴之上。",
+      code: `<div
+  className="relative h-64 overflow-hidden rounded-xl"
+  style={{ background: "oklch(0.16 0.02 265)" }}
+>
+  <BlobCursor>
+    <div className="pointer-events-none flex h-full items-center justify-center text-sm font-medium text-white/70">
+      移动鼠标 →
+    </div>
+  </BlobCursor>
+</div>`,
+      render: () => (
+        <Stage>
+          <BlobCursor>
+            <div className="pointer-events-none flex h-full items-center justify-center text-sm font-medium text-white/70">
+              移动鼠标 →
+            </div>
+          </BlobCursor>
+        </Stage>
+      ),
+    },
+    {
+      title: "方形液态块",
+      description: "square 配合较大 gooeyStrength 可得像水银一样融合的液态方块。",
+      code: `<BlobCursor square gooeyStrength={20} />`,
+      render: () => (
+        <Stage>
+          <BlobCursor square gooeyStrength={20} />
+        </Stage>
+      ),
+    },
+    {
+      title: "长拖尾",
+      description: "增大 trailCount、降低 trailStiffness，拖尾更长更黏。",
+      code: `<BlobCursor trailCount={5} trailStiffness={70} />`,
+      render: () => (
+        <Stage>
+          <BlobCursor trailCount={5} trailStiffness={70} />
+        </Stage>
+      ),
+    },
+    {
+      title: "关闭 gooey",
+      description: "gooey={false} 时各水珠彼此独立，不再边缘融合。",
+      code: `<BlobCursor gooey={false} />`,
+      render: () => (
+        <Stage>
+          <BlobCursor gooey={false} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "trailCount", type: "number", defaultValue: 3, label: "拖尾数量" },
     { prop: "gooey", type: "boolean", defaultValue: true, label: "gooey 融合" },

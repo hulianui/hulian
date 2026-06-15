@@ -46,6 +46,54 @@ function MultiDemo({ defaultValue = [] as string[] }: { defaultValue?: string[] 
 }
 
 export const countrySelectShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "单选国家/地区，搜索按中文/英文/码/区号全字段匹配。",
+      code: `<CountrySelect defaultValue="CN" className="w-72" />`,
+      render: () => <CountrySelect defaultValue="CN" className="w-72" />,
+    },
+    {
+      title: "显示区号",
+      description: "showDialCode 在下拉行右侧补国际区号。",
+      code: `<CountrySelect defaultValue="US" showDialCode className="w-72" />`,
+      render: () => <CountrySelect defaultValue="US" showDialCode className="w-72" />,
+    },
+    {
+      title: "多选（chips）",
+      description: "multiple 后已选项以 chips 回显，可继续搜索追加。",
+      code: `<CountrySelect multiple defaultValue={["CN", "US", "JP"]} className="w-80" />`,
+      render: () => <CountrySelect multiple defaultValue={["CN", "US", "JP"]} className="w-80" />,
+    },
+    {
+      title: "尺寸",
+      description: "size 支持 sm / md / lg。",
+      code: `<>
+  <CountrySelect size="sm" defaultValue="GB" className="w-72" />
+  <CountrySelect size="lg" defaultValue="FR" className="w-72" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-3">
+          <CountrySelect size="sm" defaultValue="GB" className="w-72" />
+          <CountrySelect size="lg" defaultValue="FR" className="w-72" />
+        </div>
+      ),
+    },
+    {
+      title: "禁用 / 无效态",
+      description: "disabled 屏蔽交互；invalid 触发器变 danger 描边。",
+      code: `<>
+  <CountrySelect disabled defaultValue="FR" className="w-72" />
+  <CountrySelect invalid className="w-72" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-3">
+          <CountrySelect disabled defaultValue="FR" className="w-72" />
+          <CountrySelect invalid className="w-72" />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "showDialCode", type: "boolean", defaultValue: false, label: "显示区号" },
     { prop: "showEnglish", type: "boolean", defaultValue: true, label: "显示英文名" },

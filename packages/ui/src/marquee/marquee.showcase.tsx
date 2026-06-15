@@ -26,6 +26,76 @@ const items = ["React", "Vue", "Svelte", "Solid", "Angular", "Qwik"];
 const logos = [Code2, Folder, File, Gauge, Search, Calendar, Wrench, Link];
 
 export const marqueeShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "子项无缝循环向左滚动，pauseOnHover 悬停时暂停。",
+      code: `<Marquee pauseOnHover>
+  {items.map((c) => (
+    <Chip key={c}>{c}</Chip>
+  ))}
+</Marquee>`,
+      render: () => (
+        <Marquee className="w-80" pauseOnHover>
+          {items.map((c) => (
+            <Chip key={c}>{c}</Chip>
+          ))}
+        </Marquee>
+      ),
+    },
+    {
+      title: "图标墙（fade 渐隐）",
+      description: "fade 在两端加 mask 渐隐，配 icon 子项做 logo / 图标墙观感。",
+      code: `<Marquee fade pauseOnHover gap="1.25rem">
+  {logos.map((Icon, i) => (
+    <LogoTile key={i}>
+      <Icon className="size-6" />
+    </LogoTile>
+  ))}
+</Marquee>`,
+      render: () => (
+        <Marquee className="w-80" fade pauseOnHover gap="1.25rem">
+          {logos.map((Icon, i) => (
+            <LogoTile key={i}>
+              <Icon className="size-6" />
+            </LogoTile>
+          ))}
+        </Marquee>
+      ),
+    },
+    {
+      title: "方向与速度",
+      description: "direction 控制方向，duration 越大越慢。",
+      code: `<Marquee direction="right" duration={30} fade>
+  {items.map((c) => (
+    <Chip key={c}>{c}</Chip>
+  ))}
+</Marquee>`,
+      render: () => (
+        <Marquee className="w-80" direction="right" duration={30} fade>
+          {items.map((c) => (
+            <Chip key={c}>{c}</Chip>
+          ))}
+        </Marquee>
+      ),
+    },
+    {
+      title: "竖向滚动（vertical）",
+      description: "vertical 沿 Y 轴滚动，需给容器固定高度。",
+      code: `<Marquee className="h-56" vertical fade pauseOnHover>
+  {items.map((c) => (
+    <Chip key={c}>{c}</Chip>
+  ))}
+</Marquee>`,
+      render: () => (
+        <Marquee className="h-56" vertical fade pauseOnHover>
+          {items.map((c) => (
+            <Chip key={c}>{c}</Chip>
+          ))}
+        </Marquee>
+      ),
+    },
+  ],
   controls: [
     { prop: "direction", type: "select", options: ["left", "right"], defaultValue: "left" },
     { prop: "duration", type: "number", defaultValue: 20 },

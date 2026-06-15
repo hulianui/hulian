@@ -130,6 +130,63 @@ function Demo({ enableSorting = true, striped = true }: { enableSorting?: boolea
 }
 
 export const tableShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传 columns + data 即可；表头默认可点排序，偶数行斑马纹。",
+      code: `const columns: ColumnDef<DemoUser, any>[] = [
+  { accessorKey: "name", header: "姓名" },
+  { accessorKey: "email", header: "邮箱" },
+  { accessorKey: "role", header: "角色" },
+];
+
+<Table columns={columns} data={users} />`,
+      render: () => <Demo />,
+    },
+    {
+      title: "行选择",
+      description: "enableRowSelection 自动前插复选框列（含表头全选 / 半选态）。",
+      code: `<Table columns={columns} data={users} enableRowSelection />`,
+      render: () => <SelectionDemo />,
+    },
+    {
+      title: "列筛选",
+      description: "给列加 meta.filterable，表头出内置文本筛选框。",
+      code: `const filterColumns = [
+  { ...columns[0], meta: { filterable: true } },
+  { ...columns[1], meta: { filterable: true } },
+  columns[2],
+];
+
+<Table columns={filterColumns} data={users} />`,
+      render: () => <FilterDemo />,
+    },
+    {
+      title: "可展开明细",
+      description: "renderExpandedRow 在行下渲染整宽明细面板。",
+      code: `<Table
+  columns={columns}
+  data={users}
+  renderExpandedRow={(row) => (
+    <div className="text-sm text-muted">
+      <div>用户 ID：{row.original.id}</div>
+      <div>邮箱：{row.original.email}</div>
+    </div>
+  )}
+/>`,
+      render: () => <ExpandableDemo />,
+    },
+    {
+      title: "虚拟滚动",
+      description: "大数据平铺表开 virtual，200 行只渲染视口窗口（固定高容器）。",
+      code: `<Table
+  columns={columns}
+  data={manyUsers}
+  virtual={{ enabled: true, height: 360, rowHeight: 44 }}
+/>`,
+      render: () => <VirtualDemo />,
+    },
+  ],
   controls: [
     { prop: "enableSorting", type: "boolean", defaultValue: true, label: "可排序" },
     { prop: "striped", type: "boolean", defaultValue: true, label: "斑马纹" },

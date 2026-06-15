@@ -33,6 +33,48 @@ function Demo({
 }
 
 export const colorPickerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "色板拖拽 + 文本输入，非受控用 defaultValue 给初始色。",
+      code: `<ColorPicker defaultValue="#3b82f6" />`,
+      render: () => <ColorPicker defaultValue="#3b82f6" />,
+    },
+    {
+      title: "输出格式",
+      description: "defaultFormat 决定回调与输入框格式：hex / rgb / hsl。",
+      code: `<>
+  <ColorPicker defaultValue="#22c55e" defaultFormat="rgb" />
+  <ColorPicker defaultValue="#8b5cf6" defaultFormat="hsl" />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <ColorPicker defaultValue="#22c55e" defaultFormat="rgb" />
+          <ColorPicker defaultValue="#8b5cf6" defaultFormat="hsl" />
+        </div>
+      ),
+    },
+    {
+      title: "精简：隐藏切换器 / 输入框",
+      description: "showFormatSwitcher / showInput 关掉非必要部件，只留色板。",
+      code: `<>
+  <ColorPicker defaultValue="#ef4444" showFormatSwitcher={false} />
+  <ColorPicker defaultValue="#06b6d4" showInput={false} />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <ColorPicker defaultValue="#ef4444" showFormatSwitcher={false} />
+          <ColorPicker defaultValue="#06b6d4" showInput={false} />
+        </div>
+      ),
+    },
+    {
+      title: "禁用",
+      description: "disabled 罩层 + 屏蔽交互。",
+      code: `<ColorPicker defaultValue="#3b82f6" disabled />`,
+      render: () => <ColorPicker defaultValue="#3b82f6" disabled />,
+    },
+  ],
   controls: [
     { prop: "defaultFormat", type: "select", options: ["hex", "rgb", "hsl"], defaultValue: "hex", label: "格式" },
     { prop: "showFormatSwitcher", type: "boolean", defaultValue: true, label: "显示格式切换器" },

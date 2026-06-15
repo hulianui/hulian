@@ -21,6 +21,83 @@ function CardBody({
 const variantOptions = ["default", "blue", "pink", "amber"] as const;
 
 export const pixelCardShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "悬停 / 聚焦时像素从中心向外波纹式生长，离开逐格收缩消散。",
+      code: `<PixelCard variant="default" className="h-48 w-64">
+  <div className="flex flex-col items-center gap-1 px-6 text-center">
+    <p className="text-base font-semibold text-foreground">瑚琏组件库</p>
+    <p className="text-xs text-muted">悬停 / 聚焦触发像素动画</p>
+  </div>
+</PixelCard>`,
+      render: () => (
+        <PixelCard variant="default" className="h-48 w-64">
+          <CardBody title="瑚琏组件库" subtitle="悬停 / 聚焦触发像素动画" />
+        </PixelCard>
+      ),
+    },
+    {
+      title: "预设变体",
+      description: "variant 一键切换 gap / speed / 配色组合：blue / pink / amber。",
+      code: `<PixelCard variant="blue" className="h-48 w-64">
+  …
+</PixelCard>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <PixelCard variant="blue" className="h-40 w-52">
+            <CardBody title="blue" subtitle="chart-2 蓝调" />
+          </PixelCard>
+          <PixelCard variant="amber" className="h-40 w-52">
+            <CardBody title="amber" subtitle="gap=3 更密更细腻" />
+          </PixelCard>
+        </div>
+      ),
+    },
+    {
+      title: "自定义配色与速度",
+      description: "colors / gap / speed 单独传值覆盖变体默认，喂带 --color- 前缀的 token。",
+      code: `<PixelCard
+  colors={[
+    "var(--color-chart-5)",
+    "var(--color-chart-4)",
+    "var(--color-chart-1)",
+  ]}
+  gap={5}
+  speed={18}
+  className="h-48 w-64"
+>
+  …
+</PixelCard>`,
+      render: () => (
+        <PixelCard
+          colors={[
+            "var(--color-chart-5)",
+            "var(--color-chart-4)",
+            "var(--color-chart-1)",
+          ]}
+          gap={5}
+          speed={18}
+          className="h-48 w-64"
+        >
+          <CardBody title="自定义" subtitle="colors / gap / speed 可覆盖" />
+        </PixelCard>
+      ),
+    },
+    {
+      title: "禁用焦点触发",
+      description: "noFocus 时仅鼠标悬停触发动画，根容器不可键盘聚焦。",
+      code: `<PixelCard variant="default" noFocus className="h-48 w-64">
+  …
+</PixelCard>`,
+      render: () => (
+        <PixelCard variant="default" noFocus className="h-48 w-64">
+          <CardBody title="仅悬停触发" subtitle="noFocus = true" />
+        </PixelCard>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "variant",

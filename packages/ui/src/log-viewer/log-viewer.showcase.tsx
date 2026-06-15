@@ -40,6 +40,69 @@ function StreamDemo() {
 
 export const logViewerShowcase: ShowcaseSpec = {
   controls: [],
+  examples: [
+    {
+      title: "基础用法",
+      description: "lines 数据驱动渲染，level 字段按级别着色（info/warn/error/success/command）。",
+      code: `<LogViewer
+  lines={[
+    { level: "command", message: "▸ npm run build" },
+    { level: "info", message: "compiling 248 modules…" },
+    { level: "success", message: "✓ compiled in 8.1s" },
+    { level: "error", message: "2 problems (1 error, 1 warning)" },
+  ]}
+/>`,
+      render: () => (
+        <LogViewer
+          height={160}
+          lines={[
+            { level: "command", message: "▸ npm run build" },
+            { level: "info", message: "compiling 248 modules…" },
+            { level: "success", message: "✓ compiled in 8.1s" },
+            { level: "error", message: "2 problems (1 error, 1 warning)" },
+          ]}
+        />
+      ),
+    },
+    {
+      title: "时间戳 + 来源前缀",
+      description: "showTimestamp 渲染行首时间戳；line.source 弱化渲染在正文前。",
+      code: `<LogViewer
+  showTimestamp
+  lines={[
+    { level: "command", timestamp: "12:00:01", message: "▸ npm run build" },
+    { level: "warn", timestamp: "12:00:05", source: "[ts]", message: "unused var 'x' at app.tsx:42" },
+    { level: "success", timestamp: "12:00:09", message: "✓ compiled in 8.1s" },
+  ]}
+/>`,
+      render: () => <LogViewer lines={STATIC} showTimestamp height={220} />,
+    },
+    {
+      title: "流式追加（自动贴底）",
+      description: "autoScroll 默认开启，新行追加即贴底；运行逻辑留消费侧，组件只渲染。",
+      code: `<LogViewer lines={lines} showTimestamp height={220} />`,
+      render: () => <StreamDemo />,
+    },
+    {
+      title: "折行模式",
+      description: "wrap 开启后长行折行而非横向滚动，窄容器里也能读全。",
+      code: `<LogViewer
+  wrap
+  lines={[
+    { level: "error", message: "Error: connect ECONNREFUSED 127.0.0.1:5432 …这是一条很长的日志" },
+  ]}
+/>`,
+      render: () => (
+        <LogViewer
+          wrap
+          height={140}
+          lines={[
+            { level: "error", message: "Error: connect ECONNREFUSED 127.0.0.1:5432 at TCPConnectWrap.afterConnect — 这是一条很长的日志，wrap 开启后会折行而不是横向滚动，保证窄容器里也能读全。" },
+          ]}
+        />
+      ),
+    },
+  ],
   states: [
     { name: "构建日志（多级别 + 时间戳）", render: () => <LogViewer lines={STATIC} showTimestamp height={220} /> },
     { name: "流式追加（自动贴底）", render: () => <StreamDemo /> },

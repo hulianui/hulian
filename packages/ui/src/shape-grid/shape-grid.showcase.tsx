@@ -15,6 +15,89 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const shapeGridShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "默认方格向右无限滚动，边线吃 --color-border token；canvas 需用 absolute inset-0 铺满容器。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.16 0.02 255)" }}>
+  <ShapeGrid className="absolute inset-0 opacity-90" />
+</div>`,
+      render: () => (
+        <Stage>
+          <ShapeGrid className="absolute inset-0 opacity-90" />
+        </Stage>
+      ),
+    },
+    {
+      title: "形状与方向",
+      description:
+        "shape 四选一（square / circle / triangle / hexagon），direction 控制滚动方向。",
+      code: `<ShapeGrid
+  shape="hexagon"
+  direction="diagonal"
+  squareSize={32}
+  className="absolute inset-0 opacity-90"
+/>`,
+      render: () => (
+        <Stage>
+          <ShapeGrid
+            shape="hexagon"
+            direction="diagonal"
+            squareSize={32}
+            className="absolute inset-0 opacity-90"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "悬停拖尾",
+      description:
+        "hoverTrailAmount>0 让悬停经过的单元留下渐隐拖尾，hoverFillColor 指定填充色（移动鼠标试试）。",
+      code: `<ShapeGrid
+  shape="circle"
+  direction="up"
+  hoverTrailAmount={6}
+  hoverFillColor="var(--color-chart-2)"
+  className="absolute inset-0 opacity-90"
+/>`,
+      render: () => (
+        <Stage>
+          <ShapeGrid
+            shape="circle"
+            direction="up"
+            hoverTrailAmount={6}
+            hoverFillColor="var(--color-chart-2)"
+            className="absolute inset-0 opacity-90"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "三角网 · 暖色填充",
+      description: "triangle 形交错排布，speed 调快滚动，hoverFillColor 换主题强调色。",
+      code: `<ShapeGrid
+  shape="triangle"
+  direction="left"
+  speed={1.5}
+  hoverFillColor="var(--color-chart-3)"
+  className="absolute inset-0 opacity-90"
+/>`,
+      render: () => (
+        <Stage>
+          <ShapeGrid
+            shape="triangle"
+            direction="left"
+            speed={1.5}
+            hoverFillColor="var(--color-chart-3)"
+            className="absolute inset-0 opacity-90"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "shape",

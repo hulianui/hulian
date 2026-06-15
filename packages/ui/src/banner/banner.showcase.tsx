@@ -23,6 +23,88 @@ function Closable() {
 }
 
 export const bannerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "通栏公告条，前导图标随 tone 自动着色，默认居中单行。",
+      code: `<Banner icon={<Info />}>新版本 2.0 已发布，包含 8 个新组件</Banner>`,
+      render: () => <Banner icon={<Info />}>新版本 2.0 已发布，包含 8 个新组件</Banner>,
+    },
+    {
+      title: "六语气",
+      description: "tone 提供 neutral / info / brand / success / warning / danger。",
+      code: `<>
+  <Banner tone="success" icon={<Rocket />}>部署成功，服务已切换到新版本</Banner>
+  <Banner tone="warning" icon={<TriangleAlert />}>你的会员将在 3 天后到期</Banner>
+  <Banner tone="danger" icon={<TriangleAlert />}>系统将于 23:00 停机维护</Banner>
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-2">
+          <Banner tone="success" icon={<Rocket />}>
+            部署成功，服务已切换到新版本
+          </Banner>
+          <Banner tone="warning" icon={<TriangleAlert />}>
+            你的会员将在 3 天后到期
+          </Banner>
+          <Banner tone="danger" icon={<TriangleAlert />}>
+            系统将于 23:00 停机维护
+          </Banner>
+        </div>
+      ),
+    },
+    {
+      title: "实色填充",
+      description: 'variant="solid" 用实色底，更醒目，适合促销 / 重大公告。',
+      code: `<Banner variant="solid" tone="brand" icon={<Sparkles />} align="center">
+  限时优惠：升级 Pro 立享 8 折
+</Banner>`,
+      render: () => (
+        <Banner variant="solid" tone="brand" icon={<Sparkles />} align="center">
+          限时优惠：升级 Pro 立享 8 折
+        </Banner>
+      ),
+    },
+    {
+      title: "操作 + 可关闭",
+      description: "action 槽放右侧操作，传 onClose 渲染关闭按钮。",
+      code: `<Banner
+  tone="neutral"
+  icon={<Megaphone />}
+  align="start"
+  action={<Button size="sm" variant="outline">了解更多</Button>}
+  onClose={() => setOpen(false)}
+>
+  我们更新了隐私政策
+</Banner>`,
+      render: () => (
+        <Banner
+          tone="neutral"
+          icon={<Megaphone />}
+          align="start"
+          action={
+            <Button size="sm" variant="outline">
+              了解更多
+            </Button>
+          }
+          onClose={() => {}}
+        >
+          我们更新了隐私政策
+        </Banner>
+      ),
+    },
+    {
+      title: "滚动跑马灯",
+      description: "scrollable 让长文案单行无缝滚动（hover 暂停）。",
+      code: `<Banner variant="solid" tone="info" icon={<Megaphone />} scrollable>
+  欢迎使用瑚琏 UI · 全量国产化设计 token · 暗色模式开箱即用 · 持续更新中
+</Banner>`,
+      render: () => (
+        <Banner variant="solid" tone="info" icon={<Megaphone />} scrollable>
+          欢迎使用瑚琏 UI · 全量国产化设计 token · 暗色模式开箱即用 · 持续更新中
+        </Banner>
+      ),
+    },
+  ],
   controls: [
     { prop: "tone", type: "select", options: ["neutral", "info", "brand", "success", "warning", "danger"], defaultValue: "info" },
     { prop: "variant", type: "select", options: ["soft", "solid"], defaultValue: "soft" },

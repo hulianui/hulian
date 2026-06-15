@@ -21,6 +21,83 @@ function Stage({
 }
 
 export const rippleGridShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "默认深色底 + chart-1 token 网格；放在 relative 容器里自带 absolute inset-0 z-0。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 265)" }}>
+  <RippleGrid />
+  <div className="relative z-10 flex h-full items-center justify-center">
+    <p className="text-2xl font-bold text-white/90">RippleGrid</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <RippleGrid />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-2xl font-bold tracking-tight text-white/90">
+              RippleGrid
+            </p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "密网格 · 强辉光",
+      description:
+        "gridSize 加密格子、glowIntensity 提升线条外晕、gridThickness 调锐线条。",
+      code: `<RippleGrid gridSize={18} glowIntensity={0.3} gridThickness={20} />`,
+      render: () => (
+        <Stage>
+          <RippleGrid gridSize={18} glowIntensity={0.3} gridThickness={20} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/70">密网格 · 强辉光</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "彩虹配色",
+      description: "enableRainbow 让网格随时间在 RGB 间循环渐变（此时忽略 color）。",
+      code: `<RippleGrid enableRainbow rippleIntensity={0.08} gridSize={12} />`,
+      render: () => (
+        <Stage>
+          <RippleGrid enableRainbow rippleIntensity={0.08} gridSize={12} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/80">彩虹涟漪</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "菱形网格 · 自定义色",
+      description: "gridRotation=45 旋成菱形网格，color 传任意 CSS 颜色覆盖 token。",
+      code: `<RippleGrid
+  gridRotation={45}
+  color="oklch(0.78 0.18 75)"
+  gridSize={9}
+  rippleIntensity={0.06}
+/>`,
+      render: () => (
+        <Stage>
+          <RippleGrid
+            gridRotation={45}
+            color="oklch(0.78 0.18 75)"
+            gridSize={9}
+            rippleIntensity={0.06}
+          />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-amber-100/80">
+              45° 菱形 · 暖金
+            </p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "rippleIntensity", type: "number", defaultValue: 0.05, label: "涟漪强度" },
     { prop: "gridSize", type: "number", defaultValue: 10, label: "网格密度" },

@@ -85,6 +85,132 @@ function DrivenCard() {
 }
 
 export const taskRunnerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "运行中",
+      description: "status=running 头部徽标脉冲；progress 显式控制进度条。",
+      code: `<TaskRunner
+  title="Sandbox"
+  tag="node26"
+  status="running"
+  steps={[
+    { title: "Allocate microVM", status: "done", meta: "180ms" },
+    { title: "Restore snapshot", status: "done", meta: "820ms" },
+    { title: "Boot runtime · Node 26", status: "done", meta: "1082ms" },
+    { title: "Execute main.js", status: "running", meta: "…" },
+    { title: "Reclaim sandbox", status: "pending" },
+  ]}
+  progress={58}
+  elapsed="3.12s"
+  footerStatus="Executing…"
+/>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <TaskRunner
+            title="Sandbox"
+            tag="node26"
+            status="running"
+            steps={[
+              { title: "Allocate microVM", status: "done", meta: "180ms" },
+              { title: "Restore snapshot", status: "done", meta: "820ms" },
+              { title: "Boot runtime · Node 26", status: "done", meta: "1082ms" },
+              { title: "Execute main.js", status: "running", meta: "…" },
+              { title: "Reclaim sandbox", status: "pending" },
+            ]}
+            progress={58}
+            elapsed="3.12s"
+            footerStatus="Executing…"
+          />
+        </div>
+      ),
+    },
+    {
+      title: "成功",
+      description: "status=success；省略 progress 时按 done 步骤比自动派生为 100%。",
+      code: `<TaskRunner
+  title="Build"
+  tag="ci"
+  status="success"
+  steps={[
+    { title: "Install deps", status: "done", meta: "4.2s" },
+    { title: "Typecheck", status: "done", meta: "8.1s" },
+    { title: "Bundle", status: "done", meta: "12.6s" },
+  ]}
+  elapsed="24.9s"
+  footerStatus="Done"
+/>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <TaskRunner
+            title="Build"
+            tag="ci"
+            status="success"
+            steps={[
+              { title: "Install deps", status: "done", meta: "4.2s" },
+              { title: "Typecheck", status: "done", meta: "8.1s" },
+              { title: "Bundle", status: "done", meta: "12.6s" },
+            ]}
+            elapsed="24.9s"
+            footerStatus="Done"
+          />
+        </div>
+      ),
+    },
+    {
+      title: "失败",
+      description: "status=error 红色徽标；失败步骤用 detail 写明原因。",
+      code: `<TaskRunner
+  title="Deploy"
+  status="error"
+  steps={[
+    { title: "Build image", status: "done", meta: "31s" },
+    { title: "Push registry", status: "error", detail: "registry 超时", meta: "—" },
+    { title: "Rolling update", status: "pending" },
+  ]}
+  elapsed="46s"
+  footerStatus="Failed"
+/>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <TaskRunner
+            title="Deploy"
+            status="error"
+            steps={[
+              { title: "Build image", status: "done", meta: "31s" },
+              { title: "Push registry", status: "error", detail: "registry 超时", meta: "—" },
+              { title: "Rolling update", status: "pending" },
+            ]}
+            elapsed="46s"
+            footerStatus="Failed"
+          />
+        </div>
+      ),
+    },
+    {
+      title: "无底栏",
+      description: "省略 elapsed/footerStatus/footerExtra 时不渲染底栏。",
+      code: `<TaskRunner
+  title="Lint"
+  status="running"
+  steps={[
+    { title: "Scan files", status: "done" },
+    { title: "Apply rules", status: "running" },
+  ]}
+/>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <TaskRunner
+            title="Lint"
+            status="running"
+            steps={[
+              { title: "Scan files", status: "done" },
+              { title: "Apply rules", status: "running" },
+            ]}
+          />
+        </div>
+      ),
+    },
+  ],
   controls: [],
   states: [
     { name: "运行中（Sandbox · 对照参考图）", render: () => <RunningCard /> },

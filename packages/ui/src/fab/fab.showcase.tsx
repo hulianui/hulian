@@ -31,6 +31,32 @@ function FabBox({ withActions, label }: { withActions?: boolean; label?: string 
 }
 
 export const fabShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认 fixed 贴视口右下；无 actions 时主钮直接触发 onClick。",
+      code: `<Fab icon={<Plus />} onClick={() => alert("新建")} />`,
+      render: () => <FabBox />,
+    },
+    {
+      title: "Extended 胶囊",
+      description: "传 label 后主钮从圆形变为「图标 + 文字」自适应宽度胶囊。",
+      code: `<Fab label="返回示例库" icon={<ExternalLink />} />`,
+      render: () => <FabBox label="返回示例库" />,
+    },
+    {
+      title: "Speed-dial 子动作",
+      description: "提供 actions 则点主钮展开/收起一组子动作，主钮图标旋转 45°。",
+      code: `<Fab
+  actions={[
+    { key: "search", icon: <Search />, label: "搜索" },
+    { key: "copy", icon: <Copy />, label: "复制" },
+    { key: "link", icon: <ExternalLink />, label: "分享" },
+  ]}
+/>`,
+      render: () => <FabBox withActions />,
+    },
+  ],
   controls: [],
   states: [
     { name: "单按钮", render: () => <FabBox /> },

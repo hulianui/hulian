@@ -71,6 +71,45 @@ function Demo(props: {
 }
 
 export const carouselShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "每个顶层 child 是一张幻灯片；默认带箭头 + 圆点，可拖拽、支持 ←→ 键盘。",
+      code: `<Carousel className="w-96" aria-label="首页促销 Banner">
+  <Slide title="618 年中大促" />
+  <Slide title="夏季轻薄系列" />
+  {/* …更多促销位 */}
+</Carousel>`,
+      render: () => <Demo />,
+    },
+    {
+      title: "自动播放 + 循环",
+      description: "autoplay 每 4s 自动翻页，loop 让末张接回首张；悬停 / 聚焦时自动暂停。",
+      code: `<Carousel autoplay loop className="w-96">
+  <Slide title="618 年中大促" />
+  <Slide title="夏季轻薄系列" />
+</Carousel>`,
+      render: () => <Demo autoplay loop />,
+    },
+    {
+      title: "仅圆点",
+      description: "showArrows={false} 隐藏左右箭头，只保留底部圆点指示。",
+      code: `<Carousel showArrows={false} className="w-96">
+  <Slide title="618 年中大促" />
+  <Slide title="夏季轻薄系列" />
+</Carousel>`,
+      render: () => <Demo showArrows={false} />,
+    },
+    {
+      title: "仅箭头",
+      description: "showDots={false} 隐藏圆点，只保留左右切换箭头。",
+      code: `<Carousel showDots={false} className="w-96">
+  <Slide title="618 年中大促" />
+  <Slide title="夏季轻薄系列" />
+</Carousel>`,
+      render: () => <Demo showDots={false} />,
+    },
+  ],
   controls: [
     { prop: "autoplay", type: "boolean", defaultValue: false, label: "自动播放" },
     { prop: "loop", type: "boolean", defaultValue: false, label: "循环" },

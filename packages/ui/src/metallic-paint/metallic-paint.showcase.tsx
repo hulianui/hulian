@@ -15,6 +15,78 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const metallicPaintShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "铺满深色容器的液态金属漆面背景，可叠加居中文字。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.01 255)" }}>
+  <MetallicPaint className="opacity-95" />
+  <div className="relative z-10 flex h-full items-center justify-center text-sm text-white/70">
+    Metallic Paint
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <MetallicPaint className="opacity-95" />
+          <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/70">
+            Metallic Paint
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "高液态流动",
+      description: "调大 liquid 与 speed，金属表面像流动的水银。",
+      code: `<MetallicPaint liquid={1} speed={1.4} className="opacity-95" />`,
+      render: () => (
+        <Stage>
+          <MetallicPaint liquid={1} speed={1.4} className="opacity-95" />
+        </Stage>
+      ),
+    },
+    {
+      title: "强折射虹彩",
+      description: "提高 refraction 加强 RGB 三通道错位，配 chart 色得虹彩色散。",
+      code: `<MetallicPaint
+  refraction={1.8}
+  lightColor="var(--color-chart-2)"
+  className="opacity-95"
+/>`,
+      render: () => (
+        <Stage>
+          <MetallicPaint
+            refraction={1.8}
+            lightColor="var(--color-chart-2)"
+            className="opacity-95"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "静态镜面",
+      description: "压低 liquid/refraction/speed，调高 blur，得到平整的镜面金属。",
+      code: `<MetallicPaint
+  liquid={0.1}
+  refraction={0.5}
+  speed={0.4}
+  blur={1}
+  className="opacity-95"
+/>`,
+      render: () => (
+        <Stage>
+          <MetallicPaint
+            liquid={0.1}
+            refraction={0.5}
+            speed={0.4}
+            blur={1}
+            className="opacity-95"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "speed", type: "number", defaultValue: 1, label: "流动速度" },
     { prop: "scale", type: "number", defaultValue: 1, label: "纹理缩放" },

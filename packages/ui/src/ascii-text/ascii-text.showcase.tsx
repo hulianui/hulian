@@ -15,6 +15,61 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const asciiTextShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "把文字渲染成字符画，默认开启波动位移与鼠标驱动色相。需放在定宽高的相对定位容器里。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  <ASCIIText text="瑚琏" />
+</div>`,
+      render: () => (
+        <Stage>
+          <ASCIIText text="瑚琏" className="text-[color:var(--color-chart-1)]" />
+        </Stage>
+      ),
+    },
+    {
+      title: "英文文本",
+      description: "asciiFontSize 调小可提升字符网格密度，英文长文本更清晰。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  <ASCIIText text="HULIAN UI" asciiFontSize={7} />
+</div>`,
+      render: () => (
+        <Stage>
+          <ASCIIText text="HULIAN UI" asciiFontSize={7} />
+        </Stage>
+      ),
+    },
+    {
+      title: "静态字符画",
+      description: "关闭 enableWaves 与 enableHue 得到无动画的纯字符画。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  <ASCIIText text="ASCII" enableWaves={false} enableHue={false} />
+</div>`,
+      render: () => (
+        <Stage>
+          <ASCIIText
+            text="ASCII"
+            enableWaves={false}
+            enableHue={false}
+            className="text-[color:var(--color-chart-2)]"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "高密度细节",
+      description: "更小的 asciiFontSize 配合更大的 textFontSize 采样，刻画更多细节。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  <ASCIIText text="代码" asciiFontSize={6} textFontSize={200} />
+</div>`,
+      render: () => (
+        <Stage>
+          <ASCIIText text="代码" asciiFontSize={6} textFontSize={200} />
+        </Stage>
+      ),
+    },
+  ],
   controls: [
     { prop: "text", type: "text", defaultValue: "瑚琏", label: "文本" },
     { prop: "asciiFontSize", type: "number", defaultValue: 8, label: "字符字号 px" },

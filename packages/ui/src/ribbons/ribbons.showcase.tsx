@@ -18,6 +18,74 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const ribbonsShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "放在 relative 容器里即可，默认吃 chart token 三色飘带、弹性追随鼠标。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl">
+  <Ribbons />
+</div>`,
+      render: () => (
+        <Stage>
+          <Ribbons />
+        </Stage>
+      ),
+    },
+    {
+      title: "尾部渐隐 + 波动特效",
+      description: "enableFade 沿带长渐隐尾部，enableShaderEffect 让飘带正弦抖动。",
+      code: `<Ribbons enableFade enableShaderEffect effectAmplitude={2} />`,
+      render: () => (
+        <Stage>
+          <Ribbons enableFade enableShaderEffect effectAmplitude={2} />
+        </Stage>
+      ),
+    },
+    {
+      title: "粗带慢追随（壁纸级）",
+      description: "加粗 + 高阻尼 + 长拖尾 + 低速倍率，做慵懒的背景氛围。",
+      code: `<Ribbons
+  baseThickness={50}
+  baseFriction={0.94}
+  maxAge={900}
+  speedMultiplier={0.4}
+/>`,
+      render: () => (
+        <Stage>
+          <Ribbons baseThickness={50} baseFriction={0.94} maxAge={900} speedMultiplier={0.4} />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义颜色 · 多条散开",
+      description: "colors 每个 CSS 颜色生成一条飘带；offsetFactor 越大散得越开。",
+      code: `<Ribbons
+  colors={[
+    "var(--color-chart-1)",
+    "oklch(0.72 0.22 30)",
+    "oklch(0.78 0.18 60)",
+    "var(--color-chart-3)",
+  ]}
+  offsetFactor={0.1}
+  baseThickness={24}
+/>`,
+      render: () => (
+        <Stage>
+          <Ribbons
+            colors={[
+              "var(--color-chart-1)",
+              "oklch(0.72 0.22 30)",
+              "oklch(0.78 0.18 60)",
+              "var(--color-chart-3)",
+            ]}
+            offsetFactor={0.1}
+            baseThickness={24}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "baseThickness", type: "number", defaultValue: 30, label: "粗细 px" },
     { prop: "baseFriction", type: "number", defaultValue: 0.9, label: "阻尼 0–1" },

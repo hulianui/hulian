@@ -67,6 +67,100 @@ function InlineDemo() {
 }
 
 export const comboboxShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "弹层内搜索（图4 范式）",
+      description: "触发按钮显示已选项，点击展开带搜索框的浮层。",
+      code: `<Combobox items={fruits}>
+  <ComboboxTrigger placeholder="选择水果" />
+  <ComboboxContent searchPlaceholder="搜索水果…">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+      render: () => <Demo />,
+    },
+    {
+      title: "内联自动补全",
+      description: "输入框本身即可见字段，直接打字过滤，clearable 显示清除钮。",
+      code: `<Combobox items={fruits}>
+  <ComboboxInput placeholder="搜索水果…" clearable />
+  <ComboboxContent>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+      render: () => <InlineDemo />,
+    },
+    {
+      title: "默认已选值",
+      description: "defaultValue 传入选项对象作为非受控初值。",
+      code: `<Combobox items={fruits} defaultValue={fruits[2]}>
+  <ComboboxTrigger placeholder="选择水果" />
+  <ComboboxContent searchPlaceholder="搜索水果…">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+      render: () => <Demo defaultValue={FRUITS[2]} />,
+    },
+    {
+      title: "禁用与无效态",
+      description: "disabled 整体置灰；invalid 触发器标红。",
+      code: `<>
+  <Combobox items={fruits} defaultValue={fruits[0]} disabled>
+    <ComboboxTrigger placeholder="选择水果" />
+    <ComboboxContent searchPlaceholder="搜索水果…">
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxContent>
+  </Combobox>
+  <Combobox items={fruits}>
+    <ComboboxTrigger placeholder="选择水果" invalid />
+    <ComboboxContent searchPlaceholder="搜索水果…">
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxContent>
+  </Combobox>
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-3">
+          <Demo disabled defaultValue={FRUITS[0]} />
+          <Demo invalid />
+        </div>
+      ),
+    },
+    {
+      title: "尺寸",
+      description: "size 控制触发器高度（sm / md / lg）。",
+      code: `<Combobox items={fruits}>
+  <ComboboxTrigger size="sm" placeholder="选择水果" />
+  <ComboboxContent searchPlaceholder="搜索水果…">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+      render: () => <Demo size="sm" />,
+    },
+  ],
   controls: [
     { prop: "placeholder", type: "text", defaultValue: "选择水果", label: "占位文案" },
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },

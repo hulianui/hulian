@@ -216,6 +216,67 @@ function CursorManaged() {
 }
 
 export const proTableShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "托管模式",
+      description: "传 request 即由 ProTable 自管 page/sort/filters/loading/data，按需请求服务端。",
+      code: `const request = async (p) => {
+  const rows = await fetchEmployees(p.filters, p.sort);
+  const start = (p.page - 1) * p.pageSize;
+  return { data: rows.slice(start, start + p.pageSize), total: rows.length };
+};
+
+<ProTable
+  title="员工列表"
+  columns={columns}
+  request={request}
+  defaultPageSize={8}
+  enableRowSelection
+  search={{ fields: searchFields }}
+/>`,
+      render: () => <Managed />,
+    },
+    {
+      title: "cursor 分页",
+      description: "paginationMode=\"cursor\"，request 返回 { data, nextCursor, hasMore }，底部为上一页/下一页。",
+      code: `<ProTable
+  title="日志"
+  columns={columns}
+  request={request}
+  paginationMode="cursor"
+  defaultPageSize={8}
+  pageSizeOptions={[8, 16, 32]}
+/>`,
+      render: () => <CursorManaged />,
+    },
+    {
+      title: "展示模式（受控分页）",
+      description: "自管 data/分页时，传 data + pagination + search 回调即可。",
+      code: `<ProTable
+  title="员工列表"
+  columns={columns}
+  data={pageData}
+  enableRowSelection
+  onReload={reload}
+  toolbarActions={<Button size="sm">+ 新增员工</Button>}
+  search={{ fields: searchFields, onSearch, onReset }}
+  pagination={{ page, pageSize, total, onPageChange: setPage }}
+/>`,
+      render: () => <Demo />,
+    },
+    {
+      title: "精简表",
+      description: "紧凑密度 + 关掉全屏按钮 + 无查询区。",
+      code: `<ProTable
+  title="紧凑表"
+  columns={columns.slice(0, 4)}
+  data={rows}
+  density="compact"
+  toolbar={{ fullscreen: false }}
+/>`,
+      render: () => <Minimal />,
+    },
+  ],
   controls: [],
   states: [
     { name: "托管模式（服务端 request + 批量）", render: () => <Managed /> },

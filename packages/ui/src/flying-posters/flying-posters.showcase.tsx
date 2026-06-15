@@ -33,6 +33,74 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const flyingPostersShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "传入海报图片地址数组，首尾相接无限循环；默认自动卷动，滚轮 / 拖拽可手动卷动。",
+      code: `<div
+  className="relative h-80 overflow-hidden rounded-xl"
+  style={{ background: "oklch(0.14 0.02 270)" }}
+>
+  <FlyingPosters items={posters} className="absolute inset-0" />
+</div>`,
+      render: () => (
+        <Stage>
+          <FlyingPosters items={POSTERS} className="absolute inset-0" />
+        </Stage>
+      ),
+    },
+    {
+      title: "翻折扭曲强度",
+      description: "distortion 控制卷动时海报飞起的翻折幅度，越大越夸张（建议 1–6）。",
+      code: `<FlyingPosters items={posters} distortion={5} className="absolute inset-0" />`,
+      render: () => (
+        <Stage>
+          <FlyingPosters
+            items={POSTERS}
+            distortion={5}
+            className="absolute inset-0"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "广角透视",
+      description:
+        "cameraFov 增大透视越强、海报飞入飞出弧度更明显；cameraZ 拉远可见更多海报。",
+      code: `<FlyingPosters
+  items={posters}
+  cameraFov={70}
+  cameraZ={26}
+  className="absolute inset-0"
+/>`,
+      render: () => (
+        <Stage>
+          <FlyingPosters
+            items={POSTERS}
+            cameraFov={70}
+            cameraZ={26}
+            className="absolute inset-0"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "关闭自动卷动",
+      description: "autoScroll={false} 仅保留手动卷动（滚轮 / 拖拽）。",
+      code: `<FlyingPosters items={posters} autoScroll={false} className="absolute inset-0" />`,
+      render: () => (
+        <Stage>
+          <FlyingPosters
+            items={POSTERS}
+            autoScroll={false}
+            className="absolute inset-0"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "distortion", type: "number", defaultValue: 3, label: "翻折扭曲强度" },
     { prop: "scrollEase", type: "number", defaultValue: 0.05, label: "卷动缓动系数" },

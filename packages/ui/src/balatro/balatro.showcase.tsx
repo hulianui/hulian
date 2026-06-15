@@ -21,6 +21,78 @@ function Stage({
 }
 
 export const balatroShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "放进 relative 容器即可铺满，三色默认吃 chart token 自适应明暗。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <Balatro />
+  <div className="relative z-10">内容</div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Balatro />
+          <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2">
+            <p className="text-2xl font-bold tracking-tight text-white/90">Balatro</p>
+            <p className="text-sm text-white/50">螺旋油彩 WebGL 背景</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "持续自转",
+      description: "isRotate 让旋涡随时间持续旋转，spinSpeed 控制翻涌速度。",
+      code: `<Balatro isRotate spinSpeed={4} />`,
+      render: () => (
+        <Stage>
+          <Balatro isRotate spinSpeed={4} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/70">isRotate</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "复古马赛克",
+      description: "调小 pixelFilter 让像素块变大，形成低分辨率马赛克质感。",
+      code: `<Balatro pixelFilter={120} contrast={4} />`,
+      render: () => (
+        <Stage>
+          <Balatro pixelFilter={120} contrast={4} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/70">pixelFilter = 120</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义配色",
+      description: "color1/2/3 可传任意 CSS 颜色，调出专属油彩旋涡。",
+      code: `<Balatro
+  color1="oklch(0.72 0.2 40)"
+  color2="oklch(0.6 0.18 25)"
+  color3="oklch(0.18 0.04 30)"
+  spinSpeed={5}
+  lighting={0.6}
+/>`,
+      render: () => (
+        <Stage>
+          <Balatro
+            color1="oklch(0.72 0.2 40)"
+            color2="oklch(0.6 0.18 25)"
+            color3="oklch(0.18 0.04 30)"
+            spinSpeed={5}
+            lighting={0.6}
+          />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-amber-100/80">暖橙油彩</p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "spinSpeed", type: "number", defaultValue: 7, label: "流动速度" },
     { prop: "contrast", type: "number", defaultValue: 3.5, label: "对比度" },

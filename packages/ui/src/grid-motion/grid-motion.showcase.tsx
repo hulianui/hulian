@@ -25,6 +25,71 @@ const WORDS = [
 ];
 
 export const gridMotionShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认 4×7 网格，奇偶行随鼠标横向反向视差平移；不足时用占位文字补齐。",
+      code: `<div className="relative h-72 overflow-hidden rounded-xl bg-neutral-950">
+  <GridMotion className="absolute inset-0" />
+</div>`,
+      render: () => (
+        <Stage>
+          <GridMotion className="absolute inset-0" />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义文字 + 光晕色",
+      description: "items 传内容数组（字符串当文字，http 开头当图片），gradientColor 改中心光晕。",
+      code: `<GridMotion
+  className="absolute inset-0"
+  gradientColor="var(--color-chart-1)"
+  items={["瑚琏", "组件库", "企业级", "高质量", "原生适配", "Token", "动效"]}
+/>`,
+      render: () => (
+        <Stage>
+          <GridMotion
+            className="absolute inset-0"
+            gradientColor="var(--color-chart-1)"
+            items={Array.from({ length: 28 }, (_, i) => WORDS[i % WORDS.length])}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "紧凑网格 + 小视差",
+      description: "rows/columns 加密网格，maxMoveAmount 控制每行最大平移幅度。",
+      code: `<GridMotion
+  className="absolute inset-0"
+  rows={6}
+  columns={9}
+  maxMoveAmount={160}
+  gradientColor="var(--color-chart-4)"
+/>`,
+      render: () => (
+        <Stage>
+          <GridMotion
+            className="absolute inset-0"
+            rows={6}
+            columns={9}
+            maxMoveAmount={160}
+            gradientColor="var(--color-chart-4)"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "强透视（大旋转 + 大视差）",
+      description: "rotate 调透视斜切角度，maxMoveAmount 越大视差越夸张。",
+      code: `<GridMotion className="absolute inset-0" rotate={-25} maxMoveAmount={420} />`,
+      render: () => (
+        <Stage>
+          <GridMotion className="absolute inset-0" rotate={-25} maxMoveAmount={420} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "rows", type: "number", defaultValue: 4, label: "行数" },
     { prop: "columns", type: "number", defaultValue: 7, label: "列数" },

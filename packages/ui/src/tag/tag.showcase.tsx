@@ -22,6 +22,86 @@ function Closable() {
 }
 
 export const tagShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "语气色",
+      description: "tone 覆盖状态光谱：neutral / brand / success / warning / danger。",
+      code: `<>
+  <Tag>默认</Tag>
+  <Tag tone="brand">处理中</Tag>
+  <Tag tone="success">成功</Tag>
+  <Tag tone="warning">警告</Tag>
+  <Tag tone="danger">错误</Tag>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Tag>默认</Tag>
+          <Tag tone="brand">处理中</Tag>
+          <Tag tone="success">成功</Tag>
+          <Tag tone="warning">警告</Tag>
+          <Tag tone="danger">错误</Tag>
+        </div>
+      ),
+    },
+    {
+      title: "变体",
+      description: "variant 提供 soft（默认浅底）/ solid 实底 / outline 描边。",
+      code: `<>
+  <Tag variant="soft" tone="brand">soft</Tag>
+  <Tag variant="solid" tone="brand">solid</Tag>
+  <Tag variant="outline" tone="brand">outline</Tag>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Tag variant="soft" tone="brand">soft</Tag>
+          <Tag variant="solid" tone="brand">solid</Tag>
+          <Tag variant="outline" tone="brand">outline</Tag>
+        </div>
+      ),
+    },
+    {
+      title: "状态圆点",
+      description: "dot 前导状态点；pulse 让点呼吸闪烁，表达进行态。",
+      code: `<>
+  <Tag dot tone="success">运行中</Tag>
+  <Tag dot pulse tone="brand">部署中</Tag>
+  <Tag dot pulse tone="warning">重试中</Tag>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Tag dot tone="success">运行中</Tag>
+          <Tag dot pulse tone="brand">部署中</Tag>
+          <Tag dot pulse tone="warning">重试中</Tag>
+        </div>
+      ),
+    },
+    {
+      title: "带图标",
+      description: "icon 槽放前导图标（存在时不渲染 dot）。",
+      code: `<>
+  <Tag tone="success" icon={<CircleCheck />}>已通过</Tag>
+  <Tag tone="danger" icon={<CircleX />}>已驳回</Tag>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Tag tone="success" icon={<CircleCheck />}>已通过</Tag>
+          <Tag tone="danger" icon={<CircleX />}>已驳回</Tag>
+        </div>
+      ),
+    },
+    {
+      title: "可关闭",
+      description: "传 onClose 渲染关闭按钮，点击触发回调由调用方移除标签。",
+      code: `<Tag tone="brand" onClose={() => remove(tag)}>
+  可移除
+</Tag>`,
+      render: () => (
+        <Tag tone="brand" onClose={() => {}}>
+          可移除
+        </Tag>
+      ),
+    },
+  ],
   controls: [
     { prop: "variant", type: "select", options: ["soft", "solid", "outline"], defaultValue: "soft" },
     { prop: "tone", type: "select", options: ["neutral", "brand", "success", "warning", "danger"], defaultValue: "neutral" },

@@ -107,6 +107,65 @@ function Demo({ expandTrigger, changeOnSelect }: { expandTrigger?: "click" | "ho
 }
 
 export const cascaderShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "点击逐级展开，选到叶子节点提交整条路径。非受控时用 defaultValue 设初值。",
+      code: `<Cascader
+  nodes={nodes}
+  placeholder="选择地区"
+  onChange={(path, nodePath) => setValue(path)}
+/>`,
+      render: () => (
+        <div className="w-72">
+          <Cascader nodes={NODES} placeholder="选择地区" />
+        </div>
+      ),
+    },
+    {
+      title: "hover 展开",
+      description: "expandTrigger=\"hover\" 时移入即逐列展开，点击才提交。",
+      code: `<Cascader nodes={nodes} expandTrigger="hover" placeholder="选择地区" />`,
+      render: () => (
+        <div className="w-72">
+          <Cascader nodes={NODES} expandTrigger="hover" placeholder="选择地区" />
+        </div>
+      ),
+    },
+    {
+      title: "任意层可选",
+      description: "changeOnSelect 允许选中任意一级（不必到叶子）即提交。",
+      code: `<Cascader nodes={nodes} changeOnSelect placeholder="选择地区" />`,
+      render: () => (
+        <div className="w-72">
+          <Cascader nodes={NODES} changeOnSelect placeholder="选择地区" />
+        </div>
+      ),
+    },
+    {
+      title: "默认值与可搜索",
+      description: "defaultValue 回显路径；showSearch 在浮层顶部出搜索框，输入直达叶子。",
+      code: `<Cascader
+  nodes={nodes}
+  defaultValue={["zhejiang", "hangzhou", "xihu"]}
+  showSearch
+/>`,
+      render: () => (
+        <div className="w-72">
+          <Cascader nodes={NODES} defaultValue={["zhejiang", "hangzhou", "xihu"]} showSearch />
+        </div>
+      ),
+    },
+    {
+      title: "禁用态",
+      code: `<Cascader nodes={nodes} disabled placeholder="选择地区" />`,
+      render: () => (
+        <div className="w-72">
+          <Cascader nodes={NODES} disabled placeholder="选择地区" />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "expandTrigger", type: "select", options: ["click", "hover"], defaultValue: "click", label: "expandTrigger" },
     { prop: "changeOnSelect", type: "boolean", defaultValue: false, label: "changeOnSelect（任意层可选）" },

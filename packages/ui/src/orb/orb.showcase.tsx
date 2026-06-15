@@ -21,6 +21,52 @@ function OrbFrame({
 }
 
 export const orbShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "Orb 填满父容器（block h-full w-full），由外层方形容器决定尺寸；默认蓝紫色系。",
+      code: `<div className="relative h-[280px] w-[280px] overflow-hidden rounded-2xl bg-bg">
+  <Orb />
+</div>`,
+      render: () => (
+        <OrbFrame>
+          <Orb />
+        </OrbFrame>
+      ),
+    },
+    {
+      title: "色相旋转",
+      description: "hue 以度为单位旋转 YIQ 色相：约 120 偏绿、60 偏琥珀、300 偏紫红。",
+      code: `<Orb hue={120} />`,
+      render: () => (
+        <OrbFrame>
+          <Orb hue={120} />
+        </OrbFrame>
+      ),
+    },
+    {
+      title: "强制悬停态",
+      description: "forceHoverState 常驻发光+扭曲，适合演示/截图；hoverIntensity 调扭曲强度。",
+      code: `<Orb forceHoverState hoverIntensity={0.4} />`,
+      render: () => (
+        <OrbFrame>
+          <Orb forceHoverState hoverIntensity={0.4} />
+        </OrbFrame>
+      ),
+    },
+    {
+      title: "尺寸与禁用旋转",
+      description: "尺寸由外层容器控制；rotateOnHover={false} 关闭悬停自转。",
+      code: `<div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-bg">
+  <Orb rotateOnHover={false} />
+</div>`,
+      render: () => (
+        <OrbFrame size={160}>
+          <Orb rotateOnHover={false} />
+        </OrbFrame>
+      ),
+    },
+  ],
   controls: [
     { prop: "hue", type: "number", defaultValue: 0, label: "色相旋转(度)" },
     { prop: "hoverIntensity", type: "number", defaultValue: 0.2, label: "悬停强度" },

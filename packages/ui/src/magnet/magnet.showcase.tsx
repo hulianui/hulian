@@ -21,6 +21,75 @@ function Pill({ label = "把我拉过来" }: { label?: string }) {
 }
 
 export const magnetShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "包裹任意内容，指针靠近感应区即磁吸跟随，离开平滑归位。",
+      code: `<Magnet padding={100} magnetStrength={2}>
+  <button className="rounded-full bg-primary px-6 py-3 text-primary-foreground">
+    把我拉过来
+  </button>
+</Magnet>`,
+      render: () => (
+        <Stage>
+          <Magnet padding={100} magnetStrength={2}>
+            <Pill />
+          </Magnet>
+        </Stage>
+      ),
+    },
+    {
+      title: "强吸力",
+      description: "magnetStrength 越小吸力越强；为 1 时内容几乎贴住指针。",
+      code: `<Magnet padding={140} magnetStrength={1}>
+  <button className="rounded-full bg-primary px-6 py-3 text-primary-foreground">
+    强磁吸
+  </button>
+</Magnet>`,
+      render: () => (
+        <Stage>
+          <Magnet padding={140} magnetStrength={1}>
+            <Pill label="强磁吸" />
+          </Magnet>
+        </Stage>
+      ),
+    },
+    {
+      title: "大感应区 + 弱吸力",
+      description: "padding 调大「远距离感应」，magnetStrength 调大让位移更克制。",
+      code: `<Magnet padding={180} magnetStrength={5}>
+  <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl border bg-surface shadow-md">
+    ✦
+  </span>
+</Magnet>`,
+      render: () => (
+        <Stage>
+          <Magnet padding={180} magnetStrength={5}>
+            <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface text-foreground shadow-md">
+              ✦
+            </span>
+          </Magnet>
+        </Stage>
+      ),
+    },
+    {
+      title: "禁用磁吸",
+      description: "disabled 时停止牵引、内容静止居中，DOM 结构不变。",
+      code: `<Magnet disabled>
+  <button className="rounded-full bg-primary px-6 py-3 text-primary-foreground">
+    已禁用
+  </button>
+</Magnet>`,
+      render: () => (
+        <Stage>
+          <Magnet disabled>
+            <Pill label="已禁用" />
+          </Magnet>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "padding", type: "number", defaultValue: 100, label: "感应半径 px" },
     { prop: "magnetStrength", type: "number", defaultValue: 2, label: "强度除数" },

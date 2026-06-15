@@ -9,6 +9,92 @@ const Box = ({ children }: { children?: string }) => (
 );
 
 export const stackShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "横向排列",
+      description: "direction=\"row\" 水平排列，gap 以 0.25rem 为单位（同 Tailwind spacing）。",
+      code: `<Stack direction="row" gap={3}>
+  <Box>A</Box>
+  <Box>B</Box>
+  <Box>C</Box>
+</Stack>`,
+      render: () => (
+        <Stack direction="row" gap={3}>
+          <Box>A</Box>
+          <Box>B</Box>
+          <Box>C</Box>
+        </Stack>
+      ),
+    },
+    {
+      title: "纵向排列",
+      description: "direction=\"column\" 垂直堆叠。",
+      code: `<Stack direction="column" gap={2}>
+  <Box>上</Box>
+  <Box>中</Box>
+  <Box>下</Box>
+</Stack>`,
+      render: () => (
+        <Stack direction="column" gap={2}>
+          <Box>上</Box>
+          <Box>中</Box>
+          <Box>下</Box>
+        </Stack>
+      ),
+    },
+    {
+      title: "主轴对齐",
+      description: "justify 控制主轴分布，常用 between 把首尾顶到两端。",
+      code: `<Stack direction="row" justify="between" className="w-64">
+  <Box>左</Box>
+  <Box>右</Box>
+</Stack>`,
+      render: () => (
+        <Stack direction="row" justify="between" className="w-64">
+          <Box>左</Box>
+          <Box>右</Box>
+        </Stack>
+      ),
+    },
+    {
+      title: "交叉轴对齐",
+      description: "align 控制交叉轴对齐，center 让不等高子项垂直居中。",
+      code: `<Stack direction="row" gap={3} align="center">
+  <Box>A</Box>
+  <Box>B</Box>
+  <Box>C</Box>
+</Stack>`,
+      render: () => (
+        <Stack direction="row" gap={3} align="center">
+          <Box>A</Box>
+          <Box>B</Box>
+          <Box>C</Box>
+        </Stack>
+      ),
+    },
+    {
+      title: "换行",
+      description: "wrap 让 row 在空间不足时折行（仅 row 有意义）。",
+      code: `<Stack direction="row" gap={2} wrap className="w-48">
+  <Box>1</Box>
+  <Box>2</Box>
+  <Box>3</Box>
+  <Box>4</Box>
+  <Box>5</Box>
+  <Box>6</Box>
+</Stack>`,
+      render: () => (
+        <Stack direction="row" gap={2} wrap className="w-48">
+          <Box>1</Box>
+          <Box>2</Box>
+          <Box>3</Box>
+          <Box>4</Box>
+          <Box>5</Box>
+          <Box>6</Box>
+        </Stack>
+      ),
+    },
+  ],
   controls: [
     { prop: "direction", type: "select", options: ["row", "column"], defaultValue: "row" },
     { prop: "gap", type: "number", defaultValue: 3 },

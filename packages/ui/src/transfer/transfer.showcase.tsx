@@ -39,6 +39,53 @@ function Demo({ searchable = false, disabled = false }: { searchable?: boolean; 
 }
 
 export const transferShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "勾选左侧条目后用中间箭头移入/移出（›/‹ 移选中，»/« 全部）。非受控时用 defaultTargetKeys 设初始已选。",
+      code: `<Transfer
+  dataSource={modules}
+  defaultTargetKeys={["dashboard", "orders", "goods"]}
+  titles={["全部功能模块", "已授权"]}
+  onChange={(target) => save(target)}
+/>`,
+      render: () => (
+        <Transfer
+          dataSource={modules}
+          defaultTargetKeys={["dashboard", "orders", "goods"]}
+          titles={["全部功能模块", "已授权"]}
+        />
+      ),
+    },
+    {
+      title: "可搜索",
+      description: "searchable 在两侧面板顶部各放一个搜索框，输入即按 label 过滤。",
+      code: `<Transfer
+  dataSource={modules}
+  defaultTargetKeys={["dashboard"]}
+  searchable
+  searchPlaceholder="搜索模块名"
+  titles={["全部功能模块", "已授权"]}
+/>`,
+      render: () => (
+        <Transfer
+          dataSource={modules}
+          defaultTargetKeys={["dashboard"]}
+          searchable
+          searchPlaceholder="搜索模块名"
+          titles={["全部功能模块", "已授权"]}
+        />
+      ),
+    },
+    {
+      title: "整体禁用",
+      description: "disabled 让两侧列表与移动按钮全失效。",
+      code: `<Transfer dataSource={modules} defaultTargetKeys={["dashboard", "orders"]} disabled />`,
+      render: () => (
+        <Transfer dataSource={modules} defaultTargetKeys={["dashboard", "orders"]} disabled titles={["全部功能模块", "已授权"]} />
+      ),
+    },
+  ],
   controls: [
     { prop: "searchable", type: "boolean", defaultValue: false },
     { prop: "disabled", type: "boolean", defaultValue: false },

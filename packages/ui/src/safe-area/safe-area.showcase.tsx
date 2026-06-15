@@ -17,6 +17,32 @@ function Demo({ edges, min }: { edges?: SafeAreaEdges; min?: number }): ReactNod
 }
 
 export const safeAreaShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "全边安全区",
+      description: "默认 edges=\"all\"，四边都取 max(min, env(safe-area-inset-*))。桌面 env 恒为 0，故用 min 撑开演示。",
+      code: `<SafeArea edges="all" min={16}>
+  <Content />
+</SafeArea>`,
+      render: () => <Demo min={16} />,
+    },
+    {
+      title: "仅底部",
+      description: "传边数组只对指定边生效，常用于底部 Home Indicator 留白。",
+      code: `<SafeArea edges={["bottom"]} min={24}>
+  <BottomBar />
+</SafeArea>`,
+      render: () => <Demo edges={["bottom"]} min={24} />,
+    },
+    {
+      title: "水平方向",
+      description: "语义别名 horizontal 等于左右两边（vertical 为上下）。",
+      code: `<SafeArea edges="horizontal" min={20}>
+  <Content />
+</SafeArea>`,
+      render: () => <Demo edges="horizontal" min={20} />,
+    },
+  ],
   controls: [],
   states: [
     { name: "全边（min 16）", render: () => <Demo min={16} /> },

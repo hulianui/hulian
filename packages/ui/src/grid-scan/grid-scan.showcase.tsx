@@ -16,6 +16,71 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const gridScanShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认往返扫描；children 通过 relative z-10 层叠在透视网格之上。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
+  <GridScan>
+    <div className="flex h-full items-center justify-center text-white/80">
+      内容层
+    </div>
+  </GridScan>
+</div>`,
+      render: () => (
+        <Stage>
+          <GridScan>
+            <div className="flex h-full items-center justify-center text-sm font-medium text-white/80">
+              内容层
+            </div>
+          </GridScan>
+        </Stage>
+      ),
+    },
+    {
+      title: "虚线网格 · 向前扫描",
+      description: "lineStyle 切换实/虚/点线，scanDirection 控制扫描带运动方向。",
+      code: `<GridScan lineStyle="dashed" scanDirection="forward" scanOpacity={0.6} />`,
+      render: () => (
+        <Stage>
+          <GridScan lineStyle="dashed" scanDirection="forward" scanOpacity={0.6} />
+        </Stage>
+      ),
+    },
+    {
+      title: "点线网格 + 自定义扫描色",
+      description: "gridScale 越小格子越密，scanColor 改扫描脉冲发光色。",
+      code: `<GridScan lineStyle="dotted" gridScale={0.07} scanColor="var(--color-chart-4)" />`,
+      render: () => (
+        <Stage>
+          <GridScan lineStyle="dotted" gridScale={0.07} scanColor="var(--color-chart-4)" />
+        </Stage>
+      ),
+    },
+    {
+      title: "稀疏慢扫（壁纸级）",
+      description: "大 gridScale + 长 scanDuration + 高 scanSoftness 得到从容的宽光带。",
+      code: `<GridScan
+  gridScale={0.18}
+  scanDuration={4}
+  scanDelay={1}
+  scanSoftness={3}
+  scanColor="var(--color-chart-1)"
+/>`,
+      render: () => (
+        <Stage>
+          <GridScan
+            gridScale={0.18}
+            scanDuration={4}
+            scanDelay={1}
+            scanSoftness={3}
+            scanColor="var(--color-chart-1)"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "gridScale", type: "number", defaultValue: 0.1, label: "网格密度" },
     {

@@ -14,6 +14,32 @@ function OTPDemo(props: { length?: number; type?: "numeric" | "text"; groupGap?:
 }
 
 export const inputOtpShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "6 位数字验证码，自动跳格、退格回退、整段粘贴自动分配。",
+      code: `<InputOTP length={6} value={otp} onChange={setOtp} onComplete={verify} />`,
+      render: () => <InputOTP length={6} defaultValue="123" />,
+    },
+    {
+      title: "分组分隔",
+      description: "groupGap 在中间插入横线，呈现 3-3 分组视觉。",
+      code: `<InputOTP length={6} groupGap value={otp} onChange={setOtp} />`,
+      render: () => <InputOTP length={6} groupGap defaultValue="12" />,
+    },
+    {
+      title: "任意字符",
+      description: 'type="text" 接受字母数字混合的兑换码/邀请码。',
+      code: `<InputOTP length={6} type="text" value={code} onChange={setCode} />`,
+      render: () => <InputOTP length={6} type="text" defaultValue="AB12" />,
+    },
+    {
+      title: "无效态",
+      description: "invalid 标红边框，校验失败时提示重输。",
+      code: `<InputOTP length={4} invalid value={otp} onChange={setOtp} />`,
+      render: () => <InputOTP length={4} invalid defaultValue="9999" />,
+    },
+  ],
   controls: [
     { prop: "length", type: "number", defaultValue: 6 },
     { prop: "type", type: "select", options: ["numeric", "text"], defaultValue: "numeric" },

@@ -17,6 +17,56 @@ function Flippable() {
 }
 
 export const creditCardShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传入卡号、持卡人、有效期即可，品牌由卡号前缀自动识别。",
+      code: `<CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="12/28" />`,
+      render: () => <CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="12/28" />,
+    },
+    {
+      title: "品牌自动识别",
+      description: "不同卡号前缀映射到不同卡组织皮肤（Visa / Mastercard / 银联 …）。",
+      code: `<>
+  <CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="12/28" />
+  <CreditCard number="5500005555555559" holder="WANG WU" expiry="06/26" />
+  <CreditCard number="6212345678901232" holder="赵六" expiry="11/27" />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="12/28" />
+          <CreditCard number="5500005555555559" holder="WANG WU" expiry="06/26" />
+          <CreditCard number="6212345678901232" holder="赵六" expiry="11/27" />
+        </div>
+      ),
+    },
+    {
+      title: "显示完整卡号",
+      description: "masked={false} 时展示完整卡号（仅在安全场景使用）。",
+      code: `<CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="12/28" masked={false} />`,
+      render: () => <CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="12/28" masked={false} />,
+    },
+    {
+      title: "正反面",
+      description: "flipped 翻到背面展示磁条与 CVC。",
+      code: `<>
+  <CreditCard number="5500005555555559" holder="LI LEI" expiry="08/27" />
+  <CreditCard number="5500005555555559" holder="LI LEI" expiry="08/27" cvc="321" flipped />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <CreditCard number="5500005555555559" holder="LI LEI" expiry="08/27" />
+          <CreditCard number="5500005555555559" holder="LI LEI" expiry="08/27" cvc="321" flipped />
+        </div>
+      ),
+    },
+    {
+      title: "空卡占位",
+      description: "卡号为空时渲染占位卡面，可用于表单录入实时预览的初始态。",
+      code: `<CreditCard number="" />`,
+      render: () => <CreditCard number="" />,
+    },
+  ],
   controls: [
     { prop: "masked", type: "boolean", defaultValue: true },
     { prop: "flipped", type: "boolean", defaultValue: false },

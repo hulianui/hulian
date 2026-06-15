@@ -14,6 +14,59 @@ function Stage({ children }: { children: React.ReactNode }) {
 const SAMPLE = "把指针移到这段文字上 — Hover scrambles the glyphs.";
 
 export const scrambledTextShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "把指针移到文字上，半径内的字符逐个翻滚乱码再收敛回原字。",
+      code: `<ScrambledText>
+  把指针移到这段文字上 — Hover scrambles the glyphs.
+</ScrambledText>`,
+      render: () => (
+        <Stage>
+          <ScrambledText>{SAMPLE}</ScrambledText>
+        </Stage>
+      ),
+    },
+    {
+      title: "生效半径",
+      description: "radius 控制指针靠近多少 px 内的字符才触发翻滚，越大波及范围越广。",
+      code: `<ScrambledText radius={160}>
+  HULIAN UI · Scramble On Hover
+</ScrambledText>`,
+      render: () => (
+        <Stage>
+          <ScrambledText radius={160}>HULIAN UI · Scramble On Hover</ScrambledText>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义字符集",
+      description: "scrambleChars 决定乱码过程中随机替换用的字符，换成全角块字符更有解构感。",
+      code: `<ScrambledText scrambleChars="█▓▒░">
+  HULIAN UI · Scramble On Hover
+</ScrambledText>`,
+      render: () => (
+        <Stage>
+          <ScrambledText scrambleChars="█▓▒░">HULIAN UI · Scramble On Hover</ScrambledText>
+        </Stage>
+      ),
+    },
+    {
+      title: "快收敛",
+      description: "speed 调高、duration 调短，乱码闪烁更快、回字更急促，像二进制衰变。",
+      code: `<ScrambledText duration={0.6} speed={0.9} scrambleChars="01">
+  0101 binary decay 1010
+</ScrambledText>`,
+      render: () => (
+        <Stage>
+          <ScrambledText duration={0.6} speed={0.9} scrambleChars="01">
+            0101 binary decay 1010
+          </ScrambledText>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "radius", type: "number", defaultValue: 100, label: "生效半径 px" },
     { prop: "duration", type: "number", defaultValue: 1.2, label: "翻滚时长 s" },

@@ -119,6 +119,123 @@ function NavControlDemo() {
 }
 
 export const stepsFormShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "Steps 指示器 + 上一步/下一步/提交导航；仅当前步内容挂载，值由消费者 useForm 跨步保留。",
+      code: `<StepsForm
+  onFinish={async () => { await api.save(); }}
+  steps={[
+    { title: "基本信息", content: <Field label="姓名"><Input /></Field> },
+    { title: "公司信息", content: <Field label="公司"><Input /></Field> },
+    { title: "联系方式", content: <Field label="邮箱"><Input /></Field> },
+  ]}
+/>`,
+      render: () => (
+        <div className="w-full max-w-xl">
+          <StepsForm
+            onFinish={() => {}}
+            steps={[
+              {
+                title: "基本信息",
+                description: "姓名",
+                content: (
+                  <Field label="姓名">
+                    <Input placeholder="必填" />
+                  </Field>
+                ),
+              },
+              {
+                title: "公司信息",
+                description: "公司",
+                content: (
+                  <Field label="公司">
+                    <Input placeholder="必填" />
+                  </Field>
+                ),
+              },
+              {
+                title: "联系方式",
+                description: "邮箱",
+                content: (
+                  <Field label="邮箱">
+                    <Input placeholder="含 @" />
+                  </Field>
+                ),
+              },
+            ]}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "逐步校验",
+      description: "onStepValidate 在前进前校验本步字段；返回 false / reject 阻止前进，pending 期间按钮 loading。",
+      code: `<StepsForm
+  onStepValidate={async (step) =>
+    (await form.validateField(fieldsOf(step))) == null
+  }
+  steps={steps}
+/>`,
+      render: () => (
+        <div className="w-full max-w-xl">
+          <StepsForm
+            onStepValidate={async () => true}
+            onFinish={() => {}}
+            steps={[
+              {
+                title: "上传",
+                content: (
+                  <Field label="文件">
+                    <Input placeholder="选择文件" />
+                  </Field>
+                ),
+              },
+              {
+                title: "确认",
+                content: (
+                  <Field label="备注">
+                    <Input />
+                  </Field>
+                ),
+              },
+            ]}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "竖向步骤",
+      description: "direction=vertical 让步骤指示器纵向排列，适合窄侧栏。",
+      code: `<StepsForm direction="vertical" steps={steps} />`,
+      render: () => (
+        <div className="w-full max-w-xl">
+          <StepsForm
+            direction="vertical"
+            onFinish={() => {}}
+            steps={[
+              {
+                title: "第一步",
+                content: (
+                  <Field label="字段 A">
+                    <Input />
+                  </Field>
+                ),
+              },
+              {
+                title: "第二步",
+                content: (
+                  <Field label="字段 B">
+                    <Input />
+                  </Field>
+                ),
+              },
+            ]}
+          />
+        </div>
+      ),
+    },
+  ],
   controls: [],
   states: [
     { name: "分步表单 · 逐步校验 + 跨步保值 + 提交", render: () => <Demo /> },

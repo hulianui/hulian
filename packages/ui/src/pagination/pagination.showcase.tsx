@@ -31,6 +31,40 @@ function Demo({
 }
 
 export const paginationShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "受控组件：自行持有 page 状态，onPageChange 回写。点击页码 / 上下页切换。",
+      code: `const [page, setPage] = useState(1);
+
+<Pagination page={page} total={10} onPageChange={setPage} />`,
+      render: () => <Demo total={10} />,
+    },
+    {
+      title: "两侧省略",
+      description: "总页数较多时，当前页两侧之外自动折叠为省略号，首末页恒显。",
+      code: `<Pagination page={page} total={20} onPageChange={setPage} />`,
+      render: () => <Demo total={20} initial={10} />,
+    },
+    {
+      title: "首末页跳转",
+      description: "showFirstLast 显示「跳到首页 / 末页」双箭头按钮。",
+      code: `<Pagination page={page} total={20} onPageChange={setPage} showFirstLast />`,
+      render: () => <Demo total={20} initial={10} showFirstLast />,
+    },
+    {
+      title: "更宽窗口",
+      description: "siblingCount 控制当前页左右各显示的页码数，默认 1。",
+      code: `<Pagination page={page} total={20} onPageChange={setPage} siblingCount={2} />`,
+      render: () => <Demo total={20} initial={10} siblingCount={2} />,
+    },
+    {
+      title: "禁用态",
+      description: "disabled 禁用整个分页器，所有按钮不可点。",
+      code: `<Pagination page={page} total={10} onPageChange={setPage} disabled />`,
+      render: () => <Demo total={10} initial={3} disabled />,
+    },
+  ],
   controls: [
     { prop: "total", type: "number", defaultValue: 10, label: "总页数" },
     { prop: "siblingCount", type: "number", defaultValue: 1, label: "当前页两侧页码数" },

@@ -15,6 +15,68 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const radarShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "默认主色吃 chart token、底色透明；放在 relative 容器里自带 absolute inset-0 z-0。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.14 0.02 255)" }}>
+  <Radar />
+</div>`,
+      render: () => (
+        <Stage>
+          <Radar />
+          <div className="pointer-events-none relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+            Radar
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "密集环 · 双瓣快扫",
+      description:
+        "ringCount/spokeCount 控制环与辐条密度，sweepLobes=2 同时两束对称扫描臂。",
+      code: `<Radar ringCount={16} spokeCount={16} sweepSpeed={1.8} sweepLobes={2} />`,
+      render: () => (
+        <Stage>
+          <Radar ringCount={16} spokeCount={16} sweepSpeed={1.8} sweepLobes={2} />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义主色",
+      description: "color 传任意 CSS 颜色覆盖默认 token，brightness 提亮整盘。",
+      code: `<Radar color="oklch(0.78 0.16 165)" brightness={1.4} scale={0.45} />`,
+      render: () => (
+        <Stage>
+          <Radar color="oklch(0.78 0.16 165)" brightness={1.4} scale={0.45} />
+        </Stage>
+      ),
+    },
+    {
+      title: "宽扫描臂 · 无辐条",
+      description:
+        "spokeCount=0 去掉辐条、sweepWidth 调宽扫描光束，关掉鼠标视差做纯静态背景。",
+      code: `<Radar
+  spokeCount={0}
+  sweepWidth={1}
+  sweepSpeed={0.8}
+  enableMouseInteraction={false}
+/>`,
+      render: () => (
+        <Stage>
+          <Radar
+            spokeCount={0}
+            sweepWidth={1}
+            sweepSpeed={0.8}
+            enableMouseInteraction={false}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "scale", type: "number", defaultValue: 0.5, label: "缩放" },
     { prop: "ringCount", type: "number", defaultValue: 10, label: "环数" },

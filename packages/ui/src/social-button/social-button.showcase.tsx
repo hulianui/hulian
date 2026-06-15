@@ -7,6 +7,78 @@ const CHINA: SocialProvider[] = ["wechat", "alipay", "qq", "weibo"];
 const GLOBAL: SocialProvider[] = ["github", "google", "apple", "x"];
 
 export const socialButtonShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传 provider 即得品牌 logo + 默认登录文案。",
+      code: `<SocialButton provider="wechat" />`,
+      render: () => <SocialButton provider="wechat" />,
+    },
+    {
+      title: "国内 / 国际平台",
+      description: "内置微信/支付宝/QQ/微博与 GitHub/Google/Apple/X 等品牌。",
+      code: `<>
+  <SocialButton provider="wechat" />
+  <SocialButton provider="alipay" />
+  <SocialButton provider="github" />
+  <SocialButton provider="google" />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-3">
+          <SocialButton provider="wechat" />
+          <SocialButton provider="alipay" />
+          <SocialButton provider="github" />
+          <SocialButton provider="google" />
+        </div>
+      ),
+    },
+    {
+      title: "填充变体",
+      description: "variant=solid 用品牌色填充（黑白系品牌随主题前景）。",
+      code: `<>
+  <SocialButton provider="wechat" variant="solid" />
+  <SocialButton provider="github" variant="solid" />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-3">
+          <SocialButton provider="wechat" variant="solid" />
+          <SocialButton provider="github" variant="solid" />
+        </div>
+      ),
+    },
+    {
+      title: "纯 logo 方钮",
+      description: "shape=icon 只渲染品牌 logo，适合紧凑工具条。",
+      code: `<>
+  <SocialButton provider="wechat" shape="icon" />
+  <SocialButton provider="alipay" shape="icon" variant="solid" />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <SocialButton provider="wechat" shape="icon" />
+          <SocialButton provider="alipay" shape="icon" variant="solid" />
+        </div>
+      ),
+    },
+    {
+      title: "尺寸 / 加载 / 禁用",
+      description: "size 三档；loading 转圈并禁用，disabled 屏蔽交互。",
+      code: `<>
+  <SocialButton provider="wechat" size="sm" />
+  <SocialButton provider="wechat" size="lg" />
+  <SocialButton provider="github" loading />
+  <SocialButton provider="google" disabled />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-3">
+          <SocialButton provider="wechat" size="sm" />
+          <SocialButton provider="wechat" size="lg" />
+          <SocialButton provider="github" loading />
+          <SocialButton provider="google" disabled />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "provider", type: "select", options: ["wechat", "alipay", "qq", "weibo", "github", "google", "apple", "x"], defaultValue: "wechat" },
     { prop: "variant", type: "select", options: ["outline", "solid"], defaultValue: "outline" },

@@ -27,6 +27,51 @@ const DEMO_ITEMS: InfiniteMenuItem[] = [
 ];
 
 export const infiniteMenuShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "items 围绕球面均匀排布，可拖拽旋转；正对镜头的项为激活项，其标题 / 描述显示在覆盖层。省略 image 时卡片显示标题首字。",
+      code: `<div
+  className="relative h-80 overflow-hidden rounded-xl"
+  style={{ background: "oklch(0.16 0.02 255)" }}
+>
+  <InfiniteMenu
+    items={[
+      { title: "概览", description: "项目全局视图" },
+      { title: "任务", description: "进行中的工作流" },
+      { title: "成员", description: "团队与权限" },
+    ]}
+  />
+</div>`,
+      render: () => (
+        <Stage>
+          <InfiniteMenu items={DEMO_ITEMS} />
+        </Stage>
+      ),
+    },
+    {
+      title: "放大球体 · 大卡片",
+      description: "scale 拉近球体、itemSize 放大单卡直径。",
+      code: `<InfiniteMenu items={items} scale={1.15} itemSize={104} />`,
+      render: () => (
+        <Stage>
+          <InfiniteMenu items={DEMO_ITEMS} scale={1.15} itemSize={104} />
+        </Stage>
+      ),
+    },
+    {
+      title: "关闭自动旋转",
+      description: "autoRotate={0} 关闭自旋，球体仅在拖拽时转动。",
+      code: `<InfiniteMenu items={items} autoRotate={0} />`,
+      render: () => (
+        <Stage>
+          <InfiniteMenu items={DEMO_ITEMS} autoRotate={0} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "scale", type: "number", defaultValue: 1, label: "球体缩放" },
     { prop: "itemSize", type: "number", defaultValue: 88, label: "卡片直径 px" },

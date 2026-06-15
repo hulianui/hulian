@@ -3,6 +3,64 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Dot } from "./dot";
 
 export const dotShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "语气色",
+      description: "tone 提供 neutral / brand / success / warning / danger 五档状态色。",
+      code: `<>
+  <Dot tone="neutral" />
+  <Dot tone="brand" />
+  <Dot tone="success" />
+  <Dot tone="warning" />
+  <Dot tone="danger" />
+</>`,
+      render: () => (
+        <div className="flex items-center gap-3">
+          <Dot tone="neutral" />
+          <Dot tone="brand" />
+          <Dot tone="success" />
+          <Dot tone="warning" />
+          <Dot tone="danger" />
+        </div>
+      ),
+    },
+    {
+      title: "尺寸",
+      description: "size 提供 sm / md / lg 三档。",
+      code: `<>
+  <Dot size="sm" tone="brand" />
+  <Dot size="md" tone="brand" />
+  <Dot size="lg" tone="brand" />
+</>`,
+      render: () => (
+        <div className="flex items-center gap-3">
+          <Dot size="sm" tone="brand" />
+          <Dot size="md" tone="brand" />
+          <Dot size="lg" tone="brand" />
+        </div>
+      ),
+    },
+    {
+      title: "呼吸（在线）",
+      description: "pulse 加 animate-ping 扩散动画表示活跃态；传 label 让读屏播报语义。",
+      code: `<Dot tone="success" pulse label="在线" />`,
+      render: () => <Dot tone="success" pulse label="在线" />,
+    },
+    {
+      title: "列表前导标记",
+      description: "Dot 作为行内原语，常做列表项的状态前导点。",
+      code: `<span className="inline-flex items-center gap-2">
+  <Dot tone="success" />
+  服务运行中
+</span>`,
+      render: () => (
+        <span className="inline-flex items-center gap-2 text-sm text-foreground">
+          <Dot tone="success" />
+          服务运行中
+        </span>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "tone",

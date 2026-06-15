@@ -19,6 +19,74 @@ function Frame({
 }
 
 export const liquidChromeShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "LiquidChrome 自身 absolute inset-0 铺满，需放在 relative + overflow-hidden 容器内；默认读 --color-chart-2 跟随主题。",
+      code: `<div className="relative h-48 overflow-hidden rounded-xl">
+  <LiquidChrome />
+</div>`,
+      render: () => (
+        <Frame>
+          <LiquidChrome />
+        </Frame>
+      ),
+    },
+    {
+      title: "自定义金属色",
+      description: "baseColor 可传 [r,g,b]（0–1）数组或 CSS 颜色字符串，调出深蓝/暗铜等金属质感。",
+      code: `<LiquidChrome baseColor={[0.18, 0.1, 0.03]} speed={0.25} amplitude={0.7} />`,
+      render: () => (
+        <Frame>
+          <LiquidChrome
+            baseColor={[0.18, 0.1, 0.03]}
+            speed={0.25}
+            amplitude={0.7}
+            frequencyX={3.0}
+            frequencyY={2.0}
+          />
+        </Frame>
+      ),
+    },
+    {
+      title: "高振幅快速 · 非交互",
+      description: "interactive={false} 关闭鼠标涟漪；提高 amplitude / speed 让液面更剧烈。",
+      code: `<LiquidChrome interactive={false} amplitude={0.9} speed={0.45} frequencyX={3.5} frequencyY={2.5} />`,
+      render: () => (
+        <Frame>
+          <LiquidChrome
+            interactive={false}
+            amplitude={0.9}
+            speed={0.45}
+            frequencyX={3.5}
+            frequencyY={2.5}
+          />
+        </Frame>
+      ),
+    },
+    {
+      title: "作为 Hero 背景层",
+      description: "拉高容器，内容用 z-10 叠在液态背景上。",
+      code: `<div className="relative h-72 overflow-hidden rounded-xl">
+  <LiquidChrome speed={0.18} amplitude={0.55} />
+  <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2 text-center">
+    <p className="text-2xl font-bold text-white drop-shadow-md">Liquid Chrome</p>
+    <p className="text-sm text-white/70 drop-shadow">WebGL 液态铬金属流动背景</p>
+  </div>
+</div>`,
+      render: () => (
+        <Frame height="h-72">
+          <LiquidChrome speed={0.18} amplitude={0.55} />
+          <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2 px-6 text-center">
+            <p className="text-2xl font-bold text-white drop-shadow-md">Liquid Chrome</p>
+            <p className="text-sm text-white/70 drop-shadow">
+              WebGL 液态铬金属流动背景
+            </p>
+          </div>
+        </Frame>
+      ),
+    },
+  ],
   controls: [
     { prop: "speed", type: "number", defaultValue: 0.2 },
     { prop: "amplitude", type: "number", defaultValue: 0.6 },

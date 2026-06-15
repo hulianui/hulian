@@ -10,6 +10,73 @@ function Card({ children }: { children: React.ReactNode }) {
 }
 
 export const revealShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "单块内容自下浮起、由糊到清，挂载即播，适合首屏 hero。",
+      code: `<Reveal trigger="mount">
+  <div className="card">一块内容自下浮起、由糊到清。</div>
+</Reveal>`,
+      render: () => (
+        <Reveal trigger="mount">
+          <Card>一块内容自下浮起、由糊到清。</Card>
+        </Reveal>
+      ),
+    },
+    {
+      title: "逐级编排 Stagger",
+      description: "Stagger 容器按 gap 依次唤醒内部 StaggerItem，可逐项覆写 y/scale/blur。",
+      code: `<Stagger trigger="mount" gap={0.1}>
+  <div className="flex flex-col gap-3">
+    <StaggerItem>
+      <div className="card">第一行</div>
+    </StaggerItem>
+    <StaggerItem>
+      <div className="card">第二行</div>
+    </StaggerItem>
+    <StaggerItem y={22} scale={0.94} blur={12}>
+      <div className="card">压轴项：更重的 blur + scale</div>
+    </StaggerItem>
+  </div>
+</Stagger>`,
+      render: () => (
+        <Stagger trigger="mount" gap={0.1}>
+          <div className="flex flex-col gap-3">
+            <StaggerItem>
+              <Card>第一行</Card>
+            </StaggerItem>
+            <StaggerItem>
+              <Card>第二行</Card>
+            </StaggerItem>
+            <StaggerItem y={22} scale={0.94} blur={12}>
+              <Card>压轴项：更重的 blur + scale</Card>
+            </StaggerItem>
+          </div>
+        </Stagger>
+      ),
+    },
+    {
+      title: "滚动进入视口触发",
+      description: "默认 trigger=in-view：元素滚入视口时才浮现（once 默认只播一次）。",
+      code: `<div className="max-h-72 overflow-auto">
+  <div className="h-64" />
+  <Reveal>
+    <div className="card">滚动到此处时浮现（一次性）。</div>
+  </Reveal>
+  <div className="h-40" />
+</div>`,
+      render: () => (
+        <div className="max-h-72 w-full max-w-md overflow-auto rounded-xl border border-border bg-bg p-4">
+          <div className="h-64" />
+          <Reveal>
+            <Card>滚动到此处时浮现（一次性）。</Card>
+          </Reveal>
+          <div className="h-40" />
+        </div>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "y", type: "number", defaultValue: 24, label: "起始下移 px" },
     { prop: "blur", type: "number", defaultValue: 8, label: "起始模糊 px" },

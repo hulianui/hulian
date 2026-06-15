@@ -87,6 +87,88 @@ function Quotation({ size = "a4" }: { size?: "a4" | "auto" }) {
 }
 
 export const documentSheetShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础单据",
+      description: "一张居中的 A4 纸，顶部自带打印按钮（打印时整条工具栏隐藏）。",
+      code: `<DocumentSheet size="a4">
+  <DocumentSheetHeader>
+    <div className="text-lg font-bold">瑚琏设计工作室</div>
+    <div className="text-xl font-bold">报 价 单</div>
+  </DocumentSheetHeader>
+  <DocumentSheetSection title="致">
+    <div className="font-medium">某某科技有限公司</div>
+  </DocumentSheetSection>
+</DocumentSheet>`,
+      render: () => (
+        <div className="text-sm [&_[data-document-sheet]]:p-[10mm]">
+          <DocumentSheet size="auto">
+            <DocumentSheetHeader>
+              <div className="text-lg font-bold text-foreground">瑚琏设计工作室</div>
+              <div className="text-xl font-bold tracking-wide text-foreground">报 价 单</div>
+            </DocumentSheetHeader>
+            <DocumentSheetSection title="致">
+              <div className="font-medium text-foreground">某某科技有限公司</div>
+            </DocumentSheetSection>
+          </DocumentSheet>
+        </div>
+      ),
+    },
+    {
+      title: "段落与页脚签章",
+      description: "DocumentSheetSection 分段、DocumentSheetFooter 含分隔线，DocumentSheetSignature 给出对齐稳定的签名位。",
+      code: `<DocumentSheet size="a4" printable={false}>
+  <DocumentSheetSection title="服务说明">
+    包含官网设计、组件库定制与前端实现。
+  </DocumentSheetSection>
+  <DocumentSheetFooter>
+    <div className="flex items-end justify-between gap-8">
+      <p className="text-xs">备注：报价有效期 30 天。</p>
+      <DocumentSheetSignature label="授权代表（签章）" />
+    </div>
+  </DocumentSheetFooter>
+</DocumentSheet>`,
+      render: () => (
+        <div className="text-sm [&_[data-document-sheet]]:p-[10mm]">
+          <DocumentSheet size="auto" printable={false}>
+            <DocumentSheetSection title="服务说明">
+              <span className="text-foreground">包含官网设计、组件库定制与前端实现。</span>
+            </DocumentSheetSection>
+            <DocumentSheetFooter>
+              <div className="flex items-end justify-between gap-8">
+                <p className="text-xs leading-relaxed">备注：报价有效期 30 天。</p>
+                <DocumentSheetSignature label="授权代表（签章）" />
+              </div>
+            </DocumentSheetFooter>
+          </DocumentSheet>
+        </div>
+      ),
+    },
+    {
+      title: "自定义打印回调",
+      description: "传 onPrint 接管打印动作（如先校验再 window.print），缺省时内置按钮直接调用 window.print()。",
+      code: `<DocumentSheet
+  size="a4"
+  onPrint={() => {
+    // 自定义逻辑后再打印
+    window.print();
+  }}
+>
+  <DocumentSheetSection title="发票抬头">
+    某某科技有限公司
+  </DocumentSheetSection>
+</DocumentSheet>`,
+      render: () => (
+        <div className="text-sm [&_[data-document-sheet]]:p-[10mm]">
+          <DocumentSheet size="auto" onPrint={() => {}}>
+            <DocumentSheetSection title="发票抬头">
+              <span className="text-foreground">某某科技有限公司</span>
+            </DocumentSheetSection>
+          </DocumentSheet>
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "size", type: "select", options: ["a4", "auto"], defaultValue: "a4" },
   ],

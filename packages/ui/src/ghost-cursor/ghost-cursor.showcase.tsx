@@ -24,6 +24,83 @@ function Stage({
 }
 
 export const ghostCursorShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "GhostCursor 是 absolute inset-0 的装饰覆盖层，放进一个 relative + overflow-hidden 的深色容器即可。",
+      code: `<div
+  className="relative h-64 overflow-hidden rounded-xl"
+  style={{ background: "oklch(0.14 0.02 285)" }}
+>
+  <GhostCursor />
+</div>`,
+      render: () => (
+        <Stage>
+          <GhostCursor />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义颜色与长拖尾",
+      description: "color 改主色调，trailLength 拉长尾迹，inertia 越大停手后越飘。",
+      code: `<GhostCursor
+  color="oklch(0.72 0.2 50)"
+  trailLength={48}
+  inertia={0.78}
+/>`,
+      render: () => (
+        <Stage hint="拖尾更长更飘">
+          <GhostCursor
+            color="oklch(0.72 0.2 50)"
+            trailLength={48}
+            inertia={0.78}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "聚拢小烟团",
+      description: "scale 越大烟团越聚拢，brightness 提亮，关闭颗粒更干净。",
+      code: `<GhostCursor
+  scale={1.6}
+  grainIntensity={0}
+  brightness={1.5}
+  trailLength={20}
+/>`,
+      render: () => (
+        <Stage hint="烟团更聚拢">
+          <GhostCursor
+            scale={1.6}
+            grainIntensity={0}
+            brightness={1.5}
+            trailLength={20}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "弥散柔光",
+      description: "scale 越小烟团越弥散，配青绿主色得柔和氛围光。",
+      code: `<GhostCursor
+  color="oklch(0.78 0.16 175)"
+  scale={0.7}
+  inertia={0.6}
+  brightness={1.3}
+/>`,
+      render: () => (
+        <Stage hint="弥散柔光">
+          <GhostCursor
+            color="oklch(0.78 0.16 175)"
+            scale={0.7}
+            inertia={0.6}
+            brightness={1.3}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "trailLength", type: "number", defaultValue: 32, label: "拖尾长度" },
     { prop: "inertia", type: "number", defaultValue: 0.5, label: "惯性系数 0-1" },

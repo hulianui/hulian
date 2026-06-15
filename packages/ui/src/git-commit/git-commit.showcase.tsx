@@ -15,6 +15,74 @@ function Row({ children }: { children: React.ReactNode }) {
 }
 
 export const gitCommitShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "分支 chip + 短哈希 + 提交信息，inline 单行排版。",
+      code: `<GitCommit
+  branch="master"
+  sha="10577b9aaaa"
+  message="fix(www): ai-chat 部署站无响应"
+/>`,
+      render: () => (
+        <div className="w-[30rem] max-w-full">
+          <GitCommit sha="10577b9aaaa" branch="master" message="fix(www): ai-chat 部署站无响应" />
+        </div>
+      ),
+    },
+    {
+      title: "两行排版",
+      description: "layout=\"stacked\" 信息在上、引用在下，表格/列表单元格刚需。",
+      code: `<GitCommit
+  layout="stacked"
+  branch="master"
+  sha="36e347faaa"
+  message="feat(www): 全局路由进度条"
+  author="瑚琏"
+  avatar={<Avatar>瑚</Avatar>}
+/>`,
+      render: () => (
+        <div className="w-[26rem] max-w-full">
+          <GitCommit
+            layout="stacked"
+            sha="36e347faaa"
+            branch="master"
+            message="feat(www): 全局路由进度条"
+            author="瑚琏"
+            avatar={<Avatar>瑚</Avatar>}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "可点击短哈希",
+      description: "传 href 让短哈希可跳转到 commit 详情，shaLength 控制位数。",
+      code: `<>
+  <GitCommit branch="release" sha="cb2ae42ddd0099" href="#cb2ae42" message="chore(release): @hulianui/ui@0.1.2" />
+  <GitCommit branch="hotfix" sha="f79cbb812345" shaLength={12} message="发丝边框 token" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-2.5">
+          <GitCommit sha="cb2ae42ddd0099" branch="release" href="#cb2ae42" message="chore(release): @hulianui/ui@0.1.2" />
+          <GitCommit sha="f79cbb812345" shaLength={12} branch="hotfix" message="发丝边框 token" />
+        </div>
+      ),
+    },
+    {
+      title: "小尺寸 · 仅引用",
+      description: "size=\"sm\" 紧凑化；省略 message 只渲分支 + 哈希引用。",
+      code: `<>
+  <GitCommit size="sm" branch="master" sha="10577b9000" author="瑚琏" avatar={<Avatar>瑚</Avatar>} />
+  <GitCommit size="sm" branch="feat/x" sha="abcdef0123" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-2">
+          <GitCommit size="sm" sha="10577b9000" branch="master" author="瑚琏" avatar={<Avatar>瑚</Avatar>} />
+          <GitCommit size="sm" sha="abcdef0123" branch="feat/x" />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "layout", type: "select", options: ["inline", "stacked"], defaultValue: "inline" },
     { prop: "size", type: "select", options: ["md", "sm"], defaultValue: "md" },

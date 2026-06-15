@@ -15,6 +15,83 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const ferrofluidShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "液态金属铁磁流体背景；默认色带吃 chart token，鼠标处液面下凹。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl bg-neutral-950">
+  <Ferrofluid />
+  <div className="relative z-10 flex h-full items-center justify-center text-white/80">
+    Ferrofluid
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Ferrofluid />
+          <div className="pointer-events-none relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+            Ferrofluid
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义色带 + 流向",
+      description: "colors 数组按高度梯度映射色带，flowDirection 控制峰脊整体漂移方向。",
+      code: `<Ferrofluid
+  colors={[
+    "var(--color-chart-3)",
+    "var(--color-chart-1)",
+    "oklch(0.78 0.2 50)",
+  ]}
+  flowDirection="up"
+  glow={2.6}
+/>`,
+      render: () => (
+        <Stage>
+          <Ferrofluid
+            colors={[
+              "var(--color-chart-3)",
+              "var(--color-chart-1)",
+              "oklch(0.78 0.2 50)",
+            ]}
+            flowDirection="up"
+            glow={2.6}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "高湍流 · 锐利峰脊",
+      description: "加大 turbulence、调小 fluidity、加大 sharpness 得到更锐利分明的金属峰脊。",
+      code: `<Ferrofluid turbulence={2.2} fluidity={0.04} sharpness={3.5} speed={0.8} />`,
+      render: () => (
+        <Stage>
+          <Ferrofluid turbulence={2.2} fluidity={0.04} sharpness={3.5} speed={0.8} />
+        </Stage>
+      ),
+    },
+    {
+      title: "壁纸级（慢速大尺度）",
+      description: "慢速 + 大 scale + 关闭鼠标交互，适合做静默 hero 背景叠文案。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl bg-neutral-950">
+  <Ferrofluid speed={0.25} scale={2.4} glow={2.4} mouseInteraction={false} />
+  <div className="relative z-10 flex h-full flex-col items-center justify-center gap-1">
+    <p className="text-lg font-semibold text-white">瑚琏组件库</p>
+    <p className="text-xs text-white/60">液态金属 · WebGL · 主题自适应</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Ferrofluid speed={0.25} scale={2.4} glow={2.4} mouseInteraction={false} />
+          <div className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center gap-1">
+            <p className="text-lg font-semibold text-white">瑚琏组件库</p>
+            <p className="text-xs text-white/60">液态金属 · WebGL · 主题自适应</p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "speed", type: "number", defaultValue: 0.5, label: "速度" },
     { prop: "scale", type: "number", defaultValue: 1.6, label: "缩放" },

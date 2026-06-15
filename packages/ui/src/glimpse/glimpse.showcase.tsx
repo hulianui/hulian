@@ -9,6 +9,86 @@ const cover = (hue: number) =>
   )}`;
 
 export const glimpseShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "链接预览",
+      description: "悬停行内链接弹出预览卡：封面图 + 标题 + 描述 + 域名，传入 href 时触发器渲染为外链。",
+      code: `<p>
+  我们的设计系统基于{" "}
+  <Glimpse
+    href="https://hulian.example.com/tokens"
+    image={coverUrl}
+    title="瑚琏设计 Token"
+    description="一套语义化的颜色 / 间距 / 圆角变量，明暗模式开箱即用。"
+  >
+    语义 token
+  </Glimpse>{" "}
+  构建，悬停链接即可预览。
+</p>`,
+      render: () => (
+        <p className="max-w-md leading-7 text-foreground">
+          我们的设计系统基于{" "}
+          <Glimpse
+            href="https://hulian.example.com/tokens"
+            image={cover(210)}
+            title="瑚琏设计 Token"
+            description="一套语义化的颜色 / 间距 / 圆角变量，明暗模式开箱即用，是全部组件的单一真源。"
+          >
+            语义 token
+          </Glimpse>{" "}
+          构建，悬停链接即可预览。
+        </p>
+      ),
+    },
+    {
+      title: "纯文字术语",
+      description: "不传 image / href 时退化为纯术语解释卡（无封面、无域名），触发器为行内 span。",
+      code: `<p>
+  这是一个{" "}
+  <Glimpse title="Dogfood" description="自己用自己的产品。文档站全部用 @hulianui/ui 自身组件搭建。">
+    dogfood
+  </Glimpse>{" "}
+  的例子。
+</p>`,
+      render: () => (
+        <p className="max-w-md leading-7 text-foreground">
+          这是一个{" "}
+          <Glimpse title="Dogfood" description="自己用自己的产品。文档站全部用 @hulianui/ui 自身组件搭建。">
+            dogfood
+          </Glimpse>{" "}
+          的例子。
+        </p>
+      ),
+    },
+    {
+      title: "多个并排",
+      description: "同段落多处行内链接各自独立预览，互不干扰。",
+      code: `<p>
+  推荐阅读{" "}
+  <Glimpse href="https://example.com/a" image={coverA} title="组件总览" description="160+ 组件分类索引。">
+    组件总览
+  </Glimpse>
+  、
+  <Glimpse href="https://example.com/b" image={coverB} title="主题定制" description="改一处 token 全站换肤。">
+    主题定制
+  </Glimpse>{" "}
+  两篇。
+</p>`,
+      render: () => (
+        <p className="max-w-lg leading-7 text-foreground">
+          推荐阅读{" "}
+          <Glimpse href="https://example.com/a" image={cover(140)} title="组件总览" description="160+ 组件分类索引。">
+            组件总览
+          </Glimpse>
+          、
+          <Glimpse href="https://example.com/b" image={cover(280)} title="主题定制" description="改一处 token 全站换肤。">
+            主题定制
+          </Glimpse>{" "}
+          两篇。
+        </p>
+      ),
+    },
+  ],
   controls: [
     { prop: "side", type: "select", options: ["top", "bottom", "left", "right"], defaultValue: "bottom" },
   ],

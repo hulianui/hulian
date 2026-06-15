@@ -29,6 +29,62 @@ function CheckboxPlayground(p: Record<string, unknown>) {
 }
 
 export const checkboxShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "label 渲染盒右文案并原生关联，点击文字也可切换。",
+      code: `<Checkbox label="同意条款" />`,
+      render: () => <Checkbox label="同意条款" />,
+    },
+    {
+      title: "默认选中",
+      description: "非受控写法用 defaultChecked 预设勾选。",
+      code: `<Checkbox defaultChecked label="记住我" />`,
+      render: () => <Checkbox defaultChecked label="记住我" />,
+    },
+    {
+      title: "三态：半选",
+      description: "indeterminate 渲染横杠，常用于「全选」父项。",
+      code: `<>
+  <Checkbox indeterminate label="半选" />
+  <Checkbox defaultChecked label="已选" />
+  <Checkbox label="未选" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-2">
+          <Checkbox indeterminate label="半选" />
+          <Checkbox defaultChecked label="已选" />
+          <Checkbox label="未选" />
+        </div>
+      ),
+    },
+    {
+      title: "禁用态",
+      description: "disabled 降透明度并屏蔽交互（选中态同样可禁用）。",
+      code: `<>
+  <Checkbox disabled label="禁用" />
+  <Checkbox disabled defaultChecked label="禁用已选" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-2">
+          <Checkbox disabled label="禁用" />
+          <Checkbox disabled defaultChecked label="禁用已选" />
+        </div>
+      ),
+    },
+    {
+      title: "配合 Field",
+      description: "放进 Field 内自动串联标签与错误信息。",
+      code: `<Field label="服务条款" error="必须勾选才能继续" className="w-72">
+  <Checkbox label="我已阅读并同意" />
+</Field>`,
+      render: () => (
+        <Field label="服务条款" error="必须勾选才能继续" className="w-72">
+          <Checkbox label="我已阅读并同意" />
+        </Field>
+      ),
+    },
+  ],
   controls: [
     { prop: "state", type: "select", options: ["未选", "已选", "半选"], defaultValue: "未选", label: "初始态" },
     { prop: "label", type: "text", defaultValue: "同意条款", label: "label" },

@@ -33,6 +33,49 @@ function IdPhotoDemo({ aspect = 5 / 7, maxZoom = 3 }: { aspect?: number; maxZoom
 }
 
 export const imageCropperShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "证件照 5:7",
+      description: "默认宽高比 5:7（1/2 寸证件照同比例）。拖拽对位、滑杆缩放，确认后产出目标尺寸 Blob，存储/上传由消费者接管。",
+      code: `<ImageCropper
+  image={objectUrl}
+  aspect={5 / 7}
+  maxBytes={200 * 1024}
+  onCropped={(blob) => /* 存储 / 上传 */}
+  onCancel={() => /* 关闭 */}
+/>`,
+      render: () => (
+        <div className="w-96 max-w-full">
+          <ImageCropper image={SAMPLE} aspect={5 / 7} maxBytes={200 * 1024} onCropped={() => {}} onCancel={() => {}} />
+        </div>
+      ),
+    },
+    {
+      title: "方形 1:1",
+      description: "aspect=1 适合头像；outputWidth 控制出图边长。",
+      code: `<ImageCropper
+  image={objectUrl}
+  aspect={1}
+  outputWidth={320}
+  onCropped={(blob) => upload(blob)}
+/>`,
+      render: () => (
+        <div className="w-96 max-w-full">
+          <ImageCropper image={SAMPLE} aspect={1} outputWidth={320} onCropped={() => {}} onCancel={() => {}} />
+        </div>
+      ),
+    },
+    {
+      title: "提高缩放上限",
+      description: "maxZoom 放大可裁更近的局部；滑杆量程随之变化。",
+      code: `<ImageCropper image={objectUrl} aspect={1} maxZoom={5} onCropped={save} />`,
+      render: () => (
+        <div className="w-96 max-w-full">
+          <ImageCropper image={SAMPLE} aspect={1} maxZoom={5} onCropped={() => {}} />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "aspect", type: "select", options: ["5/7", "1", "4/3"], defaultValue: "5/7" },
     { prop: "maxZoom", type: "number", defaultValue: 3 },

@@ -12,6 +12,85 @@ function Frame({ children }: { children: React.ReactNode }) {
 }
 
 export const flickeringGridShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "放进 relative + overflow-hidden 容器，用 absolute inset-0 铺满；默认吃主题前景色，4px 方格随机闪烁。",
+      code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
+  <FlickeringGrid className="absolute inset-0" />
+</div>`,
+      render: () => (
+        <Frame>
+          <FlickeringGrid className="absolute inset-0" />
+        </Frame>
+      ),
+    },
+    {
+      title: "自定义颜色",
+      description: "color 支持 CSS 变量，传强调色 token 并调高 maxOpacity 让网格更醒目。",
+      code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
+  <FlickeringGrid className="absolute inset-0" color="var(--color-primary)" maxOpacity={0.5} />
+</div>`,
+      render: () => (
+        <Frame>
+          <FlickeringGrid
+            className="absolute inset-0"
+            color="var(--color-primary)"
+            maxOpacity={0.5}
+          />
+        </Frame>
+      ),
+    },
+    {
+      title: "方格大小与间距",
+      description: "squareSize / gridGap 决定网格密度，调大方格 + 降低 flickerChance 得到沉稳的大格闪烁。",
+      code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
+  <FlickeringGrid
+    className="absolute inset-0"
+    squareSize={8}
+    gridGap={4}
+    flickerChance={0.1}
+    maxOpacity={0.4}
+  />
+</div>`,
+      render: () => (
+        <Frame>
+          <FlickeringGrid
+            className="absolute inset-0"
+            squareSize={8}
+            gridGap={4}
+            flickerChance={0.1}
+            maxOpacity={0.4}
+          />
+        </Frame>
+      ),
+    },
+    {
+      title: "高频密集闪烁",
+      description: "小方格 + 高 flickerChance 模拟数据流/赛博质感。",
+      code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
+  <FlickeringGrid
+    className="absolute inset-0"
+    squareSize={2}
+    gridGap={2}
+    flickerChance={0.7}
+    maxOpacity={0.25}
+  />
+</div>`,
+      render: () => (
+        <Frame>
+          <FlickeringGrid
+            className="absolute inset-0"
+            squareSize={2}
+            gridGap={2}
+            flickerChance={0.7}
+            maxOpacity={0.25}
+          />
+        </Frame>
+      ),
+    },
+  ],
   controls: [
     { prop: "squareSize", type: "number", defaultValue: 4 },
     { prop: "gridGap", type: "number", defaultValue: 6 },

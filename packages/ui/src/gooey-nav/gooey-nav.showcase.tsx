@@ -22,6 +22,75 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const gooeyNavShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传入导航项数组即可，点击切换时药丸滑动并迸射彩色粒子。",
+      code: `<div
+  className="flex h-40 items-center justify-center rounded-xl"
+  style={{ background: "oklch(0.16 0.02 265)" }}
+>
+  <GooeyNav
+    items={[
+      { label: "首页", href: "#" },
+      { label: "产品", href: "#" },
+      { label: "文档", href: "#" },
+      { label: "关于", href: "#" },
+    ]}
+  />
+</div>`,
+      render: () => (
+        <Stage>
+          <GooeyNav items={items} />
+        </Stage>
+      ),
+    },
+    {
+      title: "指定初始选中项",
+      description: "通过 initialActiveIndex 设定非受控初始高亮位置。",
+      code: `<GooeyNav items={items} initialActiveIndex={2} />`,
+      render: () => (
+        <Stage>
+          <GooeyNav items={items} initialActiveIndex={2} />
+        </Stage>
+      ),
+    },
+    {
+      title: "更密集的粒子",
+      description: "调大 particleCount 并加大爆开半径，迸射更绚烂。",
+      code: `<GooeyNav
+  items={items}
+  particleCount={24}
+  particleDistances={[110, 14]}
+/>`,
+      render: () => (
+        <Stage>
+          <GooeyNav items={items} particleCount={24} particleDistances={[110, 14]} />
+        </Stage>
+      ),
+    },
+    {
+      title: "暖色调色板",
+      description: "colors 取瑚琏 chart token 序号，自定义粒子配色。",
+      code: `<GooeyNav items={items} colors={[3, 4, 5, 3]} initialActiveIndex={1} />`,
+      render: () => (
+        <Stage>
+          <GooeyNav items={items} colors={[3, 4, 5, 3]} initialActiveIndex={1} />
+        </Stage>
+      ),
+    },
+    {
+      title: "仅药丸滑动（关闭粒子）",
+      description: "particleCount={0} 关闭迸射，只保留药丸平滑滑动。",
+      code: `<GooeyNav items={items} particleCount={0} />`,
+      render: () => (
+        <Stage>
+          <GooeyNav items={items} particleCount={0} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "particleCount", type: "number", defaultValue: 14, label: "粒子数" },
     { prop: "animationTime", type: "number", defaultValue: 600, label: "动画 ms" },

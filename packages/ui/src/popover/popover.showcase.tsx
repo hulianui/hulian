@@ -26,6 +26,51 @@ function Demo({
 }
 
 export const popoverShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "点击触发器弹出浮层，点外部或 Esc 关闭；带标题 + 说明 + 操作区。",
+      code: `<Popover>
+  <PopoverTrigger render={<Button>打开弹层</Button>} />
+  <PopoverContent title="瑚琏弹层" description="点击外部或 Esc 关闭。">
+    <div className="flex justify-end gap-2">
+      <PopoverClose render={<Button variant="ghost">取消</Button>} />
+      <PopoverClose render={<Button>确定</Button>} />
+    </div>
+  </PopoverContent>
+</Popover>`,
+      render: () => <Demo />,
+    },
+    {
+      title: "弹出方位",
+      description: "side 控制相对触发器的方位（top / right / bottom / left），箭头自动指向触发器。",
+      code: `<>
+  <Popover>
+    <PopoverTrigger render={<Button>向上弹</Button>} />
+    <PopoverContent side="top" title="向上弹" description="side=\\"top\\"。" />
+  </Popover>
+  <Popover>
+    <PopoverTrigger render={<Button>向右弹</Button>} />
+    <PopoverContent side="right" title="向右弹" description="side=\\"right\\"。" />
+  </Popover>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-3">
+          <Demo side="top" title="向上弹" />
+          <Demo side="right" title="向右弹" />
+        </div>
+      ),
+    },
+    {
+      title: "对齐方式",
+      description: "align 控制沿边对齐（start / center / end），配合 side 微调浮层落点。",
+      code: `<Popover>
+  <PopoverTrigger render={<Button>底部左对齐</Button>} />
+  <PopoverContent side="bottom" align="start" title="左对齐" description="align=\\"start\\"。" />
+</Popover>`,
+      render: () => <Demo side="bottom" align="start" title="左对齐" />,
+    },
+  ],
   controls: [
     { prop: "side", type: "select", options: ["top", "right", "bottom", "left"], defaultValue: "bottom" },
     { prop: "align", type: "select", options: ["start", "center", "end"], defaultValue: "center" },

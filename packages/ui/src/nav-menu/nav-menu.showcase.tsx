@@ -109,6 +109,78 @@ function Demo(props: {
 }
 
 export const navMenuShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "inline 模式下子菜单内联手风琴展开，非受控用 defaultSelectedKeys 设初始选中。",
+      code: `<NavMenu
+  items={items}
+  mode="inline"
+  defaultSelectedKeys={["dashboard"]}
+/>`,
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-border bg-surface p-2">
+          <NavMenu items={ITEMS} mode="inline" defaultSelectedKeys={["dashboard"]} />
+        </div>
+      ),
+    },
+    {
+      title: "默认展开子菜单",
+      description: "defaultOpenKeys 指定初始展开的父项，配合子项选中定位当前页。",
+      code: `<NavMenu
+  items={items}
+  mode="inline"
+  defaultOpenKeys={["users"]}
+  defaultSelectedKeys={["users-roles"]}
+/>`,
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-border bg-surface p-2">
+          <NavMenu
+            items={ITEMS}
+            mode="inline"
+            defaultOpenKeys={["users"]}
+            defaultSelectedKeys={["users-roles"]}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "行尾操作",
+      description: "actions 槽渲染在行按钮之外（绝对覆盖右侧），可用 group-hover/nav-row 做 hover 才显。",
+      code: `const items = [
+  {
+    type: "group",
+    key: "today",
+    label: "今天",
+    children: [
+      { key: "c1", label: "瑚琏组件库怎么接入", actions: <DeleteAction /> },
+      { key: "c2", label: "帮我润色一封周报", actions: <DeleteAction /> },
+    ],
+  },
+];
+
+<NavMenu items={items} defaultSelectedKeys={["c1"]} />`,
+      render: () => (
+        <div className="w-60 rounded-[var(--radius)] border border-border bg-surface p-2">
+          <NavMenu items={CONVO_ITEMS} defaultSelectedKeys={["c1"]} />
+        </div>
+      ),
+    },
+    {
+      title: "收起态（图标轨）",
+      description: "collapsed 模式收起为图标轨，hover / 聚焦时飞出子菜单。",
+      code: `<NavMenu
+  items={items}
+  mode="collapsed"
+  defaultSelectedKeys={["dashboard"]}
+/>`,
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-border bg-surface p-2">
+          <NavMenu items={ITEMS} mode="collapsed" defaultSelectedKeys={["dashboard"]} />
+        </div>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "mode",

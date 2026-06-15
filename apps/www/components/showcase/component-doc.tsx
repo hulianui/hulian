@@ -5,6 +5,7 @@ import { Anchor, Markdown, type ShowcaseSpec, type AnchorItem } from "@hulianui/
 import { manifest } from "../../lib/manifest";
 import { specBySlug } from "../../lib/registry";
 import { ComponentPreview } from "./component-preview";
+import { ExamplesSection } from "./examples-section";
 import { StatesGallery } from "./states-gallery";
 import { Playground } from "./playground";
 
@@ -20,10 +21,12 @@ export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null 
   if (!meta || !spec) notFound();
 
   const hasPlayground = spec.controls.length > 0;
+  const examples = spec.examples ?? [];
+  const hasExamples = examples.length > 0;
   const toc: AnchorItem[] = [
-    { href: "#sec-preview", title: "预览" },
+    hasExamples ? { href: "#sec-usage", title: "用法" } : { href: "#sec-preview", title: "预览" },
     ...(doc ? [{ href: "#sec-doc", title: "文档" }] : []),
-    { href: "#sec-states", title: "全状态" },
+    ...(hasExamples ? [] : [{ href: "#sec-states", title: "全状态" }]),
     ...(hasPlayground ? [{ href: "#sec-playground", title: "Playground" }] : []),
   ];
 
@@ -38,11 +41,21 @@ export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null 
           <p className="mt-2 text-sm leading-relaxed text-muted">{meta.description}</p>
         </header>
 
-        <section id="sec-preview" className="scroll-mt-6">
-          <ComponentPreview code={spec.toCode(defaultProps(spec))}>
-            {spec.states[0]?.render()}
-          </ComponentPreview>
-        </section>
+        {hasExamples ? (
+          <section
+            id="sec-usage"
+            className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7"
+          >
+            <h2 className="mb-5 text-sm font-medium text-muted">用法</h2>
+            <ExamplesSection examples={examples} />
+          </section>
+        ) : (
+          <section id="sec-preview" className="scroll-mt-6">
+            <ComponentPreview code={spec.toCode(defaultProps(spec))}>
+              {spec.states[0]?.render()}
+            </ComponentPreview>
+          </section>
+        )}
 
         {doc && (
           <section
@@ -53,13 +66,15 @@ export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null 
           </section>
         )}
 
-        <section
-          id="sec-states"
-          className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm"
-        >
-          <h2 className="mb-4 text-sm font-medium text-muted">全状态</h2>
-          <StatesGallery states={spec.states} />
-        </section>
+        {!hasExamples && (
+          <section
+            id="sec-states"
+            className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm"
+          >
+            <h2 className="mb-4 text-sm font-medium text-muted">全状态</h2>
+            <StatesGallery states={spec.states} />
+          </section>
+        )}
 
         {hasPlayground && (
           <section

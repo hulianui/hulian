@@ -17,6 +17,55 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 export const relativeTimeShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传时间戳渲成「3 分钟前」，省略 base 则实时刷新，悬停看绝对时间。",
+      code: `<RelativeTime value={publishedAt} />`,
+      render: () => <RelativeTime value={ago(20 * 60)} base={BASE} />,
+    },
+    {
+      title: "固定基准",
+      description: "传 base 固定参照「现在」，SSR/列表统一基准、不走实时 tick。",
+      code: `<>
+  <RelativeTime value={ago(45)} base={now} />
+  <RelativeTime value={ago(5 * 3600)} base={now} />
+  <RelativeTime value={ago(8 * 86400)} base={now} />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-1 text-sm">
+          <RelativeTime value={ago(45)} base={BASE} />
+          <RelativeTime value={ago(5 * 3600)} base={BASE} />
+          <RelativeTime value={ago(8 * 86400)} base={BASE} />
+        </div>
+      ),
+    },
+    {
+      title: "未来时间",
+      description: "目标时间晚于基准时渲成「10 分钟后 / 明天」。",
+      code: `<>
+  <RelativeTime value={after(10 * 60)} base={now} />
+  <RelativeTime value={after(86400 + 60)} base={now} />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-1 text-sm">
+          <RelativeTime value={after(10 * 60)} base={BASE} />
+          <RelativeTime value={after(86400 + 60)} base={BASE} />
+        </div>
+      ),
+    },
+    {
+      title: "英文 locale",
+      description: "locale=\"en\" 输出「5m ago / in 5m」紧凑英文格式。",
+      code: `<RelativeTime value={publishedAt} locale="en" />`,
+      render: () => (
+        <div className="flex flex-col gap-1 text-sm">
+          <RelativeTime value={ago(5 * 60)} base={BASE} locale="en" />
+          <RelativeTime value={after(5 * 60)} base={BASE} locale="en" />
+        </div>
+      ),
+    },
+  ],
   controls: [{ prop: "locale", type: "select", options: ["zh", "en"], defaultValue: "zh" }],
   states: [
     {

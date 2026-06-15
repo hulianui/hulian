@@ -13,6 +13,67 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const elasticSliderShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认音量滑块，拖到两端轨道像橡皮筋一样被拉伸回弹。",
+      code: `<ElasticSlider defaultValue={40} />`,
+      render: () => (
+        <Stage>
+          <ElasticSlider defaultValue={40} />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义图标",
+      description: "用 leftIcon / rightIcon 替换两端图标，例如亮度调节。",
+      code: `<ElasticSlider
+  defaultValue={65}
+  leftIcon={<SunDim className="size-5" aria-hidden />}
+  rightIcon={<Sun className="size-5" aria-hidden />}
+/>`,
+      render: () => (
+        <Stage>
+          <ElasticSlider
+            defaultValue={65}
+            leftIcon={<SunDim className="size-5" aria-hidden />}
+            rightIcon={<Sun className="size-5" aria-hidden />}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "步长吸附",
+      description: "isStepped 开启后拖动按 stepSize 取整吸附。",
+      code: `<ElasticSlider defaultValue={30} isStepped stepSize={10} />`,
+      render: () => (
+        <Stage>
+          <ElasticSlider defaultValue={30} isStepped stepSize={10} />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义量程",
+      description: "startingValue / maxValue 设定上下界，showValue 可隐藏数值。",
+      code: `<ElasticSlider
+  defaultValue={0}
+  startingValue={-50}
+  maxValue={50}
+  showValue={false}
+/>`,
+      render: () => (
+        <Stage>
+          <ElasticSlider
+            defaultValue={0}
+            startingValue={-50}
+            maxValue={50}
+            showValue={false}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "defaultValue", type: "number", defaultValue: 50, label: "初始值" },
     { prop: "startingValue", type: "number", defaultValue: 0, label: "下界" },

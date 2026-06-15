@@ -15,6 +15,87 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const magicRingsShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "放进 relative + overflow-hidden 的深色容器，MagicRings 用 absolute inset-0 铺满。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
+  <MagicRings className="absolute inset-0" />
+</div>`,
+      render: () => (
+        <Stage>
+          <MagicRings className="absolute inset-0" />
+        </Stage>
+      ),
+    },
+    {
+      title: "密环 · 慢速",
+      description: "ringCount 增多层数，speed 降速，radiusStep 收紧环间距得壁纸级密环。",
+      code: `<MagicRings
+  className="absolute inset-0"
+  ringCount={9}
+  speed={0.5}
+  radiusStep={0.07}
+/>`,
+      render: () => (
+        <Stage>
+          <MagicRings
+            className="absolute inset-0"
+            ringCount={9}
+            speed={0.5}
+            radiusStep={0.07}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "双色与花瓣裂口",
+      description: "color/colorTwo 设内外色，环色按层插值；ringGap 加大角向裂口呈花瓣状。",
+      code: `<MagicRings
+  className="absolute inset-0"
+  color="var(--color-chart-3)"
+  colorTwo="oklch(0.72 0.22 30)"
+  ringGap={2.2}
+  attenuation={8}
+/>`,
+      render: () => (
+        <Stage>
+          <MagicRings
+            className="absolute inset-0"
+            color="var(--color-chart-3)"
+            colorTwo="oklch(0.72 0.22 30)"
+            ringGap={2.2}
+            attenuation={8}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "鼠标视差 · 点击爆发",
+      description: "followMouse 开启视差跟随，clickBurst 让点击短暂放大提亮，hoverScale 控悬停缩放。",
+      code: `<MagicRings
+  className="absolute inset-0"
+  followMouse
+  clickBurst
+  hoverScale={1.25}
+/>`,
+      render: () => (
+        <Stage>
+          <MagicRings
+            className="absolute inset-0"
+            followMouse
+            clickBurst
+            hoverScale={1.25}
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-white/50">
+            移动鼠标产生视差 · 点击触发爆发
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "ringCount", type: "number", defaultValue: 6, label: "环数 1–10" },
     { prop: "speed", type: "number", defaultValue: 1, label: "速度倍率" },

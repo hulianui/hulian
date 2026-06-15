@@ -25,6 +25,54 @@ const textOnly = [
 ];
 
 export const flowingMenuShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "竖排菜单项，指针从最近的上/下边缘滑入时一块跑马灯（文字 + 图片）从同侧揭幕铺满整行，离开时退回。需放在定高容器内。",
+      code: `<div className="h-80 overflow-hidden rounded-xl border">
+  <FlowingMenu
+    items={[
+      { link: "#discover", text: "Discover", image: "/a.jpg" },
+      { link: "#build", text: "Build", image: "/b.jpg" },
+      { link: "#ship", text: "Ship", image: "/c.jpg" },
+    ]}
+  />
+</div>`,
+      render: () => (
+        <Stage>
+          <FlowingMenu items={demoItems} />
+        </Stage>
+      ),
+    },
+    {
+      title: "纯文字（无图片）",
+      description: "item 不传 image 时跑马灯只跑文字，用一截小横杠分隔，不渲染图片块。",
+      code: `<FlowingMenu
+  items={[
+    { link: "#home", text: "首页" },
+    { link: "#products", text: "产品" },
+    { link: "#about", text: "关于" },
+  ]}
+/>`,
+      render: () => (
+        <Stage>
+          <FlowingMenu items={textOnly} />
+        </Stage>
+      ),
+    },
+    {
+      title: "速度与份数",
+      description: "speed 越大跑马灯越慢；repeat 控制单项内重复份数，撑满并保证无缝循环（最小 2）。",
+      code: `<FlowingMenu items={items} speed={30} repeat={6} />`,
+      render: () => (
+        <Stage>
+          <FlowingMenu items={demoItems.slice(0, 3)} speed={30} repeat={6} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "speed", type: "number", defaultValue: 18, label: "跑马灯秒数" },
     { prop: "repeat", type: "number", defaultValue: 4, label: "重复份数" },

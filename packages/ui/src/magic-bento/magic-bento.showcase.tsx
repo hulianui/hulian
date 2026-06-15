@@ -20,6 +20,65 @@ const DEMO_ITEMS = [
 ];
 
 export const magicBentoShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "传入卡片数据，光标移入卡片时浮现径向聚光 + 描边光；colSpan 控制跨列拼出大小不一的 bento 布局。",
+      code: `<MagicBento
+  items={[
+    { label: "Insights", title: "数据洞察", description: "追踪用户行为与漏斗", colSpan: 2 },
+    { label: "Overview", title: "总览面板", description: "集中式数据视图" },
+    { label: "Teamwork", title: "团队协作", description: "无缝实时协同" },
+  ]}
+/>`,
+      render: () => (
+        <Stage>
+          <MagicBento items={DEMO_ITEMS} />
+        </Stage>
+      ),
+    },
+    {
+      title: "3D 倾斜",
+      description: "enableTilt 让卡片随光标位置轻微 tilt，增强立体反馈。",
+      code: `<MagicBento items={items} enableTilt />`,
+      render: () => (
+        <Stage>
+          <MagicBento items={DEMO_ITEMS} enableTilt />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义发光色",
+      description:
+        "glowColor 喂给光晕 / 描边光，须用带 --color- 前缀的 token；spotlightRadius 调聚光范围。",
+      code: `<MagicBento
+  items={items}
+  glowColor="var(--color-chart-2)"
+  spotlightRadius={420}
+/>`,
+      render: () => (
+        <Stage>
+          <MagicBento
+            items={DEMO_ITEMS}
+            glowColor="var(--color-chart-2)"
+            spotlightRadius={420}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "关闭交互",
+      description: "disableAnimations 渲染静态网格（等价 reduced-motion），无任何光标反馈。",
+      code: `<MagicBento items={items} disableAnimations />`,
+      render: () => (
+        <Stage>
+          <MagicBento items={DEMO_ITEMS} disableAnimations />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "columns", type: "number", defaultValue: 4, label: "网格列数" },
     { prop: "spotlightRadius", type: "number", defaultValue: 280, label: "聚光半径 px" },

@@ -15,6 +15,69 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const galaxyShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "放进 relative 容器即铺满，组件自带 absolute inset-0 z-0；内容放 z-10。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
+  <Galaxy />
+  <div className="relative z-10 flex h-full items-center justify-center text-white/80">
+    内容层
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Galaxy />
+          <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+            内容层
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "调色：色相 + 饱和度",
+      description: "hueShift 旋转主色调，saturation 调高让星点呈现彩色。",
+      code: `<Galaxy hueShift={300} saturation={0.4} density={1.4} glowIntensity={0.4} />`,
+      render: () => (
+        <Stage>
+          <Galaxy hueShift={300} saturation={0.4} density={1.4} glowIntensity={0.4} />
+        </Stage>
+      ),
+    },
+    {
+      title: "中心星环",
+      description: "autoCenterRepulsion > 0 时星点从中心向外排斥，形成空洞中心的星环观感。",
+      code: `<Galaxy autoCenterRepulsion={2} density={1.2} hueShift={200} mouseInteraction={false} />`,
+      render: () => (
+        <Stage>
+          <Galaxy autoCenterRepulsion={2} density={1.2} hueShift={200} mouseInteraction={false} />
+        </Stage>
+      ),
+    },
+    {
+      title: "纯装饰壁纸（关闭交互）",
+      description: "mouseInteraction={false} 时放行点击穿透，适合做静态背景。",
+      code: `<Galaxy
+  rotationSpeed={0.05}
+  glowIntensity={0.5}
+  twinkleIntensity={0.6}
+  starSpeed={0.3}
+  mouseInteraction={false}
+/>`,
+      render: () => (
+        <Stage>
+          <Galaxy
+            rotationSpeed={0.05}
+            glowIntensity={0.5}
+            twinkleIntensity={0.6}
+            starSpeed={0.3}
+            mouseInteraction={false}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "density", type: "number", defaultValue: 1, label: "星点密度" },
     { prop: "hueShift", type: "number", defaultValue: 140, label: "色相偏移" },

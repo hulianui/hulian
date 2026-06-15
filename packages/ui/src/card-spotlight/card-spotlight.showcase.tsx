@@ -28,6 +28,69 @@ function FeatureCard({
 }
 
 export const cardSpotlightShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "包裹卡片内容，鼠标悬停时在光标处出现柔和聚光（默认 chart-1）。",
+      code: `<CardSpotlight className="w-64">
+  <div className="mb-3 text-3xl">✦</div>
+  <h3 className="mb-1.5 text-base font-semibold">瑚琏组件</h3>
+  <p className="text-sm text-muted">鼠标悬停感受柔和聚光。</p>
+</CardSpotlight>`,
+      render: () => (
+        <FeatureCard icon="✦" title="瑚琏组件" description="宗庙玉器，至美又大用——鼠标悬停感受柔和聚光。" />
+      ),
+    },
+    {
+      title: "自定义高光色",
+      description: "color 传任意 CSS 颜色（含 token），高光随主题色联动。",
+      code: `<CardSpotlight color="var(--color-primary)" className="w-64">
+  <div className="mb-3 text-3xl">⚡</div>
+  <h3 className="mb-1.5 text-base font-semibold">主题色高光</h3>
+  <p className="text-sm text-muted">高光随主题联动。</p>
+</CardSpotlight>`,
+      render: () => (
+        <FeatureCard
+          icon="⚡"
+          title="主题色高光"
+          description="color 传 var(--color-primary)，高光随主题联动。"
+          color="var(--color-primary)"
+        />
+      ),
+    },
+    {
+      title: "聚焦小半径",
+      description: "radius 越小光晕越紧，适合强调单个核心内容区域。",
+      code: `<CardSpotlight radius={180} color="var(--color-chart-3)" className="w-64">
+  <div className="mb-3 text-3xl">🔍</div>
+  <h3 className="mb-1.5 text-base font-semibold">聚焦光束</h3>
+  <p className="text-sm text-muted">radius=180 光晕更紧。</p>
+</CardSpotlight>`,
+      render: () => (
+        <FeatureCard
+          icon="🔍"
+          title="聚焦光束"
+          description="radius=180 光晕更紧，适合强调核心内容区域。"
+          radius={180}
+          color="var(--color-chart-3)"
+        />
+      ),
+    },
+    {
+      title: "多卡并列",
+      description: "每张卡独立追踪光标，配不同高光色构成特性栅格。",
+      code: `<div className="flex flex-wrap gap-4">
+  <CardSpotlight color="var(--color-chart-1)" className="w-64">...</CardSpotlight>
+  <CardSpotlight color="var(--color-chart-2)" className="w-64">...</CardSpotlight>
+</div>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <FeatureCard icon="🎨" title="设计" description="像素级还原，主题随系统联动。" color="var(--color-chart-1)" />
+          <FeatureCard icon="⚙️" title="工程" description="TypeScript 全覆盖，类型即文档。" color="var(--color-chart-2)" />
+        </div>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "radius",

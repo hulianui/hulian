@@ -37,6 +37,67 @@ const VARIATIONS: ShapeBlurVariation[] = [
 ];
 
 export const shapeBlurShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认圆角矩形描边，鼠标靠近时柔光圆擦亮形状边缘；色吃 foreground token。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  <ShapeBlur variation="round-rect" />
+</div>`,
+      render: () => (
+        <Stage>
+          <ShapeBlur variation="round-rect" />
+        </Stage>
+      ),
+    },
+    {
+      title: "实心圆",
+      description: 'variation="circle-fill"，circleSize 放大擦亮区域。',
+      code: `<ShapeBlur variation="circle-fill" circleSize={0.4} />`,
+      render: () => (
+        <Stage hint="鼠标擦亮实心圆">
+          <ShapeBlur variation="circle-fill" circleSize={0.4} />
+        </Stage>
+      ),
+    },
+    {
+      title: "圆环描边 + 自定义色",
+      description: 'variation="circle-stroke"，color 传任意 CSS 颜色覆盖默认前景色。',
+      code: `<ShapeBlur
+  variation="circle-stroke"
+  color="oklch(0.82 0.16 75)"
+  circleSize={0.35}
+/>`,
+      render: () => (
+        <Stage hint="鼠标擦亮圆环">
+          <ShapeBlur
+            variation="circle-stroke"
+            color="oklch(0.82 0.16 75)"
+            circleSize={0.35}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "三角形",
+      description: 'variation="triangle"，蓝紫色填充。',
+      code: `<ShapeBlur
+  variation="triangle"
+  color="oklch(0.7 0.22 280)"
+  circleSize={0.32}
+/>`,
+      render: () => (
+        <Stage hint="鼠标擦亮三角">
+          <ShapeBlur
+            variation="triangle"
+            color="oklch(0.7 0.22 280)"
+            circleSize={0.32}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "variation",

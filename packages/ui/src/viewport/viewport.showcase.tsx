@@ -35,6 +35,45 @@ function ResponsiveDemo() {
 }
 
 export const viewportShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "设备切换器",
+      description: "controls 开顶部 web/平板/手机 切换条，内部按容器宽度（@md/@5xl）重排。",
+      code: `<Viewport controls defaultDevice="phone">
+  {/* 内部用 @md/@5xl 容器变体随容器宽度自适应 */}
+  <div className="grid grid-cols-1 @md:grid-cols-2 @5xl:grid-cols-3">…</div>
+</Viewport>`,
+      render: () => (
+        <Viewport controls defaultDevice="phone">
+          <ResponsiveDemo />
+        </Viewport>
+      ),
+    },
+    {
+      title: "固定设备预设",
+      description: "直接传 device 锁定到某预设宽度，手机 390 下单列纵向。",
+      code: `<Viewport device="phone">
+  <ResponsiveLayout />
+</Viewport>`,
+      render: () => (
+        <Viewport device="phone">
+          <ResponsiveDemo />
+        </Viewport>
+      ),
+    },
+    {
+      title: "自定义宽度",
+      description: "width 覆盖预设到任意像素；framed={false} 用细边框而非设备外框。",
+      code: `<Viewport width={600} framed={false}>
+  <ResponsiveLayout />
+</Viewport>`,
+      render: () => (
+        <Viewport width={600} framed={false}>
+          <ResponsiveDemo />
+        </Viewport>
+      ),
+    },
+  ],
   controls: [],
   states: [
     {

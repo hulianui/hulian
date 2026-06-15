@@ -80,6 +80,74 @@ function GridDemo() {
 }
 
 export const proFormShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "内联表单：自带提交 / 重置 footer，提交走 onFinish。",
+      code: `<ProForm onFinish={(values) => api.save(values)}>
+  <Field label="姓名">
+    <Input placeholder="必填" />
+  </Field>
+  <Field label="邮箱">
+    <Input placeholder="含 @" />
+  </Field>
+</ProForm>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <ProForm onFinish={() => {}}>
+            <Field label="姓名">
+              <Input placeholder="必填" />
+            </Field>
+            <Field label="邮箱">
+              <Input placeholder="含 @" />
+            </Field>
+          </ProForm>
+        </div>
+      ),
+    },
+    {
+      title: "响应式栅格",
+      description: "columns=2 按容器宽度自适应（容器查询，非视口断点）；单字段跨整行用 Field colSpan=full。",
+      code: `<ProForm columns={2} submitText="保存">
+  <Field label="名"><Input /></Field>
+  <Field label="姓"><Input /></Field>
+  <Field label="详细地址" colSpan="full"><Input /></Field>
+</ProForm>`,
+      render: () => (
+        <div className="w-full max-w-2xl">
+          <ProForm columns={2} submitText="保存" onFinish={() => {}}>
+            <Field label="名">
+              <Input defaultValue="瑚" />
+            </Field>
+            <Field label="姓">
+              <Input defaultValue="琏" />
+            </Field>
+            <Field label="详细地址" colSpan="full">
+              <Input placeholder="colSpan=full · 跨整行" />
+            </Field>
+          </ProForm>
+        </div>
+      ),
+    },
+    {
+      title: "底部右对齐",
+      description: "footerAlign=right 让操作区贴右；隐藏重置用 showReset={false}。",
+      code: `<ProForm footerAlign="right" showReset={false} submitText="提交">
+  <Field label="备注">
+    <Input />
+  </Field>
+</ProForm>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <ProForm footerAlign="right" showReset={false} submitText="提交" onFinish={() => {}}>
+            <Field label="备注">
+              <Input placeholder="选填" />
+            </Field>
+          </ProForm>
+        </div>
+      ),
+    },
+  ],
   controls: [],
   states: [
     { name: "内联表单 · useForm 校验 + 异步提交 + 重置", render: () => <Demo /> },

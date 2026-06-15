@@ -22,6 +22,84 @@ function Demo() {
 }
 
 export const actionSheetShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "Trigger 触发，actions 数组驱动每个动作；每项点击后自动关闭。",
+      code: `<ActionSheet>
+  <ActionSheetTrigger>打开动作面板</ActionSheetTrigger>
+  <ActionSheetContent
+    actions={[
+      { key: "save", label: "保存到相册" },
+      { key: "share", label: "分享" },
+    ]}
+  />
+</ActionSheet>`,
+      render: () => (
+        <ActionSheet>
+          <ActionSheetTrigger className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring">
+            打开动作面板
+          </ActionSheetTrigger>
+          <ActionSheetContent
+            actions={[
+              { key: "save", label: "保存到相册" },
+              { key: "share", label: "分享" },
+            ]}
+          />
+        </ActionSheet>
+      ),
+    },
+    {
+      title: "标题与说明",
+      description: "title / description 顶部展示；动作项可带 description 小字。",
+      code: `<ActionSheetContent
+  title="图片操作"
+  description="选择对这张图片的操作"
+  actions={[
+    { key: "save", label: "保存到相册" },
+    { key: "share", label: "分享", description: "发送给好友或朋友圈" },
+  ]}
+/>`,
+      render: () => (
+        <ActionSheet>
+          <ActionSheetTrigger className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring">
+            打开（带标题）
+          </ActionSheetTrigger>
+          <ActionSheetContent
+            title="图片操作"
+            description="选择对这张图片的操作"
+            actions={[
+              { key: "save", label: "保存到相册" },
+              { key: "share", label: "分享", description: "发送给好友或朋友圈" },
+            ]}
+          />
+        </ActionSheet>
+      ),
+    },
+    {
+      title: "危险动作",
+      description: "action.danger 红色高亮；cancelText 自定义或传 null 隐藏取消块。",
+      code: `<ActionSheetContent
+  title="删除确认"
+  cancelText="再想想"
+  actions={[
+    { key: "delete", label: "删除", danger: true },
+  ]}
+/>`,
+      render: () => (
+        <ActionSheet>
+          <ActionSheetTrigger className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring">
+            打开（危险动作）
+          </ActionSheetTrigger>
+          <ActionSheetContent
+            title="删除确认"
+            cancelText="再想想"
+            actions={[{ key: "delete", label: "删除", danger: true }]}
+          />
+        </ActionSheet>
+      ),
+    },
+  ],
   controls: [],
   states: [{ name: "标题 + 危险动作 + 取消", render: () => <Demo /> }],
   renderWithProps: () => <Demo />,

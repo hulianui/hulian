@@ -15,6 +15,67 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const lightPillarShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认顶/底色吃 chart token，组件自带 absolute inset-0 z-0。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <LightPillar />
+  <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+    LightPillar
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <LightPillar />
+          <div className="relative z-10 flex h-full items-center justify-center text-sm font-medium text-white/80">
+            LightPillar
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义双色（原版紫→粉）",
+      description: "topColor / bottomColor 沿 y 轴渐变混合，构成色彩纵深。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <LightPillar topColor="#5227FF" bottomColor="#FF9FFC" intensity={1.1} />
+</div>`,
+      render: () => (
+        <Stage>
+          <LightPillar topColor="#5227FF" bottomColor="#FF9FFC" intensity={1.1} />
+        </Stage>
+      ),
+    },
+    {
+      title: "细激光（窄柱·无颗粒）",
+      description: "pillarWidth 调细 + glowAmount 提亮，noiseIntensity=0 去颗粒。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <LightPillar pillarWidth={1.4} glowAmount={0.009} noiseIntensity={0} intensity={1.2} />
+</div>`,
+      render: () => (
+        <Stage>
+          <LightPillar pillarWidth={1.4} glowAmount={0.009} noiseIntensity={0} intensity={1.2} />
+        </Stage>
+      ),
+    },
+    {
+      title: "倾斜光柱（慢转）",
+      description: "pillarRotation 让光柱斜射，rotationSpeed 调慢自转。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <LightPillar pillarRotation={30} rotationSpeed={0.15} pillarWidth={2.4} />
+</div>`,
+      render: () => (
+        <Stage>
+          <LightPillar pillarRotation={30} rotationSpeed={0.15} pillarWidth={2.4} />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "intensity", type: "number", defaultValue: 1, label: "亮度系数" },
     { prop: "rotationSpeed", type: "number", defaultValue: 0.3, label: "自转速度" },

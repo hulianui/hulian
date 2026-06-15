@@ -73,6 +73,106 @@ function Demo({ initialView = "week" }: { initialView?: SchedulerView }) {
 }
 
 export const schedulerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "受控用法",
+      description: "events / view / date 全部受控，由消费者持有 state；onEventsChange 回吐整组新 events（照 Kanban 受控范式）。",
+      code: `const [events, setEvents] = useState(INITIAL);
+const [view, setView] = useState<SchedulerView>("week");
+const [date, setDate] = useState(monday);
+
+<Scheduler
+  events={events}
+  view={view}
+  date={date}
+  resources={resources}
+  onViewChange={setView}
+  onDateChange={setDate}
+  onEventsChange={setEvents}
+/>`,
+      render: () => (
+        <div className="h-[460px] w-full">
+          <Scheduler
+            className="h-full"
+            events={INITIAL}
+            view="week"
+            date={monday}
+            resources={RESOURCES}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "资源视图",
+      description: "view='resource' 时横轴为 resources（医生/诊室）、纵轴为时间；需传 resources。",
+      code: `<Scheduler
+  events={events}
+  view="resource"
+  date={date}
+  resources={resources}
+  onEventsChange={setEvents}
+/>`,
+      render: () => (
+        <div className="h-[460px] w-full">
+          <Scheduler
+            className="h-full"
+            events={INITIAL}
+            view="resource"
+            date={monday}
+            resources={RESOURCES}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "月总览",
+      description: "view='month' 给出整月概览，点某天经 onDateChange + onViewChange 下钻到日视图。",
+      code: `<Scheduler
+  events={events}
+  view="month"
+  date={date}
+  onDateChange={setDate}
+  onViewChange={setView}
+/>`,
+      render: () => (
+        <div className="h-[460px] w-full">
+          <Scheduler
+            className="h-full"
+            events={INITIAL}
+            view="month"
+            date={monday}
+            resources={RESOURCES}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "自定义时间范围",
+      description: "dayStartHour / dayEndHour 收窄时间轴，hourHeight 调每小时像素高。",
+      code: `<Scheduler
+  events={events}
+  view="day"
+  date={date}
+  dayStartHour={9}
+  dayEndHour={13}
+  hourHeight={72}
+/>`,
+      render: () => (
+        <div className="h-[460px] w-full">
+          <Scheduler
+            className="h-full"
+            events={INITIAL}
+            view="day"
+            date={monday}
+            resources={RESOURCES}
+            dayStartHour={9}
+            dayEndHour={13}
+            hourHeight={72}
+          />
+        </div>
+      ),
+    },
+  ],
   controls: [],
   states: [
     {

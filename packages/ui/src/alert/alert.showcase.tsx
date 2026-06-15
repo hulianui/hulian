@@ -53,6 +53,84 @@ const iconByTone: Record<Tone, ReactNode> = {
 };
 
 export const alertShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "五语气",
+      description: "tone 提供 neutral / info / success / warning / danger，配 icon 槽。",
+      code: `<>
+  <Alert tone="info" icon={<InfoIcon />} title="信息提示">这是一条普通信息提示。</Alert>
+  <Alert tone="success" icon={<SuccessIcon />} title="操作成功">个人资料已保存。</Alert>
+  <Alert tone="warning" icon={<WarningIcon />} title="计划内维护">服务将于周日维护。</Alert>
+  <Alert tone="danger" icon={<DangerIcon />} title="无法连接服务器">请稍后重试。</Alert>
+</>`,
+      render: () => (
+        <div className="flex w-96 flex-col gap-3">
+          <Alert tone="info" icon={InfoIcon} title="信息提示">
+            这是一条普通信息提示。
+          </Alert>
+          <Alert tone="success" icon={SuccessIcon} title="操作成功">
+            个人资料已保存。
+          </Alert>
+          <Alert tone="warning" icon={WarningIcon} title="计划内维护">
+            服务将于周日维护。
+          </Alert>
+          <Alert tone="danger" icon={DangerIcon} title="无法连接服务器">
+            请稍后重试。
+          </Alert>
+        </div>
+      ),
+    },
+    {
+      title: "带动作按钮",
+      description: "action 槽放右侧操作按钮，与正文并排。",
+      code: `<Alert tone="info" icon={<InfoIcon />} title="有可用更新" action={<Button size="sm">刷新</Button>}>
+  应用有新版本，请刷新以获取最新功能。
+</Alert>`,
+      render: () => (
+        <Alert
+          tone="info"
+          icon={InfoIcon}
+          title="有可用更新"
+          action={<Button size="sm">刷新</Button>}
+          className="w-96"
+        >
+          应用有新版本，请刷新以获取最新功能。
+        </Alert>
+      ),
+    },
+    {
+      title: "可关闭",
+      description: "传 onClose 渲染右上角关闭按钮，消隐由调用方控制。",
+      code: `<Alert tone="success" icon={<SuccessIcon />} title="个人资料更新成功" onClose={() => setShow(false)} />`,
+      render: () => (
+        <Alert tone="success" icon={SuccessIcon} title="个人资料更新成功" onClose={() => {}} className="w-96" />
+      ),
+    },
+    {
+      title: "加载态",
+      description: "icon 槽放 Spinner，表达进行中的异步操作。",
+      code: `<Alert tone="info" icon={<Spinner size="sm" />} title="正在处理你的请求">
+  正在同步数据，请稍候……
+</Alert>`,
+      render: () => (
+        <Alert tone="info" icon={<Spinner size="sm" />} title="正在处理你的请求" className="w-96">
+          正在同步数据，请稍候……
+        </Alert>
+      ),
+    },
+    {
+      title: "描边变体",
+      description: "variant=\"outline\" 用透明底靠边框划界。",
+      code: `<Alert variant="outline" tone="warning" icon={<WarningIcon />} title="描边警告">
+  透明底靠边框划界。
+</Alert>`,
+      render: () => (
+        <Alert variant="outline" tone="warning" icon={WarningIcon} title="描边警告" className="w-96">
+          透明底靠边框划界。
+        </Alert>
+      ),
+    },
+  ],
   controls: [
     { prop: "tone", type: "select", options: ["neutral", "info", "success", "warning", "danger"], defaultValue: "info" },
     { prop: "variant", type: "select", options: ["soft", "outline"], defaultValue: "soft" },

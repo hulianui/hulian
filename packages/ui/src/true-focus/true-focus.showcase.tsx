@@ -12,6 +12,83 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const trueFocusShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传入整句，按空格切词后自动循环聚焦，余词模糊。",
+      code: `<TrueFocus
+  sentence="True Focus Effect"
+  className="text-3xl font-bold text-foreground"
+/>`,
+      render: () => (
+        <Stage>
+          <TrueFocus
+            sentence="True Focus Effect"
+            className="text-3xl font-bold text-foreground"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "手动悬停聚焦",
+      description: "manualMode 关闭自动轮播，改由鼠标悬停某词来对焦。",
+      code: `<TrueFocus
+  sentence="Hover each word"
+  manualMode
+  className="text-3xl font-bold text-foreground"
+/>`,
+      render: () => (
+        <Stage>
+          <TrueFocus
+            sentence="Hover each word"
+            manualMode
+            className="text-3xl font-bold text-foreground"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义角框色",
+      description: "borderColor 接受合法 CSS 颜色，建议吃带 --color- 前缀的 token。",
+      code: `<TrueFocus
+  sentence="瑚琏 真实 焦点"
+  borderColor="var(--color-primary)"
+  blurAmount={6}
+  className="text-3xl font-bold text-foreground"
+/>`,
+      render: () => (
+        <Stage>
+          <TrueFocus
+            sentence="瑚琏 真实 焦点"
+            borderColor="var(--color-primary)"
+            blurAmount={6}
+            className="text-3xl font-bold text-foreground"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "调整模糊与停留",
+      description: "blurAmount 控制失焦模糊半径，animationDuration 控制单词停留秒数。",
+      code: `<TrueFocus
+  sentence="慢速 重模糊 焦点"
+  blurAmount={9}
+  animationDuration={2}
+  className="text-3xl font-bold text-foreground"
+/>`,
+      render: () => (
+        <Stage>
+          <TrueFocus
+            sentence="慢速 重模糊 焦点"
+            blurAmount={9}
+            animationDuration={2}
+            className="text-3xl font-bold text-foreground"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "blurAmount", type: "number", defaultValue: 5, label: "失焦模糊 px" },
     { prop: "manualMode", type: "boolean", defaultValue: false, label: "手动悬停" },

@@ -44,6 +44,59 @@ function Demo({
 }
 
 export const selectShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "items 提供选项数据，placeholder 作占位。",
+      code: `<Select items={fonts} placeholder="请选择字体">
+  <SelectTrigger />
+  <SelectContent>
+    {fonts.map((f) => (
+      <SelectItem key={f.value} value={f.value}>
+        {f.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>`,
+      render: () => <Demo />,
+    },
+    {
+      title: "默认已选值",
+      description: "非受控写法用 defaultValue 预设选中项。",
+      code: `<Select items={fonts} defaultValue="serif">
+  <SelectTrigger />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <Demo defaultValue="serif" />,
+    },
+    {
+      title: "尺寸",
+      description: "SelectTrigger 的 size 提供 sm / md / lg。",
+      code: `<Select items={fonts} defaultValue="mono">
+  <SelectTrigger size="sm" />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <Demo size="sm" defaultValue="mono" />,
+    },
+    {
+      title: "无效态",
+      description: "SelectTrigger 传 invalid 标红（独立使用时）。",
+      code: `<Select items={fonts} placeholder="请选择字体">
+  <SelectTrigger invalid />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <Demo invalid />,
+    },
+    {
+      title: "禁用态",
+      description: "Select 传 disabled 屏蔽整个下拉。",
+      code: `<Select items={fonts} defaultValue="sans" disabled>
+  <SelectTrigger />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <Demo disabled defaultValue="sans" />,
+    },
+  ],
   controls: [
     { prop: "placeholder", type: "text", defaultValue: "请选择字体", label: "占位文案" },
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },

@@ -12,6 +12,73 @@ function WavyWrap({ children }: { children: React.ReactNode }) {
 }
 
 export const wavyBackgroundShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "WavyBackground 自带 canvas 背景 + 居中内容层，children 直接放标题即可；默认吃 chart token。",
+      code: `<WavyBackground containerClassName="h-64 w-full">
+  <span className="text-sm font-medium text-foreground">WavyBackground</span>
+</WavyBackground>`,
+      render: () => (
+        <WavyWrap>
+          <WavyBackground containerClassName="h-full w-full">
+            <span className="text-sm font-medium text-foreground">WavyBackground</span>
+          </WavyBackground>
+        </WavyWrap>
+      ),
+    },
+    {
+      title: "动画速度",
+      description: 'speed="slow" 让波浪更缓更松弛，"fast" 更活跃。',
+      code: `<WavyBackground speed="slow" containerClassName="h-64 w-full">
+  <span className="text-sm font-medium text-foreground">slow</span>
+</WavyBackground>`,
+      render: () => (
+        <WavyWrap>
+          <WavyBackground speed="slow" containerClassName="h-full w-full">
+            <span className="text-sm font-medium text-foreground">slow</span>
+          </WavyBackground>
+        </WavyWrap>
+      ),
+    },
+    {
+      title: "模糊强度",
+      description: "blur 控制波带柔和度，blur=0 时边缘锐利、波带轮廓清晰。",
+      code: `<WavyBackground blur={0} containerClassName="h-64 w-full">
+  <span className="text-sm font-medium text-foreground">blur=0</span>
+</WavyBackground>`,
+      render: () => (
+        <WavyWrap>
+          <WavyBackground blur={0} containerClassName="h-full w-full">
+            <span className="text-sm font-medium text-foreground">blur=0</span>
+          </WavyBackground>
+        </WavyWrap>
+      ),
+    },
+    {
+      title: "自定义颜色",
+      description: "colors 传一组色值（推荐 5 条）定制品牌波浪带。",
+      code: `<WavyBackground
+  colors={["#a855f7", "#6366f1", "#c084fc", "#818cf8", "#a855f7"]}
+  blur={8}
+  containerClassName="h-64 w-full"
+>
+  <span className="text-sm font-medium text-white">custom</span>
+</WavyBackground>`,
+      render: () => (
+        <WavyWrap>
+          <WavyBackground
+            colors={["#a855f7", "#6366f1", "#c084fc", "#818cf8", "#a855f7"]}
+            blur={8}
+            containerClassName="h-full w-full"
+          >
+            <span className="text-sm font-medium text-white">custom</span>
+          </WavyBackground>
+        </WavyWrap>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "speed",

@@ -3,6 +3,58 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Progress } from "./progress";
 
 export const progressShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传入 value（默认 max=100）即按百分比填充进度条。",
+      code: `<Progress value={40} className="w-64" />`,
+      render: () => <Progress value={40} className="w-64" />,
+    },
+    {
+      title: "显示百分比",
+      description: "showValue 在进度条右侧显示百分比标签。",
+      code: `<Progress value={60} showValue className="w-64" />`,
+      render: () => <Progress value={60} showValue className="w-64" />,
+    },
+    {
+      title: "色调",
+      description: "tone 切换 primary / success / warning / danger 四种语义色。",
+      code: `<>
+  <Progress value={40} tone="primary" showValue className="w-64" />
+  <Progress value={70} tone="success" showValue className="w-64" />
+  <Progress value={85} tone="warning" showValue className="w-64" />
+  <Progress value={95} tone="danger" showValue className="w-64" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-3">
+          <Progress value={40} tone="primary" showValue className="w-64" />
+          <Progress value={70} tone="success" showValue className="w-64" />
+          <Progress value={85} tone="warning" showValue className="w-64" />
+          <Progress value={95} tone="danger" showValue className="w-64" />
+        </div>
+      ),
+    },
+    {
+      title: "环形进度",
+      description: "variant=\"circular\" 渲染圆环，showValue 居中显示百分比。",
+      code: `<Progress variant="circular" value={75} showValue />`,
+      render: () => <Progress variant="circular" value={75} showValue />,
+    },
+    {
+      title: "不定态",
+      description: "省略 value（undefined）进入加载中不定态，线性与环形均循环动画。",
+      code: `<>
+  <Progress className="w-64" />
+  <Progress variant="circular" />
+</>`,
+      render: () => (
+        <div className="flex items-center gap-6">
+          <Progress className="w-64" />
+          <Progress variant="circular" />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "value", type: "number", defaultValue: 40, label: "value" },
     { prop: "max", type: "number", defaultValue: 100, label: "max" },

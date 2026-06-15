@@ -24,6 +24,85 @@ function Stage({
 }
 
 export const lineWavesShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "放进 relative overflow-hidden 容器即可，组件自带 absolute inset-0 z-0；颜色默认吃 chart token，明暗自适应。内容用 relative z-10 浮在波纹之上。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
+  <LineWaves />
+  <div className="relative z-10 flex h-full items-center justify-center">
+    <p className="text-2xl font-bold text-white/90">LineWaves</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <LineWaves />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-2xl font-bold tracking-tight text-white/90">LineWaves</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "高亮 + 强扭曲",
+      description:
+        "调高 brightness 让线条更实更亮（alpha 随亮度走），warpIntensity 越大波纹越「汹涌」。",
+      code: `<LineWaves brightness={0.4} warpIntensity={1.6} speed={0.5} />`,
+      render: () => (
+        <Stage>
+          <LineWaves brightness={0.4} warpIntensity={1.6} speed={0.5} />
+        </Stage>
+      ),
+    },
+    {
+      title: "经典白线",
+      description:
+        "三通道色全传同一值（如 #ffffff）并关掉色相循环（colorCycleSpeed=0），还原 react-bits 原版单色白线。",
+      code: `<LineWaves
+  color1="#ffffff"
+  color2="#ffffff"
+  color3="#ffffff"
+  brightness={0.25}
+  colorCycleSpeed={0}
+/>`,
+      render: () => (
+        <Stage>
+          <LineWaves
+            color1="#ffffff"
+            color2="#ffffff"
+            color3="#ffffff"
+            brightness={0.25}
+            colorCycleSpeed={0}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "水平走向 · 关闭交互",
+      description:
+        "rotation=0 让波纹横向铺排；enableMouseInteraction={false} 关掉指针扰动变纯自动流动，适合纯装饰背景。",
+      code: `<LineWaves
+  rotation={0}
+  enableMouseInteraction={false}
+  innerLineCount={24}
+  outerLineCount={40}
+  brightness={0.3}
+/>`,
+      render: () => (
+        <Stage>
+          <LineWaves
+            rotation={0}
+            enableMouseInteraction={false}
+            innerLineCount={24}
+            outerLineCount={40}
+            brightness={0.3}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "speed", type: "number", defaultValue: 0.3, label: "速度" },
     { prop: "warpIntensity", type: "number", defaultValue: 1, label: "扭曲强度" },

@@ -49,6 +49,90 @@ const tabsFooter = (
 );
 
 export const pageHeaderShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "极简（仅标题 + 操作）",
+      description: "最常见的列表页头：左侧标题，右侧主操作按钮。",
+      code: `<PageHeader
+  title="用户管理"
+  extra={<Button variant="solid" size="sm">新建用户</Button>}
+/>`,
+      render: () => (
+        <div className="w-full max-w-3xl">
+          <PageHeader
+            title="用户管理"
+            extra={
+              <Button variant="solid" size="sm">
+                新建用户
+              </Button>
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      title: "面包屑 + 副标题 + 标签",
+      description: "breadcrumb 渲染在标题上方，subTitle 与 tags 贴在标题右侧。",
+      code: `<PageHeader
+  breadcrumb={<Breadcrumb items={[{ label: "首页", href: "/" }, { label: "商品列表" }]} />}
+  title="商品列表"
+  subTitle="管理在售与下架商品"
+  tags={<Chip tone="brand" variant="soft" size="sm">128 在售</Chip>}
+/>`,
+      render: () => (
+        <div className="w-full max-w-3xl">
+          <PageHeader
+            breadcrumb={
+              <Breadcrumb items={[{ label: "首页", href: "/" }, { label: "商品列表" }]} />
+            }
+            title="商品列表"
+            subTitle="管理在售与下架商品"
+            tags={
+              <Chip tone="brand" variant="soft" size="sm">
+                128 在售
+              </Chip>
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      title: "详情页（返回 + Tabs 页脚 + 分隔线）",
+      description: "传入 onBack 渲染返回箭头；footer 常放 Tabs；bordered 在底部加分隔线。",
+      code: `<PageHeader
+  onBack={() => router.back()}
+  breadcrumb={<Breadcrumb items={items} />}
+  title="订单 #20260603-8821"
+  subTitle="共 6 件商品"
+  tags={<Chip tone="brand" variant="soft" size="sm">进行中</Chip>}
+  extra={<><Button variant="ghost" size="sm">导出</Button><Button variant="solid" size="sm">编辑</Button></>}
+  footer={
+    <Tabs defaultValue="detail">
+      <TabsList>
+        <TabsTab value="detail">详情</TabsTab>
+        <TabsTab value="items">商品</TabsTab>
+        <TabsTab value="logistics">物流</TabsTab>
+      </TabsList>
+    </Tabs>
+  }
+  bordered
+/>`,
+      render: () => (
+        <div className="w-full max-w-3xl">
+          <PageHeader
+            onBack={() => {}}
+            breadcrumb={crumb}
+            title="订单 #20260603-8821"
+            subTitle="共 6 件商品"
+            tags={tags}
+            extra={actions}
+            footer={tabsFooter}
+            bordered
+          />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "onBack", type: "boolean", defaultValue: true, label: "返回按钮" },
     { prop: "bordered", type: "boolean", defaultValue: true, label: "底部分隔线" },

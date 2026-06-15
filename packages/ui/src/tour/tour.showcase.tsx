@@ -92,6 +92,51 @@ function Demo({ maskClosable = false }: { maskClosable?: boolean }) {
 }
 
 export const tourShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础引导",
+      description: "受控 open + current；steps 用 target 函数返回 ref 元素，逐步高亮走查（含无 target 的居中开场步）。点「开始引导」试。",
+      code: `const searchRef = useRef<HTMLDivElement>(null);
+const [open, setOpen] = useState(false);
+const [current, setCurrent] = useState(0);
+
+const steps = [
+  { title: "欢迎使用瑚琏", description: "30 秒带你认识三处核心功能。" },
+  {
+    target: () => searchRef.current,
+    title: "全局搜索",
+    description: "按关键字快速定位任意资源。",
+    placement: "bottom",
+  },
+];
+
+<>
+  <div ref={searchRef}>搜索资源…</div>
+  <Button onClick={() => { setCurrent(0); setOpen(true); }}>开始引导</Button>
+  <Tour
+    steps={steps}
+    open={open}
+    current={current}
+    onChange={setCurrent}
+    onClose={() => setOpen(false)}
+  />
+</>`,
+      render: () => <Demo />,
+    },
+    {
+      title: "点遮罩关闭",
+      description: "maskClosable 允许点暗色遮罩区直接结束引导（默认 false，防误触）。",
+      code: `<Tour
+  steps={steps}
+  open={open}
+  current={current}
+  onChange={setCurrent}
+  onClose={() => setOpen(false)}
+  maskClosable
+/>`,
+      render: () => <Demo maskClosable />,
+    },
+  ],
   controls: [
     { prop: "maskClosable", type: "boolean", defaultValue: false, label: "点遮罩关闭" },
   ],

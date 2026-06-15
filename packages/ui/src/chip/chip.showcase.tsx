@@ -23,6 +23,71 @@ function Removable() {
 }
 
 export const chipShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "变体与语气",
+      description: "variant（soft / solid / outline）× tone（brand / danger / neutral）组合视觉。",
+      code: `<>
+  <Chip tone="brand">品牌</Chip>
+  <Chip variant="solid" tone="brand">品牌</Chip>
+  <Chip variant="outline" tone="brand">品牌</Chip>
+  <Chip tone="danger">危险</Chip>
+  <Chip tone="neutral">中性</Chip>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Chip tone="brand">品牌</Chip>
+          <Chip variant="solid" tone="brand">品牌</Chip>
+          <Chip variant="outline" tone="brand">品牌</Chip>
+          <Chip tone="danger">危险</Chip>
+          <Chip tone="neutral">中性</Chip>
+        </div>
+      ),
+    },
+    {
+      title: "前导内容",
+      description: "dot 状态点 / startContent 图标 / avatar 头像三选一（优先级 avatar > startContent > dot）。",
+      code: `<>
+  <Chip dot tone="brand">在线</Chip>
+  <Chip tone="brand" startContent={<Sparkles className="size-3.5" />}>New</Chip>
+  <Chip tone="brand" avatar={<Avatar fallback="安" />}>安娜</Chip>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-2">
+          <Chip dot tone="brand">在线</Chip>
+          <Chip tone="brand" startContent={<Sparkles className="size-3.5" />}>New</Chip>
+          <Chip tone="brand" avatar={<Avatar fallback="安" />}>安娜</Chip>
+        </div>
+      ),
+    },
+    {
+      title: "可移除",
+      description: "传 onClose 渲染关闭(×)按钮，点击触发回调由调用方移除。",
+      code: `<Chip tone="brand" onClose={() => remove(item)}>
+  React
+</Chip>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Chip tone="brand" onClose={() => {}}>React</Chip>
+          <Chip tone="neutral" onClose={() => {}}>Vue</Chip>
+        </div>
+      ),
+    },
+    {
+      title: "禁用",
+      description: "isDisabled 降透明度、屏蔽指针、关闭按钮不可点。",
+      code: `<>
+  <Chip isDisabled>禁用</Chip>
+  <Chip isDisabled onClose={() => {}}>禁用可关闭</Chip>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Chip isDisabled>禁用</Chip>
+          <Chip isDisabled onClose={() => {}}>禁用可关闭</Chip>
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "variant", type: "select", options: ["soft", "solid", "outline"], defaultValue: "soft" },
     { prop: "tone", type: "select", options: ["brand", "danger", "neutral"], defaultValue: "brand" },

@@ -29,6 +29,68 @@ const Hint = () => (
 );
 
 export const imageTrailShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "传入 images 列表，光标在容器内拖动即沿轨迹依次甩出图片再淡出。",
+      code: `<div className="relative h-72 overflow-hidden rounded-xl">
+  <ImageTrail images={images} />
+</div>`,
+      render: () => (
+        <Stage>
+          <ImageTrail images={IMAGES} className="border-0 bg-transparent">
+            <Hint />
+          </ImageTrail>
+        </Stage>
+      ),
+    },
+    {
+      title: "密集拖尾",
+      description: "调小 threshold 让出图更频繁，配合小 imageWidth 得密集拖尾。",
+      code: `<ImageTrail
+  images={images}
+  threshold={40}
+  imageWidth={120}
+/>`,
+      render: () => (
+        <Stage>
+          <ImageTrail
+            images={IMAGES}
+            threshold={40}
+            imageWidth={120}
+            className="border-0 bg-transparent"
+          >
+            <Hint />
+          </ImageTrail>
+        </Stage>
+      ),
+    },
+    {
+      title: "稀疏大图 · 慢淡出",
+      description: "加大 threshold 与 imageWidth 出大图，fadeDuration 拉长停留更久。",
+      code: `<ImageTrail
+  images={images}
+  threshold={140}
+  imageWidth={240}
+  fadeDuration={1.2}
+/>`,
+      render: () => (
+        <Stage>
+          <ImageTrail
+            images={IMAGES}
+            threshold={140}
+            imageWidth={240}
+            fadeDuration={1.2}
+            className="border-0 bg-transparent"
+          >
+            <Hint />
+          </ImageTrail>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "threshold", type: "number", defaultValue: 80, label: "触发阈值 px" },
     { prop: "imageWidth", type: "number", defaultValue: 190, label: "图片宽度 px" },

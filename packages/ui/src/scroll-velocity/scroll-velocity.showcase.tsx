@@ -12,6 +12,64 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const scrollVelocityShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "单行文字跑马灯，静止时匀速漂移，随页面滚动速度加速/变向。",
+      code: `<ScrollVelocity texts={["瑚琏组件库"]} velocity={80} />`,
+      render: () => (
+        <Stage>
+          <ScrollVelocity texts={["瑚琏组件库"]} velocity={80} />
+        </Stage>
+      ),
+    },
+    {
+      title: "双行交替方向",
+      description: "texts 多行时偶数行向左、奇数行向右，形成视差错位。",
+      code: `<ScrollVelocity
+  texts={["企业级 · 高质量", "原生适配 · 主题感知"]}
+  velocity={70}
+/>`,
+      render: () => (
+        <Stage>
+          <ScrollVelocity texts={["企业级 · 高质量", "原生适配 · 主题感知"]} velocity={70} />
+        </Stage>
+      ),
+    },
+    {
+      title: "高亮主色 + 快速",
+      description: "提高 velocity 加速漂移，className 透传到文本上色为主色。",
+      code: `<ScrollVelocity
+  texts={["SCROLL VELOCITY"]}
+  velocity={140}
+  className="text-primary"
+/>`,
+      render: () => (
+        <Stage>
+          <ScrollVelocity texts={["SCROLL VELOCITY"]} velocity={140} className="text-primary" />
+        </Stage>
+      ),
+    },
+    {
+      title: "弱化字色",
+      description: "用 text-muted 弱化字色、放慢速度，当作氛围背景文字。",
+      code: `<ScrollVelocity
+  texts={["持续滚动的氛围背景文字"]}
+  velocity={50}
+  className="text-muted"
+/>`,
+      render: () => (
+        <Stage>
+          <ScrollVelocity
+            texts={["持续滚动的氛围背景文字"]}
+            velocity={50}
+            className="text-muted"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "velocity", type: "number", defaultValue: 80, label: "基础速度 px/s" },
     { prop: "damping", type: "number", defaultValue: 50, label: "弹簧阻尼" },

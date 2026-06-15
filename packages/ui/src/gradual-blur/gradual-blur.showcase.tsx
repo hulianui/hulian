@@ -43,6 +43,88 @@ function Stage({
 }
 
 export const gradualBlurShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "放进 relative + overflow-hidden 的容器，沿 position 指定的边贴一层从清晰到模糊的渐进柔化。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl">
+  {/* …下层内容… */}
+  <GradualBlur position="bottom" height="7rem" />
+</div>`,
+      render: () => (
+        <Stage position="bottom">
+          <GradualBlur position="bottom" height="7rem" />
+        </Stage>
+      ),
+    },
+    {
+      title: "强模糊 · 指数递增",
+      description: "strength 提升整体糊度，divCount 加层数过渡更细腻，exponential 让近边缘急剧变糊。",
+      code: `<GradualBlur
+  position="top"
+  height="8rem"
+  strength={4}
+  divCount={8}
+  exponential
+/>`,
+      render: () => (
+        <Stage position="top">
+          <GradualBlur
+            position="top"
+            height="8rem"
+            strength={4}
+            divCount={8}
+            exponential
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "竖条贴边 · 曲线",
+      description: "position 设 left/right 走竖条，width 控厚度，curve 切换爬升曲线。",
+      code: `<GradualBlur
+  position="right"
+  width="9rem"
+  strength={2.5}
+  divCount={6}
+  curve="bezier"
+/>`,
+      render: () => (
+        <Stage position="right">
+          <GradualBlur
+            position="right"
+            width="9rem"
+            strength={2.5}
+            divCount={6}
+            curve="bezier"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "悬停增强",
+      description:
+        "传 hoverIntensity 后容器接管指针事件，鼠标移上去模糊量按倍数放大。",
+      code: `<GradualBlur
+  position="bottom"
+  height="7rem"
+  strength={1.5}
+  hoverIntensity={2}
+/>`,
+      render: () => (
+        <Stage position="bottom">
+          <GradualBlur
+            position="bottom"
+            height="7rem"
+            strength={1.5}
+            hoverIntensity={2}
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "position",

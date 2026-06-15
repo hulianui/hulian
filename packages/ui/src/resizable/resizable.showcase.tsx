@@ -98,6 +98,80 @@ function LogPanel() {
 }
 
 export const resizableShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "横向两栏",
+      description: "direction=horizontal，拖动竖直手柄此消彼长，min 约束最小宽度。",
+      code: `<ResizablePanelGroup direction="horizontal" defaultSizes={[35, 65]}>
+  <ResizablePanel min={20}><FileTree /></ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel><Editor /></ResizablePanel>
+</ResizablePanelGroup>`,
+      render: () => (
+        <div className="h-48 w-80 max-w-full overflow-hidden rounded-[var(--radius)] border border-border">
+          <ResizablePanelGroup direction="horizontal" defaultSizes={[35, 65]}>
+            <ResizablePanel min={20}>
+              <FileTree />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel>
+              <Editor />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+      ),
+    },
+    {
+      title: "纵向上下分栏",
+      description: "direction=vertical，手柄变水平，上下面板拖动调高。",
+      code: `<ResizablePanelGroup direction="vertical" defaultSizes={[55, 45]}>
+  <ResizablePanel min={20}><ChatLog /></ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel min={20}><LogPanel /></ResizablePanel>
+</ResizablePanelGroup>`,
+      render: () => (
+        <div className="h-64 w-[34rem] max-w-full overflow-hidden rounded-[var(--radius)] border border-border">
+          <ResizablePanelGroup direction="vertical" defaultSizes={[55, 45]}>
+            <ResizablePanel min={20}>
+              <ChatLog />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel min={20}>
+              <LogPanel />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+      ),
+    },
+    {
+      title: "三栏编辑器布局",
+      description: "多面板 + 多手柄；defaultSizes 给初始比例，键盘 ←/→ 也可微调。",
+      code: `<ResizablePanelGroup direction="horizontal" defaultSizes={[24, 46, 30]}>
+  <ResizablePanel min={15}><FileTree /></ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel min={25}><Editor /></ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel min={18}><Preview /></ResizablePanel>
+</ResizablePanelGroup>`,
+      render: () => (
+        <div className="h-64 w-[34rem] max-w-full overflow-hidden rounded-[var(--radius)] border border-border">
+          <ResizablePanelGroup direction="horizontal" defaultSizes={[24, 46, 30]}>
+            <ResizablePanel min={15}>
+              <FileTree />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel min={25}>
+              <Editor />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel min={18}>
+              <Preview />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "direction",

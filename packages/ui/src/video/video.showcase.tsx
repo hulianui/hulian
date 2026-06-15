@@ -10,6 +10,56 @@ const POSTER = "/demo/sample-poster.jpg";
 const W = "w-full max-w-2xl";
 
 export const videoShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传入 MP4 文件 URL，自带瑚琏皮肤的播放/进度/音量/倍速/全屏控件。",
+      code: `<Video src="/demo/sample-video.mp4" title="演示视频" className="w-full max-w-2xl" />`,
+      render: () => <Video src={MP4} title="演示视频" className={W} />,
+    },
+    {
+      title: "带海报",
+      description: "poster 在首帧加载前展示封面图。",
+      code: `<Video src="/demo/sample-video.mp4" poster="/demo/sample-poster.jpg" title="带海报" className="w-full max-w-2xl" />`,
+      render: () => <Video src={MP4} poster={POSTER} title="带海报" className={W} />,
+    },
+    {
+      title: "HLS 流",
+      description: "src 传 .m3u8 即播放 HLS 直播/点播流。",
+      code: `<Video src="/demo/hls/stream.m3u8" title="HLS 流" className="w-full max-w-2xl" />`,
+      render: () => <Video src={HLS} title="HLS 流" className={W} />,
+    },
+    {
+      title: "章节标记",
+      description: "chapters 在进度条上渲染分段 tick，hover 显示章节标题。",
+      code: `<Video
+  src="/demo/sample-video.mp4"
+  poster="/demo/sample-poster.jpg"
+  title="带章节标记"
+  className="w-full max-w-2xl"
+  chapters={[
+    { time: 0, title: "开场介绍" },
+    { time: 3, title: "核心概念" },
+    { time: 6, title: "实战演示" },
+    { time: 9, title: "总结" },
+  ]}
+/>`,
+      render: () => (
+        <Video
+          src={MP4}
+          poster={POSTER}
+          title="带章节标记"
+          className={W}
+          chapters={[
+            { time: 0, title: "开场介绍" },
+            { time: 3, title: "核心概念" },
+            { time: 6, title: "实战演示" },
+            { time: 9, title: "总结" },
+          ]}
+        />
+      ),
+    },
+  ],
   controls: [
     { prop: "src", type: "text", defaultValue: MP4, label: "片源 URL" },
     { prop: "aspectRatio", type: "select", options: ["16/9", "4/3", "1/1", "21/9"], defaultValue: "16/9", label: "宽高比" },

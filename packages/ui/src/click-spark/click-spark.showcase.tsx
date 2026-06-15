@@ -39,6 +39,81 @@ const Hint = ({ light = false }: { light?: boolean }) => (
 );
 
 export const clickSparkShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "包裹任意内容，点击其内任意位置都会在点击点放射一圈前景色火花。",
+      code: `<div className="relative h-56 cursor-pointer overflow-hidden rounded-xl border border-border">
+  <ClickSpark className="absolute inset-0">
+    {/* 你的内容 */}
+  </ClickSpark>
+</div>`,
+      render: () => (
+        <Stage>
+          <ClickSpark className="absolute inset-0">
+            <Hint />
+          </ClickSpark>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义颜色与数量",
+      description: "sparkColor 走 token，sparkCount / sparkRadius 控制火花密度与爆发范围。",
+      code: `<ClickSpark
+  sparkColor="var(--color-chart-3)"
+  sparkCount={12}
+  sparkRadius={22}
+  className="absolute inset-0"
+>
+  {/* 你的内容 */}
+</ClickSpark>`,
+      render: () => (
+        <Stage dark>
+          <ClickSpark
+            sparkColor="var(--color-chart-3)"
+            sparkCount={12}
+            sparkRadius={22}
+            className="absolute inset-0"
+          >
+            <Hint light />
+          </ClickSpark>
+        </Stage>
+      ),
+    },
+    {
+      title: "大爆发",
+      description: "加长线段、放大半径并放慢缓动，得到更张扬的庆祝式迸发。",
+      code: `<ClickSpark
+  sparkColor="var(--color-chart-1)"
+  sparkCount={16}
+  sparkSize={18}
+  sparkRadius={36}
+  duration={700}
+  easing="ease-in-out"
+  extraScale={1.2}
+  className="absolute inset-0"
+>
+  {/* 你的内容 */}
+</ClickSpark>`,
+      render: () => (
+        <Stage dark>
+          <ClickSpark
+            sparkColor="var(--color-chart-1)"
+            sparkCount={16}
+            sparkSize={18}
+            sparkRadius={36}
+            duration={700}
+            easing="ease-in-out"
+            extraScale={1.2}
+            className="absolute inset-0"
+          >
+            <Hint light />
+          </ClickSpark>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "sparkCount", type: "number", defaultValue: 8, label: "火花数量" },
     { prop: "sparkSize", type: "number", defaultValue: 10, label: "线段长度 px" },

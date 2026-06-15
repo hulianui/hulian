@@ -28,6 +28,94 @@ function Stage({
 }
 
 export const silkShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "放进 relative 容器，Silk 自带 absolute inset-0 z-0；内容用 relative z-10 层叠在丝绸之上。默认吃 chart-1 token。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <Silk />
+  <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3">
+    <p className="text-2xl font-bold tracking-tight text-white/90">Silk</p>
+    <p className="text-sm text-white/50">丝绸流动 WebGL 背景</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Silk />
+          <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3">
+            <p className="text-2xl font-bold tracking-tight text-white/90">Silk</p>
+            <p className="text-sm text-white/50">丝绸流动 WebGL 背景</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "速度与缩放",
+      description: "speed 控制流动快慢，scale 控制纹理密度，低速大 scale 更细腻。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <Silk speed={2} scale={1.5} />
+</div>`,
+      render: () => (
+        <Stage>
+          <Silk speed={2} scale={1.5} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/70">speed=2 · scale=1.5</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义颜色",
+      description: "color 接受任意 CSS 颜色（hex / oklch / rgb），定制丝绸主色调。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <Silk color="oklch(0.78 0.18 55)" speed={4} scale={1.2} />
+</div>`,
+      render: () => (
+        <Stage>
+          <Silk color="oklch(0.78 0.18 55)" speed={4} scale={1.2} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-amber-100/80">暖金丝绸</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "颗粒强度",
+      description: "noiseIntensity 控制颗粒质感，0 为纯净丝绸，调高获得磨砂胶片感。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <Silk noiseIntensity={0} speed={5} />
+</div>`,
+      render: () => (
+        <Stage>
+          <Silk noiseIntensity={0} speed={5} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/70">纯净丝绸（无颗粒）</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "纹理旋转",
+      description: "rotation（弧度）旋转丝绸纹理方向，Math.PI / 4 即 45° 斜向。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.12 0.02 270)" }}>
+  <Silk rotation={Math.PI / 4} speed={4} />
+</div>`,
+      render: () => (
+        <Stage>
+          <Silk rotation={Math.PI / 4} speed={4} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/70">rotation = π/4</p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
   controls: [
     { prop: "speed",          type: "number",  defaultValue: 5,    label: "速度" },
     { prop: "scale",          type: "number",  defaultValue: 1,    label: "缩放" },

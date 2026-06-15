@@ -84,6 +84,73 @@ function FlowDemo({ controls = true, animated = false }: { controls?: boolean; a
 }
 
 export const flowShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础节点画布",
+      description:
+        "受控 nodes/edges；getHandles 声明每个节点的连接桩（左 target 入 / 右 source 出）。拖节点改位置、从输出桩拖到输入桩连线、滚轮平移、Ctrl+滚轮缩放。",
+      code: `const [nodes, setNodes] = useState(initialNodes);
+const [edges, setEdges] = useState(initialEdges);
+
+<Flow
+  nodes={nodes}
+  edges={edges}
+  getHandles={(n) => [
+    ...(n.data.io.includes("in") ? [{ id: "in", type: "target" as const }] : []),
+    ...(n.data.io.includes("out") ? [{ id: "out", type: "source" as const }] : []),
+  ]}
+  onNodesChange={setNodes}
+  onConnect={(c) => setEdges((e) => [...e, { id: uid(), ...c }])}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>`,
+      render: () => <FlowDemo />,
+    },
+    {
+      title: "选中与删除",
+      description:
+        "selectedId / onSelectNode 受控单选：点节点选中，点空白取消。选中后点 × 或按 Delete 删除节点（连带删除其连线）。",
+      code: `<Flow
+  nodes={nodes}
+  edges={edges}
+  getHandles={getHandles}
+  selectedId={selected}
+  onSelectNode={setSelected}
+  onNodeDelete={(id) => {
+    setNodes((p) => p.filter((n) => n.id !== id));
+    setEdges((p) => p.filter((e) => e.source !== id && e.target !== id));
+    setSelected(null);
+  }}
+  onEdgesDelete={(ids) => setEdges((p) => p.filter((e) => !ids.includes(e.id)))}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>`,
+      render: () => <FlowDemo />,
+    },
+    {
+      title: "运行中（连线流光）",
+      description:
+        "isEdgeAnimated 返回 true 的连线走流光动画，常用于标记正在执行的链路。",
+      code: `<Flow
+  nodes={nodes}
+  edges={edges}
+  getHandles={getHandles}
+  isEdgeAnimated={() => true}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>`,
+      render: () => <FlowDemo animated />,
+    },
+    {
+      title: "隐藏缩放控制条",
+      description: "controls={false} 关闭右下角缩放 / 适配工具条，适合纯展示场景。",
+      code: `<Flow
+  nodes={nodes}
+  edges={edges}
+  getHandles={getHandles}
+  controls={false}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>`,
+      render: () => <FlowDemo controls={false} />,
+    },
+  ],
   controls: [
     { prop: "controls", type: "boolean", defaultValue: true, label: "缩放控制条" },
     { prop: "animated", type: "boolean", defaultValue: false, label: "连线流光" },

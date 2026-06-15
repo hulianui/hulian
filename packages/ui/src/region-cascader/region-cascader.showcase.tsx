@@ -39,6 +39,51 @@ function Demo({
 }
 
 export const regionCascaderShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "三级（省/市/区县）",
+      description: "内置全量行政区划，默认三级联动。onChange 同时给 code 路径与名称路径（表单常存名称）。",
+      code: `<RegionCascader
+  value={codes}
+  onChange={(codes, names) => save(codes, names)}
+  showSearch
+/>`,
+      render: () => (
+        <div className="w-80">
+          <RegionCascader showSearch onChange={() => {}} />
+        </div>
+      ),
+    },
+    {
+      title: "默认值回显",
+      description: "defaultValue 传 code 路径即可回显（非受控）。",
+      code: `<RegionCascader defaultValue={["11", "1101", "110105"]} />`,
+      render: () => (
+        <div className="w-80">
+          <RegionCascader defaultValue={["11", "1101", "110105"]} onChange={() => {}} />
+        </div>
+      ),
+    },
+    {
+      title: "两级（省/市）",
+      description: "level=2 只联动到市一级。",
+      code: `<RegionCascader level={2} defaultValue={["44", "4401"]} />`,
+      render: () => (
+        <div className="w-80">
+          <RegionCascader level={2} defaultValue={["44", "4401"]} onChange={() => {}} />
+        </div>
+      ),
+    },
+    {
+      title: "禁用态",
+      code: `<RegionCascader disabled defaultValue={["31", "3101", "310115"]} />`,
+      render: () => (
+        <div className="w-80">
+          <RegionCascader disabled defaultValue={["31", "3101", "310115"]} onChange={() => {}} />
+        </div>
+      ),
+    },
+  ],
   controls: [
     { prop: "showSearch", type: "boolean", defaultValue: true, label: "浮层搜索" },
     { prop: "disabled", type: "boolean", defaultValue: false, label: "禁用" },

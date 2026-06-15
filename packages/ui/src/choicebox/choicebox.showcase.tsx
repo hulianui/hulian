@@ -34,6 +34,64 @@ function Payments() {
 }
 
 export const choiceboxShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础单选",
+      description: "卡片化单选，非受控用 defaultValue；每项可带图标/标题/描述/附加内容。",
+      code: `<ChoiceboxGroup defaultValue="pro" aria-label="订阅套餐" className="w-80">
+  <Choicebox value="free" icon={<Zap />} title="基础版" description="个人项目 · 永久免费">
+    <div className="mt-1 font-semibold">¥0</div>
+  </Choicebox>
+  <Choicebox value="pro" icon={<Rocket />} title="专业版" description="小团队 · 含全部组件">
+    <div className="mt-1 font-semibold">¥39 / 月</div>
+  </Choicebox>
+</ChoiceboxGroup>`,
+      render: () => (
+        <ChoiceboxGroup defaultValue="pro" aria-label="订阅套餐" className="w-80">
+          <Choicebox value="free" icon={<Zap />} title="基础版" description="个人项目 · 永久免费">
+            <div className="mt-1 font-semibold">¥0</div>
+          </Choicebox>
+          <Choicebox value="pro" icon={<Rocket />} title="专业版" description="小团队 · 含全部组件">
+            <div className="mt-1 font-semibold">¥39 / 月</div>
+          </Choicebox>
+        </ChoiceboxGroup>
+      ),
+    },
+    {
+      title: "多选 + 禁用项",
+      description: "multiple 切换为多选语义；单项 disabled 锁定该卡片。",
+      code: `<ChoiceboxGroup multiple defaultValue={["card"]} columns={1} aria-label="支付方式" className="w-72">
+  <Choicebox value="card" icon={<CreditCard />} title="银行卡" description="储蓄卡 / 信用卡" />
+  <Choicebox value="wallet" icon={<Wallet />} title="电子钱包" description="微信 / 支付宝" />
+  <Choicebox value="cash" icon={<Banknote />} title="货到付款" disabled description="该地区暂不支持" />
+</ChoiceboxGroup>`,
+      render: () => (
+        <ChoiceboxGroup multiple defaultValue={["card"]} columns={1} aria-label="支付方式" className="w-72">
+          <Choicebox value="card" icon={<CreditCard />} title="银行卡" description="储蓄卡 / 信用卡" />
+          <Choicebox value="wallet" icon={<Wallet />} title="电子钱包" description="微信 / 支付宝" />
+          <Choicebox value="cash" icon={<Banknote />} title="货到付款" disabled description="该地区暂不支持" />
+        </ChoiceboxGroup>
+      ),
+    },
+    {
+      title: "两列网格",
+      description: "columns 控制网格列数，适合无图标的紧凑选项。",
+      code: `<ChoiceboxGroup defaultValue="b" columns={2} aria-label="主题" className="w-[28rem]">
+  <Choicebox value="a" title="浅色" description="明亮界面" />
+  <Choicebox value="b" title="深色" description="暗黑界面" />
+  <Choicebox value="c" title="跟随系统" description="自动切换" />
+  <Choicebox value="d" title="高对比" description="无障碍" />
+</ChoiceboxGroup>`,
+      render: () => (
+        <ChoiceboxGroup defaultValue="b" columns={2} aria-label="主题" className="w-[28rem]">
+          <Choicebox value="a" title="浅色" description="明亮界面" />
+          <Choicebox value="b" title="深色" description="暗黑界面" />
+          <Choicebox value="c" title="跟随系统" description="自动切换" />
+          <Choicebox value="d" title="高对比" description="无障碍" />
+        </ChoiceboxGroup>
+      ),
+    },
+  ],
   controls: [
     { prop: "multiple", type: "boolean", defaultValue: false },
     { prop: "columns", type: "number", defaultValue: 1 },

@@ -21,6 +21,78 @@ function Stage({
 }
 
 export const lightningShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认蓝紫色相 230，组件自带 absolute inset-0 z-0，内容叠 z-10。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.10 0.02 265)" }}>
+  <Lightning />
+  <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2">
+    <p className="text-2xl font-bold tracking-tight text-white/90">Lightning</p>
+    <p className="text-sm text-white/50">fbm 噪声电弧背景</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Lightning />
+          <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2">
+            <p className="text-2xl font-bold tracking-tight text-white/90">Lightning</p>
+            <p className="text-sm text-white/50">fbm 噪声电弧背景</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "暖橙色相（高强度）",
+      description: "hue=30 切暖橙，intensity / speed 调高更亮更躁。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.10 0.02 265)" }}>
+  <Lightning hue={30} intensity={1.4} speed={1.3} />
+</div>`,
+      render: () => (
+        <Stage>
+          <Lightning hue={30} intensity={1.4} speed={1.3} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-amber-100/80">hue = 30</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "吃 chart token（明暗自适应）",
+      description: "传 color 覆盖 hue 路径，shader 直接吃 token、跟随主题切换。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.10 0.02 265)" }}>
+  <Lightning color="var(--color-chart-1)" intensity={1.2} />
+</div>`,
+      render: () => (
+        <Stage>
+          <Lightning color="var(--color-chart-1)" intensity={1.2} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-white/70">token 取色 · 明暗自适应</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "细密慢电",
+      description: "size 调大分叉更细密，speed 调慢翻涌更舒缓。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.10 0.02 265)" }}>
+  <Lightning size={1.6} speed={0.6} hue={280} />
+</div>`,
+      render: () => (
+        <Stage>
+          <Lightning size={1.6} speed={0.6} hue={280} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-violet-200/80">size=1.6 · speed=0.6</p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "hue",       type: "number", defaultValue: 230, label: "色相（0–360，留色为空时生效）" },
     { prop: "speed",     type: "number", defaultValue: 1,   label: "速度" },

@@ -78,6 +78,44 @@ function Demo() {
 }
 
 export const editableTableShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "行内编辑 · 增删行",
+      description:
+        "editable 列点击进入编辑态，editor 自定义单元格编辑器（下拉/数字）；addable + newRow 增行、deletable 删行；onChange 回传完整新数据。",
+      code: `const [data, setData] = useState(rows);
+const columns: EditableColumn<Row>[] = [
+  { key: "name", title: "姓名", editable: true, width: 160 },
+  {
+    key: "role", title: "角色", editable: true,
+    render: (v) => <Tag tone="brand">{ROLE_LABEL[v]}</Tag>,
+    editor: (value, onChange) => (
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        {/* options… */}
+      </select>
+    ),
+  },
+  {
+    key: "salary", title: "月薪", editable: true, align: "right",
+    render: (v) => \`¥\${Number(v).toLocaleString()}\`,
+    editor: (value, onChange) => (
+      <input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    ),
+  },
+];
+
+<EditableTable
+  columns={columns}
+  data={data}
+  rowKey={(r) => String(r.id)}
+  onChange={setData}
+  deletable
+  addable
+  newRow={() => ({ id: nextId(), name: "", role: "viewer", salary: 0 })}
+/>`,
+      render: () => <Demo />,
+    },
+  ],
   controls: [],
   states: [{ name: "行内编辑 · 自定义编辑器 · 增删行", render: () => <Demo /> }],
   renderWithProps: () => <Demo />,

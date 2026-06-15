@@ -62,6 +62,81 @@ function Cube({ size = 120 }: { size?: number }) {
 }
 
 export const modelViewerShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "把任意 children 当「模型」放进舞台——拖拽旋转、鼠标视差、悬停倾斜默认全开。",
+      code: `<ModelViewer height={320}>
+  {/* 任意节点都可作为「模型」 */}
+  <YourModel />
+</ModelViewer>`,
+      render: () => (
+        <Stage>
+          <ModelViewer height={320}>
+            <Cube />
+          </ModelViewer>
+        </Stage>
+      ),
+    },
+    {
+      title: "自动旋转",
+      description: "autoRotate 让模型绕 Y 轴匀速自转，autoRotateSpeed 控制角速度。",
+      code: `<ModelViewer height={320} autoRotate autoRotateSpeed={28}>
+  <YourModel />
+</ModelViewer>`,
+      render: () => (
+        <Stage>
+          <ModelViewer height={320} autoRotate autoRotateSpeed={28}>
+            <Cube />
+          </ModelViewer>
+        </Stage>
+      ),
+    },
+    {
+      title: "极简交互",
+      description: "关掉视差/悬停/接触阴影/重置按钮，只保留纯拖拽旋转。",
+      code: `<ModelViewer
+  height={300}
+  enableMouseParallax={false}
+  enableHoverRotation={false}
+  showContactShadow={false}
+  showResetButton={false}
+>
+  <div
+    className="grid size-32 place-items-center rounded-2xl text-4xl font-bold text-white"
+    style={{
+      background: "linear-gradient(135deg, var(--color-chart-2), var(--color-chart-5))",
+      transform: "translateZ(40px)",
+    }}
+  >
+    UI
+  </div>
+</ModelViewer>`,
+      render: () => (
+        <Stage>
+          <ModelViewer
+            height={300}
+            enableMouseParallax={false}
+            enableHoverRotation={false}
+            showContactShadow={false}
+            showResetButton={false}
+          >
+            <div
+              className="grid size-32 place-items-center rounded-2xl text-4xl font-bold text-white"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--color-chart-2), var(--color-chart-5))",
+                transform: "translateZ(40px)",
+              }}
+            >
+              UI
+            </div>
+          </ModelViewer>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "autoRotate", type: "boolean", defaultValue: false, label: "自动旋转" },
     {

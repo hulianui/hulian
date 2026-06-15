@@ -15,6 +15,122 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const tiltedCardShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "指针在卡面移动即做 3D 倾斜，captionText 渲染跟随指针的浮动提示气泡。",
+      code: `<TiltedCard
+  cardWidth="240px"
+  cardHeight="240px"
+  containerWidth="240px"
+  containerHeight="240px"
+  captionText="悬停我"
+>
+  <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
+    <p className="text-lg font-semibold text-foreground">瑚琏组件库</p>
+    <p className="text-xs text-muted">移动鼠标感受 3D 倾斜</p>
+  </div>
+</TiltedCard>`,
+      render: () => (
+        <Stage>
+          <TiltedCard
+            cardWidth="240px"
+            cardHeight="240px"
+            containerWidth="240px"
+            containerHeight="240px"
+            captionText="悬停我"
+          >
+            <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
+              <p className="text-lg font-semibold text-foreground">瑚琏组件库</p>
+              <p className="text-xs text-muted">移动鼠标感受 3D 倾斜</p>
+            </div>
+          </TiltedCard>
+        </Stage>
+      ),
+    },
+    {
+      title: "叠加内容",
+      description: "displayOverlayContent + overlayContent 把角标/标题随倾斜一同 3D 抬升。",
+      code: `<TiltedCard
+  cardWidth="240px"
+  cardHeight="240px"
+  containerWidth="240px"
+  containerHeight="240px"
+  showTooltip={false}
+  displayOverlayContent
+  overlayContent={
+    <span className="absolute left-3 top-3 rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground">
+      NEW
+    </span>
+  }
+>
+  <div
+    className="h-full w-full rounded-2xl"
+    style={{ background: "linear-gradient(135deg, var(--color-chart-1), var(--color-chart-3))" }}
+  />
+</TiltedCard>`,
+      render: () => (
+        <Stage>
+          <TiltedCard
+            cardWidth="240px"
+            cardHeight="240px"
+            containerWidth="240px"
+            containerHeight="240px"
+            showTooltip={false}
+            displayOverlayContent
+            overlayContent={
+              <span className="absolute left-3 top-3 rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground">
+                NEW
+              </span>
+            }
+          >
+            <div
+              className="h-full w-full rounded-2xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--color-chart-1), var(--color-chart-3))",
+              }}
+            />
+          </TiltedCard>
+        </Stage>
+      ),
+    },
+    {
+      title: "调整倾斜幅度",
+      description: "rotateAmplitude 控最大倾斜角，scaleOnHover 控悬停放大，越大越立体。",
+      code: `<TiltedCard
+  cardWidth="240px"
+  cardHeight="240px"
+  containerWidth="240px"
+  containerHeight="240px"
+  rotateAmplitude={22}
+  scaleOnHover={1.15}
+  captionText="更立体"
+>
+  <div className="flex h-full items-center justify-center text-sm text-foreground">
+    rotateAmplitude = 22
+  </div>
+</TiltedCard>`,
+      render: () => (
+        <Stage>
+          <TiltedCard
+            cardWidth="240px"
+            cardHeight="240px"
+            containerWidth="240px"
+            containerHeight="240px"
+            rotateAmplitude={22}
+            scaleOnHover={1.15}
+            captionText="更立体"
+          >
+            <div className="flex h-full items-center justify-center text-sm text-foreground">
+              rotateAmplitude = 22
+            </div>
+          </TiltedCard>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "rotateAmplitude", type: "number", defaultValue: 14, label: "倾斜角度" },
     { prop: "scaleOnHover", type: "number", defaultValue: 1.1, label: "悬停放大" },

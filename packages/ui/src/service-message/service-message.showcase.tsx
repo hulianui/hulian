@@ -13,6 +13,122 @@ function TimeDivider({ children }: { children: ReactNode }) {
 }
 
 export const serviceMessageShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "头像 + 来源 + 键值字段 + 底部入口，复刻微信服务通知卡片。",
+      code: `<ServiceMessage
+  avatar={{ fallback: "瑞", className: "bg-primary/10 text-primary" }}
+  source="luckincoffee 瑞幸咖啡"
+  onMore={() => openMore()}
+  title="商品领取提醒"
+  fields={[
+    { label: "取餐号", value: "361" },
+    { label: "商品数量", value: "1" },
+    { label: "商品详情", value: "橙C冰茶" },
+  ]}
+  action={{ icon: <MiniProgramIcon /> }}
+  onAction={() => openMiniProgram()}
+/>`,
+      render: () => (
+        <ServiceMessage
+          avatar={{ fallback: "瑞", className: "bg-primary/10 text-primary" }}
+          source="luckincoffee 瑞幸咖啡"
+          onMore={() => {}}
+          title="商品领取提醒"
+          fields={[
+            { label: "取餐号", value: "361" },
+            { label: "商品数量", value: "1" },
+            { label: "商品详情", value: "橙C冰茶" },
+          ]}
+          action={{ icon: miniProgram }}
+          onAction={() => {}}
+        />
+      ),
+    },
+    {
+      title: "自定义正文",
+      description: "传 children 覆盖 fields，承载非键值结构的内容。",
+      code: `<ServiceMessage
+  avatar={{ fallback: "顺", className: "bg-warning/15 text-warning" }}
+  source="顺丰速运"
+  title="您的包裹已签收"
+  footer="查看物流详情"
+  action={{ label: "详情", icon: <MiniProgramIcon /> }}
+  onAction={() => openTracking()}
+>
+  <p className="text-sm leading-relaxed text-foreground">
+    您的快件已由 <span className="font-medium">本人</span> 签收，感谢使用顺丰速运。
+  </p>
+</ServiceMessage>`,
+      render: () => (
+        <ServiceMessage
+          avatar={{ fallback: "顺", className: "bg-warning/15 text-warning" }}
+          source="顺丰速运"
+          onMore={() => {}}
+          title="您的包裹已签收"
+          footer="查看物流详情"
+          action={{ label: "详情", icon: miniProgram }}
+          onAction={() => {}}
+        >
+          <p className="text-sm leading-relaxed text-foreground">
+            您的快件已由 <span className="font-medium">本人</span> 签收，感谢使用顺丰速运。期待再次为您服务。
+          </p>
+          <p className="mt-2 text-xs text-muted">运单号 SF1234567890123 · 今天 14:32</p>
+        </ServiceMessage>
+      ),
+    },
+    {
+      title: "无更多按钮",
+      description: "不传 onMore 即隐藏头部 ⋯ 按钮；action.label 可自定义动作文字。",
+      code: `<ServiceMessage
+  avatar={{ fallback: "OA", className: "bg-success/15 text-success" }}
+  source="企业 OA · 审批助手"
+  title="报销单已通过"
+  fields={[
+    { label: "单据编号", value: "BX-2026-000812" },
+    { label: "报销金额", value: "¥ 1,280.00" },
+    { label: "审批结果", value: "已通过" },
+  ]}
+  footer="进入审批中心"
+  action={{ label: "查看", icon: <MiniProgramIcon /> }}
+  onAction={() => openApproval()}
+/>`,
+      render: () => (
+        <ServiceMessage
+          avatar={{ fallback: "OA", className: "bg-success/15 text-success" }}
+          source="企业 OA · 审批助手"
+          title="报销单已通过"
+          fields={[
+            { label: "单据编号", value: "BX-2026-000812" },
+            { label: "报销金额", value: "¥ 1,280.00" },
+            { label: "审批结果", value: "已通过" },
+          ]}
+          footer="进入审批中心"
+          action={{ label: "查看", icon: miniProgram }}
+          onAction={() => {}}
+        />
+      ),
+    },
+    {
+      title: "极简",
+      description: "仅标题 + 底部入口（无头像 / 字段）。",
+      code: `<ServiceMessage
+  source="系统通知"
+  title="您有 1 条新的系统消息待查看"
+  footer="查看详情"
+  onAction={() => openDetail()}
+/>`,
+      render: () => (
+        <ServiceMessage
+          source="系统通知"
+          title="您有 1 条新的系统消息待查看"
+          footer="查看详情"
+          onAction={() => {}}
+        />
+      ),
+    },
+  ],
   controls: [
     { prop: "source", type: "text", defaultValue: "luckincoffee 瑞幸咖啡", label: "来源" },
     { prop: "title", type: "text", defaultValue: "商品领取提醒", label: "标题" },

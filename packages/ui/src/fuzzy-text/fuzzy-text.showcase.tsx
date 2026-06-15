@@ -21,6 +21,75 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const fuzzyTextShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "文字逐行随机错位形成扫描噪点，悬停时抖动加剧。默认色吃 var(--color-foreground) 随主题。",
+      code: `<FuzzyText fontSize="clamp(2rem, 8vw, 5rem)">瑚琏</FuzzyText>`,
+      render: () => (
+        <Stage>
+          <FuzzyText fontSize="clamp(2rem, 8vw, 5rem)">瑚琏</FuzzyText>
+        </Stage>
+      ),
+    },
+    {
+      title: "404 信号噪点",
+      description: "调大 fuzzRange 与 baseIntensity，营造信号失真感，适合错误页大标题。",
+      code: `<FuzzyText
+  fontSize="clamp(3rem, 14vw, 8rem)"
+  fuzzRange={42}
+  baseIntensity={0.3}
+  color="var(--color-chart-1)"
+>
+  404
+</FuzzyText>`,
+      render: () => (
+        <Stage>
+          <FuzzyText
+            fontSize="clamp(3rem, 14vw, 8rem)"
+            fuzzRange={42}
+            baseIntensity={0.3}
+            color="var(--color-chart-1)"
+          >
+            404
+          </FuzzyText>
+        </Stage>
+      ),
+    },
+    {
+      title: "纵向错位",
+      description: "direction=\"vertical\" 改为逐列上下错位。",
+      code: `<FuzzyText direction="vertical" color="var(--color-chart-2)">GLITCH</FuzzyText>`,
+      render: () => (
+        <Stage>
+          <FuzzyText
+            fontSize="clamp(2rem, 8vw, 4.5rem)"
+            direction="vertical"
+            color="var(--color-chart-2)"
+          >
+            GLITCH
+          </FuzzyText>
+        </Stage>
+      ),
+    },
+    {
+      title: "双向叠加",
+      description: "direction=\"both\" 横纵错位叠加，噪点最强；hoverIntensity 控制悬停增益。",
+      code: `<FuzzyText direction="both" hoverIntensity={0.8} color="var(--color-chart-4)">NOISE</FuzzyText>`,
+      render: () => (
+        <Stage>
+          <FuzzyText
+            fontSize="clamp(2rem, 8vw, 4.5rem)"
+            direction="both"
+            hoverIntensity={0.8}
+            color="var(--color-chart-4)"
+          >
+            NOISE
+          </FuzzyText>
+        </Stage>
+      ),
+    },
+  ],
   controls: [
     { prop: "baseIntensity", type: "number", defaultValue: 0.18, label: "静息强度 0–1" },
     { prop: "hoverIntensity", type: "number", defaultValue: 0.5, label: "悬停强度 0–1" },

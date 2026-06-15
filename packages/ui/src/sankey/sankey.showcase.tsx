@@ -52,6 +52,91 @@ function Frame({ children }: { children: ReactNode }) {
 }
 
 export const sankeyShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "nodes/links 受控；不给 layer 时按 links 拓扑自动分层（source 层 < target 层），流宽按 value 占比。per-node tone 吃 token 变量。",
+      code: `<Sankey
+  nodes={[
+    { id: "text", label: "文本生成", tone: "var(--color-chart-1)" },
+    { id: "code", label: "代码任务", tone: "var(--color-chart-2)" },
+    { id: "router", label: "智能路由器", tone: "var(--color-primary)" },
+    { id: "haiku", label: "Haiku 池", tone: "var(--color-chart-4)" },
+    { id: "sonnet", label: "Sonnet 池", tone: "var(--color-chart-5)" },
+  ]}
+  links={[
+    { source: "text", target: "router", value: 42 },
+    { source: "code", target: "router", value: 28 },
+    { source: "router", target: "haiku", value: 38 },
+    { source: "router", target: "sonnet", value: 30 },
+  ]}
+  height={300}
+/>`,
+      render: () => (
+        <Frame>
+          <Sankey nodes={dispatchNodes} links={dispatchLinks} height={300} />
+        </Frame>
+      ),
+    },
+    {
+      title: "逐项 tooltip",
+      description:
+        "renderTooltip 区分 node / link 两类悬停目标，跟随指针展示明细。",
+      code: `<Sankey
+  nodes={nodes}
+  links={links}
+  height={300}
+  renderTooltip={(item) =>
+    item.type === "node" ? (
+      <span>{item.node.label}</span>
+    ) : (
+      <span>{item.link.source} → {item.link.target}：{item.link.value}</span>
+    )
+  }
+/>`,
+      render: () => (
+        <Frame>
+          <Sankey
+            nodes={dispatchNodes}
+            links={dispatchLinks}
+            height={300}
+            renderTooltip={(item) =>
+              item.type === "node" ? (
+                <span>{item.node.label}</span>
+              ) : (
+                <span>
+                  {item.link.source} → {item.link.target}：{item.link.value}
+                </span>
+              )
+            }
+          />
+        </Frame>
+      ),
+    },
+    {
+      title: "加粗节点条 + 调流带透明度",
+      description: "nodeWidth 放大节点矩形宽，linkOpacity 调整流带描边透明度。",
+      code: `<Sankey
+  nodes={nodes}
+  links={links}
+  height={300}
+  nodeWidth={24}
+  linkOpacity={0.5}
+/>`,
+      render: () => (
+        <Frame>
+          <Sankey
+            nodes={budgetNodes}
+            links={budgetLinks}
+            height={300}
+            nodeWidth={24}
+            linkOpacity={0.5}
+          />
+        </Frame>
+      ),
+    },
+  ],
   controls: [
     { prop: "nodeWidth", type: "number", defaultValue: 16, label: "节点宽" },
     { prop: "linkOpacity", type: "number", defaultValue: 0.35, label: "流带透明度" },

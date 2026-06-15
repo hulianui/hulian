@@ -15,6 +15,79 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const gradientBlindsShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "默认吃 chart token 双色，聚光灯跟随鼠标。放进 relative 容器即铺满。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl bg-neutral-950">
+  <GradientBlinds />
+</div>`,
+      render: () => (
+        <Stage>
+          <GradientBlinds />
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义渐变色站 + 斜向",
+      description: "gradientColors 传任意 CSS 颜色（最多前 8 个），angle 旋转整条色带。",
+      code: `<GradientBlinds
+  gradientColors={[
+    "var(--color-chart-1)",
+    "var(--color-chart-2)",
+    "var(--color-chart-4)",
+  ]}
+  angle={30}
+  blindCount={24}
+/>`,
+      render: () => (
+        <Stage>
+          <GradientBlinds
+            gradientColors={[
+              "var(--color-chart-1)",
+              "var(--color-chart-2)",
+              "var(--color-chart-4)",
+            ]}
+            angle={30}
+            blindCount={24}
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "镜像渐变",
+      description: "mirrorGradient 让色带在中点对折，形成对称往返。",
+      code: `<GradientBlinds mirrorGradient blindCount={32} noise={0.15} />`,
+      render: () => (
+        <Stage>
+          <GradientBlinds mirrorGradient blindCount={32} noise={0.15} />
+        </Stage>
+      ),
+    },
+    {
+      title: "扭曲 + 大聚光灯",
+      description: "distortAmount 让色带波浪起伏，spotlightRadius/Softness 调聚光灯大小与软硬。",
+      code: `<GradientBlinds
+  gradientColors={["oklch(0.72 0.22 30)", "var(--color-chart-3)"]}
+  distortAmount={0.8}
+  spotlightRadius={0.7}
+  spotlightSoftness={1.4}
+  shineDirection="right"
+/>`,
+      render: () => (
+        <Stage>
+          <GradientBlinds
+            gradientColors={["oklch(0.72 0.22 30)", "var(--color-chart-3)"]}
+            distortAmount={0.8}
+            spotlightRadius={0.7}
+            spotlightSoftness={1.4}
+            shineDirection="right"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "blindCount", type: "number", defaultValue: 16, label: "百叶条数" },
     { prop: "angle", type: "number", defaultValue: 0, label: "旋转角度°" },

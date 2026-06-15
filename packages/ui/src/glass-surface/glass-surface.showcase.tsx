@@ -27,6 +27,95 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const glassSurfaceShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "一块液态玻璃药丸，对身后内容折射 + 色散。需放在丰富彩色背景上才看得清效果。",
+      code: `<GlassSurface width={220} height={90} borderRadius={24}>
+  <span className="text-sm font-semibold text-foreground">
+    Glass Surface
+  </span>
+</GlassSurface>`,
+      render: () => (
+        <Stage>
+          <GlassSurface width={220} height={90} borderRadius={24}>
+            <span className="text-sm font-semibold text-foreground">
+              Glass Surface
+            </span>
+          </GlassSurface>
+        </Stage>
+      ),
+    },
+    {
+      title: "强色散",
+      description: "拉大 distortionScale 与各通道 offset，玻璃边缘出现更明显的 RGB 分光彩边。",
+      code: `<GlassSurface
+  width={240}
+  height={100}
+  borderRadius={28}
+  distortionScale={-220}
+  greenOffset={25}
+  blueOffset={45}
+>
+  <span className="text-sm font-semibold text-foreground">瑚琏</span>
+</GlassSurface>`,
+      render: () => (
+        <Stage>
+          <GlassSurface
+            width={240}
+            height={100}
+            borderRadius={28}
+            distortionScale={-220}
+            greenOffset={25}
+            blueOffset={45}
+          >
+            <span className="text-sm font-semibold text-foreground">瑚琏</span>
+          </GlassSurface>
+        </Stage>
+      ),
+    },
+    {
+      title: "磨砂底",
+      description: "backgroundOpacity 调高玻璃底色不透明度，配合 saturation 做更实的磨砂质感。",
+      code: `<GlassSurface
+  width={220}
+  height={90}
+  borderRadius={20}
+  backgroundOpacity={0.5}
+  saturation={1.4}
+>
+  <span className="text-sm text-foreground">Frosted</span>
+</GlassSurface>`,
+      render: () => (
+        <Stage>
+          <GlassSurface
+            width={220}
+            height={90}
+            borderRadius={20}
+            backgroundOpacity={0.5}
+            saturation={1.4}
+          >
+            <span className="text-sm text-foreground">Frosted</span>
+          </GlassSurface>
+        </Stage>
+      ),
+    },
+    {
+      title: "圆形徽章",
+      description: "宽高相等 + borderRadius 取半径，得到圆形玻璃徽章。",
+      code: `<GlassSurface width={96} height={96} borderRadius={48}>
+  <span className="text-xl font-bold text-foreground">瑚</span>
+</GlassSurface>`,
+      render: () => (
+        <Stage>
+          <GlassSurface width={96} height={96} borderRadius={48}>
+            <span className="text-xl font-bold text-foreground">瑚</span>
+          </GlassSurface>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "width", type: "number", defaultValue: 220, label: "宽度 px" },
     { prop: "height", type: "number", defaultValue: 90, label: "高度 px" },

@@ -37,6 +37,73 @@ const cards = (
 );
 
 export const cardSwapShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "用 CardSwap.Card 包裹每张卡片，至少 2 张才会自动轮换；placement=\"center\" 让整摞完整框进容器。",
+      code: `<div
+  className="relative h-96 overflow-hidden rounded-xl"
+  style={{ background: "oklch(0.16 0.02 255)" }}
+>
+  <CardSwap width={300} height={200} placement="center">
+    <CardSwap.Card>实时同步</CardSwap.Card>
+    <CardSwap.Card>可视编排</CardSwap.Card>
+    <CardSwap.Card>权限内核</CardSwap.Card>
+  </CardSwap>
+</div>`,
+      render: () => (
+        <Stage>
+          <CardSwap width={300} height={200} delay={3000} placement="center" pauseOnHover>
+            {cards}
+          </CardSwap>
+        </Stage>
+      ),
+    },
+    {
+      title: "顺滑缓动",
+      description: "easing=\"smooth\" 去掉弹性回弹，节奏更克制，适合企业场景。",
+      code: `<CardSwap
+  width={300}
+  height={200}
+  placement="center"
+  easing="smooth"
+  skewAmount={4}
+  delay={2600}
+>
+  {cards}
+</CardSwap>`,
+      render: () => (
+        <Stage>
+          <CardSwap width={300} height={200} delay={2600} easing="smooth" skewAmount={4} placement="center" pauseOnHover>
+            {cards}
+          </CardSwap>
+        </Stage>
+      ),
+    },
+    {
+      title: "紧凑贴合（无倾斜）",
+      description: "调小 cardDistance / verticalDistance 让堆叠更紧凑，skewAmount={0} 正视无倾斜。",
+      code: `<CardSwap
+  width={300}
+  height={190}
+  placement="center"
+  cardDistance={32}
+  verticalDistance={40}
+  skewAmount={0}
+  delay={2800}
+>
+  {cards}
+</CardSwap>`,
+      render: () => (
+        <Stage>
+          <CardSwap width={300} height={190} cardDistance={32} verticalDistance={40} skewAmount={0} delay={2800} placement="center">
+            {cards}
+          </CardSwap>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "delay", type: "number", defaultValue: 3000, label: "轮换间隔 ms" },
     { prop: "cardDistance", type: "number", defaultValue: 56, label: "水平错位 px" },

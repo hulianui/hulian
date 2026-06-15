@@ -26,6 +26,77 @@ const logistics: TimelineItemProps[] = [
 ];
 
 export const timelineShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "items 数组驱动，每项 label 作时间戳、children 作正文、color 控制圆点语气色。",
+      code: `<Timeline
+  items={[
+    { label: "09:12", children: "员工提交报销申请", color: "primary" },
+    { label: "10:40", children: "直属经理审批通过", color: "success" },
+    { label: "14:05", children: "财务复核退回（缺发票）", color: "danger" },
+    { label: "16:20", children: "员工补充材料并重新提交", color: "warning" },
+  ]}
+/>`,
+      render: () => (
+        <div className="max-w-md">
+          <Timeline items={approval} />
+        </div>
+      ),
+    },
+    {
+      title: "进行中（pending）",
+      description: "pending 在末尾追加进行中的幽灵项（加载态圆点 + 虚线连入）。",
+      code: `<Timeline items={logistics} pending="运输中 · 预计明日送达" />`,
+      render: () => (
+        <div className="max-w-md">
+          <Timeline items={logistics} pending="运输中 · 预计明日送达" />
+        </div>
+      ),
+    },
+    {
+      title: "自定义节点",
+      description: "复合用法直接传 <TimelineItem>，dot 可换成图标（用 currentColor 随 color 上色）。",
+      code: `<Timeline>
+  <TimelineItem label="步骤一" color="success" dot={CheckIcon}>账号注册完成</TimelineItem>
+  <TimelineItem label="步骤二" color="success" dot={CheckIcon}>实名认证通过</TimelineItem>
+  <TimelineItem label="步骤三" color="primary">绑定收款账户（进行中）</TimelineItem>
+</Timeline>`,
+      render: () => (
+        <div className="max-w-md">
+          <Timeline>
+            <TimelineItem label="步骤一" color="success" dot={CheckIcon}>
+              账号注册完成
+            </TimelineItem>
+            <TimelineItem label="步骤二" color="success" dot={CheckIcon}>
+              实名认证通过
+            </TimelineItem>
+            <TimelineItem label="步骤三" color="primary">
+              绑定收款账户（进行中）
+            </TimelineItem>
+          </Timeline>
+        </div>
+      ),
+    },
+    {
+      title: "布局方向",
+      description: "mode 控制节点位置：left（默认）/ right 镜像 / alternate 左右交替。",
+      code: `<>
+  <Timeline items={logistics} mode="right" />
+  <Timeline items={approval} mode="alternate" />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-6">
+          <div className="max-w-md">
+            <Timeline items={logistics} mode="right" />
+          </div>
+          <div className="max-w-lg">
+            <Timeline items={approval} mode="alternate" />
+          </div>
+        </div>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "mode",

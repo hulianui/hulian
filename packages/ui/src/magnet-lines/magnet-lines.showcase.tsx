@@ -15,6 +15,85 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 export const magnetLinesShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "9×9 线段网格，每条线像指南针一样实时朝向鼠标。",
+      code: `<MagnetLines containerSize="16rem" lineColor="var(--color-foreground)" />`,
+      render: () => (
+        <Stage>
+          <MagnetLines containerSize="16rem" lineColor="var(--color-foreground)" />
+        </Stage>
+      ),
+    },
+    {
+      title: "细密网格",
+      description: "调高 rows/columns、收窄线宽，得到更精细的磁力线场。",
+      code: `<MagnetLines
+  rows={13}
+  columns={13}
+  containerSize="16rem"
+  lineWidth="0.4rem"
+  lineHeight="2rem"
+  lineColor="var(--color-chart-1)"
+/>`,
+      render: () => (
+        <Stage>
+          <MagnetLines
+            rows={13}
+            columns={13}
+            containerSize="16rem"
+            lineWidth="0.4rem"
+            lineHeight="2rem"
+            lineColor="var(--color-chart-1)"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "稀疏粗线",
+      description: "更少行列 + 更粗线段，配品牌色做强视觉装饰。",
+      code: `<MagnetLines
+  rows={6}
+  columns={6}
+  containerSize="16rem"
+  lineWidth="0.8rem"
+  lineHeight="3rem"
+  lineColor="var(--color-primary)"
+/>`,
+      render: () => (
+        <Stage>
+          <MagnetLines
+            rows={6}
+            columns={6}
+            containerSize="16rem"
+            lineWidth="0.8rem"
+            lineHeight="3rem"
+            lineColor="var(--color-primary)"
+          />
+        </Stage>
+      ),
+    },
+    {
+      title: "初始角度",
+      description: "baseAngle 决定指针未移动时所有线段的静止角度。",
+      code: `<MagnetLines
+  baseAngle={45}
+  containerSize="16rem"
+  lineColor="var(--color-chart-2)"
+/>`,
+      render: () => (
+        <Stage>
+          <MagnetLines
+            baseAngle={45}
+            containerSize="16rem"
+            lineColor="var(--color-chart-2)"
+          />
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     { prop: "rows", type: "number", defaultValue: 9, label: "行数" },
     { prop: "columns", type: "number", defaultValue: 9, label: "列数" },

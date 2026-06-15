@@ -26,6 +26,58 @@ function Demo(props: { multiple?: boolean; defaultValue?: string[]; disabledItem
 }
 
 export const accordionShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "单开模式：同一时刻最多展开一项，点击标题切换。",
+      code: `<Accordion className="w-80">
+  <AccordionItem value="ship">
+    <AccordionTrigger>瑚琏怎么发版？</AccordionTrigger>
+    <AccordionPanel>本地 master 直接 commit，trunk-based，三道门全绿即可。</AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="token">
+    <AccordionTrigger>颜色怎么适配明暗？</AccordionTrigger>
+    <AccordionPanel>只消费语义 token，Tailwind v4 dark variant 自动换肤。</AccordionPanel>
+  </AccordionItem>
+</Accordion>`,
+      render: () => <Demo multiple={false} />,
+    },
+    {
+      title: "默认展开",
+      description: "用 defaultValue 指定初始展开的项（非受控）。",
+      code: `<Accordion defaultValue={["ship"]} className="w-80">
+  <AccordionItem value="ship">
+    <AccordionTrigger>瑚琏怎么发版？</AccordionTrigger>
+    <AccordionPanel>本地 master 直接 commit。</AccordionPanel>
+  </AccordionItem>
+  {/* …更多 item */}
+</Accordion>`,
+      render: () => <Demo multiple={false} defaultValue={["ship"]} />,
+    },
+    {
+      title: "多开",
+      description: "multiple 允许同时展开多项。",
+      code: `<Accordion multiple defaultValue={["ship", "token"]} className="w-80">
+  {/* item 同上 */}
+</Accordion>`,
+      render: () => <Demo multiple defaultValue={["ship", "token"]} />,
+    },
+    {
+      title: "禁用项",
+      description: "在 AccordionItem 上加 disabled，该项不可展开且置灰。",
+      code: `<Accordion defaultValue={["ship"]} className="w-80">
+  <AccordionItem value="ship">
+    <AccordionTrigger>瑚琏怎么发版？</AccordionTrigger>
+    <AccordionPanel>本地 master 直接 commit。</AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="token" disabled>
+    <AccordionTrigger>颜色怎么适配明暗？</AccordionTrigger>
+    <AccordionPanel>不可展开。</AccordionPanel>
+  </AccordionItem>
+</Accordion>`,
+      render: () => <Demo disabledItem defaultValue={["ship"]} />,
+    },
+  ],
   controls: [
     { prop: "multiple", type: "boolean", defaultValue: false, label: "multiple（多开）" },
     { prop: "disabledItem", type: "boolean", defaultValue: false, label: "禁用第二项" },

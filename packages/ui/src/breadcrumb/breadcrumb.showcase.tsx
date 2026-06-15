@@ -33,6 +33,54 @@ const separatorByKey: Record<string, ReactNode> = {
 };
 
 export const breadcrumbShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "传入 items 数组（从根到当前页），末项默认作为当前页且不可点。",
+      code: `<Breadcrumb
+  items={[
+    { label: "首页", href: "/" },
+    { label: "组件", href: "/components" },
+    { label: "面包屑" },
+  ]}
+/>`,
+      render: () => <Breadcrumb items={sample} />,
+    },
+    {
+      title: "自定义分隔符",
+      description: "separator 接受任意 ReactNode（字符或图标），默认 \"/\"，分隔符自动加 aria-hidden。",
+      code: `<Breadcrumb items={items} separator={<ChevronIcon />} />`,
+      render: () => <Breadcrumb items={sample} separator={Chevron} />,
+    },
+    {
+      title: "不可点的中间项",
+      description: "省略某项的 href 即渲染为中性纯文本（不可导航的祖先），仍非当前页。",
+      code: `<Breadcrumb
+  items={[
+    { label: "首页", href: "/" },
+    { label: "归档" },
+    { label: "2026 年报" },
+  ]}
+/>`,
+      render: () => (
+        <Breadcrumb
+          items={[{ label: "首页", href: "/" }, { label: "归档" }, { label: "2026 年报" }]}
+        />
+      ),
+    },
+    {
+      title: "长路径自动换行",
+      description: "项数较多时在窄容器内自动换行，配合 chevron 分隔符更清晰。",
+      code: `<div className="max-w-xs">
+  <Breadcrumb items={longPath} separator={<ChevronIcon />} />
+</div>`,
+      render: () => (
+        <div className="max-w-xs rounded-[var(--radius)] border border-border p-3">
+          <Breadcrumb items={longPath} separator={Chevron} />
+        </div>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "separator",

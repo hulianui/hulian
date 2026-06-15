@@ -27,6 +27,89 @@ function Stage({
 }
 
 export const threadsShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "Threads 是 absolute inset-0 背景层，放在 relative + overflow-hidden 容器内；内容层用 z-10 叠在上方。不传 color 时读 --color-chart-1 跟随主题。",
+      code: `<div className="relative h-56 overflow-hidden rounded-xl"
+     style={{ background: "oklch(0.10 0.015 265)" }}>
+  <Threads />
+  <div className="relative z-10 flex h-full items-center justify-center">
+    <p className="text-sm font-medium text-white/60">Threads</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <Threads />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-sm font-medium text-white/60">Threads</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "自定义颜色",
+      description: "color 支持 [r,g,b] 数组、hex、oklch、var(--token) 等任意格式。",
+      code: `<Threads color="#f97316" amplitude={0.8} distance={0.5} />`,
+      render: () => (
+        <Stage>
+          <Threads color="#f97316" amplitude={0.8} distance={0.5} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-sm text-white/50">color="#f97316"</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "振幅与线间距",
+      description: "amplitude 控制丝线摆幅，distance 拉开各线纵向间距。",
+      code: `<Threads color="var(--color-chart-3)" amplitude={2.5} distance={0.3} />`,
+      render: () => (
+        <Stage>
+          <Threads color="var(--color-chart-3)" amplitude={2.5} distance={0.3} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-sm text-white/50">amplitude=2.5</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "禁用鼠标交互",
+      description: "enableMouseInteraction={false} 后丝线不再随指针变化，适合纯装饰背景。",
+      code: `<Threads enableMouseInteraction={false} />`,
+      render: () => (
+        <Stage>
+          <Threads enableMouseInteraction={false} />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-sm text-white/50">enableMouseInteraction=false</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "Hero 大卡",
+      description: "拉高容器，叠标题副文案即成首屏背景。",
+      code: `<div className="relative h-80 overflow-hidden rounded-xl">
+  <Threads color={[0.18, 0.45, 0.88]} amplitude={1.4} distance={0.2} />
+  <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3 text-center">
+    <h2 className="text-2xl font-bold text-white">瑚琏组件库</h2>
+    <p className="max-w-sm text-sm text-white/60">企业级 · 高质量 · 原生适配明暗主题</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage height="h-80">
+          <Threads color={[0.18, 0.45, 0.88]} amplitude={1.4} distance={0.2} />
+          <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
+            <h2 className="text-2xl font-bold text-white">瑚琏组件库</h2>
+            <p className="max-w-sm text-sm text-white/60">
+              企业级 · 高质量 · 原生适配明暗主题
+            </p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "amplitude",

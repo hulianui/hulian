@@ -30,6 +30,47 @@ const Article = () => (
 );
 
 export const proseShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础排版",
+      description: "把渲染好的富文本（HTML/JSX/MDX 输出）塞进 Prose，标题/段落/列表/链接/行内代码统一吃语义 token。",
+      code: `<Prose>
+  <h1>瑚琏排版容器 Prose</h1>
+  <p>
+    标题、段落、列表、<a href="#">链接</a>、<code>行内代码</code> 与引用
+    全部吃语义 token，明暗主题自动适配。
+  </p>
+  <ul>
+    <li>零依赖、可在 RSC 中渲染</li>
+    <li>强调用 <strong>加粗</strong> 与 <em>斜体</em></li>
+  </ul>
+  <blockquote>排版即沉默的设计。</blockquote>
+</Prose>`,
+      render: () => <Article />,
+    },
+    {
+      title: "紧凑尺寸",
+      description: 'size="sm" 把基准字号降到 text-sm，适合侧栏说明、卡片内长文。',
+      code: `<Prose size="sm">
+  <h2>紧凑排版</h2>
+  <p>适合侧栏说明、卡片内长文等密集场景，其余排版规则保持一致。</p>
+  <ul>
+    <li>侧栏文档</li>
+    <li>卡片内富文本</li>
+  </ul>
+</Prose>`,
+      render: () => (
+        <Prose size="sm" className="max-w-2xl">
+          <h2>紧凑排版</h2>
+          <p>适合侧栏说明、卡片内长文等密集场景，其余排版规则保持一致。</p>
+          <ul>
+            <li>侧栏文档</li>
+            <li>卡片内富文本</li>
+          </ul>
+        </Prose>
+      ),
+    },
+  ],
   controls: [
     {
       prop: "size",

@@ -26,6 +26,104 @@ function Stage({
 }
 
 export const pixelBlastShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description:
+        "放进 relative overflow-hidden 容器，组件自带 absolute inset-0 z-0；默认方块点阵，主色读 --color-primary 明暗自适应。",
+      code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
+  <PixelBlast />
+  <div className="relative z-10 flex h-full items-center justify-center">
+    <p className="text-2xl font-bold text-white/90">PixelBlast</p>
+  </div>
+</div>`,
+      render: () => (
+        <Stage>
+          <PixelBlast />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-2xl font-bold tracking-tight text-white/90">PixelBlast</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "形状变体",
+      description:
+        "variant 支持 square / circle / triangle / diamond 四种像素单元形状，pixelSize 控制单格大小。",
+      code: `<>
+  <PixelBlast variant="circle" pixelSize={6} />
+  <PixelBlast variant="triangle" patternDensity={1.3} />
+  <PixelBlast variant="diamond" pixelSize={5} />
+</>`,
+      render: () => (
+        <div className="flex flex-col gap-3">
+          <Stage>
+            <PixelBlast variant="circle" pixelSize={6} />
+            <div className="relative z-10 flex h-full items-center justify-center">
+              <p className="text-sm font-semibold text-white/70">circle · 网点印刷感</p>
+            </div>
+          </Stage>
+          <Stage>
+            <PixelBlast variant="triangle" patternDensity={1.3} patternScale={2.5} />
+            <div className="relative z-10 flex h-full items-center justify-center">
+              <p className="text-sm font-semibold text-white/70">triangle · 织纹</p>
+            </div>
+          </Stage>
+          <Stage>
+            <PixelBlast variant="diamond" pixelSizeJitter={0.5} pixelSize={5} />
+            <div className="relative z-10 flex h-full items-center justify-center">
+              <p className="text-sm font-semibold text-white/70">diamond · 参差颗粒</p>
+            </div>
+          </Stage>
+        </div>
+      ),
+    },
+    {
+      title: "自定义色 + 强渐隐",
+      description:
+        "color 接任意 CSS 颜色；edgeFade 调大让四角淡出更柔和，便于把点阵当作内容背景。",
+      code: `<PixelBlast
+  variant="square"
+  color="oklch(0.65 0.26 285)"
+  speed={0.25}
+  patternScale={1.5}
+  edgeFade={0.7}
+/>`,
+      render: () => (
+        <Stage>
+          <PixelBlast
+            variant="square"
+            color="oklch(0.65 0.26 285)"
+            speed={0.25}
+            patternScale={1.5}
+            edgeFade={0.7}
+          />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-violet-200/90">极光蓝紫 · 慢速壁纸</p>
+          </div>
+        </Stage>
+      ),
+    },
+    {
+      title: "无渐隐铺满",
+      description: "edgeFade={0} 取消四周渐隐，点阵硬边铺满整个容器。",
+      code: `<PixelBlast variant="circle" color="oklch(0.74 0.18 55)" edgeFade={0} pixelSize={5} />`,
+      render: () => (
+        <Stage>
+          <PixelBlast
+            variant="circle"
+            color="oklch(0.74 0.18 55)"
+            edgeFade={0}
+            pixelSize={5}
+          />
+          <div className="relative z-10 flex h-full items-center justify-center">
+            <p className="text-lg font-semibold text-amber-100/80">edgeFade = 0 · 铺满</p>
+          </div>
+        </Stage>
+      ),
+    },
+  ],
+
   controls: [
     {
       prop: "variant",

@@ -22,6 +22,68 @@ function Demo() {
 }
 
 export const alertDialogShowcase: ShowcaseSpec = {
+  examples: [
+    {
+      title: "基础用法",
+      description: "销毁/不可逆操作前的强制确认：默认不响应点遮罩 / Esc 关闭，必须显式点按钮决策。",
+      code: `<AlertDialog>
+  <AlertDialogTrigger>删除项目</AlertDialogTrigger>
+  <AlertDialogContent title="删除项目？" description="此操作不可撤销，项目数据将被永久删除。">
+    <AlertDialogClose>取消</AlertDialogClose>
+    <AlertDialogClose>删除</AlertDialogClose>
+  </AlertDialogContent>
+</AlertDialog>`,
+      render: () => (
+        <AlertDialog>
+          <AlertDialogTrigger className={triggerCls}>删除项目</AlertDialogTrigger>
+          <AlertDialogContent title="删除项目？" description="此操作不可撤销，项目数据将被永久删除。">
+            <AlertDialogClose className={cancelCls}>取消</AlertDialogClose>
+            <AlertDialogClose className={dangerCls}>删除</AlertDialogClose>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+    },
+    {
+      title: "仅说明无描述",
+      description: "description 可省略，只保留标题作为 a11y label。",
+      code: `<AlertDialog>
+  <AlertDialogTrigger>退出登录</AlertDialogTrigger>
+  <AlertDialogContent title="确认退出登录？">
+    <AlertDialogClose>取消</AlertDialogClose>
+    <AlertDialogClose>退出</AlertDialogClose>
+  </AlertDialogContent>
+</AlertDialog>`,
+      render: () => (
+        <AlertDialog>
+          <AlertDialogTrigger className={triggerCls}>退出登录</AlertDialogTrigger>
+          <AlertDialogContent title="确认退出登录？">
+            <AlertDialogClose className={cancelCls}>取消</AlertDialogClose>
+            <AlertDialogClose className={dangerCls}>退出</AlertDialogClose>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+    },
+    {
+      title: "默认打开",
+      description: "用非受控 defaultOpen 让对话框初始即展开（受控请用 open + onOpenChange）。",
+      code: `<AlertDialog defaultOpen>
+  <AlertDialogTrigger>清空回收站</AlertDialogTrigger>
+  <AlertDialogContent title="清空回收站？" description="其中 28 个文件将被永久删除，无法恢复。">
+    <AlertDialogClose>取消</AlertDialogClose>
+    <AlertDialogClose>清空</AlertDialogClose>
+  </AlertDialogContent>
+</AlertDialog>`,
+      render: () => (
+        <AlertDialog defaultOpen>
+          <AlertDialogTrigger className={triggerCls}>清空回收站</AlertDialogTrigger>
+          <AlertDialogContent title="清空回收站？" description="其中 28 个文件将被永久删除，无法恢复。">
+            <AlertDialogClose className={cancelCls}>取消</AlertDialogClose>
+            <AlertDialogClose className={dangerCls}>清空</AlertDialogClose>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+    },
+  ],
   controls: [],
   states: [{ name: "default", render: () => <Demo /> }],
   renderWithProps: () => <Demo />,
