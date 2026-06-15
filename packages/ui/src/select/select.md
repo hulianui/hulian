@@ -1,0 +1,79 @@
+---
+slug: select
+name: Select
+category: forms
+group: basic
+tags: []
+exports: [Select, SelectTrigger, SelectContent, SelectItem]
+status: enriched
+---
+
+# Select
+
+> 下拉选择 · Base UI overlay 单选 + items 自动 label · forms/basic
+
+## 何时用
+
+从一组固定选项里单选一项（选项较多、需要收纳成下拉）。选项少且需全部可见用 [Radio](../radio/radio.md)；多选用 [CheckboxGroup](../checkbox-group/checkbox-group.md)；自由文本用 [Input](../input/input.md)。给 `items`（`{value,label}` 数组）让 Trigger 显示选中项 label 而非 raw value。
+
+## 导入
+```ts
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
+```
+
+## Props
+
+`Select` 继承 Base UI `Select.Root` 属性（除 `items` 被下方覆盖外，如 `value`/`defaultValue`/`onValueChange`/`disabled`…）。
+
+### Select
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
+| placeholder | `ReactNode` | — | 无选中值时的占位文本（瑚琏注入 value:null 项实现，rc.0 无 Value.placeholder prop） |
+
+### SelectTrigger
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸 |
+| invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
+| className | `string` | — | 透传类名 |
+
+### SelectContent
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| children* | `ReactNode` | — | 一组 `SelectItem` |
+| side | `"top" ｜ "bottom"` | `"bottom"` | 弹出方向 |
+| align | `"start" ｜ "center" ｜ "end"` | — | 对齐 |
+| sideOffset | `number` | — | 偏移量 |
+
+### SelectItem
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value* | `string` | — | 选项值（本批仅 string 值） |
+| disabled | `boolean` | `false` | 禁用此项 |
+| children* | `ReactNode` | — | 选项展示内容 |
+
+## 示例
+```tsx
+const FONTS = [
+  { value: "sans", label: "无衬线 Sans" },
+  { value: "serif", label: "衬线 Serif" },
+  { value: "mono", label: "等宽 Mono" },
+];
+
+<Select items={FONTS} placeholder="请选择字体" defaultValue="serif">
+  <SelectTrigger />
+  <SelectContent>
+    {FONTS.map((f) => (
+      <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+```
+
+## 禁忌 / 坑
+
+- 占位文本通过 `Select` 的 `placeholder` prop 传，**不要**给 `Select.Value` 传 placeholder——见 [[base-ui-select-rc0-no-value-placeholder-prop-inject-null-item]]：本项目锁 Base UI rc.0，其 `Select.Value` 没有 placeholder prop（那是 v1.2+），瑚琏靠注入一个 `value:null` 的 items 项实现占位 label。`items` 与 `SelectItem` 的 value 要对应，否则 Trigger 显示 raw value 而非 label。
+
+## 相关
+[Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

@@ -1,0 +1,60 @@
+---
+slug: number-field
+name: NumberField
+category: forms
+group: basic
+tags: []
+exports: [NumberField]
+status: enriched
+---
+
+# NumberField
+
+> 数字步进 · Base UI ±按钮 + 键盘步进 + min/max · forms/basic
+
+## 何时用
+
+需精确录入数字并带 ± 步进按钮、min/max 边界（数量、份数、阈值）时用。只需大致量级、拖动选值用 [Slider](../slider/slider.md)；非数字的任意文本录入用 [Input](../input/input.md)。
+
+## 导入
+```ts
+import { NumberField } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value | `number｜null` | — | 受控值（null=空） |
+| defaultValue | `number` | — | 非受控初始值 |
+| onValueChange | `(value: number｜null) => void` | — | 变化回调（瑚琏收敛签名，丢 Base UI eventDetails） |
+| min | `number` | — | 最小值 |
+| max | `number` | — | 最大值 |
+| step | `number` | `1` | 步进量 |
+| disabled | `boolean` | `false` | 禁用 |
+| readOnly | `boolean` | `false` | 只读 |
+| required | `boolean` | — | 表单必填 |
+| name | `string` | — | 原生表单 name |
+| id | `string` | — | — |
+| className | `string` | — | — |
+| aria-label | `string` | — | 无可见标题时提供 |
+
+## 示例
+```tsx
+<NumberField aria-label="数量" defaultValue={3} min={0} max={5} />
+```
+
+受控（值可为空）：
+```tsx
+const [v, setV] = useState<number | null>(2);
+<NumberField aria-label="数量" value={v} onValueChange={setV} min={0} max={10} />
+```
+
+## 禁忌 / 坑
+
+- 受控值类型是 `number | null`——清空时回调拿到 `null`，state 须用 `useState<number | null>`，别假设永远是 number。
+- 用 `value`/`onValueChange` 即受控，须自管 state；非受控只给 `defaultValue`。
+- 无可见标题时给 `aria-label`，否则读屏无名。
+
+## 相关
+[Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md)

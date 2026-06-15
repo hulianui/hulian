@@ -198,7 +198,7 @@ function main() {
   lines.push("---");
   lines.push("name: hulianui-index");
   lines.push(
-    'description: "Use when building UI with @hulianui/ui — component catalog with exports/key props. ALWAYS read the component\'s .types.ts before use; this index is for discovery, not signatures"',
+    'description: "Use when building UI with @hulianui/ui — component catalog with exports/key props. This index is for discovery; ALWAYS read the component\'s <slug>.md usage doc (full props/examples/pitfalls) before use, falling back to .types.ts for exact signatures"',
   );
   lines.push("---");
   lines.push("");
@@ -211,9 +211,10 @@ function main() {
   lines.push("");
   lines.push("1. **100% 库组件**：admin/业务界面只用 @hulianui/ui，禁止 style=/局部 CSS 覆盖库组件。");
   lines.push("2. **缺了回库加**：组件缺失/不够用 → 去 `/Users/zhangzhiwei/Desktop/code/hulian/packages/ui/src/` 新增或扩展，不在业务仓造轮子。");
-  lines.push("3. **用前必读签名**：本索引只管「找到组件」，props 列仅前 " + MAX_PROPS + " 个字段名。使用前 **必须 Read 该组件 .types.ts** 确认真实签名：");
-  lines.push("   - 常规：`/Users/zhangzhiwei/Desktop/code/hulian/packages/ui/src/<slug>/<slug>.types.ts`");
-  lines.push("   - 标注 (_mui) 的：`/Users/zhangzhiwei/Desktop/code/hulian/packages/ui/src/_mui/<slug>.types.ts`");
+  lines.push("3. **用前必读用法**：本索引只管「找到组件」，props 列仅前 " + MAX_PROPS + " 个字段名。定位到组件后 **必须先 Read 它的使用文档 `<slug>.md`**（完整 props 表 + 示例 + 禁忌坑 + 相关组件），就在组件源码旁：");
+  lines.push("   - 常规：`/Users/zhangzhiwei/Desktop/code/hulian/packages/ui/src/<slug>/<slug>.md`（精确签名仍以同目录 `<slug>.types.ts` 为准）");
+  lines.push("   - 标注 (_mui) 的：`/Users/zhangzhiwei/Desktop/code/hulian/packages/ui/src/_mui/<slug>.md`");
+  lines.push("   - 全量离线语料（一次喂全库）：`apps/www/public/llms-full.txt`；机读目录 `llms.txt` / 组件清单 `registry.json`。");
   lines.push("4. **导入**：`import { X } from \"@hulianui/ui\"`（根 barrel 全量再导出）。");
   lines.push("5. 标签 `#animated` 动效、`#webgl` 需 WebGL 上下文（SSR 注意）。");
   lines.push("");
