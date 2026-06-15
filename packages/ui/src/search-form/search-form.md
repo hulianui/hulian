@@ -26,18 +26,28 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | fields* | `SearchField[]` | — | 字段配置数组 |
-| onSearch* | `(values: Record<string, unknown>) => void` | — | 查询 / 回车提交 |
 | values | `Record<string, unknown>` | — | 受控值；缺省走内部 state |
-| onChange | `(values: Record<string, unknown>) => void` | — | 任一字段编辑触发（受控回填） |
-| onReset | `(values: Record<string, unknown>) => void` | — | 重置（values = 各字段 default 后的值） |
 | columns | `number` | `3` | 桌面列数 |
 | gap | `number` | `4` | 行列间距（× 0.25rem） |
 | collapsible | `boolean` | `true` | 字段填不满一行时自动失效 |
 | defaultCollapsed | `boolean` | `true` | 初始折叠 |
-| submitText | `ReactNode` | `"查询"` | 主按钮文案 |
-| resetText | `ReactNode` | `"重置"` | 重置按钮文案 |
 | loading | `boolean` | `false` | 查询按钮 loading 态 |
 | className | `string` | — | 根节点类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSearch* | `(values: Record<string, unknown>) => void` | 查询 / 回车提交 |
+| onChange | `(values: Record<string, unknown>) => void` | 任一字段编辑触发（受控回填） |
+| onReset | `(values: Record<string, unknown>) => void` | 重置（values = 各字段 default 后的值） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| submitText | `ReactNode` | 主按钮文案（默认 `"查询"`） |
+| resetText | `ReactNode` | 重置按钮文案（默认 `"重置"`） |
 
 `SearchField` 是判别联合（按 `type`/`render` 区分，缺省即 `input`）。公共字段：`name*`（值 key）、`label*`、`placeholder?`、`colSpan?`（默认 1，封顶 columns）、`defaultValue?`。各形态：
 - `type?: "input"` + `inputType?: string`

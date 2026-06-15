@@ -27,9 +27,14 @@ import { StatusDot } from "@hulianui/ui"
 |------|------|------|------|
 | status* | `"online"｜"degraded"｜"offline"｜"maintenance"` | — | 健康态：在线/降级/离线/维护（内部映射 success/warning/danger/neutral）。 |
 | pulse | `boolean` | 仅 online 自动脉冲 | 呼吸脉冲；可显式覆盖默认。 |
-| label | `ReactNode` | — | 状态文字（如「在线」），提供则随圆点一起播报。 |
 | size | `"sm"｜"md"｜"lg"` | `md` | 尺寸。 |
-| extra | `ReactNode` | — | 尾部数值槽（如延迟「128ms」）。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 状态文字（如「在线」），提供则随圆点一起播报。 |
+| extra | `ReactNode` | 尾部数值槽（如延迟「128ms」）。 |
 
 ## 示例
 ```tsx

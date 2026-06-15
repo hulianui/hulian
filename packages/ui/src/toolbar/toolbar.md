@@ -31,16 +31,15 @@ import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarGroup, ToolbarSeparator }
 | disabled | `boolean` | — | 整条禁用。 |
 | loopFocus | `boolean` | `true` | 键盘导航到末端时是否回环。 |
 | aria-label | `string` | — | 工具栏无障碍标签。 |
-| className / children | — | — | — |
+| className | `string` | — | — |
 
 **ToolbarButton**
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | disabled | `boolean` | — | — |
-| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | — | 点击回调。 |
 | aria-label | `string` | — | 图标按钮需补无障碍标签。 |
-| className / children | — | — | — |
+| className | `string` | — | — |
 
 **ToolbarToggle**
 
@@ -48,13 +47,25 @@ import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarGroup, ToolbarSeparator }
 |------|------|------|------|
 | pressed | `boolean` | — | 受控选中态（按下=开）。 |
 | defaultPressed | `boolean` | `false` | 非受控初始选中态。 |
-| onPressedChange | `(pressed: boolean) => void` | — | 选中态变化回调。 |
 | disabled | `boolean` | — | — |
 | aria-label | `string` | — | — |
-| className / children | — | — | — |
+| className | `string` | — | — |
 
-**ToolbarGroup**：`disabled` / `aria-label` / `className` / `children`。
-**ToolbarSeparator**：`orientation?: "horizontal" \| "vertical"` / `className`。
+**ToolbarGroup**：Props `disabled` / `aria-label` / `className`；Slots `children`。
+**ToolbarSeparator**：Props `orientation?: "horizontal" \| "vertical"` / `className`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | `ToolbarButton` 点击回调。 |
+| onPressedChange | `(pressed: boolean) => void` | `ToolbarToggle` 选中态变化回调。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | `Toolbar` / `ToolbarButton` / `ToolbarToggle` / `ToolbarGroup` 各自的子内容。 |
 
 ## 示例
 ```tsx

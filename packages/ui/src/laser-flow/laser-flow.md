@@ -42,7 +42,12 @@ import { LaserFlow } from "@hulianui/ui"
 | falloffStart | `number` | `1.2` | 光束发光起始衰减（→ uFalloffStart） |
 | mouseTiltStrength | `number` | `0.01` | 鼠标牵引雾团倾斜强度；设 0 即关闭鼠标交互（→ uTiltScale） |
 | className | `string` | — | 透传根容器（或 reduced-motion fallback div）额外 className |
-| fallback | `ReactNode` | 吃 chart token 的纵向 linear-gradient 光束 div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时渲染的静态替代内容；缺省为吃 chart token 的纵向 linear-gradient 光束 div |
 
 ## 示例
 ```tsx

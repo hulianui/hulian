@@ -25,9 +25,14 @@ import { AnimatedList } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | ReactNode | — | 列表子项（每个子项依次入场） |
 | stagger | number | — | 相邻子项入场间隔（秒） |
 | className | string | — | 容器类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | ReactNode | 列表子项（每个子项依次入场） |
 
 ## 示例
 ```tsx

@@ -25,9 +25,14 @@ import { Markdown, parseBlocks } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `string` | — | Markdown 源文本（只读渲染；编辑用 MarkdownEditor） |
 | size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose |
 | className | `string` | — | 透传容器类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `string` | Markdown 源文本（只读渲染；编辑用 MarkdownEditor） |
 
 ## 示例
 ```tsx

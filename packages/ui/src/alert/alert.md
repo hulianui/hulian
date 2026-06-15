@@ -29,11 +29,21 @@ import { Alert, alertVariants } from "@hulianui/ui"
 |------|------|------|------|
 | tone | `"neutral"｜"info"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色 |
 | variant | `"soft"｜"outline"` | `"soft"` | soft=浅底 / outline=描边 |
-| icon | `ReactNode` | — | 可选图标 slot（调用方自带 SVG/emoji；设计系统不绑图标库） |
-| title | `ReactNode` | — | 标题（可选）；children 为正文 description |
-| action | `ReactNode` | — | 右侧动作 slot（如 `<Button>Retry</Button>`），与关闭按钮并排 |
-| onClose | `() => void` | — | 传入则渲染右上角关闭按钮，点击触发回调（关闭/消隐由调用方控制） |
 | closeLabel | `string` | `"关闭"` | 关闭按钮的无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClose | `() => void` | 传入则渲染右上角关闭按钮，点击触发回调（关闭/消隐由调用方控制） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon | `ReactNode` | 可选图标 slot（调用方自带 SVG/emoji；设计系统不绑图标库） |
+| title | `ReactNode` | 标题（可选）；children 为正文 description |
+| action | `ReactNode` | 右侧动作 slot（如 `<Button>Retry</Button>`），与关闭按钮并排 |
 
 ## 示例
 ```tsx

@@ -28,11 +28,16 @@ import { StepsForm } from "@hulianui/ui"
 | steps* | `StepsFormStep[]` | — | 步骤数组，每项含 `title`/`description`/`content`/`nextDisabled`/`nextText`/`showNav` |
 | current | `number` | — | 受控当前步（0 起） |
 | defaultCurrent | `number` | — | 非受控初始步 |
-| onCurrentChange | `(current: number) => void` | — | 步骤变化回调 |
-| onStepValidate | `(currentStep: number) => boolean \| Promise<boolean>` | — | 前进/提交前校验，收到即将离开的步号；返回 false 或 reject 阻止前进；pending 期间前进按钮 loading 防重复点击 |
-| onFinish | `() => void \| Promise<void>` | — | 最后一步提交；返回 Promise → 提交按钮 loading |
 | direction | `"horizontal" \| "vertical"` | — | Steps 指示器方向 |
 | className | `string` | — | 根节点类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCurrentChange | `(current: number) => void` | 步骤变化回调 |
+| onStepValidate | `(currentStep: number) => boolean \| Promise<boolean>` | 前进/提交前校验，收到即将离开的步号；返回 false 或 reject 阻止前进；pending 期间前进按钮 loading 防重复点击 |
+| onFinish | `() => void \| Promise<void>` | 最后一步提交；返回 Promise → 提交按钮 loading |
 
 `StepsFormStep` 字段：`title: ReactNode`（必填）、`description?`、`content: ReactNode`（必填，仅当前步渲染）、`nextDisabled?`（默认 false，禁本步前进）、`nextText?`（本步前进按钮文案，缺省走 locale）、`showNav?`（默认 true，false 时不渲染本步底部导航，用于结果步自带操作）。
 

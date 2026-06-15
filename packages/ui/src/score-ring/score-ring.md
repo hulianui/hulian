@@ -30,9 +30,14 @@ import { ScoreRing, resolveGrade, DEFAULT_GRADES } from "@hulianui/ui"
 | grades | `Grade[]` | — | 等级带（不传用默认 A-F，即 `DEFAULT_GRADES`） |
 | size | `number` | `96` | 直径 px |
 | thickness | `number` | `8` | 环宽 px |
-| label | `ReactNode` | — | 环心副标签（如「质量分」） |
 | showGrade | `boolean` | `true` | 是否显示等级字 |
 | className | `string` | — | 自定义类 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 环心副标签（如「质量分」） |
 
 ## 示例
 ```tsx

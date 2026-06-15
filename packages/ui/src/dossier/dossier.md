@@ -28,10 +28,15 @@ import { Dossier } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | sections * | `DossierSection[]` | — | 分域清单（数据驱动） |
-| title | `ReactNode` | `"案卷"` | 头部标题 |
-| progress | `ReactNode` | 自动算 | 头部右侧进度文案，缺省自动算「已归档 n/m」（m 不含 optional 域） |
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
 | className | `string` | — | 容器类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 头部标题（默认 `"案卷"`） |
+| progress | `ReactNode` | 头部右侧进度文案，缺省自动算「已归档 n/m」（m 不含 optional 域） |
 
 `DossierSection`：
 

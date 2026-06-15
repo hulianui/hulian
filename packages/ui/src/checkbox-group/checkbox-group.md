@@ -27,12 +27,22 @@ import { CheckboxGroup } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string[]` | — | 受控：已勾选项的 value 数组 |
 | defaultValue | `string[]` | — | 非受控初始勾选项 |
-| onValueChange | `(value: string[]) => void` | — | 勾选变化回调 |
 | disabled | `boolean` | `false` | 下发禁用到组内全部 Checkbox |
 | orientation | `"vertical" ｜ "horizontal"` | `"vertical"` | 排列方向 |
 | className | `string` | — | 透传根节点类名 |
-| children | `ReactNode` | — | 子项为瑚琏 Checkbox（每个带 value） |
 | aria-label | `string` | — | 组的无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string[]) => void` | 勾选变化回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 子项为瑚琏 Checkbox（每个带 value） |
 
 ## 示例
 ```tsx

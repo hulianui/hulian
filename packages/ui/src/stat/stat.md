@@ -25,13 +25,18 @@ import { Stat } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label* | `ReactNode` | — | 指标标签 |
-| value* | `ReactNode` | — | 指标数值（自行格式化好的字符串/节点） |
 | delta | `number` | — | 环比百分比，>=0 升(text-primary) / <0 降(text-danger)；不传则不渲染趋势 |
-| deltaLabel | `ReactNode` | — | 趋势旁说明文案（如「较上月」） |
-| icon | `ReactNode` | — | 角标图标 |
-| chart | `ReactNode` | — | 图表插槽（如 KPI 趋势 sparkline），渲染在数值行下方、delta 上方 |
 | …HTMLAttributes | `HTMLAttributes<HTMLDivElement>` | — | 透传 div 原生属性（含 className） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label* | `ReactNode` | 指标标签 |
+| value* | `ReactNode` | 指标数值（自行格式化好的字符串/节点） |
+| deltaLabel | `ReactNode` | 趋势旁说明文案（如「较上月」） |
+| icon | `ReactNode` | 角标图标 |
+| chart | `ReactNode` | 图表插槽（如 KPI 趋势 sparkline），渲染在数值行下方、delta 上方 |
 
 ## 示例
 ```tsx

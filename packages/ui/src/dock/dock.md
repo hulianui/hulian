@@ -26,7 +26,6 @@ import { Dock, DockIcon } from "@hulianui/ui"
 ### Dock
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 一组 `DockIcon` |
 | magnification | `number` | — | 鼠标靠近时图标放大到的峰值尺寸(px) |
 | distance | `number` | — | 放大影响范围半径(px) |
 | iconSize | `number` | — | 静息图标尺寸(px) |
@@ -35,8 +34,19 @@ import { Dock, DockIcon } from "@hulianui/ui"
 ### DockIcon
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 单个图标内容 |
 | className | `string` | — | — |
+
+## Slots
+
+### Dock
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 一组 `DockIcon` |
+
+### DockIcon
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 单个图标内容 |
 
 ## 示例
 ```tsx

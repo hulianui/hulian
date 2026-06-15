@@ -29,9 +29,20 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | tone | `"brand" ｜ "danger"` | `"brand"` | 语义色调 |
 | size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm"` | `"md"` | 尺寸；icon/iconSm 为正方形图标按钮 |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
-| render | `ReactElement` | — | 渲染为自定义元素（如 `<a>`/Next `<Link>`），用于按钮样式的链接 CTA；样式与 `aria-disabled` 合并进该元素 |
-| children | `ReactNode` | — | 按钮文案 |
-| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（onClick、disabled、type 等） |
+| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | 点击回调，经 `ButtonHTMLAttributes` 透传 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 按钮文案 |
+| render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），用于按钮样式的链接 CTA；样式与 `aria-disabled` 合并进该元素 |
 
 ## 示例
 ```tsx

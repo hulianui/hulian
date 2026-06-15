@@ -29,9 +29,19 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 |------|------|------|------|
 | validationMode | `"onSubmit" \| "onBlur" \| "onChange"` | `"onSubmit"` | 校验时机 |
 | errors | `Record<string, string \| string[]>` | — | 外部/服务端校验错误，按 `<Field name>` 映射（展示需 Field 内有 Field.Error） |
-| onFormSubmit | `(formValues: Record<string, unknown>) => void` | — | 提交时拿到结构化 values（已 preventDefault 原生提交） |
 | className | `string` | — | 容器类名 |
-| children | `ReactNode` | — | 字段内容 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onFormSubmit | `(formValues: Record<string, unknown>) => void` | 提交时拿到结构化 values（已 preventDefault 原生提交） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 字段内容 |
 
 `useForm` 控制器用法（详见示例）：`form.register(name, { rules, dependencies })`、`form.submit(onValid, onInvalid)`、`form.resetFields()`。
 

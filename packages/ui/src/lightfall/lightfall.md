@@ -41,7 +41,12 @@ import { Lightfall } from "@hulianui/ui"
 | mouseStrength | `number` | `0.5` | 鼠标增亮强度 |
 | mouseRadius | `number` | `1` | 鼠标影响半径 |
 | className | `string` | — | 透传根容器（组件自带 absolute inset-0 z-0） |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时的静态兜底内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态兜底内容 |
 
 ## 示例
 ```tsx

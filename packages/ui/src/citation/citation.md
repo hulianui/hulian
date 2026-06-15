@@ -27,12 +27,17 @@ import { Citation } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | `"瑚琏设计系统文档"`(showcase) | 来源标题 |
 | index | `number` | `1`(showcase) | 引用序号（如 1 → `[1]` 角标） |
 | href | `string` | — | 外链 URL；提供则渲染为新标签页链接 |
-| source | `ReactNode` | `"hulian.dev"`(showcase) | 来源名（域名/站点，标题右侧弱化） |
 
-> 表中 showcase 默认值仅为画廊控件初值，组件本身除 `title` 外无内置默认。
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 来源标题（必填；showcase 初值 `"瑚琏设计系统文档"`） |
+| source | `ReactNode` | 来源名（域名/站点，标题右侧弱化；showcase 初值 `"hulian.dev"`） |
+
+> showcase 初值仅为画廊控件初值，组件本身除 `title` 外无内置默认。
 
 ## 示例
 ```tsx

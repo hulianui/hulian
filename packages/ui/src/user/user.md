@@ -25,10 +25,15 @@ import { User } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| name* | `ReactNode` | — | 主名称（必填）。 |
-| description | `ReactNode` | — | 次级描述（邮箱/角色/@handle 等）。 |
 | avatarProps | `AvatarProps` | — | 透传给内置 Avatar（src/alt/fallback/size）。 |
 | className | `string` | — | — |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| name* | `ReactNode` | 主名称（必填）。 |
+| description | `ReactNode` | 次级描述（邮箱/角色/@handle 等）。 |
 
 ## 示例
 ```tsx

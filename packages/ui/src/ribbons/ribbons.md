@@ -37,7 +37,12 @@ import { Ribbons } from "@hulianui/ui"
 | enableShaderEffect | `boolean` | `false` | shader 波动特效（沿法线正弦抖动） |
 | effectAmplitude | `number` | `2` | shader 波动振幅，仅 enableShaderEffect=true 生效 |
 | className | `string` | — | 透传到容器（或 reduced-motion fallback div） |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时的静态替代（默认 chart token 渐变 div） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代（默认 chart token 渐变 div） |
 
 ## 示例
 ```tsx

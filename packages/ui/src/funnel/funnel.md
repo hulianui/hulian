@@ -28,11 +28,21 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 | stages* | `FunnelStage[]` | — | 阶段数组。`{id, label, value, tone?}`；漏斗宽/高按 value 比例缩放 |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | vertical 每级一行按宽度比 / horizontal 每列按高度比 |
 | showConversion | `boolean` | `true` | 是否显示级间转化率徽标 |
-| renderStage | `(stage, ctx: FunnelRenderCtx) => ReactNode` | — | 自定义阶段内容（替换默认 label + value）。ctx 含 `widthRatio`/`conversion`(首级 null)/`index` |
-| onStageClick | `(stage) => void` | — | 点击某一级回调 |
 | className | `string` | — | 外层类名 |
 
 FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`，缺省 `brand`（同 Tag 的 tone 语义，吃 token）。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onStageClick | `(stage) => void` | 点击某一级回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderStage | `(stage, ctx: FunnelRenderCtx) => ReactNode` | 渲染函数：自定义阶段内容（替换默认 label + value）。ctx 含 `widthRatio`/`conversion`(首级 null)/`index` |
 
 ## 示例
 ```tsx

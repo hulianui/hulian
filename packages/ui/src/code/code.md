@@ -26,9 +26,14 @@ import { Code, codeVariants } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | tone | `"default" \| "primary" \| "danger"` | `"default"` | 配色语气：默认 / 主色（强调）/ 危险（破坏性命令） |
-| children | `ReactNode` | — | 代码内容 |
 
 其余 `<code>`（HTMLElement）原生属性透传。`codeVariants` 为 CVA 样式函数，可在自定义元素上复用皮肤类名。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 代码内容 |
 
 ## 示例
 ```tsx

@@ -26,10 +26,15 @@ import { Callout } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | tone | `"tip"｜"info"｜"warning"｜"success"｜"danger"` | `"tip"` | 语气：tip/info 主色、warning 警告、success 正解、danger 坑/危险 |
-| icon | `ReactNode` | — | 图标 slot（emoji 或 SVG；设计系统不绑图标库） |
-| title | `ReactNode` | — | 标题（tone 色强调） |
-| children | `ReactNode` | — | 正文（foreground 可读） |
 | className | `string` | — | 透传到根容器 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon | `ReactNode` | 图标 slot（emoji 或 SVG；设计系统不绑图标库） |
+| title | `ReactNode` | 标题（tone 色强调） |
+| children | `ReactNode` | 正文（foreground 可读） |
 
 ## 示例
 ```tsx

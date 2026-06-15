@@ -27,14 +27,19 @@ import { CodeReviewThread, severityStyle, SEVERITY } from "@hulianui/ui"
 |------|------|------|------|
 | comments* | `ReviewComment[]` | — | 线程内评论数组（含作者 kind、severity、body、可选 suggestion）。 |
 | status | `"open"｜"resolved"｜"wontfix"` | `open`（内部自管） | 线程状态；受控，传则由外部托管。 |
-| onStatusChange | `(s: ReviewThreadStatus) => void` | — | 状态变更回调。 |
-| onReply | `(text: string) => void` | — | 提交回复回调。 |
-| onAdoptSuggestion | `(commentId: string) => void` | — | 采纳某条建议修改回调。 |
 | replyable | `boolean` | `true` | 是否显示回复框。 |
 | defaultCollapsed | `boolean` | `false` | 非受控初始折叠态。 |
 | collapsed | `boolean` | — | 受控折叠（优先于 defaultCollapsed）。 |
-| onCollapsedChange | `(v: boolean) => void` | — | 折叠态变更回调。 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onStatusChange | `(s: ReviewThreadStatus) => void` | 状态变更回调（status 受控时回写）。 |
+| onReply | `(text: string) => void` | 提交回复回调。 |
+| onAdoptSuggestion | `(commentId: string) => void` | 采纳某条建议修改回调。 |
+| onCollapsedChange | `(v: boolean) => void` | 折叠态变更回调（collapsed 受控时回写）。 |
 
 ## 示例
 ```tsx

@@ -28,18 +28,23 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items | `T[]` | — | 数据数组(数据驱动模式，配合 `renderItem`) |
-| renderItem | `(item: T, index: number) => ReactNode` | — | 渲染每一项；建议返回 `<ListItem>`。不传则把 item 当 ReactNode 直接渲染 |
-| children | `ReactNode` | — | 组合模式：直接放 `<ListItem>` 子元素(与 `items` 二选一，`items` 优先) |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸(影响行内边距) |
 | bordered | `boolean` | `false` | 外层边框 + 圆角容器(栅格态下忽略) |
 | inset | `boolean` | 跟随 `bordered` | 行/头尾插槽水平内边距(与 bordered 解耦)；放进侧栏等已有容器时设 `inset` 让内容不贴边 |
 | split | `boolean` | `true` | 行分隔线(栅格态下忽略) |
 | grid | `boolean \| ListGridConfig` | — | 栅格卡片态(复用 Grid)；传 `true` 用默认配置(3 列) |
-| header | `ReactNode` | — | 头部插槽 |
-| footer | `ReactNode` | — | 底部插槽(渲染在最底部) |
-| empty | `ReactNode` | 内置 `<Empty>` | 空态内容 |
 | loadMore | `ListLoadMore` | — | 「加载更多」配置(底部按钮 + loading) |
-| pagination | `ReactNode` | — | 分页槽(放 `<Pagination>`)，渲染在列表下方 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem | `(item: T, index: number) => ReactNode` | 渲染函数——渲染每一项；建议返回 `<ListItem>`。不传则把 item 当 ReactNode 直接渲染 |
+| children | `ReactNode` | 组合模式：直接放 `<ListItem>` 子元素(与 `items` 二选一，`items` 优先) |
+| header | `ReactNode` | 头部插槽 |
+| footer | `ReactNode` | 底部插槽(渲染在最底部) |
+| empty | `ReactNode` | 空态内容(不传用内置 `<Empty>`) |
+| pagination | `ReactNode` | 分页槽(放 `<Pagination>`)，渲染在列表下方 |
 
 `ListGridConfig`：`cols`(默认 3) / `gap`(默认 4，×0.25rem) / `colGap` / `rowGap` / `rows`
 `ListLoadMore`：`onLoadMore*` / `loading` / `hasMore`(默认 true，false 时不渲染按钮) / `text`(默认 "加载更多")

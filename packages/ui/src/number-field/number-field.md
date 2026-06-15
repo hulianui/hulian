@@ -27,7 +27,6 @@ import { NumberField } from "@hulianui/ui"
 |------|------|------|------|
 | value | `number｜null` | — | 受控值（null=空） |
 | defaultValue | `number` | — | 非受控初始值 |
-| onValueChange | `(value: number｜null) => void` | — | 变化回调（瑚琏收敛签名，丢 Base UI eventDetails） |
 | min | `number` | — | 最小值 |
 | max | `number` | — | 最大值 |
 | step | `number` | `1` | 步进量 |
@@ -38,6 +37,12 @@ import { NumberField } from "@hulianui/ui"
 | id | `string` | — | — |
 | className | `string` | — | — |
 | aria-label | `string` | — | 无可见标题时提供 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: number｜null) => void` | 变化回调（瑚琏收敛签名，丢 Base UI eventDetails） |
 
 ## 示例
 ```tsx

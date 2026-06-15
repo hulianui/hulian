@@ -25,23 +25,33 @@ import { Popconfirm } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | — | 确认主问句，串 `aria-labelledby` |
-| description | `ReactNode` | — | 次要说明，串 `aria-describedby` |
-| icon | `ReactNode` | 警示三角 | `undefined`=默认三角；`null`=不渲染；ReactNode=自定义。默认色随 danger 切换 |
-| okText | `ReactNode` | `"确认"` | 确认按钮文案 |
-| cancelText | `ReactNode` | `"取消"` | 取消按钮文案 |
 | danger | `boolean` | `false` | 危险操作：确认按钮 tone=danger + 默认图标转 text-danger |
-| onConfirm | `() => void \| Promise<void>` | — | 点确认回调。返回 Promise 时按钮进 loading，resolve 后自动关闭；reject 保持打开并清 loading |
-| onCancel | `() => void` | — | 仅显式点取消按钮触发（点外部/Esc 走 onOpenChange，不触发此回调） |
 | open | `boolean` | — | 受控打开态，须配合 onOpenChange |
 | defaultOpen | `boolean` | `false` | 非受控初始打开态 |
-| onOpenChange | `(open: boolean) => void` | — | 打开态变化回调（含点外部/Esc/确认/取消） |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 浮层对齐 |
 | sideOffset | `number` | `8` | 浮层与触发器间距 |
 | disabled | `boolean` | `false` | 禁用：触发器照常渲染但不唤起浮层 |
-| children* | `ReactElement` | — | 触发器（单个元素，浮层锚定到它） |
 | className | `string` | — | 透传到浮层 Popup 的类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onConfirm | `() => void \| Promise<void>` | 点确认回调。返回 Promise 时按钮进 loading，resolve 后自动关闭；reject 保持打开并清 loading |
+| onCancel | `() => void` | 仅显式点取消按钮触发（点外部/Esc 走 onOpenChange，不触发此回调） |
+| onOpenChange | `(open: boolean) => void` | 打开态变化回调（含点外部/Esc/确认/取消） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 确认主问句，串 `aria-labelledby` |
+| description | `ReactNode` | 次要说明，串 `aria-describedby` |
+| icon | `ReactNode` | `undefined`=默认警示三角；`null`=不渲染；ReactNode=自定义。默认色随 danger 切换 |
+| okText | `ReactNode` | 确认按钮文案（默认「确认」） |
+| cancelText | `ReactNode` | 取消按钮文案（默认「取消」） |
+| children* | `ReactElement` | 触发器（单个元素，浮层锚定到它） |
 
 ## 示例
 ```tsx

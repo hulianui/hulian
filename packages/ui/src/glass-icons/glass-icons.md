@@ -32,15 +32,25 @@ import { GlassIcons } from "@hulianui/ui"
 | className | `string` | — | 透传根网格容器 className（可覆盖列数/间距/对齐） |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
-### GlassIconItem
+### GlassIconItem · Props
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| icon* | `ReactNode` | — | 图标节点（通常 lucide-react），渲染于玻璃前层中央，`aria-hidden` |
 | label* | `string` | — | hover/focus 滑出的文字，同时作按钮 `aria-label` |
 | color | `string` | `"primary"` | 背面发光配色，预设名 `primary｜blue｜purple｜red｜indigo｜orange｜green`，或任意 CSS 颜色/渐变 |
 | className | `string` | — | 透传该按钮 className |
-| onClick | `() => void` | — | 点击回调 |
+
+### GlassIconItem · Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `() => void` | 点击该图标按钮时回调 |
+
+### GlassIconItem · Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon* | `ReactNode` | 图标节点（通常 lucide-react），渲染于玻璃前层中央，`aria-hidden` |
 
 ## 示例
 

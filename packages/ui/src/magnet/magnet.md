@@ -25,7 +25,6 @@ import { Magnet } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 被磁吸的内容（按钮、图标、卡片等） |
 | padding | `number` | `100` | 感应半径（px），自元素边界向外扩展，越大越远距离感应 |
 | disabled | `boolean` | `false` | 禁用磁吸：停止牵引并平滑归位原点，DOM 结构不变 |
 | magnetStrength | `number` | `2` | 吸力除数，位移=指针到中心距离/此值，越小吸力越强；建议 1–6 |
@@ -36,6 +35,12 @@ import { Magnet } from "@hulianui/ui"
 | style | `CSSProperties` | — | 透传外层包裹 div 内联样式 |
 
 > 另继承 `Omit<HTMLAttributes<HTMLDivElement>, "children">` 的所有标准 div 属性。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 被磁吸的内容（按钮、图标、卡片等） |
 
 ## 示例
 ```tsx

@@ -29,13 +29,11 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string` | — | 受控选中值 |
 | defaultValue | `string` | — | 非受控初始选中值 |
-| onValueChange | `(value: string) => void` | — | 选中变化回调 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | required | `boolean` | — | 表单必选 |
 | name | `string` | — | 原生表单 name |
 | orientation | `"vertical"｜"horizontal"` | `"vertical"` | 仅控布局 |
 | className | `string` | — | — |
-| children | `ReactNode` | — | 内放 `Radio` 项 |
 | aria-label | `string` | — | 无可见标题时提供 |
 
 `Radio`
@@ -43,10 +41,31 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | value * | `string` | — | 必填，标识该选项 |
-| label | `ReactNode` | — | 可选 inline label（点右，原生 `<label>` 关联） |
 | disabled | `boolean` | `false` | 单项禁用 |
 | id | `string` | — | — |
 | className | `string` | — | 落在 Radio.Root |
+
+## Events
+
+`RadioGroup`
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string) => void` | 选中变化回调 |
+
+## Slots
+
+`RadioGroup`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 内放 `Radio` 项 |
+
+`Radio`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 可选 inline label（点右，原生 `<label>` 关联） |
 
 ## 示例
 ```tsx

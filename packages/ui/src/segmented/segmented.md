@@ -30,7 +30,6 @@ import { Segmented } from "@hulianui/ui"
 | items * | `SegmentedItem[]` | — | 段定义数组 |
 | value | `string` | — | 受控选中值 |
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
-| onValueChange | `(value: string) => void` | — | 选中变化（单值，radio 语义互斥） |
 | disabled | `boolean` | `false` | 整体禁用 |
 | size | `"sm"｜"md"` | `"md"` | — |
 | className | `string` | — | — |
@@ -41,9 +40,24 @@ import { Segmented } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | value * | `string` | — | 该段唯一值（也是选中标识） |
-| label * | `ReactNode` | — | 段内容（文字或图标） |
 | ariaLabel | `string` | — | label 为富节点（图标/徽标）时必填，否则降级取 value |
 | disabled | `boolean` | `false` | 单段禁用 |
+
+## Events
+
+`Segmented`
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string) => void` | 选中变化（单值，radio 语义互斥） |
+
+## Slots
+
+`SegmentedItem`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label * | `ReactNode` | 段内容（文字或图标） |
 
 ## 示例
 ```tsx

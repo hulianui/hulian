@@ -29,10 +29,15 @@ import { InfiniteMenu } from "@hulianui/ui"
 | scale | `number` | `1` | 球体缩放系数，越大球越近、单卡越大 |
 | itemSize | `number` | `88` | 单张卡片直径（px） |
 | autoRotate | `number` | `6` | 自动旋转角速度（度/秒，绕 Y 轴），0 关闭；拖拽时暂停，松手惯性衰减后恢复；reduced-motion 下强制为 0 |
-| onActiveItemChange | `(item, index) => void` | — | 激活项变化回调（拖拽停止贴靠到最前项后触发） |
-| onItemActivate | `(item, index) => void \| false` | — | 点击激活项动作箭头回调，返回 `false` 阻止默认 `window.open` |
 | className | `string` | — | 透传到根容器的额外类名 |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onActiveItemChange | `(item: InfiniteMenuItem, index: number) => void` | 激活项变化回调（拖拽停止贴靠到最前项后触发） |
+| onItemActivate | `(item: InfiniteMenuItem, index: number) => void \| false` | 点击激活项动作箭头回调，返回 `false` 阻止默认 `window.open` |
 
 `InfiniteMenuItem`：`{ image?: string; title?: string; description?: string; link?: string }` —— `link` 以 http 开头则 `window.open` 新标签，否则交给 `onItemActivate` 处理；`image` 省略时仅显示标题首字。
 

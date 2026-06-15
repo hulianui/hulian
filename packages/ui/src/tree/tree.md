@@ -30,20 +30,25 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | nodes* | `TreeNode[]` | — | 树数据(`{ key, label, icon?, children?, disabled? }`) |
 | expandedKeys | `string[]` | — | 受控展开集 |
 | defaultExpandedKeys | `string[]` | — | 非受控初始展开集 |
-| onExpandedChange | `(keys: string[]) => void` | — | 展开变化回调 |
 | selectable | `boolean` | `true` | 单选高亮(非 checkable 模式) |
 | selectedKeys | `string[]` | — | 受控选中集 |
 | defaultSelectedKeys | `string[]` | — | 非受控初始选中集 |
-| onSelect | `(keys: string[], node: TreeNode) => void` | — | 选中回调 |
 | checkable | `boolean` | `false` | 复选模式(行前 checkbox) |
 | checkedKeys | `string[]` | — | 受控勾选集 |
 | defaultCheckedKeys | `string[]` | — | 非受控初始勾选集 |
-| onCheck | `(info: { checkedKeys; halfCheckedKeys }, node) => void` | — | 勾选回调(含半选集) |
 | showLine | `boolean` | `false` | 显示连接线 |
 | searchable | `boolean` | `false` | 树内搜索框 |
 | searchPlaceholder | `string` | — | 搜索框占位 |
 | className | `string` | — | — |
 | aria-label | `string` | — | 树的无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onExpandedChange | `(keys: string[]) => void` | 展开变化回调 |
+| onSelect | `(keys: string[], node: TreeNode) => void` | 选中回调 |
+| onCheck | `(info: { checkedKeys: string[]; halfCheckedKeys: string[] }, node: TreeNode) => void` | 勾选回调(含半选集) |
 
 ## 示例
 ```tsx

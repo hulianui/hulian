@@ -27,7 +27,6 @@ import { CountrySelect, getCountry, flagEmoji, countrySearchText, filterCountrie
 |------|------|------|------|
 | value | `string \| string[]` | — | 受控值：单选为 ISO2 码字符串；多选为码数组 |
 | defaultValue | `string \| string[]` | — | 非受控初值 |
-| onChange | `(next: string \| string[]) => void` | — | 选择变更回调 |
 | multiple | `boolean` | `false` | 多选（chips） |
 | showEnglish | `boolean` | `true` | 选项行是否显示英文名 |
 | showDialCode | `boolean` | `false` | 选项行是否显示国际区号 |
@@ -37,6 +36,12 @@ import { CountrySelect, getCountry, flagEmoji, countrySearchText, filterCountrie
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 无效态 |
 | className | `string` | — | 透传到触发器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(next: string \| string[]) => void` | 选择变更回调；单选回传 string，多选回传 string[] |
 
 ## 示例
 ```tsx

@@ -25,15 +25,20 @@ import { Field } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 控件（hulian Input / Textarea，= Field.Control） |
-| label | `ReactNode` | — | 标签 |
-| description | `ReactNode` | — | help 文案 |
-| error | `ReactNode` | — | 错误文案；**非空即隐含 invalid 并强制显错** |
 | invalid | `boolean` | `false` | 显式覆盖 invalid；缺省时由 error 是否非空推导 |
 | disabled | `boolean` | `false` | 禁用 |
 | name | `string` | — | 提交标识，透传 Field.Root |
 | colSpan | `"full"` | — | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
 | className | `string` | — | 落在 Field.Root（纵向布局容器） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 控件（hulian Input / Textarea，= Field.Control） |
+| label | `ReactNode` | 标签 |
+| description | `ReactNode` | help 文案 |
+| error | `ReactNode` | 错误文案；**非空即隐含 invalid 并强制显错** |
 
 ## 示例
 ```tsx

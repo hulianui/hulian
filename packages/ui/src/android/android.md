@@ -30,7 +30,12 @@ import { Android, ANDROID_MODELS } from "@hulianui/ui"
 | model | `"pixel-9-pro-xl" \| "pixel-9-pro" \| "pixel-9" \| "galaxy-s24-ultra" \| "galaxy-s24"` | `"pixel-9-pro"`(showcase) | 预设机型，决定默认宽度。 |
 | width | `number` | model 预设，无 model 则 `280` | 设备宽度(px)，显式传入时优先于 model。 |
 | imageSrc | `string` | — | 屏幕内容图片地址，优先于 children。 |
-| children | `ReactNode` | — | 屏幕内容自定义节点。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 屏幕内容自定义节点。 |
 
 ## 示例
 ```tsx

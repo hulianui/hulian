@@ -27,7 +27,6 @@ import { RegionCascader, sliceLevel, cnDivisions } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string[]` | — | 受控值：行政区划 code 路径，如 `["11","1101","110101"]` |
 | defaultValue | `string[]` | — | 非受控初值 |
-| onChange | `(codes: string[], names: string[]) => void` | — | 变更回调，同时给 code 路径与名称路径（表单常存名称） |
 | level | `2 \| 3` | `3` | 联动层级：3=省/市/区县；2=省/市 |
 | showSearch | `boolean` | `true` | 浮层内搜索框，输"浦东"直达 |
 | changeOnSelect | `boolean` | — | 允许选到中间级即提交（不必到末级） |
@@ -36,6 +35,12 @@ import { RegionCascader, sliceLevel, cnDivisions } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 无效态 |
 | className | `string` | — | 透传到触发器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(codes: string[], names: string[]) => void` | 变更回调，同时给 code 路径与名称路径（表单常存名称） |
 
 ## 示例
 ```tsx

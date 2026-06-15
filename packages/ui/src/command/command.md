@@ -26,16 +26,26 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | open* | `boolean` | — | 受控开合。 |
-| onOpenChange* | `(open: boolean) => void` | — | 开合变化回调。 |
 | groups* | `CommandGroupData[]` | — | 命令分组（每组可带 heading）。 |
 | placeholder | `string` | — | 搜索框占位符。 |
 | filter | `(item: CommandItemData, query: string) => boolean` | 默认子串匹配 | 自定义过滤，返回 true 保留。默认大小写不敏感匹配 `keywords` + 字符串型 `label` + `value`。 |
-| onSelectItem | `(value: string) => void` | — | 任意项执行后回调（在 `item.onSelect` 之后触发）。 |
 | closeOnSelect | `boolean` | `true` | 执行项后是否自动关闭面板。 |
-| emptyMessage | `ReactNode` | — | 无匹配项时的空态文案。 |
 | shortcut | `boolean` | `false` | 内置 ⌘K / Ctrl+K 全局快捷键切换开合。 |
 | className | `string` | — | — |
 | aria-label | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onOpenChange* | `(open: boolean) => void` | 开合变化回调。 |
+| onSelectItem | `(value: string) => void` | 任意项执行后回调（在 `item.onSelect` 之后触发，拿到 value）。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| emptyMessage | `ReactNode` | 无匹配项时的空态文案。 |
 
 **CommandGroupData**：`heading?: ReactNode` / `items: CommandItemData[]`。
 

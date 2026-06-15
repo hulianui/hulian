@@ -25,23 +25,33 @@ import { Coupon } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | — | 券标题（如「全场通用券」）。 |
 | kind | `"amount" \| "discount" \| "shipping"` | `"amount"` | 券类型：满减额 / 折扣 / 包邮，决定左侧面额区主视觉。 |
 | amount | `number` | — | 面额（满减额，单位元）。kind=amount 时显示 ¥{amount}。 |
 | discount | `number` | — | 折扣（如 8.5 显示 8.5 折）。kind=discount 时使用。 |
 | threshold | `number` | — | 使用门槛（满 X 元可用）。0 / 省略 = 无门槛。 |
-| scope | `ReactNode` | — | 适用范围 / 副说明（如「仅限数码品类」）。 |
-| validUntil | `ReactNode` | — | 有效期文案（如「2026.06.30 前有效」）。 |
 | status | `"available" \| "claimed" \| "used" \| "expired"` | `"available"` | 券状态，驱动操作区文案与置灰。 |
 | tone | `"brand" \| "danger" \| "neutral"` | `"brand"` | 配色。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
 | shine | `boolean` | `false` | 面额区周期性扫光引导领取；建议仅对 available 券开启，已用/过期券自动不播。 |
 | selected | `boolean` | — | 选中态（结算页选券高亮 ring）。 |
-| onClaim | `() => void` | — | 领取回调（status=available 时操作按钮触发）。 |
-| onUse | `() => void` | — | 使用 / 去凑单回调（status=claimed 时操作按钮触发）。 |
 | actionLabel | `string` | — | 覆盖操作区按钮文案。 |
-| onSelect | `() => void` | — | 整券可点（结算选券），点击触发；与右侧按钮独立。 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClaim | `() => void` | 领取回调（status=available 时操作按钮触发）。 |
+| onUse | `() => void` | 使用 / 去凑单回调（status=claimed 时操作按钮触发）。 |
+| onSelect | `() => void` | 整券可点（结算选券），点击触发；与右侧按钮独立。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 券标题（如「全场通用券」）。 |
+| scope | `ReactNode` | 适用范围 / 副说明（如「仅限数码品类」）。 |
+| validUntil | `ReactNode` | 有效期文案（如「2026.06.30 前有效」）。 |
 
 ## 示例
 ```tsx

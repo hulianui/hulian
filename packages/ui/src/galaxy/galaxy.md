@@ -41,7 +41,12 @@ import { Galaxy } from "@hulianui/ui"
 | autoCenterRepulsion | `number` | `0` | 中心自动斥力，>0 形成空洞中心"星环" |
 | transparent | `boolean` | `true` | true=alpha 随亮度过渡可叠底色；false=纯黑底深空 |
 | className | `string` | — | 透传根容器（或兜底 div） |
-| fallback | `ReactNode` | 径向渐变 div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认径向渐变 div） |
 
 ## 示例
 ```tsx

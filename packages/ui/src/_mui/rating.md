@@ -27,15 +27,25 @@ import { Rating } from "@hulianui/ui"
 |------|------|------|------|
 | value | `number` | — | 受控当前分值 |
 | defaultValue | `number` | — | 非受控初始分值 |
-| onValueChange | `(value: number \| null) => void` | — | 瑚琏命名受控回调（替代 MUI `onChange(e,v)`）；清空时回传 `null` |
 | max | `number` | — | 星数上限 |
 | readOnly | `boolean` | `false` | 只读（不可交互） |
 | disabled | `boolean` | — | 禁用 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
 | color | `string` | `var(--color-primary)` | 星色（任意 CSS 颜色或 token var()）；hover 自动派生 |
-| icon | `ReactNode` | 实心五角星 | 自定义图标，如 `<Heart />` |
-| emptyIcon | `ReactNode` | 同 icon | 自定义空状态图标，缺省时复用 icon（同形状走空色） |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: number \| null) => void` | 瑚琏命名受控回调（替代 MUI `onChange(e,v)`）；清空时回传 `null` |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon | `ReactNode` | 自定义图标，如 `<Heart />`（默认实心五角星） |
+| emptyIcon | `ReactNode` | 自定义空状态图标，缺省时复用 icon（同形状走空色） |
 
 ## 示例
 ```tsx

@@ -29,7 +29,6 @@ import { Table } from "@hulianui/ui"
 | data* | `TData[]` | — | 行数据 |
 | enableSorting | `boolean` | `true` | false 则表头不可点、无排序箭头、不写 aria-sort |
 | sorting | `SortingState` | — | 受控排序态；不传走内部非受控 |
-| onSortingChange | `OnChangeFn<SortingState>` | — | 排序变化回调 |
 | striped | `boolean` | `true` | 偶数行斑马纹 |
 | bordered | `boolean` | `true` | 外层描边 + 圆角；被 ProTable 卡片包裹时置 false 避免双框 |
 | density | `"default" \| "middle" \| "compact"` | `"default"` | 行密度（仅调单元格内边距） |
@@ -37,19 +36,30 @@ import { Table } from "@hulianui/ui"
 | rowClassName | `(row: TData, index: number) => string \| undefined` | — | 行级附加 className（与斑马/选中类合并，不覆盖） |
 | enableRowSelection | `boolean \| ((row: Row<TData>) => boolean)` | 关 | 开行选择，自动前插复选框列（含全选）；函数可限定可选行 |
 | rowSelection | `RowSelectionState` | — | 受控选择态 |
-| onRowSelectionChange | `OnChangeFn<RowSelectionState>` | — | 选择变化回调 |
-| renderExpandedRow | `(row: Row<TData>) => ReactNode` | — | 提供则前插展开器列，展开行下渲染整宽明细面板 |
 | getRowCanExpand | `(row: Row<TData>) => boolean` | — | 限定可展开行 |
 | getSubRows | `(row: TData) => TData[] \| undefined` | — | 提供则启用树形（按 row.depth 缩进） |
 | indent | `number` | `16` | 树形/明细每级缩进像素 |
 | expanded | `ExpandedState` | — | 受控展开态（树形 + 明细共用） |
-| onExpandedChange | `OnChangeFn<ExpandedState>` | — | 展开变化回调 |
 | columnFilters | `ColumnFiltersState` | — | 受控列筛选态 |
-| onColumnFiltersChange | `OnChangeFn<ColumnFiltersState>` | — | 列筛选变化回调 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
-| emptyText | `ReactNode` | `locale.table.empty` | 空态文案 |
-| renderEmpty | `() => ReactNode` | — | 完全自定义空态（优先级高于 emptyText） |
 | className | `string` | — | 根节点类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSortingChange | `OnChangeFn<SortingState>` | 排序变化回调 |
+| onRowSelectionChange | `OnChangeFn<RowSelectionState>` | 选择变化回调 |
+| onExpandedChange | `OnChangeFn<ExpandedState>` | 展开变化回调（树形 + 明细共用） |
+| onColumnFiltersChange | `OnChangeFn<ColumnFiltersState>` | 列筛选变化回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderExpandedRow | `(row: Row<TData>) => ReactNode` | 渲染函数；提供则前插展开器列，展开行下渲染整宽明细面板 |
+| emptyText | `ReactNode` | 空态文案（默认 `locale.table.empty`） |
+| renderEmpty | `() => ReactNode` | 渲染函数；完全自定义空态（优先级高于 emptyText） |
 
 列 meta 增量（写在 `ColumnDef.meta`）：`sticky?: "left" \| "right"`（固定列贴左/右）、`filterable?: boolean`（表头渲染内置文本筛选框）。
 

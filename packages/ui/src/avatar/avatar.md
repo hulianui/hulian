@@ -28,8 +28,13 @@ import { Avatar } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 圆直径档位（CVA 变体）。 |
 | src | `string` | — | 头像图片 URL；加载失败回退到 fallback。 |
 | alt | `string` | — | 图片替代文本。 |
-| fallback | `ReactNode` | — | 无图/加载失败时显示（通常为首字母）。 |
 | className | `string` | — | — |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | 无图/加载失败时显示（通常为首字母）。 |
 
 ## 示例
 ```tsx

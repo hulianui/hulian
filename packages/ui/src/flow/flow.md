@@ -30,21 +30,31 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 | nodes * | FlowNode\<T\>[] | — | 受控节点数组（`{ id, position, data, width? }`） |
 | edges * | FlowEdge[] | — | 受控连线数组（`{ id, source, target, sourceHandle?, targetHandle? }`） |
 | getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | — | 声明每节点连接桩（左 target/右 source，按返回顺序在该侧均分纵向位置） |
-| renderNode * | (node: FlowNode\<T\>, state: { selected: boolean }) => ReactNode | — | 渲染节点内容（外框/桩/选中态由组件负责） |
-| onNodesChange | (nodes: FlowNode\<T\>[]) => void | — | 节点拖动后回吐整组新位置（组件不直接改 data） |
-| onConnect | (connection: FlowConnection) => void | — | 从输出桩拖到合法输入桩成功 → 新连接（无 id，你补 id 并去重） |
-| onEdgesDelete | (ids: string[]) => void | — | 删除连线（选中后点 × 或按 Delete） |
-| onNodeDelete | (id: string) => void | — | 删除节点（选中后点 × 或按 Delete） |
 | selectedId | string ｜ null | — | 单选受控：当前选中节点 id |
-| onSelectNode | (id: string ｜ null) => void | — | 选中变化（点节点=id，点空白=null） |
 | defaultNodeWidth | number | 240 | 默认节点宽度（px，画布坐标） |
 | minZoom | number | 0.35 | 缩放下限 |
 | maxZoom | number | 2 | 缩放上限 |
 | controls | boolean | true | 是否显示右下角缩放/适配工具条 |
-| background | ReactNode ｜ false | 内置点阵 | 画布底纹（false 关闭） |
 | isEdgeAnimated | (edge: FlowEdge) => boolean | — | 某条连线是否走流光动画（如运行中链路） |
 | className | string | — | 画布外层类名（须有确定高度，组件填满） |
 | apiRef | MutableRefObject\<FlowApi ｜ null\> | — | 命令式句柄（fitView / zoomIn / zoomOut / reset / autoLayout） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onNodesChange | (nodes: FlowNode\<T\>[]) => void | 节点拖动后回吐整组新位置（组件不直接改 data） |
+| onConnect | (connection: FlowConnection) => void | 从输出桩拖到合法输入桩成功 → 新连接（无 id，你补 id 并去重） |
+| onEdgesDelete | (ids: string[]) => void | 删除连线（选中后点 × 或按 Delete） |
+| onNodeDelete | (id: string) => void | 删除节点（选中后点 × 或按 Delete） |
+| onSelectNode | (id: string ｜ null) => void | 选中变化（点节点=id，点空白=null） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderNode * | (node: FlowNode\<T\>, state: { selected: boolean }) => ReactNode | 渲染节点内容的渲染函数（外框/桩/选中态由组件负责） |
+| background | ReactNode ｜ false | 画布底纹（false 关闭）；默认内置点阵 |
 
 ## 示例
 ```tsx

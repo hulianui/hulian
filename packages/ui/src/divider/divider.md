@@ -29,8 +29,13 @@ import { Divider } from "@hulianui/ui"
 | orientation | `"left" \| "center" \| "right"` | `"center"` | 嵌入文字的水平位置（仅 horizontal + 有文字时生效） |
 | dashed | `boolean` | `false` | 虚线 |
 | plain | `boolean` | `false` | 文字常规字重（默认加粗一档） |
-| children | `ReactNode` | — | 嵌入分隔线中的文字；不传则为纯分隔线 |
 | className | `string` | — | 额外类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 嵌入分隔线中的文字；不传则为纯分隔线 |
 
 ## 示例
 ```tsx

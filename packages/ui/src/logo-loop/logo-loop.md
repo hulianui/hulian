@@ -36,12 +36,17 @@ import { LogoLoop } from "@hulianui/ui"
 | fadeOut | `boolean` | `false` | 两端是否加渐隐遮罩（吃 bg-surface token，自动明暗适配） |
 | fadeOutColor | `string` | `var(--color-surface)` | 渐隐遮罩颜色，可传任意 CSS 颜色覆盖 |
 | scaleOnHover | `boolean` | `false` | 悬停是否放大单个 logo（scale 1.2） |
-| renderItem | `(item: LogoItem, index: number) => ReactNode` | — | 自定义渲染单项，覆盖默认图片/节点逻辑 |
 | ariaLabel | `string` | `"合作伙伴 logo"` | 根容器无障碍标签 |
 | className | `string` | — | 透传根容器额外类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
 > `LogoItem` 二选一：图片型 `{ src, srcSet?, sizes?, width?, height?, alt?, title?, href? }` 或节点型 `{ node, ariaLabel?, title?, href? }`；带 `href` 时整项包裹为链接。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem | `(item: LogoItem, index: number) => ReactNode` | 渲染函数：自定义渲染单项，覆盖默认图片/节点逻辑 |
 
 ## 示例
 ```tsx

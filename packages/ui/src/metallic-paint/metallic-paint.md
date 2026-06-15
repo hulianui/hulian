@@ -34,7 +34,12 @@ import { MetallicPaint } from "@hulianui/ui"
 | blur | `number` | `0.6` | 色带边缘模糊，建议 0.2–1.5；过小条纹生硬、过大金属感消散 |
 | angle | `number` | `-45` | 整体旋转角度（度），改变光线入射方向 |
 | className | `string` | — | 透传到容器（或 fallback div） |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时的静态替代（默认 token 金属渐变 div） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代（默认 token 金属渐变 div） |
 
 ## 示例
 ```tsx

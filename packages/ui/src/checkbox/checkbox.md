@@ -28,16 +28,26 @@ import { Checkbox } from "@hulianui/ui"
 | checked | `boolean` | — | 受控勾选态 |
 | defaultChecked | `boolean` | — | 非受控初始勾选态 |
 | indeterminate | `boolean` | `false` | 第三态：半选（Base UI 原生 indeterminate） |
-| onCheckedChange | `(checked: boolean) => void` | — | 勾选变化回调（瑚琏收敛签名，丢 eventDetails） |
 | disabled | `boolean` | `false` | 禁用 |
 | required | `boolean` | `false` | 必填 |
 | name | `string` | — | 表单字段名 |
 | value | `string` | — | 表单值；放进 CheckboxGroup 时按此 value 匹配成员 |
 | id | `string` | — | 关联 label 的 id |
-| label | `ReactNode` | — | 盒右 inline label（`<label>` 原生关联） |
 | className | `string` | — | 落在 Checkbox.Root |
 | tabIndex | `number` | — | 透传到 Checkbox.Root（树场景置 -1 退出 Tab 序，焦点由容器 roving 接管） |
 | aria-label | `string` | — | 无 label 时的无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCheckedChange | `(checked: boolean) => void` | 勾选变化回调（瑚琏收敛签名，丢 eventDetails） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 盒右 inline label（`<label>` 原生关联） |
 
 ## 示例
 ```tsx

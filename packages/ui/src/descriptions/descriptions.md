@@ -27,12 +27,17 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | `ReactNode` | — | 标题(左上) |
-| extra | `ReactNode` | — | 右上操作区 |
 | column | `number` | `3` | 每行列数 |
 | layout | `"horizontal" \| "vertical"` | `"horizontal"` | horizontal=键左值右；vertical=键上值下 |
 | bordered | `boolean` | `false` | 带边框分隔的表格态 |
 | items | `DescriptionsItemData[]` | — | 数据驱动备选；提供时优先于 `DescriptionsItem` 子节点 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 标题(左上) |
+| extra | `ReactNode` | 右上操作区 |
 
 `DescriptionsItem` / `DescriptionsItemData`：`label`(键名，text-muted) / `children`(值，text-foreground) / `span`(跨列数，默认 1，超过 `column` 时钳制到 `column`)
 

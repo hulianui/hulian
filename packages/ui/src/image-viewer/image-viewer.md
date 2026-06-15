@@ -26,11 +26,16 @@ import { ImageViewer } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | open* | `boolean` | — | 受控开关 |
-| onOpenChange* | `(open: boolean) => void` | — | 开关回调（Esc / 点遮罩 / 关闭按钮触发） |
 | images* | `ImageViewerImage[]` | — | 图片数组。`{src, alt?, caption?}` |
 | index* | `number` | — | 受控当前页（组件不自管，翻页/点缩略图都回调出去） |
-| onIndexChange* | `(index: number) => void` | — | 翻页回调（箭头/← →/点缩略图触发） |
 | className | `string` | — | 面板类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onOpenChange* | `(open: boolean) => void` | 开关回调（Esc / 点遮罩 / 关闭按钮触发） |
+| onIndexChange* | `(index: number) => void` | 翻页回调（箭头/← →/点缩略图触发） |
 
 ## 示例
 ```tsx

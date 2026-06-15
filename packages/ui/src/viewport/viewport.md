@@ -25,16 +25,26 @@ import { Viewport } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 容器内容，内部用 `@md:`/`@5xl:` 等容器变体按本容器宽度自适应。 |
 | device | `"web" \| "tablet" \| "phone"` | — | 设备预设宽度（受控）：web 满宽自适应 / tablet 768px / phone 390px。 |
 | defaultDevice | `"web" \| "tablet" \| "phone"` | `"web"` | 非受控初始设备。 |
-| onDeviceChange | `(device: "web" \| "tablet" \| "phone") => void` | — | 设备变化回调。 |
 | controls | `boolean` | `false` | 顶部显示设备切换器（dogfood Segmented）。 |
 | width | `number \| string` | — | 自定义宽度，覆盖 device 预设（数字=px 或任意 CSS 长度）。 |
 | name | `string` | — | 具名容器，用于 `@md/name:` 具名容器查询；缺省匿名容器（用 `@md:`）。 |
 | framed | `boolean` | `true` | tablet/phone 加设备感边框；web 恒细边框。 |
 | height | `number \| string` | 随内容 | 固定容器高度（数字=px 或 CSS）。 |
 | className | `string` | — | 根容器类名。 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onDeviceChange | `(device: "web" \| "tablet" \| "phone") => void` | 设备变化回调。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 容器内容，内部用 `@md:`/`@5xl:` 等容器变体按本容器宽度自适应。 |
 
 ## 示例
 ```tsx

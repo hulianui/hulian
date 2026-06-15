@@ -29,9 +29,20 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
-| prefix | `ReactNode` | — | 前缀内容（如 `¥`） |
-| suffix | `ReactNode` | — | 后缀内容（如 `.00`） |
 | disabled | `boolean` | `false` | 禁用 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(e: ChangeEvent<HTMLInputElement>) => void` | 透传原生输入回调（受控时配合 `value` 使用） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| prefix | `ReactNode` | 前缀内容（如 `¥`） |
+| suffix | `ReactNode` | 后缀内容（如 `.00`） |
 
 ## 示例
 ```tsx

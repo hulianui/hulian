@@ -25,20 +25,30 @@ import { Book3D } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | — | 封面主标题（如 "CSS" / "JS"） |
-| subtitle | `ReactNode` | — | 封面副标题（如 "转换" / "FUNCTION"） |
 | cover | `string` | — | 封面图 url；提供时覆盖 coverColor 渐变 |
 | logo | `string` | — | 封面中心叠加的产品 logo / app icon（图 url），标题落底部 |
-| inside | `ReactNode` | — | 内页内容；提供则 hover 时前封绕书脊翻开露出内页 |
 | coverColor | `{ from: string; to: string }` | 品牌渐变 | 封面渐变色 |
 | spineColor | `string` | 浅纸色 | 书脊/页厚颜色（CSS color） |
 | thickness | `string` | `"2.25rem"` | 书脊厚度（CSS 长度） |
 | ribbon | `string` | — | 角标缎带文字（如 "NEW" / "N°1"） |
 | ribbonTone | `"brand" \| "danger" \| "success"` | `"danger"` | 缎带语气 |
 | href | `string` | — | 提供则整本书是链接 |
-| onClick | `() => void` | — | 无 href 时提供则整本书是按钮 |
 | target | `string` | — | 外链是否新窗（href 时生效） |
 | className | `string` | — | 根节点类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `() => void` | 无 href 时提供则整本书是按钮 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 封面主标题（如 "CSS" / "JS"） |
+| subtitle | `ReactNode` | 封面副标题（如 "转换" / "FUNCTION"） |
+| inside | `ReactNode` | 内页内容；提供则 hover 时前封绕书脊翻开露出内页 |
 
 ## 示例
 ```tsx

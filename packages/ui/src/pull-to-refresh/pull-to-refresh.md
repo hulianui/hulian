@@ -25,14 +25,24 @@ import { PullToRefresh } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `onRefresh` * | `() => Promise<void> \| void` | — | 触发刷新回调；返回 Promise 期间保持「刷新中」，结束后回弹 |
-| `children` * | `ReactNode` | — | 可滚动内容 |
 | `threshold` | `number` | `64` | 触发刷新的下拉阈值 px |
 | `resistance` | `number` | `0.5` | 下拉阻尼系数（0-1，越小越「沉」） |
-| `pullingText` | `ReactNode` | — | 下拉中文案 |
-| `armedText` | `ReactNode` | — | 越过阈值待释放时的文案 |
-| `refreshingText` | `ReactNode` | — | 刷新中文案 |
 | `className` | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `onRefresh` * | `() => Promise<void> \| void` | 触发刷新回调；返回 Promise 期间保持「刷新中」，结束后回弹 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `children` * | `ReactNode` | 可滚动内容 |
+| `pullingText` | `ReactNode` | 下拉中文案 |
+| `armedText` | `ReactNode` | 越过阈值待释放时的文案 |
+| `refreshingText` | `ReactNode` | 刷新中文案 |
 
 ## 示例
 ```tsx

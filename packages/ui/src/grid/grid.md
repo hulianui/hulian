@@ -34,7 +34,6 @@ import { Grid, GridItem } from "@hulianui/ui"
 | rowGap | `number` | — | 行间距，覆盖 gap（× 0.25rem） |
 | inline | `boolean` | `false` | 用 inline-grid 而非 grid |
 | as | `ElementType` | `"div"` | 渲染的元素标签 |
-| children | `ReactNode` | — | 子元素 |
 
 ### GridItem
 
@@ -43,9 +42,22 @@ import { Grid, GridItem } from "@hulianui/ui"
 | colSpan | `number` | — | 跨列数 |
 | rowSpan | `number` | — | 跨行数 |
 | as | `ElementType` | `"div"` | 渲染的元素标签 |
-| children | `ReactNode` | — | 子元素 |
 
 两者其余 `HTMLAttributes<HTMLElement>` 属性透传。
+
+## Slots
+
+### Grid
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 子元素 |
+
+### GridItem
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 子元素 |
 
 ## 示例
 ```tsx

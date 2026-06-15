@@ -32,7 +32,12 @@ import { ElectricBorder } from "@hulianui/ui"
 | borderRadius | `number` | `16` | 圆角半径（px），同时应用到容器与电流描边 |
 | className | `string` | — | 透传根容器额外 className |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
-| children | `ReactNode` | — | 被电流边框包裹的内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 被电流边框包裹的内容 |
 
 ## 示例
 ```tsx

@@ -30,13 +30,23 @@ import { EditableTable } from "@hulianui/ui"
 | columns* | `EditableColumn<T>[]` | — | 列定义(见下表) |
 | data* | `T[]` | — | 数据数组(受控数据源) |
 | rowKey* | `(row: T) => string` | — | 行稳定 key |
-| onChange | `(next: T[]) => void` | — | 任一提交/删除/新增后回传完整新数据 |
 | addable | `boolean` | `false` | 显示「新增一行」按钮(需配合 `newRow`) |
-| newRow | `() => T` | — | 新行工厂；新增后该行自动进入编辑态 |
+| newRow | `() => T` | — | 新行工厂(返回新行数据)；新增后该行自动进入编辑态 |
 | deletable | `boolean` | `false` | 每行可删除 |
 | validateRow | `(row: T) => boolean` | — | 保存前校验整行，返回错误(falsy)则拦截保存(行内提示由消费者自理) |
-| summary | `(data: T[]) => ReactNode` | — | 合计页脚：返回 tfoot 内容，消费者自备 `<tr><td colSpan=…>` 控制跨列对齐 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(next: T[]) => void` | 任一提交/删除/新增后回传完整新数据 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| summary | `(data: T[]) => ReactNode` | 渲染函数——合计页脚：返回 tfoot 内容，消费者自备 `<tr><td colSpan=…>` 控制跨列对齐 |
 
 `EditableColumn<T>`：
 

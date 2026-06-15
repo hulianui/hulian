@@ -29,8 +29,13 @@ import { JsonViewer, valueType, jsonPath } from "@hulianui/ui"
 | rootName | `string` | — | 根节点标签(如 `"response"`) |
 | defaultExpandedDepth | `number` | `1` | 初始展开深度：嵌套节点 `depth < defaultExpandedDepth` 时初始展开(根的直接子节点 depth=1) |
 | maxAutoExpandKeys | `number` | `50` | 大对象/数组懒展开阈值：子项数超过则初始折叠保护 |
-| onCopyPath | `(path: string) => void` | — | 复制节点 JSON path 回调(同时把节点值复制到剪贴板) |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCopyPath | `(path: string) => void` | 复制节点 JSON path 回调(同时把节点值复制到剪贴板) |
 
 ## 示例
 ```tsx

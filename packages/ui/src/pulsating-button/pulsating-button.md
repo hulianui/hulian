@@ -27,7 +27,19 @@ import { PulsatingButton } from "@hulianui/ui"
 |------|------|------|------|
 | pulseColor | `string` | `var(--color-primary)` 的 70% | 脉冲光环色 |
 | duration | `string` | `1.5s` | 一轮脉冲秒数 |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性（onClick、children 等） |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | 点击回调，经 `ComponentPropsWithoutRef<"button">` 透传 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 按钮文案，经原生 button 属性透传 |
 
 ## 示例
 ```tsx

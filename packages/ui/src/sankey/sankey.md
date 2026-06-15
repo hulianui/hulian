@@ -31,11 +31,21 @@ import { Sankey, assignLayers, computeSankeyLayout } from "@hulianui/ui"
 | nodeWidth | `number` | `16` | 节点矩形宽 |
 | nodePadding | `number` | `12` | 同层节点间垂直间隔 |
 | linkOpacity | `number` | `0.35` | ribbon 描边透明度（hover 提至 0.6） |
-| renderNodeLabel | `(node: SankeyLaidNode) => ReactNode` | — | 自定义节点标签 |
-| renderTooltip | `(item: {type:"node";node} \| {type:"link";link}) => ReactNode` | — | 自定义 hover tooltip |
-| onNodeClick | `(node: SankeyLaidNode) => void` | — | 点击节点下钻 |
-| onLinkClick | `(link: SankeyLaidLink) => void` | — | 点击连线下钻 |
 | className | `string` | — | 外层类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onNodeClick | `(node: SankeyLaidNode) => void` | 点击节点下钻 |
+| onLinkClick | `(link: SankeyLaidLink) => void` | 点击连线下钻 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderNodeLabel | `(node: SankeyLaidNode) => ReactNode` | 渲染函数：自定义节点标签 |
+| renderTooltip | `(item: {type:"node";node} \| {type:"link";link}) => ReactNode` | 渲染函数：自定义 hover tooltip |
 
 ## 示例
 ```tsx

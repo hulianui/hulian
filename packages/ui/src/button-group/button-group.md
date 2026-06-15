@@ -29,8 +29,13 @@ import { ButtonGroup } from "@hulianui/ui"
 | attached | `boolean` | `true` | true=子按钮贴合成一体（抹内侧圆角/合并边框/hover 抬层）；false=留 gap 仅作语义分组 |
 | gap | `"sm" ｜ "md"` | `"sm"` | 子项间距档（仅 `attached={false}` 生效） |
 | className | `string` | — | 透传根节点类名 |
-| children | `ReactNode` | — | 一般放若干 `<Button>`；也可混入 Dropdown/Tooltip 包裹的按钮 |
 | aria-label | `string` | — | 组的无障碍标签 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 一般放若干 `<Button>`；也可混入 Dropdown/Tooltip 包裹的按钮 |
 
 ## 示例
 ```tsx

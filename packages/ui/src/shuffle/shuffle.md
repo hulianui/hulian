@@ -36,9 +36,14 @@ import { Shuffle } from "@hulianui/ui"
 | triggerOnHover | `boolean` | `false` | 鼠标移入时重新洗牌（动画空闲才响应） |
 | tag | `"p" \| "span" \| "div" \| "h1" \| "h2" \| "h3" \| "h4"` | `"p"` | 渲染标签 |
 | textAlign | `CSSProperties["textAlign"]` | `"center"` | 文本对齐 |
-| onShuffleComplete | `() => void` | — | 解析完成回调（loop 时每轮结束都触发） |
 | className | `string` | — | 合并到根元素的类名 |
 | style | `CSSProperties` | — | 行内样式（与 textAlign 合并） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onShuffleComplete | `() => void` | 解析完成回调（loop 时每轮结束都触发） |
 
 ## 示例
 ```tsx

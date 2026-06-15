@@ -29,11 +29,16 @@ import { Lanyard } from "@hulianui/ui"
 | ropeColor | `string` | `var(--color-primary)` | 挂绳颜色，喂 SVG stroke 的 token 须带 `--color-` 前缀 |
 | stiffness | `number` | `0.045` | 回弹刚度（弹簧常数），越大回正越快越硬，建议 0.02–0.12 |
 | damping | `number` | `0.92` | 阻尼（每帧速度衰减），越接近 1 余摆越久，建议 0.85–0.97 |
-| children | `ReactNode` | — | 工牌正面内容；不传则渲染占位工牌 |
 | title | `string` | `"瑚琏 · HULIAN"` | 占位工牌标题（仅未传 children 时显示） |
 | subtitle | `string` | `"拖动摆一摆"` | 占位工牌副标题（仅未传 children 时显示） |
 | className | `string` | — | 透传根容器 className |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 工牌正面内容；不传则渲染占位工牌 |
 
 ## 示例
 

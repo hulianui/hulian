@@ -38,7 +38,12 @@ import { RippleGrid } from "@hulianui/ui"
 | mouseInteraction | `boolean` | `true` | 指针处额外激起一圈涟漪 |
 | mouseInteractionRadius | `number` | `1` | 鼠标涟漪影响半径 |
 | className | `string` | — | 透传到根容器（或 fallback div） |
-| fallback | `ReactNode` | 静态网格底纹 div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认静态网格底纹 div） |
 
 ## 示例
 ```tsx

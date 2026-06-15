@@ -33,7 +33,12 @@ import { Beams } from "@hulianui/ui"
 | scale | `number` | `0.2` | 噪声纹理缩放，越小波纹越舒展，越大越细碎 |
 | rotation | `number` | `30` | 整组光束旋转角度（度）；0=垂直，正值顺时针斜射 |
 | className | `string` | — | 透传到根容器（根自带 absolute inset-0 z-0） |
-| fallback | `ReactNode` | 渐变兜底 | reduced-motion / 无 WebGL 时降级的静态内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时降级渲染的静态内容（叠在渐变兜底之上） |
 
 ## 示例
 ```tsx

@@ -48,7 +48,12 @@ import { Grainient } from "@hulianui/ui"
 | color2 | `string` | `--color-chart-2` | 渐变第二色（主色/中段） |
 | color3 | `string` | `--color-chart-4` | 渐变第三色（暗端） |
 | className | `string` | — | 透传根容器，自带 `absolute inset-0 z-0` |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 静态渐变兜底层内的内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 静态渐变兜底层内的内容 |
 
 ## 示例
 ```tsx

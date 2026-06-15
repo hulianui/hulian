@@ -25,9 +25,7 @@ import { BubbleMenu } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| logo | `ReactNode` | — | 左上角 logo 气泡内容：字符串当图片 src，ReactNode 直接渲染 |
 | items | `BubbleMenuItem[]` | 内置示例项 | 菜单项列表，缺省用内置示例 |
-| onMenuClick | `(isOpen: boolean) => void` | — | 开合状态回调，参数为下一状态是否打开 |
 | menuAriaLabel | `string` | — | 切换按钮无障碍标签 |
 | useFixedPosition | `boolean` | `false` | true=fixed（贴视口），false=absolute（贴最近定位父级） |
 | animationDuration | `number` | `0.5` | 单个胶囊弹入动画时长（秒） |
@@ -36,6 +34,18 @@ import { BubbleMenu } from "@hulianui/ui"
 | style | `CSSProperties` | — | 透传根 nav 内联样式 |
 
 > `BubbleMenuItem`: `{ label, href, ariaLabel?, rotation?, hoverStyles? }`；`rotation` 是桌面端胶囊旋转角（移动端归零），`hoverStyles` 为 `{ bgColor?, textColor? }` 悬停反色。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onMenuClick | `(isOpen: boolean) => void` | 开合状态回调，参数为下一状态是否打开 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| logo | `ReactNode` | 左上角 logo 气泡内容：字符串当图片 src，ReactNode 直接渲染 |
 
 ## 示例
 ```tsx

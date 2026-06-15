@@ -39,7 +39,12 @@ import { Balatro } from "@hulianui/ui"
 | isRotate | `boolean` | `false` | 是否随时间持续自转；true 时 spinRotation 改为驱动旋转速度 |
 | mouseInteraction | `boolean` | `true` | 是否开启鼠标交互；关闭后 pointer-events-none |
 | className | `string` | — | 透传到根容器（或 fallback div） |
-| fallback | `ReactNode` | conic 旋涡兜底 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认 conic 旋涡兜底） |
 
 ## 示例
 ```tsx

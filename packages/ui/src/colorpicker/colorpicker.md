@@ -27,14 +27,19 @@ import { ColorPicker, parseColor, rgbToHex, rgbToHsl, formatColor } from "@hulia
 |------|------|------|------|
 | value | `string` | — | 受控颜色值。接受 hex / rgb() / hsl() 串，内部统一规范为 hex 作单一真源 |
 | defaultValue | `string` | `"#3b82f6"` | 非受控初值 |
-| onValueChange | `(value: string) => void` | — | 变更回调，参数为**当前所选格式**的字符串；切换格式也会触发 |
 | format | `"hex" \| "rgb" \| "hsl"` | — | 受控的输出/展示格式，传入即进入格式受控模式 |
 | defaultFormat | `"hex" \| "rgb" \| "hsl"` | `"hex"` | 非受控初始格式 |
-| onFormatChange | `(format: ColorFormat) => void` | — | 格式切换回调 |
 | disabled | `boolean` | `false` | 禁用：罩层 + 屏蔽交互 |
 | showInput | `boolean` | `true` | 是否显示文本输入 |
 | showFormatSwitcher | `boolean` | `true` | 是否显示 HEX/RGB/HSL 格式切换器 |
 | className | `string` | — | 透传到外壳 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string) => void` | 变更回调，参数为**当前所选格式**的字符串；切换格式也会触发 |
+| onFormatChange | `(format: ColorFormat) => void` | 格式切换回调 |
 
 ## 示例
 ```tsx

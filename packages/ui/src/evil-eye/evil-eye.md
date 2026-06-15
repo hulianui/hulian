@@ -36,7 +36,12 @@ import { EvilEye } from "@hulianui/ui"
 | pupilFollow | `number` | `1.0` | 瞳孔跟随光标幅度，0=不动；带惯性 lerp，松手缓缓回正 |
 | flameSpeed | `number` | `1.0` | 火焰流动速度，建议 0.3–2.0 |
 | className | `string` | — | 透传根容器，组件默认 `block h-full w-full`，尺寸由容器决定 |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 降级时叠在静态兜底层里的内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 降级时叠在静态兜底层里的内容 |
 
 ## 示例
 ```tsx

@@ -34,9 +34,14 @@ import { DecayCard } from "@hulianui/ui"
 | seed | `number` | `4` | 湍流随机种子，换数字即换一套溶解纹理 |
 | maxDisplacement | `number` | `400` | 位移上限（feDisplacementMap scale 峰值），鼠标越快溶解越剧烈 |
 | movementBound | `number` | `50` | 卡片随鼠标平移软边界（px），超出后按 0.2 系数推进形成弹性阻尼手感 |
-| children | `ReactNode` | — | 覆盖在卡底的文字内容，层叠在图片之上、不受溶解影响 |
 | className | `string` | — | 透传到根容器的额外 className |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 覆盖在卡底的文字内容，层叠在图片之上、不受溶解影响 |
 
 ## 示例
 ```tsx

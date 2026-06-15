@@ -30,9 +30,14 @@ import { Heading } from "@hulianui/ui"
 | size | `"xs" \| "sm" \| "base" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl"` | 按 level 派生 | 覆盖视觉尺寸（独立于 level） |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"semibold"` | 字重 |
 | balance | `boolean` | `false` | 启用 text-balance 平衡换行（多行标题更匀称） |
-| children | `ReactNode` | — | 标题文本 |
 
 继承 `HTMLAttributes<HTMLHeadingElement>`（已 Omit `color`）。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 标题文本 |
 
 ## 示例
 ```tsx

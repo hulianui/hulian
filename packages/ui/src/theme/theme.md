@@ -25,9 +25,14 @@ import { ThemeProvider } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 被包裹的子树 |
 | defaultSetting | `"light" \| "dark" \| "system"` | `"system"` | 初始主题偏好；mount 时若 localStorage(`hulian-theme`) 有存值则被其覆盖 |
 | forcedTheme | `"light" \| "dark"` | — | 强制主题（如按路由定主题）：覆盖用户偏好与系统监听；期间 `setTheme`/`toggle` 仍写入偏好但不改变视觉 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 被包裹的子树 |
 
 `useTheme()` 返回的 context 值：`theme`（解析后的实际主题 `"light"|"dark"`）、`setting`（用户选择，含 `"system"`）、`setTheme(s)`、`toggle()`。
 

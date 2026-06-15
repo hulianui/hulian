@@ -32,7 +32,12 @@ import { Lightning } from "@hulianui/ui"
 | intensity | `number` | `1` | 辉度强度，越大越亮越粗 |
 | size | `number` | `1` | 噪声尺度，越大分叉越细密、越小越宏观 |
 | className | `string` | — | 透传根容器(reduced / WebGL 失败时透传 fallback div) |
-| fallback | `ReactNode` | token 纵向辉光渐变 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容，默认 token 纵向辉光渐变 |
 
 ## 示例
 ```tsx

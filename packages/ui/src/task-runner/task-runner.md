@@ -25,17 +25,22 @@ import { TaskRunner, resolveProgress, statusMeta } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | — | 卡头标题（如 `"Sandbox"`） |
 | steps* | `AgentTask[]` | — | 步骤清单（复用 AgentTask：title/status/detail/meta，耗时放 meta） |
-| tag | `ReactNode` | — | 标题旁标签（如 `"node26"`），渲染为浅底 Tag |
 | status | `"idle" \| "running" \| "success" \| "error"` | `"idle"` | 整体运行状态：驱动头部徽标色 + 进度条 tone |
-| statusLabel | `ReactNode` | — | 头部徽标文字覆盖；省略时按 status 派生（Idle/Running/Done/Failed） |
 | progress | `number` | — | 顶部进度 0-100；省略则按 steps 完成(done)比自动派生 |
-| elapsed | `ReactNode` | — | 底部左侧累计耗时（如 `"3.12s"`） |
-| footerStatus | `ReactNode` | — | 底部右侧状态文字；footerExtra 存在时被其替换 |
-| headerExtra | `ReactNode` | — | 头部右侧追加（按钮/菜单等） |
-| footerExtra | `ReactNode` | — | 替换底部右侧内容 |
 | className | `string` | — | 容器附加类 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 卡头标题（如 `"Sandbox"`） |
+| tag | `ReactNode` | 标题旁标签（如 `"node26"`），渲染为浅底 Tag |
+| statusLabel | `ReactNode` | 头部徽标文字覆盖；省略时按 status 派生（Idle/Running/Done/Failed） |
+| elapsed | `ReactNode` | 底部左侧累计耗时（如 `"3.12s"`） |
+| footerStatus | `ReactNode` | 底部右侧状态文字；footerExtra 存在时被其替换 |
+| headerExtra | `ReactNode` | 头部右侧追加（按钮/菜单等） |
+| footerExtra | `ReactNode` | 替换底部右侧内容 |
 
 `AgentTask` 步骤项 `status`：`"done"`（已完成，meta 显耗时）/ `"running"`（高亮）/ `"pending"`（空心环）/ `"error"`。
 

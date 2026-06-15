@@ -42,7 +42,12 @@ import { Ferrofluid } from "@hulianui/ui"
 | mouseDampening | `number` | `0.15` | 鼠标跟随阻尼（秒），0=立即跟随 |
 | dpr | `number` | `min(dpr, 2)` | 设备像素比上限，调低省 GPU |
 | className | `string` | — | 透传根容器（或兜底 div） |
-| fallback | `ReactNode` | 径向渐变 div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认径向渐变 div） |
 
 ## 示例
 ```tsx

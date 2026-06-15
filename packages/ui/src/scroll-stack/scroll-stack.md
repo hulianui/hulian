@@ -27,7 +27,6 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 卡片内容，建议每张用 `ScrollStackItem` 包裹（组件自动识别 `data-scroll-stack-card` 标记的元素参与堆叠） |
 | itemDistance | `number` | `100` | 相邻卡片初始垂直间距（px），越大未堆叠时铺得越开 |
 | itemScale | `number` | `0.03` | 每张相对前一张的缩放增量，形成后压前层层递进的纵深 |
 | itemStackDistance | `number` | `30` | 卡片被钉住时彼此错开的垂直距离（px），决定露出的"卡边"高度 |
@@ -36,9 +35,20 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 | baseScale | `number` | `0.85` | 首张（最底层）卡的基础缩放，后续卡按 itemScale 递增 |
 | rotationAmount | `number` | `0` | 每层堆叠旋转增量（deg），正值产生扑克牌式扇形错位 |
 | blurAmount | `number` | `0` | 被压下方卡片的模糊增量（px），>0 越靠下越模糊；reduced-motion 下自动关闭 |
-| onStackComplete | `() => void` | — | 最后一张进入钉住区时触发，可联动后续动效 |
 | className | `string` | — | 追加到滚动容器根节点的类名 |
 | style | `CSSProperties` | — | 透传到滚动容器根节点的内联样式 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onStackComplete | `() => void` | 最后一张进入钉住区时触发，可联动后续动效 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 卡片内容，建议每张用 `ScrollStackItem` 包裹（组件自动识别 `data-scroll-stack-card` 标记的元素参与堆叠） |
 
 `ScrollStackItem`：`{ children?: ReactNode; itemClassName?: string }` —— `itemClassName` 追加到单张卡外层。
 

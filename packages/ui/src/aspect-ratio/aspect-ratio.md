@@ -26,9 +26,14 @@ import { AspectRatio } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | ratio | `number` | `1` | 宽高比（宽 / 高），如 `16/9`、`1`、`4/3`。 |
-| children | `ReactNode` | — | 子元素（通常 img/video），自动铺满容器。 |
 
 继承 `HTMLAttributes<HTMLDivElement>`。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 子元素（通常 img/video），自动铺满容器。 |
 
 ## 示例
 ```tsx

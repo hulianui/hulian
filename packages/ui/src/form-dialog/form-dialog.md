@@ -30,15 +30,25 @@ import { ModalForm, DrawerForm } from "@hulianui/ui"
 | title * | `string` | — | 标题（a11y label） |
 | open | `boolean` | — | 受控开关 |
 | defaultOpen | `boolean` | — | 非受控初始开关 |
-| onOpenChange | `(open: boolean) => void` | — | 开关变化回调 |
-| trigger | `ReactElement` | — | 触发元素（非受控打开用）；受控时可省 |
 | form | `FormInstance` | — | useForm 实例：提供则提交前自动 `validate()`，校验不过保持打开 |
-| onFinish | `(values: FormValues) => void \| boolean \| Promise<void \| boolean>` | — | 提交回调；返回 Promise → 按钮 loading；resolve(非 false) 自动关闭；reject 或返回 false 保持打开 |
 | submitText | `string` | `locale.modalForm.submit` | 提交按钮文案 |
 | cancelText | `string` | `locale.modalForm.cancel` | 取消按钮文案 |
 | className | `string` | — | 容器类名（控宽度等） |
-| children | `ReactNode` | — | 表单字段 |
 | side | `DrawerSide` | `"right"` | 仅 `DrawerForm`：抽屉贴边方向 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onOpenChange | `(open: boolean) => void` | 开关变化回调 |
+| onFinish | `(values: FormValues) => void \| boolean \| Promise<void \| boolean>` | 提交回调；返回 Promise → 按钮 loading；resolve(非 false) 自动关闭；reject 或返回 false 保持打开 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| trigger | `ReactElement` | 触发元素（非受控打开用）；受控时可省 |
+| children | `ReactNode` | 表单字段 |
 
 ## 示例
 ```tsx

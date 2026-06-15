@@ -27,14 +27,24 @@ import { Banner } from "@hulianui/ui"
 |------|------|------|------|
 | tone | `"neutral"｜"info"｜"brand"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色 |
 | variant | `"soft"｜"solid"` | `"soft"` | soft=浅底 / solid=实色填充（更醒目，适合促销/重大公告） |
-| icon | `ReactNode` | — | 前导图标（传入 svg；随 tone 自动着色） |
-| children | `ReactNode` | — | 文案主体 |
-| action | `ReactNode` | — | 右侧操作区（如「查看详情」链接/按钮） |
 | align | `"start"｜"center"` | `"center"` | 内容对齐 |
 | scrollable | `boolean` | `false` | 文案过长时单行无缝滚动（纯 CSS marquee·hover 暂停） |
-| onClose | `() => void` | — | 传入则渲染关闭按钮 |
 | closeLabel | `string` | — | 关闭按钮无障碍标签 |
 | className | `string` | — | 额外类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClose | `() => void` | 传入则渲染关闭按钮 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon | `ReactNode` | 前导图标（传入 svg；随 tone 自动着色） |
+| children | `ReactNode` | 文案主体 |
+| action | `ReactNode` | 右侧操作区（如「查看详情」链接/按钮） |
 
 ## 示例
 ```tsx

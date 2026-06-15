@@ -39,7 +39,12 @@ import { GradualBlur } from "@hulianui/ui"
 | zIndex | `number` | `10` | 叠加的 z-index |
 | className | `string` | — | 透传根容器额外 className |
 | style | `CSSProperties` | — | 透传根容器内联样式（与内部计算样式合并，同名以此为准） |
-| children | `ReactNode` | — | 覆盖在模糊层之上的内容（如贴边标题/操作条） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 覆盖在模糊层之上的内容（如贴边标题/操作条） |
 
 ## 示例
 ```tsx

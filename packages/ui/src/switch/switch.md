@@ -27,11 +27,16 @@ import { Switch } from "@hulianui/ui"
 |------|------|------|------|
 | checked | `boolean` | — | 受控开关态 |
 | defaultChecked | `boolean` | `false` | 非受控初始态 |
-| onCheckedChange | `(checked: boolean) => void` | — | 开关变化回调 |
 | disabled | `boolean` | `false` | 禁用 |
 | id | `string` | — | — |
 | className | `string` | — | — |
 | aria-label | `string` | — | 无可见标题时提供 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCheckedChange | `(checked: boolean) => void` | 开关变化回调 |
 
 ## 示例
 ```tsx

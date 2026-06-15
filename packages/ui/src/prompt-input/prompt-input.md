@@ -27,16 +27,26 @@ import { PromptInput } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string` | — | 受控值（配 onValueChange） |
 | defaultValue | `string` | `""` | 非受控初值 |
-| onValueChange | `(value: string) => void` | — | 值变化回调 |
-| onSubmit | `(value: string) => void` | — | 提交（Enter 或点发送）；收到 trim 后的当前文本。非受控时内部自动清空 |
 | placeholder | `string` | `"发消息…"` | 占位提示 |
 | loading | `boolean` | `false` | 生成中：发送键变停止键、屏蔽提交 |
-| onStop | `() => void` | — | 点停止回调（loading 时显示停止键） |
 | disabled | `boolean` | `false` | 禁用 |
 | maxRows | `number` | `8` | 自增高最大行数（超出滚动） |
-| actions | `ReactNode` | — | 底部工具栏左侧操作槽（深度思考 / 智能搜索等开关 chip） |
-| trailing | `ReactNode` | — | 底部工具栏右侧、发送键之前的尾随槽（附件 / 语音等图标按钮） |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string) => void` | 值变化回调 |
+| onSubmit | `(value: string) => void` | 提交（Enter 或点发送）；收到 trim 后的当前文本。非受控时内部自动清空 |
+| onStop | `() => void` | 点停止回调（loading 时显示停止键） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| actions | `ReactNode` | 底部工具栏左侧操作槽（深度思考 / 智能搜索等开关 chip） |
+| trailing | `ReactNode` | 底部工具栏右侧、发送键之前的尾随槽（附件 / 语音等图标按钮） |
 
 ## 示例
 ```tsx

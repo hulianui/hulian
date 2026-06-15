@@ -25,13 +25,18 @@ import { ScrollReveal } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children * | `string` | — | 要随滚动逐词显影的整段文本，仅字符串（内部按空白拆词并保留分隔符） |
 | baseOpacity | `number` | `0.12` | 静息（未滚入解析区间）时每词的基础透明度，0~1；越小入场对比越强 |
 | baseRotation | `number` | `3` | 整段进入时的初始旋转角（deg），随进度回正到 0；设 0 关闭 |
 | enableBlur | `boolean` | `true` | 是否伴随模糊解析：未揭示词带模糊随进度消散 |
 | blurStrength | `number` | `4` | `enableBlur` 为真时词的起始模糊半径（px），随进度降到 0 |
 
 其余 `<p>` 原生属性透传；`onDrag/onDragStart/onDragEnd/onAnimationStart` 因与 motion 签名冲突被剔除。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children * | `string` | 要随滚动逐词显影的整段文本，仅字符串（内部按空白拆词并保留分隔符） |
 
 ## 示例
 ```tsx

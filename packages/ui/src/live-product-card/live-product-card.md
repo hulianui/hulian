@@ -26,19 +26,29 @@ import { LiveProductCard } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | image* | `string` | — | 商品图 URL |
-| title* | `ReactNode` | — | 商品标题 |
 | price* | `number` | — | 现价（秒杀价） |
 | index | `number` | — | 第 N 号链接徽标 |
 | originalPrice | `number` | — | 划线原价 |
 | explaining | `boolean` | — | 「讲解中」脉冲徽标 |
 | stock | `number` | — | 剩余库存 |
 | sold | `number` | — | 已售数 |
-| tag | `ReactNode` | — | 角标，如「秒杀」「限量」 |
-| action | `ReactNode` | — | 抢购按钮（调用方传 Button 等） |
 | currency | `string` | `"¥"` | 货币符号 |
 | layout | `"row" \| "card"` | `"row"` | 布局：row=列表行（中控/弹层），card=网格卡 |
-| onClick | `() => void` | — | 点击回调 |
 | className | `string` | — | 自定义类 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `() => void` | 点击回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 商品标题 |
+| tag | `ReactNode` | 角标，如「秒杀」「限量」 |
+| action | `ReactNode` | 抢购按钮（调用方传 Button 等） |
 
 ## 示例
 ```tsx

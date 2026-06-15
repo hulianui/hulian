@@ -32,13 +32,23 @@ import { ProfileCard } from "@hulianui/ui"
 | status | `string` | `"在线"` | 状态文案，handle 下方 |
 | contactText | `string` | `"联系"` | 联系按钮文案 |
 | showUserInfo | `boolean` | `true` | 是否显示底部毛玻璃信息条（handle/状态/联系按钮） |
-| onContactClick | `() => void` | — | 点击联系按钮回调 |
 | enableTilt | `boolean` | `true` | 是否开启指针倾斜 + 全息光泽；关闭后为静态卡；reduced-motion 自动降级静态 |
 | glowColor | `string` | `var(--color-chart-1)` | 全息高光主色，须用带 `--color-` 前缀的 token，也可传任意 CSS 颜色 |
 | aspectRatio | `number` | `0.74` | 卡片宽高比（width/height），默认接近实体卡 |
-| children | `ReactNode` | — | 自定义卡片正面叠加内容（头像层之上、信息条之下） |
 | className | `string` | — | 透传到根容器的额外 className |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onContactClick | `() => void` | 点击联系按钮回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 自定义卡片正面叠加内容（头像层之上、信息条之下） |
 
 ## 示例
 ```tsx

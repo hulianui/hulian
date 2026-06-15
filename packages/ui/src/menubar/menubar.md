@@ -35,6 +35,13 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
 
 `MenubarMenu` 透传 Base UI Menu.Root（`open`/`defaultOpen`/`onOpenChange` 等）；`MenubarTrigger` 透传 Menu.Trigger。
 
+## Events
+
+### MenubarMenu
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onOpenChange | `(open: boolean) => void` | 顶层菜单展开/收起回调（透传 Base UI `Menu.Root`） |
+
 ## 示例
 ```tsx
 <Menubar>

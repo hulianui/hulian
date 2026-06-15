@@ -25,7 +25,6 @@ import { OrbitImages } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items * | `ReactNode[]` | — | 沿轨道环绕的子项（img/图标/头像/卡片皆可） |
 | shape | `"ellipse"｜"circle"｜"square"｜"rectangle"｜"triangle"｜"star"｜"heart"｜"infinity"｜"wave"｜"custom"` | `"ellipse"` | 轨道形状预设，custom 走 customPath |
 | customPath | `string` | — | shape="custom" 时的 SVG path d（坐标基于 baseWidth 方形画布） |
 | baseWidth | `number` | `1400` | 设计画布边长（px·方形 viewBox），只影响路径几何比例 |
@@ -42,9 +41,15 @@ import { OrbitImages } from "@hulianui/ui"
 | showPath | `boolean` | `false` | 描出轨道路径（调试/装饰） |
 | pathColor | `string` | `"var(--color-border)"` | 轨道描边颜色 |
 | pathWidth | `number` | `2` | 轨道描边宽度（px·基于 baseWidth） |
-| centerContent | `ReactNode` | — | 居中内容（Logo/标题），不随轨道旋转 |
 | className | `string` | — | 透传到根容器 |
 | style | `CSSProperties` | — | 透传到根容器（默认 1:1 自适应铺满父宽） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| items * | `ReactNode[]` | 沿轨道环绕的子项（img/图标/头像/卡片皆可），必填 |
+| centerContent | `ReactNode` | 居中内容（Logo/标题），不随轨道旋转 |
 
 ## 示例
 ```tsx

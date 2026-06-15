@@ -30,7 +30,12 @@ import { Orb } from "@hulianui/ui"
 | rotateOnHover | `boolean` | `true` | 悬停时是否自动旋转光球 |
 | forceHoverState | `boolean` | `false` | 强制保持悬停激活态（演示 / 截图场景用） |
 | className | `string` | — | 透传到 canvas（正常）或 fallback div（降级）的 className |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时的静态备用内容（置于径向渐变球中央） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态备用内容（置于径向渐变球中央） |
 
 ## 示例
 

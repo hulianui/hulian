@@ -32,7 +32,12 @@ import { Plasma } from "@hulianui/ui"
 | opacity | `number` | `1` | 整体不透明度 0–1（叠在 shader alpha 上）；作柔和背景时压暗用 |
 | mouseInteractive | `boolean` | `true` | 指针轻微扭曲等离子流场；关闭后纯自动且不挂 mousemove 监听 |
 | className | `string` | — | 透传到 root（canvas 容器或 fallback div） |
-| fallback | `ReactNode` | chart token 径向渐变（保留中心发光观感） | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；默认 chart token 径向渐变（保留中心发光观感） |
 
 ## 示例
 

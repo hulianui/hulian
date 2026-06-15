@@ -28,10 +28,15 @@ import { Masonry } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items* | `T[]` | — | 数据源，按源顺序 round-robin 分列。 |
-| renderItem* | `(item: T, index: number) => ReactNode` | — | 渲染单个 item，返回节点会被包进列内格子。 |
 | columns | `number \| { base?: number; sm?: number; md?: number; lg?: number }` | `3` | 列数。传数字固定；传对象按断点响应式（base 为 SSR/首帧值，挂载后 matchMedia 切换）。 |
 | gap | `number` | `16` | 列间 & 列内 item 间距（像素）。 |
 | className | `string` | — | 根容器类名。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem* | `(item: T, index: number) => ReactNode` | 渲染函数：渲染单个 item，返回节点会被包进列内格子。 |
 
 ## 示例
 ```tsx

@@ -25,10 +25,7 @@ import { Glimpse } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 触发元素（行内链接文字/缩略词） |
 | image | `string` | — | 预览图 URL（顶部封面） |
-| title | `ReactNode` | — | 预览标题 |
-| description | `ReactNode` | — | 预览描述（多行截断） |
 | href | `string` | — | 链接地址；传入则触发器渲染为新标签页外链，卡底显示域名 |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | — | 对齐 |
@@ -36,6 +33,14 @@ import { Glimpse } from "@hulianui/ui"
 | closeDelay | `number` | `150` | 移出关闭延迟(ms) |
 | className | `string` | — | 触发器额外类名 |
 | contentClassName | `string` | — | 预览卡片额外类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 触发元素（行内链接文字/缩略词） |
+| title | `ReactNode` | 预览标题 |
+| description | `ReactNode` | 预览描述（多行截断） |
 
 ## 示例
 ```tsx

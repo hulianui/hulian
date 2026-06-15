@@ -27,7 +27,6 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | Trigger + Content |
 | openDelay | `number` | `300` | 悬停多少毫秒后打开 |
 | closeDelay | `number` | `150` | 移出多少毫秒后关闭 |
 
@@ -35,11 +34,17 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 卡片内容 |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | — | 与触发器的间距 |
 | className | `string` | — | 额外类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `HoverCard` children | `ReactNode` | Trigger + Content |
+| `HoverCardContent` children | `ReactNode` | 卡片内容 |
 
 `HoverCardTrigger` 用 `render` prop 接管触发元素（行内链接/按钮）。
 

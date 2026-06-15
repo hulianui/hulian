@@ -40,8 +40,13 @@ import { SoftAurora } from "@hulianui/ui"
 | enableMouseInteraction | `boolean` | `true` | 鼠标视差（极光随指针轻微平移） |
 | mouseInfluence | `number` | `0.25` | 鼠标视差强度 |
 | className | `string` | — | 透传到根容器 |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时降级静态层之上覆盖的内容 |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时降级静态层之上覆盖的内容（如标题） |
 
 ## 示例
 ```tsx

@@ -31,7 +31,12 @@ import { Silk, silkShowcase } from "@hulianui/ui"
 | noiseIntensity | number | 1.5 | 颗粒噪声强度，0=无颗粒（纯色带） |
 | rotation | number | 0 | 纹理旋转角度（弧度），如 `Math.PI/4`=45° |
 | className | string | — | 透传到 canvas（或 fallback div） |
-| fallback | ReactNode | chart token 渐变 div | reduced-motion / 无 WebGL 时渲染的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | ReactNode | reduced-motion / 无 WebGL 时渲染的静态替代内容（默认 chart token 渐变 div） |
 
 ## 示例
 ```tsx

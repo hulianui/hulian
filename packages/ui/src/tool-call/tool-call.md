@@ -25,16 +25,26 @@ import { ToolCall } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| name * | `ReactNode` | — | 工具名（等宽呈现，如 search_web） |
 | status | `"pending" ｜ "running" ｜ "success" ｜ "error"` | `"success"` | pending 等待 / running 运行中(转圈) / success 完成 / error 失败 |
-| icon | `ReactNode` | 扳手 Wrench | 工具图标槽 |
-| input | `ReactNode` | — | 入参（建议传 `<CodeBlock/>` 或 JSON 文本） |
-| output | `ReactNode` | — | 结果（建议传 `<CodeBlock/>` / `<Prose/>` 或文本） |
 | defaultOpen | `boolean` | — | 非受控初始展开态 |
 | open | `boolean` | — | 受控展开态 |
-| onOpenChange | `(open: boolean) => void` | — | 展开态变化回调 |
-| children | `ReactNode` | — | 自定义面板内容（替代 input/output） |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onOpenChange | `(open: boolean) => void` | 展开态变化回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| name * | `ReactNode` | 工具名（等宽呈现，如 search_web） |
+| icon | `ReactNode` | 工具图标槽（默认扳手 Wrench） |
+| input | `ReactNode` | 入参（建议传 `<CodeBlock/>` 或 JSON 文本） |
+| output | `ReactNode` | 结果（建议传 `<CodeBlock/>` / `<Prose/>` 或文本） |
+| children | `ReactNode` | 自定义面板内容（替代 input/output） |
 
 ## 示例
 ```tsx

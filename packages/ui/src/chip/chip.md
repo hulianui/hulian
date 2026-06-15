@@ -28,14 +28,24 @@ import { Chip, chipVariants } from "@hulianui/ui"
 | variant | `"solid"｜"soft"｜"outline"` | `soft` | 视觉风格。 |
 | tone | `"brand"｜"danger"｜"neutral"` | `brand` | 语气色。 |
 | size | `"sm"｜"md"` | `md` | 尺寸。 |
-| onClose | `() => void` | — | 提供则渲染关闭(×)按钮并触发回调（区别于 Badge：Chip 可移除）。 |
 | dot | `boolean` | — | 前导小圆点（状态指示）。 |
-| avatar | `ReactNode` | — | 前导头像（贴左边缘，按 size 约束为正方形）。 |
-| startContent | `ReactNode` | — | 起始内容槽（图标等），avatar 存在时不渲染。 |
-| endContent | `ReactNode` | — | 结尾内容槽，位于 children 之后、关闭按钮之前。 |
 | isDisabled | `boolean` | — | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
-| children | `ReactNode` | — | 标签文字。 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClose | `() => void` | 提供则渲染关闭(×)按钮并触发回调（区别于 Badge：Chip 可移除）。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| avatar | `ReactNode` | 前导头像（贴左边缘，按 size 约束为正方形）。 |
+| startContent | `ReactNode` | 起始内容槽（图标等），avatar 存在时不渲染。 |
+| endContent | `ReactNode` | 结尾内容槽，位于 children 之后、关闭按钮之前。 |
+| children | `ReactNode` | 标签文字。 |
 
 ## 示例
 ```tsx

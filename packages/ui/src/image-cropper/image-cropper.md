@@ -26,19 +26,29 @@ import { ImageCropper, cropImageToBlob } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | image* | `string` | — | 图片源：object URL / data URL / 同源地址 |
-| onCropped* | `(blob: Blob) => void` | — | 确认裁剪：产出目标尺寸 Blob |
 | aspect | `number` | `5/7` | 裁剪框宽高比（证件照 1 寸/2 寸同比例） |
 | outputWidth | `number` | `413` | 输出位图宽（px），高按 aspect 推导取整（2 寸 @300DPI） |
 | outputType | `string` | `"image/jpeg"` | 输出 mime |
 | quality | `number` | `0.9` | 编码质量 0–1 |
 | maxBytes | `number` | — | 输出字节上限（如 `200*1024`）：超限降质重试一次 |
 | maxZoom | `number` | `3` | 最大缩放倍数 |
-| onCancel | `() => void` | — | 取消按钮点击（不传则不渲染取消按钮） |
-| onError | `(error: unknown) => void` | — | 画布导出失败（极旧浏览器 / canvas 受限） |
-| confirmLabel | `ReactNode` | `"确认"` | 确认按钮文案 |
-| cancelLabel | `ReactNode` | `"取消"` | 取消按钮文案 |
 | cropAreaClassName | `string` | `h-64 sm:h-80` | 裁剪画布区高度 class |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCropped* | `(blob: Blob) => void` | 确认裁剪：产出目标尺寸 Blob |
+| onCancel | `() => void` | 取消按钮点击（不传则不渲染取消按钮） |
+| onError | `(error: unknown) => void` | 画布导出失败（极旧浏览器 / canvas 受限） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| confirmLabel | `ReactNode` | 确认按钮文案（默认 `"确认"`） |
+| cancelLabel | `ReactNode` | 取消按钮文案（默认 `"取消"`） |
 
 ## 示例
 ```tsx

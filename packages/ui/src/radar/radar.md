@@ -41,7 +41,12 @@ import { Radar } from "@hulianui/ui"
 | enableMouseInteraction | `boolean` | `true` | 是否开启鼠标视差（盘随指针平滑偏移） |
 | mouseInfluence | `number` | `0.1` | 鼠标视差影响系数 |
 | className | `string` | — | 透传到根容器（或 fallback div） |
-| fallback | `ReactNode` | 径向渐变装饰 div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认径向渐变装饰 div） |
 
 ## 示例
 ```tsx

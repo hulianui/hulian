@@ -32,9 +32,14 @@ import { Stack } from "@hulianui/ui"
 | wrap | `boolean` | `false` | 是否换行（仅 row 有意义） |
 | inline | `boolean` | `false` | 用 inline-flex 而非 flex（随内容收缩、可与文字基线排列） |
 | as | `ElementType` | `"div"` | 渲染的元素标签 |
-| children | `ReactNode` | — | 子元素 |
 
 `StackDirection = "row" \| "column"`；其余 `HTMLAttributes<HTMLElement>` 属性（className/style/事件等）透传。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 子元素 |
 
 ## 示例
 ```tsx

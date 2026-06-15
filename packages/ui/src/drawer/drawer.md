@@ -28,12 +28,23 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | 贴边方向 + 对应滑入方向 |
-| `DrawerContent.title` | `ReactNode` | — | 提供则渲 Dialog.Title 作 a11y label |
-| `DrawerContent.description` | `ReactNode` | — | 说明文案 |
-| `DrawerContent.footer` | `ReactNode` | — | 钉底操作区（带分隔线，正文独立滚动，footer 始终可见） |
 | `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
-| `DrawerContent.children` | `ReactNode` | — | 正文内容 |
 | `DrawerContent.className` | `string` | — | 内容容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `Drawer.onOpenChange` | `(open: boolean) => void` | 开关态变化回调（透传 Base UI Dialog Root） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `DrawerContent.title` | `ReactNode` | 提供则渲 Dialog.Title 作 a11y label |
+| `DrawerContent.description` | `ReactNode` | 说明文案 |
+| `DrawerContent.footer` | `ReactNode` | 钉底操作区（带分隔线，正文独立滚动，footer 始终可见） |
+| `DrawerContent.children` | `ReactNode` | 正文内容 |
 
 ## 示例
 ```tsx

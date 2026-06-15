@@ -40,7 +40,12 @@ import { Prism } from "@hulianui/ui"
 | bloom | `number` | `1` | 泛光叠加；与 glow 相乘放大整体亮度 |
 | timeScale | `number` | `0.5` | 时间缩放（动画整体速度）；0=冻结为静态一帧 |
 | className | `string` | — | 透传到根容器（或 reduced-motion fallback div） |
-| fallback | `ReactNode` | chart token 径向辉光渐变 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；默认 chart token 径向辉光渐变 |
 
 ## 示例
 

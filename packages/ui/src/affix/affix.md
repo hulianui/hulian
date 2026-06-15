@@ -25,14 +25,24 @@ import { Affix } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 被固定的内容。 |
 | offsetTop | `number` | `0` | 距容器顶部多少 px 时吸顶固定。 |
 | offsetBottom | `number` | — | 距容器底部多少 px 时吸底固定。仅在未给 offsetTop 时生效（同时给则 offsetTop 优先）。 |
 | target | `HTMLElement \| Window \| null \| (() => HTMLElement \| Window \| null)` | `window` | 滚动监听容器，可传元素 / Window / getter。 |
-| onChange | `(affixed: boolean) => void` | — | 吸附态变化回调。 |
 | affixedClassName | `string` | — | 吸附时附加到固定元素的类名（如阴影 `shadow-lg`）。 |
 
 > 另继承 `HTMLAttributes<HTMLDivElement>`（除 `children` / `onChange`）。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(affixed: boolean) => void` | 吸附态变化回调。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 被固定的内容。 |
 
 ## 示例
 ```tsx

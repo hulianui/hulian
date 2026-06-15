@@ -34,9 +34,14 @@ import { FlyingPosters } from "@hulianui/ui"
 | cameraZ | `number` | `20` | 相机 Z 轴距离，越大画面越远、可见海报越多 |
 | autoScroll | `boolean` | `true` | 无交互时是否自动缓慢卷动；reduced-motion 下强制关闭 |
 | autoScrollSpeed | `number` | `0.6` | 自动卷动速度（世界单位/秒），autoScroll 为真时生效 |
-| fallback | `ReactNode` | — | reduced-motion 或无 WebGL 时，静态备用层中央展示的内容 |
 | className | `string` | — | 透传到根容器的额外 className |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion 或无 WebGL 时，静态备用层中央展示的内容 |
 
 ## 示例
 ```tsx

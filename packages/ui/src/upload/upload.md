@@ -31,14 +31,24 @@ import { Upload, matchesAccept } from "@hulianui/ui"
 | maxSize | `number` | — | 单文件字节上限；超限进 `onReject(reason="size")` |
 | variant | `"dropzone" \| "button"` | `"dropzone"` | 形态：拖拽落区 / 单按钮 |
 | files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度）；不传则不渲染列表 |
-| onSelect | `(files: File[]) => void` | — | 通过校验的文件被选中（点击选择或拖入） |
-| onReject | `(rejections: UploadRejection[]) => void` | — | 被校验拒绝的文件（类型/大小） |
-| onRemove | `(id: string) => void` | — | 列表项移除按钮点击 |
-| label | `ReactNode` | — | 落区主文案 |
-| hint | `ReactNode` | — | 落区辅助说明（格式/大小限制提示） |
-| buttonLabel | `ReactNode` | `"选择文件"` | button 形态的按钮文案 |
-| children | `ReactNode` | — | 自定义落区内容（覆盖 label/hint） |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | `(files: File[]) => void` | 通过校验的文件被选中（点击选择或拖入） |
+| onReject | `(rejections: UploadRejection[]) => void` | 被校验拒绝的文件（类型/大小） |
+| onRemove | `(id: string) => void` | 列表项移除按钮点击 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 落区主文案 |
+| hint | `ReactNode` | 落区辅助说明（格式/大小限制提示） |
+| buttonLabel | `ReactNode` | button 形态的按钮文案（默认 `"选择文件"`） |
+| children | `ReactNode` | 自定义落区内容（覆盖 label/hint） |
 
 > `UploadFile`：`{ id; name; size?; status?: "ready"\|"uploading"\|"success"\|"error"; progress?; error? }`，`progress` 仅 `status="uploading"` 时展示进度条。
 

@@ -29,13 +29,11 @@ import { Toggle, ToggleGroup, toggleVariants } from "@hulianui/ui"
 |------|------|------|------|
 | pressed | `boolean` | — | 受控按下态 |
 | defaultPressed | `boolean` | `false` | 非受控初始按下态 |
-| onPressedChange | `(pressed: boolean) => void` | — | 按下态变化（瑚琏收敛签名，丢 Base UI eventDetails） |
 | disabled | `boolean` | `false` | 禁用 |
 | value | `string` | — | 在 ToggleGroup 内标识该项 |
 | variant | `"default"｜"outline"｜"pill"` | `"default"` | default=灰底软选中 / outline=主色实心 / pill=圆角描边 + soft 主色选中（AI 工具栏开关风） |
 | size | `"sm"｜"md"` | `"md"` | — |
 | className | `string` | — | — |
-| children | `ReactNode` | — | 图标 / 文字 |
 | aria-label | `string` | — | 仅图标时必填 |
 
 `ToggleGroup`
@@ -44,12 +42,38 @@ import { Toggle, ToggleGroup, toggleVariants } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string[]` | — | 受控：已按下项 value 数组 |
 | defaultValue | `string[]` | — | 非受控初始按下项数组 |
-| onValueChange | `(value: string[]) => void` | — | 变化回调 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | multiple | `boolean` | `false` | true=多选共存；false=单选互斥 |
 | orientation | `"horizontal"｜"vertical"` | `"horizontal"` | — |
 | className | `string` | — | — |
-| children | `ReactNode` | — | 内放 `Toggle` 项 |
+
+## Events
+
+`Toggle`
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onPressedChange | `(pressed: boolean) => void` | 按下态变化（瑚琏收敛签名，丢 Base UI eventDetails） |
+
+`ToggleGroup`
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string[]) => void` | 变化回调 |
+
+## Slots
+
+`Toggle`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 图标 / 文字 |
+
+`ToggleGroup`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 内放 `Toggle` 项 |
 
 ## 示例
 

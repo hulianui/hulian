@@ -28,15 +28,11 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 | steps* | `TourStep[]` | — | 引导步骤列表（见下） |
 | open* | `boolean` | — | 是否打开（受控） |
 | current* | `number` | — | 当前步索引（受控，从 0 起） |
-| onChange | `(current: number) => void` | — | 当前步变化（点上一步/下一步） |
-| onClose | `() => void` | — | 关闭（跳过/Esc/末步完成且未传 onFinish） |
-| onFinish | `() => void` | — | 末步「完成」回调；不传则走 onClose |
 | maskClosable | `boolean` | `false` | 点击遮罩是否关闭（默认不允许误触关闭） |
 | spotlightPadding | `number` | `8` | 高亮镂空在目标四周的留白 px |
 | spotlightRadius | `number` | `8` | 镂空圆角 px |
 | gap | `number` | `12` | 气泡卡与目标的间距 px |
 | zIndex | `number` | `100` | 遮罩 z-index |
-| prevText / nextText / skipText / finishText | `ReactNode` | — | 按钮文案覆盖 |
 
 **TourStep**：
 | 字段 | 类型 | 默认 | 说明 |
@@ -45,6 +41,25 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 | title | `ReactNode` | — | 步骤标题 |
 | description | `ReactNode` | — | 步骤描述 |
 | placement | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | 气泡方位（放不下自动翻到对侧）；无目标时忽略 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(current: number) => void` | 当前步变化（点上一步/下一步） |
+| onClose | `() => void` | 关闭（跳过/Esc/末步完成且未传 onFinish） |
+| onFinish | `() => void` | 末步「完成」回调；不传则走 onClose |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| prevText | `ReactNode` | 「上一步」按钮文案覆盖 |
+| nextText | `ReactNode` | 「下一步」按钮文案覆盖 |
+| skipText | `ReactNode` | 「跳过」按钮文案覆盖 |
+| finishText | `ReactNode` | 「完成」按钮文案覆盖 |
+
+> TourStep 内的 `title` / `description` 亦为 `ReactNode`，见上方 TourStep 表。
 
 ## 示例
 ```tsx

@@ -31,10 +31,15 @@ import { NavMenu } from "@hulianui/ui"
 | mode | `"inline" \| "collapsed"` | `"inline"` | inline=手风琴内联展开；collapsed=Sider 收起态图标 + 悬浮飞出子菜单 |
 | selectedKeys | `string[]` | — | 选中态（受控） |
 | defaultSelectedKeys | `string[]` | — | 选中态（非受控初值） |
-| onSelect | `(key, item) => void` | — | 点击叶子项触发 |
 | openKeys | `string[]` | — | 展开态（受控） |
 | defaultOpenKeys | `string[]` | — | 展开态（非受控初值） |
-| onOpenChange | `(openKeys) => void` | — | 展开态变化回调 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | `(key: string, item: NavMenuItem) => void` | 点击叶子项触发 |
+| onOpenChange | `(openKeys: string[]) => void` | 展开态变化回调 |
 
 ## 示例
 ```tsx

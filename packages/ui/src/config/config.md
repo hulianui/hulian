@@ -26,7 +26,12 @@ import { ConfigProvider } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | locale | `Locale` | `zhCN` | 全局 Locale（用导出的 zhCN/enUS 或 spread 自定义） |
-| children* | `ReactNode` | — | 子树 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 子树 |
 
 ## 示例
 ```tsx

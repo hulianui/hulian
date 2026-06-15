@@ -33,7 +33,12 @@ import { DarkVeil } from "@hulianui/ui"
 | warpAmount | `number` | `0` | 空间扭曲量，UV 正余弦扰动产生波动/折射；建议 0–0.2 |
 | resolutionScale | `number` | `1` | 渲染分辨率缩放；<1 降采样省电，>1 超采样换清晰度 |
 | className | `string` | — | 透传到根容器（或 fallback div），自带 absolute inset-0 z-0 |
-| fallback | `ReactNode` | 暗色径向渐变 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认暗色径向渐变） |
 
 ## 示例
 ```tsx

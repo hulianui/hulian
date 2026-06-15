@@ -30,7 +30,12 @@ import { Threads } from "@hulianui/ui"
 | distance | number | 0 | 各丝线纵向间距缩放，正值拉开负值压缩，建议 -1–2 |
 | enableMouseInteraction | boolean | true | 鼠标跟随：X 影响时间流速、Y 影响振幅，带 0.05 平滑插值 |
 | className | string | — | 透传到 canvas（或 fallback div） |
-| fallback | ReactNode | 几条 CSS 渐变线 | reduced-motion / 无 WebGL 时的静态替代。传 `null` 可完全隐藏占位 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | ReactNode | reduced-motion / 无 WebGL 时的静态替代（默认几条 CSS 渐变线）。传 `null` 可完全隐藏占位 |
 
 ## 示例
 ```tsx

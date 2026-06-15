@@ -29,11 +29,16 @@ import { Listbox } from "@hulianui/ui"
 | selectionMode | `"none" \| "single" \| "multiple"` | `"single"` | none=纯动作列表（不持有选中态）；single/multiple=可选 |
 | selectedKeys | `string[]` | — | 受控选中键 |
 | defaultSelectedKeys | `string[]` | — | 非受控初始选中键 |
-| onSelectionChange | `(keys: string[]) => void` | — | 选中变化回调 |
 | disabledKeys | `string[]` | — | 额外禁用键（与 `item.disabled` 合并） |
-| onAction | `(key: string) => void` | — | 任意项激活都触发（含 none 模式），用于命令式动作 |
 | className | `string` | — | 容器类名 |
 | aria-label | `string` | — | 无可见标题时的无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelectionChange | `(keys: string[]) => void` | 选中变化回调 |
+| onAction | `(key: string) => void` | 任意项激活都触发（含 none 模式），用于命令式动作 |
 
 ## 示例
 ```tsx

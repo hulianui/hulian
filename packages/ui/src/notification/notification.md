@@ -28,15 +28,25 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | type | `"open"｜"success"｜"error"｜"info"｜"warning"` | — | 经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 同 Alert（info→primary） |
-| title | `ReactNode` | — | 标题（加粗主行） |
-| description | `ReactNode` | — | 描述（次行，恒 text-muted） |
-| icon | `ReactNode` | 按类型派生 | 自定义图标，覆盖默认 |
 | duration | `number` | `4500` | 自动关闭毫秒数；`0` = 不自动关（常驻） |
 | placement | `"topRight"｜"topLeft"｜"bottomRight"｜"bottomLeft"` | `"topRight"` | 弹出位置（四角） |
-| btn | `ReactNode` | — | 操作区（按钮等），渲染在描述下方 |
-| onClose | `() => void` | — | 关闭时回调（自动/手动/编程关闭均触发一次） |
 
 调用返回 `NotificationInstance`，含 `destroy(): void` 立即关闭该通知。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClose | `() => void` | 关闭时回调（自动/手动/编程关闭均触发一次） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 标题（加粗主行） |
+| description | `ReactNode` | 描述（次行，恒 text-muted） |
+| icon | `ReactNode` | 自定义图标，覆盖默认（不传按类型派生） |
+| btn | `ReactNode` | 操作区（按钮等），渲染在描述下方 |
 
 ## 示例
 ```tsx

@@ -28,13 +28,18 @@ import { ChatMessage } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | role * | `"user" ｜ "assistant" ｜ "system"` | `"assistant"`(showcase) | user 右对齐(primary 底) / assistant 左对齐(surface 底) / system 居中弱化通告 |
-| children | `ReactNode` | — | 正文；markdown 建议外层包 `<Prose/>`，纯文本直接传 |
-| avatar | `ReactNode` | — | 头像槽（传瑚琏 `<Avatar/>`）；不传用角色默认字符 fallback。system 不渲染头像 |
-| name | `ReactNode` | — | 发送者名称（正文上方） |
-| timestamp | `ReactNode` | — | 时间戳（名称右侧，弱化色） |
 | loading | `boolean` | `false` | 加载态：正文位置显示 TypingDots（agent 生成中） |
-| actions | `ReactNode` | — | 底部操作区槽（放 `<MessageActions/>`，仅气泡下方） |
 | status | `"sending" ｜ "sent" ｜ "read"` | — | 已读回执：仅 role=user 渲染。sending 转圈 / sent 单勾 / read 双蓝勾 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 正文；markdown 建议外层包 `<Prose/>`，纯文本直接传 |
+| avatar | `ReactNode` | 头像槽（传瑚琏 `<Avatar/>`）；不传用角色默认字符 fallback。system 不渲染头像 |
+| name | `ReactNode` | 发送者名称（正文上方） |
+| timestamp | `ReactNode` | 时间戳（名称右侧，弱化色） |
+| actions | `ReactNode` | 底部操作区槽（放 `<MessageActions/>`，仅气泡下方） |
 
 ## 示例
 ```tsx

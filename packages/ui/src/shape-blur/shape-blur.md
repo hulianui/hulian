@@ -34,7 +34,12 @@ import { ShapeBlur } from "@hulianui/ui"
 | color | `string` | `var(--color-foreground)` | 形状主色，CSS 颜色或带 `--color-` 前缀的 token |
 | damping | `number` | `8` | 鼠标跟随阻尼，越大跟随越快、越小越懒 |
 | className | `string` | — | 透传到 root 容器 div |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时的静态替代（默认 foreground 径向光晕 div） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代（默认 foreground 径向光晕 div） |
 
 ## 示例
 ```tsx

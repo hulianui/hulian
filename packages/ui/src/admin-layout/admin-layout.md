@@ -26,31 +26,41 @@ import { AdminLayout } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | menuItems* | `NavMenuNode[]` | — | 侧边菜单数据（复用 NavMenu）。 |
-| children | `ReactNode` | — | 主内容（当前激活页内容，由上层按 activeKey 决定）。 |
-| logo | `ReactNode` | — | 品牌区（展开态）。 |
-| logoCollapsed | `ReactNode` | 同 logo | 品牌区（收起态）。 |
 | selectedKey | `string` | — | 受控菜单选中 key。 |
 | defaultSelectedKey | `string` | — | 非受控初始选中 key。 |
-| onMenuSelect | `(key: string, item: NavMenuItem) => void` | — | 点击菜单叶子项触发。 |
 | openKeys | `string[]` | — | 受控展开的子菜单 key。 |
 | defaultOpenKeys | `string[]` | — | 非受控初始展开。 |
-| onOpenChange | `(openKeys: string[]) => void` | — | 展开变化回调。 |
 | collapsed | `boolean` | — | 受控侧栏折叠态。 |
 | defaultCollapsed | `boolean` | — | 非受控初始折叠态。 |
-| onCollapsedChange | `(collapsed: boolean) => void` | — | 折叠变化回调。 |
 | showTabs | `boolean` | `true` | 是否显示多页签条。 |
 | tabs | `AdminTab[]` | — | 受控页签列表；不传则由菜单点击自动维护（非受控）。 |
 | activeKey | `string` | — | 受控当前激活页签 key。 |
 | defaultActiveKey | `string` | — | 非受控初始激活页签（亦决定首屏自动打开的页签）。 |
-| onTabChange | `(key: string) => void` | — | 切换页签回调。 |
-| onTabClose | `(key: string) => void` | — | 关闭页签回调。 |
-| breadcrumb | `ReactNode` | — | 顶栏面包屑区。 |
-| headerExtra | `ReactNode` | — | 顶栏右侧扩展区（用户菜单 / 通知 / 主题切换等）。 |
 | fitViewport | `boolean` | `true` | 是否自占满视口高度。整页应用骨架保持 true（固定 100dvh、内容区内部滚动）；嵌入有固定高度的容器预览时置 false，改用 `h-full` 跟随父容器。 |
 | className | `string` | — | 根容器类名。 |
 | contentClassName | `string` | — | 内容区类名。 |
 
 `AdminTab`：`{ key: string; label: ReactNode; closable?: boolean }`，`closable` 缺省为「打开页签 >1 时可关，最后一个不可关」。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onMenuSelect | `(key: string, item: NavMenuItem) => void` | 点击菜单叶子项触发。 |
+| onOpenChange | `(openKeys: string[]) => void` | 子菜单展开变化回调。 |
+| onCollapsedChange | `(collapsed: boolean) => void` | 侧栏折叠变化回调。 |
+| onTabChange | `(key: string) => void` | 切换页签回调。 |
+| onTabClose | `(key: string) => void` | 关闭页签回调。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 主内容（当前激活页内容，由上层按 activeKey 决定）。 |
+| logo | `ReactNode` | 品牌区（展开态）。 |
+| logoCollapsed | `ReactNode` | 品牌区（收起态，默认复用 logo）。 |
+| breadcrumb | `ReactNode` | 顶栏面包屑区。 |
+| headerExtra | `ReactNode` | 顶栏右侧扩展区（用户菜单 / 通知 / 主题切换等）。 |
 
 ## 示例
 ```tsx

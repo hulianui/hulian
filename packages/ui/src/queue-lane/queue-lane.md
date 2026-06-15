@@ -27,12 +27,22 @@ import { QueueLane, groupByLane } from "@hulianui/ui"
 |------|------|------|------|
 | lanes* | `QueueLaneDef[]` | — | 泳道定义，顺序即展示顺序。`{id, label, tone?, meta?}`；tone 为 CSS 颜色/token 变量，原样写入 inline style 不做枚举映射 |
 | items* | `T[]` | — | 受控队列项数组，按 laneId 分组，道内顺序 = 数组原始顺序（FIFO）。每项须含 `{id, laneId}`；laneId 未命中任一 lane 则该项被丢弃 |
-| renderItem* | `(item: T, index: number) => ReactNode` | — | 渲染单个队列项；index 为该项在所属道内的队列位次（0 = 队首） |
-| renderLaneHeader | `(lane: QueueLaneDef, items: T[]) => ReactNode` | — | 自定义道头（拿该道队列做指标聚合）。缺省渲染 label + 条数 + lane.meta |
 | maxVisible | `number` | — | 每道最多直显条数，超出折叠为「还有 N 条」。缺省不折叠（全显） |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 泳道排布方向。horizontal：泳道横向并列，每道竖向排队 |
-| onItemClick | `(item: T) => void` | — | 点击队列项回调（卡片只读，仅查看/下钻，不改队列顺序） |
 | className | `string` | — | 外层类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onItemClick | `(item: T) => void` | 点击队列项回调（卡片只读，仅查看/下钻，不改队列顺序） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem* | `(item: T, index: number) => ReactNode` | 渲染函数：渲染单个队列项；index 为该项在所属道内的队列位次（0 = 队首） |
+| renderLaneHeader | `(lane: QueueLaneDef, items: T[]) => ReactNode` | 渲染函数：自定义道头（拿该道队列做指标聚合）。缺省渲染 label + 条数 + lane.meta |
 
 ## 示例
 ```tsx

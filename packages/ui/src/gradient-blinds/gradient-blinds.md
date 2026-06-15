@@ -40,7 +40,12 @@ import { GradientBlinds } from "@hulianui/ui"
 | dpr | `number` | `min(dpr, 2)` | 设备像素比上限 |
 | className | `string` | — | 透传根容器 div |
 | style | `CSSProperties` | — | 根容器内联样式，如 `mixBlendMode` |
-| fallback | `ReactNode` | 静态百叶 div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认静态百叶 div） |
 
 ## 示例
 ```tsx

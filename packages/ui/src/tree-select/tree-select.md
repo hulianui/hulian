@@ -28,7 +28,6 @@ import { TreeSelect } from "@hulianui/ui"
 | nodes* | `TreeNode[]` | — | 树数据源（含 key/label/children），从 `../tree/tree-core` 复用 |
 | value | `string \| string[]` | — | 受控值；单选为 string，多选为 string[] |
 | defaultValue | `string \| string[]` | — | 非受控初值 |
-| onChange | `(value: string \| string[]) => void` | — | 选择变更回调 |
 | multiple | `boolean` | `false` | 多选（checkable，父子级联勾选） |
 | placeholder | `string` | — | 触发器占位文案 |
 | disabled | `boolean` | `false` | 禁用 |
@@ -37,6 +36,12 @@ import { TreeSelect } from "@hulianui/ui"
 | searchable | `boolean` | `true` | 浮层内树搜索框，多层命中跳转 |
 | showLine | `boolean` | — | 显示树连接线 |
 | className | `string` | — | 透传到触发器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(value: string \| string[]) => void` | 选择变更回调；单选回传 string，多选回传 string[] |
 
 ## 示例
 ```tsx

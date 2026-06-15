@@ -27,7 +27,6 @@ import { BorderGlow } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 卡片内容，层叠在所有发光层之上 |
 | className | `string` | — | 透传根容器 className（合并进 `.border-glow`） |
 | edgeSensitivity | `number` | `30` | 边缘灵敏度 0–100，越小越早触发外层光晕 |
 | glowColor | `string` | `var(--color-chart-1)` | 外层光晕色（box-shadow），token 须带 `--color-` 前缀 |
@@ -40,6 +39,12 @@ import { BorderGlow } from "@hulianui/ui"
 | colors | `string[]` | chart-1/3/4 | 彩色网格边框取色，循环映射到 7 个 radial 锚点 |
 | fillOpacity | `number` | `0.5` | 边缘彩色填充层透明度 0–1 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 卡片内容，层叠在所有发光层之上 |
 
 ## 示例
 

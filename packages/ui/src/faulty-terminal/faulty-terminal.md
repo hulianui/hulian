@@ -44,7 +44,12 @@ import { FaultyTerminal } from "@hulianui/ui"
 | brightness | `number` | `1` | 整体亮度倍率 |
 | className | `string` | — | 透传根容器（或兜底层） |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容 |
 
 ## 示例
 ```tsx

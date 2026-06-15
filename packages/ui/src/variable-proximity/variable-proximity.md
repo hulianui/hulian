@@ -33,9 +33,14 @@ import { VariableProximity } from "@hulianui/ui"
 | falloff | `"linear" \| "exponential" \| "gaussian"` | `"linear"` | 衰减曲线；exponential 更陡、gaussian 中心更聚拢柔和 |
 | className | `string` | — | 合并到根 span 的额外类名 |
 | style | `CSSProperties` | — | 合并到根 span 的内联样式 |
-| onClick | `React.MouseEventHandler<HTMLSpanElement>` | — | 点击根 span 的回调 |
 
 > 注：showcase controls 默认演示用 `radius={90}`，但接口默认值为 `50`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `React.MouseEventHandler<HTMLSpanElement>` | 点击根 span 的回调 |
 
 ## 示例
 ```tsx

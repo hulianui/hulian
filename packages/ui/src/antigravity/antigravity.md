@@ -38,7 +38,12 @@ import { Antigravity } from "@hulianui/ui"
 | pulseSpeed | `number` | `3` | 粒子脉冲缩放速度（被吸住时大小呼吸快慢） |
 | shape | `"dot" \| "square" \| "bar"` | `"bar"` | 粒子形状 |
 | className | `string` | — | 透传到根容器（canvas 包裹层 / fallback） |
-| fallback | `ReactNode` | — | reduced-motion 或无 canvas2d 时的自定义静态备用内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion 或无 canvas2d 时的自定义静态备用内容 |
 
 ## 示例
 ```tsx

@@ -27,10 +27,21 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogClose, AlertDialogContent }
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `AlertDialogContent.title` * | `ReactNode` | — | 标题（a11y label，必填） |
-| `AlertDialogContent.description` | `ReactNode` | — | 说明文案 |
-| `AlertDialogContent.children` | `ReactNode` | — | 底部操作区，放「取消 / 确认」按钮（取消用 `AlertDialogClose`） |
 | `AlertDialogContent.className` | `string` | — | 内容容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `AlertDialog.onOpenChange` | `(open: boolean) => void` | 开关态变化回调（透传 Base UI AlertDialog Root） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `AlertDialogContent.title` * | `ReactNode` | 标题（a11y label，必填） |
+| `AlertDialogContent.description` | `ReactNode` | 说明文案 |
+| `AlertDialogContent.children` | `ReactNode` | 底部操作区，放「取消 / 确认」按钮（取消用 `AlertDialogClose`） |
 
 ## 示例
 ```tsx

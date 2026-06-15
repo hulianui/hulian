@@ -35,7 +35,12 @@ import { PixelBlast, pixelBlastShowcase } from "@hulianui/ui"
 | edgeFade | `number` | `0.5` | 四周渐隐宽度 0–1（相对短边）；0=硬边铺满，越大四角越柔和 |
 | className | `string` | — | 透传到根容器 div（或 reduced-motion 兜底 div） |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
-| fallback | `ReactNode` | primary token radial-gradient 点阵（CSS mask 模拟网点） | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；默认 primary token radial-gradient 点阵（CSS mask 模拟网点） |
 
 ## 示例
 

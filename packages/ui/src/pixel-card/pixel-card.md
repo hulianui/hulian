@@ -30,9 +30,14 @@ import { PixelCard } from "@hulianui/ui"
 | speed | `number` | 变体默认 | 动画速度（0–100 整数标度），0 等价禁用动画 |
 | colors | `string[]` | 变体默认（token） | 像素配色数组，每像素随机取一；默认取瑚琏 token，可传任意 CSS 颜色 |
 | noFocus | `boolean` | 变体默认 | true 时仅鼠标悬停触发、根容器不可聚焦（禁键盘焦点触发） |
-| children | `ReactNode` | — | 覆盖在像素层上方的内容（relative 层叠在 canvas 背景之上） |
 | className | `string` | — | 透传到根容器的额外 className（控尺寸/圆角/边框） |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 覆盖在像素层上方的内容（relative 层叠在 canvas 背景之上） |
 
 ## 示例
 ```tsx

@@ -27,14 +27,19 @@ import { FileTree, fileStatusMeta, filterFileTree } from "@hulianui/ui"
 |------|------|------|------|
 | nodes* | `FileNode[]` | — | 树数据（递归 file/folder） |
 | selectedPath | `string` | — | 受控高亮当前选中（按拼接 path 匹配） |
-| onSelect | `(node: FileNode, path: string) => void` | — | 点击文件/文件夹回调，回传节点与拼接 path |
-| onContextMenu | `(node: FileNode, path: string, e: React.MouseEvent) => void` | — | 行右键回调（消费者配 ContextMenu 锚光标弹菜单） |
 | expandedPaths | `string[]` | — | 受控展开的 folder path 集合（传入即受控） |
 | defaultExpandedPaths | `string[]` | — | 非受控初始展开（与各 folder 的 defaultExpanded 合并） |
-| onExpandedChange | `(paths: string[]) => void` | — | 展开变化回调（受控/非受控都回调） |
 | searchable | `boolean` | `false` | 树内搜索框（过滤 + 命中祖先自动展开） |
 | searchPlaceholder | `string` | `"搜索文件"` | 搜索框占位符 |
 | className | `string` | — | 自定义类 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | `(node: FileNode, path: string) => void` | 点击文件/文件夹回调，回传节点与拼接 path |
+| onContextMenu | `(node: FileNode, path: string, e: React.MouseEvent) => void` | 行右键回调（消费者配 ContextMenu 锚光标弹菜单） |
+| onExpandedChange | `(paths: string[]) => void` | 展开变化回调（受控/非受控都回调） |
 
 `FileNode`：`{ name: string; type: "file"｜"folder"; status?: FileStatus; children?: FileNode[]; defaultExpanded?: boolean }`。
 `FileStatus`：`"added"｜"modified"｜"deleted"｜"untracked"｜"renamed"`（渲染为右侧 A/M/D/U/R 着色字母角标）。

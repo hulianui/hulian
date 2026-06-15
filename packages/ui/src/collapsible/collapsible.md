@@ -27,13 +27,23 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 |------|------|------|------|
 | `Collapsible.open` | `boolean` | — | 受控展开态 |
 | `Collapsible.defaultOpen` | `boolean` | `false` | 非受控初始展开态 |
-| `Collapsible.onOpenChange` | `(open: boolean) => void` | — | 展开态变化回调（瑚琏收敛签名，丢 Base UI eventDetails，同 Switch/Toggle 风格） |
 | `Collapsible.disabled` | `boolean` | `false` | 禁用，不可展开 |
 | `Collapsible.className` | `string` | — | 容器类名 |
-| `Collapsible.children` | `ReactNode` | — | 包含 Trigger + Panel |
 | `CollapsibleTrigger.disabled` | `boolean` | `false` | 单独禁用触发器 |
-| `CollapsibleTrigger.children` | `ReactNode` | — | 标题行内容 |
-| `CollapsiblePanel.children` | `ReactNode` | — | 折叠区内容 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `Collapsible.onOpenChange` | `(open: boolean) => void` | 展开态变化回调（瑚琏收敛签名，丢 Base UI eventDetails，同 Switch/Toggle 风格） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `Collapsible.children` | `ReactNode` | 包含 Trigger + Panel |
+| `CollapsibleTrigger.children` | `ReactNode` | 标题行内容 |
+| `CollapsiblePanel.children` | `ReactNode` | 折叠区内容 |
 
 ## 示例
 ```tsx

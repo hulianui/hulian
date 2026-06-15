@@ -25,7 +25,6 @@ import { GlassSurface } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 玻璃面内容（居中于折射层之上） |
 | width | `number ｜ string` | `200` | 宽度，number 视作 px，string 原样透传 |
 | height | `number ｜ string` | `80` | 高度，number 视作 px，string 原样透传 |
 | borderRadius | `number` | `20` | 圆角半径 px，同时作用于容器与位移图内部矩形 |
@@ -45,6 +44,12 @@ import { GlassSurface } from "@hulianui/ui"
 | mixBlendMode | `CSSProperties["mixBlendMode"]` | `"difference"` | 位移图内红/蓝渐变叠加混合模式（决定折射纹理形态） |
 | className | `string` | — | 透传根容器 className |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 玻璃面内容（居中于折射层之上） |
 
 ## 示例
 

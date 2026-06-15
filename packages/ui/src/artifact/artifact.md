@@ -25,18 +25,28 @@ import { Artifact } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | — | 头部标题 |
-| icon | `ReactNode` | — | 标题前图标 |
-| version | `ReactNode` | — | 版本标识，渲染为小 chip（如 `"v2"`） |
-| actions | `ReactNode` | — | 头部右侧操作区（如导出按钮） |
 | collapsedHeight | `number` | `240` | 折叠态内容限高 px；`<=0` 表示不折叠 |
 | defaultExpanded | `boolean` | `false` | 非受控初始展开态 |
 | expanded | `boolean` | — | 受控展开态（与 onExpandedChange 配对） |
-| onExpandedChange | `(expanded: boolean) => void` | — | 受控展开态变化回调 |
-| expandLabel | `ReactNode` | `"展开全文"` | 折叠时展开按钮文字 |
-| collapseLabel | `ReactNode` | `"收起"` | 展开时收起按钮文字 |
 | className | `string` | — | 容器附加类 |
-| children | `ReactNode` | — | 工件正文 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onExpandedChange | `(expanded: boolean) => void` | 受控展开态变化回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 头部标题 |
+| icon | `ReactNode` | 标题前图标 |
+| version | `ReactNode` | 版本标识，渲染为小 chip（如 `"v2"`） |
+| actions | `ReactNode` | 头部右侧操作区（如导出按钮） |
+| expandLabel | `ReactNode` | 折叠时展开按钮文字（默认 `"展开全文"`） |
+| collapseLabel | `ReactNode` | 展开时收起按钮文字（默认 `"收起"`） |
+| children | `ReactNode` | 工件正文 |
 
 ## 示例
 ```tsx

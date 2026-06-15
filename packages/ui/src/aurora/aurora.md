@@ -30,8 +30,13 @@ import { Aurora } from "@hulianui/ui"
 | speed | number | 20 | 完整一轮动画时长（秒），越大越慢越细腻 |
 | showRadialMask | boolean | true | 径向渐隐 mask（聚焦中部四角淡出），关闭则铺满容器无渐隐 |
 | className | string | — | 透传到极光层 div（可调透明度/混合模式） |
-| children | ReactNode | — | 覆盖在极光上方的内容（relative 层叠） |
 | style | CSSProperties | — | 透传到根容器的内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | ReactNode | 覆盖在极光上方的内容（relative 层叠） |
 
 ## 示例
 ```tsx

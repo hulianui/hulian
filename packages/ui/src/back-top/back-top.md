@@ -27,9 +27,19 @@ import { BackTop } from "@hulianui/ui"
 |------|------|------|------|
 | target | `() => HTMLElement \| Window \| null` | `window` | 滚动监听 & 回顶的目标容器（返回容器元素或 window）。 |
 | visibilityHeight | `number` | `400` | 滚动超过该高度(px)才淡入显示。 |
-| onClick | `() => void` | — | 点击回顶后的回调（在滚动触发之后）。 |
-| children | `ReactNode` | 上箭头图标 | 自定义悬浮按钮内容。 |
 | className | `string` | — | 默认 `fixed` 贴视口右下；可覆盖为 `absolute` 收进局部容器。 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `() => void` | 点击回顶后的回调（在滚动触发之后）。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 自定义悬浮按钮内容。默认上箭头图标。 |
 
 ## 示例
 ```tsx

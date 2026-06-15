@@ -27,11 +27,16 @@ import { MagicCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | ReactNode | — | 卡片内容 |
 | gradientSize | number | 200 | 高光半径（px） |
 | gradientColor | string | `var(--color-primary)` | 高光色 |
 | gradientOpacity | number | 0.15 | 高光不透明度 |
 | ...div | ComponentPropsWithoutRef\<"div"\> | — | 透传（`className` 控尺寸） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | ReactNode | 卡片内容 |
 
 ## 示例
 ```tsx

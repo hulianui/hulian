@@ -27,10 +27,8 @@ import { Carousel } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 幻灯片内容(每个顶层 child 一张) |
 | current | `number` | — | 受控当前索引(传入即受控) |
 | defaultCurrent | `number` | `0` | 非受控初始索引 |
-| onSelect | `(index: number) => void` | — | 选中变化回调(箭头/圆点/键盘/autoplay/拖拽停靠均触发) |
 | autoplay | `boolean` | `false` | 自动播放(reduced-motion 下强制关闭) |
 | autoplayInterval | `number` | `4000` | 自动播放间隔(毫秒) |
 | loop | `boolean` | `false` | 循环：末尾再下一张回到首张 |
@@ -38,6 +36,18 @@ import { Carousel } from "@hulianui/ui"
 | showDots | `boolean` | `true` | 显示圆点指示器 |
 | aria-label | `string` | `"轮播"` | region 无障碍标签 |
 | slideClassName | `string` | — | 每张幻灯片容器的额外类名(如固定高度/圆角) |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | `(index: number) => void` | 选中变化回调(箭头/圆点/键盘/autoplay/拖拽停靠均触发) |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 幻灯片内容(每个顶层 child 一张) |
 
 ## 示例
 ```tsx

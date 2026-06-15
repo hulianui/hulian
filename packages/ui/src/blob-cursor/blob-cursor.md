@@ -38,8 +38,13 @@ import { BlobCursor } from "@hulianui/ui"
 | damping | `number` | `28` | 弹簧阻尼（越大越不回弹、越黏） |
 | zIndex | `number` | `50` | 容器层级；水滴层不拦截指针（pointer-events:none） |
 | className | `string` | — | 透传到根容器（relative，铺满父级） |
-| children | `ReactNode` | — | 覆盖在水滴上方的内容（relative z-10） |
 | style | `CSSProperties` | — | 透传到根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 覆盖在水滴上方的内容（relative z-10） |
 
 ## 示例
 ```tsx

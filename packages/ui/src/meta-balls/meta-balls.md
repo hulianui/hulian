@@ -36,7 +36,12 @@ import { MetaBalls } from "@hulianui/ui"
 | cursorBallSize | `number` | `3` | 光标球半径（着色器单位） |
 | enableTransparency | `boolean` | `true` | 透明背景；false 时填黑底 |
 | className | `string` | — | 透传到 canvas / fallback 容器 |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时的自定义静态备用内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的自定义静态备用内容 |
 
 ## 示例
 ```tsx

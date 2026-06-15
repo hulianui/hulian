@@ -27,17 +27,27 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 菜单项内容。 |
-| onClick | `MouseEventHandler<HTMLElement>` | — | 点击回调。 |
 | disabled | `boolean` | — | — |
 | closeOnClick | `boolean` | `true` | 点击后是否关闭菜单。 |
 | label | `string` | — | 键盘 type-ahead 用文案覆盖（children 非纯文本时补）。 |
 | variant | `"default" \| "danger"` | `"default"` | danger 用危险色（删除等）。 |
 | className | `string` | — | — |
 
-**ContextMenuSubTrigger**：`children` / `disabled` / `label` / `variant?: "default" \| "danger"` / `className`。
-**ContextMenuContent / ContextMenuSubContent**：`children` / `className`。
+**ContextMenuSubTrigger**：Props `disabled` / `label` / `variant?: "default" \| "danger"` / `className`；Slots `children`。
+**ContextMenuContent / ContextMenuSubContent**：Props `className`；Slots `children`。
 **ContextMenuTrigger / Group / GroupLabel / Separator / Sub**：结构性组件（薄包 Base UI 原语，透传 children / className）。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `MouseEventHandler<HTMLElement>` | `ContextMenuItem` 点击回调。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | `ContextMenuItem` 菜单项内容。 |
 
 ## 示例
 ```tsx

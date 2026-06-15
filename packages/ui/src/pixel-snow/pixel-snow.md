@@ -38,7 +38,12 @@ import { PixelSnow } from "@hulianui/ui"
 | density | `number` | `0.3` | 雪花密度（每格出雪概率阈值）；越大越密。建议 0.05–0.6 |
 | direction | `number` | `125` | 风向角度（度），决定横向漂移方向 |
 | className | `string` | — | 透传到根容器（或 reduced-motion fallback div） |
-| fallback | `ReactNode` | 白点 + difference 混合静态点阵雪 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；默认白点 + difference 混合静态点阵雪 |
 
 ## 示例
 

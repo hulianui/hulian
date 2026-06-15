@@ -28,14 +28,24 @@ import { ServiceMessage } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | avatar | `AvatarProps` | — | 头部头像（复用瑚琏 Avatar 的 props，如 `{src, fallback}`） |
-| source | `ReactNode` | — | 头部来源名称，如「luckincoffee 瑞幸咖啡」 |
-| onMore | `() => void` | — | 头部右侧「更多」回调；提供则渲染 ⋯ 按钮 |
-| title | `ReactNode` | — | 正文主标题，如「商品领取提醒」 |
 | fields | `ServiceMessageField[]` | — | 正文键值对字段（`{label, value}` 左标右值）；children 提供时被覆盖 |
-| children | `ReactNode` | — | 自定义正文（覆盖 fields），用于非键值结构内容 |
-| footer | `ReactNode` | `"进入小程序查看"` | 底部左侧引导文字；传 `null` 隐藏整个底部 |
 | action | `ServiceMessageAction` | label `"小程序"` | 底部右侧动作（`{label?, icon?}` + chevron） |
-| onAction | `() => void` | — | 底部行点击回调；提供则整行成为可点击 button |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onMore | `() => void` | 头部右侧「更多」回调；提供则渲染 ⋯ 按钮 |
+| onAction | `() => void` | 底部行点击回调；提供则整行成为可点击 button |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| source | `ReactNode` | 头部来源名称，如「luckincoffee 瑞幸咖啡」 |
+| title | `ReactNode` | 正文主标题，如「商品领取提醒」 |
+| children | `ReactNode` | 自定义正文（覆盖 fields），用于非键值结构内容 |
+| footer | `ReactNode` | 底部左侧引导文字（默认「进入小程序查看」）；传 `null` 隐藏整个底部 |
 
 ## 示例
 ```tsx

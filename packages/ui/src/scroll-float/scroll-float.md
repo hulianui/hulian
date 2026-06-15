@@ -27,7 +27,6 @@ import { ScrollFloat } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `string` | — | 逐字符滚动浮现的文本(仅字符串，非字符串忽略为空) |
 | scrollContainerRef | `RefObject<HTMLElement \| null>` | 自动探测 | 自定义滚动容器；不传时优先绑最近可滚动祖先，其次视口，完全无滚动上下文则降级为进入视口自动浮现 |
 | offset | `[string, string]` | `["start 0.9", "start 0.35"]` | 进度映射区间(对应 useScroll offset)：顶进视口 90% 处开始、35% 处完成 |
 | stagger | `number` | `0.4` | 字符间错峰强度(0~1)，每字符进度窗口相对整体的偏移比例 |
@@ -36,6 +35,12 @@ import { ScrollFloat } from "@hulianui/ui"
 | scaleX | `number` | `0.7` | 初始横向压扁倍率，随进度回 1 |
 | containerClassName | `string` | — | 外层容器类名(裁切溢出的滚动浮现) |
 | textClassName | `string` | — | 文本层类名(控制字号/字重/对齐) |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `string` | 逐字符滚动浮现的文本(仅字符串，非字符串忽略为空) |
 
 ## 示例
 ```tsx

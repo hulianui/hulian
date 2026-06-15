@@ -41,7 +41,6 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 ### SelectContent
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 一组 `SelectItem` |
 | side | `"top" ｜ "bottom"` | `"bottom"` | 弹出方向 |
 | align | `"start" ｜ "center" ｜ "end"` | — | 对齐 |
 | sideOffset | `number` | — | 偏移量 |
@@ -51,7 +50,22 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 |------|------|------|------|
 | value* | `string` | — | 选项值（本批仅 string 值） |
 | disabled | `boolean` | `false` | 禁用此项 |
-| children* | `ReactNode` | — | 选项展示内容 |
+
+## Events
+
+`Select` 透传 Base UI `Select.Root` 的常用事件。
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string ｜ null, eventDetails) => void` | 选中值变化回调（透传 Base UI `Select.Root`） |
+| onOpenChange | `(open: boolean, eventDetails) => void` | 下拉开合变化回调（透传 Base UI `Select.Root`） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| SelectContent.children* | `ReactNode` | 一组 `SelectItem` |
+| SelectItem.children* | `ReactNode` | 选项展示内容 |
 
 ## 示例
 ```tsx

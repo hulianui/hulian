@@ -28,14 +28,19 @@ import { InputOTP } from "@hulianui/ui"
 | length | `number` | `6` | 分段数量 |
 | value | `string` | — | 受控值 |
 | defaultValue | `string` | — | 非受控初始值 |
-| onChange | `(value: string) => void` | — | 值变化回调 |
-| onComplete | `(value: string) => void` | — | 填满时回调 |
 | type | `"numeric" \| "text"` | `"numeric"` | 仅数字（默认）或任意字符 |
 | disabled | `boolean` | — | 禁用 |
 | invalid | `boolean` | `false` | 校验失败态 |
 | groupGap | `boolean` | — | 中间插入横线分隔符（3-3 分组视觉，如 XXX–XXX） |
 | className | `string` | — | 容器类名 |
 | aria-label | `string` | — | 无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(value: string) => void` | 值变化回调 |
+| onComplete | `(value: string) => void` | 填满时回调 |
 
 ## 示例
 ```tsx

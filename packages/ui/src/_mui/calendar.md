@@ -27,12 +27,17 @@ import { Calendar } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string \| null` | — | ISO 字符串受控值；传入即受控 |
 | defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| onValueChange | `(iso: string \| null) => void` | — | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 | minDate | `string` | — | 可选最早日期（ISO），早于此禁选 |
 | maxDate | `string` | — | 可选最晚日期（ISO），晚于此禁选 |
 | disabled | `boolean` | `false` | 整体禁用 |
 | readOnly | `boolean` | `false` | 只读：可查看不可改 |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 
 ## 示例
 ```tsx

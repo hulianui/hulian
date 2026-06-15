@@ -25,7 +25,6 @@ import { ModelViewer } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 放进 3D 舞台中央的「模型」，由组件统一施加旋转/视差/倾斜 |
 | width | `number ｜ string` | `"100%"` | 舞台宽度，由外层容器约束 |
 | height | `number ｜ string` | `360` | 舞台高度 |
 | defaultRotationY | `number` | `-20` | 初始偏航角（绕 Y，°），拖拽时累加 |
@@ -40,6 +39,12 @@ import { ModelViewer } from "@hulianui/ui"
 | showContactShadow | `boolean` | `true` | 底部柔和接触阴影 |
 | className | `string` | — | 透传根容器 className |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 放进 3D 舞台中央的「模型」，由组件统一施加旋转/视差/倾斜 |
 
 ## 示例
 

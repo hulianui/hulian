@@ -28,7 +28,6 @@ import { Cascader, flattenLeafPaths, filterLeafPaths, type CascaderLeafPath } fr
 | nodes* | `TreeNode[]` | — | 层级数据（复用 tree-core 的 `TreeNode`，含 `key`/`label`/`children`/`disabled`） |
 | value | `string[]` | — | 受控路径（从根到所选节点的 key 数组） |
 | defaultValue | `string[]` | — | 非受控初始路径 |
-| onChange | `(path: string[], nodes: TreeNode[]) => void` | — | 选中变化，回传 key 路径与对应节点链 |
 | expandTrigger | `"click" \| "hover"` | `"click"` | 逐级展开触发方式 |
 | changeOnSelect | `boolean` | `false` | 任意层节点都可提交（非仅叶子） |
 | showSearch | `boolean` | — | 浮层顶部出搜索框：扁平成叶子路径模糊匹配，命中行选中即提交全路径 |
@@ -38,6 +37,12 @@ import { Cascader, flattenLeafPaths, filterLeafPaths, type CascaderLeafPath } fr
 | invalid | `boolean` | — | 校验失败态 |
 | size | `"sm" \| "md" \| "lg"` | — | 触发器尺寸 |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(path: string[], nodes: TreeNode[]) => void` | 选中变化，回传 key 路径与对应节点链 |
 
 ## 示例
 ```tsx

@@ -28,13 +28,23 @@ import { Transfer } from "@hulianui/ui"
 | dataSource* | `TransferItem[]` | — | 全量数据源；每项 `key`/`label`，可带 `description`/`disabled` |
 | targetKeys | `string[]` | — | 受控：右侧（目标）面板的键集合 |
 | defaultTargetKeys | `string[]` | — | 非受控初始目标键 |
-| onChange | `(targetKeys, direction, movedKeys) => void` | — | 移动后回调，`direction` 为 `"right"`（入选）/`"left"`（移出） |
-| titles | `[ReactNode, ReactNode]` | `["源列表","已选"]` | 左右面板标题 |
 | searchable | `boolean` | `false` | 每个面板顶部显示搜索框 |
 | searchPlaceholder | `string` | `"搜索"` | 搜索框占位符 |
 | filterOption | `(input: string, item: TransferItem) => boolean` | label 包含匹配 | 自定义过滤（默认大小写不敏感子串） |
 | disabled | `boolean` | `false` | 整体禁用（两侧列表与移动按钮全失效） |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(targetKeys: string[], direction: "left" \| "right", movedKeys: string[]) => void` | 移动后回调，`direction` 为 `"right"`（入选）/`"left"`（移出） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| titles | `[ReactNode, ReactNode]` | 左右面板标题（默认 `["源列表","已选"]`） |
 
 ## 示例
 ```tsx

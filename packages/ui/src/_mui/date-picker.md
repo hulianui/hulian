@@ -27,13 +27,18 @@ import { DatePicker } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string \| null` | — | ISO 字符串受控值；传入即受控 |
 | defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| onValueChange | `(iso: string \| null) => void` | — | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 | minDate | `string` | — | 可选最早日期（ISO） |
 | maxDate | `string` | — | 可选最晚日期（ISO） |
 | label | `string` | `"选择日期"` | 输入框 label |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 
 ## 示例
 ```tsx

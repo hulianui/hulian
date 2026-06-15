@@ -28,9 +28,14 @@ import { Container } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg" \| "xl" \| "full"` | `"xl"` | 最大宽度档：sm=2xl / md=3xl / lg=4xl / xl=5xl / full=不限 |
 | padded | `boolean` | `true` | 是否水平居中并加左右安全内距 |
 | as | `ElementType` | `"div"` | 渲染标签（语义/布局解耦，如 section/main/article） |
-| children | `ReactNode` | — | 子内容 |
 
 其余 `HTMLAttributes<HTMLElement>` 属性（className/style 等）透传。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 子内容 |
 
 ## 示例
 ```tsx

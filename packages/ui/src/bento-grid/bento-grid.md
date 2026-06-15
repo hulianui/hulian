@@ -28,7 +28,6 @@ import { BentoGrid, BentoCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | ReactNode | — | 一组 `BentoCard` |
 | ...div | HTMLAttributes\<HTMLDivElement\> | — | 透传（`className` 控列数等） |
 
 ### BentoCard
@@ -36,12 +35,25 @@ import { BentoGrid, BentoCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | ReactNode | — | 卡片标题 |
-| description | ReactNode | — | 描述 |
-| icon | ReactNode | — | 左上图标/装饰 |
-| cta | ReactNode | — | 底部行动区（按钮/链接） |
-| children | ReactNode | — | 自定义卡片内容 |
 | ...div | Omit\<HTMLAttributes\<HTMLDivElement\>, "title"\> | — | 透传（用 `className="sm:col-span-2"` 跨列） |
+
+## Slots
+
+### BentoGrid
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | ReactNode | 一组 `BentoCard` |
+
+### BentoCard
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | ReactNode | 卡片标题 |
+| description | ReactNode | 描述 |
+| icon | ReactNode | 左上图标/装饰 |
+| cta | ReactNode | 底部行动区（按钮/链接） |
+| children | ReactNode | 自定义卡片内容 |
 
 ## 示例
 ```tsx

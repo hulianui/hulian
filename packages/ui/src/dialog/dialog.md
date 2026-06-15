@@ -29,9 +29,20 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 |------|------|------|------|
 | `DialogContent.title` * | `string` | — | 标题（a11y label） |
 | `DialogContent.description` | `string` | — | 说明文案 |
-| `DialogContent.footer` | `ReactNode` | — | 底部操作区，渲染在正文下方，顶部分隔线 + 右对齐，与 DrawerContent 对齐 |
-| `DialogContent.children` | `ReactNode` | — | 正文内容 |
 | `DialogContent.className` | `string` | — | 内容容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `Dialog.onOpenChange` | `(open: boolean) => void` | 开关态变化回调（透传 Base UI Dialog Root） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `DialogContent.footer` | `ReactNode` | 底部操作区，渲染在正文下方，顶部分隔线 + 右对齐，与 DrawerContent 对齐 |
+| `DialogContent.children` | `ReactNode` | 正文内容 |
 
 ## 示例
 ```tsx

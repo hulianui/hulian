@@ -27,14 +27,24 @@ import { Folder } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| onClick | `MouseEventHandler<HTMLButtonElement>` | — | 点击文件夹（触发展开/收起）时回调 |
 | color | `string` | `var(--color-primary)` | 文件夹主体色，接受任意 CSS 颜色，推荐喂 token；showcase 备选 `chart-1/2/4` |
 | size | `number` | `1` | 整体缩放倍数（基准 100×80px） |
-| items | `ReactNode[]` | — | 最多 3 张纸张内容（多余截断、不足补空），展开后扇形铺开并磁吸跟随 |
 | open | `boolean` | — | 受控展开态；提供时组件受控，须配 `onOpenChange` |
 | defaultOpen | `boolean` | `false` | 默认展开态（非受控） |
-| onOpenChange | `(open: boolean) => void` | — | 展开态变化回调（受控/非受控均触发） |
 | disableMagnet | `boolean` | `false` | 关闭磁吸跟随（展开后纸张不再随鼠标偏移） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `MouseEventHandler<HTMLButtonElement>` | 点击文件夹（触发展开/收起）时回调 |
+| onOpenChange | `(open: boolean) => void` | 展开态变化回调（受控/非受控均触发） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| items | `ReactNode[]` | 最多 3 张纸张内容（多余截断、不足补空），展开后扇形铺开并磁吸跟随 |
 
 ## 示例
 

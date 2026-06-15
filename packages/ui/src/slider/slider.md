@@ -36,7 +36,16 @@ import { Slider } from "@hulianui/ui"
 | showValue | `boolean` | `false` | 在轨道上方显示当前数值读出（Slider.Value） |
 | className | `string` | — | Root wrapper className |
 
-> 其余 Base UI `Slider.Root` 的 prop（`onValueChange`、`name`、`orientation` 等）原样透传。
+> 其余 Base UI `Slider.Root` 的 prop（`name`、`orientation` 等）原样透传。
+
+## Events
+
+透传 Base UI `Slider.Root`，下表为常用项（签名照上游）。
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: number｜number[], eventDetails) => void` | 值变化回调（单值传 number、range 传 number[]） |
+| onValueCommitted | `(value: number｜number[], eventDetails) => void` | 拖动结束/提交时回调 |
 
 ## 示例
 ```tsx

@@ -37,7 +37,12 @@ import { SideRays } from "@hulianui/ui"
 | falloff | `number` | `1.6` | 亮度随距离衰减指数，越大越集中光源附近 |
 | opacity | `number` | `1` | 整体不透明度（0–1），叠内容上常用 0.5–0.8 |
 | className | `string` | — | 透传根容器；组件自带 `absolute inset-0 z-0` |
-| fallback | `ReactNode` | 角向 radial-gradient div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认角向 radial-gradient div） |
 
 ## 示例
 ```tsx

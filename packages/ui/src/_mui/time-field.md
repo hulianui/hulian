@@ -27,11 +27,16 @@ import { TimeField } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string \| null` | — | ISO 字符串受控值；传入即受控 |
 | defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| onValueChange | `(iso: string \| null) => void` | — | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 | label | `string` | `"选择时间"` | 输入框 label |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 
 ## 示例
 ```tsx

@@ -32,9 +32,14 @@ import { BlurText } from "@hulianui/ui"
 | blur | `number` | `8` | 起始模糊像素，解析到 0 时清晰 |
 | stepDuration | `number` | `0.5` | 单段从起始到清晰的整体时长（秒），内部分两步 |
 | threshold | `number` | `0.3` | 触发动画的视口可见比例（useInView amount），0~1 |
-| onAnimationComplete | `() => void` | — | 末段动画结束回调（整句浮现完成时触发一次） |
 
 其余 `<p>` 原生属性透传；`onDrag/onDragStart/onDragEnd/onAnimationStart` 因与 motion 签名冲突被剔除。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onAnimationComplete | `() => void` | 末段动画结束回调（整句浮现完成时触发一次） |
 
 ## 示例
 ```tsx

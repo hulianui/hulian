@@ -27,18 +27,28 @@ import { LivePlayer } from "@hulianui/ui"
 |------|------|------|------|
 | src | `string` | — | 本地视频源（内部固定 muted/loop/autoPlay/playsInline） |
 | poster | `string` | — | 视频封面 |
-| surface | `ReactNode` | — | 自定义画面（程序化场景等）；存在时优先于 `src` |
 | live | `boolean` | `true` | 显示 LIVE 呼吸徽标 |
 | viewers | `number` | — | 在线人数（NumberTicker 跳数） |
 | qualities | `string[]` | — | 清晰度档位列表 |
 | quality | `string` | — | 当前清晰度（受控） |
-| onQualityChange | `(q: string) => void` | — | 切换清晰度回调 |
 | host | `LivePlayerHost` | — | 顶部主播条 |
 | orientation | `"portrait" \| "landscape"` | `"landscape"` | 朝向 |
-| overlay | `ReactNode` | — | 画面之上、操作条之下的覆盖层（弹幕/飘心/礼物） |
-| footer | `ReactNode` | — | 底部互动栏插槽 |
 | aspectRatio | `string` | — | CSS aspect-ratio；不传按 orientation（landscape=16/9，portrait=9/16），传 `"fill"` 则不锁比例铺满父容器 |
 | className | `string` | — | 容器自定义类 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onQualityChange | `(q: string) => void` | 切换清晰度回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| surface | `ReactNode` | 自定义画面（程序化场景等）；存在时优先于 `src` |
+| overlay | `ReactNode` | 画面之上、操作条之下的覆盖层（弹幕/飘心/礼物） |
+| footer | `ReactNode` | 底部互动栏插槽 |
 
 `LivePlayerHost`：`{ name: string; avatar?: string; followed?: boolean; onFollow?: () => void; meta?: ReactNode }`（不传 `onFollow` 则不显示关注钮）。
 

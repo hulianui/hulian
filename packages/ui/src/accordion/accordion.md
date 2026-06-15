@@ -29,12 +29,23 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 |------|------|------|------|
 | `Accordion.multiple` | `boolean` | `false` | 是否允许同时展开多项；`false` 时为单开互斥 |
 | `Accordion.defaultValue` | `string[]` | — | 非受控初始展开的 item value 数组 |
-| `Accordion.value` / `onValueChange` | `string[]` / `(v) => void` | — | 受控展开态 |
+| `Accordion.value` | `string[]` | — | 受控展开态 |
 | `Accordion.className` | `string` | — | 容器类名 |
 | `AccordionItem.value` * | `string` | — | 该项唯一标识，与 `value`/`defaultValue` 对应 |
 | `AccordionItem.disabled` | `boolean` | `false` | 禁用该项（不可展开/收起） |
-| `AccordionTrigger.children` | `ReactNode` | — | 标题行内容 |
-| `AccordionPanel.children` | `ReactNode` | — | 折叠区内容 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `Accordion.onValueChange` | `(value: string[]) => void` | 展开态变化回调（透传 Base UI Root），受控时配合 `value` 使用 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `AccordionTrigger.children` | `ReactNode` | 标题行内容 |
+| `AccordionPanel.children` | `ReactNode` | 折叠区内容 |
 
 ## 示例
 ```tsx

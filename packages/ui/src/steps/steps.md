@@ -30,7 +30,6 @@ import { Steps } from "@hulianui/ui"
 | status | `"process" \| "finish" \| "error"` | `"process"` | 当前步（index===current）的状态。 |
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | 排布方向。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
-| onChange | `(index: number) => void` | — | 提供则每步可点击，点击非禁用步触发（index）。 |
 | className | `string` | — | — |
 
 **StepsItem**
@@ -42,6 +41,12 @@ import { Steps } from "@hulianui/ui"
 | icon | `ReactNode` | 自定义指示器内容（覆盖默认序号/状态图标）。 |
 | status | `"wait" \| "process" \| "finish" \| "error"` | 显式状态，覆盖由 current 派生的状态。 |
 | disabled | `boolean` | 禁用：不可点击、降透明度。 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(index: number) => void` | 提供则每步可点击，点击非禁用步触发（index）。 |
 
 ## 示例
 ```tsx

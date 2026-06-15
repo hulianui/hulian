@@ -27,9 +27,14 @@ import { CardSpotlight } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 卡片内容。 |
 | radius | `number` | `350` | 聚光灯半径(px)，越大高光扩散越广，越小越聚焦。 |
 | color | `string` | chart-1 token | 聚光高光色，接受任意 CSS 颜色串，如 `"#7c3aed"`、`"var(--color-primary)"`。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 卡片内容。 |
 
 ## 示例
 ```tsx

@@ -27,13 +27,22 @@ import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@hulia
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 提示文案 |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | — | 与触发器的间距 |
 | className | `string` | — | 额外类名 |
 
-`TooltipProvider` 接 `delay` / `closeDelay`（ms）控制开合延迟；`TooltipTrigger` 用 `render` prop 接管触发元素。
+`TooltipProvider` 接 `delay` / `closeDelay`（ms）控制开合延迟。
+
+## Slots
+
+`TooltipContent`：
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 提示文案 |
+
+`TooltipTrigger` 用 `render` prop 接管触发元素。
 
 ## 示例
 ```tsx

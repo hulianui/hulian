@@ -27,14 +27,24 @@ import { SecretField, maskSecret } from "@hulianui/ui"
 |------|------|------|------|
 | value * | `string` | — | 密钥原值 |
 | revealed | `boolean` | — | 受控显形态；不传则组件自管 |
-| onRevealedChange | `(revealed: boolean) => void` | — | 显形态变化回调（受控时用） |
 | maskStrategy | `"full"｜"prefix-suffix"` | `"prefix-suffix"` | full 全掩 / prefix-suffix 保留首尾 |
 | copyable | `boolean` | `true` | 是否显示复制按钮 |
-| onCopy | `(value: string) => void` | — | 复制回调（拿到原值） |
-| actions | `ReactNode` | — | 尾部动作槽（重置 / 吊销等） |
 | readOnly | `boolean` | `false` | 只读外观（去掉交互态描边） |
 | size | `"sm"｜"md"` | `"md"` | — |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onRevealedChange | `(revealed: boolean) => void` | 显形态变化回调（受控时用） |
+| onCopy | `(value: string) => void` | 复制回调（拿到原值） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| actions | `ReactNode` | 尾部动作槽（重置 / 吊销等） |
 
 另导出 `maskSecret(value, strategy)` 工具函数，单独按策略生成掩码串。
 

@@ -29,13 +29,18 @@ import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuT
 |------|------|------|------|
 | value | `any` | — | 受控：当前展开项的 value |
 | defaultValue | `any` | — | 非受控初始展开项 |
-| onValueChange | `(value) => void` | — | 展开项变化回调 |
 | delay | `number` | `100` | 悬停到开启的延迟(ms)，`0` 为 hover 即开 |
 | closeDelay | `number` | — | 移出到关闭的延迟(ms) |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 菜单条方向 |
 | className | `string` | — | 根容器样式 |
 
 子件（`NavigationMenuItem` 需 `value`；`NavigationMenuLink` 透传 `href` 等锚点属性）均接受 `className` 并透传 Base UI 同名部件属性。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value) => void` | 展开项变化回调（透传 Base UI `NavigationMenu.Root`） |
 
 ## 示例
 ```tsx

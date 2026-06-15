@@ -25,11 +25,16 @@ import { AuroraText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 要渲染的文字 |
 | colors | `string[]` | 4 个瑚琏 chart token | 渐变停靠色数组（自动吃明暗主题） |
 | speed | `number` | `1` | 流动速度倍率，越大越快 |
 
 继承 `ComponentPropsWithoutRef<"span">`（除 `color`），如 `className` / `style`。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 要渲染的文字 |
 
 ## 示例
 ```tsx

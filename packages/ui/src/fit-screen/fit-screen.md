@@ -25,13 +25,18 @@ import { FitScreen, computeFit } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 你的固定设计尺寸大屏内容。 |
 | designWidth | `number` | `1920` | 设计稿宽。 |
 | designHeight | `number` | `1080` | 设计稿高。 |
 | mode | `"fit" \| "cover" \| "stretch"` | `"fit"` | fit=取 min(等比不裁切，四周可能留黑边)；cover=取 max(等比铺满，可能裁切)；stretch=非等比拉满(可能变形)。 |
 | className | `string` | — | 外层容器类名。 |
 
 `computeFit(input: FitInput)`：纯函数（`{ outerW, outerH, designW, designH, mode }` → 缩放结果），可单测，组件内部据 ResizeObserver 测量后调用它。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 你的固定设计尺寸大屏内容。 |
 
 ## 示例
 ```tsx

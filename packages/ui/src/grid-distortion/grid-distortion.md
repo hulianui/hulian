@@ -32,7 +32,12 @@ import { GridDistortion } from "@hulianui/ui"
 | imageSrc | `string` | — | 被扭曲的图像；不传则程序化生成 chart token 网格底纹（推荐）；传入需同源或 CORS |
 | color | `string` | `--color-chart-1` | 网格底纹主色（仅 imageSrc 未传时生效），任意 CSS 颜色 |
 | className | `string` | — | 透传根容器（或兜底 div） |
-| fallback | `ReactNode` | 网格底纹 div | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认网格底纹 div） |
 
 ## 示例
 ```tsx

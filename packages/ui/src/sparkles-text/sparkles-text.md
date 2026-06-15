@@ -25,11 +25,16 @@ import { SparklesText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 要渲染的文字 |
 | colors | `string[]` | `[primary, chart-1]` token | 星色数组 |
 | sparklesCount | `number` | `8` | 星星数量 |
 
 继承 `ComponentPropsWithoutRef<"span">`（除 `color`），如 `className` / `style`。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 要渲染的文字 |
 
 ## 示例
 ```tsx

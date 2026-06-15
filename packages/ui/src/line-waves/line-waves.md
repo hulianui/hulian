@@ -39,7 +39,12 @@ import { LineWaves } from "@hulianui/ui"
 | enableMouseInteraction | `boolean` | `true` | 开启指针局部扭曲外推；关闭则纯自动流动 |
 | mouseInfluence | `number` | `2` | 指针影响强度；仅 enableMouseInteraction=true 时生效 |
 | className | `string` | — | 透传到根容器（或 reduced-motion fallback div） |
-| fallback | `ReactNode` | 斜向 chart token 渐变线纹 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；默认斜向 chart token 渐变线纹 |
 
 ## 示例
 

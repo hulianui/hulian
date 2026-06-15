@@ -25,13 +25,23 @@ import { InfiniteScroll } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| onLoadMore* | `() => Promise<void>｜void` | — | 触底加载回调；返回 Promise 期间不重复触发。 |
 | hasMore* | `boolean` | — | 是否还有更多；false 时停止观察并显示完结文案。 |
-| children* | `ReactNode` | — | 已渲染的列表内容。 |
 | threshold | `number` | `100` | 距底多少 px 提前触发（IntersectionObserver rootMargin）。 |
-| loadingText | `ReactNode` | — | 加载中文案。 |
-| finishedText | `ReactNode` | — | 完结文案。 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onLoadMore* | `() => Promise<void>｜void` | 触底加载回调；返回 Promise 期间不重复触发。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 已渲染的列表内容。 |
+| loadingText | `ReactNode` | 加载中文案。 |
+| finishedText | `ReactNode` | 完结文案。 |
 
 ## 示例
 ```tsx

@@ -27,7 +27,6 @@ import { DateRangePicker } from "@hulianui/ui"
 |------|------|------|------|
 | value | `[string, string] \| null` | — | 受控值 `[start, end]`（ISO `YYYY-MM-DD`）；`null` = 已清空；传入即受控 |
 | defaultValue | `[string, string] \| null` | — | 非受控初始值 |
-| onValueChange | `(range: [string, string] \| null) => void` | — | 区间变化（含清空 → null） |
 | minDate | `string` | — | 最早可选日（ISO），早于此禁选 |
 | maxDate | `string` | — | 最晚可选日（ISO），晚于此禁选 |
 | disabledDate | `(isoDate: string) => boolean` | — | 自定义禁用某天，入参为 ISO `YYYY-MM-DD` |
@@ -37,6 +36,12 @@ import { DateRangePicker } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读：可打开查看，无端点选择/无预设/无清除 |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(range: [string, string] \| null) => void` | 区间变化（含清空 → null） |
 
 `DateRangePreset`：`{ label: string; getValue: () => [string, string] }`，点击时调用、可基于"今天"动态计算。
 

@@ -30,12 +30,22 @@ import { ElasticSlider } from "@hulianui/ui"
 | maxValue | `number` | `100` | 量程上界（轨道最右对应数值） |
 | isStepped | `boolean` | `false` | 是否吸附到步长（拖动时按 stepSize 取整） |
 | stepSize | `number` | `1` | 吸附步长，仅 isStepped 为 true 时生效 |
-| leftIcon | `ReactNode` | 音量减号图标 | 左侧图标（轨道左端），拖动越界到最左时随回弹做位移+放大 |
-| rightIcon | `ReactNode` | 音量加号图标 | 右侧图标（轨道右端），拖动越界到最右时随回弹做位移+放大 |
 | showValue | `boolean` | `true` | 是否显示当前值数字指示（轨道上方居中） |
-| onValueChange | `(value: number) => void` | — | 拖动产生新值时回调，供消费方接管/上报数值 |
 | className | `string` | — | 透传到根容器的额外 className（merge via cn） |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: number) => void` | 拖动产生新值时回调，供消费方接管/上报数值 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| leftIcon | `ReactNode` | 左侧图标（轨道左端），拖动越界到最左时随回弹做位移+放大 |
+| rightIcon | `ReactNode` | 右侧图标（轨道右端），拖动越界到最右时随回弹做位移+放大 |
 
 ## 示例
 ```tsx

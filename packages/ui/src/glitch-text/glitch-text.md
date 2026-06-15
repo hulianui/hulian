@@ -25,11 +25,16 @@ import { GlitchText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children * | `string` | — | 要做撕裂故障效果的文本，必须是纯字符串（供伪元素 `attr(data-text)` 复制） |
 | speed | `number` | `2.5` | 撕裂周期秒数，越小越狂躁 |
 | enableOnHover | `boolean` | `false` | 仅悬停时故障，静息为普通文本；默认常驻故障 |
 
 其余 `<span>` 原生属性透传。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children * | `string` | 要做撕裂故障效果的文本，必须是纯字符串（供伪元素 `attr(data-text)` 复制） |
 
 ## 示例
 ```tsx

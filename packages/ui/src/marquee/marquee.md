@@ -27,7 +27,6 @@ import { Marquee } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children * | ReactNode | — | 滚动子项 |
 | direction | `"left"｜"right"` | `"left"` | 滚动方向；`"right"` 经 `animation-direction: reverse` |
 | duration | number | 40 | 单轮时长（秒），越大越慢 |
 | gap | string | `"1rem"` | 子项间距（CSS 长度） |
@@ -37,6 +36,12 @@ import { Marquee } from "@hulianui/ui"
 | fade | boolean | false | 两端渐隐遮罩（mask-image），适合 logo/图标墙 |
 | fadeWidth | string | `"15%"` | 渐隐区宽度（CSS 长度），仅 `fade` 为真时生效 |
 | ...div | ComponentPropsWithoutRef\<"div"\> | — | 透传（`className` 控宽/高） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children * | ReactNode | 滚动子项 |
 
 > 注：showcase controls 里 `duration` 默认演示值为 20、`pauseOnHover`/`fade` 默认演示为 true，仅展示用；组件实际默认值以上表（接口 JSDoc）为准。
 

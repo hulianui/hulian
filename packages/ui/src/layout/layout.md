@@ -43,12 +43,24 @@ import { Layout, LayoutHeader, LayoutSider, LayoutContent, LayoutFooter } from "
 | collapsible | `boolean` | `false` | 是否可折叠（显示底部 trigger 折叠按钮）。 |
 | collapsed | `boolean` | — | 受控收起态。传入即受控，须配合 onCollapse 回写。 |
 | defaultCollapsed | `boolean` | `false` | 非受控初始收起态。 |
-| onCollapse | `(collapsed: boolean, type: "clickTrigger" \| "responsive") => void` | — | 收起态变化回调（点 trigger 或命中断点时触发）。 |
 | breakpoint | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| number` | — | 响应式断点：视口 ≤ 该宽度自动收起，> 时展开。 |
-| trigger | `ReactNode` | chevron | `undefined`=默认 chevron；`null`=不渲染触发器（即便 collapsible）；传节点=自定义触发器内容。 |
 
 ### LayoutContent / LayoutFooter
 纯 `HTMLAttributes<HTMLElement>`，无专属 prop。
+
+## Events
+
+### LayoutSider
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCollapse | `(collapsed: boolean, type: "clickTrigger" \| "responsive") => void` | 收起态变化回调（点 trigger 或命中断点时触发）。 |
+
+## Slots
+
+### LayoutSider
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| trigger | `ReactNode` | 底部折叠触发器内容。`undefined`=默认 chevron；`null`=不渲染触发器（即便 collapsible）；传节点=自定义触发器内容（仍由本件包裹为可点按钮）。 |
 
 ## 示例
 ```tsx

@@ -31,9 +31,14 @@ import { Ballpit } from "@hulianui/ui"
 | bounce | `number` | `0.86` | 墙壁/互撞能量保留系数（0–1）；1=完全弹性永不停 |
 | sizeRange | `[number, number]` | `[10, 26]` | 小球半径范围 [最小,最大]（px）；另受容器短边约束 |
 | followCursor | `boolean` | `true` | 是否跟随光标形成排斥球推开周围小球；关闭后光标无交互 |
-| fallback | `ReactNode` | 静态小球占位 | reduced-motion / 无 canvas 时的静态兜底 |
 | className | `string` | — | 透传到根容器；组件自带 absolute inset-0 z-0 |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 canvas 时的静态兜底（默认一组静态排布的小球占位） |
 
 ## 示例
 ```tsx

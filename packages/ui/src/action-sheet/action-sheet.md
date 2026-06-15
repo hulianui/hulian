@@ -25,18 +25,31 @@ import { ActionSheet, ActionSheetTrigger, ActionSheetClose, ActionSheetContent }
 
 `ActionSheet`（= Base UI `Dialog.Root` props，受控/非受控 open、onOpenChange 等照常）；`ActionSheetTrigger` / `ActionSheetClose` 透传对应 Base UI Dialog 部件。
 
-**ActionSheetContent**
+**ActionSheetContent — Props**
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | `actions` * | `ActionSheetAction[]` | — | 动作列表（见下）；点击任一动作即关闭面板 |
-| `title` | `ReactNode` | — | 顶部标题 |
-| `description` | `ReactNode` | — | 标题下说明 |
-| `cancelText` | `ReactNode \| null` | `"取消"` | 取消按钮文案，传 `null` 隐藏取消块 |
 | `container` | `HTMLElement \| null` | `document.body` | portal 挂载容器；传某祖先（如手机框，且其 transform/overflow-hidden）可把遮罩+面板约束在容器内 |
 | `className` | `string` | — | — |
 
 **ActionSheetAction**：`key: string` · `label: ReactNode` · `description?: ReactNode`（小字说明）· `danger?: boolean`（红色危险动作）· `disabled?: boolean` · `onClick?: () => void`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `onOpenChange` | `(open: boolean) => void` | `ActionSheet`（Dialog.Root）开关状态变化时触发（透传 Base UI Dialog） |
+
+## Slots
+
+`ActionSheetContent` 的内容注入槽：
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `title` | `ReactNode` | 顶部标题 |
+| `description` | `ReactNode` | 标题下说明 |
+| `cancelText` | `ReactNode \| null` | 取消按钮文案（默认「取消」），传 `null` 隐藏取消块 |
 
 ## 示例
 ```tsx

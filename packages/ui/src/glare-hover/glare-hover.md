@@ -27,9 +27,14 @@ import { GlareHover } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 被反光扫过的内容 |
 | glareColor | `string` | 半透明白 | 反光色，默认玻璃光泽（明暗皆宜） |
 | duration | `string` | `"650ms"` | 扫光时长（showcase 可选 `"450ms"` / `"650ms"` / `"1000ms"`） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 被反光扫过的内容 |
 
 ## 示例
 

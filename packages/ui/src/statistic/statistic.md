@@ -28,10 +28,7 @@ import { Statistic, formatStatistic, formatCountdown } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | value* | `number \| string` | — | string 原样输出，number 走千分位 + precision 格式化 |
-| title | `ReactNode` | — | 数值上方说明标题 |
 | precision | `number` | — | 小数位数（仅 value 为 number 时生效） |
-| prefix | `ReactNode` | — | 数值前缀（货币符号/图标等） |
-| suffix | `ReactNode` | — | 数值后缀（单位等） |
 | groupSeparator | `boolean` | `true` | 千分位分组 |
 | animate | `boolean` | `false` | 接 NumberTicker 入场滚动（仅 number；动效路径恒带千分位） |
 | valueStyle | `CSSProperties` | — | 数值行内联样式（自定义颜色/字号） |
@@ -43,13 +40,35 @@ import { Statistic, formatStatistic, formatCountdown } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | deadline* | `number` | — | 截止时间戳（毫秒，与 Date.now() 同基准） |
-| title | `ReactNode` | — | 标题 |
 | format | `string` | `"HH:mm:ss"` | 格式化模板，支持 D/H/HH/m/mm/s/ss/S/SS/SSS |
-| prefix | `ReactNode` | — | 前缀 |
-| suffix | `ReactNode` | — | 后缀 |
-| onFinish | `() => void` | — | 归零回调（只触发一次） |
 | valueStyle | `CSSProperties` | — | 数值行内联样式 |
 | className | `string` | — | 透传类名 |
+
+## Events
+
+### Statistic.Countdown
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onFinish | `() => void` | 倒计时归零回调（只触发一次） |
+
+## Slots
+
+### Statistic
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 数值上方说明标题 |
+| prefix | `ReactNode` | 数值前缀（货币符号/图标等） |
+| suffix | `ReactNode` | 数值后缀（单位等） |
+
+### Statistic.Countdown
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 标题 |
+| prefix | `ReactNode` | 前缀 |
+| suffix | `ReactNode` | 后缀 |
 
 ## 示例
 ```tsx

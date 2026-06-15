@@ -32,8 +32,13 @@ import { Hyperspeed } from "@hulianui/ui"
 | leftColor | `string` | `var(--color-chart-4)` | 左侧（驶离）车灯色，任意 CSS 颜色 |
 | rightColor | `string` | `var(--color-chart-2)` | 右侧（驶近）车灯色，任意 CSS 颜色 |
 | className | `string` | — | 透传根容器（本身 block h-full w-full，由容器控尺寸） |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时渲染在静态兜底层内的内容 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时渲染在静态兜底层内的内容 |
 
 ## 示例
 ```tsx

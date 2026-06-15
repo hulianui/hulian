@@ -31,16 +31,26 @@ import { StaggeredMenu } from "@hulianui/ui"
 | colors | `string[]` | chart-4 / chart-1 两层 | 面板背后多层色层颜色（错峰滑入），最多取前 4 个；建议喂 `var(--color-chart-*)` token |
 | displaySocials | `boolean` | `true` | 是否展示底部社交区（仅 `socialItems` 非空才实际渲染） |
 | displayItemNumbering | `boolean` | `true` | 是否给主条目展示前缀序号（01 / 02 …） |
-| brand | `ReactNode` | 默认文字「瑚琏」 | 触发按钮旁的品牌槽 |
 | accentColor | `string` | `var(--color-primary)` | 强调色（序号 / 社交标题 / 条目 hover） |
 | isFixed | `boolean` | `false` | 是否 `fixed` 铺满视口（整页罩层）；否则相对父容器铺满 |
 | closeOnClickAway | `boolean` | `true` | 点击面板外区域是否关闭 |
-| onMenuOpen | `() => void` | — | 菜单打开回调 |
-| onMenuClose | `() => void` | — | 菜单关闭回调 |
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
 `StaggeredMenuItem`：`{ label; link?; ariaLabel? }`（`link` 缺省渲染为不可跳转 span）。`StaggeredMenuSocial`：`{ label; link }`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onMenuOpen | `() => void` | 菜单打开回调 |
+| onMenuClose | `() => void` | 菜单关闭回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| brand | `ReactNode` | 触发按钮旁的品牌槽（通常放 logo 文字或图标），缺省渲染默认文字「瑚琏」 |
 
 ## 示例
 ```tsx

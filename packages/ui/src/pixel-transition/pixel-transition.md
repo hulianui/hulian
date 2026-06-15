@@ -25,8 +25,6 @@ import { PixelTransition } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| firstContent * | `ReactNode` | — | 默认（静止）态内容，通常一张图/一段文案 |
-| secondContent * | `ReactNode` | — | 激活态内容，悬停/聚焦/点击后透过像素幕布显露 |
 | gridSize | `number` | `7` | 像素网格边长（总块数 gridSize²），越大越细腻越软 |
 | pixelColor | `string` | `"var(--color-foreground)"` | 像素块填色，建议 token 变量或 `currentColor` |
 | animationStepDuration | `number` | `0.3` | 单次过场时长（秒），散入+散出各占一半，中点切换 |
@@ -34,6 +32,13 @@ import { PixelTransition } from "@hulianui/ui"
 | aspectRatio | `string` | `"4 / 3"` | 容器宽高比（CSS aspect-ratio 写法，如 `"1 / 1"`、`"16 / 9"`） |
 | className | `string` | — | 透传到根元素，cn 合并 |
 | style | `CSSProperties` | — | 透传到根元素 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| firstContent * | `ReactNode` | 默认（静止）态内容，通常一张图/一段文案，必填 |
+| secondContent * | `ReactNode` | 激活态内容，悬停/聚焦/点击后透过像素幕布显露，必填 |
 
 ## 示例
 ```tsx

@@ -29,13 +29,18 @@ import { PillNav } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `PillNavItem[]` | — | 导航项列表，每项 `{ href, label, ariaLabel? }`，每项渲染为一颗胶囊 |
 | activeHref | `string` | — | 当前激活项的 href，命中后胶囊常驻反相态 + 底部点亮指示圆点 |
-| logo | `React.ReactNode` | — | 左侧圆形 logo 区内容（通常放 `<img>` 或图标），悬停旋转一圈；不传则不渲染 logo 区 |
 | logoHref | `string` | `items[0].href` → `"#"` | logo 区链接地址 |
 | logoAriaLabel | `string` | `"Home"` | logo 区无障碍标签 |
 | initialLoadAnimation | `boolean` | `true` | 首次加载入场动画（logo 弹入 + 胶囊展开），reduced-motion 下自动跳过 |
 | className | `string` | — | 合并到根 `<nav>` 的类名 |
 
 `PillNavItem`：`{ href: string; label: string; ariaLabel?: string }`，`ariaLabel` 缺省回退到 `label`。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| logo | `React.ReactNode` | 左侧圆形 logo 区内容（通常放 `<img>` 或图标），悬停旋转一圈；不传则不渲染 logo 区 |
 
 ## 示例
 ```tsx

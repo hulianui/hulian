@@ -33,7 +33,12 @@ import { LiquidEther } from "@hulianui/ui"
 | opacity | `number` | `1` | 整体不透明度 0–1；叠内容上常用 0.6–0.85 降视觉重量 |
 | className | `string` | — | 透传到根容器（canvas 包裹层或 reduced fallback） |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
-| fallback | `ReactNode` | 多点 chart token radial-gradient 静态液面 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；默认多点 chart token radial-gradient 静态液面 |
 
 ## 示例
 

@@ -38,8 +38,13 @@ import { GridScan } from "@hulianui/ui"
 | noiseIntensity | `number` | `0.01` | 颗粒噪声强度，0=干净无噪点 |
 | parallax | `boolean` | `true` | 随鼠标轻微透视偏摆；reduced-motion / 无 WebGL 自动失效 |
 | className | `string` | — | 透传根容器(或 fallback div) |
-| children | `ReactNode` | — | 叠在网格上方的内容，自动 relative z-10 层叠 |
-| fallback | `ReactNode` | token 静态网格 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 叠在网格上方的内容，自动 relative z-10 层叠 |
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容，默认 token 静态网格 |
 
 ## 示例
 ```tsx

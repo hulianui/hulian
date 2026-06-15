@@ -26,7 +26,6 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 ### MenuContent
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 菜单项 |
 | side | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | 弹出方位 |
 | align | `"start" \| "center" \| "end"` | `"start"` | 沿触发器的对齐 |
 | sideOffset | `number` | — | 与触发器的间距(px) |
@@ -35,8 +34,6 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 ### MenuItem
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 项内容 |
-| onClick | `MouseEventHandler<HTMLElement>` | — | 点击回调 |
 | disabled | `boolean` | `false` | 禁用 |
 | closeOnClick | `boolean` | `true` | 点击后是否关闭菜单 |
 | label | `string` | — | 键盘 type-ahead 的文案覆盖 |
@@ -44,6 +41,25 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 | className | `string` | — | — |
 
 `MenuTrigger` 用 `render={<Button />}` 把任意元素作触发器。
+
+## Events
+
+### MenuItem
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `MouseEventHandler<HTMLElement>` | 点击回调 |
+
+## Slots
+
+### MenuContent
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 菜单项 |
+
+### MenuItem
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 项内容 |
 
 ## 示例
 ```tsx

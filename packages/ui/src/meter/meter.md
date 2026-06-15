@@ -28,9 +28,14 @@ import { Meter } from "@hulianui/ui"
 | value* | `number` | — | 当前值 |
 | min | `number` | `0` | 下限 |
 | max | `number` | `100` | 上限 |
-| label | `ReactNode` | — | 可选标签（如「磁盘用量」） |
 | showValue | `boolean` | `false` | 是否显示格式化数值 |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-64`） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 可选标签（如「磁盘用量」） |
 
 ## 示例
 ```tsx

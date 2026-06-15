@@ -38,12 +38,25 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 | playbackRates | `number[]` | `DEFAULT_PLAYBACK_RATES`(0.5–2) | 倍速档位 |
 | chapters | `VideoChapter[]` | — | 章节分段(`{ time, title }`)：进度条按 time/duration 渲染 tick，hover 显示标题 |
 | startTime | `number` | — | 续播：可播放后 seek 到此秒(仅初始一次，>0 才生效) |
-| endScreen | `ReactNode` | — | 播完浮现的结束屏内容(如「下一节」卡片)；为空则只给重播按钮 |
 | className | `string` | — | — |
-| onPlay / onPause / onEnded | `() => void` | — | 播放生命周期回调 |
-| onTimeUpdate | `(currentTime: number) => void` | — | 播放进度回调(秒) |
 
-> `children` 为 v1 预留扩展位，未实现。导出的 `formatTime` / `chapterMarkers` / `normalizeSrc` / `DEFAULT_PLAYBACK_RATES` 为辅助纯函数/常量。
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onPlay | `() => void` | 开始播放回调 |
+| onPause | `() => void` | 暂停回调 |
+| onEnded | `() => void` | 播放结束回调 |
+| onTimeUpdate | `(currentTime: number) => void` | 播放进度回调(秒) |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| endScreen | `ReactNode` | 播完浮现的结束屏内容(如「下一节」卡片)；为空则只给重播按钮 |
+| children | `ReactNode` | v1 预留扩展位，未实现 |
+
+> 导出的 `formatTime` / `chapterMarkers` / `normalizeSrc` / `DEFAULT_PLAYBACK_RATES` 为辅助纯函数/常量。
 
 ## 示例
 ```tsx

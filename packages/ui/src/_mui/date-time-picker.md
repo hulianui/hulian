@@ -27,7 +27,6 @@ import { DateTimePicker } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string \| null` | — | ISO 字符串受控值（含日期+时间）；传入即受控 |
 | defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| onValueChange | `(iso: string \| null) => void` | — | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 | minDateTime | `string` | — | 可选最早日期时间（ISO） |
 | maxDateTime | `string` | — | 可选最晚日期时间（ISO） |
 | minutesStep | `number` | — | 时间步进分钟数（如 5、15、30） |
@@ -36,6 +35,12 @@ import { DateTimePicker } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
 
 ## 示例
 ```tsx

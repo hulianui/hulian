@@ -28,8 +28,13 @@ import { Access } from "@hulianui/ui"
 | permission | `string ｜ string[]` | — | 需要的权限；与 accessible 二选一，accessible 优先 |
 | mode | `"all" ｜ "any"` | `"all"` | 数组权限匹配模式：all=全部具备 / any=任一具备（单字符串无效） |
 | accessible | `boolean ｜ ((access: AccessContextValue) => boolean)` | — | 自定义判定（优先于 permission） |
-| fallback | `ReactNode` | `null` | 无权限时渲染的内容（默认隐藏） |
-| children* | `ReactNode` | — | 有权限时渲染的内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 有权限时渲染的内容 |
+| fallback | `ReactNode` | 无权限时渲染的内容（默认 `null`，即隐藏） |
 
 > 须配套 `<AccessProvider permissions={...}>`（`permissions` 接 `string[]` 或 `Set`）在外层注入权限集合；持有 `"*"` 通配符视为超管放行任意检查。
 

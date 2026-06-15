@@ -28,11 +28,21 @@ DocumentSheet（继承 `HTMLAttributes<HTMLDivElement>`）：
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"a4" \| "auto"` | `"a4"` | a4 固定 210mm 宽纸面 / auto 自适应容器宽 |
-| toolbar | `ReactNode` | — | 纸面上方工具栏内容（挂 `print:hidden`，打印时消失） |
-| onPrint | `() => void` | — | 打印按钮回调，缺省走 `window.print()` |
 | printable | `boolean` | `true` | 是否渲染内置打印按钮 |
-| children* | `ReactNode` | — | 纸面内容（通常由下列子件组装） |
 | className | `string` | — | 纸面类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onPrint | `() => void` | 打印按钮回调，缺省走 `window.print()` |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| toolbar | `ReactNode` | 纸面上方工具栏内容（挂 `print:hidden`，打印时消失） |
+| children* | `ReactNode` | 纸面内容（通常由下列子件组装） |
 
 DocumentSheetSection：`title?: ReactNode`（段小标题）+ children。
 DocumentSheetSignature：`label?: ReactNode`（签章说明）+ `lineWidth?: number \| string`（签名线宽，默认 `"11rem"`）。

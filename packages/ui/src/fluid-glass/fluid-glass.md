@@ -31,9 +31,14 @@ import { FluidGlass } from "@hulianui/ui"
 | speed | `number` | `1` | 背景流动速度倍率，0=背景静止（透镜仍跟随指针） |
 | colors | `string[]` | chart-1/2/4 | 背景渐变色组，取前 3 个，可传任意 CSS 颜色 |
 | followPointer | `boolean` | `true` | 透镜跟随指针；关闭时停在中心缓慢漂移 |
-| children | `ReactNode` | — | 覆盖在玻璃背景上方的内容（relative z-10 层叠于画布之上） |
 | className | `string` | — | 透传根容器 className（根为 `relative overflow-hidden`，canvas 自带 `absolute inset-0`） |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 覆盖在玻璃背景上方的内容（relative z-10 层叠于画布之上） |
 
 ## 示例
 

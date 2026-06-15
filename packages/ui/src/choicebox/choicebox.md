@@ -29,13 +29,11 @@ import { ChoiceboxGroup, Choicebox } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string \| string[]` | — | 受控值。单选为 string，多选为 string[] |
 | defaultValue | `string \| string[]` | — | 非受控初值 |
-| onValueChange | `(value: string \| string[]) => void` | — | 变更回调 |
 | multiple | `boolean` | `false` | true=多选(checkbox 语义) / false=单选(radio 语义) |
 | name | `string` | 自动生成 | radio 分组 name（单选用） |
 | columns | `number` | `1` | 网格列数 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | className | `string` | — | 透传到容器 |
-| children | `ReactNode` | — | 一组 Choicebox |
 | aria-label | `string` | — | 无障碍标签 |
 
 ### Choicebox
@@ -43,12 +41,33 @@ import { ChoiceboxGroup, Choicebox } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | value* | `string` | — | 选项值（组内唯一） |
-| title | `ReactNode` | — | 主标题 |
-| description | `ReactNode` | — | 副描述 |
-| icon | `ReactNode` | — | 左侧图标 |
-| children | `ReactNode` | — | 标题/描述外的附加内容（价格、标签等） |
 | disabled | `boolean` | `false` | 单项禁用 |
 | className | `string` | — | 透传到卡片 |
+
+## Events
+
+### ChoiceboxGroup
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string \| string[]) => void` | 变更回调；单选回传 string，多选回传 string[] |
+
+## Slots
+
+### ChoiceboxGroup
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 一组 Choicebox |
+
+### Choicebox
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 主标题 |
+| description | `ReactNode` | 副描述 |
+| icon | `ReactNode` | 左侧图标 |
+| children | `ReactNode` | 标题/描述外的附加内容（价格、标签等） |
 
 ## 示例
 ```tsx

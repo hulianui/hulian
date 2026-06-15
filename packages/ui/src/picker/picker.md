@@ -28,13 +28,18 @@ import { Picker } from "@hulianui/ui"
 | `columns` * | `PickerColumn[]` | — | 各列配置（见下） |
 | `value` | `string[]` | — | 各列选中值数组（受控） |
 | `defaultValue` | `string[]` | 各列首项 | 非受控初始值 |
-| `onChange` | `(value: string[], columnIndex: number) => void` | — | 某列选定后回调（完整值数组 + 变化的列下标） |
 | `visibleCount` | `number` | `5` | 可见行数（建议奇数） |
 | `itemHeight` | `number` | `40` | 行高 px |
 | `className` | `string` | — | — |
 
 **PickerColumn**：`options: PickerOption[]` · `flex?: number`（列宽 flex 比重，默认 1）。
 **PickerOption**：`label: ReactNode` · `value: string`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `onChange` | `(value: string[], columnIndex: number) => void` | 某列选定后回调（完整值数组 + 变化的列下标） |
 
 ## 示例
 ```tsx

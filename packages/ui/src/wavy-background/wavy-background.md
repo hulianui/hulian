@@ -31,10 +31,15 @@ import { WavyBackground, valueNoise2D } from "@hulianui/ui"
 | blur | number | 10 | canvas filter blur（px），0=不模糊 |
 | speed | `"slow" \| "fast"` | "fast" | 动画速度 |
 | waveOpacity | number | 0.5 | 每条波浪整体透明度（0–1） |
-| children | ReactNode | — | 波浪上方内容（absolute 居中覆盖） |
 | className | string | — | 内容容器类（覆盖在波浪上的 wrapper div） |
 | containerClassName | string | — | 外层根容器类 |
 | containerProps | `Omit<HTMLAttributes<HTMLDivElement>, "className"> & Record<\`data-${string}\`, …>` | — | 透传至外层根 div（含 data-* 自定义属性） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | ReactNode | 波浪上方内容（absolute 居中覆盖） |
 
 ## 示例
 ```tsx

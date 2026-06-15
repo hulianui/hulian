@@ -29,7 +29,12 @@ import { Safari } from "@hulianui/ui"
 |------|------|------|------|
 | url | `string` | `"hulian.design"` | 地址栏文本。 |
 | imageSrc | `string` | — | 内容区图片地址，优先于 children。 |
-| children | `ReactNode` | — | 内容区自定义节点（imageSrc 未传时渲染）。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 内容区自定义节点（imageSrc 未传时渲染）。 |
 
 ## 示例
 ```tsx

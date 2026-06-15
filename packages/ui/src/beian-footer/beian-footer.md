@@ -29,9 +29,14 @@ import { BeianFooter } from "@hulianui/ui"
 |------|------|------|------|
 | icp | `IcpRecord[]` | — | ICP 备案号，可多个（如主体下多站 -1/-2）。默认链 beian.miit.gov.cn |
 | police | `PoliceRecord` | — | 公网安备号，带警徽图标。默认链 beian.mps.gov.cn |
-| icpLabel | `ReactNode` | `"ICP备案"` | 备案前缀文案 |
-| copyright | `ReactNode` | — | 版权/补充行 |
 | className | `string` | — | 类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icpLabel | `ReactNode` | 备案前缀文案，默认 `"ICP备案"` |
+| copyright | `ReactNode` | 版权/补充行 |
 
 ## 示例
 ```tsx

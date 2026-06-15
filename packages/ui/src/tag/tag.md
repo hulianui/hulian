@@ -30,11 +30,21 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
-| icon | `ReactNode` | — | 前导图标槽；存在时不渲染 dot。 |
-| onClose | `() => void` | — | 提供则渲染关闭(×)按钮，点击触发该回调。 |
 | isDisabled | `boolean` | `false` | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
-| children | `ReactNode` | — | 标签文本。 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClose | `() => void` | 提供则渲染关闭(×)按钮，点击触发该回调。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon | `ReactNode` | 前导图标槽；存在时不渲染 dot。 |
+| children | `ReactNode` | 标签文本。 |
 
 ## 示例
 ```tsx

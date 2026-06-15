@@ -31,7 +31,6 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 |------|------|------|------|
 | sticky | `boolean` | — | 是否 sticky 吸顶 |
 | bordered | `boolean` | — | 是否显示底部分隔边框 |
-| children | `ReactNode` | — | 子内容 |
 
 **NavbarContent**（`<ul>`）
 
@@ -50,11 +49,26 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | isOpen | `boolean` | — | 受控展开态 |
-| onToggle | `() => void` | — | 切换回调 |
 | aria-label | `string` | 按 isOpen 切换 | 无障碍标签 |
 | className | `string` | — | 类名 |
 
 `NavbarBrand` 为纯容器，无专属 prop。
+
+## Events
+
+**NavbarMenuToggle**
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onToggle | `() => void` | 切换回调 |
+
+## Slots
+
+`Navbar` / `NavbarContent` / `NavbarItem` / `NavbarBrand` 均接受 `children`。
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 各容器子件的子内容 |
 
 ## 示例
 ```tsx

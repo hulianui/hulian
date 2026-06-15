@@ -29,21 +29,31 @@ import { Scheduler, dateOf, dayColumns, eventRect, hourLines, layoutColumns, min
 | view* | `"month" \| "week" \| "day" \| "resource"` | — | 受控视图 |
 | date* | `string` | — | 受控焦点日（ISO），决定哪周/哪天/哪月 |
 | resources | `SchedulerResource[]` | — | resource 视图必填。`{id, title, subtitle?}` |
-| onViewChange | `(v: SchedulerView) => void` | — | 视图切换（内置 toolbar Segmented） |
-| onDateChange | `(iso: string) => void` | — | 焦点日切换（前/今/后、点月视图某天） |
-| onEventsChange | `(events: SchedulerEvent[]) => void` | — | 拖移/拖改时长提交：回吐整组新 events（照 Kanban 受控范式） |
-| onSlotDragCreate | `(slot: SchedulerSlot) => void` | — | 空白竖拖创建（拖出一段时间） |
-| onSlotClick | `(slot: SchedulerSlot) => void` | — | 点空白格（无拖动）创建 |
-| onEventClick | `(event: SchedulerEvent) => void` | — | 点事件块 |
 | dayStartHour | `number` | `8` | 时间轴起始小时 |
 | dayEndHour | `number` | `20` | 时间轴结束小时 |
 | slotMinutes | `number` | `30` | 吸附粒度（分钟） |
 | hourHeight | `number` | `56` | 每小时像素高 |
 | toolbar | `boolean` | `true` | 内置头部工具条（标题 + 前/今/后 + Segmented 视图） |
-| renderEvent | `(event: SchedulerEvent) => ReactNode` | — | 自定义事件块内容（外框/定位/拖拽手柄由组件负责） |
 | className | `string` | — | 外层类名（须有确定高度，组件填满时间轴可滚） |
 
 SchedulerEvent.tone：`"primary" \| "success" \| "warning" \| "danger" \| "neutral"`，默认 primary（仅用已定义语义 token）。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onViewChange | `(v: SchedulerView) => void` | 视图切换（内置 toolbar Segmented） |
+| onDateChange | `(iso: string) => void` | 焦点日切换（前/今/后、点月视图某天） |
+| onEventsChange | `(events: SchedulerEvent[]) => void` | 拖移/拖改时长提交：回吐整组新 events（照 Kanban 受控范式） |
+| onSlotDragCreate | `(slot: SchedulerSlot) => void` | 空白竖拖创建（拖出一段时间） |
+| onSlotClick | `(slot: SchedulerSlot) => void` | 点空白格（无拖动）创建 |
+| onEventClick | `(event: SchedulerEvent) => void` | 点事件块 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderEvent | `(event: SchedulerEvent) => ReactNode` | 渲染函数：自定义事件块内容（外框/定位/拖拽手柄由组件负责） |
 
 ## 示例
 ```tsx

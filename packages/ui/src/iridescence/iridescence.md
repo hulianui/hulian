@@ -30,7 +30,12 @@ import { Iridescence } from "@hulianui/ui"
 | amplitude | number | 0.1 | 鼠标偏移幅度（扰动强度），建议 0.01–0.5 |
 | mouseReact | boolean | true | 是否响应鼠标/触摸（驱动 uMouse）。关闭后固定 (0.5,0.5)，效果保持但不随指针 |
 | className | string | — | 透传到 canvas 或 fallback 容器 |
-| fallback | ReactNode | — | reduced-motion / 无 WebGL 时的静态降级内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | ReactNode | reduced-motion / 无 WebGL 时的静态降级内容 |
 
 ## 示例
 ```tsx

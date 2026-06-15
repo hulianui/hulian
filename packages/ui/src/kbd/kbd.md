@@ -25,8 +25,13 @@ import { Kbd } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 键位内容 |
 | ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | — | 透传 `<kbd>` 原生属性（className、style 等） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 键位内容 |
 
 ## 示例
 ```tsx

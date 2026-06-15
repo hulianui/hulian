@@ -38,9 +38,14 @@ import { LightRays } from "@hulianui/ui"
 | noiseAmount | `number` | `0` | 颗粒噪声强度(0–1) |
 | distortion | `number` | `0` | 角度扭曲强度，让光束摇曳而非笔直，建议 0–1 |
 | className | `string` | — | 透传根容器（自带 pointer-events-none absolute inset-0 z-0） |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 时叠在静态渐变上的兜底内容 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
-| children | `ReactNode` | — | 叠在光束层之上的内容，WebGL 与降级两路径均渲染 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 叠在光束层之上的内容，WebGL 与降级两路径均渲染 |
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时叠在静态渐变上的兜底内容 |
 
 ## 示例
 ```tsx

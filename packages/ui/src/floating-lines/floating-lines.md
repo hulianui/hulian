@@ -33,7 +33,12 @@ import { FloatingLines } from "@hulianui/ui"
 | bendRadius | `number` | `5` | 指针弯曲影响半径系数，越大范围越小越聚焦 |
 | bendStrength | `number` | `-0.5` | 指针弯曲强度（带符号，负值反向牵引） |
 | className | `string` | — | 透传根容器，根自带 `absolute inset-0 z-0` |
-| fallback | `ReactNode` | — | reduced-motion / 无 WebGL 静态兜底层内的内容（如水印文案） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 静态兜底层内的内容（如水印文案） |
 
 ## 示例
 ```tsx

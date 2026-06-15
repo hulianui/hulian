@@ -26,16 +26,26 @@ import { CardNav } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items * | `CardNavItem[]` | — | 卡片数据，展开后渲染为一排（移动端一列），最多取前 3 张 |
-| brand | `ReactNode` | — | 品牌区内容（logo/标题），居中显示在顶栏 |
-| ctaLabel | `ReactNode` | `"Get Started"` | 右侧 CTA 按钮文案；传空串或 null 隐藏按钮 |
-| onCtaClick | `() => void` | — | CTA 按钮点击回调 |
 | duration | `number` | `0.4` | 展开/收起动画时长（秒），reduced-motion 下自动归零 |
 | open | `boolean` | — | 受控展开态，传入则由外部接管开合（配合 onOpenChange） |
-| onOpenChange | `(open: boolean) => void` | — | 展开态变更回调（受控/非受控均触发） |
 | className | `string` | — | 透传根容器额外类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
 > `CardNavItem`: `{ label, links?, bgColor?, textColor? }`；`links` 为 `CardNavLink[]`（`{ label, href?, ariaLabel? }`），`bgColor` 缺省吃 bg-surface，建议用 `var(--color-chart-1..5)` 做品牌色块。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCtaClick | `() => void` | CTA 按钮点击回调 |
+| onOpenChange | `(open: boolean) => void` | 展开态变更回调（受控/非受控均触发） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| brand | `ReactNode` | 品牌区内容（logo/标题），居中显示在顶栏 |
+| ctaLabel | `ReactNode` | 右侧 CTA 按钮文案（默认 `"Get Started"`）；传空串或 null 隐藏按钮 |
 
 ## 示例
 ```tsx

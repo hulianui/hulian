@@ -30,7 +30,6 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | value | `any` | — | 受控当前 tab |
 | defaultValue | `any` | — | 非受控初始 tab |
-| onValueChange | `(value) => void` | — | 切换回调 |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 方向 |
 
 ### TabsList
@@ -40,6 +39,13 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 | className | `string` | — | — |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
+
+## Events
+
+### Tabs（根）
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value) => void` | 切换回调（透传 Base UI `Tabs.Root`） |
 
 ## 示例
 ```tsx

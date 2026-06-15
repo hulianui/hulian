@@ -29,10 +29,15 @@ import { Pagination, getPaginationRange } from "@hulianui/ui"
 |------|------|------|------|
 | page* | `number` | — | 当前页（1 起），受控 |
 | total* | `number` | — | 总页数 |
-| onPageChange* | `(page: number) => void` | — | 页码变更回调，已夹紧到 `[1, total]` |
 | siblingCount | `number` | `1` | 当前页左右各显示的页码数 |
 | showFirstLast | `boolean` | `false` | 是否显示「跳首页/末页」按钮 |
 | disabled | `boolean` | `false` | 禁用整个分页器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onPageChange* | `(page: number) => void` | 页码变更回调（点击页码/上下页/首末页时触发，已夹紧到 `[1, total]`） |
 
 ## 示例
 ```tsx

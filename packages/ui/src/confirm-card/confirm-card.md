@@ -26,13 +26,23 @@ import { ConfirmCard } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items* | `ConfirmCardItem[]` | — | 字段摘要数组，每项 `{ label, value }`，渲染为 dl |
-| title | `ReactNode` | `"请确认以下信息"` | 卡头标题 |
-| confirmText | `ReactNode` | `"确认无误"` | 确认按钮文字 |
-| editText | `ReactNode` | `"需要修改"` | 修改按钮文字 |
-| onConfirm | `() => void` | — | 点击确认回调 |
-| onEdit | `() => void` | — | 点击修改回调；**未提供则不渲染修改钮**（单动作场景） |
 | acted | `"confirmed" \| "edited" \| null` | `null` | 已操作结果：锁定双钮并标记所选项 |
 | className | `string` | — | 容器附加类 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onConfirm | `() => void` | 点击确认回调 |
+| onEdit | `() => void` | 点击修改回调；**未提供则不渲染修改钮**（单动作场景） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 卡头标题（默认 `"请确认以下信息"`） |
+| confirmText | `ReactNode` | 确认按钮文字（默认 `"确认无误"`） |
+| editText | `ReactNode` | 修改按钮文字（默认 `"需要修改"`） |
 
 `ConfirmCardItem`：`{ label: ReactNode; value: ReactNode }`
 

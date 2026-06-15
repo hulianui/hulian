@@ -28,8 +28,18 @@ import { PromptSuggestions } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | suggestions* | `Suggestion[]` | — | 建议列表 |
-| onSelect | `(value: string) => void` | — | 点击某项回调（回传其 value） |
-| title | `ReactNode` | — | 可选标题（列表上方弱化） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | `(value: string) => void` | 点击某项回调（回传其 value） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 可选标题（列表上方弱化） |
 
 `Suggestion`：`string`（label 即 value）或 `{ label: ReactNode; value?: string }`（分离展示文案与回传值）。
 

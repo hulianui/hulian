@@ -36,7 +36,12 @@ import { PlasmaWave } from "@hulianui/ui"
 | bend1 | `number` | `1` | 第一条丝带弯曲幅度；越大起伏越夸张 |
 | bend2 | `number` | `0.5` | 第二条丝带弯曲幅度 |
 | className | `string` | — | 透传到 canvas 容器或 fallback div；常用于尺寸/圆角/opacity（如 `absolute inset-0 opacity-80`） |
-| fallback | `ReactNode` | 静态渐变之上的自定义内容 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；覆盖在静态渐变之上 |
 
 ## 示例
 

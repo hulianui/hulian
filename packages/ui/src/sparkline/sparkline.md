@@ -33,10 +33,15 @@ import { Sparkline, normalize, linePath, areaPath, barRects } from "@hulianui/ui
 | highlightLast | `boolean` | `false` | 在末点画强调圆点 |
 | min | `number` | — | 归一化下界，不传从数据推 |
 | max | `number` | — | 归一化上界，不传从数据推 |
-| renderTooltip | `(value: number, index: number) => ReactNode` | — | 逐点原生 tooltip：返回字符串渲染为 SVG `<title>`（零 JS，RSC 安全） |
 | className | `string` | — | 外层类名 |
 
 继承 `SVGProps<SVGSVGElement>`（除 `data`）。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderTooltip | `(value: number, index: number) => ReactNode` | 渲染函数：逐点原生 tooltip，返回字符串渲染为 SVG `<title>`（零 JS，RSC 安全） |
 
 ## 示例
 ```tsx

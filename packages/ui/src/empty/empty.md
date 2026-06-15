@@ -27,11 +27,16 @@ import { Empty } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| icon | `ReactNode` | 内置空箱图标 | 自定义插画/图标。传 `null` 则不渲染图标区 |
-| title | `ReactNode` | — | 主标题 |
-| description | `ReactNode` | — | 辅助描述 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
-| children | `ReactNode` | — | 操作区（按钮等），渲染在描述下方 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon | `ReactNode` | 自定义插画/图标。默认内置空箱图标，传 `null` 则不渲染图标区 |
+| title | `ReactNode` | 主标题 |
+| description | `ReactNode` | 辅助描述 |
+| children | `ReactNode` | 操作区（按钮等），渲染在描述下方 |
 
 ## 示例
 ```tsx

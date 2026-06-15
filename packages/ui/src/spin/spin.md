@@ -26,12 +26,17 @@ import { Spin } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | spinning | `boolean` | `true` | 是否处于加载态 |
-| tip | `ReactNode` | — | 加载文案，居中显示在 Spinner 下方 |
 | delay | `number` | `0` | 延迟显示 ms：spinning 持续超过 delay 才显遮罩（防快速完成时闪烁） |
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸，透传内部 Spinner |
 | fullscreen | `boolean` | `false` | 整页遮罩（fixed 覆盖视口），忽略 children |
-| children | `ReactNode` | — | 被包裹内容；不传则作纯指示器 |
 | className | `string` | — | 容器类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| tip | `ReactNode` | 加载文案，居中显示在 Spinner 下方 |
+| children | `ReactNode` | 被包裹内容；不传则作纯指示器 |
 
 ## 示例
 ```tsx

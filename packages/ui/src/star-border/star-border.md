@@ -31,7 +31,12 @@ import { StarBorder } from "@hulianui/ui"
 | thickness | `number` | `1` | 边框光带厚度（px），撑开根容器上下内边距决定描边粗细 |
 | className | `string` | — | 透传根容器额外类名（合并，可覆盖圆角/间距） |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
-| children | `ReactNode` | — | 按钮/容器内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 按钮/容器内容 |
 
 ## 示例
 ```tsx

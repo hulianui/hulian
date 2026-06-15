@@ -32,8 +32,19 @@ import { SocialButton } from "@hulianui/ui"
 | shape | `"button" ｜ "icon"` | `"button"` | button=带文案；icon=纯 logo 方钮 |
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸 |
 | loading | `boolean` | `false` | 提交中：logo 替换为转圈并禁用 |
-| children | `ReactNode` | — | 覆盖默认文案（如「使用微信登录」→「微信」） |
 | className | `string` | — | 透传根节点类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | 透传原生点击回调（发起第三方登录/绑定） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 覆盖默认文案（如「使用微信登录」→「微信」） |
 
 ## 示例
 ```tsx

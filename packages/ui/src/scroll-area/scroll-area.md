@@ -27,7 +27,12 @@ import { ScrollArea } from "@hulianui/ui"
 |------|------|------|------|
 | orientation | `"vertical" \| "horizontal" \| "both"` | `"vertical"` | 滚动方向；`both` 时双向滚动条 + corner。 |
 | className | `string` | — | 限高/限宽由消费者经此给 Root（如 `h-48` / `w-64`），否则不会出现滚动。 |
-| children | `ReactNode` | — | 滚动内容。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 滚动内容。 |
 
 ## 示例
 ```tsx

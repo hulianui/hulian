@@ -28,10 +28,15 @@ import { AgentPlan } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | tasks * | `AgentTask[]` | — | 任务清单（数据驱动） |
-| title | `ReactNode` | `"执行计划"` | 头部标题；传 null 隐藏 |
 | bare | `boolean` | `false` | 去掉外层边框/底色/内边距，仅渲染列表，供内嵌复用（如 TaskRunner） |
 | strikeDone | `boolean` | `true` | done 任务是否加删除线：计划清单语义=true；执行日志语义=false 保留实色 |
 | className | `string` | — | 容器类名 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 头部标题（默认 `"执行计划"`）；传 null 隐藏 |
 
 `AgentTask`：
 

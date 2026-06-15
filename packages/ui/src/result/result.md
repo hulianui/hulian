@@ -28,11 +28,16 @@ import { Result } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | status | `"success"｜"error"｜"info"｜"warning"｜"403"｜"404"｜"500"` | `"info"` | 状态，决定内置图标与语义色 |
-| icon | `ReactNode` | 按 status 派生 | 自定义图标覆盖内置；传 `null` 则不渲染图标区 |
-| title | `ReactNode` | — | 主标题 |
-| subTitle | `ReactNode` | — | 副标题/辅助说明 |
-| content | `ReactNode` | — | 详情内容区（如错误堆栈），渲染在标题下方、操作区上方 |
-| children | `ReactNode` | — | 操作区（按钮等），渲染在最下方 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| icon | `ReactNode` | 自定义图标覆盖内置（不传按 status 派生）；传 `null` 则不渲染图标区 |
+| title | `ReactNode` | 主标题 |
+| subTitle | `ReactNode` | 副标题/辅助说明 |
+| content | `ReactNode` | 详情内容区（如错误堆栈），渲染在标题下方、操作区上方 |
+| children | `ReactNode` | 操作区（按钮等），渲染在最下方 |
 
 ## 示例
 ```tsx

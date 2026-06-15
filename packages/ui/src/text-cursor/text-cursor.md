@@ -35,7 +35,12 @@ import { TextCursor } from "@hulianui/ui"
 | removalInterval | `number` | `30` | 拖尾消减轮询间隔（ms）；光标静止 ~100ms 后每隔该值从队首移除一个字形 |
 | maxPoints | `number` | `5` | 同时存在的字形上限，超出丢弃最旧 |
 | fontSize | `string` | `"1.875rem"` | 字号（任意 CSS 长度） |
-| children | `ReactNode` | — | 容器内居中内容（提示语/标题），不影响拖尾层 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 容器内居中内容（提示语/标题），不影响拖尾层 |
 
 ## 示例
 ```tsx

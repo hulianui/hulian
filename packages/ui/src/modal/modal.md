@@ -25,17 +25,27 @@ import { modal, ModalProvider, hulianModalManager } from "@hulianui/ui"
 
 调用入口：`modal.confirm(opts)` / `modal.info` / `modal.success` / `modal.error` / `modal.warning`，返回 `ModalInstance`。语调由入口隐含。`ModalProvider` 需在应用根挂一次（同 Toast 范式）。
 
-`ModalOptions`：
+`ModalOptions` Props：
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `title` | `ReactNode` | — | 标题（加粗主行） |
-| `content` | `ReactNode` | — | 正文内容 |
-| `okText` | `ReactNode` | `"确定"` | 确定按钮文案 |
-| `cancelText` | `ReactNode` | `"取消"` | 取消按钮文案（仅 confirm 渲染取消键） |
-| `onOk` | `() => void \| Promise<unknown>` | — | 点确定回调；返回 Promise 时确定键进 loading，resolve → 自动关闭，reject → 保持打开 |
-| `onCancel` | `() => void` | — | 点取消 / Esc / 点遮罩关闭时回调 |
 | `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | 语调；命令式入口已隐含，一般无需显式传 |
+
+`ModalOptions` Events：
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `onOk` | `() => void \| Promise<unknown>` | 点确定回调；返回 Promise 时确定键进 loading，resolve → 自动关闭，reject → 保持打开 |
+| `onCancel` | `() => void` | 点取消 / Esc / 点遮罩关闭时回调 |
+
+`ModalOptions` Slots：
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `title` | `ReactNode` | 标题（加粗主行） |
+| `content` | `ReactNode` | 正文内容 |
+| `okText` | `ReactNode` | 确定按钮文案，默认 `"确定"` |
+| `cancelText` | `ReactNode` | 取消按钮文案，默认 `"取消"`（仅 confirm 渲染取消键） |
 
 `ModalInstance`：`destroy()` 立即关闭销毁；`update(next)` 更新已打开对话框配置。
 

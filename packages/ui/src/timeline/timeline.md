@@ -28,21 +28,33 @@ import { Timeline, TimelineItem } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items | `TimelineItemProps[]` | — | 数据驱动：等价于每项渲染 `<TimelineItem {...item} />`；与 children 二选一 |
-| children | `ReactNode` | — | 复合用法：直接传若干 `<TimelineItem>`；与 items 二选一 |
 | mode | `"left" \| "right" \| "alternate"` | `"left"` | 布局方向：left=节点在左/内容在右，right=镜像，alternate=逐项左右交替（中轴） |
-| pending | `boolean \| ReactNode` | — | 末尾追加一个进行中幽灵项（加载态圆点）；true=仅图标，传 ReactNode 作其内容 |
 | …HTMLAttributes | `Omit<HTMLAttributes<HTMLOListElement>, "children">` | — | 透传 ol 原生属性 |
 
 ### TimelineItem
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 主内容 |
 | color | `"default" \| "primary" \| "success" \| "danger" \| "warning"` | `"default"` | 默认圆点的语气色；自定义 dot 时忽略 |
-| dot | `ReactNode` | — | 自定义节点（如图标）；省略则渲染按 color 着色的默认圆点 |
-| label | `ReactNode` | — | 次要标签（时间戳/元信息），渲染在主内容下方、中性弱化；圆点对齐主内容首行 |
 | pending | `boolean` | — | 标记进行中：默认圆点变加载态（旋转环）；连入此项的竖线由 Timeline 自动转虚线 |
 | className | `string` | — | 透传类名 |
+
+## Slots
+
+### Timeline
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 复合用法：直接传若干 `<TimelineItem>`；与 items 二选一 |
+| pending | `boolean \| ReactNode` | 末尾追加一个进行中幽灵项（加载态圆点）；true=仅图标，传 ReactNode 作其内容 |
+
+### TimelineItem
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 主内容 |
+| dot | `ReactNode` | 自定义节点（如图标）；省略则渲染按 color 着色的默认圆点 |
+| label | `ReactNode` | 次要标签（时间戳/元信息），渲染在主内容下方、中性弱化；圆点对齐主内容首行 |
 
 ## 示例
 ```tsx

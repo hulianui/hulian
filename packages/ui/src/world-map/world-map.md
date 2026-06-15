@@ -31,11 +31,16 @@ import { WorldMap } from "@hulianui/ui"
 | flyingMarker | `"plane" \| "comet" \| "arrow"` | — | 沿每条飞线循环移动的标记。plane/arrow 自动转向贴合飞行方向，用各自连线色 |
 | points | `WorldMapNode[]` | — | 独立节点（节点分布）。与 dots 互不依赖，可单独使用。`value` 按当前 points 范围归一化映射半径 |
 | showLabels | `boolean` | `false` | 是否渲染节点标签文字 |
-| onPointClick | `(node, index) => void` | — | 传入则节点可点击/键盘聚焦下钻，同时 svg 放开 aria-hidden 暴露交互节点 |
 | lineColor | `string` | chart token | 弧线颜色（CSS 颜色）。逐条可用 `dot.color` 覆盖 |
 | dotColor | `string` | border token | 点阵颜色（CSS 颜色） |
 | duration | `number` | — | 单条弧线画入时长（秒） |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onPointClick | `(node: WorldMapNode, index: number) => void` | 传入则节点可点击/键盘聚焦下钻，同时 svg 放开 aria-hidden 暴露交互节点 |
 
 ## 示例
 ```tsx

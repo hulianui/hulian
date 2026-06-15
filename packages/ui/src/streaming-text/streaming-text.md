@@ -30,7 +30,12 @@ import { StreamingText } from "@hulianui/ui"
 | text* | `string` | — | 当前累积文本（随 token 到达由父级增长） |
 | streaming | `boolean` | — | 流式进行中：尾随闪烁光标；done 后去除光标 |
 | as | `ElementType` | `"span"` | 渲染标签 |
-| cursor | `ReactNode` | — | 自定义光标节点（默认闪烁竖线） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| cursor | `ReactNode` | 自定义光标节点（默认闪烁竖线） |
 
 ## 示例
 ```tsx

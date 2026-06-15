@@ -31,11 +31,21 @@ import { Kanban, resolveKanbanMove } from "@hulianui/ui"
 | items * | T[] | — | 受控卡片数组；组件按 getColumnId 分桶，列内顺序 = 数组原始顺序 |
 | getId * | (item: T) => string | — | 取卡片稳定 id（全局唯一且稳定） |
 | getColumnId * | (item: T) => string | — | 取卡片当前所属列 id |
-| onMove * | (e: KanbanMoveEvent) => void | — | 拖拽落定回调；组件不直接改 T，由你据此改状态 |
-| renderItem * | (item: T, state: { dragging: boolean }) => ReactNode | — | 渲染单张卡片；`state.dragging` 表示正被拖拽 |
-| renderColumnHeader | (column: KanbanColumn, items: T[]) => ReactNode | 渲染 `column.header ?? column.title` | 自定义列头（拿该列卡片做统计） |
 | className | string | — | 容器类名 |
 | columnClassName | string | — | 单列类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onMove * | (e: KanbanMoveEvent) => void | 拖拽落定回调；组件不直接改 T，由你据此改状态 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem * | (item: T, state: { dragging: boolean }) => ReactNode | 渲染单张卡片的渲染函数；`state.dragging` 表示正被拖拽 |
+| renderColumnHeader | (column: KanbanColumn, items: T[]) => ReactNode | 自定义列头的渲染函数（拿该列卡片做统计）；缺省渲染 `column.header ?? column.title` |
 
 `KanbanMoveEvent`：`{ id, fromColumn, toColumn, toIndex }`。`toIndex` = 目标列内（已剔除被拖卡片后）的插入下标。
 

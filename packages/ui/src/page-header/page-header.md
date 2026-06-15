@@ -25,17 +25,27 @@ import { PageHeader } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | — | 主标题。 |
-| subTitle | `ReactNode` | — | 副标题，内联于标题右侧，中性弱化色。 |
-| onBack | `() => void` | — | 提供则在标题左侧渲染返回箭头按钮（带回调 → 消费侧为 client）。 |
 | backLabel | `string` | `"返回"` | 返回按钮的无障碍标签。 |
-| breadcrumb | `ReactNode` | — | 面包屑区（标题行上方），传入瑚琏 `<Breadcrumb/>`。 |
-| tags | `ReactNode` | — | 状态标签区（贴标题右侧），传入 `<Chip/>`/`<Badge/>` 等。 |
-| extra | `ReactNode` | — | 右侧操作区（按钮组等），窄屏自动换行到标题下方。 |
-| footer | `ReactNode` | — | 底部附加区，常放 `<Tabs/>`。 |
 | bordered | `boolean` | `false` | 是否在页头底部渲染分隔线（复用 `<Separator/>`）。 |
 
 > 另继承 `HTMLAttributes<HTMLElement>`（除 `title`，因其类型被改为 ReactNode）。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onBack | `() => void` | 提供则在标题左侧渲染返回箭头按钮，点击触发该回调（带回调 → 消费侧为 client）。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title* | `ReactNode` | 主标题。 |
+| subTitle | `ReactNode` | 副标题，内联于标题右侧，中性弱化色。 |
+| breadcrumb | `ReactNode` | 面包屑区（标题行上方），传入瑚琏 `<Breadcrumb/>`。 |
+| tags | `ReactNode` | 状态标签区（贴标题右侧），传入 `<Chip/>`/`<Badge/>` 等。 |
+| extra | `ReactNode` | 右侧操作区（按钮组等），窄屏自动换行到标题下方。 |
+| footer | `ReactNode` | 底部附加区，常放 `<Tabs/>`。 |
 
 ## 示例
 ```tsx

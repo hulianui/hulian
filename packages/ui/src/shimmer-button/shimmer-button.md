@@ -30,8 +30,20 @@ import { ShimmerButton } from "@hulianui/ui"
 | borderRadius | `string` | `var(--radius)` | 圆角 |
 | shimmerDuration | `string` | `3s` | 一轮火花秒数 |
 | background | `string` | `var(--color-primary)` | 按钮底色 |
-| render | `ReactElement` | — | 渲染为自定义元素（如 `<a>`/Next `<Link>`），样式/内部火花结构合并进该元素；文案仍取 children |
 | ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | 点击回调，经 `ComponentPropsWithoutRef<"button">` 透传 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 按钮文案，经原生 button 属性透传 |
+| render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），样式/内部火花结构合并进该元素；文案仍取 children |
 
 ## 示例
 ```tsx

@@ -27,7 +27,6 @@ import { MarkdownEditor } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string` | — | 受控 markdown 字符串 |
 | defaultValue | `string` | — | 非受控初值 |
-| onChange | `(markdown: string) => void` | — | 内容变化回调，参数为 markdown 字符串 |
 | name | `string` | — | 桥给原生表单 / Field 的隐藏 input name |
 | placeholder | `string` | `"输入 markdown…"` | 空内容占位文案 |
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
@@ -35,6 +34,12 @@ import { MarkdownEditor } from "@hulianui/ui"
 | minRows | `number` | `6` | 内容区最小高度（行） |
 | className | `string` | — | 透传到外壳 |
 | aria-label | `string` | — | 无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(markdown: string) => void` | 内容变化回调，参数为 markdown 字符串 |
 
 ## 示例
 ```tsx

@@ -31,7 +31,18 @@ import { Link, linkVariants } from "@hulianui/ui"
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | 下划线显示策略 |
 | `external` | `boolean` | `false` | 外链：自动加 `target="_blank"` + `rel="noopener noreferrer"` + 尾随外链图标 |
 | `href` | `string` | — | 跳转地址（原生属性） |
-| `children` | `ReactNode` | — | 链接文字 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `onClick` | `(e: MouseEvent<HTMLAnchorElement>) => void` | 点击回调（透传原生 `<a>` 事件，其余 `onXxx` 同理） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `children` | `ReactNode` | 链接文字 |
 
 ## 示例
 ```tsx

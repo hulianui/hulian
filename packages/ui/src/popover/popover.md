@@ -27,13 +27,20 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | `ReactNode` | — | 标题 |
-| description | `ReactNode` | — | 描述 |
-| children | `ReactNode` | — | 正文/操作区内容 |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | — | 与触发器的间距 |
 | className | `string` | — | 额外类名 |
+
+## Slots
+
+`PopoverContent`：
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 标题 |
+| description | `ReactNode` | 描述 |
+| children | `ReactNode` | 正文/操作区内容 |
 
 `PopoverTrigger` / `PopoverClose` 用 `render` prop 接管自定义触发/关闭元素（如 `render={<Button>…</Button>}`）。
 

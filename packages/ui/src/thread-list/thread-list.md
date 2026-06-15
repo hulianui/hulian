@@ -26,13 +26,23 @@ import { ThreadList } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items* | `ThreadListItem[]` | — | 会话条目数组 |
-| onSelect | `(id: string) => void` | — | 点击条目回调 |
-| onDelete | `(id: string) => void` | — | 提供则每项渲染删除按钮（点击 stopPropagation，不触发 onSelect） |
-| title | `ReactNode` | `"历史"` | 头部标题 |
-| action | `ReactNode` | — | 头部右侧动作槽（如「新对话」按钮） |
-| empty | `ReactNode` | `"暂无历史"` | items 为空时的占位 |
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
 | className | `string` | — | 容器附加类 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | `(id: string) => void` | 点击条目回调 |
+| onDelete | `(id: string) => void` | 提供则每项渲染删除按钮（点击 stopPropagation，不触发 onSelect） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 头部标题（默认 `"历史"`） |
+| action | `ReactNode` | 头部右侧动作槽（如「新对话」按钮） |
+| empty | `ReactNode` | items 为空时的占位（默认 `"暂无历史"`） |
 
 `ThreadListItem`：`{ id: string; title: ReactNode; meta?: ReactNode; active?: boolean }`（meta 为次行元信息，active 标当前打开会话）
 

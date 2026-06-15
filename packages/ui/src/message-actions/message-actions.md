@@ -28,11 +28,21 @@ import { MessageActions } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | content | `string` | — | 复制目标文本；提供则显示复制键（点后 Check 反馈 1.5s） |
-| onCopy | `() => void` | — | 复制后回调（与内置剪贴板并行） |
-| onRegenerate | `() => void` | — | 提供则显示重新生成键 |
-| onLike | `() => void` | — | 提供则显示赞键 |
-| onDislike | `() => void` | — | 提供则显示踩键 |
-| children | `ReactNode` | — | 追加自定义操作键 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCopy | `() => void` | 复制后回调（与内置剪贴板并行） |
+| onRegenerate | `() => void` | 提供则显示重新生成键 |
+| onLike | `() => void` | 提供则显示赞键 |
+| onDislike | `() => void` | 提供则显示踩键 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 追加自定义操作键 |
 
 ## 示例
 ```tsx

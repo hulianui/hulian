@@ -35,7 +35,12 @@ import { PrismaticBurst } from "@hulianui/ui"
 | offset | `{ x?: number; y?: number }` | `{ x: 0, y: 0 }` | 爆发中心相对画面中心的偏移（CSS 像素），x 正向右、y 正向下 |
 | mixBlendMode | `string` | `"none"` | 透传到 canvas 的 `mix-blend-mode`；常用 "lighten" / "screen" 叠底更通透 |
 | className | `string` | — | 合并到 root 容器（或 reduced 降级 div） |
-| fallback | `ReactNode` | chart token 径向光爆渐变 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容；默认 chart token 径向光爆渐变 |
 
 ## 示例
 

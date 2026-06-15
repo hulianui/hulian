@@ -33,9 +33,14 @@ import { Heatmap, buildMatrix, bucketize } from "@hulianui/ui"
 | cellSize | `number` | `14` | 格子边长 px。 |
 | gap | `number` | `3` | 格间距 px。 |
 | showLabels | `boolean` | `true` | 是否显示行/列标签。 |
-| formatTooltip | `(cell: HeatmapCellInfo) => string` | — | 悬停原生提示文案。 |
-| onCellClick | `(cell: HeatmapCellInfo) => void` | — | 点击格子下钻。 |
+| formatTooltip | `(cell: HeatmapCellInfo) => string` | — | 悬停原生提示文案（返回字符串）。 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCellClick | `(cell: HeatmapCellInfo) => void` | 点击格子下钻。 |
 
 ## 示例
 ```tsx

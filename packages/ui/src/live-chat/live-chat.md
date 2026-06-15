@@ -29,9 +29,14 @@ import { LiveChat } from "@hulianui/ui"
 | pinned | `LiveChatItem[]` | — | 顶部置顶区（公告/规则） |
 | autoScroll | `boolean` | `true` | 自动滚到底；用户上滚时暂停并浮出「N 条新消息」恢复钮 |
 | maxItems | `number` | `200` | 滚动窗保留上限（性能） |
-| renderItem | `(item: LiveChatItem) => ReactNode` | — | 自定义单条渲染（逃生舱） |
 | overlay | `boolean` | `false` | 叠在深色视频上的浅色态（文字改白/半透白 + 文字阴影） |
 | className | `string` | — | 容器自定义类 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem | `(item: LiveChatItem) => ReactNode` | 渲染函数：自定义单条消息渲染（逃生舱） |
 
 `LiveChatItem`：`{ id: string; type: "message"｜"enter"｜"gift"｜"follow"｜"system"; user?: LiveChatUser; text?: ReactNode; gift?: { name; icon?; combo? }; at?: string }`。
 `LiveChatUser`：`{ name: string; avatar?: string; level?: number; badge?: ReactNode }`（`level` 渲染等级牌，`badge` 渲染房管/铁粉等身份徽标）。

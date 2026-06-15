@@ -28,12 +28,22 @@ import { Sortable } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items * | T[] | — | 受控数据数组；拖拽后由你据 onChange 写回 state |
-| onChange * | (items: T[]) => void | — | 顺序变化回调（拖拽或键盘移动均触发），参数是 arrayMove 后的新数组 |
-| renderItem * | (item: T, state: { dragging: boolean }) => ReactNode | — | 渲染单项；`state.dragging` 表示该项正被拖拽 |
 | getId | (item: T) => UniqueIdentifier | 读 `item.id` | 取每项稳定 id，须列表内唯一且稳定 |
 | orientation | `"vertical"｜"horizontal"` | `"vertical"` | 排列方向 |
 | handle | boolean | false | true=仅左侧手柄可拖（触屏/含交互元素的行推荐）；false=整项可拖 |
 | className | string | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange * | (items: T[]) => void | 顺序变化回调（拖拽或键盘移动均触发），参数是 arrayMove 后的新数组 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem * | (item: T, state: { dragging: boolean }) => ReactNode | 渲染单项的渲染函数；`state.dragging` 表示该项正被拖拽 |
 
 ## 示例
 ```tsx

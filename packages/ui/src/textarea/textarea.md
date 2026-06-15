@@ -33,6 +33,12 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 | rows | `number` | `3` | 初始/最小行高 |
 | disabled | `boolean` | `false` | 禁用 |
 
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(e: ChangeEvent<HTMLTextAreaElement>) => void` | 透传原生输入回调（受控时配合 `value` 使用） |
+
 ## 示例
 ```tsx
 <Textarea placeholder="写点什么…" className="w-64" />

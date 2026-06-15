@@ -32,7 +32,12 @@ import { ImageTrail } from "@hulianui/ui"
 | fadeDuration | `number` | `0.8` | 单张图从出现到淡出消失的时长（秒） |
 | className | `string` | — | 透传根容器（relative+overflow-hidden 捕获层）额外 className |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
-| children | `ReactNode` | — | 覆盖在拖尾层之上的内容（如标题文案） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 覆盖在拖尾层之上的内容（如标题文案） |
 
 ## 示例
 ```tsx

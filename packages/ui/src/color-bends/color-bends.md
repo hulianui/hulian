@@ -40,7 +40,12 @@ import { ColorBends } from "@hulianui/ui"
 | mouseInfluence | `number` | `1` | 指针牵引强度；0=不响应指针 |
 | transparent | `boolean` | `true` | 透明背景（仅渲染色带）；false 时填满黑底 |
 | className | `string` | — | 透传到根容器（自带 absolute inset-0 z-0） |
-| fallback | `ReactNode` | 渐变兜底 | reduced-motion / 无 WebGL 降级时渲染的内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 降级时渲染在静态渐变兜底层内的内容 |
 
 ## 示例
 ```tsx

@@ -25,10 +25,15 @@ import { Lens } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 被放大的内容（常为 `<img>`） |
 | zoom | `number` | `1.8` | 放大倍数 |
 | size | `number` | — | 镜片直径 px |
 | className | `string` | — | 透传 className |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 被放大的内容（常为 `<img>`） |
 
 ## 示例
 

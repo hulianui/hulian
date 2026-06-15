@@ -25,7 +25,6 @@ import { CardSwap } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children | `ReactNode` | — | 堆叠卡片内容，建议用 `<CardSwap.Card>`；至少 2 张才轮换 |
 | width | `number` | `380` | 单张卡片宽度（px），整体以右下角为锚点 |
 | height | `number` | `280` | 单张卡片高度（px） |
 | cardDistance | `number` | `56` | 相邻卡片水平+纵深（X/Z）错位距离（px），越大越散 |
@@ -35,9 +34,20 @@ import { CardSwap } from "@hulianui/ui"
 | skewAmount | `number` | `5` | 卡片倾斜角（deg, skewY）制造纵深；`0` 即正视 |
 | easing | `"elastic" \| "smooth"` | `"elastic"` | 缓动风格；`smooth` 顺滑无回弹更克制 |
 | placement | `"bottom-right" \| "center"` | `"bottom-right"` | 堆叠定位；`bottom-right` 右下锚定外溢（贴边营销），`center` 整摞居中完整可见（画廊/普通容器） |
-| onCardClick | `(index: number) => void` | — | 点击某卡回调，参数为该卡在 children 中的原始索引 |
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCardClick | `(index: number) => void` | 点击某卡回调，参数为该卡在 children 中的原始索引 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 堆叠卡片内容，建议用 `<CardSwap.Card>`；至少 2 张才轮换 |
 
 ## 示例
 ```tsx

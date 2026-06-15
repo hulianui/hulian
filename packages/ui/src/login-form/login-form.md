@@ -25,14 +25,24 @@ import { LoginForm } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | `ReactNode` | `locale.loginForm.title` | 标题 |
-| subtitle | `ReactNode` | — | 副标题（标题下方引导文案，左对齐·muted） |
-| logo | `ReactNode` | — | 品牌 logo（头部左上） |
-| onFinish | `(values: LoginValues) => void \| Promise<void>` | — | 校验通过后提交；返回 Promise → 提交按钮 loading |
 | loading | `boolean` | — | 外部 loading 覆盖（父层托管提交态时用） |
 | showRemember | `boolean` | `true` | 是否显示「记住我」 |
-| footer | `ReactNode` | — | 底部附加区（忘记密码 / 注册链接等） |
 | className | `string` | — | 根节点类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onFinish | `(values: LoginValues) => void \| Promise<void>` | 校验通过后提交；返回 Promise → 提交按钮 loading |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 标题（默认 `locale.loginForm.title`） |
+| subtitle | `ReactNode` | 副标题（标题下方引导文案，左对齐·muted） |
+| logo | `ReactNode` | 品牌 logo（头部左上） |
+| footer | `ReactNode` | 底部附加区（忘记密码 / 注册链接等） |
 
 `LoginValues = { username: string; password: string; remember: boolean }`。
 

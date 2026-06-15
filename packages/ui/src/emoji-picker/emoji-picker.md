@@ -25,13 +25,18 @@ import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| onSelect | `(emoji: string) => void` | — | 选中某个 emoji 的回调，参数为 emoji 字符 |
 | columns | `number` | `8` | 网格列数 |
 | searchable | `boolean` | `true` | 是否显示搜索框 |
 | defaultCategory | `string` | 第一个分类 | 初始分类 key |
 | recent | `string[]` | — | 受控「最近使用」列表；省略则组件内部维护 |
 | searchPlaceholder | `string` | — | 搜索框 placeholder |
 | className | `string` | — | 透传到容器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | `(emoji: string) => void` | 选中某个 emoji 的回调，参数为 emoji 字符 |
 
 ## 示例
 ```tsx

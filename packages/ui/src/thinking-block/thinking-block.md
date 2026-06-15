@@ -25,14 +25,24 @@ import { ThinkingBlock } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | `ReactNode` | `"思考过程"` | 头部标题 |
 | thinking | `boolean` | `false` | 进行态：标题转圈 + 高光流动，且默认展开（agent 正在推理） |
-| duration | `ReactNode` | — | 耗时标记（标题右侧弱化，如「思考 3s」） |
 | defaultOpen | `boolean` | 随 thinking | 非受控初始展开态 |
 | open | `boolean` | — | 受控展开态 |
-| onOpenChange | `(open: boolean) => void` | — | 展开态变化回调 |
-| children | `ReactNode` | — | 推理正文（markdown 建议外包 `<Prose/>`） |
 | className | `string` | — | 容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onOpenChange | `(open: boolean) => void` | 展开态变化回调 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 头部标题（默认「思考过程」） |
+| duration | `ReactNode` | 耗时标记（标题右侧弱化，如「思考 3s」） |
+| children | `ReactNode` | 推理正文（markdown 建议外包 `<Prose/>`） |
 
 ## 示例
 ```tsx

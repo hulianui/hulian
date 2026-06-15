@@ -25,17 +25,27 @@ import { Fab } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `icon` | `ReactNode` | `Plus` | 主按钮图标；展开 speed-dial 时旋转 45° |
 | `label` | `string` | — | 主按钮文字（extended 胶囊态）；提供后主钮变「图标+文字」自适应胶囊，并默认作 aria-label |
 | `actions` | `FabAction[]` | — | speed-dial 子动作；提供则点击主钮展开/收起，否则直接触发 onClick |
 | `position` | `"bottom-right" \| "bottom-left" \| "bottom-center"` | `"bottom-right"` | 贴边位置 |
 | `size` | `"sm" \| "md"` | `"md"` | md=56px 主钮，sm=48px（紧凑场景） |
 | `draggable` | `boolean` | `false` | 按住拖动重定位（位移 >3px 视为拖拽，该次不触发 onClick） |
-| `onClick` | `() => void` | — | 无 actions 时的主按钮点击 |
 | `aria-label` | `string` | `"操作"` | 主按钮无障碍标签 |
 | `className` | `string` | — | — |
 
 **FabAction**：`key: string` · `icon: ReactNode` · `label?: string`（展开时显示在图标侧并作 aria-label）· `onClick?: () => void`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `onClick` | `() => void` | 无 actions 时的主按钮点击 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| `icon` | `ReactNode` | 主按钮图标（默认 Plus）；展开 speed-dial 时旋转 45° |
 
 ## 示例
 ```tsx

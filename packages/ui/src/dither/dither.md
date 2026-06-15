@@ -33,7 +33,12 @@ import { Dither } from "@hulianui/ui"
 | pixelSize | `number` | `2` | 抖动像素块大小；越大马赛克越粗 |
 | disableAnimation | `boolean` | `false` | 是否冻结波形为静帧（与 reduced-motion 等效，可显式控制） |
 | className | `string` | — | 透传到 canvas（或 fallback div） |
-| fallback | `ReactNode` | 棋盘格+渐变 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容（默认棋盘格+渐变） |
 
 ## 示例
 ```tsx

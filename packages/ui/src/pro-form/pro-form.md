@@ -26,15 +26,25 @@ import { ProForm } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | form | `FormInstance` | — | useForm 实例：提供则提交前自动 `validate()`，重置走 `form.resetFields()` |
-| onFinish | `(values: FormValues) => void \| boolean \| Promise<void \| boolean>` | — | 提交回调；返回 Promise → 提交按钮 loading；reject 不抛断（错误反馈交消费者） |
 | submitText | `string` | `locale.proForm.submit` | 提交按钮文案 |
 | resetText | `string` | `locale.proForm.reset` | 重置按钮文案 |
 | showReset | `boolean` | `true` | 是否显示重置按钮（需 form 才有意义） |
 | columns | `1 \| 2 \| 3` | `1` | 字段栅格列数；≥2 时按容器宽度自适应（窄塌单列），跨整行用 `<Field colSpan="full">` |
 | footerAlign | `"left" \| "right"` | `"left"` | 底部操作区对齐 |
-| footer | `ReactNode` | — | 自定义底部操作区（覆盖默认提交/重置按钮） |
 | className | `string` | — | 容器类名 |
-| children | `ReactNode` | — | 表单字段 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onFinish | `(values: FormValues) => void \| boolean \| Promise<void \| boolean>` | 提交回调；返回 Promise → 提交按钮 loading；reject 不抛断（错误反馈交消费者） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| footer | `ReactNode` | 自定义底部操作区（覆盖默认提交/重置按钮） |
+| children | `ReactNode` | 表单字段 |
 
 ## 示例
 ```tsx

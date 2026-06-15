@@ -28,11 +28,16 @@ import { ColorSwatchPicker } from "@hulianui/ui"
 | colors* | `string[]` | — | 预设色块列表，任意 CSS 颜色串（hex / rgb / hsl / 具名色） |
 | value | `string` | — | 受控选中值（须与 colors 中某项严格相等） |
 | defaultValue | `string` | — | 非受控初始选中值 |
-| onValueChange | `(color: string) => void` | — | 选中变更回调 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 色块尺寸 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | className | `string` | — | 透传到容器 |
 | aria-label | `string` | — | 无障碍标签 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(color: string) => void` | 选中变更回调 |
 
 ## 示例
 ```tsx

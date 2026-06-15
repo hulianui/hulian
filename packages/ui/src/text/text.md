@@ -31,9 +31,14 @@ import { Text } from "@hulianui/ui"
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | 字重 |
 | truncate | `boolean` | `false` | 单行省略号截断 |
 | lineClamp | `number` | — | 多行截断（最多 n 行后省略号）；设置后优先于 truncate |
-| children | `ReactNode` | — | 文本内容 |
 
 继承 `HTMLAttributes<HTMLElement>`（已 Omit `color`，色调走 tone）。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 文本内容 |
 
 ## 示例
 ```tsx

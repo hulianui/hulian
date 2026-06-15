@@ -26,7 +26,6 @@ import { BounceCards } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | images | `string[]` | — | 卡片图片地址数组，按下标对应 `transformStyles`；与 `children` 互斥 |
-| children | `ReactNode[]` | — | 自定义卡片内容数组，覆盖 `images` 的 `<img>` 渲染；数量决定卡片张数 |
 | containerWidth | `number` | `400` | 容器宽度（px） |
 | containerHeight | `number` | `400` | 容器高度（px） |
 | animationDelay | `number` | `0.5` | 入场起始延迟（秒），卡片从 scale 0 弹入前的整体等待 |
@@ -36,6 +35,12 @@ import { BounceCards } from "@hulianui/ui"
 | pushDistance | `number` | `160` | hover 时两侧卡片向外让位的横向位移（px） |
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode[]` | 自定义卡片内容数组，覆盖 `images` 的 `<img>` 渲染；数量决定卡片张数，与 `transformStyles` 按下标对齐 |
 
 ## 示例
 ```tsx

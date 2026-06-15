@@ -27,10 +27,17 @@ import { toast, ToastProvider } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | `ReactNode` | — | 标题（加粗主行） |
-| description | `ReactNode` | — | 描述（次行，恒 text-muted） |
 | tone | `"info"｜"danger"｜"neutral"` | `"neutral"` | 语调，驱动左边条 + 标题着色（复用 Alert 语义，无 success：token 无） |
 | timeout | `number` | `5000` | 自动消失毫秒数；`0` = 不自动消失（手动关闭）；缺省取 Provider 默认 |
+
+## Slots
+
+`toast(options)` 的 `ToastOptions`：
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| title | `ReactNode` | 标题（加粗主行） |
+| description | `ReactNode` | 描述（次行，恒 text-muted） |
 
 `ToastProvider` 在根/段落 layout 单挂，承接命令式渲染。
 

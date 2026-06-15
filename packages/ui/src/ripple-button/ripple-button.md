@@ -23,12 +23,24 @@ import { RippleButton } from "@hulianui/ui"
 
 ## Props
 
-继承全部原生 `<button>` 属性（`onClick`/`disabled`/`type`…）。
+继承全部原生 `<button>` 属性（`disabled`/`type`…）。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | rippleColor | `string` | `var(--color-primary-foreground)` | 波纹颜色 |
 | duration | `string` | `"600ms"` | 单次波纹动画时长 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | 透传原生点击回调（点击同时触发波纹扩散） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 按钮内容（文案/图标） |
 
 ## 示例
 ```tsx

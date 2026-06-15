@@ -33,9 +33,14 @@ import { CircularGallery } from "@hulianui/ui"
 | scrollEase | `number` | `0.05` | 惯性 lerp 系数（0–1），越小越"重"越顺滑 |
 | font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，离线/RSC 安全 |
 | className | `string` | — | 透传根容器类名 |
-| fallback | `React.ReactNode` | — | reduced-motion / 无 WebGL 时的降级槽位（渲染在静态占位层之上） |
 
 `CircularGalleryItem`：`{ image?; text }`，`image` 留空则用 chart token 程序化渐变占位图。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `React.ReactNode` | reduced-motion / 无 WebGL 时的降级槽位（渲染在静态占位层之上） |
 
 ## 示例
 ```tsx

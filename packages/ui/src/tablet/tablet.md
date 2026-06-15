@@ -30,7 +30,12 @@ import { Tablet, TABLET_MODELS } from "@hulianui/ui"
 | model | `"ipad-pro-13" \| "ipad-pro-11" \| "ipad-air-11" \| "ipad-10" \| "ipad-mini"` | `"ipad-pro-11"`(showcase) | 预设机型，决定默认宽度与机身比例。 |
 | width | `number` | model 预设，无 model 则 `320` | 设备宽度(px)，显式传入时优先覆盖宽度。 |
 | imageSrc | `string` | — | 屏幕内容图片地址，优先于 children。 |
-| children | `ReactNode` | — | 屏幕内容自定义节点。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 屏幕内容自定义节点。 |
 
 ## 示例
 ```tsx

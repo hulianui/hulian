@@ -27,7 +27,6 @@ import { FuzzyText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 要渲染的文字(仅纯文本，会被拼成一行) |
 | fontSize | `number \| string` | `"clamp(2rem, 10vw, 10rem)"` | 数字按 px、字符串按任意 CSS 长度(含 clamp)，自适应视口 |
 | fontWeight | `number \| string` | `900` | 字重，厚笔画下噪点更醒目 |
 | fontFamily | `string` | `"inherit"` | 字体族，inherit 读 canvas computed font-family |
@@ -39,6 +38,12 @@ import { FuzzyText } from "@hulianui/ui"
 | direction | `"horizontal" \| "vertical" \| "both"` | `"horizontal"` | 抖动方向：按行左右/按列上下/两者叠加 |
 | className | `string` | — | 透传 canvas 额外 className |
 | style | `CSSProperties` | — | 透传 canvas 内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 要渲染的文字(仅纯文本，会被拼成一行) |
 
 ## 示例
 ```tsx

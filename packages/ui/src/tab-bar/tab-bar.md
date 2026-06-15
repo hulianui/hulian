@@ -28,12 +28,17 @@ import { TabBar } from "@hulianui/ui"
 | `items` * | `TabBarItem[]` | — | 页签数据（见下） |
 | `value` | `string` | — | 受控激活 key |
 | `defaultValue` | `string` | 首项 key | 非受控初始 key |
-| `onChange` | `(key: string) => void` | — | 切换页签回调 |
 | `safeArea` | `boolean` | `true` | 吃底部安全区 inset |
 | `fixed` | `boolean` | `true` | fixed 贴底；false 则随文档流 |
 | `className` | `string` | — | — |
 
 **TabBarItem**：`key: string` · `label: ReactNode` · `icon?: ReactNode`（默认态图标）· `activeIcon?: ReactNode`（激活态，缺省复用 icon）· `dot?: boolean`（红点）· `badge?: ReactNode`（角标，优先于 dot）· `disabled?: boolean`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| `onChange` | `(key: string) => void` | 切换页签回调 |
 
 ## 示例
 ```tsx

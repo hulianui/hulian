@@ -34,7 +34,12 @@ import { ClickSpark } from "@hulianui/ui"
 | extraScale | `number` | `1` | 半径额外缩放系数，>1 放大爆发、<1 收敛 |
 | className | `string` | — | 透传到根容器（relative DOM 元素） |
 | style | `CSSProperties` | — | 透传到根容器内联样式 |
-| children | `ReactNode` | — | 包裹内容，点击其内任意位置都在点击点迸发火花 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 包裹内容，点击其内任意位置都在点击点迸发火花 |
 
 ## 示例
 ```tsx

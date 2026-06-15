@@ -30,10 +30,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | items | `ComboboxItemData[]` | — | 选项数据 `{value,label}`，自动以 label 显示、value 提交 |
 | value | `ComboboxItemData｜ComboboxItemData[]` | — | 受控选中（multiple 时为数组） |
 | defaultValue | 同上 | — | 非受控初始选中 |
-| onValueChange | `(value) => void` | — | 变化回调 |
 | multiple | `boolean` | `false` | true 时 value/onValueChange 自动变数组 |
 | disabled | `boolean` | `false` | 禁用 |
-| children | `ReactNode` | — | 内放 Trigger/Input + Content |
 
 `ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）
 
@@ -58,8 +56,6 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children * | `(item, index) => ReactNode` | — | render fn，List 自动遍历已过滤项调用 |
-| emptyMessage | `ReactNode` | — | 无匹配时文案 |
 | searchPlaceholder | `string` | — | 设置后在浮层顶部渲染搜索框（图4 范式，配合 Trigger）；不设则为内联补全态 |
 | side | `"top"｜"bottom"` | — | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | — | 浮层对齐 |
@@ -72,11 +68,51 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 |------|------|------|------|
 | value * | `ComboboxItemData` | — | 选项 `{value,label}` 对象 |
 | disabled | `boolean` | `false` | 禁用该项 |
-| children * | `ReactNode` | — | 渲染内容 |
 | className | `string` | — | — |
 
-`ComboboxChips`（多选 chips 外壳）：`size`、`invalid`、`placeholder`、`className`、`children`。
-`ComboboxChip`（单个已选 chip）：`children` *、`className`。
+`ComboboxChips`（多选 chips 外壳）：`size`、`invalid`、`placeholder`、`className`（外加 `children` 插槽，见 Slots）。
+`ComboboxChip`（单个已选 chip）：`className`（外加 `children` 插槽，见 Slots）。
+
+## Events
+
+`Combobox`（透传 Base UI `Combobox.Root`）
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value) => void` | 选中变化回调（multiple 时 value 为数组） |
+
+## Slots
+
+`Combobox`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 内放 Trigger/Input + Content |
+
+`ComboboxContent`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children * | `(item, index) => ReactNode` | 渲染函数，List 自动遍历已过滤项调用 |
+| emptyMessage | `ReactNode` | 无匹配时文案 |
+
+`ComboboxItem`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children * | `ReactNode` | 渲染内容 |
+
+`ComboboxChips`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 内含 chip 列 + 输入框 |
+
+`ComboboxChip`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children * | `ReactNode` | chip 内容 |
 
 ## 示例
 

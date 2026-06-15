@@ -35,7 +35,12 @@ import { LightPillar } from "@hulianui/ui"
 | noiseIntensity | `number` | `0.5` | 颗粒噪声强度，0=纯净无颗粒 |
 | pillarRotation | `number` | `0` | 光柱整体倾斜角度(度)，例 30=向一侧斜射 |
 | className | `string` | — | 透传 canvas 容器(或 fallback div) |
-| fallback | `ReactNode` | token 渐变光柱 | reduced-motion / 无 WebGL 时的静态替代内容 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| fallback | `ReactNode` | reduced-motion / 无 WebGL 时的静态替代内容，默认 token 渐变光柱 |
 
 ## 示例
 ```tsx

@@ -27,10 +27,15 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `AnchorItem[]` | — | 锚点项数组，支持一层 children 形成二级 |
 | offsetTop | `number` | `0` | 滚动定位时目标顶部预留的偏移(px)，避开固定页头；同时收缩 scrollspy 观测区上沿 |
-| onChange | `(href: string) => void` | — | 激活锚点变化回调（点击或滚动驱动均触发，同值不重复触发） |
 | getContainer | `() => HTMLElement \| null` | `undefined`(window) | 自定义滚动容器；页面真正的滚动体不是 window 时**必须传** |
 
 `AnchorItem`：`{ href: string; title: ReactNode; children?: AnchorItem[] }`，`href` 形如 `"#section-id"`，与页面元素 id 一一对应。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(href: string) => void` | 激活锚点变化回调（点击或滚动驱动均触发，同值不重复触发） |
 
 ## 示例
 ```tsx

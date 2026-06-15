@@ -26,7 +26,19 @@ import { RainbowButton } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | speed | `string` | `3s` | 彩虹流动一轮秒数 |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性（onClick、children 等） |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | 点击回调，经 `ComponentPropsWithoutRef<"button">` 透传 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 按钮文案，经原生 button 属性透传 |
 
 ## 示例
 ```tsx

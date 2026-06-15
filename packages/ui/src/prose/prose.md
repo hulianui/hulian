@@ -27,9 +27,14 @@ import { Prose } from "@hulianui/ui"
 |------|------|------|------|
 | as | `ElementType` | `"article"` | 渲染的容器标签 |
 | size | `"sm" \| "base"` | `"base"` | 整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文 |
-| children | `ReactNode` | — | 富文本内容（HTML/JSX） |
 
 继承 `HTMLAttributes<HTMLElement>`（`className` / `style` 等）。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 富文本内容（HTML/JSX） |
 
 ## 示例
 ```tsx

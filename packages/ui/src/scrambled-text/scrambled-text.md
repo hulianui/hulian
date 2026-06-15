@@ -25,13 +25,18 @@ import { ScrambledText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | 要逐字打乱的文本(仅纯文本，内部拆成单字符 span) |
 | radius | `number` | `100` | 指针生效半径(px)，落在某字符中心此半径内才触发该字翻滚 |
 | duration | `number` | `1.2` | 单字乱码翻滚最长时间(秒)，离指针越近越接近此值 |
 | speed | `number` | `0.5` | 翻滚速度(0~1)，越大每帧切换乱码越频繁、收敛越快 |
 | scrambleChars | `string` | `".:"` | 乱码随机替换用的字符集，逐字符循环取样 |
 | className | `string` | — | 透传根元素额外类名(cn 合并) |
 | style | `CSSProperties` | — | 透传根元素内联样式 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | 要逐字打乱的文本(仅纯文本，内部拆成单字符 span) |
 
 ## 示例
 ```tsx

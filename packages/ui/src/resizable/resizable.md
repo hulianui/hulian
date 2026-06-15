@@ -29,8 +29,6 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle, applyResize, spli
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | horizontal=面板横排(分隔符竖直)；vertical=面板竖排(分隔符水平)。 |
 | sizes | `number[]` | — | 受控尺寸（百分比数组，一项一面板），须配 onSizesChange。 |
 | defaultSizes | `number[]` | 均分 | 非受控初始尺寸；缺省按面板数均分。 |
-| onSizesChange | `(sizes: number[]) => void` | — | 尺寸变化回调。 |
-| children* | `ReactNode` | — | Panel 与 Handle 交替排列。 |
 
 继承 `HTMLAttributes<HTMLDivElement>`（除 onChange）。
 
@@ -52,6 +50,20 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle, applyResize, spli
 ### 工具函数
 - `splitEqually(n)` — 生成 n 个面板均分的尺寸数组。
 - `applyResize(...)` — 受控模式下据拖拽增量计算新尺寸数组（含 min/max 钳制）。
+
+## Events
+
+### ResizablePanelGroup
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSizesChange | `(sizes: number[]) => void` | 尺寸变化回调。 |
+
+## Slots
+
+### ResizablePanelGroup
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | Panel 与 Handle 交替排列。 |
 
 ## 示例
 ```tsx

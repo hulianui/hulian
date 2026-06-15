@@ -27,12 +27,22 @@ import { VirtualList } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `T[]` | — | 数据数组（泛型）。 |
 | itemHeight* | `number｜((index: number) => number)` | — | 定高 px，或返回估算高度的函数（变高，按实测校正）。 |
-| renderItem* | `(item: T, index: number) => ReactNode` | — | 行渲染。 |
 | height | `number｜string` | `360` | 视口高度，px 或 CSS 长度。 |
 | overscan | `number` | `5` | 预渲染屏外条数。 |
 | getKey | `(item: T, index: number) => string｜number` | 用下标 | 行 key 提取。 |
-| onReachEnd | `() => void` | — | 末行进入视口时回调（配合无限加载）。 |
 | className | `string` | — | — |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onReachEnd | `() => void` | 末行进入视口时回调（配合无限加载）。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem* | `(item: T, index: number) => ReactNode` | 行渲染函数。 |
 
 ## 示例
 ```tsx
