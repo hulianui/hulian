@@ -1,0 +1,389 @@
+# @hulianui/ui 组件问题审计（2026-06-15）
+
+> 来源：Vant 式 examples 撰写 workflow 深读 342 组件源码顺带审查所得。共 186 条。
+> 状态：bug 级择优修复，其余留存待主人按价值排期。
+
+## 🔴 Bug（逻辑缺陷）（15）
+
+- **true-focus** `true-focus.tsx:48-65 (measure effect, index 未随 words.length 收敛)`
+  - 受控场景下 sentence 变短时 index 可能越界，wordRefs.current[index] 为 undefined，焦点框停止跟随直到 index 循环回有效范围（自动模式靠 %words.length 自愈，手动模式不切词则一直悬空）
+- **cascader** `cascader.tsx:219-223`
+  - value={[]}(受控空数组)时 `value ?? internal` 因空数组非 nullish 仍取受控值=[]，正确；但 commit 里 `value === undefined ? setInternal` 判定用 ===undefined，与读取处的 `?? ` 语义一致，无碍。真实小坑：hover 展开时 onMouseEnter 改 activePath 但不 commit，若该层正好是叶子节点(无 children)则 hover 不触发任何反馈，需点击——hover 模式下叶子列无悬停态提示
+- **tree-select** `tree-select.tsx:106-118`
+  - 多选 onCheck 只保留叶子键(过滤掉有 children 的键)写回 value，但回显 selectedArr 直接 map current 渲染 chip——若消费者外部塞入一个父级 key 作为 value，labelOf 能显示但 Tree 的 checkedKeys 期望叶子集，父子级联渲染会与 chip 不一致(契约要求 value 必须是叶子键，未在类型层约束)
+- **gantt** `gantt.tsx:145`
+  - today 竖线范围判定 off <= totalDays 越界：有效偏移为 0..totalDays-1（闭区间含首尾共 totalDays 天），当 today 恰好等于范围末日次日时 off===totalDays，todayPct=(totalDays+0.5)/totalDays*100>100，竖线被画到轴区右缘外（pointer-events-none 覆盖层内按 todayPct% 定位会溢出/裁切），应为 off < totalDays
+- **gift-feed** `gift-feed.tsx:14 (useEffect 内 if (events.length <= processed.current) return)`
+  - processed.current 单调累加假设 events 永远 append-only；若消费方把 events 替换成更短数组(列表重置)，processed 仍停在旧高位，后续新事件 events.length<=processed.current 被静默丢弃直到长度超过陈旧计数
+- **conversation** `conversation.tsx:17-21`
+  - auto-scroll useEffect 无依赖数组，每次渲染都强制 scrollTop=scrollHeight，用户向上翻阅历史时会被任意父级 re-render 拽回底部——缺「用户已上滚则不贴底」的判定
+- **message-actions** `message-actions.tsx:62 copy()`
+  - copy() 里 setTimeout(()=>setCopied(false),1500) 未在卸载时 clearTimeout；复制后 1.5s 内组件卸载会对已卸载组件 setState（潜在 React 警告/内存泄漏）
+- **wavy-background** `wavy-background.tsx:67-73 resolveColor + 134-139 resolvedBg`
+  - resolveColor 当 CSS 变量解析为空时返回原始字符串(|| color)，故 resolvedBg 的 'var(--color-bg)' || 'var(--color-background)' 短路链永远停在第一个真值字符串——--color-background 兜底成死代码；且当 --color-bg 未定义时把字面量 'var(--color-bg)' 喂给 canvas fillStyle（非法颜色被静默忽略，背景拖影层失效）
+- **curved-loop** `curved-loop.tsx:126-130 (endDrag)`
+  - endDrag 用 velRef>0 判方向但未重置 velRef，且无位移点击(vel 默认 0)会强制 dirRef 设为 left——纯点击可把原本 direction=right 的自动滚动方向翻转
+- **scroll-velocity** `scroll-velocity.tsx:102-103 VelocityRow useAnimationFrame`
+  - 自走帧速度公式对方向因子重复加权：moveBy 已含方向符号，velocity-boost 项又乘 directionFactor，反向时 boost 分量符号与基量不一致（原 React Bits 仅 moveBy += moveBy*factor）
+- **shuffle** `shuffle.tsx:110-119 run() 完成分支`
+  - loop 模式下完成时先把 runningRef 置 false 再排 loopDelay 定时器，延迟窗口内组件被视为空闲，hover(triggerOnHover) 可启动并发 run()，定时器再起一个，导致多条 rAF 循环同时 setDisplay
+- **orbit-images** `orbit-images.tsx:191,240 (const total = items.length; const progress = fill ? index / total : 0)`
+  - items 为空数组时 total=items.length=0，fill=true 下 progress=index/total 计算为 0/0=NaN，进而 offsetDistance/animationDelay 写出 NaN% 与 NaNs 样式；建议 total 为 0 时早退或对 total 取 Math.max(1, …)。
+- **cubes** `packages/ui/src/cubes/cubes.tsx:264-265 (faces 数组)`
+  - front 与 back 两个面的 3D transform 完全相同（均为 rotateY(-90deg) translateX(50%) rotateY(90deg)），back 面与 front 重叠，等于少渲染一个背面、且多挂一层无用 DOM；back 应是相反方向（如 translateX(-50%) 或额外 180° 旋转）。
+- **lanyard** `lanyard.tsx:79-110 onPointerDown`
+  - onPointerDown 在 window 上 addEventListener pointermove/pointerup，但用 useCallback([]) 且未走 setPointerCapture；若组件在拖拽中卸载，onUp 永不触发，window 上的 onMove/onUp 监听泄漏（无 cleanup 兜底）。
+- **shape-grid** `shape-grid.tsx:296-301 (handleMouseMove triangle 分支) vs 154-171 (drawGrid triangle flip)`
+  - triangle 悬停 hit-test 的 col/row 计算未纳入 drawGrid 里用到的 colShift/rowShift，导致 flip 朝向与命中单元错位：悬停三角可能高亮相邻而非指针所在的那个三角单元
+
+## 🟡 A11y（无障碍）（48）
+
+- **divider** `divider.tsx:34-46 (Divider vertical 分支)`
+  - type="vertical" 行内分隔渲染 role="separator" 但同时被放进可聚焦内容流之间，且传入的 children 被静默忽略（垂直态不支持文字），调用方易误以为能加标签
+- **circular-text** `circular-text.tsx:39-43`
+  - 根 <div> 挂 aria-label 但无 role；无隐式 role 的 div 携带 accessible name 在部分读屏下不被稳定朗读，建议补 role="img" 或改用语义元素
+- **code-block** `code-block.tsx:33-42 (copy button, 无 aria-live/role=status)`
+  - 复制成功后按钮文案/aria-label 切到「已复制」但无 aria-live 区域，屏幕阅读器不会主动播报复制结果；视障用户无反馈
+- **snippet** `snippet.tsx:34-42`
+  - 复制按钮成功态仅图标变 Check 无 aria-live 播报，与 CodeBlock 同源问题
+- **segmented** `packages/ui/src/segmented/segmented.tsx:41-44 Segmented`
+  - 无 defaultValue/value 时 selected 为 undefined 但 selectedIndex 经 Math.max(0,-1)=0，导致滑块指示器与 roving tabindex 落在第 0 段，而所有 button 的 aria-checked 仍为 false——视觉上像选中第 0 段但无障碍语义无选中项，二者不一致
+- **image-cropper** `image-cropper.tsx:100-117 (裁剪画布区无 aria 语义)`
+  - 缩放滑杆两侧的放大镜 SVG 为纯装饰(aria-hidden)，但 Slider 仅 aria-label="缩放"无可见文字标签，键盘用户可用但裁剪画布(Cropper)本身无 role/aria 描述，纯靠拖拽，对辅助技术不可达
+- **cascader** `cascader.tsx:200-238`
+  - 多列 listbox 每列独立 role=listbox 但列间无 aria 关联(如 aria-owns/活动后代)，键盘 Tab 焦点在 Popup 内各 button 间游走而非标准 listbox 方向键导航，屏幕阅读器难以理解‘第 N 级’的级联关系
+- **date-range-picker** `packages/ui/src/date-range-picker/date-range-picker.tsx:168-170 (renderMonth 内 button)`
+  - 月网格补位日(非本月)渲染为 invisible 但仍带 aria-label={iso}，屏幕阅读器会读到不可交互的相邻月日期，产生噪声；建议补位格不设 aria-label 或 aria-hidden。
+- **field** `field.tsx:26-28`
+  - Field.Label 仅在 children 为原生 Field.Control 时才建立 htmlFor/id 关联；hulian Input 经 render 透传可生效，但若 children 是自定义非控件元素则点击 label 不聚焦控件（设计层局限，跨库一致）
+- **search-form** `search-form.tsx:137 + field.tsx:26`
+  - renderControl 把 Select / date-range 的 div 包进 <Field label>，但 Field.Label 无法与非原生控件建立 id 关联，点击「状态/创建时间」标签不会聚焦或展开对应 Select
+- **tree** `tree.tsx:294-337 renderFlatSearch`
+  - 搜索平铺态(renderFlatSearch)的 treeitem 缺少 aria-level 之外的 aria-setsize/aria-posinset，且把扁平结果直接挂在 role=tree 下而无中间 role=group，破坏了 WAI-ARIA tree 的层级语义(嵌套渲染 renderTree 则有 setsize/posinset)。
+- **carousel** `carousel.tsx:161-172 / onKeyDown`
+  - ←→ 键盘导航的 onKeyDown 挂在 region 容器上，但该容器自身无 tabIndex，也无可聚焦的轨道元素；只有当焦点落在内部箭头/圆点按钮时键盘翻页才生效，纯键盘用户进入轮播区域无法直接用方向键。
+- **image** `image.tsx:51-65`
+  - dead 占位态彻底卸载 <img>，alt 一并丢失，破图对辅助技术不可感知（占位 span 无 aria）
+- **kanban** `kanban.tsx:220 DragOverlay`
+  - DragOverlay 拖拽中无 aria-live 播报，屏幕阅读器用户键盘拖拽时拿不到「已移动到 X 列第 N 位」反馈
+- **funnel** `funnel.tsx:66 spacer h-[18px]`
+  - horizontal 首级转化率占位用固定 `h-[18px]` 的 aria-hidden span 对齐，而真实徽标含 py-0.5+text-[11px] 实际高度可能>18px，跨列条底基线轻微错位（视觉 smell，非功能 bug）
+- **queue-lane** `queue-lane.tsx:84-103 li role=button`
+  - 可点击项把 <li> 设为 role="button"，覆盖了其隐式 listitem 角色，使外层 <ol> 对这些项丢失列表语义；更稳妥是在 li 内包一个 button 而非给 li 套 role=button
+- **gantt** `gantt.tsx:197-263`
+  - role=table 与内部 role=row/columnheader/rowheader/cell 之间夹了多层无 role 的 div（overflow-x 滚动壳、minWidth 撑开层、行体 relative 容器），打断 ARIA table 所需的 table>row 直系/rowgroup 结构，辅助技术可能无法把它识别为有效表格
+- **live-product-card** `live-product-card.tsx:61-69`
+  - 传 onClick 时根元素用 <div onClick> 渲染但无 role=button / tabIndex / 键盘处理，整卡不可键盘聚焦或回车触发
+- **coupon** `coupon.tsx:86-100`
+  - onSelect+inactive(used/expired) 时根节点渲染 aria-pressed 但 tabIndex 为 undefined 且无 onClick，产生「可按下但不可聚焦/不可点」的 a11y 不一致；应在 inactive 时一并省略 aria-pressed
+- **git-commit** `git-commit.tsx:71-73 (href ? <a href={href} ...>)`
+  - href 模式下短哈希链接 <a> 无 aria-label/title，屏幕阅读器只读到孤立的短哈希字符串 + commit 图标，缺少「查看提交 xxx」之类可理解的链接名；建议给 <a> 补 aria-label 含分支/message 上下文
+- **deploy-status** `deploy-status.tsx:57-68 (variant dot 分支无 aria)`
+  - dot 变体的彩色圆点纯靠相邻文字传达状态，圆点本身无语义；而 badge 变体也仅靠文字+图标无 role/aria-label。仅 icon 变体补了 role=img+aria-label。三态无障碍处理不一致——dot/badge 的颜色状态信息对依赖颜色感知者无额外冗余（虽有文字兜底，可接受但不对称）
+- **credit-card** `credit-card.tsx:96 (CreditCard aria-label)`
+  - 空卡号时 aria-label 退化为「银行卡 尾号 」（onlyDigits(number).slice(-4) 为空串），尾随空格且无尾号信息，读屏体验差
+- **world-map** `world-map.tsx:232-290 (节点渲染分支)`
+  - 节点下钻交互用 <g role="button" tabIndex=0 onKeyDown> 自造可聚焦按钮，但缺 onClick 之外的 Space 默认滚动抑制仅在 keydown 内做；且整个 svg 仅在 interactive 时去掉 aria-hidden，非交互节点（points 但无 onPointClick）的 label 文字对 AT 完全不可见——纯展示型节点分布无任何无障碍可读名。
+- **navbar** `navbar.tsx:67-88 (NavbarMenuToggle) 与 showcase NavbarDemo 的菜单 ul`
+  - NavbarMenuToggle 通过 aria-expanded 标注展开态，但与之关联的折叠菜单 <ul> 没有 id，toggle 也没有 aria-controls 指向它，AT 无法把按钮与受控菜单关联起来。
+- **drawer** `drawer.tsx:67`
+  - DrawerContent 的 Dialog.Title 仅在传入 title 时渲染（drawer.tsx:67 `{title && ...}`），若调用方省略 title 则对话框无 accessible name，Base UI 会告警；可加开发期提示或 aria-label 兜底
+- **hero-video-dialog** `hero-video-dialog.tsx:47-52`
+  - role="dialog" aria-modal 弹层缺 aria-label/aria-labelledby，且无焦点陷阱与打开时初始聚焦/关闭后焦点归还（键盘用户可 Tab 出弹层到背景）
+- **banner** `banner.tsx:49`
+  - role="status" 硬编码为 polite；danger/solid 重大公告（如停机维护）应像 Alert 那样按 tone 派生 role="alert" 做打断式播报
+- **dossier** `dossier.tsx:12-20 StatusIcon partial 分支`
+  - partial 状态图标整块 aria-hidden，三态(empty/partial/done)对屏幕阅读器无任何文本区分，进度仅靠 done 视觉图标传达；建议每行补 sr-only 状态文案或 aria-label
+- **artifact** `artifact.tsx:67-75 toggle button`
+  - 展开/收起按钮缺 aria-expanded，折叠区也无 id 关联，辅助技术无法获知当前展开态
+- **prompt-suggestions** `prompt-suggestions.tsx:22 flex-wrap container`
+  - 建议 pill 列表用裸 div+button，缺少 role=list/listitem 或 group 语义；多条建议对屏幕阅读器无分组关系（轻微）
+- **orbiting-circles** `orbiting-circles.tsx:40`
+  - 所有环绕子元素被硬编码 aria-hidden 且无 opt-out，承载文字/链接等有意义内容时对屏幕阅读器完全不可见
+- **fuzzy-text** `fuzzy-text.tsx:225-234`
+  - FuzzyText 渲染为裸 <canvas> 无 role/aria-label，文字内容(children)对屏幕阅读器不可达——纯装饰可接受但作为标题(如 404/品牌名)用时缺无障碍文本
+- **pixel-transition** `pixel-transition.tsx:71-87 (PixelTransition 根 div)`
+  - 根元素是 tabIndex=0 的 div + onClick toggle，但无 role=button 也无 Enter/Space 键盘激活处理，键盘用户聚焦后无法触发切换（只有 focus/blur 进退）
+- **logo-loop** `packages/ui/src/logo-loop/logo-loop.tsx:218-263 (renderLogoItem)`
+  - 节点型 logo 的 ariaLabel 仅在 item.href 存在时才挂到 <a> 上；无 href 的纯节点 logo 其 ariaLabel 被计算（itemAriaLabel）却从未使用，节点又是装饰性图标，导致该无障碍标签实质丢失。
+- **bubble-menu** `packages/ui/src/bubble-menu/bubble-menu.tsx:109-113`
+  - 全屏胶囊导航层用 <ul role="menu"> + <a role="menuitem">，但展开/收起仅由汉堡按钮的 aria-expanded 表达，菜单层本身无 focus 管理/Esc 关闭/初始聚焦，键盘用户展开后无法按 ARIA menu 模式上下键导航（role 与交互不匹配）。
+- **gooey-nav** `gooey-nav.tsx:221`
+  - 导航 li 用 key={item.label + index}，若两项同 label 仍唯一（拼了 index），无碍；但 active 项仅靠 text-background 区分，深底容器外（浅底）对比可能不足——非 bug，提示主题适配
+- **staggered-menu** `staggered-menu.tsx:175`
+  - 面板 aside aria-hidden={!open} 但 AnimatePresence 下未打开时整个 aside 不渲染（条件 open &&），aria-hidden 永远为 false，属冗余无害
+- **chroma-grid** `chroma-grid.tsx:162-174`
+  - 可点击卡片 role="link"+tabIndex=0 有键盘处理，但无 aria-label，屏幕阅读器仅能读到卡内 title/handle 拼接，链接目的不明确；建议 clickable 时补 aria-label
+- **pixel-card** `pixel-card.tsx:268-273 (addEventListener mouseenter/mouseleave)`
+  - 动画触发只监听 mouseenter/mouseleave（非 pointer 事件），触屏设备永远触发不了像素生长；focus 路径在 noFocus 时也被禁用，移动端等于纯静态
+- **decay-card** `decay-card.tsx:65 (window.addEventListener mousemove)`
+  - 鼠标驱动用全局 window mousemove 而非卡片本体，溶解强度由全屏指针位移决定；纯键盘/触屏用户无法触发也无替代交互
+- **reflective-card** `reflective-card.tsx:116 (内容层 text-white)`
+  - 内容层文字硬编码 text-white，依赖底色层始终为黑色混合维持对比；若使用者传浅色 baseColor 仍被 #000 mix 兜底，但传 children 自定义内容时整体仍强制 white，自定义浅底内容会失对比
+- **folder** `folder.tsx:91-94 (button aria-expanded) 与 113-148 (papers 无语义)`
+  - button 设了 aria-expanded 但展开的纸张内容未通过 aria-controls 关联，且纸张为纯 div 无语义/无 region 角色，屏阅用户感知不到展开了什么
+- **glass-icons** `glass-icons.tsx:47-56`
+  - 标签文字用 absolute 定位且 opacity-0 默认隐藏，仅 hover/focus 显现；按钮的可读名靠 aria-label=item.label 提供（已正确），但 onClick 可选时按钮无任何动作语义仍渲染为 <button type=button>，无 onClick 的项点击无反馈（非 bug，预期装饰）。
+- **lanyard** `lanyard.tsx:152-159`
+  - 工牌为纯指针拖拽（onPointerDown），无键盘可达性、无 role/aria，且 cursor-grab 的卡片不可聚焦——键盘用户完全无法交互（装饰组件，但无降级提示）。
+- **model-viewer** `model-viewer.tsx:204-212`
+  - 舞台容器 onPointerDown/Move 驱动旋转，无键盘替代；重置按钮有 focus ring 可达，但模型旋转本身键盘不可操作（装饰，可接受）。
+- **elastic-slider** `elastic-slider.tsx:216-247 (SliderBody 轨道容器)`
+  - 滑块纯指针驱动：根容器无 role="slider"、无 aria-valuenow/valuemin/valuemax，也无键盘事件处理——键盘用户与读屏用户无法操作或感知当前值
+- **dot-field** `dot-field.tsx:279 (className 含 pointer-events-auto)`
+  - aria-hidden 的背景根容器用 pointer-events-auto（为实现光标推挤需要），会拦截叠在其上层兄弟内容的指针事件；嵌入业务页时若内容未提至更高层可能挡住点击
+- **light-rays** `packages/ui/src/light-rays/light-rays.tsx:324-336（return 主分支）及 306-322（reduced 分支）`
+  - WebGL 渲染分支把 children 包进 aria-hidden + pointer-events-none 的根容器，导致经 children 传入的有意义内容（如组件文档/showcase「底部上射」里的标题文案）对辅助技术不可见、且不可点击；reduced 降级分支同样 aria-hidden。装饰层应 aria-hidden，但承载文案的 children 不应被 aria-hidden 吞掉——建议把 children 渲染在独立非 aria-hidden 兄弟层。
+
+## 🔵 Type（类型不严）（2）
+
+- **heading** `heading.types.ts:7`
+  - HeadingProps extends Omit<HTMLAttributes<HTMLHeadingElement>> 但 as 可渲染任意标签（如 div），与 HTMLHeadingElement 属性约束不严格匹配（无运行时影响）
+- **ghost-cursor** `ghost-cursor.types.ts:29-33（与 ghost-cursor.tsx:78 blob radius 公式不符）`
+  - scale 的 JSDoc 与实现语义相反：注释称「越大越弥散，越小越聚拢成点」，但 shader radius=0.5+0.3*(1/iScale) 表明 iScale 越大 radius 越小=越聚拢；showcase 文案（scale=1.6 聚拢 / scale=0.7 弥散）已按真实语义走，仅类型注释写反。
+
+## ⚪ Smell（坏味道）（121）
+
+- **admin-layout** `admin-layout.tsx:207 closeAll`
+  - closeAll 实为「关闭其它（保留当前激活页签）」而非字面意义的关闭全部——内容区会留一页，行为与方法名/i18n closeAll 文案不完全吻合（源码注释声明是有意为之，避免内容区空白），非 bug 但命名易误解。
+- **scroll-area** `scroll-area.tsx:19 keepMounted`
+  - keepMounted 让滚动条始终挂在 DOM，即使内容不超出容器（不可滚）滚动条轨道也常驻占位；源码注释说明是为 jsdom/不可滚场景兜底，属有意取舍，但在内容恰好不溢出时会显示一条无意义的轨道。
+- **container** `container.tsx:17 (Container, padded && "mx-auto px-6 sm:px-8")`
+  - padded 同时控制 mx-auto 居中与左右内距两件事——padded={false} 会连带丢掉居中，调用方若只想去内距却被迫失去居中，职责耦合
+- **grid** `grid.tsx:36 (Grid, gridTemplateRows)`
+  - rows 指定时 gridTemplateRows 用 repeat(rows, minmax(0,1fr)) 强制等高定行，内容超出会被压缩/裁切；多数显式行场景更想要 auto 高度，固定 1fr 偏激进
+- **prose** `prose.types.ts:5`
+  - ProseProps extends HTMLAttributes<HTMLElement> 未像 Text/Heading 那样 Omit "color"，三件套语义不一致（color 属性会与潜在样式约定冲突，当前无害）
+- **markdown** `markdown.tsx:62`
+  - renderProseBlock heading 把 `h${b.level}` 强转为 "h1"|"h2"|"h3"，若 parseBlocks 产出 level>=4 的标题则类型断言说谎（视觉上 Prose 仍只样式化 h1-h4，无崩溃但类型不诚实）
+- **sparkles-text** `sparkles-text.tsx:50 (useEffect deps)`
+  - useEffect 依赖数组含 colors prop；消费方传入内联数组字面量时每次 render 引用变化，导致 setInterval 被反复重建、星星持续重生成（默认 DEFAULT_COLORS 为模块级常量引用稳定，仅自定义 colors 路径受影响），建议改用 colors.join() 或 useMemo 稳定化
+- **split-text** `split-text.tsx:41`
+  - split-text.tsx:41 `if (seg === "" )` 括号内多一个空格，纯风格瑕疵
+- **true-focus** `true-focus.tsx:31,78`
+  - words 用 sentence.split 每次 render 重算且以 array index 作 key/ref 下标，相同词重排时 ref 复用不稳；纯静态句无碍但属隐患
+- **snippet** `snippet.tsx:12 (copyText = text ?? (typeof children === "string" ? children : ""))`
+  - children 为 ReactNode 非字符串且未传 text 时 copyText 退化为空串，点复制会静默写空到剪贴板（无 disabled/反馈）；调用方易误用
+- **code-diff** `code-diff.tsx:65,100 (key={i})`
+  - rows 用 array index 作 React key（unified 与 split 均 key={i}），diff 行集变化时复用错位、动画/选区不稳；diff 列表无稳定 id 是常见妥协但属隐患
+- **button-group** `button-group.tsx:38-40`
+  - 非 attached 的纵向分支重复追加 flex-col（line25 已据 orientation 加过），属冗余死类
+- **button-group** `button-group.tsx:9-16`
+  - 组件只解构 className/aria-label，丢弃 style 及 id/data-* 等透传属性，消费方无法给 ButtonGroup 容器传 style
+- **checkbox** `checkbox.tsx:33-35 (Checkbox，{...props} 透传)`
+  - onCheckedChange 类型声明为 (checked:boolean)=>void，但实现直接 {...props} 透传给 BaseCheckbox.Root，运行时回调实际收到 Base UI 的 (checked, eventDetails) 两参——类型签名收窄了，运行时却仍带额外参数，与 types.ts 注释「丢 Base UI 的 eventDetails」不符（并未真正剥离）。
+- **radio** `packages/ui/src/radio/radio.tsx:52-54 Radio`
+  - 单个 Radio disabled 时仅 label 文字 span 降透明度，外层 <label> 仍是默认 cursor（无 cursor-not-allowed），与圈本身的 cursor-not-allowed 不一致
+- **listbox** `listbox.tsx:27 useState(() => ...) 无对应 items 变更的 reset 逻辑`
+  - active 高亮索引仅在 useState 初始化时从 items/selected 计算，items prop 变更(如过滤列表)后不重算，可能指向越界/失效项导致键盘漫游错位
+- **mentions** `mentions.tsx:138 useEffect(无 deps) + :237 onBlur 无条件 close()`
+  - useEffect 无依赖数组，每次渲染都执行 syncScroll()/光标落位检查；候选选中依赖 onMouseDown preventDefault 抢在 blur 前，touch 或不触发 mousedown 的焦点切换路径可能丢失选择
+- **upload** `upload.tsx:39-54 (UploadProps 缺 defaultFiles)`
+  - dropzone 的 onDrop 在 disabled 时已 guard，但 onDragOver 提前 return 后仍调 setDragging 路径无碍；非受控无 defaultFiles，消费者只能全受控管理 files 列表（与 Cascader/TreeSelect 的 defaultValue 不对称，文档示例无法演示真实增删）
+- **image-cropper** `image-cropper.tsx:37-39,78-95`
+  - confirm 里 onCropped 调用失败仅走 onError，但 react-easy-crop 在图片极小或 zoom 边界时 areaPixels 可能 width/height=0，canvasToBlob 仍会产出 1x1(Math.max(1,...))而非报错，静默出空图
+- **transfer** `transfer.tsx:147-166`
+  - leftSelected/rightSelected 在移动后只过滤掉本次 moved 的键，但若某项从右移回左，它在 leftSelected 里的旧勾选可能滞留(代码注释也承认‘选中态可能滞留’)，靠 leftMovable 求交兜底，按钮 disabled 正确但视觉上 listbox 仍可能显示陈旧勾选
+- **tree-select** `tree-select.tsx:54-63`
+  - 单选 current 初值为空串 ""，labelOf("")在 hasValue=false 分支不会触发，安全；但 value 受控传 "" 与 undefined 行为靠 `value ?? internal` 区分，传空串会被当作受控空值而非回退 internal，潜在受控/非受控切换混淆
+- **region-cascader** `region-cascader.tsx:29-31`
+  - onChange 把 nodePath 的非字符串 label 兜底成空串 ""，若某区划 label 不是 string(理论上数据全是 string)会回传含空串的 names 数组，与 codes 长度对齐但语义丢失；薄封装无 invalid/无数据兜底，level 切换时 defaultValue 仍按旧 level 的 code 长度回显可能截断
+- **markdown-editor** `markdown-editor.tsx:50-52,119`
+  - 非受控模式下隐藏表单 input 初值取原始 defaultValue 串，而 onUpdate 后取 tiptap getMarkdown() 序列化串，二者可能不一致——首次编辑前提交会发未规范化的原始 markdown
+- **colorpicker** `color-picker.tsx:32-37`
+  - 受控 value 解析失败时 normalize 静默回退 #000000，吞掉非法输入而非保留/提示
+- **emoji-picker** `emoji-picker.tsx:29`
+  - 搜索过滤 emoji 全等用未 trim 的 query 但关键词匹配用 trim 后的 q，带前后空格的 emoji 查询永不命中全等分支(影响极小)
+- **date-time-picker** `packages/ui/src/_mui/date-time-picker.tsx:16,29 (withSeconds/views) + types.ts:13 (仅 minutesStep)`
+  - withSeconds 启用秒列，但只暴露 minutesStep 而无 secondsStep，秒列无法约束步进；语义不对称（场景需求时可能想限制秒粒度）。
+- **pro-form** `pro-form.tsx:12-16,56`
+  - GRID_BY_COLUMNS 类型签名 Record<1|2|3,string> 但 columns 由 props 进来已是 1|2|3 联合，运行期若传入非法值会索引 undefined 致 className 为 undefined（类型层已挡，仅防御性缺失）
+- **search-form** `search-form.tsx:36`
+  - select 分支 (value as string) ?? ""：先不安全断言再 ??，value 非 string 时断言谎报类型，仅靠后续 String() 兜底
+- **json-viewer** `json-viewer.tsx:183 / json-viewer.types.ts:5`
+  - rootName 类型注释为「根节点标签（如 response）」暗示会渲染可见根标签，但实现里仅被拼进复制路径前缀 `$.${rootName}`，从不渲染——文档与实现漂移，消费者会误以为能命名/显示根节点
+- **editable-table** `editable-table.showcase.tsx:74`
+  - Demo 新行工厂 `id: ++seq + Date.now()` 中 seq 是 render 内局部变量、每次渲染重置，与 Date.now() 相加得到的 id 仅靠时间戳保唯一；属 showcase demo 代码非组件本体，但 newRow 唯一性依赖时间而非确定序列，并发增行理论上可撞 key
+- **descriptions** `descriptions.tsx:12-24 collectItems`
+  - collectItems 只展开 Fragment 一层语义靠注释保证，但当 DescriptionsItem 被包在普通 <div> 等非 Fragment 容器时会被整体丢失(label/children 取不到)——目前仅支持顶层 item 或 Fragment 包裹，嵌套其它元素会静默漏项。
+- **tree** `tree.tsx:100-104`
+  - effectiveActive 在搜索态切换/过滤后可能指向已不在 flat 中的 key，roving tabindex 回退逻辑依赖 flatKeys.includes 兜底，但 activeKey 未在搜索 query 变化时重置，存在焦点漂移到不可见行的边界风险。
+- **carousel** `carousel.tsx:78-103`
+  - scroll settle 回算(120ms 防抖)调用 goTo(nearest) 与 active 变化触发的 scrollTo 平滑动画可能在快速连续拖拽时互相打架(scrollTo smooth 进行中 scroll 事件持续触发 settle)，依赖幂等 goTo 收敛，边界下可能出现抖动。
+- **image** `image.tsx:32-39 (override state / onError)`
+  - override 失败态不随 src 变化重置：实例复用并换 src 后仍可能停留在 dead/fallback（无 useEffect keying src）
+- **animated-list** `animated-list.tsx:20 (m.div key={i})`
+  - 子项用数组下标 key={i}：动态插入/重排（通知流场景）会错位重放入场动画到错误项
+- **flow** `flow.showcase.tsx:50 onConnect（范式来自组件契约）`
+  - onConnect 生成新 edge id 用 `e${Date.now()}`（见 showcase 范式），同一毫秒内连续连两条会撞 id；组件未在内部兜底去重 id，依赖消费者，文档未警示
+- **sankey** `sankey.tsx:143,171 labelX / foreignObject width`
+  - 节点 label 的 foreignObject 宽度(126)与 labelX 偏移(-132/+6)为硬编码魔数，非末层长 label 会溢出撞到下一层节点矩形，无截断保护（仅 truncate 限单行不限横向溢出范围）
+- **live-chat** `live-chat.tsx:26-36`
+  - 自动滚动/未读累计的 useLayoutEffect 仅以 items.length 为依赖键，当父级以等长新数组替换 items（如外部做窗口化：丢旧 + 加新致长度不变）时不会触发贴底或未读 +1，新消息静默不滚；且 eslint-disable exhaustive-deps 掩盖了 autoScroll 变更不重跑
+- **live-player** `live-player.tsx:113-133 (setMenuOpen)`
+  - 清晰度菜单 menuOpen 无「点击外部关闭」处理，点页面别处菜单仍展开
+- **log-viewer** `log-viewer.tsx:30-34`
+  - autoScroll 的 useEffect 无依赖数组，每次渲染都强制贴底；用户上滚查看历史日志时任意重渲染会把视口拽回底部
+- **file-tree** `file-tree.tsx:95, file-tree.tsx:184`
+  - Row 与顶层 map 均用数组 index 作 key（key={i}），节点经搜索过滤/重排时易致 DOM/状态错位
+- **heatmap** `heatmap.tsx:28`
+  - realMax 用 Math.max(1, ...data.map()) 展开整个 data 数组作参数，超大数据集可能触发调用栈上限，宜改 reduce
+- **code-review-thread** `code-review-thread.tsx:48-54, 91-96`
+  - 未传 onAdoptSuggestion 时「采纳建议」按钮 onClick=undefined 仍渲染为可点死按钮（同 confirm-card 单动作死按钮模式）；同理回复区在无 onReply 时静默无操作
+- **virtual-list** `virtual-list.tsx:36-39`
+  - onReachEnd 的 effect 依赖含被 eslint-disable 的 onReachEnd 省略，且每次 lastIndex>=len-1 渲染都会触发——依赖 loading 守卫防重入，父级若不同步改 items.length 可能重复回调
+- **infinite-scroll** `infinite-scroll.tsx:52`
+  - effect 依赖含 onLoadMore，父级传内联箭头函数（如 showcase Demo）会导致 IntersectionObserver 每次渲染拆建一次，churn 偏多，宜用 ref 锁住回调
+- **avatar-circles** `avatar-circles.tsx:24`
+  - 列表项 key 用数组下标 i（img 与 +N 圆），头像列表若重排/插入会导致 DOM 复用错位；建议用稳定 key（如 src）
+- **qrcode** `qrcode.tsx:57 (rect fill={background ?? "#ffffff"})`
+  - 中心 logo 抠底色块在未显式传 background 时硬编码白色 #ffffff，暗色主题下二维码暗块吃 currentColor 变浅而 logo 垫白块，会造成亮白方块割裂；建议 logo 底色 fallback 跟随主题 bg token 而非裸白
+- **credit-card** `credit-card.tsx:39-51 (maskCardNumber)`
+  - maskCardNumber 当 n.length<=4 时回退 formatCardNumber 完全不打码（含 4 位卡号原样显示），与「仅显示后4位」语义边界处理略激进，但属低风险
+- **statistic** `statistic.tsx:74-78 (Statistic 动效分支)`
+  - animate 路径用 <NumberTicker value decimalPlaces> 渲染，groupSeparator={false} 被静默忽略（动效恒带千分位），与非动效路径行为不一致（源注释已承认）
+- **statistic** `statistic.tsx:67 (const animated)`
+  - animate 仅在 value 为 number 时生效，value 为 string 且传 animate 时静默降级为静态，无开发期提示
+- **chart** `chart.tsx:228 (PieChart)、295 (RadialChart)`
+  - Pie/Radial/Radar 等对空 data 数组无显式保护（recharts 可容忍但 Legend/Tooltip 渲染空白），无空态占位
+- **chart** `chart.tsx:77 (textWidth 估算)`
+  - PolarAngleWrapTick 按 value.length*POLAR_TICK_FONT 估宽假设全角等宽，混排半角/数字标签会高估宽度致不必要折行
+- **meter** `meter.tsx:8 (Meter props)`
+  - value 无 clamp 到 [min,max]，越界值（如 value=120 max=100）行为完全依赖 Base UI Meter 内部处理，组件层无防御
+- **timeline** `timeline.tsx:133 (items.map key={i})`
+  - items 数组路径用数组下标 i 作 key（key={i}），列表动态增删/重排时易触发错位复用；children 路径已用稳定 key 更佳
+- **world-map** `world-map.tsx:127-134 (endpoints useMemo)`
+  - endpoints 端点去重时颜色取「首条触及该点的连线色」，当同一城市既是某条 chart-1 线起点又是另一条 chart-2 线终点时，脉冲环颜色取决于 dots 数组顺序，视觉上可能与用户预期的该城市色不一致。
+- **watermark** `watermark.tsx:47-54 (observer callback)`
+  - MutationObserver 的篡改检测（tampered）仅判断 m.target===mark 或 removedNodes 含 mark；若攻击者把整个 containerRef 子树替换或在 mark 之上再叠加一个 opacity:0 的覆盖层，不会触发还原。防篡改是「尽力而为」非强保证，文档/类型注释里宣称『删除水印层会被自动还原』略有夸大。
+- **watermark** `watermark.tsx:137-150 (image 分支)`
+  - image 模式下 img.onload 是异步的，但 effect cleanup 仅靠 cancelled 标志位拦截 onload 内部逻辑；若同一 effect 周期内 image 源快速切换，旧 Image 的 onload 仍可能在 cancelled 置位前 apply 一次旧图（竞态窗口小但存在）。无 img.onerror 处理，坏链时静默无水印。
+- **navbar** `navbar.tsx:29 (NavbarBrand 签名)`
+  - NavbarBrand 复用 NavbarProps 类型（含 sticky/bordered 字段），但 Brand 根本不消费这两个 prop——类型语义错配，消费者会误以为 NavbarBrand 支持 sticky/bordered。应单独定义 BrandProps 或用 HTMLAttributes<HTMLDivElement>。
+- **menu** `packages/ui/src/menu/menu.tsx:66 (MenuItem) · packages/ui/src/menu/menu.types.ts:15-18`
+  - MenuItemProps 声明了 closeOnClick 与 label 两个 prop（含 JSDoc @default true），但 MenuItem 实现只把 {variant, className, ...props} 透传给 BaseMenu.Item，从未消费 closeOnClick/label；closeOnClick 还会作为未知属性透传到底层组件，行为与文档承诺不符。
+- **dock** `packages/ui/src/dock/dock.tsx:54-71 (DockIcon)`
+  - DockIcon 在 ctx 缺省（脱离 Dock 单独使用）时回退 reduce:true 恒定尺寸——但同时仍调用 useTransform/useSpring 订阅了一个永不更新的 fallback motionValue，属无效计算；非致命但属冗余坏味道。
+- **affix** `affix.tsx:82-100 (measure 内 nextStyle position:fixed)`
+  - target 为元素时 fixed 按容器视口 rect 定位；若祖先含 transform/filter/backdrop-filter 会改变 fixed 的包含块，吸附条会偏离视口漂移，组件无守卫也无文档提示
+- **back-top** `back-top.tsx:21-34 (getTarget + useEffect)`
+  - effect 依赖 [getTarget, visibilityHeight]，getTarget 仅依赖 target getter 引用；若 getter 引用稳定但返回值随时间变化(如 ref 首帧返回 null 后才挂到容器)，scroll 监听会绑死在回落的 window 上不再重绑到真实容器
+- **steps** `steps.tsx:100,120`
+  - 可点击步头 focus-visible 用 group-focus-visible:ring-offset-2 但未显式设置 ring-offset 颜色（ring-offset-background），按本仓库已知坑 ring-offset 颜色缺省可能落到继承色，暗色或彩底容器下焦点环偏移区会露错色。
+- **modal** `modal.tsx:66 (open() 返回的 destroy) 对比 modal.tsx:133-135`
+  - ModalInstance.destroy 调 close(id) 只触发出场过渡却不调用 options.onCancel，而 Esc/点遮罩关闭路径(onOpenChange)会调 onCancel，导致程序化销毁与用户关闭的回调语义不一致
+- **modal** `modal.tsx:169 (disabled={loading}) + modal.tsx:133`
+  - 异步 onOk loading 期间取消键 disabled + onOpenChange 忽略关闭，若 Promise 永不 settle 则对话框无任何途径关闭(无超时/中断兜底)
+- **glimpse** `glimpse.tsx:54`
+  - Glimpse 预览封面 alt=""（glimpse.tsx:54）对装饰图合理，但 title/description 文本未与触发器建立 aria-describedby 关联，屏幕阅读器读触发链接时拿不到预览内容（HoverCard 信息卡通用局限，非阻断）
+- **service-message** `service-message.tsx:36 showFooter`
+  - footer 隐藏判定为 footer !== null，传 footer=""/0 仍渲染底部空行；文档说"传 null 隐藏"但 falsy 值未兜底
+- **service-message** `service-message.tsx:89-91`
+  - fields.map 用数组下标 i 作 key，字段顺序变动时可能复用错节点（静态展示影响小）
+- **floating-reactions** `floating-reactions.tsx:40-47 (remove 仅由 onAnimationEnd 调用)`
+  - particles 仅靠 onAnimationEnd 移除且无数量上限；若动画不触发(如 prefers-reduced-motion 下 animation 被 reduce 或快速高频 emit)，数组可能无界累积造成内存/DOM 膨胀
+- **chat-message** `chat-message.tsx:39-48`
+  - system 角色分支静默丢弃 avatar/name/timestamp/actions/status 五个 props(仅渲染 children)，传错不报错也无类型约束——易让调用方误以为这些 props 生效
+- **prompt-input** `prompt-input.tsx:55,60`
+  - disabled 用 pointer-events-none 屏蔽点击但 Textarea 仍可经键盘 Tab 聚焦输入(虽 submit 内有 disabled 短路)，纯指针拦截对键盘用户不彻底——Textarea 自身也传了 disabled 故实际无害，但 wrapper 的 pointer-events-none 与子元素 disabled 双重机制略冗余
+- **tool-call** `tool-call.tsx:13(statusMeta) 对照 :43-48`
+  - statusMeta.running.tone 设为 'brand' 但 running 分支实际渲染的是 Spinner(tone='muted')，brand 这个 tone 永远不会被用到，属冗余/误导配置
+- **agent-plan** `agent-plan.tsx:31 key={i}`
+  - tasks.map 用数组下标 i 作 key，任务列表若动态重排/增删会触发不必要的 DOM 复用与状态错位
+- **confirm-card** `confirm-card.tsx:20 key={i}`
+  - items.map 用数组下标 i 作 key（静态清单影响小，但与库内其它组件一致性差）
+- **task-runner** `task-runner.tsx:26 resolveProgress`
+  - resolveProgress 仅按 status==='done' 计数派生百分比，running/error 步骤不计权；error 状态下进度条会随已完成步骤显示部分进度，但底栏 Failed 语义与进度条 tone(danger) 一致，属可接受设计但语义略含糊
+- **ripple** `ripple.tsx:28 (key={i})`
+  - 圆环列表用数组下标 i 作 React key(key={i})——numCircles 为静态配置不增删，实际无害，但属常见坏味道
+- **particles** `particles.tsx:213-252 animate()`
+  - animate 中 circlesRef.current.forEach 里对同一数组 splice 删除后再 push 新粒子，边迭代边改长度——回收时会跳过紧随的索引（视觉无感但是迭代-变异坏味道）
+- **flickering-grid** `flickering-grid.tsx:255-263 主 effect deps`
+  - 主 effect 依赖数组含 isInView，IntersectionObserver 每次可见性翻转都 setIsInView 触发整个 effect 重建（重新 setupCanvas + 新建 RAF/ResizeObserver/IntersectionObserver），可见性切换时反复 teardown/重建，浪费且 squares 透明度被重新随机重置
+- **wavy-background** `wavy-background.tsx:227 effect deps`
+  - blur 在主 useEffect 依赖数组里，但 blur 仅作用于 canvas 的 CSS filter(canvasStyle)、不参与 canvas 绘制；改 blur 会无谓地整体重建 RAF 动画循环
+- **threads** `threads.tsx:322 (useCallback deps) + :325 (useGlCanvas deps)`
+  - setup useCallback 依赖含原始 color，array 字面量颜色每次渲染都是新引用→每次父组件 re-render 都重建 WebGL context（兄弟 Iridescence 用 JSON.stringify(color) 规避，此处未做）
+- **border-beam** `border-beam.tsx:55`
+  - transition.delay 传 -delay（负延迟）让动画从周期中段起跑，可用但语义隐晦，未在 props 文档说明负值行为
+- **lens** `lens.tsx:30-45`
+  - children 被渲染两次（底层 + 放大镜副本），若子元素含 id/可交互节点会产生重复 DOM id（放大副本虽 pointer-events-none 但仍重复挂载）
+- **animated-beam** `animated-beam.tsx:52-56`
+  - ResizeObserver 只 observe 容器，未观察 from/to 节点；节点自身尺寸变化（内容变更）时路径几何不重算
+- **orbiting-circles** `orbiting-circles.tsx:39`
+  - 列表用数组下标 i 作 React key
+- **terminal** `terminal.tsx:69 lines.map key={i}`
+  - 列表用数组下标 key={i} 渲染行（terminal.tsx lines.map），lines 为静态 props 时无害，但若运行时增删行会致动画/状态错位
+- **picker** `picker.tsx:51-55 (Column.onScroll settle 回调)`
+  - settle 防抖回调闭包捕获 render 时的 value，快速滚动后停稳时 value 可能已陈旧，导致 opt.value!==value 判断偶发漏发 onChange
+- **pull-to-refresh** `pull-to-refresh.tsx:58 / :100-114`
+  - wheel 路径 Promise.resolve(onRefresh()).finally 只在 finally reset，未 catch，onRefresh 拒绝时错误被静默吞掉(指针路径同理 try/finally 无 catch)
+- **ascii-text** `ascii-text.tsx:197 (deps) / :78-83`
+  - effect 依赖仅 [asciiFontSize]，其余 props 走 latest ref；文字色经 getComputedStyle 探针只在 layout/drawSource 时取，主题运行时切换(无 asciiFontSize 变化)时 canvas 填色不会重算
+- **falling-text** `falling-text.tsx:283`
+  - 高亮判定 word.startsWith(hw) 为前缀匹配，文档已注明；但会误高亮非预期词(如 highlightWords=['code'] 命中 'codebase')，无精确匹配选项
+- **variable-proximity** `variable-proximity.tsx:15-29 parseSettings`
+  - parseSettings 对缺值/畸形的 font-variation-settings 段无防护：split(/\s+/) 后 value 可能 undefined→parseFloat(NaN)，name 也可能 undefined 触发 .replace 报错
+- **gradual-blur** `gradual-blur.tsx:128-170（containerStyle）vs gradual-blur.types.ts:76-78`
+  - containerStyle 把 ...style 展开在前，随后 base.height/width/[position]/top/left 等覆盖之，导致用户传入的 style.height/width/top 等被组件内部计算值覆盖；而 types JSDoc 写「同名以此（style）为准」，文档与实现相反。
+- **laser-flow** `laser-flow.tsx:443-461（useGlCanvas deps 含 color，无 key remount）`
+  - color prop 变化进 useGlCanvas deps 会触发 GL 重建，但 ghost-cursor 同族组件用 key=color 强制 remount 来重解析颜色；laser-flow 仅靠 deps 重跑 setup，依赖 useGlCanvas 是否在 deps 变化时真正销毁重建——若 hook 只重跑而不换 canvas，颜色 token 的主题切换可能不重解析（潜在不一致，需 hook 行为确认）。
+- **magic-rings** `magic-rings.tsx:52（FRAG ring 函数 h 计算）`
+  - 片元 ring() 内 `float h = (1.0 - smoothstep(th, th*1.5, d)) + 1.0;` 恒在 [1,2] 区间，h 永远 ≥1（基线被抬高 1.0），与紧随的 exp(-uAttenuation*d) 相乘后亮度地板偏高，疑似移植自原版时的可疑常量；建议对照 react-bits 原 shader 核实 +1.0 是否应为 0 基线。
+- **meta-balls** `meta-balls.tsx:192 (program uniforms iBallCount) vs render() 内 258-260 行只 resync animationSize/cursorBallSize`
+  - iBallCount uniform 仅在 program 创建时从 ballCountRef 设一次，render 循环不重新同步（不同于 iAnimationSize/iCursorBallSize 每帧 resync）；当前靠 ballCount 在 useGlCanvas 依赖数组里触发整体 rebuild 才生效，与其它 uniform 的更新路径不一致，存在隐式耦合。
+- **ribbons** `ribbons.tsx:250,254 (render dt 计算)`
+  - render(t) 用 dt=t-lastTime，但 lastTime 初值取 performance.now() 而循环回调 t 的时间原点未必一致，首帧 dt 可能为巨大或负值造成一次跳变
+- **shape-blur** `shape-blur.tsx:118-119,121-140 (buildFragment main)`
+  - u_circleEdge uniform 在 shader 声明但 main() 中从未参与运算（fill/strokeAA 实参传的是 sdfCircle 与字面量），导致 circleEdge prop / '光圆羽化' 控件无任何视觉效果，是死参
+- **sticker-peel** `sticker-peel.tsx:202,206,208 (背面卷边 top calc)`
+  - 翻起卷边 div 的 top 偏移把 PAD(=10) 硬编码成字面量 '2*10px'，与常量 PAD 重复且未同步引用，改 PAD 会漏改此处
+- **card-nav** `packages/ui/src/card-nav/card-nav.tsx:102-108`
+  - 展开内容区永远渲染（仅靠 aria-hidden + pointer-events 切换），但其卡片用 AnimatePresence 仅在 open 时挂载——收起态该容器为空但仍占 absolute 层；可接受但 aria-hidden={!open} 与按钮 aria-expanded 是两处分散的开合真值，易漂移。
+- **flowing-menu** `packages/ui/src/flowing-menu/flowing-menu.tsx:171-174`
+  - 跑马灯轨道注释写「两组重复内容拼接，平移 50% 即无缝」，实际渲染 repeat 份 + 再 repeat 份共 2*repeat 份，CSS 关键帧 hulian-flowing-menu 须平移恰好一半轨道宽才无缝；当 part 含图片(宽度异于纯文字)时各份宽度一致仍成立，但注释的「50%」与代码意图须靠关键帧值保证，二者耦合脆弱（无运行时校验）。
+- **pill-nav** `pill-nav.tsx:77-112`
+  - active 项的 hover/active 文案翻转与指示圆点逻辑通过多个 isActive && 类拼接，未抽公共状态，可读性偏低但行为正确
+- **bounce-cards** `bounce-cards.tsx:85,126`
+  - 外层与内层 m.div 均用 key={idx} 索引作 key，卡片为静态列表可接受；img alt 为通用 `bounce-card-${idx}` 无语义信息
+- **card-swap** `card-swap.tsx:277`
+  - rendered 列表用 key={i}（索引），children 变更时可能错配 DOM/ref——但组件 refs 也按 total 重建且场景为静态卡组，实际无害；已在文件头注释充分说明 motion v12 中断陷阱
+- **magic-bento** `magic-bento.tsx:2`
+  - useRef 从 react 导入但组件内从未使用（未用导入，会触发 noUnusedLocals/lint）
+- **scroll-stack** `scroll-stack.tsx:124-127`
+  - blur 计算内层 for 循环直接读 cards[j].offsetTop，缺少外层 forEach 对 card 的 if(!card) 空值守卫，cards 数组若含空洞会抛错（与同函数防御风格不一致）
+- **profile-card** `profile-card.tsx:313-337 (头像区三元分支)`
+  - avatarUrl 加载失败时 onError 仅把 <img> display:none，但首字母占位块只在 avatarUrl 为假值时渲染，导致破图回退后头像区彻底空白（无降级到首字母）
+- **decay-card** `decay-card.tsx:114-117 (svg viewBox 硬编码)`
+  - SVG viewBox 固定为 -60 -75 720 900（3:4 比例），但 width/height props 可任意设置；非 3:4 尺寸时配 preserveAspectRatio=slice 会裁切/缩放失真，width/height 仅改容器盒不改内部坐标系
+- **border-glow** `border-glow.tsx:131 handlePointerMove`
+  - handlePointerMove 直接 setProperty 操作 DOM 但卡片本身无 hover 外的 a11y 焦点态——纯指针驱动，键盘用户无法点亮边框（装饰性，可接受但纯指针）。
+- **border-glow** `border-glow.tsx:102-148`
+  - getEdgeProximity 的 useCallback 内未用到的参数 el 之外，函数对 x/y 与传入 el 的 rect 重复 getBoundingClientRect（handlePointerMove 已取一次 rect，又在 getEdgeProximity/getCursorAngle 内各取一次），同一指针事件 3 次强制重排。
+- **glass-icons** `glass-icons.tsx:48 key={index}`
+  - 列表 key 用数组 index，items 重排/增删时可能错误复用 DOM；建议优先用 label 等稳定键。
+- **glass-surface** `glass-surface.tsx:163-173`
+  - ResizeObserver 回调用 setTimeout(syncFilter,0) 延迟读尺寸，但 syncFilter 是组件作用域闭包且 effect deps 为 []，captures 的是首渲染 syncFilter；虽因 ref 读取仍生效，但 distortionScale/offset 等若在无尺寸变化时改变靠的是另一个 layout effect，两路同步逻辑分散易漂移。
+- **glass-surface** `glass-surface.tsx:34-56`
+  - supportsSvgBackdropFilter 每次能力探测都 createElement('div') 并写 style，结果只在挂载时用一次；可接受但 UA 嗅探（Safari/Firefox 判定）对未来浏览器脆弱。
+- **model-viewer** `model-viewer.tsx:86-92 reset`
+  - RAF 循环 effect deps 仅 [reduced]，autoRotate/speed 等走 cfg ref 实时读取（设计如此）；但 reset() 把 tHov/tPar 清零却不清 cHov/cPar 当前值，重置后视差/悬停残留要等缓动归零，复位非即时（轻微）。
+- **fluid-glass** `fluid-glass.tsx:313 deps [colors]`
+  - useGlCanvas 重建 deps 仅 [colors]——colors 为数组字面量 prop，父组件每次渲染传新引用会触发 GL context 反复重建；showcase 内传的是稳定字面量尚可，但库消费方内联 colors={[...]} 会导致每渲染重建 WebGL（性能坑，建议 deps 用 colors?.join 或文档提示 memo）。
+- **fluid-glass** `fluid-glass.tsx:146-165`
+  - cssColorToRgb01 失败回退硬编码 [0.4,0.45,0.6]，与 resolveToken 的各 token 回退值不一致；若 token 解析空字符串走 fb，颜色与设计意图可能偏差（边缘场景）。
+- **elastic-slider** `elastic-slider.tsx:102-104 与 131`
+  - onValueChange 仅在 handlePointerMove 拖动分支触发；而 defaultValue 变化经 useEffect 同步进内部 value 时不回调，消费方拿不到这次受控外部变更的通知（行为虽与原版一致，但易误用）
+- **ballpit** `ballpit.tsx:250-251`
+  - 物理 effect 依赖数组（eslint-disable exhaustive-deps）只列 [reduced,count,gravity,bounce,followCursor]，遗漏 colors 与 sizeRange：运行时改这两个 prop 不会重建/重算小球（颜色与半径范围不更新），与其它 prop 行为不一致且无注释说明
+- **dot-field** `dot-field.tsx:64,277 (DotField 解构与 <div {...props}>)`
+  - 根 div 上 {...props} 透传无效——DotFieldProps 未 extends HTMLAttributes 且无索引签名，且已显式解构 className/style，props 恒为空对象，是死代码
+- **liquid-ether** `liquid-ether.tsx:328-336 (return 根 div)`
+  - 根容器虽 aria-hidden 但挂了 onPointerMove/onPointerLeave 交互，且默认未带 pointer-events-none（与 LineWaves/PixelBlast 等姊妹件不同），叠在内容上时会拦截下层指针事件——使用方需自行处理层级，文档外的潜在易错点
+- **radar** `radar.tsx:288-313 (Radar reduced 分支)`
+  - reduced-motion 降级分支提前 return 一个 div，但根容器 className 里 enableMouseInteraction 仍决定是否 pointer-events-none，降级态恒为 pointer-events-none——交互态与动画态 DOM 行为不完全一致（仅观感问题，非崩溃）
+- **shape-grid** `shape-grid.tsx:289-295 (handleMouseMove hex 分支)`
+  - hexagon 悬停 hit-test 用矩形栅格 round 近似六边形归属，靠近蜂巢交界处归属判定不准（命中相邻 cell）
+- **soft-aurora** `soft-aurora.tsx:61 (FRAG gradientHash)`
+  - GLSL gradientHash 球面到笛卡尔坐标映射 y 分量写为 sin(theta)*cos(phi)（标准应为 sin(theta)*sin(phi)），导致梯度向量分布略偏；系 react-bits 原样移植，视觉上可接受。
+
