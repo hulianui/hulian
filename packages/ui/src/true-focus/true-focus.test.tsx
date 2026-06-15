@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import { TrueFocus } from "./true-focus";
+
+const wordSpans = (root: HTMLElement) =>
+  Array.from(root.querySelectorAll<HTMLElement>("span")).filter((s) => s.textContent);
 
 describe("TrueFocus", () => {
   it("按空白切词渲染（三词）", () => {
@@ -29,6 +32,25 @@ describe("TrueFocus", () => {
     //（nwsapi 对 :scope > span 锚点处理偏宽松，会把 frame 内的 Corner span 一并计入）。
     const wordSpans = Array.from(root.querySelectorAll("span")).filter((s) => s.textContent);
     expect(wordSpans.length).toBe(3);
+  });
+  it("受控 sentence 变短：旧 index 越界时收敛，焦点不悬空（手动模式）", () => {
+    const { container, rerender } = render(
+      <TrueFocus manualMode sentence="a b c d e" />,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    // 手动对焦到末词（index=4）
+    act(() => {
+      fireEvent.mouseEnter(wordSpans(root)[4]);
+    });
+    expect(wordSpans(root)[4].style.filter).toBe("blur(0px)");
+    // sentence 缩到 2 词：index=4 越界。修复后应收敛到末词（index=1），
+    // 始终恰有 1 个聚焦词（blur 0px），不会因越界全部模糊 / 焦点框悬空。
+    rerender(<TrueFocus manualMode sentence="a b" />);
+    const after = wordSpans(root);
+    expect(after.length).toBe(2);
+    const focusedCount = after.filter((s) => s.style.filter === "blur(0px)").length;
+    expect(focusedCount).toBe(1);
+    expect(after[1].style.filter).toBe("blur(0px)");
   });
   it("无 sentence 时用默认句且不抛错（jsdom 无 layout 也安全）", () => {
     const { container } = render(<TrueFocus />);

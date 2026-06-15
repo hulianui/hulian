@@ -142,7 +142,9 @@ export function Gantt({
     if (today) {
       const td = parseDate(today);
       const off = daysBetween(start, td);
-      if (off >= 0 && off <= totalDays) {
+      // 有效日偏移为 0..totalDays-1（闭区间含首尾共 totalDays 天）；off===totalDays 时
+      // todayPct=((totalDays+0.5)/totalDays)*100>100，竖线会被画到轴区右缘外（覆盖层裁切/溢出）。
+      if (off >= 0 && off < totalDays) {
         // 取当日正午对应位置（off + 0.5）让竖线落在格子中线，视觉更准。
         todayPct = ((off + 0.5) / totalDays) * 100;
       }

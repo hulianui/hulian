@@ -32,4 +32,13 @@ describe("TreeSelect", () => {
     fireEvent.click(boxes.at(-1)!); // 乙
     expect(onChange).toHaveBeenCalledWith(expect.arrayContaining(["b"]));
   });
+
+  it("多选受控传父级 key → chip 与 Tree 勾选态同源（展示叶 chip 而非父 chip）", () => {
+    // 父级 "a" 有叶子 "a1"。外部塞父 key，Tree 内部会级联勾到叶；
+    // chip 也应归一为叶（显示 "甲一"），不能停留在父级 chip（"甲"）造成显示/勾选脱节。
+    render(<TreeSelect nodes={NODES} multiple value={["a"]} placeholder="请选择" />);
+    // 触发器（关闭态）里渲染的是 chip：显示叶 label，不显示父 label
+    expect(screen.getByText("甲一")).toBeTruthy();
+    expect(screen.queryByText("甲")).toBeNull();
+  });
 });

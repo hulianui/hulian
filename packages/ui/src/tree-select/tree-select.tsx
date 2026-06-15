@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { Tree } from "../tree/tree";
-import { buildIndex } from "../tree/tree-core";
+import { buildIndex, normalizeCheckedToLeaves } from "../tree/tree-core";
 import type { TreeSelectProps } from "./tree-select.types";
 
 const overlayTransition = {
@@ -59,7 +59,13 @@ export function TreeSelect({
   };
 
   const labelOf = (key: string) => index.nodeMap.get(key)?.label ?? key;
-  const selectedArr = multiple ? (current as string[]) : current ? [current as string] : [];
+  // 多选 chip 与 Tree 勾选态同源：把外部可能塞入的父级 key 归一为叶集（与 Tree 内部
+  // normalizeCheckedToLeaves 一致），保证 chip 显示与树勾选不脱节；纯叶集归一为自身（幂等）。
+  const selectedArr = multiple
+    ? Array.from(normalizeCheckedToLeaves(current as string[], index))
+    : current
+      ? [current as string]
+      : [];
   const hasValue = selectedArr.length > 0;
 
   return (

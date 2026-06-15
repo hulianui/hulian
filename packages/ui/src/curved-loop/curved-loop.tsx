@@ -21,6 +21,21 @@ import type { CurvedLoopProps } from "./curved-loop.types";
 // 3. getComputedTextLength 是浏览器 API，jsdom 下返回 0 → ready 永假但组件仍安全渲染（测试友好）。
 // 4. 纯 React + 原生 SVG，无新增依赖。
 
+/**
+ * 松手时根据拖拽末速度决定续滚方向（纯函数，便于测试）。
+ * - vel > 0（向右拖）→ "right"
+ * - vel < 0（向左拖）→ "left"
+ * - vel === 0（纯点击，无位移）→ 保持当前方向，不翻转
+ */
+export function resolveReleaseDirection(
+  vel: number,
+  current: "left" | "right",
+): "left" | "right" {
+  if (vel > 0) return "right";
+  if (vel < 0) return "left";
+  return current;
+}
+
 export function CurvedLoop({
   text = "瑚琏 · HULIAN · ",
   speed = 2,
@@ -126,7 +141,9 @@ export function CurvedLoop({
   const endDrag = () => {
     if (!interactive) return;
     dragRef.current = false;
-    dirRef.current = velRef.current > 0 ? "right" : "left";
+    // 仅在确有拖拽位移时按拖拽方向续滚；纯点击（vel=0）保持原方向不翻转。
+    dirRef.current = resolveReleaseDirection(velRef.current, dirRef.current);
+    velRef.current = 0;
   };
 
   return (

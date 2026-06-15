@@ -11,6 +11,9 @@ export function GiftFeed({ events, max = 3, duration = 4000, className }: GiftFe
   const timers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   useEffect(() => {
+    // events 默认 append-only，但消费方可能整体重置成更短数组（清空 / 切直播间）。
+    // 此时 length < 已处理高位，从 0 重新消费整条新流，避免新事件被陈旧计数静默吞掉。
+    if (events.length < processed.current) processed.current = 0;
     if (events.length <= processed.current) return;
     const fresh = events.slice(processed.current);
     processed.current = events.length;

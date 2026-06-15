@@ -63,13 +63,29 @@ export function valueNoise2D(x: number, y: number): number {
  * 将 CSS 变量字符串解析为浏览器实际计算色值。
  * 若不包含 var(…) 则原样返回（已是具体色值）。
  * 需要传入挂载的 DOM 元素以访问其计算样式。
+ *
+ * 用于 stroke / fill 等已有上层兜底的场景：当 var(--token) 未定义时，
+ * 退回原始字符串保持旧行为（浏览器自身可解析 var()，仅 canvas 不行，
+ * 但这些波形颜色总有默认 token，未定义概率低且非关键）。
  */
 function resolveColor(color: string, el: Element): string {
+  return resolveColorOrNull(color, el) ?? color;
+}
+
+/**
+ * 将 CSS 变量字符串解析为浏览器实际计算色值。
+ * 与 resolveColor 不同：当 var(--token) 解析为空（变量未定义）时返回 null，
+ * 而非退回字面量 'var(--token)'——因为 canvas fillStyle/strokeStyle 无法
+ * 解析 var() 语法，喂字面量会被静默忽略。返回 null 让调用方走真正的兜底链。
+ * 不含 var(…) 时原样返回（已是具体色值）。
+ */
+export function resolveColorOrNull(color: string, el: Element): string | null {
   if (!color.includes("var(")) return color;
   // 解析 var(--token) → 取出 token 名 → getComputedStyle
   const match = color.match(/var\(\s*(--[\w-]+)\s*\)/);
   if (!match) return color;
-  return getComputedStyle(el).getPropertyValue(match[1]).trim() || color;
+  const resolved = getComputedStyle(el).getPropertyValue(match[1]).trim();
+  return resolved || null;
 }
 
 // ---------------------------------------------------------------------------
@@ -134,8 +150,8 @@ export function WavyBackground({
     const resolvedBg =
       backgroundFill
         ? resolveColor(backgroundFill, container)
-        : resolveColor("var(--color-bg)", container) ||
-          resolveColor("var(--color-background)", container) ||
+        : resolveColorOrNull("var(--color-bg)", container) ??
+          resolveColorOrNull("var(--color-background)", container) ??
           "#ffffff";
 
     // ---------- 尺寸同步 ----------

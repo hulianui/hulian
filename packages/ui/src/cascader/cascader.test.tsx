@@ -32,6 +32,16 @@ describe("Cascader", () => {
     expect(onChange).toHaveBeenCalledWith(["zj", "hz", "xh"], expect.any(Array));
   });
 
+  it("expandTrigger=hover：叶子节点 hover 即点亮为激活项（无需点击）", () => {
+    render(<Cascader nodes={NODES} expandTrigger="hover" placeholder="选择" />);
+    fireEvent.click(screen.getByRole("button"));
+    fireEvent.mouseEnter(screen.getByText("江苏")); // 展开第二列
+    const leaf = screen.getByText("南京").closest("button")!; // 叶子
+    expect(leaf.getAttribute("aria-selected")).toBe("false");
+    fireEvent.mouseEnter(leaf);
+    expect(leaf.getAttribute("aria-selected")).toBe("true");
+  });
+
   it("showSearch：搜索命中叶子路径，点击提交全路径", () => {
     const onChange = vi.fn();
     render(<Cascader nodes={NODES} onChange={onChange} showSearch placeholder="选择" />);

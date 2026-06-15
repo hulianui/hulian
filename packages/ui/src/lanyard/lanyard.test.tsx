@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, fireEvent } from "@testing-library/react";
 import { Lanyard } from "./lanyard";
 
 // 结构：根容器 > 锚点钉 + 挂绳 SVG(path) + 工牌(motion div)。
@@ -45,5 +45,33 @@ describe("Lanyard", () => {
     expect(root.className).toContain("select-none");
     // 占位工牌使用 token 背景与描边。
     expect(container.querySelector(".bg-surface.border-border")).not.toBeNull();
+  });
+
+  it("拖拽中卸载组件，不泄漏 window 上的 pointermove/pointerup 监听", () => {
+    const addSpy = vi.spyOn(window, "addEventListener");
+    const removeSpy = vi.spyOn(window, "removeEventListener");
+
+    const { container, unmount } = render(<Lanyard />);
+    const card = container.querySelector('[class*="cursor-grab"]') as HTMLElement;
+    expect(card).not.toBeNull();
+
+    // 按下抓取：组件在 window 挂 move/up 监听，但未松手（onUp 不触发）。
+    fireEvent.pointerDown(card, { clientX: 0 });
+
+    const movesAdded = addSpy.mock.calls.filter(([t]) => t === "pointermove").length;
+    const upsAdded = addSpy.mock.calls.filter(([t]) => t === "pointerup").length;
+    expect(movesAdded).toBe(1);
+    expect(upsAdded).toBe(1);
+
+    // 拖拽途中卸载：unmount cleanup 必须卸掉残留监听，否则泄漏。
+    unmount();
+
+    const movesRemoved = removeSpy.mock.calls.filter(([t]) => t === "pointermove").length;
+    const upsRemoved = removeSpy.mock.calls.filter(([t]) => t === "pointerup").length;
+    expect(movesRemoved).toBeGreaterThanOrEqual(movesAdded);
+    expect(upsRemoved).toBeGreaterThanOrEqual(upsAdded);
+
+    addSpy.mockRestore();
+    removeSpy.mockRestore();
   });
 });

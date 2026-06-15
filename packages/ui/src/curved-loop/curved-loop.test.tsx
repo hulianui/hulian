@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { render } from "@testing-library/react";
-import { CurvedLoop } from "./curved-loop";
+import { CurvedLoop, resolveReleaseDirection } from "./curved-loop";
 
 // jsdom 不实现 SVG getComputedTextLength；mock 它让 ready 路径也能被覆盖
 beforeAll(() => {
@@ -49,5 +49,19 @@ describe("CurvedLoop", () => {
     const svg = container.querySelector("svg")!;
     expect(svg.getAttribute("class")).toContain("text-primary");
     expect(svg.getAttribute("data-testid")).toBe("cl");
+  });
+
+  describe("resolveReleaseDirection（松手续滚方向）", () => {
+    it("纯点击（vel=0）保持当前方向，不翻转 right→left", () => {
+      // 这是被修复的 bug：原实现用 vel>0 判方向，vel=0 会强制设成 left，
+      // 把自动右滚翻转成左滚。
+      expect(resolveReleaseDirection(0, "right")).toBe("right");
+      expect(resolveReleaseDirection(0, "left")).toBe("left");
+    });
+
+    it("向右拖（vel>0）→ right；向左拖（vel<0）→ left", () => {
+      expect(resolveReleaseDirection(8, "left")).toBe("right");
+      expect(resolveReleaseDirection(-8, "right")).toBe("left");
+    });
   });
 });

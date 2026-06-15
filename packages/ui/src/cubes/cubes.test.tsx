@@ -54,6 +54,18 @@ describe("Cubes", () => {
     expect(root.style.height).toBe("80px");
   });
 
+  it("front 与 back 面的 3D transform 相反（非重叠死面）", () => {
+    const { container } = render(<Cubes gridSize={1} />);
+    const faces = container.querySelectorAll("[data-face]");
+    // 面渲染顺序：top/bottom/left/right/front/back → 索引 4=front，5=back
+    const front = faces[4] as HTMLElement;
+    const back = faces[5] as HTMLElement;
+    expect(front.style.transform).not.toBe("");
+    expect(back.style.transform).not.toBe("");
+    // back 必须与 front 不同，否则背面与前面重叠 = 少渲染一个背面
+    expect(back.style.transform).not.toBe(front.style.transform);
+  });
+
   it("className / style 透传到根容器", () => {
     const { container } = render(
       <Cubes className="test-cubes" style={{ opacity: 0.5 }} />,

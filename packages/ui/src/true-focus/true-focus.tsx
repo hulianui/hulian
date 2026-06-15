@@ -34,6 +34,13 @@ export function TrueFocus({
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [frame, setFrame] = useState<FrameRect | null>(null);
 
+  // 受控场景下 sentence 变短时，旧 index 可能越界（手动模式无 %words.length 自愈），
+  // 导致 wordRefs.current[index] 为 undefined、焦点框悬空。统一收敛到有效范围内。
+  const safeIndex = words.length > 0 ? Math.min(index, words.length - 1) : 0;
+  useEffect(() => {
+    if (index > safeIndex) setIndex(safeIndex);
+  }, [index, safeIndex]);
+
   // 自动轮播（非手动、非 reduce）
   useEffect(() => {
     if (manualMode || reduce || words.length <= 1) return;
@@ -48,7 +55,7 @@ export function TrueFocus({
   useEffect(() => {
     const measure = () => {
       const container = containerRef.current;
-      const el = wordRefs.current[index];
+      const el = wordRefs.current[safeIndex];
       if (!container || !el) return;
       const c = container.getBoundingClientRect();
       const r = el.getBoundingClientRect();
@@ -62,7 +69,7 @@ export function TrueFocus({
       ro?.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [index, sentence, separator]);
+  }, [safeIndex, sentence, separator]);
 
   return (
     <div
@@ -72,7 +79,7 @@ export function TrueFocus({
       {...props}
     >
       {words.map((word, i) => {
-        const focused = reduce || i === index;
+        const focused = reduce || i === safeIndex;
         return (
           <span
             key={i}

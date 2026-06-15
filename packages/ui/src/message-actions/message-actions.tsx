@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Copy, Check, RefreshCw, ThumbsUp, ThumbsDown } from "../_icons";
 import { cn } from "../lib/cn";
 import type { MessageActionsProps } from "./message-actions.types";
@@ -48,6 +48,12 @@ export function MessageActions({
   const [copied, setCopied] = useState(false);
   const [feeling, setFeeling] = useState<"like" | "dislike" | null>(null);
   const showCopy = content != null || !!onCopy;
+  // 复制反馈复位计时器：用 ref 持有以便重复点击时去抖、卸载时清理，避免对已卸载组件 setState
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+
+  useEffect(() => () => clearTimeout(copiedTimer.current), []);
 
   const copy = async () => {
     if (content != null) {
@@ -59,7 +65,8 @@ export function MessageActions({
     }
     onCopy?.();
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    clearTimeout(copiedTimer.current);
+    copiedTimer.current = setTimeout(() => setCopied(false), 1500);
   };
 
   return (

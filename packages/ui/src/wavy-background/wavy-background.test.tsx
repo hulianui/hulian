@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
 import { WavyBackground } from "./wavy-background";
-import { valueNoise2D } from "./wavy-background";
+import { valueNoise2D, resolveColorOrNull } from "./wavy-background";
 
 afterEach(cleanup);
 
@@ -104,6 +104,60 @@ describe("WavyBackground — prop 边界不报错", () => {
     );
     const root = container.querySelector('[data-testid="wavy-root"]');
     expect(root).not.toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// resolveColorOrNull — CSS 变量解析兜底链（回归：var 未定义不得退回字面量）
+// ---------------------------------------------------------------------------
+describe("resolveColorOrNull — var() 兜底链", () => {
+  it("不含 var() 的具体色值原样返回", () => {
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    expect(resolveColorOrNull("#000000", el)).toBe("#000000");
+    el.remove();
+  });
+
+  it("var(--未定义) 解析为空时返回 null（而非字面量 'var(--…)'）", () => {
+    // jsdom getComputedStyle 对未声明的自定义属性返回 ""
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    // 关键：旧实现会返回 "var(--color-bg)" 字面量（喂给 canvas 非法被忽略），
+    // 修复后返回 null，让 backgroundFill 兜底链得以继续。
+    expect(resolveColorOrNull("var(--color-bg)", el)).toBeNull();
+    el.remove();
+  });
+
+  it("var(--已定义) 解析为内联样式的实际值", () => {
+    const el = document.createElement("div");
+    el.style.setProperty("--color-bg", "#123456");
+    document.body.appendChild(el);
+    expect(resolveColorOrNull("var(--color-bg)", el)).toBe("#123456");
+    el.remove();
+  });
+
+  it("兜底链：第一个 var 未定义 → 落到第二个已定义 var，不停在死字面量", () => {
+    const el = document.createElement("div");
+    el.style.setProperty("--color-background", "#abcdef");
+    document.body.appendChild(el);
+    const bg =
+      resolveColorOrNull("var(--color-bg)", el) ??
+      resolveColorOrNull("var(--color-background)", el) ??
+      "#ffffff";
+    // 修复前：第一项返回 'var(--color-bg)' 字面量短路，bg 永远是死字面量
+    expect(bg).toBe("#abcdef");
+    el.remove();
+  });
+
+  it("兜底链：全部 var 未定义 → 落到最终 #ffffff", () => {
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    const bg =
+      resolveColorOrNull("var(--color-bg)", el) ??
+      resolveColorOrNull("var(--color-background)", el) ??
+      "#ffffff";
+    expect(bg).toBe("#ffffff");
+    el.remove();
   });
 });
 

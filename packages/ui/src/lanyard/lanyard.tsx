@@ -31,6 +31,9 @@ export function Lanyard({
   const draggingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  // 卸载兜底：拖拽中挂在 window 上的 move/up 监听的卸钩函数。正常松手时 onUp 自卸并清空；
+  // 若组件在拖拽途中卸载（onUp 永不触发），unmount cleanup 调用它防止 window 监听泄漏。
+  const detachDragRef = useRef<(() => void) | null>(null);
   const [angle, setAngle] = useState(0);
 
   // 拖拽稳定参数引用，供事件回调读到最新值而不重绑监听。
@@ -75,6 +78,14 @@ export function Lanyard({
     };
   }, [stiffness, damping]);
 
+  // 卸载兜底：组件若在拖拽途中卸载，onUp 永不触发，确保移除 window 上残留的 move/up 监听。
+  useEffect(() => {
+    return () => {
+      detachDragRef.current?.();
+      detachDragRef.current = null;
+    };
+  }, []);
+
   // 指针按下 → 抓取：在 window 上挂 move/up，按指针水平位移反推摆角。
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     e.preventDefault();
@@ -100,13 +111,20 @@ export function Lanyard({
       angleRef.current = clamped;
       setAngle(clamped);
     };
-    const onUp = () => {
-      draggingRef.current = false;
+    const detach = () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      detachDragRef.current = null;
     };
+    const onUp = () => {
+      draggingRef.current = false;
+      detach();
+    };
+    // 若上一次拖拽尚未松手（理论上不会，防御性），先卸旧监听再挂新的。
+    detachDragRef.current?.();
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    detachDragRef.current = detach;
   }, []);
 
   // 卡片中心相对锚点（极坐标 → 笛卡尔）：摆放卡片 + 绘制挂绳曲线终点。

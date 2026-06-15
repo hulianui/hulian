@@ -217,7 +217,9 @@ export function Cascader({
                             disabled={node.disabled}
                             onClick={() => onPick(colIndex, node)}
                             onMouseEnter={() => {
-                              if (expandTrigger === "hover" && hasChildren && !node.disabled) {
+                              // hover 模式下任意非禁用项（含叶子列）都点亮为当前列激活项，
+                              // 否则叶子节点 hover 无任何反馈，必须点击才知道选中了哪一项。
+                              if (expandTrigger === "hover" && !node.disabled) {
                                 setActivePath([...activePath.slice(0, colIndex), node.key]);
                               }
                             }}

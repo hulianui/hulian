@@ -262,7 +262,7 @@ export function Cubes({
     { key: "left", transform: "translateX(-50%) rotateY(-90deg)" },
     { key: "right", transform: "translateX(50%) rotateY(90deg)" },
     { key: "front", transform: "rotateY(-90deg) translateX(50%) rotateY(90deg)" },
-    { key: "back", transform: "rotateY(-90deg) translateX(50%) rotateY(90deg)" },
+    { key: "back", transform: "rotateY(-90deg) translateX(-50%) rotateY(90deg)" },
   ];
 
   return (

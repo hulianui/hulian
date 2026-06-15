@@ -108,14 +108,19 @@ export function Shuffle({
 
       // 完成
       setDisplay(text);
-      runningRef.current = false;
       rafRef.current = null;
       completeRef.current?.();
       if (loop) {
+        // loop 模式：loopDelay 等待窗口内仍视为「忙」——保持 runningRef=true，
+        // 否则 hover(triggerOnHover) 会在空档启动并发 run()，定时器再起一个，
+        // 多条 rAF 循环同时 setDisplay。定时器回调直接复用 run() 自身的入口守卫。
         loopTimerRef.current = setTimeout(() => {
+          loopTimerRef.current = null;
           runningRef.current = false;
           run();
         }, loopDelay * 1000);
+      } else {
+        runningRef.current = false;
       }
     };
 
