@@ -23,12 +23,37 @@ function isTableStart(line: string, next: string | undefined): boolean {
   return line.includes("|") && next !== undefined && TABLE_SEP.test(next);
 }
 
-// 拆分一行单元格：去掉首尾 |，按 | 切，逐格 trim。
+// 拆分一行单元格：去掉首尾 |，仅按「未转义且不在反引号代码段内」的 | 切，逐格 trim。
+// 处理 GFM 转义管道 `\|`（联合类型 `"a" \| "b"` 常见）还原为字面 |，并保护
+// 行内代码段 `…|…` 内的管道不被当作列分隔符（容错非标准但 assistant 常产出的写法）。
 function splitRow(line: string): string[] {
   let s = line.trim();
   if (s.startsWith("|")) s = s.slice(1);
   if (s.endsWith("|")) s = s.slice(0, -1);
-  return s.split("|").map((c) => c.trim());
+  const cells: string[] = [];
+  let cur = "";
+  let inCode = false;
+  for (let k = 0; k < s.length; k++) {
+    const ch = s[k];
+    if (ch === "\\" && s[k + 1] === "|") {
+      cur += "|"; // 转义管道 → 字面量
+      k++;
+      continue;
+    }
+    if (ch === "`") {
+      inCode = !inCode;
+      cur += ch;
+      continue;
+    }
+    if (ch === "|" && !inCode) {
+      cells.push(cur);
+      cur = "";
+      continue;
+    }
+    cur += ch;
+  }
+  cells.push(cur);
+  return cells.map((c) => c.trim());
 }
 
 export function parseBlocks(src: string): MdBlock[] {

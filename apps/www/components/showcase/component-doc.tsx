@@ -1,7 +1,7 @@
 "use client";
 import { useCallback } from "react";
 import { notFound } from "next/navigation";
-import { Anchor, type ShowcaseSpec, type AnchorItem } from "@hulianui/ui";
+import { Anchor, Markdown, type ShowcaseSpec, type AnchorItem } from "@hulianui/ui";
 import { manifest } from "../../lib/manifest";
 import { specBySlug } from "../../lib/registry";
 import { ComponentPreview } from "./component-preview";
@@ -12,7 +12,7 @@ function defaultProps(spec: ShowcaseSpec) {
   return Object.fromEntries(spec.controls.map((c) => [c.prop, c.defaultValue]));
 }
 
-export function ComponentDoc({ slug }: { slug: string }) {
+export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null }) {
   const meta = manifest.find((m) => m.slug === slug);
   const spec = specBySlug[slug];
   // dogfood：本页右侧目录用真 Anchor 驱动；文档站滚动体是 <main>，故经 getContainer 指向它
@@ -22,6 +22,7 @@ export function ComponentDoc({ slug }: { slug: string }) {
   const hasPlayground = spec.controls.length > 0;
   const toc: AnchorItem[] = [
     { href: "#sec-preview", title: "预览" },
+    ...(doc ? [{ href: "#sec-doc", title: "文档" }] : []),
     { href: "#sec-states", title: "全状态" },
     ...(hasPlayground ? [{ href: "#sec-playground", title: "Playground" }] : []),
   ];
@@ -39,6 +40,12 @@ export function ComponentDoc({ slug }: { slug: string }) {
             {spec.states[0]?.render()}
           </ComponentPreview>
         </section>
+
+        {doc && (
+          <section id="sec-doc" className="scroll-mt-6">
+            <Markdown size="sm">{doc}</Markdown>
+          </section>
+        )}
 
         <section id="sec-states" className="scroll-mt-6">
           <h2 className="mb-3 text-sm font-medium text-muted">全状态</h2>

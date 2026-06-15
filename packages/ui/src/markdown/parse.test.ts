@@ -40,6 +40,26 @@ describe("parseBlocks", () => {
     expect(blocks[0].type === "code" && blocks[0].code).toBe("# 注释\n- 不是列表");
   });
 
+  it("GFM 表格：表头 + 数据行", () => {
+    const src = "| 名称 | 类型 |\n|------|------|\n| size | number |";
+    const t = parseBlocks(src)[0];
+    expect(t.type).toBe("table");
+    expect(t.type === "table" && t.header).toEqual(["名称", "类型"]);
+    expect(t.type === "table" && t.rows).toEqual([["size", "number"]]);
+  });
+
+  it("表格单元格内转义管道 \\| 不被当作列分隔（联合类型）", () => {
+    const src = '| 名称 | 类型 | 默认 |\n|---|---|---|\n| orientation | `"left" \\| "right"` | `"left"` |';
+    const t = parseBlocks(src)[0];
+    expect(t.type === "table" && t.rows[0]).toEqual(["orientation", '`"left" | "right"`', '`"left"`']);
+  });
+
+  it("表格单元格内反引号代码段里的裸管道不被切列", () => {
+    const src = "| a | b |\n|---|---|\n| `x | y` | 末列 |";
+    const t = parseBlocks(src)[0];
+    expect(t.type === "table" && t.rows[0]).toEqual(["`x | y`", "末列"]);
+  });
+
   it("空输入返回空数组", () => {
     expect(parseBlocks("")).toEqual([]);
     expect(parseBlocks("\n\n")).toEqual([]);
