@@ -47,6 +47,8 @@ export function loadComponentMarkdownForCopy(slug: string): string | null {
     /\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g,
     "](https://hulianui.haloritual.com/components/$1)",
   );
+  // 兜底：任何残留的站内根路径链接（/components/x、/llms.txt 等）转绝对，便于贴给站外 AI 直接抓取
+  md = md.replace(/\]\((\/[^)]+)\)/g, "](https://hulianui.haloritual.com$1)");
   // 接入指引页脚：单个组件 md 可能被冷会话单独贴给 AI，提示先安装与全局配置
   const setupFooter =
     "\n\n---\n" +

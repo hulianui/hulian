@@ -17,7 +17,7 @@ pnpm add @hulianui/ui @hulianui/tokens
 
 > \`@hulianui/tokens\` 提供主题 CSS（下一步会 \`@import\` 它），是 \`@hulianui/ui\` 的必备同伴包，务必一起装。
 
-peer 依赖：\`react>=18\`、\`react-dom>=18\`、\`tailwindcss>=4\`、\`motion>=11\`、\`@base-ui-components/react>=1.0.0-rc.0\`。
+peer 依赖：\`react>=18\`、\`react-dom>=18\`、\`tailwindcss>=4\`、\`motion>=11\`、\`@base-ui/react>=1.0.0\`。
 
 ## 接入 CSS（Tailwind v4）
 
@@ -66,11 +66,11 @@ export default function App({ children }: { children: React.ReactNode }) {
 
 ## 让 AI 查具体组件的用法
 
-- **逐组件**：每个组件文档页右上角有「复制 MD」按钮，复制该组件的完整用法（导入 + Props + 示例）喂给 AI。
-- **机读全量语料**（可一次喂全库）：
-  - [\`/llms.txt\`](/llms.txt) —— 组件清单与摘要
-  - [\`/llms-full.txt\`](/llms-full.txt) —— 全库完整文档
-  - [\`/registry.json\`](/registry.json) —— 结构化组件注册表
+- **逐组件**：每个组件文档页右上角有「复制 MD」按钮（导入 + Props + 示例）；组件页 URL 形如 \`https://hulianui.haloritual.com/components/<组件名小写连字符>\`（如 button / pro-table），有抓取能力的 AI 可直接取。
+- **机读全量语料**（下列均为**绝对 URL**，可直接交给有联网/抓取能力的 AI，一次喂全库）：
+  - https://hulianui.haloritual.com/llms.txt —— 组件清单与摘要
+  - https://hulianui.haloritual.com/llms-full.txt —— 全库完整文档
+  - https://hulianui.haloritual.com/registry.json —— 结构化组件注册表
 
 ## 给 AI 的提示词模板
 
