@@ -121,9 +121,22 @@ export default function Home() {
         </Stack>
 
         {/* 安装命令：dogfood Snippet，一行复制即用 */}
-        <div className="hl-rise mt-6 max-w-xs" style={rise(6)}>
-          <Snippet>pnpm add @hulianui/ui</Snippet>
+        <div className="hl-rise mt-6 max-w-sm" style={rise(6)}>
+          <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
         </div>
+
+        {/* AI 接入：一页 markdown，复制给 AI 编程助手即可上手 */}
+        <Link
+          href="/start"
+          className="hl-rise group mt-4 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+          style={rise(7)}
+        >
+          用 AI 编程助手接入？看「快速开始」
+          <ArrowRight
+            className="size-3.5 transition-transform group-hover:translate-x-0.5"
+            aria-hidden
+          />
+        </Link>
       </section>
 
       {/* 浏览区：按「组件 / 区块 / 页面 / 示例」四档切换的发丝线列表（dogfood Segmented） */}

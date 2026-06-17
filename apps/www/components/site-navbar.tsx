@@ -15,6 +15,7 @@ import {
 // 站点统一顶栏(dogfood @hulianui/ui Navbar)—— 首页 + 区块/页面画廊共用。
 // 品牌回首页 + 四档导航(组件/区块/页面/示例)+ 主题切换;移动端折叠菜单。
 const TIERS = [
+  { href: "/start", label: "开始", match: "/start" },
   { href: "/components", label: "组件", match: "/components" },
   { href: "/blocks", label: "区块", match: "/blocks" },
   { href: "/pages", label: "页面", match: "/pages" },

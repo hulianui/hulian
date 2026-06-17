@@ -8,12 +8,21 @@ import { ComponentPreview } from "./component-preview";
 import { ExamplesSection } from "./examples-section";
 import { StatesGallery } from "./states-gallery";
 import { Playground } from "./playground";
+import { CopyMarkdownButton } from "../copy-markdown-button";
 
 function defaultProps(spec: ShowcaseSpec) {
   return Object.fromEntries(spec.controls.map((c) => [c.prop, c.defaultValue]));
 }
 
-export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null }) {
+export function ComponentDoc({
+  slug,
+  doc,
+  copyMd,
+}: {
+  slug: string;
+  doc?: string | null;
+  copyMd?: string | null;
+}) {
   const meta = manifest.find((m) => m.slug === slug);
   const spec = specBySlug[slug];
   // dogfood：本页右侧目录用真 Anchor 驱动；文档站滚动体是 <main>，故经 getContainer 指向它
@@ -34,11 +43,17 @@ export function ComponentDoc({ slug, doc }: { slug: string; doc?: string | null 
     <div className="mx-auto flex max-w-6xl gap-10">
       <article className="min-w-0 flex-1 space-y-6">
         <header className="pb-1">
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <h1 className="text-[1.7rem] font-semibold tracking-tight">{meta.name}</h1>
-            <span className="rounded-md bg-muted/10 px-2 py-0.5 font-mono text-xs text-muted">{slug}</span>
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h1 className="text-[1.7rem] font-semibold tracking-tight">{meta.name}</h1>
+                <span className="rounded-md bg-muted/10 px-2 py-0.5 font-mono text-xs text-muted">{slug}</span>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{meta.description}</p>
+            </div>
+            {/* 复制本组件完整用法 MD，喂给 AI 编程助手 */}
+            {copyMd && <CopyMarkdownButton text={copyMd} className="shrink-0" />}
           </div>
-          <p className="mt-2 text-sm leading-relaxed text-muted">{meta.description}</p>
         </header>
 
         {hasExamples ? (

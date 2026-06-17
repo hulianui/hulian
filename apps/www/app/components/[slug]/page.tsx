@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { manifest } from "../../../lib/manifest";
-import { loadComponentDoc } from "../../../lib/load-component-doc";
+import { loadComponentDoc, loadComponentMarkdownForCopy } from "../../../lib/load-component-doc";
 import { ComponentDoc } from "../../../components/showcase/component-doc";
 
 export function generateStaticParams() {
@@ -23,5 +23,11 @@ export default async function ComponentSlugPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <ComponentDoc slug={slug} doc={loadComponentDoc(slug)} />;
+  return (
+    <ComponentDoc
+      slug={slug}
+      doc={loadComponentDoc(slug)}
+      copyMd={loadComponentMarkdownForCopy(slug)}
+    />
+  );
 }
