@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 文档站
+    url: https://hulianui.haloritual.com
+    about: 组件用法、Props/Events/Slots、活示例与 playground 都在文档站
+  - name: 🔒 安全漏洞
+    url: https://github.com/hulianui/hulian/security/advisories/new
+    about: 请勿在公开 issue 披露安全问题，走私密上报通道

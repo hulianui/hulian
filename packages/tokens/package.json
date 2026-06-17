@@ -1,10 +1,29 @@
 {
   "name": "@hulianui/tokens",
   "version": "0.1.1",
+  "description": "瑚琏 Hulian 设计令牌 —— OKLCH 两层 token + Tailwind v4 preset(供 @hulianui/ui 与下游应用共享主题）。",
+  "license": "MIT",
+  "author": "hulianui",
+  "homepage": "https://hulianui.haloritual.com",
+  "keywords": [
+    "design-tokens",
+    "tailwindcss",
+    "tailwind-v4",
+    "oklch",
+    "css-variables",
+    "theme",
+    "design-system"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hulianui/hulian.git",
     "directory": "packages/tokens"
+  },
+  "bugs": {
+    "url": "https://github.com/hulianui/hulian/issues"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

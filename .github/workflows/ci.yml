@@ -37,7 +37,7 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      # 1887 个 vitest 用例
+      # 2705 个 vitest 用例
       - name: Test
         run: pnpm test
 

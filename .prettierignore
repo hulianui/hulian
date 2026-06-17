@@ -1,0 +1,10 @@
+node_modules
+dist
+.next
+.turbo
+out
+apps/www/out
+apps/www/public/llms-full.txt
+apps/www/public/llms.txt
+pnpm-lock.yaml
+*.md

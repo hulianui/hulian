@@ -1,0 +1,50 @@
+name: Bug 报告
+description: 报告 @hulianui/ui 或 @hulianui/tokens 的缺陷
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量提供可复现信息。安全漏洞请勿走此通道——见 [SECURITY.md](../blob/master/SECURITY.md)。
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      description: "@hulianui/ui / @hulianui/tokens 的版本号"
+      placeholder: "@hulianui/ui@0.4.0"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 问题描述
+      description: 期望行为 vs 实际行为
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 最小复现代码 / StackBlitz / 仓库链接最佳
+      placeholder: |
+        1. 用 `<Component .../>`
+        2. ...
+        3. 看到 ...
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: 主题态
+      options:
+        - 明暗都有
+        - 仅明亮
+        - 仅暗色
+        - 与主题无关
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境
+      description: 框架(Next/Vite)、React 版本、Tailwind 版本、浏览器、OS
+    validations:
+      required: false

@@ -1,0 +1,31 @@
+name: 功能 / 组件建议
+description: 建议新组件、新能力或改进
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决什么问题
+      description: 从需求出发，而不是直接给方案
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的方案
+      description: 新组件 / 新 prop / API 形态等
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 替代方案 / 现有变通
+    validations:
+      required: false
+  - type: textarea
+    id: references
+    attributes:
+      label: 参考
+      description: 其他库（shadcn / Radix / MUI / Ant 等）的同类实现、设计稿、链接
+    validations:
+      required: false
