@@ -2,107 +2,114 @@
   <img src="apps/www/app/opengraph-image.png" alt="瑚琏 Hulian —— 颜值 + 好用的 React 设计系统" width="820">
 </p>
 
-# 瑚琏 Hulian
+<h1 align="center">瑚琏 Hulian</h1>
 
-> 中文 · [English](README.en.md)
+<p align="center">
+  颜值 + 好用的 React 设计系统 —— <b>349 个组件</b>，OKLCH 主题 · Tailwind v4 · 暗色零闪烁 · 运行时换肤。
+</p>
 
-> 颜值 + 好用的 React 设计系统。
->
+<p align="center">
+  <a href="https://www.npmjs.com/package/@hulianui/ui"><img src="https://img.shields.io/npm/v/@hulianui/ui?color=2563eb&label=%40hulianui%2Fui" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@hulianui/ui"><img src="https://img.shields.io/npm/dm/@hulianui/ui?color=2563eb" alt="npm downloads"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/npm/l/@hulianui/ui?color=2563eb" alt="license MIT"></a>
+  <a href="https://github.com/hulianui/hulian/actions/workflows/ci.yml"><img src="https://github.com/hulianui/hulian/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/hulianui/hulian/stargazers"><img src="https://img.shields.io/github/stars/hulianui/hulian?style=flat&color=2563eb" alt="stars"></a>
+</p>
+
+<p align="center">
+  <a href="https://hulianui.haloritual.com"><b>📖 文档站</b></a> ·
+  <a href="https://hulianui.haloritual.com/demos"><b>🏗️ 在线 Demo</b></a> ·
+  <a href="README.en.md"><b>English</b></a>
+</p>
+
+---
+
 > 名出《论语·公冶长》"瑚琏也"——宗庙盛黍稷的玉器，至贵至美又确有大用。
 > **颜值审美 + 好用 = 软件商业化第一生产力。人不该油头满面地对着丑/烂软件干活。**
 
-一套**可发布的 React 设计系统**（能 `import` 的 npm 组件库）+ 一个**完整 showcase 文档站**（真实样例数据 / 全状态 / MSW API mock / 可调参 playground）。全局明亮/暗黑，切换 0 闪烁、可运行时换肤。
+**瑚琏**是一套可直接 `import` 的 React 组件库，配套一个真实数据驱动、可调参的 [showcase 文档站](https://hulianui.haloritual.com)。基于 Base UI 的无障碍行为层 + Tailwind v4 的 OKLCH 双层 token 皮肤，明暗切换 0 闪烁、支持运行时换肤。
 
-## 技术地基
+## ✨ 特性
 
-站在巨人肩膀上博采众长：
+- 🧩 **349 个组件** —— 基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …
+- 🎨 **OKLCH 双层 token** —— 原始层 + 语义层，切 `[data-theme]` 明暗 0 闪烁，运行时即可换肤
+- ♿ **无障碍优先** —— 行为层基于 [Base UI](https://base-ui.com)，键盘 / 焦点 / ARIA 开箱即用
+- 🌗 **暗色零闪烁** —— `ThemeProvider` + 入口 inline script，SSR 首屏不白闪
+- 📦 **零 token 公开安装** —— 发布在公共 npmjs，`pnpm add @hulianui/ui` 一行装上
+- 🔧 **源码分发** —— 发 TSX 源码，样式可被你的 Tailwind 完整接管，无黑盒 CSS
+- 📚 **AI-first 文档** —— 每个组件含 Props/Events/Slots + 活示例 + playground，并生成 `llms.txt`
+- 🏗️ **18 个真实 demo** —— CRM / 商城 / 数据大屏 / AI 工作流 / 直播 … 全部 dogfood 自家组件
 
-- **Base UI**（`@base-ui-components/react`，headless 行为 / a11y）+ Radix 补缺
-- **Tailwind v4 + 两层 CSS 变量 token**（原始 OKLCH 层 + 语义层，切 `[data-theme]` 0 闪烁）
+## 📦 快速开始
+
+**1. 安装**（公共 npmjs，零配置零 token）
+
+```bash
+pnpm add @hulianui/ui @hulianui/tokens
+# peer：react · react-dom · tailwindcss · @base-ui-components/react · motion
+```
+
+**2. 引入 token + preset，并把组件源码加入 Tailwind 扫描**（全局 CSS）
+
+```css
+@import "@hulianui/tokens/tokens.css";
+@import "@hulianui/tokens/preset.css";
+@source "../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";
+```
+
+**3. 包一层 `ThemeProvider` 即可用**
+
+```tsx
+import { ThemeProvider, Button } from "@hulianui/ui";
+
+export default function App() {
+  return (
+    <ThemeProvider defaultSetting="system">
+      <Button>瑚琏</Button>
+    </ThemeProvider>
+  );
+}
+```
+
+> 发布形态是**源码包**（发 `src/`，不编译 dist），消费方需能转译 TSX：**Next.js** 加 `transpilePackages: ["@hulianui/ui"]`，**Vite** 一般免配。防首屏白闪的 inline script 由各应用入口注入（参考 [`apps/www/app/theme-script.tsx`](apps/www/app/theme-script.tsx)）。
+
+完整接入说明见 **[文档站 · 快速开始](https://hulianui.haloritual.com)**。
+
+## 🧩 组件与示例
+
+- **组件库**：349 个组件，覆盖中后台、营销站、电商、AI 应用、移动端等场景 —— [浏览全部](https://hulianui.haloritual.com)
+- **区块 / 页面 / 示例**：从真实 demo 抽离的整段区块与整页模板，复制即用
+- **18 个内置 demo**：CRM · 商城 · 客服 · 数据大屏 · 知识库 · 直播 · AI 工作流 · API 网关 · 智能体调度 · 项目协同 · LMS · 个人站 · 官网 · 订阅结算 · 代码审查 · 排期 · 移动端 · AI 对话 —— [在线体验](https://hulianui.haloritual.com/demos)
+
+## 🛠️ 技术地基
+
+- **Base UI**（`@base-ui-components/react`，headless 行为 / a11y）
+- **Tailwind v4** + 两层 OKLCH CSS 变量 token（原始层 + 语义层）
 - **class-variance-authority** 管变体 · **lucide-react** 图标 · **motion** 动效
-- monorepo：**pnpm + Turborepo** · **Next.js 16** 文档站 · **React 19**
+- monorepo：**pnpm + Turborepo** · 文档站 **Next.js 16 + React 19**
 
-## 快速开始
+```
+packages/
+  ui/      @hulianui/ui      组件库本体（Base UI + Tailwind 皮肤）
+  tokens/  @hulianui/tokens  设计 token（明暗主题唯一源头）
+  mocks/   @hulianui/mocks   faker 数据工厂 + MSW handlers（喂给 showcase · 私有）
+apps/
+  www/     Next.js 文档站（首个 dogfood 消费者）
+```
+
+## 🤝 参与贡献
+
+欢迎 issue 与 PR！本地开发：
 
 ```bash
 pnpm install
-pnpm dev            # 文档站起在 http://localhost:5512（非常规端口，避开本地热门口）
+pnpm --filter www dev   # 文档站 http://localhost:5512
+pnpm test               # 全量单测（vitest · 2705 用例 / 367 文件）
+pnpm typecheck
 ```
 
-其它脚本：
+详见 [CONTRIBUTING.md](CONTRIBUTING.md) · [行为准则](CODE_OF_CONDUCT.md) · 安全问题请走 [SECURITY.md](SECURITY.md) · 发布流程见 [docs/publishing.md](docs/publishing.md)。
 
-```bash
-pnpm typecheck      # 全量类型检查
-pnpm test           # 全量单测（vitest）
-pnpm --filter www build   # 生产构建
-pnpm run install-hooks    # 装 git hooks（clone 后跑一次；post-commit 自动再生成 ~/.claude/skills/hulianui-index）
-pnpm run skill-index      # 手动再生成 AI 组件索引 skill
-```
+## 📄 许可证
 
-## 目录结构
-
-```
-hulian/
-├── packages/
-│   ├── tokens/   @hulianui/tokens   设计 token（tokens.css + Tailwind v4 preset）— 明暗主题唯一源头
-│   ├── ui/       @hulianui/ui       组件库本体（Base UI + Tailwind 皮肤）— 发布到公共 npmjs
-│   └── mocks/    @hulianui/mocks    faker 数据工厂 + MSW handlers — 喂给 showcase
-└── apps/
-    └── www/      Next.js 文档站（5512）— 首个 dogfood 消费者
-```
-
-## 接入方式
-
-`@hulianui/*` 发布在公共 **npmjs**（scope `@hulianui`，`access: public`），**零配置、零 token** 直接安装，再用 Tailwind v4 接入：
-
-1. 装包：`pnpm add @hulianui/ui @hulianui/tokens`（npm / yarn 同理 `install`；`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` / `motion` 为 peer，自行安装）
-2. 全局引入 token + preset，并把 `@hulianui/ui` 源码加入 Tailwind 扫描：
-   ```css
-   @import "@hulianui/tokens/tokens.css";
-   @import "@hulianui/tokens/preset.css";
-   @source "../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";
-   ```
-3. 用组件 + 包一层 `ThemeProvider`：
-   ```tsx
-   import { ThemeProvider, Button } from "@hulianui/ui";
-   <ThemeProvider defaultSetting="system"><Button>瑚琏</Button></ThemeProvider>
-   ```
-   防首屏白闪的 inline script 由各应用的入口注入（见 `apps/www/app/theme-script.tsx`），不入库。
-
-> 发布形态是**源码包**（发 `src/`，不编译 dist）——消费方需能转译 TSX（Next 加 `transpilePackages: ["@hulianui/ui"]`；Vite 一般免配）。版本管理 + 发布流程见 `docs/publishing.md`。
-
-## 发版（维护者）
-
-用 **changesets** 管版本，**GitHub Actions 自动发布**到公共 **npmjs**（CI 用仓库 secret `NPM_TOKEN` 鉴权）。改完代码后三步：
-
-```bash
-# 1. 记一条变更（交互：选包 @hulianui/ui / @hulianui/tokens + patch/minor + 写说明）
-pnpm changeset
-# 2. 本地落版本号 + 写 CHANGELOG（消费掉 changeset）
-pnpm version-packages
-# 3. 提交并推送（特性 commit 可单独先提，这步只提 package.json + CHANGELOG）
-git add -A && git commit -m "chore(release): bump" && git push
-```
-
-push 到 `master` 后 `release.yml` 自动 `changeset publish` 发布版本号高于 registry 的包，并打 git tag。下游 `pnpm update @hulianui/ui @hulianui/tokens` 即可。
-
-> **关键：务必本地先 `pnpm version-packages` 再 push**（上面第 2 步不能省）。
-> 原因：若只 push 了 `.changeset/*.md` 而没 version，CI 会去开「Version Packages」PR；而本组织当前**关着「允许 Actions 创建 PR」**，那条路会卡住。本地先落版本 → CI 看到没有待消费 changeset → 直接 publish，绕开 PR。
->
-> 已验证版本：ui `0.1.0 → 0.1.1 → 0.1.2`、tokens `0.1.0 → 0.1.1`。完整说明 + 私有/公有切换见 `docs/publishing.md`。
-
-## 当前状态
-
-**已发布、CI/CD 上线、组件大批量铺开**：
-
-- 📦 **公共 npmjs 发布**：`@hulianui/ui` + `@hulianui/tokens`（scope `@hulianui` · `access: public` · 零 token 安装 · changesets 管版本 · GitHub Actions 用 `NPM_TOKEN` 自动发布）
-- 🌐 **文档站上线**：[hulianui.haloritual.com](https://hulianui.haloritual.com)（Cloudflare Pages · 静态导出 · push 自动重发）
-  - 🇨🇳 **中国镜像**：[hulianui-zh.haloritual.com](https://hulianui-zh.haloritual.com)（阿里云直连 · 绕开 Cloudflare · push 到 master 后 `deploy-zh` job 自动 rsync 同一份静态产物 · 与 Cloudflare 双发）
-- 🧩 **349 个组件**：基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …（以 `apps/www/lib/manifest.ts` 为准）
-- 🏗️ **18 个内置 demo**（全 dogfood）：CRM · 商城 · 客服 · 数据大屏 · 知识库 · 直播 · AI 工作流 · API 网关 · 智能体调度 · 项目协同 · LMS · 个人站 · 官网 · 订阅结算 · 代码审查 · 排期 · 移动端 · AI 对话
-- ✅ **三道门 CI 全绿**：typecheck + 2705 单测（vitest · 367 文件）+ www 静态导出
-- 🎨 OKLCH 两层 token + Tailwind v4 preset + ThemeProvider 明暗 0 闪烁 + 运行时换肤
-
-**后续**：组件持续扩量 + 文档站打磨 · Tauri 桌面壳。
-
-设计文档见 `docs/superpowers/specs/`，实施计划见 `docs/superpowers/plans/`，发布指南见 `docs/publishing.md`。
+[MIT](LICENSE) © hulianui
