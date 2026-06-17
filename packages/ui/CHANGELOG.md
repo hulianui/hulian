@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.4.2
+
+### Patch Changes
+
+- 修复：`lucide-react` 之前误放在 `devDependencies`，但大量组件运行时 import 它，导致 monorepo 之外的消费者打包时报 `Could not resolve "lucide-react"`。已改为 `dependencies`，安装时自动带上。同时把仅离线烘焙用的 `*.bake.mjs`（引用 dotted-map/proj4 等开发期工具）排出发布包。
+
 ## 0.4.1
 
 ### Patch Changes
