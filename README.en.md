@@ -43,7 +43,7 @@
 
 ```bash
 pnpm add @hulianui/ui @hulianui/tokens
-# peers: react · react-dom · tailwindcss · @base-ui-components/react · motion
+# peers: react · react-dom · tailwindcss · @base-ui/react · motion
 ```
 
 **2. Import tokens + preset, and add the library source to Tailwind's scan** (global CSS)
@@ -72,7 +72,7 @@ export default function App() {
 
 ## 🛠️ Tech foundation
 
-- **Base UI** (`@base-ui-components/react`, headless behavior / a11y)
+- **Base UI** (`@base-ui/react`, headless behavior / a11y)
 - **Tailwind v4** + two-layer OKLCH CSS-variable tokens (primitive + semantic)
 - **class-variance-authority** for variants · **lucide-react** icons · **motion** animation
 - monorepo: **pnpm + Turborepo** · docs site **Next.js 16 + React 19**

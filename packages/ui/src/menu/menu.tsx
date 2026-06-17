@@ -1,6 +1,6 @@
 "use client";
 import type { ComponentProps, ReactNode } from "react";
-import { Menu as BaseMenu } from "@base-ui-components/react/menu";
+import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";

@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.3.0 · 353 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.4.2 · 353 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui`；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -468,7 +468,7 @@ function Shell() {
 ## 禁忌 / 坑
 
 - **受控/非受控二选一**：`Layout.Sider` 传了 `collapsed` 即进入受控，必须配 `onCollapse` 回写，否则 trigger/断点点了不动；只想非受控用 `defaultCollapsed`。
-- **横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染时探测会落空，须显式给 `hasSider`。
+- **横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染、或被包装进自定义组件（如 `<AppSider/>` 内部才渲染 `Layout.Sider`）时探测会落空，须显式给 `hasSider`。
 - 收起态切窄宽用菜单的 `mode="collapsed"`（dogfood NavMenu 自带 icon-only 轨），不要手搓「窄宽裁切 label」。
 
 ## 相关

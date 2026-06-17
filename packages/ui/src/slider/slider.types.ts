@@ -1,4 +1,4 @@
-import type { SliderRoot } from "@base-ui-components/react/slider";
+import type { SliderRoot } from "@base-ui/react/slider";
 
 // 透传 Base UI Root（非泛型，默认联合类型 number | readonly number[]，数组 value 自动走 range）。
 export interface SliderProps

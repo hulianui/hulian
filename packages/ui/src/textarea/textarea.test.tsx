@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
-import { Field as BaseField } from "@base-ui-components/react/field";
+import { Field as BaseField } from "@base-ui/react/field";
 import { textareaVariants, Textarea } from "./textarea";
 
 describe("textareaVariants", () => {

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Combobox as BaseCombobox } from "@base-ui-components/react/combobox";
+import type { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 
 export type ComboboxSize = "sm" | "md" | "lg";
 

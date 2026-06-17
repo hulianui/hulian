@@ -11,7 +11,6 @@
     "demos:coverage": "node scripts/demos-coverage.mjs"
   },
   "dependencies": {
-    "@base-ui-components/react": "1.0.0-rc.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@hulianui/mocks": "workspace:*",
@@ -22,7 +21,8 @@
     "motion": "^12.40.0",
     "next": "^16.2.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "@base-ui/react": "^1.5.0"
   },
   "devDependencies": {
     "@mdx-js/react": "^3.1.0",

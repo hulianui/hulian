@@ -1,5 +1,5 @@
 "use client";
-import { Slider as BaseSlider } from "@base-ui-components/react/slider";
+import { Slider as BaseSlider } from "@base-ui/react/slider";
 import { cn } from "../lib/cn";
 import type { SliderProps } from "./slider.types";
 

@@ -50,7 +50,7 @@ pnpm update @hulianui/ui @hulianui/tokens   # 一行更新到最新
 pnpm add @hulianui/ui @hulianui/tokens
 ```
 
-`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` / `motion` 为 peer，自行安装。
+`react` / `react-dom` / `tailwindcss` / `@base-ui/react` / `motion` 为 peer，自行安装。
 
 ### 2. 引入 token CSS（否则组件没颜色/没主题）
 

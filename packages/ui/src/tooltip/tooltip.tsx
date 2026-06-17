@@ -1,6 +1,6 @@
 "use client";
 import type { ComponentProps } from "react";
-import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
+import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { TooltipContentProps } from "./tooltip.types";

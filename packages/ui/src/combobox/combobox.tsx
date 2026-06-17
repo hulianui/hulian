@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useRef, type RefObject } from "react";
-import { Combobox as BaseCombobox } from "@base-ui-components/react/combobox";
+import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";

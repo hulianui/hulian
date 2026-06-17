@@ -1,5 +1,5 @@
 "use client";
-import { Meter as BaseMeter } from "@base-ui-components/react/meter";
+import { Meter as BaseMeter } from "@base-ui/react/meter";
 import { cn } from "../lib/cn";
 import type { MeterProps } from "./meter.types";
 

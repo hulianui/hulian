@@ -1,5 +1,5 @@
 "use client";
-import { AlertDialog as BaseAlertDialog } from "@base-ui-components/react/alert-dialog";
+import { AlertDialog as BaseAlertDialog } from "@base-ui/react/alert-dialog";
 import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";

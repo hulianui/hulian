@@ -1,5 +1,5 @@
 "use client";
-import { Select as BaseSelect } from "@base-ui-components/react/select";
+import { Select as BaseSelect } from "@base-ui/react/select";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";

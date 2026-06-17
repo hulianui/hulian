@@ -1,5 +1,5 @@
 "use client";
-import { Field as BaseField } from "@base-ui-components/react/field";
+import { Field as BaseField } from "@base-ui/react/field";
 import { cn } from "../lib/cn";
 import type { FieldProps } from "./field.types";
 

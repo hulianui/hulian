@@ -1,6 +1,6 @@
 "use client";
-import { Toolbar as BaseToolbar } from "@base-ui-components/react/toolbar";
-import { Toggle } from "@base-ui-components/react/toggle";
+import { Toolbar as BaseToolbar } from "@base-ui/react/toolbar";
+import { Toggle } from "@base-ui/react/toggle";
 import { cn } from "../lib/cn";
 import type {
   ToolbarProps,

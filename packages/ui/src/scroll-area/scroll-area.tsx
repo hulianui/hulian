@@ -1,5 +1,5 @@
 "use client";
-import { ScrollArea as BaseScrollArea } from "@base-ui-components/react/scroll-area";
+import { ScrollArea as BaseScrollArea } from "@base-ui/react/scroll-area";
 import { cn } from "../lib/cn";
 import type { ScrollAreaProps } from "./scroll-area.types";
 

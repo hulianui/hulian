@@ -4,7 +4,7 @@ import type {
   TabsListProps as BaseTabsListProps,
   TabsTabProps as BaseTabsTabProps,
   TabsPanelProps as BaseTabsPanelProps,
-} from "@base-ui-components/react/tabs";
+} from "@base-ui/react/tabs";
 import type { tabsListVariants } from "./tabs";
 
 /** 根：透传 Base UI Tabs.Root（value/defaultValue/onValueChange/orientation）。默认非受控。 */

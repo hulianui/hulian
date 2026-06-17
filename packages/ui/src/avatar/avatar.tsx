@@ -1,5 +1,5 @@
 "use client";
-import { Avatar as BaseAvatar } from "@base-ui-components/react/avatar";
+import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import type { AvatarProps } from "./avatar.types";

@@ -1,5 +1,5 @@
 "use client";
-import { NumberField as BaseNumberField } from "@base-ui-components/react/number-field";
+import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
 import { Minus, Plus } from "../_icons";
 import { cn } from "../lib/cn";
 import type { NumberFieldProps } from "./number-field.types";

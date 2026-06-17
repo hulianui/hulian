@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
+import { Accordion as BaseAccordion } from "@base-ui/react/accordion";
 
 export type AccordionProps = ComponentProps<typeof BaseAccordion.Root>;
 export type AccordionItemProps = ComponentProps<typeof BaseAccordion.Item>;

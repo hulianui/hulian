@@ -46,7 +46,7 @@
 
 ```bash
 pnpm add @hulianui/ui @hulianui/tokens
-# peer：react · react-dom · tailwindcss · @base-ui-components/react · motion
+# peer：react · react-dom · tailwindcss · @base-ui/react · motion
 ```
 
 **2. 引入 token + preset，并把组件源码加入 Tailwind 扫描**（全局 CSS）
@@ -83,7 +83,7 @@ export default function App() {
 
 ## 🛠️ 技术地基
 
-- **Base UI**（`@base-ui-components/react`，headless 行为 / a11y）
+- **Base UI**（`@base-ui/react`，headless 行为 / a11y）
 - **Tailwind v4** + 两层 OKLCH CSS 变量 token（原始层 + 语义层）
 - **class-variance-authority** 管变体 · **lucide-react** 图标 · **motion** 动效
 - monorepo：**pnpm + Turborepo** · 文档站 **Next.js 16 + React 19**

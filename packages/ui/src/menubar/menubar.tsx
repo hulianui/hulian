@@ -1,6 +1,6 @@
 "use client";
-import { Menubar as BaseMenubar } from "@base-ui-components/react/menubar";
-import { Menu as BaseMenu } from "@base-ui-components/react/menu";
+import { Menubar as BaseMenubar } from "@base-ui/react/menubar";
+import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { cn } from "../lib/cn";
 import type { MenubarMenuProps, MenubarProps, MenubarTriggerProps } from "./menubar.types";
 

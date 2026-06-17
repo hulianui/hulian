@@ -1,5 +1,5 @@
 "use client";
-import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
+import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Search } from "../_icons";
 import { cn } from "../lib/cn";

@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
-import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
+import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 
 export type DrawerSide = "left" | "right" | "top" | "bottom";
 

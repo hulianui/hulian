@@ -70,6 +70,9 @@ describe("Collapsible", () => {
 
   it("disabled 透传到 trigger button", () => {
     const { getByText } = render(<Demo disabled />);
-    expect((getByText("标题").closest("button") as HTMLButtonElement).disabled).toBe(true);
+    // Base UI 1.x 用 aria-disabled + data-disabled 标记禁用（保持可聚焦），不再设原生 disabled
+    const btn = getByText("标题").closest("button") as HTMLButtonElement;
+    expect(btn.getAttribute("aria-disabled")).toBe("true");
+    expect(btn.hasAttribute("data-disabled")).toBe(true);
   });
 });

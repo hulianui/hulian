@@ -1,5 +1,5 @@
 "use client";
-import { Toast } from "@base-ui-components/react/toast";
+import { Toast } from "@base-ui/react/toast";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { ToastOptions, ToastTone } from "./toast.types";

@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
-import type { Menubar as BaseMenubar } from "@base-ui-components/react/menubar";
-import type { Menu as BaseMenu } from "@base-ui-components/react/menu";
+import type { Menubar as BaseMenubar } from "@base-ui/react/menubar";
+import type { Menu as BaseMenu } from "@base-ui/react/menu";
 
 /** 菜单条根：modal(默 true)/orientation(默 horizontal)/loopFocus(默 true)/disabled + className 透传。 */
 export type MenubarProps = ComponentProps<typeof BaseMenubar>;

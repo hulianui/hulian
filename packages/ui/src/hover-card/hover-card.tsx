@@ -8,7 +8,7 @@ import {
   useState,
   type ComponentProps,
 } from "react";
-import { Popover as BasePopover } from "@base-ui-components/react/popover";
+import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { HoverCardProps, HoverCardContentProps } from "./hover-card.types";

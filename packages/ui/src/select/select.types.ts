@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
-import type { Select as BaseSelect } from "@base-ui-components/react/select";
+import type { Select as BaseSelect } from "@base-ui/react/select";
 
 export type SelectSize = "sm" | "md" | "lg";
 

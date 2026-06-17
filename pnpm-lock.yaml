@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@base-ui-components/react@1.0.0-rc.0':
-    hash: oqp7cfk6eq2uyqfv5bq6vmygza
-    path: patches/@base-ui-components__react@1.0.0-rc.0.patch
-
 importers:
 
   .:
@@ -38,9 +33,9 @@ importers:
 
   apps/www:
     dependencies:
-      '@base-ui-components/react':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0(patch_hash=oqp7cfk6eq2uyqfv5bq6vmygza)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
+      '@base-ui/react':
+        specifier: ^1.5.0
+        version: 1.5.0(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
       '@emotion/cache':
         specifier: ^11.14.0
         version: 11.14.0
@@ -215,9 +210,9 @@ importers:
         specifier: ^0.8.10
         version: 0.8.10(@tiptap/core@3.25.0)
     devDependencies:
-      '@base-ui-components/react':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0(patch_hash=oqp7cfk6eq2uyqfv5bq6vmygza)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
+      '@base-ui/react':
+        specifier: ^1.5.0
+        version: 1.5.0(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
       '@testing-library/react':
         specifier: ^16.3.0
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
@@ -433,32 +428,34 @@ packages:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  /@base-ui-components/react@1.0.0-rc.0(patch_hash=oqp7cfk6eq2uyqfv5bq6vmygza)(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7):
-    resolution: {integrity: sha512-9lhUFbJcbXvc9KulLev1WTFxS/alJRBWDH/ibKSQaNvmDwMFS2gKp1sTeeldYSfKuS/KC1w2MZutc0wHu2hRHQ==}
+  /@base-ui/react@1.5.0(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7):
+    resolution: {integrity: sha512-z1gSAlced1yY+iM+mHDEtIkD8UI3Ebs52MuBPxvV6f5hRutk+xvCH/wuB7hDqDzK9JG5FoMz5nhrqtSs1wjt1A==}
     engines: {node: '>=14.0.0'}
-    deprecated: Package was renamed to @base-ui/react
     peerDependencies:
+      '@date-fns/tz': ^1.2.0
       '@types/react': ^17 || ^18 || ^19
+      date-fns: ^4.0.0
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
     peerDependenciesMeta:
+      '@date-fns/tz':
+        optional: true
       '@types/react':
+        optional: true
+      date-fns:
         optional: true
     dependencies:
       '@babel/runtime': 7.29.7
-      '@base-ui-components/utils': 0.2.2(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
+      '@base-ui/utils': 0.2.9(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7)
       '@floating-ui/react-dom': 2.1.8(react-dom@19.2.7)(react@19.2.7)
       '@floating-ui/utils': 0.2.11
       '@types/react': 19.2.16
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      reselect: 5.2.0
-      tabbable: 6.4.0
       use-sync-external-store: 1.6.0(react@19.2.7)
-    patched: true
 
-  /@base-ui-components/utils@0.2.2(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7):
-    resolution: {integrity: sha512-rNJCD6TFy3OSRDKVHJDzLpxO3esTV1/drRtWNUpe7rCpPN9HZVHUCuP+6rdDYDGWfXnQHbqi05xOyRP2iZAlkw==}
+  /@base-ui/utils@0.2.9(@types/react@19.2.16)(react-dom@19.2.7)(react@19.2.7):
+    resolution: {integrity: sha512-x/PDDCYzoqPpjrdyb3VcyylTI2IjUXEtYDGi5foh7KsnmNJIIaVwA2GLgDH1dps1GgXiJbA60hM+AyuTfQzIvw==}
     peerDependencies:
       '@types/react': ^17 || ^18 || ^19
       react: ^17 || ^18 || ^19
@@ -6529,9 +6526,6 @@ packages:
   /symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
     dev: true
-
-  /tabbable@6.4.0:
-    resolution: {integrity: sha512-05PUHKSNE8ou2dwIxTngl4EzcnsCDZGJ/iCLtDflR/SHB/ny14rXc+qU5P4mG9JkusiV7EivzY9Mhm55AzAvCg==}
 
   /tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}

@@ -1,6 +1,6 @@
 "use client";
 import type { CSSProperties } from "react";
-import { Tabs as BaseTabs } from "@base-ui-components/react/tabs";
+import { Tabs as BaseTabs } from "@base-ui/react/tabs";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";

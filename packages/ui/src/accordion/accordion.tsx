@@ -1,5 +1,5 @@
 "use client";
-import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
+import { Accordion as BaseAccordion } from "@base-ui/react/accordion";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type {

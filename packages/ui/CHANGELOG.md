@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.5.0
+
+### Minor Changes
+
+- 迁移 Base UI 到稳定版：同伴包从已废弃的 `@base-ui-components/react@1.0.0-rc.0` 换为 `@base-ui/react@^1.5.0`（官方改名后的稳定线），消除安装时的 deprecated 警告。
+
+  **破坏性（peer）**：消费者需把安装的同伴包从 `@base-ui-components/react` 换成 `@base-ui/react`。组件 API 与导入方式（从根入口 `@hulianui/ui` 导入）不变。
+
+  附带：Collapsible 等组件的 `disabled` 现遵循 Base UI 1.x 行为，用 `aria-disabled` + `data-disabled` 标记（保持可聚焦），不再设原生 `disabled` 属性。移除了 rc.0 时期的 Toast flushSync 补丁（修复已上游合入稳定版）。
+
 ## 0.4.2
 
 ### Patch Changes

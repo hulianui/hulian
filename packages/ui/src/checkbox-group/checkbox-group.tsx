@@ -1,5 +1,5 @@
 "use client";
-import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui-components/react/checkbox-group";
+import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
 import { cn } from "../lib/cn";
 import type { CheckboxGroupProps } from "./checkbox-group.types";
 

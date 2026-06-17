@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Popover as BasePopover } from "@base-ui-components/react/popover";
+import { Popover as BasePopover } from "@base-ui/react/popover";
 // 内部一律用 YYYY-MM-DD 文本作日期标识（toISO/normISO 出自 lib/date）：
 // 定宽 → 字典序即时间序，区间判定可直接字符串比较，避开时区/UTC 偏移日界坑。
 import { DATE_FORMAT, dayjs, type Dayjs, normISODate as normISO, toISODate as toISO } from "../lib/date";
