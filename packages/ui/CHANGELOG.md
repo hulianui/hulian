@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.4.1
+
+### Patch Changes
+
+- 发布包瘦身：排除 `*.test.ts` / `*.test.tsx`，367 个测试文件不再随包发布（tarball 2181→1814 文件、解包 6.6MB→5.5MB）。`./showcase` 公开入口与组件源照常保留。
+
 ## 0.4.0
 
 ### Minor Changes
