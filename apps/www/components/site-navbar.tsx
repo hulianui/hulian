@@ -11,6 +11,7 @@ import {
   NavbarMenuToggle,
   Tag,
 } from "@hulianui/ui";
+import { UI_VERSION } from "../lib/ui-version";
 
 // 站点统一顶栏(dogfood @hulianui/ui Navbar)—— 首页 + 区块/页面画廊共用。
 // 品牌回首页 + 四档导航(组件/区块/页面/示例)+ 主题切换;移动端折叠菜单。
@@ -37,7 +38,7 @@ export function SiteNavbar() {
             <img src="/logo.svg" alt="瑚琏" width={26} height={26} className="rounded-[6px]" />
             <span className="tracking-tight">瑚琏 Hulian</span>
             <Tag variant="soft" tone="brand" size="sm">
-              v0.1
+              v{UI_VERSION}
             </Tag>
           </Link>
         </NavbarBrand>

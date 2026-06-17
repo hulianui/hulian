@@ -121,7 +121,7 @@ export default function Home() {
         </Stack>
 
         {/* 安装命令：dogfood Snippet，一行复制即用 */}
-        <div className="hl-rise mt-6 max-w-sm" style={rise(6)}>
+        <div className="hl-rise mt-6 w-fit max-w-full" style={rise(6)}>
           <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
         </div>
 
