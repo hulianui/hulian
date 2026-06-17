@@ -26,6 +26,12 @@ const OUT_DIR = join(ROOT, "apps", "www", "public");
 
 const REPO = "https://github.com/hulianui/hulian";
 const DOC_BASE = `${REPO}/blob/master`; // + /packages/ui/src/<slug>/<slug>.md
+const SITE = "https://hulianui.haloritual.com"; // 文档站；语料供站外 AI 消费，链接须绝对
+// 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳
+const absolutize = (s) =>
+  s
+    .replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, `](${SITE}/components/$1)`)
+    .replace(/\]\((\/[^)]+)\)/g, `](${SITE}$1)`);
 const TAGLINE = "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）";
 
 const PKG_DEPS = new Set([...Object.keys(PKG.dependencies || {}), ...Object.keys(PKG.peerDependencies || {})]);
@@ -170,7 +176,9 @@ function main() {
   full.push("");
   full.push(`> ${TAGLINE} · v${PKG.version} · ${enriched.length} 个组件文档（自包含，供 AI 一次性消费）`);
   full.push("");
-  full.push('安装 `npm i @hulianui/ui`；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。');
+  full.push(
+    '安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。',
+  );
   full.push("");
   for (const cat of orderedCats) {
     const list = byCat.get(cat).filter((d) => d.status === "enriched");
@@ -178,7 +186,7 @@ function main() {
     full.push(`\n# ━━━━━━━━ ${catLabel.get(cat) ?? cat} ━━━━━━━━\n`);
     for (const d of list) {
       full.push("<!-- ════════════════════════════════════════════════════════ -->");
-      full.push(d.body);
+      full.push(absolutize(d.body));
       full.push("");
     }
   }
