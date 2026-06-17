@@ -99,7 +99,7 @@ function ClassicShell({
   breakpoint?: "md";
 }) {
   return (
-    <Layout className="h-full">
+    <Layout className="h-full" hasSider>
       <DemoSider
         collapsible={collapsible}
         collapsed={collapsed}
@@ -163,7 +163,7 @@ export const layoutShowcase: ShowcaseSpec = {
 </Layout>`,
       render: () => (
         <Frame>
-          <Layout className="h-full">
+          <Layout className="h-full" hasSider>
             <StaticSider />
             <Layout>
               <Layout.Header sticky>
@@ -200,7 +200,7 @@ export const layoutShowcase: ShowcaseSpec = {
             <Layout.Header>
               <span className="font-medium text-foreground">通栏头部</span>
             </Layout.Header>
-            <Layout>
+            <Layout hasSider>
               <StaticSider />
               <Layout.Content>
                 <FillerContent />
@@ -219,7 +219,7 @@ export const layoutShowcase: ShowcaseSpec = {
 </Layout.Sider>`,
       render: () => (
         <Frame>
-          <Layout className="h-full">
+          <Layout className="h-full" hasSider>
             <StaticSider collapsed />
             <Layout>
               <Layout.Header sticky>
@@ -255,7 +255,7 @@ export const layoutShowcase: ShowcaseSpec = {
             <Layout.Header>
               <span className="font-medium text-foreground">通栏头部</span>
             </Layout.Header>
-            <Layout>
+            <Layout hasSider>
               <DemoSider width={200} />
               <Layout.Content>
                 <FillerContent />

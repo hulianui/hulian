@@ -97,7 +97,7 @@ function Shell() {
 ## 禁忌 / 坑
 
 - **受控/非受控二选一**：`Layout.Sider` 传了 `collapsed` 即进入受控，必须配 `onCollapse` 回写，否则 trigger/断点点了不动；只想非受控用 `defaultCollapsed`。
-- **横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染时探测会落空，须显式给 `hasSider`。
+- **横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染、或被包装进自定义组件（如 `<AppSider/>` 内部才渲染 `Layout.Sider`）时探测会落空，须显式给 `hasSider`。
 - 收起态切窄宽用菜单的 `mode="collapsed"`（dogfood NavMenu 自带 icon-only 轨），不要手搓「窄宽裁切 label」。
 
 ## 相关
