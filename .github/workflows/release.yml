@@ -11,7 +11,6 @@ concurrency:
 permissions:
   contents: write # 允许 action 创建 "Version Packages" 提交/PR
   pull-requests: write # 允许开版本 PR
-  packages: write # 允许发布到 GitHub Packages
 
 jobs:
   release:
@@ -26,12 +25,12 @@ jobs:
         with:
           version: 8.15.5
 
-      - name: Setup Node (GitHub Packages registry)
+      - name: Setup Node (npmjs registry)
         uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: pnpm
-          registry-url: https://npm.pkg.github.com
+          registry-url: https://registry.npmjs.org
           scope: "@hulianui"
 
       - name: Install dependencies
@@ -46,5 +45,5 @@ jobs:
           version: pnpm version-packages
           publish: pnpm release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # changesets/action 用于开 Version PR / 打 tag
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 发布到公共 npmjs 的鉴权（需在仓库 secrets 配置）

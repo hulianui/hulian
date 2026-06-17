@@ -45,28 +45,17 @@ pnpm run skill-index      # 手动再生成 AI 组件索引 skill
 hulian/
 ├── packages/
 │   ├── tokens/   @hulianui/tokens   设计 token（tokens.css + Tailwind v4 preset）— 明暗主题唯一源头
-│   ├── ui/       @hulianui/ui       组件库本体（Base UI + Tailwind 皮肤）— 已发 GitHub Packages
+│   ├── ui/       @hulianui/ui       组件库本体（Base UI + Tailwind 皮肤）— 发布到公共 npmjs
 │   └── mocks/    @hulianui/mocks    faker 数据工厂 + MSW handlers — 喂给 showcase
 └── apps/
     └── www/      Next.js 文档站（5512）— 首个 dogfood 消费者
 ```
 
-## 接入方式（分发模型 A）
+## 接入方式
 
-`@hulianui/*` 发布在 **GitHub Packages 私有 registry**（组织 `hulianui`），不是公共 npmjs。消费方需先配 registry + 鉴权，再用 Tailwind v4 接入：
+`@hulianui/*` 发布在公共 **npmjs**（scope `@hulianui`，`access: public`），**零配置、零 token** 直接安装，再用 Tailwind v4 接入：
 
-0. **配 registry + 鉴权**（GitHub Packages 即使包公开也要求 token，见下方「私有 → 公有」）：
-
-   a. 建一个有 `read:packages` 权限的 PAT —— GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → 勾 **`read:packages`**，生成后存环境变量（勿写进文件提交）：
-   ```bash
-   export GITHUB_TOKEN=ghp_xxxxx
-   ```
-   b. 目标项目根建 `.npmrc`，把 `@hulianui` 作用域指向 GitHub Packages：
-   ```ini
-   @hulianui:registry=https://npm.pkg.github.com
-   //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-   ```
-1. 装包：`pnpm add @hulianui/ui @hulianui/tokens`（npm / yarn 同理 `install`；`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` 为 peer，自行安装）
+1. 装包：`pnpm add @hulianui/ui @hulianui/tokens`（npm / yarn 同理 `install`；`react` / `react-dom` / `tailwindcss` / `@base-ui-components/react` / `motion` 为 peer，自行安装）
 2. 全局引入 token + preset，并把 `@hulianui/ui` 源码加入 Tailwind 扫描：
    ```css
    @import "@hulianui/tokens/tokens.css";
@@ -80,17 +69,11 @@ hulian/
    ```
    防首屏白闪的 inline script 由各应用的入口注入（见 `apps/www/app/theme-script.tsx`），不入库。
 
-### 私有 → 公有？
-
-注意一个反直觉点：**把 GitHub Packages 上的包设为 public，安装时仍然要求 token**（GH Packages 的 npm registry 即便公开也强制鉴权，和 npmjs 不同）。设公开只是让任何人可见、任何 GitHub 账号的 token 都能装，省不掉第 0 步的 `.npmrc`。
-
-要**真正免 token 公开安装**，得把 registry 换成公共 **npmjs.com**（scope 仍 `@hulianui`，需在 npmjs 注册同名组织 + 配 `NPM_TOKEN`）。切换步骤见 `docs/publishing.md`。
-
-> 发布形态是**源码包**（发 `src/`，不编译 dist）——消费方需能转译 TSX（Next / Vite 可）。版本管理 + 发布流程见 `docs/publishing.md`。
+> 发布形态是**源码包**（发 `src/`，不编译 dist）——消费方需能转译 TSX（Next 加 `transpilePackages: ["@hulianui/ui"]`；Vite 一般免配）。版本管理 + 发布流程见 `docs/publishing.md`。
 
 ## 发版（维护者）
 
-用 **changesets** 管版本，**GitHub Actions 自动发布**到 GitHub Packages（CI 内用内置 `GITHUB_TOKEN`，零 PAT）。改完代码后三步：
+用 **changesets** 管版本，**GitHub Actions 自动发布**到公共 **npmjs**（CI 用仓库 secret `NPM_TOKEN` 鉴权）。改完代码后三步：
 
 ```bash
 # 1. 记一条变更（交互：选包 @hulianui/ui / @hulianui/tokens + patch/minor + 写说明）
@@ -112,7 +95,7 @@ push 到 `master` 后 `release.yml` 自动 `changeset publish` 发布版本号�
 
 **已发布、CI/CD 上线、组件大批量铺开**：
 
-- 📦 **已发 GitHub Packages**：`@hulianui/ui@0.1.2` + `@hulianui/tokens@0.1.1`（私有 registry · changesets 管版本 · GitHub Actions 自动发布，用内置 `GITHUB_TOKEN` 零 PAT）
+- 📦 **公共 npmjs 发布**：`@hulianui/ui` + `@hulianui/tokens`（scope `@hulianui` · `access: public` · 零 token 安装 · changesets 管版本 · GitHub Actions 用 `NPM_TOKEN` 自动发布）
 - 🌐 **文档站上线**：[hulianui.haloritual.com](https://hulianui.haloritual.com)（Cloudflare Pages · 静态导出 · push 自动重发）
   - 🇨🇳 **中国镜像**：[hulianui-zh.haloritual.com](https://hulianui-zh.haloritual.com)（阿里云直连 · 绕开 Cloudflare · push 到 master 后 `deploy-zh` job 自动 rsync 同一份静态产物 · 与 Cloudflare 双发）
 - 🧩 **349 个组件**：基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …（以 `apps/www/lib/manifest.ts` 为准）

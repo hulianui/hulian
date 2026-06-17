@@ -26,8 +26,8 @@
     "url": "https://github.com/hulianui/hulian/issues"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "restricted"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "exports": {
     "./tokens.css": "./src/tokens.css",

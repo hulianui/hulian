@@ -16,18 +16,7 @@ A **publishable React design system** (`@hulianui/ui`) — 349 components built 
 
 ## Quick start
 
-> `@hulianui/*` is currently published to a **GitHub Packages registry** (org `hulianui`). GitHub Packages requires a token even for public packages, so consumers must configure a registry + auth first.
-
-**0. Configure registry + auth** — create a PAT with `read:packages`, then in your project root `.npmrc`:
-
-```ini
-@hulianui:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-```bash
-export GITHUB_TOKEN=ghp_xxxxx
-```
+> `@hulianui/*` is published to the public **npm registry** (scope `@hulianui`, `access: public`) — **no registry config, no token** required.
 
 **1. Install**
 
@@ -58,7 +47,7 @@ import { ThemeProvider, Button } from "@hulianui/ui";
 
 ## Status
 
-- 📦 **Published to GitHub Packages**: `@hulianui/ui` + `@hulianui/tokens` (changesets-managed, auto-published via GitHub Actions with the built-in `GITHUB_TOKEN`)
+- 📦 **Published to public npm**: `@hulianui/ui` + `@hulianui/tokens` (scope `@hulianui`, `access: public`, zero-token install, changesets-managed, auto-published via GitHub Actions using `NPM_TOKEN`)
 - 🧩 **349 components**: controls / forms / data display / feedback / navigation / overlay / charts / effect backgrounds / AI agent / live streaming / node canvas …
 - 🏗️ **18 built-in demos**, all dogfooding the library
 - ✅ **Three-gate CI green**: typecheck + 2705 vitest tests (367 files) + static export of the docs site
