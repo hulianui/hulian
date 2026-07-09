@@ -16,7 +16,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const p = getPage(slug);
-  return { title: p ? `${p.name} · 页面 · 瑚琏 Hulian` : "页面 · 瑚琏 Hulian" };
+  if (!p) return { title: "页面 · 瑚琏 Hulian" };
+  const title = `${p.name} · 页面 · 瑚琏 Hulian`;
+  const description = `${p.description} —— 瑚琏 Hulian 整页模板，多区块拼装，可复制源码。`;
+  const path = `/pages/${slug}`;
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: { type: "article", title, description, url: path, images: ["/opengraph-image.png"] },
+  };
 }
 
 // 读取页面组合的真实源文件作为可复制源码。server 组件在构建期(output:export)执行 fs。

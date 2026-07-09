@@ -16,7 +16,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const b = getBlock(slug);
-  return { title: b ? `${b.name} · 区块 · 瑚琏 Hulian` : "区块 · 瑚琏 Hulian" };
+  if (!b) return { title: "区块 · 瑚琏 Hulian" };
+  const title = `${b.name} · 区块 · 瑚琏 Hulian`;
+  const description = `${b.description} —— 瑚琏 Hulian 现成区块，可直接复制源码接入。`;
+  const path = `/blocks/${slug}`;
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: { type: "article", title, description, url: path, images: ["/opengraph-image.png"] },
+  };
 }
 
 // 读取 block 的真实源文件作为可复制源码。server 组件在构建期(output:export)执行 fs，静态烘进页面。

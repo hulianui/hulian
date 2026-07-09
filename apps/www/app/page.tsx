@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import {
@@ -15,6 +16,11 @@ import {
 import { manifest, CATEGORIES } from "../lib/manifest";
 import { TierBrowser } from "../components/tier-browser";
 import { SiteNavbar } from "../components/site-navbar";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // 站在巨人肩上 —— 吸取式聚合的底座（dogfood Marquee 滚动呈现）
 const STACK_TAGS = [
@@ -36,9 +42,40 @@ const liveCategories = CATEGORIES.filter(
 // 入场逐级揭示的延迟（prefers-reduced-motion 下由 globals.css 整体禁用）
 const rise = (i: number): CSSProperties => ({ animationDelay: `${i * 70}ms` });
 
+// 品牌级结构化数据：把首页标记为「一个软件产品 + 网站」，帮搜索引擎/AI 在
+// 「hulianui」「瑚琏 组件库」这类导航词上正确认领本站为官方来源。
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      alternateName: ["hulianui", "hulian ui", "Hulian UI"],
+      url: SITE_URL,
+      description: SITE_DESCRIPTION,
+      inLanguage: "zh-CN",
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: SITE_NAME,
+      alternateName: "hulianui",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Web",
+      description: SITE_DESCRIPTION,
+      url: SITE_URL,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      author: { "@type": "Person", name: "瑚琏 Abel" },
+    },
+  ],
+};
+
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
       <SiteNavbar />
       <main className="mx-auto max-w-4xl px-6 pb-12 pt-8 sm:pb-16">
       {/* Hero —— 左对齐、非对称，靠层级与留白说话；isolate 让背景层锁在本段内 */}
