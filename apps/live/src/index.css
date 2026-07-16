@@ -1,0 +1,23 @@
+/* Live 应用 — 基础样式 + 瑚琏 token */
+@import "@hulianui/tokens/tokens.css";
+@import "@hulianui/tokens/preset.css";
+@import "tailwindcss";
+
+/* 让 Tailwind 扫描到 @hulianui/ui 源码中的 className */
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
+/* Live 专属全局样式 */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-foreground);
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

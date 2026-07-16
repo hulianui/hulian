@@ -218,6 +218,9 @@ export * from "./message-actions";
 export * from "./citation";
 export * from "./streaming-text";
 
+// 语音交互（Live 项目驱动 · GPT-Live 风格语音录制控件）
+export * from "./voice-record";
+
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
 export { useTheme } from "./theme/use-theme";
