@@ -1,11 +1,10 @@
 /**
  * useLiveSession — 管理与 Live 服务端的 WebSocket 连接
  *
- * 职责：
- *   - 连接 WebSocket（自动重连）
- *   - 管理录音状态（MediaRecorder + getUserMedia）
- *   - 发送音频流、接收文本/音频回复
- *   - 暴露状态和操作给 React 组件
+ * 设计要点：
+ *   - 按按钮立即切 recording 状态（不等服务端确认），视觉反馈零延迟
+ *   - 麦克风流和波形分析共享同一 getUserMedia，不重复调用
+ *   - iOS HTTPS 自动用 wss://
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -25,7 +24,6 @@ export type LivePhase =
 export interface LiveMessage {
   role: "user" | "assistant" | "system";
   text: string;
-  /** assistant 消息附带的可视组件（天气/股票等） */
   widget?: LiveWidget;
   timestamp: number;
 }
@@ -35,36 +33,24 @@ export interface LiveWidget {
   data: Record<string, unknown>;
 }
 
-export interface LiveSessionState {
-  phase: LivePhase;
-  error: string | null;
-  messages: LiveMessage[];
-  statusText: string;
-}
-
 export interface LiveSessionActions {
   startRecording: () => Promise<void>;
   stopRecording: () => void;
   clearHistory: () => void;
-  /** 推理强度：instant / medium / high */
   reasoningLevel: "instant" | "medium" | "high";
   setReasoningLevel: (level: "instant" | "medium" | "high") => void;
-  /** 联网搜索 */
   webSearch: boolean;
   setWebSearch: (on: boolean) => void;
 }
 
-/** WebSocket 服务端口（后端） */
-const WS_PORT = 6818
-const WSS_PORT = 6819
-/** 根据当前访问地址动态拼出 WebSocket URL（支持 localhost + LAN + HTTPS） */
+const WS_PORT = 6818;
+const WSS_PORT = 6819;
+
 function getWsUrl(): string {
-  if (typeof window === 'undefined') return `ws://localhost:${WS_PORT}`
-  const host = window.location.hostname
-  const protocol = window.location.protocol
-  // 如果页面是 HTTPS，WebSocket 也必须用 WSS（iOS Safari 要求）
-  if (protocol === 'https:') return `wss://${host}:${WSS_PORT}`
-  return `ws://${host}:${WS_PORT}`
+  if (typeof window === "undefined") return `ws://localhost:${WS_PORT}`;
+  const host = window.location.hostname;
+  const protocol = window.location.protocol;
+  return protocol === "https:" ? `wss://${host}:${WSS_PORT}` : `ws://${host}:${WS_PORT}`;
 }
 
 const PHASE_LABELS: Record<LivePhase, string> = {
@@ -80,20 +66,70 @@ const PHASE_LABELS: Record<LivePhase, string> = {
   error: "⚠️ 出错",
 };
 
-export function useLiveSession(): LiveSessionState & LiveSessionActions {
+export interface LiveSessionResult {
+  phase: LivePhase;
+  error: string | null;
+  messages: LiveMessage[];
+  statusText: string;
+  /** 音频分析级别（0-1），录音中实时更新，用于驱动 VoiceRecord 波形 */
+  audioLevels: number[];
+  actions: LiveSessionActions;
+}
+
+export function useLiveSession(): LiveSessionResult {
   const [phase, setPhase] = useState<LivePhase>("disconnected");
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<LiveMessage[]>([]);
+  const [audioLevels, setAudioLevels] = useState<number[]>([]);
   const [reasoningLevel, setReasoningLevel] = useState<"instant" | "medium" | "high">("medium");
   const [webSearch, setWebSearch] = useState(false);
 
+  // refs
   const wsRef = useRef<WebSocket | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const rafRef = useRef(0);
   const reconnectTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const statusText = PHASE_LABELS[phase];
 
-  // ── 连接 WebSocket ──
+  // ── 清理录音 / 波形资源 ──
+  const cleanupMic = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = 0;
+    analyserRef.current = null;
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    // 不关 audioCtx — 播放音频还需要它
+  }, []);
+
+  // ── 启动波形分析（与录音共享同一个 getUserMedia 流） ──
+  const startWaveform = useCallback((stream: MediaStream) => {
+    // 先清理旧的
+    cancelAnimationFrame(rafRef.current);
+    // 创建新的 AnalyzerNode
+    const ctx = audioCtxRef.current || new AudioContext();
+    audioCtxRef.current = ctx;
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 64;
+    src.connect(analyser);
+    analyserRef.current = analyser;
+
+    // RAF 循环采样
+    const sample = () => {
+      const data = new Uint8Array(32);
+      analyserRef.current?.getByteFrequencyData(data);
+      setAudioLevels(Array.from(data, (v) => v / 255));
+      rafRef.current = requestAnimationFrame(sample);
+    };
+    sample();
+  }, []);
+
+  // ── WebSocket 连接 ──
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
     setPhase("connecting");
@@ -109,7 +145,6 @@ export function useLiveSession(): LiveSessionState & LiveSessionActions {
     ws.onclose = () => {
       setPhase("disconnected");
       wsRef.current = null;
-      // 自动重连
       reconnectTimer.current = setTimeout(connect, 2000);
     };
 
@@ -120,41 +155,39 @@ export function useLiveSession(): LiveSessionState & LiveSessionActions {
 
     ws.onmessage = (event) => {
       if (event.data instanceof Blob) {
-        // 二进制 = 音频数据，播放
         playAudioBlob(event.data);
         return;
       }
-
       try {
         const msg = JSON.parse(event.data);
         handleServerMessage(msg);
       } catch {
-        // 忽略解析失败
+        // 忽略
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── 处理服务端消息 ──
+  // ── 服务端消息 ──
   function handleServerMessage(msg: Record<string, unknown>) {
     switch (msg.type) {
       case "status":
         setPhase(msg.phase as LivePhase);
         break;
-
       case "transcript":
         setMessages((prev) => [
           ...prev,
           { role: "user", text: msg.text as string, timestamp: Date.now() },
         ]);
         break;
-
       case "response":
         setMessages((prev) => {
           const last = prev[prev.length - 1];
-          // 最后一个如果是同一轮 assistant 回复则追加
           if (last?.role === "assistant") {
-            last.text += (msg.text as string) || "";
-            return [...prev.slice(0, -1), { ...last }];
+            return [
+              ...prev.slice(0, -1),
+              { ...last, text: last.text + ((msg.text as string) || "") },
+            ];
           }
           return [
             ...prev,
@@ -162,7 +195,6 @@ export function useLiveSession(): LiveSessionState & LiveSessionActions {
           ];
         });
         break;
-
       case "error":
         setError(msg.message as string);
         setPhase("error");
@@ -182,15 +214,29 @@ export function useLiveSession(): LiveSessionState & LiveSessionActions {
       source.buffer = audioBuf;
       source.connect(audioCtxRef.current.destination);
       source.start(0);
-    } catch (err) {
-      console.error("播放失败:", err);
+    } catch {
+      // 播放失败静默
     }
   }
 
-  // ── 录音 ──
+  // ── 开始录音 ──
   const startRecording = useCallback(async () => {
+    // 立即切 recording（不等服务器确认），按钮波形立刻响应
+    setPhase("recording");
+    setError(null);
+    setAudioLevels(Array.from({ length: 32 }, () => 0.05)); // 初始微小波纹
+
+    // 先发 start 到服务端（不等 mic 权限，视觉优先）
+    wsRef.current?.send(JSON.stringify({ type: "start" }));
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      // 启动波形分析（与录音共享同一 stream）
+      startWaveform(stream);
+
+      // 创建 MediaRecorder
       const mimeType = MediaRecorder.isTypeSupported("audio/webm;codec=opus")
         ? "audio/webm;codec=opus"
         : "audio/webm";
@@ -204,27 +250,32 @@ export function useLiveSession(): LiveSessionState & LiveSessionActions {
       };
 
       recorder.onstop = () => {
-        stream.getTracks().forEach((t) => t.stop());
+        // 停止波形
+        cleanupMic();
+        // 发送音频
         const blob = new Blob(chunks, { type: mimeType });
         wsRef.current?.send(blob);
         wsRef.current?.send(JSON.stringify({ type: "stop" }));
       };
 
-      wsRef.current?.send(JSON.stringify({ type: "start" }));
       recorder.start(250);
     } catch (err) {
+      // getUserMedia 失败（权限被拒等）
+      cleanupMic();
+      setAudioLevels([]);
       setError(`麦克风权限被拒: ${err instanceof Error ? err.message : ""}`);
       setPhase("error");
     }
-  }, []);
+  }, [cleanupMic, startWaveform]);
 
+  // ── 停止录音 ──
   const stopRecording = useCallback(() => {
     if (recorderRef.current?.state === "recording") {
       recorderRef.current.stop();
     }
   }, []);
 
-  // ── 清除对话 ──
+  // ── 清除历史 ──
   const clearHistory = useCallback(() => {
     setMessages([]);
     wsRef.current?.send(JSON.stringify({ type: "reset" }));
@@ -235,22 +286,26 @@ export function useLiveSession(): LiveSessionState & LiveSessionActions {
     connect();
     return () => {
       clearTimeout(reconnectTimer.current);
+      cleanupMic();
       wsRef.current?.close();
       audioCtxRef.current?.close();
     };
-  }, [connect]);
+  }, [connect, cleanupMic]);
 
   return {
     phase,
     error,
     messages,
     statusText,
-    startRecording,
-    stopRecording,
-    clearHistory,
-    reasoningLevel,
-    setReasoningLevel,
-    webSearch,
-    setWebSearch,
+    audioLevels,
+    actions: {
+      startRecording,
+      stopRecording,
+      clearHistory,
+      reasoningLevel,
+      setReasoningLevel,
+      webSearch,
+      setWebSearch,
+    },
   };
 }

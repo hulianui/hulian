@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useRef, type CSSProperties } from "react";
+import { useCallback, useRef, type CSSProperties, type PointerEvent } from "react";
 import { cn } from "../lib/cn";
 import type { VoiceRecordProps, VoiceRecordStatus } from "./voice-record.types";
 
@@ -12,14 +12,15 @@ const sizeMap = {
 /**
  * VoiceRecord — 语音录制触发器
  *
- * 圆形麦克风按钮，通过 status 驱动视觉反馈：
- *   idle       → 默认 mic 图标，可点击开始录音
- *   recording  → 脉动光环 + 波形动画，点击停止
+ * 支持两种交互模式：
+ *   - 默认 pressAndHold：按下开始→松开结束（GPT-Live 风格）
+ *   - pressAndHold=false：点击切换开始/停止
+ *
+ * status 控制视觉反馈：
+ *   idle       → 默认 mic 图标
+ *   recording  → 脉动光环 + 波形动画 + 红色缩小按钮
  *   processing → 转圈加载态
  *   disabled   → 不可交互
- *
- * 涟漪脉动用 CSS 动画实现（纯动画，零 JS 测量），波形用传入的 levels 驱动条形振幅。
- * 完全受控：消费侧驱动 status 和 levels。
  */
 export function VoiceRecord({
   status = "idle",
@@ -28,7 +29,10 @@ export function VoiceRecord({
   labelProcessing = "处理中…",
   levels = [],
   size = "md",
+  pressAndHold = true,
   onToggle,
+  onPress,
+  onRelease,
   className,
   disabled,
   ...props
@@ -37,19 +41,55 @@ export function VoiceRecord({
   const isRecording = status === "recording";
   const isProcessing = status === "processing";
   const isDisabled = disabled || status === "disabled";
+  const isIdle = status === "idle";
+  const longPressTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
+  // ── 指针按下：idle 态触发起始 ──
+  const handlePointerDown = useCallback(
+    (e: PointerEvent) => {
+      if (isDisabled || !isIdle) return;
+      e.preventDefault();
+      // 如果使用 pressAndHold，立即触发开始
+      if (pressAndHold) {
+        onPress?.();
+        onToggle?.("idle");
+      } else {
+        // 非 pressAndHold：等待放开才切换 onClick 风格
+        // （通过 onPointerUp 处理）
+      }
+    },
+    [isDisabled, isIdle, pressAndHold, onPress, onToggle],
+  );
+
+  // ── 指针松开：recording 态触发停止 ──
+  const handlePointerUp = useCallback(
+    (e: PointerEvent) => {
+      e.preventDefault();
+      if (pressAndHold && isRecording) {
+        onRelease?.();
+        onToggle?.(status);
+      }
+    },
+    [pressAndHold, isRecording, onRelease, onToggle, status],
+  );
+
+  // ── 点击（非 pressAndHold 模式用） ──
   const handleClick = useCallback(() => {
-    if (isDisabled) return;
-    onToggle?.(status);
-  }, [status, isDisabled, onToggle]);
+    if (isDisabled || isProcessing) return;
+    if (!pressAndHold) {
+      onToggle?.(status);
+    }
+  }, [isDisabled, isProcessing, pressAndHold, status, onToggle]);
 
   return (
     <div
       className={cn("inline-flex flex-col items-center gap-4 select-none", className)}
+      // 防止触摸滚动/长按菜单
+      onContextMenu={(e) => e.preventDefault()}
     >
-      {/* 光环 + 按钮 容器 */}
+      {/* 按钮 + 光环 */}
       <div className="relative flex items-center justify-center">
-        {/* 脉动光环 — recording 态 */}
+        {/* 脉动光环 */}
         {isRecording && (
           <>
             <span
@@ -71,16 +111,21 @@ export function VoiceRecord({
           </>
         )}
 
-        {/* 波形条 — recording 态 */}
+        {/* 波形 */}
         {isRecording && levels.length > 0 && (
-          <div className={cn("absolute inset-0 flex items-center justify-center gap-[3px]", s.ring)}>
+          <div
+            className={cn(
+              "absolute inset-0 flex items-center justify-center gap-[3px]",
+              s.ring,
+            )}
+          >
             {levels.map((lv, i) => (
               <span
                 key={i}
-                className="w-[3px] rounded-full bg-primary transition-all duration-150"
+                className="w-[3px] rounded-full bg-primary transition-all duration-100"
                 style={{
-                  height: `${Math.max(4, lv * 100)}%`,
-                  opacity: Math.max(0.3, lv),
+                  height: `${Math.max(4, (lv || 0) * 100)}%`,
+                  opacity: Math.max(0.3, lv || 0),
                 }}
               />
             ))}
@@ -90,23 +135,33 @@ export function VoiceRecord({
         {/* 主按钮 */}
         <button
           type="button"
-          onClick={handleClick}
           disabled={isDisabled}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerLeave={handlePointerUp}
+          onClick={handleClick}
           aria-label={
-            isRecording ? "松开结束录音" : isProcessing ? "处理中" : "按住说话"
+            isRecording
+              ? "松开结束录音"
+              : isProcessing
+                ? "处理中"
+                : "按住说话"
           }
+          data-recording={isRecording || undefined}
           className={cn(
             "relative z-10 inline-flex items-center justify-center rounded-full",
             "border-2 border-border bg-surface text-foreground",
-            "transition-all duration-200",
+            "transition-all duration-200 ease-out",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            // 触屏禁用默认行为
+            "touch-none",
             s.btn,
-            // recording 态：按钮缩小 + 红色边框
+            // recording：缩小 + 红色
             isRecording && "scale-90 border-danger bg-danger/10 text-danger",
-            // processing 态：旋转动画
+            // processing：旋转
             isProcessing && "animate-spin border-chart-3 text-chart-3",
-            // idle 态：hover 放大
-            !isRecording && !isProcessing && !isDisabled && "hover:scale-105 hover:bg-surface-hover",
+            // idle：hover 放大
+            isIdle && !isDisabled && "hover:scale-105 hover:bg-surface-hover cursor-pointer",
             // disabled
             isDisabled && "pointer-events-none opacity-40",
           )}
@@ -131,16 +186,14 @@ export function VoiceRecord({
             <line x1="12" y1="19" x2="12" y2="23" />
             <line x1="8" y1="23" x2="16" y2="23" />
           </svg>
-          {/* processing 态：spinner */}
+          {/* processing spinner */}
           {isProcessing && (
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              className={cn(
-                size === "lg" ? "size-8" : size === "sm" ? "size-5" : "size-6",
-              )}
+              className={size === "lg" ? "size-8" : size === "sm" ? "size-5" : "size-6"}
             >
               <circle cx="12" cy="12" r="10" strokeDasharray="31.4 31.4" strokeLinecap="round" />
             </svg>

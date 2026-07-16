@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback } from "react";
 import {
   VoiceRecord,
   StatusDot,
@@ -17,62 +17,17 @@ export default function App() {
     error,
     messages,
     statusText,
-    reasoningLevel,
-    setReasoningLevel,
-    webSearch,
-    setWebSearch,
-    startRecording,
-    stopRecording,
-    clearHistory,
+    audioLevels,
+    actions: {
+      startRecording,
+      stopRecording,
+      clearHistory,
+      reasoningLevel,
+      setReasoningLevel,
+      webSearch,
+      setWebSearch,
+    },
   } = useLiveSession();
-
-  const [audioLevels, setAudioLevels] = useState<number[]>([]);
-  const streamRef = useRef<MediaStream | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const rafRef = useRef<number>(0);
-
-  // ── 录音中的音频级别采集（驱动 VoiceRecord 波形） ──
-  const buildLevels = useCallback(async () => {
-    if (phase !== "recording") return;
-    try {
-      if (!streamRef.current) {
-        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-        streamRef.current = s;
-        const ctx = new AudioContext();
-        const src = ctx.createMediaStreamSource(s);
-        const analyser = ctx.createAnalyser();
-        analyser.fftSize = 64;
-        src.connect(analyser);
-        analyserRef.current = analyser;
-      }
-
-      const sample = () => {
-        const data = new Uint8Array(32);
-        analyserRef.current?.getByteFrequencyData(data);
-        const levelArray = Array.from(data, (v) => v / 255);
-        setAudioLevels(levelArray);
-        rafRef.current = requestAnimationFrame(sample);
-      };
-      sample();
-    } catch {
-      // 录音的 error 已由 startRecording 处理
-    }
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === "recording") {
-      buildLevels();
-      return;
-    }
-    // 停止时清理
-    cancelAnimationFrame(rafRef.current!);
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
-    analyserRef.current = null;
-    if (phase !== "processing") {
-      setAudioLevels([]);
-    }
-  }, [phase, buildLevels]);
 
   const onVoiceToggle = useCallback(
     (s: string) => {
@@ -82,13 +37,16 @@ export default function App() {
     [startRecording, stopRecording],
   );
 
+  const isProcessing =
+    phase === "processing" || phase === "asr" || phase === "llm" || phase === "tts";
+
   const currentRecordStatus = phase === "recording"
-    ? "recording" as const
-    : phase === "processing" || phase === "asr" || phase === "llm" || phase === "tts"
-      ? "processing" as const
+    ? ("recording" as const)
+    : isProcessing
+      ? ("processing" as const)
       : phase === "disconnected"
-        ? "disabled" as const
-        : "idle" as const;
+        ? ("disabled" as const)
+        : ("idle" as const);
 
   const reasoningItems = [
     { value: "instant", label: "即时" },
@@ -98,13 +56,11 @@ export default function App() {
 
   return (
     <div className="mx-auto flex min-h-full max-w-2xl flex-col px-4 py-6">
-      {/* ── 顶栏：Logo + 连接状态 ── */}
-      <header className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-xl font-bold tracking-tight text-foreground">
-            Live
-          </span>
-        </div>
+      {/* ── 顶栏 ── */}
+      <header className="mb-4 flex items-center justify-between">
+        <span className="text-xl font-bold tracking-tight text-foreground">
+          Live
+        </span>
         <StatusDot
           status={
             phase === "disconnected" || phase === "connecting"
@@ -129,8 +85,8 @@ export default function App() {
         />
       </header>
 
-      {/* ── 语音按钮主区 ── */}
-      <section className="flex flex-col items-center justify-center py-8">
+      {/* ── 语音按钮 ── */}
+      <section className="flex flex-col items-center justify-center py-6">
         <VoiceRecord
           status={currentRecordStatus}
           levels={phase === "recording" ? audioLevels : []}
@@ -142,10 +98,10 @@ export default function App() {
         />
       </section>
 
-      {/* ── 控制栏：推理深度 + 联网搜索 ── */}
-      <section className="mb-4 flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface px-4 py-3">
+      {/* ── 控制栏 ── */}
+      <section className="mb-3 flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted">🧠 推理深度</span>
+          <span className="text-xs text-muted">🧠 推理</span>
           <Segmented
             items={reasoningItems}
             value={reasoningLevel}
@@ -154,21 +110,21 @@ export default function App() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted">🔍 联网搜索</span>
+          <span className="text-xs text-muted">🔍 联网</span>
           <Switch checked={webSearch} onCheckedChange={(c) => setWebSearch(c)} />
         </div>
       </section>
 
-      {/* ── 对话消息区 ── */}
+      {/* ── 对话区 ── */}
       <section className="flex-1 overflow-hidden rounded-2xl border border-border bg-surface/60">
         {messages.length === 0 ? (
-          <div className="flex h-full min-h-[200px] items-center justify-center">
+          <div className="flex h-full min-h-[180px] items-center justify-center">
             <p className="text-sm text-muted">
               按住 🎤 按钮开始对话
             </p>
           </div>
         ) : (
-          <Conversation className="h-full p-4" autoScroll>
+          <Conversation className="h-full p-3" autoScroll>
             {messages.map((msg, i) => (
               <ChatMessage
                 key={i}
@@ -182,7 +138,6 @@ export default function App() {
                 {msg.text}
               </ChatMessage>
             ))}
-            {/* 处理中的加载提示 */}
             {(phase === "asr" || phase === "llm") && (
               <ChatMessage role="assistant" loading name="Live">
                 思考中…
@@ -192,14 +147,12 @@ export default function App() {
         )}
       </section>
 
-      {/* ── 底部工具栏 ── */}
-      <footer className="mt-4 flex items-center justify-center gap-3">
+      {/* ── 底部 ── */}
+      <footer className="mt-3 flex items-center justify-center gap-3">
         <Button variant="ghost" size="sm" onClick={clearHistory}>
           🗑 清除对话
         </Button>
-        {error && (
-          <span className="text-xs text-danger">{error}</span>
-        )}
+        {error && <span className="text-xs text-danger">{error}</span>}
       </footer>
     </div>
   );
