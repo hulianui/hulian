@@ -55,8 +55,8 @@ export default function App() {
   ];
 
   return (
-    // ── 全屏 flex 容器：头顶栏 + 中间对话(撑满) + 底部控制区 ──
-    <div className="mx-auto flex h-full max-w-2xl flex-col px-4 py-3">
+    // ── 全屏 flex 容器 ──
+    <div className="flex h-full w-full flex-col px-4 py-3">
       {/* ── 顶栏 ── */}
       <header className="flex items-center justify-between pb-2">
         <span className="text-lg font-bold tracking-tight text-foreground">
