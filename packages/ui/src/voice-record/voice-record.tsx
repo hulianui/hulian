@@ -3,10 +3,11 @@ import { useCallback, useRef, type CSSProperties, type PointerEvent } from "reac
 import { cn } from "../lib/cn";
 import type { VoiceRecordProps, VoiceRecordStatus } from "./voice-record.types";
 
+// 尺寸（Tailwind v4 标准 spacing）：ring 必须明显大于 btn，光环才在按钮外围
 const sizeMap = {
   sm: { btn: "size-20", ring: "size-24", font: "text-xs" },
-  md: { btn: "size-26", ring: "size-32", font: "text-sm" },
-  lg: { btn: "size-32", ring: "size-40", font: "text-base" },
+  md: { btn: "size-24", ring: "size-32", font: "text-sm" },
+  lg: { btn: "size-28", ring: "size-40", font: "text-base" },
 };
 
 /**
