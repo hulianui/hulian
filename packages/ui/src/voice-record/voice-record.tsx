@@ -91,7 +91,16 @@ export function VoiceRecord({
     >
       {/* 按钮 + 光环 */}
       <div className="relative flex items-center justify-center">
-        {/* 脉动光环 */}
+        {/* idle 态：微弱常驻辉光 */}
+        {isIdle && (
+          <span
+            className={cn(
+              "absolute inset-0 rounded-full bg-primary/5 blur-xl",
+              s.ring,
+            )}
+          />
+        )}
+        {/* recording 态：脉动光环 */}
         {isRecording && (
           <>
             <span
@@ -109,6 +118,13 @@ export function VoiceRecord({
                 s.ring,
               )}
               style={{ "--tw-anim-duration": "2s" } as CSSProperties}
+            />
+            {/* 录制态底层辉光增强 */}
+            <span
+              className={cn(
+                "absolute inset-0 rounded-full bg-primary/10 blur-2xl",
+                s.ring,
+              )}
             />
           </>
         )}
