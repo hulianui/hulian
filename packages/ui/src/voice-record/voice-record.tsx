@@ -3,24 +3,24 @@ import { useCallback, useRef, type CSSProperties, type PointerEvent } from "reac
 import { cn } from "../lib/cn";
 import type { VoiceRecordProps, VoiceRecordStatus } from "./voice-record.types";
 
-// 尺寸（Tailwind v4 标准 spacing）：ring 必须明显大于 btn，光环才在按钮外围
+// 尺寸（Tailwind v4 标准 spacing）
 const sizeMap = {
   sm: { btn: "size-20", ring: "size-24", font: "text-xs" },
   md: { btn: "size-24", ring: "size-32", font: "text-sm" },
   lg: { btn: "size-28", ring: "size-40", font: "text-base" },
 };
 
+// 光环/波形等装饰元素用绝对定位自居中，不受父容器大小影响
+const ringCenter = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2";
+
 /**
  * VoiceRecord — 语音录制触发器
  *
  * 支持两种交互模式：
- *   - 默认 pressAndHold：按下开始→松开结束（GPT-Live 风格）
+ *   - 默认 pressAndHold：按下开始→松开结束
  *   - pressAndHold=false：点击切换开始/停止
  *
- * 关键实现细节：pointer 事件的闭包问题。
- * onPointerUp 必须通过 ref 读取最新 status，不能在 useCallback 里闭包捕获，
- * 否则 iOS 上 status 从 "idle" 变为 "recording" 后，onPointerUp 的 isRecording
- * 闭包可能还是旧值，导致无法停止录音。
+ * 所有回调通过 ref 读取最新状态，避免 iOS 上闭包捕获过期值。
  */
 export function VoiceRecord({
   status = "idle",
@@ -43,37 +43,53 @@ export function VoiceRecord({
   const isDisabled = disabled || status === "disabled";
   const isIdle = status === "idle";
 
-  // ── Ref 方案解决 pointer 事件闭包问题 ──
-  // 每次渲染同步最新值，回调里读 ref，不依赖 useCallback 的 deps 重建
+  // 所有交互回调通过 ref 读取最新值，避免闭包在 iOS 上捕获过期状态
   const statusRef = useRef(status);
   statusRef.current = status;
   const pressAndHoldRef = useRef(pressAndHold);
   pressAndHoldRef.current = pressAndHold;
-  const onToggleRef = useRef(onToggle);
-  onToggleRef.current = onToggle;
+  const onPressRef = useRef(onPress);
+  onPressRef.current = onPress;
   const onReleaseRef = useRef(onRelease);
   onReleaseRef.current = onRelease;
+  const onToggleRef = useRef(onToggle);
+  onToggleRef.current = onToggle;
 
-  // ── 指针按下：idle 态触发录音开始 ──
-  const handlePointerDown = useCallback(
-    (e: PointerEvent) => {
-      if (statusRef.current !== "idle") return;
-      e.preventDefault();
-      if (pressAndHoldRef.current) {
-        onPress?.();
-        onToggleRef.current?.("idle");
+  // 本地按压标志——松开是否触发"停止"只看这一次按压是否由本组件发起，
+  // 不依赖 status prop 的异步回环。这样可避免两类死锁：
+  //   1. 快速点按时 status 还没回环到 recording 就松手 → 停止被丢弃
+  //   2. iOS 手势被系统打断，浏览器派发 pointercancel 而非 pointerup →
+  //      若不监听 cancel 就永远收不到"松手"，卡死在录音态
+  const pressedRef = useRef(false);
+
+  // ── 按下：idle → 发起录音 ──
+  // 只用 Pointer Events 一套覆盖 鼠标/触摸/触控笔，不再叠加 touch 事件，
+  // 否则触屏上 pointerdown 与 touchstart 会各触发一次，导致双重 start。
+  const handlePointerDown = useCallback((e: PointerEvent) => {
+    if (statusRef.current !== "idle") return;
+    if (!pressAndHoldRef.current) return; // 点击模式交给 onClick
+    // 触摸捕获指针：手指滑出按钮不会中断录音，且 up/cancel 都稳定落回本元素
+    if (e.pointerType === "touch") {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        /* 某些浏览器在特定时序下会抛错，忽略即可 */
       }
-    },
-    [onPress],
-  );
-
-  // ── 指针松开 / 离开：recording 态触发停止 ──
-  const handlePointerUp = useCallback((e: PointerEvent) => {
-    e.preventDefault();
-    if (pressAndHoldRef.current && statusRef.current === "recording") {
-      onReleaseRef.current?.();
-      onToggleRef.current?.(statusRef.current);
     }
+    pressedRef.current = true;
+    onPressRef.current?.();
+    onToggleRef.current?.("idle");
+  }, []);
+
+  // ── 松开 / 离开 / 取消：结束本次录音 ──
+  // pointerup（正常松手）、pointercancel（iOS 手势被打断）、pointerleave（鼠标拖离）
+  // 统一走这里；用本地 pressedRef 去重，只结束由本组件发起的那次按压。
+  const handlePointerEnd = useCallback(() => {
+    if (!pressAndHoldRef.current) return;
+    if (!pressedRef.current) return;
+    pressedRef.current = false;
+    onReleaseRef.current?.();
+    onToggleRef.current?.("recording");
   }, []);
 
   // ── 点击（非 pressAndHold 模式用） ──
@@ -89,13 +105,14 @@ export function VoiceRecord({
       className={cn("inline-flex flex-col items-center gap-4 select-none", className)}
       onContextMenu={(e) => e.preventDefault()}
     >
-      {/* 按钮 + 光环 */}
-      <div className="relative flex items-center justify-center">
+      {/* 按钮 + 光环容器 — 固定大小容纳光环 */}
+      <div className={cn("relative flex items-center justify-center", s.ring)}>
         {/* idle 态：微弱常驻辉光 */}
         {isIdle && (
           <span
             className={cn(
-              "absolute inset-0 rounded-full bg-primary/5 blur-xl",
+              ringCenter,
+              "rounded-full bg-primary/5 blur-xl",
               s.ring,
             )}
           />
@@ -105,24 +122,24 @@ export function VoiceRecord({
           <>
             <span
               className={cn(
-                "absolute inset-0 rounded-full border-2 border-primary/40",
-                "animate-ping",
+                ringCenter,
+                "rounded-full border-2 border-primary/40 animate-ping",
                 s.ring,
               )}
               style={{ "--tw-anim-duration": "1.5s" } as CSSProperties}
             />
             <span
               className={cn(
-                "absolute inset-0 rounded-full border border-primary/30",
-                "animate-pulse",
+                ringCenter,
+                "rounded-full border border-primary/30 animate-pulse",
                 s.ring,
               )}
               style={{ "--tw-anim-duration": "2s" } as CSSProperties}
             />
-            {/* 录制态底层辉光增强 */}
             <span
               className={cn(
-                "absolute inset-0 rounded-full bg-primary/10 blur-2xl",
+                ringCenter,
+                "rounded-full bg-primary/10 blur-2xl",
                 s.ring,
               )}
             />
@@ -133,7 +150,8 @@ export function VoiceRecord({
         {isRecording && levels.length > 0 && (
           <div
             className={cn(
-              "absolute inset-0 flex items-center justify-center gap-[3px]",
+              ringCenter,
+              "flex items-center justify-center gap-[3px]",
               s.ring,
             )}
           >
@@ -150,18 +168,18 @@ export function VoiceRecord({
           </div>
         )}
 
-        {/* 主按钮 */}
+        {/* 主按钮 — 始终居中 */}
         <button
           type="button"
           disabled={isDisabled}
           onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerUp}
+          onPointerUp={handlePointerEnd}
+          onPointerCancel={handlePointerEnd}
+          onPointerLeave={handlePointerEnd}
           onClick={handleClick}
           aria-label={
             isRecording ? "松开结束录音" : isProcessing ? "处理中" : "按住说话"
           }
-          data-recording={isRecording || undefined}
           className={cn(
             "relative z-10 inline-flex items-center justify-center rounded-full",
             "border-2 border-border bg-surface text-foreground",
