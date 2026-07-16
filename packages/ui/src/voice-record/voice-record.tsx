@@ -17,11 +17,10 @@ const sizeMap = {
  *   - 默认 pressAndHold：按下开始→松开结束（GPT-Live 风格）
  *   - pressAndHold=false：点击切换开始/停止
  *
- * status 控制视觉反馈：
- *   idle       → 默认 mic 图标
- *   recording  → 脉动光环 + 波形动画 + 红色缩小按钮
- *   processing → 转圈加载态
- *   disabled   → 不可交互
+ * 关键实现细节：pointer 事件的闭包问题。
+ * onPointerUp 必须通过 ref 读取最新 status，不能在 useCallback 里闭包捕获，
+ * 否则 iOS 上 status 从 "idle" 变为 "recording" 后，onPointerUp 的 isRecording
+ * 闭包可能还是旧值，导致无法停止录音。
  */
 export function VoiceRecord({
   status = "idle",
@@ -43,49 +42,51 @@ export function VoiceRecord({
   const isProcessing = status === "processing";
   const isDisabled = disabled || status === "disabled";
   const isIdle = status === "idle";
-  const longPressTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // ── 指针按下：idle 态触发起始 ──
+  // ── Ref 方案解决 pointer 事件闭包问题 ──
+  // 每次渲染同步最新值，回调里读 ref，不依赖 useCallback 的 deps 重建
+  const statusRef = useRef(status);
+  statusRef.current = status;
+  const pressAndHoldRef = useRef(pressAndHold);
+  pressAndHoldRef.current = pressAndHold;
+  const onToggleRef = useRef(onToggle);
+  onToggleRef.current = onToggle;
+  const onReleaseRef = useRef(onRelease);
+  onReleaseRef.current = onRelease;
+
+  // ── 指针按下：idle 态触发录音开始 ──
   const handlePointerDown = useCallback(
     (e: PointerEvent) => {
-      if (isDisabled || !isIdle) return;
+      if (statusRef.current !== "idle") return;
       e.preventDefault();
-      // 如果使用 pressAndHold，立即触发开始
-      if (pressAndHold) {
+      if (pressAndHoldRef.current) {
         onPress?.();
-        onToggle?.("idle");
-      } else {
-        // 非 pressAndHold：等待放开才切换 onClick 风格
-        // （通过 onPointerUp 处理）
+        onToggleRef.current?.("idle");
       }
     },
-    [isDisabled, isIdle, pressAndHold, onPress, onToggle],
+    [onPress],
   );
 
-  // ── 指针松开：recording 态触发停止 ──
-  const handlePointerUp = useCallback(
-    (e: PointerEvent) => {
-      e.preventDefault();
-      if (pressAndHold && isRecording) {
-        onRelease?.();
-        onToggle?.(status);
-      }
-    },
-    [pressAndHold, isRecording, onRelease, onToggle, status],
-  );
+  // ── 指针松开 / 离开：recording 态触发停止 ──
+  const handlePointerUp = useCallback((e: PointerEvent) => {
+    e.preventDefault();
+    if (pressAndHoldRef.current && statusRef.current === "recording") {
+      onReleaseRef.current?.();
+      onToggleRef.current?.(statusRef.current);
+    }
+  }, []);
 
   // ── 点击（非 pressAndHold 模式用） ──
   const handleClick = useCallback(() => {
-    if (isDisabled || isProcessing) return;
-    if (!pressAndHold) {
-      onToggle?.(status);
+    if (statusRef.current === "disabled" || statusRef.current === "processing") return;
+    if (!pressAndHoldRef.current) {
+      onToggleRef.current?.(statusRef.current);
     }
-  }, [isDisabled, isProcessing, pressAndHold, status, onToggle]);
+  }, []);
 
   return (
     <div
       className={cn("inline-flex flex-col items-center gap-4 select-none", className)}
-      // 防止触摸滚动/长按菜单
       onContextMenu={(e) => e.preventDefault()}
     >
       {/* 按钮 + 光环 */}
@@ -112,7 +113,7 @@ export function VoiceRecord({
           </>
         )}
 
-        {/* 波形 */}
+        {/* 波形条 */}
         {isRecording && levels.length > 0 && (
           <div
             className={cn(
@@ -142,11 +143,7 @@ export function VoiceRecord({
           onPointerLeave={handlePointerUp}
           onClick={handleClick}
           aria-label={
-            isRecording
-              ? "松开结束录音"
-              : isProcessing
-                ? "处理中"
-                : "按住说话"
+            isRecording ? "松开结束录音" : isProcessing ? "处理中" : "按住说话"
           }
           data-recording={isRecording || undefined}
           className={cn(
@@ -154,16 +151,11 @@ export function VoiceRecord({
             "border-2 border-border bg-surface text-foreground",
             "transition-all duration-200 ease-out",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            // 触屏禁用默认行为
             "touch-none",
             s.btn,
-            // recording：缩小 + 红色
             isRecording && "scale-90 border-danger bg-danger/10 text-danger",
-            // processing：旋转
             isProcessing && "animate-spin border-chart-3 text-chart-3",
-            // idle：hover 放大
             isIdle && !isDisabled && "hover:scale-105 hover:bg-surface-hover cursor-pointer",
-            // disabled
             isDisabled && "pointer-events-none opacity-40",
           )}
           {...props}
