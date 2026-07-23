@@ -1,4 +1,5 @@
 "use client";
+import { Fragment, createContext, useContext, useMemo, type ReactNode } from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
@@ -45,26 +46,76 @@ export const selectTriggerVariants = cva(
   },
 );
 
+// 多选 Trigger 需要 items/placeholder 才能把 string[] 解析成 label 列表——Base UI 的 store
+// 不对外暴露，用瑚琏侧 context 把 Select 上的元信息带给 SelectTrigger。
+interface SelectMeta {
+  items?: SelectProps["items"];
+  placeholder?: ReactNode;
+  multiple?: boolean;
+}
+const SelectMetaContext = createContext<SelectMeta>({});
+
 // placeholder 经注入一个 value:null 的 items 项实现（rc.0 Select.Value 无 placeholder prop）。
 // 无值时 Base UI 自动显示该 null 项 label（占位）；有值时显示选中项 label。Value 因此不写 children。
-export function Select({ items, placeholder, children, ...props }: SelectProps) {
+// 多选值是数组，命不中 null 项 → 不注入，占位改由 SelectTrigger 的函数式 Value 渲染。
+export function Select({ items, placeholder, multiple, children, ...props }: SelectProps) {
   const finalItems =
-    placeholder != null && items != null ? [{ value: null, label: placeholder }, ...items] : items;
+    !multiple && placeholder != null && items != null
+      ? [{ value: null, label: placeholder }, ...items]
+      : items;
+  const meta = useMemo(
+    () => ({ items, placeholder, multiple }),
+    [items, placeholder, multiple],
+  );
   return (
-    <BaseSelect.Root items={finalItems} {...props}>
-      {children}
-    </BaseSelect.Root>
+    <SelectMetaContext.Provider value={meta}>
+      <BaseSelect.Root items={finalItems} multiple={multiple} {...props}>
+        {children}
+      </BaseSelect.Root>
+    </SelectMetaContext.Provider>
   );
 }
 
-export function SelectTrigger({ size, invalid, className }: SelectTriggerProps) {
+// 多选 Trigger 文案：前 maxDisplay 个 label 顿号平铺，超出折叠 +N；空数组回落 placeholder
+// （data-placeholder 由 Base UI 按 hasSelectedValue 置空数组时照常落，muted 皮肤复用）。
+function renderMultipleValue(
+  value: unknown,
+  items: SelectProps["items"],
+  placeholder: ReactNode,
+  maxDisplay: number,
+) {
+  const values = Array.isArray(value) ? value : value == null ? [] : [value];
+  if (values.length === 0) return placeholder ?? null;
+  const labels = values.map((v) => items?.find((it) => it.value === v)?.label ?? String(v));
+  const shown = labels.slice(0, maxDisplay);
+  const extra = values.length - shown.length;
+  return (
+    <>
+      {shown.map((label, i) => (
+        <Fragment key={i}>
+          {i > 0 && "、"}
+          {label}
+        </Fragment>
+      ))}
+      {extra > 0 && <span className="text-muted"> +{extra}</span>}
+    </>
+  );
+}
+
+export function SelectTrigger({ size, invalid, maxDisplay = 2, className }: SelectTriggerProps) {
+  const { items, placeholder, multiple } = useContext(SelectMetaContext);
   return (
     <BaseSelect.Trigger
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
     >
-      {/* 不写 children：有值显示选中 label，无值显示注入的 null 项 label（=placeholder）；data-placeholder 态置 muted。 */}
-      <BaseSelect.Value className="truncate data-[placeholder]:text-muted" />
+      {/* 单选不写 children：有值显示选中 label，无值显示注入的 null 项 label（=placeholder）；
+          多选走函数式 children 平铺已选 label + 超出 +N。data-placeholder 态置 muted。 */}
+      <BaseSelect.Value className="truncate data-[placeholder]:text-muted">
+        {multiple
+          ? (value: unknown) => renderMultipleValue(value, items, placeholder, maxDisplay)
+          : undefined}
+      </BaseSelect.Value>
       <BaseSelect.Icon className="flex shrink-0 text-muted transition-transform data-[popup-open]:rotate-180">
         <ChevronDownIcon />
       </BaseSelect.Icon>

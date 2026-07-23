@@ -73,3 +73,52 @@ describe("Select", () => {
     expect(trigger.getAttribute("aria-invalid")).toBe("true");
   });
 });
+
+function Multi(props: { defaultValue?: string[]; maxDisplay?: number; open?: boolean }) {
+  return (
+    <Select items={items} placeholder="请选择字体" multiple defaultValue={props.defaultValue}
+      open={props.open}>
+      <SelectTrigger maxDisplay={props.maxDisplay} />
+      <SelectContent>
+        {items.map((it) => (
+          <SelectItem key={it.value} value={it.value}>
+            {it.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+describe("Select multiple", () => {
+  it("空值: Trigger 显示 placeholder（多选不注入 null 项，走函数式 Value）", () => {
+    render(<Multi defaultValue={[]} />);
+    expect(getTrigger().textContent).toContain("请选择字体");
+  });
+
+  it("已选 ≤ maxDisplay: label 顿号平铺，无 +N", () => {
+    render(<Multi defaultValue={["sans", "serif"]} />);
+    const text = getTrigger().textContent ?? "";
+    expect(text).toContain("无衬线、衬线");
+    expect(text).not.toContain("+");
+  });
+
+  it("已选 > maxDisplay: 超出折叠为 +N 计数", () => {
+    render(<Multi defaultValue={["sans", "serif", "mono"]} maxDisplay={2} />);
+    const text = getTrigger().textContent ?? "";
+    expect(text).toContain("无衬线、衬线");
+    expect(text).toContain("+1");
+    expect(text).not.toContain("等宽");
+  });
+
+  it("items 命不中的 value 回落 raw 字符串", () => {
+    render(<Multi defaultValue={["sans", "ghost"]} />);
+    expect(getTrigger().textContent).toContain("无衬线、ghost");
+  });
+
+  it("受控 open: 多个已选 Item 同时带 data-selected", () => {
+    render(<Multi defaultValue={["sans", "mono"]} open />);
+    const selected = document.querySelectorAll("[role='option'][data-selected]");
+    expect(selected.length).toBe(2);
+  });
+});

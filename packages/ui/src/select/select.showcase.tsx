@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "./select";
 
@@ -43,6 +44,24 @@ function Demo({
   );
 }
 
+function MultiDemo({ defaultValue = [] as string[], maxDisplay }: { defaultValue?: string[]; maxDisplay?: number }) {
+  const [value, setValue] = useState<string[]>(defaultValue);
+  return (
+    <div className="w-60">
+      <Select items={FONTS} placeholder="选择多个字体" multiple value={value} onValueChange={setValue}>
+        <SelectTrigger maxDisplay={maxDisplay} />
+        <SelectContent>
+          {FONTS.map((f) => (
+            <SelectItem key={f.value} value={f.value}>
+              {f.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
 export const selectShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -68,6 +87,17 @@ export const selectShowcase: ShowcaseSpec = {
   <SelectContent>{/* SelectItem… */}</SelectContent>
 </Select>`,
       render: () => <Demo defaultValue="serif" />,
+    },
+    {
+      title: "多选",
+      description: "multiple 下受控值为 string[]，Trigger 平铺已选 label（超出 maxDisplay 折叠 +N），选中后浮层保持打开。",
+      code: `const [value, setValue] = useState<string[]>([]);
+
+<Select items={fonts} placeholder="选择多个字体" multiple value={value} onValueChange={setValue}>
+  <SelectTrigger maxDisplay={2} />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <MultiDemo defaultValue={["sans", "serif", "mono"]} maxDisplay={2} />,
     },
     {
       title: "尺寸",
@@ -107,6 +137,7 @@ export const selectShowcase: ShowcaseSpec = {
   states: [
     { name: "default", render: () => <Demo /> },
     { name: "已选值", render: () => <Demo defaultValue="serif" /> },
+    { name: "多选（超出折叠 +N）", render: () => <MultiDemo defaultValue={["sans", "serif", "mono"]} /> },
     { name: "禁用", render: () => <Demo disabled defaultValue="sans" /> },
     { name: "无效态", render: () => <Demo invalid /> },
     { name: "向上弹", render: () => <Demo side="top" placeholder="向上展开" /> },
