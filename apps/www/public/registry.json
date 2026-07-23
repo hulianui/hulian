@@ -5440,6 +5440,29 @@
       }
     },
     {
+      "name": "callout",
+      "type": "registry:ui",
+      "title": "Callout",
+      "description": "文章 / 文档用提示框（admonition）。 · 反馈/提示",
+      "categories": [
+        "feedback"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { Callout } from \"@hulianui/ui\"",
+        "exports": [
+          "Callout"
+        ],
+        "group": "提示",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/callout/callout.md",
+        "docLocal": "packages/ui/src/callout/callout.md",
+        "status": "enriched"
+      }
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
@@ -9013,29 +9036,6 @@
         "webgl": false,
         "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/access/access.md",
         "docLocal": "packages/ui/src/access/access.md",
-        "status": "enriched"
-      }
-    },
-    {
-      "name": "callout",
-      "type": "registry:ui",
-      "title": "Callout",
-      "description": "文章 / 文档用提示框（admonition）。 · uncatalogued",
-      "categories": [
-        "uncatalogued"
-      ],
-      "dependencies": [],
-      "meta": {
-        "import": "import { Callout } from \"@hulianui/ui\"",
-        "exports": [
-          "Callout"
-        ],
-        "group": "",
-        "tags": [],
-        "animated": false,
-        "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/callout/callout.md",
-        "docLocal": "packages/ui/src/callout/callout.md",
         "status": "enriched"
       }
     },

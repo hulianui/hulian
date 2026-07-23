@@ -1,8 +1,8 @@
 ---
 slug: callout
 name: Callout
-category: uncatalogued
-group: 
+category: feedback
+group: 提示
 tags: []
 exports: [Callout]
 status: enriched
@@ -10,7 +10,7 @@ status: enriched
 
 # Callout
 
-> 文章 / 文档用提示框（admonition）。 · uncatalogued
+> 文章 / 文档用提示框（admonition）。 · 反馈/提示
 
 ## 何时用
 

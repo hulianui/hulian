@@ -223,10 +223,11 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Tabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tabs/tabs.md): 选项卡 · Base UI 无浮层 + underline/solid 滑块
 - [Toolbar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toolbar/toolbar.md): 工具栏 · Base UI role=toolbar + 键盘漫游 + Button/Group/Separator
 
-## 反馈 feedback（22）
+## 反馈 feedback（23）
 - [Alert](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert/alert.md): 提示条 · tone×variant 皮肤 + a11y role
 - [AlertDialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert-dialog/alert-dialog.md): 确认对话框 · Base UI 强制决策(不点遮罩/Esc 关) + Dialog 引擎
 - [Banner](https://github.com/hulianui/hulian/blob/master/packages/ui/src/banner/banner.md): 公告条 · 横贯容器顶部全宽 bar(站点维护/促销/版本更新) · 6 语气×soft/solid + 前导图标/操作区/可关闭 + 居中或左对齐 + 长文案 dogfood Marquee 单行无缝滚动 · 区别 …
+- [Callout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/callout/callout.md): 文章 / 文档用提示框（admonition）。 · 反馈/提示
 - [Dialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dialog/dialog.md): 对话框 · Base UI Portal + focus trap
 - [Drawer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/drawer/drawer.md): 抽屉 · Base UI Dialog 引擎 + 四向侧滑
 - [FloatingReactions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/floating-reactions/floating-reactions.md): 飘心点赞 · 命令式 ref.emit(content,{count}) 从底部喷射上浮表情 + 随机起点/横向漂移/缩放/时长扰动 + 上浮渐隐(keyframe)动画结束自移除 + palette 随机池 + ri…
@@ -376,8 +377,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [SwipeAction](https://github.com/hulianui/hulian/blob/master/packages/ui/src/swipe-action/swipe-action.md): 列表项滑动操作 · 内容层 translateX 跟手 + 左/右动作面板 + 过半吸附全开/回弹 + 主轴判定放行纵向滚动(零依赖·Pointer Events)
 - [TabBar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tab-bar/tab-bar.md): 底部导航栏 · items 驱动受控/非受控 + 激活 text-primary/aria-current + 角标/红点 + 吃底部安全区(零依赖·H5 主导航)
 
-## uncatalogued uncatalogued（4）
+## uncatalogued uncatalogued（3）
 - [Access](https://github.com/hulianui/hulian/blob/master/packages/ui/src/access/access.md): 声明式权限门禁：有权限渲染 children，否则渲染 fallback（默认隐藏）。 · uncatalogued
-- [Callout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/callout/callout.md): 文章 / 文档用提示框（admonition）。 · uncatalogued
 - [Config](https://github.com/hulianui/hulian/blob/master/packages/ui/src/config/config.md): 全局配置根：当前承载 i18n（locale），后续渐进扩展默认尺寸/主题等全局项。 · uncatalogued
 - [Theme](https://github.com/hulianui/hulian/blob/master/packages/ui/src/theme/theme.md): · uncatalogued
