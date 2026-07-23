@@ -17,6 +17,10 @@ export function Heatmap({
   yLabels,
   colorScale = 5,
   max,
+  domain,
+  valueFormat,
+  unit,
+  showLegend = false,
   cellSize = 14,
   gap = 3,
   showLabels = true,
@@ -25,7 +29,10 @@ export function Heatmap({
   className,
 }: HeatmapProps) {
   const { xs, ys, get } = buildMatrix(data, xLabels, yLabels);
-  const realMax = max ?? Math.max(1, ...data.map((d) => d.value));
+  // 值域：domain 显式最优先；否则 [0, max ?? 数据最大]。数据最大 <1（小数/比率）不再抬到 1，
+  // 保持小数据也能铺满色阶；全 0/空数据回落 1 防除零。
+  const [domainMin, domainMax] = domain ?? [0, max ?? (Math.max(0, ...data.map((d) => d.value)) || 1)];
+  const formatValue = valueFormat ?? (unit != null ? (v: number) => `${v}${unit}` : (v: number) => String(v));
 
   return (
     <div className={cn("inline-block overflow-x-auto", className)}>
@@ -45,9 +52,9 @@ export function Heatmap({
             )}
             {xs.map((x) => {
               const value = get(y, x);
-              const bucket = bucketize(value, realMax, colorScale);
+              const bucket = bucketize(value, domainMax, colorScale, domainMin);
               const info: HeatmapCellInfo = { x, y, value };
-              const title = formatTooltip ? formatTooltip(info) : `${y} · ${x}：${value}`;
+              const title = formatTooltip ? formatTooltip(info) : `${y} · ${x}：${formatValue(value)}`;
               const style = {
                 width: cellSize,
                 height: cellSize,
@@ -86,6 +93,26 @@ export function Heatmap({
           </div>
         )}
       </div>
+      {showLegend && (
+        <div
+          className="mt-2 flex items-center gap-1 text-[10px] leading-none text-muted"
+          aria-label={`色阶：${formatValue(domainMin)} 至 ${formatValue(domainMax)}`}
+        >
+          <span className="pr-1">{formatValue(domainMin)}</span>
+          {Array.from({ length: colorScale + 1 }, (_, bucket) => (
+            <span
+              key={bucket}
+              className="rounded-[2px]"
+              style={{
+                width: Math.min(cellSize, 12),
+                height: Math.min(cellSize, 12),
+                background: bucketBackground(bucket, colorScale),
+              }}
+            />
+          ))}
+          <span className="pl-1">{formatValue(domainMax)}</span>
+        </div>
+      )}
     </div>
   );
 }

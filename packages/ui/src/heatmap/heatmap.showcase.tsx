@@ -17,6 +17,13 @@ const contribData: HeatCell[] = ["一", "二", "三", "四", "五", "六", "日"
   weeks.map((w, wi) => ({ x: w, y: day, value: ((dy * 5 + wi * 7) % 9) })),
 );
 
+// 考点掌握率（0–1 比率·确定性数据）：domain 收紧 + valueFormat 百分比 + 色阶图例
+const TOPICS = ["有理数", "整式", "方程", "函数", "几何"];
+const CLASSES = ["一班", "二班", "三班", "四班"];
+const masteryData: HeatCell[] = CLASSES.flatMap((c, ci) =>
+  TOPICS.map((t, ti) => ({ x: t, y: c, value: 0.5 + (((ci * 5 + ti * 3) % 8) / 20) })),
+);
+
 export const heatmapShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -55,6 +62,31 @@ export const heatmapShowcase: ShowcaseSpec = {
       code: `<Heatmap data={data} xLabels={WEEKDAYS} yLabels={MODULES} showLabels={false} cellSize={12} />`,
       render: () => (
         <Heatmap data={moduleData} xLabels={WEEKDAYS} yLabels={MODULES} showLabels={false} cellSize={12} />
+      ),
+    },
+    {
+      title: "小数值域 / 百分比 + 图例",
+      description:
+        "比率数据（0–1）传 domain 收紧值域铺满色阶；valueFormat 让 tooltip 与图例自动带 %；showLegend 显示色阶图例。",
+      code: `<Heatmap
+  data={masteryData}            // value 是 0.5~0.85 的掌握率
+  xLabels={TOPICS}
+  yLabels={CLASSES}
+  domain={[0.5, 0.9]}           // 按值域比例分档，低区间也能铺满色阶
+  valueFormat={(v) => \`\${Math.round(v * 100)}%\`}
+  showLegend
+  cellSize={18}
+/>`,
+      render: () => (
+        <Heatmap
+          data={masteryData}
+          xLabels={TOPICS}
+          yLabels={CLASSES}
+          domain={[0.5, 0.9]}
+          valueFormat={(v) => `${Math.round(v * 100)}%`}
+          showLegend
+          cellSize={18}
+        />
       ),
     },
     {
@@ -98,6 +130,20 @@ export const heatmapShowcase: ShowcaseSpec = {
     {
       name: "无标签紧凑",
       render: () => <Heatmap data={moduleData} xLabels={WEEKDAYS} yLabels={MODULES} showLabels={false} cellSize={12} />,
+    },
+    {
+      name: "掌握率（小数值域 + % 图例）",
+      render: () => (
+        <Heatmap
+          data={masteryData}
+          xLabels={TOPICS}
+          yLabels={CLASSES}
+          domain={[0.5, 0.9]}
+          valueFormat={(v) => `${Math.round(v * 100)}%`}
+          showLegend
+          cellSize={18}
+        />
+      ),
     },
   ],
   renderWithProps: (p) => (

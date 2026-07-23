@@ -21,8 +21,13 @@ export function buildMatrix(
   };
 }
 
-/** value→色阶档位 [0..scale]（0 表示无/最浅）。 */
-export function bucketize(value: number, max: number, scale: number): number {
-  if (max <= 0 || value <= 0) return 0;
-  return Math.max(1, Math.min(scale, Math.ceil((value / max) * scale)));
+/**
+ * value→色阶档位 [0..scale]（0 表示无/≤值域下限）。
+ * min 是值域下限（默认 0，行为与旧签名完全一致）；传入后按 (value-min)/(max-min)
+ * 的值域比例分档——小数/比率数据（如掌握率 0.55~0.88 配 domain [0.5, 0.9]）也能均匀铺满色阶。
+ */
+export function bucketize(value: number, max: number, scale: number, min = 0): number {
+  if (max <= min || value <= min) return 0;
+  const ratio = (value - min) / (max - min);
+  return Math.max(1, Math.min(scale, Math.ceil(ratio * scale)));
 }
