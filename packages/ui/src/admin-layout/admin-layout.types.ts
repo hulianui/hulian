@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { LayoutBreakpoint } from "../layout/layout.types";
 import type { NavMenuItem, NavMenuNode } from "../nav-menu/nav-menu.types";
 
 /** 一个打开的页签。 */
@@ -31,6 +32,12 @@ export interface AdminLayoutProps {
   collapsed?: boolean;
   defaultCollapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
+  /**
+   * 响应式断点（与 LayoutSider 同语义）：视口 ≤ 该宽度时自动收起侧栏、> 时展开。
+   * 非受控时直接改内部收起态；受控（传了 collapsed）时不改状态、只触发 onCollapsedChange，
+   * 由消费侧决定是否跟随。不设则保持现有行为（不自动收起）。
+   */
+  breakpoint?: LayoutBreakpoint;
 
   // —— 多页签 ——
   /** 关闭多页签条（默认 true）。 */

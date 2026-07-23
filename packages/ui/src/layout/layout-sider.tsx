@@ -14,6 +14,11 @@ const BREAKPOINT_PX: Record<Exclude<LayoutBreakpoint, number>, number> = {
   "2xl": 1536,
 };
 
+/** 断点名/自定义像素数 → 像素宽。AdminLayout 等自绘侧栏的骨架件复用，保证断点语义一致。 */
+export function resolveBreakpointPx(breakpoint: LayoutBreakpoint): number {
+  return typeof breakpoint === "number" ? breakpoint : BREAKPOINT_PX[breakpoint];
+}
+
 // 默认折叠 chevron：收起态指向右（展开方向），展开态指向左。
 function DefaultTrigger({ collapsed }: { collapsed: boolean }) {
   return (
@@ -69,8 +74,7 @@ export function LayoutSider({
   useEffect(() => {
     if (breakpoint === undefined) return;
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
-    const px = typeof breakpoint === "number" ? breakpoint : BREAKPOINT_PX[breakpoint];
-    const mql = window.matchMedia(`(max-width: ${px}px)`);
+    const mql = window.matchMedia(`(max-width: ${resolveBreakpointPx(breakpoint)}px)`);
     const apply = (matches: boolean) => {
       if (!isControlled) setInternal(matches);
       onCollapseRef.current?.(matches, "responsive");

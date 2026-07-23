@@ -64,6 +64,20 @@ describe("Toast", () => {
     await waitFor(() => expect(titleEl("可关闭项", "text-foreground")).toBeFalsy());
   });
 
+  it("ToastProvider 透传渲染 children（包裹式写法不吞子树）", () => {
+    render(
+      <ToastProvider>
+        <div>应用内容</div>
+      </ToastProvider>,
+    );
+    expect(screen.getByText("应用内容")).toBeTruthy();
+    // children 存在时命令式触发照常工作
+    act(() => {
+      toast({ title: "包裹式触发" });
+    });
+    expect(screen.getAllByText("包裹式触发").length).toBeGreaterThan(0);
+  });
+
   it("timeout:0 不自动消失（fake timers 推进 10s 仍在）", () => {
     vi.useFakeTimers();
     try {

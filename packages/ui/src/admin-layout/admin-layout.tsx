@@ -1,7 +1,8 @@
 "use client";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Menu, X } from "../_icons";
 import { useLocale } from "../config/locale";
+import { resolveBreakpointPx } from "../layout/layout-sider";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { NavMenu } from "../nav-menu/nav-menu";
@@ -132,6 +133,7 @@ export function AdminLayout({
   collapsed: collapsedProp,
   defaultCollapsed = false,
   onCollapsedChange,
+  breakpoint,
   showTabs = true,
   tabs: tabsProp,
   activeKey: activeKeyProp,
@@ -154,6 +156,25 @@ export function AdminLayout({
     if (collapsedProp === undefined) setCollapsedI(v);
     onCollapsedChange?.(v);
   };
+
+  // 响应式断点（同 LayoutSider）：视口 ≤ 断点宽度时收起、> 时展开。jsdom 无 matchMedia → 守卫跳过。
+  // onCollapsedChange 走 ref 持最新引用，避免回调变化反复重订阅。
+  const collapseControlled = collapsedProp !== undefined;
+  const onCollapsedChangeRef = useRef(onCollapsedChange);
+  onCollapsedChangeRef.current = onCollapsedChange;
+  useEffect(() => {
+    if (breakpoint === undefined) return;
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mql = window.matchMedia(`(max-width: ${resolveBreakpointPx(breakpoint)}px)`);
+    const apply = (matches: boolean) => {
+      if (!collapseControlled) setCollapsedI(matches);
+      onCollapsedChangeRef.current?.(matches);
+    };
+    apply(mql.matches);
+    const handler = (e: MediaQueryListEvent) => apply(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, [breakpoint, collapseControlled]);
 
   const [selectedI, setSelectedI] = useState<string | undefined>(defaultSelectedKey ?? defaultActiveKey);
   const selected = selectedKeyProp ?? selectedI;

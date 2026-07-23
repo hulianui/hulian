@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.6.0 · 353 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.7.0 · 354 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -32,6 +32,7 @@ import { AdminLayout } from "@hulianui/ui"
 | defaultOpenKeys | `string[]` | — | 非受控初始展开。 |
 | collapsed | `boolean` | — | 受控侧栏折叠态。 |
 | defaultCollapsed | `boolean` | — | 非受控初始折叠态。 |
+| breakpoint | `"sm"｜"md"｜"lg"｜"xl"｜"2xl"｜number` | — | 响应式断点（与 LayoutSider 同语义）：视口 ≤ 该宽度自动收起侧栏、> 时展开。非受控直接改内部态；受控（传了 `collapsed`）时只触发 `onCollapsedChange` 由上层决定是否跟随。不设则不自动收起。 |
 | showTabs | `boolean` | `true` | 是否显示多页签条。 |
 | tabs | `AdminTab[]` | — | 受控页签列表；不传则由菜单点击自动维护（非受控）。 |
 | activeKey | `string` | — | 受控当前激活页签 key。 |
@@ -70,6 +71,7 @@ const [active, setActive] = useState("dashboard");
   menuItems={menu}
   logo={<span className="font-bold text-primary">瑚琏 Admin</span>}
   logoCollapsed={<span className="font-bold text-primary">瑚</span>}
+  breakpoint="md" // 窄屏（≤768px）自动收起侧栏，移动端友好
   defaultActiveKey="dashboard"
   defaultSelectedKey="dashboard"
   defaultOpenKeys={["users"]}
@@ -86,6 +88,7 @@ const [active, setActive] = useState("dashboard");
 - **`fitViewport` 决定撑高方式**：整页用默认 `true`（自钉 100dvh），别再外面套 `h-dvh` wrapper；嵌入文档示例卡等固定高度容器时务必传 `false`，否则整页滚动而非内容区滚动。详见 [[hulian-adminlayout-fitviewport]]。
 - **页签受控/非受控二选一**：不传 `tabs` 时页签由菜单点击自动维护（非受控）；一旦传 `tabs` 即受控，须自行配 `onTabChange`/`onTabClose` 维护数组与 `activeKey`。
 - `children` 只渲染「当前激活页」，keep-alive 的多页内容缓存需上层按 `activeKey` 自行管理，组件不替你缓存各页 DOM。
+- **移动端务必设 `breakpoint`**（推荐 `"md"`）：不设时窄屏侧栏保持展开，390px 视口下会挤占过半屏宽。为不破坏既有行为该项无默认值，需显式开启。
 
 ## 相关
 [Layout](https://hulianui.haloritual.com/components/layout) · [ScrollArea](https://hulianui.haloritual.com/components/scroll-area) · [Viewport](https://hulianui.haloritual.com/components/viewport) · [Resizable](https://hulianui.haloritual.com/components/resizable) · [AspectRatio](https://hulianui.haloritual.com/components/aspect-ratio) · [FitScreen](https://hulianui.haloritual.com/components/fit-screen)
@@ -5644,6 +5647,44 @@ const [files, setFiles] = useState<UploadFile[]>([]);
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
+
+<!-- ════════════════════════════════════════════════════════ -->
+> 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
+
+# VoiceRecord
+
+语音录制触发器，通过 `status` 驱动视觉反馈。
+
+## 状态
+
+| status | 效果 | 点击行为 |
+|--------|------|---------|
+| idle | 默认 mic 图标 | 触发 onToggle → 开始录音 |
+| recording | 脉动光环 + 波形条 + 按钮缩小红色 | 触发 onToggle → 停止 |
+| processing | 旋转加载态 | 无点击响应 |
+| disabled | 灰色不可交互 | 无 |
+
+## Props
+
+| Prop | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| status | `"idle" \| "recording" \| "processing" \| "disabled"` | `"idle"` | 当前状态 |
+| onToggle | `(status) => void` | — | 状态切换回调 |
+| levels | `number[]` | `[]` | 波形级别(0-1)；空数组=无波形 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 按钮尺寸 |
+| labelIdle | `string` | `"按住说话"` | idle 态文案 |
+| labelRecording | `string` | `"松开结束"` | recording 态文案 |
+| labelProcessing | `string` | `"处理中…"` | processing 态文案 |
+
+## 用法
+
+```tsx
+<VoiceRecord
+  status={phase === "recording" ? "recording" : phase === "processing" ? "processing" : "idle"}
+  levels={audioLevels}
+  onToggle={(s) => s === "idle" ? onStart() : onStop()}
+/>
+```
 
 
 # ━━━━━━━━ 数据展示 ━━━━━━━━
@@ -13541,12 +13582,17 @@ import { toast, ToastProvider } from "@hulianui/ui"
 | title | `ReactNode` | 标题（加粗主行） |
 | description | `ReactNode` | 描述（次行，恒 text-muted） |
 
-`ToastProvider` 在根/段落 layout 单挂，承接命令式渲染。
+`ToastProvider` 在根/段落 layout 单挂，承接命令式渲染。`children` 可选且透传渲染：包裹式 `<ToastProvider><App/></ToastProvider>` 与自闭合 `<ToastProvider />`（与页面内容并列兄弟）两种写法均可。
 
 ## 示例
 ```tsx
-// 应用根布局挂一次
+// 应用根布局挂一次：包裹式（透传渲染 children）
 <ToastProvider>{children}</ToastProvider>
+// 或自闭合 + 兄弟节点渲染应用，等价
+<>
+  <App />
+  <ToastProvider />
+</>
 
 // 业务侧命令式调用
 toast({ tone: "info", title: "有新版本", description: "点击刷新以更新。" })
@@ -13557,6 +13603,7 @@ toast({ title: "需手动关闭", timeout: 0 }) // 0 = 常驻，点 × 才消失
 ## 禁忌 / 坑
 
 - `ToastProvider` 全应用只挂一次（在段落 layout），别在 showcase/页面里重复挂，否则命令式渲染会重复。
+- `@hulianui/ui` < 0.8 的 `ToastProvider` **不渲染 children**：包裹式写法会静默吞掉整个应用子树（白屏、零报错）。0.8 起已修复为透传渲染；旧版本务必用自闭合写法。
 - 无 `success` 语调（token 无），成功态用 `info` 或 `neutral`。
 - 测试该组件时注意 Base UI Toast 的几个坑见 [[base-ui-toast-close-aria-hidden-query-dom-not-role]]：未聚焦的 Close 按钮带 `aria-hidden` 致 `getByRole("button")` 找不到（改查 DOM）、aria-live 公告会让标题文本重复匹配、全局 manager 持久化致 toast 跨测试泄漏需清理。
 

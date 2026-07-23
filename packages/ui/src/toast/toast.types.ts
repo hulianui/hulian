@@ -3,6 +3,11 @@ import type { ReactNode } from "react";
 /** 复用 Alert 语义 tone（无 success：token 无）。 */
 export type ToastTone = "info" | "danger" | "neutral";
 
+export interface ToastProviderProps {
+  /** 可选应用子树，透传渲染。不传则自闭合挂载，与页面内容并列。 */
+  children?: ReactNode;
+}
+
 export interface ToastOptions {
   /** 标题（加粗主行）。 */
   title?: ReactNode;

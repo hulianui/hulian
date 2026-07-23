@@ -1,7 +1,14 @@
 ---
-name: voice-record
-description: 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
+slug: voice-record
+name: VoiceRecord
+category: forms
+group: 高级录入
+tags: []
+exports: [VoiceRecord]
+status: enriched
 ---
+
+> 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
 # VoiceRecord
 

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, fireEvent, within } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { act, render, fireEvent, within } from "@testing-library/react";
 import type { NavMenuNode } from "../nav-menu/nav-menu.types";
 import { AdminLayout } from "./admin-layout";
 
@@ -124,5 +124,64 @@ describe("AdminLayout", () => {
     fireEvent.click(getByText("订单管理"));
     // 受控页签由上层维护，组件内部不增改
     expect(tabsOf(container).length).toBe(1);
+  });
+
+  describe("breakpoint 响应式自动折叠", () => {
+    function stubMatchMedia(initialMatches: boolean) {
+      const listeners: Array<(e: { matches: boolean }) => void> = [];
+      let queried = "";
+      vi.stubGlobal("matchMedia", (query: string) => {
+        queried = query;
+        return {
+          matches: initialMatches,
+          media: query,
+          addEventListener: (_: string, cb: (e: { matches: boolean }) => void) => listeners.push(cb),
+          removeEventListener: () => {},
+        };
+      });
+      return {
+        emit: (matches: boolean) => listeners.forEach((cb) => cb({ matches })),
+        query: () => queried,
+      };
+    }
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    it("命中断点初始收起，变化事件切换展开", () => {
+      const mm = stubMatchMedia(true);
+      const { container } = render(<AdminLayout menuItems={menu} breakpoint="md" />);
+      expect(mm.query()).toBe("(max-width: 768px)");
+      const aside = container.querySelector("aside")!;
+      expect(aside.hasAttribute("data-collapsed")).toBe(true);
+      act(() => mm.emit(false));
+      expect(aside.hasAttribute("data-collapsed")).toBe(false);
+    });
+
+    it("数字断点走自定义像素查询", () => {
+      const mm = stubMatchMedia(false);
+      render(<AdminLayout menuItems={menu} breakpoint={900} />);
+      expect(mm.query()).toBe("(max-width: 900px)");
+    });
+
+    it("受控 collapsed 时不改状态、只回调 onCollapsedChange", () => {
+      const mm = stubMatchMedia(true);
+      const onChange = vi.fn();
+      const { container } = render(
+        <AdminLayout menuItems={menu} breakpoint="md" collapsed={false} onCollapsedChange={onChange} />,
+      );
+      const aside = container.querySelector("aside")!;
+      // 受控展开态不被断点覆盖
+      expect(aside.hasAttribute("data-collapsed")).toBe(false);
+      expect(onChange).toHaveBeenCalledWith(true);
+      act(() => mm.emit(false));
+      expect(onChange).toHaveBeenCalledWith(false);
+    });
+
+    it("不设 breakpoint 不订阅 matchMedia（保持现有行为）", () => {
+      const spy = vi.fn();
+      vi.stubGlobal("matchMedia", spy);
+      render(<AdminLayout menuItems={menu} />);
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 });

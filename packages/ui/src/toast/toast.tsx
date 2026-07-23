@@ -2,7 +2,7 @@
 import { Toast } from "@base-ui/react/toast";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
-import type { ToastOptions, ToastTone } from "./toast.types";
+import type { ToastOptions, ToastProviderProps, ToastTone } from "./toast.types";
 
 // 模块级全局单例 manager：触发(toast())与渲染(<ToastProvider/>)解耦。框架无关、SSR 安全。
 const hulianToastManager = Toast.createToastManager();
@@ -70,10 +70,15 @@ function ToastList() {
   });
 }
 
-/** 单挂一次（推荐 /components 段 layout）。含 Viewport + 列表；自闭合，无需外部 children。 */
-export function ToastProvider() {
+/**
+ * 单挂一次（推荐应用根/段落 layout）。含 Viewport + 列表。
+ * children 可选且透传渲染：`<ToastProvider><App/></ToastProvider>` 包裹式与
+ * `<ToastProvider />` 自闭合并列兄弟两种写法均可（Provider 语义组件收 children 是生态普遍预期）。
+ */
+export function ToastProvider({ children }: ToastProviderProps) {
   return (
     <Toast.Provider toastManager={hulianToastManager}>
+      {children}
       <Toast.Viewport className="fixed right-4 top-4 z-[60] flex w-[min(90vw,22rem)] flex-col gap-2 outline-none">
         <ToastList />
       </Toast.Viewport>

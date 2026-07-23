@@ -32,6 +32,7 @@ import { AdminLayout } from "@hulianui/ui"
 | defaultOpenKeys | `string[]` | — | 非受控初始展开。 |
 | collapsed | `boolean` | — | 受控侧栏折叠态。 |
 | defaultCollapsed | `boolean` | — | 非受控初始折叠态。 |
+| breakpoint | `"sm"｜"md"｜"lg"｜"xl"｜"2xl"｜number` | — | 响应式断点（与 LayoutSider 同语义）：视口 ≤ 该宽度自动收起侧栏、> 时展开。非受控直接改内部态；受控（传了 `collapsed`）时只触发 `onCollapsedChange` 由上层决定是否跟随。不设则不自动收起。 |
 | showTabs | `boolean` | `true` | 是否显示多页签条。 |
 | tabs | `AdminTab[]` | — | 受控页签列表；不传则由菜单点击自动维护（非受控）。 |
 | activeKey | `string` | — | 受控当前激活页签 key。 |
@@ -70,6 +71,7 @@ const [active, setActive] = useState("dashboard");
   menuItems={menu}
   logo={<span className="font-bold text-primary">瑚琏 Admin</span>}
   logoCollapsed={<span className="font-bold text-primary">瑚</span>}
+  breakpoint="md" // 窄屏（≤768px）自动收起侧栏，移动端友好
   defaultActiveKey="dashboard"
   defaultSelectedKey="dashboard"
   defaultOpenKeys={["users"]}
@@ -86,6 +88,7 @@ const [active, setActive] = useState("dashboard");
 - **`fitViewport` 决定撑高方式**：整页用默认 `true`（自钉 100dvh），别再外面套 `h-dvh` wrapper；嵌入文档示例卡等固定高度容器时务必传 `false`，否则整页滚动而非内容区滚动。详见 [[hulian-adminlayout-fitviewport]]。
 - **页签受控/非受控二选一**：不传 `tabs` 时页签由菜单点击自动维护（非受控）；一旦传 `tabs` 即受控，须自行配 `onTabChange`/`onTabClose` 维护数组与 `activeKey`。
 - `children` 只渲染「当前激活页」，keep-alive 的多页内容缓存需上层按 `activeKey` 自行管理，组件不替你缓存各页 DOM。
+- **移动端务必设 `breakpoint`**（推荐 `"md"`）：不设时窄屏侧栏保持展开，390px 视口下会挤占过半屏宽。为不破坏既有行为该项无默认值，需显式开启。
 
 ## 相关
 [Layout](../layout/layout.md) · [ScrollArea](../scroll-area/scroll-area.md) · [Viewport](../viewport/viewport.md) · [Resizable](../resizable/resizable.md) · [AspectRatio](../aspect-ratio/aspect-ratio.md) · [FitScreen](../fit-screen/fit-screen.md)
