@@ -45,6 +45,14 @@ const radarSeries = [
 ];
 
 const W = "w-[32rem] max-w-full";
+
+// issue #6 复现数据：4 字 CJK / 混合类目，验证 horizontal 轴宽自适应不截断
+const stageData = [
+  { stage: "音频解码", p50: 105 },
+  { stage: "ASR识别", p50: 620 },
+  { stage: "LLM首句", p50: 890 },
+  { stage: "TTS首音", p50: 760 },
+];
 const TYPES = ["area", "bar", "line", "pie", "donut", "radar", "radial"] as const;
 
 function renderType(type: string) {
@@ -109,6 +117,31 @@ export const chartShowcase: ShowcaseSpec = {
       render: () => <BarChart data={data} series={series} xKey="month" stacked className={W} />,
     },
     {
+      title: "横向柱状（CJK 类目自适应轴宽）",
+      description:
+        "horizontal 把类目移到 Y 轴，轴宽默认按最长标签自适应（CJK 全角估宽，48–160px），不再截断中文；要精确控制传 yAxisWidth。",
+      code: `<BarChart
+  horizontal
+  data={[
+    { stage: "音频解码", p50: 105 },
+    { stage: "ASR识别", p50: 620 },
+    { stage: "LLM首句", p50: 890 },
+    { stage: "TTS首音", p50: 760 },
+  ]}
+  xKey="stage"
+  series={[{ key: "p50", label: "P50 耗时(ms)" }]}
+/>`,
+      render: () => (
+        <BarChart
+          horizontal
+          data={stageData}
+          xKey="stage"
+          series={[{ key: "p50", label: "P50 耗时(ms)" }]}
+          className={W}
+        />
+      ),
+    },
+    {
       title: "饼图 / 环形",
       description: "扁平 {name,value} 数据；donut 中心挖空。",
       code: `<>
@@ -161,6 +194,18 @@ export const chartShowcase: ShowcaseSpec = {
       name: "横向柱状",
       render: () => (
         <BarChart data={data.slice(0, 6)} series={series} xKey="month" horizontal className={W} />
+      ),
+    },
+    {
+      name: "横向柱状（CJK 类目·轴宽自适应）",
+      render: () => (
+        <BarChart
+          horizontal
+          data={stageData}
+          xKey="stage"
+          series={[{ key: "p50", label: "P50 耗时(ms)" }]}
+          className={W}
+        />
       ),
     },
     {

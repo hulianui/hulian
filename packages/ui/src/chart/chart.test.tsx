@@ -12,7 +12,7 @@ vi.mock("recharts", async (importOriginal) => {
   };
 });
 
-import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart } from "./chart";
+import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, categoryAxisWidth } from "./chart";
 import { chartColor } from "./chart-theme";
 
 const data = [
@@ -56,6 +56,42 @@ describe("BarChart", () => {
       <BarChart data={data} series={series} xKey="month" stacked horizontal />,
     );
     expect(container.querySelector("svg")).toBeTruthy();
+  });
+  it("horizontal + CJK 类目（issue #6 复现数据）渲染不抛", () => {
+    const stages = [
+      { stage: "音频解码", p50: 105 },
+      { stage: "ASR识别", p50: 620 },
+      { stage: "LLM首句", p50: 890 },
+      { stage: "TTS首音", p50: 760 },
+    ];
+    const { container } = render(
+      <BarChart data={stages} series={[{ key: "p50" }]} xKey="stage" horizontal />,
+    );
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+});
+
+describe("categoryAxisWidth（horizontal 类目轴自适应宽）", () => {
+  it("短标签维持下限 48", () => {
+    expect(categoryAxisWidth(["一", "二"])).toBe(48);
+    expect(categoryAxisWidth([])).toBe(48);
+  });
+  it("4 个 CJK 字（issue #6 场景）> 48，不再截断", () => {
+    // 音频解码 = 4×12 + 16 = 64
+    expect(categoryAxisWidth(["音频解码", "ASR识别", "TTS首音"])).toBe(64);
+  });
+  it("CJK 按全角、ASCII 按 0.62 半角估宽", () => {
+    // "ASR识别" = 3×12×0.62 + 2×12 = 46.32 → 与纯 4 字全角比更窄
+    expect(categoryAxisWidth(["ASR识别"])).toBe(Math.ceil(3 * 12 * 0.62 + 2 * 12) + 16);
+  });
+  it("超长标签夹在上限 160", () => {
+    expect(categoryAxisWidth(["这是一个非常非常非常长的类目标签超过上限"])).toBe(160);
+  });
+  it("显式 override 直接生效（逃生舱）", () => {
+    expect(categoryAxisWidth(["音频解码"], 90)).toBe(90);
+  });
+  it("null/undefined 标签按空串处理", () => {
+    expect(categoryAxisWidth([null, undefined])).toBe(48);
   });
 });
 

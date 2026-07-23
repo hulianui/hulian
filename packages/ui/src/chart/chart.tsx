@@ -97,6 +97,23 @@ function PolarAngleWrapTick({
   );
 }
 
+// horizontal 柱图的类目轴（YAxis）宽度：recharts 需要显式 px，写死会截断 CJK 标签
+// （48px 只容 ~3 个全角字）。按最长标签估宽：CJK/全角 ≈ fontSize，半角 ≈ 0.62×fontSize，
+// 另加 tick 与轴的间隙。夹在 [48, 160]——超长标签建议消费侧截短或显式传 yAxisWidth。
+const AXIS_TICK_FONT = 12; // 与 chart-theme axisProps.tick.fontSize 同源
+export function categoryAxisWidth(labels: unknown[], override?: number): number {
+  if (override != null) return override;
+  let longest = 0;
+  for (const label of labels) {
+    let w = 0;
+    for (const ch of String(label ?? "")) {
+      w += (ch.codePointAt(0) ?? 0) > 0xff ? AXIS_TICK_FONT : AXIS_TICK_FONT * 0.62;
+    }
+    if (w > longest) longest = w;
+  }
+  return Math.min(160, Math.max(48, Math.ceil(longest) + 16));
+}
+
 // recharts 引擎（坐标系/比例尺/路径）+ 瑚琏皮肤（SVG 色走 var(--color-chart-N)/token，明暗自适应）。
 export function AreaChart<TDatum>({
   data,
@@ -144,6 +161,7 @@ export function BarChart<TDatum>({
   className,
   stacked,
   horizontal,
+  yAxisWidth,
 }: BarChartProps<TDatum>) {
   return (
     <div className={cn("w-full", className)} style={{ height }}>
@@ -157,7 +175,15 @@ export function BarChart<TDatum>({
           {horizontal ? (
             <>
               <XAxis type="number" {...axisProps} />
-              <YAxis type="category" dataKey={xKey} {...axisProps} width={48} />
+              <YAxis
+                type="category"
+                dataKey={xKey}
+                {...axisProps}
+                width={categoryAxisWidth(
+                  data.map((d) => (d as Record<string, unknown>)[xKey]),
+                  yAxisWidth,
+                )}
+              />
             </>
           ) : (
             <>

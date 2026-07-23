@@ -23,6 +23,11 @@ export interface ChartProps<TDatum = Record<string, unknown>> {
 /** Bar 专属：横向柱状（layout=vertical） */
 export interface BarChartProps<TDatum = Record<string, unknown>> extends ChartProps<TDatum> {
   horizontal?: boolean;
+  /**
+   * horizontal 模式类目轴（Y 轴）宽度 px。默认按最长类目标签自适应
+   * （CJK 全角估宽，min 48 / max 160）；标签超长或要精确控制时显式传值覆盖。
+   */
+  yAxisWidth?: number;
 }
 
 /** 饼图/环形图/径向图的扁平数据点 */

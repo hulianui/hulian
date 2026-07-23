@@ -4,7 +4,7 @@ name: Chart
 category: data-display
 group: stat
 tags: []
-exports: [AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, chartColor]
+exports: [AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, chartColor, categoryAxisWidth]
 status: enriched
 ---
 
@@ -33,6 +33,7 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | height | `number` | `280` | 高度（SSR 安全：宽走 ResponsiveContainer，高需显式值） |
 | stacked | `boolean` | `false` | 多序列堆叠（Area/Bar 生效） |
 | horizontal | `boolean` | `false` | **BarChart 专属**：横向柱状 |
+| yAxisWidth | `number` | 自适应 | **BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48–160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传 |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-[32rem]`） |
 
 ### PieChart / RadialChart（扁平数据类）
@@ -52,12 +53,21 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 
 // 环形图
 <PieChart donut data={[{ name: "搜索", value: 420 }, { name: "直接", value: 280 }]} className="w-[32rem]" />
+
+// 横向柱状：CJK 类目轴宽自适应（≥4 字不再截断）
+<BarChart
+  horizontal
+  data={[{ stage: "音频解码", p50: 105 }, { stage: "TTS首音", p50: 760 }]}
+  xKey="stage"
+  series={[{ key: "p50" }]}
+/>
 ```
 
 ## 禁忌 / 坑
 - 宽度交给父容器 / className，**高度必须显式**（`height` 默认 280）——宽走 ResponsiveContainer 但高拿不到会塌成 0。
 - 在收缩的 flex 容器里 ResponsiveContainer 可能量不到宽，需给容器显式宽度，见 [[recharts-responsive-container-needs-explicit-width-in-shrink-flex]]。
 - headless 截图常出现「只剩坐标轴、数据区空白」——不是 bug，是入场动画的 clipPath 被 rAF 饿死，设 `prefers-reduced-motion: reduce` 再截即显，见 [[recharts-headless-screenshot-blank-clippath-animation-starved]]。
+- horizontal 类目轴宽自适应有 160px 上限（防超长标签吃掉图区）——类目 >12 个全角字仍会截断，此时消费侧截短标签或显式传 `yAxisWidth`。
 
 ## 相关
 [Stat](../stat/stat.md) · [Statistic](../statistic/statistic.md) · [Meter](../meter/meter.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)
