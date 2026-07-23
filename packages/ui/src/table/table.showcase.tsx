@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Table } from "./table";
 import type { ColumnDef } from "./table.types";
@@ -120,6 +121,37 @@ function TreeDemo() {
   return <Table columns={orgColumns} data={org} getSubRows={(r) => r.reports} />;
 }
 
+// 行点击：整行可点进详情（toast 示意），行内按钮冒泡隔离不误触
+function RowClickDemo() {
+  const [last, setLast] = useState<string | null>(null);
+  const actionColumns: ColumnDef<DemoUser, any>[] = [
+    ...columns,
+    {
+      id: "actions",
+      header: "操作",
+      cell: ({ row }) => (
+        <button
+          type="button"
+          className="text-primary hover:underline"
+          onClick={() => setLast(`点了「${row.original.name}」的编辑按钮（未触发行点击）`)}
+        >
+          编辑
+        </button>
+      ),
+    },
+  ];
+  return (
+    <div className="flex flex-col gap-2">
+      <Table
+        columns={actionColumns}
+        data={users.slice(0, 4)}
+        onRowClick={(row) => setLast(`行点击 → 进入 ${row.name} 的详情`)}
+      />
+      <p className="text-sm text-muted">{last ?? "点整行任意空白处，或点行内「编辑」按钮试试"}</p>
+    </div>
+  );
+}
+
 // 虚拟滚动：200 行只渲染视口窗口（固定高度容器）
 function VirtualDemo() {
   return <Table columns={columns} data={manyUsers} virtual={{ enabled: true, height: 360, rowHeight: 44 }} />;
@@ -177,6 +209,20 @@ export const tableShowcase: ShowcaseSpec = {
       render: () => <ExpandableDemo />,
     },
     {
+      title: "行点击",
+      description:
+        "onRowClick 让整行可点（hover 高亮 + cursor-pointer + 键盘可达）；行内按钮/链接冒泡隔离不误触。整页跳转可改用 rowHref。",
+      code: `<Table
+  columns={columns}
+  data={users}
+  onRowClick={(row) => router.push(\`/users/\${row.id}\`)}
+/>
+
+// 或声明式整行导航（整页跳转，cmd/ctrl+点击新开 tab）
+<Table columns={columns} data={users} rowHref={(row) => \`/users/\${row.id}\`} />`,
+      render: () => <RowClickDemo />,
+    },
+    {
       title: "虚拟滚动",
       description: "大数据平铺表开 virtual，200 行只渲染视口窗口（固定高容器）。",
       code: `<Table
@@ -196,6 +242,7 @@ export const tableShowcase: ShowcaseSpec = {
     { name: "行选择（全选 + 单选）", render: () => <SelectionDemo /> },
     { name: "列筛选（meta.filterable）", render: () => <FilterDemo /> },
     { name: "固定列（左首列 / 右操作列·横滚试试）", render: () => <StickyDemo /> },
+    { name: "行点击（整行进详情·行内按钮隔离）", render: () => <RowClickDemo /> },
     { name: "可展开明细", render: () => <ExpandableDemo /> },
     { name: "树形（getSubRows）", render: () => <TreeDemo /> },
     { name: "虚拟滚动（200 行·固定高容器）", render: () => <VirtualDemo /> },

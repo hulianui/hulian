@@ -65,6 +65,20 @@ export interface TableProps<TData> {
   rowClassName?: (row: TData, index: number) => string | undefined;
   className?: string;
 
+  // —— 行点击 / 整行导航（不传=关）——
+  /**
+   * 行点击回调（列表页点整行进详情）。开启后整行 cursor-pointer、tabIndex=0、
+   * 键盘 Enter/Space 可达，保持 <tr> row 语义不换 role。
+   * 行内交互元素（链接/按钮/表单控件，含自动前插的复选框/展开器）已做冒泡隔离，点它们不触发行级动作。
+   */
+  onRowClick?: (row: TData, index: number) => void;
+  /**
+   * 声明式整行导航：返回 href 则该行点击/Enter 整页跳转，cmd/ctrl+点击新开 tab；
+   * 返回 undefined 则该行不可点。SPA 路由跳转（router.push）请用 onRowClick。
+   * 与 onRowClick 同传时 onRowClick 优先，不再执行导航。
+   */
+  rowHref?: (row: TData, index: number) => string | undefined;
+
   // —— 行选择（不传=关）——
   /** 开启行选择：自动前插复选框列（含表头全选）。可传布尔或 (row)=>boolean 限定可选行。 */
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean);

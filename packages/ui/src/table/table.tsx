@@ -26,6 +26,12 @@ import type { TableProps } from "./table.types";
 const SELECT_COL = "__select__";
 const EXPANDER_COL = "__expander__";
 
+// 行点击冒泡隔离：点击落在行内交互元素（链接/按钮/表单控件，含前插的复选框/展开器）时
+// 不触发行级动作，各自的 onClick 照常工作。
+// 注意瑚琏 Checkbox 的 Root 是 span[role=checkbox]（非原生 input），须靠 role 命中。
+const ROW_INTERACTIVE_SELECTOR =
+  "a,button,input,select,textarea,label,[role='button'],[role='checkbox'],[role='switch'],[role='menuitem']";
+
 // ── 固定列：从 TanStack 原生 pinning 读 offset，皮肤补 sticky 几何 ──────────
 // （meta.sticky 只是初始 columnPinning 的派生源；offset 走 getStart/getAfter 不手算累加宽度）
 function stickyStyle<TData>(column: Column<TData, unknown>): React.CSSProperties | undefined {
@@ -68,6 +74,9 @@ export function Table<TData>({
   getRowId,
   rowClassName,
   className,
+  // 行点击 / 整行导航
+  onRowClick,
+  rowHref,
   // 行选择
   enableRowSelection,
   rowSelection: rowSelectionProp,
@@ -229,11 +238,50 @@ export function Table<TData>({
       selected && "bg-primary/10 hover:bg-primary/10",
     );
 
-  const renderRow = (row: (typeof rows)[number], index: number) => (
+  const renderRow = (row: (typeof rows)[number], index: number) => {
+    // 行点击 / 整行导航：onRowClick 优先；rowHref 按行返回 undefined 即该行不可点。
+    const href = onRowClick ? undefined : rowHref?.(row.original, index);
+    const rowInteractive = Boolean(onRowClick) || href != null;
+    const activate = (e: React.MouseEvent | React.KeyboardEvent) => {
+      if (onRowClick) {
+        onRowClick(row.original, index);
+        return;
+      }
+      if (href == null) return;
+      if ("metaKey" in e && (e.metaKey || e.ctrlKey)) window.open(href, "_blank", "noopener");
+      else window.location.assign(href);
+    };
+    return (
     <Fragment key={row.id}>
       <tr
-        className={cn(rowClass(row.getIsSelected()), rowClassName?.(row.original, index))}
+        className={cn(
+          rowClass(row.getIsSelected()),
+          rowInteractive &&
+            "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+          rowClassName?.(row.original, index),
+        )}
         data-selected={row.getIsSelected() || undefined}
+        tabIndex={rowInteractive ? 0 : undefined}
+        onClick={
+          rowInteractive
+            ? (e) => {
+                const hit = (e.target as HTMLElement).closest(ROW_INTERACTIVE_SELECTOR);
+                if (hit && e.currentTarget.contains(hit)) return;
+                activate(e);
+              }
+            : undefined
+        }
+        onKeyDown={
+          rowInteractive
+            ? (e) => {
+                // 只响应焦点落在 <tr> 自身的 Enter/Space，不劫持行内输入控件的按键
+                if (e.target !== e.currentTarget) return;
+                if (e.key !== "Enter" && e.key !== " ") return;
+                e.preventDefault();
+                activate(e);
+              }
+            : undefined
+        }
       >
         {row.getVisibleCells().map((cell) => (
           <td
@@ -253,7 +301,8 @@ export function Table<TData>({
         </tr>
       )}
     </Fragment>
-  );
+    );
+  };
 
   // tbody 主体：虚拟模式只渲染视口窗口 + 上下撑高占位行
   let body: React.ReactNode;

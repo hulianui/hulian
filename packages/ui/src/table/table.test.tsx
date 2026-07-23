@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
@@ -277,6 +277,106 @@ describe("rowClassName（行级状态着色）", () => {
       />,
     );
     expect(seen).toEqual([0, 1, 2]);
+  });
+});
+
+describe("行点击（onRowClick）", () => {
+  it("默认（不传）：行无 cursor-pointer、无 tabIndex、无点击响应", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    const row = container.querySelector("tbody tr") as HTMLElement;
+    expect(row.className).not.toContain("cursor-pointer");
+    expect(row.getAttribute("tabindex")).toBeNull();
+  });
+
+  it("点行任意单元格 → 回调收到 (row, index)；行有 cursor-pointer + tabIndex=0", () => {
+    const onRowClick = vi.fn();
+    const { container } = render(<Table columns={columns} data={data} onRowClick={onRowClick} />);
+    const rows = container.querySelectorAll("tbody tr");
+    const secondRowLastCell = rows[1].querySelectorAll("td")[1];
+    fireEvent.click(secondRowLastCell);
+    expect(onRowClick).toHaveBeenCalledTimes(1);
+    expect(onRowClick).toHaveBeenCalledWith({ name: "Alice", age: 25 }, 1);
+    const row = rows[0] as HTMLElement;
+    expect(row.className).toContain("cursor-pointer");
+    expect(row.getAttribute("tabindex")).toBe("0");
+  });
+
+  it("冒泡隔离：点行内复选框/按钮不触发 onRowClick", () => {
+    const onRowClick = vi.fn();
+    const { getAllByRole, container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        onRowClick={onRowClick}
+        enableRowSelection
+        renderExpandedRow={(row) => <div>明细：{row.original.name}</div>}
+      />,
+    );
+    fireEvent.click(getAllByRole("checkbox", { name: "选择行" })[0]);
+    fireEvent.click(getAllByRole("button", { name: "展开" })[0]);
+    expect(onRowClick).not.toHaveBeenCalled();
+    // 复选框/展开器各自功能照常
+    expect((container.querySelector("tbody tr") as HTMLElement).getAttribute("data-selected")).toBe(
+      "true",
+    );
+  });
+
+  it("键盘：焦点落 <tr> 自身按 Enter/Space 触发；行内元素按键不劫持", () => {
+    const onRowClick = vi.fn();
+    const { container } = render(<Table columns={columns} data={data} onRowClick={onRowClick} />);
+    const row = container.querySelector("tbody tr") as HTMLElement;
+    fireEvent.keyDown(row, { key: "Enter" });
+    fireEvent.keyDown(row, { key: " " });
+    expect(onRowClick).toHaveBeenCalledTimes(2);
+    // target ≠ currentTarget（模拟按键来自行内单元格内容）不触发
+    fireEvent.keyDown(row.querySelector("td") as HTMLElement, { key: "Enter" });
+    expect(onRowClick).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("整行导航（rowHref）", () => {
+  it("返回 undefined 的行不可点：无 cursor-pointer/tabIndex；返回 href 的行可点", () => {
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        rowHref={(row) => (row.name === "Alice" ? `/detail/${row.name}` : undefined)}
+      />,
+    );
+    const rows = Array.from(container.querySelectorAll("tbody tr")) as HTMLElement[];
+    const alice = rows.find((tr) => tr.textContent?.includes("Alice"))!;
+    const bob = rows.find((tr) => tr.textContent?.includes("Bob"))!;
+    expect(alice.className).toContain("cursor-pointer");
+    expect(alice.getAttribute("tabindex")).toBe("0");
+    expect(bob.className).not.toContain("cursor-pointer");
+    expect(bob.getAttribute("tabindex")).toBeNull();
+  });
+
+  it("cmd/ctrl+点击 → window.open 新开 tab", () => {
+    const open = vi.spyOn(window, "open").mockImplementation(() => null);
+    const { container } = render(
+      <Table columns={columns} data={data} rowHref={(row) => `/detail/${row.name}`} />,
+    );
+    fireEvent.click(container.querySelector("tbody tr td") as HTMLElement, { metaKey: true });
+    expect(open).toHaveBeenCalledWith("/detail/Charlie", "_blank", "noopener");
+    open.mockRestore();
+  });
+
+  it("与 onRowClick 同传：onRowClick 优先，不执行导航", () => {
+    const onRowClick = vi.fn();
+    const open = vi.spyOn(window, "open").mockImplementation(() => null);
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        onRowClick={onRowClick}
+        rowHref={(row) => `/detail/${row.name}`}
+      />,
+    );
+    fireEvent.click(container.querySelector("tbody tr td") as HTMLElement, { metaKey: true });
+    expect(onRowClick).toHaveBeenCalledTimes(1);
+    expect(open).not.toHaveBeenCalled();
+    open.mockRestore();
   });
 });
 
