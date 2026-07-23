@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, type AnyExtension } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { Markdown } from "tiptap-markdown";
@@ -57,7 +57,11 @@ export function MarkdownEditor({
     extensions: [
       StarterKit.configure({ link: false }), // StarterKit v3 自带 link，关掉用单独 Link
       Link.configure({ openOnClick: false, autolink: true }),
-      Markdown,
+      // tiptap-markdown 0.8.x 的类型绑 @tiptap/core v2（peer ^2.0.3），本库用 v3。本包是源码
+      // 分发，消费方 tsc 会直接检查本文件——其依赖树里 tiptap-markdown 若挂自己的 v2 core
+      // 副本，v2 Extension 进 v3 AnyExtension[] 即类型不匹配（vite 只转译不受影响）。
+      // 运行时 v3 兼容已实证，类型在此收口；tiptap-markdown 出 v3 适配版后可去掉。
+      Markdown as unknown as AnyExtension,
       Placeholder.configure({ placeholder: placeholder ?? "" }),
     ],
     content: init,
