@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 353 个组件 · v0.5.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 353 个组件 · v0.6.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，统一从根 barrel 导入：`import { X } from "@hulianui/ui"`。
@@ -49,7 +49,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Snippet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/snippet/snippet.md): 代码片段 · 命令提示符 + 一键复制(剪贴板+反馈)
 - [SparklesText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sparkles-text/sparkles-text.md): 星闪文字 · 随机小星脉冲(客户端生成) + token · typography/text · #animated
 - [SplitText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/split-text/split-text.md): 切字进场 · 文本切字/词 + 滚入视口逐段错峰位移淡入(motion · useInView 触发一次 · aria-label 整段读屏友好 · reduced-motion 直呈终态) · typography/…
-- [Text](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text/text.md): 文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)
+- [Text](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text/text.md): 文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)
 - [TextCursor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text-cursor/text-cursor.md): 光标拖尾文字特效组件 · 在容器内移动光标时沿轨迹按间距落下一串字形并随机微浮动淡出回收（沿方向旋转 / emoji / 自定义间距上限）(零依赖·motion 运行时·reduced-motion 去浮动) · ty…
 - [TextPressure](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text-pressure/text-pressure.md): 逐字符"压感"标题 · 字形随鼠标距离实时插值字重/宽度/倾斜 + 透明度(零依赖 RAF·token 配色·reduced-motion·系统字体兜底) · typography/text · #animated
 - [TrueFocus](https://github.com/hulianui/hulian/blob/master/packages/ui/src/true-focus/true-focus.md): 真实焦点 · 句中一词清晰余词模糊 + 焦点循环移动 + 四角框跟随(测量 rect 定位 · 角框吃 chart token · manualMode 悬停聚焦 · reduced-motion 全清晰) · typ…
@@ -95,7 +95,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [SearchForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/search-form/search-form.md): 查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)
 - [SecretField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/secret-field/secret-field.md): 密钥掩码字段 · sk-abc…wxyz 掩码(full/prefix-suffix) + 眼睛 toggle 显形 + 一键复制原值(同 Snippet idiom·1.5s 反馈) + 尾部动作槽(重置/吊销) +…
 - [Segmented](https://github.com/hulianui/hulian/blob/master/packages/ui/src/segmented/segmented.md): 分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖)
-- [Select](https://github.com/hulianui/hulian/blob/master/packages/ui/src/select/select.md): 下拉选择 · Base UI overlay 单选 + items 自动 label
+- [Select](https://github.com/hulianui/hulian/blob/master/packages/ui/src/select/select.md): 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label
 - [ShimmerButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shimmer-button/shimmer-button.md): 微光按钮 · 边缘游走火花(conic) + token + RSC · forms/button · #animated
 - [Slider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/slider/slider.md): 滑块 · Base UI 单值/range + 键盘步进
 - [SocialButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/social-button/social-button.md): 第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X 品牌 logo(内联 simple-icons·零依赖) + outline/solid 变体 + 纯 logo 方钮 + …
@@ -180,7 +180,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Stat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stat/stat.md): 指标卡 · KPI 数值/标签/升降趋势(无图表库)
 - [Statistic](https://github.com/hulianui/hulian/blob/master/packages/ui/src/statistic/statistic.md): 统计数值 · 千分位/precision/前后缀/valueStyle + 可选 NumberTicker 入场滚动 + Statistic.Countdown 倒计时(SSR 安全·零依赖·与 Stat 互补)
 - [StatusDot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/status-dot/status-dot.md): 健康状态点 · 在线/降级/离线/维护四语义态(→success/warning/danger/neutral 映射) + 默认仅在线脉冲 + 状态文字 + 尾部数值槽(延迟/成功率)(封装 Dot·网关渠道健康墙刚需…
-- [Table](https://github.com/hulianui/hulian/blob/master/packages/ui/src/table/table.md): 表格 · TanStack headless + 列排序 + 空态
+- [Table](https://github.com/hulianui/hulian/blob/master/packages/ui/src/table/table.md): 表格 · TanStack headless + 列排序 + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 空态
 - [Tag](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tag/tag.md): 状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)
 - [TiltedCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilted-card/tilted-card.md): 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · data-displ…
 - [Timeline](https://github.com/hulianui/hulian/blob/master/packages/ui/src/timeline/timeline.md): 时间线 · 复合 Timeline/Item + items 数组 + 彩色节点/自定义 dot + left/right/alternate + pending 加载态(纯皮肤·零依赖·RSC)

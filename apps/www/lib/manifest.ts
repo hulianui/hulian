@@ -155,7 +155,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "separator", name: "Separator", description: "分隔线 · Base UI role=separator + 横/竖几何", category: "layout", group: "arrange", status: "new" },
 
   // ── 排版 typography ──────────────────────────────────────────
-  { slug: "text", name: "Text", description: "文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)", category: "typography", group: "text", status: "new" },
+  { slug: "text", name: "Text", description: "文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)", category: "typography", group: "text", status: "new" },
   { slug: "heading", name: "Heading", description: "标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC)", category: "typography", group: "text", status: "new" },
   { slug: "prose", name: "Prose", description: "排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC)", category: "typography", group: "text", status: "new" },
   { slug: "markdown", name: "Markdown", description: "只读 Markdown 渲染 · 零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC 安全", category: "typography", group: "text", status: "new" },
@@ -188,7 +188,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "social-button", name: "SocialButton", description: "第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X 品牌 logo(内联 simple-icons·零依赖) + outline/solid 变体 + 纯 logo 方钮 + loading · 黑白系品牌 solid 随主题前景避暗色不可见", category: "forms", group: "button", status: "new" },
   { slug: "input", name: "Input", description: "输入框 · Base UI Field + 前后缀 + invalid", category: "forms", group: "basic", status: "new" },
   { slug: "textarea", name: "Textarea", description: "多行输入 · 自适应高度", category: "forms", group: "basic", status: "new" },
-  { slug: "select", name: "Select", description: "下拉选择 · Base UI overlay 单选 + items 自动 label", category: "forms", group: "basic", status: "new" },
+  { slug: "select", name: "Select", description: "下拉选择 · Base UI overlay 单选/多选(multiple·string[] 受控·Trigger 平铺 label 超出 +N) + items 自动 label", category: "forms", group: "basic", status: "new" },
   { slug: "checkbox", name: "Checkbox", description: "复选框 · 三态(含半选) + Base UI", category: "forms", group: "basic", status: "new" },
   { slug: "checkbox-group", name: "CheckboxGroup", description: "复选组 · Base UI 值数组协调 + 复用瑚琏 Checkbox", category: "forms", group: "basic", status: "new" },
   { slug: "radio", name: "Radio", description: "单选 · RadioGroup 单选组 + 键盘方向键", category: "forms", group: "basic", status: "new" },
@@ -229,7 +229,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "search-form", name: "SearchForm", description: "查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)", category: "forms", group: "framework", status: "new" },
 
   // ── 数据展示 data-display ────────────────────────────────────
-  { slug: "table", name: "Table", description: "表格 · TanStack headless + 列排序 + 空态", category: "data-display", group: "collection", status: "new" },
+  { slug: "table", name: "Table", description: "表格 · TanStack headless + 列排序 + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 空态", category: "data-display", group: "collection", status: "new" },
   { slug: "book-3d", name: "Book3D", description: "3D 立体书 · CSS 3D transform 透视书体(前封/书脊/页块/后封) + 渐变或图封面 + 封面标题副标 + 角标缎带 + hover 翻正(纯 transform·GPU 合成·reduced-motion 降级) · 作品集书架/封面墙", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "pro-table", name: "ProTable", description: "高级表格 · 列表页编排层(复用 Table/SearchForm/Pagination) · 查询区 + 工具栏(密度/列设置/刷新/全屏) + 行选择 + 集成分页(企业中后台列表页旗舰)", category: "data-display", group: "collection", status: "new" },
   { slug: "pricing-table", name: "PricingTable", description: "定价对比矩阵 · 行列转置(列=被比项/模型·行=属性/价目) + 列高亮描边 + 角标(推荐/最佳性价比) + 表头吸顶 + 窄屏横滚(复用 ScrollArea·区别 Table 行=记录·模型市场定价对照刚需)", category: "data-display", group: "collection", status: "new" },

@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.5.0 · 353 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.6.0 · 353 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -2145,7 +2145,7 @@ import { SplitText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Text
 
-> 文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC) · typography/text
+> 文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC) · typography/text
 
 ## 何时用
 
@@ -2162,7 +2162,7 @@ import { Text } from "@hulianui/ui"
 |------|------|------|------|
 | as | `ElementType` | `"p"` | 渲染的元素标签 |
 | size | `"xs" \| "sm" \| "base" \| "lg" \| "xl"` | `"base"` | 字号 |
-| tone | `"default" \| "muted" \| "primary" \| "danger"` | `"default"` | 语义色调（明暗自适配） |
+| tone | `"default" \| "muted" \| "primary" \| "success" \| "warning" \| "danger"` | `"default"` | 语义色调（明暗自适配） |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | 字重 |
 | truncate | `boolean` | `false` | 单行省略号截断 |
 | lineClamp | `number` | — | 多行截断（最多 n 行后省略号）；设置后优先于 truncate |
@@ -2179,6 +2179,8 @@ import { Text } from "@hulianui/ui"
 ```tsx
 // 语义色调
 <Text tone="muted">辅助说明</Text>
+<Text tone="success">3/3 分 · 判分正确</Text>
+<Text tone="warning">掌握率偏低</Text>
 <Text tone="danger">危险提示</Text>
 
 // 多行截断
@@ -4875,11 +4877,11 @@ import { Segmented } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Select
 
-> 下拉选择 · Base UI overlay 单选 + items 自动 label · forms/basic
+> 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label · forms/basic
 
 ## 何时用
 
-从一组固定选项里单选一项（选项较多、需要收纳成下拉）。选项少且需全部可见用 [Radio](https://hulianui.haloritual.com/components/radio)；多选用 [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group)；自由文本用 [Input](https://hulianui.haloritual.com/components/input)。给 `items`（`{value,label}` 数组）让 Trigger 显示选中项 label 而非 raw value。
+从一组固定选项里选一项或多项（选项较多、需要收纳成下拉）。多选传 `multiple`，受控值变 `string[]`，Trigger 平铺已选 label、超出折叠 +N。选项少且需全部可见用 [Radio](https://hulianui.haloritual.com/components/radio) 或 [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group)（多选平铺）；带搜索/自动补全用 [Combobox](https://hulianui.haloritual.com/components/combobox)；自由文本用 [Input](https://hulianui.haloritual.com/components/input)。给 `items`（`{value,label}` 数组）让 Trigger 显示选中项 label 而非 raw value。
 
 ## 导入
 ```ts
@@ -4894,13 +4896,15 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
-| placeholder | `ReactNode` | — | 无选中值时的占位文本（瑚琏注入 value:null 项实现，rc.0 无 Value.placeholder prop） |
+| placeholder | `ReactNode` | — | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
+| multiple | `boolean` | `false` | 多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开 |
 
 ### SelectTrigger
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸 |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
+| maxDisplay | `number` | `2` | 多选模式下最多平铺几个已选 label，超出折叠为 +N 计数 |
 | className | `string` | — | 透传类名 |
 
 ### SelectContent
@@ -4922,7 +4926,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(value: string ｜ null, eventDetails) => void` | 选中值变化回调（透传 Base UI `Select.Root`） |
+| onValueChange | `(value: string ｜ null, eventDetails) => void`（多选时 `(value: string[], …)`） | 选中值变化回调（透传 Base UI `Select.Root`） |
 | onOpenChange | `(open: boolean, eventDetails) => void` | 下拉开合变化回调（透传 Base UI `Select.Root`） |
 
 ## Slots
@@ -4948,11 +4952,25 @@ const FONTS = [
     ))}
   </SelectContent>
 </Select>
+
+// 多选：考点覆盖 / 报表维度等中后台多选筛选
+const [points, setPoints] = useState<string[]>([]);
+
+<Select items={KNOWLEDGE_POINTS} placeholder="选择考点" multiple value={points} onValueChange={setPoints}>
+  <SelectTrigger maxDisplay={2} />
+  <SelectContent>
+    {KNOWLEDGE_POINTS.map((p) => (
+      <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
 ```
 
 ## 禁忌 / 坑
 
 - 占位文本通过 `Select` 的 `placeholder` prop 传，**不要**给 `Select.Value` 传 placeholder——见 [[base-ui-select-rc0-no-value-placeholder-prop-inject-null-item]]：本项目锁 Base UI rc.0，其 `Select.Value` 没有 placeholder prop（那是 v1.2+），瑚琏靠注入一个 `value:null` 的 items 项实现占位 label。`items` 与 `SelectItem` 的 value 要对应，否则 Trigger 显示 raw value 而非 label。
+- `multiple` 下 value 必须是数组：给 `defaultValue="a"`（字符串）会被当成无选中处理。多选模式不注入 null 占位项（数组值命不中 null 项），占位由 Trigger 内函数式 Value 渲染，因此**多选的 placeholder/label 解析依赖 `items` prop**——不传 items 时 Trigger 只能显示 raw value。
+- 多选 Trigger 的平铺条数由 `SelectTrigger` 的 `maxDisplay` 控制（默认 2），不在 `Select` 上。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/components/input) · [Textarea](https://hulianui.haloritual.com/components/textarea) · [Checkbox](https://hulianui.haloritual.com/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group) · [Radio](https://hulianui.haloritual.com/components/radio) · [Switch](https://hulianui.haloritual.com/components/switch)
@@ -9870,7 +9888,7 @@ import { StatusDot } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Table
 
-> 表格 · TanStack headless + 列排序 + 空态 · data-display/collection
+> 表格 · TanStack headless + 列排序 + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 空态 · data-display/collection
 
 ## 何时用
 
@@ -9894,6 +9912,8 @@ import { Table } from "@hulianui/ui"
 | density | `"default" \| "middle" \| "compact"` | `"default"` | 行密度（仅调单元格内边距） |
 | getRowId | `(row: TData, index: number) => string` | 按 index | 行稳定 key |
 | rowClassName | `(row: TData, index: number) => string \| undefined` | — | 行级附加 className（与斑马/选中类合并，不覆盖） |
+| onRowClick | `(row: TData, index: number) => void` | 关 | 行点击：整行 cursor-pointer + tabIndex=0 + 键盘 Enter/Space 可达（保持 row 语义）；行内交互元素冒泡隔离 |
+| rowHref | `(row: TData, index: number) => string \| undefined` | 关 | 声明式整行导航：返回 href 该行点击/Enter 整页跳转（cmd/ctrl+点击新开 tab），返回 undefined 该行不可点 |
 | enableRowSelection | `boolean \| ((row: Row<TData>) => boolean)` | 关 | 开行选择，自动前插复选框列（含全选）；函数可限定可选行 |
 | rowSelection | `RowSelectionState` | — | 受控选择态 |
 | getRowCanExpand | `(row: Row<TData>) => boolean` | — | 限定可展开行 |
@@ -9936,6 +9956,12 @@ const columns: ColumnDef<DemoUser, any>[] = [
 
 // 行选择（自动前插复选框列 + 全选）
 <Table columns={columns} data={users} enableRowSelection />
+
+// 行点击：整行进详情（SPA 路由用 onRowClick + router.push）
+<Table columns={columns} data={users} onRowClick={(row) => router.push(`/users/${row.id}`)} />
+
+// 整行导航（整页跳转；cmd/ctrl+点击新开 tab）
+<Table columns={columns} data={users} rowHref={(row) => `/users/${row.id}`} />
 ```
 
 ## 禁忌 / 坑
@@ -9944,6 +9970,8 @@ const columns: ColumnDef<DemoUser, any>[] = [
 - `virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。
 - 排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。
+- `rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。
+- 行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。
 
 ## 相关
 [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table) · [List](https://hulianui.haloritual.com/components/list)

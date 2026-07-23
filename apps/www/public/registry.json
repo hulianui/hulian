@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "hulianui",
   "homepage": "https://github.com/hulianui/hulian",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "install": "npm i @hulianui/ui",
   "import": "import { /* components */ } from \"@hulianui/ui\"",
@@ -1019,7 +1019,7 @@
       "name": "text",
       "type": "registry:ui",
       "title": "Text",
-      "description": "文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)",
+      "description": "文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)",
       "categories": [
         "typography"
       ],
@@ -2164,7 +2164,7 @@
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
-      "description": "下拉选择 · Base UI overlay 单选 + items 自动 label",
+      "description": "下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label",
       "categories": [
         "forms"
       ],
@@ -4300,7 +4300,7 @@
       "name": "table",
       "type": "registry:ui",
       "title": "Table",
-      "description": "表格 · TanStack headless + 列排序 + 空态",
+      "description": "表格 · TanStack headless + 列排序 + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 空态",
       "categories": [
         "data-display"
       ],
