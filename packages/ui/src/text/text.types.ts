@@ -1,7 +1,7 @@
 import type { ElementType, HTMLAttributes, ReactNode } from "react";
 
 export type TextSize = "xs" | "sm" | "base" | "lg" | "xl";
-export type TextTone = "default" | "muted" | "primary" | "danger";
+export type TextTone = "default" | "muted" | "primary" | "success" | "warning" | "danger";
 export type TextWeight = "normal" | "medium" | "semibold" | "bold";
 
 export interface TextProps extends Omit<HTMLAttributes<HTMLElement>, "color"> {

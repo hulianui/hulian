@@ -17,6 +17,8 @@ const TONE: Record<TextTone, string> = {
   default: "text-foreground",
   muted: "text-muted",
   primary: "text-primary",
+  success: "text-success",
+  warning: "text-warning",
   danger: "text-danger",
 };
 

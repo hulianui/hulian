@@ -10,7 +10,7 @@ status: enriched
 
 # Text
 
-> 文本 · size/tone/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC) · typography/text
+> 文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC) · typography/text
 
 ## 何时用
 
@@ -27,7 +27,7 @@ import { Text } from "@hulianui/ui"
 |------|------|------|------|
 | as | `ElementType` | `"p"` | 渲染的元素标签 |
 | size | `"xs" \| "sm" \| "base" \| "lg" \| "xl"` | `"base"` | 字号 |
-| tone | `"default" \| "muted" \| "primary" \| "danger"` | `"default"` | 语义色调（明暗自适配） |
+| tone | `"default" \| "muted" \| "primary" \| "success" \| "warning" \| "danger"` | `"default"` | 语义色调（明暗自适配） |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | 字重 |
 | truncate | `boolean` | `false` | 单行省略号截断 |
 | lineClamp | `number` | — | 多行截断（最多 n 行后省略号）；设置后优先于 truncate |
@@ -44,6 +44,8 @@ import { Text } from "@hulianui/ui"
 ```tsx
 // 语义色调
 <Text tone="muted">辅助说明</Text>
+<Text tone="success">3/3 分 · 判分正确</Text>
+<Text tone="warning">掌握率偏低</Text>
 <Text tone="danger">危险提示</Text>
 
 // 多行截断

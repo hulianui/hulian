@@ -27,12 +27,16 @@ describe("Text", () => {
         <Text>默认</Text>
         <Text tone="muted">弱</Text>
         <Text tone="primary">主</Text>
+        <Text tone="success">成</Text>
+        <Text tone="warning">警</Text>
         <Text tone="danger">险</Text>
       </>,
     );
     expect(getByText("默认").className).toContain("text-foreground");
     expect(getByText("弱").className).toContain("text-muted");
     expect(getByText("主").className).toContain("text-primary");
+    expect(getByText("成").className).toContain("text-success");
+    expect(getByText("警").className).toContain("text-warning");
     expect(getByText("险").className).toContain("text-danger");
   });
 

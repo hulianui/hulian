@@ -14,12 +14,16 @@ export const textShowcase: ShowcaseSpec = {
       code: `<Text>默认正文</Text>
 <Text tone="muted">辅助说明</Text>
 <Text tone="primary">强调文本</Text>
+<Text tone="success">成功结果</Text>
+<Text tone="warning">留意警示</Text>
 <Text tone="danger">危险提示</Text>`,
       render: () => (
         <div className="flex flex-col gap-1.5">
           <Text>默认正文</Text>
           <Text tone="muted">辅助说明</Text>
           <Text tone="primary">强调文本</Text>
+          <Text tone="success">成功结果</Text>
+          <Text tone="warning">留意警示</Text>
           <Text tone="danger">危险提示</Text>
         </div>
       ),
@@ -90,7 +94,7 @@ export const textShowcase: ShowcaseSpec = {
     {
       prop: "tone",
       type: "select",
-      options: ["default", "muted", "primary", "danger"],
+      options: ["default", "muted", "primary", "success", "warning", "danger"],
       defaultValue: "default",
       label: "色调",
     },
@@ -118,6 +122,8 @@ export const textShowcase: ShowcaseSpec = {
           <Text>默认正文 default · text-foreground</Text>
           <Text tone="muted">辅助说明 muted · text-muted</Text>
           <Text tone="primary">强调文本 primary · text-primary</Text>
+          <Text tone="success">成功结果 success · text-success</Text>
+          <Text tone="warning">留意警示 warning · text-warning</Text>
           <Text tone="danger">危险提示 danger · text-danger</Text>
         </div>
       ),
