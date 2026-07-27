@@ -21,14 +21,18 @@ export function toast(options: ToastOptions): string {
 
 // tone → 左边条 + 标题着色（与 Alert 语义 token 一致；neutral 用中性 border/foreground）。
 const toneBorder: Record<ToastTone, string> = {
-  info: "border-l-primary",
-  danger: "border-l-danger",
   neutral: "border-l-border",
+  info: "border-l-primary",
+  success: "border-l-success",
+  warning: "border-l-warning",
+  danger: "border-l-danger",
 };
 const toneTitle: Record<ToastTone, string> = {
-  info: "text-primary",
-  danger: "text-danger",
   neutral: "text-foreground",
+  info: "text-primary",
+  success: "text-success",
+  warning: "text-warning",
+  danger: "text-danger",
 };
 
 // transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 过渡期会往内联 style 注入

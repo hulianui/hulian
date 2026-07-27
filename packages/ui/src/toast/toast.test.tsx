@@ -33,6 +33,26 @@ describe("Toast", () => {
     expect(title!.closest("[class*='border-l-danger']")).not.toBeNull();
   });
 
+  it("success tone：标题 text-success + 容器 border-l-success", () => {
+    render(<ToastProvider />);
+    act(() => {
+      toast({ title: "已保存成功", tone: "success" });
+    });
+    const title = titleEl("已保存成功", "text-success");
+    expect(title).toBeTruthy();
+    expect(title!.closest("[class*='border-l-success']")).not.toBeNull();
+  });
+
+  it("warning tone：标题 text-warning + 容器 border-l-warning", () => {
+    render(<ToastProvider />);
+    act(() => {
+      toast({ title: "部分失败", tone: "warning" });
+    });
+    const title = titleEl("部分失败", "text-warning");
+    expect(title).toBeTruthy();
+    expect(title!.closest("[class*='border-l-warning']")).not.toBeNull();
+  });
+
   it("info tone：标题 text-primary", () => {
     render(<ToastProvider />);
     act(() => {

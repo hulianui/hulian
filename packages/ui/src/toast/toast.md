@@ -27,7 +27,7 @@ import { toast, ToastProvider } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"info"｜"danger"｜"neutral"` | `"neutral"` | 语调，驱动左边条 + 标题着色（复用 Alert 语义，无 success：token 无） |
+| tone | `"neutral"｜"info"｜"success"｜"warning"｜"danger"` | `"neutral"` | 语调，驱动左边条 + 标题着色（五档与 [Alert](../alert/alert.md) / [Tag](../tag/tag.md) 对齐，复用同一组语义 token） |
 | timeout | `number` | `5000` | 自动消失毫秒数；`0` = 不自动消失（手动关闭）；缺省取 Provider 默认 |
 
 ## Slots
@@ -53,6 +53,8 @@ import { toast, ToastProvider } from "@hulianui/ui"
 
 // 业务侧命令式调用
 toast({ tone: "info", title: "有新版本", description: "点击刷新以更新。" })
+toast({ tone: "success", title: "已保存", description: "更改已同步到云端。" })
+toast({ tone: "warning", title: "部分失败", description: "3 条中 1 条未同步。" })
 toast({ tone: "danger", title: "保存失败", description: "网络异常，请重试。" })
 toast({ title: "需手动关闭", timeout: 0 }) // 0 = 常驻，点 × 才消失
 ```
@@ -61,7 +63,8 @@ toast({ title: "需手动关闭", timeout: 0 }) // 0 = 常驻，点 × 才消失
 
 - `ToastProvider` 全应用只挂一次（在段落 layout），别在 showcase/页面里重复挂，否则命令式渲染会重复。
 - `@hulianui/ui` < 0.8 的 `ToastProvider` **不渲染 children**：包裹式写法会静默吞掉整个应用子树（白屏、零报错）。0.8 起已修复为透传渲染；旧版本务必用自闭合写法。
-- 无 `success` 语调（token 无），成功态用 `info` 或 `neutral`。
+- `@hulianui/ui` ≤ 0.8 的 `ToastTone` 只有 `info | danger | neutral`，成功/警告态只能降级成 `info` / `neutral`；0.8 之后已补齐 `success` / `warning`，升级后可直接换回语义正确的 tone。
+- 仅 `danger` 走 `priority: "high"`（aria-live assertive 打断播报），`warning` 与其余 tone 一样是 polite——警告不抢读屏焦点是有意为之。
 - 测试该组件时注意 Base UI Toast 的几个坑见 [[base-ui-toast-close-aria-hidden-query-dom-not-role]]：未聚焦的 Close 按钮带 `aria-hidden` 致 `getByRole("button")` 找不到（改查 DOM）、aria-live 公告会让标题文本重复匹配、全局 manager 持久化致 toast 跨测试泄漏需清理。
 
 ## 相关

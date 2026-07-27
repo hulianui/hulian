@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-/** 复用 Alert 语义 tone（无 success：token 无）。 */
-export type ToastTone = "info" | "danger" | "neutral";
+/** 复用 Alert 语义 tone，五档对齐（Alert / Tag 同一组语义 token）。 */
+export type ToastTone = "neutral" | "info" | "success" | "warning" | "danger";
 
 export interface ToastProviderProps {
   /** 可选应用子树，透传渲染。不传则自闭合挂载，与页面内容并列。 */

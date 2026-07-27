@@ -20,13 +20,18 @@ export const toastShowcase: ShowcaseSpec = {
       ),
     },
     {
-      title: "三语调",
-      description: "tone 提供 info / danger / neutral，驱动左边条与标题着色。",
-      code: `toast({ tone: "info", title: "有新版本", description: "点击刷新以更新。" });
-toast({ tone: "danger", title: "保存失败", description: "网络异常，请重试。" });
-toast({ title: "已复制到剪贴板" }); // neutral`,
+      title: "五语调",
+      description: "tone 提供 neutral / info / success / warning / danger，与 Alert 对齐，驱动左边条与标题着色。",
+      code: `toast({ title: "已复制到剪贴板" }); // neutral
+toast({ tone: "info", title: "有新版本", description: "点击刷新以更新。" });
+toast({ tone: "success", title: "已保存", description: "更改已同步到云端。" });
+toast({ tone: "warning", title: "部分失败", description: "3 条中 1 条未同步。" });
+toast({ tone: "danger", title: "保存失败", description: "网络异常，请重试。" });`,
       render: () => (
         <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => toast({ title: "已复制到剪贴板" })}>
+            neutral
+          </Button>
           <Button
             variant="outline"
             onClick={() => toast({ tone: "info", title: "有新版本", description: "点击刷新以更新。" })}
@@ -35,12 +40,21 @@ toast({ title: "已复制到剪贴板" }); // neutral`,
           </Button>
           <Button
             variant="outline"
+            onClick={() => toast({ tone: "success", title: "已保存", description: "更改已同步到云端。" })}
+          >
+            success
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => toast({ tone: "warning", title: "部分失败", description: "3 条中 1 条未同步。" })}
+          >
+            warning
+          </Button>
+          <Button
+            variant="outline"
             onClick={() => toast({ tone: "danger", title: "保存失败", description: "网络异常，请重试。" })}
           >
             danger
-          </Button>
-          <Button variant="outline" onClick={() => toast({ title: "已复制到剪贴板" })}>
-            neutral
           </Button>
         </div>
       ),
@@ -79,7 +93,13 @@ toast({ tone: "danger", title: "第 3 条" });`,
     },
   ],
   controls: [
-    { prop: "tone", type: "select", options: ["info", "danger", "neutral"], defaultValue: "neutral", label: "语调" },
+    {
+      prop: "tone",
+      type: "select",
+      options: ["neutral", "info", "success", "warning", "danger"],
+      defaultValue: "neutral",
+      label: "语调",
+    },
     { prop: "title", type: "text", defaultValue: "已保存", label: "标题" },
     { prop: "description", type: "text", defaultValue: "更改已成功同步。", label: "描述" },
     { prop: "timeout", type: "number", defaultValue: 5000, label: "消失(ms,0=常驻)" },
@@ -90,6 +110,22 @@ toast({ tone: "danger", title: "第 3 条" });`,
       render: () => (
         <Button variant="outline" onClick={() => toast({ tone: "info", title: "有新版本", description: "点击刷新以更新。" })}>
           弹 info
+        </Button>
+      ),
+    },
+    {
+      name: "success",
+      render: () => (
+        <Button variant="outline" onClick={() => toast({ tone: "success", title: "已保存", description: "更改已同步到云端。" })}>
+          弹 success
+        </Button>
+      ),
+    },
+    {
+      name: "warning",
+      render: () => (
+        <Button variant="outline" onClick={() => toast({ tone: "warning", title: "部分失败", description: "3 条中 1 条未同步。" })}>
+          弹 warning
         </Button>
       ),
     },
