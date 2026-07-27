@@ -9,14 +9,25 @@ import { DocHeader, Section, Code } from "../_components/doc-kit";
 
 export const metadata: Metadata = { title: "颜色 Color · 瑚琏 Hulian" };
 
+// 棋盘格底：不透明色完全遮住它，只有 transparent 的令牌（如 hairline 在浅色主题）会露出格子，
+// 让「这个色现在是透明的」在色卡上就看得见，而不是伪装成白色。
+const CHECKER = {
+  backgroundImage:
+    "linear-gradient(45deg,var(--color-surface-hover) 25%,transparent 25%,transparent 75%,var(--color-surface-hover) 75%),linear-gradient(45deg,var(--color-surface-hover) 25%,transparent 25%,transparent 75%,var(--color-surface-hover) 75%)",
+  backgroundSize: "8px 8px",
+  backgroundPosition: "0 0, 4px 4px",
+} as const;
+
 function SwatchRow({ c }: { c: SemanticColor }) {
   return (
     <div className="flex items-center gap-3 py-2">
       <span
-        className="size-10 shrink-0 rounded-[var(--radius)] border border-border"
-        style={{ background: `var(--${c.token})` }}
+        className="size-10 shrink-0 overflow-hidden rounded-[var(--radius)] border border-border"
+        style={CHECKER}
         aria-hidden
-      />
+      >
+        <span className="block size-full" style={{ background: `var(--${c.token})` }} />
+      </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline gap-x-2">
           <span className="text-sm font-medium">{c.label}</span>
@@ -26,6 +37,7 @@ function SwatchRow({ c }: { c: SemanticColor }) {
           亮 <span className="font-mono">{c.light}</span> · 暗{" "}
           <span className="font-mono">{c.dark}</span>
         </p>
+        {c.note ? <p className="mt-1 text-xs leading-relaxed text-warning">{c.note}</p> : null}
       </div>
       {c.fg ? (
         <span

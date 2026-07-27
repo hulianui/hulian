@@ -44,6 +44,8 @@ export interface SemanticColor {
   dark: string;
   /** 文字态：在该底色上用前景色画文字示意 */
   fg?: string;
+  /** 用途约束 / 误用警示（有值则在色卡下渲染一行提示） */
+  note?: string;
 }
 export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] = [
   {
@@ -52,7 +54,14 @@ export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] = [
       { token: "color-bg", label: "页面底", light: "gray-50", dark: "gray-950" },
       { token: "color-surface", label: "卡片表面", light: "white", dark: "gray-900" },
       { token: "color-surface-hover", label: "表面悬停", light: "gray-100", dark: "gray-800" },
-      { token: "color-border", label: "边框 / 发丝线", light: "gray-200", dark: "gray-800" },
+      { token: "color-border", label: "边框 / 分隔线", light: "gray-200", dark: "gray-800" },
+      {
+        token: "color-hairline",
+        label: "发丝边框",
+        light: "transparent",
+        dark: "gray-800（同 border）",
+        note: "只用于 border-*：给带阴影的表面（卡片/浮层/按钮）勾轮廓。浅色主题下它就是 transparent——用作 text- / bg- / fill- 会静默隐形（无报错、无回落），填充与文字请改用 border 或 muted。",
+      },
     ],
   },
   {

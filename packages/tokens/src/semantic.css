@@ -12,7 +12,11 @@
   /* 发丝边框：仅用于「有阴影的 elevation/浮层/按钮」表面。亮色 transparent(靠阴影自带的
      1px 发丝边分隔，避免与显式 border 形成「双线」显脏)；暗色回落到 --color-border(投影在
      深底偏弱，需细线勾边)。宽度恒为 1px、只切颜色 → 切主题零布局抖动。
-     真功能 border(输入 affordance / Kbd 键帽 / Toast accent / 分隔线)仍用 --color-border。 */
+     真功能 border(输入 affordance / Kbd 键帽 / Toast accent / 分隔线)仍用 --color-border。
+     ⚠️ 消费方注意：本令牌只能用于 border-*。它在浅色主题就是 transparent，用作
+     text-hairline / bg-hairline / fill-hairline 会静默隐形——不报错、不回落到继承色，
+     元素直接消失(实例：DotPattern 底纹上 text-hairline，浅色下整层不见)。填充/文字用
+     --color-border 或 --color-muted。 */
   --color-hairline: transparent;
   --color-ring: var(--brand-500);
   --color-primary: var(--brand-600);
