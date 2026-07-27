@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blocks",
     "/pages",
     "/start",
+    "/changelog",
     "/theme",
     "/theme/color",
     "/theme/typography",
