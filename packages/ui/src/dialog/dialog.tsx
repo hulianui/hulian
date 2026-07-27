@@ -30,21 +30,25 @@ export function DialogContent({ title, description, children, footer, className 
       />
       <BaseDialog.Popup
         className={cn(
-          "fixed left-1/2 top-1/2 z-50 w-[min(90vw,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius)] border border-hairline bg-surface p-6 text-foreground shadow-xl outline-none",
+          // 三段式：max-h 封顶 + flex column，标题/footer 不压缩，正文自己滚。
+          // 不封顶时长表单会顶穿视口，footer 被推到屏幕外 → 确定按钮点不到（DrawerContent
+          // 早已是这个写法，Dialog 此前漏了，两者行为不一致）。
+          "fixed left-1/2 top-1/2 z-50 flex max-h-[85dvh] w-[min(90vw,28rem)] -translate-x-1/2 -translate-y-1/2 flex-col rounded-[var(--radius)] border border-hairline bg-surface p-6 text-foreground shadow-xl outline-none",
           "data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0 data-[ending-style]:scale-[0.96] data-[ending-style]:opacity-0",
           className,
         )}
         style={overlayTransition}
       >
-        <BaseDialog.Title className="text-lg font-semibold">{title}</BaseDialog.Title>
+        <BaseDialog.Title className="shrink-0 text-lg font-semibold">{title}</BaseDialog.Title>
         {description && (
-          <BaseDialog.Description className="mt-1 text-sm text-muted">
+          <BaseDialog.Description className="mt-1 shrink-0 text-sm text-muted">
             {description}
           </BaseDialog.Description>
         )}
-        <div className="mt-4">{children}</div>
+        {/* min-h-0 必需：flex item 默认 min-height:auto，不给 0 则正文撑开父级、overflow 永不生效 */}
+        <div className="mt-4 min-h-0 flex-1 overflow-y-auto">{children}</div>
         {footer != null && (
-          <div className="mt-6 flex items-center justify-end gap-2 border-t border-border pt-4">
+          <div className="mt-6 flex shrink-0 items-center justify-end gap-2 border-t border-border pt-4">
             {footer}
           </div>
         )}
