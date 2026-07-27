@@ -76,7 +76,7 @@ function toCodeDiffAnnotations(file: ChangedFile): CodeDiffAnnotation[] {
           },
         ]}
         onAdoptSuggestion={() =>
-          toast({ tone: "info", title: "已采纳建议", description: `${file.path}:${a.line} 的修改建议已写入工作区。` })
+          toast({ tone: "success", title: "已采纳建议", description: `${file.path}:${a.line} 的修改建议已写入工作区。` })
         }
         onStatusChange={() => {}}
       />

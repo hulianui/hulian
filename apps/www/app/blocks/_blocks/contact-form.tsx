@@ -106,7 +106,7 @@ export function ContactFormBlock() {
       toast({
         title: "已收到，谢谢！",
         description: `我们的团队会尽快通过 ${email} 与你联系。`,
-        tone: "info",
+        tone: "success",
       });
     });
   };

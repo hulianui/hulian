@@ -208,7 +208,7 @@ export default function PaymentPage() {
         <AddCardForm
           onAdd={(m) => {
             addCard(m);
-            toast({ title: `已添加 ${detectBrand(m.number).toUpperCase()} •••• ${m.number.slice(-4)}`, tone: "info" });
+            toast({ title: `已添加 ${detectBrand(m.number).toUpperCase()} •••• ${m.number.slice(-4)}`, tone: "success" });
           }}
         />
       </section>

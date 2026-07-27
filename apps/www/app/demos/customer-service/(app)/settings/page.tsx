@@ -27,7 +27,7 @@ export default function SettingsPage() {
   const [worktime, setWorktime] = useState("work");
 
   const save = () => {
-    toast({ title: "设置已保存", description: "客服偏好已更新（demo 内存态，刷新还原）", tone: "info" });
+    toast({ title: "设置已保存", description: "客服偏好已更新（demo 内存态，刷新还原）", tone: "success" });
   };
 
   return (

@@ -46,7 +46,7 @@ export function DiscussionTab({ course }: { course: Course }) {
         ...prev,
       ]);
       setDraft("");
-      toast({ title: "已发布讨论", tone: "info" });
+      toast({ title: "已发布讨论", tone: "success" });
     });
   };
 

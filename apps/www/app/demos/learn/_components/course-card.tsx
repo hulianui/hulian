@@ -23,7 +23,7 @@ export function CourseCard({ course }: { course: Course }) {
       // 免费课直接加入「我的学习」，不走支付向导。
       enroll(course.id);
       setLastLesson(course.id, firstLessonId(course));
-      toast({ title: "已加入学习", description: course.title, tone: "info" });
+      toast({ title: "已加入学习", description: course.title, tone: "success" });
     } else {
       setEnrollOpen(true);
     }

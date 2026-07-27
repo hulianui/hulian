@@ -159,7 +159,7 @@ export function GuestbookClient() {
       setAuthorName("");
       setRating(5);
       setContent("");
-      toast({ title: "留言已发布 🎉", tone: "info" });
+      toast({ title: "留言已发布 🎉", tone: "success" });
     });
   }
 

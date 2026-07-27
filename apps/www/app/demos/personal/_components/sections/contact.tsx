@@ -28,7 +28,7 @@ export function Contact() {
     toast({
       title: "已收到，我会尽快回复",
       description: "通常 24 小时内回信。也欢迎直接发邮件给我。",
-      tone: "info",
+      tone: "success",
     });
     setEmail("");
     setDate("");

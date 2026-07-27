@@ -31,7 +31,7 @@ export default function ShopLoginPage() {
             onFinish={async () => {
               // 模拟网络请求
               await new Promise((r) => setTimeout(r, 600));
-              toast({ title: "登录成功，欢迎回来！", tone: "info" });
+              toast({ title: "登录成功，欢迎回来！", tone: "success" });
               await new Promise((r) => setTimeout(r, 350));
               window.location.href = "/demos/shop/account";
             }}

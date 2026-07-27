@@ -77,7 +77,7 @@ export function ProjectOverview({ id }: { id: string }) {
       setDeploys((prev) =>
         (prev ?? list).map((x) => ({ ...x, current: x.id === d.id })),
       );
-      toast({ tone: "info", title: "已回滚生产环境", description: `${project.name} 已指向 ${d.sha.slice(0, 8)}（${d.message.slice(0, 20)}…）` });
+      toast({ tone: "success", title: "已回滚生产环境", description: `${project.name} 已指向 ${d.sha.slice(0, 8)}（${d.message.slice(0, 20)}…）` });
     });
 
   const redeploy = (d: Deploy) =>

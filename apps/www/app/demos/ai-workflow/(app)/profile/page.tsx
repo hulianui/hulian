@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   const onSave = () => {
     void runSave(() => {
-      toast({ title: "资料已保存", tone: "info" });
+      toast({ title: "资料已保存", tone: "success" });
     });
   };
 

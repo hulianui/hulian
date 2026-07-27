@@ -105,7 +105,7 @@ export default function InvoicesPage() {
         rs.map((r) => (r.id === iv.id ? { ...r, status: "已开" as InvoiceStatus, issuedAt: "2026-06-04" } : r)),
       );
       if (active?.id === iv.id) setActive((prev) => prev ? { ...prev, status: "已开", issuedAt: "2026-06-04" } : prev);
-      toast({ title: "已开票", description: `${iv.code} 开具成功`, tone: "info" });
+      toast({ title: "已开票", description: `${iv.code} 开具成功`, tone: "success" });
     });
   }
 

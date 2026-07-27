@@ -48,7 +48,7 @@ export function CheckoutCashier({ id }: { id: string }) {
       setSerialNo(sn);
       setPhase("done");
       // 支付成功 toast 反馈
-      toast({ title: "支付成功", description: `${co.code} · ${yuan(co.amount)} 已到账`, tone: "info" });
+      toast({ title: "支付成功", description: `${co.code} · ${yuan(co.amount)} 已到账`, tone: "success" });
     }, 900);
   }
 

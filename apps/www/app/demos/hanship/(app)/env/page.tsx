@@ -248,7 +248,7 @@ export default function EnvPage() {
           };
           setExtra((prev) => [fresh, ...prev]);
           form.resetFields();
-          toast({ tone: "info", title: "变量已保存", description: `${fresh.key} 将在下次部署生效` });
+          toast({ tone: "success", title: "变量已保存", description: `${fresh.key} 将在下次部署生效` });
         }}
       >
         <Field label="变量名" error={reg.key.error} description="如 DATABASE_URL">

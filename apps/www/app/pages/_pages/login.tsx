@@ -72,7 +72,7 @@ export function LoginPage() {
             subtitle="欢迎回来，登录你的工作台"
             onFinish={async () => {
               await new Promise((r) => setTimeout(r, 600));
-              toast({ title: "登录成功", description: "演示环境：任意账号密码均可登录。", tone: "info" });
+              toast({ title: "登录成功", description: "演示环境：任意账号密码均可登录。", tone: "success" });
             }}
             footer={
               <div className="flex justify-between text-sm">

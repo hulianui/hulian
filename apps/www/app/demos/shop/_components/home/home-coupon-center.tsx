@@ -21,7 +21,7 @@ export function HomeCouponCenter({ coupons }: Props) {
   const handleClaim = (coupon: CouponData) => {
     claimCoupon(coupon.id);
     setLocalClaimed((prev) => new Set([...prev, coupon.id]));
-    toast({ title: `「${coupon.title}」已领取，快去使用吧！`, tone: "info" });
+    toast({ title: `「${coupon.title}」已领取，快去使用吧！`, tone: "success" });
   };
 
   const getCouponStatus = (coupon: CouponData): "available" | "claimed" | "used" | "expired" => {

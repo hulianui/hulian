@@ -76,7 +76,7 @@ export default function BillingPage() {
     toast({
       title: `充值成功 · 到账 ${formatUsd(credited)}`,
       description: `含手续费 ${formatUsd(fee)}，实付 ${formatUsd(credited + fee)}`,
-      tone: "info",
+      tone: "success",
     });
   }
 

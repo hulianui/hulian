@@ -49,7 +49,7 @@ export function TicketDetail({ id }: { id: string }) {
       toast({ title: "请输入回复内容", tone: "danger" });
       return;
     }
-    toast({ title: "回复已提交", description: `已回复工单 #${ticket.id}`, tone: "info" });
+    toast({ title: "回复已提交", description: `已回复工单 #${ticket.id}`, tone: "success" });
     setReply("");
   };
 

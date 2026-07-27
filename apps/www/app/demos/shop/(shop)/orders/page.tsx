@@ -62,7 +62,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
 
   const handleConfirmReceipt = () =>
     run(async () => {
-      toast({ title: "已确认收货，感谢购买！", tone: "info" });
+      toast({ title: "已确认收货，感谢购买！", tone: "success" });
     });
 
   const handleBuyAgain = (item: Order["items"][0]) => {
@@ -121,7 +121,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
                       setRatings((prev) => {
                         const key = `${order.id}-${idx}`;
                         if (prev[key] === v) return prev;
-                        toast({ title: "感谢您的评价！", tone: "info" });
+                        toast({ title: "感谢您的评价！", tone: "success" });
                         return { ...prev, [key]: v ?? 0 };
                       })
                     }

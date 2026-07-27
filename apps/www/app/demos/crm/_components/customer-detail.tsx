@@ -220,7 +220,7 @@ export function CustomerDetail({ id }: { id: string }) {
             ...prev,
           ]);
           form.resetFields();
-          toast({ title: "跟进已记录", description: `${customer.name} · ${v.type}`, tone: "info" });
+          toast({ title: "跟进已记录", description: `${customer.name} · ${v.type}`, tone: "success" });
         }}
       >
         <Field label="跟进方式">

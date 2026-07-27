@@ -25,7 +25,7 @@ export default function BillingLoginPage() {
   const [pending, setPending] = useState<SocialProvider | null>(null);
 
   const enter = (msg: string) => {
-    toast({ title: msg, tone: "info" });
+    toast({ title: msg, tone: "success" });
     setTimeout(() => {
       window.location.href = BILLING_BASE;
     }, 450);

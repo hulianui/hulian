@@ -150,7 +150,7 @@ export default function ProjectsOverviewPage() {
       createdAgoDays: 0,
     };
     setItems([np, ...list]);
-    toast({ tone: "info", title: "项目已创建", description: `${np.name} 已连接 ${np.repo}，推送到 ${np.productionBranch} 即自动部署。` });
+    toast({ tone: "success", title: "项目已创建", description: `${np.name} 已连接 ${np.repo}，推送到 ${np.productionBranch} 即自动部署。` });
   };
 
   return (

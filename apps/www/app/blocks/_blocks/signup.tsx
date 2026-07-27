@@ -94,7 +94,7 @@ export function SignupBlock() {
         const email = values.email;
         setValues(empty);
         setAgree(false);
-        toast({ title: "注册成功", description: `验证邮件已发送至 ${email}。`, tone: "info" });
+        toast({ title: "注册成功", description: `验证邮件已发送至 ${email}。`, tone: "success" });
       } finally {
         setPending(false);
       }

@@ -69,7 +69,7 @@ export function SettingsPanelBlock() {
     setSaving(true);
     setTimeout(() => {
       setSaving(false);
-      toast({ title: "个人资料已保存", description: `姓名：${name}`, tone: "info" });
+      toast({ title: "个人资料已保存", description: `姓名：${name}`, tone: "success" });
     }, 600);
   };
 
@@ -182,7 +182,7 @@ export function SettingsPanelBlock() {
                 className="mt-5"
                 onClick={() => {
                   const on = Object.values(notif).filter(Boolean).length;
-                  toast({ title: "通知设置已保存", description: `已开启 ${on}/${NOTIF_ITEMS.length} 项通知`, tone: "info" });
+                  toast({ title: "通知设置已保存", description: `已开启 ${on}/${NOTIF_ITEMS.length} 项通知`, tone: "success" });
                 }}
               >
                 保存设置
@@ -236,7 +236,7 @@ export function SettingsPanelBlock() {
                   toast({
                     title: "外观设置已保存",
                     description: `紧凑模式：${compactMode ? "开" : "关"} · 动效：${animEnabled ? "开" : "关"}`,
-                    tone: "info",
+                    tone: "success",
                   })
                 }
               >
@@ -267,7 +267,7 @@ export function SettingsPanelBlock() {
 
               <Button
                 className="mt-5"
-                onClick={() => toast({ title: "密码已更新（demo）", description: "真实场景需接后端校验接口", tone: "info" })}
+                onClick={() => toast({ title: "密码已更新（demo）", description: "真实场景需接后端校验接口", tone: "success" })}
               >
                 更新密码
               </Button>

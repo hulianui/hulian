@@ -119,7 +119,7 @@ export function EnrollDialog({
             toast({
               title: "报名成功",
               description: `已加入「我的学习」· ${selectedPlan.name}`,
-              tone: "info",
+              tone: "success",
             });
             onOpenChange(false);
           }}

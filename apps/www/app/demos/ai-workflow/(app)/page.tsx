@@ -158,7 +158,7 @@ export default function AiWorkflowCanvasPage() {
 
   const handleSave = () => {
     void runSave(() => {
-      toast({ title: `「${name}」已保存`, tone: "info" });
+      toast({ title: `「${name}」已保存`, tone: "success" });
     });
   };
 

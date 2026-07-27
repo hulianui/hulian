@@ -252,7 +252,7 @@ export default function SettingsPage() {
 
           <Button
             className="self-start"
-            onClick={() => toast({ title: "默认配置已保存", tone: "info" })}
+            onClick={() => toast({ title: "默认配置已保存", tone: "success" })}
           >
             保存设置
           </Button>

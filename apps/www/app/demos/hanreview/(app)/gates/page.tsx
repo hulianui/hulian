@@ -276,7 +276,7 @@ export default function GatesPage() {
     toast({
       title: "门禁已创建",
       description: `${repo?.name ?? values.repoId} · ${values.branch} · 最低分 ${values.minScore ?? 0}`,
-      tone: "info",
+      tone: "success",
     });
   };
 

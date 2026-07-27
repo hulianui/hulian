@@ -300,7 +300,7 @@ export default function DomainsPage() {
           };
           setExtra((prev) => [fresh, ...prev]);
           form.resetFields();
-          toast({ tone: "info", title: "域名已添加，正在签发证书", description: fresh.host });
+          toast({ tone: "success", title: "域名已添加，正在签发证书", description: fresh.host });
         }}
       >
         <Field label="域名" error={reg.host.error} description="例如 app.example.com">

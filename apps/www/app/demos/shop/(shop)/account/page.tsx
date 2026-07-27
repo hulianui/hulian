@@ -108,7 +108,7 @@ function ProfileForm() {
       showReset
       onFinish={async () => {
         await new Promise((r) => setTimeout(r, 600));
-        toast({ title: "资料保存成功", tone: "info" });
+        toast({ title: "资料保存成功", tone: "success" });
       }}
     >
       <Field label="昵称">
@@ -148,7 +148,7 @@ function AddressBook() {
     setAdding(false);
     setNewRegion([]);
     setNewRegionNames([]);
-    toast({ title: "地址添加成功", tone: "info" });
+    toast({ title: "地址添加成功", tone: "success" });
   };
 
   const handleDelete = (id: string) => {

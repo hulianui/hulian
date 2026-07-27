@@ -66,7 +66,7 @@ export default function PhotosPage() {
 
   const handleUpload = () => {
     void runUpload(() => {
-      toast({ title: "照片上传成功", description: "已加入工作照片库", tone: "info" });
+      toast({ title: "照片上传成功", description: "已加入工作照片库", tone: "success" });
     });
   };
 

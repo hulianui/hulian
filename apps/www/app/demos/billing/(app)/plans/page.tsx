@@ -172,7 +172,7 @@ export default function PlansPage() {
               onClick={() =>
                 toast({
                   title: plan.monthly < 0 ? "已提交咨询，销售将联系您" : `已切换到${plan.name}（${cycle === "yearly" ? "年付" : "月付"}），${formatMoney(monthlyTotal)}/月`,
-                  tone: "info",
+                  tone: "success",
                 })
               }
             >

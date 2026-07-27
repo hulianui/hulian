@@ -131,7 +131,7 @@ export default function CheckoutPage() {
       setOrderId(id);
       clearCart();
       setStep(2);
-      toast({ title: "支付成功", tone: "info" });
+      toast({ title: "支付成功", tone: "success" });
     });
   }
 

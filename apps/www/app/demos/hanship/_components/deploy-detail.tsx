@@ -307,7 +307,7 @@ export function DeployDetail({ id }: { id: string }) {
               danger
               onConfirm={() => {
                 toast({
-                  tone: "info",
+                  tone: "success",
                   title: "已回滚",
                   description: `${project.name} 生产环境已切换到 ${deploy.sha.slice(0, 7)}。`,
                 });

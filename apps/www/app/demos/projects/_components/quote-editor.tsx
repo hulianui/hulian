@@ -153,13 +153,13 @@ export function QuoteEditor({ id }: { id: string }) {
 
   const handleSave = () => {
     void runSave(() => {
-      toast({ title: "草稿已保存", tone: "info" });
+      toast({ title: "草稿已保存", tone: "success" });
     });
   };
 
   const handleGenerate = () => {
     void runGen(() => {
-      toast({ title: "报价单已生成", description: `${quote.code} 已保存为正式版`, tone: "info" });
+      toast({ title: "报价单已生成", description: `${quote.code} 已保存为正式版`, tone: "success" });
     });
   };
 

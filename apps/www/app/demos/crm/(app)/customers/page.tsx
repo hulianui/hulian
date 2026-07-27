@@ -107,7 +107,7 @@ export default function CustomersPage() {
     return run(() => {
       if (editing) {
         setRows((rs) => rs.map((r) => (r.id === editing.id ? { ...r, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus } : r)));
-        toast({ title: "客户已更新", description: val.name, tone: "info" });
+        toast({ title: "客户已更新", description: val.name, tone: "success" });
       } else {
         const nextId = `C${1000 + rows.length + 1}`;
         setRows((rs) => [
@@ -118,7 +118,7 @@ export default function CustomersPage() {
           ...rs,
         ]);
         setPage(1);
-        toast({ title: "已新建客户", description: val.name, tone: "info" });
+        toast({ title: "已新建客户", description: val.name, tone: "success" });
       }
     });
   };

@@ -152,7 +152,7 @@ export function SchedulerShell() {
               : r,
           ),
         );
-        toast({ title: "预约已更新", description: `${v.patient} · ${dayjs(v.start).format("M/D HH:mm")}`, tone: "info" });
+        toast({ title: "预约已更新", description: `${v.patient} · ${dayjs(v.start).format("M/D HH:mm")}`, tone: "success" });
       } else {
         const appt: ClinicAppt = {
           id: `n-${Date.now()}`,
@@ -168,7 +168,7 @@ export function SchedulerShell() {
           subtitle: doc?.dept,
         };
         setRows((rs) => [...rs, appt]);
-        toast({ title: "已建预约", description: `${v.patient} · ${doc?.title} · ${dayjs(v.start).format("M/D HH:mm")}`, tone: "info" });
+        toast({ title: "已建预约", description: `${v.patient} · ${doc?.title} · ${dayjs(v.start).format("M/D HH:mm")}`, tone: "success" });
       }
       setFormOpen(false);
     });
@@ -176,7 +176,7 @@ export function SchedulerShell() {
   // 拖移/拖改时长回写
   const handleEventsChange = (next: SchedulerEvent[]) => {
     setRows(next as ClinicAppt[]);
-    toast({ title: "预约已改期", tone: "info" });
+    toast({ title: "预约已改期", tone: "success" });
   };
 
   const cancelAppt = (appt: ClinicAppt) => {
@@ -199,7 +199,7 @@ export function SchedulerShell() {
         return [...rs, ...added.filter((a) => !ids.has(a.id))];
       });
       const doc = DOCTORS.find((d) => d.id === leaveDoctor);
-      toast({ title: "已登记停诊", description: `${doc?.title} · ${s} ~ ${e}`, tone: "info" });
+      toast({ title: "已登记停诊", description: `${doc?.title} · ${s} ~ ${e}`, tone: "success" });
       setLeaveRange(null);
     });
 

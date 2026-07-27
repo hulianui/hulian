@@ -95,7 +95,7 @@ export default function KeysPage() {
     };
     setKeys((prev) => [newKey, ...prev]);
     setCreated(newKey);
-    toast({ tone: "info", title: "密钥已创建", description: "请立即复制并妥善保存，完整密钥仅展示这一次。" });
+    toast({ tone: "success", title: "密钥已创建", description: "请立即复制并妥善保存，完整密钥仅展示这一次。" });
   };
 
   const toggleStatus = (id: string) =>
@@ -106,7 +106,7 @@ export default function KeysPage() {
   const resetSecret = (id: string) => {
     const next = genSecret();
     setKeys((prev) => prev.map((k) => (k.id === id ? { ...k, secret: next } : k)));
-    toast({ tone: "info", title: "密钥已重置", description: "旧密钥立即失效，请更新你的服务配置。" });
+    toast({ tone: "success", title: "密钥已重置", description: "旧密钥立即失效，请更新你的服务配置。" });
   };
 
   const revokeKey = (id: string) => {

@@ -160,7 +160,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
             onEnded={() => {
               if (enrolled && !isCompleted(current.id)) {
                 markComplete(current.id);
-                toast({ title: "已完成本节", description: current.title, tone: "info" });
+                toast({ title: "已完成本节", description: current.title, tone: "success" });
               }
             }}
             endScreen={

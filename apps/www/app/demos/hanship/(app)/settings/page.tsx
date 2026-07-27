@@ -123,7 +123,7 @@ export default function SettingsPage() {
               disabled={savingBuild}
               onClick={() =>
                 void runBuild(() => {
-                  toast({ tone: "info", title: "构建设置已保存" });
+                  toast({ tone: "success", title: "构建设置已保存" });
                 })
               }
             >
@@ -159,7 +159,7 @@ export default function SettingsPage() {
               disabled={savingGit}
               onClick={() =>
                 void runGit(() => {
-                  toast({ tone: "info", title: "Git 集成设置已保存" });
+                  toast({ tone: "success", title: "Git 集成设置已保存" });
                 })
               }
             >

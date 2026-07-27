@@ -126,7 +126,7 @@ export default function SettingsPage() {
       ...ms,
       { name: val.name, role: val.role, email: val.email, status: "邀请中", roleTone: "neutral" },
     ]);
-    toast({ title: "邀请已发送", description: `已邀请 ${val.name}（${val.email}）加入团队`, tone: "info" });
+    toast({ title: "邀请已发送", description: `已邀请 ${val.name}（${val.email}）加入团队`, tone: "success" });
   };
 
   const bindInput = (f: typeof reg.name) => ({
@@ -166,7 +166,7 @@ export default function SettingsPage() {
                   submitText="保存修改"
                   resetText="重置"
                   onFinish={(v) => {
-                    toast({ title: "企业资料已保存", description: String(v.name), tone: "info" });
+                    toast({ title: "企业资料已保存", description: String(v.name), tone: "success" });
                   }}
                 >
                   <Field label="公司名称" error={reg.name.error}>
@@ -379,7 +379,7 @@ export default function SettingsPage() {
                       toast({
                         title: "通知设置已保存",
                         description: `渠道：${notifChannels.map((c) => channelLabels[c]).join("/")} · 首页：${viewLabels[defaultView]} · 已开启 ${on}/${NOTIF_ITEMS.length} 项`,
-                        tone: "info",
+                        tone: "success",
                       });
                     }, 500);
                   }}

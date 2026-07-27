@@ -110,7 +110,7 @@ export default function SettingsPage() {
     toast({
       title: "设置已保存",
       description: "全局调度策略与通知配置已生效（mock）。",
-      tone: "info",
+      tone: "success",
     });
   };
 

@@ -79,7 +79,7 @@ export default function KnowledgePage() {
       updatedAt: new Date().toISOString().slice(0, 10),
     };
     setArticles((prev) => [article, ...prev]);
-    toast({ title: "文章已发布", description: `「${title}」已加入知识库（demo 内存态）`, tone: "info" });
+    toast({ title: "文章已发布", description: `「${title}」已加入知识库（demo 内存态）`, tone: "success" });
     setCreating(false);
   };
 

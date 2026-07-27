@@ -32,7 +32,7 @@ export function NotesTab({ course, currentLesson }: { course: Course; currentLes
     void run(() => {
       addNote({ lessonId: currentLesson.id, lessonTitle: currentLesson.title, body: draft });
       setDraft("");
-      toast({ title: "笔记已保存", description: currentLesson.title, tone: "info" });
+      toast({ title: "笔记已保存", description: currentLesson.title, tone: "success" });
     });
   };
 

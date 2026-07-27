@@ -128,7 +128,7 @@ export default function CheckoutPage() {
         expireAt: String(values.expireAt) || "2026-06-05 18:00",
       };
       setRows((r) => [next, ...r]);
-      toast({ title: "已生成收款单", description: next.code, tone: "info" });
+      toast({ title: "已生成收款单", description: next.code, tone: "success" });
       setOpen(false);
     });
     return true;
