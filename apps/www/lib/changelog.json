@@ -1,5 +1,34 @@
 [
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.1.2",
+    "date": "2026-07-27",
+    "entries": [
+      {
+        "sha": "549d24b",
+        "bump": "patch",
+        "body": "`--color-hairline` 补面向消费方的用途约束注释：该令牌**只能用于 `border-*`**。它在浅色主题的值就是 `transparent`（既定设计：靠阴影自带的发丝边分隔，避免与显式 border 形成双线），因此用作 `text-hairline` / `bg-hairline` / `fill-hairline` 时会静默隐形——不报错、不回落到继承色，元素直接看不见。填充与文字请用 `--color-border` 或 `--color-muted`。\n\n仅注释变更，令牌值与主题行为不变。文档站「颜色」页也已把 hairline 列入语义色表并标注该约束。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.9.0",
+    "date": "2026-07-27",
+    "entries": [
+      {
+        "sha": "72b94d4",
+        "bump": "minor",
+        "body": "Toast 语调补齐五档：`ToastTone` 由 `info | danger | neutral` 扩到 `neutral | info | success | warning | danger`，与 Alert / Tag 对齐。\n\n`success` / `warning` 复用 tokens 里早已存在的 `--color-success` / `--color-warning`（此前类型注释所述「token 无」与事实不符），左边条与标题着色随之补 `border-l-success` / `text-success` 与 `border-l-warning` / `text-warning`。消费端不必再把成功态降级成 `info`、警告态降级成 `neutral`。\n\n`priority` 维持现状：仅 `danger` 走 `high`（assertive 打断播报），`warning` 与其余 tone 一样是 polite。纯新增，无破坏性变更。"
+      },
+      {
+        "sha": "20c98d3",
+        "bump": "patch",
+        "body": "fix(dialog): DialogContent 封顶 85dvh 并让正文内部滚动\n\n此前 Popup 没有任何高度约束与 overflow 处理，内容一长就顶穿视口：正文向上下溢出屏幕，\nfooter 被推到可视区外，「确定 / 保存」按钮点不到，且没有任何滚动条可用。表单类弹窗\n（多凭据字段 + 说明 Alert）必然触发。\n\n改为与 DrawerContent 同一套三段式（该组件早已是此写法，两者此前行为不一致）：\n\n- Popup: `flex max-h-[85dvh] flex-col`\n- Title / Description: `shrink-0`\n- 正文: `min-h-0 flex-1 overflow-y-auto`（`min-h-0` 必需，否则 flex item 的\n  `min-height:auto` 会让正文撑开父级、overflow 永不生效）\n- Footer: `shrink-0`\n\n短内容不受影响：未达 max-h 时弹窗仍按内容高度自适应，不出滚动条。\nModalForm / DrawerForm 复用 Dialog 引擎，一并受益。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.8.0",
     "date": "2026-07-23",
