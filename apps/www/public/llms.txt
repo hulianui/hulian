@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 360 个组件 · v0.11.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 360 个组件 · v0.12.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，统一从根 barrel 导入：`import { X } from "@hulianui/ui"`。

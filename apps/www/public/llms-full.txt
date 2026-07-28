@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.11.0 · 360 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.12.0 · 360 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
