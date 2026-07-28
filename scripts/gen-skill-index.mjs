@@ -217,6 +217,15 @@ function main() {
   lines.push("   - 全量离线语料（一次喂全库）：`apps/www/public/llms-full.txt`；机读目录 `llms.txt` / 组件清单 `registry.json`。");
   lines.push("4. **导入**：`import { X } from \"@hulianui/ui\"`（根 barrel 全量再导出）。");
   lines.push("5. 标签 `#animated` 动效、`#webgl` 需 WebGL 上下文（SSR 注意）。");
+  lines.push(
+    "6. **跨 workspace 消费本库时**（消费方不在本仓的 pnpm workspace 内，如 `link:` / 软链到源码）：" +
+      "先读 skill `consume-tailwind-v4-design-system-package-outside-its-pnpm-workspace`。" +
+      "它记录了 React/emotion 被解析成两份实例导致的一整类故障——" +
+      "症状是 `Cannot read properties of null (reading 'useRef'/'useId'/'useContext'/'useMemo')` " +
+      "且**栈顶指向本库或第三方包内部，看起来像组件坏了**，实际是消费方的构建/测试解析配置问题。" +
+      "四种依赖形态（自研零依赖 / 纯 ESM peer 包 / 有 exports 但 import 指向 CJS 壳 / 无 exports 的 legacy 包）" +
+      "各需一条不同配置，缺一族崩一族，**逐条单独试会得出「每条都无效」的错误结论**。",
+  );
   lines.push("");
   lines.push("## 组件目录");
 
