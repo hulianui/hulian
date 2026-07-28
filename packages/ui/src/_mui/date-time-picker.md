@@ -44,6 +44,8 @@ import { DateTimePicker } from "@hulianui/ui"
 | maxDateTime | `string` | — | 可选最晚日期时间（ISO） |
 | minutesStep | `number` | — | 时间步进分钟数（如 5、15、30） |
 | withSeconds | `boolean` | `false` | 是否启用秒（默认仅到分钟） |
+| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定（只作用于日期部分，不筛时刻） |
+| format | `string` | — | 输入框显示格式（dayjs format 串）。**只影响显示**，回调仍回传完整 ISO 时间戳；不传时随 `withSeconds` 取默认 |
 | label | `string` | `"选择日期时间"` | 输入框 label |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |

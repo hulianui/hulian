@@ -140,7 +140,8 @@ export const CATEGORIES: Category[] = [
 export const manifest: ComponentMeta[] = [
   // ── 布局 layout ──────────────────────────────────────────────
   { slug: "layout", name: "Layout", description: "整页布局 · 复合 Header/Sider/Content/Footer + Sider 可折叠(受控/断点/trigger) + 宽度过渡(零依赖·尽量 RSC·复用 ScrollArea)", category: "layout", group: "container", status: "new" },
-  { slug: "admin-layout", name: "AdminLayout", description: "中后台骨架 · 侧栏(品牌+NavMenu可折叠) + 顶栏(折叠/面包屑/扩展区) + 多页签导航(开/切/关·关闭其他/全部·受控接路由或菜单点击自动维护) + 内容区(复用 NavMenu/ScrollArea/Popover·企业应用外壳)", category: "layout", group: "container", status: "new" },
+  { slug: "admin-layout", name: "AdminLayout", description: "中后台骨架 · 侧栏(品牌+NavMenu可折叠) + 顶栏(折叠/面包屑/扩展区) + 多页签导航(内嵌 RouteTabs·右键关闭其他/左右/全部/刷新·受控接路由或菜单点击自动维护) + 内容区(复用 NavMenu/ScrollArea·企业应用外壳)", category: "layout", group: "container", status: "new" },
+  { slug: "route-tabs", name: "RouteTabs", description: "路由页签条 · 中后台多标签工作区(右键关闭其他/左侧/右侧/全部/刷新 + 固定页签 + 拖拽调序 + 激活项滚入视口 + 溢出滚动) · 完全受控", category: "navigation", group: "inpage", status: "new" },
   { slug: "scroll-area", name: "ScrollArea", description: "滚动区 · Base UI 自定义细滚动条 + 竖/横/双向", category: "layout", group: "container", status: "new" },
   { slug: "viewport", name: "Viewport", description: "响应式容器 · container-type 容器查询上下文 + web/平板/手机 预设宽度(可 width 覆盖) + 可选设备切换器(dogfood Segmented) · 内部组件用 @md/@5xl 等容器变体按【容器宽度】自适应而非页面视口(跨设备同套布局自动重排)", category: "layout", group: "container", status: "new" },
   { slug: "resizable", name: "Resizable", description: "拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator)", category: "layout", group: "container", status: "new" },
@@ -222,6 +223,9 @@ export const manifest: ComponentMeta[] = [
   { slug: "date-picker", name: "DatePicker", description: "日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max", category: "forms", group: "datetime", status: "new" },
   { slug: "date-time-picker", name: "DateTimePicker", description: "日期时间选择 · MUI X 桥(年月日+时钟一体弹层) + ISO 受控 + 步进/秒", category: "forms", group: "datetime", status: "new" },
   { slug: "date-range-picker", name: "DateRangePicker", description: "日期区间 · 自研零依赖双月范围日历(避开 MUI Pro 收费) + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控", category: "forms", group: "datetime", status: "new" },
+  { slug: "icon-picker", name: "IconPicker", description: "图标选择 · 分类页签 + 跨类搜索(名字/中文别名) + 网格 + 最近使用 · 图标集由消费方经 renderIcon 注入(库不打包图标集)", category: "forms", group: "advanced", status: "new" },
+  { slug: "date-field", name: "DateField", description: "单日期选择 · 自研零依赖(日/月/年三粒度·面板逐层下钻) + Popover 引擎 + min-max/disabledDate · 不经 MUI 桥", category: "forms", group: "datetime", status: "new" },
+  { slug: "time-picker", name: "TimePicker", description: "时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · 不经 MUI 桥", category: "forms", group: "datetime", status: "new" },
   { slug: "time-field", name: "TimeField", description: "时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控", category: "forms", group: "datetime", status: "new" },
   { slug: "form", name: "Form", description: "表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同", category: "forms", group: "framework", status: "new" },
   { slug: "form-dialog", name: "ModalForm / DrawerForm", description: "弹窗/抽屉表单 · 列表页新增/编辑编排件(复用 Dialog/Drawer + useForm + Button footer) · 提交前自动 validate · async onFinish 成功关闭/失败保持 · 文案接 i18n", category: "forms", group: "framework", status: "new" },

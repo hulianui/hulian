@@ -94,3 +94,95 @@ describe("SearchForm", () => {
     expect(screen.queryByText("收起")).toBeNull();
   });
 });
+
+// a14：此前只有 input / select / date / date-range 四种，数值与日期时间这类常见查询条件表达不了
+describe("SearchForm 控件类型", () => {
+  const submit = (onSearch: ReturnType<typeof vi.fn>) => {
+    fireEvent.click(screen.getByText("查询"));
+    return onSearch.mock.calls.at(-1)![0] as Record<string, unknown>;
+  };
+
+  it("number：渲染数字输入并透传 min/max/step", () => {
+    const fields: SearchField[] = [
+      { name: "age", label: "年龄", type: "number", min: 0, max: 120, step: 5 },
+    ];
+    const { container } = render(<SearchForm fields={fields} onSearch={() => {}} />);
+    const input = container.querySelector('input[type="number"]') as HTMLInputElement;
+    expect(input).toBeTruthy();
+    expect(input.min).toBe("0");
+    expect(input.max).toBe("120");
+    expect(input.step).toBe("5");
+  });
+
+  it("number-range：两个数字格子，值是二元组", () => {
+    const onSearch = vi.fn();
+    const fields: SearchField[] = [{ name: "price", label: "价格", type: "number-range" }];
+    const { container } = render(<SearchForm fields={fields} onSearch={onSearch} />);
+    const inputs = container.querySelectorAll('input[type="number"]');
+    expect(inputs).toHaveLength(2);
+    fireEvent.change(inputs[0], { target: { value: "10" } });
+    fireEvent.change(inputs[1], { target: { value: "99" } });
+    expect(submit(onSearch).price).toEqual(["10", "99"]);
+  });
+
+  it("datetime / datetime-range：走原生 datetime-local", () => {
+    const fields: SearchField[] = [
+      { name: "at", label: "时刻", type: "datetime" },
+      { name: "span", label: "区间", type: "datetime-range" },
+    ];
+    const { container } = render(<SearchForm fields={fields} columns={1} collapsible={false} onSearch={() => {}} />);
+    expect(container.querySelectorAll('input[type="datetime-local"]')).toHaveLength(3);
+  });
+
+  it("multi-select：初值是空数组而非空串", () => {
+    const onSearch = vi.fn();
+    const fields: SearchField[] = [
+      {
+        name: "tags",
+        label: "标签",
+        type: "multi-select",
+        options: [
+          { value: "a", label: "A" },
+          { value: "b", label: "B" },
+        ],
+      },
+    ];
+    render(<SearchForm fields={fields} onSearch={onSearch} />);
+    expect(submit(onSearch).tags).toEqual([]);
+  });
+
+  it("remote-select multiple：初值是空数组；单选是空串", () => {
+    const onSearch = vi.fn();
+    const fetcher = vi.fn(async () => ({ options: [], total: 0 }));
+    const fields: SearchField[] = [
+      { name: "shopMulti", label: "门店", type: "remote-select", fetcher, multiple: true },
+      { name: "shopOne", label: "门店", type: "remote-select", fetcher },
+    ];
+    render(<SearchForm fields={fields} columns={1} collapsible={false} onSearch={onSearch} />);
+    const values = submit(onSearch);
+    expect(values.shopMulti).toEqual([]);
+    expect(values.shopOne).toBe("");
+  });
+
+  it("重置把区间/多值字段各自还原成对应的空形状", () => {
+    const onReset = vi.fn();
+    const fields: SearchField[] = [
+      { name: "price", label: "价格", type: "number-range" },
+      { name: "tags", label: "标签", type: "multi-select", options: [{ value: "a", label: "A" }] },
+      { name: "kw", label: "关键词" },
+    ];
+    const { container } = render(<SearchForm fields={fields} columns={1} collapsible={false} onSearch={() => {}} onReset={onReset} />);
+    fireEvent.change(container.querySelectorAll('input[type="number"]')[0], { target: { value: "10" } });
+    fireEvent.click(screen.getByText("重置"));
+    expect(onReset).toHaveBeenCalledWith({ price: ["", ""], tags: [], kw: "" });
+  });
+
+  it("defaultValue 优先于类型推出的空形状", () => {
+    const onSearch = vi.fn();
+    const fields: SearchField[] = [
+      { name: "price", label: "价格", type: "number-range", defaultValue: ["1", "9"] },
+    ];
+    render(<SearchForm fields={fields} onSearch={onSearch} />);
+    expect(submit(onSearch).price).toEqual(["1", "9"]);
+  });
+});

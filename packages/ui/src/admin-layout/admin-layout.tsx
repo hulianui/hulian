@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { Menu, X } from "../_icons";
+import { Menu } from "../_icons";
 import { useLocale } from "../config/locale";
 import { resolveBreakpointPx } from "../layout/layout-sider";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { NavMenu } from "../nav-menu/nav-menu";
-import { Popover, PopoverContent, PopoverClose, PopoverTrigger } from "../popover";
+import { RouteTabs } from "../route-tabs";
+import { nextActiveKey } from "../route-tabs/route-tabs-core";
+import type { RouteTabsAction } from "../route-tabs/route-tabs.types";
 import { ScrollArea } from "../scroll-area";
 import type { NavMenuItem, NavMenuNode } from "../nav-menu/nav-menu.types";
 import type { AdminLayoutProps, AdminTab } from "./admin-layout.types";
@@ -25,101 +27,9 @@ function collectLeaves(nodes: NavMenuNode[], out: Map<string, NavMenuItem>): Map
   return out;
 }
 
-const Ellipsis = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
-    <circle cx="5" cy="12" r="1.6" />
-    <circle cx="12" cy="12" r="1.6" />
-    <circle cx="19" cy="12" r="1.6" />
-  </svg>
-);
-
-interface TabBarProps {
-  tabs: AdminTab[];
-  active?: string;
-  onActivate: (key: string) => void;
-  onClose: (key: string) => void;
-  onCloseOthers: (key: string) => void;
-  onCloseAll: () => void;
-}
-
-function TabBar({ tabs, active, onActivate, onClose, onCloseOthers, onCloseAll }: TabBarProps) {
-  const loc = useLocale().adminLayout;
-  return (
-    <div className="flex h-10 shrink-0 items-center gap-1 border-b border-border bg-surface px-2">
-      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
-        {tabs.map((t) => {
-          const isActive = t.key === active;
-          const closable = t.closable ?? tabs.length > 1;
-          return (
-            <div
-              key={t.key}
-              role="tab"
-              aria-selected={isActive}
-              tabIndex={0}
-              onClick={() => onActivate(t.key)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  onActivate(t.key);
-                }
-              }}
-              className={cn(
-                "group flex h-7 shrink-0 cursor-pointer items-center gap-1.5 rounded-[calc(var(--radius)-0.25rem)] pl-3 text-sm whitespace-nowrap outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                closable ? "pr-1.5" : "pr-3",
-                isActive
-                  ? "bg-primary/12 text-primary"
-                  : "text-muted hover:bg-surface-hover hover:text-foreground",
-              )}
-            >
-              {isActive && <span className="size-1.5 shrink-0 rounded-full bg-primary" aria-hidden />}
-              <span className="truncate">{t.label}</span>
-              {closable && (
-                <button
-                  type="button"
-                  aria-label={loc.closeTab}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClose(t.key);
-                  }}
-                  className="inline-flex size-4 items-center justify-center rounded-full opacity-50 transition-opacity hover:bg-surface-hover hover:opacity-100"
-                >
-                  <X className="size-3" />
-                </button>
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <Popover>
-        <PopoverTrigger
-          aria-label={loc.tabActions}
-          className="inline-grid size-7 shrink-0 place-items-center rounded-[calc(var(--radius)-0.25rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <Ellipsis className="size-4" />
-        </PopoverTrigger>
-        <PopoverContent align="end" className="w-40 p-1.5">
-          <div className="flex flex-col">
-            <PopoverClose
-              onClick={() => active && onCloseOthers(active)}
-              className="rounded-[calc(var(--radius)-0.25rem)] px-2.5 py-1.5 text-left text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover"
-            >
-              {loc.closeOthers}
-            </PopoverClose>
-            <PopoverClose
-              onClick={onCloseAll}
-              className="rounded-[calc(var(--radius)-0.25rem)] px-2.5 py-1.5 text-left text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover"
-            >
-              {loc.closeAll}
-            </PopoverClose>
-          </div>
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-}
-
 // AdminLayout = 中后台应用骨架：侧栏(品牌 + NavMenu·可折叠) + 顶栏(折叠触发 + 面包屑 + 扩展区)
-// + 多页签导航(keep-alive 风格·开/切/关 + 关闭其他/全部) + 内容区。页签可受控(接路由)或非受控(菜单点击自动维护)。
+// + 多页签导航(内嵌 RouteTabs：开/切/关 + 右键关闭其他/左侧/右侧/全部/刷新) + 内容区。
+// 页签可受控(接路由)或非受控(菜单点击自动维护)。
 export function AdminLayout({
   menuItems,
   logo,
@@ -140,6 +50,7 @@ export function AdminLayout({
   defaultActiveKey,
   onTabChange,
   onTabClose,
+  onTabsAction,
   breadcrumb,
   headerExtra,
   fitViewport = true,
@@ -219,14 +130,25 @@ export function AdminLayout({
     });
   };
 
-  const closeOthers = (key: string) => {
-    if (!tabsControlled) setTabsI((prev) => prev.filter((t) => t.key === key));
-    setActive(key);
-  };
-
-  // 关闭全部：保留当前激活页签（避免内容区空白；中后台常保留首页/当前页）。
-  const closeAll = () => {
-    if (active) closeOthers(active);
+  /**
+   * 批量动作。RouteTabs 已把「这次实际会关掉哪些 key」算好（排除 pinned / 不可关的），
+   * 这里只负责：非受控时按它改内部 tabs、必要时挪激活页；受控时**必须把动作透出去**——
+   * 此前这里只调 setActive、没有对外回调，受控消费方点「关闭其他」看着毫无反应。
+   */
+  const handleTabsAction = (action: RouteTabsAction, tabKey: string, affected: string[]) => {
+    onTabsAction?.(action, tabKey, affected);
+    if (action === "refresh" || affected.length === 0) return;
+    if (tabsControlled) return;
+    setTabsI((prev) => {
+      const next = prev.filter((t) => !affected.includes(t.key));
+      const nextActive = nextActiveKey(prev, affected, active);
+      if (nextActive && nextActive !== active) {
+        if (activeKeyProp === undefined) setActiveI(nextActive);
+        if (selectedKeyProp === undefined) setSelectedI(nextActive);
+        onTabChange?.(nextActive);
+      }
+      return next;
+    });
   };
 
   const w = collapsed ? 64 : 232;
@@ -284,13 +206,12 @@ export function AdminLayout({
         </header>
 
         {showTabs && tabs.length > 0 && (
-          <TabBar
-            tabs={tabs}
-            active={active}
-            onActivate={setActive}
+          <RouteTabs
+            items={tabs}
+            activeKey={active}
+            onChange={setActive}
             onClose={closeTab}
-            onCloseOthers={closeOthers}
-            onCloseAll={closeAll}
+            onAction={handleTabsAction}
           />
         )}
 

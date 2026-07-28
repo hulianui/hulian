@@ -42,6 +42,10 @@ import { DatePicker } from "@hulianui/ui"
 | defaultValue | `string` | — | ISO 字符串非受控默认值 |
 | minDate | `string` | — | 可选最早日期（ISO） |
 | maxDate | `string` | — | 可选最晚日期（ISO） |
+| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参是 `"YYYY-MM-DD"`；与 min/max 是「或」关系 |
+| views | `("year" \| "month" \| "day")[]` | `["year","day"]` | 面板视图层级。只选年传 `["year"]`、只选年月传 `["year","month"]`（对上 el-date-picker 的 `type="year"`/`"month"`） |
+| openTo | `"year" \| "month" \| "day"` | — | 打开时停在哪一层视图（须是 `views` 的成员） |
+| format | `string` | — | 输入框显示格式（dayjs format 串）。**只影响显示**，回调仍回传完整 ISO 时间戳 |
 | label | `string` | `"选择日期"` | 输入框 label |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |

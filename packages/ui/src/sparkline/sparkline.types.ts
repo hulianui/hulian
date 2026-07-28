@@ -25,6 +25,20 @@ export interface SparklineProps
   /** 归一化上界，不传从数据推 */
   max?: number;
   /**
+   * 基准线：在该数值处画一条横向虚线，让序列有个「对比的参照」而不只是形状。
+   * 典型用法是上期均值 / 目标值 / 及格线 —— 此前 Sparkline 只能表达序列本身，
+   * 「当前 vs 参照」只能在旁边另拼两个数字。
+   *
+   * 不传 `min`/`max` 时会把基准值一并纳入归一化域，保证它落在视口内而不是被裁到外面。
+   */
+  baseline?: number;
+  /**
+   * 基准线颜色，默认 `var(--color-muted)`。取值同 `tone`（语义色名 / 任意 CSS 颜色 / 变量）。
+   */
+  baselineTone?: string;
+  /** 基准线的原生 tooltip 文案（渲染为 SVG `<title>`）。 */
+  baselineLabel?: string;
+  /**
    * 逐点原生 tooltip：返回字符串渲染为 SVG <title>（零 JS，RSC 安全）。
    * 入参为该点的原始数值与索引。
    */

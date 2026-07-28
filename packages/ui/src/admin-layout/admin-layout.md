@@ -43,6 +43,8 @@ import { AdminLayout } from "@hulianui/ui"
 
 `AdminTab`：`{ key: string; label: ReactNode; closable?: boolean }`，`closable` 缺省为「打开页签 >1 时可关，最后一个不可关」。
 
+页签条本身是独立组件 [RouteTabs](../route-tabs/route-tabs.md) —— 右键菜单、固定页签、拖拽调序、激活项滚入视口这些能力都在那边，本组件只是把它内嵌进骨架。自己搭骨架时直接用 RouteTabs。
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -52,6 +54,7 @@ import { AdminLayout } from "@hulianui/ui"
 | onCollapsedChange | `(collapsed: boolean) => void` | 侧栏折叠变化回调。 |
 | onTabChange | `(key: string) => void` | 切换页签回调。 |
 | onTabClose | `(key: string) => void` | 关闭页签回调。 |
+| onTabsAction | `(action, tabKey, affectedKeys) => void` | 页签右键菜单的批量动作（关闭其他/左侧/右侧/全部、刷新）。第三参是**该动作实际影响到的 key 列表**。⚠️ **受控（传了 `tabs`）时这是唯一出口**：不接它，这些动作点了不会有任何变化 |
 
 ## Slots
 
@@ -85,6 +88,9 @@ const [active, setActive] = useState("dashboard");
 
 ## 禁忌 / 坑
 
+
+- **受控页签下必须接 `onTabsAction`**：组件不持有 `tabs`，右键菜单里的「关闭其他/左侧/右侧/全部」只能把「该关哪些」算给你，改不了。此前这里连回调都没有，受控消费方点了完全没反应。
+- 「关闭全部」关的是**全部可关页签（含当前页）**，不是「关闭其他」。此前二者行为相同、与菜单文案对不上。
 - **`fitViewport` 决定撑高方式**：整页用默认 `true`（自钉 100dvh），别再外面套 `h-dvh` wrapper；嵌入文档示例卡等固定高度容器时务必传 `false`，否则整页滚动而非内容区滚动。详见 [[hulian-adminlayout-fitviewport]]。
 - **页签受控/非受控二选一**：不传 `tabs` 时页签由菜单点击自动维护（非受控）；一旦传 `tabs` 即受控，须自行配 `onTabChange`/`onTabClose` 维护数组与 `activeKey`。
 - `children` 只渲染「当前激活页」，keep-alive 的多页内容缓存需上层按 `activeKey` 自行管理，组件不替你缓存各页 DOM。

@@ -25,3 +25,30 @@ export const toISODate = (d: Dayjs): string => d.format(DATE_FORMAT);
 
 // 任意可解析日期入参 → 规范化 ISO 日期串；空值穿透为 undefined。
 export const normISODate = (s?: string): string | undefined => (s ? toISODate(dayjs(s)) : undefined);
+
+// 月/年格式（月选择器 / 年选择器的对外值形状）。
+export const MONTH_FORMAT = "YYYY-MM";
+export const YEAR_FORMAT = "YYYY";
+
+/** 日历表头的星期名（周日起）。自研日历件共用，避免各写一份中文星期。 */
+export const WEEKDAY_LABELS = ["日", "一", "二", "三", "四", "五", "六"] as const;
+
+/**
+ * 月历格子：6 周 × 7 列 = 42 格，含本月前后补位。
+ * 恒定 42 格（而非按需 35/42）是为了月份切换时面板高度不跳。
+ */
+export function monthMatrix(month: Dayjs): Dayjs[] {
+  const first = month.startOf("month");
+  const gridStart = first.subtract(first.day(), "day"); // 回退到本周日
+  return Array.from({ length: 42 }, (_, i) => gridStart.add(i, "day"));
+}
+
+/**
+ * 年份面板的 12 格：以 `year` 所在的**十年段**为主体，前后各补一格凑满 3×4 网格。
+ * 如 2026 → 2019, [2020..2029], 2030；首尾两格是邻段的补位，渲染时弱化。
+ * 按十年段（而非十二年段）分是因为人对「20 年代」有直觉，2016–2027 这种切法读起来没有着落。
+ */
+export function yearMatrix(year: number): number[] {
+  const decadeStart = Math.floor(year / 10) * 10;
+  return Array.from({ length: 12 }, (_, i) => decadeStart - 1 + i);
+}

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { Tree } from "./tree";
 import type { TreeNode } from "./tree-core";
 
@@ -134,6 +134,174 @@ describe("Tree", () => {
     render(<Tree nodes={[{ key: "x", label: "禁用叶", disabled: true }]} onSelect={onSelect} aria-label="t" />);
     fireEvent.click(screen.getByText("禁用叶").closest('[role="treeitem"]')!);
     expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  // ── 拖拽排序（原生 HTML5 拖放；数据仍归消费方）──
+  describe("draggable", () => {
+    // jsdom 不实现 DataTransfer，喂一个够用的替身
+    const dt = () => ({ effectAllowed: "", dropEffect: "", setData: vi.fn(), getData: () => "" });
+    const rowOf = (text: string) => screen.getByText(text).closest('[role="treeitem"]')! as HTMLElement;
+    // 让 getBoundingClientRect 有高度，否则落点判定拿到 0 高恒返回 before
+    const stubRect = (el: HTMLElement, top = 0, height = 40) => {
+      el.getBoundingClientRect = () => ({ top, height, bottom: top + height, left: 0, right: 0, width: 100, x: 0, y: top, toJSON: () => ({}) }) as DOMRect;
+    };
+    // jsdom 没有 DragEvent 构造器 → @testing-library 的 fireEvent.dragOver 退化成无坐标的 Event，
+    // clientY 丢失后落点判定拿到 NaN。这里直接派一个带坐标的 MouseEvent（React 照样收到 onDragOver），
+    // 并把 dataTransfer 挂上去，免得为了测试去污染组件的生产代码。
+    // 必须走 fireEvent(el, ev) 而不是 el.dispatchEvent：前者裹了 act，setDropHint 才会在
+    // 后续 drop 之前刷进去；裸 dispatch 的话 drop 读到的 dropHint 还是 null，直接静默 return。
+    const dragOverAt = (el: HTMLElement, clientY: number) => {
+      const ev = new MouseEvent("dragover", { bubbles: true, cancelable: true, clientY });
+      Object.defineProperty(ev, "dataTransfer", { value: dt() });
+      fireEvent(el, ev);
+    };
+
+    it("不开 draggable 时行上没有 draggable 属性", () => {
+      render(<Tree nodes={NODES} defaultExpandedKeys={["a"]} aria-label="t" />);
+      expect(rowOf("甲").getAttribute("draggable")).toBeNull();
+    });
+
+    it("只传 draggable 不传 onDrop 时不启用（拖了也没人接）", () => {
+      render(<Tree nodes={NODES} draggable defaultExpandedKeys={["a"]} aria-label="t" />);
+      expect(rowOf("甲").getAttribute("draggable")).toBeNull();
+    });
+
+    it("拖到目标行中部 → inside", () => {
+      const onDrop = vi.fn();
+      render(<Tree nodes={NODES} draggable onDrop={onDrop} defaultExpandedKeys={["a"]} aria-label="t" />);
+      const from = rowOf("甲一");
+      const to = rowOf("乙");
+      stubRect(to);
+      fireEvent.dragStart(from, { dataTransfer: dt() });
+      dragOverAt(to, 20);
+      fireEvent.drop(to, { dataTransfer: dt() });
+      expect(onDrop).toHaveBeenCalledWith({ dragKey: "a1", dropKey: "b", position: "inside" });
+    });
+
+    it("拖到目标行顶部 → before", () => {
+      const onDrop = vi.fn();
+      render(<Tree nodes={NODES} draggable onDrop={onDrop} defaultExpandedKeys={["a"]} aria-label="t" />);
+      const from = rowOf("乙");
+      const to = rowOf("甲一");
+      stubRect(to);
+      fireEvent.dragStart(from, { dataTransfer: dt() });
+      dragOverAt(to, 2);
+      fireEvent.drop(to, { dataTransfer: dt() });
+      expect(onDrop).toHaveBeenCalledWith({ dragKey: "b", dropKey: "a1", position: "before" });
+    });
+
+    it("丢进自己的子树被拦下，不触发 onDrop", () => {
+      const onDrop = vi.fn();
+      render(<Tree nodes={NODES} draggable onDrop={onDrop} defaultExpandedKeys={["a"]} aria-label="t" />);
+      const from = rowOf("甲");
+      const to = rowOf("甲一");
+      stubRect(to);
+      fireEvent.dragStart(from, { dataTransfer: dt() });
+      dragOverAt(to, 20);
+      fireEvent.drop(to, { dataTransfer: dt() });
+      expect(onDrop).not.toHaveBeenCalled();
+    });
+
+    it("disabled 节点不可拖", () => {
+      const onDrop = vi.fn();
+      const nodes: TreeNode[] = [
+        { key: "x", label: "禁用项", disabled: true },
+        { key: "y", label: "普通项" },
+      ];
+      render(<Tree nodes={nodes} draggable onDrop={onDrop} aria-label="t" />);
+      expect(rowOf("禁用项").getAttribute("draggable")).toBeNull();
+      expect(rowOf("普通项").getAttribute("draggable")).toBe("true");
+    });
+
+    it("allowDropInside 返回 false 的目标只接受 before/after", () => {
+      const onDrop = vi.fn();
+      render(
+        <Tree
+          nodes={NODES}
+          draggable
+          onDrop={onDrop}
+          allowDropInside={() => false}
+          defaultExpandedKeys={["a"]}
+          aria-label="t"
+        />,
+      );
+      const from = rowOf("甲一");
+      const to = rowOf("乙");
+      stubRect(to);
+      fireEvent.dragStart(from, { dataTransfer: dt() });
+      // 正中间：允许 inside 时是 inside，禁掉后退化成 after
+      dragOverAt(to, 20);
+      fireEvent.drop(to, { dataTransfer: dt() });
+      expect(onDrop).toHaveBeenCalledWith({ dragKey: "a1", dropKey: "b", position: "after" });
+    });
+  });
+
+  // ── 虚拟滚动：几百节点的权限树用 ──
+  // jsdom 无 ResizeObserver 且 getBoundingClientRect 恒 0 → tanstack 量不到视口、渲 0 行。
+  // 照 virtual-list.test.tsx 的范式：observe 时立刻回一个有高度的 entry + 兜底 rect。
+  describe("virtual", () => {
+    class FiringResizeObserver {
+      cb: ResizeObserverCallback;
+      constructor(cb: ResizeObserverCallback) {
+        this.cb = cb;
+      }
+      observe(el: Element) {
+        const box = [{ inlineSize: 300, blockSize: 320 }] as unknown as ReadonlyArray<ResizeObserverSize>;
+        this.cb(
+          [
+            {
+              target: el,
+              contentRect: { width: 300, height: 320, top: 0, left: 0, right: 300, bottom: 320, x: 0, y: 0 } as DOMRectReadOnly,
+              borderBoxSize: box,
+              contentBoxSize: box,
+              devicePixelContentBoxSize: box,
+            },
+          ],
+          this as unknown as ResizeObserver,
+        );
+      }
+      unobserve() {}
+      disconnect() {}
+    }
+
+    let rectSpy: ReturnType<typeof vi.spyOn>;
+    beforeAll(() => {
+      vi.stubGlobal("ResizeObserver", FiringResizeObserver);
+      rectSpy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockReturnValue({
+        width: 300, height: 320, top: 0, left: 0, right: 300, bottom: 320, x: 0, y: 0, toJSON() {},
+      } as DOMRect);
+    });
+    afterAll(() => {
+      rectSpy.mockRestore();
+      vi.unstubAllGlobals();
+    });
+
+    const many: TreeNode[] = Array.from({ length: 500 }, (_, i) => ({ key: `n${i}`, label: `节点 ${i}` }));
+
+    it("不开时全量渲染", () => {
+      render(<Tree nodes={many} aria-label="t" />);
+      expect(screen.getAllByRole("treeitem")).toHaveLength(500);
+    });
+
+    it("开了之后只渲染视口内的一小截，远端行被裁掉", () => {
+      render(<Tree nodes={many} virtual aria-label="t" />);
+      const rendered = screen.getAllByRole("treeitem").length;
+      expect(rendered).toBeGreaterThan(0);
+      expect(rendered).toBeLessThan(500);
+      expect(screen.queryByText("节点 0")).not.toBeNull();
+      expect(screen.queryByText("节点 499")).toBeNull();
+    });
+
+    it("总高占位为 行数 × itemHeight", () => {
+      const { container } = render(<Tree nodes={many} virtual={{ itemHeight: 40 }} aria-label="t" />);
+      const ul = container.querySelector('[role="tree"]') as HTMLElement;
+      expect(ul.style.height).toBe("20000px"); // 500 × 40
+    });
+
+    it("虚拟态仍带展开箭头（区别于搜索平铺态）", () => {
+      render(<Tree nodes={NODES} virtual aria-label="t" />);
+      expect(screen.getByText("甲").closest('[role="treeitem"]')!.querySelector("svg")).toBeTruthy();
+    });
   });
 
   // ── searchText：label 是 ReactNode 时，搜索此前退化成拿 key 去匹配 ──

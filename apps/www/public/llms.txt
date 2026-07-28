@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 356 个组件 · v0.11.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 360 个组件 · v0.11.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，统一从根 barrel 导入：`import { X } from "@hulianui/ui"`。
@@ -57,7 +57,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 RAF · red…
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（52）
+## 表单 forms（55）
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 按钮 · CVA 变体 + press 动效
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体)
 - [Calendar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/calendar.md): 日历 · MUI X 桥(DateCalendar) + 对外 ISO 字符串受控 + 瑚琏 token
@@ -70,6 +70,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ColorSwatchPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/color-swatch-picker/color-swatch-picker.md): 预设色块单选 · base-ui RadioGroup 换皮(方向键 a11y) + 选中 ring + mix-blend 勾(零依赖)
 - [Combobox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/combobox/combobox.md): 自动补全 · 触发按钮 + 弹层内搜索(图4 范式)，亦支持内联输入；浮层锚到字段等宽
 - [CountrySelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/country-select/country-select.md): 国家/地区选择 · 内置 250 国(旗+中英文名+区号) + 单/多选 chips + 中英文/码/区号搜索 · dogfood Combobox(新增多选)
+- [DateField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-field/date-field.md): 单日期选择 · 自研零依赖(日/月/年三粒度·面板逐层下钻) + Popover 引擎 + min-max/disabledDate · 不经 MUI 桥
 - [DatePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/date-picker.md): 日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max
 - [DateRangePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-range-picker/date-range-picker.md): 日期区间 · 自研零依赖双月范围日历(避开 MUI Pro 收费) + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控
 - [DateTimePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/date-time-picker.md): 日期时间选择 · MUI X 桥(年月日+时钟一体弹层) + ISO 受控 + 步进/秒
@@ -77,6 +78,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [EmojiPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/emoji-picker/emoji-picker.md): 表情选择器 · 内联 emoji 数据集(7 分类·中英关键词) + 关键词搜索 + 分类页签 + 最近使用(受控/内部) · 搜索框 dogfood Input · onSelect 回传 emoji(零依赖·聊天/…
 - [Field](https://github.com/hulianui/hulian/blob/master/packages/ui/src/field/field.md): 字段包装 · label/help/error a11y 串联
 - [Form](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form/form.md): 表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同
+- [IconPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/icon-picker/icon-picker.md): 图标选择 · 分类页签 + 跨类搜索(名字/别名) + 网格 + 最近使用 · 图标集由消费方经 renderIcon 注入
 - [ImageCropper](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image-cropper/image-cropper.md): 图片裁剪 · 固定比例框(默认证件照 5:7) + 触屏双指捏合/拖拽对位 + 缩放滑杆 + canvas 出 Blob(尺寸/质量/字节上限可配·react-easy-crop MIT)
 - [Input](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input/input.md): 输入框 · Base UI Field + 前后缀 + invalid
 - [InputOTP](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input-otp/input-otp.md): 验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)
@@ -105,6 +107,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Switch](https://github.com/hulianui/hulian/blob/master/packages/ui/src/switch/switch.md): 开关 · Base UI 受控 + ARIA
 - [Textarea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/textarea/textarea.md): 多行输入 · 自适应高度
 - [TimeField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/time-field.md): 时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控
+- [TimePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/time-picker/time-picker.md): 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · 不经 MUI 桥
 - [Toggle](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toggle/toggle.md): 切换按钮 · Base UI pressed 态 + ToggleGroup 单/多选
 - [Transfer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/transfer/transfer.md): 穿梭框 · 左右双 listbox 面板 + 移动按钮(选中/全部) + 可选搜索 + 空态(零依赖·复用 Listbox/Empty)
 - [TreeSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tree-select/tree-select.md): 树选择器 · 触发器 + Popover 浮层内嵌 Tree + 单选/多选(checkable)对称 + 树内搜索 · 复用树引擎核
@@ -194,7 +197,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Watermark](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watermark/watermark.md): 水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)
 - [WorldMap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/world-map/world-map.md): 点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交…
 
-## 导航 navigation（29）
+## 导航 navigation（30）
 - [Accordion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/accordion/accordion.md): 手风琴 · Base UI 单/多开 + 高度过渡
 - [Affix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/affix/affix.md): 固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器
 - [Anchor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/anchor/anchor.md): 锚点导航 · 自研零依赖 scrollspy(IntersectionObserver) + 平滑滚动 + active CSS 变量滑动指示条 + offsetTop/二级项
@@ -219,6 +222,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [PageHeader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/page-header/page-header.md): 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖·可 RSC)
 - [Pagination](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pagination/pagination.md): 分页器 · 纯皮肤受控 + 页码区间算法(省略号)
 - [PillNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pill-nav/pill-nav.md): 胶囊导航条 · 悬停底部圆涨满 + 文案翻转反相 + 激活指示圆点(纯 CSS·零依赖·RSC 安全·reduced-motion) · navigation/global · #animated
+- [RouteTabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/route-tabs/route-tabs.md): 路由页签条 · 中后台多标签工作区(右键关闭其他/左侧/右侧/全部/刷新 + 固定页签 + 拖拽调序 + 激活项滚入视口 + 溢出滚动) · 完全受控
 - [StaggeredMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/staggered-menu/staggered-menu.md): 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 gsap·token…
 - [Stepper](https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/stepper.md): 步骤条 · MUI 桥 + active/completed 走瑚琏 token
 - [Steps](https://github.com/hulianui/hulian/blob/master/packages/ui/src/steps/steps.md): 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(替代 MUI Stepper 桥 · 分步表单/审批流)

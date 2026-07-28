@@ -51,8 +51,17 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 
 `SearchField` 是判别联合（按 `type`/`render` 区分，缺省即 `input`）。公共字段：`name*`（值 key）、`label*`、`placeholder?`、`colSpan?`（默认 1，封顶 columns）、`defaultValue?`。各形态：
 - `type?: "input"` + `inputType?: string`
+- `type: "number"` + `min?` / `max?` / `step?`（透传原生 input）
+- `type: "number-range"` + 同上三项（值是二元组）
 - `type: "select"` + `options: { value: string; label: ReactNode }[]`
+- `type: "multi-select"` + `options`（值是 `string[]`）
+- `type: "remote-select"` + `fetcher`（签名同 RemoteSelect）+ `resolveValue?` + `multiple?`
 - `type: "date"` / `type: "date-range"`
+- `type: "datetime"` / `type: "datetime-range"`（原生 `datetime-local`）
+
+**值形状按类型定**：`*-range` 恒为二元组 `[start, end]`（未填的那端是 `""`）；
+`multi-select` 与 `remote-select multiple` 是 `string[]`；其余是 `string`。
+重置后各自回到 `defaultValue` 或上述空形状 —— 别假设「重置 = 全变空串」。
 - `render: (ctx: { name; value; onChange }) => ReactNode`（逃生舱，自渲染控件）
 
 ## 示例
@@ -81,6 +90,14 @@ const fields: SearchField[] = [
 - 受控用法（传 `values`）必须同时接 `onChange` 回填，否则字段无法编辑。
 - `collapsible` 只在字段总跨度超过一行时才真正出现「展开/收起」；少字段时自动失效，不用手动关。
 - `onReset` 回调收到的 values 是「各字段 default 后的值」而非空对象——重置后重新查询应用它而不是 `{}`，以保留默认筛选。
+- **operator（`LIKE` / `BETWEEN` / `=` 之类）不属于本组件**。那是后端查询契约，
+  由你在 `onSearch` 里把 values 翻译成自家请求形状。把 operator 塞进字段配置会让一个通用组件
+  编码某一家后端的协议，换个后端就得改库。
+- `datetime` / `datetime-range` 用的是原生 `datetime-local`，**值是不带时区的本地时间串**
+  （`"2026-07-29T14:30"`）。别对它调 `new Date(...).toISOString()` —— 东八区会直接少 8 小时，
+  且不报错只写坏数据。要 ISO 请在 `onSearch` 里显式按本地时刻拼。
+- `remote-select` 的受控回调在 RemoteSelect 那边叫 `onChange`（第二参给完整选项），
+  本组件只取第一参喂回 values；需要拿到原始行请改用 `render` 逃生舱自己接。
 
 ## 相关
 [Form](../form/form.md) · [ModalForm / DrawerForm](../form-dialog/form-dialog.md) · [ProForm](../pro-form/pro-form.md) · [StepsForm](../steps-form/steps-form.md) · [LoginForm](../login-form/login-form.md) · [Field](../field/field.md)

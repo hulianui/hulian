@@ -1,4 +1,68 @@
 import { describe, expect, it } from "vitest";
+import { buildIndex as buildIdx, canDropOn, isDescendant, resolveDropPosition } from "./tree-core";
+
+// 拖拽落点判定：三条护栏都得成立，否则消费方拿到的是一份没法落库的指令
+describe("拖拽落点", () => {
+  const idx = buildIdx([
+    {
+      key: "a",
+      label: "甲",
+      children: [
+        { key: "a1", label: "甲一", children: [{ key: "a11", label: "甲一一" }] },
+        { key: "a2", label: "甲二" },
+      ],
+    },
+    { key: "b", label: "乙" },
+  ]);
+
+  it("isDescendant 顺着 parentMap 往上找", () => {
+    expect(isDescendant(idx, "a", "a11")).toBe(true);
+    expect(isDescendant(idx, "a1", "a11")).toBe(true);
+    expect(isDescendant(idx, "a2", "a11")).toBe(false);
+    expect(isDescendant(idx, "a11", "a")).toBe(false);
+  });
+
+  it("不许丢到自己身上", () => {
+    expect(canDropOn(idx, "a", "a", "before")).toBe(false);
+  });
+
+  it("不许丢进自己的子树（会成环）", () => {
+    expect(canDropOn(idx, "a", "a11", "inside")).toBe(false);
+    expect(canDropOn(idx, "a", "a1", "after")).toBe(false);
+  });
+
+  it("inside 到自己的直接父级视为无变化，挡掉", () => {
+    expect(canDropOn(idx, "a1", "a", "inside")).toBe(false);
+    // 但排到父级前后是真实的移动，放行
+    expect(canDropOn(idx, "a1", "a", "before")).toBe(true);
+  });
+
+  it("跨子树移动放行", () => {
+    expect(canDropOn(idx, "a11", "b", "inside")).toBe(true);
+    expect(canDropOn(idx, "b", "a1", "after")).toBe(true);
+  });
+
+  it("resolveDropPosition 按上下四分之一 / 中间一半切", () => {
+    expect(resolveDropPosition(2, 40)).toBe("before");
+    expect(resolveDropPosition(20, 40)).toBe("inside");
+    expect(resolveDropPosition(38, 40)).toBe("after");
+  });
+
+  it("不允许 inside 时退化成上下二分", () => {
+    expect(resolveDropPosition(20, 40, false)).toBe("after");
+    expect(resolveDropPosition(19, 40, false)).toBe("before");
+  });
+
+  it("行高为 0 时不炸（除零守卫）", () => {
+    expect(resolveDropPosition(0, 0)).toBe("before");
+  });
+
+  it("坐标拿不到（NaN）时退回 before，不静默落到 inside", () => {
+    // NaN 参与比较两个分支都为假，若不守卫就会掉进「改父级」这个最危险的落点
+    expect(resolveDropPosition(Number.NaN, 40)).toBe("before");
+    expect(resolveDropPosition(20, Number.NaN)).toBe("before");
+  });
+});
 import {
   buildIndex,
   computeChecked,

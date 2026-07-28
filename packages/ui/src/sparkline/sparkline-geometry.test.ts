@@ -1,5 +1,25 @@
 import { describe, expect, it } from "vitest";
-import { normalize, linePath, areaPath, barRects } from "./sparkline-geometry";
+import { normalize, linePath, areaPath, barRects, valueToY } from "./sparkline-geometry";
+
+describe("valueToY", () => {
+  const data = [0, 5, 10];
+  it("与 normalize 同口径：同一个值落在同一条 y 上", () => {
+    const pts = normalize(data, { w: 100, h: 20 });
+    expect(valueToY(5, data, { w: 100, h: 20 })).toBeCloseTo(pts[1].y);
+    expect(valueToY(10, data, { w: 100, h: 20 })).toBeCloseTo(pts[2].y);
+  });
+  it("域外的值夹紧到 [0,h]，不画到视口外", () => {
+    expect(valueToY(999, data, { w: 100, h: 20 })).toBe(0);
+    expect(valueToY(-999, data, { w: 100, h: 20 })).toBe(20);
+  });
+  it("常量数据（range=0）居中，避免除零", () => {
+    expect(valueToY(3, [3, 3, 3], { w: 100, h: 20 })).toBe(10);
+  });
+  it("显式 min/max 优先于数据推导", () => {
+    expect(valueToY(0, data, { w: 100, h: 20, min: 0, max: 20 })).toBe(20);
+    expect(valueToY(20, data, { w: 100, h: 20, min: 0, max: 20 })).toBe(0);
+  });
+});
 
 describe("normalize", () => {
   it("把数据映射到 [0,h]，最大值在顶（y 小）", () => {

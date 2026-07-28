@@ -38,6 +38,11 @@ export interface Locale {
     tabActions: string;
     closeOthers: string;
     closeAll: string;
+    closeLeft: string;
+    closeRight: string;
+    refreshTab: string;
+    scrollLeft: string;
+    scrollRight: string;
   };
   modalForm: {
     submit: string;
@@ -98,6 +103,11 @@ export const zhCN: Locale = {
     tabActions: "页签操作",
     closeOthers: "关闭其他",
     closeAll: "关闭全部",
+    closeLeft: "关闭左侧",
+    closeRight: "关闭右侧",
+    refreshTab: "刷新当前页",
+    scrollLeft: "向左滚动",
+    scrollRight: "向右滚动",
   },
   modalForm: {
     submit: "提交",
@@ -158,6 +168,11 @@ export const enUS: Locale = {
     tabActions: "Tab actions",
     closeOthers: "Close others",
     closeAll: "Close all",
+    closeLeft: "Close to the left",
+    closeRight: "Close to the right",
+    refreshTab: "Refresh",
+    scrollLeft: "Scroll left",
+    scrollRight: "Scroll right",
   },
   modalForm: {
     submit: "Submit",

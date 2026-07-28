@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { LayoutBreakpoint } from "../layout/layout.types";
 import type { NavMenuItem, NavMenuNode } from "../nav-menu/nav-menu.types";
+import type { RouteTabsAction } from "../route-tabs/route-tabs.types";
 
 /** 一个打开的页签。 */
 export interface AdminTab {
@@ -50,6 +51,14 @@ export interface AdminLayoutProps {
   defaultActiveKey?: string;
   onTabChange?: (key: string) => void;
   onTabClose?: (key: string) => void;
+  /**
+   * 页签右键菜单的批量动作（关闭其他/左侧/右侧/全部、刷新）。
+   * 第三参是**该动作实际影响到的 key 列表**，受控（传了 `tabs`）时照它改自己的 tabs 即可。
+   *
+   * ⚠️ 受控模式下这是唯一的出口：不接它，「关闭其他/全部」点了不会有任何变化
+   * （组件不持有 tabs，改不了）。非受控时组件自己处理，接不接都行。
+   */
+  onTabsAction?: (action: RouteTabsAction, tabKey: string, affectedKeys: string[]) => void;
 
   // —— 顶栏 ——
   /** 顶栏面包屑区。 */

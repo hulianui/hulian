@@ -4,7 +4,7 @@ name: Tree
 category: data-display
 group: collection
 tags: []
-exports: [Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckState, normalizeCheckedToLeaves, computeChecked, filterTree, type FlatRow, type TreeIndex, type CheckState]
+exports: [Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckState, normalizeCheckedToLeaves, computeChecked, filterTree, nodeSearchText, canDropOn, isDescendant, resolveDropPosition, type FlatRow, type TreeIndex, type CheckState]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ status: enriched
 
 ## 导入
 ```ts
-import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckState, normalizeCheckedToLeaves, computeChecked, filterTree, type FlatRow, type TreeIndex, type CheckState } from "@hulianui/ui"
+import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckState, normalizeCheckedToLeaves, computeChecked, filterTree, nodeSearchText, canDropOn, isDescendant, resolveDropPosition, type FlatRow, type TreeIndex, type CheckState } from "@hulianui/ui"
 ```
 
 ## Props
@@ -37,7 +37,10 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | checkedKeys | `string[]` | — | 受控勾选集 |
 | defaultCheckedKeys | `string[]` | — | 非受控初始勾选集 |
 | expandTrigger | `"row" ｜ "icon"` | `"row"` | 什么东西触发展开。`"row"` 点整行展开（父节点因此**选不中**）；`"icon"` 只有左侧箭头管展开，行归 select/check，父节点可选 |
-| showLine | `boolean` | `false` | 显示连接线 |
+| draggable | `boolean` | `false` | 开启拖拽排序（原生 HTML5 拖放，不引 dnd-kit）。须同时传 `onDrop`，否则不生效 |
+| allowDropInside | `(target: TreeNode) => boolean` | 一律允许 | 该目标是否接受「放进内部」（改父级）。返回 false 时只接受 before/after |
+| virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | 虚拟滚动（默认 height 320 / itemHeight 36 / overscan 8）。**开启后强制平铺渲染** |
+| showLine | `boolean` | `false` | 显示连接线（`virtual` 开启时失效） |
 | searchable | `boolean` | `false` | 树内搜索框 |
 | searchPlaceholder | `string` | — | 搜索框占位 |
 | className | `string` | — | — |
@@ -49,6 +52,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 |------|------|------|
 | onExpandedChange | `(keys: string[]) => void` | 展开变化回调 |
 | onSelect | `(keys: string[], node: TreeNode) => void` | 选中回调 |
+| onDrop | `(e: { dragKey, dropKey, position }) => void` | 拖拽落定。`position` 为 `"before"` / `"after"`（与目标同级排前/后）或 `"inside"`（成为目标的子节点） |
 | onCheck | `(info: { checkedKeys: string[]; halfCheckedKeys: string[] }, node: TreeNode) => void` | 勾选回调(含半选集) |
 
 ## 示例
@@ -68,6 +72,13 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 - `nodes` 每项需稳定 `key`。
 - **`disabled` 只挡选中/勾选，不挡展开** —— 禁用的父节点仍能点开看子树（否则整棵子树彻底不可达）。要连展开都禁掉请在数据层就不给 `children`。
 - **默认 `expandTrigger="row"` 下，有子节点的行永远不会触发 `onSelect`**（点它只展开）。要选目录/部门/任意层级分类，改 `expandTrigger="icon"`。「只能选叶子」是这个默认值的副作用，**不是契约**，别拿它当校验。
+- **拖拽的顺序不归组件**：`onDrop` 只回传「谁落到谁的哪一侧」，`nodes` 仍由你按自家后端契约改
+  （家风同 Table 的 `onRowDragEnd`）。组件已拦掉三种非法落点：丢到自己身上、丢进自己的子树（会成环）、
+  `inside` 到自己的直接父级（等于没动却会触发一次写库）。非法落点不 `preventDefault`，
+  浏览器自己显示「不可放置」光标。
+- **`virtual` 与嵌套渲染互斥**：开了之后没有展开过渡、`showLine` 连接线失效（平铺后没有嵌套 DOM 可挂线）。
+  `itemHeight` 必须与实际行高一致，否则滚动条长度会飘。
+- **`virtual` 下 `itemHeight` 是固定值**，不做动态测量。行高会因 `label` 换行而变化的场景先别开虚拟。
 - **`label` 传 `ReactNode`（带高亮片段、图标、徽标…）时必须同时给 `searchText`**，否则内置搜索与键盘首字母跳转会退化成拿 `key` 去匹配 —— 用户按看得见的文字搜，一条都搜不出来。`label` 是字符串/数字时不用管。
 
 ## 相关

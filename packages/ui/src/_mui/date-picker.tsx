@@ -1,6 +1,6 @@
 "use client";
 import { DatePicker as MuiDatePicker } from "@mui/x-date-pickers/DatePicker";
-import { toDayjs } from "../lib/date";
+import { toDayjs, toISODate, type Dayjs } from "../lib/date";
 import type { DatePickerProps } from "./date-picker.types";
 
 // 瑚琏 DatePicker = MUI DatePicker 罩瑚琏受控 API（对外 ISO 字符串）+ token 皮肤。
@@ -12,11 +12,19 @@ export function DatePicker({
   onValueChange,
   minDate,
   maxDate,
+  disabledDate,
+  views,
+  openTo,
+  format,
   disabled,
   readOnly,
   label,
   className,
 }: DatePickerProps) {
+  // MUI 的 shouldDisableDate 收的是 Dayjs，瑚琏对外一律 ISO 日期串——在桥这层转换，
+  // 免得消费方为了一个禁用判定被迫认识 dayjs。
+  const shouldDisableDate = disabledDate ? (d: Dayjs) => disabledDate(toISODate(d)) : undefined;
+
   return (
     <MuiDatePicker
       className={className}
@@ -25,6 +33,10 @@ export function DatePicker({
       defaultValue={toDayjs(defaultValue) ?? undefined}
       minDate={toDayjs(minDate) ?? undefined}
       maxDate={toDayjs(maxDate) ?? undefined}
+      shouldDisableDate={shouldDisableDate}
+      views={views}
+      openTo={openTo}
+      format={format}
       disabled={disabled}
       readOnly={readOnly}
       onChange={(v) => onValueChange?.(v ? v.toISOString() : null)}

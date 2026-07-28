@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.11.0 · 356 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.11.0 · 360 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -43,6 +43,8 @@ import { AdminLayout } from "@hulianui/ui"
 
 `AdminTab`：`{ key: string; label: ReactNode; closable?: boolean }`，`closable` 缺省为「打开页签 >1 时可关，最后一个不可关」。
 
+页签条本身是独立组件 [RouteTabs](https://hulianui.haloritual.com/components/route-tabs) —— 右键菜单、固定页签、拖拽调序、激活项滚入视口这些能力都在那边，本组件只是把它内嵌进骨架。自己搭骨架时直接用 RouteTabs。
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -52,6 +54,7 @@ import { AdminLayout } from "@hulianui/ui"
 | onCollapsedChange | `(collapsed: boolean) => void` | 侧栏折叠变化回调。 |
 | onTabChange | `(key: string) => void` | 切换页签回调。 |
 | onTabClose | `(key: string) => void` | 关闭页签回调。 |
+| onTabsAction | `(action, tabKey, affectedKeys) => void` | 页签右键菜单的批量动作（关闭其他/左侧/右侧/全部、刷新）。第三参是**该动作实际影响到的 key 列表**。⚠️ **受控（传了 `tabs`）时这是唯一出口**：不接它，这些动作点了不会有任何变化 |
 
 ## Slots
 
@@ -85,6 +88,9 @@ const [active, setActive] = useState("dashboard");
 
 ## 禁忌 / 坑
 
+
+- **受控页签下必须接 `onTabsAction`**：组件不持有 `tabs`，右键菜单里的「关闭其他/左侧/右侧/全部」只能把「该关哪些」算给你，改不了。此前这里连回调都没有，受控消费方点了完全没反应。
+- 「关闭全部」关的是**全部可关页签（含当前页）**，不是「关闭其他」。此前二者行为相同、与菜单文案对不上。
 - **`fitViewport` 决定撑高方式**：整页用默认 `true`（自钉 100dvh），别再外面套 `h-dvh` wrapper；嵌入文档示例卡等固定高度容器时务必传 `false`，否则整页滚动而非内容区滚动。详见 [[hulian-adminlayout-fitviewport]]。
 - **页签受控/非受控二选一**：不传 `tabs` 时页签由菜单点击自动维护（非受控）；一旦传 `tabs` 即受控，须自行配 `onTabChange`/`onTabClose` 维护数组与 `activeKey`。
 - `children` 只渲染「当前激活页」，keep-alive 的多页内容缓存需上层按 `activeKey` 自行管理，组件不替你缓存各页 DOM。
@@ -3340,6 +3346,93 @@ const [codes, setCodes] = useState<string[]>([]);
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# DateField
+
+> 单日期选择 · 自研零依赖(日/月/年三粒度·面板逐层下钻) + Popover 引擎 + min-max/disabledDate · 不经 MUI 桥 · forms/datetime
+
+## 何时用
+
+表单里选**一个**日期、月份或年份时用。它是零依赖自研件，不牵扯 MUI / emotion，也**不需要挂
+`MuiBridgeProvider`** —— 这正是它与 `_mui` 那份 [DatePicker](https://hulianui.haloritual.com/components/date-picker) 的分工：
+只想要一个日期选择器就用本组件；已经因为别的原因把 MUI 桥引进来了、且需要 MUI X 的高级视图，
+才用那份。
+
+选一段区间用 [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker)；
+要月历常驻铺开（无触发器）用 [Calendar](https://hulianui.haloritual.com/components/calendar)；连时间一起选用
+[DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)。
+
+## 导入
+```ts
+import { DateField } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value | `string \| null` | — | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
+| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，同时决定值形状与面板起始层 |
+| minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
+| maxDate | `string` | — | 最晚可选日期 |
+| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
+| placeholder | `string` | 随 picker | 触发器占位文本 |
+| displayFormat | `string` | 随 picker | 触发器显示格式（dayjs format 串）。**只影响显示**，对外值形状不变 |
+| clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
+| showToday | `boolean` | `true` | 面板底部「今天 / 本月 / 今年」快捷 |
+| disabled | `boolean` | `false` | 整体置灰，面板打不开 |
+| readOnly | `boolean` | `false` | 面板可看，但选不动 |
+| aria-label | `string` | — | 触发器无障碍名（无可见 label 时给） |
+| className | `string` | — | 落在触发器外层容器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
+
+## 示例
+```tsx
+// 基础：值是 ISO 日期串
+<DateField defaultValue="2026-06-08" />
+
+// 受控
+const [date, setDate] = useState<string | null>(null);
+<DateField value={date} onValueChange={setDate} />
+
+// 选月份 / 选年份（值形状随之变成 YYYY-MM / YYYY）
+<DateField picker="month" defaultValue="2026-06" />
+<DateField picker="year" defaultValue="2026" />
+
+// 限定范围 + 禁用周末
+<DateField
+  minDate="2026-06-01"
+  maxDate="2026-06-30"
+  disabledDate={(iso) => {
+    const day = new Date(`${iso}T00:00:00`).getDay();
+    return day === 0 || day === 6;
+  }}
+/>
+```
+
+## 禁忌 / 坑
+
+- **值是定宽文本，不是 `Date`**：`"YYYY-MM-DD"` 定宽 → 字典序即时间序，区间比较可以直接比字符串，
+  也避开了 `new Date("2026-06-08").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。
+- **`picker` 改了值形状**：从 `date` 切到 `month` 时旧值 `"2026-06-08"` 解析后会按月粒度提交成 `"2026-06"`。
+  切粒度时请一并处理存量值，别指望组件替你迁移。
+- `displayFormat` 只管显示。想改**对外**值形状只能通过 `picker`。
+- `disabledDate` 在 `date` 粒度下逐日调用（一屏 42 次），请保持它是纯计算 —— 别在里面发请求或建对象。
+  月/年粒度下只对该月/该年首日调一次，**判据也随之变粗**：想精确到天就别用粗粒度 picker。
+- 面板标题可点，逐层上卷 date → month → year；`picker` 决定「点到哪一层就提交」，
+  所以 `picker="date"` 时点月份只是下钻，不会提交。
+- 与 `_mui` 的 [DatePicker](https://hulianui.haloritual.com/components/date-picker) 是两个独立组件，**不共享值格式**（那份对外是完整 ISO
+  时间戳，本组件是日期串）。同一个表单里别混用。
+
+## 相关
+[DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [DatePicker](https://hulianui.haloritual.com/components/date-picker) · [Calendar](https://hulianui.haloritual.com/components/calendar) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [ColorField](https://hulianui.haloritual.com/components/color-field)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # DatePicker
 
 > 日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max · forms/datetime · MUI 桥
@@ -3374,6 +3467,10 @@ import { DatePicker } from "@hulianui/ui"
 | defaultValue | `string` | — | ISO 字符串非受控默认值 |
 | minDate | `string` | — | 可选最早日期（ISO） |
 | maxDate | `string` | — | 可选最晚日期（ISO） |
+| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参是 `"YYYY-MM-DD"`；与 min/max 是「或」关系 |
+| views | `("year" \| "month" \| "day")[]` | `["year","day"]` | 面板视图层级。只选年传 `["year"]`、只选年月传 `["year","month"]`（对上 el-date-picker 的 `type="year"`/`"month"`） |
+| openTo | `"year" \| "month" \| "day"` | — | 打开时停在哪一层视图（须是 `views` 的成员） |
+| format | `string` | — | 输入框显示格式（dayjs format 串）。**只影响显示**，回调仍回传完整 ISO 时间戳 |
 | label | `string` | `"选择日期"` | 输入框 label |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |
@@ -3507,6 +3604,8 @@ import { DateTimePicker } from "@hulianui/ui"
 | maxDateTime | `string` | — | 可选最晚日期时间（ISO） |
 | minutesStep | `number` | — | 时间步进分钟数（如 5、15、30） |
 | withSeconds | `boolean` | `false` | 是否启用秒（默认仅到分钟） |
+| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定（只作用于日期部分，不筛时刻） |
+| format | `string` | — | 输入框显示格式（dayjs format 串）。**只影响显示**，回调仍回传完整 ISO 时间戳；不传时随 `withSeconds` 取默认 |
 | label | `string` | `"选择日期时间"` | 输入框 label |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |
@@ -3782,6 +3881,105 @@ const confirm = form.register("confirm", {
 
 ## 相关
 [ModalForm / DrawerForm](https://hulianui.haloritual.com/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/components/steps-form) · [LoginForm](https://hulianui.haloritual.com/components/login-form) · [Field](https://hulianui.haloritual.com/components/field) · [SearchForm](https://hulianui.haloritual.com/components/search-form)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# IconPicker
+
+> 图标选择 · 分类页签 + 跨类搜索(名字/别名) + 网格 + 最近使用 · 图标集由消费方经 renderIcon 注入 · forms/advanced
+
+## 何时用
+
+让用户从一组图标里挑一个并把**图标名**存进后端时用 —— 菜单管理、分类配置、快捷入口这类。
+选表情用 [EmojiPicker](https://hulianui.haloritual.com/components/emoji-picker)（结构同源，数据内置）。
+
+## 导入
+```ts
+import { IconPicker } from "@hulianui/ui"
+```
+
+> **图标集不进组件库。** `sources[].renderIcon` 把「名字 → 节点」的映射交给你，
+> 于是 lucide / iconfont / 本地 svg 三种来源都能接。瑚琏的 `_icons` 只有运行时必需的那几十个，
+> 明确不做图标集 —— 不然一个选择器会把几千个图标打进每个消费方的包里。
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| sources* | `IconPickerSource[]` | — | 图标来源分类。每项 `{ key, label, tabIcon?, icons, renderIcon }` |
+| value | `string \| null` | — | 受控值（图标名） |
+| defaultValue | `string \| null` | — | 非受控初始值 |
+| columns | `number` | `8` | 网格列数 |
+| searchable | `boolean` | `true` | 显示搜索框 |
+| searchPlaceholder | `string` | `"搜索图标"` | 搜索框占位 |
+| defaultSource | `string` | 第一个 | 初始分类 key |
+| recent | `string[]` | — | 受控「最近使用」；省略则内部维护（最多 16 个，最新在前） |
+| clearable | `boolean` | `true` | 有值时显示当前值行与清除按钮 |
+| emptyMessage | `ReactNode` | `"没有匹配的图标"` | 搜索无结果文案 |
+| className | `string` | — | 面板类名（调宽度用） |
+
+`IconPickerSource`：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| key* | `string` | 分类唯一 key |
+| label* | `ReactNode` | 分类页签文字 |
+| tabIcon | `ReactNode` | 分类页签图标（不给则显示 `label`） |
+| icons* | `{ name: string; keywords?: string[] }[]` | 该分类的图标。`name` 即对外值，`keywords` 是搜索别名 |
+| renderIcon* | `(name: string) => ReactNode` | 把图标名渲染成节点 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(name: string \| null) => void` | 选中/清空回调；清空回传 `null` |
+| onRecentChange | `(recent: string[]) => void` | 最近使用变化（受控 `recent` 时用它落盘） |
+
+## 示例
+```tsx
+import { Home, User, Settings } from "lucide-react"
+
+const REGISTRY = { home: <Home />, user: <User />, settings: <Settings /> }
+
+const SOURCES = [
+  {
+    key: "common",
+    label: "常用",
+    icons: [
+      { name: "home", keywords: ["首页", "主页"] },
+      { name: "user", keywords: ["用户", "账号"] },
+      { name: "settings", keywords: ["设置"] },
+    ],
+    renderIcon: (name) => REGISTRY[name] ?? null,
+  },
+]
+
+<IconPicker sources={SOURCES} value={icon} onValueChange={setIcon} />
+```
+
+放进弹层里用（表单里的「选图标」按钮）：
+```tsx
+<Popover>
+  <PopoverTrigger render={<Button variant="outline">{icon ?? "选择图标"}</Button>} />
+  <PopoverContent className="p-0">
+    <IconPicker sources={SOURCES} value={icon} onValueChange={setIcon} className="border-0" />
+  </PopoverContent>
+</Popover>
+```
+
+## 禁忌 / 坑
+
+- **别把整个图标库塞进 `sources`**。`lucide-react` 有一千多个图标，全量 `import * as icons`
+  会让 tree-shaking 彻底失效、包体暴涨。按业务实际用得到的那几十个建 registry。
+- **搜索跨全部分类**，不只搜当前分类 —— 用户找图标时心里没有「它属于哪一类」这个概念。
+  所以搜索期间分类页签会隐藏（留着会让人误以为只在当前类里搜）。
+- `keywords` 是给中文用户的：图标名都是英文，不配别名的话「删除」搜不到 `trash`。
+- **最近使用只存名字**。图标从 `sources` 里下掉后，那条记录解不出来源，组件直接跳过不渲染
+  （而不是渲染一个空格子）。要持久化就走受控 `recent` + `onRecentChange` 自己落 localStorage。
+- 对外值是**图标名字符串**，不是节点。渲染选中图标请用你自己的 `renderIcon`，
+  组件不对外暴露节点。
+
+## 相关
+[EmojiPicker](https://hulianui.haloritual.com/components/emoji-picker) · [ColorPicker](https://hulianui.haloritual.com/components/colorpicker) · [ColorField](https://hulianui.haloritual.com/components/color-field) · [Select](https://hulianui.haloritual.com/components/select) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Popover](https://hulianui.haloritual.com/components/popover)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ImageCropper
@@ -4922,8 +5120,17 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 
 `SearchField` 是判别联合（按 `type`/`render` 区分，缺省即 `input`）。公共字段：`name*`（值 key）、`label*`、`placeholder?`、`colSpan?`（默认 1，封顶 columns）、`defaultValue?`。各形态：
 - `type?: "input"` + `inputType?: string`
+- `type: "number"` + `min?` / `max?` / `step?`（透传原生 input）
+- `type: "number-range"` + 同上三项（值是二元组）
 - `type: "select"` + `options: { value: string; label: ReactNode }[]`
+- `type: "multi-select"` + `options`（值是 `string[]`）
+- `type: "remote-select"` + `fetcher`（签名同 RemoteSelect）+ `resolveValue?` + `multiple?`
 - `type: "date"` / `type: "date-range"`
+- `type: "datetime"` / `type: "datetime-range"`（原生 `datetime-local`）
+
+**值形状按类型定**：`*-range` 恒为二元组 `[start, end]`（未填的那端是 `""`）；
+`multi-select` 与 `remote-select multiple` 是 `string[]`；其余是 `string`。
+重置后各自回到 `defaultValue` 或上述空形状 —— 别假设「重置 = 全变空串」。
 - `render: (ctx: { name; value; onChange }) => ReactNode`（逃生舱，自渲染控件）
 
 ## 示例
@@ -4952,6 +5159,14 @@ const fields: SearchField[] = [
 - 受控用法（传 `values`）必须同时接 `onChange` 回填，否则字段无法编辑。
 - `collapsible` 只在字段总跨度超过一行时才真正出现「展开/收起」；少字段时自动失效，不用手动关。
 - `onReset` 回调收到的 values 是「各字段 default 后的值」而非空对象——重置后重新查询应用它而不是 `{}`，以保留默认筛选。
+- **operator（`LIKE` / `BETWEEN` / `=` 之类）不属于本组件**。那是后端查询契约，
+  由你在 `onSearch` 里把 values 翻译成自家请求形状。把 operator 塞进字段配置会让一个通用组件
+  编码某一家后端的协议，换个后端就得改库。
+- `datetime` / `datetime-range` 用的是原生 `datetime-local`，**值是不带时区的本地时间串**
+  （`"2026-07-29T14:30"`）。别对它调 `new Date(...).toISOString()` —— 东八区会直接少 8 小时，
+  且不报错只写坏数据。要 ISO 请在 `onSearch` 里显式按本地时刻拼。
+- `remote-select` 的受控回调在 RemoteSelect 那边叫 `onChange`（第二参给完整选项），
+  本组件只取第一参喂回 values；需要拿到原始行请改用 `render` 逃生舱自己接。
 
 ## 相关
 [Form](https://hulianui.haloritual.com/components/form) · [ModalForm / DrawerForm](https://hulianui.haloritual.com/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/components/steps-form) · [LoginForm](https://hulianui.haloritual.com/components/login-form) · [Field](https://hulianui.haloritual.com/components/field)
@@ -5672,6 +5887,94 @@ function Demo() {
 
 ## 相关
 [Calendar](https://hulianui.haloritual.com/components/calendar) · [DatePicker](https://hulianui.haloritual.com/components/date-picker) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [Button](https://hulianui.haloritual.com/components/button) · [ShimmerButton](https://hulianui.haloritual.com/components/shimmer-button)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# TimePicker
+
+> 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · 不经 MUI 桥 · forms/datetime
+
+## 何时用
+
+要「点开面板挑时刻」时用（排班、预约、营业时间）。零依赖自研，不牵扯 MUI / emotion，
+也**不需要挂 `MuiBridgeProvider`**。
+
+只想要键盘分段输入、不要浮层，用 [TimeField](https://hulianui.haloritual.com/components/time-field)（MUI 桥）。
+连日期一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)；只选日期用 [DateField](https://hulianui.haloritual.com/components/date-field)。
+
+## 导入
+```ts
+import { TimePicker } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value | `string \| null` | — | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`），24 小时制定宽补零 |
+| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| withSeconds | `boolean` | `false` | 显示秒列，值形状随之变成 `"HH:mm:ss"` |
+| minuteStep | `number` | `1` | 分钟列步进（5 / 15 / 30 常用） |
+| secondStep | `number` | `1` | 秒列步进 |
+| minTime | `string` | — | 最早可选时刻（含），形状同 `value` |
+| maxTime | `string` | — | 最晚可选时刻（含） |
+| placeholder | `string` | `"选择时间"` | 触发器占位文本 |
+| clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
+| showNow | `boolean` | `true` | 面板底部「此刻」快捷（按步进向下取整对齐） |
+| disabled | `boolean` | `false` | 整体置灰，面板打不开 |
+| readOnly | `boolean` | `false` | 面板可看，但选不动 |
+| aria-label | `string` | — | 触发器无障碍名（无可见 label 时给） |
+| className | `string` | — | 落在触发器外层容器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
+
+## 示例
+```tsx
+<TimePicker defaultValue="09:30" />
+
+// 带秒
+<TimePicker withSeconds defaultValue="09:30:15" />
+
+// 15 分步进（排班场景不必让用户从 60 个里挑）
+<TimePicker minuteStep={15} defaultValue="09:30" />
+
+// 营业时间窗
+<TimePicker minTime="09:30" maxTime="18:00" defaultValue="10:00" />
+```
+
+另导出一组纯函数供表单校验直接复用（不必再解析一遍时间串）：
+
+```ts
+import { parseTime, formatTimeParts, clampTime, snapToStep } from "@hulianui/ui"
+
+parseTime("9:5")                       // { h: 9, m: 5, s: 0 }；非法/越界返回 null
+formatTimeParts({h:9,m:5,s:0}, false)  // "09:05"
+clampTime({h:8,m:0,s:0}, false, "09:30")  // { h: 9, m: 30, s: 0 }
+snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
+```
+
+> 名字里的 `Parts` 是为了避开 [Video](https://hulianui.haloritual.com/components/video) 已占用的 `formatTime`（那份是「秒数 → mm:ss」）。
+
+## 禁忌 / 坑
+
+- **值是定宽文本，不是 `Date`**：`"HH:mm[:ss]"` 定宽 → 字典序即时间序，`minTime`/`maxTime`
+  的比较可以直接比字符串，也不会被时区搅进来。要 `Date` 请自己拼日期部分。
+- **逐列禁用的判据是「整段与范围有无交集」，不是「端点是否越界」**：`minTime="09:30"` 时
+  9 点这一格**仍可选**（9:30~9:59 是可达的），被禁的是 9 点内 30 分之前的分钟。
+  照「端点越界即禁」写会把整个 9 点误禁。
+- **尚未选值时存在一个隐含基准**：`clamp(00:00:00, [min,max])`。不这么做的话 `minTime="09:30"`
+  下基准小时恒为 0，分钟列会被整列判死，面板看着像坏了。所以「先点分钟再点小时」也能工作。
+- `minuteStep` 只影响**候选列表**，不校验外部传进来的值。`value="09:37"` 配 `minuteStep={15}`
+  时面板里没有对应项、分钟列不会有高亮 —— 需要对齐请自己先过一遍 `snapToStep`。
+- `withSeconds` 切换会改变对外值形状（`"09:30"` ↔ `"09:30:15"`）。切换时请一并处理存量值。
+- 与 `_mui` 的 [TimeField](https://hulianui.haloritual.com/components/time-field) **不共享值格式**（那份对外是完整 ISO 时间戳，
+  本组件是时刻串）。同一个表单里别混用。
+
+## 相关
+[DateField](https://hulianui.haloritual.com/components/date-field) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [Calendar](https://hulianui.haloritual.com/components/calendar) · [Scheduler](https://hulianui.haloritual.com/components/scheduler)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Toggle
@@ -10731,7 +11034,7 @@ const approval = [
 
 ## 导入
 ```ts
-import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckState, normalizeCheckedToLeaves, computeChecked, filterTree, type FlatRow, type TreeIndex, type CheckState } from "@hulianui/ui"
+import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckState, normalizeCheckedToLeaves, computeChecked, filterTree, nodeSearchText, canDropOn, isDescendant, resolveDropPosition, type FlatRow, type TreeIndex, type CheckState } from "@hulianui/ui"
 ```
 
 ## Props
@@ -10750,7 +11053,10 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | checkedKeys | `string[]` | — | 受控勾选集 |
 | defaultCheckedKeys | `string[]` | — | 非受控初始勾选集 |
 | expandTrigger | `"row" ｜ "icon"` | `"row"` | 什么东西触发展开。`"row"` 点整行展开（父节点因此**选不中**）；`"icon"` 只有左侧箭头管展开，行归 select/check，父节点可选 |
-| showLine | `boolean` | `false` | 显示连接线 |
+| draggable | `boolean` | `false` | 开启拖拽排序（原生 HTML5 拖放，不引 dnd-kit）。须同时传 `onDrop`，否则不生效 |
+| allowDropInside | `(target: TreeNode) => boolean` | 一律允许 | 该目标是否接受「放进内部」（改父级）。返回 false 时只接受 before/after |
+| virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | 虚拟滚动（默认 height 320 / itemHeight 36 / overscan 8）。**开启后强制平铺渲染** |
+| showLine | `boolean` | `false` | 显示连接线（`virtual` 开启时失效） |
 | searchable | `boolean` | `false` | 树内搜索框 |
 | searchPlaceholder | `string` | — | 搜索框占位 |
 | className | `string` | — | — |
@@ -10762,6 +11068,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 |------|------|------|
 | onExpandedChange | `(keys: string[]) => void` | 展开变化回调 |
 | onSelect | `(keys: string[], node: TreeNode) => void` | 选中回调 |
+| onDrop | `(e: { dragKey, dropKey, position }) => void` | 拖拽落定。`position` 为 `"before"` / `"after"`（与目标同级排前/后）或 `"inside"`（成为目标的子节点） |
 | onCheck | `(info: { checkedKeys: string[]; halfCheckedKeys: string[] }, node: TreeNode) => void` | 勾选回调(含半选集) |
 
 ## 示例
@@ -10781,6 +11088,13 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 - `nodes` 每项需稳定 `key`。
 - **`disabled` 只挡选中/勾选，不挡展开** —— 禁用的父节点仍能点开看子树（否则整棵子树彻底不可达）。要连展开都禁掉请在数据层就不给 `children`。
 - **默认 `expandTrigger="row"` 下，有子节点的行永远不会触发 `onSelect`**（点它只展开）。要选目录/部门/任意层级分类，改 `expandTrigger="icon"`。「只能选叶子」是这个默认值的副作用，**不是契约**，别拿它当校验。
+- **拖拽的顺序不归组件**：`onDrop` 只回传「谁落到谁的哪一侧」，`nodes` 仍由你按自家后端契约改
+  （家风同 Table 的 `onRowDragEnd`）。组件已拦掉三种非法落点：丢到自己身上、丢进自己的子树（会成环）、
+  `inside` 到自己的直接父级（等于没动却会触发一次写库）。非法落点不 `preventDefault`，
+  浏览器自己显示「不可放置」光标。
+- **`virtual` 与嵌套渲染互斥**：开了之后没有展开过渡、`showLine` 连接线失效（平铺后没有嵌套 DOM 可挂线）。
+  `itemHeight` 必须与实际行高一致，否则滚动条长度会飘。
+- **`virtual` 下 `itemHeight` 是固定值**，不做动态测量。行高会因 `label` 换行而变化的场景先别开虚拟。
 - **`label` 传 `ReactNode`（带高亮片段、图标、徽标…）时必须同时给 `searchText`**，否则内置搜索与键盘首字母跳转会退化成拿 `key` 去匹配 —— 用户按看得见的文字搜，一条都搜不出来。`label` 是字符串/数字时不用管。
 
 ## 相关
@@ -12629,6 +12943,98 @@ import { PillNav } from "@hulianui/ui"
 
 ## 相关
 [Navbar](https://hulianui.haloritual.com/components/navbar) · [BeianFooter](https://hulianui.haloritual.com/components/beian-footer) · [NavMenu](https://hulianui.haloritual.com/components/nav-menu) · [NavigationMenu](https://hulianui.haloritual.com/components/navigation-menu) · [Menu](https://hulianui.haloritual.com/components/menu) · [Menubar](https://hulianui.haloritual.com/components/menubar)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# RouteTabs
+
+> 路由页签条 · 中后台多标签工作区(右键关闭其他/左侧/右侧/全部/刷新 + 固定页签 + 拖拽调序 + 激活项滚入视口 + 溢出滚动) · 完全受控 · navigation/inpage
+
+## 何时用
+
+中后台「多标签工作区」那条页签栏 —— 打开的页面并排列着，可切、可关、可右键批量关。
+[AdminLayout](https://hulianui.haloritual.com/components/admin-layout) 内置了它；自己搭骨架时直接用本组件。
+
+**它不是内容型 Tab。** 一屏之内切换内容用 [Tabs](https://hulianui.haloritual.com/components/tabs)：那个管内容显隐，
+这个管的是「打开了哪些页面」，内容由路由决定。
+
+## 导入
+```ts
+import { RouteTabs } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| items* | `RouteTabItem[]` | — | 页签列表。**组件不持有它**，增删由你在回调里做 |
+| activeKey | `string` | — | 当前激活页签 |
+| actions | `RouteTabsAction[]` | 全部 | 右键菜单开放哪些动作 |
+| extraMenuItems | `{ key, label, disabled? }[]` | — | 追加的自定义菜单项（排在内置动作之后） |
+| sortable | `boolean` | `false` | 允许拖拽调序，须配 `onReorder` |
+| disableAutoScroll | `boolean` | `false` | 关掉「激活页签自动滚入视口」 |
+| className | `string` | — | — |
+
+`RouteTabItem`：`{ key, label, icon?, closable?, pinned? }`。
+`closable` 默认规则：`pinned` 恒不可关；其余在「可关闭页签数 > 1」时可关（关到只剩一个就停手，免得内容区空白）。
+
+`RouteTabsAction`：`"close" | "closeOthers" | "closeLeft" | "closeRight" | "closeAll" | "refresh"`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(key: string) => void` | 切换激活页签 |
+| onClose | `(key: string) => void` | 关闭单个（点 × 或右键「关闭」） |
+| onAction | `(action, tabKey, affectedKeys) => void` | 批量动作。第三参是**该动作实际影响到的 key 列表**（已排除 pinned 与不可关的） |
+| onExtraAction | `(menuKey, tabKey) => void` | 自定义菜单项被点击 |
+| onReorder | `(keys: string[]) => void` | 拖拽调序后的完整 key 顺序（pinned 恒在前） |
+
+另导出一组纯函数，让受控消费方与组件用**同一份口径**算，不各算各的：
+
+```ts
+import { affectedKeys, nextActiveKey, isClosable, orderTabs, reorderTabs } from "@hulianui/ui"
+
+affectedKeys("closeAll", "b", items)   // 该动作会关掉哪些 key
+nextActiveKey(items, closing, active)  // 关完之后激活页该落到哪
+```
+
+## 示例
+```tsx
+const [items, setItems] = useState(INITIAL)
+const [active, setActive] = useState("orders")
+
+const closeKeys = (keys: string[]) => {
+  setActive((cur) => nextActiveKey(items, keys, cur) ?? cur)
+  setItems((prev) => prev.filter((t) => !keys.includes(t.key)))
+}
+
+<RouteTabs
+  items={items}
+  activeKey={active}
+  onChange={setActive}
+  onClose={(k) => closeKeys([k])}
+  onAction={(action, key, affected) => {
+    if (action === "refresh") return remountPage(key)   // keep-alive 各家实现不同
+    closeKeys(affected)
+  }}
+/>
+```
+
+## 禁忌 / 坑
+
+- **它是完全受控的**：不接 `onAction`，右键菜单里的「关闭其他/左侧/右侧/全部」点了不会有任何变化
+  —— 组件不持有 `items`，改不了。这正是从 AdminLayout 里抽出来的原因：内置那版在受控模式下
+  只调了 `setActive` 没有对外回调，点了看着毫无反应。
+- **`closeAll` 关的是全部可关页签（含当前页），不是「关闭其他」**。两者是不同的动作，
+  别把菜单文案和行为对错。
+- **`refresh` 不改 `items`**，只把「请重新挂载这一页」的意图传出去。keep-alive 的实现各家不同
+  （换 remount key / 清缓存 / 重新请求），组件不替你决定，`affectedKeys` 恒为空数组。
+- `closeLeft` / `closeRight` 按**展示顺序**算，不是数据顺序 —— `pinned` 会被提到最前，从而改变左右关系。
+- 拖拽调序时**固定段与普通段不互相拖入**：`pinned` 的语义就是「钉在最前」，允许混排会让它自相矛盾。
+- 溢出时才出左右滚动按钮（靠 `ResizeObserver` 量）。jsdom 里没有 RO，测试中按钮不出现是正常的。
+
+## 相关
+[AdminLayout](https://hulianui.haloritual.com/components/admin-layout) · [Tabs](https://hulianui.haloritual.com/components/tabs) · [ContextMenu](https://hulianui.haloritual.com/components/context-menu) · [NavMenu](https://hulianui.haloritual.com/components/nav-menu) · [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) · [Layout](https://hulianui.haloritual.com/components/layout)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # StaggeredMenu

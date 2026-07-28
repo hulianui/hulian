@@ -3,20 +3,19 @@ import { useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 // 内部一律用 YYYY-MM-DD 文本作日期标识（toISO/normISO 出自 lib/date）：
 // 定宽 → 字典序即时间序，区间判定可直接字符串比较，避开时区/UTC 偏移日界坑。
-import { DATE_FORMAT, dayjs, type Dayjs, normISODate as normISO, toISODate as toISO } from "../lib/date";
+import {
+  DATE_FORMAT,
+  dayjs,
+  type Dayjs,
+  monthMatrix,
+  normISODate as normISO,
+  toISODate as toISO,
+  WEEKDAY_LABELS as WEEKDAYS,
+} from "../lib/date";
 import { Calendar, ChevronLeft, ChevronRight, X } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DateRangePickerProps, DateRangePreset, DateRangeValue } from "./date-range-picker.types";
-
-const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
-
-// 6 周 × 7 列 = 42 格，含本月前后补位（补位格渲染为 invisible，不参与交互）。
-function monthMatrix(month: Dayjs): Dayjs[] {
-  const first = month.startOf("month");
-  const gridStart = first.subtract(first.day(), "day"); // 回退到本周日
-  return Array.from({ length: 42 }, (_, i) => gridStart.add(i, "day"));
-}
 
 // 与 popover.tsx 同款：transition 简写避免与 Base UI 内联长写混用触发 React shorthand 警告。
 const overlayTransition = {

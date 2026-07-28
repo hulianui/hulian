@@ -430,9 +430,12 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
                   </SelectContent>
                 </Select>
               )}
+            {/* pagination.total 是总条数，直接喂 Pagination 的 totalItems（0.11.0 起），
+                不再在这里手算 Math.ceil —— 页数换算只留一处，边界（0 条 / 整除）不会两边各算各的。 */}
             <Pagination
               page={pagination.page}
-              total={Math.max(1, Math.ceil(pagination.total / pagination.pageSize))}
+              totalItems={pagination.total}
+              pageSize={pagination.pageSize}
               onPageChange={pagination.onPageChange}
               showFirstLast={pagination.showFirstLast ?? true}
             />

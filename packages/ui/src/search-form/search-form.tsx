@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { Button } from "../button";
 import { Field } from "../field";
 import { Input } from "../input";
+import { RemoteSelect } from "../remote-select";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
 import { canCollapse, planLayout } from "./search-form.layout";
 import type { SearchField, SearchFormProps } from "./search-form.types";
@@ -14,13 +15,63 @@ const ChevronDown = ({ className }: { className?: string }) => (
   </svg>
 );
 
-/** 非受控初始值：date-range → ["",""]，其余 → ""（或字段 defaultValue）。 */
+/** 区间类字段：值恒为二元组 [start, end]。 */
+const RANGE_TYPES = new Set(["date-range", "datetime-range", "number-range"]);
+/** 多值字段：值恒为数组。 */
+const MULTI_TYPES = new Set(["multi-select"]);
+
+/** 空值形状：区间 → ["",""]，多值 → []，其余 → ""（字段自带 defaultValue 时以它为准）。 */
+function emptyValue(f: SearchField): unknown {
+  if (f.type && RANGE_TYPES.has(f.type)) return ["", ""];
+  if (f.type && MULTI_TYPES.has(f.type)) return [];
+  if (f.type === "remote-select" && f.multiple) return [];
+  return "";
+}
+
 function seedDefaults(fields: SearchField[]): Record<string, unknown> {
   const out: Record<string, unknown> = {};
-  for (const f of fields) {
-    out[f.name] = f.defaultValue ?? (f.type === "date-range" ? ["", ""] : "");
-  }
+  for (const f of fields) out[f.name] = f.defaultValue ?? emptyValue(f);
   return out;
+}
+
+/** 读区间值的两端（脏数据兜底成 ["",""]）。 */
+function rangePair(value: unknown): [string, string] {
+  const arr = Array.isArray(value) ? value : ["", ""];
+  return [String(arr[0] ?? ""), String(arr[1] ?? "")];
+}
+
+/** 区间输入的两个格子 + 中间的 ~ 分隔。三种区间类型共用这一套骨架。 */
+function RangeInputs({
+  type,
+  value,
+  onChange,
+  numberProps,
+}: {
+  type: string;
+  value: unknown;
+  onChange: (v: unknown) => void;
+  numberProps?: { min?: number; max?: number; step?: number };
+}) {
+  const [start, end] = rangePair(value);
+  return (
+    <div className="flex items-center gap-2">
+      <Input
+        type={type}
+        {...numberProps}
+        value={start}
+        onChange={(e) => onChange([e.target.value, end])}
+        className="flex-1"
+      />
+      <span className="shrink-0 text-muted">~</span>
+      <Input
+        type={type}
+        {...numberProps}
+        value={end}
+        onChange={(e) => onChange([start, e.target.value])}
+        className="flex-1"
+      />
+    </div>
+  );
 }
 
 function renderControl(
@@ -53,20 +104,89 @@ function renderControl(
     );
   }
 
-  if (field.type === "date-range") {
-    const arr = Array.isArray(value) ? value : ["", ""];
-    const start = String(arr[0] ?? "");
-    const end = String(arr[1] ?? "");
+  if (field.type === "multi-select") {
+    const arr = Array.isArray(value) ? (value as string[]) : [];
     return (
-      <div className="flex items-center gap-2">
-        <Input type="date" value={start} onChange={(e) => onChange([e.target.value, end])} className="flex-1" />
-        <span className="shrink-0 text-muted">~</span>
-        <Input type="date" value={end} onChange={(e) => onChange([start, e.target.value])} className="flex-1" />
-      </div>
+      <Select
+        items={field.options}
+        multiple
+        placeholder={field.placeholder ?? "请选择"}
+        value={arr}
+        onValueChange={(val: unknown) => onChange(Array.isArray(val) ? val.map(String) : [])}
+      >
+        <SelectTrigger />
+        <SelectContent>
+          {field.options.map((o) => (
+            <SelectItem key={o.value} value={o.value}>
+              {o.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     );
   }
 
-  const type = field.type === "date" ? "date" : (field.inputType ?? "text");
+  if (field.type === "remote-select") {
+    // 查询区的远程字典（门店/会员/商品这类几万条的）：过滤权在服务端，
+    // 不能像 select 那样要求先把全量选项落到前端。
+    // RemoteSelect 的受控回调叫 onChange（第二参给完整选项），与本组件的 select 分支不同名，
+    // 这里只取第一参喂回查询区的 values。
+    return field.multiple === true ? (
+      <RemoteSelect
+        multiple
+        fetcher={field.fetcher}
+        resolveValue={field.resolveValue}
+        placeholder={field.placeholder ?? "请选择"}
+        value={Array.isArray(value) ? (value as string[]) : []}
+        onChange={(v) => onChange(v ?? [])}
+      />
+    ) : (
+      <RemoteSelect
+        fetcher={field.fetcher}
+        resolveValue={field.resolveValue}
+        placeholder={field.placeholder ?? "请选择"}
+        value={value == null || value === "" ? null : String(value)}
+        onChange={(v) => onChange(v ?? "")}
+      />
+    );
+  }
+
+  if (field.type === "date-range") {
+    return <RangeInputs type="date" value={value} onChange={onChange} />;
+  }
+
+  if (field.type === "datetime-range") {
+    return <RangeInputs type="datetime-local" value={value} onChange={onChange} />;
+  }
+
+  if (field.type === "number-range") {
+    return (
+      <RangeInputs
+        type="number"
+        value={value}
+        onChange={onChange}
+        numberProps={{ min: field.min, max: field.max, step: field.step }}
+      />
+    );
+  }
+
+  if (field.type === "number") {
+    return (
+      <Input
+        type="number"
+        min={field.min}
+        max={field.max}
+        step={field.step}
+        value={String(value ?? "")}
+        placeholder={field.placeholder}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    );
+  }
+
+  // 其余落到单个 Input：date / datetime 走原生控件类型，缺省是文本。
+  const type =
+    field.type === "date" ? "date" : field.type === "datetime" ? "datetime-local" : (field.inputType ?? "text");
   return (
     <Input
       type={type}

@@ -48,6 +48,21 @@ export function normalize(data: SparkDatum[], scale: SparkScale): SparkPoint[] {
   });
 }
 
+/**
+ * 把单个标量映射到视口的 y 坐标，口径与 `normalize` 完全一致
+ * （同一条 [min,max] 线性归一、常量域居中 h/2）。基准线要与序列对齐就必须共用这条式子。
+ * 域外的值会夹紧到 [0,h]，免得基准线画到视口外面看不见。
+ */
+export function valueToY(value: number, data: SparkDatum[], scale: SparkScale): number {
+  const ys = toYValues(data);
+  const lo = scale.min ?? (ys.length ? Math.min(...ys) : 0);
+  const hi = scale.max ?? (ys.length ? Math.max(...ys) : 0);
+  const range = hi - lo;
+  if (range === 0) return scale.h / 2;
+  const y = scale.h - ((value - lo) / range) * scale.h;
+  return Math.max(0, Math.min(scale.h, y));
+}
+
 /** 折线 path：以 M 起笔，后续 L 连接。空数据返回 ""。 */
 export function linePath(data: SparkDatum[], scale: SparkScale): string {
   const pts = normalize(data, scale);

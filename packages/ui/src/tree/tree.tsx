@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useReducedMotion } from "motion/react";
 import { Search } from "../_icons";
 import { cn } from "../lib/cn";
@@ -10,9 +11,12 @@ import {
   computeChecked,
   filterTree,
   flattenVisible,
+  canDropOn,
   getCheckState,
   nodeSearchText,
   normalizeCheckedToLeaves,
+  resolveDropPosition,
+  type DropPosition,
   toggleChecked,
   type FlatRow,
   type TreeNode,
@@ -35,6 +39,10 @@ export function Tree({
   defaultCheckedKeys = [],
   onCheck,
   expandTrigger = "row",
+  draggable = false,
+  onDrop,
+  allowDropInside,
+  virtual = false,
   showLine = false,
   searchable = false,
   searchPlaceholder = "搜索",
@@ -206,6 +214,83 @@ export function Tree({
     }
   };
 
+  // —— 虚拟滚动 ——
+  // hook 不可条件调用，故 virtualizer 恒声明；virtualOn=false 时它拿到 count=0、整段闲置。
+  const virtualOpts = typeof virtual === "object" ? virtual : {};
+  const virtualOn = virtual !== false && virtual != null;
+  const virtualHeight = virtualOpts.height ?? 320;
+  const itemHeight = virtualOpts.itemHeight ?? 36;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: virtualOn ? flat.length : 0,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => itemHeight,
+    overscan: virtualOpts.overscan ?? 8,
+  });
+
+  // —— 拖拽排序（原生 HTML5 拖放）——
+  // 不用 dnd-kit：Tree 只需要「拖一行、落到另一行的上/中/下」，原生事件足够，
+  // 也免得不开拖拽的消费方白白背上一条 dnd-kit 运行时（Table 刚踩过这个坑）。
+  const [dragKey, setDragKey] = useState<string | null>(null);
+  const [dropHint, setDropHint] = useState<{ key: string; position: DropPosition } | null>(null);
+  const dragEnabled = draggable && Boolean(onDrop);
+
+  const endDrag = () => {
+    setDragKey(null);
+    setDropHint(null);
+  };
+
+  /** 拖拽相关的 DOM props；未开拖拽或该行不可拖时返回空对象（渲染结果与改造前一致）。 */
+  const dragProps = (node: TreeNode): React.HTMLAttributes<HTMLElement> & { draggable?: boolean } => {
+    if (!dragEnabled || node.disabled) return {};
+    return {
+      draggable: true,
+      onDragStart: (e) => {
+        setDragKey(node.key);
+        // 不设 dataTransfer 的话 Firefox 根本不发起拖拽
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", node.key);
+      },
+      onDragEnd: endDrag,
+      onDragOver: (e) => {
+        if (dragKey == null) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const allowInside = allowDropInside ? allowDropInside(node) : true;
+        const position = resolveDropPosition(e.clientY - rect.top, rect.height, allowInside);
+        if (!canDropOn(index, dragKey, node.key, position)) {
+          setDropHint(null);
+          return;
+        }
+        // 只有 preventDefault 过的目标才会收到 drop —— 非法落点不 preventDefault，
+        // 于是浏览器自己就显示「不可放置」光标，不必再自造禁止态
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        setDropHint((prev) =>
+          prev?.key === node.key && prev.position === position ? prev : { key: node.key, position },
+        );
+      },
+      onDragLeave: () => setDropHint((prev) => (prev?.key === node.key ? null : prev)),
+      onDrop: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const hint = dropHint;
+        const from = dragKey;
+        endDrag();
+        if (!from || !hint || hint.key !== node.key) return;
+        if (!canDropOn(index, from, hint.key, hint.position)) return;
+        onDrop?.({ dragKey: from, dropKey: hint.key, position: hint.position });
+      },
+    };
+  };
+
+  /** 落点指示：上/下沿画主色线，inside 画一圈内描边。 */
+  const dropClass = (key: string) => {
+    if (dropHint?.key !== key) return undefined;
+    if (dropHint.position === "before") return "before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-primary before:content-['']";
+    if (dropHint.position === "after") return "after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary after:content-['']";
+    return "ring-2 ring-inset ring-primary";
+  };
+
   const checkboxFor = (node: TreeNode, checkState: ReturnType<typeof getCheckState>) => (
     <span onClick={(e) => e.stopPropagation()} className="flex shrink-0">
       <Checkbox
@@ -257,6 +342,7 @@ export function Tree({
                 expanded: isExpanded,
               });
             }}
+            {...dragProps(node)}
             style={{ paddingLeft: `calc(0.5rem + ${depth} * 1.25rem)` }}
             data-selected={!checkable && isSelected ? "" : undefined}
             className={cn(
@@ -267,6 +353,9 @@ export function Tree({
               // 禁用行不再 pointer-events-none：它会连箭头一起废掉，子树彻底不可达。
               // 拦截改由 activateRow 内部做，这里只表达视觉。
               node.disabled ? "cursor-default opacity-50" : "hover:bg-surface-hover",
+              dragEnabled && !node.disabled && "cursor-grab active:cursor-grabbing",
+              dragKey === node.key && "opacity-50",
+              dropClass(node.key),
               showLine && "tree-line",
             )}
           >
@@ -332,60 +421,100 @@ export function Tree({
       );
     });
 
-  // 搜索态：平铺渲染过滤后的 flat 行（命中高亮，不走嵌套过渡）。
-  const renderFlatSearch = () =>
-    flat.map((row) => {
-      const node = row.node;
-      const hasChildren = row.hasChildren;
-      const checkState = checkable ? getCheckState(node.key, leafSet, index) : "unchecked";
-      const isActive = node.key === effectiveActive;
-      return (
-        <li key={node.key} role="none">
-          <div
-            role="treeitem"
-            ref={(el) => {
-              if (el) itemRefs.current.set(node.key, el);
-              else itemRefs.current.delete(node.key);
-            }}
-            aria-level={row.depth + 1}
-            aria-expanded={hasChildren ? row.expanded : undefined}
-            aria-selected={!checkable && selectedSet.has(node.key) ? true : undefined}
-            aria-checked={
-              checkable ? (checkState === "indeterminate" ? "mixed" : checkState === "checked") : undefined
-            }
-            aria-disabled={node.disabled || undefined}
-            tabIndex={isActive && !node.disabled ? 0 : -1}
-            onFocus={() => setActiveKey(node.key)}
-            onClick={() => {
-              if (node.disabled) return;
-              setActiveKey(node.key);
-              // 搜索平铺态：展开由命中路径自动驱动，点击一律走 select/check，
-              // 父节点在这里同样可选（此前点父节点是切一个当下被忽略的 expanded 位，即毫无反应）。
-              activateRow({
-                key: node.key,
-                disabled: Boolean(node.disabled),
-                hasChildren,
-                expanded: row.expanded,
-                flatSearch: true,
-              });
-            }}
-            style={{ paddingLeft: `calc(0.5rem + ${row.depth} * 1.25rem)` }}
-            data-selected={!checkable && selectedSet.has(node.key) ? "" : undefined}
+  /**
+   * 平铺一行。两条路径共用：
+   * - **搜索态**（`flatSearch`）：展开由命中路径自动驱动，点击一律 select/check，不画箭头。
+   * - **虚拟滚动**：展开照常，画箭头；但没有嵌套 DOM，也就没有 grid-rows 过渡。
+   */
+  const renderFlatRow = (row: FlatRow, opts: { flatSearch: boolean; style?: React.CSSProperties }) => {
+    const node = row.node;
+    const hasChildren = row.hasChildren;
+    const checkState = checkable ? getCheckState(node.key, leafSet, index) : "unchecked";
+    const isActive = node.key === effectiveActive;
+    const isSelected = selectedSet.has(node.key);
+    const showCaret = !opts.flatSearch;
+    return (
+      <li key={node.key} role="none" style={opts.style}>
+        <div
+          role="treeitem"
+          ref={(el) => {
+            if (el) itemRefs.current.set(node.key, el);
+            else itemRefs.current.delete(node.key);
+          }}
+          aria-level={row.depth + 1}
+          aria-expanded={hasChildren ? row.expanded : undefined}
+          aria-selected={!checkable && isSelected ? true : undefined}
+          aria-checked={
+            checkable ? (checkState === "indeterminate" ? "mixed" : checkState === "checked") : undefined
+          }
+          aria-disabled={node.disabled || undefined}
+          tabIndex={isActive && !node.disabled ? 0 : -1}
+          onFocus={() => setActiveKey(node.key)}
+          onClick={() => {
+            if (!node.disabled) setActiveKey(node.key);
+            // 搜索平铺态下父节点同样可选（此前点父节点是切一个当下被忽略的 expanded 位，即毫无反应）。
+            activateRow({
+              key: node.key,
+              disabled: Boolean(node.disabled),
+              hasChildren,
+              expanded: row.expanded,
+              flatSearch: opts.flatSearch,
+            });
+          }}
+          {...dragProps(node)}
+          style={{ paddingLeft: `calc(0.5rem + ${row.depth} * 1.25rem)` }}
+          data-selected={!checkable && isSelected ? "" : undefined}
+          className={cn(
+            "relative flex items-center gap-1.5 rounded-md py-1.5 pr-2 text-sm outline-none transition-colors",
+            "text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+            opts.flatSearch && matchedKeys.has(node.key) && "font-medium text-primary",
+            !checkable && "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
+            node.disabled ? "cursor-default opacity-50" : "hover:bg-surface-hover",
+            dragEnabled && !node.disabled && "cursor-grab active:cursor-grabbing",
+            dragKey === node.key && "opacity-50",
+            dropClass(node.key),
+          )}
+        >
+          <span
             className={cn(
-              "flex items-center gap-1.5 rounded-md py-1.5 pr-2 text-sm outline-none transition-colors",
-              "text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-              matchedKeys.has(node.key) && "font-medium text-primary",
-              !checkable && "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
-              node.disabled ? "cursor-default opacity-50" : "hover:bg-surface-hover",
+              "flex size-4 shrink-0 items-center justify-center text-muted",
+              showCaret && hasChildren && !rowClickExpands && "cursor-pointer hover:text-foreground",
             )}
+            onClick={
+              showCaret && hasChildren && !rowClickExpands
+                ? (e) => {
+                    e.stopPropagation();
+                    toggleExpand(node.key, !row.expanded);
+                  }
+                : undefined
+            }
           >
-            <span className="size-4 shrink-0" aria-hidden />
-            {checkable ? checkboxFor(node, checkState) : null}
-            <span className="truncate">{node.label}</span>
-          </div>
-        </li>
-      );
-    });
+            {showCaret && hasChildren ? (
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={cn("size-3.5 transition-transform", row.expanded && "rotate-90")}
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            ) : null}
+          </span>
+          {checkable ? checkboxFor(node, checkState) : null}
+          {node.icon ? (
+            <span aria-hidden className="shrink-0 text-muted [&>svg]:size-4">
+              {node.icon}
+            </span>
+          ) : null}
+          <span className="truncate">{node.label}</span>
+        </div>
+      </li>
+    );
+  };
 
   return (
     <div className={cn("w-full select-none text-foreground", className)}>
@@ -401,15 +530,46 @@ export function Tree({
           />
         </div>
       ) : null}
-      <ul
-        role="tree"
-        aria-label={ariaLabel}
-        aria-multiselectable={checkable || undefined}
-        onKeyDown={onKeyDown}
-        className="flex flex-col"
-      >
-        {searching ? renderFlatSearch() : renderTree(nodes, 0, [])}
-      </ul>
+      {virtualOn ? (
+        // 虚拟滚动：只渲染视口内的行。代价是必须平铺（无嵌套 DOM）→ 没有展开过渡、连接线失效，
+        // 已写进 tree.md 禁忌区。ul 需要 relative 才能承接 li 的绝对定位。
+        <div ref={scrollRef} style={{ height: virtualHeight }} className="overflow-auto">
+          <ul
+            role="tree"
+            aria-label={ariaLabel}
+            aria-multiselectable={checkable || undefined}
+            onKeyDown={onKeyDown}
+            className="relative w-full"
+            style={{ height: virtualizer.getTotalSize() }}
+          >
+            {virtualizer.getVirtualItems().map((v) =>
+              renderFlatRow(flat[v.index], {
+                flatSearch: searching,
+                style: {
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: v.size,
+                  transform: `translateY(${v.start}px)`,
+                },
+              }),
+            )}
+          </ul>
+        </div>
+      ) : (
+        <ul
+          role="tree"
+          aria-label={ariaLabel}
+          aria-multiselectable={checkable || undefined}
+          onKeyDown={onKeyDown}
+          className="flex flex-col"
+        >
+          {searching
+            ? flat.map((row) => renderFlatRow(row, { flatSearch: true }))
+            : renderTree(nodes, 0, [])}
+        </ul>
+      )}
       {searching && flat.length === 0 ? (
         <div className="px-2 py-6 text-center text-sm text-muted">无匹配项</div>
       ) : null}

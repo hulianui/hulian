@@ -1,5 +1,5 @@
 export { Tree } from "./tree";
-export type { TreeProps, TreeNode } from "./tree.types";
+export type { TreeProps, TreeNode, TreeDropEvent, TreeVirtualOptions, DropPosition } from "./tree.types";
 // Layer A 核：供 tree-select / cascader 复用，并对外暴露工具
 export {
   buildIndex,
@@ -10,6 +10,10 @@ export {
   normalizeCheckedToLeaves,
   computeChecked,
   filterTree,
+  nodeSearchText,
+  canDropOn,
+  isDescendant,
+  resolveDropPosition,
   type FlatRow,
   type TreeIndex,
   type CheckState,

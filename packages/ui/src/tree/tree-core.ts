@@ -170,6 +170,59 @@ export function computeChecked(
  * 节点的可搜索文本（已小写）。取值顺序：`searchText` → 字符串/数字 label → `key` 兜底。
  * 搜索与键盘首字母跳转共用同一条口径，避免两处规则漂移。
  */
+/** 拖拽落点相对目标节点的位置。`inside` 表示改父级（成为目标的子节点）。 */
+export type DropPosition = "before" | "after" | "inside";
+
+/**
+ * `key` 是否为 `ancestorKey` 的后代（顺着 parentMap 往上走）。
+ * 拖拽必须拦住这条：把一个节点丢进它自己的子树里会把这棵树从数据结构上撕成环。
+ */
+export function isDescendant(index: TreeIndex, ancestorKey: string, key: string): boolean {
+  let cur = index.parentMap.get(key) ?? null;
+  while (cur != null) {
+    if (cur === ancestorKey) return true;
+    cur = index.parentMap.get(cur) ?? null;
+  }
+  return false;
+}
+
+/**
+ * 落点是否合法。三条都得拦，否则消费方拿到的是一份没法落库的指令：
+ * 1. 丢到自己身上
+ * 2. 丢进自己的子树（成环）
+ * 3. `inside` 到自己的直接父级（等于没动，却会触发一次写库）
+ */
+export function canDropOn(
+  index: TreeIndex,
+  dragKey: string,
+  dropKey: string,
+  position: DropPosition,
+): boolean {
+  if (dragKey === dropKey) return false;
+  if (isDescendant(index, dragKey, dropKey)) return false;
+  if (position === "inside" && index.parentMap.get(dragKey) === dropKey) return false;
+  return true;
+}
+
+/**
+ * 指针在行内的纵向位置 → 落点语义。上/下各四分之一是「排到前/后」，中间一半是「放进去」。
+ * `allowInside=false`（如目标是叶子且业务不允许建子级）时退化成上下二分。
+ */
+export function resolveDropPosition(
+  offsetY: number,
+  rowHeight: number,
+  allowInside = true,
+): DropPosition {
+  // 非有限值（拿不到坐标、行高为 0）一律退回 before：
+  // NaN 参与比较时两个分支都为假，会静默落到 inside —— 那是改父级，是三种落点里最危险的一种。
+  if (!Number.isFinite(offsetY) || !Number.isFinite(rowHeight) || rowHeight <= 0) return "before";
+  const ratio = offsetY / rowHeight;
+  if (!allowInside) return ratio < 0.5 ? "before" : "after";
+  if (ratio < 0.25) return "before";
+  if (ratio > 0.75) return "after";
+  return "inside";
+}
+
 export function nodeSearchText(node: TreeNode): string {
   if (typeof node.searchText === "string") return node.searchText.toLowerCase();
   if (typeof node.label === "string" || typeof node.label === "number") {

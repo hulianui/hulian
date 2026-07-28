@@ -13,6 +13,15 @@ export interface DateTimePickerProps {
   minutesStep?: number;
   /** 是否启用秒（默认 false，仅到分钟） */
   withSeconds?: boolean;
+  /**
+   * 逐日禁用判定，入参是 `"YYYY-MM-DD"`（只作用于日期部分，不筛时刻）。
+   * 与 `minDateTime`/`maxDateTime` 是「或」关系。
+   */
+  disabledDate?: (isoDate: string) => boolean;
+  /**
+   * 输入框显示格式（dayjs format 串）。**只影响显示**，`onValueChange` 回传的仍是完整 ISO 时间戳。
+   */
+  format?: string;
   disabled?: boolean;
   readOnly?: boolean;
   /** 输入框 label */

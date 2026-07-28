@@ -1,6 +1,6 @@
 "use client";
 import { DateTimePicker as MuiDateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { DATE_TIME_FORMAT, DATE_TIME_SEC_FORMAT, toDayjs } from "../lib/date";
+import { DATE_TIME_FORMAT, DATE_TIME_SEC_FORMAT, toDayjs, toISODate, type Dayjs } from "../lib/date";
 import type { DateTimePickerProps } from "./date-time-picker.types";
 
 // 瑚琏 DateTimePicker = MUI DateTimePicker 罩瑚琏受控 API（对外 ISO 字符串）+ token 皮肤。
@@ -14,17 +14,22 @@ export function DateTimePicker({
   maxDateTime,
   minutesStep,
   withSeconds = false,
+  disabledDate,
+  format,
   disabled,
   readOnly,
   label,
   className,
 }: DateTimePickerProps) {
+  // MUI 的 shouldDisableDate 收 Dayjs，瑚琏对外一律 ISO 日期串——在桥这层转换。
+  const shouldDisableDate = disabledDate ? (d: Dayjs) => disabledDate(toISODate(d)) : undefined;
+
   return (
     <MuiDateTimePicker
       className={className}
       label={label}
-      // 24 小时制；按需带秒（YYYY-MM-DD HH:mm[:ss]）
-      format={withSeconds ? DATE_TIME_SEC_FORMAT : DATE_TIME_FORMAT}
+      // 24 小时制；按需带秒（YYYY-MM-DD HH:mm[:ss]）。format 显式给了就以它为准。
+      format={format ?? (withSeconds ? DATE_TIME_SEC_FORMAT : DATE_TIME_FORMAT)}
       ampm={false}
       views={withSeconds ? ["year", "month", "day", "hours", "minutes", "seconds"] : ["year", "month", "day", "hours", "minutes"]}
       minutesStep={minutesStep}
@@ -32,6 +37,7 @@ export function DateTimePicker({
       defaultValue={toDayjs(defaultValue) ?? undefined}
       minDateTime={toDayjs(minDateTime) ?? undefined}
       maxDateTime={toDayjs(maxDateTime) ?? undefined}
+      shouldDisableDate={shouldDisableDate}
       disabled={disabled}
       readOnly={readOnly}
       onChange={(v) => onValueChange?.(v ? v.toISOString() : null)}
