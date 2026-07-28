@@ -31,6 +31,7 @@ import { Listbox } from "@hulianui/ui"
 | defaultSelectedKeys | `string[]` | — | 非受控初始选中键 |
 | disabledKeys | `string[]` | — | 额外禁用键（与 `item.disabled` 合并） |
 | className | `string` | — | 容器类名 |
+| style | `CSSProperties` | — | 行内样式，落在列表根元素。用于表达 Tailwind 类给不出的动态值（如运行时决定的 `maxHeight`） |
 | aria-label | `string` | — | 无可见标题时的无障碍标签 |
 
 ## Events

@@ -2637,6 +2637,19 @@ import { ButtonGroup } from "@hulianui/ui"
 import { Calendar } from "@hulianui/ui"
 ```
 
+> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
+> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
+> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
+> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
+>
+> ```tsx
+> import { MuiBridgeProvider } from "@hulianui/ui"
+>
+> <MuiBridgeProvider>
+>   <App />
+> </MuiBridgeProvider>
+> ```
+
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
@@ -3340,6 +3353,19 @@ const [codes, setCodes] = useState<string[]>([]);
 import { DatePicker } from "@hulianui/ui"
 ```
 
+> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
+> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
+> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
+> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
+>
+> ```tsx
+> import { MuiBridgeProvider } from "@hulianui/ui"
+>
+> <MuiBridgeProvider>
+>   <App />
+> </MuiBridgeProvider>
+> ```
+
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
@@ -3457,6 +3483,19 @@ function Demo() {
 ```ts
 import { DateTimePicker } from "@hulianui/ui"
 ```
+
+> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
+> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
+> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
+> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
+>
+> ```tsx
+> import { MuiBridgeProvider } from "@hulianui/ui"
+>
+> <MuiBridgeProvider>
+>   <App />
+> </MuiBridgeProvider>
+> ```
 
 ## Props
 
@@ -3836,6 +3875,7 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
 | disabled | `boolean` | `false` | 禁用 |
+| ref | `Ref<HTMLInputElement>` | — | 转发到**内层原生 `<input>`**（不是外壳 span）。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它 |
 
 ## Events
 
@@ -3951,6 +3991,7 @@ import { Listbox } from "@hulianui/ui"
 | defaultSelectedKeys | `string[]` | — | 非受控初始选中键 |
 | disabledKeys | `string[]` | — | 额外禁用键（与 `item.disabled` 合并） |
 | className | `string` | — | 容器类名 |
+| style | `CSSProperties` | — | 行内样式，落在列表根元素。用于表达 Tailwind 类给不出的动态值（如运行时决定的 `maxHeight`） |
 | aria-label | `string` | — | 无可见标题时的无障碍标签 |
 
 ## Events
@@ -4453,6 +4494,9 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 单项禁用 |
 | id | `string` | — | — |
 | className | `string` | — | 落在 Radio.Root |
+| aria-label | `string` | — | 无障碍名。**不给 `label`、或 `label` 是图标/纯视觉内容时必须给** |
+| aria-labelledby | `string` | — | 用页面上已有元素充当名字（填其 id），与 `aria-label` 二选一 |
+| aria-describedby | `string` | — | 补充描述（填元素 id），如该选项的说明文字 |
 
 ## Events
 
@@ -4499,6 +4543,7 @@ const [value, setValue] = useState("standard");
 - 选中值统一由 `RadioGroup` 管，`Radio` 不自带选中态——别在 `Radio` 上找 `checked`。
 - 用 `value`/`onValueChange` 即受控，须自管 state；只给初值用 `defaultValue`，二者不要混用。
 - 无可见标题的单选组要给 `aria-label`，否则无障碍读屏无名。
+- **不给 `label` 的 `Radio`（图标卡片、自定义排版）必须自带 `aria-label` 或 `aria-labelledby`**，否则读屏只报「单选按钮」，用户不知道自己在选哪一项——这不只是测试不好写，是真实的可访问性缺陷。`label` 传的是图标之类的非文本 `ReactNode` 时同理。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/components/input) · [Textarea](https://hulianui.haloritual.com/components/textarea) · [Select](https://hulianui.haloritual.com/components/select) · [Checkbox](https://hulianui.haloritual.com/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group) · [Switch](https://hulianui.haloritual.com/components/switch)
@@ -4564,6 +4609,19 @@ import { RainbowButton } from "@hulianui/ui"
 ```ts
 import { Rating } from "@hulianui/ui"
 ```
+
+> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
+> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
+> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
+> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
+>
+> ```tsx
+> import { MuiBridgeProvider } from "@hulianui/ui"
+>
+> <MuiBridgeProvider>
+>   <App />
+> </MuiBridgeProvider>
+> ```
 
 ## Props
 
@@ -5473,6 +5531,8 @@ import { Switch } from "@hulianui/ui"
 | id | `string` | — | — |
 | className | `string` | — | — |
 | aria-label | `string` | — | 无可见标题时提供 |
+| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 视觉尺寸（轨道 36×20 / 40×24 / 48×28）。`md` 与加这个 prop 之前逐像素一致 |
+| touchTarget | `boolean` | `false` | 扩出一块不可见的 ≥44px 命中区（只影响命中，不占布局、不改视觉）。移动端建议开 |
 
 ## Events
 
@@ -5495,6 +5555,8 @@ const [on, setOn] = useState(false);
 
 - 用 `checked`/`onCheckedChange` 即受控，须自管 state；只给初值用 `defaultChecked`，二者不要混用。
 - 无可见标题时务必给 `aria-label`，否则读屏无名。
+- **移动端记得开 `touchTarget`**：默认 `md` 轨道只有 24px 高，低于触控目标推荐值（≥44px），手指点不准。此前库里没有这个开关，消费方只能在外面自己包一层 ≥44px 的可点区。
+- `touchTarget` 的命中区会向上下各溢出约 10px。桌面端紧密排布的表单里若相邻控件挨得很近，可能压到邻居，所以它默认关、按场景开。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/components/input) · [Textarea](https://hulianui.haloritual.com/components/textarea) · [Select](https://hulianui.haloritual.com/components/select) · [Checkbox](https://hulianui.haloritual.com/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group) · [Radio](https://hulianui.haloritual.com/components/radio)
@@ -5561,6 +5623,19 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 ```ts
 import { TimeField } from "@hulianui/ui"
 ```
+
+> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
+> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
+> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
+> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
+>
+> ```tsx
+> import { MuiBridgeProvider } from "@hulianui/ui"
+>
+> <MuiBridgeProvider>
+>   <App />
+> </MuiBridgeProvider>
+> ```
 
 ## Props
 
@@ -5718,6 +5793,8 @@ import { Transfer } from "@hulianui/ui"
 | searchable | `boolean` | `false` | 每个面板顶部显示搜索框 |
 | searchPlaceholder | `string` | `"搜索"` | 搜索框占位符 |
 | filterOption | `(input: string, item: TransferItem) => boolean` | label 包含匹配 | 自定义过滤（默认大小写不敏感子串） |
+| listHeight | `number` | `240` | 面板列表区最大高度（px）。几百节点的权限/部门数据下把它调大，否则面板挤成一条缝 |
+| showSelectAll | `boolean` | `false` | 面板标题栏显示全选复选框（只作用于**当前过滤结果里的可用项**） |
 | disabled | `boolean` | `false` | 整体禁用（两侧列表与移动按钮全失效） |
 | className | `string` | — | 容器类名 |
 
@@ -5749,7 +5826,8 @@ const [target, setTarget] = useState<string[]>(["dashboard", "orders"]);
 
 - `onChange` 首参就是移动后的完整目标键集合，直接 `setTarget` 即可（无需自己合并 `movedKeys`）；后两参 `direction`/`movedKeys` 用于审计/差量提示。
 - `disabled` 的 item 不可勾选、也**不随「全部移入/移出」按钮移动**——设计如此，用于冻结历史项。
-- 暂无其它已知坑。
+- `showSelectAll` 的全选**只覆盖当前过滤结果里的可用项**：搜出 3 条时点全选，不会把被过滤掉的另外 200 条也勾上。清空搜索后再点一次才是全量。
+- 面板列表尚无虚拟滚动，上千节点时靠 `listHeight` + 滚动扛。真到万级请先在数据层分组/懒加载。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
@@ -8863,7 +8941,8 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 |------|------|------|------|
 | lines* | `LogLine[]` | — | 日志行（数据驱动） |
 | showTimestamp | `boolean` | `false` | 显示每行时间戳（渲染在行首） |
-| autoScroll | `boolean` | `true` | 新行自动贴底（流式日志刚需） |
+| autoScroll | `boolean` | `true` | 新行**黏底**跟随：只在用户本就停在底部时才滚。上滚看历史即暂停跟随，滚回底部自动恢复 |
+| maxLines | `number` | — | 只渲染最后 N 行（0 / 不传 = 不截）。长流护栏，截断只发生在渲染层，`lines` 原数组不动 |
 | wrap | `boolean` | `false` | 长行折行；false 时长行横向滚动 |
 | height | `number \| string` | `320` | 滚动区高度 |
 | className | `string` | — | 自定义类 |
@@ -8893,7 +8972,9 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 流式运行逻辑（计时/追加）留在消费侧，组件只负责按 `lines` 渲染并贴底——不要期待它自己产生日志。
-- `autoScroll` 默认开；用户手动上滚查看历史时仍会被新行拉回底部，需要保留滚动位置的场景请自行关掉。
+- `autoScroll` 是**黏底**不是强制贴底：用户上滚看历史时不会被新行拽回去，滚回底部自动恢复跟随。判定「已在底部」留了 8px 容差（亚像素与惯性滚动会让 `scrollTop` 差零点几，卡死等号会永远判 false）。完全不要自动滚动才关掉它。
+- 长流务必给 `maxLines`：一条跑几小时的构建流会把几万个 DOM 节点堆在页面里，滚动直接卡死。
+- 不解析 ANSI 转义序列。带颜色码的原始输出请在消费侧先剥掉，或自己拆成 `LogLine` 的 `level`。
 - `wrap=false`（默认）时超长行横向滚动而非折行；窄容器读全文须开 `wrap`。
 
 ## 相关
@@ -10317,6 +10398,7 @@ import { Table } from "@hulianui/ui"
 | columnSizing | `ColumnSizingState` | — | 受控列宽态（列 id → 像素宽）；不传走内部非受控 |
 | onRowClick | `(row: TData, index: number) => void` | 关 | 行点击：整行 cursor-pointer + tabIndex=0 + 键盘 Enter/Space 可达（保持 row 语义）；行内交互元素冒泡隔离 |
 | rowHref | `(row: TData, index: number) => string \| undefined` | 关 | 声明式整行导航：返回 href 该行点击/Enter 整页跳转（cmd/ctrl+点击新开 tab），返回 undefined 该行不可点 |
+| onRowDoubleClick | `(row: TData, index: number) => void` | 关 | 行双击（后台列表「双击进编辑」的老习惯）。与 `onRowClick` 相互独立、可同传；行内交互元素同样冒泡隔离 |
 | enableRowSelection | `boolean \| ((row: Row<TData>) => boolean)` | 关 | 开行选择，自动前插复选框列（含全选）；函数可限定可选行 |
 | rowSelection | `RowSelectionState` | — | 受控选择态 |
 | getRowCanExpand | `(row: Row<TData>) => boolean` | — | 限定可展开行 |
@@ -10423,6 +10505,7 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。
 - 排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。
 - `rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。
+- `onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。
 - 行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。
 - 行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。
 - 拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。
@@ -10657,7 +10740,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes* | `TreeNode[]` | — | 树数据(`{ key, label, icon?, children?, disabled? }`) |
+| nodes* | `TreeNode[]` | — | 树数据(`{ key, label, icon?, children?, disabled?, searchText? }`) |
 | expandedKeys | `string[]` | — | 受控展开集 |
 | defaultExpandedKeys | `string[]` | — | 非受控初始展开集 |
 | selectable | `boolean` | `true` | 单选高亮(非 checkable 模式) |
@@ -10666,6 +10749,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | checkable | `boolean` | `false` | 复选模式(行前 checkbox) |
 | checkedKeys | `string[]` | — | 受控勾选集 |
 | defaultCheckedKeys | `string[]` | — | 非受控初始勾选集 |
+| expandTrigger | `"row" ｜ "icon"` | `"row"` | 什么东西触发展开。`"row"` 点整行展开（父节点因此**选不中**）；`"icon"` 只有左侧箭头管展开，行归 select/check，父节点可选 |
 | showLine | `boolean` | `false` | 显示连接线 |
 | searchable | `boolean` | `false` | 树内搜索框 |
 | searchPlaceholder | `string` | — | 搜索框占位 |
@@ -10694,7 +10778,10 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 
 - 展开/选中/勾选三组状态各自**受控/非受控对称**：传 `xxxKeys` 即受控(须配 `onXxx` 回写)，否则用 `defaultXxxKeys`。混用同一组的受控与非受控会失效。
 - `selectable` 默认 `true`；`checkable` 模式下走勾选，`onCheck` 回调里 `checkedKeys` 与 `halfCheckedKeys` 分开返回，半选父节点不在 `checkedKeys` 里。
-- `nodes` 每项需稳定 `key`；`disabled` 节点不可选/不可勾。
+- `nodes` 每项需稳定 `key`。
+- **`disabled` 只挡选中/勾选，不挡展开** —— 禁用的父节点仍能点开看子树（否则整棵子树彻底不可达）。要连展开都禁掉请在数据层就不给 `children`。
+- **默认 `expandTrigger="row"` 下，有子节点的行永远不会触发 `onSelect`**（点它只展开）。要选目录/部门/任意层级分类，改 `expandTrigger="icon"`。「只能选叶子」是这个默认值的副作用，**不是契约**，别拿它当校验。
+- **`label` 传 `ReactNode`（带高亮片段、图标、徽标…）时必须同时给 `searchText`**，否则内置搜索与键盘首字母跳转会退化成拿 `key` 去匹配 —— 用户按看得见的文字搜，一条都搜不出来。`label` 是字符串/数字时不用管。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -11231,7 +11318,9 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 依赖 View Transitions API 做圆形揭示，浏览器不支持时自动降级为瞬时切换（无动画），切换本身仍生效。
-- 内部用 `useTheme` 读写主题、点击时读按钮位置算扩散圆心，属客户端组件；在 RSC 树里使用须确保父级有 `"use client"` 边界。
+- 点击时读按钮位置算扩散圆心，属客户端组件；在 RSC 树里使用须确保父级有 `"use client"` 边界。
+- **上层没有 `ThemeProvider` 时不再抛错**（此前会整页白屏）：自动降级为自持主题态，直接读写 `<html data-theme>` 与同一个 `localStorage` 键（`hulian-theme`），dev 下打一条告警。降级态下它与其他消费 `useTheme` 的组件**不联动**，正式用法仍应在上层挂 `ThemeProvider`。
+- 应用代码里想要「缺 Provider 就报错」的硬约束，继续用 `useTheme`；库内组件与需要容错的场景用 `useThemeOptional`（缺上下文返回 `null`）。
 
 ## 相关
 [Command](https://hulianui.haloritual.com/components/command) · [ContextMenu](https://hulianui.haloritual.com/components/context-menu) · [Toolbar](https://hulianui.haloritual.com/components/toolbar) · [Accordion](https://hulianui.haloritual.com/components/accordion) · [Collapsible](https://hulianui.haloritual.com/components/collapsible) · [Link](https://hulianui.haloritual.com/components/link)
@@ -11932,6 +12021,7 @@ import { Link, linkVariants } from "@hulianui/ui"
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | 下划线显示策略 |
 | `external` | `boolean` | `false` | 外链：自动加 `target="_blank"` + `rel="noopener noreferrer"` + 尾随外链图标 |
 | `href` | `string` | — | 跳转地址（原生属性） |
+| `render` | `ReactElement` | — | 渲染为自定义元素，用来承载框架路由件（`next/link`、`react-router` 的 `Link`）。皮肤 class 与 Link 自身的 props 合并进该元素，`href` 由它自己带 |
 
 ## Events
 
@@ -11950,12 +12040,17 @@ import { Link, linkVariants } from "@hulianui/ui"
 <Link href="/docs">瑚琏文档</Link>
 <Link href="https://base-ui.com" external>Base UI 官网</Link>
 <Link href="#" underline="always" tone="danger">删除说明</Link>
+
+// 客户端路由：把框架的 Link 交给 render，href 写在它身上
+import NextLink from "next/link"
+<Link render={<NextLink href="/posts/1" />}>查看详情</Link>
 ```
 
 ## 禁忌 / 坑
 
 - 设了 `external` 就不必再手写 `target`/`rel`，组件已自动注入安全属性并补外链图标；手写反而可能与之冲突。
-- 这是原生 `<a>` 的薄包、RSC 友好，不做客户端路由拦截；接入 Next.js 路由需自行用 `<Link asChild>` 思路或包一层框架 Link（本组件未内置）。
+- **接客户端路由必须走 `render`，`href` 写在被 render 的那个元素上**。`<Link href="/a" render={<NextLink />}>` 这种写法里 `href` 落在瑚琏这层、传不到路由件，等于没接。
+- `render` 之外的写法（例如把路由件包在 Link 外面）会得到 `<a>` 套 `<a>`，是非法 DOM 且 React 会报 hydration 错。
 
 ## 相关
 [Command](https://hulianui.haloritual.com/components/command) · [ContextMenu](https://hulianui.haloritual.com/components/context-menu) · [Toolbar](https://hulianui.haloritual.com/components/toolbar) · [Accordion](https://hulianui.haloritual.com/components/accordion) · [Collapsible](https://hulianui.haloritual.com/components/collapsible) · [AnimatedThemeToggler](https://hulianui.haloritual.com/components/animated-theme-toggler)
@@ -12420,9 +12515,13 @@ import { Pagination, getPaginationRange } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | page* | `number` | — | 当前页（1 起），受控 |
-| total* | `number` | — | 总页数 |
+| total | `number` | — | **总页数**（不是总条数）。与 `totalItems` 二选一，同传时以本项为准 |
+| totalItems | `number` | — | **总条数**（后端 `data.total` 的常见语义），与 `pageSize` 一起换算页数 |
+| pageSize | `number` | `10` | 每页条数，仅在给了 `totalItems` 时参与算页数 |
 | siblingCount | `number` | `1` | 当前页左右各显示的页码数 |
 | showFirstLast | `boolean` | `false` | 是否显示「跳首页/末页」按钮 |
+| showTotal | `boolean ｜ (totalItems, [from, to]) => ReactNode` | `false` | 左侧总数文案（默认「共 N 条」）。**依赖 `totalItems`**，只给 `total` 时静默不渲染 |
+| showQuickJumper | `boolean` | `false` | 右侧「跳至 __ 页」输入框（回车/失焦提交，自动夹紧到合法范围） |
 | disabled | `boolean` | `false` | 禁用整个分页器 |
 
 ## Events
@@ -12444,10 +12543,26 @@ function Demo() {
 <Pagination page={page} total={20} onPageChange={setPage} siblingCount={2} showFirstLast />
 ```
 
+接后端分页信封（后端给的是总条数，不是页数）：
+```tsx
+// res.data = { list, total: 128 }
+<Pagination
+  page={page}
+  totalItems={res.data.total}
+  pageSize={20}
+  onPageChange={setPage}
+  showTotal
+  showQuickJumper
+/>
+```
+
 ## 禁忌 / 坑
 
 - [[pagination-range-single-gap-fill-not-ellipsis]]：页码序列由 `getPaginationRange` 生成 —— 当两个展示页之间**只隐藏了 1 页**时直接补出那个页码，而不是显示「…」（省略号仅在 gap > 1 时出现），避免出现 `1 … 3` 这种只藏一页还占省略号的丑态。模型同 MUI usePagination。
 - 组件不持有内部页码态，忘了在 `onPageChange` 里更新 `page` 会点不动。
+- **`total` 是总页数，与几乎所有后端回的 `total`（总条数）语义相反。** 接后端数据请走 `totalItems` + `pageSize`，别在调用处自己 `Math.ceil` —— 两处各算一遍最容易在边界（0 条 / 整除）上分叉。两个 prop 同传会在 dev 下告警并以 `total` 为准。
+- `total` 的语义修正留到 1.0 主版本一次性做，届时两个 prop 会合并为一个。新代码优先写 `totalItems`。
+- `showTotal` 依赖 `totalItems` —— 只给了 `total`（页数）时算不出条数，本项静默不渲染而非报错。
 
 ## 相关
 [Tabs](https://hulianui.haloritual.com/components/tabs) · [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) · [Anchor](https://hulianui.haloritual.com/components/anchor) · [Affix](https://hulianui.haloritual.com/components/affix) · [BackTop](https://hulianui.haloritual.com/components/back-top) · [Stepper](https://hulianui.haloritual.com/components/stepper)
@@ -12605,6 +12720,19 @@ import { StaggeredMenu } from "@hulianui/ui"
 ```ts
 import { Stepper } from "@hulianui/ui"
 ```
+
+> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
+> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
+> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
+> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
+>
+> ```tsx
+> import { MuiBridgeProvider } from "@hulianui/ui"
+>
+> <MuiBridgeProvider>
+>   <App />
+> </MuiBridgeProvider>
+> ```
 
 ## Props
 
@@ -12859,7 +12987,7 @@ import { Alert, alertVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"｜"info"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色 |
+| tone | `"neutral"｜"brand"｜"info"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色。`info` 是 `brand` 的历史别名，两者同配方、可互换 |
 | variant | `"soft"｜"outline"` | `"soft"` | soft=浅底 / outline=描边 |
 | closeLabel | `string` | `"关闭"` | 关闭按钮的无障碍标签 |
 
@@ -12893,6 +13021,7 @@ import { Alert, alertVariants } from "@hulianui/ui"
 - `onClose` 只触发回调、不自行消隐，是否移除/隐藏由调用方控制（受控）；不传 `onClose` 则不渲染关闭按钮。
 - 不绑图标库，`icon` 须调用方自带 SVG/emoji。
 - 接口已 `Omit<…, "title">` 避开 HTML 原生 title 属性与 ReactNode title 冲突，直接传 `title` 即为标题。
+- **新代码用 `tone="brand"`**，与 Tag / Button / Badge 同一套取值。`info` 是本组件早于全库 tone 统一时留下的别名，配方完全相同、不会移除，但混用两个名字会让「跨组件搜同一语气」搜不全。
 
 ## 相关
 [Banner](https://hulianui.haloritual.com/components/banner) · [Toast](https://hulianui.haloritual.com/components/toast) · [Notification](https://hulianui.haloritual.com/components/notification) · [ServiceMessage](https://hulianui.haloritual.com/components/service-message) · [Result](https://hulianui.haloritual.com/components/result) · [GiftFeed](https://hulianui.haloritual.com/components/gift-feed)

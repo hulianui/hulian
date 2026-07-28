@@ -37,10 +37,12 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./showcase": "./src/showcase.ts"
+    "./showcase": "./src/showcase.ts",
+    "./vitest-preset": "./vitest-preset.js"
   },
   "files": [
     "src",
+    "vitest-preset.js",
     "!src/**/*.test.ts",
     "!src/**/*.test.tsx",
     "!src/**/*.bake.mjs"

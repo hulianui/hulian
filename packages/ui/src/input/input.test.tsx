@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { createRef } from "react";
 import { render } from "@testing-library/react";
 import { inputShellVariants, Input } from "./input";
 
@@ -40,5 +41,15 @@ describe("Input", () => {
     const { getByText } = render(<Input prefix="¥" suffix=".00" />);
     expect(getByText("¥")).toBeTruthy();
     expect(getByText(".00")).toBeTruthy();
+  });
+  // ref 指向真正的 <input> 而非外壳 span：focus()/取 .value/react-hook-form register 都靠它
+  it("转发 ref 到内层原生 input", () => {
+    const ref = createRef<HTMLInputElement>();
+    const { container } = render(<Input ref={ref} defaultValue="abc" />);
+    expect(ref.current).toBe(container.querySelector("input"));
+    expect(ref.current!.tagName).toBe("INPUT");
+    expect(ref.current!.value).toBe("abc");
+    ref.current!.focus();
+    expect(document.activeElement).toBe(ref.current);
   });
 });

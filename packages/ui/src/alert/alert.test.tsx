@@ -113,4 +113,26 @@ describe("Alert", () => {
     const { queryByRole } = render(<Alert title="纯提示">x</Alert>);
     expect(queryByRole("button")).toBeNull();
   });
+
+  // tone 取值与 Tag / Button / Badge 对齐：本组件早于全库统一，历史上只有 info 没有 brand
+  describe("tone=brand（与 info 同配方）", () => {
+    it("soft brand 与 soft info 产出同一套色", () => {
+      expect(alertVariants({ variant: "soft", tone: "brand" })).toBe(
+        alertVariants({ variant: "soft", tone: "info" }),
+      );
+    });
+    it("outline brand 与 outline info 产出同一套色", () => {
+      expect(alertVariants({ variant: "outline", tone: "brand" })).toBe(
+        alertVariants({ variant: "outline", tone: "info" }),
+      );
+    });
+    it("组件上直接用 tone=brand 能渲染出主色皮肤", () => {
+      const { container } = render(
+        <Alert tone="brand" title="品牌">
+          x
+        </Alert>,
+      );
+      expect(container.firstElementChild!.className).toContain("bg-primary/12");
+    });
+  });
 });

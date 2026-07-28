@@ -33,4 +33,39 @@ describe("AnimatedThemeToggler", () => {
     );
     expect(getByRole("button").classList.contains("my-toggler")).toBe(true);
   });
+
+  // 缺 Provider 时曾直接 throw（useTheme 的硬约束）→ 整页白屏。一个装饰性开关不该有这种杀伤力。
+  describe("无 ThemeProvider 时降级", () => {
+    it("不抛异常，照常渲染出按钮", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      expect(() => render(<AnimatedThemeToggler />)).not.toThrow();
+      warn.mockRestore();
+    });
+
+    it("自持主题态：点击改写 <html data-theme> 并落盘 localStorage", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      document.documentElement.setAttribute("data-theme", "light");
+      const { getByRole } = render(<AnimatedThemeToggler />);
+      fireEvent.click(getByRole("button"));
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+      expect(localStorage.getItem("hulian-theme")).toBe("dark");
+      expect(getByRole("button").getAttribute("aria-label")).toBe("切换到亮色");
+      warn.mockRestore();
+    });
+
+    it("初值取自已有的 <html data-theme>（anti-FOUC 脚本先写的那份）", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      document.documentElement.setAttribute("data-theme", "dark");
+      const { getByRole } = render(<AnimatedThemeToggler />);
+      expect(getByRole("button").getAttribute("aria-label")).toBe("切换到亮色");
+      warn.mockRestore();
+    });
+
+    it("dev 下给出可读告警，指明少挂了 ThemeProvider", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      render(<AnimatedThemeToggler />);
+      expect(warn.mock.calls.flat().join(" ")).toContain("ThemeProvider");
+      warn.mockRestore();
+    });
+  });
 });

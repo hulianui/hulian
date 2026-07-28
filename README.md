@@ -75,6 +75,10 @@ export default function App() {
 
 完整接入说明见 **[文档站 · 快速开始](https://hulianui.haloritual.com)**。
 
+> ⚠️ **接进自己的仓库前先读 [docs/consuming.md](docs/consuming.md)**，两条不写明就一定会踩：
+> ① 源码分发导致消费方的 Vitest 容易解析出**第二份 React**（可直接 `import { withHulian } from "@hulianui/ui/vitest-preset"` 一行解决）；
+> ② `_mui` 桥接族（日期/评分/步骤条）必须置于 `MuiBridgeProvider` 之内，否则真实浏览器里也会抛 `Unsupported color`。
+
 ## 🧩 组件与示例
 
 - **组件库**：349 个组件，覆盖中后台、营销站、电商、AI 应用、移动端等场景 —— [浏览全部](https://hulianui.haloritual.com)

@@ -21,6 +21,19 @@ status: enriched
 import { DatePicker } from "@hulianui/ui"
 ```
 
+> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
+> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
+> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
+> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
+>
+> ```tsx
+> import { MuiBridgeProvider } from "@hulianui/ui"
+>
+> <MuiBridgeProvider>
+>   <App />
+> </MuiBridgeProvider>
+> ```
+
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |

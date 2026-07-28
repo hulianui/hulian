@@ -225,8 +225,8 @@ export * from "./voice-record";
 
 // 主题
 export { ThemeProvider } from "./theme/theme-provider";
-export { useTheme } from "./theme/use-theme";
-export type { Theme, ThemeSetting } from "./theme/use-theme";
+export { useTheme, useThemeOptional, THEME_STORAGE_KEY } from "./theme/use-theme";
+export type { Theme, ThemeSetting, ThemeContextValue } from "./theme/use-theme";
 
 // 权限（基础设施·不进组件画廊·同 ThemeProvider 先例）
 export { AccessProvider } from "./access/access-provider";

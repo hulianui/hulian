@@ -23,4 +23,13 @@ export interface RadioProps {
   id?: string;
   /** 落在点 Radio.Root。 */
   className?: string;
+  /**
+   * 无障碍名。**不给 label、或 label 是图标/纯视觉内容时必须给** ——
+   * 否则读屏用户听到的只是「单选按钮」，拿不到这是哪个选项。
+   */
+  "aria-label"?: string;
+  /** 用页面上已有元素充当名字（填其 id）。与 aria-label 二选一。 */
+  "aria-labelledby"?: string;
+  /** 补充描述（填元素 id），如该选项的说明文字。 */
+  "aria-describedby"?: string;
 }

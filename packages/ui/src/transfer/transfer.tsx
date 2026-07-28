@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "../_icons";
+import { Checkbox } from "../checkbox/checkbox";
 import { cn } from "../lib/cn";
 import { Listbox } from "../listbox/listbox";
 import type { ListboxItemData } from "../listbox/listbox.types";
@@ -60,6 +61,8 @@ function TransferPanel({
   searchPlaceholder,
   filterOption,
   disabled,
+  listHeight,
+  showSelectAll,
 }: {
   title: ReactNode;
   items: TransferItem[];
@@ -71,6 +74,8 @@ function TransferPanel({
   searchPlaceholder: string;
   filterOption: (input: string, item: TransferItem) => boolean;
   disabled: boolean;
+  listHeight: number;
+  showSelectAll: boolean;
 }) {
   const filtered = search ? items.filter((it) => filterOption(search, it)) : items;
   const listItems: ListboxItemData[] = filtered.map((it) => ({
@@ -83,6 +88,16 @@ function TransferPanel({
   const selCount = selected.filter((k) => items.some((it) => it.key === k)).length;
   const titleStr = typeof title === "string" ? title : undefined;
 
+  // 全选只作用于「当前过滤结果里的可用项」——搜出 3 条时点全选不该把看不见的另外 200 条也勾上。
+  const selectableKeys = filtered.filter((it) => !it.disabled).map((it) => it.key);
+  const selectedSet = new Set(selected);
+  const allSelected = selectableKeys.length > 0 && selectableKeys.every((k) => selectedSet.has(k));
+  const someSelected = selectableKeys.some((k) => selectedSet.has(k));
+  const toggleAll = () => {
+    if (allSelected) onSelectionChange(selected.filter((k) => !selectableKeys.includes(k)));
+    else onSelectionChange([...new Set([...selected, ...selectableKeys])]);
+  };
+
   return (
     <div
       className={cn(
@@ -90,9 +105,20 @@ function TransferPanel({
         disabled && "opacity-60",
       )}
     >
-      <div className="flex items-center justify-between border-b border-border px-3 py-2 text-sm">
-        <span className="truncate font-medium text-foreground">{title}</span>
-        <span className="ml-2 shrink-0 text-xs text-muted">{selCount > 0 ? `${selCount}/${total}` : total}</span>
+      <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 text-sm">
+        <span className="flex min-w-0 items-center gap-2">
+          {showSelectAll && (
+            <Checkbox
+              checked={allSelected}
+              indeterminate={!allSelected && someSelected}
+              disabled={disabled || selectableKeys.length === 0}
+              onCheckedChange={toggleAll}
+              aria-label={titleStr ? `全选${titleStr}` : "全选"}
+            />
+          )}
+          <span className="truncate font-medium text-foreground">{title}</span>
+        </span>
+        <span className="shrink-0 text-xs text-muted">{selCount > 0 ? `${selCount}/${total}` : total}</span>
       </div>
       {searchable && (
         <div className="border-b border-border p-2">
@@ -118,7 +144,8 @@ function TransferPanel({
           selectedKeys={selected}
           onSelectionChange={onSelectionChange}
           disabledKeys={disabled ? items.map((it) => it.key) : []}
-          className="max-h-60 w-full flex-1 rounded-none border-0 bg-transparent"
+          className="w-full flex-1 overflow-auto rounded-none border-0 bg-transparent"
+          style={{ maxHeight: listHeight }}
           aria-label={titleStr}
         />
       ) : (
@@ -137,6 +164,8 @@ export function Transfer({
   searchable = false,
   searchPlaceholder = "搜索",
   filterOption = defaultFilter,
+  listHeight = 240,
+  showSelectAll = false,
   disabled = false,
   className,
 }: TransferProps) {
@@ -194,6 +223,8 @@ export function Transfer({
         searchPlaceholder={searchPlaceholder}
         filterOption={filterOption}
         disabled={disabled}
+        listHeight={listHeight}
+        showSelectAll={showSelectAll}
       />
       <div className="flex flex-col justify-center gap-2">
         <MoveButton dir="all-right" onClick={() => moveRight(leftEnabled)} disabled={disabled || leftEnabled.length === 0} />
@@ -212,6 +243,8 @@ export function Transfer({
         searchPlaceholder={searchPlaceholder}
         filterOption={filterOption}
         disabled={disabled}
+        listHeight={listHeight}
+        showSelectAll={showSelectAll}
       />
     </div>
   );

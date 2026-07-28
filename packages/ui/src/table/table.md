@@ -39,6 +39,7 @@ import { Table } from "@hulianui/ui"
 | columnSizing | `ColumnSizingState` | — | 受控列宽态（列 id → 像素宽）；不传走内部非受控 |
 | onRowClick | `(row: TData, index: number) => void` | 关 | 行点击：整行 cursor-pointer + tabIndex=0 + 键盘 Enter/Space 可达（保持 row 语义）；行内交互元素冒泡隔离 |
 | rowHref | `(row: TData, index: number) => string \| undefined` | 关 | 声明式整行导航：返回 href 该行点击/Enter 整页跳转（cmd/ctrl+点击新开 tab），返回 undefined 该行不可点 |
+| onRowDoubleClick | `(row: TData, index: number) => void` | 关 | 行双击（后台列表「双击进编辑」的老习惯）。与 `onRowClick` 相互独立、可同传；行内交互元素同样冒泡隔离 |
 | enableRowSelection | `boolean \| ((row: Row<TData>) => boolean)` | 关 | 开行选择，自动前插复选框列（含全选）；函数可限定可选行 |
 | rowSelection | `RowSelectionState` | — | 受控选择态 |
 | getRowCanExpand | `(row: Row<TData>) => boolean` | — | 限定可展开行 |
@@ -145,6 +146,7 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。
 - 排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。
 - `rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。
+- `onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。
 - 行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。
 - 行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。
 - 拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。

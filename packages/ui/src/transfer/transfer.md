@@ -31,6 +31,8 @@ import { Transfer } from "@hulianui/ui"
 | searchable | `boolean` | `false` | 每个面板顶部显示搜索框 |
 | searchPlaceholder | `string` | `"搜索"` | 搜索框占位符 |
 | filterOption | `(input: string, item: TransferItem) => boolean` | label 包含匹配 | 自定义过滤（默认大小写不敏感子串） |
+| listHeight | `number` | `240` | 面板列表区最大高度（px）。几百节点的权限/部门数据下把它调大，否则面板挤成一条缝 |
+| showSelectAll | `boolean` | `false` | 面板标题栏显示全选复选框（只作用于**当前过滤结果里的可用项**） |
 | disabled | `boolean` | `false` | 整体禁用（两侧列表与移动按钮全失效） |
 | className | `string` | — | 容器类名 |
 
@@ -62,7 +64,8 @@ const [target, setTarget] = useState<string[]>(["dashboard", "orders"]);
 
 - `onChange` 首参就是移动后的完整目标键集合，直接 `setTarget` 即可（无需自己合并 `movedKeys`）；后两参 `direction`/`movedKeys` 用于审计/差量提示。
 - `disabled` 的 item 不可勾选、也**不随「全部移入/移出」按钮移动**——设计如此，用于冻结历史项。
-- 暂无其它已知坑。
+- `showSelectAll` 的全选**只覆盖当前过滤结果里的可用项**：搜出 3 条时点全选，不会把被过滤掉的另外 200 条也勾上。清空搜索后再点一次才是全量。
+- 面板列表尚无虚拟滚动，上千节点时靠 `listHeight` + 滚动扛。真到万级请先在数据层分组/懒加载。
 
 ## 相关
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../_mui/rating.md)

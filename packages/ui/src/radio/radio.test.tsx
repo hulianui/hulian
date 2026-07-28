@@ -71,4 +71,28 @@ describe("RadioGroup / Radio", () => {
     expect(container.querySelector("[data-invalid]")).toBeTruthy();
     expect(getByText("请选择一项")).toBeTruthy();
   });
+
+  // 无 label 用法（图标卡片、自定义排版）此前完全拿不到无障碍名
+  it("无 label 时 aria-label 落到 role=radio 上，按名字取得到", () => {
+    const { getByRole } = render(
+      <RadioGroup aria-label="套餐">
+        <Radio value="basic" aria-label="基础版" />
+        <Radio value="pro" aria-label="专业版" />
+      </RadioGroup>,
+    );
+    expect(getByRole("radio", { name: "专业版" })).toBeTruthy();
+  });
+
+  it("aria-labelledby / aria-describedby 透传", () => {
+    const { container } = render(
+      <RadioGroup aria-label="g">
+        <span id="n1">方案一</span>
+        <span id="d1">每月 9 元</span>
+        <Radio value="a" aria-labelledby="n1" aria-describedby="d1" />
+      </RadioGroup>,
+    );
+    const radio = container.querySelector('[role="radio"]')!;
+    expect(radio.getAttribute("aria-labelledby")).toBe("n1");
+    expect(radio.getAttribute("aria-describedby")).toBe("d1");
+  });
 });

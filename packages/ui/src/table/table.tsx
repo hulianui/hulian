@@ -255,6 +255,45 @@ function guardRowListeners(listeners: DraggableSyntheticListeners): DraggableSyn
   return guarded as DraggableSyntheticListeners;
 }
 
+/**
+ * DndContext 宿主。sensors 的 hook 收在这里、而非 Table 本体，是为了让**不开 rowDraggable
+ * 的消费方一个 dnd-kit hook 都不执行**——此前 `useSensors` 写在 Table 顶层（hook 不可条件调用），
+ * 于是任何用了 Table 的下游都会拉起整条 dnd-kit 运行时；下游 vitest 里 @dnd-kit 无 exports 字段、
+ * 只有 legacy main/module，解析出第二份 React 后整页崩，而栈顶在 dnd-kit 内部、极难归因。
+ * 组件不是 hook，声明在这里零成本；只有 dragEnabled 时才挂载。
+ */
+function RowDndProvider({
+  onDragStart,
+  onDragOver,
+  onDragEnd,
+  onDragCancel,
+  children,
+}: {
+  onDragStart: (e: DragStartEvent) => void;
+  onDragOver: (e: DragOverEvent) => void;
+  onDragEnd: (e: DragEndEvent) => void;
+  onDragCancel: () => void;
+  children: React.ReactNode;
+}) {
+  // 指针通道设 6px 距离阈值（不吞掉行点击 / 行内按钮的 click）+ 键盘通道（Space 抓起 · 方向键移动 · Space 放下）。
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+      onDragCancel={onDragCancel}
+    >
+      {children}
+    </DndContext>
+  );
+}
+
 /** 单行的 useSortable 宿主：hook 必须按行独立调用，故拆成组件 + render prop（不产出额外 DOM）。 */
 function DraggableRow({
   id,
@@ -352,6 +391,7 @@ export function Table<TData>({
   // 行点击 / 整行导航
   onRowClick,
   rowHref,
+  onRowDoubleClick,
   // 行选择
   enableRowSelection,
   rowSelection: rowSelectionProp,
@@ -546,12 +586,9 @@ export function Table<TData>({
     );
 
   // ── 行拖拽排序 ────────────────────────────────────────────────────────────
-  // 指针通道设 6px 距离阈值（不吞掉行点击 / 行内按钮的 click）+ 键盘通道（Space 抓起 · 方向键移动 · Space 放下）。
-  // sensors/rowIds/dragState 恒声明（hook 不可条件调用）；rowDraggable=false 时整段闲置、不渲染 DndContext。
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
+  // rowIds/dragState 恒声明（React hook 不可条件调用），但都是 React 自带 hook，与 dnd-kit 无关。
+  // dnd-kit 自己的 hook（useSensors/useSortable）全部收进 RowDndProvider / DraggableRow 两个
+  // 子组件，rowDraggable=false 时它们不挂载 → 一个 dnd-kit hook 都不执行。
   const rowIds = useMemo(() => rows.map((r) => r.id), [rows]);
   // 拖拽中的 active/over：只喂落点指示线，拖完即清。顺序始终由 data 决定，组件不偷存。
   const [dragState, setDragState] = useState<{ activeId: string; overId: string | null } | null>(
@@ -586,6 +623,12 @@ export function Table<TData>({
       if (href == null) return;
       if ("metaKey" in e && (e.metaKey || e.ctrlKey)) window.open(href, "_blank", "noopener");
       else window.location.assign(href);
+    };
+
+    // 点击/双击落在行内交互元素上时不触发行级动作（两者共用同一条隔离规则）。
+    const hitsRowInteractive = (e: React.MouseEvent<HTMLTableRowElement>) => {
+      const hit = (e.target as HTMLElement).closest(ROW_INTERACTIVE_SELECTOR);
+      return Boolean(hit && e.currentTarget.contains(hit));
     };
 
     // dragHandle="row" 时 activator（role/tabIndex/onKeyDown/onPointerDown…）落在 <tr> 自身；
@@ -624,9 +667,16 @@ export function Table<TData>({
         onClick={
           rowInteractive
             ? (e) => {
-                const hit = (e.target as HTMLElement).closest(ROW_INTERACTIVE_SELECTOR);
-                if (hit && e.currentTarget.contains(hit)) return;
+                if (hitsRowInteractive(e)) return;
                 activate(e);
+              }
+            : undefined
+        }
+        onDoubleClick={
+          onRowDoubleClick
+            ? (e) => {
+                if (hitsRowInteractive(e)) return;
+                onRowDoubleClick(row.original, index);
               }
             : undefined
         }
@@ -891,18 +941,17 @@ export function Table<TData>({
     </div>
   );
 
-  // 未开拖拽就不套 DndContext：不注册 sensor、不挂 document 级监听、不产出 a11y live region
+  // 未开拖拽就不挂 RowDndProvider：不执行 dnd-kit 的 hook、不注册 sensor、
+  // 不挂 document 级监听、不产出 a11y live region
   if (!dragEnabled) return shell;
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
+    <RowDndProvider
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       onDragCancel={() => setDragState(null)}
     >
       {shell}
-    </DndContext>
+    </RowDndProvider>
   );
 }

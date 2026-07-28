@@ -30,6 +30,7 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
 | disabled | `boolean` | `false` | 禁用 |
+| ref | `Ref<HTMLInputElement>` | — | 转发到**内层原生 `<input>`**（不是外壳 span）。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它 |
 
 ## Events
 

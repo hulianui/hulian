@@ -44,6 +44,9 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 单项禁用 |
 | id | `string` | — | — |
 | className | `string` | — | 落在 Radio.Root |
+| aria-label | `string` | — | 无障碍名。**不给 `label`、或 `label` 是图标/纯视觉内容时必须给** |
+| aria-labelledby | `string` | — | 用页面上已有元素充当名字（填其 id），与 `aria-label` 二选一 |
+| aria-describedby | `string` | — | 补充描述（填元素 id），如该选项的说明文字 |
 
 ## Events
 
@@ -90,6 +93,7 @@ const [value, setValue] = useState("standard");
 - 选中值统一由 `RadioGroup` 管，`Radio` 不自带选中态——别在 `Radio` 上找 `checked`。
 - 用 `value`/`onValueChange` 即受控，须自管 state；只给初值用 `defaultValue`，二者不要混用。
 - 无可见标题的单选组要给 `aria-label`，否则无障碍读屏无名。
+- **不给 `label` 的 `Radio`（图标卡片、自定义排版）必须自带 `aria-label` 或 `aria-labelledby`**，否则读屏只报「单选按钮」，用户不知道自己在选哪一项——这不只是测试不好写，是真实的可访问性缺陷。`label` 传的是图标之类的非文本 `ReactNode` 时同理。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Switch](../switch/switch.md)

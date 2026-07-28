@@ -85,4 +85,52 @@ describe("Transfer", () => {
     // 受控未回填 targetKeys → 右面板仍空（仅左 listbox）
     expect(queryAllByRole("listbox")).toHaveLength(1);
   });
+
+  describe("listHeight / showSelectAll", () => {
+    it("listHeight 落成列表的 maxHeight（默认 240）", () => {
+      const a = render(<Transfer dataSource={items} />);
+      expect((a.getAllByRole("listbox")[0] as HTMLElement).style.maxHeight).toBe("240px");
+      a.unmount();
+      const b = render(<Transfer dataSource={items} listHeight={520} />);
+      expect((b.getAllByRole("listbox")[0] as HTMLElement).style.maxHeight).toBe("520px");
+    });
+
+    it("不开 showSelectAll 时标题栏没有全选框", () => {
+      const { queryByLabelText } = render(<Transfer dataSource={items} titles={["左", "右"]} />);
+      expect(queryByLabelText("全选左")).toBeNull();
+    });
+
+    it("全选勾上当前面板的全部可用项（跳过 disabled 的 Banana）", () => {
+      const onChange = vi.fn();
+      const { getByLabelText } = render(
+        <Transfer dataSource={items} titles={["左", "右"]} showSelectAll onChange={onChange} />,
+      );
+      fireEvent.click(getByLabelText("全选左"));
+      fireEvent.click(getByLabelText("移入选中"));
+      expect(onChange).toHaveBeenCalledWith(["a", "c"], "right", ["a", "c"]);
+    });
+
+    it("再点一次全选 → 取消全选，「移入选中」重新禁用", () => {
+      const { getByLabelText } = render(
+        <Transfer dataSource={items} titles={["左", "右"]} showSelectAll />,
+      );
+      const all = getByLabelText("全选左");
+      fireEvent.click(all);
+      expect(getByLabelText("移入选中").hasAttribute("disabled")).toBe(false);
+      fireEvent.click(all);
+      expect(getByLabelText("移入选中").hasAttribute("disabled")).toBe(true);
+    });
+
+    it("搜索后全选只作用于命中项，不碰被过滤掉的", () => {
+      const onChange = vi.fn();
+      const { getByLabelText, getAllByRole } = render(
+        <Transfer dataSource={items} titles={["左", "右"]} showSelectAll searchable onChange={onChange} />,
+      );
+      // 搜 Apple → 左面板只剩它；Cherry 虽同为可用项但已被过滤掉
+      fireEvent.change(getAllByRole("textbox")[0], { target: { value: "Apple" } });
+      fireEvent.click(getByLabelText("全选左"));
+      fireEvent.click(getByLabelText("移入选中"));
+      expect(onChange).toHaveBeenCalledWith(["a"], "right", ["a"]);
+    });
+  });
 });

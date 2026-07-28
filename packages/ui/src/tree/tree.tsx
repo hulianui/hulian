@@ -11,6 +11,7 @@ import {
   filterTree,
   flattenVisible,
   getCheckState,
+  nodeSearchText,
   normalizeCheckedToLeaves,
   toggleChecked,
   type FlatRow,
@@ -33,12 +34,16 @@ export function Tree({
   checkedKeys,
   defaultCheckedKeys = [],
   onCheck,
+  expandTrigger = "row",
   showLine = false,
   searchable = false,
   searchPlaceholder = "搜索",
   className,
   "aria-label": ariaLabel = "树",
 }: TreeProps) {
+  // "row"：有子节点的行点了只展开（历史默认）。"icon"：只有箭头管展开，行归 select/check，
+  // 于是父节点也能被选中。
+  const rowClickExpands = expandTrigger === "row";
   const reduced = useReducedMotion();
   const index = useMemo(() => buildIndex(nodes), [nodes]);
 
@@ -108,23 +113,41 @@ export function Tree({
     itemRefs.current.get(key)?.focus();
   };
 
-  const activate = (row: FlatRow) => {
-    if (row.disabled) return;
-    if (row.hasChildren) {
-      toggleExpand(row.key, !row.expanded);
-    } else if (checkable) {
-      onToggleCheck(row.key);
-    } else if (selectable) {
-      setSelected(row.key);
+  // 行动作（点击 / Enter / Space 共用一条）。
+  // disabled 只挡 select/check，不挡展开——「不可选」不等于「不可浏览子树」，
+  // 此前禁用节点连箭头都点不动，子树彻底不可达。
+  const activateRow = (opts: {
+    key: string;
+    disabled: boolean;
+    hasChildren: boolean;
+    expanded: boolean;
+    /** 搜索平铺态：展开由命中路径自动驱动，点击一律走 select/check。 */
+    flatSearch?: boolean;
+  }) => {
+    const canExpandByRow = opts.hasChildren && rowClickExpands && !opts.flatSearch;
+    if (canExpandByRow) {
+      toggleExpand(opts.key, !opts.expanded);
+      return;
     }
+    if (opts.disabled) return;
+    if (checkable) onToggleCheck(opts.key);
+    else if (selectable) setSelected(opts.key);
   };
+
+  const activate = (row: FlatRow) =>
+    activateRow({
+      key: row.key,
+      disabled: row.disabled,
+      hasChildren: row.hasChildren,
+      expanded: row.expanded,
+      flatSearch: searching,
+    });
 
   const typeahead = (char: string, from: number) => {
     const c = char.toLowerCase();
-    const text = (r: FlatRow) => (typeof r.node.label === "string" ? r.node.label : r.key).toLowerCase();
     for (let n = 1; n <= flat.length; n++) {
       const i = (from + n) % flat.length;
-      if (!flat[i].disabled && text(flat[i]).startsWith(c)) return i;
+      if (!flat[i].disabled && nodeSearchText(flat[i].node).startsWith(c)) return i;
     }
     return -1;
   };
@@ -226,24 +249,43 @@ export function Tree({
             tabIndex={isActive && !node.disabled ? 0 : -1}
             onFocus={() => setActiveKey(node.key)}
             onClick={() => {
-              if (node.disabled) return;
-              setActiveKey(node.key);
-              if (hasChildren) toggleExpand(node.key, !isExpanded);
-              else if (checkable) onToggleCheck(node.key);
-              else if (selectable) setSelected(node.key);
+              if (!node.disabled) setActiveKey(node.key);
+              activateRow({
+                key: node.key,
+                disabled: Boolean(node.disabled),
+                hasChildren,
+                expanded: isExpanded,
+              });
             }}
             style={{ paddingLeft: `calc(0.5rem + ${depth} * 1.25rem)` }}
             data-selected={!checkable && isSelected ? "" : undefined}
             className={cn(
               "group/row relative flex items-center gap-1.5 rounded-md py-1.5 pr-2 text-sm outline-none transition-colors",
-              "text-foreground hover:bg-surface-hover",
+              "text-foreground",
               "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
               !checkable && "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
-              "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+              // 禁用行不再 pointer-events-none：它会连箭头一起废掉，子树彻底不可达。
+              // 拦截改由 activateRow 内部做，这里只表达视觉。
+              node.disabled ? "cursor-default opacity-50" : "hover:bg-surface-hover",
               showLine && "tree-line",
             )}
           >
-            <span className="flex size-4 shrink-0 items-center justify-center text-muted">
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- 箭头是鼠标可供性，
+                键盘走方向键；treeitem 内不放可聚焦子元素（ARIA tree pattern 不允许）。 */}
+            <span
+              className={cn(
+                "flex size-4 shrink-0 items-center justify-center text-muted",
+                hasChildren && !rowClickExpands && "cursor-pointer hover:text-foreground",
+              )}
+              onClick={
+                hasChildren && !rowClickExpands
+                  ? (e) => {
+                      e.stopPropagation(); // 别让行的 select 也跟着跑
+                      toggleExpand(node.key, !isExpanded);
+                    }
+                  : undefined
+              }
+            >
               {hasChildren ? (
                 <svg
                   aria-hidden
@@ -307,6 +349,7 @@ export function Tree({
             }}
             aria-level={row.depth + 1}
             aria-expanded={hasChildren ? row.expanded : undefined}
+            aria-selected={!checkable && selectedSet.has(node.key) ? true : undefined}
             aria-checked={
               checkable ? (checkState === "indeterminate" ? "mixed" : checkState === "checked") : undefined
             }
@@ -316,16 +359,24 @@ export function Tree({
             onClick={() => {
               if (node.disabled) return;
               setActiveKey(node.key);
-              if (hasChildren) toggleExpand(node.key, !row.expanded);
-              else if (checkable) onToggleCheck(node.key);
-              else if (selectable) setSelected(node.key);
+              // 搜索平铺态：展开由命中路径自动驱动，点击一律走 select/check，
+              // 父节点在这里同样可选（此前点父节点是切一个当下被忽略的 expanded 位，即毫无反应）。
+              activateRow({
+                key: node.key,
+                disabled: Boolean(node.disabled),
+                hasChildren,
+                expanded: row.expanded,
+                flatSearch: true,
+              });
             }}
             style={{ paddingLeft: `calc(0.5rem + ${row.depth} * 1.25rem)` }}
+            data-selected={!checkable && selectedSet.has(node.key) ? "" : undefined}
             className={cn(
               "flex items-center gap-1.5 rounded-md py-1.5 pr-2 text-sm outline-none transition-colors",
-              "text-foreground hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+              "text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
               matchedKeys.has(node.key) && "font-medium text-primary",
-              "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+              !checkable && "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
+              node.disabled ? "cursor-default opacity-50" : "hover:bg-surface-hover",
             )}
           >
             <span className="size-4 shrink-0" aria-hidden />

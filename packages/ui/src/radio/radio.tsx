@@ -39,9 +39,17 @@ const dotClass = cn(
   "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
 );
 
-export function Radio({ value, disabled, label, id, className }: RadioProps) {
+export function Radio({ value, disabled, label, id, className, ...a11y }: RadioProps) {
   const dot = (
-    <BaseRadio.Root value={value} disabled={disabled} id={id} className={cn(dotClass, className)}>
+    // a11y（aria-label / aria-labelledby / aria-describedby）必须落到 Root：它才是 role=radio 的宿主。
+    // 无 label 用法此前完全拿不到无障碍名 —— 读屏只报「单选按钮」，不知道选的是哪一项。
+    <BaseRadio.Root
+      value={value}
+      disabled={disabled}
+      id={id}
+      {...a11y}
+      className={cn(dotClass, className)}
+    >
       <BaseRadio.Indicator data-icon="dot" className="size-2.5 rounded-full bg-primary" />
     </BaseRadio.Root>
   );

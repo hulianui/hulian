@@ -78,15 +78,31 @@ function PagerButton({
 export function Pagination({
   page,
   total,
+  totalItems,
+  pageSize = 10,
   onPageChange,
   siblingCount = 1,
   showFirstLast = false,
+  showTotal = false,
+  showQuickJumper = false,
   disabled = false,
   className,
   "aria-label": ariaLabel = "pagination",
   ...props
 }: PaginationProps) {
-  const totalPages = Math.max(1, Math.trunc(total));
+  // 页数真源：total（页数）优先，其次由 totalItems/pageSize 算。
+  // 两条路并存是为了兼容既有调用方 —— `total` 一开始就被定义成「总页数」，而几乎所有后端回的
+  // 是总条数，于是每个消费方都在调用处补一次 Math.ceil。语义修正留到 1.0 主版本一次性做。
+  const totalPages = (() => {
+    if (total != null) return Math.max(1, Math.trunc(total));
+    if (totalItems != null) return Math.max(1, Math.ceil(Math.max(0, totalItems) / Math.max(1, pageSize)));
+    return 1;
+  })();
+  if (process.env.NODE_ENV !== "production" && total != null && totalItems != null) {
+    console.warn(
+      "[hulian] Pagination 同时收到 total（总页数）与 totalItems（总条数），以 total 为准。二者只该给一个。",
+    );
+  }
   const current = Math.min(Math.max(Math.trunc(page), 1), totalPages);
   const items = getPaginationRange({ page: current, total: totalPages, siblingCount });
 
@@ -128,6 +144,24 @@ export function Pagination({
   const atFirst = current <= 1;
   const atLast = current >= totalPages;
 
+  // 「共 N 条」：只有拿到总条数才算得出，只给 total（页数）时静默不渲染。
+  const totalNode = (() => {
+    if (!showTotal || totalItems == null) return null;
+    const from = totalItems === 0 ? 0 : (current - 1) * pageSize + 1;
+    const to = Math.min(current * pageSize, totalItems);
+    if (typeof showTotal === "function") return showTotal(totalItems, [from, to]);
+    return `共 ${totalItems} 条`;
+  })();
+
+  // 快捷跳转：受控草稿，回车/失焦才提交，不随敲键跳页。
+  const [jump, setJump] = useState("");
+  const submitJump = () => {
+    const n = Number.parseInt(jump, 10);
+    setJump("");
+    if (Number.isNaN(n)) return;
+    go(n);
+  };
+
   return (
     <nav
       ref={navRef}
@@ -147,6 +181,9 @@ export function Pagination({
         >
           {current}
         </span>
+      )}
+      {totalNode != null && (
+        <span className="relative z-10 mr-1 select-none whitespace-nowrap text-sm text-muted">{totalNode}</span>
       )}
       {showFirstLast && (
         <PagerButton aria-label="跳到首页" hasPill={hasPill} disabled={disabled || atFirst} onClick={() => go(1)}>
@@ -195,6 +232,28 @@ export function Pagination({
         <PagerButton aria-label="跳到末页" hasPill={hasPill} disabled={disabled || atLast} onClick={() => go(totalPages)}>
           <ChevronsRight className="size-4" aria-hidden />
         </PagerButton>
+      )}
+
+      {showQuickJumper && (
+        <span className="relative z-10 ml-1 inline-flex items-center gap-1.5 whitespace-nowrap text-sm text-muted">
+          跳至
+          <input
+            type="text"
+            inputMode="numeric"
+            aria-label="跳至第几页"
+            value={jump}
+            disabled={disabled}
+            onChange={(e) => setJump(e.target.value.replace(/\D/g, ""))}
+            onBlur={submitJump}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter") return;
+              e.preventDefault();
+              submitJump();
+            }}
+            className="h-9 w-12 rounded-[var(--radius)] border border-border bg-surface px-2 text-center text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+          />
+          页
+        </span>
       )}
     </nav>
   );

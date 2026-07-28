@@ -15,6 +15,7 @@ export function Listbox({
   disabledKeys = [],
   onAction,
   className,
+  style,
   "aria-label": ariaLabel = "选项列表",
 }: ListboxProps) {
   const isControlled = selectedKeys !== undefined;
@@ -116,6 +117,7 @@ export function Listbox({
         "flex max-h-72 w-56 flex-col gap-0.5 overflow-y-auto rounded-[var(--radius)] border border-border bg-surface p-1",
         className,
       )}
+      style={style}
     >
       {items.map((it, i) => {
         const disabled = isDisabled(it);

@@ -6,8 +6,15 @@ export interface TreeNode {
   key: string;
   label: ReactNode;
   children?: TreeNode[];
+  /** 只挡选中/勾选，不挡展开 —— 禁用节点的子树仍可浏览。 */
   disabled?: boolean;
   icon?: ReactNode;
+  /**
+   * 供搜索与首字母跳转使用的纯文本。
+   * label 是 ReactNode（带高亮片段、图标、徽标…）时**必须给**，否则匹配会退化成拿 `key` 去比，
+   * 用户按看得见的文字搜就搜不到。label 本身是字符串/数字时不必给。
+   */
+  searchText?: string;
 }
 
 /** 扁平化后的「可见行」，供 roving tabindex + 键盘 + 连接线渲染。 */
@@ -159,6 +166,18 @@ export function computeChecked(
   return { checkedKeys, halfCheckedKeys };
 }
 
+/**
+ * 节点的可搜索文本（已小写）。取值顺序：`searchText` → 字符串/数字 label → `key` 兜底。
+ * 搜索与键盘首字母跳转共用同一条口径，避免两处规则漂移。
+ */
+export function nodeSearchText(node: TreeNode): string {
+  if (typeof node.searchText === "string") return node.searchText.toLowerCase();
+  if (typeof node.label === "string" || typeof node.label === "number") {
+    return String(node.label).toLowerCase();
+  }
+  return node.key.toLowerCase();
+}
+
 export function filterTree(
   nodes: TreeNode[],
   query: string,
@@ -168,10 +187,7 @@ export function filterTree(
   const q = query.trim().toLowerCase();
   if (!q) return { matchedKeys, autoExpandKeys };
 
-  const labelText = (node: TreeNode): string =>
-    typeof node.label === "string" || typeof node.label === "number"
-      ? String(node.label).toLowerCase()
-      : node.key.toLowerCase();
+  const labelText = (node: TreeNode): string => nodeSearchText(node);
 
   const dfs = (list: TreeNode[], ancestors: string[]): boolean => {
     let anyMatch = false;

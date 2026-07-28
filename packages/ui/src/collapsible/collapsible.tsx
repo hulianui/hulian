@@ -25,7 +25,8 @@ export function CollapsibleTrigger({ className, children, ...props }: Collapsibl
     <BaseCollapsible.Trigger
       {...props}
       className={cn(
-        "group flex w-full items-center justify-between gap-3 rounded-[var(--radius)] px-3 py-2.5 text-left text-sm font-medium text-foreground outline-none transition-colors",
+        // min-h-11（44px）：Trigger 常配单行短文案，仅靠 py-2.5 只有 40px，低于触控目标推荐值。
+        "group flex min-h-11 w-full items-center justify-between gap-3 rounded-[var(--radius)] px-3 py-2.5 text-left text-sm font-medium text-foreground outline-none transition-colors",
         "hover:bg-surface-hover",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         "data-[disabled]:opacity-50 data-[disabled]:pointer-events-none",

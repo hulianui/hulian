@@ -1,8 +1,8 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { ThemeContext, type Theme, type ThemeSetting } from "./use-theme";
+import { ThemeContext, THEME_STORAGE_KEY, type Theme, type ThemeSetting } from "./use-theme";
 
-const STORAGE_KEY = "hulian-theme";
+const STORAGE_KEY = THEME_STORAGE_KEY;
 
 function systemTheme(): Theme {
   if (typeof window === "undefined") return "light";

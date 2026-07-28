@@ -280,6 +280,57 @@ describe("rowClassName（行级状态着色）", () => {
   });
 });
 
+describe("行双击（onRowDoubleClick）", () => {
+  it("默认不传：行上没有 dblclick 处理", () => {
+    const onRowDoubleClick = vi.fn();
+    const { container } = render(<Table columns={columns} data={data} />);
+    fireEvent.doubleClick(container.querySelectorAll("tbody tr")[0]);
+    expect(onRowDoubleClick).not.toHaveBeenCalled();
+  });
+
+  it("双击行 → 回调收到 (row, index)", () => {
+    const onRowDoubleClick = vi.fn();
+    const { container } = render(
+      <Table columns={columns} data={data} onRowDoubleClick={onRowDoubleClick} />,
+    );
+    fireEvent.doubleClick(container.querySelectorAll("tbody tr")[1].querySelectorAll("td")[0]);
+    expect(onRowDoubleClick).toHaveBeenCalledTimes(1);
+    expect(onRowDoubleClick).toHaveBeenCalledWith({ name: "Alice", age: 25 }, 1);
+  });
+
+  it("冒泡隔离：双击行内复选框不触发", () => {
+    const onRowDoubleClick = vi.fn();
+    const { getAllByRole } = render(
+      <Table
+        columns={columns}
+        data={data}
+        enableRowSelection
+        onRowDoubleClick={onRowDoubleClick}
+      />,
+    );
+    fireEvent.doubleClick(getAllByRole("checkbox", { name: "选择行" })[0]);
+    expect(onRowDoubleClick).not.toHaveBeenCalled();
+  });
+
+  it("与 onRowClick 相互独立，可同传", () => {
+    const onRowClick = vi.fn();
+    const onRowDoubleClick = vi.fn();
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        onRowClick={onRowClick}
+        onRowDoubleClick={onRowDoubleClick}
+      />,
+    );
+    const row = container.querySelectorAll("tbody tr")[0];
+    fireEvent.doubleClick(row);
+    expect(onRowDoubleClick).toHaveBeenCalledTimes(1);
+    // fireEvent.doubleClick 只派 dblclick，不模拟浏览器前置的两次 click
+    expect(onRowClick).not.toHaveBeenCalled();
+  });
+});
+
 describe("行点击（onRowClick）", () => {
   it("默认（不传）：行无 cursor-pointer、无 tabIndex、无点击响应", () => {
     const { container } = render(<Table columns={columns} data={data} />);

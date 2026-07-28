@@ -157,6 +157,13 @@ export interface TableProps<TData> {
    * 与 onRowClick 同传时 onRowClick 优先，不再执行导航。
    */
   rowHref?: (row: TData, index: number) => string | undefined;
+  /**
+   * 行双击回调（后台列表「双击进编辑」的老习惯）。与 onRowClick 相互独立、可同传：
+   * 双击时浏览器必然先派两次 click，所以 onRowClick 会先跑两次再跑这个 —— 两者都传时
+   * 请保证 onRowClick 的动作可重入、且不与双击语义冲突（典型是单击选中、双击编辑）。
+   * 行内交互元素上的双击同样不触发（复用行点击那套冒泡隔离）。
+   */
+  onRowDoubleClick?: (row: TData, index: number) => void;
 
   // —— 行选择（不传=关）——
   /** 开启行选择：自动前插复选框列（含表头全选）。可传布尔或 (row)=>boolean 限定可选行。 */

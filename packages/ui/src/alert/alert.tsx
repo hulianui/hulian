@@ -4,19 +4,23 @@ import type { AlertProps } from "./alert.types";
 
 // 纯皮肤（照 badge.tsx）：base 设布局；tone/variant 留空由 compound 填「底色/边框 + accent 文字色」。
 // accent 作用于 icon + title；description 显式 text-muted 覆盖（正文恒中性可读，不被 tone 染色）。
-// 五语气：neutral/info/success/warning/danger，各自 soft(浅底) 与 outline(描边) 两变体。
+// 语气：neutral/brand/success/warning/danger，各自 soft(浅底) 与 outline(描边) 两变体。
+// `info` 是 `brand` 的历史别名（本组件早于全库 tone 取值统一，先有 info 后有 brand），
+// 两者同配方、可互换；新代码请用 brand，与 Tag / Button / Badge 保持同一套取值。
 export const alertVariants = cva("flex w-full items-start gap-3 rounded-[var(--radius)] p-4", {
   variants: {
     variant: { soft: "", outline: "border" },
-    tone: { neutral: "", info: "", success: "", warning: "", danger: "" },
+    tone: { neutral: "", brand: "", info: "", success: "", warning: "", danger: "" },
   },
   compoundVariants: [
     { variant: "soft", tone: "neutral", class: "bg-surface-hover text-foreground" },
+    { variant: "soft", tone: "brand", class: "bg-primary/12 text-primary" },
     { variant: "soft", tone: "info", class: "bg-primary/12 text-primary" },
     { variant: "soft", tone: "success", class: "bg-success/12 text-success" },
     { variant: "soft", tone: "warning", class: "bg-warning/12 text-warning" },
     { variant: "soft", tone: "danger", class: "bg-danger/12 text-danger" },
     { variant: "outline", tone: "neutral", class: "border-border text-foreground" },
+    { variant: "outline", tone: "brand", class: "border-primary text-primary" },
     { variant: "outline", tone: "info", class: "border-primary text-primary" },
     { variant: "outline", tone: "success", class: "border-success text-success" },
     { variant: "outline", tone: "warning", class: "border-warning text-warning" },

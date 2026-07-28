@@ -112,3 +112,93 @@ describe("Pagination 组件", () => {
     expect(nav.getAttribute("aria-label")).toBe("翻页");
   });
 });
+
+// total（总页数）与后端普遍给的总条数反向，此前每个消费方都在调用处补一次 Math.ceil
+describe("totalItems / pageSize（总条数口径）", () => {
+  it("totalItems + pageSize 算出页数（向上取整）", () => {
+    const { getByLabelText, queryByLabelText } = render(
+      <Pagination page={1} totalItems={21} pageSize={10} onPageChange={() => {}} />,
+    );
+    expect(getByLabelText("第 3 页")).toBeTruthy();
+    expect(queryByLabelText("第 4 页")).toBeNull();
+  });
+
+  it("pageSize 缺省为 10", () => {
+    const { getByLabelText } = render(<Pagination page={1} totalItems={15} onPageChange={() => {}} />);
+    expect(getByLabelText("第 2 页")).toBeTruthy();
+  });
+
+  it("整除时不多出一页", () => {
+    const { queryByLabelText } = render(
+      <Pagination page={1} totalItems={20} pageSize={10} onPageChange={() => {}} />,
+    );
+    expect(queryByLabelText("第 3 页")).toBeNull();
+  });
+
+  it("0 条也至少 1 页，且末页按钮禁用", () => {
+    const { getByLabelText } = render(<Pagination page={1} totalItems={0} onPageChange={() => {}} />);
+    expect(getByLabelText("第 1 页")).toBeTruthy();
+    expect(getByLabelText("下一页").hasAttribute("disabled")).toBe(true);
+  });
+
+  it("两者同传时以 total（页数）为准，并在 dev 下告警", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { getByLabelText, queryByLabelText } = render(
+      <Pagination page={1} total={2} totalItems={999} onPageChange={() => {}} />,
+    );
+    expect(getByLabelText("第 2 页")).toBeTruthy();
+    expect(queryByLabelText("第 3 页")).toBeNull();
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+});
+
+describe("showTotal / showQuickJumper", () => {
+  it("showTotal 默认文案「共 N 条」", () => {
+    const { getByText } = render(
+      <Pagination page={1} totalItems={128} onPageChange={() => {}} showTotal />,
+    );
+    expect(getByText("共 128 条")).toBeTruthy();
+  });
+
+  it("showTotal 传函数拿到总条数与当前页区间", () => {
+    const { getByText } = render(
+      <Pagination
+        page={2}
+        totalItems={25}
+        pageSize={10}
+        onPageChange={() => {}}
+        showTotal={(t, [from, to]) => `${from}-${to} / ${t}`}
+      />,
+    );
+    expect(getByText("11-20 / 25")).toBeTruthy();
+  });
+
+  it("只给了 total（页数）时算不出条数 → showTotal 静默不渲染", () => {
+    const { container } = render(<Pagination page={1} total={5} onPageChange={() => {}} showTotal />);
+    expect(container.textContent).not.toContain("共");
+  });
+
+  it("快捷跳转：回车提交并夹紧到合法范围", () => {
+    const onPageChange = vi.fn();
+    const { getByLabelText } = render(
+      <Pagination page={1} totalItems={30} onPageChange={onPageChange} showQuickJumper />,
+    );
+    const input = getByLabelText("跳至第几页") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "99" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onPageChange).toHaveBeenCalledWith(3);
+    expect(input.value).toBe("");
+  });
+
+  it("快捷跳转只收数字，敲键期间不跳页", () => {
+    const onPageChange = vi.fn();
+    const { getByLabelText } = render(
+      <Pagination page={1} totalItems={30} onPageChange={onPageChange} showQuickJumper />,
+    );
+    const input = getByLabelText("跳至第几页") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "2a" } });
+    expect(input.value).toBe("2");
+    expect(onPageChange).not.toHaveBeenCalled();
+  });
+});

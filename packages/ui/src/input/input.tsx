@@ -1,6 +1,7 @@
 "use client";
 import { Input as BaseInput } from "@base-ui/react/input";
 import { cva } from "class-variance-authority";
+import { forwardRef } from "react";
 import { cn } from "../lib/cn";
 import type { InputProps } from "./input.types";
 
@@ -27,11 +28,17 @@ export const inputShellVariants = cva(
   },
 );
 
-export function Input({ className, size, invalid, prefix, suffix, ...props }: InputProps) {
+// ref 转发到真正的 <input>（不是外壳 span）：focus()/select()/取 .value、以及 react-hook-form
+// 的 register() 都指望拿到原生控件。此前不转发，消费方只能「受控值 + 包一层容器查询 DOM」绕。
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  { className, size, invalid, prefix, suffix, ...props },
+  ref,
+) {
   return (
     <span className={cn(inputShellVariants({ size }), className)}>
       {prefix != null && <span className="shrink-0 text-muted">{prefix}</span>}
       <BaseInput
+        ref={ref}
         {...props}
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
         className="w-full bg-transparent text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed"
@@ -39,4 +46,4 @@ export function Input({ className, size, invalid, prefix, suffix, ...props }: In
       {suffix != null && <span className="shrink-0 text-muted">{suffix}</span>}
     </span>
   );
-}
+});

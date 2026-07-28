@@ -27,7 +27,8 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 |------|------|------|------|
 | lines* | `LogLine[]` | — | 日志行（数据驱动） |
 | showTimestamp | `boolean` | `false` | 显示每行时间戳（渲染在行首） |
-| autoScroll | `boolean` | `true` | 新行自动贴底（流式日志刚需） |
+| autoScroll | `boolean` | `true` | 新行**黏底**跟随：只在用户本就停在底部时才滚。上滚看历史即暂停跟随，滚回底部自动恢复 |
+| maxLines | `number` | — | 只渲染最后 N 行（0 / 不传 = 不截）。长流护栏，截断只发生在渲染层，`lines` 原数组不动 |
 | wrap | `boolean` | `false` | 长行折行；false 时长行横向滚动 |
 | height | `number \| string` | `320` | 滚动区高度 |
 | className | `string` | — | 自定义类 |
@@ -57,7 +58,9 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 流式运行逻辑（计时/追加）留在消费侧，组件只负责按 `lines` 渲染并贴底——不要期待它自己产生日志。
-- `autoScroll` 默认开；用户手动上滚查看历史时仍会被新行拉回底部，需要保留滚动位置的场景请自行关掉。
+- `autoScroll` 是**黏底**不是强制贴底：用户上滚看历史时不会被新行拽回去，滚回底部自动恢复跟随。判定「已在底部」留了 8px 容差（亚像素与惯性滚动会让 `scrollTop` 差零点几，卡死等号会永远判 false）。完全不要自动滚动才关掉它。
+- 长流务必给 `maxLines`：一条跑几小时的构建流会把几万个 DOM 节点堆在页面里，滚动直接卡死。
+- 不解析 ANSI 转义序列。带颜色码的原始输出请在消费侧先剥掉，或自己拆成 `LogLine` 的 `level`。
 - `wrap=false`（默认）时超长行横向滚动而非折行；窄容器读全文须开 `wrap`。
 
 ## 相关

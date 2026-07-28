@@ -31,6 +31,7 @@ import { Link, linkVariants } from "@hulianui/ui"
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | 下划线显示策略 |
 | `external` | `boolean` | `false` | 外链：自动加 `target="_blank"` + `rel="noopener noreferrer"` + 尾随外链图标 |
 | `href` | `string` | — | 跳转地址（原生属性） |
+| `render` | `ReactElement` | — | 渲染为自定义元素，用来承载框架路由件（`next/link`、`react-router` 的 `Link`）。皮肤 class 与 Link 自身的 props 合并进该元素，`href` 由它自己带 |
 
 ## Events
 
@@ -49,12 +50,17 @@ import { Link, linkVariants } from "@hulianui/ui"
 <Link href="/docs">瑚琏文档</Link>
 <Link href="https://base-ui.com" external>Base UI 官网</Link>
 <Link href="#" underline="always" tone="danger">删除说明</Link>
+
+// 客户端路由：把框架的 Link 交给 render，href 写在它身上
+import NextLink from "next/link"
+<Link render={<NextLink href="/posts/1" />}>查看详情</Link>
 ```
 
 ## 禁忌 / 坑
 
 - 设了 `external` 就不必再手写 `target`/`rel`，组件已自动注入安全属性并补外链图标；手写反而可能与之冲突。
-- 这是原生 `<a>` 的薄包、RSC 友好，不做客户端路由拦截；接入 Next.js 路由需自行用 `<Link asChild>` 思路或包一层框架 Link（本组件未内置）。
+- **接客户端路由必须走 `render`，`href` 写在被 render 的那个元素上**。`<Link href="/a" render={<NextLink />}>` 这种写法里 `href` 落在瑚琏这层、传不到路由件，等于没接。
+- `render` 之外的写法（例如把路由件包在 Link 外面）会得到 `<a>` 套 `<a>`，是非法 DOM 且 React 会报 hydration 错。
 
 ## 相关
 [Command](../command/command.md) · [ContextMenu](../context-menu/context-menu.md) · [Toolbar](../toolbar/toolbar.md) · [Accordion](../accordion/accordion.md) · [Collapsible](../collapsible/collapsible.md) · [AnimatedThemeToggler](../animated-theme-toggler/animated-theme-toggler.md)

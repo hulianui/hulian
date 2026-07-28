@@ -79,4 +79,72 @@ describe("Tree", () => {
     fireEvent.click(boxes[1]); // 甲一
     expect(boxes[0].getAttribute("aria-checked")).toBe("mixed");
   });
+
+  // ── expandTrigger：默认 "row" 下有子节点的行永远选不中，"icon" 解开这条 ──
+  describe("expandTrigger", () => {
+    it('默认 "row"：点父节点只展开，不触发 onSelect', () => {
+      const onSelect = vi.fn();
+      render(<Tree nodes={NODES} onSelect={onSelect} aria-label="t" />);
+      const parent = screen.getByText("甲").closest('[role="treeitem"]')!;
+      fireEvent.click(parent);
+      expect(parent.getAttribute("aria-expanded")).toBe("true");
+      expect(onSelect).not.toHaveBeenCalled();
+    });
+
+    it('"icon"：点父节点行 → 选中它，展开态不变', () => {
+      const onSelect = vi.fn();
+      render(<Tree nodes={NODES} expandTrigger="icon" onSelect={onSelect} aria-label="t" />);
+      const parent = screen.getByText("甲").closest('[role="treeitem"]')!;
+      fireEvent.click(parent);
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect.mock.calls[0][0]).toEqual(["a"]);
+      expect(parent.getAttribute("aria-expanded")).toBe("false");
+      expect(parent.getAttribute("aria-selected")).toBe("true");
+    });
+
+    it('"icon"：点箭头只展开，不触发 onSelect', () => {
+      const onSelect = vi.fn();
+      const { container } = render(
+        <Tree nodes={NODES} expandTrigger="icon" onSelect={onSelect} aria-label="t" />,
+      );
+      const parent = screen.getByText("甲").closest('[role="treeitem"]')!;
+      // 箭头是行内第一个 span（size-4 占位/容器）
+      fireEvent.click(container.querySelector('[role="treeitem"] > span')!);
+      expect(parent.getAttribute("aria-expanded")).toBe("true");
+      expect(onSelect).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── disabled 只挡选中，不挡展开：此前禁用父节点的整棵子树彻底不可达 ──
+  it("disabled 父节点仍可展开，但不触发 onSelect", () => {
+    const onSelect = vi.fn();
+    const nodes: TreeNode[] = [
+      { key: "p", label: "禁用父", disabled: true, children: [{ key: "c", label: "子" }] },
+    ];
+    render(<Tree nodes={nodes} onSelect={onSelect} aria-label="t" />);
+    const parent = screen.getByText("禁用父").closest('[role="treeitem"]')!;
+    fireEvent.click(parent);
+    expect(parent.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByText("子")).toBeTruthy();
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  it("disabled 叶子点了什么都不发生", () => {
+    const onSelect = vi.fn();
+    render(<Tree nodes={[{ key: "x", label: "禁用叶", disabled: true }]} onSelect={onSelect} aria-label="t" />);
+    fireEvent.click(screen.getByText("禁用叶").closest('[role="treeitem"]')!);
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  // ── searchText：label 是 ReactNode 时，搜索此前退化成拿 key 去匹配 ──
+  it("label 为 ReactNode 时用 searchText 搜得到", () => {
+    const nodes: TreeNode[] = [
+      { key: "n-001", label: <b>研发中心</b>, searchText: "研发中心" },
+      { key: "n-002", label: <b>市场部</b>, searchText: "市场部" },
+    ];
+    render(<Tree nodes={nodes} searchable aria-label="t" />);
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "研发" } });
+    expect(screen.getByText("研发中心")).toBeTruthy();
+    expect(screen.queryByText("市场部")).toBeNull();
+  });
 });

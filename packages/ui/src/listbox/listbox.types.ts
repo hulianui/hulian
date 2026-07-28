@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 export interface ListboxItemData {
   /** 唯一键（选中/禁用/动作回调都用它）。 */
@@ -27,5 +27,7 @@ export interface ListboxProps {
   /** 任意项激活都触发（含 none 模式），用于命令式动作。 */
   onAction?: (key: string) => void;
   className?: string;
+  /** 行内样式，落在列表根元素。用于表达 Tailwind 类给不出的动态值（如运行时决定的 maxHeight）。 */
+  style?: CSSProperties;
   "aria-label"?: string;
 }
