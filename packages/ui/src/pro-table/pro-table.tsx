@@ -41,6 +41,20 @@ function toProSort(s: SortingState): ProTableSort | null {
   return { field: s[0].id, order: s[0].desc ? "desc" : "asc" };
 }
 
+const EMPTY_PARAMS: Record<string, unknown> = {};
+
+// params 浅比较（键集合 + Object.is 逐值）。undefined 视同 {}。
+// 只比第一层：这正是「内联对象字面量不触发重查、但嵌套对象换引用会触发」的边界。
+function shallowEqualParams(
+  a: Record<string, unknown> = EMPTY_PARAMS,
+  b: Record<string, unknown> = EMPTY_PARAMS,
+): boolean {
+  if (a === b) return true;
+  const ak = Object.keys(a);
+  if (ak.length !== Object.keys(b).length) return false;
+  return ak.every((k) => Object.prototype.hasOwnProperty.call(b, k) && Object.is(a[k], b[k]));
+}
+
 // ProTable = 列表页编排层。两种模式：
 //  · 展示模式（不传 request）：data/pagination/loading 由消费者控制（向后兼容旧用法）。
 //  · 托管模式（传 request）：ProTable 自管 page/pageSize/sort/filters/loading/data/选择，
@@ -60,9 +74,11 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     className,
     // 托管模式
     request,
+    params,
     onRequestError,
     paginationMode = "page",
     defaultPageSize = 10,
+    defaultSorting,
     pageSizeOptions,
     actionRef,
     batchActions,
@@ -100,7 +116,8 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(defaultPageSize);
   const [filters, setFilters] = useState<Record<string, unknown>>({});
-  const [sorting, setSorting] = useState<SortingState>([]);
+  // defaultSorting 只做首次挂载初值（非受控默认值语义），之后由用户点表头接管。
+  const [sorting, setSorting] = useState<SortingState>(defaultSorting ?? []);
   const [reloadKey, setReloadKey] = useState(0);
   const [fetched, setFetched] = useState<{
     data: TData[];
@@ -113,11 +130,31 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   // ref 持有错误回调：回调身份变化不应重发请求（effect 依赖里不放它）。
   const onRequestErrorRef = useRef(onRequestError);
   onRequestErrorRef.current = onRequestError;
+  // 防呆（不是可选优化）：request 同样只用 ref 持有最新引用，effect 依赖里不放它。
+  // 否则消费者写内联 `request={async (p) => …}`（每次 render 新身份）会让拉数 effect
+  // 每次 render 重跑 → setState → 再 render → 无限请求打爆服务端。
+  // 代价：换 request 函数本身不触发重查（改 params 或 actionRef.reload()）。
+  const requestRef = useRef(request);
+  requestRef.current = request;
   // cursor 模式游标栈：stack[i] = 第 i+1 页的入参 cursor（第 1 页恒为 null）。
   // 上一页 = 弹栈；filters/sort/pageSize 变化 = 重置为 [null]（旧游标钉死了
   // 签发时的排序/筛选语义，跨条件复用会拿到错页或被服务端 422）。
   const [cursorStack, setCursorStack] = useState<(string | null)[]>([null]);
   const resetCursor = () => setCursorStack([null]);
+
+  // —— params（固定查询参数）浅比较 ——
+  // 用「渲染期派生 state」而不是 useEffect：新 params 与 page=1 在同一次提交里生效，
+  // 拉数 effect 只跑一次；若放 effect 里 setPage 会先用旧页码发一次废请求再纠正。
+  // version 而不是 JSON.stringify 做 effect 依赖：浅比较不关心键序，值也可能不可序列化。
+  const [paramsState, setParamsState] = useState({ value: params, version: 0 });
+  if (!shallowEqualParams(paramsState.value, params)) {
+    setParamsState((s) => ({ value: params, version: s.version + 1 }));
+    if (managed) {
+      setPage(1); // 固定条件变了，旧页码的结果集已无意义
+      if (cursorMode) setCursorStack([null]);
+    }
+  }
+  const paramsVersion = paramsState.version;
 
   // 行选择：托管模式（或需要批量条）由本层持有，以便观测选中集合。
   const selfControlSelection = managed || batchActions != null;
@@ -134,19 +171,21 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
   // 托管模式拉数（竞态守卫：只接受最新一次 seq 的结果）。
   useEffect(() => {
-    if (!request) return;
+    const send = requestRef.current;
+    if (!send) return;
     const seq = ++reqSeq.current;
     setFetching(true);
-    const params: ProTableRequestParams = cursorMode
+    const reqParams: ProTableRequestParams = cursorMode
       ? {
           page: cursorStack.length,
           pageSize,
           sort: sortParam,
           filters,
+          params: params ?? EMPTY_PARAMS,
           cursor: cursorStack[cursorStack.length - 1],
         }
-      : { page, pageSize, sort: sortParam, filters };
-    request(params)
+      : { page, pageSize, sort: sortParam, filters, params: params ?? EMPTY_PARAMS };
+    send(reqParams)
       .then((res) => {
         if (seq !== reqSeq.current) return;
         setFetched({
@@ -166,9 +205,11 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
       .finally(() => {
         if (seq === reqSeq.current) setFetching(false);
       });
-    // filters 用 filtersKey 稳定依赖；sortParam 已 memo；cursor 栈用 cursorKey 稳定依赖。
+    // filters 用 filtersKey 稳定依赖；sortParam 已 memo；cursor 栈用 cursorKey 稳定依赖；
+    // params 用 paramsVersion（浅比较后自增）稳定依赖；request 走 requestRef 不进依赖，
+    // 只用 managed（有没有 request）驱动「展示模式 → 托管模式」的首拉。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [request, page, pageSize, sortParam, filtersKey, reloadKey, cursorKey]);
+  }, [managed, page, pageSize, sortParam, filtersKey, reloadKey, cursorKey, paramsVersion]);
 
   const clearSelection = () => setInternalSelection({});
   const doReload = () => {

@@ -281,6 +281,15 @@ export const Gauge = createIcon("gauge", [
   ["path", { d: "M3.34 19a10 10 0 1 1 17.32 0", key: "19p75a" }],
 ]);
 
+export const GripVertical = createIcon("grip-vertical", [
+  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
+  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
+  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
+  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
+  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
+  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }],
+]);
+
 export const Info = createIcon("info", [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["path", { d: "M12 16v-4", key: "1dtifu" }],

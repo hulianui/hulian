@@ -183,6 +183,50 @@ function Managed() {
   );
 }
 
+// defaultSorting + params：默认按月薪倒序；顶部部门切换是「固定查询参数」，
+// 变化即回第 1 页重查。注意 request 与 params 都是内联写的（不 useCallback / useMemo）——
+// request 由组件内部 ref 持有、params 走浅比较，都不会造成重复请求。
+function SortedWithParams() {
+  const [dept, setDept] = useState<string>(DEPTS[0]);
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted">部门（固定查询参数）</span>
+        {DEPTS.map((d) => (
+          <Button
+            key={d}
+            size="sm"
+            variant={d === dept ? "solid" : "outline"}
+            onClick={() => setDept(d)}
+          >
+            {d}
+          </Button>
+        ))}
+      </div>
+      <ProTable<Row>
+        title="默认按月薪倒序"
+        columns={columns}
+        defaultSorting={[{ id: "salary", desc: true }]}
+        params={{ dept }}
+        request={async (p) => {
+          const scope = String(p.params?.dept ?? "");
+          let rows = ALL.filter((r) => (scope ? r.dept === scope : true));
+          if (p.sort) {
+            const f = p.sort.field as keyof Row;
+            rows = [...rows].sort((a, b) => (a[f] < b[f] ? -1 : a[f] > b[f] ? 1 : 0));
+            if (p.sort.order === "desc") rows.reverse();
+          }
+          const start = (p.page - 1) * p.pageSize;
+          await new Promise((r) => setTimeout(r, 300));
+          return { data: rows.slice(start, start + p.pageSize), total: rows.length };
+        }}
+        defaultPageSize={5}
+        getRowId={(r) => String(r.id)}
+      />
+    </div>
+  );
+}
+
 // cursor 分页托管模式：request 入参带 cursor、返回 { data, nextCursor, hasMore }，
 // 底部为「上一页/下一页」按钮对（keyset 分页无 total）。此处用数组下标模拟服务端游标。
 function CursorManaged() {
@@ -237,6 +281,28 @@ export const proTableShowcase: ShowcaseSpec = {
       render: () => <Managed />,
     },
     {
+      title: "默认排序 + 固定查询参数",
+      description:
+        "defaultSorting 让首次 request 就带排序；params 是页面上下文钉死的条件，浅比较变化即回第 1 页重查。request/params 都可内联，不会重复请求。",
+      code: `<ProTable
+  title="默认按月薪倒序"
+  columns={columns}
+  defaultSorting={[{ id: "salary", desc: true }]}
+  params={{ dept }}
+  request={async (p) => {
+    const { rows, total } = await api.list({
+      page: p.page,
+      pageSize: p.pageSize,
+      sort: p.sort,
+      ...p.filters,
+      ...p.params,
+    });
+    return { data: rows, total };
+  }}
+/>`,
+      render: () => <SortedWithParams />,
+    },
+    {
       title: "cursor 分页",
       description: "paginationMode=\"cursor\"，request 返回 { data, nextCursor, hasMore }，底部为上一页/下一页。",
       code: `<ProTable
@@ -280,6 +346,7 @@ export const proTableShowcase: ShowcaseSpec = {
   controls: [],
   states: [
     { name: "托管模式（服务端 request + 批量）", render: () => <Managed /> },
+    { name: "默认排序 + 固定查询参数（defaultSorting / params）", render: () => <SortedWithParams /> },
     { name: "cursor 分页托管模式（上一页/下一页）", render: () => <CursorManaged /> },
     { name: "完整（查询区 + 工具栏 + 行选择 + 分页）", render: () => <Demo /> },
     { name: "精简（紧凑密度 · 无查询区）", render: () => <Minimal /> },

@@ -1381,6 +1381,31 @@
       }
     },
     {
+      "name": "color-field",
+      "type": "registry:ui",
+      "title": "ColorField",
+      "description": "颜色输入框 · 紧凑单行：色块(调起系统取色器) + 十六进制文本输入 + 短写自动展开(#abc→#aabbcc) + 草稿态支持手输",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { ColorField, normalizeHex, isHexColor } from \"@hulianui/ui\"",
+        "exports": [
+          "ColorField",
+          "normalizeHex",
+          "isHexColor"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/color-field/color-field.md",
+        "docLocal": "packages/ui/src/color-field/color-field.md",
+        "status": "enriched"
+      }
+    },
+    {
       "name": "colorpicker",
       "type": "registry:ui",
       "title": "ColorPicker",
@@ -2063,6 +2088,29 @@
       }
     },
     {
+      "name": "remote-select",
+      "type": "registry:ui",
+      "title": "RemoteSelect",
+      "description": "远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { RemoteSelect } from \"@hulianui/ui\"",
+        "exports": [
+          "RemoteSelect"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/remote-select/remote-select.md",
+        "docLocal": "packages/ui/src/remote-select/remote-select.md",
+        "status": "enriched"
+      }
+    },
+    {
       "name": "ripple-button",
       "type": "registry:ui",
       "title": "RippleButton",
@@ -2164,7 +2212,7 @@
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
-      "description": "下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label",
+      "description": "下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label + clearable / searchable / loading / 分组",
       "categories": [
         "forms"
       ],
@@ -2173,12 +2221,14 @@
         "class-variance-authority"
       ],
       "meta": {
-        "import": "import { Select, SelectTrigger, SelectContent, SelectItem } from \"@hulianui/ui\"",
+        "import": "import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGroupLabel } from \"@hulianui/ui\"",
         "exports": [
           "Select",
           "SelectTrigger",
           "SelectContent",
-          "SelectItem"
+          "SelectItem",
+          "SelectGroup",
+          "SelectGroupLabel"
         ],
         "group": "basic",
         "tags": [],
@@ -2445,16 +2495,23 @@
       "name": "upload",
       "type": "registry:ui",
       "title": "Upload",
-      "description": "文件上传 · 拖拽落区/按钮形态 + accept/maxSize 校验 + 受控文件列表(状态/进度)，零依赖自研只发 onSelect",
+      "description": "文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload",
       "categories": [
         "forms"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "@dnd-kit/core",
+        "@dnd-kit/sortable",
+        "@dnd-kit/utilities",
+        "lucide-react"
+      ],
       "meta": {
-        "import": "import { Upload, matchesAccept } from \"@hulianui/ui\"",
+        "import": "import { Upload, useUpload, matchesAccept, moveUploadFile } from \"@hulianui/ui\"",
         "exports": [
           "Upload",
-          "matchesAccept"
+          "useUpload",
+          "matchesAccept",
+          "moveUploadFile"
         ],
         "group": "advanced",
         "tags": [],
@@ -4324,11 +4381,14 @@
       "name": "table",
       "type": "registry:ui",
       "title": "Table",
-      "description": "表格 · TanStack headless + 列排序 + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 空态",
+      "description": "表格 · TanStack headless + 列排序 + 列几何(size/align/ellipsis/resizable·固定列 offset 自动重算) + 行点击/整行导航(onRowClick/rowHr…",
       "categories": [
         "data-display"
       ],
       "dependencies": [
+        "@dnd-kit/core",
+        "@dnd-kit/sortable",
+        "@dnd-kit/utilities",
         "@tanstack/react-table",
         "@tanstack/react-virtual"
       ],

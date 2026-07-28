@@ -48,6 +48,7 @@ export { codeBlockShowcase } from "./code-block/code-block.showcase";
 export { codeShowcase } from "./code/code.showcase";
 export { collapsibleShowcase } from "./collapsible/collapsible.showcase";
 export { colorPickerShowcase } from "./colorpicker/color-picker.showcase";
+export { colorFieldShowcase } from "./color-field/color-field.showcase";
 export { colorSwatchPickerShowcase } from "./color-swatch-picker/color-swatch-picker.showcase";
 export { comboboxShowcase } from "./combobox/combobox.showcase";
 export { commandShowcase } from "./command/command.showcase";
@@ -118,6 +119,7 @@ export { pulsatingButtonShowcase } from "./pulsating-button/pulsating-button.sho
 export { radioShowcase } from "./radio/radio.showcase";
 export { rainbowButtonShowcase } from "./rainbow-button/rainbow-button.showcase";
 export { ratingShowcase } from "./_mui/rating.showcase";
+export { remoteSelectShowcase } from "./remote-select/remote-select.showcase";
 export { resizableShowcase } from "./resizable/resizable.showcase";
 export { resultShowcase } from "./result/result.showcase";
 export { retroGridShowcase } from "./retro-grid/retro-grid.showcase";

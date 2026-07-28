@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, UIEventHandler } from "react";
 import type { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 
 export type ComboboxSize = "sm" | "md" | "lg";
@@ -62,6 +62,10 @@ export interface ComboboxContentProps {
   side?: "top" | "bottom";
   align?: "start" | "center" | "end";
   sideOffset?: number;
+  /** 列表滚动回调；`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用）。 */
+  onListScroll?: UIEventHandler<HTMLDivElement>;
+  /** 列表下方常驻页脚（加载中 / 计数 / 到底提示）。不参与列表滚动，故不会被新一页顶走。 */
+  footer?: ReactNode;
   className?: string;
 }
 

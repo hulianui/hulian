@@ -1,4 +1,5 @@
 import type { ReactNode, Ref } from "react";
+import type { SortingState } from "@tanstack/react-table";
 import type { TableProps } from "../table/table.types";
 import type { SearchFormProps } from "../search-form/search-form.types";
 
@@ -38,12 +39,21 @@ export interface ProTableSort {
 /** 托管分页协议：page=页码分页（默认）；cursor=游标分页（上一页/下一页导航，无 total）。 */
 export type ProTablePaginationMode = "page" | "cursor";
 
-/** 托管模式 request 入参：分页 + 排序 + 查询区筛选值。 */
+/** 托管模式 request 入参：分页 + 排序 + 查询区筛选值 + 固定查询参数。 */
 export interface ProTableRequestParams {
   page: number;
   pageSize: number;
   sort: ProTableSort | null;
+  /** 查询区（SearchForm）提交的筛选值。不含 params。 */
   filters: Record<string, unknown>;
+  /**
+   * 固定查询参数：原样透传 ProTable 的 `params` prop（未传时为 `{}`）。
+   * 刻意与 filters 分开：params 是页面上下文钉死的条件（如 `{ scopeId }`），
+   * 不受查询区重置影响，也不会被同名 filter 覆盖。request 里自行合并：
+   * `api.list({ ...p.filters, ...p.params })`。
+   * 类型上可选是为了向后兼容（旧代码可能手工构造本类型），运行时恒有值。
+   */
+  params?: Record<string, unknown>;
   /**
    * cursor 模式：本页入参游标（第 1 页恒为 null）。
    * page 模式不携带此字段（undefined）。
@@ -105,8 +115,23 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
    * 服务端受控数据源。提供则进入「托管模式」：ProTable 自管
    * page/pageSize/sort/filters/loading/data/选择 生命周期，按需调 request；
    * 此时忽略 data/pagination/loading props。不提供则维持现有展示模式。
+   *
+   * 内部以 ref 持有最新引用，**不进请求依赖**：即使消费者写内联箭头函数
+   * （每次 render 新身份）也不会自激死循环。代价是「换一个 request 函数」
+   * 本身不触发重查——要换数据源请改 params 或调 actionRef.reload()。
    */
   request?: (params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>;
+  /**
+   * 固定查询参数（托管模式）。与查询区 filters 并列传给 request 的 `params` 字段，
+   * 用于承载页面上下文钉死的条件（路由 id、外部筛选器、tab 值等）。
+   *
+   * 采用**浅比较**（键集合 + Object.is 逐值）：内容变化才回第 1 页重新 request，
+   * 只是引用变化（内联对象字面量）不会触发。因此可以直接写
+   * `params={{ scopeId }}`，无需 useMemo。
+   * 注意浅比较只看第一层——嵌套对象/数组请自己保持引用稳定，否则每次 render 都会重查。
+   * 展示模式忽略此项。
+   */
+  params?: Record<string, unknown>;
   /**
    * 托管模式分页协议。"page"（默认）：request 返回 `{ data, total }`，底部渲染
    * 总条数文案 + 数字分页。"cursor"：request 入参带 `cursor`、返回
@@ -124,6 +149,16 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
   onRequestError?: (error: unknown) => void;
   /** 托管模式初始每页条数。@default 10 */
   defaultPageSize?: number;
+  /**
+   * 托管模式初始排序（非受控默认值）。仅作内部排序 state 的 **首次挂载初值**，
+   * 之后由用户点表头接管；后续改这个 prop 不会回灌（同 defaultValue 家族语义）。
+   * 首次 request 即带上它，因此「默认按某列倒序」可直接表达：
+   * `defaultSorting={[{ id: "weight", desc: true }]}`。
+   *
+   * 不改变受控语义：展示模式仍由 `sorting` + `onSortingChange` 受控，此项不生效
+   * （展示模式的默认排序请直接传 `sorting`）。
+   */
+  defaultSorting?: SortingState;
   /**
    * 每页条数可选项（如 [10, 20, 50, 100]）。提供则在分页区渲染「每页条数」切换器：
    * 托管模式由 ProTable 自管 pageSize（切换后回到第 1 页并重新 request）；

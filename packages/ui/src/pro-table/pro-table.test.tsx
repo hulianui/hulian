@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, waitFor } from "@testing-library/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { ColumnDef } from "../table/table.types";
 import { ProTable } from "./pro-table";
 import type { ProTableActions, ProTableRequestParams } from "./pro-table.types";
@@ -335,6 +335,218 @@ describe("ProTable 托管模式", () => {
     );
     await waitFor(() => expect(onRequestError).toHaveBeenCalledWith(boom));
     await waitFor(() => expect(container.querySelector(".animate-spin")).toBeNull());
+  });
+});
+
+describe("ProTable 托管模式 · defaultSorting", () => {
+  const cols: ColumnDef<Row, any>[] = [
+    { accessorKey: "id", header: "工号" },
+    { accessorKey: "name", header: "姓名" },
+  ];
+
+  it("首次 request 即带上 defaultSorting（可表达「默认按某列倒序」）", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 2 }));
+    render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        defaultSorting={[{ id: "name", desc: true }]}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    expect(request.mock.calls[0][0]).toMatchObject({
+      page: 1,
+      sort: { field: "name", order: "desc" },
+    });
+  });
+
+  it("defaultSorting 只是初值：点表头仍可改排序", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 2 }));
+    const { getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        defaultSorting={[{ id: "name", desc: true }]}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    // 换列排序（首点方向由 TanStack 按列类型决定，这里只关心「初值没锁死」）
+    fireEvent.click(getByText("工号"));
+    await waitFor(() =>
+      expect(request.mock.calls.at(-1)![0].sort).toMatchObject({ field: "id" }),
+    );
+  });
+
+  it("不传 defaultSorting 时首次 sort 仍为 null（向后兼容）", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 2 }));
+    render(<ProTable<Row> columns={cols} request={request} getRowId={(r) => String(r.id)} />);
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    expect(request.mock.calls[0][0]).toMatchObject({ sort: null });
+  });
+
+  it("不破坏受控语义：展示模式下 sorting 受控值胜出，defaultSorting 不生效", () => {
+    const { container } = render(
+      <ProTable<Row>
+        columns={cols}
+        data={data}
+        sorting={[{ id: "name", desc: true }]}
+        onSortingChange={() => {}}
+        defaultSorting={[{ id: "id", desc: false }]}
+      />,
+    );
+    const sorted = container.querySelector('th[aria-sort="descending"]');
+    expect(sorted).toBeTruthy();
+    expect(sorted!.textContent).toContain("姓名");
+    // defaultSorting 指向的「工号」列不被标记为已排序
+    const ths = Array.from(container.querySelectorAll("th"));
+    const idTh = ths.find((th) => th.textContent?.includes("工号"))!;
+    expect(idTh.getAttribute("aria-sort")).toBe("none");
+  });
+});
+
+describe("ProTable 托管模式 · params 固定查询参数", () => {
+  const cols: ColumnDef<Row, any>[] = [
+    { accessorKey: "id", header: "工号" },
+    { accessorKey: "name", header: "姓名" },
+  ];
+
+  it("params 透传给 request（与 filters 并列，不混入 filters）", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 2 }));
+    render(
+      <ProTable<Row>
+        columns={cols}
+        request={request}
+        params={{ scopeId: 7 }}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    expect(request.mock.calls[0][0]).toMatchObject({ params: { scopeId: 7 }, filters: {} });
+    expect(request.mock.calls[0][0].filters).not.toHaveProperty("scopeId");
+  });
+
+  it("不传 params 时为空对象（向后兼容）", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 2 }));
+    render(<ProTable<Row> columns={cols} request={request} getRowId={(r) => String(r.id)} />);
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    expect(request.mock.calls[0][0].params).toEqual({});
+  });
+
+  it("params 内容变化：重新 request 且回到第 1 页", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 40 }));
+    function Host({ scopeId }: { scopeId: number }) {
+      return (
+        <ProTable<Row>
+          columns={cols}
+          request={request}
+          params={{ scopeId }}
+          getRowId={(r) => String(r.id)}
+        />
+      );
+    }
+    const { rerender, getByLabelText } = render(<Host scopeId={1} />);
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+
+    // 先翻到第 2 页
+    fireEvent.click(getByLabelText("第 2 页"));
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(2));
+    expect(request.mock.calls.at(-1)![0]).toMatchObject({ page: 2, params: { scopeId: 1 } });
+
+    rerender(<Host scopeId={2} />);
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(3));
+    expect(request.mock.calls.at(-1)![0]).toMatchObject({ page: 1, params: { scopeId: 2 } });
+    // 回第 1 页是同一次提交完成的：不应先用旧页码发一次废请求
+    expect(request.mock.calls.filter((c) => c[0].params?.scopeId === 2)).toHaveLength(1);
+  });
+
+  it("浅比较：内联新对象但内容相同不触发重查", async () => {
+    const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 2 }));
+    function Host() {
+      const [tick, setTick] = useState(0);
+      return (
+        <>
+          <button onClick={() => setTick((t) => t + 1)}>{`重渲染 ${tick}`}</button>
+          {/* 每次 render 都是新对象字面量，内容不变 */}
+          <ProTable<Row>
+            columns={cols}
+            request={request}
+            params={{ scopeId: 1, kind: "a" }}
+            getRowId={(r) => String(r.id)}
+          />
+        </>
+      );
+    }
+    const { getByText } = render(<Host />);
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    fireEvent.click(getByText("重渲染 0"));
+    fireEvent.click(getByText("重渲染 1"));
+    await waitFor(() => expect(getByText("重渲染 2")).toBeTruthy());
+    expect(request).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("ProTable 托管模式 · request 防呆", () => {
+  const cols: ColumnDef<Row, any>[] = [
+    { accessorKey: "id", header: "工号" },
+    { accessorKey: "name", header: "姓名" },
+  ];
+
+  it("内联 request（每次 render 新身份）不造成重复请求", async () => {
+    const spy = vi.fn();
+    function Host() {
+      const [tick, setTick] = useState(0);
+      return (
+        <>
+          <button onClick={() => setTick((t) => t + 1)}>{`重渲染 ${tick}`}</button>
+          <ProTable<Row>
+            columns={cols}
+            // 故意不包 useCallback：这正是会打爆服务端的写法
+            request={async (_p) => {
+              spy(_p);
+              return { data, total: 2 };
+            }}
+            getRowId={(r) => String(r.id)}
+          />
+        </>
+      );
+    }
+    const { getByText } = render(<Host />);
+    // 首次请求 resolve → setState → 重渲染 → 若 request 进依赖数组即自激死循环
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByText("重渲染 0"));
+    fireEvent.click(getByText("重渲染 1"));
+    await waitFor(() => expect(getByText("重渲染 2")).toBeTruthy());
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it("reload/翻页仍取到最新一版 request 闭包", async () => {
+    const seen: string[] = [];
+    function Host() {
+      const [scope, setScope] = useState("a");
+      return (
+        <>
+          <button onClick={() => setScope("b")}>切 scope</button>
+          <ProTable<Row>
+            columns={cols}
+            request={async () => {
+              seen.push(scope);
+              return { data, total: 2 };
+            }}
+            onReload={() => {}}
+            getRowId={(r) => String(r.id)}
+          />
+        </>
+      );
+    }
+    const { getByText, getByLabelText } = render(<Host />);
+    await waitFor(() => expect(seen).toEqual(["a"]));
+    fireEvent.click(getByText("切 scope"));
+    // 换 request 身份本身不重查（防呆的代价）
+    expect(seen).toEqual(["a"]);
+    fireEvent.click(getByLabelText("刷新"));
+    await waitFor(() => expect(seen).toEqual(["a", "b"]));
   });
 });
 

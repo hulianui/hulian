@@ -4,21 +4,23 @@ name: Select
 category: forms
 group: basic
 tags: []
-exports: [Select, SelectTrigger, SelectContent, SelectItem]
+exports: [Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGroupLabel]
 status: enriched
 ---
 
 # Select
 
-> 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label · forms/basic
+> 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label + clearable / searchable / loading / 分组 · forms/basic
 
 ## 何时用
 
-从一组固定选项里选一项或多项（选项较多、需要收纳成下拉）。多选传 `multiple`，受控值变 `string[]`，Trigger 平铺已选 label、超出折叠 +N。选项少且需全部可见用 [Radio](../radio/radio.md) 或 [CheckboxGroup](../checkbox-group/checkbox-group.md)（多选平铺）；带搜索/自动补全用 [Combobox](../combobox/combobox.md)；自由文本用 [Input](../input/input.md)。给 `items`（`{value,label}` 数组）让 Trigger 显示选中项 label 而非 raw value。
+从一组固定选项里选一项或多项（选项较多、需要收纳成下拉）。多选传 `multiple`，受控值变 `string[]`，Trigger 平铺已选 label、超出折叠 +N。选项少且需全部可见用 [Radio](../radio/radio.md) 或 [CheckboxGroup](../checkbox-group/checkbox-group.md)（多选平铺）；自由文本用 [Input](../input/input.md)。给 `items`（`{value,label}` 数组）让 Trigger 显示选中项 label 而非 raw value。
+
+对标 el-select 的 `clearable` / `filterable` 心智：本组件的 `clearable` 即前者，`searchable` 即后者（内部切到 [Combobox](../combobox/combobox.md) 的搜索皮肤，过滤逻辑直接复用 Base UI Combobox，不另造）。需要 chips 多选输入、异步远程补全、自由输入等更重的场景仍直接用 [Combobox](../combobox/combobox.md)。
 
 ## 导入
 ```ts
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGroupLabel } from "@hulianui/ui"
 ```
 
 ## Props
@@ -31,6 +33,18 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 | items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
 | placeholder | `ReactNode` | — | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
 | multiple | `boolean` | `false` | 多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开 |
+| clearable | `boolean` | `false` | 有值时 Trigger 右侧 hover/focus 浮出清除按钮，点击置空（单选回传 `null`，多选回传 `[]`） |
+| searchable | `boolean` | `false` | 切到 Combobox 搜索皮肤：浮层顶部搜索框 + Base UI 过滤（依赖 `items`） |
+| searchPlaceholder | `string` | `"搜索"` | searchable 时搜索框占位 |
+| emptyMessage | `ReactNode` | `"无匹配项"` | searchable 时无命中的空态文案 |
+| loading | `boolean` | `false` | 加载态：Trigger 图标换 Spinner，浮层只出加载占位（不渲染选项） |
+| loadingText | `ReactNode` | `"加载中"` | 加载占位文案 |
+
+### SelectGroup / SelectGroupLabel
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| children* | `ReactNode` | — | `SelectGroup` 内放一个 `SelectGroupLabel` + 若干 `SelectItem` |
+| className | `string` | — | 透传类名 |
 
 ### SelectTrigger
 | 名称 | 类型 | 默认 | 说明 |
@@ -66,8 +80,9 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| SelectContent.children* | `ReactNode` | 一组 `SelectItem` |
+| SelectContent.children* | `ReactNode` | 一组 `SelectItem`（可外套 `SelectGroup`） |
 | SelectItem.children* | `ReactNode` | 选项展示内容 |
+| SelectGroupLabel.children* | `ReactNode` | 分组标题 |
 
 ## 示例
 ```tsx
@@ -97,6 +112,44 @@ const [points, setPoints] = useState<string[]>([]);
     ))}
   </SelectContent>
 </Select>
+
+// 可清除 + 可搜索：对标 el-select 的 clearable / filterable
+<Select items={FONTS} placeholder="请选择字体" clearable searchable searchPlaceholder="搜索字体">
+  <SelectTrigger />
+  <SelectContent>
+    {FONTS.map((f) => (
+      <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
+// 加载态（异步拉选项）
+const { data, isLoading } = useFonts();
+
+<Select items={data ?? []} placeholder="请选择字体" loading={isLoading}>
+  <SelectTrigger />
+  <SelectContent>
+    {(data ?? []).map((f) => (
+      <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
+// 选项分组
+<Select items={FONTS} placeholder="请选择字体">
+  <SelectTrigger />
+  <SelectContent>
+    <SelectGroup>
+      <SelectGroupLabel>西文</SelectGroupLabel>
+      <SelectItem value="sans">无衬线 Sans</SelectItem>
+      <SelectItem value="serif">衬线 Serif</SelectItem>
+    </SelectGroup>
+    <SelectGroup>
+      <SelectGroupLabel>代码</SelectGroupLabel>
+      <SelectItem value="mono">等宽 Mono</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
 ```
 
 ## 禁忌 / 坑
@@ -104,6 +157,12 @@ const [points, setPoints] = useState<string[]>([]);
 - 占位文本通过 `Select` 的 `placeholder` prop 传，**不要**给 `Select.Value` 传 placeholder——见 [[base-ui-select-rc0-no-value-placeholder-prop-inject-null-item]]：本项目锁 Base UI rc.0，其 `Select.Value` 没有 placeholder prop（那是 v1.2+），瑚琏靠注入一个 `value:null` 的 items 项实现占位 label。`items` 与 `SelectItem` 的 value 要对应，否则 Trigger 显示 raw value 而非 label。
 - `multiple` 下 value 必须是数组：给 `defaultValue="a"`（字符串）会被当成无选中处理。多选模式不注入 null 占位项（数组值命不中 null 项），占位由 Trigger 内函数式 Value 渲染，因此**多选的 placeholder/label 解析依赖 `items` prop**——不传 items 时 Trigger 只能显示 raw value。
 - 多选 Trigger 的平铺条数由 `SelectTrigger` 的 `maxDisplay` 控制（默认 2），不在 `Select` 上。
+- `clearable` 会让组件接管 value（非受控时内部起受控镜像）——**受控用法不变**：外部不改 `value` 时点清除只回调不落值，符合受控语义。未开 `clearable` 时 value 归属与 DOM 结构与旧版逐字节一致（不加包裹层）。
+- 清除按钮是 `Trigger` 的**兄弟**节点（绝对定位盖在箭头位上），不是子节点——`<button>` 里嵌 `<button>` 是非法 HTML，且嵌套后点击会冒泡到 Trigger 顺手把浮层打开。常态 `hidden`，靠外层 `group-hover` / `group-focus-within` 浮出。
+- `searchable` 依赖 `items`：该皮肤下列表由 `items` 过滤结果驱动渲染（消费者写的 `SelectItem` 按 value 建索引后复用，自定义内容不丢；`items` 有而 `SelectItem` 没写的项兜底用 label 渲染）。**不传 `items` 就没有候选，浮层恒为空态。**
+- `searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要"搜索 + 分组"直接用 [Combobox](../combobox/combobox.md)。
+- `searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](../combobox/combobox.md) 自带 `filter`。
+- `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

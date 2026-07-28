@@ -26,6 +26,7 @@ export * from "./tooltip";
 export * from "./popover";
 export * from "./select";
 export * from "./combobox";
+export * from "./remote-select";
 export * from "./accordion";
 export * from "./collapsible";
 export * from "./segmented";
@@ -158,6 +159,7 @@ export * from "./markdown";
 export * from "./mentions";
 export * from "./command";
 export * from "./colorpicker";
+export * from "./color-field";
 export * from "./color-swatch-picker";
 // MagicUI 缺口收尾批（零依赖：纯 CSS/SVG/motion）
 export * from "./avatar-circles";

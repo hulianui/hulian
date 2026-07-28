@@ -60,6 +60,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | side | `"top"｜"bottom"` | — | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | — | 浮层对齐 |
 | sideOffset | `number` | — | 偏移 |
+| onListScroll | `UIEventHandler<HTMLDivElement>` | — | 列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](../remote-select/remote-select.md)） |
+| footer | `ReactNode` | — | 列表下方常驻页脚（加载中 / 计数 / 到底提示），不随列表滚动 |
 | className | `string` | — | — |
 
 `ComboboxItem`

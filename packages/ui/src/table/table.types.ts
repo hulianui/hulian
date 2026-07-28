@@ -5,6 +5,7 @@ import type {
   RowSelectionState,
   ExpandedState,
   ColumnFiltersState,
+  ColumnSizingState,
   OnChangeFn,
   Row,
   RowData,
@@ -17,9 +18,13 @@ export type {
   RowSelectionState,
   ExpandedState,
   ColumnFiltersState,
+  ColumnSizingState,
 } from "@tanstack/react-table";
 
-// 列 meta 增量（模块增强）：固定列 + 列内置筛选框。皆为可选，不写即关。
+/** 列内容水平对齐（对标 el-table-column 的 align / header-align）。 */
+export type TableColumnAlign = "left" | "center" | "right";
+
+// 列 meta 增量（模块增强）：固定列 / 筛选框 / 对齐 / 溢出省略。皆为可选，不写即关。
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -27,7 +32,60 @@ declare module "@tanstack/react-table" {
     sticky?: "left" | "right";
     /** 该列表头渲染内置文本筛选框（驱动 column.setFilterValue + getFilteredRowModel）。 */
     filterable?: boolean;
+    /** 单元格内容水平对齐；不写则沿用表格默认（左）。对标 el-table-column 的 `align`。 */
+    align?: TableColumnAlign;
+    /** 表头水平对齐；不写则跟随 `align`，两者都不写为左。对标 el-table-column 的 `header-align`。 */
+    headerAlign?: TableColumnAlign;
+    /**
+     * 单元格溢出省略号 + 悬停 Tooltip 显示全文（对标 el-table-column 的 `show-overflow-tooltip`）。
+     * 依赖该列有确定宽度：给显式 `size`（或 `maxSize`），或整表 `layout="fixed"`；
+     * 否则列会被内容撑开，省略号不会出现。
+     * Tooltip 全文取该列的**原始值**（string/number），非文本值只截断不挂浮层。
+     */
+    ellipsis?: boolean;
   }
+}
+
+/**
+ * 行拖拽落点（相对目标行）：
+ * · `"before"` —— 落在目标行之前（上移，对标 baTable 的 direction `"up"`）
+ * · `"after"`  —— 落在目标行之后（下移，对标 baTable 的 direction `"down"`）
+ */
+export type RowDropPosition = "before" | "after";
+
+/**
+ * 行拖拽结束事件。
+ *
+ * 刻意回传**相对位置语义**（activeId / overId / position）而非只回吐重排后的数组——
+ * 后端排序接口通常要 `{ move, target, order, direction }` 这种「把 move 挪到 target 的上/下」，
+ * 只给新数组无法还原这个语义。映射示例：
+ * ```ts
+ * api.sortable({
+ *   move: e.activeId,
+ *   target: e.overId,
+ *   order: filter.order,
+ *   direction: e.position === "after" ? "down" : "up",
+ * });
+ * ```
+ * 需要本地乐观更新的场景直接用 `nextData`（已按落点重排）。
+ */
+export interface RowDragEndEvent<TData> {
+  /** 被拖拽行的 id（由 getRowId 派生；未传 getRowId 时为行在 data 中的下标字符串） */
+  activeId: string;
+  /** 落点目标行的 id */
+  overId: string;
+  /** 被拖拽行在拖拽前的可见行序（table 渲染行数组下标；无排序/筛选时等同 data 下标） */
+  activeIndex: number;
+  /** 目标行在拖拽前的可见行序 */
+  overIndex: number;
+  /** 相对目标行的落点：overIndex > activeIndex（向下拖）= "after"，反之 = "before" */
+  position: RowDropPosition;
+  /** 被拖拽行的原始数据 */
+  activeRow: TData;
+  /** 目标行的原始数据 */
+  overRow: TData;
+  /** 已按落点重排的新 data 数组（本地乐观更新用；组件自身不改 data） */
+  nextData: TData[];
 }
 
 /** 虚拟滚动（可选·需 @tanstack/react-virtual）。仅推荐用于大数据平铺表，不建议与树形/明细面板同开。 */
@@ -64,6 +122,27 @@ export interface TableProps<TData> {
    */
   rowClassName?: (row: TData, index: number) => string | undefined;
   className?: string;
+
+  // —— 列几何（列宽 / 布局 / 拖拽调宽）——
+  /**
+   * 列宽布局模式：
+   * · `"auto"`（默认）—— `table-layout: auto`。**只有显式写了** `size` / `minSize` / `maxSize`
+   *   的列才落宽度样式，其余列按内容自适应（不写 size 的列绝不会被钉成 TanStack 的默认 150px）；
+   * · `"fixed"` —— `table-layout: fixed`，每列都按 `column.getSize()` 出实宽，
+   *   表格总宽 = `table.getTotalSize()`（不足容器时 `min-w-full` 兜底撑满）。
+   *
+   * 开启 `resizable` 时强制走 `"fixed"`（拖拽必须有确定宽度，否则手柄拖不动）。
+   */
+  layout?: "auto" | "fixed";
+  /**
+   * 列宽拖拽：表头右缘出拖拽手柄，实时改列宽（TanStack columnResizeMode="onChange"），
+   * 双击手柄复位该列。开启即切 `layout="fixed"`。
+   * 单列可用 `ColumnDef.enableResizing = false` 单独关闭；内建的选择列/展开器列恒不可拖。
+   */
+  resizable?: boolean;
+  /** 受控列宽态（列 id → 像素宽）；不传则内部非受控。 */
+  columnSizing?: ColumnSizingState;
+  onColumnSizingChange?: OnChangeFn<ColumnSizingState>;
 
   // —— 行点击 / 整行导航（不传=关）——
   /**
@@ -106,6 +185,26 @@ export interface TableProps<TData> {
   /** 受控列筛选态；不传则内部非受控。 */
   columnFilters?: ColumnFiltersState;
   onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
+
+  // —— 行拖拽排序（不传=关）——
+  /**
+   * 开启行拖拽排序（@dnd-kit·useSortable 挂在 `<tr>` 上 + verticalListSortingStrategy）。
+   * 组件**不改 data**——顺序由消费方按 onRowDragEnd 自行落库/重排（受控家风同 sorting/selection）。
+   */
+  rowDraggable?: boolean;
+  /**
+   * 拖拽把手：
+   * · `"cell"`（默认）—— 前插一列手柄，只有手柄可抓起，与行点击 / 行内控件零冲突；
+   * · `"row"` —— 整行任意位置可抓起（行内交互元素上已做冒泡隔离，点复选框/按钮不会起拖）。
+   */
+  dragHandle?: "row" | "cell";
+  /** 拖拽结束回调（落点未变 / 越界不触发）。回传相对位置语义，详见 RowDragEndEvent。 */
+  onRowDragEnd?: (event: RowDragEndEvent<TData>) => void;
+  /**
+   * 限定哪些行可拖：返回 false 则该行手柄禁用、既抓不起也不能作为落点。
+   * 树形子行（row.depth > 0）恒不可拖（跨层级拖拽语义未定义）。
+   */
+  getRowCanDrag?: (row: TData, index: number) => boolean;
 
   // —— 虚拟滚动（不传=关·可选依赖）——
   virtual?: VirtualOptions;

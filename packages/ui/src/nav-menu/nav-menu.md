@@ -28,7 +28,7 @@ import { NavMenu } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items* | `NavMenuNode[]` | — | 树形菜单数据 |
-| mode | `"inline" \| "collapsed"` | `"inline"` | inline=手风琴内联展开；collapsed=Sider 收起态图标 + 悬浮飞出子菜单 |
+| mode | `"inline" \| "collapsed"` | `"inline"` | inline=手风琴内联展开；collapsed=Sider 收起态图标 + 悬浮飞出子菜单（**两态都支持无限级**） |
 | selectedKeys | `string[]` | — | 选中态（受控） |
 | defaultSelectedKeys | `string[]` | — | 选中态（非受控初值） |
 | openKeys | `string[]` | — | 展开态（受控） |
@@ -71,6 +71,18 @@ function ConvoNav() {
 - 行尾操作放 `actions` 槽，组件会渲在 treeitem 按钮/链接【之外】（绝对覆盖行右侧）。**别把 `<button>` 等交互元素直接塞进 `label`**——嵌进 treeitem 按钮是非法 HTML，会触发 hydration 报错。`actions` 仅 inline 态生效。
 - 高度过渡用纯 CSS `grid-template-rows` 0fr→1fr，不靠 JS 测高，嵌套展开也不抖。参见 [[nested-collapsible-height-via-css-grid-rows-not-js-measure]]。
 - 选中/展开态可受控（`selectedKeys`/`openKeys` + 回调）或非受控（`default*`），勿混用同一维度。
+- collapsed 态飞出层是**无限级级联**（与 inline 能力对齐），整棵树 DOM 恒在、显隐纯 CSS 驱动：
+  `:hover` / `:focus-within` 逐层点亮。键盘走「级联菜单」语义——`→` 进子层、`←`/`Esc` 回父层、
+  `↑↓` 只在**同层兄弟**间移动、`Home/End` 落本层首尾；roving tabindex 贯穿全树（整棵树只有一个
+  tab 落点，深层靠方向键进出，**不要指望 Tab 逐项走进飞出层**）。
+- collapsed 的**第一层**飞出层用 `position: fixed` + JS 实测坐标，**刻意不是 `absolute`**：图标轨几乎
+  总被放进可滚动的侧栏容器（`AdminLayout` 用的就是 `ScrollArea`），`absolute` 面板会被那个祖先的
+  `overflow` 整块裁掉——面板在 DOM 里、有尺寸、`opacity:1`，但一个像素都画不出来，
+  `elementFromPoint` 打到的是内容区。第二层起仍是 `absolute`（祖先已是不裁剪的面板）。
+  代价：坐标靠挂载时实测 + `scroll`（捕获阶段）/ `resize` 时重算；把轨道放进**自定义滚动实现**
+  （不派发 scroll 事件的那种）时位置会失准。
+- `openKeys` 只作用于 inline 态；collapsed 的层级显隐由 hover/焦点驱动，不进 `openKeys`，也不发
+  `onOpenChange`。
 - SCAFFOLD 列的 menubar/SwiftUI/Tauri 原生菜单类坑均不适用本组件（它是纯 React WAI-ARIA tree，非系统托盘菜单）。
 
 ## 相关

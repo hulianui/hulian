@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.9.0 · 354 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.9.0 · 356 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -2950,6 +2950,77 @@ const [v, setV] = useState<string | string[]>("pro");
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# ColorField
+
+> 颜色输入框 · 紧凑单行：色块(调起系统取色器) + 十六进制文本输入 + 短写自动展开(#abc→#aabbcc) + 草稿态支持手输 · forms/advanced
+
+## 何时用
+
+表单里的**一行**颜色输入：主题配置表、设计 token 编辑器、图表配色项 —— 已知色值、偶尔微调的场景。
+
+需要完整取色面板（饱和度方块 + HEX/RGB/HSL 格式切换）用 [ColorPicker](https://hulianui.haloritual.com/components/colorpicker)；只从固定几个预设里挑用 [ColorSwatchPicker](https://hulianui.haloritual.com/components/color-swatch-picker)。ColorField 的定位是**不抢版面**，一行能塞进标签和说明文字旁边。
+
+## 导入
+```ts
+import { ColorField, normalizeHex, isHexColor } from "@hulianui/ui"
+```
+
+## Props
+
+继承原生 `<input>` 属性（`size`/`prefix`/`value`/`defaultValue`/`onChange`/`type` 已被覆盖）。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value | `string` | — | 受控值。接受 `#rgb` / `#rrggbb` / 无 `#` 写法，内部统一规范为小写 `#rrggbb` |
+| defaultValue | `string` | `"#3b82f6"` | 非受控初值 |
+| showSwatch | `boolean` | `true` | 左侧色块，点开调起系统取色器 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（与 Input 同一套外壳变体，色块随之缩放） |
+| invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动 |
+| disabled | `boolean` | `false` | 同时禁用文本框与取色器 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(hex: string) => void` | 值变化。参数**恒为规范化后的 `#rrggbb`**；输入不合法时不触发 |
+
+## 工具函数
+
+| 函数 | 签名 | 说明 |
+|------|------|------|
+| normalizeHex | `(input: string) => string \| null` | 规范化成小写 `#rrggbb`；不可解析返回 `null`（不抛错、不吐默认色） |
+| isHexColor | `(input: string) => boolean` | 是否可解析（3/6 位，`#` 可省） |
+
+两个纯函数单独导出：「哪些写法算合法颜色」消费方也要用（比如导入一份主题配置前先校验），不该只活在组件内部。
+
+## 示例
+```tsx
+const [hex, setHex] = useState("#38e8ff");
+<ColorField value={hex} onValueChange={setHex} className="w-40" aria-label="主色" />
+```
+
+配置表里一行一色：
+```tsx
+{THEME_KEYS.map((k) => (
+  <div key={k} className="flex items-center gap-3">
+    <span className="w-28 text-sm">{k}</span>
+    <ColorField value={theme[k]} onValueChange={(hex) => setColor(k, hex)} className="w-36" aria-label={k} />
+  </div>
+))}
+```
+
+## 禁忌 / 坑
+
+- **短写是缩写，不是另一种颜色**：`#abc` 展开成 `#aabbcc`（逐位重复），不是 `#abc000`。`normalizeHex` 已按此实现，自己解析时别写错。
+- **不要把 value 直接当 input 的显示值自己实现一遍**：受控值经规范化后回灌会让手输在第一个字符就被打回（敲 `#3` 立刻变回原值，根本没法输）。本组件内部维护「草稿态」——键入期间以草稿为准、只在解析成功时抛值、失焦丢草稿归一。扩展/仿写时必须保留这个机制。
+- `onValueChange` 在输入不合法时**不触发**，所以它拿到的一定是可用色值；要感知「用户正在敲一个还不合法的值」请监听原生 `onInput`。
+- 外部传入不可解析的 `value` 时回落到内部值而不是崩，但这是兜底不是契约 —— 受控方应自己保证传合法色。
+- 原生 `input[type=color]` 的外观改不动，所以色块是「透明原生 input 铺在 token 着色的 span 上」。别给它加 `appearance` 之类的样式，改不动也不生效。
+
+## 相关
+[ColorPicker](https://hulianui.haloritual.com/components/colorpicker) · [ColorSwatchPicker](https://hulianui.haloritual.com/components/color-swatch-picker) · [Input](https://hulianui.haloritual.com/components/input) · [Field](https://hulianui.haloritual.com/components/field) · [SecretField](https://hulianui.haloritual.com/components/secret-field)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # ColorPicker
 
 > 颜色选择 · react-colorful 内核 + HEX/RGB/HSL 多格式输出与切换器(零依赖派生) + 瑚琏 token 皮肤 · forms/advanced
@@ -3104,6 +3175,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | side | `"top"｜"bottom"` | — | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | — | 浮层对齐 |
 | sideOffset | `number` | — | 偏移 |
+| onListScroll | `UIEventHandler<HTMLDivElement>` | — | 列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](https://hulianui.haloritual.com/components/remote-select)） |
+| footer | `ReactNode` | — | 列表下方常驻页脚（加载中 / 计数 / 到底提示），不随列表滚动 |
 | className | `string` | — | — |
 
 `ComboboxItem`
@@ -4597,6 +4670,107 @@ const [names, setNames] = useState<string[]>([]);
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# RemoteSelect
+
+> 远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips · forms/advanced
+
+## 何时用
+
+选项来自**后端接口**、数据量大到不可能一次性拉全（门店、会员、商品、员工…）时用：输入防抖搜索、滚动加载下一页、编辑表单打开即回显已选项的中文名。
+
+选项固定且已在前端就用 [Select](https://hulianui.haloritual.com/components/select)；选项在前端数组里只是需要搜索用 [Combobox](https://hulianui.haloritual.com/components/combobox)（本组件即基于它，只是把过滤权从本地交给了服务端）；国家/地区这类内置数据用 [CountrySelect](https://hulianui.haloritual.com/components/country-select)。
+
+## 导入
+```ts
+import { RemoteSelect } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| fetcher * | `(query, { page, pageSize, signal }) => Promise<{ options, total? }>` | — | 远程搜索数据源。`options` 是后端原始行数组；`total` 给了就用它判断还有没有下一页 |
+| resolveValue | `(values: string[]) => Promise<Row[]>` | — | 初值回显解析器：按 value 批量解 label。**编辑表单必配**，见下方「禁忌 / 坑」 |
+| labelKey | `string` | `"name"` | 从原始行取显示文案的字段名 |
+| valueKey | `string` | `"id"` | 从原始行取值的字段名 |
+| debounce | `number` | `300` | 输入防抖毫秒数 |
+| pageSize | `number` | `10` | 每页条数，透传给 `fetcher` |
+| multiple | `boolean` | `false` | 多选（chips 形态）。开启后 `value`/`onChange` 变数组 |
+| value | `string｜number｜null`（多选为数组） | — | 受控值。数组顺序即 chip 渲染顺序 |
+| defaultValue | 同上 | — | 非受控初值 |
+| placeholder | `string` | `"请选择"` | 字段占位 |
+| emptyMessage | `ReactNode` | `"无匹配数据"` | 空态文案 |
+| loadingMessage | `ReactNode` | `"加载中…"` | 加载态文案 |
+| size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
+| clearable | `boolean` | `true` | 单选时渲染清除按钮（多选靠 chip 上的 × 逐个删） |
+| disabled | `boolean` | `false` | 禁用 |
+| invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
+| defaultOpen | `boolean` | `false` | 非受控初始展开（调试 / 文档演示用） |
+| renderOption | `(option) => ReactNode` | — | 自定义选项行（`option.raw` 是后端原始行） |
+| className | `string` | — | 字段（输入框 / chips 外壳）类名 |
+| popupClassName | `string` | — | 浮层类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | 单选 `(value: string｜null, option: Option｜null) => void`<br>多选 `(value: string[], options: Option[]) => void` | 选中变化。第二参给出完整选项（含 `raw` 原始行），与 value 同序 |
+
+## 示例
+
+基础用法（防抖搜索 + 滚动分页）：
+```tsx
+<RemoteSelect
+  valueKey="store_id"
+  labelKey="store_name"
+  placeholder="搜索门店…"
+  fetcher={async (query, { page, pageSize, signal }) => {
+    const res = await fetch(`/api/stores?q=${query}&page=${page}&size=${pageSize}`, { signal })
+    const json = await res.json()
+    return { options: json.list, total: json.total }
+  }}
+/>
+```
+
+编辑表单回显（value 不在首屏列表里）：
+```tsx
+<RemoteSelect
+  valueKey="store_id"
+  labelKey="store_name"
+  value={form.storeId}
+  onChange={(v) => setForm({ ...form, storeId: v })}
+  fetcher={fetchStores}
+  // 与 fetcher 分开的第二个端点：按 id 取详情，不参与搜索/分页
+  resolveValue={async (ids) => (await api.storesByIds(ids)).list}
+/>
+```
+
+多选：
+```tsx
+<RemoteSelect
+  multiple
+  valueKey="store_id"
+  labelKey="store_name"
+  value={form.storeIds}
+  onChange={(ids) => setForm({ ...form, storeIds: ids })}
+  fetcher={fetchStores}
+  resolveValue={resolveStores}
+/>
+```
+
+## 禁忌 / 坑
+
+- **`resolveValue` 不是可选装饰，编辑表单必配**：打开编辑表单时 `value` 已有，但它常常不在首屏那一页里（在第 7 页、或被当前搜索词过滤掉）。只有 `resolveValue` 能把它的 label 解出来，缺了就只会显示裸 id。它与 `fetcher` 是**两个不同的后端语义**（一个按关键词分页搜，一个按主键批量取），别合并成一个函数。
+- **`fetcher` 必须把 `signal` 透传给 fetch/axios**：不传也能跑（组件用请求序号丢弃过期响应），但旧请求会一直占着连接，快速输入时可能连开十几条。
+- **多选 chip 只能按 `value` 顺序渲染**：底层 `ComboboxChipRemove` 按 chip 在容器内的渲染序绑定 `selectedValue[index]`，乱序渲染会**删错项**。组件内部已按 `value` 顺序渲染，自定义时别打乱。
+- 本地不做二次过滤（底层 `filter={null}`）：搜索结果完全由服务端决定，`fetcher` 忽略 `query` 就等于没有搜索。
+- 关闭浮层即结束一次搜索会话：关键词清空、下次打开重新拉第一页（与 el-select 的 remote 行为一致），因此不要在 `fetcher` 里做「同参数缓存穿透」以外的副作用。
+- `total` 不给也能分页：此时按「本页返回条数 ≥ pageSize 即可能还有下一页」推断，最后会多打一次空请求；能给就给。
+
+## 相关
+[Combobox](https://hulianui.haloritual.com/components/combobox) · [Select](https://hulianui.haloritual.com/components/select) · [CountrySelect](https://hulianui.haloritual.com/components/country-select) · [Cascader](https://hulianui.haloritual.com/components/cascader) · [ProTable](https://hulianui.haloritual.com/components/pro-table)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # RippleButton
 
 > 波纹按钮 · 点击落点扩散(Material) + reduced-motion · forms/button · #animated
@@ -4880,15 +5054,17 @@ import { Segmented } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Select
 
-> 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label · forms/basic
+> 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label + clearable / searchable / loading / 分组 · forms/basic
 
 ## 何时用
 
-从一组固定选项里选一项或多项（选项较多、需要收纳成下拉）。多选传 `multiple`，受控值变 `string[]`，Trigger 平铺已选 label、超出折叠 +N。选项少且需全部可见用 [Radio](https://hulianui.haloritual.com/components/radio) 或 [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group)（多选平铺）；带搜索/自动补全用 [Combobox](https://hulianui.haloritual.com/components/combobox)；自由文本用 [Input](https://hulianui.haloritual.com/components/input)。给 `items`（`{value,label}` 数组）让 Trigger 显示选中项 label 而非 raw value。
+从一组固定选项里选一项或多项（选项较多、需要收纳成下拉）。多选传 `multiple`，受控值变 `string[]`，Trigger 平铺已选 label、超出折叠 +N。选项少且需全部可见用 [Radio](https://hulianui.haloritual.com/components/radio) 或 [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group)（多选平铺）；自由文本用 [Input](https://hulianui.haloritual.com/components/input)。给 `items`（`{value,label}` 数组）让 Trigger 显示选中项 label 而非 raw value。
+
+对标 el-select 的 `clearable` / `filterable` 心智：本组件的 `clearable` 即前者，`searchable` 即后者（内部切到 [Combobox](https://hulianui.haloritual.com/components/combobox) 的搜索皮肤，过滤逻辑直接复用 Base UI Combobox，不另造）。需要 chips 多选输入、异步远程补全、自由输入等更重的场景仍直接用 [Combobox](https://hulianui.haloritual.com/components/combobox)。
 
 ## 导入
 ```ts
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGroupLabel } from "@hulianui/ui"
 ```
 
 ## Props
@@ -4901,6 +5077,18 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 | items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
 | placeholder | `ReactNode` | — | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
 | multiple | `boolean` | `false` | 多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开 |
+| clearable | `boolean` | `false` | 有值时 Trigger 右侧 hover/focus 浮出清除按钮，点击置空（单选回传 `null`，多选回传 `[]`） |
+| searchable | `boolean` | `false` | 切到 Combobox 搜索皮肤：浮层顶部搜索框 + Base UI 过滤（依赖 `items`） |
+| searchPlaceholder | `string` | `"搜索"` | searchable 时搜索框占位 |
+| emptyMessage | `ReactNode` | `"无匹配项"` | searchable 时无命中的空态文案 |
+| loading | `boolean` | `false` | 加载态：Trigger 图标换 Spinner，浮层只出加载占位（不渲染选项） |
+| loadingText | `ReactNode` | `"加载中"` | 加载占位文案 |
+
+### SelectGroup / SelectGroupLabel
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| children* | `ReactNode` | — | `SelectGroup` 内放一个 `SelectGroupLabel` + 若干 `SelectItem` |
+| className | `string` | — | 透传类名 |
 
 ### SelectTrigger
 | 名称 | 类型 | 默认 | 说明 |
@@ -4936,8 +5124,9 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@hulianui/ui"
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| SelectContent.children* | `ReactNode` | 一组 `SelectItem` |
+| SelectContent.children* | `ReactNode` | 一组 `SelectItem`（可外套 `SelectGroup`） |
 | SelectItem.children* | `ReactNode` | 选项展示内容 |
+| SelectGroupLabel.children* | `ReactNode` | 分组标题 |
 
 ## 示例
 ```tsx
@@ -4967,6 +5156,44 @@ const [points, setPoints] = useState<string[]>([]);
     ))}
   </SelectContent>
 </Select>
+
+// 可清除 + 可搜索：对标 el-select 的 clearable / filterable
+<Select items={FONTS} placeholder="请选择字体" clearable searchable searchPlaceholder="搜索字体">
+  <SelectTrigger />
+  <SelectContent>
+    {FONTS.map((f) => (
+      <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
+// 加载态（异步拉选项）
+const { data, isLoading } = useFonts();
+
+<Select items={data ?? []} placeholder="请选择字体" loading={isLoading}>
+  <SelectTrigger />
+  <SelectContent>
+    {(data ?? []).map((f) => (
+      <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
+// 选项分组
+<Select items={FONTS} placeholder="请选择字体">
+  <SelectTrigger />
+  <SelectContent>
+    <SelectGroup>
+      <SelectGroupLabel>西文</SelectGroupLabel>
+      <SelectItem value="sans">无衬线 Sans</SelectItem>
+      <SelectItem value="serif">衬线 Serif</SelectItem>
+    </SelectGroup>
+    <SelectGroup>
+      <SelectGroupLabel>代码</SelectGroupLabel>
+      <SelectItem value="mono">等宽 Mono</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
 ```
 
 ## 禁忌 / 坑
@@ -4974,6 +5201,12 @@ const [points, setPoints] = useState<string[]>([]);
 - 占位文本通过 `Select` 的 `placeholder` prop 传，**不要**给 `Select.Value` 传 placeholder——见 [[base-ui-select-rc0-no-value-placeholder-prop-inject-null-item]]：本项目锁 Base UI rc.0，其 `Select.Value` 没有 placeholder prop（那是 v1.2+），瑚琏靠注入一个 `value:null` 的 items 项实现占位 label。`items` 与 `SelectItem` 的 value 要对应，否则 Trigger 显示 raw value 而非 label。
 - `multiple` 下 value 必须是数组：给 `defaultValue="a"`（字符串）会被当成无选中处理。多选模式不注入 null 占位项（数组值命不中 null 项），占位由 Trigger 内函数式 Value 渲染，因此**多选的 placeholder/label 解析依赖 `items` prop**——不传 items 时 Trigger 只能显示 raw value。
 - 多选 Trigger 的平铺条数由 `SelectTrigger` 的 `maxDisplay` 控制（默认 2），不在 `Select` 上。
+- `clearable` 会让组件接管 value（非受控时内部起受控镜像）——**受控用法不变**：外部不改 `value` 时点清除只回调不落值，符合受控语义。未开 `clearable` 时 value 归属与 DOM 结构与旧版逐字节一致（不加包裹层）。
+- 清除按钮是 `Trigger` 的**兄弟**节点（绝对定位盖在箭头位上），不是子节点——`<button>` 里嵌 `<button>` 是非法 HTML，且嵌套后点击会冒泡到 Trigger 顺手把浮层打开。常态 `hidden`，靠外层 `group-hover` / `group-focus-within` 浮出。
+- `searchable` 依赖 `items`：该皮肤下列表由 `items` 过滤结果驱动渲染（消费者写的 `SelectItem` 按 value 建索引后复用，自定义内容不丢；`items` 有而 `SelectItem` 没写的项兜底用 label 渲染）。**不传 `items` 就没有候选，浮层恒为空态。**
+- `searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要"搜索 + 分组"直接用 [Combobox](https://hulianui.haloritual.com/components/combobox)。
+- `searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](https://hulianui.haloritual.com/components/combobox) 自带 `filter`。
+- `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/components/input) · [Textarea](https://hulianui.haloritual.com/components/textarea) · [Checkbox](https://hulianui.haloritual.com/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/components/checkbox-group) · [Radio](https://hulianui.haloritual.com/components/radio) · [Switch](https://hulianui.haloritual.com/components/switch)
@@ -5579,15 +5812,24 @@ const [v, setV] = useState<string | string[]>(["fe-web", "fe-mini"]);
 <!-- ════════════════════════════════════════════════════════ -->
 # Upload
 
-> 文件上传 · 拖拽落区/按钮形态 + accept/maxSize 校验 + 受控文件列表(状态/进度)，零依赖自研只发 onSelect · forms/advanced
+> 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload · forms/advanced
 
 ## 何时用
 
-需要选/拖文件并展示带状态进度的文件列表时用。注意：组件**不做网络传输**，它只在通过 `accept`/`maxSize` 校验后回 `onSelect`，真正上传、进度回填由消费者完成（受控 `files`）。落区形态用 `variant="dropzone"`，紧凑场景用 `variant="button"`。图片选完要裁剪请配合 [ImageCropper](https://hulianui.haloritual.com/components/image-cropper)。
+需要选/拖文件并展示带缩略图、状态、进度的文件列表时用。
+
+**分层**（这是本组件的核心设计约束，别搞混）：
+
+- `<Upload>` = **纯皮肤 + 状态展示**。它仍然**不做网络传输**，只在通过 `accept`/`maxSize`/`limit` 校验后回 `onSelect(File[])`，其余状态靠受控 `files` 回填。
+- `useUpload({ request, concurrency })` = **传输层**。队列、并发闸门、进度回填、取消、重传都在这里；但**怎么发**由你给的 `request` 决定。
+
+`request` 的签名是 `(file, { onProgress, signal }) => Promise<{ url }>`。库内**刻意没有** `action` / `headers` / `withCredentials` / `transformResponse` 这类参数——瑚琏是通用库，不给某一家后端的响应信封开后门，鉴权与解包请写在你的应用层闭包里。
+
+落区形态用 `variant="dropzone"`，紧凑场景用 `variant="button"`。图片选完要裁剪请配合 [ImageCropper](https://hulianui.haloritual.com/components/image-cropper)；纯排序不涉及上传用 [Sortable](https://hulianui.haloritual.com/components/sortable)。
 
 ## 导入
 ```ts
-import { Upload, matchesAccept } from "@hulianui/ui"
+import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 ```
 
 ## Props
@@ -5598,8 +5840,11 @@ import { Upload, matchesAccept } from "@hulianui/ui"
 | multiple | `boolean` | `false` | 是否允许多选 |
 | disabled | `boolean` | `false` | 禁用 |
 | maxSize | `number` | — | 单文件字节上限；超限进 `onReject(reason="size")` |
+| limit | `number` | — | 文件数量上限（按 `files.length` 计）；达标后触发器自动禁用并显示「已选 n/limit」，超额进 `onReject(reason="limit")` |
 | variant | `"dropzone" \| "button"` | `"dropzone"` | 形态：拖拽落区 / 单按钮 |
-| files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度）；不传则不渲染列表 |
+| files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度/url）；不传则不渲染列表 |
+| renderPreview | `(file: UploadFile) => ReactNode` | — | 缩略图渲染钩子；返回节点时列表项左侧变 40px 预览位（状态点降级为角标），返回 `null` 回落默认圆点 |
+| sortable | `boolean` | `false` | 列表可拖拽调序（**需同时传 `onSort` 才生效**） |
 | className | `string` | — | 容器类名 |
 
 ## Events
@@ -5607,8 +5852,9 @@ import { Upload, matchesAccept } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onSelect | `(files: File[]) => void` | 通过校验的文件被选中（点击选择或拖入） |
-| onReject | `(rejections: UploadRejection[]) => void` | 被校验拒绝的文件（类型/大小） |
+| onReject | `(rejections: UploadRejection[]) => void` | 被校验拒绝的文件（`reason`: `"type"` / `"size"` / `"limit"`） |
 | onRemove | `(id: string) => void` | 列表项移除按钮点击 |
+| onSort | `(files: UploadFile[]) => void` | 拖拽调序后的新顺序（组件不偷存顺序，由你写回 `files`） |
 
 ## Slots
 
@@ -5619,34 +5865,98 @@ import { Upload, matchesAccept } from "@hulianui/ui"
 | buttonLabel | `ReactNode` | button 形态的按钮文案（默认 `"选择文件"`） |
 | children | `ReactNode` | 自定义落区内容（覆盖 label/hint） |
 
-> `UploadFile`：`{ id; name; size?; status?: "ready"\|"uploading"\|"success"\|"error"; progress?; error? }`，`progress` 仅 `status="uploading"` 时展示进度条。
+> `UploadFile`：`{ id; name; size?; status?: "ready"\|"uploading"\|"success"\|"error"; progress?; error?; url?; raw? }`
+> · `progress` 仅 `status="uploading"` 时展示进度条 + 百分比（内部 clamp 到 0–100）
+> · `url` / `raw` 都是**纯附加字段**，不参与组件内部逻辑，只供 `renderPreview` 与你自己回读；`onSelect` 仍然给 `File[]`，File 语义没被替换
+
+## useUpload（传输层）
+
+```ts
+const up = useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })
+// up: { files, add, remove, retry, reorder, clear, uploading }
+```
+
+| 选项 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| request | `(file, { onProgress, signal }) => Promise<{ url }>` | — | 必填。怎么发由你定；`signal` 请透传给 fetch/XHR |
+| concurrency | `number` | `3` | 并发上限，超出的排队（`0` 会兜到 `1`，不会死锁） |
+| onChange | `(files: UploadFile[]) => void` | — | 任一次 files 变化后回调 |
+| onSuccess / onError | `(file, result \| error) => void` | — | 单个文件落定回调（被 abort 的取消不触发 onError） |
+
+| 返回 | 说明 |
+|------|------|
+| `files` | 直接喂 `<Upload files>` |
+| `add` | 接 `<Upload onSelect>`，入列并按并发自动开传 |
+| `remove` | 接 `<Upload onRemove>`，进行中的任务会被 abort |
+| `retry` | 重传单个失败项 |
+| `reorder` | 接 `<Upload onSort>`，只换顺序不影响在飞任务 |
+| `clear` | 全部取消并清空 |
+| `uploading` | 是否还有排队中或进行中的任务 |
 
 ## 示例
+
+自动上传（进度 + 并发 + 数量上限）：
 ```tsx
-const [files, setFiles] = useState<UploadFile[]>([]);
+const up = useUpload({
+  request: async (file, { onProgress, signal }) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd, signal });
+    onProgress(100);
+    return { url: (await res.json()).data.url }; // 信封解包在应用层
+  },
+  concurrency: 3,
+});
+
+<Upload multiple limit={5} files={up.files} onSelect={up.add} onRemove={up.remove} />
+```
+
+要真进度条就用 XHR（fetch 无上传进度事件）：
+```ts
+const request: UploadRequest = (file, { onProgress, signal }) =>
+  new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.upload.onprogress = (e) => e.lengthComputable && onProgress((e.loaded / e.total) * 100);
+    xhr.onload = () => resolve({ url: JSON.parse(xhr.responseText).url });
+    xhr.onerror = () => reject(new Error("网络异常"));
+    signal.addEventListener("abort", () => xhr.abort());
+    xhr.open("POST", "/api/upload");
+    xhr.send(new FormData(/* ... */));
+  });
+```
+
+图片墙：缩略图 + 拖拽调序
+```tsx
 <Upload
   multiple
-  maxSize={5 * 1024 * 1024}
-  hint="支持任意格式，单文件 ≤ 5MB"
-  files={files}
-  onSelect={(picked) => /* 上传并回填 files */}
-  onRemove={(id) => /* 移除 */}
+  accept="image/*"
+  limit={6}
+  sortable
+  files={up.files}
+  onSelect={up.add}
+  onRemove={up.remove}
+  onSort={up.reorder}
+  renderPreview={(f) => <img src={f.url ?? objectUrl(f.raw)} alt={f.name} />}
 />
 ```
 
-按钮形态 + 仅图片：
+纯受控（不用 useUpload，自己管上传）：
 ```tsx
 <Upload variant="button" accept="image/*" files={files} onSelect={add} onRemove={remove} />
 ```
 
 ## 禁忌 / 坑
 
-- 组件只发 `onSelect`，**不会自己上传**。进度条/成功/失败态全靠消费者把 `UploadFile.status`/`progress`/`error` 回填到受控 `files`。
-- 想知道某文件为何被拒（类型 vs 大小）接 `onReject`，`reason` 区分 `"size"`/`"type"`。
-- 暂无其它已知坑。
+- `<Upload>` **不会自己上传**。要自动上传就配 `useUpload`；坚持自己管，就把 `status`/`progress`/`error`/`url` 回填到受控 `files`。
+- **不要指望库帮你解后端信封**。`request` 拿到的 `{ url }` 是你自己 resolve 的，`code/data/msg` 之类的形状在你的闭包里剥完再返回。
+- `sortable` 单独给不生效，**必须同时给 `onSort`**（顺序是受控的，组件不偷存）；只给 `sortable` 会静默退回静态列表。
+- `renderPreview` 每次渲染都会被调用，**别在里面直接 `URL.createObjectURL`** —— 会漏对象 URL。缓存到 `Map<id, url>` 并在卸载时 `revokeObjectURL`（showcase 的 `useObjectUrls` 是可抄的写法）。
+- `limit` 按受控 `files.length` 算；`files` 没传时视为 0，此时 `limit` 只能拦住"单次选太多"，拦不住累计。
+- `useUpload` 的 `remove` 会 `abort()`，但**只有你把 `signal` 透传下去**才真取消；迟到的 resolve 会被丢弃，不会复活已移除的行。
+- 引入 `sortable` 让 upload 静态依赖了 `@dnd-kit/*`（与 Sortable/Kanban 同源），source 分发下不用 sortable 也会打进包里。
 
 ## 相关
-[SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
+[Sortable](https://hulianui.haloritual.com/components/sortable) · [ImageCropper](https://hulianui.haloritual.com/components/image-cropper) · [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Progress](https://hulianui.haloritual.com/components/progress)
 
 <!-- ════════════════════════════════════════════════════════ -->
 > 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
@@ -9043,9 +9353,11 @@ import { ProTable } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | data | `TData[]` | — | 展示模式必传；托管模式由 request 提供，忽略此项 |
-| request | `(params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>` | — | 传则进「托管模式」：自管 page/pageSize/sort/filters/loading/data/选择，忽略 data/pagination/loading |
+| request | `(params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>` | — | 传则进「托管模式」：自管 page/pageSize/sort/filters/loading/data/选择，忽略 data/pagination/loading。内部以 ref 持有，**不进请求依赖**（内联箭头函数也不会死循环） |
+| params | `Record<string, unknown>` | — | 托管模式固定查询参数；**浅比较**，内容变化才回第 1 页重查。以 `params` 字段单独传给 request，不混入 filters |
 | paginationMode | `"page" \| "cursor"` | `"page"` | 托管分页协议：page=返回 `{data,total}` 数字分页；cursor=入参带 cursor、返回 `{data,nextCursor,hasMore}` 上下页 |
 | defaultPageSize | `number` | `10` | 托管模式初始每页条数 |
+| defaultSorting | `SortingState` | `[]` | 托管模式初始排序（非受控默认值，仅首次挂载生效）；首次 request 即带上，用来表达「默认按某列倒序」 |
 | pageSizeOptions | `number[]` | — | 提供则渲染「每页条数」切换器（如 [10,20,50,100]） |
 | pagination | `ProTablePagination` | — | 展示模式集成分页（底部）；`{page,pageSize,total,onPageChange,showFirstLast?,onPageSizeChange?}` |
 | search | `Omit<SearchFormProps,"onSearch"> & { onSearch? }` | — | 集成查询区（复用 SearchForm）；托管模式下 onSearch 可省 |
@@ -9097,6 +9409,20 @@ import { ProTable } from "@hulianui/ui"
   search={{ fields: searchFields }}
   pageSizeOptions={[10, 20, 50]}
 />
+
+// 托管模式：默认排序 + 固定查询参数
+// request 内联不用 useCallback；params 内联对象字面量不用 useMemo（浅比较）
+<ProTable<Row>
+  title="排序权重"
+  columns={columns}
+  defaultSorting={[{ id: "weight", desc: true }]}
+  params={{ categoryId }}
+  request={async ({ page, pageSize, sort, filters, params }) => {
+    const { rows, total } = await api.list({ page, pageSize, sort, ...filters, ...params });
+    return { data: rows, total };
+  }}
+  getRowId={(r) => String(r.id)}
+/>
 ```
 
 ## 禁忌 / 坑
@@ -9105,6 +9431,11 @@ import { ProTable } from "@hulianui/ui"
 - 托管模式必须给 `getRowId`，否则行选择/批量在翻页后 key 不稳。
 - `request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。
 - `batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。
+- **`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。
+- **`defaultSorting` 是非受控默认值**：只在首次挂载读一次，之后由用户点表头接管，后续改这个 prop 不会回灌（同 `defaultValue` 家族）。想在运行中强制改排序请用 `key` 重挂或改用受控 `sorting`。展示模式下它不生效（展示模式的默认排序直接传 `sorting`）。首点方向由 TanStack 按列类型决定（数值列默认 desc 优先），要精确控制请写 `defaultSorting` 而非依赖点击。
+- **`params` 是浅比较（只比第一层）**：`params={{ scopeId }}` 这种内联对象字面量安全，不用 `useMemo`；但 `params={{ filter: { a: 1 } }}` 这种嵌套对象每次 render 都是新引用 → 每次都重查，嵌套值请自己保持引用稳定或拍平成一层。
+- `params` **不会并入 `filters`**：`filters` 只装查询区提交的值，`params` 单独一个字段。这样固定条件不会被同名 filter 覆盖、也不受查询区「重置」影响；request 里自己合并 `{ ...p.filters, ...p.params }`。
+- `params` 内容变化会强制回到第 1 页（cursor 模式同时重置游标栈）——旧页码/旧游标在新固定条件下已无意义。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table) · [List](https://hulianui.haloritual.com/components/list)
@@ -9957,7 +10288,7 @@ import { StatusDot } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Table
 
-> 表格 · TanStack headless + 列排序 + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 空态 · data-display/collection
+> 表格 · TanStack headless + 列排序 + 列几何(size/align/ellipsis/resizable·固定列 offset 自动重算) + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 行拖拽排序(rowDraggable·回传相对位置语义) + 空态 · data-display/collection
 
 ## 何时用
 
@@ -9981,6 +10312,9 @@ import { Table } from "@hulianui/ui"
 | density | `"default" \| "middle" \| "compact"` | `"default"` | 行密度（仅调单元格内边距） |
 | getRowId | `(row: TData, index: number) => string` | 按 index | 行稳定 key |
 | rowClassName | `(row: TData, index: number) => string \| undefined` | — | 行级附加 className（与斑马/选中类合并，不覆盖） |
+| layout | `"auto" \| "fixed"` | `"auto"` | 列宽布局：auto 只让显式写了 size/minSize/maxSize 的列出宽度，其余按内容自适应；fixed 每列都按 `getSize()` 出实宽、表宽 = 各列之和 |
+| resizable | `boolean` | `false` | 列宽拖拽（表头右缘手柄，双击复位）。开启即强制 `layout="fixed"`；单列可用 `ColumnDef.enableResizing=false` 关掉，内建选择/展开器/拖拽列恒不可调宽 |
+| columnSizing | `ColumnSizingState` | — | 受控列宽态（列 id → 像素宽）；不传走内部非受控 |
 | onRowClick | `(row: TData, index: number) => void` | 关 | 行点击：整行 cursor-pointer + tabIndex=0 + 键盘 Enter/Space 可达（保持 row 语义）；行内交互元素冒泡隔离 |
 | rowHref | `(row: TData, index: number) => string \| undefined` | 关 | 声明式整行导航：返回 href 该行点击/Enter 整页跳转（cmd/ctrl+点击新开 tab），返回 undefined 该行不可点 |
 | enableRowSelection | `boolean \| ((row: Row<TData>) => boolean)` | 关 | 开行选择，自动前插复选框列（含全选）；函数可限定可选行 |
@@ -9990,6 +10324,9 @@ import { Table } from "@hulianui/ui"
 | indent | `number` | `16` | 树形/明细每级缩进像素 |
 | expanded | `ExpandedState` | — | 受控展开态（树形 + 明细共用） |
 | columnFilters | `ColumnFiltersState` | — | 受控列筛选态 |
+| rowDraggable | `boolean` | `false` | 开行拖拽排序（@dnd-kit，useSortable 挂在 `<tr>`）；组件不改 data，顺序由 onRowDragEnd 交还消费方 |
+| dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
+| getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
 | className | `string` | — | 根节点类名 |
 
@@ -10001,6 +10338,8 @@ import { Table } from "@hulianui/ui"
 | onRowSelectionChange | `OnChangeFn<RowSelectionState>` | 选择变化回调 |
 | onExpandedChange | `OnChangeFn<ExpandedState>` | 展开变化回调（树形 + 明细共用） |
 | onColumnFiltersChange | `OnChangeFn<ColumnFiltersState>` | 列筛选变化回调 |
+| onColumnSizingChange | `OnChangeFn<ColumnSizingState>` | 列宽变化回调（拖拽调宽时按 `onChange` 逐帧触发） |
+| onRowDragEnd | `(e: RowDragEndEvent<TData>) => void` | 行拖拽结束（落点未变 / 越界不触发）。`e` = `{ activeId, overId, activeIndex, overIndex, position: "before" \| "after", activeRow, overRow, nextData }` |
 
 ## Slots
 
@@ -10010,7 +10349,18 @@ import { Table } from "@hulianui/ui"
 | emptyText | `ReactNode` | 空态文案（默认 `locale.table.empty`） |
 | renderEmpty | `() => ReactNode` | 渲染函数；完全自定义空态（优先级高于 emptyText） |
 
-列 meta 增量（写在 `ColumnDef.meta`）：`sticky?: "left" \| "right"`（固定列贴左/右）、`filterable?: boolean`（表头渲染内置文本筛选框）。
+列 meta 增量（写在 `ColumnDef.meta`）：
+
+| meta | 类型 | 说明 | Element Plus 对应 |
+|------|------|------|------|
+| sticky | `"left" \| "right"` | 固定列贴左/右 | `fixed` |
+| filterable | `boolean` | 表头渲染内置文本筛选框 | — |
+| align | `"left" \| "center" \| "right"` | 单元格内容水平对齐 | `align` |
+| headerAlign | `"left" \| "center" \| "right"` | 表头对齐；不写则跟随 `align` | `header-align` |
+| ellipsis | `boolean` | 溢出截断 + 悬停 Tooltip 显示全文 | `show-overflow-tooltip` |
+
+列宽走 TanStack 原生的 `ColumnDef.size / minSize / maxSize`（不另发明 `width` / `min-width`）：
+`size` → `width`、`minSize` → `min-width`、`maxSize` → `max-width`，`th` 与 `td` 用同一口径的内联 style（不使用 `<colgroup>`）。
 
 ## 示例
 ```tsx
@@ -10031,16 +10381,55 @@ const columns: ColumnDef<DemoUser, any>[] = [
 
 // 整行导航（整页跳转；cmd/ctrl+点击新开 tab）
 <Table columns={columns} data={users} rowHref={(row) => `/users/${row.id}`} />
+
+// 列几何：定宽 + 对齐 + 溢出省略（对标 el-table-column 的 width/align/show-overflow-tooltip）
+const geoColumns: ColumnDef<DemoUser, any>[] = [
+  { accessorKey: "name", header: "姓名", size: 120 },
+  { accessorKey: "email", header: "邮箱", size: 180, meta: { ellipsis: true } },
+  { accessorKey: "role", header: "角色", size: 100, meta: { align: "center" } },
+  { accessorKey: "id", header: "编号", minSize: 120, meta: { align: "right", headerAlign: "right" } },
+];
+<Table columns={geoColumns} data={users} />
+
+// 列宽拖拽（表头右缘拖动改宽，双击复位）；受控可持久化到用户偏好
+<Table columns={geoColumns} data={users} resizable columnSizing={sizing} onColumnSizingChange={setSizing} />
+
+// 行拖拽排序：回调给的是「相对位置」，不是重排后的数组
+<Table
+  columns={columns}
+  data={rows}
+  getRowId={(r) => r.id}
+  enableSorting={false}
+  rowDraggable
+  onRowDragEnd={(e) => {
+    setRows(e.nextData);                                  // 本地乐观更新
+    api.sortable({                                        // 落库（对标 baTable.dragSort）
+      move: e.activeId,
+      target: e.overId,
+      order: filter.order,
+      direction: e.position === "after" ? "down" : "up",
+    });
+  }}
+/>
 ```
 
 ## 禁忌 / 坑
 
-- 固定列（`meta.sticky`）的 offset 靠 TanStack 列宽推算，务必给相关列显式 `size`，否则贴左/右偏移不准；同时内容要够宽触发横滚才看得到效果。
+- 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
+- `meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout="fixed"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。
+- 固定列（`meta.sticky`）的 offset 由 `getStart/getAfter` 按 `getSize()` 累加得出，所以固定列的渲染宽会被**强制钉成 `getSize()`**（没写 size 就是默认 150）——想要多宽就显式写 `size`。同时内容要够宽触发横滚才看得到效果。
+- `resizable` 会强制 `layout="fixed"`（拖拽必须有确定列宽）。fixed 下表宽 = 各列 `getSize()` 之和，窄于容器时靠 `min-w-full` 撑满、列宽被浏览器按比例放大——那种情况下没有横滚，固定列 offset 也就无从体现。
 - `virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。
 - 排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。
 - `rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。
 - 行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。
+- 行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。
+- 拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。
+- 拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。
+- `dragHandle="row"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `"cell"`。
+- 拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。
+- 树形（`getSubRows`）下只有顶层行可拖，子行手柄恒禁用——跨层级拖拽的落点语义未定义，需要拖子节点请用 [Tree](https://hulianui.haloritual.com/components/tree) 或按层级拆表。
 
 ## 相关
 [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table) · [List](https://hulianui.haloritual.com/components/list)

@@ -45,6 +45,42 @@ const ITEMS: NavMenuNode[] = [
   },
 ];
 
+// 四级深树：验证 collapsed 态飞出层是无限级级联（一级图标 → 二级 → 三级 → 四级）。
+const DEEP_ITEMS: NavMenuNode[] = [
+  { key: "dashboard", label: "仪表盘", icon: <LayoutDashboard />, href: "#dashboard" },
+  {
+    key: "sys",
+    label: "系统管理",
+    icon: <Settings />,
+    children: [
+      {
+        key: "sys-user",
+        label: "用户与权限",
+        children: [
+          {
+            key: "sys-user-role",
+            label: "角色",
+            children: [
+              { key: "sys-user-role-list", label: "角色列表", href: "#role-list" },
+              { key: "sys-user-role-perm", label: "权限分配", href: "#role-perm" },
+            ],
+          },
+          { key: "sys-user-list", label: "用户列表", href: "#user-list" },
+        ],
+      },
+      {
+        key: "sys-log",
+        label: "日志",
+        children: [
+          { key: "sys-log-login", label: "登录日志", href: "#log-login" },
+          { key: "sys-log-error", label: "错误日志", href: "#log-error" },
+        ],
+      },
+    ],
+  },
+  { key: "security", label: "安全中心", icon: <ShieldCheck />, href: "#security" },
+];
+
 // 行尾操作（actions 槽）演示用删除按钮：hover/聚焦才显，用 NavMenu 暴露的 group-hover/nav-row 钩子。
 function DeleteAction({ label }: { label: string }) {
   return (
@@ -180,6 +216,45 @@ export const navMenuShowcase: ShowcaseSpec = {
         </div>
       ),
     },
+    {
+      title: "收起态 · 多级级联",
+      description:
+        "collapsed 的飞出层与 inline 一样支持无限级：子层逐级向右级联。键盘 → 进子层、← / Esc 回父层，↑↓ 在同层兄弟间移动。",
+      code: `const items = [
+  {
+    key: "sys",
+    label: "系统管理",
+    icon: <Settings />,
+    children: [
+      {
+        key: "sys-user",
+        label: "用户与权限",
+        children: [
+          {
+            key: "sys-user-role",
+            label: "角色",
+            children: [
+              { key: "sys-user-role-list", label: "角色列表", href: "#role-list" },
+              { key: "sys-user-role-perm", label: "权限分配", href: "#role-perm" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+<NavMenu items={items} mode="collapsed" defaultSelectedKeys={["sys-user-role-perm"]} />`,
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-border bg-surface p-2">
+          <NavMenu
+            items={DEEP_ITEMS}
+            mode="collapsed"
+            defaultSelectedKeys={["sys-user-role-perm"]}
+          />
+        </div>
+      ),
+    },
   ],
   controls: [
     {
@@ -203,6 +278,18 @@ export const navMenuShowcase: ShowcaseSpec = {
       render: () => <ConvoDemo />,
     },
     { name: "collapsed（图标轨 · 悬浮飞出）", render: () => <Demo mode="collapsed" /> },
+    {
+      name: "collapsed · 多级级联飞出（四级）",
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-border bg-surface p-2">
+          <NavMenu
+            items={DEEP_ITEMS}
+            mode="collapsed"
+            defaultSelectedKeys={["sys-user-role-perm"]}
+          />
+        </div>
+      ),
+    },
   ],
   renderWithProps: (p) => (
     <Demo
