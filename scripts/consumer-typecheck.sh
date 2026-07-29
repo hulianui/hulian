@@ -81,6 +81,11 @@ cat > "$APP_DIR/tsconfig.json" <<'JSON'
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "strict": true,
+    // 刻意比库更严一档：消费方开这类「不在 strict 家族、需单独开」的检查是常态，
+    // 而 skipLibCheck 只跳 .d.ts、跳不过我们发出去的 .tsx 源码 —— 库里少一个
+    // override 修饰符就是消费方的 TS4114 硬失败（hulianui/hulian#31）。
+    // 同步在 tsconfig.base.json 也开了，这里是发布产物侧的兜底。
+    "noImplicitOverride": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noEmit": true
@@ -93,16 +98,26 @@ JSON
 # 这一行就足以把 barrel 可达的整棵 src 拉进 program —— 库里任何一处不合法的全局引用都会在这里暴露。
 # 顺带挂上 ./showcase 子入口：它同样是对外发布的 exports 条目，且能把 *.showcase.tsx 这批
 # barrel 不可达的文件也纳入检查，成本为零。
+#
+# 另外挂几条 `./*` 子路径导出（hulianui/hulian#19）：这批入口只在真实 exports 解析下才成立，
+# 库内 tsc 走相对路径、workspace 链接走目录直读，两者都**测不到** exports 映射写错。
+# 取样刻意覆盖三类：普通组件目录、没有 index.ts 需专门补的基础设施目录（theme/lib）。
 mkdir -p "$APP_DIR/src"
 cat > "$APP_DIR/src/app.tsx" <<'TSX'
 import { Button } from "@hulianui/ui";
 import * as showcase from "@hulianui/ui/showcase";
+import { Tag } from "@hulianui/ui/tag";
+import { ThemeProvider } from "@hulianui/ui/theme";
+import { cn } from "@hulianui/ui/lib";
 
 export function App() {
   return (
-    <Button variant="solid" size="md" onClick={() => console.log(Object.keys(showcase).length)}>
-      点我
-    </Button>
+    <ThemeProvider>
+      <Tag className={cn("mr-2")}>标签</Tag>
+      <Button variant="solid" size="md" onClick={() => console.log(Object.keys(showcase).length)}>
+        点我
+      </Button>
+    </ThemeProvider>
   );
 }
 TSX

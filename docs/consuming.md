@@ -95,7 +95,44 @@ export default function RootLayout({ children }) {
 
 ---
 
-## 3. 几个不那么致命但值得先知道的
+## 3. 只用少数几个组件时，从子路径引入
+
+瑚琏是**源码分发**（`exports` 指向 `.ts`，产物里没有 `dist/`），所以根 barrel 不是一个「打好的包」，
+而是一棵会被你的打包器逐文件 transform 的源码树。从根 barrel 取一个组件，整棵 `src/`（700+ 个 tsx）
+连同全部 26 个 dependencies（tiptap / recharts / vidstack / ogl / MUI …）都会进你的 dev 模块图 ——
+即使你一个都没用到。实测某 Vite 桌面 App 只用了约 15 个组件，dev server 常驻 3.1 GB、CPU ~90%，
+HMR 卡到「点了没反应」（hulianui/hulian#19）。
+
+0.14.0 起每个组件都有子路径入口，按需引入即可绕开：
+
+```ts
+// 只把 tag / tooltip 两棵子树拉进模块图
+import { Tag } from "@hulianui/ui/tag"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@hulianui/ui/tooltip"
+```
+
+子路径名就是组件的目录名（与文档站 URL 一致，`ProTable` → `@hulianui/ui/pro-table`）。
+基础设施件同理：`@hulianui/ui/theme`、`@hulianui/ui/access`、`@hulianui/ui/config`、`@hulianui/ui/lib`。
+两个入口导出的是同一份东西，混用没有问题 —— 子路径只是让打包器少看几百个文件。
+
+**什么时候不必管这条**：走 Next.js / webpack 这类默认对 node_modules 做过依赖预打包的链路，
+或者你本来就用到大半个库，收益有限，根 barrel 更省事。
+
+**已经踩上了又暂时不想改 import 的**，Vite 侧的止血是强制预打包（默认不会对 node_modules 里的
+源码包做预构建，必须显式 include）：
+
+```ts
+// vite.config.ts
+optimizeDeps: { include: ["@hulianui/ui"] }
+```
+
+> 重依赖组件（`_mui/*`、`markdown-editor`、`video`、`*-chart`、WebGL 特效系）目前仍在根 barrel 里，
+> 也就是说**根 barrel 依然会拖出全部 26 个 dependencies**。把它们移出根 barrel 是破坏性改动，
+> 留到 1.0；在那之前，子路径引入是唯一能真正瘦下来的办法。
+
+---
+
+## 4. 几个不那么致命但值得先知道的
 
 - **`Table` 不开 `rowDraggable` 就不会碰 dnd-kit**（0.11.0 起）。此前 `useSensors` 写在组件顶层，
   任何用了 `Table` 的下游都会拉起整条 dnd-kit 运行时；现在这些 hook 收在只有开了拖拽才挂载的

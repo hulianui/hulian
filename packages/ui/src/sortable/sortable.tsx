@@ -52,7 +52,9 @@ export function shouldStartDragFrom(target: EventTarget | null, container: Eleme
 // 继承 PointerSensor 只重写 activator：命中交互元素直接返回 false（不进拖拽状态机），
 // 其余判定（isPrimary/左键）照抄上游，避免把 sensor 的既有语义改坏。
 export class InteractiveAwarePointerSensor extends PointerSensor {
-  static activators = [
+  // override 不能省：本包发的是源码，这行会进每个消费方的 tsc program，
+  // 开了 noImplicitOverride 的工程会直接 TS4114 编译失败（hulianui/hulian#31）。
+  static override activators = [
     {
       eventName: "onPointerDown" as const,
       // 这里刻意不解构 nativeEvent：需要 React 合成事件的 currentTarget 作为向上查找的边界，
