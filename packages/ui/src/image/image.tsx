@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import type { ImageProps } from "./image.types";
@@ -32,6 +32,16 @@ export function Image({
   const [override, setOverride] = useState<string | null>(null);
   const dead = override === "dead";
   const currentSrc = override && override !== "dead" ? override : src;
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // 只靠 onLoad 翻转淡入态是不够的：图片命中缓存（或 SSR 出的 HTML 在 hydration
+  // 之前就解完码）时，load 事件早在 React 挂上处理器之前就烧完了，onLoad 永远不触发，
+  // 图片于是永久停在 opacity-0 —— 现象是「网络面板 200、naturalWidth 正常，
+  // 页面上却是一块空白」，极易被误判成图挂了。挂载后补查一次 complete。
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img?.complete && img.naturalWidth > 0) setLoaded(true);
+  }, [currentSrc]);
 
   const onError = () => {
     setLoaded(false);
@@ -50,6 +60,7 @@ export function Image({
     >
       {!dead && (
         <img
+          ref={imgRef}
           src={currentSrc}
           alt={alt}
           onLoad={() => setLoaded(true)}
