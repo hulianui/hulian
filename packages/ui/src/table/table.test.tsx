@@ -906,3 +906,20 @@ describe("固定列 offset 随列宽变化重算", () => {
     expect(headers(container)[1].style.left).toBe("250px");
   });
 });
+
+describe("表头换行", () => {
+  it("表头恒 nowrap —— 否则 auto 布局会把中文表头挤成一列一个字", () => {
+    const { container } = render(
+      <Table
+        columns={[
+          { accessorKey: "a", header: "拆出条目" },
+          { accessorKey: "b", header: "待复核" },
+        ]}
+        data={[{ a: 1, b: 2 }]}
+      />,
+    );
+    for (const th of Array.from(container.querySelectorAll("th"))) {
+      expect(th.className).toContain("whitespace-nowrap");
+    }
+  });
+});

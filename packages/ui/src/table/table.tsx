@@ -857,6 +857,11 @@ export function Table<TData>({
                       cellPad,
                       ALIGN_TEXT[headerAlign],
                       "font-semibold",
+                      // 表头恒不换行：auto 布局下列宽收缩到 min-content，中文表头会被挤成
+                      // 「拆／出／条／目」每行一个字（英文则按空格断开），列宽反而更窄。
+                      // 表头是短标签，nowrap 让它成为列的宽度下界，才是正确的度量基准。
+                      // 需要截断的列走 meta.ellipsis + maxWidth，不靠折行省地方。
+                      "whitespace-nowrap",
                       // 拖拽手柄绝对定位在 th 右缘（sticky 列的 position:sticky 同样是包含块）
                       canResize && "relative",
                       meta?.ellipsis && "overflow-hidden",
