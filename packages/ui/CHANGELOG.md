@@ -1,5 +1,79 @@
 # @hulianui/ui
 
+## 0.13.0
+
+### Minor Changes
+
+- 8ff9043: 清 issue #24–#29，外加两处自查发现的真 bug
+
+  **#24 packaging：源码里的裸 `process` 让消费方 tsc 直接失败**
+
+  新增内部 `lib/is-dev.ts`（模块作用域 `declare const process`），`pagination` 与 `animated-theme-toggler` 的开发期告警改用它。装 `@types/node` 是更坏的解——它会把整套 Node 全局类型灌进浏览器端消费方，`setTimeout` 从此返回 `NodeJS.Timeout` 而非 `number`，反倒掩盖真实的平台错配。
+
+  同时给 CI 加了「以消费方身份 typecheck」门禁（`pnpm pack` 产物 + 仓库外临时目录 + 不装 `@types/node`）。这次的本质不是那两行代码，而是**库的自查环境比消费方宽松**——`packages/ui` 的 tsconfig 里 `types: ["vitest/globals"]` 让 `@types/node` 经 vitest 类型链混了进来，于是「库内 tsc 绿、装出去就挂」这一类问题会持续漏网。
+
+  **#25 Heatmap：区分「无数据」与「值为 0」**
+
+  新增 `emptyCellTone`；`buildMatrix` 的 `get` 缺席时返回 `undefined` 而非 `?? 0`；`HeatmapCellInfo` 增加 `empty` 字段供 `formatTooltip` 判别。
+
+  ⚠️ **一处行为变更**：缺席格的默认 tooltip / `aria-label` 文案从 `Y · X：0` 改为 `Y · X：无数据`，且不受 `emptyCellTone` 门控。颜色保持完全向后兼容（不传 `emptyCellTone` 时与旧版逐字节一致），但 aria-label 谎报「0」属于无障碍缺陷，不宜再 gate。**若你的测试或 e2e 按 aria-label / title 定位缺席格，需要更新选择器。**
+
+  **#26 Sortable：行内交互元素不再劫持拖拽（指针 + 键盘双路）**
+
+  指针路径加 `InteractiveAwarePointerSensor`；键盘路径把 `<li>` 登记为 `activatorNode`，让 dnd-kit 上游那句 `if (activator && event.target !== activator) return false` 生效——此前 `activatorNode` 为 null 会让整条守卫被跳过，行内按钮上的 Enter 被 `preventDefault` 吞掉，键盘用户根本按不动。`handle` 从此只是取向选择，不再是「避免劫持子元素」的必需补丁。
+
+  **#27 TreeSelect：新增 `clearable`**，对齐 Select 已有的语义与视觉。此前单选选中后无法在组件内回到未选态，筛选条件只能收窄不能放宽。
+
+  **#28 Sortable：`renderItem` 的 state 增加 `index`**，省掉消费方 `findIndex` 兜回来，也让行内控件能有带序号的唯一 `aria-label`。
+
+  **#29 Stat：新增 `hint`**（与趋势无关的注脚槽），并对「传了 `deltaLabel` 却没有 `delta`」补开发期告警——原先是静默吞掉，TS 过、控制台干净、页面只少一行字，属最难查的一类。
+
+  **自查发现的两处真 bug（非上述 issue）**
+
+  - **Kanban 整卡拖拽此前完全失效**：卡片守卫用的是无边界 `closest("…[role='button']…")`，而 dnd-kit 会给可拖卡片挂 `role="button"`——守卫命中卡片自己，于是每次按下都被判成「按在交互元素上」。原有测试全部用孤立 `createElement` 断言，测不到真实渲染的卡片，因此一直绿着。现已抽出 `lib/drag-guard.ts` 与 Sortable 共用同一份带边界的实现，并补了基于真实渲染的回归测试。
+  - **Dialog / Drawer 正文滚动区裁掉焦点环**：`overflow-y-auto` 会连带把 `overflow-x` 从 `visible` 变成裁剪（CSS 规范：一轴非 visible 时另一轴的 visible 计算成 auto），而 `w-full` 表单控件与滚动容器左右边界零余量，`ring-2 + ring-offset-2` 向外 4px 的两条竖边整条被切掉（症状是「聚焦只剩上下两条线」）。横向改为经 `--hl-overlay-pad` 变量做负边距补偿——覆盖 Popup 内边距时需一并覆盖该变量。
+
+    纵向同样要留（`mt-3 pt-1` / `-mb-1 pb-1`，视觉间距净变化为零）：表单最后一个控件的下边界与滚动容器完全贴合，环往下那 4px 一样会被切掉。纵向只留 4px 而非跟横向一样借 24px——上下方紧挨着标题与 footer，借多了滚动内容会从标题底下穿出一大截。
+
+  - **ModalForm / DrawerForm 的操作按钮**从滚动区移进 `footer` 槽（经 HTML `form` 属性关联提交），长表单时按钮不再跟着滚走。
+
+  **其它**
+
+  - 开发期误用告警统一走新的 `lib/warn-once.ts`，同一误用整个进程只打一次（原先写在 render body 里，每次重渲染都打、StrictMode 下翻倍）。
+  - FAB 补 `draggable` 示例与文档（此前 showcase 里没有任何可拖示例，用户会以为拖拽坏了）；拖拽期间不再套用按压缩放（缩小表达「按进平面」，与拖拽的「拿起来移动」语义相反），并补上缺失的 `onPointerCancel` 重置。
+
+- 8ff9043: 动效手感统一：曲线 SSOT 打通、浮层从触发器长出、按压反馈铺开
+
+  对照 Emil Kowalski 的动效判据（easing / duration / 物理性 / 可中断性 / 性能 / 内聚性）做的一轮系统性打磨。行为变更，无 API 破坏。
+
+  **曲线 SSOT 打通（覆盖面最大）**
+
+  - `@hulianui/tokens` 的 preset.css 新增 `@theme` 缓动块：把 Tailwind 内置的 `--ease-out` / `--ease-in-out` 覆盖为瑚琏曲线，并新增 `--ease-drawer`（iOS/Ionic 抽屉曲线）。
+  - 同时覆盖 `--default-transition-timing-function` —— 库内 90+ 个组件写的是裸 `transition-colors`，此前全部走 Tailwind 默认的 `cubic-bezier(0.4, 0, 0.2, 1)`，与 motion token 驱动的动效并存两套手感。现已统一。
+  - `motion/tokens.ts` 补 `motionEase.drawer` / `motionEaseCss.drawer`。
+
+  **浮层从触发器长出**
+
+  13 个 Base UI overlay（Tooltip / Popover / Select / Menu / ContextMenu / Combobox / Cascader / HoverCard / Popconfirm / TreeSelect / DateField / DateRangePicker / TimePicker）接上 `--transform-origin`，进出场不再从自身中心缩放。Dialog / AlertDialog / Modal 保持居中（它们不锚定触发器）。
+
+  **按压反馈**
+
+  - 新增导出 `pressableClass` —— `pressable`（motion 版）的纯 CSS 平替，零 motion 运行时。
+  - 铺到 Fab（主钮 + 子动作）、Toggle、Segmented、SocialButton、Choicebox（大卡用 0.99）；ActionSheet 走 active 底色（移动端全宽条目变色比缩放更贴原生）。
+
+  **其它**
+
+  - Drawer / ActionSheet 面板改用 drawer 曲线 + 300ms，遮罩淡入与面板滑动解耦（原先共用一套参数）。
+  - Command 命令面板去掉缩放进场、缩至 150ms 纯淡入 —— ⌘K 是键盘高频入口，位移进场会让每次唤起慢半拍。
+  - Tooltip 支持 `data-instant`：同组内已有 tooltip 打开时，相邻触发器瞬时显示（跳过延迟与动画）。
+  - 清零 `transition-all`（Fab / BentoGrid / VoiceRecord / InfiniteMenu / ShimmerButton 改指名属性）。
+  - VoiceRecord 波形条从动态 `height` 改为 `scaleY` —— 每 100ms 刷新、十余条同时动 height 会逐帧触发整行 flex 重排。
+  - Folder 的 `ease-in` 改 `ease-out`。
+
+  **文档**
+
+  文档站新增 `/theme/motion` —— `/theme` 下此前有色彩/圆角/阴影/间距等页，唯独动效缺席。新页含曲线手感对比（悬停即看）、时长阶梯、「该不该动」的频率判据，以及按压反馈与浮层原点的接法。
+
 ## 0.12.0
 
 ### Minor Changes
