@@ -68,7 +68,7 @@ export default function App() {
 }
 ```
 
-> Packages ship **source** (`src/`), not a compiled `dist`, so consumers must transpile TSX: **Next.js** → add `transpilePackages: ["@hulianui/ui"]`; **Vite** → usually no extra config. The anti-flash inline script is injected by each app's entry (see [`apps/www/app/theme-script.tsx`](apps/www/app/theme-script.tsx)).
+> Packages ship **source** (`src/`), not a compiled `dist`, so consumers must transpile TSX: **Next.js** → add `transpilePackages: ["@hulianui/ui"]`, and — when running **webpack dev** (Next 15 and below) — pair it with `experimental.optimizePackageImports: ["@hulianui/ui"]`, without which cold compiles are several times slower (measured no difference under Next 16's Turbopack; [why](docs/consuming.md#nextjs-消费方这是最糟的一档务必加一行配置)); **Vite** → usually no extra config. The anti-flash inline script is injected by each app's entry (see [`apps/www/app/theme-script.tsx`](apps/www/app/theme-script.tsx)).
 
 ## 🛠️ Tech foundation
 

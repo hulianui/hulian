@@ -215,7 +215,15 @@ function main() {
   lines.push("   - 常规：`/Users/zhangzhiwei/Desktop/code/hulian/packages/ui/src/<slug>/<slug>.md`（精确签名仍以同目录 `<slug>.types.ts` 为准）");
   lines.push("   - 标注 (_mui) 的：`/Users/zhangzhiwei/Desktop/code/hulian/packages/ui/src/_mui/<slug>.md`");
   lines.push("   - 全量离线语料（一次喂全库）：`apps/www/public/llms-full.txt`；机读目录 `llms.txt` / 组件清单 `registry.json`。");
-  lines.push("4. **导入**：`import { X } from \"@hulianui/ui\"`（根 barrel 全量再导出）。");
+  lines.push(
+    "4. **导入优先走子路径**：`import { X } from \"@hulianui/ui/<slug>\"`（0.14.0 起，slug 即组件目录名 / 本索引里的条目名）。" +
+      "根 barrel `import { X } from \"@hulianui/ui\"` 仍然可用，但本库是**源码分发**，barrel 会把整棵 `src/`（700+ tsx）" +
+      "连同全部 26 个 dependencies 拖进消费方模块图 —— 即使一个都没用到（hulianui/hulian#19）。" +
+      "**Next.js 消费方额外注意**：`transpilePackages` 是本库的强制项，而它恰恰把整棵源码放回 loader 路径，" +
+      "叠加 dev 模式不 tree-shake，是所有链路里最糟的一档；跑 **webpack dev**（Next 15 及以下）时务必同时配 " +
+      "`experimental: { optimizePackageImports: [\"@hulianui/ui\"] }`，它在编译期把 barrel 导入改写成深路径、**dev 也生效**" +
+      "（实测冷编译 16.5s→3.9s、模块数 7378→1730；Next 16 的 Turbopack 实测无差异，hulianui/hulian#34）。",
+  );
   lines.push("5. 标签 `#animated` 动效、`#webgl` 需 WebGL 上下文（SSR 注意）。");
   lines.push(
     "6. **跨 workspace 消费本库时**（消费方不在本仓的 pnpm workspace 内，如 `link:` / 软链到源码）：" +

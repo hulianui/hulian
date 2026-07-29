@@ -115,10 +115,54 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@hulianui/ui/tooltip"
 基础设施件同理：`@hulianui/ui/theme`、`@hulianui/ui/access`、`@hulianui/ui/config`、`@hulianui/ui/lib`。
 两个入口导出的是同一份东西，混用没有问题 —— 子路径只是让打包器少看几百个文件。
 
-**什么时候不必管这条**：走 Next.js / webpack 这类默认对 node_modules 做过依赖预打包的链路，
-或者你本来就用到大半个库，收益有限，根 barrel 更省事。
+**什么时候收益有限**：你本来就用到大半个库时，根 barrel 更省事。
 
-**已经踩上了又暂时不想改 import 的**，Vite 侧的止血是强制预打包（默认不会对 node_modules 里的
+### Next.js 消费方：这是最糟的一档，务必加一行配置
+
+> 本节此前写着「走 Next.js / webpack 这类默认对 node_modules 做过依赖预打包的链路不必管」——
+> **那句话是反的**，已更正（hulianui/hulian#34）。webpack 侧根本没有「依赖预打包」这回事，
+> `optimizeDeps` 是 Vite/esbuild 的概念。
+
+Next 不是「不必管」，而是比 Vite **更糟**，三层叠加：
+
+1. **`transpilePackages` 是强制项，不是可选优化。** 本库源码分发，Next 默认不转译 node_modules，
+   不加这条根本起不来 —— 而它的语义恰恰是把整棵 `src/` 放回 webpack 的 loader 路径，逐个走 SWC。
+2. **webpack 没有依赖预打包。** 对应物只有 persistent cache，冷启动时不救场。
+3. **dev 模式不做 tree-shaking。** webpack 的 `optimization.sideEffects` / `usedExports` 只在
+   production 默认开启，所以本库 `sideEffects: false` 在 dev 下等于没写，根 barrel 全量进图。
+
+Next 侧有一个正好对口的开关，且**在 dev 也生效**（不像 tree-shaker 只在 prod 跑）：
+
+```js
+// next.config.mjs
+export default {
+  transpilePackages: ["@hulianui/ui"],          // 强制项：源码分发必须转译
+  experimental: {
+    optimizePackageImports: ["@hulianui/ui"],   // 与上一条成对出现，别只写一半
+  },
+}
+```
+
+它的 barrel loader 会在编译期把 `import { Button } from "@hulianui/ui"` 改写成深路径导入。
+本库根 barrel 是纯 `export *` + 每个组件目录都有 `index.ts`，静态完全可分析，正是这个 transform
+的理想形态 —— **不需要你改任何一行业务代码**，这点比逐个改成子路径省事得多。
+
+实测（Next 15.5.22 + webpack dev，从 npm 装 `@hulianui/ui@0.14.0`，页面只用 8 个组件）：
+
+| 指标 | 只有 `transpilePackages` | 加 `optimizePackageImports` |
+|---|---|---|
+| 冷编译 `/`（全新 `distDir`） | 16.5 s | **3.9 s** |
+| 模块数 | 7378 | **1730** |
+
+⚠️ 它治的是**编译时间与模块图**，不是产物体积 —— 页面真正用到的重依赖该多大还是多大。
+
+**用 Turbopack 的话不必加**（Next 16 起 `next dev` 默认就是 Turbopack）。我们在本仓文档站
+（Next 16.2 + Turbopack）上实测两轮：加与不加分别是 13.9 s / 13.7 s，**没有可测差异** ——
+Turbopack 自己就处理 barrel，上面那三层成因里的第 2、3 层对它不成立。
+所以这条配置的适用面是**明确跑 webpack 的 dev**（Next 15 及以下，或 Next 16 显式关掉 Turbopack）。
+加了也无害，只是别指望在 Turbopack 上看到同样的收益。
+
+**Vite 侧**已经踩上又暂时不想改 import 的，止血是强制预打包（Vite 默认不对 node_modules 里的
 源码包做预构建，必须显式 include）：
 
 ```ts
@@ -128,7 +172,7 @@ optimizeDeps: { include: ["@hulianui/ui"] }
 
 > 重依赖组件（`_mui/*`、`markdown-editor`、`video`、`*-chart`、WebGL 特效系）目前仍在根 barrel 里，
 > 也就是说**根 barrel 依然会拖出全部 26 个 dependencies**。把它们移出根 barrel 是破坏性改动，
-> 留到 1.0；在那之前，子路径引入是唯一能真正瘦下来的办法。
+> 留到 1.0；在那之前，子路径引入（或 Next 的 `optimizePackageImports`）是唯一能真正瘦下来的办法。
 
 ---
 

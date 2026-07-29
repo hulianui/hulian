@@ -71,7 +71,7 @@ export default function App() {
 }
 ```
 
-> 发布形态是**源码包**（发 `src/`，不编译 dist），消费方需能转译 TSX：**Next.js** 加 `transpilePackages: ["@hulianui/ui"]`，**Vite** 一般免配。防首屏白闪的 inline script 由各应用入口注入（参考 [`apps/www/app/theme-script.tsx`](apps/www/app/theme-script.tsx)）。
+> 发布形态是**源码包**（发 `src/`，不编译 dist），消费方需能转译 TSX：**Next.js** 加 `transpilePackages: ["@hulianui/ui"]` —— 跑 **webpack dev**（Next 15 及以下）时还须**成对**加上 `experimental.optimizePackageImports: ["@hulianui/ui"]`，否则冷编译会慢数倍（Next 16 的 Turbopack 实测无差异，[为什么](docs/consuming.md#nextjs-消费方这是最糟的一档务必加一行配置)）；**Vite** 一般免配。防首屏白闪的 inline script 由各应用入口注入（参考 [`apps/www/app/theme-script.tsx`](apps/www/app/theme-script.tsx)）。
 
 完整接入说明见 **[文档站 · 快速开始](https://hulianui.haloritual.com)**。
 

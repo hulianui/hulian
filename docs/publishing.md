@@ -67,10 +67,15 @@ import "@hulianui/tokens/preset.css";
 ```ts
 export default {
   transpilePackages: ["@hulianui/ui"],
+  // 跑 webpack dev（Next 15 及以下）时必须成对写：transpilePackages 把整棵源码放回
+  // loader 路径，而 dev 不 tree-shake，只写上面一条会让冷编译慢数倍
+  //（实测 16.5s → 3.9s、模块 7378 → 1730）。Next 16 的 Turbopack 实测无差异，加了也无害。
+  experimental: { optimizePackageImports: ["@hulianui/ui"] },
 };
 ```
 
-Vite 一般无需额外配置。
+Vite 一般无需额外配置；只用少数几个组件时改走子路径导入（`@hulianui/ui/<slug>`）。
+详见 [consuming.md 第 3 节](./consuming.md#3-只用少数几个组件时从子路径引入)。
 
 ### 4. Tailwind v4：让它扫描组件类名
 
