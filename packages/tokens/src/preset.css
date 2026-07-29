@@ -594,3 +594,16 @@
     transform: translate3d(-30%, -30%, 0);
   }
 }
+
+/* data-display/EventStream 新事件淡入：高频追加流里让"刚到的那条"被眼睛捕捉到。
+   只做一次性淡入 + 轻微下滑，不做持续动效——事件流常年开着，任何循环动画都是噪音。 */
+@keyframes hulian-event-flash {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
