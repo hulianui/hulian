@@ -4,6 +4,8 @@ export type MathNode =
   | { kind: "frac"; num: MathNode[]; den: MathNode[] }
   /** 根号，index 为根指数（三次根等） */
   | { kind: "sqrt"; radicand: MathNode[]; index?: MathNode[] }
+  /** 装饰线：上划线（\overline）与帽子（\widehat，用于角/向量） */
+  | { kind: "decorate"; style: "overline" | "hat"; children: MathNode[] }
   | { kind: "sup"; children: MathNode[] }
   | { kind: "sub"; children: MathNode[] }
   /** 填空槽，length 为原文里的下划线个数（决定空位宽度） */

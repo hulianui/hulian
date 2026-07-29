@@ -53,6 +53,23 @@ function renderNode(
         </span>
       );
 
+    case "decorate":
+      // 上划线用 border-top（\overline{AB} 表示线段），帽子用组合字符叠加
+      return node.style === "overline" ? (
+        <span className="border-t border-current">{renderNodes(node.children, opts)}</span>
+      ) : (
+        <span className="relative inline-block">
+          <span
+            aria-hidden
+            className="absolute inset-x-0 -top-[0.45em] text-center leading-none"
+            style={{ fontSize: `${opts.scriptScale}em` }}
+          >
+            ⌢
+          </span>
+          {renderNodes(node.children, opts)}
+        </span>
+      );
+
     case "sup":
       return (
         <sup className="leading-none" style={{ fontSize: `${opts.scriptScale}em` }}>

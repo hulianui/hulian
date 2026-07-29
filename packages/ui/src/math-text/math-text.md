@@ -32,8 +32,21 @@ import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
 | `^{...}` 或 `^a` | 上标 | `x^{2}`、`x^2` |
 | `_{...}` 或 `_a` | 下标 | `a_{1}`、`a_1` |
 | `____` | 填空槽（**2 个及以上**连续下划线） | `可记作____万元` |
+| `\overline{}` / `\widehat{}` | 上划线 / 帽子 | `\overline{AB}` |
+| `\text{}` / `\mathrm{}` | 字体包装，剥壳保留内容 | `\text{甲组}` |
+| `\left` / `\right` | 定界符尺寸，丢弃命令保留括号 | `\left(a\right)` |
+| 符号命令 | 换成 Unicode，见下 | `\angle` → ∠ |
 
-其余内容一律按字面文本输出。**不认识的记号不会被吞掉** —— `\alpha` 原样显示为 `\alpha`，残缺的 `\frac{3}` 也原样保留，绝不静默丢内容。
+### 符号表
+
+`\angle ∠`　`\triangle △`　`\parallel ∥`　`\perp ⊥`　`\cong ≌`　`\sim ∽`　`\odot ⊙`　`\circ °`
+`\times ×`　`\div ÷`　`\cdot ·`　`\pm ±`　`\neq ≠`　`\leq(slant) ≤`　`\geq(slant) ≥`　`\approx ≈`
+希腊字母、集合运算符、`\therefore ∴` / `\because ∵`、`\ldots …` 等见 `math-text.symbols.ts`。
+
+取值范围不是拍脑袋定的：对 22k 字符真实初中数学题面（PaddleOCR-VL 识别产物）统计命令频次后建表，
+覆盖到长尾。频次前列：`\angle` 140 · `\frac` 99 · `\circ` 80 · `\triangle` 60 · `\sqrt` 55 · `\times` 51。
+
+其余内容一律按字面文本输出。**不认识的记号不会被吞掉** —— `\oiint` 原样显示为 `\oiint`，残缺的 `\frac{3}` 也原样保留，绝不静默丢内容。
 
 ## 用法
 
@@ -68,6 +81,9 @@ import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
 - **别用 `a/b` 表示分数**。上游数据若用斜杠，`千米/时`、`元/千克` 这类单位会被误渲染成分数。用 `\frac{}{}` 把「这是分数」这个已知事实显式带过来，不要让渲染层再猜一遍。
 - **单个 `_` 是下标，`__` 起才是填空**。`a_1` 渲染成下标；想要填空至少写两个下划线。
 - **分数不是 `<sup>`/`<sub>` 拼的**。用 `inline-flex` 竖排 + `border-t` 画线，这样嵌在中文正文里行高不会被撑乱、分数线也对得齐。改样式时别退回 sup/sub。
+- **命令名后的空格是终止符不是内容**。`\angle ABC` 里那个空格必须吃掉，否则题面里每个 `\angle` / `\triangle` 后都会多冒一个空格（本组件已处理，自行扩表时别忘）。
+- **`30^{\circ}` 不套 `<sup>`**。`\circ` 本身就是上标位的字符，再抬一次会变成浮空小点。
+- **矩阵/方程组是有损降级**。`\begin{array}…\end{array}` 会被拍平成一行、`\\` 变成分号。要真排版请接 KaTeX。
 - 组件返回 `<span>`，可安全嵌进 `<p>`；填空槽带 `aria-label="填空"`，读屏不会读成一串下划线。
 
 ## 相关
