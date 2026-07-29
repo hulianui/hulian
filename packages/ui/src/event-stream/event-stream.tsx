@@ -17,12 +17,15 @@ import type { EventStreamItem, EventStreamProps, EventStreamTone } from "./event
 //  时间不做格式化：时区、精度、相对/绝对是调用方的领域知识，
 //  组件擅自 toLocaleString 只会在跨时区场景制造错误。
 
+// 用语义色而非 chart-N：chart-* 是**图表分类色**，只保证彼此可区分，不承载
+// "危险/正常"的含义 —— 拿它当状态色会出现 danger 渲染成橙色这类语义错位。
+// 语义色在明暗主题下自动切值（semantic.css 的 danger-600 / danger-500）。
 const TONE_DOT: Record<EventStreamTone, string> = {
   neutral: "bg-border",
-  info: "bg-[var(--color-chart-2)]",
-  success: "bg-[var(--color-chart-1)]",
-  warning: "bg-[var(--color-chart-4)]",
-  danger: "bg-[var(--color-chart-3)]",
+  info: "bg-primary",
+  success: "bg-success",
+  warning: "bg-warning",
+  danger: "bg-danger",
 };
 
 const TONE_TEXT: Record<EventStreamTone, string> = {
@@ -120,7 +123,7 @@ function Row({
           >
             <span
               aria-hidden
-              className="inline-block size-1.5 shrink-0 rounded-full bg-[var(--color-chart-4)]"
+              className="inline-block size-1.5 shrink-0 rounded-full bg-warning"
             />
             <span className="min-w-0 truncate">已放行：{item.overridden}</span>
           </div>

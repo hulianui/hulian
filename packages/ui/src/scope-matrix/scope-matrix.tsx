@@ -62,8 +62,10 @@ function Bucket({
     setError(null);
   };
 
+  // 语义色：允许=success / 禁止=danger。用 chart-N 会让"禁止"渲染成
+  // 一个没有危险含义的分类色，削弱它的警示作用。
   const tone =
-    kind === "allow" ? "var(--color-chart-1)" : "var(--color-chart-3)";
+    kind === "allow" ? "var(--color-success)" : "var(--color-danger)";
 
   return (
     <section
@@ -137,7 +139,7 @@ function Bucket({
             </button>
           </div>
 
-          {error != null && <p className="text-xs text-[var(--color-chart-3)]">{error}</p>}
+          {error != null && <p className="text-xs text-danger">{error}</p>}
 
           {suggestions.length > 0 && (
             <div className="flex flex-wrap gap-1">

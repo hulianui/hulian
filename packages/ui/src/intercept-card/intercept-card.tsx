@@ -17,16 +17,17 @@ import type { InterceptCardProps, InterceptSeverity } from "./intercept-card.typ
 //  一次没写理由的放行，半年后没人记得当时为什么放行 —— 那等于没有治理。
 //  故 onOverride 在理由为空时不会被调用（按钮禁用），这是刻意的硬约束。
 
+// 语义色而非 chart-N（后者是图表分类色，不承载危险/正常的含义）
 const BAR: Record<InterceptSeverity, string> = {
-  block: "bg-[var(--color-chart-3)]",
-  confirm: "bg-[var(--color-chart-4)]",
-  notice: "bg-[var(--color-chart-2)]",
+  block: "bg-danger",
+  confirm: "bg-warning",
+  notice: "bg-primary",
 };
 
 const BADGE: Record<InterceptSeverity, string> = {
-  block: "bg-[var(--color-chart-3)]/12 text-[var(--color-chart-3)]",
-  confirm: "bg-[var(--color-chart-4)]/12 text-[var(--color-chart-4)]",
-  notice: "bg-[var(--color-chart-2)]/12 text-[var(--color-chart-2)]",
+  block: "bg-danger/12 text-danger",
+  confirm: "bg-warning/12 text-warning",
+  notice: "bg-primary/12 text-primary",
 };
 
 const LABEL: Record<InterceptSeverity, string> = {
