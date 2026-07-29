@@ -20,6 +20,7 @@ import {
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "../_icons";
 import { buttonVariants } from "../button";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { getPaginationRange } from "./pagination.range";
 import type { PaginationProps } from "./pagination.types";
@@ -98,8 +99,9 @@ export function Pagination({
     if (totalItems != null) return Math.max(1, Math.ceil(Math.max(0, totalItems) / Math.max(1, pageSize)));
     return 1;
   })();
-  if (process.env.NODE_ENV !== "production" && total != null && totalItems != null) {
-    console.warn(
+  if (total != null && totalItems != null) {
+    warnOnce(
+      "pagination/total-and-totalItems",
       "[hulian] Pagination 同时收到 total（总页数）与 totalItems（总条数），以 total 为准。二者只该给一个。",
     );
   }

@@ -125,4 +125,48 @@ describe("isInteractiveDragTarget（卡片内交互元素放行拖拽）", () =>
     expect(isInteractiveDragTarget(document.createElement("div"))).toBe(false);
     expect(isInteractiveDragTarget(null)).toBe(false);
   });
+
+  // 上面几条都拿孤立 createElement 测，测不到真实渲染出来的卡片长什么样 —— 而问题恰恰出在那里：
+  // dnd-kit 给可拖卡片挂了 role="button"，它本身就在交互元素选择器里。不传边界时守卫会命中
+  // 卡片自己，于是**每张卡都拖不动**（症状是整个看板失灵，容易误判成 dnd-kit 坏了）。
+  it("真实渲染的卡片：按在普通内容上仍可拖（边界不含卡片自身）", () => {
+    const columns = [{ id: "todo", title: "待办" }];
+    const items = [{ id: "1", col: "todo", text: "卡片甲" }];
+    const { container, getByText } = render(
+      <Kanban
+        columns={columns}
+        items={items}
+        getId={(i) => i.id}
+        getColumnId={(i) => i.col}
+        onMove={() => {}}
+        renderItem={(i) => <span>{i.text}</span>}
+      />,
+    );
+    const card = container.querySelector("li[role='button']")!;
+    expect(card).toBeTruthy(); // 前提成立：dnd-kit 确实挂了 role="button"
+    // 传边界 → 卡片自身不参与判定 → 可拖
+    expect(isInteractiveDragTarget(getByText("卡片甲"), card)).toBe(false);
+  });
+
+  it("真实渲染的卡片：按在行内按钮上不发起拖拽", () => {
+    const columns = [{ id: "todo", title: "待办" }];
+    const items = [{ id: "1", col: "todo", text: "卡片甲" }];
+    const { container, getByText } = render(
+      <Kanban
+        columns={columns}
+        items={items}
+        getId={(i) => i.id}
+        getColumnId={(i) => i.col}
+        onMove={() => {}}
+        renderItem={(i) => (
+          <span>
+            {i.text}
+            <button type="button">归档</button>
+          </span>
+        )}
+      />,
+    );
+    const card = container.querySelector("li[role='button']")!;
+    expect(isInteractiveDragTarget(getByText("归档"), card)).toBe(true);
+  });
 });

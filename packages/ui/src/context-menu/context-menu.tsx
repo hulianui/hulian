@@ -20,7 +20,7 @@ const overlayTransition = {
 
 // 面板皮肤（主菜单 / 子菜单共用），抽常量避免漂移。
 const popupClass =
-  "min-w-[8rem] rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0";
+  "min-w-[8rem] rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0";
 
 export function ContextMenu(props: ComponentProps<typeof BaseContextMenu.Root>) {
   return <BaseContextMenu.Root {...props} />;

@@ -229,7 +229,7 @@ export function DateRangePicker({
           <BasePopover.Popup
             className={cn(
               "flex rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
-              "data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+              "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
             style={overlayTransition}
           >

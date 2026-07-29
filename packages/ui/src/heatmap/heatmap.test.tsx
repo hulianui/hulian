@@ -4,14 +4,17 @@ import { buildMatrix, bucketize } from "./heatmap.matrix";
 import { Heatmap } from "./heatmap";
 
 describe("buildMatrix", () => {
-  it("命中已有点，缺省 0", () => {
+  it("命中已有点，缺席返回 undefined（不与真实 0 混同）", () => {
     const { get, xs, ys } = buildMatrix([
       { x: "周一", y: "A", value: 5 },
       { x: "周二", y: "B", value: 3 },
+      { x: "周一", y: "B", value: 0 },
     ]);
     expect(get("A", "周一")).toBe(5);
     expect(get("B", "周二")).toBe(3);
-    expect(get("A", "周二")).toBe(0);
+    // 真实的 0 照常返回 0，缺席才是 undefined —— 两者必须可分
+    expect(get("B", "周一")).toBe(0);
+    expect(get("A", "周二")).toBeUndefined();
     expect(xs).toContain("周一");
     expect(ys).toContain("B");
   });
@@ -62,7 +65,7 @@ describe("Heatmap", () => {
     const fn = vi.fn();
     const { getByLabelText } = render(<Heatmap data={data} onCellClick={fn} showLabels={false} />);
     fireEvent.click(getByLabelText("支付 · 周一：8"));
-    expect(fn).toHaveBeenCalledWith({ x: "周一", y: "支付", value: 8 });
+    expect(fn).toHaveBeenCalledWith({ x: "周一", y: "支付", value: 8, empty: false });
   });
   it("formatTooltip 自定义提示", () => {
     const { getByLabelText } = render(
@@ -140,5 +143,59 @@ describe("Heatmap 小数值域 / 图例（issue #10）", () => {
   it("默认不渲染图例（向后兼容）", () => {
     const { container } = render(<Heatmap data={rates} showLabels={false} />);
     expect(container.querySelectorAll(".rounded-\\[2px\\]").length).toBe(2);
+  });
+});
+
+describe("Heatmap 无数据 vs 值为 0（issue #25）", () => {
+  // xs=[周一,周二] ys=[登录,支付]：(登录,周一) 是真实的 0，(登录,周二) 在 data 里根本不存在
+  const sparse = [
+    { x: "周一", y: "登录", value: 0 },
+    { x: "周二", y: "支付", value: 6 },
+  ];
+  const zeroLabel = "登录 · 周一：0";
+
+  it("默认 tooltip：缺席格说「无数据」，真实 0 仍说 0", () => {
+    const { getByLabelText } = render(<Heatmap data={sparse} showLabels={false} />);
+    expect(getByLabelText(zeroLabel)).toBeTruthy();
+    expect(getByLabelText("登录 · 周二：无数据")).toBeTruthy();
+  });
+
+  it("formatTooltip 能拿到 empty 标记来自己派生文案", () => {
+    const { getByLabelText } = render(
+      <Heatmap
+        data={sparse}
+        showLabels={false}
+        formatTooltip={(c) => (c.empty ? `${c.y}未作答` : `${c.y}得分${c.value}`)}
+      />,
+    );
+    expect(getByLabelText("登录未作答")).toBeTruthy();
+    expect(getByLabelText("登录得分0")).toBeTruthy();
+  });
+
+  it("向后兼容锁：不传 emptyCellTone 时缺席格与真实 0 同色", () => {
+    const { getByLabelText } = render(<Heatmap data={sparse} showLabels={false} />);
+    const zero = getByLabelText(zeroLabel) as HTMLElement;
+    const empty = getByLabelText("登录 · 周二：无数据") as HTMLElement;
+    expect(empty.style.background).toBe(zero.style.background);
+  });
+
+  it("传 emptyCellTone 时缺席格与真实 0 渲染成不同颜色", () => {
+    const { getByLabelText } = render(
+      <Heatmap data={sparse} showLabels={false} emptyCellTone="#eeeeee" />,
+    );
+    const zero = getByLabelText(zeroLabel) as HTMLElement;
+    const empty = getByLabelText("登录 · 周二：无数据") as HTMLElement;
+    expect(empty.style.background).not.toBe(zero.style.background);
+    // 真实 0 的色阶不受影响（仍是 0 档色，与不传时一致）
+    expect(zero.style.background).toContain("var(--color-surface-hover)");
+  });
+
+  it("emptyCellTone + showLegend：图例多一个「无数据」样例块", () => {
+    const { container, getByText } = render(
+      <Heatmap data={sparse} showLabels={false} showLegend emptyCellTone="#eeeeee" />,
+    );
+    expect(getByText("无数据")).toBeTruthy();
+    // 4 个数据格 + 6 个色阶块（colorScale 5 + 0 档）+ 1 个无数据块
+    expect(container.querySelectorAll(".rounded-\\[2px\\]").length).toBe(11);
   });
 });

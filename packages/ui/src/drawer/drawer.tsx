@@ -8,16 +8,28 @@ import type { DrawerContentProps } from "./drawer.types";
 
 // 同 dialog.tsx：overlay 自管 mount/unmount，用 motion token CSS 镜像驱动原生过渡，零 motion 运行时。
 // transition 简写(而非长写)：Base UI 过渡期会往内联 style 注入 transition 简写，与长写混用 →
-// React "shorthand/longhand 混用" 警告并丢弃长写。简写同时覆盖 transform(panel 滑动)+opacity(backdrop 淡入)。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
+// React "shorthand/longhand 混用" 警告并丢弃长写。
+//
+// 遮罩与面板刻意分开两套参数（原先共用一套 base/out）：
+//  · 遮罩只是淡入淡出，跟随 overlay 通用档 base(200ms)/out 即可；
+//  · 面板是整屏尺度的位移 —— 用 out(expo) + 200ms 会"冲到位再急停"，抽屉越大越明显。
+//    换 drawer 曲线（iOS/Ionic）+ slow(300ms)：起步果断、尾段长距离减速，大面积滑动才有从容感。
+const backdropTransition = {
+  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}`,
+} as const;
+
+const panelTransition = {
+  transition: `transform ${motionDurationCss.slow} ${motionEaseCss.drawer}, opacity ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
 // side 决定贴边定位 + 尺寸 + 内边框 + 关闭态 translate（落在 starting/ending-style → 滑入/滑出）。
 export const drawerVariants = cva(
   [
     // 定位（fixed/absolute）由 DrawerContent 按 container 决定，故不写死在这里。
-    "z-50 flex flex-col gap-1 bg-surface border-hairline p-6 text-foreground shadow-xl outline-none",
+    // --hl-overlay-pad 与 p-6 必须同值：正文滚动区靠它做负边距补偿（见 DrawerContent 内注释）。
+    // 消费方若用 className 覆盖内边距（如 p-0 做铺满型抽屉），必须一并覆盖这个变量，
+    // 否则正文会向抽屉外溢出 —— 例：className="p-0 [--hl-overlay-pad:0px]"。
+    "z-50 flex flex-col gap-1 bg-surface border-hairline p-6 [--hl-overlay-pad:1.5rem] text-foreground shadow-xl outline-none",
   ],
   {
     variants: {
@@ -61,17 +73,31 @@ export function DrawerContent({
           place,
           "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
         )}
-        style={overlayTransition}
+        style={backdropTransition}
       />
-      <BaseDialog.Popup className={cn(place, drawerVariants({ side }), className)} style={overlayTransition}>
+      <BaseDialog.Popup className={cn(place, drawerVariants({ side }), className)} style={panelTransition}>
         {title && <BaseDialog.Title className="text-lg font-semibold">{title}</BaseDialog.Title>}
         {description && (
           <BaseDialog.Description className="text-sm text-muted">
             {description}
           </BaseDialog.Description>
         )}
-        {/* 正文独立滚动，长内容不挤压 footer，footer 始终钉底可见 */}
-        <div className="mt-2 min-h-0 flex-1 overflow-y-auto">{children}</div>
+        {/* 正文独立滚动，长内容不挤压 footer，footer 始终钉底可见。
+            横向负边距 + 等量内边距同 dialog.tsx：overflow-y-auto 会连带把 overflow-x 从 visible
+            变成裁剪，而滚动容器宽度就等于内容宽度，w-full 的表单控件与它左右边界零余量，
+            focus 环（ring-2 + ring-offset-2 向外 4px）的两条竖边正好落在 padding box 外被切掉。
+            负边距铺满 Popup 宽度、等量内边距把内容推回原位，给焦点环腾出画的地方；
+            净宽度变化为零，top/bottom 这类矮变体也不会因此冒出横向滚动条。
+            走 --hl-overlay-pad 变量而非写死 -mx-6：抽屉的内边距可被 className 覆盖
+            （仓库内就有 `className="w-72 p-0"` 的铺满型用法），写死会让正文溢出到抽屉外。
+
+            纵向同样要给焦点环留位（`mt-1 pt-1` 与 `-mb-1 pb-1`，视觉间距净变化为零）：
+            表单最后一个控件的下边界与滚动容器完全贴合，它的环往下那 4px 一样会被切掉。
+            但纵向**只留 4px 而不是跟横向一样借 24px**：上下方紧挨着标题和 footer，
+            借多了滚动内容会从标题底下穿出来一大截；4px 恰好够环画，穿透幅度肉眼不可见。 */}
+        <div className="mx-[calc(var(--hl-overlay-pad,1.5rem)*-1)] -mb-1 mt-1 min-h-0 flex-1 overflow-y-auto px-[var(--hl-overlay-pad,1.5rem)] pb-1 pt-1">
+          {children}
+        </div>
         {footer != null && (
           <div className="mt-4 flex shrink-0 items-center justify-end gap-2 border-t border-border pt-4">
             {footer}

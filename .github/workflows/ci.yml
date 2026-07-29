@@ -55,6 +55,45 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  # 以消费方身份 typecheck —— 防「库内 tsc 绿、装出去就挂」这一整类问题。
+  #
+  # 上面 verify 里的 `pnpm typecheck` 跑在库自己的环境里，而那个环境比真实消费方**宽松**：
+  # packages/ui/tsconfig.json 的 `types: ["vitest/globals"]` 会顺着 vitest 的类型链把
+  # @types/node 混进来，于是库里任何一处裸 `process` / `Buffer` 在库内合法、在只跑浏览器的
+  # 消费方那里却是 TS2580（hulianui/hulian#24）；同理 monorepo 根 node_modules 有求必应，
+  # 掩盖了 barrel 拖出的依赖缺失（hulianui/hulian#19）。
+  #
+  # 这道门禁刻意还原消费方的类型环境：走 pnpm pack 产物（不是 workspace 链接）、不装
+  # @types/node、tsconfig 不写 types 字段、临时工程建在 ${{ runner.temp }}（仓库之外，
+  # 否则 tsc 上溯会捡到 monorepo 根的 @types/node，门禁形同虚设）。
+  # 具体步骤与各处断言见 scripts/consumer-typecheck.sh 里的注释。
+  #
+  # 与 verify 并行、不设 needs：它测的是发布产物的可消费性，与文档站构建互不依赖。
+  consumer-smoke:
+    name: Consumer Typecheck (packed tarball)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 8.15.5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # 有意不在仓库根跑 pnpm install：pack 不需要 node_modules，
+      # 且少装一次也少一分把 monorepo 依赖泄漏给消费方工程的机会。
+      - name: Pack, install as a consumer, typecheck
+        env:
+          CONSUMER_SMOKE_DIR: ${{ runner.temp }}/hulian-consumer-smoke
+        run: bash scripts/consumer-typecheck.sh
+
   # 中国镜像站点：push 到 master 时把静态产物 rsync 到阿里云服务器
   # （hulianui-zh.haloritual.com · 直连阿里云绕开 Cloudflare）。
   # 与 Cloudflare Pages 自动发布并行 —— 双发，同一份产物。

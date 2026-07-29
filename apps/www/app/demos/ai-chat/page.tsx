@@ -407,7 +407,10 @@ export default function AiChatDemo() {
                 </Button>
               }
             />
-            <DrawerContent side="left" className="w-72 p-0">
+            {/* 铺满型抽屉：Rail 自带内边距，故去掉 Popup 的 p-6。
+                --hl-overlay-pad 必须跟着一起归零 —— 正文滚动区用它做负边距补偿（给焦点环让位），
+                只改 p-0 不改变量会让正文向抽屉外溢出 24px。 */}
+            <DrawerContent side="left" className="w-72 p-0 [--hl-overlay-pad:0px]">
               <Rail
                 convos={convos}
                 activeId={activeId}

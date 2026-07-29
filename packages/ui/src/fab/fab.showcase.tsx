@@ -1,20 +1,31 @@
 "use client";
-import { Plus, Search, Copy, ExternalLink } from "../_icons";
+import { Plus, Search, Copy, ExternalLink, GripVertical } from "../_icons";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Fab } from "./fab";
 
 // Fab 默认 fixed 贴视口，gallery 里会飘到整页角落；demo 用 relative 框 + className 覆盖 fixed→absolute 收进框内。
-function FabBox({ withActions, label }: { withActions?: boolean; label?: string }) {
+function FabBox({
+  withActions,
+  label,
+  draggable,
+}: {
+  withActions?: boolean;
+  label?: string;
+  draggable?: boolean;
+}) {
   return (
     <div
       className={`relative ${withActions ? "h-72" : "h-56"} w-full max-w-md overflow-hidden rounded-[var(--radius)] border border-border bg-surface-hover`}
     >
       <div className="p-4 text-sm text-muted">
-        右下角悬浮按钮{withActions ? "（点击展开子动作）" : label ? "（extended 胶囊态）" : ""}。
+        {draggable
+          ? "按住悬浮按钮可拖着走（松手后停在原地）。"
+          : `右下角悬浮按钮${withActions ? "（点击展开子动作）" : label ? "（extended 胶囊态）" : ""}。`}
       </div>
       <Fab
         className="absolute bottom-4 right-4"
         label={label}
+        draggable={draggable}
         actions={
           withActions
             ? [
@@ -24,7 +35,16 @@ function FabBox({ withActions, label }: { withActions?: boolean; label?: string 
               ]
             : undefined
         }
-        icon={label ? <ExternalLink className="size-5" aria-hidden /> : <Plus className="size-6" aria-hidden />}
+        icon={
+          // 可拖拽示例用抓握手柄图标，让「按住能拖」在按钮本体上就可读，不必只靠旁边说明文字。
+          draggable ? (
+            <GripVertical className="size-5" aria-hidden />
+          ) : label ? (
+            <ExternalLink className="size-5" aria-hidden />
+          ) : (
+            <Plus className="size-6" aria-hidden />
+          )
+        }
       />
     </div>
   );
@@ -56,12 +76,20 @@ export const fabShowcase: ShowcaseSpec = {
 />`,
       render: () => <FabBox withActions />,
     },
+    {
+      title: "可拖拽",
+      description:
+        "draggable 默认关闭（不开则按住不动）。开启后按住主钮即可拖到任意位置；位移超过 3px 视为拖拽，本次抬手不触发 onClick。",
+      code: `<Fab draggable label="按住拖我" icon={<GripVertical />} onClick={() => alert("新建")} />`,
+      render: () => <FabBox draggable label="按住拖我" />,
+    },
   ],
   controls: [],
   states: [
     { name: "单按钮", render: () => <FabBox /> },
     { name: "Extended 胶囊（带文字）", render: () => <FabBox label="返回示例库" /> },
     { name: "Speed-dial 子动作", render: () => <FabBox withActions /> },
+    { name: "可拖拽（draggable）", render: () => <FabBox draggable label="按住拖我" /> },
   ],
   renderWithProps: () => <FabBox withActions />,
   toCode: () =>

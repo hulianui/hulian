@@ -1,2 +1,2 @@
 export { Sortable } from "./sortable";
-export type { SortableProps } from "./sortable.types";
+export type { SortableItemState, SortableProps } from "./sortable.types";

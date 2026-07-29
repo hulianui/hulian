@@ -33,7 +33,8 @@ import { TreeSelect } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 无效态（外壳变 danger） |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸 |
-| searchable | `boolean` | `true` | 浮层内树搜索框，多层命中跳转 |
+| clearable | `boolean` | `false` | 可清除：有值且未禁用时触发器右侧 hover/聚焦浮出清除按钮，点击回到未选态（单选回传 `""`，多选回传 `[]`）。与 [Select](../select/select.md) 的 `clearable` 语义一致 |
+| searchable | `boolean` | `false` | 浮层内树搜索框，多层命中跳转 |
 | showLine | `boolean` | — | 显示树连接线 |
 | className | `string` | — | 透传到触发器 |
 
@@ -52,10 +53,15 @@ const [v, setV] = useState<string | string[]>("");
 // 多选：父级勾选级联到叶，取消单叶父级落半选
 const [v, setV] = useState<string | string[]>(["fe-web", "fe-mini"]);
 <TreeSelect nodes={NODES} multiple value={v} onChange={setV} placeholder="勾选可见部门" />
+
+// 可清除：作为可留空的筛选维度（留空 = 不限）
+const [dept, setDept] = useState<string | string[]>("");
+<TreeSelect nodes={NODES} clearable value={dept} onChange={setDept} placeholder="全部部门" />
 ```
 
 ## 禁忌 / 坑
 
+- 单选默认**没有清除入口**，选中后无法在组件内回到未选态；凡是「可留空的筛选维度」都要开 `clearable`，否则筛选条件只能收窄不能放宽。
 - `value` 受控时 `multiple` 切换会改变值的类型（string ↔ string[]），onChange 回调的入参类型随 `multiple` 而变，消费侧需按当前模式分支处理，不要混存。
 - 多选下 `value` 只需传叶子/已选 key，父级半选态由组件依树结构派生，不要手动塞入半选父 key。
 

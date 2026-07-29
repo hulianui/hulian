@@ -15,6 +15,7 @@ import {
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "../lib/cn";
+import { hasInteractiveAncestorWithin } from "../lib/drag-guard";
 import type { KanbanColumn, KanbanMoveEvent, KanbanProps } from "./kanban.types";
 
 // 看板（"use client"·@dnd-kit headless 多容器 + 瑚琏皮肤）：
@@ -27,12 +28,18 @@ const COL_PREFIX = "kbcol:";
 
 // 卡片里的交互元素（链接/按钮/表单控件）按下时不应触发整卡拖拽——否则点链接/按钮会被拖拽劫持，
 // 消费者就得在每个元素上手写 stopPropagation。组件内部统一放行，卡片可塞任意交互内容而无需补丁。
-// 留 data-no-drag 逃生舱给自定义元素显式声明「我不拖」。
-const INTERACTIVE_SELECTOR = "a,button,input,textarea,select,label,[role='button'],[role='link'],[data-no-drag]";
+// 留 data-no-drag 逃生舱给自定义元素显式声明「我不拖」。口径与 Sortable 共用，见 lib/drag-guard.ts。
 
-/** 判断 pointerdown 的目标是否落在卡片内的交互元素上（落在则不发起拖拽）。 */
-export function isInteractiveDragTarget(target: EventTarget | null): boolean {
-  return target instanceof Element && target.closest(INTERACTIVE_SELECTOR) != null;
+/**
+ * 判断 pointerdown 的目标是否落在卡片内的交互元素上（落在则不发起拖拽）。
+ *
+ * @param card 卡片元素（activator 自身），作为向上查找的边界。
+ *   **必须传**：dnd-kit 会给卡片挂 `role="button"`，不传边界就会命中卡片自己，
+ *   于是每次按下都被判成「按在交互元素上」，整卡拖拽全部失效。
+ *   省略只为兼容旧签名，行为退化成有此缺陷的老版本。
+ */
+export function isInteractiveDragTarget(target: EventTarget | null, card?: Element | null): boolean {
+  return hasInteractiveAncestorWithin(target, card ?? null);
 }
 
 /** 解析拖拽落点为 KanbanMoveEvent（纯函数，便于单测）。over 可能是卡片 id 或带前缀的列 id。 */
@@ -84,7 +91,8 @@ function KanbanCard<T>({
   const guardedListeners = listeners && {
     ...listeners,
     onPointerDown: (e: ReactPointerEvent) => {
-      if (isInteractiveDragTarget(e.target)) return;
+      // 传 currentTarget（挂着 listeners 的卡片 li）当边界，否则会命中它自己的 role="button"
+      if (isInteractiveDragTarget(e.target, e.currentTarget)) return;
       listeners.onPointerDown?.(e);
     },
   };

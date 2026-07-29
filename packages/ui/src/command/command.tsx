@@ -10,8 +10,12 @@ import type { CommandItemData, CommandProps } from "./command.types";
 // 模态外壳复用瑚琏 Dialog 引擎（Base UI Dialog：Portal + Backdrop + Popup + focus-trap + Esc + 点外关闭），
 // 同 drawer.tsx 装配；overlay 自管 mount/unmount，用 motion token CSS 镜像驱动原生过渡，零 motion 运行时。
 // transition 用简写：Base UI 过渡期会往内联 style 注入 transition 简写，与长写混用会触发 React 警告并丢弃长写。
+//
+// 命令面板刻意「无位移、更快」：它是键盘高频入口（⌘K 一天可开数十上百次），
+// 位移/缩放进场会让每一次唤起都显得慢半拍——与其他 overlay 的 base(200ms)+scale 不同，
+// 这里只留 fast(150ms) 的 opacity，既不从"无"硬闪出来，也不拖住高频动作。
 const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
+  transition: `opacity ${motionDurationCss.fast} ${motionEaseCss.out}`,
 } as const;
 
 // 默认过滤：大小写不敏感子串匹配 keywords + 字符串型 label + value。
@@ -172,7 +176,7 @@ export function Command({
           initialFocus={inputRef}
           className={cn(
             "fixed left-1/2 top-[15vh] z-50 flex max-h-[70vh] w-[min(92vw,40rem)] -translate-x-1/2 flex-col overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
-            "data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0 data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0",
+            "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             className,
           )}
           style={overlayTransition}

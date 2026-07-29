@@ -3528,7 +3528,7 @@
       "name": "heatmap",
       "type": "registry:ui",
       "title": "Heatmap",
-      "description": "热力图 · 网格色阶映射(value→bucket→primary 透明度档·纯函数 buildMatrix/bucketize 可测) + 小数值域 domain/百分比 valueFormat + 色阶图例 + 行…",
+      "description": "热力图 · 网格色阶映射(value→bucket→primary 透明度档·纯函数 buildMatrix/bucketize 可测) + 小数值域 domain/百分比 valueFormat + 色阶图例 + 无…",
       "categories": [
         "data-display"
       ],

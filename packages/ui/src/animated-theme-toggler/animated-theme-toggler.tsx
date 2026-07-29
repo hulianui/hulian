@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Moon, Sun } from "../_icons";
 import { cn } from "../lib/cn";
+import { isDev } from "../lib/is-dev";
 import { THEME_STORAGE_KEY, useThemeOptional, type Theme } from "../theme/use-theme";
 import type { AnimatedThemeTogglerProps } from "./animated-theme-toggler.types";
 
@@ -33,7 +34,7 @@ function useStandaloneTheme(enabled: boolean) {
             ? "dark"
             : "light";
     setTheme(initial);
-    if (process.env.NODE_ENV !== "production") {
+    if (isDev) {
       console.warn(
         "[hulian] AnimatedThemeToggler 未找到 ThemeProvider，已降级为自持主题态（直接读写 <html data-theme>）。若要与其他组件联动，请在上层挂 ThemeProvider。",
       );

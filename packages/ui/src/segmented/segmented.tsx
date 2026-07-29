@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { motionDurationCss, motionEaseCss, pressableClass } from "../motion";
 import type { SegmentedProps } from "./segmented.types";
 
 // 尺寸：root 高度 + 段内边距。
@@ -162,7 +162,9 @@ export function Segmented({
             onClick={() => select(item.value)}
             onKeyDown={(e) => onKeyDown(e, idx)}
             className={cn(
-              "relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] font-medium outline-none transition-colors",
+              // pressableClass 平替 transition-colors 并补按下缩放：滑块（下方 absolute 层）不受影响，
+              // 只有当前项的文字/图标轻微内缩，形成"按到了"的即时反馈。
+              `relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] font-medium outline-none ${pressableClass}`,
               sizeClasses[size].item,
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
               isSelected ? "text-foreground" : "hover:text-foreground",

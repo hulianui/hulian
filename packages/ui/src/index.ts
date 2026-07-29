@@ -253,6 +253,7 @@ export {
   motionEase,
   motionEaseCss,
   pressable,
+  pressableClass,
   fadeScale,
   shimmer,
 } from "./motion";

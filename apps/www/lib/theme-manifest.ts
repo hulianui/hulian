@@ -17,6 +17,7 @@ export const THEME_NAV: ThemeNavItem[] = [
   { slug: "breakpoints", label: "断点", en: "Breakpoints", blurb: "响应式断点与用法" },
   { slug: "radius", label: "圆角", en: "Radius", blurb: "--radius 基准与派生" },
   { slug: "shadows", label: "阴影", en: "Shadows", blurb: "层级投影比例" },
+  { slug: "motion", label: "动效", en: "Motion", blurb: "缓动曲线 / 时长 / 该不该动" },
   { slug: "cursors", label: "光标", en: "Cursors", blurb: "交互态指针语义" },
 ];
 
@@ -149,6 +150,61 @@ export const SHADOW_SCALE = [
   { name: "shadow-lg", use: "弹层 / Popover" },
   { name: "shadow-xl", use: "对话框 / 抽屉" },
   { name: "shadow-2xl", use: "命令面板 / 大模态" },
+];
+
+// ===== 动效（真源：@hulianui/tokens preset.css @theme --ease-* + @hulianui/ui motion/tokens.ts）=====
+// 三处必须同值：preset.css 的 @theme（工具类）、motion/tokens.ts 的 JS/CSS 双镜像、此处文档镜像。
+export interface EasingToken {
+  /** Tailwind 工具类（--ease-drawer 无对应类时留空） */
+  utility: string;
+  cssVar: string;
+  curve: string;
+  label: string;
+  use: string;
+}
+export const EASINGS: EasingToken[] = [
+  {
+    utility: "ease-out",
+    cssVar: "--ease-out",
+    curve: "cubic-bezier(0.16, 1, 0.3, 1)",
+    label: "减速（默认档）",
+    use: "进场 / 退场 / hover / 按压 —— 起步即最快，用户第一眼就看到位移，因此「感觉」比同时长的其它曲线更跟手。不确定用哪条时用它。",
+  },
+  {
+    utility: "ease-in-out",
+    cssVar: "--ease-in-out",
+    curve: "cubic-bezier(0.65, 0, 0.35, 1)",
+    label: "加速后减速",
+    use: "元素在屏内位移 / 形变（不涉及出现与消失）。两端都平缓，像真实物体起步与停稳。",
+  },
+  {
+    utility: "—",
+    cssVar: "--ease-drawer",
+    curve: "cubic-bezier(0.32, 0.72, 0, 1)",
+    label: "抽屉（iOS / Ionic）",
+    use: "整屏尺度的滑入滑出：Drawer、ActionSheet。尾段比 ease-out 长得多，大面积位移才不会「冲到位再急停」。",
+  },
+];
+
+export interface DurationToken {
+  name: string; // motionDuration 的键
+  ms: number;
+  utility: string;
+  use: string;
+}
+export const DURATIONS: DurationToken[] = [
+  { name: "fast", ms: 150, utility: "duration-150", use: "按压反馈 / 贴身微交互（100–160ms）" },
+  { name: "base", ms: 200, utility: "duration-200", use: "浮层进出场：Tooltip、Popover、Select、Menu" },
+  { name: "slow", ms: 300, utility: "duration-300", use: "大块转场：Drawer / ActionSheet 面板滑动" },
+  { name: "entrance", ms: 600, utility: "duration-600", use: "首屏逐级揭示 / 滚动入场（非交互反馈，可从容）" },
+];
+
+/** 该不该动 —— 按用户一天看到它多少次决定，而不是按「好不好看」 */
+export const MOTION_FREQUENCY = [
+  { freq: "每天 100+ 次", example: "⌘K 命令面板、键盘快捷键", verdict: "不做动画", tone: "danger" as const },
+  { freq: "每天几十次", example: "hover 态、列表导航", verdict: "去掉或大幅削减", tone: "warning" as const },
+  { freq: "偶尔", example: "对话框、抽屉、Toast", verdict: "常规动效", tone: "neutral" as const },
+  { freq: "罕见 / 首次", example: "引导、成功庆祝", verdict: "可以有惊喜", tone: "success" as const },
 ];
 
 // ===== 光标（交互态指针语义）=====

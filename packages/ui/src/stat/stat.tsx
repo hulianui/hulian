@@ -1,11 +1,21 @@
 import { TrendingUp, TrendingDown } from "../_icons";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import type { StatProps } from "./stat.types";
 
 // KPI 指标卡：纯瑚琏皮肤（无图表库）。升=text-primary / 降=text-danger（无 success）。
-export function Stat({ label, value, delta, deltaLabel, icon, chart, className, ...props }: StatProps) {
+export function Stat({ label, value, delta, deltaLabel, hint, icon, chart, className, ...props }: StatProps) {
   const hasDelta = typeof delta === "number";
   const up = hasDelta && (delta as number) >= 0;
+  // deltaLabel 是趋势行的附属文案，无 delta 时整块趋势不渲染 → 它会被静默吞掉。
+  // 这种「配了没用、还不报错」的形态最难查（TS 过、控制台干净、页面只是少一行字），
+  // 所以开发期显式点名，并指路到 hint（与趋势无关的注脚该走那条）。
+  if (deltaLabel != null && !hasDelta) {
+    warnOnce(
+      "stat/deltaLabel-without-delta",
+      "[hulian] Stat 传了 deltaLabel 但没有 delta，它不会被渲染；若想要与趋势无关的注脚请用 hint。",
+    );
+  }
   return (
     <div
       className={cn("rounded-[var(--radius)] border border-border bg-surface p-5", className)}
@@ -28,6 +38,11 @@ export function Stat({ label, value, delta, deltaLabel, icon, chart, className, 
           </span>
           {deltaLabel ? <span className="whitespace-nowrap text-muted">{deltaLabel}</span> : null}
         </div>
+      ) : null}
+      {hint != null ? (
+        // 排在趋势行之下：趋势是对数值本身的解读，hint 是整张卡的注脚，语义层级更外。
+        // 用 text-xs（比趋势行的 text-sm 小一档）拉开视觉层次，避免两行 muted 文字糊成一片。
+        <div className="mt-1 text-xs text-muted">{hint}</div>
       ) : null}
     </div>
   );

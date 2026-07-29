@@ -6161,7 +6161,8 @@ import { TreeSelect } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 无效态（外壳变 danger） |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸 |
-| searchable | `boolean` | `true` | 浮层内树搜索框，多层命中跳转 |
+| clearable | `boolean` | `false` | 可清除：有值且未禁用时触发器右侧 hover/聚焦浮出清除按钮，点击回到未选态（单选回传 `""`，多选回传 `[]`）。与 [Select](https://hulianui.haloritual.com/components/select) 的 `clearable` 语义一致 |
+| searchable | `boolean` | `false` | 浮层内树搜索框，多层命中跳转 |
 | showLine | `boolean` | — | 显示树连接线 |
 | className | `string` | — | 透传到触发器 |
 
@@ -6180,10 +6181,15 @@ const [v, setV] = useState<string | string[]>("");
 // 多选：父级勾选级联到叶，取消单叶父级落半选
 const [v, setV] = useState<string | string[]>(["fe-web", "fe-mini"]);
 <TreeSelect nodes={NODES} multiple value={v} onChange={setV} placeholder="勾选可见部门" />
+
+// 可清除：作为可留空的筛选维度（留空 = 不限）
+const [dept, setDept] = useState<string | string[]>("");
+<TreeSelect nodes={NODES} clearable value={dept} onChange={setDept} placeholder="全部部门" />
 ```
 
 ## 禁忌 / 坑
 
+- 单选默认**没有清除入口**，选中后无法在组件内回到未选态；凡是「可留空的筛选维度」都要开 `clearable`，否则筛选条件只能收窄不能放宽。
 - `value` 受控时 `multiple` 切换会改变值的类型（string ↔ string[]），onChange 回调的入参类型随 `multiple` 而变，消费侧需按当前模式分支处理，不要混存。
 - 多选下 `value` 只需传叶子/已选 key，父级半选态由组件依树结构派生，不要手动塞入半选父 key。
 
@@ -8470,7 +8476,7 @@ import { GitCommit, shortSha, branchTone, type BranchTone } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Heatmap
 
-> 热力图 · 网格色阶映射(value→bucket→primary 透明度档·纯函数 buildMatrix/bucketize 可测) + 小数值域 domain/百分比 valueFormat + 色阶图例 + 行列标签 + 原生 hover 提示 + 点击下钻 · 代码热点/贡献活动/覆盖率/掌握率·库内首个热力图 · data-display/collection
+> 热力图 · 网格色阶映射(value→bucket→primary 透明度档·纯函数 buildMatrix/bucketize 可测) + 小数值域 domain/百分比 valueFormat + 色阶图例 + 无数据/值为 0 可分(emptyCellTone) + 行列标签 + 原生 hover 提示 + 点击下钻 · 代码热点/贡献活动/覆盖率/掌握率·库内首个热力图 · data-display/collection
 
 ## 何时用
 
@@ -8493,12 +8499,21 @@ import { Heatmap, buildMatrix, bucketize } from "@hulianui/ui"
 | domain | `[number, number]` | `[0, max]` | 显式值域，按 `(value-min)/(max-min)` 比例分档；小数/比率数据传 `[0, 1]` 或收紧到实际区间（如掌握率 `[0.5, 0.9]`）铺满色阶。value ≤ min 落 0 档。 |
 | valueFormat | `(value: number) => string` | `String` | 数值显示格式化，tooltip 默认文案与图例共用（比率转百分比：`(v) => \`${Math.round(v*100)}%\``）。优先于 unit。 |
 | unit | `string` | — | 数值后缀（`"%"`、`" 次"`），拼在原始值后；要换算用 valueFormat。 |
-| showLegend | `boolean` | `false` | 色阶图例（值域下限 → colorScale+1 个色块 → 上限，标签走 valueFormat/unit）。 |
+| emptyCellTone | `string` | — | 缺席格（`data` 里没有这个点）的背景，任意 CSS 颜色/渐变。不传则缺席格与 0 档同色（保持既有视觉）。传了之后色阶图例会多一块「无数据」样例。 |
+| showLegend | `boolean` | `false` | 色阶图例（值域下限 → colorScale+1 个色块 → 上限，标签走 valueFormat/unit；`emptyCellTone` 已传时末尾追加「无数据」块）。 |
 | cellSize | `number` | `14` | 格子边长 px。 |
 | gap | `number` | `3` | 格间距 px。 |
 | showLabels | `boolean` | `true` | 是否显示行/列标签。 |
-| formatTooltip | `(cell: HeatmapCellInfo) => string` | — | 悬停原生提示文案（返回字符串）。 |
+| formatTooltip | `(cell: HeatmapCellInfo) => string` | — | 悬停原生提示文案（返回字符串）。缺席格拿到 `cell.empty === true` 且 `cell.value` 为 0，先判 `empty` 再用 `value`。 |
 | className | `string` | — | — |
+
+`HeatmapCellInfo`（`formatTooltip` / `onCellClick` 的入参）：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| x / y | `string｜number` | 列 / 行标签。 |
+| value | `number` | 该格的值；缺席格恒为 `0`，别拿它判断「有没有数据」。 |
+| empty | `boolean` | 该格在 `data` 里是否缺席。组件始终传；类型上可选只为不破坏旧标注。 |
 
 ## Events
 
@@ -8530,6 +8545,19 @@ const data = MODULES.flatMap((m, mi) =>
 />
 ```
 
+区分「无数据」与「值为 0」（缺席格上色）：
+```tsx
+<Heatmap
+  data={masterySparse}                      // 三班的函数/几何整格缺席；四班·方程是真实的 0 分
+  domain={[0, 1]}
+  valueFormat={(v) => `${Math.round(v * 100)}%`}
+  // 用斜纹而不是另一档灰：条纹在色阶里没有对应物，不会被读成「又一级强度」
+  emptyCellTone="repeating-linear-gradient(45deg, var(--color-border) 0 2px, transparent 2px 4px)"
+  showLegend
+  formatTooltip={(c) => (c.empty ? `${c.y}·${c.x}：未作答` : `${c.y}·${c.x}：${Math.round(c.value * 100)}%`)}
+/>
+```
+
 ## 禁忌 / 坑
 
 注意 `data` 的 `value` 应为确定性数据：showcase 用伪随机公式而非 `Math.random()` 生成，避免 SSR/CSR 首帧色阶不一致。色阶顶档由 `max`（缺省取数据最大值）决定，跨多张图对比时建议显式传同一 `max`（或同一 `domain`）才能横向可比。
@@ -8537,6 +8565,9 @@ const data = MODULES.flatMap((m, mi) =>
 - `unit` 是纯后缀拼接：0–1 比率数据配 `unit="%"` 会显示「0.55%」——比率转百分比必须用 `valueFormat`。
 - 0.6.x 起小数数据不传 `max` 时按真实数据最大值分档（旧版会抬到 1）；依赖旧行为的显式传 `max={1}`。
 - `domain` 的 min 是「0 档下限」：value ≤ min 渲染为最浅档，min 别设成有效数据的下界值本身（如掌握率最低 0.55 就设 0.5）。
+- **「无数据」默认与「值为 0」同色**：缺席格默认仍走 0 档色（贡献活动墙里「这天没提交」本来就该是最浅色，不能改样）。当两者语义相反时——「这个班没作答这个考点」不是教学信号，「掌握率真的 0%」是最红的红灯——必须显式传 `emptyCellTone` 才画得开，光看图发现不了这个合并。
+- 判断有没有数据只能看 `cell.empty`，不能看 `cell.value === 0`：缺席格的 `value` 被兜底成 0（保持 `formatTooltip`/`onCellClick` 的旧签名不破）。默认 tooltip 与 aria-label 对缺席格已自动改说「无数据」，自定义 `formatTooltip` 要自己判 `empty`，否则会印成「0」。
+- `buildMatrix(...).get(y, x)` 0.13 起缺席返回 `undefined`（旧版返回 `0`）；直接消费这个纯函数的代码要自己兜底，比如 `get(y, x) ?? 0`。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -10391,7 +10422,7 @@ import { Sortable } from "@hulianui/ui"
 | items * | T[] | — | 受控数据数组；拖拽后由你据 onChange 写回 state |
 | getId | (item: T) => UniqueIdentifier | 读 `item.id` | 取每项稳定 id，须列表内唯一且稳定 |
 | orientation | `"vertical"｜"horizontal"` | `"vertical"` | 排列方向 |
-| handle | boolean | false | true=仅左侧手柄可拖（触屏/含交互元素的行推荐）；false=整项可拖 |
+| handle | boolean | false | true=仅左侧手柄可拖（触屏体验更稳、抓手更明确）；false=整项可拖。行内交互元素已由组件守卫，两种模式都不会劫持 |
 | className | string | — | 容器类名 |
 
 ## Events
@@ -10404,7 +10435,14 @@ import { Sortable } from "@hulianui/ui"
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| renderItem * | (item: T, state: { dragging: boolean }) => ReactNode | 渲染单项的渲染函数；`state.dragging` 表示该项正被拖拽 |
+| renderItem * | (item: T, state: SortableItemState) => ReactNode | 渲染单项的渲染函数；`state.dragging` 表示该项正被拖拽，`state.index` 是该项在 items 中的下标（0 起） |
+
+`SortableItemState`：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| dragging | boolean | 该项是否正被拖拽 |
+| index | number | 该项在当前 items 中的下标（0 起）。用于「第 N 项」序号与行内控件的唯一 `aria-label`，无需消费方 `items.findIndex` 兜回来（O(n²)） |
 
 ## 示例
 ```tsx
@@ -10425,13 +10463,29 @@ const [items, setItems] = useState(fields);
 // 横向
 <Sortable items={tags} orientation="horizontal" onChange={setTags}
   renderItem={(t) => <span>{t.name}</span>} />
+
+// 行内交互元素 + 序号：整项可拖也不会劫持 input/button
+<Sortable
+  items={questions}
+  onChange={setQuestions}
+  renderItem={(q, { index }) => (
+    <div className="flex items-center gap-2">
+      <span>第 {index + 1} 题</span>
+      <span className="flex-1 truncate">{q.title}</span>
+      <input type="number" value={q.score} aria-label={`第 ${index + 1} 题分值`} onChange={...} />
+      <button type="button" aria-label={`删除第 ${index + 1} 题`} onClick={...}>删除</button>
+    </div>
+  )}
+/>
 ```
 
 ## 禁忌 / 坑
 
 - 受控组件：`onChange` 不会替你改 state，必须自己把新数组写回（`onChange={setItems}`）。
 - `getId` 返回的 id 必须稳定唯一；用数组下标当 id 会在重排后错乱。
-- 行内含按钮/链接等交互元素时设 `handle`，否则整项可拖会拦截子元素的点击/拖拽（参考 [[dnd-kit-draggable-container-guard-interactive-children]]）。
+- 行内的 `input / textarea / select / button / label / a / [role=button] / [role=link] / [contenteditable]` 不会劫持拖拽——守卫内置在指针 sensor 里，**默认（`handle={false}`）就安全**，不必为此设 `handle`（参考 [[dnd-kit-draggable-container-guard-interactive-children]]）。自绘的可拖控件（色卡、滑块、画布）不在上述标签之列，给它加 `data-no-drag` 即可放行。
+- 守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。
+- 展示序号别用 `items.findIndex(...)` 反查（O(n²)），直接取 `renderItem` 第二参的 `state.index`。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -10524,7 +10578,8 @@ import { Stat } from "@hulianui/ui"
 |------|------|------|
 | label* | `ReactNode` | 指标标签 |
 | value* | `ReactNode` | 指标数值（自行格式化好的字符串/节点） |
-| deltaLabel | `ReactNode` | 趋势旁说明文案（如「较上月」） |
+| deltaLabel | `ReactNode` | 趋势旁说明文案（如「较上月」）。**依附于 delta**，不传 delta 则不渲染 |
+| hint | `ReactNode` | 与趋势无关的一行注脚（如「上限 200 题」），独立于 delta 渲染，位于趋势行下方 |
 | icon | `ReactNode` | 角标图标 |
 | chart | `ReactNode` | 图表插槽（如 KPI 趋势 sparkline），渲染在数值行下方、delta 上方 |
 
@@ -10535,10 +10590,18 @@ import { Stat } from "@hulianui/ui"
 
 // 无趋势
 <Stat label="注册用户" value="8,021" icon={<Users className="size-4" />} className="w-64" />
+
+// 与趋势无关的注脚：用 hint，不要塞进 label（标签被撑长、视觉重心跑偏）
+<Stat label="题篮题数" value="12" hint="上限 200 题" className="w-64" />
+
+// hint 与趋势可同时出现：趋势行在上，注脚在下
+<Stat label="参考人数" value="38" delta={6.4} deltaLabel="较上场" hint="2 人未交卷" className="w-64" />
 ```
 
 ## 禁忌 / 坑
-暂无已知坑。`delta` 不传则整块趋势不渲染；正负号由数值符号决定颜色，无需自己加箭头。`value` 不做格式化，需自己传格式化后的内容（要自动千分位/前后缀走 [Statistic](https://hulianui.haloritual.com/components/statistic)）。
+- **`deltaLabel` 依附于 `delta`，单独传会被静默吞掉**：不传 `delta` 时整块趋势不渲染，`deltaLabel` 一起消失——TS 能过、控制台干净、页面只是少一行字。要「数值 + 一行与趋势无关的注脚」请用 `hint`（开发态现在也会 `console.warn` 点名这种误用）。
+- `delta` 不传则整块趋势不渲染；正负号由数值符号决定颜色，无需自己加箭头。
+- `value` 不做格式化，需自己传格式化后的内容（要自动千分位/前后缀走 [Statistic](https://hulianui.haloritual.com/components/statistic)）。
 
 ## 相关
 [Statistic](https://hulianui.haloritual.com/components/statistic) · [Chart](https://hulianui.haloritual.com/components/chart) · [Meter](https://hulianui.haloritual.com/components/meter) · [Timeline](https://hulianui.haloritual.com/components/timeline) · [NumberTicker](https://hulianui.haloritual.com/components/number-ticker) · [WorldMap](https://hulianui.haloritual.com/components/world-map)
@@ -21383,10 +21446,20 @@ import { Fab } from "@hulianui/ui"
 />
 ```
 
+可拖拽（`draggable` 默认 `false`，不开则按住不动）：
+
+```tsx
+<Fab draggable label="按住拖我" icon={<GripVertical />} onClick={() => alert("新建")} />
+```
+
 ## 禁忌 / 坑
 - 默认 `fixed` 贴视口角落，gallery / 容器内演示时用 `className` 覆盖为 `absolute` 收进框内（容器需 `position: relative` + `overflow-hidden`）。
 - 给了 `actions` 时点击主钮是展开/收起子动作，`onClick` 不再触发；只有不给 actions 时主钮才直接触发 `onClick`。
+- `draggable` 默认 `false`——不开启时按住主钮不会有任何位移，这是预期行为而非失效。
 - `draggable` 下若拖拽位移超过 3px，本次抬手不会触发点击（避免拖完误触）。
+- 拖拽偏移写在根节点的 inline `transform` 上，并且只是组件内部 state：不持久化，也不受控（无 `onDragEnd` / 受控位置入参），刷新或重挂载即回到 `position` 指定的贴边处。
+- 拖拽只沿相对按下点的自由位移，不做视口边界钳制——拖到屏幕外不会自动拉回，容器内演示务必配 `overflow-hidden`。
+- 开启后主钮带 `touch-action: none`，移动端在按钮上的手势归拖拽所有，不会再滚动页面。
 
 ## 相关
 [TabBar](https://hulianui.haloritual.com/components/tab-bar) · [ActionSheet](https://hulianui.haloritual.com/components/action-sheet) · [Picker](https://hulianui.haloritual.com/components/picker) · [SwipeAction](https://hulianui.haloritual.com/components/swipe-action) · [PullToRefresh](https://hulianui.haloritual.com/components/pull-to-refresh) · [SafeArea](https://hulianui.haloritual.com/components/safe-area)

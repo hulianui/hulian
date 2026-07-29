@@ -293,7 +293,7 @@ export function InfiniteMenu({
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2000] flex flex-col items-center gap-1 p-4 text-center">
           <h2
             className={cn(
-              "text-base font-semibold text-foreground transition-all duration-300",
+              "text-base font-semibold text-foreground transition-[translate,opacity] duration-300 ease-out",
               isMoving ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100",
             )}
           >
@@ -302,7 +302,7 @@ export function InfiniteMenu({
           {activeItem.description && (
             <p
               className={cn(
-                "max-w-xs text-xs text-muted transition-all duration-300",
+                "max-w-xs text-xs text-muted transition-[translate,opacity] duration-300 ease-out",
                 isMoving ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100",
               )}
             >
@@ -319,7 +319,7 @@ export function InfiniteMenu({
           aria-label={activeItem.title ? `打开 ${activeItem.title}` : "打开激活项"}
           className={cn(
             "absolute right-4 top-4 z-[2000] grid size-10 place-items-center rounded-full",
-            "bg-primary text-primary-foreground shadow-md transition-all duration-300",
+            "bg-primary text-primary-foreground shadow-md transition-[scale,opacity,filter] duration-300 ease-out",
             "hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
             isMoving ? "scale-90 opacity-0" : "scale-100 opacity-100",
           )}

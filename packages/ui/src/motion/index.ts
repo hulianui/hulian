@@ -4,5 +4,5 @@ export {
   motionEase,
   motionEaseCss,
 } from "./tokens";
-export { pressable, fadeScale, shimmer } from "./variants";
+export { pressable, pressableClass, fadeScale, shimmer } from "./variants";
 export { m, LazyMotionProvider } from "./lazy";

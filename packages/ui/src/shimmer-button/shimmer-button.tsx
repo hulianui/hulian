@@ -47,7 +47,8 @@ export function ShimmerButton({
       {/* inline-flex + whitespace-nowrap：图标(preflight 下 svg=display:block)与文案同行居中，不掉行 */}
       <span className="relative z-10 inline-flex items-center justify-center whitespace-nowrap">{children}</span>
       {/* inset 高光 */}
-      <div className="absolute inset-0 size-full rounded-[inherit] shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
+      {/* 只有 box-shadow 在变，指名它而非 transition-all（300ms/ease-in-out 是这枚炫效按钮刻意的"缓慢发光"个性，保留） */}
+      <div className="absolute inset-0 size-full rounded-[inherit] shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-[box-shadow] duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
       {/* backdrop 盖回底色只露边缘火花 */}
       <div className="absolute inset-[var(--hulian-shimmer-cut)] -z-20 [border-radius:var(--hulian-shimmer-radius)] [background:var(--hulian-shimmer-bg)]" />
     </>

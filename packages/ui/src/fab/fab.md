@@ -57,10 +57,20 @@ import { Fab } from "@hulianui/ui"
 />
 ```
 
+可拖拽（`draggable` 默认 `false`，不开则按住不动）：
+
+```tsx
+<Fab draggable label="按住拖我" icon={<GripVertical />} onClick={() => alert("新建")} />
+```
+
 ## 禁忌 / 坑
 - 默认 `fixed` 贴视口角落，gallery / 容器内演示时用 `className` 覆盖为 `absolute` 收进框内（容器需 `position: relative` + `overflow-hidden`）。
 - 给了 `actions` 时点击主钮是展开/收起子动作，`onClick` 不再触发；只有不给 actions 时主钮才直接触发 `onClick`。
+- `draggable` 默认 `false`——不开启时按住主钮不会有任何位移，这是预期行为而非失效。
 - `draggable` 下若拖拽位移超过 3px，本次抬手不会触发点击（避免拖完误触）。
+- 拖拽偏移写在根节点的 inline `transform` 上，并且只是组件内部 state：不持久化，也不受控（无 `onDragEnd` / 受控位置入参），刷新或重挂载即回到 `position` 指定的贴边处。
+- 拖拽只沿相对按下点的自由位移，不做视口边界钳制——拖到屏幕外不会自动拉回，容器内演示务必配 `overflow-hidden`。
+- 开启后主钮带 `touch-action: none`，移动端在按钮上的手势归拖拽所有，不会再滚动页面。
 
 ## 相关
 [TabBar](../tab-bar/tab-bar.md) · [ActionSheet](../action-sheet/action-sheet.md) · [Picker](../picker/picker.md) · [SwipeAction](../swipe-action/swipe-action.md) · [PullToRefresh](../pull-to-refresh/pull-to-refresh.md) · [SafeArea](../safe-area/safe-area.md)

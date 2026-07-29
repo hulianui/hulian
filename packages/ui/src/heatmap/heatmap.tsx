@@ -5,6 +5,8 @@ import type { HeatmapCellInfo, HeatmapProps } from "./heatmap.types";
 
 // 热力图：网格色阶映射(value→bucket→primary 透明度档) + 行列标签 + 原生 hover 提示 + 点击下钻。
 // 库内首个热力图，通用价值高（代码热点 / 贡献活动 / 覆盖率）。纯函数 buildMatrix/bucketize 可测，零依赖。
+const EMPTY_TEXT = "无数据";
+
 function bucketBackground(bucket: number, scale: number): string {
   if (bucket === 0) return "var(--color-surface-hover)";
   const alpha = 0.18 + (bucket / scale) * 0.82;
@@ -20,6 +22,7 @@ export function Heatmap({
   domain,
   valueFormat,
   unit,
+  emptyCellTone,
   showLegend = false,
   cellSize = 14,
   gap = 3,
@@ -51,14 +54,22 @@ export function Heatmap({
               </span>
             )}
             {xs.map((x) => {
-              const value = get(y, x);
+              const raw = get(y, x);
+              const empty = raw === undefined;
+              const value = raw ?? 0;
               const bucket = bucketize(value, domainMax, colorScale, domainMin);
-              const info: HeatmapCellInfo = { x, y, value };
-              const title = formatTooltip ? formatTooltip(info) : `${y} · ${x}：${formatValue(value)}`;
+              const info: HeatmapCellInfo = { x, y, value, empty };
+              // 缺席格默认文案说「无数据」而不是「0」——颜色可以为了向后兼容跟 0 档共用，
+              // 但文案路径没有兼容包袱，让读屏/悬停第一时间看到真相。
+              const title = formatTooltip
+                ? formatTooltip(info)
+                : `${y} · ${x}：${empty ? EMPTY_TEXT : formatValue(value)}`;
               const style = {
                 width: cellSize,
                 height: cellSize,
-                background: bucketBackground(bucket, colorScale),
+                // 不传 emptyCellTone 时缺席格仍走 0 档色：这是能力补齐不是行为变更，
+                // 贡献活动墙那类「这天没提交本来就该最浅色」的存量图不能被改样。
+                background: empty && emptyCellTone ? emptyCellTone : bucketBackground(bucket, colorScale),
               };
               return onCellClick ? (
                 <button
@@ -111,6 +122,20 @@ export function Heatmap({
             />
           ))}
           <span className="pl-1">{formatValue(domainMax)}</span>
+          {/* 缺席格一旦被涂成独立颜色，图例必须解释这个颜色，否则读图人只会当成又一档强度。 */}
+          {emptyCellTone && (
+            <>
+              <span
+                className="ml-2 rounded-[2px]"
+                style={{
+                  width: Math.min(cellSize, 12),
+                  height: Math.min(cellSize, 12),
+                  background: emptyCellTone,
+                }}
+              />
+              <span>{EMPTY_TEXT}</span>
+            </>
+          )}
         </div>
       )}
     </div>

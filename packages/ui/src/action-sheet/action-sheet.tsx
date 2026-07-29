@@ -7,8 +7,10 @@ import type { ActionSheetContentProps } from "./action-sheet.types";
 
 // 移动端动作面板（底滑·建在 Base UI Dialog 上，同 drawer 范式：overlay 自管 mount，motion token CSS 镜像驱动过渡，零 motion 运行时）。
 // 每个动作即一个 Dialog.Close（点击先跑 onClick 再自然关闭）；底部独立「取消」块。底部吃安全区 inset。
+// 面板整块从屏底滑上来，与 Drawer 同属"大面积位移"，故同样走 drawer 曲线 + slow —— 这也是
+// 用户对底部弹层的肌肉记忆来源（iOS 原生 action sheet 就是这条曲线）。遮罩仍走通用淡入档。
 const sheetTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
+  transition: `transform ${motionDurationCss.slow} ${motionEaseCss.drawer}, opacity ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
 export function ActionSheet(props: ComponentProps<typeof BaseDialog.Root>) {
@@ -66,7 +68,11 @@ export function ActionSheetContent({
               className={cn(
                 "flex w-full flex-col items-center gap-0.5 px-4 py-3.5 text-center outline-none transition-colors",
                 i > 0 && "border-t border-border",
-                a.disabled ? "pointer-events-none opacity-40" : "hover:bg-surface-hover focus-visible:bg-surface-hover",
+                // ActionSheet 是移动端形态：主要输入是手指，没有真正的 hover 阶段。
+                // 按压反馈走 active 底色（而非缩放）—— 全宽条目缩放位移过大，变色才是 iOS 原生手感。
+                a.disabled
+                  ? "pointer-events-none opacity-40"
+                  : "hover:bg-surface-hover focus-visible:bg-surface-hover active:bg-surface-hover",
                 a.danger ? "text-danger" : "text-foreground",
               )}
             >
@@ -76,7 +82,7 @@ export function ActionSheetContent({
           ))}
         </div>
         {cancelText !== null && (
-          <BaseDialog.Close className="rounded-[var(--radius)] bg-surface px-4 py-3.5 text-sm font-semibold text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover">
+          <BaseDialog.Close className="rounded-[var(--radius)] bg-surface px-4 py-3.5 text-sm font-semibold text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover active:bg-surface-hover">
             {cancelText}
           </BaseDialog.Close>
         )}

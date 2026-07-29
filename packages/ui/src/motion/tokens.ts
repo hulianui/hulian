@@ -23,13 +23,22 @@ export const motionDurationCss = {
 
 // 缓动曲线（motion 口径：4 段 cubic-bezier 控制点）。
 // 自然减速，禁用 bounce/elastic（见 frontend-design motion 规范：真实物体平滑减速）。
+//
+// 第三份镜像在 @hulianui/tokens 的 preset.css @theme：那里把同样的曲线灌进 Tailwind 的
+// --ease-out / --ease-in-out / --ease-drawer，覆盖内置弱曲线 —— 于是 `ease-out` 工具类
+// 与这里的 motionEase.out 是同一条曲线。改任一处必须同步另一处，否则 JS 驱动的动效
+// 和工具类驱动的动效手感会分叉。
 export const motionEase = {
   out: [0.16, 1, 0.3, 1] as [number, number, number, number], // ease-out-expo 风格
   inOut: [0.65, 0, 0.35, 1] as [number, number, number, number],
+  // iOS 抽屉曲线（源自 Ionic）：起步果断、尾段极长的减速，专供大面积滑入滑出。
+  // 与 out 的区别在尾巴——抽屉整屏位移用 out 会显得"到位太急"。
+  drawer: [0.32, 0.72, 0, 1] as [number, number, number, number],
 };
 
 // 缓动曲线（CSS transitionTimingFunction 口径，与 motionEase 同曲线）。
 export const motionEaseCss = {
   out: "cubic-bezier(0.16, 1, 0.3, 1)",
   inOut: "cubic-bezier(0.65, 0, 0.35, 1)",
+  drawer: "cubic-bezier(0.32, 0.72, 0, 1)",
 } as const;

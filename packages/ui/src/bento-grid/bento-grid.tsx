@@ -32,7 +32,7 @@ export function BentoCard({ title, description, icon, cta, className, children, 
         {description && <p className="text-sm text-muted">{description}</p>}
       </div>
       {cta && (
-        <div className="mt-3 translate-y-1 opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
+        <div className="mt-3 translate-y-1 opacity-0 transition-[translate,opacity] ease-out group-hover:translate-y-0 group-hover:opacity-100">
           {cta}
         </div>
       )}

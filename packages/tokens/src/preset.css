@@ -51,6 +51,30 @@
   --breakpoint-2xl: 96rem; /* 1536px · 大桌面 */
 }
 
+/* 缓动曲线 SSOT —— 覆盖 Tailwind 内置的弱曲线，让 ease-out / ease-in-out 工具类与
+   @hulianui/ui 的 motion/tokens.ts（JS 侧 motionEase / CSS 镜像 motionEaseCss）**同一条曲线**。
+   不统一的后果：同一个库里 motion 驱动的动效走 expo 曲线、Tailwind 工具类驱动的走内置弱曲线，
+   两套手感并存 —— 用户感知不到原因，只觉得"有的地方脆、有的地方糊"。
+   改这里必须同步改 packages/ui/src/motion/tokens.ts，反之亦然。
+
+   刻意不覆盖 --ease-in：UI 动效不该用 ease-in（开头慢，正好卡在用户注视最紧的一刻），
+   保留内置弱曲线反而降低误用时的伤害。 */
+@theme {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* ease-out-expo 风格：进出场、hover 的默认档 */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* 屏内位移/形变 */
+  /* iOS 抽屉曲线（源自 Ionic）：大面积滑入滑出。
+     Drawer/ActionSheet 自身走的是 motionEaseCss.drawer 内联字符串（Base UI overlay 必须内联 transition），
+     这里这份是给工具类用的 —— 故除非有人写 `ease-drawer` 类，v4 的 @theme tree-shaking 不会输出它。
+     查 :root 里找不到 --ease-drawer 是正常的，不是没生效。 */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* 覆盖面最大的一条：不带 ease-* 类的过渡（`transition`、`transition-colors`……）用的是这个默认值。
+     库内 90+ 个组件写的是裸 transition-colors —— 不改这里，它们全部走 Tailwind 自带的
+     cubic-bezier(0.4, 0, 0.2, 1)（ease-in-out 味，开头慢），与瑚琏曲线并存两套手感。
+     --default-transition-duration 保持 Tailwind 的 150ms，已与 motionDuration.fast 一致。 */
+  --default-transition-timing-function: var(--ease-out);
+}
+
 /* effects/Marquee 无缝跑马灯关键帧（CSS 侧动效 SSOT；JS 侧动效见 @hulianui/ui motion/variants.ts）。
    每份子项平移 -100% - gap，配合复制 N 份实现无缝循环。 */
 @keyframes hulian-marquee {

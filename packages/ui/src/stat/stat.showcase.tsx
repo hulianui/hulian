@@ -47,6 +47,28 @@ export const statShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "注脚 hint",
+      description:
+        "与趋势无关的一行说明用 hint，独立于 delta 渲染；两者同时存在时趋势行在上、注脚在下。注意 deltaLabel 依附于 delta，不传 delta 时它不会渲染。",
+      code: `<>
+  <Stat label="题篮题数" value="12" hint="上限 200 题" />
+  <Stat label="参考人数" value="38" delta={6.4} deltaLabel="较上场" hint="2 人未交卷" />
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <Stat label="题篮题数" value="12" hint="上限 200 题" className="w-64" />
+          <Stat
+            label="参考人数"
+            value="38"
+            delta={6.4}
+            deltaLabel="较上场"
+            hint="2 人未交卷"
+            className="w-64"
+          />
+        </div>
+      ),
+    },
+    {
       title: "网格排布",
       description: "多张指标卡可直接用网格布局拼成看板。",
       code: `<div className="grid grid-cols-2 gap-4">
@@ -93,6 +115,26 @@ export const statShowcase: ShowcaseSpec = {
       name: "无趋势",
       render: () => (
         <Stat label="注册用户" value="8,021" icon={<Users className="size-4" />} className="w-64" />
+      ),
+    },
+    {
+      name: "仅注脚",
+      render: () => (
+        <Stat label="题篮题数" value="12" hint="上限 200 题" icon={<Users className="size-4" />} className="w-64" />
+      ),
+    },
+    {
+      name: "趋势 + 注脚",
+      render: () => (
+        <Stat
+          label="参考人数"
+          value="38"
+          delta={6.4}
+          deltaLabel="较上场"
+          hint="2 人未交卷"
+          icon={<Activity className="size-4" />}
+          className="w-64"
+        />
       ),
     },
   ],

@@ -17,7 +17,10 @@ export function buildMatrix(
   return {
     xs,
     ys,
-    get: (y: string | number, x: string | number) => map.get(`${y}|${x}`) ?? 0,
+    // 缺席返回 undefined 而不是抹成 0：数据层若把「没有这个点」和「值真的是 0」
+    // 合并，消费方就再也分不开了（班级×考点看板里「没作答」与「掌握率 0%」
+    // 是两个相反的信号）。要不要在视觉上区分交给渲染层的 emptyCellTone 决定。
+    get: (y: string | number, x: string | number): number | undefined => map.get(`${y}|${x}`),
   };
 }
 

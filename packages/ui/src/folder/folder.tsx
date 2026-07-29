@@ -95,7 +95,8 @@ export function Folder({
         style={folderVars}
         className={cn(
           "group/folder relative block cursor-pointer appearance-none border-0 bg-transparent p-0",
-          "transition-transform duration-200 ease-in",
+          // ease-out 而非 ease-in：ease-in 开头慢，正好卡在用户注视最紧的那一刻，同样 200ms 却显得迟钝。
+          "transition-transform duration-200 ease-out",
           // 收起态 hover 抬升；展开态常驻抬升
           open ? "-translate-y-2" : "hover:-translate-y-2",
           "motion-reduce:transition-none motion-reduce:hover:translate-y-0",

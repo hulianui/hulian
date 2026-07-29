@@ -158,9 +158,12 @@ export function VoiceRecord({
             {levels.map((lv, i) => (
               <span
                 key={i}
-                className="w-[3px] rounded-full bg-primary transition-all duration-100"
+                // 用 scaleY 而非动态 height 表达电平：每 100ms 刷新一次、同屏十几条 bar，
+                // 动 height 会逐帧触发 layout+paint（整行 flex 重排）；scaleY 只走 GPU 合成。
+                // origin-center + h-full 复刻原先"百分比高度 + items-center"的上下对称声波观感。
+                className="h-full w-[3px] origin-center rounded-full bg-primary transition-[transform,opacity] duration-100 ease-out"
                 style={{
-                  height: `${Math.max(4, (lv || 0) * 100)}%`,
+                  transform: `scaleY(${Math.max(0.04, lv || 0)})`,
                   opacity: Math.max(0.3, lv || 0),
                 }}
               />
@@ -183,7 +186,7 @@ export function VoiceRecord({
           className={cn(
             "relative z-10 inline-flex items-center justify-center rounded-full",
             "border-2 border-border bg-surface text-foreground",
-            "transition-all duration-200 ease-out",
+            "transition-[scale,background-color,border-color,color] duration-200 ease-out",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             "touch-none",
             s.btn,
@@ -203,7 +206,8 @@ export function VoiceRecord({
             strokeLinecap="round"
             strokeLinejoin="round"
             className={cn(
-              "transition-all duration-200",
+              // 原为 transition-all：这里唯一会变的是 size-*（尺寸由 prop 决定，运行时不变）与 hidden
+              // （display 本就不可过渡），过渡等于空转 —— 直接去掉。
               size === "lg" ? "size-8" : size === "sm" ? "size-5" : "size-6",
               isProcessing && "hidden",
             )}

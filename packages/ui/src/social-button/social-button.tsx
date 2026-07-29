@@ -1,6 +1,7 @@
 "use client";
 import { Loader2 } from "../_icons";
 import { cn } from "../lib/cn";
+import { pressableClass } from "../motion";
 import type { SocialButtonProps, SocialProvider } from "./social-button.types";
 
 // 第三方/OAuth 登录按钮。品牌 logo 取自 simple-icons(单色 path·fill currentColor)，
@@ -101,7 +102,8 @@ export function SocialButton({
       disabled={isDisabled}
       aria-label={shape === "icon" ? brand.label : undefined}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius)] font-medium transition-[background-color,box-shadow,filter] outline-none",
+        // pressableClass 平替原 transition-[background-color,box-shadow,filter]：属性列表已覆盖这三者，另补按下缩放。
+        `inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius)] font-medium ${pressableClass} outline-none`,
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         "disabled:opacity-50 disabled:pointer-events-none",
         shape === "icon" ? sz.icon : sz.button,
