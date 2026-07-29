@@ -97,6 +97,8 @@ export { listShowcase } from "./list/list.showcase";
 export { magicCardShowcase } from "./magic-card/magic-card.showcase";
 export { markdownEditorShowcase } from "./markdown-editor/markdown-editor.showcase";
 export { markdownShowcase } from "./markdown/markdown.showcase";
+export { mathTextShowcase } from "./math-text/math-text.showcase";
+export { questionCardShowcase } from "./question-card/question-card.showcase";
 export { marqueeShowcase } from "./marquee/marquee.showcase";
 export { mentionsShowcase } from "./mentions/mentions.showcase";
 export { menubarShowcase } from "./menubar/menubar.showcase";
