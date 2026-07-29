@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 360 个组件 · v0.13.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 362 个组件 · v0.14.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，统一从根 barrel 导入：`import { X } from "@hulianui/ui"`。
@@ -22,7 +22,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Stack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stack/stack.md): 弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)
 - [Viewport](https://github.com/hulianui/hulian/blob/master/packages/ui/src/viewport/viewport.md): 响应式容器 · container-type 容器查询上下文 + web/平板/手机 预设宽度(可 width 覆盖) + 可选设备切换器(dogfood Segmented) · 内部组件用 @md/@5xl 等容器…
 
-## 排版 typography（33）
+## 排版 typography（34）
 - [AnimatedGradientText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-gradient-text/animated-gradient-text.md): 渐变文字 · 行内 chart 渐变流动 + RSC · typography/text · #animated
 - [AnimatedShinyText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-shiny-text/animated-shiny-text.md): 高光文字 · 横扫高光 + 徽标气质 + RSC · typography/text · #animated
 - [ASCIIText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ascii-text/ascii-text.md): 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced-motion） · t…
@@ -40,6 +40,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Heading](https://github.com/hulianui/hulian/blob/master/packages/ui/src/heading/heading.md): 标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC)
 - [Kbd](https://github.com/hulianui/hulian/blob/master/packages/ui/src/kbd/kbd.md): 按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC
 - [Markdown](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown/markdown.md): 只读 Markdown 渲染 · 零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC …
+- [MathText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-text/math-text.md): 行内数学排版 · 零依赖解析 LaTeX 子集(分数/根号/上下标/填空槽)并渲染成真数学版式 · 分数用 inline-flex 竖排不撑乱中文行高 · 可检索朴素文本走 mathToPlain · RSC 安全
 - [Prose](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prose/prose.md): 排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC)
 - [ScrambledText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scrambled-text/scrambled-text.md): 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
 - [ScrollFloat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-float/scroll-float.md): 滚动浮现标题：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（去 g…
@@ -114,7 +115,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（81）
+## 数据展示 data-display（82）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 头像 · Base UI 图片+fallback
 - [AvatarCircles](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar-circles/avatar-circles.md): 堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC)
@@ -173,6 +174,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ProfileCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/profile-card/profile-card.md): 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-display/c…
 - [ProTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-table/pro-table.md): 高级表格 · 列表页编排层(复用 Table/SearchForm/Pagination) · 查询区 + 工具栏(密度/列设置/刷新/全屏) + 行选择 + 集成分页(企业中后台列表页旗舰)
 - [QRCode](https://github.com/hulianui/hulian/blob/master/packages/ui/src/qrcode/qrcode.md): 二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题 + UTF-8 中文 + 纠错级别 + 中心 logo(可 …
+- [QuestionCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-card/question-card.md): 题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 MathText 真数学版式 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chi…
 - [QueueLane](https://github.com/hulianui/hulian/blob/master/packages/ui/src/queue-lane/queue-lane.md): 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItem…
 - [ReflectiveCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/reflective-card/reflective-card.md): 金属反光证件卡 · 对角高光横扫 + 磨砂噪点 + 渐变发丝边框(纯 CSS 零依赖·token·RSC 安全·reduced-motion)，内容可插槽化 · data-display/collection · #a…
 - [RelativeTime](https://github.com/hulianui/hulian/blob/master/packages/ui/src/relative-time/relative-time.md): 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> …

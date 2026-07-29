@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.13.0 · 360 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.14.0 · 362 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -1689,6 +1689,75 @@ function quickSort(arr) { /* ... */ }
 
 ## 相关
 [Text](https://hulianui.haloritual.com/components/text) · [Heading](https://hulianui.haloritual.com/components/heading) · [Prose](https://hulianui.haloritual.com/components/prose) · [AuroraText](https://hulianui.haloritual.com/components/aurora-text) · [AnimatedShinyText](https://hulianui.haloritual.com/components/animated-shiny-text) · [AnimatedGradientText](https://hulianui.haloritual.com/components/animated-gradient-text)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# MathText
+
+> 行内数学排版 · 零依赖解析 LaTeX 子集(分数/根号/上下标/填空槽)并渲染成真数学版式 · 分数用 inline-flex 竖排不撑乱中文行高 · 可检索朴素文本走 mathToPlain · RSC 安全 · typography/text
+
+## 何时用
+
+正文里要混排数学式子时用：题干、选项、解析、公式说明。典型来源是从 PDF/Word 抽取出来的题库数据 —— 那些数据里分数是 `\frac{3}{8}`、指数是 `x^{2}`、填空是 `____`，直接当纯文本渲染会得到 `\frac{3}{8}` 这种露馅的原始记号。
+
+**不要**用它渲染整段富文本（用 [Markdown](https://hulianui.haloritual.com/components/markdown)）或代码（用 [Code](https://hulianui.haloritual.com/components/code)）。需要完整 LaTeX（矩阵、积分、求和、对齐环境）时本组件不够，请自行接 KaTeX —— 本组件刻意只覆盖教辅题面高频的那几样，以保持零依赖。
+
+## 导入
+```ts
+import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
+```
+
+## 支持的记号
+
+| 记号 | 含义 | 例 |
+|---|---|---|
+| `\frac{a}{b}` | 分数，上下叠放并画分数线 | `\frac{16}{9}` |
+| `\sqrt{a}` / `\sqrt[n]{a}` | 根号，被开方数带上横线 | `\sqrt{a^{2}+b^{2}}` |
+| `^{...}` 或 `^a` | 上标 | `x^{2}`、`x^2` |
+| `_{...}` 或 `_a` | 下标 | `a_{1}`、`a_1` |
+| `____` | 填空槽（**2 个及以上**连续下划线） | `可记作____万元` |
+
+其余内容一律按字面文本输出。**不认识的记号不会被吞掉** —— `\alpha` 原样显示为 `\alpha`，残缺的 `\frac{3}` 也原样保留，绝不静默丢内容。
+
+## 用法
+
+```tsx
+<MathText>{"将 \\frac{3}{8} 化成小数为 ____ 。"}</MathText>
+```
+
+选项并排：
+
+```tsx
+<MathText>{"A.\\frac{1}{9}　B.\\frac{5}{9}　C.\\frac{16}{9}　D.\\frac{80}{9}"}</MathText>
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|---|---|---|---|
+| `children` | `string` | — | 含数学记号的文本 |
+| `blankWidth` | `number` | `2.5` | 填空槽最小宽度（em） |
+| `scriptScale` | `number` | `0.75` | 上下标相对字号 |
+| `className` | `string` | — | — |
+
+## 配套纯函数
+
+- `parseMath(src)` → `MathNode[]`，解析结果，可用于自定义渲染或做结构校验。
+- `mathToPlain(src)` → `string`，转成朴素文本（`\frac{3}{8}` → `3/8`）。
+
+**检索、导出、纯文本比对一律用 `mathToPlain`**，不要把带记号的原串直接甩给搜索框 —— 用户搜「3/8」应该能命中。
+
+## 坑
+
+- **别用 `a/b` 表示分数**。上游数据若用斜杠，`千米/时`、`元/千克` 这类单位会被误渲染成分数。用 `\frac{}{}` 把「这是分数」这个已知事实显式带过来，不要让渲染层再猜一遍。
+- **单个 `_` 是下标，`__` 起才是填空**。`a_1` 渲染成下标；想要填空至少写两个下划线。
+- **分数不是 `<sup>`/`<sub>` 拼的**。用 `inline-flex` 竖排 + `border-t` 画线，这样嵌在中文正文里行高不会被撑乱、分数线也对得齐。改样式时别退回 sup/sub。
+- 组件返回 `<span>`，可安全嵌进 `<p>`；填空槽带 `aria-label="填空"`，读屏不会读成一串下划线。
+
+## 相关
+
+- [QuestionCard](https://hulianui.haloritual.com/components/question-card) —— 题目卡片，题干/选项内部就是用本组件渲染的
+- [Markdown](https://hulianui.haloritual.com/components/markdown) —— 整段富文本
+- [Prose](https://hulianui.haloritual.com/components/prose) —— 长文排版容器
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Prose
@@ -9902,6 +9971,84 @@ import { QRCode } from "@hulianui/ui"
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# QuestionCard
+
+> 题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 MathText 真数学版式 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chip/Image · data-display/collection
+
+## 何时用
+
+题库列表、组卷预览、错题本、批改回看 —— 凡是要把「一道题」完整呈现给人看的地方。它把题号、题型、分层难度、题干、选项、小问、附图、章节归属、出处这九件事收在一张卡里，并保证数学记号被真正排版。
+
+要展示一组可勾选的卡片选项用 [Choicebox](https://hulianui.haloritual.com/components/choicebox)；只要一段带公式的文字用 [MathText](https://hulianui.haloritual.com/components/math-text)。
+
+## 导入
+```ts
+import { QuestionCard } from "@hulianui/ui"
+```
+
+## 用法
+
+```tsx
+<QuestionCard
+  number="3"
+  kind="choice"
+  difficulty="A 组"
+  stem="如图,图形①②都由完全相同的小正方形拼成。若图形①的边长为 4,则图形②的面积用分数表示为( )。"
+  options={[
+    { label: "A", text: "\\frac{1}{9}" },
+    { label: "B", text: "\\frac{5}{9}" },
+    { label: "C", text: "\\frac{16}{9}" },
+    { label: "D", text: "\\frac{80}{9}" },
+  ]}
+  figure={{ src: "/figures/q3.png" }}
+  chapter="第1章 有理数 · 1.1.1 自然数、分数和小数"
+  topics={["有理数", "分数"]}
+  source="学能评价 七上 · 第 3 页 · 第 3 题"
+/>
+```
+
+自动拆题拿不准的条目：
+
+```tsx
+<QuestionCard
+  stem="下列各式中,正确的是( )。"
+  issues={[{ label: "选项不足 4 个" }, { label: "题号不连续" }]}
+  actions={<Button size="sm" variant="ghost">去校对</Button>}
+/>
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|---|---|---|---|
+| `stem` | `string` | — | 题干，支持 MathText 记号 |
+| `number` | `ReactNode` | — | 原书题号 |
+| `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | — | 题型，决定标签文案与语气色 |
+| `kindLabel` | `ReactNode` | — | 覆盖内置题型中文名 |
+| `difficulty` | `ReactNode` | — | 分层标签（A 组 / 基础 / 拔高） |
+| `options` | `{ label, text }[]` | — | 选择题选项，`text` 支持 MathText 记号 |
+| `parts` | `string[]` | — | 小问 (1)(2)(3) |
+| `figure` | `{ src, alt? }` | — | 附图 |
+| `chapter` / `source` | `ReactNode` | — | 章节归属 / 出处，落在页脚 |
+| `topics` | `string[]` | — | 知识点，渲染成 Chip |
+| `issues` | `{ label, tone? }[]` | — | 质量标记，非空时亮左侧警示边条 |
+| `actions` | `ReactNode` | — | 右上角操作区 |
+| `compact` | `boolean` | `false` | 收起小问与页脚，用于长列表 |
+
+## 坑
+
+- **`stem` 和 `options[].text` 必须是 MathText 记号串，不要预先转成纯文本**。传 `"3/8"` 只会显示斜杠；传 `"\\frac{3}{8}"` 才有真分数版式。
+- **`issues` 不是装饰**。它存在的意义是让「机器拆出来但没把握」的题一眼可辨。把待复核的题和正常题渲染成一个样子，等于拿不可信的数据骗验收 —— 有 `issues` 就一定要传。
+- 警示用**左侧边条**而非整卡染色：整卡染色会压低题干对比度，题反而看不清。
+- `compact` 只影响小问与页脚，题干和选项始终完整渲染 —— 题面截断会让人误判题目内容。
+
+## 相关
+
+- [MathText](https://hulianui.haloritual.com/components/math-text) —— 题干/选项内部的数学排版
+- [Card](https://hulianui.haloritual.com/components/card) —— 外壳
+- [Choicebox](https://hulianui.haloritual.com/components/choicebox) —— 可勾选卡片选项
+
+<!-- ════════════════════════════════════════════════════════ -->
 # QueueLane
 
 > 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItemClick · groupByLane 保序分组纯函数带单测 · 任务总线/优先级队列(零依赖) · data-display/collection
@@ -14695,7 +14842,7 @@ import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@hulia
 |------|------|------|
 | children* | `ReactNode` | 提示文案 |
 
-`TooltipTrigger` 用 `render` prop 接管触发元素。
+`TooltipTrigger` 用 `render` prop 接管触发元素 —— **触发器是可交互元素（button / a / input）时这是硬要求，不能当 children 传**，原因见下方「禁忌 / 坑」。
 
 ## 示例
 ```tsx
@@ -14709,6 +14856,24 @@ import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@hulia
 
 ## 禁忌 / 坑
 
+- **触发器必须用 `render` 注入，不能当 children 传。** `TooltipTrigger` 默认自渲一个 `<button>`，
+  children 是塞进它*里面*而不是替换它 —— 传一个 `<button>` 进去就套成 `button > button`：
+
+  ```tsx
+  // ✗ 从 HeroUI(Tooltip.Trigger 合并 props 进子元素) 迁过来最容易这么写
+  <TooltipTrigger>
+    <button aria-label="设置" onClick={onOpen}>⚓</button>
+  </TooltipTrigger>
+
+  // ✓ render 是「渲染成这个元素」而不是「包裹这个元素」，Base UI 会把自己的 handler
+  //   合并进去，你自己的 onClick 照常保留
+  <TooltipTrigger render={<button aria-label="设置" onClick={onOpen}>⚓</button>} />
+  ```
+
+  这个错误 **tsc / eslint / build / 肉眼全都不报**（children 类型完全合法，嵌套 button 在浏览器里照样可点），
+  只有查 a11y 树才看得出来 —— 屏读用户会听到两颗按钮，且嵌套交互元素是无效 HTML（hulianui/hulian#20）。
+- **`TooltipContent` 渲染出的 popup 不带 `role="tooltip"`。** 写验收/E2E 脚本时按 `[role="tooltip"]`
+  查会查不到，请按文本或类名定位。
 - `delay`/`closeDelay` 写在 `TooltipProvider` 而非 `Tooltip`；截图/稳态验收时把两者设 0 让 hover 即开。
 - 在 flex 行内（带 `text-overflow:ellipsis` + `min-w-0`）用 Tooltip 包裹文本时，触发器 wrapper 若是 `inline-block` 会按内容固有宽撑开、绕过父级宽度约束破坏截断（同类问题见 [[heroui-tooltip-trigger-inline-block-breaks-flex-truncation]]）；本组件用 `render` 注入元素时确保触发元素本身保持 `block; min-w-0`。
 

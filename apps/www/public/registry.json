@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "hulianui",
   "homepage": "https://github.com/hulianui/hulian",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "install": "npm i @hulianui/ui",
   "import": "import { /* components */ } from \"@hulianui/ui\"",
@@ -777,6 +777,31 @@
         "webgl": false,
         "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown/markdown.md",
         "docLocal": "packages/ui/src/markdown/markdown.md",
+        "status": "enriched"
+      }
+    },
+    {
+      "name": "math-text",
+      "type": "registry:ui",
+      "title": "MathText",
+      "description": "行内数学排版 · 零依赖解析 LaTeX 子集(分数/根号/上下标/填空槽)并渲染成真数学版式 · 分数用 inline-flex 竖排不撑乱中文行高 · 可检索朴素文本走 mathToPlain · RSC 安全",
+      "categories": [
+        "typography"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { MathText, parseMath, mathToPlain } from \"@hulianui/ui\"",
+        "exports": [
+          "MathText",
+          "parseMath",
+          "mathToPlain"
+        ],
+        "group": "text",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-text/math-text.md",
+        "docLocal": "packages/ui/src/math-text/math-text.md",
         "status": "enriched"
       }
     },
@@ -4103,6 +4128,29 @@
         "webgl": false,
         "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/qrcode/qrcode.md",
         "docLocal": "packages/ui/src/qrcode/qrcode.md",
+        "status": "enriched"
+      }
+    },
+    {
+      "name": "question-card",
+      "type": "registry:ui",
+      "title": "QuestionCard",
+      "description": "题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 MathText 真数学版式 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chi…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { QuestionCard } from \"@hulianui/ui\"",
+        "exports": [
+          "QuestionCard"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-card/question-card.md",
+        "docLocal": "packages/ui/src/question-card/question-card.md",
         "status": "enriched"
       }
     },
