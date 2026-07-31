@@ -64,13 +64,65 @@ export default function App({ children }: { children: React.ReactNode }) {
 3. **吃主题 token，不要写死颜色**：给 SVG 的 \`fill\`/\`stroke\` 或内联样式用 \`var(--color-primary)\`、\`var(--color-foreground)\` 等，**颜色变量必须带 \`--color-\` 前缀**，否则 Tailwind v4 下解析不到。
 4. **不要用局部 \`style\`/\`className\` 覆盖库组件内部结构**：用组件自身暴露的 props 调整外观与行为。
 
-## 让 AI 查具体组件的用法
+## 唯一的例外：日期族走子路径
+
+\`Calendar\` / \`DatePicker\` / \`DateTimePicker\` / \`TimeField\` **不在根 barrel 里**，它们依赖 optional peer（MUI X + emotion），要用得多两步：
+
+\`\`\`bash
+pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
+\`\`\`
+
+\`\`\`tsx
+import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers";
+// 且这几件必须置于 <MuiBridgeProvider> 之内，否则真实浏览器里会抛 Unsupported color
+\`\`\`
+
+不用日期族的项目完全不用管这一节 —— 那四个包一个都不会装。
+其余全部组件（含 Rating / Stepper）正常从 \`@hulianui/ui\` 根 barrel 导入。
+
+## 推荐：装 MCP，让 AI 自己查（而不是你贴文档）
+
+\`@hulianui/mcp\` 把「有什么 / 怎么用 / 不许怎么用」变成 AI 可按需调用的 tool。装上之后，AI 不必整吞全库语料，也不会再猜错 props 签名。
+
+Claude Code / Cursor 的 MCP 配置：
+
+\`\`\`json
+{
+  "mcpServers": {
+    "hulianui": { "command": "npx", "args": ["-y", "@hulianui/mcp"] }
+  }
+}
+\`\`\`
+
+四个 tool：
+
+| tool | AI 什么时候该调 |
+| --- | --- |
+| \`list_components\` | 写任何 UI **之前**。\`kind\` 可取 component / block / page / lib |
+| \`get_component_doc\` | 写下第一行使用某组件的代码**之前**（Props / Events / Slots / 示例 / 禁忌坑） |
+| \`install_block\` | 要把**区块或整页**积木放进项目时（自包含，落盘即用） |
+| \`get_conventions\` | 开始新页面 / 新功能**之前**，取强制约束 |
+
+## 让 AI 查具体组件的用法（没装 MCP 时）
 
 - **逐组件**：每个组件文档页右上角有「复制 MD」按钮（导入 + Props + 示例）；组件页 URL 形如 \`https://hulianui.haloritual.com/components/<组件名小写连字符>\`（如 button / pro-table），有抓取能力的 AI 可直接取。
-- **机读全量语料**（下列均为**绝对 URL**，可直接交给有联网/抓取能力的 AI，一次喂全库）：
+- **机读语料**（下列均为**绝对 URL**，可直接交给有联网/抓取能力的 AI）：
+  - https://hulianui.haloritual.com/d/<slug>.md —— **单个组件**的完整文档，按需取，最省 context
   - https://hulianui.haloritual.com/llms.txt —— 组件清单与摘要
-  - https://hulianui.haloritual.com/llms-full.txt —— 全库完整文档
-  - https://hulianui.haloritual.com/registry.json —— 结构化组件注册表
+  - https://hulianui.haloritual.com/llms-full.txt —— 全库完整文档（1MB+，优先用上面的单件端点）
+  - https://hulianui.haloritual.com/registry.json —— 结构化注册表（组件 / 区块 / 页面）
+  - https://hulianui.haloritual.com/conventions.json —— 机器可读的使用约束
+
+## 直接安装积木（区块 / 整页）
+
+区块与整页是**自包含**的（只从 \`@hulianui/ui\` 根 barrel 导入），可直接注入项目后改业务字段：
+
+\`\`\`bash
+npx shadcn@latest add https://hulianui.haloritual.com/r/block-pricing-table.json
+npx shadcn@latest add https://hulianui.haloritual.com/r/page-dashboard.json
+\`\`\`
+
+组件一般**不需要**这样装 —— 直接 \`import\` 即可，只有要魔改组件本身时才注入源码。完整可装清单见 \`registry.json\`。
 
 ## 给 AI 的提示词模板
 
@@ -78,7 +130,10 @@ export default function App({ children }: { children: React.ReactNode }) {
 我在用 @hulianui/ui（瑚琏）这套 React 设计系统。请遵守：
 1) UI 一律用从 "@hulianui/ui" 导出的组件实现，不要手写等价组件；
 2) 不要覆盖库组件的内部样式，用组件自身的 props；
-3) 颜色一律走主题 token（如 var(--color-primary)），不要写死色值。
-需要某个组件的精确用法时，我会把它的文档 MD 贴给你。
+3) 颜色一律走主题 token（如 var(--color-primary)），且必须带 --color- 前缀；
+4) 动手前先查文档，不要凭印象猜 props —— 装了 MCP 就调 get_component_doc，
+   否则取 https://hulianui.haloritual.com/d/<组件slug>.md。
+需要整块界面（登录页、定价表、控制台骨架…）时，先看 registry 里的 block / page，
+能复用就别从零写。
 \`\`\`
 `;

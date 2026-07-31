@@ -152,10 +152,6 @@ import {
   listboxShowcase,
   mentionsShowcase,
   commandShowcase,
-  calendarShowcase,
-  datePickerShowcase,
-  dateTimePickerShowcase,
-  timeFieldShowcase,
   colorPickerShowcase,
   colorFieldShowcase,
   colorSwatchPickerShowcase,
@@ -367,6 +363,12 @@ import {
   sideRaysShowcase,
   softAuroraShowcase,
 } from "@hulianui/ui/showcase";
+import {
+  calendarShowcase,
+  datePickerShowcase,
+  dateTimePickerShowcase,
+  timeFieldShowcase,
+} from "@hulianui/ui/date-pickers/showcase";
 
 // 唯一 import @hulianui/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
 export const specBySlug: Record<string, ShowcaseSpec> = {

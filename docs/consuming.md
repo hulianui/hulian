@@ -62,16 +62,35 @@ export default defineConfig(withHulian({
 }
 ```
 
-> 为什么不干脆把 `@mui/material` / `@dnd-kit/*` 也改成 peerDependency？
-> 因为根 barrel（`src/index.ts`）会把全部组件拉进模块图，改成 peer 等于要求**每个**消费方
-> 都装齐十来个包才能 `import { Button }`。在 0.x 阶段这个代价不划算，所以选择「保持 dependency
-> + 把解析约束显式化成可 import 的预设」。语义如有变化会写进 CHANGELOG。
+> **`@mui/material` / `@mui/x-date-pickers` / `@emotion/*` 已改成 optional peerDependency。**
+> 此前不改是因为根 barrel 会把全部组件拉进模块图，改成 peer 等于要求每个消费方都装齐才能
+> `import { Button }`。现在的解法是把**日期族一并移出根 barrel**（见下节）：不用它就一个字节
+> 都不拉，用它才装那四个包。root-barrel 基线因此从 1250KB 降到 1098KB（-12.2%）。
+>
+> `@dnd-kit/*` 等仍是 dependency —— 它们服务的组件仍在根 barrel 里。
 
 ---
 
-## 2. `_mui` 桥接族必须置于 `MuiBridgeProvider` 之内
+## 2. 日期族走子路径导入，且必须置于 `MuiBridgeProvider` 之内
 
-涉及组件：`Rating`、`Stepper`、`Calendar`、`DatePicker`、`DateTimePicker`、`TimeField`。
+涉及组件：`Calendar`、`DatePicker`、`DateTimePicker`、`TimeField`。
+（`Rating` / `Stepper` 自 0.15.0 起已改为零依赖自研，**不再需要**这层包裹，正常从根 barrel 导入即可。）
+
+**导入路径**：日期族不在根 barrel 里，从 `@hulianui/ui/date-pickers` 取：
+
+```tsx
+import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers"
+```
+
+**并自行安装 optional peer**：
+
+```bash
+pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
+```
+
+为什么这么设计：源码分发下，根 barrel 导出等于强制**每个**消费方的 tsc 去编译 `_mui/*.tsx`，
+而它 import 的 `@mui/*` 是 optional peer —— 没装的项目会直接 `TS2307: Cannot find module`。
+把它移出根 barrel，不用日期族的项目就完全碰不到这条链路。
 
 桥主题把 `theme.alpha` 重写成 `color-mix`（好让 MUI 读瑚琏的 OKLCH token，单一真源）。
 不挂 Provider 时，MUI 核心件（如日期族头部那个 IconButton）会对 `var(--color-*)` 调 `alpha()`
@@ -80,7 +99,8 @@ export default defineConfig(withHulian({
 整个应用挂一次即可，通常在根 layout：
 
 ```tsx
-import { ThemeProvider, MuiBridgeProvider } from "@hulianui/ui"
+import { ThemeProvider } from "@hulianui/ui"
+import { MuiBridgeProvider } from "@hulianui/ui/date-pickers"
 
 export default function RootLayout({ children }) {
   return (
@@ -91,7 +111,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-不用日期/评分/步骤条这几件的话，不挂也没关系 —— 它不是全局必需品。
+不用日期族的话，不挂也没关系 —— 它不是全局必需品，那四个 npm 包也一个都不用装。
 
 ---
 
@@ -214,7 +234,8 @@ optimizeDeps: { include: ["@hulianui/ui"] }
 > 这边是给 dev server 的，治的是模块图膨胀。实测 Vite dev 会把所有 bare `import "react"`
 > 重写到同一份预构建产物，React 不会分裂，所以这个插件**刻意不加 `dedupe`**。
 
-> 重依赖组件（`_mui/*`、`markdown-editor`、`video`、`*-chart`、WebGL 特效系）目前仍在根 barrel 里，
+> 重依赖组件（`markdown-editor`、`video`、`*-chart`、WebGL 特效系）目前仍在根 barrel 里
+> （`_mui/*` 已移出，见第 2 节），
 > 也就是说**根 barrel 依然会拖出全部 26 个 dependencies**。把它们移出根 barrel 是破坏性改动，
 > 留到 1.0；在那之前，子路径引入（或 Next 的 `optimizePackageImports`）是唯一能真正瘦下来的办法。
 
@@ -239,7 +260,7 @@ CSS 不在其中（瑚琏的样式走你自己的 Tailwind 产物）。同一套
 | `@hulianui/ui/table` | 87.7 KB | 111.9 KB | 含 TanStack Table |
 | `@hulianui/ui/chart` | 141.6 KB | 141.6 KB | recharts |
 | `@hulianui/ui/pro-table` | 142.9 KB | 170.0 KB | 列表页整套编排 |
-| `@hulianui/ui/_mui` | 144.5 KB | 144.5 KB | MUI + emotion 桥 |
+| `@hulianui/ui/date-pickers` | 137.9 KB | 137.9 KB | MUI X 日期族 + emotion 桥（optional peer，不用则为 0） |
 | `@hulianui/ui/markdown-editor` | 193.8 KB | 220.8 KB | tiptap 全家 |
 | `@hulianui/ui/video` | 61.9 KB | 116.5 KB | vidstack 自带懒加载 |
 | `@hulianui/ui` **根 barrel** | **1086.8 KB** | 1215.6 KB | 全库导出的上界 |

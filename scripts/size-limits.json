@@ -6,17 +6,65 @@
     "基线 = 实测值 + 15% 余量。优化完记得 --update 压回去，省下的空间才不会被下次改动悄悄吃掉。"
   ],
   "targets": [
-    { "name": "button", "entry": "@hulianui/ui/button", "limitKB": 12 },
-    { "name": "tag", "entry": "@hulianui/ui/tag", "limitKB": 11.5 },
-    { "name": "card", "entry": "@hulianui/ui/card", "limitKB": 10.5 },
-    { "name": "dialog", "entry": "@hulianui/ui/dialog", "limitKB": 36 },
-    { "name": "select", "entry": "@hulianui/ui/select", "limitKB": 80 },
-    { "name": "table", "entry": "@hulianui/ui/table", "limitKB": 101 },
-    { "name": "pro-table", "entry": "@hulianui/ui/pro-table", "limitKB": 164.5 },
-    { "name": "chart", "entry": "@hulianui/ui/chart", "limitKB": 163 },
-    { "name": "video", "entry": "@hulianui/ui/video", "limitKB": 71.5 },
-    { "name": "markdown-editor", "entry": "@hulianui/ui/markdown-editor", "limitKB": 223 },
-    { "name": "mui-bridge", "entry": "@hulianui/ui/_mui", "limitKB": 166.5 },
-    { "name": "root-barrel", "entry": "@hulianui/ui", "limitKB": 1250 }
+    {
+      "name": "button",
+      "entry": "@hulianui/ui/button",
+      "limitKB": 12
+    },
+    {
+      "name": "tag",
+      "entry": "@hulianui/ui/tag",
+      "limitKB": 11.5
+    },
+    {
+      "name": "card",
+      "entry": "@hulianui/ui/card",
+      "limitKB": 10.5
+    },
+    {
+      "name": "dialog",
+      "entry": "@hulianui/ui/dialog",
+      "limitKB": 36
+    },
+    {
+      "name": "select",
+      "entry": "@hulianui/ui/select",
+      "limitKB": 80
+    },
+    {
+      "name": "table",
+      "entry": "@hulianui/ui/table",
+      "limitKB": 101
+    },
+    {
+      "name": "pro-table",
+      "entry": "@hulianui/ui/pro-table",
+      "limitKB": 164.5
+    },
+    {
+      "name": "chart",
+      "entry": "@hulianui/ui/chart",
+      "limitKB": 163
+    },
+    {
+      "name": "video",
+      "entry": "@hulianui/ui/video",
+      "limitKB": 71.5
+    },
+    {
+      "name": "markdown-editor",
+      "entry": "@hulianui/ui/markdown-editor",
+      "limitKB": 223
+    },
+    {
+      "name": "mui-bridge",
+      "entry": "@hulianui/ui/_mui",
+      "limitKB": 159
+    },
+    {
+      "name": "root-barrel",
+      "entry": "@hulianui/ui",
+      "limitKB": 1098
+    }
   ]
 }

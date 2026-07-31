@@ -46,9 +46,15 @@ const GLOBAL = [
   },
   {
     id: "mui-bridge-provider",
-    rule: "_mui 桥接族（Rating / Stepper / 日期时间选择器）必须置于 MuiBridgeProvider 之内",
-    why: "桥接层把 emotion theme 接到瑚琏 CSS 变量；缺 Provider 时真实浏览器里会抛 Unsupported color",
+    rule: "日期族（Calendar / DatePicker / DateTimePicker / TimeField）必须置于 MuiBridgeProvider 之内",
+    why: "桥接层把 emotion theme 接到瑚琏 CSS 变量；缺 Provider 时真实浏览器里会抛 Unsupported color。注意 Rating / Stepper 已自研为零依赖，不再需要这层包裹",
     instead: "在用到这些组件的子树外层包一层 <MuiBridgeProvider>",
+  },
+  {
+    id: "mui-optional-peer",
+    rule: "要用日期族就必须自行安装 optional peer：@mui/material @mui/x-date-pickers @emotion/react @emotion/styled",
+    why: "这四个包已从 dependencies 降为 optional peerDependencies —— 不用日期族的项目不该被迫装下整个 MUI 与 emotion（runtime CSS-in-JS，不兼容 RSC）",
+    instead: "不用日期族就什么都不用装；用的话 pnpm add 上面四个包",
   },
   {
     id: "theme-provider",

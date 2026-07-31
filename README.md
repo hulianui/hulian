@@ -77,7 +77,7 @@ export default function App() {
 
 > ⚠️ **接进自己的仓库前先读 [docs/consuming.md](docs/consuming.md)**，两条不写明就一定会踩：
 > ① 源码分发导致消费方的 Vitest 容易解析出**第二份 React**（可直接 `import { withHulian } from "@hulianui/ui/vitest-preset"` 一行解决）；
-> ② `_mui` 桥接族（日期/评分/步骤条）必须置于 `MuiBridgeProvider` 之内，否则真实浏览器里也会抛 `Unsupported color`。
+> ② 日期族（`Calendar`/`DatePicker`/`DateTimePicker`/`TimeField`）从 `@hulianui/ui/date-pickers` 导入、需自装 4 个 optional peer、且必须置于 `MuiBridgeProvider` 之内，否则真实浏览器里会抛 `Unsupported color`。（`Rating`/`Stepper` 已改零依赖，正常从根 barrel 取。）
 
 ## 🧩 组件与示例
 

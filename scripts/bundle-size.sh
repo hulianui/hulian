@@ -44,6 +44,9 @@ UI_TGZ="$(ls "$PKG_DIR"/hulianui-ui-*.tgz)"
 #   - 不装 tailwindcss（构建期工具，不进 JS bundle）
 #   - 多一个 esbuild —— 它就是本门禁的打包器
 # peer 必须装齐：少一个，esbuild 会把它当外部模块跳过，体积凭空少一大块，门禁失真。
+# MUI / emotion 四件是 **optional** peer（只有用日期族才需要），不会随 @hulianui/ui 自动装下来，
+# 但 size-limits 里有 mui-bridge 这个采样点，所以这里显式装上，模拟「用日期族的消费方」。
+# 注意这不代表普通消费方要付这份体积 —— 不用日期族就一个字节都不会拉进来。
 cat > "$APP_DIR/package.json" <<JSON
 {
   "name": "hulian-bundle-size",
@@ -56,7 +59,11 @@ cat > "$APP_DIR/package.json" <<JSON
     "@base-ui/react": "^1.5.0",
     "motion": "^12.40.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "@mui/material": "^9.2.0",
+    "@mui/x-date-pickers": "^9.10.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
@@ -70,18 +77,32 @@ echo "▶ 安装消费方依赖（pnpm · 隔离 node_modules · 无 workspace �
 #   —— 多塞的包会被 esbuild 打进去，量出来的体积就不是消费方真实付出的。
 (cd "$APP_DIR" && pnpm install --ignore-workspace --config.auto-install-peers=false --config.strict-peer-dependencies=false >/dev/null)
 
-# 断言：库的重依赖确实随 @hulianui/ui 装了下来。
-# 这些目前都在 dependencies 里，装不下来说明 pack 产物或 exports 出了问题，
-# 继续跑只会量出一个虚低的数字。（若将来把它们改成 optional peer，这条断言要一并改。）
+# 断言一：仍在 dependencies 里的重依赖，确实随 @hulianui/ui 装了下来。
+# 装不下来说明 pack 产物或 exports 出了问题，继续跑只会量出一个虚低的数字。
 #
 # 查 .pnpm/ 而不是 node_modules/ 顶层：pnpm 的隔离结构下只有工程自己的直接依赖
 # 会出现在顶层，传递依赖一律躺在 .pnpm/ 里（目录名把 `/` 写成 `+`）。
-for dep in recharts @tanstack+react-table @mui+material @vidstack+react @tiptap+react; do
+for dep in recharts @tanstack+react-table @vidstack+react @tiptap+react; do
   if ! ls -d "$APP_DIR/node_modules/.pnpm/${dep}@"* >/dev/null 2>&1; then
     echo "✗ ${dep} 没随 @hulianui/ui 装下来，量出的体积会虚低" >&2
     exit 1
   fi
 done
+
+# 断言二（方向相反）：MUI / emotion **不得**随 @hulianui/ui 自动装下来。
+# 它们是 optional peer，只有上面消费方 package.json 里显式列了才会出现。
+# 这条防的是「哪天有人手滑把 @mui/material 挪回 dependencies」—— 那会让每个只想用
+# 一个 Button 的项目重新背上整个 MUI + emotion（runtime CSS-in-JS，且不兼容 RSC）。
+if node -e "
+  const d = require('$REPO_ROOT/packages/ui/package.json');
+  const bad = Object.keys(d.dependencies).filter(k => /^@mui\//.test(k) || /^@emotion\//.test(k));
+  if (bad.length) { console.error(bad.join(', ')); process.exit(1); }
+" 2>/tmp/hulian-mui-dep-check; then
+  :
+else
+  echo "✗ $(cat /tmp/hulian-mui-dep-check) 回到了 dependencies —— 应保持 optional peerDependencies" >&2
+  exit 1
+fi
 
 echo "▶ esbuild 打包各入口，量 gzip 体积"
 # 脚本复制进工程再跑：这样 `import("esbuild")` 走工程自己的 node_modules 正常解析，
@@ -91,3 +112,13 @@ cp "$REPO_ROOT/scripts/size-limits.json" "$APP_DIR/size-limits.json"
 
 # 变量名后紧跟全角括号必须写成 ${VAR}，否则 bash 会把全角字符并进变量名（set -u 下直接报 unbound）。
 (cd "$APP_DIR" && node bundle-size.mjs "$@")
+
+# --update 时把新基线拷回仓库。
+# bundle-size.mjs 写的是它 cwd 下的 size-limits.json —— 那是上面 cp 进临时工程的副本，
+# 不拷回来的话临时目录一删就没了，`--update` 等于只把新基线打印到 stdout 让人肉抄。
+for arg in "$@"; do
+  if [ "$arg" = "--update" ]; then
+    cp "$APP_DIR/size-limits.json" "$REPO_ROOT/scripts/size-limits.json"
+    echo "▶ 新基线已写回 scripts/size-limits.json"
+  fi
+done

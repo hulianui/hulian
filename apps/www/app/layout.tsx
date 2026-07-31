@@ -2,7 +2,12 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
-import { ThemeProvider, MuiBridgeProvider } from "@hulianui/ui";
+import {
+  ThemeProvider,
+} from "@hulianui/ui";
+import {
+  MuiBridgeProvider,
+} from "@hulianui/ui/date-pickers";
 import { themeScript } from "./theme-script";
 import { MswProvider } from "../components/msw-provider";
 import { RouteProgress } from "../components/route-progress";

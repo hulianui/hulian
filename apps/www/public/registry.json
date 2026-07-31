@@ -2454,24 +2454,9 @@
           "target": "components/hulianui/calendar/provider.tsx"
         },
         {
-          "path": "components/hulianui/calendar/rating.tsx",
+          "path": "components/hulianui/calendar/showcase.ts",
           "type": "registry:ui",
-          "target": "components/hulianui/calendar/rating.tsx"
-        },
-        {
-          "path": "components/hulianui/calendar/rating.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/rating.types.ts"
-        },
-        {
-          "path": "components/hulianui/calendar/stepper.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/stepper.tsx"
-        },
-        {
-          "path": "components/hulianui/calendar/stepper.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/stepper.types.ts"
+          "target": "components/hulianui/calendar/showcase.ts"
         },
         {
           "path": "components/hulianui/calendar/theme.ts",
@@ -3068,24 +3053,9 @@
           "target": "components/hulianui/date-picker/provider.tsx"
         },
         {
-          "path": "components/hulianui/date-picker/rating.tsx",
+          "path": "components/hulianui/date-picker/showcase.ts",
           "type": "registry:ui",
-          "target": "components/hulianui/date-picker/rating.tsx"
-        },
-        {
-          "path": "components/hulianui/date-picker/rating.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/rating.types.ts"
-        },
-        {
-          "path": "components/hulianui/date-picker/stepper.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/stepper.tsx"
-        },
-        {
-          "path": "components/hulianui/date-picker/stepper.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/stepper.types.ts"
+          "target": "components/hulianui/date-picker/showcase.ts"
         },
         {
           "path": "components/hulianui/date-picker/theme.ts",
@@ -3224,24 +3194,9 @@
           "target": "components/hulianui/date-time-picker/provider.tsx"
         },
         {
-          "path": "components/hulianui/date-time-picker/rating.tsx",
+          "path": "components/hulianui/date-time-picker/showcase.ts",
           "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/rating.tsx"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/rating.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/rating.types.ts"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/stepper.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/stepper.tsx"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/stepper.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/stepper.types.ts"
+          "target": "components/hulianui/date-time-picker/showcase.ts"
         },
         {
           "path": "components/hulianui/date-time-picker/theme.ts",
@@ -4227,16 +4182,13 @@
       "name": "rating",
       "type": "registry:ui",
       "title": "Rating",
-      "description": "评分 · MUI 桥(emotion theme 读瑚琏 token) + 受控星级",
+      "description": "评分 · 零依赖受控星级(radio 语义) + 自定义图标 + hover 预览 + token 星色",
       "categories": [
         "forms"
       ],
-      "dependencies": [
-        "@mui/material",
-        "@mui/x-date-pickers",
-        "dayjs"
-      ],
+      "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -4248,51 +4200,16 @@
         "tags": [],
         "animated": false,
         "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/rating.md",
-        "docLocal": "packages/ui/src/_mui/rating.md",
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/rating/rating.md",
+        "docLocal": "packages/ui/src/rating/rating.md",
         "status": "enriched",
         "preferred": "npm"
       },
       "files": [
         {
-          "path": "components/hulianui/rating/calendar.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/calendar.tsx"
-        },
-        {
-          "path": "components/hulianui/rating/calendar.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/calendar.types.ts"
-        },
-        {
-          "path": "components/hulianui/rating/date-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/date-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/rating/date-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/date-picker.types.ts"
-        },
-        {
-          "path": "components/hulianui/rating/date-time-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/date-time-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/rating/date-time-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/date-time-picker.types.ts"
-        },
-        {
           "path": "components/hulianui/rating/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/rating/index.ts"
-        },
-        {
-          "path": "components/hulianui/rating/provider.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/provider.tsx"
         },
         {
           "path": "components/hulianui/rating/rating.tsx",
@@ -4303,31 +4220,6 @@
           "path": "components/hulianui/rating/rating.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/rating/rating.types.ts"
-        },
-        {
-          "path": "components/hulianui/rating/stepper.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/stepper.tsx"
-        },
-        {
-          "path": "components/hulianui/rating/stepper.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/stepper.types.ts"
-        },
-        {
-          "path": "components/hulianui/rating/theme.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/theme.ts"
-        },
-        {
-          "path": "components/hulianui/rating/time-field.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/time-field.tsx"
-        },
-        {
-          "path": "components/hulianui/rating/time-field.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/rating/time-field.types.ts"
         }
       ]
     },
@@ -5078,24 +4970,9 @@
           "target": "components/hulianui/time-field/provider.tsx"
         },
         {
-          "path": "components/hulianui/time-field/rating.tsx",
+          "path": "components/hulianui/time-field/showcase.ts",
           "type": "registry:ui",
-          "target": "components/hulianui/time-field/rating.tsx"
-        },
-        {
-          "path": "components/hulianui/time-field/rating.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/rating.types.ts"
-        },
-        {
-          "path": "components/hulianui/time-field/stepper.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/stepper.tsx"
-        },
-        {
-          "path": "components/hulianui/time-field/stepper.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/stepper.types.ts"
+          "target": "components/hulianui/time-field/showcase.ts"
         },
         {
           "path": "components/hulianui/time-field/theme.ts",
@@ -10817,15 +10694,11 @@
       "name": "stepper",
       "type": "registry:ui",
       "title": "Stepper",
-      "description": "步骤条 · MUI 桥 + active/completed 走瑚琏 token",
+      "description": "步骤条 · 零依赖 flex 布局 + 自绘完成对勾 + 连接线随进度点亮 + aria-current",
       "categories": [
         "navigation"
       ],
-      "dependencies": [
-        "@mui/material",
-        "@mui/x-date-pickers",
-        "dayjs"
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/lib.json"
       ],
@@ -10838,61 +10711,16 @@
         "tags": [],
         "animated": false,
         "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/stepper.md",
-        "docLocal": "packages/ui/src/_mui/stepper.md",
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/stepper/stepper.md",
+        "docLocal": "packages/ui/src/stepper/stepper.md",
         "status": "enriched",
         "preferred": "npm"
       },
       "files": [
         {
-          "path": "components/hulianui/stepper/calendar.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/calendar.tsx"
-        },
-        {
-          "path": "components/hulianui/stepper/calendar.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/calendar.types.ts"
-        },
-        {
-          "path": "components/hulianui/stepper/date-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/date-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/stepper/date-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/date-picker.types.ts"
-        },
-        {
-          "path": "components/hulianui/stepper/date-time-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/date-time-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/stepper/date-time-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/date-time-picker.types.ts"
-        },
-        {
           "path": "components/hulianui/stepper/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/stepper/index.ts"
-        },
-        {
-          "path": "components/hulianui/stepper/provider.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/provider.tsx"
-        },
-        {
-          "path": "components/hulianui/stepper/rating.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/rating.tsx"
-        },
-        {
-          "path": "components/hulianui/stepper/rating.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/rating.types.ts"
         },
         {
           "path": "components/hulianui/stepper/stepper.tsx",
@@ -10903,21 +10731,6 @@
           "path": "components/hulianui/stepper/stepper.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/stepper/stepper.types.ts"
-        },
-        {
-          "path": "components/hulianui/stepper/theme.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/theme.ts"
-        },
-        {
-          "path": "components/hulianui/stepper/time-field.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/time-field.tsx"
-        },
-        {
-          "path": "components/hulianui/stepper/time-field.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/stepper/time-field.types.ts"
         }
       ]
     },

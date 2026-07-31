@@ -231,12 +231,18 @@ async function getConventions({ scope }) {
     return fail(`取不到约束数据（数据源 ${source}）：${e.message}`);
   }
   const out = [];
-  const rule = (r) =>
-    `- **${r.rule}**` +
-    (r.why ? `\n  - 为什么：${r.why}` : "") +
-    (r.instead ? `\n  - 该怎么做：${r.instead}` : "") +
-    (r.wrong ? `\n  - ❌ \`${r.wrong}\`` : "") +
-    (r.right ? `\n  - ✅ \`${r.right}\`` : "");
+  // 组件级 rule 是从 md 的「禁忌 / 坑」原样提取的，本身就带 markdown 强调；
+  // 再包一层会渲染成 `****文字**`。只给纯文本的手写 global rule 加粗。
+  const rule = (r) => {
+    const body = r.rule.includes("**") ? r.rule : `**${r.rule}**`;
+    return (
+      `- ${body}` +
+      (r.why ? `\n  - 为什么：${r.why}` : "") +
+      (r.instead ? `\n  - 该怎么做：${r.instead}` : "") +
+      (r.wrong ? `\n  - ❌ \`${r.wrong}\`` : "") +
+      (r.right ? `\n  - ✅ \`${r.right}\`` : "")
+    );
+  };
 
   if (!scope) {
     out.push("# 瑚琏使用约束（违反后多数在运行时才报错，或根本不报错只是变丑）\n");

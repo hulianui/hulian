@@ -5,18 +5,20 @@ import {
   ComboboxContent,
   ComboboxItem,
   ComboboxTrigger,
-  DateTimePicker,
   Field,
   ModalForm,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  TimeField,
   useForm,
   type ComboboxItemData,
   type FormValues,
 } from "@hulianui/ui";
+import {
+  DateTimePicker,
+  TimeField,
+} from "@hulianui/ui/date-pickers";
 import { DOCTORS, PATIENTS, ROOMS, type ApptType, type ClinicAppt } from "../_data/clinic";
 
 const TYPES: ApptType[] = ["初诊", "复诊", "检查", "处置"];

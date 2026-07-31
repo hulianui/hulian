@@ -51,7 +51,13 @@ export * from "./affix";
 export * from "./timeline";
 export * from "./stat";
 export * from "./chart";
-export * from "./_mui";
+// 日期族（Calendar / DatePicker / DateTimePicker / TimeField）**刻意不在根 barrel**：
+// 它依赖 @mui/x-date-pickers + @emotion，那几个是 optional peer。源码分发下 barrel 导出
+// 等于强制每个消费方的 tsc 去编译 _mui/*.tsx，没装 MUI 的项目会直接 TS2307 —— 而绝大多数
+// 项目并不用日期族。要用就显式装那四个包，并从子路径导入：
+//   import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers"
+export * from "./rating";
+export * from "./stepper";
 export * from "./date-range-picker";
 export * from "./date-field";
 export * from "./time-picker";

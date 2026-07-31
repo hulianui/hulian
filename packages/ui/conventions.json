@@ -23,9 +23,15 @@
     },
     {
       "id": "mui-bridge-provider",
-      "rule": "_mui 桥接族（Rating / Stepper / 日期时间选择器）必须置于 MuiBridgeProvider 之内",
-      "why": "桥接层把 emotion theme 接到瑚琏 CSS 变量；缺 Provider 时真实浏览器里会抛 Unsupported color",
+      "rule": "日期族（Calendar / DatePicker / DateTimePicker / TimeField）必须置于 MuiBridgeProvider 之内",
+      "why": "桥接层把 emotion theme 接到瑚琏 CSS 变量；缺 Provider 时真实浏览器里会抛 Unsupported color。注意 Rating / Stepper 已自研为零依赖，不再需要这层包裹",
       "instead": "在用到这些组件的子树外层包一层 <MuiBridgeProvider>"
+    },
+    {
+      "id": "mui-optional-peer",
+      "rule": "要用日期族就必须自行安装 optional peer：@mui/material @mui/x-date-pickers @emotion/react @emotion/styled",
+      "why": "这四个包已从 dependencies 降为 optional peerDependencies —— 不用日期族的项目不该被迫装下整个 MUI 与 emotion（runtime CSS-in-JS，不兼容 RSC）",
+      "instead": "不用日期族就什么都不用装；用的话 pnpm add 上面四个包"
     },
     {
       "id": "theme-provider",
@@ -3252,6 +3258,23 @@
         }
       ]
     },
+    "rating": {
+      "title": "Rating",
+      "rules": [
+        {
+          "rule": "回调是 `onValueChange`，不是原生 `onChange`。"
+        },
+        {
+          "rule": "`readOnly` 时不渲染任何 radio，只留一个带 `aria-label` 的静态图形；可交互时是一组真实 radio（可按 value 选中）。"
+        },
+        {
+          "rule": "`color` 传 token 须带前缀写 `var(--color-primary)`，裸 `var(--primary)` 不解析 —— 见 hulian-token-color-var-needs-color-prefix。"
+        },
+        {
+          "rule": "自定义 `icon` 想填充实色须自带 `fill=\"currentColor\"`（如示例），否则只描边。"
+        }
+      ]
+    },
     "reflective-card": {
       "title": "ReflectiveCard",
       "rules": [
@@ -3967,6 +3990,20 @@
         },
         {
           "rule": "`precision` / 千分位仅在 `value` 为 number 时生效；传 string 则原样输出。"
+        }
+      ]
+    },
+    "stepper": {
+      "title": "Stepper",
+      "rules": [
+        {
+          "rule": "`activeStep` 是纯受控、0-based；index < activeStep 显示为已完成，== 为进行中。要表达「全部完成」传 `activeStep={steps.length}`。"
+        },
+        {
+          "rule": "功能面刻意保持最小（只有 `steps` + `activeStep`）；需要垂直方向、可点击跳步、步骤描述或自定义图标时改用 Steps。"
+        },
+        {
+          "rule": "状态钩子是 `aria-current=\"step\"` 与 `data-state=\"completed|active|pending\"`，不是 MUI 的 `.Mui-active` 类名。"
         }
       ]
     },

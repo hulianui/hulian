@@ -10,11 +10,11 @@ status: enriched
 
 # Rating
 
-> 评分 · MUI 桥(emotion theme 读瑚琏 token) + 受控星级 · forms/advanced · MUI 桥
+> 评分 · 零依赖受控星级(radio 语义) + 自定义图标 + hover 预览 + token 星色 · forms/advanced
 
 ## 何时用
 
-需要星级打分/满意度采集，或只读展示已有评分时用。基于 MUI Rating 的桥接组件，emotion 主题读瑚琏 token，可换图标（心/火苗等）和颜色。纯只读且只需展示分值文字的场景可直接用文本，不必引入本组件。
+需要星级打分/满意度采集，或只读展示已有评分时用。零依赖自研，可换图标（心/火苗等）和颜色，星色走 token、hover 态用 color-mix 自动派生。纯只读且只需展示分值文字的场景可直接用文本，不必引入本组件。
 
 ## 导入
 ```ts
@@ -22,18 +22,6 @@ import { Rating } from "@hulianui/ui"
 ```
 
 > ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
-> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
-> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
-> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
->
-> ```tsx
-> import { MuiBridgeProvider } from "@hulianui/ui"
->
-> <MuiBridgeProvider>
->   <App />
-> </MuiBridgeProvider>
-> ```
-
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
@@ -51,7 +39,7 @@ import { Rating } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(value: number \| null) => void` | 瑚琏命名受控回调（替代 MUI `onChange(e,v)`）；清空时回传 `null` |
+| onValueChange | `(value: number \| null) => void` | 受控回调，点星即触发 |
 
 ## Slots
 
@@ -74,7 +62,8 @@ const [v, setV] = useState<number | null>(3);
 
 ## 禁忌 / 坑
 
-- 回调是 `onValueChange`（瑚琏命名），不是 MUI 原生 `onChange(e, value)`；清空评分时回传 `null`，受控时记得处理。
+- 回调是 `onValueChange`，不是原生 `onChange`。
+- `readOnly` 时不渲染任何 radio，只留一个带 `aria-label` 的静态图形；可交互时是一组真实 radio（可按 value 选中）。
 - `color` 传 token 须带前缀写 `var(--color-primary)`，裸 `var(--primary)` 不解析 —— 见 [[hulian-token-color-var-needs-color-prefix]]。
 - 自定义 `icon` 想填充实色须自带 `fill="currentColor"`（如示例），否则只描边。
 

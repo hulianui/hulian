@@ -4,14 +4,12 @@ import {
   Alert,
   Avatar,
   Button,
-  Calendar,
   Card,
   Checkbox,
   DateRangePicker,
   Drawer,
   DrawerContent,
   Empty,
-  DatePicker,
   Popconfirm,
   Scheduler,
   Select,
@@ -32,6 +30,10 @@ import {
   type SchedulerSlot,
   type SchedulerView,
 } from "@hulianui/ui";
+import {
+  Calendar,
+  DatePicker,
+} from "@hulianui/ui/date-pickers";
 import { CalendarPlus, RotateCw } from "lucide-react";
 import {
   buildAppointments,
