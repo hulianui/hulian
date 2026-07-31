@@ -122,6 +122,160 @@ function scanDeps(dir) {
   return [...deps].sort();
 }
 
+// ------------------------------------------------------ registry payloads --
+//
+// registry.json 此前只有目录元数据、没有 `files` —— 而 files 是 shadcn registry item
+// 的**必填字段**，缺了它任何 shadcn 兼容工具（含 AI agent）一个都装不上。这里补齐，
+// 并按「注入后能不能直接跑」分成三类：
+//
+//   registry:ui    组件。源码有内部相对 import（../lib/cn、../_icons…），注入时
+//                  必须改写成目标项目里的路径，并把内部模块声明为 registryDependencies。
+//   registry:lib   内部共享模块（lib / _icons / motion）。组件的依赖底座。
+//   registry:block 区块 & 页面。**自包含**，只从 "@hulianui/ui" 根 barrel 导入，
+//                  零改写即可整段复制 —— 这也是「AI 搭积木」最有价值的粒度。
+
+/** 注入到消费方项目里的落点前缀。shadcn 的 `@/` 别名由消费方 components.json 决定。 */
+const TARGET_ROOT = "components/hulianui";
+
+/**
+ * 单件安装端点的基址。可用 HULIAN_REGISTRY_BASE 覆盖，便于起本地 server 做端到端验证
+ * （registryDependencies 内联的是绝对 URL，不覆盖就会指回线上域名）。
+ */
+const REGISTRY_BASE = process.env.HULIAN_REGISTRY_BASE || `${SITE}/r`;
+
+/** 组件目录里真正要发出去的文件（排掉测试 / showcase / 文档）。 */
+function payloadFiles(dir) {
+  let files;
+  try {
+    files = readdirSync(dir);
+  } catch {
+    return [];
+  }
+  return files
+    .filter((f) => /\.(tsx?)$/.test(f) && !/\.(test|browser\.test|showcase)\.tsx?$/.test(f))
+    .sort();
+}
+
+/**
+ * 把组件源码里的**上级相对 import** 改写成消费方项目里的绝对别名。
+ * 同级 `./x` 保持不变 —— 同目录文件是一起注入的。
+ *   `from "../lib/cn"`  → `from "@/components/hulianui/lib/cn"`
+ *   `from "../_icons"`  → `from "@/components/hulianui/_icons"`
+ */
+function rewriteImports(code) {
+  return code.replace(
+    /((?:from|import)\s+["'])\.\.\/([^"']+)(["'])/g,
+    (_, head, rest, tail) => `${head}@/${TARGET_ROOT}/${rest}${tail}`,
+  );
+}
+
+/**
+ * 组件依赖的**库内部**模块（`../X` 里的 X），即它的 registryDependencies。
+ *
+ * 必须输出**完整 URL**：shadcn CLI 把裸名（"button"）解析到**官方 shadcn registry**，
+ * 写 "_icons" 只会让它去 ui.shadcn.com 找一个不存在的东西然后失败。
+ */
+function scanInternalDeps(dir, selfSlug) {
+  const deps = new Set();
+  for (const f of payloadFiles(dir)) {
+    const src = readFileSync(join(dir, f), "utf8");
+    for (const m of src.matchAll(/(?:from|import)\s+["']\.\.\/([^"']+)["']/g)) {
+      const top = m[1].split("/")[0];
+      if (top && top !== selfSlug) deps.add(top);
+    }
+  }
+  return [...deps].sort().map((n) => `${REGISTRY_BASE}/${n}.json`);
+}
+
+/** registry item 的 files[]，content 内联真实源码（远程安装必须内联，路径没用）。 */
+function buildFiles(dir, slug, { rewrite = true, type = "registry:ui" } = {}) {
+  return payloadFiles(dir).map((f) => {
+    const raw = readFileSync(join(dir, f), "utf8");
+    return {
+      path: `${TARGET_ROOT}/${slug}/${f}`,
+      type,
+      target: `${TARGET_ROOT}/${slug}/${f}`,
+      content: rewrite ? rewriteImports(raw) : raw,
+    };
+  });
+}
+
+/** 从 app/{blocks,pages}/_meta.ts 里正则提取条目（与 parseCategories 同策略，零依赖）。 */
+function parseMeta(file) {
+  if (!existsSync(file)) return [];
+  const src = readFileSync(file, "utf8");
+  const out = [];
+  for (const m of src.matchAll(
+    /\{\s*slug:\s*"([\w-]+)",\s*name:\s*"([^"]*)",\s*description:\s*"([^"]*)",\s*category:\s*"([\w-]+)",\s*tags:\s*\[([^\]]*)\],\s*file:\s*"([^"]+)"/g,
+  )) {
+    out.push({
+      slug: m[1],
+      name: m[2],
+      description: m[3],
+      category: m[4],
+      tags: [...m[5].matchAll(/"([^"]*)"/g)].map((t) => t[1]),
+      file: m[6],
+    });
+  }
+  return out;
+}
+
+/** 区块 / 页面 → registry item。自包含，只依赖 @hulianui/ui + lucide-react，不改写。 */
+function buildCompositeItems(metaFile, srcDir, kind) {
+  const metas = parseMeta(metaFile);
+  const items = [];
+  for (const meta of metas) {
+    const abs = join(srcDir, meta.file);
+    if (!existsSync(abs)) continue;
+    const content = readFileSync(abs, "utf8");
+    const deps = new Set();
+    for (const m of content.matchAll(/(?:from|import)\s+["']([^"'.][^"']*)["']/g)) {
+      const spec = m[1];
+      const pkg = spec.startsWith("@") ? spec.split("/").slice(0, 2).join("/") : spec.split("/")[0];
+      if (!UNIVERSAL_PEERS.has(pkg)) deps.add(pkg);
+    }
+    items.push({
+      name: `${kind}-${meta.slug}`,
+      type: "registry:block",
+      title: meta.name,
+      description: meta.description,
+      categories: [meta.category],
+      dependencies: [...deps].sort(),
+      files: [
+        {
+          path: `${TARGET_ROOT}/${kind}s/${meta.file}`,
+          type: "registry:block",
+          target: `${TARGET_ROOT}/${kind}s/${meta.file}`,
+          content,
+        },
+      ],
+      meta: { kind, selfContained: true, source: `apps/www/app/${kind}s/_${kind}s/${meta.file}` },
+    });
+  }
+  return items;
+}
+
+/** 语义 token 作为 cssVars 一并下发，否则注入的组件在消费方那里没有颜色。 */
+function buildCssVars() {
+  const read = (f) => {
+    const p = join(ROOT, "packages", "tokens", "src", f);
+    return existsSync(p) ? readFileSync(p, "utf8") : "";
+  };
+  const pick = (css, block) => {
+    const re = new RegExp(`${block}\\s*\\{([\\s\\S]*?)\\n\\}`);
+    const m = css.match(re);
+    if (!m) return {};
+    const out = {};
+    for (const v of m[1].matchAll(/^\s*(--[\w-]+):\s*([^;]+);/gm)) out[v[1].slice(2)] = v[2].trim();
+    return out;
+  };
+  const semantic = read("semantic.css");
+  return {
+    light: pick(semantic, ":root"),
+    dark: pick(semantic, '\\[data-theme="dark"\\]'),
+  };
+}
+
 // ----------------------------------------------------------------- render --
 
 const truncate = (s, n) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
@@ -192,8 +346,22 @@ function main() {
   }
   writeFileSync(join(OUT_DIR, "llms-full.txt"), full.join("\n"));
 
-  // ---- registry.json ------------------------------------------------------
-  const items = docs.map((d) => {
+  // ---- registry.json + /r/<name>.json --------------------------------------
+  const cssVars = buildCssVars();
+
+  // 内部共享模块：组件的依赖底座，必须能被单独装，否则注入的组件 import 断链。
+  const INTERNAL_MODULES = ["lib", "_icons", "motion"];
+  const libItems = INTERNAL_MODULES.filter((m) => existsSync(join(UI_SRC, m))).map((m) => ({
+    name: m,
+    type: "registry:lib",
+    title: m,
+    description: `瑚琏内部共享模块 ${m}（组件注入后的依赖底座）`,
+    dependencies: scanDeps(join(UI_SRC, m)),
+    registryDependencies: scanInternalDeps(join(UI_SRC, m), m),
+    files: buildFiles(join(UI_SRC, m), m, { type: "registry:lib" }),
+  }));
+
+  const uiItems = docs.map((d) => {
     const imp = d.exports.length ? `import { ${d.exports.join(", ")} } from "${PKG.name}"` : `import { /* ? */ } from "${PKG.name}"`;
     return {
       name: d.slug,
@@ -202,6 +370,8 @@ function main() {
       description: blurb(d),
       categories: [d.category],
       dependencies: scanDeps(d.dir),
+      registryDependencies: scanInternalDeps(d.dir, d.slug),
+      files: buildFiles(d.dir, d.slug),
       meta: {
         import: imp,
         exports: d.exports,
@@ -212,9 +382,32 @@ function main() {
         doc: d.docUrl,
         docLocal: d.docUrl.replace(`${DOC_BASE}/`, ""),
         status: d.status,
+        // 推荐用法仍是 npm import；注入源码是「想改这个组件」时才走的路。
+        preferred: "npm",
       },
     };
   });
+
+  const WWW_APP = join(ROOT, "apps", "www", "app");
+  const blockItems = buildCompositeItems(
+    join(WWW_APP, "blocks", "_meta.ts"),
+    join(WWW_APP, "blocks", "_blocks"),
+    "block",
+  );
+  const pageItems = buildCompositeItems(
+    join(WWW_APP, "pages", "_meta.ts"),
+    join(WWW_APP, "pages", "_pages"),
+    "page",
+  );
+
+  const items = [...uiItems, ...libItems, ...blockItems, ...pageItems];
+
+  // 根索引：目录用途，剥掉 files 的 content（否则单文件几十 MB，AI 拉一次就爆 context）
+  const index = items.map(({ files, ...rest }) => ({
+    ...rest,
+    files: (files ?? []).map(({ content: _c, ...f }) => f),
+  }));
+
   const registry = {
     $schema: "https://ui.shadcn.com/schema/registry.json",
     name: "hulianui",
@@ -223,12 +416,28 @@ function main() {
     description: TAGLINE,
     install: `npm i ${PKG.name}`,
     import: `import { /* components */ } from "${PKG.name}"`,
-    items,
+    // 单件安装端点。AI / shadcn CLI 按此模板取具体 item。
+    itemUrl: `${REGISTRY_BASE}/{name}.json`,
+    items: index,
   };
   writeFileSync(join(OUT_DIR, "registry.json"), JSON.stringify(registry, null, 2));
 
+  // 每个 item 一个可直接 `npx shadcn add <url>` 的端点
+  const R_DIR = join(OUT_DIR, "r");
+  if (!existsSync(R_DIR)) mkdirSync(R_DIR, { recursive: true });
+  for (const it of items) {
+    const payload = {
+      $schema: "https://ui.shadcn.com/schema/registry-item.json",
+      ...it,
+      ...(it.type === "registry:ui" || it.type === "registry:lib" ? { cssVars } : {}),
+    };
+    writeFileSync(join(R_DIR, `${it.name}.json`), JSON.stringify(payload, null, 2));
+  }
+
   console.log(
-    `[llms-registry] llms.txt(${docs.length}) · llms-full.txt(${enriched.length} enriched) · registry.json(${items.length})` +
+    `[llms-registry] llms.txt(${docs.length}) · llms-full.txt(${enriched.length} enriched) · ` +
+      `registry.json(${items.length} = ui ${uiItems.length} + lib ${libItems.length} + block ${blockItems.length} + page ${pageItems.length}) · ` +
+      `r/*.json(${items.length})` +
       (scaffold.length ? ` · ⚠ ${scaffold.length} 个仍 scaffold 未入 full: ${scaffold.slice(0, 8).map((d) => d.slug).join(",")}${scaffold.length > 8 ? "…" : ""}` : ""),
   );
 }

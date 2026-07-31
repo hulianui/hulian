@@ -23,3 +23,6 @@ out/
 
 # vitest browser mode 失败时自动留的截图（诊断用，不入库）
 **/__screenshots__/
+
+# registry 单件安装端点（447 个内联源码的 json，6.6M）——构建时由 pnpm llms-registry 生成
+apps/www/public/r/
