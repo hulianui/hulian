@@ -105,12 +105,14 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/browser": "^3.2.7",
     "jsdom": "^25.0.0",
     "motion": "^12.43.0",
+    "playwright": "^1.62.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vitest": "^3.2.6"
+    "vitest": "^3.2.7"
   }
 }

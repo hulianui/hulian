@@ -1,0 +1,11 @@
+/* browser mode 的样式入口：真实浏览器里跑测试必须有真实 CSS，
+   否则 Tailwind 类不生效、元素塌成 0 尺寸，拖拽 / 布局 / 定位类断言全部失真。
+
+   注意用**相对路径**而非 `@hulianui/tokens/...` 包名 —— postcss-import 不解析 node_modules
+   的 bare specifier（消费方那边由 Tailwind 自己解析，所以文档里写的是包名，这里不能照抄）。
+   preset.css 内部已 `@import "tailwindcss"`，此处不必重复。 */
+@import "../tokens/src/tokens.css";
+@import "../tokens/src/preset.css";
+
+/* 让 Tailwind 扫到组件源码里的类名 */
+@source "./src/**/*.{ts,tsx}";

@@ -45,7 +45,13 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      # 2705 个 vitest 用例
+      # vitest 分两个 project 跑（见 packages/ui/vitest.config.ts）：
+      #   unit    —— jsdom，props→DOM 契约与纯逻辑，占绝大多数
+      #   browser —— 真实 chromium，拖拽/指针捕获/动画/布局定位这些在 jsdom 下结论不可信的部分
+      # 后者需要真实浏览器二进制，装了才能跑；只装 chromium（不是全部三个内核）省 CI 时间。
+      - name: Install Playwright chromium
+        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+
       - name: Test
         run: pnpm test
 
