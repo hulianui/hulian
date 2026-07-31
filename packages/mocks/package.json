@@ -7,14 +7,16 @@
     ".": "./src/index.ts",
     "./browser": "./src/browser.ts"
   },
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
-    "@faker-js/faker": "^10.4.0",
-    "msw": "^2.14.0"
+    "@faker-js/faker": "^10.5.0",
+    "msw": "^2.15.0"
   },
   "devDependencies": {
     "typescript": "^5.5.0",
