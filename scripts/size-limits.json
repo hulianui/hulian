@@ -1,0 +1,22 @@
+{
+  "$comment": [
+    "消费方 bundle 体积基线。由 scripts/bundle-size.sh 校验，`bash scripts/bundle-size.sh --update` 重新生成。",
+    "limitKB 卡的是 initial chunk 的 gzip 大小（见 scripts/bundle-size.mjs 顶部注释）。",
+    "取样口径：轻量常用件 + 三大重依赖入口 + 根 barrel。改动这份清单请连带说明为什么。",
+    "基线 = 实测值 + 15% 余量。优化完记得 --update 压回去，省下的空间才不会被下次改动悄悄吃掉。"
+  ],
+  "targets": [
+    { "name": "button", "entry": "@hulianui/ui/button", "limitKB": 12 },
+    { "name": "tag", "entry": "@hulianui/ui/tag", "limitKB": 11.5 },
+    { "name": "card", "entry": "@hulianui/ui/card", "limitKB": 10.5 },
+    { "name": "dialog", "entry": "@hulianui/ui/dialog", "limitKB": 36 },
+    { "name": "select", "entry": "@hulianui/ui/select", "limitKB": 80 },
+    { "name": "table", "entry": "@hulianui/ui/table", "limitKB": 101 },
+    { "name": "pro-table", "entry": "@hulianui/ui/pro-table", "limitKB": 164.5 },
+    { "name": "chart", "entry": "@hulianui/ui/chart", "limitKB": 163 },
+    { "name": "video", "entry": "@hulianui/ui/video", "limitKB": 71.5 },
+    { "name": "markdown-editor", "entry": "@hulianui/ui/markdown-editor", "limitKB": 223 },
+    { "name": "mui-bridge", "entry": "@hulianui/ui/_mui", "limitKB": 166.5 },
+    { "name": "root-barrel", "entry": "@hulianui/ui", "limitKB": 1250 }
+  ]
+}

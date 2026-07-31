@@ -16,6 +16,9 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "doctor": "react-doctor -y --diff false --lint --no-score",
+    "size": "bash scripts/bundle-size.sh",
+    "size:update": "bash scripts/bundle-size.sh --update",
+    "compile-cost": "bash scripts/compile-cost.sh",
     "skill-index": "node scripts/gen-skill-index.mjs",
     "component-docs": "node scripts/gen-component-docs.mjs",
     "llms-registry": "node scripts/gen-llms-registry.mjs",
@@ -27,9 +30,9 @@
     "release": "changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^2.31.1",
     "react-doctor": "^0.2.14",
-    "turbo": "^2.0.0",
+    "turbo": "^2.10.8",
     "typescript": "^5.5.0"
   },
   "pnpm": {}
