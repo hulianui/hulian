@@ -17,7 +17,6 @@
 5. 区块与页面都提供机器可读的依赖、Provider、mock/替换点与可裁剪信息；生成器缺少必填元数据时直接失败。
 6. CI 对代表性文档页执行 axe-core 自动审计；现存高优先级假测试迁入 Chromium；浏览器测试不再输出 React `act(...)` warning。
 7. 审计文档只描述当前事实，不再同时保留互相矛盾的“原状态”和“完成状态”。
-8. 在真实下游 `php-hulianui-admin` 上完成一次隔离试验：安装页面、运行 guard、执行该项目自己的类型检查与构建，证明协议不是只在瑚琏 monorepo 内成立。
 
 ## 2. 范围拆分
 
@@ -213,17 +212,6 @@ git diff --check
 ```
 
 此外人工核对 20 个页面 endpoint 都有非空 `registryDependencies` 或确实无相对区块依赖，所有 77 个 composite item 都有完整 installation metadata。
-
-### 9.1 真实 PHP 管理后台消费方试验
-
-用户指定 `/Users/zhangzhiwei/Desktop/code/hulian-admin` 为最终真实消费方。该仓库包含 ThinkPHP 8 后端、Vue 前端和 `web-react/` React 19 前端；瑚琏仓库的全部修改与内部验证完成后，最后才进入这里验收。
-
-按以下口径执行：
-
-1. 使用临时 clone 或独立 git worktree，不污染用户正在开发的工作目录。
-2. 不推送、不部署、不改数据库；试验只涉及前端依赖、页面源码和本地验证配置。
-3. 在 `web-react/` 安装一个代表性管理页面并运行 `hulian-check`、typecheck、test、build。
-4. 试验发现的通用问题必须回到瑚琏修复，再重新生成 registry 并从干净下游环境复测，不能在下游打临时补丁掩盖组件库缺口。
 
 ## 10. 后续子项目
 

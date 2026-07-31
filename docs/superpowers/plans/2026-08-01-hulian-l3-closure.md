@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make every Hulian page registry item installable, enforce the machine-checkable design conventions in CI, add composite installation metadata and accessibility/browser gates, then prove the result in `/Users/zhangzhiwei/Desktop/code/hulian-admin/web-react`.
+**Goal:** Make every Hulian page registry item installable, enforce the machine-checkable design conventions in CI, and add composite installation metadata plus accessibility/browser gates.
 
 **Architecture:** The registry generator owns a single page-to-block dependency graph and emits shadcn-compatible recursive dependencies. `conventions.json` v2 separates executable AST rules from advisory documentation; a new `@hulianui/guard` package enforces executable rules after AI generation. Black-box page installation, axe scans, browser interaction tests, and a real downstream project form the completion gates.
 
@@ -16,8 +16,6 @@
 - Page smoke must install all 20 pages into isolated temporary projects; prior installs may not mask missing dependencies.
 - Only low-false-positive rules are errors. Natural-language component pitfalls remain advisory.
 - `critical` and `serious` axe violations block CI; `moderate` violations are reported.
-- Do not modify, delete, or stage `/Users/zhangzhiwei/Desktop/code/hulian-admin/public/admin.php`.
-- Finish and verify Hulian internally before changing the downstream project.
 
 ---
 
@@ -478,62 +476,9 @@ git commit -m "docs(audit): record the verified frontend L3 state"
 
 ---
 
-### Task 9: Real downstream verification in `hulian-admin`
-
-**Files:**
-- Inspect first: `/Users/zhangzhiwei/Desktop/code/hulian-admin/web-react/package.json`
-- Modify only in an isolated worktree: `/Users/zhangzhiwei/Desktop/code/hulian-admin/web-react/**`
-- Preserve: `/Users/zhangzhiwei/Desktop/code/hulian-admin/public/admin.php`
-
-**Interfaces:**
-- Consumes the packed local `@hulianui/ui`, `@hulianui/guard`, and generated registry endpoints.
-- Produces a verified representative admin page and a downstream evidence log; general failures return to Hulian for fixing.
-
-- [ ] **Step 1: Create an isolated downstream worktree after Hulian is green**
-
-```bash
-git -C /Users/zhangzhiwei/Desktop/code/hulian-admin worktree add "$(mktemp -d)/hulian-admin-l3" -b verify/hulian-l3
-```
-
-Record the exact returned path; never use a broad cleanup command or touch the user's untracked `public/admin.php`.
-
-- [ ] **Step 2: Pack local packages and install them into `web-react`**
-
-```bash
-pnpm --filter @hulianui/ui pack --pack-destination "$DOWNSTREAM_PACK_DIR"
-pnpm --filter @hulianui/guard pack --pack-destination "$DOWNSTREAM_PACK_DIR"
-pnpm add "$DOWNSTREAM_PACK_DIR"/hulianui-ui-*.tgz "$DOWNSTREAM_PACK_DIR"/hulianui-guard-*.tgz
-```
-
-- [ ] **Step 3: Install a representative admin page through the local registry**
-
-Use `page-admin-list` because it exercises page-to-block recursion, KPI, table and application layout. Do not hand-copy missing blocks; a missing dependency is a Hulian registry failure.
-
-- [ ] **Step 4: Run downstream guard and native project gates**
-
-Inspect `web-react/package.json` and run its exact scripts for typecheck, test, and build, plus:
-
-```bash
-pnpm exec hulian-check src
-```
-
-- [ ] **Step 5: Route generic failures back to Hulian and retest cleanly**
-
-If the downstream needs a CSS override, manual dependency copy, import rewrite, or provider workaround, add a failing Hulian regression test, fix Hulian, rerun the full internal suite, recreate the downstream worktree, and repeat.
-
-- [ ] **Step 6: Verify no unintended original-worktree changes**
-
-```bash
-git -C /Users/zhangzhiwei/Desktop/code/hulian-admin status --short
-```
-
-Expected original-worktree output still contains only the pre-existing `?? public/admin.php` unless the user changed it concurrently.
-
----
-
 ## Plan Self-Review
 
-- Spec coverage: Tasks 1–2 cover installable pages; Tasks 3–4 cover executable constraints; Task 5 covers construction metadata; Task 6 joins MCP and CI; Task 7 covers axe/browser reliability; Task 8 covers factual docs and every internal acceptance command; Task 9 covers the user-specified real project.
+- Spec coverage: Tasks 1–2 cover installable pages; Tasks 3–4 cover executable constraints; Task 5 covers construction metadata; Task 6 joins MCP and CI; Task 7 covers axe/browser reliability; Task 8 covers factual docs and every internal acceptance command.
 - Placeholder scan: every implementation step contains concrete files, commands, assertions and expected outcomes.
 - Type consistency: schema matcher names match the design; `hulian-check`, `registry:smoke:pages`, `conventions:check`, and `pnpm a11y` are introduced before later tasks consume them.
 - Scope: demo templates, dependency reduction, date rewrite and PHP/Java L4 remain separate approved follow-up projects, as required by the design specification.
