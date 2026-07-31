@@ -22,6 +22,7 @@ export { auroraTextShowcase } from "./aurora-text/aurora-text.showcase";
 export { avatarCirclesShowcase } from "./avatar-circles/avatar-circles.showcase";
 export { avatarShowcase } from "./avatar/avatar.showcase";
 export { backTopShowcase } from "./back-top/back-top.showcase";
+export { annotationShowcase } from "./annotation/annotation.showcase";
 export { badgeShowcase } from "./badge/badge.showcase";
 export { bentoGridShowcase } from "./bento-grid/bento-grid.showcase";
 export { borderBeamShowcase } from "./border-beam/border-beam.showcase";

@@ -607,3 +607,20 @@
     transform: none;
   }
 }
+
+/* data-display/Annotation 的 tone="rainbow" 色相循环。
+   色相要能被动画插值就必须注册类型，否则自定义属性按字符串处理、只会在关键帧间硬跳。
+   inherits 必须为 true：Annotation 的箭头与标签是宿主的**子元素**，靠继承拿到
+   动画中的色相；设 false 的话子元素只会读到 initial-value，动的只剩宿主的荧光笔底色。 */
+@property --hl-ann-hue {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 350deg;
+}
+
+/* 绕色轮一整圈（350 → 710 = 350 + 360），首尾同色所以循环处无跳变。 */
+@keyframes hulian-annotation-hue {
+  to {
+    --hl-ann-hue: 710deg;
+  }
+}

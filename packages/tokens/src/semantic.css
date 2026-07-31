@@ -59,6 +59,22 @@
      工具类 shadow-pin-left / shadow-pin-right（经 preset.css @theme inline 映射）。 */
   --hl-shadow-pin-left: 2px 0 6px -2px rgb(0 0 0 / 0.15);
   --hl-shadow-pin-right: -2px 0 6px -2px rgb(0 0 0 / 0.15);
+
+  /* Annotation 手写标签字体栈（明暗共用，不随主题切）。
+     拉丁在前、中文在后 —— 浏览器逐字符回落，于是拉丁走 Shantell/Comic Sans，
+     中文继续往后找手写体。全部是**系统自带或用户自装**的字体，库不打包
+     （中文手写体动辄数 MB，塞进设计系统不合理）。
+     一个都没命中时回落到 cursive → 通常就是正文字体：此时倾斜角与配色仍在，
+     只是少了手写笔触。要保证中文也是手写体，自行 @font-face 后覆盖本变量即可。
+
+     ⚠️ 这个栈刻意很短，不是漏写。macOS 把「手札体 Hannotate SC / 行楷 Xingkai SC /
+     报隶 / 魏碑」这类字体登记为**可下载字体**：字体名在系统里注册着，但字形默认不在本地。
+     浏览器的逐字符回落会在这种名字上**停住**（认为已命中），却拿不到字形而画成默认黑体
+     —— 于是它把排在后面、真正装了的字体（翩翩体）永远挡在门外。所以只列经实测确认
+     默认可用的：macOS 走翩翩体，Windows 走楷体。往这个栈里"多加几个备选"通常会让效果
+     变差而不是变好。 */
+  --hl-annotation-font:
+    "Shantell Sans", "Comic Sans MS", "Hanzipen SC", "翩翩体-简", KaiTi, "楷体", STKaiti, cursive;
 }
 
 [data-theme="dark"] {

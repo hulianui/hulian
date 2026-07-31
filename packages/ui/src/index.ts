@@ -6,6 +6,7 @@ export * from "./badge";
 export * from "./dot";
 export * from "./status-dot";
 export * from "./tag";
+export * from "./annotation";
 export * from "./beian-footer";
 export * from "./book-3d";
 export * from "./steps";

@@ -284,6 +284,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", group: "info", status: "new" },
   { slug: "coupon", name: "Coupon", description: "优惠券 · 撕票造型(中缝虚线+上下半圆穿孔·纯CSS) + 满减/折扣/包邮三类 + 可领/已领/已用/过期四态 + 选券高亮(电商标配·只消费 token)", category: "data-display", group: "info", status: "new" },
   { slug: "tag", name: "Tag", description: "状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)", category: "data-display", group: "info", status: "new" },
+  { slug: "annotation", name: "Annotation", description: "手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容(文档/演示/组件解剖图) · 八方位(标签在哪，箭头自动指回) + 6 语气(含彩虹) + 只圈不注 · 标签是真节点故可放 ReactNode 且读屏可读(区别 Callout 块级提示框·零依赖)", category: "data-display", group: "info", status: "new" },
   { slug: "avatar", name: "Avatar", description: "头像 · Base UI 图片+fallback", category: "data-display", group: "info", status: "new" },
   { slug: "avatar-circles", name: "AvatarCircles", description: "堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "user", name: "User", description: "用户卡 · Avatar + 名称/描述组合(复用瑚琏 Avatar) + RSC", category: "data-display", group: "info", status: "new" },

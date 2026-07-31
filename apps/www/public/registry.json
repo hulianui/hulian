@@ -2672,6 +2672,33 @@
       }
     },
     {
+      "name": "annotation",
+      "type": "registry:ui",
+      "title": "Annotation",
+      "description": "手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { Annotation, annotationGeometry, ARROWS, sideVector, isDiagonal } from \"@hulianui/ui\"",
+        "exports": [
+          "Annotation",
+          "annotationGeometry",
+          "ARROWS",
+          "sideVector",
+          "isDiagonal"
+        ],
+        "group": "info",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md",
+        "docLocal": "packages/ui/src/annotation/annotation.md",
+        "status": "enriched"
+      }
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
