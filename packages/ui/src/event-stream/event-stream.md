@@ -1,6 +1,16 @@
+---
+slug: event-stream
+name: EventStream
+category: data-display
+group: collection
+tags: []
+exports: [EventStream]
+status: enriched
+---
+
 # EventStream 事件流
 
-高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」。
+> 事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」 · data-display/collection
 
 ## 什么时候用
 

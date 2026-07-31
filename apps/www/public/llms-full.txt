@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.14.0 · 364 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.14.0 · 367 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -4667,7 +4667,7 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 
 `PasswordOptions`：`length` 14（clamp 5–128）、`uppercase`/`lowercase`/`digits`/`special` 均 true、`minDigits`/`minSpecial` 1（clamp 1–9）、`avoidAmbiguous` false（排除 `I l 1 O 0 o`）。
 
-`PassphraseOptions`：`words` 5（clamp 3–20）、`separator` `"-"`、`capitalize` false、`includeNumber` false、`wordlist` 内置 1747 词表。
+`PassphraseOptions`：`words` 6（clamp 3–20）、`separator` `"-"`、`capitalize` false、`includeNumber` false、`wordlist` 内置 1747 词表。
 
 ## Events
 
@@ -5298,6 +5298,66 @@ import { RippleButton } from "@hulianui/ui"
 
 ## 相关
 [Button](https://hulianui.haloritual.com/components/button) · [ShimmerButton](https://hulianui.haloritual.com/components/shimmer-button) · [RainbowButton](https://hulianui.haloritual.com/components/rainbow-button) · [PulsatingButton](https://hulianui.haloritual.com/components/pulsating-button) · [ButtonGroup](https://hulianui.haloritual.com/components/button-group) · [SocialButton](https://hulianui.haloritual.com/components/social-button)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# ScopeMatrix 范围矩阵
+
+> 范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话 · forms/advanced
+
+## 什么时候用
+
+- 权限 / 白名单配置
+- 任务或作业的可改动范围
+- 路由守卫、文件同步范围、CI 触发路径
+
+## 什么时候不用
+
+| 场景 | 用什么 | 为什么 |
+|---|---|---|
+| 从固定候选池搬运 | `Transfer` | 候选是封闭集合，用户只能选不能造 |
+| 自由输入的一维标签 | `TagInput` | 没有「两个对立的桶」这层语义 |
+
+## 用法
+
+```tsx
+import { ScopeMatrix } from "@hulianui/ui";
+
+const [scope, setScope] = useState({ allow: ["src/**"], deny: ["**/dist/**"] });
+
+<ScopeMatrix
+  allow={scope.allow}
+  deny={scope.deny}
+  onChange={setScope}
+  suggestions={derivedFromProject}
+/>
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|---|---|---|---|
+| `allow` | `string[]` | — | 允许列表；空数组 = 不启用白名单 |
+| `deny` | `string[]` | — | 禁止列表 |
+| `onChange` | `(next: { allow, deny }) => void` | — | 不给则为只读 |
+| `suggestions` | `string[]` | `[]` | 候选模式，点击填入输入框 |
+| `readOnly` | `boolean` | `false` | 强制只读 |
+| `validate` | `(pattern) => string \| null` | — | 返回错误文案表示非法 |
+| `allowLabel` / `denyLabel` | `ReactNode` | `"允许"` / `"禁止"` | 桶标题 |
+| `allowHint` / `denyHint` | `ReactNode` | 见默认值 | 桶下方说明 |
+| `placeholder` | `string` | `"输入模式后回车"` | 输入占位符 |
+
+## 设计取舍
+
+**底部小结是这个组件存在的主要理由。** 允许/禁止两个列表谁都会做，但这类配置有两个极易想错的点：
+
+1. **禁止优先于允许** —— 同时命中时以禁止为准。
+2. **允许为空 ≠ 全部禁止** —— 而是「不启用白名单」，只受禁止列表约束。
+
+第 2 条写反的后果是配好之后一切都被拦，用户会以为工具坏了。与其指望人读文档，不如让界面随时把当前配置的实际效果写成一句话。
+
+**不内置模式语法校验。** glob / 正则 / ant 风格 / 自定义 DSL 差异很大，组件猜错比不猜更糟。需要校验就传 `validate`。
+
+**候选点击只填入不提交。** 候选往往需要在填入后微调（改个层级、加个后缀），直接提交会逼用户先加后删。
 
 <!-- ════════════════════════════════════════════════════════ -->
 # SearchForm
@@ -8338,6 +8398,76 @@ import { Empty } from "@hulianui/ui"
 
 ## 相关
 [Skeleton](https://hulianui.haloritual.com/components/skeleton) · [Watermark](https://hulianui.haloritual.com/components/watermark) · [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# EventStream 事件流
+
+> 事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」 · data-display/collection
+
+## 什么时候用
+
+- 审计流 / 治理拦截记录
+- CI 流水线阶段
+- 日志与告警流
+- 任何「持续追加、需要快速扫视异常」的序列
+
+## 什么时候不用
+
+| 场景 | 用什么 | 为什么 |
+|---|---|---|
+| 会话 / 话题列表 | `ThreadList` | 每项是可进入的对话，强调「读到哪了」 |
+| 里程碑叙事 | `Timeline` | 稀疏、人工编排、每点都有分量 |
+| 按优先级排队的任务 | `QueueLane` | 强调积压与等待，不是时间序 |
+
+## 用法
+
+```tsx
+import { EventStream } from "@hulianui/ui";
+
+<EventStream
+  items={[
+    { id: 1, ts: "09:12:01", tone: "success", title: "构建通过", meta: "2.1s" },
+    { id: 2, ts: "09:12:44", tone: "danger", title: "越权写入被拦",
+      detail: "目标超出允许范围", meta: "1.3ms" },
+  ]}
+  maxHeight={320}
+  onItemClick={(e) => openDetail(e.id)}
+/>
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|---|---|---|---|
+| `items` | `EventStreamItem[]` | — | 顺序即展示顺序，组件不排序 |
+| `maxHeight` | `number \| string` | — | 给了才出现内部滚动 |
+| `emptyText` | `ReactNode` | `"暂无事件"` | 空态文案 |
+| `onItemClick` | `(item) => void` | — | 给了才有可点击态与键盘可达 |
+| `live` | `boolean` | `false` | 新条目淡入一次 |
+| `side` | `"left" \| "right"` | `"left"` | 时间轴所在侧 |
+| `defaultExpanded` | `boolean` | `false` | 是否默认展开 `detail` |
+
+### EventStreamItem
+
+| 名称 | 类型 | 说明 |
+|---|---|---|
+| `id` | `string \| number` | 稳定唯一；`live` 靠它判断新条目 |
+| `ts` | `ReactNode` | 时间显示串 |
+| `tone` | `"neutral" \| "info" \| "success" \| "warning" \| "danger"` | 语义色，缺省 `neutral` |
+| `title` | `ReactNode` | 一行说清发生了什么 |
+| `detail` | `ReactNode` | 折叠区内容 |
+| `meta` | `ReactNode` | 右对齐尾部信息（耗时 / 编号） |
+| `overridden` | `ReactNode` | 已被人工放行时的说明 |
+
+## 设计取舍
+
+**时间不做格式化。** 组件收到什么显示什么。时区、精度、相对还是绝对，都是调用方的领域知识；组件擅自 `toLocaleString` 只会在跨时区场景制造错误。
+
+**`live` 只淡入一次，不做循环动效。** 事件流常年开着，任何持续动画都是噪音。
+
+**首帧不闪。** `live` 模式初次挂载时全部视为「已见」，否则整屏一起动，反而看不出哪条是新的。
+
+**`overridden` 单独成行而非改色。** 「曾被拦但放行了」与「从未被拦」必须视觉可区分——这是审计场景的刚需，把它并进 tone 会丢掉这层信息。
 
 <!-- ════════════════════════════════════════════════════════ -->
 # FileTree
@@ -14433,6 +14563,66 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 ## 相关
 [Dialog](https://hulianui.haloritual.com/components/dialog) · [Modal](https://hulianui.haloritual.com/components/modal) · [AlertDialog](https://hulianui.haloritual.com/components/alert-dialog) · [Drawer](https://hulianui.haloritual.com/components/drawer) · [Popover](https://hulianui.haloritual.com/components/popover) · [Tooltip](https://hulianui.haloritual.com/components/tooltip)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# InterceptCard 拦截卡
+
+> 拦截卡 · 「某个动作被规则挡下了」的完整交代：规则是什么、出处在哪、违反点在哪、该怎么改、我要不要放行 · feedback/message
+
+## 什么时候用
+
+- 策略 / 权限拦截的说明与放行
+- 风控命中项的人工复核
+- 合规检查、审批驳回、告警确认
+
+## 什么时候不用
+
+| 场景 | 用什么 | 为什么 |
+|---|---|---|
+| 一句话提示 | `Alert` | 无出处、无动作、看完即走 |
+| 整页结果态 | `Result` | 占满视野，是页面主体 |
+| 表单字段级校验 | `Field` 自带错误态 | 就地反馈，不需要卡片 |
+
+## 用法
+
+```tsx
+import { InterceptCard } from "@hulianui/ui";
+
+<InterceptCard
+  severity="block"
+  title="并行子任务上限"
+  message="同一会话最多允许 2 个并行子任务"
+  source="团队约定 · 硬约束 4"
+  violation="本次为第 3 个子任务"
+  suggestion="先让前两个跑完再派"
+  onOverride={async (reason) => api.override(id, reason)}
+/>
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|---|---|---|---|
+| `severity` | `"block" \| "confirm" \| "notice"` | — | 拦截强度 |
+| `title` | `ReactNode` | — | 规则名或事由 |
+| `message` | `ReactNode` | — | 规则原文或说明 |
+| `source` | `ReactNode` | — | 溯源。强烈建议给 |
+| `violation` | `ReactNode` | — | 具体违反了什么（等宽渲染） |
+| `suggestion` | `ReactNode` | — | 建议的合规改法 |
+| `onOverride` | `(reason: string) => void \| Promise<void>` | — | 给了才渲染放行入口 |
+| `overrideLabel` | `ReactNode` | `"放行本次"` | 放行按钮文案 |
+| `overridePlaceholder` | `string` | 见默认值 | 理由输入占位符 |
+| `overridden` | `{ reason, at? }` | — | 已放行，展示既有理由 |
+
+## 设计取舍
+
+**溯源是一等公民。** 一条说不清出处的拦截，用户第一反应是关掉它而不是遵守它。`source` 虽是可选，但缺了它这个组件就失去大半价值。
+
+**放行理由必填，且由组件强制。** 理由为空时确认按钮禁用，`onOverride` 根本不会被调用。这是刻意的硬约束——一次没写理由的放行，半年后没人记得当时为什么放行，那等于没有治理。
+
+**左缘色条是严重度的唯一视觉锚点。** 不给整卡染色：拦截卡常成列出现，整卡染色会让列表糊成一片色块，反而失去分级作用。
+
+**放行是两步的。** 点「放行本次」先展开理由输入，不直接生效。破坏性动作不该一击即中。
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Modal

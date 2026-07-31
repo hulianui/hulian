@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 364 个组件 · v0.14.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 367 个组件 · v0.14.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，统一从根 barrel 导入：`import { X } from "@hulianui/ui"`。
@@ -58,7 +58,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 RAF · red…
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（56）
+## 表单 forms（57）
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 按钮 · CVA 变体 + press 动效
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体)
 - [Calendar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/calendar.md): 日历 · MUI X 桥(DateCalendar) + 对外 ISO 字符串受控 + 瑚琏 token
@@ -98,6 +98,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [RegionCascader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-cascader/region-cascader.md): 中国省市区级联 · 内置全量行政区划(国家统计局口径·3级) + 浮层搜索直达 + onChange 同回码与名 · dogfood Cascader
 - [RemoteSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/remote-select/remote-select.md): 远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips
 - [RippleButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ripple-button/ripple-button.md): 波纹按钮 · 点击落点扩散(Material) + reduced-motion · forms/button · #animated
+- [ScopeMatrix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scope-matrix/scope-matrix.md): 范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话
 - [SearchForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/search-form/search-form.md): 查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)
 - [SecretField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/secret-field/secret-field.md): 密钥掩码字段 · sk-abc…wxyz 掩码(full/prefix-suffix) + 眼睛 toggle 显形 + 一键复制原值(同 Snippet idiom·1.5s 反馈) + 尾部动作槽(重置/吊销) +…
 - [Segmented](https://github.com/hulianui/hulian/blob/master/packages/ui/src/segmented/segmented.md): 分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖)
@@ -116,7 +117,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（83）
+## 数据展示 data-display（84）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 头像 · Base UI 图片+fallback
@@ -146,6 +147,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Dot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot/dot.md): 状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)
 - [EditableTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/editable-table/editable-table.md): 行内编辑表格 · 行级编辑(草稿副本/保存校验/取消还原) + 自定义编辑器(editor 逃生舱) + 增删行 + 列对齐/宽度(企业录入场景·文案接 i18n)
 - [Empty](https://github.com/hulianui/hulian/blob/master/packages/ui/src/empty/empty.md): 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)
+- [EventStream](https://github.com/hulianui/hulian/blob/master/packages/ui/src/event-stream/event-stream.md): 事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」
 - [FileTree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/file-tree/file-tree.md): 文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义)…
 - [Flow](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flow/flow.md): 节点画布编排器 · 零依赖原生 Pointer Events + SVG 贝塞尔连线 · 拖节点/拖桩连线/平移缩放/适配视图 + 受控 nodes/edges(onNodesChange/onConnect/删点删线…
 - [FlyingPosters](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flying-posters/flying-posters.md): WebGL 海报飞行长廊 · 一列海报随滚轮/拖拽无限循环上下飞过，顶点着色器按 distortion 翻折"飞起"·离屏循环复用 + 透视相机景深(ogl·懒加载·StrictMode 安全·reduced-moti…
@@ -233,7 +235,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Tabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tabs/tabs.md): 选项卡 · Base UI 无浮层 + underline/solid 滑块
 - [Toolbar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toolbar/toolbar.md): 工具栏 · Base UI role=toolbar + 键盘漫游 + Button/Group/Separator
 
-## 反馈 feedback（23）
+## 反馈 feedback（24）
 - [Alert](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert/alert.md): 提示条 · tone×variant 皮肤 + a11y role
 - [AlertDialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert-dialog/alert-dialog.md): 确认对话框 · Base UI 强制决策(不点遮罩/Esc 关) + Dialog 引擎
 - [Banner](https://github.com/hulianui/hulian/blob/master/packages/ui/src/banner/banner.md): 公告条 · 横贯容器顶部全宽 bar(站点维护/促销/版本更新) · 6 语气×soft/solid + 前导图标/操作区/可关闭 + 居中或左对齐 + 长文案 dogfood Marquee 单行无缝滚动 · 区别 …
@@ -245,6 +247,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Glimpse](https://github.com/hulianui/hulian/blob/master/packages/ui/src/glimpse/glimpse.md): 链接预览 · dogfood HoverCard 引擎换皮成「封面图+标题+描述+域名」预览卡(维基式 hover preview) · 触发器随 href 渲染外链 a 或纯 span 保持行内排版 · 描述多行截断
 - [HeroVideoDialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/hero-video-dialog/hero-video-dialog.md): 视频弹层 · 缩略图+播放钮→Portal 模态(Esc/遮罩关 + 锁滚)
 - [HoverCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/hover-card/hover-card.md): 悬停卡片 · Popover 引擎自研 hover 开/移出延迟关(复刻 Tooltip delay 范式) + 富内容
+- [InterceptCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/intercept-card/intercept-card.md): 拦截卡 · 「某个动作被规则挡下了」的完整交代：规则是什么、出处在哪、违反点在哪、该怎么改、我要不要放行
 - [Modal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/modal/modal.md): 命令式对话框 · confirm/info/success/error/warning 函数式 API + Dialog 引擎
 - [Notification](https://github.com/hulianui/hulian/blob/master/packages/ui/src/notification/notification.md): 通知 · 四角堆叠卡片 + 图标/操作区/位置 + 命令式 API(比 Toast 重)
 - [Popconfirm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/popconfirm/popconfirm.md): 气泡确认 · dogfood Popover 引擎 + 危险操作就地确认(标题/图标/确认取消) + async onConfirm loading + 受控开合

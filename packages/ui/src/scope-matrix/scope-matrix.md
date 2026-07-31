@@ -1,6 +1,16 @@
+---
+slug: scope-matrix
+name: ScopeMatrix
+category: forms
+group: advanced
+tags: []
+exports: [ScopeMatrix]
+status: enriched
+---
+
 # ScopeMatrix 范围矩阵
 
-两个语义对立的模式桶（允许 / 禁止），并把「最终有效范围」写成人话。
+> 范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话 · forms/advanced
 
 ## 什么时候用
 

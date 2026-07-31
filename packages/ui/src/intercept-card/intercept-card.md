@@ -1,6 +1,16 @@
+---
+slug: intercept-card
+name: InterceptCard
+category: feedback
+group: message
+tags: []
+exports: [InterceptCard]
+status: enriched
+---
+
 # InterceptCard 拦截卡
 
-「某个动作被规则挡下了」的完整交代：规则是什么 · 出处在哪 · 违反点在哪 · 该怎么改 · 我要不要放行。
+> 拦截卡 · 「某个动作被规则挡下了」的完整交代：规则是什么、出处在哪、违反点在哪、该怎么改、我要不要放行 · feedback/message
 
 ## 什么时候用
 

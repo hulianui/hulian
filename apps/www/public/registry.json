@@ -2230,6 +2230,29 @@
       }
     },
     {
+      "name": "scope-matrix",
+      "type": "registry:ui",
+      "title": "ScopeMatrix",
+      "description": "范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { ScopeMatrix } from \"@hulianui/ui\"",
+        "exports": [
+          "ScopeMatrix"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/scope-matrix/scope-matrix.md",
+        "docLocal": "packages/ui/src/scope-matrix/scope-matrix.md",
+        "status": "enriched"
+      }
+    },
+    {
       "name": "search-form",
       "type": "registry:ui",
       "title": "SearchForm",
@@ -3415,6 +3438,29 @@
         "webgl": false,
         "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/empty/empty.md",
         "docLocal": "packages/ui/src/empty/empty.md",
+        "status": "enriched"
+      }
+    },
+    {
+      "name": "event-stream",
+      "type": "registry:ui",
+      "title": "EventStream",
+      "description": "事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { EventStream } from \"@hulianui/ui\"",
+        "exports": [
+          "EventStream"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/event-stream/event-stream.md",
+        "docLocal": "packages/ui/src/event-stream/event-stream.md",
         "status": "enriched"
       }
     },
@@ -5904,6 +5950,29 @@
         "webgl": false,
         "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/hover-card/hover-card.md",
         "docLocal": "packages/ui/src/hover-card/hover-card.md",
+        "status": "enriched"
+      }
+    },
+    {
+      "name": "intercept-card",
+      "type": "registry:ui",
+      "title": "InterceptCard",
+      "description": "拦截卡 · 「某个动作被规则挡下了」的完整交代：规则是什么、出处在哪、违反点在哪、该怎么改、我要不要放行",
+      "categories": [
+        "feedback"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { InterceptCard } from \"@hulianui/ui\"",
+        "exports": [
+          "InterceptCard"
+        ],
+        "group": "message",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/intercept-card/intercept-card.md",
+        "docLocal": "packages/ui/src/intercept-card/intercept-card.md",
         "status": "enriched"
       }
     },
