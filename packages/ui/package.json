@@ -39,11 +39,17 @@
     ".": "./src/index.ts",
     "./showcase": "./src/showcase.ts",
     "./vitest-preset": "./vitest-preset.js",
+    "./vite": {
+      "types": "./vite.d.ts",
+      "default": "./vite.js"
+    },
     "./*": "./src/*/index.ts"
   },
   "files": [
     "src",
     "vitest-preset.js",
+    "vite.js",
+    "vite.d.ts",
     "!src/**/*.test.ts",
     "!src/**/*.test.tsx",
     "!src/**/*.bake.mjs"
@@ -57,7 +63,13 @@
     "motion": ">=11",
     "react": ">=18",
     "react-dom": ">=18",
-    "tailwindcss": ">=4"
+    "tailwindcss": ">=4",
+    "vite": ">=5"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
