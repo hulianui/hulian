@@ -216,15 +216,14 @@ git diff --check
 
 ### 9.1 真实 PHP 管理后台消费方试验
 
-用户指定 `php-hulianui-admin` 为最终真实消费方。当前本机未发现同名工作副本；GitHub 账号下发现候选仓库 `Zhanglala103838/hulian-admin`，其默认分支描述为 ThinkPHP 8 + Vue 3，并提到 React 19，但当前默认分支树中只看到 `web/` Vue 工程。开始下游试验前需要用户确认它是否就是目标仓库，或提供实际本地路径/远程地址。
+用户指定 `/Users/zhangzhiwei/Desktop/code/hulian-admin` 为最终真实消费方。该仓库包含 ThinkPHP 8 后端、Vue 前端和 `web-react/` React 19 前端；瑚琏仓库的全部修改与内部验证完成后，最后才进入这里验收。
 
-确认后按以下口径执行：
+按以下口径执行：
 
 1. 使用临时 clone 或独立 git worktree，不污染用户正在开发的工作目录。
 2. 不推送、不部署、不改数据库；试验只涉及前端依赖、页面源码和本地验证配置。
-3. 若仓库含 React 19 前端，直接安装一个代表性管理页面并运行 `hulian-check`、typecheck、test、build。
-4. 若只有 Vue 前端，则该项目只能验证 PHP API/业务契约，不能伪装成 React UI 消费方；需要先找到用户所指的 React 前端位置。
-5. 试验发现的通用问题必须回到瑚琏修复，再重新生成 registry 并从干净下游环境复测，不能在下游打临时补丁掩盖组件库缺口。
+3. 在 `web-react/` 安装一个代表性管理页面并运行 `hulian-check`、typecheck、test、build。
+4. 试验发现的通用问题必须回到瑚琏修复，再重新生成 registry 并从干净下游环境复测，不能在下游打临时补丁掩盖组件库缺口。
 
 ## 10. 后续子项目
 
