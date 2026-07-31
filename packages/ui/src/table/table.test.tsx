@@ -923,3 +923,33 @@ describe("表头换行", () => {
     }
   });
 });
+
+// 虚拟滚动此前完全没有测试保护 —— 它的失效方式还特别安静：
+// 出问题时表格照样渲染、数据照样在，只是把 N 万行全铺进 DOM，页面卡死而没有任何报错。
+//
+// 注意断言的是**滚动容器的结构**，不是「渲染了几行」：jsdom 里元素尺寸恒为 0，
+// @tanstack/react-virtual 量不到视口就返回空窗口（实测一行数据都不渲染），
+// 按行数写的断言在这里只会测出 0，既证明不了虚拟化生效、也拦不住回归。
+// 窗口内的行数是否正确属于真机验证的范畴，这里守住「virtual 确实被消费了」这条线。
+describe("Table 虚拟滚动", () => {
+  const many: Row[] = Array.from({ length: 200 }, (_, i) => ({
+    name: `员工${i + 1}`,
+    age: 20 + (i % 40),
+  }));
+
+  it("开启后把表体套进定高滚动容器", () => {
+    const { container } = render(
+      <Table columns={columns} data={many} virtual={{ enabled: true, height: 360, rowHeight: 44 }} />,
+    );
+    const scroller = container.querySelector<HTMLElement>('div[style*="overflow"]');
+    expect(scroller).not.toBeNull();
+    expect(scroller!.style.height).toBe("360px");
+    expect(scroller!.style.overflow).toBe("auto");
+  });
+
+  it("不开启时全量渲染、且不套滚动容器（默认行为不受影响）", () => {
+    const { container } = render(<Table columns={columns} data={many} />);
+    expect(container.querySelectorAll("tbody tr").length).toBe(many.length);
+    expect(container.querySelector('div[style*="overflow"]')).toBeNull();
+  });
+});

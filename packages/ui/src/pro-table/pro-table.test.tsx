@@ -688,3 +688,30 @@ describe("ProTable 托管模式 · cursor 分页", () => {
     expect(getByRole("combobox").textContent).toContain("10 条/页");
   });
 });
+
+// ProTable 的 virtual 是「继承 + rest 透传」来的（types 里没有显式声明，
+// 渲染时随 {...tableProps} 一起下去），整个 pro-table/ 目录没有任何一处写着 "virtual"。
+// 这种隐式契约最容易在重构解构列表时被无声掐断 —— 谁把 virtual 显式解构出来
+// 忘了往下传，能力就没了，且不报错、类型也照样过。这条测试就是拦这个。
+// （断言取滚动容器结构而非行数，理由见 table.test.tsx 里同名 describe 的注释。）
+describe("ProTable 虚拟滚动透传", () => {
+  const many: Row[] = Array.from({ length: 200 }, (_, i) => ({ id: i + 1, name: `员工${i + 1}` }));
+
+  it("virtual 透传给内部 Table：表体套进定高滚动容器", () => {
+    const { container } = render(
+      <ProTable
+        columns={columns}
+        data={many}
+        virtual={{ enabled: true, height: 360, rowHeight: 44 }}
+      />,
+    );
+    const scroller = container.querySelector<HTMLElement>('div[style*="overflow"]');
+    expect(scroller).not.toBeNull();
+    expect(scroller!.style.height).toBe("360px");
+  });
+
+  it("不传 virtual 时不套滚动容器", () => {
+    const { container } = render(<ProTable columns={columns} data={many} />);
+    expect(container.querySelector('div[style*="overflow"]')).toBeNull();
+  });
+});

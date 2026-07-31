@@ -10198,6 +10198,15 @@ import { ProTable } from "@hulianui/ui"
 
 继承 `Omit<TableProps<TData>, "data">`（即 Table 的 columns/enableSorting/enableRowSelection/density/getRowId/rowClassName… 全可用），并新增：
 
+> **大数据列表记得开 `virtual`。** 它继承自 Table，透传下去即生效，但因为没有出现在下面这张表里，
+> 很容易被当成 ProTable 不支持而把上万行直接铺进 DOM：
+>
+> ```tsx
+> <ProTable columns={columns} request={fetchRows} virtual={{ enabled: true, height: 480 }} />
+> ```
+>
+> 参数与禁忌见 [Table 的 `virtual`](https://hulianui.haloritual.com/components/table)（需装 `@tanstack/react-virtual`；不建议与树形/明细面板、行拖拽同开）。
+
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | data | `TData[]` | — | 展示模式必传；托管模式由 request 提供，忽略此项 |
