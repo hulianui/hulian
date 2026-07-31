@@ -20,6 +20,11 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# 消费方装哪个 TypeScript。**这个版本与仓库自己用的 tsc 无关**，两者服务不同目的：
+# 仓库的 tsc 检查我们自己的代码，这里的 tsc 模拟下游。瑚琏是源码分发，下游用自己的
+# tsc 编译我们的 .tsx，所以「支持哪些 TS 版本」这件事只有这道门禁能证明。
+CONSUMER_TS_VERSION="${CONSUMER_TS_VERSION:-^7.0.2}"
+
 # CI 传 runner.temp；本地不传就自己开一个系统临时目录。两者都在仓库之外。
 WORKDIR="${CONSUMER_SMOKE_DIR:-$(mktemp -d "${TMPDIR:-/tmp}/hulian-consumer-XXXXXX")}"
 
@@ -65,13 +70,19 @@ cat > "$APP_DIR/package.json" <<JSON
   "devDependencies": {
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "typescript": "^5.5.0"
+    "typescript": "$CONSUMER_TS_VERSION"
   }
 }
 JSON
 
-# 有意不写 compilerOptions.types：让 tsc 走默认的「自动引入全部可见 @types」，
-# 这样一旦 @types/node 从哪条依赖链溜进来，下面的断言能立刻发现。
+# 有意不写 compilerOptions.types —— 但两代 tsc 下这个「不写」的含义**不同**，别按旧理解读：
+#   - TS ≤6：默认自动引入全部可见的 @types。于是 @types/node 一旦从某条依赖链溜进来，
+#     process/Buffer 立刻全部合法，本门禁的检出能力当场归零 —— 上面的断言 1 就是为此设的。
+#   - TS 7：`types` 默认值改成了 `[]`，不再自动引入任何 @types（实测：装了 @types/node
+#     且不写 types 字段，`process` 仍报 TS2591）。检出能力不再依赖「消费方目录里没有
+#     @types/node」这个前提。
+# 所以断言 1 在 TS7 下从「地基」降级为「兜底」：它现在拦的是依赖树被污染这件事本身，
+# 而不再是门禁失效的唯一防线。**两代下都保留它**，因为 CONSUMER_TS_VERSION 可切回 5.x。
 cat > "$APP_DIR/tsconfig.json" <<'JSON'
 {
   "compilerOptions": {
@@ -122,7 +133,7 @@ export function App() {
 }
 TSX
 
-echo "▶ 安装消费方依赖（pnpm · 隔离 node_modules · 无 workspace 链接）"
+echo "▶ 安装消费方依赖（pnpm · 隔离 node_modules · 无 workspace 链接 · typescript ${CONSUMER_TS_VERSION}）"
 # --ignore-workspace: 防止 pnpm 沿目录上溯认到别的 workspace。
 # --config.auto-install-peers=false: peer 已在上面显式列全，关掉自动装以免悄悄多塞包。
 (cd "$APP_DIR" && pnpm install --ignore-workspace --config.auto-install-peers=false --config.strict-peer-dependencies=false >/dev/null)

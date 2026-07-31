@@ -24,6 +24,13 @@ const nextConfig = {
   images: { unoptimized: true },
   // 工作区包以 TS 源码形式发布，需让 Next 转译
   transpilePackages: ["@hulianui/ui", "@hulianui/mocks"],
+  experimental: {
+    // TypeScript 7 的 npm 包**不再导出编译器 API**（exports 的 "." 只指向 lib/version.cjs，
+    // 其余全在 unstable/* 下）。Next 默认走 programmatic API 做构建期类型检查与 tsconfig
+    // 解析，因此一升 TS7 就会抛 E1150，`next dev` / `next build` 双双起不来。
+    // 这个开关让 Next 改为 spawn 项目本地的 tsc CLI，是升 TS7 的**硬前置**，不是调优项。
+    useTypeScriptCli: true,
+  },
 };
 
 export default nextConfig;

@@ -36,6 +36,15 @@ echo "▶ 打包 @hulianui/tokens 与 @hulianui/ui → $PKG_DIR"
 TOKENS_TGZ="$(ls "$PKG_DIR"/hulianui-tokens-*.tgz)"
 UI_TGZ="$(ls "$PKG_DIR"/hulianui-ui-*.tgz)"
 
+# 量类型检查成本时用哪个 tsc。默认跟随仓库当前的大版本，这样尺子量到的就是「今天的下游
+# 装了会是什么体感」。想做跨大版本 A/B（比如复核 TS7 到底省了多少）就改这个环境变量再跑一次。
+#
+# 横比两个大版本时留意：下面 probe 的 tsconfig 不写 types 字段，而 TS≤6 会据此自动引入
+# 全部可见 @types、TS7 则默认 `[]`。本工程只装了 @types/react(-dom)，两者都会被显式 import
+# 拉进来，所以实测 Files 只差 1（83 vs 82）—— 但换个装了 @types/node 的工程差距会拉开，
+# 真要做严格 A/B 就把两边的 types 写死。
+COMPILE_COST_TS_VERSION="${COMPILE_COST_TS_VERSION:-^7.0.2}"
+
 cat > "$APP_DIR/package.json" <<JSON
 {
   "name": "hulian-compile-cost",
@@ -53,7 +62,7 @@ cat > "$APP_DIR/package.json" <<JSON
   "devDependencies": {
     "vite": "^7.0.0",
     "@vitejs/plugin-react": "^4.7.0",
-    "typescript": "^5.5.0",
+    "typescript": "$COMPILE_COST_TS_VERSION",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0"
   }

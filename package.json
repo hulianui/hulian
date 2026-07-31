@@ -33,7 +33,7 @@
     "@changesets/cli": "^2.31.1",
     "react-doctor": "^0.2.14",
     "turbo": "^2.10.8",
-    "typescript": "^5.5.0"
+    "typescript": "^7.0.2"
   },
   "pnpm": {}
 }

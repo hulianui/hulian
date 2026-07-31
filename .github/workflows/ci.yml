@@ -76,6 +76,12 @@ jobs:
   # 否则 tsc 上溯会捡到 monorepo 根的 @types/node，门禁形同虚设）。
   # 具体步骤与各处断言见 scripts/consumer-typecheck.sh 里的注释。
   #
+  # **跑两个 TS 大版本**：瑚琏是源码分发，下游用他们自己的 tsc 编译我们的 .tsx，所以
+  # 「支持哪些 TypeScript」只有这道门禁能证明。仓库自己升到 TS7 之后若把这里也一并换成
+  # TS7，就等于静默放弃了 TS5 消费方 —— 而 TS5 目前仍是绝大多数下游的现状。反过来只留
+  # TS5 也不行：TS≥6 独有的失败是真实存在的（Video 的 TS2882，见 f4328bb）。两版共用一次
+  # checkout、顺序跑，增量约 30 秒，换的是两条真实消费路径的覆盖。
+  #
   # 与 verify 并行、不设 needs：它测的是发布产物的可消费性，与文档站构建互不依赖。
   consumer-smoke:
     name: Consumer Typecheck (packed tarball)
@@ -97,9 +103,17 @@ jobs:
 
       # 有意不在仓库根跑 pnpm install：pack 不需要 node_modules，
       # 且少装一次也少一分把 monorepo 依赖泄漏给消费方工程的机会。
-      - name: Pack, install as a consumer, typecheck
+      - name: Pack, install as a consumer, typecheck (TypeScript 7)
         env:
-          CONSUMER_SMOKE_DIR: ${{ runner.temp }}/hulian-consumer-smoke
+          CONSUMER_SMOKE_DIR: ${{ runner.temp }}/hulian-consumer-smoke-ts7
+          CONSUMER_TS_VERSION: ^7.0.2
+        run: bash scripts/consumer-typecheck.sh
+
+      # 不设 continue-on-error：TS5 消费方挂了同样是发版级问题，不能只当参考信息。
+      - name: Pack, install as a consumer, typecheck (TypeScript 5)
+        env:
+          CONSUMER_SMOKE_DIR: ${{ runner.temp }}/hulian-consumer-smoke-ts5
+          CONSUMER_TS_VERSION: ^5.5.0
         run: bash scripts/consumer-typecheck.sh
 
   # 消费方 bundle 体积门禁 —— 拦「组件悄悄变胖」这一类回归。

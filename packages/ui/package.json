@@ -110,7 +110,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.5.0",
+    "typescript": "^7.0.2",
     "vitest": "^3.2.6"
   }
 }
