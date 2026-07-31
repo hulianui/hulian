@@ -75,6 +75,39 @@ export interface Locale {
     usernameRequired: string;
     passwordRequired: string;
   };
+  passwordGenerator: {
+    /** 模式切换：字符密码 / 密码短语。 */
+    password: string;
+    passphrase: string;
+    regenerate: string;
+    copy: string;
+    copied: string;
+    /** 强度条前缀与四个档位名。 */
+    strength: string;
+    weak: string;
+    fair: string;
+    good: string;
+    strong: string;
+    /** 密码模式参数。 */
+    length: string;
+    uppercase: string;
+    lowercase: string;
+    digits: string;
+    special: string;
+    minDigits: string;
+    minSpecial: string;
+    avoidAmbiguous: string;
+    /** 短语模式参数。 */
+    words: string;
+    separator: string;
+    capitalize: string;
+    includeNumber: string;
+    /** 熵值单位，及结果区的无障碍名称。 */
+    entropyUnit: string;
+    result: string;
+    /** 环境缺少 crypto.getRandomValues 时的兜底提示。 */
+    unavailable: string;
+  };
 }
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */
@@ -140,6 +173,33 @@ export const zhCN: Locale = {
     usernameRequired: "请输入账号",
     passwordRequired: "请输入密码",
   },
+  passwordGenerator: {
+    password: "密码",
+    passphrase: "密码短语",
+    regenerate: "重新生成",
+    copy: "复制",
+    copied: "已复制",
+    strength: "强度",
+    weak: "弱",
+    fair: "一般",
+    good: "强",
+    strong: "很强",
+    length: "长度",
+    uppercase: "大写 A-Z",
+    lowercase: "小写 a-z",
+    digits: "数字 0-9",
+    special: "符号 !@#$%^&*",
+    minDigits: "最少数字",
+    minSpecial: "最少符号",
+    avoidAmbiguous: "排除形近字符",
+    words: "词数",
+    separator: "分隔符",
+    capitalize: "首字母大写",
+    includeNumber: "包含数字",
+    entropyUnit: "bit",
+    result: "生成结果",
+    unavailable: "当前环境不支持安全随机数，无法生成",
+  },
 };
 
 /** 英文（en-US），演示 i18n 可切换；消费者亦可 spread zhCN/enUS 自定义。 */
@@ -204,6 +264,33 @@ export const enUS: Locale = {
     submit: "Sign in",
     usernameRequired: "Username is required",
     passwordRequired: "Password is required",
+  },
+  passwordGenerator: {
+    password: "Password",
+    passphrase: "Passphrase",
+    regenerate: "Regenerate",
+    copy: "Copy",
+    copied: "Copied",
+    strength: "Strength",
+    weak: "Weak",
+    fair: "Fair",
+    good: "Good",
+    strong: "Strong",
+    length: "Length",
+    uppercase: "Uppercase A-Z",
+    lowercase: "Lowercase a-z",
+    digits: "Digits 0-9",
+    special: "Symbols !@#$%^&*",
+    minDigits: "Min digits",
+    minSpecial: "Min symbols",
+    avoidAmbiguous: "Avoid ambiguous characters",
+    words: "Words",
+    separator: "Separator",
+    capitalize: "Capitalize",
+    includeNumber: "Include number",
+    entropyUnit: "bit",
+    result: "Generated secret",
+    unavailable: "Secure randomness is unavailable in this environment",
   },
 };
 

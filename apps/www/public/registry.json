@@ -2010,6 +2010,27 @@
       }
     },
     {
+      "name": "password-generator",
+      "type": "registry:ui",
+      "title": "PasswordGenerator",
+      "description": "密码生成器 · Bitwarden 式双模面板（字符密码 + 密码短语·内置 1747 词表）+ 熵值实时评级四档强度条 + 参数即改即重算 + 逐字符着色（数字蓝符号红·手抄可辨）+ 复制/重生成 + i18n · …",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "meta": {
+        "import": "import { /* ? */ } from \"@hulianui/ui\"",
+        "exports": [],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/password-generator/password-generator.md",
+        "docLocal": "packages/ui/src/password-generator/password-generator.md",
+        "status": "enriched"
+      }
+    },
+    {
       "name": "pro-form",
       "type": "registry:ui",
       "title": "ProForm",

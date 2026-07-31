@@ -17,6 +17,7 @@ export * from "./input";
 export * from "./textarea";
 export * from "./field";
 export * from "./secret-field";
+export * from "./password-generator";
 export * from "./checkbox";
 export * from "./radio";
 export * from "./slider";

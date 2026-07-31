@@ -201,6 +201,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "slider", name: "Slider", description: "滑块 · Base UI 单值/range + 键盘步进", category: "forms", group: "basic", status: "new" },
   { slug: "number-field", name: "NumberField", description: "数字步进 · Base UI ±按钮 + 键盘步进 + min/max", category: "forms", group: "basic", status: "new" },
   { slug: "secret-field", name: "SecretField", description: "密钥掩码字段 · sk-abc…wxyz 掩码(full/prefix-suffix) + 眼睛 toggle 显形 + 一键复制原值(同 Snippet idiom·1.5s 反馈) + 尾部动作槽(重置/吊销) + 受控 revealed(API key 管理刚需·复用 _icons Eye/Copy)", category: "forms", group: "advanced", status: "new" },
+  { slug: "password-generator", name: "PasswordGenerator", description: "密码生成器 · Bitwarden 式双模面板(字符密码 + 密码短语·内置 1747 词表) + 熵值实时评级四档强度条 + 参数即改即重算 + 逐字符着色(数字蓝符号红·手抄可辨) + 复制/重生成 + i18n · 随机源 crypto.getRandomValues 拒绝采样消模偏(拒绝 Math.random) + 生成算法作纯函数导出可服务端复用 + SSR 首帧占位不水合失配", category: "forms", group: "advanced", status: "new" },
   { slug: "combobox", name: "Combobox", description: "自动补全 · 触发按钮 + 弹层内搜索(图4 范式)，亦支持内联输入；浮层锚到字段等宽", category: "forms", group: "advanced", status: "new" },
   { slug: "remote-select", name: "RemoteSelect", description: "远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips", category: "forms", group: "advanced", status: "new" },
   { slug: "listbox", name: "Listbox", description: "可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)", category: "forms", group: "advanced", status: "new" },
