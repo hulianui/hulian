@@ -163,7 +163,10 @@ async function listComponents({ kind = "component", query, category, limit = 60 
   const head =
     `瑚琏 ${kind} 共 ${total} 个` +
     (total > shown.length ? `，下面是前 ${shown.length} 个（用 query/category 收窄）` : "") +
-    `。统一从根 barrel 导入：import { X } from "${PKG}"`;
+    // 逐条后面都带真实 import 行（见上面的 i.meta.import），所以这里只给默认值 + 例外提醒：
+    // 日期族不在根 barrel 里（MUI/emotion 是 optional peer），照总纲抄会导不进来。
+    `。默认从根 barrel 导入：import { X } from "${PKG}"；以每条后面的 import 为准 ——` +
+    ` 日期族（Calendar / DatePicker / DateTimePicker / TimeField）走 "${PKG}/date-pickers" 子路径，且需自行安装 MUI 与 emotion。`;
   return text([head, "", ...lines].join("\n"));
 }
 

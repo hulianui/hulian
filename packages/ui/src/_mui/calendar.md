@@ -18,8 +18,15 @@ status: enriched
 
 ## 导入
 ```ts
-import { Calendar } from "@hulianui/ui"
+import { Calendar } from "@hulianui/ui/date-pickers"
 ```
+
+> 日期族自 0.15.0 起**不在根 barrel** 里，必须走 `date-pickers` 子路径；同时自行安装四个 optional peer
+> （不用日期族的项目一个都不用装，这正是移出根 barrel 的目的）：
+>
+> ```bash
+> pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
+> ```
 
 > ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
 > 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
@@ -27,7 +34,7 @@ import { Calendar } from "@hulianui/ui"
 > 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
 >
 > ```tsx
-> import { MuiBridgeProvider } from "@hulianui/ui"
+> import { MuiBridgeProvider } from "@hulianui/ui/date-pickers"
 >
 > <MuiBridgeProvider>
 >   <App />

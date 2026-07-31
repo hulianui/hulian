@@ -208,7 +208,13 @@ function statusBadge(entry, f) {
 
 function render(entry, f, entries) {
   const ex = exportsOf(f);
-  const importLine = ex.length ? `import { ${ex.join(", ")} } from "@hulianui/ui"` : `import { /* ? */ } from "@hulianui/ui"`;
+  // `_mui/` 下的件不在根 barrel 里 —— MUI/emotion 是 optional peer，放进根 barrel 就等于
+  // 强制每个消费方装齐才能 import 任何组件，所以日期族对外只走 ./date-pickers 子路径。
+  // scaffold 出根 barrel 的 import 就是给人和 AI 一条导不进来的路径。
+  const importEntry = f.mui ? "@hulianui/ui/date-pickers" : "@hulianui/ui";
+  const importLine = ex.length
+    ? `import { ${ex.join(", ")} } from "${importEntry}"`
+    : `import { /* ? */ } from "${importEntry}"`;
   const related = relatedOf(entry, entries);
   const relatedLine = related.length ? related.map((r) => `[${r.name}](${relLink(r.slug)})`).join(" · ") : "—";
   const skills = candidateSkills(entry);
