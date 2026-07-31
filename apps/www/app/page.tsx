@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { JsonLd } from "../components/json-ld";
 import {
   Button,
   DotPattern,
@@ -72,10 +73,7 @@ const homeJsonLd = {
 export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
-      />
+      <JsonLd data={homeJsonLd} />
       <SiteNavbar />
       <main className="mx-auto max-w-4xl px-6 pb-12 pt-8 sm:pb-16">
       {/* Hero —— 左对齐、非对称，靠层级与留白说话；isolate 让背景层锁在本段内 */}

@@ -3,6 +3,7 @@ import { manifest } from "../../../lib/manifest";
 import { SITE_URL, SITE_NAME } from "../../../lib/site";
 import { loadComponentDoc, loadComponentMarkdownForCopy } from "../../../lib/load-component-doc";
 import { ComponentDoc } from "../../../components/showcase/component-doc";
+import { JsonLd } from "../../../components/json-ld";
 
 export function generateStaticParams() {
   return manifest.map((m) => ({ slug: m.slug }));
@@ -63,12 +64,7 @@ export default async function ComponentSlugPage({
     : null;
   return (
     <>
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      {jsonLd && <JsonLd data={jsonLd} />}
       <ComponentDoc
         slug={slug}
         doc={loadComponentDoc(slug)}
