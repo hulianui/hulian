@@ -94,7 +94,7 @@
     "ogl": "^1.0.11",
     "qrcode-generator": "^2.0.4",
     "react-colorful": "^5.8.0",
-    "react-easy-crop": "^5.5.7",
+    "react-easy-crop": "^6.2.3",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "tiptap-markdown": "^0.9.0"
