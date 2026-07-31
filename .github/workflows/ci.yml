@@ -11,6 +11,14 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# 工具链版本的单一来源：Node 读 .nvmrc（全仓四处 setup-node 都用 node-version-file，
+# 不再各写各的 `node-version: 22`），pnpm 由根 package.json 的 packageManager 字段与
+# 这里的 version 共同钉死。
+#
+# 为什么要钉到补丁号而不是留 `22`：vite 8 要求 ^20.19.0 || >=22.12.0，jsdom 27.4 要求
+# ^20.19 || ^22.12 || >=24 —— 浮动的 major 会让一台 Node 20.0~20.18 的开发机安静装上，
+# 然后崩在 rolldown 的 native binding 上，报错栈毫无指向性。根 engines 已按这两条的
+# 交集收紧，`.nvmrc` 则保证「本地 == CI」跑的是同一个补丁版本。
 jobs:
   verify:
     name: Typecheck · Test · Build
@@ -27,7 +35,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: pnpm
 
       - name: Install dependencies
@@ -84,7 +92,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: pnpm
 
       # 有意不在仓库根跑 pnpm install：pack 不需要 node_modules，
@@ -117,7 +125,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: pnpm
 
       # 同 consumer-smoke：pack 不需要仓库根的 node_modules。

@@ -4,8 +4,8 @@
   "license": "MIT",
   "packageManager": "pnpm@8.15.5",
   "engines": {
-    "node": ">=20",
-    "pnpm": ">=8"
+    "node": "^20.19.0 || ^22.12.0 || >=24",
+    "pnpm": ">=8.15.5 <9"
   },
   "scripts": {
     "kill:stale": "pkill -f '[h]ulian-desktop' 2>/dev/null; lsof -t -i:5512 -i:5514 2>/dev/null | xargs kill -9 2>/dev/null; for pid in $(pgrep -f 'next dev'); do cwd=$(lsof -a -p $pid -d cwd -Fn 2>/dev/null | sed -n 's/^n//p' | head -1); case $cwd in $PWD/apps/www*) kill -9 $pid 2>/dev/null;; esac; done; true",
