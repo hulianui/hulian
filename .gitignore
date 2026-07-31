@@ -26,3 +26,7 @@ out/
 
 # registry 单件安装端点（447 个内联源码的 json，6.6M）——构建时由 pnpm llms-registry 生成
 apps/www/public/r/
+
+# 逐件文档端点 + 约束数据的 www 副本（构建时生成；conventions 的源在 packages/ui/）
+apps/www/public/d/
+apps/www/public/conventions.json

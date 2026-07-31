@@ -422,6 +422,12 @@ function main() {
   };
   writeFileSync(join(OUT_DIR, "registry.json"), JSON.stringify(registry, null, 2));
 
+  // 逐件文档端点 /d/<slug>.md —— MCP server 与任何 AI 都能按需取单个组件的用法，
+  // 不必整吞 1.1M 的 llms-full.txt（那正是「猜签名」的根源：读不起就只能猜）。
+  const D_DIR = join(OUT_DIR, "d");
+  if (!existsSync(D_DIR)) mkdirSync(D_DIR, { recursive: true });
+  for (const d of docs) writeFileSync(join(D_DIR, `${d.slug}.md`), absolutize(d.body));
+
   // 每个 item 一个可直接 `npx shadcn add <url>` 的端点
   const R_DIR = join(OUT_DIR, "r");
   if (!existsSync(R_DIR)) mkdirSync(R_DIR, { recursive: true });
