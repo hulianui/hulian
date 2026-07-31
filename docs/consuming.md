@@ -162,13 +162,57 @@ Turbopack 自己就处理 barrel，上面那三层成因里的第 2、3 层对�
 所以这条配置的适用面是**明确跑 webpack 的 dev**（Next 15 及以下，或 Next 16 显式关掉 Turbopack）。
 加了也无害，只是别指望在 Turbopack 上看到同样的收益。
 
-**Vite 侧**已经踩上又暂时不想改 import 的，止血是强制预打包（Vite 默认不对 node_modules 里的
-源码包做预构建，必须显式 include）：
+### Vite 消费方：装出来的没事，**软链的才是重灾区**
+
+> 本节此前写着「Vite 默认不对 node_modules 里的源码包做预构建，必须显式 include」——
+> 这句话对 Vite 7 只说对了一半，已按实测更正。
+
+Vite 的依赖预打包（optimizeDeps）会从入口 HTML 出发扫描 bare import，把扫到的包用 esbuild
+预打包进 `node_modules/.vite/deps/`。**正常 `pnpm add` 装进来的 `@hulianui/ui` 会被自动预打包**，
+一整棵源码树因此塌缩成一个文件，dev 完全不吃亏 —— 这一档不需要你做任何配置。
+
+真正的坑在**软链消费**（`link:` / `file:` 指向目录 / pnpm workspace，也就是一边改库一边跑下游的
+双源开发模式）。Vite **有意跳过 linked 包的预构建**，因为它假定你正在改那个包、需要 HMR。
+于是整棵 `src/` 回到逐文件 transform 的老路。实测同一个页面（引 8 个组件，Vite 7.3.6）：
+
+| 消费方式 | 浏览器模块请求 | dev server RSS | `.vite/deps` 里有预打包产物 |
+|---|---|---|---|
+| `pnpm add`（tarball） | **16** | 43 MB | ✅ 自动 |
+| **软链**（`link:`） | **250** | 83 MB | ❌ |
+| 软链 + 下面这行配置 | **13** | 80 MB | ✅ |
+
+请求数差 **15 倍**，且这是只用 8 个组件的量 —— 真实项目引十几个组件、跨多个页面，
+模块图按同样的比例放大，这就是「dev server 常驻 3 GB、HMR 卡到点了没反应」的来源。
+
+所以软链消费瑚琏时，预打包是**必需项而不是优化项**。0.15.0 起库自带一个插件替你判断：
 
 ```ts
 // vite.config.ts
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
+import { hulian } from "@hulianui/ui/vite"
+
+export default defineConfig({ plugins: [react(), hulian()] })
+```
+
+它只做一件事：**探测瑚琏是不是软链进来的**（读自己的 realpath 是否还在 `node_modules` 里），
+是就注入 `optimizeDeps.include`，不是就什么都不做。所以**正常安装的项目加了也无害**，
+可以无脑写进模板；只在真正生效时打印一行说明，其余时候安静。
+
+代价是**库源码不再有 HMR** —— 改 `packages/ui` 下的文件要重启 dev server。
+一边改库一边调下游时传 `hulian({ prebundle: false })` 换回来。冷启动那次预打包
+约 4 秒（把 5204 个模块打成一个 9.4 MB 的 chunk），之后走缓存。
+
+不想加插件就手写等价配置：
+
+```ts
 optimizeDeps: { include: ["@hulianui/ui"] }
 ```
+
+> 这个插件和 `@hulianui/ui/vitest-preset` **不要互相套用**：那边是给 vitest 的，
+> 治的是 SSR 转换 + Node 解析下的 React 分裂（需要 `dedupe` / `conditions` / `mainFields`）；
+> 这边是给 dev server 的，治的是模块图膨胀。实测 Vite dev 会把所有 bare `import "react"`
+> 重写到同一份预构建产物，React 不会分裂，所以这个插件**刻意不加 `dedupe`**。
 
 > 重依赖组件（`_mui/*`、`markdown-editor`、`video`、`*-chart`、WebGL 特效系）目前仍在根 barrel 里，
 > 也就是说**根 barrel 依然会拖出全部 26 个 dependencies**。把它们移出根 barrel 是破坏性改动，
@@ -176,7 +220,112 @@ optimizeDeps: { include: ["@hulianui/ui"] }
 
 ---
 
-## 4. 几个不那么致命但值得先知道的
+## 4. 各入口到底多大（实测）
+
+上一节说的都是**编译时间与模块图**；这一节是**产物体积** —— 你的用户真正要下载的字节。
+
+数字由 `pnpm size` 实测：`pnpm pack` 出 tarball，装进一个仓库外的空白工程，
+用 esbuild 打包 + minify + gzip。react 外部化（你本来就有），其余依赖全部计入。
+CSS 不在其中（瑚琏的样式走你自己的 Tailwind 产物）。同一套脚本在 CI 里当门禁跑，
+所以下面这张表不会随版本悄悄失真。
+
+| 入口 | initial | total | 说明 |
+|---|---|---|---|
+| `@hulianui/ui/card` | 9.0 KB | 9.0 KB | 纯展示件的地板价 |
+| `@hulianui/ui/tag` | 9.9 KB | 9.9 KB | |
+| `@hulianui/ui/button` | 10.0 KB | 36.8 KB | 差额是动画引擎，懒加载（见下） |
+| `@hulianui/ui/dialog` | 30.9 KB | 55.1 KB | Base UI 的 overlay 基建 |
+| `@hulianui/ui/select` | 69.5 KB | 93.7 KB | |
+| `@hulianui/ui/table` | 87.7 KB | 111.9 KB | 含 TanStack Table |
+| `@hulianui/ui/chart` | 141.6 KB | 141.6 KB | recharts |
+| `@hulianui/ui/pro-table` | 142.9 KB | 170.0 KB | 列表页整套编排 |
+| `@hulianui/ui/_mui` | 144.5 KB | 144.5 KB | MUI + emotion 桥 |
+| `@hulianui/ui/markdown-editor` | 193.8 KB | 220.8 KB | tiptap 全家 |
+| `@hulianui/ui/video` | 61.9 KB | 116.5 KB | vidstack 自带懒加载 |
+| `@hulianui/ui` **根 barrel** | **1086.8 KB** | 1215.6 KB | 全库导出的上界 |
+
+**initial 是首屏立刻要下的，total 含之后按需加载的 chunk。** 两个数差得多的入口，
+说明它把大头推到了首屏之后；两个数相等的，进来就得全付。
+
+几点值得注意：
+
+- **每个入口都含约 8 KB 的 `tailwind-merge`** —— 它是 `cn()` 的运行时，全库共用一份，
+  多引几个组件不会重复计费。所以「9 KB 的 Card」里真正属于 Card 的不到 1 KB。
+- **动画引擎（motion 的 `domAnimation`，约 24 KB）走 `import()` 单独成 chunk**，
+  不在任何组件的首屏关键路径上。代价是它到达之前 `m.*` 渲染为无动画元素 ——
+  慢网络下「一进页面就播」的入场动画可能少播一次淡入。**不会卡在不可见**：
+  features 缺席时组件以最终态呈现，而不是停在 `opacity: 0`。
+  交互触发的动效（按压、hover、overlay 开合）完全不受影响。
+  （本仓文档站逐帧实测：入场动画照常逐帧推进，chunk 到得比动画该开始的时刻还早。）
+- **根 barrel 的 1 MB 是「用满全库」的上界**，不是你一定会付的价 —— 打包器 tree-shaking 后
+  只留你用到的部分。但 dev 模式不做 tree-shaking，所以上一节那条配置仍然要加。
+
+想看某个入口为什么这么大：
+
+```bash
+pnpm size                                   # 全表
+bash scripts/bundle-size.sh --why button    # 某个入口的体积构成归因
+```
+
+### 字节之外：编译压力是另一把尺子，结论常常相反
+
+上面那张表量的是**用户的下载压力**。开发者关心的另一件事 —— dev server 吃多少内存、
+冷启动等多久、HMR 卡不卡 —— 由**模块数**决定，和字节数不是一回事：
+
+| 入口 | 产物字节 | 模块数 |
+|---|---|---|
+| `@hulianui/ui/video` | 61.9 KB | **39** |
+| `@hulianui/ui/button` | 10.0 KB | **415** |
+| `@hulianui/ui/card` | 9.0 KB | 7 |
+| `@hulianui/ui` 根 barrel | 1095 KB | **5204** |
+
+Video 的产物是 Button 的 6 倍字节，模块数却只有它的十分之一 —— 因为 vidstack 发的是打包好的
+dist（少数大文件），而 motion 发的是细碎 ESM（一个函数一个文件）。打包器的成本是按**文件个数**
+付的：每个文件都要 resolve、parse、transform，并在模块图里占一个常驻节点。
+
+**dev 模式不做 tree-shaking**，所以 prod 里被剪掉的东西在 dev 里全都要过一遍。
+实测（Vite 7，同样 8 个组件）：
+
+| 引入方式 | 模块数 | 内存增量 | transform 耗时 |
+|---|---|---|---|
+| 根 barrel | **809** | 184~261 MB | 5~21 s |
+| 子路径 | **30** | 1~2 MB | ~0.2 s |
+| 单个轻组件（地板） | 4 | ~0 | ~0.05 s |
+
+**27 倍模块。** 耗时和内存给的是区间 —— 它们随机器负载浮动（同一台机器两次跑相差 4 倍），
+模块数才是稳定可比的那个数；但三者同向，量级差距是真的。
+
+### 还有一层：IDE 的类型检查，`optimizeDeps` 救不了
+
+打包器的负担可以靠预打包卸掉（`optimizeDeps` / `optimizePackageImports` 都是把源码树塌缩成
+预打包产物），**但 tsserver 吃不到这个好处** —— IDE 里的类型检查永远直面我们发出去的 `.tsx`
+源码，`skipLibCheck` 也只跳 `.d.ts`、跳不过源码。所以「IDE 卡」和「dev server 卡」是两个
+独立的问题。
+
+实测只 `import` **一个** Button 的固定成本：
+
+| 引入方式 | Files | tsc 内存 | tsc 耗时 |
+|---|---|---|---|
+| 根 barrel | **3020** | **722 MB** | 14.3 s |
+| 子路径 | 83 | 105 MB | 0.6 s |
+
+一个 Button 就要 700 MB —— 这就是 tsserver 在大项目里常驻 1~2 GB 的来源。
+
+**结论：子路径引入是唯一同时救打包器和 IDE 的手段。** Next 的 `optimizePackageImports`
+只治前者，IDE 那半边它管不着。
+
+自己跑一遍（两层一起量）：
+
+```bash
+pnpm compile-cost
+```
+
+（这把尺子没进 CI：编译耗时受机器负载影响大，做成门禁只会 flaky。它是诊断工具，
+怀疑「库把我的 dev / IDE 拖慢了」时拿它取证。）
+
+---
+
+## 5. 几个不那么致命但值得先知道的
 
 - **`Table` 不开 `rowDraggable` 就不会碰 dnd-kit**（0.11.0 起）。此前 `useSensors` 写在组件顶层，
   任何用了 `Table` 的下游都会拉起整条 dnd-kit 运行时；现在这些 hook 收在只有开了拖拽才挂载的
