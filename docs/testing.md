@@ -151,20 +151,53 @@ await userEvent.dragAndDrop(source, target);   // 真实鼠标
 
 **实践**：默认用 `dispatchEvent`（可控、可断言中间态），需要证明"真实设备也走得通"时再补一条 `userEvent` 测试。参考 `carousel.browser.test.tsx` 里两种各留了一条。
 
+### 坑三：Vite 中途重新优化依赖会打断测试
+
+**症状**：某条测试报 `Cannot read properties of null (reading 'useContext')`，看着像坑一（React 分裂），但只有**特定一条**用例失败，日志里能看到：
+
+```
+[vite] (client) ✨ new dependencies optimized: lucide-react
+[vite] (client) ✨ optimized dependencies changed. reloading
+```
+
+**真因**：某条用例第一次用到某个包（例：Sortable 只在 `handle` 模式才渲染 lucide 图标），Vite 触发依赖预构建并 **reload 页面**，正在跑的用例被腰斩。
+
+**根治**：`vitest.config.ts` 的 `optimizeDeps.include` 把浏览器侧会用到的重包一次性列全，让预构建在启动时完成。**新组件引入新的第三方包时，记得同步这份清单。**
+
 ---
 
 ## 迁移状态
 
 **已迁**：
 
-| 组件 | 补上了什么 jsdom 测不到的 |
-|---|---|
-| `kanban.browser.test.tsx` | 整卡拖拽跨列（`closestCorners` 依赖真实 rect） |
-| `carousel.browser.test.tsx` | 轨道真实溢出几何、拖拽改 `scrollLeft`、snap 类切换、圆点 `scrollTo` 落位、真实输入设备拖拽 |
+| 组件 | 补上了什么 jsdom 测不到的 | jsdom 那边为什么测不了 |
+|---|---|---|
+| `kanban` | 整卡拖拽跨列 | `closestCorners` 依赖真实 rect，jsdom 恒 0 |
+| `carousel` | 轨道溢出几何、拖拽改 `scrollLeft`、snap 类切换、圆点 `scrollTo` 落位、真实输入设备拖拽 | 测试开头就把 `scrollTo`/`setPointerCapture` 桩成 `vi.fn()` |
+| `resizable` | 面板真实宽度、拖手柄改比例、min/max 夹取、`data-dragging` | `avail = Σ offsetWidth` 恒 0 → `deltaPct` 恒 0 → **拖拽是彻底 no-op** |
+| `swipe-action` | 面板真实宽度、跟手偏移、过阈值吸附、回弹、纵向放行 | `widths()` 读 `offsetWidth` 恒 0 → 拖不动也永不吸附，只能全局 mock 成 80 |
+| `sortable` | 拖拽重排、相邻互换、交互元素放行、handle 模式 | `closestCenter` 同样依赖 rect，`over` 恒空 → **onChange 永不触发** |
 
-> Carousel 的 jsdom 测试开头就把 `scrollTo` 和 `setPointerCapture` 桩成了 `vi.fn()` ——
-> 而这个组件的核心逻辑正是 `track.scrollLeft = startLeft - (clientX - startX)`。
-> jsdom 无布局无溢出，`scrollLeft` 恒为 0，**拖拽切换幻灯片这个主功能从未被测过**。
+共 23 个用例。三处**源码级证据**说明这些不是"覆盖不足"而是"根本测不了"：
+
+```js
+// resizable.tsx:163,178
+const avail = panelEls.reduce((s, p) => s + p.offsetWidth, 0);   // jsdom 恒 0
+const deltaPct = d.avail > 0 ? ((pos - d.startPos) / d.avail) * 100 : 0;   // → 恒 0
+
+// swipe-action.tsx:67,77
+setOffset(Math.max(-rw, Math.min(lw, start.current.offset + dx)));   // rw/lw=0 → 恒 0
+if (offset < 0 && rw > 0 && ...) next = -rw;                         // rw>0 不成立 → 永不吸附
+
+// sortable.tsx:151  onDragEnd
+if (!over || active.id === over.id) return;   // over 恒空 → 直接短路
+```
+
+### 迁移时的纪律：写完必做变异验证
+
+**测试通过 ≠ 测试有用。** 每迁一个组件，人为把对应逻辑改坏（或还原成 jsdom 的行为），确认测试**精确变红**再收工。
+
+实例：Resizable 首版有一条"min/max 约束"断言写成 `expect(last[0]).toBeLessThanOrEqual(80)`，变异后**依然通过**——因为 `deltaPct` 恒 0 时也满足"没越界"。收紧成 `toBeCloseTo(80, 1)`（必须真的顶到边界）后，变异红条从 2 条增至 3 条。
 
 **待迁清单**（按信号强度排序，实测于 2026-08-01）：
 

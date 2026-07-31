@@ -29,6 +29,23 @@ export default defineConfig({
   // 有多份入口的包会被解析出**第二份 React** —— 症状是 useState/useRef 读到 null，
   // 栈顶落在组件里，看着像组件坏了。dedupe 是唯一的根治手段。
   resolve: { dedupe: hulianDedupe },
+  // 浏览器侧依赖预构建必须在**启动时**完成。否则某条测试第一次用到某个包（例如
+  // handle 模式才渲染的 lucide 图标）会触发 Vite 中途重新优化 + reload，正在跑的
+  // 用例被打断，报出来的却是 "Cannot read properties of null (reading 'useContext')"
+  // 这种像 React 分裂的假象。把浏览器里会用到的重包一次性列全。
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "react/jsx-dev-runtime",
+      "lucide-react",
+      "motion",
+      "motion/react",
+      "@dnd-kit/core",
+      "@dnd-kit/sortable",
+      "@dnd-kit/utilities",
+    ],
+  },
   test: {
     globals: true,
     projects: [
