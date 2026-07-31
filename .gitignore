@@ -20,6 +20,7 @@ out/
 # 验收/工具产物（截图垃圾只忽略根目录，不误伤 packages 内资源图）
 /*.png
 .playwright-mcp/
+.worktrees/
 
 # vitest browser mode 失败时自动留的截图（诊断用，不入库）
 **/__screenshots__/
