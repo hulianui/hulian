@@ -1,3 +1,10 @@
+/// <reference path="./vidstack-css.d.ts" />
+// ↑ 两条都别动：
+//   1) 别删 —— 消费方的 tsconfig 不会 include 库里的 .d.ts，只有这条三斜线引用能把它带进下游的
+//      program。少了它，升到 TS≥6 的消费方一 import Video 就是 TS2882（详见 vidstack-css.d.ts）。
+//   2) 别挪到 "use client" 下面 —— 三斜线指令只在**任何语句之前**才生效，而 "use client" 是一条
+//      ExpressionStatement；排在它后面就会被当成普通注释静默失效（实测：放下面时消费方仍报 TS2882）。
+//      指令前允许有注释，所以这个顺序对 "use client" 本身无影响。
 "use client";
 import "@vidstack/react/player/styles/base.css";
 import { useEffect, useRef, useState } from "react";
