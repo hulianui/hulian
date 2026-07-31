@@ -20,10 +20,10 @@
 **积木的质量已经很好，积木的可取用性接近于零。**
 
 - 瑚琏在 **7 个技术维度上处于全球前沿**（OKLCH token 体系、Base UI 选型、TypeScript 7、CI 体积门禁四项**领先于绝大多数头部库**）
-- 但**「让 AI 只能搭积木」这件事，目前只做到了 L0.5**（散文铁律 + 一份需要整吞的 `llms-full.txt`）
-- 且最值钱的两层积木——**28 个区块、19 个页面、18 个整站 demo**——对 AI **完全不可见**，它们只活在文档站里给人看
+- ~~但**「让 AI 只能搭积木」这件事，目前只做到了 L0.5**~~ → **2026-08-01 已推进到 L3**（registry 447 个可装 item + MCP 四个 tool + 998 条机器可读约束）
+- ~~且最值钱的两层积木——**28 个区块、19 个页面**——对 AI **完全不可见**~~ → **已全部进 registry**（57 区块 + 20 页面，可 `npx shadcn add` 直接注入）
 
-三个维度停留在旧范式（jsdom 测试、emotion 运行时、分发形态半途），它们不是独立问题，而是**削弱积木可靠性与可注入性的三块短板**。
+~~三个维度停留在旧范式~~ → **2026-08-01 已解决两个**（测试基座切 browser mode、分发形态补齐 registry）。**剩 emotion / MUI 桥这条 2021 尾巴**，见 §4.2。
 
 ---
 
@@ -57,23 +57,23 @@ AI 的自由度  ─────────────────────
 组件库只是这件事的**载体之一**。真正起作用的是三样东西：
 
 1. **积木本身**（组件 / 区块 / 页面）—— 瑚琏已有，质量很好
-2. **积木的机器可读索引**（AI 知道有什么、怎么用）—— 只有文本层
-3. **硬约束**（AI 想发挥也发挥不了）—— **完全缺失**
+2. **积木的机器可读索引**（AI 知道有什么、怎么用）—— ✅ 2026-08-01 落地（MCP + registry）
+3. **硬约束**（AI 想发挥也发挥不了）—— ✅ 2026-08-01 落地（998 条 conventions）
 
 ### 1.3 积木的三种粒度 ← 本次审计最重要的发现
 
 | 粒度 | 数量 | 存放位置 | AI 可取用性 |
 |---|---|---|---|
-| **组件** Button / ProTable / Flow | 368 | `packages/ui/src/` + npm | 🟡 靠猜签名，或整吞 `llms-full.txt` |
-| **区块** 登录区 / 定价表 / 工作台头部 / 特性分栏 | 28 | 文档站 `/blocks` | ❌ **不可见** |
-| **页面** 列表页 / 详情页 / 仪表盘 / 结算流 | 19 | 文档站 `/pages` | ❌ **不可见** |
-| **整站 demo** CRM / 商城 / 大屏 / AI 工作流 / 直播 / 网关 | 18 | `apps/www/app/demos/` | ❌ **不可见** |
+| **组件** Button / ProTable / Flow | 367 | `packages/ui/src/` + npm | ✅ `list_components` + `get_component_doc` |
+| **区块** 登录区 / 定价表 / 工作台头部 / 特性分栏 | 57 | 文档站 `/blocks` | ✅ `install_block`，自包含可注入 |
+| **页面** 列表页 / 详情页 / 仪表盘 / 结算流 | 20 | 文档站 `/pages` | ✅ 同上 |
+| **整站 demo** CRM / 商城 / 大屏 / AI 工作流 / 直播 / 网关 | 18 | `apps/www/app/demos/` | ❌ 仍不可见（区块已从中抽出，demo 本体未进 registry） |
 
 **"从零到一搭积木"用的主要是后三层**——AI 需要的不是"给我一个 Button"，而是"给我一个中后台列表页的骨架"。
 
-而这三层现在的处境是：**做出来了、质量很高、有真实交互和状态机、CDP 像素自证过，然后只被放在文档站里给人看。** AI 在开新项目时，对它们的存在一无所知。
+~~而这三层现在的处境是：做出来了、质量很高，然后只被放在文档站里给人看。~~
 
-这是当前投入产出比最失衡的一块：**最贵的资产，零可取用性。**
+**2026-08-01 已解决**：57 区块 + 20 页面全部进 registry，`npx shadcn add` 可直接注入（真实 CLI 验证过）。它们本就自包含——只从 `@hulianui/ui` 根 barrel 导入——零改写即可落盘。
 
 ---
 
@@ -84,11 +84,11 @@ AI 的自由度  ─────────────────────
 | 级别 | 机制 | AI 的行为 | 瑚琏 |
 |---|---|---|---|
 | **L0** | 口头 / CLAUDE.md 散文铁律 | 有时遵守，有时发挥 | ✓ |
-| **L0.5** | 一份需整吞的 `llms-full.txt` | 吃 context，或干脆猜 | ✓ **← 当前在这** |
-| **L1** | 机器可读索引（MCP `list` / `get_doc`） | 按需查，不猜了 | ✗ |
-| **L2** | 可注入积木（registry `install` 组件/区块/页面） | 直接把你的积木写进项目 | ✗ |
-| **L3** | 硬约束 schema（必须包裹 / token 值域 / 禁止项） | **想发挥也发挥不了** | ✗ |
-| **L4** | 跨栈统一（前端 + PHP + Java 同一套机制） | 全栈搭积木 | ✗ |
+| **L0.5** | 一份需整吞的 `llms-full.txt` | 吃 context，或干脆猜 | ✓ |
+| **L1** | 机器可读索引（MCP `list_components` / `get_component_doc`） | 按需查，不猜了 | ✅ 2026-08-01 |
+| **L2** | 可注入积木（registry `install_block`，447 个 item） | 直接把你的积木写进项目 | ✅ 2026-08-01 |
+| **L3** | 硬约束 schema（`get_conventions`，998 条） | **想发挥也发挥不了** | ✅ **← 当前在这** |
+| **L4** | 跨栈统一（后端各框架同一套机制） | 全栈搭积木 | 未做（机制已验证，可复制） |
 
 ### L0.5 的实际代价：AI 猜错是常态
 
@@ -119,12 +119,12 @@ AI 的自由度  ─────────────────────
 | 4 | 类型工具链 | TypeScript 7（Go 重写的 tsc） | ✓ `^7.0.2` + CI 跑 TS5/TS7 双版本冒烟 | 🟢 **领先** |
 | 5 | 性能预算 | CI 强制体积门禁 | ✓ `size-limits.json` 12 采样点带 15% 余量 | 🟢 **领先** |
 | 6 | 动效体系 | 曲线 SSOT + `prefers-reduced-motion` | ✓ 曲线三处镜像、13 overlay 统一 transform-origin | 🟢 前沿 |
-| 7 | 文档形态 | 结构化 + 机器可读 | ✓ 367 份逐组件 md + llms.txt + registry 元数据 | 🟢 前沿（**但止步文本层**） |
-| 8 | **分发形态** | registry 协议 + CLI + agent 可注入 | 源码分发，但消费方式是 npm import | 🟡 **卡在 2024.5** |
+| 7 | 文档形态 | 结构化 + 机器可读 | ✓ 367 份逐组件 md + llms.txt + `/d/<slug>.md` 单件端点 | 🟢 前沿 |
+| 8 | ~~**分发形态**~~ | registry 协议 + CLI + agent 可注入 | ✅ **已解决**：447 个可装 item，真实 `npx shadcn add` 验证 | 🟢 **已解决** |
 | 9 | ~~**测试基座**~~ | Vitest **browser mode**（真实浏览器） | ✅ **2026-08-01 已迁**：双 project（unit=jsdom / browser=真实 chromium） | 🟢 **已解决** |
 | 10 | **CSS-in-JS** | zero-runtime（runtime 方案已判死） | `@emotion` runtime 仍在依赖（MUI 桥） | 🔴 **2021 尾巴** |
 | 11 | a11y 验证 | CI 内 axe-core 自动回归 | 靠 Base UI 兜底，无门禁 | 🟡 待补 |
-| 12 | **agent 可操作性** | MCP + 机器可读约束 schema | 只有文本层 | ⚪ **项目目的所在，却是空白** |
+| 12 | ~~**agent 可操作性**~~ | MCP + 机器可读约束 schema | ✅ **已解决**：`@hulianui/mcp` 四个 tool + 998 条约束 | 🟢 **已解决** |
 
 ### 3.1 领先的部分（不要动这些，它们是地基）
 
@@ -140,11 +140,13 @@ AI 的自由度  ─────────────────────
 
 ## 4. 三块短板（它们如何伤害"搭积木"这件事）
 
-### 4.1 🔴 测试基座：积木的可靠性地基是假的
+### 4.1 ✅ 测试基座（2026-08-01 已解决）
 
-**现状**：388 个测试文件全部 jsdom（`jsdom@^25.0.0`）。当前分支正在「为 vite8 / jsdom 升级铺前置」。
+**原现状**：388 个测试文件全部 jsdom。当时分支正在「为 vite8 / jsdom 升级铺前置」。
 
-**建议改方向：不是升级 jsdom，是切 Vitest browser mode（Playwright provider）。**
+**已执行**：没有升级 jsdom，而是切了 Vitest browser mode（Playwright provider）。双 project 分流，现存测试零改动，5 个高危交互组件（Kanban / Carousel / Resizable / SwipeAction / Sortable）共 23 个用例迁入真实 chromium。详见 `docs/testing.md`。
+
+下面保留当时的诊断，因为它解释了**为什么必须迁**：
 
 #### 为什么这直接影响"搭积木"
 
@@ -377,15 +379,29 @@ get_conventions(scope?)       → 铁律与约束（见 5.3）
 
 ## 7. 可执行清单（按"离目标的距离"排序）
 
-### 🔴 P0 —— 让 AI 真的只能搭积木（这是目的）
+### ✅ P0 —— 让 AI 真的只能搭积木（2026-08-01 三件全部落地）
 
-| # | 动作 | 工作量 | 达成级别 |
+| # | 动作 | 状态 | 达成级别 |
 |---|---|---|---|
-| 1 | **registry.json 补 `files` + `cssVars`，并扩展 `registry:block` / `registry:page` 把 28 区块 + 19 页面 + 18 demo 纳入** | 3–5 天 | L2 前提 |
-| 2 | **`@hulianui/mcp`**：`list_blocks` / `get_doc` / `install` / `get_conventions` | 3–5 天 | L1 + L2 |
-| 3 | **约束 schema**：必须包裹 / token 值域 / 禁止项 / 易混淆兄弟件，接进 MCP `get_conventions` | 1 周 | **L3** |
+| 1 | registry 补 `files` + `cssVars`，扩展 `registry:block` / `registry:page` | ✅ `5c3f23f` | **L2** |
+| 2 | `@hulianui/mcp` 四个 tool | ✅ `2220034` | **L1 + L2** |
+| 3 | 约束 schema，接进 MCP `get_conventions` | ✅ `2220034` | **L3** |
 
-**做完这三件，AI 从零到一的形态才真正改变。** 其余所有事情都是为它们服务的。
+**成熟度从 L0.5 跃到 L3。** 具体成果：
+
+**registry（447 个可装 item）** —— ui 367 + lib 3 + block 57 + page 20。端到端验收用的是**真实 `npx shadcn add`**，不是模拟：
+- `button.json` → 创建 17 个文件，递归带出 `_icons`/`lib`/`motion`，cssVars 自动注入 globals.css
+- `block-pricing-table.json` → 创建 1 个文件，只依赖 `@hulianui/ui`
+- 注入后所有 `@/` import 解析成功（3/3），零断链
+
+途中修掉一个会让真实安装**必然失败**的问题：`registryDependencies` 原本输出裸名，而 shadcn CLI 把裸名解析到**官方** registry——写 `_icons` 只会让它去 ui.shadcn.com 找一个不存在的东西。
+
+**MCP（4 tool + 10 个端到端用例）** —— 起真实子进程走 stdio JSON-RPC，不 mock。数据源本地优先（`HULIAN_UI_ROOT`），改完源码即刻生效、零网络。
+
+**约束（8 全局 + 4 易混淆 + 986 条组件级）** —— 组件级从 360 个 md 的「禁忌 / 坑」章节自动提取，不会与文档漂移。
+
+> **核对时纠正了一条记忆偏差**：`ToastTone` 实际是五档 `neutral|info|success|warning|danger`，不是三档。
+> 写错的约束比没有约束更糟——所有手写约束都逐条核对了源码取值。
 
 ### ✅ P0.5 —— 积木可靠性（2026-08-01 已完成基座切换）
 
