@@ -121,9 +121,50 @@ const nextFrame = () =>
 
 ---
 
+## 两个已经踩过的坑
+
+### 坑一：browser project 会解析出第二份 React
+
+**症状**：组件一渲染就报 `Cannot read properties of null (reading 'useState')`，栈顶落在你的组件里，看着像组件坏了。
+
+**真因**：`browser` project 走的是**浏览器侧解析**（不是 `unit` 那条 SSR 解析），`motion` 这类有多份入口的包会被解析出第二份 React 实例。Kanban 不受影响、Carousel 一碰就炸，区别只是后者 `import { useReducedMotion } from "motion/react"`。
+
+**根治**：`vitest.config.ts` 顶层已配 `resolve.dedupe`，直接复用发给消费方的 `hulianDedupe` 清单（`vitest-preset.js`），两处不会漂移。**新增依赖如果也有多入口，记得加进那个清单。**
+
+这其实是 dogfood：消费方早就被这个问题坑过（所以才有 `@hulianui/ui/vitest-preset`），而库自己的测试配置一直没用上。
+
+### 坑二：合成事件测不了指针捕获
+
+`setPointerCapture(id)` 要求 `id` 对应一个**真实的活跃指针**。`dispatchEvent(new PointerEvent(...))` 造出来的只是个数据对象，浏览器不认它的 `pointerId` —— 于是 `hasPointerCapture()` 恒为 `false`，断言它只会得到一条**假失败**。
+
+所以 browser mode 里有两档保真度，按需要选：
+
+| 手段 | 保真度 | 能做什么 | 不能做什么 |
+|---|---|---|---|
+| `dispatchEvent` 合成指针序列 | 中 | 逐帧控制、拖拽中途断言、任意坐标 | 指针捕获、原生手势、`:hover` 等真实 UA 状态 |
+| `userEvent`（→ playwright 真实鼠标） | 高 | 真实输入设备的完整路径 | 拖拽**中途**插入断言（`dragAndDrop` 是原子操作） |
+
+```tsx
+import { userEvent } from "@vitest/browser/context";
+await userEvent.dragAndDrop(source, target);   // 真实鼠标
+```
+
+**实践**：默认用 `dispatchEvent`（可控、可断言中间态），需要证明"真实设备也走得通"时再补一条 `userEvent` 测试。参考 `carousel.browser.test.tsx` 里两种各留了一条。
+
+---
+
 ## 迁移状态
 
-**已迁**：Kanban 整卡拖拽（`kanban.browser.test.tsx`）
+**已迁**：
+
+| 组件 | 补上了什么 jsdom 测不到的 |
+|---|---|
+| `kanban.browser.test.tsx` | 整卡拖拽跨列（`closestCorners` 依赖真实 rect） |
+| `carousel.browser.test.tsx` | 轨道真实溢出几何、拖拽改 `scrollLeft`、snap 类切换、圆点 `scrollTo` 落位、真实输入设备拖拽 |
+
+> Carousel 的 jsdom 测试开头就把 `scrollTo` 和 `setPointerCapture` 桩成了 `vi.fn()` ——
+> 而这个组件的核心逻辑正是 `track.scrollLeft = startLeft - (clientX - startX)`。
+> jsdom 无布局无溢出，`scrollLeft` 恒为 0，**拖拽切换幻灯片这个主功能从未被测过**。
 
 **待迁清单**（按信号强度排序，实测于 2026-08-01）：
 

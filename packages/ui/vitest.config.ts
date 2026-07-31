@@ -1,5 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+// dogfood 自家发给消费方的 dedupe 清单，避免两处漂移。
+import { hulianDedupe } from "./vitest-preset.js";
 
 /**
  * 两个 project，按「这条断言在 jsdom 里可不可信」分流：
@@ -23,6 +25,10 @@ const BROWSER_TESTS = "src/**/*.browser.test.{ts,tsx}";
 
 export default defineConfig({
   plugins: [react()],
+  // browser project 走的是浏览器侧解析（不是 unit 那条 SSR 解析），`motion` 这类
+  // 有多份入口的包会被解析出**第二份 React** —— 症状是 useState/useRef 读到 null，
+  // 栈顶落在组件里，看着像组件坏了。dedupe 是唯一的根治手段。
+  resolve: { dedupe: hulianDedupe },
   test: {
     globals: true,
     projects: [
