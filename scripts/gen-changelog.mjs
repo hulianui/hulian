@@ -23,12 +23,34 @@ const OUT = join(ROOT, "apps", "www", "lib", "changelog.json");
 
 /** tag 名 → 发布日期（YYYY-MM-DD）。tag 缺失（未 fetch / 未发版）时该版本 date 为 null。 */
 function tagDates() {
-  const out = execFileSync(
-    "git",
-    ["for-each-ref", "--format=%(refname:short)\t%(creatordate:short)", "refs/tags"],
-    { cwd: ROOT, encoding: "utf8" },
-  );
+  let out;
+  try {
+    out = execFileSync(
+      "git",
+      ["for-each-ref", "--format=%(refname:short)\t%(creatordate:short)", "refs/tags"],
+      { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    );
+  } catch {
+    return new Map(); // 无 git / 非仓库：全部回退到下面的既有产物日期
+  }
   return new Map(out.split("\n").filter(Boolean).map((l) => l.split("\t")));
+}
+
+/**
+ * `${pkg}@${version}` → 上一次生成时记下的日期。
+ *
+ * 托管平台（Cloudflare Pages 等）用浅克隆拉代码，`refs/tags` 往往是空的；若只认 tag，
+ * 在那里构建会把**所有**历史版本的发布日期抹成 null。仓库里提交的那份 changelog.json
+ * 是本地带全量 tag 生成的，正好可以当这份日期的兜底来源——只补日期，正文一律以当前
+ * CHANGELOG.md 为准。
+ */
+function previousDates() {
+  try {
+    const prev = JSON.parse(readFileSync(OUT, "utf8"));
+    return new Map(prev.filter((r) => r.date).map((r) => [`${r.pkg}@${r.version}`, r.date]));
+  } catch {
+    return new Map(); // 首次生成，无既有产物
+  }
 }
 
 /**
@@ -81,14 +103,16 @@ function parseChangelog(md) {
 }
 
 const dates = tagDates();
+const fallbackDates = previousDates();
 const releases = [];
 for (const pkg of PACKAGES) {
   const md = readFileSync(join(ROOT, "packages", pkg, "CHANGELOG.md"), "utf8");
   for (const v of parseChangelog(md)) {
+    const key = `@hulianui/${pkg}@${v.version}`;
     releases.push({
       pkg: `@hulianui/${pkg}`,
       version: v.version,
-      date: dates.get(`@hulianui/${pkg}@${v.version}`) ?? null,
+      date: dates.get(key) ?? fallbackDates.get(key) ?? null,
       entries: v.entries,
     });
   }
