@@ -281,6 +281,7 @@ export { legendShowcase } from "./legend/legend.showcase";
 export { appLauncherShowcase } from "./app-launcher/app-launcher.showcase";
 export { regionSelectShowcase } from "./region-select/region-select.showcase";
 export { tiltShowcase } from "./tilt/tilt.showcase";
+export { brandShowcase } from "./brand/brand.showcase";
 export { asciiTextShowcase } from "./ascii-text/ascii-text.showcase";
 export { curvedLoopShowcase } from "./curved-loop/curved-loop.showcase";
 export { fallingTextShowcase } from "./falling-text/falling-text.showcase";

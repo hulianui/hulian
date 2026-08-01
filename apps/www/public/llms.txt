@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 374 个组件 · v0.16.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 375 个组件 · v0.16.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -208,7 +208,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Watermark](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watermark/watermark.md): 水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)
 - [WorldMap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/world-map/world-map.md): 点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交…
 
-## 导航 navigation（31）
+## 导航 navigation（32）
 - [Accordion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/accordion/accordion.md): 手风琴 · Base UI 单/多开 + 高度过渡
 - [Affix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/affix/affix.md): 固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器
 - [Anchor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/anchor/anchor.md): 锚点导航 · 自研零依赖 scrollspy(IntersectionObserver) + 平滑滚动 + active CSS 变量滑动指示条 + offsetTop/二级项
@@ -216,6 +216,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [AppLauncher](https://github.com/hulianui/hulian/blob/master/packages/ui/src/app-launcher/app-launcher.md): 应用启动台 · 毛玻璃面板 + 搜索(标题即 placeholder) + 分类胶囊 + 图标网格(macOS Launchpad/工作台首页) · 搜索与分类各自可受控/非受控 · keywords 别名(拼音/英文…
 - [BackTop](https://github.com/hulianui/hulian/blob/master/packages/ui/src/back-top/back-top.md): 回顶 · 监听滚动容器超 visibilityHeight 淡入 + scrollTo smooth + prefers-reduced-motion 降级 auto(零依赖)
 - [BeianFooter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/beian-footer/beian-footer.md): 备案页脚 · ICP 备案号(可多个·默认链 miit) + 公网安备(警徽 icon·默认链 mps) + 版权行 · 中国大陆合规底栏(发丝边卡片·语义 token·外链新窗·RSC)
+- [Brand](https://github.com/hulianui/hulian/blob/master/packages/ui/src/brand/brand.md): 品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底…
 - [Breadcrumb](https://github.com/hulianui/hulian/blob/master/packages/ui/src/breadcrumb/breadcrumb.md): 面包屑 · 纯皮肤静态 + aria-current 当前页语义
 - [BubbleMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/bubble-menu/bubble-menu.md): 气泡导航菜单 · logo 气泡 + 汉堡切换钮，点开整屏铺一组错落旋转胶囊导航 · 胶囊弹性 scale 入场 + 标签上滑淡入按序错峰(motion·零 gsap·reduced-motion) · navigat…
 - [CardNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/card-nav/card-nav.md): 卡片导航 · ：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/glo…

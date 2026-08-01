@@ -194,7 +194,7 @@ describe("LoginForm", () => {
 describe("LoginForm 记住我文案（hulianui/hulian#64）", () => {
   it("rememberLabel 覆盖 locale 默认文案", () => {
     const { getByText, queryByText } = render(
-      <LoginForm onSubmit={() => {}} rememberLabel="保持登录状态" />,
+      <LoginForm onFinish={() => {}} rememberLabel="保持登录状态" />,
     );
     expect(getByText("保持登录状态")).toBeTruthy();
     expect(queryByText("记住我")).toBeNull();
@@ -202,7 +202,7 @@ describe("LoginForm 记住我文案（hulianui/hulian#64）", () => {
 
   it("rememberDescription 渲染说明行", () => {
     const { getByText } = render(
-      <LoginForm onSubmit={() => {}} rememberDescription="勾选后服务端下发刷新令牌" />,
+      <LoginForm onFinish={() => {}} rememberDescription="勾选后服务端下发刷新令牌" />,
     );
     expect(getByText("勾选后服务端下发刷新令牌")).toBeTruthy();
   });

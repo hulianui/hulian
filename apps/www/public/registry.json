@@ -10769,6 +10769,54 @@
       ]
     },
     {
+      "name": "brand",
+      "type": "registry:ui",
+      "title": "Brand",
+      "description": "品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底…",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { Brand } from \"@hulianui/ui\"",
+        "exports": [
+          "Brand"
+        ],
+        "types": [
+          "BrandProps",
+          "BrandSize"
+        ],
+        "group": "global",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/brand/brand.md",
+        "docLocal": "packages/ui/src/brand/brand.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/brand/brand.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/brand/brand.tsx"
+        },
+        {
+          "path": "components/hulianui/brand/brand.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/brand/brand.types.ts"
+        },
+        {
+          "path": "components/hulianui/brand/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/brand/index.ts"
+        }
+      ]
+    },
+    {
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
