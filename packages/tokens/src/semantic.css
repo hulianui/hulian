@@ -7,7 +7,7 @@
   --color-surface: var(--white);
   --color-surface-hover: var(--gray-100);
   --color-foreground: var(--gray-900);
-  --color-muted: var(--gray-500);
+  --color-muted: var(--gray-600);
   --color-border: var(--gray-200);
   /* 发丝边框：仅用于「有阴影的 elevation/浮层/按钮」表面。亮色 transparent(靠阴影自带的
      1px 发丝边分隔，避免与显式 border 形成「双线」显脏)；暗色回落到 --color-border(投影在
@@ -19,12 +19,12 @@
      --color-border 或 --color-muted。 */
   --color-hairline: transparent;
   --color-ring: var(--brand-500);
-  --color-primary: var(--brand-600);
+  --color-primary: var(--brand-700);
   --color-primary-foreground: var(--white);
   --color-primary-hover: var(--brand-500);
   --color-danger: var(--danger-600);
   --color-danger-foreground: var(--white);
-  --color-success: var(--success-600);
+  --color-success: var(--success-700);
   --color-success-foreground: var(--white);
   --color-warning: var(--warning-600);
   --color-warning-foreground: var(--white);
@@ -36,9 +36,9 @@
   --color-chart-5: oklch(0.64 0.2 25);
   --color-chart-6: oklch(0.68 0.12 200);
   /* 代码语法着色（零依赖着色器消费 · 复用色相，明暗各调亮度保对比） */
-  --code-keyword: var(--brand-600);
-  --code-string: var(--success-600);
-  --code-comment: var(--gray-500);
+  --code-keyword: var(--brand-700);
+  --code-string: var(--success-700);
+  --code-comment: var(--gray-600);
   --code-number: var(--warning-600);
   --code-tag: var(--danger-600);
   --code-attr: oklch(0.55 0.2 300);

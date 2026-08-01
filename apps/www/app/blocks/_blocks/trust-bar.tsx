@@ -25,7 +25,7 @@ export function TrustBarBlock() {
         {companies.map((name) => (
           <span
             key={name}
-            className="select-none whitespace-nowrap text-lg font-semibold text-muted/70 transition-colors hover:text-foreground"
+            className="select-none whitespace-nowrap text-lg font-semibold text-muted transition-colors hover:text-foreground"
           >
             {name}
           </span>

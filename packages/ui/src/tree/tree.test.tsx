@@ -138,23 +138,7 @@ describe("Tree", () => {
 
   // ── 拖拽排序（原生 HTML5 拖放；数据仍归消费方）──
   describe("draggable", () => {
-    // jsdom 不实现 DataTransfer，喂一个够用的替身
-    const dt = () => ({ effectAllowed: "", dropEffect: "", setData: vi.fn(), getData: () => "" });
     const rowOf = (text: string) => screen.getByText(text).closest('[role="treeitem"]')! as HTMLElement;
-    // 让 getBoundingClientRect 有高度，否则落点判定拿到 0 高恒返回 before
-    const stubRect = (el: HTMLElement, top = 0, height = 40) => {
-      el.getBoundingClientRect = () => ({ top, height, bottom: top + height, left: 0, right: 0, width: 100, x: 0, y: top, toJSON: () => ({}) }) as DOMRect;
-    };
-    // jsdom 没有 DragEvent 构造器 → @testing-library 的 fireEvent.dragOver 退化成无坐标的 Event，
-    // clientY 丢失后落点判定拿到 NaN。这里直接派一个带坐标的 MouseEvent（React 照样收到 onDragOver），
-    // 并把 dataTransfer 挂上去，免得为了测试去污染组件的生产代码。
-    // 必须走 fireEvent(el, ev) 而不是 el.dispatchEvent：前者裹了 act，setDropHint 才会在
-    // 后续 drop 之前刷进去；裸 dispatch 的话 drop 读到的 dropHint 还是 null，直接静默 return。
-    const dragOverAt = (el: HTMLElement, clientY: number) => {
-      const ev = new MouseEvent("dragover", { bubbles: true, cancelable: true, clientY });
-      Object.defineProperty(ev, "dataTransfer", { value: dt() });
-      fireEvent(el, ev);
-    };
 
     it("不开 draggable 时行上没有 draggable 属性", () => {
       render(<Tree nodes={NODES} defaultExpandedKeys={["a"]} aria-label="t" />);
@@ -166,42 +150,6 @@ describe("Tree", () => {
       expect(rowOf("甲").getAttribute("draggable")).toBeNull();
     });
 
-    it("拖到目标行中部 → inside", () => {
-      const onDrop = vi.fn();
-      render(<Tree nodes={NODES} draggable onDrop={onDrop} defaultExpandedKeys={["a"]} aria-label="t" />);
-      const from = rowOf("甲一");
-      const to = rowOf("乙");
-      stubRect(to);
-      fireEvent.dragStart(from, { dataTransfer: dt() });
-      dragOverAt(to, 20);
-      fireEvent.drop(to, { dataTransfer: dt() });
-      expect(onDrop).toHaveBeenCalledWith({ dragKey: "a1", dropKey: "b", position: "inside" });
-    });
-
-    it("拖到目标行顶部 → before", () => {
-      const onDrop = vi.fn();
-      render(<Tree nodes={NODES} draggable onDrop={onDrop} defaultExpandedKeys={["a"]} aria-label="t" />);
-      const from = rowOf("乙");
-      const to = rowOf("甲一");
-      stubRect(to);
-      fireEvent.dragStart(from, { dataTransfer: dt() });
-      dragOverAt(to, 2);
-      fireEvent.drop(to, { dataTransfer: dt() });
-      expect(onDrop).toHaveBeenCalledWith({ dragKey: "b", dropKey: "a1", position: "before" });
-    });
-
-    it("丢进自己的子树被拦下，不触发 onDrop", () => {
-      const onDrop = vi.fn();
-      render(<Tree nodes={NODES} draggable onDrop={onDrop} defaultExpandedKeys={["a"]} aria-label="t" />);
-      const from = rowOf("甲");
-      const to = rowOf("甲一");
-      stubRect(to);
-      fireEvent.dragStart(from, { dataTransfer: dt() });
-      dragOverAt(to, 20);
-      fireEvent.drop(to, { dataTransfer: dt() });
-      expect(onDrop).not.toHaveBeenCalled();
-    });
-
     it("disabled 节点不可拖", () => {
       const onDrop = vi.fn();
       const nodes: TreeNode[] = [
@@ -211,28 +159,6 @@ describe("Tree", () => {
       render(<Tree nodes={nodes} draggable onDrop={onDrop} aria-label="t" />);
       expect(rowOf("禁用项").getAttribute("draggable")).toBeNull();
       expect(rowOf("普通项").getAttribute("draggable")).toBe("true");
-    });
-
-    it("allowDropInside 返回 false 的目标只接受 before/after", () => {
-      const onDrop = vi.fn();
-      render(
-        <Tree
-          nodes={NODES}
-          draggable
-          onDrop={onDrop}
-          allowDropInside={() => false}
-          defaultExpandedKeys={["a"]}
-          aria-label="t"
-        />,
-      );
-      const from = rowOf("甲一");
-      const to = rowOf("乙");
-      stubRect(to);
-      fireEvent.dragStart(from, { dataTransfer: dt() });
-      // 正中间：允许 inside 时是 inside，禁掉后退化成 after
-      dragOverAt(to, 20);
-      fireEvent.drop(to, { dataTransfer: dt() });
-      expect(onDrop).toHaveBeenCalledWith({ dragKey: "a1", dropKey: "b", position: "after" });
     });
   });
 

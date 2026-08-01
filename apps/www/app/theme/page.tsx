@@ -49,7 +49,7 @@ export default function ThemeOverviewPage() {
               key={l.n}
               className="flex gap-4 rounded-[var(--radius)] border border-border bg-surface p-5"
             >
-              <span className="font-mono text-sm tabular-nums text-muted/70">{l.n}</span>
+              <span className="font-mono text-sm tabular-nums text-muted">{l.n}</span>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <h3 className="font-medium">{l.name}</h3>
@@ -81,7 +81,7 @@ export default function ThemeOverviewPage() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline gap-2">
                   <span className="font-medium">{p.label}</span>
-                  <span className="text-xs text-muted/70">{p.en}</span>
+                  <span className="text-xs text-muted">{p.en}</span>
                 </div>
                 <p className="truncate text-sm text-muted">{p.blurb}</p>
               </div>

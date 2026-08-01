@@ -280,7 +280,7 @@ function renderMultipleValue(
   );
 }
 
-export function SelectTrigger({ size, invalid, maxDisplay = 2, className }: SelectTriggerProps) {
+export function SelectTrigger({ size, invalid, maxDisplay = 2, className, ...triggerProps }: SelectTriggerProps) {
   const { items, placeholder, multiple, searchable, clearable, loading, hasValue, onClear } =
     useContext(SelectMetaContext);
   const anchorRef = useContext(ComboboxAnchorContext);
@@ -300,6 +300,7 @@ export function SelectTrigger({ size, invalid, maxDisplay = 2, className }: Sele
 
   const trigger = searchable ? (
     <BaseCombobox.Trigger
+      {...triggerProps}
       ref={anchorRef as RefObject<HTMLButtonElement> | null}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
@@ -323,6 +324,7 @@ export function SelectTrigger({ size, invalid, maxDisplay = 2, className }: Sele
     </BaseCombobox.Trigger>
   ) : (
     <BaseSelect.Trigger
+      {...triggerProps}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
     >

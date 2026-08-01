@@ -39,6 +39,15 @@ function Basic(props: {
 const getTrigger = () => screen.getByRole("combobox");
 
 describe("Select", () => {
+  it("SelectTrigger 透传 aria-label 到真实 button", () => {
+    render(
+      <Select items={items}>
+        <SelectTrigger aria-label="每页条数" />
+      </Select>,
+    );
+    expect(getTrigger().getAttribute("aria-label")).toBe("每页条数");
+  });
+
   it("闭合态: 触发器在, 选项不在 DOM", () => {
     render(<Basic />);
     expect(getTrigger()).toBeTruthy();

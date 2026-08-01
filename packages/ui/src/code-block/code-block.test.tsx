@@ -10,6 +10,11 @@ beforeEach(() => {
 });
 
 describe("CodeBlock", () => {
+  it("横向可滚动代码区可用键盘聚焦", () => {
+    const { container } = render(<CodeBlock code="const x = 1" />);
+    expect(container.querySelector("pre")?.getAttribute("tabindex")).toBe("0");
+  });
+
   it("渲染代码文本于 <pre><code>（着色切分后 textContent 仍为原文）", () => {
     const { container } = render(<CodeBlock code="const x = 1" />);
     const code = container.querySelector("pre code");

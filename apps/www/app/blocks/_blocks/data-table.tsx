@@ -145,6 +145,7 @@ export function DataTableBlock() {
                 <Button
                   variant="ghost"
                   size="iconSm"
+                  aria-label={`查看工单 ${row.original.id}`}
                   onClick={() =>
                     toast({ title: "查看工单", description: row.original.title, tone: "info" })
                   }
@@ -161,6 +162,7 @@ export function DataTableBlock() {
                 <Button
                   variant="ghost"
                   size="iconSm"
+                  aria-label={`编辑工单 ${row.original.id}`}
                   onClick={() =>
                     toast({ title: "编辑工单", description: row.original.title, tone: "info" })
                   }
@@ -184,7 +186,12 @@ export function DataTableBlock() {
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <Button variant="ghost" size="iconSm" tone="danger">
+                  <Button
+                    variant="ghost"
+                    size="iconSm"
+                    tone="danger"
+                    aria-label={`删除工单 ${row.original.id}`}
+                  >
                     <Trash2 className="size-3.5" />
                   </Button>
                 }

@@ -8,9 +8,15 @@ importers:
 
   .:
     devDependencies:
+      '@axe-core/playwright':
+        specifier: ^4.11.1
+        version: 4.12.1(playwright-core@1.62.1)
       '@changesets/cli':
         specifier: ^2.31.1
         version: 2.31.1
+      playwright:
+        specifier: ^1.62.1
+        version: 1.62.1
       react-doctor:
         specifier: ^0.2.14
         version: 0.2.14(eslint@10.8.0)
@@ -283,6 +289,15 @@ packages:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
+    dev: true
+
+  /@axe-core/playwright@4.12.1(playwright-core@1.62.1):
+    resolution: {integrity: sha512-rMd7xriptqKpP+w5265i4Hdkv2X5kbu6uiBi/B2I7uf3hieRBM3qDCfaKPtxfiYb2mKXfF+yLODJwIx+Jv1GDw==}
+    peerDependencies:
+      playwright-core: '>= 1.0.0'
+    dependencies:
+      axe-core: 4.12.1
+      playwright-core: 1.62.1
     dev: true
 
   /@babel/code-frame@7.29.7:
@@ -4690,6 +4705,11 @@ packages:
     dependencies:
       stubborn-fs: 2.0.0
       when-exit: 2.1.5
+    dev: true
+
+  /axe-core@4.12.1:
+    resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
+    engines: {node: '>=4'}
     dev: true
 
   /babel-plugin-macros@3.1.0:

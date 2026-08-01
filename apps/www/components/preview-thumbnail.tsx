@@ -41,6 +41,7 @@ export function PreviewThumbnail({
       className="pointer-events-none w-full overflow-hidden bg-bg"
       style={{ height: dims ? Math.min(dims.h, maxHeight) : 220, maxHeight }}
       aria-hidden
+      inert
     >
       <div
         ref={contentRef}

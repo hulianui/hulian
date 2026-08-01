@@ -78,6 +78,9 @@ jobs:
       - name: Build
         run: pnpm --filter www build
 
+      - name: Accessibility gate
+        run: pnpm a11y
+
       # 把静态导出产物传给下游 deploy-zh job（避免二次构建）
       - name: Upload static export
         uses: actions/upload-artifact@v6

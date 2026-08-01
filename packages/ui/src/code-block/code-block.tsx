@@ -40,7 +40,11 @@ export function CodeBlock({ code, lang, copyable = true, highlight = true, class
           {copied ? "已复制" : "复制"}
         </button>
       )}
-      <pre className={cn("overflow-auto p-4 text-sm leading-relaxed", lang != null && "pt-8")}>
+      <pre
+        tabIndex={0}
+        aria-label={lang ? `${lang} 代码` : "代码"}
+        className={cn("overflow-auto p-4 text-sm leading-relaxed", lang != null && "pt-8")}
+      >
         <code className="font-mono text-foreground">
           {highlight ? <HighlightedCode code={code} lang={lang} /> : code}
         </code>

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, cleanup, screen, waitFor } from "@testing-library/react";
+import { act, render, cleanup, screen, waitFor } from "@testing-library/react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "./resizable";
 
 /**
@@ -68,18 +68,26 @@ function firePointer(
 const nextFrame = () =>
   new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
+async function actPointer(
+  target: Element,
+  type: "pointerdown" | "pointermove" | "pointerup",
+  x: number,
+) {
+  await act(async () => {
+    firePointer(target, type, x);
+    await nextFrame();
+  });
+}
+
 /** 从手柄中心水平拖 dx 像素 */
 async function dragHandle(handle: Element, dx: number) {
   const r = handle.getBoundingClientRect();
   const startX = r.left + r.width / 2;
-  firePointer(handle, "pointerdown", startX);
-  await nextFrame();
+  await actPointer(handle, "pointerdown", startX);
   for (let i = 1; i <= 6; i++) {
-    firePointer(handle, "pointermove", startX + (dx * i) / 6);
-    await nextFrame();
+    await actPointer(handle, "pointermove", startX + (dx * i) / 6);
   }
-  firePointer(handle, "pointerup", startX + dx);
-  await nextFrame();
+  await actPointer(handle, "pointerup", startX + dx);
 }
 
 describe("Resizable 拖拽分栏（真实浏览器）", () => {
@@ -139,12 +147,10 @@ describe("Resizable 拖拽分栏（真实浏览器）", () => {
     const r = handle.getBoundingClientRect();
     const startX = r.left + r.width / 2;
 
-    firePointer(handle, "pointerdown", startX);
-    await nextFrame();
+    await actPointer(handle, "pointerdown", startX);
     expect(handle.hasAttribute("data-dragging")).toBe(true);
 
-    firePointer(handle, "pointerup", startX);
-    await nextFrame();
+    await actPointer(handle, "pointerup", startX);
     await waitFor(() => expect(handle.hasAttribute("data-dragging")).toBe(false));
   });
 });

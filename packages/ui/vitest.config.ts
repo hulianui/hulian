@@ -44,6 +44,11 @@ export default defineConfig({
       "@dnd-kit/core",
       "@dnd-kit/sortable",
       "@dnd-kit/utilities",
+      "@tanstack/react-virtual",
+      "@base-ui/react/context-menu",
+      "@base-ui/react/checkbox",
+      "@base-ui/react/menu",
+      "class-variance-authority",
     ],
   },
   test: {

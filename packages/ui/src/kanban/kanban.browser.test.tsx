@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, cleanup, waitFor } from "@testing-library/react";
+import { act, render, cleanup, waitFor } from "@testing-library/react";
 import { Kanban } from "./kanban";
 import type { KanbanColumn } from "./kanban.types";
 
@@ -67,23 +67,32 @@ function firePointer(
 const nextFrame = () =>
   new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
 
+async function actPointer(
+  target: Element | Document,
+  type: "pointerdown" | "pointermove" | "pointerup",
+  x: number,
+  y: number,
+) {
+  await act(async () => {
+    firePointer(target, type, x, y);
+    await nextFrame();
+  });
+}
+
 /** 按住 from 元素，分步移动到 to 元素中心后松手。分步是必须的：单跳一步会被 dnd-kit 当成瞬移。 */
 async function dragCardTo(from: Element, to: Element) {
   const start = centerOf(from);
   const end = centerOf(to);
 
-  firePointer(from, "pointerdown", start.x, start.y);
-  await nextFrame();
+  await actPointer(from, "pointerdown", start.x, start.y);
 
   const STEPS = 8;
   for (let i = 1; i <= STEPS; i++) {
     const t = i / STEPS;
-    firePointer(document, "pointermove", start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t);
-    await nextFrame();
+    await actPointer(document, "pointermove", start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t);
   }
 
-  firePointer(document, "pointerup", end.x, end.y);
-  await nextFrame();
+  await actPointer(document, "pointerup", end.x, end.y);
 }
 
 function renderBoard(onMove: (e: unknown) => void) {

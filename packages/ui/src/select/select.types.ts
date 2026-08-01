@@ -54,7 +54,8 @@ export interface SelectProps
   loadingText?: ReactNode;
 }
 
-export interface SelectTriggerProps {
+export interface SelectTriggerProps
+  extends Omit<ComponentProps<"button">, "className" | "size"> {
   size?: SelectSize;
   /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
   invalid?: boolean;

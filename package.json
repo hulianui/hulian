@@ -23,6 +23,7 @@
     "component-docs": "node scripts/gen-component-docs.mjs",
     "llms-registry": "node scripts/gen-llms-registry.mjs",
     "registry:smoke:pages": "node scripts/registry-pages-smoke.mjs",
+    "a11y": "node scripts/a11y.mjs",
     "conventions": "node scripts/gen-conventions.mjs",
     "conventions:check": "node scripts/gen-conventions.mjs --check",
     "guard": "node packages/guard/src/cli.mjs",
@@ -34,7 +35,9 @@
     "release": "changeset publish"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@changesets/cli": "^2.31.1",
+    "playwright": "^1.62.1",
     "react-doctor": "^0.2.14",
     "turbo": "^2.10.8",
     "typescript": "^7.0.2"

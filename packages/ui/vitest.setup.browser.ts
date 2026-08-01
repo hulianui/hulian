@@ -12,7 +12,5 @@ import "./vitest.browser.css";
 document.documentElement.dataset.theme = "light";
 document.documentElement.style.colorScheme = "light";
 
-// 真实浏览器里我们要的就是真实的异步时序（rAF、指针事件序列、过渡），不是 act() 的同步批处理。
-// 不关掉的话，dnd-kit / motion 这类在原生事件回调里 setState 的库会刷屏 "not wrapped in act(...)"，
-// 而那些更新恰恰是本 project 要观察的真实行为。
-(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = false;
+// 测试仍保留真实的 rAF、指针事件与布局；触发 React 更新的事件序列由各用例显式放进
+// async act()，既不伪造浏览器能力，也确保断言观察到的是已经提交的 UI 状态。

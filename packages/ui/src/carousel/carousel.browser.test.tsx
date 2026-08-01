@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { render, cleanup, screen, waitFor } from "@testing-library/react";
+import { act, render, cleanup, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@vitest/browser/context";
 import { Carousel } from "./carousel";
 
@@ -66,6 +66,17 @@ function firePointer(
 const nextFrame = () =>
   new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
+async function actPointer(
+  target: Element,
+  type: "pointerdown" | "pointermove" | "pointerup",
+  x: number,
+) {
+  await act(async () => {
+    firePointer(target, type, x);
+    await nextFrame();
+  });
+}
+
 describe("Carousel 滚动几何与拖拽（真实浏览器）", () => {
   it("轨道真的溢出：scrollWidth ≈ 视口 × 幻灯片数（jsdom 下两者都是 0）", () => {
     const { track } = renderCarousel();
@@ -79,31 +90,26 @@ describe("Carousel 滚动几何与拖拽（真实浏览器）", () => {
     const { track } = renderCarousel();
     expect(track.scrollLeft).toBe(0);
 
-    firePointer(track, "pointerdown", 500);
-    await nextFrame();
+    await actPointer(track, "pointerdown", 500);
     // 向左拖 200px → scrollLeft 应增加约 200
-    firePointer(track, "pointermove", 300);
-    await nextFrame();
+    await actPointer(track, "pointermove", 300);
 
     expect(track.scrollLeft).toBeGreaterThan(0);
     expect(track.scrollLeft).toBeCloseTo(200, -1);
 
-    firePointer(track, "pointerup", 300);
-    await nextFrame();
+    await actPointer(track, "pointerup", 300);
   });
 
   it("按下时进入拖拽态（关 snap），松手复原", async () => {
     const { track } = renderCarousel();
     expect(track.className).toContain("snap-x");
 
-    firePointer(track, "pointerdown", 400);
-    await nextFrame();
+    await actPointer(track, "pointerdown", 400);
     // dragging=true → snap-none + cursor-grabbing
     expect(track.className).toContain("snap-none");
     expect(track.className).not.toContain("snap-x");
 
-    firePointer(track, "pointerup", 400);
-    await nextFrame();
+    await actPointer(track, "pointerup", 400);
     await waitFor(() => expect(track.className).toContain("snap-x"));
   });
 
@@ -117,7 +123,10 @@ describe("Carousel 滚动几何与拖拽（真实浏览器）", () => {
     const second = screen.getByRole("group", { name: `第 2 / ${SLIDES} 张` });
 
     // 把第二张往第一张的位置拖 = 向左拖 → 前进
-    await userEvent.dragAndDrop(second, first);
+    await act(async () => {
+      await userEvent.dragAndDrop(second, first);
+      await nextFrame();
+    });
 
     await waitFor(() => expect(track.scrollLeft).toBeGreaterThan(0), { timeout: 2000 });
   });
@@ -127,7 +136,10 @@ describe("Carousel 滚动几何与拖拽（真实浏览器）", () => {
     const dots = screen.getAllByRole("button", { name: /转到第/ });
     expect(dots.length).toBe(SLIDES);
 
-    dots[2].click();
+    await act(async () => {
+      dots[2].click();
+      await nextFrame();
+    });
 
     await waitFor(
       () => expect(track.scrollLeft).toBeCloseTo(track.clientWidth * 2, -1),

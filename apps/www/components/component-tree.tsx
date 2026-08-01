@@ -100,14 +100,14 @@ export function ComponentTree() {
                 aria-hidden
               />
               <span>{cat.label}</span>
-              <span className="ml-auto tabular-nums text-muted/60">{count}</span>
+              <span className="ml-auto tabular-nums text-muted">{count}</span>
             </button>
 
             {open && (
               <div className="mt-1 space-y-2">
                 {groups.map((g) => (
                   <div key={g.key}>
-                    <h4 className="px-2 pb-0.5 pl-7 text-[11px] font-medium text-muted/60">{g.label}</h4>
+                    <h4 className="px-2 pb-0.5 pl-7 text-[11px] font-medium text-muted">{g.label}</h4>
                     <ul className="space-y-0.5">
                       {g.items.map((m) => {
                         const href = `/components/${m.slug}`;
@@ -128,7 +128,7 @@ export function ComponentTree() {
                                   <Sparkles className="size-3 shrink-0 text-primary/60" aria-label="动效" />
                                 )}
                               </span>
-                              <span className="ml-auto min-w-0 truncate text-xs text-muted/70">{m.name}</span>
+                              <span className="ml-auto min-w-0 truncate text-xs text-muted">{m.name}</span>
                             </Link>
                           </li>
                         );

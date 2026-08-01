@@ -82,7 +82,7 @@ function renderProseBlock(b: ProseBlock, key: number) {
       // 圆角描边容器 + 表头浅色底 + 行斑马纹 + 仅横向分隔（去满格网格线，主题感知）。
       return (
         <div key={key} className="my-4 overflow-hidden rounded-lg border border-border">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" tabIndex={0} aria-label="数据表格">
             <table className="w-full border-collapse text-[0.92em] [&_tr:last-child>td]:border-b-0">
               <thead>
                 <tr className="bg-muted/[0.06]">

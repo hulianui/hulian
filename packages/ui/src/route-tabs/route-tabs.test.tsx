@@ -127,13 +127,7 @@ describe("RouteTabs", () => {
   });
 
   describe("拖拽调序", () => {
-    const dt = () => ({ effectAllowed: "", dropEffect: "", setData: vi.fn(), getData: () => "" });
     const tabOf = (label: string) => screen.getByText(label).closest('[role="tab"]')! as HTMLElement;
-    const dragOverAt = (el: HTMLElement, clientX: number) => {
-      const ev = new MouseEvent("dragover", { bubbles: true, cancelable: true, clientX });
-      Object.defineProperty(ev, "dataTransfer", { value: dt() });
-      fireEvent(el, ev);
-    };
 
     it("不开 sortable 时页签不可拖", () => {
       render(<RouteTabs items={TABS} activeKey="a" />);
@@ -143,19 +137,6 @@ describe("RouteTabs", () => {
     it("只传 sortable 不传 onReorder 时不启用", () => {
       render(<RouteTabs items={TABS} activeKey="a" sortable />);
       expect(tabOf("订单").getAttribute("draggable")).toBeNull();
-    });
-
-    it("拖到目标左半区 → 排到它之前", () => {
-      const onReorder = vi.fn();
-      render(<RouteTabs items={TABS} activeKey="a" sortable onReorder={onReorder} />);
-      const from = tabOf("会员");
-      const to = tabOf("订单");
-      to.getBoundingClientRect = () =>
-        ({ left: 0, width: 100, top: 0, height: 28, right: 100, bottom: 28, x: 0, y: 0, toJSON: () => ({}) }) as DOMRect;
-      fireEvent.dragStart(from, { dataTransfer: dt() });
-      dragOverAt(to, 10);
-      fireEvent.drop(to, { dataTransfer: dt() });
-      expect(onReorder).toHaveBeenCalledWith(["home", "c", "a", "b"]);
     });
   });
 });

@@ -23,7 +23,7 @@ export function ThemeSidebar() {
         label: (
           <span className="flex w-full items-center justify-between gap-2">
             <span className="truncate">{i.label}</span>
-            <span className="shrink-0 text-xs text-muted/70">{i.en}</span>
+            <span className="shrink-0 text-xs text-muted">{i.en}</span>
           </span>
         ),
       })),

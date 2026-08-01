@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, cleanup, screen, waitFor } from "@testing-library/react";
+import { act, render, cleanup, screen, waitFor } from "@testing-library/react";
 import { Sortable } from "./sortable";
 
 /**
@@ -60,19 +60,28 @@ function firePointer(
 const nextFrame = () =>
   new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
+async function actPointer(
+  target: Element | Document,
+  type: "pointerdown" | "pointermove" | "pointerup",
+  x: number,
+  y: number,
+) {
+  await act(async () => {
+    firePointer(target, type, x, y);
+    await nextFrame();
+  });
+}
+
 async function dragRowTo(from: Element, to: Element) {
   const start = centerOf(from);
   const end = centerOf(to);
-  firePointer(from, "pointerdown", start.x, start.y);
-  await nextFrame();
+  await actPointer(from, "pointerdown", start.x, start.y);
   const STEPS = 8;
   for (let i = 1; i <= STEPS; i++) {
     const t = i / STEPS;
-    firePointer(document, "pointermove", start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t);
-    await nextFrame();
+    await actPointer(document, "pointermove", start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t);
   }
-  firePointer(document, "pointerup", end.x, end.y);
-  await nextFrame();
+  await actPointer(document, "pointerup", end.x, end.y);
 }
 
 function renderSortable(onChange: (rows: Row[]) => void, handle = false) {

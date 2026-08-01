@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, cleanup, screen, waitFor } from "@testing-library/react";
+import { act, render, cleanup, screen, waitFor } from "@testing-library/react";
 import { SwipeAction } from "./swipe-action";
 
 /**
@@ -53,18 +53,27 @@ function firePointer(
 const nextFrame = () =>
   new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
+async function actPointer(
+  target: Element,
+  type: "pointerdown" | "pointermove" | "pointerup",
+  x: number,
+  y = 30,
+) {
+  await act(async () => {
+    firePointer(target, type, x, y);
+    await nextFrame();
+  });
+}
+
 /** 从 (x0,y0) 拖到 (x0+dx, y0+dy)，分步走，最后松手 */
 async function swipe(el: Element, dx: number, dy = 0) {
   const x0 = 200;
   const y0 = 30;
-  firePointer(el, "pointerdown", x0, y0);
-  await nextFrame(); // 必须等一帧：dragging 是 state，pointermove 里会先判它
+  await actPointer(el, "pointerdown", x0, y0);
   for (let i = 1; i <= 6; i++) {
-    firePointer(el, "pointermove", x0 + (dx * i) / 6, y0 + (dy * i) / 6);
-    await nextFrame();
+    await actPointer(el, "pointermove", x0 + (dx * i) / 6, y0 + (dy * i) / 6);
   }
-  firePointer(el, "pointerup", x0 + dx, y0 + dy);
-  await nextFrame();
+  await actPointer(el, "pointerup", x0 + dx, y0 + dy);
 }
 
 function renderSwipe(onOpenChange?: (s: "left" | "right" | null) => void) {
@@ -117,17 +126,14 @@ describe("SwipeAction 跟手与吸附（真实浏览器）", () => {
     const { panel, content } = renderSwipe();
     const rw = panel.offsetWidth;
 
-    firePointer(content, "pointerdown", 200, 30);
-    await nextFrame();
-    firePointer(content, "pointermove", 200 - Math.round(rw * 0.4), 30);
-    await nextFrame();
+    await actPointer(content, "pointerdown", 200, 30);
+    await actPointer(content, "pointermove", 200 - Math.round(rw * 0.4), 30);
 
     const mid = offsetOf(contentEl());
     expect(mid).toBeLessThan(0);
     expect(mid).toBeGreaterThan(-rw - 1); // 被 clamp 在面板宽度内
 
-    firePointer(content, "pointerup", 200 - Math.round(rw * 0.4), 30);
-    await nextFrame();
+    await actPointer(content, "pointerup", 200 - Math.round(rw * 0.4), 30);
   });
 
   it("纵向手势不接管（保持关闭，放行原生滚动）", async () => {
