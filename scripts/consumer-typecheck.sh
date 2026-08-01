@@ -61,6 +61,13 @@ UI_TGZ="$(ls "$PKG_DIR"/hulianui-ui-*.tgz)"
 #     @types/node」这个前提。
 # 所以断言 1 在 TS7 下从「地基」降级为「兜底」：它现在拦的是依赖树被污染这件事本身，
 # 而不再是门禁失效的唯一防线。**两代下都保留它**，因为 CONSUMER_TS_VERSION 可切回 5.x。
+# 下面这份 tsconfig 就是 docs/consuming.md「官方支持的 TypeScript 配置矩阵」的**可执行版本**。
+# 改任一边都必须同步另一边，否则那张表就是空头支票。
+#
+# 刻意**不开** noUncheckedIndexedAccess：源码分发下它会让库内约 300 处索引访问在消费方
+# 编译里报 TS2532/TS18048（hulianui/hulian#56）。这不是遗漏，是**已知边界** ——
+# 机械加 `!` 只会把 undefined 风险从编译期挪到运行时，要支持得逐处判断语义，是独立一轮工作。
+# 谁哪天把它加进来，先去 docs/consuming.md 把「目前不承诺」那节一起改掉。
 write_tsconfig() {
   cat > "$1/tsconfig.json" <<'JSON'
 {

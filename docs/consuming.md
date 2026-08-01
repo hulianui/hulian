@@ -347,7 +347,47 @@ pnpm compile-cost
 
 ---
 
-## 5. 几个不那么致命但值得先知道的
+## 5. 官方支持的 TypeScript 配置矩阵
+
+瑚琏是**源码分发**：装出去的是 `.tsx`，你的 `tsc` 编译的是我们的源码。
+`skipLibCheck` 只跳 `.d.ts`，跳不过源码 —— 所以「你的严格档」直接作用在库内代码上，
+这件事必须把边界讲清楚，而不是让你装完才发现。
+
+### 承诺支持（CI 每次都跑）
+
+| 项 | 值 |
+|----|----|
+| TypeScript | **5.x 与 7.x 双版本**（`scripts/consumer-typecheck.sh` 各跑一遍） |
+| `strict` | `true` |
+| `noImplicitOverride` | `true`（不在 strict 家族里，但消费方常开，故承诺） |
+| `skipLibCheck` | `true` |
+| `moduleResolution` | `Bundler` |
+| `jsx` | `react-jsx` |
+| `types` | **不写**（复刻只跑浏览器的消费方；不假设有 `@types/node`） |
+
+门禁走 `pnpm pack` 产物、装在仓库之外、只装声明的 peer，一个可选依赖都不装 ——
+即「装出去的那份」本身能在上述配置下 `tsc --noEmit` 通过。
+
+### 目前**不**承诺
+
+- **`noUncheckedIndexedAccess`**：开了它，库内约 300 处索引访问会在你的编译里报
+  TS2532/TS18048（hulianui/hulian#56）。
+- 同类的「逐文件语义级」严格项（`exactOptionalPropertyTypes` 等）同理，未逐一验证。
+
+**为什么不是随手就能修**：这类错误不能机械加 `!` —— 那是把真实的 undefined 风险
+从编译期挪到运行时。要支持就得逐处判断语义，是独立的一轮工作。
+
+**现在怎么办**（按代价从低到高）：
+
+1. 项目级不开 `noUncheckedIndexedAccess`（绝大多数团队的现状）；
+2. 拆两份 tsconfig：自己的 `src/` 用严格档，构建/类型检查入口用承诺矩阵那档；
+3. 等我们发 `.d.ts` —— 那是这类问题的根治路线（`skipLibCheck` 就能整体跳过），
+   但会改变分发形态（多一个构建步骤），尚未启动。
+
+改这张表**必须同步改** `scripts/consumer-typecheck.sh` 里的 `write_tsconfig`：
+那份 tsconfig 就是这张表的可执行版本，两边漂了这张表就是空头支票。
+
+## 6. 几个不那么致命但值得先知道的
 
 - **`Table` 不开 `rowDraggable` 就不会碰 dnd-kit**（0.11.0 起）。此前 `useSensors` 写在组件顶层，
   任何用了 `Table` 的下游都会拉起整条 dnd-kit 运行时；现在这些 hook 收在只有开了拖拽才挂载的
