@@ -17945,6 +17945,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -17970,6 +17971,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -17996,6 +17998,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18022,6 +18025,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18048,6 +18052,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18074,6 +18079,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18099,6 +18105,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18123,6 +18130,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18148,6 +18156,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18173,6 +18182,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18198,6 +18208,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18224,6 +18235,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18248,6 +18260,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18273,6 +18286,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18297,6 +18311,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18323,6 +18338,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18349,6 +18365,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18375,6 +18392,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18401,6 +18419,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18425,6 +18444,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18451,6 +18471,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18476,6 +18497,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18502,6 +18524,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18528,6 +18551,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18553,6 +18577,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18577,6 +18602,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18601,6 +18627,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18625,6 +18652,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18649,6 +18677,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18673,6 +18702,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18697,6 +18727,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18721,6 +18752,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18746,6 +18778,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18771,6 +18804,7 @@
         "@hulianui/ui",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18797,6 +18831,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18822,6 +18857,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18848,6 +18884,7 @@
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18873,6 +18910,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18897,6 +18935,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18921,6 +18960,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18946,6 +18986,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18971,6 +19012,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -18995,6 +19037,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19019,6 +19062,7 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19044,6 +19088,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19069,6 +19114,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19094,6 +19140,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19119,6 +19166,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19144,6 +19192,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19169,6 +19218,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19194,6 +19244,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19219,6 +19270,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19244,6 +19296,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19269,6 +19322,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19294,6 +19348,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19319,6 +19374,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19344,6 +19400,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "block",
         "selfContained": true,
@@ -19366,9 +19423,21 @@
         "marketing"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-contact-form.json",
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-features.json",
+        "https://hulianui.haloritual.com/r/block-hero.json",
+        "https://hulianui.haloritual.com/r/block-integrations.json",
+        "https://hulianui.haloritual.com/r/block-pricing-table.json",
+        "https://hulianui.haloritual.com/r/block-stats.json",
+        "https://hulianui.haloritual.com/r/block-testimonials.json",
+        "https://hulianui.haloritual.com/r/block-trust-bar.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/landing.tsx"
       },
       "files": [
@@ -19388,9 +19457,15 @@
         "marketing"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-hero.json",
+        "https://hulianui.haloritual.com/r/block-pricing-table.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/pricing.tsx"
       },
       "files": [
@@ -19410,9 +19485,14 @@
         "marketing"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-contact-form.json",
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/contact.tsx"
       },
       "files": [
@@ -19434,9 +19514,16 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-feature-split.json",
+        "https://hulianui.haloritual.com/r/block-stats.json",
+        "https://hulianui.haloritual.com/r/block-testimonials.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/feature.tsx"
       },
       "files": [
@@ -19458,9 +19545,14 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-integrations.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/integrations.tsx"
       },
       "files": [
@@ -19480,9 +19572,14 @@
         "marketing"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-contact-form.json",
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/faq.tsx"
       },
       "files": [
@@ -19504,9 +19601,16 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-milestone-timeline.json",
+        "https://hulianui.haloritual.com/r/block-stats.json",
+        "https://hulianui.haloritual.com/r/block-team-grid.json",
+        "https://hulianui.haloritual.com/r/block-testimonials.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/about.tsx"
       },
       "files": [
@@ -19528,9 +19632,12 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-blog-list.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/blog.tsx"
       },
       "files": [
@@ -19550,9 +19657,13 @@
         "marketing"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-article-body.json",
+        "https://hulianui.haloritual.com/r/block-cta.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/blog-post.tsx"
       },
       "files": [
@@ -19572,9 +19683,13 @@
         "marketing"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-article-toc.json",
+        "https://hulianui.haloritual.com/r/block-cta.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/blog-post-guide.tsx"
       },
       "files": [
@@ -19596,9 +19711,12 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-changelog.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/changelog.tsx"
       },
       "files": [
@@ -19618,9 +19736,15 @@
         "application"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-chart-grid.json",
+        "https://hulianui.haloritual.com/r/block-data-table.json",
+        "https://hulianui.haloritual.com/r/block-kpi-rail.json",
+        "https://hulianui.haloritual.com/r/block-page-header.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/dashboard.tsx"
       },
       "files": [
@@ -19640,9 +19764,14 @@
         "application"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-data-table.json",
+        "https://hulianui.haloritual.com/r/block-kpi-rail.json",
+        "https://hulianui.haloritual.com/r/block-page-header.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/admin-list.tsx"
       },
       "files": [
@@ -19662,9 +19791,13 @@
         "application"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-page-header.json",
+        "https://hulianui.haloritual.com/r/block-settings-panel.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/settings.tsx"
       },
       "files": [
@@ -19687,6 +19820,7 @@
         "@hulianui/ui",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "page",
         "selfContained": true,
@@ -19712,6 +19846,7 @@
         "@hulianui/ui",
         "next"
       ],
+      "registryDependencies": [],
       "meta": {
         "kind": "page",
         "selfContained": true,
@@ -19736,9 +19871,12 @@
       "dependencies": [
         "@hulianui/ui"
       ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-product-grid.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/product-list.tsx"
       },
       "files": [
@@ -19758,9 +19896,14 @@
         "ecommerce"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-product-detail.json",
+        "https://hulianui.haloritual.com/r/block-product-grid.json",
+        "https://hulianui.haloritual.com/r/block-review-section.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/product-detail.tsx"
       },
       "files": [
@@ -19780,9 +19923,14 @@
         "ecommerce"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-activity-timeline.json",
+        "https://hulianui.haloritual.com/r/block-product-grid.json",
+        "https://hulianui.haloritual.com/r/block-user-profile.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/user-center.tsx"
       },
       "files": [
@@ -19802,9 +19950,13 @@
         "ai"
       ],
       "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/block-agent-card.json",
+        "https://hulianui.haloritual.com/r/block-chat-panel.json"
+      ],
       "meta": {
         "kind": "page",
-        "selfContained": true,
+        "selfContained": false,
         "source": "apps/www/app/pages/_pages/ai-chat.tsx"
       },
       "files": [

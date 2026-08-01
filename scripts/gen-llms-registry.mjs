@@ -16,7 +16,7 @@
 
 import { readFileSync, readdirSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
@@ -156,8 +156,8 @@ function scanDeps(dir) {
 //   registry:ui    组件。源码有内部相对 import（../lib/cn、../_icons…），注入时
 //                  必须改写成目标项目里的路径，并把内部模块声明为 registryDependencies。
 //   registry:lib   内部共享模块（lib / _icons / motion）。组件的依赖底座。
-//   registry:block 区块 & 页面。**自包含**，只从 "@hulianui/ui" 根 barrel 导入，
-//                  零改写即可整段复制 —— 这也是「AI 搭积木」最有价值的粒度。
+//   registry:block 区块 & 页面。区块只从 "@hulianui/ui" 根 barrel 导入；页面会声明
+//                  它组合的区块并改写安装路径。这是「AI 搭积木」最有价值的粒度。
 
 /** 注入到消费方项目里的落点前缀。shadcn 的 `@/` 别名由消费方 components.json 决定。 */
 const TARGET_ROOT = "components/hulianui";
@@ -245,14 +245,46 @@ function parseMeta(file) {
   return out;
 }
 
-/** 区块 / 页面 → registry item。自包含，只依赖 @hulianui/ui + lucide-react，不改写。 */
-function buildCompositeItems(metaFile, srcDir, kind) {
+/** 页面注入目标项目后与 blocks 同级，源码中的仓库内路径需要改写为安装后的路径。 */
+export function rewritePageBlockImports(code) {
+  return code.replace(
+    /((?:from|import)\s+["'])\.\.\/\.\.\/blocks\/_blocks\/([\w-]+)(["'])/g,
+    "$1../blocks/$2$3",
+  );
+}
+
+/** 从仓库内页面源码提取它安装时必须先注入的区块 registry item。 */
+export function scanPageBlockDeps(code) {
+  const deps = new Set();
+  for (const match of code.matchAll(
+    /(?:from|import)\s+["']\.\.\/\.\.\/blocks\/_blocks\/([\w-]+)["']/g,
+  )) {
+    deps.add(`block-${match[1]}`);
+  }
+  return [...deps].sort();
+}
+
+/** 区块 / 页面 → registry item。 */
+export function buildCompositeItems(metaFile, srcDir, kind) {
   const metas = parseMeta(metaFile);
   const items = [];
   for (const meta of metas) {
     const abs = join(srcDir, meta.file);
     if (!existsSync(abs)) continue;
-    const content = readFileSync(abs, "utf8");
+    const source = readFileSync(abs, "utf8");
+    const pageBlockDeps = kind === "page" ? scanPageBlockDeps(source) : [];
+    if (kind === "page") {
+      const relativeImports = [
+        ...source.matchAll(/(?:from|import)\s+["'](\.{1,2}\/[^"']+)["']/g),
+      ].map((match) => match[1]);
+      const unresolved = relativeImports.filter(
+        (specifier) => !/^\.\.\/\.\.\/blocks\/_blocks\/[\w-]+$/.test(specifier),
+      );
+      if (unresolved.length > 0) {
+        throw new Error(`${meta.file} 包含无法随 registry 安装的相对依赖: ${unresolved.join(", ")}`);
+      }
+    }
+    const content = kind === "page" ? rewritePageBlockImports(source) : source;
     const deps = new Set();
     for (const m of content.matchAll(/(?:from|import)\s+["']([^"'.][^"']*)["']/g)) {
       const spec = m[1];
@@ -266,6 +298,7 @@ function buildCompositeItems(metaFile, srcDir, kind) {
       description: meta.description,
       categories: [meta.category],
       dependencies: [...deps].sort(),
+      registryDependencies: pageBlockDeps.map((name) => `${REGISTRY_BASE}/${name}.json`),
       files: [
         {
           path: `${TARGET_ROOT}/${kind}s/${meta.file}`,
@@ -274,7 +307,11 @@ function buildCompositeItems(metaFile, srcDir, kind) {
           content,
         },
       ],
-      meta: { kind, selfContained: true, source: `apps/www/app/${kind}s/_${kind}s/${meta.file}` },
+      meta: {
+        kind,
+        selfContained: pageBlockDeps.length === 0,
+        source: `apps/www/app/${kind}s/_${kind}s/${meta.file}`,
+      },
     });
   }
   return items;
@@ -476,5 +513,8 @@ function main() {
   );
 }
 
-if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
-main();
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
+  main();
+}
