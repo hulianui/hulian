@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/tokens",
+    "version": "0.4.0",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "b02bc6f",
+        "bump": "minor",
+        "breaking": false,
+        "body": "LoginForm 补三个逃生口 + 新增 ClickCaptcha 点选人机验证（closes #50 #51）\n\n一个 BuildAdmin 系后台的两个登录页**查完文档后仍绕开 `LoginForm` 各自手写表单**——不是没查，是它接不住：校验只有必填、外部拿不到字段实时值、没有验证码位。以它为核心的 `page-login` / `block-login` 推荐链因此整条断掉（装了也得拆）。这批补上缺口，模板不再是\"只能做 demo\"。\n\n**LoginForm 三个口子**（都向后兼容，不传行为与之前完全一致）：\n\n```tsx\n<LoginForm\n  // 1. 字段级校验：沿用 useForm 的 FormRule[] 形状，内置必填始终先跑\n  rules={{\n    username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: \"账号格式不正确\" }],\n    password: [{ min: 6, max: 32, message: \"密码 6~32 位\" }],\n  }}\n  // 2. 受控逃生口：外部持有实时值（受控回写不会二次触发 onValuesChange，不会循环）\n  values={values}\n  onValuesChange={(_changed, all) => setValues(all)}\n  // 3. 提交前异步拦截 + 表单内插槽：验证码链路终于能挂进来\n  extra={<ClickCaptcha backgroundSrc={captcha.background} onComplete={setPoints} />}\n  beforeSubmit={async () => {\n    if (points.length < 3) return false; // 返回 false / 抛错即中止提交\n    ticket.current = await api.verifyCaptcha(captcha.id, points);\n  }}\n  onFinish={({ username, password }) => api.login(username, password, ticket.current)}\n/>\n```\n\n`beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不必自己再管 loading。\n\n**新增 `ClickCaptcha`**：点选式人机验证的**纯 UI 层**——给定背景图与提示图，采集点击序列并回传**相对坐标（x/y ∈ [0,1]）**。\n\n有意不做的事：不发请求、不认协议。`captchaId` 语义、`captchaInfo` 编码、接口路径各家后端不同（BuildAdmin / 极验 / 防水墙），进库就是 API 债。你在 `onComplete` 里编码成自家协议串再发请求，按结果把 `status` 置 `success` / `failed`。\n\n组件吃掉的正是自建时最占篇幅、最容易做错的部分：坐标换算（相对值，容器缩放 / 响应式 / 高 DPI 都不错位）、序号标记与撤销、换一张、失败抖动并清空、加载遮罩、图片加载失败兜底，以及**键盘可达**（区域可聚焦，方向键移准星、Enter/Space 落点、Backspace 撤销）。抖动走 `motion-safe:`，`prefers-reduced-motion` 下不抖，失败仍有 `aria-live` 文案播报。\n\n滑块拼图式（SliderCaptcha）本批不做——同一「纯 UI 层」原则，需要时单独提。\n\n配套：`@hulianui/tokens` 新增关键帧 `hulian-captcha-shake`；`@hulianui/mcp` 搜索词表补「验证码 / 人机验证 / 点选」→ `click-captcha`（此前搜这些词只会命中 InputOTP / Slider，正是 #51 的起点）。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
     "version": "0.3.0",
     "date": "2026-08-01",
     "entries": [
@@ -21,6 +34,19 @@
         "bump": "patch",
         "breaking": false,
         "body": "依赖升级：semver range 内的安全批次 + 组件依赖 minor\n\n**安全批**（patch / 小 minor，行为无预期变化）：\nreact `19.2.7→19.2.8`、tailwindcss `4.3.0→4.3.3`、@tanstack/react-virtual `3.14.2→3.14.9`、\nreact-colorful `5.7.0→5.8.0`、@types/react `19.2.16→19.2.18`、@types/react-dom `19.2.3→19.2.4`，\n以及仓库侧的 next `16.2.6→16.2.12`、@next/mdx、@tailwindcss/postcss、turbo `2.9.16→2.10.8`、\n@changesets/cli、msw、@faker-js/faker、@mui/material-nextjs、@tauri-apps/\\*。\n\n**组件依赖批**（minor，但都是运行时行为依赖，已跑全量测试）：\n@base-ui/react `1.5.0→1.6.0`、@mui/material `9.0.1→9.2.0`、@mui/x-date-pickers `9.3.0→9.10.1`、\nrecharts `3.8.1→3.10.1`、motion `12.40.0→12.43.0`、lucide-react `1.17.0→1.28.0`。\n\n**顺带修掉一处版本裂开**：tiptap 的直接依赖此前锁在 3.25.0，而它的传递依赖\n（`@tiptap/extension-bubble-menu` / `extension-floating-menu` / `extensions`）已被解析到 3.29.x，\n`pnpm install` 会报一串 unmet peer。现已把 `@tiptap/react` / `pm` / `starter-kit` /\n`extension-link` / `extension-placeholder` / `tiptap-markdown` 统一到 3.29.2，peer 警告清零。\n\n验证：3302 个测试全绿、typecheck 通过、文档站 `next build` 通过、12 个入口体积门禁全绿\n（体积零变化 —— 体积门禁在临时工程里全新安装，本来测的就是 range 内的最新依赖）。\n\n跨大版本的 typescript 7 / vitest 4 / jsdom 30 / @types/node 26 / react-easy-crop 6 不在本次范围内。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.17.0",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "b02bc6f",
+        "bump": "minor",
+        "breaking": false,
+        "body": "LoginForm 补三个逃生口 + 新增 ClickCaptcha 点选人机验证（closes #50 #51）\n\n一个 BuildAdmin 系后台的两个登录页**查完文档后仍绕开 `LoginForm` 各自手写表单**——不是没查，是它接不住：校验只有必填、外部拿不到字段实时值、没有验证码位。以它为核心的 `page-login` / `block-login` 推荐链因此整条断掉（装了也得拆）。这批补上缺口，模板不再是\"只能做 demo\"。\n\n**LoginForm 三个口子**（都向后兼容，不传行为与之前完全一致）：\n\n```tsx\n<LoginForm\n  // 1. 字段级校验：沿用 useForm 的 FormRule[] 形状，内置必填始终先跑\n  rules={{\n    username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: \"账号格式不正确\" }],\n    password: [{ min: 6, max: 32, message: \"密码 6~32 位\" }],\n  }}\n  // 2. 受控逃生口：外部持有实时值（受控回写不会二次触发 onValuesChange，不会循环）\n  values={values}\n  onValuesChange={(_changed, all) => setValues(all)}\n  // 3. 提交前异步拦截 + 表单内插槽：验证码链路终于能挂进来\n  extra={<ClickCaptcha backgroundSrc={captcha.background} onComplete={setPoints} />}\n  beforeSubmit={async () => {\n    if (points.length < 3) return false; // 返回 false / 抛错即中止提交\n    ticket.current = await api.verifyCaptcha(captcha.id, points);\n  }}\n  onFinish={({ username, password }) => api.login(username, password, ticket.current)}\n/>\n```\n\n`beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不必自己再管 loading。\n\n**新增 `ClickCaptcha`**：点选式人机验证的**纯 UI 层**——给定背景图与提示图，采集点击序列并回传**相对坐标（x/y ∈ [0,1]）**。\n\n有意不做的事：不发请求、不认协议。`captchaId` 语义、`captchaInfo` 编码、接口路径各家后端不同（BuildAdmin / 极验 / 防水墙），进库就是 API 债。你在 `onComplete` 里编码成自家协议串再发请求，按结果把 `status` 置 `success` / `failed`。\n\n组件吃掉的正是自建时最占篇幅、最容易做错的部分：坐标换算（相对值，容器缩放 / 响应式 / 高 DPI 都不错位）、序号标记与撤销、换一张、失败抖动并清空、加载遮罩、图片加载失败兜底，以及**键盘可达**（区域可聚焦，方向键移准星、Enter/Space 落点、Backspace 撤销）。抖动走 `motion-safe:`，`prefers-reduced-motion` 下不抖，失败仍有 `aria-live` 文案播报。\n\n滑块拼图式（SliderCaptcha）本批不做——同一「纯 UI 层」原则，需要时单独提。\n\n配套：`@hulianui/tokens` 新增关键帧 `hulian-captcha-shake`；`@hulianui/mcp` 搜索词表补「验证码 / 人机验证 / 点选」→ `click-captcha`（此前搜这些词只会命中 InputOTP / Slider，正是 #51 的起点）。"
       }
     ]
   },
