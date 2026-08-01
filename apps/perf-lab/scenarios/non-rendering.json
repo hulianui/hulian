@@ -1,0 +1,97 @@
+[
+  {
+    "id": "access",
+    "entry": "@hulianui/ui/access",
+    "source": "packages/ui/src/access/index.ts",
+    "exports": [
+      "Access",
+      "AccessProvider",
+      "useAccess"
+    ],
+    "aliases": [],
+    "reason": "Access providers and authorization helpers have no standalone visual showcase"
+  },
+  {
+    "id": "config",
+    "entry": "@hulianui/ui/config",
+    "source": "packages/ui/src/config/index.ts",
+    "exports": [
+      "ConfigProvider",
+      "enUS",
+      "useLocale",
+      "zhCN"
+    ],
+    "aliases": [],
+    "reason": "Configuration provider and locale helpers have no standalone visual showcase"
+  },
+  {
+    "id": "lib",
+    "entry": "@hulianui/ui/lib",
+    "source": "packages/ui/src/lib/index.ts",
+    "exports": [
+      "cn",
+      "DATE_FORMAT",
+      "DATE_TIME_FORMAT",
+      "dayjs",
+      "TIME_FORMAT"
+    ],
+    "aliases": [],
+    "reason": "Utility-only entry with no React render surface"
+  },
+  {
+    "id": "motion",
+    "entry": "@hulianui/ui/motion",
+    "source": "packages/ui/src/motion/index.ts",
+    "exports": [
+      "fadeScale",
+      "LazyMotionProvider",
+      "m",
+      "motionDuration",
+      "motionDurationCss",
+      "motionEase",
+      "motionEaseCss",
+      "pressable",
+      "pressableClass",
+      "shimmer"
+    ],
+    "aliases": [],
+    "reason": "Motion primitives and provider infrastructure have no standalone showcase"
+  },
+  {
+    "id": "showcase",
+    "entry": "@hulianui/ui/showcase",
+    "source": "./src/showcase.ts",
+    "exports": [],
+    "aliases": [],
+    "reason": "Showcase metadata barrel, not a component entry"
+  },
+  {
+    "id": "theme",
+    "entry": "@hulianui/ui/theme",
+    "source": "packages/ui/src/theme/index.ts",
+    "exports": [
+      "THEME_STORAGE_KEY",
+      "ThemeProvider",
+      "useTheme",
+      "useThemeOptional"
+    ],
+    "aliases": [],
+    "reason": "Theme provider and hooks have no standalone visual showcase"
+  },
+  {
+    "id": "vite",
+    "entry": "@hulianui/ui/vite",
+    "source": "./vite.js",
+    "exports": [],
+    "aliases": [],
+    "reason": "Vite plugin, no React render export"
+  },
+  {
+    "id": "vitest-preset",
+    "entry": "@hulianui/ui/vitest-preset",
+    "source": "./vitest-preset.js",
+    "exports": [],
+    "aliases": [],
+    "reason": "Vitest preset, no React render export"
+  }
+]

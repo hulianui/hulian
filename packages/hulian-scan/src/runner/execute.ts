@@ -3,6 +3,7 @@ import { join, resolve } from "node:path";
 
 import type { CliOptions } from "../cli";
 import type { Finding, ScanReport } from "../contracts";
+import { buildRepositoryInventory } from "../inventory/repository";
 import { repositoryRoot } from "../paths";
 import { createDefaultDependencies } from "./default-dependencies";
 import { runScan, type RunScanOptions } from "./run-scan";
@@ -64,12 +65,13 @@ export async function executeDefaultScan(options: CliOptions): Promise<ScanRepor
   });
 
   if (options.inventoryOnly) {
+    const inventory = await buildRepositoryInventory();
     const report: ScanReport = {
       schemaVersion: 1,
       environment: options.environment,
       runs: [],
       findings: [],
-      inventory: [],
+      inventory: inventory.map((entry) => ({ ...entry })),
     };
     await deps.write(report, resolve(repositoryRoot, options.outputDir));
     return report;

@@ -10,3 +10,5 @@ export * from "./report/checkpoint";
 export * from "./runner/run-scan";
 export * from "./runner/default-dependencies";
 export * from "./runner/execute";
+export * from "./inventory/inventory";
+export * from "./inventory/repository";
