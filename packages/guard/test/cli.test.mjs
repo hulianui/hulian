@@ -26,6 +26,19 @@ test("CLI 参数或路径错误以 2 退出", () => {
   assert.equal(result.status, 2);
 });
 
+test("CLI 语法解析失败以 2 退出", () => {
+  const result = spawnSync(
+    process.execPath,
+    [CLI, "test/fixtures/broken.tsx", "--format", "json"],
+    {
+      cwd: ROOT,
+      encoding: "utf8",
+    },
+  );
+  assert.equal(result.status, 2);
+  assert.ok(JSON.parse(result.stdout).diagnostics.some((item) => item.ruleId === "syntax-error"));
+});
+
 test("CLI 对干净文件以 0 退出", () => {
   const result = spawnSync(process.execPath, [CLI, "--", "test/fixtures/clean.tsx"], {
     cwd: ROOT,

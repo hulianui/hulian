@@ -40,7 +40,8 @@
     "playwright": "^1.62.1",
     "react-doctor": "^0.2.14",
     "turbo": "^2.10.8",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "typescript-api": "npm:typescript@^5.9.3"
   },
   "pnpm": {}
 }

@@ -10,13 +10,18 @@ import {
   useState,
   type ReactElement,
   type ReactNode,
-  type RefObject,
+  type Ref,
 } from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
-import { Combobox, ComboboxAnchorContext, ComboboxContent, ComboboxItem } from "../combobox/combobox";
+import {
+  Combobox,
+  ComboboxAnchorContext,
+  ComboboxContent,
+  ComboboxItem,
+} from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
 import { Spinner } from "../spinner/spinner";
 import { motionDurationCss, motionEaseCss } from "../motion";
@@ -38,13 +43,25 @@ const overlayTransition = {
 
 const ChevronDownIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M4 6l4 4 4-4"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 const CheckIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M3.5 8.5l3 3 6-7"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -203,8 +220,8 @@ export function Select({
     const searchValue = multiple
       ? (Array.isArray(current) ? current : []).map(toItemData)
       : typeof current === "string" && current !== ""
-        ? toItemData(current)
-        : null;
+      ? toItemData(current)
+      : null;
     const rootProps: Record<string, unknown> = {
       ...props,
       items: searchItems,
@@ -214,7 +231,7 @@ export function Select({
         handleValueChange(
           multiple
             ? ((next ?? []) as ComboboxItemData[]).map((it) => it.value)
-            : ((next as ComboboxItemData | null)?.value ?? null),
+            : (next as ComboboxItemData | null)?.value ?? null,
           eventDetails,
         ),
       // 值对象每渲染重建 → 默认 Object.is 比较会失配，按 value 字段比。
@@ -262,7 +279,8 @@ function renderMultipleValue(
   if (values.length === 0) return placeholder ?? null;
   const labels = values.map((v) => {
     // 搜索皮肤下 Combobox 的值是 {value,label} 对象，标准皮肤下是原始 string。
-    const raw = v != null && typeof v === "object" && "value" in v ? (v as ComboboxItemData).value : v;
+    const raw =
+      v != null && typeof v === "object" && "value" in v ? (v as ComboboxItemData).value : v;
     return items?.find((it) => it.value === raw)?.label ?? String(raw);
   });
   const shown = labels.slice(0, maxDisplay);
@@ -280,10 +298,30 @@ function renderMultipleValue(
   );
 }
 
-export function SelectTrigger({ size, invalid, maxDisplay = 2, className, ...triggerProps }: SelectTriggerProps) {
+function setRef<T>(ref: Ref<T> | undefined, value: T | null) {
+  if (typeof ref === "function") ref(value);
+  else if (ref) ref.current = value;
+}
+
+function mergeRefs<T>(...refs: Array<Ref<T> | undefined>): Ref<T> {
+  return (value) => refs.forEach((ref) => setRef(ref, value));
+}
+
+export function SelectTrigger({
+  size,
+  invalid,
+  maxDisplay = 2,
+  className,
+  ref: forwardedRef,
+  ...triggerProps
+}: SelectTriggerProps) {
   const { items, placeholder, multiple, searchable, clearable, loading, hasValue, onClear } =
     useContext(SelectMetaContext);
   const anchorRef = useContext(ComboboxAnchorContext);
+  const searchableRef = useMemo(
+    () => mergeRefs(anchorRef as Ref<HTMLButtonElement> | undefined, forwardedRef),
+    [anchorRef, forwardedRef],
+  );
   // 清除按钮只在「开了 clearable + 当前有值 + 非加载态」时进 DOM；可见性再由 hover/focus 控制。
   const showClear = Boolean(clearable && hasValue && !loading);
 
@@ -301,14 +339,16 @@ export function SelectTrigger({ size, invalid, maxDisplay = 2, className, ...tri
   const trigger = searchable ? (
     <BaseCombobox.Trigger
       {...triggerProps}
-      ref={anchorRef as RefObject<HTMLButtonElement> | null}
+      ref={searchableRef}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
     >
       <BaseCombobox.Value>
         {(value: unknown) =>
           multiple ? (
-            <span className="truncate">{renderMultipleValue(value, items, placeholder, maxDisplay)}</span>
+            <span className="truncate">
+              {renderMultipleValue(value, items, placeholder, maxDisplay)}
+            </span>
           ) : (
             <span className={cn("truncate", value == null && "text-muted")}>
               {(value as ComboboxItemData | null)?.label ?? placeholder}
@@ -325,6 +365,7 @@ export function SelectTrigger({ size, invalid, maxDisplay = 2, className, ...tri
   ) : (
     <BaseSelect.Trigger
       {...triggerProps}
+      ref={forwardedRef}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
     >
@@ -417,7 +458,9 @@ export function SelectContent({
       >
         {(item: ComboboxItemData) => (
           <Fragment key={item.value}>
-            {childByValue.get(item.value) ?? <SelectItem value={item.value}>{item.label}</SelectItem>}
+            {childByValue.get(item.value) ?? (
+              <SelectItem value={item.value}>{item.label}</SelectItem>
+            )}
           </Fragment>
         )}
       </ComboboxContent>
@@ -493,7 +536,9 @@ export function SelectItem({ value, disabled, children, className }: SelectItemP
 /** 选项分组容器：内放一个 SelectGroupLabel + 若干 SelectItem。searchable 皮肤下会被拍平。 */
 export function SelectGroup({ children, className }: SelectGroupProps) {
   return (
-    <BaseSelect.Group className={cn("py-1 first:pt-0 last:pb-0", className)}>{children}</BaseSelect.Group>
+    <BaseSelect.Group className={cn("py-1 first:pt-0 last:pb-0", className)}>
+      {children}
+    </BaseSelect.Group>
   );
 }
 

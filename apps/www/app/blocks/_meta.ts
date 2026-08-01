@@ -4,7 +4,7 @@
 
 export interface CompositeInstallation {
   providers: string[];
-  replace: Array<"copy" | "mock-data" | "navigation" | "event-handlers">;
+  replace: Array<"assets" | "copy" | "mock-data" | "navigation" | "event-handlers">;
   slots: string[];
 }
 
@@ -19,8 +19,8 @@ export interface BlockMeta {
   tags: string[];
   /** _blocks/ 下的源文件名，detail 页据此 fs 读取真实源码。 */
   file: string;
-  /** 可选人工覆盖；registry 默认从真实源码保守推导安装后的接入清单。 */
-  installation?: CompositeInstallation;
+  /** 安装后的显式接入清单；生成器拒绝缺失或未知值，不从源码猜测。 */
+  installation: CompositeInstallation;
 }
 
 export const CATEGORY_LABEL: Record<BlockMeta["category"], string> = {
@@ -39,6 +39,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["导航", "粘性", "NavigationMenu"],
     file: "navbar.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "banner",
@@ -47,6 +52,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["公告", "可关闭", "Banner"],
     file: "banner.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "hero",
@@ -55,6 +65,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["渐变标题", "双 CTA", "AuroraText"],
     file: "hero.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "navigation"], slots: [] },
   },
   {
     slug: "hero-split",
@@ -63,6 +74,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["左文右图", "Safari 外壳", "产品截图"],
     file: "hero-split.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "navigation"], slots: [] },
   },
   {
     slug: "hero-video",
@@ -71,6 +83,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["视频演示", "HeroVideoDialog", "Lightbox"],
     file: "hero-video.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["assets", "copy", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "hero-terminal",
@@ -79,6 +96,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["开发者", "Terminal", "命令行"],
     file: "hero-terminal.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "hero-waitlist",
@@ -87,6 +109,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["等候名单", "内嵌订阅", "AvatarCircles"],
     file: "hero-waitlist.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["assets", "copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "trust-bar",
@@ -95,6 +122,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["Logo 墙", "无缝滚动", "Marquee"],
     file: "trust-bar.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "logo-cloud",
@@ -103,6 +131,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["Logo 墙", "灰度网格", "信任背书"],
     file: "logo-cloud.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "features",
@@ -111,6 +140,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["错落网格", "图标", "BentoGrid"],
     file: "features.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "feature-tabs",
@@ -119,6 +149,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["Tab 切换", "图文", "Tabs"],
     file: "feature-tabs.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "feature-spotlight",
@@ -127,6 +158,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["聚光", "鼠标跟随", "CardSpotlight"],
     file: "feature-spotlight.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "stats",
@@ -135,6 +171,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["数字滚动", "KPI 指标", "NumberTicker"],
     file: "stats.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "integrations",
@@ -143,6 +180,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["生态对接", "图标网格"],
     file: "integrations.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "testimonials",
@@ -151,6 +189,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["口碑墙", "跑马灯", "Marquee"],
     file: "testimonials.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "pricing-table",
@@ -159,6 +198,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["套餐定价", "Segmented", "Tooltip"],
     file: "pricing-table.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "pricing-compare",
@@ -167,6 +211,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["对比矩阵", "Table", "冻结列"],
     file: "pricing-compare.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "pricing-usage",
@@ -175,6 +224,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["用量计价", "Slider", "实时算价"],
     file: "pricing-usage.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "pricing-credits",
@@ -183,6 +237,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["积分包", "一次性", "Choicebox"],
     file: "pricing-credits.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "faq",
@@ -191,6 +250,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["折叠问答", "Accordion"],
     file: "faq.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "cta",
@@ -199,6 +259,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["收尾转化", "流星背景", "Meteors"],
     file: "cta.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "navigation"], slots: [] },
   },
   {
     slug: "cta-newsletter",
@@ -207,6 +268,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["内嵌订阅", "邮箱", "GridPattern"],
     file: "cta-newsletter.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "event-handlers"], slots: [] },
   },
   {
     slug: "cta-card",
@@ -215,6 +277,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["渐变卡", "边框流光", "BorderBeam"],
     file: "cta-card.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "navigation"], slots: [] },
   },
   {
     slug: "cta-banner",
@@ -223,6 +286,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["横幅", "左文右钮", "紧凑"],
     file: "cta-banner.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "navigation"], slots: [] },
   },
   {
     slug: "contact-form",
@@ -231,6 +295,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["表单校验", "异步提交", "Form"],
     file: "contact-form.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "feature-split",
@@ -239,6 +308,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["图文交替", "功能深挖", "要点"],
     file: "feature-split.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "team-grid",
@@ -247,6 +317,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["团队", "成员卡", "Avatar"],
     file: "team-grid.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "blog-list",
@@ -255,6 +326,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["博客", "文章卡", "封面网格"],
     file: "blog-list.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "article-body",
@@ -263,6 +335,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["文章正文", "Prose", "阅读"],
     file: "article-body.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy"], slots: [] },
   },
   {
     slug: "changelog",
@@ -271,6 +344,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["更新日志", "时间线", "版本"],
     file: "changelog.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "milestone-timeline",
@@ -279,14 +353,21 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["发展历程", "中轴交替", "Timeline"],
     file: "milestone-timeline.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "article-toc",
     name: "长文 + 侧边目录",
-    description: "左正文(Prose) + 右 sticky 目录锚点 · 博客长文指南版式(对比 article-body 案例版式)。",
+    description:
+      "左正文(Prose) + 右 sticky 目录锚点 · 博客长文指南版式(对比 article-body 案例版式)。",
     category: "marketing",
     tags: ["长文", "侧边目录", "sticky"],
     file: "article-toc.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "about",
@@ -295,6 +376,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["关于", "价值观", "AuroraText"],
     file: "about.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "login",
@@ -303,6 +385,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["登录", "鉴权", "LoginForm"],
     file: "login.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "signup",
@@ -311,6 +398,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["注册", "鉴权", "Field"],
     file: "signup.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "error-page",
@@ -319,6 +411,7 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["404", "错误页", "Result"],
     file: "error-page.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy"], slots: [] },
   },
   {
     slug: "footer",
@@ -327,6 +420,11 @@ export const blocks: BlockMeta[] = [
     category: "marketing",
     tags: ["页脚", "订阅", "SocialButton"],
     file: "footer.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
 
   // ——— 应用骨架（中后台）：页头 → 指标 → 图表 → 列表 → 详情 → 流水 → 看板 → 设置 → 空态 ———
@@ -337,6 +435,7 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["面包屑", "操作区", "Breadcrumb"],
     file: "page-header.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "kpi-rail",
@@ -345,6 +444,7 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["KPI", "趋势", "Sparkline"],
     file: "kpi-rail.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "chart-grid",
@@ -353,6 +453,7 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["图表", "仪表盘", "Chart"],
     file: "chart-grid.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "data-table",
@@ -361,6 +462,11 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["数据表", "查询", "ProTable"],
     file: "data-table.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "detail-drawer",
@@ -369,6 +475,11 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["抽屉", "详情", "Drawer"],
     file: "detail-drawer.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "activity-timeline",
@@ -377,6 +488,7 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["时间线", "活动流", "Timeline"],
     file: "activity-timeline.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "mock-data"], slots: [] },
   },
   {
     slug: "kanban-board",
@@ -385,6 +497,11 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["看板", "拖拽", "Kanban"],
     file: "kanban-board.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "settings-panel",
@@ -393,6 +510,11 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["设置", "表单", "Tabs"],
     file: "settings-panel.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "empty-state",
@@ -401,6 +523,7 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["空状态", "占位", "Empty"],
     file: "empty-state.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy"], slots: [] },
   },
   {
     slug: "sidebar-nav",
@@ -409,6 +532,11 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["侧边栏", "导航", "可折叠"],
     file: "sidebar-nav.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "onboarding",
@@ -417,6 +545,11 @@ export const blocks: BlockMeta[] = [
     category: "application",
     tags: ["引导", "步骤", "Steps"],
     file: "onboarding.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
 
   // ——— 电商 / C 端：商品网格 → 商品详情 → 购物车 → 评价 → 个人中心 ———
@@ -427,6 +560,11 @@ export const blocks: BlockMeta[] = [
     category: "ecommerce",
     tags: ["商品卡", "评分", "加购"],
     file: "product-grid.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "product-detail",
@@ -435,6 +573,11 @@ export const blocks: BlockMeta[] = [
     category: "ecommerce",
     tags: ["详情", "规格", "Carousel"],
     file: "product-detail.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "cart-summary",
@@ -443,6 +586,11 @@ export const blocks: BlockMeta[] = [
     category: "ecommerce",
     tags: ["购物车", "结算", "NumberField"],
     file: "cart-summary.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "review-section",
@@ -451,6 +599,11 @@ export const blocks: BlockMeta[] = [
     category: "ecommerce",
     tags: ["评价", "评分分布", "Rating"],
     file: "review-section.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "user-profile",
@@ -459,6 +612,11 @@ export const blocks: BlockMeta[] = [
     category: "ecommerce",
     tags: ["个人中心", "会员", "Tabs"],
     file: "user-profile.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
 
   // ——— AI 应用：对话面板 → 提示输入 → 智能体卡 → 编排画布 ———
@@ -469,6 +627,11 @@ export const blocks: BlockMeta[] = [
     category: "ai",
     tags: ["对话", "流式", "Conversation"],
     file: "chat-panel.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "prompt-input",
@@ -477,6 +640,11 @@ export const blocks: BlockMeta[] = [
     category: "ai",
     tags: ["输入框", "建议", "PromptInput"],
     file: "prompt-input.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "agent-card",
@@ -485,6 +653,11 @@ export const blocks: BlockMeta[] = [
     category: "ai",
     tags: ["智能体", "负载", "ScoreRing"],
     file: "agent-card.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data"],
+      slots: [],
+    },
   },
   {
     slug: "flow-canvas",
@@ -493,6 +666,11 @@ export const blocks: BlockMeta[] = [
     category: "ai",
     tags: ["画布", "编排", "Flow"],
     file: "flow-canvas.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "mock-data", "navigation"],
+      slots: [],
+    },
   },
 ];
 

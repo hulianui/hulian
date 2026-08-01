@@ -32,27 +32,40 @@ function staticText(node) {
   return null;
 }
 
-function importBindings(sourceFile) {
+function importBindings(sourceFile, checker) {
   const bindings = new Map();
   const declarations = [];
   for (const statement of sourceFile.statements) {
-    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
+    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier))
+      continue;
     const source = statement.moduleSpecifier.text;
     const names = [];
     const clause = statement.importClause;
     if (clause?.name) {
       names.push("default");
-      bindings.set(clause.name.text, { importedName: "default", source });
+      bindings.set(clause.name.text, {
+        importedName: "default",
+        source,
+        symbol: checker.getSymbolAtLocation(clause.name),
+      });
     }
     if (clause?.namedBindings && ts.isNamedImports(clause.namedBindings)) {
       for (const specifier of clause.namedBindings.elements) {
         const importedName = (specifier.propertyName ?? specifier.name).text;
         names.push(importedName);
-        bindings.set(specifier.name.text, { importedName, source });
+        bindings.set(specifier.name.text, {
+          importedName,
+          source,
+          symbol: checker.getSymbolAtLocation(specifier.name),
+        });
       }
     } else if (clause?.namedBindings && ts.isNamespaceImport(clause.namedBindings)) {
       names.push("*");
-      bindings.set(clause.namedBindings.name.text, { importedName: "*", source });
+      bindings.set(clause.namedBindings.name.text, {
+        importedName: "*",
+        source,
+        symbol: checker.getSymbolAtLocation(clause.namedBindings.name),
+      });
     }
     declarations.push({ names, node: statement, source });
   }
@@ -74,11 +87,18 @@ function invalidCssVars(text, matcher) {
     );
 }
 
-function jsxBinding(tagName, bindings) {
-  if (ts.isIdentifier(tagName)) return bindings.get(tagName.text);
+function resolvedBinding(identifier, bindings, checker) {
+  const binding = bindings.get(identifier.text);
+  if (!binding?.symbol || checker.getSymbolAtLocation(identifier) !== binding.symbol) return null;
+  return binding;
+}
+
+function jsxBinding(tagName, bindings, checker) {
+  if (ts.isIdentifier(tagName)) return resolvedBinding(tagName, bindings, checker);
   if (ts.isPropertyAccessExpression(tagName) && ts.isIdentifier(tagName.expression)) {
-    const namespace = bindings.get(tagName.expression.text);
-    if (namespace?.importedName === "*") return { importedName: tagName.name.text, source: namespace.source };
+    const namespace = resolvedBinding(tagName.expression, bindings, checker);
+    if (namespace?.importedName === "*")
+      return { importedName: tagName.name.text, source: namespace.source };
   }
   return null;
 }
@@ -93,6 +113,19 @@ export function checkSource(source, options = {}) {
     true,
     sourceKind(filePath),
   );
+  // 只建当前文件的轻量 Program，不解析依赖；TypeChecker 仍能区分 import binding 与
+  // 函数参数/局部变量等同名符号，避免按文本匹配造成阻断级误报。
+  const compilerOptions = {
+    allowJs: true,
+    jsx: ts.JsxEmit.Preserve,
+    noLib: true,
+    noResolve: true,
+  };
+  const host = ts.createCompilerHost(compilerOptions);
+  host.getSourceFile = (name) => (name === filePath ? sourceFile : undefined);
+  host.fileExists = (name) => name === filePath;
+  host.readFile = (name) => (name === filePath ? source : undefined);
+  const checker = ts.createProgram([filePath], compilerOptions, host).getTypeChecker();
   const diagnostics = [];
   const report = (rule, node, message = rule.message) => {
     diagnostics.push({
@@ -118,7 +151,7 @@ export function checkSource(source, options = {}) {
     });
   }
 
-  const { bindings, declarations } = importBindings(sourceFile);
+  const { bindings, declarations } = importBindings(sourceFile, checker);
   const rules = conventions.executableRules;
 
   for (const rule of rules.filter((candidate) => candidate.matcher.kind === "forbidden-import")) {
@@ -128,12 +161,15 @@ export function checkSource(source, options = {}) {
         ? declaration.source === matcher.source
         : new RegExp(matcher.sourcePattern).test(declaration.source);
       const namesMatch =
-        !matcher.importedNames || declaration.names.some((name) => matcher.importedNames.includes(name));
+        !matcher.importedNames ||
+        declaration.names.some((name) => matcher.importedNames.includes(name));
       if (sourceMatches && namesMatch) report(rule, declaration.node);
     }
   }
 
-  for (const rule of rules.filter((candidate) => candidate.matcher.kind === "required-import-companion")) {
+  for (const rule of rules.filter(
+    (candidate) => candidate.matcher.kind === "required-import-companion",
+  )) {
     const matcher = rule.matcher;
     const triggered = declarations.some(
       (declaration) =>
@@ -154,11 +190,14 @@ export function checkSource(source, options = {}) {
 
   const visit = (node) => {
     if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
-      const binding = jsxBinding(node.tagName, bindings);
-      for (const rule of rules.filter((candidate) => candidate.matcher.kind === "forbidden-jsx-prop")) {
+      const binding = jsxBinding(node.tagName, bindings, checker);
+      for (const rule of rules.filter(
+        (candidate) => candidate.matcher.kind === "forbidden-jsx-prop",
+      )) {
         if (!binding || !rule.matcher.imports.includes(binding.source)) continue;
         const attribute = node.attributes.properties.find(
-          (property) => ts.isJsxAttribute(property) && property.name.getText(sourceFile) === rule.matcher.prop,
+          (property) =>
+            ts.isJsxAttribute(property) && property.name.getText(sourceFile) === rule.matcher.prop,
         );
         if (attribute) report(rule, attribute);
       }
@@ -195,8 +234,10 @@ export function checkSource(source, options = {}) {
     if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
       const target = node.expression.expression;
       if (ts.isIdentifier(target)) {
-        const binding = bindings.get(target.text);
-        for (const rule of rules.filter((candidate) => candidate.matcher.kind === "forbidden-call")) {
+        const binding = resolvedBinding(target, bindings, checker);
+        for (const rule of rules.filter(
+          (candidate) => candidate.matcher.kind === "forbidden-call",
+        )) {
           if (
             binding?.source === rule.matcher.source &&
             binding.importedName === rule.matcher.importedName &&
@@ -239,8 +280,8 @@ function collectFiles(paths) {
 export function checkFiles(paths, options = {}) {
   const conventions = loadConventions(options.configPath);
   const files = collectFiles(paths);
-  const diagnostics = files.flatMap((file) =>
-    checkSource(readFileSync(file, "utf8"), { filePath: file, conventions }).diagnostics,
+  const diagnostics = files.flatMap(
+    (file) => checkSource(readFileSync(file, "utf8"), { filePath: file, conventions }).diagnostics,
   );
   return { diagnostics, filesChecked: files.length };
 }

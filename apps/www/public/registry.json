@@ -17885,6 +17885,7 @@
             "ThemeProvider"
           ],
           "replace": [
+            "assets",
             "copy",
             "navigation"
           ],
@@ -17959,6 +17960,7 @@
             "ThemeProvider"
           ],
           "replace": [
+            "assets",
             "copy",
             "event-handlers",
             "mock-data"
@@ -19826,9 +19828,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "contact-form",
             "cta",
@@ -19874,9 +19874,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "cta",
             "faq",
@@ -19915,9 +19913,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "contact-form",
             "cta",
@@ -20043,9 +20039,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "contact-form",
             "cta",
@@ -20166,9 +20160,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "article-body",
             "cta"
@@ -20204,9 +20196,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "article-toc",
             "cta"
@@ -20282,9 +20272,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "chart-grid",
             "data-table",
@@ -20323,9 +20311,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "data-table",
             "kpi-rail",
@@ -20362,9 +20348,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "page-header",
             "settings-panel"
@@ -20476,7 +20460,8 @@
             "ThemeProvider"
           ],
           "replace": [
-            "copy"
+            "copy",
+            "mock-data"
           ],
           "slots": [
             "product-grid"
@@ -20513,9 +20498,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "product-detail",
             "product-grid",
@@ -20553,9 +20536,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "activity-timeline",
             "product-grid",
@@ -20592,9 +20573,7 @@
           "providers": [
             "ThemeProvider"
           ],
-          "replace": [
-            "copy"
-          ],
+          "replace": [],
           "slots": [
             "agent-card",
             "chat-panel"

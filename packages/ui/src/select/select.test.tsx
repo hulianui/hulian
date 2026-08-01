@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import {
@@ -22,7 +23,12 @@ function Basic(props: {
   invalid?: boolean;
 }) {
   return (
-    <Select items={items} placeholder="请选择字体" defaultValue={props.defaultValue} open={props.open}>
+    <Select
+      items={items}
+      placeholder="请选择字体"
+      defaultValue={props.defaultValue}
+      open={props.open}
+    >
       <SelectTrigger size={props.size} invalid={props.invalid} />
       <SelectContent>
         {items.map((it) => (
@@ -46,6 +52,16 @@ describe("Select", () => {
       </Select>,
     );
     expect(getTrigger().getAttribute("aria-label")).toBe("每页条数");
+  });
+
+  it("searchable SelectTrigger 合并消费方 ref 与内部锚点 ref", () => {
+    const ref = createRef<HTMLButtonElement>();
+    render(
+      <Select items={items} searchable>
+        <SelectTrigger ref={ref} />
+      </Select>,
+    );
+    expect(ref.current).toBe(getTrigger());
   });
 
   it("闭合态: 触发器在, 选项不在 DOM", () => {
@@ -92,8 +108,13 @@ describe("Select", () => {
 
 function Multi(props: { defaultValue?: string[]; maxDisplay?: number; open?: boolean }) {
   return (
-    <Select items={items} placeholder="请选择字体" multiple defaultValue={props.defaultValue}
-      open={props.open}>
+    <Select
+      items={items}
+      placeholder="请选择字体"
+      multiple
+      defaultValue={props.defaultValue}
+      open={props.open}
+    >
       <SelectTrigger maxDisplay={props.maxDisplay} />
       <SelectContent>
         {items.map((it) => (
@@ -210,7 +231,13 @@ describe("Select clearable", () => {
   it("清除结果(受控): 外部不改 value 时组件不自行置空（受控语义不被打破）", () => {
     const onValueChange = vi.fn();
     render(
-      <Select items={items} placeholder="请选择字体" clearable value="serif" onValueChange={onValueChange}>
+      <Select
+        items={items}
+        placeholder="请选择字体"
+        clearable
+        value="serif"
+        onValueChange={onValueChange}
+      >
         <SelectTrigger />
         <SelectContent>
           {items.map((it) => (

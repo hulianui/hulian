@@ -32,7 +32,9 @@ export function classify(violations) {
 export function validateRouteResult(result) {
   if (result.loadFailed) {
     throw new Error(
-      `route load failed: ${result.route} (status ${result.status ?? "none"}; failed ${result.failed?.join(", ") || "none"})`,
+      `route load failed: ${result.route} (status ${result.status ?? "none"}; failed ${
+        result.failed?.join(", ") || "none"
+      })`,
     );
   }
   return classify(result.violations ?? []);
@@ -40,6 +42,10 @@ export function validateRouteResult(result) {
 
 export function shouldIgnoreRequestFailure({ resourceType, errorText }) {
   return resourceType === "fetch" && errorText === "net::ERR_ABORTED";
+}
+
+export function shouldFailResponse({ url, status }, baseUrl) {
+  return url.startsWith(`${baseUrl}/`) && status >= 400;
 }
 
 function contentType(file) {
@@ -120,9 +126,13 @@ export async function runA11y() {
             errorText: request.failure()?.errorText ?? "unknown",
           };
           if (shouldIgnoreRequestFailure(failure)) return;
-          failed.push(
-            `${failure.resourceType}:${failure.errorText}:${request.url()}`,
-          );
+          failed.push(`${failure.resourceType}:${failure.errorText}:${request.url()}`);
+        }
+      });
+      page.on("response", (resource) => {
+        const responseResult = { url: resource.url(), status: resource.status() };
+        if (shouldFailResponse(responseResult, staticServer.baseUrl)) {
+          failed.push(`http:${responseResult.status}:${responseResult.url}`);
         }
       });
       const response = await page.goto(`${staticServer.baseUrl}${route}`, {
@@ -156,7 +166,9 @@ export async function runA11y() {
     for (const violation of [...blocking, ...reported]) {
       console.log(`  [${violation.impact ?? "unknown"}] ${violation.id}: ${violation.help}`);
       for (const node of violation.nodes.slice(0, 8)) {
-        console.log(`    ${node.target.join(" ")} · ${node.failureSummary?.replace(/\s+/g, " ").trim()}`);
+        console.log(
+          `    ${node.target.join(" ")} · ${node.failureSummary?.replace(/\s+/g, " ").trim()}`,
+        );
       }
     }
   }

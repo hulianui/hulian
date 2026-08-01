@@ -3,7 +3,7 @@
 
 export interface CompositeInstallation {
   providers: string[];
-  replace: Array<"copy" | "mock-data" | "navigation" | "event-handlers">;
+  replace: Array<"assets" | "copy" | "mock-data" | "navigation" | "event-handlers">;
   slots: string[];
 }
 
@@ -15,8 +15,8 @@ export interface PageMeta {
   tags: string[];
   /** _pages/ 下的源文件名，detail 页据此 fs 读取真实源码（=区块组合方式）。 */
   file: string;
-  /** 可选人工覆盖；registry 默认从真实源码保守推导安装后的接入清单。 */
-  installation?: CompositeInstallation;
+  /** 安装后的显式接入清单；slots 必须与页面实际区块依赖一致。 */
+  installation: CompositeInstallation;
 }
 
 export const CATEGORY_LABEL: Record<PageMeta["category"], string> = {
@@ -35,6 +35,22 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["落地页", "10 区块组合"],
     file: "landing.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: [
+        "contact-form",
+        "cta",
+        "faq",
+        "features",
+        "hero",
+        "integrations",
+        "pricing-table",
+        "stats",
+        "testimonials",
+        "trust-bar",
+      ],
+    },
   },
   {
     slug: "pricing",
@@ -43,6 +59,11 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["定价", "Segmented"],
     file: "pricing.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["cta", "faq", "hero", "pricing-table"],
+    },
   },
   {
     slug: "contact",
@@ -51,6 +72,11 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["联系", "表单"],
     file: "contact.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["contact-form", "cta", "faq"],
+    },
   },
   {
     slug: "feature",
@@ -59,6 +85,11 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["功能", "图文交替", "深挖"],
     file: "feature.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy"],
+      slots: ["cta", "faq", "feature-split", "stats", "testimonials"],
+    },
   },
   {
     slug: "integrations",
@@ -67,6 +98,11 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["集成", "生态", "Logo 网格"],
     file: "integrations.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy"],
+      slots: ["cta", "faq", "integrations"],
+    },
   },
   {
     slug: "faq",
@@ -75,6 +111,11 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["FAQ", "帮助", "Accordion"],
     file: "faq.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["contact-form", "cta", "faq"],
+    },
   },
   {
     slug: "about",
@@ -83,6 +124,11 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["关于", "团队", "使命"],
     file: "about.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy"],
+      slots: ["cta", "milestone-timeline", "stats", "team-grid", "testimonials"],
+    },
   },
   {
     slug: "blog",
@@ -91,6 +137,7 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["博客", "文章列表", "内容"],
     file: "blog.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy"], slots: ["blog-list"] },
   },
   {
     slug: "blog-post",
@@ -99,14 +146,17 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["文章", "Prose", "阅读"],
     file: "blog-post.tsx",
+    installation: { providers: ["ThemeProvider"], replace: [], slots: ["article-body", "cta"] },
   },
   {
     slug: "blog-post-guide",
     name: "博客文章页 · 长文指南",
-    description: "左正文 + 右 sticky 目录的长文版式 + 订阅转化,与叙事案例版式并列的博客文章页变体。",
+    description:
+      "左正文 + 右 sticky 目录的长文版式 + 订阅转化,与叙事案例版式并列的博客文章页变体。",
     category: "marketing",
     tags: ["长文", "侧边目录", "指南"],
     file: "blog-post-guide.tsx",
+    installation: { providers: ["ThemeProvider"], replace: [], slots: ["article-toc", "cta"] },
   },
   {
     slug: "changelog",
@@ -115,6 +165,7 @@ export const pages: PageMeta[] = [
     category: "marketing",
     tags: ["更新日志", "版本", "时间线"],
     file: "changelog.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy"], slots: ["changelog"] },
   },
 
   // ——— 应用骨架（中后台）———
@@ -125,6 +176,11 @@ export const pages: PageMeta[] = [
     category: "application",
     tags: ["仪表盘", "KPI", "图表"],
     file: "dashboard.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["chart-grid", "data-table", "kpi-rail", "page-header"],
+    },
   },
   {
     slug: "admin-list",
@@ -133,6 +189,11 @@ export const pages: PageMeta[] = [
     category: "application",
     tags: ["列表页", "ProTable", "查询"],
     file: "admin-list.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["data-table", "kpi-rail", "page-header"],
+    },
   },
   {
     slug: "settings",
@@ -141,6 +202,11 @@ export const pages: PageMeta[] = [
     category: "application",
     tags: ["设置", "Tabs", "表单"],
     file: "settings.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["page-header", "settings-panel"],
+    },
   },
   {
     slug: "login",
@@ -149,6 +215,11 @@ export const pages: PageMeta[] = [
     category: "application",
     tags: ["登录", "分屏", "LoginForm"],
     file: "login.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "event-handlers", "mock-data", "navigation"],
+      slots: [],
+    },
   },
   {
     slug: "result",
@@ -157,6 +228,7 @@ export const pages: PageMeta[] = [
     category: "application",
     tags: ["404", "结果页", "Result"],
     file: "result.tsx",
+    installation: { providers: ["ThemeProvider"], replace: ["copy", "navigation"], slots: [] },
   },
 
   // ——— 电商 / C 端 ———
@@ -167,6 +239,11 @@ export const pages: PageMeta[] = [
     category: "ecommerce",
     tags: ["商品列表", "网格", "选购"],
     file: "product-list.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: ["copy", "mock-data"],
+      slots: ["product-grid"],
+    },
   },
   {
     slug: "product-detail",
@@ -175,6 +252,11 @@ export const pages: PageMeta[] = [
     category: "ecommerce",
     tags: ["商品详情", "加购", "评价"],
     file: "product-detail.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["product-detail", "product-grid", "review-section"],
+    },
   },
   {
     slug: "user-center",
@@ -183,16 +265,27 @@ export const pages: PageMeta[] = [
     category: "ecommerce",
     tags: ["个人中心", "会员", "动态"],
     file: "user-center.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["activity-timeline", "product-grid", "user-profile"],
+    },
   },
 
   // ——— AI 应用 ———
   {
     slug: "ai-chat",
     name: "AI 对话页",
-    description: "完整对话面板（消息流含推理 / 工具调用 / 引用 + 底部提示输入），AI 助手应用主页范式。",
+    description:
+      "完整对话面板（消息流含推理 / 工具调用 / 引用 + 底部提示输入），AI 助手应用主页范式。",
     category: "ai",
     tags: ["AI 对话", "流式", "助手"],
     file: "ai-chat.tsx",
+    installation: {
+      providers: ["ThemeProvider"],
+      replace: [],
+      slots: ["agent-card", "chat-panel"],
+    },
   },
 ];
 

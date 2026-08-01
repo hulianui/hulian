@@ -22,6 +22,20 @@ const UI_SRC = join(ROOT, "packages", "ui", "src");
 const OUT_PKG = join(ROOT, "packages", "ui", "conventions.json");
 const OUT_WWW = join(ROOT, "apps", "www", "public", "conventions.json");
 const OUT_GUARD = join(ROOT, "packages", "guard", "conventions.json");
+const SEMANTIC_COLOR_NAMES = [
+  ...new Set([
+    // 兼容文档中沿用过的常见语义名；其余名称从 token 真源自动得出，避免新增 chart/ring
+    // 等颜色后门禁继续漏报。
+    "--background",
+    "--info",
+    "--secondary",
+    ...[
+      ...readFileSync(join(ROOT, "packages", "tokens", "src", "semantic.css"), "utf8").matchAll(
+        /--color-([\w-]+)\s*:/g,
+      ),
+    ].map((match) => `--${match[1]}`),
+  ]),
+].sort();
 
 // ------------------------------------------------------------ 全局硬约束 --
 // 每一条都在源码里核对过取值，不是凭印象写的 —— 写错的约束比没有约束更糟。
@@ -112,18 +126,7 @@ const EXECUTABLE_RULES = [
       kind: "css-var-prefix",
       attributes: ["fill", "stroke", "style"],
       requiredPrefix: "--color-",
-      semanticNames: [
-        "--background",
-        "--danger",
-        "--foreground",
-        "--info",
-        "--muted",
-        "--primary",
-        "--secondary",
-        "--success",
-        "--surface",
-        "--warning",
-      ],
+      semanticNames: SEMANTIC_COLOR_NAMES,
     },
     message: "SVG 或内联 style 中的颜色变量必须使用 --color- 前缀。",
     instead: "例如 var(--color-primary)。",

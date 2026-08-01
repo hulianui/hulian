@@ -11,12 +11,13 @@
 // it carries the import line + per-component npm deps (scanned from real
 // source imports), not copy-paste file payloads.
 //
-// Zero dependencies. Run: node scripts/gen-llms-registry.mjs
+// Uses the TypeScript compiler API to parse composite metadata. Run: node scripts/gen-llms-registry.mjs
 // Re-run after enrichment; only `status: enriched` docs enter llms-full.txt.
 
 import { readFileSync, readdirSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import ts from "typescript-api";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
@@ -34,7 +35,10 @@ const absolutize = (s) =>
     .replace(/\]\((\/[^)]+)\)/g, `](${SITE}$1)`);
 const TAGLINE = "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）";
 
-const PKG_DEPS = new Set([...Object.keys(PKG.dependencies || {}), ...Object.keys(PKG.peerDependencies || {})]);
+const PKG_DEPS = new Set([
+  ...Object.keys(PKG.dependencies || {}),
+  ...Object.keys(PKG.peerDependencies || {}),
+]);
 // universal framework peers — assumed everywhere, omitted from per-component deps to cut noise
 const UNIVERSAL_PEERS = new Set(["react", "react-dom", "tailwindcss"]);
 
@@ -55,7 +59,10 @@ for (const [key, value] of Object.entries(PKG.exports || {})) {
 
 function parseCategories(src) {
   const cats = [];
-  const block = src.slice(src.indexOf("export const CATEGORIES"), src.indexOf("export const manifest"));
+  const block = src.slice(
+    src.indexOf("export const CATEGORIES"),
+    src.indexOf("export const manifest"),
+  );
   const keys = [...src.matchAll(/^\s*\|\s*"([\w-]+)"/gm)].map((m) => m[1]);
   for (const key of keys) {
     const m = block.match(new RegExp(`key:\\s*"${key}",\\s*\\n\\s*label:\\s*"([^"]+)"`));
@@ -74,7 +81,14 @@ function parseDoc(src) {
     const mm = line.match(/^(\w+):\s*(.*)$/);
     if (mm) fm[mm[1]] = mm[2].trim();
   }
-  const list = (v) => (v && v.startsWith("[") ? v.slice(1, -1).split(",").map((s) => s.trim()).filter(Boolean) : []);
+  const list = (v) =>
+    v && v.startsWith("[")
+      ? v
+          .slice(1, -1)
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
   return {
     slug: fm.slug,
     name: fm.name,
@@ -122,7 +136,8 @@ function scanDeps(dir) {
     return [];
   }
   for (const f of files) {
-    if (!/\.(tsx?|ts)$/.test(f) || /\.(test|showcase)\.tsx?$/.test(f) || f.endsWith(".md")) continue;
+    if (!/\.(tsx?|ts)$/.test(f) || /\.(test|showcase)\.tsx?$/.test(f) || f.endsWith(".md"))
+      continue;
     const src = readFileSync(join(dir, f), "utf8");
     for (const m of src.matchAll(/(?:from|import)\s+["']([^"'.][^"']*)["']/g)) {
       const spec = m[1];
@@ -212,24 +227,90 @@ function buildFiles(dir, slug, { rewrite = true, type = "registry:ui" } = {}) {
   });
 }
 
-/** 从 app/{blocks,pages}/_meta.ts 里正则提取条目（与 parseCategories 同策略，零依赖）。 */
+const INSTALLATION_REPLACE_VALUES = new Set([
+  "assets",
+  "copy",
+  "event-handlers",
+  "mock-data",
+  "navigation",
+]);
+
+function objectProperty(object, name, context) {
+  const property = object.properties.find(
+    (candidate) =>
+      ts.isPropertyAssignment(candidate) &&
+      ((ts.isIdentifier(candidate.name) && candidate.name.text === name) ||
+        (ts.isStringLiteralLike(candidate.name) && candidate.name.text === name)),
+  );
+  if (!property) throw new Error(`${context} missing required ${name}`);
+  return property.initializer;
+}
+
+function stringValue(node, context) {
+  if (!ts.isStringLiteralLike(node)) throw new Error(`${context} must be a string literal`);
+  return node.text;
+}
+
+function stringArray(node, context) {
+  if (!ts.isArrayLiteralExpression(node))
+    throw new Error(`${context} must be a string array literal`);
+  return node.elements.map((element, index) => stringValue(element, `${context}[${index}]`));
+}
+
+function installationValue(node, context) {
+  if (!ts.isObjectLiteralExpression(node)) throw new Error(`${context} must be an object literal`);
+  const providers = stringArray(objectProperty(node, "providers", context), `${context}.providers`);
+  const replace = stringArray(objectProperty(node, "replace", context), `${context}.replace`);
+  const slots = stringArray(objectProperty(node, "slots", context), `${context}.slots`);
+  const unknown = replace.find((value) => !INSTALLATION_REPLACE_VALUES.has(value));
+  if (unknown) throw new Error(`${context}.replace contains unknown value ${unknown}`);
+  return { providers, replace, slots };
+}
+
+/** 从 app/{blocks,pages}/_meta.ts 的真实 TypeScript object literals 提取条目。 */
 function parseMeta(file) {
   if (!existsSync(file)) return [];
   const src = readFileSync(file, "utf8");
-  const out = [];
-  for (const m of src.matchAll(
-    /\{\s*slug:\s*"([\w-]+)",\s*name:\s*"([^"]*)",\s*description:\s*"([^"]*)",\s*category:\s*"([\w-]+)",\s*tags:\s*\[([^\]]*)\],\s*file:\s*"([^"]+)"/g,
-  )) {
-    out.push({
-      slug: m[1],
-      name: m[2],
-      description: m[3],
-      category: m[4],
-      tags: [...m[5].matchAll(/"([^"]*)"/g)].map((t) => t[1]),
-      file: m[6],
-    });
+  const sourceFile = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  if (sourceFile.parseDiagnostics.length > 0) {
+    const diagnostic = sourceFile.parseDiagnostics[0];
+    throw new Error(
+      `${file} parse failed: ${ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n")}`,
+    );
   }
-  return out;
+  let array;
+  sourceFile.forEachChild((node) => {
+    if (!ts.isVariableStatement(node)) return;
+    for (const declaration of node.declarationList.declarations) {
+      if (
+        ts.isIdentifier(declaration.name) &&
+        (declaration.name.text === "blocks" || declaration.name.text === "pages") &&
+        declaration.initializer &&
+        ts.isArrayLiteralExpression(declaration.initializer)
+      ) {
+        array = declaration.initializer;
+      }
+    }
+  });
+  if (!array) throw new Error(`${file} missing blocks/pages array literal`);
+  return array.elements.map((element, index) => {
+    const context = `${basename(file)} entry ${index + 1}`;
+    if (!ts.isObjectLiteralExpression(element))
+      throw new Error(`${context} must be an object literal`);
+    const slug = stringValue(objectProperty(element, "slug", context), `${context}.slug`);
+    return {
+      slug,
+      name: stringValue(objectProperty(element, "name", slug), `${slug}.name`),
+      description: stringValue(objectProperty(element, "description", slug), `${slug}.description`),
+      category: stringValue(objectProperty(element, "category", slug), `${slug}.category`),
+      tags: stringArray(objectProperty(element, "tags", slug), `${slug}.tags`),
+      file: stringValue(objectProperty(element, "file", slug), `${slug}.file`),
+      installation: installationValue(
+        objectProperty(element, "installation", slug),
+        `${slug}.installation`,
+      ),
+    };
+  });
 }
 
 /** 页面注入目标项目后与 blocks 同级，源码中的仓库内路径需要改写为安装后的路径。 */
@@ -251,19 +332,6 @@ export function scanPageBlockDeps(code) {
   return [...deps].sort();
 }
 
-/** 根据真实源码生成安装后的接入清单；只报告能从语法直接证明存在的工作。 */
-function inferCompositeInstallation(source, kind, pageBlockDeps) {
-  const replace = new Set(["copy"]);
-  if (/\bconst\s+[\w$]+\s*(?::[^=]+)?=\s*\[/.test(source)) replace.add("mock-data");
-  if (/\bhref\s*=|\b(?:router\.)?(?:push|replace)\s*\(/.test(source)) replace.add("navigation");
-  if (/\bon[A-Z][\w]*\s*=/.test(source)) replace.add("event-handlers");
-  return {
-    providers: ["ThemeProvider"],
-    replace: [...replace].sort(),
-    slots: kind === "page" ? pageBlockDeps.map((name) => name.replace(/^block-/, "")) : [],
-  };
-}
-
 /** 区块 / 页面 → registry item。 */
 export function buildCompositeItems(metaFile, srcDir, kind) {
   const metas = parseMeta(metaFile);
@@ -281,11 +349,21 @@ export function buildCompositeItems(metaFile, srcDir, kind) {
         (specifier) => !/^\.\.\/\.\.\/blocks\/_blocks\/[\w-]+$/.test(specifier),
       );
       if (unresolved.length > 0) {
-        throw new Error(`${meta.file} 包含无法随 registry 安装的相对依赖: ${unresolved.join(", ")}`);
+        throw new Error(
+          `${meta.file} 包含无法随 registry 安装的相对依赖: ${unresolved.join(", ")}`,
+        );
+      }
+      const dependencySlots = pageBlockDeps.map((name) => name.replace(/^block-/, "")).sort();
+      const declaredSlots = [...meta.installation.slots].sort();
+      if (JSON.stringify(dependencySlots) !== JSON.stringify(declaredSlots)) {
+        throw new Error(
+          `${meta.file} installation.slots 与源码区块依赖不一致: expected ${
+            dependencySlots.join(", ") || "[]"
+          }; received ${declaredSlots.join(", ") || "[]"}`,
+        );
       }
     }
     const content = kind === "page" ? rewritePageBlockImports(source) : source;
-    const installation = inferCompositeInstallation(source, kind, pageBlockDeps);
     const deps = new Set();
     for (const m of content.matchAll(/(?:from|import)\s+["']([^"'.][^"']*)["']/g)) {
       const spec = m[1];
@@ -311,7 +389,7 @@ export function buildCompositeItems(metaFile, srcDir, kind) {
       meta: {
         kind,
         selfContained: pageBlockDeps.length === 0,
-        installation,
+        installation: meta.installation,
         source: `apps/www/app/${kind}s/_${kind}s/${meta.file}`,
       },
     });
@@ -359,7 +437,11 @@ function main() {
   catOrder.set("uncatalogued", 999);
 
   const docs = collectDocs();
-  docs.sort((a, b) => (catOrder.get(a.category) ?? 998) - (catOrder.get(b.category) ?? 998) || a.name.localeCompare(b.name));
+  docs.sort(
+    (a, b) =>
+      (catOrder.get(a.category) ?? 998) - (catOrder.get(b.category) ?? 998) ||
+      a.name.localeCompare(b.name),
+  );
   const enriched = docs.filter((d) => d.status === "enriched");
   const scaffold = docs.filter((d) => d.status !== "enriched");
 
@@ -368,7 +450,9 @@ function main() {
     if (!byCat.has(d.category)) byCat.set(d.category, []);
     byCat.get(d.category).push(d);
   }
-  const orderedCats = [...byCat.keys()].sort((a, b) => (catOrder.get(a) ?? 998) - (catOrder.get(b) ?? 998));
+  const orderedCats = [...byCat.keys()].sort(
+    (a, b) => (catOrder.get(a) ?? 998) - (catOrder.get(b) ?? 998),
+  );
 
   // ---- llms.txt -----------------------------------------------------------
   const idx = [];
@@ -376,7 +460,9 @@ function main() {
   idx.push("");
   idx.push(`> ${TAGLINE} · ${docs.length} 个组件 · v${PKG.version}`);
   idx.push("");
-  idx.push("AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。");
+  idx.push(
+    "AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。",
+  );
   idx.push('安装 `npm i @hulianui/ui`，统一从根 barrel 导入：`import { X } from "@hulianui/ui"`。');
   idx.push("铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。");
   idx.push("");
@@ -392,7 +478,9 @@ function main() {
   const full = [];
   full.push(`# 瑚琏 Hulian (\`${PKG.name}\`) — 全量组件使用文档`);
   full.push("");
-  full.push(`> ${TAGLINE} · v${PKG.version} · ${enriched.length} 个组件文档（自包含，供 AI 一次性消费）`);
+  full.push(
+    `> ${TAGLINE} · v${PKG.version} · ${enriched.length} 个组件文档（自包含，供 AI 一次性消费）`,
+  );
   full.push("");
   full.push(
     '安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。',
@@ -429,7 +517,9 @@ function main() {
     // 入口按组件所在目录取（见 SUBPATH_ENTRY）：日期族在 `_mui/`，对外走 ./date-pickers 子路径，
     // 拼成根 barrel 就是给 AI 和人一条导不进来的 import。
     const entry = SUBPATH_ENTRY.get(basename(d.dir)) || PKG.name;
-    const imp = d.exports.length ? `import { ${d.exports.join(", ")} } from "${entry}"` : `import { /* ? */ } from "${entry}"`;
+    const imp = d.exports.length
+      ? `import { ${d.exports.join(", ")} } from "${entry}"`
+      : `import { /* ? */ } from "${entry}"`;
     return {
       name: d.slug,
       type: "registry:ui",
@@ -511,7 +601,12 @@ function main() {
     `[llms-registry] llms.txt(${docs.length}) · llms-full.txt(${enriched.length} enriched) · ` +
       `registry.json(${items.length} = ui ${uiItems.length} + lib ${libItems.length} + block ${blockItems.length} + page ${pageItems.length}) · ` +
       `r/*.json(${items.length})` +
-      (scaffold.length ? ` · ⚠ ${scaffold.length} 个仍 scaffold 未入 full: ${scaffold.slice(0, 8).map((d) => d.slug).join(",")}${scaffold.length > 8 ? "…" : ""}` : ""),
+      (scaffold.length
+        ? ` · ⚠ ${scaffold.length} 个仍 scaffold 未入 full: ${scaffold
+            .slice(0, 8)
+            .map((d) => d.slug)
+            .join(",")}${scaffold.length > 8 ? "…" : ""}`
+        : ""),
   );
 }
 

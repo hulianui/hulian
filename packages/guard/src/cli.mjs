@@ -19,7 +19,8 @@ function parseArgs(argv) {
       options.paths.push(arg);
     }
   }
-  if (!new Set(["text", "json"]).has(options.format)) throw new Error(`未知输出格式: ${options.format}`);
+  if (!new Set(["text", "json"]).has(options.format))
+    throw new Error(`未知输出格式: ${options.format}`);
   if (options.paths.length === 0) options.paths.push(".");
   return options;
 }
@@ -38,9 +39,15 @@ try {
       );
       if (diagnostic.instead) console.log(`  建议: ${diagnostic.instead}`);
     }
-    console.log(`[hulian-check] FAIL · ${result.diagnostics.length} diagnostics / ${result.filesChecked} files`);
+    console.log(
+      `[hulian-check] FAIL · ${result.diagnostics.length} diagnostics / ${result.filesChecked} files`,
+    );
   }
-  if (result.diagnostics.some((diagnostic) => diagnostic.severity === "error")) process.exitCode = 1;
+  if (result.diagnostics.some((diagnostic) => diagnostic.ruleId === "syntax-error")) {
+    process.exitCode = 2;
+  } else if (result.diagnostics.some((diagnostic) => diagnostic.severity === "error")) {
+    process.exitCode = 1;
+  }
 } catch (error) {
   console.error(`[hulian-check] ${error.message}`);
   process.exitCode = 2;
