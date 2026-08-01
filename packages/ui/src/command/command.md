@@ -40,6 +40,7 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 |------|------|------|
 | onOpenChange* | `(open: boolean) => void` | 开合变化回调。 |
 | onSelectItem | `(value: string) => void` | 任意项执行后回调（在 `item.onSelect` 之后触发，拿到 value）。 |
+| onQueryChange | `(query: string) => void` | 搜索词变化回调（含每次打开面板时的清空）。搜索词是内部状态，默认外部读不到；要**自己排序/分组**时用它同步出去，再配 `filter={() => true}` 由消费方全权决定 `groups`。 |
 
 ## Slots
 

@@ -57,12 +57,12 @@ function run(command, args, cwd, options = {}) {
   });
 }
 
-async function startRegistryServer() {
+async function startRegistryServer(serveDir) {
   const server = createServer((request, response) => {
     const pathname = decodeURIComponent(new URL(request.url ?? "/", "http://localhost").pathname);
     const relativePath = normalize(pathname).replace(/^[/\\]+/, "");
-    const file = join(PUBLIC_DIR, relativePath);
-    if (relative(PUBLIC_DIR, file).startsWith("..") || !existsSync(file) || !statSync(file).isFile()) {
+    const file = join(serveDir, relativePath);
+    if (relative(serveDir, file).startsWith("..") || !existsSync(file) || !statSync(file).isFile()) {
       response.writeHead(404).end("not found");
       return;
     }
@@ -125,7 +125,15 @@ export async function runPageSmoke(options = {}) {
   }
 
   const tempRoot = mkdtempSync(join(tmpdir(), "hulian-pages-smoke-"));
-  const registryServer = await startRegistryServer();
+  // registry 产物写进临时目录，**不碰仓库**。
+  //
+  // 这里原本是「把 apps/www/public 覆盖成 localhost base → 从那儿托管 → finally 里再生成回去」。
+  // 问题在于还原只挂在一段跑好几分钟的 async 流程的 finally 上：Ctrl-C / 崩溃 / 机器休眠
+  // 都会跳过它，于是 registry.json 与 llms*.txt 带着 `http://127.0.0.1:<随机端口>` 留在工作区，
+  // 再被下一个 commit 顺手带走（ddf601f 就是这么把 localhost base 提交进 master 的）。
+  // 改成写临时目录后，根本没有「需要还原」这一步，也就没有漏还原的可能。
+  const registryOut = join(tempRoot, "registry-public");
+  const registryServer = await startRegistryServer(registryOut);
   const checked = [];
   try {
     await run("pnpm", ["pack", "--pack-destination", tempRoot], join(ROOT, "packages", "ui"));
@@ -133,7 +141,10 @@ export async function runPageSmoke(options = {}) {
     if (!tarballName) throw new Error("pnpm pack 未生成 @hulianui/ui tarball");
     const packageTarball = join(tempRoot, tarballName);
     await run("node", ["scripts/gen-llms-registry.mjs"], ROOT, {
-      env: { HULIAN_REGISTRY_BASE: `${registryServer.baseUrl}/r` },
+      env: {
+        HULIAN_REGISTRY_BASE: `${registryServer.baseUrl}/r`,
+        HULIAN_REGISTRY_OUT: registryOut,
+      },
     });
     checked.push(
       ...(await installAll(async (name) => {
@@ -144,7 +155,7 @@ export async function runPageSmoke(options = {}) {
     return { checked, tempRoot };
   } finally {
     await registryServer.close();
-    await run("node", ["scripts/gen-llms-registry.mjs"], ROOT);
+    // 无需还原仓库产物 —— 本次跑的所有 registry 产物都在 tempRoot 里。
     if (!options.keepTemp) rmSync(tempRoot, { recursive: true, force: true });
   }
 }

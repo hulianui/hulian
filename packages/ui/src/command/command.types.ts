@@ -37,6 +37,13 @@ export interface CommandProps {
   filter?: (item: CommandItemData, query: string) => boolean;
   /** 任意项执行后回调（在 item.onSelect 之后触发，拿到 value）。 */
   onSelectItem?: (value: string) => void;
+  /**
+   * 搜索词变化回调（含每次打开面板时的清空）。
+   * 搜索词是 Command 的内部状态，默认外部读不到；需要**自己排序/分组**（按相关度重排、
+   * 按类型分组、命中数写进空态文案、"查看全部结果"链接带上 q=）时，用它把词同步出去，
+   * 再配合 `filter={() => true}` 由消费方全权决定 groups —— 这条路径不改变默认行为。
+   */
+  onQueryChange?: (query: string) => void;
   /** 执行项后是否自动关闭面板。默认 true。 */
   closeOnSelect?: boolean;
   /** 无匹配项时的空态文案。 */

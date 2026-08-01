@@ -23,7 +23,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
 const MANIFEST = join(ROOT, "apps", "www", "lib", "manifest.ts");
 const PKG = JSON.parse(readFileSync(join(ROOT, "packages", "ui", "package.json"), "utf8"));
-const OUT_DIR = join(ROOT, "apps", "www", "public");
+// 产物目录。默认写进仓库的 apps/www/public；HULIAN_REGISTRY_OUT 可改写到别处 ——
+// 这是给「要一份带自定义 base 的 registry、但绝不能弄脏工作区」的场景用的
+// （registry-pages-smoke 就是），配合 HULIAN_REGISTRY_BASE 一起用。
+const OUT_DIR = process.env.HULIAN_REGISTRY_OUT || join(ROOT, "apps", "www", "public");
 
 const REPO = "https://github.com/hulianui/hulian";
 const DOC_BASE = `${REPO}/blob/master`; // + /packages/ui/src/<slug>/<slug>.md

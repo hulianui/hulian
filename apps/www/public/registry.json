@@ -6,7 +6,7 @@
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "install": "npm i @hulianui/ui",
   "import": "import { /* components */ } from \"@hulianui/ui\"",
-  "itemUrl": "http://127.0.0.1:59065/r/{name}.json",
+  "itemUrl": "https://hulianui.haloritual.com/r/{name}.json",
   "items": [
     {
       "name": "admin-layout",
@@ -18,14 +18,14 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/layout.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json",
-        "http://127.0.0.1:59065/r/nav-menu.json",
-        "http://127.0.0.1:59065/r/route-tabs.json",
-        "http://127.0.0.1:59065/r/scroll-area.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/layout.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/nav-menu.json",
+        "https://hulianui.haloritual.com/r/route-tabs.json",
+        "https://hulianui.haloritual.com/r/scroll-area.json"
       ],
       "meta": {
         "import": "import { AdminLayout } from \"@hulianui/ui\"",
@@ -73,7 +73,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { AspectRatio } from \"@hulianui/ui\"",
@@ -120,7 +120,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Container } from \"@hulianui/ui\"",
@@ -168,7 +168,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Divider } from \"@hulianui/ui\"",
@@ -217,7 +217,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FitScreen, computeFit } from \"@hulianui/ui\"",
@@ -265,7 +265,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Grid, GridItem } from \"@hulianui/ui\"",
@@ -314,9 +314,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json",
-        "http://127.0.0.1:59065/r/scroll-area.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/scroll-area.json"
       ],
       "meta": {
         "import": "import { Layout, LayoutHeader, LayoutSider, LayoutContent, LayoutFooter } from \"@hulianui/ui\"",
@@ -378,7 +378,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Masonry } from \"@hulianui/ui\"",
@@ -420,7 +420,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ResizablePanelGroup, ResizablePanel, ResizableHandle, applyResize, splitEqually } from \"@hulianui/ui\"",
@@ -476,7 +476,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ScrollArea } from \"@hulianui/ui\"",
@@ -525,7 +525,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Separator } from \"@hulianui/ui\"",
@@ -572,7 +572,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Spacer } from \"@hulianui/ui\"",
@@ -619,7 +619,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Stack } from \"@hulianui/ui\"",
@@ -668,8 +668,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/segmented.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/segmented.json"
       ],
       "meta": {
         "import": "import { Viewport } from \"@hulianui/ui\"",
@@ -717,7 +717,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { AnimatedGradientText } from \"@hulianui/ui\"",
@@ -766,7 +766,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { AnimatedShinyText } from \"@hulianui/ui\"",
@@ -817,7 +817,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ASCIIText } from \"@hulianui/ui\"",
@@ -866,7 +866,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { AuroraText } from \"@hulianui/ui\"",
@@ -917,8 +917,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { BlurText } from \"@hulianui/ui\"",
@@ -969,7 +969,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CircularText } from \"@hulianui/ui\"",
@@ -1020,7 +1020,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Code, codeVariants } from \"@hulianui/ui\"",
@@ -1068,8 +1068,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CodeBlock, HighlightedCode, tokenizeCode } from \"@hulianui/ui\"",
@@ -1130,7 +1130,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CodeDiff, diffLines, diffStat } from \"@hulianui/ui\"",
@@ -1189,7 +1189,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CurvedLoop } from \"@hulianui/ui\"",
@@ -1240,7 +1240,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DecryptedText } from \"@hulianui/ui\"",
@@ -1291,7 +1291,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FallingText } from \"@hulianui/ui\"",
@@ -1342,7 +1342,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FuzzyText } from \"@hulianui/ui\"",
@@ -1391,7 +1391,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GlitchText } from \"@hulianui/ui\"",
@@ -1440,7 +1440,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Heading } from \"@hulianui/ui\"",
@@ -1490,7 +1490,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Kbd } from \"@hulianui/ui\"",
@@ -1537,9 +1537,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/code-block.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/prose.json"
+        "https://hulianui.haloritual.com/r/code-block.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/prose.json"
       ],
       "meta": {
         "import": "import { Markdown, parseBlocks } from \"@hulianui/ui\"",
@@ -1593,7 +1593,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MathText, parseMath, mathToPlain } from \"@hulianui/ui\"",
@@ -1653,7 +1653,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Prose } from \"@hulianui/ui\"",
@@ -1703,7 +1703,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ScrambledText } from \"@hulianui/ui\"",
@@ -1754,8 +1754,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { ScrollFloat } from \"@hulianui/ui\"",
@@ -1806,8 +1806,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { ScrollReveal } from \"@hulianui/ui\"",
@@ -1858,8 +1858,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { ScrollVelocity } from \"@hulianui/ui\"",
@@ -1910,7 +1910,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Shuffle } from \"@hulianui/ui\"",
@@ -1959,9 +1959,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/code-block.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/code-block.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Snippet } from \"@hulianui/ui\"",
@@ -2010,8 +2010,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { SparklesText } from \"@hulianui/ui\"",
@@ -2062,8 +2062,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { SplitText } from \"@hulianui/ui\"",
@@ -2112,7 +2112,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Text } from \"@hulianui/ui\"",
@@ -2164,8 +2164,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { TextCursor } from \"@hulianui/ui\"",
@@ -2216,7 +2216,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { TextPressure } from \"@hulianui/ui\"",
@@ -2267,8 +2267,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { TrueFocus } from \"@hulianui/ui\"",
@@ -2319,7 +2319,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { TypingAnimation } from \"@hulianui/ui\"",
@@ -2370,7 +2370,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { VariableProximity } from \"@hulianui/ui\"",
@@ -2421,8 +2421,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { WordRotate } from \"@hulianui/ui\"",
@@ -2474,9 +2474,9 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Button, buttonVariants } from \"@hulianui/ui\"",
@@ -2524,7 +2524,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ButtonGroup } from \"@hulianui/ui\"",
@@ -2571,8 +2571,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Calendar } from \"@hulianui/ui\"",
@@ -2628,10 +2628,10 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json",
-        "http://127.0.0.1:59065/r/tree.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/tree.json"
       ],
       "meta": {
         "import": "import { Cascader, flattenLeafPaths, filterLeafPaths } from \"@hulianui/ui\"",
@@ -2688,7 +2688,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Checkbox } from \"@hulianui/ui\"",
@@ -2737,7 +2737,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CheckboxGroup } from \"@hulianui/ui\"",
@@ -2784,9 +2784,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { ChoiceboxGroup, Choicebox } from \"@hulianui/ui\"",
@@ -2835,8 +2835,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/input.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/input.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ColorField, normalizeHex, isHexColor } from \"@hulianui/ui\"",
@@ -2887,7 +2887,7 @@
         "react-colorful"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ColorPicker, parseColor, rgbToHex, rgbToHsl, formatColor } from \"@hulianui/ui\"",
@@ -2947,7 +2947,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ColorSwatchPicker } from \"@hulianui/ui\"",
@@ -2998,8 +2998,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem, ComboboxChips, ComboboxChip } from \"@hulianui/ui\"",
@@ -3060,7 +3060,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/combobox.json"
+        "https://hulianui.haloritual.com/r/combobox.json"
       ],
       "meta": {
         "import": "import { CountrySelect, getCountry, flagEmoji, countrySearchText, filterCountries, countries } from \"@hulianui/ui\"",
@@ -3125,10 +3125,10 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/calendar.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/calendar.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { DatePicker } from \"@hulianui/ui\"",
@@ -3177,9 +3177,9 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { DateRangePicker } from \"@hulianui/ui\"",
@@ -3230,11 +3230,11 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/calendar.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json",
-        "http://127.0.0.1:59065/r/time-picker.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/calendar.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/time-picker.json"
       ],
       "meta": {
         "import": "import { DateTimePicker } from \"@hulianui/ui\"",
@@ -3289,8 +3289,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { ElasticSlider } from \"@hulianui/ui\"",
@@ -3339,9 +3339,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/input.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/input.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from \"@hulianui/ui\"",
@@ -3399,7 +3399,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Field } from \"@hulianui/ui\"",
@@ -3448,7 +3448,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Form, useForm, validateValue, FormList } from \"@hulianui/ui\"",
@@ -3522,9 +3522,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/input.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/input.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { IconPicker } from \"@hulianui/ui\"",
@@ -3575,9 +3575,9 @@
         "react-easy-crop"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/slider.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/slider.json"
       ],
       "meta": {
         "import": "import { ImageCropper, cropImageToBlob } from \"@hulianui/ui\"",
@@ -3630,7 +3630,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Input, inputShellVariants } from \"@hulianui/ui\"",
@@ -3678,7 +3678,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { InputOTP } from \"@hulianui/ui\"",
@@ -3725,8 +3725,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Listbox } from \"@hulianui/ui\"",
@@ -3774,13 +3774,13 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/checkbox.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/field.json",
-        "http://127.0.0.1:59065/r/form.json",
-        "http://127.0.0.1:59065/r/input.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/checkbox.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/field.json",
+        "https://hulianui.haloritual.com/r/form.json",
+        "https://hulianui.haloritual.com/r/input.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LoginForm } from \"@hulianui/ui\"",
@@ -3834,9 +3834,9 @@
         "tiptap-markdown"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MarkdownEditor } from \"@hulianui/ui\"",
@@ -3890,8 +3890,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/textarea.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/textarea.json"
       ],
       "meta": {
         "import": "import { Mentions, MentionText, findTrigger, insertMention, defaultFilter, segmentMentions } from \"@hulianui/ui\"",
@@ -3961,11 +3961,11 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/dialog.json",
-        "http://127.0.0.1:59065/r/drawer.json",
-        "http://127.0.0.1:59065/r/form.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/dialog.json",
+        "https://hulianui.haloritual.com/r/drawer.json",
+        "https://hulianui.haloritual.com/r/form.json"
       ],
       "meta": {
         "import": "import { ModalForm, DrawerForm } from \"@hulianui/ui\"",
@@ -4017,8 +4017,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { NumberField } from \"@hulianui/ui\"",
@@ -4065,15 +4065,15 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/checkbox.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/input.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/number-field.json",
-        "http://127.0.0.1:59065/r/segmented.json",
-        "http://127.0.0.1:59065/r/slider.json",
-        "http://127.0.0.1:59065/r/switch.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/checkbox.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/input.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/number-field.json",
+        "https://hulianui.haloritual.com/r/segmented.json",
+        "https://hulianui.haloritual.com/r/slider.json",
+        "https://hulianui.haloritual.com/r/switch.json"
       ],
       "meta": {
         "import": "import { PasswordGenerator, AMBIGUOUS, CHARSET, LENGTH_RANGE, MIN_COUNT_RANGE, STRENGTH_THRESHOLDS, WORDS_RANGE, buildPools, generatePassphrase, generatePassword, generateSecret, passphraseEntropy, passwordEntropy, randomInt, resolvePassphraseOptions, resolvePasswordOptions, shuffle, strengthOf, PASSPHRASE_WORDLIST } from \"@hulianui/ui\"",
@@ -4157,10 +4157,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/form.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/form.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ProForm } from \"@hulianui/ui\"",
@@ -4207,7 +4207,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PulsatingButton } from \"@hulianui/ui\"",
@@ -4258,7 +4258,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { RadioGroup, Radio } from \"@hulianui/ui\"",
@@ -4307,7 +4307,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { RainbowButton } from \"@hulianui/ui\"",
@@ -4356,8 +4356,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Rating } from \"@hulianui/ui\"",
@@ -4404,8 +4404,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/cascader.json",
-        "http://127.0.0.1:59065/r/tree.json"
+        "https://hulianui.haloritual.com/r/cascader.json",
+        "https://hulianui.haloritual.com/r/tree.json"
       ],
       "meta": {
         "import": "import { RegionCascader, sliceLevel, cnDivisions } from \"@hulianui/ui\"",
@@ -4464,8 +4464,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/combobox.json",
-        "http://127.0.0.1:59065/r/spinner.json"
+        "https://hulianui.haloritual.com/r/combobox.json",
+        "https://hulianui.haloritual.com/r/spinner.json"
       ],
       "meta": {
         "import": "import { RemoteSelect } from \"@hulianui/ui\"",
@@ -4523,7 +4523,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { RippleButton } from \"@hulianui/ui\"",
@@ -4572,7 +4572,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ScopeMatrix } from \"@hulianui/ui\"",
@@ -4620,12 +4620,12 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/field.json",
-        "http://127.0.0.1:59065/r/input.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/remote-select.json",
-        "http://127.0.0.1:59065/r/select.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/field.json",
+        "https://hulianui.haloritual.com/r/input.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/remote-select.json",
+        "https://hulianui.haloritual.com/r/select.json"
       ],
       "meta": {
         "import": "import { SearchForm, planLayout, canCollapse, totalSpan } from \"@hulianui/ui\"",
@@ -4683,8 +4683,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { SecretField, maskSecret } from \"@hulianui/ui\"",
@@ -4733,8 +4733,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Segmented } from \"@hulianui/ui\"",
@@ -4785,10 +4785,10 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/combobox.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json",
-        "http://127.0.0.1:59065/r/spinner.json"
+        "https://hulianui.haloritual.com/r/combobox.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/spinner.json"
       ],
       "meta": {
         "import": "import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGroupLabel } from \"@hulianui/ui\"",
@@ -4847,7 +4847,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ShimmerButton } from \"@hulianui/ui\"",
@@ -4898,7 +4898,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Slider } from \"@hulianui/ui\"",
@@ -4945,9 +4945,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { SocialButton } from \"@hulianui/ui\"",
@@ -4995,10 +4995,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/steps.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/steps.json"
       ],
       "meta": {
         "import": "import { StepsForm } from \"@hulianui/ui\"",
@@ -5049,7 +5049,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Switch } from \"@hulianui/ui\"",
@@ -5099,7 +5099,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Textarea, textareaVariants } from \"@hulianui/ui\"",
@@ -5147,8 +5147,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { TimeField } from \"@hulianui/ui\"",
@@ -5202,9 +5202,9 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { TimePicker, buildOptions, clampTime, formatTimeParts, isHourDisabled, isMinuteDisabled, isSecondDisabled, parseTime, snapToStep } from \"@hulianui/ui\"",
@@ -5273,8 +5273,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Toggle, ToggleGroup, toggleVariants } from \"@hulianui/ui\"",
@@ -5324,11 +5324,11 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/checkbox.json",
-        "http://127.0.0.1:59065/r/empty.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/listbox.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/checkbox.json",
+        "https://hulianui.haloritual.com/r/empty.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/listbox.json"
       ],
       "meta": {
         "import": "import { Transfer } from \"@hulianui/ui\"",
@@ -5379,9 +5379,9 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json",
-        "http://127.0.0.1:59065/r/tree.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/tree.json"
       ],
       "meta": {
         "import": "import { TreeSelect } from \"@hulianui/ui\"",
@@ -5433,7 +5433,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Upload, matchesAccept, moveUploadFile, useUpload } from \"@hulianui/ui\"",
@@ -5495,7 +5495,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { VoiceRecord } from \"@hulianui/ui\"",
@@ -5545,8 +5545,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { AnimatedList } from \"@hulianui/ui\"",
@@ -5595,7 +5595,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Annotation, ARROWS, ARROW_H, ARROW_W, annotationGeometry, isDiagonal, sideVector } from \"@hulianui/ui\"",
@@ -5662,7 +5662,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Avatar } from \"@hulianui/ui\"",
@@ -5711,7 +5711,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { AvatarCircles, avatarCirclesItemVariants } from \"@hulianui/ui\"",
@@ -5760,7 +5760,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Badge } from \"@hulianui/ui\"",
@@ -5807,7 +5807,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { BentoGrid, BentoCard } from \"@hulianui/ui\"",
@@ -5856,7 +5856,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Book3D } from \"@hulianui/ui\"",
@@ -5908,8 +5908,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { BounceCards } from \"@hulianui/ui\"",
@@ -5960,7 +5960,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Card, CardHeader, CardBody, CardFooter } from \"@hulianui/ui\"",
@@ -6012,7 +6012,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CardSwap } from \"@hulianui/ui\"",
@@ -6065,9 +6065,9 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Carousel } from \"@hulianui/ui\"",
@@ -6116,7 +6116,7 @@
         "recharts"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, categoryAxisWidth, chartColor } from \"@hulianui/ui\"",
@@ -6182,8 +6182,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Chip, chipVariants } from \"@hulianui/ui\"",
@@ -6233,7 +6233,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ChromaGrid } from \"@hulianui/ui\"",
@@ -6282,7 +6282,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CircularGallery } from \"@hulianui/ui\"",
@@ -6333,12 +6333,12 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/code-diff.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/tag.json",
-        "http://127.0.0.1:59065/r/textarea.json"
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/code-diff.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/tag.json",
+        "https://hulianui.haloritual.com/r/textarea.json"
       ],
       "meta": {
         "import": "import { CodeReviewThread, severityStyle, SEVERITY } from \"@hulianui/ui\"",
@@ -6398,10 +6398,10 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/link.json",
-        "http://127.0.0.1:59065/r/mentions.json"
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/link.json",
+        "https://hulianui.haloritual.com/r/mentions.json"
       ],
       "meta": {
         "import": "import { Comment, CommentActions, CommentAction, commentActionVariants } from \"@hulianui/ui\"",
@@ -6454,7 +6454,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Coupon } from \"@hulianui/ui\"",
@@ -6504,7 +6504,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from \"@hulianui/ui\"",
@@ -6555,7 +6555,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Danmaku, allocateTrack, densityGap, estimateWidth, leastBusyTrack, scrollDuration, trackFreeTime } from \"@hulianui/ui\"",
@@ -6620,7 +6620,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DecayCard } from \"@hulianui/ui\"",
@@ -6669,8 +6669,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DeployStatus } from \"@hulianui/ui\"",
@@ -6719,7 +6719,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Descriptions, DescriptionsItem } from \"@hulianui/ui\"",
@@ -6769,7 +6769,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DiffStat, splitBlocks } from \"@hulianui/ui\"",
@@ -6823,7 +6823,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DocumentSheet, DocumentSheetHeader, DocumentSheetSection, DocumentSheetFooter, DocumentSheetSignature } from \"@hulianui/ui\"",
@@ -6873,8 +6873,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { DomeGallery } from \"@hulianui/ui\"",
@@ -6925,7 +6925,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Dot } from \"@hulianui/ui\"",
@@ -6973,10 +6973,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/input.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/input.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { EditableTable } from \"@hulianui/ui\"",
@@ -7024,7 +7024,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Empty } from \"@hulianui/ui\"",
@@ -7071,7 +7071,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { EventStream } from \"@hulianui/ui\"",
@@ -7120,8 +7120,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FileTree, fileStatusMeta, filterFileTree } from \"@hulianui/ui\"",
@@ -7177,8 +7177,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/dot-pattern.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/dot-pattern.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoint, nodesBounds, screenToCanvas, zoomAtPoint } from \"@hulianui/ui\"",
@@ -7252,7 +7252,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FlyingPosters } from \"@hulianui/ui\"",
@@ -7301,7 +7301,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Folder } from \"@hulianui/ui\"",
@@ -7350,7 +7350,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Funnel, computeFunnel } from \"@hulianui/ui\"",
@@ -7407,7 +7407,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Gantt } from \"@hulianui/ui\"",
@@ -7456,8 +7456,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GitCommit, shortSha, branchTone } from \"@hulianui/ui\"",
@@ -7513,7 +7513,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Heatmap, buildMatrix, bucketize } from \"@hulianui/ui\"",
@@ -7571,7 +7571,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Image, imageVariants } from \"@hulianui/ui\"",
@@ -7619,7 +7619,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ImageViewer } from \"@hulianui/ui\"",
@@ -7665,7 +7665,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { InfiniteMenu } from \"@hulianui/ui\"",
@@ -7714,8 +7714,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { InfiniteScroll } from \"@hulianui/ui\"",
@@ -7762,8 +7762,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { JsonViewer, valueType, jsonPath } from \"@hulianui/ui\"",
@@ -7817,7 +7817,7 @@
         "@dnd-kit/utilities"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Kanban, resolveKanbanMove } from \"@hulianui/ui\"",
@@ -7867,10 +7867,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/empty.json",
-        "http://127.0.0.1:59065/r/grid.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/empty.json",
+        "https://hulianui.haloritual.com/r/grid.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { List, ListItem, ListItemMeta } from \"@hulianui/ui\"",
@@ -7924,8 +7924,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LiveChat } from \"@hulianui/ui\"",
@@ -7975,9 +7975,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/number-ticker.json"
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/number-ticker.json"
       ],
       "meta": {
         "import": "import { LivePlayer } from \"@hulianui/ui\"",
@@ -8025,7 +8025,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LiveProductCard } from \"@hulianui/ui\"",
@@ -8074,7 +8074,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LogoLoop } from \"@hulianui/ui\"",
@@ -8123,7 +8123,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LogViewer, levelClass } from \"@hulianui/ui\"",
@@ -8175,7 +8175,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MagicBento } from \"@hulianui/ui\"",
@@ -8226,8 +8226,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { MagicCard } from \"@hulianui/ui\"",
@@ -8276,7 +8276,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Marquee } from \"@hulianui/ui\"",
@@ -8327,7 +8327,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Meter } from \"@hulianui/ui\"",
@@ -8376,8 +8376,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { NumberTicker, formatTicker } from \"@hulianui/ui\"",
@@ -8429,7 +8429,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PixelCard } from \"@hulianui/ui\"",
@@ -8478,8 +8478,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/scroll-area.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/scroll-area.json"
       ],
       "meta": {
         "import": "import { PricingTable } from \"@hulianui/ui\"",
@@ -8530,7 +8530,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ProfileCard } from \"@hulianui/ui\"",
@@ -8581,17 +8581,17 @@
         "@tanstack/react-table"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/checkbox.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/pagination.json",
-        "http://127.0.0.1:59065/r/popover.json",
-        "http://127.0.0.1:59065/r/search-form.json",
-        "http://127.0.0.1:59065/r/select.json",
-        "http://127.0.0.1:59065/r/spin.json",
-        "http://127.0.0.1:59065/r/table.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/checkbox.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/pagination.json",
+        "https://hulianui.haloritual.com/r/popover.json",
+        "https://hulianui.haloritual.com/r/search-form.json",
+        "https://hulianui.haloritual.com/r/select.json",
+        "https://hulianui.haloritual.com/r/spin.json",
+        "https://hulianui.haloritual.com/r/table.json"
       ],
       "meta": {
         "import": "import { ProTable } from \"@hulianui/ui\"",
@@ -8647,7 +8647,7 @@
         "qrcode-generator"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { QRCode } from \"@hulianui/ui\"",
@@ -8696,13 +8696,13 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/card.json",
-        "http://127.0.0.1:59065/r/chip.json",
-        "http://127.0.0.1:59065/r/image.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/math-text.json",
-        "http://127.0.0.1:59065/r/tag.json",
-        "http://127.0.0.1:59065/r/text.json"
+        "https://hulianui.haloritual.com/r/card.json",
+        "https://hulianui.haloritual.com/r/chip.json",
+        "https://hulianui.haloritual.com/r/image.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/math-text.json",
+        "https://hulianui.haloritual.com/r/tag.json",
+        "https://hulianui.haloritual.com/r/text.json"
       ],
       "meta": {
         "import": "import { QuestionCard } from \"@hulianui/ui\"",
@@ -8752,7 +8752,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { QueueLane, groupByLane } from \"@hulianui/ui\"",
@@ -8810,7 +8810,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ReflectiveCard } from \"@hulianui/ui\"",
@@ -8859,7 +8859,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { RelativeTime, formatRelative, formatAbsolute } from \"@hulianui/ui\"",
@@ -8909,7 +8909,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Sankey, assignLayers, computeSankeyLayout } from \"@hulianui/ui\"",
@@ -8969,10 +8969,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/segmented.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/segmented.json"
       ],
       "meta": {
         "import": "import { Scheduler, dateOf, dayColumns, eventRect, hourLines, layoutColumns, minutesOfDay, minutesToISO, monthMatrix, resourceColumns, snap, startOfWeekISO, weekColumns, yToMinutes } from \"@hulianui/ui\"",
@@ -9054,7 +9054,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ScoreRing, resolveGrade, DEFAULT_GRADES } from \"@hulianui/ui\"",
@@ -9111,7 +9111,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ScrollStack, ScrollStackItem } from \"@hulianui/ui\"",
@@ -9164,8 +9164,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from \"@hulianui/ui\"",
@@ -9228,7 +9228,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Sortable } from \"@hulianui/ui\"",
@@ -9276,7 +9276,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Sparkline, normalize, linePath, areaPath, barRects } from \"@hulianui/ui\"",
@@ -9337,8 +9337,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Stat } from \"@hulianui/ui\"",
@@ -9385,8 +9385,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/number-ticker.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/number-ticker.json"
       ],
       "meta": {
         "import": "import { Statistic, formatStatistic, formatCountdown } from \"@hulianui/ui\"",
@@ -9436,8 +9436,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/dot.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/dot.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { StatusDot } from \"@hulianui/ui\"",
@@ -9491,12 +9491,12 @@
         "@tanstack/react-virtual"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/checkbox.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/empty.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/tooltip.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/checkbox.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/empty.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/tooltip.json"
       ],
       "meta": {
         "import": "import { Table } from \"@hulianui/ui\"",
@@ -9555,8 +9555,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Tag, tagVariants } from \"@hulianui/ui\"",
@@ -9608,8 +9608,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { TiltedCard } from \"@hulianui/ui\"",
@@ -9658,7 +9658,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Timeline, TimelineItem } from \"@hulianui/ui\"",
@@ -9712,10 +9712,10 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/checkbox.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/checkbox.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckState, normalizeCheckedToLeaves, computeChecked, filterTree, nodeSearchText, canDropOn, isDescendant, resolveDropPosition } from \"@hulianui/ui\"",
@@ -9786,8 +9786,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { User } from \"@hulianui/ui\"",
@@ -9836,8 +9836,8 @@
         "@vidstack/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES } from \"@hulianui/ui\"",
@@ -9902,7 +9902,7 @@
         "@tanstack/react-virtual"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { VirtualList } from \"@hulianui/ui\"",
@@ -9949,7 +9949,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Watermark } from \"@hulianui/ui\"",
@@ -9998,8 +9998,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { WorldMap } from \"@hulianui/ui\"",
@@ -10058,8 +10058,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from \"@hulianui/ui\"",
@@ -10112,7 +10112,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Affix } from \"@hulianui/ui\"",
@@ -10162,8 +10162,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Anchor, flattenAnchorItems } from \"@hulianui/ui\"",
@@ -10212,9 +10212,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/theme.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/theme.json"
       ],
       "meta": {
         "import": "import { AnimatedThemeToggler } from \"@hulianui/ui\"",
@@ -10263,8 +10263,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { BackTop } from \"@hulianui/ui\"",
@@ -10311,8 +10311,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { BeianFooter } from \"@hulianui/ui\"",
@@ -10361,7 +10361,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Breadcrumb } from \"@hulianui/ui\"",
@@ -10411,8 +10411,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { BubbleMenu } from \"@hulianui/ui\"",
@@ -10464,8 +10464,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { CardNav } from \"@hulianui/ui\"",
@@ -10516,8 +10516,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from \"@hulianui/ui\"",
@@ -10570,10 +10570,10 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/empty.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/empty.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Command, useCommandShortcut } from \"@hulianui/ui\"",
@@ -10625,9 +10625,9 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/menu.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/menu.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from \"@hulianui/ui\"",
@@ -10688,8 +10688,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Dock, DockIcon } from \"@hulianui/ui\"",
@@ -10740,7 +10740,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FlowingMenu } from \"@hulianui/ui\"",
@@ -10791,8 +10791,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { GooeyNav } from \"@hulianui/ui\"",
@@ -10843,8 +10843,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Link, linkVariants } from \"@hulianui/ui\"",
@@ -10895,8 +10895,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from \"@hulianui/ui\"",
@@ -10953,8 +10953,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/menu.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/menu.json"
       ],
       "meta": {
         "import": "import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator, MenubarGroup, MenubarGroupLabel } from \"@hulianui/ui\"",
@@ -11010,8 +11010,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from \"@hulianui/ui\"",
@@ -11067,9 +11067,9 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink } from \"@hulianui/ui\"",
@@ -11128,8 +11128,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { NavMenu } from \"@hulianui/ui\"",
@@ -11179,10 +11179,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/separator.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/separator.json"
       ],
       "meta": {
         "import": "import { PageHeader } from \"@hulianui/ui\"",
@@ -11229,10 +11229,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Pagination, getPaginationRange } from \"@hulianui/ui\"",
@@ -11287,7 +11287,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PillNav } from \"@hulianui/ui\"",
@@ -11336,10 +11336,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/config.json",
-        "http://127.0.0.1:59065/r/context-menu.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/context-menu.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { RouteTabs, affectedKeys, isClosable, nextActiveKey, orderTabs, reorderTabs } from \"@hulianui/ui\"",
@@ -11401,8 +11401,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { StaggeredMenu } from \"@hulianui/ui\"",
@@ -11451,7 +11451,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Stepper } from \"@hulianui/ui\"",
@@ -11499,8 +11499,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Steps } from \"@hulianui/ui\"",
@@ -11552,8 +11552,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from \"@hulianui/ui\"",
@@ -11609,7 +11609,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarGroup, ToolbarSeparator } from \"@hulianui/ui\"",
@@ -11666,7 +11666,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Alert, alertVariants } from \"@hulianui/ui\"",
@@ -11716,8 +11716,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { AlertDialog, AlertDialogTrigger, AlertDialogClose, AlertDialogContent } from \"@hulianui/ui\"",
@@ -11769,8 +11769,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/marquee.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/marquee.json"
       ],
       "meta": {
         "import": "import { Banner } from \"@hulianui/ui\"",
@@ -11818,7 +11818,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Callout } from \"@hulianui/ui\"",
@@ -11868,8 +11868,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Dialog, DialogTrigger, DialogClose, DialogContent } from \"@hulianui/ui\"",
@@ -11922,8 +11922,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } from \"@hulianui/ui\"",
@@ -11976,7 +11976,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FloatingReactions } from \"@hulianui/ui\"",
@@ -12026,8 +12026,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GiftFeed, applyGiftEvent } from \"@hulianui/ui\"",
@@ -12084,8 +12084,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/hover-card.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/hover-card.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Glimpse } from \"@hulianui/ui\"",
@@ -12132,8 +12132,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { HeroVideoDialog } from \"@hulianui/ui\"",
@@ -12182,8 +12182,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { HoverCard, HoverCardTrigger, HoverCardContent } from \"@hulianui/ui\"",
@@ -12233,7 +12233,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { InterceptCard } from \"@hulianui/ui\"",
@@ -12284,10 +12284,10 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { modal, ModalProvider, hulianModalManager } from \"@hulianui/ui\"",
@@ -12338,9 +12338,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { notification, NotificationProvider, hulianNotificationManager } from \"@hulianui/ui\"",
@@ -12394,11 +12394,11 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json",
-        "http://127.0.0.1:59065/r/popover.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/popover.json"
       ],
       "meta": {
         "import": "import { Popconfirm } from \"@hulianui/ui\"",
@@ -12447,8 +12447,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from \"@hulianui/ui\"",
@@ -12500,8 +12500,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Progress, progressPercent, dashOffset } from \"@hulianui/ui\"",
@@ -12550,7 +12550,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Result } from \"@hulianui/ui\"",
@@ -12598,9 +12598,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ServiceMessage } from \"@hulianui/ui\"",
@@ -12649,8 +12649,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/spinner.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/spinner.json"
       ],
       "meta": {
         "import": "import { Spin } from \"@hulianui/ui\"",
@@ -12699,7 +12699,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Spinner, spinnerVariants } from \"@hulianui/ui\"",
@@ -12749,8 +12749,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { toast, ToastProvider } from \"@hulianui/ui\"",
@@ -12802,8 +12802,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from \"@hulianui/ui\"",
@@ -12855,10 +12855,10 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Tour, resolveTarget, computeSpotlight, computeCardPosition } from \"@hulianui/ui\"",
@@ -12916,9 +12916,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/spinner.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/spinner.json"
       ],
       "meta": {
         "import": "import { AgentPlan } from \"@hulianui/ui\"",
@@ -12967,8 +12967,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/chip.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/chip.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Artifact } from \"@hulianui/ui\"",
@@ -13015,10 +13015,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/avatar.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/typing-dots.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/typing-dots.json"
       ],
       "meta": {
         "import": "import { ChatMessage } from \"@hulianui/ui\"",
@@ -13066,7 +13066,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Citation } from \"@hulianui/ui\"",
@@ -13113,8 +13113,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ConfirmCard } from \"@hulianui/ui\"",
@@ -13162,7 +13162,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Conversation } from \"@hulianui/ui\"",
@@ -13209,8 +13209,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Dossier } from \"@hulianui/ui\"",
@@ -13259,8 +13259,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MessageActions } from \"@hulianui/ui\"",
@@ -13307,10 +13307,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/button.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/textarea.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/textarea.json"
       ],
       "meta": {
         "import": "import { PromptInput } from \"@hulianui/ui\"",
@@ -13357,7 +13357,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PromptSuggestions } from \"@hulianui/ui\"",
@@ -13405,7 +13405,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { StreamingText } from \"@hulianui/ui\"",
@@ -13454,11 +13454,11 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/agent-plan.json",
-        "http://127.0.0.1:59065/r/dot.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/progress.json",
-        "http://127.0.0.1:59065/r/tag.json"
+        "https://hulianui.haloritual.com/r/agent-plan.json",
+        "https://hulianui.haloritual.com/r/dot.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/progress.json",
+        "https://hulianui.haloritual.com/r/tag.json"
       ],
       "meta": {
         "import": "import { TaskRunner, resolveProgress, statusMeta } from \"@hulianui/ui\"",
@@ -13508,10 +13508,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/animated-shiny-text.json",
-        "http://127.0.0.1:59065/r/collapsible.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/animated-shiny-text.json",
+        "https://hulianui.haloritual.com/r/collapsible.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ThinkingBlock } from \"@hulianui/ui\"",
@@ -13560,8 +13560,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ThreadList } from \"@hulianui/ui\"",
@@ -13609,11 +13609,11 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/collapsible.json",
-        "http://127.0.0.1:59065/r/dot.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/spinner.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/collapsible.json",
+        "https://hulianui.haloritual.com/r/dot.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/spinner.json"
       ],
       "meta": {
         "import": "import { ToolCall } from \"@hulianui/ui\"",
@@ -13661,7 +13661,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { TypingDots } from \"@hulianui/ui\"",
@@ -13710,8 +13710,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { AnimatedBeam } from \"@hulianui/ui\"",
@@ -13760,7 +13760,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Antigravity } from \"@hulianui/ui\"",
@@ -13809,7 +13809,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Aurora } from \"@hulianui/ui\"",
@@ -13858,7 +13858,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Balatro } from \"@hulianui/ui\"",
@@ -13908,7 +13908,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Ballpit } from \"@hulianui/ui\"",
@@ -13963,7 +13963,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Beams } from \"@hulianui/ui\"",
@@ -14015,8 +14015,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { BlobCursor } from \"@hulianui/ui\"",
@@ -14067,8 +14067,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { BorderBeam } from \"@hulianui/ui\"",
@@ -14119,7 +14119,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { BorderGlow } from \"@hulianui/ui\"",
@@ -14168,7 +14168,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { CardSpotlight } from \"@hulianui/ui\"",
@@ -14219,7 +14219,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ClickSpark } from \"@hulianui/ui\"",
@@ -14268,7 +14268,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ColorBends } from \"@hulianui/ui\"",
@@ -14320,7 +14320,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Crosshair } from \"@hulianui/ui\"",
@@ -14371,7 +14371,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Cubes } from \"@hulianui/ui\"",
@@ -14420,7 +14420,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DarkVeil } from \"@hulianui/ui\"",
@@ -14470,7 +14470,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Dither } from \"@hulianui/ui\"",
@@ -14522,7 +14522,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DotField } from \"@hulianui/ui\"",
@@ -14572,7 +14572,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { DotPattern } from \"@hulianui/ui\"",
@@ -14619,7 +14619,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ElectricBorder } from \"@hulianui/ui\"",
@@ -14668,7 +14668,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { EvilEye } from \"@hulianui/ui\"",
@@ -14718,7 +14718,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FaultyTerminal } from \"@hulianui/ui\"",
@@ -14768,7 +14768,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Ferrofluid } from \"@hulianui/ui\"",
@@ -14818,7 +14818,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FlickeringGrid } from \"@hulianui/ui\"",
@@ -14867,7 +14867,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FloatingLines } from \"@hulianui/ui\"",
@@ -14917,7 +14917,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { FluidGlass } from \"@hulianui/ui\"",
@@ -14966,7 +14966,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Galaxy } from \"@hulianui/ui\"",
@@ -15016,7 +15016,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GhostCursor } from \"@hulianui/ui\"",
@@ -15065,7 +15065,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GlareHover } from \"@hulianui/ui\"",
@@ -15114,7 +15114,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GlassIcons } from \"@hulianui/ui\"",
@@ -15163,7 +15163,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GlassSurface } from \"@hulianui/ui\"",
@@ -15212,7 +15212,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GradientBlinds } from \"@hulianui/ui\"",
@@ -15264,7 +15264,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GradualBlur } from \"@hulianui/ui\"",
@@ -15313,7 +15313,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Grainient } from \"@hulianui/ui\"",
@@ -15363,7 +15363,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GridDistortion } from \"@hulianui/ui\"",
@@ -15415,8 +15415,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { GridMotion } from \"@hulianui/ui\"",
@@ -15466,7 +15466,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GridPattern } from \"@hulianui/ui\"",
@@ -15513,7 +15513,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { GridScan } from \"@hulianui/ui\"",
@@ -15563,7 +15563,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Hyperspeed } from \"@hulianui/ui\"",
@@ -15615,7 +15615,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ImageTrail } from \"@hulianui/ui\"",
@@ -15664,7 +15664,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Iridescence } from \"@hulianui/ui\"",
@@ -15716,7 +15716,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Lanyard } from \"@hulianui/ui\"",
@@ -15765,7 +15765,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LaserFlow } from \"@hulianui/ui\"",
@@ -15814,7 +15814,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Lens } from \"@hulianui/ui\"",
@@ -15863,7 +15863,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LetterGlitch } from \"@hulianui/ui\"",
@@ -15913,7 +15913,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Lightfall } from \"@hulianui/ui\"",
@@ -15963,7 +15963,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Lightning } from \"@hulianui/ui\"",
@@ -16013,7 +16013,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LightPillar } from \"@hulianui/ui\"",
@@ -16063,7 +16063,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LightRays } from \"@hulianui/ui\"",
@@ -16113,7 +16113,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LineWaves } from \"@hulianui/ui\"",
@@ -16163,7 +16163,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LiquidChrome } from \"@hulianui/ui\"",
@@ -16213,7 +16213,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { LiquidEther } from \"@hulianui/ui\"",
@@ -16263,7 +16263,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MagicRings } from \"@hulianui/ui\"",
@@ -16314,7 +16314,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Magnet } from \"@hulianui/ui\"",
@@ -16365,7 +16365,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MagnetLines } from \"@hulianui/ui\"",
@@ -16414,7 +16414,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MetaBalls } from \"@hulianui/ui\"",
@@ -16463,7 +16463,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { MetallicPaint } from \"@hulianui/ui\"",
@@ -16512,7 +16512,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Meteors } from \"@hulianui/ui\"",
@@ -16563,7 +16563,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ModelViewer } from \"@hulianui/ui\"",
@@ -16612,7 +16612,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Orb } from \"@hulianui/ui\"",
@@ -16662,7 +16662,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { OrbitImages } from \"@hulianui/ui\"",
@@ -16711,7 +16711,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { OrbitingCircles } from \"@hulianui/ui\"",
@@ -16760,7 +16760,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Particles } from \"@hulianui/ui\"",
@@ -16809,7 +16809,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PixelBlast, pixelBlastShowcase } from \"@hulianui/ui\"",
@@ -16860,7 +16860,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PixelSnow } from \"@hulianui/ui\"",
@@ -16910,7 +16910,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PixelTrail } from \"@hulianui/ui\"",
@@ -16961,8 +16961,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { PixelTransition } from \"@hulianui/ui\"",
@@ -17011,7 +17011,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Plasma } from \"@hulianui/ui\"",
@@ -17061,7 +17061,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PlasmaWave } from \"@hulianui/ui\"",
@@ -17111,7 +17111,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Prism } from \"@hulianui/ui\"",
@@ -17161,7 +17161,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PrismaticBurst } from \"@hulianui/ui\"",
@@ -17211,7 +17211,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ProgressiveBlur } from \"@hulianui/ui\"",
@@ -17258,7 +17258,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Radar } from \"@hulianui/ui\"",
@@ -17308,7 +17308,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { RetroGrid } from \"@hulianui/ui\"",
@@ -17359,8 +17359,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Reveal, Stagger, StaggerItem } from \"@hulianui/ui\"",
@@ -17413,7 +17413,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Ribbons } from \"@hulianui/ui\"",
@@ -17462,7 +17462,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Ripple } from \"@hulianui/ui\"",
@@ -17511,7 +17511,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { RippleGrid } from \"@hulianui/ui\"",
@@ -17561,7 +17561,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ShapeBlur } from \"@hulianui/ui\"",
@@ -17612,7 +17612,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ShapeGrid } from \"@hulianui/ui\"",
@@ -17662,7 +17662,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { ShineBorder } from \"@hulianui/ui\"",
@@ -17711,7 +17711,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { SideRays } from \"@hulianui/ui\"",
@@ -17761,7 +17761,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Silk, silkShowcase } from \"@hulianui/ui\"",
@@ -17812,7 +17812,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { SoftAurora } from \"@hulianui/ui\"",
@@ -17864,7 +17864,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { SplashCursor } from \"@hulianui/ui\"",
@@ -17913,7 +17913,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Spotlight } from \"@hulianui/ui\"",
@@ -17960,7 +17960,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { StarBorder } from \"@hulianui/ui\"",
@@ -18011,7 +18011,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { StickerPeel } from \"@hulianui/ui\"",
@@ -18060,7 +18060,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { StripedPattern } from \"@hulianui/ui\"",
@@ -18109,7 +18109,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { TargetCursor } from \"@hulianui/ui\"",
@@ -18158,7 +18158,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Threads } from \"@hulianui/ui\"",
@@ -18208,7 +18208,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { WavyBackground, valueNoise2D } from \"@hulianui/ui\"",
@@ -18258,7 +18258,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Android, ANDROID_MODELS } from \"@hulianui/ui\"",
@@ -18307,7 +18307,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Chrome } from \"@hulianui/ui\"",
@@ -18354,7 +18354,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { IPhone, IPHONE_MODELS } from \"@hulianui/ui\"",
@@ -18403,7 +18403,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Safari } from \"@hulianui/ui\"",
@@ -18450,7 +18450,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Tablet, TABLET_MODELS } from \"@hulianui/ui\"",
@@ -18501,8 +18501,8 @@
         "motion"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Terminal } from \"@hulianui/ui\"",
@@ -18557,7 +18557,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Watch, WATCH_MODELS } from \"@hulianui/ui\"",
@@ -18608,8 +18608,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { ActionSheet, ActionSheetTrigger, ActionSheetClose, ActionSheetContent } from \"@hulianui/ui\"",
@@ -18661,9 +18661,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json",
-        "http://127.0.0.1:59065/r/motion.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
         "import": "import { Fab } from \"@hulianui/ui\"",
@@ -18712,7 +18712,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { Picker } from \"@hulianui/ui\"",
@@ -18761,8 +18761,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/_icons.json",
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { PullToRefresh } from \"@hulianui/ui\"",
@@ -18809,7 +18809,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { SafeArea } from \"@hulianui/ui\"",
@@ -18858,7 +18858,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { SwipeAction } from \"@hulianui/ui\"",
@@ -18907,7 +18907,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/lib.json"
+        "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
         "import": "import { TabBar } from \"@hulianui/ui\"",
@@ -21301,16 +21301,16 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-contact-form.json",
-        "http://127.0.0.1:59065/r/block-cta.json",
-        "http://127.0.0.1:59065/r/block-faq.json",
-        "http://127.0.0.1:59065/r/block-features.json",
-        "http://127.0.0.1:59065/r/block-hero.json",
-        "http://127.0.0.1:59065/r/block-integrations.json",
-        "http://127.0.0.1:59065/r/block-pricing-table.json",
-        "http://127.0.0.1:59065/r/block-stats.json",
-        "http://127.0.0.1:59065/r/block-testimonials.json",
-        "http://127.0.0.1:59065/r/block-trust-bar.json"
+        "https://hulianui.haloritual.com/r/block-contact-form.json",
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-features.json",
+        "https://hulianui.haloritual.com/r/block-hero.json",
+        "https://hulianui.haloritual.com/r/block-integrations.json",
+        "https://hulianui.haloritual.com/r/block-pricing-table.json",
+        "https://hulianui.haloritual.com/r/block-stats.json",
+        "https://hulianui.haloritual.com/r/block-testimonials.json",
+        "https://hulianui.haloritual.com/r/block-trust-bar.json"
       ],
       "meta": {
         "kind": "page",
@@ -21353,10 +21353,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-cta.json",
-        "http://127.0.0.1:59065/r/block-faq.json",
-        "http://127.0.0.1:59065/r/block-hero.json",
-        "http://127.0.0.1:59065/r/block-pricing-table.json"
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-hero.json",
+        "https://hulianui.haloritual.com/r/block-pricing-table.json"
       ],
       "meta": {
         "kind": "page",
@@ -21393,9 +21393,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-contact-form.json",
-        "http://127.0.0.1:59065/r/block-cta.json",
-        "http://127.0.0.1:59065/r/block-faq.json"
+        "https://hulianui.haloritual.com/r/block-contact-form.json",
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json"
       ],
       "meta": {
         "kind": "page",
@@ -21433,11 +21433,11 @@
         "@hulianui/ui"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-cta.json",
-        "http://127.0.0.1:59065/r/block-faq.json",
-        "http://127.0.0.1:59065/r/block-feature-split.json",
-        "http://127.0.0.1:59065/r/block-stats.json",
-        "http://127.0.0.1:59065/r/block-testimonials.json"
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-feature-split.json",
+        "https://hulianui.haloritual.com/r/block-stats.json",
+        "https://hulianui.haloritual.com/r/block-testimonials.json"
       ],
       "meta": {
         "kind": "page",
@@ -21479,9 +21479,9 @@
         "@hulianui/ui"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-cta.json",
-        "http://127.0.0.1:59065/r/block-faq.json",
-        "http://127.0.0.1:59065/r/block-integrations.json"
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json",
+        "https://hulianui.haloritual.com/r/block-integrations.json"
       ],
       "meta": {
         "kind": "page",
@@ -21519,9 +21519,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-contact-form.json",
-        "http://127.0.0.1:59065/r/block-cta.json",
-        "http://127.0.0.1:59065/r/block-faq.json"
+        "https://hulianui.haloritual.com/r/block-contact-form.json",
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-faq.json"
       ],
       "meta": {
         "kind": "page",
@@ -21559,11 +21559,11 @@
         "@hulianui/ui"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-cta.json",
-        "http://127.0.0.1:59065/r/block-milestone-timeline.json",
-        "http://127.0.0.1:59065/r/block-stats.json",
-        "http://127.0.0.1:59065/r/block-team-grid.json",
-        "http://127.0.0.1:59065/r/block-testimonials.json"
+        "https://hulianui.haloritual.com/r/block-cta.json",
+        "https://hulianui.haloritual.com/r/block-milestone-timeline.json",
+        "https://hulianui.haloritual.com/r/block-stats.json",
+        "https://hulianui.haloritual.com/r/block-team-grid.json",
+        "https://hulianui.haloritual.com/r/block-testimonials.json"
       ],
       "meta": {
         "kind": "page",
@@ -21605,7 +21605,7 @@
         "@hulianui/ui"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-blog-list.json"
+        "https://hulianui.haloritual.com/r/block-blog-list.json"
       ],
       "meta": {
         "kind": "page",
@@ -21641,8 +21641,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-article-body.json",
-        "http://127.0.0.1:59065/r/block-cta.json"
+        "https://hulianui.haloritual.com/r/block-article-body.json",
+        "https://hulianui.haloritual.com/r/block-cta.json"
       ],
       "meta": {
         "kind": "page",
@@ -21677,8 +21677,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-article-toc.json",
-        "http://127.0.0.1:59065/r/block-cta.json"
+        "https://hulianui.haloritual.com/r/block-article-toc.json",
+        "https://hulianui.haloritual.com/r/block-cta.json"
       ],
       "meta": {
         "kind": "page",
@@ -21715,7 +21715,7 @@
         "@hulianui/ui"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-changelog.json"
+        "https://hulianui.haloritual.com/r/block-changelog.json"
       ],
       "meta": {
         "kind": "page",
@@ -21751,10 +21751,10 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-chart-grid.json",
-        "http://127.0.0.1:59065/r/block-data-table.json",
-        "http://127.0.0.1:59065/r/block-kpi-rail.json",
-        "http://127.0.0.1:59065/r/block-page-header.json"
+        "https://hulianui.haloritual.com/r/block-chart-grid.json",
+        "https://hulianui.haloritual.com/r/block-data-table.json",
+        "https://hulianui.haloritual.com/r/block-kpi-rail.json",
+        "https://hulianui.haloritual.com/r/block-page-header.json"
       ],
       "meta": {
         "kind": "page",
@@ -21791,9 +21791,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-data-table.json",
-        "http://127.0.0.1:59065/r/block-kpi-rail.json",
-        "http://127.0.0.1:59065/r/block-page-header.json"
+        "https://hulianui.haloritual.com/r/block-data-table.json",
+        "https://hulianui.haloritual.com/r/block-kpi-rail.json",
+        "https://hulianui.haloritual.com/r/block-page-header.json"
       ],
       "meta": {
         "kind": "page",
@@ -21829,8 +21829,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-page-header.json",
-        "http://127.0.0.1:59065/r/block-settings-panel.json"
+        "https://hulianui.haloritual.com/r/block-page-header.json",
+        "https://hulianui.haloritual.com/r/block-settings-panel.json"
       ],
       "meta": {
         "kind": "page",
@@ -21941,7 +21941,7 @@
         "@hulianui/ui"
       ],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-product-grid.json"
+        "https://hulianui.haloritual.com/r/block-product-grid.json"
       ],
       "meta": {
         "kind": "page",
@@ -21978,9 +21978,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-product-detail.json",
-        "http://127.0.0.1:59065/r/block-product-grid.json",
-        "http://127.0.0.1:59065/r/block-review-section.json"
+        "https://hulianui.haloritual.com/r/block-product-detail.json",
+        "https://hulianui.haloritual.com/r/block-product-grid.json",
+        "https://hulianui.haloritual.com/r/block-review-section.json"
       ],
       "meta": {
         "kind": "page",
@@ -22016,9 +22016,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-activity-timeline.json",
-        "http://127.0.0.1:59065/r/block-product-grid.json",
-        "http://127.0.0.1:59065/r/block-user-profile.json"
+        "https://hulianui.haloritual.com/r/block-activity-timeline.json",
+        "https://hulianui.haloritual.com/r/block-product-grid.json",
+        "https://hulianui.haloritual.com/r/block-user-profile.json"
       ],
       "meta": {
         "kind": "page",
@@ -22054,8 +22054,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "http://127.0.0.1:59065/r/block-agent-card.json",
-        "http://127.0.0.1:59065/r/block-chat-panel.json"
+        "https://hulianui.haloritual.com/r/block-agent-card.json",
+        "https://hulianui.haloritual.com/r/block-chat-panel.json"
       ],
       "meta": {
         "kind": "page",
