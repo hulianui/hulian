@@ -1,5 +1,17 @@
 # @hulianui/mcp
 
+## 0.4.0
+
+### Minor Changes
+
+- `inspect_project` 解析 `@source` 路径，不再把指不到实处的当 `detected`（#66）。
+
+  只按文本匹配「有没有写 `@source`」是不够的：pnpm workspace 里真实包入口常在 `<app>/node_modules`，而 CSS 按仓库根数了层级，解析后目标根本不存在。后果最阴——setup 表面全绿、生产构建成功、DOM className 也正常，但库内 Tailwind 工具类一个都没生成，页面退化成无样式文本，typecheck / 单测 / guard 全都发现不了。
+
+  - 按**样式表自身所在目录**解析每条 `@source`，glob 取静态前缀后检查目标是否存在。
+  - `setup.tailwindSource` 从二值变三值：写了且指对 → `detected`；写了但目标不存在 → **`invalid`** + warning；没写 → `not-found`（原样）。读这个字段做分支的调用方请把新值考虑进去。
+  - 新增 `setup.tailwindSourceTargets`：回报解析后的候选路径（`raw` → `resolved` → `exists`），便于定位 pnpm workspace 与单包安装的差异。
+
 ## 0.3.1
 
 ### Patch Changes
