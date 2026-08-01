@@ -54,7 +54,7 @@ export function findExactComponent(query: string): SearchDoc | null {
   if (!normalized) return null;
 
   const identities = COMPONENT_DOCS.filter((doc) =>
-    [doc.en, doc.title, slugOf(doc)]
+    [doc.en, doc.title, slugOf(doc), ...(doc.identityAliases ?? [])]
       .filter((value): value is string => Boolean(value))
       .some((value) => normalizeIdentity(value) === normalized),
   );

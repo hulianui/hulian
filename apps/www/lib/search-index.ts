@@ -8,7 +8,7 @@
 // 组装（manifest / blocks _meta / pages _meta / demos / theme-manifest），
 // 所以 server 组件与 client 面板可以共读同一份，不会漂。
 
-import { componentMeta, manifest } from "./manifest";
+import { componentMeta, manifest, type ComponentMeta } from "./manifest";
 import { themeMeta, THEME_NAV } from "./theme-manifest";
 import { blockMeta, blocks } from "../app/blocks/_meta";
 import { pageMeta, pages } from "../app/pages/_meta";
@@ -33,7 +33,20 @@ export interface SearchDoc {
   categoryLabel?: string;
   /** 附加检索词（tags、小类名等）。 */
   keywords: string[];
+  /** 仅指向同一组件的次级公共导出/技术别名；不含分类、分组、标签或一般检索词。 */
+  identityAliases?: string[];
 }
+
+/**
+ * Sparse by design. Each entry must be a verified public identity of the same component.
+ * `form-dialog` is exported as both names by packages/ui/src/form-dialog/index.ts and registry
+ * meta.exports; general search metadata stays in `keywords` below.
+ */
+const COMPONENT_IDENTITY_ALIASES: Readonly<
+  Partial<Record<ComponentMeta["slug"], readonly string[]>>
+> = {
+  "form-dialog": ["ModalForm", "DrawerForm"],
+};
 
 export const TYPE_LABEL: Record<DocType, string> =
   DOCS_LOCALE === "en"
@@ -67,6 +80,7 @@ function componentDocs(): SearchDoc[] {
       description: localized.description,
       category: m.category,
       categoryLabel: localized.categoryLabel,
+      identityAliases: [...(COMPONENT_IDENTITY_ALIASES[m.slug] ?? [])],
       keywords: [m.slug, localized.groupLabel, ...localized.tags, ...localized.keywords].filter(
         Boolean,
       ),

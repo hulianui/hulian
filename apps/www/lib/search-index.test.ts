@@ -141,6 +141,15 @@ describe("中英双语与导出名", () => {
   it("slug 形式也能命中（data-table → 区块）", () => {
     expect(idsOf("data-table")).toContain("block:data-table");
   });
+
+  it("separates canonical secondary exports from generic search metadata", () => {
+    const formDialog = searchDocs.find((doc) => doc.id === "component:form-dialog");
+    const tour = searchDocs.find((doc) => doc.id === "component:tour");
+
+    expect(formDialog?.identityAliases).toEqual(["ModalForm", "DrawerForm"]);
+    expect(tour?.keywords).toContain("引导");
+    expect(tour?.identityAliases ?? []).not.toContain("引导");
+  });
 });
 
 describe("过滤与分组", () => {

@@ -21,6 +21,13 @@ describe("findExactComponent", () => {
     },
   );
 
+  it.each(["ModalForm", "DrawerForm"])(
+    "resolves the canonical secondary public export %s",
+    (query) => {
+      expect(findExactComponent(query)?.id).toBe("component:form-dialog");
+    },
+  );
+
   it("does not call an ambiguous alias an exact result", () => {
     expect(findExactComponent("animated")).toBeNull();
   });
@@ -48,6 +55,16 @@ describe("ComponentQuickJump", () => {
     fireEvent.keyDown(input, { key: "Enter" });
 
     expect(push).toHaveBeenCalledWith("/components/button");
+  });
+
+  it("navigates a canonical secondary public export on Enter", () => {
+    render(<ComponentQuickJump placement="catalog" />);
+
+    const input = screen.getByRole("combobox", { name: "快速跳转组件" });
+    fireEvent.change(input, { target: { value: "DrawerForm" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(push).toHaveBeenCalledWith("/components/form-dialog");
   });
 
   it("requires a highlighted result for ambiguous fuzzy input", () => {
