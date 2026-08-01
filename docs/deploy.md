@@ -19,10 +19,15 @@
 | 环境变量 | 无（纯静态，无密钥） |
 
 **构建命令不要拆。** `www` 的 `build` 是 `pnpm gen && next build`，`gen` 负责生成 `/r`、`/d`、
-`conventions.json` 和 changelog 数据——这些是 Git 忽略的产物，MCP 的远程模式和 `/changelog`
-页面都依赖它们。曾经 `build` 只有 `next build`、生成靠调用方自己记得先跑，结果 CI 补了这一步
-而平台构建命令没补，主站长期缺整个 `/r` 端点（`curl .../r/registry.json` 回落成 HTML）。
-任何托管平台只要能跑 `pnpm --filter www build`，就应当得到与 CI 完全一致的产物。
+`conventions.json` 和 changelog 数据——这些是 Git 忽略的产物（见 `.gitignore`），MCP 的远程模式
+和 `/changelog` 页面都依赖它们。此前 `build` 只有 `next build`、生成靠调用方自己记得先跑，
+CI 补了这一步而平台的构建命令没有——干净 clone 上只跑 `next build` 会产出缺 `/r` 的站点。
+收进 `build` 之后，任何托管平台只要能跑 `pnpm --filter www build`，就得到与 CI 一致的产物。
+
+> 注：2026-08-01 主站停更**与此无关**，病因是下面"注意"里的 Node 补丁版本。当时误判成
+> 产物残缺，依据是 `curl /r/registry.json` 回落成 HTML——但那个路径本来就不存在（注册表在
+> 根级 `/registry.json`，`/r/` 下是 `button.json` 这样的逐件端点），两个站点在该路径上行为
+> 一致。把生成收进 `build` 仍然正确，只是属于防御性加固，不是那次故障的修复。
 
 ---
 
