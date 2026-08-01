@@ -25,6 +25,7 @@
     "registry:smoke:pages": "node scripts/registry-pages-smoke.mjs",
     "conventions": "node scripts/gen-conventions.mjs",
     "conventions:check": "node scripts/gen-conventions.mjs --check",
+    "guard": "node packages/guard/src/cli.mjs",
     "changelog": "node scripts/gen-changelog.mjs",
     "docs:all": "pnpm skill-index && pnpm component-docs && pnpm llms-registry && pnpm conventions && pnpm changelog",
     "install-hooks": "sh scripts/install-hooks.sh",

@@ -1,0 +1,31 @@
+{
+  "name": "@hulianui/guard",
+  "version": "0.1.0",
+  "description": "AST-based executable convention checks for HulianUI consumers.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "hulian-check": "./src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/check.mjs"
+  },
+  "files": [
+    "src",
+    "conventions.json"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "typecheck": "node --check src/check.mjs && node --check src/cli.mjs && node --check src/rules.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}

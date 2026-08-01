@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+
+import { checkFiles } from "./check.mjs";
+
+function parseArgs(argv) {
+  const options = { format: "text", paths: [] };
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === "--") {
+      continue;
+    } else if (arg === "--format" || arg === "--config") {
+      const value = argv[++index];
+      if (!value) throw new Error(`${arg} 缺少取值`);
+      if (arg === "--format") options.format = value;
+      else options.configPath = value;
+    } else if (arg.startsWith("-")) {
+      throw new Error(`未知参数: ${arg}`);
+    } else {
+      options.paths.push(arg);
+    }
+  }
+  if (!new Set(["text", "json"]).has(options.format)) throw new Error(`未知输出格式: ${options.format}`);
+  if (options.paths.length === 0) options.paths.push(".");
+  return options;
+}
+
+try {
+  const options = parseArgs(process.argv.slice(2));
+  const result = checkFiles(options.paths, options);
+  if (options.format === "json") {
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+  } else if (result.diagnostics.length === 0) {
+    console.log(`[hulian-check] PASS · ${result.filesChecked} files`);
+  } else {
+    for (const diagnostic of result.diagnostics) {
+      console.log(
+        `${diagnostic.file}:${diagnostic.line}:${diagnostic.column} ${diagnostic.severity} ${diagnostic.ruleId} ${diagnostic.message}`,
+      );
+      if (diagnostic.instead) console.log(`  建议: ${diagnostic.instead}`);
+    }
+    console.log(`[hulian-check] FAIL · ${result.diagnostics.length} diagnostics / ${result.filesChecked} files`);
+  }
+  if (result.diagnostics.length > 0) process.exitCode = 1;
+} catch (error) {
+  console.error(`[hulian-check] ${error.message}`);
+  process.exitCode = 2;
+}

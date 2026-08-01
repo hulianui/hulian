@@ -107,6 +107,12 @@ importers:
         specifier: ^3.2.6
         version: 3.2.6(@types/node@22.19.19)(jsdom@25.0.1)
 
+  packages/guard:
+    dependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/mcp:
     dependencies:
       '@modelcontextprotocol/sdk':
@@ -7152,7 +7158,7 @@ packages:
       oxlint: 1.68.0
       oxlint-plugin-react-doctor: 0.2.14
       prompts: 2.4.2
-      typescript: 6.0.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - bufferutil
       - eslint
@@ -7867,6 +7873,11 @@ packages:
       media-typer: 1.1.1
       mime-types: 3.0.2
     dev: false
+
+  /typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
 
   /typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}

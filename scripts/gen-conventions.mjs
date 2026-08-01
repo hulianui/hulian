@@ -21,6 +21,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
 const OUT_PKG = join(ROOT, "packages", "ui", "conventions.json");
 const OUT_WWW = join(ROOT, "apps", "www", "public", "conventions.json");
+const OUT_GUARD = join(ROOT, "packages", "guard", "conventions.json");
 
 // ------------------------------------------------------------ 全局硬约束 --
 // 每一条都在源码里核对过取值，不是凭印象写的 —— 写错的约束比没有约束更糟。
@@ -263,8 +264,9 @@ function main() {
 
   if (process.argv.includes("--check")) {
     const current = existsSync(OUT_PKG) ? readFileSync(OUT_PKG, "utf8") : "";
-    if (current !== json) {
-      console.error("[conventions] packages/ui/conventions.json 已漂移，请运行 pnpm conventions");
+    const guardCurrent = existsSync(OUT_GUARD) ? readFileSync(OUT_GUARD, "utf8") : "";
+    if (current !== json || (existsSync(dirname(OUT_GUARD)) && guardCurrent !== json)) {
+      console.error("[conventions] conventions.json 已漂移，请运行 pnpm conventions");
       process.exitCode = 1;
       return;
     }
@@ -275,6 +277,7 @@ function main() {
   }
 
   writeFileSync(OUT_PKG, json);
+  if (existsSync(dirname(OUT_GUARD))) writeFileSync(OUT_GUARD, json);
   const wwwDir = dirname(OUT_WWW);
   if (!existsSync(wwwDir)) mkdirSync(wwwDir, { recursive: true });
   writeFileSync(OUT_WWW, json);
