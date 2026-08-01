@@ -10,11 +10,11 @@ status: enriched
 
 # SoftAurora
 
-> Soft aurora · Two layers of 3D Perlin noise and cosine gradients create flowing color bands with pointer parallax · OGL/WebGL, theme-token colors, and a reduced-motion fallback · decoration/backdrop · #animated #webgl
+> Soft aurora · Two phase-offset layers of 3D Perlin noise shape gently moving bands colored by a cosine gradient · Optional pointer parallax, theme-token colors, and a static OGL/WebGL fallback · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
-Use it for a soft flowing aurora in a dark hero or open marketing surface. For regular dots or lines, use [DotPattern](../dot-pattern/dot-pattern.md) or [GridPattern](../grid-pattern/grid-pattern.md); for volumetric corner beams, use [SideRays](../side-rays/side-rays.md). SoftAurora combines two Perlin-noise layers with a cosine color cycle.
+Use SoftAurora when a dark hero or spacious marketing surface needs slow color movement without a sharply defined focal object. It works behind large copy when brightness and band position are restrained. Choose [DotPattern](../dot-pattern/dot-pattern.md) or [GridPattern](../grid-pattern/grid-pattern.md) for regular geometry, or [SideRays](../side-rays/side-rays.md) for directional beams from a corner.
 
 ## Import
 ```ts
@@ -25,37 +25,37 @@ import { SoftAurora } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| color1 | `string` | `var(--color-chart-1)` | Main Aurora ribbon color (layer 1), any CSS color string (off-screen canvas parsing) |
-| color2 | `string` | `var(--color-chart-4)` | Auxiliary auroral ribbon color (layer 2), misalignment superposition produces mixed color interference |
-| speed | `number` | `0.6` | Aurora flow speed magnification, recommended 0.2–2 |
+| color1 | `string` | `var(--color-chart-1)` | Primary band color for the first layer; accepts any CSS color resolved through an off-screen canvas |
+| color2 | `string` | `var(--color-chart-4)` | Secondary color for the offset layer; overlap between the layers creates mixed hues |
+| speed | `number` | `0.6` | Animation-speed multiplier; 0.2–2 is recommended |
 | scale | `number` | `1.5` | Noise-sampling scale; higher values create finer texture, with 0.8–3 recommended |
-| brightness | `number` | `1` | Overall brightness ratio |
-| noiseFrequency | `number` | `2.5` | Noise fundamental frequency, affecting wrinkle density |
-| noiseAmplitude | `number` | `1` | Noise base amplitude, affecting the fluctuation amplitude |
-| bandHeight | `number` | `0.5` | The vertical position of the auroral belt (0–1), the smaller it is, the lower it is |
-| bandSpread | `number` | `1` | Aurora band glow diffusion intensity |
-| octaveDecay | `number` | `0.1` | Multi-octave noise attenuation coefficient, controlling the proportion of high-frequency details |
-| layerOffset | `number` | `0` | Time phase shift of two layers of aurora, peak-staggered flow when non-zero |
-| colorSpeed | `number` | `1` | Hue circulation flow speed (cosine gradient horizontal scrolling speed) |
-| enableMouseInteraction | `boolean` | `true` | Mouse parallax (the aurora moves slightly with the pointer) |
-| mouseInfluence | `number` | `0.25` | Mouse parallax intensity |
-| className | `string` | — | Additional class name for the root container |
-| style | `CSSProperties` | — | Inline styles passed through to the root container |
+| brightness | `number` | `1` | Overall brightness multiplier |
+| noiseFrequency | `number` | `2.5` | Base noise frequency, controlling fold density |
+| noiseAmplitude | `number` | `1` | Base noise amplitude, controlling vertical variation |
+| bandHeight | `number` | `0.5` | Vertical band position from 0 to 1; lower values move the band downward |
+| bandSpread | `number` | `1` | Width and intensity of the glow surrounding each band |
+| octaveDecay | `number` | `0.1` | Contribution retained by higher-frequency noise octaves |
+| layerOffset | `number` | `0` | Time-phase offset between the two layers; nonzero values separate their peaks |
+| colorSpeed | `number` | `1` | Horizontal travel speed of the cosine color cycle |
+| enableMouseInteraction | `boolean` | `true` | Enable subtle pointer-driven parallax |
+| mouseInfluence | `number` | `0.25` | Distance the aurora shifts in response to the pointer |
+| className | `string` | — | Class name forwarded to the root |
+| style | `CSSProperties` | — | Inline styles forwarded to the root |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | Content, such as a title, rendered over the static non-WebGL fallback |
+| fallback | `ReactNode` | Foreground content rendered above the static gradient when reduced motion is enabled |
 
 ## Examples
 ```tsx
-//Default chart token double layer aurora
+// Two-layer aurora using the default chart tokens
 <div className="relative h-56 overflow-hidden rounded-xl">
   <SoftAurora className="absolute inset-0" />
 </div>
 
-// Slow, non-interactive backdrop with custom fallback content
+// Slow non-interactive bands with fallback foreground content
 <SoftAurora
   speed={0.3}
   bandHeight={0.35}
@@ -67,10 +67,10 @@ import { SoftAurora } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- WebGL requires client rendering; the component already declares `"use client"` and can be placed beneath a server-rendered page boundary.
-- If it does not have `inset-0`, it must be positioned with className (`absolute inset-0` in the example); the parent container must have positioning + size + `overflow-hidden`.
-- `color1` and `color2` are parsed through an off-screen canvas. Theme variables such as `var(--color-chart-1)` work; bare values such as `var(--primary)` do not. See [[hulian-token-color-var-needs-color-prefix]].
-- Reduced-motion and non-WebGL environments use static gradients plus `fallback`; do not make motion essential to understanding the content.
+- SoftAurora does not add `inset-0` itself. Position it explicitly, for example with `absolute inset-0`, inside a `relative` parent that has measurable dimensions and `overflow-hidden`.
+- WebGL starts on the client. Reduced motion keeps the root, replaces the canvas with token gradients, and renders `fallback` above that static layer. SSR and WebGL setup failure leave the live root empty.
+- `color1` and `color2` are parsed through an off-screen canvas. Use full theme variables such as `var(--color-chart-1)`; bare values such as `var(--primary)` do not resolve. See [[hulian-token-color-var-needs-color-prefix]].
+- Pointer parallax is decorative and is disabled by fallback paths. Keep essential information in normal foreground content rather than encoding it in motion.
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)

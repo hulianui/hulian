@@ -10,11 +10,11 @@ status: enriched
 
 # StickerPeel
 
-> Draggable sticker · Hover/press peel lift + drop shadow + pointer-following highlight (zero dependencies · Pointer Events drag · reduced-motion support) · decoration/overlay-fx · #animated
+> Draggable sticker · A two-layer image peels on hover or press, casts a configurable shadow, follows pointer light, and can be dragged within its parent · Native Pointer Events, no added dependency, and reduced-motion support · decoration/overlay-fx · #animated
 
 ## When to Use
 
-Use it to present an image as a peelable, draggable sticker inside its parent. It suits logos, badges, and campaign artwork on marketing pages or portfolios. Choose [GlareHover](../glare-hover/glare-hover.md) or [ShineBorder](../shine-border/shine-border.md) for highlights on arbitrary containers, and [Lens](../lens/lens.md) for local image magnification.
+Use StickerPeel for logos, badges, or campaign artwork that should feel like a physical sticker users can lift and reposition. It is image-specific and intentionally playful. Choose [GlareHover](../glare-hover/glare-hover.md) or [ShineBorder](../shine-border/shine-border.md) to animate an arbitrary container, or [Lens](../lens/lens.md) to magnify part of an image.
 
 ## Import
 ```ts
@@ -25,26 +25,26 @@ import { StickerPeel } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| imageSrc * | `string` | — | Sticker image address, rendered in two layers: front sticker + flipped back hem |
-| alt | `string` | `""` | Image accessibility description (transparent img alt), decorative stickers can be left blank |
-| width | `number` | `200` | Sticker width (px), height is adaptive according to the original proportion of the picture |
-| rotate | `number` | `30` | Sticker rotation in degrees |
-| peelBackHoverPct | `number` | `30` | Percentage of curling up when hovering (ratio of top uncovered height) |
-| peelBackActivePct | `number` | `40` | The curling percentage when active (press and hold), usually larger than hover |
-| peelDirection | `number` | `0` | Curling direction angle (deg), the entire sticker rotates together with the curling |
-| shadowIntensity | `number` | `0.6` | Floor projection intensity 0~1 (drop-shadow transparency) |
-| lightingIntensity | `number` | `0.4` | Mouse follows highlight intensity 0~1, 0 turns off highlight |
-| initialPosition | `"center" \| { x: number; y: number }` | `"center"` | The initial placement point of the sticker: centered or pixel offset relative to the upper left corner of the parent container |
-| draggable | `boolean` | `true` | Whether to allow dragging within the parent container (automatic clamping back when out of bounds) |
+| imageSrc * | `string` | — | Image URL used for both the sticker face and its vertically flipped peel-back layer |
+| alt | `string` | `""` | Native image alternative text; leave empty only when the sticker is decorative |
+| width | `number` | `200` | Sticker width in pixels; the image preserves its intrinsic aspect ratio |
+| rotate | `number` | `30` | Rotation applied to the printed image, in degrees |
+| peelBackHoverPct | `number` | `30` | Percentage of the sticker height revealed from the top while hovered |
+| peelBackActivePct | `number` | `40` | Percentage revealed while pressed; normally larger than the hover value |
+| peelDirection | `number` | `0` | Rotation of the complete sticker and peel direction, in degrees |
+| shadowIntensity | `number` | `0.6` | Drop-shadow opacity from 0 to 1 |
+| lightingIntensity | `number` | `0.4` | Pointer-following highlight opacity from 0 to 1; 0 removes the highlight layer |
+| initialPosition | `"center" \| { x: number; y: number }` | `"center"` | Initial position preset or pixel translation from the parent's top-left origin |
+| draggable | `boolean` | `true` | Enable Pointer Events dragging; coordinates are clamped to the parent's measured bounds during drag and after resize or orientation changes |
 
-> Also inherits `HTMLAttributes<HTMLDivElement>` (except `children`), and can forward `className`/`style`/events, etc.
+> Also inherits `HTMLAttributes<HTMLDivElement>` except `children`, forwarding `className`, `style`, and native event handlers to the draggable root.
 
 ## Examples
 ```tsx
-// Default peel and drag behavior
+// Peel on hover or press, then drag within the parent
 <StickerPeel imageSrc="/sticker.svg" width={150} rotate={14} />
 
-// Large curling + strong highlights + locked and cannot be dragged
+// Deeper peel, stronger highlight, and fixed placement
 <StickerPeel
   imageSrc="/sticker.svg"
   width={170}
@@ -57,9 +57,9 @@ import { StickerPeel } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- Give the parent `position: relative` and `overflow: hidden` so drag bounds are measured correctly and the sticker stays inside the frame.
-- `draggable` is enabled by default and will intercept PointerEvents; if the sticker is placed in a clickable/scrollable area and gesture conflicts need to be evaluated, turn it off as needed.
-- Reduced-motion disables the peel and highlight animation while preserving the sticker image.
+- The root is absolutely positioned. Give its parent `position: relative`, explicit dimensions, and `overflow: hidden`; drag coordinates are clamped against that parent's current content box.
+- With `draggable=true`, the root captures pointer input and uses `touch-none`. Disable dragging when the sticker overlaps scrolling or clickable controls that must receive those gestures.
+- Reduced motion removes peel transitions and drag-induced tilt. Hover/press peel states and the pointer highlight still render, but update without motion; the sticker image always remains visible.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

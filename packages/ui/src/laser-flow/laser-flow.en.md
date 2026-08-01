@@ -10,11 +10,11 @@ status: enriched
 
 # LaserFlow
 
-> Laser beam · Top-down volumetric WebGL light combining polar beam geometry, FBM fog, traveling wisps, and pointer-driven tilt · OGL implementation without Three.js, theme-aware color, and a reduced-motion fallback · decoration/overlay-fx · #animated
+> Volumetric laser · A top-down beam combines polar light geometry, FBM fog, flowing edge highlights, pulsing intensity, and pointer-driven tilt · Theme-aware OGL/WebGL implementation with no Three.js dependency and a static fallback · decoration/overlay-fx · #animated
 
 ## When to Use
 
-Use it as a full-screen or section-level volumetric backdrop where a laser, fog, and fine wisps descend from above. Use [BorderBeam](../border-beam/border-beam.md) to trace one element's border or [GhostCursor](../ghost-cursor/ghost-cursor.md) for pointer-driven smoke. LaserFlow is rendering-intensive; keep it behind content and layer foreground elements with `relative z-10`.
+Use LaserFlow as a full-screen or section backdrop when one vertical beam should cut through fog and carry subtle flowing highlights. It is a high-cost atmospheric effect, so reserve it for a focal surface rather than repeating it in lists. Choose [BorderBeam](../border-beam/border-beam.md) for an element outline or [GhostCursor](../ghost-cursor/ghost-cursor.md) for smoke that follows the pointer.
 
 ## Import
 ```ts
@@ -25,29 +25,29 @@ import { LaserFlow } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| color | `string` | `var(--color-chart-1)` | Laser main color, light and dark theme; any CSS color string can be used (→ uColor) |
-| horizontalBeamOffset | `number` | `0.0` | Lateral beam offset (ratio of viewport width), plus right and minus left (→ uBeamXFrac) |
-| verticalBeamOffset | `number` | `0.0` | Longitudinal beam offset (proportion of viewport height) (→ uBeamYFrac) |
-| flowSpeed | `number` | `0.35` | Light-pulse speed multiplier (maps to `uFlowSpeed`) |
-| verticalSizing | `number` | `2.0` | Vertical beam-length multiplier (maps to `uVLenFactor`) |
-| horizontalSizing | `number` | `0.5` | Transverse flare length factor (→ uHLenFactor) |
-| fogIntensity | `number` | `0.45` | Volume fog intensity, 0 = no fog (→ uFogIntensity) |
-| fogScale | `number` | `0.3` | Fog-noise scale; higher values create finer structure (maps to `uFogScale`) |
-| fogFallSpeed | `number` | `0.6` | Fog falling speed (→ uFogFallSpeed) |
-| wispDensity | `number` | `1` | Microfluid optical density 0–2 (→ uWispDensity) |
-| wispSpeed | `number` | `15` | Microstreaming speed (→ uWSpeed) |
-| wispIntensity | `number` | `5` | Microfluid light intensity (→ uWIntensity) |
-| flowStrength | `number` | `0.25` | Optical flow light and dark pulse intensity 0–1 (→ uFlowStrength) |
-| decay | `number` | `1.1` | Beam attenuation phase width (→ uDecay) |
-| falloffStart | `number` | `1.2` | Beam luminescence start attenuation (→ uFalloffStart) |
-| mouseTiltStrength | `number` | `0.01` | Pointer-driven fog tilt intensity; set to 0 to disable interaction (→ `uTiltScale`) |
-| className | `string` | — | Root container (or reduced-motion fallback div) additional className |
+| color | `string` | `var(--color-chart-1)` | Main beam color; accepts any CSS color and defaults to a theme-aware chart token |
+| horizontalBeamOffset | `number` | `0.0` | Horizontal beam offset as a fraction of viewport width; positive moves right and negative moves left |
+| verticalBeamOffset | `number` | `0.0` | Vertical beam offset as a fraction of viewport height |
+| flowSpeed | `number` | `0.35` | Speed multiplier for light pulses traveling through the beam |
+| verticalSizing | `number` | `2.0` | Multiplier for the beam's vertical reach |
+| horizontalSizing | `number` | `0.5` | Multiplier for the horizontal flare length |
+| fogIntensity | `number` | `0.45` | Volumetric-fog strength; 0 removes the fog contribution |
+| fogScale | `number` | `0.3` | Fog-noise scale; higher values split the fog into finer structures |
+| fogFallSpeed | `number` | `0.6` | Downward drift speed of the fog field |
+| wispDensity | `number` | `1` | Density of the subtle flowing highlights along the beam, from 0 to 2 |
+| wispSpeed | `number` | `15` | Travel speed of those flowing highlights |
+| wispIntensity | `number` | `5` | Brightness of the flowing highlights |
+| flowStrength | `number` | `0.25` | Contrast of the traveling light pulse, from 0 to 1 |
+| decay | `number` | `1.1` | Width of the beam's attenuation phase |
+| falloffStart | `number` | `1.2` | Position at which beam luminance begins to fall off |
+| mouseTiltStrength | `number` | `0.01` | Amount of fog tilt driven by pointer input that reaches the canvas; 0 disables the response |
+| className | `string` | — | Class name forwarded to the live or fallback root |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | Static content for reduced motion or unavailable WebGL; defaults to a theme-token vertical beam gradient |
+| fallback | `ReactNode` | Content rendered over the static theme-token beam when reduced motion is enabled |
 
 ## Examples
 ```tsx
@@ -62,16 +62,17 @@ import { LaserFlow } from "@hulianui/ui"
 </div>
 ```
 
-Warm orange laser + high fog:
+Warm beam with denser fog:
 ```tsx
 <LaserFlow color="oklch(0.72 0.2 35)" fogIntensity={0.6} fogScale={0.35} />
 ```
 
 ## Usage Guidelines
 
-- WebGL (ogl) component, the cleanup call `loseContext` under double mounting of React StrictMode will poison the canvas reuse and cause a blank crash. Internally, a new canvas should be mounted each time, see [[webgl-canvas-loseContext-poisons-strictmode-remount]].
-- Content must be layered on top of LaserFlow with `relative z-10` (or higher), otherwise it will be covered by the volumetric light.
-- Reduced-motion and non-WebGL environments render the static gradient `fallback`; do not convey essential information through motion alone.
+- LaserFlow is an `absolute inset-0 z-0` decorative layer. Use a `relative overflow-hidden` parent with an explicit height and place foreground content at `relative z-10` or above.
+- Its WebGL lifecycle creates a fresh canvas for each mount, avoiding context reuse after cleanup during React StrictMode remounts. See [[webgl-canvas-loseContext-poisons-strictmode-remount]].
+- Reduced motion renders the theme-token gradient plus `fallback`. SSR and WebGL setup failure leave the decorative root empty rather than switching to that fallback, so provide any essential content outside LaserFlow.
+- The live root defaults to `pointer-events-none`. Add `pointer-events-auto` through `className` if pointer tilt is required, and make sure foreground layers do not take those pointer hits.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

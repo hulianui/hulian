@@ -10,11 +10,11 @@ status: enriched
 
 # LightPillar
 
-> Volumetric light pillar · Y-axis raymarching accumulates glow through layered wave noise and a two-color vertical gradient · OGL/WebGL, theme-aware tokens, and a reduced-motion fallback · decoration/backdrop · #animated #webgl
+> Volumetric light pillar · A raymarch accumulates layered wave noise into one vertical beam, blending separate top and bottom theme colors · Adjustable width, tilt, grain, and glow with a static OGL/WebGL fallback · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
-Use it as a single top-to-bottom volumetric focal light in a centered hero. Choose [Lightning](../lightning/lightning.md) for flashing arcs, [LightRays](../light-rays/light-rays.md) for radial beams, or [Lightfall](../lightfall/lightfall.md) for falling streaks.
+Use LightPillar when a centered hero needs one continuous volumetric beam rather than a field of independent rays. Its narrow control range supports anything from a soft column to a laser-like line. Choose [Lightning](../lightning/lightning.md) for branching arcs, [LightRays](../light-rays/light-rays.md) for rays from an origin, or [Lightfall](../lightfall/lightfall.md) for multiple falling streaks.
 
 ## Import
 ```ts
@@ -25,26 +25,26 @@ import { LightPillar } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| topColor | `string` | `var(--color-chart-2)` | Top color of light beam, any CSS color, default token light and dark adaptive |
-| bottomColor | `string` | `var(--color-chart-1)` | The color at the bottom of the light beam, mixed with the top color along the y-axis gradient |
+| topColor | `string` | `var(--color-chart-2)` | Beam color at the top; accepts any CSS color and defaults to a theme-aware chart token |
+| bottomColor | `string` | `var(--color-chart-1)` | Beam color at the bottom, blended with `topColor` along the Y axis |
 | intensity | `number` | `1` | Overall brightness multiplier |
-| rotationSpeed | `number` | `0.3` | Rotation speed factor, while driving time advancement, 0=almost stationary |
-| glowAmount | `number` | `0.005` | Glow intensity (raymarch cumulative gain), recommended 0.001–0.02 |
+| rotationSpeed | `number` | `0.3` | Rotation and internal-wave speed multiplier; 0 freezes both at their initial state |
+| glowAmount | `number` | `0.005` | Gain applied to accumulated raymarch energy before compression; 0.001–0.02 is recommended |
 | pillarWidth | `number` | `3` | Beam radius in world units; lower values create a thinner, laser-like column |
-| pillarHeight | `number` | `0.4` | Height factor; higher values make the vertical bands denser |
-| noiseIntensity | `number` | `0.5` | Particle noise intensity, 0=pure and no particles |
-| pillarRotation | `number` | `0` | The overall tilt angle of the light beam (degrees), example 30 = obliquely irradiated to one side |
-| className | `string` | — | Canvas container (or fallback div) |
+| pillarHeight | `number` | `0.4` | Vertical texture scale; higher values pack the internal bands more closely |
+| noiseIntensity | `number` | `0.5` | Screen-space grain strength; 0 renders a clean beam |
+| pillarRotation | `number` | `0` | Beam tilt in degrees, applied by rotating the sampling plane |
+| className | `string` | — | Class name forwarded to the canvas container or fallback root |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | reduced-motion / static alternative content without WebGL, default token gradient light beam |
+| fallback | `ReactNode` | Content rendered inside the static two-color token gradient when reduced motion is enabled |
 
 ## Examples
 ```tsx
-//Token two-color, container fixed height + overflow-hidden
+// Default two-color beam inside a fixed-height clipped container
 <div className="relative h-64 overflow-hidden rounded-xl">
   <LightPillar />
   <div className="relative z-10 flex h-full items-center justify-center">
@@ -53,16 +53,17 @@ import { LightPillar } from "@hulianui/ui"
 </div>
 ```
 ```tsx
-// Fine laser: narrow column · high brightness · no particles
+// Narrow, bright, grain-free beam
 <LightPillar pillarWidth={1.4} glowAmount={0.009} noiseIntensity={0} intensity={1.2} />
 ```
 
 ## Usage Guidelines
 
-- OGL/WebGL renders only on the client. SSR, unavailable WebGL, and reduced motion use the token-gradient fallback.
-- `glowAmount` operates at a small scale (`0.005` by default). Increase it in small steps such as `0.009`; large jumps quickly overexpose the beam.
-- `topColor`/`bottomColor` must use the `--color-` prefix token when passing CSS variables, see [[hulian-token-color-var-needs-color-prefix]].
-- Fullscreen background layers in a non-cascading context parent of an opaque background may be obscured by the parent background, see [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
+- LightPillar is a full-size decorative layer. Use a `relative overflow-hidden` parent with an explicit height and place foreground content above it with `relative z-10`.
+- OGL/WebGL starts on the client. Reduced motion renders the static two-color beam plus custom `fallback`; SSR and WebGL setup failure leave the decorative root empty.
+- `glowAmount` is intentionally small (`0.005` by default). Adjust it in small increments such as `0.009`; large increases quickly clip the beam to white.
+- CSS variables for `topColor` and `bottomColor` require full token names such as `var(--color-chart-1)`. See [[hulian-token-color-var-needs-color-prefix]].
+- If a full-size canvas is present but hidden, inspect parent backgrounds and stacking contexts; see [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)
