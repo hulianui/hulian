@@ -84,6 +84,11 @@ jobs:
       - name: Test
         run: pnpm test
 
+      # scripts/ 不是 workspace 包，`turbo run test` 扫不到它 —— 这些 node:test 套件
+      # （a11y/registry-smoke/llms-registry/conventions/viewport 的判据）此前写了却从未被执行。
+      - name: Test build scripts
+        run: pnpm test:scripts
+
       # 每个页面都在独立临时工程中经真实 shadcn CLI 递归安装并 typecheck，防止前一个页面
       # 已安装的区块掩盖后一个页面漏写 registryDependencies。
       - name: Smoke all registry pages
@@ -96,6 +101,11 @@ jobs:
 
       - name: Accessibility gate
         run: pnpm a11y
+
+      # 响应式门禁：按视口量正文的**几何**。#39 那类 bug（正文被生成、但祖先 display:none）
+      # 在 SSR HTML、sitemap、typecheck、构建甚至 axe 里全是绿的，只有按宽度量面积才拦得住。
+      - name: Responsive viewport gate
+        run: pnpm viewport
 
       # 把静态导出产物传给下游 deploy-zh job（避免二次构建）
       - name: Upload static export
