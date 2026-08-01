@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { useState } from "react";
 
 import { definePerformanceScenario } from "@hulianui/hulian-scan/browser";
 
@@ -11,9 +11,9 @@ function ExpensiveChildView({ config }: { config: { rows: number } }) {
   }
   return <output data-checksum={checksum}>{config.rows}</output>;
 }
-
-const ExpensiveChild = memo(ExpensiveChildView);
-ExpensiveChild.displayName = "ExpensiveChild";
+Object.defineProperty(ExpensiveChildView, "displayName", {
+  value: "ExpensiveChildView",
+});
 
 function LocalTicker() {
   const [tick, setTick] = useState(0);
@@ -28,7 +28,7 @@ export function KnownGood() {
   return (
     <div data-hulian-scan-fixture="known-good">
       <LocalTicker />
-      <ExpensiveChild config={stableConfig} />
+      <ExpensiveChildView config={stableConfig} />
     </div>
   );
 }
@@ -50,9 +50,7 @@ export const knownGoodScenario = definePerformanceScenario({
       id: "stable-parent-update",
       kind: "parent-update",
       run: async () => {
-        const button = document.querySelector<HTMLButtonElement>(
-          "[data-fixture-update]",
-        );
+        const button = document.querySelector<HTMLButtonElement>("[data-fixture-update]");
         if (!button) throw new Error("known-good update button missing");
         for (let index = 0; index < 5; index += 1) {
           button.click();

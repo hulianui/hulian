@@ -30,9 +30,7 @@ declare global {
   const __HULIAN_SCAN_STAGE__: ScanStage;
   var __HULIAN_SCAN_ADAPTER__: AdapterHandle | undefined;
   var __HULIAN_SCAN_ADAPTER_INSTALLED_BEFORE_REACT__: boolean | undefined;
-  var __HULIAN_SCAN_SUBSCRIBE__:
-    | ((sink: (event: ScanEvent) => void) => () => void)
-    | undefined;
+  var __HULIAN_SCAN_SUBSCRIBE__: ((sink: (event: ScanEvent) => void) => () => void) | undefined;
   interface Window {
     __HULIAN_SCAN_LAB__: HulianScanLabApi;
   }
@@ -52,10 +50,7 @@ function assertRunOptions(options: LabRunOptions): void {
   }
 }
 
-async function withTimeout<T>(
-  operation: Promise<T>,
-  timeoutMs: number,
-): Promise<T> {
+async function withTimeout<T>(operation: Promise<T>, timeoutMs: number): Promise<T> {
   let timeout: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
@@ -80,10 +75,7 @@ function metrics(events: ScanEvent[]): Record<string, number> {
     fanout.set(fiber.commitId, (fanout.get(fiber.commitId) ?? 0) + 1);
   }
   return {
-    commitDurationMs: commits.reduce(
-      (total, commit) => total + commit.durationMs,
-      0,
-    ),
+    commitDurationMs: commits.reduce((total, commit) => total + commit.durationMs, 0),
     cascadeFanout: Math.max(0, ...fanout.values()),
     longTaskMs: 0,
     droppedFrameRatio: 0,
@@ -170,11 +162,7 @@ export function createWindowApi(harness: HarnessController): HulianScanLabApi {
         const samples: Array<Record<string, number>> = [];
         const iterations = options.warmups + options.samples;
         for (let index = 0; index < iterations; index += 1) {
-          const iteration = await runIteration(
-            scenario,
-            harness,
-            options.timeoutMs ?? 10_000,
-          );
+          const iteration = await runIteration(scenario, harness, options.timeoutMs ?? 10_000);
           if (index >= options.warmups) {
             events.push(...iteration.events);
             errors.push(...iteration.errors);
@@ -194,6 +182,9 @@ export function createWindowApi(harness: HarnessController): HulianScanLabApi {
               globalThis.__HULIAN_SCAN_ADAPTER_INSTALLED_BEFORE_REACT__ === true,
             warmups: options.warmups,
             samples: options.samples,
+            component: scenario.component,
+            category: scenario.category,
+            entry: scenario.entry,
           },
         };
         results.set(id, run);

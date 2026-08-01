@@ -7,3 +7,6 @@ export * from "./diagnosis/compare";
 export * from "./diagnosis/diagnose";
 export * from "./report/report";
 export * from "./report/checkpoint";
+export * from "./runner/run-scan";
+export * from "./runner/default-dependencies";
+export * from "./runner/execute";

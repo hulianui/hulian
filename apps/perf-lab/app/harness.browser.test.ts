@@ -12,10 +12,7 @@ interface BrowserRun {
 
 interface BrowserLabApi {
   ready: Promise<void>;
-  run(
-    id: string,
-    options: { samples: number; warmups: number },
-  ): Promise<BrowserRun>;
+  run(id: string, options: { samples: number; warmups: number }): Promise<BrowserRun>;
 }
 
 let browser: Browser;
@@ -50,20 +47,20 @@ describe("profiling performance lab", () => {
     });
     await page.goto(`${baseUrl}/?scenario=fixture/known-bad&stage=measurement`);
     try {
-      await page.waitForFunction(
-        () => "__HULIAN_SCAN_LAB__" in window,
-        undefined,
-        { timeout: 10_000 },
-      );
+      await page.waitForFunction(() => "__HULIAN_SCAN_LAB__" in window, undefined, {
+        timeout: 10_000,
+      });
     } catch {
       throw new Error(
         `performance lab did not become ready: ${[...pageErrors, ...consoleErrors].join(" | ")}`,
       );
     }
     const result = await page.evaluate(async () => {
-      const api = (window as typeof window & {
-        __HULIAN_SCAN_LAB__: BrowserLabApi;
-      }).__HULIAN_SCAN_LAB__;
+      const api = (
+        window as typeof window & {
+          __HULIAN_SCAN_LAB__: BrowserLabApi;
+        }
+      ).__HULIAN_SCAN_LAB__;
       await api.ready;
       const bad = await api.run("fixture/known-bad", {
         samples: 5,
@@ -80,9 +77,9 @@ describe("profiling performance lab", () => {
     expect(result.bad.errors).toEqual([]);
     expect(result.good.errors).toEqual([]);
     expect(result.bad.metadata.adapterInstalledBeforeReact).toBe(true);
-    expect(
-      result.bad.events.filter((event) => event.type === "commit").length,
-    ).toBeGreaterThan(0);
+    expect(result.bad.metadata.component).toBe("ExpensiveChildView");
+    expect(result.bad.metadata.category).toBe("standard");
+    expect(result.bad.events.filter((event) => event.type === "commit").length).toBeGreaterThan(0);
     const badRenders = result.bad.events.filter(
       (event) =>
         event.type === "fiber-render" &&
@@ -106,9 +103,11 @@ describe("profiling performance lab", () => {
     await page.waitForFunction(() => "__HULIAN_SCAN_LAB__" in window);
 
     const result = await page.evaluate(async () => {
-      const api = (window as typeof window & {
-        __HULIAN_SCAN_LAB__: BrowserLabApi;
-      }).__HULIAN_SCAN_LAB__;
+      const api = (
+        window as typeof window & {
+          __HULIAN_SCAN_LAB__: BrowserLabApi;
+        }
+      ).__HULIAN_SCAN_LAB__;
       const first = api.run("fixture/known-bad", { samples: 1, warmups: 0 });
       let concurrentError = "";
       try {

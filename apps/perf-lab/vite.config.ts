@@ -16,19 +16,17 @@ export default defineConfig(({ mode }) => ({
     alias: [
       {
         find: /^@hulianui\/ui-internal\/(.+)$/,
-        replacement: fileURLToPath(
-          new URL("../../packages/ui/src/$1", import.meta.url),
-        ),
+        replacement: fileURLToPath(new URL("../../packages/ui/src/$1", import.meta.url)),
       },
-      ...(mode === "measurement"
-        ? [{ find: /^react-dom\/client$/, replacement: reactDomProfiling }]
-        : []),
+      { find: /^react-dom\/client$/, replacement: reactDomProfiling },
     ],
   },
   server: { port: 5513, strictPort: true },
+  build: {
+    minify: false,
+    sourcemap: true,
+  },
   define: {
-    __HULIAN_SCAN_STAGE__: JSON.stringify(
-      mode === "measurement" ? "measurement" : "diagnosis",
-    ),
+    __HULIAN_SCAN_STAGE__: JSON.stringify(mode === "measurement" ? "measurement" : "diagnosis"),
   },
 }));

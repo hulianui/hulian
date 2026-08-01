@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { useState } from "react";
 
 import { definePerformanceScenario } from "@hulianui/hulian-scan/browser";
 
@@ -9,9 +9,11 @@ function ExpensiveChildView({ config }: { config: { rows: number } }) {
   }
   return <output data-checksum={checksum}>{config.rows}</output>;
 }
+Object.defineProperty(ExpensiveChildView, "displayName", {
+  value: "ExpensiveChildView",
+});
 
-const ExpensiveChild = memo(ExpensiveChildView);
-ExpensiveChild.displayName = "ExpensiveChild";
+const stableConfig = { rows: 200 } as const;
 
 export function KnownBad() {
   const [tick, setTick] = useState(0);
@@ -20,7 +22,7 @@ export function KnownBad() {
       <button data-fixture-update onClick={() => setTick((value) => value + 1)}>
         {tick}
       </button>
-      <ExpensiveChild config={{ rows: 200 }} />
+      <ExpensiveChildView config={stableConfig} />
     </div>
   );
 }
@@ -42,9 +44,7 @@ export const knownBadScenario = definePerformanceScenario({
       id: "stable-parent-update",
       kind: "parent-update",
       run: async () => {
-        const button = document.querySelector<HTMLButtonElement>(
-          "[data-fixture-update]",
-        );
+        const button = document.querySelector<HTMLButtonElement>("[data-fixture-update]");
         if (!button) throw new Error("known-bad update button missing");
         for (let index = 0; index < 5; index += 1) {
           button.click();
