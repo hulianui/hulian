@@ -37,12 +37,32 @@ test("局部绑定遮蔽同名导入时不误报", () => {
   assert.deepEqual(call.diagnostics, []);
 });
 
-test("拒绝所有深路径导入", () => {
-  const component = checkSource('import { Button } from "@hulianui/ui/button";');
-  assert.deepEqual(ruleIds(component), ["no-private-deep-import"]);
+// 边界是 package.json 的 exports 能不能解析出来，不是「有没有斜杠」。
+// 曾经这条规则禁掉一切子路径，连 consuming.md §3 推荐的 `@hulianui/ui/button` 和库自己的
+// vitest/vite 集成入口都判 error —— 门禁与文档、exports 三方打架。见 hulianui/hulian#36。
+test("放行 exports 里的公开子路径", () => {
+  for (const source of [
+    'import { Button } from "@hulianui/ui/button";',
+    'import { withHulian } from "@hulianui/ui/vitest-preset";',
+    'import { hulian } from "@hulianui/ui/vite";',
+    'import { ThemeProvider } from "@hulianui/ui/theme";',
+    'import { cn } from "@hulianui/ui/lib";',
+  ]) {
+    assert.deepEqual(checkSource(source).diagnostics, [], source);
+  }
+});
 
+test("拒绝解析不出来的子路径", () => {
+  // 0.15.0 随 MUI 一起移除的入口
   const removedDateSubpath = checkSource('import { DatePicker } from "@hulianui/ui/date-pickers";');
   assert.deepEqual(ruleIds(removedDateSubpath), ["no-private-deep-import"]);
+
+  // 库内部实现路径：既不在显式 exports 里，`./*` 也映射不到（无 index.ts）
+  const internal = checkSource('import { Loader2 } from "@hulianui/ui/_icons";');
+  assert.deepEqual(ruleIds(internal), ["no-private-deep-import"]);
+
+  const srcPath = checkSource('import { Button } from "@hulianui/ui/src/button/button";');
+  assert.deepEqual(ruleIds(srcPath), ["no-private-deep-import"]);
 });
 
 test("日期族从根入口导入", () => {

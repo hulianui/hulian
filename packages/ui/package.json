@@ -38,7 +38,10 @@
   "exports": {
     ".": "./src/index.ts",
     "./showcase": "./src/showcase.ts",
-    "./vitest-preset": "./vitest-preset.js",
+    "./vitest-preset": {
+      "types": "./vitest-preset.d.ts",
+      "default": "./vitest-preset.js"
+    },
     "./vite": {
       "types": "./vite.d.ts",
       "default": "./vite.js"
@@ -48,6 +51,7 @@
   "files": [
     "src",
     "vitest-preset.js",
+    "vitest-preset.d.ts",
     "vite.js",
     "vite.d.ts",
     "!src/**/*.test.ts",

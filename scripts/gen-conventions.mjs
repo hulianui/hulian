@@ -83,6 +83,26 @@ const GLOBAL = [
   },
 ];
 
+/**
+ * 公开子路径全集 —— 真源是 `packages/ui/package.json` 的 exports 加真实目录，不是人工清单。
+ *
+ * `./*` 映射到 `./src/<slug>/index.ts`，所以「有 index.ts 的目录」就是它能解析出的全部条目；
+ * `./showcase` / `./vite` / `./vitest-preset` 这类显式条目单独列在 exports 里。二者之外的
+ * 任何子路径（`_icons`、`src/...`、以及 0.15.0 移除的 `date-pickers`）才是真正导不进去的。
+ */
+function publicSubpaths() {
+  const pkg = JSON.parse(readFileSync(join(ROOT, "packages", "ui", "package.json"), "utf8"));
+  const explicit = Object.keys(pkg.exports)
+    .filter((k) => k.startsWith("./") && k !== "./*")
+    .map((k) => k.slice(2));
+  const wildcard = readdirSync(UI_SRC).filter((d) =>
+    existsSync(join(UI_SRC, d, "index.ts")),
+  );
+  return [...new Set([...explicit, ...wildcard])].sort();
+}
+
+const PUBLIC_SUBPATHS = publicSubpaths();
+
 // 这里只放能用 AST 低误报判断的规则。其余经验即使很重要，也只能进入 advisories，
 // 不能把自然语言包装成一个看似可执行、实际无法可靠执行的“门禁”。
 const EXECUTABLE_RULES = [
@@ -98,14 +118,21 @@ const EXECUTABLE_RULES = [
     instead: "为组件补 prop 或 variant，并使用语义 token。",
   },
   {
+    // 只禁**真正解析不出来**的子路径。曾经这条是 `^@hulianui/ui/`，把所有子路径一律判 error，
+    // 于是 `@hulianui/ui/button`（consuming.md §3 明确推荐，用来避免源码分发下根 barrel 撑大
+    // dev 模块图）和库自己的 `vitest-preset` / `vite` 官方集成入口都成了违规 —— 门禁跟文档、
+    // 跟 package.json exports 三方打架。见 hulianui/hulian#36。
+    //
+    // 现在用负向前瞻放行 exports 能解析的全部条目，剩下的（`_icons`、`src/...`、已移除的
+    // `date-pickers`）才报错，且列表随目录自动更新，不需要人工维护。
     id: "no-private-deep-import",
     severity: "error",
     matcher: {
       kind: "forbidden-import",
-      sourcePattern: "^@hulianui/ui/",
+      sourcePattern: `^@hulianui/ui/(?!(?:${PUBLIC_SUBPATHS.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})$)`,
     },
-    message: "不要导入 @hulianui/ui 的私有深路径。",
-    instead: "统一从 @hulianui/ui 根入口导入。",
+    message: "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
+    instead: "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。",
   },
   {
     id: "toast-object-signature",

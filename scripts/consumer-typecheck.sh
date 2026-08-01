@@ -140,7 +140,8 @@ cat > "$APP_A/package.json" <<JSON
   "devDependencies": {
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "typescript": "$CONSUMER_TS_VERSION"
+    "typescript": "$CONSUMER_TS_VERSION",
+    "vitest": "^3.2.7"
   }
 }
 JSON
@@ -178,5 +179,29 @@ export function App() {
   );
 }
 TSX
+
+# 工具入口（./vite、./vitest-preset）单独引一次：它们不在组件树上，上面那份 app.tsx 无论
+# 怎么写都覆盖不到，于是「exports 条目缺 types 字段」这类问题在库内 tsc 和这道门禁下都不报错，
+# 只在消费方 tsc 时炸成 TS7016 —— 0.15.0 的 vitest-preset 就是这么逃出去的（hulianui/hulian#35）。
+# 消费方的 vitest.config.ts 通常也在 tsconfig 的 include 里，所以这里等价复现那条链路。
+cat > "$APP_A/src/tooling.ts" <<'TS'
+import { hulian } from "@hulianui/ui/vite";
+import {
+  withHulian,
+  hulianDedupe,
+  hulianConditions,
+  hulianMainFields,
+  hulianInlineDeps,
+} from "@hulianui/ui/vitest-preset";
+
+export const vitePlugin = hulian({ prebundle: false });
+export const vitestConfig = withHulian({ test: { environment: "jsdom" } });
+export const presetLists = [
+  hulianDedupe,
+  hulianConditions,
+  hulianMainFields,
+  hulianInlineDeps,
+] as const;
+TS
 
 install_and_typecheck "$APP_A" "消费方"
