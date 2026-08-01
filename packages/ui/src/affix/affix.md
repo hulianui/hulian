@@ -62,4 +62,4 @@ const ref = useRef<HTMLDivElement>(null);
 - 文档/预览这类 window 不滚动的场景，务必用 `target` 指向真实滚动框，否则永远不吸附。
 
 ## 相关
-[Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [BackTop](../back-top/back-top.md) · [Stepper](../_mui/stepper.md)
+[Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [BackTop](../back-top/back-top.md) · [Stepper](../stepper/stepper.md)

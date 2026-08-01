@@ -22,30 +22,21 @@ test("拒绝 toast 成员快捷调用", () => {
   assert.deepEqual(ruleIds(result), ["toast-object-signature"]);
 });
 
-test("拒绝私有深路径，但允许公开日期子入口", () => {
-  const bad = checkSource('import { Button } from "@hulianui/ui/button";');
-  assert.deepEqual(ruleIds(bad), ["no-private-deep-import"]);
+test("拒绝所有深路径导入", () => {
+  const component = checkSource('import { Button } from "@hulianui/ui/button";');
+  assert.deepEqual(ruleIds(component), ["no-private-deep-import"]);
 
-  const good = checkSource(
-    'import { MuiBridgeProvider } from "@hulianui/ui/date-pickers";',
+  const removedDateSubpath = checkSource(
+    'import { DatePicker } from "@hulianui/ui/date-pickers";',
   );
-  assert.deepEqual(good.diagnostics, []);
+  assert.deepEqual(ruleIds(removedDateSubpath), ["no-private-deep-import"]);
 });
 
-test("日期族必须走子入口，并提示 Provider companion", () => {
-  const root = checkSource('import { DatePicker } from "@hulianui/ui";');
-  assert.deepEqual(ruleIds(root), ["date-components-from-subpath"]);
-
-  const missingProvider = checkSource(
-    'import { DatePicker } from "@hulianui/ui/date-pickers"; export const X = () => <DatePicker />;',
+test("日期族从根入口导入", () => {
+  const result = checkSource(
+    'import { Calendar, DatePicker, DateTimePicker, TimeField, TimePicker } from "@hulianui/ui";',
   );
-  assert.deepEqual(ruleIds(missingProvider), ["date-picker-provider-import"]);
-  assert.equal(missingProvider.diagnostics[0].severity, "warning");
-
-  const complete = checkSource(
-    'import { DatePicker, MuiBridgeProvider as Bridge } from "@hulianui/ui/date-pickers"; export const X = () => <Bridge><DatePicker /></Bridge>;',
-  );
-  assert.deepEqual(complete.diagnostics, []);
+  assert.deepEqual(result.diagnostics, []);
 });
 
 test("校验 SVG 与颜色 style 的 CSS 变量前缀", () => {

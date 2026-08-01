@@ -86,7 +86,7 @@ const TOOLS = [
     name: "list_components",
     description:
       "列出瑚琏 @hulianui/ui 里可用的积木。写任何 UI 之前先调这个，不要凭印象猜组件名或 props。" +
-      "kind 可选 component(368 个组件) / block(57 个区块) / page(20 个整页) / lib，" +
+      "kind 可选 component / block（可直接落盘的区块） / page（整页模板） / lib，" +
       "不传则只列组件。query 按名称与描述模糊筛选，category 按分类筛选。",
     inputSchema: {
       type: "object",
@@ -163,10 +163,9 @@ async function listComponents({ kind = "component", query, category, limit = 60 
   const head =
     `瑚琏 ${kind} 共 ${total} 个` +
     (total > shown.length ? `，下面是前 ${shown.length} 个（用 query/category 收窄）` : "") +
-    // 逐条后面都带真实 import 行（见上面的 i.meta.import），所以这里只给默认值 + 例外提醒：
-    // 日期族不在根 barrel 里（MUI/emotion 是 optional peer），照总纲抄会导不进来。
-    `。默认从根 barrel 导入：import { X } from "${PKG}"；以每条后面的 import 为准 ——` +
-    ` 日期族（Calendar / DatePicker / DateTimePicker / TimeField）走 "${PKG}/date-pickers" 子路径，且需自行安装 MUI 与 emotion。`;
+    // 逐条后面都带真实 import 行（见上面的 i.meta.import）；库里目前没有子路径入口，
+    // 但这句仍以「按每条的 import 为准」收尾 —— 将来再挂子路径时不必回来改文案。
+    `。从根 barrel 导入：import { X } from "${PKG}"，以每条后面的 import 为准。`;
   return text([head, "", ...lines].join("\n"));
 }
 

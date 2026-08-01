@@ -44,9 +44,7 @@ UI_TGZ="$(ls "$PKG_DIR"/hulianui-ui-*.tgz)"
 #   - 不装 tailwindcss（构建期工具，不进 JS bundle）
 #   - 多一个 esbuild —— 它就是本门禁的打包器
 # peer 必须装齐：少一个，esbuild 会把它当外部模块跳过，体积凭空少一大块，门禁失真。
-# MUI / emotion 四件是 **optional** peer（只有用日期族才需要），不会随 @hulianui/ui 自动装下来，
-# 但 size-limits 里有 mui-bridge 这个采样点，所以这里显式装上，模拟「用日期族的消费方」。
-# 注意这不代表普通消费方要付这份体积 —— 不用日期族就一个字节都不会拉进来。
+# 这里列的就是全部 peer —— 0.15.0 起库里没有 optional peer 了。
 cat > "$APP_DIR/package.json" <<JSON
 {
   "name": "hulian-bundle-size",
@@ -59,11 +57,7 @@ cat > "$APP_DIR/package.json" <<JSON
     "@base-ui/react": "^1.5.0",
     "motion": "^12.40.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@mui/material": "^9.2.0",
-    "@mui/x-date-pickers": "^9.10.1",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
@@ -89,18 +83,19 @@ for dep in recharts @tanstack+react-table @vidstack+react @tiptap+react; do
   fi
 done
 
-# 断言二（方向相反）：MUI / emotion **不得**随 @hulianui/ui 自动装下来。
-# 它们是 optional peer，只有上面消费方 package.json 里显式列了才会出现。
-# 这条防的是「哪天有人手滑把 @mui/material 挪回 dependencies」—— 那会让每个只想用
-# 一个 Button 的项目重新背上整个 MUI + emotion（runtime CSS-in-JS，且不兼容 RSC）。
+# 断言二（方向相反）：MUI / emotion **一个都不许回来**，无论挂在哪一类依赖上。
+# 0.15.0 把日期族自研成零依赖后，这套 runtime CSS-in-JS（且不兼容 RSC）已彻底出库。
+# 这条防的是哪天有人图省事又桥一个 MUI 件进来 —— 那会让每个只想用一个 Button 的项目
+# 重新背上整个 MUI + emotion。
 if node -e "
   const d = require('$REPO_ROOT/packages/ui/package.json');
-  const bad = Object.keys(d.dependencies).filter(k => /^@mui\//.test(k) || /^@emotion\//.test(k));
+  const all = { ...d.dependencies, ...d.devDependencies, ...d.peerDependencies };
+  const bad = Object.keys(all).filter(k => /^@mui\//.test(k) || /^@emotion\//.test(k));
   if (bad.length) { console.error(bad.join(', ')); process.exit(1); }
 " 2>/tmp/hulian-mui-dep-check; then
   :
 else
-  echo "✗ $(cat /tmp/hulian-mui-dep-check) 回到了 dependencies —— 应保持 optional peerDependencies" >&2
+  echo "✗ $(cat /tmp/hulian-mui-dep-check) 又回到了 @hulianui/ui 的依赖里 —— 日期族已自研，不该再引入 MUI/emotion" >&2
   exit 1
 fi
 

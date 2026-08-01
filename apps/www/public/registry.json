@@ -2386,22 +2386,17 @@
       "name": "calendar",
       "type": "registry:ui",
       "title": "Calendar",
-      "description": "日历 · MUI X 桥(DateCalendar) + 对外 ISO 字符串受控 + 瑚琏 token",
+      "description": "日历面板 · 自研零依赖(日/月/年三层下钻·常驻不带浮层) + min-max/disabledDate/今天快捷 · 定宽字符串受控",
       "categories": [
         "forms"
       ],
-      "dependencies": [
-        "@emotion/react",
-        "@emotion/styled",
-        "@mui/material",
-        "@mui/x-date-pickers",
-        "dayjs"
-      ],
+      "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
-        "import": "import { Calendar } from \"@hulianui/ui/date-pickers\"",
+        "import": "import { Calendar } from \"@hulianui/ui\"",
         "exports": [
           "Calendar"
         ],
@@ -2409,12 +2404,17 @@
         "tags": [],
         "animated": false,
         "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/calendar.md",
-        "docLocal": "packages/ui/src/_mui/calendar.md",
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/calendar/calendar.md",
+        "docLocal": "packages/ui/src/calendar/calendar.md",
         "status": "enriched",
         "preferred": "npm"
       },
       "files": [
+        {
+          "path": "components/hulianui/calendar/calendar-core.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/calendar/calendar-core.ts"
+        },
         {
           "path": "components/hulianui/calendar/calendar.tsx",
           "type": "registry:ui",
@@ -2426,54 +2426,9 @@
           "target": "components/hulianui/calendar/calendar.types.ts"
         },
         {
-          "path": "components/hulianui/calendar/date-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/date-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/calendar/date-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/date-picker.types.ts"
-        },
-        {
-          "path": "components/hulianui/calendar/date-time-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/date-time-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/calendar/date-time-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/date-time-picker.types.ts"
-        },
-        {
           "path": "components/hulianui/calendar/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/calendar/index.ts"
-        },
-        {
-          "path": "components/hulianui/calendar/provider.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/provider.tsx"
-        },
-        {
-          "path": "components/hulianui/calendar/showcase.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/showcase.ts"
-        },
-        {
-          "path": "components/hulianui/calendar/theme.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/theme.ts"
-        },
-        {
-          "path": "components/hulianui/calendar/time-field.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/time-field.tsx"
-        },
-        {
-          "path": "components/hulianui/calendar/time-field.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/calendar/time-field.types.ts"
         }
       ]
     },
@@ -2936,10 +2891,10 @@
       ]
     },
     {
-      "name": "date-field",
+      "name": "date-picker",
       "type": "registry:ui",
-      "title": "DateField",
-      "description": "单日期选择 · 自研零依赖(日/月/年三粒度·面板逐层下钻) + Popover 引擎 + min-max/disabledDate · 不经 MUI 桥",
+      "title": "DatePicker",
+      "description": "单日期选择 · 自研零依赖(触发器 + Popover 罩 Calendar 面板·日/月/年三粒度) + min-max/disabledDate/清除",
       "categories": [
         "forms"
       ],
@@ -2948,61 +2903,12 @@
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/calendar.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
       "meta": {
-        "import": "import { DateField } from \"@hulianui/ui\"",
-        "exports": [
-          "DateField"
-        ],
-        "group": "datetime",
-        "tags": [],
-        "animated": false,
-        "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-field/date-field.md",
-        "docLocal": "packages/ui/src/date-field/date-field.md",
-        "status": "enriched",
-        "preferred": "npm"
-      },
-      "files": [
-        {
-          "path": "components/hulianui/date-field/date-field.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-field/date-field.tsx"
-        },
-        {
-          "path": "components/hulianui/date-field/date-field.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-field/date-field.types.ts"
-        },
-        {
-          "path": "components/hulianui/date-field/index.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-field/index.ts"
-        }
-      ]
-    },
-    {
-      "name": "date-picker",
-      "type": "registry:ui",
-      "title": "DatePicker",
-      "description": "日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max",
-      "categories": [
-        "forms"
-      ],
-      "dependencies": [
-        "@emotion/react",
-        "@emotion/styled",
-        "@mui/material",
-        "@mui/x-date-pickers",
-        "dayjs"
-      ],
-      "registryDependencies": [
-        "https://hulianui.haloritual.com/r/lib.json"
-      ],
-      "meta": {
-        "import": "import { DatePicker } from \"@hulianui/ui/date-pickers\"",
+        "import": "import { DatePicker } from \"@hulianui/ui\"",
         "exports": [
           "DatePicker"
         ],
@@ -3010,22 +2916,12 @@
         "tags": [],
         "animated": false,
         "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/date-picker.md",
-        "docLocal": "packages/ui/src/_mui/date-picker.md",
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-picker/date-picker.md",
+        "docLocal": "packages/ui/src/date-picker/date-picker.md",
         "status": "enriched",
         "preferred": "npm"
       },
       "files": [
-        {
-          "path": "components/hulianui/date-picker/calendar.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/calendar.tsx"
-        },
-        {
-          "path": "components/hulianui/date-picker/calendar.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/calendar.types.ts"
-        },
         {
           "path": "components/hulianui/date-picker/date-picker.tsx",
           "type": "registry:ui",
@@ -3037,44 +2933,9 @@
           "target": "components/hulianui/date-picker/date-picker.types.ts"
         },
         {
-          "path": "components/hulianui/date-picker/date-time-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/date-time-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/date-picker/date-time-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/date-time-picker.types.ts"
-        },
-        {
           "path": "components/hulianui/date-picker/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/date-picker/index.ts"
-        },
-        {
-          "path": "components/hulianui/date-picker/provider.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/provider.tsx"
-        },
-        {
-          "path": "components/hulianui/date-picker/showcase.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/showcase.ts"
-        },
-        {
-          "path": "components/hulianui/date-picker/theme.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/theme.ts"
-        },
-        {
-          "path": "components/hulianui/date-picker/time-field.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/time-field.tsx"
-        },
-        {
-          "path": "components/hulianui/date-picker/time-field.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-picker/time-field.types.ts"
         }
       ]
     },
@@ -3082,7 +2943,7 @@
       "name": "date-range-picker",
       "type": "registry:ui",
       "title": "DateRangePicker",
-      "description": "日期区间 · 自研零依赖双月范围日历(避开 MUI Pro 收费) + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控",
+      "description": "日期区间 · 自研零依赖双月范围日历 + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控",
       "categories": [
         "forms"
       ],
@@ -3130,22 +2991,22 @@
       "name": "date-time-picker",
       "type": "registry:ui",
       "title": "DateTimePicker",
-      "description": "日期时间选择 · MUI X 桥(年月日+时钟一体弹层) + ISO 受控 + 步进/秒",
+      "description": "日期时间选择 · 自研零依赖(左日历 + 右时/分/秒列一体弹层) + 步进/秒/此刻 · 边界只在压着 min-max 那天生效 · 定宽 YYYY-MM-DD HH:mm 受控",
       "categories": [
         "forms"
       ],
       "dependencies": [
-        "@emotion/react",
-        "@emotion/styled",
-        "@mui/material",
-        "@mui/x-date-pickers",
-        "dayjs"
+        "@base-ui/react"
       ],
       "registryDependencies": [
-        "https://hulianui.haloritual.com/r/lib.json"
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/calendar.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json",
+        "https://hulianui.haloritual.com/r/time-picker.json"
       ],
       "meta": {
-        "import": "import { DateTimePicker } from \"@hulianui/ui/date-pickers\"",
+        "import": "import { DateTimePicker } from \"@hulianui/ui\"",
         "exports": [
           "DateTimePicker"
         ],
@@ -3153,31 +3014,16 @@
         "tags": [],
         "animated": false,
         "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/date-time-picker.md",
-        "docLocal": "packages/ui/src/_mui/date-time-picker.md",
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-time-picker/date-time-picker.md",
+        "docLocal": "packages/ui/src/date-time-picker/date-time-picker.md",
         "status": "enriched",
         "preferred": "npm"
       },
       "files": [
         {
-          "path": "components/hulianui/date-time-picker/calendar.tsx",
+          "path": "components/hulianui/date-time-picker/date-time-picker-core.ts",
           "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/calendar.tsx"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/calendar.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/calendar.types.ts"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/date-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/date-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/date-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/date-picker.types.ts"
+          "target": "components/hulianui/date-time-picker/date-time-picker-core.ts"
         },
         {
           "path": "components/hulianui/date-time-picker/date-time-picker.tsx",
@@ -3193,31 +3039,6 @@
           "path": "components/hulianui/date-time-picker/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/date-time-picker/index.ts"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/provider.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/provider.tsx"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/showcase.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/showcase.ts"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/theme.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/theme.ts"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/time-field.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/time-field.tsx"
-        },
-        {
-          "path": "components/hulianui/date-time-picker/time-field.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/date-time-picker/time-field.types.ts"
         }
       ]
     },
@@ -4908,22 +4729,17 @@
       "name": "time-field",
       "type": "registry:ui",
       "title": "TimeField",
-      "description": "时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控",
+      "description": "时间分段输入 · 自研零依赖(时/分/秒各一段 spinbutton·↑↓ 调值/←→ 切段/数字键两位覆写) + min-max 钳制 · 定宽 HH:mm[:ss] 受控",
       "categories": [
         "forms"
       ],
-      "dependencies": [
-        "@emotion/react",
-        "@emotion/styled",
-        "@mui/material",
-        "@mui/x-date-pickers",
-        "dayjs"
-      ],
+      "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
-        "import": "import { TimeField } from \"@hulianui/ui/date-pickers\"",
+        "import": "import { TimeField } from \"@hulianui/ui\"",
         "exports": [
           "TimeField"
         ],
@@ -4931,61 +4747,21 @@
         "tags": [],
         "animated": false,
         "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/_mui/time-field.md",
-        "docLocal": "packages/ui/src/_mui/time-field.md",
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/time-field/time-field.md",
+        "docLocal": "packages/ui/src/time-field/time-field.md",
         "status": "enriched",
         "preferred": "npm"
       },
       "files": [
-        {
-          "path": "components/hulianui/time-field/calendar.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/calendar.tsx"
-        },
-        {
-          "path": "components/hulianui/time-field/calendar.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/calendar.types.ts"
-        },
-        {
-          "path": "components/hulianui/time-field/date-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/date-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/time-field/date-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/date-picker.types.ts"
-        },
-        {
-          "path": "components/hulianui/time-field/date-time-picker.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/date-time-picker.tsx"
-        },
-        {
-          "path": "components/hulianui/time-field/date-time-picker.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/date-time-picker.types.ts"
-        },
         {
           "path": "components/hulianui/time-field/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/time-field/index.ts"
         },
         {
-          "path": "components/hulianui/time-field/provider.tsx",
+          "path": "components/hulianui/time-field/time-field-core.ts",
           "type": "registry:ui",
-          "target": "components/hulianui/time-field/provider.tsx"
-        },
-        {
-          "path": "components/hulianui/time-field/showcase.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/showcase.ts"
-        },
-        {
-          "path": "components/hulianui/time-field/theme.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/time-field/theme.ts"
+          "target": "components/hulianui/time-field/time-field-core.ts"
         },
         {
           "path": "components/hulianui/time-field/time-field.tsx",
@@ -5003,7 +4779,7 @@
       "name": "time-picker",
       "type": "registry:ui",
       "title": "TimePicker",
-      "description": "时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · 不经 MUI 桥",
+      "description": "时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控",
       "categories": [
         "forms"
       ],
@@ -5034,6 +4810,11 @@
           "path": "components/hulianui/time-picker/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/time-picker/index.ts"
+        },
+        {
+          "path": "components/hulianui/time-picker/time-column.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/time-picker/time-column.tsx"
         },
         {
           "path": "components/hulianui/time-picker/time-picker-core.ts",
@@ -10746,7 +10527,7 @@
       "name": "steps",
       "type": "registry:ui",
       "title": "Steps",
-      "description": "步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(替代 MUI Stepper 桥 · 分步表单/审批流)",
+      "description": "步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(分步表单/审批流)",
       "categories": [
         "navigation"
       ],

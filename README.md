@@ -75,9 +75,8 @@ export default function App() {
 
 完整接入说明见 **[文档站 · 快速开始](https://hulianui.haloritual.com)**。
 
-> ⚠️ **接进自己的仓库前先读 [docs/consuming.md](docs/consuming.md)**，两条不写明就一定会踩：
-> ① 源码分发导致消费方的 Vitest 容易解析出**第二份 React**（可直接 `import { withHulian } from "@hulianui/ui/vitest-preset"` 一行解决）；
-> ② 日期族（`Calendar`/`DatePicker`/`DateTimePicker`/`TimeField`）从 `@hulianui/ui/date-pickers` 导入、需自装 4 个 optional peer、且必须置于 `MuiBridgeProvider` 之内，否则真实浏览器里会抛 `Unsupported color`。（`Rating`/`Stepper` 已改零依赖，正常从根 barrel 取。）
+> ⚠️ **接进自己的仓库前先读 [docs/consuming.md](docs/consuming.md)**：源码分发会让消费方的 Vitest 容易解析出**第二份 React**（可直接 `import { withHulian } from "@hulianui/ui/vitest-preset"` 一行解决）。
+> 除此之外没有别的坑 —— 自 0.15.0 起全部组件都在根 barrel 里，没有子路径入口、没有 optional peer、没有必须挂的第三方 Provider。
 
 ## 🧩 组件与示例
 

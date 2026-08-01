@@ -11,26 +11,26 @@
 前端 L3 的闭环已经完整：
 
 1. **发现**：MCP 能按 component / lib / block / page 检索和读取文档。
-2. **安装**：447 个 registry item 可取用；20 个页面逐个在隔离项目里经真实 shadcn CLI 安装并 typecheck。
+2. **安装**：446 个 registry item 可取用；20 个页面逐个在隔离项目里经真实 shadcn CLI 安装并 typecheck。
 3. **接入**：57 个区块和 20 个页面带 Provider、必须替换内容和插槽元数据；页面会递归安装依赖区块。
-4. **约束**：`conventions.json` v2 明确区分 6 条可执行规则与 1002 条建议；`@hulianui/guard` 以 AST 检查可执行规则，CI 会阻断错误级违规。
+4. **约束**：`conventions.json` v2 明确区分 4 条可执行规则与 1019 条建议；`@hulianui/guard` 以 AST 检查可执行规则，CI 会阻断错误级违规。
 5. **验证**：CI 同时覆盖生成物漂移、registry 黑盒安装、guard、真实 Chromium 交互和固定路由 axe 扫描。
 
 离最终目标还差的不是“前端再补一层协议”，而是两类后续工作：
 
 - **L4 跨栈复制**：PHP / Java 尚未形成同构的 registry、MCP 和 guard。
-- **前端持续覆盖**：18 个整站 demo 仍不是 registry 一等项；a11y 是 10 条代表路由而非全站穷举；更多布局、动画、canvas/WebGL 行为仍可按风险迁入 browser project。
+- **前端持续覆盖**：18 个整站 demo 仍不是 registry 一等项；a11y 是 10 条代表路由而非全站穷举；更多布局、动画、canvas / WebGL 行为仍可按风险迁入 browser project。
 
 因此，对“AI 能否在瑚琏前端主见上搭积木”的回答是：**核心链路已闭合**。对“所有技术栈是否都只能按同一套主见施工”的回答仍是：**还没有，L4 是明确边界。**
 
 ## 1. 权威数据
 
-下列数字直接来自 `apps/www/public/registry.json` 与 `packages/ui/conventions.json`：
+下列数字直接来自 `apps/www/public/registry.json`、`packages/ui/conventions.json` 与当前测试配置：
 
 | 项目 | 当前值 |
 |---|---:|
-| registry 总 item | 447 |
-| component (`registry:ui`) | 367 |
+| registry 总 item | 446 |
+| component (`registry:ui`) | 366 |
 | lib (`registry:lib`) | 3 |
 | block | 57 |
 | page | 20 |
@@ -38,17 +38,19 @@
 | 有递归区块依赖的 page | 18 / 20 |
 | 无区块依赖的 page | `page-login`、`page-result` |
 | conventions schema | v2 |
-| 可执行规则 | 6 |
-| 建议规则 | 1002 |
-| 易混淆组件组 | 4 |
+| 可执行规则 | 4 |
+| 建议规则 | 1019 |
+| 易混淆组件组 | 5 |
 | 真实浏览器交互用例 | 30（7 个文件） |
 | axe 固定路由 | 10 |
+| UI 直接 runtime dependencies | 23 |
 
 可重复生成计数：
 
 ```bash
+pnpm docs:all
 node -e 'const r=require("./apps/www/public/registry.json"); console.log(r.items.length)'
-node -e 'const c=require("./packages/ui/conventions.json"); console.log(c.executableRules.length,c.advisories.length)'
+node -e 'const c=require("./packages/ui/conventions.json"); console.log(c.executableRules.length,c.advisories.length,c.confusables.length)'
 ```
 
 ## 2. 成熟度分级
@@ -58,11 +60,11 @@ node -e 'const c=require("./packages/ui/conventions.json"); console.log(c.execut
 | L0 | CLAUDE.md / 普通文字规范 | 保留，作为人读入口 |
 | L0.5 | `llms.txt` / `llms-full.txt` | 保留，作为无 MCP 时的降级入口 |
 | L1 | MCP 按需发现组件与文档 | ✅ 已完成 |
-| L2 | registry 可递归安装组件、区块和页面 | ✅ 已完成，并有 20/20 页面黑盒安装门禁 |
+| L2 | registry 可递归安装组件、区块和页面 | ✅ 已完成，并有 20 / 20 页面黑盒安装门禁 |
 | L3 | 机器规则 + 可执行 guard + CI | ✅ 前端已完成 |
 | L4 | PHP / Java 等后端栈采用同一套发现、安装、约束机制 | ❌ 未开始 |
 
-这里的 L3 不等于“1002 条建议全部变成 AST 规则”。当前契约是刻意分层的：
+这里的 L3 不等于“1019 条建议全部变成 AST 规则”。当前契约是刻意分层的：
 
 - `executableRules`：能可靠静态判断的规则，由 `hulian-check` 执行。
 - `advisories`：仍需语境或人工判断的建议，供 MCP 和文档使用，不伪装成可自动证明的规则。
@@ -71,7 +73,7 @@ node -e 'const c=require("./packages/ui/conventions.json"); console.log(c.execut
 
 ## 3. 安装链路已经闭合
 
-### 3.1 页面不再被误称为“全部自包含”
+### 3.1 页面具有可验证的递归依赖
 
 57 个区块通常可以单文件落盘；页面则不是同一种情况：
 
@@ -96,7 +98,7 @@ node -e 'const c=require("./packages/ui/conventions.json"); console.log(c.execut
 
 ### 3.3 复合积木告诉 AI “装完还要做什么”
 
-77 个 block/page item 均提供安装元数据：
+77 个 block / page item 均提供安装元数据：
 
 - `providers`：需要挂载的 Provider。
 - `replace`：必须替换的示例数据、文案或业务回调。
@@ -106,15 +108,16 @@ MCP 的 `install_block` 会把这些信息与递归依赖、安装命令和 `hul
 
 ## 4. 约束不再只是散文
 
-`conventions.json` v2 目前覆盖五类可执行 matcher：
+`conventions.json` v2 当前使用四类可稳定执行的 matcher：
 
 - 禁止 JSX prop
 - 禁止 import
-- import 必须有同伴
 - 禁止调用形式
 - CSS 变量前缀
 
-`@hulianui/guard` 使用 TypeScript 5.9 compiler API 做 AST 与绑定分析，支持别名导入、深层导入和语法错误定位。退出码契约：
+日期族完成自研替换后不再需要“子入口必须同时导入 Provider”规则。所有组件统一从 `@hulianui/ui` 根入口导入，任何 `@hulianui/ui/*` 深路径都由 guard 拒绝。
+
+`@hulianui/guard` 使用 TypeScript compiler API 做 AST 与绑定分析，支持别名导入、深层导入和语法错误定位。退出码契约：
 
 | 退出码 | 含义 |
 |---:|---|
@@ -140,7 +143,7 @@ CI 还会跑 `pnpm conventions:check`，防止生成器与提交的 conventions 
 
 ### 5.1 unit 与 browser 分工
 
-jsdom 继续负责 props、DOM 契约、aria、受控/非受控和纯函数。真实 Chromium 负责布局、拖拽、指针、滚动与依赖浏览器渲染时序的行为。
+jsdom 继续负责 props、DOM 契约、aria、受控 / 非受控和纯函数。真实 Chromium 负责布局、拖拽、指针、滚动与依赖浏览器渲染时序的行为。
 
 目前 30 条 browser 用例覆盖：
 
@@ -152,7 +155,7 @@ jsdom 继续负责 props、DOM 契约、aria、受控/非受控和纯函数。�
 - RouteTabs 横向 HTML5 拖放落点
 - Tree 上 / 中 / 下 HTML5 拖放落点与非法子树保护
 
-所有状态更新事件按“一个事件 + 两个真实 animation frame”分别包进异步 `act()`。当前 browser suite 的 stderr 为 0，不再通过关闭 React act 环境掩盖警告。
+所有状态更新事件按“一个事件 + 两个真实 animation frame”分别包进异步 `act()`。browser suite 的验收要求不只看退出码，还要求 stderr 为 0，不能通过关闭 React act 环境掩盖警告。
 
 ### 5.2 axe 路由门禁
 
@@ -178,15 +181,16 @@ jsdom 继续负责 props、DOM 契约、aria、受控/非受控和纯函数。�
 - 路由或同源资源加载失败：阻断，不能伪装成零违规。
 - 只忽略 Next 导航预取产生的 `fetch: net::ERR_ABORTED`。
 
-当前 10/10 路由通过，blocking violation 为 0。组件文档页仍报告 `landmark-unique` moderate，已明确记录而不是静默过滤。
+当前 10 / 10 路由通过，blocking violation 为 0。组件文档页仍报告 `landmark-unique` moderate，已明确记录而不是静默过滤。
 
 ## 6. 技术现代性
 
 | 维度 | 当前状态 | 判断 |
 |---|---|---|
-| 颜色与主题 | OKLCH 原始/语义双层 token、运行时 `[data-theme]` | 前沿 |
+| 颜色与主题 | OKLCH 原始 / 语义双层 token、运行时 `[data-theme]` | 前沿 |
 | 行为层 | Base UI + 自研复杂件 | 前沿 |
-| 样式 | Tailwind v4 + 原生 CSS 变量 | 前沿 |
+| 样式 | Tailwind v4 + 原生 CSS 变量，无 runtime CSS-in-JS | 前沿 |
+| 日期族 | Calendar / DatePicker / DateTimePicker / TimeField / TimePicker 全部自研、根入口导出 | 已清除 MUI / emotion 债务 |
 | 类型工具链 | TS7 主线，消费兼容性另有门禁 | 前沿但需持续兼容验证 |
 | 体积 | `size-limits.json` + `pnpm size` | 有硬门禁 |
 | 分发 | npm 源码消费 + shadcn registry 注入 | 两种消费方式均已验证 |
@@ -196,28 +200,13 @@ jsdom 继续负责 props、DOM 契约、aria、受控/非受控和纯函数。�
 
 ## 7. 仍然存在的前端债务
 
-### 7.1 日期族仍有隔离的 MUI / emotion optional peer
+### 7.1 直接 runtime dependencies 仍有 23 个
 
-Rating 和 Stepper 已经是自研零依赖组件，不再属于 MUI 桥。当前 MUI / emotion 只服务日期子路径：
+当前 `packages/ui/package.json` 的 `dependencies` 是 23 个。MUI 与 emotion 已全部移除，日期族没有第三方 Provider；现有依赖包括 Tiptap、Vidstack、OGL、Recharts 等重型能力，以及日期族内部使用的 `dayjs`。
 
-```tsx
-import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers";
-```
+后续可以按真实消费成本评估重依赖拆分，但不能只追求数字而破坏默认可用性。
 
-这四个包是 optional peer，不使用日期族的消费项目不会安装它们：
-
-- `@mui/material`
-- `@mui/x-date-pickers`
-- `@emotion/react`
-- `@emotion/styled`
-
-它仍是 RSC / zero-runtime 叙事中的隔离尾巴，但已不是根 barrel 的普遍成本。后续是否自研替换日期族，应按真实下游收益决定。
-
-### 7.2 直接 runtime dependencies 仍有 22 个
-
-当前 `packages/ui/package.json` 的 `dependencies` 是 22 个，不是历史文档里的 27 个。较重的 Tiptap、Vidstack、OGL、Recharts 等仍可评估是否拆成可选子路径，但不能只追求数字而破坏默认可用性。
-
-### 7.3 demo、a11y 与浏览器覆盖仍非穷举
+### 7.2 demo、a11y 与浏览器覆盖仍非穷举
 
 - 18 个 demo 是文档和 dogfood 资产，尚未成为 registry item。
 - a11y 当前固定 10 条代表路由。
@@ -233,7 +222,7 @@ import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers";
 | P1 | 为 PHP 设计最小 registry + MCP + guard 契约 | 开始 L4，不复制前端实现细节 |
 | P1 | 为 Java 设计同构契约 | 完成跨栈一致入口 |
 | P2 | 按真实缺陷扩充 browser / a11y 路由 | 提高验证覆盖，不做机械迁移 |
-| P2 | 评估日期族去 MUI 与重依赖拆分 | 以消费成本和维护收益为依据 |
+| P2 | 按消费数据评估重依赖拆分 | 降低安装与构建成本，不破坏根入口契约 |
 
 ## 9. 明确不做
 
@@ -254,7 +243,8 @@ import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers";
 - browser suite 曾有 23 条通过用例，同时输出 186 条 React `act(...)` 警告。
 - RouteTabs 和 Tree 的坐标落点测试曾依靠 jsdom 伪造 rect；现已迁入真实 Chromium，并通过生产逻辑变异验证。
 - a11y 曾完全依赖组件库语义，没有固定路由 axe CI 门禁。
-- 旧文档把 Rating / Stepper 和日期族一起描述为 MUI-backed，并把直接依赖数写成 27；两项都已过时。
+- 日期族曾位于 `@hulianui/ui/date-pickers` 子入口，并依赖 MUI / emotion 与 `MuiBridgeProvider`；这些实现、依赖和子入口现已移除。
+- 旧文档把直接依赖数写成 27 或 22；当前事实是 23。
 
 ## 相关入口
 

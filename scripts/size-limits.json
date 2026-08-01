@@ -57,9 +57,9 @@
       "limitKB": 223
     },
     {
-      "name": "mui-bridge",
-      "entry": "@hulianui/ui/_mui",
-      "limitKB": 159
+      "name": "date-picker",
+      "entry": "@hulianui/ui/date-picker",
+      "limitKB": 60
     },
     {
       "name": "root-barrel",

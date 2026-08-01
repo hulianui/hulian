@@ -10,15 +10,16 @@ status: enriched
 
 # TimePicker
 
-> 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · 不经 MUI 桥 · forms/datetime
+> 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · forms/datetime
 
 ## 何时用
 
-要「点开面板挑时刻」时用（排班、预约、营业时间）。零依赖自研，不牵扯 MUI / emotion，
-也**不需要挂 `MuiBridgeProvider`**。
+要「点开面板挑时刻」时用（排班、预约、营业时间）—— 列选式浮层，带步进与「此刻」，
+适合把可选值限定在整点/半点。
 
-只想要键盘分段输入、不要浮层，用 [TimeField](../_mui/time-field.md)（MUI 桥）。
-连日期一起选用 [DateTimePicker](../_mui/date-time-picker.md)；只选日期用 [DateField](../date-field/date-field.md)。
+要手不离键盘地录入，用 [TimeField](../time-field/time-field.md)（分段输入，无浮层）。
+连日期一起选用 [DateTimePicker](../date-time-picker/date-time-picker.md)；
+只选日期用 [DatePicker](../date-picker/date-picker.md)。
 
 ## 导入
 ```ts
@@ -89,8 +90,8 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 - `minuteStep` 只影响**候选列表**，不校验外部传进来的值。`value="09:37"` 配 `minuteStep={15}`
   时面板里没有对应项、分钟列不会有高亮 —— 需要对齐请自己先过一遍 `snapToStep`。
 - `withSeconds` 切换会改变对外值形状（`"09:30"` ↔ `"09:30:15"`）。切换时请一并处理存量值。
-- 与 `_mui` 的 [TimeField](../_mui/time-field.md) **不共享值格式**（那份对外是完整 ISO 时间戳，
-  本组件是时刻串）。同一个表单里别混用。
+- 与 [TimeField](../time-field/time-field.md) **共享同一套值格式**（都是定宽 `"HH:mm[:ss]"`），
+  两者可以直接互换，甚至同一个字段按屏幕宽度切换用哪个都行 —— 区别只在交互方式（列选 vs 键盘录入）。
 
 ## 相关
-[DateField](../date-field/date-field.md) · [TimeField](../_mui/time-field.md) · [DateTimePicker](../_mui/date-time-picker.md) · [DateRangePicker](../date-range-picker/date-range-picker.md) · [Calendar](../_mui/calendar.md) · [Scheduler](../scheduler/scheduler.md)
+[TimeField](../time-field/time-field.md) · [DatePicker](../date-picker/date-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [DateRangePicker](../date-range-picker/date-range-picker.md) · [Calendar](../calendar/calendar.md) · [Scheduler](../scheduler/scheduler.md)

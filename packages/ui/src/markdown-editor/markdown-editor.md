@@ -59,4 +59,4 @@ const [md, setMd] = useState("# 标题");
 - 放进 [Field](../field/field.md) 校验时，`invalid` 既可自传、也可由外层 Field 的 `data-invalid` 驱动，二选一即可，不必两边都设。
 
 ## 相关
-[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../_mui/rating.md)
+[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

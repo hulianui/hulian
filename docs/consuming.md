@@ -62,56 +62,50 @@ export default defineConfig(withHulian({
 }
 ```
 
-> **`@mui/material` / `@mui/x-date-pickers` / `@emotion/*` 已改成 optional peerDependency。**
-> 此前不改是因为根 barrel 会把全部组件拉进模块图，改成 peer 等于要求每个消费方都装齐才能
-> `import { Button }`。现在的解法是把**日期族一并移出根 barrel**（见下节）：不用它就一个字节
-> 都不拉，用它才装那四个包。root-barrel 基线因此从 1250KB 降到 1098KB（-12.2%）。
+> **上面就是全部 peer —— 没有 optional peer，也没有需要你按需安装的东西。**
+> 0.15.0 之前日期族是 MUI X 的桥接件，拖着 `@mui/material` / `@mui/x-date-pickers` / `@emotion/*`
+> 四个 optional peer，还得记着挂 `MuiBridgeProvider`、从 `@hulianui/ui/date-pickers` 子路径导入。
+> 这一族现已全部自研为零依赖并回到根 barrel，那四个包、那条子路径、那个 Provider 一并消失。
 >
-> `@dnd-kit/*` 等仍是 dependency —— 它们服务的组件仍在根 barrel 里。
+> `@dnd-kit/*` 等仍是 dependency —— 它们服务的组件在根 barrel 里，装库即到位，你不用管。
 
 ---
 
-## 2. 日期族走子路径导入，且必须置于 `MuiBridgeProvider` 之内
+## 2. 日期族：全部零依赖，直接从根 barrel 用
 
-涉及组件：`Calendar`、`DatePicker`、`DateTimePicker`、`TimeField`。
-（`Rating` / `Stepper` 自 0.15.0 起已改为零依赖自研，**不再需要**这层包裹，正常从根 barrel 导入即可。）
-
-**导入路径**：日期族不在根 barrel 里，从 `@hulianui/ui/date-pickers` 取：
+涉及组件：`Calendar`、`DatePicker`、`DateTimePicker`、`TimeField`、`TimePicker`、`DateRangePicker`。
 
 ```tsx
-import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers"
+import { Calendar, DatePicker, DateTimePicker, TimeField, TimePicker, DateRangePicker } from "@hulianui/ui"
 ```
 
-**并自行安装 optional peer**：
+装 `@hulianui/ui` 就有了，**不需要另外装任何包，也不需要包 Provider**。
 
-```bash
-pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
-```
+对外值一律是**定宽字符串**，不是 `Date`：
 
-为什么这么设计：源码分发下，根 barrel 导出等于强制**每个**消费方的 tsc 去编译 `_mui/*.tsx`，
-而它 import 的 `@mui/*` 是 optional peer —— 没装的项目会直接 `TS2307: Cannot find module`。
-把它移出根 barrel，不用日期族的项目就完全碰不到这条链路。
+| 组件 | 值形状 |
+|------|--------|
+| `Calendar` / `DatePicker` | `"YYYY-MM-DD"`（`picker="month"` → `"YYYY-MM"`，`"year"` → `"YYYY"`） |
+| `TimeField` / `TimePicker` | `"HH:mm"`，`withSeconds` 时 `"HH:mm:ss"` |
+| `DateTimePicker` | `"YYYY-MM-DD HH:mm"`，`withSeconds` 时带秒 |
+| `DateRangePicker` | `["YYYY-MM-DD", "YYYY-MM-DD"]` |
 
-桥主题把 `theme.alpha` 重写成 `color-mix`（好让 MUI 读瑚琏的 OKLCH token，单一真源）。
-不挂 Provider 时，MUI 核心件（如日期族头部那个 IconButton）会对 `var(--color-*)` 调 `alpha()`
-并直接抛 `Unsupported color`。**真实浏览器同样触发**，不是只在测试里出现。
+定宽是刻意的：字典序即时间序，`minDate`/`maxTime` 这类比较可以直接比字符串，
+既不用引 date 库，也不会被时区和 UTC 日界搅进来。
 
-整个应用挂一次即可，通常在根 layout：
+### 从 0.15.0 之前升级
 
-```tsx
-import { ThemeProvider } from "@hulianui/ui"
-import { MuiBridgeProvider } from "@hulianui/ui/date-pickers"
-
-export default function RootLayout({ children }) {
-  return (
-    <ThemeProvider>
-      <MuiBridgeProvider>{children}</MuiBridgeProvider>
-    </ThemeProvider>
-  )
-}
-```
-
-不用日期族的话，不挂也没关系 —— 它不是全局必需品，那四个 npm 包也一个都不用装。
+| 之前 | 现在 |
+|------|------|
+| `import { X } from "@hulianui/ui/date-pickers"` | `import { X } from "@hulianui/ui"` |
+| `pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled` | 不需要，可以卸掉 |
+| `<MuiBridgeProvider>` 包裹 | 删掉，不再存在 |
+| `DateField` | 改名为 `DatePicker` |
+| 值是完整 ISO 时间戳 | 定宽字符串（见上表） |
+| `DatePicker` 的 `views` / `openTo` | `picker="date" \| "month" \| "year"` |
+| `DatePicker` / `TimeField` 的 `label` | 用 `placeholder` + `aria-label`（组件不带浮动 label） |
+| `DateTimePicker` 的 `minutesStep` | `minuteStep`（与 `TimePicker` 对齐） |
+| `DateTimePicker` 的 `format` | `displayFormat`（只改显示，不改值） |
 
 ---
 
@@ -259,11 +253,11 @@ CSS 不在其中（瑚琏的样式走你自己的 Tailwind 产物）。同一套
 | `@hulianui/ui/select` | 69.5 KB | 93.7 KB | |
 | `@hulianui/ui/table` | 87.7 KB | 111.9 KB | 含 TanStack Table |
 | `@hulianui/ui/chart` | 141.6 KB | 141.6 KB | recharts |
-| `@hulianui/ui/pro-table` | 142.9 KB | 170.0 KB | 列表页整套编排 |
-| `@hulianui/ui/date-pickers` | 137.9 KB | 137.9 KB | MUI X 日期族 + emotion 桥（optional peer，不用则为 0） |
+| `@hulianui/ui/pro-table` | 142.9 KB | 169.9 KB | 列表页整套编排 |
+| `@hulianui/ui/date-picker` | 53.6 KB | 77.8 KB | 自研零依赖日期族（含共用的 Calendar 面板） |
 | `@hulianui/ui/markdown-editor` | 193.8 KB | 220.8 KB | tiptap 全家 |
 | `@hulianui/ui/video` | 61.9 KB | 116.5 KB | vidstack 自带懒加载 |
-| `@hulianui/ui` **根 barrel** | **1086.8 KB** | 1215.6 KB | 全库导出的上界 |
+| `@hulianui/ui` **根 barrel** | **957.5 KB** | 1086.3 KB | 全库导出的上界 |
 
 **initial 是首屏立刻要下的，total 含之后按需加载的 chunk。** 两个数差得多的入口，
 说明它把大头推到了首屏之后；两个数相等的，进来就得全付。

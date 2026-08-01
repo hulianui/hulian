@@ -93,4 +93,4 @@ const [v, setV] = useState<string | string[]>("pro");
 - 在 Choicebox 的 `children` 里放删除/操作钮等交互元素时，会与卡片整体的选中点击冲突，需对子元素阻断冒泡（或用绝对定位让它脱离单选环的点击区）。
 
 ## 相关
-[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../_mui/rating.md)
+[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

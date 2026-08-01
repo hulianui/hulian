@@ -9,8 +9,7 @@
       "matcher": {
         "kind": "forbidden-jsx-prop",
         "imports": [
-          "@hulianui/ui",
-          "@hulianui/ui/date-pickers"
+          "@hulianui/ui"
         ],
         "prop": "style"
       },
@@ -22,49 +21,10 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!date-pickers$)"
+        "sourcePattern": "^@hulianui/ui/"
       },
       "message": "不要导入 @hulianui/ui 的私有深路径。",
-      "instead": "从 @hulianui/ui 根入口导入；日期族使用 @hulianui/ui/date-pickers。"
-    },
-    {
-      "id": "date-components-from-subpath",
-      "severity": "error",
-      "matcher": {
-        "kind": "forbidden-import",
-        "source": "@hulianui/ui",
-        "importedNames": [
-          "Calendar",
-          "DatePicker",
-          "DateTimePicker",
-          "TimeField",
-          "TimePicker",
-          "MuiBridgeProvider"
-        ]
-      },
-      "message": "日期族不能从 @hulianui/ui 根入口导入。",
-      "instead": "改从 @hulianui/ui/date-pickers 导入。"
-    },
-    {
-      "id": "date-picker-provider-import",
-      "severity": "warning",
-      "matcher": {
-        "kind": "required-import-companion",
-        "source": "@hulianui/ui/date-pickers",
-        "importedNames": [
-          "Calendar",
-          "DatePicker",
-          "DateTimePicker",
-          "TimeField",
-          "TimePicker"
-        ],
-        "companion": {
-          "source": "@hulianui/ui/date-pickers",
-          "importedName": "MuiBridgeProvider"
-        }
-      },
-      "message": "使用日期族时需要同时导入并在上层渲染 MuiBridgeProvider。",
-      "instead": "从同一入口导入 MuiBridgeProvider，并包住日期组件子树。"
+      "instead": "统一从 @hulianui/ui 根入口导入。"
     },
     {
       "id": "toast-object-signature",
@@ -117,10 +77,8 @@
     },
     {
       "id": "global/import-from-root-barrel",
-      "rule": "统一从根 barrel 导入：import { X } from \"@hulianui/ui\"。唯一例外是日期族（Calendar / DatePicker / DateTimePicker / TimeField / MuiBridgeProvider），它们走 \"@hulianui/ui/date-pickers\"",
-      "why": "深路径导入绕过 barrel 的类型聚合与副作用声明，升级时路径也易变。日期族之所以例外，是因为它依赖 optional peer（MUI/emotion），留在根 barrel 就会强制每个消费方装齐才能 import 任何组件",
-      "wrong": "import { DatePicker } from \"@hulianui/ui\"",
-      "right": "import { DatePicker } from \"@hulianui/ui/date-pickers\"",
+      "rule": "统一从根 barrel 导入：import { X } from \"@hulianui/ui\"。**没有例外入口** —— 0.15.0 起日期族也在根 barrel 里",
+      "why": "深路径导入绕过 barrel 的类型聚合与副作用声明，升级时路径也易变。曾经存在的 @hulianui/ui/date-pickers 子路径已随日期族自研零依赖一并移除",
       "scope": "global",
       "source": "scripts/gen-conventions.mjs"
     },
@@ -130,22 +88,6 @@
       "wrong": "fill=\"var(--primary)\"",
       "right": "fill=\"var(--color-primary)\"",
       "why": "Tailwind v4 的 @theme 生成的真名带 --color- 前缀；裸名不解析，表现为 fill 变黑、stroke 消失（工具类如 text-primary 不受影响）",
-      "scope": "global",
-      "source": "scripts/gen-conventions.mjs"
-    },
-    {
-      "id": "global/mui-bridge-provider",
-      "rule": "日期族（Calendar / DatePicker / DateTimePicker / TimeField）必须置于 MuiBridgeProvider 之内",
-      "why": "桥接层把 emotion theme 接到瑚琏 CSS 变量；缺 Provider 时真实浏览器里会抛 Unsupported color。注意 Rating / Stepper 已自研为零依赖，不再需要这层包裹",
-      "instead": "在用到这些组件的子树外层包一层 <MuiBridgeProvider>",
-      "scope": "global",
-      "source": "scripts/gen-conventions.mjs"
-    },
-    {
-      "id": "global/mui-optional-peer",
-      "rule": "要用日期族就必须自行安装 optional peer：@mui/material @mui/x-date-pickers @emotion/react @emotion/styled，并从 \"@hulianui/ui/date-pickers\" 子路径导入",
-      "why": "这四个包已从 dependencies 降为 optional peerDependencies，日期族也一并移出根 barrel —— 不用日期族的项目不该被迫装下整个 MUI 与 emotion（runtime CSS-in-JS，不兼容 RSC）。emotion 那两个包组件源码里看不到，它是 MUI 的样式引擎，少装同样跑不起来",
-      "instead": "不用日期族就什么都不用装；用的话 pnpm add 上面四个包，再走子路径导入",
       "scope": "global",
       "source": "scripts/gen-conventions.mjs"
     },
@@ -957,6 +899,48 @@
       "source": "packages/ui/src/button/button.md"
     },
     {
+      "id": "component/calendar/pitfall/1",
+      "scope": "calendar",
+      "title": "Calendar",
+      "rule": "**值是定宽文本，不是 `Date`**：`\"YYYY-MM-DD\"` 定宽 → 字典序即时间序，区间比较可以直接比字符串， 也避开了 `new Date(\"2026-06-08\").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。",
+      "source": "packages/ui/src/calendar/calendar.md"
+    },
+    {
+      "id": "component/calendar/pitfall/2",
+      "scope": "calendar",
+      "title": "Calendar",
+      "rule": "`onValueChange` 的参数类型是 `string` 而非 `string | null`：面板没有清空入口。 需要「可清空」用 [DatePicker](../date-picker/date-picker.md)，它的触发器上带清除按钮。",
+      "source": "packages/ui/src/calendar/calendar.md"
+    },
+    {
+      "id": "component/calendar/pitfall/3",
+      "scope": "calendar",
+      "title": "Calendar",
+      "rule": "**下钻不回调**：`picker=\"date\"` 时点标题上卷到月视图、再点某个月，只是把光标挪过去，不算选中， 只有点到日格才提交。写测试时别把「点了 9 月」当成一次选值。",
+      "source": "packages/ui/src/calendar/calendar.md"
+    },
+    {
+      "id": "component/calendar/pitfall/4",
+      "scope": "calendar",
+      "title": "Calendar",
+      "rule": "`disabledDate` 在 `date` 粒度下逐日调用（一屏 42 次），请保持它是纯计算 —— 别在里面发请求或建对象。 月/年粒度下只对该月/该年首日调一次，**判据也随之变粗**：想精确到天就别用粗粒度 picker。",
+      "source": "packages/ui/src/calendar/calendar.md"
+    },
+    {
+      "id": "component/calendar/pitfall/5",
+      "scope": "calendar",
+      "title": "Calendar",
+      "rule": "`disabled` 与 `readOnly` 不是一回事：`readOnly` 还能翻页浏览，`disabled` 连翻页按钮都禁掉。",
+      "source": "packages/ui/src/calendar/calendar.md"
+    },
+    {
+      "id": "component/calendar/pitfall/6",
+      "scope": "calendar",
+      "title": "Calendar",
+      "rule": "面板宽度固定 `15.75rem`（7 列 × 2.25rem），不做响应式收窄 —— 日历一挤压就点不准。 要塞进更窄的容器请自行缩放。",
+      "source": "packages/ui/src/calendar/calendar.md"
+    },
+    {
       "id": "component/callout/pitfall/1",
       "scope": "callout",
       "title": "Callout",
@@ -1685,46 +1669,46 @@
       "source": "packages/ui/src/dark-veil/dark-veil.md"
     },
     {
-      "id": "component/date-field/pitfall/1",
-      "scope": "date-field",
-      "title": "DateField",
+      "id": "component/date-picker/pitfall/1",
+      "scope": "date-picker",
+      "title": "DatePicker",
       "rule": "**值是定宽文本，不是 `Date`**：`\"YYYY-MM-DD\"` 定宽 → 字典序即时间序，区间比较可以直接比字符串， 也避开了 `new Date(\"2026-06-08\").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。",
-      "source": "packages/ui/src/date-field/date-field.md"
+      "source": "packages/ui/src/date-picker/date-picker.md"
     },
     {
-      "id": "component/date-field/pitfall/2",
-      "scope": "date-field",
-      "title": "DateField",
+      "id": "component/date-picker/pitfall/2",
+      "scope": "date-picker",
+      "title": "DatePicker",
       "rule": "**`picker` 改了值形状**：从 `date` 切到 `month` 时旧值 `\"2026-06-08\"` 解析后会按月粒度提交成 `\"2026-06\"`。 切粒度时请一并处理存量值，别指望组件替你迁移。",
-      "source": "packages/ui/src/date-field/date-field.md"
+      "source": "packages/ui/src/date-picker/date-picker.md"
     },
     {
-      "id": "component/date-field/pitfall/3",
-      "scope": "date-field",
-      "title": "DateField",
+      "id": "component/date-picker/pitfall/3",
+      "scope": "date-picker",
+      "title": "DatePicker",
       "rule": "`displayFormat` 只管显示。想改**对外**值形状只能通过 `picker`。",
-      "source": "packages/ui/src/date-field/date-field.md"
+      "source": "packages/ui/src/date-picker/date-picker.md"
     },
     {
-      "id": "component/date-field/pitfall/4",
-      "scope": "date-field",
-      "title": "DateField",
+      "id": "component/date-picker/pitfall/4",
+      "scope": "date-picker",
+      "title": "DatePicker",
       "rule": "`disabledDate` 在 `date` 粒度下逐日调用（一屏 42 次），请保持它是纯计算 —— 别在里面发请求或建对象。 月/年粒度下只对该月/该年首日调一次，**判据也随之变粗**：想精确到天就别用粗粒度 picker。",
-      "source": "packages/ui/src/date-field/date-field.md"
+      "source": "packages/ui/src/date-picker/date-picker.md"
     },
     {
-      "id": "component/date-field/pitfall/5",
-      "scope": "date-field",
-      "title": "DateField",
+      "id": "component/date-picker/pitfall/5",
+      "scope": "date-picker",
+      "title": "DatePicker",
       "rule": "面板标题可点，逐层上卷 date → month → year；`picker` 决定「点到哪一层就提交」， 所以 `picker=\"date\"` 时点月份只是下钻，不会提交。",
-      "source": "packages/ui/src/date-field/date-field.md"
+      "source": "packages/ui/src/date-picker/date-picker.md"
     },
     {
-      "id": "component/date-field/pitfall/6",
-      "scope": "date-field",
-      "title": "DateField",
-      "rule": "与 `_mui` 的 [DatePicker](../_mui/date-picker.md) 是两个独立组件，**不共享值格式**（那份对外是完整 ISO 时间戳，本组件是日期串）。同一个表单里别混用。",
-      "source": "packages/ui/src/date-field/date-field.md"
+      "id": "component/date-picker/pitfall/6",
+      "scope": "date-picker",
+      "title": "DatePicker",
+      "rule": "从 0.15.0 之前的 MUI 版 `DatePicker` 迁过来时注意**值格式变了**：那份对外是完整 ISO 时间戳， 这份是定宽日期串。另外 `views` / `openTo` 合并成了 `picker`，`label` 换成 `placeholder` + `aria-label`。",
+      "source": "packages/ui/src/date-picker/date-picker.md"
     },
     {
       "id": "component/date-range-picker/pitfall/1",
@@ -1746,6 +1730,55 @@
       "title": "DateRangePicker",
       "rule": "`disabledDate` 入参是 ISO 字符串，自己拼 `new Date(iso + \"T00:00:00\")` 算 getDay 时注意时区，别直接 `new Date(iso)`（会按 UTC 解析偏一天）。",
       "source": "packages/ui/src/date-range-picker/date-range-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/1",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "**值是定宽文本，不是 `Date` 也不是 ISO 时间戳**：`\"YYYY-MM-DD HH:mm\"`，中间一个空格。 定宽 → 字典序即时间序，范围比较直接比字符串，也不会被时区搅进来。 从 0.15.0 之前的 MUI 版迁过来要改存量数据（那份对外是完整 ISO 时间戳）。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/2",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "**`minDateTime`/`maxDateTime` 的时间部分只在压着边界的那一天生效**。选到区间内部的日子时， 一天 24 小时全开 —— 这是对的：「6 月 8 日 09:30 起可选」不该把 6 月 9 日的 00:00 也禁掉。 这条最容易实现错，也最容易被误报成 bug。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/3",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "**选日期不关面板**：时间还没选完就关掉等于逼用户重开。要收起面板点「确定」，或点面板外。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/4",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "只选了日期没碰时间列时，时间按 `00:00` 补（若被 `minDateTime` 顶着，则补成那天的最早可选时刻）。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/5",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "反过来，没选日期就先点了时间列，日期会落到**今天** —— 否则这一下点了等于没点。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/6",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "`disabledDate` 只筛日期。想按「星期几的某个时段」这种粒度禁选，本组件做不到， 需要在提交时自行校验。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/7",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "`minuteStep` 只影响**列里能点到的候选**，不校验外部传入的 `value`： 传 `\"2026-06-08 09:07\"` 配 `minuteStep={15}` 时，07 分不在列里，分钟列会显示为无选中。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
     },
     {
       "id": "component/decay-card/pitfall/1",
@@ -6571,6 +6604,48 @@
       "source": "packages/ui/src/tilted-card/tilted-card.md"
     },
     {
+      "id": "component/time-field/pitfall/1",
+      "scope": "time-field",
+      "title": "TimeField",
+      "rule": "**半截时间不回调**：只输了小时、分钟还空着时 `onValueChange` 不触发，值仍是上一次的。 想拿到「正在编辑」的中间态是拿不到的 —— 那是内部编辑态，刻意不外泄。",
+      "source": "packages/ui/src/time-field/time-field.md"
+    },
+    {
+      "id": "component/time-field/pitfall/2",
+      "scope": "time-field",
+      "title": "TimeField",
+      "rule": "**`minTime`/`maxTime` 只在整段输完那一刻钳制，不做段级限制**。这是刻意的：段级判定会让 「先输 23 点、再输分钟」这类顺序根本没法输（min=09:30 时刚输完 23 点的瞬间还没有分钟， 会当场被拽回 09）。代价是用户可能看到自己输的 `23:00` 被改成 `18:00`。",
+      "source": "packages/ui/src/time-field/time-field.md"
+    },
+    {
+      "id": "component/time-field/pitfall/3",
+      "scope": "time-field",
+      "title": "TimeField",
+      "rule": "**第二位放不下时按新首位重来，不钳到边界**：小时段先按 `2` 再按 `9`，得到的是 `09` 而不是 `23`。 29 点不存在，钳成 23 点等于凭空造了个用户没按过的值。",
+      "source": "packages/ui/src/time-field/time-field.md"
+    },
+    {
+      "id": "component/time-field/pitfall/4",
+      "scope": "time-field",
+      "title": "TimeField",
+      "rule": "边界值的形状会被自动补齐：`maxTime=\"18:00\"` 在 `withSeconds` 下按 `18:00:00` 理解。 别指望它表示「18:00:59 之前都行」。",
+      "source": "packages/ui/src/time-field/time-field.md"
+    },
+    {
+      "id": "component/time-field/pitfall/5",
+      "scope": "time-field",
+      "title": "TimeField",
+      "rule": "段是 `<span role=\"spinbutton\">` 而不是三个 `<input>`：三个真 input 会各自吃掉浏览器的 输入法/自动填充/校验行为，而这里要的恰恰是完全自定义的两位缓冲逻辑。 因此**它不会参与原生表单提交**，值请自行受控收集。",
+      "source": "packages/ui/src/time-field/time-field.md"
+    },
+    {
+      "id": "component/time-field/pitfall/6",
+      "scope": "time-field",
+      "title": "TimeField",
+      "rule": "`readOnly` 仍可用 `←→` 切段（只读不等于不能看），但 `↑↓` 与数字键无效。",
+      "source": "packages/ui/src/time-field/time-field.md"
+    },
+    {
       "id": "component/time-picker/pitfall/1",
       "scope": "time-picker",
       "title": "TimePicker",
@@ -6609,7 +6684,7 @@
       "id": "component/time-picker/pitfall/6",
       "scope": "time-picker",
       "title": "TimePicker",
-      "rule": "与 `_mui` 的 [TimeField](../_mui/time-field.md) **不共享值格式**（那份对外是完整 ISO 时间戳， 本组件是时刻串）。同一个表单里别混用。",
+      "rule": "与 [TimeField](../time-field/time-field.md) **共享同一套值格式**（都是定宽 `\"HH:mm[:ss]\"`）， 两者可以直接互换，甚至同一个字段按屏幕宽度切换用哪个都行 —— 区别只在交互方式（列选 vs 键盘录入）。",
       "source": "packages/ui/src/time-picker/time-picker.md"
     },
     {
@@ -7134,27 +7209,34 @@
   "confusables": [
     {
       "id": "confusable/1",
+      "when": "单个日期选择（输入框 + 弹层日历）",
+      "pick": "DatePicker",
+      "notThis": "DateField",
+      "why": "DateField 是 0.15.0 之前的名字，已改名为 DatePicker（picker=\"date|month|year\" 三粒度）；要不带浮层的常驻面板用 Calendar"
+    },
+    {
+      "id": "confusable/2",
       "when": "需要带状态色的文字标签",
       "pick": "Tag",
       "notThis": "Badge",
       "why": "Badge 是计数/圆点角标（props 为 count/dot/content/max/showZero），没有 variant；Tag 才有 variant + tone"
     },
     {
-      "id": "confusable/2",
+      "id": "confusable/3",
       "when": "需要带文字的分隔线",
       "pick": "Divider",
       "notThis": "Separator",
       "why": "Separator 是纯几何分隔线（role=separator），不带文字槽；Divider 支持左/中/右文字与 dashed"
     },
     {
-      "id": "confusable/3",
+      "id": "confusable/4",
       "when": "表示部署/构建的生命周期状态",
       "pick": "DeployStatus",
       "notThis": "StatusDot",
       "why": "StatusDot 表示健康态（在线/离线/异常）；DeployStatus 是部署六态，building 会转圈"
     },
     {
-      "id": "confusable/4",
+      "id": "confusable/5",
       "when": "标题分级",
       "pick": "Heading size 用 \"base\"",
       "notThis": "size=\"md\"",
@@ -7162,8 +7244,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 363,
-    "componentAdvisories": 993,
-    "totalAdvisories": 1002
+    "componentDocs": 366,
+    "componentAdvisories": 1012,
+    "totalAdvisories": 1019
   }
 }

@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.14.0 · 367 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.14.0 · 366 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。
 
@@ -2717,73 +2717,92 @@ import { ButtonGroup } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Calendar
 
-> 日历 · MUI X 桥(DateCalendar) + 对外 ISO 字符串受控 + 瑚琏 token · forms/datetime · MUI 桥
+> 日历面板 · 自研零依赖(日/月/年三层下钻·常驻不带浮层) + min-max/disabledDate/今天快捷 · 定宽字符串受控 · forms/datetime
 
 ## 何时用
 
-需要在页面内**常驻铺开**一个月历面板让用户挑日期时用（如日程、筛选侧栏）。若想要点击触发、弹层选日期且带输入框，用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)；要选一段区间用 [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker)；要连时间一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)。
+需要一块**常驻铺开**的月历时用：仪表盘侧栏的日期导航、预约页的选日区、任何「面板本身就是界面一部分」
+的场景。它不带触发器也不带浮层。
+
+要「输入框 + 点开才出日历」用 [DatePicker](https://hulianui.haloritual.com/components/date-picker) —— 它的弹层里就是本组件，
+两者共用同一套下钻与禁用逻辑，行为完全一致。选一段区间用
+[DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker)；连时间一起选用
+[DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)。
+
+> 本组件在 0.15.0 之前是 MUI X `DateCalendar` 的桥接件，要装四个 optional peer 并挂
+> `MuiBridgeProvider`。现在是零依赖自研，装库即用。
 
 ## 导入
 ```ts
-import { Calendar } from "@hulianui/ui/date-pickers"
+import { Calendar } from "@hulianui/ui"
 ```
-
-> 日期族自 0.15.0 起**不在根 barrel** 里，必须走 `date-pickers` 子路径；同时自行安装四个 optional peer
-> （不用日期族的项目一个都不用装，这正是移出根 barrel 的目的）：
->
-> ```bash
-> pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
-> ```
-
-> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
-> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
-> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
-> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
->
-> ```tsx
-> import { MuiBridgeProvider } from "@hulianui/ui/date-pickers"
->
-> <MuiBridgeProvider>
->   <App />
-> </MuiBridgeProvider>
-> ```
 
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | ISO 字符串受控值；传入即受控 |
-| defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| minDate | `string` | — | 可选最早日期（ISO），早于此禁选 |
-| maxDate | `string` | — | 可选最晚日期（ISO），晚于此禁选 |
-| disabled | `boolean` | `false` | 整体禁用 |
-| readOnly | `boolean` | `false` | 只读：可查看不可改 |
-| className | `string` | — | 容器类名 |
+| value | `string \| null` | — | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
+| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，同时决定值形状与面板起始层 |
+| defaultMonth | `string` | 随 `value` | 面板初始停留的月份（任意可解析日期串），与选中值无关。之后由内部导航接管 |
+| minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
+| maxDate | `string` | — | 最晚可选日期 |
+| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
+| showToday | `boolean` | `true` | 底部「今天 / 本月 / 今年」快捷 |
+| disabled | `boolean` | `false` | 整块置灰，连翻页都停掉 |
+| readOnly | `boolean` | `false` | 可翻页浏览，但选不动 |
+| aria-label | `string` | `"日历"` | 面板无障碍名 |
+| className | `string` | — | 落在面板外层容器 |
 
 ## Events
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
+| onValueChange | `(value: string) => void` | 选中回调。面板内的**下钻不会触发**，只有真正选到 `picker` 那一层才回调；面板没有清空入口，所以不回传 `null` |
 
 ## 示例
 ```tsx
-function Demo() {
-  const [v, setV] = useState<string | null>("2026-06-03");
-  return <Calendar value={v} onValueChange={setV} />;
-}
-```
-```tsx
-<Calendar defaultValue="2026-06-15" />
+// 基础：值是 ISO 日期串
+<Calendar defaultValue="2026-06-08" />
+
+// 受控
+const [date, setDate] = useState<string | null>(null);
+<Calendar value={date} onValueChange={setDate} />
+
+// 选月份 / 选年份（值形状随之变成 YYYY-MM / YYYY）
+<Calendar picker="month" defaultValue="2026-06" />
+<Calendar picker="year" defaultValue="2026" />
+
+// 没有值，但想从九月开始看
+<Calendar defaultMonth="2026-09-01" />
+
+// 限定范围 + 禁用周末
+<Calendar
+  minDate="2026-06-01"
+  maxDate="2026-06-30"
+  disabledDate={(iso) => {
+    const day = new Date(`${iso}T00:00:00`).getDay();
+    return day === 0 || day === 6;
+  }}
+/>
 ```
 
 ## 禁忌 / 坑
 
-- 受控/非受控二选一：给了 `value` 就走受控、必须配 `onValueChange` 才能改动；只想要初值用 `defaultValue`，别同时给。
-- 对外值恒为 ISO 字符串（非 Date 对象），回调 `onValueChange` 也回传 ISO 或 null，跨组件传值直接用字符串即可。
+- **值是定宽文本，不是 `Date`**：`"YYYY-MM-DD"` 定宽 → 字典序即时间序，区间比较可以直接比字符串，
+  也避开了 `new Date("2026-06-08").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。
+- `onValueChange` 的参数类型是 `string` 而非 `string | null`：面板没有清空入口。
+  需要「可清空」用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)，它的触发器上带清除按钮。
+- **下钻不回调**：`picker="date"` 时点标题上卷到月视图、再点某个月，只是把光标挪过去，不算选中，
+  只有点到日格才提交。写测试时别把「点了 9 月」当成一次选值。
+- `disabledDate` 在 `date` 粒度下逐日调用（一屏 42 次），请保持它是纯计算 —— 别在里面发请求或建对象。
+  月/年粒度下只对该月/该年首日调一次，**判据也随之变粗**：想精确到天就别用粗粒度 picker。
+- `disabled` 与 `readOnly` 不是一回事：`readOnly` 还能翻页浏览，`disabled` 连翻页按钮都禁掉。
+- 面板宽度固定 `15.75rem`（7 列 × 2.25rem），不做响应式收窄 —— 日历一挤压就点不准。
+  要塞进更窄的容器请自行缩放。
 
 ## 相关
-[DatePicker](https://hulianui.haloritual.com/components/date-picker) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [Button](https://hulianui.haloritual.com/components/button) · [ShimmerButton](https://hulianui.haloritual.com/components/shimmer-button)
+[DatePicker](https://hulianui.haloritual.com/components/date-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [TimePicker](https://hulianui.haloritual.com/components/time-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [Scheduler](https://hulianui.haloritual.com/components/scheduler)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Cascader
@@ -3438,24 +3457,25 @@ const [codes, setCodes] = useState<string[]>([]);
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
 
 <!-- ════════════════════════════════════════════════════════ -->
-# DateField
+# DatePicker
 
-> 单日期选择 · 自研零依赖(日/月/年三粒度·面板逐层下钻) + Popover 引擎 + min-max/disabledDate · 不经 MUI 桥 · forms/datetime
+> 单日期选择 · 自研零依赖(触发器 + Popover 罩 Calendar 面板·日/月/年三粒度) + min-max/disabledDate/清除 · forms/datetime
 
 ## 何时用
 
-表单里选**一个**日期、月份或年份时用。它是零依赖自研件，不牵扯 MUI / emotion，也**不需要挂
-`MuiBridgeProvider`** —— 这正是它与 `_mui` 那份 [DatePicker](https://hulianui.haloritual.com/components/date-picker) 的分工：
-只想要一个日期选择器就用本组件；已经因为别的原因把 MUI 桥引进来了、且需要 MUI X 的高级视图，
-才用那份。
+表单里选**一个**日期、月份或年份时用。触发器 + 弹层，弹层里就是 [Calendar](https://hulianui.haloritual.com/components/calendar)
+面板本身 —— 两者共用同一套下钻与禁用逻辑，所以行为完全一致。
 
+要面板常驻铺开、不带触发器和浮层，直接用 [Calendar](https://hulianui.haloritual.com/components/calendar)；
 选一段区间用 [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker)；
-要月历常驻铺开（无触发器）用 [Calendar](https://hulianui.haloritual.com/components/calendar)；连时间一起选用
-[DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)。
+连时间一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)。
+
+> 本组件在 0.15.0 之前叫 `DateField`，同期还存在一个基于 MUI X 的 `DatePicker`。
+> 那份桥接件已随整个 `_mui` 目录移除，这个名字现在只指向这个自研零依赖实现。
 
 ## 导入
 ```ts
-import { DateField } from "@hulianui/ui"
+import { DatePicker } from "@hulianui/ui"
 ```
 
 ## Props
@@ -3486,18 +3506,18 @@ import { DateField } from "@hulianui/ui"
 ## 示例
 ```tsx
 // 基础：值是 ISO 日期串
-<DateField defaultValue="2026-06-08" />
+<DatePicker defaultValue="2026-06-08" />
 
 // 受控
 const [date, setDate] = useState<string | null>(null);
-<DateField value={date} onValueChange={setDate} />
+<DatePicker value={date} onValueChange={setDate} />
 
 // 选月份 / 选年份（值形状随之变成 YYYY-MM / YYYY）
-<DateField picker="month" defaultValue="2026-06" />
-<DateField picker="year" defaultValue="2026" />
+<DatePicker picker="month" defaultValue="2026-06" />
+<DatePicker picker="year" defaultValue="2026" />
 
 // 限定范围 + 禁用周末
-<DateField
+<DatePicker
   minDate="2026-06-01"
   maxDate="2026-06-30"
   disabledDate={(iso) => {
@@ -3518,96 +3538,20 @@ const [date, setDate] = useState<string | null>(null);
   月/年粒度下只对该月/该年首日调一次，**判据也随之变粗**：想精确到天就别用粗粒度 picker。
 - 面板标题可点，逐层上卷 date → month → year；`picker` 决定「点到哪一层就提交」，
   所以 `picker="date"` 时点月份只是下钻，不会提交。
-- 与 `_mui` 的 [DatePicker](https://hulianui.haloritual.com/components/date-picker) 是两个独立组件，**不共享值格式**（那份对外是完整 ISO
-  时间戳，本组件是日期串）。同一个表单里别混用。
+- 从 0.15.0 之前的 MUI 版 `DatePicker` 迁过来时注意**值格式变了**：那份对外是完整 ISO 时间戳，
+  这份是定宽日期串。另外 `views` / `openTo` 合并成了 `picker`，`label` 换成 `placeholder` + `aria-label`。
 
 ## 相关
-[DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [DatePicker](https://hulianui.haloritual.com/components/date-picker) · [Calendar](https://hulianui.haloritual.com/components/calendar) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [ColorField](https://hulianui.haloritual.com/components/color-field)
-
-<!-- ════════════════════════════════════════════════════════ -->
-# DatePicker
-
-> 日期选择 · MUI X 桥(输入+弹层日历) + ISO 受控 + min/max · forms/datetime · MUI 桥
-
-## 何时用
-
-表单里选**单个日期**、要带输入框 + 弹层日历时用。需要月历常驻铺开（无输入框）用 [Calendar](https://hulianui.haloritual.com/components/calendar)；选一段区间用 [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker)；连时间一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)。
-
-## 导入
-```ts
-import { DatePicker } from "@hulianui/ui/date-pickers"
-```
-
-> 日期族自 0.15.0 起**不在根 barrel** 里，必须走 `date-pickers` 子路径；同时自行安装四个 optional peer
-> （不用日期族的项目一个都不用装，这正是移出根 barrel 的目的）：
->
-> ```bash
-> pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
-> ```
-
-> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
-> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
-> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
-> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
->
-> ```tsx
-> import { MuiBridgeProvider } from "@hulianui/ui/date-pickers"
->
-> <MuiBridgeProvider>
->   <App />
-> </MuiBridgeProvider>
-> ```
-
-## Props
-
-| 名称 | 类型 | 默认 | 说明 |
-|------|------|------|------|
-| value | `string \| null` | — | ISO 字符串受控值；传入即受控 |
-| defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| minDate | `string` | — | 可选最早日期（ISO） |
-| maxDate | `string` | — | 可选最晚日期（ISO） |
-| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参是 `"YYYY-MM-DD"`；与 min/max 是「或」关系 |
-| views | `("year" \| "month" \| "day")[]` | `["year","day"]` | 面板视图层级。只选年传 `["year"]`、只选年月传 `["year","month"]`（对上 el-date-picker 的 `type="year"`/`"month"`） |
-| openTo | `"year" \| "month" \| "day"` | — | 打开时停在哪一层视图（须是 `views` 的成员） |
-| format | `string` | — | 输入框显示格式（dayjs format 串）。**只影响显示**，回调仍回传完整 ISO 时间戳 |
-| label | `string` | `"选择日期"` | 输入框 label |
-| disabled | `boolean` | `false` | 禁用 |
-| readOnly | `boolean` | `false` | 只读 |
-| className | `string` | — | 容器类名 |
-
-## Events
-
-| 事件 | 类型 | 说明 |
-|------|------|------|
-| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
-
-## 示例
-```tsx
-function Demo() {
-  const [v, setV] = useState<string | null>("2026-06-03");
-  return <DatePicker label="选择日期" value={v} onValueChange={setV} />;
-}
-```
-```tsx
-<DatePicker label="到期日" defaultValue="2026-06-15" />
-```
-
-## 禁忌 / 坑
-
-- 受控/非受控二选一：给 `value` 走受控须配 `onValueChange`；只想要初值用 `defaultValue`，别同时给。
-- 对外值恒为 ISO 字符串（非 Date），回调也回传 ISO 或 null。
-
-## 相关
-[Calendar](https://hulianui.haloritual.com/components/calendar) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [Button](https://hulianui.haloritual.com/components/button) · [ShimmerButton](https://hulianui.haloritual.com/components/shimmer-button)
+[Calendar](https://hulianui.haloritual.com/components/calendar) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [TimePicker](https://hulianui.haloritual.com/components/time-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [ColorField](https://hulianui.haloritual.com/components/color-field)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # DateRangePicker
 
-> 日期区间 · 自研零依赖双月范围日历(避开 MUI Pro 收费) + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控 · forms/datetime
+> 日期区间 · 自研零依赖双月范围日历 + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控 · forms/datetime
 
 ## 何时用
 
-选一段**日期区间**（起止两端）时用，自带双月并排 + 快捷预设（今天/最近7天/30天/本月）。选单个日期用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)；连时间一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)；月历常驻铺开用 [Calendar](https://hulianui.haloritual.com/components/calendar)。本组件零依赖自研，不引 MUI Pro。
+选一段**日期区间**（起止两端）时用，自带双月并排 + 快捷预设（今天/最近7天/30天/本月）。选单个日期用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)；连时间一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)；月历常驻铺开用 [Calendar](https://hulianui.haloritual.com/components/calendar)。全库日期族都是零依赖自研，值一律是定宽字符串。
 
 ## 导入
 ```ts
@@ -3669,79 +3613,90 @@ function Demo() {
 <!-- ════════════════════════════════════════════════════════ -->
 # DateTimePicker
 
-> 日期时间选择 · MUI X 桥(年月日+时钟一体弹层) + ISO 受控 + 步进/秒 · forms/datetime · MUI 桥
+> 日期时间选择 · 自研零依赖(左日历 + 右时/分/秒列一体弹层) + 步进/秒/此刻 · 边界只在压着 min-max 那天生效 · 定宽 YYYY-MM-DD HH:mm 受控 · forms/datetime
 
 ## 何时用
 
-需要在一个弹层里**同时选日期 + 时间**时用（预约、起止时间戳）。只选日期用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)；只选时间（HH:mm）用 [TimeField](https://hulianui.haloritual.com/components/time-field)；选日期区间用 [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker)。
+一个字段要同时定下「哪天」和「几点」时用：会议预约、任务截止、排班起止。
+弹层里左边是 [Calendar](https://hulianui.haloritual.com/components/calendar) 面板、右边是时间列，两边各选各的互不干扰。
+
+只要日期用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)；只要时间用
+[TimePicker](https://hulianui.haloritual.com/components/time-picker)（列选）或 [TimeField](https://hulianui.haloritual.com/components/time-field)（键盘录入）。
+把日期和时间拆成两个字段通常比这个组件更好填 —— 先想清楚是不是真需要一体化。
+
+> 本组件在 0.15.0 之前是 MUI X `DateTimePicker` 的桥接件，要装四个 optional peer 并挂
+> `MuiBridgeProvider`。现在是零依赖自研，装库即用。
 
 ## 导入
 ```ts
-import { DateTimePicker } from "@hulianui/ui/date-pickers"
+import { DateTimePicker } from "@hulianui/ui"
 ```
-
-> 日期族自 0.15.0 起**不在根 barrel** 里，必须走 `date-pickers` 子路径；同时自行安装四个 optional peer
-> （不用日期族的项目一个都不用装，这正是移出根 barrel 的目的）：
->
-> ```bash
-> pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
-> ```
-
-> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
-> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
-> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
-> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
->
-> ```tsx
-> import { MuiBridgeProvider } from "@hulianui/ui/date-pickers"
->
-> <MuiBridgeProvider>
->   <App />
-> </MuiBridgeProvider>
-> ```
 
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | ISO 字符串受控值（含日期+时间）；传入即受控 |
-| defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| minDateTime | `string` | — | 可选最早日期时间（ISO） |
-| maxDateTime | `string` | — | 可选最晚日期时间（ISO） |
-| minutesStep | `number` | — | 时间步进分钟数（如 5、15、30） |
-| withSeconds | `boolean` | `false` | 是否启用秒（默认仅到分钟） |
-| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定（只作用于日期部分，不筛时刻） |
-| format | `string` | — | 输入框显示格式（dayjs format 串）。**只影响显示**，回调仍回传完整 ISO 时间戳；不传时随 `withSeconds` 取默认 |
-| label | `string` | `"选择日期时间"` | 输入框 label |
-| disabled | `boolean` | `false` | 禁用 |
-| readOnly | `boolean` | `false` | 只读 |
-| className | `string` | — | 容器类名 |
+| value | `string \| null` | — | 受控值，`"YYYY-MM-DD HH:mm"`（`withSeconds` 时带秒），中间一个空格 |
+| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| withSeconds | `boolean` | `false` | 显示秒列，值形状随之带秒 |
+| minuteStep | `number` | `1` | 分钟列步进（常用 5 / 15 / 30） |
+| secondStep | `number` | `1` | 秒列步进 |
+| minDateTime | `string` | — | 最早可选时刻（含），形状同 `value`。日期部分限制日历，时间部分只在边界那天生效 |
+| maxDateTime | `string` | — | 最晚可选时刻（含） |
+| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`，**只筛日期不筛时刻** |
+| placeholder | `string` | `"选择日期时间"` | 触发器占位文本 |
+| displayFormat | `string` | 原样显示 | 触发器显示格式（dayjs format 串）。**只影响显示**，对外值形状不变 |
+| clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
+| showNow | `boolean` | `true` | 面板底部「此刻」快捷（按步进向下取整对齐） |
+| disabled | `boolean` | `false` | 整体置灰，面板打不开 |
+| readOnly | `boolean` | `false` | 面板可看，但选不动 |
+| aria-label | `string` | — | 触发器无障碍名（无可见 label 时给） |
+| className | `string` | — | 落在触发器外层容器 |
 
 ## Events
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
+| onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
 
 ## 示例
 ```tsx
-function Demo() {
-  const [v, setV] = useState<string | null>("2026-06-03T14:30:00");
-  return <DateTimePicker label="选择日期时间" value={v} onValueChange={setV} />;
-}
-```
-```tsx
-<DateTimePicker label="预约时间" defaultValue="2026-06-15T09:00:00" minutesStep={15} />
+// 基础
+<DateTimePicker defaultValue="2026-06-08 09:30" />
+
+// 受控
+const [dt, setDt] = useState<string | null>(null);
+<DateTimePicker value={dt} onValueChange={setDt} />
+
+// 带秒 + 15 分步进
+<DateTimePicker withSeconds minuteStep={15} defaultValue="2026-06-08 09:30:00" />
+
+// 限定区间：日期部分限制日历，时间部分只在压着边界的那天生效
+<DateTimePicker
+  defaultValue="2026-06-10 12:00"
+  minDateTime="2026-06-08 09:30"
+  maxDateTime="2026-06-20 18:00"
+/>
 ```
 
 ## 禁忌 / 坑
 
-- 受控/非受控二选一：给 `value` 走受控须配 `onValueChange`；只想要初值用 `defaultValue`，别同时给。
-- 对外值恒为 ISO 字符串（含时间，非 Date），回调也回传 ISO 或 null。
-- 默认只到分钟，要秒级须显式开 `withSeconds`；`minutesStep` 只约束分钟轮的步进，不会自动对齐 `defaultValue`。
+- **值是定宽文本，不是 `Date` 也不是 ISO 时间戳**：`"YYYY-MM-DD HH:mm"`，中间一个空格。
+  定宽 → 字典序即时间序，范围比较直接比字符串，也不会被时区搅进来。
+  从 0.15.0 之前的 MUI 版迁过来要改存量数据（那份对外是完整 ISO 时间戳）。
+- **`minDateTime`/`maxDateTime` 的时间部分只在压着边界的那一天生效**。选到区间内部的日子时，
+  一天 24 小时全开 —— 这是对的：「6 月 8 日 09:30 起可选」不该把 6 月 9 日的 00:00 也禁掉。
+  这条最容易实现错，也最容易被误报成 bug。
+- **选日期不关面板**：时间还没选完就关掉等于逼用户重开。要收起面板点「确定」，或点面板外。
+- 只选了日期没碰时间列时，时间按 `00:00` 补（若被 `minDateTime` 顶着，则补成那天的最早可选时刻）。
+- 反过来，没选日期就先点了时间列，日期会落到**今天** —— 否则这一下点了等于没点。
+- `disabledDate` 只筛日期。想按「星期几的某个时段」这种粒度禁选，本组件做不到，
+  需要在提交时自行校验。
+- `minuteStep` 只影响**列里能点到的候选**，不校验外部传入的 `value`：
+  传 `"2026-06-08 09:07"` 配 `minuteStep={15}` 时，07 分不在列里，分钟列会显示为无选中。
 
 ## 相关
-[Calendar](https://hulianui.haloritual.com/components/calendar) · [DatePicker](https://hulianui.haloritual.com/components/date-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [Button](https://hulianui.haloritual.com/components/button) · [ShimmerButton](https://hulianui.haloritual.com/components/shimmer-button)
+[DatePicker](https://hulianui.haloritual.com/components/date-picker) · [Calendar](https://hulianui.haloritual.com/components/calendar) · [TimePicker](https://hulianui.haloritual.com/components/time-picker) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [Scheduler](https://hulianui.haloritual.com/components/scheduler)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ElasticSlider
@@ -5052,7 +5007,6 @@ import { RainbowButton } from "@hulianui/ui"
 import { Rating } from "@hulianui/ui"
 ```
 
-> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
@@ -6121,85 +6075,103 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TimeField
 
-> 时间输入 · MUI X 桥(分段编辑 HH:mm 24h) + ISO 受控 · forms/datetime · MUI 桥
+> 时间分段输入 · 自研零依赖(时/分/秒各一段 spinbutton·↑↓ 调值/←→ 切段/数字键两位覆写) + min-max 钳制 · 定宽 HH:mm[:ss] 受控 · forms/datetime
 
 ## 何时用
 
-只选**时间**（HH:mm 24 小时制分段输入、无弹层）时用。要日期 + 时间一体弹层用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)；只选日期用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)。
+录入密集的表单里用：手不离键盘，`14` `30` 四下按完就录好了，不用抬手去点浮层。
+排班表、考勤、批量改时间这类一屏要填十几个时间的界面尤其合适。
+
+要「点着选」用 [TimePicker](https://hulianui.haloritual.com/components/time-picker) —— 它是列选式浮层，
+带 `minuteStep` 步进和「此刻」，适合偶尔填一个、且希望限定在整点/半点的场景。
+连日期一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)。
+
+> 本组件在 0.15.0 之前是 MUI X `TimeField` 的桥接件，要装四个 optional peer 并挂
+> `MuiBridgeProvider`。现在是零依赖自研，装库即用，且补上了 min/max 与秒段。
 
 ## 导入
 ```ts
-import { TimeField } from "@hulianui/ui/date-pickers"
+import { TimeField } from "@hulianui/ui"
 ```
-
-> 日期族自 0.15.0 起**不在根 barrel** 里，必须走 `date-pickers` 子路径；同时自行安装四个 optional peer
-> （不用日期族的项目一个都不用装，这正是移出根 barrel 的目的）：
->
-> ```bash
-> pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
-> ```
-
-> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
-> 桥主题把 `theme.alpha` 重写成 `color-mix`，不挂 Provider 时 MUI 核心件（如日期族头部的
-> IconButton）会对 `var(--color-*)` 调 `alpha()` 并直接抛 `Unsupported color` —— 真实浏览器同样触发，
-> 不是只在测试里出现。整个应用挂一次即可（通常在根 layout）。
->
-> ```tsx
-> import { MuiBridgeProvider } from "@hulianui/ui/date-pickers"
->
-> <MuiBridgeProvider>
->   <App />
-> </MuiBridgeProvider>
-> ```
 
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | ISO 字符串受控值；传入即受控 |
-| defaultValue | `string` | — | ISO 字符串非受控默认值 |
-| label | `string` | `"选择时间"` | 输入框 label |
-| disabled | `boolean` | `false` | 禁用 |
-| readOnly | `boolean` | `false` | 只读 |
-| className | `string` | — | 容器类名 |
+| value | `string \| null` | — | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`）。24 小时制、定宽补零 |
+| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| withSeconds | `boolean` | `false` | 显示秒段，值形状随之带秒 |
+| minTime | `string` | — | 最早可选时刻（含），形状同 `value` |
+| maxTime | `string` | — | 最晚可选时刻（含） |
+| clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
+| disabled | `boolean` | `false` | 整体置灰，各段不可聚焦 |
+| readOnly | `boolean` | `false` | 改不动值，但还能切段浏览 |
+| aria-label | `string` | `"时间"` | 整个输入框的无障碍名（各段自带「小时/分钟/秒」标签） |
+| className | `string` | — | 落在外层容器 |
 
 ## Events
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(iso: string \| null) => void` | 受控回调，回传 ISO 或 null（替代 MUI 的 onChange） |
+| onValueChange | `(value: string \| null) => void` | **只有整段输完才触发**；清空或退格清段回传 `null` |
+
+## 键盘
+
+| 按键 | 作用 |
+|------|------|
+| `↑` / `↓` | 当前段 ±1，段内循环（23 → 0）。空段起步：`↑` 给最小、`↓` 给最大 |
+| `←` / `→` | 切换段，两端不越界 |
+| `0`–`9` | 两位缓冲覆写：输满两位自动跳下一段；首位补零后已超范围（小时按 `3`）则一位定形 |
+| `Backspace` / `Delete` | 清空当前段 |
 
 ## 示例
 ```tsx
-function Demo() {
-  const [v, setV] = useState<string | null>("2026-06-03T09:30:00");
-  return <TimeField label="选择时间" value={v} onValueChange={setV} />;
-}
-```
-```tsx
-<TimeField label="起始时间" defaultValue="2026-06-03T08:00:00" />
+// 基础
+<TimeField defaultValue="09:30" />
+
+// 受控
+const [time, setTime] = useState<string | null>(null);
+<TimeField value={time} onValueChange={setTime} />
+
+// 带秒
+<TimeField withSeconds defaultValue="09:30:15" />
+
+// 限定区间（整段输完才钳制）
+<TimeField defaultValue="12:00" minTime="09:30" maxTime="18:00" />
 ```
 
 ## 禁忌 / 坑
 
-- 受控/非受控二选一：给 `value` 走受控须配 `onValueChange`；只想要初值用 `defaultValue`，别同时给。
-- 对外值仍是完整 ISO 字符串（带日期部分，只是时间可编辑），不是裸 `HH:mm`；回调回传 ISO 或 null。
+- **半截时间不回调**：只输了小时、分钟还空着时 `onValueChange` 不触发，值仍是上一次的。
+  想拿到「正在编辑」的中间态是拿不到的 —— 那是内部编辑态，刻意不外泄。
+- **`minTime`/`maxTime` 只在整段输完那一刻钳制，不做段级限制**。这是刻意的：段级判定会让
+  「先输 23 点、再输分钟」这类顺序根本没法输（min=09:30 时刚输完 23 点的瞬间还没有分钟，
+  会当场被拽回 09）。代价是用户可能看到自己输的 `23:00` 被改成 `18:00`。
+- **第二位放不下时按新首位重来，不钳到边界**：小时段先按 `2` 再按 `9`，得到的是 `09` 而不是 `23`。
+  29 点不存在，钳成 23 点等于凭空造了个用户没按过的值。
+- 边界值的形状会被自动补齐：`maxTime="18:00"` 在 `withSeconds` 下按 `18:00:00` 理解。
+  别指望它表示「18:00:59 之前都行」。
+- 段是 `<span role="spinbutton">` 而不是三个 `<input>`：三个真 input 会各自吃掉浏览器的
+  输入法/自动填充/校验行为，而这里要的恰恰是完全自定义的两位缓冲逻辑。
+  因此**它不会参与原生表单提交**，值请自行受控收集。
+- `readOnly` 仍可用 `←→` 切段（只读不等于不能看），但 `↑↓` 与数字键无效。
 
 ## 相关
-[Calendar](https://hulianui.haloritual.com/components/calendar) · [DatePicker](https://hulianui.haloritual.com/components/date-picker) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [Button](https://hulianui.haloritual.com/components/button) · [ShimmerButton](https://hulianui.haloritual.com/components/shimmer-button)
+[TimePicker](https://hulianui.haloritual.com/components/time-picker) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DatePicker](https://hulianui.haloritual.com/components/date-picker) · [Calendar](https://hulianui.haloritual.com/components/calendar) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [InputOtp](https://hulianui.haloritual.com/components/input-otp)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TimePicker
 
-> 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · 不经 MUI 桥 · forms/datetime
+> 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · forms/datetime
 
 ## 何时用
 
-要「点开面板挑时刻」时用（排班、预约、营业时间）。零依赖自研，不牵扯 MUI / emotion，
-也**不需要挂 `MuiBridgeProvider`**。
+要「点开面板挑时刻」时用（排班、预约、营业时间）—— 列选式浮层，带步进与「此刻」，
+适合把可选值限定在整点/半点。
 
-只想要键盘分段输入、不要浮层，用 [TimeField](https://hulianui.haloritual.com/components/time-field)（MUI 桥）。
-连日期一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)；只选日期用 [DateField](https://hulianui.haloritual.com/components/date-field)。
+要手不离键盘地录入，用 [TimeField](https://hulianui.haloritual.com/components/time-field)（分段输入，无浮层）。
+连日期一起选用 [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker)；
+只选日期用 [DatePicker](https://hulianui.haloritual.com/components/date-picker)。
 
 ## 导入
 ```ts
@@ -6270,11 +6242,11 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 - `minuteStep` 只影响**候选列表**，不校验外部传进来的值。`value="09:37"` 配 `minuteStep={15}`
   时面板里没有对应项、分钟列不会有高亮 —— 需要对齐请自己先过一遍 `snapToStep`。
 - `withSeconds` 切换会改变对外值形状（`"09:30"` ↔ `"09:30:15"`）。切换时请一并处理存量值。
-- 与 `_mui` 的 [TimeField](https://hulianui.haloritual.com/components/time-field) **不共享值格式**（那份对外是完整 ISO 时间戳，
-  本组件是时刻串）。同一个表单里别混用。
+- 与 [TimeField](https://hulianui.haloritual.com/components/time-field) **共享同一套值格式**（都是定宽 `"HH:mm[:ss]"`），
+  两者可以直接互换，甚至同一个字段按屏幕宽度切换用哪个都行 —— 区别只在交互方式（列选 vs 键盘录入）。
 
 ## 相关
-[DateField](https://hulianui.haloritual.com/components/date-field) · [TimeField](https://hulianui.haloritual.com/components/time-field) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [Calendar](https://hulianui.haloritual.com/components/calendar) · [Scheduler](https://hulianui.haloritual.com/components/scheduler)
+[TimeField](https://hulianui.haloritual.com/components/time-field) · [DatePicker](https://hulianui.haloritual.com/components/date-picker) · [DateTimePicker](https://hulianui.haloritual.com/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/components/date-range-picker) · [Calendar](https://hulianui.haloritual.com/components/calendar) · [Scheduler](https://hulianui.haloritual.com/components/scheduler)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Toggle
@@ -13727,7 +13699,6 @@ import { StaggeredMenu } from "@hulianui/ui"
 import { Stepper } from "@hulianui/ui"
 ```
 
-> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
@@ -13755,11 +13726,11 @@ const steps = [{ label: "下单" }, { label: "付款" }, { label: "发货" }, { 
 <!-- ════════════════════════════════════════════════════════ -->
 # Steps
 
-> 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(替代 MUI Stepper 桥 · 分步表单/审批流) · navigation/inpage
+> 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(分步表单/审批流) · navigation/inpage
 
 ## 何时用
 
-零依赖、数据驱动的步骤条，用于分步表单、订单流转、审批流的进度展示，支持水平/垂直、状态派生、可点击受控、描述/图标。是 [Stepper](https://hulianui.haloritual.com/components/stepper)（MUI 桥）的首选替代——新代码一律用 Steps，功能更全且不引 MUI。
+零依赖、数据驱动的步骤条，用于分步表单、订单流转、审批流的进度展示，支持水平/垂直、状态派生、可点击受控、描述/图标。与 [Stepper](https://hulianui.haloritual.com/components/stepper) 的分工：Stepper 是轻量的进度指示，Steps 功能更全（状态派生、可点击受控、描述/图标），分步流程优先用 Steps。
 
 ## 导入
 ```ts

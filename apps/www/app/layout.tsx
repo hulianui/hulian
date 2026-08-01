@@ -1,13 +1,7 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
-import {
-  ThemeProvider,
-} from "@hulianui/ui";
-import {
-  MuiBridgeProvider,
-} from "@hulianui/ui/date-pickers";
+import { ThemeProvider } from "@hulianui/ui";
 import { themeScript } from "./theme-script";
 import { MswProvider } from "../components/msw-provider";
 import { RouteProgress } from "../components/route-progress";
@@ -56,11 +50,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider defaultSetting="system">
           <RouteProgress />
           <RegionMirrorBanner />
-          <AppRouterCacheProvider options={{ key: "mui" }}>
-            <MuiBridgeProvider>
-              <MswProvider>{children}</MswProvider>
-            </MuiBridgeProvider>
-          </AppRouterCacheProvider>
+          <MswProvider>{children}</MswProvider>
         </ThemeProvider>
       </body>
     </html>

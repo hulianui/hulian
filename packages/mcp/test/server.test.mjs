@@ -118,7 +118,7 @@ test("get_conventions 返回全局铁律与易混淆件", async () => {
   const [res] = await rpc([call(7, "get_conventions")]);
   const body = bodyOf(res);
   assert.match(body, /--color-/, "应含色彩 token 前缀约束");
-  assert.match(body, /MuiBridgeProvider/, "应含 MUI 桥 Provider 约束");
+  assert.match(body, /ThemeProvider/, "应含 ThemeProvider 挂载约束");
   assert.match(body, /Tag/, "应含 Badge↔Tag 易混淆提示");
   assert.match(body, /可执行门禁/, "应明确哪些规则由 guard 执行");
   assert.match(body, /建议/, "应把文档经验标成建议而非硬门禁");

@@ -10,11 +10,11 @@ status: enriched
 
 # DateRangePicker
 
-> 日期区间 · 自研零依赖双月范围日历(避开 MUI Pro 收费) + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控 · forms/datetime
+> 日期区间 · 自研零依赖双月范围日历 + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控 · forms/datetime
 
 ## 何时用
 
-选一段**日期区间**（起止两端）时用，自带双月并排 + 快捷预设（今天/最近7天/30天/本月）。选单个日期用 [DatePicker](../_mui/date-picker.md)；连时间一起选用 [DateTimePicker](../_mui/date-time-picker.md)；月历常驻铺开用 [Calendar](../_mui/calendar.md)。本组件零依赖自研，不引 MUI Pro。
+选一段**日期区间**（起止两端）时用，自带双月并排 + 快捷预设（今天/最近7天/30天/本月）。选单个日期用 [DatePicker](../date-picker/date-picker.md)；连时间一起选用 [DateTimePicker](../date-time-picker/date-time-picker.md)；月历常驻铺开用 [Calendar](../calendar/calendar.md)。全库日期族都是零依赖自研，值一律是定宽字符串。
 
 ## 导入
 ```ts
@@ -71,4 +71,4 @@ function Demo() {
 - `disabledDate` 入参是 ISO 字符串，自己拼 `new Date(iso + "T00:00:00")` 算 getDay 时注意时区，别直接 `new Date(iso)`（会按 UTC 解析偏一天）。
 
 ## 相关
-[Calendar](../_mui/calendar.md) · [DatePicker](../_mui/date-picker.md) · [DateTimePicker](../_mui/date-time-picker.md) · [TimeField](../_mui/time-field.md) · [Button](../button/button.md) · [ShimmerButton](../shimmer-button/shimmer-button.md)
+[Calendar](../calendar/calendar.md) · [DatePicker](../date-picker/date-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [TimeField](../time-field/time-field.md) · [Button](../button/button.md) · [ShimmerButton](../shimmer-button/shimmer-button.md)

@@ -25,15 +25,13 @@ import {
   dayjs,
   startOfWeekISO,
   toast,
+  Calendar,
+  DatePicker,
   type DateRangeValue,
   type SchedulerEvent,
   type SchedulerSlot,
   type SchedulerView,
 } from "@hulianui/ui";
-import {
-  Calendar,
-  DatePicker,
-} from "@hulianui/ui/date-pickers";
 import { CalendarPlus, RotateCw } from "lucide-react";
 import {
   buildAppointments,
@@ -226,7 +224,7 @@ export function SchedulerShell() {
                 setView("day");
               }
             }}
-            label="选择日期"
+            aria-label="选择日期"
           />
         </Card>
 

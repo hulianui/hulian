@@ -17,15 +17,11 @@
 #     node_modules/@types，工程一旦落在仓库目录下就会捡到 monorepo 根的 @types/node，
 #     门禁形同虚设 —— issue 报告者本机看不到错误正是这个原因。
 #
-# 跑两个互斥的消费方场景（**必须是两个隔离工程，不能合并**）：
-#   A. baseline —— 不装 MUI/emotion。这是绝大多数消费方的样子，也是「根 barrel 不得
-#      可达 @mui/*」这条契约的唯一证明：一旦有人把日期族挪回根 barrel 或把 MUI 从
-#      optional peer 改回 dependency，这一场景当场 TS2307。
-#   B. date-pickers —— 装上 MUI/emotion，走 `@hulianui/ui/date-pickers` 子路径。日期族
-#      在 0.15 起是 opt-in 子路径导入，而 `src/_mui/` 既不在根 barrel 也不在 showcase
-#      barrel，库内 tsc 走相对路径、workspace 链接走目录直读，**两者都测不到这条 exports
-#      映射**。没有这一场景，日期族的对外入口就是零覆盖。
-#   两个场景装的依赖是互斥的（A 的断言依赖「没有 MUI」），所以必须各建各的工程。
+# 消费方工程只装库声明的 peer（react / react-dom / @base-ui/react / motion / tailwindcss），
+# **一个可选依赖都不装** —— 0.15.0 起 @hulianui/ui 没有 optional peer 了，日期族自研为零依赖
+# 并回到根 barrel。因此「根 barrel 拉进来的东西是不是都装得上」这件事，这一个场景就能全证。
+# 顺带钉死一条回归：日期族必须能从根 barrel 导入（见下面 app.tsx 里的 DatePicker 等），
+# 谁要是再把它们挪去子路径、或引入需要额外安装的依赖，这里当场 TS2307。
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -56,22 +52,6 @@ echo "▶ 打包 @hulianui/tokens 与 @hulianui/ui → $PKG_DIR"
 
 TOKENS_TGZ="$(ls "$PKG_DIR"/hulianui-tokens-*.tgz)"
 UI_TGZ="$(ls "$PKG_DIR"/hulianui-ui-*.tgz)"
-
-# 场景 B 要装的 MUI 系列版本从 packages/ui 的 **devDependencies** 里读，而不是硬编码、
-# 也不是读 peerDependencies。peer 声明的是 `>=9.2.0` 这种开区间，照它装会拉到最新大版本，
-# 门禁就会因为上游发版而无关地变红；devDependencies 钉的才是仓库自己验证过的那一档。
-MUI_DEPS_JSON="$(node -e '
-const pkg = require(process.argv[1]);
-const dev = pkg.devDependencies || {};
-const want = ["@mui/material", "@mui/x-date-pickers", "@emotion/react", "@emotion/styled"];
-const missing = want.filter((n) => !dev[n]);
-if (missing.length) {
-  console.error("✗ packages/ui 的 devDependencies 里缺 " + missing.join(" / ") + "，场景 B 无法确定该装哪个版本");
-  process.exit(1);
-}
-// dayjs 是日期族的运行时依赖，在 ui 的 dependencies 里，消费方由 ui 自己带，无需显式装。
-process.stdout.write(want.map((n) => JSON.stringify(n) + ": " + JSON.stringify(dev[n])).join(",\n    "));
-' "$REPO_ROOT/packages/ui/package.json")"
 
 # 有意不写 compilerOptions.types —— 但两代 tsc 下这个「不写」的含义**不同**，别按旧理解读：
 #   - TS ≤6：默认自动引入全部可见的 @types。于是 @types/node 一旦从某条依赖链溜进来，
@@ -116,7 +96,6 @@ install_and_typecheck() {
 
   # 断言 1：@types/node 不得出现在消费方的类型可见范围内。
   # 这不是洁癖 —— 它一旦在，process/Buffer 之类就全都合法了，本门禁的检出能力直接归零。
-  # 场景 B 装了 MUI 系列后同样适用（实测 MUI/emotion 的依赖链不带 @types/node）。
   if [ -e "$app_dir/node_modules/@types/node" ]; then
     echo "✗ [$label] 消费方工程里出现了 @types/node，门禁的检出能力已归零，请查明是哪条依赖链带进来的" >&2
     exit 1
@@ -136,13 +115,10 @@ install_and_typecheck() {
   echo "✓ [$label] 消费方 typecheck 通过（${app_dir}）"
 }
 
-# ── 场景 A：baseline（不装 MUI）────────────────────────────────────────────────
-# 空白消费方工程：只有 react / react-dom / typescript + 两个 tarball + 库声明的**非可选** peer。
+# 空白消费方工程：只有 react / react-dom / typescript + 两个 tarball + 库声明的 peer。
 # peer 必须装（消费方本来也得装，见 docs/consuming.md），否则失败原因会退化成
 # 「找不到模块」，反倒盖住我们真正想抓的类型环境问题。
 # 注意这里没有 @types/node —— 那正是被测的变量，别随手加回来。
-# 同样注意这里**没有** @mui/* 与 @emotion/*：它们是 optional peer，此场景的价值正在于
-# 证明「不装也能用」，随手补上就等于把契约测没了。
 APP_A="$WORKDIR/app-baseline"
 rm -rf "$APP_A"
 mkdir -p "$APP_A/src"
@@ -179,7 +155,7 @@ write_tsconfig "$APP_A"
 # 库内 tsc 走相对路径、workspace 链接走目录直读，两者都**测不到** exports 映射写错。
 # 取样刻意覆盖三类：普通组件目录、没有 index.ts 需专门补的基础设施目录（theme/lib）。
 cat > "$APP_A/src/app.tsx" <<'TSX'
-import { Button } from "@hulianui/ui";
+import { Button, Calendar, DatePicker, DateTimePicker, TimeField } from "@hulianui/ui";
 import * as showcase from "@hulianui/ui/showcase";
 import { Tag } from "@hulianui/ui/tag";
 import { ThemeProvider } from "@hulianui/ui/theme";
@@ -189,6 +165,12 @@ export function App() {
   return (
     <ThemeProvider>
       <Tag className={cn("mr-2")}>标签</Tag>
+      {/* 日期族：0.15.0 起自研零依赖并回到根 barrel。列在这里是为了钉死回归 ——
+          谁再把它们挪去子路径、或让它们依赖需要另外安装的包，这个工程当场编不过。 */}
+      <Calendar defaultValue="2026-06-08" />
+      <DatePicker defaultValue="2026-06-08" aria-label="日期" />
+      <DateTimePicker defaultValue="2026-06-08 09:30" aria-label="日期时间" />
+      <TimeField defaultValue="09:30" />
       <Button variant="solid" size="md" onClick={() => console.log(Object.keys(showcase).length)}>
         点我
       </Button>
@@ -197,84 +179,4 @@ export function App() {
 }
 TSX
 
-install_and_typecheck "$APP_A" "baseline · 无 MUI"
-
-# ── 场景 B：date-pickers opt-in 子路径（装 MUI）──────────────────────────────
-# 独立工程，在场景 A 的依赖上补齐四个 optional peer。这里刻意**不** import 根 barrel：
-# 本场景要证明的只有一件事 —— `./date-pickers` 与 `./date-pickers/showcase` 这两条
-# exports 条目在真实解析下成立，且日期族的组件与类型都能从子路径导出来。
-APP_B="$WORKDIR/app-date-pickers"
-rm -rf "$APP_B"
-mkdir -p "$APP_B/src"
-cat > "$APP_B/package.json" <<JSON
-{
-  "name": "hulian-consumer-smoke-date-pickers",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@hulianui/tokens": "file:$TOKENS_TGZ",
-    "@hulianui/ui": "file:$UI_TGZ",
-    "@base-ui/react": "^1.5.0",
-    "motion": "^12.40.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "tailwindcss": "^4.3.0",
-    $MUI_DEPS_JSON
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "typescript": "$CONSUMER_TS_VERSION"
-  }
-}
-JSON
-write_tsconfig "$APP_B"
-
-# 值类型与 Props 类型分开 import：前者验运行时导出，后者验 `export type` 那半边 ——
-# 类型导出漏了不会让值导入报错，只有真的拿类型去标注变量才暴露。
-cat > "$APP_B/src/app.tsx" <<'TSX'
-import {
-  Calendar,
-  DatePicker,
-  DateTimePicker,
-  TimeField,
-  MuiBridgeProvider,
-  hulianMuiTheme,
-} from "@hulianui/ui/date-pickers";
-import type {
-  CalendarProps,
-  DatePickerProps,
-  DateTimePickerProps,
-  TimeFieldProps,
-} from "@hulianui/ui/date-pickers";
-import * as dateShowcase from "@hulianui/ui/date-pickers/showcase";
-
-const calendarProps: CalendarProps = {};
-const dateProps: DatePickerProps = { value: "2026-08-01" };
-const dateTimeProps: DateTimePickerProps = {};
-const timeProps: TimeFieldProps = {};
-
-// MuiBridgeProvider 只吃 children（主题与 dayjs 本地化都在它内部装配好），
-// 所以 hulianMuiTheme 单独取一次 —— 它是给要自建 MUI ThemeProvider 的消费方用的导出。
-const bridgeTheme = hulianMuiTheme;
-
-export function App() {
-  return (
-    <MuiBridgeProvider>
-      <Calendar {...calendarProps} />
-      <DatePicker {...dateProps} />
-      <DateTimePicker {...dateTimeProps} />
-      <TimeField {...timeProps} />
-      <span>
-        {Object.keys(dateShowcase).length}
-        {bridgeTheme.palette.mode}
-      </span>
-    </MuiBridgeProvider>
-  );
-}
-TSX
-
-install_and_typecheck "$APP_B" "date-pickers · 装 MUI"
-
-echo "✓ 两个消费方场景全部通过（${WORKDIR}）"
+install_and_typecheck "$APP_A" "消费方"

@@ -60,4 +60,4 @@ const ref = useRef<HTMLDivElement>(null);
 - 已内置 `prefers-reduced-motion` 降级（smooth → auto），无需消费侧处理。
 
 ## 相关
-[Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [Stepper](../_mui/stepper.md)
+[Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [Stepper](../stepper/stepper.md)

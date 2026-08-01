@@ -25,7 +25,7 @@ test("conventions v2 将可执行规则与建议分开", () => {
   assert.ok(conventions.advisories.every((rule) => rule.id && rule.rule && rule.source));
 });
 
-test("conventions v2 覆盖五类稳定 matcher", () => {
+test("conventions v2 覆盖当前四类稳定 matcher", () => {
   const kinds = new Set(conventions.executableRules.map((rule) => rule.matcher.kind));
   assert.deepEqual(
     [...kinds].sort(),
@@ -34,7 +34,6 @@ test("conventions v2 覆盖五类稳定 matcher", () => {
       "forbidden-call",
       "forbidden-import",
       "forbidden-jsx-prop",
-      "required-import-companion",
     ],
   );
 });

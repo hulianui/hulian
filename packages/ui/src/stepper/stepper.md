@@ -21,7 +21,6 @@ status: enriched
 import { Stepper } from "@hulianui/ui"
 ```
 
-> ⚠️ **前置条件：本组件属 `_mui` 桥接族，必须置于 `MuiBridgeProvider` 之内。**
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |

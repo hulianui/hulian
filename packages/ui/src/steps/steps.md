@@ -10,11 +10,11 @@ status: enriched
 
 # Steps
 
-> 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(替代 MUI Stepper 桥 · 分步表单/审批流) · navigation/inpage
+> 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(分步表单/审批流) · navigation/inpage
 
 ## 何时用
 
-零依赖、数据驱动的步骤条，用于分步表单、订单流转、审批流的进度展示，支持水平/垂直、状态派生、可点击受控、描述/图标。是 [Stepper](../_mui/stepper.md)（MUI 桥）的首选替代——新代码一律用 Steps，功能更全且不引 MUI。
+零依赖、数据驱动的步骤条，用于分步表单、订单流转、审批流的进度展示，支持水平/垂直、状态派生、可点击受控、描述/图标。与 [Stepper](../stepper/stepper.md) 的分工：Stepper 是轻量的进度指示，Steps 功能更全（状态派生、可点击受控、描述/图标），分步流程优先用 Steps。
 
 ## 导入
 ```ts

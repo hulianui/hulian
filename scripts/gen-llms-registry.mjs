@@ -38,20 +38,10 @@ const PKG_DEPS = new Set([...Object.keys(PKG.dependencies || {}), ...Object.keys
 // universal framework peers — assumed everywhere, omitted from per-component deps to cut noise
 const UNIVERSAL_PEERS = new Set(["react", "react-dom", "tailwindcss"]);
 
-// 伴生 peer：**源码里永远扫不到、但少了就跑不起来**的那一类依赖。
-// scanDeps 是靠 grep import specifier 反推 npm 依赖的，而 emotion 是 MUI v9 的样式引擎 ——
-// 组件只 import `@mui/*`，emotion 由 MUI 自己在内部 require。于是 registry 单件安装
-// 日期族时会漏装 emotion，装完直接跑不起来（docs/consuming.md 让人装的是四个包，
-// registry 却只给三个）。这里按「谁带谁」补齐，别指望扫 import 能发现它们。
-const COMPANION_PEERS = new Map([
-  ["@mui/material", ["@emotion/react", "@emotion/styled"]],
-  ["@mui/x-date-pickers", ["@emotion/react", "@emotion/styled"]],
-]);
-
-// 组件的对外入口未必是根 barrel。日期族在 package.json 的 exports 里单挂了 `./date-pickers`
-// （映射到 src/_mui/index.ts）—— 因为 MUI 是 optional peer，放进根 barrel 就等于强制每个
-// 消费方的 tsc 去编译 `_mui/*.tsx`。这里从 exports 反推「目录 → 入口说明符」，
-// 而不是把 `_mui → ./date-pickers` 写死，将来再挂新的子路径入口时这里无需改动。
+// 组件的对外入口未必是根 barrel：package.json 的 exports 里可以给某个目录单挂子路径。
+// 这里从 exports 反推「目录 → 入口说明符」，而不是无条件拼根 barrel —— 0.15.0 之前日期族
+// 挂在 ./date-pickers 上，而 registry 照根 barrel 拼 import，给出的是一条导不进来的路径。
+// 当前没有任何子路径入口（这张表是空的），保留这段是为了下次再挂时不必重新想起这件事。
 const SUBPATH_ENTRY = new Map();
 for (const [key, value] of Object.entries(PKG.exports || {})) {
   if (key === "." || key.includes("*")) continue;
@@ -140,9 +130,6 @@ function scanDeps(dir) {
       const pkg = spec.startsWith("@") ? spec.split("/").slice(0, 2).join("/") : spec.split("/")[0];
       if (PKG_DEPS.has(pkg) && !UNIVERSAL_PEERS.has(pkg)) deps.add(pkg);
     }
-  }
-  for (const pkg of [...deps]) {
-    for (const companion of COMPANION_PEERS.get(pkg) || []) deps.add(companion);
   }
   return [...deps].sort();
 }

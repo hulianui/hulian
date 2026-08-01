@@ -38,8 +38,6 @@
   "exports": {
     ".": "./src/index.ts",
     "./showcase": "./src/showcase.ts",
-    "./date-pickers": "./src/_mui/index.ts",
-    "./date-pickers/showcase": "./src/_mui/showcase.ts",
     "./vitest-preset": "./vitest-preset.js",
     "./vite": {
       "types": "./vite.d.ts",
@@ -62,10 +60,6 @@
   },
   "peerDependencies": {
     "@base-ui/react": ">=1.0.0",
-    "@emotion/react": ">=11.14.0",
-    "@emotion/styled": ">=11.14.1",
-    "@mui/material": ">=9.2.0",
-    "@mui/x-date-pickers": ">=9.10.1",
     "motion": ">=11",
     "react": ">=18",
     "react-dom": ">=18",
@@ -74,18 +68,6 @@
   },
   "peerDependenciesMeta": {
     "vite": {
-      "optional": true
-    },
-    "@mui/material": {
-      "optional": true
-    },
-    "@mui/x-date-pickers": {
-      "optional": true
-    },
-    "@emotion/react": {
-      "optional": true
-    },
-    "@emotion/styled": {
       "optional": true
     }
   },
@@ -109,16 +91,13 @@
     "qrcode-generator": "^2.0.4",
     "react-colorful": "^5.8.0",
     "react-easy-crop": "^6.2.3",
+    "react-is": "^19.2.0",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "tiptap-markdown": "^0.9.0"
   },
   "devDependencies": {
     "@base-ui/react": "^1.6.0",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/material": "^9.2.0",
-    "@mui/x-date-pickers": "^9.10.1",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
