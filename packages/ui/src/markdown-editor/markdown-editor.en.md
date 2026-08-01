@@ -28,12 +28,12 @@ import { MarkdownEditor } from "@hulianui/ui"
 | value | `string` | — | Controlled markdown string |
 | defaultValue | `string` | — | Initial value when uncontrolled. |
 | name | `string` | — | Name of the hidden input used to bridge native forms and Field. |
-| placeholder | `string` | `"Enter Markdown…"` | Placeholder shown when the editor is empty. |
+| placeholder | `string` | — | Placeholder shown when the editor is empty. |
 | invalid | `boolean` | `false` | Applies the danger style; an enclosing Field may also drive this through `data-invalid`. |
 | disabled | `boolean` | `false` | Disables editing. |
 | minRows | `number` | `6` | Content area minimum height (rows) |
 | className | `string` | — | Additional class name for the editor shell. |
-| aria-label | `string` | — | Accessibility label |
+| aria-label | `string` | `"Markdown \u7f16\u8f91\u5668"` | Accessible name; the built-in Chinese copy means “Markdown editor.” |
 
 ## Events
 

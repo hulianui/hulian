@@ -30,8 +30,8 @@ import { CountrySelect, getCountry, flagEmoji, countrySearchText, filterCountrie
 | multiple | `boolean` | `false` | Multiple selection (chips) |
 | showEnglish | `boolean` | `true` | Whether to display the English name in the option line |
 | showDialCode | `boolean` | `false` | Whether the item line displays the international area code |
-| placeholder | `string` | — | Trigger placeholder copy |
-| searchPlaceholder | `string` | — | Search box placeholder copy |
+| placeholder | `string` | `"\u9009\u62e9\u56fd\u5bb6/\u5730\u533a"` | Trigger placeholder; the built-in Chinese copy means “Select a country or region.” |
+| searchPlaceholder | `string` | `"\u641c\u7d22\u56fd\u5bb6 / \u533a\u53f7\u2026"` | Search placeholder; the built-in Chinese copy means “Search country or dialing code…”. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size |
 | disabled | `boolean` | `false` | Disable |
 | invalid | `boolean` | `false` | Invalid state |

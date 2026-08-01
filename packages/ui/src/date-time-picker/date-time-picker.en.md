@@ -18,8 +18,8 @@ Use DateTimePicker when one field must capture both a day and a time, such as a 
 
 Use [DatePicker](../date-picker/date-picker.md) for date only, [TimePicker](../time-picker/time-picker.md) for column-based time selection, or [TimeField](../time-field/time-field.md) for keyboard entry. Two separate fields are often easier to complete, so use the combined control only when the workflow benefits from it.
 
-> This component was a bridge component of MUI X `DateTimePicker` before 0.15.0. Four optional peers must be installed and mounted
-> `MuiBridgeProvider`. Now it is self-developed with zero dependencies, and it can be used immediately after installing the library.
+> Before 0.15.0 this component bridged to MUI X `DateTimePicker` and required four optional peer dependencies plus `MuiBridgeProvider`.
+> The current implementation is dependency-free and no longer requires that provider.
 
 ## Import
 ```ts
@@ -32,26 +32,26 @@ import { DateTimePicker } from "@hulianui/ui"
 |------|------|------|------|
 | value | `string \| null` | — | Controlled value, `"YYYY-MM-DD HH:mm"` (`withSeconds` with seconds), with a space in the middle |
 | defaultValue | `string \| null` | — | Uncontrolled initial value, the shape is the same as above |
-| withSeconds | `boolean` | `false` | Displays the seconds column, and the value shape follows the seconds |
+| withSeconds | `boolean` | `false` | Shows the seconds column and changes the value shape to include seconds. |
 | minuteStep | `number` | `1` | Minute column step (commonly used 5 / 15 / 30) |
 | secondStep | `number` | `1` | second column step |
 | minDateTime | `string` | — | The earliest selectable time (inclusive), the shape is the same as `value`. The date part restricts the calendar, and the time part only takes effect on the boundary day. |
 | maxDateTime | `string` | — | Latest selectable time (inclusive) |
-| disabledDate | `(isoDate: string) => boolean` | — | Disable daily judgment, the input parameter is always `"YYYY-MM-DD"`, **only screen the date but not the time** |
-| placeholder | `string` | `"Select date time"` | Trigger placeholder text |
+| disabledDate | `(isoDate: string) => boolean` | — | Disables dates. The argument is always `"YYYY-MM-DD"`; this callback does not filter times. |
+| placeholder | `string` | `"\u9009\u62e9\u65e5\u671f\u65f6\u95f4"` | Trigger placeholder; the built-in Chinese copy means “Select date and time.” |
 | displayFormat | `string` | Display as is | Trigger display format (dayjs format string). **Only affects display**, the shape of external values remains unchanged |
 | clearable | `boolean` | `true` | Display the clear button when it has a value and is not disabled/readOnly |
-| showNow | `boolean` | `true` | "At this moment" shortcut at the bottom of the panel (round down and align by step) |
-| disabled | `boolean` | `false` | The whole screen is grayed out and the panel cannot be opened. |
-| readOnly | `boolean` | `false` | The panel can be viewed but cannot be selected |
-| aria-label | `string` | — | Trigger accessibility name (given when there is no visible label) |
-| className | `string` | — | falls on the outer container of the trigger |
+| showNow | `boolean` | `true` | Shows a shortcut with built-in Chinese copy `"\u6b64\u523b"` (Now), rounded down to the configured step. |
+| disabled | `boolean` | `false` | Disables the trigger and prevents the panel from opening. |
+| readOnly | `boolean` | `false` | Allows the panel to open but prevents selection. |
+| aria-label | `string` | — | Accessible name for an unlabeled trigger. |
+| className | `string` | — | Additional class name for the outer trigger container. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: string \| null) => void` | Select/clear callback; clear callback `null` |
+| onValueChange | `(value: string \| null) => void` | Called with the selected value, or `null` when cleared. |
 
 ## Examples
 ```tsx

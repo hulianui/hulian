@@ -28,11 +28,11 @@ import { Listbox } from "@hulianui/ui"
 | items* | `ListboxItemData[]` | — | List items; each item contains `key`/`label`, and can contain `description`/`startContent`/`endContent`/`disabled` |
 | selectionMode | `"none" \| "single" \| "multiple"` | `"single"` | `none` creates an action-only list; `single` and `multiple` retain selection. |
 | selectedKeys | `string[]` | — | Controlled selected keys. |
-| defaultSelectedKeys | `string[]` | — | Initial selected keys when uncontrolled. |
-| disabledKeys | `string[]` | — | Extra disabled keys (merged with `item.disabled`) |
+| defaultSelectedKeys | `string[]` | `[]` | Initial selected keys when uncontrolled. |
+| disabledKeys | `string[]` | `[]` | Extra disabled keys, merged with `item.disabled`. |
 | className | `string` | — | Container class name |
 | style | `CSSProperties` | — | Inline styles, placed on the root element of the list. Used to express dynamic values that cannot be given by the Tailwind class (such as `maxHeight` determined at runtime) |
-| aria-label | `string` | — | Accessibility label when no title is visible |
+| aria-label | `string` | `"\u9009\u9879\u5217\u8868"` | Accessible name; the built-in Chinese copy means “Option list.” |
 
 ## Events
 

@@ -29,13 +29,13 @@ import { TreeSelect } from "@hulianui/ui"
 | value | `string \| string[]` | — | Controlled value; single selection is string, multiple selection is string[] |
 | defaultValue | `string \| string[]` | — | uncontrolled initial value |
 | multiple | `boolean` | `false` | Multiple selection (checkable, parent-child cascade check) |
-| placeholder | `string` | — | Trigger placeholder copy |
+| placeholder | `string` | `"\u8bf7\u9009\u62e9"` | Trigger placeholder; the built-in Chinese copy means “Please select.” |
 | disabled | `boolean` | `false` | Disable |
-| invalid | `boolean` | `false` | Invalid state (the shell becomes danger) |
+| invalid | `boolean` | `false` | Applies invalid styling. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size |
 | clearable | `boolean` | `false` | Clearable: When there is a value and is not disabled, the hover/focus popup clear button on the right side of the trigger, click to return to the unselected state (single selection returns `""`, multi-selection returns `[]`). Same semantics as `clearable` of [Select](../select/select.md) |
-| searchable | `boolean` | `false` | Tree search box in floating layer, multi-layer hit jump |
-| showLine | `boolean` | — | Show tree connection lines |
+| searchable | `boolean` | `false` | Shows a search field in the popup and expands matching paths. |
+| showLine | `boolean` | `false` | Shows tree connection lines. |
 | className | `string` | — | Passthrough to trigger |
 
 ## Events

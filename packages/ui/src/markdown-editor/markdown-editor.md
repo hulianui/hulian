@@ -28,7 +28,7 @@ import { MarkdownEditor } from "@hulianui/ui"
 | value | `string` | — | 受控 markdown 字符串 |
 | defaultValue | `string` | — | 非受控初值 |
 | name | `string` | — | 桥给原生表单 / Field 的隐藏 input name |
-| placeholder | `string` | `"输入 markdown…"` | 空内容占位文案 |
+| placeholder | `string` | — | 空内容占位文案 |
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
 | disabled | `boolean` | `false` | 禁用 |
 | minRows | `number` | `6` | 内容区最小高度（行） |

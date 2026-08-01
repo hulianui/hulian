@@ -30,8 +30,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | items | `ComboboxItemData[]` | — | Option data `{value,label}`, automatically displayed with label and submitted with value |
 | value | `ComboboxItemData｜ComboboxItemData[]` | — | Controlled selection (array when multiple) |
 | defaultValue | Same as above | — | Uncontrolled initial selection |
-| multiple | `boolean` | `false` | value/onValueChange automatic variable array when true |
-| disabled | `boolean` | `false` | Disable |
+| multiple | `boolean` | `false` | Changes `value` and `onValueChange` to arrays. |
+| disabled | `boolean` | `false` | Disables the control. |
 
 `ComboboxTrigger` displays the selected label or placeholder and opens search inside the popup.
 
@@ -89,7 +89,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Built-in Trigger/Input + Content |
+| children | `ReactNode` | Trigger or input plus popup content. |
 
 `ComboboxContent`
 

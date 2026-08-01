@@ -27,7 +27,7 @@ Inherits `Omit<HTMLAttributes<HTMLDivElement>, "children">`, additionally:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text | `string` | `"H"` | Glyph or short string left by the cursor; emoji such as `"✨"` are supported. |
+| text | `string` | `"\u745a"` | Glyph or short string left by the cursor; the built-in Chinese character is the first character of “Hulian,” and emoji such as `"✨"` are supported. |
 | spacing | `number` | `80` | Minimum pixel spacing between adjacent glyphs; a new glyph will be placed every time the cursor moves full spacing. The smaller the glyph, the denser it is. |
 | followMouseDirection | `boolean` | `true` | Whether the glyph is rotated and aligned along the moving direction (atan2); if off, it remains horizontal |
 | randomFloat | `boolean` | `true` | After the glyph settles, it randomly floats (displacement + light rotation breathing); it is automatically deactivated under reduced-motion and only fades out. |

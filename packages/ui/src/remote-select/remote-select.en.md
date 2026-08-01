@@ -36,9 +36,9 @@ import { RemoteSelect } from "@hulianui/ui"
 | multiple | `boolean` | `false` | Enables chip-based multiple selection and changes `value`/`onChange` to arrays. |
 | value | `string｜number｜null` (array when multiple) | — | Controlled value. Array order determines chip order. |
 | defaultValue | Same as above | — | Initial value when uncontrolled. |
-| placeholder | `string` | `"Select"` | Field placeholder. |
-| emptyMessage | `ReactNode` | `"No matching data"` | Empty-state content. |
-| loadingMessage | `ReactNode` | `"Loading…"` | Loading-state content. |
+| placeholder | `string` | `"\u8bf7\u9009\u62e9"` | Field placeholder; the built-in Chinese copy means “Please select.” |
+| emptyMessage | `ReactNode` | `"\u65e0\u5339\u914d\u6570\u636e"` | Empty-state content; the built-in Chinese copy means “No matching data.” |
+| loadingMessage | `ReactNode` | `"\u52a0\u8f7d\u4e2d\u2026"` | Loading-state content; the built-in Chinese copy means “Loading…”. |
 | size | `"sm"｜"md"｜"lg"` | `"md"` | Field size. |
 | clearable | `boolean` | `true` | Shows a clear button for single selection; multiple selections are removed from each chip. |
 | disabled | `boolean` | `false` | Disables interaction. |

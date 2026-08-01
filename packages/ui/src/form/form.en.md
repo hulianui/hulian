@@ -57,13 +57,13 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 ```tsx
 // useForm: validation rules and field dependencies
 const form = useForm({ initialValues: { pwd: "", confirm: "" } });
-const pwd = form.register("pwd", { rules: [{ required: true, min: 6, message: "At least 6 people" }] });
+const pwd = form.register("pwd", { rules: [{ required: true, min: 6, message: "Use at least 6 characters" }] });
 const confirm = form.register("confirm", {
   dependencies: ["pwd"],
   rules: [{ validator: (v, values) => { if (v !== values.pwd) throw new Error("Two passwords are inconsistent"); } }],
 });
 <form onSubmit={form.submit((values) => save(values))} noValidate>
-  <Field label="password" error={pwd.error}>
+  <Field label="Password" error={pwd.error}>
     <Input type="password" value={pwd.value as string} onChange={pwd.onChange} onBlur={pwd.onBlur} />
   </Field>
   <Field label="Confirm Password" error={confirm.error}>

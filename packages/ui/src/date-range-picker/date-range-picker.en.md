@@ -30,8 +30,8 @@ import { DateRangePicker } from "@hulianui/ui"
 | minDate | `string` | — | The earliest selectable date (ISO), any date earlier than this is prohibited. |
 | maxDate | `string` | — | The latest selectable date (ISO), no selection later than this date |
 | disabledDate | `(isoDate: string) => boolean` | — | Customize to disable a certain day, the input parameter is ISO `YYYY-MM-DD` |
-| presets | `boolean \| DateRangePreset[]` | `true` | Quick preset: `true`/omitted = default four items; array = custom; `false` = hidden |
-| placeholder | `[string, string]` | `["start date","end date"]` | Placeholder copy [start, end] |
+| presets | `boolean \| DateRangePreset[]` | `true` | `true` or omitted uses four presets with built-in Chinese labels: `"\u4eca\u5929"` (Today), `"\u6700\u8fd1 7 \u5929"` (Last 7 Days), `"\u6700\u8fd1 30 \u5929"` (Last 30 Days), and `"\u672c\u6708"` (This Month). Pass an array for custom presets or `false` to hide them. |
+| placeholder | `[string, string]` | `["\u5f00\u59cb\u65e5\u671f", "\u7ed3\u675f\u65e5\u671f"]` | Built-in Chinese placeholders meaning “Start date” and “End date.” |
 | displayFormat | `string` | `"YYYY-MM-DD"` | Display format (dayjs format); the external controlled value is always ISO `YYYY-MM-DD` |
 | disabled | `boolean` | `false` | Disable |
 | readOnly | `boolean` | `false` | Read only: can be opened for viewing, no endpoint selection/no preset/no clearing |

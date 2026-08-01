@@ -27,8 +27,8 @@ import { StepsForm } from "@hulianui/ui"
 |------|------|------|------|
 | steps* | `StepsFormStep[]` | — | Step array, each item contains `title`/`description`/`content`/`nextDisabled`/`nextText`/`showNav` |
 | current | `number` | — | Controlled current step (from 0) |
-| defaultCurrent | `number` | — | uncontrolled initial step |
-| direction | `"horizontal" \| "vertical"` | — | Steps indicator direction |
+| defaultCurrent | `number` | `0` | Initial step when uncontrolled. |
+| direction | `"horizontal" \| "vertical"` | `"horizontal"` | Steps indicator direction. |
 | className | `string` | — | Root node class name |
 
 ## Events

@@ -25,8 +25,8 @@ import { Field } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| invalid | `boolean` | `false` | Explicitly override invalid; by default, it is deduced from whether error is non-null |
-| disabled | `boolean` | `false` | Disable |
+| invalid | `boolean` | `false` | Explicit invalid state; a nonempty `error` also marks the field invalid. |
+| disabled | `boolean` | `false` | Disables the field. |
 | name | `string` | — | Submit ID, supports Field.Root |
 | colSpan | `"full"` | — | Spanning entire rows in ProForm columns grid; no side effects outside grid |
 | className | `string` | — | Fall on Field.Root (portrait layout container) |
@@ -35,9 +35,9 @@ import { Field } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| children* | `ReactNode` | Control(hulian Input/Textarea, = Field.Control) |
+| children* | `ReactNode` | Field control, such as HulianUI Input or Textarea. |
 | label | `ReactNode` | Label |
-| description | `ReactNode` | help copywriting |
+| description | `ReactNode` | Help text. |
 | error | `ReactNode` | Error copy; **If it is not empty, it means invalid and forces an error to be displayed** |
 
 ## Examples

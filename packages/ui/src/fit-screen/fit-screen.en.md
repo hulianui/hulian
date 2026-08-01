@@ -25,8 +25,8 @@ import { FitScreen, computeFit } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| designWidth | `number` | `1920` | The design draft is wide. |
-| designHeight | `number` | `1080` | High design draft. |
+| designWidth | `number` | `1920` | Design-canvas width. |
+| designHeight | `number` | `1080` | Design-canvas height. |
 | mode | `"fit" \| "cover" \| "stretch"` | `"fit"` | fit = take min (no cropping in equal proportions, black edges may be left around); cover = take max (cover in equal proportions, may be cropped); stretch = stretch in non-equal proportions (may deform). |
 | className | `string` | — | The outer container class name. |
 
@@ -56,7 +56,7 @@ import { FitScreen, computeFit } from "@hulianui/ui"
 ## Usage guidelines
 
 - **Scaling uses `transform: scale`.** Headless/CDP screenshot coordinates may not align with real click geometry. Account for this in visual and interaction tests; see [[recharts-headless-screenshot-blank-clippath-animation-starved]] and [[turbopack-dev-cold-route-blank-cdp-screenshot-warm-first]]. Use `dispatchEvent` if coordinate clicks are inaccurate.
-- **ref + style written out of gear crash**: The component writes transform to ref in the effect, and when reconnecting with StrictMode dual mount/`<Activity>`/Offscreen, `ref.current` may be truthy but `.style` has been out of gear and crashed - see [[react-offscreen-reconnect-detached-ref-style-crash]], `if (!el?.style) return` should be guarded before writing.
+- **Guard detached refs before writing styles.** During StrictMode remounts, `<Activity>`, or Offscreen reconnection, `ref.current` can remain truthy after its style target is detached. See [[react-offscreen-reconnect-detached-ref-style-crash]]; check `if (!el?.style) return` before writing.
 - The size of the design draft (designWidth/Height) must be consistent with the actual absolute layout size of children, otherwise the scaling ratio will be incorrectly calculated and the content will overflow or be left blank.
 
 ## Related

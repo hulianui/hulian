@@ -27,15 +27,15 @@ import { Cascader, flattenLeafPaths, filterLeafPaths, type CascaderLeafPath } fr
 |------|------|------|------|
 | nodes* | `TreeNode[]` | — | Hierarchical data using the shared tree-core `TreeNode` shape: `key`, `label`, `children`, and `disabled`. |
 | value | `string[]` | — | Controlled key path from the root to the selected node. |
-| defaultValue | `string[]` | — | Initial key path when uncontrolled. |
+| defaultValue | `string[]` | `[]` | Initial key path when uncontrolled. |
 | expandTrigger | `"click" \| "hover"` | `"click"` | Interaction that expands the next level. |
 | changeOnSelect | `boolean` | `false` | Whether a node at any level can be selected instead of leaves only. |
-| showSearch | `boolean` | — | Shows a search field above the popup. Leaf paths are flattened for fuzzy matching, and selecting a result submits its full path. |
-| searchPlaceholder | `string` | — | Search-field placeholder. |
-| placeholder | `string` | — | Trigger placeholder. |
+| showSearch | `boolean` | `false` | Shows a search field above the popup. Leaf paths are flattened for fuzzy matching, and selecting a result submits its full path. |
+| searchPlaceholder | `string` | `"\u641c\u7d22\u2026"` | Search-field placeholder; the built-in Chinese copy means “Search…”. |
+| placeholder | `string` | `"\u8bf7\u9009\u62e9"` | Trigger placeholder; the built-in Chinese copy means “Please select.” |
 | disabled | `boolean` | — | Disables the component. |
 | invalid | `boolean` | — | Applies invalid-state styling. |
-| size | `"sm" \| "md" \| "lg"` | — | Trigger size. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size. |
 | className | `string` | — | Additional class name for the container. |
 
 ## Events

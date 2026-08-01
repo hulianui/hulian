@@ -31,7 +31,7 @@ import { ColorSwatchPicker } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Color block size |
 | disabled | `boolean` | `false` | Disable entire group |
 | className | `string` | — | Additional class name for the container. |
-| aria-label | `string` | — | Accessibility label |
+| aria-label | `string` | `"\u989c\u8272\u8272\u677f"` | Accessible name; the built-in Chinese copy means “Color palette.” |
 
 ## Events
 

@@ -29,7 +29,7 @@ import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from "@hulianui/ui"
 | searchable | `boolean` | `true` | Whether to display the search box |
 | defaultCategory | `string` | first category | Initial classification key |
 | recent | `string[]` | — | Controlled "recently used" list; if omitted, the component is maintained internally |
-| searchPlaceholder | `string` | — | search box placeholder |
+| searchPlaceholder | `string` | `"\u641c\u7d22\u8868\u60c5"` | Search placeholder; the built-in Chinese copy means “Search emoji.” |
 | className | `string` | — | supports to container |
 
 ## Events

@@ -27,9 +27,9 @@ import { Transfer } from "@hulianui/ui"
 |------|------|------|------|
 | dataSource* | `TransferItem[]` | — | Full data source; each item `key`/`label`, can bring `description`/`disabled` |
 | targetKeys | `string[]` | — | Controlled: Set of keys for the right (target) panel |
-| defaultTargetKeys | `string[]` | — | Uncontrolled initial target key |
+| defaultTargetKeys | `string[]` | `[]` | Uncontrolled initial target keys. |
 | searchable | `boolean` | `false` | Show search box at top of each panel |
-| searchPlaceholder | `string` | `"Search"` | Search input placeholder. |
+| searchPlaceholder | `string` | `"\u641c\u7d22"` | Search input placeholder; the built-in Chinese copy means “Search.” |
 | filterOption | `(input: string, item: TransferItem) => boolean` | label contains matches | Custom filtering (default case-insensitive substring) |
 | listHeight | `number` | `240` | The maximum height of the panel list area (px). If you have hundreds of node permissions/department data, increase it, otherwise the panel will be squeezed into a gap. |
 | showSelectAll | `boolean` | `false` | The panel title bar displays the Select All checkbox (only applies to **available items in the current filter results**) |
@@ -46,7 +46,7 @@ import { Transfer } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| titles | `[ReactNode, ReactNode]` | Source and target panel titles (default `["Source", "Selected"]`). |
+| titles | `[ReactNode, ReactNode]` | Source and target panel titles; the default is `["\u6e90\u5217\u8868", "\u5df2\u9009"]`, built-in Chinese copy meaning “Source list” and “Selected.” |
 
 ## Example
 ```tsx

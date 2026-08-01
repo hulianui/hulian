@@ -27,13 +27,13 @@ import { InputOTP } from "@hulianui/ui"
 |------|------|------|------|
 | length | `number` | `6` | number of segments |
 | value | `string` | — | controlled value |
-| defaultValue | `string` | — | uncontrolled initial value |
+| defaultValue | `string` | `""` | Uncontrolled initial value. |
 | type | `"numeric" \| "text"` | `"numeric"` | Numbers only (default) or any characters |
-| disabled | `boolean` | — | Disable |
+| disabled | `boolean` | `false` | Disables the control. |
 | invalid | `boolean` | `false` | Verification failed status |
-| groupGap | `boolean` | — | Insert a horizontal line separator in the middle (3-3 group visual, such as XXX–XXX) |
+| groupGap | `boolean` | `false` | Inserts a separator in the middle for a 3–3 grouping such as XXX–XXX. |
 | className | `string` | — | Container class name |
-| aria-label | `string` | — | Accessibility label |
+| aria-label | `string` | `"\u9a8c\u8bc1\u7801"` | Accessible name; the built-in Chinese copy means “Verification code.” |
 
 ## Events
 

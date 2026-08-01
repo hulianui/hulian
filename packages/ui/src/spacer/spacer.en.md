@@ -25,7 +25,7 @@ import { Spacer } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| x | `number` | — | Horizontal spacing (× 0.25rem, same as Tailwind spacing scale) |
+| x | `number` | `1` | Horizontal spacing (× 0.25rem, same as Tailwind spacing scale) |
 | y | `number` | — | Vertical spacing (× 0.25rem) |
 | className | `string` | — | Extra class name |
 

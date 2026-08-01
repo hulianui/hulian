@@ -25,7 +25,7 @@ import { ASCIIText } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text | `string` | `"HulianUI"` | Text to convert into ASCII art. It is rendered to an offscreen canvas, then mapped cell by cell from pixel brightness to characters. |
+| text | `string` | `"\u745a\u740f"` | Text to convert into ASCII art. The built-in Chinese copy means “Hulian”; it is rendered to an offscreen canvas, then mapped cell by cell from pixel brightness to characters. |
 | asciiFontSize | `number` | `8` | ASCII character size in pixels. Smaller values create a denser grid and require more computation; 6–14 is recommended. |
 | textFontSize | `number` | `160` | Source-text size on the offscreen canvas in pixels. Larger values increase sampling resolution; its ratio to `asciiFontSize` approximates the number of character columns. |
 | textColor | `string` | `var(--color-foreground)` | Fill color for the source text. It is assigned to Canvas `fillStyle` and must be a color Canvas can parse. |

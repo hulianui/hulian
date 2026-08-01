@@ -16,9 +16,7 @@ status: enriched
 
 Use TimePicker for popup-based time selection in schedules, reservations, or business hours. Step sizes and the Now shortcut work well when choices should align to whole or half hours.
 
-To input without taking your hands off the keyboard, use [TimeField](../time-field/time-field.md) (segmented input, no floating layer).
-Select [DateTimePicker](../date-time-picker/date-time-picker.md) together with the date;
-Use [DatePicker](../date-picker/date-picker.md) to select only dates.
+Use [TimeField](../time-field/time-field.md) for keyboard-first segmented input, [DateTimePicker](../date-time-picker/date-time-picker.md) for a combined date and time, or [DatePicker](../date-picker/date-picker.md) for a date only.
 
 ## Import
 ```ts
@@ -36,19 +34,19 @@ import { TimePicker } from "@hulianui/ui"
 | secondStep | `number` | `1` | second column step |
 | minTime | `string` | — | The earliest selectable time (inclusive), the shape is the same as `value` |
 | maxTime | `string` | — | Latest selectable time (inclusive) |
-| placeholder | `string` | `"Select time"` | Trigger placeholder. |
+| placeholder | `string` | `"\u9009\u62e9\u65f6\u95f4"` | Trigger placeholder; the built-in Chinese copy means “Select time.” |
 | clearable | `boolean` | `true` | Display the clear button when it has a value and is not disabled/readOnly |
-| showNow | `boolean` | `true` | "At this moment" shortcut at the bottom of the panel (round down and align by step) |
-| disabled | `boolean` | `false` | The whole screen is grayed out and the panel cannot be opened. |
-| readOnly | `boolean` | `false` | The panel can be viewed but cannot be selected |
-| aria-label | `string` | — | Trigger accessibility name (given when there is no visible label) |
-| className | `string` | — | falls on the outer container of the trigger |
+| showNow | `boolean` | `true` | Shows a shortcut with built-in Chinese copy `"\u6b64\u523b"` (Now), rounded down to the configured step. |
+| disabled | `boolean` | `false` | Disables the trigger and prevents the panel from opening. |
+| readOnly | `boolean` | `false` | Allows the panel to open but prevents selection. |
+| aria-label | `string` | — | Accessible name for an unlabeled trigger. |
+| className | `string` | — | Additional class name for the outer trigger container. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: string \| null) => void` | Select/clear callback; clear callback `null` |
+| onValueChange | `(value: string \| null) => void` | Called with the selected value, or `null` when cleared. |
 
 ## Example
 ```tsx
@@ -80,13 +78,10 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 ## Usage guidelines
 
 - **Values are fixed-width strings, not `Date` objects.** Lexical order of `"HH:mm[:ss]"` matches time order, so bounds compare directly without timezone effects. Add a date explicitly if the application needs a `Date`.
-- **The criterion for column-by-column disabling is "whether the entire segment intersects with the range", not "whether the endpoint crosses the boundary"**: `minTime="09:30"`
-The 9 o'clock box is still available** (9:30~9:59 is accessible), and the minutes before 30 minutes within 9 o'clock are prohibited.
-If you write it as "the endpoint is banned when it crosses the boundary", the entire 9 points will be banned by mistake.
-- **There is an implicit base when no value has been selected**: `clamp(00:00:00, [min,max])`. If you don’t do this `minTime="09:30"`
-The base hour is always 0, the minute column will be blocked by the whole column, and the panel will look broken. So "click minutes and then hours" will also work.
+- **A column option is disabled only when its entire interval falls outside the range.** With `minTime="09:30"`, hour 09 remains available because 09:30–09:59 is valid, while minute values before 30 are disabled when hour 09 is active.
+- **An empty picker uses `clamp(00:00:00, [min,max])` as its working base.** With `minTime="09:30"`, this keeps the minute column usable even before the user selects an hour.
 - `minuteStep` changes only the **candidate list**; it does not validate external values. With `minuteStep={15}`, `value="09:37"` has no matching minute item and is not highlighted. Call `snapToStep` first when alignment is required.
-- `withSeconds` switching will change the external value shape (`"09:30"` ↔ `"09:30:15"`). Please process the stock value when switching.
+- Switching `withSeconds` changes the external value shape (`"09:30"` ↔ `"09:30:15"`). Normalize stored values when switching modes.
 - TimePicker and [TimeField](../time-field/time-field.md) share the same fixed-width `"HH:mm[:ss]"` format, so applications can switch between popup and keyboard interactions without converting values.
 
 ## Related

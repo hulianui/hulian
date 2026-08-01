@@ -20,7 +20,7 @@ Use ScopeMatrix when users must define an effective scope from opposing allow an
 - Paths a task or operation may change.
 - Route guards, file-sync scopes, or CI trigger paths.
 
-### When not to use
+## When not to use
 
 | Scenario | Use instead | Why |
 |---|---|---|
@@ -52,9 +52,9 @@ const [scope, setScope] = useState({ allow: ["src/**"], deny: ["**/dist/**"] });
 | `suggestions` | `string[]` | `[]` | Suggested patterns that populate the input when clicked. |
 | `readOnly` | `boolean` | `false` | Forces read-only mode. |
 | `validate` | `(pattern) => string \| null` | — | Returns an error message for an invalid pattern, or `null`. |
-| `allowLabel` / `denyLabel` | `ReactNode` | `"Allow"` / `"Deny"` | Bucket headings. |
+| `allowLabel` / `denyLabel` | `ReactNode` | `"\u5141\u8bb8"` / `"\u7981\u6b62"` | Bucket headings; the built-in Chinese copy means “Allow” and “Deny.” |
 | `allowHint` / `denyHint` | `ReactNode` | See defaults | Guidance shown below each bucket. |
-| `placeholder` | `string` | `"Enter a pattern and press Enter"` | Input placeholder. |
+| `placeholder` | `string` | `"\u8f93\u5165\u6a21\u5f0f\u540e\u56de\u8f66"` | Input placeholder; the built-in Chinese copy means “Enter a pattern, then press Enter.” |
 
 ## Usage guidelines
 

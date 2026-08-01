@@ -27,7 +27,7 @@ Inherits `SVGProps<SVGSVGElement>` (removes `ref`), commonly used as follows:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text | `string` | — | Marquee text. Trailing whitespace is trimmed, non-breaking spaces separate phrases, and the ends are joined to fill the curve seamlessly. |
+| text | `string` | `"\u745a\u740f \u00b7 HULIAN \u00b7 "` | Marquee text. The built-in Chinese copy begins with “Hulian”; trailing whitespace is trimmed, non-breaking spaces separate phrases, and the ends are joined to fill the curve seamlessly. |
 | speed | `number` | `2` | Scroll speed in pixels per frame at roughly 60fps; larger values move faster. |
 | curveAmount | `number` | `320` | Vertical offset of the quadratic Bézier control point in viewBox pixels. Positive values curve down, negative values curve up, and 0 is nearly straight. |
 | direction | `"left" \| "right"` | `"left"` | Automatic scrolling direction. |

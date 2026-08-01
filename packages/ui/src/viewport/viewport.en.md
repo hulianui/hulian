@@ -25,8 +25,8 @@ import { Viewport } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| device | `"web" \| "tablet" \| "phone"` | — | Device default width (controlled): web full width adaptive / tablet 768px / phone 390px. |
-| defaultDevice | `"web" \| "tablet" \| "phone"` | `"web"` | Uncontrolled initial equipment. |
+| device | `"web" \| "tablet" \| "phone"` | — | Controlled preset: responsive web width, 768 px tablet, or 390 px phone. |
+| defaultDevice | `"web" \| "tablet" \| "phone"` | `"web"` | Initial device preset when uncontrolled. |
 | controls | `boolean` | `false` | The top shows the device switcher (dogfood Segmented). |
 | width | `number \| string` | — | Custom width, overrides device default (number=px or any CSS length). |
 | name | `string` | — | Named container, used for `@md/name:` named container query; default anonymous container (use `@md:`). |

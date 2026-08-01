@@ -28,8 +28,8 @@ import { ElasticSlider } from "@hulianui/ui"
 | defaultValue | `number` | `50` | Initial value (uncontrolled). The component maintains internal values and only synchronizes the internal state when mounting and the prop changes. |
 | startingValue | `number` | `0` | Lower bound of measurement range (corresponding value on the leftmost side of the track) |
 | maxValue | `number` | `100` | Upper bound of measurement range (corresponding value on the rightmost side of the track) |
-| isStepped | `boolean` | `false` | Whether to adsorb to the step size (rounded by stepSize when dragging) |
-| stepSize | `number` | `1` | Adsorption step size, only effective when isStepped is true |
+| isStepped | `boolean` | `false` | Snaps dragged values to `stepSize` increments. |
+| stepSize | `number` | `1` | Snap increment when `isStepped` is true. |
 | showValue | `boolean` | `true` | Whether to display a digital indication of the current value (centered above the track) |
 | className | `string` | — | supports additional className to the root container (merge via cn) |
 | style | `CSSProperties` | — | supports inline styles to the root container |

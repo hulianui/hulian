@@ -30,20 +30,20 @@ import { ShimmerButton } from "@hulianui/ui"
 | borderRadius | `string` | `var(--radius)` | rounded corners |
 | shimmerDuration | `string` | `3s` | Duration of one shimmer cycle. |
 | background | `string` | `var(--color-primary)` | Button background color |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | Transparently transmit native button attributes |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | Native button attributes passed to the rendered element. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | Click callback, transparently transmitted via `ComponentPropsWithoutRef<"button">` |
+| onClick | `(e: MouseEvent<HTMLButtonElement>) => void` | Native click handler. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Button copy, transparently transmitted through the native button attribute |
-| render | `ReactElement` | Rendered as a custom element (such as `<a>`/Next `<Link>`), the style/internal spark structure is merged into the element; the copywriting is still children |
+| children | `ReactNode` | Button content. |
+| render | `ReactElement` | Custom rendered element, such as `<a>` or Next.js `<Link>`; button styles and shimmer structure are merged into it. |
 
 ## Example
 ```tsx

@@ -33,10 +33,10 @@ import { Mentions, MentionText, type MentionTextProps, findTrigger, insertMentio
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Textarea skin size (reuse the size variant of Textarea) |
 | invalid | `boolean` | `false` | Applies invalid styling when used outside Field. |
 | placeholder | `string` | — | Placeholder passed to the textarea. |
-| rows | `number` | — | Row count passed to the textarea. |
+| rows | `number` | `3` | Row count passed to the textarea. |
 | disabled | `boolean` | `false` | Disables the input. |
 | className | `string` | — | Container class name |
-| popupClassName | `string` | — | Candidate floating layer additional class name |
+| popupClassName | `string` | — | Additional class name for the suggestion popup. |
 
 > Also accepts native Textarea attributes except the omitted `size`/`value`/`defaultValue`/`onChange`/`onSelect`/`prefix` fields.
 

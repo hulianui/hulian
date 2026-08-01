@@ -36,10 +36,10 @@ import { Calendar } from "@hulianui/ui"
 | minDate | `string` | — | Earliest selectable date as any parseable date string; normalized internally. |
 | maxDate | `string` | — | Latest selectable date. |
 | disabledDate | `(isoDate: string) => boolean` | — | Determines whether a date is disabled. The argument is always `"YYYY-MM-DD"`; month/year pickers pass the first day of that month/year. |
-| showToday | `boolean` | `true` | Shows the Today, This Month, or This Year shortcut at the bottom. |
+| showToday | `boolean` | `true` | Shows a shortcut whose built-in Chinese copy is `"\u4eca\u5929"` (Today), `"\u672c\u6708"` (This Month), or `"\u4eca\u5e74"` (This Year), depending on `picker`. |
 | disabled | `boolean` | `false` | Disables the entire panel, including navigation. |
 | readOnly | `boolean` | `false` | Allows navigation but prevents selection. |
-| aria-label | `string` | `"calendar"` | Accessible name for the panel. |
+| aria-label | `string` | `"\u65e5\u5386"` | Accessible name for the panel; the built-in Chinese copy means “Calendar.” |
 | className | `string` | — | Additional class name for the outer panel container. |
 
 ## Events

@@ -32,7 +32,7 @@ import { Switch } from "@hulianui/ui"
 | className | `string` | — | — |
 | aria-label | `string` | — | Provided when no title is visible |
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Visual size (Track 36×20 / 40×24 / 48×28). `md` is consistent pixel by pixel before adding this prop. |
-| touchTarget | `boolean` | `false` | Expand an invisible ≥44px hit area (only affects hits, does not occupy the layout, and does not change the vision). It is recommended to open the mobile version |
+| touchTarget | `boolean` | `false` | Expands the invisible hit area to at least 44 px without changing layout or appearance; enable it for touch interfaces when spacing permits. |
 
 ## Events
 

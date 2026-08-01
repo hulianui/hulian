@@ -28,7 +28,7 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 | fields* | `SearchField[]` | — | Field configuration array |
 | values | `Record<string, unknown>` | — | Controlled values; omit for internal state. |
 | columns | `number` | `3` | Number of desktop columns |
-| gap | `number` | `4` | Row and row spacing (× 0.25rem) |
+| gap | `number` | `4` | Row and column gap (× 0.25rem). |
 | collapsible | `boolean` | `true` | Enables one-row collapse when fields exceed one row; has no effect otherwise. |
 | defaultCollapsed | `boolean` | `true` | Initial collapsed state. |
 | loading | `boolean` | `false` | Query button loading state |

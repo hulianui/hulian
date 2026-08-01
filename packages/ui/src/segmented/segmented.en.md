@@ -57,7 +57,7 @@ import { Segmented } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| label * | `ReactNode` | paragraph content (text or icon) |
+| label * | `ReactNode` | Segment content, such as text or an icon. |
 
 ## Example
 ```tsx

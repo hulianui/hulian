@@ -27,7 +27,7 @@ import { Rating } from "@hulianui/ui"
 |------|------|------|------|
 | value | `number` | — | Controlled current score. |
 | defaultValue | `number` | — | Initial score when uncontrolled. |
-| max | `number` | — | Maximum number of rating icons. |
+| max | `number` | `5` | Maximum number of rating icons. |
 | readOnly | `boolean` | `false` | Shows a noninteractive rating. |
 | disabled | `boolean` | — | Disables interaction. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Icon size. |

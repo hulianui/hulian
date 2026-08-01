@@ -28,8 +28,8 @@ import { Grid, GridItem } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | cols | `number \| ResponsiveCols` | `1` | Number of columns. Number = fixed number of columns (any value, inline style); `{base,sm,md,lg}` = responsive (static class) |
-| rows | `number` | — | Number of lines (if left blank, it will be automatically based on the content) |
-| gap | `number` | `0` | Row and row spacing (× 0.25rem) |
+| rows | `number` | — | Explicit row count; omit it to let content create rows automatically. |
+| gap | `number` | `0` | Row and column gap (× 0.25rem). |
 | colGap | `number` | — | Column spacing, covering gap (× 0.25rem) |
 | rowGap | `number` | — | Line spacing, covering gap (× 0.25rem) |
 | inline | `boolean` | `false` | Use inline-grid instead of grid |
@@ -40,7 +40,7 @@ import { Grid, GridItem } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | colSpan | `number` | — | Number of columns spanned |
-| rowSpan | `number` | — | Number of spans |
+| rowSpan | `number` | — | Number of rows spanned. |
 | as | `ElementType` | `"div"` | Rendered element tag |
 
 Both the remaining `HTMLAttributes<HTMLElement>` properties support.

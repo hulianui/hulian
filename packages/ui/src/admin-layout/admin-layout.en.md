@@ -31,7 +31,7 @@ import { AdminLayout } from "@hulianui/ui"
 | openKeys | `string[]` | — | Controlled keys for expanded submenus. |
 | defaultOpenKeys | `string[]` | — | Initial expanded submenu keys when uncontrolled. |
 | collapsed | `boolean` | — | Controlled sidebar collapse state. |
-| defaultCollapsed | `boolean` | — | Initial sidebar collapse state when uncontrolled. |
+| defaultCollapsed | `boolean` | `false` | Initial sidebar collapse state when uncontrolled. |
 | breakpoint | `"sm"｜"md"｜"lg"｜"xl"｜"2xl"｜number` | — | Responsive breakpoint with the same semantics as LayoutSider. The sidebar collapses when the viewport is at or below this width and expands above it. In uncontrolled mode, the component updates its own state. When `collapsed` is passed, it only calls `onCollapsedChange`; the consumer decides whether to apply the new state. Omit this prop to disable automatic collapsing. |
 | showTabs | `boolean` | `true` | Whether to show the tab bar. |
 | tabs | `AdminTab[]` | — | Controlled tab list. When omitted, menu selections maintain the list automatically. |

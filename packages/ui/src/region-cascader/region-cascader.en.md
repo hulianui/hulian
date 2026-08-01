@@ -29,8 +29,8 @@ import { RegionCascader, sliceLevel, cnDivisions } from "@hulianui/ui"
 | defaultValue | `string[]` | — | Initial code path when uncontrolled. |
 | level | `2 \| 3` | `3` | Depth: 3 = province/city/district or county; 2 = province/city. |
 | showSearch | `boolean` | `true` | Shows popup search, allowing direct matches such as “Pudong.” |
-| changeOnSelect | `boolean` | — | Allows an intermediate level to be submitted without selecting the final level. |
-| placeholder | `string` | — | Trigger placeholder. |
+| changeOnSelect | `boolean` | `false` | Allows an intermediate level to be submitted without selecting the final level. |
+| placeholder | `string` | Depends on `level` | Built-in Chinese copy is `"\u8bf7\u9009\u62e9\u7701/\u5e02"` for level 2 or `"\u8bf7\u9009\u62e9\u7701/\u5e02/\u533a"` for level 3, meaning “Select province/city” or “Select province/city/district.” |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size |
 | disabled | `boolean` | `false` | Disable |
 | invalid | `boolean` | `false` | Invalid state |

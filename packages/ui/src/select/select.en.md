@@ -35,10 +35,10 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | multiple | `boolean` | `false` | Enables multiple selection: `value`, `defaultValue`, and `onValueChange` use `string[]`, and the popup stays open after selection. |
 | clearable | `boolean` | `false` | Shows a clear action on trigger hover/focus. Clearing emits `null` in single mode or `[]` in multiple mode. |
 | searchable | `boolean` | `false` | Uses the Combobox search UI and Base UI filtering; requires `items`. |
-| searchPlaceholder | `string` | `"Search"` | Search input placeholder. |
-| emptyMessage | `ReactNode` | `"No matching options"` | Empty state shown when search has no matches. |
+| searchPlaceholder | `string` | `"\u641c\u7d22"` | Search input placeholder; the built-in Chinese copy means “Search.” |
+| emptyMessage | `ReactNode` | `"\u65e0\u5339\u914d\u9879"` | Empty state; the built-in Chinese copy means “No matching options.” |
 | loading | `boolean` | `false` | Replaces the trigger icon with Spinner and the option list with loading content. |
-| loadingText | `ReactNode` | `"Loading"` | Loading-state content. |
+| loadingText | `ReactNode` | `"\u52a0\u8f7d\u4e2d"` | Loading-state content; the built-in Chinese copy means “Loading.” |
 
 ### SelectGroup / SelectGroupLabel
 | Name | Type | Default | Description |
@@ -80,7 +80,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 
 | Slot | Type | Description |
 |------|------|------|
-| SelectContent.children* | `ReactNode` | One set of `SelectItem` (can be worn over `SelectGroup`) |
+| SelectContent.children* | `ReactNode` | `SelectItem` elements, optionally nested in `SelectGroup`. |
 | SelectItem.children* | `ReactNode` | Options display content |
 | SelectGroupLabel.children* | `ReactNode` | Group title |
 

@@ -18,8 +18,8 @@ Use TimeField in keyboard-heavy schedules, attendance forms, or bulk edits where
 
 Use [TimePicker](../time-picker/time-picker.md) for popup-based selection with `minuteStep` and a Now shortcut, or [DateTimePicker](../date-time-picker/date-time-picker.md) when date and time are selected together.
 
-> This component was a bridge component of MUI X `TimeField` before 0.15.0. Four optional peers must be installed and mounted
->`MuiBridgeProvider`. Now it is self-developed with zero dependencies, ready to use after installing the library, and has added min/max and seconds.
+> Before 0.15.0 this component bridged to MUI X `TimeField` and required four optional peer dependencies plus `MuiBridgeProvider`.
+> The current dependency-free implementation also supports min/max bounds and seconds.
 
 ## Import
 ```ts
@@ -36,16 +36,16 @@ import { TimeField } from "@hulianui/ui"
 | minTime | `string` | — | The earliest selectable time (inclusive), the shape is the same as `value` |
 | maxTime | `string` | — | Latest selectable time (inclusive) |
 | clearable | `boolean` | `true` | Display the clear button when it has a value and is not disabled/readOnly |
-| disabled | `boolean` | `false` | The whole thing is grayed out and each section cannot be focused. |
-| readOnly | `boolean` | `false` | The value cannot be changed, but you can browse in sections |
-| aria-label | `string` | `"Time"` | Accessible name for the complete field; each segment has its own hour/minute/second label. |
-| className | `string` | — | Fall into the outer container |
+| disabled | `boolean` | `false` | Disables the field and prevents its segments from receiving focus. |
+| readOnly | `boolean` | `false` | Prevents value changes while preserving segment navigation. |
+| aria-label | `string` | `"\u65f6\u95f4"` | Accessible name; the built-in Chinese copy means “Time.” Segment labels are also built-in Chinese copy meaning hour, minute, and second. |
+| className | `string` | — | Additional class name for the outer container. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: string \| null) => void` | **Triggered only after the entire paragraph is entered**; clear or backspace to clear the paragraph and return `null` |
+| onValueChange | `(value: string \| null) => void` | **Triggered only after every required segment is complete**; clearing the value returns `null`. |
 
 ## Keyboard
 
@@ -53,7 +53,7 @@ import { TimeField } from "@hulianui/ui"
 |------|------|
 | `↑` / `↓` | Current segment ±1, loop within segment (23 → 0). Empty segment starts: `↑` is the smallest, `↓` is the largest |
 | `←` / `→` | Switch segments without crossing the boundary at both ends |
-| `0`–`9` | Two-digit buffer overwrite: automatically jump to the next paragraph after inputting two digits; after filling in the first digit with zero, it exceeds the range (press `3` for hours), then one digit is finalized |
+| `0`–`9` | Replaces the current segment through a two-digit buffer and advances after two digits. If the first digit cannot begin a valid two-digit value (for example `3` for hours), it commits that one digit immediately. |
 | `Backspace` / `Delete` | Clear current segment |
 
 ## Example

@@ -23,7 +23,7 @@ Use Upload to select or drop files and display a controlled list with thumbnails
 
 `request` has the signature `(file, { onProgress, signal }) => Promise<{ url }>`. The library deliberately omits `action`, `headers`, `withCredentials`, and `transformResponse`: authentication and response-envelope handling belong in the application's request closure.
 
-Use `variant="dropzone"` for the drop zone form and `variant="button"` for the compact scene. If you want to crop the image after selecting it, please use [ImageCropper](../image-cropper/image-cropper.md); pure sorting does not involve uploading and use [Sortable](../sortable/sortable.md).
+Use `variant="dropzone"` for a drop area and `variant="button"` for a compact trigger. Use [ImageCropper](../image-cropper/image-cropper.md) to crop selected images, or [Sortable](../sortable/sortable.md) when the workflow only reorders existing items.
 
 ## Import
 ```ts
@@ -34,7 +34,7 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| accept | `string` | — | Native accept (such as `"image/*,.pdf"`); also used for landing zone verification |
+| accept | `string` | — | Native accept filter, such as `"image/*,.pdf"`; also validates dropped files. |
 | multiple | `boolean` | `false` | Whether to allow multiple selections |
 | disabled | `boolean` | `false` | Disable |
 | maxSize | `number` | — | The upper limit of single file bytes; if the limit is exceeded, enter `onReject(reason="size")` |
@@ -42,15 +42,15 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | variant | `"dropzone" \| "button"` | `"dropzone"` | Form: drag drop area/single button |
 | files | `UploadFile[]` | — | List of files for controlled display (including status/progress/url); if not passed, the list will not be rendered. |
 | renderPreview | `(file: UploadFile) => ReactNode` | — | Thumbnail rendering hook; when returning to the node, the left side of the list item changes to 40px preview position (the status point is downgraded to a corner mark), and `null` is returned to the default dot. |
-| sortable | `boolean` | `false` | The list can be dragged and ordered (**`onSort` must be uploaded at the same time to take effect**) |
+| sortable | `boolean` | `false` | Enables drag reordering when `onSort` is also provided. |
 | className | `string` | — | Container class name |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onSelect | `(files: File[]) => void` | Files that pass verification are selected (click to select or drag in) |
-| onReject | `(rejections: UploadRejection[]) => void` | Files rejected by verification (`reason`: `"type"` / `"size"` / `"limit"`) |
+| onSelect | `(files: File[]) => void` | Called with files that pass validation. |
+| onReject | `(rejections: UploadRejection[]) => void` | Called for rejected files with reason `"type"`, `"size"`, or `"limit"`. |
 | onRemove | `(id: string) => void` | List item remove button click |
 | onSort | `(files: UploadFile[]) => void` | The new sequence after drag-and-drop resequencing (the component does not save the sequence, you write it back to `files`) |
 
@@ -58,9 +58,9 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| label | `ReactNode` | Landing area main copy |
+| label | `ReactNode` | Dropzone label; the default is `"\u70b9\u51fb\u6216\u62d6\u62fd\u6587\u4ef6\u5230\u6b64\u5904"`, built-in Chinese copy meaning “Click or drag files here.” |
 | hint | `ReactNode` | Drop zone auxiliary instructions (format/size limit tips) |
-| buttonLabel | `ReactNode` | Button-mode label (default `"Choose files"`). |
+| buttonLabel | `ReactNode` | Button-mode label; the default is `"\u9009\u62e9\u6587\u4ef6"`, built-in Chinese copy meaning “Choose files.” |
 | children | `ReactNode` | Customize drop zone content (override label/hint) |
 
 > `UploadFile`: `{ id; name; size?; status?: "ready"\|"uploading"\|"success"\|"error"; progress?; error?; url?; raw? }`
@@ -87,7 +87,7 @@ const up = useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })
 | `add` | Connect to `<Upload onSelect>`, enter the queue and automatically start transmission according to concurrent |
 | `remove` | Connect to `<Upload onRemove>`, and the ongoing task will be aborted. |
 | `retry` | Retransmit a single failed item |
-| `reorder` | Connect to `<Upload onSort>`, only changing the order will not affect the flight mission. |
+| `reorder` | Connect to `<Upload onSort>`; it changes list order without affecting upload tasks. |
 | `clear` | Cancel all and clear |
 | `uploading` | Are there any tasks queued or in progress? |
 
