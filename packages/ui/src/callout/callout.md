@@ -2,7 +2,7 @@
 slug: callout
 name: Callout
 category: feedback
-group: 提示
+group: message
 tags: []
 exports: [Callout]
 status: enriched
