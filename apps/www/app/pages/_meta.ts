@@ -1,6 +1,12 @@
 // Pages 纯数据 SSOT —— 零组件 import，server / client 皆可安全读（首页四档浏览器、画廊卡片用）。
 // 「页面」= 由多个区块拼成的完整整页，比区块大一级。_registry.tsx 在此基础上补 slug→页面组件映射。
 
+export interface CompositeInstallation {
+  providers: string[];
+  replace: Array<"copy" | "mock-data" | "navigation" | "event-handlers">;
+  slots: string[];
+}
+
 export interface PageMeta {
   slug: string;
   name: string;
@@ -9,6 +15,8 @@ export interface PageMeta {
   tags: string[];
   /** _pages/ 下的源文件名，detail 页据此 fs 读取真实源码（=区块组合方式）。 */
   file: string;
+  /** 可选人工覆盖；registry 默认从真实源码保守推导安装后的接入清单。 */
+  installation?: CompositeInstallation;
 }
 
 export const CATEGORY_LABEL: Record<PageMeta["category"], string> = {

@@ -2,6 +2,12 @@
 // （client（首页四档浏览器、画廊卡片）导入此文件，绝不能导入 _registry.tsx：
 //  那里有 RSC block 组件，拖进 client 模块会报错）。_registry.tsx 在此基础上补 slug→预览组件映射。
 
+export interface CompositeInstallation {
+  providers: string[];
+  replace: Array<"copy" | "mock-data" | "navigation" | "event-handlers">;
+  slots: string[];
+}
+
 export interface BlockMeta {
   slug: string;
   name: string;
@@ -13,6 +19,8 @@ export interface BlockMeta {
   tags: string[];
   /** _blocks/ 下的源文件名，detail 页据此 fs 读取真实源码。 */
   file: string;
+  /** 可选人工覆盖；registry 默认从真实源码保守推导安装后的接入清单。 */
+  installation?: CompositeInstallation;
 }
 
 export const CATEGORY_LABEL: Record<BlockMeta["category"], string> = {

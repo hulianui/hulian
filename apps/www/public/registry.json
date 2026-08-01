@@ -17949,6 +17949,18 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/navbar.tsx"
       },
       "files": [
@@ -17975,6 +17987,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/banner.tsx"
       },
       "files": [
@@ -18002,6 +18025,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/hero.tsx"
       },
       "files": [
@@ -18029,6 +18062,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/hero-split.tsx"
       },
       "files": [
@@ -18056,6 +18099,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/hero-video.tsx"
       },
       "files": [
@@ -18083,6 +18136,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/hero-terminal.tsx"
       },
       "files": [
@@ -18109,6 +18173,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/hero-waitlist.tsx"
       },
       "files": [
@@ -18134,6 +18209,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/trust-bar.tsx"
       },
       "files": [
@@ -18160,6 +18245,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/logo-cloud.tsx"
       },
       "files": [
@@ -18186,6 +18281,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/features.tsx"
       },
       "files": [
@@ -18212,6 +18317,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/feature-tabs.tsx"
       },
       "files": [
@@ -18239,6 +18354,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/feature-spotlight.tsx"
       },
       "files": [
@@ -18264,6 +18390,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/stats.tsx"
       },
       "files": [
@@ -18290,6 +18426,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/integrations.tsx"
       },
       "files": [
@@ -18315,6 +18461,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/testimonials.tsx"
       },
       "files": [
@@ -18342,6 +18498,18 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/pricing-table.tsx"
       },
       "files": [
@@ -18369,6 +18537,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/pricing-compare.tsx"
       },
       "files": [
@@ -18396,6 +18575,18 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/pricing-usage.tsx"
       },
       "files": [
@@ -18423,6 +18614,18 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/pricing-credits.tsx"
       },
       "files": [
@@ -18448,6 +18651,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/faq.tsx"
       },
       "files": [
@@ -18475,6 +18688,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/cta.tsx"
       },
       "files": [
@@ -18501,6 +18724,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/cta-newsletter.tsx"
       },
       "files": [
@@ -18528,6 +18761,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/cta-card.tsx"
       },
       "files": [
@@ -18555,6 +18798,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/cta-banner.tsx"
       },
       "files": [
@@ -18581,6 +18834,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/contact-form.tsx"
       },
       "files": [
@@ -18606,6 +18870,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/feature-split.tsx"
       },
       "files": [
@@ -18631,6 +18905,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/team-grid.tsx"
       },
       "files": [
@@ -18656,6 +18940,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/blog-list.tsx"
       },
       "files": [
@@ -18681,6 +18975,15 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/article-body.tsx"
       },
       "files": [
@@ -18706,6 +19009,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/changelog.tsx"
       },
       "files": [
@@ -18731,6 +19044,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/milestone-timeline.tsx"
       },
       "files": [
@@ -18756,6 +19079,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/article-toc.tsx"
       },
       "files": [
@@ -18782,6 +19116,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/about.tsx"
       },
       "files": [
@@ -18808,6 +19152,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/login.tsx"
       },
       "files": [
@@ -18835,6 +19190,18 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/signup.tsx"
       },
       "files": [
@@ -18861,6 +19228,15 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/error-page.tsx"
       },
       "files": [
@@ -18888,6 +19264,18 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/footer.tsx"
       },
       "files": [
@@ -18914,6 +19302,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/page-header.tsx"
       },
       "files": [
@@ -18939,6 +19337,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/kpi-rail.tsx"
       },
       "files": [
@@ -18964,6 +19372,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/chart-grid.tsx"
       },
       "files": [
@@ -18990,6 +19408,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/data-table.tsx"
       },
       "files": [
@@ -19016,6 +19445,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/detail-drawer.tsx"
       },
       "files": [
@@ -19041,6 +19481,16 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/activity-timeline.tsx"
       },
       "files": [
@@ -19066,6 +19516,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/kanban-board.tsx"
       },
       "files": [
@@ -19092,6 +19553,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/settings-panel.tsx"
       },
       "files": [
@@ -19118,6 +19590,15 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/empty-state.tsx"
       },
       "files": [
@@ -19144,6 +19625,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/sidebar-nav.tsx"
       },
       "files": [
@@ -19170,6 +19662,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/onboarding.tsx"
       },
       "files": [
@@ -19196,6 +19699,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/product-grid.tsx"
       },
       "files": [
@@ -19222,6 +19736,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/product-detail.tsx"
       },
       "files": [
@@ -19248,6 +19773,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/cart-summary.tsx"
       },
       "files": [
@@ -19274,6 +19810,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/review-section.tsx"
       },
       "files": [
@@ -19300,6 +19847,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/user-profile.tsx"
       },
       "files": [
@@ -19326,6 +19884,18 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/chat-panel.tsx"
       },
       "files": [
@@ -19352,6 +19922,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/prompt-input.tsx"
       },
       "files": [
@@ -19378,6 +19959,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/agent-card.tsx"
       },
       "files": [
@@ -19404,6 +19996,17 @@
       "meta": {
         "kind": "block",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/blocks/_blocks/flow-canvas.tsx"
       },
       "files": [
@@ -19438,6 +20041,26 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "contact-form",
+            "cta",
+            "faq",
+            "features",
+            "hero",
+            "integrations",
+            "pricing-table",
+            "stats",
+            "testimonials",
+            "trust-bar"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/landing.tsx"
       },
       "files": [
@@ -19466,6 +20089,20 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "cta",
+            "faq",
+            "hero",
+            "pricing-table"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/pricing.tsx"
       },
       "files": [
@@ -19493,6 +20130,19 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "contact-form",
+            "cta",
+            "faq"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/contact.tsx"
       },
       "files": [
@@ -19524,6 +20174,21 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "cta",
+            "faq",
+            "feature-split",
+            "stats",
+            "testimonials"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/feature.tsx"
       },
       "files": [
@@ -19553,6 +20218,19 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "cta",
+            "faq",
+            "integrations"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/integrations.tsx"
       },
       "files": [
@@ -19580,6 +20258,19 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "contact-form",
+            "cta",
+            "faq"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/faq.tsx"
       },
       "files": [
@@ -19611,6 +20302,21 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "cta",
+            "milestone-timeline",
+            "stats",
+            "team-grid",
+            "testimonials"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/about.tsx"
       },
       "files": [
@@ -19638,6 +20344,17 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "blog-list"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/blog.tsx"
       },
       "files": [
@@ -19664,6 +20381,18 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "article-body",
+            "cta"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/blog-post.tsx"
       },
       "files": [
@@ -19690,6 +20419,18 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "article-toc",
+            "cta"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/blog-post-guide.tsx"
       },
       "files": [
@@ -19717,6 +20458,17 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "changelog"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/changelog.tsx"
       },
       "files": [
@@ -19745,6 +20497,20 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "chart-grid",
+            "data-table",
+            "kpi-rail",
+            "page-header"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/dashboard.tsx"
       },
       "files": [
@@ -19772,6 +20538,19 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "data-table",
+            "kpi-rail",
+            "page-header"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/admin-list.tsx"
       },
       "files": [
@@ -19798,6 +20577,18 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "page-header",
+            "settings-panel"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/settings.tsx"
       },
       "files": [
@@ -19824,6 +20615,18 @@
       "meta": {
         "kind": "page",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "event-handlers",
+            "mock-data",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/pages/_pages/login.tsx"
       },
       "files": [
@@ -19850,6 +20653,16 @@
       "meta": {
         "kind": "page",
         "selfContained": true,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy",
+            "navigation"
+          ],
+          "slots": []
+        },
         "source": "apps/www/app/pages/_pages/result.tsx"
       },
       "files": [
@@ -19877,6 +20690,17 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "product-grid"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/product-list.tsx"
       },
       "files": [
@@ -19904,6 +20728,19 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "product-detail",
+            "product-grid",
+            "review-section"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/product-detail.tsx"
       },
       "files": [
@@ -19931,6 +20768,19 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "activity-timeline",
+            "product-grid",
+            "user-profile"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/user-center.tsx"
       },
       "files": [
@@ -19957,6 +20807,18 @@
       "meta": {
         "kind": "page",
         "selfContained": false,
+        "installation": {
+          "providers": [
+            "ThemeProvider"
+          ],
+          "replace": [
+            "copy"
+          ],
+          "slots": [
+            "agent-card",
+            "chat-panel"
+          ]
+        },
         "source": "apps/www/app/pages/_pages/ai-chat.tsx"
       },
       "files": [

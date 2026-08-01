@@ -264,6 +264,19 @@ export function scanPageBlockDeps(code) {
   return [...deps].sort();
 }
 
+/** 根据真实源码生成安装后的接入清单；只报告能从语法直接证明存在的工作。 */
+function inferCompositeInstallation(source, kind, pageBlockDeps) {
+  const replace = new Set(["copy"]);
+  if (/\bconst\s+[\w$]+\s*(?::[^=]+)?=\s*\[/.test(source)) replace.add("mock-data");
+  if (/\bhref\s*=|\b(?:router\.)?(?:push|replace)\s*\(/.test(source)) replace.add("navigation");
+  if (/\bon[A-Z][\w]*\s*=/.test(source)) replace.add("event-handlers");
+  return {
+    providers: ["ThemeProvider"],
+    replace: [...replace].sort(),
+    slots: kind === "page" ? pageBlockDeps.map((name) => name.replace(/^block-/, "")) : [],
+  };
+}
+
 /** 区块 / 页面 → registry item。 */
 export function buildCompositeItems(metaFile, srcDir, kind) {
   const metas = parseMeta(metaFile);
@@ -285,6 +298,7 @@ export function buildCompositeItems(metaFile, srcDir, kind) {
       }
     }
     const content = kind === "page" ? rewritePageBlockImports(source) : source;
+    const installation = inferCompositeInstallation(source, kind, pageBlockDeps);
     const deps = new Set();
     for (const m of content.matchAll(/(?:from|import)\s+["']([^"'.][^"']*)["']/g)) {
       const spec = m[1];
@@ -310,6 +324,7 @@ export function buildCompositeItems(metaFile, srcDir, kind) {
       meta: {
         kind,
         selfContained: pageBlockDeps.length === 0,
+        installation,
         source: `apps/www/app/${kind}s/_${kind}s/${meta.file}`,
       },
     });

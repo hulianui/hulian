@@ -51,3 +51,25 @@ test("20 个页面的源码路径与 registryDependencies 在安装后闭环", (
     assert.deepEqual(item.registryDependencies, [...new Set(installedBlockImports)].sort(), item.name);
   }
 });
+
+test("全部 77 个组合项都说明安装后的业务接入工作", () => {
+  const blockItems = buildCompositeItems(
+    join(ROOT, "apps/www/app/blocks/_meta.ts"),
+    join(ROOT, "apps/www/app/blocks/_blocks"),
+    "block",
+  );
+  const pageItems = buildCompositeItems(
+    join(ROOT, "apps/www/app/pages/_meta.ts"),
+    join(ROOT, "apps/www/app/pages/_pages"),
+    "page",
+  );
+  const composites = [...blockItems, ...pageItems];
+
+  assert.equal(composites.length, 77);
+  for (const item of composites) {
+    assert.ok(item.meta.installation, `${item.name} missing installation metadata`);
+    assert.ok(Array.isArray(item.meta.installation.providers));
+    assert.ok(Array.isArray(item.meta.installation.replace));
+    assert.ok(Array.isArray(item.meta.installation.slots));
+  }
+});
