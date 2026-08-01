@@ -18,6 +18,7 @@ import { readFileSync, readdirSync, existsSync, statSync, writeFileSync, mkdirSy
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript-api";
+import { mapMarkdownCode } from "./check-component-doc-translations.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
@@ -34,94 +35,14 @@ const SITE = "https://hulianui.haloritual.com"; // 文档站；语料供站外 A
 // 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳。
 // 只处理 Markdown 正文：代码围栏和行内 code span 是示例数据，不是可导航链接；
 // `//host/path` 是协议相对外链，也绝不能被误拼成本站 URL。
-function backtickRun(markdown, index) {
-  if (markdown[index] !== "`") return 0;
-  let end = index;
-  while (markdown[end] === "`") end += 1;
-  return end - index;
-}
-
-function hasClosingBacktickRun(markdown, index, length) {
-  for (let cursor = index; cursor < markdown.length; ) {
-    const next = markdown.indexOf("`", cursor);
-    if (next < 0) return false;
-    const run = backtickRun(markdown, next);
-    if (run === length) return true;
-    cursor = next + run;
-  }
-  return false;
-}
-
-function rewriteOutsideCode(markdown, rewrite) {
-  const lines = markdown.match(/.*(?:\n|$)/g)?.filter(Boolean) ?? [];
-  let fence = null;
-  let inlineTicks = 0;
-  let globalOffset = 0;
-  return lines
-    .map((line) => {
-      const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
-      if (!inlineTicks && fence) {
-        if (marker?.[0] === fence[0] && marker.length >= fence.length) fence = null;
-        globalOffset += line.length;
-        return line;
-      }
-      if (!inlineTicks && marker) {
-        fence = marker;
-        globalOffset += line.length;
-        return line;
-      }
-
-      let output = "";
-      let cursor = 0;
-      while (cursor < line.length) {
-        if (inlineTicks) {
-          let close = line.indexOf("`", cursor);
-          while (close >= 0 && backtickRun(line, close) !== inlineTicks) {
-            close += backtickRun(line, close);
-            close = line.indexOf("`", close);
-          }
-          if (close < 0) {
-            output += line.slice(cursor);
-            cursor = line.length;
-            continue;
-          }
-          const end = close + inlineTicks;
-          output += line.slice(cursor, end);
-          cursor = end;
-          inlineTicks = 0;
-          continue;
-        }
-
-        const opening = line.indexOf("`", cursor);
-        if (opening < 0) {
-          output += rewrite(line.slice(cursor));
-          cursor = line.length;
-          continue;
-        }
-        const length = backtickRun(line, opening);
-        const end = opening + length;
-        if (!hasClosingBacktickRun(markdown, globalOffset + end, length)) {
-          output += rewrite(line.slice(cursor, end));
-          cursor = end;
-          continue;
-        }
-        output += rewrite(line.slice(cursor, opening));
-        output += line.slice(opening, end);
-        cursor = end;
-        inlineTicks = length;
-      }
-      globalOffset += line.length;
-      return output;
-    })
-    .join("");
-}
 
 export const absolutize = (source) =>
-  rewriteOutsideCode(source, (text) =>
-    text
-      .replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, `](${SITE}/components/$1)`)
-      .replace(/\]\((\/(?!\/)[^)\s]+)\)/g, `](${SITE}$1)`),
-  );
+  mapMarkdownCode(source, {
+    outside: (text) =>
+      text
+        .replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, `](${SITE}/components/$1)`)
+        .replace(/\]\((\/(?!\/)[^)\s]+)\)/g, `](${SITE}$1)`),
+  });
 const TAGLINE = "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）";
 
 const PKG_DEPS = new Set([

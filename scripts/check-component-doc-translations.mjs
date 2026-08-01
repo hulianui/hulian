@@ -45,21 +45,32 @@ function backtickRun(source, index) {
   return end - index;
 }
 
-function hasClosingBacktickRun(source, index, length) {
+function hasClosingBacktickRunBeforeFence(source, index, length) {
   for (let cursor = index; cursor < source.length; ) {
-    const next = source.indexOf("`", cursor);
-    if (next < 0) return false;
-    const run = backtickRun(source, next);
-    if (run === length) return true;
-    cursor = next + run;
+    const lineEnd = source.indexOf("\n", cursor);
+    const end = lineEnd < 0 ? source.length : lineEnd;
+    if (
+      (cursor === 0 || source[cursor - 1] === "\n") &&
+      /^ {0,3}(`{3,}|~{3,})/.test(source.slice(cursor, end))
+    ) {
+      return false;
+    }
+    for (let next = source.indexOf("`", cursor); next >= 0 && next < end; ) {
+      const run = backtickRun(source, next);
+      if (run === length) return true;
+      next = source.indexOf("`", next + run);
+    }
+    if (lineEnd < 0) return false;
+    cursor = lineEnd + 1;
   }
   return false;
 }
 
 /**
  * Map Markdown while tracking fenced blocks and exact-length inline backtick
- * delimiters. Inline code spans may cross newlines; a single backtick inside a
- * double-backtick span is content and cannot close it.
+ * delimiters. Inline code spans may cross ordinary newlines, but a fence line
+ * is a hard boundary; a single backtick inside a double-backtick span is
+ * content and cannot close it.
  */
 export function mapMarkdownCode(
   source,
@@ -72,13 +83,14 @@ export function mapMarkdownCode(
   return lines
     .map((line) => {
       const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
-      if (!inlineTicks && fence) {
+      if (fence) {
         const closes = marker?.[0] === fence[0] && marker.length >= fence.length;
         if (closes) fence = null;
         globalOffset += line.length;
         return fenced(line);
       }
-      if (!inlineTicks && marker) {
+      if (marker) {
+        inlineTicks = 0;
         fence = marker;
         globalOffset += line.length;
         return fenced(line);
@@ -113,7 +125,7 @@ export function mapMarkdownCode(
         }
         const length = backtickRun(line, opening);
         const end = opening + length;
-        if (!hasClosingBacktickRun(source, globalOffset + end, length)) {
+        if (!hasClosingBacktickRunBeforeFence(source, globalOffset + end, length)) {
           output += outside(line.slice(cursor, end));
           cursor = end;
           continue;

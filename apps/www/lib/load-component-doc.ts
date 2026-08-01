@@ -59,13 +59,30 @@ function backtickRun(markdown: string, index: number): number {
   return end - index;
 }
 
-function hasClosingBacktickRun(markdown: string, index: number, length: number): boolean {
+// Typed runtime mirror of scripts/check-component-doc-translations.mjs. The two
+// Node scripts share that implementation directly; this Next server module
+// keeps the same fence-first semantics without importing a CLI-oriented module.
+function hasClosingBacktickRunBeforeFence(
+  markdown: string,
+  index: number,
+  length: number,
+): boolean {
   for (let cursor = index; cursor < markdown.length; ) {
-    const next = markdown.indexOf("`", cursor);
-    if (next < 0) return false;
-    const run = backtickRun(markdown, next);
-    if (run === length) return true;
-    cursor = next + run;
+    const lineEnd = markdown.indexOf("\n", cursor);
+    const end = lineEnd < 0 ? markdown.length : lineEnd;
+    if (
+      (cursor === 0 || markdown[cursor - 1] === "\n") &&
+      /^ {0,3}(`{3,}|~{3,})/.test(markdown.slice(cursor, end))
+    ) {
+      return false;
+    }
+    for (let next = markdown.indexOf("`", cursor); next >= 0 && next < end; ) {
+      const run = backtickRun(markdown, next);
+      if (run === length) return true;
+      next = markdown.indexOf("`", next + run);
+    }
+    if (lineEnd < 0) return false;
+    cursor = lineEnd + 1;
   }
   return false;
 }
@@ -78,12 +95,13 @@ function rewriteOutsideCode(markdown: string, rewrite: (text: string) => string)
   return lines
     .map((line) => {
       const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
-      if (!inlineTicks && fence) {
+      if (fence) {
         if (marker?.[0] === fence[0] && marker.length >= fence.length) fence = null;
         globalOffset += line.length;
         return line;
       }
-      if (!inlineTicks && marker) {
+      if (marker) {
+        inlineTicks = 0;
         fence = marker;
         globalOffset += line.length;
         return line;
@@ -118,7 +136,7 @@ function rewriteOutsideCode(markdown: string, rewrite: (text: string) => string)
         }
         const length = backtickRun(line, opening);
         const end = opening + length;
-        if (!hasClosingBacktickRun(markdown, globalOffset + end, length)) {
+        if (!hasClosingBacktickRunBeforeFence(markdown, globalOffset + end, length)) {
           output += rewrite(line.slice(cursor, end));
           cursor = end;
           continue;

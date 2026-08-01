@@ -118,4 +118,21 @@ describe("localized component Markdown resolution", () => {
     expect(rendered).toContain("[Hidden](/components/hidden)");
     expect(rendered).toContain("[Visible](/en/components/visible)");
   });
+
+  it("does not let an unmatched inline delimiter consume the next fenced block", () => {
+    const markdown = [
+      "# Button",
+      "",
+      "Unmatched ``` in ordinary text.",
+      "```md",
+      "[Fenced](../fenced/fenced.md)",
+      "```",
+      "[Visible](../visible/visible.md)",
+    ].join("\n");
+    const root = fixture({ "button/button.en.md": doc("button", markdown) });
+
+    const rendered = loadComponentDoc("button", "en", [root])!;
+    expect(rendered).toContain("[Fenced](../fenced/fenced.md)");
+    expect(rendered).toContain("[Visible](/en/components/visible)");
+  });
 });

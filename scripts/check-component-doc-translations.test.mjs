@@ -41,6 +41,18 @@ const manifest = [
 const frontmatter = (slug, body = `# ${slug}\n`, category = "forms") =>
   `---\nslug: ${slug}\nname: ${slug}\ncategory: ${category}\nstatus: enriched\n---\n\n${body}`;
 
+const fenceBoundaryMarkdown = [
+  "# Button",
+  "",
+  "Unmatched ``` in ordinary text.",
+  "```md",
+  "[Fenced](../ghost-fenced/ghost-fenced.md)",
+  "围栏中文",
+  "```",
+  "[Visible](../ghost-visible/ghost-visible.md)",
+  "Visible 可见中文.",
+].join("\n");
+
 test("normal and _mui documents require exact Chinese/English pairs", () => {
   withFixture(
     {
@@ -191,6 +203,31 @@ test("multiline code spans hide related links using their exact backtick run", (
   );
 });
 
+test("an unmatched inline delimiter stops at a fence boundary during coverage checks", () => {
+  withFixture(
+    {
+      "button/button.md": frontmatter("button"),
+      "button/button.en.md": frontmatter("button", fenceBoundaryMarkdown),
+    },
+    (uiSrc) => {
+      const diagnostics = checkComponentDocTranslations({
+        uiSrc,
+        manifest: [{ slug: "button", category: "forms" }],
+      });
+      assert.deepEqual(
+        diagnostics.map((diagnostic) => [diagnostic.code, diagnostic.message]),
+        [
+          ["broken-related", "Broken related-component slug ghost-visible"],
+          [
+            "cjk",
+            'Unapproved CJK text "可见中文"; use English or an exact data-i18n-allow-cjk marker',
+          ],
+        ],
+      );
+    },
+  );
+});
+
 test("proper-noun exemption requires a real standalone HTML attribute", () => {
   withFixture(
     {
@@ -283,6 +320,15 @@ test("registry link rewriting preserves links in multiline code spans", () => {
   assert.match(
     rewritten,
     /\[Visible\]\(https:\/\/hulianui\.haloritual\.com\/components\/visible\)/,
+  );
+});
+
+test("registry rewriting keeps fences authoritative over unmatched inline delimiters", () => {
+  const rewritten = absolutize(fenceBoundaryMarkdown);
+  assert.match(rewritten, /\[Fenced\]\(\.\.\/ghost-fenced\/ghost-fenced\.md\)/);
+  assert.match(
+    rewritten,
+    /\[Visible\]\(https:\/\/hulianui\.haloritual\.com\/components\/ghost-visible\)/,
   );
 });
 
