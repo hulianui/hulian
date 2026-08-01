@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { blocks } from "../app/blocks/_meta";
+import { blocks, CATEGORY_LABEL as BLOCK_CATEGORY_LABEL } from "../app/blocks/_meta";
 import { demos } from "../app/demos/lib/demos";
-import { pages } from "../app/pages/_meta";
+import { pages, CATEGORY_LABEL as PAGE_CATEGORY_LABEL } from "../app/pages/_meta";
 import { CATEGORIES, manifest } from "../lib/manifest";
 import { THEME_NAV } from "../lib/theme-manifest";
 import { blockCategoryMetaEn, blockMetaEn } from "./block-meta.en";
@@ -40,9 +40,12 @@ describe("English catalog metadata coverage", () => {
   });
 
   it("has exact block and page category keys", () => {
-    const categoryKeys = sorted(["marketing", "application", "ecommerce", "ai"]);
-    expect(sorted(Object.keys(blockCategoryMetaEn))).toEqual(categoryKeys);
-    expect(sorted(Object.keys(pageCategoryMetaEn))).toEqual(categoryKeys);
+    expect(sorted(Object.keys(blockCategoryMetaEn))).toEqual(
+      sorted(Object.keys(BLOCK_CATEGORY_LABEL)),
+    );
+    expect(sorted(Object.keys(pageCategoryMetaEn))).toEqual(
+      sorted(Object.keys(PAGE_CATEGORY_LABEL)),
+    );
   });
 
   it("contains no CJK in English visible display fields", () => {
