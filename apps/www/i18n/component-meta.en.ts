@@ -138,7 +138,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   container: {
     shortName: "Container",
-    description: "Centers content within preset maximum widths and responsive horizontal padding.",
+    description: "Centers content within preset maximum widths and safe horizontal padding.",
     keywords: ["container", "layout"],
   },
   grid: {
@@ -205,7 +205,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "animated-shiny-text": {
     shortName: "AnimatedShinyText",
-    description: "Sweeps a restrained highlight across text while respecting reduced motion.",
+    description: "Sweeps a restrained highlight across inline text.",
     keywords: ["animated", "shiny", "text", "typography"],
   },
   "animated-gradient-text": {
@@ -226,8 +226,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "sparkles-text": {
     shortName: "SparklesText",
-    description:
-      "Surrounds text with seeded animated sparkles without changing its readable content.",
+    description: "Surrounds text with animated sparkles generated on the client.",
     keywords: ["sparkles", "text", "typography"],
   },
   "split-text": {
@@ -273,8 +272,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "code-block": {
     shortName: "CodeBlock",
-    description:
-      "Displays fenced code with language labeling, line structure, scrolling, and copy support.",
+    description: "Displays multiline code with an optional language label and copy action.",
     keywords: ["code", "block", "typography"],
   },
   snippet: {
@@ -285,12 +283,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   "code-diff": {
     shortName: "CodeDiff",
     description:
-      "Shows line-oriented code additions, removals, context, numbering, and optional anchored comments.",
+      "Shows line-oriented additions and removals in unified or split views with line numbers and a summary.",
     keywords: ["code", "diff", "typography"],
   },
   kbd: {
     shortName: "Kbd",
-    description: "Displays keyboard keys or shortcuts with accessible inline keycap styling.",
+    description: "Displays keyboard keys or shortcuts with inline keycap styling.",
     keywords: ["kbd", "typography", "code"],
   },
   button: {
@@ -325,33 +323,32 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "social-button": {
     shortName: "SocialButton",
-    description:
-      "Provides branded sign-in or sharing buttons with service icons and loading states.",
+    description: "Provides branded sign-in buttons with service icons and loading states.",
     keywords: ["social", "button", "forms"],
   },
   input: {
     shortName: "Input",
-    description: "Collects single-line text with sizes, validation states, prefixes, and suffixes.",
+    description: "Collects single-line text with prefixes, suffixes, and an invalid state.",
     keywords: ["input", "forms", "basic"],
   },
   textarea: {
     shortName: "Textarea",
-    description: "Collects multiline text with resize and validation styling.",
+    description: "Collects multiline text in an auto-sizing field.",
     keywords: ["textarea", "forms", "basic"],
   },
   select: {
     shortName: "Select",
-    description: "Chooses one value from an accessible anchored option popup.",
+    description: "Chooses one or multiple values from an anchored option popup.",
     keywords: ["select", "forms", "basic"],
   },
   checkbox: {
     shortName: "Checkbox",
-    description: "Toggles an independent boolean value with indeterminate and disabled states.",
+    description: "Toggles an independent boolean value with an indeterminate state.",
     keywords: ["checkbox", "forms", "basic"],
   },
   "checkbox-group": {
     shortName: "CheckboxGroup",
-    description: "Manages a labeled set of checkbox values and group-level validation.",
+    description: "Coordinates an array of values across a group of checkboxes.",
     keywords: ["checkbox", "group", "forms", "basic"],
   },
   radio: {
@@ -382,7 +379,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "number-field": {
     shortName: "NumberField",
-    description: "Edits numeric values with bounds, step controls, and keyboard-safe parsing.",
+    description: "Edits numeric values with bounds, step buttons, and keyboard stepping.",
     keywords: ["number", "field", "forms", "basic"],
   },
   "secret-field": {
@@ -397,13 +394,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   combobox: {
     shortName: "Combobox",
-    description: "Combines text filtering with accessible option selection and custom values.",
+    description: "Filters selectable options through either a trigger popup or an inline input.",
     keywords: ["combobox", "forms", "advanced"],
   },
   "remote-select": {
     shortName: "RemoteSelect",
     description:
-      "Loads and filters selectable options asynchronously with pending and error states.",
+      "Loads debounced remote options with request cancellation, pagination, initial-value resolution, and multiple selection.",
     keywords: ["remote", "select", "forms", "advanced"],
   },
   listbox: {
@@ -418,12 +415,14 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "input-otp": {
     shortName: "InputOTP",
-    description: "Collects one-time codes across accessible fixed-length character slots.",
+    description:
+      "Collects one-time codes across fixed-length slots with auto-advance, backspace, and full-code paste.",
     keywords: ["input", "otp", "forms", "advanced"],
   },
   rating: {
     shortName: "Rating",
-    description: "Captures or displays a star rating with hover, keyboard, and read-only modes.",
+    description:
+      "Captures a controlled rating with radio semantics, custom icons, and hover preview.",
     keywords: ["rating", "forms", "advanced"],
   },
   upload: {
@@ -440,7 +439,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "scope-matrix": {
     shortName: "ScopeMatrix",
-    description: "Edits permission scopes in a resource-by-action checkbox matrix.",
+    description:
+      "Edits allow and deny scope lists with suggestions, an effective-scope summary, and read-only or controlled modes.",
     keywords: ["scope", "matrix", "forms", "advanced"],
   },
   transfer: {
@@ -470,7 +470,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "markdown-editor": {
     shortName: "MarkdownEditor",
-    description: "Edits Markdown with write, preview, toolbar, and synchronized content modes.",
+    description: "Edits Markdown through a WYSIWYG TipTap surface with Markdown input and output.",
     keywords: ["markdown", "editor", "forms", "advanced"],
   },
   colorpicker: {
@@ -480,7 +480,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "color-field": {
     shortName: "ColorField",
-    description: "Edits and validates a color value with an inline preview swatch.",
+    description:
+      "Edits a hexadecimal color through a swatch, system picker, text input, and shorthand expansion.",
     keywords: ["color", "field", "forms", "advanced"],
   },
   "color-swatch-picker": {
@@ -496,7 +497,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "emoji-picker": {
     shortName: "EmojiPicker",
-    description: "Searches and selects emoji from categorized, keyboard-navigable grids.",
+    description: "Searches and selects emoji by category, including a recent-use section.",
     keywords: ["emoji", "picker", "forms", "advanced"],
   },
   "voice-record": {
@@ -523,7 +524,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "date-range-picker": {
     shortName: "DateRangePicker",
-    description: "Selects and validates a start and end date from linked calendars.",
+    description: "Selects a start and end date from a dual-month range calendar.",
     keywords: ["date", "range", "picker", "forms", "datetime"],
   },
   "icon-picker": {
@@ -543,8 +544,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   form: {
     shortName: "Form",
-    description:
-      "Connects labeled fields, validation messages, descriptions, and submission state.",
+    description: "Coordinates named fields with structured submission and field errors.",
     keywords: ["form", "forms", "framework"],
   },
   "form-dialog": {
@@ -572,7 +572,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "click-captcha": {
     shortName: "ClickCaptcha",
-    description: "Verifies users by matching clicks to prompted targets on an image.",
+    description:
+      "Collects an ordered set of relative image coordinates with undo, refresh, and keyboard crosshair controls.",
     keywords: ["click", "captcha", "forms", "framework"],
   },
   field: {
@@ -626,7 +627,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   descriptions: {
     shortName: "Descriptions",
-    description: "Displays labeled record fields in responsive bordered or unbordered grids.",
+    description:
+      "Displays labeled record fields in horizontal or vertical, bordered or unbordered layouts.",
     keywords: ["descriptions", "data-display", "collection"],
   },
   tree: {
@@ -636,13 +638,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   card: {
     shortName: "Card",
-    description: "Groups related content, media, metadata, and actions on a bordered surface.",
+    description: "Groups related content into header, body, and footer regions.",
     keywords: ["card", "data-display", "collection"],
   },
   carousel: {
     shortName: "Carousel",
     description:
-      "Navigates through slides with controls, indicators, looping, and responsive sizing.",
+      "Navigates scroll-snap slides with arrows, dots, autoplay, looping, dragging, and keyboard controls.",
     keywords: ["carousel", "data-display", "collection"],
   },
   video: {
@@ -653,13 +655,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "bento-grid": {
     shortName: "BentoGrid",
-    description: "Arranges heterogeneous feature cards in responsive row and column spans.",
+    description:
+      "Arranges feature cards across configurable row and column spans with a hover action.",
     keywords: ["bento", "grid", "data-display", "collection"],
   },
   image: {
     shortName: "Image",
-    description:
-      "Loads images with fade-in, fallback, radius, object-fit, and hover zoom behavior.",
+    description: "Loads images with fade-in, fallback, radius, and optional hover zoom.",
     keywords: ["image", "data-display", "collection"],
   },
   "magic-card": {
@@ -692,7 +694,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   flow: {
     shortName: "Flow",
     description:
-      "Edits node-and-edge diagrams with pan, zoom, selection, connection, and minimap controls.",
+      "Edits controlled node-and-edge canvases with node dragging, edge connection, panning, zooming, and fit view.",
     keywords: ["flow", "data-display", "collection"],
   },
   sankey: {
@@ -717,13 +719,14 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "queue-lane": {
     shortName: "QueueLane",
-    description: "Shows prioritized queue items in lanes with capacity and status cues.",
+    description:
+      "Shows prioritized queue items in read-only lanes with depth, average-wait, and throughput metrics.",
     keywords: ["queue", "lane", "data-display", "collection"],
   },
   "document-sheet": {
     shortName: "DocumentSheet",
     description:
-      "Formats business documents with header, line items, totals, status, and print layout.",
+      "Frames business documents on an A4-style sheet with header, section, footer, and print controls.",
     keywords: ["document", "sheet", "data-display", "collection"],
   },
   gantt: {
@@ -741,12 +744,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   "image-viewer": {
     shortName: "ImageViewer",
     description:
-      "Opens images in a full-screen viewer with zoom, rotation, panning, navigation, and thumbnails.",
+      "Opens images in a full-screen viewer with anchored zoom, panning, navigation, and thumbnails.",
     keywords: ["image", "viewer", "data-display", "info"],
   },
   danmaku: {
     shortName: "Danmaku",
-    description: "Overlays timed scrolling audience comments across media playback.",
+    description: "Overlays lane-allocated scrolling, top, or bottom audience comments on media.",
     keywords: ["danmaku", "data-display", "collection"],
   },
   "live-chat": {
@@ -768,7 +771,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "log-viewer": {
     shortName: "LogViewer",
-    description: "Streams leveled log lines with timestamps, sources, wrapping, and auto-scroll.",
+    description: "Displays leveled log lines with timestamps, sources, wrapping, and auto-scroll.",
     keywords: ["log", "viewer", "data-display", "collection"],
   },
   "file-tree": {
@@ -797,7 +800,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   "code-review-thread": {
     shortName: "CodeReviewThread",
     description:
-      "Anchors review comments and replies to specific code lines with resolution state.",
+      "Presents review comments, replies, severity, suggested diffs, and resolution or false-positive actions.",
     keywords: ["code", "review", "thread", "data-display", "collection"],
   },
   "virtual-list": {
@@ -844,12 +847,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   annotation: {
     shortName: "Annotation",
-    description: "Attaches a numbered or labeled explanatory marker to content.",
+    description:
+      "Adds a handwritten-style highlight, arrow, or note around inline content in eight positions.",
     keywords: ["annotation", "data-display", "info"],
   },
   avatar: {
     shortName: "Avatar",
-    description: "Displays a user image with initials fallback, sizes, shapes, and status.",
+    description: "Displays a user image with fallback content.",
     keywords: ["avatar", "data-display", "info"],
   },
   "avatar-circles": {
@@ -872,7 +876,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   comment: {
     shortName: "Comment",
     description:
-      "Displays nested author comments with timestamps, reply indentation, connectors, and action slots.",
+      "Displays nested comments with reply indentation, optional connectors, and action slots.",
     keywords: ["comment", "data-display", "info"],
   },
   "relative-time": {
@@ -909,12 +913,14 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "award-badge": {
     shortName: "AwardBadge",
-    description: "Displays achievement artwork with title, level, and earned state.",
+    description:
+      "Displays a laurel emblem beside a prefixed award title in outline, solid, or soft styles.",
     keywords: ["award", "badge", "data-display", "info"],
   },
   "credit-card": {
     shortName: "CreditCard",
-    description: "Previews payment-card number, holder, expiry, brand, and visual theme.",
+    description:
+      "Displays a formatted or masked card number with detected brand and front or back card faces.",
     keywords: ["credit", "card", "data-display", "info"],
   },
   stat: {
@@ -924,7 +930,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   statistic: {
     shortName: "Statistic",
-    description: "Formats a numeric value with prefix, suffix, precision, and loading state.",
+    description:
+      "Formats numeric values with precision, separators, prefixes, suffixes, optional animation, or a countdown.",
     keywords: ["statistic", "data-display", "stat"],
   },
   chart: {
@@ -940,12 +947,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   timeline: {
     shortName: "Timeline",
-    description: "Orders events along a vertical or horizontal line with status markers.",
+    description:
+      "Orders events along a timeline with colored or custom markers, alternate placement, and a pending state.",
     keywords: ["timeline", "data-display", "stat"],
   },
   "number-ticker": {
     shortName: "NumberTicker",
-    description: "Animates numeric changes while preserving the final accessible value.",
+    description: "Animates a numeric value toward its target when it enters the viewport.",
     keywords: ["number", "ticker", "data-display", "stat"],
   },
   "world-map": {
@@ -955,7 +963,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   empty: {
     shortName: "Empty",
-    description: "Explains an empty result and offers an optional recovery action.",
+    description: "Explains an empty result with an icon, title, description, and optional action.",
     keywords: ["empty", "data-display", "placeholder"],
   },
   skeleton: {
@@ -965,7 +973,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   watermark: {
     shortName: "Watermark",
-    description: "Repeats noninteractive text or imagery behind protected content.",
+    description: "Tiles a high-DPI canvas watermark and restores it after DOM tampering.",
     keywords: ["watermark", "data-display", "placeholder"],
   },
   navbar: {
@@ -992,12 +1000,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "navigation-menu": {
     shortName: "NavigationMenu",
-    description: "Provides accessible disclosure-based site navigation with rich linked panels.",
+    description:
+      "Provides triggers, links, and rich navigation panels through a shared animated viewport.",
     keywords: ["navigation", "menu", "global"],
   },
   menu: {
     shortName: "Menu",
-    description: "Presents keyboard-navigable action items, groups, separators, and submenus.",
+    description: "Presents action items, groups, separators, and a danger treatment in a dropdown.",
     keywords: ["menu", "navigation", "global"],
   },
   menubar: {
@@ -1013,19 +1022,17 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   tabs: {
     shortName: "Tabs",
-    description:
-      "Switches between labeled content panels with keyboard navigation and controlled state.",
+    description: "Switches between labeled content panels with underline or solid indicators.",
     keywords: ["tabs", "navigation", "inpage"],
   },
   breadcrumb: {
     shortName: "Breadcrumb",
-    description: "Shows the current hierarchy as linked navigation segments.",
+    description: "Shows a static page hierarchy with a semantic current-page marker.",
     keywords: ["breadcrumb", "navigation", "inpage"],
   },
   pagination: {
     shortName: "Pagination",
-    description:
-      "Navigates paged data with page numbers, previous-next actions, and size controls.",
+    description: "Navigates controlled paged data with page ranges and ellipses.",
     keywords: ["pagination", "navigation", "inpage"],
   },
   anchor: {
@@ -1040,7 +1047,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "back-top": {
     shortName: "BackTop",
-    description: "Reveals a control that scrolls the current viewport back to the top.",
+    description:
+      "Reveals a control that smoothly returns a configured scroll container to the top.",
     keywords: ["back", "top", "navigation", "inpage"],
   },
   stepper: {
@@ -1056,7 +1064,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "page-header": {
     shortName: "PageHeader",
-    description: "Combines breadcrumbs, title, description, metadata, and page-level actions.",
+    description: "Combines back navigation, breadcrumbs, title, tags, actions, and footer tabs.",
     keywords: ["page", "header", "navigation", "inpage"],
   },
   command: {
@@ -1066,7 +1074,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "context-menu": {
     shortName: "ContextMenu",
-    description: "Opens contextual actions at the pointer with keyboard-accessible submenus.",
+    description: "Opens contextual action items at the pointer with a danger treatment.",
     keywords: ["context", "menu", "navigation", "action"],
   },
   toolbar: {
@@ -1076,17 +1084,17 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   accordion: {
     shortName: "Accordion",
-    description: "Expands one or more stacked content sections from accessible headers.",
+    description: "Expands one or multiple stacked content sections with height transitions.",
     keywords: ["accordion", "navigation", "action"],
   },
   collapsible: {
     shortName: "Collapsible",
-    description: "Toggles visibility of a single controlled content region.",
+    description: "Toggles visibility of a single content region with a height transition.",
     keywords: ["collapsible", "navigation", "action"],
   },
   link: {
     shortName: "Link",
-    description: "Renders semantic navigation with external, disabled, and styled variants.",
+    description: "Renders styled navigation with tone, underline, and external-link behavior.",
     keywords: ["link", "navigation", "action"],
   },
   "animated-theme-toggler": {
@@ -1096,8 +1104,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   dialog: {
     shortName: "Dialog",
-    description:
-      "Presents focused modal content with focus trapping, dismissal, and labeled structure.",
+    description: "Presents modal content in a portal with focus trapping.",
     keywords: ["dialog", "feedback", "overlay"],
   },
   modal: {
@@ -1124,12 +1131,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   tooltip: {
     shortName: "Tooltip",
-    description: "Shows brief noninteractive guidance on hover or keyboard focus.",
+    description: "Shows brief guidance in an arrowed positioned layer on hover.",
     keywords: ["tooltip", "feedback", "overlay"],
   },
   "hover-card": {
     shortName: "HoverCard",
-    description: "Previews richer linked content after pointer hover or focus.",
+    description: "Shows rich content after pointer hover and closes it after a leave delay.",
     keywords: ["hover", "card", "feedback", "overlay"],
   },
   glimpse: {
@@ -1139,7 +1146,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "hero-video-dialog": {
     shortName: "HeroVideoDialog",
-    description: "Opens a product video from a poster-style hero preview in a modal player.",
+    description: "Opens a video from a thumbnail and play button in a modal player.",
     keywords: ["hero", "video", "dialog", "feedback", "overlay"],
   },
   alert: {
@@ -1164,7 +1171,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   toast: {
     shortName: "Toast",
-    description: "Queues brief transient feedback with actions, durations, and status tones.",
+    description: "Queues brief transient feedback that can close automatically or manually.",
     keywords: ["toast", "feedback", "message"],
   },
   notification: {
@@ -1175,12 +1182,14 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "service-message": {
     shortName: "ServiceMessage",
-    description: "Displays system events inline within a conversation timeline.",
+    description:
+      "Displays a service-notification card with source header, structured fields or custom content, and footer actions.",
     keywords: ["service", "message", "feedback"],
   },
   result: {
     shortName: "Result",
-    description: "Presents success, error, empty, or permission outcomes with next actions.",
+    description:
+      "Presents success, error, information, warning, permission, or server outcomes with detail and action slots.",
     keywords: ["result", "feedback", "message"],
   },
   "gift-feed": {
@@ -1205,7 +1214,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   spinner: {
     shortName: "Spinner",
-    description: "Renders a standalone accessible loading indicator in multiple sizes.",
+    description: "Renders a standalone CSS loading ring with status semantics.",
     keywords: ["spinner", "feedback", "loading"],
   },
   progress: {
@@ -1216,7 +1225,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   tour: {
     shortName: "Tour",
     description:
-      "Guides users through anchored product steps with navigation and focus management.",
+      "Guides users through anchored steps with a cutout highlight, positioned card, navigation, and progress.",
     keywords: ["tour", "feedback", "guide"],
   },
   conversation: {
@@ -1265,7 +1274,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   artifact: {
     shortName: "Artifact",
-    description: "Presents generated files or rich outputs with type, preview, and actions.",
+    description:
+      "Presents generated content with a title, version chip, action slot, and controlled or uncontrolled expansion.",
     keywords: ["artifact", "ai", "agent"],
   },
   "confirm-card": {
@@ -1275,7 +1285,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "thread-list": {
     shortName: "ThreadList",
-    description: "Lists conversation threads with search, selection, metadata, and row actions.",
+    description:
+      "Lists conversation threads with active state, metadata, deletion, a header action, and an empty state.",
     keywords: ["thread", "list", "ai", "agent"],
   },
   "task-runner": {
@@ -1286,7 +1297,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "streaming-text": {
     shortName: "StreamingText",
-    description: "Appends streamed text smoothly while preserving selectable accessible content.",
+    description: "Renders parent-accumulated text with a blinking trailing cursor while streaming.",
     keywords: ["streaming", "text", "ai", "assist"],
   },
   "prompt-suggestions": {
@@ -1301,12 +1312,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   citation: {
     shortName: "Citation",
-    description: "Links generated claims to numbered source references with preview details.",
+    description: "Renders an inline numbered source link with a title and source label.",
     keywords: ["citation", "ai", "assist"],
   },
   "dot-pattern": {
     shortName: "DotPattern",
-    description: "Draws a token-colored repeating dot background with configurable spacing.",
+    description: "Draws a token-colored repeating dot background with an SVG pattern.",
     keywords: ["dot", "pattern", "decoration", "backdrop"],
   },
   "grid-pattern": {
@@ -1316,7 +1327,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "striped-pattern": {
     shortName: "StripedPattern",
-    description: "Creates configurable diagonal stripes as a lightweight decorative surface.",
+    description: "Creates diagonal stripes as a lightweight CSS decorative surface.",
     keywords: ["striped", "pattern", "decoration", "backdrop"],
   },
   spotlight: {
@@ -1346,7 +1357,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   particles: {
     shortName: "Particles",
-    description: "Animates configurable particles with density, motion, and pointer interaction.",
+    description:
+      "Animates a canvas particle field with pointer repulsion and theme-aware foreground color.",
     keywords: ["particles", "decoration", "backdrop"],
   },
   "flickering-grid": {
@@ -1356,7 +1368,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "wavy-background": {
     shortName: "WavyBackground",
-    description: "Renders layered animated waves with canvas-based color and motion controls.",
+    description: "Renders layered multicolor waves with a canvas value-noise field.",
     keywords: ["wavy", "background", "decoration", "backdrop"],
   },
   silk: {
@@ -1397,12 +1409,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "glare-hover": {
     shortName: "GlareHover",
-    description: "Sweeps a configurable glare across content when the pointer hovers.",
+    description: "Sweeps a diagonal glare across content when the pointer hovers.",
     keywords: ["glare", "hover", "decoration", "overlay-fx"],
   },
   lens: {
     shortName: "Lens",
-    description: "Magnifies image details beneath a movable circular lens.",
+    description: "Magnifies arbitrary content beneath a movable circular lens.",
     keywords: ["lens", "decoration", "overlay-fx"],
   },
   "animated-beam": {
@@ -1427,7 +1439,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   safari: {
     shortName: "Safari",
-    description: "Frames screenshots in a configurable Safari-style browser window.",
+    description: "Frames screenshots in a Safari-style browser window with an address bar.",
     keywords: ["safari", "mockups", "window"],
   },
   chrome: {
@@ -1442,7 +1454,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   iphone: {
     shortName: "iPhone",
-    description: "Frames content inside a responsive iPhone device mockup.",
+    description: "Frames content inside an iPhone-style shell with a Dynamic Island.",
     keywords: ["iphone", "mockups", "device"],
   },
   android: {
@@ -1477,7 +1489,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   picker: {
     shortName: "Picker",
-    description: "Selects values through inertial touch-friendly wheel columns.",
+    description: "Selects values through one or more scroll-snap wheel columns.",
     keywords: ["picker", "mobile", "input"],
   },
   "swipe-action": {
@@ -1487,7 +1499,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "pull-to-refresh": {
     shortName: "PullToRefresh",
-    description: "Tracks downward touch gestures and exposes refresh progress and completion.",
+    description:
+      "Tracks a resisted downward pull, arms at a threshold, and holds until refresh completes.",
     keywords: ["pull", "to", "refresh", "mobile", "gesture"],
   },
   "safe-area": {
@@ -1538,17 +1551,17 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   shuffle: {
     shortName: "Shuffle",
-    description: "Reorders character tiles through a configurable animated shuffle sequence.",
+    description: "Scrambles characters and then locks the original text into place in sequence.",
     keywords: ["shuffle", "typography", "text"],
   },
   "text-cursor": {
     shortName: "TextCursor",
-    description: "Adds a configurable animated cursor trail around text or pointer movement.",
+    description: "Drops a fading trail of text glyphs along pointer movement inside a container.",
     keywords: ["text", "cursor", "typography"],
   },
   "text-pressure": {
     shortName: "TextPressure",
-    description: "Varies glyph weight and width according to pointer proximity and speed.",
+    description: "Varies glyph weight, width, slant, and opacity according to pointer proximity.",
     keywords: ["text", "pressure", "typography"],
   },
   "variable-proximity": {
@@ -1631,7 +1644,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "orbit-images": {
     shortName: "OrbitImages",
-    description: "Moves images around a configurable orbit with depth and interaction.",
+    description:
+      "Moves child items along preset or custom CSS offset paths with spacing and tilt controls.",
     keywords: ["orbit", "images", "decoration", "overlay-fx"],
   },
   "pixel-trail": {
@@ -1641,7 +1655,7 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "pixel-transition": {
     shortName: "PixelTransition",
-    description: "Transitions between two content states through a seeded pixel dissolve.",
+    description: "Transitions between two content states through a randomized pixel curtain.",
     keywords: ["pixel", "transition", "decoration", "overlay-fx"],
   },
   ribbons: {
@@ -1651,12 +1665,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "shape-blur": {
     shortName: "ShapeBlur",
-    description: "Morphs and blurs a geometric shader shape in response to interaction.",
+    description: "Moves a softly blurred geometric highlight with damped pointer interaction.",
     keywords: ["shape", "blur", "decoration", "overlay-fx"],
   },
   "splash-cursor": {
     shortName: "SplashCursor",
-    description: "Simulates fluid splashes and color advection around pointer movement.",
+    description: "Emits colorful splashes and fading trails from pointer movement and clicks.",
     keywords: ["splash", "cursor", "decoration", "overlay-fx"],
   },
   "star-border": {
@@ -1666,7 +1680,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "sticker-peel": {
     shortName: "StickerPeel",
-    description: "Lets users peel a corner of an image-backed sticker with spring motion.",
+    description:
+      "Lets users drag or hover a sticker corner to reveal a peel, shadow, and pointer-following highlight.",
     keywords: ["sticker", "peel", "decoration", "overlay-fx"],
   },
   "target-cursor": {
@@ -1692,12 +1707,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "card-nav": {
     shortName: "CardNav",
-    description: "Reveals rich navigation cards from a responsive header control.",
+    description:
+      "Expands a pill-shaped header to reveal staggered navigation cards from a hamburger control.",
     keywords: ["card", "nav", "navigation", "global"],
   },
   "flowing-menu": {
     shortName: "FlowingMenu",
-    description: "Pairs navigation rows with animated image marquees on hover.",
+    description: "Pairs navigation rows with looping text or image marquees on pointer entry.",
     keywords: ["flowing", "menu", "navigation", "global"],
   },
   "gooey-nav": {
@@ -1707,12 +1723,13 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "pill-nav": {
     shortName: "PillNav",
-    description: "Renders responsive pill-shaped navigation with an animated active item.",
+    description:
+      "Renders pill-shaped navigation with hover fill, inverted labels, and an active dot.",
     keywords: ["pill", "nav", "navigation", "global"],
   },
   "staggered-menu": {
     shortName: "StaggeredMenu",
-    description: "Opens a full-screen navigation panel with staggered links and social actions.",
+    description: "Opens a layered side panel with staggered links, numbering, and social actions.",
     keywords: ["staggered", "menu", "navigation", "global"],
   },
   "bounce-cards": {
@@ -1727,7 +1744,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "chroma-grid": {
     shortName: "ChromaGrid",
-    description: "Displays an interactive profile grid with pointer-driven chromatic highlights.",
+    description:
+      "Displays a dimmed card grid that reveals full color inside a pointer-following spotlight.",
     keywords: ["chroma", "grid", "data-display", "collection"],
   },
   "circular-gallery": {
@@ -1752,7 +1770,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "magic-bento": {
     shortName: "MagicBento",
-    description: "Builds a bento card grid with spotlight, particles, tilt, and magnetic effects.",
+    description:
+      "Builds a bento card grid with a pointer spotlight, glowing borders, and optional tilt.",
     keywords: ["magic", "bento", "data-display", "collection"],
   },
   "scroll-stack": {
@@ -1762,7 +1781,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "profile-card": {
     shortName: "ProfileCard",
-    description: "Presents a profile identity card with tilt, glare, links, and status details.",
+    description:
+      "Presents a holographic identity card with pointer tilt, glare, and an initials fallback.",
     keywords: ["profile", "card", "data-display", "collection"],
   },
   "tilted-card": {
