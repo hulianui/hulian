@@ -41,6 +41,15 @@ describe("installReactScanAdapter", () => {
               selfBaseDuration: 1,
               treeBaseDuration: 1,
             },
+            {
+              name: "StableSibling",
+              depth: 1,
+              tag: 0,
+              actualDuration: 0,
+              actualStartTime: 0,
+              selfBaseDuration: 5,
+              treeBaseDuration: 5,
+            },
           ],
         } as never);
         options.onEvent?.({ kind: "commit-stop", timestamp: 14 } as never);
@@ -66,6 +75,9 @@ describe("installReactScanAdapter", () => {
       selfDurationMs: 2,
     });
     expect(JSON.stringify(sink)).not.toMatch(/fiberRoot|bippy|selfBaseDuration/);
+    expect(sink).not.toContainEqual(
+      expect.objectContaining({ name: "StableSibling" }),
+    );
 
     handle.stop();
     expect(stop).toHaveBeenCalledOnce();
@@ -77,7 +89,7 @@ describe("installReactScanAdapter", () => {
         stage: "measurement",
         sink: () => undefined,
         instrument: (options = {}) => {
-          options.onEvent?.({ kind: "commit", timestamp: 12, tree: [] } as never);
+          options.onEvent?.({ kind: "commit-stop", timestamp: 12 } as never);
           return {
             stop: () => undefined,
             isActive: () => true,
@@ -85,7 +97,7 @@ describe("installReactScanAdapter", () => {
           };
         },
       }),
-    ).toThrow(/commit without commit-start/);
+    ).toThrow(/commit-stop without complete commit pair/);
 
     expect(() =>
       installReactScanAdapter({
@@ -105,17 +117,33 @@ describe("installReactScanAdapter", () => {
     ).toThrow(/invalid commit duration/);
   });
 
-  it("treats unavailable profiling hooks as a measurement infrastructure error", () => {
+  it("falls back to commit tree timing when React 19.2 omits profiling hooks", () => {
+    const sink: ScanEvent[] = [];
     expect(() =>
       installReactScanAdapter({
         stage: "measurement",
-        sink: () => undefined,
+        sink: (event) => sink.push(event),
         instrument: (options = {}) => {
           options.onEvent?.({
             kind: "profiling-hooks-status",
             timestamp: 1,
             available: false,
             reason: "no-inject-method",
+          } as never);
+          options.onEvent?.({
+            kind: "commit",
+            timestamp: 5,
+            tree: [
+              {
+                name: "Button",
+                depth: 0,
+                tag: 0,
+                actualDuration: 2,
+                actualStartTime: 3,
+                selfBaseDuration: 1,
+                treeBaseDuration: 2,
+              },
+            ],
           } as never);
           return {
             stop: () => undefined,
@@ -124,7 +152,13 @@ describe("installReactScanAdapter", () => {
           };
         },
       }),
-    ).toThrow(/profiling hooks unavailable/);
+    ).not.toThrow();
+    expect(sink).toContainEqual({
+      type: "commit",
+      commitId: 1,
+      timestampMs: 3,
+      durationMs: 2,
+    });
   });
 });
 

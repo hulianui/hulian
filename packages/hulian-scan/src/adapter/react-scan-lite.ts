@@ -21,6 +21,7 @@ interface NormalizationState {
   nextCommitId: number;
   startedAt?: number;
   tree?: LiteFiberSummary[];
+  profilingHooksAvailable?: boolean;
 }
 
 export function assertPreReactInstallation(
@@ -92,19 +93,34 @@ function normalizeFiber(
   };
 }
 
+function normalizeCommitTree(
+  tree: LiteFiberSummary[],
+  state: NormalizationState,
+  timestampMs: number,
+  durationMs: number,
+): ScanEvent[] {
+  assertFiniteNonNegative(timestampMs, "commit timestamp");
+  assertFiniteNonNegative(durationMs, "commit duration");
+  const commitId = state.nextCommitId;
+  const normalized: ScanEvent[] = [
+    { type: "commit", commitId, timestampMs, durationMs },
+    ...tree.flatMap((fiber, index) =>
+      fiber.actualDuration > 0
+        ? [normalizeFiber(fiber, tree, index, commitId)]
+        : [],
+    ),
+  ];
+  state.nextCommitId += 1;
+  return normalized;
+}
+
 function normalizeLiteEvent(
   event: LiteEvent,
   state: NormalizationState,
-  stage: ScanStage,
 ): ScanEvent[] {
-  if (
-    event.kind === "profiling-hooks-status" &&
-    event.available === false &&
-    stage === "measurement"
-  ) {
-    throw new Error(
-      `profiling hooks unavailable: ${event.reason ?? "unknown reason"}`,
-    );
+  if (event.kind === "profiling-hooks-status") {
+    state.profilingHooksAvailable = event.available;
+    return [];
   }
 
   if (event.kind === "commit-start") {
@@ -119,7 +135,22 @@ function normalizeLiteEvent(
 
   if (event.kind === "commit") {
     if (state.startedAt === undefined) {
-      throw new Error("commit without commit-start");
+      if (state.profilingHooksAvailable !== false) {
+        throw new Error("commit without commit-start");
+      }
+      const tree = event.tree ?? [];
+      const durationMs = tree
+        .filter((fiber) => fiber.depth === 0)
+        .reduce((total, fiber) => {
+          assertFiniteNonNegative(fiber.actualDuration, "fiber duration");
+          return total + fiber.actualDuration;
+        }, 0);
+      return normalizeCommitTree(
+        tree,
+        state,
+        Math.max(0, event.timestamp - durationMs),
+        durationMs,
+      );
     }
     if (state.tree !== undefined) {
       throw new Error("duplicate commit payload before commit-stop");
@@ -136,21 +167,14 @@ function normalizeLiteEvent(
 
   const durationMs = event.timestamp - state.startedAt;
   assertFiniteNonNegative(durationMs, "commit duration");
-  const commitId = state.nextCommitId;
   const tree = state.tree;
-  const normalized: ScanEvent[] = [
-    {
-      type: "commit",
-      commitId,
-      timestampMs: state.startedAt,
-      durationMs,
-    },
-    ...tree.map((fiber, index) =>
-      normalizeFiber(fiber, tree, index, commitId),
-    ),
-  ];
+  const normalized = normalizeCommitTree(
+    tree,
+    state,
+    state.startedAt,
+    durationMs,
+  );
 
-  state.nextCommitId += 1;
   state.startedAt = undefined;
   state.tree = undefined;
   return normalized;
@@ -174,8 +198,9 @@ export function installReactScanAdapter(
     includeFiberSource: options.stage === "diagnosis",
     includeFiberIdentity: true,
     includeLaneLabels: options.stage === "diagnosis",
+    minFiberActualDurationMs: Number.EPSILON,
     onEvent(event) {
-      for (const normalized of normalizeLiteEvent(event, state, options.stage)) {
+      for (const normalized of normalizeLiteEvent(event, state)) {
         options.sink(normalized);
       }
     },
