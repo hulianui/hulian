@@ -1,5 +1,316 @@
 # @hulianui/ui
 
+## 0.15.0
+
+### Minor Changes
+
+- 48c9f9a: 新增 Annotation 手写风格标注
+
+  **Annotation（新增 · data-display/info）**
+
+  给一段行内内容画上荧光笔底色 + 手绘箭头 + 手写小标签，用来在文档、演示、组件解剖图里就地讲解「这一块是什么」。与 Callout 互补：Callout 是打断正文的块级提示框，Annotation 是不占布局位置的旁注。
+
+  `side` 说的是**标签在哪**（与 Tooltip / Popover 同义），箭头自动从标签指回目标。八个方位共用两条定位规则 —— 箭头的头端贴目标、标签接在箭头尾端外侧 —— 所以换方位不需要各自调偏移量，几何算在 `annotationGeometry` 纯函数里。
+
+  与同类的纯 CSS 方案相比有三处不同：标签是**真实 DOM 节点**而非 `::after` + `content: attr()`，因此能放 ReactNode（内嵌 Code、链接）且读屏能读到；箭头是**真实 SVG 元素**而非 `mask: url(data:...)`，直接吃颜色变量、省掉一层遮罩合成；配色走语义 token，暗色下荧光笔自动提亮，且只染标注自身 —— 被标注的正文保持原色。
+
+  荧光笔底色向左右外扩模仿马克笔涂过头，量走 `--hl-ann-spread`（默认 `0.3em`）。同一行里几条标注紧挨着时底色会连成一片，`className="[--hl-ann-spread:0.1em]"` 即可收窄。
+
+  **tokens：新增 `--hl-annotation-font` 手写字体栈 + `--hl-ann-hue` 注册属性**
+
+  字体栈刻意很短，只列经实测确认默认可用的：macOS 走翩翩体、Windows 走楷体。原因是 macOS 把「手札体 / 行楷 / 报隶 / 魏碑」这类字体登记为**可下载字体** —— 字体名在系统里注册着但字形默认不在本地，浏览器的逐字符回落会在这种名字上停住（认为已命中）却拿不到字形，画成默认黑体，于是把排在后面、真正装了的字体永远挡在门外。往这个栈里「多加几个备选」会让效果变差而不是变好。
+
+  `@property --hl-ann-hue` 让色相可插值，供 `tone="rainbow"` 循环换色；`inherits: true` 是必须的 —— 箭头与标签是宿主的子元素，靠继承拿到动画中的色相。
+
+- 7e1b107: **BREAKING**：日期族全部自研为零依赖，MUI 与 emotion 整族切除
+
+  `src/_mui/` 目录不复存在。`@mui/material`、`@mui/x-date-pickers`、`@emotion/react`、`@emotion/styled`
+  四个包已从 `dependencies` / `peerDependencies` / `peerDependenciesMeta` 全部移除，
+  `@hulianui/ui/date-pickers` 子路径入口移除，`MuiBridgeProvider` 移除。
+
+  **装 `@hulianui/ui` 现在没有 optional peer、没有子路径入口、没有必须挂的第三方 Provider。**
+
+  ### 新增（自研零依赖）
+
+  - **`Calendar`** —— 常驻日历面板，日/月/年三层下钻，不带触发器与浮层
+  - **`DateTimePicker`** —— 左日历 + 右时/分/秒列一体弹层，边界只在压着 min/max 那天生效
+  - **`TimeField`** —— 分段键盘输入（时/分/秒各一段 `role="spinbutton"`）：`↑↓` 调值、`←→` 切段、
+    数字键两位缓冲覆写并自动跳段、`Backspace` 清段
+
+  ### 改名
+
+  - **`DateField` → `DatePicker`**。库内命名统一为 `DatePicker` / `TimePicker` / `DateRangePicker`，
+    与行业惯例一致。`DatePicker` 这个名字此前指向 MUI 桥接件，现在指向这个自研实现。
+  - 随之移除导出类型 `DateFieldPicker`，粒度类型统一用 `CalendarPicker`。
+
+  ### 迁移
+
+  | 之前                                                                        | 现在                                                               |
+  | --------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+  | `import { X } from "@hulianui/ui/date-pickers"`                             | `import { X } from "@hulianui/ui"`                                 |
+  | `pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled` | 不需要，可以卸掉                                                   |
+  | `<MuiBridgeProvider>` 包裹                                                  | 删掉                                                               |
+  | `DateField`                                                                 | `DatePicker`                                                       |
+  | 值是完整 ISO 时间戳                                                         | 定宽字符串：`"YYYY-MM-DD"` / `"HH:mm[:ss]"` / `"YYYY-MM-DD HH:mm"` |
+  | `DatePicker` 的 `views` / `openTo`                                          | `picker="date" \| "month" \| "year"`                               |
+  | `DatePicker` / `TimeField` 的 `label`                                       | `placeholder` + `aria-label`（不带浮动 label）                     |
+  | `DateTimePicker` 的 `minutesStep`                                           | `minuteStep`（与 `TimePicker` 对齐）                               |
+  | `DateTimePicker` 的 `format`                                                | `displayFormat`（只改显示，不改值）                                |
+
+  值改成定宽字符串是刻意的：字典序即时间序，范围比较可以直接比字符串，
+  既不用引 date 库做比较，也不会被时区和 UTC 日界搅进来。
+
+  ### 顺带修复
+
+  `recharts` 3.x 把 `react-is` 声明为 **peerDependency**，而瑚琏既没装也没声明它 ——
+  此前一直是靠 MUI 的依赖链蹭到的。MUI 一走，体积门禁当场 `Could not resolve "react-is"`。
+  recharts 是我们的 `dependency`，它的 peer 就该由我们兜住，现已补进 `dependencies`：
+  在不自动装 peer 的包管理器（如 yarn classic）下，此前用 `Chart` 会直接打包失败。
+
+  ### 真机验证抓到的两个修复
+
+  单测（jsdom）全绿之后，用真实浏览器逐个走了一遍键盘与浮层，抓到两个 jsdom 测不出来的问题：
+
+  - **`TimeField` 的两位缓冲在受控用法下失效**：`applyParts` 只在非受控时记录「刚提交的值」，
+    于是受控下父组件回传值会被当成「外部改了值」，连带清空缓冲 —— 输 `3` 再输 `0` 得到 `00` 而不是 `30`。
+    全部用 `defaultValue` 的测试碰不到这条路径，已补两条受控回环的回归测试。
+  - **时间列的滚动定位每次多滚一格**（`TimePicker` 原有问题，`DateTimePicker` 继承）：
+    `el.offsetTop` 的 offsetParent 不是滚动容器而是带列头的外层 div，于是选中项被顶到可视区外。
+    滚动容器补 `relative` 后，选中项正好落在列顶。jsdom 无布局、`offsetTop` 恒 0，只有真机看得见。
+
+  ### 门禁
+
+  - 消费方冒烟门禁收敛回单场景，并在消费面里钉死日期族必须能从根 barrel 导入且零额外依赖
+  - `scripts/bundle-size.sh` 反向断言升级：`@mui/*` / `@emotion/*` 出现在**任何一类**依赖里即失败
+  - 体积基线的 `mui-bridge` 采样点换成 `date-picker`（53.6KB initial）；根 barrel 实测 957.5KB
+
+- ce1c41b: 新增 MathText / QuestionCard，外加 Image 与 Table 两处真 bug 修复
+
+  **MathText（新增 · typography/text）**
+
+  行内数学排版。零依赖解析 LaTeX 子集（分数 / 根号 / 上下标 / 填空槽）并渲染成真数学版式。分数用 `inline-flex` 竖排，不撑乱中文行高。需要可检索的朴素文本时走 `mathToPlain`。RSC 安全。
+
+  **QuestionCard（新增 · data-display/collection）**
+
+  教辅题库的标准展示件：题号 / 题型 / 分层 / 题干 / 选项 / 小问 / 附图 / 章节 / 出处。题干与选项走 MathText 的真数学版式；待复核题亮左侧警示边条，不与正常题混排。dogfood Card / Tag / Chip / Image。
+
+  **fix(image)：命中缓存的图片永久停在 `opacity-0`**
+
+  只靠 `onLoad` 翻转淡入态是不够的 —— 图片命中缓存（或 SSR 出的 HTML 在 hydration 之前就解完码）时，`load` 事件早在 React 挂上处理器之前就烧完了，`onLoad` 永不触发。
+
+  现象极具迷惑性：**网络面板 200、`naturalWidth` 正常，页面上却是一块空白**，很容易被误判成图片本身挂了。改为挂载后经 ref 补查一次 `img.complete && naturalWidth > 0`。
+
+  **fix(table)：表头恒不换行**
+
+  `table-layout: auto` 下列宽会收缩到 `min-content`，中文表头因此被挤成「拆／出／条／目」每行一个字（英文则按空格断开），列宽反而更窄。表头是短标签，`nowrap` 让它成为列的宽度下界，才是正确的度量基准。需要截断的列继续走 `meta.ellipsis` + `maxWidth`，不靠折行省地方。
+
+- 15ef604: **BREAKING**：日期族改走子路径导入，MUI / emotion 降为 optional peerDependency。
+
+  - `Rating` / `Stepper` 重写为零依赖自研，仍从根 barrel 导入，**不再需要** `MuiBridgeProvider`。
+  - `Calendar` / `DatePicker` / `DateTimePicker` / `TimeField` / `MuiBridgeProvider` 移出根 barrel，
+    改从 `@hulianui/ui/date-pickers` 导入，并需自行安装 `@mui/material` `@mui/x-date-pickers`
+    `@emotion/react` `@emotion/styled` 四个 optional peer。
+
+  迁移：
+
+  ```diff
+  - import { DatePicker, MuiBridgeProvider } from "@hulianui/ui"
+  + import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers"
+  ```
+
+  为什么：`@emotion` 是 runtime CSS-in-JS（不兼容 RSC），此前是硬依赖 —— 任何人只想用一个
+  Button 也会被迫装下整个 MUI + emotion。源码分发下光把它降为 optional peer 还不够：根 barrel
+  导出会强制每个消费方的 tsc 去编译 `_mui/*.tsx`，没装 MUI 的项目直接 `TS2307`。所以连同
+  barrel 一起移出。
+
+  收益：`dependencies` 27 → 22；root-barrel 体积基线 1250KB → 1098KB（-12.2%）；
+  不用日期族的项目彻底不接触 emotion。
+
+- a502b85: 新增 PasswordGenerator 密码生成器（Bitwarden 式双模面板）
+
+  **字符密码 + 密码短语双模**。密码模式给长度（5–128）、四类字符开关、最少数字/符号、排除形近字符；短语模式给词数（3–20）、分隔符、首字母大写、附加数字，词从内置 1747 词的常用短词表里取。参数改了立刻重算，熵值实时评级四档强度条。
+
+  **真正的含金量在算法，不在面板**，所以生成逻辑全部作为纯函数导出，服务端 / 表单校验 / CLI 都能直接调：
+
+  ```ts
+  import { generatePassword, generatePassphrase, passwordEntropy, strengthOf } from "@hulianui/ui";
+  ```
+
+  三条不可省的安全实现：
+
+  - **随机源只用 `crypto.getRandomValues`**。`Math.random()` 是可预测 PRNG，用它生成的密码等于没生成。环境不支持时组件显示错误提示，**不静默降级**。
+  - **拒绝采样消除模偏**。`bytes[i] % pool.length` 这种常见写法会让前几个字符出现概率偏高——熵被悄悄削掉而外观毫无异样。
+  - **结果整体洗牌**。否则「前两位必是大写和小写」成了可被利用的位置规律。
+
+  生成函数第二参数是可注入的随机源，测试里传伪随机即可让输出确定可复现。
+
+  文案接入 `ConfigProvider` 的 `locale.passwordGenerator`（内置 zhCN / enUS），亦可用 `labels` prop 逐条覆盖。结果区是 `aria-live` 的 `<output>`，强度条是 `role="meter"` 带 `aria-valuetext`，不靠颜色单独传达强弱。SSR 首帧渲染占位符，不会水合失配。
+
+  配套 70 个测试（47 个算法 + 23 个组件），覆盖拒绝采样、约束满足、洗牌有效性、词库无重复、SSR 占位。
+
+- 720fa91: `react-easy-crop` 升到 6.2.3（ImageCropper 的裁剪引擎）
+
+  走 minor 而不是 patch：它挂在 `dependencies` 而不是 `peerDependencies`，升 major 会改变下游
+  装到的传递依赖大版本，不该藏在 patch 里发。
+
+  **API / 坐标语义零变更**。ImageCropper 的源码一行没动，`onCropComplete(area, croppedAreaPixels)`
+  的含义、`restrictPosition` 的夹紧规则、出图坐标全部照旧。v6.0.0 的 breaking 是构建产物层面的：
+  去掉 UMD build、去掉 `tslib` 运行时依赖（少一个传递依赖）、`exports` map 拆出
+  `index.d.mts` / `index.d.ts` 双份类型。
+
+  **两处实际差异**：
+
+  1. **v6.0.1 给媒体元素加了 `max-width: unset`** —— 防全局 `img { max-width: 100% }` 类 reset
+     （Tailwind Preflight 正是这种）挤压裁剪媒体。我们默认 `objectFit: "contain"`，
+     `.reactEasyCrop_Contain` 的 `max-width: 100%` 优先级更后，所以默认路径行为不变；
+     受益的是传 `objectFit: "cover"` 系列的消费方。
+  2. **v6.1.0 给 resize 后的回调加了 250ms 防抖**。视觉布局仍是即时重算（实测容器 320→200px
+     后裁剪框立刻跟到 143×200，比例仍是 5:7），防抖只推迟 `onCropComplete` 的发射。
+     理论上留下一个「resize 后 250ms 内点确认会用到旧几何」的窗口，实操中人手够不到；
+     实测 resize 前后各点一次确认，源区域稳定在 571×800（≈5:7），说明防抖后回调正常收敛、
+     不会永久停在旧几何。
+
+  **验收**：3302 用例全绿、消费方 typecheck 门禁绿、12 个体积入口全在基线内（root-barrel
+  反而因少了 tslib 略降）、www 构建通过。真浏览器实拖实裁自证：滚轮缩放到 3×、拖拽对位、
+  确认出图 413×578 JPEG，产物像素与裁剪框内所见一致。
+
+- 20f2f57: 新增 `@hulianui/ui/vite` —— 软链消费时自动修好 dev server
+
+  ```ts
+  // vite.config.ts
+  import { hulian } from "@hulianui/ui/vite";
+  export default defineConfig({ plugins: [react(), hulian()] });
+  ```
+
+  **治的病**：Vite **有意跳过 linked 包的依赖预打包**（`link:` / workspace / `file:` 指向目录），
+  因为它假定你正在改那个包、需要 HMR。于是源码分发的瑚琏回到逐文件 transform 的老路。
+  实测同一页面（引 8 个组件，Vite 7.3.6）：
+
+  | 消费方式              | 浏览器模块请求 | dev server RSS |
+  | --------------------- | -------------- | -------------- |
+  | `pnpm add`（tarball） | 16             | 43 MB          |
+  | **软链**              | **250**        | 83 MB          |
+  | 软链 + 本插件         | **13**         | 80 MB          |
+
+  请求数差 15 倍，而这只是 8 个组件的量 —— 真实项目引十几个组件、跨多个页面按同样比例放大，
+  就是「dev server 常驻数 GB、HMR 卡到点了没反应」。
+
+  **怎么判断**：插件读自己的 realpath 是否还在 `node_modules` 里 —— pnpm 正常安装会落在
+  `.pnpm/@hulianui+ui@x.y.z/...`，软链则落在你的仓库目录。所以**正常安装的项目加了也无害**
+  （探测到不是软链就什么都不做，且保持安静），可以直接写进项目模板。
+
+  **代价**：预打包意味着库源码不再有 HMR，改 `packages/ui` 后需重启 dev server；
+  正在改库时传 `hulian({ prebundle: false })` 换回来。冷启动那次预打包约 4 秒
+  （5204 个模块 → 一个 9.4 MB chunk），之后走缓存。
+
+  **刻意不做的事**：不加 `resolve.dedupe`。实测 Vite dev 会把所有 bare `import "react"` 重写到
+  同一份预构建产物，React 不会分裂，加了是噪音。这与 `@hulianui/ui/vitest-preset` 需要 dedupe
+  并不矛盾 —— 那边走的是 SSR 转换 + Node 解析，没有浏览器侧预构建统一这一层。两个环境两套配置，
+  别互相套用。
+
+  `vite` 以 optional peer 声明（`>=5`），不用 Vite 的消费方不受影响。插件只用 `config` /
+  `configResolved` 两个钩子与 `optimizeDeps`，这些在 Vite 5~8 都稳定 —— Vite 8 换 Rolldown 后
+  预打包仍在，linked 包仍默认跳过。
+
+### Patch Changes
+
+- ce9b419: 消费方产物瘦身：Button 首屏 -75%，凡用图标的组件均 -3.7 KB
+
+  三处改动，都不动任何 API：
+
+  **`_icons` 补 `/*#__PURE__*/` —— 全库受益**
+
+  67 个内联图标都是 `createIcon(...)` 的调用结果。打包器对顶层函数调用一律保守：无法证明无副作用就整条留下。于是**任何组件只要引一个图标，67 个全进它的 bundle**。Button 只用 `Loader2`，产物里却背着 11.6 KB 的完整图标集。加上 PURE 标注后 Tag 从 13.6 KB 降到 9.9 KB（**-27%**），Table、ProTable、MarkdownEditor、Video 各降约 3.7 KB。
+
+  新增图标时记得连 `/*#__PURE__*/` 一起写，`_icons/index.tsx` 顶部有说明。
+
+  **动画引擎改按需加载 —— Button 40.1 KB → 10.0 KB**
+
+  `LazyMotionProvider` 的 `features` 从静态 `domAnimation` 改为 `import()`，约 24 KB 的动画引擎因此切成独立 chunk，不再占用任何组件的首屏关键路径。
+
+  行为上：features 到达之前 `m.*` 渲染为无动画元素，慢网络下「一进页面就播」的入场动画可能少播一次淡入。**不会卡在不可见** —— features 缺席时元素以最终态呈现，不是停在 `opacity: 0`。交互触发的动效（按压、hover、overlay 开合）完全不受影响。文档站逐帧实测：入场动画照常逐帧推进，chunk 到得比动画该开始的时刻还早。
+
+  **ProTable 的虚拟滚动补上文档与测试**
+
+  `virtual` 一直随 `...tableProps` 透传给内部 Table，能力早就有，但整个 `pro-table/` 目录没有一处写着 "virtual"，文档也没提，很容易被当成不支持而把上万行直接铺进 DOM。现在 Props 段显式点名，并加了测试钉住这条隐式透传契约（连同 Table 自身的虚拟滚动 —— 它此前同样没有任何测试保护）。
+
+  **配套：两把尺子 + 一处文档更正**
+
+  - `pnpm size` —— 体积门禁（已进 CI）。pack 出 tarball → 仓库外空白工程 → esbuild 打包量 gzip，基线在 `scripts/size-limits.json`；`--why <入口>` 看体积构成。
+  - `pnpm compile-cost` —— 编译压力诊断（不进 CI，耗时受机器负载影响太大）。量 dev 模块图规模、内存，以及 tsc 的 Files/内存/耗时。实测同样 8 个组件，根 barrel 是子路径的 **27 倍模块**；只 import 一个 Button，根 barrel 让 tsc 吃 **722 MB / 3020 files**，子路径只要 105 MB / 83 files —— 而这一层 `optimizeDeps` / `optimizePackageImports` 都救不了，它们只塌缩打包器的模块图，tsserver 照样直面源码。
+
+  `docs/consuming.md` 里「Vite 默认不对 node_modules 里的源码包做预构建」一句按实测更正：Vite 7 对**正常 `pnpm add` 装进来**的瑚琏会自动预打包（16 个模块请求 / 43 MB），**软链消费**才会退回逐文件 transform（250 个请求）——那时 `optimizeDeps.include` 是必需项而非优化项。
+
+- bd4ffd4: 修复：日期族的对外入口与依赖清单在文档 / registry / MCP 三处都对不上
+
+  日期族改走 `@hulianui/ui/date-pickers` 子路径之后，还有四处仍在告诉使用者「从根 barrel 导入」——
+  组件文档、registry 的 `meta.import`、conventions 的 `import-from-root-barrel` 约束、MCP 的
+  `list_components` 表头。照抄任意一处的结果都是 `TS2305: has no exported member`。
+
+  同时修一个更早就存在的问题：registry 单件安装日期族时只列了 `@mui/material` /
+  `@mui/x-date-pickers` / `dayjs`，**漏掉 `@emotion/react` 与 `@emotion/styled`**。registry 的依赖
+  是扫源码 import 反推的，而 emotion 是 MUI v9 的样式引擎、组件从不直接 import 它，于是永远扫不出来 ——
+  照 registry 装完直接跑不起来。现按「伴生 peer」补齐。
+
+  消费方冒烟门禁也补上了第二个场景（装 MUI + 走子路径），此前 `src/_mui/` 的 exports 映射零覆盖：
+  它既不在根 barrel 也不在 showcase barrel，库内 tsc 与 workspace 链接两条路都测不到。
+
+- 9f2ad65: 依赖升级：semver range 内的安全批次 + 组件依赖 minor
+
+  **安全批**（patch / 小 minor，行为无预期变化）：
+  react `19.2.7→19.2.8`、tailwindcss `4.3.0→4.3.3`、@tanstack/react-virtual `3.14.2→3.14.9`、
+  react-colorful `5.7.0→5.8.0`、@types/react `19.2.16→19.2.18`、@types/react-dom `19.2.3→19.2.4`，
+  以及仓库侧的 next `16.2.6→16.2.12`、@next/mdx、@tailwindcss/postcss、turbo `2.9.16→2.10.8`、
+  @changesets/cli、msw、@faker-js/faker、@mui/material-nextjs、@tauri-apps/\*。
+
+  **组件依赖批**（minor，但都是运行时行为依赖，已跑全量测试）：
+  @base-ui/react `1.5.0→1.6.0`、@mui/material `9.0.1→9.2.0`、@mui/x-date-pickers `9.3.0→9.10.1`、
+  recharts `3.8.1→3.10.1`、motion `12.40.0→12.43.0`、lucide-react `1.17.0→1.28.0`。
+
+  **顺带修掉一处版本裂开**：tiptap 的直接依赖此前锁在 3.25.0，而它的传递依赖
+  （`@tiptap/extension-bubble-menu` / `extension-floating-menu` / `extensions`）已被解析到 3.29.x，
+  `pnpm install` 会报一串 unmet peer。现已把 `@tiptap/react` / `pm` / `starter-kit` /
+  `extension-link` / `extension-placeholder` / `tiptap-markdown` 统一到 3.29.2，peer 警告清零。
+
+  验证：3302 个测试全绿、typecheck 通过、文档站 `next build` 通过、12 个入口体积门禁全绿
+  （体积零变化 —— 体积门禁在临时工程里全新安装，本来测的就是 range 内的最新依赖）。
+
+  跨大版本的 typescript 7 / vitest 4 / jsdom 30 / @types/node 26 / react-easy-crop 6 不在本次范围内。
+
+- 235cee5: 新增可执行的 `@hulianui/guard` 约束门禁，并让 MCP 安装指引返回页面递归依赖、显式接入清单和安装后检查命令。
+
+  `SelectTrigger` 现在透传原生 button 属性，并在 searchable 模式下正确合并消费方 ref 与内部锚点 ref。
+
+- f4328bb: 修复：升到 TypeScript 6/7 的消费方一 `import { Video }` 就报 TS2882
+
+  `video.tsx` 里的 `import "@vidstack/react/player/styles/base.css"` 是一条 side-effect import，
+  而 vidstack 没有随包提供样式表的类型声明。TypeScript **6.0 起** `noUncheckedSideEffectImports`
+  默认为 `true`，于是这条 import 直接报错：
+
+  ```
+  TS2882: Cannot find module or type declarations for side-effect import of
+  '@vidstack/react/player/styles/base.css'.
+  ```
+
+  因为瑚琏是**源码分发**（`exports "." → "./src/index.ts"`，消费方直接编译这份源码），
+  这不是我们仓内的小事 —— **任何已经升到 TS 6/7 的下游只要引了 Video 就当场编译失败**，
+  与我们自己升不升 TypeScript 无关。用 TS 7.0.2 在一个仓库外的干净消费方工程实测复现、并验证修复。
+
+  修法：新增 `src/video/vidstack-css.d.ts` 声明该样式路径，并在 `video.tsx` 顶部加三斜线引用把它
+  带进下游的 program（消费方的 tsconfig 只 include 自己的 src，不会自动加载库里的 `.d.ts`）。
+
+  两个刻意的选择，改动时请勿"顺手优化"：
+
+  - **用带包名前缀的通配** `declare module "@vidstack/react/player/styles/*.css"`，而不是全局
+    `declare module "*.css"` —— 后者会顺着源码分发渗进消费方的类型环境，把他们自己的
+    CSS Module 类型一起吃掉。
+  - **三斜线必须排在 `"use client"` 之前**。三斜线指令只在任何语句之前才生效，而 `"use client"`
+    是一条 ExpressionStatement；排在它后面会被当成普通注释静默失效（实测过：放下面时消费方仍报
+    TS2882，且库内因为 tsconfig 的 `src/**/*.ts` 会自动 include 那份 `.d.ts` 而**假绿**）。
+    指令前允许有注释，所以这个顺序对 `"use client"` 本身没有影响。
+
+  对 TS 5.x 消费方无任何影响（那里本就不报这条）。
+
 ## 0.14.0
 
 ### Minor Changes
