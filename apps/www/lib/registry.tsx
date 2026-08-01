@@ -260,6 +260,11 @@ import {
   glimpseShowcase,
   gitCommitShowcase,
   deployStatusShowcase,
+  shieldBadgeShowcase,
+  awardBadgeShowcase,
+  contributionGraphShowcase,
+  legendShowcase,
+  appLauncherShowcase,
   // —— react-bits 移植批 ——
   asciiTextShowcase,
   curvedLoopShowcase,
@@ -633,6 +638,11 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   glimpse: glimpseShowcase,
   "git-commit": gitCommitShowcase,
   "deploy-status": deployStatusShowcase,
+  "shield-badge": shieldBadgeShowcase,
+  "award-badge": awardBadgeShowcase,
+  "contribution-graph": contributionGraphShowcase,
+  legend: legendShowcase,
+  "app-launcher": appLauncherShowcase,
   // —— react-bits 移植批 ——
   "ascii-text": asciiTextShowcase,
   "curved-loop": curvedLoopShowcase,

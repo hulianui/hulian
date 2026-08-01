@@ -5804,6 +5804,67 @@
       ]
     },
     {
+      "name": "award-badge",
+      "type": "registry:ui",
+      "title": "AwardBadge",
+      "description": "桂冠奖章 · 左桂冠圈名次 + 右「前缀小字 + 粗体主标题」两行 · 对标 GitHub Trending「#1 Repository Of The Day」/ Product Hunt 荣誉牌 · outline/…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
+      ],
+      "meta": {
+        "import": "import { AwardBadge, laurelLeaves, laurelStemPath, laurelDefaults } from \"@hulianui/ui\"",
+        "exports": [
+          "AwardBadge",
+          "laurelLeaves",
+          "laurelStemPath",
+          "laurelDefaults"
+        ],
+        "types": [
+          "LaurelLeaf",
+          "LaurelOptions",
+          "AwardBadgeProps",
+          "AwardBadgeVariant",
+          "AwardBadgeTone",
+          "AwardBadgeSize"
+        ],
+        "group": "info",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/award-badge/award-badge.md",
+        "docLocal": "packages/ui/src/award-badge/award-badge.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/award-badge/award-badge.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/award-badge/award-badge.tsx"
+        },
+        {
+          "path": "components/hulianui/award-badge/award-badge.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/award-badge/award-badge.types.ts"
+        },
+        {
+          "path": "components/hulianui/award-badge/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/award-badge/index.ts"
+        },
+        {
+          "path": "components/hulianui/award-badge/laurel-geometry.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/award-badge/laurel-geometry.ts"
+        }
+      ]
+    },
+    {
       "name": "badge",
       "type": "registry:ui",
       "title": "Badge",
@@ -6494,6 +6555,66 @@
           "path": "components/hulianui/comment/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/comment/index.ts"
+        }
+      ]
+    },
+    {
+      "name": "contribution-graph",
+      "type": "registry:ui",
+      "title": "ContributionGraph",
+      "description": "贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/heatmap.json",
+        "https://hulianui.haloritual.com/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { ContributionGraph, buildContributionCalendar } from \"@hulianui/ui\"",
+        "exports": [
+          "ContributionGraph",
+          "buildContributionCalendar"
+        ],
+        "types": [
+          "ContributionDay",
+          "ContributionCell",
+          "ContributionCalendar",
+          "ContributionCalendarOptions",
+          "ContributionMonthLabel",
+          "ContributionGraphProps",
+          "ContributionGraphLayout"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/contribution-graph/contribution-graph.md",
+        "docLocal": "packages/ui/src/contribution-graph/contribution-graph.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/contribution-graph/contribution-graph.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/contribution-graph/contribution-graph.tsx"
+        },
+        {
+          "path": "components/hulianui/contribution-graph/contribution-graph.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/contribution-graph/contribution-graph.types.ts"
+        },
+        {
+          "path": "components/hulianui/contribution-graph/contribution-matrix.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/contribution-graph/contribution-matrix.ts"
+        },
+        {
+          "path": "components/hulianui/contribution-graph/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/contribution-graph/index.ts"
         }
       ]
     },
@@ -7911,6 +8032,57 @@
       ]
     },
     {
+      "name": "legend",
+      "type": "registry:ui",
+      "title": "Legend",
+      "description": "独立图例 · 彩标记 + 系列名 + 可选数值 · dot/square/line 三标记 × row 横排自动换行/column 竖排(value 右对齐) × sm/md · 缺省色按序取 chart-1..6(与…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/chart.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
+      ],
+      "meta": {
+        "import": "import { Legend } from \"@hulianui/ui\"",
+        "exports": [
+          "Legend"
+        ],
+        "types": [
+          "LegendProps",
+          "LegendItem",
+          "LegendMarker"
+        ],
+        "group": "stat",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/legend/legend.md",
+        "docLocal": "packages/ui/src/legend/legend.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/legend/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/legend/index.ts"
+        },
+        {
+          "path": "components/hulianui/legend/legend.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/legend/legend.tsx"
+        },
+        {
+          "path": "components/hulianui/legend/legend.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/legend/legend.types.ts"
+        }
+      ]
+    },
+    {
       "name": "list",
       "type": "registry:ui",
       "title": "List",
@@ -9205,6 +9377,61 @@
       ]
     },
     {
+      "name": "shield-badge",
+      "type": "registry:ui",
+      "title": "ShieldBadge",
+      "description": "README 徽章 · shields.io 风格「左灰标签 + 右彩数值」双段贴纸(版本/许可证/下载量/CI/星标) · 5 语气 + color 逃生舱 · solid/soft/outline 三皮肤 × ro…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
+      ],
+      "meta": {
+        "import": "import { ShieldBadge, ShieldBadgeGroup, compactCount } from \"@hulianui/ui\"",
+        "exports": [
+          "ShieldBadge",
+          "ShieldBadgeGroup",
+          "compactCount"
+        ],
+        "types": [
+          "ShieldBadgeProps",
+          "ShieldBadgeGroupProps",
+          "ShieldBadgeVariant",
+          "ShieldBadgeTone",
+          "ShieldBadgeShape",
+          "ShieldBadgeSize"
+        ],
+        "group": "info",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/shield-badge/shield-badge.md",
+        "docLocal": "packages/ui/src/shield-badge/shield-badge.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/shield-badge/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/shield-badge/index.ts"
+        },
+        {
+          "path": "components/hulianui/shield-badge/shield-badge.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/shield-badge/shield-badge.tsx"
+        },
+        {
+          "path": "components/hulianui/shield-badge/shield-badge.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/shield-badge/shield-badge.types.ts"
+        }
+      ]
+    },
+    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
@@ -10303,6 +10530,66 @@
           "path": "components/hulianui/animated-theme-toggler/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/animated-theme-toggler/index.ts"
+        }
+      ]
+    },
+    {
+      "name": "app-launcher",
+      "type": "registry:ui",
+      "title": "AppLauncher",
+      "description": "应用启动台 · 毛玻璃面板 + 搜索(标题即 placeholder) + 分类胶囊 + 图标网格(macOS Launchpad/工作台首页) · 搜索与分类各自可受控/非受控 · keywords 别名(拼音/英文…",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
+      ],
+      "meta": {
+        "import": "import { AppLauncher, matchApp, filterApps, groupSections } from \"@hulianui/ui\"",
+        "exports": [
+          "AppLauncher",
+          "matchApp",
+          "filterApps",
+          "groupSections"
+        ],
+        "types": [
+          "AppLauncherProps",
+          "AppLauncherItem",
+          "AppLauncherCategory",
+          "AppLauncherSection"
+        ],
+        "group": "global",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/app-launcher/app-launcher.md",
+        "docLocal": "packages/ui/src/app-launcher/app-launcher.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/app-launcher/app-launcher.filter.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/app-launcher/app-launcher.filter.ts"
+        },
+        {
+          "path": "components/hulianui/app-launcher/app-launcher.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/app-launcher/app-launcher.tsx"
+        },
+        {
+          "path": "components/hulianui/app-launcher/app-launcher.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/app-launcher/app-launcher.types.ts"
+        },
+        {
+          "path": "components/hulianui/app-launcher/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/app-launcher/index.ts"
         }
       ]
     },

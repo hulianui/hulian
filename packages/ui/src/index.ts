@@ -337,6 +337,13 @@ export * from "./glimpse";
 export * from "./git-commit";
 export * from "./deploy-status";
 
+// 开源项目元信息 / 荣誉牌 / 活动统计
+export * from "./shield-badge";
+export * from "./award-badge";
+export * from "./contribution-graph";
+export * from "./legend";
+export * from "./app-launcher";
+
 // —— react-bits 移植批（自动接线）——
 export * from "./ascii-text";
 export * from "./curved-loop";

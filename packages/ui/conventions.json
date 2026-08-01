@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|artifact|ascii-text|aspect-ratio|aurora|aurora-text|avatar|avatar-circles|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|config|confirm-card|container|context-menu|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|intercept-card|iphone|iridescence|json-viewer|kanban|kbd|lanyard|laser-flow|layout|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math-text|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|intercept-card|iphone|iridescence|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math-text|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -468,6 +468,41 @@
       "source": "packages/ui/src/antigravity/antigravity.md"
     },
     {
+      "id": "component/app-launcher/pitfall/1",
+      "scope": "app-launcher",
+      "title": "AppLauncher",
+      "rule": "**glass 需要身后有底图**：`variant=\"glass\"` 是 `bg-surface/70 + backdrop-blur`，铺在纯色背景上等于半透明面板，看不出玻璃。无底图场景用 `variant=\"solid\"`。",
+      "source": "packages/ui/src/app-launcher/app-launcher.md"
+    },
+    {
+      "id": "component/app-launcher/pitfall/2",
+      "scope": "app-launcher",
+      "title": "AppLauncher",
+      "rule": "**中文搜索按子串匹配**，不是前缀——「云盘」搜「盘」要命中。给英文/拼音别名请走 `keywords`，别把它们拼进 `label`。",
+      "source": "packages/ui/src/app-launcher/app-launcher.md"
+    },
+    {
+      "id": "component/app-launcher/pitfall/3",
+      "scope": "app-launcher",
+      "title": "AppLauncher",
+      "rule": "**section 按「连续」分组**，不做全局重排：调用方数组的顺序就是最终顺序（「最近使用」排在最前是靠顺序表达的，重排会把它打散）。同名但不连续的 section 会各自成组，这是刻意的。",
+      "source": "packages/ui/src/app-launcher/app-launcher.md"
+    },
+    {
+      "id": "component/app-launcher/pitfall/4",
+      "scope": "app-launcher",
+      "title": "AppLauncher",
+      "rule": "图标圆角固定 22%（逼近 Apple 超椭圆），不吃 `var(--radius)`——大方块上它偏小、小图标上又会被磨成圆。",
+      "source": "packages/ui/src/app-launcher/app-launcher.md"
+    },
+    {
+      "id": "component/app-launcher/pitfall/5",
+      "scope": "app-launcher",
+      "title": "AppLauncher",
+      "rule": "面板高度由调用方给（`className=\"h-[28rem]\"`），网格区自己滚；不给高度时面板会被内容撑开。",
+      "source": "packages/ui/src/app-launcher/app-launcher.md"
+    },
+    {
       "id": "component/artifact/pitfall/1",
       "scope": "artifact",
       "title": "Artifact",
@@ -578,6 +613,34 @@
       "title": "AvatarCircles",
       "rule": "`extraCount` 仅渲染计数标记，不会自动从列表长度推算，按真实溢出人数手动传。",
       "source": "packages/ui/src/avatar-circles/avatar-circles.md"
+    },
+    {
+      "id": "component/award-badge/pitfall/1",
+      "scope": "award-badge",
+      "title": "AwardBadge",
+      "rule": "**平台 logo 不进库**：`emblem` 是插槽，Product Hunt / 掘金 / Awwwards 等 mark 由调用方给（品牌资产属对方）。",
+      "source": "packages/ui/src/award-badge/award-badge.md"
+    },
+    {
+      "id": "component/award-badge/pitfall/2",
+      "scope": "award-badge",
+      "title": "AwardBadge",
+      "rule": "**一页别贴一排**：奖章是「唯一性」表达；要并排展示多条元信息用 [ShieldBadge](../shield-badge/shield-badge.md) + `ShieldBadgeGroup`。",
+      "source": "packages/ui/src/award-badge/award-badge.md"
+    },
+    {
+      "id": "component/award-badge/pitfall/3",
+      "scope": "award-badge",
+      "title": "AwardBadge",
+      "rule": "徽记区（桂冠 + 名次）已 `aria-hidden`——名次信息由 `title` 承载，避免读屏念两遍「1」。若名次只写在花环里没进标题，记得自己补 `aria-label`。",
+      "source": "packages/ui/src/award-badge/award-badge.md"
+    },
+    {
+      "id": "component/award-badge/pitfall/4",
+      "scope": "award-badge",
+      "title": "AwardBadge",
+      "rule": "`solid` 皮肤文字固定取 `--color-primary-foreground`（亮色白 / 暗色近黑）。给中等明度自定义色时核对对比度，或改用 `soft`。",
+      "source": "packages/ui/src/award-badge/award-badge.md"
     },
     {
       "id": "component/back-top/pitfall/1",
@@ -1579,6 +1642,34 @@
       "title": "ContextMenu",
       "rule": "`ContextMenuItem` 的 children 非纯文本（如带图标）时，补 `label` 供键盘 type-ahead 搜索。",
       "source": "packages/ui/src/context-menu/context-menu.md"
+    },
+    {
+      "id": "component/contribution-graph/pitfall/1",
+      "scope": "contribution-graph",
+      "title": "ContributionGraph",
+      "rule": "**别把 365 个格子逐个交给读屏**：不传 `onDayClick` 时整块是 `role=\"img\"` + 一句总数摘要；传了 `onDayClick` 才逐格成按钮（此时每格带 `aria-label`）。要在只读场景做逐格朗读，请自行降低 `days`。",
+      "source": "packages/ui/src/contribution-graph/contribution-graph.md"
+    },
+    {
+      "id": "component/contribution-graph/pitfall/2",
+      "scope": "contribution-graph",
+      "title": "ContributionGraph",
+      "rule": "**日期按本地日历日对齐**（`dayjs.startOf(\"day\")`），跨时区的服务端日期请先归一到本地日再喂。",
+      "source": "packages/ui/src/contribution-graph/contribution-graph.md"
+    },
+    {
+      "id": "component/contribution-graph/pitfall/3",
+      "scope": "contribution-graph",
+      "title": "ContributionGraph",
+      "rule": "整面墙约 53 列（`cellSize=11` 时 ≈ 740px）。组件已自带 `max-w-full` + 内层 `min-w-0 overflow-x-auto`，放窄卡片里是**内部**横向滚动；别在外面再包一层 `overflow-hidden`，会把滚动区裁死。",
+      "source": "packages/ui/src/contribution-graph/contribution-graph.md"
+    },
+    {
+      "id": "component/contribution-graph/pitfall/4",
+      "scope": "contribution-graph",
+      "title": "ContributionGraph",
+      "rule": "格子圆角按边长算（`cellSize/4`），不用 `var(--radius)`——小方块套大圆角会被磨成圆点。",
+      "source": "packages/ui/src/contribution-graph/contribution-graph.md"
     },
     {
       "id": "component/conversation/pitfall/1",
@@ -3399,6 +3490,27 @@
       "title": "Layout",
       "rule": "收起态切窄宽用菜单的 `mode=\"collapsed\"`（dogfood NavMenu 自带 icon-only 轨），不要手搓「窄宽裁切 label」。",
       "source": "packages/ui/src/layout/layout.md"
+    },
+    {
+      "id": "component/legend/pitfall/1",
+      "scope": "legend",
+      "title": "Legend",
+      "rule": "**显隐是受控的**：组件不自管开关状态，`hidden` 由调用方给。这样图例与图形永远同一份真源，不会出现「图例灭了但线还在」。",
+      "source": "packages/ui/src/legend/legend.md"
+    },
+    {
+      "id": "component/legend/pitfall/2",
+      "scope": "legend",
+      "title": "Legend",
+      "rule": "**hidden 只置灰不删条目**——删掉用户就点不回来了。",
+      "source": "packages/ui/src/legend/legend.md"
+    },
+    {
+      "id": "component/legend/pitfall/3",
+      "scope": "legend",
+      "title": "Legend",
+      "rule": "用在 recharts 图上属于重复：[Chart](../chart/chart.md) 自带 recharts `<Legend>`，别再叠一层。",
+      "source": "packages/ui/src/legend/legend.md"
     },
     {
       "id": "component/lens/pitfall/1",
@@ -5746,6 +5858,27 @@
       "source": "packages/ui/src/shape-grid/shape-grid.md"
     },
     {
+      "id": "component/shield-badge/pitfall/1",
+      "scope": "shield-badge",
+      "title": "ShieldBadge",
+      "rule": "**品牌 logo 不进库**：`icon` 是插槽，npm/GitHub/Discord 等 mark 由调用方给（lucide v1 起已移除品牌图标，且品牌 mark 属调用方资产）。传入的 SVG 会被拉伸到槽位尺寸并 `aria-hidden`。",
+      "source": "packages/ui/src/shield-badge/shield-badge.md"
+    },
+    {
+      "id": "component/shield-badge/pitfall/2",
+      "scope": "shield-badge",
+      "title": "ShieldBadge",
+      "rule": "**不要用它做计数角标**：叠在图标/头像角上的红点用 [Badge](../badge/badge.md)，本组件是行内贴纸。",
+      "source": "packages/ui/src/shield-badge/shield-badge.md"
+    },
+    {
+      "id": "component/shield-badge/pitfall/3",
+      "scope": "shield-badge",
+      "title": "ShieldBadge",
+      "rule": "`color` 逃生舱在 solid 皮肤下文字固定取 `--color-primary-foreground`（亮色白 / 暗色近黑）。给中等明度的自定义色时自行核对对比度，或改用 `soft` 皮肤（彩字 + 12% 同色底，两态都稳）。",
+      "source": "packages/ui/src/shield-badge/shield-badge.md"
+    },
+    {
       "id": "component/shimmer-button/pitfall/1",
       "scope": "shimmer-button",
       "title": "ShimmerButton",
@@ -7352,8 +7485,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 367,
-    "componentAdvisories": 1025,
-    "totalAdvisories": 1032
+    "componentDocs": 372,
+    "componentAdvisories": 1044,
+    "totalAdvisories": 1051
   }
 }
