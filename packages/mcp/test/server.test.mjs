@@ -146,6 +146,7 @@ test("install_block 对页面返回递归依赖、接入清单与 guard 命令",
   const [res] = await rpc([call(11, "install_block", { name: "page-landing", includeSource: false })]);
   const body = bodyOf(res);
   assert.match(body, /需要递归安装的区块/);
-  assert.match(body, /必须替换/);
+  assert.match(body, /需要 Provider：ThemeProvider/);
+  assert.match(body, /可替换插槽：.*hero/);
   assert.match(body, /hulian-check/);
 });

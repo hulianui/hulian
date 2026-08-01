@@ -60,15 +60,16 @@ jobs:
       - name: Install Playwright chromium
         run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
 
+      # MCP 的 install_block 端到端测试读取 apps/www/public/r/*.json 中的完整源码。
+      # 这些拆分端点被 Git 忽略，因此干净 checkout 必须先生成再测试；否则本地残留产物
+      # 会掩盖 CI 中的真实缺失。后面的页面 smoke、构建和部署继续复用同一份生成结果。
+      - name: Generate AI distribution endpoints
+        # /r、/d 与 conventions.json 都被 Git 忽略，必须在干净 checkout 中显式生成，
+        # 否则 MCP 的本地模式和部署后的远程模式都会拿不到逐件文档或约束数据。
+        run: pnpm llms-registry && pnpm conventions
+
       - name: Test
         run: pnpm test
-
-      # registry 的单件安装端点 apps/www/public/r/*.json（447 个、6.6M、内联组件源码）
-      # 不入库 —— 每次改组件源码都会重写，进 git 只会让历史膨胀。构建前现生成。
-      - name: Generate AI distribution endpoints
-        # /r、/d 与 conventions.json 都被 Git 忽略，必须在干净 checkout 的构建阶段生成，
-        # 否则 MCP 远程模式会拿不到逐件文档或约束数据。
-        run: pnpm llms-registry && pnpm conventions
 
       # 每个页面都在独立临时工程中经真实 shadcn CLI 递归安装并 typecheck，防止前一个页面
       # 已安装的区块掩盖后一个页面漏写 registryDependencies。
