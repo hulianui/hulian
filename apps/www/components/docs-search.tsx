@@ -11,6 +11,8 @@ import {
   searchPanelGroups,
   type SearchHit,
 } from "../lib/search-index";
+import { stripDocsBasePath, withDocsBasePath } from "../lib/docs-locale";
+import { ComponentQuickJump } from "./component-quick-jump";
 
 // 数量从索引现算，不写死 —— 写死的「366 个组件」下次加件就成了假话。
 const COMPONENT_COUNT = searchDocs.filter((d) => d.type === "component").length;
@@ -43,7 +45,7 @@ export function DocsSearch() {
   const [query, setQuery] = useState("");
 
   const groups = useMemo<CommandGroupData[]>(() => {
-    const go = (href: string) => router.push(href);
+    const go = (href: string) => router.push(stripDocsBasePath(href));
     const trimmed = query.trim();
     const panel = searchPanelGroups(query);
 
@@ -61,7 +63,7 @@ export function DocsSearch() {
                   value: `__more-${g.type}__`,
                   label: `查看${TYPE_LABEL[g.type]}的全部 ${g.total} 条`,
                   onSelect: () =>
-                    go(`/search?q=${encodeURIComponent(trimmed)}&type=${g.type}`),
+                    go(withDocsBasePath(`/search?q=${encodeURIComponent(trimmed)}&type=${g.type}`)),
                 },
               ]
             : []),
@@ -73,7 +75,7 @@ export function DocsSearch() {
             {
               value: "__all__",
               label: `查看「${trimmed}」的全部结果`,
-              onSelect: () => go(`/search?q=${encodeURIComponent(trimmed)}`),
+              onSelect: () => go(withDocsBasePath(`/search?q=${encodeURIComponent(trimmed)}`)),
             },
           ],
         });
@@ -99,26 +101,26 @@ export function DocsSearch() {
           value: "__browse-pages__",
           label: "浏览全部页面",
           description: "由区块拼成的完整整页，最省事的起点",
-          onSelect: () => go("/pages"),
+          onSelect: () => go(withDocsBasePath("/pages")),
         },
         {
           value: "__browse-blocks__",
           label: "浏览全部区块",
           description: "自包含的页面区块，复制即用",
-          onSelect: () => go("/blocks"),
+          onSelect: () => go(withDocsBasePath("/blocks")),
         },
         {
           value: "__browse-components__",
           label: "浏览全部组件",
           description: `按分类查看 ${COMPONENT_COUNT} 个组件`,
-          onSelect: () => go("/components"),
+          onSelect: () => go(withDocsBasePath("/components")),
         },
         {
           value: "__registry__",
           label: "打开 registry",
           description: "shadcn CLI 可直接消费的机器可读清单",
           onSelect: () => {
-            window.open("/registry.json", "_blank", "noreferrer");
+            window.open(withDocsBasePath("/registry.json"), "_blank", "noreferrer");
           },
         },
       ],
@@ -128,6 +130,8 @@ export function DocsSearch() {
 
   return (
     <>
+      {/* 高频组件直达保持非模态；全站 DocsSearch 继续承接页面/区块/模版/指南检索。 */}
+      <ComponentQuickJump placement="navbar" />
       {/* 顶栏入口：全断点常驻。窄屏收成图标钮（不折进汉堡菜单——搜索和主题切换一样是站点级动作）。 */}
       <button
         type="button"
