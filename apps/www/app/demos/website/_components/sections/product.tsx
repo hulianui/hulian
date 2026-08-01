@@ -26,7 +26,7 @@ function DeployDashboard() {
     { branch: "fix/cache", env: "预览", status: "已上线", tone: "success" as const, time: "3 分钟前" },
   ];
   return (
-    <div className="bg-background p-4 sm:p-5">
+    <div className="bg-bg p-4 sm:p-5">
       <Stack direction="row" align="center" justify="between" className="mb-4">
         <Stack direction="row" align="center" gap={2}>
           <span className="flex size-7 items-center justify-center rounded-[var(--radius)] bg-primary/10 text-primary">
@@ -101,7 +101,7 @@ function MobileAlertScreen() {
     success: "bg-success/15 text-success",
   };
   return (
-    <div className="flex h-full flex-col gap-0 bg-background">
+    <div className="flex h-full flex-col gap-0 bg-bg">
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <Text size="xs" weight="semibold" className="text-foreground">
           瀚云告警
@@ -152,7 +152,7 @@ function AndroidDashScreen() {
     { label: "平均耗时", value: "38s", color: "text-foreground" },
   ];
   return (
-    <div className="flex h-full flex-col bg-background">
+    <div className="flex h-full flex-col bg-bg">
       <div className="border-b border-border px-3 py-2">
         <Stack direction="row" align="center" gap={1.5}>
           <span className="flex size-5 items-center justify-center rounded bg-primary/10 text-primary">

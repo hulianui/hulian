@@ -146,7 +146,7 @@ export default function FindingsPage() {
       accessorKey: "file",
       header: "文件:行",
       cell: ({ row }) => (
-        <span className="font-mono text-xs text-muted-foreground">
+        <span className="font-mono text-xs text-muted">
           {row.original.file}:{row.original.line}
         </span>
       ),
@@ -179,7 +179,7 @@ export default function FindingsPage() {
       accessorKey: "firstSeen",
       header: "首次出现",
       cell: ({ row }) => (
-        <span className="tabular-nums text-xs text-muted-foreground">{row.original.firstSeen}</span>
+        <span className="tabular-nums text-xs text-muted">{row.original.firstSeen}</span>
       ),
     },
     {
@@ -337,8 +337,8 @@ export default function FindingsPage() {
 
               <section className="flex flex-col gap-1.5">
                 <h4 className="text-sm font-medium text-foreground">问题描述</h4>
-                <p className="text-sm text-muted-foreground">{active.ruleDesc}</p>
-                <p className="font-mono text-xs text-muted-foreground">
+                <p className="text-sm text-muted">{active.ruleDesc}</p>
+                <p className="font-mono text-xs text-muted">
                   {active.file}:{active.line} ·{" "}
                   <Link
                     href={`/demos/hanreview/reviews/${active.reviewId}`}

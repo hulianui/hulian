@@ -73,7 +73,7 @@ export function NavbarBlock() {
                       className="block px-3 py-2"
                     >
                       <div className="font-medium text-foreground">{p.title}</div>
-                      <div className="mt-0.5 text-xs text-muted-foreground">
+                      <div className="mt-0.5 text-xs text-muted">
                         {p.desc}
                       </div>
                     </NavigationMenuLink>

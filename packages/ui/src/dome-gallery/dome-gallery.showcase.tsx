@@ -5,7 +5,7 @@ import { DomeGallery } from "./dome-gallery";
 /** 球面图库需要一定高度与中性底色展现 3D 曲面，统一包一层 Stage */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative h-80 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-background">
+    <div className="relative h-80 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-bg">
       {children}
     </div>
   );
@@ -16,7 +16,7 @@ export const domeGalleryShowcase: ShowcaseSpec = {
     {
       title: "基础用法",
       description: "不传 images 时用内置占位渐变瓦片，可拖拽旋转球面、点开放大查看。",
-      code: `<div className="relative h-80 overflow-hidden rounded-xl bg-background">
+      code: `<div className="relative h-80 overflow-hidden rounded-xl bg-bg">
   <DomeGallery />
 </div>`,
       render: () => (
@@ -112,7 +112,7 @@ export const domeGalleryShowcase: ShowcaseSpec = {
 
   toCode: (p) =>
     [
-      `<div className="relative h-80 overflow-hidden rounded-xl bg-background">`,
+      `<div className="relative h-80 overflow-hidden rounded-xl bg-bg">`,
       `  <DomeGallery`,
       `    segments={${p.segments}}`,
       `    fit={${p.fit}}`,

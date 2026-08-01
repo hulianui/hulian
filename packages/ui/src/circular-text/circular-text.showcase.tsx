@@ -51,7 +51,7 @@ export const circularTextShowcase: ShowcaseSpec = {
     spinDuration={14}
     onHover="goBonkers"
     radius={64}
-    className="text-xs font-bold tracking-[0.2em] text-background"
+    className="text-xs font-bold tracking-[0.2em] text-bg"
   />
 </div>`,
       render: () => (
@@ -62,7 +62,7 @@ export const circularTextShowcase: ShowcaseSpec = {
               spinDuration={14}
               onHover="goBonkers"
               radius={64}
-              className="text-xs font-bold tracking-[0.2em] text-background"
+              className="text-xs font-bold tracking-[0.2em] text-bg"
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ export const circularTextShowcase: ShowcaseSpec = {
               spinDuration={14}
               onHover="goBonkers"
               radius={64}
-              className="text-xs font-bold tracking-[0.2em] text-background"
+              className="text-xs font-bold tracking-[0.2em] text-bg"
             />
           </div>
         </div>

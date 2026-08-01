@@ -94,7 +94,7 @@ function Bucket({
           values.map((v) => (
             <li
               key={v}
-              className="flex items-center gap-2 rounded-[var(--radius)] border border-border bg-background px-2.5 py-1.5"
+              className="flex items-center gap-2 rounded-[var(--radius)] border border-border bg-bg px-2.5 py-1.5"
             >
               <code className="min-w-0 flex-1 break-all font-mono text-xs text-foreground">{v}</code>
               {editable && (
@@ -128,7 +128,7 @@ function Bucket({
                 }
               }}
               placeholder={placeholder}
-              className="min-w-0 flex-1 rounded-[var(--radius)] border border-border bg-background px-2.5 py-1.5 font-mono text-xs text-foreground outline-none placeholder:font-sans placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-w-0 flex-1 rounded-[var(--radius)] border border-border bg-bg px-2.5 py-1.5 font-mono text-xs text-foreground outline-none placeholder:font-sans placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring"
             />
             <button
               type="button"

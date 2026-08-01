@@ -78,7 +78,7 @@ function Row({
         <span
           aria-hidden
           className={cn(
-            "mt-1.5 size-2 shrink-0 rounded-full ring-2 ring-background",
+            "mt-1.5 size-2 shrink-0 rounded-full ring-2 ring-bg",
             TONE_DOT[tone],
           )}
         />
@@ -104,7 +104,7 @@ function Row({
             "flex items-baseline gap-2 rounded-[var(--radius)] outline-none",
             side === "right" && "flex-row-reverse",
             interactive &&
-              "cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
+              "cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg",
           )}
         >
           <span className="shrink-0 font-mono text-xs tabular-nums text-muted">{item.ts}</span>

@@ -1194,7 +1194,7 @@ import { CircularText } from "@hulianui/ui"
   spinDuration={14}
   onHover="goBonkers"
   radius={64}
-  className="text-xs font-bold tracking-[0.2em] text-background"
+  className="text-xs font-bold tracking-[0.2em] text-bg"
 />
 ```
 
@@ -8567,7 +8567,7 @@ import { DomeGallery } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-<div className="relative h-80 overflow-hidden rounded-xl bg-background">
+<div className="relative h-80 overflow-hidden rounded-xl bg-bg">
   <DomeGallery
     images={[
       { src: "/a.jpg", alt: "封面 A" },
@@ -14333,7 +14333,7 @@ import { StaggeredMenu } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-background">
+<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-bg">
   <StaggeredMenu
     items={[
       { label: "首页", link: "#home" },
