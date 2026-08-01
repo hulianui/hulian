@@ -1,7 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "paths": {
+      "@hulianui/ui-internal/*": ["../../packages/ui/src/*"]
+    },
     "types": ["node", "vite/client", "vitest/globals"]
   },
-  "include": ["app/**/*.ts", "app/**/*.tsx", "fixtures/**/*.tsx", "vite.config.ts", "vitest.config.ts"]
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "fixtures/**/*.tsx",
+    "scenarios/**/*.ts",
+    "scenarios/**/*.tsx",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ]
 }

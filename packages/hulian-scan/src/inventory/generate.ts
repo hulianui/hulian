@@ -40,8 +40,18 @@ export function renderScenarioLoaders(inventory: InventoryEntry[]): string {
       `  ${quote(entry.id)}: ${JSON.stringify({
         id: entry.id,
         scenarioId: entry.scenarioId,
-        component: entry.exports[0] ?? entry.id,
+        component: entry.primaryExport ?? entry.exports[0] ?? entry.id,
         entry: entry.entry,
+        category:
+          entry.animated || entry.webgl
+            ? "animation"
+            : ["chart", "markdown-editor", "pro-table", "table", "tree", "virtual-list"].includes(
+                entry.id,
+              )
+            ? "heavy"
+            : ["button", "dialog", "form", "input", "select"].includes(entry.id)
+            ? "core"
+            : "standard",
         categories: entry.categories,
         animated: entry.animated,
         webgl: entry.webgl,
@@ -67,20 +77,23 @@ export function renderScenarioLoaders(inventory: InventoryEntry[]): string {
 }
 
 function renderNonRendering(inventory: InventoryEntry[]): string {
-  return `${JSON.stringify(
-    inventory
-      .filter((entry) => entry.kind === "non-rendering")
-      .map(({ id, entry, source, exports, aliases, reason }) => ({
-        id,
-        entry,
-        source,
-        exports,
-        aliases,
-        reason,
-      })),
-    null,
-    2,
-  )}\n`;
+  return format(
+    JSON.stringify(
+      inventory
+        .filter((entry) => entry.kind === "non-rendering")
+        .map(({ id, entry, source, exports, aliases, reason }) => ({
+          id,
+          entry,
+          source,
+          exports,
+          aliases,
+          reason,
+        })),
+      null,
+      2,
+    ),
+    { parser: "json" },
+  );
 }
 
 async function writeAtomic(path: string, contents: string): Promise<void> {

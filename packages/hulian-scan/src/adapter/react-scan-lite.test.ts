@@ -1,10 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { ScanEvent } from "../contracts";
-import {
-  assertPreReactInstallation,
-  installReactScanAdapter,
-} from "./react-scan-lite";
+import { assertPreReactInstallation, installReactScanAdapter } from "./react-scan-lite";
 
 describe("installReactScanAdapter", () => {
   it("normalizes Lite commit data without leaking upstream fields", () => {
@@ -91,9 +88,7 @@ describe("installReactScanAdapter", () => {
       }),
     );
     expect(JSON.stringify(sink)).not.toMatch(/fiberRoot|bippy|selfBaseDuration/);
-    expect(sink).not.toContainEqual(
-      expect.objectContaining({ name: "StableSibling" }),
-    );
+    expect(sink).not.toContainEqual(expect.objectContaining({ name: "StableSibling" }));
 
     handle.stop();
     expect(stop).toHaveBeenCalledOnce();
@@ -159,6 +154,15 @@ describe("installReactScanAdapter", () => {
                 selfBaseDuration: 1,
                 treeBaseDuration: 2,
               },
+              {
+                name: "BailedOutSibling",
+                depth: 1,
+                tag: 0,
+                actualDuration: 1,
+                actualStartTime: 1,
+                selfBaseDuration: 1,
+                treeBaseDuration: 1,
+              },
             ],
           } as never);
           return {
@@ -175,13 +179,14 @@ describe("installReactScanAdapter", () => {
       timestampMs: 3,
       durationMs: 2,
     });
+    expect(sink).not.toContainEqual(expect.objectContaining({ name: "BailedOutSibling" }));
   });
 });
 
 describe("assertPreReactInstallation", () => {
   it("fails when React already owns the renderer hook", () => {
-    expect(() =>
-      assertPreReactInstallation({ renderers: new Map([[1, {}]]) }),
-    ).toThrow(/before React/);
+    expect(() => assertPreReactInstallation({ renderers: new Map([[1, {}]]) })).toThrow(
+      /before React/,
+    );
   });
 });

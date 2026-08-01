@@ -34,6 +34,7 @@ export interface InventoryEntry {
   documentation?: string;
   scenarioId?: string;
   reason?: string;
+  primaryExport?: string;
   showcaseExport?: string;
   showcaseSource?: string;
 }
@@ -268,6 +269,12 @@ export async function buildInventory(paths: InventoryPaths): Promise<InventoryEn
     const registryItem = registryBySlug.get(slug);
     if (!registryItem) throw new Error(`registry item missing for ${slug}`);
     assertSameExports(slug, exported, registryItem.meta?.exports);
+    const primaryExport = Array.isArray(registryItem.meta?.exports)
+      ? registryItem.meta.exports.find((value): value is string => typeof value === "string")
+      : undefined;
+    if (!primaryExport) {
+      throw new Error(`registry primary export missing for ${slug}`);
+    }
     const documentation = registryItem.meta?.docLocal;
     if (typeof documentation !== "string") {
       throw new Error(`registry documentation missing for ${slug}`);
@@ -302,6 +309,7 @@ export async function buildInventory(paths: InventoryPaths): Promise<InventoryEn
       webgl: registryItem.meta?.webgl === true,
       documentation,
       scenarioId: `${slug}/basic`,
+      primaryExport,
       showcaseExport: showcase.exported,
       showcaseSource: showcase.source,
     });

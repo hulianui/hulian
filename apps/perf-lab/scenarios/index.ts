@@ -1,0 +1,28 @@
+import type { PerformanceScenario } from "@hulianui/hulian-scan/browser";
+
+import { knownBadScenario } from "../fixtures/known-bad";
+import { knownGoodScenario } from "../fixtures/known-good";
+import { createGenericScenario } from "./generic";
+import { scenarioLoaders, scenarioMetadata } from "./generated";
+
+const fixed = new Map<string, PerformanceScenario>([
+  [knownBadScenario.id, knownBadScenario],
+  [knownGoodScenario.id, knownGoodScenario],
+]);
+
+export function listScenarioIds(): string[] {
+  return [
+    ...fixed.keys(),
+    ...Object.values(scenarioMetadata).map((entry) => entry.scenarioId),
+  ].sort();
+}
+
+export async function loadScenario(id: string): Promise<PerformanceScenario> {
+  const fixedScenario = fixed.get(id);
+  if (fixedScenario) return fixedScenario;
+  const metadata = Object.values(scenarioMetadata).find((entry) => entry.scenarioId === id);
+  if (!metadata) throw new Error(`unknown performance scenario: ${id}`);
+  const loader = scenarioLoaders[metadata.id as keyof typeof scenarioLoaders];
+  if (!loader) throw new Error(`scenario loader missing: ${metadata.id}`);
+  return createGenericScenario(metadata, await loader());
+}

@@ -8,8 +8,6 @@ import { repositoryRoot } from "../paths";
 import { createDefaultDependencies } from "./default-dependencies";
 import { runScan, type RunScanOptions } from "./run-scan";
 
-const fixtureScenarios = ["fixture/known-good", "fixture/known-bad"];
-
 async function readReport(path: string): Promise<ScanReport> {
   const parsed: unknown = JSON.parse(await readFile(resolve(repositoryRoot, path), "utf8"));
   if (
@@ -63,15 +61,16 @@ export async function executeDefaultScan(options: CliOptions): Promise<ScanRepor
   const deps = await createDefaultDependencies({
     ...(baseline ? { baseline } : {}),
   });
+  const inventory =
+    options.inventoryOnly || options.full ? await buildRepositoryInventory() : undefined;
 
   if (options.inventoryOnly) {
-    const inventory = await buildRepositoryInventory();
     const report: ScanReport = {
       schemaVersion: 1,
       environment: options.environment,
       runs: [],
       findings: [],
-      inventory: inventory.map((entry) => ({ ...entry })),
+      inventory: inventory?.map((entry) => ({ ...entry })) ?? [],
     };
     await deps.write(report, resolve(repositoryRoot, options.outputDir));
     return report;
@@ -95,7 +94,11 @@ export async function executeDefaultScan(options: CliOptions): Promise<ScanRepor
     return report;
   }
 
-  const scenarioIds = options.full ? fixtureScenarios : options.scenarioIds;
+  const scenarioIds = options.full
+    ? (inventory ?? []).flatMap((entry) =>
+        entry.kind === "renderable" && entry.scenarioId ? [entry.scenarioId] : [],
+      )
+    : options.scenarioIds;
   if (scenarioIds.length === 0) {
     throw new Error("no performance scenarios selected");
   }

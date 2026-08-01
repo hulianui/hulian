@@ -3,11 +3,7 @@
     "id": "access",
     "entry": "@hulianui/ui/access",
     "source": "packages/ui/src/access/index.ts",
-    "exports": [
-      "Access",
-      "AccessProvider",
-      "useAccess"
-    ],
+    "exports": ["Access", "AccessProvider", "useAccess"],
     "aliases": [],
     "reason": "Access providers and authorization helpers have no standalone visual showcase"
   },
@@ -15,12 +11,7 @@
     "id": "config",
     "entry": "@hulianui/ui/config",
     "source": "packages/ui/src/config/index.ts",
-    "exports": [
-      "ConfigProvider",
-      "enUS",
-      "useLocale",
-      "zhCN"
-    ],
+    "exports": ["ConfigProvider", "enUS", "useLocale", "zhCN"],
     "aliases": [],
     "reason": "Configuration provider and locale helpers have no standalone visual showcase"
   },

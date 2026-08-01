@@ -9,8 +9,7 @@ import {
   type ScenarioRun,
 } from "@hulianui/hulian-scan/browser";
 
-import { knownBadScenario } from "../fixtures/known-bad";
-import { knownGoodScenario } from "../fixtures/known-good";
+import { listScenarioIds, loadScenario } from "../scenarios";
 import type { HarnessController } from "./harness";
 
 export interface LabRunOptions {
@@ -35,11 +34,6 @@ declare global {
     __HULIAN_SCAN_LAB__: HulianScanLabApi;
   }
 }
-
-const scenarios = new Map<string, PerformanceScenario>([
-  [knownBadScenario.id, knownBadScenario],
-  [knownGoodScenario.id, knownGoodScenario],
-]);
 
 function assertRunOptions(options: LabRunOptions): void {
   if (!Number.isInteger(options.samples) || options.samples < 1) {
@@ -149,14 +143,13 @@ export function createWindowApi(harness: HarnessController): HulianScanLabApi {
 
   return {
     ready: Promise.resolve(),
-    list: () => [...scenarios.keys()].sort(),
+    list: listScenarioIds,
     async run(id, options) {
       if (running) throw new Error("another Hulian Scan scenario is running");
       assertRunOptions(options);
-      const scenario = scenarios.get(id);
-      if (!scenario) throw new Error(`unknown performance scenario: ${id}`);
       running = true;
       try {
+        const scenario: PerformanceScenario = await loadScenario(id);
         const events: ScanEvent[] = [];
         const errors: string[] = [];
         const samples: Array<Record<string, number>> = [];

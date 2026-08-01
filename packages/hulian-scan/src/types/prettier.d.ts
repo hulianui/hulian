@@ -1,6 +1,3 @@
 declare module "prettier" {
-  export function format(
-    source: string,
-    options: { parser: "typescript" },
-  ): string;
+  export function format(source: string, options: { parser: "json" | "typescript" }): string;
 }

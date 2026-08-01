@@ -24,9 +24,7 @@ interface NormalizationState {
   profilingHooksAvailable?: boolean;
 }
 
-export function assertPreReactInstallation(
-  hook: RendererHook | undefined,
-): void {
+export function assertPreReactInstallation(hook: RendererHook | undefined): void {
   if (hook?.renderers && hook.renderers.size > 0) {
     throw new Error("hulian-scan must install before React");
   }
@@ -41,13 +39,17 @@ function assertFiniteNonNegative(value: number, label: string): void {
 function formatSource(source: LiteFiberSummary["source"]): string | undefined {
   if (!source) return undefined;
 
-  const location = source.lineNumber
-    ? `${source.fileName}:${source.lineNumber}`
-    : source.fileName;
+  const location = source.lineNumber ? `${source.fileName}:${source.lineNumber}` : source.fileName;
   return source.columnNumber ? `${location}:${source.columnNumber}` : location;
 }
 
-function selfDurationAt(tree: LiteFiberSummary[], index: number): number {
+function renderedInWindow(fiber: LiteFiberSummary, renderedAfterMs: number | undefined): boolean {
+  if (fiber.actualDuration <= Number.EPSILON) return false;
+  if (renderedAfterMs === undefined || fiber.depth === 0) return true;
+  return Number.isFinite(fiber.actualStartTime) && fiber.actualStartTime >= renderedAfterMs - 0.5;
+}
+
+function selfDurationAt(tree: LiteFiberSummary[], index: number, renderedAfterMs?: number): number {
   const fiber = tree[index];
   if (!fiber) throw new Error(`missing fiber at index ${index}`);
 
@@ -61,7 +63,7 @@ function selfDurationAt(tree: LiteFiberSummary[], index: number): number {
     const candidate = tree[childIndex];
     if (!candidate) break;
     if (candidate.depth <= fiber.depth) break;
-    if (candidate.depth === fiber.depth + 1) {
+    if (candidate.depth === fiber.depth + 1 && renderedInWindow(candidate, renderedAfterMs)) {
       assertFiniteNonNegative(candidate.actualDuration, "fiber duration");
       directChildrenDuration += candidate.actualDuration;
     }
@@ -70,10 +72,7 @@ function selfDurationAt(tree: LiteFiberSummary[], index: number): number {
   return Math.max(0, fiber.actualDuration - directChildrenDuration);
 }
 
-function inferredOwnerName(
-  tree: LiteFiberSummary[],
-  index: number,
-): string | undefined {
+function inferredOwnerName(tree: LiteFiberSummary[], index: number): string | undefined {
   const fiber = tree[index];
   if (!fiber || fiber.depth === 0) return undefined;
   for (let ownerIndex = index - 1; ownerIndex >= 0; ownerIndex -= 1) {
@@ -89,6 +88,7 @@ function normalizeFiber(
   tree: LiteFiberSummary[],
   index: number,
   commitId: number,
+  renderedAfterMs?: number,
 ): ScanEvent {
   const source = formatSource(fiber.source);
   const ownerName = fiber.ownerName ?? inferredOwnerName(tree, index);
@@ -101,10 +101,8 @@ function normalizeFiber(
     ...(source ? { source } : {}),
     depth: fiber.depth,
     actualDurationMs: fiber.actualDuration,
-    selfDurationMs: selfDurationAt(tree, index),
-    ...(fiber.changeDescription == null
-      ? {}
-      : { changeDescription: fiber.changeDescription }),
+    selfDurationMs: selfDurationAt(tree, index, renderedAfterMs),
+    ...(fiber.changeDescription == null ? {} : { changeDescription: fiber.changeDescription }),
   };
 }
 
@@ -113,6 +111,7 @@ function normalizeCommitTree(
   state: NormalizationState,
   timestampMs: number,
   durationMs: number,
+  renderedAfterMs?: number,
 ): ScanEvent[] {
   assertFiniteNonNegative(timestampMs, "commit timestamp");
   assertFiniteNonNegative(durationMs, "commit duration");
@@ -120,8 +119,8 @@ function normalizeCommitTree(
   const normalized: ScanEvent[] = [
     { type: "commit", commitId, timestampMs, durationMs },
     ...tree.flatMap((fiber, index) =>
-      fiber.actualDuration > 0
-        ? [normalizeFiber(fiber, tree, index, commitId)]
+      renderedInWindow(fiber, renderedAfterMs)
+        ? [normalizeFiber(fiber, tree, index, commitId, renderedAfterMs)]
         : [],
     ),
   ];
@@ -129,10 +128,7 @@ function normalizeCommitTree(
   return normalized;
 }
 
-function normalizeLiteEvent(
-  event: LiteEvent,
-  state: NormalizationState,
-): ScanEvent[] {
+function normalizeLiteEvent(event: LiteEvent, state: NormalizationState): ScanEvent[] {
   if (event.kind === "profiling-hooks-status") {
     state.profilingHooksAvailable = event.available;
     return [];
@@ -165,6 +161,7 @@ function normalizeLiteEvent(
         state,
         Math.max(0, event.timestamp - durationMs),
         durationMs,
+        Math.max(0, event.timestamp - durationMs),
       );
     }
     if (state.tree !== undefined) {
@@ -183,21 +180,14 @@ function normalizeLiteEvent(
   const durationMs = event.timestamp - state.startedAt;
   assertFiniteNonNegative(durationMs, "commit duration");
   const tree = state.tree;
-  const normalized = normalizeCommitTree(
-    tree,
-    state,
-    state.startedAt,
-    durationMs,
-  );
+  const normalized = normalizeCommitTree(tree, state, state.startedAt, durationMs);
 
   state.startedAt = undefined;
   state.tree = undefined;
   return normalized;
 }
 
-export function installReactScanAdapter(
-  options: AdapterOptions,
-): AdapterHandle {
+export function installReactScanAdapter(options: AdapterOptions): AdapterHandle {
   const globalHook = (
     globalThis as typeof globalThis & {
       __REACT_DEVTOOLS_GLOBAL_HOOK__?: RendererHook;
