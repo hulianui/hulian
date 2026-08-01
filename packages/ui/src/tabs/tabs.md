@@ -14,7 +14,7 @@ status: enriched
 
 ## 何时用
 
-同一区域内切换若干并列内容面板（账户/密码/团队），内容互斥、平级、无层级。表达页面在站点中的位置用 [Breadcrumb](../breadcrumb/breadcrumb.md)；长文内随阅读进度高亮的目录用 [Anchor](../anchor/anchor.md)；有序步骤流程用 [Stepper](../_mui/stepper.md)。
+同一区域内切换若干并列内容面板（账户/密码/团队），内容互斥、平级、无层级。表达页面在站点中的位置用 [Breadcrumb](../breadcrumb/breadcrumb.md)；长文内随阅读进度高亮的目录用 [Anchor](../anchor/anchor.md)；有序步骤流程用 [Stepper](../stepper/stepper.md)。
 
 ## 导入
 ```ts
@@ -66,4 +66,4 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 - [[base-ui-tabs-indicator-slider-via-active-tab-css-vars]]：滑块靠 Base UI 写在 indicator 上的 `--active-tab-*` CSS 变量 + 纯 CSS transition 实现，不引动画库。坑点：激活态钩子是 `data-active` 而非 `data-selected`，写错样式不生效；jsdom 单测无 ResizeObserver 也能跑（指示条几何不会真渲染）。
 
 ## 相关
-[Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [BackTop](../back-top/back-top.md) · [Stepper](../_mui/stepper.md)
+[Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [BackTop](../back-top/back-top.md) · [Stepper](../stepper/stepper.md)

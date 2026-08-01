@@ -54,4 +54,4 @@ const [text, setText] = useState("");
 - 组件只是面板，不含触发器/浮层定位；要做弹出式表情按钮需自己套 [Popover](../popover/popover.md)。
 
 ## 相关
-[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../_mui/rating.md)
+[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

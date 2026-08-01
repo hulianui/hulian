@@ -66,4 +66,4 @@ const [otp, setOtp] = useState("");
 - 暂无其它已知坑。
 
 ## 相关
-[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [Rating](../_mui/rating.md) · [Upload](../upload/upload.md)
+[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [Rating](../rating/rating.md) · [Upload](../upload/upload.md)

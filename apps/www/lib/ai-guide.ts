@@ -64,21 +64,17 @@ export default function App({ children }: { children: React.ReactNode }) {
 3. **吃主题 token，不要写死颜色**：给 SVG 的 \`fill\`/\`stroke\` 或内联样式用 \`var(--color-primary)\`、\`var(--color-foreground)\` 等，**颜色变量必须带 \`--color-\` 前缀**，否则 Tailwind v4 下解析不到。
 4. **不要用局部 \`style\`/\`className\` 覆盖库组件内部结构**：用组件自身暴露的 props 调整外观与行为。
 
-## 唯一的例外：日期族走子路径
+## 全部组件都在根 barrel 里
 
-\`Calendar\` / \`DatePicker\` / \`DateTimePicker\` / \`TimeField\` **不在根 barrel 里**，它们依赖 optional peer（MUI X + emotion），要用得多两步：
-
-\`\`\`bash
-pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled
-\`\`\`
+0.15.0 起没有任何例外入口：日期族（\`Calendar\` / \`DatePicker\` / \`DateTimePicker\` / \`TimeField\` /
+\`TimePicker\` / \`DateRangePicker\`）已全部自研为零依赖，\`@hulianui/ui/date-pickers\` 这条子路径、
+以及它要求的 MUI 与 emotion 四个 optional peer 都不复存在。
 
 \`\`\`tsx
-import { DatePicker, MuiBridgeProvider } from "@hulianui/ui/date-pickers";
-// 且这几件必须置于 <MuiBridgeProvider> 之内，否则真实浏览器里会抛 Unsupported color
+import { DatePicker, DateTimePicker, TimeField, Calendar } from "@hulianui/ui";
 \`\`\`
 
-不用日期族的项目完全不用管这一节 —— 那四个包一个都不会装。
-其余全部组件（含 Rating / Stepper）正常从 \`@hulianui/ui\` 根 barrel 导入。
+若你手上的资料还写着「日期族要装 @mui/* 并挂 MuiBridgeProvider」，那是 0.15.0 之前的旧文档。
 
 ## 推荐：装 MCP，让 AI 自己查（而不是你贴文档）
 

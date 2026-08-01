@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Clock, X } from "../_icons";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
+import { TimeColumn } from "./time-column";
 import {
   buildOptions,
   clampTime,
@@ -11,7 +12,6 @@ import {
   isHourDisabled,
   isMinuteDisabled,
   isSecondDisabled,
-  pad2,
   parseTime,
   snapToStep,
   type TimeParts,
@@ -29,72 +29,6 @@ import type { TimePickerProps } from "./time-picker.types";
 const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
-
-/** 单列候选。选中项在打开时滚入视口——否则 23 点的值要用户自己滚到底去找。 */
-function Column({
-  label,
-  values,
-  active,
-  isDisabled,
-  onPick,
-  open,
-}: {
-  label: string;
-  values: number[];
-  active: number | null;
-  isDisabled: (v: number) => boolean;
-  onPick: (v: number) => void;
-  open: boolean;
-}) {
-  const listRef = useRef<HTMLDivElement>(null);
-  const activeRef = useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const el = activeRef.current;
-    const box = listRef.current;
-    // jsdom 无布局，offsetTop 恒 0；这里只做「有就滚」，测不到不影响正确性
-    if (el && box) box.scrollTop = el.offsetTop;
-  }, [open, active]);
-
-  return (
-    <div className="flex min-w-0 flex-col">
-      <div className="border-b border-border px-2 py-1 text-center text-xs text-muted">{label}</div>
-      <div
-        ref={listRef}
-        role="listbox"
-        aria-label={label}
-        className="h-48 w-14 overflow-y-auto scroll-smooth py-1"
-      >
-        {values.map((v) => {
-          const dis = isDisabled(v);
-          const isActive = active === v;
-          return (
-            <button
-              key={v}
-              type="button"
-              role="option"
-              aria-selected={isActive}
-              aria-label={`${label} ${pad2(v)}`}
-              disabled={dis}
-              ref={isActive ? activeRef : undefined}
-              onClick={() => onPick(v)}
-              className={cn(
-                "flex h-8 w-full items-center justify-center rounded-md text-sm tabular-nums transition-colors",
-                isActive
-                  ? "bg-primary font-medium text-primary-foreground"
-                  : "text-foreground hover:bg-surface-hover",
-                dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
-              )}
-            >
-              {pad2(v)}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 export function TimePicker({
   value: valueProp,
@@ -206,7 +140,7 @@ export function TimePicker({
             style={overlayTransition}
           >
             <div className="flex divide-x divide-border">
-              <Column
+              <TimeColumn
                 label="时"
                 values={hours}
                 active={parsed?.h ?? null}
@@ -214,7 +148,7 @@ export function TimePicker({
                 onPick={(h) => pick({ h })}
                 open={open}
               />
-              <Column
+              <TimeColumn
                 label="分"
                 values={minutes}
                 active={parsed?.m ?? null}
@@ -223,7 +157,7 @@ export function TimePicker({
                 open={open}
               />
               {withSeconds && (
-                <Column
+                <TimeColumn
                   label="秒"
                   values={seconds}
                   active={parsed?.s ?? null}

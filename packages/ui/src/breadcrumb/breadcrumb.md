@@ -14,7 +14,7 @@ status: enriched
 
 ## 何时用
 
-表达当前页在站点层级中的位置（首页 / 组件 / 面包屑），并提供逐级回退链接。同层内容互斥切换用 [Tabs](../tabs/tabs.md)；翻页用 [Pagination](../pagination/pagination.md)；有序流程用 [Stepper](../_mui/stepper.md)。
+表达当前页在站点层级中的位置（首页 / 组件 / 面包屑），并提供逐级回退链接。同层内容互斥切换用 [Tabs](../tabs/tabs.md)；翻页用 [Pagination](../pagination/pagination.md)；有序流程用 [Stepper](../stepper/stepper.md)。
 
 ## 导入
 ```ts
@@ -56,4 +56,4 @@ import { Breadcrumb } from "@hulianui/ui"
 暂无已知坑。注意中间项省略 `href` 即渲染为不可点的纯文本（如「归档」这类无独立页面的祖先）。
 
 ## 相关
-[Tabs](../tabs/tabs.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [BackTop](../back-top/back-top.md) · [Stepper](../_mui/stepper.md)
+[Tabs](../tabs/tabs.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [BackTop](../back-top/back-top.md) · [Stepper](../stepper/stepper.md)

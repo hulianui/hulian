@@ -68,4 +68,4 @@ const [target, setTarget] = useState<string[]>(["dashboard", "orders"]);
 - 面板列表尚无虚拟滚动，上千节点时靠 `listHeight` + 滚动扛。真到万级请先在数据层分组/懒加载。
 
 ## 相关
-[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../_mui/rating.md)
+[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

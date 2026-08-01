@@ -1,11 +1,12 @@
 import dayjs, { type Dayjs } from "dayjs";
 
 // 全库日期/时间的单一出口。组件一律从这里取 dayjs / 格式常量 / 转换工具，
-// 不直接 import "dayjs"——这样将来换 date 引擎（如 MUI X 改用 AdapterDateFns）
-// 只需改本文件，散落在 _mui/* 与 date-range-picker 的转换逻辑不必逐处翻找。
+// 不直接 import "dayjs"——这样将来换 date 引擎只需改本文件，
+// 散落在 Calendar / DatePicker / DateRangePicker / Scheduler / Gantt 的转换逻辑不必逐处翻找。
 //
-// 注意：中文 locale（月份/星期本地化）的副作用注册由 _mui/provider.tsx 持有，
-// 因为只有 MUI X 桥子树需要它；此处不引 locale，避免拖累所有日期工具消费者的 bundle。
+// 有意**不引 dayjs 的 locale 包**：日期族的中文文案走下面的 WEEKDAY_LABELS 与
+// `format("YYYY 年 M 月")` 这类显式模板，全库没有一处用 dddd / MMMM 这些 locale 敏感占位符。
+// 引进来只会让每个日期工具的消费者白背一份 locale 数据。
 export { dayjs };
 export type { Dayjs };
 

@@ -11,14 +11,12 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  DateTimePicker,
+  TimeField,
   useForm,
   type ComboboxItemData,
   type FormValues,
 } from "@hulianui/ui";
-import {
-  DateTimePicker,
-  TimeField,
-} from "@hulianui/ui/date-pickers";
 import { DOCTORS, PATIENTS, ROOMS, type ApptType, type ClinicAppt } from "../_data/clinic";
 
 const TYPES: ApptType[] = ["初诊", "复诊", "检查", "处置"];
@@ -136,7 +134,7 @@ export function AppointmentForm({ open, onOpenChange, slot, editing, onSubmit }:
           <DateTimePicker
             value={(start.value as string) || null}
             onValueChange={(iso) => start.onChange(iso ?? "")}
-            minutesStep={5}
+            minuteStep={5}
           />
         </Field>
         <Field label="结束时间" error={end.error}>

@@ -34,10 +34,8 @@ const GLOBAL = [
   },
   {
     id: "import-from-root-barrel",
-    rule: '统一从根 barrel 导入：import { X } from "@hulianui/ui"。唯一例外是日期族（Calendar / DatePicker / DateTimePicker / TimeField / MuiBridgeProvider），它们走 "@hulianui/ui/date-pickers"',
-    why: "深路径导入绕过 barrel 的类型聚合与副作用声明，升级时路径也易变。日期族之所以例外，是因为它依赖 optional peer（MUI/emotion），留在根 barrel 就会强制每个消费方装齐才能 import 任何组件",
-    wrong: 'import { DatePicker } from "@hulianui/ui"',
-    right: 'import { DatePicker } from "@hulianui/ui/date-pickers"',
+    rule: '统一从根 barrel 导入：import { X } from "@hulianui/ui"。**没有例外入口** —— 0.15.0 起日期族也在根 barrel 里',
+    why: "深路径导入绕过 barrel 的类型聚合与副作用声明，升级时路径也易变。曾经存在的 @hulianui/ui/date-pickers 子路径已随日期族自研零依赖一并移除",
   },
   {
     id: "color-token-prefix",
@@ -45,18 +43,6 @@ const GLOBAL = [
     wrong: 'fill="var(--primary)"',
     right: 'fill="var(--color-primary)"',
     why: "Tailwind v4 的 @theme 生成的真名带 --color- 前缀；裸名不解析，表现为 fill 变黑、stroke 消失（工具类如 text-primary 不受影响）",
-  },
-  {
-    id: "mui-bridge-provider",
-    rule: "日期族（Calendar / DatePicker / DateTimePicker / TimeField）必须置于 MuiBridgeProvider 之内",
-    why: "桥接层把 emotion theme 接到瑚琏 CSS 变量；缺 Provider 时真实浏览器里会抛 Unsupported color。注意 Rating / Stepper 已自研为零依赖，不再需要这层包裹",
-    instead: "在用到这些组件的子树外层包一层 <MuiBridgeProvider>",
-  },
-  {
-    id: "mui-optional-peer",
-    rule: '要用日期族就必须自行安装 optional peer：@mui/material @mui/x-date-pickers @emotion/react @emotion/styled，并从 "@hulianui/ui/date-pickers" 子路径导入',
-    why: "这四个包已从 dependencies 降为 optional peerDependencies，日期族也一并移出根 barrel —— 不用日期族的项目不该被迫装下整个 MUI 与 emotion（runtime CSS-in-JS，不兼容 RSC）。emotion 那两个包组件源码里看不到，它是 MUI 的样式引擎，少装同样跑不起来",
-    instead: "不用日期族就什么都不用装；用的话 pnpm add 上面四个包，再走子路径导入",
   },
   {
     id: "theme-provider",
@@ -86,6 +72,12 @@ const GLOBAL = [
 // 选错不会报错，只是不对 —— 这类恰恰是 AI 最容易栽的。取值均已核对源码。
 
 const CONFUSABLES = [
+  {
+    when: "单个日期选择（输入框 + 弹层日历）",
+    pick: "DatePicker",
+    notThis: "DateField",
+    why: "DateField 是 0.15.0 之前的名字，已改名为 DatePicker（picker=\"date|month|year\" 三粒度）；要不带浮层的常驻面板用 Calendar",
+  },
   {
     when: "需要带状态色的文字标签",
     pick: "Tag",

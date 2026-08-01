@@ -60,4 +60,4 @@ const [codes, setCodes] = useState<string[]>([]);
 - value 存的是 ISO2 码（如 `"CN"`），不是中文名；展示名用 `getCountry(code)` 现取。
 
 ## 相关
-[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../_mui/rating.md)
+[SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

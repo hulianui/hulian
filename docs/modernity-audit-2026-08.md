@@ -23,7 +23,7 @@
 - ~~但**「让 AI 只能搭积木」这件事，目前只做到了 L0.5**~~ → **2026-08-01 已推进到 L3**（registry 447 个可装 item + MCP 四个 tool + 998 条机器可读约束）
 - ~~且最值钱的两层积木——**28 个区块、19 个页面**——对 AI **完全不可见**~~ → **已全部进 registry**（57 区块 + 20 页面，可 `npx shadcn add` 直接注入）
 
-~~三个维度停留在旧范式~~ → **2026-08-01 已解决两个**（测试基座切 browser mode、分发形态补齐 registry）。**剩 emotion / MUI 桥这条 2021 尾巴**，见 §4.2。
+~~三个维度停留在旧范式~~ → **2026-08-01 全部解决**（测试基座切 browser mode、分发形态补齐 registry、emotion / MUI 桥整族切除）。见 §4.2。
 
 ---
 
@@ -122,7 +122,7 @@ AI 的自由度  ─────────────────────
 | 7 | 文档形态 | 结构化 + 机器可读 | ✓ 367 份逐组件 md + llms.txt + `/d/<slug>.md` 单件端点 | 🟢 前沿 |
 | 8 | ~~**分发形态**~~ | registry 协议 + CLI + agent 可注入 | ✅ **已解决**：447 个可装 item，真实 `npx shadcn add` 验证 | 🟢 **已解决** |
 | 9 | ~~**测试基座**~~ | Vitest **browser mode**（真实浏览器） | ✅ **2026-08-01 已迁**：双 project（unit=jsdom / browser=真实 chromium） | 🟢 **已解决** |
-| 10 | **CSS-in-JS** | zero-runtime（runtime 方案已判死） | `@emotion` runtime 仍在依赖（MUI 桥） | 🔴 **2021 尾巴** |
+| 10 | **CSS-in-JS** | zero-runtime（runtime 方案已判死） | 无 runtime CSS-in-JS，纯 Tailwind + CSS 变量 | 🟢 **当代** |
 | 11 | a11y 验证 | CI 内 axe-core 自动回归 | 靠 Base UI 兜底，无门禁 | 🟡 待补 |
 | 12 | ~~**agent 可操作性**~~ | MCP + 机器可读约束 schema | ✅ **已解决**：`@hulianui/mcp` 四个 tool + 998 条约束 | 🟢 **已解决** |
 
@@ -190,30 +190,33 @@ AI 的自由度  ─────────────────────
 
 ---
 
-### 4.2 🔴 emotion / MUI 桥：积木内部有两套并行范式
+### 4.2 ✅ emotion / MUI 桥：已整族切除（2026-08-01）
 
-```jsonc
-"dependencies": {
-  "@mui/material":       "^9.2.0",    // 硬依赖
-  "@mui/x-date-pickers": "^9.10.1",   // 硬依赖
-  "@emotion/react":      "^11.14.0",  // 硬依赖
-  "@emotion/styled":     "^11.14.1"   // 硬依赖
-}
-```
+原问题：为了 **Rating / Stepper / 日期族**，全库拖着 `@mui/material` + `@mui/x-date-pickers` +
+`@emotion/*` 四个依赖。`@emotion` 是 **runtime CSS-in-JS**，2026 已被明确判死：运行时开销 +
+**不兼容 RSC** —— 而瑚琏 `llms.txt` 里大量组件标着「零依赖 · RSC」，MUI 桥是这套叙事上唯一的污点。
+它还产生了一条额外心智负担：桥接族必须置于 `MuiBridgeProvider` 之内，否则真实浏览器里抛
+`Unsupported color`（正是 AI 最容易违反的那类隐式约束，见 §2 L3）。
 
-`@emotion` 是 **runtime CSS-in-JS**，2026 已被明确判死：运行时开销 + **不兼容 RSC**。
+**已完成**：
 
-而瑚琏 `llms.txt` 里大量组件标着「零依赖 · RSC」（Container / Divider / Grid / Spacer / Stack / AspectRatio…）——**MUI 桥是这套叙事上唯一的污点**。
+| 组件 | 处置 |
+|------|------|
+| `Rating` / `Stepper` | 自研零依赖重写（0.14.0） |
+| `Calendar` | 自研零依赖新件，三层下钻面板 |
+| `DatePicker` | 自研（原 `DateField` 改名），弹层里复用 `Calendar` |
+| `DateTimePicker` | 自研，左日历 + 右时间列 |
+| `TimeField` | 自研分段键盘输入（`role="spinbutton"`，两位缓冲覆写） |
+| `TimePicker` / `DateRangePicker` | 本就是自研零依赖 |
 
-更关键的是它产生了一条**积木使用的额外心智负担**，`docs/consuming.md` 明写：
+**结果**：`src/_mui/` 目录删除、四个包从 `dependencies`/`peerDependencies` 全部移除、
+`@hulianui/ui/date-pickers` 子路径入口移除、`MuiBridgeProvider` 不复存在。
+消费方现在**没有 optional peer、没有子路径入口、没有必须挂的第三方 Provider**。
+`scripts/bundle-size.sh` 加了反向断言：`@mui/*` / `@emotion/*` 出现在任何一类依赖里即失败。
 
-> `_mui` 桥接族（日期/评分/步骤条）**必须**置于 `MuiBridgeProvider` 之内，否则真实浏览器里也会抛 `Unsupported color`。
-
-这正是 AI 最容易违反的那类隐式约束（见 §2 L3）。
-
-**代价核算**：为了 **Rating / Stepper / DatePicker 三类件**，全库拖着一个过时范式的完整运行时、4 个硬依赖、一层桥接代码、一条消费方硬约束、RSC 叙事的唯一污点。
-
-**动作**：用 Base UI + Tailwind 自己重写这三类。难度**远低于**你已经完成的 Scheduler（月/周/日/资源四视图 + 拖建/拖移/拖时长）、Flow（节点画布 + 贝塞尔连线 + 平移缩放 + fitView）、Gantt（UTC 日期数学零依赖）。完成后 `_mui` 整族删除。
+顺带暴露并修复一个潜伏缺陷：`recharts` 3.x 把 `react-is` 声明为 **peerDependency**，而瑚琏既没装
+也没声明 —— 此前一直靠 MUI 的依赖链蹭到。MUI 一走，体积门禁当场 `Could not resolve "react-is"`。
+已补进 `dependencies`（recharts 是我们的 dependency，它的 peer 就该由我们兜住）。
 
 ---
 
@@ -320,7 +323,7 @@ get_conventions(scope?)       → 铁律与约束（见 5.3）
 
 | 约束类型 | 实例 |
 |---|---|
-| **必须被包裹** | `_mui` 族 → `MuiBridgeProvider`；主题相关 → `ThemeProvider` |
+| **必须被包裹** | 主题相关 → `ThemeProvider`（0.15.0 起没有别的强制 Provider） |
 | **prop 值域必须是 token** | 色彩必须 `var(--color-*)`；间距走 token；禁止裸值 |
 | **互斥 / 依赖 prop** | `AdminLayout.fitViewport`；`Table.density` |
 | **禁止项** | 禁止 `style=` 覆盖；禁止局部 CSS 打补丁；**缺能力回库修组件，不在业务里绕路** |
@@ -356,7 +359,7 @@ get_conventions(scope?)       → 铁律与约束（见 5.3）
 |---|---|---|---|---|---|
 | shadcn/ui | 120,231 | 2026-07-31 | Radix | Tailwind | registry 协议参照物；颜色系统同代但只有单层 |
 | ant-design | 98,885 | 2026-07-31 | 自研 | CSS-in-JS | 企业组件语义参照 |
-| material-ui | 98,656 | 2026-07-31 | 自研 | emotion（runtime） | `_mui` 引用它 —— §4.2 建议切除 |
+| material-ui | 98,656 | 2026-07-31 | 自研 | emotion（runtime） | ~~`_mui` 引用它~~ → 2026-08-01 已切除，见 §4.2 |
 | react-bits | 44,579 | 2026-07-31 | 无 | Tailwind | 已移植 107 件 |
 | daisyUI | 41,894 | 2026-07-30 | 无 | 纯 CSS 插件 | — |
 | chakra-ui | 40,543 | 2026-07-31 | Ark | CSS-in-JS | — |
@@ -427,7 +430,7 @@ get_conventions(scope?)       → 铁律与约束（见 5.3）
 
 | # | 动作 |
 |---|---|
-| 5 | 重写 Rating / Stepper / DatePicker，删 `_mui` 整族，切掉 emotion runtime |
+| ~~5~~ | ~~重写 Rating / Stepper / DatePicker，删 `_mui` 整族，切掉 emotion runtime~~ → **2026-08-01 已完成**，见 §4.2 |
 | 6 | 重依赖转 optional peer（`@tiptap/*` / `@vidstack` / `ogl` / `recharts`），`dependencies` 27 → ≤10 |
 | 7 | CI 接 axe-core a11y 门禁（依赖 #4） |
 

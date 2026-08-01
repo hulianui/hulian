@@ -12,12 +12,9 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
-    "@emotion/cache": "^11.14.0",
-    "@emotion/react": "^11.14.0",
     "@hulianui/mocks": "workspace:*",
     "@hulianui/tokens": "workspace:*",
     "@hulianui/ui": "workspace:*",
-    "@mui/material-nextjs": "^9.1.1",
     "lucide-react": "^1.28.0",
     "motion": "^12.43.0",
     "next": "^16.2.12",
