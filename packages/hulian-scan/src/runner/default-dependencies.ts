@@ -141,9 +141,23 @@ async function gitRevision(): Promise<string> {
   return result.stdout.trim();
 }
 
-async function buildLab(stage: ScanStage): Promise<void> {
-  await execFileAsync("pnpm", ["--filter", "@hulianui/perf-lab", `build:${stage}`], {
-    cwd: repositoryRoot,
+function performanceLabDirectory(environment: RunScanOptions["environment"]): string | undefined {
+  if (environment !== "packed-consumer") return undefined;
+  const configured = process.env.HULIAN_SCAN_LAB_DIR;
+  if (!configured) {
+    throw new Error(
+      "packed-consumer scans require HULIAN_SCAN_LAB_DIR from scripts/performance-consumer.sh",
+    );
+  }
+  return configured;
+}
+
+async function buildLab(stage: ScanStage, labDirectory: string | undefined): Promise<void> {
+  const args = labDirectory
+    ? ["exec", "vite", "build", "--mode", stage]
+    : ["--filter", "@hulianui/perf-lab", `build:${stage}`];
+  await execFileAsync("pnpm", args, {
+    cwd: labDirectory ?? repositoryRoot,
     maxBuffer: 10 * 1024 * 1024,
   });
 }
@@ -171,7 +185,8 @@ async function runBrowserStage(
   scenarioIds: string[],
   options: RunScanOptions,
 ): Promise<ScenarioRun[]> {
-  await buildLab(stage);
+  const labDirectory = performanceLabDirectory(options.environment);
+  await buildLab(stage, labDirectory);
   const port = await availablePort();
   const url = `http://127.0.0.1:${port}`;
   let preview: ChildProcess | undefined;
@@ -181,8 +196,7 @@ async function runBrowserStage(
     preview = spawn(
       "pnpm",
       [
-        "--filter",
-        "@hulianui/perf-lab",
+        ...(labDirectory ? [] : ["--filter", "@hulianui/perf-lab"]),
         "exec",
         "vite",
         "preview",
@@ -193,7 +207,7 @@ async function runBrowserStage(
         "--strictPort",
       ],
       {
-        cwd: repositoryRoot,
+        cwd: labDirectory ?? repositoryRoot,
         env: process.env,
         stdio: ["ignore", "pipe", "pipe"],
       },
