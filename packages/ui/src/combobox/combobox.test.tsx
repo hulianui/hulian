@@ -1,8 +1,12 @@
-import { describe, it, expect, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { describe, it, expect, afterEach, vi } from "vitest";
+import { render, screen, cleanup, fireEvent, waitFor } from "@testing-library/react";
 import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem } from "./combobox";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
 
 const FRUITS = [
   { value: "apple", label: "苹果 Apple" },
@@ -65,5 +69,82 @@ describe("Combobox", () => {
     render(<Demo defaultValue={FRUITS[1]} />);
     const input = screen.getByDisplayValue("香蕉 Banana");
     expect(input).toBeTruthy();
+  });
+
+  it("大数据集只挂载可视窗口，过滤后仍能找到远端选项", async () => {
+    const observer = class {
+      constructor(private readonly callback: ResizeObserverCallback) {}
+      observe(target: Element) {
+        const size = [{ inlineSize: 320, blockSize: 320 }] as ReadonlyArray<ResizeObserverSize>;
+        queueMicrotask(() =>
+          this.callback(
+            [
+              {
+                target,
+                contentRect: {
+                  width: 320,
+                  height: 320,
+                  top: 0,
+                  left: 0,
+                  right: 320,
+                  bottom: 320,
+                  x: 0,
+                  y: 0,
+                } as DOMRectReadOnly,
+                borderBoxSize: size,
+                contentBoxSize: size,
+                devicePixelContentBoxSize: size,
+              },
+            ],
+            this as unknown as ResizeObserver,
+          ),
+        );
+      }
+      unobserve() {}
+      disconnect() {}
+    };
+    vi.stubGlobal("ResizeObserver", observer);
+    const rect = vi
+      .spyOn(Element.prototype, "getBoundingClientRect")
+      .mockImplementation(function (this: Element) {
+        const height = this.hasAttribute("data-index") ? 32 : 320;
+        return {
+          width: 320,
+          height,
+          top: 0,
+          left: 0,
+          right: 320,
+          bottom: height,
+          x: 0,
+          y: 0,
+          toJSON() {},
+        } as DOMRect;
+      });
+    const many = Array.from({ length: 1_000 }, (_, index) => ({
+      value: `item-${index}`,
+      label: `选项 ${index}`,
+    }));
+
+    render(
+      <Combobox items={many} defaultOpen>
+        <ComboboxInput placeholder="搜索千项" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+
+    await waitFor(() =>
+      expect(document.querySelectorAll("[role='option']").length).toBeLessThan(40),
+    );
+    expect(screen.queryByText("选项 999")).toBeNull();
+    fireEvent.change(screen.getByPlaceholderText("搜索千项"), { target: { value: "选项 999" } });
+    await waitFor(() => expect(screen.getByText("选项 999")).toBeTruthy());
+
+    rect.mockRestore();
   });
 });

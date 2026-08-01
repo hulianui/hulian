@@ -13,6 +13,10 @@ const options = Array.from({ length: selectParameters.options }, (_, index) => (
   label: `性能选项 ${index}`,
 }));
 
+export function selectSearchInput(root: ParentNode = document): HTMLInputElement | null {
+  return root.querySelector<HTMLInputElement>('input[placeholder="搜索"]');
+}
+
 function Fixture() {
   const [value, setValue] = useState<string | null>(null);
   controller["open"] = () => {
@@ -24,7 +28,7 @@ function Fixture() {
     );
   };
   controller["search"] = () => {
-    const input = document.querySelector<HTMLInputElement>('input[role="combobox"],input');
+    const input = selectSearchInput();
     if (!input) throw new Error("select search input is missing");
     inputValue(input, "性能选项 999");
   };
@@ -32,7 +36,18 @@ function Fixture() {
     const candidate = [...document.querySelectorAll<HTMLElement>("[role=option]")].find((item) =>
       item.textContent?.includes("性能选项 999"),
     );
-    if (!candidate) throw new Error("filtered select option is missing");
+    if (!candidate) {
+      const rendered = [...document.querySelectorAll<HTMLElement>("[role=option]")]
+        .map((item) => item.textContent)
+        .join(" | ");
+      const filteredCount = document
+        .querySelector("[data-hulian-virtual-count]")
+        ?.getAttribute("data-hulian-virtual-count");
+      const input = selectSearchInput();
+      throw new Error(
+        `filtered select option is missing; input: ${input?.value ?? "missing"}; filtered count: ${filteredCount ?? "unknown"}; rendered options: ${rendered || "none"}`,
+      );
+    }
     candidate.click();
   };
   controller["close"] = () => {

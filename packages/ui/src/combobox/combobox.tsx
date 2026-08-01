@@ -1,6 +1,7 @@
 "use client";
-import { createContext, useContext, useRef, type RefObject } from "react";
+import { createContext, useContext, useRef, type ReactNode, type RefObject } from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
@@ -31,6 +32,9 @@ const overlayTransition = {
 // 不进 packages/ui/src/index.ts，属库内部约定，对外 API 无变化。
 export const ComboboxAnchorContext = createContext<RefObject<HTMLElement | null> | null>(null);
 const AnchorContext = ComboboxAnchorContext;
+const VirtualizedContext = createContext(false);
+const VirtualizedItemIndexContext = createContext<number | undefined>(undefined);
+const VIRTUALIZE_THRESHOLD = 100;
 
 const ChevronDownIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -100,11 +104,83 @@ export const comboboxTriggerVariants = cva(
 
 export function Combobox<Multiple extends boolean = false>({ children, ...props }: ComboboxProps<Multiple>) {
   const anchorRef = useRef<HTMLElement>(null);
+  const candidateItems = props.items;
+  const flatItemCount =
+    Array.isArray(candidateItems) &&
+    candidateItems.every(
+      (item) => item != null && typeof item === "object" && "value" in item,
+    )
+      ? candidateItems.length
+      : 0;
+  const virtualized = props.virtualized ?? flatItemCount >= VIRTUALIZE_THRESHOLD;
   return (
     <AnchorContext.Provider value={anchorRef}>
-      {/* Root 是泛型函数组件，spread 泛型 props 推断不稳 → 在边界 as any，对外类型仍由 ComboboxProps 保证。 */}
-      <BaseCombobox.Root {...(props as Record<string, unknown>)}>{children}</BaseCombobox.Root>
+      <VirtualizedContext.Provider value={virtualized}>
+        {/* Root 是泛型函数组件，spread 泛型 props 推断不稳 → 在边界 as any，对外类型仍由 ComboboxProps 保证。 */}
+        <BaseCombobox.Root
+          {...(props as Record<string, unknown>)}
+          virtualized={virtualized}
+        >
+          {children}
+        </BaseCombobox.Root>
+      </VirtualizedContext.Provider>
     </AnchorContext.Provider>
+  );
+}
+
+function VirtualizedComboboxList({
+  children,
+  onListScroll,
+}: {
+  children: (item: ComboboxItemData, index: number) => ReactNode;
+  onListScroll: ComboboxContentProps["onListScroll"];
+}) {
+  const items = BaseCombobox.useFilteredItems<ComboboxItemData>();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 32,
+    overscan: 6,
+    initialRect: { width: 320, height: 384 },
+    getItemKey: (index) => items[index]?.value ?? index,
+  });
+
+  return (
+    <BaseCombobox.List
+      ref={scrollRef}
+      data-hulian-virtual-count={items.length}
+      className="min-h-0 overflow-y-auto"
+      onScroll={onListScroll}
+    >
+      <div
+        role="presentation"
+        style={{ height: virtualizer.getTotalSize(), position: "relative", width: "100%" }}
+      >
+        {virtualizer.getVirtualItems().map((virtualItem) => {
+          const item = items[virtualItem.index];
+          if (!item) return null;
+          return (
+            <div
+              key={virtualItem.key}
+              data-index={virtualItem.index}
+              role="presentation"
+              style={{
+                left: 0,
+                position: "absolute",
+                top: 0,
+                transform: `translateY(${virtualItem.start}px)`,
+                width: "100%",
+              }}
+            >
+              <VirtualizedItemIndexContext.Provider value={virtualItem.index}>
+                {children(item, virtualItem.index)}
+              </VirtualizedItemIndexContext.Provider>
+            </div>
+          );
+        })}
+      </div>
+    </BaseCombobox.List>
   );
 }
 
@@ -170,6 +246,7 @@ export function ComboboxContent({
   className,
 }: ComboboxContentProps) {
   const anchorRef = useContext(AnchorContext);
+  const virtualized = useContext(VirtualizedContext);
   return (
     <BaseCombobox.Portal>
       <BaseCombobox.Positioner
@@ -204,9 +281,15 @@ export function ComboboxContent({
           <BaseCombobox.Empty className="shrink-0 px-2 py-6 text-center text-sm text-muted empty:py-0">
             {emptyMessage}
           </BaseCombobox.Empty>
-          <BaseCombobox.List className="overflow-y-auto" onScroll={onListScroll}>
-            {children}
-          </BaseCombobox.List>
+          {virtualized ? (
+            <VirtualizedComboboxList onListScroll={onListScroll}>
+              {children}
+            </VirtualizedComboboxList>
+          ) : (
+            <BaseCombobox.List className="overflow-y-auto" onScroll={onListScroll}>
+              {children}
+            </BaseCombobox.List>
+          )}
           {/* 页脚在 List 之外：不随列表滚动，故「加载中/共 N 条」始终可见（RemoteSelect 远程分页用）。 */}
           {footer != null && (
             <div className="mt-1 shrink-0 border-t border-hairline pt-1">{footer}</div>
@@ -218,9 +301,11 @@ export function ComboboxContent({
 }
 
 export function ComboboxItem({ value, disabled, children, className }: ComboboxItemProps) {
+  const virtualizedIndex = useContext(VirtualizedItemIndexContext);
   return (
     <BaseCombobox.Item
       value={value}
+      index={virtualizedIndex}
       disabled={disabled}
       className={cn(
         "relative flex cursor-default select-none items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] py-1.5 pl-2 pr-8 text-sm outline-none",

@@ -1,7 +1,9 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 
 import { specializedScenarios } from "./index";
 import { createAnimationScenario } from "./animation";
+import { selectSearchInput } from "./select";
 
 describe("specialized performance scenarios", () => {
   it("pins the heavy-component dataset scales", () => {
@@ -21,6 +23,12 @@ describe("specialized performance scenarios", () => {
       "stop",
       "unmount-observe",
     ]);
+  });
+
+  it("targets the visible Select search input instead of Base UI's hidden form input", () => {
+    const root = document.createElement("div");
+    root.innerHTML = '<input value="hidden-value"><input placeholder="搜索">';
+    expect(selectSearchInput(root)?.getAttribute("placeholder")).toBe("搜索");
   });
 
   it("applies the same 120-frame lifecycle to every classified public animation", async () => {
