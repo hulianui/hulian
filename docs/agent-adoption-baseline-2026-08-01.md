@@ -14,10 +14,12 @@ node scripts/agent-adoption-scan.mjs --json   # 完整数据
 
 ## 结论先说
 
-1. **契约有效性已经被这 8 个项目验证过了，不是假设。** 6 个在 `CLAUDE.md` / `README.md`
+1. **契约与采用率之间存在强相关，但这不是因果实验。** 6 个在 `CLAUDE.md` / `README.md`
    里写了瑚琏硬规则的项目，手搓信号合计 **12 处**；唯一没写的 `quay` 一个项目就 **89 处**
-   （69 处裸 `<button>`）。#41 的 P0 方向成立，但论证应该换成这组对照数据，而不是
-   「Agent 默认会退化」的推测。
+   （69 处裸 `<button>`）。#41 的 P0 方向成立，其论证也应该换成这组数据而不是
+   「Agent 默认会退化」的推测 —— 但样本是 6 比 1，且 `quay` 同时带着版本旧
+   （`^0.9.0`，落后 6 个 minor）、Tauri 桌面技术栈、项目规模不同三个混杂变量。
+   它足以支持「把契约做成可安装的」这个方向，不足以支持「装了契约就会提升采用率」。
 2. **37.7% 的覆盖率不该当成一个指标看。** 它至少要拆成两类完全不同的缺口：
    「有场景却没采用」（如 `mobile` 7 个只用了 1 个，而 5069tk 确实做了 6 个 H5 页面）
    和「这批项目根本没这类场景」（如 `decoration` 91 个只用 10 个）。前者是 #41 要解决的
@@ -62,12 +64,22 @@ node scripts/agent-adoption-scan.mjs --json   # 完整数据
 
 这对 #41 有两个直接影响：
 
-- **P0 的 `init-agent` 是在把已被验证有效的做法自动化**，不是在赌一个新机制。验收标准里
-  「新项目跑一次就不用再粘长提示词」应该改成可度量的形式：装契约前后跑同一个扫描，比手搓
-  数与 slug 数。
-- **`quay` 就是现成的 A/B 样本。** #41 验收要求「完整演练一次真实项目暴露问题 → 回库修复」，
-  不需要另找项目：给 `quay` 装上契约，重扫，看 89 处手搓能压到多少、桌面端会暴露出哪些
-  组件缺口（它当前主力是 `tooltip`，高密度桌面 UI 是库里最没被验证过的场景）。
+- **P0 的 `init-agent` 是在把一种已在多个项目上观察到有效的做法自动化**，不是在赌一个
+  全新机制。
+- **`quay` 是合适的实验对象，但不能用「装契约前后重扫」来测。** 装契约不会回溯消除已有的
+  89 处手搓代码，前后比数字量到的是「有没有人去改」而不是契约是否有效。正确设计是：
+
+  ```text
+  建立当前基线
+  → 安装契约 + MCP 体检
+  → 选择一批明确的改造任务
+  → 由 Agent 实施
+  → 重扫，比较采用率、误报率、组件缺口、行为回归
+  ```
+
+  关键在中间两步：必须有真实改造任务经过 Agent，否则测的不是契约。`quay` 值得作为对象，
+  是因为它当前主力组件是 `tooltip`，高密度桌面 UI 是库里最没被验证过的场景，大概率能撞出
+  真缺口。
 
 ## 发现二：37.7% 要拆成两类缺口
 
@@ -112,25 +124,46 @@ node scripts/agent-adoption-scan.mjs --json   # 完整数据
 对 #41 profile 清单的三条具体修正：
 
 1. **补两个真实存在的**：`config-tool`（参数配置/生成器）与 `desktop-shell`（桌面应用）。
-2. **`data-dashboard` 与 `mobile-performance` 在真实项目里不独立存在**，它们是 `admin-console`
-   的子形态 —— `stat`/`statistic` 混在 5069tk 与 ins-admin 的后台页里，H5 是 5069tk 的一个
-   路由分区。做成平级 profile 会导致同一个项目同时匹配多个、选型时互斥判断失效。建议改成
-   profile 内的 **variant**（`admin-console.mobile` / `admin-console.dashboard`）。
+2. **`data-dashboard` 与 `mobile-performance` 不该是平级 profile**，它们在真实项目里不独立
+   存在 —— `stat`/`statistic` 混在 5069tk 与 ins-admin 的后台页里，H5 是 5069tk 的一个路由
+   分区。做成平级会导致同一个项目同时匹配多个、选型时互斥判断失效。
+
+   但也**不该做成 `admin-console.mobile` 这样的子类型嵌套** —— 移动端 AI 产品、独立数据
+   大屏在嵌套模型里表达不出来。正确的是三维正交：
+
+   ```ts
+   {
+     surface:   "admin-console" | "config-tool" | "ai-product" | "content-brand" | "desktop-shell",
+     modifiers: ("mobile" | "dashboard" | "data-dense" | "marketing" | "high-performance")[],
+     workflow:  "build" | "audit" | "dogfood" | "migrate",
+   }
+   ```
+
+   `surface` 决定组件语言，`modifiers` 决定约束与预算（**可组合**是关键），`workflow` 决定
+   任务步骤。
 3. **`existing-project-audit` 与 `component-dogfood` 不是场景，是工作流**。场景回答「这个页面
    该用什么组件语言」，工作流回答「这次任务按什么步骤走」。混在一个 profile 列表里，
-   `recommend_ui` 拿到 `profile: "component-dogfood"` 时无法推出任何组件语言。应拆到
-   另一个维度（#41 里已有的 `hulianui_project_auditor` / `hulianui_dogfood` 两个 tool 入口
-   就是它们的正确位置）。
+   `recommend_ui` 拿到 `profile: "component-dogfood"` 时无法推出任何组件语言。它们属于上面
+   三维模型里的 `workflow` 维。
 
 ## 建议的下一步
 
 按 #41 的实施顺序，这份基线能直接接上的是：
 
-- profile 定义改用上表五个（含两个 variant），落成 `agent-profiles.json` 时每个 profile 的
-  `componentRoles` 用实证 top 组件填，而不是凭印象列。
-- `init-agent` 的验收改成可度量：`quay` 装契约前 13 slug / 89 手搓 → 装后重扫对比。
+- `surface` 的五个取值用上表填，落成 `agent-profiles.json` 时每个的 `componentRoles` 取实证
+  top 组件，而不是凭印象列。
 - adoption audit 的输出必须区分「有场景没采用」与「没场景」，否则会输出误导性的
   「decoration 覆盖率仅 11%」。判据可以从「同项目内是否已出现该场景的邻近组件」入手
   （如出现 `TabBar` 却没有 `SafeArea`）。
+- 存量项目体检还需要**版本感知**：库当前 `0.15.1`，而四个走发布版的项目分别锁在
+  `^0.13.0` / `^0.9.0` / `^0.7.1` / `^0.5.0`，没有一个在最新版。已拆出 #43 承担这块。
 
 profile 的 JSON 落盘位置等 #36/#37 的 `packages/mcp` 改动收口后再定，避免与在途工作冲突。
+
+## 修订记录
+
+- 2026-08-01 初版。
+- 2026-08-01 修订：收回「契约有效性已被验证」的过强表述（6 比 1 且 `quay` 带三个混杂变量，
+  属强相关非因果）；作废「装契约前后重扫」的 A/B 设计（装契约不回溯消除既有手搓，量到的是
+  「有没有人去改」）；profile 从子类型嵌套改为 `surface` + `modifiers` + `workflow` 三维正交。
+  讨论见 [#41](https://github.com/hulianui/hulian/issues/41) 与 [#43](https://github.com/hulianui/hulian/issues/43)。
