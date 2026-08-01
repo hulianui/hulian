@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import {
   DOCS_LOCALE,
   LOCALE_STORAGE_KEY,
@@ -14,14 +14,27 @@ const localeOptions = [
   { locale: "en", label: "EN", ariaLabel: "Switch to English" },
 ] as const;
 
+function getCurrentBrowserUrl() {
+  const { pathname, search, hash } = window.location;
+  return `${pathname}${search}${hash}`;
+}
+
 export function LanguageSwitcher({ pathname }: { pathname?: string }) {
   const [currentUrl, setCurrentUrl] = useState(() =>
     pathname ?? withDocsBasePath("/", DOCS_LOCALE),
   );
 
   useEffect(() => {
-    const { pathname, search, hash } = window.location;
-    setCurrentUrl(`${pathname}${search}${hash}`);
+    const syncCurrentUrl = () => setCurrentUrl(getCurrentBrowserUrl());
+
+    syncCurrentUrl();
+    window.addEventListener("hashchange", syncCurrentUrl);
+    window.addEventListener("popstate", syncCurrentUrl);
+
+    return () => {
+      window.removeEventListener("hashchange", syncCurrentUrl);
+      window.removeEventListener("popstate", syncCurrentUrl);
+    };
   }, [pathname]);
 
   const rememberLocale = (locale: DocsLocale) => {
@@ -30,6 +43,17 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
     } catch {
       // A blocked storage API must not block the anchor's full navigation.
     }
+  };
+
+  const activateLocale = (
+    event: MouseEvent<HTMLAnchorElement>,
+    locale: DocsLocale,
+  ) => {
+    event.currentTarget.setAttribute(
+      "href",
+      switchLocaleUrl(getCurrentBrowserUrl(), locale),
+    );
+    rememberLocale(locale);
   };
 
   return (
@@ -49,7 +73,7 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
             aria-label={ariaLabel}
             data-i18n-allow-cjk={locale === "zh-CN" ? "" : undefined}
             aria-current={current ? "page" : undefined}
-            onClick={() => rememberLocale(locale)}
+            onClick={(event) => activateLocale(event, locale)}
             className={`inline-flex h-full min-w-11 items-center justify-center rounded-[min(var(--radius),0.375rem)] px-1.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg ${
               current
                 ? "bg-surface-hover text-foreground"

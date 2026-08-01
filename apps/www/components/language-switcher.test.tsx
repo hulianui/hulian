@@ -34,6 +34,47 @@ describe("LanguageSwitcher", () => {
     expect(html).toContain('href="/en/components/button"');
   });
 
+  it("refreshes both destinations when the hash changes after render", () => {
+    render(<LanguageSwitcher />);
+
+    window.history.replaceState({}, "", "/components/button?q=x#examples");
+    fireEvent(window, new Event("hashchange"));
+
+    expect(screen.getByRole("link", { name: "切换到中文" }).getAttribute("href")).toBe(
+      "/components/button?q=x#examples",
+    );
+    expect(
+      screen.getByRole("link", { name: "Switch to English" }).getAttribute("href"),
+    ).toBe("/en/components/button?q=x#examples");
+  });
+
+  it("refreshes both destinations after query-only history navigation", () => {
+    render(<LanguageSwitcher />);
+
+    window.history.pushState({}, "", "/components/button?q=filters#api");
+    fireEvent(window, new PopStateEvent("popstate"));
+
+    expect(screen.getByRole("link", { name: "切换到中文" }).getAttribute("href")).toBe(
+      "/components/button?q=filters#api",
+    );
+    expect(
+      screen.getByRole("link", { name: "Switch to English" }).getAttribute("href"),
+    ).toBe("/en/components/button?q=filters#api");
+  });
+
+  it("derives a modified-click destination from the live URL even without a history event", () => {
+    render(<LanguageSwitcher />);
+    const english = screen.getByRole("link", { name: "Switch to English" });
+    english.addEventListener("click", (event) => event.preventDefault());
+
+    window.history.replaceState({}, "", "/components/button?q=latest#usage");
+    fireEvent.click(english, { metaKey: true });
+
+    expect(english.getAttribute("href")).toBe(
+      "/en/components/button?q=latest#usage",
+    );
+  });
+
   it("marks the build locale as the current language", () => {
     render(<LanguageSwitcher />);
 
