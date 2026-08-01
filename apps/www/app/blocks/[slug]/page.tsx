@@ -2,8 +2,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { blocks, blockPreviews, getBlock } from "../_registry";
-import { BlockView } from "../_block-view";
+import { blocks, getBlock } from "../_registry";
+import { PreviewViewer } from "../../../components/preview-viewer";
+import { InstallPanel } from "../../../components/install-panel";
+import { buildInstallModel, depNameOf } from "../../../lib/install-model";
+import { readDepTitles, readRegistryItem, readRegistryMeta } from "../../../lib/registry-source";
 
 export function generateStaticParams() {
   return blocks.map((b) => ({ slug: b.slug }));
@@ -40,10 +43,18 @@ export default async function BlockDetailPage({
 }) {
   const { slug } = await params;
   const b = getBlock(slug);
-  const preview = blockPreviews[slug];
-  if (!b || !preview) notFound();
+  if (!b) notFound();
 
   const source = readBlockSource(b.file);
+
+  // 安装信息读站点自己产出的 /r/block-<slug>.json —— 与 shadcn CLI 拉到的是同一份字节。
+  const item = readRegistryItem(`block-${slug}`);
+  const registry = readRegistryMeta();
+  const model = buildInstallModel(
+    item,
+    registry,
+    readDepTitles((item.registryDependencies ?? []).map(depNameOf)),
+  );
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -51,7 +62,13 @@ export default async function BlockDetailPage({
         <h1 className="text-2xl font-semibold">{b.name}</h1>
         <p className="mt-1 text-sm text-muted">{b.description}</p>
       </header>
-      <BlockView code={source}>{preview()}</BlockView>
+      <PreviewViewer
+        src={`/preview/blocks/${slug}`}
+        code={source}
+        title={b.name}
+        files={model.targets.map((path) => ({ path, note: "本区块" }))}
+      />
+      <InstallPanel model={model} kind="block" />
     </div>
   );
 }

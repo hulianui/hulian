@@ -2,8 +2,16 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { pages, pagePreviews, getPage } from "../_registry";
-import { PageView } from "../_page-view";
+import { pages, getPage } from "../_registry";
+import { PreviewViewer } from "../../../components/preview-viewer";
+import { InstallPanel } from "../../../components/install-panel";
+import { buildInstallModel, depNameOf } from "../../../lib/install-model";
+import {
+  readDepFiles,
+  readDepTitles,
+  readRegistryItem,
+  readRegistryMeta,
+} from "../../../lib/registry-source";
 
 export function generateStaticParams() {
   return pages.map((p) => ({ slug: p.slug }));
@@ -40,18 +48,39 @@ export default async function PageDetailPage({
 }) {
   const { slug } = await params;
   const p = getPage(slug);
-  const preview = pagePreviews[slug];
-  if (!p || !preview) notFound();
+  if (!p) notFound();
 
   const source = readPageSource(p.file);
 
+  // 安装信息读站点自己产出的 /r/page-<slug>.json —— 与 shadcn CLI 拉到的是同一份字节。
+  const item = readRegistryItem(`page-${slug}`);
+  const registry = readRegistryMeta();
+  const model = buildInstallModel(
+    item,
+    registry,
+    readDepTitles((item.registryDependencies ?? []).map(depNameOf)),
+  );
+
   return (
-    <div className="mx-auto max-w-6xl px-6 py-10">
-      <header className="mb-6">
+    <div className="mx-auto max-w-6xl space-y-6 px-4 py-10 sm:px-6">
+      <header>
         <h1 className="text-2xl font-semibold">{p.name}</h1>
         <p className="mt-1 text-sm text-muted">{p.description}</p>
       </header>
-      <PageView code={source}>{preview()}</PageView>
+      <PreviewViewer
+        src={`/preview/pages/${slug}`}
+        code={source}
+        title={p.name}
+        height={780}
+        // 文件树：本页在前，递归区块在后 —— 装完工程里会多出来的就是这些。
+        files={[
+          ...model.targets.map((path) => ({ path, note: "本页" })),
+          ...readDepFiles(model.registryDeps.map((d) => d.name)).flatMap((dep) =>
+            dep.targets.map((path) => ({ path, note: `依赖 · ${dep.title}` })),
+          ),
+        ]}
+      />
+      <InstallPanel model={model} kind="page" />
     </div>
   );
 }

@@ -1,0 +1,155 @@
+"use client";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+import { Command, Kbd, Tag, type CommandGroupData } from "@hulianui/ui";
+import {
+  TYPE_LABEL,
+  groupByType,
+  relaxQuery,
+  searchAll,
+  searchDocs,
+  type SearchHit,
+} from "../lib/search-index";
+
+// 数量从索引现算，不写死 —— 写死的「366 个组件」下次加件就成了假话。
+const COMPONENT_COUNT = searchDocs.filter((d) => d.type === "component").length;
+
+// 全站搜索 —— dogfood 自家 Command。
+//
+// 关键在于**由本站决定排序与分组**，而不是让 Command 的默认子串过滤决定：
+// 业务任务查询（「用户 管理 列表」）要先给整页/区块，再给低层组件；命中词多的要靠前。
+// 所以走 onQueryChange 把搜索词同步出来 + filter={() => true} 交出过滤权，
+// groups 完全由 lib/search-index 的相关度排序生成。
+//
+// 面板只放前 PANEL_LIMIT 条，其余交给 /search 全量页（URL 可分享、可刷新、可后退）。
+const PANEL_LIMIT = 24;
+
+function hitItems(hits: SearchHit[], go: (href: string) => void) {
+  return hits.map((h) => ({
+    value: h.id,
+    label: h.title,
+    description: h.description,
+    // Command 的默认过滤已被关掉，keywords 只作可访问性/兜底文本用。
+    keywords: [h.en, h.categoryLabel, ...h.keywords].filter(Boolean).join(" "),
+    shortcut: h.en ? <span className="font-mono text-[11px]">{h.en}</span> : undefined,
+    onSelect: () => go(h.href),
+  }));
+}
+
+export function DocsSearch() {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const groups = useMemo<CommandGroupData[]>(() => {
+    const go = (href: string) => router.push(href);
+    const trimmed = query.trim();
+    const hits = searchAll(query, { limit: PANEL_LIMIT });
+
+    if (hits.length > 0) {
+      const result: CommandGroupData[] = groupByType(hits).map((g) => ({
+        heading: `${TYPE_LABEL[g.type]}（${g.hits.length}）`,
+        items: hitItems(g.hits, go),
+      }));
+      if (trimmed) {
+        result.push({
+          items: [
+            {
+              value: "__all__",
+              label: `查看「${trimmed}」的全部结果`,
+              onSelect: () => go(`/search?q=${encodeURIComponent(trimmed)}`),
+            },
+          ],
+        });
+      }
+      return result;
+    }
+
+    if (!trimmed) return [];
+
+    // 一个都没命中：给出口，而不是一句「无匹配」把人堵死。
+    const relaxed = relaxQuery(trimmed);
+    const fallback: CommandGroupData[] = [];
+    if (relaxed) {
+      fallback.push({
+        heading: `近似结果（按「${relaxed}」）`,
+        items: hitItems(searchAll(relaxed, { limit: 8 }), go),
+      });
+    }
+    fallback.push({
+      heading: "换个找法",
+      items: [
+        {
+          value: "__browse-pages__",
+          label: "浏览全部页面",
+          description: "由区块拼成的完整整页，最省事的起点",
+          onSelect: () => go("/pages"),
+        },
+        {
+          value: "__browse-blocks__",
+          label: "浏览全部区块",
+          description: "自包含的页面区块，复制即用",
+          onSelect: () => go("/blocks"),
+        },
+        {
+          value: "__browse-components__",
+          label: "浏览全部组件",
+          description: `按分类查看 ${COMPONENT_COUNT} 个组件`,
+          onSelect: () => go("/components"),
+        },
+        {
+          value: "__registry__",
+          label: "打开 registry",
+          description: "shadcn CLI 可直接消费的机器可读清单",
+          onSelect: () => {
+            window.open("/registry.json", "_blank", "noreferrer");
+          },
+        },
+      ],
+    });
+    return fallback;
+  }, [query, router]);
+
+  return (
+    <>
+      {/* 顶栏入口：全断点常驻。窄屏收成图标钮（不折进汉堡菜单——搜索和主题切换一样是站点级动作）。 */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="搜索文档"
+        aria-keyshortcuts="Meta+K Control+K"
+        className="flex h-9 items-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-2.5 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:w-56 sm:justify-between sm:px-3"
+      >
+        <span className="flex items-center gap-2">
+          <Search className="size-4 shrink-0" aria-hidden />
+          <span className="hidden sm:inline">搜索文档…</span>
+        </span>
+        <Kbd className="hidden sm:inline-flex">⌘K</Kbd>
+      </button>
+
+      <Command
+        open={open}
+        onOpenChange={setOpen}
+        shortcut
+        groups={groups}
+        filter={() => true}
+        onQueryChange={setQuery}
+        aria-label="全站搜索"
+        placeholder="搜页面 / 区块 / 组件 / 模版 / 指南，或直接描述任务…"
+        emptyMessage={
+          <span className="flex flex-col items-center gap-2">
+            <span>没有匹配的内容</span>
+            <span className="flex flex-wrap justify-center gap-1.5">
+              {(["页面", "区块", "组件"] as const).map((t) => (
+                <Tag key={t} variant="soft" tone="neutral" size="sm">
+                  {t}
+                </Tag>
+              ))}
+            </span>
+          </span>
+        }
+      />
+    </>
+  );
+}

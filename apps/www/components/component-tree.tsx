@@ -64,8 +64,8 @@ export function ComponentTree() {
           size="sm"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="搜索组件…"
-          aria-label="搜索组件"
+          placeholder="在导航中筛组件…"
+          aria-label="在导航中筛组件"
           prefix={<Search className="size-3.5" aria-hidden />}
         />
         <button
@@ -83,7 +83,19 @@ export function ComponentTree() {
         </button>
       </div>
 
-      {tree.length === 0 && <p className="px-2 py-6 text-sm text-muted">无匹配组件</p>}
+      {/* 这个框只筛**导航树**，筛不到正文的组件总览卡片 —— 旧文案「无匹配组件」会让人
+          以为全站没有，而真正想找的整页/区块/模版就在别的货架上。空态直接给全站搜索出口。 */}
+      {tree.length === 0 && (
+        <div className="px-2 py-6 text-sm text-muted">
+          <p>导航里没有匹配的组件。</p>
+          <Link
+            href={`/search?q=${encodeURIComponent(query.trim())}`}
+            className="mt-2 inline-flex items-center rounded-full border border-border px-2.5 py-1 text-xs outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            去全站搜索（含页面 / 区块 / 模版）
+          </Link>
+        </div>
+      )}
 
       {tree.map(({ cat, groups, count }) => {
         const open = filtering || openCats.has(cat.key);

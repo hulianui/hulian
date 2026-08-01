@@ -26,6 +26,7 @@
     "registry:smoke:pages": "node scripts/registry-pages-smoke.mjs",
     "a11y": "node scripts/a11y.mjs",
     "viewport": "node scripts/viewport.mjs",
+    "gallery": "node scripts/gallery-budget.mjs",
     "conventions": "node scripts/gen-conventions.mjs",
     "conventions:check": "node scripts/gen-conventions.mjs --check",
     "guard": "node packages/guard/src/cli.mjs",

@@ -107,6 +107,11 @@ jobs:
       - name: Responsive viewport gate
         run: pnpm viewport
 
+      # 画廊预算：已挂载预览数 / 顶层 DOM 数 / 控制台 warning。
+      # 拦「把整座画廊当活组件同时挂上」这类回归 —— 它不会让任何测试变红，只会让页面变慢。
+      - name: Gallery mount budget gate
+        run: pnpm gallery
+
       # 把静态导出产物传给下游 deploy-zh job（避免二次构建）
       - name: Upload static export
         uses: actions/upload-artifact@v6
