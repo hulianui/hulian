@@ -45,6 +45,47 @@ function Demo() {
   );
 }
 
+// 三个逃生口合演：rules 追加格式校验 + 受控值外显 + beforeSubmit 拦一道「模拟验证码」
+function EscapeHatchDemo() {
+  const [values, setValues] = useState({ username: "", password: "", remember: false });
+  const [passed, setPassed] = useState(false);
+  const [log, setLog] = useState<string | null>(null);
+  return (
+    <div className="flex w-full max-w-md flex-col gap-3">
+      <LoginForm
+        rules={{
+          username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: "账号需字母开头，3~16 位字母/数字/下划线" }],
+          password: [{ min: 6, max: 32, message: "密码 6~32 位" }],
+        }}
+        values={values}
+        onValuesChange={(_changed, all) => setValues(all)}
+        extra={
+          <label className="flex items-center gap-2 rounded-[var(--radius)] border border-dashed border-border p-3 text-sm text-muted">
+            <input type="checkbox" checked={passed} onChange={(e) => setPassed(e.target.checked)} />
+            模拟人机验证（真实场景放 ClickCaptcha）
+          </label>
+        }
+        beforeSubmit={async () => {
+          if (!passed) {
+            setLog("beforeSubmit 返回 false → 提交已中止");
+            return false;
+          }
+          await new Promise((r) => setTimeout(r, 500));
+        }}
+        onFinish={({ username }) => setLog(`onFinish：${username} 登录中`)}
+      />
+      <p className="text-xs text-muted">
+        外部实时值：{values.username || "—"} / {values.password ? "•".repeat(values.password.length) : "—"}
+      </p>
+      {log && (
+        <p className="text-xs text-muted" role="status">
+          {log}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export const loginFormShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -115,6 +156,26 @@ export const loginFormShowcase: ShowcaseSpec = {
           />
         </div>
       ),
+    },
+    {
+      title: "自定义校验 + 受控值 + 提交前拦截",
+      description:
+        "rules 追加格式约束（内置必填仍先跑）；values/onValuesChange 让外部拿到实时值；beforeSubmit 在 onFinish 之前插一步（验证码等），返回 false 即中止。",
+      code: `<LoginForm
+  rules={{
+    username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: "账号格式不正确" }],
+    password: [{ min: 6, message: "密码至少 6 位" }],
+  }}
+  values={values}
+  onValuesChange={(_changed, all) => setValues(all)}
+  extra={<ClickCaptcha backgroundSrc={captcha.background} onComplete={setPoints} />}
+  beforeSubmit={async () => {
+    if (points.length < 3) return false;   // 未过验证码 → 中止提交
+    await verifyCaptcha(points);
+  }}
+  onFinish={({ username }) => api.login(username)}
+/>`,
+      render: () => <EscapeHatchDemo />,
     },
     {
       title: "隐藏记住我",

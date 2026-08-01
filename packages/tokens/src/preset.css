@@ -117,6 +117,27 @@
   }
 }
 
+/* forms/ClickCaptcha 校验失败抖动：横向小幅左右摆，收敛回原位（消费方只需把 status 置 failed）。
+   幅度刻意小（4px）——错误反馈要被看见，但不该像页面在震。reduced-motion 由组件侧 motion-safe 前缀兜。 */
+@keyframes hulian-captcha-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
 /* ===== MagicUI 零依赖合集关键帧（文字动画 / 特效按钮 / 特效核心） ===== */
 
 /* effects/AuroraText·AnimatedGradientText 渐变流动（bg-size 200% 平移背景位置） */

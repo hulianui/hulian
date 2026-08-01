@@ -2826,6 +2826,59 @@
       ]
     },
     {
+      "name": "click-captcha",
+      "type": "registry:ui",
+      "title": "ClickCaptcha",
+      "description": "点选式人机验证 UI · 采集点击序列回传相对坐标(0~1) + 序号标记/撤销/换一张 + 键盘准星可达 + 失败抖动清空(零协议·不碰网络)",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/spinner.json"
+      ],
+      "meta": {
+        "import": "import { ClickCaptcha } from \"@hulianui/ui\"",
+        "exports": [
+          "ClickCaptcha"
+        ],
+        "types": [
+          "ClickCaptchaProps",
+          "ClickCaptchaStatus",
+          "CaptchaPoint"
+        ],
+        "group": "framework",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/click-captcha/click-captcha.md",
+        "docLocal": "packages/ui/src/click-captcha/click-captcha.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/click-captcha/click-captcha.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/click-captcha/click-captcha.tsx"
+        },
+        {
+          "path": "components/hulianui/click-captcha/click-captcha.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/click-captcha/click-captcha.types.ts"
+        },
+        {
+          "path": "components/hulianui/click-captcha/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/click-captcha/index.ts"
+        }
+      ]
+    },
+    {
       "name": "color-field",
       "type": "registry:ui",
       "title": "ColorField",
@@ -3768,7 +3821,7 @@
       "name": "login-form",
       "type": "registry:ui",
       "title": "LoginForm",
-      "description": "登录模板 · 自管 useForm(账号/密码必填+记住我) + 提交 loading + logo/footer 插槽(复用 Field/Input/Checkbox/Button·文案接 i18n)",
+      "description": "登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Fiel…",
       "categories": [
         "forms"
       ],

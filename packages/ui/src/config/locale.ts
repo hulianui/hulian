@@ -75,6 +75,22 @@ export interface Locale {
     usernameRequired: string;
     passwordRequired: string;
   };
+  clickCaptcha: {
+    /** 默认提示文案（消费方可用 hintText 覆盖）。 */
+    hint: string;
+    /** 提示图 alt。 */
+    hintImageAlt: string;
+    /** 点选区 aria-label（含键盘操作说明）。 */
+    areaLabel: string;
+    /** 进度播报前缀，形如「已选点位 1/3」。 */
+    selected: string;
+    undo: string;
+    refresh: string;
+    verifying: string;
+    failed: string;
+    success: string;
+    imageError: string;
+  };
   passwordGenerator: {
     /** 模式切换：字符密码 / 密码短语。 */
     password: string;
@@ -173,6 +189,18 @@ export const zhCN: Locale = {
     usernameRequired: "请输入账号",
     passwordRequired: "请输入密码",
   },
+  clickCaptcha: {
+    hint: "请依次点击图中的提示内容",
+    hintImageAlt: "点击提示",
+    areaLabel: "人机验证点选区：方向键移动准星，回车或空格落点，退格撤销",
+    selected: "已选点位",
+    undo: "撤销上一个点",
+    refresh: "换一张",
+    verifying: "校验中…",
+    failed: "验证失败，请重新点选",
+    success: "验证通过",
+    imageError: "验证码图片加载失败，请点「换一张」重试",
+  },
   passwordGenerator: {
     password: "密码",
     passphrase: "密码短语",
@@ -264,6 +292,18 @@ export const enUS: Locale = {
     submit: "Sign in",
     usernameRequired: "Username is required",
     passwordRequired: "Password is required",
+  },
+  clickCaptcha: {
+    hint: "Click the prompted targets in order",
+    hintImageAlt: "Click prompt",
+    areaLabel: "Click captcha area: arrow keys move the cursor, Enter or Space drops a point, Backspace undoes",
+    selected: "Points selected",
+    undo: "Undo last point",
+    refresh: "Refresh image",
+    verifying: "Verifying…",
+    failed: "Verification failed, please try again",
+    success: "Verified",
+    imageError: "Captcha image failed to load — use Refresh to retry",
   },
   passwordGenerator: {
     password: "Password",

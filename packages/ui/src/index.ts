@@ -95,6 +95,7 @@ export * from "./form";
 export * from "./form-dialog";
 export * from "./pro-form";
 export * from "./login-form";
+export * from "./click-captcha";
 export * from "./steps-form";
 // effects: MagicUI 文字动画批
 export * from "./aurora-text";
