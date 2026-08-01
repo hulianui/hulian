@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, type SVGProps } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   AnimatedThemeToggler,
+  Button,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -23,6 +24,20 @@ const TIERS = [
   { href: "/demos", label: "模版", match: "/demos" },
   { href: "/changelog", label: "更新", match: "/changelog" },
 ];
+
+const REPO = "https://github.com/hulianui/hulian";
+
+// GitHub mark 内联在这里，不进 packages/ui/src/_icons —— 那个图标集只收「组件运行时真正
+// 需要的」结构性图标，品牌 logo 不属于此列，进去会白白撑大每个消费方的产物。
+// 也不能用 lucide-react：v1 起移除了全部品牌图标，本版（1.28）确实没有 Github 导出。
+// 官方 mark 是实心填充，与顶栏其余 stroke 图标风格不同，但品牌标识不宜改画。
+function GithubIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.335-1.725-1.335-1.725-1.087-.731.084-.716.084-.716 1.205.084 1.838 1.215 1.838 1.215 1.07 1.803 2.809 1.282 3.495.98.108-.762.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.235-3.164-.135-.298-.54-1.497.105-3.121 0 0 1.005-.316 3.3 1.209.96-.262 1.98-.392 3-.398 1.02.006 2.04.136 3 .398 2.28-1.525 3.285-1.209 3.285-1.209.645 1.624.24 2.823.12 3.121.765.825 1.23 1.877 1.23 3.164 0 4.53-2.805 5.527-5.475 5.817.42.354.81 1.077.81 2.182 0 1.578-.015 2.846-.015 3.229 0 .309.21.678.825.56C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
+    </svg>
+  );
+}
 
 export function SiteNavbar() {
   const pathname = usePathname();
@@ -53,6 +68,15 @@ export function SiteNavbar() {
             </NavbarItem>
           ))}
         </NavbarContent>
+        {/* 开源入口全断点常驻：它和主题切换一样是「站点级」动作，不该跟着导航折进汉堡菜单。 */}
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="在 GitHub 上查看瑚琏源码"
+          render={<a href={REPO} target="_blank" rel="noreferrer" />}
+        >
+          <GithubIcon className="size-[18px]" />
+        </Button>
         <AnimatedThemeToggler />
       </Navbar>
 
