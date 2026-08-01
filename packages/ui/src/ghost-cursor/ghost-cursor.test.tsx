@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
-import { GhostCursor } from "./ghost-cursor";
+import { ghostCursorRenderSize, GhostCursor, shaderTrailSampleCount } from "./ghost-cursor";
 
 // jsdom 不实现 WebGL：useGlCanvas 内 ogl 动态 import 成功，但 Renderer 构造 getContext
 // 返回 null → setup 静默失败，组件不抛错（与 Orb 测试同策略）。
@@ -60,6 +60,13 @@ afterEach(() => {
 });
 
 describe("GhostCursor 正常渲染路径（WebGL canvas）", () => {
+  it("caps fragment-shader trail samples while preserving the public trail history", () => {
+    expect(shaderTrailSampleCount(1)).toBe(1);
+    expect(shaderTrailSampleCount(32)).toBe(4);
+    expect(shaderTrailSampleCount(64)).toBe(4);
+    expect(ghostCursorRenderSize(560, 256)).toEqual({ width: 224, height: 102 });
+  });
+
   it("渲染根容器 div，不抛错", () => {
     expect(() => render(<GhostCursor />)).not.toThrow();
     const { container } = render(<GhostCursor />);
