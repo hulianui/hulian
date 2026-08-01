@@ -179,8 +179,15 @@ export function computeMetrics(
   const fibers = events.filter((event) => event.type === "fiber-render");
   const fanout = new Map<number, number>();
   const mountFanout = new Map<number, number>();
+  const seenFiberIds = new Set<number>();
   for (const fiber of fibers) {
-    if (isMountStep(fiber.stepId)) {
+    const isNewFiber = fiber.fiberId !== undefined && !seenFiberIds.has(fiber.fiberId);
+    if (fiber.fiberId !== undefined) seenFiberIds.add(fiber.fiberId);
+
+    // A popup/list can mount during an interaction. Those fibers are mount work,
+    // not an update cascade. react-scan/lite IDs are stable and alternate-aware,
+    // so only fibers observed in an earlier commit count toward update fanout.
+    if (isMountStep(fiber.stepId) || isNewFiber) {
       mountFanout.set(fiber.commitId, (mountFanout.get(fiber.commitId) ?? 0) + 1);
     } else if (!isUnmountStep(fiber.stepId)) {
       fanout.set(fiber.commitId, (fanout.get(fiber.commitId) ?? 0) + 1);
