@@ -28,7 +28,7 @@ import { Glimpse } from "@hulianui/ui"
 | image | `string` | — | Cover image URL. |
 | href | `string` | — | Destination. When present, renders an external-link trigger and shows the domain. |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | Preferred popup side. |
-| align | `"start"｜"center"｜"end"` | — | Alignment along the trigger. |
+| align | `"start"｜"center"｜"end"` | `"center"` | Alignment along the trigger. |
 | openDelay | `number` | `300` | Opening delay in milliseconds. |
 | closeDelay | `number` | `150` | Closing delay in milliseconds. |
 | className | `string` | — | Trigger class name. |

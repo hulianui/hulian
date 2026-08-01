@@ -28,7 +28,7 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 |------|------|------|------|
 | side | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Preferred side of the trigger on which to place the popup. |
 | align | `"start" \| "center" \| "end"` | `"start"` | Alignment along the trigger. |
-| sideOffset | `number` | — | Distance from the trigger in pixels. |
+| sideOffset | `number` | `6` | Distance from the trigger in pixels. |
 | className | `string` | — | Additional class name. |
 
 ### MenuItem

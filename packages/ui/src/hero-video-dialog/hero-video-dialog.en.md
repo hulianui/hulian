@@ -26,7 +26,7 @@ import { HeroVideoDialog } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | thumbnailSrc* | `string` | — | Thumbnail URL. |
-| thumbnailAlt | `string` | — | Thumbnail alternative text. |
+| thumbnailAlt | `string` | `""` | Thumbnail alternative text; empty by default, so provide meaningful text unless the thumbnail is decorative. |
 | videoSrc* | `string` | — | iframe source, such as a YouTube or Bilibili embed URL. |
 | className | `string` | — | Additional class name, including thumbnail sizing. |
 

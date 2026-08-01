@@ -36,7 +36,7 @@ import { Timeline, TimelineItem } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | color | `"default" \| "primary" \| "success" \| "danger" \| "warning"` | `"default"` | Default dot tone; ignored with a custom dot. |
-| pending | `boolean` | — | Shows a spinning pending ring and makes the incoming connector dashed. |
+| pending | `boolean` | `false` | Shows a spinning pending ring and makes the incoming connector dashed. |
 | className | `string` | — | Custom class name. |
 
 ## Slots

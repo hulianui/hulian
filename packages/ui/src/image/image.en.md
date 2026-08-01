@@ -28,7 +28,7 @@ Inherits `Omit<ImgHTMLAttributes<HTMLImageElement>, "width" | "height">`.
 | Name | Type | Default | Description |
 |------|------|------|------|
 | src * | string | — | Image URL. |
-| alt | string | — | Alternative text. |
+| alt | string | `""` | Alternative text; empty by default, so provide meaningful text unless the image is decorative. |
 | width | number ｜ string | — | Numeric width or CSS length. |
 | height | number ｜ string | — | Numeric height or CSS length. |
 | radius | `"none"｜"sm"｜"md"｜"lg"｜"full"` | `"md"` | Radius scale. |

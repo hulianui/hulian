@@ -29,14 +29,14 @@ Each subcomponent inherits the attributes of its underlying native element.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| sticky | `boolean` | — | Whether to keep the bar pinned to the top while scrolling. |
-| bordered | `boolean` | — | Whether to show a separator border along the bottom. |
+| sticky | `boolean` | `false` | Whether to keep the bar pinned to the top while scrolling. |
+| bordered | `boolean` | `true` | Whether to show a separator border along the bottom. |
 
 **NavbarContent** (`<ul>`)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| justify | `"start" \| "center" \| "end"` | — | Horizontal alignment of the content. |
+| justify | `"start" \| "center" \| "end"` | `"start"` | Horizontal alignment of the content. |
 
 **NavbarItem** (`<li>`)
 
@@ -48,7 +48,7 @@ Each subcomponent inherits the attributes of its underlying native element.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| isOpen | `boolean` | — | Controlled open state. |
+| isOpen | `boolean` | `false` | Controlled open state. |
 | aria-label | `string` | Based on `isOpen` | Accessible label. The built-in Chinese labels mean “Close menu” when open and “Open menu” when closed. |
 | className | `string` | — | Additional class name. |
 
@@ -90,7 +90,7 @@ function Header() {
 
 ## Usage guidelines
 
-The mobile toggle uses `"\u5173\u95ed\u83dc\u5355"` ("Close menu") and `"\u6253\u5f00\u83dc\u5355"` ("Open menu") when `ariaLabel` is absent. Supply `ariaLabel` for English runtime copy.
+The mobile toggle uses `"\u5173\u95ed\u83dc\u5355"` ("Close menu") and `"\u6253\u5f00\u83dc\u5355"` ("Open menu") when `aria-label` is absent. Supply `aria-label` for English runtime copy.
 
 - `NavbarMenuToggle` is controlled: maintain `isOpen` and `onToggle` in application state. The component does not render or manage a mobile menu panel, so conditionally render that panel from `open` yourself.
 - No other known caveats.

@@ -27,7 +27,7 @@ import { DecayCard } from "@hulianui/ui"
 |------|------|------|------|
 | width | `number` | `300` | Card width in pixels. |
 | height | `number` | `400` | Card height in pixels. |
-| image | `string` | Grayscale placeholder | Main image displaced by pointer speed. Replace it with a product asset. |
+| image | `string` | `"https://picsum.photos/300/400?grayscale"` | Built-in grayscale placeholder displaced by pointer speed; replace it with a product asset. |
 | alt | `string` | `""` | Image alternative; empty treats the image as decorative. |
 | baseFrequency | `number` | `0.015` | SVG turbulence frequency. Higher values create finer noise; 0.005 to 0.05 is recommended. |
 | numOctaves | `number` | `5` | Turbulence octave count; more creates detail at higher cost. |

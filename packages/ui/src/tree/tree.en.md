@@ -42,9 +42,9 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | Flat virtual rendering, defaulting to height 320, itemHeight 36, and overscan 8. |
 | showLine | `boolean` | `false` | Shows connector lines; ignored by virtual rendering. |
 | searchable | `boolean` | `false` | Shows built-in tree search. |
-| searchPlaceholder | `string` | — | Search input placeholder. |
+| searchPlaceholder | `string` | `"\u641c\u7d22"` ("Search") | Search input placeholder; the built-in runtime value is Chinese. |
 | className | `string` | — | Root class name. |
-| aria-label | `string` | — | Accessible tree label. |
+| aria-label | `string` | `"\u6811"` ("Tree") | Accessible tree label; the built-in runtime value is Chinese. |
 
 ## Events
 

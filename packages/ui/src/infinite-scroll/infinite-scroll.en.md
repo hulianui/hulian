@@ -40,7 +40,7 @@ import { InfiniteScroll } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | children* | `ReactNode` | Already rendered list content. |
-| loadingText | `ReactNode` | Loading message; the built-in runtime default is `"\u52a0\u8f7d\u4e2d..."` ("Loading..."). |
+| loadingText | `ReactNode` | Loading message; the built-in runtime default is `"\u52a0\u8f7d\u4e2d\u2026"` ("Loading..."). |
 | finishedText | `ReactNode` | Completion message; the built-in runtime default is `"\u6ca1\u6709\u66f4\u591a\u4e86"` ("No more items"). |
 
 ## Examples

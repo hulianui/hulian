@@ -10,7 +10,7 @@ status: enriched
 
 # Callout
 
-> Admonition for articles and documentation · feedback/prompt
+> Admonition for articles and documentation · feedback/message
 
 ## When to use
 

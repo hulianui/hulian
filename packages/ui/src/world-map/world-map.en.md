@@ -31,9 +31,9 @@ import { WorldMap } from "@hulianui/ui"
 | flyingMarker | `"plane" \| "comet" \| "arrow"` | — | Repeating marker along every arc; planes and arrows rotate with direction. |
 | points | `WorldMapNode[]` | — | Independent nodes whose values map to radius within the current point range. |
 | showLabels | `boolean` | `false` | Shows node labels. |
-| lineColor | `string` | Chart token | Arc color, overridable per dot. |
-| dotColor | `string` | Border token | Base-map dot color. |
-| duration | `number` | — | Arc entrance duration in seconds. |
+| lineColor | `string` | `"var(--color-chart-1)"` | Chart-token arc color, overridable per dot. |
+| dotColor | `string` | `"var(--color-border)"` | Border-token base-map dot color. |
+| duration | `number` | `1` | Arc entrance duration in seconds. |
 | className | `string` | — | Container class name. |
 
 ## Events

@@ -28,7 +28,7 @@ import { Book3D } from "@hulianui/ui"
 | cover | `string` | — | Cover image URL, taking precedence over `coverColor`. |
 | logo | `string` | — | Product logo or app icon centered on the cover. |
 | coverColor | `{ from: string; to: string }` | Brand gradient | Cover gradient. |
-| spineColor | `string` | Light paper color | Spine and page-block CSS color. |
+| spineColor | `string` | `"#efe9dd"` | Light paper color used for the spine and page block. |
 | thickness | `string` | `"2.25rem"` | Spine thickness as a CSS length. |
 | ribbon | `string` | — | Corner ribbon such as `"NEW"` or `"N°1"`. |
 | ribbonTone | `"brand" \| "danger" \| "success"` | `"danger"` | Ribbon tone. |

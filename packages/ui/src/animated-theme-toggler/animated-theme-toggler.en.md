@@ -25,7 +25,7 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `duration` | `number` | — | Circular reveal duration in milliseconds. |
+| `duration` | `number` | `500` | Circular reveal duration in milliseconds. |
 | `className` | `string` | — | Button class name. |
 | `aria-label` | `string` | — | Accessible label. |
 

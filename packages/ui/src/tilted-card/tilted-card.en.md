@@ -26,7 +26,7 @@ import { TiltedCard } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | imageSrc | `string` | — | Image URL filling the card; it can be combined with or replaced by `children`. |
-| altText | `string` | — | Accessible image alternative. |
+| altText | `string` | `"Tilted card"` | Accessible image alternative; replace the generic default with content-specific text. |
 | containerHeight | `CSSProperties["height"]` | `"300px"` | Perspective container height. |
 | containerWidth | `CSSProperties["width"]` | `"100%"` | Perspective container width. |
 | cardHeight | `CSSProperties["height"]` | `"300px"` | Tilting card height. |

@@ -25,7 +25,7 @@ import { AnimatedList } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| stagger | number | — | Delay between adjacent entries in seconds. |
+| stagger | number | `0.15` | Delay between adjacent entries in seconds. |
 | className | string | — | Container class name. |
 
 ## Slots
