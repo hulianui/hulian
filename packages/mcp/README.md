@@ -49,12 +49,24 @@ Claude Code / Cursor 的 MCP 配置：
 
 | tool | 什么时候调 |
 |---|---|
-| `list_components` | 写任何 UI **之前**。`kind` 可取 `component`(368) / `block`(57) / `page`(20) / `lib`；`query` 模糊搜 |
+| `list_components` | 写任何 UI **之前**。`kind` 可取 `component`(367) / `block`(57) / `page`(20) / `lib`(3)；`query` 模糊搜 |
 | `get_component_doc` | 写下第一行使用某组件的代码**之前**。返回 Props / Events / Slots / 示例 / 禁忌坑 |
-| `install_block` | 要把区块或整页积木**放进项目**时。区块自包含，落盘即用 |
-| `get_conventions` | 开始新页面/新功能**之前**。返回强制约束（Provider 包裹 / token 值域 / 禁止项 / 易混淆兄弟件） |
+| `install_block` | 要把区块或整页积木**放进项目**时。返回 shadcn 命令、页面递归区块、Provider、必须替换项、插槽和安装后 guard 命令 |
+| `get_conventions` | 开始新页面/新功能**之前**。分别返回可由 `hulian-check` 执行的门禁，以及仍需语境判断的建议 |
 
 名字打错会返回最接近的候选（带编辑距离），AI 可据此自我纠正，而不是收到一句干巴巴的 not found。
+
+### 页面安装不是“单文件自包含”
+
+57 个区块通常直接落成一个业务积木；20 个页面中有 18 个会通过 `registryDependencies` 递归安装所需区块。`install_block` 会明确列出依赖，shadcn CLI 负责递归落盘，AI 不应手工复制仓库内的 `../../blocks/_blocks/*` 路径。
+
+安装完成后执行 MCP 返回的门禁命令，例如：
+
+```bash
+npx -y @hulianui/guard src/components/pages src/components/blocks
+```
+
+错误级违规退出 1，warning 只报告；路径或调用错误退出 2。
 
 ## 数据源
 
@@ -66,5 +78,5 @@ Claude Code / Cursor 的 MCP 配置：
 ## 开发
 
 ```bash
-pnpm --filter @hulianui/mcp test   # 端到端跑真实 server，走 stdio JSON-RPC，不 mock
+pnpm --filter @hulianui/mcp test   # 11 个用例，端到端跑真实 server，走 stdio JSON-RPC，不 mock
 ```

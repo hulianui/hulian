@@ -11,8 +11,8 @@
 
 ```bash
 pnpm test                       # 两个都跑
-pnpm exec vitest --project unit     # 只跑 jsdom（快）
-pnpm exec vitest --project browser  # 只跑真实浏览器
+pnpm --filter @hulianui/ui exec vitest run --project unit     # 只跑 jsdom（快）
+pnpm --filter @hulianui/ui exec vitest run --project browser  # 只跑真实浏览器
 ```
 
 新增测试**默认写 `unit`**。只有命中下面判据时才写 `.browser.test.tsx`。
@@ -93,15 +93,22 @@ render(
 );
 ```
 
-**2. 指针序列要分步。** 单跳一步会被当成瞬移，且过不了 `activationConstraint: { distance: 6 }`：
+**2. 指针序列要分步，并让每个事件单独提交。** 单跳一步会被当成瞬移，且过不了 `activationConstraint: { distance: 6 }`；把整段拖拽放进同一个 `act` 又会让 React 合并更新，使下一次 move 看不到已经提交的 pointerdown 状态：
 
 ```tsx
-firePointer(from, "pointerdown", start.x, start.y);
-for (let i = 1; i <= 8; i++) {
-  firePointer(document, "pointermove", lerp(...));
-  await nextFrame();          // 每步让一帧
+async function actPointer(target, type, x, y) {
+  await act(async () => {
+    firePointer(target, type, x, y);
+    await nextFrame();
+  });
 }
-firePointer(document, "pointerup", end.x, end.y);
+
+await actPointer(from, "pointerdown", start.x, start.y);
+for (let i = 1; i <= 8; i++) {
+  const point = lerp(start, end, i / 8);
+  await actPointer(document, "pointermove", point.x, point.y);
+}
+await actPointer(document, "pointerup", end.x, end.y);
 ```
 
 **3. `pointermove` / `pointerup` 派发到 `document`。** 传感器激活后监听挂在 `ownerDocument` 上，不是原元素。
@@ -117,11 +124,11 @@ const nextFrame = () =>
 
 **6. 样式已自动就绪**：`vitest.browser.css` 引了 tokens + preset + `@source ./src`，根节点也已设 `data-theme="light"`。
 
-**7. 不需要 `act()`**：setup 里已关掉 `IS_REACT_ACT_ENVIRONMENT`——真实浏览器里要的就是真实异步时序。
+**7. React 状态更新必须显式放进异步 `act()`**：browser setup 不再关闭 `IS_REACT_ACT_ENVIRONMENT`。门禁要求 browser suite 的 stderr 不含 `not wrapped in act`；不要用过滤日志或全局关警告代替正确时序。
 
 ---
 
-## 两个已经踩过的坑
+## 三个已经踩过的坑
 
 ### 坑一：browser project 会解析出第二份 React
 
@@ -177,8 +184,10 @@ await userEvent.dragAndDrop(source, target);   // 真实鼠标
 | `resizable` | 面板真实宽度、拖手柄改比例、min/max 夹取、`data-dragging` | `avail = Σ offsetWidth` 恒 0 → `deltaPct` 恒 0 → **拖拽是彻底 no-op** |
 | `swipe-action` | 面板真实宽度、跟手偏移、过阈值吸附、回弹、纵向放行 | `widths()` 读 `offsetWidth` 恒 0 → 拖不动也永不吸附，只能全局 mock 成 80 |
 | `sortable` | 拖拽重排、相邻互换、交互元素放行、handle 模式 | `closestCenter` 同样依赖 rect，`over` 恒空 → **onChange 永不触发** |
+| `route-tabs` | 横向 HTML5 拖放的左/右半区落点 | jsdom 只能手工覆盖 rect，无法证明真实页签宽度 |
+| `tree` | HTML5 拖放的 before / inside / after、非法子树保护 | jsdom rect 高度恒 0，旧测试必须伪造高度与 dragover 坐标 |
 
-共 23 个用例。三处**源码级证据**说明这些不是"覆盖不足"而是"根本测不了"：
+共 30 个用例。三处**源码级证据**说明这些不是"覆盖不足"而是"根本测不了"：
 
 ```js
 // resizable.tsx:163,178
@@ -199,27 +208,15 @@ if (!over || active.id === over.id) return;   // over 恒空 → 直接短路
 
 实例：Resizable 首版有一条"min/max 约束"断言写成 `expect(last[0]).toBeLessThanOrEqual(80)`，变异后**依然通过**——因为 `deltaPct` 恒 0 时也满足"没越界"。收紧成 `toBeCloseTo(80, 1)`（必须真的顶到边界）后，变异红条从 2 条增至 3 条。
 
-**待迁清单**（按信号强度排序，实测于 2026-08-01）：
+本轮重新枚举 `setPointerCapture|dragover|dragstart|pointer*` 后，坐标依赖最强的 RouteTabs 与 Tree 已迁移。剩余命中主要是 Lanyard 的 window 监听器清理、VoiceRecord 的事件去重，以及特效件“事件不抛错”契约；这些断言不依赖真实布局，继续留在 unit 更准确。
 
-| 信号 | 命中测试文件数 | 优先级 |
-|---|---|---|
-| `setPointerCapture` | 2 | 🔴 最高——jsdom 下这个 API 是 no-op，等于没测 |
-| `pointerdown` / `pointermove` | 6 | 🔴 高 |
-| `dragover` / `dragstart` | 2 | 🔴 高（jsdom 下坐标是 NaN） |
-| `getBoundingClientRect` | 15 | 🟡 中——看是否真的断言了几何 |
-| `IntersectionObserver` | 53 | 🟡 中——多数只需"静息态 DOM 完整"，可留；测进场动画的要迁 |
-| `requestAnimationFrame` | 50 | 🟡 中——同上 |
-| `getContext`（canvas/WebGL） | 34 | 🟢 低——多数是特效件，真值验证成本高，可分批 |
-
-涉及指针/拖拽的具体组件：`balatro` `carousel` `kanban` `lanyard` `magnet-lines` `route-tabs` `sortable` `tree` `voice-record`
-
-**不必全迁。** 迁移的判据是"这条断言在 jsdom 下是否可信"，不是"这个文件是否提到了某个 API"。多数 `IntersectionObserver` / `rAF` 测试只是在验证"组件挂载后 DOM 完整"，那在 jsdom 下是可信的，留着即可。
+**不必全迁。** 迁移的判据是“断言是否依赖真实浏览器能力”，不是“文件是否提到了某个 API”。多数 `IntersectionObserver` / rAF 测试只验证静息态 DOM 完整，在 jsdom 下仍可信。
 
 ---
 
 ## CI
 
-`ci.yml` 的 `verify` job 在 `pnpm test` 前加了一步：
+`ci.yml` 的 `verify` job 在 `pnpm test` 前安装 Chromium：
 
 ```yaml
 - name: Install Playwright chromium
@@ -227,6 +224,8 @@ if (!over || active.id === over.id) return;   // over 恒空 → 直接短路
 ```
 
 只装 chromium（不是三个内核）以省 CI 时间。
+
+生产构建完成后还会运行 `pnpm a11y`。该命令扫描 10 条固定静态路由，critical / serious axe 违规或同源资源加载失败都会阻断；moderate / minor 只报告。
 
 ---
 

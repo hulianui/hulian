@@ -7,7 +7,7 @@ export const AI_GUIDE_MD = `# 瑚琏 Hulian（@hulianui/ui）· AI 接入指南
 
 > 把这份文档整段复制给你的 AI 编程助手（Claude Code / Cursor / Copilot 等），它就能正确地用瑚琏搭界面。
 
-瑚琏是一套「颜值 + 好用」的 React 设计系统，共 ${total} 个组件，全部从单一入口 \`@hulianui/ui\` 导出，开箱即用、统一吃主题 token。
+瑚琏是一套「颜值 + 好用」的 React 设计系统，共 ${total} 个组件。除下文单独说明的日期族子路径外，组件统一从 \`@hulianui/ui\` 导出，并统一使用主题 token。
 
 ## 安装
 
@@ -100,8 +100,8 @@ Claude Code / Cursor 的 MCP 配置：
 | --- | --- |
 | \`list_components\` | 写任何 UI **之前**。\`kind\` 可取 component / block / page / lib |
 | \`get_component_doc\` | 写下第一行使用某组件的代码**之前**（Props / Events / Slots / 示例 / 禁忌坑） |
-| \`install_block\` | 要把**区块或整页**积木放进项目时（自包含，落盘即用） |
-| \`get_conventions\` | 开始新页面 / 新功能**之前**，取强制约束 |
+| \`install_block\` | 要把**区块或整页**积木放进项目时；同时取得递归区块、Provider、必须替换项、插槽和 guard 命令 |
+| \`get_conventions\` | 开始新页面 / 新功能**之前**；分别取得可执行门禁与仍需语境判断的建议 |
 
 ## 让 AI 查具体组件的用法（没装 MCP 时）
 
@@ -115,11 +115,17 @@ Claude Code / Cursor 的 MCP 配置：
 
 ## 直接安装积木（区块 / 整页）
 
-区块与整页是**自包含**的（只从 \`@hulianui/ui\` 根 barrel 导入），可直接注入项目后改业务字段：
+区块通常可直接落盘；页面可能由多个区块组成。registry 会通过 \`registryDependencies\` 递归安装页面所需区块，并把仓库内路径改写为消费项目可解析的同级路径：
 
 \`\`\`bash
 npx shadcn@latest add https://hulianui.haloritual.com/r/block-pricing-table.json
 npx shadcn@latest add https://hulianui.haloritual.com/r/page-dashboard.json
+\`\`\`
+
+安装输出中的示例数据、文案、接口回调与 Provider 要按 item 的 \`replace\` / \`providers\` 清单处理；可组合区域见 \`slots\`。完成后运行：
+
+\`\`\`bash
+npx -y @hulianui/guard src
 \`\`\`
 
 组件一般**不需要**这样装 —— 直接 \`import\` 即可，只有要魔改组件本身时才注入源码。完整可装清单见 \`registry.json\`。
@@ -134,6 +140,6 @@ npx shadcn@latest add https://hulianui.haloritual.com/r/page-dashboard.json
 4) 动手前先查文档，不要凭印象猜 props —— 装了 MCP 就调 get_component_doc，
    否则取 https://hulianui.haloritual.com/d/<组件slug>.md。
 需要整块界面（登录页、定价表、控制台骨架…）时，先看 registry 里的 block / page，
-能复用就别从零写。
+能复用就别从零写；安装后执行 MCP 返回的 hulian-check 命令并修完错误级违规。
 \`\`\`
 `;
