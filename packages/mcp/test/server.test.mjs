@@ -117,6 +117,9 @@ function makeProject(kind) {
     "node_modules/@hulianui/ui/package.json",
     JSON.stringify({ name: "@hulianui/ui", version: "0.15.1" }),
   );
+  // @source 指向的 src/ 必须真的存在：inspect_project 现在会解析路径而不只是文本匹配，
+  // fixture 也得忠实反映「装好了」这件事（hulianui/hulian#66）。
+  write(root, "node_modules/@hulianui/ui/src/button/button.tsx", "export const Button = () => null\n");
   if (kind === "next") {
     write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
     write(
@@ -535,6 +538,8 @@ function makePnpmProject({ declared = "^0.16.0", installed = "0.16.0" } = {}) {
   const root = mkdtempSync(join(tmpdir(), "hulian-pnpm-"));
   const store = join("node_modules", ".pnpm", `@hulianui+ui@${installed}`, "node_modules", "@hulianui", "ui");
   write(root, join(store, "package.json"), JSON.stringify({ name: "@hulianui/ui", version: installed }));
+  // 同上：@source 指向的 src/ 要真的存在（软链过去也能解析到）。
+  write(root, join(store, "src", "button", "button.tsx"), "export const Button = () => null\n");
   mkdirSync(join(root, "node_modules", "@hulianui"), { recursive: true });
   symlinkSync(join(root, store), join(root, "node_modules", "@hulianui", "ui"));
   write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
@@ -1065,6 +1070,43 @@ test("workspace 声明优先于目录名猜测", async () => {
       info.workspaceCandidates.map((entry) => entry.path).sort(),
       ["apps/dashboard", "packages/utils"],
     );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("@source 路径指不到实处 → invalid + warning，而不是误报 detected（#66）", async () => {
+  const root = makeProject("next");
+  try {
+    // pnpm workspace 的经典错法：包实际在 <app>/node_modules，CSS 却按仓库根数了层级。
+    write(
+      root,
+      "app/globals.css",
+      `@import "@hulianui/tokens/tokens.css";\n@source "../../../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";\n`,
+    );
+    const [res] = await rpc([call(91, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.setup.tailwindSource, "invalid");
+    // 解析后的候选路径要回报出去，便于消费方对比 workspace 与单包安装的差异
+    assert.ok(Array.isArray(info.setup.tailwindSourceTargets));
+    assert.equal(info.setup.tailwindSourceTargets.length, 1);
+    assert.equal(info.setup.tailwindSourceTargets[0].exists, false);
+    assert.ok(
+      info.warnings.some((w) => w.includes("解析后的目标不存在")),
+      `应给出 warning，实际：${JSON.stringify(info.warnings)}`,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("@source 指对了仍是 detected（不因新校验误伤）", async () => {
+  const root = makeProject("next");
+  try {
+    const [res] = await rpc([call(92, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.setup.tailwindSource, "detected");
+    assert.equal(info.setup.tailwindSourceTargets[0].exists, true);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

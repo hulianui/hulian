@@ -287,6 +287,35 @@ function probe(root, candidates, pattern) {
   return { status: scanned.length ? "not-found" : "unknown", file: null, scanned };
 }
 
+
+/**
+ * 解析 CSS 里的 `@source "<路径>"`，逐条把目标解析成绝对路径并检查是否存在。
+ *
+ * 只按文本匹配「有没有写 @source」是不够的（hulianui/hulian#66）：pnpm workspace 里
+ * 真实包入口可能在 `apps/web/node_modules`，而 CSS 写的是 `../../../node_modules/...`，
+ * 解析后根本不存在 —— 于是 setup 表面全绿、构建也成功，但库内 Tailwind 工具类一个都没生成，
+ * 页面退化成无样式文本，typecheck / 单测 / guard 全都发现不了。
+ *
+ * glob 只取静态前缀（第一个含 * 的段之前），足够判断「这条路径指对了没有」。
+ */
+export function resolveSourceTargets(cssAbsPath, cssText) {
+  const dir = dirname(cssAbsPath);
+  const out = [];
+  const re = /@source\s+(?:not\s+)?["']([^"']+)["']/g;
+  let m;
+  while ((m = re.exec(cssText))) {
+    const raw = m[1];
+    if (!raw.includes("@hulianui/ui")) continue;
+    const staticPrefix = raw.split("/").reduce((acc, seg) => {
+      if (acc.stop || seg.includes("*")) return { parts: acc.parts, stop: true };
+      return { parts: [...acc.parts, seg], stop: false };
+    }, { parts: [], stop: false }).parts.join("/");
+    const abs = isAbsolute(staticPrefix) ? staticPrefix : resolve(dir, staticPrefix);
+    out.push({ raw, resolved: abs, exists: existsSync(abs) });
+  }
+  return out;
+}
+
 export function inspectProject({ explicit, roots, cwd } = {}) {
   const { projectRoot, projectRootSource } = resolveProjectRoot({ explicit, roots, cwd });
   const warnings = [];
@@ -347,7 +376,24 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
   // 入口 import 推出来的样式表排在固定候选之前 —— 那是这个项目真正在用的那份
   const cssCandidates = [...new Set([...cssFromEntries(projectRoot), ...CSS_CANDIDATES])];
   const tokensCss = probe(projectRoot, cssCandidates, /@hulianui\/tokens\/tokens\.css/);
-  const tailwindSource = probe(projectRoot, cssCandidates, /@source[^\n]*@hulianui\/ui/);
+  const tailwindSourceProbe = probe(projectRoot, cssCandidates, /@source[^\n]*@hulianui\/ui/);
+  // 写了 @source ≠ 指对了：把路径解析出来看目标存不存在（hulianui/hulian#66）。
+  const sourceTargets = tailwindSourceProbe.file
+    ? resolveSourceTargets(
+        join(projectRoot, tailwindSourceProbe.file),
+        readTextIfExists(join(projectRoot, tailwindSourceProbe.file)) ?? "",
+      )
+    : [];
+  const tailwindSource = {
+    ...tailwindSourceProbe,
+    status:
+      tailwindSourceProbe.status === "detected" && sourceTargets.length > 0
+        ? sourceTargets.some((t) => t.exists)
+          ? "detected"
+          : "invalid"
+        : tailwindSourceProbe.status,
+    targets: sourceTargets,
+  };
 
   const setup = {
     themeProvider: themeProvider.status,
@@ -355,6 +401,8 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
     accessProvider: accessProvider.status,
     tokensCss: tokensCss.status,
     tailwindSource: tailwindSource.status,
+    // 解析后的候选路径：便于消费方定位 pnpm workspace 与单包安装的差异
+    tailwindSourceTargets: tailwindSource.targets,
     componentsJson: configs.components ?? null,
     transpilePackages: nextConfigText
       ? /transpilePackages[\s\S]{0,120}@hulianui\/ui/.test(nextConfigText)
@@ -423,6 +471,15 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
       "没找到任何全局样式表：常见路径都不存在，扫过的入口文件里也没有相对路径的 CSS import。" +
         "tokens.css / @source 两项因此是 unknown（**探测不到**，不是「你没接」）—— " +
         "样式表若在别处，带上它的路径自行确认，别据此断定缺接入",
+    );
+  }
+  if (usesHulian && tailwindSource.status === "invalid") {
+    warnings.push(
+      `${tailwindSourceProbe.file} 里写了 @source 指向 @hulianui/ui，但解析后的目标不存在：` +
+        `${tailwindSource.targets.map((t) => `${t.raw} → ${t.resolved}`).join("；")}。` +
+        "这条最阴：构建照样成功、DOM className 也正常，但库内 Tailwind 工具类一个都没生成，" +
+        "页面退化成无样式文本。pnpm workspace 里包常被提到 <app>/node_modules，" +
+        "路径层级要按样式表**自身所在目录**数",
     );
   }
   if (usesHulian && tailwindSource.status === "not-found") {
