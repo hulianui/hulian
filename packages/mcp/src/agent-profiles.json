@@ -1,6 +1,7 @@
 {
   "version": 1,
   "note": "场景 profile 真源。三维正交：surface 决定组件语言，modifiers 决定约束与预算（可组合），workflow 决定任务步骤。componentRoles 与 signals 取自 docs/agent-adoption-baseline-2026-08-01.md 对 12 个真实消费项目的扫描，不是凭印象列的。",
+  "detectNote": "signals 是给人读的自然语言，无法执行；detect 是它的机器可判定伴生字段，供 audit_hulian_adoption 自动判场景（#43）。三类判据权重不同：components（项目真的 import 了这些件）最强，deps 次之，paths 最弱 —— 路径名是约定俗成而非事实。两者必须同步维护：改了 signals 就该想想 detect 要不要跟。",
   "surfaces": [
     {
       "id": "admin-console",
@@ -11,6 +12,10 @@
         "已出现 AdminLayout、PageHeader、ProTable 任一",
         "存在登录态、角色或权限判断"
       ],
+      "detect": {
+        "paths": ["/admin", "/console", "/manage", "/dashboard", "/(admin)", "/settings"],
+        "components": ["admin-layout", "page-header", "pro-table", "access", "form-dialog", "search-form", "pro-form", "route-tabs"]
+      },
       "preferPages": ["page-admin-list", "page-dashboard", "page-settings", "page-login", "page-result", "page-user-center"],
       "preferBlocks": ["block-page-header", "block-data-table", "block-detail-drawer", "block-settings-panel", "block-sidebar-nav", "block-empty-state", "block-kpi-rail", "block-activity-timeline", "block-login"],
       "componentRoles": {
@@ -27,6 +32,7 @@
         "用 Card + Stack 手搭已有的 ProTable / FormDialog / PageHeader",
         "关键数字裸写而不用 Statistic / NumberTicker"
       ],
+      "avoidCategories": ["decoration", "mockups"],
       "verification": ["窄屏（1280 与 1024）布局不塌", "键盘可完成主流程", "空态 / 加载态 / 错误态各验一次", "批量操作的选中态与反馈"]
     },
     {
@@ -38,6 +44,10 @@
         "已出现 JsonViewer、Snippet、SecretField 任一",
         "表单件占比显著高于展示件"
       ],
+      "detect": {
+        "paths": ["/generator", "/playground", "/config", "/keys", "/mock"],
+        "components": ["json-viewer", "snippet", "secret-field", "number-field", "color-field", "password-generator"]
+      },
       "preferPages": ["page-settings", "page-result"],
       "preferBlocks": ["block-settings-panel", "block-empty-state", "block-page-header"],
       "componentRoles": {
@@ -50,8 +60,10 @@
       "avoid": [
         "把每个参数都塞进 Dialog 而不是就地编辑",
         "自制复制按钮而不用 Snippet 的内建复制",
-        "明文渲染密钥而不用 SecretField"
+        "明文渲染密钥而不用 SecretField",
+        "因为登录页用了一个文字特效，就把整套装饰件铺进工具界面"
       ],
+      "avoidCategories": ["decoration", "mockups"],
       "verification": ["空参数与极端值的结果区表现", "复制与导出真的产出可用内容", "长结果的滚动归属正确"]
     },
     {
@@ -63,6 +75,11 @@
         "已出现 Conversation、PromptInput、StreamingText 任一",
         "有「重新生成 / 停止生成」类动作"
       ],
+      "detect": {
+        "paths": ["/chat", "/ai", "/agent", "/assistant", "/conversation"],
+        "deps": ["ai", "@ai-sdk/react", "openai", "@anthropic-ai/sdk"],
+        "components": ["conversation", "chat-message", "prompt-input", "streaming-text", "tool-call", "thinking-block", "agent-plan"]
+      },
       "preferPages": ["page-ai-chat"],
       "preferBlocks": ["block-chat-panel", "block-prompt-input", "block-agent-card", "block-flow-canvas"],
       "componentRoles": {
@@ -89,6 +106,10 @@
         "已出现 Prose、Markdown、Hero 类区块",
         "路由含 /blog、/docs、/about、/pricing"
       ],
+      "detect": {
+        "paths": ["/blog", "/docs", "/about", "/pricing", "/posts", "/articles", "/changelog"],
+        "components": ["prose", "citation", "back-top", "anchor", "book-3d", "aurora-text", "sparkles-text"]
+      },
       "preferPages": ["page-landing", "page-blog", "page-blog-post", "page-about", "page-changelog", "page-faq", "page-feature", "page-pricing"],
       "preferBlocks": ["block-navbar", "block-hero", "block-features", "block-testimonials", "block-pricing-table", "block-faq", "block-cta", "block-footer", "block-article-body", "block-article-toc", "block-blog-list"],
       "componentRoles": {
@@ -111,6 +132,10 @@
       "evidence": ["quay"],
       "maturity": "样本弱 —— quay 尚未真正接入（13 slug / 89 处手搓），本 profile 的 componentRoles 是候选而非实证",
       "signals": ["Tauri / Electron 外壳", "窗口内多面板布局", "存在全局快捷键或命令面板"],
+      "detect": {
+        "deps": ["@tauri-apps/api", "electron", "@electron/remote"],
+        "components": ["command", "log-viewer", "file-tree", "resizable", "menubar", "toolbar"]
+      },
       "preferPages": [],
       "preferBlocks": [],
       "componentRoles": {
@@ -121,6 +146,7 @@
         "状态": ["status-dot", "tag", "relative-time"]
       },
       "avoid": ["照搬 Web 的行高与间距导致信息密度过低", "用浏览器风格的整页跳转替代面板切换"],
+      "avoidCategories": ["decoration", "mockups"],
       "verification": ["窗口缩放到最小尺寸不塌", "键盘可达主要动作", "长列表滚动性能"]
     }
   ],
@@ -129,6 +155,10 @@
       "id": "mobile",
       "intent": "移动端或窄屏形态",
       "signals": ["路由含 /m、/h5、/mobile", "已出现 TabBar 或 SafeArea", "视口断点以 390px 为主"],
+      "detect": {
+        "paths": ["/m/", "/h5", "/mobile", "/wap"],
+        "components": ["tab-bar", "safe-area", "action-sheet", "pull-to-refresh", "fab", "picker", "swipe-action"]
+      },
       "require": ["safe-area", "tab-bar"],
       "consider": ["action-sheet", "pull-to-refresh", "fab", "picker", "swipe-action"],
       "constraints": ["触控目标不小于 44px", "避免 hover-only 交互", "重型背景降级或关闭"],
@@ -138,6 +168,10 @@
       "id": "dashboard",
       "intent": "指标看板形态",
       "signals": ["页面以数字与趋势为主", "已出现 Chart 或 Stat"],
+      "detect": {
+        "paths": ["/dashboard", "/analytics", "/overview", "/metrics", "/usage"],
+        "components": ["chart", "stat", "statistic", "sparkline", "score-ring", "heatmap", "funnel", "meter", "number-ticker"]
+      },
       "require": ["stat", "statistic"],
       "consider": ["number-ticker", "chart", "sparkline", "score-ring", "status-dot", "heatmap", "funnel", "meter"],
       "constraints": ["关键数字不裸写", "图表容器需给定宽度，避免 flex 收缩为 0"],
@@ -147,6 +181,9 @@
       "id": "data-dense",
       "intent": "大数据量列表",
       "signals": ["单页行数过千", "存在虚拟滚动或分页需求"],
+      "detect": {
+        "components": ["virtual-list", "infinite-scroll"]
+      },
       "consider": ["virtual-list", "infinite-scroll", "pagination"],
       "constraints": ["Table 用 density 收紧行高而不是改写样式", "冻结列用组件能力而非手写 sticky"],
       "verification": ["滚动性能", "冻结列在横向滚动下的表现"]
@@ -154,6 +191,10 @@
     {
       "id": "marketing",
       "intent": "品牌与转化诉求",
+      "detect": {
+        "paths": ["/landing", "/pricing", "/features", "/(marketing)"],
+        "components": ["aurora-text", "sparkles-text", "shimmer-button", "border-beam", "shine-border", "bento-grid"]
+      },
       "consider": ["aurora-text", "sparkles-text", "shimmer-button", "border-beam", "shine-border", "bento-grid"],
       "constraints": ["一屏一个主焦点", "重型 WebGL 全页最多一个且移动端降级", "特效不得进入正文阅读区"],
       "verification": ["reduced-motion 下仍完整可用", "移动端首屏性能"]
@@ -161,6 +202,7 @@
     {
       "id": "high-performance",
       "intent": "性能敏感场景",
+      "detectNote": "刻意不给 detect —— 「这个项目性能敏感吗」是产品决策，代码里没有可靠信号。只能由调用方显式指定，自动判定会凭空给出一堆降级建议。",
       "constraints": ["不引入 WebGL 类组件", "动效限定 transform / opacity", "避免大面积 filter: blur 上的动画"],
       "verification": ["低端设备帧率", "首屏体积"]
     }

@@ -8,10 +8,12 @@
 //   <Heading size="md">       没有 md 这一档
 //   fill={var(--primary)}     必须 var(--color-primary)，否则不解析
 //
-// 八个 tool 覆盖一条完整链路：
+// 十个 tool 覆盖一条完整链路：
 //   认项目 inspect_project → 选积木 recommend_ui / list_components →
-//   查用法 get_component_doc / get_conventions / get_setup_guide →
+//   查用法 get_component_doc / get_conventions / get_setup_guide / get_agent_profile →
 //   落地 install_block → 验收 validate_hulian_usage
+// 外加一条给**存量项目**的支线：audit_hulian_adoption —— 接手已有代码时先体检，
+// 它答的是「该用的有没有用上、从哪改起」，与前面那条「从零开始搭」的主线是两回事。
 //
 // 用法（Claude Code / Cursor 的 mcpServers 配置）：
 //   { "hulianui": { "command": "npx", "args": ["-y", "@hulianui/mcp"] } }
@@ -41,6 +43,7 @@ import {
   sourceInfo,
   sourceLine,
 } from "./data.mjs";
+import { auditAdoption, renderAudit } from "./audit.mjs";
 import {
   composeProfile,
   listModifiers,
@@ -192,6 +195,69 @@ async function buildTools() {
           warnings: { type: "array", items: { type: "string" } },
         },
         required: ["projectRoot", "projectRootSource", "framework", "packages", "setup", "warnings"],
+      },
+      annotations: READ_ONLY,
+    },
+    {
+      name: "audit_hulian_adoption",
+      title: "存量项目采用体检",
+      description:
+        "给**已经有代码**的项目做组件采用体检：自动判场景（surface + modifiers），" +
+        "列出实际用了什么、高层业务组件采用度、有场景却没采用的机会点、疑似绕过组件库的风险项、" +
+        "以及按收益/风险排序的渐进迁移计划。" +
+        "与另外两个能力分工明确：inspect_project 答「装没装对」，validate_hulian_usage 答「改动有没有违规」，" +
+        "本 tool 答「该用没用上、从哪改起」。" +
+        "输出**全部是带置信度的建议，不是 error**，不要当门禁用 —— 可静态证明的错误仍归 validate_hulian_usage。" +
+        "会递归读源码文件（跳过 node_modules / 构建产物，不读 .env），只读不写。",
+      inputSchema: {
+        type: "object",
+        properties: {
+          projectRoot: {
+            type: "string",
+            description: "项目根目录绝对路径。不传则优先用 MCP Roots，最后退到 server 进程的 cwd",
+          },
+          surface: {
+            type: "string",
+            enum: listSurfaces().map((s) => s.id),
+            description: "人工覆盖场景判定。不传则自动判，并给出依据与置信度",
+          },
+          modifiers: {
+            type: "array",
+            items: { type: "string", enum: listModifiers().map((m) => m.id) },
+            description:
+              "人工覆盖修饰维度。high-performance 刻意无法自动判定（是产品决策，代码里没有可靠信号），要它就显式传",
+          },
+          workflow: {
+            type: "string",
+            enum: listWorkflows().map((w) => w.id),
+            description:
+              "任务性质，默认 build（正式实现口径）。**原型 / demo 务必传 prototype** —— " +
+              "实证：同产品的 demo 与正式系统在 12 个企业高层件上是 5/12 与 10/12，那是取向不同不是采用不足，" +
+              "按正式口径量原型会得出一堆假缺口",
+          },
+          baseline: {
+            type: "object",
+            description:
+              "上次体检产出的 baseline.snapshot，用于出差异。存量项目别拿全量合规当门禁 —— " +
+              "传入基线后只看「新增」违规（ratchet），存量债务不阻断",
+          },
+        },
+      },
+      outputSchema: {
+        type: "object",
+        properties: {
+          projectRoot: { type: "string" },
+          scanned: { type: "object" },
+          context: { type: "object" },
+          usage: { type: "object" },
+          scene: { type: "object" },
+          opportunities: { type: "array" },
+          risks: { type: "array" },
+          upstreamGaps: { type: "array" },
+          plan: { type: "array" },
+          baseline: { type: "object" },
+        },
+        required: ["projectRoot", "scanned", "context", "usage", "scene", "opportunities", "risks", "plan"],
       },
       annotations: READ_ONLY,
     },
@@ -1036,6 +1102,35 @@ async function inspectProjectTool(args = {}, server) {
   };
 }
 
+async function auditAdoptionTool(args = {}, server) {
+  const roots = await clientRoots(server);
+  let registry;
+  try {
+    registry = await loadRegistry();
+  } catch (error) {
+    return fail(`audit_hulian_adoption 读不到 registry：${error.message}`);
+  }
+  let report;
+  try {
+    report = auditAdoption({
+      projectRoot: args.projectRoot,
+      roots,
+      registry,
+      surface: args.surface,
+      modifiers: args.modifiers,
+      workflow: args.workflow,
+      baseline: args.baseline,
+    });
+  } catch (error) {
+    return fail(`audit_hulian_adoption 失败：${error.message}`);
+  }
+  return {
+    content: [{ type: "text", text: renderAudit(report) }],
+    structuredContent: report,
+    // 刻意不置 isError：采用不足是**建议**，不是工具故障，更不是 guard error。
+  };
+}
+
 async function validateTool(args = {}) {
   const result = validateUsage(args);
   if (result.invalid) return fail(result.invalid);
@@ -1070,6 +1165,7 @@ const HANDLERS = {
   get_agent_profile: getAgentProfile,
   install_block: installBlock,
   validate_hulian_usage: validateTool,
+  audit_hulian_adoption: auditAdoptionTool,
 };
 
 // ----------------------------------------------------------------- prompts --
@@ -1077,6 +1173,9 @@ const HANDLERS = {
 const WORKFLOW = `瑚琏 @hulianui/ui 工作流（按顺序，不要跳步）：
 
 1. inspect_project —— 先认项目：框架、实装版本、ThemeProvider / token CSS 是否就位。
+   接手**已经有代码**的项目时，紧接着跑一次 audit_hulian_adoption：它自动判场景、
+   列出该用没用上的地方和从哪改起。原型 / demo 记得传 workflow=prototype。
+   它给的是**建议不是 error**，别拿它当门禁 —— 门禁是第 9 步。
 2. get_agent_profile —— 再认场景：这个页面该用什么组件语言、受什么约束、按什么步骤走。
    不传参先看目录对号入座；中后台别套营销特效，原型阶段选 workflow=prototype。
 3. recommend_ui（整段任务描述）—— 先看有没有现成 page / block，再决定自己拼组件。
@@ -1162,6 +1261,10 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
 if (process.argv[2] === "init-agent") {
   const { runInitAgent } = await import("./cli.mjs");
   process.exit(await runInitAgent(process.argv.slice(3)));
+}
+if (process.argv[2] === "audit") {
+  const { runAudit } = await import("./audit-cli.mjs");
+  process.exit(await runAudit(process.argv.slice(3)));
 }
 
 const transport = new StdioServerTransport();

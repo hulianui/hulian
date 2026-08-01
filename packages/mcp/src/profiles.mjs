@@ -118,11 +118,27 @@ export function validateProfiles(registry) {
       if (!ui.has(slug)) errors.push(`${where}: 组件 "${slug}" 不在 registry 中`);
   };
 
+  // detect / avoidCategories 是 audit 自动判场景的判据（#43）。写错的 slug 或分类不会报错，
+  // 只会让判定**永远落空** —— 静默失效比报错更难发现，所以必须在这里挡住。
+  const allCategories = new Set(
+    registry.items.filter((i) => i.type === "registry:ui").flatMap((i) => i.categories ?? []),
+  );
+  const checkDetect = (detect, where) => {
+    checkComponents(detect?.components, `${where}/detect.components`);
+    for (const key of Object.keys(detect ?? {}))
+      if (!["paths", "deps", "components"].includes(key))
+        warnings.push(`${where}: detect 里有未知键 "${key}"，不会被使用`);
+  };
+
   const seenSurface = new Set();
   for (const s of profiles.surfaces) {
     if (seenSurface.has(s.id)) errors.push(`surface id 重复: ${s.id}`);
     seenSurface.add(s.id);
     if (!s.intent) errors.push(`surface ${s.id}: 缺 intent`);
+    checkDetect(s.detect, `surface ${s.id}`);
+    for (const cat of s.avoidCategories ?? [])
+      if (!allCategories.has(cat))
+        errors.push(`surface ${s.id}: avoidCategories 里的 "${cat}" 不是 registry 中的分类`);
     if (!s.componentRoles || !Object.keys(s.componentRoles).length)
       errors.push(`surface ${s.id}: 缺 componentRoles`);
     for (const [role, list] of Object.entries(s.componentRoles ?? {}))
@@ -139,6 +155,7 @@ export function validateProfiles(registry) {
   for (const m of profiles.modifiers) {
     if (seenMod.has(m.id)) errors.push(`modifier id 重复: ${m.id}`);
     seenMod.add(m.id);
+    checkDetect(m.detect, `modifier ${m.id}`);
     checkComponents(m.require, `modifier ${m.id}/require`);
     checkComponents(m.consider, `modifier ${m.id}/consider`);
     if (!m.constraints?.length) warnings.push(`modifier ${m.id}: 没有 constraints`);

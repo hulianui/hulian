@@ -183,12 +183,13 @@ export default function Layout({ children }) {
 
 // ------------------------------------------------------------------ tools --
 
-test("tools/list 暴露完整链路的九个 tool，且都带 title 与只读标注", async () => {
+test("tools/list 暴露完整链路的十个 tool，且都带 title 与只读标注", async () => {
   const [list] = await rpc([{ jsonrpc: "2.0", id: 1, method: "tools/list" }]);
   const tools = list.result?.tools ?? [];
   assert.deepEqual(
     tools.map((t) => t.name).sort(),
     [
+      "audit_hulian_adoption",
       "get_agent_profile",
       "get_component_doc",
       "get_conventions",
@@ -622,6 +623,48 @@ test("一个样式表都找不到时说清是「探测不到」而非「你没�
     assert.equal(info.setup.tokensCss, "unknown");
     assert.deepEqual(info.setup.scannedCssFiles, []);
     assert.match(info.warnings.join("\n"), /探测不到/, "unknown 的含义必须写进 warnings，否则模型读反");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("audit_hulian_adoption 走真实协议返回结构化体检，且不置 isError", async () => {
+  const root = makePnpmProject();
+  try {
+    write(
+      root,
+      "app/admin/users/page.tsx",
+      `import { AdminLayout, PageHeader, Table, Pagination } from "@hulianui/ui"
+export default () => <AdminLayout><PageHeader /><Table /><Pagination /><table /></AdminLayout>\n`,
+    );
+    const [res] = await rpc([call(70, "audit_hulian_adoption", { projectRoot: root })]);
+    const data = dataOf(res);
+    assert.notEqual(res.result?.isError, true, "采用不足是结论不是工具故障，不能置 isError");
+    assert.equal(data.scene.surface.id, "admin-console");
+    assert.ok(data.usage.highLevel.score, "要给出主指标（高层业务组件采用度）");
+    assert.ok(
+      data.opportunities.some((o) => o.slug === "pro-table"),
+      "同组用了 Table/Pagination 却缺 ProTable，该报机会点",
+    );
+    assert.ok(data.risks.some((r) => r.id === "bare-table" && r.confidence === "high"));
+    assert.match(bodyOf(res), /带置信度的建议/, "渲染文本必须自陈是建议而非门禁");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("audit_hulian_adoption 拒绝未知 surface / workflow，不静默忽略", async () => {
+  const root = makePnpmProject();
+  try {
+    const [res] = await rpc([
+      call(71, "audit_hulian_adoption", { projectRoot: root, surface: "not-a-surface" }),
+    ]);
+    // MCP SDK 会按 inputSchema 的 enum 拦下；无论谁拦，都不能当成"没传"继续跑
+    const body = bodyOf(res);
+    assert.ok(
+      res.result?.isError === true || /not-a-surface/.test(body),
+      `未知 surface 应被拒绝或明确报出，实际：${body.slice(0, 200)}`,
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

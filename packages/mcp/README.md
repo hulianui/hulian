@@ -14,7 +14,7 @@ AI 写业务时消费这个库只有两条路：整吞 1.1M 的 `llms-full.txt`�
 | `fill="var(--primary)"` | 必须 `var(--color-primary)`，否则不解析 |
 | 手搓 `h-dvh` 包整页 | `AdminLayout` 自带 `fitViewport` |
 
-这些约束本来就写在组件文档里，只是 AI 读不到。这个 server 把「你的项目长什么样 / 有什么 / 怎么用 / 不许怎么用 / 写完对不对」变成八个按需调用的 tool。
+这些约束本来就写在组件文档里，只是 AI 读不到。这个 server 把「你的项目长什么样 / 有什么 / 怎么用 / 不许怎么用 / 写完对不对 / 存量代码该从哪改起」变成十个按需调用的 tool。
 
 ## 安装
 
@@ -60,8 +60,26 @@ Claude Code / Cursor 的 MCP 配置：
 | `get_setup_guide` | `inspect_project` 报了接入缺口时。`target` 取 `install` / `tailwind` / `imports` / `next` / `vite` / `vitest` |
 | `install_block` | 要把区块或整页积木**放进项目**时。返回安装命令（跟随当前 registry base）、递归区块、Provider、必须替换项、插槽 |
 | `validate_hulian_usage` | **改完瑚琏相关代码必须调**。以库方式调用 `@hulianui/guard`，返回带 `ruleId` / `file` / `line` / `column` 的结构化诊断 |
+| `audit_hulian_adoption` | 接手**已经有代码**的项目时。自动判场景，给出实际使用清单、高层业务组件采用度、有场景却没采用的机会点、疑似绕过组件库的风险项与渐进迁移计划 |
 
-所有 tool 都声明了 `readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`；`inspect_project`、`recommend_ui`、`list_components`、`validate_hulian_usage`、`get_agent_profile` 另有 `outputSchema` 并返回 `structuredContent`。
+所有 tool 都声明了 `readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`；`inspect_project`、`recommend_ui`、`list_components`、`validate_hulian_usage`、`get_agent_profile`、`audit_hulian_adoption` 另有 `outputSchema` 并返回 `structuredContent`。
+
+### 三个「检查类」tool 各答一个问题，不得互相冒充
+
+| tool | 回答 | 判定性质 |
+|---|---|---|
+| `inspect_project` | 装没装对 | 事实 |
+| `validate_hulian_usage` | 改动有没有违反硬规则 | **可静态证明的错误** |
+| `audit_hulian_adoption` | 该用的有没有用上、从哪改起 | **带置信度的建议** |
+
+第三个的输出**全是建议，不产生 error，别当门禁用**。存量项目第一次体检就出几百条硬门禁，唯一的结果是整个门禁被关掉；所以它给 `baseline.snapshot`，CI 用 ratchet 只拦「新增」，存量债务不阻断。
+
+两条让它不至于变成噪音的规则：
+
+- **机会点只报「同项目内有邻近信号」的缺口。** 一个职责组里已经用了东西却缺关键件 → 报；整组一件没有 → 这个项目没这个场景，不报。所以中后台项目不会因为 91 个 `decoration` 组件没用而被判采用不足 —— 那是库存结构问题，不是采用缺口。
+- **风险项不一律标红。** 裸 `<button>` 多数是图标热区、`asChild` 或桌面端自定义控件，属正当用法；每条带置信度与判断依据（实测 quay 的 69 处：high 0 / medium 2 / low 67）。
+
+**原型项目务必传 `workflow: "prototype"`** —— 否则会按正式系统的尺子量它，得出一堆假缺口。项目自述像原型时报告里会提示。
 
 ### 场景 profile 是三维正交的，不是一张平铺清单
 
@@ -97,6 +115,21 @@ npx @hulianui/mcp init-agent --all      # 四家客户端全覆盖
 契约本身刻意保持短，只放所有 UI 任务都适用的六条。场景差异由 `get_agent_profile` 按需取，不往指令文件里堆 —— 否则营销页的特效配额会被无差别套到中后台和长文页上。契约里列出的维度取值直接从 profile 真源生成，不会两处漂移。
 
 `--doctor` 会额外检查项目里有没有引用 hulianui 的 MCP 配置：没有的话契约里的 tool 调用会落空，这时只装契约是不够的。
+
+## 存量项目体检：`audit`
+
+```bash
+npx @hulianui/mcp audit                      # 看现状
+npx @hulianui/mcp audit --workflow prototype # 原型口径：不推高层企业件
+npx @hulianui/mcp audit --write-baseline     # 接受现有债务，立基线
+npx @hulianui/mcp audit --baseline --check   # 进 CI：只拦新增违规
+```
+
+与 `audit_hulian_adoption` 同一套判定，多两件命令行才该做的事：**落基线**与 **ratchet 门禁**。
+
+写盘刻意归 CLI 而不是 tool —— `audit_hulian_adoption` 声明了 `readOnlyHint`，调用方是照着这个 annotation 决定要不要审批的；一个声明只读的 tool 顺手写文件，比不提供这个能力更糟。所以 tool 只把 `baseline.snapshot` 交出来，落盘是人在命令行里的显式动作。
+
+基线落在 `.hulianui/adoption-baseline.json`，人类可读、diff 友好、**不含项目源码**（有测试守着这条）。存量项目的正确用法是：第一次 `--write-baseline` 把现有债务接受下来，之后 CI 用 `--check` 只拦新增。拿全量合规当门禁，唯一的结果是第一次几百条之后整个门禁被关掉。
 
 名字打错会返回最接近的候选（带编辑距离），AI 可据此自我纠正，而不是收到一句干巴巴的 not found。搜索零命中时会跨粒度降级并标注「可能相关」—— **不会**把「没搜到」说成「库里没有」。
 
