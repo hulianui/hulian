@@ -5063,18 +5063,39 @@
       "id": "component/qrcode/pitfall/1",
       "scope": "qrcode",
       "title": "QRCode",
-      "rule": "暗块默认 `currentColor`，靠外层文字色控制；要染色用 `className=\"text-primary\"` 或显式 `color`，背景默认透明需自备底色保证扫码对比度。",
+      "rule": "**导出 PNG 别用透明底**：PNG 没有「继承页面底色」这回事，透明底打印或贴进白底文档会糊成黑块。`qrCodeToPngDataUrl` 默认给白底就是为此。",
       "source": "packages/ui/src/qrcode/qrcode.md"
     },
     {
       "id": "component/qrcode/pitfall/2",
       "scope": "qrcode",
       "title": "QRCode",
-      "rule": "加 `logo` 必须同时 `level=\"H\"`，否则 logo 遮挡导致纠错冗余不足、扫不出。",
+      "rule": "**不抠空的 logo 必须半透明**：`excavate={false}` 配不透明 logo 会盖掉模块直接扫不出来；水印式用法记得配 `opacity`。",
       "source": "packages/ui/src/qrcode/qrcode.md"
     },
     {
       "id": "component/qrcode/pitfall/3",
+      "scope": "qrcode",
+      "title": "QRCode",
+      "rule": "为什么不引 qrcode.react：它把前景/背景写死成 `#000000`/`#FFFFFF`，暗色主题下要消费方自己传两个色；我们默认 `currentColor` + 透明底，跟着主题走。它的 Canvas 变体的价值（导出）我们用 `qrCodeToPngDataUrl` 覆盖，不必为此多一个组件与一份依赖。",
+      "source": "packages/ui/src/qrcode/qrcode.md"
+    },
+    {
+      "id": "component/qrcode/pitfall/4",
+      "scope": "qrcode",
+      "title": "QRCode",
+      "rule": "暗块默认 `currentColor`，靠外层文字色控制；要染色用 `className=\"text-primary\"` 或显式 `color`，背景默认透明需自备底色保证扫码对比度。",
+      "source": "packages/ui/src/qrcode/qrcode.md"
+    },
+    {
+      "id": "component/qrcode/pitfall/5",
+      "scope": "qrcode",
+      "title": "QRCode",
+      "rule": "加 `logo` 必须同时 `level=\"H\"`，否则 logo 遮挡导致纠错冗余不足、扫不出。",
+      "source": "packages/ui/src/qrcode/qrcode.md"
+    },
+    {
+      "id": "component/qrcode/pitfall/6",
       "scope": "qrcode",
       "title": "QRCode",
       "rule": "中文/长文本会抬高二维码版本（更密），扫描距离与 size 要相应放大。",
@@ -7528,7 +7549,7 @@
   ],
   "stats": {
     "componentDocs": 373,
-    "componentAdvisories": 1050,
-    "totalAdvisories": 1057
+    "componentAdvisories": 1053,
+    "totalAdvisories": 1060
   }
 }

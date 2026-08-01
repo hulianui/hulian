@@ -8924,7 +8924,7 @@
       "name": "qrcode",
       "type": "registry:ui",
       "title": "QRCode",
-      "description": "二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题 + UTF-8 中文 + 纠错级别 + 中心 logo(可 …",
+      "description": "二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题(区别 qrcode.react 写死黑白) + UTF-8 …",
       "categories": [
         "data-display"
       ],
@@ -8935,11 +8935,18 @@
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
-        "import": "import { QRCode } from \"@hulianui/ui\"",
+        "import": "import { QRCode, buildQRCode, qrCodeSvgString, qrCodeToPngDataUrl } from \"@hulianui/ui\"",
         "exports": [
-          "QRCode"
+          "QRCode",
+          "buildQRCode",
+          "qrCodeSvgString",
+          "qrCodeToPngDataUrl"
         ],
         "types": [
+          "QRCodeBuildOptions",
+          "QRCodeMatrix",
+          "QRCodeSvgStringOptions",
+          "QRCodePngOptions",
           "QRCodeProps",
           "QRCodeLevel",
           "QRCodeLogo"
@@ -8958,6 +8965,16 @@
           "path": "components/hulianui/qrcode/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/qrcode/index.ts"
+        },
+        {
+          "path": "components/hulianui/qrcode/qrcode-core.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/qrcode/qrcode-core.ts"
+        },
+        {
+          "path": "components/hulianui/qrcode/qrcode-png.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/qrcode/qrcode-png.ts"
         },
         {
           "path": "components/hulianui/qrcode/qrcode.tsx",
