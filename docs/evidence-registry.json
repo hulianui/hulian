@@ -1,0 +1,605 @@
+{
+  "note": "组件使用证据登记。theme / mobile / motion / interaction / external 无法从仓库自动证明，只能由验过的人登记 —— 把没验的写成验过，这份矩阵就成了粉饰工具。",
+  "components": {
+    "card": {
+      "external": true,
+      "externalProjectCount": 10
+    },
+    "select": {
+      "external": true,
+      "externalProjectCount": 8
+    },
+    "heading": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "stack": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "text": {
+      "external": true,
+      "externalProjectCount": 9
+    },
+    "tag": {
+      "external": true,
+      "externalProjectCount": 11
+    },
+    "button": {
+      "external": true,
+      "externalProjectCount": 11
+    },
+    "toast": {
+      "external": true,
+      "externalProjectCount": 8
+    },
+    "alert": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "table": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "dialog": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "stat": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "tabs": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "statistic": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "link": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "aurora-text": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "reveal": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "steps": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "number-field": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "segmented": {
+      "external": true,
+      "externalProjectCount": 8
+    },
+    "chip": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "chart": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "descriptions": {
+      "external": true,
+      "externalProjectCount": 8
+    },
+    "meter": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "input": {
+      "external": true,
+      "externalProjectCount": 10
+    },
+    "divider": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "textarea": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "upload": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "empty": {
+      "external": true,
+      "externalProjectCount": 9
+    },
+    "field": {
+      "external": true,
+      "externalProjectCount": 8
+    },
+    "rating": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "shimmer-button": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "timeline": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "radio": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "alert-dialog": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "checkbox": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "progress": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "user": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "border-beam": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "document-sheet": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "collapsible": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "checkbox-group": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "tree": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "dot-pattern": {
+      "external": true,
+      "externalProjectCount": 6
+    },
+    "choicebox": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "heatmap": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "editable-table": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "pagination": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "question-card": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "search-form": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "toggle": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "math-text": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "dot": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "slider": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "admin-layout": {
+      "external": true,
+      "externalProjectCount": 8
+    },
+    "animated-theme-toggler": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "badge": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "switch": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "qrcode": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "status-dot": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "form-dialog": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "theme": {
+      "external": true,
+      "externalProjectCount": 8
+    },
+    "modal": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "tab-bar": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "number-ticker": {
+      "external": true,
+      "externalProjectCount": 6
+    },
+    "score-ring": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "sparkline": {
+      "external": true,
+      "externalProjectCount": 6
+    },
+    "shine-border": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "spotlight": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "page-header": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "skeleton": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "access": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "drawer": {
+      "external": true,
+      "externalProjectCount": 6
+    },
+    "form": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "result": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "pro-table": {
+      "external": true,
+      "externalProjectCount": 6
+    },
+    "navbar": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "spin": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "popconfirm": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "grid": {
+      "external": true,
+      "externalProjectCount": 6
+    },
+    "date-picker": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "date-range-picker": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "tree-select": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "transfer": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "list": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "bento-grid": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "json-viewer": {
+      "external": true,
+      "externalProjectCount": 7
+    },
+    "image": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "book-3d": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "breadcrumb": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "sortable": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "aurora": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "login-form": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "marquee": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "meteors": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "container": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "separator": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "sparkles-text": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "typing-animation": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "avatar": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "beian-footer": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "animated-gradient-text": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "blur-text": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "card-spotlight": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "circular-text": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "callout": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "prose": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "chat-message": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "conversation": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "prompt-input": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "streaming-text": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "steps-form": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "relative-time": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "code-block": {
+      "external": true,
+      "externalProjectCount": 4
+    },
+    "combobox": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "spinner": {
+      "external": true,
+      "externalProjectCount": 3
+    },
+    "snippet": {
+      "external": true,
+      "externalProjectCount": 5
+    },
+    "config": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "log-viewer": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "magic-card": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "secret-field": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "grid-pattern": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "menu": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "accordion": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "input-otp": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "thread-list": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "banner": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "floating-lines": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "layout": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "nav-menu": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "ripple": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "typing-dots": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "confirm-card": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "markdown": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "message-actions": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "prompt-suggestions": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "tool-call": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "dossier": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "artifact": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "image-cropper": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "voice-record": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "time-picker": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "code": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "tooltip": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "masonry": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "scroll-area": {
+      "external": true,
+      "externalProjectCount": 2
+    },
+    "color-field": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "git-commit": {
+      "external": true,
+      "externalProjectCount": 1
+    },
+    "command": {
+      "external": true,
+      "externalProjectCount": 1
+    }
+  },
+  "externalSyncedFrom": {
+    "projects": 11,
+    "coverage": "149/366"
+  }
+}

@@ -1,0 +1,100 @@
+name: 组件能力缺口（上游回流）
+description: 真实项目里需要 CSS override / 行为 hack / 缺 prop 才能用 —— 回库补组件，而不是在业务项目打补丁
+labels: ["enhancement", "upstream-gap"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **什么时候用这个模板**：你在消费项目里为了让某个组件可用，不得不写 `style=`、
+        局部 CSS override、包一层 wrapper 改行为，或者发现缺一个 prop / variant。
+
+        这不是 bug（组件按设计工作），也不是普通需求（它已经挡住了真实业务）。
+        正确动作是回库补能力，消费项目升级后**删掉临时绕法** —— 绕法留在业务代码里，
+        下一个人会照抄，缺口就永久化了。
+
+        纯缺陷走 [Bug 报告](?template=bug_report.yml)；与现有能力无关的新组件走
+        [功能建议](?template=feature_request.yml)。
+  - type: input
+    id: component
+    attributes:
+      label: 组件与版本
+      description: 哪个组件，消费项目实装的是哪个版本
+      placeholder: "Table @hulianui/ui@0.13.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: 场景
+      description: 这个缺口出现在什么形态的页面里（对应 get_agent_profile 的 surface）
+      options:
+        - admin-console（企业中后台）
+        - config-tool（参数配置 / 生成器）
+        - ai-product（AI 产品）
+        - content-brand（内容站 / 品牌页）
+        - desktop-shell（桌面应用）
+        - 其他 / 说不准
+    validations:
+      required: true
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: 期望能力 vs 当前行为
+      description: 你想让组件做到什么，它现在实际怎么表现
+      placeholder: |
+        期望：Table 能在窄屏下把某几列折叠进展开行
+        当前：只能横向滚动，移动端体验不可用
+    validations:
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: 当前的绕法
+      description: |
+        贴出你在消费项目里被迫写的那段代码 —— CSS override、wrapper、hack 都算。
+        这段代码就是缺口的证据，也是修好后要删掉的东西。
+      render: tsx
+    validations:
+      required: true
+  - type: textarea
+    id: minimal-repro
+    attributes:
+      label: 最小复现
+      description: 能跑起来的最小片段（不含业务逻辑），或 StackBlitz / 仓库链接
+      render: tsx
+    validations:
+      required: true
+  - type: checkboxes
+    id: environment
+    attributes:
+      label: 这个缺口在哪些条件下成立
+      description: 勾选你实际验过的。没验过的别勾 —— 「静态看代码觉得会」和「真的试过」不是一回事。
+      options:
+        - label: 浅色主题
+        - label: 深色主题
+        - label: 桌面视口
+        - label: 移动 / 窄屏（390px 或等价）
+        - label: prefers-reduced-motion 开启时
+        - label: 真实浏览器交互（不只是渲染出来）
+  - type: dropdown
+    id: shape
+    attributes:
+      label: 期望的补法
+      description: 你觉得应该怎么补 —— 只是建议，最终形态由维护者定
+      options:
+        - 给现有组件加 prop
+        - 给现有组件加 variant / 尺寸
+        - 现有组件放开某个内部能力（slot / render prop / ref）
+        - 需要一个新组件
+        - 说不准，先讨论
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: 确认
+      options:
+        - label: 我查过组件的 `.md` 文档与 `.types.ts`，确认不是我没找到已有的 prop
+          required: true
+        - label: 我理解修好后要回消费项目删掉绕法，缺口才算真正关闭
+          required: true
