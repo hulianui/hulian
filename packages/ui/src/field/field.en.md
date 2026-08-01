@@ -10,11 +10,11 @@ status: enriched
 
 # Field
 
-> Form field · Label, help text, and error content with automatic accessible relationships · forms/framework
+> Form field wrapper · Labels, descriptions, errors, and automatic ARIA relationships · forms/framework
 
 ## When to use
 
-Use Field to pair one control such as Input or Textarea with its label, help text, and error message. It connects them through `aria-describedby` and `aria-invalid`. [Form](../form/form.md) and [ProForm](../pro-form/pro-form.md) use Field internally, and it can also compose custom rows or controls inside [StepsForm](../steps-form/steps-form.md).
+Use Field to associate one control, such as Input or Textarea, with a label, supporting description, and validation error. Field wires those elements together with `aria-describedby` and `aria-invalid`. [Form](../form/form.md) and [ProForm](../pro-form/pro-form.md) use it internally; it is also suitable for custom form rows and controls inside [StepsForm](../steps-form/steps-form.md).
 
 ## Import
 ```ts
@@ -27,18 +27,18 @@ import { Field } from "@hulianui/ui"
 |------|------|------|------|
 | invalid | `boolean` | `false` | Explicit invalid state; a nonempty `error` also marks the field invalid. |
 | disabled | `boolean` | `false` | Disables the field. |
-| name | `string` | — | Submit ID, supports Field.Root |
-| colSpan | `"full"` | — | Spanning entire rows in ProForm columns grid; no side effects outside grid |
-| className | `string` | — | Fall on Field.Root (portrait layout container) |
+| name | `string` | — | Field name forwarded to the underlying `Field.Root`. |
+| colSpan | `"full"` | — | Spans the full row in a ProForm column grid; has no effect outside that grid. |
+| className | `string` | — | Additional class name for the vertical `Field.Root` container. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
 | children* | `ReactNode` | Field control, such as HulianUI Input or Textarea. |
-| label | `ReactNode` | Label |
+| label | `ReactNode` | Visible field label. |
 | description | `ReactNode` | Help text. |
-| error | `ReactNode` | Error copy; **If it is not empty, it means invalid and forces an error to be displayed** |
+| error | `ReactNode` | Validation message. Any nonempty value marks the field invalid and renders the error. |
 
 ## Examples
 ```tsx
@@ -56,7 +56,7 @@ import { Field } from "@hulianui/ui"
 ## Usage guidelines
 
 - A non-empty `error` already implies `invalid`; do not pass both. Pass `invalid` alone only when the control needs invalid styling without an error message.
-- The bottom layer is Base UI Field, and the error text is forced to be rendered through `match={true}` - do not write an error in another `<p>` outside the Field, otherwise the automatic `aria-describedby` concatenation will be lost. For details, see [[base-ui-field-error-match-true-for-external-controlled-error]]: When externally controlled error does not go through Base UI verification, the default branch will make the error text "no red text in the box".
+- Field uses Base UI Field and renders externally controlled errors with `match={true}`. Keep the error inside Field so it remains part of the generated `aria-describedby` relationship; a separate `<p>` will not be connected automatically. See [[base-ui-field-error-match-true-for-external-controlled-error]].
 - For a Textarea child, follow the render-as typing guidance in [[base-ui-field-control-render-textarea-type-safe]].
 
 ## Related

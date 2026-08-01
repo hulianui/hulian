@@ -27,9 +27,9 @@ import { ShimmerButton } from "@hulianui/ui"
 |------|------|------|------|
 | shimmerColor | `string` | `var(--color-primary-foreground)` | Shimmer highlight color. |
 | shimmerSize | `string` | `0.05em` | Shimmer width. |
-| borderRadius | `string` | `var(--radius)` | rounded corners |
+| borderRadius | `string` | `var(--radius)` | Button border radius. |
 | shimmerDuration | `string` | `3s` | Duration of one shimmer cycle. |
-| background | `string` | `var(--color-primary)` | Button background color |
+| background | `string` | `var(--color-primary)` | Button background color. |
 | ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | Native button attributes passed to the rendered element. |
 
 ## Events

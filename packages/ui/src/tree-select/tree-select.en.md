@@ -25,24 +25,24 @@ import { TreeSelect } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| nodes* | `TreeNode[]` | — | Tree data source (including key/label/children), reused from `../tree/tree-core` |
-| value | `string \| string[]` | — | Controlled value; single selection is string, multiple selection is string[] |
-| defaultValue | `string \| string[]` | — | uncontrolled initial value |
-| multiple | `boolean` | `false` | Multiple selection (checkable, parent-child cascade check) |
+| nodes* | `TreeNode[]` | — | Hierarchical data with `key`, `label`, and optional `children`, using the shared Tree node model. |
+| value | `string \| string[]` | — | Controlled value: a string in single mode or `string[]` in multiple mode. |
+| defaultValue | `string \| string[]` | — | Initial value in uncontrolled mode. |
+| multiple | `boolean` | `false` | Whether to enable checkbox-based multiple selection with parent-child cascading. |
 | placeholder | `string` | `"\u8bf7\u9009\u62e9"` | Trigger placeholder; the built-in Chinese copy means “Please select.” |
-| disabled | `boolean` | `false` | Disable |
+| disabled | `boolean` | `false` | Whether to disable the selector. |
 | invalid | `boolean` | `false` | Applies invalid styling. |
-| size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size |
-| clearable | `boolean` | `false` | Clearable: When there is a value and is not disabled, the hover/focus popup clear button on the right side of the trigger, click to return to the unselected state (single selection returns `""`, multi-selection returns `[]`). Same semantics as `clearable` of [Select](../select/select.md) |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size. |
+| clearable | `boolean` | `false` | Whether to reveal a clear button on trigger hover or focus when a value exists. Clearing emits `""` in single mode or `[]` in multiple mode, matching [Select](../select/select.md). |
 | searchable | `boolean` | `false` | Shows a search field in the popup and expands matching paths. |
 | showLine | `boolean` | `false` | Shows tree connection lines. |
-| className | `string` | — | Passthrough to trigger |
+| className | `string` | — | Additional class name passed to the trigger. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onChange | `(value: string \| string[]) => void` | Select change callback; single selection returns string, multiple selection returns string[] |
+| onChange | `(value: string \| string[]) => void` | Called with a string in single mode or `string[]` in multiple mode when selection changes. |
 
 ## Example
 ```tsx
@@ -54,7 +54,7 @@ const [v, setV] = useState<string | string[]>("");
 const [v, setV] = useState<string | string[]>(["fe-web", "fe-mini"]);
 <TreeSelect nodes={NODES} multiple value={v} onChange={setV} placeholder="Check visible departments" />
 
-// Clearable: as a filter dimension that can be left blank (leave blank = no limit)
+// Clearable optional filter: an empty value means no restriction
 const [dept, setDept] = useState<string | string[]>("");
 <TreeSelect nodes={NODES} clearable value={dept} onChange={setDept} placeholder="All departments" />
 ```

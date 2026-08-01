@@ -25,21 +25,21 @@ import { StepsForm } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| steps* | `StepsFormStep[]` | — | Step array, each item contains `title`/`description`/`content`/`nextDisabled`/`nextText`/`showNav` |
-| current | `number` | — | Controlled current step (from 0) |
+| steps* | `StepsFormStep[]` | — | Step definitions containing `title`, `description`, `content`, `nextDisabled`, `nextText`, and `showNav`. |
+| current | `number` | — | Zero-based current step in controlled mode. |
 | defaultCurrent | `number` | `0` | Initial step when uncontrolled. |
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | Steps indicator direction. |
-| className | `string` | — | Root node class name |
+| className | `string` | — | Additional class name for the root element. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onCurrentChange | `(current: number) => void` | step change callback |
+| onCurrentChange | `(current: number) => void` | Called with the new zero-based index when the step changes. |
 | onStepValidate | `(currentStep: number) => boolean \| Promise<boolean>` | Runs before leaving a step. Return false or reject to block navigation; async work keeps the forward button loading. |
 | onFinish | `() => void \| Promise<void>` | Called when submitting the final step; a Promise enables submit-button loading. |
 
-`StepsFormStep` field: `title: ReactNode` (required), `description?`, `content: ReactNode` (required, only rendered in the current step), `nextDisabled?` (default false, prohibit this step from advancing), `nextText?` (this step forward button copy, default to locale), `showNav?` (default When true or false, the bottom navigation of this step will not be rendered and is used for the built-in operation of the result step).
+`StepsFormStep` fields: `title: ReactNode` (required), `description?`, `content: ReactNode` (required and rendered only for the current step), `nextDisabled?` (defaults to `false` and prevents advancing from this step), `nextText?` (overrides the localized forward-button label), and `showNav?` (defaults to `true`; set it to `false` to hide this step's footer navigation, typically for a result step with its own actions).
 
 ## Example
 ```tsx

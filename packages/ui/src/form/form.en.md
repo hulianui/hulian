@@ -10,11 +10,11 @@ status: enriched
 
 # Form
 
-> Form container · Base UI structured submission, name-keyed errors, Field integration, validation, dependencies, and dynamic lists · forms/framework
+> Form container and controller · Structured submission, validation rules, field dependencies, server errors, and dynamic lists · forms/framework
 
 ## When to use
 
-Use Form to arrange `Field` controls and manage submission and validation. `Form` collects structured values by native field name; `useForm` adds rules, dependencies, registration, and submission control; `FormList` manages dynamic rows. Use [ModalForm / DrawerForm](../form-dialog/form-dialog.md) for overlays, [ProForm](../pro-form/pro-form.md) for an inline form with grid and footer, or [SearchForm](../search-form/search-form.md) for query filters.
+Use Form for a group of fields that submits structured values and owns its validation flow. `Form` collects values by native field name, `useForm` adds registration, rules, dependencies, and controlled submission, and `FormList` manages dynamic rows. Use [ModalForm / DrawerForm](../form-dialog/form-dialog.md) for overlays, [ProForm](../pro-form/pro-form.md) for an inline grid with a standard footer, or [SearchForm](../search-form/search-form.md) for list filters.
 
 ## Import
 ```ts
@@ -23,25 +23,25 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 
 ## Props
 
-`Form`：
+`Form`:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| validationMode | `"onSubmit" \| "onBlur" \| "onChange"` | `"onSubmit"` | Verification timing |
-| errors | `Record<string, string \| string[]>` | — | External/server verification error, mapped according to `<Field name>` (display requires Field.Error in Field) |
-| className | `string` | — | Container class name |
+| validationMode | `"onSubmit" \| "onBlur" \| "onChange"` | `"onSubmit"` | Point at which validation runs. |
+| errors | `Record<string, string \| string[]>` | — | External or server errors keyed by `<Field name>`. The matching Field must render `Field.Error`. |
+| className | `string` | — | Additional class name for the form container. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onFormSubmit | `(formValues: Record<string, unknown>) => void` | Get structured values when submitting (preventDefault native submission) |
+| onFormSubmit | `(formValues: Record<string, unknown>) => void` | Called with structured values after the component prevents native form submission. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Field content |
+| children | `ReactNode` | Fields and form actions. |
 
 `useForm` controller usage (see examples for details): `form.register(name, { rules, dependencies })`, `form.submit(onValid, onInvalid)`, `form.resetFields()`.
 
@@ -51,7 +51,7 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
   <Field label="Email" name="email">
     <Input name="email" type="email" required />
   </Field>
-<Button type="submit" size="sm">Submit</Button>
+  <Button type="submit" size="sm">Submit</Button>
 </Form>
 ```
 ```tsx
@@ -60,7 +60,7 @@ const form = useForm({ initialValues: { pwd: "", confirm: "" } });
 const pwd = form.register("pwd", { rules: [{ required: true, min: 6, message: "Use at least 6 characters" }] });
 const confirm = form.register("confirm", {
   dependencies: ["pwd"],
-  rules: [{ validator: (v, values) => { if (v !== values.pwd) throw new Error("Two passwords are inconsistent"); } }],
+  rules: [{ validator: (v, values) => { if (v !== values.pwd) throw new Error("Passwords do not match"); } }],
 });
 <form onSubmit={form.submit((values) => save(values))} noValidate>
   <Field label="Password" error={pwd.error}>

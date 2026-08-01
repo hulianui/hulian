@@ -10,11 +10,11 @@ status: enriched
 
 # Segmented
 
-> Segmented control · radio semantics with arrow-key navigation + CSS-variable sliding indicator · dependency-free · forms/basic
+> Segmented control with radio semantics, arrow-key navigation, and a CSS-variable sliding indicator · dependency-free · forms/basic
 
 ## When to use
 
-Use Segmented for two to five mutually exclusive horizontal choices, such as Day/Week/Month, Grid/List/Map, or Monthly/Annual. An indicator highlights the active item and selection is one string value. Use [Radio](../radio/radio.md) for vertically arranged form choices, Tabs for switching page-level panels, or [Select](../select/select.md) for a larger collapsed set.
+Use Segmented for two to five mutually exclusive horizontal choices, such as Day/Week/Month, Grid/List/Map, or Monthly/Annual. An indicator highlights the active item, and the selected value is a single string. Use [Radio](../radio/radio.md) for vertically arranged form choices, Tabs for switching page-level panels, or [Select](../select/select.md) for a larger collapsed set.
 
 ## Import
 ```ts
@@ -27,21 +27,21 @@ import { Segmented } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items * | `SegmentedItem[]` | — | segment definition array |
-| value | `string` | — | controlled selected value |
-| defaultValue | `string` | First non-disabled segment | Uncontrolled initial selection value |
-| disabled | `boolean` | `false` | Disable overall |
-| size | `"sm"｜"md"` | `"md"` | — |
-| className | `string` | — | — |
-| aria-label | `string` | — | Provided when no title is visible |
+| items * | `SegmentedItem[]` | — | Definitions for the available segments. |
+| value | `string` | — | Selected value in controlled mode. |
+| defaultValue | `string` | First non-disabled segment | Initial selected value in uncontrolled mode. |
+| disabled | `boolean` | `false` | Whether to disable the entire control. |
+| size | `"sm"｜"md"` | `"md"` | Visual size. |
+| className | `string` | — | Additional class name for the root element. |
+| aria-label | `string` | — | Accessible label for the control when no visible title is present. |
 
 `SegmentedItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value * | `string` | — | The unique value of this segment (also the selected identifier) |
-| ariaLabel | `string` | — | Label is required when it is a rich node (icon/logo), otherwise it will be downgraded to value. |
-| disabled | `boolean` | `false` | Single segment disabled |
+| value * | `string` | — | Unique value that identifies the segment and its selected state. |
+| ariaLabel | `string` | — | Accessible label for non-text content such as an icon or logo; otherwise screen readers fall back to `value`. |
+| disabled | `boolean` | `false` | Whether to disable this segment. |
 
 ## Events
 
@@ -49,7 +49,7 @@ import { Segmented } from "@hulianui/ui"
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: string) => void` | Selected changes (single value, radio semantics mutually exclusive) |
+| onValueChange | `(value: string) => void` | Called with the newly selected value; selection is mutually exclusive. |
 
 ## Slots
 
@@ -72,7 +72,7 @@ import { Segmented } from "@hulianui/ui"
 />
 ```
 
-Icon segments (one for each ariaLabel):
+Icon-only segments, each with its own `ariaLabel`:
 ```tsx
 <Segmented
   items={[

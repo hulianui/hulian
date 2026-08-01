@@ -35,15 +35,15 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | accept | `string` | — | Native accept filter, such as `"image/*,.pdf"`; also validates dropped files. |
-| multiple | `boolean` | `false` | Whether to allow multiple selections |
-| disabled | `boolean` | `false` | Disable |
-| maxSize | `number` | — | The upper limit of single file bytes; if the limit is exceeded, enter `onReject(reason="size")` |
-| limit | `number` | — | The upper limit of the number of files (according to `files.length`); after reaching the limit, the trigger is automatically disabled and "selected n/limit" is displayed. If the limit is exceeded, `onReject(reason="limit")` will be entered. |
-| variant | `"dropzone" \| "button"` | `"dropzone"` | Form: drag drop area/single button |
-| files | `UploadFile[]` | — | List of files for controlled display (including status/progress/url); if not passed, the list will not be rendered. |
-| renderPreview | `(file: UploadFile) => ReactNode` | — | Thumbnail rendering hook; when returning to the node, the left side of the list item changes to 40px preview position (the status point is downgraded to a corner mark), and `null` is returned to the default dot. |
+| multiple | `boolean` | `false` | Whether to allow selecting more than one file. |
+| disabled | `boolean` | `false` | Whether to disable file selection and dropping. |
+| maxSize | `number` | — | Maximum size of each file in bytes; oversized files are reported through `onReject` with reason `"size"`. |
+| limit | `number` | — | Maximum file count, based on `files.length`. At the limit, the trigger is disabled and shows “selected n/limit”; excess files are reported with reason `"limit"`. |
+| variant | `"dropzone" \| "button"` | `"dropzone"` | Presentation as either a drag-and-drop area or a compact button. |
+| files | `UploadFile[]` | — | Controlled display list, including status, progress, and URL metadata. Omit it to hide the list. |
+| renderPreview | `(file: UploadFile) => ReactNode` | — | Thumbnail renderer. A returned node occupies a 40 px preview area with the status dot shown as a corner badge; returning `null` uses the default status dot. |
 | sortable | `boolean` | `false` | Enables drag reordering when `onSort` is also provided. |
-| className | `string` | — | Container class name |
+| className | `string` | — | Additional class name for the container. |
 
 ## Events
 
@@ -51,21 +51,21 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 |------|------|------|
 | onSelect | `(files: File[]) => void` | Called with files that pass validation. |
 | onReject | `(rejections: UploadRejection[]) => void` | Called for rejected files with reason `"type"`, `"size"`, or `"limit"`. |
-| onRemove | `(id: string) => void` | List item remove button click |
-| onSort | `(files: UploadFile[]) => void` | The new sequence after drag-and-drop resequencing (the component does not save the sequence, you write it back to `files`) |
+| onRemove | `(id: string) => void` | Called with the file ID when its remove button is clicked. |
+| onSort | `(files: UploadFile[]) => void` | Called with the reordered list after a drag; write it back to controlled `files`. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
 | label | `ReactNode` | Dropzone label; the default is `"\u70b9\u51fb\u6216\u62d6\u62fd\u6587\u4ef6\u5230\u6b64\u5904"`, built-in Chinese copy meaning “Click or drag files here.” |
-| hint | `ReactNode` | Drop zone auxiliary instructions (format/size limit tips) |
+| hint | `ReactNode` | Supporting dropzone text, such as accepted formats or size limits. |
 | buttonLabel | `ReactNode` | Button-mode label; the default is `"\u9009\u62e9\u6587\u4ef6"`, built-in Chinese copy meaning “Choose files.” |
-| children | `ReactNode` | Customize drop zone content (override label/hint) |
+| children | `ReactNode` | Custom dropzone content that replaces `label` and `hint`. |
 
 > `UploadFile`: `{ id; name; size?; status?: "ready"\|"uploading"\|"success"\|"error"; progress?; error?; url?; raw? }`
-> · `progress` Show progress bar + percentage only for `status="uploading"` (internally clamped to 0–100)
-> · `url` / `raw` are **pure additional fields** that do not participate in the internal logic of the component and are only for `renderPreview` and yourself to read back; `onSelect` is still given to `File[]`, and the File semantics have not been replaced.
+> · `progress` displays a progress bar and percentage only for `status="uploading"`; values are clamped internally to 0–100.
+> · `url` and `raw` are **metadata only**. Upload does not interpret them; they are available to `renderPreview` and consumer code. `onSelect` still emits `File[]`.
 
 ## useUpload (transport layer)
 
@@ -77,23 +77,23 @@ const up = useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })
 | Options | Type | Default | Description |
 |------|------|------|------|
 | request | `(file, { onProgress, signal }) => Promise<{ url }>` | — | Required transport implementation. Forward `signal` to fetch or XHR. |
-| concurrency | `number` | `3` | Concurrency upper limit, excessive queuing (`0` will go to `1`, no deadlock) |
-| onChange | `(files: UploadFile[]) => void` | — | Callback after any file changes |
-| onSuccess / onError | `(file, result \| error) => void` | — | Single file finalization callback (cancellation by abort does not trigger onError) |
+| concurrency | `number` | `3` | Maximum concurrent uploads; excess files queue, and values below 1 fall back to 1. |
+| onChange | `(files: UploadFile[]) => void` | — | Called after any change to the file list. |
+| onSuccess / onError | `(file, result \| error) => void` | — | Called when an individual upload settles; cancellation through abort does not trigger `onError`. |
 
 | Returns | Description |
 |------|------|
-| `files` | Feed `<Upload files>` directly |
-| `add` | Connect to `<Upload onSelect>`, enter the queue and automatically start transmission according to concurrent |
-| `remove` | Connect to `<Upload onRemove>`, and the ongoing task will be aborted. |
-| `retry` | Retransmit a single failed item |
+| `files` | Controlled file list to pass directly to `<Upload files>`. |
+| `add` | Handler for `<Upload onSelect>` that queues files and starts uploads within the concurrency limit. |
+| `remove` | Handler for `<Upload onRemove>` that also aborts an in-progress task. |
+| `retry` | Retries one failed item. |
 | `reorder` | Connect to `<Upload onSort>`; it changes list order without affecting upload tasks. |
-| `clear` | Cancel all and clear |
-| `uploading` | Are there any tasks queued or in progress? |
+| `clear` | Cancels every task and clears the list. |
+| `uploading` | Whether any task is queued or in progress. |
 
 ## Example
 
-Automatic upload (progress + concurrency + quantity limit):
+Automatic upload with progress, concurrency, and a file-count limit:
 ```tsx
 const up = useUpload({
   request: async (file, { onProgress, signal }) => {
@@ -123,7 +123,7 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
   });
 ```
 
-Image wall with thumbnails and drag sorting:
+Image gallery with thumbnails and drag sorting:
 ```tsx
 <Upload
   multiple

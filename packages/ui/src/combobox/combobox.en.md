@@ -10,11 +10,11 @@ status: enriched
 
 # Combobox
 
-> Autocomplete · Trigger-button search inside an equal-width popup or direct inline input, with single- and multi-select modes · forms/advanced
+> Autocomplete · Search in an equal-width popup or directly in the field · Single and multiple selection · forms/advanced
 
 ## When to use
 
-Use Combobox when a large option set must be filtered as the user types. It supports single selection, `multiple` selection with chips, a trigger button that opens a searchable popup, and direct inline input. Use [Select](../select/select.md) for a small fixed list, [SecretField](../secret-field/secret-field.md) to display an existing secret, or [Mentions](../mentions/mentions.md) for @mentions.
+Use Combobox when users need to filter a substantial option set as they type. It supports a trigger that opens a searchable popup, an inline autocomplete field, and chip-based multiple selection. Use [Select](../select/select.md) for a small fixed list, [SecretField](../secret-field/secret-field.md) to display an existing secret, or [Mentions](../mentions/mentions.md) for inline references such as @mentions.
 
 ## Import
 ```ts
@@ -27,53 +27,53 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items | `ComboboxItemData[]` | — | Option data `{value,label}`, automatically displayed with label and submitted with value |
-| value | `ComboboxItemData｜ComboboxItemData[]` | — | Controlled selection (array when multiple) |
-| defaultValue | Same as above | — | Uncontrolled initial selection |
+| items | `ComboboxItemData[]` | — | Options in `{ value, label }` form. The label is displayed while the value identifies the option. |
+| value | `ComboboxItemData｜ComboboxItemData[]` | — | Controlled selection; use an array when `multiple` is true. |
+| defaultValue | Same as above | — | Initial selection when uncontrolled. |
 | multiple | `boolean` | `false` | Changes `value` and `onValueChange` to arrays. |
 | disabled | `boolean` | `false` | Disables the control. |
 
-`ComboboxTrigger` displays the selected label or placeholder and opens search inside the popup.
+`ComboboxTrigger` displays the selected label or placeholder and opens the searchable popup.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm"｜"md"｜"lg"` | `"md"` | size |
-| placeholder | `string` | — | Placeholder copy when not selected |
+| size | `"sm"｜"md"｜"lg"` | `"md"` | Trigger size. |
+| placeholder | `string` | — | Text shown when nothing is selected. |
 | invalid | `boolean` | `false` | Applies invalid styling when used outside Field. |
-| className | `string` | — | — |
+| className | `string` | — | Additional class name for the trigger. |
 
-`ComboboxInput` (inline auto-completion: the field is visible in the input box itself)
+`ComboboxInput` provides inline autocomplete: the visible field is also the search input.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm"｜"md"｜"lg"` | `"md"` | size |
-| placeholder | `string` | — | Placeholder |
+| size | `"sm"｜"md"｜"lg"` | `"md"` | Input size. |
+| placeholder | `string` | — | Input placeholder. |
 | invalid | `boolean` | `false` | Applies invalid styling. |
-| clearable | `boolean` | `false` | Render clear button when value is present |
-| className | `string` | — | — |
+| clearable | `boolean` | `false` | Shows a clear button when the field has a value. |
+| className | `string` | — | Additional class name for the input. |
 
 `ComboboxContent`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| searchPlaceholder | `string` | — | Renders a search field at the top of the popup when used with Trigger. When omitted, Combobox uses inline completion. |
-| side | `"top"｜"bottom"` | — | popup direction |
-| align | `"start"｜"center"｜"end"` | — | popup alignment |
-| sideOffset | `number` | — | offset |
-| onListScroll | `UIEventHandler<HTMLDivElement>` | — | List scrolling callback, `e.currentTarget` is the scrolling container (used for remote paging "scroll to the end to load more", see [RemoteSelect](../remote-select/remote-select.md)) |
-| footer | `ReactNode` | — | Permanent footer below the list (loading/counting/end prompt), does not scroll with the list |
-| className | `string` | — | — |
+| searchPlaceholder | `string` | — | Adds a search field to the popup when used with `ComboboxTrigger`. Omit it when `ComboboxInput` already provides inline search. |
+| side | `"top"｜"bottom"` | — | Preferred side of the trigger on which to place the popup. |
+| align | `"start"｜"center"｜"end"` | — | Popup alignment relative to the trigger. |
+| sideOffset | `number` | — | Distance from the trigger in pixels. |
+| onListScroll | `UIEventHandler<HTMLDivElement>` | — | Called when the option list scrolls. `e.currentTarget` is the scroll container, which can be inspected to implement load-on-scroll pagination; see [RemoteSelect](../remote-select/remote-select.md). |
+| footer | `ReactNode` | — | Fixed content below the scrolling list, such as loading, count, or end-of-results feedback. |
+| className | `string` | — | Additional class name for the popup. |
 
 `ComboboxItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value * | `ComboboxItemData` | — | Option `{value,label}` object |
-| disabled | `boolean` | `false` | Disable this item |
-| className | `string` | — | — |
+| value * | `ComboboxItemData` | — | Complete `{ value, label }` option object. |
+| disabled | `boolean` | `false` | Disables this option. |
+| className | `string` | — | Additional class name for the option. |
 
-`ComboboxChips` (multi-select chips case): `size`, `invalid`, `placeholder`, `className` (plus `children` slot, see Slots).
-`ComboboxChip` (single selected chip): `className` (plus `children` slot, see Slots).
+`ComboboxChips` is the multiple-selection field shell and accepts `size`, `invalid`, `placeholder`, `className`, and `children`.
+`ComboboxChip` renders one selected value and accepts `className` and `children`.
 
 ## Events
 
@@ -81,7 +81,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value) => void` | Selected change callback (when multiple, value is an array) |
+| onValueChange | `(value) => void` | Called when the selection changes; `value` is an array in multiple mode. |
 
 ## Slots
 
@@ -95,26 +95,26 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | Slot | Type | Description |
 |------|------|------|
-| children * | `(item, index) => ReactNode` | Rendering function, List is automatically called by traversing filtered items |
-| emptyMessage | `ReactNode` | No matching copy |
+| children * | `(item, index) => ReactNode` | Render function invoked once for each filtered option. |
+| emptyMessage | `ReactNode` | Content shown when no option matches the query. |
 
 `ComboboxItem`
 
 | Slot | Type | Description |
 |------|------|------|
-| children * | `ReactNode` | render content |
+| children * | `ReactNode` | Visible option content. |
 
 `ComboboxChips`
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Contains chip column + input box |
+| children | `ReactNode` | Selected chips and the inline input. |
 
 `ComboboxChip`
 
 | Slot | Type | Description |
 |------|------|------|
-| children * | `ReactNode` | chip content |
+| children * | `ReactNode` | Visible chip content. |
 
 ## Examples
 
@@ -132,7 +132,7 @@ Trigger button with search inside the popup:
 </Combobox>
 ```
 
-Inline auto-completion (input box is field):
+Inline autocomplete, where the field itself accepts the search query:
 ```tsx
 <Combobox items={FRUITS}>
   <ComboboxInput placeholder="Search for fruits…" clearable />

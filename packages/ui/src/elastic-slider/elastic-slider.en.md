@@ -10,11 +10,11 @@ status: enriched
 
 # ElasticSlider
 
-> Elastic slider · Rubber-band overdrag, reactive endpoint icons, hover enlargement, spring rebound, and reduced-motion support · forms/basic · #animated
+> Elastic slider · Rubber-band overdrag, responsive endpoint icons, spring rebound, and reduced-motion support · forms/basic · #animated
 
 ## When to use
 
-Use ElasticSlider for an expressive single value such as volume or brightness. For validated form input, full keyboard semantics, and alignment with [Input](../input/input.md) or Select, use the standard Slider instead. ElasticSlider is an uncontrolled decorative control that prioritizes drag feel over form semantics.
+Use ElasticSlider for an expressive, pointer-driven value such as volume or brightness. Use the standard Slider when the value belongs in a validated form, requires complete keyboard semantics, or must align with [Input](../input/input.md) and Select controls. ElasticSlider is an uncontrolled presentation component that prioritizes drag feedback over form semantics.
 
 ## Import
 ```ts
@@ -25,27 +25,27 @@ import { ElasticSlider } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| defaultValue | `number` | `50` | Initial value (uncontrolled). The component maintains internal values and only synchronizes the internal state when mounting and the prop changes. |
-| startingValue | `number` | `0` | Lower bound of measurement range (corresponding value on the leftmost side of the track) |
-| maxValue | `number` | `100` | Upper bound of measurement range (corresponding value on the rightmost side of the track) |
+| defaultValue | `number` | `50` | Initial value. Internal state is initialized on mount and resynchronized if this prop changes. |
+| startingValue | `number` | `0` | Value at the left end of the track. |
+| maxValue | `number` | `100` | Value at the right end of the track. |
 | isStepped | `boolean` | `false` | Snaps dragged values to `stepSize` increments. |
 | stepSize | `number` | `1` | Snap increment when `isStepped` is true. |
-| showValue | `boolean` | `true` | Whether to display a digital indication of the current value (centered above the track) |
-| className | `string` | — | supports additional className to the root container (merge via cn) |
-| style | `CSSProperties` | — | supports inline styles to the root container |
+| showValue | `boolean` | `true` | Shows the current numeric value above the center of the track. |
+| className | `string` | — | Additional class name for the root container. |
+| style | `CSSProperties` | — | Inline styles for the root container. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: number) => void` | Called back when dragging generates a new value for the consumer to take over/report the value |
+| onValueChange | `(value: number) => void` | Called with each new value produced while dragging. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| leftIcon | `ReactNode` | The icon on the left (left end of the track), when dragging crosses the boundary to the far left, it will move and zoom in with the rebound. |
-| rightIcon | `ReactNode` | The icon on the right (right end of the track), when dragging crosses the boundary to the far right, it will move and zoom in with the rebound. |
+| leftIcon | `ReactNode` | Icon at the lower-value end; it shifts and scales during left-side overdrag. |
+| rightIcon | `ReactNode` | Icon at the higher-value end; it shifts and scales during right-side overdrag. |
 
 ## Examples
 ```tsx
@@ -67,7 +67,7 @@ import { ElasticSlider } from "@hulianui/ui"
 
 ## Usage guidelines
 
-- **Uncontrolled:** `defaultValue` initializes internal state and resynchronizes only when the prop changes. It is not a controlled value; store updates from `onValueChange` if the application needs them.
+- **Uncontrolled:** `defaultValue` initializes internal state and resynchronizes when the prop changes. Persist `onValueChange` results if the application needs to read the current value elsewhere.
 - Overdrag stretches beyond the track in both axes. Leave overflow space around the component and avoid clipping it with `overflow-hidden`.
 
 ## Related

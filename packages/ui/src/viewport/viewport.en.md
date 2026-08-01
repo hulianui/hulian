@@ -27,24 +27,24 @@ import { Viewport } from "@hulianui/ui"
 |------|------|------|------|
 | device | `"web" \| "tablet" \| "phone"` | — | Controlled preset: responsive web width, 768 px tablet, or 390 px phone. |
 | defaultDevice | `"web" \| "tablet" \| "phone"` | `"web"` | Initial device preset when uncontrolled. |
-| controls | `boolean` | `false` | The top shows the device switcher (dogfood Segmented). |
-| width | `number \| string` | — | Custom width, overrides device default (number=px or any CSS length). |
-| name | `string` | — | Named container, used for `@md/name:` named container query; default anonymous container (use `@md:`). |
-| framed | `boolean` | `true` | Tablet/phone adds device-like borders; web has constant thin borders. |
-| height | `number \| string` | With content | Fixed container height (number=px or CSS). |
-| className | `string` | — | The root container class name. |
+| controls | `boolean` | `false` | Whether to show the Segmented device switcher above the container. |
+| width | `number \| string` | — | Custom width that overrides the device preset; numbers are interpreted as pixels, and strings accept any CSS length. |
+| name | `string` | — | Container name for variants such as `@md/name:`. Omit it for an anonymous container targeted with `@md:`. |
+| framed | `boolean` | `true` | Whether tablet and phone presets use device-like frames; the web preset always has a thin border. |
+| height | `number \| string` | With content | Fixed container height; numbers are interpreted as pixels, and strings accept CSS lengths. |
+| className | `string` | — | Additional class name for the root container. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onDeviceChange | `(device: "web" \| "tablet" \| "phone") => void` | Device change callback. |
+| onDeviceChange | `(device: "web" \| "tablet" \| "phone") => void` | Called with the selected preset when the device changes. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| children* | `ReactNode` | Container content, internally use container variants such as `@md:`/`@5xl:` to adapt according to the width of the container. |
+| children* | `ReactNode` | Content that can use variants such as `@md:` and `@5xl:` to respond to this container's width. |
 
 ## Example
 ```tsx

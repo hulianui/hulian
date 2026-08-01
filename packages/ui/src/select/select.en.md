@@ -25,7 +25,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 
 ## Props
 
-`Select` inherits the Base UI `Select.Root` properties (except `items` is covered below, such as `value`/`defaultValue`/`onValueChange`/`disabled`…).
+`Select` inherits Base UI `Select.Root` properties such as `value`, `defaultValue`, `onValueChange`, and `disabled`, except where `items` is redefined below.
 
 ### Select
 | Name | Type | Default | Description |
@@ -43,33 +43,33 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectGroup / SelectGroupLabel
 | Name | Type | Default | Description |
 |------|------|------|------|
-| children* | `ReactNode` | — | `SelectGroup` contains one `SelectGroupLabel` + several `SelectItem` |
-| className | `string` | — | Transparent class name |
+| children* | `ReactNode` | — | One `SelectGroupLabel` followed by one or more `SelectItem` elements. |
+| className | `string` | — | Additional class name passed through to the element. |
 
 ### SelectTrigger
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | size |
-| invalid | `boolean` | `false` | Manually set the invalid state skin when used independently (not in a Field) |
+| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Visual size. |
+| invalid | `boolean` | `false` | Whether to show invalid styling when the trigger is used outside a Field. |
 | maxDisplay | `number` | `2` | Maximum visible selected labels in multiple mode; remaining selections collapse into `+N`. |
-| className | `string` | — | Transparent class name |
+| className | `string` | — | Additional class name passed through to the element. |
 
 ### SelectContent
 | Name | Type | Default | Description |
 |------|------|------|------|
-| side | `"top" ｜ "bottom"` | `"bottom"` | popup direction |
-| align | `"start" ｜ "center" ｜ "end"` | — | Alignment |
-| sideOffset | `number` | — | offset |
+| side | `"top" ｜ "bottom"` | `"bottom"` | Side on which the popup opens. |
+| align | `"start" ｜ "center" ｜ "end"` | — | Popup alignment relative to the trigger. |
+| sideOffset | `number` | — | Distance between the popup and trigger. |
 
 ### SelectItem
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `string` | — | Option value (only string values in this batch) |
-| disabled | `boolean` | `false` | Disable this |
+| value* | `string` | — | String value that identifies the option. |
+| disabled | `boolean` | `false` | Whether to disable this option. |
 
 ## Events
 
-`Select` transparently transmits common events of Base UI `Select.Root`.
+`Select` forwards the common events from Base UI `Select.Root`.
 
 | Event | Type | Description |
 |------|------|------|
@@ -81,8 +81,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | Slot | Type | Description |
 |------|------|------|
 | SelectContent.children* | `ReactNode` | `SelectItem` elements, optionally nested in `SelectGroup`. |
-| SelectItem.children* | `ReactNode` | Options display content |
-| SelectGroupLabel.children* | `ReactNode` | Group title |
+| SelectItem.children* | `ReactNode` | Content displayed for the option. |
+| SelectGroupLabel.children* | `ReactNode` | Group heading. |
 
 ## Example
 ```tsx
@@ -113,7 +113,7 @@ const [points, setPoints] = useState<string[]>([]);
   </SelectContent>
 </Select>
 
-// Clearable + searchable: clearable / filterable of el-select
+// Clearable and searchable, corresponding to el-select's clearable and filterable options
 <Select items={FONTS} placeholder="Please select a font" clearable searchable searchPlaceholder="Search font">
   <SelectTrigger />
   <SelectContent>

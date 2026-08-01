@@ -10,11 +10,11 @@ status: enriched
 
 # Grid
 
-> Grid layout · grid primitive cols/gap + GridItem across columns and rows (zero dependency·RSC) · layout/arrange
+> CSS Grid primitive · Fixed or responsive columns, configurable gaps, and spanning items · RSC-safe · layout/arrange
 
 ## When to use
 
-Use Grid for two-dimensional layouts with fixed columns, card grids, or items spanning rows and columns. GridItem controls `colSpan` and `rowSpan`. Use [Stack](../stack/stack.md) for a single row or column, or [Spacer](../spacer/spacer.md) for directional empty space.
+Use Grid for two-dimensional layouts such as fixed-column forms, card collections, or arrangements with items that span rows and columns. Use GridItem to set `colSpan` and `rowSpan`. Choose [Stack](../stack/stack.md) for a single row or column, or [Spacer](../spacer/spacer.md) when only directional whitespace is needed.
 
 ## Import
 ```ts
@@ -27,23 +27,23 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| cols | `number \| ResponsiveCols` | `1` | Number of columns. Number = fixed number of columns (any value, inline style); `{base,sm,md,lg}` = responsive (static class) |
+| cols | `number \| ResponsiveCols` | `1` | Column count. A number creates any fixed count through inline styles; `{ base, sm, md, lg }` uses static responsive classes. |
 | rows | `number` | — | Explicit row count; omit it to let content create rows automatically. |
 | gap | `number` | `0` | Row and column gap (× 0.25rem). |
-| colGap | `number` | — | Column spacing, covering gap (× 0.25rem) |
-| rowGap | `number` | — | Line spacing, covering gap (× 0.25rem) |
-| inline | `boolean` | `false` | Use inline-grid instead of grid |
-| as | `ElementType` | `"div"` | Rendered element tag |
+| colGap | `number` | — | Column gap, overriding the column component of `gap` (× 0.25rem). |
+| rowGap | `number` | — | Row gap, overriding the row component of `gap` (× 0.25rem). |
+| inline | `boolean` | `false` | Uses `inline-grid` instead of `grid`. |
+| as | `ElementType` | `"div"` | Element type rendered by Grid. |
 
 ### GridItem
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| colSpan | `number` | — | Number of columns spanned |
+| colSpan | `number` | — | Number of columns spanned. |
 | rowSpan | `number` | — | Number of rows spanned. |
-| as | `ElementType` | `"div"` | Rendered element tag |
+| as | `ElementType` | `"div"` | Element type rendered by GridItem. |
 
-Both the remaining `HTMLAttributes<HTMLElement>` properties support.
+Both components forward the remaining `HTMLAttributes<HTMLElement>` to their rendered element.
 
 ## Slots
 
@@ -51,13 +51,13 @@ Both the remaining `HTMLAttributes<HTMLElement>` properties support.
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | child element |
+| children | `ReactNode` | Grid contents. |
 
 ### GridItem
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | child element |
+| children | `ReactNode` | Content of the grid item. |
 
 ## Examples
 ```tsx
@@ -68,14 +68,14 @@ Both the remaining `HTMLAttributes<HTMLElement>` properties support.
 
 // Span multiple columns
 <Grid cols={3} gap={3}>
-<GridItem colSpan={2}><Box> across 2 columns </Box></GridItem>
+  <GridItem colSpan={2}><Box>Spans two columns</Box></GridItem>
   <Box>3</Box>
 </Grid>
 ```
 
 ## Usage guidelines
 
-Pass a number to `cols` for any column count through inline styles, or pass `{base,sm,md,lg}` to use static responsive classes. Previously listed caveats for body centering, card-button rows, and nested collapsible grid rows belong to those specific layouts, not to this general primitive.
+Pass a number to `cols` for an arbitrary fixed count. Pass `{ base, sm, md, lg }` when the count should change at the supported responsive breakpoints. Layout-specific issues involving page centering, card action rows, or collapsible tracks are outside this primitive's contract.
 
 ## Related
 [Stack](../stack/stack.md) · [Spacer](../spacer/spacer.md) · [Divider](../divider/divider.md) · [Separator](../separator/separator.md) · [Layout](../layout/layout.md) · [AdminLayout](../admin-layout/admin-layout.md)

@@ -10,11 +10,11 @@ status: enriched
 
 # Switch
 
-> Switches · Base UI controlled + ARIA · forms/basic
+> Accessible switch control built on Base UI · controlled and uncontrolled state · forms/basic
 
 ## When to use
 
-Toggle a Boolean switch that takes effect immediately (such as "Turn on notifications"). Use it when changes are applied immediately and no submit button is required. Use [Radio](../radio/radio.md) to choose between two mutually exclusive options that are semantically equivalent; use [Checkbox](../checkbox/checkbox.md) to check a Boolean item (such as "Agree to the Terms") when submitting the form.
+Use Switch for a Boolean setting that takes effect immediately, such as enabling notifications, without waiting for form submission. Use [Radio](../radio/radio.md) for two mutually exclusive choices with equal semantic weight, or [Checkbox](../checkbox/checkbox.md) for a Boolean field submitted with a form, such as accepting terms.
 
 ## Import
 ```ts
@@ -25,27 +25,27 @@ import { Switch } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| checked | `boolean` | — | controlled switching state |
-| defaultChecked | `boolean` | `false` | uncontrolled initial state |
-| disabled | `boolean` | `false` | Disable |
-| id | `string` | — | — |
-| className | `string` | — | — |
-| aria-label | `string` | — | Provided when no title is visible |
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Visual size (Track 36×20 / 40×24 / 48×28). `md` is consistent pixel by pixel before adding this prop. |
+| checked | `boolean` | — | Checked state in controlled mode. |
+| defaultChecked | `boolean` | `false` | Initial checked state in uncontrolled mode. |
+| disabled | `boolean` | `false` | Whether to disable the switch. |
+| id | `string` | — | HTML identifier used to associate the switch with a label. |
+| className | `string` | — | Additional class name for the switch root. |
+| aria-label | `string` | — | Accessible label when no visible label is present. |
+| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Visual size: 36×20, 40×24, or 48×28 px. The default `md` size preserves the original dimensions. |
 | touchTarget | `boolean` | `false` | Expands the invisible hit area to at least 44 px without changing layout or appearance; enable it for touch interfaces when spacing permits. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onCheckedChange | `(checked: boolean) => void` | Switch change callback |
+| onCheckedChange | `(checked: boolean) => void` | Called with the new checked state. |
 
 ## Example
 ```tsx
 <Switch defaultChecked aria-label="Turn on notifications" />
 ```
 
-controlled:
+Controlled usage:
 ```tsx
 const [on, setOn] = useState(false);
 <Switch checked={on} onCheckedChange={setOn} aria-label="Turn on notifications" />
@@ -54,7 +54,7 @@ const [on, setOn] = useState(false);
 ## Usage guidelines
 
 - Pair controlled `checked` with `onCheckedChange`. Use `defaultChecked` only for uncontrolled initial state; do not mix the two patterns.
-- When there is no visible title, be sure to give `aria-label`, otherwise the screen will read without a name.
+- Provide `aria-label` when there is no visible label so assistive technology can identify the control.
 - **Enable `touchTarget` on mobile.** The default `md` track is only 24 px high, below the recommended 44 px touch target; the invisible expansion improves finger accuracy without changing layout.
 - The expanded hit area extends about 10 px above and below. In a dense desktop form it may overlap nearby controls, so the option is off by default and should be enabled by context.
 

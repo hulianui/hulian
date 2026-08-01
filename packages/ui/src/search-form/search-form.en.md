@@ -10,7 +10,7 @@ status: enriched
 
 # SearchForm
 
-> Query-filter form for admin list pages · declarative fields + fixed-column grid + one-row collapse + Search/Reset actions · built from HulianUI primitives · forms/framework
+> Declarative filter form for admin list pages · fixed-column grid + single-row collapse + Search/Reset actions · built from HulianUI primitives · forms/framework
 
 ## When to use
 
@@ -25,43 +25,42 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| fields* | `SearchField[]` | — | Field configuration array |
+| fields* | `SearchField[]` | — | Definitions for the filter fields. |
 | values | `Record<string, unknown>` | — | Controlled values; omit for internal state. |
-| columns | `number` | `3` | Number of desktop columns |
+| columns | `number` | `3` | Number of columns at desktop widths. |
 | gap | `number` | `4` | Row and column gap (× 0.25rem). |
 | collapsible | `boolean` | `true` | Enables one-row collapse when fields exceed one row; has no effect otherwise. |
 | defaultCollapsed | `boolean` | `true` | Initial collapsed state. |
-| loading | `boolean` | `false` | Query button loading state |
-| className | `string` | — | Root node class name |
+| loading | `boolean` | `false` | Whether the Search button is in a loading state. |
+| className | `string` | — | Additional class name for the root element. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onSearch* | `(values: Record<string, unknown>) => void` | Query / Enter to submit |
-| onChange | `(values: Record<string, unknown>) => void` | Triggered by any field edit (controlled backfill) |
-| onReset | `(values: Record<string, unknown>) => void` | Reset (values = value after default of each field) |
+| onSearch* | `(values: Record<string, unknown>) => void` | Called with the current filter values when Search is clicked or Enter is pressed. |
+| onChange | `(values: Record<string, unknown>) => void` | Called after any field changes; use it to write back controlled values. |
+| onReset | `(values: Record<string, unknown>) => void` | Called after reset with each field restored to its default or type-specific empty value. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| submitText | `ReactNode` | Primary button label (default `"Search"`). |
-| resetText | `ReactNode` | Reset button label (default `"Reset"`). |
+| submitText | `ReactNode` | Primary button label (default `"\u67e5\u8be2"`, meaning “Search”). |
+| resetText | `ReactNode` | Reset button label (default `"\u91cd\u7f6e"`, meaning “Reset”). |
 
-`SearchField` is a discriminant combination (distinguished by `type`/`render`, the default is `input`). Public fields: `name*` (value key), `label*`, `placeholder?`, `colSpan?` (default 1, capped columns), `defaultValue?`. Various forms:
+`SearchField` is a discriminated union selected by `type` or `render`; omitting both creates an input field. Shared properties are `name*` (the value key), `label*`, `placeholder?`, `colSpan?` (defaults to 1 and is capped at `columns`), and `defaultValue?`. Supported variants are:
 - `type?: "input"` + `inputType?: string`
-- `type: "number"` + `min?` / `max?` / `step?` (transparent native input)
-- `type: "number-range"` + the same three items as above (the value is a tuple)
+- `type: "number"` + `min?` / `max?` / `step?` (forwards native input constraints)
+- `type: "number-range"` + the same constraints (the value is a tuple)
 - `type: "select"` + `options: { value: string; label: ReactNode }[]`
 - `type: "multi-select"` + `options` (value is `string[]`)
 - `type: "remote-select"` + `fetcher` (signature is the same as RemoteSelect) + `resolveValue?` + `multiple?`
 - `type: "date"` / `type: "date-range"`
 - `type: "datetime"`/`type: "datetime-range"` (native `datetime-local`)
 
-**The value shape is determined by type**: `*-range` is always a binary tuple `[start, end]` (the unfilled end is `""`);
-`multi-select` and `remote-select multiple` are `string[]`; the rest are `string`.
-After reset, each returns to `defaultValue` or the above empty shape - don't assume "reset = all empty strings".
+**The field type determines the value shape**: every `*-range` value is a two-item tuple `[start, end]`, with `""` for an unfilled endpoint; `multi-select` and a multiple `remote-select` use `string[]`; all other built-in fields use `string`.
+After reset, each field returns to its `defaultValue` or its type-specific empty shape—do not assume every field resets to an empty string.
 - `render: (ctx: { name; value; onChange }) => ReactNode` (escape hatch for a custom control)
 
 ## Example
@@ -81,7 +80,7 @@ const fields: SearchField[] = [
   values={values}
   onChange={setValues}
   onSearch={(v) => fetchList(v)}
-  onReset={() => fetchList({})}
+  onReset={(v) => fetchList(v)}
 />
 ```
 

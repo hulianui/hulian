@@ -25,27 +25,27 @@ import { TextPressure } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text | `string` | `"Compressa"` | Render text (character-by-character deformation in response to mouse pressure) |
-| fontFamily | `string` | System sans serif stack | Font family; use scaleX+font-weight+opacity to simulate pressure sensitivity under system fonts, and pass in true variable fonts to drive font-variation-settings |
-| fontUrl | `string` | — | Custom @font-face font URL; remote fonts are not injected by default (obeying the remote resource access control), only injected when the local/self-hosted address is explicitly passed |
-| width | `boolean` | `true` | Whether to drive wdth axis + scaleX to simulate lateral extrusion |
-| weight | `boolean` | `true` | Whether to drive wght axis / font-weight becomes thicker with proximity |
-| italic | `boolean` | `true` | Whether to drive ital axis (only variable fonts take effect) |
-| alpha | `boolean` | `false` | Whether to drive opacity (more opaque when close) |
-| flex | `boolean` | `true` | Whether to use flex space-between to fill the characters horizontally |
-| stroke | `boolean` | `false` | Whether to stroke (transparent center + token stroke color, hollow outline) |
-| scale | `boolean` | `false` | Whether to stretch the text block vertically to fill the height of the container |
-| textColor | `string` | `var(--color-foreground)` | Text color (self-adaptive light and dark) |
-| strokeColor | `string` | `var(--color-primary)` | Stroke color (valid when stroke=true) |
-| minFontSize | `number` | `24` | Minimum font size (px), lower limit when the container is narrow |
-| className | `string` | — | Transparent to root div (cn merge) |
+| text | `string` | `"Compressa"` | Text to render as individually responsive characters. |
+| fontFamily | `string` | System sans serif stack | Font family. System fonts simulate the effect with `scaleX`, `font-weight`, and opacity; a true variable font enables `font-variation-settings`. |
+| fontUrl | `string` | — | URL for a custom `@font-face`. No remote font is injected unless a local or self-hosted URL is supplied explicitly. |
+| width | `boolean` | `true` | Whether to animate the `wdth` axis and use `scaleX` as a fallback. |
+| weight | `boolean` | `true` | Whether to animate the `wght` axis or `font-weight` based on proximity. |
+| italic | `boolean` | `true` | Whether to animate the `ital` axis; effective only with a compatible variable font. |
+| alpha | `boolean` | `false` | Whether characters become more opaque as the pointer approaches. |
+| flex | `boolean` | `true` | Whether to distribute characters across the available width with flexbox. |
+| stroke | `boolean` | `false` | Whether to render a hollow outline with transparent fill and the configured stroke color. |
+| scale | `boolean` | `false` | Whether to stretch the text vertically to fill the container height. |
+| textColor | `string` | `var(--color-foreground)` | Text color, using a theme-aware token by default. |
+| strokeColor | `string` | `var(--color-primary)` | Outline color when `stroke` is enabled. |
+| minFontSize | `number` | `24` | Minimum font size in pixels when the container narrows. |
+| className | `string` | — | Additional class name merged onto the root `div`. |
 
 ## Example
 ```tsx
 // Move the pointer across the heading to change character pressure
 <TextPressure text="Compressa" className="flex items-center" />
 
-// Stroke hollow (token primary stroke)
+// Hollow text with the primary theme token as its outline
 <TextPressure
   text="Hulian"
   stroke
@@ -57,7 +57,7 @@ import { TextPressure } from "@hulianui/ui"
 ## Usage guidelines
 
 - Full `width` and `italic` behavior requires a variable font with `wght`, `wdth`, and `ital` axes. With a system font, width falls back to `scaleX` and italic may have no effect; this is a font limitation.
-- The token fed to `strokeColor`/`textColor` must be prefixed with `--color-` (such as `var(--color-primary)`), and bare `var(--primary)` will not be parsed. See [[hulian-token-color-var-needs-color-prefix]].
+- Tokens passed to `strokeColor` or `textColor` must use the `--color-` prefix, such as `var(--color-primary)`; bare `var(--primary)` is not resolved. See [[hulian-token-color-var-needs-color-prefix]].
 - Remote fonts are not injected by default; to use self-hosted variable fonts, you must explicitly pass `fontUrl`.
 - Reduced-motion mode disables pointer-driven deformation.
 

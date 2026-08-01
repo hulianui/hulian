@@ -30,15 +30,15 @@ import { TimeField } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| null` | — | Controlled value, `"HH:mm"` or `"HH:mm:ss"` (with `withSeconds`). 24-hour format, fixed width zero padding |
-| defaultValue | `string \| null` | — | Uncontrolled initial value, the shape is the same as above |
-| withSeconds | `boolean` | `false` | Displays the seconds segment, and the value shape is accompanied by seconds. |
-| minTime | `string` | — | The earliest selectable time (inclusive), the shape is the same as `value` |
-| maxTime | `string` | — | Latest selectable time (inclusive) |
-| clearable | `boolean` | `true` | Display the clear button when it has a value and is not disabled/readOnly |
+| value | `string \| null` | — | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
+| defaultValue | `string \| null` | — | Initial value in uncontrolled mode, with the same shape as `value`. |
+| withSeconds | `boolean` | `false` | Whether to show the seconds segment and include seconds in the value. |
+| minTime | `string` | — | Earliest allowed time, inclusive, with the same shape as `value`. |
+| maxTime | `string` | — | Latest allowed time, inclusive. |
+| clearable | `boolean` | `true` | Whether to show a clear button when the field has a value and is neither disabled nor read-only. |
 | disabled | `boolean` | `false` | Disables the field and prevents its segments from receiving focus. |
 | readOnly | `boolean` | `false` | Prevents value changes while preserving segment navigation. |
-| aria-label | `string` | `"\u65f6\u95f4"` | Accessible name; the built-in Chinese copy means “Time.” Segment labels are also built-in Chinese copy meaning hour, minute, and second. |
+| aria-label | `string` | `"\u65f6\u95f4"` | Accessible name; the built-in Chinese copy means “Time.” The hour, minute, and second segments also use built-in Chinese labels. |
 | className | `string` | — | Additional class name for the outer container. |
 
 ## Events
@@ -49,12 +49,12 @@ import { TimeField } from "@hulianui/ui"
 
 ## Keyboard
 
-| button | effect |
+| Key | Action |
 |------|------|
-| `↑` / `↓` | Current segment ±1, loop within segment (23 → 0). Empty segment starts: `↑` is the smallest, `↓` is the largest |
-| `←` / `→` | Switch segments without crossing the boundary at both ends |
+| `↑` / `↓` | Increment or decrement the active segment, wrapping within its range (23 → 0). In an empty segment, `↑` starts at the minimum and `↓` at the maximum. |
+| `←` / `→` | Move between segments without wrapping past either end. |
 | `0`–`9` | Replaces the current segment through a two-digit buffer and advances after two digits. If the first digit cannot begin a valid two-digit value (for example `3` for hours), it commits that one digit immediately. |
-| `Backspace` / `Delete` | Clear current segment |
+| `Backspace` / `Delete` | Clear the active segment. |
 
 ## Example
 ```tsx
@@ -68,7 +68,7 @@ const [time, setTime] = useState<string | null>(null);
 // With seconds
 <TimeField withSeconds defaultValue="09:30:15" />
 
-// Limited interval (clamped only after the entire section is input)
+// Range limits are applied only after every segment is complete
 <TimeField defaultValue="12:00" minTime="09:30" maxTime="18:00" />
 ```
 

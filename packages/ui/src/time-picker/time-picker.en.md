@@ -27,15 +27,15 @@ import { TimePicker } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| null` | — | Controlled value, `"HH:mm"` or `"HH:mm:ss"` (with `withSeconds`), 24-hour wide zero padding |
-| defaultValue | `string \| null` | — | Uncontrolled initial value, the shape is the same as above |
-| withSeconds | `boolean` | `false` | The seconds column is displayed and the value shape becomes `"HH:mm:ss"` |
-| minuteStep | `number` | `1` | Minute column step (5 / 15 / 30 commonly used) |
-| secondStep | `number` | `1` | second column step |
-| minTime | `string` | — | The earliest selectable time (inclusive), the shape is the same as `value` |
-| maxTime | `string` | — | Latest selectable time (inclusive) |
+| value | `string \| null` | — | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
+| defaultValue | `string \| null` | — | Initial value in uncontrolled mode, with the same shape as `value`. |
+| withSeconds | `boolean` | `false` | Whether to show the seconds column and include seconds in the value. |
+| minuteStep | `number` | `1` | Increment between minute options; 5, 15, and 30 are common choices. |
+| secondStep | `number` | `1` | Increment between second options. |
+| minTime | `string` | — | Earliest selectable time, inclusive, with the same shape as `value`. |
+| maxTime | `string` | — | Latest selectable time, inclusive. |
 | placeholder | `string` | `"\u9009\u62e9\u65f6\u95f4"` | Trigger placeholder; the built-in Chinese copy means “Select time.” |
-| clearable | `boolean` | `true` | Display the clear button when it has a value and is not disabled/readOnly |
+| clearable | `boolean` | `true` | Whether to show a clear button when the picker has a value and is neither disabled nor read-only. |
 | showNow | `boolean` | `true` | Shows a shortcut with built-in Chinese copy `"\u6b64\u523b"` (Now), rounded down to the configured step. |
 | disabled | `boolean` | `false` | Disables the trigger and prevents the panel from opening. |
 | readOnly | `boolean` | `false` | Allows the panel to open but prevents selection. |
@@ -62,18 +62,18 @@ import { TimePicker } from "@hulianui/ui"
 <TimePicker minTime="09:30" maxTime="18:00" defaultValue="10:00" />
 ```
 
-Another set of pure functions is exported for direct reuse in form verification (no need to parse the time string again):
+The package also exports pure functions for form validation, so consumers do not need to parse the time string again:
 
 ```ts
 import { parseTime, formatTimeParts, clampTime, snapToStep } from "@hulianui/ui"
 
-parseTime("9:5")                       // { h: 9, m: 5, s: 0 }; illegal/out of bounds return null
+parseTime("9:5")                       // { h: 9, m: 5, s: 0 }; invalid/out-of-range input returns null
 formatTimeParts({h:9,m:5,s:0}, false)  // "09:05"
 clampTime({h:8,m:0,s:0}, false, "09:30")  // { h: 9, m: 30, s: 0 }
 snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 ```
 
-> The `Parts` in the name is to avoid the `formatTime` occupied by [Video](../video/video.md) (which is "seconds → mm:ss").
+> The `Parts` suffix avoids a collision with [Video](../video/video.md)'s existing `formatTime`, which converts seconds to `mm:ss`.
 
 ## Usage guidelines
 

@@ -31,7 +31,7 @@ status: enriched
 
 # PasswordGenerator
 
-> Bitwarden-style password and passphrase generator · built-in 1,747-word list + live entropy rating + copy and regenerate actions + localized UI · cryptographic randomness with rejection sampling · reusable pure generation functions · hydration-safe SSR placeholder · forms/advanced
+> Secure password and passphrase generator with a built-in 1,747-word list, live entropy rating, copy and regenerate actions, localized UI, and reusable generation functions · cryptographic randomness with rejection sampling · hydration-safe SSR placeholder · forms/advanced
 
 ## When to use
 
@@ -67,21 +67,21 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 | modes | `GeneratorMode[]` | Both modes | Allowed modes. Supplying one mode hides the top switcher. |
 | defaultPasswordOptions | `PasswordOptions` | See below | Initial password-mode options. |
 | defaultPassphraseOptions | `PassphraseOptions` | See below | Initial passphrase-mode options. |
-| copyable | `boolean` | `true` | Show copy button |
-| showStrength | `boolean` | `true` | Display entropy value and intensity bar |
-| showOptions | `boolean` | `true` | Display parameter area. Turn off only the results + regenerate, suitable for popover |
+| copyable | `boolean` | `true` | Whether to show the copy button. |
+| showStrength | `boolean` | `true` | Whether to show the entropy value and strength meter. |
+| showOptions | `boolean` | `true` | Whether to show the options panel. Set to `false` for a compact result-and-regenerate view, such as inside a popover. |
 | labels | `Partial<PasswordGeneratorLabels>` | — | Per-label overrides with higher priority than the ConfigProvider locale. |
 | className | `string` | — | Additional class name for the panel root. |
 
-`PasswordOptions`: `length` 14 (clamp 5–128), `uppercase`/`lowercase`/`digits`/`special` all true, `minDigits`/`minSpecial` 1 (clamp 1–9), `avoidAmbiguous` false (excluding `I l 1 O 0 o`).
+`PasswordOptions`: `length` defaults to 14 and is clamped to 5–128; `uppercase`, `lowercase`, `digits`, and `special` all default to `true`; `minDigits` and `minSpecial` default to 1 and are clamped to 1–9; `avoidAmbiguous` defaults to `false` and, when enabled, excludes `I l 1 O 0 o`.
 
-`PassphraseOptions`: `words` 6 (clamped to 3–20), `separator` `"-"`, `capitalize` false, `includeNumber` false, and the built-in 1,747-word list.
+`PassphraseOptions`: `words` defaults to 6 and is clamped to 3–20; `separator` defaults to `"-"`; `capitalize` and `includeNumber` default to `false`; `wordlist` defaults to the built-in 1,747-word list.
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
-| onGenerate | `(result: GeneratedSecret) => void` | Called for every generated value, including after first mount, with `{ value, mode, entropy, strength }`. |
+| onGenerate | `(result: GeneratedSecret) => void` | Called for every generated value, including after the initial mount, with `{ value, mode, entropy, strength }`. |
 | onModeChange | `(mode: GeneratorMode) => void` | Called when the mode changes; use to update controlled state. |
 | onOptionsChange | `(state) => void` | Called when options change, for persisting preferences. |
 | onCopy | `(value: string) => void` | Called after the component writes the value to the clipboard; use for feedback or audit hooks. |
@@ -90,7 +90,7 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 
 | Slot | Type | Description |
 |------|------|------|
-| actions | `ReactNode` | The bottom action slot usually contains "Use this password" |
+| actions | `ReactNode` | Additional actions rendered at the bottom, such as a “Use this password” button. |
 
 ## Example
 
@@ -153,7 +153,7 @@ generatePassword({ length: 8 }, () => 0); // fixed sequence → fixed result
 
 - The result uses `<output aria-live="polite">`, so screen readers announce regenerated values.
 - The strength bar uses `role="meter"`, `aria-valuenow` (0–4), and `aria-valuetext` (strength label), conveying strength without relying on color.
-- All icon buttons, sliders, numeric inputs have `aria-label`, taken from the current locale.
+- All icon buttons, sliders, and numeric inputs have an `aria-label` from the current locale.
 
 ## i18n
 
