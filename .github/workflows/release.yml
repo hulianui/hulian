@@ -39,6 +39,11 @@ jobs:
       # changesets/action 的两种行为:
       #  - 若存在未消费的 .changeset/*.md → 开/更新 "Version Packages" PR(bump 版本 + 写 changelog)
       #  - 若没有待消费 changeset 且 package.json 版本高于已发布版本 → 跑 `pnpm release` 发布
+      #
+      # `version-packages` 在 `changeset version` 之后补跑 llms-registry + changelog:
+      # apps/www/public/registry.json 与 apps/www/lib/changelog.json 都带版本号且都是提交进仓库的
+      # 生成物,而 changesets 只认 package.json/CHANGELOG.md。不在这里一并重生成,本地检出的产物
+      # 就会永远落后一个 release,本地模式的 MCP 据此答题会缺掉当版新增的组件与 prop(#47/#48)。
       - name: Create Release PR or Publish
         uses: changesets/action@v1
         with:

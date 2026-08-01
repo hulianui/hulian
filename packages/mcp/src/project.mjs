@@ -10,8 +10,8 @@
 //   · 只读不写
 //   · 「没在扫描范围里看到」不等于「不存在」—— 一律标 unknown，并把扫过的路径回报出去
 
-import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
 const HULIAN_PACKAGES = ["@hulianui/ui", "@hulianui/tokens", "@hulianui/guard", "@hulianui/mcp"];
 
@@ -33,7 +33,13 @@ const ENTRY_CANDIDATES = [
   "src/pages/_app.tsx",
 ];
 
-/** 全局样式表的候选位置（token CSS 与 @source 扫描都写在这儿）。 */
+/**
+ * 全局样式表的候选位置（token CSS 与 @source 扫描都写在这儿）。
+ *
+ * 这只是**兜底**：固定列表必漏 —— `src/styles.css` 这种 Vite 常见命名当初就不在表里，
+ * 于是接入完全正确的项目被报成 `unknown`（#46）。真正的判据是 `cssFromEntries()`：
+ * 跟着入口文件的 `import "./xxx.css"` 走，文件叫什么、放在哪都能命中。
+ */
 const CSS_CANDIDATES = [
   "app/globals.css",
   "src/app/globals.css",
@@ -42,7 +48,11 @@ const CSS_CANDIDATES = [
   "src/index.css",
   "src/main.css",
   "src/App.css",
+  "src/styles.css",
+  "src/globals.css",
+  "src/global.css",
   "src/styles/index.css",
+  "src/styles/main.css",
   "app/global.css",
 ];
 
@@ -102,13 +112,15 @@ export function resolveProjectRoot({ explicit, roots = [], cwd = process.cwd() }
 }
 
 /** 实装版本以 node_modules 里的 package.json 为准；声明范围只是意图，未必是现实。 */
-export function installedVersion(root, name) {
+export function installedVersion(root, name, declared = null) {
   let dir = root;
   for (let depth = 0; depth < 4; depth += 1) {
-    const manifest = readJson(join(dir, "node_modules", name, "package.json"));
+    const nodeModules = join(dir, "node_modules");
+    const entry = join(nodeModules, name);
+    const manifest = readJson(join(entry, "package.json"));
     if (manifest?.version) {
-      const linked = isSymlink(join(dir, "node_modules", name));
-      return { version: manifest.version, linked, from: join(dir, "node_modules", name) };
+      const linkKind = linkKindOf(nodeModules, entry, declared);
+      return { version: manifest.version, linkKind, linked: Boolean(linkKind), from: entry };
     }
     const parent = dirname(dir);
     if (parent === dir) break;
@@ -117,12 +129,54 @@ export function installedVersion(root, name) {
   return null;
 }
 
-function isSymlink(path) {
+/**
+ * 「是不是本地源码接入」**不能**用 `lstat().isSymbolicLink()` 判 —— pnpm 的
+ * `node_modules/` 每一项都是指向 `.pnpm/` store 的软链，那样判会在**任何 pnpm 项目**里
+ * 对**任何包**恒为 true（#45）。后果不是多一条误报，而是 `!info.linked` 那道版本漂移门禁
+ * 对 pnpm 用户整体静默失效 —— 而 pnpm 恰恰是本库文档推荐的包管理器。
+ *
+ * 两条独立判据，任一成立即算本地接入：
+ *   · 声明的 specifier 是 `workspace:` / `link:` / `file:` —— 那是使用者写下的真实意图
+ *   · 解析后的真实路径**逃出**了这一层 node_modules 树 —— pnpm store 的 realpath 仍在树内，
+ *     指向兄弟仓或 workspace 包则在树外
+ *
+ * workspace 与 link/file 语义不同（前者是 monorepo 内的一等公民，后者是临时联调），
+ * 分开标注，调用方按需区分；两者都不该参与「声明 vs 实装」的漂移比对。
+ */
+function linkKindOf(nodeModulesDir, entry, declared) {
+  const spec = typeof declared === "string" ? declared.trim() : "";
+  if (spec.startsWith("workspace:")) return "workspace";
+  if (spec.startsWith("link:") || spec.startsWith("file:")) return "local-link";
   try {
-    return lstatSync(path).isSymbolicLink();
+    const real = realpathSync(entry);
+    const base = realpathSync(nodeModulesDir);
+    if (real !== base && !real.startsWith(base + sep)) return "local-link";
   } catch {
-    return false;
+    // 读不到就当不是：宁可漏报一次联调，也不能把 pnpm store 软链误判成联调
   }
+  return null;
+}
+
+/**
+ * 0.x 的兼容单位是 **minor 而非 major** —— npm 对 `^0.5.0` 只放行 `0.5.x`。
+ * 原先只比 major，对瑚琏这种长期停在 0.x 的库永远比不出漂移（`^0.5.0` 与实装 `0.16.0`
+ * 两边 major 都是 "0"），门禁常年空转。这与 #45 的 `linked` 恒 true 是两个独立成因，
+ * 叠在一起才让「声明 ^0.14.0 却实装 0.16.0」一路无声通过。
+ *
+ * 只对 `^` / `~` / 精确版本三种形态下判断：`>=x` `*` `1.x` `npm:` 这些要么显式放宽了范围、
+ * 要么不是语义版本，猜了就是误报。
+ */
+function versionDrift(declared, installed) {
+  if (!/^\s*[\^~]?\s*\d+\.\d+/.test(declared)) return null;
+  const want = declared.replace(/^[\s\^~]+/, "").split(".");
+  const got = String(installed).split(".");
+  const isNum = (value) => /^\d+$/.test(value ?? "");
+  if (!isNum(want[0]) || !isNum(got[0])) return null;
+  if (want[0] !== got[0]) return "主版本不一致";
+  if (want[0] === "0" && isNum(want[1]) && isNum(got[1]) && want[1] !== got[1]) {
+    return "0.x 下 minor 就是破坏性版本线（^ 只放行 patch），实装的不是声明的那条线";
+  }
+  return null;
 }
 
 /**
@@ -177,7 +231,7 @@ function workspaceCandidates(root) {
     const pkg = readJson(join(dir, "package.json"));
     if (!pkg) continue;
     const deps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
-    const installed = installedVersion(dir, "@hulianui/ui");
+    const installed = installedVersion(dir, "@hulianui/ui", deps["@hulianui/ui"]);
     found.push({
       path: rel,
       framework: detectFramework(deps).name,
@@ -195,6 +249,29 @@ function detectFramework(deps) {
   if (deps.vite) return { name: "vite", version: deps.vite };
   if (deps["react-scripts"]) return { name: "cra", version: deps["react-scripts"] };
   return { name: "unknown", version: null };
+}
+
+/**
+ * 从入口文件里抓出它 import 的本项目 CSS —— 这比固定候选列表可靠得多：
+ * `src/main.tsx` 里那行 `import "./styles.css"` 直接指出了真正的全局样式表，
+ * 无论它叫什么名字、放在哪个目录（#46）。
+ *
+ * 只认相对路径：裸 specifier（`import "tailwindcss"`）指向 node_modules，不是本项目的样式表；
+ * 顺着 `../..` 爬出 projectRoot 的也丢掉 —— 探测必须留在本仓库边界内。
+ */
+function cssFromEntries(root) {
+  const found = [];
+  for (const rel of ENTRY_CANDIDATES) {
+    const text = readTextIfExists(join(root, rel));
+    if (text === null) continue;
+    for (const [, spec] of text.matchAll(/import\s+["']([^"']+\.css)["']/g)) {
+      if (!spec.startsWith(".")) continue;
+      const abs = resolve(dirname(join(root, rel)), spec);
+      if (!abs.startsWith(root + sep)) continue;
+      found.push(relative(root, abs).split(sep).join("/"));
+    }
+  }
+  return [...new Set(found)];
 }
 
 /** 在候选文件里找一个标记；找不到只说「扫过的文件里没有」，不说「不存在」。 */
@@ -234,12 +311,13 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
 
   const packages = {};
   for (const name of HULIAN_PACKAGES) {
-    const installed = installedVersion(projectRoot, name);
+    const installed = installedVersion(projectRoot, name, deps[name]);
     if (!installed && !deps[name]) continue;
     packages[name] = {
       declared: deps[name] ?? null,
       installed: installed?.version ?? null,
       linked: installed?.linked ?? false,
+      linkKind: installed?.linkKind ?? null,
     };
   }
 
@@ -266,8 +344,10 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
   const themeProvider = probe(projectRoot, ENTRY_CANDIDATES, /<ThemeProvider[\s/>]/);
   const configProvider = probe(projectRoot, ENTRY_CANDIDATES, /<ConfigProvider[\s/>]/);
   const accessProvider = probe(projectRoot, ENTRY_CANDIDATES, /<AccessProvider[\s/>]/);
-  const tokensCss = probe(projectRoot, CSS_CANDIDATES, /@hulianui\/tokens\/tokens\.css/);
-  const tailwindSource = probe(projectRoot, CSS_CANDIDATES, /@source[^\n]*@hulianui\/ui/);
+  // 入口 import 推出来的样式表排在固定候选之前 —— 那是这个项目真正在用的那份
+  const cssCandidates = [...new Set([...cssFromEntries(projectRoot), ...CSS_CANDIDATES])];
+  const tokensCss = probe(projectRoot, cssCandidates, /@hulianui\/tokens\/tokens\.css/);
+  const tailwindSource = probe(projectRoot, cssCandidates, /@source[^\n]*@hulianui\/ui/);
 
   const setup = {
     themeProvider: themeProvider.status,
@@ -336,6 +416,15 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
         "若样式表不在这些位置请自行确认，漏了这行组件全无样式",
     );
   }
+  // `unknown` 是「没找到文件」，不是「你没接」—— 这两件事必须说清楚，否则模型会读成后者，
+  // 对一个接入完全正确的项目开出一堆修复建议（#46）。
+  if (usesHulian && tokensCss.status === "unknown") {
+    warnings.push(
+      "没找到任何全局样式表：常见路径都不存在，扫过的入口文件里也没有相对路径的 CSS import。" +
+        "tokens.css / @source 两项因此是 unknown（**探测不到**，不是「你没接」）—— " +
+        "样式表若在别处，带上它的路径自行确认，别据此断定缺接入",
+    );
+  }
   if (usesHulian && tailwindSource.status === "not-found") {
     warnings.push(
       "扫过的样式表里没有 @source 指向 @hulianui/ui/src —— Tailwind v4 默认不扫 node_modules，" +
@@ -353,17 +442,14 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
   }
   if (packages["@hulianui/ui"]?.linked && setup.vitePlugin === "not-found") {
     warnings.push(
-      "@hulianui/ui 是软链进来的，但 vite 配置里没有 @hulianui/ui/vite 插件：" +
+      "@hulianui/ui 是本地源码接入的（link: / file: / workspace:），但 vite 配置里没有 @hulianui/ui/vite 插件：" +
         "Vite 会跳过 linked 包预构建，dev 模块请求实测差 15 倍",
     );
   }
   for (const [name, info] of Object.entries(packages)) {
-    if (info.declared && info.installed && !info.linked) {
-      const declared = info.declared.replace(/^[\^~>=<\s]*/, "");
-      if (declared && !info.installed.startsWith(declared.split(".")[0])) {
-        warnings.push(`${name} 声明 ${info.declared} 但实装 ${info.installed}，主版本不一致`);
-      }
-    }
+    if (!info.declared || !info.installed || info.linked) continue;
+    const drift = versionDrift(info.declared, info.installed);
+    if (drift) warnings.push(`${name} 声明 ${info.declared} 但实装 ${info.installed}：${drift}`);
   }
 
   return {
@@ -408,7 +494,7 @@ function recommendImports({ framework, packages, setup }) {
     return {
       recommended: ui.linked ? "root-barrel-with-vite-plugin" : "root-barrel",
       reason: ui.linked
-        ? "软链消费必须让 Vite 预构建瑚琏：加 @hulianui/ui/vite 的 hulian() 插件，或手写 optimizeDeps.include"
+        ? "本地源码接入必须让 Vite 预构建瑚琏：加 @hulianui/ui/vite 的 hulian() 插件，或手写 optimizeDeps.include"
         : "npm 安装的包 Vite 会自动预打包，不需要额外配置；只用十几个组件时子路径入口能进一步瘦模块图",
     };
   }
@@ -431,7 +517,7 @@ export function renderProject(info) {
     ([name, value]) =>
       `  - ${name}：实装 ${value.installed ?? "未安装"}${
         value.declared ? `（声明 ${value.declared}）` : ""
-      }${value.linked ? " · 软链" : ""}`,
+      }${value.linkKind === "workspace" ? " · workspace 包" : value.linkKind ? " · 本地源码接入" : ""}`,
   );
   lines.push(`- 瑚琏包：${pkgLines.length ? "" : "无"}`, ...pkgLines);
   if (info.workspaceCandidates.length) {

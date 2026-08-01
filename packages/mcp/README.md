@@ -140,7 +140,11 @@ npx -y @hulianui/guard src/components/pages src/components/blocks
 两条路，返回结构一致，且**每个响应尾部都标出数据源、registry 版本与生成时间** —— 调用方能自己发现漂移：
 
 1. **本地**（`HULIAN_UI_ROOT` 已设）：直接读 `packages/ui/src/<slug>/<slug>.md` 与生成的 registry。永远最新。
-   缺产物时**明确报错**（提示去跑 `pnpm llms-registry`），不会安静地改用线上数据回答本地问题。
+   - 缺产物时**明确报错**（提示去跑 `pnpm llms-registry`），不会安静地改用线上数据回答本地问题。
+   - 版本戳取 `packages/ui/package.json`，**不取生成物里的** —— 生成物是 `pnpm llms-registry` 的产出，
+     发版 commit 不会重跑它，用它当版本戳会报出假的 skew。
+   - 产物**陈旧**同样会告警（比版本号 + 比 `<slug>.md` / `<slug>.types.ts` 的 mtime）：
+     产物落后意味着新增的组件与 prop 在 MCP 里整个查不到，而这是静默的，比缺产物更危险。
 2. **远程**（默认）：读 `https://hulianui.haloritual.com` 的 `registry.json` / `r/<name>.json` / `d/<slug>.md` / `conventions.json`。
 
 | 环境变量 | 作用 |

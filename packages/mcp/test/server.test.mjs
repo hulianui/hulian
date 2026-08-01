@@ -4,7 +4,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  symlinkSync,
+  utimesSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -517,6 +526,107 @@ test("inspect_project 优先用 MCP Roots，没有才退 cwd 并标明来源", a
   }
 });
 
+/**
+ * pnpm 的真实布局：`node_modules/<pkg>` 是指向 `.pnpm/` store 的**软链**。
+ * 这不是联调，是它默认的隔离方案 —— 用 isSymbolicLink 判 linked 会在这里恒为 true（#45）。
+ */
+function makePnpmProject({ declared = "^0.16.0", installed = "0.16.0" } = {}) {
+  const root = mkdtempSync(join(tmpdir(), "hulian-pnpm-"));
+  const store = join("node_modules", ".pnpm", `@hulianui+ui@${installed}`, "node_modules", "@hulianui", "ui");
+  write(root, join(store, "package.json"), JSON.stringify({ name: "@hulianui/ui", version: installed }));
+  mkdirSync(join(root, "node_modules", "@hulianui"), { recursive: true });
+  symlinkSync(join(root, store), join(root, "node_modules", "@hulianui", "ui"));
+  write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
+  write(
+    root,
+    "package.json",
+    JSON.stringify({
+      name: "pnpm-fixture",
+      dependencies: { next: "16.2.0", react: "19.0.0", "@base-ui/react": "1.0.0", "@hulianui/ui": declared },
+    }),
+  );
+  return root;
+}
+
+test("pnpm store 的软链不算本地接入 —— 版本漂移门禁必须照常跑（#45）", async () => {
+  // 声明 ^0.14.0 却实装 0.16.0：0.x 下 minor 就是破坏性版本线，这必须报出来
+  const root = makePnpmProject({ declared: "^0.14.0", installed: "0.16.0" });
+  try {
+    const [res] = await rpc([call(60, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    const ui = info.packages["@hulianui/ui"];
+    assert.equal(ui.installed, "0.16.0");
+    assert.equal(ui.linked, false, "pnpm store 软链不是本地接入");
+    assert.equal(ui.linkKind, null);
+    assert.match(
+      info.warnings.join("\n"),
+      /声明 \^0\.14\.0 但实装 0\.16\.0/,
+      "linked 恒 true 时这条门禁被静默跳过，正是 #45 最要紧的影响",
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("0.x 版本一致时不误报漂移（^0.16.0 + 0.16.0）", async () => {
+  const root = makePnpmProject({ declared: "^0.16.0", installed: "0.16.0" });
+  try {
+    const [res] = await rpc([call(61, "inspect_project", { projectRoot: root })]);
+    const warnings = dataOf(res).warnings.join("\n");
+    assert.doesNotMatch(warnings, /实装/, "版本对得上就不该有漂移警告");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("link: 声明才算本地源码接入，并如实标出 linkKind（#45）", async () => {
+  const root = makeProject("vite"); // 该 fixture 声明的就是 link:../hulian/packages/ui
+  try {
+    const [res] = await rpc([call(62, "inspect_project", { projectRoot: root })]);
+    const ui = dataOf(res).packages["@hulianui/ui"];
+    assert.equal(ui.linked, true);
+    assert.equal(ui.linkKind, "local-link");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("全局样式表跟着入口 import 走，src/styles.css 也能命中（#46）", async () => {
+  const root = makePnpmProject();
+  try {
+    // 入口 import 的是一个既不在固定候选列表里、名字也不常规的样式表
+    write(root, "src/main.tsx", `import "./theme/app-styles.css"\nexport default null\n`);
+    write(
+      root,
+      "src/theme/app-styles.css",
+      `@import "@hulianui/tokens/tokens.css";\n@source "../../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";\n`,
+    );
+    const [res] = await rpc([call(63, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.setup.tokensCss, "detected");
+    assert.equal(info.setup.tailwindSource, "detected");
+    assert.ok(
+      info.setup.scannedCssFiles.includes("src/theme/app-styles.css"),
+      `扫描过的样式表应含入口推出来的那份，实际：${JSON.stringify(info.setup.scannedCssFiles)}`,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("一个样式表都找不到时说清是「探测不到」而非「你没接」（#46）", async () => {
+  const root = makePnpmProject();
+  try {
+    const [res] = await rpc([call(64, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.setup.tokensCss, "unknown");
+    assert.deepEqual(info.setup.scannedCssFiles, []);
+    assert.match(info.warnings.join("\n"), /探测不到/, "unknown 的含义必须写进 warnings，否则模型读反");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("validate_hulian_usage 对合规代码返回 ok:true", async () => {
   const [res] = await rpc([
     call(31, "validate_hulian_usage", {
@@ -741,6 +851,57 @@ test("本地源码不会配上线上安装命令（内容不同也不会误导�
     );
     assert.match(body, /不是同一来源|没有同源的安装端点/, "必须说清为什么没有命令");
     assert.match(body, /registry v9\.9\.9-local/, "数据源版本应如实回报");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("本地模式版本以源码为准，产物落后一版时显式告警（#47 #48）", async () => {
+  const root = makeLocalRegistry();
+  try {
+    // 发版 commit 只动 package.json，不重跑生成脚本 —— 于是本地产物必然落后一版
+    write(root, "packages/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: "9.9.10-source" }));
+    const [res] = await rpc([call(65, "install_block", { name: "block-local-only", includeSource: false })], {
+      env: { HULIAN_UI_ROOT: join(root, "packages", "ui") },
+    });
+    const body = bodyOf(res);
+    assert.match(body, /registry v9\.9\.10-source/, "版本戳取源码真源，不取生成物 —— 否则报出假 skew");
+    assert.match(body, /产物已陈旧/, "陈旧必须说出来，不能静默");
+    assert.match(body, /9\.9\.9-local/, "要把产物那一版也报出来，方便判断差多远");
+    assert.match(body, /pnpm llms-registry/, "告警要直接给修复命令");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("版本号相同但组件文档改过，同样算产物陈旧（mtime 判据，#48）", async () => {
+  const root = makeLocalRegistry();
+  try {
+    // 与产物同版：版本号比对对「同版本内改文档」是瞎的，只有 mtime 能挡
+    write(root, "packages/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: "9.9.9-local" }));
+    write(root, "packages/ui/src/button/button.md", "# Button\n\n| onQueryChange | 新加的 |\n");
+    const future = Date.now() / 1000 + 600;
+    utimesSync(join(root, "packages", "ui", "src", "button", "button.md"), future, future);
+
+    const [res] = await rpc([call(66, "install_block", { name: "block-local-only", includeSource: false })], {
+      env: { HULIAN_UI_ROOT: join(root, "packages", "ui") },
+    });
+    const body = bodyOf(res);
+    assert.match(body, /产物已陈旧/);
+    assert.match(body, /button\.md 比产物新/, "要指出是哪个文件比产物新");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("产物与源码同步时不打陈旧告警", async () => {
+  const root = makeLocalRegistry();
+  try {
+    write(root, "packages/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: "9.9.9-local" }));
+    const [res] = await rpc([call(67, "install_block", { name: "block-local-only", includeSource: false })], {
+      env: { HULIAN_UI_ROOT: join(root, "packages", "ui") },
+    });
+    assert.doesNotMatch(bodyOf(res), /产物已陈旧/, "同步状态下不能有噪音告警");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
