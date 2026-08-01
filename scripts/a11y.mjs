@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 
-import { existsSync, readFileSync, statSync } from "node:fs";
-import { createServer } from "node:http";
-import { dirname, extname, join, normalize, relative } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathToFileURL } from "node:url";
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(ROOT, "apps", "www", "out");
+import { startStaticServer } from "./static-server.mjs";
 
 export const ROUTES = [
   "/",
@@ -47,64 +43,6 @@ export function shouldIgnoreRequestFailure({ resourceType, errorText }) {
 
 export function shouldFailResponse({ url, status }, baseUrl) {
   return url.startsWith(`${baseUrl}/`) && status >= 400;
-}
-
-function contentType(file) {
-  return (
-    {
-      ".css": "text/css",
-      ".html": "text/html; charset=utf-8",
-      ".js": "text/javascript",
-      ".json": "application/json",
-      ".svg": "image/svg+xml",
-      ".webp": "image/webp",
-      ".woff2": "font/woff2",
-    }[extname(file)] ?? "application/octet-stream"
-  );
-}
-
-function resolveStaticFile(pathname) {
-  const clean = normalize(decodeURIComponent(pathname)).replace(/^[/\\]+/, "");
-  const base = join(OUT_DIR, clean);
-  const candidates = [base, `${base}.html`, join(base, "index.html")];
-  for (const candidate of candidates) {
-    if (
-      !relative(OUT_DIR, candidate).startsWith("..") &&
-      existsSync(candidate) &&
-      statSync(candidate).isFile()
-    ) {
-      return candidate;
-    }
-  }
-  return null;
-}
-
-async function startStaticServer() {
-  if (!existsSync(join(OUT_DIR, "index.html"))) {
-    throw new Error("apps/www/out 不存在，请先运行 pnpm --filter www build");
-  }
-  const server = createServer((request, response) => {
-    const pathname = new URL(request.url ?? "/", "http://localhost").pathname;
-    const file = resolveStaticFile(pathname);
-    if (!file) {
-      response.writeHead(404).end("not found");
-      return;
-    }
-    response.setHeader("content-type", contentType(file));
-    response.end(readFileSync(file));
-  });
-  await new Promise((resolve, reject) => {
-    server.once("error", reject);
-    server.listen(0, "127.0.0.1", resolve);
-  });
-  const address = server.address();
-  return {
-    baseUrl: `http://127.0.0.1:${address.port}`,
-    close: async () => {
-      server.close();
-      server.closeAllConnections();
-    },
-  };
 }
 
 export async function runA11y() {
