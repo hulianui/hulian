@@ -970,7 +970,7 @@ import { AnimatedShinyText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ASCIIText
 
-> 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced-motion） · typography/text · #animated
+> ASCII 字符画 · 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced-motion） · typography/text · #animated
 
 ## 何时用
 
@@ -1297,7 +1297,7 @@ import { CodeDiff, diffLines, diffStat } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CurvedLoop
 
-> 沿二次贝塞尔曲线无缝循环滚动的弧形跑马灯文字 · SVG textPath + rAF 续滚 + 可拖拽拨动(零依赖·token/currentColor·reduced-motion) · typography/text · #animated
+> 弧形跑马灯 · 沿二次贝塞尔曲线无缝循环滚动的弧形跑马灯文字 · SVG textPath + rAF 续滚 + 可拖拽拨动(零依赖·token/currentColor·reduced-motion) · typography/text · #animated
 
 ## 何时用
 
@@ -1390,7 +1390,7 @@ import { DecryptedText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FallingText
 
-> 文字按词散落物理特效 · 触发后逐词受重力下落/撞墙反弹堆叠 + 指针拖拽抛掷(零依赖 RAF 自写二维刚体·token·reduced-motion) · typography/text · #animated
+> 文字散落 · 文字按词散落物理特效 · 触发后逐词受重力下落/撞墙反弹堆叠 + 指针拖拽抛掷(零依赖 RAF 自写二维刚体·token·reduced-motion) · typography/text · #animated
 
 ## 何时用
 
@@ -1442,7 +1442,7 @@ import { FallingText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FuzzyText
 
-> 信号噪点模糊标题 · canvas2d 逐行/逐列随机错位扫描 + 悬停增强抖动(零依赖·token·reduced-motion 退静态帧) · typography/text · #animated
+> 噪点模糊标题 · 信号噪点模糊标题 · canvas2d 逐行/逐列随机错位扫描 + 悬停增强抖动(零依赖·token·reduced-motion 退静态帧) · typography/text · #animated
 
 ## 何时用
 
@@ -1643,7 +1643,7 @@ import { Kbd } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Markdown
 
-> 只读 Markdown 渲染 · 零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC 安全 · typography/text
+> Markdown 渲染 · 只读，零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC 安全 · typography/text
 
 ## 何时用
 
@@ -1828,7 +1828,7 @@ import { Prose } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrambledText
 
-> 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
+> 乱码悬停文字 · 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
 
 ## 何时用
 
@@ -1879,7 +1879,7 @@ import { ScrambledText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollFloat
 
-> 滚动浮现标题：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（去 gsap·吃 text-foreground token·reduced-motion 直出清晰标题） · typography/text · #animated
+> 滚动浮现标题 · ：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（去 gsap·吃 text-foreground token·reduced-motion 直出清晰标题） · typography/text · #animated
 
 ## 何时用
 
@@ -1987,7 +1987,7 @@ import { ScrollReveal } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollVelocity
 
-> 滚动速度跑马灯文字 · 多行交替方向视差 + 随页面滚动加速/变向、静止匀速漂移(motion 速度值驱动·零额外依赖·reduced-motion 冻结自走帧保留 DOM) · typography/text · #animated
+> 滚动跑马灯 · 滚动速度跑马灯文字 · 多行交替方向视差 + 随页面滚动加速/变向、静止匀速漂移(motion 速度值驱动·零额外依赖·reduced-motion 冻结自走帧保留 DOM) · typography/text · #animated
 
 ## 何时用
 
@@ -2036,7 +2036,7 @@ import { ScrollVelocity } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Shuffle
 
-> 逐字「洗牌解密」文本动画 · 字位先滚乱码再按方向顺序锁定真字 + 视口/悬停/循环触发(零依赖 rAF·reduced-motion 直落终态·token 着色) · typography/text · #animated
+> 洗牌解密文字 · 逐字「洗牌解密」文本动画 · 字位先滚乱码再按方向顺序锁定真字 + 视口/悬停/循环触发(零依赖 rAF·reduced-motion 直落终态·token 着色) · typography/text · #animated
 
 ## 何时用
 
@@ -2293,7 +2293,7 @@ import { Text } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TextCursor
 
-> 光标拖尾文字特效组件 · 在容器内移动光标时沿轨迹按间距落下一串字形并随机微浮动淡出回收（沿方向旋转 / emoji / 自定义间距上限）(零依赖·motion 运行时·reduced-motion 去浮动) · typography/text · #animated
+> 光标拖尾文字 · 特效组件 · 在容器内移动光标时沿轨迹按间距落下一串字形并随机微浮动淡出回收（沿方向旋转 / emoji / 自定义间距上限）(零依赖·motion 运行时·reduced-motion 去浮动) · typography/text · #animated
 
 ## 何时用
 
@@ -2503,7 +2503,7 @@ import { TypingAnimation } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # VariableProximity
 
-> 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 RAF · reduced-motion 定格 from · sr-only 完整朗读） · typography/text · #animated
+> 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 RAF · reduced-motion 定格 from · sr-only 完整朗读） · typography/text · #animated
 
 ## 何时用
 
@@ -7264,7 +7264,7 @@ import { Book3D } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # BounceCards
 
-> 一叠卡片扇形铺开的入场弹跳组件 · 逐张 scale 0 弹性弹入 + hover 推挤让位（零依赖去 gsap·motion 弹簧·reduced-motion） · data-display/collection · #animated
+> 扇形弹跳卡 · 一叠卡片扇形铺开的入场弹跳组件 · 逐张 scale 0 弹性弹入 + hover 推挤让位（零依赖去 gsap·motion 弹簧·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 
@@ -7375,7 +7375,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CardSwap
 
-> 3D 透视卡片自动洗牌组件 · 最前卡下坠 → 其余递进 → 绕回队尾循环 + 复合 CardSwap.Card 默认皮肤（去 gsap·motion useAnimate·reduced-motion） · data-display/collection · #animated
+> 卡片洗牌 · 3D 透视卡片自动洗牌组件 · 最前卡下坠 → 其余递进 → 绕回队尾循环 + 复合 CardSwap.Card 默认皮肤（去 gsap·motion useAnimate·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 
@@ -7636,7 +7636,7 @@ import { Chip, chipVariants } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ChromaGrid
 
-> 光标聚光揭示的卡片墙 · 整片灰度暗化、光标圈内透出全彩 + 单卡 hover 径向高光（弹性跟随·reduced-motion） · data-display/collection · #animated
+> 聚光卡片墙 · 光标聚光揭示的卡片墙 · 整片灰度暗化、光标圈内透出全彩 + 单卡 hover 径向高光（弹性跟随·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 
@@ -7702,7 +7702,7 @@ import { ChromaGrid } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CircularGallery
 
-> ogl 弧形图片画廊 · 卡片沿圆弧弯曲倾斜排开 + 滚轮/拖拽惯性平移首尾无缝循环(ogl·圆角SDF·token化标题·reduced-motion 降级静态轨道) · data-display/collection · #animated
+> 弧形图片画廊 · ogl 弧形图片画廊 · 卡片沿圆弧弯曲倾斜排开 + 滚轮/拖拽惯性平移首尾无缝循环(ogl·圆角SDF·token化标题·reduced-motion 降级静态轨道) · data-display/collection · #animated
 
 ## 何时用
 
@@ -7766,7 +7766,7 @@ import { CircularGallery } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CodeReviewThread
 
-> 代码审查评论线程 · severity 左边色条(四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠 · 嵌 code-diff annotations 槽或独立用·复用 Avatar/Tag/CodeDiff · data-display/collection
+> 代码评审线程 · 代码审查评论线程 · severity 左边色条(四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠 · 嵌 code-diff annotations 槽或独立用·复用 Avatar/Tag/CodeDiff · data-display/collection
 
 ## 何时用
 
@@ -8137,7 +8137,7 @@ setItems((p) => [...p.slice(-60), { id: `d${i}`, text: "前排围观", mode: "sc
 <!-- ════════════════════════════════════════════════════════ -->
 # DecayCard
 
-> 鼠标驱动的「湍流溶解」图片卡 · SVG feTurbulence+feDisplacementMap 随鼠标速度融化图像 + 带阻尼的视差倾斜平移（零依赖去 gsap·RAF 缓动·reduced-motion） · data-display/collection · #animated
+> 湍流溶解卡 · 鼠标驱动的「湍流溶解」图片卡 · SVG feTurbulence+feDisplacementMap 随鼠标速度融化图像 + 带阻尼的视差倾斜平移（零依赖去 gsap·RAF 缓动·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 
@@ -8197,7 +8197,7 @@ import { DecayCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DeployStatus
 
-> 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC) · data-display/info
+> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC) · data-display/info
 
 ## 何时用
 
@@ -8420,7 +8420,7 @@ DocumentSheetHeader / DocumentSheetFooter：仅排版容器，透传 div 属性�
 <!-- ════════════════════════════════════════════════════════ -->
 # DomeGallery
 
-> 球面图库：图片瓦片贴在 CSS 3D 半球内壁，拖拽旋转浏览、点击放大查看 · 原生 PointerEvents 自搓拖拽+RAF 惯性 + motion 灯箱(零依赖·token·reduced-motion) · data-display/collection · #animated
+> 球面图库 · ：图片瓦片贴在 CSS 3D 半球内壁，拖拽旋转浏览、点击放大查看 · 原生 PointerEvents 自搓拖拽+RAF 惯性 + motion 灯箱(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 
@@ -8931,7 +8931,7 @@ import { FlyingPosters } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Folder
 
-> 点击展开的 3D 文件夹 · 三层纸张扇形铺开 + 展开后磁吸跟随鼠标(零依赖纯 CSS transform·token 派生·reduced-motion) · data-display/collection · #animated
+> 3D 文件夹 · 点击展开的 3D 文件夹 · 三层纸张扇形铺开 + 展开后磁吸跟随鼠标(零依赖纯 CSS transform·token 派生·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 
@@ -9371,7 +9371,7 @@ const [index, setIndex] = useState(0);
 <!-- ════════════════════════════════════════════════════════ -->
 # InfiniteMenu
 
-> 可拖拽旋转的菜单球，菜单项围绕球面分布、正对镜头者贴靠为激活项并显覆盖层标题/描述+动作箭头 · 松手惯性衰减 + 自动自旋（零依赖 CSS-3D/RAF·reduced-motion） · data-display/collection · #animated
+> 球面菜单 · 可拖拽旋转的菜单球，菜单项围绕球面分布、正对镜头者贴靠为激活项并显覆盖层标题/描述+动作箭头 · 松手惯性衰减 + 自动自旋（零依赖 CSS-3D/RAF·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 
@@ -9492,7 +9492,7 @@ function Feed() {
 <!-- ════════════════════════════════════════════════════════ -->
 # JsonViewer
 
-> 折叠 JSON 树(只读) · 递归零依赖 + 语法着色(key/string/number/bool/null) + 行级展开折叠 + 折叠态 {…} N keys/[…] N items + depth<阈值初始展开/大对象懒展开 + hover 复制节点值与 JSON path(网关请求/响应日志检查器刚需·导出 valueType/jsonPath 纯函数) · data-display/collection
+> 只读 JSON 树 · 折叠 JSON 树(只读) · 递归零依赖 + 语法着色(key/string/number/bool/null) + 行级展开折叠 + 折叠态 {…} N keys/[…] N items + depth<阈值初始展开/大对象懒展开 + hover 复制节点值与 JSON path(网关请求/响应日志检查器刚需·导出 valueType/jsonPath 纯函数) · data-display/collection
 
 ## 何时用
 
@@ -9944,7 +9944,7 @@ import { LiveProductCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LogoLoop
 
-> 无缝无限滚动的 logo 跑马灯 · RAF 速度低通平滑 + 序列复制无缝回卷 · 横纵四向/悬停变速暂停/单项放大/两端渐隐(零依赖·token·reduced-motion) · data-display/collection · #animated
+> logo 跑马灯 · 无缝无限滚动的 logo 跑马灯 · RAF 速度低通平滑 + 序列复制无缝回卷 · 横纵四向/悬停变速暂停/单项放大/两端渐隐(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 
@@ -10068,7 +10068,7 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MagicBento
 
-> 魔法便当卡片网格 · 光标跟随径向聚光 + 描边光呼吸 + 可选 3D 倾斜(零依赖·token·reduced-motion) · data-display/collection · #animated
+> 便当卡片网格 · 魔法便当卡片网格 · 光标跟随径向聚光 + 描边光呼吸 + 可选 3D 倾斜(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 
@@ -10327,7 +10327,7 @@ import { NumberTicker, formatTicker } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelCard
 
-> canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion 静止) · data-display/collection · #animated
+> 像素卡片 · canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion 静止) · data-display/collection · #animated
 
 ## 何时用
 
@@ -10434,7 +10434,7 @@ const rows: PricingRow[] = [
 <!-- ════════════════════════════════════════════════════════ -->
 # ProfileCard
 
-> 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-display/collection · #animated
+> 全息名片卡 · 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-display/collection · #animated
 
 ## 何时用
 
@@ -10742,7 +10742,7 @@ import { QuestionCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # QueueLane
 
-> 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItemClick · groupByLane 保序分组纯函数带单测 · 任务总线/优先级队列(零依赖) · data-display/collection
+> 优先级队列板 · 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItemClick · groupByLane 保序分组纯函数带单测 · 任务总线/优先级队列(零依赖) · data-display/collection
 
 ## 何时用
 
@@ -10919,7 +10919,7 @@ import { RelativeTime, formatRelative, formatAbsolute } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Sankey
 
-> 桑基图(库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · hover 高亮关联链路 tooltip + 点击节点/连线下钻 · 调度流向/流量来源/预算分配/转化路径旗舰 · data-display/collection
+> 桑基图 · (库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · hover 高亮关联链路 tooltip + 点击节点/连线下钻 · 调度流向/流量来源/预算分配/转化路径旗舰 · data-display/collection
 
 ## 何时用
 
@@ -11127,7 +11127,7 @@ import { ScoreRing, resolveGrade, DEFAULT_GRADES } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollStack
 
-> 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collection · #animated
+> 滚动堆叠卡 · 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collection · #animated
 
 ## 何时用
 
@@ -11855,7 +11855,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TiltedCard
 
-> 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · data-display/collection · #animated
+> 倾斜卡片 · 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 
@@ -12914,7 +12914,7 @@ const items = [
 <!-- ════════════════════════════════════════════════════════ -->
 # CardNav
 
-> 卡片导航：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/global · #animated
+> 卡片导航 · ：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/global · #animated
 
 ## 何时用
 
@@ -14090,7 +14090,7 @@ const closeKeys = (keys: string[]) => {
 <!-- ════════════════════════════════════════════════════════ -->
 # StaggeredMenu
 
-> 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 gsap·token·reduced-motion） · navigation/global · #animated
+> 侧滑分层菜单 · 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 gsap·token·reduced-motion） · navigation/global · #animated
 
 ## 何时用
 
@@ -16828,7 +16828,7 @@ function Demo() {
 <!-- ════════════════════════════════════════════════════════ -->
 # Antigravity
 
-> 反重力粒子吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点阵) · decoration/overlay-fx · #animated
+> 反重力粒子 · 吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点阵) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -16951,7 +16951,7 @@ import { Aurora } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Balatro
 
-> 螺旋油彩 WebGL 背景 · 像素旋涡 + 5 次正弦迭代油画混色 + 可选鼠标交互/自转(ogl·三色吃 chart token·reduced-motion conic 兜底) · decoration/backdrop · #animated #webgl
+> 螺旋油彩 · WebGL 背景 · 像素旋涡 + 5 次正弦迭代油画混色 + 可选鼠标交互/自转(ogl·三色吃 chart token·reduced-motion conic 兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -17022,7 +17022,7 @@ import { Balatro } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Ballpit
 
-> 一坑彩色小球的可交互物理球池 · 重力下落+墙壁回弹+球球弹性碰撞+光标排斥(零依赖 canvas2d·chart token·reduced-motion) · decoration/backdrop · #animated #webgl
+> 彩球球池 · 一坑彩色小球的可交互物理球池 · 重力下落+墙壁回弹+球球弹性碰撞+光标排斥(零依赖 canvas2d·chart token·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -17078,7 +17078,7 @@ import { Ballpit } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Beams
 
-> 流动体积光柱 WebGL 背景 · perlin 噪声扰动起伏 + 方向光受光梯度 + 倾斜光幕 + 胶片颗粒(ogl·token·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 流动光柱 · 流动体积光柱 WebGL 背景 · perlin 噪声扰动起伏 + 方向光受光梯度 + 倾斜光幕 + 胶片颗粒(ogl·token·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -17140,7 +17140,7 @@ import { Beams } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # BlobCursor
 
-> 果冻光标拖尾组件 · 领头跟手 + 多滴弹性拖尾经 SVG gooey 滤镜融成液态水银(去 gsap·motion useSpring·token·reduced-motion) · decoration/overlay-fx · #animated
+> 果冻光标 · 拖尾组件 · 领头跟手 + 多滴弹性拖尾经 SVG gooey 滤镜融成液态水银(去 gsap·motion useSpring·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -17259,7 +17259,7 @@ import { BorderBeam } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # BorderGlow
 
-> 指针感应发光边框卡片 · 沿光锥点亮彩色网格边框 + 外层霓虹光晕(随边缘贴近度渐变) + 可选挂载自动扫光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
+> 发光边框卡 · 指针感应发光边框卡片 · 沿光锥点亮彩色网格边框 + 外层霓虹光晕(随边缘贴近度渐变) + 可选挂载自动扫光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -17375,7 +17375,7 @@ import { CardSpotlight } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ClickSpark
 
-> 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·RSC 安全·jsdom 安全） · decoration/overlay-fx · #animated
+> 点击火花 · 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·RSC 安全·jsdom 安全） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -17433,7 +17433,7 @@ import { ClickSpark } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ColorBends
 
-> 多色流场 WebGL 背景组件 · 正弦折叠噪声场按软阈值带宽采样叠加生成相互弯折的有机色带 + 指针视差/牵引/自动旋转(ogl·主题感知·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 多色流场 · WebGL 背景组件 · 正弦折叠噪声场按软阈值带宽采样叠加生成相互弯折的有机色带 + 指针视差/牵引/自动旋转(ogl·主题感知·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -17502,7 +17502,7 @@ import { ColorBends } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Crosshair
 
-> 鼠标跟随的容器内准星十字线 · lerp 平滑拖尾 + 进入抖动脉冲 + token 配色(零依赖·reduced-motion) · decoration/overlay-fx · #animated
+> 准星十字线 · 鼠标跟随的容器内准星十字线 · lerp 平滑拖尾 + 进入抖动脉冲 + token 配色(零依赖·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -17547,7 +17547,7 @@ import { Crosshair } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Cubes
 
-> 3D 立方体阵列交互背景 · 指针靠近按距离衰减倾斜 + 空闲自动游走 + 点击环形涟漪高亮（零依赖去 gsap·token 配色·reduced-motion） · decoration/overlay-fx · #animated
+> 立方体阵列 · 3D 立方体阵列交互背景 · 指针靠近按距离衰减倾斜 + 空闲自动游走 + 点击环形涟漪高亮（零依赖去 gsap·token 配色·reduced-motion） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -17606,7 +17606,7 @@ import { Cubes } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DarkVeil
 
-> CPPN 神经场暗色流动帷幕 WebGL 背景 · 色相旋转/扫描线/颗粒/空间扭曲(ogl·懒加载·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 暗色帷幕 · CPPN 神经场暗色流动帷幕 WebGL 背景 · 色相旋转/扫描线/颗粒/空间扭曲(ogl·懒加载·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -17668,7 +17668,7 @@ import { DarkVeil } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Dither
 
-> 复古有序抖动波纹 WebGL 背景 · Perlin/fbm 波纹场 + 8×8 Bayer 抖动 + 色阶量化/像素马赛克(ogl 单遍 shader·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 抖动波纹 · 复古有序抖动波纹 WebGL 背景 · Perlin/fbm 波纹场 + 8×8 Bayer 抖动 + 色阶量化/像素马赛克(ogl 单遍 shader·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -17832,7 +17832,7 @@ import { DotPattern } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ElectricBorder
 
-> 通电跳动的边框装饰 · SVG 湍流位移描边 + 多层模糊光晕模拟放电辉光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
+> 通电边框 · 通电跳动的边框装饰 · SVG 湍流位移描边 + 多层模糊光晕模拟放电辉光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -17890,7 +17890,7 @@ import { ElectricBorder } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # EvilEye
 
-> 火焰邪眼 WebGL 背景 · 极坐标多层程序化噪声画出翻腾火焰瞳孔 + 瞳孔惯性跟随光标 + 外圈弥散辉光（ogl·token 自适应·reduced-motion 静态降级） · decoration/backdrop · #animated #webgl
+> 火焰邪眼 · WebGL 背景 · 极坐标多层程序化噪声画出翻腾火焰瞳孔 + 瞳孔惯性跟随光标 + 外圈弥散辉光（ogl·token 自适应·reduced-motion 静态降级） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -17949,7 +17949,7 @@ import { EvilEye } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FaultyTerminal
 
-> 出故障的 CRT 终端字符雨 WebGL 背景 · fbm 噪声点阵 + 横向撕裂/扫描线/闪烁/桶形畸变/色散 + 鼠标涟漪(ogl·token 着色·reduced-motion 兜底) · decoration/backdrop · #animated #webgl
+> 故障终端雨 · 出故障的 CRT 终端字符雨 WebGL 背景 · fbm 噪声点阵 + 横向撕裂/扫描线/闪烁/桶形畸变/色散 + 鼠标涟漪(ogl·token 着色·reduced-motion 兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18016,7 +18016,7 @@ import { FaultyTerminal } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Ferrofluid
 
-> 液态金属铁磁流体 WebGL 背景组件 · value-noise 峰脊 + smin 软融合 + rim 亮带流动 + 鼠标下凹交互(ogl·主题 chart token·reduced-motion 径向渐变兜底) · decoration/backdrop · #animated #webgl
+> 铁磁流体 · 液态金属铁磁流体 WebGL 背景组件 · value-noise 峰脊 + smin 软融合 + rim 亮带流动 + 鼠标下凹交互(ogl·主题 chart token·reduced-motion 径向渐变兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18137,7 +18137,7 @@ import { FlickeringGrid } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FloatingLines
 
-> 漂浮线束 WebGL 背景 · 三组正弦波线束随时间漂浮 + log 半径扭曲旋转 + 渐变色带插值 + 可选指针径向弯曲(ogl 零新依赖·token 吃 chart·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 漂浮线束 · WebGL 背景 · 三组正弦波线束随时间漂浮 + log 半径扭曲旋转 + 渐变色带插值 + 可选指针径向弯曲(ogl 零新依赖·token 吃 chart·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18196,7 +18196,7 @@ import { FloatingLines } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FluidGlass
 
-> 跟随指针的流体玻璃折射背景 · 程序化流动渐变底图 + 圆形玻璃透镜实时折射/放大/边缘色散/菲涅尔高光(ogl 单 shader·零 3D 依赖·reduced-motion) · decoration/overlay-fx · #animated
+> 流体玻璃 · 跟随指针的流体玻璃折射背景 · 程序化流动渐变底图 + 圆形玻璃透镜实时折射/放大/边缘色散/菲涅尔高光(ogl 单 shader·零 3D 依赖·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -18255,7 +18255,7 @@ import { FluidGlass } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Galaxy
 
-> 程序化生成的多层视差星河 WebGL 背景 · Hash 铺点+十字辉光+HSV 调色+三角波闪烁+自转/鼠标斥力，4 层尺度叠加深空纵深(ogl·懒加载·StrictMode 安全·reduced-motion 降级 chart token 径向渐变) · decoration/backdrop · #animated #webgl
+> 视差星河 · 程序化生成的多层视差星河 WebGL 背景 · Hash 铺点+十字辉光+HSV 调色+三角波闪烁+自转/鼠标斥力，4 层尺度叠加深空纵深(ogl·懒加载·StrictMode 安全·reduced-motion 降级 chart token 径向渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18319,7 +18319,7 @@ import { Galaxy } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GhostCursor
 
-> 跟随指针的幽灵烟雾拖尾 · fbm 噪声烟团 + 环形帧缓冲历史尾迹 + 惯性滑行渐隐（ogl WebGL·去 three.js·reduced-motion 降级） · decoration/overlay-fx · #animated
+> 幽灵拖尾光标 · 跟随指针的幽灵烟雾拖尾 · fbm 噪声烟团 + 环形帧缓冲历史尾迹 + 惯性滑行渐隐（ogl WebGL·去 three.js·reduced-motion 降级） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -18422,7 +18422,7 @@ import { GlareHover } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GlassIcons
 
-> 玻璃拟态图标按钮网格 · 背面 3D 旋转彩色发光板 + 前面磨砂玻璃片（backdrop-blur·inset 高光边），hover/focus 彩板抬升旋转、玻璃前推、标签滑出（纯 CSS 零依赖·token 配色·RSC 安全·reduced-motion） · decoration/overlay-fx · #animated
+> 玻璃图标网格 · 玻璃拟态图标按钮网格 · 背面 3D 旋转彩色发光板 + 前面磨砂玻璃片（backdrop-blur·inset 高光边），hover/focus 彩板抬升旋转、玻璃前推、标签滑出（纯 CSS 零依赖·token 配色·RSC 安全·reduced-motion） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -18574,7 +18574,7 @@ import { GlassSurface } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GradientBlinds
 
-> 渐变百叶窗 WebGL 背景 · 多色站水平渐变 + 竖条百叶明暗调制 + 跟随鼠标聚光灯 + 颗粒噪声(可旋转/镜像/扭曲) · 默认吃 chart token(ogl·reduced-motion 静态百叶降级) · decoration/backdrop · #animated #webgl
+> 渐变百叶窗 · WebGL 背景 · 多色站水平渐变 + 竖条百叶明暗调制 + 跟随鼠标聚光灯 + 颗粒噪声(可旋转/镜像/扭曲) · 默认吃 chart token(ogl·reduced-motion 静态百叶降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18641,7 +18641,7 @@ import { GradientBlinds } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GradualBlur
 
-> 沿容器某一边叠加多层 backdrop-filter 的渐进式模糊贴边 · 八方向/曲线/指数递增 + 悬停增强 + 进场淡入(零依赖·tokens·reduced-motion) · decoration/overlay-fx · #animated
+> 渐进贴边模糊 · 沿容器某一边叠加多层 backdrop-filter 的渐进式模糊贴边 · 八方向/曲线/指数递增 + 悬停增强 + 进场淡入(零依赖·tokens·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -18702,7 +18702,7 @@ import { GradualBlur } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Grainient
 
-> 三色域扭曲 + 胶片颗粒的 WebGL 渐变背景 · 噪声驱动旋转 + 实时 grain/对比度后期(ogl·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 颗粒渐变 · 三色域扭曲 + 胶片颗粒的 WebGL 渐变背景 · 噪声驱动旋转 + 实时 grain/对比度后期(ogl·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18775,7 +18775,7 @@ import { Grainient } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GridDistortion
 
-> 鼠标拖拽的液态网格扭曲 WebGL 背景 · 数据纹理位移场 + 鼠标速度涟漪/弛豫回弹(ogl·零外部资源默认程序化网格底纹·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 网格扭曲 · 鼠标拖拽的液态网格扭曲 WebGL 背景 · 数据纹理位移场 + 鼠标速度涟漪/弛豫回弹(ogl·零外部资源默认程序化网格底纹·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18830,7 +18830,7 @@ import { GridDistortion } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GridMotion
 
-> 倾斜网格视差背景 · 鼠标横移每行奇偶反向弹性追随 + 中心径向光晕(零依赖 motion useSpring·token·reduced-motion) · decoration/backdrop · #animated #webgl
+> 倾斜网格视差 · 背景 · 鼠标横移每行奇偶反向弹性追随 + 中心径向光晕(零依赖 motion useSpring·token·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18925,7 +18925,7 @@ import { GridPattern } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GridScan
 
-> 透视扫描网格 WebGL 背景 · 射线投射无限网格(实线/虚线/点线)+纵深推进的发光扫描脉冲+鼠标视差偏摆(ogl·token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
+> 扫描网格 · 透视扫描网格 WebGL 背景 · 射线投射无限网格(实线/虚线/点线)+纵深推进的发光扫描脉冲+鼠标视差偏摆(ogl·token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -18988,7 +18988,7 @@ import { GridScan } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Hyperspeed
 
-> 超空间跃迁 warp 隧道背景 · 从消失点放射的双色车灯光带向观察者冲来 + 湍流扭曲 + 程序化辉光(ogl 单 shader·零新依赖·token·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
+> 跃迁隧道 · 超空间跃迁 warp 隧道背景 · 从消失点放射的双色车灯光带向观察者冲来 + 湍流扭曲 + 程序化辉光(ogl 单 shader·零新依赖·token·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19043,7 +19043,7 @@ import { Hyperspeed } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ImageTrail
 
-> 光标拖尾图片组件 · 移动光标沿轨迹依次甩出图片淡入跟随、缩小淡出(零依赖 RAF+lerp·token·reduced-motion) · decoration/overlay-fx · #animated
+> 光标图片拖尾 · 光标拖尾图片组件 · 移动光标沿轨迹依次甩出图片淡入跟随、缩小淡出(零依赖 RAF+lerp·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -19150,7 +19150,7 @@ import { Iridescence } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Lanyard
 
-> 可拖拽的挂绳工牌 · 单摆+阻尼弹簧物理回弹(原生 PointerEvents+RAF·零三方依赖) + SVG 二次贝塞尔挂绳随摆角实时弯折 + token 配色(挂绳 primary·工牌 surface/border)·reduced-motion 松手即静止归位 · decoration/overlay-fx · #animated
+> 挂绳工牌 · 可拖拽的挂绳工牌 · 单摆+阻尼弹簧物理回弹(原生 PointerEvents+RAF·零三方依赖) + SVG 二次贝塞尔挂绳随摆角实时弯折 + token 配色(挂绳 primary·工牌 surface/border)·reduced-motion 松手即静止归位 · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -19211,7 +19211,7 @@ import { Lanyard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LaserFlow
 
-> 自顶向下倾泻的体积激光束 WebGL 背景 · 极坐标光束几何 + fbm 噪声雾 + 行进微流光 + 指针牵引倾斜(ogl 去 three·主题感知·reduced-motion 降级) · decoration/overlay-fx · #animated
+> 激光束 · 自顶向下倾泻的体积激光束 WebGL 背景 · 极坐标光束几何 + fbm 噪声雾 + 行进微流光 + 指针牵引倾斜(ogl 去 three·主题感知·reduced-motion 降级) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -19324,7 +19324,7 @@ import { Lens } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LetterGlitch
 
-> 终端字符故障雨背景 · canvas 等宽字符矩阵按节拍随机翻字翻色 + 颜色逐帧插值平滑 + 内/外缘暗角(零依赖 canvas2d·token 调色板·reduced-motion) · decoration/backdrop · #animated #webgl
+> 字符故障雨 · 终端字符故障雨背景 · canvas 等宽字符矩阵按节拍随机翻字翻色 + 颜色逐帧插值平滑 + 内/外缘暗角(零依赖 canvas2d·token 调色板·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19379,7 +19379,7 @@ import { LetterGlitch } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Lightfall
 
-> 隧道光束坠落 WebGL 背景 · 多色光束按高度循环取色 + 中心辉光 + 闪烁/拖尾 + 鼠标牵引(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 光束坠落 · 隧道光束坠落 WebGL 背景 · 多色光束按高度循环取色 + 中心辉光 + 闪烁/拖尾 + 鼠标牵引(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19445,7 +19445,7 @@ import { Lightfall } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Lightning
 
-> fbm 噪声电弧/极光柱 WebGL 背景 · 距离场反比辉光 + hash 随机闪烁(ogl·token 取色·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
+> 电弧极光 · fbm 噪声电弧/极光柱 WebGL 背景 · 距离场反比辉光 + hash 随机闪烁(ogl·token 取色·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19499,7 +19499,7 @@ import { Lightning } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LightPillar
 
-> 体积光柱 WebGL 背景 · 沿 y 轴 raymarch 累积辉光 + 多层波动噪声 + 顶底双色纵向渐变(ogl·token 自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 体积光柱 · WebGL 背景 · 沿 y 轴 raymarch 累积辉光 + 多层波动噪声 + 顶底双色纵向渐变(ogl·token 自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19559,7 +19559,7 @@ import { LightPillar } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LightRays
 
-> 体积光束放射 WebGL 背景 · 八向原点 + 双层正弦扰动/扩散衰减/脉动/噪点/扭曲 + 鼠标方向跟随(ogl·token 着色·reduced-motion 静态渐变兜底) · decoration/backdrop · #animated #webgl
+> 光束放射 · 体积光束放射 WebGL 背景 · 八向原点 + 双层正弦扰动/扩散衰减/脉动/噪点/扭曲 + 鼠标方向跟随(ogl·token 着色·reduced-motion 静态渐变兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19625,7 +19625,7 @@ import { LightRays } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LineWaves
 
-> 流动波纹线阵 WebGL 背景 · 双正弦位移场 + 噪声脊线 + 三通道色相循环 + 鼠标局部隆起(ogl·chart token 配色·reduced-motion 静态线纹降级) · decoration/backdrop · #animated #webgl
+> 波纹线阵 · 流动波纹线阵 WebGL 背景 · 双正弦位移场 + 噪声脊线 + 三通道色相循环 + 鼠标局部隆起(ogl·chart token 配色·reduced-motion 静态线纹降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19752,7 +19752,7 @@ import { LiquidChrome } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LiquidEther
 
-> 鼠标驱动的液态色域 WebGL 背景 · 域扭曲+metaball 翻涌 + 指针搅动/自动巡游(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 液态色域 · 鼠标驱动的液态色域 WebGL 背景 · 域扭曲+metaball 翻涌 + 指针搅动/自动巡游(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -19814,7 +19814,7 @@ import { LiquidEther } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MagicRings
 
-> 同心魔法光环装饰背景 · GLSL 循环扩张/淡入淡出双色波纹 + 噪点颗粒 + 鼠标视差/悬停缩放/点击爆发（ogl·token 双色·reduced-motion 静态同心环降级） · decoration/overlay-fx · #animated
+> 魔法光环 · 同心魔法光环装饰背景 · GLSL 循环扩张/淡入淡出双色波纹 + 噪点颗粒 + 鼠标视差/悬停缩放/点击爆发（ogl·token 双色·reduced-motion 静态同心环降级） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -19879,7 +19879,7 @@ import { MagicRings } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Magnet
 
-> 指针磁吸交互组件 · 内容按「到中心距离/强度」牵引跟随指针、离开平滑归位(零依赖·reduced-motion 钳位) · decoration/overlay-fx · #animated
+> 指针磁吸 · 交互组件 · 内容按「到中心距离/强度」牵引跟随指针、离开平滑归位(零依赖·reduced-motion 钳位) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -19938,7 +19938,7 @@ import { Magnet } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MagnetLines
 
-> 指针驱动的磁力线网格 · rows×columns 细线段实时朝向鼠标(acos 反三角求角) + token 线色(零依赖·reduced-motion 静止) · decoration/overlay-fx · #animated
+> 磁力线网格 · 指针驱动的磁力线网格 · rows×columns 细线段实时朝向鼠标(acos 反三角求角) + token 线色(零依赖·reduced-motion 静止) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -19991,7 +19991,7 @@ import { MagnetLines } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MetaBalls
 
-> 一组黏液球（metaball）公转游走、距离平方反比势场叠加 smoothstep 等值面产生融合/分裂的有机黏连背景 · 主体球与跟随鼠标的光标球交界处混色 + 自动巡游兜底(ogl·token 配色·reduced-motion 静态渐变球团 fallback) · decoration/overlay-fx · #animated
+> 黏液融球 · 一组黏液球（metaball）公转游走、距离平方反比势场叠加 smoothstep 等值面产生融合/分裂的有机黏连背景 · 主体球与跟随鼠标的光标球交界处混色 + 自动巡游兜底(ogl·token 配色·reduced-motion 静态渐变球团 fallback) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -20055,7 +20055,7 @@ import { MetaBalls } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MetallicPaint
 
-> 液态金属漆面 WebGL 装饰背景 · fbm 液态扰动 + RGB 折射色散 + 多段金属条纹梯度(ogl·token·reduced-motion 降级) · decoration/overlay-fx · #animated
+> 液态金属漆面 · WebGL 装饰背景 · fbm 液态扰动 + RGB 折射色散 + 多段金属条纹梯度(ogl·token·reduced-motion 降级) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -20158,7 +20158,7 @@ import { Meteors } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ModelViewer
 
-> 交互式 3D 模型查看舞台 · 拖拽旋转(惯性) + 鼠标视差 + 悬停倾斜 + 自动旋转 + 接触阴影(零依赖 CSS 3D · RAF · reduced-motion) · decoration/overlay-fx · #animated
+> 3D 模型舞台 · 交互式 3D 模型查看舞台 · 拖拽旋转(惯性) + 鼠标视差 + 悬停倾斜 + 自动旋转 + 接触阴影(零依赖 CSS 3D · RAF · reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -20275,7 +20275,7 @@ import { Orb } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # OrbitImages
 
-> 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·RSC 安全·reduced-motion) · decoration/overlay-fx · #animated
+> 轨道环绕 · 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·RSC 安全·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -20449,7 +20449,7 @@ import { Particles } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelBlast
 
-> 抖动点阵翻涌的 WebGL 背景 · FBM 噪声 + 8×8 Bayer 有序抖动量化成方块/圆/三角/菱形像素 + 四周渐隐（ogl·token·reduced-motion 降级静态点阵） · decoration/backdrop · #animated #webgl
+> 点阵翻涌 · 抖动点阵翻涌的 WebGL 背景 · FBM 噪声 + 8×8 Bayer 有序抖动量化成方块/圆/三角/菱形像素 + 四周渐隐（ogl·token·reduced-motion 降级静态点阵） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -20511,7 +20511,7 @@ import { PixelBlast, pixelBlastShowcase } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelSnow
 
-> 像素化体素雪场 WebGL 背景 · 光线步进逐格哈希生雪 + 景深淡出 · 方块/圆点/六臂雪花三变体（ogl 去 three.js·token 着色·reduced-motion 静态点阵降级） · decoration/backdrop · #animated #webgl
+> 像素雪场 · 像素化体素雪场 WebGL 背景 · 光线步进逐格哈希生雪 + 景深淡出 · 方块/圆点/六臂雪花三变体（ogl 去 three.js·token 着色·reduced-motion 静态点阵降级） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -20576,7 +20576,7 @@ import { PixelSnow } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelTrail
 
-> 鼠标划过点亮背后的像素网格、拖尾随时间淡灭的颗粒余晖背景 · 自维护 CPU 拖尾缓冲 + ogl data texture 着色 + 可选 gooey 液态融合(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
+> 像素余晖拖尾 · 鼠标划过点亮背后的像素网格、拖尾随时间淡灭的颗粒余晖背景 · 自维护 CPU 拖尾缓冲 + ogl data texture 着色 + 可选 gooey 液态融合(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -20626,7 +20626,7 @@ import { PixelTrail } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelTransition
 
-> 像素马赛克转场卡片：双层内容叠放，悬停/聚焦/点击触发一幕随机散入再散出的像素幕布完成切换 · 自定网格密度/过场时长/只进不退 + token 像素色（去 gsap·motion 减包驱动·reduced-motion 直切） · decoration/overlay-fx · #animated
+> 像素转场卡 · 像素马赛克转场卡片：双层内容叠放，悬停/聚焦/点击触发一幕随机散入再散出的像素幕布完成切换 · 自定网格密度/过场时长/只进不退 + token 像素色（去 gsap·motion 减包驱动·reduced-motion 直切） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -20686,7 +20686,7 @@ import { PixelTransition } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Plasma
 
-> 等离子流动 WebGL 背景 · 60 步光线步进 shader + 鼠标扰动 + forward/reverse/pingpong 三向(ogl·token 染色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 等离子流动 · WebGL 背景 · 60 步光线步进 shader + 鼠标扰动 + forward/reverse/pingpong 三向(ogl·token 染色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -20745,7 +20745,7 @@ import { Plasma } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PlasmaWave
 
-> 等离子波 WebGL 背景 · raymarch 双丝带交织流动 + 双色权重混合(ogl·主题感知 chart token·reduced-motion 静态渐变降级) · decoration/backdrop · #animated #webgl
+> 等离子波 · WebGL 背景 · raymarch 双丝带交织流动 + 双色权重混合(ogl·主题感知 chart token·reduced-motion 静态渐变降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -20812,7 +20812,7 @@ import { PlasmaWave } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Prism
 
-> 棱镜分光 WebGL 背景 · ray-march 八面体 SDF 折射出彩虹体积光 + rotate/3drotate/hover 三姿态(ogl·主题色相自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 棱镜分光 · WebGL 背景 · ray-march 八面体 SDF 折射出彩虹体积光 + rotate/3drotate/hover 三姿态(ogl·主题色相自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -20880,7 +20880,7 @@ import { Prism } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PrismaticBurst
 
-> 棱镜光爆 WebGL 背景 · 从中心放射的体积步进光谱射线(可弯曲扭曲/N 瓣梳理/三维翻滚/hover 跟随) · 默认色带吃 --color-chart-1..5 token(明暗自适应) + 懒加载 ogl 复用 useGlCanvas(StrictMode 安全·reduced-motion 降级静态径向光爆) · decoration/backdrop · #animated #webgl
+> 棱镜光爆 · WebGL 背景 · 从中心放射的体积步进光谱射线(可弯曲扭曲/N 瓣梳理/三维翻滚/hover 跟随) · 默认色带吃 --color-chart-1..5 token(明暗自适应) + 懒加载 ogl 复用 useGlCanvas(StrictMode 安全·reduced-motion 降级静态径向光爆) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -20979,7 +20979,7 @@ import { ProgressiveBlur } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Radar
 
-> 雷达扫描 WebGL 背景 · 同心环波纹 + 径向辐条 + 旋转扫描臂 + 边缘衰减 + 鼠标视差(ogl·主色吃 chart token·reduced-motion 降级静态盘) · decoration/backdrop · #animated #webgl
+> 雷达扫描 · WebGL 背景 · 同心环波纹 + 径向辐条 + 旋转扫描臂 + 边缘衰减 + 鼠标视差(ogl·主色吃 chart token·reduced-motion 降级静态盘) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -21082,7 +21082,7 @@ import { RetroGrid } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Reveal
 
-> 通用「逐级揭示」块级动效原语 · Reveal 包裹元素进入视口时从位移/透明/缩放过渡到正常 + Stagger/StaggerItem 让子项按序错峰入场（非文字动画 · 作用于任意块级内容 · motion 运行时 · 吃 token · reduced-motion 直出终态） · decoration/overlay-fx · #animated
+> 逐级揭示 · 通用「逐级揭示」块级动效原语 · Reveal 包裹元素进入视口时从位移/透明/缩放过渡到正常 + Stagger/StaggerItem 让子项按序错峰入场（非文字动画 · 作用于任意块级内容 · motion 运行时 · 吃 token · reduced-motion 直出终态） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -21155,7 +21155,7 @@ import { Reveal, Stagger, StaggerItem } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Ribbons
 
-> 弹簧追随鼠标的飘带 WebGL 效果 · ogl Polyline 多条折线弹性拖尾 + 可选沿带渐隐/正弦波动(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
+> 飘带跟随 · 弹簧追随鼠标的飘带 WebGL 效果 · ogl Polyline 多条折线弹性拖尾 + 可选沿带渐隐/正弦波动(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -21255,7 +21255,7 @@ import { Ripple } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # RippleGrid
 
-> 涟漪网格 WebGL 背景 · 同心 sin 波推挤网格 + 暗角/辉光/彩虹配色 + 指针局部涟漪(ogl·chart token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
+> 涟漪网格 · WebGL 背景 · 同心 sin 波推挤网格 + 暗角/辉光/彩虹配色 + 指针局部涟漪(ogl·chart token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -21314,7 +21314,7 @@ import { RippleGrid } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ShapeBlur
 
-> 鼠标揭示的模糊形状高光 WebGL 件 · 圆角矩形/圆/圆环/三角四形态 + 阻尼跟随柔光圆擦亮边缘(ogl·token·reduced-motion 降级静态光晕) · decoration/overlay-fx · #animated
+> 模糊形状高光 · 鼠标揭示的模糊形状高光 WebGL 件 · 圆角矩形/圆/圆环/三角四形态 + 阻尼跟随柔光圆擦亮边缘(ogl·token·reduced-motion 降级静态光晕) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -21370,7 +21370,7 @@ import { ShapeBlur } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ShapeGrid
 
-> 无限滚动几何网格背景 · canvas2d 绘制方/圆/三角/六边形四形，沿任意方向匀速平移环绕 + 鼠标悬停缓动填充与渐隐拖尾（零依赖·token 配色·reduced-motion 静止·jsdom 安全） · decoration/backdrop · #animated #webgl
+> 几何网格 · 无限滚动几何网格背景 · canvas2d 绘制方/圆/三角/六边形四形，沿任意方向匀速平移环绕 + 鼠标悬停缓动填充与渐隐拖尾（零依赖·token 配色·reduced-motion 静止·jsdom 安全） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -21474,7 +21474,7 @@ import { ShineBorder } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # SideRays
 
-> 从屏幕一角发散的动态侧光束 WebGL 背景 · 双束角度正弦摆动+平方反比衰减+饱和度/混色调节(ogl·token 双色·reduced-motion 静态兜底) · decoration/backdrop · #animated #webgl
+> 侧光束 · 从屏幕一角发散的动态侧光束 WebGL 背景 · 双束角度正弦摆动+平方反比衰减+饱和度/混色调节(ogl·token 双色·reduced-motion 静态兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -21593,7 +21593,7 @@ import { Silk, silkShowcase } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # SoftAurora
 
-> WebGL 柔和极光背景 · 3D Perlin 噪声 + cosine 渐变双层叠加 · 鼠标视差(ogl·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 柔和极光 · WebGL 柔和极光背景 · 3D Perlin 噪声 + cosine 渐变双层叠加 · 鼠标视差(ogl·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 
@@ -21661,7 +21661,7 @@ import { SoftAurora } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # SplashCursor
 
-> 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decoration/overlay-fx · #animated
+> 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -21902,7 +21902,7 @@ import { StripedPattern } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TargetCursor
 
-> 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration/overlay-fx · #animated
+> 准星光标 · 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

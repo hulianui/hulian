@@ -10,7 +10,7 @@ status: enriched
 
 # LiquidEther
 
-> 鼠标驱动的液态色域 WebGL 背景 · 域扭曲+metaball 翻涌 + 指针搅动/自动巡游(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 液态色域 · 鼠标驱动的液态色域 WebGL 背景 · 域扭曲+metaball 翻涌 + 指针搅动/自动巡游(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

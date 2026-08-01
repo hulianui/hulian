@@ -10,7 +10,7 @@ status: enriched
 
 # Folder
 
-> 点击展开的 3D 文件夹 · 三层纸张扇形铺开 + 展开后磁吸跟随鼠标(零依赖纯 CSS transform·token 派生·reduced-motion) · data-display/collection · #animated
+> 3D 文件夹 · 点击展开的 3D 文件夹 · 三层纸张扇形铺开 + 展开后磁吸跟随鼠标(零依赖纯 CSS transform·token 派生·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 

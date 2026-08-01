@@ -10,7 +10,7 @@ status: enriched
 
 # CardNav
 
-> 卡片导航：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/global · #animated
+> 卡片导航 · ：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/global · #animated
 
 ## 何时用
 

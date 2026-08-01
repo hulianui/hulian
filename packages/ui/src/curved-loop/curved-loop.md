@@ -10,7 +10,7 @@ status: enriched
 
 # CurvedLoop
 
-> 沿二次贝塞尔曲线无缝循环滚动的弧形跑马灯文字 · SVG textPath + rAF 续滚 + 可拖拽拨动(零依赖·token/currentColor·reduced-motion) · typography/text · #animated
+> 弧形跑马灯 · 沿二次贝塞尔曲线无缝循环滚动的弧形跑马灯文字 · SVG textPath + rAF 续滚 + 可拖拽拨动(零依赖·token/currentColor·reduced-motion) · typography/text · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Balatro
 
-> 螺旋油彩 WebGL 背景 · 像素旋涡 + 5 次正弦迭代油画混色 + 可选鼠标交互/自转(ogl·三色吃 chart token·reduced-motion conic 兜底) · decoration/backdrop · #animated #webgl
+> 螺旋油彩 · WebGL 背景 · 像素旋涡 + 5 次正弦迭代油画混色 + 可选鼠标交互/自转(ogl·三色吃 chart token·reduced-motion conic 兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

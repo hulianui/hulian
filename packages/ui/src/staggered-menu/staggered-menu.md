@@ -10,7 +10,7 @@ status: enriched
 
 # StaggeredMenu
 
-> 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 gsap·token·reduced-motion） · navigation/global · #animated
+> 侧滑分层菜单 · 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 gsap·token·reduced-motion） · navigation/global · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # LogoLoop
 
-> 无缝无限滚动的 logo 跑马灯 · RAF 速度低通平滑 + 序列复制无缝回卷 · 横纵四向/悬停变速暂停/单项放大/两端渐隐(零依赖·token·reduced-motion) · data-display/collection · #animated
+> logo 跑马灯 · 无缝无限滚动的 logo 跑马灯 · RAF 速度低通平滑 + 序列复制无缝回卷 · 横纵四向/悬停变速暂停/单项放大/两端渐隐(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # PrismaticBurst
 
-> 棱镜光爆 WebGL 背景 · 从中心放射的体积步进光谱射线(可弯曲扭曲/N 瓣梳理/三维翻滚/hover 跟随) · 默认色带吃 --color-chart-1..5 token(明暗自适应) + 懒加载 ogl 复用 useGlCanvas(StrictMode 安全·reduced-motion 降级静态径向光爆) · decoration/backdrop · #animated #webgl
+> 棱镜光爆 · WebGL 背景 · 从中心放射的体积步进光谱射线(可弯曲扭曲/N 瓣梳理/三维翻滚/hover 跟随) · 默认色带吃 --color-chart-1..5 token(明暗自适应) + 懒加载 ogl 复用 useGlCanvas(StrictMode 安全·reduced-motion 降级静态径向光爆) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # MagnetLines
 
-> 指针驱动的磁力线网格 · rows×columns 细线段实时朝向鼠标(acos 反三角求角) + token 线色(零依赖·reduced-motion 静止) · decoration/overlay-fx · #animated
+> 磁力线网格 · 指针驱动的磁力线网格 · rows×columns 细线段实时朝向鼠标(acos 反三角求角) + token 线色(零依赖·reduced-motion 静止) · decoration/overlay-fx · #animated
 
 ## 何时用
 

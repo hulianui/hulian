@@ -10,7 +10,7 @@ status: enriched
 
 # PixelTransition
 
-> 像素马赛克转场卡片：双层内容叠放，悬停/聚焦/点击触发一幕随机散入再散出的像素幕布完成切换 · 自定网格密度/过场时长/只进不退 + token 像素色（去 gsap·motion 减包驱动·reduced-motion 直切） · decoration/overlay-fx · #animated
+> 像素转场卡 · 像素马赛克转场卡片：双层内容叠放，悬停/聚焦/点击触发一幕随机散入再散出的像素幕布完成切换 · 自定网格密度/过场时长/只进不退 + token 像素色（去 gsap·motion 减包驱动·reduced-motion 直切） · decoration/overlay-fx · #animated
 
 ## 何时用
 

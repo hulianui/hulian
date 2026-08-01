@@ -10,7 +10,7 @@ status: enriched
 
 # ScrollFloat
 
-> 滚动浮现标题：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（去 gsap·吃 text-foreground token·reduced-motion 直出清晰标题） · typography/text · #animated
+> 滚动浮现标题 · ：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（去 gsap·吃 text-foreground token·reduced-motion 直出清晰标题） · typography/text · #animated
 
 ## 何时用
 

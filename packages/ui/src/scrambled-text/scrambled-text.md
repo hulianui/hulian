@@ -10,7 +10,7 @@ status: enriched
 
 # ScrambledText
 
-> 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
+> 乱码悬停文字 · 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # GridMotion
 
-> 倾斜网格视差背景 · 鼠标横移每行奇偶反向弹性追随 + 中心径向光晕(零依赖 motion useSpring·token·reduced-motion) · decoration/backdrop · #animated #webgl
+> 倾斜网格视差 · 背景 · 鼠标横移每行奇偶反向弹性追随 + 中心径向光晕(零依赖 motion useSpring·token·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

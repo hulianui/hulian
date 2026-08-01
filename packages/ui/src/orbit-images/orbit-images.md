@@ -10,7 +10,7 @@ status: enriched
 
 # OrbitImages
 
-> 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·RSC 安全·reduced-motion) · decoration/overlay-fx · #animated
+> 轨道环绕 · 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·RSC 安全·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

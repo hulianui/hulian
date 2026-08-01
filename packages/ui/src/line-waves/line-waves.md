@@ -10,7 +10,7 @@ status: enriched
 
 # LineWaves
 
-> 流动波纹线阵 WebGL 背景 · 双正弦位移场 + 噪声脊线 + 三通道色相循环 + 鼠标局部隆起(ogl·chart token 配色·reduced-motion 静态线纹降级) · decoration/backdrop · #animated #webgl
+> 波纹线阵 · 流动波纹线阵 WebGL 背景 · 双正弦位移场 + 噪声脊线 + 三通道色相循环 + 鼠标局部隆起(ogl·chart token 配色·reduced-motion 静态线纹降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

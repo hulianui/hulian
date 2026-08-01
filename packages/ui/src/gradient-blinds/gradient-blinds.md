@@ -10,7 +10,7 @@ status: enriched
 
 # GradientBlinds
 
-> 渐变百叶窗 WebGL 背景 · 多色站水平渐变 + 竖条百叶明暗调制 + 跟随鼠标聚光灯 + 颗粒噪声(可旋转/镜像/扭曲) · 默认吃 chart token(ogl·reduced-motion 静态百叶降级) · decoration/backdrop · #animated #webgl
+> 渐变百叶窗 · WebGL 背景 · 多色站水平渐变 + 竖条百叶明暗调制 + 跟随鼠标聚光灯 + 颗粒噪声(可旋转/镜像/扭曲) · 默认吃 chart token(ogl·reduced-motion 静态百叶降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Lightning
 
-> fbm 噪声电弧/极光柱 WebGL 背景 · 距离场反比辉光 + hash 随机闪烁(ogl·token 取色·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
+> 电弧极光 · fbm 噪声电弧/极光柱 WebGL 背景 · 距离场反比辉光 + hash 随机闪烁(ogl·token 取色·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

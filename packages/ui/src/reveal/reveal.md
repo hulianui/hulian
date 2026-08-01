@@ -10,7 +10,7 @@ status: enriched
 
 # Reveal
 
-> 通用「逐级揭示」块级动效原语 · Reveal 包裹元素进入视口时从位移/透明/缩放过渡到正常 + Stagger/StaggerItem 让子项按序错峰入场（非文字动画 · 作用于任意块级内容 · motion 运行时 · 吃 token · reduced-motion 直出终态） · decoration/overlay-fx · #animated
+> 逐级揭示 · 通用「逐级揭示」块级动效原语 · Reveal 包裹元素进入视口时从位移/透明/缩放过渡到正常 + Stagger/StaggerItem 让子项按序错峰入场（非文字动画 · 作用于任意块级内容 · motion 运行时 · 吃 token · reduced-motion 直出终态） · decoration/overlay-fx · #animated
 
 ## 何时用
 

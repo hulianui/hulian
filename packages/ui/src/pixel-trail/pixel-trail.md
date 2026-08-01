@@ -10,7 +10,7 @@ status: enriched
 
 # PixelTrail
 
-> 鼠标划过点亮背后的像素网格、拖尾随时间淡灭的颗粒余晖背景 · 自维护 CPU 拖尾缓冲 + ogl data texture 着色 + 可选 gooey 液态融合(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
+> 像素余晖拖尾 · 鼠标划过点亮背后的像素网格、拖尾随时间淡灭的颗粒余晖背景 · 自维护 CPU 拖尾缓冲 + ogl data texture 着色 + 可选 gooey 液态融合(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

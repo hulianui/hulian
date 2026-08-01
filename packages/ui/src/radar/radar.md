@@ -10,7 +10,7 @@ status: enriched
 
 # Radar
 
-> 雷达扫描 WebGL 背景 · 同心环波纹 + 径向辐条 + 旋转扫描臂 + 边缘衰减 + 鼠标视差(ogl·主色吃 chart token·reduced-motion 降级静态盘) · decoration/backdrop · #animated #webgl
+> 雷达扫描 · WebGL 背景 · 同心环波纹 + 径向辐条 + 旋转扫描臂 + 边缘衰减 + 鼠标视差(ogl·主色吃 chart token·reduced-motion 降级静态盘) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

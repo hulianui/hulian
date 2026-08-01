@@ -10,7 +10,7 @@ status: enriched
 
 # ColorBends
 
-> 多色流场 WebGL 背景组件 · 正弦折叠噪声场按软阈值带宽采样叠加生成相互弯折的有机色带 + 指针视差/牵引/自动旋转(ogl·主题感知·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 多色流场 · WebGL 背景组件 · 正弦折叠噪声场按软阈值带宽采样叠加生成相互弯折的有机色带 + 指针视差/牵引/自动旋转(ogl·主题感知·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

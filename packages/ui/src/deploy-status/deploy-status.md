@@ -10,7 +10,7 @@ status: enriched
 
 # DeployStatus
 
-> 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC) · data-display/info
+> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC) · data-display/info
 
 ## 何时用
 

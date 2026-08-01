@@ -10,7 +10,7 @@ status: enriched
 
 # ShapeBlur
 
-> 鼠标揭示的模糊形状高光 WebGL 件 · 圆角矩形/圆/圆环/三角四形态 + 阻尼跟随柔光圆擦亮边缘(ogl·token·reduced-motion 降级静态光晕) · decoration/overlay-fx · #animated
+> 模糊形状高光 · 鼠标揭示的模糊形状高光 WebGL 件 · 圆角矩形/圆/圆环/三角四形态 + 阻尼跟随柔光圆擦亮边缘(ogl·token·reduced-motion 降级静态光晕) · decoration/overlay-fx · #animated
 
 ## 何时用
 

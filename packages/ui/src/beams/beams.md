@@ -10,7 +10,7 @@ status: enriched
 
 # Beams
 
-> 流动体积光柱 WebGL 背景 · perlin 噪声扰动起伏 + 方向光受光梯度 + 倾斜光幕 + 胶片颗粒(ogl·token·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 流动光柱 · 流动体积光柱 WebGL 背景 · perlin 噪声扰动起伏 + 方向光受光梯度 + 倾斜光幕 + 胶片颗粒(ogl·token·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # GridScan
 
-> 透视扫描网格 WebGL 背景 · 射线投射无限网格(实线/虚线/点线)+纵深推进的发光扫描脉冲+鼠标视差偏摆(ogl·token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
+> 扫描网格 · 透视扫描网格 WebGL 背景 · 射线投射无限网格(实线/虚线/点线)+纵深推进的发光扫描脉冲+鼠标视差偏摆(ogl·token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

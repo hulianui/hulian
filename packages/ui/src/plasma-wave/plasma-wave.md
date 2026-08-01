@@ -10,7 +10,7 @@ status: enriched
 
 # PlasmaWave
 
-> 等离子波 WebGL 背景 · raymarch 双丝带交织流动 + 双色权重混合(ogl·主题感知 chart token·reduced-motion 静态渐变降级) · decoration/backdrop · #animated #webgl
+> 等离子波 · WebGL 背景 · raymarch 双丝带交织流动 + 双色权重混合(ogl·主题感知 chart token·reduced-motion 静态渐变降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

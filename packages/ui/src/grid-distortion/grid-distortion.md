@@ -10,7 +10,7 @@ status: enriched
 
 # GridDistortion
 
-> 鼠标拖拽的液态网格扭曲 WebGL 背景 · 数据纹理位移场 + 鼠标速度涟漪/弛豫回弹(ogl·零外部资源默认程序化网格底纹·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 网格扭曲 · 鼠标拖拽的液态网格扭曲 WebGL 背景 · 数据纹理位移场 + 鼠标速度涟漪/弛豫回弹(ogl·零外部资源默认程序化网格底纹·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

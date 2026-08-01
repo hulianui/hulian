@@ -10,7 +10,7 @@ status: enriched
 
 # ChromaGrid
 
-> 光标聚光揭示的卡片墙 · 整片灰度暗化、光标圈内透出全彩 + 单卡 hover 径向高光（弹性跟随·reduced-motion） · data-display/collection · #animated
+> 聚光卡片墙 · 光标聚光揭示的卡片墙 · 整片灰度暗化、光标圈内透出全彩 + 单卡 hover 径向高光（弹性跟随·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 

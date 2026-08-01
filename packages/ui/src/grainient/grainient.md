@@ -10,7 +10,7 @@ status: enriched
 
 # Grainient
 
-> 三色域扭曲 + 胶片颗粒的 WebGL 渐变背景 · 噪声驱动旋转 + 实时 grain/对比度后期(ogl·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 颗粒渐变 · 三色域扭曲 + 胶片颗粒的 WebGL 渐变背景 · 噪声驱动旋转 + 实时 grain/对比度后期(ogl·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

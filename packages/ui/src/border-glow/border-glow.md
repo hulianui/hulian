@@ -10,7 +10,7 @@ status: enriched
 
 # BorderGlow
 
-> 指针感应发光边框卡片 · 沿光锥点亮彩色网格边框 + 外层霓虹光晕(随边缘贴近度渐变) + 可选挂载自动扫光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
+> 发光边框卡 · 指针感应发光边框卡片 · 沿光锥点亮彩色网格边框 + 外层霓虹光晕(随边缘贴近度渐变) + 可选挂载自动扫光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

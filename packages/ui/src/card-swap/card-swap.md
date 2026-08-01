@@ -10,7 +10,7 @@ status: enriched
 
 # CardSwap
 
-> 3D 透视卡片自动洗牌组件 · 最前卡下坠 → 其余递进 → 绕回队尾循环 + 复合 CardSwap.Card 默认皮肤（去 gsap·motion useAnimate·reduced-motion） · data-display/collection · #animated
+> 卡片洗牌 · 3D 透视卡片自动洗牌组件 · 最前卡下坠 → 其余递进 → 绕回队尾循环 + 复合 CardSwap.Card 默认皮肤（去 gsap·motion useAnimate·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 

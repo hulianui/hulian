@@ -10,7 +10,7 @@ status: enriched
 
 # PixelCard
 
-> canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion 静止) · data-display/collection · #animated
+> 像素卡片 · canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion 静止) · data-display/collection · #animated
 
 ## 何时用
 

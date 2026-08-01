@@ -10,7 +10,7 @@ status: enriched
 
 # LightRays
 
-> 体积光束放射 WebGL 背景 · 八向原点 + 双层正弦扰动/扩散衰减/脉动/噪点/扭曲 + 鼠标方向跟随(ogl·token 着色·reduced-motion 静态渐变兜底) · decoration/backdrop · #animated #webgl
+> 光束放射 · 体积光束放射 WebGL 背景 · 八向原点 + 双层正弦扰动/扩散衰减/脉动/噪点/扭曲 + 鼠标方向跟随(ogl·token 着色·reduced-motion 静态渐变兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

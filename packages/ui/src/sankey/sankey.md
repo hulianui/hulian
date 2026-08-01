@@ -10,7 +10,7 @@ status: enriched
 
 # Sankey
 
-> 桑基图(库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · hover 高亮关联链路 tooltip + 点击节点/连线下钻 · 调度流向/流量来源/预算分配/转化路径旗舰 · data-display/collection
+> 桑基图 · (库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · hover 高亮关联链路 tooltip + 点击节点/连线下钻 · 调度流向/流量来源/预算分配/转化路径旗舰 · data-display/collection
 
 ## 何时用
 

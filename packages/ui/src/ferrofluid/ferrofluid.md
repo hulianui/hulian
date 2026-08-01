@@ -10,7 +10,7 @@ status: enriched
 
 # Ferrofluid
 
-> 液态金属铁磁流体 WebGL 背景组件 · value-noise 峰脊 + smin 软融合 + rim 亮带流动 + 鼠标下凹交互(ogl·主题 chart token·reduced-motion 径向渐变兜底) · decoration/backdrop · #animated #webgl
+> 铁磁流体 · 液态金属铁磁流体 WebGL 背景组件 · value-noise 峰脊 + smin 软融合 + rim 亮带流动 + 鼠标下凹交互(ogl·主题 chart token·reduced-motion 径向渐变兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

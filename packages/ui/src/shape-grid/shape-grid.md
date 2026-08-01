@@ -10,7 +10,7 @@ status: enriched
 
 # ShapeGrid
 
-> 无限滚动几何网格背景 · canvas2d 绘制方/圆/三角/六边形四形，沿任意方向匀速平移环绕 + 鼠标悬停缓动填充与渐隐拖尾（零依赖·token 配色·reduced-motion 静止·jsdom 安全） · decoration/backdrop · #animated #webgl
+> 几何网格 · 无限滚动几何网格背景 · canvas2d 绘制方/圆/三角/六边形四形，沿任意方向匀速平移环绕 + 鼠标悬停缓动填充与渐隐拖尾（零依赖·token 配色·reduced-motion 静止·jsdom 安全） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

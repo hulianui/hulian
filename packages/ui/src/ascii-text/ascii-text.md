@@ -10,7 +10,7 @@ status: enriched
 
 # ASCIIText
 
-> 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced-motion） · typography/text · #animated
+> ASCII 字符画 · 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced-motion） · typography/text · #animated
 
 ## 何时用
 

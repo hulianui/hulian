@@ -10,7 +10,7 @@ status: enriched
 
 # VariableProximity
 
-> 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 RAF · reduced-motion 定格 from · sr-only 完整朗读） · typography/text · #animated
+> 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 RAF · reduced-motion 定格 from · sr-only 完整朗读） · typography/text · #animated
 
 ## 何时用
 

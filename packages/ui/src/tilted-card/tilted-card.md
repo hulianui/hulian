@@ -10,7 +10,7 @@ status: enriched
 
 # TiltedCard
 
-> 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · data-display/collection · #animated
+> 倾斜卡片 · 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 

@@ -134,7 +134,9 @@ export function ComponentTree() {
                                   : "text-muted hover:bg-surface-hover hover:text-foreground"
                               }`}
                             >
-                              <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
+                              {/* 中文名可截断（min-w-0 + truncate）：名字本身按 ≤6 汉字维护，
+                                  这里只是防复发的兜底——再长也只是省略号，不会把英文名挤出行外。 */}
+                              <span className="flex min-w-0 items-center gap-1.5 truncate whitespace-nowrap">
                                 {nameCn(m.description)}
                                 {m.tags?.includes("animated") && (
                                   <Sparkles className="size-3 shrink-0 text-primary/60" aria-label="动效" />

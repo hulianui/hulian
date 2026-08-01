@@ -10,7 +10,7 @@ status: enriched
 
 # Lightfall
 
-> 隧道光束坠落 WebGL 背景 · 多色光束按高度循环取色 + 中心辉光 + 闪烁/拖尾 + 鼠标牵引(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 光束坠落 · 隧道光束坠落 WebGL 背景 · 多色光束按高度循环取色 + 中心辉光 + 闪烁/拖尾 + 鼠标牵引(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

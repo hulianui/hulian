@@ -10,7 +10,7 @@ status: enriched
 
 # FaultyTerminal
 
-> 出故障的 CRT 终端字符雨 WebGL 背景 · fbm 噪声点阵 + 横向撕裂/扫描线/闪烁/桶形畸变/色散 + 鼠标涟漪(ogl·token 着色·reduced-motion 兜底) · decoration/backdrop · #animated #webgl
+> 故障终端雨 · 出故障的 CRT 终端字符雨 WebGL 背景 · fbm 噪声点阵 + 横向撕裂/扫描线/闪烁/桶形畸变/色散 + 鼠标涟漪(ogl·token 着色·reduced-motion 兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

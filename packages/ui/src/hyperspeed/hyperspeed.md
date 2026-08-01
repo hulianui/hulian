@@ -10,7 +10,7 @@ status: enriched
 
 # Hyperspeed
 
-> 超空间跃迁 warp 隧道背景 · 从消失点放射的双色车灯光带向观察者冲来 + 湍流扭曲 + 程序化辉光(ogl 单 shader·零新依赖·token·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
+> 跃迁隧道 · 超空间跃迁 warp 隧道背景 · 从消失点放射的双色车灯光带向观察者冲来 + 湍流扭曲 + 程序化辉光(ogl 单 shader·零新依赖·token·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

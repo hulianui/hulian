@@ -10,7 +10,7 @@ status: enriched
 
 # Ballpit
 
-> 一坑彩色小球的可交互物理球池 · 重力下落+墙壁回弹+球球弹性碰撞+光标排斥(零依赖 canvas2d·chart token·reduced-motion) · decoration/backdrop · #animated #webgl
+> 彩球球池 · 一坑彩色小球的可交互物理球池 · 重力下落+墙壁回弹+球球弹性碰撞+光标排斥(零依赖 canvas2d·chart token·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # ProfileCard
 
-> 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-display/collection · #animated
+> 全息名片卡 · 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-display/collection · #animated
 
 ## 何时用
 

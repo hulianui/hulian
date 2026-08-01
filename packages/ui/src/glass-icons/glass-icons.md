@@ -10,7 +10,7 @@ status: enriched
 
 # GlassIcons
 
-> 玻璃拟态图标按钮网格 · 背面 3D 旋转彩色发光板 + 前面磨砂玻璃片（backdrop-blur·inset 高光边），hover/focus 彩板抬升旋转、玻璃前推、标签滑出（纯 CSS 零依赖·token 配色·RSC 安全·reduced-motion） · decoration/overlay-fx · #animated
+> 玻璃图标网格 · 玻璃拟态图标按钮网格 · 背面 3D 旋转彩色发光板 + 前面磨砂玻璃片（backdrop-blur·inset 高光边），hover/focus 彩板抬升旋转、玻璃前推、标签滑出（纯 CSS 零依赖·token 配色·RSC 安全·reduced-motion） · decoration/overlay-fx · #animated
 
 ## 何时用
 

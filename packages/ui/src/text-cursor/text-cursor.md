@@ -10,7 +10,7 @@ status: enriched
 
 # TextCursor
 
-> 光标拖尾文字特效组件 · 在容器内移动光标时沿轨迹按间距落下一串字形并随机微浮动淡出回收（沿方向旋转 / emoji / 自定义间距上限）(零依赖·motion 运行时·reduced-motion 去浮动) · typography/text · #animated
+> 光标拖尾文字 · 特效组件 · 在容器内移动光标时沿轨迹按间距落下一串字形并随机微浮动淡出回收（沿方向旋转 / emoji / 自定义间距上限）(零依赖·motion 运行时·reduced-motion 去浮动) · typography/text · #animated
 
 ## 何时用
 

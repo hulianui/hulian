@@ -10,7 +10,7 @@ status: enriched
 
 # EvilEye
 
-> 火焰邪眼 WebGL 背景 · 极坐标多层程序化噪声画出翻腾火焰瞳孔 + 瞳孔惯性跟随光标 + 外圈弥散辉光（ogl·token 自适应·reduced-motion 静态降级） · decoration/backdrop · #animated #webgl
+> 火焰邪眼 · WebGL 背景 · 极坐标多层程序化噪声画出翻腾火焰瞳孔 + 瞳孔惯性跟随光标 + 外圈弥散辉光（ogl·token 自适应·reduced-motion 静态降级） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

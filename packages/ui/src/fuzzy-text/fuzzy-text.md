@@ -10,7 +10,7 @@ status: enriched
 
 # FuzzyText
 
-> 信号噪点模糊标题 · canvas2d 逐行/逐列随机错位扫描 + 悬停增强抖动(零依赖·token·reduced-motion 退静态帧) · typography/text · #animated
+> 噪点模糊标题 · 信号噪点模糊标题 · canvas2d 逐行/逐列随机错位扫描 + 悬停增强抖动(零依赖·token·reduced-motion 退静态帧) · typography/text · #animated
 
 ## 何时用
 

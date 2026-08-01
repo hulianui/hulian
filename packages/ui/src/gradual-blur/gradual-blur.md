@@ -10,7 +10,7 @@ status: enriched
 
 # GradualBlur
 
-> 沿容器某一边叠加多层 backdrop-filter 的渐进式模糊贴边 · 八方向/曲线/指数递增 + 悬停增强 + 进场淡入(零依赖·tokens·reduced-motion) · decoration/overlay-fx · #animated
+> 渐进贴边模糊 · 沿容器某一边叠加多层 backdrop-filter 的渐进式模糊贴边 · 八方向/曲线/指数递增 + 悬停增强 + 进场淡入(零依赖·tokens·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

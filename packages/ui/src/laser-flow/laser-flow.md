@@ -10,7 +10,7 @@ status: enriched
 
 # LaserFlow
 
-> 自顶向下倾泻的体积激光束 WebGL 背景 · 极坐标光束几何 + fbm 噪声雾 + 行进微流光 + 指针牵引倾斜(ogl 去 three·主题感知·reduced-motion 降级) · decoration/overlay-fx · #animated
+> 激光束 · 自顶向下倾泻的体积激光束 WebGL 背景 · 极坐标光束几何 + fbm 噪声雾 + 行进微流光 + 指针牵引倾斜(ogl 去 three·主题感知·reduced-motion 降级) · decoration/overlay-fx · #animated
 
 ## 何时用
 

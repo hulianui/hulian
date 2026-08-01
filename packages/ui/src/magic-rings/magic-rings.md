@@ -10,7 +10,7 @@ status: enriched
 
 # MagicRings
 
-> 同心魔法光环装饰背景 · GLSL 循环扩张/淡入淡出双色波纹 + 噪点颗粒 + 鼠标视差/悬停缩放/点击爆发（ogl·token 双色·reduced-motion 静态同心环降级） · decoration/overlay-fx · #animated
+> 魔法光环 · 同心魔法光环装饰背景 · GLSL 循环扩张/淡入淡出双色波纹 + 噪点颗粒 + 鼠标视差/悬停缩放/点击爆发（ogl·token 双色·reduced-motion 静态同心环降级） · decoration/overlay-fx · #animated
 
 ## 何时用
 

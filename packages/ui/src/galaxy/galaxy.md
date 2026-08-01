@@ -10,7 +10,7 @@ status: enriched
 
 # Galaxy
 
-> 程序化生成的多层视差星河 WebGL 背景 · Hash 铺点+十字辉光+HSV 调色+三角波闪烁+自转/鼠标斥力，4 层尺度叠加深空纵深(ogl·懒加载·StrictMode 安全·reduced-motion 降级 chart token 径向渐变) · decoration/backdrop · #animated #webgl
+> 视差星河 · 程序化生成的多层视差星河 WebGL 背景 · Hash 铺点+十字辉光+HSV 调色+三角波闪烁+自转/鼠标斥力，4 层尺度叠加深空纵深(ogl·懒加载·StrictMode 安全·reduced-motion 降级 chart token 径向渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

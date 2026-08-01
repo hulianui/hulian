@@ -10,7 +10,7 @@ status: enriched
 
 # PixelSnow
 
-> 像素化体素雪场 WebGL 背景 · 光线步进逐格哈希生雪 + 景深淡出 · 方块/圆点/六臂雪花三变体（ogl 去 three.js·token 着色·reduced-motion 静态点阵降级） · decoration/backdrop · #animated #webgl
+> 像素雪场 · 像素化体素雪场 WebGL 背景 · 光线步进逐格哈希生雪 + 景深淡出 · 方块/圆点/六臂雪花三变体（ogl 去 three.js·token 着色·reduced-motion 静态点阵降级） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

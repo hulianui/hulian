@@ -10,7 +10,7 @@ status: enriched
 
 # DomeGallery
 
-> 球面图库：图片瓦片贴在 CSS 3D 半球内壁，拖拽旋转浏览、点击放大查看 · 原生 PointerEvents 自搓拖拽+RAF 惯性 + motion 灯箱(零依赖·token·reduced-motion) · data-display/collection · #animated
+> 球面图库 · ：图片瓦片贴在 CSS 3D 半球内壁，拖拽旋转浏览、点击放大查看 · 原生 PointerEvents 自搓拖拽+RAF 惯性 + motion 灯箱(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 

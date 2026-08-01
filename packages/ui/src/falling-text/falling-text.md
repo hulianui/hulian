@@ -10,7 +10,7 @@ status: enriched
 
 # FallingText
 
-> 文字按词散落物理特效 · 触发后逐词受重力下落/撞墙反弹堆叠 + 指针拖拽抛掷(零依赖 RAF 自写二维刚体·token·reduced-motion) · typography/text · #animated
+> 文字散落 · 文字按词散落物理特效 · 触发后逐词受重力下落/撞墙反弹堆叠 + 指针拖拽抛掷(零依赖 RAF 自写二维刚体·token·reduced-motion) · typography/text · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # FloatingLines
 
-> 漂浮线束 WebGL 背景 · 三组正弦波线束随时间漂浮 + log 半径扭曲旋转 + 渐变色带插值 + 可选指针径向弯曲(ogl 零新依赖·token 吃 chart·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 漂浮线束 · WebGL 背景 · 三组正弦波线束随时间漂浮 + log 半径扭曲旋转 + 渐变色带插值 + 可选指针径向弯曲(ogl 零新依赖·token 吃 chart·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # GhostCursor
 
-> 跟随指针的幽灵烟雾拖尾 · fbm 噪声烟团 + 环形帧缓冲历史尾迹 + 惯性滑行渐隐（ogl WebGL·去 three.js·reduced-motion 降级） · decoration/overlay-fx · #animated
+> 幽灵拖尾光标 · 跟随指针的幽灵烟雾拖尾 · fbm 噪声烟团 + 环形帧缓冲历史尾迹 + 惯性滑行渐隐（ogl WebGL·去 three.js·reduced-motion 降级） · decoration/overlay-fx · #animated
 
 ## 何时用
 

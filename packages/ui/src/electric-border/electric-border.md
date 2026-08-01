@@ -10,7 +10,7 @@ status: enriched
 
 # ElectricBorder
 
-> 通电跳动的边框装饰 · SVG 湍流位移描边 + 多层模糊光晕模拟放电辉光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
+> 通电边框 · 通电跳动的边框装饰 · SVG 湍流位移描边 + 多层模糊光晕模拟放电辉光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

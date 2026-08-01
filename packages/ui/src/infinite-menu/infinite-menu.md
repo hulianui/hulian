@@ -10,7 +10,7 @@ status: enriched
 
 # InfiniteMenu
 
-> 可拖拽旋转的菜单球，菜单项围绕球面分布、正对镜头者贴靠为激活项并显覆盖层标题/描述+动作箭头 · 松手惯性衰减 + 自动自旋（零依赖 CSS-3D/RAF·reduced-motion） · data-display/collection · #animated
+> 球面菜单 · 可拖拽旋转的菜单球，菜单项围绕球面分布、正对镜头者贴靠为激活项并显覆盖层标题/描述+动作箭头 · 松手惯性衰减 + 自动自旋（零依赖 CSS-3D/RAF·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 

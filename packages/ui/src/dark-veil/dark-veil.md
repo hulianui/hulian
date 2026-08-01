@@ -10,7 +10,7 @@ status: enriched
 
 # DarkVeil
 
-> CPPN 神经场暗色流动帷幕 WebGL 背景 · 色相旋转/扫描线/颗粒/空间扭曲(ogl·懒加载·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
+> 暗色帷幕 · CPPN 神经场暗色流动帷幕 WebGL 背景 · 色相旋转/扫描线/颗粒/空间扭曲(ogl·懒加载·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # ScrollStack
 
-> 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collection · #animated
+> 滚动堆叠卡 · 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collection · #animated
 
 ## 何时用
 

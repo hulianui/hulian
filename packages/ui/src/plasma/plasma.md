@@ -10,7 +10,7 @@ status: enriched
 
 # Plasma
 
-> 等离子流动 WebGL 背景 · 60 步光线步进 shader + 鼠标扰动 + forward/reverse/pingpong 三向(ogl·token 染色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 等离子流动 · WebGL 背景 · 60 步光线步进 shader + 鼠标扰动 + forward/reverse/pingpong 三向(ogl·token 染色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

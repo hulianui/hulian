@@ -10,7 +10,7 @@ status: enriched
 
 # DecayCard
 
-> 鼠标驱动的「湍流溶解」图片卡 · SVG feTurbulence+feDisplacementMap 随鼠标速度融化图像 + 带阻尼的视差倾斜平移（零依赖去 gsap·RAF 缓动·reduced-motion） · data-display/collection · #animated
+> 湍流溶解卡 · 鼠标驱动的「湍流溶解」图片卡 · SVG feTurbulence+feDisplacementMap 随鼠标速度融化图像 + 带阻尼的视差倾斜平移（零依赖去 gsap·RAF 缓动·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 

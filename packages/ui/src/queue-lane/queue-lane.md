@@ -10,7 +10,7 @@ status: enriched
 
 # QueueLane
 
-> 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItemClick · groupByLane 保序分组纯函数带单测 · 任务总线/优先级队列(零依赖) · data-display/collection
+> 优先级队列板 · 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItemClick · groupByLane 保序分组纯函数带单测 · 任务总线/优先级队列(零依赖) · data-display/collection
 
 ## 何时用
 

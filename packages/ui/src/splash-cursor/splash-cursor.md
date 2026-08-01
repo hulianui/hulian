@@ -10,7 +10,7 @@ status: enriched
 
 # SplashCursor
 
-> 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decoration/overlay-fx · #animated
+> 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decoration/overlay-fx · #animated
 
 ## 何时用
 

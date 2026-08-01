@@ -10,7 +10,7 @@ status: enriched
 
 # Dither
 
-> 复古有序抖动波纹 WebGL 背景 · Perlin/fbm 波纹场 + 8×8 Bayer 抖动 + 色阶量化/像素马赛克(ogl 单遍 shader·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 抖动波纹 · 复古有序抖动波纹 WebGL 背景 · Perlin/fbm 波纹场 + 8×8 Bayer 抖动 + 色阶量化/像素马赛克(ogl 单遍 shader·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

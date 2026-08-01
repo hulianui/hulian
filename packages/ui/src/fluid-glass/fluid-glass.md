@@ -10,7 +10,7 @@ status: enriched
 
 # FluidGlass
 
-> 跟随指针的流体玻璃折射背景 · 程序化流动渐变底图 + 圆形玻璃透镜实时折射/放大/边缘色散/菲涅尔高光(ogl 单 shader·零 3D 依赖·reduced-motion) · decoration/overlay-fx · #animated
+> 流体玻璃 · 跟随指针的流体玻璃折射背景 · 程序化流动渐变底图 + 圆形玻璃透镜实时折射/放大/边缘色散/菲涅尔高光(ogl 单 shader·零 3D 依赖·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

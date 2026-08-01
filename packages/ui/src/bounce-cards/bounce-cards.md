@@ -10,7 +10,7 @@ status: enriched
 
 # BounceCards
 
-> 一叠卡片扇形铺开的入场弹跳组件 · 逐张 scale 0 弹性弹入 + hover 推挤让位（零依赖去 gsap·motion 弹簧·reduced-motion） · data-display/collection · #animated
+> 扇形弹跳卡 · 一叠卡片扇形铺开的入场弹跳组件 · 逐张 scale 0 弹性弹入 + hover 推挤让位（零依赖去 gsap·motion 弹簧·reduced-motion） · data-display/collection · #animated
 
 ## 何时用
 

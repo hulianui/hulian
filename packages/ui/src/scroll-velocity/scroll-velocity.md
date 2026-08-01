@@ -10,7 +10,7 @@ status: enriched
 
 # ScrollVelocity
 
-> 滚动速度跑马灯文字 · 多行交替方向视差 + 随页面滚动加速/变向、静止匀速漂移(motion 速度值驱动·零额外依赖·reduced-motion 冻结自走帧保留 DOM) · typography/text · #animated
+> 滚动跑马灯 · 滚动速度跑马灯文字 · 多行交替方向视差 + 随页面滚动加速/变向、静止匀速漂移(motion 速度值驱动·零额外依赖·reduced-motion 冻结自走帧保留 DOM) · typography/text · #animated
 
 ## 何时用
 

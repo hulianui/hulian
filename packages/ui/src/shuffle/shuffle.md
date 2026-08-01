@@ -10,7 +10,7 @@ status: enriched
 
 # Shuffle
 
-> 逐字「洗牌解密」文本动画 · 字位先滚乱码再按方向顺序锁定真字 + 视口/悬停/循环触发(零依赖 rAF·reduced-motion 直落终态·token 着色) · typography/text · #animated
+> 洗牌解密文字 · 逐字「洗牌解密」文本动画 · 字位先滚乱码再按方向顺序锁定真字 + 视口/悬停/循环触发(零依赖 rAF·reduced-motion 直落终态·token 着色) · typography/text · #animated
 
 ## 何时用
 

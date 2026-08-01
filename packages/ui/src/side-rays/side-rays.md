@@ -10,7 +10,7 @@ status: enriched
 
 # SideRays
 
-> 从屏幕一角发散的动态侧光束 WebGL 背景 · 双束角度正弦摆动+平方反比衰减+饱和度/混色调节(ogl·token 双色·reduced-motion 静态兜底) · decoration/backdrop · #animated #webgl
+> 侧光束 · 从屏幕一角发散的动态侧光束 WebGL 背景 · 双束角度正弦摆动+平方反比衰减+饱和度/混色调节(ogl·token 双色·reduced-motion 静态兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

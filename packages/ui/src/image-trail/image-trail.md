@@ -10,7 +10,7 @@ status: enriched
 
 # ImageTrail
 
-> 光标拖尾图片组件 · 移动光标沿轨迹依次甩出图片淡入跟随、缩小淡出(零依赖 RAF+lerp·token·reduced-motion) · decoration/overlay-fx · #animated
+> 光标图片拖尾 · 光标拖尾图片组件 · 移动光标沿轨迹依次甩出图片淡入跟随、缩小淡出(零依赖 RAF+lerp·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Lanyard
 
-> 可拖拽的挂绳工牌 · 单摆+阻尼弹簧物理回弹(原生 PointerEvents+RAF·零三方依赖) + SVG 二次贝塞尔挂绳随摆角实时弯折 + token 配色(挂绳 primary·工牌 surface/border)·reduced-motion 松手即静止归位 · decoration/overlay-fx · #animated
+> 挂绳工牌 · 可拖拽的挂绳工牌 · 单摆+阻尼弹簧物理回弹(原生 PointerEvents+RAF·零三方依赖) + SVG 二次贝塞尔挂绳随摆角实时弯折 + token 配色(挂绳 primary·工牌 surface/border)·reduced-motion 松手即静止归位 · decoration/overlay-fx · #animated
 
 ## 何时用
 

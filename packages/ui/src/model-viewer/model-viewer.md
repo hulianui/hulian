@@ -10,7 +10,7 @@ status: enriched
 
 # ModelViewer
 
-> 交互式 3D 模型查看舞台 · 拖拽旋转(惯性) + 鼠标视差 + 悬停倾斜 + 自动旋转 + 接触阴影(零依赖 CSS 3D · RAF · reduced-motion) · decoration/overlay-fx · #animated
+> 3D 模型舞台 · 交互式 3D 模型查看舞台 · 拖拽旋转(惯性) + 鼠标视差 + 悬停倾斜 + 自动旋转 + 接触阴影(零依赖 CSS 3D · RAF · reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

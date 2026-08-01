@@ -10,7 +10,7 @@ status: enriched
 
 # RippleGrid
 
-> 涟漪网格 WebGL 背景 · 同心 sin 波推挤网格 + 暗角/辉光/彩虹配色 + 指针局部涟漪(ogl·chart token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
+> 涟漪网格 · WebGL 背景 · 同心 sin 波推挤网格 + 暗角/辉光/彩虹配色 + 指针局部涟漪(ogl·chart token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

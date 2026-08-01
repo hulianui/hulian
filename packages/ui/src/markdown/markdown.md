@@ -10,7 +10,7 @@ status: enriched
 
 # Markdown
 
-> 只读 Markdown 渲染 · 零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC 安全 · typography/text
+> Markdown 渲染 · 只读，零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC 安全 · typography/text
 
 ## 何时用
 

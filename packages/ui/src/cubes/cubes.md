@@ -10,7 +10,7 @@ status: enriched
 
 # Cubes
 
-> 3D 立方体阵列交互背景 · 指针靠近按距离衰减倾斜 + 空闲自动游走 + 点击环形涟漪高亮（零依赖去 gsap·token 配色·reduced-motion） · decoration/overlay-fx · #animated
+> 立方体阵列 · 3D 立方体阵列交互背景 · 指针靠近按距离衰减倾斜 + 空闲自动游走 + 点击环形涟漪高亮（零依赖去 gsap·token 配色·reduced-motion） · decoration/overlay-fx · #animated
 
 ## 何时用
 

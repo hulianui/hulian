@@ -10,7 +10,7 @@ status: enriched
 
 # SoftAurora
 
-> WebGL 柔和极光背景 · 3D Perlin 噪声 + cosine 渐变双层叠加 · 鼠标视差(ogl·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 柔和极光 · WebGL 柔和极光背景 · 3D Perlin 噪声 + cosine 渐变双层叠加 · 鼠标视差(ogl·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

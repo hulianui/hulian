@@ -10,7 +10,7 @@ status: enriched
 
 # Prism
 
-> 棱镜分光 WebGL 背景 · ray-march 八面体 SDF 折射出彩虹体积光 + rotate/3drotate/hover 三姿态(ogl·主题色相自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 棱镜分光 · WebGL 背景 · ray-march 八面体 SDF 折射出彩虹体积光 + rotate/3drotate/hover 三姿态(ogl·主题色相自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

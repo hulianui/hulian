@@ -10,7 +10,7 @@ status: enriched
 
 # MetallicPaint
 
-> 液态金属漆面 WebGL 装饰背景 · fbm 液态扰动 + RGB 折射色散 + 多段金属条纹梯度(ogl·token·reduced-motion 降级) · decoration/overlay-fx · #animated
+> 液态金属漆面 · WebGL 装饰背景 · fbm 液态扰动 + RGB 折射色散 + 多段金属条纹梯度(ogl·token·reduced-motion 降级) · decoration/overlay-fx · #animated
 
 ## 何时用
 

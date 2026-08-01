@@ -10,7 +10,7 @@ status: enriched
 
 # Crosshair
 
-> 鼠标跟随的容器内准星十字线 · lerp 平滑拖尾 + 进入抖动脉冲 + token 配色(零依赖·reduced-motion) · decoration/overlay-fx · #animated
+> 准星十字线 · 鼠标跟随的容器内准星十字线 · lerp 平滑拖尾 + 进入抖动脉冲 + token 配色(零依赖·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

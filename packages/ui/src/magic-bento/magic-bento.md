@@ -10,7 +10,7 @@ status: enriched
 
 # MagicBento
 
-> 魔法便当卡片网格 · 光标跟随径向聚光 + 描边光呼吸 + 可选 3D 倾斜(零依赖·token·reduced-motion) · data-display/collection · #animated
+> 便当卡片网格 · 魔法便当卡片网格 · 光标跟随径向聚光 + 描边光呼吸 + 可选 3D 倾斜(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
 

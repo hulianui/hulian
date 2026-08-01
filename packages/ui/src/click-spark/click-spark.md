@@ -10,7 +10,7 @@ status: enriched
 
 # ClickSpark
 
-> 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·RSC 安全·jsdom 安全） · decoration/overlay-fx · #animated
+> 点击火花 · 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·RSC 安全·jsdom 安全） · decoration/overlay-fx · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # CircularGallery
 
-> ogl 弧形图片画廊 · 卡片沿圆弧弯曲倾斜排开 + 滚轮/拖拽惯性平移首尾无缝循环(ogl·圆角SDF·token化标题·reduced-motion 降级静态轨道) · data-display/collection · #animated
+> 弧形图片画廊 · ogl 弧形图片画廊 · 卡片沿圆弧弯曲倾斜排开 + 滚轮/拖拽惯性平移首尾无缝循环(ogl·圆角SDF·token化标题·reduced-motion 降级静态轨道) · data-display/collection · #animated
 
 ## 何时用
 

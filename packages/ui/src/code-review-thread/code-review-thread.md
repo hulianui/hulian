@@ -10,7 +10,7 @@ status: enriched
 
 # CodeReviewThread
 
-> 代码审查评论线程 · severity 左边色条(四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠 · 嵌 code-diff annotations 槽或独立用·复用 Avatar/Tag/CodeDiff · data-display/collection
+> 代码评审线程 · 代码审查评论线程 · severity 左边色条(四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠 · 嵌 code-diff annotations 槽或独立用·复用 Avatar/Tag/CodeDiff · data-display/collection
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # BlobCursor
 
-> 果冻光标拖尾组件 · 领头跟手 + 多滴弹性拖尾经 SVG gooey 滤镜融成液态水银(去 gsap·motion useSpring·token·reduced-motion) · decoration/overlay-fx · #animated
+> 果冻光标 · 拖尾组件 · 领头跟手 + 多滴弹性拖尾经 SVG gooey 滤镜融成液态水银(去 gsap·motion useSpring·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

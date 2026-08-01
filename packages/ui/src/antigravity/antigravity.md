@@ -10,7 +10,7 @@ status: enriched
 
 # Antigravity
 
-> 反重力粒子吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点阵) · decoration/overlay-fx · #animated
+> 反重力粒子 · 吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点阵) · decoration/overlay-fx · #animated
 
 ## 何时用
 

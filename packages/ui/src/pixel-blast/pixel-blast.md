@@ -10,7 +10,7 @@ status: enriched
 
 # PixelBlast
 
-> 抖动点阵翻涌的 WebGL 背景 · FBM 噪声 + 8×8 Bayer 有序抖动量化成方块/圆/三角/菱形像素 + 四周渐隐（ogl·token·reduced-motion 降级静态点阵） · decoration/backdrop · #animated #webgl
+> 点阵翻涌 · 抖动点阵翻涌的 WebGL 背景 · FBM 噪声 + 8×8 Bayer 有序抖动量化成方块/圆/三角/菱形像素 + 四周渐隐（ogl·token·reduced-motion 降级静态点阵） · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

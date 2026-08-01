@@ -10,7 +10,7 @@ status: enriched
 
 # Magnet
 
-> 指针磁吸交互组件 · 内容按「到中心距离/强度」牵引跟随指针、离开平滑归位(零依赖·reduced-motion 钳位) · decoration/overlay-fx · #animated
+> 指针磁吸 · 交互组件 · 内容按「到中心距离/强度」牵引跟随指针、离开平滑归位(零依赖·reduced-motion 钳位) · decoration/overlay-fx · #animated
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # LightPillar
 
-> 体积光柱 WebGL 背景 · 沿 y 轴 raymarch 累积辉光 + 多层波动噪声 + 顶底双色纵向渐变(ogl·token 自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
+> 体积光柱 · WebGL 背景 · 沿 y 轴 raymarch 累积辉光 + 多层波动噪声 + 顶底双色纵向渐变(ogl·token 自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

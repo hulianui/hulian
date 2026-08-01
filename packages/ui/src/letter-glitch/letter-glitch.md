@@ -10,7 +10,7 @@ status: enriched
 
 # LetterGlitch
 
-> 终端字符故障雨背景 · canvas 等宽字符矩阵按节拍随机翻字翻色 + 颜色逐帧插值平滑 + 内/外缘暗角(零依赖 canvas2d·token 调色板·reduced-motion) · decoration/backdrop · #animated #webgl
+> 字符故障雨 · 终端字符故障雨背景 · canvas 等宽字符矩阵按节拍随机翻字翻色 + 颜色逐帧插值平滑 + 内/外缘暗角(零依赖 canvas2d·token 调色板·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
 

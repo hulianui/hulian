@@ -10,7 +10,7 @@ status: enriched
 
 # MetaBalls
 
-> 一组黏液球（metaball）公转游走、距离平方反比势场叠加 smoothstep 等值面产生融合/分裂的有机黏连背景 · 主体球与跟随鼠标的光标球交界处混色 + 自动巡游兜底(ogl·token 配色·reduced-motion 静态渐变球团 fallback) · decoration/overlay-fx · #animated
+> 黏液融球 · 一组黏液球（metaball）公转游走、距离平方反比势场叠加 smoothstep 等值面产生融合/分裂的有机黏连背景 · 主体球与跟随鼠标的光标球交界处混色 + 自动巡游兜底(ogl·token 配色·reduced-motion 静态渐变球团 fallback) · decoration/overlay-fx · #animated
 
 ## 何时用
 

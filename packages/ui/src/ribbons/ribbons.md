@@ -10,7 +10,7 @@ status: enriched
 
 # Ribbons
 
-> 弹簧追随鼠标的飘带 WebGL 效果 · ogl Polyline 多条折线弹性拖尾 + 可选沿带渐隐/正弦波动(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
+> 飘带跟随 · 弹簧追随鼠标的飘带 WebGL 效果 · ogl Polyline 多条折线弹性拖尾 + 可选沿带渐隐/正弦波动(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 

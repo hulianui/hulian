@@ -10,7 +10,7 @@ status: enriched
 
 # TargetCursor
 
-> 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration/overlay-fx · #animated
+> 准星光标 · 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
