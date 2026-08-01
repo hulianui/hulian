@@ -54,6 +54,18 @@ function previousDates() {
 }
 
 /**
+ * 破坏性变更的判据——**不是** semver 的 major bump。
+ *
+ * 只要还在 0.x，changesets 就不会产出 major：打一个 major changeset 等于直接发 1.0.0。
+ * 于是破坏性变更一律记成 minor，靠正文里加粗的 `**BREAKING**` / `**破坏性**` 表达
+ * （0.15.0 切除 MUI 与 date-pickers 子路径入口、0.5.0 Base UI 同伴包改名都是这么写的）。
+ * 站点若只看 bump，「仅破坏性」筛选就永远是空的——这些标记必须被读出来。
+ *
+ * 要求加粗前缀而不是裸词，避免正文里议论「破坏性」时被误判。
+ */
+const BREAKING_RE = /\*\*(?:BREAKING|破坏性)/;
+
+/**
  * 解析一份 changesets CHANGELOG.md。
  * 结构：`## <version>` → `### Major|Minor|Patch Changes` → `- [sha: ]正文`，
  * 正文续行缩进 2 空格（子列表 / 多段落），去缩进后原样交给 Markdown 渲染。
@@ -67,7 +79,8 @@ function parseChangelog(md) {
   const flushEntry = () => {
     if (!entry) return;
     const body = entry.lines.join("\n").replace(/\n+$/, "");
-    if (body.trim()) cur.entries.push({ sha: entry.sha, bump, body });
+    if (body.trim())
+      cur.entries.push({ sha: entry.sha, bump, breaking: BREAKING_RE.test(body), body });
     entry = null;
   };
 

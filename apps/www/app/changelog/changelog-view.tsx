@@ -8,6 +8,8 @@ type Bump = "major" | "minor" | "patch";
 interface Entry {
   sha: string | null;
   bump: Bump;
+  /** 由 gen-changelog 从正文的 **BREAKING** / **破坏性** 标记解析而来，见下方 kindOf。 */
+  breaking?: boolean;
   body: string;
 }
 export interface Release {
@@ -17,14 +19,27 @@ export interface Release {
   entries: Entry[];
 }
 
-// bump → 展示元信息。破坏性最扎眼，patch 最弱，与 Timeline 圆点语气色对齐。
-const BUMP = {
-  major: { label: "破坏性", tone: "danger", dot: "danger", dotClass: "bg-danger" },
-  minor: { label: "新功能", tone: "brand", dot: "primary", dotClass: "bg-primary" },
-  patch: { label: "修复", tone: "neutral", dot: "default", dotClass: "bg-muted" },
+/**
+ * 展示分档 —— 与 semver 的 bump 不是一回事。
+ *
+ * 只要还在 0.x，changesets 就不会产出 major（打一个 major changeset 等于直接发 1.0.0），
+ * 破坏性变更只能记成 minor，靠正文里加粗的 **BREAKING** / **破坏性** 表达。所以分档必须
+ * 读 entry.breaking，只看 bump 的话「仅破坏性」永远是空的 —— 0.15.0 切除 MUI 与
+ * date-pickers 子路径入口、0.5.0 Base UI 同伴包改名，都会被漏掉。
+ */
+type Kind = "breaking" | "feature" | "fix";
+
+// 破坏性最扎眼，修复最弱，与 Timeline 圆点语气色对齐。
+const KIND = {
+  breaking: { label: "破坏性", tone: "danger", dot: "danger", dotClass: "bg-danger" },
+  feature: { label: "新功能", tone: "brand", dot: "primary", dotClass: "bg-primary" },
+  fix: { label: "修复", tone: "neutral", dot: "default", dotClass: "bg-muted" },
 } as const;
 
-const RANK: Record<Bump, number> = { patch: 0, minor: 1, major: 2 };
+const RANK: Record<Kind, number> = { fix: 0, feature: 1, breaking: 2 };
+
+const kindOf = (e: Entry): Kind =>
+  e.breaking || e.bump === "major" ? "breaking" : e.bump === "minor" ? "feature" : "fix";
 
 // 默认只出最近这么多个版本。更新日志天然只增不减，全量铺开会越来越长，
 // 而绝大多数来访只关心「最近发生了什么」；想看全史一键切「全部」。
@@ -48,8 +63,11 @@ function linkifyIssues(md: string): string {
 /** 两个包可能撞同一版本号（ui@0.1.1 与 tokens@0.1.1），锚点带包名才唯一。 */
 const anchorOf = (r: Release) => `${r.pkg.replace("@hulianui/", "")}-${r.version}`;
 
-const topBump = (r: Release): Bump =>
-  r.entries.reduce<Bump>((acc, e) => (RANK[e.bump] > RANK[acc] ? e.bump : acc), "patch");
+const topKind = (r: Release): Kind =>
+  r.entries.reduce<Kind>((acc, e) => {
+    const k = kindOf(e);
+    return RANK[k] > RANK[acc] ? k : acc;
+  }, "fix");
 
 export function ChangelogView({
   releases,
@@ -61,7 +79,12 @@ export function ChangelogView({
   const [view, setView] = useState("recent");
 
   const shown = useMemo(() => {
-    if (view === "breaking") return releases.filter((r) => r.entries.some((e) => e.bump === "major"));
+    // 「仅破坏性」只留破坏性条目本身：0.15.0 有 12 条改动而其中 2 条破坏性，把整版铺出来
+    // 等于让人自己再找一遍。版本头的条目数也因此是真实数字。
+    if (view === "breaking")
+      return releases
+        .map((r) => ({ ...r, entries: r.entries.filter((e) => kindOf(e) === "breaking") }))
+        .filter((r) => r.entries.length > 0);
     if (view === "recent") return releases.slice(0, RECENT_COUNT);
     return releases;
   }, [releases, view]);
@@ -74,7 +97,7 @@ export function ChangelogView({
         title: (
           <span className="flex items-center gap-2">
             <span
-              className={`size-1.5 shrink-0 rounded-full ${BUMP[topBump(r)].dotClass}`}
+              className={`size-1.5 shrink-0 rounded-full ${KIND[topKind(r)].dotClass}`}
               aria-hidden
             />
             <span className="font-mono text-xs">v{r.version}</span>
@@ -128,14 +151,12 @@ export function ChangelogView({
         ) : (
           <Timeline
             items={shown.map((r) => {
-              const top = topBump(r);
-              // 同版本多条不同 bump 时各条自带标签，故版本头列出该版涉及的全部 bump。
-              const bumps = [...new Set(r.entries.map((e) => e.bump))].sort(
-                (a, b) => RANK[b] - RANK[a],
-              );
+              const top = topKind(r);
+              // 同版本多条分档不同时各条自带标签，故版本头列出该版涉及的全部分档。
+              const kinds = [...new Set(r.entries.map(kindOf))].sort((a, b) => RANK[b] - RANK[a]);
               const anchor = anchorOf(r);
               return {
-                color: BUMP[top].dot,
+                color: KIND[top].dot,
                 children: (
                   <section id={anchor} className="scroll-mt-20 pb-2">
                     {/* 版本头吸顶：单条 changeset 动辄十几行，滚进正文深处就不知道自己在哪一版了。
@@ -151,9 +172,9 @@ export function ChangelogView({
                       <Tag variant="soft" tone="neutral" size="sm">
                         {r.pkg}
                       </Tag>
-                      {bumps.map((b) => (
-                        <Tag key={b} variant="soft" tone={BUMP[b].tone} size="sm">
-                          {BUMP[b].label}
+                      {kinds.map((k) => (
+                        <Tag key={k} variant="soft" tone={KIND[k].tone} size="sm">
+                          {KIND[k].label}
                         </Tag>
                       ))}
                       {r.date ? (

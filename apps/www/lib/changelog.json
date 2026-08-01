@@ -1,12 +1,117 @@
 [
   {
     "pkg": "@hulianui/tokens",
+    "version": "0.3.0",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "48c9f9a",
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 Annotation 手写风格标注\n\n**Annotation（新增 · data-display/info）**\n\n给一段行内内容画上荧光笔底色 + 手绘箭头 + 手写小标签，用来在文档、演示、组件解剖图里就地讲解「这一块是什么」。与 Callout 互补：Callout 是打断正文的块级提示框，Annotation 是不占布局位置的旁注。\n\n`side` 说的是**标签在哪**（与 Tooltip / Popover 同义），箭头自动从标签指回目标。八个方位共用两条定位规则 —— 箭头的头端贴目标、标签接在箭头尾端外侧 —— 所以换方位不需要各自调偏移量，几何算在 `annotationGeometry` 纯函数里。\n\n与同类的纯 CSS 方案相比有三处不同：标签是**真实 DOM 节点**而非 `::after` + `content: attr()`，因此能放 ReactNode（内嵌 Code、链接）且读屏能读到；箭头是**真实 SVG 元素**而非 `mask: url(data:...)`，直接吃颜色变量、省掉一层遮罩合成；配色走语义 token，暗色下荧光笔自动提亮，且只染标注自身 —— 被标注的正文保持原色。\n\n荧光笔底色向左右外扩模仿马克笔涂过头，量走 `--hl-ann-spread`（默认 `0.3em`）。同一行里几条标注紧挨着时底色会连成一片，`className=\"[--hl-ann-spread:0.1em]\"` 即可收窄。\n\n**tokens：新增 `--hl-annotation-font` 手写字体栈 + `--hl-ann-hue` 注册属性**\n\n字体栈刻意很短，只列经实测确认默认可用的：macOS 走翩翩体、Windows 走楷体。原因是 macOS 把「手札体 / 行楷 / 报隶 / 魏碑」这类字体登记为**可下载字体** —— 字体名在系统里注册着但字形默认不在本地，浏览器的逐字符回落会在这种名字上停住（认为已命中）却拿不到字形，画成默认黑体，于是把排在后面、真正装了的字体永远挡在门外。往这个栈里「多加几个备选」会让效果变差而不是变好。\n\n`@property --hl-ann-hue` 让色相可插值，供 `tone=\"rainbow\"` 循环换色；`inherits: true` 是必须的 —— 箭头与标签是宿主的子元素，靠继承拿到动画中的色相。"
+      },
+      {
+        "sha": "4237cf3",
+        "bump": "patch",
+        "breaking": false,
+        "body": "提高亮暗主题下 primary、danger、success 与 warning 语义色的文字和底色对比度，并为危险色、警告色补充可复用的明暗阶。"
+      },
+      {
+        "sha": "9f2ad65",
+        "bump": "patch",
+        "breaking": false,
+        "body": "依赖升级：semver range 内的安全批次 + 组件依赖 minor\n\n**安全批**（patch / 小 minor，行为无预期变化）：\nreact `19.2.7→19.2.8`、tailwindcss `4.3.0→4.3.3`、@tanstack/react-virtual `3.14.2→3.14.9`、\nreact-colorful `5.7.0→5.8.0`、@types/react `19.2.16→19.2.18`、@types/react-dom `19.2.3→19.2.4`，\n以及仓库侧的 next `16.2.6→16.2.12`、@next/mdx、@tailwindcss/postcss、turbo `2.9.16→2.10.8`、\n@changesets/cli、msw、@faker-js/faker、@mui/material-nextjs、@tauri-apps/\\*。\n\n**组件依赖批**（minor，但都是运行时行为依赖，已跑全量测试）：\n@base-ui/react `1.5.0→1.6.0`、@mui/material `9.0.1→9.2.0`、@mui/x-date-pickers `9.3.0→9.10.1`、\nrecharts `3.8.1→3.10.1`、motion `12.40.0→12.43.0`、lucide-react `1.17.0→1.28.0`。\n\n**顺带修掉一处版本裂开**：tiptap 的直接依赖此前锁在 3.25.0，而它的传递依赖\n（`@tiptap/extension-bubble-menu` / `extension-floating-menu` / `extensions`）已被解析到 3.29.x，\n`pnpm install` 会报一串 unmet peer。现已把 `@tiptap/react` / `pm` / `starter-kit` /\n`extension-link` / `extension-placeholder` / `tiptap-markdown` 统一到 3.29.2，peer 警告清零。\n\n验证：3302 个测试全绿、typecheck 通过、文档站 `next build` 通过、12 个入口体积门禁全绿\n（体积零变化 —— 体积门禁在临时工程里全新安装，本来测的就是 range 内的最新依赖）。\n\n跨大版本的 typescript 7 / vitest 4 / jsdom 30 / @types/node 26 / react-easy-crop 6 不在本次范围内。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.15.0",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "48c9f9a",
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 Annotation 手写风格标注\n\n**Annotation（新增 · data-display/info）**\n\n给一段行内内容画上荧光笔底色 + 手绘箭头 + 手写小标签，用来在文档、演示、组件解剖图里就地讲解「这一块是什么」。与 Callout 互补：Callout 是打断正文的块级提示框，Annotation 是不占布局位置的旁注。\n\n`side` 说的是**标签在哪**（与 Tooltip / Popover 同义），箭头自动从标签指回目标。八个方位共用两条定位规则 —— 箭头的头端贴目标、标签接在箭头尾端外侧 —— 所以换方位不需要各自调偏移量，几何算在 `annotationGeometry` 纯函数里。\n\n与同类的纯 CSS 方案相比有三处不同：标签是**真实 DOM 节点**而非 `::after` + `content: attr()`，因此能放 ReactNode（内嵌 Code、链接）且读屏能读到；箭头是**真实 SVG 元素**而非 `mask: url(data:...)`，直接吃颜色变量、省掉一层遮罩合成；配色走语义 token，暗色下荧光笔自动提亮，且只染标注自身 —— 被标注的正文保持原色。\n\n荧光笔底色向左右外扩模仿马克笔涂过头，量走 `--hl-ann-spread`（默认 `0.3em`）。同一行里几条标注紧挨着时底色会连成一片，`className=\"[--hl-ann-spread:0.1em]\"` 即可收窄。\n\n**tokens：新增 `--hl-annotation-font` 手写字体栈 + `--hl-ann-hue` 注册属性**\n\n字体栈刻意很短，只列经实测确认默认可用的：macOS 走翩翩体、Windows 走楷体。原因是 macOS 把「手札体 / 行楷 / 报隶 / 魏碑」这类字体登记为**可下载字体** —— 字体名在系统里注册着但字形默认不在本地，浏览器的逐字符回落会在这种名字上停住（认为已命中）却拿不到字形，画成默认黑体，于是把排在后面、真正装了的字体永远挡在门外。往这个栈里「多加几个备选」会让效果变差而不是变好。\n\n`@property --hl-ann-hue` 让色相可插值，供 `tone=\"rainbow\"` 循环换色；`inherits: true` 是必须的 —— 箭头与标签是宿主的子元素，靠继承拿到动画中的色相。"
+      },
+      {
+        "sha": "7e1b107",
+        "bump": "minor",
+        "breaking": true,
+        "body": "**BREAKING**：日期族全部自研为零依赖，MUI 与 emotion 整族切除\n\n`src/_mui/` 目录不复存在。`@mui/material`、`@mui/x-date-pickers`、`@emotion/react`、`@emotion/styled`\n四个包已从 `dependencies` / `peerDependencies` / `peerDependenciesMeta` 全部移除，\n`@hulianui/ui/date-pickers` 子路径入口移除，`MuiBridgeProvider` 移除。\n\n**装 `@hulianui/ui` 现在没有 optional peer、没有子路径入口、没有必须挂的第三方 Provider。**\n\n### 新增（自研零依赖）\n\n- **`Calendar`** —— 常驻日历面板，日/月/年三层下钻，不带触发器与浮层\n- **`DateTimePicker`** —— 左日历 + 右时/分/秒列一体弹层，边界只在压着 min/max 那天生效\n- **`TimeField`** —— 分段键盘输入（时/分/秒各一段 `role=\"spinbutton\"`）：`↑↓` 调值、`←→` 切段、\n  数字键两位缓冲覆写并自动跳段、`Backspace` 清段\n\n### 改名\n\n- **`DateField` → `DatePicker`**。库内命名统一为 `DatePicker` / `TimePicker` / `DateRangePicker`，\n  与行业惯例一致。`DatePicker` 这个名字此前指向 MUI 桥接件，现在指向这个自研实现。\n- 随之移除导出类型 `DateFieldPicker`，粒度类型统一用 `CalendarPicker`。\n\n### 迁移\n\n| 之前                                                                        | 现在                                                               |\n| --------------------------------------------------------------------------- | ------------------------------------------------------------------ |\n| `import { X } from \"@hulianui/ui/date-pickers\"`                             | `import { X } from \"@hulianui/ui\"`                                 |\n| `pnpm add @mui/material @mui/x-date-pickers @emotion/react @emotion/styled` | 不需要，可以卸掉                                                   |\n| `<MuiBridgeProvider>` 包裹                                                  | 删掉                                                               |\n| `DateField`                                                                 | `DatePicker`                                                       |\n| 值是完整 ISO 时间戳                                                         | 定宽字符串：`\"YYYY-MM-DD\"` / `\"HH:mm[:ss]\"` / `\"YYYY-MM-DD HH:mm\"` |\n| `DatePicker` 的 `views` / `openTo`                                          | `picker=\"date\" \\| \"month\" \\| \"year\"`                               |\n| `DatePicker` / `TimeField` 的 `label`                                       | `placeholder` + `aria-label`（不带浮动 label）                     |\n| `DateTimePicker` 的 `minutesStep`                                           | `minuteStep`（与 `TimePicker` 对齐）                               |\n| `DateTimePicker` 的 `format`                                                | `displayFormat`（只改显示，不改值）                                |\n\n值改成定宽字符串是刻意的：字典序即时间序，范围比较可以直接比字符串，\n既不用引 date 库做比较，也不会被时区和 UTC 日界搅进来。\n\n### 顺带修复\n\n`recharts` 3.x 把 `react-is` 声明为 **peerDependency**，而瑚琏既没装也没声明它 ——\n此前一直是靠 MUI 的依赖链蹭到的。MUI 一走，体积门禁当场 `Could not resolve \"react-is\"`。\nrecharts 是我们的 `dependency`，它的 peer 就该由我们兜住，现已补进 `dependencies`：\n在不自动装 peer 的包管理器（如 yarn classic）下，此前用 `Chart` 会直接打包失败。\n\n### 真机验证抓到的两个修复\n\n单测（jsdom）全绿之后，用真实浏览器逐个走了一遍键盘与浮层，抓到两个 jsdom 测不出来的问题：\n\n- **`TimeField` 的两位缓冲在受控用法下失效**：`applyParts` 只在非受控时记录「刚提交的值」，\n  于是受控下父组件回传值会被当成「外部改了值」，连带清空缓冲 —— 输 `3` 再输 `0` 得到 `00` 而不是 `30`。\n  全部用 `defaultValue` 的测试碰不到这条路径，已补两条受控回环的回归测试。\n- **时间列的滚动定位每次多滚一格**（`TimePicker` 原有问题，`DateTimePicker` 继承）：\n  `el.offsetTop` 的 offsetParent 不是滚动容器而是带列头的外层 div，于是选中项被顶到可视区外。\n  滚动容器补 `relative` 后，选中项正好落在列顶。jsdom 无布局、`offsetTop` 恒 0，只有真机看得见。\n\n### 门禁\n\n- 消费方冒烟门禁收敛回单场景，并在消费面里钉死日期族必须能从根 barrel 导入且零额外依赖\n- `scripts/bundle-size.sh` 反向断言升级：`@mui/*` / `@emotion/*` 出现在**任何一类**依赖里即失败\n- 体积基线的 `mui-bridge` 采样点换成 `date-picker`（53.6KB initial）；根 barrel 实测 957.5KB"
+      },
+      {
+        "sha": "ce1c41b",
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 MathText / QuestionCard，外加 Image 与 Table 两处真 bug 修复\n\n**MathText（新增 · typography/text）**\n\n行内数学排版。零依赖解析 LaTeX 子集（分数 / 根号 / 上下标 / 填空槽）并渲染成真数学版式。分数用 `inline-flex` 竖排，不撑乱中文行高。需要可检索的朴素文本时走 `mathToPlain`。RSC 安全。\n\n**QuestionCard（新增 · data-display/collection）**\n\n教辅题库的标准展示件：题号 / 题型 / 分层 / 题干 / 选项 / 小问 / 附图 / 章节 / 出处。题干与选项走 MathText 的真数学版式；待复核题亮左侧警示边条，不与正常题混排。dogfood Card / Tag / Chip / Image。\n\n**fix(image)：命中缓存的图片永久停在 `opacity-0`**\n\n只靠 `onLoad` 翻转淡入态是不够的 —— 图片命中缓存（或 SSR 出的 HTML 在 hydration 之前就解完码）时，`load` 事件早在 React 挂上处理器之前就烧完了，`onLoad` 永不触发。\n\n现象极具迷惑性：**网络面板 200、`naturalWidth` 正常，页面上却是一块空白**，很容易被误判成图片本身挂了。改为挂载后经 ref 补查一次 `img.complete && naturalWidth > 0`。\n\n**fix(table)：表头恒不换行**\n\n`table-layout: auto` 下列宽会收缩到 `min-content`，中文表头因此被挤成「拆／出／条／目」每行一个字（英文则按空格断开），列宽反而更窄。表头是短标签，`nowrap` 让它成为列的宽度下界，才是正确的度量基准。需要截断的列继续走 `meta.ellipsis` + `maxWidth`，不靠折行省地方。"
+      },
+      {
+        "sha": "15ef604",
+        "bump": "minor",
+        "breaking": true,
+        "body": "**BREAKING**：日期族改走子路径导入，MUI / emotion 降为 optional peerDependency。\n\n- `Rating` / `Stepper` 重写为零依赖自研，仍从根 barrel 导入，**不再需要** `MuiBridgeProvider`。\n- `Calendar` / `DatePicker` / `DateTimePicker` / `TimeField` / `MuiBridgeProvider` 移出根 barrel，\n  改从 `@hulianui/ui/date-pickers` 导入，并需自行安装 `@mui/material` `@mui/x-date-pickers`\n  `@emotion/react` `@emotion/styled` 四个 optional peer。\n\n迁移：\n\n```diff\n- import { DatePicker, MuiBridgeProvider } from \"@hulianui/ui\"\n+ import { DatePicker, MuiBridgeProvider } from \"@hulianui/ui/date-pickers\"\n```\n\n为什么：`@emotion` 是 runtime CSS-in-JS（不兼容 RSC），此前是硬依赖 —— 任何人只想用一个\nButton 也会被迫装下整个 MUI + emotion。源码分发下光把它降为 optional peer 还不够：根 barrel\n导出会强制每个消费方的 tsc 去编译 `_mui/*.tsx`，没装 MUI 的项目直接 `TS2307`。所以连同\nbarrel 一起移出。\n\n收益：`dependencies` 27 → 22；root-barrel 体积基线 1250KB → 1098KB（-12.2%）；\n不用日期族的项目彻底不接触 emotion。"
+      },
+      {
+        "sha": "a502b85",
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 PasswordGenerator 密码生成器（Bitwarden 式双模面板）\n\n**字符密码 + 密码短语双模**。密码模式给长度（5–128）、四类字符开关、最少数字/符号、排除形近字符；短语模式给词数（3–20）、分隔符、首字母大写、附加数字，词从内置 1747 词的常用短词表里取。参数改了立刻重算，熵值实时评级四档强度条。\n\n**真正的含金量在算法，不在面板**，所以生成逻辑全部作为纯函数导出，服务端 / 表单校验 / CLI 都能直接调：\n\n```ts\nimport { generatePassword, generatePassphrase, passwordEntropy, strengthOf } from \"@hulianui/ui\";\n```\n\n三条不可省的安全实现：\n\n- **随机源只用 `crypto.getRandomValues`**。`Math.random()` 是可预测 PRNG，用它生成的密码等于没生成。环境不支持时组件显示错误提示，**不静默降级**。\n- **拒绝采样消除模偏**。`bytes[i] % pool.length` 这种常见写法会让前几个字符出现概率偏高——熵被悄悄削掉而外观毫无异样。\n- **结果整体洗牌**。否则「前两位必是大写和小写」成了可被利用的位置规律。\n\n生成函数第二参数是可注入的随机源，测试里传伪随机即可让输出确定可复现。\n\n文案接入 `ConfigProvider` 的 `locale.passwordGenerator`（内置 zhCN / enUS），亦可用 `labels` prop 逐条覆盖。结果区是 `aria-live` 的 `<output>`，强度条是 `role=\"meter\"` 带 `aria-valuetext`，不靠颜色单独传达强弱。SSR 首帧渲染占位符，不会水合失配。\n\n配套 70 个测试（47 个算法 + 23 个组件），覆盖拒绝采样、约束满足、洗牌有效性、词库无重复、SSR 占位。"
+      },
+      {
+        "sha": "720fa91",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`react-easy-crop` 升到 6.2.3（ImageCropper 的裁剪引擎）\n\n走 minor 而不是 patch：它挂在 `dependencies` 而不是 `peerDependencies`，升 major 会改变下游\n装到的传递依赖大版本，不该藏在 patch 里发。\n\n**API / 坐标语义零变更**。ImageCropper 的源码一行没动，`onCropComplete(area, croppedAreaPixels)`\n的含义、`restrictPosition` 的夹紧规则、出图坐标全部照旧。v6.0.0 的 breaking 是构建产物层面的：\n去掉 UMD build、去掉 `tslib` 运行时依赖（少一个传递依赖）、`exports` map 拆出\n`index.d.mts` / `index.d.ts` 双份类型。\n\n**两处实际差异**：\n\n1. **v6.0.1 给媒体元素加了 `max-width: unset`** —— 防全局 `img { max-width: 100% }` 类 reset\n   （Tailwind Preflight 正是这种）挤压裁剪媒体。我们默认 `objectFit: \"contain\"`，\n   `.reactEasyCrop_Contain` 的 `max-width: 100%` 优先级更后，所以默认路径行为不变；\n   受益的是传 `objectFit: \"cover\"` 系列的消费方。\n2. **v6.1.0 给 resize 后的回调加了 250ms 防抖**。视觉布局仍是即时重算（实测容器 320→200px\n   后裁剪框立刻跟到 143×200，比例仍是 5:7），防抖只推迟 `onCropComplete` 的发射。\n   理论上留下一个「resize 后 250ms 内点确认会用到旧几何」的窗口，实操中人手够不到；\n   实测 resize 前后各点一次确认，源区域稳定在 571×800（≈5:7），说明防抖后回调正常收敛、\n   不会永久停在旧几何。\n\n**验收**：3302 用例全绿、消费方 typecheck 门禁绿、12 个体积入口全在基线内（root-barrel\n反而因少了 tslib 略降）、www 构建通过。真浏览器实拖实裁自证：滚轮缩放到 3×、拖拽对位、\n确认出图 413×578 JPEG，产物像素与裁剪框内所见一致。"
+      },
+      {
+        "sha": "20f2f57",
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 `@hulianui/ui/vite` —— 软链消费时自动修好 dev server\n\n```ts\n// vite.config.ts\nimport { hulian } from \"@hulianui/ui/vite\";\nexport default defineConfig({ plugins: [react(), hulian()] });\n```\n\n**治的病**：Vite **有意跳过 linked 包的依赖预打包**（`link:` / workspace / `file:` 指向目录），\n因为它假定你正在改那个包、需要 HMR。于是源码分发的瑚琏回到逐文件 transform 的老路。\n实测同一页面（引 8 个组件，Vite 7.3.6）：\n\n| 消费方式              | 浏览器模块请求 | dev server RSS |\n| --------------------- | -------------- | -------------- |\n| `pnpm add`（tarball） | 16             | 43 MB          |\n| **软链**              | **250**        | 83 MB          |\n| 软链 + 本插件         | **13**         | 80 MB          |\n\n请求数差 15 倍，而这只是 8 个组件的量 —— 真实项目引十几个组件、跨多个页面按同样比例放大，\n就是「dev server 常驻数 GB、HMR 卡到点了没反应」。\n\n**怎么判断**：插件读自己的 realpath 是否还在 `node_modules` 里 —— pnpm 正常安装会落在\n`.pnpm/@hulianui+ui@x.y.z/...`，软链则落在你的仓库目录。所以**正常安装的项目加了也无害**\n（探测到不是软链就什么都不做，且保持安静），可以直接写进项目模板。\n\n**代价**：预打包意味着库源码不再有 HMR，改 `packages/ui` 后需重启 dev server；\n正在改库时传 `hulian({ prebundle: false })` 换回来。冷启动那次预打包约 4 秒\n（5204 个模块 → 一个 9.4 MB chunk），之后走缓存。\n\n**刻意不做的事**：不加 `resolve.dedupe`。实测 Vite dev 会把所有 bare `import \"react\"` 重写到\n同一份预构建产物，React 不会分裂，加了是噪音。这与 `@hulianui/ui/vitest-preset` 需要 dedupe\n并不矛盾 —— 那边走的是 SSR 转换 + Node 解析，没有浏览器侧预构建统一这一层。两个环境两套配置，\n别互相套用。\n\n`vite` 以 optional peer 声明（`>=5`），不用 Vite 的消费方不受影响。插件只用 `config` /\n`configResolved` 两个钩子与 `optimizeDeps`，这些在 Vite 5~8 都稳定 —— Vite 8 换 Rolldown 后\n预打包仍在，linked 包仍默认跳过。"
+      },
+      {
+        "sha": "ce9b419",
+        "bump": "patch",
+        "breaking": false,
+        "body": "消费方产物瘦身：Button 首屏 -75%，凡用图标的组件均 -3.7 KB\n\n三处改动，都不动任何 API：\n\n**`_icons` 补 `/*#__PURE__*/` —— 全库受益**\n\n67 个内联图标都是 `createIcon(...)` 的调用结果。打包器对顶层函数调用一律保守：无法证明无副作用就整条留下。于是**任何组件只要引一个图标，67 个全进它的 bundle**。Button 只用 `Loader2`，产物里却背着 11.6 KB 的完整图标集。加上 PURE 标注后 Tag 从 13.6 KB 降到 9.9 KB（**-27%**），Table、ProTable、MarkdownEditor、Video 各降约 3.7 KB。\n\n新增图标时记得连 `/*#__PURE__*/` 一起写，`_icons/index.tsx` 顶部有说明。\n\n**动画引擎改按需加载 —— Button 40.1 KB → 10.0 KB**\n\n`LazyMotionProvider` 的 `features` 从静态 `domAnimation` 改为 `import()`，约 24 KB 的动画引擎因此切成独立 chunk，不再占用任何组件的首屏关键路径。\n\n行为上：features 到达之前 `m.*` 渲染为无动画元素，慢网络下「一进页面就播」的入场动画可能少播一次淡入。**不会卡在不可见** —— features 缺席时元素以最终态呈现，不是停在 `opacity: 0`。交互触发的动效（按压、hover、overlay 开合）完全不受影响。文档站逐帧实测：入场动画照常逐帧推进，chunk 到得比动画该开始的时刻还早。\n\n**ProTable 的虚拟滚动补上文档与测试**\n\n`virtual` 一直随 `...tableProps` 透传给内部 Table，能力早就有，但整个 `pro-table/` 目录没有一处写着 \"virtual\"，文档也没提，很容易被当成不支持而把上万行直接铺进 DOM。现在 Props 段显式点名，并加了测试钉住这条隐式透传契约（连同 Table 自身的虚拟滚动 —— 它此前同样没有任何测试保护）。\n\n**配套：两把尺子 + 一处文档更正**\n\n- `pnpm size` —— 体积门禁（已进 CI）。pack 出 tarball → 仓库外空白工程 → esbuild 打包量 gzip，基线在 `scripts/size-limits.json`；`--why <入口>` 看体积构成。\n- `pnpm compile-cost` —— 编译压力诊断（不进 CI，耗时受机器负载影响太大）。量 dev 模块图规模、内存，以及 tsc 的 Files/内存/耗时。实测同样 8 个组件，根 barrel 是子路径的 **27 倍模块**；只 import 一个 Button，根 barrel 让 tsc 吃 **722 MB / 3020 files**，子路径只要 105 MB / 83 files —— 而这一层 `optimizeDeps` / `optimizePackageImports` 都救不了，它们只塌缩打包器的模块图，tsserver 照样直面源码。\n\n`docs/consuming.md` 里「Vite 默认不对 node_modules 里的源码包做预构建」一句按实测更正：Vite 7 对**正常 `pnpm add` 装进来**的瑚琏会自动预打包（16 个模块请求 / 43 MB），**软链消费**才会退回逐文件 transform（250 个请求）——那时 `optimizeDeps.include` 是必需项而非优化项。"
+      },
+      {
+        "sha": "bd4ffd4",
+        "bump": "patch",
+        "breaking": false,
+        "body": "修复：日期族的对外入口与依赖清单在文档 / registry / MCP 三处都对不上\n\n日期族改走 `@hulianui/ui/date-pickers` 子路径之后，还有四处仍在告诉使用者「从根 barrel 导入」——\n组件文档、registry 的 `meta.import`、conventions 的 `import-from-root-barrel` 约束、MCP 的\n`list_components` 表头。照抄任意一处的结果都是 `TS2305: has no exported member`。\n\n同时修一个更早就存在的问题：registry 单件安装日期族时只列了 `@mui/material` /\n`@mui/x-date-pickers` / `dayjs`，**漏掉 `@emotion/react` 与 `@emotion/styled`**。registry 的依赖\n是扫源码 import 反推的，而 emotion 是 MUI v9 的样式引擎、组件从不直接 import 它，于是永远扫不出来 ——\n照 registry 装完直接跑不起来。现按「伴生 peer」补齐。\n\n消费方冒烟门禁也补上了第二个场景（装 MUI + 走子路径），此前 `src/_mui/` 的 exports 映射零覆盖：\n它既不在根 barrel 也不在 showcase barrel，库内 tsc 与 workspace 链接两条路都测不到。"
+      },
+      {
+        "sha": "9f2ad65",
+        "bump": "patch",
+        "breaking": false,
+        "body": "依赖升级：semver range 内的安全批次 + 组件依赖 minor\n\n**安全批**（patch / 小 minor，行为无预期变化）：\nreact `19.2.7→19.2.8`、tailwindcss `4.3.0→4.3.3`、@tanstack/react-virtual `3.14.2→3.14.9`、\nreact-colorful `5.7.0→5.8.0`、@types/react `19.2.16→19.2.18`、@types/react-dom `19.2.3→19.2.4`，\n以及仓库侧的 next `16.2.6→16.2.12`、@next/mdx、@tailwindcss/postcss、turbo `2.9.16→2.10.8`、\n@changesets/cli、msw、@faker-js/faker、@mui/material-nextjs、@tauri-apps/\\*。\n\n**组件依赖批**（minor，但都是运行时行为依赖，已跑全量测试）：\n@base-ui/react `1.5.0→1.6.0`、@mui/material `9.0.1→9.2.0`、@mui/x-date-pickers `9.3.0→9.10.1`、\nrecharts `3.8.1→3.10.1`、motion `12.40.0→12.43.0`、lucide-react `1.17.0→1.28.0`。\n\n**顺带修掉一处版本裂开**：tiptap 的直接依赖此前锁在 3.25.0，而它的传递依赖\n（`@tiptap/extension-bubble-menu` / `extension-floating-menu` / `extensions`）已被解析到 3.29.x，\n`pnpm install` 会报一串 unmet peer。现已把 `@tiptap/react` / `pm` / `starter-kit` /\n`extension-link` / `extension-placeholder` / `tiptap-markdown` 统一到 3.29.2，peer 警告清零。\n\n验证：3302 个测试全绿、typecheck 通过、文档站 `next build` 通过、12 个入口体积门禁全绿\n（体积零变化 —— 体积门禁在临时工程里全新安装，本来测的就是 range 内的最新依赖）。\n\n跨大版本的 typescript 7 / vitest 4 / jsdom 30 / @types/node 26 / react-easy-crop 6 不在本次范围内。"
+      },
+      {
+        "sha": "235cee5",
+        "bump": "patch",
+        "breaking": false,
+        "body": "新增可执行的 `@hulianui/guard` 约束门禁，并让 MCP 安装指引返回页面递归依赖、显式接入清单和安装后检查命令。\n\n`SelectTrigger` 现在透传原生 button 属性，并在 searchable 模式下正确合并消费方 ref 与内部锚点 ref。"
+      },
+      {
+        "sha": "f4328bb",
+        "bump": "patch",
+        "breaking": false,
+        "body": "修复：升到 TypeScript 6/7 的消费方一 `import { Video }` 就报 TS2882\n\n`video.tsx` 里的 `import \"@vidstack/react/player/styles/base.css\"` 是一条 side-effect import，\n而 vidstack 没有随包提供样式表的类型声明。TypeScript **6.0 起** `noUncheckedSideEffectImports`\n默认为 `true`，于是这条 import 直接报错：\n\n```\nTS2882: Cannot find module or type declarations for side-effect import of\n'@vidstack/react/player/styles/base.css'.\n```\n\n因为瑚琏是**源码分发**（`exports \".\" → \"./src/index.ts\"`，消费方直接编译这份源码），\n这不是我们仓内的小事 —— **任何已经升到 TS 6/7 的下游只要引了 Video 就当场编译失败**，\n与我们自己升不升 TypeScript 无关。用 TS 7.0.2 在一个仓库外的干净消费方工程实测复现、并验证修复。\n\n修法：新增 `src/video/vidstack-css.d.ts` 声明该样式路径，并在 `video.tsx` 顶部加三斜线引用把它\n带进下游的 program（消费方的 tsconfig 只 include 自己的 src，不会自动加载库里的 `.d.ts`）。\n\n两个刻意的选择，改动时请勿\"顺手优化\"：\n\n- **用带包名前缀的通配** `declare module \"@vidstack/react/player/styles/*.css\"`，而不是全局\n  `declare module \"*.css\"` —— 后者会顺着源码分发渗进消费方的类型环境，把他们自己的\n  CSS Module 类型一起吃掉。\n- **三斜线必须排在 `\"use client\"` 之前**。三斜线指令只在任何语句之前才生效，而 `\"use client\"`\n  是一条 ExpressionStatement；排在它后面会被当成普通注释静默失效（实测过：放下面时消费方仍报\n  TS2882，且库内因为 tsconfig 的 `src/**/*.ts` 会自动 include 那份 `.d.ts` 而**假绿**）。\n  指令前允许有注释，所以这个顺序对 `\"use client\"` 本身没有影响。\n\n对 TS 5.x 消费方无任何影响（那里本就不报这条）。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
     "version": "0.2.0",
     "date": "2026-07-29",
     "entries": [
       {
         "sha": "8ff9043",
         "bump": "minor",
+        "breaking": false,
         "body": "动效手感统一：曲线 SSOT 打通、浮层从触发器长出、按压反馈铺开\n\n对照 Emil Kowalski 的动效判据（easing / duration / 物理性 / 可中断性 / 性能 / 内聚性）做的一轮系统性打磨。行为变更，无 API 破坏。\n\n**曲线 SSOT 打通（覆盖面最大）**\n\n- `@hulianui/tokens` 的 preset.css 新增 `@theme` 缓动块：把 Tailwind 内置的 `--ease-out` / `--ease-in-out` 覆盖为瑚琏曲线，并新增 `--ease-drawer`（iOS/Ionic 抽屉曲线）。\n- 同时覆盖 `--default-transition-timing-function` —— 库内 90+ 个组件写的是裸 `transition-colors`，此前全部走 Tailwind 默认的 `cubic-bezier(0.4, 0, 0.2, 1)`，与 motion token 驱动的动效并存两套手感。现已统一。\n- `motion/tokens.ts` 补 `motionEase.drawer` / `motionEaseCss.drawer`。\n\n**浮层从触发器长出**\n\n13 个 Base UI overlay（Tooltip / Popover / Select / Menu / ContextMenu / Combobox / Cascader / HoverCard / Popconfirm / TreeSelect / DateField / DateRangePicker / TimePicker）接上 `--transform-origin`，进出场不再从自身中心缩放。Dialog / AlertDialog / Modal 保持居中（它们不锚定触发器）。\n\n**按压反馈**\n\n- 新增导出 `pressableClass` —— `pressable`（motion 版）的纯 CSS 平替，零 motion 运行时。\n- 铺到 Fab（主钮 + 子动作）、Toggle、Segmented、SocialButton、Choicebox（大卡用 0.99）；ActionSheet 走 active 底色（移动端全宽条目变色比缩放更贴原生）。\n\n**其它**\n\n- Drawer / ActionSheet 面板改用 drawer 曲线 + 300ms，遮罩淡入与面板滑动解耦（原先共用一套参数）。\n- Command 命令面板去掉缩放进场、缩至 150ms 纯淡入 —— ⌘K 是键盘高频入口，位移进场会让每次唤起慢半拍。\n- Tooltip 支持 `data-instant`：同组内已有 tooltip 打开时，相邻触发器瞬时显示（跳过延迟与动画）。\n- 清零 `transition-all`（Fab / BentoGrid / VoiceRecord / InfiniteMenu / ShimmerButton 改指名属性）。\n- VoiceRecord 波形条从动态 `height` 改为 `scaleY` —— 每 100ms 刷新、十余条同时动 height 会逐帧触发整行 flex 重排。\n- Folder 的 `ease-in` 改 `ease-out`。\n\n**文档**\n\n文档站新增 `/theme/motion` —— `/theme` 下此前有色彩/圆角/阴影/间距等页，唯独动效缺席。新页含曲线手感对比（悬停即看）、时长阶梯、「该不该动」的频率判据，以及按压反馈与浮层原点的接法。"
       }
     ]
@@ -19,6 +124,7 @@
       {
         "sha": "be31a60",
         "bump": "minor",
+        "breaking": false,
         "body": "清 issue #19 / #20 / #21 / #31\n\n**#31 Sortable：`InteractiveAwarePointerSensor.activators` 缺 `override`（0.13.0 回归 · 阻断级）**\n\n`static activators` 补 `override`。这一行是 0.13.0 随 #26 首次发布时带进来的：本包**发的是源码**（`exports` 指向 `./src/index.ts`，产物里零 `dist/`），所以它会进入**每个消费方**的 tsc program，凡是 tsconfig 开了 `noImplicitOverride` 的工程 `tsc --noEmit` 直接 TS4114 失败。`skipLibCheck` 救不了——它只跳 `.d.ts`，跳不过我们发出去的 `.tsx`。消费方此前除了为一个依赖关掉自己代码的一项检查，没有别的绕法。\n\n根子在门禁：`tsconfig.base.json` 只有 `strict: true`，而 `noImplicitOverride` 不在 strict 家族里、需单独开，于是库内编译通过、问题只在消费方暴露。现已在 `tsconfig.base.json` 与「消费方身份 typecheck」门禁的 tsconfig 里**双双开启**——后者刻意比库更严一档，因为对发源码的包来说，**库没开的检查项都是漏给消费方的雷**。全仓开启后零违规，即此前只此一处。\n\n**#19 packaging：新增子路径导出，按需引入不再拖进整棵源码树**\n\n`exports` 增加 `\"./*\": \"./src/*/index.ts\"`，从此可写 `import { Tag } from \"@hulianui/ui/tag\"`。\n\n此前 exports 只有 `.` 与 `./showcase`，取任何一个组件都只能走根 barrel；叠加源码分发，消费方的打包器会把整棵 `src/`（700+ tsx）连同全部 26 个 dependencies（tiptap / recharts / vidstack / ogl / MUI …）拉进模块图——即使一个都没用到。实测某 Vite 桌面 App 只用约 15 个组件，dev server 常驻 3.1 GB、CPU ~90%，HMR 卡到「点了没反应」。\n\n以打包后的真实产物量了一下同一个 `Tag`：\n\n| 引入方式                     | 模块数 | 带进来的 npm 包 |\n| ---------------------------- | ------ | --------------- |\n| `@hulianui/ui`（根 barrel）  | 5198   | 128             |\n| `@hulianui/ui/tag`（子路径） | 8      | 4               |\n\n顺带给 `theme` / `access` / `config` / `lib` 四个基础设施目录补了 `index.ts`（它们是根 barrel 已对外的公共 API，却是仅有的几个没有目录入口的），导出面与根 barrel 对应段落逐条对齐——两个入口是同一份公共契约的两种取法，子路径不额外放开内部实现。\n\n⚠️ **这不是全自动的瘦身**：根 barrel 的行为完全不变，**仍会拖出全部 26 个 dependencies**，收益只在你改写 import 之后才拿得到。把重依赖组件（`_mui/*` / `markdown-editor` / `video` / `*-chart` / WebGL 系）移出根 barrel 是破坏性改动，留到 1.0。接入指引见 `docs/consuming.md` 第 3 节（含已经踩上又暂不想改 import 时的 Vite 止血办法）。\n\n消费方冒烟门禁同步挂上三条子路径（普通组件 + 两个需专门补 `index.ts` 的基础设施目录）：exports 映射写错这一类问题，库内 tsc 走相对路径、workspace 链接走目录直读，**两者都测不到**，只有走 pack 产物的真实解析才拦得住。\n\n**#21 deps：`tiptap-markdown` 升到 0.9.0，unmet peer 警告根除**\n\n`^0.8.10` → `^0.9.0`。0.8.10 的 peer 锁在 `@tiptap/core@^2.0.3`，而库装的是 v3，于是**每个**消费方安装时都会看到一条 unmet peer WARN（只是警告不阻断，但足以让人怀疑自己装错了）。上游 0.9.0 的 peer 已是 `@tiptap/core@^3.0.1`，属干净升级——因此没有采用 `peerDependencyRules` 静音那条路。`MarkdownEditor` 用到的 `Markdown` 扩展与 `editor.storage.markdown.getMarkdown()` 两处 API 在 0.9.0 均未变，测试全绿。\n\n**#20 docs(tooltip)：触发器必须用 `render` 注入，写成硬要求**\n\n`TooltipTrigger` 默认自渲一个 `<button>`，children 是塞进它*里面*而不是替换它——从 HeroUI（`Tooltip.Trigger` 是把 props 合并进子元素）迁过来会很自然地把 `<button>` 当 children 传，结果 DOM 里套成 `button > button`。实测确认：children 形态嵌套 button 数为 1，`render` 形态为 0。\n\n这个错误 **tsc / eslint / build / 肉眼全都不报**（children 类型完全合法，嵌套 button 在浏览器里照样可点），只有查 a11y 树才看得出来。原文档只提了 `render` 与 flex 截断的关系，那句话隐含「可以不用 render」，反倒容易让人以为 children 是正常用法。现已在 Slots 与「禁忌 / 坑」两处写明是硬要求，并给出正反例。\n\n顺带补上另一条实测确认的坑：`TooltipContent` 渲染出的 popup **不带 `role=\"tooltip\"`**（整棵树里该 role 计数为 0），写验收 / E2E 脚本时按 `[role=\"tooltip\"]` 查会查不到，请按文本或类名定位。"
       }
     ]
@@ -31,11 +137,13 @@
       {
         "sha": "8ff9043",
         "bump": "minor",
+        "breaking": false,
         "body": "清 issue #24–#29，外加两处自查发现的真 bug\n\n**#24 packaging：源码里的裸 `process` 让消费方 tsc 直接失败**\n\n新增内部 `lib/is-dev.ts`（模块作用域 `declare const process`），`pagination` 与 `animated-theme-toggler` 的开发期告警改用它。装 `@types/node` 是更坏的解——它会把整套 Node 全局类型灌进浏览器端消费方，`setTimeout` 从此返回 `NodeJS.Timeout` 而非 `number`，反倒掩盖真实的平台错配。\n\n同时给 CI 加了「以消费方身份 typecheck」门禁（`pnpm pack` 产物 + 仓库外临时目录 + 不装 `@types/node`）。这次的本质不是那两行代码，而是**库的自查环境比消费方宽松**——`packages/ui` 的 tsconfig 里 `types: [\"vitest/globals\"]` 让 `@types/node` 经 vitest 类型链混了进来，于是「库内 tsc 绿、装出去就挂」这一类问题会持续漏网。\n\n**#25 Heatmap：区分「无数据」与「值为 0」**\n\n新增 `emptyCellTone`；`buildMatrix` 的 `get` 缺席时返回 `undefined` 而非 `?? 0`；`HeatmapCellInfo` 增加 `empty` 字段供 `formatTooltip` 判别。\n\n⚠️ **一处行为变更**：缺席格的默认 tooltip / `aria-label` 文案从 `Y · X：0` 改为 `Y · X：无数据`，且不受 `emptyCellTone` 门控。颜色保持完全向后兼容（不传 `emptyCellTone` 时与旧版逐字节一致），但 aria-label 谎报「0」属于无障碍缺陷，不宜再 gate。**若你的测试或 e2e 按 aria-label / title 定位缺席格，需要更新选择器。**\n\n**#26 Sortable：行内交互元素不再劫持拖拽（指针 + 键盘双路）**\n\n指针路径加 `InteractiveAwarePointerSensor`；键盘路径把 `<li>` 登记为 `activatorNode`，让 dnd-kit 上游那句 `if (activator && event.target !== activator) return false` 生效——此前 `activatorNode` 为 null 会让整条守卫被跳过，行内按钮上的 Enter 被 `preventDefault` 吞掉，键盘用户根本按不动。`handle` 从此只是取向选择，不再是「避免劫持子元素」的必需补丁。\n\n**#27 TreeSelect：新增 `clearable`**，对齐 Select 已有的语义与视觉。此前单选选中后无法在组件内回到未选态，筛选条件只能收窄不能放宽。\n\n**#28 Sortable：`renderItem` 的 state 增加 `index`**，省掉消费方 `findIndex` 兜回来，也让行内控件能有带序号的唯一 `aria-label`。\n\n**#29 Stat：新增 `hint`**（与趋势无关的注脚槽），并对「传了 `deltaLabel` 却没有 `delta`」补开发期告警——原先是静默吞掉，TS 过、控制台干净、页面只少一行字，属最难查的一类。\n\n**自查发现的两处真 bug（非上述 issue）**\n\n- **Kanban 整卡拖拽此前完全失效**：卡片守卫用的是无边界 `closest(\"…[role='button']…\")`，而 dnd-kit 会给可拖卡片挂 `role=\"button\"`——守卫命中卡片自己，于是每次按下都被判成「按在交互元素上」。原有测试全部用孤立 `createElement` 断言，测不到真实渲染的卡片，因此一直绿着。现已抽出 `lib/drag-guard.ts` 与 Sortable 共用同一份带边界的实现，并补了基于真实渲染的回归测试。\n- **Dialog / Drawer 正文滚动区裁掉焦点环**：`overflow-y-auto` 会连带把 `overflow-x` 从 `visible` 变成裁剪（CSS 规范：一轴非 visible 时另一轴的 visible 计算成 auto），而 `w-full` 表单控件与滚动容器左右边界零余量，`ring-2 + ring-offset-2` 向外 4px 的两条竖边整条被切掉（症状是「聚焦只剩上下两条线」）。横向改为经 `--hl-overlay-pad` 变量做负边距补偿——覆盖 Popup 内边距时需一并覆盖该变量。\n\n  纵向同样要留（`mt-3 pt-1` / `-mb-1 pb-1`，视觉间距净变化为零）：表单最后一个控件的下边界与滚动容器完全贴合，环往下那 4px 一样会被切掉。纵向只留 4px 而非跟横向一样借 24px——上下方紧挨着标题与 footer，借多了滚动内容会从标题底下穿出一大截。\n\n- **ModalForm / DrawerForm 的操作按钮**从滚动区移进 `footer` 槽（经 HTML `form` 属性关联提交），长表单时按钮不再跟着滚走。\n\n**其它**\n\n- 开发期误用告警统一走新的 `lib/warn-once.ts`，同一误用整个进程只打一次（原先写在 render body 里，每次重渲染都打、StrictMode 下翻倍）。\n- FAB 补 `draggable` 示例与文档（此前 showcase 里没有任何可拖示例，用户会以为拖拽坏了）；拖拽期间不再套用按压缩放（缩小表达「按进平面」，与拖拽的「拿起来移动」语义相反），并补上缺失的 `onPointerCancel` 重置。"
       },
       {
         "sha": "8ff9043",
         "bump": "minor",
+        "breaking": false,
         "body": "动效手感统一：曲线 SSOT 打通、浮层从触发器长出、按压反馈铺开\n\n对照 Emil Kowalski 的动效判据（easing / duration / 物理性 / 可中断性 / 性能 / 内聚性）做的一轮系统性打磨。行为变更，无 API 破坏。\n\n**曲线 SSOT 打通（覆盖面最大）**\n\n- `@hulianui/tokens` 的 preset.css 新增 `@theme` 缓动块：把 Tailwind 内置的 `--ease-out` / `--ease-in-out` 覆盖为瑚琏曲线，并新增 `--ease-drawer`（iOS/Ionic 抽屉曲线）。\n- 同时覆盖 `--default-transition-timing-function` —— 库内 90+ 个组件写的是裸 `transition-colors`，此前全部走 Tailwind 默认的 `cubic-bezier(0.4, 0, 0.2, 1)`，与 motion token 驱动的动效并存两套手感。现已统一。\n- `motion/tokens.ts` 补 `motionEase.drawer` / `motionEaseCss.drawer`。\n\n**浮层从触发器长出**\n\n13 个 Base UI overlay（Tooltip / Popover / Select / Menu / ContextMenu / Combobox / Cascader / HoverCard / Popconfirm / TreeSelect / DateField / DateRangePicker / TimePicker）接上 `--transform-origin`，进出场不再从自身中心缩放。Dialog / AlertDialog / Modal 保持居中（它们不锚定触发器）。\n\n**按压反馈**\n\n- 新增导出 `pressableClass` —— `pressable`（motion 版）的纯 CSS 平替，零 motion 运行时。\n- 铺到 Fab（主钮 + 子动作）、Toggle、Segmented、SocialButton、Choicebox（大卡用 0.99）；ActionSheet 走 active 底色（移动端全宽条目变色比缩放更贴原生）。\n\n**其它**\n\n- Drawer / ActionSheet 面板改用 drawer 曲线 + 300ms，遮罩淡入与面板滑动解耦（原先共用一套参数）。\n- Command 命令面板去掉缩放进场、缩至 150ms 纯淡入 —— ⌘K 是键盘高频入口，位移进场会让每次唤起慢半拍。\n- Tooltip 支持 `data-instant`：同组内已有 tooltip 打开时，相邻触发器瞬时显示（跳过延迟与动画）。\n- 清零 `transition-all`（Fab / BentoGrid / VoiceRecord / InfiniteMenu / ShimmerButton 改指名属性）。\n- VoiceRecord 波形条从动态 `height` 改为 `scaleY` —— 每 100ms 刷新、十余条同时动 height 会逐帧触发整行 flex 重排。\n- Folder 的 `ease-in` 改 `ease-out`。\n\n**文档**\n\n文档站新增 `/theme/motion` —— `/theme` 下此前有色彩/圆角/阴影/间距等页，唯独动效缺席。新页含曲线手感对比（悬停即看）、时长阶梯、「该不该动」的频率判据，以及按压反馈与浮层原点的接法。"
       }
     ]
@@ -48,6 +156,7 @@
       {
         "sha": "64106c0",
         "bump": "minor",
+        "breaking": false,
         "body": "下游缺口回流（二）：日期时间族补齐 + 图标选择器 + 路由页签条 + Tree 虚拟滚动与拖拽\n\n承接 0.11.0，把两份下游缺口清单（`5069tk-app/docs/HULIAN-GAPS.md`、`hulian-admin` 的\n`gap-matrix.md`）里剩下的**能力型**条目一次清完。0.11.0 处理的是缺陷与集成契约，这一版是补能力。\n\n**新增组件（4 件）**\n\n- **`DateField`** —— 零依赖单日期选择器（forms/datetime）。此前库里只有 `_mui` 那份 MUI X 桥的\n  `DatePicker`，想选一个日期就得把整条 MUI + emotion 拖进来、还得记得挂 `MuiBridgeProvider`。\n  本件走 Base UI Popover + dayjs，与 `DateRangePicker` 同源（共用新抽出的 `lib/date` 里的\n  `monthMatrix` / `WEEKDAY_LABELS`）。\n\n  - `picker: \"date\" | \"month\" | \"year\"` 三粒度，值形状随之为 `YYYY-MM-DD` / `YYYY-MM` / `YYYY`\n    —— 一并补掉 gap-matrix a9 说的「`year` 类型完全缺失」\n  - 面板标题可点，逐层上卷 date → month → year；`picker` 决定「点到哪一层就提交」\n  - `minDate` / `maxDate` / `disabledDate` / `displayFormat` / `clearable` / `showToday`\n  - 年份面板按**十年段**对齐（2020–2029 + 前后各一格补位），不是十二年段 —— 人对「20 年代」\n    有直觉，2016–2027 这种切法读起来没有着落\n\n- **`TimePicker`** —— 零依赖时间选择器（forms/datetime）。此前只有 `_mui/TimeField`\n  （分段键盘输入、无浮层、无 min/max/step），要 el-time-picker 那种「点开选」只能自己搓。\n  时/分/秒三列浮层 + `minuteStep`/`secondStep` + `minTime`/`maxTime` 逐列禁用。\n  两处值得记下的实现取舍：\n\n  1. **逐列禁用的判据是「整段与范围有无交集」，不是「端点是否越界」**。`minTime=\"09:30\"` 时\n     9 点这一格仍可选（9:30~9:59 可达），被禁的是 9 点内 30 分之前的分钟；照「端点越界即禁」\n     写会把整个 9 点误禁\n  2. **尚未选值时存在一个隐含基准** `clamp(00:00:00, [min,max])`。否则 `minTime=\"09:30\"` 下\n     基准小时恒为 0，分钟列会被整列判死，面板看着像坏了\n     另导出 `parseTime` / `formatTimeParts` / `clampTime` / `snapToStep` 等纯函数供表单校验复用\n     （`formatTime` 已被 Video 占用，故对外叫 `formatTimeParts`）。\n\n- **`IconPicker`**（gap-matrix a8）—— 分类页签 + 跨类搜索（名字/中文别名）+ 网格 + 最近使用。\n  **图标集不进组件库**：`sources[].renderIcon` 把「名字 → 节点」的映射交给消费方，\n  lucide / iconfont / 本地 svg 三种来源都能接，库自身不为了一个选择器把几千个图标打进每个包里。\n  搜索**跨全部分类**（用户找图标时心里没有「它属于哪一类」这个概念），故搜索期间分类页签隐藏。\n\n- **`RouteTabs`**（gap-matrix a17）—— 中后台多标签工作区那条页签栏，从 `AdminLayout` 里抽出来\n  独立可用。补齐右键菜单（关闭其他/左侧/右侧/全部/刷新）、固定页签、拖拽调序、\n  激活项滚入视口、溢出左右滚动按钮。\n  **顺带根治一个真 bug**：`AdminLayout` 内置那版在受控模式下「关闭其他/全部」只调了 `setActive`、\n  没有任何对外回调，消费方点了看着毫无反应；且「关闭全部」实为 `closeOthers`，与菜单文案对不上。\n  现在 `AdminLayout` 内嵌 `RouteTabs` 并新增 `onTabsAction` 出口（受控时是唯一出口），\n  `closeAll` 也修正为「关全部可关页签（含当前页）」。批量动作的判定抽成纯函数\n  （`affectedKeys` / `nextActiveKey` / `isClosable` / `orderTabs` / `reorderTabs`）一并导出，\n  让消费方与组件用同一份口径，不各算各的。\n\n**既有组件增强**\n\n- **`Tree` 虚拟滚动 + 拖拽排序**（gap-matrix a13 后半 + 5069tk #7）\n\n  - `virtual`：几百上千节点的权限树/组织树。**开启后强制平铺渲染** —— 没有展开过渡、\n    `showLine` 连接线失效（平铺后没有嵌套 DOM 可挂线），已写进禁忌区\n  - `draggable` + `onDrop` + `allowDropInside`：原生 HTML5 拖放，**不引 dnd-kit**\n    （Table 刚为「不开拖拽也被迫拉起整条 dnd-kit」付过代价）。顺序不归组件，\n    `onDrop` 只回传「谁落到谁的哪一侧」。已拦三种非法落点：丢到自己身上、丢进自己的子树（成环）、\n    `inside` 到自己的直接父级（等于没动却会触发一次写库）\n  - 落点几何函数对**非有限值**做了守卫：NaN 参与比较时两个分支都为假，会静默落到 `inside`\n    ——那是改父级，三种落点里最危险的一种\n\n- **`SearchForm` 控件类型补齐**（gap-matrix a14）：新增 `number` / `number-range` /\n  `datetime` / `datetime-range` / `multi-select` / `remote-select`（后者直接复用 RemoteSelect 的\n  `fetcher` / `resolveValue` 契约，不另立平行类型）。值形状按类型定：`*-range` 恒为二元组、\n  多值字段为数组，重置后各自回到对应空形状。\n  **operator 刻意不进 `SearchForm`** —— 那是后端查询契约，塞进来会让通用组件编码某一家后端的协议。\n\n- **`_mui/DatePicker` / `DateTimePicker` 透传补齐**（gap-matrix a9）：`views` / `openTo` /\n  `format` / `disabledDate`。`disabledDate` 对外收 ISO 日期串、在桥这层转 Dayjs，\n  免得消费方为一个禁用判定被迫认识 dayjs。\n\n- **`Sparkline` 新增 `baseline`**（5069tk #12）：在指定数值处画一条横向虚线（上期均值 / 目标值 /\n  及格线），让序列有个「对比的参照」而不只是形状。基准值会一并纳入归一化域，保证它落在视口内。\n  另导出纯函数 `valueToY`，与 `normalize` 共用同一条归一口径。\n\n- **`ProTable` 改吃 `Pagination` 的 `totalItems`**：不再在内部手算 `Math.ceil(total/pageSize)`，\n  页数换算只留一处，边界（0 条 / 整除）不会两边各算各的。\n\n- **`Listbox` 新增 `style`**：用于表达 Tailwind 类给不出的动态值（`Transfer` 的 `listHeight` 要用）。\n\n**新增 i18n 文案**：`adminLayout.closeLeft` / `closeRight` / `refreshTab` / `scrollLeft` / `scrollRight`。\n\n**行为变化提示**：`AdminLayout` 的「关闭全部」语义修正为关全部可关页签（此前等同「关闭其他」）；\n受控页签的批量动作现在需要接 `onTabsAction` 才会生效（此前根本不生效）。其余全部为可选新 prop\n或新组件，既有用法零影响。"
       }
     ]
@@ -60,6 +169,7 @@
       {
         "sha": "38d57d5",
         "bump": "minor",
+        "breaking": false,
         "body": "下游 dogfood 缺口回流：可访问性 / 集成契约 / 表格·表单能力补齐\n\n本轮全部条目来自两个真实消费方在实现页面时记录的缺口清单（`5069tk-app/docs/HULIAN-GAPS.md`\n与 `hulian-admin` 的 `gap-matrix.md`），不是凭空设计的 API。0.10.0 已闭合的那批不再重复。\n\n**修的是缺陷（会产出功能性问题，不只是不方便）**\n\n- **`Link` 补 `render` 口子，消除死锚点。** `Link` 是纯皮肤 `<a>`，`LinkProps` 里没有 `render`，\n  于是 `<Link render={<NextLink href=\"…\" />}>` 把 `render` 当未知 DOM 属性交给 `<a>`（React 静默丢弃），\n  **`href` 从头到尾没传下去**。产出的是一个看起来像链接、点了没反应、也没有 `link` role 的 `<a>` ——\n  视觉与 hover 全对，只有点击和 `getByRole(\"link\")` 会露馅，读屏用户完全拿不到它。\n  现照 `Button` 的同款 `cloneElement` 范式合并皮肤与 props，`external` 的 `target`/`rel` 与外链图标一并生效。\n\n- **`Table` 不开 `rowDraggable` 时不再执行任何 dnd-kit hook。** `useSensors` 原先写在组件顶层\n  （hook 不可条件调用），任何用了 `Table` 的下游都会被迫拉起整条 dnd-kit 运行时。下游 vitest 里\n  `@dnd-kit/*` 没有 `exports` 字段、只有 legacy main/module，解析出第二份 React 后整页崩，\n  而栈顶落在 dnd-kit 内部、几乎无法归因到「表格没开拖拽」。现把 sensors 收进只在 `dragEnabled`\n  时挂载的 `RowDndProvider`（`useSortable` 本就只在 `DraggableRow` 里），并加了一条盯住\n  「hook 有没有被调用」本身的回归测试。\n\n- **`AnimatedThemeToggler` 缺 `ThemeProvider` 不再 throw。** 原先直接抛 = 整页白屏，一个装饰性\n  开关不该有这种杀伤力。现降级为自持主题态：直接读写 `<html data-theme>` 与同一个 localStorage\n  键，dev 下打一条指明「少挂了 ThemeProvider」的告警。新增导出 `useThemeOptional`（缺上下文返回\n  `null`）与 `THEME_STORAGE_KEY`；`useTheme` 的强约束语义不变，应用代码想要「缺 Provider 就报错」\n  继续用它。\n\n- **`Radio` 支持无障碍名。** `RadioProps` 此前只有 `value/disabled/label/id/className`，\n  不给 `label`（图标卡片、自定义排版）时读屏只报「单选按钮」，拿不到这是哪个选项 —— 是真实的\n  a11y 缺陷，不只是测试不好写。现透传 `aria-label` / `aria-labelledby` / `aria-describedby` 到 Root。\n\n- **`Input` 转发 `ref` 到内层原生 `<input>`**（不是外壳 span）。`focus()` / `select()` / 取 `.value` /\n  react-hook-form 的 `register()` 都指望拿到原生控件；此前不转发，消费方只能「受控值 + 包一层容器查 DOM」绕。\n\n- **`Tree` 三条行为缺陷**：\n  - `disabled` 改为**只挡选中/勾选，不挡展开** —— 此前禁用父节点连箭头都点不动，整棵子树彻底不可达。\n  - 新增 `expandTrigger?: \"row\" | \"icon\"`（默认 `\"row\"`，行为不变）。默认下有子节点的行点了只展开、\n    **永远选不中**；要选目录/部门/任意层级分类改 `\"icon\"`：只有箭头管展开，行归 select/check。\n    「只能选叶子」是这个默认值的副作用，**不是契约**。\n  - `TreeNode` 新增 `searchText?: string`。`label` 是 `ReactNode` 时，内置搜索与键盘首字母跳转\n    此前会退化成拿 `key` 去匹配 —— 用户按看得见的文字搜一条都搜不出来。搜索与 typeahead 现共用\n    同一条取值口径（新导出纯函数 `nodeSearchText`）。\n  - 顺带：搜索平铺态下点父节点此前是切一个当下被忽略的 expanded 位（即毫无反应），现改为 select，\n    并补上选中高亮与 `aria-selected`。\n\n**能力补齐**\n\n- **`Pagination` 接总条数口径**：新增 `totalItems` + `pageSize`。原有的 `total` 是**总页数**，\n  与几乎所有后端回的 `total`（总条数）语义相反，此前每个消费方都在调用处补一次 `Math.ceil`，\n  边界（0 条 / 整除）上最容易各算各的。两者同传以 `total` 为准并在 dev 下告警；\n  `total` 的语义修正留到 1.0 主版本一次性做。同时补 `showTotal`（默认「共 N 条」，可传函数拿到\n  条目区间）与 `showQuickJumper`（回车/失焦提交，自动夹紧）。\n\n- **`Table` 新增 `onRowDoubleClick`**，对上后台列表「双击进编辑」的老习惯。与 `onRowClick` 相互\n  独立可同传，行内交互元素复用同一条冒泡隔离。\n\n- **`Transfer` 新增 `listHeight`（默认 240）与 `showSelectAll`。** 面板列表区高度此前是硬编码的\n  `max-h-60`，几百节点的权限/部门数据下被挤成一条缝，只能在外面改样式绕。全选**只作用于当前\n  过滤结果里的可用项** —— 搜出 3 条时点全选不会把看不见的另外 200 条也勾上。\n  （配套给 `Listbox` 加了 `style`，用于表达 Tailwind 类给不出的动态值。）\n\n- **`LogViewer` 面向流式日志**：`autoScroll` 从「每次渲染无条件贴底」改为**黏底** —— 只在用户\n  本就停在底部时跟随，上滚看历史不再被新行拽回去，滚回底部自动恢复（判定留 8px 容差，\n  亚像素与惯性滚动会让 `scrollTop` 差零点几）。新增 `maxLines`：一条跑几小时的构建流会把几万个\n  DOM 节点堆在页面里，滚动直接卡死。\n\n- **`Switch` 新增 `size`（sm/md/lg）与 `touchTarget`。** 此前只有一档 24px 高的轨道且无尺寸开关，\n  低于移动端触控目标推荐值，消费方只能自己在外面包一层 ≥44px 的可点区。`touchTarget` 扩出的是\n  不可见命中区，不占布局不改视觉；默认关，因为它会上下各溢出约 10px，桌面端密排表单里可能压到邻居。\n  `md` 档与加这个 prop 之前逐像素一致。\n\n- **`Alert` 新增 `tone=\"brand\"`**，与 Tag / Button / Badge 对齐同一套 tone 取值。`info` 保留为\n  历史别名（同配方、不会移除），新代码用 `brand`。\n\n- **`Collapsible` 的 Trigger 加 `min-h-11`（44px）。** 它常配单行短文案，仅靠 `py-2.5` 只有 40px。\n\n**集成契约显式化（此前一字未写，每个下游各查一遍）**\n\n- 新增 **`@hulianui/ui/vitest-preset`** 导出：`withHulian(config)` 一行合并消费方 Vitest/Vite\n  所需的解析配置，另导出 `hulianDedupe` / `hulianConditions` / `hulianMainFields` / `hulianInlineDeps`\n  四个常量供自拼。瑚琏是源码分发，消费方的解析器要负责找瑚琏的第三方依赖，而这些依赖恰好横跨\n  四种模块形态（自研零依赖件 / 纯 ESM peer / 有 exports 但 `import` 指向 `.cjs.mjs` 壳 / 无 exports\n  只有 legacy main-module），各需一条不同配置。踩中时的症状是 `useRef`/`useId`/`useContext`/`useMemo`\n  读到 null，**且栈顶落在第三方包内部**，每次都像是「那个组件坏了」。\n\n- 新增 **`docs/consuming.md`** 并从 README 置顶引用，写明上面这条与「`_mui` 桥接族必须置于\n  `MuiBridgeProvider` 之内」。后者不挂的后果是硬故障：桥主题把 `theme.alpha` 重写成 `color-mix`，\n  MUI 核心件会对 `var(--color-*)` 调 `alpha()` 直接抛 `Unsupported color`，**真实浏览器同样触发**。\n  六份 `_mui` 组件文档（Rating / Stepper / Calendar / DatePicker / DateTimePicker / TimeField）\n  顶部均已补上这条前置条件 —— 此前 showcase 套了 Provider、文档只字未提，照文档抄必踩。\n\n**行为变化提示（均为修正，非新增开关）**：`Tree` 的 disabled 节点现可展开；`Tree` 搜索态点父节点\n现会 select；`LogViewer` 的 `autoScroll` 现是黏底而非强制贴底；`Collapsible` Trigger 最小高度\n40px→44px。其余全部为可选新 prop，不传时与本版之前逐字一致。"
       }
     ]
@@ -72,36 +182,43 @@
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "新增 ColorField —— 紧凑单行颜色输入框（forms/advanced）\n\n表单里一行的颜色输入：左侧色块调起系统取色器 + 十六进制文本输入。与 ColorPicker 的分工是「不抢版面」——后者是完整取色面板（饱和度方块 + 格式切换器），适合独立占一块地方；ColorField 适合主题配置表、设计 token 编辑器这类一行一色的场景。\n\n- 短写自动展开：`#abc` → `#aabbcc`（逐位重复，不是 `#abc000`）\n- 内部维护草稿态，解决受控颜色输入没法手输的问题：受控值经规范化后回灌会让人敲到 `#3` 就被打回，所以键入期间以草稿为准、只在解析成功时抛值、失焦丢草稿归一\n- `onValueChange` 参数恒为规范化后的 `#rrggbb`，输入不合法时不触发\n- 草稿不合法时自身标红，无需外部传 `invalid`\n- 另导出纯函数 `normalizeHex` / `isHexColor`，供消费方校验导入的主题配置\n- 尺寸 sm/md/lg 复用 Input 的外壳变体，色块随之缩放\n\n动因：Quay 从 HeroUI 收敛到瑚琏时，`ColorField`（hex 文本输入）是库里唯一缺的等价物 —— 现有 ColorPicker 是完整面板，塞进设置页一行会撑坏版式。"
       },
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "ProTable 托管模式增强：defaultSorting / params，以及内联 request 的无限请求防呆\n\n- `defaultSorting?: SortingState`：托管模式内部排序 state 的**首次挂载初值**（非受控默认值语义，后续改 prop 不回灌）。首拉即带 sort，因此能表达「默认按某列倒序」。展示模式的默认排序仍直接传受控 `sorting`\n- `params?: Record<string, unknown>`：托管模式固定查询参数，**浅比较**（键集合 + `Object.is` 逐值）后内容变化才回第 1 页重查，仅引用变化不触发——所以 `params={{ scopeId }}` 写内联对象字面量无需 `useMemo`\n- `request` 改由 ref 持有最新引用并**移出 effect 依赖数组**，改用 `managed = Boolean(request)` 驱动首拉。此前消费者写内联 `request={async (p) => …}` 会每次渲染换身份 → 无限请求\n\n`ProTableRequestParams` 增 `params` 字段（运行时恒有值，未传 prop 时为 `{}`）。**刻意不并入 `filters`**：`filters` 只装查询区提交值，固定条件不该被同名 filter 覆盖、也不该受查询区「重置」影响；需要合并的在 request 内自己写 `{ ...p.filters, ...p.params }`。\n\n两个已知代价，均已写进 pro-table.md 禁忌区：\n\n1. request 移出依赖后，「换一个 request 函数」本身不再触发重查（antd ProTable 同款取舍），要刷新请改 `params` 或调 `actionRef.reload()`\n2. `params` 只做浅比较，嵌套对象/数组每次 render 换引用仍会每次重查——组件层不兜底深比较，请拍平成一层或自己保持引用稳定\n\n`params` 变化的重置走「渲染期派生 state」而非 `useEffect`，好让新 params 与 `page=1` 在同一次提交生效，避免先用旧页码发一次废请求。"
       },
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "新增 RemoteSelect —— 远程搜索选择器（forms/advanced），含 multiple 多选\n\n补上库里唯一缺的「远程数据」能力：此前 Combobox 只有 Base UI 的本地 filter，选项必须先全量落到前端，门店/会员/商品这类几万条的字典没法用。RemoteSelect 把过滤权交给服务端。\n\n- `fetcher(query, { page, pageSize, signal })` 数据源，`signal` 在被新一次搜索取代时 abort；同时用请求序号丢弃过期响应（只 abort 不够——fetcher 可能忽略 signal，慢响应后到会覆盖新结果）\n- 输入防抖（默认 300ms），loading / 空态、`共 N 条` 页脚\n- 滚到底自动追加下一页；`total` 缺省时按「本页满页即可能还有」推断\n- **`resolveValue(values)` 初值回显**：编辑表单打开时 value 常不在首屏那一页里（在第 7 页、或被搜索词过滤掉），只有它能把 label 解出来。与 `fetcher` 是两个后端语义（按关键词分页搜 vs 按主键批量取），刻意不合并\n- `multiple` 多选复用 ComboboxChips 皮肤，已选但未加载的 value 同样靠 resolveValue 解出 chip 文案；chip 严格按 value 顺序渲染——底层 ChipRemove 按渲染序绑定 `selectedValue[index]`，乱序会删错项\n- `labelKey` / `valueKey` 映射任意后端字段名，`renderOption` 可拿到 `raw` 原始行\n\n顺带给 `ComboboxContent` 加了两个可选项（不设即与此前完全一致）：`onListScroll`（列表滚动回调，用于滚到底加载更多）与 `footer`（列表下方常驻页脚，不随列表滚动）。\n\n动因：对标 hulian-admin Vue 后台的 `baInput/remoteSelect.vue`（355 行），React 侧缺等价物，表单页的远程字典只能各自手搓。"
       },
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "Select 新增 clearable / searchable / loading 与选项分组\n\n把 el-select 上最常用的几个开关补齐，心智对齐——都挂在 `<Select>` 上，而不是散到 Trigger / Content 子件。全部可选、默认关闭，既有用法零影响。\n\n- `clearable`：有值时 Trigger 右侧浮出清除按钮（常态 hidden，`group-hover` / `group-focus-within` 才显形），单选回传 `onValueChange(null)`、多选回传 `[]`。清除按钮是 Trigger 的兄弟节点而非嵌在 `<button>` 里（嵌套按钮非法且会吞点击）\n- `searchable`：切到 Combobox 搜索皮肤，过滤 100% 由 Base UI Combobox 承担，未自造搜索逻辑。对外值形状仍是 `string` / `string[]`，内部做 `string ⇄ { value, label }` 搬运\n- `searchPlaceholder`（默认「搜索」）/ `emptyMessage`（默认「无匹配项」）\n- `loading` + `loadingText`：Trigger 图标换 Spinner，浮层只出加载占位不渲染选项；loading 期间不给清除按钮\n- 新增导出 `SelectGroup` / `SelectGroupLabel`：Base UI 1.5.0 早有分组能力，瑚琏此前未暴露\n\n两处刻意的取舍：\n\n1. `clearable` 开启后，组件对**非受控**用法接管为内部受控镜像——要能程序化置空就得拿得到值，而 Base UI 的 store 不对外暴露。未开 `clearable` 时 value 归属与 DOM 结构与旧版完全一致（不加包裹层），分两条路径以保证既有消费方零影响\n2. `searchable` 与 `SelectGroup` 不能同时生效：该皮肤下列表由 items 过滤结果驱动（Base UI Combobox 的 List 只对函数式 children 走 filteredItems），静态声明的分组会被拍平。已写进 select.md 禁忌区\n\n新增导出类型：`SelectGroupProps` / `SelectGroupLabelProps` / `SelectItemData`。"
       },
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "Table 新增列几何能力与行拖拽排序\n\n补齐对标 el-table-column 的列控制，以及列表页排序的刚需交互。两组能力默认全关，不传 prop 时行为与改造前逐字一致。\n\n**列几何**\n\n- `layout?: \"auto\" | \"fixed\"`（默认 `auto`）：`auto` 下只有显式写了 `size` / `minSize` / `maxSize` 的列才落宽度，避免未声明的列被拍成等宽；`fixed` 下每列按 `getSize()` 出实宽，表宽取 `table.getTotalSize()` 并以 `min-w-full` 兜底\n- `resizable?: boolean`：表头右缘拖拽手柄（`role=\"separator\"`），`columnResizeMode: \"onChange\"` 实时改宽、双击复位；开启即强制 `layout=\"fixed\"`。内建前插列（`__select__` / `__expander__` / `__drag__`）恒不可调宽，单列可用 `ColumnDef.enableResizing=false` 关掉\n- `columnSizing` / `onColumnSizingChange`：受控列宽，家风同 `sorting` / `rowSelection`\n- `ColumnMeta` 增 `align` / `headerAlign` / `ellipsis` 三项（对应 el 的 `align` / `header-align` / `show-overflow-tooltip`）。`ellipsis` 列的溢出文本悬停出 Tooltip，触发器强制 render 成 `<span>` —— 默认的 `<button>` 会被行点击的 `ROW_INTERACTIVE_SELECTOR` 命中，导致整列点不动行\n\n列宽契约沿用 TanStack 原生 `size` / `minSize` / `maxSize`（不发明 `width` 平行 API），th 与 td 共用同一个内联 style 对象，不使用 colgroup。固定列的 sticky offset 随列宽变化同帧重算。\n\n**行拖拽排序**\n\n- `rowDraggable?: boolean` + `dragHandle?: \"row\" | \"cell\"`（默认 `cell`，前插 `__drag__` 手柄列）\n- `onRowDragEnd?: (e: RowDragEndEvent<TData>) => void`，载荷含 `activeId` / `overId` / `activeIndex` / `overIndex` / `position` / `activeRow` / `overRow` / `nextData`；`position` 的推导与 baTable 的 `newIndex > oldIndex ? \"down\" : \"up\"` 同构，便于直接映射后端 `dragSort` 接口\n- `getRowCanDrag?: (row, index) => boolean` 锁定指定行；树形子行（depth > 0）恒禁用\n\n**顺序不归组件管**：Table 从不改 `data`，只回报落点，重排由消费方落库或本地乐观更新。基于已在依赖里的 @dnd-kit，未引入新依赖。落点指示线用 inset box-shadow 而非 border —— `border-collapse` 下 border 会与相邻行分隔线合并、顶掉 1~2px 行高。\n\n新增导出类型：`TableColumnAlign` / `ColumnSizingState` / `RowDragEndEvent` / `RowDropPosition`。"
       },
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "Upload 新增 limit / renderPreview / sortable，并拆出传输层 useUpload\n\n**皮肤层**\n\n- `limit`：数量上限，按受控 `files.length` 计。达标后触发器整体禁用（`aria-disabled` + `tabIndex=-1` + input disabled）并渲染「已选 n/limit」计数；本次选择中超出剩余名额的文件进 `onReject`，`reason` 新增 `\"limit\"` 分支\n- `renderPreview?: (file) => ReactNode`：返回非空节点时列表项左侧变 40px 缩略图位，状态点降级为右下角标；返回 null 回落默认状态圆点\n- `sortable` + `onSort`：手柄式拖拽调序（@dnd-kit，与 Sortable/Kanban 同源）。顺序仍受控，只给 `sortable` 不给 `onSort` 会静默退回静态列表\n- `UploadFile` 增 `url`（上传完成后的远端地址，不参与组件内部逻辑）与 `raw`（原始 File 句柄，供 `renderPreview` 做 `createObjectURL` 本地预览）\n- 上传中的进度条补 `role=\"progressbar\"` + `aria-valuenow/min/max` + 百分比文本，越界值内部 clamp 到 0–100\n- 另导出纯函数 `moveUploadFile(files, activeId, overId)`：调序核心，原地或未知 id 时返回同一引用，便于避免无谓 `onSort`\n\n**传输层（新文件 use-upload.ts）**\n\n`useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })` → `{ files, add, remove, retry, reorder, clear, uploading }`。\n\n`request(file, { onProgress, signal })` 由消费者提供，库内**不存在** action / headers / withCredentials / 信封解包——对后端零假设。它提供的是纯前端并发编排：队列闸门（默认并发 3）、AbortController 取消、进度状态机。`remove` / `clear` / 卸载会 abort 对应请求，且迟到的 resolve 被丢弃，不会复活已移除的行。\n\n之所以下放到通用库而不是留给每个消费方：这类队列各自手搓必然各带一份竞态 bug，定位与 `useForm` 同级。目录因此是 8 个文件（6 件套 + use-upload.ts/.test.tsx），照 `src/form/` 既有先例分段导出。\n\n已知取舍：`sortable` 让 upload.tsx 静态 import 了 @dnd-kit，未用该功能的消费者在 source 分发下也会打进包（未引新依赖，但确实增加 Upload 最小体积）；`limit` 按受控 `files.length` 计，非受控用法下只能拦住「单次选太多」，拦不住累计。两点均已写进 upload.md。"
       },
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "fix(nav-menu): collapsed 态飞出层补齐无限级级联，并改用 fixed 定位逃出侧栏裁剪\n\n收起态此前有两处**功能缺失**，叠在一起等于「侧栏收起后没有子菜单」：\n\n**1. 只渲染一级子项。** 旧实现的 collapsed 分支是 `item.children!.map(FlyoutLeaf)` —— 没有递归。\n三级及以下的菜单项在 DOM 里**根本不存在**（不是隐藏，是不渲染），窄屏/收起态下彻底不可达。\n现在飞出层递归渲染整棵子树，与 inline 态能力对齐：\n\n- 每层一个 `role=\"group\"` 面板，父项带 `aria-haspopup` + 右向 chevron，显隐靠\n  `li:hover>&` / `li:focus-within>&` **直接子选择器**（不用同名 `group-hover/x:`——那是后代选择器，\n  祖先 hover 会连带点亮所有后代面板，三四级同时炸开）\n- 键盘改走「级联菜单」语义：`→` 进子层、`←`/`Esc` 回父层、`↑↓` 只在**同层兄弟**间移动、\n  `Home/End` 落本层首尾；roving tabindex 贯穿全树（整棵树一个 tab 落点）\n- 深层项选中时，tab 落点收敛到它的**顶层祖先**（图标轨上真实可见的那颗），不落进未展开的深处；\n  祖先链带 `data-selected` 弱高亮\n\n**2. 面板被祖先 `overflow` 整块裁掉。** 图标轨几乎总住在可滚动的侧栏容器里——`AdminLayout`\n自己就把 NavMenu 包在 `ScrollArea` 中。`position: absolute` 的面板会被那个祖先裁掉：面板在 DOM 里、\n有尺寸、`opacity: 1`，**却一个像素都画不出来**（`elementFromPoint` 打到的是内容区）。\n所以第一层面板改用 `position: fixed` + JS 实测坐标（挂载时量一次，`scroll` 捕获阶段与 `resize`\n时重算）；第二层起仍是 `absolute`，因为它们的祖先已经是不裁剪的面板。\n\n未定位的那一帧**不用 `visibility: hidden` 兜**：那会把整棵子树摘出无障碍树，等于把上面刚补的\n「深层项 DOM 恒在」再拿掉一半。面板静息态本就是 `opacity-0`，首帧位置不对也画不出来。\n\n已知代价（已写进 nav-menu.md 禁忌区）：把图标轨放进**不派发 scroll 事件的自定义滚动实现**时，\n第一层面板的位置会失准。"
       }
     ]
@@ -114,6 +231,7 @@
       {
         "sha": "549d24b",
         "bump": "patch",
+        "breaking": false,
         "body": "`--color-hairline` 补面向消费方的用途约束注释：该令牌**只能用于 `border-*`**。它在浅色主题的值就是 `transparent`（既定设计：靠阴影自带的发丝边分隔，避免与显式 border 形成双线），因此用作 `text-hairline` / `bg-hairline` / `fill-hairline` 时会静默隐形——不报错、不回落到继承色，元素直接看不见。填充与文字请用 `--color-border` 或 `--color-muted`。\n\n仅注释变更，令牌值与主题行为不变。文档站「颜色」页也已把 hairline 列入语义色表并标注该约束。"
       }
     ]
@@ -126,11 +244,13 @@
       {
         "sha": "72b94d4",
         "bump": "minor",
+        "breaking": false,
         "body": "Toast 语调补齐五档：`ToastTone` 由 `info | danger | neutral` 扩到 `neutral | info | success | warning | danger`，与 Alert / Tag 对齐。\n\n`success` / `warning` 复用 tokens 里早已存在的 `--color-success` / `--color-warning`（此前类型注释所述「token 无」与事实不符），左边条与标题着色随之补 `border-l-success` / `text-success` 与 `border-l-warning` / `text-warning`。消费端不必再把成功态降级成 `info`、警告态降级成 `neutral`。\n\n`priority` 维持现状：仅 `danger` 走 `high`（assertive 打断播报），`warning` 与其余 tone 一样是 polite。纯新增，无破坏性变更。"
       },
       {
         "sha": "20c98d3",
         "bump": "patch",
+        "breaking": false,
         "body": "fix(dialog): DialogContent 封顶 85dvh 并让正文内部滚动\n\n此前 Popup 没有任何高度约束与 overflow 处理，内容一长就顶穿视口：正文向上下溢出屏幕，\nfooter 被推到可视区外，「确定 / 保存」按钮点不到，且没有任何滚动条可用。表单类弹窗\n（多凭据字段 + 说明 Alert）必然触发。\n\n改为与 DrawerContent 同一套三段式（该组件早已是此写法，两者此前行为不一致）：\n\n- Popup: `flex max-h-[85dvh] flex-col`\n- Title / Description: `shrink-0`\n- 正文: `min-h-0 flex-1 overflow-y-auto`（`min-h-0` 必需，否则 flex item 的\n  `min-height:auto` 会让正文撑开父级、overflow 永不生效）\n- Footer: `shrink-0`\n\n短内容不受影响：未达 max-h 时弹窗仍按内容高度自适应，不出滚动条。\nModalForm / DrawerForm 复用 Dialog 引擎，一并受益。"
       }
     ]
@@ -143,6 +263,7 @@
       {
         "sha": "7830039",
         "bump": "minor",
+        "breaking": false,
         "body": "AdminLayout 新增 `breakpoint` 响应式断点（与 LayoutSider 同语义：视口 ≤ 断点自动收起侧栏、> 时展开；受控时只回调 onCollapsedChange），修复窄屏侧栏挤占屏宽（#14）；ToastProvider 支持透传渲染 children，包裹式 `<ToastProvider><App/></ToastProvider>` 不再静默吞掉应用子树（#13）。"
       }
     ]
@@ -155,6 +276,7 @@
       {
         "sha": "5ea7c69",
         "bump": "patch",
+        "breaking": false,
         "body": "MarkdownEditor：tiptap-markdown 0.8.x 类型绑 @tiptap/core v2，源码分发下消费方 tsc 报 Extension 与 AnyExtension 不匹配（vite 构建不受影响）——extensions 处显式收口为 AnyExtension，消费方 tsc 恢复干净。"
       }
     ]
@@ -167,6 +289,7 @@
       {
         "sha": "eec0d69",
         "bump": "minor",
+        "breaking": false,
         "body": "BarChart horizontal 类目轴宽按最长标签自适应（CJK 全角估宽·48–160px）+ yAxisWidth 逃生舱，修复 CJK ≥4 字截断（#6）；Heatmap 支持小数值域 domain=[min,max] 按值域比例分档、valueFormat/unit 格式化 tooltip 与图例、showLegend 色阶图例（#10）。"
       }
     ]
@@ -179,6 +302,7 @@
       {
         "sha": "0278e6d",
         "bump": "minor",
+        "breaking": false,
         "body": "feat(voice-record): 新增 VoiceRecord 语音录制组件，并修复「按住说话」在移动端的交互死锁\n\n- 交互改为纯 Pointer Events，移除叠加的 `onTouchStart/onTouchEnd`，消除触屏上 pointer 与 touch 各触发一次导致的双重 start，同时消掉 passive listener 里 `preventDefault` 的告警。\n- 新增 `onPointerCancel` 处理：iOS 手势被系统打断时浏览器派发的是 pointercancel 而非 pointerup，此前会导致永远收不到「松手」而死锁在录音态。\n- 松手判定改用本地按压 ref，不再依赖父组件异步 `status` prop 的回环，避免快速点按时停止被丢弃。"
       }
     ]
@@ -191,6 +315,7 @@
       {
         "sha": null,
         "bump": "minor",
+        "breaking": true,
         "body": "迁移 Base UI 到稳定版：同伴包从已废弃的 `@base-ui-components/react@1.0.0-rc.0` 换为 `@base-ui/react@^1.5.0`（官方改名后的稳定线），消除安装时的 deprecated 警告。\n\n**破坏性（peer）**：消费者需把安装的同伴包从 `@base-ui-components/react` 换成 `@base-ui/react`。组件 API 与导入方式（从根入口 `@hulianui/ui` 导入）不变。\n\n附带：Collapsible 等组件的 `disabled` 现遵循 Base UI 1.x 行为，用 `aria-disabled` + `data-disabled` 标记（保持可聚焦），不再设原生 `disabled` 属性。移除了 rc.0 时期的 Toast flushSync 补丁（修复已上游合入稳定版）。"
       }
     ]
@@ -203,6 +328,7 @@
       {
         "sha": null,
         "bump": "patch",
+        "breaking": false,
         "body": "修复：`lucide-react` 之前误放在 `devDependencies`，但大量组件运行时 import 它，导致 monorepo 之外的消费者打包时报 `Could not resolve \"lucide-react\"`。已改为 `dependencies`，安装时自动带上。同时把仅离线烘焙用的 `*.bake.mjs`（引用 dotted-map/proj4 等开发期工具）排出发布包。"
       }
     ]
@@ -215,6 +341,7 @@
       {
         "sha": null,
         "bump": "patch",
+        "breaking": false,
         "body": "发布包瘦身：排除 `*.test.ts` / `*.test.tsx`，367 个测试文件不再随包发布（tarball 2181→1814 文件、解包 6.6MB→5.5MB）。`./showcase` 公开入口与组件源照常保留。"
       }
     ]
@@ -227,6 +354,7 @@
       {
         "sha": "2bf8ebc",
         "bump": "minor",
+        "breaking": false,
         "body": "AI-first 组件文档体系 + Vant 式 examples API + 12 组件 bug 修复\n\n- 新增 `ExampleSpec` 类型与 `ShowcaseSpec.examples` 字段：Vant 式「用法」场景（标题 + 说明 + 可复制代码 + 活预览）。\n- 353 组件逐件使用文档（`<slug>.md`），API 表按 Props / Events / Slots 拆分；产出 `llms.txt` / `llms-full.txt` / `registry.json` 供 AI 消费。\n- 修 Markdown 表格 GFM 转义管道解析（`\\|` 与代码段内裸管道不再劈列）。\n- 修 12 个组件 bug（含 conversation 自动贴底打断上滚、message-actions/lanyard 卸载未清理、true-focus/gantt 越界、cubes 背面重叠等），10 个附单测。"
       }
     ]
@@ -239,16 +367,19 @@
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "Admin-grade data component growth, driven by the admin-starter vertical slices:\n\n- **pro-table**: cursor pagination mode for managed requests (`paginationMode=\"cursor\"`, prev/next navigation with internal cursor stack, resets on filter/sort/pageSize changes); `pageSizeOptions` with per-page switcher; managed request rejections are now caught (`onRequestError` prop, defaults to console.error); `search.onSearch` is now optional in types (runtime was already optional).\n- **table**: `rowClassName` row-level styling hook (merges with zebra/selection classes); customizable empty state via `emptyText`/`renderEmpty`, default text now flows through the locale system (`table.empty`, zh/en).\n- **steps-form**: per-step navigation control (`nextDisabled`/`nextText`/`showNav`) and async `onStepValidate` with loading state on the forward button; all new props optional, default behavior unchanged.\n\nNote: `Locale` gained a required `table.empty` field — consumers spreading `zhCN`/`enUS` are unaffected; hand-built full `Locale` objects need the new key."
       },
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
         "body": "New agent/conversation building blocks: `Dossier` (slot-filling progress panel), `Artifact` + `ConfirmCard` (inline conversation cards), `ThreadList` (conversation history sidebar), `ImageCropper` (react-easy-crop wrapper with fixed-ratio frame and pinch zoom), `Conversation` `hideScrollbar` prop, and `ThemeProvider` `forcedTheme` for route-level forced theming."
       },
       {
         "sha": null,
         "bump": "patch",
+        "breaking": false,
         "body": "Fixes: chat-message bubble max-width constrained by available width (mobile overflow); prompt-input focus ring-offset residue (ring-0 paired with ring-offset-0); thread-list delete button 44px touch target."
       }
     ]
@@ -261,6 +392,7 @@
       {
         "sha": "d923732",
         "bump": "patch",
+        "breaking": false,
         "body": "修复 17 个特效/动效组件的画廊展示问题（CDP 实测证据驱动 + 有头浏览器复验）：\n\n- WebGL shader 全黑：dither（ES 3.00 数组初始化器在 ES 1.00 编译失败 →Bayer 改程序式生成）、grid-scan / pixel-blast / shape-blur（fwidth 无导数支持 →shader 升 #version 300 es）\n- WebGL 颜色解析失败：ghost-cursor（ogl Color 不认 var()/oklch→getComputedStyle+离屏 canvas2d 转 rgb）、magic-rings（正则拆 rgb 撞 oklch 计算值 → 同款修法）\n- 默认色撞深色演示底：fuzzy-text、pixel-snow 默认色改按画布真实底色亮度自适应，亮暗主题均可读\n- card-swap：Fragment children 不被 Children.toArray 展开致 total=1 轮换从未启动 → 递归 flatten；motion v12 被中断动画 promise 永不归还 → 每段加超时兜底+在飞守卫；新增 placement=\"center\" 解决画廊容器裁切\n- ballpit：窄容器超填充致剧烈抖动 → 新增面积占用率上限自适应（球数/半径随容器缩放）+ 位置校正式重叠分离 + 低速收敛\n- star-border：animation 简写含两个方向关键字属非法 CSS 整条被丢 → 拆为合法 alternate / alternate-reverse 双向流光\n- orbit-images：offset-path 绝对坐标不随容器缩放致子项全程在视野外 → 真缩放层 + 动画失效时静态均匀分布兜底\n- scroll-float：useScroll 盲绑视口在内滚容器中进度钉死 → 自动探测可滚动祖先（static 容器自动补 relative），无滚动上下文降级 in-view 浮现\n- target-cursor：默认改容器作用域（absolute+容器事件+离开即隐藏），多实例互不干扰；新增 fullScreen prop 保留全页模式\n- ripple-button：波纹 span 补 transform: scale(0) 基线 + 键盘/程序化激活从中心扩散\n- text-pressure：字符盒宽与缩放同步，相邻字符不再重叠"
       }
     ]
@@ -273,6 +405,7 @@
       {
         "sha": "3b81b35",
         "bump": "patch",
+        "breaking": false,
         "body": "fix(ui): 消除 Base UI rc.0 Toast 的 React 19 flushSync 告警\n\nToast 出现时 `ToastRoot` 在 layout effect 里调 `ReactDOM.flushSync` 写回测得高度，React 19 报 `flushSync was called from inside a lifecycle method`（dev 下每次 2 条：1 条正常 + 1 条 StrictMode 双调用）。经 `pnpm patch` 把 base-ui 的 `recalculateHeight` 改为 `flushSync` 可选形参（默认关），对齐上游 mui/base-ui master 修复——layout-effect 路径直接 setState（React 本就在 paint 前同步 flush，无需 flushSync 且无闪烁），observer 回调仍走 flushSync。\n\n仅影响 dev 控制台噪声（production 本就剥离该警告）。注意：补丁经 `patchedDependencies` 落地，惠及本仓库 + dev 软链消费方；npm 发布版不携带该补丁，registry 消费方如遇同告警需各自加同款 patch。"
       }
     ]
@@ -285,6 +418,7 @@
       {
         "sha": "6195d52",
         "bump": "patch",
+        "breaking": false,
         "body": "fix(book-3d): 修复立体书三处渲染缺陷\n\n- 页块/书脊补 `translateZ(-thk/2)` 在 z 轴居中，封面右缘不再被书页盖住\n- 翻开内页改 opacity 非对称门控（打开快入、关闭迟出），消除闭合态左缘穿帮，且翻开/关闭途中不再露出深色后封造成的黑页\n- 翻开模式后封改透明，消除内页淡入时白叠深色的灰色过渡"
       }
     ]
@@ -297,6 +431,7 @@
       {
         "sha": null,
         "bump": "patch",
+        "breaking": false,
         "body": "新增主题感知的发丝边框令牌 `--color-hairline`（亮色 transparent / 暗色取 border）。有阴影的组件亮色去硬 border、暗色保留发丝轮缘，~34 处 `border-border` → `hairline`。"
       }
     ]
@@ -309,21 +444,25 @@
       {
         "sha": "54d02ff",
         "bump": "minor",
+        "breaking": false,
         "body": "DialogContent 新增 `footer` 槽：渲染在正文下方、顶部分隔线 + 右对齐的操作区（取消/确定等），与 `DrawerContent` 的 `footer` API 对齐。补齐二者不一致的缺口。"
       },
       {
         "sha": "9debc9e",
         "bump": "minor",
+        "breaking": false,
         "body": "ProTable 升级为浮起卡片表面 + Table 新增 `bordered` prop（mock-pilot dogfood 驱动）：\n\n- **ProTable**：根容器从「漂在页面底色上的透明描边框」改为完整的浮起卡片——`bg-surface` 表面 + 发丝边 `border-hairline` + `shadow-sm` 阴影 + `p-4`，与 `Card` 同层级。工具栏/表格/分页统一在卡内。全屏态不变。\n- **Table**：新增 `bordered?: boolean`（默认 `true`）。`false` 时去掉表格自身的描边框 + 圆角；ProTable 内层 Table 传 `bordered={false}`，由外层卡片提供外框，避免双框。基础 `Table` 独立使用时仍默认带框，行为不变。"
       },
       {
         "sha": "b8db07a",
         "bump": "minor",
+        "breaking": false,
         "body": "表格表头与刷新键打磨（mock-pilot dogfood 驱动）：\n\n- **Table**：表头文字由 `text-muted` + `font-medium`（灰、中等）改为 `text-foreground` + `font-semibold`（黑/白、加粗），列标题更突出、层级更清晰。\n- **ProTable**：刷新键改为「仅在传入 `onReload` 时才渲染」。原先无论是否提供 `onReload` 都渲染刷新图标，未提供时点击无任何反应（死按钮）。现在无 handler 即不渲染；整条工具栏仍可用 `toolbar={false}` 或逐项 `toolbar={{ reload: false }}` 隐藏。"
       },
       {
         "sha": "14c3b6d",
         "bump": "patch",
+        "breaking": false,
         "body": "两处暗色/观感修复（mock-pilot dogfood 驱动）：\n\n- **Switch**：旋钮由 `bg-surface` 改为恒白 `bg-white`。原 `bg-surface` 在暗色=gray-900，比 off 轨道 gray-800 还暗且与面板同色，导致暗色 off 态整个开关「黑融黑」不可见；白旋钮在灰轨道与蓝轨道、亮暗两态都保证对比。\n- **Table**：虚拟滚动 sticky 表头背景由 `bg-bg` 改为 `bg-surface`，匹配卡片表面而非页面底色。表头保持透明（muted + medium 文字 + 行底分隔线），不加填充灰底——表格本身已是 surface 卡片/带框原语，灰底带反而割裂观感。"
       }
     ]
@@ -336,6 +475,7 @@
       {
         "sha": null,
         "bump": "patch",
+        "breaking": false,
         "body": "新增主题感知的发丝边框令牌 `--color-hairline`（亮色 transparent / 暗色取 border）。有阴影的组件亮色去硬 border、暗色保留发丝轮缘，~34 处 `border-border` → `hairline`。"
       }
     ]
@@ -348,6 +488,7 @@
       {
         "sha": null,
         "bump": "patch",
+        "breaking": false,
         "body": "video 组件 SSR 安全：MediaPlayer 加挂载守卫，首帧渲同比例占位、挂载后再渲真播放器，避免 Vidstack 在 SSR/静态导出时摸 `window` 报错。"
       }
     ]
