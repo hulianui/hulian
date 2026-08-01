@@ -24,8 +24,13 @@ jobs:
     name: Typecheck · Test · Build
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 拉全量历史与 tag —— changelog 的发布日期只存在于 `@hulianui/ui@x.y.z`
+      # 这类 annotated tag 上，浅克隆拿不到，构建期生成的 changelog.json 会整片丢日期。
+      # 仓库 .git 不到 30 MB，全量克隆的代价可以忽略。
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v5
@@ -67,6 +72,14 @@ jobs:
         # /r、/d 与 conventions.json 都被 Git 忽略，必须在干净 checkout 中显式生成，
         # 否则 MCP 的本地模式和部署后的远程模式都会拿不到逐件文档或约束数据。
         run: pnpm llms-registry && pnpm conventions
+
+      # changelog.json 与上面几个端点不同，它被提交进仓（/changelog 页面 import 它，
+      # 干净 clone 必须能 typecheck）。但仓库里那份只是**开发期占位**：只要不在构建期
+      # 按当前 CHANGELOG.md + tag 重新生成，站点就会停在最后一次人工回填的版本上——
+      # 0.14.0 发版后站点长期显示旧版就是这么来的。这里重生成，把「发版后记得跑一次
+      # pnpm changelog 再提交」这个纯人工步骤从发布流程里彻底去掉。
+      - name: Regenerate changelog data
+        run: pnpm changelog
 
       - name: Test
         run: pnpm test

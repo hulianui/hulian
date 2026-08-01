@@ -3,11 +3,14 @@
 // 写入 apps/www/lib/changelog.json，供文档站 /changelog 渲染。
 //
 // 为什么要生成而不在页面里直接读 md：发版日期只存在于 git tag（changesets 不写日期），
-// 而 CI 用浅克隆构建站点、拿不到 tag —— 本地生成、把结果提交进仓，构建期只读 JSON。
-// 同理于 llms.txt / registry.json 的既有做法。
+// 页面又是 `import changelog from "lib/changelog.json"` 的静态引用。
+//
+// 产物提交进仓，但它只是**开发期占位**——保证干净 clone 能 typecheck / dev，不保证是最新的。
+// 真正上站的那份由 CI 在构建前重跑本脚本生成（.github/workflows/ci.yml 的
+// "Regenerate changelog data"，配套 checkout 的 fetch-depth: 0 才能读到 tag）。
+// 所以发版后**不需要**人工回填这个文件；仓库里那份滞后不影响线上。
 //
 // 零依赖。跑：node scripts/gen-changelog.mjs（已挂进 pnpm docs:all）
-// 发版（changeset version 改完 CHANGELOG + 打完 tag）后需重跑，否则站点少最新一条。
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -97,12 +100,16 @@ const cmpSemver = (a, b) => {
   const pb = b.split(".").map(Number);
   return pb[0] - pa[0] || pb[1] - pa[1] || pb[2] - pa[2];
 };
+// date 为 null 只有一种成因：这个版本刚进 CHANGELOG.md、对应 tag 还没打（发版那次
+// CI 与 Release workflow 并发，构建站点时 tag 尚不存在）。语义上它是**最新的一版**。
+// 按空串排序会把它甩到列表末尾，站点顶部就还停在上一版——看起来就像 changelog 没更新。
+const dateKey = (r) => r.date ?? "9999-12-31";
 releases.sort((a, b) =>
-  a.date === b.date
+  dateKey(a) === dateKey(b)
     ? a.pkg === b.pkg
       ? cmpSemver(a.version, b.version)
       : a.pkg.localeCompare(b.pkg)
-    : (b.date ?? "").localeCompare(a.date ?? ""),
+    : dateKey(b).localeCompare(dateKey(a)),
 );
 
 writeFileSync(OUT, `${JSON.stringify(releases, null, 2)}\n`);
