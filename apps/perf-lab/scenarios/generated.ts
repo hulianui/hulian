@@ -1336,7 +1336,7 @@ export const scenarioMetadata = {
   },
   "animated-beam": {
     id: "animated-beam",
-    scenarioId: "animated-beam/basic",
+    scenarioId: "animated-beam/frame-budget",
     component: "AnimatedBeam",
     entry: "@hulianui/ui/animated-beam",
     category: "animation",
@@ -1347,7 +1347,7 @@ export const scenarioMetadata = {
   },
   "animated-gradient-text": {
     id: "animated-gradient-text",
-    scenarioId: "animated-gradient-text/basic",
+    scenarioId: "animated-gradient-text/frame-budget",
     component: "AnimatedGradientText",
     entry: "@hulianui/ui/animated-gradient-text",
     category: "animation",
@@ -1358,7 +1358,7 @@ export const scenarioMetadata = {
   },
   "animated-list": {
     id: "animated-list",
-    scenarioId: "animated-list/basic",
+    scenarioId: "animated-list/frame-budget",
     component: "AnimatedList",
     entry: "@hulianui/ui/animated-list",
     category: "animation",
@@ -1369,7 +1369,7 @@ export const scenarioMetadata = {
   },
   "animated-shiny-text": {
     id: "animated-shiny-text",
-    scenarioId: "animated-shiny-text/basic",
+    scenarioId: "animated-shiny-text/frame-budget",
     component: "AnimatedShinyText",
     entry: "@hulianui/ui/animated-shiny-text",
     category: "animation",
@@ -1380,7 +1380,7 @@ export const scenarioMetadata = {
   },
   "animated-theme-toggler": {
     id: "animated-theme-toggler",
-    scenarioId: "animated-theme-toggler/basic",
+    scenarioId: "animated-theme-toggler/frame-budget",
     component: "AnimatedThemeToggler",
     entry: "@hulianui/ui/animated-theme-toggler",
     category: "animation",
@@ -1402,7 +1402,7 @@ export const scenarioMetadata = {
   },
   antigravity: {
     id: "antigravity",
-    scenarioId: "antigravity/basic",
+    scenarioId: "antigravity/frame-budget",
     component: "Antigravity",
     entry: "@hulianui/ui/antigravity",
     category: "animation",
@@ -1435,7 +1435,7 @@ export const scenarioMetadata = {
   },
   "ascii-text": {
     id: "ascii-text",
-    scenarioId: "ascii-text/basic",
+    scenarioId: "ascii-text/frame-budget",
     component: "ASCIIText",
     entry: "@hulianui/ui/ascii-text",
     category: "animation",
@@ -1457,7 +1457,7 @@ export const scenarioMetadata = {
   },
   aurora: {
     id: "aurora",
-    scenarioId: "aurora/basic",
+    scenarioId: "aurora/frame-budget",
     component: "Aurora",
     entry: "@hulianui/ui/aurora",
     category: "animation",
@@ -1468,7 +1468,7 @@ export const scenarioMetadata = {
   },
   "aurora-text": {
     id: "aurora-text",
-    scenarioId: "aurora-text/basic",
+    scenarioId: "aurora-text/frame-budget",
     component: "AuroraText",
     entry: "@hulianui/ui/aurora-text",
     category: "animation",
@@ -1534,7 +1534,7 @@ export const scenarioMetadata = {
   },
   balatro: {
     id: "balatro",
-    scenarioId: "balatro/basic",
+    scenarioId: "balatro/frame-budget",
     component: "Balatro",
     entry: "@hulianui/ui/balatro",
     category: "animation",
@@ -1545,7 +1545,7 @@ export const scenarioMetadata = {
   },
   ballpit: {
     id: "ballpit",
-    scenarioId: "ballpit/basic",
+    scenarioId: "ballpit/frame-budget",
     component: "Ballpit",
     entry: "@hulianui/ui/ballpit",
     category: "animation",
@@ -1567,7 +1567,7 @@ export const scenarioMetadata = {
   },
   beams: {
     id: "beams",
-    scenarioId: "beams/basic",
+    scenarioId: "beams/frame-budget",
     component: "Beams",
     entry: "@hulianui/ui/beams",
     category: "animation",
@@ -1600,7 +1600,7 @@ export const scenarioMetadata = {
   },
   "blob-cursor": {
     id: "blob-cursor",
-    scenarioId: "blob-cursor/basic",
+    scenarioId: "blob-cursor/frame-budget",
     component: "BlobCursor",
     entry: "@hulianui/ui/blob-cursor",
     category: "animation",
@@ -1611,7 +1611,7 @@ export const scenarioMetadata = {
   },
   "blur-text": {
     id: "blur-text",
-    scenarioId: "blur-text/basic",
+    scenarioId: "blur-text/frame-budget",
     component: "BlurText",
     entry: "@hulianui/ui/blur-text",
     category: "animation",
@@ -1622,7 +1622,7 @@ export const scenarioMetadata = {
   },
   "book-3d": {
     id: "book-3d",
-    scenarioId: "book-3d/basic",
+    scenarioId: "book-3d/frame-budget",
     component: "Book3D",
     entry: "@hulianui/ui/book-3d",
     category: "animation",
@@ -1633,7 +1633,7 @@ export const scenarioMetadata = {
   },
   "border-beam": {
     id: "border-beam",
-    scenarioId: "border-beam/basic",
+    scenarioId: "border-beam/frame-budget",
     component: "BorderBeam",
     entry: "@hulianui/ui/border-beam",
     category: "animation",
@@ -1644,7 +1644,7 @@ export const scenarioMetadata = {
   },
   "border-glow": {
     id: "border-glow",
-    scenarioId: "border-glow/basic",
+    scenarioId: "border-glow/frame-budget",
     component: "BorderGlow",
     entry: "@hulianui/ui/border-glow",
     category: "animation",
@@ -1655,7 +1655,7 @@ export const scenarioMetadata = {
   },
   "bounce-cards": {
     id: "bounce-cards",
-    scenarioId: "bounce-cards/basic",
+    scenarioId: "bounce-cards/frame-budget",
     component: "BounceCards",
     entry: "@hulianui/ui/bounce-cards",
     category: "animation",
@@ -1677,7 +1677,7 @@ export const scenarioMetadata = {
   },
   "bubble-menu": {
     id: "bubble-menu",
-    scenarioId: "bubble-menu/basic",
+    scenarioId: "bubble-menu/frame-budget",
     component: "BubbleMenu",
     entry: "@hulianui/ui/bubble-menu",
     category: "animation",
@@ -1743,7 +1743,7 @@ export const scenarioMetadata = {
   },
   "card-nav": {
     id: "card-nav",
-    scenarioId: "card-nav/basic",
+    scenarioId: "card-nav/frame-budget",
     component: "CardNav",
     entry: "@hulianui/ui/card-nav",
     category: "animation",
@@ -1754,7 +1754,7 @@ export const scenarioMetadata = {
   },
   "card-spotlight": {
     id: "card-spotlight",
-    scenarioId: "card-spotlight/basic",
+    scenarioId: "card-spotlight/frame-budget",
     component: "CardSpotlight",
     entry: "@hulianui/ui/card-spotlight",
     category: "animation",
@@ -1765,7 +1765,7 @@ export const scenarioMetadata = {
   },
   "card-swap": {
     id: "card-swap",
-    scenarioId: "card-swap/basic",
+    scenarioId: "card-swap/frame-budget",
     component: "CardSwap",
     entry: "@hulianui/ui/card-swap",
     category: "animation",
@@ -1798,7 +1798,7 @@ export const scenarioMetadata = {
   },
   chart: {
     id: "chart",
-    scenarioId: "chart/basic",
+    scenarioId: "chart/stress",
     component: "AreaChart",
     entry: "@hulianui/ui/chart",
     category: "heavy",
@@ -1864,7 +1864,7 @@ export const scenarioMetadata = {
   },
   "chroma-grid": {
     id: "chroma-grid",
-    scenarioId: "chroma-grid/basic",
+    scenarioId: "chroma-grid/frame-budget",
     component: "ChromaGrid",
     entry: "@hulianui/ui/chroma-grid",
     category: "animation",
@@ -1886,7 +1886,7 @@ export const scenarioMetadata = {
   },
   "circular-gallery": {
     id: "circular-gallery",
-    scenarioId: "circular-gallery/basic",
+    scenarioId: "circular-gallery/frame-budget",
     component: "CircularGallery",
     entry: "@hulianui/ui/circular-gallery",
     category: "animation",
@@ -1897,7 +1897,7 @@ export const scenarioMetadata = {
   },
   "circular-text": {
     id: "circular-text",
-    scenarioId: "circular-text/basic",
+    scenarioId: "circular-text/frame-budget",
     component: "CircularText",
     entry: "@hulianui/ui/circular-text",
     category: "animation",
@@ -1930,7 +1930,7 @@ export const scenarioMetadata = {
   },
   "click-spark": {
     id: "click-spark",
-    scenarioId: "click-spark/basic",
+    scenarioId: "click-spark/frame-budget",
     component: "ClickSpark",
     entry: "@hulianui/ui/click-spark",
     category: "animation",
@@ -1996,7 +1996,7 @@ export const scenarioMetadata = {
   },
   "color-bends": {
     id: "color-bends",
-    scenarioId: "color-bends/basic",
+    scenarioId: "color-bends/frame-budget",
     component: "ColorBends",
     entry: "@hulianui/ui/color-bends",
     category: "animation",
@@ -2161,7 +2161,7 @@ export const scenarioMetadata = {
   },
   crosshair: {
     id: "crosshair",
-    scenarioId: "crosshair/basic",
+    scenarioId: "crosshair/frame-budget",
     component: "Crosshair",
     entry: "@hulianui/ui/crosshair",
     category: "animation",
@@ -2172,7 +2172,7 @@ export const scenarioMetadata = {
   },
   cubes: {
     id: "cubes",
-    scenarioId: "cubes/basic",
+    scenarioId: "cubes/frame-budget",
     component: "Cubes",
     entry: "@hulianui/ui/cubes",
     category: "animation",
@@ -2183,7 +2183,7 @@ export const scenarioMetadata = {
   },
   "curved-loop": {
     id: "curved-loop",
-    scenarioId: "curved-loop/basic",
+    scenarioId: "curved-loop/frame-budget",
     component: "CurvedLoop",
     entry: "@hulianui/ui/curved-loop",
     category: "animation",
@@ -2194,7 +2194,7 @@ export const scenarioMetadata = {
   },
   danmaku: {
     id: "danmaku",
-    scenarioId: "danmaku/basic",
+    scenarioId: "danmaku/frame-budget",
     component: "Danmaku",
     entry: "@hulianui/ui/danmaku",
     category: "animation",
@@ -2205,7 +2205,7 @@ export const scenarioMetadata = {
   },
   "dark-veil": {
     id: "dark-veil",
-    scenarioId: "dark-veil/basic",
+    scenarioId: "dark-veil/frame-budget",
     component: "DarkVeil",
     entry: "@hulianui/ui/dark-veil",
     category: "animation",
@@ -2249,7 +2249,7 @@ export const scenarioMetadata = {
   },
   "decay-card": {
     id: "decay-card",
-    scenarioId: "decay-card/basic",
+    scenarioId: "decay-card/frame-budget",
     component: "DecayCard",
     entry: "@hulianui/ui/decay-card",
     category: "animation",
@@ -2260,7 +2260,7 @@ export const scenarioMetadata = {
   },
   "decrypted-text": {
     id: "decrypted-text",
-    scenarioId: "decrypted-text/basic",
+    scenarioId: "decrypted-text/frame-budget",
     component: "DecryptedText",
     entry: "@hulianui/ui/decrypted-text",
     category: "animation",
@@ -2293,7 +2293,7 @@ export const scenarioMetadata = {
   },
   dialog: {
     id: "dialog",
-    scenarioId: "dialog/basic",
+    scenarioId: "dialog/cycles",
     component: "Dialog",
     entry: "@hulianui/ui/dialog",
     category: "core",
@@ -2315,7 +2315,7 @@ export const scenarioMetadata = {
   },
   dither: {
     id: "dither",
-    scenarioId: "dither/basic",
+    scenarioId: "dither/frame-budget",
     component: "Dither",
     entry: "@hulianui/ui/dither",
     category: "animation",
@@ -2359,7 +2359,7 @@ export const scenarioMetadata = {
   },
   "dome-gallery": {
     id: "dome-gallery",
-    scenarioId: "dome-gallery/basic",
+    scenarioId: "dome-gallery/frame-budget",
     component: "DomeGallery",
     entry: "@hulianui/ui/dome-gallery",
     category: "animation",
@@ -2392,7 +2392,7 @@ export const scenarioMetadata = {
   },
   "dot-field": {
     id: "dot-field",
-    scenarioId: "dot-field/basic",
+    scenarioId: "dot-field/frame-budget",
     component: "DotField",
     entry: "@hulianui/ui/dot-field",
     category: "animation",
@@ -2436,7 +2436,7 @@ export const scenarioMetadata = {
   },
   "elastic-slider": {
     id: "elastic-slider",
-    scenarioId: "elastic-slider/basic",
+    scenarioId: "elastic-slider/frame-budget",
     component: "ElasticSlider",
     entry: "@hulianui/ui/elastic-slider",
     category: "animation",
@@ -2447,7 +2447,7 @@ export const scenarioMetadata = {
   },
   "electric-border": {
     id: "electric-border",
-    scenarioId: "electric-border/basic",
+    scenarioId: "electric-border/frame-budget",
     component: "ElectricBorder",
     entry: "@hulianui/ui/electric-border",
     category: "animation",
@@ -2491,7 +2491,7 @@ export const scenarioMetadata = {
   },
   "evil-eye": {
     id: "evil-eye",
-    scenarioId: "evil-eye/basic",
+    scenarioId: "evil-eye/frame-budget",
     component: "EvilEye",
     entry: "@hulianui/ui/evil-eye",
     category: "animation",
@@ -2513,7 +2513,7 @@ export const scenarioMetadata = {
   },
   "falling-text": {
     id: "falling-text",
-    scenarioId: "falling-text/basic",
+    scenarioId: "falling-text/frame-budget",
     component: "FallingText",
     entry: "@hulianui/ui/falling-text",
     category: "animation",
@@ -2524,7 +2524,7 @@ export const scenarioMetadata = {
   },
   "faulty-terminal": {
     id: "faulty-terminal",
-    scenarioId: "faulty-terminal/basic",
+    scenarioId: "faulty-terminal/frame-budget",
     component: "FaultyTerminal",
     entry: "@hulianui/ui/faulty-terminal",
     category: "animation",
@@ -2535,7 +2535,7 @@ export const scenarioMetadata = {
   },
   ferrofluid: {
     id: "ferrofluid",
-    scenarioId: "ferrofluid/basic",
+    scenarioId: "ferrofluid/frame-budget",
     component: "Ferrofluid",
     entry: "@hulianui/ui/ferrofluid",
     category: "animation",
@@ -2579,7 +2579,7 @@ export const scenarioMetadata = {
   },
   "flickering-grid": {
     id: "flickering-grid",
-    scenarioId: "flickering-grid/basic",
+    scenarioId: "flickering-grid/frame-budget",
     component: "FlickeringGrid",
     entry: "@hulianui/ui/flickering-grid",
     category: "animation",
@@ -2590,7 +2590,7 @@ export const scenarioMetadata = {
   },
   "floating-lines": {
     id: "floating-lines",
-    scenarioId: "floating-lines/basic",
+    scenarioId: "floating-lines/frame-budget",
     component: "FloatingLines",
     entry: "@hulianui/ui/floating-lines",
     category: "animation",
@@ -2601,7 +2601,7 @@ export const scenarioMetadata = {
   },
   "floating-reactions": {
     id: "floating-reactions",
-    scenarioId: "floating-reactions/basic",
+    scenarioId: "floating-reactions/frame-budget",
     component: "FloatingReactions",
     entry: "@hulianui/ui/floating-reactions",
     category: "animation",
@@ -2623,7 +2623,7 @@ export const scenarioMetadata = {
   },
   "flowing-menu": {
     id: "flowing-menu",
-    scenarioId: "flowing-menu/basic",
+    scenarioId: "flowing-menu/frame-budget",
     component: "FlowingMenu",
     entry: "@hulianui/ui/flowing-menu",
     category: "animation",
@@ -2634,7 +2634,7 @@ export const scenarioMetadata = {
   },
   "fluid-glass": {
     id: "fluid-glass",
-    scenarioId: "fluid-glass/basic",
+    scenarioId: "fluid-glass/frame-budget",
     component: "FluidGlass",
     entry: "@hulianui/ui/fluid-glass",
     category: "animation",
@@ -2645,7 +2645,7 @@ export const scenarioMetadata = {
   },
   "flying-posters": {
     id: "flying-posters",
-    scenarioId: "flying-posters/basic",
+    scenarioId: "flying-posters/frame-budget",
     component: "FlyingPosters",
     entry: "@hulianui/ui/flying-posters",
     category: "animation",
@@ -2656,7 +2656,7 @@ export const scenarioMetadata = {
   },
   folder: {
     id: "folder",
-    scenarioId: "folder/basic",
+    scenarioId: "folder/frame-budget",
     component: "Folder",
     entry: "@hulianui/ui/folder",
     category: "animation",
@@ -2667,7 +2667,7 @@ export const scenarioMetadata = {
   },
   form: {
     id: "form",
-    scenarioId: "form/basic",
+    scenarioId: "form/validation",
     component: "Form",
     entry: "@hulianui/ui/form",
     category: "core",
@@ -2700,7 +2700,7 @@ export const scenarioMetadata = {
   },
   "fuzzy-text": {
     id: "fuzzy-text",
-    scenarioId: "fuzzy-text/basic",
+    scenarioId: "fuzzy-text/frame-budget",
     component: "FuzzyText",
     entry: "@hulianui/ui/fuzzy-text",
     category: "animation",
@@ -2711,7 +2711,7 @@ export const scenarioMetadata = {
   },
   galaxy: {
     id: "galaxy",
-    scenarioId: "galaxy/basic",
+    scenarioId: "galaxy/frame-budget",
     component: "Galaxy",
     entry: "@hulianui/ui/galaxy",
     category: "animation",
@@ -2733,7 +2733,7 @@ export const scenarioMetadata = {
   },
   "ghost-cursor": {
     id: "ghost-cursor",
-    scenarioId: "ghost-cursor/basic",
+    scenarioId: "ghost-cursor/frame-budget",
     component: "GhostCursor",
     entry: "@hulianui/ui/ghost-cursor",
     category: "animation",
@@ -2744,7 +2744,7 @@ export const scenarioMetadata = {
   },
   "gift-feed": {
     id: "gift-feed",
-    scenarioId: "gift-feed/basic",
+    scenarioId: "gift-feed/frame-budget",
     component: "GiftFeed",
     entry: "@hulianui/ui/gift-feed",
     category: "animation",
@@ -2766,7 +2766,7 @@ export const scenarioMetadata = {
   },
   "glare-hover": {
     id: "glare-hover",
-    scenarioId: "glare-hover/basic",
+    scenarioId: "glare-hover/frame-budget",
     component: "GlareHover",
     entry: "@hulianui/ui/glare-hover",
     category: "animation",
@@ -2777,7 +2777,7 @@ export const scenarioMetadata = {
   },
   "glass-icons": {
     id: "glass-icons",
-    scenarioId: "glass-icons/basic",
+    scenarioId: "glass-icons/frame-budget",
     component: "GlassIcons",
     entry: "@hulianui/ui/glass-icons",
     category: "animation",
@@ -2788,7 +2788,7 @@ export const scenarioMetadata = {
   },
   "glass-surface": {
     id: "glass-surface",
-    scenarioId: "glass-surface/basic",
+    scenarioId: "glass-surface/frame-budget",
     component: "GlassSurface",
     entry: "@hulianui/ui/glass-surface",
     category: "animation",
@@ -2810,7 +2810,7 @@ export const scenarioMetadata = {
   },
   "glitch-text": {
     id: "glitch-text",
-    scenarioId: "glitch-text/basic",
+    scenarioId: "glitch-text/frame-budget",
     component: "GlitchText",
     entry: "@hulianui/ui/glitch-text",
     category: "animation",
@@ -2821,7 +2821,7 @@ export const scenarioMetadata = {
   },
   "gooey-nav": {
     id: "gooey-nav",
-    scenarioId: "gooey-nav/basic",
+    scenarioId: "gooey-nav/frame-budget",
     component: "GooeyNav",
     entry: "@hulianui/ui/gooey-nav",
     category: "animation",
@@ -2832,7 +2832,7 @@ export const scenarioMetadata = {
   },
   "gradient-blinds": {
     id: "gradient-blinds",
-    scenarioId: "gradient-blinds/basic",
+    scenarioId: "gradient-blinds/frame-budget",
     component: "GradientBlinds",
     entry: "@hulianui/ui/gradient-blinds",
     category: "animation",
@@ -2843,7 +2843,7 @@ export const scenarioMetadata = {
   },
   "gradual-blur": {
     id: "gradual-blur",
-    scenarioId: "gradual-blur/basic",
+    scenarioId: "gradual-blur/frame-budget",
     component: "GradualBlur",
     entry: "@hulianui/ui/gradual-blur",
     category: "animation",
@@ -2854,7 +2854,7 @@ export const scenarioMetadata = {
   },
   grainient: {
     id: "grainient",
-    scenarioId: "grainient/basic",
+    scenarioId: "grainient/frame-budget",
     component: "Grainient",
     entry: "@hulianui/ui/grainient",
     category: "animation",
@@ -2876,7 +2876,7 @@ export const scenarioMetadata = {
   },
   "grid-distortion": {
     id: "grid-distortion",
-    scenarioId: "grid-distortion/basic",
+    scenarioId: "grid-distortion/frame-budget",
     component: "GridDistortion",
     entry: "@hulianui/ui/grid-distortion",
     category: "animation",
@@ -2887,7 +2887,7 @@ export const scenarioMetadata = {
   },
   "grid-motion": {
     id: "grid-motion",
-    scenarioId: "grid-motion/basic",
+    scenarioId: "grid-motion/frame-budget",
     component: "GridMotion",
     entry: "@hulianui/ui/grid-motion",
     category: "animation",
@@ -2909,7 +2909,7 @@ export const scenarioMetadata = {
   },
   "grid-scan": {
     id: "grid-scan",
-    scenarioId: "grid-scan/basic",
+    scenarioId: "grid-scan/frame-budget",
     component: "GridScan",
     entry: "@hulianui/ui/grid-scan",
     category: "animation",
@@ -2964,7 +2964,7 @@ export const scenarioMetadata = {
   },
   hyperspeed: {
     id: "hyperspeed",
-    scenarioId: "hyperspeed/basic",
+    scenarioId: "hyperspeed/frame-budget",
     component: "Hyperspeed",
     entry: "@hulianui/ui/hyperspeed",
     category: "animation",
@@ -3008,7 +3008,7 @@ export const scenarioMetadata = {
   },
   "image-trail": {
     id: "image-trail",
-    scenarioId: "image-trail/basic",
+    scenarioId: "image-trail/frame-budget",
     component: "ImageTrail",
     entry: "@hulianui/ui/image-trail",
     category: "animation",
@@ -3030,7 +3030,7 @@ export const scenarioMetadata = {
   },
   "infinite-menu": {
     id: "infinite-menu",
-    scenarioId: "infinite-menu/basic",
+    scenarioId: "infinite-menu/frame-budget",
     component: "InfiniteMenu",
     entry: "@hulianui/ui/infinite-menu",
     category: "animation",
@@ -3096,7 +3096,7 @@ export const scenarioMetadata = {
   },
   iridescence: {
     id: "iridescence",
-    scenarioId: "iridescence/basic",
+    scenarioId: "iridescence/frame-budget",
     component: "Iridescence",
     entry: "@hulianui/ui/iridescence",
     category: "animation",
@@ -3140,7 +3140,7 @@ export const scenarioMetadata = {
   },
   lanyard: {
     id: "lanyard",
-    scenarioId: "lanyard/basic",
+    scenarioId: "lanyard/frame-budget",
     component: "Lanyard",
     entry: "@hulianui/ui/lanyard",
     category: "animation",
@@ -3151,7 +3151,7 @@ export const scenarioMetadata = {
   },
   "laser-flow": {
     id: "laser-flow",
-    scenarioId: "laser-flow/basic",
+    scenarioId: "laser-flow/frame-budget",
     component: "LaserFlow",
     entry: "@hulianui/ui/laser-flow",
     category: "animation",
@@ -3184,7 +3184,7 @@ export const scenarioMetadata = {
   },
   lens: {
     id: "lens",
-    scenarioId: "lens/basic",
+    scenarioId: "lens/frame-budget",
     component: "Lens",
     entry: "@hulianui/ui/lens",
     category: "animation",
@@ -3195,7 +3195,7 @@ export const scenarioMetadata = {
   },
   "letter-glitch": {
     id: "letter-glitch",
-    scenarioId: "letter-glitch/basic",
+    scenarioId: "letter-glitch/frame-budget",
     component: "LetterGlitch",
     entry: "@hulianui/ui/letter-glitch",
     category: "animation",
@@ -3206,7 +3206,7 @@ export const scenarioMetadata = {
   },
   "light-pillar": {
     id: "light-pillar",
-    scenarioId: "light-pillar/basic",
+    scenarioId: "light-pillar/frame-budget",
     component: "LightPillar",
     entry: "@hulianui/ui/light-pillar",
     category: "animation",
@@ -3217,7 +3217,7 @@ export const scenarioMetadata = {
   },
   "light-rays": {
     id: "light-rays",
-    scenarioId: "light-rays/basic",
+    scenarioId: "light-rays/frame-budget",
     component: "LightRays",
     entry: "@hulianui/ui/light-rays",
     category: "animation",
@@ -3228,7 +3228,7 @@ export const scenarioMetadata = {
   },
   lightfall: {
     id: "lightfall",
-    scenarioId: "lightfall/basic",
+    scenarioId: "lightfall/frame-budget",
     component: "Lightfall",
     entry: "@hulianui/ui/lightfall",
     category: "animation",
@@ -3239,7 +3239,7 @@ export const scenarioMetadata = {
   },
   lightning: {
     id: "lightning",
-    scenarioId: "lightning/basic",
+    scenarioId: "lightning/frame-budget",
     component: "Lightning",
     entry: "@hulianui/ui/lightning",
     category: "animation",
@@ -3250,7 +3250,7 @@ export const scenarioMetadata = {
   },
   "line-waves": {
     id: "line-waves",
-    scenarioId: "line-waves/basic",
+    scenarioId: "line-waves/frame-budget",
     component: "LineWaves",
     entry: "@hulianui/ui/line-waves",
     category: "animation",
@@ -3272,7 +3272,7 @@ export const scenarioMetadata = {
   },
   "liquid-chrome": {
     id: "liquid-chrome",
-    scenarioId: "liquid-chrome/basic",
+    scenarioId: "liquid-chrome/frame-budget",
     component: "LiquidChrome",
     entry: "@hulianui/ui/liquid-chrome",
     category: "animation",
@@ -3283,7 +3283,7 @@ export const scenarioMetadata = {
   },
   "liquid-ether": {
     id: "liquid-ether",
-    scenarioId: "liquid-ether/basic",
+    scenarioId: "liquid-ether/frame-budget",
     component: "LiquidEther",
     entry: "@hulianui/ui/liquid-ether",
     category: "animation",
@@ -3371,7 +3371,7 @@ export const scenarioMetadata = {
   },
   "logo-loop": {
     id: "logo-loop",
-    scenarioId: "logo-loop/basic",
+    scenarioId: "logo-loop/frame-budget",
     component: "LogoLoop",
     entry: "@hulianui/ui/logo-loop",
     category: "animation",
@@ -3382,7 +3382,7 @@ export const scenarioMetadata = {
   },
   "magic-bento": {
     id: "magic-bento",
-    scenarioId: "magic-bento/basic",
+    scenarioId: "magic-bento/frame-budget",
     component: "MagicBento",
     entry: "@hulianui/ui/magic-bento",
     category: "animation",
@@ -3393,7 +3393,7 @@ export const scenarioMetadata = {
   },
   "magic-card": {
     id: "magic-card",
-    scenarioId: "magic-card/basic",
+    scenarioId: "magic-card/frame-budget",
     component: "MagicCard",
     entry: "@hulianui/ui/magic-card",
     category: "animation",
@@ -3404,7 +3404,7 @@ export const scenarioMetadata = {
   },
   "magic-rings": {
     id: "magic-rings",
-    scenarioId: "magic-rings/basic",
+    scenarioId: "magic-rings/frame-budget",
     component: "MagicRings",
     entry: "@hulianui/ui/magic-rings",
     category: "animation",
@@ -3415,7 +3415,7 @@ export const scenarioMetadata = {
   },
   magnet: {
     id: "magnet",
-    scenarioId: "magnet/basic",
+    scenarioId: "magnet/frame-budget",
     component: "Magnet",
     entry: "@hulianui/ui/magnet",
     category: "animation",
@@ -3426,7 +3426,7 @@ export const scenarioMetadata = {
   },
   "magnet-lines": {
     id: "magnet-lines",
-    scenarioId: "magnet-lines/basic",
+    scenarioId: "magnet-lines/frame-budget",
     component: "MagnetLines",
     entry: "@hulianui/ui/magnet-lines",
     category: "animation",
@@ -3448,7 +3448,7 @@ export const scenarioMetadata = {
   },
   "markdown-editor": {
     id: "markdown-editor",
-    scenarioId: "markdown-editor/basic",
+    scenarioId: "markdown-editor/stress",
     component: "MarkdownEditor",
     entry: "@hulianui/ui/markdown-editor",
     category: "heavy",
@@ -3459,7 +3459,7 @@ export const scenarioMetadata = {
   },
   marquee: {
     id: "marquee",
-    scenarioId: "marquee/basic",
+    scenarioId: "marquee/frame-budget",
     component: "Marquee",
     entry: "@hulianui/ui/marquee",
     category: "animation",
@@ -3536,7 +3536,7 @@ export const scenarioMetadata = {
   },
   "meta-balls": {
     id: "meta-balls",
-    scenarioId: "meta-balls/basic",
+    scenarioId: "meta-balls/frame-budget",
     component: "MetaBalls",
     entry: "@hulianui/ui/meta-balls",
     category: "animation",
@@ -3547,7 +3547,7 @@ export const scenarioMetadata = {
   },
   "metallic-paint": {
     id: "metallic-paint",
-    scenarioId: "metallic-paint/basic",
+    scenarioId: "metallic-paint/frame-budget",
     component: "MetallicPaint",
     entry: "@hulianui/ui/metallic-paint",
     category: "animation",
@@ -3558,7 +3558,7 @@ export const scenarioMetadata = {
   },
   meteors: {
     id: "meteors",
-    scenarioId: "meteors/basic",
+    scenarioId: "meteors/frame-budget",
     component: "Meteors",
     entry: "@hulianui/ui/meteors",
     category: "animation",
@@ -3591,7 +3591,7 @@ export const scenarioMetadata = {
   },
   "model-viewer": {
     id: "model-viewer",
-    scenarioId: "model-viewer/basic",
+    scenarioId: "model-viewer/frame-budget",
     component: "ModelViewer",
     entry: "@hulianui/ui/model-viewer",
     category: "animation",
@@ -3657,7 +3657,7 @@ export const scenarioMetadata = {
   },
   "number-ticker": {
     id: "number-ticker",
-    scenarioId: "number-ticker/basic",
+    scenarioId: "number-ticker/frame-budget",
     component: "NumberTicker",
     entry: "@hulianui/ui/number-ticker",
     category: "animation",
@@ -3668,7 +3668,7 @@ export const scenarioMetadata = {
   },
   orb: {
     id: "orb",
-    scenarioId: "orb/basic",
+    scenarioId: "orb/frame-budget",
     component: "Orb",
     entry: "@hulianui/ui/orb",
     category: "animation",
@@ -3679,7 +3679,7 @@ export const scenarioMetadata = {
   },
   "orbit-images": {
     id: "orbit-images",
-    scenarioId: "orbit-images/basic",
+    scenarioId: "orbit-images/frame-budget",
     component: "OrbitImages",
     entry: "@hulianui/ui/orbit-images",
     category: "animation",
@@ -3690,7 +3690,7 @@ export const scenarioMetadata = {
   },
   "orbiting-circles": {
     id: "orbiting-circles",
-    scenarioId: "orbiting-circles/basic",
+    scenarioId: "orbiting-circles/frame-budget",
     component: "OrbitingCircles",
     entry: "@hulianui/ui/orbiting-circles",
     category: "animation",
@@ -3723,7 +3723,7 @@ export const scenarioMetadata = {
   },
   particles: {
     id: "particles",
-    scenarioId: "particles/basic",
+    scenarioId: "particles/frame-budget",
     component: "Particles",
     entry: "@hulianui/ui/particles",
     category: "animation",
@@ -3756,7 +3756,7 @@ export const scenarioMetadata = {
   },
   "pill-nav": {
     id: "pill-nav",
-    scenarioId: "pill-nav/basic",
+    scenarioId: "pill-nav/frame-budget",
     component: "PillNav",
     entry: "@hulianui/ui/pill-nav",
     category: "animation",
@@ -3767,7 +3767,7 @@ export const scenarioMetadata = {
   },
   "pixel-blast": {
     id: "pixel-blast",
-    scenarioId: "pixel-blast/basic",
+    scenarioId: "pixel-blast/frame-budget",
     component: "PixelBlast",
     entry: "@hulianui/ui/pixel-blast",
     category: "animation",
@@ -3778,7 +3778,7 @@ export const scenarioMetadata = {
   },
   "pixel-card": {
     id: "pixel-card",
-    scenarioId: "pixel-card/basic",
+    scenarioId: "pixel-card/frame-budget",
     component: "PixelCard",
     entry: "@hulianui/ui/pixel-card",
     category: "animation",
@@ -3789,7 +3789,7 @@ export const scenarioMetadata = {
   },
   "pixel-snow": {
     id: "pixel-snow",
-    scenarioId: "pixel-snow/basic",
+    scenarioId: "pixel-snow/frame-budget",
     component: "PixelSnow",
     entry: "@hulianui/ui/pixel-snow",
     category: "animation",
@@ -3800,7 +3800,7 @@ export const scenarioMetadata = {
   },
   "pixel-trail": {
     id: "pixel-trail",
-    scenarioId: "pixel-trail/basic",
+    scenarioId: "pixel-trail/frame-budget",
     component: "PixelTrail",
     entry: "@hulianui/ui/pixel-trail",
     category: "animation",
@@ -3811,7 +3811,7 @@ export const scenarioMetadata = {
   },
   "pixel-transition": {
     id: "pixel-transition",
-    scenarioId: "pixel-transition/basic",
+    scenarioId: "pixel-transition/frame-budget",
     component: "PixelTransition",
     entry: "@hulianui/ui/pixel-transition",
     category: "animation",
@@ -3822,7 +3822,7 @@ export const scenarioMetadata = {
   },
   plasma: {
     id: "plasma",
-    scenarioId: "plasma/basic",
+    scenarioId: "plasma/frame-budget",
     component: "Plasma",
     entry: "@hulianui/ui/plasma",
     category: "animation",
@@ -3833,7 +3833,7 @@ export const scenarioMetadata = {
   },
   "plasma-wave": {
     id: "plasma-wave",
-    scenarioId: "plasma-wave/basic",
+    scenarioId: "plasma-wave/frame-budget",
     component: "PlasmaWave",
     entry: "@hulianui/ui/plasma-wave",
     category: "animation",
@@ -3877,7 +3877,7 @@ export const scenarioMetadata = {
   },
   prism: {
     id: "prism",
-    scenarioId: "prism/basic",
+    scenarioId: "prism/frame-budget",
     component: "Prism",
     entry: "@hulianui/ui/prism",
     category: "animation",
@@ -3888,7 +3888,7 @@ export const scenarioMetadata = {
   },
   "prismatic-burst": {
     id: "prismatic-burst",
-    scenarioId: "prismatic-burst/basic",
+    scenarioId: "prismatic-burst/frame-budget",
     component: "PrismaticBurst",
     entry: "@hulianui/ui/prismatic-burst",
     category: "animation",
@@ -3910,7 +3910,7 @@ export const scenarioMetadata = {
   },
   "pro-table": {
     id: "pro-table",
-    scenarioId: "pro-table/basic",
+    scenarioId: "pro-table/stress",
     component: "ProTable",
     entry: "@hulianui/ui/pro-table",
     category: "heavy",
@@ -3921,7 +3921,7 @@ export const scenarioMetadata = {
   },
   "profile-card": {
     id: "profile-card",
-    scenarioId: "profile-card/basic",
+    scenarioId: "profile-card/frame-budget",
     component: "ProfileCard",
     entry: "@hulianui/ui/profile-card",
     category: "animation",
@@ -3998,7 +3998,7 @@ export const scenarioMetadata = {
   },
   "pulsating-button": {
     id: "pulsating-button",
-    scenarioId: "pulsating-button/basic",
+    scenarioId: "pulsating-button/frame-budget",
     component: "PulsatingButton",
     entry: "@hulianui/ui/pulsating-button",
     category: "animation",
@@ -4042,7 +4042,7 @@ export const scenarioMetadata = {
   },
   radar: {
     id: "radar",
-    scenarioId: "radar/basic",
+    scenarioId: "radar/frame-budget",
     component: "Radar",
     entry: "@hulianui/ui/radar",
     category: "animation",
@@ -4064,7 +4064,7 @@ export const scenarioMetadata = {
   },
   "rainbow-button": {
     id: "rainbow-button",
-    scenarioId: "rainbow-button/basic",
+    scenarioId: "rainbow-button/frame-budget",
     component: "RainbowButton",
     entry: "@hulianui/ui/rainbow-button",
     category: "animation",
@@ -4086,7 +4086,7 @@ export const scenarioMetadata = {
   },
   "reflective-card": {
     id: "reflective-card",
-    scenarioId: "reflective-card/basic",
+    scenarioId: "reflective-card/frame-budget",
     component: "ReflectiveCard",
     entry: "@hulianui/ui/reflective-card",
     category: "animation",
@@ -4163,7 +4163,7 @@ export const scenarioMetadata = {
   },
   "retro-grid": {
     id: "retro-grid",
-    scenarioId: "retro-grid/basic",
+    scenarioId: "retro-grid/frame-budget",
     component: "RetroGrid",
     entry: "@hulianui/ui/retro-grid",
     category: "animation",
@@ -4174,7 +4174,7 @@ export const scenarioMetadata = {
   },
   reveal: {
     id: "reveal",
-    scenarioId: "reveal/basic",
+    scenarioId: "reveal/frame-budget",
     component: "Reveal",
     entry: "@hulianui/ui/reveal",
     category: "animation",
@@ -4185,7 +4185,7 @@ export const scenarioMetadata = {
   },
   ribbons: {
     id: "ribbons",
-    scenarioId: "ribbons/basic",
+    scenarioId: "ribbons/frame-budget",
     component: "Ribbons",
     entry: "@hulianui/ui/ribbons",
     category: "animation",
@@ -4196,7 +4196,7 @@ export const scenarioMetadata = {
   },
   ripple: {
     id: "ripple",
-    scenarioId: "ripple/basic",
+    scenarioId: "ripple/frame-budget",
     component: "Ripple",
     entry: "@hulianui/ui/ripple",
     category: "animation",
@@ -4207,7 +4207,7 @@ export const scenarioMetadata = {
   },
   "ripple-button": {
     id: "ripple-button",
-    scenarioId: "ripple-button/basic",
+    scenarioId: "ripple-button/frame-budget",
     component: "RippleButton",
     entry: "@hulianui/ui/ripple-button",
     category: "animation",
@@ -4218,7 +4218,7 @@ export const scenarioMetadata = {
   },
   "ripple-grid": {
     id: "ripple-grid",
-    scenarioId: "ripple-grid/basic",
+    scenarioId: "ripple-grid/frame-budget",
     component: "RippleGrid",
     entry: "@hulianui/ui/ripple-grid",
     category: "animation",
@@ -4306,7 +4306,7 @@ export const scenarioMetadata = {
   },
   "scrambled-text": {
     id: "scrambled-text",
-    scenarioId: "scrambled-text/basic",
+    scenarioId: "scrambled-text/frame-budget",
     component: "ScrambledText",
     entry: "@hulianui/ui/scrambled-text",
     category: "animation",
@@ -4328,7 +4328,7 @@ export const scenarioMetadata = {
   },
   "scroll-float": {
     id: "scroll-float",
-    scenarioId: "scroll-float/basic",
+    scenarioId: "scroll-float/frame-budget",
     component: "ScrollFloat",
     entry: "@hulianui/ui/scroll-float",
     category: "animation",
@@ -4339,7 +4339,7 @@ export const scenarioMetadata = {
   },
   "scroll-reveal": {
     id: "scroll-reveal",
-    scenarioId: "scroll-reveal/basic",
+    scenarioId: "scroll-reveal/frame-budget",
     component: "ScrollReveal",
     entry: "@hulianui/ui/scroll-reveal",
     category: "animation",
@@ -4350,7 +4350,7 @@ export const scenarioMetadata = {
   },
   "scroll-stack": {
     id: "scroll-stack",
-    scenarioId: "scroll-stack/basic",
+    scenarioId: "scroll-stack/frame-budget",
     component: "ScrollStack",
     entry: "@hulianui/ui/scroll-stack",
     category: "animation",
@@ -4361,7 +4361,7 @@ export const scenarioMetadata = {
   },
   "scroll-velocity": {
     id: "scroll-velocity",
-    scenarioId: "scroll-velocity/basic",
+    scenarioId: "scroll-velocity/frame-budget",
     component: "ScrollVelocity",
     entry: "@hulianui/ui/scroll-velocity",
     category: "animation",
@@ -4405,7 +4405,7 @@ export const scenarioMetadata = {
   },
   select: {
     id: "select",
-    scenarioId: "select/basic",
+    scenarioId: "select/stress",
     component: "Select",
     entry: "@hulianui/ui/select",
     category: "core",
@@ -4438,7 +4438,7 @@ export const scenarioMetadata = {
   },
   "shape-blur": {
     id: "shape-blur",
-    scenarioId: "shape-blur/basic",
+    scenarioId: "shape-blur/frame-budget",
     component: "ShapeBlur",
     entry: "@hulianui/ui/shape-blur",
     category: "animation",
@@ -4449,7 +4449,7 @@ export const scenarioMetadata = {
   },
   "shape-grid": {
     id: "shape-grid",
-    scenarioId: "shape-grid/basic",
+    scenarioId: "shape-grid/frame-budget",
     component: "ShapeGrid",
     entry: "@hulianui/ui/shape-grid",
     category: "animation",
@@ -4471,7 +4471,7 @@ export const scenarioMetadata = {
   },
   "shimmer-button": {
     id: "shimmer-button",
-    scenarioId: "shimmer-button/basic",
+    scenarioId: "shimmer-button/frame-budget",
     component: "ShimmerButton",
     entry: "@hulianui/ui/shimmer-button",
     category: "animation",
@@ -4482,7 +4482,7 @@ export const scenarioMetadata = {
   },
   "shine-border": {
     id: "shine-border",
-    scenarioId: "shine-border/basic",
+    scenarioId: "shine-border/frame-budget",
     component: "ShineBorder",
     entry: "@hulianui/ui/shine-border",
     category: "animation",
@@ -4493,7 +4493,7 @@ export const scenarioMetadata = {
   },
   shuffle: {
     id: "shuffle",
-    scenarioId: "shuffle/basic",
+    scenarioId: "shuffle/frame-budget",
     component: "Shuffle",
     entry: "@hulianui/ui/shuffle",
     category: "animation",
@@ -4504,7 +4504,7 @@ export const scenarioMetadata = {
   },
   "side-rays": {
     id: "side-rays",
-    scenarioId: "side-rays/basic",
+    scenarioId: "side-rays/frame-budget",
     component: "SideRays",
     entry: "@hulianui/ui/side-rays",
     category: "animation",
@@ -4515,7 +4515,7 @@ export const scenarioMetadata = {
   },
   silk: {
     id: "silk",
-    scenarioId: "silk/basic",
+    scenarioId: "silk/frame-budget",
     component: "Silk",
     entry: "@hulianui/ui/silk",
     category: "animation",
@@ -4570,7 +4570,7 @@ export const scenarioMetadata = {
   },
   "soft-aurora": {
     id: "soft-aurora",
-    scenarioId: "soft-aurora/basic",
+    scenarioId: "soft-aurora/frame-budget",
     component: "SoftAurora",
     entry: "@hulianui/ui/soft-aurora",
     category: "animation",
@@ -4603,7 +4603,7 @@ export const scenarioMetadata = {
   },
   "sparkles-text": {
     id: "sparkles-text",
-    scenarioId: "sparkles-text/basic",
+    scenarioId: "sparkles-text/frame-budget",
     component: "SparklesText",
     entry: "@hulianui/ui/sparkles-text",
     category: "animation",
@@ -4647,7 +4647,7 @@ export const scenarioMetadata = {
   },
   "splash-cursor": {
     id: "splash-cursor",
-    scenarioId: "splash-cursor/basic",
+    scenarioId: "splash-cursor/frame-budget",
     component: "SplashCursor",
     entry: "@hulianui/ui/splash-cursor",
     category: "animation",
@@ -4658,7 +4658,7 @@ export const scenarioMetadata = {
   },
   "split-text": {
     id: "split-text",
-    scenarioId: "split-text/basic",
+    scenarioId: "split-text/frame-budget",
     component: "SplitText",
     entry: "@hulianui/ui/split-text",
     category: "animation",
@@ -4691,7 +4691,7 @@ export const scenarioMetadata = {
   },
   "staggered-menu": {
     id: "staggered-menu",
-    scenarioId: "staggered-menu/basic",
+    scenarioId: "staggered-menu/frame-budget",
     component: "StaggeredMenu",
     entry: "@hulianui/ui/staggered-menu",
     category: "animation",
@@ -4702,7 +4702,7 @@ export const scenarioMetadata = {
   },
   "star-border": {
     id: "star-border",
-    scenarioId: "star-border/basic",
+    scenarioId: "star-border/frame-budget",
     component: "StarBorder",
     entry: "@hulianui/ui/star-border",
     category: "animation",
@@ -4779,7 +4779,7 @@ export const scenarioMetadata = {
   },
   "sticker-peel": {
     id: "sticker-peel",
-    scenarioId: "sticker-peel/basic",
+    scenarioId: "sticker-peel/frame-budget",
     component: "StickerPeel",
     entry: "@hulianui/ui/sticker-peel",
     category: "animation",
@@ -4790,7 +4790,7 @@ export const scenarioMetadata = {
   },
   "streaming-text": {
     id: "streaming-text",
-    scenarioId: "streaming-text/basic",
+    scenarioId: "streaming-text/frame-budget",
     component: "StreamingText",
     entry: "@hulianui/ui/streaming-text",
     category: "animation",
@@ -4845,7 +4845,7 @@ export const scenarioMetadata = {
   },
   table: {
     id: "table",
-    scenarioId: "table/basic",
+    scenarioId: "table/stress",
     component: "Table",
     entry: "@hulianui/ui/table",
     category: "heavy",
@@ -4889,7 +4889,7 @@ export const scenarioMetadata = {
   },
   "target-cursor": {
     id: "target-cursor",
-    scenarioId: "target-cursor/basic",
+    scenarioId: "target-cursor/frame-budget",
     component: "TargetCursor",
     entry: "@hulianui/ui/target-cursor",
     category: "animation",
@@ -4911,7 +4911,7 @@ export const scenarioMetadata = {
   },
   terminal: {
     id: "terminal",
-    scenarioId: "terminal/basic",
+    scenarioId: "terminal/frame-budget",
     component: "Terminal",
     entry: "@hulianui/ui/terminal",
     category: "animation",
@@ -4933,7 +4933,7 @@ export const scenarioMetadata = {
   },
   "text-cursor": {
     id: "text-cursor",
-    scenarioId: "text-cursor/basic",
+    scenarioId: "text-cursor/frame-budget",
     component: "TextCursor",
     entry: "@hulianui/ui/text-cursor",
     category: "animation",
@@ -4944,7 +4944,7 @@ export const scenarioMetadata = {
   },
   "text-pressure": {
     id: "text-pressure",
-    scenarioId: "text-pressure/basic",
+    scenarioId: "text-pressure/frame-budget",
     component: "TextPressure",
     entry: "@hulianui/ui/text-pressure",
     category: "animation",
@@ -4966,7 +4966,7 @@ export const scenarioMetadata = {
   },
   "thinking-block": {
     id: "thinking-block",
-    scenarioId: "thinking-block/basic",
+    scenarioId: "thinking-block/frame-budget",
     component: "ThinkingBlock",
     entry: "@hulianui/ui/thinking-block",
     category: "animation",
@@ -4988,7 +4988,7 @@ export const scenarioMetadata = {
   },
   threads: {
     id: "threads",
-    scenarioId: "threads/basic",
+    scenarioId: "threads/frame-budget",
     component: "Threads",
     entry: "@hulianui/ui/threads",
     category: "animation",
@@ -5010,7 +5010,7 @@ export const scenarioMetadata = {
   },
   "tilted-card": {
     id: "tilted-card",
-    scenarioId: "tilted-card/basic",
+    scenarioId: "tilted-card/frame-budget",
     component: "TiltedCard",
     entry: "@hulianui/ui/tilted-card",
     category: "animation",
@@ -5131,7 +5131,7 @@ export const scenarioMetadata = {
   },
   tree: {
     id: "tree",
-    scenarioId: "tree/basic",
+    scenarioId: "tree/stress",
     component: "Tree",
     entry: "@hulianui/ui/tree",
     category: "heavy",
@@ -5153,7 +5153,7 @@ export const scenarioMetadata = {
   },
   "true-focus": {
     id: "true-focus",
-    scenarioId: "true-focus/basic",
+    scenarioId: "true-focus/frame-budget",
     component: "TrueFocus",
     entry: "@hulianui/ui/true-focus",
     category: "animation",
@@ -5164,7 +5164,7 @@ export const scenarioMetadata = {
   },
   "typing-animation": {
     id: "typing-animation",
-    scenarioId: "typing-animation/basic",
+    scenarioId: "typing-animation/frame-budget",
     component: "TypingAnimation",
     entry: "@hulianui/ui/typing-animation",
     category: "animation",
@@ -5175,7 +5175,7 @@ export const scenarioMetadata = {
   },
   "typing-dots": {
     id: "typing-dots",
-    scenarioId: "typing-dots/basic",
+    scenarioId: "typing-dots/frame-budget",
     component: "TypingDots",
     entry: "@hulianui/ui/typing-dots",
     category: "animation",
@@ -5208,7 +5208,7 @@ export const scenarioMetadata = {
   },
   "variable-proximity": {
     id: "variable-proximity",
-    scenarioId: "variable-proximity/basic",
+    scenarioId: "variable-proximity/frame-budget",
     component: "VariableProximity",
     entry: "@hulianui/ui/variable-proximity",
     category: "animation",
@@ -5241,7 +5241,7 @@ export const scenarioMetadata = {
   },
   "virtual-list": {
     id: "virtual-list",
-    scenarioId: "virtual-list/basic",
+    scenarioId: "virtual-list/scroll",
     component: "VirtualList",
     entry: "@hulianui/ui/virtual-list",
     category: "heavy",
@@ -5285,7 +5285,7 @@ export const scenarioMetadata = {
   },
   "wavy-background": {
     id: "wavy-background",
-    scenarioId: "wavy-background/basic",
+    scenarioId: "wavy-background/frame-budget",
     component: "WavyBackground",
     entry: "@hulianui/ui/wavy-background",
     category: "animation",
@@ -5296,7 +5296,7 @@ export const scenarioMetadata = {
   },
   "word-rotate": {
     id: "word-rotate",
-    scenarioId: "word-rotate/basic",
+    scenarioId: "word-rotate/frame-budget",
     component: "WordRotate",
     entry: "@hulianui/ui/word-rotate",
     category: "animation",
@@ -5307,7 +5307,7 @@ export const scenarioMetadata = {
   },
   "world-map": {
     id: "world-map",
-    scenarioId: "world-map/basic",
+    scenarioId: "world-map/frame-budget",
     component: "WorldMap",
     entry: "@hulianui/ui/world-map",
     category: "animation",

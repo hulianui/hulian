@@ -21,6 +21,23 @@ export interface InventoryPaths {
   workspaceRoot?: string;
 }
 
+const specializedScenarioIds: Readonly<Record<string, string>> = {
+  table: "table/stress",
+  "pro-table": "pro-table/stress",
+  tree: "tree/stress",
+  "virtual-list": "virtual-list/scroll",
+  select: "select/stress",
+  dialog: "dialog/cycles",
+  form: "form/validation",
+  chart: "chart/stress",
+  "markdown-editor": "markdown-editor/stress",
+};
+
+export function scenarioIdFor(slug: string, animated: boolean, webgl: boolean): string {
+  if (animated || webgl) return `${slug}/frame-budget`;
+  return specializedScenarioIds[slug] ?? `${slug}/basic`;
+}
+
 export interface InventoryEntry {
   id: string;
   entry: string;
@@ -308,7 +325,11 @@ export async function buildInventory(paths: InventoryPaths): Promise<InventoryEn
       animated: registryItem.meta?.animated === true,
       webgl: registryItem.meta?.webgl === true,
       documentation,
-      scenarioId: `${slug}/basic`,
+      scenarioId: scenarioIdFor(
+        slug,
+        registryItem.meta?.animated === true,
+        registryItem.meta?.webgl === true,
+      ),
       primaryExport,
       showcaseExport: showcase.exported,
       showcaseSource: showcase.source,

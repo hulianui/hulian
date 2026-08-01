@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { buildInventory, type InventoryPaths } from "./inventory";
+import { buildInventory, scenarioIdFor, type InventoryPaths } from "./inventory";
 
 async function fixturePaths(): Promise<InventoryPaths> {
   const root = await mkdtemp(join(tmpdir(), "hulian-scan-inventory-"));
@@ -76,6 +76,13 @@ async function fixturePaths(): Promise<InventoryPaths> {
 }
 
 describe("buildInventory", () => {
+  it("routes heavy and animation entries to deterministic specialized scenarios", () => {
+    expect(scenarioIdFor("table", false, false)).toBe("table/stress");
+    expect(scenarioIdFor("virtual-list", false, false)).toBe("virtual-list/scroll");
+    expect(scenarioIdFor("animated-beam", true, false)).toBe("animated-beam/frame-budget");
+    expect(scenarioIdFor("button", false, false)).toBe("button/basic");
+  });
+
   it("maps public renderable exports, aliases, and explicit non-rendering entries", async () => {
     const inventory = await buildInventory(await fixturePaths());
     const renderable = inventory.filter((entry) => entry.kind === "renderable");

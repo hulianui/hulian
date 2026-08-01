@@ -21,6 +21,11 @@ export interface LabRunOptions {
 export interface HulianScanLabApi {
   ready: Promise<void>;
   list(): string[];
+  describe(id: string): Promise<{
+    category: PerformanceScenario["category"];
+    component: string;
+    entry: string;
+  }>;
   run(id: string, options: LabRunOptions): Promise<ScenarioRun>;
   result(id: string): ScenarioRun | undefined;
 }
@@ -61,18 +66,103 @@ async function withTimeout<T>(operation: Promise<T>, timeoutMs: number): Promise
   }
 }
 
-function metrics(events: ScanEvent[]): Record<string, number> {
+interface BrowserObservation {
+  beginStep(stepId: string, interaction: boolean): void;
+  endStep(): void;
+  finish(): {
+    interactionDurations: number[];
+    longTaskDurations: number[];
+    frameDurations: number[];
+  };
+}
+
+function observeBrowser(category: PerformanceScenario["category"]): BrowserObservation {
+  const prefix = `hulian-scan-${Math.random().toString(36).slice(2)}`;
+  const interactionDurations: number[] = [];
+  const longTaskDurations: number[] = [];
+  const frameDurations: number[] = [];
+  let current: { stepId: string; startName: string; interaction: boolean } | undefined;
+  let observer: PerformanceObserver | undefined;
+  let frameRequest: number | undefined;
+  let previousFrame: number | undefined;
+
+  try {
+    observer = new PerformanceObserver((entries) => {
+      for (const entry of entries.getEntries()) longTaskDurations.push(entry.duration);
+    });
+    observer.observe({ type: "longtask", buffered: false });
+  } catch {
+    observer = undefined;
+  }
+
+  if (category === "animation") {
+    const sampleFrame = (timestamp: number): void => {
+      if (previousFrame !== undefined) frameDurations.push(timestamp - previousFrame);
+      previousFrame = timestamp;
+      frameRequest = requestAnimationFrame(sampleFrame);
+    };
+    frameRequest = requestAnimationFrame(sampleFrame);
+  }
+
+  const endStep = (): void => {
+    if (!current) return;
+    const endName = `${prefix}:${current.stepId}:end`;
+    const measureName = `${prefix}:${current.stepId}`;
+    performance.mark(endName);
+    const measure = performance.measure(measureName, current.startName, endName);
+    if (current.interaction) interactionDurations.push(measure.duration);
+    current = undefined;
+  };
+
+  return {
+    beginStep(stepId, interaction) {
+      endStep();
+      const startName = `${prefix}:${stepId}:start`;
+      performance.mark(startName);
+      current = { stepId, startName, interaction };
+    },
+    endStep,
+    finish() {
+      endStep();
+      observer?.takeRecords().forEach((entry) => longTaskDurations.push(entry.duration));
+      observer?.disconnect();
+      if (frameRequest !== undefined) cancelAnimationFrame(frameRequest);
+      performance.clearMarks(prefix);
+      for (const entry of performance.getEntriesByType("mark")) {
+        if (entry.name.startsWith(prefix)) performance.clearMarks(entry.name);
+      }
+      for (const entry of performance.getEntriesByType("measure")) {
+        if (entry.name.startsWith(prefix)) performance.clearMeasures(entry.name);
+      }
+      return { interactionDurations, longTaskDurations, frameDurations };
+    },
+  };
+}
+
+function metrics(
+  events: ScanEvent[],
+  observation: ReturnType<BrowserObservation["finish"]>,
+): Record<string, number> {
   const commits = events.filter((event) => event.type === "commit");
   const fibers = events.filter((event) => event.type === "fiber-render");
   const fanout = new Map<number, number>();
   for (const fiber of fibers) {
     fanout.set(fiber.commitId, (fanout.get(fiber.commitId) ?? 0) + 1);
   }
+  const longestTaskMs = Math.max(0, ...observation.longTaskDurations);
+  const droppedFrames = observation.frameDurations.filter((duration) => duration > 20).length;
   return {
     commitDurationMs: commits.reduce((total, commit) => total + commit.durationMs, 0),
     cascadeFanout: Math.max(0, ...fanout.values()),
-    longTaskMs: 0,
-    droppedFrameRatio: 0,
+    interactionLatencyMs: Math.max(0, ...observation.interactionDurations),
+    longTaskCount: observation.longTaskDurations.length,
+    longestTaskMs,
+    longTaskMs: longestTaskMs,
+    droppedFrameRatio:
+      observation.frameDurations.length === 0
+        ? 0
+        : droppedFrames / observation.frameDurations.length,
+    longestFrameMs: Math.max(0, ...observation.frameDurations),
   };
 }
 
@@ -82,17 +172,20 @@ async function runIteration(
   timeoutMs: number,
 ): Promise<{ events: ScanEvent[]; errors: string[]; sample: Record<string, number> }> {
   const collector = createCollector();
+  const browserObservation = observeBrowser(scenario.category);
   const subscribe = globalThis.__HULIAN_SCAN_SUBSCRIBE__;
   if (!subscribe) throw new Error("Hulian Scan adapter subscriber is missing");
   const unsubscribe = subscribe((event) => collector.accept(event));
   let openStepId: string | undefined;
-  const beginStep = (stepId: string): void => {
+  const beginStep = (stepId: string, interaction = false): void => {
     collector.beginStep(stepId, performance.now());
+    browserObservation.beginStep(stepId, interaction);
     openStepId = stepId;
   };
   const endStep = (): void => {
     if (!openStepId) return;
     collector.endStep(openStepId, performance.now());
+    browserObservation.endStep();
     openStepId = undefined;
   };
 
@@ -104,7 +197,7 @@ async function runIteration(
         endStep();
 
         for (const step of scenario.steps) {
-          beginStep(step.id);
+          beginStep(step.id, step.kind === "interaction");
           await step.run();
           endStep();
         }
@@ -120,20 +213,22 @@ async function runIteration(
     await harness.clear();
     const result = collector.finalize();
     const message = error instanceof Error ? error.message : String(error);
+    const observation = browserObservation.finish();
     return {
       events: result.events,
       errors: [...result.errors, ...harness.takeErrors(), message],
-      sample: metrics(result.events),
+      sample: metrics(result.events, observation),
     };
   } finally {
     unsubscribe();
   }
 
   const result = collector.finalize();
+  const observation = browserObservation.finish();
   return {
     events: result.events,
     errors: [...result.errors, ...harness.takeErrors()],
-    sample: metrics(result.events),
+    sample: metrics(result.events, observation),
   };
 }
 
@@ -144,6 +239,14 @@ export function createWindowApi(harness: HarnessController): HulianScanLabApi {
   return {
     ready: Promise.resolve(),
     list: listScenarioIds,
+    async describe(id) {
+      const scenario = await loadScenario(id);
+      return {
+        category: scenario.category,
+        component: scenario.component,
+        entry: scenario.entry,
+      };
+    },
     async run(id, options) {
       if (running) throw new Error("another Hulian Scan scenario is running");
       assertRunOptions(options);

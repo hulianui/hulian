@@ -231,10 +231,22 @@ async function runBrowserStage(
           });
           await page.waitForFunction(() => "__HULIAN_SCAN_LAB__" in window);
           await page.evaluate(async () => document.fonts.ready);
-          await page.addStyleTag({
-            content:
-              "*,*::before,*::after{transition:none!important;animation-duration:.001ms!important;animation-iteration-count:1!important}",
-          });
+          const descriptor = await page.evaluate(async (id) => {
+            const api = (
+              window as typeof window & {
+                __HULIAN_SCAN_LAB__: {
+                  describe(scenarioId: string): Promise<{ category: string }>;
+                };
+              }
+            ).__HULIAN_SCAN_LAB__;
+            return api.describe(id);
+          }, scenarioId);
+          if (descriptor.category !== "animation") {
+            await page.addStyleTag({
+              content:
+                "*,*::before,*::after{transition:none!important;animation-duration:.001ms!important;animation-iteration-count:1!important}",
+            });
+          }
           const run = await page.evaluate(
             async (input) => {
               const api = (
