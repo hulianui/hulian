@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
 import { ChevronRight } from "../_icons";
@@ -55,7 +55,7 @@ function columnsOf(nodes: TreeNode[], activePath: string[]): TreeNode[][] {
   return cols;
 }
 
-export function Cascader({
+function CascaderImpl({
   nodes,
   value,
   defaultValue = [],
@@ -246,3 +246,6 @@ export function Cascader({
     </BasePopover.Root>
   );
 }
+
+export const Cascader = memo(CascaderImpl);
+Cascader.displayName = "Cascader";

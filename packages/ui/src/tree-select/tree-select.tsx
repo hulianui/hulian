@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
@@ -41,7 +41,7 @@ const ClearIcon = () => (
   </svg>
 );
 
-export function TreeSelect({
+function TreeSelectImpl({
   nodes,
   value,
   defaultValue,
@@ -191,3 +191,6 @@ export function TreeSelect({
     </BasePopover.Root>
   );
 }
+
+export const TreeSelect = memo(TreeSelectImpl);
+TreeSelect.displayName = "TreeSelect";

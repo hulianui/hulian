@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "../hover-card/hover-card";
 import type { GlimpseProps } from "./glimpse.types";
@@ -14,7 +15,7 @@ function hostOf(href: string): string {
   }
 }
 
-export function Glimpse({
+function GlimpseImpl({
   children,
   image,
   title,
@@ -65,3 +66,6 @@ export function Glimpse({
     </HoverCard>
   );
 }
+
+export const Glimpse = memo(GlimpseImpl);
+Glimpse.displayName = "Glimpse";
