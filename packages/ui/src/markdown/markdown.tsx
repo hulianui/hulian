@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, memo, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Prose } from "../prose";
 import { CodeBlock } from "../code-block";
@@ -116,7 +116,7 @@ function renderProseBlock(b: ProseBlock, key: number) {
   }
 }
 
-export function Markdown({ children = "", size = "base", className }: MarkdownProps) {
+function MarkdownImpl({ children = "", size = "base", className }: MarkdownProps) {
   const blocks = parseBlocks(children);
   // 连续文本块分组进 Prose，围栏代码块作为独立 CodeBlock 夹在中间 ——
   // 关键：CodeBlock 不能当 Prose 的后代 pre，否则 Prose 的 [&_pre] 样式(p-4/border/bg)会覆盖
@@ -145,3 +145,6 @@ export function Markdown({ children = "", size = "base", className }: MarkdownPr
   flush();
   return <div className={cn("space-y-3", className)}>{out}</div>;
 }
+
+export const Markdown = memo(MarkdownImpl);
+Markdown.displayName = "Markdown";
