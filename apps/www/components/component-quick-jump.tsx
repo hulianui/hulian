@@ -48,11 +48,7 @@ function normalizeIdentity(value: string): string {
     .replace(/[\s_-]+/g, "");
 }
 
-/**
- * Resolve only an unambiguous component identity. Public/export/display names and slugs take
- * precedence over broader search aliases, so `Button` stays exact even though many variants use
- * `button` as a keyword.
- */
+/** Resolve only a real component identity, never category/group/tag/search metadata. */
 export function findExactComponent(query: string): SearchDoc | null {
   const normalized = normalizeIdentity(query);
   if (!normalized) return null;
@@ -62,12 +58,7 @@ export function findExactComponent(query: string): SearchDoc | null {
       .filter((value): value is string => Boolean(value))
       .some((value) => normalizeIdentity(value) === normalized),
   );
-  if (identities.length > 0) return identities.length === 1 ? identities[0] : null;
-
-  const aliases = COMPONENT_DOCS.filter((doc) =>
-    doc.keywords.some((value) => normalizeIdentity(value) === normalized),
-  );
-  return aliases.length === 1 ? aliases[0] : null;
+  return identities.length === 1 ? identities[0] : null;
 }
 
 function docsForSlugs(slugs: string[]): SearchDoc[] {

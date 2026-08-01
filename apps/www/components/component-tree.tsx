@@ -4,7 +4,26 @@ import { usePathname } from "next/navigation";
 import { Search, ChevronRight, Sparkles } from "lucide-react";
 import { Input } from "@hulianui/ui";
 import { manifest, CATEGORIES, componentMeta, type CategoryKey } from "../lib/manifest";
-import { stripDocsBasePath, withDocsBasePath } from "../lib/docs-locale";
+import { DOCS_LOCALE, stripDocsBasePath, withDocsBasePath } from "../lib/docs-locale";
+
+const copy =
+  DOCS_LOCALE === "en"
+    ? {
+        navLabel: "Component navigation",
+        filterLabel: "Filter components in navigation",
+        filterPlaceholder: "Filter components…",
+        animated: "Animated",
+        noResults: "No matching components in this navigation.",
+        searchAll: "Search the whole site (pages, blocks, and templates)",
+      }
+    : {
+        navLabel: "组件导航",
+        filterLabel: "在导航中筛组件",
+        filterPlaceholder: "在导航中筛组件…",
+        animated: "动效",
+        noResults: "导航里没有匹配的组件。",
+        searchAll: "去全站搜索（含页面 / 区块 / 模版）",
+      };
 
 export function ComponentTree() {
   const pathname = usePathname();
@@ -65,15 +84,15 @@ export function ComponentTree() {
     });
 
   return (
-    <nav className="space-y-3">
+    <nav aria-label={copy.navLabel} className="space-y-3">
       {/* 搜索 + 过滤：解决「我知道要哪个」的滚动 —— 输名直达，跨分组筛动效 */}
       <div className="space-y-2">
         <Input
           size="sm"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="在导航中筛组件…"
-          aria-label="在导航中筛组件"
+          placeholder={copy.filterPlaceholder}
+          aria-label={copy.filterLabel}
           prefix={<Search className="size-3.5" aria-hidden />}
         />
         <button
@@ -87,7 +106,7 @@ export function ComponentTree() {
           }`}
         >
           <Sparkles className="size-3" aria-hidden />
-          动效
+          {copy.animated}
         </button>
       </div>
 
@@ -95,12 +114,12 @@ export function ComponentTree() {
           以为全站没有，而真正想找的整页/区块/模版就在别的货架上。空态直接给全站搜索出口。 */}
       {tree.length === 0 && (
         <div className="px-2 py-6 text-sm text-muted">
-          <p>导航里没有匹配的组件。</p>
+          <p>{copy.noResults}</p>
           <a
             href={withDocsBasePath(`/search?q=${encodeURIComponent(query.trim())}`)}
             className="mt-2 inline-flex items-center rounded-full border border-border px-2.5 py-1 text-xs outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
-            去全站搜索（含页面 / 区块 / 模版）
+            {copy.searchAll}
           </a>
         </div>
       )}
@@ -154,13 +173,15 @@ export function ComponentTree() {
                                 {m.tags?.includes("animated") && (
                                   <Sparkles
                                     className="size-3 shrink-0 text-primary/60"
-                                    aria-label="动效"
+                                    aria-label={copy.animated}
                                   />
                                 )}
                               </span>
-                              <span className="ml-auto min-w-0 truncate text-xs text-muted">
-                                {m.name}
-                              </span>
+                              {m.name !== localized.shortName && (
+                                <span className="ml-auto min-w-0 truncate text-xs text-muted">
+                                  {m.name}
+                                </span>
+                              )}
                             </a>
                           </li>
                         );

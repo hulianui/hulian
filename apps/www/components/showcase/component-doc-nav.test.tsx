@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { CATEGORIES, componentMeta, manifest } from "../../lib/manifest";
 import { ComponentDocNav, localizeComponentMarkdownLinks } from "./component-doc-nav";
 
@@ -75,5 +75,22 @@ describe("ComponentDocNav", () => {
         "en",
       ),
     ).toBe("[Related](/en/components/dialog) [Start](https://hulianui.haloritual.com/en/start)");
+  });
+
+  it("renders English sibling and category links from a fresh locale module graph", async () => {
+    vi.resetModules();
+    vi.stubEnv("DOCS_LOCALE", "en");
+    try {
+      const { ComponentDocNav: EnglishComponentDocNav } = await import("./component-doc-nav");
+      const html = renderToStaticMarkup(<EnglishComponentDocNav slug="button" />);
+
+      expect(html).toContain('href="/en/components/variable-proximity"');
+      expect(html).toContain('href="/en/components#forms"');
+      expect(html).toContain('href="/en/components/shimmer-button"');
+      expect(html).not.toContain('href="/en/en/');
+    } finally {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    }
   });
 });

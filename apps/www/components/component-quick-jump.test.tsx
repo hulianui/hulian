@@ -24,6 +24,10 @@ describe("findExactComponent", () => {
   it("does not call an ambiguous alias an exact result", () => {
     expect(findExactComponent("animated")).toBeNull();
   });
+
+  it("does not treat a unique group label as an exact component identity", () => {
+    expect(findExactComponent("引导")).toBeNull();
+  });
 });
 
 describe("ComponentQuickJump", () => {
@@ -63,6 +67,17 @@ describe("ComponentQuickJump", () => {
     const href = highlighted?.getAttribute("href");
     fireEvent.keyDown(input, { key: "Enter" });
     expect(push).toHaveBeenCalledWith(href);
+  });
+
+  it("does not immediately navigate a unique generic group match on Enter", () => {
+    render(<ComponentQuickJump placement="home" />);
+
+    const input = screen.getByRole("combobox", { name: "快速跳转组件" });
+    fireEvent.change(input, { target: { value: "引导" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(push).not.toHaveBeenCalled();
+    expect(screen.getByRole("option", { name: /漫游引导.*tour/i })).toBeTruthy();
   });
 
   it("supports ArrowDown and Escape while retaining combobox semantics", () => {
@@ -113,5 +128,20 @@ describe("ComponentQuickJump", () => {
 
     expect(html).toContain('href="/components/button"');
     expect(html).not.toContain('href="/en/en/');
+  });
+
+  it("renders exactly one English base path from a fresh locale module graph", async () => {
+    vi.resetModules();
+    vi.stubEnv("DOCS_LOCALE", "en");
+    try {
+      const { ComponentQuickJump: EnglishQuickJump } = await import("./component-quick-jump");
+      const html = renderToStaticMarkup(<EnglishQuickJump placement="catalog" />);
+
+      expect(html).toContain('href="/en/components/button"');
+      expect(html).not.toContain('href="/en/en/');
+    } finally {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    }
   });
 });
