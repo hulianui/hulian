@@ -21,6 +21,8 @@ export function LoginForm({
   onFinish,
   loading: loadingProp,
   showRemember = true,
+  rememberLabel,
+  rememberDescription,
   footer,
   rules,
   values: valuesProp,
@@ -125,12 +127,18 @@ export function LoginForm({
         </Field>
         {extra}
         {showRemember && (
-          <div className="flex items-center justify-between pt-0.5">
-            <Checkbox
-              label={loc.remember}
-              checked={remember}
-              onCheckedChange={(v) => form.setFieldValue("remember", v)}
-            />
+          <div className="flex flex-col gap-1 pt-0.5">
+            <div className="flex items-center justify-between">
+              <Checkbox
+                label={rememberLabel ?? loc.remember}
+                checked={remember}
+                onCheckedChange={(v) => form.setFieldValue("remember", v)}
+              />
+            </div>
+            {rememberDescription != null && (
+              // 说明行紧贴勾选项（extra 槽在密码框与记住我之间，位置不对）。
+              <p className="pl-6 text-xs text-muted">{rememberDescription}</p>
+            )}
           </div>
         )}
         <Button type="submit" loading={loading} className="mt-2 w-full">

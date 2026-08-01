@@ -401,3 +401,34 @@ describe("NavMenu · collapsed 态无限级飞出", () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 });
+
+describe("NavMenuItem render 逃生口（hulianui/hulian#59）", () => {
+  const items = [
+    { key: "/a", label: "余额明细", render: <a data-router href="/a" /> },
+    { key: "/b", label: "普通项" },
+  ];
+
+  it("render 的元素替代内建 <a>/<button>，皮肤与内容合并进去", () => {
+    const { container, getByText } = render(<NavMenu items={items} />);
+    const el = container.querySelector("[data-router]") as HTMLAnchorElement;
+    expect(el).toBeTruthy();
+    expect(el.tagName).toBe("A");
+    expect(el.getAttribute("href")).toBe("/a");
+    expect(el.className).not.toBe(""); // 皮肤 class 合并了
+    expect(getByText("余额明细")).toBeTruthy();
+  });
+
+  it("点击既跑消费方的 onClick 也跑内部选中", () => {
+    const onClick = vi.fn();
+    const onSelect = vi.fn();
+    const { container } = render(
+      <NavMenu
+        onSelect={onSelect}
+        items={[{ key: "/a", label: "余额", render: <a data-router href="/a" onClick={onClick} /> }]}
+      />,
+    );
+    fireEvent.click(container.querySelector("[data-router]")!);
+    expect(onClick).toHaveBeenCalled();
+    expect(onSelect).toHaveBeenCalledWith("/a", expect.objectContaining({ key: "/a" }));
+  });
+})

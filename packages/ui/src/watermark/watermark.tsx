@@ -37,7 +37,7 @@ export function Watermark({
 
   const [gapX, gapY] = Array.isArray(gap) ? gap : [gap, gap];
   // 数组 content 每次渲染都是新引用，序列化为字符串作为 effect 依赖，避免无谓重绘。
-  const contentKey = Array.isArray(content) ? content.join("") : content;
+  const contentKey = Array.isArray(content) ? content.join("\u0001") : content;
 
   useEffect(() => {
     const container = containerRef.current;

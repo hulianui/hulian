@@ -112,5 +112,12 @@ const ticket = useRef<string | null>(null);
 - 若父层自己也在管提交态（如全局 loading），用 `loading` prop 覆盖内置 loading，别另写一份。
 - `onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。
 
+### 「记住我」的文案与说明
+
+`rememberLabel` 覆盖文案、`rememberDescription` 在勾选项下方加一行说明。
+这个勾选并不总是「下次免登录」的体验糖——有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token），
+文案是刻意写的；锁死在 locale 就只能退回手写表单（hulianui/hulian#64）。
+说明行紧贴勾选项，而 `extra` 槽在密码框与记住我之间，位置不对。
+
 ## 相关
 [ClickCaptcha](../click-captcha/click-captcha.md) · [Form](../form/form.md) · [ModalForm / DrawerForm](../form-dialog/form-dialog.md) · [ProForm](../pro-form/pro-form.md) · [StepsForm](../steps-form/steps-form.md) · [Field](../field/field.md) · [SearchForm](../search-form/search-form.md)

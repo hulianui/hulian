@@ -2165,7 +2165,7 @@
       "id": "component/drawer/pitfall/3",
       "scope": "drawer",
       "title": "Drawer",
-      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。",
+      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。 ### 关闭按钮 `DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。 纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc， 读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。",
       "source": "packages/ui/src/drawer/drawer.md"
     },
     {
@@ -3789,7 +3789,7 @@
       "id": "component/list/pitfall/3",
       "scope": "list",
       "title": "List",
-      "rule": "`ListLoadMore.hasMore=false` 时整个加载更多按钮不渲染，别等它消失才发现没传完。",
+      "rule": "`ListLoadMore.hasMore=false` 时整个加载更多按钮不渲染，别等它消失才发现没传完。 ### 无障碍名 `aria-label` / `aria-labelledby` / `aria-describedby` 会被透到 `role=\"list\"` 的节点上， 其余原生属性仍落在最外层容器。所以 `getByRole(\"list\", { name: \"…\" })` 找得到，读屏也不会听到一个无名列表 （hulianui/hulian#60）。",
       "source": "packages/ui/src/list/list.md"
     },
     {
@@ -3950,7 +3950,7 @@
       "id": "component/login-form/pitfall/7",
       "scope": "login-form",
       "title": "LoginForm",
-      "rule": "`onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。",
+      "rule": "`onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。 ### 「记住我」的文案与说明 `rememberLabel` 覆盖文案、`rememberDescription` 在勾选项下方加一行说明。 这个勾选并不总是「下次免登录」的体验糖——有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token）， 文案是刻意写的；锁死在 locale 就只能退回手写表单（hulianui/hulian#64）。 说明行紧贴勾选项，而 `extra` 槽在密码框与记住我之间，位置不对。",
       "source": "packages/ui/src/login-form/login-form.md"
     },
     {

@@ -66,6 +66,17 @@ function ConvoNav() {
 }
 ```
 
+### 接框架路由（`render` 逃生口）
+
+```tsx
+{ key: "/user/balance", label: "余额明细", render: <Link to="/user/balance" /> }
+```
+
+`href` 渲染的是原生 `<a>`，在 SPA 里点一下**整页刷新**；只用 `onSelect` + `navigate()` 又会退化成 `<button>`，
+中键新标签页 / 右键复制链接 / 读屏按「链接」播报全没了。`render` 让两者同时成立：
+皮肤 class、键盘漫游属性、选中回调都合并进你给的元素，点击时先跑你的 `onClick` 再跑内部选中
+（hulianui/hulian#59）。与 [Button](../button/button.md) / [Link](../link/link.md) 的 `render` 约定一致。
+
 ## 禁忌 / 坑
 
 - 行尾操作放 `actions` 槽，组件会渲在 treeitem 按钮/链接【之外】（绝对覆盖行右侧）。**别把 `<button>` 等交互元素直接塞进 `label`**——嵌进 treeitem 按钮是非法 HTML，会触发 hydration 报错。`actions` 仅 inline 态生效。

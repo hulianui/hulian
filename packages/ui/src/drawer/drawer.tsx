@@ -2,6 +2,8 @@
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { cva } from "class-variance-authority";
 import type { ComponentProps } from "react";
+import { X } from "../_icons";
+import { useLocale } from "../config";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DrawerContentProps } from "./drawer.types";
@@ -60,8 +62,11 @@ export function DrawerContent({
   children,
   footer,
   container,
+  showClose = true,
+  closeLabel,
   className,
 }: DrawerContentProps) {
+  const loc = useLocale();
   // 提供 container（如手机框 ref）→ 抽屉就地 portal 进该元素并改用 absolute 定位，
   // 贴该容器的边而非视口（容器须 position:relative + overflow-hidden）。否则默认 fixed 贴视口。
   const contained = container != null;
@@ -75,8 +80,26 @@ export function DrawerContent({
         )}
         style={backdropTransition}
       />
-      <BaseDialog.Popup className={cn(place, drawerVariants({ side }), className)} style={panelTransition}>
-        {title && <BaseDialog.Title className="text-lg font-semibold">{title}</BaseDialog.Title>}
+      <BaseDialog.Popup
+        className={cn("relative", place, drawerVariants({ side }), className)}
+        style={panelTransition}
+      >
+        {/* 关闭按钮（hulianui/hulian#63）：纯展示型抽屉（导航菜单/详情面板，没有 footer 的那种）
+            此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc，读屏用户面板里根本没有「关闭」可达元素。
+            绝对定位不占布局，故对既有的 title/正文/footer 结构零影响；标题侧留出 pr-10 免得被压。 */}
+        {showClose && (
+          <BaseDialog.Close
+            aria-label={closeLabel ?? loc.drawer.close}
+            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X className="size-4" aria-hidden />
+          </BaseDialog.Close>
+        )}
+        {title && (
+          <BaseDialog.Title className={cn("text-lg font-semibold", showClose && "pr-10")}>
+            {title}
+          </BaseDialog.Title>
+        )}
         {description && (
           <BaseDialog.Description className="text-sm text-muted">
             {description}

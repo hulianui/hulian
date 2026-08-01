@@ -4520,6 +4520,13 @@ const ticket = useRef<string | null>(null);
 - 若父层自己也在管提交态（如全局 loading），用 `loading` prop 覆盖内置 loading，别另写一份。
 - `onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。
 
+### 「记住我」的文案与说明
+
+`rememberLabel` 覆盖文案、`rememberDescription` 在勾选项下方加一行说明。
+这个勾选并不总是「下次免登录」的体验糖——有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token），
+文案是刻意写的；锁死在 locale 就只能退回手写表单（hulianui/hulian#64）。
+说明行紧贴勾选项，而 `extra` 槽在密码框与记住我之间，位置不对。
+
 ## 相关
 [ClickCaptcha](https://hulianui.haloritual.com/components/click-captcha) · [Form](https://hulianui.haloritual.com/components/form) · [ModalForm / DrawerForm](https://hulianui.haloritual.com/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/components/steps-form) · [Field](https://hulianui.haloritual.com/components/field) · [SearchForm](https://hulianui.haloritual.com/components/search-form)
 
@@ -9843,6 +9850,12 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 - `grid` 态下 `bordered` / `split` 被忽略(边框由卡片自带)。
 - `ListLoadMore.hasMore=false` 时整个加载更多按钮不渲染，别等它消失才发现没传完。
 
+### 无障碍名
+
+`aria-label` / `aria-labelledby` / `aria-describedby` 会被透到 `role="list"` 的节点上，
+其余原生属性仍落在最外层容器。所以 `getByRole("list", { name: "…" })` 找得到，读屏也不会听到一个无名列表
+（hulianui/hulian#60）。
+
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
@@ -13896,6 +13909,17 @@ function ConvoNav() {
 }
 ```
 
+### 接框架路由（`render` 逃生口）
+
+```tsx
+{ key: "/user/balance", label: "余额明细", render: <Link to="/user/balance" /> }
+```
+
+`href` 渲染的是原生 `<a>`，在 SPA 里点一下**整页刷新**；只用 `onSelect` + `navigate()` 又会退化成 `<button>`，
+中键新标签页 / 右键复制链接 / 读屏按「链接」播报全没了。`render` 让两者同时成立：
+皮肤 class、键盘漫游属性、选中回调都合并进你给的元素，点击时先跑你的 `onClick` 再跑内部选中
+（hulianui/hulian#59）。与 [Button](https://hulianui.haloritual.com/components/button) / [Link](https://hulianui.haloritual.com/components/link) 的 `render` 约定一致。
+
 ## 禁忌 / 坑
 
 - 行尾操作放 `actions` 槽，组件会渲在 treeitem 按钮/链接【之外】（绝对覆盖行右侧）。**别把 `<button>` 等交互元素直接塞进 `label`**——嵌进 treeitem 按钮是非法 HTML，会触发 hydration 报错。`actions` 仅 inline 态生效。
@@ -14887,6 +14911,12 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 - Base UI rc.0 没有独立 Drawer 原语，本组件是 Dialog（Portal+Backdrop+Popup）重皮、靠 `transform: translateX/Y` 按 `side` 侧滑；Dialog 没有 Positioner，定位别按 Tooltip/Popover 那套想。详见 [[base-ui-dialog-drawer-side-slide-via-transform]]。
 - 「取消 / 保存 / 关闭」放 `footer` 槽而非正文末尾，否则正文滚动后按钮会滚出可视区。
 - 用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。
+
+### 关闭按钮
+
+`DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。
+纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc，
+读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。
 
 ## 相关
 [Dialog](https://hulianui.haloritual.com/components/dialog) · [Modal](https://hulianui.haloritual.com/components/modal) · [AlertDialog](https://hulianui.haloritual.com/components/alert-dialog) · [Popover](https://hulianui.haloritual.com/components/popover) · [Tooltip](https://hulianui.haloritual.com/components/tooltip) · [HoverCard](https://hulianui.haloritual.com/components/hover-card)

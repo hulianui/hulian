@@ -41,8 +41,17 @@ export function List<T,>({
   loadMore,
   pagination,
   className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
   ...props
 }: ListProps<T>) {
+  // 这三个属性单独拎出来喂给 role="list" 的节点，其余原生属性照旧落外层容器。
+  const ariaProps = {
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-describedby": ariaDescribedBy,
+  };
   const isGrid = Boolean(grid);
   const gridCfg = grid && typeof grid === "object" ? grid : {};
   const framed = bordered && !isGrid;
@@ -75,13 +84,20 @@ export function List<T,>({
         rowGap={gridCfg.rowGap}
         rows={gridCfg.rows}
         className="m-0 list-none p-0"
+        {...ariaProps}
       >
         {itemNodes}
       </Grid>
     );
   } else {
     body = (
-      <ul role="list" className={cn("m-0 list-none p-0", split && "divide-y divide-border")}>
+      <ul
+        role="list"
+        // 无障碍名必须落在 role="list" 的节点上（hulianui/hulian#60）：
+        // 早先 aria-* 随 {...props} 落到最外层 div，读屏用户听到的是一个**无名列表**，
+        // getByRole("list", { name }) 也永远找不到。其余原生属性仍留在外层容器。
+        {...ariaProps}
+        className={cn("m-0 list-none p-0", split && "divide-y divide-border")}>
         {itemNodes}
       </ul>
     );
