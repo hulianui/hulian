@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { createRef } from "react";
+import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Image } from "./image";
 
@@ -16,6 +17,34 @@ describe("Image", () => {
     expect(img.className).toContain("opacity-0");
     fireEvent.load(img);
     expect(img.className).toContain("opacity-100");
+  });
+
+  // hulianui/hulian#55：{...props} 曾展开在自己的 onLoad 之后，外部一传 onLoad
+  // 就把 setLoaded 顶掉 → 图永久 opacity-0。两个回调都要「合并」而不是「谁后写谁赢」。
+  it("消费方传 onLoad 不影响淡入，且自己的回调照常收到事件", () => {
+    const userOnLoad = vi.fn();
+    const { getByAltText } = render(<Image src="/a.png" alt="图A" onLoad={userOnLoad} />);
+    const img = getByAltText("图A");
+    fireEvent.load(img);
+    expect(img.className).toContain("opacity-100");
+    expect(userOnLoad).toHaveBeenCalledTimes(1);
+  });
+
+  it("消费方传 onError 不影响回退图逻辑", () => {
+    const userOnError = vi.fn();
+    const { getByAltText } = render(
+      <Image src="/bad.png" fallbackSrc="/fb.png" alt="图A" onError={userOnError} />,
+    );
+    const img = getByAltText("图A") as HTMLImageElement;
+    fireEvent.error(img);
+    expect(img.getAttribute("src")).toBe("/fb.png");
+    expect(userOnError).toHaveBeenCalledTimes(1);
+  });
+
+  it("forwardRef 到内层 img（量 naturalWidth / 滚进视野）", () => {
+    const ref = createRef<HTMLImageElement>();
+    const { getByAltText } = render(<Image ref={ref} src="/a.png" alt="图A" />);
+    expect(ref.current).toBe(getByAltText("图A"));
   });
 
   it("原图失败且有 fallbackSrc → 切到回退图", () => {

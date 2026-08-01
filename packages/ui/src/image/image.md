@@ -53,6 +53,8 @@ import { Image, imageVariants } from "@hulianui/ui"
 
 - `isZoomed` 的放大效果靠外壳 `overflow` 裁切，外壳尺寸由 `width/height`/`className` 决定——别给 `<img>`（`imgClassName`）单独设溢出。
 - 圆角分两层：`radius` 作用于外壳；要单独调 `<img>` 走 `imgClassName`。`radius="full"` 配等宽高做圆形头像。
+- **传 `onLoad` / `onError` 是安全的**：组件把消费方的回调与内部的**合并**（先翻淡入/走回退，再调你的），不会互相顶掉。0.17.0 之前 `{...props}` 展开在内部 `onLoad` 之后，外部一传 `onLoad` 图就永久停在 `opacity-0`（[#55](https://github.com/hulianui/hulian/issues/55)）。
+- 要量 `naturalWidth/naturalHeight` 或滚进视野：直接 `ref` 到组件，它 `forwardRef` 到内层 `<img>`（与 [Input](../input/input.md) 对齐）。
 - 候选坑 skill（`dark-image-page-bg-seam-converge-same-color` / `image-enhancer` 等）均为业务/工具场景，与本组件无关，不引用。
 
 ## 相关
