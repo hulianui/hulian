@@ -21,35 +21,22 @@
 //   · 风险项不得见 <div>/<button> 就判错。图标热区、asChild、桌面端自定义控件都可能合理，
 //     所以每条带 confidence + 判断依据，由人/模型自己决定信不信。
 
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join, relative, sep } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
+import {
+  CODE_EXT,
+  JSX_EXT,
+  RISK_RULES,
+  buildSymbolIndex,
+  collectHulianImports,
+  walkCodeFiles,
+} from "./adoption-signals.mjs";
 import { getModifier, getSurface, listModifiers, listSurfaces, loadProfiles } from "./profiles.mjs";
 import { inspectProject } from "./project.mjs";
 
 /** 扫描上限。真实消费项目实测 300–3000 个代码文件，5000 给足余量又不至于扫穿 monorepo。 */
 const MAX_FILES = 5000;
-
-const SKIP_DIR = new Set([
-  "node_modules",
-  ".git",
-  ".next",
-  ".turbo",
-  ".vercel",
-  ".output",
-  "dist",
-  "build",
-  "out",
-  "coverage",
-  "src-tauri",
-  "target",
-  "public",
-  "vendor",
-  "__snapshots__",
-]);
-
-const CODE_EXT = /\.(tsx|ts|jsx|js|mjs)$/;
-const JSX_EXT = /\.(tsx|jsx)$/;
 
 /**
  * 原型信号。同产品的 demo 原型（5069tk）与正式系统（5069tk-app）在 12 个企业高层业务
@@ -63,86 +50,10 @@ const JSX_EXT = /\.(tsx|jsx)$/;
 const PROTOTYPE_HINT_FILES = ["CLAUDE.md", "AGENTS.md", "README.md"];
 const PROTOTYPE_HINT_RE = /(?:纯前端)?(?:demo|原型|prototype|mock\s*only|需求回看)/i;
 
-/**
- * 花括号内不会嵌套，用 [^{}] 而非 [\s\S] —— 后者会跨过上一条 import 的收尾花括号，
- * 把 react 的 useState/useEffect 一并算成瑚琏组件。
- */
-const IMPORT_RE = /import\s+(type\s+)?\{([^{}]*?)\}\s*from\s*["'](@hulianui\/[^"']+)["']/g;
-
 // --------------------------------------------------------------- 风险规则 --
 
-/**
- * 手搓信号：本该用现成能力，却退回原生标签或内联样式。
- *
- * `baseConfidence` 是**未看上下文时**的先手判断，之后由 refine 逐条升降 ——
- * 裸 <table> 几乎一定该用 Table，裸 <button> 则大概率是图标热区。把这两条给同一个
- * 置信度，就是 #43 说的「一律标红」，审计会立刻失去可信度。
- */
-const RISK_RULES = [
-  {
-    id: "bare-table",
-    should: "Table / ProTable",
-    re: /<table[\s>]/g,
-    baseConfidence: "high",
-    why: "原生 table 拿不到排序 / 分页 / 冻结列 / 密度，且样式与主题脱节",
-  },
-  {
-    id: "bare-dialog",
-    should: "Dialog / Modal",
-    re: /<dialog[\s>]/g,
-    baseConfidence: "high",
-    why: "原生 dialog 的焦点陷阱与滚动锁定行为跨浏览器不一致",
-  },
-  {
-    id: "handmade-overlay",
-    should: "Dialog / Drawer / Popover",
-    re: /className=["'][^"']*fixed\s+inset-0/g,
-    baseConfidence: "medium",
-    why: "自制遮罩通常缺焦点陷阱、Esc 关闭、滚动锁定与 aria",
-  },
-  {
-    id: "bare-select",
-    should: "Select",
-    re: /<select[\s>]/g,
-    baseConfidence: "medium",
-    why: "原生 select 无法定制选项渲染，且移动端表现不受控",
-  },
-  {
-    id: "bare-textarea",
-    should: "Textarea / Field",
-    re: /<textarea[\s>]/g,
-    baseConfidence: "medium",
-    why: "缺自适应高度、计数与 Field 的错误态联动",
-  },
-  {
-    id: "bare-input",
-    should: "Input / Field",
-    re: /<input[\s>]/g,
-    baseConfidence: "medium",
-    why: "缺 Field 的 label / 错误态 / 描述联动，无障碍要自己补",
-  },
-  {
-    id: "bare-button",
-    should: "Button",
-    re: /<button[\s>]/g,
-    baseConfidence: "low",
-    why: "多数是图标热区或自定义控件，属正当用法；只有承担主要动作时才该换 Button",
-  },
-  {
-    id: "inline-style",
-    should: "语义 token / 组件 prop",
-    re: /\sstyle=\{\{/g,
-    baseConfidence: "low",
-    why: "动态定位 / 计算尺寸用内联样式是正当的；只有写死颜色与间距才是问题",
-  },
-  {
-    id: "hardcoded-color",
-    should: "语义 token",
-    re: /(?:text|bg|border|from|to|via|fill|stroke)-\[#[0-9a-fA-F]{3,8}\]/g,
-    baseConfidence: "high",
-    why: "硬编码颜色不跟随明暗主题，换肤时必然失真",
-  },
-];
+// RISK_RULES 与 IMPORT_RE 在 adoption-signals.mjs —— 与横比脚本共用同一份口径。
+// 本文件只负责「读出来之后怎么判」：refineRisk 的置信度升降、机会点、迁移计划。
 
 /** 上游缺口信号：这些写法通常意味着「组件差点能力，于是在业务侧绕过去了」。 */
 const GAP_RULES = [
@@ -159,27 +70,6 @@ const GAP_RULES = [
 ];
 
 // --------------------------------------------------------------- 文件扫描 --
-
-function walk(dir, acc, base) {
-  if (acc.length >= MAX_FILES) return acc;
-  let entries;
-  try {
-    entries = readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return acc;
-  }
-  for (const entry of entries) {
-    if (acc.length >= MAX_FILES) return acc;
-    if (entry.name.startsWith(".") && entry.name !== ".") continue;
-    if (SKIP_DIR.has(entry.name)) continue;
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) walk(path, acc, base);
-    else if (CODE_EXT.test(entry.name) && !entry.name.endsWith(".d.ts")) {
-      acc.push(relative(base, path).split(sep).join("/"));
-    }
-  }
-  return acc;
-}
 
 const lineOf = (text, index) => text.slice(0, index).split("\n").length;
 
@@ -515,18 +405,13 @@ export function auditAdoption({
   const project = inspectProject({ explicit, roots, cwd });
   const projectRoot = project.projectRoot;
 
-  const ui = (registry?.items ?? []).filter((i) => i.type === "registry:ui");
+  const { slugMeta, symbolToSlug } = buildSymbolIndex(registry);
   const blockNames = new Set(
     (registry?.items ?? []).filter((i) => i.type === "registry:block").map((i) => i.name),
   );
-  const slugMeta = new Map(ui.map((i) => [i.name, i]));
-  const symbolToSlug = new Map();
-  for (const item of ui) {
-    for (const ex of item.meta?.exports ?? []) if (!symbolToSlug.has(ex)) symbolToSlug.set(ex, item.name);
-  }
 
   // ------------------------------------------------------------- 扫描 --
-  const files = walk(projectRoot, [], projectRoot);
+  const files = walkCodeFiles(projectRoot, { maxFiles: MAX_FILES });
   const truncated = files.length >= MAX_FILES;
 
   const slugUses = new Map();
@@ -551,32 +436,17 @@ export function auditAdoption({
     }
 
     const usesHulian = text.includes("@hulianui/");
-    if (usesHulian) {
-      let hit = false;
-      for (const match of text.matchAll(IMPORT_RE)) {
-        const typeImport = Boolean(match[1]);
-        for (let raw of match[2].split(",")) {
-          raw = raw.trim();
-          if (!raw) continue;
-          let typeOnly = typeImport;
-          if (raw.startsWith("type ")) {
-            typeOnly = true;
-            raw = raw.slice(5).trim();
-          }
-          if (typeOnly) continue; // 类型导入不等于用了组件
-          const name = raw.split(/\s+as\s+/)[0].trim();
-          if (!name) continue;
-          const slug = symbolToSlug.get(name);
-          if (!slug) {
-            unmapped.add(name);
-            continue;
-          }
-          slugUses.set(slug, (slugUses.get(slug) ?? 0) + 1);
-          hit = true;
-        }
+    let hit = false;
+    for (const name of collectHulianImports(text)) {
+      const slug = symbolToSlug.get(name);
+      if (!slug) {
+        unmapped.add(name);
+        continue;
       }
-      if (hit) filesUsingHulian++;
+      slugUses.set(slug, (slugUses.get(slug) ?? 0) + 1);
+      hit = true;
     }
+    if (hit) filesUsingHulian++;
 
     if (!JSX_EXT.test(rel)) continue;
 

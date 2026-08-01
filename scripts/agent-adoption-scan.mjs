@@ -12,6 +12,17 @@ import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 
+// 「什么算一次组件使用」「哪些写法算手搓」与 MCP 的 audit tool 共用同一份口径 ——
+// 各存一份的下场是同一个项目在两处报出不同的数字，而两处都自称在测采用率。
+// 单向依赖：脚本消费包，包不认识脚本。
+import {
+  JSX_EXT,
+  RISK_RULES,
+  buildSymbolIndex,
+  collectHulianImports,
+  walkCodeFiles,
+} from "../packages/mcp/src/adoption-signals.mjs";
+
 const argv = process.argv.slice(2);
 const asJson = argv.includes("--json");
 const rootArg = argv[argv.indexOf("--root") + 1];
@@ -32,45 +43,9 @@ const REGISTRY = fileURLToPath(
   new URL("../apps/www/public/registry.json", import.meta.url),
 );
 
-const SKIP_DIR = new Set([
-  "node_modules",
-  ".git",
-  ".next",
-  "dist",
-  "build",
-  ".turbo",
-  "out",
-  "coverage",
-  "src-tauri",
-]);
-const CODE_EXT = /\.(tsx|ts|jsx|js)$/;
-const JSX_EXT = /\.(tsx|jsx)$/;
-
-// 花括号内不会嵌套，用 [^{}] 而非 [\s\S]：后者会跨过上一条 import 的收尾
-// 花括号，把 react 的 useState/useEffect 一并算成瑚琏组件。
-const IMPORT_RE =
-  /import\s+(type\s+)?\{([^{}]*?)\}\s*from\s*["'](@hulianui\/[^"']+)["']/g;
-
-// 手搓信号：本该用现成组件，却退回原生标签 / 内联样式。
-const HANDMADE_RULES = [
-  { id: "bare-table", should: "Table / ProTable", re: /<table[\s>]/g },
-  { id: "bare-button", should: "Button", re: /<button[\s>]/g },
-  { id: "bare-input", should: "Input / Field", re: /<input[\s>]/g },
-  { id: "bare-select", should: "Select", re: /<select[\s>]/g },
-  { id: "bare-textarea", should: "Textarea", re: /<textarea[\s>]/g },
-  { id: "bare-dialog", should: "Dialog", re: /<dialog[\s>]/g },
-  { id: "inline-style", should: "语义 token / 组件 prop", re: /\sstyle=\{\{/g },
-  {
-    id: "hardcoded-color",
-    should: "语义 token",
-    re: /(?:text|bg|border|from|to|via)-\[#[0-9a-fA-F]{3,8}\]/g,
-  },
-  {
-    id: "handmade-overlay",
-    should: "Dialog / Drawer / Popover",
-    re: /fixed\s+inset-0/g,
-  },
-];
+// 目录发现用的跳过集：只用来决定「一级目录要不要当候选项目看」，与源码遍历的
+// SKIP_DIR 不是一回事，故不共用 —— 那边是「这些目录里的代码不是本项目写的」。
+const SKIP_TOPLEVEL = new Set(["node_modules", ".git", "dist", "build", "out", "coverage"]);
 
 // Agent 契约可能落在哪些文件，以及「铁律」类措辞。
 const CONTRACT_FILES = [
@@ -81,22 +56,6 @@ const CONTRACT_FILES = [
   ".cursorrules",
 ];
 const RULE_WORDS = /100%|铁律|硬规则|回库|不.{0,6}(CSS|css).{0,4}补丁|优先使用/;
-
-function walk(dir, acc = []) {
-  let entries;
-  try {
-    entries = readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return acc;
-  }
-  for (const e of entries) {
-    if (SKIP_DIR.has(e.name)) continue;
-    const p = join(dir, e.name);
-    if (e.isDirectory()) walk(p, acc);
-    else if (CODE_EXT.test(e.name)) acc.push(p);
-  }
-  return acc;
-}
 
 // monorepo 消费方的前端可能不在仓库根。有界探测这些常见位置，不递归全仓 ——
 // 与 #37 里 inspect_project 面对 monorepo 根的处境同构：只看根 package.json
@@ -158,7 +117,7 @@ function discoverProjects(root, exclude = []) {
     return found;
   }
   for (const e of entries) {
-    if (!e.isDirectory() || SKIP_DIR.has(e.name)) continue;
+    if (!e.isDirectory() || SKIP_TOPLEVEL.has(e.name)) continue;
     if (exclude.includes(e.name)) continue;
     // 跳过瑚琏仓库自身：apps/www 会 import 全部组件做 showcase，计入会把覆盖率
     // 拉到接近 100%，且 xxxShowcase 这类导出并非组件使用。
@@ -193,56 +152,34 @@ function discoverProjects(root, exclude = []) {
 function scanProject(root, proj) {
   // monorepo 消费方只扫前端子目录，避免把后端 / 脚本算进 jsx 与手搓统计
   const base = join(root, proj.dir, proj.scanSubdir || "");
-  const files = walk(base);
+  // 横比不设文件数上限：扫的是本机已知项目，截断会让覆盖率分母悄悄变小
+  const files = walkCodeFiles(base);
 
   const symbolCounts = new Map();
-  let filesUsingHulian = 0;
-  for (const f of files) {
-    let src;
-    try {
-      src = readFileSync(f, "utf8");
-    } catch {
-      continue;
-    }
-    if (!src.includes("@hulianui/")) continue;
-    let hit = false;
-    for (const m of src.matchAll(IMPORT_RE)) {
-      const typeImport = Boolean(m[1]);
-      for (let raw of m[2].split(",")) {
-        raw = raw.trim();
-        if (!raw) continue;
-        let typeOnly = typeImport;
-        if (raw.startsWith("type ")) {
-          typeOnly = true;
-          raw = raw.slice(5).trim();
-        }
-        if (typeOnly) continue; // 类型导入不等于用了组件
-        const name = raw.split(/\s+as\s+/)[0].trim();
-        if (!name) continue;
-        symbolCounts.set(name, (symbolCounts.get(name) ?? 0) + 1);
-        hit = true;
-      }
-    }
-    if (hit) filesUsingHulian++;
-  }
-
   const handmade = {};
+  let filesUsingHulian = 0;
   let jsxFiles = 0;
-  for (const f of files.filter((f) => JSX_EXT.test(f))) {
+
+  for (const rel of files) {
     let src;
     try {
-      src = readFileSync(f, "utf8");
+      src = readFileSync(join(base, rel), "utf8");
     } catch {
       continue;
     }
+
+    const names = collectHulianImports(src);
+    for (const name of names) symbolCounts.set(name, (symbolCounts.get(name) ?? 0) + 1);
+    if (names.length) filesUsingHulian++;
+
+    if (!JSX_EXT.test(rel)) continue;
     jsxFiles++;
-    for (const r of HANDMADE_RULES) {
+    for (const r of RISK_RULES) {
       const m = src.match(r.re);
       if (!m) continue;
       handmade[r.id] ??= { count: 0, files: [] };
       handmade[r.id].count += m.length;
-      if (handmade[r.id].files.length < 5)
-        handmade[r.id].files.push(relative(base, f));
+      if (handmade[r.id].files.length < 5) handmade[r.id].files.push(rel);
     }
   }
 
@@ -294,12 +231,7 @@ function main() {
     process.exit(1);
   }
   const registry = JSON.parse(readFileSync(REGISTRY, "utf8"));
-  const ui = registry.items.filter((i) => i.type === "registry:ui");
-  const symbolToSlug = new Map();
-  for (const item of ui)
-    for (const ex of item.meta?.exports ?? [])
-      if (!symbolToSlug.has(ex)) symbolToSlug.set(ex, item.name);
-  const slugMeta = new Map(ui.map((i) => [i.name, i]));
+  const { ui, slugMeta, symbolToSlug } = buildSymbolIndex(registry);
 
   const projects = discoverProjects(SCAN_ROOT, EXCLUDE)
     .map((p) => scanProject(SCAN_ROOT, p))
