@@ -52,7 +52,13 @@ import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarGroup, ToolbarSeparator }
 | className | `string` | — | Additional class name. |
 
 **ToolbarGroup**: props `disabled` / `aria-label` / `className`; slot `children`.
-**ToolbarSeparator**: props `orientation?: "horizontal" \| "vertical"` / `className`.
+
+**ToolbarSeparator**
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| orientation | `"horizontal" \| "vertical"` | `"vertical"` | Separator direction. This is independent of the root Toolbar orientation. |
+| className | `string` | — | Additional class name. |
 
 ## Events
 
