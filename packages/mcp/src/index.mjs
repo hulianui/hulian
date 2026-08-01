@@ -1054,6 +1054,13 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
   }
 });
 
+// CLI 子命令：不进 stdio server 模式。放在 connect 之前，避免把 CLI 输出
+// 写进 MCP 客户端正在读的 stdout。
+if (process.argv[2] === "init-agent") {
+  const { runInitAgent } = await import("./cli.mjs");
+  process.exit(await runInitAgent(process.argv.slice(3)));
+}
+
 const transport = new StdioServerTransport();
 await server.connect(transport);
 console.error(`[hulianui-mcp] v${VERSION} ready · 数据源 ${source}`);
