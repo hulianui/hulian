@@ -19,6 +19,14 @@ const SCAN_ROOT =
   argv.includes("--root") && rootArg
     ? resolve(rootArg.replace(/^~/, homedir()))
     : join(homedir(), "Desktop", "code");
+// --exclude a,b：跳过指定目录。用于剔除 demo 原型这类不代表生产使用的仓库。
+const excludeArg = argv.includes("--exclude")
+  ? (argv[argv.indexOf("--exclude") + 1] ?? "")
+  : "";
+const EXCLUDE = excludeArg
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 const REGISTRY = fileURLToPath(
   new URL("../apps/www/public/registry.json", import.meta.url),
@@ -90,8 +98,58 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-/** 找出扫描根下所有 package.json 依赖了 @hulianui/* 的一级子目录。 */
-function discoverProjects(root) {
+// monorepo 消费方的前端可能不在仓库根。有界探测这些常见位置，不递归全仓 ——
+// 与 #37 里 inspect_project 面对 monorepo 根的处境同构：只看根 package.json
+// 会得出「没装 @hulianui/ui」的错误结论（5069tk-app 就是这样被漏掉的）。
+const WORKSPACE_CANDIDATES = [
+  "web",
+  "frontend",
+  "client",
+  "site",
+  "ui",
+  "app",
+  "www",
+  "apps/web",
+  "apps/www",
+  "packages/web",
+  "packages/ui",
+];
+
+/** 该目录是否就是瑚琏库仓库本身（而非消费方）。 */
+function isHulianRepo(dir) {
+  const p = join(dir, "packages", "ui", "package.json");
+  if (!existsSync(p)) return false;
+  try {
+    return JSON.parse(readFileSync(p, "utf8")).name === "@hulianui/ui";
+  } catch {
+    return false;
+  }
+}
+
+/** 读一个 package.json，若依赖 @hulianui/* 则返回描述，否则 null。 */
+function readHulianPkg(pkgPath) {
+  if (!existsSync(pkgPath)) return null;
+  let pkg;
+  try {
+    pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+  } catch {
+    return null;
+  }
+  const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+  const hulian = Object.keys(deps).filter((d) => d.startsWith("@hulianui/"));
+  if (!hulian.length) return null;
+  return {
+    pkgName: pkg.name,
+    deps: Object.fromEntries(hulian.map((h) => [h, deps[h]])),
+    linked: hulian.some((h) => String(deps[h]).startsWith("link:")),
+  };
+}
+
+/**
+ * 找出扫描根下依赖 @hulianui/* 的项目。先看一级目录的 package.json；
+ * 命不中再有界探测 WORKSPACE_CANDIDATES，命中则以该子目录为扫描起点。
+ */
+function discoverProjects(root, exclude = []) {
   const found = [];
   let entries;
   try {
@@ -101,29 +159,40 @@ function discoverProjects(root) {
   }
   for (const e of entries) {
     if (!e.isDirectory() || SKIP_DIR.has(e.name)) continue;
-    const pkgPath = join(root, e.name, "package.json");
-    if (!existsSync(pkgPath)) continue;
-    let pkg;
-    try {
-      pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
-    } catch {
+    if (exclude.includes(e.name)) continue;
+    // 跳过瑚琏仓库自身：apps/www 会 import 全部组件做 showcase，计入会把覆盖率
+    // 拉到接近 100%，且 xxxShowcase 这类导出并非组件使用。
+    if (isHulianRepo(join(root, e.name))) continue;
+
+    const direct = readHulianPkg(join(root, e.name, "package.json"));
+    if (direct) {
+      found.push({
+        dir: e.name,
+        scanSubdir: "",
+        pkgName: direct.pkgName ?? e.name,
+        ...direct,
+      });
       continue;
     }
-    const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-    const hulian = Object.keys(deps).filter((d) => d.startsWith("@hulianui/"));
-    if (!hulian.length) continue;
-    found.push({
-      dir: e.name,
-      pkgName: pkg.name ?? e.name,
-      deps: Object.fromEntries(hulian.map((h) => [h, deps[h]])),
-      linked: hulian.some((h) => String(deps[h]).startsWith("link:")),
-    });
+
+    for (const cand of WORKSPACE_CANDIDATES) {
+      const sub = readHulianPkg(join(root, e.name, cand, "package.json"));
+      if (!sub) continue;
+      found.push({
+        dir: e.name,
+        scanSubdir: cand, // 只扫这个子目录，避免把后端/脚本算进 jsx 统计
+        pkgName: sub.pkgName ?? `${e.name}/${cand}`,
+        ...sub,
+      });
+      break;
+    }
   }
   return found;
 }
 
 function scanProject(root, proj) {
-  const base = join(root, proj.dir);
+  // monorepo 消费方只扫前端子目录，避免把后端 / 脚本算进 jsx 与手搓统计
+  const base = join(root, proj.dir, proj.scanSubdir || "");
   const files = walk(base);
 
   const symbolCounts = new Map();
@@ -177,19 +246,30 @@ function scanProject(root, proj) {
     }
   }
 
+  // 契约可能写在仓库根（monorepo 常见）也可能在前端子目录，两处都看
+  const contractRoots = [join(root, proj.dir)];
+  if (proj.scanSubdir) contractRoots.push(base);
   const contracts = [];
-  for (const cf of CONTRACT_FILES) {
-    const p = join(base, cf);
-    if (!existsSync(p)) continue;
-    let text;
-    try {
-      text = readFileSync(p, "utf8");
-    } catch {
-      continue;
+  const seenContract = new Set();
+  for (const cr of contractRoots) {
+    for (const cf of CONTRACT_FILES) {
+      const p = join(cr, cf);
+      if (seenContract.has(p) || !existsSync(p)) continue;
+      seenContract.add(p);
+      let text;
+      try {
+        text = readFileSync(p, "utf8");
+      } catch {
+        continue;
+      }
+      const mentions = (text.match(/hulianui/gi) ?? []).length;
+      if (!mentions) continue;
+      contracts.push({
+        file: relative(join(root, proj.dir), p),
+        mentions,
+        hasRuleWording: RULE_WORDS.test(text),
+      });
     }
-    const mentions = (text.match(/hulianui/gi) ?? []).length;
-    if (!mentions) continue;
-    contracts.push({ file: cf, mentions, hasRuleWording: RULE_WORDS.test(text) });
   }
 
   return {
@@ -221,7 +301,7 @@ function main() {
       if (!symbolToSlug.has(ex)) symbolToSlug.set(ex, item.name);
   const slugMeta = new Map(ui.map((i) => [i.name, i]));
 
-  const projects = discoverProjects(SCAN_ROOT)
+  const projects = discoverProjects(SCAN_ROOT, EXCLUDE)
     .map((p) => scanProject(SCAN_ROOT, p))
     .filter((p) => p.distinctSymbols > 0 || p.hasContract);
 
@@ -314,10 +394,10 @@ function main() {
         `${((c.used / c.total) * 100).toFixed(0)}%`,
     );
 
-  console.log("\n项目".padEnd(18) + "契约  slug  手搓  接入方式");
+  console.log("\n项目".padEnd(22) + "契约  slug  手搓  接入方式");
   for (const p of projects)
     console.log(
-      p.dir.padEnd(18) +
+      (p.dir + (p.scanSubdir ? `/${p.scanSubdir}` : "")).padEnd(22) +
         (p.hasContract ? " ✅  " : " ❌  ") +
         String(p.slugCount).padStart(4) +
         String(p.handmadeTotal).padStart(6) +
