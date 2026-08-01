@@ -102,4 +102,20 @@ describe("localized component Markdown resolution", () => {
     expect(rendered).toContain("[Fenced](/components/fenced)");
     expect(rendered).toContain("[Fenced relative](../fenced/fenced.md)");
   });
+
+  it("preserves links inside multiline code spans with matching backtick runs", () => {
+    const markdown = [
+      "# Button",
+      "",
+      "``code span starts with ` inside",
+      "[Hidden](/components/hidden)",
+      "and closes here``",
+      "[Visible](/components/visible)",
+    ].join("\n");
+    const root = fixture({ "button/button.en.md": doc("button", markdown) });
+
+    const rendered = loadComponentDoc("button", "en", [root])!;
+    expect(rendered).toContain("[Hidden](/components/hidden)");
+    expect(rendered).toContain("[Visible](/en/components/visible)");
+  });
 });

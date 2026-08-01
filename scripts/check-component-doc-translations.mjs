@@ -38,63 +38,143 @@ function spacesPreservingNewlines(value) {
   return value.replace(/[^\n]/g, " ");
 }
 
-/** Hide fenced code while preserving offsets for path:line:column diagnostics. */
-export function maskMarkdownFences(source) {
+function backtickRun(source, index) {
+  if (source[index] !== "`") return 0;
+  let end = index;
+  while (source[end] === "`") end += 1;
+  return end - index;
+}
+
+function hasClosingBacktickRun(source, index, length) {
+  for (let cursor = index; cursor < source.length; ) {
+    const next = source.indexOf("`", cursor);
+    if (next < 0) return false;
+    const run = backtickRun(source, next);
+    if (run === length) return true;
+    cursor = next + run;
+  }
+  return false;
+}
+
+/**
+ * Map Markdown while tracking fenced blocks and exact-length inline backtick
+ * delimiters. Inline code spans may cross newlines; a single backtick inside a
+ * double-backtick span is content and cannot close it.
+ */
+export function mapMarkdownCode(
+  source,
+  { outside = (value) => value, inline = (value) => value, fenced = (value) => value } = {},
+) {
   const lines = source.match(/.*(?:\n|$)/g)?.filter(Boolean) ?? [];
   let fence = null;
+  let inlineTicks = 0;
+  let globalOffset = 0;
   return lines
     .map((line) => {
       const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
-      if (fence) {
+      if (!inlineTicks && fence) {
         const closes = marker?.[0] === fence[0] && marker.length >= fence.length;
         if (closes) fence = null;
-        return spacesPreservingNewlines(line);
+        globalOffset += line.length;
+        return fenced(line);
       }
-      if (marker) {
+      if (!inlineTicks && marker) {
         fence = marker;
-        return spacesPreservingNewlines(line);
+        globalOffset += line.length;
+        return fenced(line);
       }
-      return line;
-    })
-    .join("");
-}
 
-/** Hide fenced and inline code while preserving offsets for link diagnostics. */
-export function maskMarkdownCode(source) {
-  const lines =
-    maskMarkdownFences(source)
-      .match(/.*(?:\n|$)/g)
-      ?.filter(Boolean) ?? [];
-  return lines
-    .map((line) => {
       let output = "";
-      for (let index = 0; index < line.length; ) {
-        if (line[index] !== "`") {
-          output += line[index++];
+      let cursor = 0;
+      while (cursor < line.length) {
+        if (inlineTicks) {
+          let close = line.indexOf("`", cursor);
+          while (close >= 0 && backtickRun(line, close) !== inlineTicks) {
+            close += backtickRun(line, close);
+            close = line.indexOf("`", close);
+          }
+          if (close < 0) {
+            output += inline(line.slice(cursor));
+            cursor = line.length;
+            continue;
+          }
+          const end = close + inlineTicks;
+          output += inline(line.slice(cursor, end));
+          cursor = end;
+          inlineTicks = 0;
           continue;
         }
-        let endOfRun = index;
-        while (line[endOfRun] === "`") endOfRun += 1;
-        const delimiter = line.slice(index, endOfRun);
-        const close = line.indexOf(delimiter, endOfRun);
-        if (close < 0) {
-          output += delimiter;
-          index = endOfRun;
+
+        const opening = line.indexOf("`", cursor);
+        if (opening < 0) {
+          output += outside(line.slice(cursor));
+          cursor = line.length;
           continue;
         }
-        const end = close + delimiter.length;
-        output += spacesPreservingNewlines(line.slice(index, end));
-        index = end;
+        const length = backtickRun(line, opening);
+        const end = opening + length;
+        if (!hasClosingBacktickRun(source, globalOffset + end, length)) {
+          output += outside(line.slice(cursor, end));
+          cursor = end;
+          continue;
+        }
+        output += outside(line.slice(cursor, opening));
+        output += inline(line.slice(opening, end));
+        cursor = end;
+        inlineTicks = length;
       }
+      globalOffset += line.length;
       return output;
     })
     .join("");
 }
 
+/** Hide fenced code while preserving offsets for path:line:column diagnostics. */
+export function maskMarkdownFences(source) {
+  return mapMarkdownCode(source, { fenced: spacesPreservingNewlines });
+}
+
+/** Hide fenced and inline code while preserving offsets for link diagnostics. */
+export function maskMarkdownCode(source) {
+  return mapMarkdownCode(source, {
+    inline: spacesPreservingNewlines,
+    fenced: spacesPreservingNewlines,
+  });
+}
+
+function hasHtmlAttribute(attributes, expected) {
+  for (let index = 0; index < attributes.length; ) {
+    while (/\s|\//.test(attributes[index] ?? "")) index += 1;
+    const start = index;
+    while (/[A-Za-z0-9_:.-]/.test(attributes[index] ?? "")) index += 1;
+    if (index === start) {
+      index += 1;
+      continue;
+    }
+    const name = attributes.slice(start, index).toLowerCase();
+    while (/\s/.test(attributes[index] ?? "")) index += 1;
+    if (attributes[index] === "=") {
+      index += 1;
+      while (/\s/.test(attributes[index] ?? "")) index += 1;
+      const quote = attributes[index];
+      if (quote === '"' || quote === "'") {
+        index += 1;
+        while (index < attributes.length && attributes[index] !== quote) index += 1;
+        if (attributes[index] === quote) index += 1;
+      } else {
+        while (index < attributes.length && !/\s/.test(attributes[index])) index += 1;
+      }
+    }
+    if (name === expected) return true;
+  }
+  return false;
+}
+
 function maskProperNouns(source) {
   return source.replace(
-    /<([A-Za-z][\w:-]*)\b[^>]*\bdata-i18n-allow-cjk(?:=(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>[\s\S]*?<\/\1\s*>/gi,
-    spacesPreservingNewlines,
+    /<([A-Za-z][\w:-]*)([^>]*)>[\s\S]*?<\/\1\s*>/gi,
+    (match, _tag, attributes) =>
+      hasHtmlAttribute(attributes, "data-i18n-allow-cjk") ? spacesPreservingNewlines(match) : match,
   );
 }
 
@@ -118,12 +198,50 @@ function selectedEntries(manifest, categories) {
   return manifest.filter((entry) => wanted.has(entry.category));
 }
 
+function docMetadata(source) {
+  const block = source.match(/^---\n([\s\S]*?)\n---(?:\n|$)/)?.[1];
+  if (!block) return null;
+  const field = (name) => block.match(new RegExp(`^${name}:\\s*([^\\n#]*)`, "m"))?.[1].trim();
+  const slug = field("slug");
+  if (!slug) return null;
+  return {
+    slug,
+    category: field("category") || "uncatalogued",
+    status: field("status") || "scaffold",
+  };
+}
+
+/** Discover every enriched Chinese document consumed by the public registry. */
+export function discoverComponentDocs(uiSrc = DEFAULT_UI_SRC) {
+  const entries = [];
+  for (const directory of readdirSync(uiSrc).sort()) {
+    const path = join(uiSrc, directory);
+    if (!statSync(path).isDirectory()) continue;
+    const documents =
+      directory === "_mui"
+        ? readdirSync(path)
+            .filter((file) => file.endsWith(".md") && !file.endsWith(".en.md"))
+            .map((file) => join(path, file))
+        : [join(path, `${directory}.md`)].filter(existsSync);
+    for (const document of documents) {
+      const metadata = docMetadata(readFileSync(document, "utf8"));
+      if (metadata?.status === "enriched") entries.push(metadata);
+    }
+  }
+  return entries;
+}
+
 export function checkComponentDocTranslations({
   uiSrc = DEFAULT_UI_SRC,
   manifest,
   categories,
 } = {}) {
-  const allEntries = manifest ?? parseManifestEntries(readFileSync(DEFAULT_MANIFEST, "utf8"));
+  const manifestEntries = manifest ?? parseManifestEntries(readFileSync(DEFAULT_MANIFEST, "utf8"));
+  const bySlug = new Map(manifestEntries.map((entry) => [entry.slug, entry]));
+  for (const entry of discoverComponentDocs(uiSrc)) {
+    if (!bySlug.has(entry.slug)) bySlug.set(entry.slug, entry);
+  }
+  const allEntries = [...bySlug.values()];
   const entries = selectedEntries(allEntries, categories);
   const knownSlugs = new Set(allEntries.map((entry) => entry.slug));
   const diagnostics = [];
@@ -249,12 +367,15 @@ export function formatDiagnostics(diagnostics, root = ROOT) {
 }
 
 function parseArguments(argv) {
-  const all = argv.includes("--all");
-  const categoryFlag = argv.find((value) => value.startsWith("--categories="));
-  const unknown = argv.filter((value) => value !== "--all" && !value.startsWith("--categories="));
+  const normalized = argv.filter((value) => value !== "--");
+  const all = normalized.includes("--all");
+  const categoryFlag = normalized.find((value) => value.startsWith("--categories="));
+  const unknown = normalized.filter(
+    (value) => value !== "--all" && !value.startsWith("--categories="),
+  );
   if (unknown.length) throw new Error(`Unknown arguments: ${unknown.join(", ")}`);
   if (all && categoryFlag) throw new Error("Use either --all or --categories, not both");
-  if (!all && !categoryFlag) throw new Error("Pass --all or --categories=layout,forms");
+  if (!all && !categoryFlag) return undefined;
   return categoryFlag
     ? categoryFlag
         .slice("--categories=".length)

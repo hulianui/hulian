@@ -38,8 +38,8 @@ const manifest = [
   { slug: "stack", category: "layout" },
 ];
 
-const frontmatter = (slug, body = `# ${slug}\n`) =>
-  `---\nslug: ${slug}\nname: ${slug}\nstatus: enriched\n---\n\n${body}`;
+const frontmatter = (slug, body = `# ${slug}\n`, category = "forms") =>
+  `---\nslug: ${slug}\nname: ${slug}\ncategory: ${category}\nstatus: enriched\n---\n\n${body}`;
 
 test("normal and _mui documents require exact Chinese/English pairs", () => {
   withFixture(
@@ -70,6 +70,36 @@ test("missing translations report the slug and exact normal/_mui path", () => {
       );
       assert.match(output, /button\/button\.en\.md.*button/);
       assert.match(output, /_mui\/date-picker\.en\.md.*date-picker/);
+    },
+  );
+});
+
+test("all and uncatalogued coverage include enriched Chinese docs absent from manifest", () => {
+  withFixture(
+    {
+      "button/button.md": frontmatter("button"),
+      "button/button.en.md": frontmatter("button"),
+      "access/access.md": frontmatter("access", "# Access\n", "uncatalogued"),
+    },
+    (uiSrc) => {
+      const all = checkComponentDocTranslations({
+        uiSrc,
+        manifest: [{ slug: "button", category: "forms" }],
+      });
+      assert.deepEqual(
+        all.map((diagnostic) => [diagnostic.code, diagnostic.path.replace(`${uiSrc}/`, "")]),
+        [["missing-english", "access/access.en.md"]],
+      );
+
+      const uncatalogued = checkComponentDocTranslations({
+        uiSrc,
+        manifest: [{ slug: "button", category: "forms" }],
+        categories: ["uncatalogued"],
+      });
+      assert.deepEqual(
+        uncatalogued.map((diagnostic) => diagnostic.path.replace(`${uiSrc}/`, "")),
+        ["access/access.en.md"],
+      );
     },
   );
 });
@@ -105,11 +135,11 @@ test("English CJK is allowed only in fenced code or an explicit proper-noun mark
       });
       const cjk = diagnostics.filter((diagnostic) => diagnostic.code === "cjk");
       assert.equal(cjk.length, 3);
-      assert.equal(cjk[0].line, 9);
-      assert.equal(cjk[1].line, 17);
-      assert.equal(cjk[2].line, 19);
+      assert.equal(cjk[0].line, 10);
+      assert.equal(cjk[1].line, 18);
+      assert.equal(cjk[2].line, 20);
       assert.ok(cjk[0].column > 1);
-      assert.match(formatDiagnostics(cjk), /button\.en\.md:9:\d+.*CJK/);
+      assert.match(formatDiagnostics(cjk), /button\.en\.md:10:\d+.*CJK/);
     },
   );
 });
@@ -129,6 +159,59 @@ test("frontmatter drift and broken related slugs are executable diagnostics", ()
       );
       assert.match(output, /button\.en\.md:\d+:\d+.*frontmatter.*wrong-button.*button/i);
       assert.match(output, /button\.en\.md:\d+:\d+.*related.*ghost/i);
+    },
+  );
+});
+
+test("multiline code spans hide related links using their exact backtick run", () => {
+  withFixture(
+    {
+      "button/button.md": frontmatter("button"),
+      "button/button.en.md": frontmatter(
+        "button",
+        [
+          "# Button",
+          "",
+          "``code span starts with ` inside",
+          "[Not a link](../ghost/ghost.md)",
+          "and ends here``",
+        ].join("\n"),
+      ),
+    },
+    (uiSrc) => {
+      const diagnostics = checkComponentDocTranslations({
+        uiSrc,
+        manifest: [{ slug: "button", category: "forms" }],
+      });
+      assert.equal(
+        diagnostics.filter((diagnostic) => diagnostic.code === "broken-related").length,
+        0,
+      );
+    },
+  );
+});
+
+test("proper-noun exemption requires a real standalone HTML attribute", () => {
+  withFixture(
+    {
+      "button/button.md": frontmatter("button"),
+      "button/button.en.md": frontmatter(
+        "button",
+        [
+          "# Button",
+          "",
+          '<span title="data-i18n-allow-cjk">伪装标记</span>',
+          '<span data-i18n-allow-cjk="true">瑚琏</span> (Hulian)',
+        ].join("\n"),
+      ),
+    },
+    (uiSrc) => {
+      const cjk = checkComponentDocTranslations({
+        uiSrc,
+        manifest: [{ slug: "button", category: "forms" }],
+      }).filter((diagnostic) => diagnostic.code === "cjk");
+      assert.equal(cjk.length, 1);
+      assert.match(cjk[0].message, /伪装标记/);
     },
   );
 });
@@ -185,6 +268,45 @@ test("registry link rewriting rejects protocol-relative URLs and protects Markdo
   assert.match(rewritten, /\[CDN\]\(\/\/cdn\.example\.com\/asset\)/);
   assert.match(rewritten, /`\[Inline\]\(\/components\/inline\)`/);
   assert.match(rewritten, /\[Fenced\]\(\/components\/fenced\)/);
+});
+
+test("registry link rewriting preserves links in multiline code spans", () => {
+  const markdown = [
+    "``code span starts with ` inside",
+    "[Hidden](/components/hidden)",
+    "and closes here``",
+    "[Visible](/components/visible)",
+  ].join("\n");
+
+  const rewritten = absolutize(markdown);
+  assert.match(rewritten, /\[Hidden\]\(\/components\/hidden\)/);
+  assert.match(
+    rewritten,
+    /\[Visible\]\(https:\/\/hulianui\.haloritual\.com\/components\/visible\)/,
+  );
+});
+
+test("package script defaults to all docs and forwards pnpm category arguments", () => {
+  const env = {
+    ...process.env,
+    PATH: `${process.env.HOME}/.nvm/versions/node/v22.22.3/bin:${process.env.PATH}`,
+  };
+  const all = spawnSync("pnpm", ["docs:i18n:check"], { cwd: ROOT, env, encoding: "utf8" });
+  assert.equal(all.status, 1, all.stderr);
+  assert.match(`${all.stdout}\n${all.stderr}`, /\[docs:i18n\] 372 issue\(s\)/);
+
+  const uncatalogued = spawnSync("pnpm", ["docs:i18n:check", "--", "--categories=uncatalogued"], {
+    cwd: ROOT,
+    env,
+    encoding: "utf8",
+  });
+  const output = `${uncatalogued.stdout}\n${uncatalogued.stderr}`;
+  assert.equal(uncatalogued.status, 1, output);
+  assert.match(output, /access\/access\.en\.md/);
+  assert.match(output, /config\/config\.en\.md/);
+  assert.match(output, /theme\/theme\.en\.md/);
+  assert.match(output, /\[docs:i18n\] 3 issue\(s\)/);
+  assert.doesNotMatch(output, /Unknown arguments|Use either --all/);
 });
 
 test("Chinese scaffolding never targets the sibling .en.md document", () => {

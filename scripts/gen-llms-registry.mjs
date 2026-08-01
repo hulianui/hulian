@@ -34,43 +34,84 @@ const SITE = "https://hulianui.haloritual.com"; // 文档站；语料供站外 A
 // 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳。
 // 只处理 Markdown 正文：代码围栏和行内 code span 是示例数据，不是可导航链接；
 // `//host/path` 是协议相对外链，也绝不能被误拼成本站 URL。
+function backtickRun(markdown, index) {
+  if (markdown[index] !== "`") return 0;
+  let end = index;
+  while (markdown[end] === "`") end += 1;
+  return end - index;
+}
+
+function hasClosingBacktickRun(markdown, index, length) {
+  for (let cursor = index; cursor < markdown.length; ) {
+    const next = markdown.indexOf("`", cursor);
+    if (next < 0) return false;
+    const run = backtickRun(markdown, next);
+    if (run === length) return true;
+    cursor = next + run;
+  }
+  return false;
+}
+
 function rewriteOutsideCode(markdown, rewrite) {
   const lines = markdown.match(/.*(?:\n|$)/g)?.filter(Boolean) ?? [];
   let fence = null;
+  let inlineTicks = 0;
+  let globalOffset = 0;
   return lines
     .map((line) => {
       const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
-      if (fence) {
+      if (!inlineTicks && fence) {
         if (marker?.[0] === fence[0] && marker.length >= fence.length) fence = null;
+        globalOffset += line.length;
         return line;
       }
-      if (marker) {
+      if (!inlineTicks && marker) {
         fence = marker;
+        globalOffset += line.length;
         return line;
       }
 
       let output = "";
-      let plainStart = 0;
-      for (let index = 0; index < line.length; ) {
-        if (line[index] !== "`") {
-          index += 1;
+      let cursor = 0;
+      while (cursor < line.length) {
+        if (inlineTicks) {
+          let close = line.indexOf("`", cursor);
+          while (close >= 0 && backtickRun(line, close) !== inlineTicks) {
+            close += backtickRun(line, close);
+            close = line.indexOf("`", close);
+          }
+          if (close < 0) {
+            output += line.slice(cursor);
+            cursor = line.length;
+            continue;
+          }
+          const end = close + inlineTicks;
+          output += line.slice(cursor, end);
+          cursor = end;
+          inlineTicks = 0;
           continue;
         }
-        let endOfRun = index;
-        while (line[endOfRun] === "`") endOfRun += 1;
-        const delimiter = line.slice(index, endOfRun);
-        const close = line.indexOf(delimiter, endOfRun);
-        if (close < 0) {
-          index = endOfRun;
+
+        const opening = line.indexOf("`", cursor);
+        if (opening < 0) {
+          output += rewrite(line.slice(cursor));
+          cursor = line.length;
           continue;
         }
-        output += rewrite(line.slice(plainStart, index));
-        const end = close + delimiter.length;
-        output += line.slice(index, end);
-        index = end;
-        plainStart = end;
+        const length = backtickRun(line, opening);
+        const end = opening + length;
+        if (!hasClosingBacktickRun(markdown, globalOffset + end, length)) {
+          output += rewrite(line.slice(cursor, end));
+          cursor = end;
+          continue;
+        }
+        output += rewrite(line.slice(cursor, opening));
+        output += line.slice(opening, end);
+        cursor = end;
+        inlineTicks = length;
       }
-      return output + rewrite(line.slice(plainStart));
+      globalOffset += line.length;
+      return output;
     })
     .join("");
 }
