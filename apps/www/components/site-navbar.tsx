@@ -14,6 +14,7 @@ import {
 } from "@hulianui/ui";
 import { UI_VERSION } from "../lib/ui-version";
 import { DocsSearch } from "./docs-search";
+import { LanguageSwitcher } from "./language-switcher";
 
 // 站点统一顶栏(dogfood @hulianui/ui Navbar)—— 首页 + 区块/页面画廊共用。
 // 品牌回首页 + 五档导航(开始/组件/区块/页面/模版)+ 更新日志 + 主题切换;移动端折叠菜单。
@@ -47,9 +48,13 @@ export function SiteNavbar() {
 
   return (
     <>
-      <Navbar sticky className="bg-bg/80">
-        <NavbarMenuToggle isOpen={open} onToggle={() => setOpen((v) => !v)} />
-        {/* min-w-0 让品牌区可收缩：375px 下顶栏要塞下 汉堡+品牌+搜索+开源+主题切换，
+      <Navbar sticky className="gap-1 bg-bg/80 px-2 sm:gap-2 sm:px-4 xl:gap-4 xl:px-6">
+        <NavbarMenuToggle
+          isOpen={open}
+          onToggle={() => setOpen((v) => !v)}
+          className="sm:inline-flex xl:hidden"
+        />
+        {/* min-w-0 让品牌区可收缩：375px 下顶栏要塞下 汉堡+品牌+搜索+语言+开源+主题切换，
             品牌区不让步就会把最右的主题切换钮顶出视口（横向溢出 6px）。 */}
         {/* `shrink` 覆盖 NavbarBrand 自带的 shrink-0（同组、后写者胜）——只加 min-w-0 是不够的。 */}
         <NavbarBrand className="min-w-0 shrink">
@@ -57,20 +62,20 @@ export function SiteNavbar() {
           <Link href="/" className="flex min-w-0 items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element -- 静态 logo,免 next/image 优化开销 */}
             <img src="/logo.svg" alt="瑚琏" width={26} height={26} className="shrink-0 rounded-[6px]" />
-            <span className="truncate tracking-tight">瑚琏 Hulian</span>
+            <span className="hidden truncate tracking-tight min-[480px]:inline">瑚琏 Hulian</span>
           </Link>
           {/* 版本号在最窄屏让位：它是「锦上添花」，主题切换钮是功能。 */}
           <Link
             href="/changelog"
             aria-label={`当前版本 v${UI_VERSION}，查看更新日志`}
-            className="ml-2 hidden shrink-0 sm:block"
+            className="ml-2 hidden shrink-0 2xl:block"
           >
             <Tag variant="soft" tone="brand" size="sm">
               v{UI_VERSION}
             </Tag>
           </Link>
         </NavbarBrand>
-        <NavbarContent justify="end" className="hidden sm:flex">
+        <NavbarContent justify="end" className="hidden xl:flex">
           {TIERS.map((t) => (
             <NavbarItem key={t.href} isActive={isActive(t.match)}>
               <Link href={t.href}>{t.label}</Link>
@@ -80,6 +85,7 @@ export function SiteNavbar() {
         {/* 全站搜索：跨 页面/区块/组件/模版/指南 的统一入口，⌘K 可唤起。
             与开源、主题切换同属「站点级」动作，全断点常驻、不折进汉堡菜单。 */}
         <DocsSearch />
+        <LanguageSwitcher pathname={pathname} />
         {/* 开源入口全断点常驻：它和主题切换一样是「站点级」动作，不该跟着导航折进汉堡菜单。 */}
         <Button
           variant="ghost"
@@ -93,7 +99,7 @@ export function SiteNavbar() {
       </Navbar>
 
       {open && (
-        <ul className="flex flex-col gap-1 border-b border-border bg-bg p-2 sm:hidden">
+        <ul className="flex flex-col gap-1 border-b border-border bg-bg p-2 xl:hidden">
           {TIERS.map((t) => (
             <NavbarItem key={t.href} isActive={isActive(t.match)} onClick={() => setOpen(false)}>
               <Link href={t.href} className="block px-2 py-1.5">

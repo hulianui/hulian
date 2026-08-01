@@ -71,6 +71,17 @@ describe("RegionMirrorBanner", () => {
     );
   });
 
+  it("英文页切到镜像时保留 /en、查询与锚点", async () => {
+    stubLocation(MAIN, "/en/components/button", "?q=x", "#api");
+    stubTrace("CN");
+    const { findByText, getByText } = render(<RegionMirrorBanner />);
+    await findByText(/访问镜像站点更快/);
+
+    expect(getByText("切换到镜像 →").closest("a")?.getAttribute("href")).toBe(
+      "https://hulianui-zh.haloritual.com/en/components/button?q=x#api",
+    );
+  });
+
   it("非 CN 访客：不显示", async () => {
     stubLocation(MAIN, "/");
     stubTrace("US");

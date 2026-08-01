@@ -17,10 +17,22 @@ import {
 import { manifest, CATEGORIES } from "../lib/manifest";
 import { TierBrowser } from "../components/tier-browser";
 import { SiteNavbar } from "../components/site-navbar";
+import { DOCS_LOCALE, withDocsBasePath } from "../lib/docs-locale";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
 
+const english = DOCS_LOCALE === "en";
+const homePath = withDocsBasePath("/", DOCS_LOCALE);
+const homeUrl = `${SITE_URL}${homePath === "/" ? "" : homePath}`;
+const homeName = english ? "Hulian UI" : SITE_NAME;
+const homeDescription = english
+  ? "Hulian UI is a production-ready React component library and design system with 349+ components, OKLCH color, Tailwind CSS v4, dark mode, and source-first distribution."
+  : SITE_DESCRIPTION;
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: homePath,
+    languages: { "zh-CN": "/", en: "/en", "x-default": "/en" },
+  },
 };
 
 // 站在巨人肩上 —— 吸取式聚合的底座（dogfood Marquee 滚动呈现）
@@ -50,22 +62,25 @@ const homeJsonLd = {
   "@graph": [
     {
       "@type": "WebSite",
-      name: SITE_NAME,
-      alternateName: ["hulianui", "hulian ui", "Hulian UI"],
-      url: SITE_URL,
-      description: SITE_DESCRIPTION,
-      inLanguage: "zh-CN",
+      name: homeName,
+      alternateName: english
+        ? ["Hulian", "hulianui", "hulian ui"]
+        : ["hulianui", "hulian ui", "Hulian UI"],
+      url: homeUrl,
+      description: homeDescription,
+      inLanguage: DOCS_LOCALE,
     },
     {
       "@type": "SoftwareApplication",
-      name: SITE_NAME,
+      name: homeName,
       alternateName: "hulianui",
       applicationCategory: "DeveloperApplication",
       operatingSystem: "Web",
-      description: SITE_DESCRIPTION,
-      url: SITE_URL,
+      description: homeDescription,
+      url: homeUrl,
+      inLanguage: DOCS_LOCALE,
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      author: { "@type": "Person", name: "瑚琏 Abel" },
+      author: { "@type": "Person", name: english ? "Abel" : "瑚琏 Abel" },
     },
   ],
 };
