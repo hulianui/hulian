@@ -2,11 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  THEMES,
   classify,
   shouldFailResponse,
   shouldIgnoreRequestFailure,
   validateRouteResult,
 } from "./a11y.mjs";
+
+test("无障碍门禁固定覆盖亮色与暗色，不继承运行机器偏好", () => {
+  assert.deepEqual(THEMES, ["light", "dark"]);
+});
 
 test("axe 分级只阻塞 critical 与 serious", () => {
   assert.equal(classify([{ impact: "critical" }]).blocking.length, 1);

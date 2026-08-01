@@ -75,17 +75,17 @@ export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] = [
   {
     title: "品牌 / 强调",
     colors: [
-      { token: "color-primary", label: "主色", light: "brand-600", dark: "brand-500", fg: "color-primary-foreground" },
-      { token: "color-primary-hover", label: "主色悬停", light: "brand-500", dark: "brand-400" },
+      { token: "color-primary", label: "主色", light: "brand-700", dark: "brand-400", fg: "color-primary-foreground" },
+      { token: "color-primary-hover", label: "主色悬停", light: "brand-500", dark: "brand-500" },
       { token: "color-ring", label: "焦点环", light: "brand-500", dark: "brand-400" },
     ],
   },
   {
     title: "状态",
     colors: [
-      { token: "color-danger", label: "危险", light: "danger-600", dark: "danger-500", fg: "color-danger-foreground" },
+      { token: "color-danger", label: "危险", light: "danger-700", dark: "danger-400", fg: "color-danger-foreground" },
       { token: "color-success", label: "成功", light: "success-600", dark: "success-500", fg: "color-success-foreground" },
-      { token: "color-warning", label: "警告", light: "warning-600", dark: "warning-500", fg: "color-warning-foreground" },
+      { token: "color-warning", label: "警告", light: "warning-700", dark: "warning-500", fg: "color-warning-foreground" },
     ],
   },
 ];

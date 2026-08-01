@@ -19,7 +19,7 @@ import type { EventStreamItem, EventStreamProps, EventStreamTone } from "./event
 
 // 用语义色而非 chart-N：chart-* 是**图表分类色**，只保证彼此可区分，不承载
 // "危险/正常"的含义 —— 拿它当状态色会出现 danger 渲染成橙色这类语义错位。
-// 语义色在明暗主题下自动切值（semantic.css 的 danger-600 / danger-500）。
+// 语义色在明暗主题下自动切值（semantic.css 的 danger-700 / danger-400）。
 const TONE_DOT: Record<EventStreamTone, string> = {
   neutral: "bg-border",
   info: "bg-primary",

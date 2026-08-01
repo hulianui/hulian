@@ -20,6 +20,7 @@ export const ROUTES = [
   "/pages/admin-list",
   "/pages/product-list",
 ];
+export const THEMES = ["light", "dark"];
 
 export function classify(violations) {
   const blocking = violations.filter((violation) =>
@@ -113,45 +114,55 @@ export async function runA11y() {
   ]);
   const staticServer = await startStaticServer();
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
   const results = [];
   try {
-    for (const route of ROUTES) {
-      const page = await context.newPage();
-      const failed = [];
-      page.on("requestfailed", (request) => {
-        if (request.url().startsWith(staticServer.baseUrl)) {
-          const failure = {
-            resourceType: request.resourceType(),
-            errorText: request.failure()?.errorText ?? "unknown",
+    for (const theme of THEMES) {
+      const context = await browser.newContext({ colorScheme: theme });
+      await context.addInitScript((selectedTheme) => {
+        window.localStorage.setItem("hulian-theme", selectedTheme);
+        document.documentElement.setAttribute("data-theme", selectedTheme);
+      }, theme);
+      try {
+        for (const route of ROUTES) {
+          const page = await context.newPage();
+          const failed = [];
+          page.on("requestfailed", (request) => {
+            if (request.url().startsWith(staticServer.baseUrl)) {
+              const failure = {
+                resourceType: request.resourceType(),
+                errorText: request.failure()?.errorText ?? "unknown",
+              };
+              if (shouldIgnoreRequestFailure(failure)) return;
+              failed.push(`${failure.resourceType}:${failure.errorText}:${request.url()}`);
+            }
+          });
+          page.on("response", (resource) => {
+            const responseResult = { url: resource.url(), status: resource.status() };
+            if (shouldFailResponse(responseResult, staticServer.baseUrl)) {
+              failed.push(`http:${responseResult.status}:${responseResult.url}`);
+            }
+          });
+          const response = await page.goto(`${staticServer.baseUrl}${route}`, {
+            waitUntil: "networkidle",
+          });
+          const loadFailed = !response?.ok() || failed.length > 0;
+          const analysis = loadFailed ? { violations: [] } : await new AxeBuilder({ page }).analyze();
+          const result = {
+            theme,
+            route,
+            status: response?.status(),
+            loadFailed,
+            failed,
+            violations: analysis.violations,
           };
-          if (shouldIgnoreRequestFailure(failure)) return;
-          failed.push(`${failure.resourceType}:${failure.errorText}:${request.url()}`);
+          results.push(result);
+          await page.close();
         }
-      });
-      page.on("response", (resource) => {
-        const responseResult = { url: resource.url(), status: resource.status() };
-        if (shouldFailResponse(responseResult, staticServer.baseUrl)) {
-          failed.push(`http:${responseResult.status}:${responseResult.url}`);
-        }
-      });
-      const response = await page.goto(`${staticServer.baseUrl}${route}`, {
-        waitUntil: "networkidle",
-      });
-      const loadFailed = !response?.ok() || failed.length > 0;
-      const analysis = loadFailed ? { violations: [] } : await new AxeBuilder({ page }).analyze();
-      const result = {
-        route,
-        status: response?.status(),
-        loadFailed,
-        failed,
-        violations: analysis.violations,
-      };
-      results.push(result);
-      await page.close();
+      } finally {
+        await context.close();
+      }
     }
   } finally {
-    await context.close();
     await browser.close();
     await staticServer.close();
   }
@@ -161,7 +172,7 @@ export async function runA11y() {
     const { blocking, reported } = validateRouteResult(result);
     blockingCount += blocking.length;
     console.log(
-      `[a11y] ${result.route} · blocking ${blocking.length} · moderate/minor ${reported.length}`,
+      `[a11y] ${result.theme} ${result.route} · blocking ${blocking.length} · moderate/minor ${reported.length}`,
     );
     for (const violation of [...blocking, ...reported]) {
       console.log(`  [${violation.impact ?? "unknown"}] ${violation.id}: ${violation.help}`);
@@ -173,7 +184,7 @@ export async function runA11y() {
     }
   }
   if (blockingCount > 0) throw new Error(`axe 发现 ${blockingCount} 个 critical/serious 违规`);
-  console.log(`[a11y] PASS ${results.length}/${ROUTES.length} routes`);
+  console.log(`[a11y] PASS ${results.length}/${THEMES.length * ROUTES.length} theme-routes`);
   return results;
 }
 

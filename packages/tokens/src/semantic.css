@@ -22,11 +22,11 @@
   --color-primary: var(--brand-700);
   --color-primary-foreground: var(--white);
   --color-primary-hover: var(--brand-500);
-  --color-danger: var(--danger-600);
+  --color-danger: var(--danger-700);
   --color-danger-foreground: var(--white);
   --color-success: var(--success-700);
   --color-success-foreground: var(--white);
-  --color-warning: var(--warning-600);
+  --color-warning: var(--warning-700);
   --color-warning-foreground: var(--white);
   /* 图表分类色板（数据序列用，SVG 经 var() 直接消费 → 明暗自适应） */
   --color-chart-1: oklch(0.62 0.19 255);
@@ -39,8 +39,8 @@
   --code-keyword: var(--brand-700);
   --code-string: var(--success-700);
   --code-comment: var(--gray-600);
-  --code-number: var(--warning-600);
-  --code-tag: var(--danger-600);
+  --code-number: var(--warning-700);
+  --code-tag: var(--danger-700);
   --code-attr: oklch(0.55 0.2 300);
   --radius: 0.625rem;
 
@@ -88,13 +88,13 @@
   /* 暗色：发丝边回落到可见细线(=现状 border)，因深底投影偏弱、需 border 分隔。 */
   --color-hairline: var(--color-border);
   --color-ring: var(--brand-400);
-  --color-primary: var(--brand-500);
-  --color-primary-foreground: var(--white);
-  --color-primary-hover: var(--brand-400);
-  --color-danger: var(--danger-500);
-  --color-danger-foreground: var(--white);
+  --color-primary: var(--brand-400);
+  --color-primary-foreground: var(--gray-950);
+  --color-primary-hover: var(--brand-500);
+  --color-danger: var(--danger-400);
+  --color-danger-foreground: var(--gray-950);
   --color-success: var(--success-500);
-  --color-success-foreground: var(--white);
+  --color-success-foreground: var(--gray-950);
   --color-warning: var(--warning-500);
   --color-warning-foreground: var(--gray-950);
   /* 暗态图表色提亮以保对比 */
@@ -109,7 +109,7 @@
   --code-string: var(--success-500);
   --code-comment: var(--gray-400);
   --code-number: var(--warning-500);
-  --code-tag: var(--danger-500);
+  --code-tag: var(--danger-400);
   --code-attr: oklch(0.74 0.16 300);
 
   /* 阴影 · 折中·结构升级（当前启用 · 暗色）：抬黑度(深底需更重投影) +
