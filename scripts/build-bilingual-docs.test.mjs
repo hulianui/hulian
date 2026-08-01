@@ -1,15 +1,26 @@
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  mkdtemp,
+  mkdir,
+  readFile,
+  realpath,
+  rename,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
 
-import {
+import * as bilingualDocs from "./build-bilingual-docs.mjs";
+
+const {
   assertRouteParity,
   mergeExports,
   routeSet,
   safeRemoveBuildDirectory,
-} from "./build-bilingual-docs.mjs";
+} = bilingualDocs;
 
 async function writeFixture(root, files) {
   for (const [relativePath, contents] of Object.entries(files)) {
@@ -20,7 +31,9 @@ async function writeFixture(root, files) {
 }
 
 async function withFixture(run) {
-  const fixtureRoot = await mkdtemp(join(tmpdir(), "hulian-bilingual-docs-"));
+  const fixtureRoot = await mkdtemp(
+    join(await realpath(tmpdir()), "hulian-bilingual-docs-"),
+  );
   try {
     await run(fixtureRoot);
   } finally {
@@ -119,5 +132,45 @@ test("safeRemoveBuildDirectory rejects paths outside the exact build root", asyn
       /must be a descendant of/,
     );
     assert.equal(await readFile(join(outsideRoot, "keep.txt"), "utf8"), "safe");
+  });
+});
+
+test("safeRemoveBuildDirectory rejects a symlinked build root without deleting its target", async () => {
+  await withFixture(async (fixtureRoot) => {
+    const externalRoot = join(fixtureRoot, "external");
+    const externalZhRoot = join(externalRoot, "zh");
+    const linkedBuildRoot = join(fixtureRoot, ".bilingual-build");
+    await writeFixture(externalZhRoot, { "keep.txt": "safe" });
+    await symlink(externalRoot, linkedBuildRoot, "dir");
+
+    await assert.rejects(
+      safeRemoveBuildDirectory(join(linkedBuildRoot, "zh"), linkedBuildRoot),
+      /symlink|canonical/i,
+    );
+    assert.equal(await readFile(join(externalZhRoot, "keep.txt"), "utf8"), "safe");
+  });
+});
+
+test("startup recovery restores the previous output after interruption following backup rename", async () => {
+  await withFixture(async (fixtureRoot) => {
+    const buildRoot = join(fixtureRoot, ".bilingual-build");
+    const backupRoot = join(buildRoot, "zh");
+    const finalRoot = join(buildRoot, "final");
+    const outputRoot = join(fixtureRoot, "out");
+    const markerPath = join(buildRoot, "replacement-in-progress.json");
+    await writeFixture(outputRoot, { "index.html": "previous output" });
+    await writeFixture(finalRoot, { "index.html": "new output" });
+    await writeFile(
+      markerPath,
+      JSON.stringify({ version: 1, previousOutputBackup: "zh" }),
+    );
+    await rename(outputRoot, backupRoot);
+
+    await bilingualDocs.recoverInterruptedOutput(buildRoot, backupRoot, outputRoot);
+
+    assert.equal(await readFile(join(outputRoot, "index.html"), "utf8"), "previous output");
+    await assert.rejects(readFile(join(backupRoot, "index.html")), { code: "ENOENT" });
+    assert.equal(await readFile(join(finalRoot, "index.html"), "utf8"), "new output");
+    await assert.rejects(readFile(markerPath), { code: "ENOENT" });
   });
 });
