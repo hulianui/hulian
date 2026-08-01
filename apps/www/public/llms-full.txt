@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.16.0 · 366 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.16.0 · 367 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -3080,6 +3080,98 @@ const [v, setV] = useState<string | string[]>("pro");
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# ClickCaptcha
+
+> 点选式人机验证 UI · 采集点击序列回传相对坐标(0~1) + 序号标记/撤销/换一张 + 键盘准星可达 + 失败抖动清空(零协议·不碰网络) · forms/framework
+
+## 何时用
+
+中后台登录页开人机验证时用：它只做「给定背景图 + 提示图 → 采集用户点击序列 → 回传相对坐标」这一段纯交互，坐标换算、点位标记、撤销/刷新、键盘可达、reduced-motion 都由组件吃掉。
+
+**有意不做的事**：不发请求、不认协议。验证码的接口路径、`captchaId` 会话语义、`captchaInfo` 编码各家后端不同（BuildAdmin、腾讯防水墙、极验……），进库就是 API 债。你在 `onComplete` 里把点位编码成自家协议串再发请求，按结果把 `status` 置 `success` / `failed`。
+
+与 [InputOTP](https://hulianui.haloritual.com/components/input-otp) 的区别：那个是短信/邮箱验证码的**数字输入**，与人机验证无关。配合 [LoginForm](https://hulianui.haloritual.com/components/login-form) 的 `extra` 插槽 + `beforeSubmit` 可组成「点提交 → 过验证码 → 再登录」的链路。
+
+## 导入
+```ts
+import { ClickCaptcha } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| backgroundSrc | `string` | — | 背景图 URL（必填，业务自己取） |
+| hintSrc | `string` | — | 提示图 URL（「请依次点击：书 山 水」那条），渲染在提示行右侧 |
+| hintText | `ReactNode` | `locale.clickCaptcha.hint` | 提示文案 |
+| maxPoints | `number` | `3` | 采集点位数，采满触发 `onComplete` |
+| points | `CaptchaPoint[]` | — | 受控点位；不传则内部自管 |
+| defaultPoints | `CaptchaPoint[]` | `[]` | 非受控初始点位 |
+| loading | `boolean` | `false` | 盖遮罩 + 禁点选（等后端换图时用） |
+| status | `"idle" \| "verifying" \| "failed" \| "success"` | `"idle"` | 校验态；`failed` 抖动并清空点位，`verifying`/`success` 锁交互 |
+| disabled | `boolean` | `false` | 禁用（连「换一张」也禁） |
+| aspectRatio | `number` | `2` | 图片区宽高比（BuildAdmin 系点选图常见 310×155） |
+| keyboardStep | `number` | `0.02` | 键盘准星单次步进（相对坐标） |
+| className | `string` | — | 根节点类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onPointsChange | `(points: CaptchaPoint[]) => void` | 点位变化（新增 / 撤销 / 清空）；受控时用它回写 |
+| onComplete | `(points: CaptchaPoint[]) => void` | 采满 `maxPoints` 时触发——在此编码协议串并发请求 |
+| onRefresh | `() => void` | 点「换一张」；组件只清点位，换图由你改 `backgroundSrc` |
+
+`CaptchaPoint = { x: number; y: number }`，**相对坐标 x/y ∈ [0,1]**（相对图片显示区域左上角）。
+
+## 示例
+```tsx
+const [status, setStatus] = useState<ClickCaptchaStatus>("idle");
+const [captcha, setCaptcha] = useState(() => fetchCaptcha());
+
+<ClickCaptcha
+  backgroundSrc={captcha.background}
+  hintSrc={captcha.hint}
+  status={status}
+  onComplete={async (points) => {
+    setStatus("verifying");
+    // 相对坐标 → 后端要的原图像素基准（原图尺寸由你的后端定义）
+    const encoded = points.map((p) => `${Math.round(p.x * 310)},${Math.round(p.y * 155)}`).join("|");
+    const ok = await api.verifyCaptcha(captcha.id, encoded);
+    setStatus(ok ? "success" : "failed");
+  }}
+  onRefresh={() => setCaptcha(fetchCaptcha())}
+/>
+```
+
+与 LoginForm 组合（点提交 → 弹验证码 → 再登录）：
+
+```tsx
+<LoginForm
+  extra={<ClickCaptcha backgroundSrc={captcha.background} onComplete={setPoints} />}
+  beforeSubmit={async () => {
+    if (points.length < 3) return false;           // 未过验证码 → 中止提交
+    captchaInfo.current = await verify(points);    // 拿到票据，onFinish 里带上
+  }}
+  onFinish={({ username, password }) => api.login(username, password, captchaInfo.current)}
+/>
+```
+
+## 禁忌 / 坑
+
+- **别把协议塞进组件**：`captchaId`、`captchaInfo` 编码、接口路径都留在业务侧。组件只回坐标，换成任何后端都不用改。
+- **坐标是相对值不是像素**：容器缩放 / 响应式 / 高 DPI 下 `x*原图宽` 才是后端要的像素；直接把 `x` 当像素发过去必然对不上。
+- **受控模式必须回写**：传了 `points` 却不在 `onPointsChange` 里 `setState`，点了也不会出标记（与所有受控组件一致）。
+- 校验失败请把 `status` 置 `failed`：组件负责抖动 + 清空点位；自己再手动清一次会让点位闪两下。
+- 抖动走 `motion-safe:`，`prefers-reduced-motion` 下不抖——失败反馈仍有文案播报，不依赖动画。
+- 图片加载失败会显示兜底文案而非空白框，用户可直接点「换一张」自救。
+- 键盘用户：区域可聚焦，方向键移准星、Enter/Space 落点、Backspace 撤销；别再往区域上套 `pointer-events-none` 或自定义 `tabIndex`。
+- 滑块拼图式（SliderCaptcha）目前不在库内，需要的话按同一「纯 UI 层」原则单独提。
+
+## 相关
+[LoginForm](https://hulianui.haloritual.com/components/login-form) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Field](https://hulianui.haloritual.com/components/field) · [ImageCropper](https://hulianui.haloritual.com/components/image-cropper)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # ColorField
 
 > 颜色输入框 · 紧凑单行：色块(调起系统取色器) + 十六进制文本输入 + 短写自动展开(#abc→#aabbcc) + 草稿态支持手输 · forms/advanced
@@ -4288,11 +4380,19 @@ const [keys, setKeys] = useState<string[]>(["profile"]);
 <!-- ════════════════════════════════════════════════════════ -->
 # LoginForm
 
-> 登录模板 · 自管 useForm(账号/密码必填+记住我) + 提交 loading + logo/footer 插槽(复用 Field/Input/Checkbox/Button·文案接 i18n) · forms/framework
+> 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Field/Input/Checkbox/Button·文案接 i18n) · forms/framework
 
 ## 何时用
 
 直接落地后台/应用的登录页时用：账号 + 密码 + 记住我的表单状态、必填校验、提交 loading 都由它内部托管，你只接 `onFinish`。与 [Form](https://hulianui.haloritual.com/components/form)/[ProForm](https://hulianui.haloritual.com/components/pro-form) 的区别：那两个是通用表单骨架，需要自己拼字段；LoginForm 是开箱即用的成品模板，登录场景之外不用它。
+
+真实后台常见的三类需求都有逃生口，不必因此拆掉模板自己拼：
+
+- **账号/密码有格式约束** → `rules`（沿用 `useForm` 的 `FormRule[]` 形状，内置必填规则始终先跑）
+- **外部要拿字段实时值**（字段级实时提示、与其他控件联动）→ `values` + `onValuesChange` 受控
+- **提交前要插一步**（人机验证码、二次确认、租户选择）→ `beforeSubmit` 异步拦截 + `extra` 插槽
+
+仍然不建议用它的场景：登录表单本身要重排字段顺序 / 加多个自定义字段（如手机号+短信码 tab 切换）——那种直接用 Field/Input/Checkbox/Button 拼。
 
 ## 导入
 ```ts
@@ -4305,13 +4405,17 @@ import { LoginForm } from "@hulianui/ui"
 |------|------|------|------|
 | loading | `boolean` | — | 外部 loading 覆盖（父层托管提交态时用） |
 | showRemember | `boolean` | `true` | 是否显示「记住我」 |
+| rules | `{ username?: FormRule[]; password?: FormRule[] }` | — | 字段级校验规则，追加在内置必填之后（`FormRule` 同 [Form](https://hulianui.haloritual.com/components/form)：`pattern`/`min`/`max`/`validator`/`message`） |
+| values | `Partial<LoginValues>` | — | 受控值：传入即受控，需配合 `onValuesChange` 回写；不传维持内部自管 |
 | className | `string` | — | 根节点类名 |
 
 ## Events
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onFinish | `(values: LoginValues) => void \| Promise<void>` | 校验通过后提交；返回 Promise → 提交按钮 loading |
+| onFinish | `(values: LoginValues) => void \| Promise<void>` | 校验 + `beforeSubmit` 通过后提交；返回 Promise → 提交按钮 loading |
+| onValuesChange | `(changed: Partial<LoginValues>, all: LoginValues) => void` | 任一字段变化；受控时用它回写，非受控时可用于实时观察 |
+| beforeSubmit | `(values: LoginValues) => boolean \| void \| Promise<boolean \| void>` | 校验通过后、`onFinish` 之前执行；返回 `false` 或抛错即中止。执行期间按钮保持 loading |
 
 ## Slots
 
@@ -4320,6 +4424,7 @@ import { LoginForm } from "@hulianui/ui"
 | title | `ReactNode` | 标题（默认 `locale.loginForm.title`） |
 | subtitle | `ReactNode` | 副标题（标题下方引导文案，左对齐·muted） |
 | logo | `ReactNode` | 品牌 logo（头部左上） |
+| extra | `ReactNode` | 密码字段与「记住我」之间（人机验证码、租户选择等） |
 | footer | `ReactNode` | 底部附加区（忘记密码 / 注册链接等） |
 
 `LoginValues = { username: string; password: string; remember: boolean }`。
@@ -4341,13 +4446,44 @@ import { LoginForm } from "@hulianui/ui"
 />
 ```
 
+## 自定义校验 / 受控 / 验证码
+
+```tsx
+const [values, setValues] = useState({ username: "", password: "", remember: false });
+const [points, setPoints] = useState<CaptchaPoint[]>([]);
+const ticket = useRef<string | null>(null);
+
+<LoginForm
+  // 1. 字段级校验：内置必填先跑，这里追加格式约束
+  rules={{
+    username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: "账号格式不正确" }],
+    password: [{ min: 6, max: 32, message: "密码 6~32 位" }],
+  }}
+  // 2. 受控：外部持有实时值
+  values={values}
+  onValuesChange={(_changed, all) => setValues(all)}
+  // 3. 提交前插一步：过人机验证码，拿票据
+  extra={<ClickCaptcha backgroundSrc={captcha.background} onComplete={setPoints} />}
+  beforeSubmit={async () => {
+    if (points.length < 3) return false;                 // 未过验证 → 中止
+    ticket.current = await api.verifyCaptcha(captcha.id, points);
+  }}
+  onFinish={({ username, password }) => api.login(username, password, ticket.current)}
+/>
+```
+
 ## 禁忌 / 坑
 
-- 表单状态由组件内部托管，外部拿不到 username/password 的实时值——只能在 `onFinish` 拿到最终 `values`。若父层自己也在管提交态（如全局 loading），用 `loading` prop 覆盖内置 loading，别另写一份。
+- 默认非受控：不传 `values` 时表单状态由组件托管，外部只能在 `onFinish` 拿最终值——需要实时值就传 `values` + `onValuesChange` 转受控（受控回写不会二次触发 `onValuesChange`，不会循环）。
+- 传了 `values` 却不在 `onValuesChange` 里回写 = 输入框打不进字（与所有受控组件一致）。
+- `rules` 只追加不替换：内置必填规则始终第一条先跑，所以空值时先出「请输入账号」，不会跳过必填直接报格式错。
+- `beforeSubmit` 抛错等同返回 `false`（不中断也不上抛，避免未捕获 rejection）；要给用户错误提示请在自己的 catch 里做。
+- `beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不需要自己再管 loading。
+- 若父层自己也在管提交态（如全局 loading），用 `loading` prop 覆盖内置 loading，别另写一份。
 - `onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。
 
 ## 相关
-[Form](https://hulianui.haloritual.com/components/form) · [ModalForm / DrawerForm](https://hulianui.haloritual.com/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/components/steps-form) · [Field](https://hulianui.haloritual.com/components/field) · [SearchForm](https://hulianui.haloritual.com/components/search-form)
+[ClickCaptcha](https://hulianui.haloritual.com/components/click-captcha) · [Form](https://hulianui.haloritual.com/components/form) · [ModalForm / DrawerForm](https://hulianui.haloritual.com/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/components/steps-form) · [Field](https://hulianui.haloritual.com/components/field) · [SearchForm](https://hulianui.haloritual.com/components/search-form)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # MarkdownEditor
