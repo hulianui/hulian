@@ -1,1 +1,2647 @@
-{ "schemaVersion": 1, "react": "19.2.8", "environment": "packed-consumer", "scenarios": {} }
+{
+  "schemaVersion": 1,
+  "react": "19.2.8",
+  "environment": "packed-consumer",
+  "scenarios": {
+    "action-sheet/basic": {
+      "cascadeFanout": 23,
+      "commitDurationMs": 3.9999998211860657,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "affix/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 1.3999998569488525,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "alert-dialog/basic": {
+      "cascadeFanout": 22,
+      "commitDurationMs": 3.3999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "anchor/basic": {
+      "cascadeFanout": 14,
+      "commitDurationMs": 1.6999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "android/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.5999999642372131,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "animated-beam/frame-budget": {
+      "cascadeFanout": 27,
+      "commitDurationMs": 1,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999727,
+      "longestTaskMs": 0
+    },
+    "animated-gradient-text/frame-budget": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.19999992847442627,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "animated-list/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.6000000238418579,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "animated-shiny-text/frame-budget": {
+      "cascadeFanout": 3,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "animated-theme-toggler/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "annotation/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1.100000023841858,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "antigravity/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "app-launcher/basic": {
+      "cascadeFanout": 21,
+      "commitDurationMs": 2.0000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.19999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "artifact/basic": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 2.0999999046325684,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "ascii-text/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "aspect-ratio/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.6999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "aurora-text/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "aurora/frame-budget": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.10000002384185791,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "avatar-circles/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 1.0000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "back-top/basic": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 1.4999998211860657,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "badge/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.9000000953674316,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "balatro/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0.010471204188481676,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 1,
+      "longTaskMs": 55,
+      "longestFrameMs": 49.90000000000009,
+      "longestTaskMs": 55
+    },
+    "ballpit/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "banner/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.100000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "beams/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.799999952316284,
+      "longTaskCount": 1,
+      "longTaskMs": 78,
+      "longestFrameMs": 75,
+      "longestTaskMs": 78
+    },
+    "beian-footer/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "bento-grid/basic": {
+      "cascadeFanout": 17,
+      "commitDurationMs": 1.6000001430511475,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "blob-cursor/frame-budget": {
+      "cascadeFanout": 16,
+      "commitDurationMs": 0.6000000238418579,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.400000035762787,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000273,
+      "longestTaskMs": 0
+    },
+    "blur-text/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.6000000238418579,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "book-3d/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000045,
+      "longestTaskMs": 0
+    },
+    "border-beam/frame-budget": {
+      "cascadeFanout": 14,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "border-glow/frame-budget": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999727,
+      "longestTaskMs": 0
+    },
+    "bounce-cards/frame-budget": {
+      "cascadeFanout": 20,
+      "commitDurationMs": 0.800000011920929,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "brand/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.8999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "breadcrumb/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.0000001788139343,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "bubble-menu/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "callout/basic": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.7000001072883606,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "card-nav/frame-budget": {
+      "cascadeFanout": 16,
+      "commitDurationMs": 0.40000003576278687,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "card-spotlight/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "card-swap/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "card/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.8999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "carousel/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 1.6999998092651367,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 15.699999988079071,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "chart/stress": {
+      "cascadeFanout": 115,
+      "commitDurationMs": 23.90000009536743,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "checkbox-group/basic": {
+      "cascadeFanout": 21,
+      "commitDurationMs": 3.100000023841858,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "chip/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1.3999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "choicebox/basic": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 1.5999999642372131,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "chroma-grid/frame-budget": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 0.5000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "chrome/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.8000001311302185,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.100000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "circular-text/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.30000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "citation/basic": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.5999999642372131,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "click-captcha/basic": {
+      "cascadeFanout": 21,
+      "commitDurationMs": 3.100000023841858,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.19999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "click-spark/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "code-block/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.7999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.399999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "code/basic": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.9000000357627869,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "collapsible/basic": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 2.400000035762787,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "colorpicker/basic": {
+      "cascadeFanout": 20,
+      "commitDurationMs": 2.0999998450279236,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "comment/basic": {
+      "cascadeFanout": 20,
+      "commitDurationMs": 2.099999964237213,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "confirm-card/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 2.099999964237213,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "container/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.7000000476837158,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "context-menu/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 2.299999952316284,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "conversation/basic": {
+      "cascadeFanout": 22,
+      "commitDurationMs": 1.8999998569488525,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 15.900000035762787,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "coupon/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.1000000834465027,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "crosshair/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.400000035762787,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.400000000000091,
+      "longestTaskMs": 0
+    },
+    "cubes/frame-budget": {
+      "cascadeFanout": 52,
+      "commitDurationMs": 2.199999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 25.100000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 16.5,
+      "longestTaskMs": 0
+    },
+    "curved-loop/frame-budget": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 6.0999996066093445,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "danmaku/frame-budget": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.30000007152557373,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "decay-card/frame-budget": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 0.4999999403953552,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "decrypted-text/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 1.1999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "descriptions/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.799999952316284,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "dialog/cycles": {
+      "cascadeFanout": 21,
+      "commitDurationMs": 6.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 22.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "dither/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0.015706806282722512,
+      "interactionLatencyMs": 21.80000001192093,
+      "longTaskCount": 1,
+      "longTaskMs": 75,
+      "longestFrameMs": 75.09999999999991,
+      "longestTaskMs": 75
+    },
+    "divider/basic": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 1.0000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "document-sheet/basic": {
+      "cascadeFanout": 20,
+      "commitDurationMs": 2.899999976158142,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "dome-gallery/frame-budget": {
+      "cascadeFanout": 25,
+      "commitDurationMs": 1.7000000476837158,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.30000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "dot-field/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "dot-pattern/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.0999999046325684,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "dot/basic": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.8999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.099999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "elastic-slider/frame-budget": {
+      "cascadeFanout": 23,
+      "commitDurationMs": 0.800000011920929,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "electric-border/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "emoji-picker/basic": {
+      "cascadeFanout": 16,
+      "commitDurationMs": 2.2000001072883606,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "empty/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "evil-eye/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 1,
+      "longTaskMs": 62,
+      "longestFrameMs": 67.60000000000036,
+      "longestTaskMs": 62
+    },
+    "fab/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 1.100000023841858,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "falling-text/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "field/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 2.3999998569488525,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "fit-screen/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.900000035762787,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "flickering-grid/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.799999952316284,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "floating-reactions/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "flow/basic": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 2.4999999403953552,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "flowing-menu/frame-budget": {
+      "cascadeFanout": 29,
+      "commitDurationMs": 0.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "fluid-glass/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.10000002384185791,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 49.399999999999636,
+      "longestTaskMs": 0
+    },
+    "folder/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.399999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "funnel/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 1.9000000357627869,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "fuzzy-text/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "ghost-cursor/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 15.699999988079071,
+      "longTaskCount": 1,
+      "longTaskMs": 71,
+      "longestFrameMs": 66.79999999999973,
+      "longestTaskMs": 71
+    },
+    "gift-feed/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 0.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.19999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "glare-hover/frame-budget": {
+      "cascadeFanout": 1,
+      "commitDurationMs": 0.09999996423721313,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "glass-icons/frame-budget": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 0.40000003576278687,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "glass-surface/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.40000009536743164,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "glitch-text/frame-budget": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.10000002384185791,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.30000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "gooey-nav/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 0.4999999403953552,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.100000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000045,
+      "longestTaskMs": 0
+    },
+    "gradual-blur/frame-budget": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 15.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "grid-distortion/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 20.200000047683716,
+      "longTaskCount": 1,
+      "longTaskMs": 56,
+      "longestFrameMs": 56.80000000000018,
+      "longestTaskMs": 56
+    },
+    "grid-motion/frame-budget": {
+      "cascadeFanout": 35,
+      "commitDurationMs": 0.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.400000000000091,
+      "longestTaskMs": 0
+    },
+    "grid-pattern/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.9999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "grid/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 1.199999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "heading/basic": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.8999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "hero-video-dialog/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1.3999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 25.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "hyperspeed/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005263157894736842,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 41.70000000000073,
+      "longestTaskMs": 0
+    },
+    "image-cropper/basic": {
+      "cascadeFanout": 26,
+      "commitDurationMs": 6.000000178813934,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "image-trail/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "image-viewer/basic": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.6000000238418579,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "image/basic": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.7999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "infinite-menu/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 11.400000274181366,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "infinite-scroll/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.7000000476837158,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "input-otp/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 1.399999976158142,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "input/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1.3000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "iphone/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.6999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "iridescence/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.10000002384185791,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 33.30000000000018,
+      "longestTaskMs": 0
+    },
+    "kanban/basic": {
+      "cascadeFanout": 24,
+      "commitDurationMs": 3.1000000834465027,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "lanyard/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "legend/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.8999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "lens/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "letter-glitch/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "light-rays/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 1,
+      "longTaskMs": 54,
+      "longestFrameMs": 50,
+      "longestTaskMs": 54
+    },
+    "lightning/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 41.70000000000073,
+      "longestTaskMs": 0
+    },
+    "line-waves/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 1,
+      "longTaskMs": 56,
+      "longestFrameMs": 50.200000000000045,
+      "longestTaskMs": 56
+    },
+    "link/basic": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.800000011920929,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "listbox/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 1.5000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "live-chat/basic": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 1.3000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "log-viewer/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.8000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.100000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "logo-loop/frame-budget": {
+      "cascadeFanout": 30,
+      "commitDurationMs": 1.0999999642372131,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "magic-bento/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999454,
+      "longestTaskMs": 0
+    },
+    "magic-card/frame-budget": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.3999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.399999999999636,
+      "longestTaskMs": 0
+    },
+    "magic-rings/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 1,
+      "longTaskMs": 65,
+      "longestFrameMs": 58.400000000000546,
+      "longestTaskMs": 65
+    },
+    "magnet-lines/frame-budget": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "magnet/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.099999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "markdown-editor/stress": {
+      "cascadeFanout": 38,
+      "commitDurationMs": 2.0999999046325684,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "marquee/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "masonry/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 2.3999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "math-text/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1.199999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "mentions/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 1.0000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "message-actions/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 1.300000011920929,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "meta-balls/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 41.600000000000364,
+      "longestTaskMs": 0
+    },
+    "metallic-paint/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.10000002384185791,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 1,
+      "longTaskMs": 86,
+      "longestFrameMs": 83.30000000000018,
+      "longestTaskMs": 86
+    },
+    "meteors/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "modal/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 1.4999999403953552,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "model-viewer/frame-budget": {
+      "cascadeFanout": 16,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "nav-menu/basic": {
+      "cascadeFanout": 29,
+      "commitDurationMs": 4.9999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "navbar/basic": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 1.4000000357627869,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "notification/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 1.6999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "number-ticker/frame-budget": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "orb/frame-budget": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.10000002384185791,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 50.19999999999891,
+      "longestTaskMs": 0
+    },
+    "orbit-images/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999454,
+      "longestTaskMs": 0
+    },
+    "orbiting-circles/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.40000003576278687,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "pagination/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 3.299999952316284,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.30000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "particles/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.10000002384185791,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "picker/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.9000000953674316,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "pill-nav/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "pixel-blast/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999992847442627,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 1,
+      "longTaskMs": 53,
+      "longestFrameMs": 50,
+      "longestTaskMs": 53
+    },
+    "pixel-card/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "pixel-trail/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 25,
+      "longestTaskMs": 0
+    },
+    "pixel-transition/frame-budget": {
+      "cascadeFanout": 16,
+      "commitDurationMs": 0.5999999642372131,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "plasma-wave/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 49.90000000000009,
+      "longestTaskMs": 0
+    },
+    "pro-table/stress": {
+      "cascadeFanout": 68,
+      "commitDurationMs": 13.700000166893005,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "profile-card/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "progress/basic": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.799999952316284,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "progressive-blur/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.9000000953674316,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 15.799999952316284,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "prompt-input/basic": {
+      "cascadeFanout": 22,
+      "commitDurationMs": 2.600000023841858,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.30000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "prompt-suggestions/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "prose/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.9000001549720764,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "pull-to-refresh/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 1.2000001668930054,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.099999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "pulsating-button/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.19999992847442627,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.099999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 9.900000000000546,
+      "longestTaskMs": 0
+    },
+    "question-card/basic": {
+      "cascadeFanout": 24,
+      "commitDurationMs": 1.8000001311302185,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "radar/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 1,
+      "longTaskMs": 51,
+      "longestFrameMs": 50.100000000000136,
+      "longestTaskMs": 51
+    },
+    "radio/basic": {
+      "cascadeFanout": 24,
+      "commitDurationMs": 3.2000001072883606,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "rainbow-button/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "reflective-card/frame-budget": {
+      "cascadeFanout": 19,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "region-select/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 1.0000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "relative-time/basic": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.8000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "remote-select/basic": {
+      "cascadeFanout": 25,
+      "commitDurationMs": 3.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "resizable/basic": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 2.2999998331069946,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "result/basic": {
+      "cascadeFanout": 16,
+      "commitDurationMs": 1.1000000834465027,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "retro-grid/frame-budget": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "reveal/frame-budget": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 0.40000003576278687,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "ripple-button/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.799999952316284,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "ripple-grid/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 1,
+      "longTaskMs": 57,
+      "longestFrameMs": 50,
+      "longestTaskMs": 57
+    },
+    "ripple/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "safari/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.7999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "safe-area/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.7999997735023499,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "sankey/basic": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 2.099999964237213,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "score-ring/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.9000000953674316,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "scrambled-text/frame-budget": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "scroll-area/basic": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 3.5999999046325684,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "scroll-float/frame-budget": {
+      "cascadeFanout": 17,
+      "commitDurationMs": 1.199999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "scroll-reveal/frame-budget": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 0.8999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.5,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "scroll-stack/frame-budget": {
+      "cascadeFanout": 1,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "scroll-velocity/frame-budget": {
+      "cascadeFanout": 14,
+      "commitDurationMs": 0.40000009536743164,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "segmented/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 1.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.799999952316284,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "service-message/basic": {
+      "cascadeFanout": 20,
+      "commitDurationMs": 1.800000011920929,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "shape-blur/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 41.599999999999454,
+      "longestTaskMs": 0
+    },
+    "shape-grid/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "shield-badge/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 1.199999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "shimmer-button/frame-budget": {
+      "cascadeFanout": 4,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "shine-border/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "shuffle/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 3.4999998211860657,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000728,
+      "longestTaskMs": 0
+    },
+    "side-rays/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 50,
+      "longestTaskMs": 0
+    },
+    "silk/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0.005235602094240838,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 33.30000000000018,
+      "longestTaskMs": 0
+    },
+    "skeleton/basic": {
+      "cascadeFanout": 17,
+      "commitDurationMs": 1.6999998092651367,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "social-button/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.8999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "spacer/basic": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.8000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "sparkles-text/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 0.6000000238418579,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "sparkline/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1.2999998927116394,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "spin/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 1.3000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "splash-cursor/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "split-text/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 0.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999454,
+      "longestTaskMs": 0
+    },
+    "spotlight/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.6999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "stack/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.699999988079071,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.900000035762787,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "staggered-menu/frame-budget": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "star-border/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.30000001192092896,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "stat/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 1.1999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "sticker-peel/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "streaming-text/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "striped-pattern/basic": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.6000000834465027,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "swipe-action/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.7000000476837158,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.599999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tab-bar/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.1000000834465027,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "table/stress": {
+      "cascadeFanout": 77,
+      "commitDurationMs": 13.100000023841858,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tablet/basic": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.800000011920929,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tabs/basic": {
+      "cascadeFanout": 26,
+      "commitDurationMs": 4.300000071525574,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "target-cursor/frame-budget": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999998909,
+      "longestTaskMs": 0
+    },
+    "task-runner/basic": {
+      "cascadeFanout": 24,
+      "commitDurationMs": 1.800000011920929,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "terminal/frame-budget": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.299999999999272,
+      "longestTaskMs": 0
+    },
+    "text-cursor/frame-budget": {
+      "cascadeFanout": 8,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "text-pressure/frame-budget": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.3999999761581421,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10,
+      "longestTaskMs": 0
+    },
+    "text/basic": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 0.6999998688697815,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "textarea/basic": {
+      "cascadeFanout": 7,
+      "commitDurationMs": 1.2999998927116394,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "thinking-block/frame-budget": {
+      "cascadeFanout": 14,
+      "commitDurationMs": 0.40000003576278687,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "thread-list/basic": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 0.8000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tilt/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.8999999165534973,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tilted-card/frame-budget": {
+      "cascadeFanout": 14,
+      "commitDurationMs": 0.5,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.899999976158142,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.200000000000273,
+      "longestTaskMs": 0
+    },
+    "time-field/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.2999998927116394,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "timeline/basic": {
+      "cascadeFanout": 13,
+      "commitDurationMs": 1.7000000476837158,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "toast/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.2000000476837158,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "toggle/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.6999998688697815,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tool-call/basic": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 2.4999996423721313,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.80000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "toolbar/basic": {
+      "cascadeFanout": 20,
+      "commitDurationMs": 1.8000000715255737,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tooltip/basic": {
+      "cascadeFanout": 22,
+      "commitDurationMs": 2.600000023841858,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tour/basic": {
+      "cascadeFanout": 15,
+      "commitDurationMs": 1.6999999284744263,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "transfer/basic": {
+      "cascadeFanout": 18,
+      "commitDurationMs": 2.400000035762787,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "tree/stress": {
+      "cascadeFanout": 14,
+      "commitDurationMs": 1.7999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.100000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "true-focus/frame-budget": {
+      "cascadeFanout": 14,
+      "commitDurationMs": 0.5000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.100000000000364,
+      "longestTaskMs": 0
+    },
+    "typing-animation/frame-budget": {
+      "cascadeFanout": 6,
+      "commitDurationMs": 0.7999998927116394,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.099999964237213,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "typing-dots/frame-budget": {
+      "cascadeFanout": 5,
+      "commitDurationMs": 0.19999998807907104,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 17.19999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.099999999999909,
+      "longestTaskMs": 0
+    },
+    "upload/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 1.7000001072883606,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "user/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.0000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.600000023841858,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "variable-proximity/frame-budget": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 0.2999999523162842,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 9.900000000000091,
+      "longestTaskMs": 0
+    },
+    "viewport/basic": {
+      "cascadeFanout": 12,
+      "commitDurationMs": 1.0999999046325684,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "virtual-list/scroll": {
+      "cascadeFanout": 10,
+      "commitDurationMs": 1.0999999642372131,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.30000001192093,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "voice-record/basic": {
+      "cascadeFanout": 11,
+      "commitDurationMs": 1.5000000596046448,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 18.200000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "watch/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.6000000238418579,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "watermark/basic": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.6000000238418579,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 0,
+      "longestTaskMs": 0
+    },
+    "wavy-background/frame-budget": {
+      "cascadeFanout": 9,
+      "commitDurationMs": 0.20000004768371582,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.700000047683716,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.300000000000182,
+      "longestTaskMs": 0
+    },
+    "word-rotate/frame-budget": {
+      "cascadeFanout": 16,
+      "commitDurationMs": 0.40000003576278687,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 10.199999999999818,
+      "longestTaskMs": 0
+    },
+    "world-map/frame-budget": {
+      "cascadeFanout": 34,
+      "commitDurationMs": 2.799999952316284,
+      "droppedFrameRatio": 0,
+      "interactionLatencyMs": 16.69999998807907,
+      "longTaskCount": 0,
+      "longTaskMs": 0,
+      "longestFrameMs": 9.899999999999636,
+      "longestTaskMs": 0
+    }
+  }
+}
