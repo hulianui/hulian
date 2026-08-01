@@ -2,6 +2,10 @@
   "name": "@hulianui/hulian-scan",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/browser.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
