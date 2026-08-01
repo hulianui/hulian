@@ -52,6 +52,7 @@ Claude Code / Cursor 的 MCP 配置：
 | tool | 什么时候调 |
 |---|---|
 | `inspect_project` | **开工前**。读消费项目已知配置：框架、包管理器、瑚琏包实装版本、`components.json`、ThemeProvider / token CSS / Next / Vite / Vitest 接入状态，并给出**结合本项目**的导入策略建议 |
+| `get_agent_profile` | 认完项目、动手之前。按场景取「该用什么组件语言、受什么约束、按什么步骤走」。三维正交：`surface` × `modifiers`（可组合）× `workflow`。不传参数先看目录对号入座 |
 | `recommend_ui` | 拿到一句业务需求时。一次返回排序后的 **页面 → 区块 → 组件** 组合，先看有没有现成整页可复用 |
 | `list_components` | 需要按关键词补齐候选时。`kind` 取 `component`(366) / `block`(57) / `page`(20) / `lib`(3)；`query` 会分词并按 name/title/description/category/group/tags/exports 打分排序；`limit` + `offset` 翻页 |
 | `get_component_doc` | 写下第一行使用某组件的代码**之前**。返回 Props / Events / Slots / 示例 / 禁忌坑；`names` 一次取多个，`sections` 只取需要的章节 |
@@ -60,7 +61,42 @@ Claude Code / Cursor 的 MCP 配置：
 | `install_block` | 要把区块或整页积木**放进项目**时。返回安装命令（跟随当前 registry base）、递归区块、Provider、必须替换项、插槽 |
 | `validate_hulian_usage` | **改完瑚琏相关代码必须调**。以库方式调用 `@hulianui/guard`，返回带 `ruleId` / `file` / `line` / `column` 的结构化诊断 |
 
-所有 tool 都声明了 `readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`；`inspect_project`、`recommend_ui`、`list_components`、`validate_hulian_usage` 另有 `outputSchema` 并返回 `structuredContent`。
+所有 tool 都声明了 `readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`；`inspect_project`、`recommend_ui`、`list_components`、`validate_hulian_usage`、`get_agent_profile` 另有 `outputSchema` 并返回 `structuredContent`。
+
+### 场景 profile 是三维正交的，不是一张平铺清单
+
+`get_agent_profile` 的三个维度各管一件事，**分开才能组合**：
+
+| 维度 | 管什么 | 取值 |
+|---|---|---|
+| `surface` | 组件语言 —— 这个页面该用什么 | `admin-console` / `config-tool` / `ai-product` / `content-brand` / `desktop-shell` |
+| `modifiers` | 约束与预算，**可叠加** | `mobile` / `dashboard` / `data-dense` / `marketing` / `high-performance` |
+| `workflow` | 任务步骤 | `prototype` / `build` / `audit` / `dogfood` / `migrate` |
+
+移动端 AI 产品是 `ai-product + [mobile]`，独立数据大屏是 `admin-console + [dashboard]`。把它们做成 profile 的子类型会让一个项目同时匹配多个、选型时互斥判断失效；把 `audit` / `dogfood` 混进 `surface` 列表则更糟 —— 模型拿到 `profile: "dogfood"` 推不出任何组件语言。
+
+`componentRoles` 取自对 12 个真实消费项目的扫描（见仓库 `docs/agent-adoption-baseline-2026-08-01.md`），不是凭印象列的。有测试对着 registry 校验每个 slug 真实存在 —— profile 里写一个不存在的组件，等于让模型去 import 查不到的东西，比不给建议更糟。
+
+`workflow` 里的 `prototype` 来自一条实证：同产品同团队的 demo 原型与正式系统，在 12 个企业高层业务组件上分别是 5/12 与 10/12。原型求快是正当取向，给它推荐全套企业件是过度工程。
+
+## 一键接入：`init-agent`
+
+```bash
+npx @hulianui/mcp init-agent            # 装 / 更新
+npx @hulianui/mcp init-agent --check    # 只报告，有待办时非 0 退出，可进 CI
+npx @hulianui/mcp init-agent --doctor   # 体检：装在哪、是否最新、MCP 配没配
+npx @hulianui/mcp init-agent --all      # 四家客户端全覆盖
+```
+
+把契约写进各家客户端各自读取的文件：`AGENTS.md`（Codex / Copilot agents 模式）、`CLAUDE.md`（Claude Code）、`.cursor/rules/hulianui.mdc`（Cursor，自带 frontmatter 才会被自动加载）、`.github/copilot-instructions.md`（GitHub Copilot）。
+
+**不弄坏你已有的内容**：契约包在 `<!-- hulianui:begin -->` / `<!-- hulianui:end -->` 之间，更新只替换这一段，区块前后逐字保留；重复运行文件逐字节不变；marker 只剩一半（被手工编辑坏了）时报冲突并退出、**不写任何文件**，不猜区块边界；`--check` 绝不写盘。
+
+默认只更新项目里**已存在**的指令文件，不主动往项目里撒四份新文件；一份都没有时才创建 `AGENTS.md`。
+
+契约本身刻意保持短，只放所有 UI 任务都适用的六条。场景差异由 `get_agent_profile` 按需取，不往指令文件里堆 —— 否则营销页的特效配额会被无差别套到中后台和长文页上。契约里列出的维度取值直接从 profile 真源生成，不会两处漂移。
+
+`--doctor` 会额外检查项目里有没有引用 hulianui 的 MCP 配置：没有的话契约里的 tool 调用会落空，这时只装契约是不够的。
 
 名字打错会返回最接近的候选（带编辑距离），AI 可据此自我纠正，而不是收到一句干巴巴的 not found。搜索零命中时会跨粒度降级并标注「可能相关」—— **不会**把「没搜到」说成「库里没有」。
 
