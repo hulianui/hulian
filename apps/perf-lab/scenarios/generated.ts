@@ -1905,7 +1905,7 @@ export const scenarioMetadata = {
     category: "animation",
     categories: ["collection", "data-display"],
     animated: true,
-    webgl: false,
+    webgl: true,
     source: "packages/ui/src/circular-gallery/index.ts",
   },
   "circular-text": {

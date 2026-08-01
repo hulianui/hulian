@@ -176,6 +176,7 @@ const DEFAULT_ITEMS: CircularGalleryItem[] = [
 ];
 
 const DEFAULT_FONT = "bold 30px ui-sans-serif, system-ui, sans-serif";
+export const CIRCULAR_GALLERY_PLANE_SEGMENTS = { width: 32, height: 16 } as const;
 
 export function CircularGallery({
   items,
@@ -224,7 +225,13 @@ export function CircularGallery({
       camera.position.z = 20;
 
       const scene = new Transform();
-      const planeGeometry = new Plane(gl, { heightSegments: 50, widthSegments: 100 });
+      // 32x16 已能平滑承载顶点波动。原 100x50 每张卡片会创建约十倍顶点，
+      // 在 16 张无缝循环卡片初始化时容易把单任务推过 100ms。
+      const planeGeometry = new Plane(gl, {
+        heightSegments: CIRCULAR_GALLERY_PLANE_SEGMENTS.height,
+        widthSegments: CIRCULAR_GALLERY_PLANE_SEGMENTS.width,
+      });
+      const titleGeometry = new Plane(gl);
 
       const resolvedTextColor = resolveColor(textColorRef.current, host) || "#888888";
       const galleryItems =
@@ -301,7 +308,7 @@ export function CircularGallery({
           transparent: true,
         });
         const titleMesh = new Mesh(gl, {
-          geometry: new Plane(gl),
+          geometry: titleGeometry,
           program: titleProgram,
         });
         titleMesh.setParent(plane);
