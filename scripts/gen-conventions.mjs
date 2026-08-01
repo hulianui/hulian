@@ -15,7 +15,7 @@
 
 import { readFileSync, readdirSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
@@ -82,6 +82,78 @@ const GLOBAL = [
   },
 ];
 
+// 这里只放能用 AST 低误报判断的规则。其余经验即使很重要，也只能进入 advisories，
+// 不能把自然语言包装成一个看似可执行、实际无法可靠执行的“门禁”。
+const EXECUTABLE_RULES = [
+  {
+    id: "no-style-override",
+    severity: "error",
+    matcher: {
+      kind: "forbidden-jsx-prop",
+      imports: ["@hulianui/ui", "@hulianui/ui/date-pickers"],
+      prop: "style",
+    },
+    message: "业务代码不要用 style 覆盖瑚琏组件样式。",
+    instead: "为组件补 prop 或 variant，并使用语义 token。",
+  },
+  {
+    id: "no-private-deep-import",
+    severity: "error",
+    matcher: {
+      kind: "forbidden-import",
+      sourcePattern: "^@hulianui/ui/(?!date-pickers$)",
+    },
+    message: "不要导入 @hulianui/ui 的私有深路径。",
+    instead: "从 @hulianui/ui 根入口导入；日期族使用 @hulianui/ui/date-pickers。",
+  },
+  {
+    id: "date-components-from-subpath",
+    severity: "error",
+    matcher: {
+      kind: "forbidden-import",
+      source: "@hulianui/ui",
+      importedNames: ["Calendar", "DatePicker", "DateTimePicker", "TimeField", "TimePicker", "MuiBridgeProvider"],
+    },
+    message: "日期族不能从 @hulianui/ui 根入口导入。",
+    instead: "改从 @hulianui/ui/date-pickers 导入。",
+  },
+  {
+    id: "date-picker-provider-import",
+    severity: "warning",
+    matcher: {
+      kind: "required-import-companion",
+      source: "@hulianui/ui/date-pickers",
+      importedNames: ["Calendar", "DatePicker", "DateTimePicker", "TimeField", "TimePicker"],
+      companion: { source: "@hulianui/ui/date-pickers", importedName: "MuiBridgeProvider" },
+    },
+    message: "使用日期族时需要同时导入并在上层渲染 MuiBridgeProvider。",
+    instead: "从同一入口导入 MuiBridgeProvider，并包住日期组件子树。",
+  },
+  {
+    id: "toast-object-signature",
+    severity: "error",
+    matcher: {
+      kind: "forbidden-call",
+      source: "@hulianui/ui",
+      importedName: "toast",
+      memberCall: true,
+    },
+    message: "toast 没有 success/error 等成员快捷方法。",
+    instead: '使用 toast({ title: "已保存", tone: "success" })。',
+  },
+  {
+    id: "color-token-prefix",
+    severity: "error",
+    matcher: {
+      kind: "css-var-prefix",
+      attributes: ["fill", "stroke", "style"],
+      requiredPrefix: "--color-",
+    },
+    message: "SVG 或内联 style 中的颜色变量必须使用 --color- 前缀。",
+    instead: "例如 var(--color-primary)。",
+  },
+];
+
 // ------------------------------------------------------- 易混淆的兄弟件 --
 // 选错不会报错，只是不对 —— 这类恰恰是 AI 最容易栽的。取值均已核对源码。
 
@@ -142,9 +214,14 @@ function extractPitfalls(md) {
     .map((s) => ({ rule: s.replace(/\[\[([\w-]+)\]\]/g, "$1").replace(/\s+/g, " ") }));
 }
 
-function main() {
+export function buildConventions() {
   const slugs = readdirSync(UI_SRC).filter((d) => existsSync(join(UI_SRC, d, `${d}.md`)));
-  const components = {};
+  const advisories = GLOBAL.map((rule) => ({
+    ...rule,
+    id: `global/${rule.id}`,
+    scope: "global",
+    source: "scripts/gen-conventions.mjs",
+  }));
   let ruleCount = 0;
 
   for (const slug of slugs.sort()) {
@@ -152,30 +229,61 @@ function main() {
     const rules = extractPitfalls(md);
     if (!rules.length) continue;
     const title = (md.match(/^name:\s*(.+)$/m) || [])[1]?.trim() || slug;
-    components[slug] = { title, rules };
+    rules.forEach((rule, index) => {
+      advisories.push({
+        id: `component/${slug}/pitfall/${index + 1}`,
+        scope: slug,
+        title,
+        rule: rule.rule,
+        source: `packages/ui/src/${slug}/${slug}.md`,
+      });
+    });
     ruleCount += rules.length;
   }
 
-  const out = {
-    version: "1",
+  return {
+    version: "2",
     description:
-      "瑚琏使用约束。global/confusables 手写并核对过源码；components 从各组件 md 的「禁忌 / 坑」章节自动提取。",
+      "瑚琏使用约束。executableRules 可由 @hulianui/guard 执行；advisories 是需结合业务判断的建议，不冒充硬门禁。",
     generatedBy: "scripts/gen-conventions.mjs",
-    global: GLOBAL,
-    confusables: CONFUSABLES,
-    components,
+    executableRules: EXECUTABLE_RULES,
+    advisories,
+    confusables: CONFUSABLES.map((item, index) => ({ id: `confusable/${index + 1}`, ...item })),
+    stats: {
+      componentDocs: slugs.length,
+      componentAdvisories: ruleCount,
+      totalAdvisories: advisories.length,
+    },
   };
+}
 
-  const json = JSON.stringify(out, null, 2);
+function main() {
+  const out = buildConventions();
+  const json = `${JSON.stringify(out, null, 2)}\n`;
+
+  if (process.argv.includes("--check")) {
+    const current = existsSync(OUT_PKG) ? readFileSync(OUT_PKG, "utf8") : "";
+    if (current !== json) {
+      console.error("[conventions] packages/ui/conventions.json 已漂移，请运行 pnpm conventions");
+      process.exitCode = 1;
+      return;
+    }
+    console.log(
+      `[conventions] check PASS · executable(${out.executableRules.length}) · advisories(${out.advisories.length})`,
+    );
+    return;
+  }
+
   writeFileSync(OUT_PKG, json);
   const wwwDir = dirname(OUT_WWW);
   if (!existsSync(wwwDir)) mkdirSync(wwwDir, { recursive: true });
   writeFileSync(OUT_WWW, json);
 
   console.log(
-    `[conventions] global(${GLOBAL.length}) · confusables(${CONFUSABLES.length}) · ` +
-      `components(${Object.keys(components).length}/${slugs.length} 有实质约束，共 ${ruleCount} 条)`,
+    `[conventions] executable(${out.executableRules.length}) · advisories(${out.advisories.length}) · ` +
+      `confusables(${out.confusables.length}) · component docs(${out.stats.componentDocs})`,
   );
 }
 
-main();
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) main();
