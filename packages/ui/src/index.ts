@@ -343,6 +343,7 @@ export * from "./award-badge";
 export * from "./contribution-graph";
 export * from "./legend";
 export * from "./app-launcher";
+export * from "./region-select";
 
 // —— react-bits 移植批（自动接线）——
 export * from "./ascii-text";

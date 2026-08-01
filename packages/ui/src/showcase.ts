@@ -279,6 +279,7 @@ export { awardBadgeShowcase } from "./award-badge/award-badge.showcase";
 export { contributionGraphShowcase } from "./contribution-graph/contribution-graph.showcase";
 export { legendShowcase } from "./legend/legend.showcase";
 export { appLauncherShowcase } from "./app-launcher/app-launcher.showcase";
+export { regionSelectShowcase } from "./region-select/region-select.showcase";
 export { asciiTextShowcase } from "./ascii-text/ascii-text.showcase";
 export { curvedLoopShowcase } from "./curved-loop/curved-loop.showcase";
 export { fallingTextShowcase } from "./falling-text/falling-text.showcase";

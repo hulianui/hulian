@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 372 个组件 · v0.16.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 373 个组件 · v0.16.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -58,7 +58,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 …
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（57）
+## 表单 forms（58）
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 按钮 · CVA 变体 + press 动效
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体)
 - [Calendar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/calendar/calendar.md): 日历面板 · 自研零依赖(日/月/年三层下钻·常驻不带浮层) + min-max/disabledDate/今天快捷 · 定宽字符串受控
@@ -96,6 +96,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [RainbowButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rainbow-button/rainbow-button.md): 彩虹按钮 · chart 流光底 + 模糊光晕 + RSC · forms/button · #animated
 - [Rating](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rating/rating.md): 评分 · 零依赖受控星级(radio 语义) + 自定义图标 + hover 预览 + token 星色
 - [RegionCascader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-cascader/region-cascader.md): 中国省市区级联 · 内置全量行政区划(国家统计局口径·3级) + 浮层搜索直达 + onChange 同回码与名 · dogfood Cascader
+- [RegionSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-select/region-select.md): 图上框选回坐标 · 拖框拿回**原图像素** [x1,y1,x2,y2](区别 ImageCropper 出 Blob) · 反向拖规范化 + minSide 滤误点 + aspect 固定比例(撞边界整体缩不破比例)…
 - [RemoteSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/remote-select/remote-select.md): 远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips
 - [RippleButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ripple-button/ripple-button.md): 波纹按钮 · 点击落点扩散(Material) + reduced-motion · forms/button · #animated
 - [ScopeMatrix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scope-matrix/scope-matrix.md): 范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话

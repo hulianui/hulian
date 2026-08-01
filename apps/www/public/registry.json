@@ -4508,6 +4508,66 @@
       ]
     },
     {
+      "name": "region-select",
+      "type": "registry:ui",
+      "title": "RegionSelect",
+      "description": "图上框选回坐标 · 拖框拿回**原图像素** [x1,y1,x2,y2](区别 ImageCropper 出 Blob) · 反向拖规范化 + minSide 滤误点 + aspect 固定比例(撞边界整体缩不破比例)…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { RegionSelect, toImagePoint, normalizeBox, applyAspect, boxMinSide, strokeWidthFor } from \"@hulianui/ui\"",
+        "exports": [
+          "RegionSelect",
+          "toImagePoint",
+          "normalizeBox",
+          "applyAspect",
+          "boxMinSide",
+          "strokeWidthFor"
+        ],
+        "types": [
+          "RegionBox",
+          "RegionRect",
+          "RegionSelectProps",
+          "RegionSelectBox"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-select/region-select.md",
+        "docLocal": "packages/ui/src/region-select/region-select.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/region-select/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/index.ts"
+        },
+        {
+          "path": "components/hulianui/region-select/region-box.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/region-box.ts"
+        },
+        {
+          "path": "components/hulianui/region-select/region-select.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/region-select.tsx"
+        },
+        {
+          "path": "components/hulianui/region-select/region-select.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/region-select.types.ts"
+        }
+      ]
+    },
+    {
       "name": "remote-select",
       "type": "registry:ui",
       "title": "RemoteSelect",
