@@ -1,11 +1,18 @@
 {
   "name": "@hulianui/mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "瑚琏 Hulian 的 MCP server —— 让 AI 按需查组件/区块/页面与使用约束，而不是猜签名或整吞 llms-full.txt。",
   "license": "MIT",
   "author": "hulianui",
   "homepage": "https://hulianui.haloritual.com",
-  "keywords": ["mcp", "model-context-protocol", "hulianui", "react", "component-library", "ai"],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "hulianui",
+    "react",
+    "component-library",
+    "ai"
+  ],
   "type": "module",
   "bin": {
     "hulianui-mcp": "./src/index.mjs"

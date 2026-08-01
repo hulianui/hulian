@@ -1,6 +1,6 @@
 {
   "name": "@hulianui/guard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "AST-based executable convention checks for HulianUI consumers.",
   "license": "MIT",
   "type": "module",
