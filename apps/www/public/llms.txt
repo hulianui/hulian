@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 373 个组件 · v0.16.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 374 个组件 · v0.16.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -285,7 +285,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ToolCall](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tool-call/tool-call.md): 工具调用卡 · dogfood Collapsible + Dot状态色 + Spinner(运行中) · pending/running/success/error 四态 + 参数/结果折叠面板 + 工具图标
 - [TypingDots](https://github.com/hulianui/hulian/blob/master/packages/ui/src/typing-dots/typing-dots.md): 打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
 
-## 装饰 decoration（91）
+## 装饰 decoration（92）
 - [AnimatedBeam](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-beam/animated-beam.md): 动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver) · decoration/overlay-fx · #animated
 - [Antigravity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/antigravity/antigravity.md): 反重力粒子 · 吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点…
 - [Aurora](https://github.com/hulianui/hulian/blob/master/packages/ui/src/aurora/aurora.md): 极光渐变背景 · 双层 repeating-linear-gradient 横移干涉 + 径向 mask 聚焦 + chart token(纯 CSS·RSC) · decoration/backdrop · #ani…
@@ -376,6 +376,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [StripedPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/striped-pattern/striped-pattern.md): 斜条纹背景 · 纯 CSS 渐变 + currentColor
 - [TargetCursor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/target-cursor/target-cursor.md): 准星光标 · 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration…
 - [Threads](https://github.com/hulianui/hulian/blob/master/packages/ui/src/threads/threads.md): 流动丝线背景 · WebGL/ogl Perlin 波动线随鼠标摆动 + 透明底叠加 + chart token + 静态 fallback · decoration/backdrop · #animated #web…
+- [Tilt](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilt/tilt.md): 视差倾斜包裹器 · 裹住任意 children 做 3D 倾斜(区别 TiltedCard 的固定卡片结构) · 指针/陀螺仪/手动角度三种驱动 + 全窗跟踪 + 单轴限制 + 反向 + 静息角 + 悬停放大 · gl…
 - [WavyBackground](https://github.com/hulianui/hulian/blob/master/packages/ui/src/wavy-background/wavy-background.md): 噪声波浪 · canvas 多彩波浪带叠加 + 内联零依赖 value noise + chart token + reduced-motion 静态 · decoration/backdrop · #animated
 
 ## 设备外壳 mockups（7）

@@ -18616,6 +18616,70 @@
       ]
     },
     {
+      "name": "tilt",
+      "type": "registry:ui",
+      "title": "Tilt",
+      "description": "视差倾斜包裹器 · 裹住任意 children 做 3D 倾斜(区别 TiltedCard 的固定卡片结构) · 指针/陀螺仪/手动角度三种驱动 + 全窗跟踪 + 单轴限制 + 反向 + 静息角 + 悬停放大 · gl…",
+      "categories": [
+        "decoration"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
+      ],
+      "meta": {
+        "import": "import { Tilt, tiltAngles, glareState, normalizePointer } from \"@hulianui/ui\"",
+        "exports": [
+          "Tilt",
+          "tiltAngles",
+          "glareState",
+          "normalizePointer"
+        ],
+        "types": [
+          "TiltAngles",
+          "TiltAngleOptions",
+          "GlareState",
+          "GlareOptions",
+          "TiltProps",
+          "TiltGlarePosition",
+          "TiltEventPayload"
+        ],
+        "group": "overlay-fx",
+        "tags": [
+          "\"animated\""
+        ],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilt/tilt.md",
+        "docLocal": "packages/ui/src/tilt/tilt.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/tilt/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/index.ts"
+        },
+        {
+          "path": "components/hulianui/tilt/tilt-geometry.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/tilt-geometry.ts"
+        },
+        {
+          "path": "components/hulianui/tilt/tilt.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/tilt.tsx"
+        },
+        {
+          "path": "components/hulianui/tilt/tilt.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/tilt.types.ts"
+        }
+      ]
+    },
+    {
       "name": "wavy-background",
       "type": "registry:ui",
       "title": "WavyBackground",
