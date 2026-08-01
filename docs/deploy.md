@@ -18,6 +18,12 @@
 | Node 版本 | `22`（已由仓库根 `.nvmrc` 固定） |
 | 环境变量 | 无（纯静态，无密钥） |
 
+**构建命令不要拆。** `www` 的 `build` 是 `pnpm gen && next build`，`gen` 负责生成 `/r`、`/d`、
+`conventions.json` 和 changelog 数据——这些是 Git 忽略的产物，MCP 的远程模式和 `/changelog`
+页面都依赖它们。曾经 `build` 只有 `next build`、生成靠调用方自己记得先跑，结果 CI 补了这一步
+而平台构建命令没补，主站长期缺整个 `/r` 端点（`curl .../r/registry.json` 回落成 HTML）。
+任何托管平台只要能跑 `pnpm --filter www build`，就应当得到与 CI 完全一致的产物。
+
 ---
 
 ## A. Cloudflare Pages（推荐）
@@ -28,7 +34,11 @@
    - Build command: `pnpm install && pnpm --filter www build`
    - Build output directory: `apps/www/out`
    - Root directory: 留空（仓库根）
-   - 环境变量加 `NODE_VERSION = 22`（或靠 `.nvmrc`）
+   - **环境变量不要设 `NODE_VERSION`**，让仓库的 `.node-version` / `.nvmrc`（均为精确补丁号）生效。
+     若项目里已经设过，去 Settings → Variables and Secrets 删掉，或改成与 `.nvmrc` 一致的**完整
+     补丁号**。写 `22` 这种浮动值会被解析成平台当时的 22 系列默认版本——2026-08-01 主站构建就是
+     这么挂的：解析出 22.22.0，而依赖树里 `ini@7.0.0` 要求 `^22.22.2`，`pnpm install` 直接
+     `ERR_PNPM_UNSUPPORTED_ENGINE`（`.npmrc` 的 `engine-strict=true` 让这类不匹配是硬失败）。
 3. Save and Deploy。首发后给一个 `*.pages.dev` 子域。
 4. 自定义域 `hulianui.haloritual.com`（域在阿里云，非 Cloudflare）：
    - Pages 项目 → Custom domains → Set up a domain → 填 `hulianui.haloritual.com`。
@@ -53,4 +63,13 @@
 
 - **basePath**：以上都是部署到**域根**（自定义域或平台子域），**无需 basePath**。只有 GitHub Pages 项目页那种 `/hulian/` 子路径才需要 `basePath`/`assetPrefix`（本仓库没走那条路）。
 - 推送 `master` 后平台自动重新构建发布（连了 Git 即 CI/CD）。
+- **平台构建失败只能去控制台查**：Cloudflare Pages 走 Git 集成，授权建立在 Cloudflare 账号
+  与 GitHub 之间，**仓库里没有、本机也不需要任何 Cloudflare 凭证**（`wrangler whoami` 会报
+  未登录，这是正常状态，不是配置丢失）。所以构建日志既不在 GitHub Actions 里，也拿不到
+  ——只能 dash.cloudflare.com → 该 Pages 项目 → 失败的部署 → View build log。
+  想让日志和部署都收进 CI，就得改走 Direct Upload：建 `Account / Cloudflare Pages / Edit`
+  的 API Token，配 `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` 两个仓库 secret，
+  再加一个 wrangler 直传 job 复用 `www-out` 产物（中文站的 `deploy-zh` 就是这个形状）。
+  注意 Git 集成项目与 Direct Upload 项目在 Cloudflare 是两种模式，切换可能要新建项目并
+  迁移自定义域。
 - 静态站在真实浏览器渲染正常；headless CLI 截图可能空白（与 MSW client gate 有关，见 memory `www-msw-gate-blanks-headless-screenshots`），**不影响线上访问**。
