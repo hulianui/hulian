@@ -8,6 +8,7 @@ dist/
 # www
 .next/
 next-env.d.ts
+apps/www/.intlayer/
 
 # tauri
 apps/desktop/src-tauri/target/
