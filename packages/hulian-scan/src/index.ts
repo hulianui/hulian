@@ -5,3 +5,5 @@ export * from "./analyzer/statistics";
 export * from "./analyzer/budgets";
 export * from "./diagnosis/compare";
 export * from "./diagnosis/diagnose";
+export * from "./report/report";
+export * from "./report/checkpoint";

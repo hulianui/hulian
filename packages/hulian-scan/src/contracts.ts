@@ -92,6 +92,7 @@ export interface ScanReport {
   environment: ScanEnvironment;
   runs: ScenarioRun[];
   findings: Finding[];
+  inventory?: Array<Record<string, unknown>>;
 }
 
 export function definePerformanceScenario(
