@@ -1,5 +1,34 @@
 # @hulianui/mcp
 
+## 0.3.0
+
+### Minor Changes
+
+- bf58470: 新增 `audit_hulian_adoption` tool 与 `npx @hulianui/mcp audit` 命令：给**已经有代码**的项目做组件采用体检（issue #43）。
+
+  存量项目才是采用率的主要战场，而它需要的东西和新建项目不一样：不是「该怎么搭」，而是「该用的有没有用上、从哪改起」。
+
+  - **自动判场景** —— surface + modifiers 三维正交，判据来自 profile 真源新增的 `detect` 字段（`signals` 的机器可判定伴生），依据与置信度一并给出，次名候选如实列出，可人工覆盖。
+  - **主指标是高层业务组件采用度**（如 `10/12`）而非裸覆盖率 —— 后者对项目规模敏感，前者直接对应「有没有绕过现成能力」。
+  - **机会点只报有邻近信号的缺口** —— 一个职责组里用过东西却缺关键件才报；整组一件没有 = 这个项目没这个场景。所以中后台不会因为 91 个 `decoration` 组件没用而被判采用不足，那是库存结构问题。新增的 `avoidCategories` 进一步保证 modifier 的建议不越过 surface 的组件语言边界。
+  - **风险项不一律标红** —— 每条带置信度与判断依据。实测 quay 的 69 处裸 `<button>`：high 0 / medium 2 / low 67。
+  - **原型口径** —— 传 `workflow: "prototype"` 后不推高层企业件（实证：同产品的 demo 与正式系统是 5/12 与 10/12，那是取向不同不是采用不足），但形态必备件照报。项目自述像原型时会提示，但**不自动切换**。
+  - **baseline / ratchet** —— CLI 的 `--write-baseline` 接受现有债务，`--check` 只拦新增。基线人类可读、不含项目源码。
+
+  输出**全部是带置信度的建议，不产生 error**：可静态证明的错误仍归 `validate_hulian_usage` / `@hulianui/guard`。写盘只在 CLI，tool 保持 `readOnlyHint` 语义不被破坏。
+
+  判定质量对着本机 11 个真实消费项目验证过，#43 的 7 条验收标准逐条通过。
+
+### Patch Changes
+
+- 52c0ac7: 修四条探测准确度问题，四条的共同形态都是「静默给出错误结论」，而 MCP 的定位是「props 不许猜，查这里」，最听话的调用方受害最深。
+
+  - **`inspect_project` 在 pnpm 项目里 `linked` 恒为 true**（#45）。pnpm 的 `node_modules/` 每一项都是指向 `.pnpm/` store 的软链，用 `isSymbolicLink()` 判会对任何包恒真，导致 `!linked` 那道版本漂移门禁对 pnpm 用户整体失效。改判「解析后是否逃出本层 node_modules 树」+ 读 specifier（`link:` / `file:` / `workspace:`）双保险，并新增 `linkKind` 区分 workspace 与临时联调。
+  - **版本漂移门禁对 0.x 永远比不出差异**。原先只比 major，而 npm 对 `^0.5.0` 只放行 `0.5.x` —— 0.x 的兼容单位是 minor。现在 `声明 ^0.14.0 / 实装 0.16.0` 会如实报出。
+  - **`inspect_project` 漏掉非常规命名的全局样式表**（#46）。固定候选列表缺 `src/styles.css` 等，接入完全正确的项目被报成 `unknown`。改为跟着入口文件的相对路径 CSS import 走，固定列表退为兜底；并把「探测不到」与「你没接」在 warnings 里说清楚。
+  - **本地模式的版本戳落后一版**（#47）。改为以 `packages/ui/package.json` 为准，不再用生成物里的版本号，消除 `validate_hulian_usage` 里的假 skew。
+  - **本地模式静默返回陈旧 registry 产物**（#48）。新增新鲜度检查：版本号比对挡「发版后没重新生成」，mtime 比对挡「同版本内改了文档」，陈旧时在每个响应上告警并直接给出 `pnpm llms-registry`。
+
 ## 0.2.0
 
 ### Minor Changes
