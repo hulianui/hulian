@@ -4,6 +4,7 @@
 // string is passed down to the client ComponentDoc which dogfoods <Markdown/>.
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { DOCS_LOCALE, withDocsBasePath, type DocsLocale } from "./docs-locale";
 
 // build cwd is apps/www in this monorepo; fall back to repo-root just in case.
 //
@@ -26,49 +27,138 @@ const BASES = [
   join(process.cwd(), "packages", "ui", "src"),
 ];
 
-function resolveMd(slug: string): string | null {
-  for (const base of BASES) {
-    for (const p of [join(base, slug, `${slug}.md`), join(base, "_mui", `${slug}.md`)]) {
+function candidates(base: string, slug: string, locale: DocsLocale) {
+  const suffix = locale === "en" ? ".en.md" : ".md";
+  return [join(base, slug, `${slug}${suffix}`), join(base, "_mui", `${slug}${suffix}`)];
+}
+
+export function resolveMd(
+  slug: string,
+  locale: DocsLocale = DOCS_LOCALE,
+  bases: string[] = BASES,
+): string | null {
+  for (const base of bases) {
+    for (const p of candidates(base, slug, locale)) {
       if (existsSync(p)) return p;
     }
+  }
+  if (locale === "en") {
+    const chinese = resolveMd(slug, "zh-CN", bases);
+    const expected = chinese
+      ? chinese.replace(/\.md$/, ".en.md")
+      : candidates(bases[0], slug, locale)[0];
+    throw new Error(`Missing English component documentation for "${slug}": expected ${expected}`);
   }
   return null;
 }
 
-export function loadComponentDoc(slug: string): string | null {
-  const p = resolveMd(slug);
+function rewriteOutsideCode(markdown: string, rewrite: (text: string) => string): string {
+  const lines = markdown.match(/.*(?:\n|$)/g)?.filter(Boolean) ?? [];
+  let fence: string | null = null;
+  return lines
+    .map((line) => {
+      const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
+      if (fence) {
+        if (marker?.[0] === fence[0] && marker.length >= fence.length) fence = null;
+        return line;
+      }
+      if (marker) {
+        fence = marker;
+        return line;
+      }
+
+      let output = "";
+      let plainStart = 0;
+      for (let index = 0; index < line.length; ) {
+        if (line[index] !== "`") {
+          index += 1;
+          continue;
+        }
+        let endOfRun = index;
+        while (line[endOfRun] === "`") endOfRun += 1;
+        const delimiter = line.slice(index, endOfRun);
+        const close = line.indexOf(delimiter, endOfRun);
+        if (close < 0) {
+          index = endOfRun;
+          continue;
+        }
+        output += rewrite(line.slice(plainStart, index));
+        const end = close + delimiter.length;
+        output += line.slice(index, end);
+        index = end;
+        plainStart = end;
+      }
+      return output + rewrite(line.slice(plainStart));
+    })
+    .join("");
+}
+
+function localizedTarget(target: string, locale: DocsLocale, absolute: boolean) {
+  const url = new URL(target, "https://hulianui.haloritual.com");
+  const path = `${withDocsBasePath(url.pathname, locale)}${url.search}${url.hash}`;
+  return absolute ? `https://hulianui.haloritual.com${path}` : path;
+}
+
+export function rewriteComponentMarkdownLinks(
+  markdown: string,
+  locale: DocsLocale,
+  absolute: boolean,
+): string {
+  return rewriteOutsideCode(markdown, (text) =>
+    text.replace(/\]\(([^)\s]+)\)/g, (match, target: string) => {
+      if (target.startsWith("//")) return match;
+      const relative = target.match(/^\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md$/);
+      if (relative) return `](${localizedTarget(`/components/${relative[1]}`, locale, absolute)})`;
+      if (target.startsWith("/") || target.startsWith("https://hulianui.haloritual.com/")) {
+        return `](${localizedTarget(target, locale, absolute)})`;
+      }
+      return match;
+    }),
+  );
+}
+
+export function loadComponentDoc(
+  slug: string,
+  locale: DocsLocale = DOCS_LOCALE,
+  bases: string[] = BASES,
+): string | null {
+  const p = resolveMd(slug, locale, bases);
   if (!p) return null;
   let md = readFileSync(p, "utf8");
   md = md.replace(/^---\n[\s\S]*?\n---\n/, ""); // strip frontmatter
   md = md.trimStart(); // frontmatter block leaves a leading blank line
   md = md.replace(/^#\s+.*\n+/, ""); // drop leading H1 (page header already shows name)
   md = md.replace(/^>\s.*\n+/, ""); // drop the blurb quote (page header already shows description)
-  md = md.replace(/\n## 示例\n[\s\S]*?(?=\n## |$)/, ""); // page shows live 用法 examples instead of static 示例
+  md = md.replace(/\n## (?:示例|Examples)\n[\s\S]*?(?=\n## |$)/, ""); // page shows live usage examples instead
   // rewrite "相关" links (../slug/slug.md | ../_mui/slug.md) → in-site /components/slug
-  md = md.replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, "](/components/$1)");
+  md = rewriteComponentMarkdownLinks(md, locale, false);
   return md.trim();
 }
 
 // 「复制 MD」按钮用的完整文档：保留 H1 名称 / 一句话简介 / 导入 / Props / 示例代码，
 // 只剥 frontmatter，并把「相关」相对链接改成站内绝对路径。喂给 AI 编程助手用，越完整越好。
-export function loadComponentMarkdownForCopy(slug: string): string | null {
-  const p = resolveMd(slug);
+export function loadComponentMarkdownForCopy(
+  slug: string,
+  locale: DocsLocale = DOCS_LOCALE,
+  bases: string[] = BASES,
+): string | null {
+  const p = resolveMd(slug, locale, bases);
   if (!p) return null;
   let md = readFileSync(p, "utf8");
   md = md.replace(/^---\n[\s\S]*?\n---\n/, ""); // strip frontmatter only
   md = md.trimStart();
   // 复制内容可能被贴到站外的 AI 助手，相对/站内链接无法解析 → 用绝对 URL
-  md = md.replace(
-    /\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g,
-    "](https://hulianui.haloritual.com/components/$1)",
-  );
-  // 兜底：任何残留的站内根路径链接（/components/x、/llms.txt 等）转绝对，便于贴给站外 AI 直接抓取
-  md = md.replace(/\]\((\/[^)]+)\)/g, "](https://hulianui.haloritual.com$1)");
+  md = rewriteComponentMarkdownLinks(md, locale, true);
   // 接入指引页脚：单个组件 md 可能被冷会话单独贴给 AI，提示先安装与全局配置
   const setupFooter =
-    "\n\n---\n" +
-    "_本文是**单个组件**的用法文档。首次接入瑚琏请先：" +
-    "1) 安装 `pnpm add @hulianui/ui @hulianui/tokens`；" +
-    "2) 按 [快速开始 /start](https://hulianui.haloritual.com/start) 接入 Tailwind preset 与 `ThemeProvider`。_";
+    locale === "en"
+      ? "\n\n---\n" +
+        "_This is documentation for a single component. Before first use: " +
+        "1) install `pnpm add @hulianui/ui @hulianui/tokens`; " +
+        "2) follow [Quick Start](https://hulianui.haloritual.com/en/start) to configure the Tailwind preset and `ThemeProvider`._"
+      : "\n\n---\n" +
+        "_本文是**单个组件**的用法文档。首次接入瑚琏请先：" +
+        "1) 安装 `pnpm add @hulianui/ui @hulianui/tokens`；" +
+        "2) 按 [快速开始 /start](https://hulianui.haloritual.com/start) 接入 Tailwind preset 与 `ThemeProvider`。_";
   return md.trim() + setupFooter;
 }

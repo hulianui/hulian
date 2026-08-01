@@ -34,6 +34,7 @@
     "docs:all": "pnpm skill-index && pnpm component-docs && pnpm llms-registry && pnpm conventions && pnpm changelog",
     "docs:build": "node scripts/build-bilingual-docs.mjs",
     "docs:check:routes": "node scripts/build-bilingual-docs.mjs --check-routes",
+    "docs:i18n:check": "node scripts/check-component-doc-translations.mjs --all",
     "install-hooks": "sh scripts/install-hooks.sh",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm llms-registry && pnpm changelog",

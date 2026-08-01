@@ -31,11 +31,56 @@ const OUT_DIR = process.env.HULIAN_REGISTRY_OUT || join(ROOT, "apps", "www", "pu
 const REPO = "https://github.com/hulianui/hulian";
 const DOC_BASE = `${REPO}/blob/master`; // + /packages/ui/src/<slug>/<slug>.md
 const SITE = "https://hulianui.haloritual.com"; // 文档站；语料供站外 AI 消费，链接须绝对
-// 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳
-const absolutize = (s) =>
-  s
-    .replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, `](${SITE}/components/$1)`)
-    .replace(/\]\((\/[^)]+)\)/g, `](${SITE}$1)`);
+// 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳。
+// 只处理 Markdown 正文：代码围栏和行内 code span 是示例数据，不是可导航链接；
+// `//host/path` 是协议相对外链，也绝不能被误拼成本站 URL。
+function rewriteOutsideCode(markdown, rewrite) {
+  const lines = markdown.match(/.*(?:\n|$)/g)?.filter(Boolean) ?? [];
+  let fence = null;
+  return lines
+    .map((line) => {
+      const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
+      if (fence) {
+        if (marker?.[0] === fence[0] && marker.length >= fence.length) fence = null;
+        return line;
+      }
+      if (marker) {
+        fence = marker;
+        return line;
+      }
+
+      let output = "";
+      let plainStart = 0;
+      for (let index = 0; index < line.length; ) {
+        if (line[index] !== "`") {
+          index += 1;
+          continue;
+        }
+        let endOfRun = index;
+        while (line[endOfRun] === "`") endOfRun += 1;
+        const delimiter = line.slice(index, endOfRun);
+        const close = line.indexOf(delimiter, endOfRun);
+        if (close < 0) {
+          index = endOfRun;
+          continue;
+        }
+        output += rewrite(line.slice(plainStart, index));
+        const end = close + delimiter.length;
+        output += line.slice(index, end);
+        index = end;
+        plainStart = end;
+      }
+      return output + rewrite(line.slice(plainStart));
+    })
+    .join("");
+}
+
+export const absolutize = (source) =>
+  rewriteOutsideCode(source, (text) =>
+    text
+      .replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, `](${SITE}/components/$1)`)
+      .replace(/\]\((\/(?!\/)[^)\s]+)\)/g, `](${SITE}$1)`),
+  );
 const TAGLINE = "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）";
 
 const PKG_DEPS = new Set([
@@ -210,18 +255,18 @@ export function barrelExports(dir) {
 }
 
 /** find every component .md and its src dir (for dep scan + doc url). */
-function collectDocs() {
+export function collectDocs(uiSrc = UI_SRC) {
   const out = [];
   const push = (mdPath, dir, urlRel) => {
     const parsed = parseDoc(readFileSync(mdPath, "utf8"));
     if (parsed && parsed.slug) out.push({ ...parsed, dir, docUrl: `${DOC_BASE}/${urlRel}` });
   };
-  for (const d of readdirSync(UI_SRC).sort()) {
-    const p = join(UI_SRC, d);
+  for (const d of readdirSync(uiSrc).sort()) {
+    const p = join(uiSrc, d);
     if (!statSync(p).isDirectory()) continue;
     if (d === "_mui") {
       for (const f of readdirSync(p)) {
-        if (f.endsWith(".md")) {
+        if (f.endsWith(".md") && !f.endsWith(".en.md")) {
           const slug = f.replace(/\.md$/, "");
           push(join(p, f), p, `packages/ui/src/_mui/${f}`);
         }
@@ -573,7 +618,7 @@ function main() {
   );
   idx.push(
     '安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；' +
-      '只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。',
+      "只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。",
   );
   idx.push("铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。");
   idx.push("");
@@ -595,7 +640,7 @@ function main() {
   full.push("");
   full.push(
     '安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，' +
-      '每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。',
+      "每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。",
   );
   full.push("");
   for (const cat of orderedCats) {
