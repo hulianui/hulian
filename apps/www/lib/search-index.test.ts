@@ -5,7 +5,9 @@ import {
   groupByType,
   searchAll,
   searchDocs,
+  searchPanelGroups,
   scoreToken,
+  termFrequency,
   tokenize,
 } from "./search-index";
 
@@ -51,6 +53,72 @@ describe("业务任务查询：用户 管理 列表", () => {
     const tokens = tokenize("用户 管理 列表");
     const matched = tokens.filter((t) => scoreToken(hits[0], t) > 0);
     expect(matched.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+// ⌘K 面板的回归测试。**必须走 searchPanelGroups**（面板本身也走它）——
+// 之前这里按自己的 limit=40 取数，于是「三档同屏」测得通过，而面板按全局前 24 条截断，
+// 组件尾巴连同 ProTable 一起被切掉，测试完全没覆盖到真实的截断行为。
+describe("⌘K 面板：用户 管理 列表", () => {
+  const panel = searchPanelGroups("用户 管理 列表");
+  const shown = panel.flatMap((g) => g.hits.map((h) => h.id));
+
+  it("整页、区块、低层组件三档在同一块面板里同屏出现", () => {
+    expect(shown).toContain("page:admin-list");
+    expect(shown).toContain("block:data-table");
+    expect(shown).toContain("component:pro-table");
+  });
+
+  it("面板里的顺序也是 页面 → 区块 → 组件", () => {
+    expect(shown.indexOf("page:admin-list")).toBeLessThan(shown.indexOf("component:pro-table"));
+    expect(shown.indexOf("block:data-table")).toBeLessThan(shown.indexOf("component:pro-table"));
+    const types = panel.map((g) => g.type);
+    expect(types).toEqual(TYPE_ORDER.filter((t) => types.includes(t)));
+  });
+
+  it("每一类都有自己的名额，不会被高层积木挤没", () => {
+    // 全局截断的老写法下，组件这一组会被前面的页面/区块/模版挤到只剩个位数名额。
+    const components = panel.find((g) => g.type === "component");
+    expect(components).toBeDefined();
+    expect(components!.hits.length).toBeGreaterThanOrEqual(
+      Math.min(10, components!.total),
+    );
+  });
+
+  it("被配额截断的组会如实报出总数，不假装这就是全部", () => {
+    for (const g of panel) {
+      expect(g.hits.length).toBeLessThanOrEqual(g.total);
+      expect(g.truncated).toBe(g.total > g.hits.length);
+    }
+  });
+});
+
+describe("同分时按词频排，不按标题拼音排", () => {
+  it("词频统计跨标题/英文名/关键词/描述", () => {
+    const doc = {
+      id: "x",
+      type: "component" as const,
+      title: "列表",
+      en: "List",
+      href: "/x",
+      description: "列表页 列表项",
+      keywords: ["列表"],
+    };
+    expect(termFrequency(doc, ["列表"])).toBe(4);
+    expect(termFrequency(doc, [])).toBe(0);
+  });
+
+  it("同分组内，描述里反复提到该词的排在只蹭到一次的前面", () => {
+    const hits = searchAll("用户 管理 列表").filter((h) => h.type === "component");
+    const proTable = hits.findIndex((h) => h.id === "component:pro-table");
+    expect(proTable).toBeGreaterThanOrEqual(0);
+    // 同分（都只命中「列表」一词、且命中在描述上）的组件里，ProTable 的词频更高。
+    const sameScore = hits.filter((h) => h.score === hits[proTable].score);
+    const worse = sameScore.filter((h) => h.tf < hits[proTable].tf);
+    expect(worse.length).toBeGreaterThan(0);
+    for (const w of worse) {
+      expect(hits.indexOf(w)).toBeGreaterThan(proTable);
+    }
   });
 });
 

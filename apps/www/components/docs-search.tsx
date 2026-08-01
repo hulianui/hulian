@@ -5,10 +5,10 @@ import { Search } from "lucide-react";
 import { Command, Kbd, Tag, type CommandGroupData } from "@hulianui/ui";
 import {
   TYPE_LABEL,
-  groupByType,
   relaxQuery,
   searchAll,
   searchDocs,
+  searchPanelGroups,
   type SearchHit,
 } from "../lib/search-index";
 
@@ -22,8 +22,8 @@ const COMPONENT_COUNT = searchDocs.filter((d) => d.type === "component").length;
 // 所以走 onQueryChange 把搜索词同步出来 + filter={() => true} 交出过滤权，
 // groups 完全由 lib/search-index 的相关度排序生成。
 //
-// 面板只放前 PANEL_LIMIT 条，其余交给 /search 全量页（URL 可分享、可刷新、可后退）。
-const PANEL_LIMIT = 24;
+// 面板按**类型配额**取数（见 searchPanelGroups），不做全局截断 —— 全局截断会让
+// 高层积木把组件的名额挤没，而用户看不出自己被截了。超出配额的部分给一条明说的出口。
 
 function hitItems(hits: SearchHit[], go: (href: string) => void) {
   return hits.map((h) => ({
@@ -45,12 +45,27 @@ export function DocsSearch() {
   const groups = useMemo<CommandGroupData[]>(() => {
     const go = (href: string) => router.push(href);
     const trimmed = query.trim();
-    const hits = searchAll(query, { limit: PANEL_LIMIT });
+    const panel = searchPanelGroups(query);
 
-    if (hits.length > 0) {
-      const result: CommandGroupData[] = groupByType(hits).map((g) => ({
-        heading: `${TYPE_LABEL[g.type]}（${g.hits.length}）`,
-        items: hitItems(g.hits, go),
+    if (panel.length > 0) {
+      const result: CommandGroupData[] = panel.map((g) => ({
+        // 截断时把「显示了几条 / 一共几条」写在组标题上，别让人以为这就是全部。
+        heading: g.truncated
+          ? `${TYPE_LABEL[g.type]}（${g.hits.length} / ${g.total}）`
+          : `${TYPE_LABEL[g.type]}（${g.total}）`,
+        items: [
+          ...hitItems(g.hits, go),
+          ...(g.truncated && trimmed
+            ? [
+                {
+                  value: `__more-${g.type}__`,
+                  label: `查看${TYPE_LABEL[g.type]}的全部 ${g.total} 条`,
+                  onSelect: () =>
+                    go(`/search?q=${encodeURIComponent(trimmed)}&type=${g.type}`),
+                },
+              ]
+            : []),
+        ],
       }));
       if (trimmed) {
         result.push({

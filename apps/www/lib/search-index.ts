@@ -237,9 +237,30 @@ export interface SearchFilters {
 
 export interface SearchHit extends SearchDoc {
   score: number;
+  /** 全文里 token 的出现次数，用作同分时的次级排序键。 */
+  tf: number;
 }
 
-/** 排序：分高优先；同分按类型层级序，再按标题，保证结果稳定（不随数组顺序漂）。 */
+/**
+ * 词频：token 在标题 / 英文名 / 关键词 / 描述里一共出现多少次。
+ *
+ * 只作**同分时的次级排序键**，不并进主分数 —— 并进去会打乱「命中标题 > 命中描述」
+ * 这条主序，而它是对的。
+ *
+ * 为什么需要它：CJK 里两三个字的通用词（"列表""管理"）撞名极其频繁，于是一大批组件
+ * 会拿到完全一样的分数，此时原本是按标题拼音排 —— 纯噪音。搜「用户 管理 列表」时
+ * ProTable（描述里"列表页"出现两次、且写明是中后台列表页旗舰）就这样被
+ * DiffStat / SecretField 这些只蹭到一次的挤到后面去了。
+ */
+export function termFrequency(doc: SearchDoc, tokens: string[]): number {
+  if (tokens.length === 0) return 0;
+  const hay = [doc.title, doc.en ?? "", doc.keywords.join(" "), doc.description]
+    .join(" ")
+    .toLowerCase();
+  return tokens.reduce((n, token) => n + (hay.split(token).length - 1), 0);
+}
+
+/** 排序：分高优先 → 词频高优先 → 类型层级序 → 标题，保证结果稳定（不随数组顺序漂）。 */
 export function searchAll(query: string, filters: SearchFilters = {}): SearchHit[] {
   const tokens = tokenize(query);
   const hits: SearchHit[] = [];
@@ -248,11 +269,12 @@ export function searchAll(query: string, filters: SearchFilters = {}): SearchHit
     if (filters.category && doc.category !== filters.category) continue;
     const score = scoreDoc(doc, tokens);
     if (score <= 0) continue;
-    hits.push({ ...doc, score });
+    hits.push({ ...doc, score, tf: termFrequency(doc, tokens) });
   }
   hits.sort(
     (a, b) =>
       b.score - a.score ||
+      b.tf - a.tf ||
       TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type) ||
       a.title.localeCompare(b.title, "zh-Hans-CN"),
   );
@@ -279,6 +301,43 @@ export function groupByType(hits: SearchHit[]): Array<{ type: DocType; hits: Sea
   return TYPE_ORDER.map((type) => ({ type, hits: hits.filter((h) => h.type === type) })).filter(
     (g) => g.hits.length > 0,
   );
+}
+
+/**
+ * ⌘K 面板每组最多显示几条。
+ *
+ * 面板刻意**按类型配额**，不按全局取前 N 条。全局截断会让分组这件事变成谎言：
+ * 「用户 管理 列表」的前 24 条里页面/区块/模版占了 15 条，组件只剩 9 个名额，
+ * 于是 ProTable 这种正是答案的组件被整条尾巴一起切掉，面板上看不到，
+ * 而用户根本不知道自己被截断了。配额保证每一类都有自己的位置。
+ */
+export const PANEL_PER_TYPE = 10;
+
+export interface PanelGroup {
+  type: DocType;
+  /** 本组要显示的条目（已按配额截断）。 */
+  hits: SearchHit[];
+  /** 本组命中总数。 */
+  total: number;
+  /** 是否被配额截断 —— 截断必须在 UI 上说出来，不能默默吞掉。 */
+  truncated: boolean;
+}
+
+/**
+ * 面板要显示的分组结果。面板与其回归测试**共用这一个函数**，
+ * 否则测试按自己的 limit 取数就永远测不到面板真实的截断行为（#40 验收翻车正是这样）。
+ */
+export function searchPanelGroups(
+  query: string,
+  perType: number = PANEL_PER_TYPE,
+  filters: Omit<SearchFilters, "limit"> = {},
+): PanelGroup[] {
+  return groupByType(searchAll(query, filters)).map(({ type, hits }) => ({
+    type,
+    hits: hits.slice(0, perType),
+    total: hits.length,
+    truncated: hits.length > perType,
+  }));
 }
 
 /** 某类型下出现过的分类（用于搜索页筛选芯片），保持首次出现顺序。 */
