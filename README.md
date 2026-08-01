@@ -76,7 +76,8 @@ export default function App() {
 完整接入说明见 **[文档站 · 快速开始](https://hulianui.haloritual.com)**。
 
 > ⚠️ **接进自己的仓库前先读 [docs/consuming.md](docs/consuming.md)**：源码分发会让消费方的 Vitest 容易解析出**第二份 React**（可直接 `import { withHulian } from "@hulianui/ui/vitest-preset"` 一行解决）。
-> 除此之外没有别的坑 —— 自 0.15.0 起全部组件都在根 barrel 里，没有子路径入口、没有 optional peer、没有必须挂的第三方 Provider。
+> 另一条是模块图：源码分发下根 barrel 会把整棵 `src/` 拖进 dev 编译。只用少数几个组件时改子路径 `@hulianui/ui/tag`，Next 消费方则加 `experimental.optimizePackageImports`（见 consuming.md §3）。
+> 自 0.15.0 起没有 optional peer、没有必须挂的第三方 Provider；日期族也回到了根 barrel（`./date-pickers` 子路径已移除）。
 
 ## 🧩 组件与示例
 

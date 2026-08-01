@@ -36,10 +36,11 @@
     "access": "public"
   },
   "scripts": {
-    "typecheck": "node --check src/index.mjs && node --check src/data.mjs",
+    "typecheck": "for f in src/*.mjs; do node --check \"$f\" || exit 1; done",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
+    "@hulianui/guard": "workspace:^",
     "@modelcontextprotocol/sdk": "^1.30.0"
   }
 }

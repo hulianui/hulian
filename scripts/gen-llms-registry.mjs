@@ -73,32 +73,137 @@ function parseCategories(src) {
 
 // ------------------------------------------------------------------- docs --
 
+/**
+ * frontmatter 的最小解析器。
+ *
+ * 为什么不能逐行 `^(\w+):\s*(.*)$`：数组值可以跨行 —— `exports:` 后面接一个换行的
+ * `[ A, B, … ]` 块（prettier 会把长数组这么折），逐行读只会拿到 `[`，于是 exports 变空、
+ * import 行退化成占位符「导入什么未知」。password-generator 就是这么把 19 个公开导出丢光的。
+ * 这里按「值未闭合就继续吃下一行」处理，同时兼容 YAML 的 `- item` 列表写法。
+ */
+export function parseFrontmatter(block) {
+  const fields = {};
+  const lines = block.split("\n");
+  for (let index = 0; index < lines.length; index += 1) {
+    const head = lines[index].match(/^(\w+):\s*(.*)$/);
+    if (!head) continue;
+    const key = head[1];
+    let value = head[2].trim();
+    if (value === "") {
+      // `key:` 换行后可以跟 YAML 的 `- item` 列表，也可以跟一个折行的 `[ … ]`
+      // （prettier 对长数组就是这么折的，password-generator 的 exports 正是这一形）。
+      if (index + 1 < lines.length && /^\s*-\s+/.test(lines[index + 1])) {
+        const items = [];
+        while (index + 1 < lines.length && /^\s*-\s+/.test(lines[index + 1])) {
+          items.push(lines[++index].replace(/^\s*-\s+/, "").trim());
+        }
+        fields[key] = `[${items.join(", ")}]`;
+        continue;
+      }
+      if (index + 1 < lines.length && lines[index + 1].trim().startsWith("[")) {
+        value = lines[++index].trim();
+      }
+    }
+    if (value.startsWith("[")) {
+      // 方括号数组：吃到方括号配平为止（值里不含引号/嵌套数组，计数即可）
+      let depth = (value.match(/\[/g) || []).length - (value.match(/\]/g) || []).length;
+      while (depth > 0 && index + 1 < lines.length) {
+        const next = lines[++index];
+        value += ` ${next.trim()}`;
+        depth += (next.match(/\[/g) || []).length - (next.match(/\]/g) || []).length;
+      }
+      if (depth > 0) throw new Error(`frontmatter ${key} 的数组没有闭合`);
+    }
+    fields[key] = value.trim();
+  }
+  return fields;
+}
+
+const frontmatterList = (value) =>
+  value && value.startsWith("[")
+    ? value
+        .slice(1, value.lastIndexOf("]"))
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+    : [];
+
 function parseDoc(src) {
   const m = src.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!m) return null;
-  const fm = {};
-  for (const line of m[1].split("\n")) {
-    const mm = line.match(/^(\w+):\s*(.*)$/);
-    if (mm) fm[mm[1]] = mm[2].trim();
-  }
-  const list = (v) =>
-    v && v.startsWith("[")
-      ? v
-          .slice(1, -1)
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean)
-      : [];
+  const fm = parseFrontmatter(m[1]);
   return {
     slug: fm.slug,
     name: fm.name,
     category: fm.category || "uncatalogued",
     group: fm.group || "",
-    tags: list(fm.tags),
-    exports: list(fm.exports),
+    tags: frontmatterList(fm.tags),
+    exports: frontmatterList(fm.exports),
     status: fm.status || "scaffold",
     body: m[2].trim(),
   };
+}
+
+/**
+ * 组件真正的公开导出，直接读 `src/<slug>/index.ts` 的 barrel。
+ *
+ * frontmatter 的 `exports:` 是人写的，只在 scaffold 时生成一次，之后组件加导出它不会跟着动 ——
+ * 实测 theme 少了 useTheme、config 少了 zhCN/enUS、access 少了 AccessProvider/useAccess、
+ * time-picker 少了 8 个纯函数。AI 按 catalog 搜 export 名时这些能力等于不存在。
+ * 以 barrel 为真源后这类漂移不会再发生。
+ *
+ * 值与类型分开返回：import 行只拼值导出（那才是「怎么用这个组件」），
+ * 类型另存 meta.types 供检索 —— 混在一起会让每条 import 行都拖着一串 XxxProps。
+ */
+export function barrelExports(dir) {
+  const file = ["index.ts", "index.tsx"].map((name) => join(dir, name)).find((p) => existsSync(p));
+  if (!file) return null;
+  const sourceFile = ts.createSourceFile(
+    file,
+    readFileSync(file, "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  const values = [];
+  const types = [];
+  const push = (name, isType) => {
+    const bucket = isType ? types : values;
+    if (name && !bucket.includes(name)) bucket.push(name);
+  };
+  sourceFile.forEachChild((node) => {
+    if (ts.isExportDeclaration(node)) {
+      if (!node.exportClause || !ts.isNamedExports(node.exportClause)) return; // `export *` 无从枚举
+      for (const element of node.exportClause.elements) {
+        push(element.name.text, node.isTypeOnly || element.isTypeOnly);
+      }
+      return;
+    }
+    if (
+      (ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)) &&
+      node.name &&
+      node.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)
+    ) {
+      push(node.name.text);
+      return;
+    }
+    if (
+      ts.isVariableStatement(node) &&
+      node.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)
+    ) {
+      for (const declaration of node.declarationList.declarations) {
+        if (ts.isIdentifier(declaration.name)) push(declaration.name.text);
+      }
+      return;
+    }
+    if (
+      (ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) &&
+      node.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)
+    ) {
+      push(node.name.text, true);
+    }
+  });
+  return values.length || types.length ? { values, types } : null;
 }
 
 /** find every component .md and its src dir (for dep scan + doc url). */
@@ -463,7 +568,10 @@ function main() {
   idx.push(
     "AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。",
   );
-  idx.push('安装 `npm i @hulianui/ui`，统一从根 barrel 导入：`import { X } from "@hulianui/ui"`。');
+  idx.push(
+    '安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；' +
+      '只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。',
+  );
   idx.push("铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。");
   idx.push("");
   for (const cat of orderedCats) {
@@ -483,7 +591,8 @@ function main() {
   );
   full.push("");
   full.push(
-    '安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；所有组件从根 barrel 导入 `import { X } from "@hulianui/ui"`。',
+    '安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，' +
+      '每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。',
   );
   full.push("");
   for (const cat of orderedCats) {
@@ -517,8 +626,14 @@ function main() {
     // 入口按组件所在目录取（见 SUBPATH_ENTRY）：日期族在 `_mui/`，对外走 ./date-pickers 子路径，
     // 拼成根 barrel 就是给 AI 和人一条导不进来的 import。
     const entry = SUBPATH_ENTRY.get(basename(d.dir)) || PKG.name;
-    const imp = d.exports.length
-      ? `import { ${d.exports.join(", ")} } from "${entry}"`
+    // barrel 优先、frontmatter 兜底：前者是编译器认的真源，后者只在没有 index.ts 时才用得上。
+    const barrel = barrelExports(d.dir) ?? {
+      values: d.exports.filter((name) => !name.startsWith("type ")),
+      types: d.exports.filter((name) => name.startsWith("type ")).map((name) => name.slice(5)),
+    };
+    const exported = barrel.values;
+    const imp = exported.length
+      ? `import { ${exported.join(", ")} } from "${entry}"`
       : `import { /* ? */ } from "${entry}"`;
     return {
       name: d.slug,
@@ -531,7 +646,9 @@ function main() {
       files: buildFiles(d.dir, d.slug),
       meta: {
         import: imp,
-        exports: d.exports,
+        exports: exported,
+        // 类型导出不进 import 行，但要能被按名检索到（AI 常拿 ProTableProps 反查组件）
+        types: barrel.types,
         group: d.group,
         tags: d.tags,
         animated: d.tags.includes("animated"),
@@ -558,6 +675,17 @@ function main() {
   );
 
   const items = [...uiItems, ...libItems, ...blockItems, ...pageItems];
+
+  // 门禁：registry 里不许出现导不进来的 import。这条占位符曾经安静地发到线上，
+  // AI 拿到的就是一行「从这里导入什么我也不知道」——比没有元数据更糟。
+  const unresolved = items.filter((item) => item.meta?.import?.includes("/* ? */"));
+  if (unresolved.length > 0) {
+    throw new Error(
+      `registry 中有 ${unresolved.length} 条无法解析的 import：${unresolved
+        .map((item) => item.name)
+        .join(", ")}。检查 src/<slug>/index.ts 是否有具名导出，或文档 frontmatter 的 exports。`,
+    );
+  }
 
   // 根索引：目录用途，剥掉 files 的 content（否则单文件几十 MB，AI 拉一次就爆 context）
   const index = items.map(({ files, ...rest }) => ({

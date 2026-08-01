@@ -1,12 +1,14 @@
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
+  barrelExports,
   buildCompositeItems,
+  parseFrontmatter,
   rewritePageBlockImports,
   scanPageBlockDeps,
 } from "./gen-llms-registry.mjs";
@@ -162,4 +164,79 @@ test("全部 77 个组合项都说明安装后的业务接入工作", () => {
     assert.ok(Array.isArray(item.meta.installation.replace));
     assert.ok(Array.isArray(item.meta.installation.slots));
   }
+});
+
+test("frontmatter 的跨行数组不再被截断", () => {
+  const fields = parseFrontmatter(
+    [
+      "slug: password-generator",
+      "name: PasswordGenerator",
+      "tags: []",
+      "exports:",
+      "  [",
+      "    PasswordGenerator,",
+      "    generatePassword,",
+      "    generatePassphrase,",
+      "  ]",
+      "status: enriched",
+    ].join("\n"),
+  );
+
+  assert.equal(fields.slug, "password-generator");
+  assert.equal(fields.status, "enriched", "数组之后的字段不能被吃掉");
+  assert.equal(fields.exports, "[ PasswordGenerator, generatePassword, generatePassphrase, ]");
+});
+
+test("frontmatter 支持 YAML 短横线列表", () => {
+  const fields = parseFrontmatter(["tags:", "  - animated", "  - webgl", "status: enriched"].join("\n"));
+  assert.equal(fields.tags, "[animated, webgl]");
+  assert.equal(fields.status, "enriched");
+});
+
+test("barrelExports 以 index.ts 为真源，值与类型分开", () => {
+  const dir = mkdtempSync(join(tmpdir(), "hulian-barrel-"));
+  try {
+    writeFileSync(
+      join(dir, "index.ts"),
+      [
+        'export { ThemeProvider } from "./theme-provider";',
+        'export { useTheme, THEME_STORAGE_KEY } from "./use-theme";',
+        'export type { Theme } from "./use-theme";',
+        "export const VERSION = 1;",
+        "export function helper() {}",
+      ].join("\n"),
+    );
+    assert.deepEqual(barrelExports(dir), {
+      values: ["ThemeProvider", "useTheme", "THEME_STORAGE_KEY", "VERSION", "helper"],
+      types: ["Theme"],
+    });
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("barrelExports 找不到 barrel 时交还给 frontmatter 兜底", () => {
+  const dir = mkdtempSync(join(tmpdir(), "hulian-barrel-none-"));
+  try {
+    assert.equal(barrelExports(dir), null);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("发布的 registry 里没有导不进来的 import 占位符", () => {
+  const registry = JSON.parse(readFileSync(join(ROOT, "apps/www/public/registry.json"), "utf8"));
+  const unresolved = registry.items.filter((item) => item.meta?.import?.includes("/* ?"));
+  assert.deepEqual(unresolved.map((item) => item.name), []);
+});
+
+test("registry 覆盖 Theme/Access/Config 的全部公开能力", () => {
+  const registry = JSON.parse(readFileSync(join(ROOT, "apps/www/public/registry.json"), "utf8"));
+  const exportsOf = (name) => registry.items.find((item) => item.name === name)?.meta?.exports ?? [];
+
+  for (const symbol of ["ThemeProvider", "useTheme"]) assert.ok(exportsOf("theme").includes(symbol), symbol);
+  for (const symbol of ["AccessProvider", "Access", "useAccess"])
+    assert.ok(exportsOf("access").includes(symbol), symbol);
+  for (const symbol of ["ConfigProvider", "zhCN", "enUS"]) assert.ok(exportsOf("config").includes(symbol), symbol);
+  assert.ok(exportsOf("password-generator").includes("generatePassphrase"));
 });

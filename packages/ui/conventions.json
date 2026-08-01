@@ -93,8 +93,9 @@
     },
     {
       "id": "global/import-from-root-barrel",
-      "rule": "统一从根 barrel 导入：import { X } from \"@hulianui/ui\"。**没有例外入口** —— 0.15.0 起日期族也在根 barrel 里",
-      "why": "深路径导入绕过 barrel 的类型聚合与副作用声明，升级时路径也易变。曾经存在的 @hulianui/ui/date-pickers 子路径已随日期族自研零依赖一并移除",
+      "rule": "默认从根 barrel 导入：import { X } from \"@hulianui/ui\"；只用少数几个组件时，改子路径 import { Tag } from \"@hulianui/ui/tag\" 同样是官方入口",
+      "why": "本库是源码分发，根 barrel 会把整棵 src/ 与全部 dependencies 拖进消费方的 dev 模块图（#19 / #34 实测：Next 冷编译 16.5s → 3.9s、模块数 7378 → 1730）。根入口还是子路径由消费项目的规模与打包器决定，不是全库通用门禁",
+      "instead": "两种入口导出同一份东西、可以混用。Next 消费方也可以留在根 barrel，加 experimental.optimizePackageImports 让编译期自动改写。真正禁止的只有 exports 之外的路径（_icons、src/...、已移除的 date-pickers），那条由 guard 的 no-private-deep-import 拦",
       "scope": "global",
       "source": "scripts/gen-conventions.mjs"
     },

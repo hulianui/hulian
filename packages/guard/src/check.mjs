@@ -4,6 +4,10 @@ import ts from "typescript";
 
 import { loadConventions } from "./rules.mjs";
 
+// 约束表本身也是公开 API：调用方（如 @hulianui/mcp）要按文件循环检查时，
+// 需要先加载一次再复用，而不是每个文件重新读一遍 7000 行 JSON。
+export { loadConventions };
+
 const SOURCE_EXTENSIONS = new Set([".js", ".jsx", ".ts", ".tsx"]);
 const SKIP_DIRS = new Set(["node_modules", ".git", ".next", "dist", "out", "coverage"]);
 const COLOR_STYLE_PROPS = new Set([

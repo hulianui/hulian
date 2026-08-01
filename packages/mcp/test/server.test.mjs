@@ -1,9 +1,11 @@
-// 端到端跑真实的 MCP server：起子进程、走 stdio JSON-RPC、验四个 tool 的真实返回。
+// 端到端跑真实的 MCP server：起子进程、走 stdio JSON-RPC、验每个 tool 的真实返回。
 // 不 mock 任何东西 —— server 的价值就在于「AI 拿到的是真数据」，mock 掉就什么都没验。
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,11 +19,15 @@ const UI_ROOT = join(HERE, "..", "..", "ui");
  *
  * 注意握手是两步：只发 initialize 不发 initialized 通知，SDK 不会开始处理业务请求。
  * 响应也要按 id 认领 —— initialize 自己会占一条，不能按条数计。
+ *
+ * roots：传了就声明 roots 能力，并在 server 反向请求 roots/list 时如实作答 ——
+ * inspect_project 的「优先用 Roots」这条路必须被真的走一遍，光看 fallback 不算数。
  */
-function rpc(requests) {
+function rpc(requests, { roots = null, cwd, env } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [ENTRY], {
-      env: { ...process.env, HULIAN_UI_ROOT: UI_ROOT },
+      cwd,
+      env: { ...process.env, HULIAN_UI_ROOT: UI_ROOT, ...env },
       stdio: ["pipe", "pipe", "pipe"],
     });
     const wanted = new Set(requests.map((r) => r.id));
@@ -30,7 +36,9 @@ function rpc(requests) {
     const timer = setTimeout(() => {
       child.kill();
       reject(new Error(`超时，缺 id：${[...wanted].filter((i) => !byId.has(i)).join(",")}`));
-    }, 30000);
+    }, 60000);
+
+    const send = (o) => child.stdin.write(JSON.stringify(o) + "\n");
 
     child.stdout.on("data", (d) => {
       buf += d.toString();
@@ -45,6 +53,10 @@ function rpc(requests) {
         } catch {
           continue; // 非 JSON 行（server 的 ready 日志走 stderr，这里是保险）
         }
+        if (msg.method === "roots/list") {
+          send({ jsonrpc: "2.0", id: msg.id, result: { roots: roots ?? [] } });
+          continue;
+        }
         if (wanted.has(msg.id)) byId.set(msg.id, msg);
         if (byId.size === wanted.size) {
           clearTimeout(timer);
@@ -55,12 +67,15 @@ function rpc(requests) {
     });
     child.on("error", reject);
 
-    const send = (o) => child.stdin.write(JSON.stringify(o) + "\n");
     send({
       jsonrpc: "2.0",
       id: 0,
       method: "initialize",
-      params: { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "t", version: "0" } },
+      params: {
+        protocolVersion: "2024-11-05",
+        capabilities: roots ? { roots: {} } : {},
+        clientInfo: { name: "t", version: "0" },
+      },
     });
     send({ jsonrpc: "2.0", method: "notifications/initialized" });
     for (const r of requests) send(r);
@@ -75,11 +90,117 @@ const call = (id, name, args = {}) => ({
 });
 
 const bodyOf = (res) => res.result?.content?.[0]?.text ?? "";
+const dataOf = (res) => res.result?.structuredContent ?? null;
 
-test("tools/list 暴露四个 tool", async () => {
+// --------------------------------------------------------------- fixtures --
+
+const write = (root, rel, content) => {
+  const path = join(root, rel);
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, content);
+};
+
+/** 消费项目 fixture：一个装好的 Next 项目 / 一个软链的 Vite 项目（缺几项接入）。 */
+function makeProject(kind) {
+  const root = mkdtempSync(join(tmpdir(), `hulian-${kind}-`));
+  write(
+    root,
+    "node_modules/@hulianui/ui/package.json",
+    JSON.stringify({ name: "@hulianui/ui", version: "0.15.1" }),
+  );
+  if (kind === "next") {
+    write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
+    write(
+      root,
+      "package.json",
+      JSON.stringify({
+        name: "next-fixture",
+        dependencies: {
+          next: "16.2.0",
+          react: "19.0.0",
+          "@base-ui/react": "1.0.0",
+          "@hulianui/ui": "^0.15.1",
+          "@hulianui/tokens": "^0.3.0",
+        },
+      }),
+    );
+    write(
+      root,
+      "node_modules/@hulianui/tokens/package.json",
+      JSON.stringify({ name: "@hulianui/tokens", version: "0.3.0" }),
+    );
+    write(
+      root,
+      "next.config.mjs",
+      `export default {
+  transpilePackages: ["@hulianui/ui"],
+  experimental: { optimizePackageImports: ["@hulianui/ui"] },
+}\n`,
+    );
+    write(root, "components.json", JSON.stringify({ aliases: { components: "@/components" } }));
+    write(
+      root,
+      "app/layout.tsx",
+      `import { ThemeProvider } from "@hulianui/ui"
+export default function Layout({ children }) {
+  return <html><body><ThemeProvider>{children}</ThemeProvider></body></html>
+}\n`,
+    );
+    write(
+      root,
+      "app/globals.css",
+      `@import "@hulianui/tokens/tokens.css";
+@import "@hulianui/tokens/preset.css";
+@source "../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";\n`,
+    );
+    return root;
+  }
+  // vite：软链消费、没加 vite 插件、没引 token CSS、入口里没有 ThemeProvider
+  write(root, "yarn.lock", "");
+  write(
+    root,
+    "package.json",
+    JSON.stringify({
+      name: "vite-fixture",
+      dependencies: { react: "19.0.0", "@hulianui/ui": "link:../hulian/packages/ui" },
+      devDependencies: { vite: "7.3.6" },
+    }),
+  );
+  write(root, "vite.config.ts", `export default { plugins: [] }\n`);
+  write(root, "src/main.tsx", `import App from "./App"\nexport default App\n`);
+  write(root, "src/index.css", `@import "tailwindcss";\n`);
+  return root;
+}
+
+// ------------------------------------------------------------------ tools --
+
+test("tools/list 暴露完整链路的八个 tool，且都带 title 与只读标注", async () => {
   const [list] = await rpc([{ jsonrpc: "2.0", id: 1, method: "tools/list" }]);
-  const names = (list.result?.tools ?? []).map((t) => t.name).sort();
-  assert.deepEqual(names, ["get_component_doc", "get_conventions", "install_block", "list_components"]);
+  const tools = list.result?.tools ?? [];
+  assert.deepEqual(
+    tools.map((t) => t.name).sort(),
+    [
+      "get_component_doc",
+      "get_conventions",
+      "get_setup_guide",
+      "insp" + "ect_project",
+      "install_block",
+      "list_components",
+      "recommend_ui",
+      "validate_hulian_usage",
+    ].sort(),
+  );
+  for (const tool of tools) {
+    assert.ok(tool.title, `${tool.name} 缺 title`);
+    assert.equal(tool.annotations?.readOnlyHint, true, `${tool.name} 应声明只读`);
+    assert.equal(tool.annotations?.destructiveHint, false, `${tool.name} 不该是破坏性的`);
+    assert.equal(tool.annotations?.idempotentHint, true, `${tool.name} 应声明幂等`);
+    assert.equal(typeof tool.annotations?.openWorldHint, "boolean", `${tool.name} 缺 openWorldHint`);
+  }
+  const category = tools.find((t) => t.name === "list_components").inputSchema.properties.category;
+  assert.ok(Array.isArray(category.enum), "category 应由真实分类枚举生成");
+  assert.ok(category.enum.includes("forms"), "真分类是 forms");
+  assert.ok(!category.enum.includes("form"), "form 不是真分类，不该出现在 schema 里");
 });
 
 test("list_components 能按关键词找到组件，并带出导入语句", async () => {
@@ -91,62 +212,573 @@ test("list_components 能按关键词找到组件，并带出导入语句", asyn
 
 test("list_components 能列出区块（此前只活在文档站里）", async () => {
   const [res] = await rpc([call(3, "list_components", { kind: "block", limit: 5 })]);
-  const body = bodyOf(res);
-  assert.match(body, /block-/, "区块 item 名以 block- 开头");
+  assert.match(bodyOf(res), /block-/, "区块 item 名以 block- 开头");
+});
+
+test("多关键词首轮就命中现成页面与区块（#36 的两条假阴性）", async () => {
+  const [page, block] = await rpc([
+    call(4, "list_components", { kind: "page", query: "用户 管理 列表" }),
+    call(5, "list_components", { kind: "block", query: "用户 查询 表格 表单 弹窗" }),
+  ]);
+  assert.match(bodyOf(page), /page-admin-list/, "「用户 管理 列表」必须命中中后台列表页");
+  assert.match(bodyOf(block), /block-data-table/, "「查询 表格」必须命中数据表格区块");
+  assert.equal(dataOf(page).items[0].name, "page-admin-list", "最相关的应排第一");
+});
+
+test("recommend_ui 一次给出 page → block → component 的完整选型", async () => {
+  const [res] = await rpc([
+    call(6, "recommend_ui", {
+      task: "用户管理列表页：页头、查询、分页表格、批量操作、新增编辑弹窗、删除确认",
+    }),
+  ]);
+  const data = dataOf(res);
+  assert.ok(
+    data.pages.some((item) => item.name === "page-admin-list"),
+    "应推荐 page-admin-list",
+  );
+  assert.ok(
+    data.blocks.some((item) => item.name === "block-data-table"),
+    "应推荐 block-data-table",
+  );
+  assert.ok(data.components.length > 0, "应给出组件级候选");
+  assert.match(bodyOf(res), /install_block/, "应指出下一步怎么落地");
+});
+
+test("category 用真实枚举：form 报错并指向 forms", async () => {
+  const [wrong, right] = await rpc([
+    call(7, "list_components", { category: "form" }),
+    call(8, "list_components", { category: "forms", limit: 5 }),
+  ]);
+  assert.equal(wrong.result?.isError, true, "不存在的分类是参数错误");
+  assert.match(bodyOf(wrong), /forms/, "应提示真实分类名");
+  assert.ok(dataOf(right).total > 10, "forms 分类下应有大量组件");
+});
+
+test("limit + offset 真的翻页，两页不重叠", async () => {
+  const [first, second] = await rpc([
+    call(9, "list_components", { limit: 5, offset: 0 }),
+    call(10, "list_components", { limit: 5, offset: 5 }),
+  ]);
+  const a = dataOf(first).items.map((item) => item.name);
+  const b = dataOf(second).items.map((item) => item.name);
+  assert.equal(a.length, 5);
+  assert.equal(b.length, 5);
+  assert.equal(a.filter((name) => b.includes(name)).length, 0, "两页不该重叠");
+  assert.equal(dataOf(first).total, dataOf(second).total);
+});
+
+test("指定 kind 内零命中会跨粒度降级，而不是宣告不存在", async () => {
+  const [res] = await rpc([call(11, "list_components", { kind: "page", query: "拖拽排序" })]);
+  const data = dataOf(res);
+  assert.notEqual(res.result?.isError, true, "没搜到不是工具错误");
+  if (data.items.length) {
+    assert.equal(data.degraded, true, "跨粒度结果必须标记 degraded");
+    assert.match(bodyOf(res), /\[(component|block|lib|page)\]/, "降级结果应标出每条的粒度");
+  } else {
+    assert.match(bodyOf(res), /recommend_ui/, "彻底没有时也要给下一步，而不是空手而归");
+  }
 });
 
 test("get_component_doc 返回真实 Props 文档", async () => {
-  const [res] = await rpc([call(4, "get_component_doc", { name: "button" })]);
+  const [res] = await rpc([call(12, "get_component_doc", { name: "button" })]);
   const body = bodyOf(res);
   assert.match(body, /## Props/, "应含 Props 章节");
   assert.match(body, /@hulianui\/ui/, "应含导入信息");
 });
 
 test("get_component_doc 接受显示名（ProTable → pro-table）", async () => {
-  const [res] = await rpc([call(5, "get_component_doc", { name: "ProTable" })]);
+  const [res] = await rpc([call(13, "get_component_doc", { name: "ProTable" })]);
   assert.match(bodyOf(res), /## Props/);
 });
 
+test("get_component_doc 支持批量与按章节裁剪", async () => {
+  const [batch, sliced] = await rpc([
+    call(14, "get_component_doc", { names: ["button", "tag"] }),
+    call(15, "get_component_doc", { name: "button", sections: ["props"] }),
+  ]);
+  const body = bodyOf(batch);
+  assert.match(body, /<!-- button ·/);
+  assert.match(body, /<!-- tag ·/);
+  const only = bodyOf(sliced);
+  assert.match(only, /## Props/);
+  assert.doesNotMatch(only, /## 示例/, "裁剪后不该带上没要的章节");
+  assert.ok(only.length < body.length, "裁剪应真的省 context");
+});
+
 test("名字打错时给出候选，而不是干巴巴的 not found", async () => {
-  const [res] = await rpc([call(6, "get_component_doc", { name: "buton" })]);
-  const body = bodyOf(res);
+  const [res] = await rpc([call(16, "get_component_doc", { name: "buton" })]);
   assert.equal(res.result?.isError, true);
-  assert.match(body, /button/, "应提示最接近的候选");
+  assert.match(bodyOf(res), /button/, "应提示最接近的候选");
 });
 
 test("get_conventions 返回全局铁律与易混淆件", async () => {
-  const [res] = await rpc([call(7, "get_conventions")]);
+  const [res] = await rpc([call(17, "get_conventions")]);
   const body = bodyOf(res);
   assert.match(body, /--color-/, "应含色彩 token 前缀约束");
   assert.match(body, /ThemeProvider/, "应含 ThemeProvider 挂载约束");
   assert.match(body, /Tag/, "应含 Badge↔Tag 易混淆提示");
   assert.match(body, /可执行门禁/, "应明确哪些规则由 guard 执行");
-  assert.match(body, /建议/, "应把文档经验标成建议而非硬门禁");
+  assert.match(body, /validate_hulian_usage/, "应指向可直接调用的验证 tool");
 });
 
 test("get_conventions 带 scope 返回该组件的硬约束", async () => {
-  const [res] = await rpc([call(8, "get_conventions", { scope: "AdminLayout" })]);
+  const [res] = await rpc([call(18, "get_conventions", { scope: "AdminLayout" })]);
   assert.match(bodyOf(res), /fitViewport/, "AdminLayout 的约束应含 fitViewport");
 });
 
-test("install_block 返回自包含区块的可注入源码与安装命令", async () => {
-  const [res] = await rpc([call(9, "install_block", { name: "block-pricing-table" })]);
+test("conventions 不再把公开子路径当成禁忌", async () => {
+  const [res] = await rpc([call(19, "get_conventions")]);
   const body = bodyOf(res);
-  assert.match(body, /npx shadcn@latest add/, "应给出安装命令");
+  assert.match(body, /@hulianui\/ui\/tag|子路径/, "子路径是官方入口，应如实说明");
+  assert.doesNotMatch(body, /没有例外入口/, "这句与 package exports 矛盾，应已删除");
+});
+
+test("get_setup_guide 按 target 给出可直接抄的接入配置", async () => {
+  const [next, vitest, bad] = await rpc([
+    call(20, "get_setup_guide", { target: "next" }),
+    call(21, "get_setup_guide", { target: "vitest" }),
+    call(22, "get_setup_guide", { target: "svelte" }),
+  ]);
+  assert.match(bodyOf(next), /transpilePackages/);
+  assert.match(bodyOf(next), /optimizePackageImports/);
+  assert.match(bodyOf(vitest), /withHulian/);
+  assert.equal(bad.result?.isError, true, "未知 target 是参数错误");
+});
+
+test("install_block 返回自包含区块的可注入源码", async () => {
+  const [res] = await rpc([call(23, "install_block", { name: "block-pricing-table" })]);
+  const body = bodyOf(res);
   assert.match(body, /@hulianui\/ui/, "区块源码应从根 barrel 导入");
   assert.match(body, /```tsx/, "应内联源码");
 });
 
 test("install_block 对组件提示优先用 npm import 而非注入源码", async () => {
-  const [res] = await rpc([call(10, "install_block", { name: "button", includeSource: false })]);
+  const [res] = await rpc([call(24, "install_block", { name: "button", includeSource: false })]);
   assert.match(bodyOf(res), /不需要.{0,2}注入源码/, "组件应引导走 npm import 而非注入");
 });
 
-test("install_block 对页面返回递归依赖、接入清单与 guard 命令", async () => {
-  const [res] = await rpc([call(11, "install_block", { name: "page-landing", includeSource: false })]);
+test("install_block 对页面返回递归依赖、接入清单与可直接调用的验收", async () => {
+  const [res] = await rpc([call(25, "install_block", { name: "page-landing", includeSource: false })]);
   const body = bodyOf(res);
   assert.match(body, /需要递归安装的区块/);
   assert.match(body, /需要 Provider：ThemeProvider/);
   assert.match(body, /可替换插槽：.*hero/);
-  assert.match(body, /hulian-check/);
+  assert.match(body, /validate_hulian_usage/, "验收应是一次 tool 调用，而不是让模型自己拼 shell");
+});
+
+test("每个响应都带数据源与 registry 版本，漂移可见", async () => {
+  const [res] = await rpc([call(26, "list_components", { limit: 1 })]);
+  const body = bodyOf(res);
+  assert.match(body, /数据源 local:/, "本地模式应如实标出");
+  assert.match(body, /registry v\d+\.\d+\.\d+/, "应带 registry 版本");
+  assert.equal(dataOf(res).source.mode, "local");
+  assert.ok(dataOf(res).source.version, "structuredContent 里也要有版本");
+});
+
+// ------------------------------------------------------------ 项目与验证 --
+
+test("inspect_project 认出装好的 Next 项目", async () => {
+  const root = makeProject("next");
+  try {
+    const [res] = await rpc([call(27, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.projectRootSource, "argument");
+    assert.equal(info.framework.name, "next");
+    assert.equal(info.packageManager, "pnpm");
+    assert.equal(info.packages["@hulianui/ui"].installed, "0.15.1");
+    assert.equal(info.setup.themeProvider, "detected");
+    assert.equal(info.setup.tokensCss, "detected");
+    assert.equal(info.setup.tailwindSource, "detected");
+    assert.equal(info.setup.transpilePackages, "detected");
+    assert.equal(info.setup.optimizePackageImports, "detected");
+    assert.equal(info.componentsJson.file, "components.json");
+    assert.deepEqual(info.warnings, [], "接好的项目不该有告警");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("inspect_project 指出 Vite 软链项目的接入缺口", async () => {
+  const root = makeProject("vite");
+  try {
+    const [res] = await rpc([call(28, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.framework.name, "vite");
+    assert.equal(info.packageManager, "yarn");
+    assert.equal(info.setup.tokensCss, "not-found");
+    assert.equal(info.setup.themeProvider, "not-found");
+    const warnings = info.warnings.join("\n");
+    assert.match(warnings, /tokens/, "缺 token CSS 要报");
+    assert.match(warnings, /ThemeProvider/, "缺 Provider 要报");
+    assert.match(warnings, /@base-ui\/react/, "缺 peer 要报");
+    assert.match(bodyOf(res), /not-found.*不等于不存在|不等于不存在/, "必须说明未检测≠不存在");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("inspect_project 优先用 MCP Roots，没有才退 cwd 并标明来源", async () => {
+  const root = makeProject("next");
+  try {
+    const [viaRoots] = await rpc([call(29, "inspect_project", {})], {
+      roots: [{ uri: `file://${root}`, name: "fixture" }],
+    });
+    assert.equal(dataOf(viaRoots).projectRootSource, "mcp-roots");
+    assert.equal(dataOf(viaRoots).framework.name, "next");
+
+    const [viaCwd] = await rpc([call(30, "inspect_project", {})], { cwd: root });
+    assert.equal(dataOf(viaCwd).projectRootSource, "cwd-fallback");
+    assert.match(dataOf(viaCwd).warnings.join("\n"), /cwd/, "兜底必须写进 warnings");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("validate_hulian_usage 对合规代码返回 ok:true", async () => {
+  const [res] = await rpc([
+    call(31, "validate_hulian_usage", {
+      code: `import { Button } from "@hulianui/ui"\nexport const A = () => <Button>ok</Button>\n`,
+      filePath: "a.tsx",
+    }),
+  ]);
+  assert.equal(dataOf(res).ok, true);
+  assert.notEqual(res.result?.isError, true);
+  assert.match(bodyOf(res), /guard 通过/);
+});
+
+test("违规代码返回结构化诊断，且不误用 isError", async () => {
+  const [res] = await rpc([
+    call(32, "validate_hulian_usage", {
+      code: `import { Button, toast } from "@hulianui/ui"
+export function A() {
+  toast.success("saved")
+  return <Button style={{ color: "red" }}>x</Button>
+}\n`,
+      filePath: "bad.tsx",
+    }),
+  ]);
+  const data = dataOf(res);
+  assert.equal(data.ok, false, "业务代码违规 → ok:false");
+  assert.notEqual(res.result?.isError, true, "isError 只留给工具自身失败");
+  const ruleIds = data.diagnostics.map((item) => item.ruleId);
+  assert.ok(ruleIds.includes("toast-object-signature"), "应抓到 toast 成员调用");
+  assert.ok(ruleIds.includes("no-style-override"), "应抓到 style 覆盖");
+  for (const item of data.diagnostics) {
+    assert.equal(typeof item.line, "number");
+    assert.equal(typeof item.column, "number");
+    assert.equal(typeof item.file, "string");
+    assert.ok(item.severity);
+  }
+  assert.ok(data.versions.guard, "应带 guard 版本");
+});
+
+test("公开子路径导入不再被判违规，真私有路径仍然拦", async () => {
+  const [ok, bad] = await rpc([
+    call(33, "validate_hulian_usage", {
+      code: `import { Tag } from "@hulianui/ui/tag"\nimport { withHulian } from "@hulianui/ui/vitest-preset"\nexport const A = withHulian\n`,
+      filePath: "ok.ts",
+    }),
+    call(34, "validate_hulian_usage", {
+      code: `import { X } from "@hulianui/ui/src/internal"\nexport const A = X\n`,
+      filePath: "bad.ts",
+    }),
+  ]);
+  assert.equal(dataOf(ok).ok, true, "package exports 里的子路径是公开入口");
+  assert.equal(dataOf(bad).ok, false, "exports 之外的路径仍要拦");
+});
+
+test("多文件检查：单个文件读不到不影响其余诊断", async () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-validate-"));
+  try {
+    write(root, "good.tsx", `import { Button } from "@hulianui/ui"\nexport const A = () => <Button/>\n`);
+    write(root, "bad.tsx", `import { toast } from "@hulianui/ui"\nexport const B = () => toast.success("x")\n`);
+    const [res] = await rpc([
+      call(35, "validate_hulian_usage", {
+        projectRoot: root,
+        files: ["good.tsx", "bad.tsx", "missing.tsx", "notes.md"],
+      }),
+    ]);
+    const data = dataOf(res);
+    assert.equal(data.summary.files, 2, "两个可读文件都要检查");
+    assert.equal(data.summary.skipped, 2, "缺失文件与非源码各记一条 skipped");
+    assert.equal(data.ok, false);
+    assert.ok(data.diagnostics.some((item) => item.file === "bad.tsx"));
+    assert.notEqual(res.result?.isError, true);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("参数缺失才是工具失败", async () => {
+  const [res] = await rpc([call(36, "validate_hulian_usage", {})]);
+  assert.equal(res.result?.isError, true);
+});
+
+test("prompts 把推荐工作流固化下来", async () => {
+  const [list, get] = await rpc([
+    { jsonrpc: "2.0", id: 37, method: "prompts/list" },
+    {
+      jsonrpc: "2.0",
+      id: 38,
+      method: "prompts/get",
+      params: { name: "hulianui_page_builder", arguments: { page: "用户管理列表页" } },
+    },
+  ]);
+  assert.deepEqual(
+    (list.result?.prompts ?? []).map((p) => p.name).sort(),
+    ["hulianui_expert", "hulianui_page_builder"],
+  );
+  const message = get.result?.messages?.[0]?.content?.text ?? "";
+  assert.match(message, /inspect_project/);
+  assert.match(message, /recommend_ui/);
+  assert.match(message, /validate_hulian_usage/);
+  assert.match(message, /用户管理列表页/);
+});
+
+test("本地模式缺产物时明确报错，不静默混用线上数据", async () => {
+  const empty = mkdtempSync(join(tmpdir(), "hulian-no-artifacts-"));
+  try {
+    const [strict, opted] = await rpc(
+      [call(39, "list_components", { limit: 1 }), call(40, "get_conventions", {})],
+      { env: { HULIAN_UI_ROOT: empty } },
+    );
+    assert.equal(strict.result?.isError, true, "缺 registry 产物必须报错");
+    assert.match(bodyOf(strict), /本地模式/);
+    assert.match(bodyOf(strict), /llms-registry|docs:all/, "要说清怎么补");
+    assert.equal(opted.result?.isError, true);
+  } finally {
+    rmSync(empty, { recursive: true, force: true });
+  }
+});
+
+test("基准任务：用户管理列表页的选型 4 次调用内闭环", async () => {
+  // #36 的验收标准之一：这条链路此前退化成 29 次 tool call，且最终得出「没有可复用的页面」。
+  const [recommend, docs, conventions, install] = await rpc([
+    call(41, "recommend_ui", {
+      task: "用户管理列表页：页头、查询、分页表格、批量操作、新增编辑弹窗、删除确认",
+    }),
+    call(42, "get_component_doc", {
+      names: ["pro-table", "form-dialog", "page-header"],
+      sections: ["props", "pitfalls"],
+    }),
+    call(43, "get_conventions", {}),
+    call(44, "install_block", { name: "page-admin-list", includeSource: false }),
+  ]);
+
+  const picks = dataOf(recommend);
+  assert.ok(picks.pages.some((item) => item.name === "page-admin-list"));
+  assert.ok(picks.blocks.some((item) => item.name === "block-data-table"));
+
+  const body = bodyOf(docs);
+  for (const slug of ["pro-table", "form-dialog", "page-header"]) {
+    assert.match(body, new RegExp(`<!-- ${slug} ·`), `${slug} 的文档应在同一次返回里`);
+  }
+  assert.match(bodyOf(conventions), /可执行门禁/);
+  assert.match(bodyOf(install), /需要递归安装的区块/);
+  assert.match(bodyOf(install), /validate_hulian_usage/);
+});
+
+test("两个工具都不碰消费项目的文件", async () => {
+  const root = makeProject("next");
+  const snapshot = () => {
+    const entries = [];
+    const walk = (dir, rel = "") => {
+      for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        const next = join(dir, entry.name);
+        const path = rel ? `${rel}/${entry.name}` : entry.name;
+        if (entry.isDirectory()) walk(next, path);
+        else entries.push(`${path}:${readFileSync(next, "utf8").length}`);
+      }
+    };
+    walk(root);
+    return entries.join("\n");
+  };
+  const before = snapshot();
+  try {
+    await rpc([
+      call(45, "inspect_project", { projectRoot: root }),
+      call(46, "validate_hulian_usage", { projectRoot: root, files: ["app/layout.tsx"] }),
+    ]);
+    assert.equal(snapshot(), before, "inspect_project / validate_hulian_usage 都是只读的");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// ------------------------------------------------------- 同源安装 / 版本 --
+
+/** 一个内容与线上**故意不同**的本地 registry：用来证明本地源码不会配上线上安装命令。 */
+function makeLocalRegistry() {
+  const root = mkdtempSync(join(tmpdir(), "hulian-local-registry-"));
+  const item = {
+    name: "block-local-only",
+    type: "registry:block",
+    title: "只存在于本地的区块",
+    description: "线上 registry 里没有这一份",
+    categories: ["application"],
+    dependencies: [],
+    registryDependencies: [],
+    files: [
+      {
+        path: "components/hulianui/blocks/local-only.tsx",
+        type: "registry:block",
+        target: "components/hulianui/blocks/local-only.tsx",
+        content: 'export const MARKER = "LOCAL_ONLY_NOT_PUBLISHED"\n',
+      },
+    ],
+    meta: { kind: "block", installation: { providers: [], replace: [], slots: [] } },
+  };
+  write(root, "packages/ui/conventions.json", JSON.stringify({ version: "2", executableRules: [], advisories: [] }));
+  write(
+    root,
+    "apps/www/public/registry.json",
+    JSON.stringify({
+      name: "hulianui",
+      version: "9.9.9-local",
+      itemUrl: "https://hulianui.haloritual.com/r/{name}.json",
+      items: [{ ...item, files: item.files.map(({ content: _c, ...rest }) => rest) }],
+    }),
+  );
+  write(root, "apps/www/public/r/block-local-only.json", JSON.stringify(item));
+  return root;
+}
+
+test("本地源码不会配上线上安装命令（内容不同也不会误导）", async () => {
+  const root = makeLocalRegistry();
+  try {
+    const [res] = await rpc([call(47, "install_block", { name: "block-local-only" })], {
+      env: { HULIAN_UI_ROOT: join(root, "packages", "ui") },
+    });
+    const body = bodyOf(res);
+    assert.match(body, /LOCAL_ONLY_NOT_PUBLISHED/, "应返回本地那一份源码");
+    assert.doesNotMatch(
+      body,
+      /npx shadcn@latest add https:\/\/hulianui\.haloritual\.com/,
+      "本地源码 + 线上端点是跨源的，不能给这条命令",
+    );
+    assert.match(body, /不是同一来源|没有同源的安装端点/, "必须说清为什么没有命令");
+    assert.match(body, /registry v9\.9\.9-local/, "数据源版本应如实回报");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("显式配了 registry URL 才给安装命令，且用的就是那个 base", async () => {
+  const root = makeLocalRegistry();
+  try {
+    const [res] = await rpc([call(48, "install_block", { name: "block-local-only", includeSource: false })], {
+      env: {
+        HULIAN_UI_ROOT: join(root, "packages", "ui"),
+        HULIAN_REGISTRY_URL: "http://127.0.0.1:4499",
+      },
+    });
+    const body = bodyOf(res);
+    assert.match(body, /npx shadcn@latest add http:\/\/127\.0\.0\.1:4499\/r\/block-local-only\.json/);
+    assert.doesNotMatch(body, /hulianui\.haloritual\.com/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("唯一的文件不存在时是工具失败，绝不能显示通过", async () => {
+  const [res] = await rpc([
+    call(49, "validate_hulian_usage", { files: ["definitely-missing.tsx"] }),
+  ]);
+  assert.equal(res.result?.isError, true, "0 个文件被检查 = 工具没能完成工作");
+  const body = bodyOf(res);
+  assert.doesNotMatch(body, /通过/, "不能出现任何「通过」字样");
+  assert.match(body, /definitely-missing\.tsx/);
+  assert.match(body, /文件不存在/);
+});
+
+test("部分文件未检查时标 partial，且不算通过", async () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-partial-"));
+  try {
+    write(root, "good.tsx", `import { Button } from "@hulianui/ui"\nexport const A = () => <Button/>\n`);
+    const [res] = await rpc([
+      call(50, "validate_hulian_usage", { projectRoot: root, files: ["good.tsx", "missing.tsx"] }),
+    ]);
+    const data = dataOf(res);
+    assert.equal(data.partial, true);
+    assert.equal(data.ok, false, "已检查的干净，但漏了一个 —— 不能算通过");
+    assert.equal(data.summary.errors, 0, "并不是代码有违规");
+    assert.notEqual(res.result?.isError, true, "还有文件检查成了，不是工具失败");
+    assert.match(bodyOf(res), /部分完成/);
+    assert.doesNotMatch(bodyOf(res), /✅/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("versions 区分 guard / registry / 消费方实装版本，首轮调用就齐", async () => {
+  const root = makeProject("next");
+  try {
+    const [res] = await rpc([
+      call(51, "validate_hulian_usage", { projectRoot: root, files: ["app/layout.tsx"] }),
+    ]);
+    const versions = dataOf(res).versions;
+    assert.ok(versions.guard, "guard 版本");
+    assert.match(versions.registry ?? "", /^\d+\.\d+\.\d+$/, "registry 版本不能因为调用顺序而是 null");
+    assert.equal(versions.consumerUi, "0.15.1", "消费方实装版本来自 projectRoot/node_modules");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("monorepo 根：交出子项目候选而不是断言「没装瑚琏」", async () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-monorepo-"));
+  try {
+    // 仓库根连 package.json 都没有，前端在 web/ —— 5069tk 的真实形状
+    write(
+      root,
+      "web/package.json",
+      JSON.stringify({
+        name: "web",
+        dependencies: { next: "16.2.0", "@hulianui/ui": "^0.15.1" },
+      }),
+    );
+    write(
+      root,
+      "web/node_modules/@hulianui/ui/package.json",
+      JSON.stringify({ name: "@hulianui/ui", version: "0.15.1" }),
+    );
+    const [res] = await rpc([call(52, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.suggestedProjectRoot, join(root, "web"));
+    assert.deepEqual(
+      info.workspaceCandidates.map((entry) => [entry.path, entry.framework, entry.hulianUi]),
+      [["web", "next", "0.15.1"]],
+    );
+    const warnings = info.warnings.join("\n");
+    assert.match(warnings, /monorepo 根/);
+    assert.match(warnings, /web/);
+    assert.doesNotMatch(warnings, /ThemeProvider/, "根目录不该抱怨缺 Provider —— 那是子项目的事");
+    assert.doesNotMatch(warnings, /tokens/, "同上：噪音会盖住真正该说的那句");
+    assert.match(bodyOf(res), /未替你切换/, "必须说明没有自动切换");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workspace 声明优先于目录名猜测", async () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-workspaces-"));
+  try {
+    write(root, "package.json", JSON.stringify({ name: "root", private: true }));
+    write(root, "pnpm-workspace.yaml", "packages:\n  - apps/*\n  - packages/*\n");
+    write(
+      root,
+      "apps/dashboard/package.json",
+      JSON.stringify({ name: "dashboard", dependencies: { vite: "7.3.6", "@hulianui/ui": "^0.15.1" } }),
+    );
+    write(root, "packages/utils/package.json", JSON.stringify({ name: "utils" }));
+    const [res] = await rpc([call(53, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.suggestedProjectRoot, join(root, "apps/dashboard"));
+    assert.deepEqual(
+      info.workspaceCandidates.map((entry) => entry.path).sort(),
+      ["apps/dashboard", "packages/utils"],
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
