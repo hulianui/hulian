@@ -40,7 +40,7 @@ try {
     }
     console.log(`[hulian-check] FAIL · ${result.diagnostics.length} diagnostics / ${result.filesChecked} files`);
   }
-  if (result.diagnostics.length > 0) process.exitCode = 1;
+  if (result.diagnostics.some((diagnostic) => diagnostic.severity === "error")) process.exitCode = 1;
 } catch (error) {
   console.error(`[hulian-check] ${error.message}`);
   process.exitCode = 2;

@@ -113,7 +113,7 @@ const TOOLS = [
     name: "install_block",
     description:
       "取区块 / 页面 / 组件的可注入源码，用于「把这块积木放进我的项目」。" +
-      "区块与页面是自包含的（只从 @hulianui/ui 根 barrel 导入），拿到即可落盘改业务字段。" +
+      "区块只从 @hulianui/ui 根 barrel 导入；页面会递归安装它组合的区块。" +
       "组件通常不需要注入 —— 直接 npm import 即可，只有要魔改组件本身时才注入。",
     inputSchema: {
       type: "object",
@@ -208,15 +208,29 @@ async function installBlock({ name, includeSource = true }) {
   }
   const kind = KIND_OF(item);
   const cmd = `npx shadcn@latest add https://hulianui.haloritual.com/r/${item.name}.json`;
+  const recursive = (item.registryDependencies || []).map((dependency) =>
+    dependency.replace(/\.json$/, "").split("/").pop(),
+  );
+  const installation = item.meta?.installation;
+  const targets = (item.files || []).map((file) => file.target || file.path).filter(Boolean);
   const head = [
     `# ${item.title || item.name}（${kind}）`,
     item.description ? `\n${item.description}` : "",
     "",
     `安装命令：\`${cmd}\``,
     item.dependencies?.length ? `npm 依赖：${item.dependencies.join(", ")}` : "",
+    recursive.length ? `需要递归安装的区块：${recursive.join(", ")}` : "",
+    installation?.providers?.length ? `需要 Provider：${installation.providers.join(", ")}` : "",
+    installation?.replace?.length ? `必须替换：${installation.replace.join(", ")}` : "",
+    installation?.slots?.length ? `可替换插槽：${installation.slots.join(", ")}` : "",
     kind === "component"
       ? `\n⚠️ 组件一般**不需要注入源码** —— 直接 \`${item.meta?.import ?? `import { ... } from "${PKG}"`}\` 即可。只有要魔改组件本身时才注入。`
-      : `\n这是自包含积木：只从 "${PKG}" 根 barrel 导入，落盘后改业务字段即可。`,
+      : recursive.length
+        ? `\n这是组合页面；shadcn 会先递归安装上面的区块，再写入页面源码。`
+        : `\n这是自包含积木：只从 "${PKG}" 根 barrel 导入。`,
+    kind !== "component" && targets.length
+      ? `安装后门禁：\`npx -y @hulianui/guard ${targets.join(" ")}\`（hulian-check）`
+      : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -247,6 +261,46 @@ async function getConventions({ scope }) {
     );
   };
 
+  if (conv.version === "2") {
+    const executable = conv.executableRules || [];
+    const advisories = conv.advisories || [];
+    if (!scope) {
+      out.push("# 瑚琏使用约束\n");
+      out.push("## 可执行门禁（@hulianui/guard）\n");
+      for (const item of executable) {
+        out.push(
+          `- **[${item.severity}] ${item.id}**：${item.message}` +
+            (item.instead ? `\n  - 该怎么做：${item.instead}` : ""),
+        );
+      }
+      out.push(
+        `\n运行：\`npx -y @hulianui/guard <files...>\`。以上 ${executable.length} 条可由 AST 稳定检查。`,
+      );
+      const globalAdvisories = advisories.filter((item) => item.scope === "global");
+      out.push("\n## 建议（需要业务判断，不冒充硬门禁）\n");
+      for (const item of globalAdvisories) out.push(rule(item));
+      if (conv.confusables?.length) {
+        out.push("\n## 易混淆的兄弟件（选错不会报错，只是不对）\n");
+        for (const c of conv.confusables) {
+          out.push(`- 要「${c.when}」→ 用 **${c.pick}**，不是 ${c.notThis}。${c.why ? `（${c.why}）` : ""}`);
+        }
+      }
+      const scopes = new Set(advisories.map((item) => item.scope).filter((value) => value && value !== "global"));
+      out.push(`\n## 组件建议索引\n\n${scopes.size} 个组件有专属建议；传 scope 可按组件取回。`);
+      return text(out.join("\n"));
+    }
+
+    const key = String(scope).replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+    const scoped = advisories.filter((item) => item.scope === key || item.scope === scope);
+    if (!scoped.length) {
+      return text(`${scope} 没有专属建议；仍需遵守不带 scope 时返回的可执行门禁与全局建议。`);
+    }
+    out.push(`# ${scope} 的使用建议\n`);
+    for (const item of scoped) out.push(rule(item));
+    return text(out.join("\n"));
+  }
+
+  // v1 兼容分支：线上旧 conventions 在滚动发布期间仍可读一个版本。
   if (!scope) {
     out.push("# 瑚琏使用约束（违反后多数在运行时才报错，或根本不报错只是变丑）\n");
     for (const g of conv.global || []) out.push(rule(g));

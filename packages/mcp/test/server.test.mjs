@@ -120,6 +120,8 @@ test("get_conventions 返回全局铁律与易混淆件", async () => {
   assert.match(body, /--color-/, "应含色彩 token 前缀约束");
   assert.match(body, /MuiBridgeProvider/, "应含 MUI 桥 Provider 约束");
   assert.match(body, /Tag/, "应含 Badge↔Tag 易混淆提示");
+  assert.match(body, /可执行门禁/, "应明确哪些规则由 guard 执行");
+  assert.match(body, /建议/, "应把文档经验标成建议而非硬门禁");
 });
 
 test("get_conventions 带 scope 返回该组件的硬约束", async () => {
@@ -138,4 +140,12 @@ test("install_block 返回自包含区块的可注入源码与安装命令", asy
 test("install_block 对组件提示优先用 npm import 而非注入源码", async () => {
   const [res] = await rpc([call(10, "install_block", { name: "button", includeSource: false })]);
   assert.match(bodyOf(res), /不需要.{0,2}注入源码/, "组件应引导走 npm import 而非注入");
+});
+
+test("install_block 对页面返回递归依赖、接入清单与 guard 命令", async () => {
+  const [res] = await rpc([call(11, "install_block", { name: "page-landing", includeSource: false })]);
+  const body = bodyOf(res);
+  assert.match(body, /需要递归安装的区块/);
+  assert.match(body, /必须替换/);
+  assert.match(body, /hulian-check/);
 });

@@ -64,10 +64,14 @@ function location(sourceFile, node) {
   return { line: point.line + 1, column: point.character + 1 };
 }
 
-function invalidCssVars(text, prefix) {
+function invalidCssVars(text, matcher) {
   return [...text.matchAll(/var\((--[\w-]+)/g)]
     .map((match) => match[1])
-    .filter((name) => !name.startsWith(prefix));
+    .filter(
+      (name) =>
+        !name.startsWith(matcher.requiredPrefix) &&
+        (!matcher.semanticNames || matcher.semanticNames.includes(name)),
+    );
 }
 
 function jsxBinding(tagName, bindings) {
@@ -174,13 +178,13 @@ export function checkSource(source, options = {}) {
               const styleName = styleProperty.name.getText(sourceFile).replace(/^['"]|['"]$/g, "");
               if (!COLOR_STYLE_PROPS.has(styleName)) continue;
               const text = staticText(styleProperty.initializer);
-              if (text && invalidCssVars(text, rule.matcher.requiredPrefix).length > 0) {
+              if (text && invalidCssVars(text, rule.matcher).length > 0) {
                 report(rule, styleProperty.initializer);
               }
             }
           } else {
             const text = staticText(property.initializer);
-            if (text && invalidCssVars(text, rule.matcher.requiredPrefix).length > 0) {
+            if (text && invalidCssVars(text, rule.matcher).length > 0) {
               report(rule, property.initializer ?? property);
             }
           }

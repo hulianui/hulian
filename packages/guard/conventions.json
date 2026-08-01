@@ -88,7 +88,19 @@
           "stroke",
           "style"
         ],
-        "requiredPrefix": "--color-"
+        "requiredPrefix": "--color-",
+        "semanticNames": [
+          "--background",
+          "--danger",
+          "--foreground",
+          "--info",
+          "--muted",
+          "--primary",
+          "--secondary",
+          "--success",
+          "--surface",
+          "--warning"
+        ]
       },
       "message": "SVG 或内联 style 中的颜色变量必须使用 --color- 前缀。",
       "instead": "例如 var(--color-primary)。"

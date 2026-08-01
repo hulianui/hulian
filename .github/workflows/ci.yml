@@ -41,6 +41,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check generated conventions
+        run: pnpm conventions:check
+
+      # 门禁只扫对外分发的组合源码与组件实现；文档 demo 为展示动画允许局部 style，public
+      # 还包含扩展名为 .ts 的 HLS 二进制分片，都不属于业务消费代码。
+      - name: Guard distributable UI usage
+        run: pnpm guard -- apps/www/app/blocks/_blocks apps/www/app/pages/_pages packages/ui/src
+
       # 全量类型检查（@hulianui/ui + apps/www）
       - name: Typecheck
         run: pnpm typecheck
