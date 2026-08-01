@@ -1,0 +1,68 @@
+---
+slug: tool-call
+name: ToolCall
+category: ai
+group: agent
+tags: []
+exports: [ToolCall]
+status: enriched
+---
+
+# ToolCall
+
+> Tool-call card · Collapsible input and output with four status states, a tool icon, Dot status color, and Spinner while running · Reuses Collapsible · ai/agent
+
+## When to Use
+
+Use it to present one agent tool invocation with its name, status, and collapsible input and result. Use [AgentPlan](../agent-plan/agent-plan.md) for multi-step orchestration and [ThinkingBlock](../thinking-block/thinking-block.md) for free-form reasoning. ToolCall focuses on one tool's inputs and outputs.
+
+## Import
+```ts
+import { ToolCall } from "@hulianui/ui"
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| status | `"pending" ｜ "running" ｜ "success" ｜ "error"` | `"success"` | Status label: `"\u7b49\u5f85"` (Waiting), `"\u8fd0\u884c\u4e2d"` (Running), `"\u5b8c\u6210"` (Complete), or `"\u5931\u8d25"` (Failed) |
+| defaultOpen | `boolean` | — | Uncontrolled initial expansion state |
+| open | `boolean` | — | Controlled expansion state |
+| className | `string` | — | Container class name |
+
+## Events
+
+| Event | Type | Description |
+|------|------|------|
+| onOpenChange | `(open: boolean) => void` | Expanded state change callback |
+
+## Slots
+
+| Slot | Type | Description |
+|------|------|------|
+| name * | `ReactNode` | Tool name rendered in monospace, such as `search_web` |
+| icon | `ReactNode` | Tool icon slot (default Wrench) |
+| input | `ReactNode` | Input shown below the built-in `"\u53c2\u6570"` (Parameters) heading; typically `<CodeBlock/>` or JSON text |
+| output | `ReactNode` | Result shown below the built-in `"\u7ed3\u679c"` (Result) heading; typically `<CodeBlock/>`, `<Prose/>`, or text |
+| children | `ReactNode` | Customize panel content (replace input/output) |
+
+## Examples
+```tsx
+<ToolCall
+  name="search_web"
+  status="success"
+  defaultOpen
+  input={<CodeBlock lang="json" code={'{ "query": "Hulian design system" }'} />}
+  output="Found 3 relevant results, synthesized."
+/>
+
+<ToolCall name="run_code" status="running" />
+```
+
+## Usage Guidelines
+
+- Choose controlled or uncontrolled expansion. Pair `open` with `onOpenChange`; use `defaultOpen` only for the initial uncontrolled state.
+- `children` replaces the standard `input` and `output` panel, so choose one composition mode.
+
+## Related
+[ThinkingBlock](../thinking-block/thinking-block.md) · [AgentPlan](../agent-plan/agent-plan.md) · [Dossier](../dossier/dossier.md) · [Artifact](../artifact/artifact.md) · [ConfirmCard](../confirm-card/confirm-card.md) · [ThreadList](../thread-list/thread-list.md)
