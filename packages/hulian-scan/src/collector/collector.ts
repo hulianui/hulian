@@ -14,7 +14,12 @@ export function createCollector(): ScanCollector {
 
   return {
     accept(event) {
-      events.push(event);
+      const activeStepIds = [...open.keys()];
+      events.push(
+        activeStepIds.length === 1
+          ? { ...event, stepId: activeStepIds[0] }
+          : event,
+      );
     },
     beginStep(stepId, atMs) {
       if (open.has(stepId)) {

@@ -21,6 +21,7 @@ describe("createCollector", () => {
           commitId: 1,
           timestampMs: 11,
           durationMs: 2,
+          stepId: "mount",
         },
       ],
       errors: [],

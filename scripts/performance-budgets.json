@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "relativeRegressionPct": 20,
+    "absoluteRegressionMs": 2,
+    "minSamples": 5,
+    "minAvoidableRenderMs": 0.5,
+    "minRepeatedAvoidableRenders": 2,
+    "maxLongTaskMs": 100
+  },
+  "categories": {
+    "standard": {
+      "maxAvoidableRenderCount": 1,
+      "maxCascadeFanout": 30
+    },
+    "core": {
+      "maxAvoidableRenderCount": 0,
+      "maxCascadeFanout": 50
+    },
+    "heavy": {
+      "maxAvoidableRenderCount": 1,
+      "maxCascadeFanout": 250
+    },
+    "animation": {
+      "maxDroppedFrameRatio": 0.1,
+      "maxLongTaskMs": 100
+    }
+  },
+  "scenarios": {}
+}

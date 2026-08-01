@@ -19,6 +19,7 @@ export interface ScenarioStep {
 export interface PerformanceBudget {
   relativeRegressionPct?: number;
   absoluteRegressionMs?: number;
+  minSamples?: number;
   maxAvoidableRenderCount?: number;
   minAvoidableRenderMs?: number;
   minRepeatedAvoidableRenders?: number;
@@ -48,6 +49,7 @@ export interface FiberRenderEvent {
   depth: number;
   actualDurationMs: number;
   selfDurationMs: number;
+  stepId?: string;
   changeDescription?: unknown;
 }
 
@@ -56,6 +58,7 @@ export interface CommitEvent {
   commitId: number;
   timestampMs: number;
   durationMs: number;
+  stepId?: string;
 }
 
 export type ScanEvent = FiberRenderEvent | CommitEvent;
