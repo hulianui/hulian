@@ -8,6 +8,7 @@ export interface RunScanOptions {
   checkpointPath: string;
   outputDir: string;
   resume: boolean;
+  react?: "18" | "19";
 }
 
 export interface RunDependencies {

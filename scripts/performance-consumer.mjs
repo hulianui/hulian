@@ -291,6 +291,11 @@ export default defineConfig({
 }
 
 function selectedSlugs(args, allSlugs) {
+  if (args.includes("--smoke")) {
+    return ["animated-beam", "button", "dialog", "table"].filter((slug) =>
+      allSlugs.includes(slug),
+    );
+  }
   if (args.includes("--full") || !args.includes("--scenario")) return [...new Set(allSlugs)].sort();
   const selected = [];
   for (let index = 0; index < args.length; index += 1) {
@@ -367,12 +372,44 @@ function withoutEnvironmentArgs(args) {
   return forwarded;
 }
 
+function valueAfter(args, flag) {
+  const index = args.indexOf(flag);
+  return index >= 0 ? args[index + 1] : undefined;
+}
+
+async function assertCiBaseline(args, repositoryRoot) {
+  const react = valueAfter(args, "--react") ?? process.env.PERFORMANCE_REACT_VERSION ?? "19";
+  if (!args.includes("--ci") || react === "18") return;
+  const baseline = resolve(
+    repositoryRoot,
+    valueAfter(args, "--from-baseline") ?? "scripts/performance-baseline.json",
+  );
+  let parsed;
+  try {
+    parsed = JSON.parse(await readFile(baseline, "utf8"));
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`performance baseline is missing or invalid: ${detail}`);
+  }
+  if (
+    parsed?.schemaVersion !== 1 ||
+    parsed?.react !== "19.2.8" ||
+    parsed?.environment !== "packed-consumer" ||
+    typeof parsed?.scenarios !== "object" ||
+    parsed.scenarios === null ||
+    Object.keys(parsed.scenarios).length === 0
+  ) {
+    throw new Error("performance baseline is empty or invalid; run pnpm scan:update explicitly");
+  }
+}
+
 async function runPackedConsumer(args) {
   const repositoryRoot = process.env.HULIAN_PERFORMANCE_REPO_ROOT;
   const consumerRoot = process.env.HULIAN_PERFORMANCE_CONSUMER_ROOT;
   if (!repositoryRoot || !consumerRoot) {
     throw new Error("performance-consumer.sh must provide validated repository and consumer roots");
   }
+  await assertCiBaseline(args, repositoryRoot);
   const appRoot = join(consumerRoot, "app");
   const artifacts = join(consumerRoot, "artifacts");
   await cleanValidatedChildren(consumerRoot);
@@ -396,7 +433,13 @@ async function runPackedConsumer(args) {
   await writeAndBuildBusinessBundle(appRoot, consumerRoot, selectedSlugs(args, allSlugs));
   await assertNoWorkspaceLeaks(appRoot, repositoryRoot);
   if (args.includes("--prepare-only")) return;
-  const forwarded = withoutEnvironmentArgs(args);
+  const updateBaseline = args.includes("--update") && !args.includes("--from");
+  const forwarded = withoutEnvironmentArgs(args).filter((argument) => argument !== "--update");
+  let output = valueAfter(forwarded, "--output");
+  if (updateBaseline && !output) {
+    output = ".hulian-scan/baseline-candidate";
+    forwarded.push("--output", output);
+  }
   run(
     "node",
     [
@@ -411,6 +454,21 @@ async function runPackedConsumer(args) {
     },
   );
   await assertNoWorkspaceLeaks(appRoot, repositoryRoot);
+  if (updateBaseline) {
+    run(
+      "node",
+      [
+        join(repositoryRoot, "scripts/hulian-scan.mjs"),
+        "--update",
+        "--from",
+        join(resolve(repositoryRoot, output), "summary.json"),
+      ],
+      {
+        cwd: repositoryRoot,
+        env: { ...process.env, HULIAN_SCAN_LAB_DIR: appRoot },
+      },
+    );
+  }
 }
 
 async function main() {

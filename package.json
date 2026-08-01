@@ -35,7 +35,10 @@
     "install-hooks": "sh scripts/install-hooks.sh",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm llms-registry && pnpm changelog",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "scan": "node scripts/hulian-scan.mjs --full --environment workspace",
+    "scan:ci": "node scripts/hulian-scan.mjs --ci --environment packed-consumer",
+    "scan:update": "node scripts/hulian-scan.mjs --update --full --environment packed-consumer"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",

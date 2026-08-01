@@ -9,6 +9,7 @@ import { chromium } from "playwright";
 import { evaluateBudget } from "../analyzer/budgets";
 import type { Finding, PerformanceBudget, ScanReport, ScanStage, ScenarioRun } from "../contracts";
 import { loadCheckpoint, saveCheckpoint, type Checkpoint } from "../report/checkpoint";
+import type { PerformanceBaseline } from "../report/baseline";
 import { writeReport } from "../report/report";
 import { repositoryRoot } from "../paths";
 import type { RunDependencies, RunScanOptions } from "./run-scan";
@@ -41,13 +42,11 @@ function budgetFor(
 function analyzeRuns(
   runs: ScenarioRun[],
   configuration: BudgetConfiguration,
-  baseline: ScanReport | undefined,
+  baseline: PerformanceBaseline | undefined,
 ): Finding[] {
-  const baselineById = new Map(baseline?.runs.map((run) => [run.scenarioId, run]) ?? []);
   return runs.flatMap((run) => {
     const component = runMetadata(run, "component") ?? run.scenarioId;
-    const baselineRun = baselineById.get(run.scenarioId);
-    const baselineMetrics = baselineRun?.samples[0];
+    const baselineMetrics = baseline?.scenarios[run.scenarioId];
     return evaluateBudget({
       run,
       component,
@@ -215,9 +214,9 @@ async function runBrowserStage(
     await waitForPreview(url, preview);
     browser = await chromium.launch({ headless: true });
     const revision = await gitRevision();
-    const fingerprint = `${
-      options.environment
-    }/react19/chromium-${browser.version()}/git-${revision}`;
+    const fingerprint = `${options.environment}/react${
+      options.react ?? "19"
+    }/chromium-${browser.version()}/git-${revision}`;
     const checkpoint = await loadResumeCheckpoint(options, fingerprint, stage === "diagnosis");
     const stageRuns = new Map(
       checkpoint.runs.filter((run) => run.stage === stage).map((run) => [run.scenarioId, run]),
@@ -323,7 +322,7 @@ async function runBrowserStage(
 
 export async function createDefaultDependencies(
   options: {
-    baseline?: ScanReport;
+    baseline?: PerformanceBaseline;
   } = {},
 ): Promise<RunDependencies> {
   const budgetPath = join(repositoryRoot, "scripts/performance-budgets.json");

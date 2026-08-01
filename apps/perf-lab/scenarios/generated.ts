@@ -127,6 +127,8 @@ export const scenarioLoaders = {
   "bounce-cards": async () =>
     (await import("@hulianui/ui-internal/bounce-cards/bounce-cards.showcase"))
       .bounceCardsShowcase,
+  brand: async () =>
+    (await import("@hulianui/ui-internal/brand/brand.showcase")).brandShowcase,
   breadcrumb: async () =>
     (await import("@hulianui/ui-internal/breadcrumb/breadcrumb.showcase"))
       .breadcrumbShowcase,
@@ -1663,6 +1665,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: false,
     source: "packages/ui/src/bounce-cards/index.ts",
+  },
+  brand: {
+    id: "brand",
+    scenarioId: "brand/basic",
+    component: "Brand",
+    entry: "@hulianui/ui/brand",
+    category: "standard",
+    categories: ["global", "navigation"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/brand/index.ts",
   },
   breadcrumb: {
     id: "breadcrumb",

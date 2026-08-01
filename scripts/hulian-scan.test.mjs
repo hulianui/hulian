@@ -26,3 +26,29 @@ test("forwards every argument to the private package CLI", () => {
     options: { stdio: "inherit" },
   });
 });
+
+test("routes packed-consumer scans through the external tarball harness", () => {
+  let invocation;
+  const status = runForwarder(
+    ["--ci", "--environment", "packed-consumer", "--scenario", "button/basic"],
+    (command, args, options) => {
+      invocation = { command, args, options };
+      return { status: 0 };
+    },
+    {},
+  );
+
+  assert.equal(status, 0);
+  assert.deepEqual(invocation, {
+    command: "bash",
+    args: [
+      "scripts/performance-consumer.sh",
+      "--ci",
+      "--environment",
+      "packed-consumer",
+      "--scenario",
+      "button/basic",
+    ],
+    options: { stdio: "inherit" },
+  });
+});

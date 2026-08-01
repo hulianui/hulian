@@ -3,12 +3,18 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-export function runForwarder(argv, spawn = spawnSync) {
-  const result = spawn(
-    "pnpm",
-    ["--filter", "@hulianui/hulian-scan", "run", "scan:internal", "--", ...argv],
-    { stdio: "inherit" },
+export function runForwarder(argv, spawn = spawnSync, environment = process.env) {
+  const packedConsumer = argv.some(
+    (argument, index) => argument === "--environment" && argv[index + 1] === "packed-consumer",
   );
+  const result =
+    packedConsumer && !environment.HULIAN_SCAN_LAB_DIR
+      ? spawn("bash", ["scripts/performance-consumer.sh", ...argv], { stdio: "inherit" })
+      : spawn(
+          "pnpm",
+          ["--filter", "@hulianui/hulian-scan", "run", "scan:internal", "--", ...argv],
+          { stdio: "inherit" },
+        );
   return result.status ?? 1;
 }
 

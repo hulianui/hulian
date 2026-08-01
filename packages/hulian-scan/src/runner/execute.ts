@@ -5,21 +5,13 @@ import type { CliOptions } from "../cli";
 import type { Finding, ScanReport } from "../contracts";
 import { buildRepositoryInventory } from "../inventory/repository";
 import { repositoryRoot } from "../paths";
+import { parsePerformanceBaseline, type PerformanceBaseline } from "../report/baseline";
 import { createDefaultDependencies } from "./default-dependencies";
 import { runScan, type RunScanOptions } from "./run-scan";
 
-async function readReport(path: string): Promise<ScanReport> {
+async function readBaseline(path: string, requireNonEmpty: boolean): Promise<PerformanceBaseline> {
   const parsed: unknown = JSON.parse(await readFile(resolve(repositoryRoot, path), "utf8"));
-  if (
-    typeof parsed !== "object" ||
-    parsed === null ||
-    (parsed as Partial<ScanReport>).schemaVersion !== 1 ||
-    !Array.isArray((parsed as Partial<ScanReport>).runs) ||
-    !Array.isArray((parsed as Partial<ScanReport>).findings)
-  ) {
-    throw new Error(`invalid Hulian Scan report: ${path}`);
-  }
-  return parsed as ScanReport;
+  return parsePerformanceBaseline(parsed, { requireNonEmpty });
 }
 
 async function readFindings(path: string): Promise<Finding[]> {
@@ -50,14 +42,17 @@ function runOptions(options: CliOptions, scenarioIds: string[]): RunScanOptions 
     checkpointPath: join(outputDir, "checkpoint.json"),
     outputDir,
     resume: options.resume,
+    react: options.react,
   };
 }
 
 export async function executeDefaultScan(options: CliOptions): Promise<ScanReport> {
-  if (options.react === "18") {
-    throw new Error("React 18 smoke support is not installed yet");
-  }
-  const baseline = options.fromBaseline ? await readReport(options.fromBaseline) : undefined;
+  const baselinePath =
+    options.fromBaseline ??
+    (options.ci && options.react === "19" && options.environment === "packed-consumer"
+      ? "scripts/performance-baseline.json"
+      : undefined);
+  const baseline = baselinePath ? await readBaseline(baselinePath, true) : undefined;
   const deps = await createDefaultDependencies({
     ...(baseline ? { baseline } : {}),
   });
@@ -94,7 +89,15 @@ export async function executeDefaultScan(options: CliOptions): Promise<ScanRepor
     return report;
   }
 
-  const scenarioIds = options.full
+  const compatibilityScenarios = [
+    "button/basic",
+    "dialog/cycles",
+    "table/stress",
+    "animated-beam/frame-budget",
+  ];
+  const scenarioIds = options.smoke
+    ? compatibilityScenarios
+    : options.full
     ? (inventory ?? []).flatMap((entry) =>
         entry.kind === "renderable" && entry.scenarioId ? [entry.scenarioId] : [],
       )

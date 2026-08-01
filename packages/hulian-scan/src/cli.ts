@@ -4,6 +4,11 @@ import { pathToFileURL } from "node:url";
 
 import type { ScanEnvironment, ScanReport } from "./contracts";
 import { repositoryRoot } from "./paths";
+import {
+  baselineFromReport,
+  parsePerformanceBaseline,
+  type PerformanceBaseline,
+} from "./report/baseline";
 import { formatTerminalSummary, writeJsonAtomic } from "./report/report";
 import { executeDefaultScan } from "./runner/execute";
 
@@ -149,7 +154,7 @@ export function parseCliArgs(args: string[]): CliOptions {
   if (inventoryOnly && (update || diagnoseFindings)) {
     throw new Error("--inventory-only cannot mutate or diagnose findings");
   }
-  if (scenarioIds.length === 0 && !update && !inventoryOnly && !diagnoseFindings) {
+  if (scenarioIds.length === 0 && !smoke && !update && !inventoryOnly && !diagnoseFindings) {
     full = true;
   }
 
@@ -212,32 +217,39 @@ async function updateBaseline(options: CliOptions): Promise<void> {
   const next: unknown = JSON.parse(await readFile(sourcePath, "utf8"));
   assertCompleteSummary(next);
   const baselinePath = resolve(repositoryRoot, "scripts/performance-baseline.json");
-  let previous: ScanReport | undefined;
+  const baseline = baselineFromReport(next);
+  if (Object.keys(baseline.scenarios).length === 0) {
+    throw new Error("baseline update produced no eligible packed-consumer scenarios");
+  }
+  let previous: PerformanceBaseline | undefined;
   try {
     const parsed: unknown = JSON.parse(await readFile(baselinePath, "utf8"));
-    assertCompleteSummary(parsed);
-    previous = parsed;
+    previous = parsePerformanceBaseline(parsed);
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
     if (code !== "ENOENT") throw error;
   }
-  const previousById = new Map(previous?.runs.map((run) => [run.scenarioId, run]) ?? []);
-  for (const run of next.runs) {
-    const oldRun = previousById.get(run.scenarioId);
-    const oldValue = oldRun?.samples[0]?.commitDurationMs;
-    const newValue = run.samples[0]?.commitDurationMs;
-    if (oldValue === undefined || newValue === undefined || oldValue === newValue) {
-      continue;
+  const componentById = new Map(
+    next.runs.map((run) => [run.scenarioId, String(run.metadata.component ?? run.scenarioId)]),
+  );
+  for (const [scenarioId, metrics] of Object.entries(baseline.scenarios)) {
+    for (const [metric, newValue] of Object.entries(metrics)) {
+      const oldValue = previous?.scenarios[scenarioId]?.[metric];
+      const delta = oldValue === undefined ? newValue : newValue - oldValue;
+      const percentage =
+        oldValue === undefined || oldValue === 0
+          ? Number.POSITIVE_INFINITY
+          : (delta / oldValue) * 100;
+      console.log(
+        `${scenarioId} (${componentById.get(scenarioId)}).${metric}: ${
+          oldValue ?? "new"
+        } -> ${newValue} (${delta >= 0 ? "+" : ""}${delta}, ${
+          Number.isFinite(percentage) ? `${percentage.toFixed(2)}%` : "new"
+        })`,
+      );
     }
-    const delta = newValue - oldValue;
-    const percentage = oldValue === 0 ? Number.POSITIVE_INFINITY : (delta / oldValue) * 100;
-    console.log(
-      `${run.scenarioId}: ${oldValue} -> ${newValue} (${
-        delta >= 0 ? "+" : ""
-      }${delta}, ${percentage.toFixed(2)}%)`,
-    );
   }
-  await writeJsonAtomic(baselinePath, next);
+  await writeJsonAtomic(baselinePath, baseline);
 }
 
 export async function runCli(

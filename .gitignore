@@ -31,3 +31,6 @@ apps/www/public/r/
 # 逐件文档端点 + 约束数据的 www 副本（构建时生成；conventions 的源在 packages/ui/）
 apps/www/public/d/
 apps/www/public/conventions.json
+
+# Hulian Scan local raw samples, traces and screenshots
+.hulian-scan/
