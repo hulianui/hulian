@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Clock, X } from "../_icons";
 import { cn } from "../lib/cn";
@@ -30,7 +30,7 @@ const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
-export function TimePicker({
+function TimePickerImpl({
   value: valueProp,
   defaultValue,
   onValueChange,
@@ -192,3 +192,6 @@ export function TimePicker({
     </BasePopover.Root>
   );
 }
+
+export const TimePicker = memo(TimePickerImpl);
+TimePicker.displayName = "TimePicker";

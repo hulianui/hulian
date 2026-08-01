@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { buildQRCode } from "./qrcode-core";
 import type { QRCodeProps } from "./qrcode.types";
@@ -6,7 +7,7 @@ import type { QRCodeProps } from "./qrcode.types";
 // 颜色默认继承 currentColor 吃主题（区别 qrcode.react 写死 #000/#FFF，暗色下要自己改两个色）；
 // 可选中心 logo（默认垫底色块抠空）。编码在 qrcode-core 里，与「出 SVG 串 / 转 PNG」共用同一份。
 
-export function QRCode({
+function QRCodeImpl({
   value,
   size = 160,
   level = "M",
@@ -63,3 +64,6 @@ export function QRCode({
     </svg>
   );
 }
+
+export const QRCode = memo(QRCodeImpl);
+QRCode.displayName = "QRCode";

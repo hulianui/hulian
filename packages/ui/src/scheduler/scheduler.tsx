@@ -1,5 +1,5 @@
 "use client";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { Button } from "../button";
 import { ChevronLeft, ChevronRight } from "../_icons";
 import { Segmented } from "../segmented";
@@ -36,7 +36,7 @@ function step(view: SchedulerView, date: string, dir: 1 | -1): string {
   return d.add(dir, "day").format("YYYY-MM-DD");
 }
 
-export function Scheduler({
+function SchedulerImpl({
   events,
   view,
   date,
@@ -154,3 +154,6 @@ export function Scheduler({
     </div>
   );
 }
+
+export const Scheduler = memo(SchedulerImpl);
+Scheduler.displayName = "Scheduler";

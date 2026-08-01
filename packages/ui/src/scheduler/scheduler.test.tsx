@@ -1,5 +1,6 @@
+import { Profiler } from "react";
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import { act, render, cleanup, fireEvent } from "@testing-library/react";
 import { Scheduler } from "./scheduler";
 import type { SchedulerEvent, SchedulerResource } from "./scheduler.types";
 
@@ -18,6 +19,30 @@ const resources: SchedulerResource[] = [
 const base = { events, date: DATE, resources, onViewChange: () => {}, onDateChange: () => {} };
 
 describe("Scheduler 渲染", () => {
+  it("稳定父组件更新时跳过排班子树", async () => {
+    const onRender = vi.fn();
+    const { rerender } = render(
+      <div data-parent-version="0">
+        <Profiler id="scheduler" onRender={onRender}>
+          <Scheduler {...base} view="week" />
+        </Profiler>
+      </div>,
+    );
+    await act(async () => undefined);
+    onRender.mockClear();
+    rerender(
+      <div data-parent-version="1">
+        <Profiler id="scheduler" onRender={onRender}>
+          <Scheduler {...base} view="week" />
+        </Profiler>
+      </div>,
+    );
+
+    const update = onRender.mock.calls.at(-1);
+    expect(update?.[1]).toBe("update");
+    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+  });
+
   it("月视图渲染事件 chip", () => {
     const { getAllByTitle } = render(<Scheduler {...base} view="month" />);
     expect(getAllByTitle("复诊").length).toBeGreaterThan(0);
