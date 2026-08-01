@@ -140,6 +140,27 @@ async function gitRevision(): Promise<string> {
   return result.stdout.trim();
 }
 
+export async function withHardTimeout<T>(
+  operation: Promise<T>,
+  timeoutMs: number,
+  label: string,
+): Promise<T> {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      operation,
+      new Promise<T>((_, reject) => {
+        timeout = setTimeout(
+          () => reject(new Error(`${label} exceeded outer browser timeout (${timeoutMs} ms)`)),
+          timeoutMs,
+        );
+      }),
+    ]);
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
+}
+
 function performanceLabDirectory(environment: RunScanOptions["environment"]): string | undefined {
   if (environment !== "packed-consumer") return undefined;
   const configured = process.env.HULIAN_SCAN_LAB_DIR;
@@ -218,6 +239,9 @@ async function runBrowserStage(
       options.react ?? "19"
     }/chromium-${browser.version()}/git-${revision}`;
     const checkpoint = await loadResumeCheckpoint(options, fingerprint, stage === "diagnosis");
+    const forcedScenarios = new Set(
+      (process.env.HULIAN_SCAN_RERUN ?? "").split(",").filter(Boolean),
+    );
     const stageRuns = new Map(
       checkpoint.runs.filter((run) => run.stage === stage).map((run) => [run.scenarioId, run]),
     );
@@ -231,11 +255,16 @@ async function runBrowserStage(
     try {
       for (const scenarioId of scenarioIds) {
         const completionId = `${stage}:${scenarioId}`;
-        if (options.resume && checkpoint.completed.includes(completionId)) {
-          if (!stageRuns.has(scenarioId)) {
+        if (
+          options.resume &&
+          !forcedScenarios.has(scenarioId) &&
+          checkpoint.completed.includes(completionId)
+        ) {
+          const completed = stageRuns.get(scenarioId);
+          if (!completed) {
             throw new Error(`checkpoint marks ${completionId} complete without a run`);
           }
-          continue;
+          if (completed.errors.length === 0) continue;
         }
         const page = await context.newPage();
         try {
@@ -260,28 +289,35 @@ async function runBrowserStage(
                 "*,*::before,*::after{transition:none!important;animation-duration:.001ms!important;animation-iteration-count:1!important}",
             });
           }
-          const run = await page.evaluate(
-            async (input) => {
-              const api = (
-                window as typeof window & {
-                  __HULIAN_SCAN_LAB__: {
-                    run(
-                      id: string,
-                      options: { samples: number; warmups: number },
-                    ): Promise<ScenarioRun>;
-                  };
-                }
-              ).__HULIAN_SCAN_LAB__;
-              return api.run(input.scenarioId, {
-                samples: input.samples,
-                warmups: input.warmups,
-              });
-            },
-            {
-              scenarioId,
-              samples: options.samples,
-              warmups: options.warmups,
-            },
+          const timeoutMs = descriptor.category === "animation" ? 30_000 : 10_000;
+          const run = await withHardTimeout(
+            page.evaluate(
+              async (input) => {
+                const api = (
+                  window as typeof window & {
+                    __HULIAN_SCAN_LAB__: {
+                      run(
+                        id: string,
+                        options: { samples: number; warmups: number; timeoutMs?: number },
+                      ): Promise<ScenarioRun>;
+                    };
+                  }
+                ).__HULIAN_SCAN_LAB__;
+                return api.run(input.scenarioId, {
+                  samples: input.samples,
+                  warmups: input.warmups,
+                  timeoutMs: input.timeoutMs,
+                });
+              },
+              {
+                scenarioId,
+                samples: options.samples,
+                warmups: options.warmups,
+                timeoutMs,
+              },
+            ),
+            descriptor.category === "animation" ? 240_000 : 90_000,
+            scenarioId,
           );
           const normalized: ScenarioRun = {
             ...run,

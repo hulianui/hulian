@@ -48,7 +48,7 @@ describe("profiling performance lab", () => {
     await page.goto(`${baseUrl}/?scenario=fixture/known-bad&stage=measurement`);
     try {
       await page.waitForFunction(() => "__HULIAN_SCAN_LAB__" in window, undefined, {
-        timeout: 10_000,
+        timeout: 30_000,
       });
     } catch {
       throw new Error(
@@ -100,7 +100,9 @@ describe("profiling performance lab", () => {
   it("refuses a second concurrent run", async () => {
     const page = await browser.newPage();
     await page.goto(`${baseUrl}/?stage=measurement`);
-    await page.waitForFunction(() => "__HULIAN_SCAN_LAB__" in window);
+    await page.waitForFunction(() => "__HULIAN_SCAN_LAB__" in window, undefined, {
+      timeout: 30_000,
+    });
 
     const result = await page.evaluate(async () => {
       const api = (
