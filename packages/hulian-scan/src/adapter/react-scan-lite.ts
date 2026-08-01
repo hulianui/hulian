@@ -70,6 +70,20 @@ function selfDurationAt(tree: LiteFiberSummary[], index: number): number {
   return Math.max(0, fiber.actualDuration - directChildrenDuration);
 }
 
+function inferredOwnerName(
+  tree: LiteFiberSummary[],
+  index: number,
+): string | undefined {
+  const fiber = tree[index];
+  if (!fiber || fiber.depth === 0) return undefined;
+  for (let ownerIndex = index - 1; ownerIndex >= 0; ownerIndex -= 1) {
+    const candidate = tree[ownerIndex];
+    if (!candidate || candidate.depth >= fiber.depth) continue;
+    if (candidate.tag !== 5 && candidate.tag !== 6) return candidate.name;
+  }
+  return undefined;
+}
+
 function normalizeFiber(
   fiber: LiteFiberSummary,
   tree: LiteFiberSummary[],
@@ -77,12 +91,13 @@ function normalizeFiber(
   commitId: number,
 ): ScanEvent {
   const source = formatSource(fiber.source);
+  const ownerName = fiber.ownerName ?? inferredOwnerName(tree, index);
   return {
     type: "fiber-render",
     commitId,
     ...(fiber.fiberId === undefined ? {} : { fiberId: fiber.fiberId }),
     name: fiber.name,
-    ...(fiber.ownerName ? { ownerName: fiber.ownerName } : {}),
+    ...(ownerName ? { ownerName } : {}),
     ...(source ? { source } : {}),
     depth: fiber.depth,
     actualDurationMs: fiber.actualDuration,

@@ -33,8 +33,17 @@ describe("installReactScanAdapter", () => {
               source: { fileName: "button.tsx", lineNumber: 10 },
             },
             {
-              name: "span",
+              name: "div",
               depth: 1,
+              tag: 5,
+              actualDuration: 1,
+              actualStartTime: 9,
+              selfBaseDuration: 1,
+              treeBaseDuration: 1,
+            },
+            {
+              name: "span",
+              depth: 2,
               tag: 5,
               actualDuration: 1,
               actualStartTime: 9,
@@ -74,6 +83,13 @@ describe("installReactScanAdapter", () => {
       actualDurationMs: 3,
       selfDurationMs: 2,
     });
+    expect(sink).toContainEqual(
+      expect.objectContaining({
+        type: "fiber-render",
+        name: "span",
+        ownerName: "Button",
+      }),
+    );
     expect(JSON.stringify(sink)).not.toMatch(/fiberRoot|bippy|selfBaseDuration/);
     expect(sink).not.toContainEqual(
       expect.objectContaining({ name: "StableSibling" }),
