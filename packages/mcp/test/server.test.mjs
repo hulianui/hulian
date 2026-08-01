@@ -174,12 +174,13 @@ export default function Layout({ children }) {
 
 // ------------------------------------------------------------------ tools --
 
-test("tools/list 暴露完整链路的八个 tool，且都带 title 与只读标注", async () => {
+test("tools/list 暴露完整链路的九个 tool，且都带 title 与只读标注", async () => {
   const [list] = await rpc([{ jsonrpc: "2.0", id: 1, method: "tools/list" }]);
   const tools = list.result?.tools ?? [];
   assert.deepEqual(
     tools.map((t) => t.name).sort(),
     [
+      "get_agent_profile",
       "get_component_doc",
       "get_conventions",
       "get_setup_guide",
@@ -201,6 +202,45 @@ test("tools/list 暴露完整链路的八个 tool，且都带 title 与只读标
   assert.ok(Array.isArray(category.enum), "category 应由真实分类枚举生成");
   assert.ok(category.enum.includes("forms"), "真分类是 forms");
   assert.ok(!category.enum.includes("form"), "form 不是真分类，不该出现在 schema 里");
+});
+
+test("get_agent_profile 不传维度给目录，传了给可执行的组件语言与约束", async () => {
+  const [catalog, composed, unknown] = await rpc([
+    call(1, "get_agent_profile"),
+    call(2, "get_agent_profile", {
+      surface: "ai-product",
+      modifiers: ["mobile"],
+      workflow: "build",
+    }),
+    call(3, "get_agent_profile", { surface: "no-such-surface" }),
+  ]);
+
+  // 空调用 = 目录，让模型对号入座
+  const catalogText = bodyOf(catalog);
+  for (const id of ["admin-console", "config-tool", "ai-product", "content-brand", "desktop-shell"])
+    assert.ok(catalogText.includes(id), `目录应列出 surface ${id}`);
+  assert.ok(catalogText.includes("prototype"), "目录应列出 workflow prototype");
+
+  // 组合调用 = 三个维度叠加后的具体建议
+  const data = dataOf(composed);
+  assert.equal(data.surface, "ai-product");
+  assert.deepEqual(data.modifiers, ["mobile"]);
+  assert.ok(data.components.includes("prompt-input"), "surface 的组件要在");
+  assert.ok(data.components.includes("safe-area"), "modifier 追加的组件也要在");
+  assert.ok(data.preferPages.includes("page-ai-chat"), "应先给现成整页");
+  assert.ok(data.steps.length > 0, "workflow 应给出步骤");
+  assert.ok(
+    data.verification.some((v) => v.includes("390px")),
+    "mobile 的验证项应合并进来",
+  );
+  assert.ok(
+    bodyOf(composed).includes("get_component_doc"),
+    "必须提醒仍要查 props 真源，本 tool 不代替文档",
+  );
+
+  // 未知维度不静默吞掉，也不当成工具故障
+  assert.notEqual(unknown.result?.isError, true, "参数认不出不该报成工具坏了");
+  assert.ok(dataOf(unknown).unknown.length === 1, "未识别的维度要如实回报");
 });
 
 test("list_components 能按关键词找到组件，并带出导入语句", async () => {

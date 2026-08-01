@@ -41,6 +41,12 @@ import {
   sourceInfo,
   sourceLine,
 } from "./data.mjs";
+import {
+  composeProfile,
+  listModifiers,
+  listSurfaces,
+  listWorkflows,
+} from "./profiles.mjs";
 import { inspectProject, installedVersion, renderProject } from "./project.mjs";
 import { rank } from "./search.mjs";
 import { SETUP_TARGETS, setupGuide } from "./setup.mjs";
@@ -305,6 +311,39 @@ async function buildTools() {
             type: "string",
             enum: [...SETUP_TARGETS, "all"],
             description: "要取哪一片，默认全部",
+          },
+        },
+      },
+      annotations: READ_ONLY,
+    },
+    {
+      name: "get_agent_profile",
+      title: "取场景 profile（组件语言 + 约束 + 步骤）",
+      description:
+        "按场景取「该用什么组件语言、受什么约束、按什么步骤走」。三维正交：" +
+        "surface 决定组件语言（admin-console / config-tool / ai-product / content-brand / desktop-shell）、" +
+        "modifiers 决定约束与预算且可组合（mobile / dashboard / data-dense / marketing / high-performance）、" +
+        "workflow 决定步骤（prototype / build / audit / dogfood / migrate）。" +
+        "不传参数则列出全部可选值与判定信号。" +
+        "componentRoles 取自 12 个真实消费项目的扫描，不是凭印象列的；" +
+        "拿到候选后仍须用 get_component_doc 查真实 props，本 tool 不代替文档。",
+      inputSchema: {
+        type: "object",
+        properties: {
+          surface: {
+            type: "string",
+            enum: listSurfaces().map((s) => s.id),
+            description: "页面形态，决定组件语言",
+          },
+          modifiers: {
+            type: "array",
+            items: { type: "string", enum: listModifiers().map((m) => m.id) },
+            description: "可组合的修饰维度，如移动端 AI 产品 = ai-product + [mobile]",
+          },
+          workflow: {
+            type: "string",
+            enum: listWorkflows().map((w) => w.id),
+            description: "任务性质，决定步骤。原型阶段选 prototype，不会被要求用全套企业件",
           },
         },
       },
@@ -784,6 +823,91 @@ async function getSetupGuide({ target } = {}) {
   return text(guide.text);
 }
 
+/** 没传任何维度时，列出可选值与判定信号，让模型自己对号入座。 */
+function renderProfileCatalog() {
+  const lines = ["瑚琏场景 profile · 三维正交（surface 组件语言 / modifiers 约束 / workflow 步骤）", ""];
+  lines.push("## surface —— 决定用什么组件语言");
+  for (const s of listSurfaces()) {
+    lines.push(`\n### ${s.id}`, s.intent);
+    if (s.maturity) lines.push(`⚠️ ${s.maturity}`);
+    if (s.signals?.length) lines.push(`判定信号：${s.signals.join("；")}`);
+    lines.push(`实证来源：${(s.evidence ?? []).join("、") || "—"}`);
+  }
+  lines.push("", "## modifiers —— 可组合，决定约束与预算");
+  for (const m of listModifiers())
+    lines.push(`- **${m.id}**：${m.intent}${m.signals?.length ? `（信号：${m.signals.join("；")}）` : ""}`);
+  lines.push("", "## workflow —— 决定步骤");
+  for (const w of listWorkflows()) lines.push(`- **${w.id}**：${w.intent}`);
+  lines.push(
+    "",
+    "带上维度再调一次即可拿到具体的组件候选、约束与验证清单。",
+    "例：{ surface: \"ai-product\", modifiers: [\"mobile\"], workflow: \"build\" }",
+  );
+  return lines.join("\n");
+}
+
+function renderComposedProfile(c) {
+  const lines = [];
+  const title = [
+    c.surface ? `surface: ${c.surface.id}` : null,
+    c.modifiers.length ? `modifiers: ${c.modifiers.map((m) => m.id).join(" + ")}` : null,
+    c.workflow ? `workflow: ${c.workflow.id}` : null,
+  ].filter(Boolean);
+  lines.push(`# ${title.join(" · ") || "未指定维度"}`);
+  if (c.unknown.length) lines.push(`\n⚠️ 无法识别：${c.unknown.join("、")}（已忽略）`);
+  if (c.surface?.maturity) lines.push(`\n⚠️ ${c.surface.maturity}`);
+
+  if (c.preferPages.length || c.preferBlocks.length) {
+    lines.push("\n## 先看现成的（优先于自己拼组件）");
+    if (c.preferPages.length) lines.push(`- 整页：${c.preferPages.join("、")}`);
+    if (c.preferBlocks.length) lines.push(`- 区块：${c.preferBlocks.join("、")}`);
+    lines.push("用 install_block 落盘，别从低层原语重搭。");
+  }
+
+  if (c.surface?.componentRoles) {
+    lines.push("\n## 组件语言（按职责）");
+    for (const [role, list] of Object.entries(c.surface.componentRoles))
+      lines.push(`- **${role}**：${list.join("、")}`);
+  }
+
+  const modComps = c.modifiers.flatMap((m) => [
+    ...(m.require ?? []).map((s) => `${s}（${m.id} 必需）`),
+    ...(m.consider ?? []).map((s) => `${s}（${m.id} 备选）`),
+  ]);
+  if (modComps.length) lines.push("\n## 修饰维度追加", `- ${modComps.join("\n- ")}`);
+
+  if (c.constraints.length) lines.push("\n## 约束", `- ${c.constraints.join("\n- ")}`);
+  if (c.steps.length) lines.push("\n## 步骤", c.steps.map((s, i) => `${i + 1}. ${s}`).join("\n"));
+  if (c.verification.length) lines.push("\n## 完成前要验", `- ${c.verification.join("\n- ")}`);
+
+  lines.push(
+    "",
+    "---",
+    "以上是**候选与约束**，不是 props 真源：用到的每个组件在写第一行代码前仍须 get_component_doc。",
+  );
+  return lines.join("\n");
+}
+
+async function getAgentProfile({ surface, modifiers, workflow } = {}) {
+  if (!surface && !workflow && !(modifiers?.length)) return text(renderProfileCatalog());
+  const composed = composeProfile({ surface, modifiers: modifiers ?? [], workflow });
+  return {
+    content: [{ type: "text", text: renderComposedProfile(composed) }],
+    structuredContent: {
+      surface: composed.surface?.id ?? null,
+      modifiers: composed.modifiers.map((m) => m.id),
+      workflow: composed.workflow?.id ?? null,
+      unknown: composed.unknown,
+      components: composed.components,
+      preferPages: composed.preferPages,
+      preferBlocks: composed.preferBlocks,
+      constraints: composed.constraints,
+      steps: composed.steps,
+      verification: composed.verification,
+    },
+  };
+}
+
 /** 客户端声明了 roots 能力才去要；没有就安静退回 cwd（并在响应里标明来源）。 */
 async function clientRoots(server) {
   try {
@@ -840,6 +964,7 @@ const HANDLERS = {
   get_component_doc: getComponentDoc,
   get_conventions: getConventions,
   get_setup_guide: getSetupGuide,
+  get_agent_profile: getAgentProfile,
   install_block: installBlock,
   validate_hulian_usage: validateTool,
 };
@@ -849,14 +974,16 @@ const HANDLERS = {
 const WORKFLOW = `瑚琏 @hulianui/ui 工作流（按顺序，不要跳步）：
 
 1. inspect_project —— 先认项目：框架、实装版本、ThemeProvider / token CSS 是否就位。
-2. recommend_ui（整段任务描述）—— 先看有没有现成 page / block，再决定自己拼组件。
-3. list_components —— 需要按关键词补齐候选时用；结果多就 limit + offset 翻页，别整吞。
-4. get_component_doc —— **用到的每个组件在写第一行代码前必须查**，props 不许猜。
+2. get_agent_profile —— 再认场景：这个页面该用什么组件语言、受什么约束、按什么步骤走。
+   不传参先看目录对号入座；中后台别套营销特效，原型阶段选 workflow=prototype。
+3. recommend_ui（整段任务描述）—— 先看有没有现成 page / block，再决定自己拼组件。
+4. list_components —— 需要按关键词补齐候选时用；结果多就 limit + offset 翻页，别整吞。
+5. get_component_doc —— **用到的每个组件在写第一行代码前必须查**，props 不许猜。
    一次可传多个 names；只要 props / pitfalls 时传 sections 省 context。
-5. get_conventions —— 新页面 / 新功能开工前取一次硬约束。
-6. get_setup_guide —— inspect_project 报了接入缺口时按 target 取对应片段。
-7. install_block —— 落盘区块 / 页面源码。
-8. validate_hulian_usage —— **改完瑚琏相关代码必须调**，对变更文件跑一次，修完复验。
+6. get_conventions —— 新页面 / 新功能开工前取一次硬约束。
+7. get_setup_guide —— inspect_project 报了接入缺口时按 target 取对应片段。
+8. install_block —— 落盘区块 / 页面源码。
+9. validate_hulian_usage —— **改完瑚琏相关代码必须调**，对变更文件跑一次，修完复验。
 
 硬规则：
 - 不猜组件名与 props；不确定就查，查不到就说查不到。

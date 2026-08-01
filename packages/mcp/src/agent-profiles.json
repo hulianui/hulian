@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "note": "场景 profile 真源。三维正交：surface 决定组件语言，modifiers 决定约束与预算（可组合），workflow 决定任务步骤。componentRoles 与 signals 取自 docs/agent-adoption-baseline-2026-08-01.md 对 12 个真实消费项目的扫描，不是凭印象列的。",
+  "surfaces": [
+    {
+      "id": "admin-console",
+      "intent": "企业中后台：列表查询、表单录入、批量操作、权限与反馈",
+      "evidence": ["5069tk-app/web", "admin-starter/web", "jinshu-ops/web", "live/client", "ins-admin"],
+      "signals": [
+        "路由含 /admin、/console、/manage、/dashboard",
+        "已出现 AdminLayout、PageHeader、ProTable 任一",
+        "存在登录态、角色或权限判断"
+      ],
+      "preferPages": ["page-admin-list", "page-dashboard", "page-settings", "page-login", "page-result", "page-user-center"],
+      "preferBlocks": ["block-page-header", "block-data-table", "block-detail-drawer", "block-settings-panel", "block-sidebar-nav", "block-empty-state", "block-kpi-rail", "block-activity-timeline", "block-login"],
+      "componentRoles": {
+        "骨架": ["admin-layout", "page-header", "route-tabs"],
+        "列表页": ["pro-table", "search-form", "table", "pagination", "descriptions"],
+        "录入": ["form", "form-dialog", "pro-form", "field", "select", "input", "date-picker", "upload"],
+        "反馈": ["toast", "alert", "popconfirm", "modal", "result", "spin"],
+        "空与载入": ["empty", "skeleton"],
+        "权限": ["access"],
+        "抽屉与详情": ["drawer", "descriptions", "timeline"]
+      },
+      "avoid": [
+        "为了覆盖率加入营销背景或 WebGL 特效",
+        "用 Card + Stack 手搭已有的 ProTable / FormDialog / PageHeader",
+        "关键数字裸写而不用 Statistic / NumberTicker"
+      ],
+      "verification": ["窄屏（1280 与 1024）布局不塌", "键盘可完成主流程", "空态 / 加载态 / 错误态各验一次", "批量操作的选中态与反馈"]
+    },
+    {
+      "id": "config-tool",
+      "intent": "参数配置与生成器：录入参数 → 预览结果 → 复制/导出",
+      "evidence": ["mock-pilot", "ai-key-vault"],
+      "signals": [
+        "存在「生成 / 预览 / 导出 / 复制」主动作",
+        "已出现 JsonViewer、Snippet、SecretField 任一",
+        "表单件占比显著高于展示件"
+      ],
+      "preferPages": ["page-settings", "page-result"],
+      "preferBlocks": ["block-settings-panel", "block-empty-state", "block-page-header"],
+      "componentRoles": {
+        "参数录入": ["field", "select", "number-field", "switch", "checkbox-group", "radio", "slider", "color-field"],
+        "结果预览": ["json-viewer", "code-block", "snippet", "table", "markdown"],
+        "敏感值": ["secret-field", "password-generator"],
+        "反馈": ["toast", "empty", "alert"],
+        "元信息": ["relative-time", "tag", "status-dot"]
+      },
+      "avoid": [
+        "把每个参数都塞进 Dialog 而不是就地编辑",
+        "自制复制按钮而不用 Snippet 的内建复制",
+        "明文渲染密钥而不用 SecretField"
+      ],
+      "verification": ["空参数与极端值的结果区表现", "复制与导出真的产出可用内容", "长结果的滚动归属正确"]
+    },
+    {
+      "id": "ai-product",
+      "intent": "AI 产品：会话、流式输出、工具调用、推理过程与重试",
+      "evidence": ["jinshu"],
+      "signals": [
+        "存在 SSE / 流式响应 / LLM 调用",
+        "已出现 Conversation、PromptInput、StreamingText 任一",
+        "有「重新生成 / 停止生成」类动作"
+      ],
+      "preferPages": ["page-ai-chat"],
+      "preferBlocks": ["block-chat-panel", "block-prompt-input", "block-agent-card", "block-flow-canvas"],
+      "componentRoles": {
+        "会话": ["conversation", "chat-message", "thread-list", "typing-dots"],
+        "输入": ["prompt-input", "prompt-suggestions", "mentions"],
+        "过程可见": ["thinking-block", "tool-call", "agent-plan", "streaming-text", "task-runner"],
+        "产物": ["artifact", "dossier", "citation", "markdown", "code-block"],
+        "操作": ["message-actions", "confirm-card"],
+        "评分与进度": ["score-ring", "progress", "spinner"]
+      },
+      "avoid": [
+        "用普通 Text 渲染流式输出而不用 StreamingText",
+        "工具调用只打日志不进 ToolCall，用户看不见发生了什么",
+        "缺失失败态与重试入口"
+      ],
+      "verification": ["流式中途中断与重试", "超长内容的滚动与截断", "工具调用的进行中 / 成功 / 失败三态", "空会话与首次进入"]
+    },
+    {
+      "id": "content-brand",
+      "intent": "内容站与品牌页：阅读、导览、转化",
+      "evidence": ["abel-site"],
+      "signals": [
+        "以正文阅读或品牌展示为主，无登录态",
+        "已出现 Prose、Markdown、Hero 类区块",
+        "路由含 /blog、/docs、/about、/pricing"
+      ],
+      "preferPages": ["page-landing", "page-blog", "page-blog-post", "page-about", "page-changelog", "page-faq", "page-feature", "page-pricing"],
+      "preferBlocks": ["block-navbar", "block-hero", "block-features", "block-testimonials", "block-pricing-table", "block-faq", "block-cta", "block-footer", "block-article-body", "block-article-toc", "block-blog-list"],
+      "componentRoles": {
+        "正文": ["prose", "markdown", "code-block", "citation", "anchor", "back-top"],
+        "结构": ["container", "stack", "grid", "separator"],
+        "首屏": ["heading", "text", "link", "button"],
+        "入场": ["reveal"],
+        "文字特效": ["aurora-text", "sparkles-text", "typing-animation", "word-rotate"]
+      },
+      "avoid": [
+        "在正文区加入干扰阅读的动效或滚动劫持",
+        "每屏都放一个主焦点以上的视觉重物",
+        "移动端仍加载重型 WebGL 背景"
+      ],
+      "verification": ["正文在 reduced-motion 下完全可读", "深浅色下的正文对比度", "移动端字号与行宽", "目录锚点跳转"]
+    },
+    {
+      "id": "desktop-shell",
+      "intent": "桌面应用：高密度、悬停解释、键盘与命令驱动",
+      "evidence": ["quay"],
+      "maturity": "样本弱 —— quay 尚未真正接入（13 slug / 89 处手搓），本 profile 的 componentRoles 是候选而非实证",
+      "signals": ["Tauri / Electron 外壳", "窗口内多面板布局", "存在全局快捷键或命令面板"],
+      "preferPages": [],
+      "preferBlocks": [],
+      "componentRoles": {
+        "解释": ["tooltip", "hover-card"],
+        "命令": ["command", "kbd", "context-menu", "menubar"],
+        "容器": ["scroll-area", "resizable", "toolbar"],
+        "内容": ["code", "snippet", "log-viewer", "file-tree"],
+        "状态": ["status-dot", "tag", "relative-time"]
+      },
+      "avoid": ["照搬 Web 的行高与间距导致信息密度过低", "用浏览器风格的整页跳转替代面板切换"],
+      "verification": ["窗口缩放到最小尺寸不塌", "键盘可达主要动作", "长列表滚动性能"]
+    }
+  ],
+  "modifiers": [
+    {
+      "id": "mobile",
+      "intent": "移动端或窄屏形态",
+      "signals": ["路由含 /m、/h5、/mobile", "已出现 TabBar 或 SafeArea", "视口断点以 390px 为主"],
+      "require": ["safe-area", "tab-bar"],
+      "consider": ["action-sheet", "pull-to-refresh", "fab", "picker", "swipe-action"],
+      "constraints": ["触控目标不小于 44px", "避免 hover-only 交互", "重型背景降级或关闭"],
+      "verification": ["390px 实机或等价窄屏", "刘海屏安全区（SafeArea 缺席会贴边）", "触控目标尺寸"]
+    },
+    {
+      "id": "dashboard",
+      "intent": "指标看板形态",
+      "signals": ["页面以数字与趋势为主", "已出现 Chart 或 Stat"],
+      "require": ["stat", "statistic"],
+      "consider": ["number-ticker", "chart", "sparkline", "score-ring", "status-dot", "heatmap", "funnel", "meter"],
+      "constraints": ["关键数字不裸写", "图表容器需给定宽度，避免 flex 收缩为 0"],
+      "verification": ["零值 / 极值 / 小数值域", "加载态与空态", "深浅色下的图表配色"]
+    },
+    {
+      "id": "data-dense",
+      "intent": "大数据量列表",
+      "signals": ["单页行数过千", "存在虚拟滚动或分页需求"],
+      "consider": ["virtual-list", "infinite-scroll", "pagination"],
+      "constraints": ["Table 用 density 收紧行高而不是改写样式", "冻结列用组件能力而非手写 sticky"],
+      "verification": ["滚动性能", "冻结列在横向滚动下的表现"]
+    },
+    {
+      "id": "marketing",
+      "intent": "品牌与转化诉求",
+      "consider": ["aurora-text", "sparkles-text", "shimmer-button", "border-beam", "shine-border", "bento-grid"],
+      "constraints": ["一屏一个主焦点", "重型 WebGL 全页最多一个且移动端降级", "特效不得进入正文阅读区"],
+      "verification": ["reduced-motion 下仍完整可用", "移动端首屏性能"]
+    },
+    {
+      "id": "high-performance",
+      "intent": "性能敏感场景",
+      "constraints": ["不引入 WebGL 类组件", "动效限定 transform / opacity", "避免大面积 filter: blur 上的动画"],
+      "verification": ["低端设备帧率", "首屏体积"]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "prototype",
+      "intent": "原型 / demo：求快，用于需求回看",
+      "note": "实证：同产品的 demo 原型（5069tk）与正式系统（5069tk-app）在 12 个企业高层业务组件上是 5/12 与 10/12。原型阶段不该被判为「采用不足」，给原型推荐全套企业件是过度工程。",
+      "steps": ["先满足演示路径", "优先整页 page 与区块，不逐个拼原语", "跳过权限、极端态与性能优化", "不因覆盖率增加组件"]
+    },
+    {
+      "id": "build",
+      "intent": "正式实现",
+      "steps": ["先找 page / block 候选，再考虑自己拼", "写代码前查每个组件的真实 props 文档", "缺能力回库补，不在业务侧打 CSS 补丁", "完成后跑 guard + 类型 + 测试 + 真实视觉验证"]
+    },
+    {
+      "id": "audit",
+      "intent": "存量项目体检",
+      "steps": ["先判 surface 与 modifiers", "列出实际使用与高层业务组件采用度", "区分「有场景没采用」与「没这个场景」", "按收益/风险排序给渐进迁移计划，不一次性重写"],
+      "seeAlso": "https://github.com/hulianui/hulian/issues/43"
+    },
+    {
+      "id": "dogfood",
+      "intent": "为真实需求选用低覆盖组件并回流问题",
+      "steps": ["只在与任务匹配时选用，不硬塞", "记录使用证据（主题 / 视口 / 动效 / 交互）", "发现缺口时产出可复现信息并回库修", "消费项目升级后删除临时绕法"]
+    },
+    {
+      "id": "migrate",
+      "intent": "把既有实现替换为组件库能力",
+      "steps": ["先保留业务行为，逐模块替换", "每次替换后跑回归", "不为覆盖率改动语义", "记录被替换掉的手写实现"]
+    }
+  ],
+  "metrics": {
+    "primary": "高层业务组件采用度",
+    "note": "对项目规模不敏感，直接对应「有没有绕过现成能力」，优于裸组件覆盖率。基准 12 件见 highLevelComponents。",
+    "highLevelComponents": ["page-header", "pro-table", "access", "form-dialog", "admin-layout", "pro-form", "search-form", "steps-form", "login-form", "result", "descriptions", "editable-table"],
+    "baseline": {
+      "date": "2026-08-01",
+      "source": "docs/agent-adoption-baseline-2026-08-01.md",
+      "registryUi": 366,
+      "coveredByRealProjects": 149
+    }
+  }
+}
