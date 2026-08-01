@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "note": "八类基准任务，用于对比「加载瑚琏契约与 profile 前后」Agent 的行为差异。评分点分三类：static 由 scripts/agent-eval.mjs 从产出代码静态判定，可重复运行；trace 需要本次会话的 tool 调用记录；human 必须人看或跑真实浏览器。三类刻意不混——把 trace/human 项算进自动分，Eval 就成了自我认证。",
+  "scoring": {
+    "static": "从产出代码静态判定，可重复运行",
+    "trace": "需要本次会话的 tool 调用序列",
+    "human": "必须人工确认或真实浏览器验证"
+  },
+  "predicates": {
+    "requireAny": "产出里至少出现其一（组件 slug 或 block/page 名）",
+    "requireCount": "至少命中 requireAny 中的 N 个",
+    "forbidAny": "产出里不得出现",
+    "noHandmade": "不得有裸 button/input/table/select、内联 style、硬编码颜色",
+    "maxWebgl": "WebGL 类组件数量上限",
+    "forbidAnimated": "不得引入带动效标记的组件"
+  },
+  "tasks": [
+    {
+      "id": "marketing-home",
+      "title": "营销首页",
+      "prompt": "做一个 SaaS 产品的营销首页：主标题与副标题、三个关键指标、主 CTA、三段特性介绍、页脚。",
+      "expect": { "surface": "content-brand", "modifiers": ["marketing"], "workflow": "build" },
+      "checks": [
+        { "kind": "static", "id": "uses-page-or-block", "desc": "用了现成整页或营销区块，而不是从零拼", "weight": 3, "requireAny": ["page-landing", "block-hero", "block-hero-split", "block-features", "block-cta", "block-footer"] },
+        { "kind": "static", "id": "metrics-not-bare", "desc": "关键指标用组件而非裸写数字", "weight": 2, "requireAny": ["statistic", "stat", "number-ticker"] },
+        { "kind": "static", "id": "webgl-budget", "desc": "重型 WebGL 件不超过 1 个", "weight": 2, "maxWebgl": 1 },
+        { "kind": "static", "id": "no-handmade", "desc": "没有裸标签 / 内联 style / 硬编码颜色", "weight": 2, "noHandmade": true },
+        { "kind": "trace", "id": "doc-before-use", "desc": "每个首次使用的组件在写代码前调过 get_component_doc", "weight": 3 },
+        { "kind": "human", "id": "one-focus-per-screen", "desc": "一屏一个主焦点，没有视觉堆料", "weight": 2 },
+        { "kind": "human", "id": "reduced-motion", "desc": "reduced-motion 下仍完整可用", "weight": 1 }
+      ]
+    },
+    {
+      "id": "admin-user-list",
+      "title": "用户管理后台",
+      "prompt": "做用户管理页：页头、条件查询、分页表格、批量启用/禁用、新增与编辑弹窗、删除二次确认。",
+      "expect": { "surface": "admin-console", "workflow": "build" },
+      "checks": [
+        { "kind": "static", "id": "uses-page-or-block", "desc": "用了 page-admin-list 或 block-data-table", "weight": 3, "requireAny": ["page-admin-list", "block-data-table", "block-page-header"] },
+        { "kind": "static", "id": "high-level-components", "desc": "用了至少两个高层业务件，而非 Card+Stack 手搭", "weight": 3, "requireAny": ["pro-table", "page-header", "form-dialog", "search-form", "admin-layout"], "requireCount": 2 },
+        { "kind": "static", "id": "confirm-not-window", "desc": "删除确认用组件而非 window.confirm", "weight": 2, "requireAny": ["popconfirm", "alert-dialog", "modal"], "forbidAny": ["window.confirm"] },
+        { "kind": "static", "id": "no-marketing-effects", "desc": "没有引入营销文字特效", "weight": 2, "forbidAny": ["aurora-text", "sparkles-text", "shimmer-button", "border-beam", "meteors"] },
+        { "kind": "static", "id": "no-handmade", "desc": "没有裸 table/button/input", "weight": 2, "noHandmade": true },
+        { "kind": "trace", "id": "doc-before-use", "desc": "写代码前查过 props", "weight": 3 },
+        { "kind": "human", "id": "keyboard-flow", "desc": "键盘可完成主流程", "weight": 2 },
+        { "kind": "human", "id": "states-covered", "desc": "空态 / 加载态 / 错误态都实现了", "weight": 2 }
+      ]
+    },
+    {
+      "id": "data-dashboard",
+      "title": "数据看板",
+      "prompt": "做运营看板：四个 KPI 卡片、一条趋势折线、一个状态分布、异常列表。",
+      "expect": { "surface": "admin-console", "modifiers": ["dashboard"], "workflow": "build" },
+      "checks": [
+        { "kind": "static", "id": "kpi-not-bare", "desc": "KPI 用组件而非裸数字", "weight": 3, "requireAny": ["stat", "statistic", "number-ticker", "score-ring"] },
+        { "kind": "static", "id": "uses-chart", "desc": "趋势用图表组件而非自绘 SVG", "weight": 2, "requireAny": ["chart", "sparkline"] },
+        { "kind": "static", "id": "status-component", "desc": "状态用 StatusDot / Tag 而非彩色圆点手搓", "weight": 2, "requireAny": ["status-dot", "tag", "badge"] },
+        { "kind": "static", "id": "no-handmade", "desc": "无手搓信号", "weight": 2, "noHandmade": true },
+        { "kind": "trace", "id": "doc-before-use", "desc": "写代码前查过 props", "weight": 3 },
+        { "kind": "human", "id": "edge-values", "desc": "零值 / 极值 / 加载态 / 空态都覆盖", "weight": 3 },
+        { "kind": "human", "id": "chart-dark-mode", "desc": "深色下图表配色可读", "weight": 2 }
+      ]
+    },
+    {
+      "id": "content-article",
+      "title": "长文内容页",
+      "prompt": "做一篇技术文章页：右侧目录、正文（含多级标题）、代码块、引用来源、回到顶部。",
+      "expect": { "surface": "content-brand", "workflow": "build" },
+      "checks": [
+        { "kind": "static", "id": "uses-prose", "desc": "正文用 Prose / Markdown 而非手写排版", "weight": 3, "requireAny": ["prose", "markdown", "block-article-body"] },
+        { "kind": "static", "id": "uses-anchor-backtop", "desc": "目录用 Anchor，回顶用 BackTop", "weight": 2, "requireAny": ["anchor", "back-top", "block-article-toc"] },
+        { "kind": "static", "id": "code-block", "desc": "代码用 CodeBlock 而非裸 pre", "weight": 2, "requireAny": ["code-block", "code", "snippet"] },
+        { "kind": "static", "id": "no-distracting-motion", "desc": "正文区没有引入干扰阅读的特效", "weight": 3, "forbidAny": ["particles", "aurora", "meteors", "liquid-chrome", "orb", "threads", "iridescence", "glitch-text", "letter-glitch"] },
+        { "kind": "trace", "id": "doc-before-use", "desc": "写代码前查过 props", "weight": 2 },
+        { "kind": "human", "id": "reading-quality", "desc": "行宽、字号、对比度适合阅读", "weight": 2 }
+      ]
+    },
+    {
+      "id": "ai-workbench",
+      "title": "AI 工作台",
+      "prompt": "做 AI 对话工作台：会话列表、消息流、流式输出、工具调用过程可见、失败重试。",
+      "expect": { "surface": "ai-product", "workflow": "build" },
+      "checks": [
+        { "kind": "static", "id": "uses-ai-components", "desc": "用了对话族组件", "weight": 3, "requireAny": ["conversation", "chat-message", "prompt-input", "thread-list"], "requireCount": 2 },
+        { "kind": "static", "id": "streaming-component", "desc": "流式输出用 StreamingText，不是普通 Text", "weight": 3, "requireAny": ["streaming-text", "typing-dots"] },
+        { "kind": "static", "id": "tool-call-visible", "desc": "工具调用可见，不只打日志", "weight": 3, "requireAny": ["tool-call", "thinking-block", "agent-plan", "task-runner"] },
+        { "kind": "static", "id": "retry-affordance", "desc": "有失败态与重试入口", "weight": 2, "requireAny": ["message-actions", "alert", "result", "empty"] },
+        { "kind": "trace", "id": "doc-before-use", "desc": "写代码前查过 props", "weight": 2 },
+        { "kind": "human", "id": "interrupt-retry", "desc": "流式中断与重试真的能走通", "weight": 3 }
+      ]
+    },
+    {
+      "id": "mobile-flow",
+      "title": "移动端业务流程",
+      "prompt": "做移动端预约流程：表单填写、底部操作条、提交反馈、底部导航。目标 390px。",
+      "expect": { "surface": "admin-console", "modifiers": ["mobile"], "workflow": "build" },
+      "checks": [
+        { "kind": "static", "id": "safe-area", "desc": "用了 SafeArea —— 缺席会直接贴到刘海屏上", "weight": 3, "requireAny": ["safe-area"] },
+        { "kind": "static", "id": "mobile-components", "desc": "底部操作用移动端组件而非桌面组件硬塞", "weight": 3, "requireAny": ["action-sheet", "tab-bar", "fab", "picker", "pull-to-refresh"] },
+        { "kind": "static", "id": "no-heavy-bg", "desc": "没有引入重型 WebGL 背景", "weight": 2, "maxWebgl": 0 },
+        { "kind": "static", "id": "no-handmade", "desc": "无手搓信号", "weight": 2, "noHandmade": true },
+        { "kind": "trace", "id": "doc-before-use", "desc": "写代码前查过 props", "weight": 2 },
+        { "kind": "human", "id": "touch-target", "desc": "触控目标不小于 44px", "weight": 2 },
+        { "kind": "human", "id": "notch-verified", "desc": "390px 实机或等价窄屏验过", "weight": 3 }
+      ]
+    },
+    {
+      "id": "retrofit-plain-page",
+      "title": "既有素页面改造",
+      "prompt": "这个页面是用裸 div/table/button 手写的，行为不能变。把它改造成用组件库实现。",
+      "expect": { "surface": "admin-console", "workflow": "migrate" },
+      "baselineRequired": true,
+      "checks": [
+        { "kind": "static", "id": "handmade-reduced", "desc": "改造后手搓信号数量显著下降（需 --baseline 对比）", "weight": 3, "noHandmade": true },
+        { "kind": "static", "id": "high-level-adopted", "desc": "高层业务组件采用度上升", "weight": 3, "requireAny": ["pro-table", "page-header", "form-dialog", "search-form", "admin-layout", "descriptions", "editable-table"] },
+        { "kind": "static", "id": "no-semantic-drift", "desc": "没有为了用组件而改动业务语义", "weight": 3, "manual": "静态判不了语义漂移，此项需人工比对 diff" },
+        { "kind": "trace", "id": "incremental", "desc": "分模块替换而非整页重写", "weight": 2 },
+        { "kind": "human", "id": "behavior-regression", "desc": "原有行为回归通过", "weight": 3 }
+      ]
+    },
+    {
+      "id": "upstream-gap",
+      "title": "组件能力不足时的回流",
+      "prompt": "需求要求表格在窄屏下把次要列折叠进展开行。组件当前不支持。请实现这个需求。",
+      "expect": { "surface": "admin-console", "modifiers": ["mobile"], "workflow": "dogfood" },
+      "checks": [
+        { "kind": "static", "id": "no-consumer-patch", "desc": "没有在业务项目里用 style= / 局部 CSS override 绕过", "weight": 3, "noHandmade": true },
+        { "kind": "trace", "id": "chose-upstream", "desc": "明确选择回库补组件，而不是业务侧打补丁", "weight": 3 },
+        { "kind": "trace", "id": "gap-report", "desc": "产出了可复现的缺口信息（组件+版本、场景、期望/实际、最小代码）", "weight": 3 },
+        { "kind": "human", "id": "upstream-test", "desc": "库侧改动带了能复现该问题的测试", "weight": 2 },
+        { "kind": "human", "id": "workaround-removed", "desc": "消费项目升级后删掉了临时绕法", "weight": 2 }
+      ]
+    }
+  ]
+}
