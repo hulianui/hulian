@@ -247,7 +247,7 @@ function SiteFooter() {
 /** 营销站外壳：顶部导航 + 主体 + 页脚。被 (site) 路由组 layout 套在所有页上。 */
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-dvh flex-col bg-background">
+    <div className="flex min-h-dvh flex-col bg-bg">
       <SiteNavbar />
       <main className="flex-1">{children}</main>
       <SiteFooter />

@@ -267,6 +267,7 @@ import {
   appLauncherShowcase,
   regionSelectShowcase,
   tiltShowcase,
+  brandShowcase,
   // —— react-bits 移植批 ——
   asciiTextShowcase,
   curvedLoopShowcase,
@@ -647,6 +648,7 @@ export const specBySlug: Record<string, ShowcaseSpec> = {
   "app-launcher": appLauncherShowcase,
   "region-select": regionSelectShowcase,
   tilt: tiltShowcase,
+  brand: brandShowcase,
   // —— react-bits 移植批 ——
   "ascii-text": asciiTextShowcase,
   "curved-loop": curvedLoopShowcase,

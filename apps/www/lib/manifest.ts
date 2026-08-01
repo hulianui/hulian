@@ -316,6 +316,7 @@ export const manifest: ComponentMeta[] = [
   // ── 导航 navigation ──────────────────────────────────────────
   { slug: "navbar", name: "Navbar", description: "导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换", category: "navigation", group: "global", status: "new" },
   { slug: "beian-footer", name: "BeianFooter", description: "备案页脚 · ICP 备案号(可多个·默认链 miit) + 公网安备(警徽 icon·默认链 mps) + 版权行 · 中国大陆合规底栏(发丝边卡片·语义 token·外链新窗·RSC)", category: "navigation", group: "global", status: "new" },
+  { slug: "brand", name: "Brand", description: "品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏/md 侧栏/lg 登录页) + color 换徽章底色 · 省略 name 即收起态只出徽章 · href 普通链接 / render 接框架路由件回首页 · 区别 Avatar(圆的·套它得改形状=业务侧打补丁)", category: "navigation", group: "global", status: "new" },
   { slug: "app-launcher", name: "AppLauncher", description: "应用启动台 · 毛玻璃面板 + 搜索(标题即 placeholder) + 分类胶囊 + 图标网格(macOS Launchpad/工作台首页) · 搜索与分类各自可受控 · keywords 拼音别名参与匹配·中文按子串命中 · 连续同 section 归组自动分隔线 · 方向键网格漫游焦点 · badge/href/disabled/右上操作槽 · glass vs solid · 筛选分节纯函数可测(零依赖)", category: "navigation", group: "global", status: "new" },
   { slug: "nav-menu", name: "NavMenu", description: "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游", category: "navigation", group: "global", status: "new" },
   { slug: "navigation-menu", name: "NavigationMenu", description: "导航菜单 · Base UI navigation-menu 薄包(mega 面板/共享 Viewport 尺寸形变) + 触发器/内容/链接 + chevron 旋转", category: "navigation", group: "global", status: "new" },

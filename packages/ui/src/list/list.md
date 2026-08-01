@@ -76,5 +76,11 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 - `grid` 态下 `bordered` / `split` 被忽略(边框由卡片自带)。
 - `ListLoadMore.hasMore=false` 时整个加载更多按钮不渲染，别等它消失才发现没传完。
 
+### 无障碍名
+
+`aria-label` / `aria-labelledby` / `aria-describedby` 会被透到 `role="list"` 的节点上，
+其余原生属性仍落在最外层容器。所以 `getByRole("list", { name: "…" })` 找得到，读屏也不会听到一个无名列表
+（hulianui/hulian#60）。
+
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

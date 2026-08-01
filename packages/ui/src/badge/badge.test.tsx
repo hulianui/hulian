@@ -75,7 +75,7 @@ describe("Badge 计数角标", () => {
         <span>x</span>
       </Badge>,
     );
-    expect(container.querySelector(".ring-background")).toBeTruthy();
+    expect(container.querySelector(".ring-bg")).toBeTruthy();
   });
 
   it("tone=success 绿底（头像绿勾场景）", () => {

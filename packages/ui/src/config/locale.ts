@@ -66,6 +66,10 @@ export interface Locale {
     next: string;
     submit: string;
   };
+  drawer: {
+    /** 右上角关闭按钮的无障碍名。 */
+    close: string;
+  };
   loginForm: {
     title: string;
     username: string;
@@ -180,6 +184,9 @@ export const zhCN: Locale = {
     next: "下一步",
     submit: "提交",
   },
+  drawer: {
+    close: "关闭",
+  },
   loginForm: {
     title: "登录",
     username: "账号",
@@ -283,6 +290,9 @@ export const enUS: Locale = {
     prev: "Previous",
     next: "Next",
     submit: "Submit",
+  },
+  drawer: {
+    close: "Close",
   },
   loginForm: {
     title: "Sign in",

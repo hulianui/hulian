@@ -75,7 +75,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
     [controlled, props.value, innerValues],
   );
   // 标量 key：values 每渲染都是新数组，effect 依赖它会空转；用内容 key 才是真变化。
-  const valuesKey = values.join("");
+  const valuesKey = values.join("\u0001");
   const valuesRef = useRef(values);
   valuesRef.current = values;
 

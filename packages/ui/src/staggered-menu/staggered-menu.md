@@ -54,7 +54,7 @@ import { StaggeredMenu } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-background">
+<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-bg">
   <StaggeredMenu
     items={[
       { label: "首页", link: "#home" },

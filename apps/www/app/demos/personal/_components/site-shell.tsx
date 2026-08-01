@@ -188,7 +188,7 @@ function SiteFooter() {
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <TooltipProvider delay={200} closeDelay={0}>
-      <div className="flex min-h-dvh flex-col bg-background">
+      <div className="flex min-h-dvh flex-col bg-bg">
         <TopNav />
         <main className="flex-1">{children}</main>
         <SiteFooter />

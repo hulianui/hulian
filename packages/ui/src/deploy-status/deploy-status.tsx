@@ -19,12 +19,12 @@ interface Meta {
 }
 
 const META: Record<DeployState, Meta> = {
-  queued: { Icon: Clock, label: "排队中", soft: "bg-surface-hover text-muted", fg: "text-muted-foreground", dot: "bg-muted" },
+  queued: { Icon: Clock, label: "排队中", soft: "bg-surface-hover text-muted", fg: "text-muted", dot: "bg-muted" },
   building: { Icon: Loader2, label: "构建中", soft: "bg-primary/12 text-primary", fg: "text-primary", dot: "bg-primary", spin: true },
   ready: { Icon: CircleCheck, label: "已上线", soft: "bg-success/12 text-success", fg: "text-success", dot: "bg-success" },
   error: { Icon: CircleX, label: "失败", soft: "bg-danger/12 text-danger", fg: "text-danger", dot: "bg-danger" },
-  canceled: { Icon: Ban, label: "已取消", soft: "bg-surface-hover text-muted", fg: "text-muted-foreground", dot: "bg-muted" },
-  skipped: { Icon: Minus, label: "已跳过", soft: "bg-surface-hover text-muted", fg: "text-muted-foreground", dot: "bg-muted" },
+  canceled: { Icon: Ban, label: "已取消", soft: "bg-surface-hover text-muted", fg: "text-muted", dot: "bg-muted" },
+  skipped: { Icon: Minus, label: "已跳过", soft: "bg-surface-hover text-muted", fg: "text-muted", dot: "bg-muted" },
 };
 
 export function DeployStatus({

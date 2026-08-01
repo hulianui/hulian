@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.16.0 · 374 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.18.0 · 375 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -172,8 +172,9 @@ import { Container } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg" \| "xl" \| "full"` | `"xl"` | 最大宽度档：sm=2xl / md=3xl / lg=4xl / xl=5xl / full=不限 |
-| padded | `boolean` | `true` | 是否水平居中并加左右安全内距 |
+| size | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "full"` | `"xl"` | 最大宽度档，见下表 |
+| padded | `boolean` | `true` | 左右安全内距（**只管内距**，不再连带居中） |
+| centered | `boolean` | `true` | 水平居中（`mx-auto`） |
 | as | `ElementType` | `"div"` | 渲染标签（语义/布局解耦，如 section/main/article） |
 
 其余 `HTMLAttributes<HTMLElement>` 属性（className/style 等）透传。
@@ -183,6 +184,21 @@ import { Container } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 子内容 |
+
+### 档位映射
+
+| size | max-width | 典型场景 |
+|------|-----------|----------|
+| sm | `max-w-2xl` | 阅读正文 |
+| md | `max-w-3xl` | 文章页 |
+| lg | `max-w-4xl` | 表单页 |
+| xl（默认） | `max-w-5xl` | 常规内容页 |
+| 2xl | `max-w-6xl` | 营销页功能区 |
+| 3xl | `max-w-7xl` | 页脚 / 宽栅格 |
+| full | 不限 | 全宽区块 |
+
+`padded` 与 `centered` 是**两个开关**：`padded` 只管左右安全内距，`centered` 管 `mx-auto`。
+（早先 `padded={false}` 会连居中一起关掉，导致「要居中但要自定义内距」做不到 —— hulianui/hulian#58。要两者都关就都传 `false`。）
 
 ## 示例
 ```tsx
@@ -200,6 +216,12 @@ import { Container } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 暂无已知坑。`size` 档位映射的是 Tailwind `max-w-*`（sm=2xl 而非 sm），勿按字面理解。候选坑列表（affix/dialog-portal/dnd-kit/flex-mx-auto/recharts/scrollspy/sticky-glass/vant-toast）均为各自具体场景的容器问题，与本通用宽度容器无直接关系，已剔除。
+
+### `as` 是**类型多态**的
+
+`as="section"` 之后，事件与属性会跟着目标元素走：`onSubmit` 拿到 `FormEvent<HTMLFormElement>`、`as="a"` 能传 `href`。
+早先 `as` 不参与推导，`event.currentTarget` 一律退化成 `HTMLElement`，表单专有 API 只能 as-cast——
+而 cast 掉的正是类型安全本身（hulianui/hulian#62）。
 
 ## 相关
 [Layout](https://hulianui.haloritual.com/components/layout) · [AdminLayout](https://hulianui.haloritual.com/components/admin-layout) · [ScrollArea](https://hulianui.haloritual.com/components/scroll-area) · [Viewport](https://hulianui.haloritual.com/components/viewport) · [Resizable](https://hulianui.haloritual.com/components/resizable) · [AspectRatio](https://hulianui.haloritual.com/components/aspect-ratio)
@@ -334,7 +356,7 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| cols | `number \| ResponsiveCols` | `1` | 列数。数字=固定列数（任意值，走 inline style）；`{base,sm,md,lg}`=响应式（静态类） |
+| cols | `number \| ResponsiveCols` | `1` | 列数。数字=固定列数（任意值，走 inline style）；`{base,sm,md,lg,xl,2xl}`=响应式（静态类） |
 | rows | `number` | — | 行数（不填则按内容自动） |
 | gap | `number` | `0` | 行列间距（× 0.25rem） |
 | colGap | `number` | — | 列间距，覆盖 gap（× 0.25rem） |
@@ -366,6 +388,8 @@ import { Grid, GridItem } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 子元素 |
 
+响应式档位铺满 Tailwind 断点：`base / sm / md / lg / xl / 2xl`。中后台宽屏（≥1280）恰恰最需要在 `xl` 档换布局，档位止于 lg 会逼消费方一半走 prop 一半走 className（hulianui/hulian#61）。例：`cols={{ base: 1, xl: 4, "2xl": 6 }}`。
+
 ## 示例
 ```tsx
 // 3 列等宽网格
@@ -382,7 +406,13 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-暂无已知坑。`cols` 传数字走 inline style 支持任意列数；传 `{base,sm,md,lg}` 才走静态响应式类。候选坑 body-grid-place-items-center / grid-card-button-tail-row / nested-collapsible-css-grid-rows 均针对各自具体布局场景，与本通用栅格原语无直接关系，已剔除。
+暂无已知坑。`cols` 传数字走 inline style 支持任意列数；传 `{base,sm,md,lg,xl,2xl}` 才走静态响应式类。候选坑 body-grid-place-items-center / grid-card-button-tail-row / nested-collapsible-css-grid-rows 均针对各自具体布局场景，与本通用栅格原语无直接关系，已剔除。
+
+### `as` 是**类型多态**的
+
+`as="ul"` 之后，事件与属性会跟着目标元素走：`onSubmit` 拿到 `FormEvent<HTMLFormElement>`、`as="a"` 能传 `href`。
+早先 `as` 不参与推导，`event.currentTarget` 一律退化成 `HTMLElement`，表单专有 API 只能 as-cast——
+而 cast 掉的正是类型安全本身（hulianui/hulian#62）。
 
 ## 相关
 [Stack](https://hulianui.haloritual.com/components/stack) · [Spacer](https://hulianui.haloritual.com/components/spacer) · [Divider](https://hulianui.haloritual.com/components/divider) · [Separator](https://hulianui.haloritual.com/components/separator) · [Layout](https://hulianui.haloritual.com/components/layout) · [AdminLayout](https://hulianui.haloritual.com/components/admin-layout)
@@ -783,7 +813,7 @@ import { Stack } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| direction | `StackDirection \| ResponsiveDirection` | `"column"` | 主轴方向。传字符串=固定；传 `{base,sm,md,lg}`=按断点响应式 |
+| direction | `StackDirection \| ResponsiveDirection` | `"column"` | 主轴方向。传字符串=固定；传 `{base,sm,md,lg,xl,2xl}`=按断点响应式 |
 | gap | `number` | `0` | 子项间距（× 0.25rem，同 Tailwind spacing 刻度） |
 | align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | — | 交叉轴对齐 |
 | justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | — | 主轴对齐 |
@@ -798,6 +828,8 @@ import { Stack } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 子元素 |
+
+响应式档位铺满 Tailwind 断点：`base / sm / md / lg / xl / 2xl`。中后台宽屏（≥1280）恰恰最需要在 `xl` 档换布局，档位止于 lg 会逼消费方一半走 prop 一半走 className（hulianui/hulian#61）。例：`direction={{ base: "column", xl: "row" }}`。
 
 ## 示例
 ```tsx
@@ -818,6 +850,12 @@ import { Stack } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 暂无已知坑。`gap` 是 Tailwind 刻度倍数而非像素（`gap={3}` = 0.75rem）；`wrap`/`justify` 仅在 `direction="row"` 下有实际意义。候选坑 multi-card-stack-trace / swiftui-text-css-font-stack 与本组件无关，已剔除。
+
+### `as` 是**类型多态**的
+
+`as="form"` 之后，事件与属性会跟着目标元素走：`onSubmit` 拿到 `FormEvent<HTMLFormElement>`、`as="a"` 能传 `href`。
+早先 `as` 不参与推导，`event.currentTarget` 一律退化成 `HTMLElement`，表单专有 API 只能 as-cast——
+而 cast 掉的正是类型安全本身（hulianui/hulian#62）。
 
 ## 相关
 [Grid](https://hulianui.haloritual.com/components/grid) · [Spacer](https://hulianui.haloritual.com/components/spacer) · [Divider](https://hulianui.haloritual.com/components/divider) · [Separator](https://hulianui.haloritual.com/components/separator) · [Layout](https://hulianui.haloritual.com/components/layout) · [AdminLayout](https://hulianui.haloritual.com/components/admin-layout)
@@ -1156,7 +1194,7 @@ import { CircularText } from "@hulianui/ui"
   spinDuration={14}
   onHover="goBonkers"
   radius={64}
-  className="text-xs font-bold tracking-[0.2em] text-background"
+  className="text-xs font-bold tracking-[0.2em] text-bg"
 />
 ```
 
@@ -4481,6 +4519,13 @@ const ticket = useRef<string | null>(null);
 - `beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不需要自己再管 loading。
 - 若父层自己也在管提交态（如全局 loading），用 `loading` prop 覆盖内置 loading，别另写一份。
 - `onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。
+
+### 「记住我」的文案与说明
+
+`rememberLabel` 覆盖文案、`rememberDescription` 在勾选项下方加一行说明。
+这个勾选并不总是「下次免登录」的体验糖——有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token），
+文案是刻意写的；锁死在 locale 就只能退回手写表单（hulianui/hulian#64）。
+说明行紧贴勾选项，而 `extra` 槽在密码框与记住我之间，位置不对。
 
 ## 相关
 [ClickCaptcha](https://hulianui.haloritual.com/components/click-captcha) · [Form](https://hulianui.haloritual.com/components/form) · [ModalForm / DrawerForm](https://hulianui.haloritual.com/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/components/steps-form) · [Field](https://hulianui.haloritual.com/components/field) · [SearchForm](https://hulianui.haloritual.com/components/search-form)
@@ -8522,7 +8567,7 @@ import { DomeGallery } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-<div className="relative h-80 overflow-hidden rounded-xl bg-background">
+<div className="relative h-80 overflow-hidden rounded-xl bg-bg">
   <DomeGallery
     images={[
       { src: "/a.jpg", alt: "封面 A" },
@@ -9804,6 +9849,12 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 - `items` 与 `children` 二选一，同时给则 `items` 优先；数据驱动用 `items + renderItem`，静态布局直接放 `<ListItem>` children。
 - `grid` 态下 `bordered` / `split` 被忽略(边框由卡片自带)。
 - `ListLoadMore.hasMore=false` 时整个加载更多按钮不渲染，别等它消失才发现没传完。
+
+### 无障碍名
+
+`aria-label` / `aria-labelledby` / `aria-describedby` 会被透到 `role="list"` 的节点上，
+其余原生属性仍落在最外层容器。所以 `getByRole("list", { name: "…" })` 找得到，读屏也不会听到一个无名列表
+（hulianui/hulian#60）。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -12884,6 +12935,56 @@ import { BeianFooter } from "@hulianui/ui"
 [Navbar](https://hulianui.haloritual.com/components/navbar) · [NavMenu](https://hulianui.haloritual.com/components/nav-menu) · [NavigationMenu](https://hulianui.haloritual.com/components/navigation-menu) · [Menu](https://hulianui.haloritual.com/components/menu) · [Menubar](https://hulianui.haloritual.com/components/menubar) · [Dock](https://hulianui.haloritual.com/components/dock)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# Brand
+
+> 品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底色 · 省略 name 即收起态只出徽章 · href 普通链接 / render 接框架路由件回首页 · 区别 Avatar(圆的·套它得用 className 改形状=业务侧打补丁) · navigation/global
+
+## 何时用
+
+「方角色块徽章 + 站点名」这个组合是每个中后台 / 会员站都有的四处：导航栏左上、侧栏顶部、页脚品牌列、登录页品牌区。
+
+**为什么 [Avatar](https://hulianui.haloritual.com/components/avatar) 顶不了**：Avatar 是**圆**的（`size` 只给圆直径），品牌徽章要方角 + token 圆角。套 Avatar 就得用 `className` 改形状——那正是 `guard` 与 conventions 里说的「在业务侧打补丁」（hulianui/hulian#57）。
+
+## 导入
+```ts
+import { Brand } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| mark | `ReactNode` | 取 `name` 首字 | 徽章内容：图标 / 图片 / 首字 |
+| name | `ReactNode` | — | 品牌名；省略则只出徽章（侧栏收起态） |
+| description | `ReactNode` | — | 品牌名下方一行副标题（版本号 / 一句话定位） |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | sm 导航栏 28px / md 侧栏 36px / lg 登录页品牌区 |
+| color | `string` | `"primary"` | 徽章底色：语义色名（`chart-3` 等）或任意 CSS 色 |
+| href | `string` | — | 普通链接（链回首页） |
+| render | `ReactElement` | — | 渲染成框架路由件（`<Link to="/" />`），避免 SPA 整页刷新；与 Button/Link/NavMenuItem 的 `render` 约定一致 |
+| className | `string` | — | 透传类名；其余原生属性一并透传 |
+
+## 示例
+```tsx
+// 导航栏
+<Brand size="sm" mark={<Logo />} name="瑚琏后台" render={<Link to="/" />} />
+
+// 侧栏（收起时只留徽章）
+<Brand mark={<Logo />} name={collapsed ? undefined : "瑚琏后台"} />
+
+// 登录页
+<Brand size="lg" name="瑚琏后台" description="v0.18.0" />
+```
+
+## 禁忌 / 坑
+
+- **有 `name` 时徽章是装饰**（`aria-hidden`），无障碍名由品牌名承载；只出徽章（收起态）时它自己就是内容，记得给 `mark` 一个有意义的节点或给根节点 `aria-label`。
+- 徽章底色固定配 `--color-primary-foreground` 作前景（亮色白 / 暗色近黑）。给中等明度的自定义色时自行核对对比度。
+- 品牌图片走 `mark={<img … />}`，组件已给 `size-full object-cover`，不要再在外面套尺寸类。
+
+## 相关
+[Avatar](https://hulianui.haloritual.com/components/avatar) · [Navbar](https://hulianui.haloritual.com/components/navbar) · [NavMenu](https://hulianui.haloritual.com/components/nav-menu) · [AdminLayout](https://hulianui.haloritual.com/components/admin-layout) · [BeianFooter](https://hulianui.haloritual.com/components/beian-footer) · [LoginForm](https://hulianui.haloritual.com/components/login-form)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # Breadcrumb
 
 > 面包屑 · 纯皮肤静态 + aria-current 当前页语义 · navigation/inpage
@@ -13858,6 +13959,17 @@ function ConvoNav() {
 }
 ```
 
+### 接框架路由（`render` 逃生口）
+
+```tsx
+{ key: "/user/balance", label: "余额明细", render: <Link to="/user/balance" /> }
+```
+
+`href` 渲染的是原生 `<a>`，在 SPA 里点一下**整页刷新**；只用 `onSelect` + `navigate()` 又会退化成 `<button>`，
+中键新标签页 / 右键复制链接 / 读屏按「链接」播报全没了。`render` 让两者同时成立：
+皮肤 class、键盘漫游属性、选中回调都合并进你给的元素，点击时先跑你的 `onClick` 再跑内部选中
+（hulianui/hulian#59）。与 [Button](https://hulianui.haloritual.com/components/button) / [Link](https://hulianui.haloritual.com/components/link) 的 `render` 约定一致。
+
 ## 禁忌 / 坑
 
 - 行尾操作放 `actions` 槽，组件会渲在 treeitem 按钮/链接【之外】（绝对覆盖行右侧）。**别把 `<button>` 等交互元素直接塞进 `label`**——嵌进 treeitem 按钮是非法 HTML，会触发 hydration 报错。`actions` 仅 inline 态生效。
@@ -14221,7 +14333,7 @@ import { StaggeredMenu } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-background">
+<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-bg">
   <StaggeredMenu
     items={[
       { label: "首页", link: "#home" },
@@ -14849,6 +14961,12 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 - Base UI rc.0 没有独立 Drawer 原语，本组件是 Dialog（Portal+Backdrop+Popup）重皮、靠 `transform: translateX/Y` 按 `side` 侧滑；Dialog 没有 Positioner，定位别按 Tooltip/Popover 那套想。详见 [[base-ui-dialog-drawer-side-slide-via-transform]]。
 - 「取消 / 保存 / 关闭」放 `footer` 槽而非正文末尾，否则正文滚动后按钮会滚出可视区。
 - 用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。
+
+### 关闭按钮
+
+`DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。
+纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc，
+读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。
 
 ## 相关
 [Dialog](https://hulianui.haloritual.com/components/dialog) · [Modal](https://hulianui.haloritual.com/components/modal) · [AlertDialog](https://hulianui.haloritual.com/components/alert-dialog) · [Popover](https://hulianui.haloritual.com/components/popover) · [Tooltip](https://hulianui.haloritual.com/components/tooltip) · [HoverCard](https://hulianui.haloritual.com/components/hover-card)

@@ -4,7 +4,7 @@ import type { BadgePlacement, BadgeProps, BadgeTone } from "./badge.types";
 
 // Badge = 计数 / 状态角标（区别于 Tag 状态标签 / Chip 令牌）：可独立成标，也可包裹子元素叠到角上。
 // count 数字（带 max 溢出）/ dot 纯点 / content 自定义内容（如绿勾）三种形态。纯 CSS 渲染（无 hook，可 RSC）。
-// 包裹模式角标带 ring-background 描边，从宿主（图标/头像）上分离出来。仅消费语义 token，自动吃主题明暗。
+// 包裹模式角标带 ring-bg 描边，从宿主（图标/头像）上分离出来。仅消费语义 token，自动吃主题明暗。
 
 /** 把计数格式化为展示文本：超过 max 显示 `max+`。导出供测试与外部复用。 */
 export function formatCount(count: number, max?: number): string {
@@ -99,7 +99,7 @@ export function Badge({
       {children}
       {showMark && (
         <span
-          className={cn(markClassName, "absolute z-10 ring-2 ring-background", placementAnchor[placement])}
+          className={cn(markClassName, "absolute z-10 ring-2 ring-bg", placementAnchor[placement])}
           style={markStyle}
           aria-hidden={isDot || undefined}
         >

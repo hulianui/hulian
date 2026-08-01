@@ -1,5 +1,85 @@
 # @hulianui/ui
 
+## 0.18.0
+
+### Minor Changes
+
+- 新增 8 个组件，修 9 条消费方缺口。
+
+  **新组件**
+
+  - `ShieldBadge` / `ShieldBadgeGroup`：README 徽章（shields.io 风格的双段贴纸）。纯 CSS 渲染吃主题，不再靠 img.shields.io 远程图片；配纯函数 `compactCount`（1.5k / 3.4M）。
+  - `AwardBadge`：桂冠奖章（GitHub Trending / Product Hunt 那类荣誉牌）。桂冠由 `laurelLeaves` / `laurelStemPath` 纯函数算出，吃 currentColor、缩放不糊、零图片请求。
+  - `ContributionGraph`：贡献活动墙。calendar 周列 × 星期行 / strip 单行活动条，日期算术抽成 `buildContributionCalendar` 纯函数，色阶复用 Heatmap 的 bucketize。
+  - `Legend`：独立图例。recharts 的 Legend 出不了图外，自绘图形（Sparkline / Heatmap / 贡献墙 / 地图）此前只能各自手搓彩点；缺省色按序取 chart-1..6，与 Chart 同套 token。
+  - `AppLauncher`：应用启动台（macOS Launchpad 形态）。搜索与分类各自可受控，`keywords` 支持拼音别名，方向键在网格漫游焦点，筛选分节是纯函数。
+  - `RegionSelect`：在图上拖框选一块区域、拿回**原图像素坐标**（区别 ImageCropper 出 Blob）。坐标系零换算、自然尺寸自量、touch-none、描边按图宽（#54）。
+  - `Brand`：品牌标识（方角徽章 + 站点名）。Avatar 是圆的顶不了；`render` 可接框架路由件（#57）。
+  - `Tilt`：通用视差倾斜包裹器（对标 react-parallax-tilt）。指针/陀螺仪/手动角度三种驱动 + glare 反光，零依赖、吃瑚琏动效曲线、默认尊重 reduced-motion。
+
+  **能力增强**
+
+  - `QRCode`：补 `minVersion`（钉住版本下限让一组码密度一致）、`boostLevel`（不升版本白拿更高纠错）、`logo.excavate` / `logo.opacity`（水印式 logo），并新增 `qrCodeSvgString()` / `qrCodeToPngDataUrl()` 两个导出函数（服务端出 SVG / 浏览器出 PNG，按 DPR 放大、默认白底）。
+  - 布局原语 `Stack` / `Container` / `Grid` / `GridItem` / `Heading` / `Text` / `Prose` / `SafeArea` / `StreamingText` 改成**泛型多态**：`as="form"` 后 `onSubmit` 能拿到 `FormEvent<HTMLFormElement>`（#62）。
+  - `Grid` 的 `cols` 与 `Stack` 的 `direction` 响应式档位补 `xl` / `2xl`，与 Tailwind 断点表对齐（#61）。
+  - `Container` 的 `size` 补 `2xl`(max-w-6xl) / `3xl`(max-w-7xl)；居中与内距解耦成 `centered` 与 `padded`（#58）。
+  - `NavMenuItem` 补 `render` 逃生口：既保住 `<a>` 语义又能走客户端路由（#59）。
+  - `DrawerContent` 默认渲染右上角关闭按钮，配 `showClose` / `closeLabel`；locale 补 `drawer.close`（#63）。
+  - `LoginForm` 补 `rememberLabel` / `rememberDescription`：「记住我」并不总是体验糖，有时是刷新令牌开关（#64）。
+
+  **修复**
+
+  - `Image`：消费方传的 `onLoad` / `onError` 与内部的**合并**而不是被顶掉——此前一传 `onLoad` 图片就永久停在 `opacity-0`；同时补 `forwardRef` 到内层 `<img>`（#55）。
+  - `List`：`aria-label` / `aria-labelledby` / `aria-describedby` 透到 `role="list"` 的节点上，读屏不再听到无名列表（#60）。
+  - 清掉 55 处引用**未定义色 token** 的工具类（`text-muted-foreground` / `bg-background` / `bg-card` 等）——Tailwind 对未定义 token 不报错也不生成规则，元素静默继承父级颜色，「次要文字」渲染成正文同色。
+  - 三个源文件里的裸控制字节（用作 join 分隔符的 U+0000 / U+0001 被写成真字节），此前让 `file` 判定为 binary、grep 与 git diff 双双失灵。
+
+  **行为变更**
+
+  - `Container` 的 `padded={false}` 此前会连居中一起关掉，现在只关左右内距；要两者都关请同时传 `centered={false}`。
+
+## 0.17.0
+
+### Minor Changes
+
+- b02bc6f: LoginForm 补三个逃生口 + 新增 ClickCaptcha 点选人机验证（closes #50 #51）
+
+  一个 BuildAdmin 系后台的两个登录页**查完文档后仍绕开 `LoginForm` 各自手写表单**——不是没查，是它接不住：校验只有必填、外部拿不到字段实时值、没有验证码位。以它为核心的 `page-login` / `block-login` 推荐链因此整条断掉（装了也得拆）。这批补上缺口，模板不再是"只能做 demo"。
+
+  **LoginForm 三个口子**（都向后兼容，不传行为与之前完全一致）：
+
+  ```tsx
+  <LoginForm
+    // 1. 字段级校验：沿用 useForm 的 FormRule[] 形状，内置必填始终先跑
+    rules={{
+      username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: "账号格式不正确" }],
+      password: [{ min: 6, max: 32, message: "密码 6~32 位" }],
+    }}
+    // 2. 受控逃生口：外部持有实时值（受控回写不会二次触发 onValuesChange，不会循环）
+    values={values}
+    onValuesChange={(_changed, all) => setValues(all)}
+    // 3. 提交前异步拦截 + 表单内插槽：验证码链路终于能挂进来
+    extra={<ClickCaptcha backgroundSrc={captcha.background} onComplete={setPoints} />}
+    beforeSubmit={async () => {
+      if (points.length < 3) return false; // 返回 false / 抛错即中止提交
+      ticket.current = await api.verifyCaptcha(captcha.id, points);
+    }}
+    onFinish={({ username, password }) => api.login(username, password, ticket.current)}
+  />
+  ```
+
+  `beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不必自己再管 loading。
+
+  **新增 `ClickCaptcha`**：点选式人机验证的**纯 UI 层**——给定背景图与提示图，采集点击序列并回传**相对坐标（x/y ∈ [0,1]）**。
+
+  有意不做的事：不发请求、不认协议。`captchaId` 语义、`captchaInfo` 编码、接口路径各家后端不同（BuildAdmin / 极验 / 防水墙），进库就是 API 债。你在 `onComplete` 里编码成自家协议串再发请求，按结果把 `status` 置 `success` / `failed`。
+
+  组件吃掉的正是自建时最占篇幅、最容易做错的部分：坐标换算（相对值，容器缩放 / 响应式 / 高 DPI 都不错位）、序号标记与撤销、换一张、失败抖动并清空、加载遮罩、图片加载失败兜底，以及**键盘可达**（区域可聚焦，方向键移准星、Enter/Space 落点、Backspace 撤销）。抖动走 `motion-safe:`，`prefers-reduced-motion` 下不抖，失败仍有 `aria-live` 文案播报。
+
+  滑块拼图式（SliderCaptcha）本批不做——同一「纯 UI 层」原则，需要时单独提。
+
+  配套：`@hulianui/tokens` 新增关键帧 `hulian-captcha-shake`；`@hulianui/mcp` 搜索词表补「验证码 / 人机验证 / 点选」→ `click-captcha`（此前搜这些词只会命中 InputOTP / Slider，正是 #51 的起点）。
+
 ## 0.16.0
 
 ### Minor Changes

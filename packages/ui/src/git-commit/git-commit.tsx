@@ -50,7 +50,7 @@ export function GitCommit({
         <span className="truncate">{branch}</span>
       </span>
     ) : (
-      <span className="inline-flex min-w-0 items-center gap-1 text-muted-foreground">
+      <span className="inline-flex min-w-0 items-center gap-1 text-muted">
         <GitBranch className={cn(iconSize, "shrink-0")} />
         <span className="truncate font-medium text-foreground">{branch}</span>
       </span>
@@ -63,7 +63,7 @@ export function GitCommit({
         href && "rounded-[var(--radius-sm)] transition-colors hover:text-primary hover:underline",
       )}
     >
-      <GitCommitIcon className={cn(iconSize, "shrink-0 text-muted-foreground")} />
+      <GitCommitIcon className={cn(iconSize, "shrink-0 text-muted")} />
       {short}
     </span>
   );
@@ -77,7 +77,7 @@ export function GitCommit({
   );
 
   const authorNode = (author != null || avatar != null) && (
-    <span className="inline-flex shrink-0 items-center gap-1.5 text-muted-foreground">
+    <span className="inline-flex shrink-0 items-center gap-1.5 text-muted">
       {avatar}
       {author != null && <span className="truncate">{author}</span>}
     </span>
@@ -91,7 +91,7 @@ export function GitCommit({
             {message}
           </span>
         )}
-        <span className="flex min-w-0 items-center gap-2 text-muted-foreground">
+        <span className="flex min-w-0 items-center gap-2 text-muted">
           {branchChip}
           {branch != null && <span className="text-border">·</span>}
           {shaEl}
@@ -107,7 +107,7 @@ export function GitCommit({
       {branchChip}
       {shaEl}
       {message != null && (
-        <span className="truncate text-muted-foreground" title={typeof message === "string" ? message : undefined}>
+        <span className="truncate text-muted" title={typeof message === "string" ? message : undefined}>
           {message}
         </span>
       )}

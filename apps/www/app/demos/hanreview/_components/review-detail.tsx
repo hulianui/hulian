@@ -44,7 +44,7 @@ const SEVERITY_META: Record<Severity, { label: string; dot: string; tone: TagTon
   critical: { label: "严重", dot: "bg-danger", tone: "danger" },
   major: { label: "重要", dot: "bg-warning", tone: "warning" },
   minor: { label: "次要", dot: "bg-brand", tone: "brand" },
-  info: { label: "提示", dot: "bg-muted-foreground", tone: "neutral" },
+  info: { label: "提示", dot: "bg-muted", tone: "neutral" },
 };
 
 const SEVERITY_ORDER: Severity[] = ["critical", "major", "minor", "info"];

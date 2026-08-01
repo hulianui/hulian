@@ -345,6 +345,7 @@ export * from "./legend";
 export * from "./app-launcher";
 export * from "./region-select";
 export * from "./tilt";
+export * from "./brand";
 
 // —— react-bits 移植批（自动接线）——
 export * from "./ascii-text";

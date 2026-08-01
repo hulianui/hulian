@@ -18,7 +18,7 @@ const socialItems = [
 /** 展示用容器：StaggeredMenu 内部 absolute 定位，需要 relative + 固定高度 + overflow-hidden 承托 */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative h-96 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-background">
+    <div className="relative h-96 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-bg">
       {children}
     </div>
   );

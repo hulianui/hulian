@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 
 /** 普通菜单项（叶子或可展开父项）。 */
 export interface NavMenuItem {
@@ -9,6 +9,14 @@ export interface NavMenuItem {
   icon?: ReactNode;
   /** 叶子链接：提供则渲染 `<a>`（点击导航），否则渲染 `<button>`。父项忽略。 */
   href?: string;
+  /**
+   * 渲染成自定义元素（框架路由件：`<Link to=… />` / `<NextLink href=… />`）。
+   * 皮肤 class、ref、键盘漫游属性与点击回调都会合并进去 —— 于是「真链接语义
+   * （中键新标签页/右键复制/读屏播报为链接）」与「客户端路由」可以同时拿到。
+   * 与 Button / Link 的 `render` 约定一致。父项（有 children）忽略。
+   * @example { key: "/balance", label: "余额", render: <Link to="/balance" /> }
+   */
+  render?: ReactElement;
   disabled?: boolean;
   /**
    * 行尾操作区（如删除/更多按钮）。渲染在该行 treeitem 按钮/链接【之外】（绝对覆盖行右侧），

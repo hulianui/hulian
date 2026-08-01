@@ -1,15 +1,18 @@
-import type { ElementType, HTMLAttributes, ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
+import type { PolymorphicProps } from "../lib/polymorphic";
 
-/** 响应式列数：按断点给列数（base 为默认/最小屏）。 */
+/** 响应式列数：按断点给列数（base 为默认/最小屏）。断点表与 Tailwind 对齐到 2xl。 */
 export interface ResponsiveCols {
   base?: number;
   sm?: number;
   md?: number;
   lg?: number;
+  xl?: number;
+  "2xl"?: number;
 }
 
-export interface GridProps extends HTMLAttributes<HTMLElement> {
-  /** 列数。传数字=固定列数（任意值·inline style）；传 {base,sm,md,lg}=响应式（静态类）。@default 1 */
+export interface GridOwnProps {
+  /** 列数。传数字=固定列数（任意值·inline style）；传 {base,sm,md,lg,xl,2xl}=响应式（静态类）。@default 1 */
   cols?: number | ResponsiveCols;
   /** 行数（不填则按内容自动）。 */
   rows?: number;
@@ -21,17 +24,20 @@ export interface GridProps extends HTMLAttributes<HTMLElement> {
   rowGap?: number;
   /** 用 inline-grid 而非 grid。@default false */
   inline?: boolean;
-  /** 渲染的元素标签。@default "div" */
-  as?: ElementType;
   children?: ReactNode;
+  className?: string;
 }
 
-export interface GridItemProps extends HTMLAttributes<HTMLElement> {
+/** `as` 参与类型推导（hulianui/hulian#62）。 */
+export type GridProps<E extends ElementType = "div"> = PolymorphicProps<E, GridOwnProps>;
+
+export interface GridItemOwnProps {
   /** 跨列数。 */
   colSpan?: number;
   /** 跨行数。 */
   rowSpan?: number;
-  /** 渲染的元素标签。@default "div" */
-  as?: ElementType;
   children?: ReactNode;
+  className?: string;
 }
+
+export type GridItemProps<E extends ElementType = "div"> = PolymorphicProps<E, GridItemOwnProps>;

@@ -75,3 +75,36 @@ describe("Drawer (defaultOpen 渲染)", () => {
     expect(screen.getByText("仅内容")).toBeTruthy();
   });
 });
+
+describe("DrawerContent 关闭按钮（hulianui/hulian#63）", () => {
+  it("默认渲染右上角关闭按钮，带无障碍名", () => {
+    const { getByLabelText } = render(
+      <Drawer open>
+        <DrawerContent title="导航">内容</DrawerContent>
+      </Drawer>,
+    );
+    expect(getByLabelText("关闭")).toBeTruthy();
+  });
+
+  it("closeLabel 可覆盖无障碍名", () => {
+    const { getByLabelText } = render(
+      <Drawer open>
+        <DrawerContent title="导航" closeLabel="收起菜单">
+          内容
+        </DrawerContent>
+      </Drawer>,
+    );
+    expect(getByLabelText("收起菜单")).toBeTruthy();
+  });
+
+  it("showClose=false 关掉", () => {
+    const { queryByLabelText } = render(
+      <Drawer open>
+        <DrawerContent title="导航" showClose={false}>
+          内容
+        </DrawerContent>
+      </Drawer>,
+    );
+    expect(queryByLabelText("关闭")).toBeNull();
+  });
+})

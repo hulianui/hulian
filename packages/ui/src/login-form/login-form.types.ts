@@ -26,6 +26,15 @@ export interface LoginFormProps {
   loading?: boolean;
   /** 显示「记住我」，默认 true。 */
   showRemember?: boolean;
+  /**
+   * 「记住我」的标签文案，覆盖 locale 默认值。
+   * 这个勾选并不总是「下次免登录」的体验糖——有的系统里它是**刷新令牌能力开关**
+   * （勾上才下发 refresh_token），文案是刻意写的，锁死在 locale 就没法用了
+   * （hulianui/hulian#64）。
+   */
+  rememberLabel?: ReactNode;
+  /** 「记住我」下方的一行说明（解释这个勾选到底意味着什么）。 */
+  rememberDescription?: ReactNode;
   /** 底部附加区（忘记密码 / 注册链接等）。 */
   footer?: ReactNode;
   /** 字段级校验规则（追加在内置必填之后）。 */

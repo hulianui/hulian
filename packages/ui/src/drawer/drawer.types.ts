@@ -22,6 +22,10 @@ export interface DrawerContentProps {
    * 而非默认 fixed 贴视口——适合手机框预览等需把抽屉收进局部容器的场景。
    * 容器须 position:relative + overflow-hidden。
    */
+  /** 是否渲染右上角关闭按钮。@default true */
+  showClose?: boolean;
+  /** 关闭按钮的无障碍名（默认取 locale 的 drawer.close）。 */
+  closeLabel?: string;
   container?: ComponentProps<typeof BaseDialog.Portal>["container"];
   className?: string;
 }
