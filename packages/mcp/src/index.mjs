@@ -201,12 +201,29 @@ async function buildTools() {
       description:
         "用一句业务需求（如「用户管理列表页：查询、分页表格、批量操作、新增编辑弹窗」）换回" +
         "排好序的**页面 → 区块 → 组件**组合。选型从这里开始：先看有没有现成整页/区块可用，" +
-        "再决定要不要自己拼组件。",
+        "再决定要不要自己拼组件。" +
+        "带上 surface/modifiers/workflow 时按场景加权：该场景常用的整页与组件**即使关键词没命中也会补进来**，" +
+        "并附带这个场景的约束与验证清单。",
       inputSchema: {
         type: "object",
         properties: {
           task: { type: "string", description: "要做的东西，用自然语言描述，越具体越好" },
           limit: { type: "number", description: "每档返回条数，默认 5" },
+          surface: {
+            type: "string",
+            enum: listSurfaces().map((s) => s.id),
+            description: "页面形态。不确定就先调 get_agent_profile 看目录",
+          },
+          modifiers: {
+            type: "array",
+            items: { type: "string", enum: listModifiers().map((m) => m.id) },
+            description: "可组合的修饰维度，如移动端看板 = [mobile, dashboard]",
+          },
+          workflow: {
+            type: "string",
+            enum: listWorkflows().map((w) => w.id),
+            description: "任务性质，决定给出的步骤",
+          },
         },
         required: ["task"],
       },
@@ -530,31 +547,97 @@ function renderList({ header, total, skip, take, shown }) {
     .join("\n");
 }
 
-async function recommendUi({ task, limit } = {}) {
+async function recommendUi({ task, limit, surface, modifiers, workflow } = {}) {
   if (!task || !String(task).trim()) return fail("recommend_ui 需要 task：一句话说清要做什么。");
   const take = clamp(limit, 5, 20);
   const reg = await loadRegistry();
   const { results } = rank(reg.items, task);
-  if (!results.length) {
+
+  // 场景加权：profile 点名的 page/block/component 即使**关键词没命中**也要补进来。
+  // 这是本函数最容易失手的地方 —— 「用户 管理 列表」这类描述曾经一个 page 都搜不到，
+  // 模型据此得出「没有可复用的页面」，一次选型退化成几十次 tool call。
+  const profile =
+    surface || workflow || modifiers?.length
+      ? composeProfile({ surface, modifiers: modifiers ?? [], workflow })
+      : null;
+
+  const byName = new Map(reg.items.map((item) => [item.name, item]));
+  const fromProfile = new Set();
+  // modifier 的 require 是「这个形态下必须有」（如移动端的 SafeArea），不能被
+  // 候选条数挤出去 —— 实证缺口正出在这里：真做了 H5 的项目 7 个 mobile 组件只用了 1 个。
+  const required = new Set(profile?.modifiers.flatMap((m) => m.require ?? []) ?? []);
+  const merged = [...results];
+  const seen = new Set(results.map((entry) => entry.item.name));
+
+  if (profile) {
+    const wanted = [
+      ...profile.preferPages,
+      ...profile.preferBlocks,
+      ...profile.components,
+    ];
+    for (const name of wanted) {
+      const item = byName.get(name);
+      if (!item) continue; // profile 有门禁测试，正常不会走到这里
+      fromProfile.add(name);
+      if (seen.has(name)) continue;
+      seen.add(name);
+      // 补进来的排在关键词命中之后，标记来源，不冒充「搜到了」
+      merged.push({ item, score: 0, viaProfile: true });
+    }
+  }
+
+  if (!merged.length) {
     return text(
-      `「${task}」没有直接命中。换更短的关键词，或用 list_components 按 category 浏览。`,
+      `「${task}」没有直接命中。换更短的关键词，或用 list_components 按 category 浏览。` +
+        `\n也可以带上 surface/modifiers 让本 tool 按场景直接给候选，不依赖关键词。`,
       { task, pages: [], blocks: [], components: [] },
     );
   }
+
+  // 排序权重：形态必需件 > profile 点名 > 仅关键词命中；同级按搜索分
+  const weigh = (entry) =>
+    required.has(entry.item.name) ? 2 : fromProfile.has(entry.item.name) ? 1 : 0;
   const byKind = (kind, count) =>
-    results.filter((entry) => KIND_OF(entry.item) === kind).slice(0, count);
+    merged
+      .filter((entry) => KIND_OF(entry.item) === kind)
+      .sort((a, b) => weigh(b) - weigh(a) || b.score - a.score)
+      .slice(0, count);
 
   const pages = byKind("page", Math.min(take, 5));
   const blocks = byKind("block", take);
   const components = byKind("component", take + 3);
 
+  const mark = (entry) => {
+    const line = briefLine(entry.item);
+    if (required.has(entry.item.name)) return `${line} ← **本形态必需**`;
+    if (!fromProfile.has(entry.item.name)) return line;
+    return entry.viaProfile ? `${line} ← 本场景常用（关键词未命中，按 profile 补入）` : `${line} ← 本场景常用`;
+  };
+
   const section = (title, entries, hint) =>
     entries.length
-      ? [`## ${title}`, "", ...entries.map((entry) => `${briefLine(entry.item)}`), "", hint, ""]
+      ? [`## ${title}`, "", ...entries.map(mark), "", hint, ""]
       : [];
 
+  const head = [`# 「${task}」的选型建议`];
+  if (profile) {
+    const dims = [
+      profile.surface ? `surface: ${profile.surface.id}` : null,
+      profile.modifiers.length ? `modifiers: ${profile.modifiers.map((m) => m.id).join(" + ")}` : null,
+      profile.workflow ? `workflow: ${profile.workflow.id}` : null,
+    ].filter(Boolean);
+    head.push("", `场景：${dims.join(" · ")}`);
+    if (profile.unknown.length) head.push(`⚠️ 无法识别：${profile.unknown.join("、")}（已忽略）`);
+  }
+
+  const tail = [];
+  if (profile?.constraints.length)
+    tail.push("## 本场景的约束", "", ...profile.constraints.map((c) => `- ${c}`), "");
+  if (profile?.verification.length)
+    tail.push("## 完成前要验", "", ...profile.verification.map((v) => `- ${v}`), "");
+
   const body = [
-    `# 「${task}」的选型建议`,
+    ...head,
     "",
     "按「先整页 → 再区块 → 最后自己拼组件」的顺序看，能省掉大量重复搭建。",
     "",
@@ -573,14 +656,34 @@ async function recommendUi({ task, limit } = {}) {
       components,
       "→ 直接 npm import；写代码前先 `get_component_doc({ names: [...] })` 对 props。",
     ),
-    "下一步：选定后调 get_conventions 拿硬约束，写完调 validate_hulian_usage 复验。",
+    ...tail,
+    profile
+      ? "下一步：写完调 validate_hulian_usage 复验；约束与验证清单见上。"
+      : "下一步：选定后调 get_conventions 拿硬约束，写完调 validate_hulian_usage 复验。" +
+        "\n提示：带上 surface/modifiers 可让候选按场景加权，并附带该场景的约束与验证清单。",
   ];
+
+  const pack = (entry) =>
+    compact(entry.item, {
+      score: entry.score,
+      ...(fromProfile.has(entry.item.name) ? { viaProfile: Boolean(entry.viaProfile) } : {}),
+    });
 
   return text(body.join("\n"), {
     task,
-    pages: pages.map((entry) => compact(entry.item, { score: entry.score })),
-    blocks: blocks.map((entry) => compact(entry.item, { score: entry.score })),
-    components: components.map((entry) => compact(entry.item, { score: entry.score })),
+    profile: profile
+      ? {
+          surface: profile.surface?.id ?? null,
+          modifiers: profile.modifiers.map((m) => m.id),
+          workflow: profile.workflow?.id ?? null,
+          unknown: profile.unknown,
+        }
+      : null,
+    pages: pages.map(pack),
+    blocks: blocks.map(pack),
+    components: components.map(pack),
+    constraints: profile?.constraints ?? [],
+    verification: profile?.verification ?? [],
   });
 }
 

@@ -284,6 +284,49 @@ test("recommend_ui 一次给出 page → block → component 的完整选型", a
   assert.match(bodyOf(res), /install_block/, "应指出下一步怎么落地");
 });
 
+test("recommend_ui 带 surface 时：关键词没命中的场景常用件也会被补进来", async () => {
+  // 「做个页面」这种描述几乎搜不到 page-ai-chat；但既然场景是 ai-product，
+  // 它就该出现在候选里 —— 搜不到不等于库里没有，这正是选型退化的起点。
+  const [plain, scoped] = await rpc([
+    call(60, "recommend_ui", { task: "做个页面" }),
+    call(61, "recommend_ui", {
+      task: "做个页面",
+      surface: "ai-product",
+      modifiers: ["mobile"],
+      workflow: "build",
+    }),
+  ]);
+
+  const scopedData = dataOf(scoped);
+  assert.equal(scopedData.profile.surface, "ai-product");
+  assert.deepEqual(scopedData.profile.modifiers, ["mobile"]);
+
+  const aiChat = scopedData.pages.find((p) => p.name === "page-ai-chat");
+  assert.ok(aiChat, "ai-product 场景应给出 page-ai-chat");
+
+  const plainHasAiChat = dataOf(plain).pages.some((p) => p.name === "page-ai-chat");
+  if (!plainHasAiChat) {
+    assert.equal(aiChat.viaProfile, true, "关键词没命中而被 profile 补入时要如实标记");
+    assert.match(bodyOf(scoped), /关键词未命中/, "正文要说明这是按场景补入的，不冒充搜到了");
+  }
+
+  // 约束与验证随场景一起给出
+  assert.ok(scopedData.constraints.length > 0, "应附带本场景约束");
+  assert.ok(
+    scopedData.verification.some((v) => v.includes("390px")),
+    "mobile modifier 的验证项应合并进来",
+  );
+  assert.ok(
+    scopedData.components.some((c) => c.name === "safe-area"),
+    "mobile 必需件应进入组件候选，不能被候选条数挤出去",
+  );
+  assert.match(bodyOf(scoped), /本形态必需/, "必需件要在正文里标出来");
+
+  // 不带场景时保持原样，向后兼容
+  assert.equal(dataOf(plain).profile, null);
+  assert.deepEqual(dataOf(plain).constraints, []);
+});
+
 test("category 用真实枚举：form 报错并指向 forms", async () => {
   const [wrong, right] = await rpc([
     call(7, "list_components", { category: "form" }),
