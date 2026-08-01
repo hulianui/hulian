@@ -10,7 +10,7 @@ status: enriched
 
 # CardSpotlight
 
-> Spotlight card · Mouse follows radial highlight (pure CSS variable + radial-gradient) + color-mix highlight color + surface token (zero dependency) · decoration/overlay-fx · #animated
+> Spotlight card · Pointer-following radial highlight powered by CSS variables, `radial-gradient`, `color-mix`, and surface tokens · No runtime dependency · decoration/overlay-fx · #animated
 
 ## When to Use
 
@@ -28,27 +28,27 @@ Extends `HTMLAttributes<HTMLDivElement>`, forwarding `className`, `style`, `onCl
 | Name | Type | Default | Description |
 |------|------|------|------|
 | radius | `number` | `350` | Spotlight radius in pixels; higher values spread the highlight and lower values focus it |
-| color | `string` | chart-1 token | Spotlight color, accepts any CSS color string, such as `"#7c3aed"`, `"var(--color-primary)"`. |
+| color | `string` | chart-1 token | Spotlight color; accepts any CSS color such as `"#7c3aed"` or `"var(--color-primary)"` |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| children* | `ReactNode` | Card content. |
+| children* | `ReactNode` | Card content |
 
 ## Examples
 ```tsx
 <CardSpotlight color="var(--color-primary)" radius={350} className="w-64">
   <div className="mb-3 text-3xl">⚡</div>
-<h3 className="mb-1.5 text-base font-semibold"> theme color highlight </h3>
-<p className="text-sm text-muted">color passes var(--color-primary), and the highlight is linked with the theme. </p>
+  <h3 className="mb-1.5 text-base font-semibold">Theme-aware highlight</h3>
+  <p className="text-sm text-muted">The spotlight follows the active primary color.</p>
 </CardSpotlight>
 ```
 
 ## Usage Guidelines
 
-- `color` If you want to link it with the theme, you must bring the `--color-` prefix (such as `var(--color-primary)`) when passing CSS variables. The bare `var(--primary)` will not be parsed under Tailwind v4 `@theme`.
-- Highlight is a client-side effect of pointer following. Highlight is not displayed in pure SSR/no pointer (touch screen) environment, which is an expected downgrade.
+- To follow the active theme, pass a CSS variable with the `--color-` prefix, such as `var(--color-primary)`. Tailwind v4 does not expose bare names such as `var(--primary)` here.
+- The spotlight tracks pointer movement on the client. It remains inactive during SSR and on devices without a pointer; the card content still renders normally.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

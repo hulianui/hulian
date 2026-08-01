@@ -55,8 +55,8 @@ Inherits `Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "title">`, additiona
 ## Usage Guidelines
 
 - `onSelect` and `title` have been redefined from Omit in native HTMLAttributes - don't mistake them for native DOM event/attribute signatures.
-- If `value` is omitted when using the `{ label, value }` formula, the label (ReactNode) derived value will be returned; if a stable identifier is required, explicitly provide it to `value`.
-- For non-string labels, provide an explicit `value`; otherwise the fallback string conversion may not be a stable prompt or identifier.
+- For `{ label, value }` items with a string `label`, omitting `value` returns that exact string from `onSelect`.
+- For items with a non-string ReactNode `label`, omitting `value` returns the empty string `""`. Provide an explicit `value` whenever the label is not a string.
 
 ## Related
 [StreamingText](../streaming-text/streaming-text.md) · [MessageActions](../message-actions/message-actions.md) · [Citation](../citation/citation.md) · [Conversation](../conversation/conversation.md) · [ChatMessage](../chat-message/chat-message.md) · [PromptInput](../prompt-input/prompt-input.md)

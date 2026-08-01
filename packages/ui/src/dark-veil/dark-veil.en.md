@@ -10,7 +10,7 @@ status: enriched
 
 # DarkVeil
 
-> Dark curtain · CPPN neural field dark flowing curtain WebGL background · Hue rotation/scanline/particle/space distortion (ogl·lazy loading·reduced-motion degraded static gradient) · decoration/backdrop · #animated #webgl
+> Dark curtain · CPPN neural field dark flowing curtain WebGL background · Hue rotation/scanline/particle/space distortion (ogl·lazy loading·static reduced-motion fallback) · decoration/backdrop · #animated #webgl
 
 ## When to Use
 

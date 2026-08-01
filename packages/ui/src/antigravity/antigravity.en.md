@@ -28,13 +28,13 @@ import { Antigravity } from "@hulianui/ui"
 | count | `number` | `240` | Particle count; higher values cost more, so keep mobile usage at or below 200 |
 | magnetRadius | `number` | `130` | Attraction radius in pixels; particles inside this pointer range join the orbit |
 | ringRadius | `number` | `56` | Orbital base radius (px) |
-| waveSpeed | `number` | `0.4` | Wave speed on the ring (how fast the orbit radius fluctuates with angle/time) |
+| waveSpeed | `number` | `0.4` | Speed of the radial wave traveling around the ring |
 | waveAmplitude | `number` | `10` | Ring-wave amplitude in pixels; larger values make the orbit rougher and more organic |
 | particleSize | `number` | `4` | Particle base size (px); dot=diameter / square=side length / bar=length |
 | lerpSpeed | `number` | `0.12` | Target interpolation factor from 0 to 1; higher values track more tightly |
 | color | `string` | `var(--color-chart-1)` | Particle color; accepts any CSS color and defaults to a theme-aware token |
 | autoAnimate | `boolean` | `false` | Start an automatic pointer path after two seconds of inactivity |
-| rotationSpeed | `number` | `0` | The angular speed of the entire ring's rotation over time (rad/s), 0 = no rotation |
+| rotationSpeed | `number` | `0` | Angular speed of the entire ring in radians per second; 0 disables rotation |
 | pulseSpeed | `number` | `3` | Scale-pulse speed while particles are attracted |
 | shape | `"dot" \| "square" \| "bar"` | `"bar"` | Particle shape |
 | className | `string` | — | Class name forwarded to the root canvas wrapper or fallback |
@@ -47,12 +47,12 @@ import { Antigravity } from "@hulianui/ui"
 
 ## Examples
 ```tsx
-//Default short stick particles, covering the positioning parent
+// Default bar particles filling a positioned parent
 <div className="relative h-64 overflow-hidden rounded-xl">
   <Antigravity className="absolute inset-0" />
 </div>
 
-// Automatic tour + block + token color matching
+// Automatic pointer path, square particles, and a theme token color
 <Antigravity
   className="absolute inset-0"
   autoAnimate

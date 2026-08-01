@@ -10,11 +10,11 @@ status: enriched
 
 # DotField
 
-> Interactive lattice background · The cursor pushes the lattice to bulge + moves with radial glow, optional wavy/star flashing (Canvas 2D zero dependency·token color matching·reduced-motion static degradation) · decoration/backdrop · #animated #webgl
+> Interactive dot field · Pointer-driven displacement and radial glow with optional waves and sparkles · Dependency-free Canvas 2D, theme-aware colors, and a static reduced-motion fallback · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
-Use it when you need an interactive dot matrix background that bulges and glows with the cursor (tech product Hero, console shading, empty state). If you want purely static CSS dot matrix shading, use [DotPattern](../dot-pattern/dot-pattern.md) (lightweight, does not consume the GPU); if you want light curtain/vortex, use [Beams](../beams/beams.md) / [Balatro](../balatro/balatro.md); DotField is a Canvas 2D real-time interactive field that emphasizes cursor ripples and bulges. It is heavier than DotPattern but has interactivity.
+Use it for an interactive dot-matrix backdrop that displaces and glows around the pointer, such as a technology hero, console surface, or empty state. Use [DotPattern](../dot-pattern/dot-pattern.md) for a lighter static CSS pattern, [Beams](../beams/beams.md) for a light curtain, or [Balatro](../balatro/balatro.md) for a vortex. DotField trades some rendering cost for realtime pointer response.
 
 ## Import
 ```ts
@@ -26,14 +26,14 @@ import { DotField } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | dotRadius | `number` | `1.5` | Drawing radius of a single point (px), recommended 1–3 |
-| dotSpacing | `number` | `14` | Spacing between adjacent points (px), the larger the sparser, the recommended 8–24 |
+| dotSpacing | `number` | `14` | Distance between adjacent dots in pixels; higher values create a sparser field, with 8–24 recommended |
 | cursorRadius | `number` | `220` | Cursor influence radius (px), how many points around the pointer are pushed |
-| bulgeStrength | `number` | `56` | Bulging strength (px), the maximum displacement of a point pushed away from its original position; 0 = only emits light with the cursor |
+| bulgeStrength | `number` | `56` | Maximum dot displacement in pixels; 0 keeps the glow but disables displacement |
 | color | `string` | `--color-chart-1` | Dot matrix base color, CSS color string; token must be prefixed with `--color-` |
 | glowColor | `string` | `--color-primary` | Radial glow color at cursor |
-| glowRadius | `number` | `160` | Glow radius (px); 0=turn off glow |
-| waveAmplitude | `number` | `0` | Wave amplitude (px), the "breathing" feeling of global sinusoidal fluctuations; 0 = no wave |
-| sparkle | `boolean` | `false` | Whether to turn on random flashing (a small number of dots occasionally enlarge into star dots) |
+| glowRadius | `number` | `160` | Glow radius in pixels; 0 disables the glow |
+| waveAmplitude | `number` | `0` | Global sinusoidal-wave amplitude in pixels; 0 disables the wave |
+| sparkle | `boolean` | `false` | Occasionally enlarge a small number of dots to create a twinkling effect |
 | className | `string` | — | Additional className passed through to the root container |
 | style | `CSSProperties` | — | Inline styles passed through to the root container |
 
@@ -46,7 +46,7 @@ import { DotField } from "@hulianui/ui"
 </div>
 ```
 ```tsx
-// undulating waves + twinkling stars + custom color matching
+// Waves, sparkles, and custom colors
 <DotField
   waveAmplitude={5}
   sparkle
@@ -58,9 +58,9 @@ import { DotField } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- **Token color must be prefixed with `--color-`**: The `color`/`glowColor` passed to the Canvas must write the full name (such as `var(--color-chart-1)`). The bare `var(--chart-1)` Canvas does not parse → the stipples turn black/the glow disappears. See [[hulian-token-color-var-needs-color-prefix]].
-- **Client rendering**: relies on Canvas 2D + `requestAnimationFrame`, SSR/reduced-motion downgrades static lattice; do not directly mount real-time logic in the server component.
-- The parent container must be `relative` + `overflow-hidden` (the component has its own absolute logic).
+- **Token colors require the `--color-` prefix**: pass values such as `var(--color-chart-1)`. Canvas cannot resolve bare names such as `var(--chart-1)`, which can make dots black or remove the glow. See [[hulian-token-color-var-needs-color-prefix]].
+- **Client rendering**: the live effect uses Canvas 2D and `requestAnimationFrame`. SSR and reduced-motion environments render the static lattice fallback.
+- Give the parent `position: relative`, `overflow: hidden`, and an explicit height so the absolutely positioned canvas has stable bounds.
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)

@@ -42,7 +42,7 @@ import { TaskRunner, resolveProgress, statusMeta } from "@hulianui/ui"
 | headerExtra | `ReactNode` | Add to the right side of the head (buttons/menus, etc.) |
 | footerExtra | `ReactNode` | Replace the bottom right content |
 
-`AgentTask` step item `status`: `"done"` (completed, meta shows time-consuming)/`"running"` (highlighted)/`"pending"` (hollow ring)/`"error"`.
+`AgentTask` step item `status`: `"done"` (completed, metadata can show elapsed time) / `"running"` (highlighted) / `"pending"` (hollow ring) / `"error"`.
 
 ## Examples
 ```tsx

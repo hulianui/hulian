@@ -10,7 +10,7 @@ status: enriched
 
 # SoftAurora
 
-> Soft aurora · WebGL soft aurora background · 3D Perlin noise + cosine gradient double layer overlay · Mouse parallax (ogl·token coloring·reduced-motion degradation) · decoration/backdrop · #animated #webgl
+> Soft aurora · Two layers of 3D Perlin noise and cosine gradients create flowing color bands with pointer parallax · OGL/WebGL, theme-token colors, and a reduced-motion fallback · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
@@ -28,7 +28,7 @@ import { SoftAurora } from "@hulianui/ui"
 | color1 | `string` | `var(--color-chart-1)` | Main Aurora ribbon color (layer 1), any CSS color string (off-screen canvas parsing) |
 | color2 | `string` | `var(--color-chart-4)` | Auxiliary auroral ribbon color (layer 2), misalignment superposition produces mixed color interference |
 | speed | `number` | `0.6` | Aurora flow speed magnification, recommended 0.2–2 |
-| scale | `number` | `1.5` | Noise sampling scaling, the larger the size, the finer the texture, recommended 0.8–3 |
+| scale | `number` | `1.5` | Noise-sampling scale; higher values create finer texture, with 0.8–3 recommended |
 | brightness | `number` | `1` | Overall brightness ratio |
 | noiseFrequency | `number` | `2.5` | Noise fundamental frequency, affecting wrinkle density |
 | noiseAmplitude | `number` | `1` | Noise base amplitude, affecting the fluctuation amplitude |
@@ -46,7 +46,7 @@ import { SoftAurora } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | reduced-motion / Reduced content (such as titles) above the static layer without WebGL |
+| fallback | `ReactNode` | Content, such as a title, rendered over the static non-WebGL fallback |
 
 ## Examples
 ```tsx
@@ -55,7 +55,7 @@ import { SoftAurora } from "@hulianui/ui"
   <SoftAurora className="absolute inset-0" />
 </div>
 
-// Wallpaper level: low speed · off interaction · bottom · self-titled fallback
+// Slow, non-interactive backdrop with custom fallback content
 <SoftAurora
   speed={0.3}
   bandHeight={0.35}
@@ -69,8 +69,8 @@ import { SoftAurora } from "@hulianui/ui"
 
 - WebGL requires client rendering; the component already declares `"use client"` and can be placed beneath a server-rendered page boundary.
 - If it does not have `inset-0`, it must be positioned with className (`absolute inset-0` in the example); the parent container must have positioning + size + `overflow-hidden`.
-- `color1/color2` can be parsed off-screen, and the `var(--color-chart-*)` token can be directly eaten; bare `var(--primary)` cannot be parsed, see [[hulian-token-color-var-needs-color-prefix]].
-- reduced-motion / downgrade static gradients and stack them without WebGL `fallback`, don’t treat flow as key information.
+- `color1` and `color2` are parsed through an off-screen canvas. Theme variables such as `var(--color-chart-1)` work; bare values such as `var(--primary)` do not. See [[hulian-token-color-var-needs-color-prefix]].
+- Reduced-motion and non-WebGL environments use static gradients plus `fallback`; do not make motion essential to understanding the content.
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)

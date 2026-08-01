@@ -10,11 +10,11 @@ status: enriched
 
 # LightPillar
 
-> Volumetric light column · WebGL background · Accumulated glow along the y-axis raymarch + multi-layer wave noise + top and bottom two-color vertical gradient (ogl·token adaptive·reduced-motion degradation) · decoration/backdrop · #animated #webgl
+> Volumetric light pillar · Y-axis raymarching accumulates glow through layered wave noise and a two-color vertical gradient · OGL/WebGL, theme-aware tokens, and a reduced-motion fallback · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
-Used when a single top-to-bottom gradient volumetric light column is needed as the focus of the centered hero. For random flashing arcs/auroras use [Lightning](../lightning/lightning.md); for radial multiple beams use [LightRays](../light-rays/light-rays.md); for falling beams use [Lightfall](../lightfall/lightfall.md).
+Use it as a single top-to-bottom volumetric focal light in a centered hero. Choose [Lightning](../lightning/lightning.md) for flashing arcs, [LightRays](../light-rays/light-rays.md) for radial beams, or [Lightfall](../lightfall/lightfall.md) for falling streaks.
 
 ## Import
 ```ts
@@ -27,10 +27,10 @@ import { LightPillar } from "@hulianui/ui"
 |------|------|------|------|
 | topColor | `string` | `var(--color-chart-2)` | Top color of light beam, any CSS color, default token light and dark adaptive |
 | bottomColor | `string` | `var(--color-chart-1)` | The color at the bottom of the light beam, mixed with the top color along the y-axis gradient |
-| intensity | `number` | `1` | Overall brightness coefficient, the larger, the brighter |
+| intensity | `number` | `1` | Overall brightness multiplier |
 | rotationSpeed | `number` | `0.3` | Rotation speed factor, while driving time advancement, 0=almost stationary |
 | glowAmount | `number` | `0.005` | Glow intensity (raymarch cumulative gain), recommended 0.001–0.02 |
-| pillarWidth | `number` | `3` | Light beam thickness (world radius), the smaller it is, the finer it is like a laser |
+| pillarWidth | `number` | `3` | Beam radius in world units; lower values create a thinner, laser-like column |
 | pillarHeight | `number` | `0.4` | Height factor; higher values make the vertical bands denser |
 | noiseIntensity | `number` | `0.5` | Particle noise intensity, 0=pure and no particles |
 | pillarRotation | `number` | `0` | The overall tilt angle of the light beam (degrees), example 30 = obliquely irradiated to one side |

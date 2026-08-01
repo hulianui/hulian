@@ -25,8 +25,8 @@ import { GlassSurface } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| width | `number ｜ string` | `200` | Width, number is treated as px, string is passed through as it is |
-| height | `number ｜ string` | `80` | Height, number is treated as px, string is passed through as it is |
+| width | `number \| string` | `200` | Width, number is treated as px, string is passed through as it is |
+| height | `number \| string` | `80` | Height, number is treated as px, string is passed through as it is |
 | borderRadius | `number` | `20` | Fillet radius px, acting on the inner rectangle of the container and displacement map at the same time |
 | borderWidth | `number` | `0.07` | Edge highlight band width coefficient 0~1 (relatively short side), the larger the wider the refraction |
 | brightness | `number` | `50` | Displacement map internal rectangular brightness (HSL's L, 0~100), control glass thickness texture |
@@ -39,7 +39,7 @@ import { GlassSurface } from "@hulianui/ui"
 | redOffset | `number` | `0` | The extra displacement (color difference) of the red channel relative to distortionScale |
 | greenOffset | `number` | `10` | Green channel additional displacement (color difference) |
 | blueOffset | `number` | `20` | Blue channel additional displacement (color difference) |
-| xChannel | `GlassChannel` | `"R"` | X-direction offset access channel (`"R"｜"G"｜"B"｜"A"`) |
+| xChannel | `GlassChannel` | `"R"` | X-direction offset access channel (`"R"\|"G"\|"B"\|"A"`) |
 | yChannel | `GlassChannel` | `"G"` | Y-direction offset access channel |
 | mixBlendMode | `CSSProperties["mixBlendMode"]` | `"difference"` | Red/blue gradient overlay blending mode in the displacement map (determines the refraction texture shape) |
 | className | `string` | — | Root container className |

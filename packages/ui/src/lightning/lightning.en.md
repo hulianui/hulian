@@ -54,7 +54,7 @@ import { Lightning } from "@hulianui/ui"
 ## Usage Guidelines
 
 - Choose one of `color` and `hue`: if `color` is passed, `hue` will be invalid. For token adaptation, `color="var(--color-chart-1)"` is preferred.
-- ogl/WebGL client only; SSR/no WebGL has fallback (token gradient), and is also degraded under reduced-motion.
+- OGL/WebGL renders on the client; SSR, reduced motion, and unavailable WebGL use the token-gradient fallback.
 - `color` must use the `--color-` prefix token when passing CSS variables. The bare `var(--primary)` shader does not parse, see [[hulian-token-color-var-needs-color-prefix]].
 - Fullscreen background layers in a non-cascading context parent of an opaque background may be obscured by the parent background, see [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
 

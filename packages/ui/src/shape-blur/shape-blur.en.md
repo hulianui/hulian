@@ -25,7 +25,7 @@ import { ShapeBlur } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variation | `"round-rect"｜"circle-fill"｜"circle-stroke"｜"triangle"` | `"round-rect"` | Shape presets (rounded rectangle stroke/solid circle/ring stroke/triangle fill) |
+| variation | `"round-rect"\|"circle-fill"\|"circle-stroke"\|"triangle"` | `"round-rect"` | Shape presets (rounded rectangle stroke/solid circle/ring stroke/triangle fill) |
 | shapeSize | `number` | `1.2` | Overall shape scale mapped to the GLSL `u_shapeSize` uniform |
 | roundness | `number` | `0.4` | Rounding degree, only round-rect takes effect, 0=right angle |
 | borderSize | `number` | `0.05` | Stroke width, only stroke type (round-rect/circle-stroke) takes effect |

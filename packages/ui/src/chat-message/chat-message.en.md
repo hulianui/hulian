@@ -14,7 +14,7 @@ status: enriched
 
 ## When to Use
 
-Render a single dialogue bubble (user/assistant/system notification). The scrolling stack of multiple bubbles is given to [Conversation](../conversation/conversation.md); the operation button under the bubble is put into the `actions` slot using MessageActions.
+Render one user or assistant message, or a centered system notice. Use [Conversation](../conversation/conversation.md) for a scrolling message history and place MessageActions in the `actions` slot for controls below the bubble.
 
 ## Import
 ```ts
@@ -27,15 +27,15 @@ Inherited from `Omit<HTMLAttributes<HTMLDivElement>, "title">`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| role * | `"user" ｜ "assistant" ｜ "system"` | `"assistant"`(showcase) | user right-aligned (primary bottom) / assistant left-aligned (surface bottom) / system centered weakening notice |
-| loading | `boolean` | `false` | Loading state: Text position displays TypingDots (agent is being generated) |
-| status | `"sending" ｜ "sent" ｜ "read"` | — | User-only receipt: spinner with `"\u53d1\u9001\u4e2d"` (Sending), one check with `"\u5df2\u9001\u8fbe"` (Delivered), or two blue checks with `"\u5df2\u8bfb"` (Read) as the built-in `aria-label` |
+| role * | `"user" \| "assistant" \| "system"` | `"assistant"` (showcase) | User messages are right-aligned on a primary background, assistant messages are left-aligned on a surface background, and system notices are centered and muted |
+| loading | `boolean` | `false` | Replaces the message body with TypingDots while the assistant response is being generated |
+| status | `"sending" \| "sent" \| "read"` | — | User-only receipt: spinner with `"\u53d1\u9001\u4e2d"` (Sending), one check with `"\u5df2\u9001\u8fbe"` (Delivered), or two blue checks with `"\u5df2\u8bfb"` (Read) as the built-in `aria-label` |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Text; markdown is recommended to include `<Prose/>` in the outer layer, and the plain text can be transferred directly |
+| children | `ReactNode` | Message body; pass plain text directly or wrap rendered Markdown in `<Prose />` |
 | avatar | `ReactNode` | Avatar slot, typically a Hulian `<Avatar/>`; omitted avatars use `"\u6211"` (Me) for `user` or `"AI"` for `assistant`, while system messages render no avatar |
 | name | `ReactNode` | Sender’s name (above the text) |
 | timestamp | `ReactNode` | Timestamp (right side of name, weakened color) |
@@ -52,7 +52,7 @@ Help me rewrite the homepage to be 100% dogfood
 
 ## Usage Guidelines
 
-- `status` read receipts are only rendered in `role="user"` (right bubble) and are not displayed when passed to assistant/system.
+- `status` receipts render only for `role="user"`; assistant and system messages ignore them.
 - When `loading` is true, the text is replaced by TypingDots. `children` is only a placeholder and not displayed.
 
 ## Related

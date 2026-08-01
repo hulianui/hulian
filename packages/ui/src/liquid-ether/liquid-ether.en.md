@@ -27,7 +27,7 @@ import { LiquidEther } from "@hulianui/ui"
 |------|------|------|------|
 | colors | `string[]` | `["var(--color-chart-1)","var(--color-chart-2)","var(--color-chart-4)"]` | Palette, at least 1 color (less than 2 will automatically copy both ends); any CSS color string, switch with the light and dark theme |
 | speed | `number` | `0.5` | Flow rate factor; recommended 0.2–1.5 |
-| scale | `number` | `1` | Liquid clump size; the smaller, the more finely divided the clumps, and the larger, the more fused it is. Recommendation 0.6–2 |
+| scale | `number` | `1` | Liquid-blob scale; lower values create smaller separated forms and higher values merge them, with 0.6–2 recommended |
 | mouseForce | `number` | `1` | Pointer disturbance intensity; 0 = ignore pointer pure drift. Suggestions 0–2 |
 | autoDemo | `boolean` | `true` | The virtual cursor automatically cruises and stirs when there is no interaction; when it is turned off, it stays still and waits for the real pointer |
 | opacity | `number` | `1` | Overall opacity 0–1; commonly used on stacked content 0.6–0.85 to reduce visual weight |
@@ -43,14 +43,14 @@ import { LiquidEther } from "@hulianui/ui"
 ## Examples
 
 ```tsx
-//Default: automatic patrol liquid color gamut (parent container must be relative + overflow-hidden)
+// Automatic demo motion inside a positioned, clipped parent
 <div className="relative h-64 overflow-hidden rounded-xl">
   <LiquidEther />
 </div>
 ```
 
 ```tsx
-// Wallpaper level: slow + translucent stack, content stacked at a higher z
+// Slow translucent backdrop with foreground content above it
 <div className="relative h-64 overflow-hidden rounded-xl">
   <LiquidEther speed={0.3} scale={1.2} opacity={0.7} />
   <div className="pointer-events-none relative z-10 flex h-full items-center justify-center text-white">

@@ -51,7 +51,7 @@ import { ShineBorder } from "@hulianui/ui"
 ## Usage Guidelines
 
 - Must be placed in the `position:relative` container, otherwise the border will be positioned incorrectly.
-- `shineColor` feeding token needs to be prefixed with `--color-`, and bare `var(--primary)` will not be parsed - see [[hulian-token-color-var-needs-color-prefix]].
+- `shineColor` feeding token needs to be prefixed with `--color-`, and bare `var(--primary)` does not resolve - see [[hulian-token-color-var-needs-color-prefix]].
 - Pure CSS implementation, can be used directly in RSC, no need for `"use client"`.
 
 ## Related

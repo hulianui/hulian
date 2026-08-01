@@ -25,7 +25,7 @@ import { OrbitImages } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| shape | `"ellipse"｜"circle"｜"square"｜"rectangle"｜"triangle"｜"star"｜"heart"｜"infinity"｜"wave"｜"custom"` | `"ellipse"` | Track preset; set `customPath` when using `"custom"` |
+| shape | `"ellipse"\|"circle"\|"square"\|"rectangle"\|"triangle"\|"star"\|"heart"\|"infinity"\|"wave"\|"custom"` | `"ellipse"` | Track preset; set `customPath` when using `"custom"` |
 | customPath | `string` | — | SVG path d with shape="custom" (coordinates based on baseWidth square canvas) |
 | baseWidth | `number` | `1400` | Design canvas side length (px·square viewBox), only affects path geometric proportions |
 | radiusX | `number` | `700` | Horizontal radius of ellipse/rectangle/infinity/wave (px·based on baseWidth) |
@@ -36,7 +36,7 @@ import { OrbitImages } from "@hulianui/ui"
 | rotation | `number` | `-8` | Orbital inclination angle (deg), the child rotates in the opposite direction to maintain uprightness |
 | duration | `number` | `40` | The time it takes to complete a lap (seconds), the larger it is, the slower it is |
 | itemSize | `number` | `64` | Single child side length (px·CSS pixels) |
-| direction | `"normal"｜"reverse"` | `"normal"` | Flow direction |
+| direction | `"normal"\|"reverse"` | `"normal"` | Flow direction |
 | fill | `boolean` | `true` | Distributes items evenly when true; starts all items from the same point when false |
 | showPath | `boolean` | `false` | Trace track path (debug/decoration) |
 | pathColor | `string` | `"var(--color-border)"` | Track stroke color |

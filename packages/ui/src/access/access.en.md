@@ -25,9 +25,9 @@ import { Access } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| permission | `string ｜ string[]` | — | Required permission or permissions; mutually exclusive with `accessible`, which takes precedence |
-| mode | `"all" ｜ "any"` | `"all"` | Matching mode for an array: require every permission with `all`, or at least one with `any`; ignored for a single string |
-| accessible | `boolean ｜ ((access: AccessContextValue) => boolean)` | — | Custom access decision; takes precedence over `permission` |
+| permission | `string \| string[]` | — | Required permission or permissions; mutually exclusive with `accessible`, which takes precedence |
+| mode | `"all" \| "any"` | `"all"` | Matching mode for an array: require every permission with `all`, or at least one with `any`; ignored for a single string |
+| accessible | `boolean \| ((access: AccessContextValue) => boolean)` | — | Custom access decision; takes precedence over `permission` |
 
 ## Slots
 

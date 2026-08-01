@@ -23,7 +23,7 @@ import { Dossier } from "@hulianui/ui"
 
 ## Props
 
-`DossierProps`：
+`DossierProps`:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
@@ -38,14 +38,14 @@ import { Dossier } from "@hulianui/ui"
 | title | `ReactNode` | Header title (default `"\u6848\u5377"` ("Case File")) |
 | progress | `ReactNode` | Header progress; defaults to `\u5df2\u5f52\u6863 ${done}/${required.length}` ("Archived n/m"), excluding optional sections from the denominator |
 
-`DossierSection`：
+`DossierSection`:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
 | key * | `string` | — | Domain unique identifier |
 | label * | `ReactNode` | — | Domain name |
-| status | `"empty" ｜ "partial" ｜ "done"` | `"empty"` | Empty (hollow ring) / Half filled / Complete (tick) |
-| optional | `boolean` | `false` | Optional fields: not included in the progress denominator, weakened and marked "optional" when empty |
+| status | `"empty" \| "partial" \| "done"` | `"empty"` | Empty (hollow ring) / Half filled / Complete (tick) |
+| optional | `boolean` | `false` | Optional section: excluded from the progress denominator and, when empty, dimmed and marked `"\u53ef\u9009"` ("Optional") |
 | summary | `ReactNode` | — | Summary of archived content (one or two lines) |
 | active | `boolean` | `false` | The domain currently being collected, highlighted |
 
@@ -63,7 +63,7 @@ import { Dossier } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- Optional sections are excluded from the automatic progress denominator. Leave `optional` false or unset when a section must count.
+- Optional sections are excluded from the automatic progress denominator. An empty optional section displays `"\u53ef\u9009"` ("Optional"); leave `optional` false or unset when a section must count.
 - `sections` is data-driven. Advance progress by updating the array in the consumer and re-rendering. Use `bare` when embedding Dossier inside another card.
 
 ## Related

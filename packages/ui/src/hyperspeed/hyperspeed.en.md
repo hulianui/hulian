@@ -10,7 +10,7 @@ status: enriched
 
 # Hyperspeed
 
-> Jump tunnel · Hyperspace jump warp tunnel background · Two-color car light strip radiating from the vanishing point rushing towards the observer + turbulent distortion + procedural glow (ogl single shader·zero new dependency·token·reduced-motion static degradation) · decoration/backdrop · #animated #webgl
+> Jump tunnel · Hyperspace jump warp tunnel background · Two-color car light strip radiating from the vanishing point rushing towards the observer + turbulent distortion + procedural glow (ogl single shader·zero new dependency·token·static reduced-motion fallback) · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
@@ -38,7 +38,7 @@ import { Hyperspeed } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | reduced-motion / content rendered in the static bottom layer without WebGL |
+| fallback | `ReactNode` | Content rendered with the static fallback in reduced-motion or non-WebGL environments |
 
 ## Examples
 ```tsx

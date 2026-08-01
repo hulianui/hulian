@@ -10,7 +10,7 @@ status: enriched
 
 # Terminal
 
-> Terminal box · mac window shell + command line reveal line by line (motion + tone) + syntax coloring (command name/flag/URL/number) · mockups/window · #animated
+> Terminal window · macOS-style shell with staggered line reveal, semantic tones, and syntax coloring for commands, flags, URLs, numbers, and quoted strings · mockups/window · #animated
 
 ## When to Use
 
@@ -28,7 +28,7 @@ import { Terminal } from "@hulianui/ui"
 | lines* | `TerminalLine[]` | — | Array of rows to be revealed row by row (see table below). |
 | lineDelay | `number` | `0.4` | Delay between adjacent lines in seconds |
 | title | `string` | `"bash"` | Title-bar text |
-| highlight | `boolean` | `true` | Command line/output line syntax coloring (command name/--flag/URL/number/quote string removal --code-* token); only effective for command/muted lines where text is a string, the tone color of the entire line such as success is not separated. |
+| highlight | `boolean` | `true` | Apply syntax colors to commands, flags, URLs, numbers, and quoted strings. This affects string-valued `command` and `muted` lines; ReactNode and `success` lines keep a single tone color. |
 | className | `string` | — | Additional class name for the root container |
 
 `TerminalLine`:
@@ -53,7 +53,7 @@ import { Terminal } from "@hulianui/ui"
 ## Usage Guidelines
 
 - Syntax coloring only splits words for lines where `text` is a string and tone is command/muted; the entire line where ReactNode or success is passed is colored with tone, and no secondary coloring is performed.
-- The line-by-line reveal is a motion client animation, and the host file needs to be `"use client"` (declared by the component itself).
+- The staggered reveal is a client-side animation. Terminal already declares its own `"use client"` boundary.
 
 ## Related
 [Safari](../safari/safari.md) · [Chrome](../chrome/chrome.md) · [iPhone](../iphone/iphone.md) · [Android](../android/android.md) · [Tablet](../tablet/tablet.md) · [Watch](../watch/watch.md)

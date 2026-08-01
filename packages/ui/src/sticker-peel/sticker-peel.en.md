@@ -14,7 +14,7 @@ status: enriched
 
 ## When to Use
 
-Use it to decorate a picture by turning it into a "stick" that can be rolled up and dragged in the parent container. It is suitable for interesting logos, medals, and event stickers on marketing pages/portfolios. It is a special skeuomorphism method for pictures; if you want to add luminous strokes or sweeps to any container, use [GlareHover](../glare-hover/glare-hover.md)/[ShineBorder](../shine-border/shine-border.md); if you want a partial magnifying glass for the picture, use [Lens](../lens/lens.md).
+Use it to present an image as a peelable, draggable sticker inside its parent. It suits logos, badges, and campaign artwork on marketing pages or portfolios. Choose [GlareHover](../glare-hover/glare-hover.md) or [ShineBorder](../shine-border/shine-border.md) for highlights on arbitrary containers, and [Lens](../lens/lens.md) for local image magnification.
 
 ## Import
 ```ts
@@ -41,7 +41,7 @@ import { StickerPeel } from "@hulianui/ui"
 
 ## Examples
 ```tsx
-//Default: lift + drag
+// Default peel and drag behavior
 <StickerPeel imageSrc="/sticker.svg" width={150} rotate={14} />
 
 // Large curling + strong highlights + locked and cannot be dragged
@@ -57,9 +57,9 @@ import { StickerPeel } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- The parent container needs to be `position: relative` + `overflow-hidden`, otherwise the dragging boundary will not be calculated accurately and the sticker will run out of the frame.
+- Give the parent `position: relative` and `overflow: hidden` so drag bounds are measured correctly and the sticker stays inside the frame.
 - `draggable` is enabled by default and will intercept PointerEvents; if the sticker is placed in a clickable/scrollable area and gesture conflicts need to be evaluated, turn it off as needed.
-- The curling/highlight dynamic effect is degraded under reduced-motion, but the sticker body is still visible.
+- Reduced-motion disables the peel and highlight animation while preserving the sticker image.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

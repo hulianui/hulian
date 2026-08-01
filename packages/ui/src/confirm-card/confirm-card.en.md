@@ -25,7 +25,7 @@ import { ConfirmCard } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `ConfirmCardItem[]` | — | Field summary array, each item `{ label, value }`, rendered as dl |
+| items* | `ConfirmCardItem[]` | — | Field summaries rendered as a description list; each item is `{ label, value }` |
 | acted | `"confirmed" \| "edited" \| null` | `null` | Controlled result that locks both actions and marks the selected outcome; renders `"\u5df2\u786e\u8ba4"` (Confirmed) or `"\u4fee\u6539\u4e2d"` (Editing) |
 | className | `string` | — | Container additional classes |
 
@@ -33,28 +33,28 @@ import { ConfirmCard } from "@hulianui/ui"
 
 | Event | Type | Description |
 |------|------|------|
-| onConfirm | `() => void` | Click to confirm the callback |
-| onEdit | `() => void` | Click to modify callback; **If not provided, the modification button will not be rendered** (single action scene) |
+| onConfirm | `() => void` | Called when the user confirms the information |
+| onEdit | `() => void` | Called when the user requests changes; omitting it also removes the edit button for single-action flows |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
 | title | `ReactNode` | Card header title (default `"\u8bf7\u786e\u8ba4\u4ee5\u4e0b\u4fe1\u606f"` ("Please confirm the following information")) |
-| confirmText | `ReactNode` | Confirm button text (default `"\u786e\u8ba4\u65e0\u8bef"` ("Confirmed")) |
-| editText | `ReactNode` | Modify button text (default `"\u9700\u8981\u4fee\u6539"` ("needs modification")) |
+| confirmText | `ReactNode` | Confirm-button content; defaults to `"\u786e\u8ba4\u65e0\u8bef"` ("Confirm as correct") |
+| editText | `ReactNode` | Edit-button content; defaults to `"\u9700\u8981\u4fee\u6539"` ("Needs changes") |
 
-`ConfirmCardItem`：`{ label: ReactNode; value: ReactNode }`
+`ConfirmCardItem`: `{ label: ReactNode; value: ReactNode }`
 
 ## Examples
 ```tsx
 const [acted, setActed] = useState<"confirmed" | "edited" | null>(null);
 
 <ConfirmCard
-title="Case File Summary · Please confirm"
+  title="Case File Summary · Please confirm"
   items={[
-{ label: "Basic information", value: "Lin Wanqing · 138-0000-0000" },
-{ label: "Job Intention", value: "Yunqi Technology·President's Personal Secretary" },
+    { label: "Basic information", value: "Lin Wanqing · 138-0000-0000" },
+    { label: "Job intention", value: "Yunqi Technology · Executive assistant" },
   ]}
   acted={acted}
   onConfirm={() => setActed("confirmed")}

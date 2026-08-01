@@ -10,7 +10,7 @@ status: enriched
 
 # GradientBlinds
 
-> Gradient blinds · WebGL background · Multi-color station horizontal gradient + vertical strip shading modulation + pointer-following spotlight + grain noise (rotatable/mirror/distorted) · Default chart token (ogl·reduced-motion static blind degradation) · decoration/backdrop · #animated #webgl
+> Gradient blinds · WebGL backdrop with a multicolor horizontal gradient, vertical-slat shading, pointer-following spotlight, and grain · Rotatable, mirrored, distortion-aware, theme-token driven, and equipped with a static reduced-motion fallback · decoration/backdrop · #animated #webgl
 
 ## When to Use
 

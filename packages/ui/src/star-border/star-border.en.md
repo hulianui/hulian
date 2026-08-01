@@ -51,7 +51,7 @@ import { StarBorder } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- When customizing `color` token, be sure to bring the `--color-` prefix (such as `var(--color-chart-3)`). The bare `var(--primary)` will not be parsed under Tailwind v4. See [[hulian-token-color-var-needs-color-prefix]].
+- When customizing `color` token, be sure to bring the `--color-` prefix (such as `var(--color-chart-3)`). The bare `var(--primary)` does not resolve under Tailwind v4. See [[hulian-token-color-var-needs-color-prefix]].
 - The reduced-motion light band automatically stops (does not move but the stroke is still there), no additional processing is required.
 
 ## Related

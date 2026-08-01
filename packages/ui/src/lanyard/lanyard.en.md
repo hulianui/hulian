@@ -62,7 +62,7 @@ subtitle="Drag and let go to see the rest of the swing"
 ## Usage Guidelines
 
 - The work badges are hung by absolute positioning. The root container must be `relative overflow-hidden` and have a clear height, otherwise the work badges will overflow or be positioned incorrectly (showcases must always be `className="absolute inset-0"` with a fixed height stage).
-- `ropeColor` Feed SVG stroke, the token must be prefixed with `--color-`, and bare `var(--primary)` will not be parsed. See [[hulian-token-color-var-needs-color-prefix]].
+- `ropeColor` Feed SVG stroke, the token must be prefixed with `--color-`, and bare `var(--primary)` does not resolve. See [[hulian-token-color-var-needs-color-prefix]].
 - Client component (PointerEvents + RAF physical loop), no swing under SSR; under reduced-motion, let go and return to position immediately, without any residual swing.
 
 ## Related

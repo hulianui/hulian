@@ -14,7 +14,7 @@ status: enriched
 
 ## When to Use
 
-It is folded to show the agent's chain-of-thought reasoning process. The circle is highlighted during thinking and can be folded after completion. Use [AgentPlan](../agent-plan/agent-plan.md) for a structured list of steps, [ToolCall](../tool-call/tool-call.md) for a single tool call; here is free-text reasoning.
+Use it to disclose a concise, user-facing reasoning summary or progress narrative. The header is highlighted while work is in progress and can collapse after completion. Use [AgentPlan](../agent-plan/agent-plan.md) for structured steps or [ToolCall](../tool-call/tool-call.md) for one tool invocation.
 
 ## Import
 ```ts
@@ -25,7 +25,7 @@ import { ThinkingBlock } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| thinking | `boolean` | `false` | Progressive state: title circle + highlight flowing, and expanded by default (agent is reasoning) |
+| thinking | `boolean` | `false` | Active state with a spinner and highlight; also supplies the default expanded state |
 | defaultOpen | `boolean` | With thinking | Uncontrolled initial expansion state |
 | open | `boolean` | — | Controlled expansion state |
 | className | `string` | — | Container class name |
@@ -34,7 +34,7 @@ import { ThinkingBlock } from "@hulianui/ui"
 
 | Event | Type | Description |
 |------|------|------|
-| onOpenChange | `(open: boolean) => void` | Expanded state change callback |
+| onOpenChange | `(open: boolean) => void` | Called when the expanded state changes |
 
 ## Slots
 
@@ -42,19 +42,19 @@ import { ThinkingBlock } from "@hulianui/ui"
 |------|------|------|
 | title | `ReactNode` | Header title; defaults to `\u601d\u8003\u8fc7\u7a0b` ("Thinking process") |
 | duration | `ReactNode` | Muted duration label beside the title, such as "Thought for 3s" |
-| children | `ReactNode` | Reasoning text (markdown recommended outsourcing `<Prose/>`) |
+| children | `ReactNode` | Reasoning or progress content; wrap rendered Markdown in `<Prose />` |
 
 ## Examples
 ```tsx
 <ThinkingBlock duration="Thought for 3s">{reasoning}</ThinkingBlock>
 
-// Inference: circle + highlight + default expansion
+// Active reasoning state with spinner, highlight, and default expansion
 <ThinkingBlock thinking>{reasoning}</ThinkingBlock>
 ```
 
 ## Usage Guidelines
 
-- Choose one of controlled/uncontrolled: `open` must be configured with `onOpenChange` and managed by yourself; you only want to use `defaultOpen` for the initial value.
+- Choose either controlled or uncontrolled state. Pair `open` with `onOpenChange`; use `defaultOpen` only to set the initial uncontrolled value.
 - When `defaultOpen`/`open` is not passed, the expanded state defaults to `thinking` (expanded during thinking, collapsed after completion).
 
 ## Related

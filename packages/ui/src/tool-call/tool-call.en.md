@@ -25,7 +25,7 @@ import { ToolCall } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| status | `"pending" ｜ "running" ｜ "success" ｜ "error"` | `"success"` | Status label: `"\u7b49\u5f85"` (Waiting), `"\u8fd0\u884c\u4e2d"` (Running), `"\u5b8c\u6210"` (Complete), or `"\u5931\u8d25"` (Failed) |
+| status | `"pending" \| "running" \| "success" \| "error"` | `"success"` | Status label: `"\u7b49\u5f85"` (Waiting), `"\u8fd0\u884c\u4e2d"` (Running), `"\u5b8c\u6210"` (Complete), or `"\u5931\u8d25"` (Failed) |
 | defaultOpen | `boolean` | — | Uncontrolled initial expansion state |
 | open | `boolean` | — | Controlled expansion state |
 | className | `string` | — | Container class name |

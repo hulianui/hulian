@@ -71,7 +71,7 @@ Extends `<div>` attributes, with the native `color` attribute omitted.
 ## Usage Guidelines
 
 - The luminous border relies on dark background contrast, and the effect is significantly weaker when placed on a light background; use `backgroundColor` to maintain a dark background.
-- `glowColor`/`colors` feed token must be prefixed with `--color-` (Tailwind v4 real name), and bare `var(--primary)` will not be parsed. See [[hulian-token-color-var-needs-color-prefix]].
+- `glowColor`/`colors` feed token must be prefixed with `--color-` (Tailwind v4 real name), and bare `var(--primary)` does not resolve. See [[hulian-token-color-var-needs-color-prefix]].
 - Both pointer tracking and `animated` sweeping are affected by reduced-motion: users prefer to automatically skip sweeping when reducing the animation (the DOM remains unchanged).
 
 ## Related

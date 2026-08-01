@@ -61,7 +61,7 @@ Strong suction (almost sticking to the pointer):
 ## Usage Guidelines
 
 - `magnetStrength` is a divisor, not a multiplier: the smaller the value, the stronger the suction force (=1 almost sticks to the pointer), don’t understand it the other way around.
-- The displacement under reduced-motion will be clamped and the interaction will be degraded. Do not rely on magnetic suction for key functions.
+- Reduced-motion limits displacement and keeps the interaction subtle. Do not rely on magnetic movement for essential actions.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

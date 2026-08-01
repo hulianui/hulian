@@ -25,12 +25,12 @@ import { ShapeGrid } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| direction | `"right"｜"left"｜"up"｜"down"｜"diagonal"` | `"right"` | Grid scroll direction |
+| direction | `"right"\|"left"\|"up"\|"down"\|"diagonal"` | `"right"` | Grid scroll direction |
 | speed | `number` | `1` | Scrolling speed (pixels/frame, internal clamp lower limit 0.1); forced stillness under reduced-motion |
 | borderColor | `string` | `var(--color-border)` | Cell edge color, any CSS color string |
 | squareSize | `number` | `40` | Unit side length (px), also determines the mesh density |
 | hoverFillColor | `string` | `var(--color-primary)` | Cell fill color on hover, fade in/out easing |
-| shape | `"square"｜"circle"｜"triangle"｜"hexagon"` | `"square"` | Element shape |
+| shape | `"square"\|"circle"\|"triangle"\|"hexagon"` | `"square"` | Element shape |
 | hoverTrailAmount | `number` | `0` | Hover trailing length (how many historical units are retained to fade out), 0 = no trailing |
 | className | `string` | — | Passthrough to root canvas |
 | style | `CSSProperties` | — | Inline styles passed through to the root canvas |

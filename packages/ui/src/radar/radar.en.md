@@ -63,7 +63,7 @@ import { Radar } from "@hulianui/ui"
 
 - Requires client-side rendering (WebGL/ogl), the component comes with `"use client"`; when placing it into the RSC page, make sure it is hung in the client subtree or dynamic import.
 - The container needs to have its own positioning + `overflow-hidden`, and the component will cover the parent with `absolute inset-0`; the radar disk will not be visible when the parent has no size.
-- reduced-motion / no WebGL environment automatically degrades to static `fallback`, do not rely on scanning arm animation to express key information.
+- Reduced-motion and non-WebGL environments render the static `fallback`; do not use the scanning arm to communicate essential information.
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)

@@ -25,8 +25,8 @@ import { ModelViewer } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| width | `number ｜ string` | `"100%"` | Stage width, constrained by outer container |
-| height | `number ｜ string` | `360` | Stage height |
+| width | `number \| string` | `"100%"` | Stage width, constrained by outer container |
+| height | `number \| string` | `360` | Stage height |
 | defaultRotationY | `number` | `-20` | Initial yaw angle (around Y, °), accumulated when dragging |
 | defaultRotationX | `number` | `12` | Initial pitch angle (around X, °), accumulated when dragging |
 | perspective | `number` | `1000` | CSS perspective depth in pixels; lower values create more exaggerated perspective |

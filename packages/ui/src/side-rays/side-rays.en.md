@@ -30,7 +30,7 @@ import { SideRays } from "@hulianui/ui"
 | rayColor2 | `string` | `var(--color-chart-2)` | Auxiliary beam color, superimposed with the main color to produce a mixed color |
 | intensity | `number` | `2` | Overall brightness intensity, too high will easily overexpose |
 | spread | `number` | `2` | Beam opening angle (sector width), the smaller it is, the more it will gather together |
-| origin | `"top-left"｜"top-right"｜"bottom-left"｜"bottom-right"` | `"top-right"` | Beam divergence corner starting point |
+| origin | `"top-left"\|"top-right"\|"bottom-left"\|"bottom-right"` | `"top-right"` | Beam divergence corner starting point |
 | tilt | `number` | `0` | Overall tilt angle of the beam (degrees), rotating sector around the light source point |
 | saturation | `number` | `1.5` | Saturation, 1=primary color / >1 enhance color / 0=remove color |
 | blend | `number` | `0.75` | Two-bundle color mixing ratio (0–1), 0=primary color only / 1=secondary color only |

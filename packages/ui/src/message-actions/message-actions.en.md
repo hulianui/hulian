@@ -10,7 +10,7 @@ status: enriched
 
 # MessageActions
 
-> Message action bar · Copy with clipboard feedback, regenerate, like, and dislike · Renders controls on demand · Fits the `ChatMessage` actions slot · ai/assist
+> Message action bar · On-demand copy, regenerate, like, and dislike controls with clipboard feedback · Designed for the `ChatMessage` actions slot · ai/assist
 
 ## When to Use
 
@@ -33,16 +33,16 @@ Inherits `HTMLAttributes<HTMLDivElement>`, additionally:
 
 | Event | Type | Description |
 |------|------|------|
-| onCopy | `() => void` | Post-copy callback (in parallel with the built-in clipboard) |
-| onRegenerate | `() => void` | Displays the regenerate button when provided |
-| onLike | `() => void` | If provided, the like button will be displayed |
-| onDislike | `() => void` | Displays the dislike button when provided |
+| onCopy | `() => void` | Called after the built-in clipboard action; providing it also displays the copy button |
+| onRegenerate | `() => void` | Called when regenerate is selected; providing it displays the button |
+| onLike | `() => void` | Called when like is selected; providing it displays the button |
+| onDislike | `() => void` | Called when dislike is selected; providing it displays the button |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Add custom operation keys |
+| children | `ReactNode` | Additional custom action controls |
 
 ## Examples
 ```tsx

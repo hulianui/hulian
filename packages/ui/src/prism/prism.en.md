@@ -10,7 +10,7 @@ status: enriched
 
 # Prism
 
-> Prismatic light splitting · WebGL background · ray-march octahedral SDF refracts rainbow volumetric light + rotate/3drotate/hover three postures (ogl·theme hue adaptive·reduced-motion degradation) · decoration/backdrop · #animated #webgl
+> Prismatic refraction · An octahedral SDF raymarch refracts rainbow volumetric light with rotate, 3D-rotate, and pointer-hover modes · OGL/WebGL, theme-derived hue, and a reduced-motion fallback · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
@@ -33,13 +33,13 @@ import { Prism } from "@hulianui/ui"
 | noise | `number` | `0.5` | Grain noise intensity (film-like film grain); 0 = pure and grain-free |
 | transparent | `boolean` | `true` | When true, the canvas alpha shows through the background color, and automatically increases the saturation to make it more transparent |
 | scale | `number` | `3.6` | The overall zoom of the prism; the larger it is, the more it occupies the viewport |
-| hueShift | `number` | Topic derivation (`--color-chart-1`) | Hue rotation (radians); explicit value passing will superimpose offset on the basis of automatic derivation |
+| hueShift | `number` | Derived from `--color-chart-1` | Hue rotation in radians; an explicit value is added to the theme-derived hue |
 | colorFrequency | `number` | `1` | Spectral color frequency; the larger, the denser the rainbow stripes, the smaller, the wider the color band |
 | hoverStrength | `number` | `2` | Following intensity in hover mode; the larger the value, the greater the tilt amplitude |
 | inertia | `number` | `0.05` | Hover mode inertia coefficient 0–1; the smaller it is, the "stickier" it is and the longer it will ease |
 | bloom | `number` | `1` | Flood overlay; multiplied by glow to amplify the overall brightness |
 | timeScale | `number` | `0.5` | Time scaling (overall animation speed); 0 = freeze to a static frame |
-| className | `string` | — | Passthrough to root container (or reduced-motion fallback div) |
+| className | `string` | — | Class name forwarded to the root container or reduced-motion fallback |
 
 ## Slots
 
@@ -50,7 +50,7 @@ import { Prism } from "@hulianui/ui"
 ## Examples
 
 ```tsx
-//Default: rotate breath swing + theme hue (parent container must be relative)
+// Rotating animation with a theme-derived hue
 <div className="relative h-64 overflow-hidden rounded-xl">
   <Prism />
   <div className="relative z-10 flex h-full items-center justify-center">
@@ -67,7 +67,7 @@ import { Prism } from "@hulianui/ui"
 ## Usage Guidelines
 
 - The component includes `absolute inset-0 z-0`. **The parent must be `relative`**, and overlay content must use `relative z-10`; otherwise the canvas can cover it. See [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
-- `animationType="hover"` follows the **global pointer** (not limited to the container), and only this mode hangs pointer monitoring; rotate/3drotate does not respond to the mouse.
+- `animationType="hover"` follows the **global pointer**, not just movement within the container. Only this mode installs pointer listeners; `rotate` and `3drotate` ignore pointer movement.
 - WebGL client component (`"use client"`); only fallback is rendered during the SSR phase.
 - `hueShift` is derived from `--color-chart-1`, the theme hue is analyzed by off-screen canvas, **token must be prefixed with `--color-`** [[oklch-css-var-color-must-parse-via-offscreen-canvas]].
 - Headless screenshots can capture a still or blank frame when rAF is throttled. Verify rotation on a real device or with Playwright measurements; see [[recharts-headless-screenshot-blank-clippath-animation-starved]].

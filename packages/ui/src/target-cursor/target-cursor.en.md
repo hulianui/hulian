@@ -48,7 +48,7 @@ import { TargetCursor } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- The `color` token must be prefixed with `--color-` (such as `var(--color-primary)`), and bare `var(--primary)` will not be parsed. See [[hulian-token-color-var-needs-color-prefix]].
+- The `color` token must be prefixed with `--color-` (such as `var(--color-primary)`), and bare `var(--primary)` does not resolve. See [[hulian-token-color-var-needs-color-prefix]].
 - Container scope requires the parent element to be a positioning context; if the parent element is `position: static`, the component will fill in `position: relative` in place and restore it when unloading - don't rely on the static positioning of the parent element itself.
 - `fullScreen` mode takes over the cursor of `document.body`, and only one instance should be placed on the entire page; only multiple instances can coexist in the container scope.
 - Monitoring the hanging window/container and hiding the system cursor are browser behaviors and must be run by the client (the component is marked `"use client"`).

@@ -37,7 +37,7 @@ import { GlassIcons } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | label* | `string` | — | hover/focus slides out the text and also acts as a button `aria-label` |
-| color | `string` | `"primary"` | Backside glow color, default name `primary｜blue｜purple｜red｜indigo｜orange｜green`, or any CSS color/gradient |
+| color | `string` | `"primary"` | Backside glow color, default name `primary\|blue\|purple\|red\|indigo\|orange\|green`, or any CSS color/gradient |
 | className | `string` | — | Transmit this button className |
 
 ### GlassIconItem · Events

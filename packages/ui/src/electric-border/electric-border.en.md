@@ -59,7 +59,7 @@ Try it now
 
 ## Usage Guidelines
 
-- When customizing `color`, be sure to bring the `--color-` prefix (such as `var(--color-chart-3)`). Feeding bare `var(--primary)` to SVG stroke will not be parsed, and the stroke will become black or disappear. See [[hulian-token-color-var-needs-color-prefix]].
+- When customizing `color`, be sure to bring the `--color-` prefix (such as `var(--color-chart-3)`). Feeding bare `var(--primary)` to SVG stroke does not resolve, and the stroke will become black or disappear. See [[hulian-token-color-var-needs-color-prefix]].
 - The stroked arc requires a dark background to be visible, and the glow is almost invisible on a light background.
 
 ## Related

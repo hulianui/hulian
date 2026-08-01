@@ -10,11 +10,11 @@ status: enriched
 
 # GhostCursor
 
-> Ghost trailing cursor · Ghost smoke trail following pointer · fbm noise smoke + ring framebuffer history trail + coast fade (ogl WebGL · de three.js · reduced-motion downgrade) · decoration/overlay-fx · #animated
+> Ghost cursor trail · FBM smoke follows the pointer through a ring-buffered position history and fades after movement stops · OGL/WebGL implementation without Three.js and with a reduced-motion fallback · decoration/overlay-fx · #animated
 
 ## When to Use
 
-As a WebGL smoke trailing layer covering the entire area, let the pointer drag out glowing smoke on the hero/card/landing page. To throw out a specific image for trailing use [ImageTrail](../image-trail/image-trail.md); this component is an abstract smoke light effect, more suitable for pure atmosphere decoration. It is `absolute inset-0` overlay, and the parent container must be `relative` + dark background to achieve the effect.
+Use it as a full-area smoke trail behind a hero, card, or landing-page section. Choose [ImageTrail](../image-trail/image-trail.md) when pointer movement should emit specific images; GhostCursor is an abstract atmospheric light effect. The component is an `absolute inset-0` overlay and reads best inside a relatively positioned dark container.
 
 ## Import
 ```ts
@@ -25,15 +25,15 @@ import { GhostCursor } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| trailLength | `number` | `32` | The number of historical frames retained in the tail. The larger the number, the longer the tail. The fragment overhead increases linearly. It is recommended to 16–64 |
+| trailLength | `number` | `32` | Number of historical pointer positions retained; higher values create a longer trail and increase fragment cost linearly, with 16–64 recommended |
 | inertia | `number` | `0.5` | Inertia from 0 to 1; values near 1 drift farther, while values near 0 track the pointer closely |
-| grainIntensity | `number` | `0.05` | Film grain intensity 0–0.3, superimposed noise; 0 = off |
-| brightness | `number` | `1.2` | Overall brightness gain, to compensate for the brightness loss after removing Bloom, recommended 0.8–2.0 |
-| color | `string` | `var(--color-chart-1)` | Main color of smoke, light and dark theme; any CSS color string can be used |
+| grainIntensity | `number` | `0.05` | Film-grain intensity from 0 to 0.3; 0 disables grain |
+| brightness | `number` | `1.2` | Overall brightness multiplier; 0.8–2.0 is recommended |
+| color | `string` | `var(--color-chart-1)` | Main smoke color; accepts any CSS color and defaults to a theme-aware token |
 | scale | `number` | `1` | Positive noise-radius factor; higher values spread the smoke and lower values concentrate it |
-| mixBlendMode | `CSSProperties["mixBlendMode"]` | `"screen"` | Canvas blending mode, use screen for dark background to overlay and emit light; light color background can be changed to multiply/normal |
-| className | `string` | — | Root container (absolute inset-0) additional className |
-| style | `CSSProperties` | — | Forward the root container inline style (such as zIndex) |
+| mixBlendMode | `CSSProperties["mixBlendMode"]` | `"screen"` | Canvas blend mode; `screen` creates light on dark backgrounds, while `multiply` or `normal` may suit light surfaces |
+| className | `string` | — | Additional class name for the `absolute inset-0` root |
+| style | `CSSProperties` | — | Inline styles forwarded to the root, such as `zIndex` |
 
 ## Examples
 ```tsx

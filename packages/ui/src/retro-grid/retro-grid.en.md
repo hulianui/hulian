@@ -44,7 +44,7 @@ import { RetroGrid } from "@hulianui/ui"
 ## Usage Guidelines
 
 - The inner `absolute inset-0` is parented and must be placed inside a `relative` (and usually `overflow-hidden`) positioning container.
-- Contains CSS scroll animation, with built-in `prefers-reduced-motion` degradation (the system stops scrolling when "Reduce Dynamic Effects" is turned on).
+- The CSS scrolling animation honors `prefers-reduced-motion` and stops when the system requests reduced motion.
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [Ripple](../ripple/ripple.md) · [Meteors](../meteors/meteors.md)

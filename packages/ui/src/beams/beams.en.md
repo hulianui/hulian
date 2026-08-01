@@ -10,7 +10,7 @@ status: enriched
 
 # Beams
 
-> Flowing light column · Flowing volume light column WebGL background · perlin noise disturbance fluctuation + directional light receiving gradient + tilted light curtain + film grain (ogl·token·reduced-motion degraded static gradient) · decoration/backdrop · #animated #webgl
+> Flowing light column · Flowing volume light column WebGL background · perlin noise disturbance fluctuation + directional light receiving gradient + tilted light curtain + film grain (ogl·token·static reduced-motion fallback) · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
@@ -62,7 +62,7 @@ import { Beams } from "@hulianui/ui"
 ## Usage Guidelines
 
 - **WebGL client rendering**: the effect depends on OGL and WebGL. SSR renders the static-gradient `fallback`; do not mount realtime logic directly in a server component.
-- **The token color must be prefixed with `--color-`**: `lightColor` The CSS variable must be passed with the full name of `var(--color-chart-1)`, and the bare `var(--chart-1)` will not be parsed. See [[hulian-token-color-var-needs-color-prefix]].
+- **The token color must be prefixed with `--color-`**: `lightColor` The CSS variable must be passed with the full name of `var(--color-chart-1)`, and the bare `var(--chart-1)` does not resolve. See [[hulian-token-color-var-needs-color-prefix]].
 - Values of `beamNumber` above 24 blur together and increase GPU cost on lower-end devices.
 - The parent container must be `relative` + `overflow-hidden`.
 

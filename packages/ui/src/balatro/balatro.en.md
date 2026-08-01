@@ -25,17 +25,17 @@ import { Balatro } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| spinRotation | `number` | `-2.0` | Static vortex rotation when `isRotate=false`; the sign selects its direction |
+| spinRotation | `number` | `-2.0` | Static vortex rotation when `isRotate=false`; the sign determines direction |
 | spinSpeed | `number` | `7.0` | Internal paint-flow speed; higher values produce more vigorous motion |
-| offset | `[number, number]` | `[0, 0]` | The offset of the vortex center relative to the midpoint of the screen [x, y] |
-| color1 | `string` | `--color-chart-1` | Main color (vortex bright band), CSS color string, the default theme color light and dark adaptive |
-| color2 | `string` | `--color-chart-2` | Secondary color (middle of vortex), CSS color string |
-| color3 | `string` | `--color-chart-5` | Background color (swirl shadow/gap), CSS color string |
-| contrast | `number` | `3.5` | Contrast, the larger the contrast, the sharper the three-color boundary |
-| lighting | `number` | `0.4` | Highlight intensity, the larger the vortex peak, the brighter it will be; 0 = no additional highlights |
-| spinAmount | `number` | `0.25` | The attenuation of rotation with radius, the larger the spiral tail, the more obvious it is |
+| offset | `[number, number]` | `[0, 0]` | Vortex-center offset from the viewport midpoint as `[x, y]` |
+| color1 | `string` | `--color-chart-1` | Main color for the vortex's bright band; accepts any CSS color and defaults to a theme-aware token |
+| color2 | `string` | `--color-chart-2` | Secondary color for the middle of the vortex; accepts any CSS color |
+| color3 | `string` | `--color-chart-5` | Background color for shadows and gaps in the swirl; accepts any CSS color |
+| contrast | `number` | `3.5` | Separation between the three colors; higher values create sharper boundaries |
+| lighting | `number` | `0.4` | Highlight intensity on vortex peaks; 0 disables the additional highlights |
+| spinAmount | `number` | `0.25` | Radial twist strength; higher values make the spiral tails more pronounced |
 | pixelFilter | `number` | `745` | Pixelation factor; higher values produce smaller, finer pixels, while lower values create a coarser retro mosaic |
-| spinEase | `number` | `1.0` | Rotation easing coefficient, fine-tuning the overall scaling rotation amount and speed |
+| spinEase | `number` | `1.0` | Rotation easing coefficient used to fine-tune the overall twist and speed |
 | isRotate | `boolean` | `false` | Continuously rotate over time; when enabled, `spinRotation` influences rotation speed |
 | mouseInteraction | `boolean` | `true` | Enable pointer interaction; disabling it makes the effect pointer-transparent |
 | className | `string` | — | Additional class name for the root container or fallback div |
@@ -44,7 +44,7 @@ import { Balatro } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | reduced-motion / static alternative content without WebGL (default conic whirlpool bottom) |
+| fallback | `ReactNode` | Static non-WebGL content for reduced motion or unavailable WebGL; defaults to a conic-gradient swirl |
 
 ## Examples
 ```tsx
@@ -71,8 +71,8 @@ import { Balatro } from "@hulianui/ui"
 ## Usage Guidelines
 
 - **WebGL client rendering**: the component depends on OGL and WebGL and must mount on the client. SSR renders the conic-gradient `fallback`; do not import the realtime implementation directly at the top of a Next.js server-component tree.
-- **Token color must be prefixed with `--color-`**: When customizing color1/2/3, the full name must be written when passing CSS variables (such as `var(--color-chart-1)`), bare `var(--chart-1)` will not be parsed → the vortex will turn black. See [[hulian-token-color-var-needs-color-prefix]].
-- The parent container must be `relative` + `overflow-hidden`, otherwise `absolute inset-0` cannot be spread or overflows.
+- **Token colors require the `--color-` prefix**: pass CSS variables such as `var(--color-chart-1)`. Bare names such as `var(--chart-1)` do not resolve and can make the vortex render black. See [[hulian-token-color-var-needs-color-prefix]].
+- Give the parent `position: relative` and `overflow: hidden` so the absolutely positioned effect fills the intended bounds without overflowing.
 - Continuous rotation and high `lighting` values increase GPU cost. Avoid stacking multiple instances in long lists, especially on lower-end devices.
 
 ## Related

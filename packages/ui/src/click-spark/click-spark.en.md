@@ -58,7 +58,7 @@ import { ClickSpark } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- The token used for `sparkColor` must be prefixed with `--color-` (`var(--color-foreground)`), and the canvas strokeStyle feed `var(--foreground)` will not be parsed. See [[hulian-token-color-var-needs-color-prefix]].
+- The token used for `sparkColor` must be prefixed with `--color-` (`var(--color-foreground)`), and the canvas strokeStyle feed `var(--foreground)` does not resolve. See [[hulian-token-color-var-needs-color-prefix]].
 - It is a wrapper: sparks are only triggered when clicked in the wrapped `children` area; the root container must be the positioning context (relative).
 - No sparks are released silently under reduced-motion; the RSC/jsdom environment is safe (no errors are reported), but the actual sparks require the browser to run.
 

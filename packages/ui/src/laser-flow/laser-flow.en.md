@@ -10,7 +10,7 @@ status: enriched
 
 # LaserFlow
 
-> Laser Beam · Top-Down Volumetric Laser Beam WebGL Background · Polar Beam Geometry + FBM Noise Fog + Traveling Microstreamer + Pointer Pull Tilt (ogl go three · theme aware · reduced-motion downgrade) · decoration/overlay-fx · #animated
+> Laser beam · Top-down volumetric WebGL light combining polar beam geometry, FBM fog, traveling wisps, and pointer-driven tilt · OGL implementation without Three.js, theme-aware color, and a reduced-motion fallback · decoration/overlay-fx · #animated
 
 ## When to Use
 
@@ -28,11 +28,11 @@ import { LaserFlow } from "@hulianui/ui"
 | color | `string` | `var(--color-chart-1)` | Laser main color, light and dark theme; any CSS color string can be used (→ uColor) |
 | horizontalBeamOffset | `number` | `0.0` | Lateral beam offset (ratio of viewport width), plus right and minus left (→ uBeamXFrac) |
 | verticalBeamOffset | `number` | `0.0` | Longitudinal beam offset (proportion of viewport height) (→ uBeamYFrac) |
-| flowSpeed | `number` | `0.35` | Optical flow pulse speed factor, the larger the value, the faster the flow (→ uFlowSpeed) |
-| verticalSizing | `number` | `2.0` | Longitudinal beam length factor, the larger, the longer (→ uVLenFactor) |
+| flowSpeed | `number` | `0.35` | Light-pulse speed multiplier (maps to `uFlowSpeed`) |
+| verticalSizing | `number` | `2.0` | Vertical beam-length multiplier (maps to `uVLenFactor`) |
 | horizontalSizing | `number` | `0.5` | Transverse flare length factor (→ uHLenFactor) |
 | fogIntensity | `number` | `0.45` | Volume fog intensity, 0 = no fog (→ uFogIntensity) |
-| fogScale | `number` | `0.3` | Fog noise scaling, the larger the fog group, the finer it is (→ uFogScale) |
+| fogScale | `number` | `0.3` | Fog-noise scale; higher values create finer structure (maps to `uFogScale`) |
 | fogFallSpeed | `number` | `0.6` | Fog falling speed (→ uFogFallSpeed) |
 | wispDensity | `number` | `1` | Microfluid optical density 0–2 (→ uWispDensity) |
 | wispSpeed | `number` | `15` | Microstreaming speed (→ uWSpeed) |
@@ -71,7 +71,7 @@ Warm orange laser + high fog:
 
 - WebGL (ogl) component, the cleanup call `loseContext` under double mounting of React StrictMode will poison the canvas reuse and cause a blank crash. Internally, a new canvas should be mounted each time, see [[webgl-canvas-loseContext-poisons-strictmode-remount]].
 - Content must be layered on top of LaserFlow with `relative z-10` (or higher), otherwise it will be covered by the volumetric light.
-- reduced-motion / no WebGL will render `fallback` (default gradient div), don't assume there is animation.
+- Reduced-motion and non-WebGL environments render the static gradient `fallback`; do not convey essential information through motion alone.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

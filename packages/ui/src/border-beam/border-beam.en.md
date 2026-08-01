@@ -56,7 +56,7 @@ import { BorderBeam } from "@hulianui/ui"
 ## Usage Guidelines
 
 - It must be placed in a `position:relative` container, and the container is generally `overflow-hidden`, otherwise the beam will go around the rounded corners and overflow.
-- The color prop needs to be prefixed with `--color-` when feeding the token (the default value is already included). The bare `var(--primary)` will not be parsed - see [[hulian-token-color-var-needs-color-prefix]].
+- The color prop needs to be prefixed with `--color-` when feeding the token (the default value is already included). The bare `var(--primary)` does not resolve - see [[hulian-token-color-var-needs-color-prefix]].
 - Motion-based animations should be expected to be weakened/stopped with reduced-motion preferences.
 
 ## Related

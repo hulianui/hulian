@@ -35,7 +35,7 @@ import { Iridescence } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | ReactNode | reduced-motion / static degraded content without WebGL |
+| fallback | ReactNode | reduced-motion / static fallback content without WebGL |
 
 ## Examples
 ```tsx

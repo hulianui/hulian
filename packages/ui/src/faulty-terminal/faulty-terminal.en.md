@@ -42,7 +42,7 @@ import { FaultyTerminal } from "@hulianui/ui"
 | mouseStrength | `number` | `0.2` | Pointer influence intensity, only effective when `mouseReact=true` |
 | pageLoadAnimation | `boolean` | `true` | Fade in animation frame by frame when loading |
 | brightness | `number` | `1` | Overall brightness ratio |
-| className | `string` | — | Root container (or bottom layer) |
+| className | `string` | — | Class name forwarded to the root container or fallback |
 | style | `CSSProperties` | — | Forward the root container inline style |
 
 ## Slots

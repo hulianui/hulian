@@ -10,7 +10,7 @@ status: enriched
 
 # LetterGlitch
 
-> Character failure rain · Terminal character failure rain background · Canvas equal-width character matrix randomly flips words and colors according to the beat + color interpolation smoothing frame by frame + inner/outer edge vignetting (zero dependence on Canvas 2D·token palette·reduced-motion) · decoration/backdrop · #animated #webgl
+> Character glitch field · Monospaced Canvas 2D matrix that periodically swaps glyphs and colors, interpolates transitions frame by frame, and supports inner and outer vignettes · Dependency-free, token-aware, and reduced-motion safe · decoration/backdrop · #animated #webgl
 
 ## When to Use
 
@@ -28,8 +28,8 @@ import { LetterGlitch } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | glitchColors | `string[]` | `["var(--color-chart-2)", "var(--color-chart-1)", "var(--color-chart-4)"]` | Character flicker palette, any CSS color, internal off-screen canvas parsed to RGB interpolation |
-| glitchSpeed | `number` | `50` | Minimum interval between adjacent refreshes (ms), the smaller it is, the more restless it is, recommended 20–200 |
-| smooth | `boolean` | `true` | Smooth color transition (frame-by-frame interpolation); hard cut after turning off, more blunt fault feeling |
+| glitchSpeed | `number` | `50` | Minimum interval between updates in milliseconds; lower values feel more frantic, with 20–200 recommended |
+| smooth | `boolean` | `true` | Interpolate color changes frame by frame; false switches colors immediately for a harsher glitch |
 | outerVignette | `boolean` | `true` | Outer edge vignetting (radial fade around) |
 | centerVignette | `boolean` | `false` | Center vignetting (dark in the middle→transparent at the edge), used to contrast the embedded content |
 | characters | `string` | Uppercase letters + symbols + numbers | Character set that participates in flickering, internally split by code points, supports any Unicode |
@@ -55,9 +55,9 @@ import { LetterGlitch } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- Canvas 2D is client only and needs to be used within the client component tree; it is normal for the first frame of SSR to be blank. reduced-motion reduced level.
+- Canvas 2D renders on the client, so SSR may produce an empty first frame. Reduced-motion users receive the static state.
 - The character matrix only has a terminal look on a dark background, and light-colored containers have poor contrast.
-- `glitchColors` must use the `--color-` prefix token when passing CSS variables. The bare `var(--primary)` will not be parsed, see [[hulian-token-color-var-needs-color-prefix]].
+- CSS variables in `glitchColors` require the `--color-` prefix. Bare values such as `var(--primary)` do not resolve; see [[hulian-token-color-var-needs-color-prefix]].
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)

@@ -10,7 +10,7 @@ status: enriched
 
 # FloatingLines
 
-> Floating harnesses · WebGL background · Three sets of sine wave harnesses floating over time + log radius twist rotation + gradient ribbon interpolation + optional pointer radial bending (ogl zero new dependency · theme-token chart · reduced-motion degraded static gradient) · decoration/backdrop · #animated #webgl
+> Floating harnesses · WebGL background · Three sets of sine wave harnesses floating over time + log radius twist rotation + gradient ribbon interpolation + optional pointer radial bending (ogl zero new dependency · theme-token chart · static reduced-motion fallback) · decoration/backdrop · #animated #webgl
 
 ## When to Use
 

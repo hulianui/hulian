@@ -50,7 +50,7 @@ Hulian’s reachability comes from Base UI
   <Citation index={1} title="Base UI" href="https://base-ui.com" source="base-ui.com" />
 , table capabilities come from TanStack
   <Citation index={2} title="TanStack Table" href="https://tanstack.com/table" source="tanstack.com" />
-  。
+  .
 </p>
 ```
 

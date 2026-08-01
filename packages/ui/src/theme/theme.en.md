@@ -26,7 +26,7 @@ import { ThemeProvider } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | defaultSetting | `"light" \| "dark" \| "system"` | `"system"` | Initial theme preference; if localStorage(`hulian-theme`) has a value during mount, it will be overwritten by it |
-| forcedTheme | `"light" \| "dark"` | — | Forced theme (such as theme by route): override user preferences and system monitoring; during this period, `setTheme`/`toggle` still writes preferences but does not change the visual |
+| forcedTheme | `"light" \| "dark"` | — | Force the resolved theme, for example per route. `setTheme` and `toggle` still save preferences but do not change the displayed theme while this prop is set. |
 
 ## Slots
 
@@ -34,7 +34,7 @@ import { ThemeProvider } from "@hulianui/ui"
 |------|------|------|
 | children* | `ReactNode` | Wrapped subtree |
 
-Context values returned by `useTheme()`: `theme` (actual topic after parsing `"light"|"dark"`), `setting` (user selection, including `"system"`), `setTheme(s)`, `toggle()`.
+Context values returned by `useTheme()`: `theme` (resolved `"light" | "dark"` value), `setting` (saved preference, including `"system"`), `setTheme(s)`, and `toggle()`.
 
 ## Examples
 
@@ -61,9 +61,9 @@ export function ThemeToggle() {
 ## Usage Guidelines
 
 - `useTheme()` must be called within the `ThemeProvider` subtree, otherwise `"useTheme must be used within ThemeProvider"` will be thrown.
-- This component is a `"use client"` client component and must be hung within the client boundary (do not put it directly into the pure server component tree under Next.js App Router).
-- The first rendering `theme` takes a certain value (`system` is resolved to `light`), and does not adjust `systemTheme()` in the SSR/first frame to avoid theme-related rendering (such as toggler icons) triggering hydration mismatch (React #418); the real theme is immediately corrected by the mount effect. So don't rely on the `theme` value of the first frame for key rendering branches.
-- The vision is locked after passing `forcedTheme`: `setTheme`/`toggle` only writes preferences without changing `data-theme`, and the theme-changing UI looks "invalid" during the enforcement period, which is expected behavior.
+- ThemeProvider is a client component. Mount it at a client boundary rather than directly inside a server-only Next.js App Router subtree.
+- During SSR and the first render, `system` resolves to `light` to avoid hydration mismatches in theme-dependent UI such as toggle icons. The mount effect then applies the actual system theme, so do not use the first-frame `theme` value for critical rendering branches.
+- While `forcedTheme` is set, `setTheme` and `toggle` update the saved preference without changing `data-theme`. Theme controls therefore appear visually unchanged until the forced value is removed.
 - `forcedTheme` locks the resolved visual theme but still allows `setTheme` and `toggle` to update the saved preference for later use.
 
 ## Related

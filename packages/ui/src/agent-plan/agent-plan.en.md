@@ -23,7 +23,7 @@ import { AgentPlan } from "@hulianui/ui"
 
 ## Props
 
-`AgentPlanProps`：
+`AgentPlanProps`:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
@@ -38,12 +38,12 @@ import { AgentPlan } from "@hulianui/ui"
 |------|------|------|
 | title | `ReactNode` | Header title; defaults to `"\u6267\u884c\u8ba1\u5212"` (Execution Plan); pass `null` to hide it |
 
-`AgentTask`：
+`AgentTask`:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
 | title | `ReactNode` | — | Task title |
-| status | `"pending" ｜ "running" ｜ "done" ｜ "error"` | `"pending"` | Task state: hollow ring for pending, spinner and highlighted row for running, check and optional strike-through for done, or X for error |
+| status | `"pending" \| "running" \| "done" \| "error"` | `"pending"` | Task state: hollow ring for pending, spinner and highlighted row for running, check and optional strike-through for done, or X for error |
 | detail | `ReactNode` | — | Muted supporting text below the title |
 | meta | `ReactNode` | — | Muted, right-aligned trailing metadata such as `180ms` or a small badge |
 
