@@ -55,6 +55,7 @@ export function Command({
   placeholder = "输入命令或搜索…",
   filter = defaultFilter,
   onSelectItem,
+  onQueryChange,
   closeOnSelect = true,
   emptyMessage = "无匹配结果",
   shortcut = false,
@@ -82,9 +83,23 @@ export function Command({
     return () => document.removeEventListener("keydown", onKey);
   }, [shortcut, open, onOpenChange]);
 
-  // 每次打开清空搜索（关闭→打开拿到干净面板）。
+  // onQueryChange 用 ref 持最新引用：它只是「把内部态播出去」的通知口，
+  // 不该因消费方每渲染新建一个箭头函数就重跑下面的清空 effect。
+  const onQueryChangeRef = useRef(onQueryChange);
+  onQueryChangeRef.current = onQueryChange;
+
+  const updateQuery = (next: string) => {
+    setQuery(next);
+    onQueryChangeRef.current?.(next);
+  };
+
+  // 每次打开清空搜索（关闭→打开拿到干净面板）。清空同样要播出去，
+  // 否则消费方自管的 groups 会停在上一次的搜索词上。
   useEffect(() => {
-    if (open) setQuery("");
+    if (open) {
+      setQuery("");
+      onQueryChangeRef.current?.("");
+    }
   }, [open]);
 
   // 过滤后的分组 + 跨组展平项（active 索引在展平序上漫游，支持跨组上下移动）。
@@ -197,7 +212,7 @@ export function Command({
               spellCheck={false}
               value={query}
               placeholder={placeholder}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => updateQuery(e.target.value)}
               onKeyDown={onKeyDown}
               className="h-11 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
             />

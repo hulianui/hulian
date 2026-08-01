@@ -163,4 +163,24 @@ describe("Command", () => {
     fireEvent.click(calc);
     expect(onSelectItem).not.toHaveBeenCalled();
   });
+
+  it("onQueryChange 播出内部搜索词，且打开面板时播出清空", () => {
+    const onQueryChange = vi.fn();
+    const { rerender } = render(
+      <Command open={false} onOpenChange={noop} groups={groups} onQueryChange={onQueryChange} />,
+    );
+    rerender(<Command open onOpenChange={noop} groups={groups} onQueryChange={onQueryChange} />);
+    // 打开即清空 —— 消费方自管的 groups 不能停在上一次搜索词上。
+    expect(onQueryChange).toHaveBeenCalledWith("");
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "搜索" } });
+    expect(onQueryChange).toHaveBeenLastCalledWith("搜索");
+  });
+
+  it("filter 恒真时由消费方全权决定 groups（自排序路径不被内部过滤二次裁剪）", () => {
+    render(
+      <Command open onOpenChange={noop} groups={groups} filter={() => true} />,
+    );
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "不可能匹配的词" } });
+    expect(screen.getByText("搜索文档")).toBeTruthy();
+  });
 });
