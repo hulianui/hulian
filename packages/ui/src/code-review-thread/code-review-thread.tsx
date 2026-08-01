@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Bot, Check, ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
@@ -59,7 +59,7 @@ function CommentRow({
   );
 }
 
-export function CodeReviewThread({
+function CodeReviewThreadImpl({
   comments,
   status,
   onStatusChange,
@@ -154,3 +154,6 @@ export function CodeReviewThread({
     </div>
   );
 }
+
+export const CodeReviewThread = memo(CodeReviewThreadImpl);
+CodeReviewThread.displayName = "CodeReviewThread";
