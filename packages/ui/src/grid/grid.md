@@ -27,7 +27,7 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| cols | `number \| ResponsiveCols` | `1` | 列数。数字=固定列数（任意值，走 inline style）；`{base,sm,md,lg}`=响应式（静态类） |
+| cols | `number \| ResponsiveCols` | `1` | 列数。数字=固定列数（任意值，走 inline style）；`{base,sm,md,lg,xl,2xl}`=响应式（静态类） |
 | rows | `number` | — | 行数（不填则按内容自动） |
 | gap | `number` | `0` | 行列间距（× 0.25rem） |
 | colGap | `number` | — | 列间距，覆盖 gap（× 0.25rem） |
@@ -59,6 +59,8 @@ import { Grid, GridItem } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 子元素 |
 
+响应式档位铺满 Tailwind 断点：`base / sm / md / lg / xl / 2xl`。中后台宽屏（≥1280）恰恰最需要在 `xl` 档换布局，档位止于 lg 会逼消费方一半走 prop 一半走 className（hulianui/hulian#61）。例：`cols={{ base: 1, xl: 4, "2xl": 6 }}`。
+
 ## 示例
 ```tsx
 // 3 列等宽网格
@@ -75,7 +77,13 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-暂无已知坑。`cols` 传数字走 inline style 支持任意列数；传 `{base,sm,md,lg}` 才走静态响应式类。候选坑 body-grid-place-items-center / grid-card-button-tail-row / nested-collapsible-css-grid-rows 均针对各自具体布局场景，与本通用栅格原语无直接关系，已剔除。
+暂无已知坑。`cols` 传数字走 inline style 支持任意列数；传 `{base,sm,md,lg,xl,2xl}` 才走静态响应式类。候选坑 body-grid-place-items-center / grid-card-button-tail-row / nested-collapsible-css-grid-rows 均针对各自具体布局场景，与本通用栅格原语无直接关系，已剔除。
+
+### `as` 是**类型多态**的
+
+`as="ul"` 之后，事件与属性会跟着目标元素走：`onSubmit` 拿到 `FormEvent<HTMLFormElement>`、`as="a"` 能传 `href`。
+早先 `as` 不参与推导，`event.currentTarget` 一律退化成 `HTMLElement`，表单专有 API 只能 as-cast——
+而 cast 掉的正是类型安全本身（hulianui/hulian#62）。
 
 ## 相关
 [Stack](../stack/stack.md) · [Spacer](../spacer/spacer.md) · [Divider](../divider/divider.md) · [Separator](../separator/separator.md) · [Layout](../layout/layout.md) · [AdminLayout](../admin-layout/admin-layout.md)

@@ -1,3 +1,4 @@
+import type { ElementType } from "react";
 import { cn } from "../lib/cn";
 import type { ContainerProps, ContainerSize } from "./container.types";
 
@@ -8,14 +9,24 @@ const MAX: Record<ContainerSize, string> = {
   md: "max-w-3xl",
   lg: "max-w-4xl",
   xl: "max-w-5xl",
+  "2xl": "max-w-6xl",
+  "3xl": "max-w-7xl",
   full: "max-w-none",
 };
 
-export function Container({ size = "xl", padded = true, as, className, ...props }: ContainerProps) {
-  const Comp = as ?? "div";
+export function Container<E extends ElementType = "div">({
+  size = "xl",
+  padded = true,
+  centered = true,
+  as,
+  className,
+  ...props
+}: ContainerProps<E>) {
+  const Comp = (as ?? "div") as ElementType;
   return (
     <Comp
-      className={cn("w-full", MAX[size], padded && "mx-auto px-6 sm:px-8", className)}
+      // 居中与内距解耦：padded 只管左右内距，居中走 centered（hulianui/hulian#58）。
+      className={cn("w-full", MAX[size], centered && "mx-auto", padded && "px-6 sm:px-8", className)}
       {...props}
     />
   );

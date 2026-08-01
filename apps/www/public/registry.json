@@ -19617,6 +19617,11 @@
           "target": "components/hulianui/lib/is-dev.ts"
         },
         {
+          "path": "components/hulianui/lib/polymorphic.ts",
+          "type": "registry:lib",
+          "target": "components/hulianui/lib/polymorphic.ts"
+        },
+        {
           "path": "components/hulianui/lib/tone.ts",
           "type": "registry:lib",
           "target": "components/hulianui/lib/tone.ts"

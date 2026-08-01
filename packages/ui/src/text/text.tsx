@@ -29,7 +29,7 @@ const WEIGHT: Record<TextWeight, string> = {
   bold: "font-bold",
 };
 
-export function Text({
+export function Text<E extends ElementType = "div">({
   as,
   size = "base",
   tone = "default",
@@ -39,7 +39,7 @@ export function Text({
   className,
   style,
   ...props
-}: TextProps) {
+}: TextProps<E>) {
   const Comp = (as ?? "p") as ElementType;
   const clampStyle: CSSProperties | undefined = lineClamp
     ? {

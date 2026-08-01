@@ -32,7 +32,7 @@ const SIZE_BY_LEVEL: Record<HeadingLevel, HeadingSize> = {
   6: "base",
 };
 
-export function Heading({
+export function Heading<E extends ElementType = "div">({
   level = 2,
   as,
   size,
@@ -40,7 +40,7 @@ export function Heading({
   balance = false,
   className,
   ...props
-}: HeadingProps) {
+}: HeadingProps<E>) {
   const Comp = (as ?? `h${level}`) as ElementType;
   const resolvedSize = size ?? SIZE_BY_LEVEL[level];
   return (

@@ -1,3 +1,4 @@
+import type { ElementType } from "react";
 import type { CSSProperties } from "react";
 import { cn } from "../lib/cn";
 import type { SafeAreaEdge, SafeAreaEdges, SafeAreaProps } from "./safe-area.types";
@@ -19,7 +20,7 @@ function resolveEdges(edges: SafeAreaEdges): SafeAreaEdge[] {
   return typeof edges === "string" ? GROUPS[edges] : edges;
 }
 
-export function SafeArea({
+export function SafeArea<E extends ElementType = "div">({
   edges = "all",
   mode = "padding",
   min = 0,
@@ -27,7 +28,7 @@ export function SafeArea({
   className,
   style,
   ...rest
-}: SafeAreaProps) {
+}: SafeAreaProps<E>) {
   const Comp = (as ?? "div") as "div";
   const minCss = typeof min === "number" ? `${min}px` : min;
   const box = mode === "margin" ? MAR : PAD;

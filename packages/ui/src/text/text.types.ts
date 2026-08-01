@@ -1,12 +1,12 @@
 import type { ElementType, HTMLAttributes, ReactNode } from "react";
+import type { PolymorphicProps } from "../lib/polymorphic";
 
 export type TextSize = "xs" | "sm" | "base" | "lg" | "xl";
 export type TextTone = "default" | "muted" | "primary" | "success" | "warning" | "danger";
 export type TextWeight = "normal" | "medium" | "semibold" | "bold";
 
-export interface TextProps extends Omit<HTMLAttributes<HTMLElement>, "color"> {
-  /** 渲染的元素标签。@default "p" */
-  as?: ElementType;
+export interface TextOwnProps {
+  className?: string;
   /** 字号。@default "base" */
   size?: TextSize;
   /** 语义色调。@default "default" */
@@ -19,3 +19,6 @@ export interface TextProps extends Omit<HTMLAttributes<HTMLElement>, "color"> {
   lineClamp?: number;
   children?: ReactNode;
 }
+
+/** `as` 参与类型推导（hulianui/hulian#62）。 */
+export type TextProps<E extends ElementType = "p"> = PolymorphicProps<E, TextOwnProps>;

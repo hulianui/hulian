@@ -25,7 +25,7 @@ import { Stack } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| direction | `StackDirection \| ResponsiveDirection` | `"column"` | 主轴方向。传字符串=固定；传 `{base,sm,md,lg}`=按断点响应式 |
+| direction | `StackDirection \| ResponsiveDirection` | `"column"` | 主轴方向。传字符串=固定；传 `{base,sm,md,lg,xl,2xl}`=按断点响应式 |
 | gap | `number` | `0` | 子项间距（× 0.25rem，同 Tailwind spacing 刻度） |
 | align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | — | 交叉轴对齐 |
 | justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | — | 主轴对齐 |
@@ -40,6 +40,8 @@ import { Stack } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 子元素 |
+
+响应式档位铺满 Tailwind 断点：`base / sm / md / lg / xl / 2xl`。中后台宽屏（≥1280）恰恰最需要在 `xl` 档换布局，档位止于 lg 会逼消费方一半走 prop 一半走 className（hulianui/hulian#61）。例：`direction={{ base: "column", xl: "row" }}`。
 
 ## 示例
 ```tsx
@@ -60,6 +62,12 @@ import { Stack } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 暂无已知坑。`gap` 是 Tailwind 刻度倍数而非像素（`gap={3}` = 0.75rem）；`wrap`/`justify` 仅在 `direction="row"` 下有实际意义。候选坑 multi-card-stack-trace / swiftui-text-css-font-stack 与本组件无关，已剔除。
+
+### `as` 是**类型多态**的
+
+`as="form"` 之后，事件与属性会跟着目标元素走：`onSubmit` 拿到 `FormEvent<HTMLFormElement>`、`as="a"` 能传 `href`。
+早先 `as` 不参与推导，`event.currentTarget` 一律退化成 `HTMLElement`，表单专有 API 只能 as-cast——
+而 cast 掉的正是类型安全本身（hulianui/hulian#62）。
 
 ## 相关
 [Grid](../grid/grid.md) · [Spacer](../spacer/spacer.md) · [Divider](../divider/divider.md) · [Separator](../separator/separator.md) · [Layout](../layout/layout.md) · [AdminLayout](../admin-layout/admin-layout.md)

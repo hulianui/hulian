@@ -51,3 +51,13 @@ describe("Grid", () => {
     expect(el.style.gridTemplateColumns).toBe("");
   });
 });
+
+describe("Grid 响应式断点（hulianui/hulian#61）", () => {
+  it("cols 支持 xl / 2xl 档", () => {
+    const { container } = render(<Grid cols={{ base: 1, lg: 3, xl: 4, "2xl": 6 }} />);
+    const cls = (container.firstElementChild as HTMLElement).className;
+    expect(cls).toContain("lg:grid-cols-3");
+    expect(cls).toContain("xl:grid-cols-4");
+    expect(cls).toContain("2xl:grid-cols-6");
+  });
+});
