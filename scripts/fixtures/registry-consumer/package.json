@@ -1,0 +1,17 @@
+{
+  "name": "hulian-registry-consumer",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@8.15.5",
+  "dependencies": {
+    "@hulianui/ui": "latest",
+    "lucide-react": "latest",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^7.0.2"
+  }
+}

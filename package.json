@@ -22,6 +22,7 @@
     "skill-index": "node scripts/gen-skill-index.mjs",
     "component-docs": "node scripts/gen-component-docs.mjs",
     "llms-registry": "node scripts/gen-llms-registry.mjs",
+    "registry:smoke:pages": "node scripts/registry-pages-smoke.mjs",
     "conventions": "node scripts/gen-conventions.mjs",
     "changelog": "node scripts/gen-changelog.mjs",
     "docs:all": "pnpm skill-index && pnpm component-docs && pnpm llms-registry && pnpm conventions && pnpm changelog",
