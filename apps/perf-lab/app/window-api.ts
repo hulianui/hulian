@@ -25,6 +25,7 @@ export interface HulianScanLabApi {
     category: PerformanceScenario["category"];
     component: string;
     entry: string;
+    webgl?: boolean;
   }>;
   run(id: string, options: LabRunOptions): Promise<ScenarioRun>;
   result(id: string): ScenarioRun | undefined;
@@ -139,20 +140,57 @@ function observeBrowser(category: PerformanceScenario["category"]): BrowserObser
   };
 }
 
-function metrics(
+export type GpuMode = "hardware" | "software" | "unavailable";
+
+export function classifyGpuRenderer(renderer: string | undefined): GpuMode {
+  if (!renderer) return "unavailable";
+  return /swiftshader|software|llvmpipe|lavapipe/i.test(renderer) ? "software" : "hardware";
+}
+
+function inspectGpu(): { renderer?: string; mode: GpuMode } {
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+    if (!gl) return { mode: "unavailable" };
+    const extension = gl.getExtension("WEBGL_debug_renderer_info");
+    const renderer = extension
+      ? String(gl.getParameter(extension.UNMASKED_RENDERER_WEBGL))
+      : undefined;
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return { ...(renderer ? { renderer } : {}), mode: classifyGpuRenderer(renderer) };
+  } catch {
+    return { mode: "unavailable" };
+  }
+}
+
+function isMountStep(stepId: string | undefined): boolean {
+  return /^(?:mount|mount[-:])/.test(stepId ?? "");
+}
+
+function isUnmountStep(stepId: string | undefined): boolean {
+  return /^(?:unmount|unmount[-:])/.test(stepId ?? "");
+}
+
+export function computeMetrics(
   events: ScanEvent[],
   observation: ReturnType<BrowserObservation["finish"]>,
 ): Record<string, number> {
   const commits = events.filter((event) => event.type === "commit");
   const fibers = events.filter((event) => event.type === "fiber-render");
   const fanout = new Map<number, number>();
+  const mountFanout = new Map<number, number>();
   for (const fiber of fibers) {
-    fanout.set(fiber.commitId, (fanout.get(fiber.commitId) ?? 0) + 1);
+    if (isMountStep(fiber.stepId)) {
+      mountFanout.set(fiber.commitId, (mountFanout.get(fiber.commitId) ?? 0) + 1);
+    } else if (!isUnmountStep(fiber.stepId)) {
+      fanout.set(fiber.commitId, (fanout.get(fiber.commitId) ?? 0) + 1);
+    }
   }
   const longestTaskMs = Math.max(0, ...observation.longTaskDurations);
   const droppedFrames = observation.frameDurations.filter((duration) => duration > 20).length;
   return {
     commitDurationMs: commits.reduce((total, commit) => total + commit.durationMs, 0),
+    mountFanout: Math.max(0, ...mountFanout.values()),
     cascadeFanout: Math.max(0, ...fanout.values()),
     interactionLatencyMs: Math.max(0, ...observation.interactionDurations),
     longTaskCount: observation.longTaskDurations.length,
@@ -217,7 +255,7 @@ async function runIteration(
     return {
       events: result.events,
       errors: [...result.errors, ...harness.takeErrors(), message],
-      sample: metrics(result.events, observation),
+      sample: computeMetrics(result.events, observation),
     };
   } finally {
     unsubscribe();
@@ -228,7 +266,7 @@ async function runIteration(
   return {
     events: result.events,
     errors: [...result.errors, ...harness.takeErrors()],
-    sample: metrics(result.events, observation),
+    sample: computeMetrics(result.events, observation),
   };
 }
 
@@ -245,6 +283,7 @@ export function createWindowApi(harness: HarnessController): HulianScanLabApi {
         category: scenario.category,
         component: scenario.component,
         entry: scenario.entry,
+        webgl: scenario.webgl,
       };
     },
     async run(id, options) {
@@ -281,6 +320,16 @@ export function createWindowApi(harness: HarnessController): HulianScanLabApi {
             component: scenario.component,
             category: scenario.category,
             entry: scenario.entry,
+            webgl: scenario.webgl === true,
+            ...(() => {
+              if (!scenario.webgl) return { gpuMetricsTrusted: true };
+              const gpu = inspectGpu();
+              return {
+                gpuMode: gpu.mode,
+                gpuMetricsTrusted: gpu.mode === "hardware",
+                ...(gpu.renderer ? { gpuRenderer: gpu.renderer } : {}),
+              };
+            })(),
           },
         };
         results.set(id, run);

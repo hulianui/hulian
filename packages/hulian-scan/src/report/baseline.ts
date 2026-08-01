@@ -65,6 +65,7 @@ export function baselineFromReport(report: ScanReport): PerformanceBaseline {
       run.errors.length > 0 ||
       run.samples.length < 5 ||
       !run.events.some((event) => event.type === "commit") ||
+      (run.metadata.webgl === true && run.metadata.gpuMetricsTrusted === false) ||
       isHardViolation(report, run.scenarioId)
     ) {
       continue;

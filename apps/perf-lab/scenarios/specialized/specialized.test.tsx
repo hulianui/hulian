@@ -50,5 +50,30 @@ describe("specialized performance scenarios", () => {
       "stop",
       "unmount-observe",
     ]);
+    expect(scenario.webgl).toBe(false);
+  });
+
+  it("carries the WebGL classification into the executable scenario", async () => {
+    const scenario = await createAnimationScenario(
+      {
+        id: "shader",
+        scenarioId: "shader/frame-budget",
+        component: "Shader",
+        entry: "@hulianui/ui/shader",
+        category: "animation",
+        categories: ["decoration"],
+        animated: true,
+        webgl: true,
+        source: "packages/ui/src/shader/index.ts",
+      },
+      {
+        controls: [],
+        states: [{ name: "default", render: () => <div /> }],
+        renderWithProps: () => <div />,
+        toCode: () => "<Shader />",
+      },
+    );
+
+    expect(scenario.webgl).toBe(true);
   });
 });

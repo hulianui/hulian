@@ -56,4 +56,26 @@ describe("performance baseline", () => {
       "button/basic": { commitDurationMs: 3 },
     });
   });
+
+  it("never freezes software-GPU WebGL metrics as a release baseline", () => {
+    const report: ScanReport = {
+      schemaVersion: 1,
+      environment: "packed-consumer",
+      runs: [
+        {
+          schemaVersion: 1,
+          scenarioId: "shader/frame-budget",
+          stage: "measurement",
+          environment: "packed-consumer",
+          samples: Array.from({ length: 5 }, () => ({ longTaskMs: 400 })),
+          events: [{ type: "commit", commitId: 1, timestampMs: 1, durationMs: 1 }],
+          errors: [],
+          metadata: { webgl: true, gpuMode: "software", gpuMetricsTrusted: false },
+        },
+      ],
+      findings: [],
+    };
+
+    expect(baselineFromReport(report).scenarios).toEqual({});
+  });
 });

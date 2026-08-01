@@ -138,4 +138,28 @@ describe("evaluateBudget", () => {
       "invalid-sample",
     ]);
   });
+
+  it("does not turn untrusted software-GPU WebGL timings into hard findings", () => {
+    const run = makeRun("measurement");
+    run.samples = Array.from({ length: 5 }, () => ({
+      commitDurationMs: 1,
+      longTaskMs: 900,
+      droppedFrameRatio: 0.7,
+    }));
+    run.metadata = {
+      webgl: true,
+      gpuMode: "software",
+      gpuMetricsTrusted: false,
+    };
+
+    expect(
+      evaluateBudget({
+        run,
+        component: "Shader",
+        budget: { maxLongTaskMs: 100, maxDroppedFrameRatio: 0.05 },
+        baseline: { longTaskMs: 20, droppedFrameRatio: 0 },
+        minSamples: 5,
+      }).map((finding) => finding.rule),
+    ).toEqual([]);
+  });
 });

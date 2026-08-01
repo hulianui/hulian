@@ -34,6 +34,8 @@ export interface PerformanceScenario {
   component: string;
   entry: string;
   category: ScenarioCategory;
+  /** True when frame timings depend on a real WebGL GPU backend. */
+  webgl?: boolean;
   render: () => unknown;
   steps: ScenarioStep[];
   budgets: Partial<PerformanceBudget>;

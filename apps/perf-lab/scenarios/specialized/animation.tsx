@@ -69,6 +69,7 @@ export const animationScenario = definePerformanceScenario({
   component: "AnimationFrameBudgetFixture",
   entry: "@hulianui/perf-lab/scenarios/animation",
   category: "animation",
+  webgl: false,
   render: () => <Fixture />,
   steps: [
     {
@@ -130,6 +131,7 @@ export async function createAnimationScenario(
     component: metadata.component,
     entry: metadata.entry,
     category: "animation",
+    webgl: metadata.webgl,
     render: () => <PublicAnimationFixture />,
     steps: [
       {

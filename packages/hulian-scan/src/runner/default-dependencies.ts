@@ -15,6 +15,10 @@ import { repositoryRoot } from "../paths";
 import type { RunDependencies, RunScanOptions } from "./run-scan";
 
 const execFileAsync = promisify(execFile);
+
+export function chromiumLaunchArgs(platform: NodeJS.Platform = process.platform): string[] {
+  return platform === "darwin" ? ["--use-angle=metal"] : [];
+}
 interface BudgetConfiguration {
   schemaVersion: 1;
   defaults: Partial<PerformanceBudget>;
@@ -233,7 +237,7 @@ async function runBrowserStage(
       },
     );
     await waitForPreview(url, preview);
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true, args: chromiumLaunchArgs() });
     const revision = await gitRevision();
     const fingerprint = `${options.environment}/react${
       options.react ?? "19"
@@ -277,7 +281,7 @@ async function runBrowserStage(
             const api = (
               window as typeof window & {
                 __HULIAN_SCAN_LAB__: {
-                  describe(scenarioId: string): Promise<{ category: string }>;
+                  describe(scenarioId: string): Promise<{ category: string; webgl?: boolean }>;
                 };
               }
             ).__HULIAN_SCAN_LAB__;

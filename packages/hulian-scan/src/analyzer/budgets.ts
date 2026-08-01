@@ -121,6 +121,22 @@ function metricValues(run: ScenarioRun, metric: string): number[] {
   );
 }
 
+const GPU_TIMING_METRICS = new Set([
+  "longTaskCount",
+  "longestTaskMs",
+  "longTaskMs",
+  "droppedFrameRatio",
+  "longestFrameMs",
+]);
+
+function isUntrustedGpuMetric(run: ScenarioRun, metric: string): boolean {
+  return (
+    run.metadata.webgl === true &&
+    run.metadata.gpuMetricsTrusted === false &&
+    GPU_TIMING_METRICS.has(metric)
+  );
+}
+
 function addThresholdFinding(
   findings: Finding[],
   input: BudgetEvaluationInput,
@@ -129,6 +145,7 @@ function addThresholdFinding(
   maximum: number | undefined,
 ): void {
   if (maximum === undefined) return;
+  if (isUntrustedGpuMetric(input.run, metric)) return;
   const values = metricValues(input.run, metric);
   if (values.length === 0 || values.some((value) => !Number.isFinite(value))) return;
   const current = summarize(values).p95;
@@ -262,6 +279,7 @@ export function evaluateBudget(input: BudgetEvaluationInput): Finding[] {
   const relativePct = input.budget.relativeRegressionPct ?? 20;
   const absoluteMs = input.budget.absoluteRegressionMs ?? 2;
   for (const [metric, baseline] of Object.entries(input.baseline ?? {})) {
+    if (isUntrustedGpuMetric(input.run, metric)) continue;
     const values = metricValues(input.run, metric);
     if (values.length === 0 || values.some((value) => !Number.isFinite(value))) {
       continue;
