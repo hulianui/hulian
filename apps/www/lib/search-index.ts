@@ -8,11 +8,12 @@
 // 组装（manifest / blocks _meta / pages _meta / demos / theme-manifest），
 // 所以 server 组件与 client 面板可以共读同一份，不会漂。
 
-import { manifest, CATEGORIES } from "./manifest";
-import { THEME_NAV } from "./theme-manifest";
-import { blocks, CATEGORY_LABEL as BLOCK_CATEGORY_LABEL } from "../app/blocks/_meta";
-import { pages, CATEGORY_LABEL as PAGE_CATEGORY_LABEL } from "../app/pages/_meta";
-import { demos } from "../app/demos/lib/demos";
+import { componentMeta, manifest } from "./manifest";
+import { themeMeta, THEME_NAV } from "./theme-manifest";
+import { blockMeta, blocks } from "../app/blocks/_meta";
+import { pageMeta, pages } from "../app/pages/_meta";
+import { demoMeta, demos } from "../app/demos/lib/demos";
+import { DOCS_LOCALE, withDocsBasePath } from "./docs-locale";
 
 export type DocType = "page" | "block" | "component" | "demo" | "guide";
 
@@ -34,13 +35,10 @@ export interface SearchDoc {
   keywords: string[];
 }
 
-export const TYPE_LABEL: Record<DocType, string> = {
-  page: "页面",
-  block: "区块",
-  component: "组件",
-  demo: "模版",
-  guide: "指南",
-};
+export const TYPE_LABEL: Record<DocType, string> =
+  DOCS_LOCALE === "en"
+    ? { page: "Page", block: "Block", component: "Component", demo: "Template", guide: "Guide" }
+    : { page: "页面", block: "区块", component: "组件", demo: "模版", guide: "指南" };
 
 /**
  * 结果分组顺序。业务任务查询（「用户管理列表」）要的是**可直接复用的高层积木**，
@@ -57,101 +55,124 @@ const TYPE_WEIGHT: Record<DocType, number> = {
   guide: 0.9,
 };
 
-// 组件中文名藏在 description 的首段（"整页布局 · 复合 Header/..."），与 ComponentTree 同款取法。
-const nameCn = (description: string) => description.split(" · ")[0].trim();
-
-const groupLabel = (categoryKey: string, groupKey: string) =>
-  CATEGORIES.find((c) => c.key === categoryKey)?.groups.find((g) => g.key === groupKey)?.label ?? "";
-
-const categoryLabelOf = (key: string) => CATEGORIES.find((c) => c.key === key)?.label ?? key;
-
 function componentDocs(): SearchDoc[] {
-  return manifest.map((m) => ({
-    id: `component:${m.slug}`,
-    type: "component" as const,
-    title: nameCn(m.description),
-    en: m.name,
-    href: `/components/${m.slug}`,
-    description: m.description,
-    category: m.category,
-    categoryLabel: categoryLabelOf(m.category),
-    keywords: [m.slug, groupLabel(m.category, m.group), ...(m.tags ?? [])].filter(Boolean),
-  }));
+  return manifest.map((m) => {
+    const localized = componentMeta(m);
+    return {
+      id: `component:${m.slug}`,
+      type: "component" as const,
+      title: localized.shortName,
+      en: m.name,
+      href: withDocsBasePath(`/components/${m.slug}`),
+      description: localized.description,
+      category: m.category,
+      categoryLabel: localized.categoryLabel,
+      keywords: [m.slug, localized.groupLabel, ...localized.tags, ...localized.keywords].filter(
+        Boolean,
+      ),
+    };
+  });
 }
 
 function blockDocs(): SearchDoc[] {
-  return blocks.map((b) => ({
-    id: `block:${b.slug}`,
-    type: "block" as const,
-    title: b.name,
-    href: `/blocks/${b.slug}`,
-    description: b.description,
-    category: b.category,
-    categoryLabel: BLOCK_CATEGORY_LABEL[b.category],
-    keywords: [b.slug, ...b.tags, ...b.installation.slots],
-  }));
+  return blocks.map((b) => {
+    const localized = blockMeta(b);
+    return {
+      id: `block:${b.slug}`,
+      type: "block" as const,
+      title: localized.name,
+      href: withDocsBasePath(`/blocks/${b.slug}`),
+      description: localized.description,
+      category: b.category,
+      categoryLabel: localized.categoryLabel,
+      keywords: [b.slug, ...localized.tags, ...b.installation.slots, ...localized.searchAliases],
+    };
+  });
 }
 
 function pageDocs(): SearchDoc[] {
-  return pages.map((p) => ({
-    id: `page:${p.slug}`,
-    type: "page" as const,
-    title: p.name,
-    href: `/pages/${p.slug}`,
-    description: p.description,
-    category: p.category,
-    categoryLabel: PAGE_CATEGORY_LABEL[p.category],
-    // slots 就是这页递归依赖的区块名，把它并进检索词 → 搜「data-table」也能命中整页。
-    keywords: [p.slug, ...p.tags, ...p.installation.slots],
-  }));
+  return pages.map((p) => {
+    const localized = pageMeta(p);
+    return {
+      id: `page:${p.slug}`,
+      type: "page" as const,
+      title: localized.name,
+      href: withDocsBasePath(`/pages/${p.slug}`),
+      description: localized.description,
+      category: p.category,
+      categoryLabel: localized.categoryLabel,
+      // slots 就是这页递归依赖的区块名，把它并进检索词 → 搜「data-table」也能命中整页。
+      keywords: [p.slug, ...localized.tags, ...p.installation.slots, ...localized.searchAliases],
+    };
+  });
 }
 
 function demoDocs(): SearchDoc[] {
-  return demos.map((d) => ({
-    id: `demo:${d.slug}`,
-    type: "demo" as const,
-    title: d.title,
-    href: d.href,
-    description: d.description,
-    category: d.category,
-    categoryLabel: d.category,
-    keywords: [d.slug, ...d.tags],
-  }));
+  return demos.map((d) => {
+    const localized = demoMeta(d);
+    return {
+      id: `demo:${d.slug}`,
+      type: "demo" as const,
+      title: localized.title,
+      href: withDocsBasePath(d.href),
+      description: localized.description,
+      category: localized.category,
+      categoryLabel: localized.category,
+      keywords: [d.slug, ...localized.tags, ...localized.searchAliases],
+    };
+  });
 }
 
 function guideDocs(): SearchDoc[] {
-  const themed: SearchDoc[] = THEME_NAV.map((t) => ({
-    id: `guide:theme-${t.slug || "overview"}`,
-    type: "guide" as const,
-    title: `${t.label}`,
-    en: t.en,
-    href: t.slug ? `/theme/${t.slug}` : "/theme",
-    description: t.blurb,
-    category: "theme",
-    categoryLabel: "主题",
-    keywords: ["theme", "token", "设计令牌", t.slug].filter(Boolean),
-  }));
+  const themed: SearchDoc[] = THEME_NAV.map((t) => {
+    const localized = themeMeta(t);
+    return {
+      id: `guide:theme-${t.slug || "overview"}`,
+      type: "guide" as const,
+      title: localized.label,
+      en: t.en,
+      href: withDocsBasePath(t.slug ? `/theme/${t.slug}` : "/theme"),
+      description: localized.description,
+      category: "theme",
+      categoryLabel: DOCS_LOCALE === "en" ? "Theme" : "主题",
+      keywords: ["theme", "token", "设计令牌", t.slug, ...localized.searchAliases].filter(Boolean),
+    };
+  });
+  const english = DOCS_LOCALE === "en";
   return [
     {
       id: "guide:start",
       type: "guide",
-      title: "开始使用",
+      title: english ? "Getting Started" : "开始使用",
       en: "Start",
-      href: "/start",
-      description: "安装、按需引入、registry 安装单件、MCP 接入、llms.txt 与 guard 门禁。",
+      href: withDocsBasePath("/start"),
+      description: english
+        ? "Installation, selective imports, registry items, MCP integration, llms.txt, and guard checks."
+        : "安装、按需引入、registry 安装单件、MCP 接入、llms.txt 与 guard 门禁。",
       category: "start",
-      categoryLabel: "上手",
-      keywords: ["install", "安装", "mcp", "registry", "llms", "guard", "shadcn", "getting started"],
+      categoryLabel: english ? "Setup" : "上手",
+      keywords: [
+        "install",
+        "安装",
+        "mcp",
+        "registry",
+        "llms",
+        "guard",
+        "shadcn",
+        "getting started",
+      ],
     },
     {
       id: "guide:changelog",
       type: "guide",
-      title: "更新日志",
+      title: english ? "Changelog" : "更新日志",
       en: "Changelog",
-      href: "/changelog",
-      description: "各版本新增组件、修复与破坏性变更。",
+      href: withDocsBasePath("/changelog"),
+      description: english
+        ? "New components, fixes, and breaking changes by release."
+        : "各版本新增组件、修复与破坏性变更。",
       category: "changelog",
-      categoryLabel: "版本",
+      categoryLabel: english ? "Releases" : "版本",
       keywords: ["changelog", "release", "版本", "升级"],
     },
     ...themed,
@@ -276,7 +297,7 @@ export function searchAll(query: string, filters: SearchFilters = {}): SearchHit
       b.score - a.score ||
       b.tf - a.tf ||
       TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type) ||
-      a.title.localeCompare(b.title, "zh-Hans-CN"),
+      a.title.localeCompare(b.title, DOCS_LOCALE === "en" ? "en" : "zh-Hans-CN"),
   );
   return filters.limit ? hits.slice(0, filters.limit) : hits;
 }
@@ -290,7 +311,9 @@ export function relaxQuery(query: string): string | null {
   if (tokens.length === 0) return null;
   const original = tokens.join(" ");
   for (let cut = 1; cut <= 2; cut += 1) {
-    const relaxed = tokens.map((t) => (t.length > cut + 1 ? t.slice(0, t.length - cut) : t)).join(" ");
+    const relaxed = tokens
+      .map((t) => (t.length > cut + 1 ? t.slice(0, t.length - cut) : t))
+      .join(" ");
     if (relaxed !== original && searchAll(relaxed, { limit: 1 }).length > 0) return relaxed;
   }
   return null;

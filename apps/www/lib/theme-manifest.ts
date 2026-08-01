@@ -1,11 +1,20 @@
 // 瑚琏「Theme」文档区 IA + 设计 token 数据 SSOT —— 纯数据，零 @hulianui/ui import，server/client 皆可读。
 // 数值真源在 @hulianui/tokens（preset.css / semantic.css）；此处镜像用于文档可视化，改 token 时同步。
 
+import { themeMetaEn } from "../i18n/theme-meta.en";
+import { DOCS_LOCALE } from "./docs-locale";
+
 export interface ThemeNavItem {
   slug: string; // 空串 = Overview（/theme 根）
   label: string; // 中文
   en: string; // 英文副标
   blurb: string;
+}
+
+export interface LocalizedThemeDisplayMeta {
+  label: string;
+  description: string;
+  searchAliases: string[];
 }
 
 export const THEME_NAV: ThemeNavItem[] = [
@@ -20,6 +29,22 @@ export const THEME_NAV: ThemeNavItem[] = [
   { slug: "motion", label: "动效", en: "Motion", blurb: "缓动曲线 / 时长 / 该不该动" },
   { slug: "cursors", label: "光标", en: "Cursors", blurb: "交互态指针语义" },
 ];
+
+/** Localized display/search overlay. Theme slugs remain stable. */
+export function themeMeta(item: ThemeNavItem): LocalizedThemeDisplayMeta {
+  if (DOCS_LOCALE === "en") {
+    const localized = themeMetaEn[item.slug || "overview"];
+    return {
+      ...localized,
+      searchAliases: [item.label, item.en, item.blurb],
+    };
+  }
+  return {
+    label: item.label,
+    description: item.blurb,
+    searchAliases: [item.en],
+  };
+}
 
 // ===== 断点 SSOT 镜像（真源：@hulianui/tokens preset.css @theme --breakpoint-*）=====
 export interface Breakpoint {

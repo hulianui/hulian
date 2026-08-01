@@ -2,6 +2,9 @@
 // （client（首页四档浏览器、画廊卡片）导入此文件，绝不能导入 _registry.tsx：
 //  那里有 RSC block 组件，拖进 client 模块会报错）。_registry.tsx 在此基础上补 slug→预览组件映射。
 
+import { blockCategoryMetaEn, blockMetaEn } from "../../i18n/block-meta.en";
+import { DOCS_LOCALE } from "../../lib/docs-locale";
+
 export interface CompositeInstallation {
   providers: string[];
   replace: Array<"assets" | "copy" | "mock-data" | "navigation" | "event-handlers">;
@@ -21,6 +24,14 @@ export interface BlockMeta {
   file: string;
   /** 安装后的显式接入清单；生成器拒绝缺失或未知值，不从源码猜测。 */
   installation: CompositeInstallation;
+}
+
+export interface LocalizedBlockDisplayMeta {
+  name: string;
+  description: string;
+  categoryLabel: string;
+  tags: string[];
+  searchAliases: string[];
 }
 
 export const CATEGORY_LABEL: Record<BlockMeta["category"], string> = {
@@ -676,4 +687,23 @@ export const blocks: BlockMeta[] = [
 
 export function getBlock(slug: string): BlockMeta | undefined {
   return blocks.find((b) => b.slug === slug);
+}
+
+/** Localized display/search overlay. Installation data and source filenames remain canonical. */
+export function blockMeta(item: BlockMeta): LocalizedBlockDisplayMeta {
+  if (DOCS_LOCALE === "en") {
+    const localized = blockMetaEn[item.slug];
+    return {
+      ...localized,
+      categoryLabel: blockCategoryMetaEn[item.category].label,
+      searchAliases: [item.name, item.description, CATEGORY_LABEL[item.category], ...item.tags],
+    };
+  }
+  return {
+    name: item.name,
+    description: item.description,
+    categoryLabel: CATEGORY_LABEL[item.category],
+    tags: item.tags,
+    searchAliases: [],
+  };
 }
