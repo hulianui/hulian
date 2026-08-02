@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { Cascader } from "../cascader/cascader";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cnDivisions } from "./cn-divisions.data";
 import { sliceLevel } from "./region-cascader.logic";
 import type { RegionCascaderProps } from "./region-cascader.types";
@@ -14,12 +15,14 @@ export function RegionCascader({
   level = 3,
   showSearch = true,
   changeOnSelect = false,
-  placeholder = level === 2 ? "请选择省/市" : "请选择省/市/区",
+  placeholder,
   size,
   disabled,
   invalid,
   className,
 }: RegionCascaderProps) {
+  const locale = useComponentLocale().regionCascader ?? zhCN.components!.regionCascader!;
+  const resolvedPlaceholder = placeholder ?? (level === 2 ? locale.provinceCity : locale.full);
   const nodes = useMemo(() => sliceLevel(cnDivisions, level), [level]);
   return (
     <Cascader
@@ -30,9 +33,9 @@ export function RegionCascader({
         onChange?.(codes, nodePath.map((n) => (typeof n.label === "string" ? n.label : "")))
       }
       showSearch={showSearch}
-      searchPlaceholder="搜索省/市/区…"
+      searchPlaceholder={locale.searchPlaceholder}
       changeOnSelect={changeOnSelect}
-      placeholder={placeholder}
+      placeholder={resolvedPlaceholder}
       size={size}
       disabled={disabled}
       invalid={invalid}

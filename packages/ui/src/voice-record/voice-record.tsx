@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useRef, type CSSProperties, type PointerEvent } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { VoiceRecordProps, VoiceRecordStatus } from "./voice-record.types";
 
@@ -24,9 +25,9 @@ const ringCenter = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
  */
 export function VoiceRecord({
   status = "idle",
-  labelIdle = "按住说话",
-  labelRecording = "松开结束",
-  labelProcessing = "处理中…",
+  labelIdle,
+  labelRecording,
+  labelProcessing,
   levels = [],
   size = "md",
   pressAndHold = true,
@@ -37,6 +38,10 @@ export function VoiceRecord({
   disabled,
   ...props
 }: VoiceRecordProps) {
+  const locale = useComponentLocale().voiceRecord ?? zhCN.components!.voiceRecord!;
+  const resolvedLabelIdle = labelIdle ?? locale.idle;
+  const resolvedLabelRecording = labelRecording ?? locale.recording;
+  const resolvedLabelProcessing = labelProcessing ?? locale.processing;
   const s = sizeMap[size];
   const isRecording = status === "recording";
   const isProcessing = status === "processing";
@@ -181,7 +186,11 @@ export function VoiceRecord({
           onPointerLeave={handlePointerEnd}
           onClick={handleClick}
           aria-label={
-            isRecording ? "松开结束录音" : isProcessing ? "处理中" : "按住说话"
+            isRecording
+              ? locale.stopRecording
+              : isProcessing
+                ? locale.processingAria
+                : locale.holdToTalk
           }
           className={cn(
             "relative z-10 inline-flex items-center justify-center rounded-full",
@@ -242,7 +251,11 @@ export function VoiceRecord({
           isDisabled && "text-muted",
         )}
       >
-        {isRecording ? labelRecording : isProcessing ? labelProcessing : labelIdle}
+        {isRecording
+          ? resolvedLabelRecording
+          : isProcessing
+            ? resolvedLabelProcessing
+            : resolvedLabelIdle}
       </span>
     </div>
   );

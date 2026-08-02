@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { BubbleMenuItem, BubbleMenuProps } from "./bubble-menu.types";
@@ -11,29 +12,29 @@ import type { BubbleMenuItem, BubbleMenuProps } from "./bubble-menu.types";
 // 瑚琏化：去 gsap 改 motion（m + LazyMotionProvider 减包）；gsap.timeline stagger → transition.delay；
 // back.out(1.5) 弹性 → spring 近似；颜色全走 token（bg-surface/text-foreground/border-border，悬停反色默认 chart token）；
 // reduced-motion 下保留全部 DOM、仅去入场动画（避免 reveal 不可见坑）。
-const DEFAULT_ITEMS: BubbleMenuItem[] = [
-  { label: "首页", href: "#", ariaLabel: "首页", rotation: -8, hoverStyles: { bgColor: "var(--color-chart-1)", textColor: "var(--color-primary-foreground)" } },
-  { label: "关于", href: "#", ariaLabel: "关于", rotation: 8, hoverStyles: { bgColor: "var(--color-chart-2)", textColor: "var(--color-primary-foreground)" } },
-  { label: "作品", href: "#", ariaLabel: "作品", rotation: 8, hoverStyles: { bgColor: "var(--color-chart-3)", textColor: "var(--color-primary-foreground)" } },
-  { label: "博客", href: "#", ariaLabel: "博客", rotation: 8, hoverStyles: { bgColor: "var(--color-chart-4)", textColor: "var(--color-primary-foreground)" } },
-  { label: "联系", href: "#", ariaLabel: "联系", rotation: -8, hoverStyles: { bgColor: "var(--color-chart-5)", textColor: "var(--color-primary-foreground)" } },
-];
-
 export function BubbleMenu({
   logo,
   onMenuClick,
   className,
   style,
-  menuAriaLabel = "切换菜单",
+  menuAriaLabel,
   useFixedPosition = false,
   items,
   animationDuration = 0.5,
   staggerDelay = 0.12,
 }: BubbleMenuProps) {
+  const locale = useComponentLocale().bubbleMenu ?? zhCN.components!.bubbleMenu!;
   const [isOpen, setIsOpen] = useState(false);
   const reduce = useReducedMotion();
 
-  const menuItems = items?.length ? items : DEFAULT_ITEMS;
+  const defaultItems: BubbleMenuItem[] = [
+    { label: locale.home, href: "#", ariaLabel: locale.home, rotation: -8, hoverStyles: { bgColor: "var(--color-chart-1)", textColor: "var(--color-primary-foreground)" } },
+    { label: locale.about, href: "#", ariaLabel: locale.about, rotation: 8, hoverStyles: { bgColor: "var(--color-chart-2)", textColor: "var(--color-primary-foreground)" } },
+    { label: locale.work, href: "#", ariaLabel: locale.work, rotation: 8, hoverStyles: { bgColor: "var(--color-chart-3)", textColor: "var(--color-primary-foreground)" } },
+    { label: locale.blog, href: "#", ariaLabel: locale.blog, rotation: 8, hoverStyles: { bgColor: "var(--color-chart-4)", textColor: "var(--color-primary-foreground)" } },
+    { label: locale.contact, href: "#", ariaLabel: locale.contact, rotation: -8, hoverStyles: { bgColor: "var(--color-chart-5)", textColor: "var(--color-primary-foreground)" } },
+  ];
+  const menuItems = items?.length ? items : defaultItems;
   const position = useFixedPosition ? "fixed" : "absolute";
 
   const handleToggle = () => {
@@ -55,7 +56,7 @@ export function BubbleMenu({
           className,
         )}
         style={style}
-        aria-label="主导航"
+        aria-label={locale.navigation}
       >
         {/* logo 气泡 */}
         <div
@@ -76,7 +77,7 @@ export function BubbleMenu({
           type="button"
           className={cn(bubbleClass, "h-12 w-12 cursor-pointer flex-col p-0 md:h-14 md:w-14")}
           onClick={handleToggle}
-          aria-label={menuAriaLabel}
+          aria-label={menuAriaLabel ?? locale.toggle}
           aria-pressed={isOpen}
           aria-expanded={isOpen}
         >
@@ -109,7 +110,7 @@ export function BubbleMenu({
             <ul
               className="m-0 flex w-full max-w-[1600px] list-none flex-wrap justify-stretch gap-y-1 px-6 pointer-events-auto max-[899px]:gap-y-4"
               role="menu"
-              aria-label="菜单链接"
+              aria-label={locale.menuLink}
             >
               {menuItems.map((item, idx) => {
                 const rotation = item.rotation ?? 0;

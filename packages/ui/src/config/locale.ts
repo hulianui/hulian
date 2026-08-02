@@ -353,6 +353,26 @@ export interface ComponentLocale {
   navMenu?: { navigation: string };
   /** Default formatter locale for RelativeTime when its locale prop is omitted. */
   relativeTime?: { locale: "zh" | "en" };
+  regionSelect?: { error: string; loading: string; canvas: string };
+  remoteSelect?: {
+    placeholder: string;
+    empty: string;
+    loading: string;
+    total: (count: number) => string;
+    loaded: (count: number) => string;
+    loadMore: string;
+    noMore: string;
+  };
+  select?: { search: string; empty: string; loading: string; separator: string; clear: string };
+  viewport?: { devicePresets: string; tablet: string; phone: string };
+  artifact?: { expand: string; collapse: string };
+  banner?: { close: string };
+  eventStream?: { empty: string; overriddenPrefix: string };
+  fab?: { action: string };
+  fileTree?: { search: string };
+  treeSelect?: { placeholder: string; clear: string };
+  agentPlan?: { title: string };
+  list?: { empty: string; loadMore: string };
   spinner?: { loading: string };
   animatedThemeToggler?: { switchToLight: string; switchToDark: string };
   backTop?: { backToTop: string };
@@ -438,6 +458,57 @@ export interface ComponentLocale {
     signInWith: (provider: string) => string;
   };
   typingDots?: { typing: string };
+  countrySelect?: { placeholder: string; searchPlaceholder: string };
+  colorPicker?: { hex: string; rgb: string; hsl: string; format: string };
+  imageCropper?: { confirm: string; cancel: string; zoom: string };
+  iconPicker?: { searchPlaceholder: string; empty: string; clear: string; recent: string };
+  profileCard?: {
+    name: string;
+    title: string;
+    status: string;
+    contact: string;
+    avatar: (name: string) => string;
+    contactName: (name: string) => string;
+  };
+  regionCascader?: { provinceCity: string; full: string; searchPlaceholder: string };
+  voiceRecord?: {
+    idle: string;
+    recording: string;
+    processing: string;
+    processingAria: string;
+    stopRecording: string;
+    holdToTalk: string;
+  };
+  bubbleMenu?: {
+    home: string;
+    about: string;
+    work: string;
+    blog: string;
+    contact: string;
+    toggle: string;
+    navigation: string;
+    menuLink: string;
+  };
+  serviceMessage?: { footer: string; action: string; more: string };
+  appLauncher?: {
+    all: string;
+    empty: string;
+    search: string;
+    categories: string;
+  };
+  colorField?: { openPicker: string };
+  dateRangePicker?: {
+    today: string;
+    lastDays: (days: number) => string;
+    thisMonth: string;
+    startDate: string;
+    endDate: string;
+    month: (year: number, month: number) => string;
+    clear: string;
+    previousMonth: string;
+    nextMonth: string;
+  };
+  threadList?: { title: string; empty: string; deleteThread: string };
   sankey?: { chart: string };
   diffStat?: { added: string; modified: string; deleted: string; renamed: string };
   deployStatus?: {
@@ -504,6 +575,38 @@ export interface ComponentLocale {
     less: string;
     more: string;
   };
+  cardNav?: { expandMenu: string; collapseMenu: string };
+  confirmCard?: {
+    title: string;
+    confirm: string;
+    edit: string;
+    confirmed: string;
+    editing: string;
+  };
+  inputOtp?: { label: string };
+  logoLoop?: { label: string; link: string };
+  timePicker?: {
+    placeholder: string;
+    clear: string;
+    hour: string;
+    minute: string;
+    second: string;
+    now: string;
+    confirm: string;
+  };
+  beianFooter?: { icp: string };
+  infiniteMenu?: {
+    openItem: (title: string) => string;
+    openActive: string;
+    placeholderTitle: (index: number) => string;
+    placeholderDescription: string;
+  };
+  lanyard?: { title: string; subtitle: string };
+  listbox?: { label: string };
+  stepper?: { progress: string };
+  documentSheet?: { print: string };
+  mathText?: { blank: string; rowSeparator: string };
+  modelViewer?: { reset: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   coupon?: {
     available: string;
@@ -730,6 +833,26 @@ const zhComponents: ComponentLocale = {
   chatMessage: { me: "我", sending: "发送中", sent: "已送达", read: "已读" },
   navMenu: { navigation: "侧边导航" },
   relativeTime: { locale: "zh" },
+  regionSelect: { error: "图片加载失败", loading: "载入图片…", canvas: "区域选择画布" },
+  remoteSelect: {
+    placeholder: "请选择",
+    empty: "无匹配数据",
+    loading: "加载中…",
+    total: (count) => `共 ${count} 条`,
+    loaded: (count) => `已加载 ${count} 条`,
+    loadMore: "滚动加载更多",
+    noMore: "没有更多了",
+  },
+  select: { search: "搜索", empty: "无匹配项", loading: "加载中", separator: "、", clear: "清除" },
+  viewport: { devicePresets: "设备预设", tablet: "平板", phone: "手机" },
+  artifact: { expand: "展开全文", collapse: "收起" },
+  banner: { close: "关闭" },
+  eventStream: { empty: "暂无事件", overriddenPrefix: "已放行：" },
+  fab: { action: "操作" },
+  fileTree: { search: "搜索文件" },
+  treeSelect: { placeholder: "请选择", clear: "清除" },
+  agentPlan: { title: "执行计划" },
+  list: { empty: "暂无数据", loadMore: "加载更多" },
   spinner: { loading: "加载中" },
   animatedThemeToggler: { switchToLight: "切换到亮色", switchToDark: "切换到暗色" },
   backTop: { backToTop: "回到顶部" },
@@ -826,6 +949,71 @@ const zhComponents: ComponentLocale = {
     signInWith: (provider) => `${provider}登录`,
   },
   typingDots: { typing: "正在输入" },
+  countrySelect: { placeholder: "选择国家/地区", searchPlaceholder: "搜索国家 / 区号…" },
+  colorPicker: {
+    hex: "十六进制颜色值",
+    rgb: "RGB 颜色值",
+    hsl: "HSL 颜色值",
+    format: "颜色格式",
+  },
+  imageCropper: { confirm: "确认", cancel: "取消", zoom: "缩放" },
+  iconPicker: {
+    searchPlaceholder: "搜索图标",
+    empty: "没有匹配的图标",
+    clear: "清除",
+    recent: "最近使用",
+  },
+  profileCard: {
+    name: "瑚琏",
+    title: "前端工程师",
+    status: "在线",
+    contact: "联系",
+    avatar: (name) => `${name} 头像`,
+    contactName: (name) => `联系 ${name}`,
+  },
+  regionCascader: {
+    provinceCity: "请选择省/市",
+    full: "请选择省/市/区",
+    searchPlaceholder: "搜索省/市/区…",
+  },
+  voiceRecord: {
+    idle: "按住说话",
+    recording: "松开结束",
+    processing: "处理中…",
+    processingAria: "处理中",
+    stopRecording: "松开结束录音",
+    holdToTalk: "按住说话",
+  },
+  bubbleMenu: {
+    home: "首页",
+    about: "关于",
+    work: "作品",
+    blog: "博客",
+    contact: "联系",
+    toggle: "切换菜单",
+    navigation: "主导航",
+    menuLink: "菜单链接",
+  },
+  serviceMessage: { footer: "进入小程序查看", action: "小程序", more: "更多" },
+  appLauncher: {
+    all: "全部",
+    empty: "没有匹配的应用",
+    search: "搜索应用",
+    categories: "应用分类",
+  },
+  colorField: { openPicker: "打开取色器" },
+  dateRangePicker: {
+    today: "今天",
+    lastDays: (days) => `最近 ${days} 天`,
+    thisMonth: "本月",
+    startDate: "开始日期",
+    endDate: "结束日期",
+    month: (year, month) => `${year} 年 ${month} 月`,
+    clear: "清除",
+    previousMonth: "上个月",
+    nextMonth: "下个月",
+  },
+  threadList: { title: "历史", empty: "暂无历史", deleteThread: "删除会话" },
   sankey: { chart: "桑基流向图" },
   diffStat: { added: "新增", modified: "修改", deleted: "删除", renamed: "重命名" },
   deployStatus: {
@@ -887,6 +1075,38 @@ const zhComponents: ComponentLocale = {
     less: "少",
     more: "多",
   },
+  cardNav: { expandMenu: "展开菜单", collapseMenu: "收起菜单" },
+  confirmCard: {
+    title: "请确认以下信息",
+    confirm: "确认无误",
+    edit: "需要修改",
+    confirmed: "已确认",
+    editing: "修改中",
+  },
+  inputOtp: { label: "验证码" },
+  logoLoop: { label: "合作伙伴 logo", link: "logo 链接" },
+  timePicker: {
+    placeholder: "选择时间",
+    clear: "清除",
+    hour: "时",
+    minute: "分",
+    second: "秒",
+    now: "此刻",
+    confirm: "确定",
+  },
+  beianFooter: { icp: "ICP备案" },
+  infiniteMenu: {
+    openItem: (title) => `打开 ${title}`,
+    openActive: "打开激活项",
+    placeholderTitle: (index) => `菜单项 ${index}`,
+    placeholderDescription: "占位项 · 传入 items 替换",
+  },
+  lanyard: { title: "瑚琏 · HULIAN", subtitle: "拖动摆一摆" },
+  listbox: { label: "选项列表" },
+  stepper: { progress: "步骤进度" },
+  documentSheet: { print: "打印" },
+  mathText: { blank: "填空", rowSeparator: "；" },
+  modelViewer: { reset: "重置视角" },
   coupon: {
     available: "立即领取",
     claimed: "去使用",
@@ -1166,6 +1386,36 @@ const enComponents: ComponentLocale = {
   chatMessage: { me: "Me", sending: "Sending", sent: "Delivered", read: "Read" },
   navMenu: { navigation: "Sidebar navigation" },
   relativeTime: { locale: "en" },
+  regionSelect: {
+    error: "Failed to load image",
+    loading: "Loading image…",
+    canvas: "Region selection canvas",
+  },
+  remoteSelect: {
+    placeholder: "Select",
+    empty: "No matching data",
+    loading: "Loading…",
+    total: (count) => `${count} items`,
+    loaded: (count) => `${count} loaded`,
+    loadMore: "Scroll to load more",
+    noMore: "No more results",
+  },
+  select: {
+    search: "Search",
+    empty: "No matching items",
+    loading: "Loading",
+    separator: ", ",
+    clear: "Clear",
+  },
+  viewport: { devicePresets: "Device presets", tablet: "Tablet", phone: "Phone" },
+  artifact: { expand: "Show all", collapse: "Collapse" },
+  banner: { close: "Close" },
+  eventStream: { empty: "No events", overriddenPrefix: "Allowed: " },
+  fab: { action: "Action" },
+  fileTree: { search: "Search files" },
+  treeSelect: { placeholder: "Select", clear: "Clear" },
+  agentPlan: { title: "Execution plan" },
+  list: { empty: "No data", loadMore: "Load more" },
   spinner: { loading: "Loading" },
   animatedThemeToggler: {
     switchToLight: "Switch to light mode",
@@ -1269,6 +1519,72 @@ const enComponents: ComponentLocale = {
     signInWith: (provider) => `Sign in with ${provider}`,
   },
   typingDots: { typing: "Typing" },
+  countrySelect: { placeholder: "Select a country or region", searchPlaceholder: "Search countries or calling codes…" },
+  colorPicker: {
+    hex: "Hex color value",
+    rgb: "RGB color value",
+    hsl: "HSL color value",
+    format: "Color format",
+  },
+  imageCropper: { confirm: "Confirm", cancel: "Cancel", zoom: "Zoom" },
+  iconPicker: {
+    searchPlaceholder: "Search icons",
+    empty: "No matching icons",
+    clear: "Clear",
+    recent: "Recently used",
+  },
+  profileCard: {
+    name: "Hulian",
+    title: "Frontend Engineer",
+    status: "Online",
+    contact: "Contact",
+    avatar: (name) => `${name} avatar`,
+    contactName: (name) => `Contact ${name}`,
+  },
+  regionCascader: {
+    provinceCity: "Select province/city",
+    full: "Select province/city/district",
+    searchPlaceholder: "Search province/city/district…",
+  },
+  voiceRecord: {
+    idle: "Hold to talk",
+    recording: "Release to finish",
+    processing: "Processing…",
+    processingAria: "Processing",
+    stopRecording: "Release to stop recording",
+    holdToTalk: "Hold to talk",
+  },
+  bubbleMenu: {
+    home: "Home",
+    about: "About",
+    work: "Work",
+    blog: "Blog",
+    contact: "Contact",
+    toggle: "Toggle menu",
+    navigation: "Main navigation",
+    menuLink: "Menu link",
+  },
+  serviceMessage: { footer: "Open the mini app to view", action: "Mini app", more: "More" },
+  appLauncher: {
+    all: "All",
+    empty: "No matching apps",
+    search: "Search apps",
+    categories: "App categories",
+  },
+  colorField: { openPicker: "Open color picker" },
+  dateRangePicker: {
+    today: "Today",
+    lastDays: (days) => `Last ${days} days`,
+    thisMonth: "This month",
+    startDate: "Start date",
+    endDate: "End date",
+    month: (year, month) =>
+      `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month - 1]} ${year}`,
+    clear: "Clear",
+    previousMonth: "Previous month",
+    nextMonth: "Next month",
+  },
+  threadList: { title: "History", empty: "No history", deleteThread: "Delete conversation" },
   sankey: { chart: "Sankey diagram" },
   diffStat: { added: "Added", modified: "Modified", deleted: "Deleted", renamed: "Renamed" },
   deployStatus: {
@@ -1345,6 +1661,38 @@ const enComponents: ComponentLocale = {
     less: "Less",
     more: "More",
   },
+  cardNav: { expandMenu: "Open menu", collapseMenu: "Close menu" },
+  confirmCard: {
+    title: "Please confirm the following information",
+    confirm: "Confirm",
+    edit: "Edit",
+    confirmed: "Confirmed",
+    editing: "Editing",
+  },
+  inputOtp: { label: "Verification code" },
+  logoLoop: { label: "Partner logos", link: "Logo link" },
+  timePicker: {
+    placeholder: "Select time",
+    clear: "Clear",
+    hour: "Hour",
+    minute: "Minute",
+    second: "Second",
+    now: "Now",
+    confirm: "Confirm",
+  },
+  beianFooter: { icp: "ICP filing" },
+  infiniteMenu: {
+    openItem: (title) => `Open ${title}`,
+    openActive: "Open active item",
+    placeholderTitle: (index) => `Menu item ${index}`,
+    placeholderDescription: "Placeholder item · Replace via items",
+  },
+  lanyard: { title: "Hulian · HULIAN", subtitle: "Drag to swing" },
+  listbox: { label: "Options" },
+  stepper: { progress: "Step progress" },
+  documentSheet: { print: "Print" },
+  mathText: { blank: "Blank", rowSeparator: ";" },
+  modelViewer: { reset: "Reset view" },
   coupon: {
     available: "Claim now",
     claimed: "Use now",

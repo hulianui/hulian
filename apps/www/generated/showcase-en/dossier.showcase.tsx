@@ -10,7 +10,7 @@ const sections = [
     { key: "extras", label: "Optional supplement", status: "empty" as const, optional: true },
 ];
 const Demo = () => (<div className="w-full max-w-sm">
-    <Dossier sections={sections}/>
+    <Dossier sections={sections} title="Dossier" archivedLabel="Archived" optionalLabel="Optional"/>
   </div>);
 export const dossierShowcase: ShowcaseSpec = {
     examples: [
@@ -25,9 +25,12 @@ export const dossierShowcase: ShowcaseSpec = {
     { key: "experience", label: "Work experience", status: "empty" },
     { key: "extras", label: "Optional supplement", status: "empty", optional: true },
   ]}
+  title="Dossier"
+  archivedLabel="Archived"
+  optionalLabel="Optional"
 />`,
             render: () => (<div className="w-full max-w-sm">
-          <Dossier sections={sections}/>
+          <Dossier sections={sections} title="Dossier" archivedLabel="Archived" optionalLabel="Optional"/>
         </div>),
         },
         {
@@ -35,10 +38,12 @@ export const dossierShowcase: ShowcaseSpec = {
             description: "When all domains are done, the progress is full and customized title.",
             code: `<Dossier
   title="Case file \u00B7 Complete arguments"
+  archivedLabel="Archived"
+  optionalLabel="Optional"
   sections={sections.map((s) => ({ ...s, status: "done", active: false }))}
 />`,
             render: () => (<div className="w-full max-w-sm">
-          <Dossier title="Case file · Complete arguments" sections={sections.map((s) => ({
+          <Dossier title="Case file · Complete arguments" archivedLabel="Archived" optionalLabel="Optional" sections={sections.map((s) => ({
                     ...s,
                     status: "done" as const,
                     active: false,
@@ -49,9 +54,15 @@ export const dossierShowcase: ShowcaseSpec = {
         {
             title: "Embedded (bare)",
             description: "bare Remove the container border background and embed other panels.",
-            code: `<Dossier sections={sections.slice(0, 4)} bare />`,
+            code: `<Dossier
+  sections={sections.slice(0, 4)}
+  title="Dossier"
+  archivedLabel="Archived"
+  optionalLabel="Optional"
+  bare
+/>`,
             render: () => (<div className="w-full max-w-sm rounded-[var(--radius)] bg-surface-hover p-4">
-          <Dossier sections={sections.slice(0, 4)} bare/>
+          <Dossier sections={sections.slice(0, 4)} title="Dossier" archivedLabel="Archived" optionalLabel="Optional" bare/>
         </div>),
         },
     ],
@@ -61,7 +72,7 @@ export const dossierShowcase: ShowcaseSpec = {
         {
             name: "Archive All",
             render: () => (<div className="w-full max-w-sm">
-          <Dossier title="Case file · Complete arguments" sections={sections.map((s) => ({
+          <Dossier title="Case file · Complete arguments" archivedLabel="Archived" optionalLabel="Optional" sections={sections.map((s) => ({
                     ...s,
                     status: "done" as const,
                     active: false,
@@ -72,10 +83,15 @@ export const dossierShowcase: ShowcaseSpec = {
         {
             name: "bare embedded state",
             render: () => (<div className="w-full max-w-sm rounded-[var(--radius)] bg-surface-hover p-4">
-          <Dossier sections={sections.slice(0, 4)} bare/>
+          <Dossier sections={sections.slice(0, 4)} title="Dossier" archivedLabel="Archived" optionalLabel="Optional" bare/>
         </div>),
         },
     ],
     renderWithProps: () => <Demo />,
-    toCode: () => `<Dossier sections={[{ key, label, status: "done", summary }, \u2026]} />`,
+    toCode: () => `<Dossier
+  sections={[{ key, label, status: "done", summary }, \u2026]}
+  title="Dossier"
+  archivedLabel="Archived"
+  optionalLabel="Optional"
+/>`,
 };

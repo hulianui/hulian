@@ -1,5 +1,6 @@
 "use client";
 import { X } from "../_icons";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { ThreadListProps } from "./thread-list.types";
 
@@ -7,12 +8,15 @@ export function ThreadList({
   items,
   onSelect,
   onDelete,
-  title = "历史",
+  title,
   action,
-  empty = "暂无历史",
+  empty,
   bare = false,
   className,
 }: ThreadListProps) {
+  const locale = useComponentLocale().threadList ?? zhCN.components!.threadList!;
+  const resolvedTitle = title ?? locale.title;
+  const resolvedEmpty = empty ?? locale.empty;
   return (
     <div
       className={cn(
@@ -21,11 +25,11 @@ export function ThreadList({
       )}
     >
       <div className="mb-2.5 flex items-center justify-between gap-2">
-        {title && <p className="text-xs font-medium text-muted">{title}</p>}
+        {resolvedTitle && <p className="text-xs font-medium text-muted">{resolvedTitle}</p>}
         {action}
       </div>
       {items.length === 0 ? (
-        <p className="px-2 py-3 text-center text-xs text-muted">{empty}</p>
+        <p className="px-2 py-3 text-center text-xs text-muted">{resolvedEmpty}</p>
       ) : (
         <ol className="space-y-0.5">
           {items.map((it) => (
@@ -54,7 +58,7 @@ export function ThreadList({
               {onDelete && (
                 <button
                   type="button"
-                  aria-label="删除会话"
+                  aria-label={locale.deleteThread}
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(it.id);

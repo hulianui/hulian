@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { ColorFormat, ColorPickerProps } from "./color-picker.types";
 import { formatColor, parseColor, rgbToHex } from "./color-utils";
@@ -8,12 +9,6 @@ import { formatColor, parseColor, rgbToHex } from "./color-utils";
 // 颜色选择器（含色板拖拽 + 文本输入故 "use client"）。
 // 内核 react-colorful（hex 单一真源）+ 零依赖 hex→rgb/hsl 派生 + 瑚琏 token 皮肤。受控/非受控对称。
 const FORMATS: ColorFormat[] = ["hex", "rgb", "hsl"];
-
-const FORMAT_LABEL: Record<ColorFormat, string> = {
-  hex: "十六进制颜色值",
-  rgb: "RGB 颜色值",
-  hsl: "HSL 颜色值",
-};
 
 export function ColorPicker({
   value,
@@ -27,6 +22,7 @@ export function ColorPicker({
   showFormatSwitcher = true,
   className,
 }: ColorPickerProps) {
+  const locale = useComponentLocale().colorPicker ?? zhCN.components!.colorPicker!;
   // 颜色：受控读 value（解析为 hex 规范），非受控读内部 state
   const isControlled = value !== undefined;
   const normalize = (v: string) => {
@@ -82,7 +78,7 @@ export function ColorPicker({
 
       {/* 格式切换器：HEX / RGB / HSL 分段控件 */}
       {showFormatSwitcher && (
-        <div role="group" aria-label="颜色格式" className="inline-flex rounded-[min(var(--radius),0.375rem)] border border-border p-0.5">
+        <div role="group" aria-label={locale.format} className="inline-flex rounded-[min(var(--radius),0.375rem)] border border-border p-0.5">
           {FORMATS.map((f) => {
             const active = f === fmt;
             return (
@@ -119,7 +115,7 @@ export function ColorPicker({
             value={draft}
             onChange={(e) => handleInput(e.target.value)}
             spellCheck={false}
-            aria-label={FORMAT_LABEL[fmt]}
+            aria-label={locale[fmt]}
             className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 font-mono text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>

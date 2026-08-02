@@ -10,9 +10,9 @@ import {
   monthMatrix,
   normISODate as normISO,
   toISODate as toISO,
-  WEEKDAY_LABELS as WEEKDAYS,
 } from "../lib/date";
 import { Calendar, ChevronLeft, ChevronRight, X } from "../_icons";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DateRangePickerProps, DateRangePreset, DateRangeValue } from "./date-range-picker.types";
@@ -22,13 +22,6 @@ const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
-const DEFAULT_PRESETS: DateRangePreset[] = [
-  { label: "今天", getValue: () => { const t = toISO(dayjs()); return [t, t]; } },
-  { label: "最近 7 天", getValue: () => [toISO(dayjs().subtract(6, "day")), toISO(dayjs())] },
-  { label: "最近 30 天", getValue: () => [toISO(dayjs().subtract(29, "day")), toISO(dayjs())] },
-  { label: "本月", getValue: () => [toISO(dayjs().startOf("month")), toISO(dayjs().endOf("month"))] },
-];
-
 export function DateRangePicker({
   value: valueProp,
   defaultValue,
@@ -37,12 +30,22 @@ export function DateRangePicker({
   maxDate,
   disabledDate,
   presets,
-  placeholder = ["开始日期", "结束日期"],
+  placeholder,
   displayFormat = DATE_FORMAT,
   disabled,
   readOnly,
   className,
 }: DateRangePickerProps) {
+  const componentLocale = useComponentLocale();
+  const locale = componentLocale.dateRangePicker ?? zhCN.components!.dateRangePicker!;
+  const calendarLocale = componentLocale.calendar ?? zhCN.components!.calendar!;
+  const resolvedPlaceholder = placeholder ?? [locale.startDate, locale.endDate];
+  const defaultPresets: DateRangePreset[] = [
+    { label: locale.today, getValue: () => { const t = toISO(dayjs()); return [t, t]; } },
+    { label: locale.lastDays(7), getValue: () => [toISO(dayjs().subtract(6, "day")), toISO(dayjs())] },
+    { label: locale.lastDays(30), getValue: () => [toISO(dayjs().subtract(29, "day")), toISO(dayjs())] },
+    { label: locale.thisMonth, getValue: () => [toISO(dayjs().startOf("month")), toISO(dayjs().endOf("month"))] },
+  ];
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<DateRangeValue | null>(defaultValue ?? null);
   const value = isControlled ? valueProp ?? null : internal;
@@ -58,7 +61,7 @@ export function DateRangePicker({
   const min = normISO(minDate);
   const max = normISO(maxDate);
   const presetList: DateRangePreset[] | null =
-    presets === false ? null : presets === true || presets === undefined ? DEFAULT_PRESETS : presets;
+    presets === false ? null : presets === true || presets === undefined ? defaultPresets : presets;
   const today = toISO(dayjs());
 
   function isDisabledDay(iso: string): boolean {
@@ -132,9 +135,9 @@ export function DateRangePicker({
   function renderMonth(month: Dayjs) {
     return (
       <div>
-        <div className="mb-2 text-center text-sm font-medium text-foreground">{month.format("YYYY 年 M 月")}</div>
+        <div className="mb-2 text-center text-sm font-medium text-foreground">{locale.month(month.year(), month.month() + 1)}</div>
         <div className="grid grid-cols-7">
-          {WEEKDAYS.map((w) => (
+          {calendarLocale.weekdays.map((w) => (
             <div key={w} className="flex h-8 items-center justify-center text-xs text-muted">
               {w}
             </div>
@@ -207,16 +210,16 @@ export function DateRangePicker({
               )}
             >
               <Calendar className="size-4 shrink-0 text-muted" aria-hidden />
-              <span className={cn(!startText && "text-muted")}>{startText || placeholder[0]}</span>
+              <span className={cn(!startText && "text-muted")}>{startText || resolvedPlaceholder[0]}</span>
               <span className="text-muted">~</span>
-              <span className={cn(!endText && "text-muted")}>{endText || placeholder[1]}</span>
+              <span className={cn(!endText && "text-muted")}>{endText || resolvedPlaceholder[1]}</span>
             </button>
           }
         />
         {showClear && (
           <button
             type="button"
-            aria-label="清除"
+            aria-label={locale.clear}
             onClick={clearValue}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >
@@ -259,7 +262,7 @@ export function DateRangePicker({
               <div className="relative mb-1 flex items-center justify-between px-1">
                 <button
                   type="button"
-                  aria-label="上个月"
+                  aria-label={locale.previousMonth}
                   onClick={() => setViewMonth(viewMonth.subtract(1, "month"))}
                   className="rounded-md p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
@@ -267,7 +270,7 @@ export function DateRangePicker({
                 </button>
                 <button
                   type="button"
-                  aria-label="下个月"
+                  aria-label={locale.nextMonth}
                   onClick={() => setViewMonth(viewMonth.add(1, "month"))}
                   className="rounded-md p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >

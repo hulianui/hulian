@@ -2,6 +2,7 @@
 import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { Button } from "../button";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Slider } from "../slider";
 import type { CropArea, CropOutputOptions, ImageCropperProps } from "./image-cropper.types";
@@ -61,11 +62,14 @@ export function ImageCropper({
   onCropped,
   onCancel,
   onError,
-  confirmLabel = "确认",
-  cancelLabel = "取消",
+  confirmLabel,
+  cancelLabel,
   cropAreaClassName,
   className,
 }: ImageCropperProps) {
+  const locale = useComponentLocale().imageCropper ?? zhCN.components!.imageCropper!;
+  const resolvedConfirmLabel = confirmLabel ?? locale.confirm;
+  const resolvedCancelLabel = cancelLabel ?? locale.cancel;
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [areaPixels, setAreaPixels] = useState<CropArea | null>(null);
@@ -122,7 +126,7 @@ export function ImageCropper({
           <path d="M13.5 13.5 17 17M7 9h4" strokeLinecap="round" />
         </svg>
         <Slider
-          aria-label="缩放"
+          aria-label={locale.zoom}
           min={1}
           max={maxZoom}
           step={0.01}
@@ -137,11 +141,11 @@ export function ImageCropper({
       <div className="flex items-center justify-end gap-2">
         {onCancel && (
           <Button variant="ghost" onClick={onCancel} disabled={exporting}>
-            {cancelLabel}
+            {resolvedCancelLabel}
           </Button>
         )}
         <Button onClick={confirm} loading={exporting} disabled={!areaPixels}>
-          {confirmLabel}
+          {resolvedConfirmLabel}
         </Button>
       </div>
     </div>

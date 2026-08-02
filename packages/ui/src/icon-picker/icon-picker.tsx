@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState, type ReactNode } from "react";
 import { Search, X } from "../_icons";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { Input } from "../input/input";
 import { cn } from "../lib/cn";
 import type { IconPickerProps, IconPickerSource } from "./icon-picker.types";
@@ -29,14 +30,17 @@ export function IconPicker({
   sources,
   columns = 8,
   searchable = true,
-  searchPlaceholder = "搜索图标",
+  searchPlaceholder,
   defaultSource,
   recent: recentProp,
   onRecentChange,
   clearable = true,
-  emptyMessage = "没有匹配的图标",
+  emptyMessage,
   className,
 }: IconPickerProps) {
+  const locale = useComponentLocale().iconPicker ?? zhCN.components!.iconPicker!;
+  const resolvedSearchPlaceholder = searchPlaceholder ?? locale.searchPlaceholder;
+  const resolvedEmptyMessage = emptyMessage ?? locale.empty;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
   const value = isControlled ? (valueProp ?? null) : internal;
@@ -122,8 +126,8 @@ export function IconPicker({
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={searchPlaceholder}
-            aria-label={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
+            aria-label={resolvedSearchPlaceholder}
             prefix={<Search className="size-4 text-muted" />}
           />
         </div>
@@ -158,7 +162,7 @@ export function IconPicker({
           </span>
           <button
             type="button"
-            aria-label="清除"
+            aria-label={locale.clear}
             onClick={() => commit(null)}
             className="grid size-5 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none"
           >
@@ -169,12 +173,12 @@ export function IconPicker({
 
       <div className="h-56 overflow-y-auto p-2">
         {q ? (
-          renderGrid(hits ?? [], emptyMessage)
+          renderGrid(hits ?? [], resolvedEmptyMessage)
         ) : (
           <>
             {recentHits.length > 0 && (
               <div className="mb-2">
-                <div className="px-1 pb-1 text-xs font-medium text-muted">最近使用</div>
+                <div className="px-1 pb-1 text-xs font-medium text-muted">{locale.recent}</div>
                 {renderGrid(recentHits)}
               </div>
             )}

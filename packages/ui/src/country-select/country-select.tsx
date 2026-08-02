@@ -9,6 +9,7 @@ import {
   ComboboxTrigger,
 } from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { countries } from "./countries.data";
 import { countrySearchText, flagEmoji, getCountry } from "./country-select.logic";
 import type { Country, CountrySelectProps } from "./country-select.types";
@@ -28,13 +29,16 @@ export function CountrySelect({
   multiple = false,
   showEnglish = true,
   showDialCode = false,
-  placeholder = "选择国家/地区",
-  searchPlaceholder = "搜索国家 / 区号…",
+  placeholder,
+  searchPlaceholder,
   size,
   disabled,
   invalid,
   className,
 }: CountrySelectProps) {
+  const locale = useComponentLocale().countrySelect ?? zhCN.components!.countrySelect!;
+  const resolvedPlaceholder = placeholder ?? locale.placeholder;
+  const resolvedSearchPlaceholder = searchPlaceholder ?? locale.searchPlaceholder;
   const items = useMemo(() => countries.map(toItem), []);
   const itemByCode = useMemo(() => new Map(items.map((i) => [i.value, i])), [items]);
 
@@ -86,7 +90,7 @@ export function CountrySelect({
         <ComboboxChips
           size={size}
           invalid={invalid}
-          placeholder={selected.length ? "" : placeholder}
+          placeholder={selected.length ? "" : resolvedPlaceholder}
           className={className}
         >
           {selected.map((it) => (
@@ -96,7 +100,7 @@ export function CountrySelect({
             </ComboboxChip>
           ))}
         </ComboboxChips>
-        <ComboboxContent searchPlaceholder={searchPlaceholder}>
+        <ComboboxContent searchPlaceholder={resolvedSearchPlaceholder}>
           {(item) => (
             <ComboboxItem key={item.value} value={item}>
               {renderRow(item)}
@@ -120,8 +124,8 @@ export function CountrySelect({
         onChange?.(code);
       }}
     >
-      <ComboboxTrigger size={size} placeholder={placeholder} invalid={invalid} className={className} />
-      <ComboboxContent searchPlaceholder={searchPlaceholder}>
+      <ComboboxTrigger size={size} placeholder={resolvedPlaceholder} invalid={invalid} className={className} />
+      <ComboboxContent searchPlaceholder={resolvedSearchPlaceholder}>
         {(item) => (
           <ComboboxItem key={item.value} value={item}>
             {renderRow(item)}

@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useReducedMotion } from "motion/react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { ProfileCardProps } from "./profile-card.types";
 
@@ -40,11 +41,11 @@ function initials(name: string): string {
 
 export function ProfileCard({
   avatarUrl,
-  name = "瑚琏",
-  title = "前端工程师",
+  name,
+  title,
   handle = "hulianui",
-  status = "在线",
-  contactText = "联系",
+  status,
+  contactText,
   showUserInfo = true,
   onContactClick,
   enableTilt = true,
@@ -56,6 +57,11 @@ export function ProfileCard({
   ...props
 }: ProfileCardProps &
   Omit<HTMLAttributes<HTMLDivElement>, "style" | "children" | "color" | "className">) {
+  const locale = useComponentLocale().profileCard ?? zhCN.components!.profileCard!;
+  name ??= locale.name;
+  title ??= locale.title;
+  status ??= locale.status;
+  contactText ??= locale.contact;
   const prefersReduced = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
@@ -314,7 +320,7 @@ export function ProfileCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={avatarUrl}
-                alt={`${name} 头像`}
+                alt={locale.avatar(name)}
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover mix-blend-luminosity"
                 onError={(e) => {
@@ -373,7 +379,7 @@ export function ProfileCard({
               <button
                 type="button"
                 onClick={onContactClick}
-                aria-label={`联系 ${name}`}
+                aria-label={locale.contactName(name)}
                 className="pointer-events-auto rounded-xl border border-border/60 bg-surface/60 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 {contactText}

@@ -21,6 +21,10 @@ export interface DossierProps {
   title?: ReactNode;
   /** 头部右侧进度文案，缺省自动算「已归档 n/m」（m 不含 optional 域） */
   progress?: ReactNode;
+  /** 自动进度前缀。服务端渲染场景可显式传入本地化文案。 @default "已归档" */
+  archivedLabel?: ReactNode;
+  /** 可选域标记。服务端渲染场景可显式传入本地化文案。 @default "可选" */
+  optionalLabel?: ReactNode;
   /** 去掉容器边框背景，内嵌用 @default false */
   bare?: boolean;
   className?: string;
