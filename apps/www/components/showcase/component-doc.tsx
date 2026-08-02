@@ -35,26 +35,15 @@ export function ComponentDoc({
   const localizedCopyMd = localizeComponentMarkdownLinks(copyMd);
   const english = DOCS_LOCALE === "en";
 
-  // Showcase specs are the Chinese site's interactive fixture layer and include fixture text
-  // inside render closures. English component pages use the complete, parity-checked .en.md
-  // documents as their authoritative usage/API surface; rendering the Chinese fixture layer
-  // there would produce a mixed-language page and a hydration-stable Chinese fallback.
-  const renderInteractiveShowcase = !english;
-  const hasPlayground = renderInteractiveShowcase && spec.controls.length > 0;
+  const hasPlayground = spec.controls.length > 0;
   const examples = spec.examples ?? [];
-  const hasExamples = renderInteractiveShowcase && examples.length > 0;
+  const hasExamples = examples.length > 0;
   const toc: AnchorItem[] = [
-    ...(renderInteractiveShowcase
-      ? [
-          hasExamples
-            ? { href: "#sec-usage", title: "用法" }
-            : { href: "#sec-preview", title: "预览" },
-        ]
-      : []),
+    hasExamples
+      ? { href: "#sec-usage", title: english ? "Usage" : "用法" }
+      : { href: "#sec-preview", title: english ? "Preview" : "预览" },
     ...(localizedDoc ? [{ href: "#sec-doc", title: english ? "Documentation" : "文档" }] : []),
-    ...(renderInteractiveShowcase && !hasExamples
-      ? [{ href: "#sec-states", title: "全状态" }]
-      : []),
+    ...(hasExamples ? [] : [{ href: "#sec-states", title: english ? "States" : "全状态" }]),
     ...(hasPlayground ? [{ href: "#sec-playground", title: "Playground" }] : []),
   ];
 
@@ -85,13 +74,13 @@ export function ComponentDoc({
             <h2 className="mb-5 text-sm font-medium text-muted">{english ? "Usage" : "用法"}</h2>
             <ExamplesSection examples={examples} />
           </section>
-        ) : renderInteractiveShowcase ? (
+        ) : (
           <section id="sec-preview" className="scroll-mt-6">
             <ComponentPreview code={spec.toCode(defaultProps(spec))}>
               {spec.states[0]?.render()}
             </ComponentPreview>
           </section>
-        ) : null}
+        )}
 
         {localizedDoc && (
           <section
@@ -102,7 +91,7 @@ export function ComponentDoc({
           </section>
         )}
 
-        {renderInteractiveShowcase && !hasExamples && (
+        {!hasExamples && (
           <section
             id="sec-states"
             className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm"
