@@ -62,6 +62,48 @@ CI 补了这一步而平台的构建命令没有——干净 clone 上只跑 `ne
 3. Deploy。给一个 `*.vercel.app` 域。
 4. 自定义域：Project → Settings → Domains → 加 `hulianui.haloritual.com`，按提示在阿里云配 CNAME，SSL 自动签发。
 
+## C. 中国镜像 `hulianui-zh.haloritual.com`（阿里云直连）
+
+主站在 Cloudflare 后面，国内访问不稳，故 2026-06-05 起**双发**同一份静态产物到一台阿里云机器（60.205.112.50 · Ubuntu 22.04 + 宝塔 + nginx 1.24 · docroot `/www/wwwroot/hulianui-zh.haloritual.com/`）。
+
+- **自动部署**：`ci.yml` 的 `deploy-zh` job（`needs: verify`，仅 master push）下载 `www-out` 产物后 `rsync -az --delete` 上去。secrets：`ZH_DEPLOY_SSH_KEY` / `ZH_DEPLOY_HOST` / `ZH_DEPLOY_USER` / `ZH_DEPLOY_PATH`。
+- **证书**是通配符 `*.haloritual.com`（**只覆盖一级**），所以镜像必须用单级子域名。
+- **两站部署不同步**：Cloudflare Pages 自己监听 push，几分钟就上；`deploy-zh` 要等整个 CI 跑完（Typecheck·Test·Build 单独就 ~10 分钟）。**别看主站好了就宣布发完** —— 判据是两站各 `curl /llms.txt | sed -n 3p` 比对版本号与组件数。
+
+### nginx 配置
+
+**SSoT 是 `deploy/nginx/hulianui-zh.haloritual.com.conf`**（本仓库），服务器上那份在
+`/www/server/panel/vhost/nginx/hulianui-zh.haloritual.com.conf`。CI 只同步**静态产物**，
+不同步 nginx 配置——改配置目前是手工：
+
+```bash
+# 备份 → 换 → nginx -t → reload（测不过就回滚）
+scp deploy/nginx/hulianui-zh.haloritual.com.conf root@60.205.112.50:/tmp/new.conf
+ssh root@60.205.112.50 'V=/www/server/panel/vhost/nginx/hulianui-zh.haloritual.com.conf; \
+  cp -p $V $V.bak-$(date +%Y%m%d-%H%M%S) && cp /tmp/new.conf $V && \
+  (nginx -t && nginx -s reload) || cp -p $(ls -t $V.bak-* | head -1) $V'
+```
+
+两条**踩过的**规则写在配置的注释里，改动前先读：
+
+1. `try_files` 末位必须是 `=404`（配 `error_page 404 /404.html`），**不能**直接写 `/404.html`
+   —— 后者是内部重定向，状态码保持 **200**，于是任意不存在的 URL 都成了「200 + 404 页内容」的
+   软 404：搜索引擎会把它们当正常页收录，人工验证部署时也会被 200 骗过去。
+2. 必须有 `rewrite ^/(.+)/$ /$1 permanent;` 做尾斜杠规范化（对齐主站 Cloudflare 的 308）
+   —— 否则**带尾斜杠的合法页面**也会静默变 404 页：`try_files` 拼出的是 `/foo/.html` 与
+   `/foo//index.html`，两个都不存在。用户从主站复制一条带斜杠的链接过来就撞这个。
+
+> 这两条 2026-08-02 之前都是坏的，随 0.19.0 发版验证时发现并修复。
+
+**验证部署永远看页面内容，不要看状态码**：
+
+```bash
+curl -s --compressed -L https://hulianui-zh.haloritual.com/components/auth-panel \
+  | grep -oE '<title>[^<]*</title>'      # 期望 <title>AuthPanel · 瑚琏 Hulian</title>
+```
+
+URL **不带尾斜杠**：带斜杠在主站是 308，不跟随重定向就拿到空 body，grep 什么都搜不到。
+
 ---
 
 ## 注意
