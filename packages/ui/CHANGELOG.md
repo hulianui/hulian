@@ -74,7 +74,7 @@
 
 ### Minor Changes
 
-- 新增 8 个组件，修 9 条消费方缺口。
+- 新增 8 个组件，修 9 条消费方缺口。 <!-- parity-id: ui-0.18.0-consumer-gaps -->
 
   **新组件**
 

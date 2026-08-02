@@ -68,7 +68,7 @@
 
 ### Minor Changes
 
-- Add eight components and close nine downstream-consumer gaps.
+- Add eight components and close nine downstream-consumer gaps. <!-- parity-id: ui-0.18.0-consumer-gaps -->
 
   **New components**
 
