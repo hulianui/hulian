@@ -3,6 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import {
+  AuthPanel,
+  Brand,
   Field,
   Input,
   Checkbox,
@@ -15,7 +17,7 @@ import {
   Spinner,
   toast,
 } from "@hulianui/ui";
-import { Rocket, Check } from "lucide-react";
+import { Rocket } from "lucide-react";
 
 // 注册 Block —— 自包含、可整段复制。
 // 两栏布局：左侧品牌图文（响应式塌成单列），右侧表单。
@@ -103,42 +105,18 @@ export function SignupBlock() {
 
   return (
     <section className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-[var(--radius)] border border-border bg-surface shadow-sm md:grid-cols-2">
-      {/* 左：品牌图文 */}
-      <div
-        className="hidden flex-col justify-between gap-10 p-10 md:flex"
-        style={{
-          background:
-            "radial-gradient(125% 125% at 0% 0%, color-mix(in oklab, var(--color-primary) 12%, var(--color-bg)) 0%, var(--color-bg) 60%)",
-        }}
-      >
-        <div>
-          <span className="inline-flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-              瀚
-            </span>
-            <span className="text-base font-semibold tracking-tight">瀚云</span>
-          </span>
-          <Heading
-            level={2}
-            weight="bold"
-            balance
-            className="mt-8 text-3xl leading-tight text-foreground"
-          >
+      {/* 左：品牌图文 —— 整块交给 AuthPanel（此前是裸 div + inline 渐变，hulianui/hulian#71） */}
+      <AuthPanel
+        className="hidden md:flex"
+        brand={<Brand name="瀚云" mark="瀚" />}
+        title={
+          <>
             把想法送上 <AuroraText>全球边缘</AuroraText>
-          </Heading>
-          <Text tone="muted" className="mt-3 max-w-sm">
-            五分钟创建账号，开启第一个项目。无需信用卡。
-          </Text>
-        </div>
-        <ul className="space-y-3">
-          {highlights.map((h) => (
-            <li key={h} className="flex items-start gap-2 text-sm text-foreground">
-              <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-              <span>{h}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+          </>
+        }
+        description="五分钟创建账号，开启第一个项目。无需信用卡。"
+        highlights={highlights}
+      />
 
       {/* 右：表单 */}
       <div className="p-8 sm:p-10">
