@@ -9,6 +9,7 @@ dist/
 .next/
 next-env.d.ts
 apps/www/.intlayer/
+apps/www/.bilingual-build/
 
 # tauri
 apps/desktop/src-tauri/target/
