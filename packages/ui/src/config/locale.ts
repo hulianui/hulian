@@ -558,6 +558,8 @@ export interface ComponentLocale {
     messageSeparator?: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
+  giftFeed?: { sent: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
   liveProductCard?: {
     presenting: string;
     sold: (count: number) => string;
@@ -1078,6 +1080,7 @@ const zhComponents: ComponentLocale = {
     sent: "送出",
     messageSeparator: "：",
   },
+  giftFeed: { sent: "送出" },
   liveProductCard: {
     presenting: "讲解中",
     sold: (count) => `已售 ${count}`,
@@ -1708,6 +1711,7 @@ const enComponents: ComponentLocale = {
     sent: "sent",
     messageSeparator: ":",
   },
+  giftFeed: { sent: "sent" },
   liveProductCard: {
     presenting: "Presenting",
     sold: (count) => `Sold ${count}`,

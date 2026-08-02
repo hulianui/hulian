@@ -2,10 +2,12 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
+import { useComponentLocale } from "../config/locale-context";
 import { applyGiftEvent } from "./gift-feed-merge";
 import type { GiftBanner, GiftFeedProps } from "./gift-feed.types";
 
 export function GiftFeed({ events, max = 3, duration = 4000, className }: GiftFeedProps) {
+  const locale = useComponentLocale().giftFeed ?? { sent: "送出" };
   const [banners, setBanners] = useState<GiftBanner[]>([]);
   const processed = useRef(0);
   const timers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
@@ -50,7 +52,7 @@ export function GiftFeed({ events, max = 3, duration = 4000, className }: GiftFe
           <div className="leading-tight">
             <div className="text-xs font-medium">{b.user.name}</div>
             <div className="text-[11px] text-white/75">
-              送出 {b.gift.name} {b.gift.icon}
+              {locale.sent} {b.gift.name} {b.gift.icon}
             </div>
           </div>
           <div className="ml-1 flex items-center gap-1">
