@@ -67,9 +67,68 @@ const MANUAL_COPY = new Map([
     "Use pnpm patch to persist the patch alongside the lockfile.",
   ],
   ["用 pnpm patch 固化补丁。", "Persist the fix with pnpm patch."],
+  ["坑", "Pit"],
+  ["正解", "Correct answer"],
+  ["降级", "Degraded"],
+  ["我", "Me"],
+  ["琏", "Lian"],
+  ["刚刚", "Just now"],
+  ["瑚琏支持暗色吗？", "Does Hulian support dark mode?"],
+  ["怎么切换？", "How do I switch themes?"],
+  [
+    "好的，我先看下现有结构再动手。",
+    "Okay, let me take a look at the existing structure before starting.",
+  ],
+  ["退款预计 1-3 个工作日到账。", "Refunds are expected to arrive in 1-3 working days."],
+  [
+    '<Callout tone="warning" title="坑">直接改 node_modules 里的样式，下次安装会丢。</Callout>',
+    '<Callout tone="warning" title="Pit">If you directly change the style in node_modules, it will be lost in the next installation.</Callout>',
+  ],
   [
     '<Callout tone="success" title="正解">用 pnpm patch 固化补丁，随 lockfile 走。</Callout>',
-    '<Callout tone="success" title="Recommended">Use pnpm patch to persist the patch alongside the lockfile.</Callout>',
+    '<Callout tone="success" title="Correct answer">Use pnpm patch to persist the patch alongside the lockfile.</Callout>',
+  ],
+  [
+    '<StatusDot status="degraded" label="降级" />',
+    '<StatusDot status="degraded" label="Degraded" />',
+  ],
+  [
+    '<ChatMessage role="assistant" name="瑚琏 AI">好的，我先看下现有结构再动手。</ChatMessage>',
+    '<ChatMessage role="assistant" name="Hulian AI">Okay, let me take a look at the existing structure before starting.</ChatMessage>',
+  ],
+  [
+    '<ChatMessage role="user" name="我">帮我把首页重写成 100% dogfood</ChatMessage>',
+    '<ChatMessage role="user" name="Me">Help me rewrite the homepage to 100% dogfood</ChatMessage>',
+  ],
+  [
+    '<ChatMessage role="user" name="我">瑚琏支持暗色吗？</ChatMessage>',
+    '<ChatMessage role="user" name="Me">Does Hulian support dark mode?</ChatMessage>',
+  ],
+  [
+    '<ChatMessage role="user" name="我">怎么切换？</ChatMessage>',
+    '<ChatMessage role="user" name="Me">How do I switch themes?</ChatMessage>',
+  ],
+  [
+    '<ChatMessage role="user" name="我">这条很长……</ChatMessage>',
+    '<ChatMessage role="user" name="Me">This is a long message...</ChatMessage>',
+  ],
+  [
+    '<ChatMessage role="user" name="坐席·小琏" timestamp="刚刚" status="read">退款预计 1-3 个工作日到账。</ChatMessage>',
+    '<ChatMessage role="user" name="Agent·Xiao Lian" timestamp="Just now" status="read">Refunds are expected to arrive in 1-3 working days.</ChatMessage>',
+  ],
+  ['avatar={<Avatar fallback="琏" />}', 'avatar={<Avatar fallback="Lian" />}'],
+  ["avatar={<Avatar>瑚</Avatar>}", "avatar={<Avatar>Hu</Avatar>}"],
+  [
+    '<Chip tone="brand" avatar={<Avatar fallback="安" />}>安娜</Chip>',
+    '<Chip tone="brand" avatar={<Avatar fallback="Ann" />}>Anna</Chip>',
+  ],
+  [
+    "dot 状态点 / startContent 图标 / avatar 头像三选一（优先级 avatar > startContent > dot）。",
+    "Choose one visual indicator: a dot, a startContent icon, or an avatar (priority: avatar > startContent > dot).",
+  ],
+  [
+    "Statistic.Countdown 按 deadline 实时倒数，format 控制模板（支持 D/H/m/s/S）。",
+    "Statistic.Countdown counts down to the deadline in real time; format controls the display template (supports D/H/m/s/S).",
   ],
   [
     "提高 velocity 加速漂移，className 透传到文本上色为主色。",
@@ -313,10 +372,18 @@ function normalizeEnglish(value) {
     .trim();
 }
 
+export function isHumanOnlyShowcaseText(source) {
+  // A bare comparison/priority arrow (`>`) is ordinary prose. Opening markup,
+  // JSX expressions, quoted attributes, and statement punctuation identify
+  // executable fragments whose repeated tokens must remain byte-for-byte.
+  return !/[<{}\[\]="'`;]/u.test(source);
+}
+
 function normalizeSourceEnglish(source, value) {
   let english = normalizeEnglish(value);
-  const codeBearing = /[<>{}\[\]="'`;]/u.test(source);
-  if (!codeBearing) english = english.replace(/\b([A-Za-z][A-Za-z-]*)\s+\1\b/giu, "$1");
+  if (isHumanOnlyShowcaseText(source)) {
+    english = english.replace(/\b([A-Za-z][A-Za-z-]*)\s+\1\b/giu, "$1");
+  }
   if (source.includes("YYYY 年 M 月 D 日")) {
     english = english.replace(/YYYY\s+year\s+M\s+month\s+D\s+day/giu, "MMM D, YYYY");
   }

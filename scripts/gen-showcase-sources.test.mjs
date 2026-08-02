@@ -110,6 +110,52 @@ test("translation treats fullwidth yen as residue and converts it to ASCII yen",
   assert.deepEqual(result.usage, { exact: 1, file: 0, fallback: 0 });
 });
 
+test("translation rejects static JSX copy that drifts between code and preview", () => {
+  const source = `
+    export const messageShowcase = {
+      examples: [{
+        code: \`<ChatMessage timestamp="刚刚">退款处理中</ChatMessage>\`,
+        render: () => <ChatMessage timestamp="刚刚">退款处理中</ChatMessage>,
+      }],
+    };
+  `;
+  const options = {
+    sourceFile: "packages/ui/src/message/message.showcase.tsx",
+    outputFile: "apps/www/generated/showcase-en/message.showcase.tsx",
+  };
+
+  assert.throws(
+    () =>
+      translateShowcaseModule(source, {
+        ...options,
+        copy: {
+          exact: {
+            '<ChatMessage timestamp="刚刚">退款处理中</ChatMessage>':
+              '<ChatMessage timestamp="Just">Refund pending</ChatMessage>',
+            刚刚: "Just now",
+            退款处理中: "Refund is pending",
+          },
+          files: {},
+        },
+      }),
+    /code-preview parity mismatch.*刚刚.*退款处理中/su,
+  );
+
+  const result = translateShowcaseModule(source, {
+    ...options,
+    copy: {
+      exact: {
+        '<ChatMessage timestamp="刚刚">退款处理中</ChatMessage>':
+          '<ChatMessage timestamp="Just now">Refund is pending</ChatMessage>',
+        刚刚: "Just now",
+        退款处理中: "Refund is pending",
+      },
+      files: {},
+    },
+  });
+  assert.match(result.code, /timestamp="Just now"/u);
+});
+
 test("translation rejects empty or residue-bearing English copy before generation", () => {
   const options = {
     sourceFile: "packages/ui/src/button/button.showcase.tsx",

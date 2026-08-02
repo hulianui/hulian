@@ -8,6 +8,12 @@ const REPO_ROOT = fileURLToPath(new URL("../", import.meta.url));
 const DEFAULT_SOURCE_ROOT = join(REPO_ROOT, "packages/ui/src");
 const DEFAULT_OUTPUT_ROOT = join(REPO_ROOT, "apps/www/generated/showcase-en");
 const DEFAULT_COPY_FILE = join(REPO_ROOT, "apps/www/i18n/showcase-copy.en.json");
+const CODE_PREVIEW_PARITY_COMPONENTS = new Set([
+  "Avatar",
+  "Callout",
+  "ChatMessage",
+  "MessageActions",
+]);
 
 function posixPath(value) {
   return value.split(sep).join("/");
@@ -141,6 +147,178 @@ function rewrittenModulePath(modulePath, sourceFile, outputFile) {
   return rewritten;
 }
 
+function normalizedParityValue(value) {
+  return value.trim().replace(/\s+/gu, " ");
+}
+
+function codeLiteralValues(root) {
+  const values = [];
+  function visit(node) {
+    if (
+      ts.isPropertyAssignment(node) &&
+      ((ts.isIdentifier(node.name) && node.name.text === "code") ||
+        (ts.isStringLiteral(node.name) && node.name.text === "code")) &&
+      (ts.isStringLiteral(node.initializer) || ts.isNoSubstitutionTemplateLiteral(node.initializer))
+    ) {
+      values.push(node.initializer.text);
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(root);
+  return values;
+}
+
+function jsxStaticValues(root) {
+  const values = [];
+  function visit(node) {
+    if (ts.isJsxAttribute(node)) {
+      const component = node.parent.parent.tagName.getText(root);
+      if (node.initializer && ts.isStringLiteral(node.initializer)) {
+        values.push({ component, value: node.initializer.text });
+      } else if (
+        node.initializer &&
+        ts.isJsxExpression(node.initializer) &&
+        node.initializer.expression &&
+        (ts.isStringLiteral(node.initializer.expression) ||
+          ts.isNoSubstitutionTemplateLiteral(node.initializer.expression))
+      ) {
+        values.push({ component, value: node.initializer.expression.text });
+      }
+    } else if (ts.isJsxText(node)) {
+      const value = normalizedParityValue(node.text);
+      if (value && ts.isJsxElement(node.parent)) {
+        values.push({ component: node.parent.openingElement.tagName.getText(root), value });
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(root);
+  return values;
+}
+
+function parsedJsxSnippet(sourceFile, snippet) {
+  if (!snippet.trimStart().startsWith("<")) return undefined;
+  const root = ts.createSourceFile(
+    `${sourceFile}.snippet.tsx`,
+    `const ShowcaseParity = (<>${snippet}</>);`,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  return root.parseDiagnostics.length === 0 ? root : undefined;
+}
+
+function pairedStaticValues(sourceValues, translatedValues, sourceFile, context) {
+  if (sourceValues.length !== translatedValues.length) {
+    throw new Error(
+      `[showcase-source] code-preview parity structure changed in ${sourceFile} (${context}: ${sourceValues.length} -> ${translatedValues.length})`,
+    );
+  }
+  return sourceValues.map((source, index) => {
+    const translated = translatedValues[index];
+    if (source.component !== translated.component) {
+      throw new Error(
+        `[showcase-source] code-preview parity structure changed in ${sourceFile} (${context}: ${source.component} -> ${translated.component})`,
+      );
+    }
+    return {
+      component: source.component,
+      source: normalizedParityValue(source.value),
+      translated: normalizedParityValue(translated.value),
+    };
+  });
+}
+
+function staticCodePreviewParity(source, translated, sourceFile) {
+  const sourceRoot = ts.createSourceFile(
+    sourceFile,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const translatedRoot = ts.createSourceFile(
+    `${sourceFile}.en.tsx`,
+    translated,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const sourceSnippets = codeLiteralValues(sourceRoot);
+  const translatedSnippets = codeLiteralValues(translatedRoot);
+  if (sourceSnippets.length !== translatedSnippets.length) {
+    throw new Error(
+      `[showcase-source] code-preview parity structure changed in ${sourceFile} (code blocks: ${sourceSnippets.length} -> ${translatedSnippets.length})`,
+    );
+  }
+
+  const codePairs = [];
+  for (const [index, sourceSnippet] of sourceSnippets.entries()) {
+    const sourceSnippetRoot = parsedJsxSnippet(sourceFile, sourceSnippet);
+    const translatedSnippetRoot = parsedJsxSnippet(sourceFile, translatedSnippets[index]);
+    if (!sourceSnippetRoot || !translatedSnippetRoot) continue;
+    const sourceValues = jsxStaticValues(sourceSnippetRoot);
+    if (!sourceValues.some(({ component }) => CODE_PREVIEW_PARITY_COMPONENTS.has(component))) {
+      continue;
+    }
+    codePairs.push(
+      ...pairedStaticValues(
+        sourceValues,
+        jsxStaticValues(translatedSnippetRoot),
+        sourceFile,
+        `code block ${index + 1}`,
+      ),
+    );
+  }
+
+  const previewPairs = pairedStaticValues(
+    jsxStaticValues(sourceRoot),
+    jsxStaticValues(translatedRoot),
+    sourceFile,
+    "preview",
+  );
+  const translationsBySource = (pairs) => {
+    const values = new Map();
+    for (const pair of pairs) {
+      if (
+        !pair.source ||
+        !CJK.test(pair.source) ||
+        !CODE_PREVIEW_PARITY_COMPONENTS.has(pair.component)
+      ) {
+        continue;
+      }
+      const key = `${pair.component}\0${pair.source}`;
+      const translatedValues = values.get(key) ?? new Set();
+      translatedValues.add(pair.translated);
+      values.set(key, translatedValues);
+    }
+    return values;
+  };
+  const codeBySource = translationsBySource(codePairs);
+  const previewBySource = translationsBySource(previewPairs);
+  const mismatches = [];
+  for (const [key, codeTranslations] of codeBySource) {
+    const previewTranslations = previewBySource.get(key);
+    if (!previewTranslations) continue;
+    const translations = new Set([...codeTranslations, ...previewTranslations]);
+    if (translations.size > 1) {
+      const [component, sourceValue] = key.split("\0");
+      mismatches.push(
+        `${component} ${JSON.stringify(sourceValue)}: ${[...translations]
+          .map(JSON.stringify)
+          .join(" != ")}`,
+      );
+    }
+  }
+  if (mismatches.length > 0) {
+    throw new Error(
+      `[showcase-source] code-preview parity mismatch in ${sourceFile}:\n  ${mismatches.join(
+        "\n  ",
+      )}`,
+    );
+  }
+}
+
 export function translateShowcaseModule(source, options) {
   const { sourceFile, outputFile, copy } = options;
   const sourcePath = options.sourcePath ?? resolve(sourceFile);
@@ -210,6 +388,7 @@ export function translateShowcaseModule(source, options) {
         `[showcase-source] untranslated CJK remains in ${sourceFile}; only literal translation is supported`,
       );
     }
+    staticCodePreviewParity(source, code, sourceFile);
     return { code, usage, consumed };
   } finally {
     result.dispose();

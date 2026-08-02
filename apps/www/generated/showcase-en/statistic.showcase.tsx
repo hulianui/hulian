@@ -51,7 +51,7 @@ export const statisticShowcase: ShowcaseSpec = {
         },
         {
             title: "Countdown",
-            description: "Statistic.Countdown Press deadline for real-time countdown, format control template (supports D/H/m/s/S).",
+            description: "Statistic.Countdown counts down to the deadline in real time; format controls the display template (supports D/H/m/s/S).",
             code: `<Statistic.Countdown title="The event ends" deadline={Date.now() + 1000 * 60 * 60} />`,
             render: () => <CountdownDemo />,
         },

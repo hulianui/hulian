@@ -37,11 +37,11 @@ export const chipShowcase: ShowcaseSpec = {
         },
         {
             title: "Preamble content",
-            description: "dot status point / startContent icon / avatar avatar Choose one of three (priority avatar > startContent > dot).",
+            description: "Choose one visual indicator: a dot, a startContent icon, or an avatar (priority: avatar > startContent > dot).",
             code: `<>
   <Chip dot tone="brand">Online</Chip>
   <Chip tone="brand" startContent={<Sparkles className="size-3.5" />}>New</Chip>
-  <Chip tone="brand" avatar={<Avatar fallback="An" />}>Anna</Chip>
+  <Chip tone="brand" avatar={<Avatar fallback="Ann" />}>Anna</Chip>
 </>`,
             render: () => (<div className="flex flex-wrap items-center gap-2">
           <Chip dot tone="brand">Online</Chip>

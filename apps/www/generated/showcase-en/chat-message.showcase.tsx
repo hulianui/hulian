@@ -9,8 +9,8 @@ export const chatMessageShowcase: ShowcaseSpec = {
             title: "Users and Assistants",
             description: "role determines the alignment and bubble background color: user right-aligned primary bottom / assistant left-aligned surface bottom. name appears above the text.",
             code: `<>
-  <ChatMessage role="user" name="me">Help me rewrite the homepage to 100% dogfood</ChatMessage>
-  <ChatMessage role="assistant" name="Hulian AI">Okay, I'll take a look at the existing structure before starting. </ChatMessage>
+  <ChatMessage role="user" name="Me">Help me rewrite the homepage to 100% dogfood</ChatMessage>
+  <ChatMessage role="assistant" name="Hulian AI">Okay, let me take a look at the existing structure before starting.</ChatMessage>
 </>`,
             render: () => (<div className="flex w-full max-w-lg flex-col gap-5">
           <ChatMessage role="user" name="Me">
@@ -34,7 +34,7 @@ export const chatMessageShowcase: ShowcaseSpec = {
             description: "status Only in role=user (right bubble) Rendering: sending circle / sent single hook / read double blue hook.",
             code: `<>
   <ChatMessage role="user" name="Agent\u00B7Xiao Lian" timestamp="Just now" status="sent">A work order has been submitted for you. </ChatMessage>
-  <ChatMessage role="user" name="Agent\u00B7Xiao Lian" timestamp="Just" status="read">Refund expected 1-3 Arrival within working days. </ChatMessage>
+  <ChatMessage role="user" name="Agent\u00B7Xiao Lian" timestamp="Just now" status="read">Refunds are expected to arrive in 1-3 working days.</ChatMessage>
 </>`,
             render: () => (<div className="flex w-full max-w-lg flex-col gap-5">
           <ChatMessage role="user" name="Agent·Xiao Lian" timestamp="Just now" status="sent">
@@ -51,7 +51,7 @@ export const chatMessageShowcase: ShowcaseSpec = {
             code: `<ChatMessage
   role="assistant"
   name="Hulian AI"
-  avatar={<Avatar fallback="Jue" />}
+  avatar={<Avatar fallback="Lian" />}
   actions={
     <MessageActions
       content="Home page rewriting completed"

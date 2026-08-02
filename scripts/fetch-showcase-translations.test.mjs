@@ -4,6 +4,7 @@ import test from "node:test";
 import ts from "typescript-api";
 import {
   CJK,
+  isHumanOnlyShowcaseText,
   parseBatchTranslation,
   protect,
   protectedTokens,
@@ -204,11 +205,69 @@ test("rejects adjacent duplicate words and known machine-translation phrasing", 
     /degraded downgrade/iu,
   ];
   for (const [source, english] of Object.entries(copy)) {
-    const codeBearing = /[<>{}\[\]="'`;]/u.test(source);
-    for (const pattern of codeBearing ? knownAwkward : [...humanAwkward, ...knownAwkward]) {
+    const patterns = isHumanOnlyShowcaseText(source)
+      ? [...humanAwkward, ...knownAwkward]
+      : knownAwkward;
+    for (const pattern of patterns) {
       assert.doesNotMatch(english, pattern, `${source} -> ${english}`);
     }
   }
+});
+
+test("treats prose comparison arrows as human text while preserving executable fragments", () => {
+  assert.equal(
+    isHumanOnlyShowcaseText(
+      "dot 状态点 / startContent 图标 / avatar 头像三选一（优先级 avatar > startContent > dot）。",
+    ),
+    true,
+  );
+  assert.equal(
+    isHumanOnlyShowcaseText(
+      '<div className="grid grid-cols-2 gap-1">{/* NavigationMenuLink 列表 */}</div>',
+    ),
+    false,
+  );
+});
+
+test("locks final reviewed prose and Callout code-preview parity", () => {
+  const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
+  const warningSource =
+    '<Callout tone="warning" title="坑">直接改 node_modules 里的样式，下次安装会丢。</Callout>';
+  const successSource =
+    '<Callout tone="success" title="正解">用 pnpm patch 固化补丁，随 lockfile 走。</Callout>';
+
+  assert.equal(copy["坑"], "Pit");
+  assert.equal(copy["正解"], "Correct answer");
+  assert.equal(
+    copy[warningSource],
+    `<Callout tone="warning" title="${copy["坑"]}">${copy["直接改 node_modules 里的样式，下次安装会丢。"]}</Callout>`,
+  );
+  assert.equal(
+    copy[successSource],
+    `<Callout tone="success" title="${copy["正解"]}">${copy["用 pnpm patch 固化补丁，随 lockfile 走。"]}</Callout>`,
+  );
+  assert.equal(copy["降级"], "Degraded");
+  assert.equal(
+    copy[
+      "dot 状态点 / startContent 图标 / avatar 头像三选一（优先级 avatar > startContent > dot）。"
+    ],
+    "Choose one visual indicator: a dot, a startContent icon, or an avatar (priority: avatar > startContent > dot).",
+  );
+  assert.equal(
+    copy["Statistic.Countdown 按 deadline 实时倒数，format 控制模板（支持 D/H/m/s/S）。"],
+    "Statistic.Countdown counts down to the deadline in real time; format controls the display template (supports D/H/m/s/S).",
+  );
+  assert.equal(
+    copy[
+      '<ChatMessage role="user" name="坐席·小琏" timestamp="刚刚" status="read">退款预计 1-3 个工作日到账。</ChatMessage>'
+    ],
+    '<ChatMessage role="user" name="Agent·Xiao Lian" timestamp="Just now" status="read">Refunds are expected to arrive in 1-3 working days.</ChatMessage>',
+  );
+  assert.equal(copy['avatar={<Avatar fallback="琏" />}'], 'avatar={<Avatar fallback="Lian" />}');
+  assert.equal(
+    copy['<ChatMessage role="user" name="我">帮我把首页重写成 100% dogfood</ChatMessage>'],
+    '<ChatMessage role="user" name="Me">Help me rewrite the homepage to 100% dogfood</ChatMessage>',
+  );
 });
 
 test("keeps executable class tokens distinct from human-word repetition", () => {

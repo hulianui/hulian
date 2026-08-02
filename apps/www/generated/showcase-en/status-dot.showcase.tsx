@@ -4,7 +4,7 @@ import { StatusDot } from "../../../../packages/ui/src/status-dot/status-dot";
 import type { ChannelStatus } from "../../../../packages/ui/src/status-dot/status-dot.types";
 const labelOf: Record<ChannelStatus, string> = {
     online: "Online",
-    degraded: "Downgrade",
+    degraded: "Degraded",
     offline: "Offline",
     maintenance: "Maintenance",
 };
@@ -15,13 +15,13 @@ export const statusDotShowcase: ShowcaseSpec = {
             description: "Four semantic states: online, degraded, offline, and maintenance. Colors are derived from tone.",
             code: `<>
   <StatusDot status="online" label="Online" />
-  <StatusDot status="degraded" label="Downgrade" />
+  <StatusDot status="degraded" label="Degraded" />
   <StatusDot status="offline" label="Offline" />
   <StatusDot status="maintenance" label="Under maintenance" />
 </>`,
             render: () => (<div className="flex flex-wrap items-center gap-4">
           <StatusDot status="online" label="Online"/>
-          <StatusDot status="degraded" label="Downgrade"/>
+          <StatusDot status="degraded" label="Degraded"/>
           <StatusDot status="offline" label="Offline"/>
           <StatusDot status="maintenance" label="Under maintenance"/>
         </div>),
@@ -79,7 +79,7 @@ export const statusDotShowcase: ShowcaseSpec = {
     ],
     states: [
         { name: "online", render: () => <StatusDot status="online" label="Online" extra="86ms"/> },
-        { name: "degraded", render: () => <StatusDot status="degraded" label="Downgrade" extra="412ms"/> },
+        { name: "degraded", render: () => <StatusDot status="degraded" label="Degraded" extra="412ms"/> },
         { name: "offline", render: () => <StatusDot status="offline" label="Offline"/> },
         { name: "maintenance", render: () => <StatusDot status="maintenance" label="Under maintenance"/> },
         { name: "Dots only", render: () => <StatusDot status="online"/> },

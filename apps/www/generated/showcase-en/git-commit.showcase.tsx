@@ -36,7 +36,7 @@ export const gitCommitShowcase: ShowcaseSpec = {
   sha="36e347faaa"
   message="feat(www): Global routing progress bar"
   author="Hulian"
-  avatar={<Avatar>hu</Avatar>}
+  avatar={<Avatar>Hu</Avatar>}
 />`,
             render: () => (<div className="w-[26rem] max-w-full">
           <GitCommit layout="stacked" sha="36e347faaa" branch="master" message="feat(www): Global routing progress bar" author="Hulian" avatar={<Avatar>Hu</Avatar>}/>
