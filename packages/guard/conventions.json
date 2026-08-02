@@ -3278,7 +3278,35 @@
       "id": "component/image/pitfall/1",
       "scope": "image",
       "title": "Image",
-      "rule": "`is",
+      "rule": "`isZoomed` 的放大效果靠外壳 `overflow` 裁切，外壳尺寸由 `width/height`/`className` 决定——别给 `<img>`（`imgClassName`）单独设溢出。",
+      "source": "packages/ui/src/image/image.md"
+    },
+    {
+      "id": "component/image/pitfall/2",
+      "scope": "image",
+      "title": "Image",
+      "rule": "圆角分两层：`radius` 作用于外壳；要单独调 `<img>` 走 `imgClassName`。`radius=\"full\"` 配等宽高做圆形头像。",
+      "source": "packages/ui/src/image/image.md"
+    },
+    {
+      "id": "component/image/pitfall/3",
+      "scope": "image",
+      "title": "Image",
+      "rule": "**传 `onLoad` / `onError` 是安全的**：组件把消费方的回调与内部的**合并**（先翻淡入/走回退，再调你的），不会互相顶掉。0.17.0 之前 `{...props}` 展开在内部 `onLoad` 之后，外部一传 `onLoad` 图就永久停在 `opacity-0`（[#55](https://github.com/hulianui/hulian/issues/55)）。",
+      "source": "packages/ui/src/image/image.md"
+    },
+    {
+      "id": "component/image/pitfall/4",
+      "scope": "image",
+      "title": "Image",
+      "rule": "要量 `naturalWidth/naturalHeight` 或滚进视野：直接 `ref` 到组件，它 `forwardRef` 到内层 `<img>`（与 [Input](../input/input.md) 对齐）。",
+      "source": "packages/ui/src/image/image.md"
+    },
+    {
+      "id": "component/image/pitfall/5",
+      "scope": "image",
+      "title": "Image",
+      "rule": "候选坑 skill（`dark-image-page-bg-seam-converge-same-color` / `image-enhancer` 等）均为业务/工具场景，与本组件无关，不引用。",
       "source": "packages/ui/src/image/image.md"
     },
     {
@@ -4342,7 +4370,21 @@
       "id": "component/model-viewer/pitfall/1",
       "scope": "model-viewer",
       "title": "ModelViewer",
-      "rule": "这是 CSS 3D 舞台，不渲染真实 GLTF/FBX/OBJ；`children` 应是平面/伪 3D 内容，深度感来自外层 `preserve-3d` 子层自行用 `translate",
+      "rule": "这是 CSS 3D 舞台，不渲染真实 GLTF/FBX/OBJ；`children` 应是平面/伪 3D 内容，深度感来自外层 `preserve-3d` 子层自行用 `translateZ`。",
+      "source": "packages/ui/src/model-viewer/model-viewer.md"
+    },
+    {
+      "id": "component/model-viewer/pitfall/2",
+      "scope": "model-viewer",
+      "title": "ModelViewer",
+      "rule": "客户端组件（拖拽 + RAF 惯性循环），SSR 下静止；reduced-motion 下关惯性/自转等动画。",
+      "source": "packages/ui/src/model-viewer/model-viewer.md"
+    },
+    {
+      "id": "component/model-viewer/pitfall/3",
+      "scope": "model-viewer",
+      "title": "ModelViewer",
+      "rule": "多层立方面等需 `transform-style: preserve-3d` 的内容须自己在 children 里设置，组件只负责整体旋转/视差容器。",
       "source": "packages/ui/src/model-viewer/model-viewer.md"
     },
     {
@@ -7633,7 +7675,7 @@
   ],
   "stats": {
     "componentDocs": 372,
-    "componentAdvisories": 1065,
-    "totalAdvisories": 1072
+    "componentAdvisories": 1071,
+    "totalAdvisories": 1078
   }
 }
