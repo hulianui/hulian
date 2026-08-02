@@ -5,6 +5,7 @@ import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
 import { PICKER_FORMAT, PICKER_PLACEHOLDER, parseValue } from "../calendar/calendar-core";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DatePickerProps } from "./date-picker.types";
 
@@ -34,6 +35,7 @@ export function DatePicker({
   "aria-label": ariaLabel,
   className,
 }: DatePickerProps) {
+  const labels = useComponentLocale().datePicker ?? { clear: "清除" };
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
   const value = isControlled ? (valueProp ?? null) : internal;
@@ -85,7 +87,7 @@ export function DatePicker({
         {showClear && (
           <button
             type="button"
-            aria-label="清除"
+            aria-label={labels.clear}
             onClick={clearValue}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >

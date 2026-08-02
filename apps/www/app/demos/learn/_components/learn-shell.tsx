@@ -123,7 +123,11 @@ function LearnNavbar() {
             <AnimatedThemeToggler />
           </li>
           <li className="flex md:hidden">
-            <NavbarMenuToggle isOpen={open} onToggle={() => setOpen((v) => !v)} />
+            <NavbarMenuToggle
+              isOpen={open}
+              onToggle={() => setOpen((v) => !v)}
+              aria-label={copy(open ? "closeMenu" : "openMenu")}
+            />
           </li>
         </NavbarContent>
       </Navbar>

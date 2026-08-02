@@ -107,7 +107,17 @@ export function startOfWeekISO(focalISO: string): string {
   return d.subtract(back, "day").format("YYYY-MM-DD");
 }
 
-const WEEKDAY_LABELS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+export interface SchedulerDateLabels {
+  weekdays: readonly string[];
+  weekDate: (month: number, day: number) => string;
+  dayColumn: (month: number, day: number) => string;
+}
+
+const DEFAULT_DATE_LABELS: SchedulerDateLabels = {
+  weekdays: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+  weekDate: (month, day) => `${month}/${day}`,
+  dayColumn: (month, day) => `${month}月${day}日`,
+};
 
 /** 月视图 6×7 矩阵（ISO 周一起，含上/下月补位）。返回每格 "YYYY-MM-DD"。 */
 export function monthMatrix(focalISO: string): string[][] {
@@ -126,7 +136,11 @@ export function monthMatrix(focalISO: string): string[][] {
 }
 
 /** 周视图 7 列。todayISO 用于高亮（默认不高亮）。 */
-export function weekColumns(focalISO: string, todayISO?: string): SchedulerColumn[] {
+export function weekColumns(
+  focalISO: string,
+  todayISO?: string,
+  labels: SchedulerDateLabels = DEFAULT_DATE_LABELS,
+): SchedulerColumn[] {
   const monday = dayjs(startOfWeekISO(focalISO));
   return Array.from({ length: 7 }, (_, i) => {
     const d = monday.add(i, "day");
@@ -134,23 +148,27 @@ export function weekColumns(focalISO: string, todayISO?: string): SchedulerColum
     return {
       key: dateISO,
       dateISO,
-      label: WEEKDAY_LABELS[i],
-      sublabel: `${d.month() + 1}/${d.date()}`,
+      label: labels.weekdays[i] ?? "",
+      sublabel: labels.weekDate(d.month() + 1, d.date()),
       isToday: dateISO === todayISO,
     };
   });
 }
 
 /** 日视图单列。 */
-export function dayColumns(focalISO: string, todayISO?: string): SchedulerColumn[] {
+export function dayColumns(
+  focalISO: string,
+  todayISO?: string,
+  labels: SchedulerDateLabels = DEFAULT_DATE_LABELS,
+): SchedulerColumn[] {
   const d = dayjs(focalISO);
   const dateISO = d.format("YYYY-MM-DD");
   return [
     {
       key: dateISO,
       dateISO,
-      label: `${d.month() + 1}月${d.date()}日`,
-      sublabel: WEEKDAY_LABELS[(d.day() + 6) % 7],
+      label: labels.dayColumn(d.month() + 1, d.date()),
+      sublabel: labels.weekdays[(d.day() + 6) % 7],
       isToday: dateISO === todayISO,
     },
   ];

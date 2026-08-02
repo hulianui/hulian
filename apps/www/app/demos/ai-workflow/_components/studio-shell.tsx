@@ -55,9 +55,9 @@ function ThemeToggle() {
 }
 
 const NOTIFICATIONS = [
-  { title: copy("vincentHighDefinitionEnlargementRunCompleted"), time: "2 分钟前" },
-  { title: copy("ofGeneratedQuotaRemainingThisMonth"), time: "1 小时前" },
-  { title: copy("templateTucsonVideoHasBeenUpdated"), time: "昨天" },
+  { title: copy("vincentHighDefinitionEnlargementRunCompleted"), time: copy("twoMinutesAgo") },
+  { title: copy("ofGeneratedQuotaRemainingThisMonth"), time: copy("oneHourAgo") },
+  { title: copy("templateTucsonVideoHasBeenUpdated"), time: copy("yesterday") },
 ];
 
 function Notifications() {

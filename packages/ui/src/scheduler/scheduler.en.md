@@ -87,7 +87,7 @@ const [date, setDate] = useState("2026-06-15");
 - The host needs a definite height so the time grid can fill it and scroll internally.
 - Tone accepts only five semantic values; use `renderEvent` for arbitrary color.
 - Start and end are local ISO datetimes with time, unlike Gantt's inclusive date-only values.
-- Built-in view labels are `"\u6708"`, `"\u5468"`, `"\u65e5"`, and `"\u8d44\u6e90"` (“Month”, “Week”, “Day”, “Resources”). Toolbar copy is `"\u4e0a\u4e00\u4e2a"`, `"\u4eca\u5929"`, `"\u4e0b\u4e00\u4e2a"`, and `"\u89c6\u56fe\u5207\u6362"` (“Previous”, “Today”, “Next”, “Switch view”). Dates are formatted with Chinese year/month/day units; weekdays are `"\u5468\u4e00"` through `"\u5468\u65e5"`, and overflow appends `" \u66f4\u591a"` (“ more”).
+- Toolbar actions, view names, weekdays, formatted titles, and the overflow label read `ConfigProvider`'s `locale.components.scheduler`. `zhCN` and `enUS` include the dictionary; legacy custom locales that omit this optional field retain the Chinese fallback.
 
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

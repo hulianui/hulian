@@ -12,7 +12,6 @@ const CHIP_TONE: Record<SchedulerTone, string> = {
   neutral: "bg-surface-hover text-foreground",
 };
 
-const WEEKDAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 const MAX_CHIPS = 3;
 
 interface MonthViewProps {
@@ -24,6 +23,8 @@ interface MonthViewProps {
   onSlotClick?: (slot: SchedulerSlot) => void;
   onEventClick?: (event: SchedulerEvent) => void;
   onDayPick?: (iso: string) => void;
+  weekdays: readonly string[];
+  moreLabel: (count: number) => string;
 }
 
 export function MonthView({
@@ -35,6 +36,8 @@ export function MonthView({
   onSlotClick,
   onEventClick,
   onDayPick,
+  weekdays,
+  moreLabel,
 }: MonthViewProps) {
   const weeks = monthMatrix(date);
   const focalMonth = dayjs(date).month();
@@ -52,7 +55,7 @@ export function MonthView({
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* 星期表头 */}
       <div className="grid grid-cols-7 border-b border-border bg-surface">
-        {WEEKDAYS.map((w) => (
+        {weekdays.map((w) => (
           <div key={w} className="px-2 py-2 text-center text-xs font-medium text-muted">
             {w}
           </div>
@@ -121,7 +124,7 @@ export function MonthView({
                       </button>
                     ))}
                     {more > 0 && (
-                      <span className="px-1 text-[11px] text-muted">+{more} 更多</span>
+                      <span className="px-1 text-[11px] text-muted">{moreLabel(more)}</span>
                     )}
                   </div>
                 </div>

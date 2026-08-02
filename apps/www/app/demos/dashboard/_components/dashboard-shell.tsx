@@ -8,7 +8,7 @@ import { useTicker } from "../_lib/use-live";
 import { AlertTicker } from "./alert-ticker";
 import { ChartStack, BandwidthArea } from "./chart-stack";
 import { GlobePanel } from "./globe-panel";
-import { HeaderBar, type DataSource } from "./header-bar";
+import { DATA_SOURCE_LABELS, HeaderBar, type DataSource } from "./header-bar";
 import { KpiRail } from "./kpi-rail";
 import { NodeDrawer } from "./node-drawer";
 import { RegionMeters } from "./region-meters";
@@ -61,7 +61,7 @@ export function DashboardShell() {
   const handleSource = (s: DataSource) => {
     setSource(s);
     toast({
-      title: copy("dataSourceSwitched", s),
+      title: copy("dataSourceSwitched", DATA_SOURCE_LABELS[s]),
       tone: s === "异常" ? "danger" : "info",
     });
   };

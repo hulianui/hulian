@@ -87,6 +87,7 @@ const [date, setDate] = useState("2026-06-15");
 - 外层须给确定高度（如 `h-[520px]` + `className="h-full"`），时间轴靠容器高度填满后才内部滚动；不给高度会塌缩。
 - tone 只接受 5 个语义枚举，刻意避开未定义色的静默回退；要任意配色走 `renderEvent`。
 - start/end 是含时分的 ISO datetime（本地时区解释），区别于 Gantt 的纯日期闭区间。
+- 内置工具条、星期、日期标题和「更多」文案读取 `ConfigProvider` 的 `locale.components.scheduler`。`zhCN` / `enUS` 已内置；旧版自定义 locale 未提供该可选字段时继续回退中文，不影响现有消费者。
 
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

@@ -2,12 +2,12 @@
 import { useRef, useState } from "react";
 import { Clock, X } from "../_icons";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import {
   clampTime,
   EMPTY_PARTS,
   formatTime,
   parseTime,
-  SEGMENT_LABEL,
   SEGMENT_MAX,
   SEGMENT_ORDER,
   segmentText,
@@ -38,9 +38,23 @@ export function TimeField({
   clearable = true,
   disabled,
   readOnly,
-  "aria-label": ariaLabel = "时间",
+  "aria-label": ariaLabelProp,
   className,
 }: TimeFieldProps) {
+  const labels = useComponentLocale().timeField ?? {
+    time: "时间",
+    hour: "小时",
+    minute: "分钟",
+    second: "秒",
+    empty: "空",
+    clear: "清除",
+  };
+  const ariaLabel = ariaLabelProp ?? labels.time;
+  const segmentLabels: Record<TimeSegment, string> = {
+    hour: labels.hour,
+    minute: labels.minute,
+    second: labels.second,
+  };
   const isControlled = valueProp !== undefined;
   const [parts, setParts] = useState<TimeParts>(() => parseTime(valueProp ?? defaultValue));
   // 当前段还没输满两位时暂存首位。切段/失焦即清 —— 否则「1」会跨段黏到下一次输入上。
@@ -163,11 +177,11 @@ export function TimeField({
               }}
               role="spinbutton"
               tabIndex={disabled ? -1 : 0}
-              aria-label={SEGMENT_LABEL[seg]}
+              aria-label={segmentLabels[seg]}
               aria-valuenow={parts[seg] ?? undefined}
               aria-valuemin={0}
               aria-valuemax={SEGMENT_MAX[seg]}
-              aria-valuetext={parts[seg] == null ? "空" : segmentText(parts, seg)}
+              aria-valuetext={parts[seg] == null ? labels.empty : segmentText(parts, seg)}
               aria-readonly={readOnly || undefined}
               onKeyDown={(e) => handleKeyDown(e, seg)}
               onBlur={() => setBuffer("")}
@@ -181,7 +195,7 @@ export function TimeField({
       {showClear && (
         <button
           type="button"
-          aria-label="清除"
+          aria-label={labels.clear}
           onClick={clearAll}
           className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
         >

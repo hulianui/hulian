@@ -18,6 +18,11 @@ import { Maximize, Pause, Play, RefreshCw, Satellite } from "lucide-react";
 
 export type DataSource = "正常" | "异常";
 
+export const DATA_SOURCE_LABELS: Record<DataSource, string> = {
+  正常: copy("dataSourceNormal"),
+  异常: copy("dataSourceException"),
+};
+
 export interface HeaderBarProps {
   source: DataSource;
   onSourceChange: (s: DataSource) => void;

@@ -8,6 +8,8 @@ export const content = {
     searchCourses: "搜索课程",
     searchCoursesAlternate: "搜索课程…",
     noRelatedCoursesFound: "没有找到相关课程",
+    openMenu: "打开菜单",
+    closeMenu: "关闭菜单",
     thisPlatformIsAHulianuiUiDemoAndTheCourse:
       "—— 本平台为 @hulianui/ui 演示，课程与讲师均为虚构。",
     learning: "学习",
@@ -34,6 +36,8 @@ export const content = {
     searchCourses: "Search courses",
     searchCoursesAlternate: "Search courses...",
     noRelatedCoursesFound: "No related courses found",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
     thisPlatformIsAHulianuiUiDemoAndTheCourse:
       "This is a @hulianui/ui demo. Courses and instructors are fictional.",
     learning: "Learning",

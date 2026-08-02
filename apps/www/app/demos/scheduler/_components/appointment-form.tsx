@@ -18,17 +18,16 @@ import {
   type ComboboxItemData,
   type FormValues,
 } from "@hulianui/ui";
-import { DOCTORS, PATIENTS, ROOMS, type ApptType, type ClinicAppt } from "../_data/clinic";
+import {
+  DOCTORS,
+  PATIENTS,
+  ROOMS,
+  TYPE_LABELS,
+  type ApptType,
+  type ClinicAppt,
+} from "../_data/clinic";
 
 const TYPES: ApptType[] = ["初诊", "复诊", "检查", "处置"];
-const TYPE_LABELS: Record<ApptType, string> = {
-  初诊: copy("initialConsultation"),
-  复诊: copy("revisit"),
-  检查: copy("check"),
-  处置: copy("disposal"),
-  停诊: copy("disposal"),
-};
-
 const PATIENT_ITEMS: ComboboxItemData[] = PATIENTS.map((p) => ({
   value: p.name,
   label: `${p.name} · ${p.phone}`,

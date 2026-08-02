@@ -196,6 +196,57 @@ export interface ComponentLocale {
     thisMonth: string;
     thisYear: string;
   };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  scheduler?: {
+    views: Record<"month" | "week" | "day" | "resource", string>;
+    previous: string;
+    next: string;
+    today: string;
+    viewSwitcher: string;
+    weekdays: readonly string[];
+    monthTitle: (year: number, month: number) => string;
+    weekDate: (month: number, day: number) => string;
+    dayTitle: (year: number, month: number, day: number) => string;
+    dayColumn: (month: number, day: number) => string;
+    more: (count: number) => string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  mentions?: { suggestions: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  datePicker?: { clear: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  dateTimePicker?: {
+    placeholder: string;
+    clear: string;
+    hour: string;
+    minute: string;
+    second: string;
+    now: string;
+    confirm: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  timeField?: {
+    time: string;
+    hour: string;
+    minute: string;
+    second: string;
+    empty: string;
+    clear: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  video?: {
+    playVideo: string;
+    replay: string;
+    play: string;
+    pause: string;
+    mute: string;
+    unmute: string;
+    playbackSpeed: string;
+    pictureInPicture: string;
+    exitPictureInPicture: string;
+    fullscreen: string;
+    exitFullscreen: string;
+  };
   numberField: { decrement: string; increment: string };
   pagination: {
     total: (count: number) => string;
@@ -303,6 +354,19 @@ const zhComponents: ComponentLocale = {
     star: (value) => `${value} 星`,
   },
   heroVideoDialog: { play: "播放视频", close: "关闭", iframeTitle: "视频" },
+  video: {
+    playVideo: "播放视频",
+    replay: "重新播放",
+    play: "播放",
+    pause: "暂停",
+    mute: "静音",
+    unmute: "取消静音",
+    playbackSpeed: "播放速度",
+    pictureInPicture: "画中画",
+    exitPictureInPicture: "退出画中画",
+    fullscreen: "全屏",
+    exitFullscreen: "退出全屏",
+  },
   messageActions: {
     copy: "复制",
     copied: "已复制",
@@ -361,6 +425,38 @@ const zhComponents: ComponentLocale = {
     today: "今天",
     thisMonth: "本月",
     thisYear: "今年",
+  },
+  scheduler: {
+    views: { month: "月", week: "周", day: "日", resource: "资源" },
+    previous: "上一个",
+    next: "下一个",
+    today: "今天",
+    viewSwitcher: "视图切换",
+    weekdays: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+    monthTitle: (year, month) => `${year} 年 ${month} 月`,
+    weekDate: (month, day) => `${month}/${day}`,
+    dayTitle: (year, month, day) => `${year} 年 ${month} 月 ${day} 日`,
+    dayColumn: (month, day) => `${month}月${day}日`,
+    more: (count) => `+${count} 更多`,
+  },
+  mentions: { suggestions: "提及候选" },
+  datePicker: { clear: "清除" },
+  dateTimePicker: {
+    placeholder: "选择日期时间",
+    clear: "清除",
+    hour: "时",
+    minute: "分",
+    second: "秒",
+    now: "此刻",
+    confirm: "确定",
+  },
+  timeField: {
+    time: "时间",
+    hour: "小时",
+    minute: "分钟",
+    second: "秒",
+    empty: "空",
+    clear: "清除",
   },
   numberField: { decrement: "减少", increment: "增加" },
   pagination: {
@@ -471,6 +567,19 @@ const enComponents: ComponentLocale = {
     star: (value) => `${value} ${value === 1 ? "star" : "stars"}`,
   },
   heroVideoDialog: { play: "Play video", close: "Close", iframeTitle: "Video" },
+  video: {
+    playVideo: "Play video",
+    replay: "Replay",
+    play: "Play",
+    pause: "Pause",
+    mute: "Mute",
+    unmute: "Unmute",
+    playbackSpeed: "Playback speed",
+    pictureInPicture: "Picture in picture",
+    exitPictureInPicture: "Exit picture in picture",
+    fullscreen: "Fullscreen",
+    exitFullscreen: "Exit fullscreen",
+  },
   messageActions: {
     copy: "Copy",
     copied: "Copied",
@@ -545,6 +654,42 @@ const enComponents: ComponentLocale = {
     today: "Today",
     thisMonth: "This month",
     thisYear: "This year",
+  },
+  scheduler: {
+    views: { month: "Month", week: "Week", day: "Day", resource: "Resources" },
+    previous: "Previous",
+    next: "Next",
+    today: "Today",
+    viewSwitcher: "View switcher",
+    weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    monthTitle: (year, month) =>
+      `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month - 1]} ${year}`,
+    weekDate: (month, day) =>
+      `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1]} ${day}`,
+    dayTitle: (year, month, day) =>
+      `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month - 1]} ${day}, ${year}`,
+    dayColumn: (month, day) =>
+      `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1]} ${day}`,
+    more: (count) => `+${count} more`,
+  },
+  mentions: { suggestions: "Mention suggestions" },
+  datePicker: { clear: "Clear" },
+  dateTimePicker: {
+    placeholder: "Select date and time",
+    clear: "Clear",
+    hour: "Hour",
+    minute: "Minute",
+    second: "Second",
+    now: "Now",
+    confirm: "Confirm",
+  },
+  timeField: {
+    time: "Time",
+    hour: "Hour",
+    minute: "Minute",
+    second: "Second",
+    empty: "Empty",
+    clear: "Clear",
   },
   numberField: { decrement: "Decrease", increment: "Increase" },
   pagination: {

@@ -38,6 +38,7 @@ import {
   buildAppointments,
   buildLeave,
   DOCTORS,
+  TYPE_LABELS,
   TYPE_TONE,
   type ApptType,
   type ClinicAppt,
@@ -150,7 +151,7 @@ export function SchedulerShell() {
                   resourceId: v.doctorId,
                   type: v.type as ApptType,
                   room: v.room,
-                  title: `${v.type} · ${v.patient}`,
+                  title: `${TYPE_LABELS[v.type as ApptType]} · ${v.patient}`,
                   tone: TYPE_TONE[v.type as ApptType],
                   subtitle: doc?.dept,
                   start: v.start,
@@ -167,7 +168,7 @@ export function SchedulerShell() {
       } else {
         const appt: ClinicAppt = {
           id: `n-${Date.now()}`,
-          title: `${v.type} · ${v.patient}`,
+          title: `${TYPE_LABELS[v.type as ApptType]} · ${v.patient}`,
           start: v.start,
           end,
           resourceId: v.doctorId,
@@ -427,7 +428,7 @@ function DetailBody({
   const doc = DOCTORS.find((d) => d.id === appt.doctorId);
   const rows: [string, string][] = [
     [copy("patient"), appt.patient],
-    [copy("type"), appt.type],
+    [copy("type"), TYPE_LABELS[appt.type]],
     [copy("doctor"), `${doc?.title ?? "—"} · ${doc?.dept ?? ""}`],
     [copy("clinic"), appt.room ?? "—"],
     [
@@ -439,7 +440,7 @@ function DetailBody({
     <div className="flex flex-col gap-4 p-1">
       <div className="flex items-center gap-2">
         <Tag tone={TONE_TO_TAG[appt.tone ?? "primary"]} size="sm">
-          {appt.type}
+          {TYPE_LABELS[appt.type]}
         </Tag>
       </div>
       <dl className="flex flex-col gap-2 text-sm">

@@ -68,6 +68,7 @@ Use `#` to reference a ticket:
 - Pair a controlled `value` with `onChange`; otherwise the field is read-only, just like a native controlled textarea.
 - Inserted text is `prefix + label + " "`; `label` is both the visible name and the literal stored in the text. Use `onSelect` to handle cases where display and stored values must differ.
 - For external or asynchronous filtering, set `filter={false}` and refresh `options` from `onSearch`; otherwise the built-in substring filter will filter the consumer's results a second time.
+- The suggestions listbox accessible name reads `ConfigProvider`'s `locale.components.mentions.suggestions`. `zhCN` and `enUS` include it; legacy custom locales that omit this optional field retain the Chinese fallback.
 
 ## Related
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md) · [Upload](../upload/upload.md)

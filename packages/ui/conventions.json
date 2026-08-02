@@ -4178,6 +4178,13 @@
       "source": "packages/ui/src/mentions/mentions.md"
     },
     {
+      "id": "component/mentions/pitfall/4",
+      "scope": "mentions",
+      "title": "Mentions",
+      "rule": "候选浮层的无障碍名称读取 `ConfigProvider` 的 `locale.components.mentions.suggestions`。`zhCN` / `enUS` 已内置；旧版自定义 locale 未提供该可选字段时回退「提及候选」。",
+      "source": "packages/ui/src/mentions/mentions.md"
+    },
+    {
       "id": "component/menu/pitfall/1",
       "scope": "menu",
       "title": "Menu",
@@ -5554,6 +5561,13 @@
       "scope": "scheduler",
       "title": "Scheduler",
       "rule": "start/end 是含时分的 ISO datetime（本地时区解释），区别于 Gantt 的纯日期闭区间。",
+      "source": "packages/ui/src/scheduler/scheduler.md"
+    },
+    {
+      "id": "component/scheduler/pitfall/5",
+      "scope": "scheduler",
+      "title": "Scheduler",
+      "rule": "内置工具条、星期、日期标题和「更多」文案读取 `ConfigProvider` 的 `locale.components.scheduler`。`zhCN` / `enUS` 已内置；旧版自定义 locale 未提供该可选字段时继续回退中文，不影响现有消费者。",
       "source": "packages/ui/src/scheduler/scheduler.md"
     },
     {
@@ -7528,7 +7542,7 @@
   ],
   "stats": {
     "componentDocs": 372,
-    "componentAdvisories": 1050,
-    "totalAdvisories": 1057
+    "componentAdvisories": 1052,
+    "totalAdvisories": 1059
   }
 }

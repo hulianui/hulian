@@ -19,50 +19,145 @@ import { DOCS_LOCALE } from "../../../lib/docs-locale";
 
 const DEMOS_ROOT = new URL("..", import.meta.url).pathname;
 const HAN_OR_CJK_PUNCTUATION = /[\p{Script=Han}，。！？；：、“”‘’（）【】《》〈〉「」『』…]/u;
-const INTERNAL_PROTOCOL_EXEMPTIONS = new Map([
+type ProtocolExemption = {
+  literals: readonly string[];
+  reason: string;
+  /** Tokens proving the canonical values are mapped before Task 11 presentation. */
+  mappingEvidence: readonly string[];
+};
+
+const INTERNAL_PROTOCOL_EXEMPTIONS = new Map<string, ProtocolExemption>([
   [
     "crm/_data/metrics.ts",
-    "CRM mock discriminators and chart data keys stay aligned with the typed fixture protocol",
+    {
+      literals: ["已成交", "跟进中", "赢单", "输单", "已退款", "月"],
+      reason: "CRM aggregate comparisons and the Chinese month suffix are stable fixture protocol values",
+      mappingEvidence: ["oppStageLabel", "DOCS_LOCALE"],
+    },
   ],
   [
     "crm/_data/orders.ts",
-    "CRM order status seeds are typed protocol values and are localized by the status label map at render time",
+    {
+      literals: ["已完成", "已发货", "已付款", "待付款", "已退款"],
+      reason: "CRM order status seeds are typed protocol values localized by consumers",
+      mappingEvidence: [],
+    },
   ],
   [
     "crm/_data/protocol.ts",
-    "CRM canonical owner and industry values are stable protocol values; only their render labels are localized",
+    {
+      literals: [
+        "制造", "互联网", "餐饮", "医疗", "教育", "物流", "传媒", "地产", "农业",
+        "贸易", "金融", "零售", "出行", "建材", "咨询", "食品", "能源", "林晚晴",
+        "周明远", "高敏", "陈策", "苏晓",
+      ],
+      reason: "CRM canonical owner and industry identifiers are stable protocol values",
+      mappingEvidence: [],
+    },
   ],
   [
     "ai-chat/conversations.ts",
-    "Conversation group IDs stay canonical while CONVERSATION_GROUP_LABELS localizes their presentation",
+    {
+      literals: ["今天", "昨天", "7 天内"],
+      reason: "Conversation group IDs remain canonical",
+      mappingEvidence: ["CONVERSATION_GROUP_LABELS", "copy(\"today\")"],
+    },
+  ],
+  [
+    "ai-chat/page.tsx",
+    {
+      literals: ["今天"],
+      reason: "New conversations use the canonical group ID",
+      mappingEvidence: ["CONVERSATION_GROUP_LABELS"],
+    },
   ],
   [
     "ai-workflow/_data/templates.ts",
-    "Workflow template category discriminators stay canonical while TEMPLATE_CATEGORY_LABELS localizes their presentation",
+    {
+      literals: ["文生图", "图生图", "文生视频", "图生视频"],
+      reason: "Workflow template category discriminators remain canonical",
+      mappingEvidence: ["TEMPLATE_CATEGORY_LABELS", "copy(\"textToImage\")"],
+    },
   ],
   [
     "knowledge/_data/images.ts",
-    "Knowledge image categories stay canonical while their SVG and visible labels consume the adjacent catalog",
+    {
+      literals: ["设计稿", "海报", "截图", "插画", "原型"],
+      reason: "Knowledge image categories remain canonical SVG inputs",
+      mappingEvidence: ["CATEGORY_LABEL", "CATEGORY_LABEL[category]"],
+    },
+  ],
+  [
+    "knowledge/_data/vault.ts",
+    {
+      literals: ["设计稿", "海报", "原型", "插画", "截图"],
+      reason: "Vault image seeds pass canonical categories to the locale-aware SVG builder",
+      mappingEvidence: ["vaultImage("],
+    },
   ],
   [
     "learn/_data/courses.ts",
-    "Course level discriminators stay canonical while COURSE_LEVEL_NAME localizes their presentation",
+    {
+      literals: ["进阶", "高级", "入门"],
+      reason: "Course level discriminators remain canonical",
+      mappingEvidence: ["COURSE_LEVEL_NAME", "copy(\"beginner\")"],
+    },
+  ],
+  [
+    "learn/_components/discussion-tab.tsx",
+    {
+      literals: ["助教-小研", "夏小满", "陈起"],
+      reason: "Mention insertion values remain canonical while option labels are localized",
+      mappingEvidence: ["label: copy(\"assistantTeacherXiaoyan\")", "label: copy(\"xiaXiaoman\")", "label: copy(\"chenQi\")"],
+    },
   ],
   [
     "scheduler/_data/clinic.ts",
-    "Appointment type discriminators stay canonical while TYPE_LABELS localizes their presentation",
+    {
+      literals: ["初诊", "复诊", "检查", "处置", "停诊"],
+      reason: "Appointment type discriminators remain canonical",
+      mappingEvidence: ["TYPE_LABELS", "TYPE_LABELS[type]"],
+    },
+  ],
+  [
+    "scheduler/_components/appointment-form.tsx",
+    {
+      literals: ["初诊", "复诊", "检查", "处置"],
+      reason: "Appointment form option values remain canonical",
+      mappingEvidence: ["TYPE_LABELS[t]"],
+    },
+  ],
+  [
+    "scheduler/_components/scheduler-shell.tsx",
+    {
+      literals: ["停诊"],
+      reason: "Leave comparisons remain canonical while every rendered type uses TYPE_LABELS",
+      mappingEvidence: ["TYPE_LABELS[v.type as ApptType]", "TYPE_LABELS[appt.type]"],
+    },
   ],
   [
     "dashboard/_data/snapshot.ts",
-    "Region, node status, and event level discriminators stay canonical while typed label maps localize their presentation",
+    {
+      literals: ["亚太", "北美", "欧洲", "中东", "南美", "非洲", "正常", "繁忙", "告警", "严重", "警告", "提示", "信息"],
+      reason: "Dashboard region, node status, and event level discriminators remain canonical",
+      mappingEvidence: ["REGION_LABELS", "NODE_STATUS_LABELS", "EVENT_LEVEL_LABELS"],
+    },
   ],
   [
     "dashboard/_components/header-bar.tsx",
-    "Dashboard data-source values stay canonical while Select labels come from the adjacent catalog",
+    {
+      literals: ["正常", "异常"],
+      reason: "Dashboard data-source Select values remain canonical",
+      mappingEvidence: ["DATA_SOURCE_LABELS", "copy(\"dataSourceNormal\")"],
+    },
   ],
   [
     "dashboard/_components/dashboard-shell.tsx",
-    "Dashboard data-source comparisons use the canonical values selected by HeaderBar",
+    {
+      literals: ["正常", "异常"],
+      reason: "Dashboard state and comparisons use canonical data-source values",
+      mappingEvidence: ["DATA_SOURCE_LABELS[s]"],
+    },
   ],
 ]);
 const TASK_11_DEMOS = new Set([
@@ -323,6 +418,18 @@ function walk(directory: string): string[] {
 }
 
 describe("admin and developer demo localization inventory", () => {
+  it("uses exact literal protocol exemptions with locale-mapping evidence", () => {
+    for (const [file, exemption] of INTERNAL_PROTOCOL_EXEMPTIONS) {
+      expect(exemption, `${file} exemption shape`).toEqual(
+        expect.objectContaining({
+          literals: expect.any(Array),
+          reason: expect.any(String),
+          mappingEvidence: expect.any(Array),
+        }),
+      );
+    }
+  });
+
   it("provides English component defaults and localized shared demo chrome", async () => {
     const layout = readFileSync(join(DEMOS_ROOT, "layout.tsx"), "utf8");
     const provider = readFileSync(
@@ -448,12 +555,22 @@ describe("admin and developer demo localization inventory", () => {
         const chineseNodes = chineseLiteralNodes(sourceFile, source);
         if (chineseNodes.length === 0) continue;
         const relativeSource = relative(DEMOS_ROOT, sourceFile);
-        if (INTERNAL_PROTOCOL_EXEMPTIONS.has(relativeSource)) {
+        const exemption = INTERNAL_PROTOCOL_EXEMPTIONS.get(relativeSource);
+        if (exemption) {
+          expect(exemption.reason.trim(), `${relativeSource} exemption reason`).not.toBe("");
           expect(
-            INTERNAL_PROTOCOL_EXEMPTIONS.get(relativeSource),
-            `${relativeSource} exemption reason`,
-          ).toBeTruthy();
-          if (!TASK_11_DEMOS.has(demo)) continue;
+            [...new Set(chineseNodes)].sort(),
+            `${relativeSource} exact protocol literals`,
+          ).toEqual([...exemption.literals].sort());
+          for (const evidence of exemption.mappingEvidence) {
+            expect(source, `${relativeSource} mapping evidence: ${evidence}`).toContain(evidence);
+          }
+          continue;
+        }
+        if (TASK_11_DEMOS.has(demo)) {
+          expect.fail(
+            `${relativeSource} must declare exact protocol literals and locale mapping evidence; found: ${chineseNodes.join(" | ")}`,
+          );
         }
         const companion = sourceFile.replace(/\.(ts|tsx)$/, ".content.ts");
         expect(
@@ -471,5 +588,33 @@ describe("admin and developer demo localization inventory", () => {
     expect(source).toContain("customerOwnerLabel");
     expect(source).toContain("value: o, label: customerOwnerLabel[o]");
     expect(source).toContain("{customerOwnerLabel[o]}");
+  });
+
+  it("maps Task 11 canonical protocol values before rendering or notifying", () => {
+    const scheduler = readFileSync(
+      join(DEMOS_ROOT, "scheduler/_components/scheduler-shell.tsx"),
+      "utf8",
+    );
+    const workflow = readFileSync(
+      join(DEMOS_ROOT, "ai-workflow/_components/studio-shell.tsx"),
+      "utf8",
+    );
+    const dashboard = readFileSync(
+      join(DEMOS_ROOT, "dashboard/_components/dashboard-shell.tsx"),
+      "utf8",
+    );
+    const dashboardLayout = readFileSync(
+      join(DEMOS_ROOT, "dashboard/(app)/layout.tsx"),
+      "utf8",
+    );
+
+    expect(scheduler).toContain("TYPE_LABELS[v.type as ApptType]");
+    expect(scheduler).toContain("TYPE_LABELS[appt.type]");
+    expect(scheduler).not.toContain("[copy(\"type\"), appt.type]");
+    expect(workflow).toContain('time: copy("twoMinutesAgo")');
+    expect(workflow).toContain('time: copy("oneHourAgo")');
+    expect(workflow).toContain('time: copy("yesterday")');
+    expect(dashboard).toContain('copy("dataSourceSwitched", DATA_SOURCE_LABELS[s])');
+    expect(dashboardLayout).toContain("<ToastProvider />");
   });
 });

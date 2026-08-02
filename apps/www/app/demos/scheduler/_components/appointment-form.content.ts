@@ -3,10 +3,6 @@ import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 
 export const content = {
   "zh-CN": {
-    initialConsultation: "初诊",
-    revisit: "复诊",
-    check: "检查",
-    disposal: "处置",
     pleaseSelectPatient: "请选择患者",
     pleaseSelectAStartTime: "请选择起诊时间",
     pleaseSelectAnEndTime: "请选择结束时间",
@@ -24,10 +20,6 @@ export const content = {
     endTime: "结束时间",
   },
   en: {
-    initialConsultation: "Initial visit",
-    revisit: "Follow-up",
-    check: "Exam",
-    disposal: "Procedure",
     pleaseSelectPatient: "Please select patient",
     pleaseSelectAStartTime: "Please select a start time",
     pleaseSelectAnEndTime: "Please select an end time",

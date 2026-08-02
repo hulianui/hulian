@@ -1,10 +1,21 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { DatePicker } from "./date-picker";
 
 const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择日期" }));
 
 describe("DatePicker", () => {
+  it("enUS localizes the clear button", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <DatePicker defaultValue="2026-06-08" aria-label="Select date" />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
+  });
+
   it("默认渲染占位文本，不渲染清除按钮", () => {
     render(<DatePicker aria-label="选择日期" />);
     expect(screen.getByText("选择日期")).toBeTruthy();

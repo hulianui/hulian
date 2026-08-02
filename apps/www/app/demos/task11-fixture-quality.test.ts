@@ -19,7 +19,6 @@ import { content as workflowNodes } from "./ai-workflow/_data/node-kinds.content
 import { content as workflowTemplates } from "./ai-workflow/_data/templates.content";
 import { content as vault } from "./knowledge/_data/vault.content";
 import { content as courses } from "./learn/_data/courses.content";
-import { content as schedulerForm } from "./scheduler/_components/appointment-form.content";
 import { content as clinic } from "./scheduler/_data/clinic.content";
 import { content as dashboardCharts } from "./dashboard/_components/chart-stack.content";
 import { content as dashboardHeader } from "./dashboard/_components/header-bar.content";
@@ -101,10 +100,10 @@ describe("Task 11 English fixture quality", () => {
       ragChapter: courses.en.chapterRagRetrievalEnhancement,
       rerankingLesson: courses.en.rearrangementAndRecallEvaluation,
       agentLesson: courses.en.multiStepTaskChoreographyAndGuardrails,
-      initialVisit: schedulerForm.en.initialConsultation,
-      followUp: schedulerForm.en.revisit,
-      exam: schedulerForm.en.check,
-      procedure: schedulerForm.en.disposal,
+      initialVisit: clinic.en.initialConsultation,
+      followUp: clinic.en.revisit,
+      exam: clinic.en.check,
+      procedure: clinic.en.disposal,
       clinicRoom1: clinic.en.clinic,
       clinicRoom2: clinic.en.clinicAlternate,
       blocked: clinic.en.stop,

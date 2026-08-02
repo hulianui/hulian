@@ -4,6 +4,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import { dayjs } from "../lib/date";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { TimeColumn } from "../time-picker/time-column";
@@ -46,7 +47,7 @@ export function DateTimePicker({
   minDateTime,
   maxDateTime,
   disabledDate,
-  placeholder = "选择日期时间",
+  placeholder: placeholderProp,
   displayFormat,
   clearable = true,
   showNow = true,
@@ -55,6 +56,16 @@ export function DateTimePicker({
   "aria-label": ariaLabel,
   className,
 }: DateTimePickerProps) {
+  const labels = useComponentLocale().dateTimePicker ?? {
+    placeholder: "选择日期时间",
+    clear: "清除",
+    hour: "时",
+    minute: "分",
+    second: "秒",
+    now: "此刻",
+    confirm: "确定",
+  };
+  const placeholder = placeholderProp ?? labels.placeholder;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
   const value = isControlled ? (valueProp ?? null) : internal;
@@ -151,7 +162,7 @@ export function DateTimePicker({
         {showClear && (
           <button
             type="button"
-            aria-label="清除"
+            aria-label={labels.clear}
             onClick={clearValue}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >
@@ -183,7 +194,7 @@ export function DateTimePicker({
               </div>
               <div className="flex divide-x divide-border">
                 <TimeColumn
-                  label="时"
+                  label={labels.hour}
                   values={buildOptions(23, 1)}
                   active={parsedTime?.h ?? null}
                   isDisabled={(h) => isHourDisabled(h, minTime, maxTime)}
@@ -191,7 +202,7 @@ export function DateTimePicker({
                   open={open}
                 />
                 <TimeColumn
-                  label="分"
+                  label={labels.minute}
                   values={buildOptions(59, minuteStep)}
                   active={parsedTime?.m ?? null}
                   isDisabled={(m) => isMinuteDisabled(base.h, m, minTime, maxTime)}
@@ -200,7 +211,7 @@ export function DateTimePicker({
                 />
                 {withSeconds && (
                   <TimeColumn
-                    label="秒"
+                    label={labels.second}
                     values={buildOptions(59, secondStep)}
                     active={parsedTime?.s ?? null}
                     isDisabled={(s) => isSecondDisabled(base.h, base.m, s, minTime, maxTime)}
@@ -218,7 +229,7 @@ export function DateTimePicker({
                   disabled={readOnly}
                   className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  此刻
+                  {labels.now}
                 </button>
               ) : (
                 <span />
@@ -228,7 +239,7 @@ export function DateTimePicker({
                 onClick={() => setOpen(false)}
                 className="rounded-md px-2 py-1 text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30"
               >
-                确定
+                {labels.confirm}
               </button>
             </div>
           </BasePopover.Popup>

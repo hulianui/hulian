@@ -5,27 +5,37 @@ import { ChevronLeft, ChevronRight } from "../_icons";
 import { Segmented } from "../segmented";
 import { dayjs } from "../lib/date";
 import { cn } from "../lib/cn";
+import { useComponentLocale, type ComponentLocale } from "../config/locale";
 import { MonthView } from "./scheduler-month";
 import { TimeGrid } from "./scheduler-time-grid";
 import { dayColumns, resourceColumns, startOfWeekISO, weekColumns } from "./scheduler-geometry";
 import type { SchedulerEvent, SchedulerProps, SchedulerView } from "./scheduler.types";
 
-const VIEW_ITEMS = [
-  { value: "month", label: "月" },
-  { value: "week", label: "周" },
-  { value: "day", label: "日" },
-  { value: "resource", label: "资源" },
-];
+type SchedulerLabels = NonNullable<ComponentLocale["scheduler"]>;
 
-function titleFor(view: SchedulerView, date: string): string {
+const DEFAULT_LABELS: SchedulerLabels = {
+  views: { month: "月", week: "周", day: "日", resource: "资源" },
+  previous: "上一个",
+  next: "下一个",
+  today: "今天",
+  viewSwitcher: "视图切换",
+  weekdays: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+  monthTitle: (year: number, month: number) => `${year} 年 ${month} 月`,
+  weekDate: (month: number, day: number) => `${month}/${day}`,
+  dayTitle: (year: number, month: number, day: number) => `${year} 年 ${month} 月 ${day} 日`,
+  dayColumn: (month: number, day: number) => `${month}月${day}日`,
+  more: (count: number) => `+${count} 更多`,
+};
+
+function titleFor(view: SchedulerView, date: string, labels: SchedulerLabels): string {
   const d = dayjs(date);
-  if (view === "month") return d.format("YYYY 年 M 月");
+  if (view === "month") return labels.monthTitle(d.year(), d.month() + 1);
   if (view === "week") {
     const monday = dayjs(startOfWeekISO(date));
     const sunday = monday.add(6, "day");
-    return `${monday.format("M/D")} – ${sunday.format("M/D")}`;
+    return `${labels.weekDate(monday.month() + 1, monday.date())} – ${labels.weekDate(sunday.month() + 1, sunday.date())}`;
   }
-  return d.format("YYYY 年 M 月 D 日");
+  return labels.dayTitle(d.year(), d.month() + 1, d.date());
 }
 
 /** 焦点日按视图步进。 */
@@ -55,6 +65,11 @@ export function Scheduler({
   renderEvent,
   className,
 }: SchedulerProps) {
+  const labels = useComponentLocale().scheduler ?? DEFAULT_LABELS;
+  const viewItems = (Object.keys(labels.views) as SchedulerView[]).map((value) => ({
+    value,
+    label: labels.views[value],
+  }));
   const todayISO = dayjs().format("YYYY-MM-DD");
   const nowISO = dayjs().format("YYYY-MM-DDTHH:mm:ss");
 
@@ -68,9 +83,9 @@ export function Scheduler({
 
   const columns =
     view === "week"
-      ? weekColumns(date, todayISO)
+      ? weekColumns(date, todayISO, labels)
       : view === "day"
-        ? dayColumns(date, todayISO)
+        ? dayColumns(date, todayISO, labels)
         : view === "resource"
           ? resourceColumns(date, resources)
           : [];
@@ -88,32 +103,32 @@ export function Scheduler({
             <Button
               variant="ghost"
               size="icon"
-              aria-label="上一个"
-              title="上一个"
+              aria-label={labels.previous}
+              title={labels.previous}
               onClick={() => onDateChange?.(step(view, date, -1))}
             >
               <ChevronLeft className="size-4" />
             </Button>
             <Button variant="outline" size="sm" onClick={() => onDateChange?.(todayISO)}>
-              今天
+              {labels.today}
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              aria-label="下一个"
-              title="下一个"
+              aria-label={labels.next}
+              title={labels.next}
               onClick={() => onDateChange?.(step(view, date, 1))}
             >
               <ChevronRight className="size-4" />
             </Button>
-            <span className="ml-1 text-sm font-medium tabular-nums">{titleFor(view, date)}</span>
+            <span className="ml-1 text-sm font-medium tabular-nums">{titleFor(view, date, labels)}</span>
           </div>
           <Segmented
-            items={VIEW_ITEMS}
+            items={viewItems}
             value={view}
             onValueChange={(v) => onViewChange?.(v as SchedulerView)}
             size="sm"
-            aria-label="视图切换"
+            aria-label={labels.viewSwitcher}
           />
         </div>
       )}
@@ -132,6 +147,8 @@ export function Scheduler({
               onDateChange?.(iso);
               onViewChange?.("day");
             }}
+            weekdays={labels.weekdays}
+            moreLabel={labels.more}
           />
         ) : (
           <TimeGrid

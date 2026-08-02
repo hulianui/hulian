@@ -23,6 +23,8 @@ vi.mock("@vidstack/react", () => {
 });
 import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES } from "./video.types";
 import { Video } from "./video";
 
@@ -81,6 +83,17 @@ describe("video pure logic", () => {
 afterEach(() => cleanup());
 
 describe("<Video> 渲染冒烟", () => {
+  it("enUS localizes every video control accessible label", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <Video src="/demo/sample-video.mp4" title="Demo" />
+      </ConfigProvider>,
+    );
+    for (const label of ["Pause", "Mute", "Playback speed", "Picture in picture", "Fullscreen"]) {
+      expect(screen.getByLabelText(label)).toBeTruthy();
+    }
+  });
+
   it("挂载不抛错且渲出播放钮", () => {
     render(<Video src="/demo/sample-video.mp4" title="演示" />);
     // 锚定全词，避免误匹配 aria-label="播放速度" 的倍速菜单按钮

@@ -29,14 +29,41 @@ export const TASK11_ROUTE_MARKERS = {
   dashboard: "Hulian Global Traffic Command Center",
 };
 
-function assertEnglishText(text, context) {
-  const cjkLines = text
+export const TASK11_ACCESSIBLE_ATTRIBUTES = ["aria-label", "title", "alt", "placeholder"];
+export const TASK11_INTERACTION_CHECKS = [
+  "english-navigation",
+  "workflow-notifications",
+  "learn-mentions",
+  "scheduler-retry-detail-submit",
+  "dashboard-status-toast",
+];
+
+export function collectCjkLines(text) {
+  return text
     .split("\n")
     .filter((line) => /\p{Script=Han}/u.test(line))
     .slice(0, 8);
+}
+
+function assertEnglishText(text, context) {
+  const cjkLines = collectCjkLines(text);
   if (cjkLines.length) {
     throw new Error(`${context} contains visible CJK text:\n${cjkLines.join("\n")}`);
   }
+}
+
+async function assertEnglishPage(page, context) {
+  const surfaces = await page.evaluate((attributes) => {
+    const values = [document.body.innerText];
+    for (const attribute of attributes) {
+      for (const element of document.querySelectorAll(`[${attribute}]`)) {
+        const value = element.getAttribute(attribute);
+        if (value) values.push(`${attribute}: ${value}`);
+      }
+    }
+    return values.join("\n");
+  }, TASK11_ACCESSIBLE_ATTRIBUTES);
+  assertEnglishText(surfaces, context);
 }
 
 export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
@@ -48,6 +75,7 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
   page.on("pageerror", (error) => browserErrors.push(error.message));
 
   try {
+    const routeLanguageErrors = [];
     for (const route of TASK11_DEMO_ROUTES) {
       const path = `/en/demos/${route}`;
       const response = await page.goto(`${origin}${path}`, { waitUntil: "networkidle" });
@@ -60,7 +88,14 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
         state: "visible",
         timeout: 10_000,
       });
-      assertEnglishText(await page.locator("body").innerText(), path);
+      try {
+        await assertEnglishPage(page, path);
+      } catch (error) {
+        routeLanguageErrors.push(error instanceof Error ? error.message : String(error));
+      }
+    }
+    if (routeLanguageErrors.length) {
+      throw new Error(`Task 11 route language scan failed:\n${routeLanguageErrors.join("\n\n")}`);
     }
 
     await page.goto(`${origin}/en/demos/ai-chat`, { waitUntil: "networkidle" });
@@ -69,19 +104,77 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       state: "visible",
       timeout: 15_000,
     });
-    assertEnglishText(await page.locator("body").innerText(), "/en/demos/ai-chat after response");
+    await assertEnglishPage(page, "/en/demos/ai-chat after response");
 
-    await page.goto(`${origin}/en/demos/ai-workflow/templates`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}/en/demos/ai-workflow`, { waitUntil: "networkidle" });
+    const skipTour = page.getByRole("button", { name: "Skip" });
+    try {
+      await skipTour.waitFor({ state: "visible", timeout: 2_000 });
+      await skipTour.click();
+    } catch (error) {
+      if (!(error instanceof Error) || !error.message.includes("Timeout")) throw error;
+    }
+    await page.getByRole("button", { name: "Notifications" }).click();
+    await page.getByText("2 minutes ago", { exact: true }).waitFor({ state: "visible" });
+    await page.getByText("1 hour ago", { exact: true }).waitFor({ state: "visible" });
+    await page.getByText("Yesterday", { exact: true }).waitFor({ state: "visible" });
+    await assertEnglishPage(page, "/en/demos/ai-workflow notifications");
+    await page.keyboard.press("Escape");
+
+    await page.getByRole("link", { name: "Template library" }).click();
+    await page.waitForURL((url) => url.pathname === "/en/demos/ai-workflow/templates");
+    if ((await page.locator("html").getAttribute("lang")) !== "en") {
+      throw new Error("English workflow navigation lost the document language");
+    }
+    await page.getByText(TASK11_ROUTE_MARKERS["ai-workflow/templates"], { exact: false }).first().waitFor({
+      state: "visible",
+    });
+    await assertEnglishPage(page, "/en/demos/ai-workflow/templates after navigation");
+
     await page.getByText("Text to image", { exact: true }).first().waitFor({ state: "visible" });
 
+    await page.goto(`${origin}/en/demos/learn/courses/react-foundations`, {
+      waitUntil: "networkidle",
+    });
+    await page.getByRole("tab", { name: "Discussion" }).click();
+    const discussion = page.getByRole("combobox", { name: "New discussion" });
+    await discussion.fill("@");
+    await page.getByRole("listbox", { name: "Mention suggestions" }).waitFor({ state: "visible" });
+    await page.getByRole("option", { name: /Course assistant/ }).first().waitFor({ state: "visible" });
+    await assertEnglishPage(page, "/en/demos/learn mention suggestions");
+
     await page.goto(`${origin}/en/demos/scheduler`, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "Retry" }).waitFor({ state: "visible" });
+    await page.getByRole("button", { name: "Retry" }).click();
+    const seededEvent = page.locator('[role="button"][title*="Follow-up · Chen Xiaoming"]').first();
+    await seededEvent.waitFor({ state: "visible", timeout: 10_000 });
+    await assertEnglishPage(page, "/en/demos/scheduler after retry");
+    await seededEvent.click();
+    await page.getByText("Follow-up", { exact: true }).last().waitFor({ state: "visible" });
+    await page.getByText("Type", { exact: true }).waitFor({ state: "visible" });
+    await assertEnglishPage(page, "/en/demos/scheduler appointment detail");
+    await page.keyboard.press("Escape");
+
     await page.getByRole("button", { name: "New appointment" }).click();
     await page.getByText("Initial visit", { exact: true }).waitFor({ state: "visible" });
     await page.getByText("Clinic Room 1", { exact: true }).waitFor({ state: "visible" });
-    assertEnglishText(
-      await page.locator("body").innerText(),
-      "/en/demos/scheduler appointment dialog",
-    );
+    await page
+      .getByRole("combobox")
+      .filter({ hasText: "Search or select a patient" })
+      .click();
+    await page.getByPlaceholder("Search by patient name or phone...").fill("Chen Xiaoming");
+    await page.getByRole("option", { name: /Chen Xiaoming/ }).click();
+    await assertEnglishPage(page, "/en/demos/scheduler appointment dialog");
+    await page.getByRole("button", { name: "Create appointment" }).click();
+    await page.getByText("Appointment created", { exact: true }).waitFor({
+      state: "visible",
+      timeout: 10_000,
+    });
+    await page.locator('[role="button"][title*="Initial visit · Chen Xiaoming"]').first().waitFor({
+      state: "visible",
+      timeout: 10_000,
+    });
+    await assertEnglishPage(page, "/en/demos/scheduler after submit");
 
     await page.goto(`${origin}/en/demos/dashboard`, { waitUntil: "networkidle" });
     await page.getByText("Global QPS", { exact: false }).waitFor({ state: "visible" });
@@ -98,6 +191,12 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
         throw new Error(`Dashboard chart path ${index + 1} is empty`);
       }
     }
+    await page.getByRole("combobox", { name: "Data source" }).click();
+    await page.getByRole("option", { name: "Data source: Error" }).click();
+    await page.getByText(/Data source switched: .*Error/, { exact: false }).first().waitFor({
+      state: "visible",
+    });
+    await assertEnglishPage(page, "/en/demos/dashboard status toast");
 
     if (browserErrors.length) throw new Error(`Browser page errors:\n${browserErrors.join("\n")}`);
     return { routes: TASK11_DEMO_ROUTES.length, chartPaths: chartPathCount };

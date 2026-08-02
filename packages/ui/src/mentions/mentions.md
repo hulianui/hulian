@@ -69,6 +69,7 @@ import { Mentions, MentionText, type MentionTextProps, findTrigger, insertMentio
 - 插入文本是 `prefix + label + " "`，`label` 即可见名也是写入正文的字面量；要展示和插入不一致请自行用 `onSelect` 接管。
 - 外部/异步过滤时设 `filter={false}` 并在 `onSearch` 里刷新 `options`，否则内置子串过滤会再过滤一遍父级已筛好的结果。
 - 暂无其它已知坑。
+- 候选浮层的无障碍名称读取 `ConfigProvider` 的 `locale.components.mentions.suggestions`。`zhCN` / `enUS` 已内置；旧版自定义 locale 未提供该可选字段时回退「提及候选」。
 
 ## 相关
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md) · [Upload](../upload/upload.md)
