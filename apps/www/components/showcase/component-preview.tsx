@@ -3,9 +3,14 @@ import type { ReactNode } from "react";
 import { Tabs, TabsList, TabsTab, TabsPanel, CodeBlock } from "@hulianui/ui";
 import { DOCS_LOCALE } from "../../lib/docs-locale";
 
+export function componentPreviewLabels(locale: "zh-CN" | "en") {
+  return locale === "en"
+    ? { preview: "Preview", code: "Code" }
+    : { preview: "预览", code: "代码" };
+}
+
 export function ComponentPreview({ children, code }: { children: ReactNode; code: string }) {
-  const labels =
-    DOCS_LOCALE === "en" ? { preview: "Preview", code: "Code" } : { preview: "预览", code: "代码" };
+  const labels = componentPreviewLabels(DOCS_LOCALE);
 
   return (
     <div className="overflow-hidden rounded-[var(--radius)] border border-border bg-surface shadow-sm">

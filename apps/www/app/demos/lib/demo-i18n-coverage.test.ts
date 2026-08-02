@@ -630,9 +630,12 @@ describe("admin and developer demo localization inventory", () => {
         ].find((candidate) => existsSync(candidate));
         expect(sourceFile, `${relative(DEMOS_ROOT, contentFile)} consumer`).toBeTruthy();
         const source = readFileSync(sourceFile!, "utf8");
+        const directLiteralKeys = [...source.matchAll(/\bcopy\s*\(\s*["']([^"']+)["']/gu)].map(
+          (match) => match[1],
+        );
         const consumedKeys = STRICT_DEMOS.has(demo)
-          ? consumedContentKeys(sourceFile!, source)
-          : new Set([...source.matchAll(/copy\("([^"]+)"/g)].map((match) => match[1]));
+          ? new Set([...consumedContentKeys(sourceFile!, source), ...directLiteralKeys])
+          : new Set(directLiteralKeys);
         if (!STRICT_DEMOS.has(demo)) {
           for (const line of source.split("\n").filter((row) => row.includes("copy("))) {
             for (const match of line.matchAll(/"([^"]+)"/g))
