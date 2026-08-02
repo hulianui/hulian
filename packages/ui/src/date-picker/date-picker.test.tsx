@@ -16,6 +16,40 @@ describe("DatePicker", () => {
     expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
   });
 
+  it("enUS localizes the empty date, month, and year placeholders", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <div>
+          <DatePicker aria-label="Date" />
+          <DatePicker picker="month" aria-label="Month" />
+          <DatePicker picker="year" aria-label="Year" />
+        </div>
+      </ConfigProvider>,
+    );
+    expect(screen.getByText("Select date")).toBeTruthy();
+    expect(screen.getByText("Select month")).toBeTruthy();
+    expect(screen.getByText("Select year")).toBeTruthy();
+  });
+
+  it("an old custom datePicker locale with only clear keeps Chinese picker placeholders", () => {
+    const locale = {
+      ...enUS,
+      components: { ...enUS.components!, datePicker: { clear: "Remove" } },
+    };
+    render(
+      <ConfigProvider locale={locale}>
+        <div>
+          <DatePicker aria-label="Date" />
+          <DatePicker picker="month" aria-label="Month" />
+          <DatePicker picker="year" aria-label="Year" />
+        </div>
+      </ConfigProvider>,
+    );
+    expect(screen.getByText("选择日期")).toBeTruthy();
+    expect(screen.getByText("选择月份")).toBeTruthy();
+    expect(screen.getByText("选择年份")).toBeTruthy();
+  });
+
   it("默认渲染占位文本，不渲染清除按钮", () => {
     render(<DatePicker aria-label="选择日期" />);
     expect(screen.getByText("选择日期")).toBeTruthy();

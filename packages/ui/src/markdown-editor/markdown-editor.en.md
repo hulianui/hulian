@@ -33,13 +33,20 @@ import { MarkdownEditor } from "@hulianui/ui"
 | disabled | `boolean` | `false` | Disables editing. |
 | minRows | `number` | `6` | Content area minimum height (rows) |
 | className | `string` | — | Additional class name for the editor shell. |
-| aria-label | `string` | `"Markdown \u7f16\u8f91\u5668"` | Accessible name; the built-in Chinese copy means “Markdown editor.” |
+| aria-label | `string` | ConfigProvider locale | Accessible name for the editor. An explicit value takes precedence over the locale. |
 
 ## Events
 
 | Event | Type | Description |
 |------|------|------|
 | onChange | `(markdown: string) => void` | Content change callback, parameter is markdown string |
+
+## Localization
+
+The editor and formatting-toolbar accessible names, every formatting action,
+and the link URL prompt follow the nearest `ConfigProvider locale`. An explicit
+`aria-label` takes precedence. A legacy custom locale without
+`components.markdownEditor` keeps the original Chinese compatibility labels.
 
 ## Example
 ```tsx

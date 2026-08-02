@@ -42,9 +42,9 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | Flat virtual rendering, defaulting to height 320, itemHeight 36, and overscan 8. |
 | showLine | `boolean` | `false` | Shows connector lines; ignored by virtual rendering. |
 | searchable | `boolean` | `false` | Shows built-in tree search. |
-| searchPlaceholder | `string` | `"\u641c\u7d22"` ("Search") | Search input placeholder; the built-in runtime value is Chinese. |
+| searchPlaceholder | `string` | locale | Search input placeholder; an explicit value overrides the locale. |
 | className | `string` | — | Root class name. |
-| aria-label | `string` | `"\u6811"` ("Tree") | Accessible tree label; the built-in runtime value is Chinese. |
+| aria-label | `string` | locale | Accessible tree label; an explicit value overrides the locale. |
 
 ## Events
 
@@ -73,7 +73,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 - Dragging never mutates `nodes`. Apply the returned relative position yourself. Self drops, descendant cycles, and no-op inside drops are rejected.
 - Virtual mode removes nested transitions and connector lines. `itemHeight` must match real fixed row height; do not virtualize wrapping labels.
 - ReactNode labels need `searchText`; otherwise search and typeahead fall back to matching the key.
-- Runtime search defaults are `"\u641c\u7d22"` (“Search”), root `aria-label` `"\u6811"` (“Tree”), and empty result `"\u65e0\u5339\u914d\u9879"` (“No matching items”).
+- The default tree label, search placeholder, and empty-result message follow `ConfigProvider` (`zhCN` / `enUS`). Explicit `aria-label` and `searchPlaceholder` props win. Legacy custom locales without `components.tree` keep the Chinese fallback.
 
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

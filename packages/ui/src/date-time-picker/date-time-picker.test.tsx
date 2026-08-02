@@ -21,6 +21,28 @@ describe("DateTimePicker", () => {
     expect(screen.getByRole("button", { name: "Confirm" })).toBeTruthy();
   });
 
+  it("a legacy custom locale without dateTimePicker keeps the Chinese controls", () => {
+    const locale = {
+      ...enUS,
+      components: { ...enUS.components!, dateTimePicker: undefined },
+    };
+    render(
+      <ConfigProvider locale={locale}>
+        <div>
+          <DateTimePicker defaultValue="2026-06-08 09:30" aria-label="Legacy date time" />
+          <DateTimePicker aria-label="Empty legacy date time" />
+        </div>
+      </ConfigProvider>,
+    );
+    expect(screen.getByText("选择日期时间")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "清除" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Legacy date time" }));
+    expect(screen.getByRole("listbox", { name: "时" })).toBeTruthy();
+    expect(screen.getByRole("listbox", { name: "分" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "此刻" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "确定" })).toBeTruthy();
+  });
+
   it("无值时显示占位", () => {
     render(<DateTimePicker aria-label="选择日期时间" />);
     expect(screen.getByText("选择日期时间")).toBeTruthy();

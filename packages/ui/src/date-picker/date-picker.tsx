@@ -35,7 +35,11 @@ export function DatePicker({
   "aria-label": ariaLabel,
   className,
 }: DatePickerProps) {
-  const labels = useComponentLocale().datePicker ?? { clear: "清除" };
+  const labels = {
+    clear: "清除",
+    ...PICKER_PLACEHOLDER,
+    ...useComponentLocale().datePicker,
+  };
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
   const value = isControlled ? (valueProp ?? null) : internal;
@@ -79,7 +83,7 @@ export function DatePicker({
             >
               <CalendarIcon className="size-4 shrink-0 text-muted" aria-hidden />
               <span className={cn("truncate", !text && "text-muted")}>
-                {text || placeholder || PICKER_PLACEHOLDER[picker]}
+                {text || placeholder || labels[picker]}
               </span>
             </button>
           }

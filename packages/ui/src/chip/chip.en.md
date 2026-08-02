@@ -59,7 +59,7 @@ import { Chip, chipVariants } from "@hulianui/ui"
 
 Priority is avatar, startContent, then dot. A close button exists only with `onClose`; disabled chips block it too.
 
-The close control's runtime accessibility label is `"\u79fb\u9664"` ("Remove").
+The close control's accessible label follows `ConfigProvider`: `zhCN` uses `"\u79fb\u9664"` and `enUS` uses “Remove”. Legacy custom locales without `components.chip` keep the Chinese fallback.
 
 ## Related
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

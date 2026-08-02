@@ -64,6 +64,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 - `pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。
 - `icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。
 - `onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。
+- 关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。旧自定义 locale 缺少 `components.tag` 时回退中文。
 
 ## 相关
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

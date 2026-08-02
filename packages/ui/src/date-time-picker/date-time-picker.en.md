@@ -38,10 +38,10 @@ import { DateTimePicker } from "@hulianui/ui"
 | minDateTime | `string` | — | Earliest selectable date and time, inclusive. Its date limits the calendar; its time applies only on that boundary date. |
 | maxDateTime | `string` | — | Latest selectable date and time, inclusive, with the same boundary-date behavior. |
 | disabledDate | `(isoDate: string) => boolean` | — | Disables dates. The argument is always `"YYYY-MM-DD"`; this callback does not filter times. |
-| placeholder | `string` | `"\u9009\u62e9\u65e5\u671f\u65f6\u95f4"` | Trigger placeholder; the built-in Chinese copy means “Select date and time.” |
+| placeholder | `string` | From `ConfigProvider locale` | Trigger placeholder. An explicit value overrides the locale default. |
 | displayFormat | `string` | Display as is | Day.js format string used by the trigger. It affects presentation only; the external value format does not change. |
 | clearable | `boolean` | `true` | Shows a clear button when a value exists and the control is neither disabled nor read-only. |
-| showNow | `boolean` | `true` | Shows a shortcut with built-in Chinese copy `"\u6b64\u523b"` (Now), rounded down to the configured step. |
+| showNow | `boolean` | `true` | Shows the locale-aware Now shortcut, rounded down to the configured step. |
 | disabled | `boolean` | `false` | Disables the trigger and prevents the panel from opening. |
 | readOnly | `boolean` | `false` | Allows the panel to open but prevents selection. |
 | aria-label | `string` | — | Accessible name for an unlabeled trigger. |
@@ -52,6 +52,13 @@ import { DateTimePicker } from "@hulianui/ui"
 | Event | Type | Description |
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | Called with the selected value, or `null` when cleared. |
+
+## Localization
+
+The placeholder, clear action, hour/minute/second columns, Now shortcut, and
+confirmation action follow the nearest `ConfigProvider locale`. An explicit
+`placeholder` takes precedence. A legacy custom locale without
+`components.dateTimePicker` retains the original Chinese compatibility labels.
 
 ## Examples
 ```tsx

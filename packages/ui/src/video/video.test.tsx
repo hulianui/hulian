@@ -94,6 +94,18 @@ describe("<Video> 渲染冒烟", () => {
     }
   });
 
+  it("a legacy custom locale without video keeps the Chinese control labels", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, video: undefined } };
+    render(
+      <ConfigProvider locale={locale}>
+        <Video src="/demo/sample-video.mp4" title="Demo" />
+      </ConfigProvider>,
+    );
+    for (const label of ["暂停", "静音", "播放速度", "画中画", "全屏"]) {
+      expect(screen.getByLabelText(label)).toBeTruthy();
+    }
+  });
+
   it("挂载不抛错且渲出播放钮", () => {
     render(<Video src="/demo/sample-video.mp4" title="演示" />);
     // 锚定全词，避免误匹配 aria-label="播放速度" 的倍速菜单按钮

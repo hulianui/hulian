@@ -23,6 +23,20 @@ describe("TimeField", () => {
     expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
   });
 
+  it("a legacy custom locale without timeField keeps the Chinese controls", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, timeField: undefined } };
+    render(
+      <ConfigProvider locale={locale}>
+        <TimeField defaultValue="09:05:07" withSeconds />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("group", { name: "时间" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "小时" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "分钟" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "秒" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "清除" })).toBeTruthy();
+  });
+
   it("无值时各段显示 --", () => {
     render(<TimeField />);
     expect(hourSeg().textContent).toBe("--");

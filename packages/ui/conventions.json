@@ -6663,6 +6663,13 @@
       "source": "packages/ui/src/tag/tag.md"
     },
     {
+      "id": "component/tag/pitfall/4",
+      "scope": "tag",
+      "title": "Tag",
+      "rule": "关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。旧自定义 locale 缺少 `components.tag` 时回退中文。",
+      "source": "packages/ui/src/tag/tag.md"
+    },
+    {
       "id": "component/target-cursor/pitfall/1",
       "scope": "target-cursor",
       "title": "TargetCursor",
@@ -7230,6 +7237,13 @@
       "source": "packages/ui/src/tree/tree.md"
     },
     {
+      "id": "component/tree/pitfall/10",
+      "scope": "tree",
+      "title": "Tree",
+      "rule": "默认树标签、搜索占位和空结果文案跟随 `ConfigProvider`（`zhCN` / `enUS`）。显式 `aria-label` 与 `searchPlaceholder` 优先；旧自定义 locale 缺少 `components.tree` 时回退中文。",
+      "source": "packages/ui/src/tree/tree.md"
+    },
+    {
       "id": "component/tree-select/pitfall/1",
       "scope": "tree-select",
       "title": "TreeSelect",
@@ -7542,7 +7556,7 @@
   ],
   "stats": {
     "componentDocs": 372,
-    "componentAdvisories": 1052,
-    "totalAdvisories": 1059
+    "componentAdvisories": 1054,
+    "totalAdvisories": 1061
   }
 }

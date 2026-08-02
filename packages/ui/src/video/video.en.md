@@ -58,6 +58,13 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 
 > `formatTime`, `chapterMarkers`, `normalizeSrc`, and `DEFAULT_PLAYBACK_RATES` are exported pure helpers or constants.
 
+## Localization
+
+Built-in play, pause, mute, speed, picture-in-picture, fullscreen, and replay
+labels follow the nearest `ConfigProvider locale`. Both `zhCN` and `enUS` are
+included. A legacy custom locale without `components.video` keeps the original
+Chinese fallback labels instead of rendering empty accessible names.
+
 ## Examples
 ```tsx
 <Video src="/demo/sample.mp4" poster="/demo/poster.jpg" title="Demo video" className="w-full max-w-2xl" />

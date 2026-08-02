@@ -33,16 +33,35 @@ export const TASK11_ACCESSIBLE_ATTRIBUTES = ["aria-label", "title", "alt", "plac
 export const TASK11_INTERACTION_CHECKS = [
   "english-navigation",
   "workflow-notifications",
-  "learn-mentions",
+  "knowledge-retry",
+  "learn-retry-mentions",
   "scheduler-retry-detail-submit",
-  "dashboard-status-toast",
+  "dashboard-error-recovery",
 ];
+export const TASK11_FAILURE_MARKERS = [
+  "Failed to load knowledge base",
+  "Course failed to load",
+  "Live data source error",
+  "Retry",
+];
+export const TASK11_ROUTE_EXPECTED_PRECONDITIONS = {
+  knowledge: ["Failed to load knowledge base", "Retry"],
+  learn: ["Course failed to load", "Retry"],
+  scheduler: ["Retry"],
+};
 
 export function collectCjkLines(text) {
   return text
     .split("\n")
     .filter((line) => /\p{Script=Han}/u.test(line))
     .slice(0, 8);
+}
+
+export function collectUnexpectedFailureMarkers(text, allowedMarkers = []) {
+  const allowed = new Set(allowedMarkers);
+  return TASK11_FAILURE_MARKERS.filter(
+    (marker) => text.includes(marker) && !allowed.has(marker),
+  );
 }
 
 function assertEnglishText(text, context) {
@@ -64,6 +83,31 @@ async function assertEnglishPage(page, context) {
     return values.join("\n");
   }, TASK11_ACCESSIBLE_ATTRIBUTES);
   assertEnglishText(surfaces, context);
+}
+
+async function assertNoUnexpectedApplicationFailure(page, context, allowedMarkers = []) {
+  const visibleText = await page.locator("body").innerText();
+  const failures = collectUnexpectedFailureMarkers(visibleText, allowedMarkers);
+  if (failures.length) {
+    throw new Error(`${context} rendered unexpected application failure UI: ${failures.join(", ")}`);
+  }
+}
+
+async function assertDashboardCharts(page, context) {
+  const chartPaths = page.locator(
+    ".recharts-line path[d], .recharts-area path[d], .recharts-bar-rectangle path[d], .recharts-pie-sector path[d]",
+  );
+  await chartPaths.first().waitFor({ state: "attached", timeout: 10_000 });
+  const chartPathCount = await chartPaths.count();
+  if (chartPathCount < 4) {
+    throw new Error(`${context} rendered ${chartPathCount} chart paths; expected at least 4`);
+  }
+  for (let index = 0; index < chartPathCount; index += 1) {
+    if (!(await chartPaths.nth(index).getAttribute("d"))?.trim()) {
+      throw new Error(`${context} chart path ${index + 1} is empty`);
+    }
+  }
+  return chartPathCount;
 }
 
 export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
@@ -90,6 +134,11 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       });
       try {
         await assertEnglishPage(page, path);
+        await assertNoUnexpectedApplicationFailure(
+          page,
+          path,
+          TASK11_ROUTE_EXPECTED_PRECONDITIONS[route] ?? [],
+        );
       } catch (error) {
         routeLanguageErrors.push(error instanceof Error ? error.message : String(error));
       }
@@ -133,6 +182,32 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
 
     await page.getByText("Text to image", { exact: true }).first().waitFor({ state: "visible" });
 
+    await page.goto(`${origin}/en/demos/knowledge`, { waitUntil: "networkidle" });
+    await page
+      .getByRole("alert")
+      .filter({ hasText: "Failed to load knowledge base" })
+      .waitFor({ state: "visible", timeout: 10_000 });
+    await page.getByRole("button", { name: "Retry" }).click();
+    await page.getByText("R&D Center", { exact: true }).first().waitFor({
+      state: "visible",
+      timeout: 10_000,
+    });
+    await assertEnglishPage(page, "/en/demos/knowledge after retry");
+    await assertNoUnexpectedApplicationFailure(page, "/en/demos/knowledge after retry");
+
+    await page.goto(`${origin}/en/demos/learn`, { waitUntil: "networkidle" });
+    await page
+      .getByRole("alert")
+      .filter({ hasText: "Course failed to load" })
+      .waitFor({ state: "visible", timeout: 10_000 });
+    await page.getByRole("button", { name: "Retry" }).click();
+    await page.getByText("Modern React Engineering in Practice", { exact: true }).first().waitFor({
+      state: "visible",
+      timeout: 10_000,
+    });
+    await assertEnglishPage(page, "/en/demos/learn after retry");
+    await assertNoUnexpectedApplicationFailure(page, "/en/demos/learn after retry");
+
     await page.goto(`${origin}/en/demos/learn/courses/react-foundations`, {
       waitUntil: "networkidle",
     });
@@ -149,6 +224,7 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
     const seededEvent = page.locator('[role="button"][title*="Follow-up · Chen Xiaoming"]').first();
     await seededEvent.waitFor({ state: "visible", timeout: 10_000 });
     await assertEnglishPage(page, "/en/demos/scheduler after retry");
+    await assertNoUnexpectedApplicationFailure(page, "/en/demos/scheduler after retry");
     await seededEvent.click();
     await page.getByText("Follow-up", { exact: true }).last().waitFor({ state: "visible" });
     await page.getByText("Type", { exact: true }).waitFor({ state: "visible" });
@@ -178,25 +254,33 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
 
     await page.goto(`${origin}/en/demos/dashboard`, { waitUntil: "networkidle" });
     await page.getByText("Global QPS", { exact: false }).waitFor({ state: "visible" });
-    const chartPaths = page.locator(
-      ".recharts-line path[d], .recharts-area path[d], .recharts-bar-rectangle path[d], .recharts-pie-sector path[d]",
-    );
-    await chartPaths.first().waitFor({ state: "attached" });
-    const chartPathCount = await chartPaths.count();
-    if (chartPathCount < 4) {
-      throw new Error(`Dashboard rendered ${chartPathCount} chart paths; expected at least 4`);
-    }
-    for (let index = 0; index < chartPathCount; index += 1) {
-      if (!(await chartPaths.nth(index).getAttribute("d"))?.trim()) {
-        throw new Error(`Dashboard chart path ${index + 1} is empty`);
-      }
-    }
+    await assertDashboardCharts(page, "Dashboard healthy state");
     await page.getByRole("combobox", { name: "Data source" }).click();
     await page.getByRole("option", { name: "Data source: Error" }).click();
     await page.getByText(/Data source switched: .*Error/, { exact: false }).first().waitFor({
       state: "visible",
     });
-    await assertEnglishPage(page, "/en/demos/dashboard status toast");
+    await page
+      .getByRole("alert")
+      .filter({ hasText: "Live data source error" })
+      .waitFor({
+        state: "visible",
+        timeout: 10_000,
+      });
+    await assertEnglishPage(page, "/en/demos/dashboard error state");
+
+    await page.getByRole("combobox", { name: "Data source" }).click();
+    await page.getByRole("option", { name: "Data source: Healthy" }).click();
+    await page.getByText(/Data source switched: .*Healthy/, { exact: false }).first().waitFor({
+      state: "visible",
+    });
+    await page.getByText("Global QPS", { exact: false }).waitFor({
+      state: "visible",
+      timeout: 10_000,
+    });
+    const chartPathCount = await assertDashboardCharts(page, "Dashboard recovered state");
+    await assertEnglishPage(page, "/en/demos/dashboard recovered state");
+    await assertNoUnexpectedApplicationFailure(page, "/en/demos/dashboard recovered state");
 
     if (browserErrors.length) throw new Error(`Browser page errors:\n${browserErrors.join("\n")}`);
     return { routes: TASK11_DEMO_ROUTES.length, chartPaths: chartPathCount };

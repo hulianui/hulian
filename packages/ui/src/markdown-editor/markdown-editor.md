@@ -41,6 +41,12 @@ import { MarkdownEditor } from "@hulianui/ui"
 |------|------|------|
 | onChange | `(markdown: string) => void` | 内容变化回调，参数为 markdown 字符串 |
 
+## 国际化
+
+编辑区与格式工具栏的无障碍名称、全部格式按钮，以及链接地址提示跟随最近的
+`ConfigProvider locale`。显式 `aria-label` 优先于 Locale。旧自定义 Locale 若没有
+`components.markdownEditor`，仍使用原有中文兼容默认值。
+
 ## 示例
 ```tsx
 // 受控

@@ -50,6 +50,14 @@ import { DatePicker } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | Select/clear callback; clear callback `null` |
 
+## Localization
+
+When `placeholder` is omitted, the date, month, and year placeholders and the
+clear-button label follow the nearest `ConfigProvider locale`; `enUS` uses
+“Select date,” “Select month,” and “Select year.” An explicit `placeholder`
+always wins. A legacy custom locale with no `components.datePicker`, or with
+only its older `clear` field, keeps the original Chinese fallback placeholders.
+
 ## Examples
 ```tsx
 // Basic: values are ISO date strings

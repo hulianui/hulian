@@ -1,12 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
+import * as task11Gate from "./check-task11-demo-output.mjs";
+
+const {
   TASK11_ACCESSIBLE_ATTRIBUTES,
   collectCjkLines,
   TASK11_DEMO_ROUTES,
   TASK11_INTERACTION_CHECKS,
   TASK11_ROUTE_MARKERS,
-} from "./check-task11-demo-output.mjs";
+} = task11Gate;
 
 test("Task 11 browser scan reports every CJK surface in one route pass", () => {
   assert.deepEqual(collectCjkLines("English\naria-label: 清除\ntitle: 中文"), [
@@ -28,10 +30,28 @@ test("Task 11 browser scan covers reviewed interactions and accessible text surf
   assert.deepEqual(TASK11_INTERACTION_CHECKS, [
     "english-navigation",
     "workflow-notifications",
-    "learn-mentions",
+    "knowledge-retry",
+    "learn-retry-mentions",
     "scheduler-retry-detail-submit",
-    "dashboard-status-toast",
+    "dashboard-error-recovery",
   ]);
+});
+
+test("generic route scans reject known application failures except declared preconditions", () => {
+  assert.equal(typeof task11Gate.collectUnexpectedFailureMarkers, "function");
+  assert.deepEqual(
+    task11Gate.collectUnexpectedFailureMarkers("Course failed to load\nRetry"),
+    ["Course failed to load", "Retry"],
+  );
+  assert.deepEqual(
+    task11Gate.collectUnexpectedFailureMarkers("Course failed to load\nRetry", ["Retry"]),
+    ["Course failed to load"],
+  );
+  assert.deepEqual(task11Gate.TASK11_ROUTE_EXPECTED_PRECONDITIONS, {
+    knowledge: ["Failed to load knowledge base", "Retry"],
+    learn: ["Course failed to load", "Retry"],
+    scheduler: ["Retry"],
+  });
 });
 
 test("every Task 11 route has an explicit English marker", () => {

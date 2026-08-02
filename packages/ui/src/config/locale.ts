@@ -213,7 +213,42 @@ export interface ComponentLocale {
   /** Optional so existing custom component dictionaries remain source-compatible. */
   mentions?: { suggestions: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
-  datePicker?: { clear: string };
+  chip?: { remove: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  tag?: { remove: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  tree?: {
+    label: string;
+    searchPlaceholder: string;
+    noMatches: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  markdownEditor?: {
+    editor: string;
+    toolbar: string;
+    bold: string;
+    italic: string;
+    strikethrough: string;
+    inlineCode: string;
+    heading1: string;
+    heading2: string;
+    heading3: string;
+    unorderedList: string;
+    orderedList: string;
+    blockquote: string;
+    codeBlock: string;
+    link: string;
+    horizontalRule: string;
+    linkUrl: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  datePicker?: {
+    clear: string;
+    /** Optional so dictionaries created before picker-specific placeholders remain compatible. */
+    date?: string;
+    month?: string;
+    year?: string;
+  };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   dateTimePicker?: {
     placeholder: string;
@@ -440,7 +475,37 @@ const zhComponents: ComponentLocale = {
     more: (count) => `+${count} 更多`,
   },
   mentions: { suggestions: "提及候选" },
-  datePicker: { clear: "清除" },
+  chip: { remove: "移除" },
+  tag: { remove: "移除" },
+  tree: {
+    label: "树",
+    searchPlaceholder: "搜索",
+    noMatches: "无匹配项",
+  },
+  markdownEditor: {
+    editor: "Markdown 编辑器",
+    toolbar: "格式工具栏",
+    bold: "加粗",
+    italic: "斜体",
+    strikethrough: "删除线",
+    inlineCode: "行内代码",
+    heading1: "标题 1",
+    heading2: "标题 2",
+    heading3: "标题 3",
+    unorderedList: "无序列表",
+    orderedList: "有序列表",
+    blockquote: "引用",
+    codeBlock: "代码块",
+    link: "链接",
+    horizontalRule: "分割线",
+    linkUrl: "链接地址",
+  },
+  datePicker: {
+    clear: "清除",
+    date: "选择日期",
+    month: "选择月份",
+    year: "选择年份",
+  },
   dateTimePicker: {
     placeholder: "选择日期时间",
     clear: "清除",
@@ -673,7 +738,37 @@ const enComponents: ComponentLocale = {
     more: (count) => `+${count} more`,
   },
   mentions: { suggestions: "Mention suggestions" },
-  datePicker: { clear: "Clear" },
+  chip: { remove: "Remove" },
+  tag: { remove: "Remove" },
+  tree: {
+    label: "Tree",
+    searchPlaceholder: "Search",
+    noMatches: "No matching items",
+  },
+  markdownEditor: {
+    editor: "Markdown editor",
+    toolbar: "Formatting toolbar",
+    bold: "Bold",
+    italic: "Italic",
+    strikethrough: "Strikethrough",
+    inlineCode: "Inline code",
+    heading1: "Heading 1",
+    heading2: "Heading 2",
+    heading3: "Heading 3",
+    unorderedList: "Unordered list",
+    orderedList: "Ordered list",
+    blockquote: "Blockquote",
+    codeBlock: "Code block",
+    link: "Link",
+    horizontalRule: "Horizontal rule",
+    linkUrl: "Link URL",
+  },
+  datePicker: {
+    clear: "Clear",
+    date: "Select date",
+    month: "Select month",
+    year: "Select year",
+  },
   dateTimePicker: {
     placeholder: "Select date and time",
     clear: "Clear",

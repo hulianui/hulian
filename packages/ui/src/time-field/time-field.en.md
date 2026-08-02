@@ -38,7 +38,7 @@ import { TimeField } from "@hulianui/ui"
 | clearable | `boolean` | `true` | Whether to show a clear button when the field has a value and is neither disabled nor read-only. |
 | disabled | `boolean` | `false` | Disables the field and prevents its segments from receiving focus. |
 | readOnly | `boolean` | `false` | Prevents value changes while preserving segment navigation. |
-| aria-label | `string` | `"\u65f6\u95f4"` | Accessible name; the built-in Chinese copy means “Time.” The hour, minute, and second segments also use built-in Chinese labels. |
+| aria-label | `string` | From `ConfigProvider locale` | Accessible group name. An explicit value overrides the locale default; segment labels also follow the locale. |
 | className | `string` | — | Additional class name for the outer container. |
 
 ## Events
@@ -46,6 +46,13 @@ import { TimeField } from "@hulianui/ui"
 | Event | Type | Description |
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | **Triggered only after every required segment is complete**; clearing the value returns `null`. |
+
+## Localization
+
+The group, hour/minute/second segments, empty-value announcement, and clear
+action follow the nearest `ConfigProvider locale`. An explicit `aria-label`
+takes precedence. A legacy custom locale without `components.timeField`
+retains the original Chinese compatibility labels.
 
 ## Keyboard
 

@@ -61,7 +61,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 - Pulse requires dot. Icon and dot are mutually exclusive, with icon winning.
 - Closing is controlled by the parent; filter the item from state.
-- The close control's runtime accessibility label is `"\u79fb\u9664"` ("Remove").
+- The close control's accessible label follows `ConfigProvider`: `zhCN` uses `"\u79fb\u9664"` and `enUS` uses “Remove”. Legacy custom locales without `components.tag` keep the Chinese fallback.
 
 ## Related
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

@@ -3,6 +3,7 @@ import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useReducedMotion } from "motion/react";
 import { Search } from "../_icons";
+import { useComponentLocale } from "../config/locale";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { Checkbox } from "../checkbox";
@@ -45,10 +46,18 @@ export function Tree({
   virtual = false,
   showLine = false,
   searchable = false,
-  searchPlaceholder = "搜索",
+  searchPlaceholder: searchPlaceholderProp,
   className,
-  "aria-label": ariaLabel = "树",
+  "aria-label": ariaLabelProp,
 }: TreeProps) {
+  const labels = {
+    label: "树",
+    searchPlaceholder: "搜索",
+    noMatches: "无匹配项",
+    ...useComponentLocale().tree,
+  };
+  const searchPlaceholder = searchPlaceholderProp ?? labels.searchPlaceholder;
+  const ariaLabel = ariaLabelProp ?? labels.label;
   // "row"：有子节点的行点了只展开（历史默认）。"icon"：只有箭头管展开，行归 select/check，
   // 于是父节点也能被选中。
   const rowClickExpands = expandTrigger === "row";
@@ -571,7 +580,7 @@ export function Tree({
         </ul>
       )}
       {searching && flat.length === 0 ? (
-        <div className="px-2 py-6 text-center text-sm text-muted">无匹配项</div>
+        <div className="px-2 py-6 text-center text-sm text-muted">{labels.noMatches}</div>
       ) : null}
     </div>
   );

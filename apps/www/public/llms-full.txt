@@ -3596,6 +3596,13 @@ import { DatePicker } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
 
+## 国际化
+
+未显式传 `placeholder` 时，日期、月份、年份占位文本以及清除按钮文案跟随最近的
+`ConfigProvider locale`；`enUS` 分别显示 “Select date / month / year”。显式
+`placeholder` 始终优先。为兼容旧自定义 Locale，`components.datePicker` 缺失，或只含旧版
+`clear` 字段时，缺少的占位文本仍回退到原有中文。
+
 ## 示例
 ```tsx
 // 基础：值是 ISO 日期串
@@ -3751,6 +3758,12 @@ import { DateTimePicker } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
+
+## 国际化
+
+占位文本、清除按钮、时/分/秒列、此刻和确定文案跟随最近的 `ConfigProvider locale`。
+显式 `placeholder` 优先于 Locale。旧自定义 Locale 若没有
+`components.dateTimePicker`，仍使用原有中文兼容默认值。
 
 ## 示例
 ```tsx
@@ -4521,6 +4534,12 @@ import { MarkdownEditor } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onChange | `(markdown: string) => void` | 内容变化回调，参数为 markdown 字符串 |
+
+## 国际化
+
+编辑区与格式工具栏的无障碍名称、全部格式按钮，以及链接地址提示跟随最近的
+`ConfigProvider locale`。显式 `aria-label` 优先于 Locale。旧自定义 Locale 若没有
+`components.markdownEditor`，仍使用原有中文兼容默认值。
 
 ## 示例
 ```tsx
@@ -6257,6 +6276,12 @@ import { TimeField } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | **只有整段输完才触发**；清空或退格清段回传 `null` |
 
+## 国际化
+
+输入组、时/分/秒段、空值播报和清除按钮的无障碍文案跟随最近的
+`ConfigProvider locale`。显式 `aria-label` 优先于 Locale。旧自定义 Locale 若没有
+`components.timeField`，仍使用原有中文兼容默认值。
+
 ## 键盘
 
 | 按键 | 作用 |
@@ -7635,6 +7660,8 @@ import { Chip, chipVariants } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 暂无已知坑。前导内容互斥优先级为 `avatar > startContent > dot`——三者同传只渲染 avatar。要出现 × 关闭按钮必须传 `onClose`（即便回调为空函数）。`isDisabled` 会屏蔽整片指针事件，连 × 也点不动。
+
+关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。为兼容旧自定义 locale，缺少 `components.chip` 时仍回退中文。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -11874,6 +11901,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 - `pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。
 - `icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。
 - `onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。
+- 关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。旧自定义 locale 缺少 `components.tag` 时回退中文。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -12055,9 +12083,9 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | 虚拟滚动（默认 height 320 / itemHeight 36 / overscan 8）。**开启后强制平铺渲染** |
 | showLine | `boolean` | `false` | 显示连接线（`virtual` 开启时失效） |
 | searchable | `boolean` | `false` | 树内搜索框 |
-| searchPlaceholder | `string` | — | 搜索框占位 |
+| searchPlaceholder | `string` | locale | 搜索框占位；显式传值优先于 locale。 |
 | className | `string` | — | — |
-| aria-label | `string` | — | 树的无障碍标签 |
+| aria-label | `string` | locale | 树的无障碍标签；显式传值优先于 locale。 |
 
 ## Events
 
@@ -12093,6 +12121,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
   `itemHeight` 必须与实际行高一致，否则滚动条长度会飘。
 - **`virtual` 下 `itemHeight` 是固定值**，不做动态测量。行高会因 `label` 换行而变化的场景先别开虚拟。
 - **`label` 传 `ReactNode`（带高亮片段、图标、徽标…）时必须同时给 `searchText`**，否则内置搜索与键盘首字母跳转会退化成拿 `key` 去匹配 —— 用户按看得见的文字搜，一条都搜不出来。`label` 是字符串/数字时不用管。
+- 默认树标签、搜索占位和空结果文案跟随 `ConfigProvider`（`zhCN` / `enUS`）。显式 `aria-label` 与 `searchPlaceholder` 优先；旧自定义 locale 缺少 `components.tree` 时回退中文。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -12196,6 +12225,12 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 | children | `ReactNode` | v1 预留扩展位，未实现 |
 
 > 导出的 `formatTime` / `chapterMarkers` / `normalizeSrc` / `DEFAULT_PLAYBACK_RATES` 为辅助纯函数/常量。
+
+## 国际化
+
+播放、暂停、静音、倍速、画中画、全屏和重播等内置控件文案跟随最近的
+`ConfigProvider locale`。`zhCN` 与 `enUS` 均已覆盖；旧自定义 Locale 若没有
+`components.video`，仍回退到原有中文文案，不会因升级变成空标签。
 
 ## 示例
 ```tsx

@@ -58,6 +58,12 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 
 > 导出的 `formatTime` / `chapterMarkers` / `normalizeSrc` / `DEFAULT_PLAYBACK_RATES` 为辅助纯函数/常量。
 
+## 国际化
+
+播放、暂停、静音、倍速、画中画、全屏和重播等内置控件文案跟随最近的
+`ConfigProvider locale`。`zhCN` 与 `enUS` 均已覆盖；旧自定义 Locale 若没有
+`components.video`，仍回退到原有中文文案，不会因升级变成空标签。
+
 ## 示例
 ```tsx
 // 文件 + 海报

@@ -8,6 +8,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { cn } from "../lib/cn";
 import type { MarkdownEditorProps } from "./markdown-editor.types";
 import { MarkdownEditorToolbar } from "./markdown-editor-toolbar";
+import { useComponentLocale } from "../config/locale";
 
 // 内容区排版：从 prose.tsx proseBase 复制的后代选择器（去掉首尾子元素边距类）
 const editorProseClass = cn(
@@ -45,8 +46,10 @@ export function MarkdownEditor({
   disabled,
   minRows = 6,
   className,
-  "aria-label": ariaLabel = "Markdown 编辑器",
+  "aria-label": ariaLabelProp,
 }: MarkdownEditorProps) {
+  const ariaLabel =
+    ariaLabelProp ?? useComponentLocale().markdownEditor?.editor ?? "Markdown 编辑器";
   const init = value ?? defaultValue ?? "";
   const lastEmitted = useRef<string>(init);
   const [mdValue, setMdValue] = useState(init);

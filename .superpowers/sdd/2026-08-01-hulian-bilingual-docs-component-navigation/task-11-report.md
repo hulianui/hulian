@@ -34,7 +34,7 @@ routes and a real Learn course detail route.
 ## Upstream component locale gaps fixed
 
 The production export and review follow-up exposed component-owned Chinese
-defaults in eight shared components:
+defaults in twelve shared components:
 
 - `Tour` now reads navigation, finish, skip, close, dialog, and progress copy
   from `ComponentLocale`, while explicit text props still win and missing
@@ -45,9 +45,17 @@ defaults in eight shared components:
 - `Scheduler` now localizes its toolbar, view labels, weekday/month formatting,
   overflow summary, and event accessible names through `ComponentLocale`.
 - `Mentions` now localizes the suggestions listbox name.
+- `Chip` and `Tag` now localize their removable-control accessible labels.
+- `Tree` now localizes its root accessible label, search placeholder, and empty
+  result, while explicit `aria-label` and `searchPlaceholder` props still win.
 - `Video`, `DatePicker`, `DateTimePicker`, and `TimeField` now localize the
   control labels, placeholders, time-column labels, empty state, and clear
   actions exposed by the reviewed English Scheduler and Learn flows.
+- `MarkdownEditor` now localizes its editor, formatting toolbar, format-action,
+  and link-prompt labels; explicit editor `aria-label` still wins and legacy
+  custom dictionaries retain the original Chinese defaults. The successful
+  Knowledge recovery scan also verified the new `Chip`, `Tag`, and `Tree`
+  labels against the production English export.
 
 All additions are optional in `ComponentLocale` so existing custom component
 dictionaries remain source-compatible. Focused provider and compatibility tests
@@ -59,7 +67,8 @@ cover the behavior.
 uses Chromium to verify:
 
 - all 11 explicit `/en/demos/...` routes return successfully, retain
-  `lang="en"`, show their reviewed marker, and contain no visible Han text;
+  `lang="en"`, show their reviewed marker, and contain no Han text across
+  visible content, `aria-label`, `title`, `alt`, or `placeholder` surfaces;
 - the AI Chat quicksort suggestion completes its local streamed response and
   renders the JavaScript implementation;
 - AI Workflow opens localized notifications with semantic relative times and
@@ -68,8 +77,9 @@ uses Chromium to verify:
 - Scheduler recovers from its loading error, opens a seeded event, creates a
   new appointment, verifies its toast and calendar event, and scans visible and
   accessible text after every state change; and
-- Dashboard renders eight nonempty Recharts SVG paths and proves the canonical
-  data-source status is mapped before the localized toast is rendered.
+- Dashboard renders nonempty Recharts SVG paths, enters the asynchronous Error
+  state, scans the visible and accessible error UI, then switches back to
+  Healthy and requires both the success content and chart paths to recover.
 
 The exact route inventory and marker parity have a Node test and the browser
 command is wired into CI after the existing admin-demo scan.
@@ -88,6 +98,32 @@ command is wired into CI after the existing admin-demo scan.
 - Mounted the missing Dashboard `ToastProvider` in the dashboard route layout;
   a source regression assertion and the production-export browser interaction
   now prove status feedback is actually visible.
+
+## Round-two review follow-up
+
+- Extended `ComponentLocale.datePicker` with optional date, month, and year
+  placeholders. `zhCN` and `enUS` provide all three values, while the runtime
+  merges the original Chinese placeholders with partial custom dictionaries so
+  pre-existing clear-only locales remain compatible.
+- Added explicit legacy custom-locale fallback regressions for `Video`,
+  `DatePicker`, `DateTimePicker`, and `TimeField`. The three new non-DatePicker
+  tests were mutation-checked against broken fallback labels before restoring
+  the production defaults.
+- Documented locale ownership, explicit-prop precedence, and legacy fallback
+  behavior in the paired Chinese and English docs for `Video`, `DatePicker`,
+  `DateTimePicker`, and `TimeField`.
+- Strengthened the Task 11 browser gate so generic route scans reject known
+  application failure/retry UI unless it is an explicit route precondition.
+  Knowledge, Learn, and Scheduler declare their source-owned one-time failure,
+  then each browser flow clicks Retry, waits for a distinct success marker,
+  scans all text surfaces, and requires failure markers to disappear. This
+  recovery scan exposed and fixed MarkdownEditor's hidden Chinese toolbar
+  labels, then exposed and fixed the shared Tree root label and Tag removal
+  labels in the successful Knowledge UI. Chip received the same compatible
+  removable-control locale contract and focused coverage. Dashboard now waits
+  for its `role="alert"` error marker, scans visible text plus `aria-label`,
+  `title`, `alt`, and `placeholder`, then restores Healthy and revalidates the
+  chart paths and success state.
 
 ## TDD and defect evidence
 
@@ -110,18 +146,18 @@ All commands used Node 22.22.3.
 | --- | --- |
 | `pnpm --filter www exec vitest run app/demos/lib/demo-i18n-coverage.test.ts app/demos/task11-fixture-quality.test.ts app/demos/ai-chat/ai-chat-i18n.test.ts` | PASS, 3 files / 52 tests |
 | `pnpm --filter www test -- --reporter=dot` | PASS, 33 files / 302 tests |
-| `pnpm --filter @hulianui/ui test -- scheduler/scheduler.test.tsx mentions/mentions.test.tsx video/video.test.tsx date-picker/date-picker.test.tsx date-time-picker/date-time-picker.test.tsx time-field/time-field.test.tsx --run` | PASS, 6 files / 114 tests |
+| `pnpm --filter @hulianui/ui test -- scheduler/scheduler.test.tsx mentions/mentions.test.tsx video/video.test.tsx date-picker/date-picker.test.tsx date-time-picker/date-time-picker.test.tsx time-field/time-field.test.tsx markdown-editor/markdown-editor.test.tsx chip/chip.test.tsx tag/tag.test.tsx tree/tree.test.tsx --run` | PASS, 10 files / 176 tests |
 | `DOCS_LOCALE=en pnpm --filter www typecheck` | PASS |
 | `pnpm --filter @hulianui/ui typecheck` | PASS |
-| `pnpm test:scripts` | PASS, 98/98 tests |
+| `pnpm test:scripts` | PASS, 99/99 tests |
 | `pnpm docs:all` | PASS, regenerated component docs, registry, conventions, and changelog artifacts |
 | `pnpm docs:build` | PASS, both locale builds generated 774/774 pages and merged 769 bilingual routes |
 | `pnpm docs:check:output` | PASS, 170 Task 9 routes plus `/en/404` |
 | `pnpm docs:check:routes` | PASS, 769 bilingual routes |
 | `pnpm docs:i18n:check` | PASS, component Markdown coverage complete |
-| `pnpm conventions:check` | PASS, 4 executable rules and 1059 advisories |
+| `pnpm conventions:check` | PASS, 4 executable rules and 1061 advisories |
 | `pnpm registry:smoke:pages` | PASS, 20/20 pages installed and typechecked in isolated consumers |
-| `pnpm docs:check:task11-demos` | PASS, 11 routes and 8 nonempty chart paths |
+| `pnpm docs:check:task11-demos` | PASS, 11 routes and 14 nonempty recovered chart paths |
 | `git diff --check` | PASS |
 
 The production builds retained the existing non-fatal worktree-root,
@@ -130,6 +166,6 @@ locale builds and the merged export completed successfully.
 
 ## Generated artifacts
 
-The locale-aware `Calendar` and `Tour` imports were regenerated into
-`apps/www/public/registry.json`, keeping their published registry dependencies
-aligned with the runtime `ConfigProvider` usage.
+Locale-aware component imports were regenerated into
+`apps/www/public/registry.json`, keeping published registry dependencies
+aligned with runtime `ConfigProvider` usage.
