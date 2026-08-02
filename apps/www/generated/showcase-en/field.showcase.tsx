@@ -36,7 +36,7 @@ export const fieldShowcase: ShowcaseSpec = {
         },
         {
             title: "Disabled",
-            description: "disabled transparently transmits Field.Root, and the control is disabled.",
+            description: "disabled is passed to Field.Root, which disables the control.",
             code: `<Field label="Email" disabled>
   <Input placeholder="you@work.com" />
 </Field>`,

@@ -109,7 +109,7 @@ export const textShowcase: ShowcaseSpec = {
           <Text tone="muted">Auxiliary instructions muted · text-muted</Text>
           <Text tone="primary">Emphasis text primary · text-primary</Text>
           <Text tone="success">Successful result success · text-success</Text>
-          <Text tone="warning">Pay attention to the warning warning · text-warning</Text>
+          <Text tone="warning">Pay attention to the warning · text-warning</Text>
           <Text tone="danger">Danger warning danger · text-danger</Text>
         </div>),
         },

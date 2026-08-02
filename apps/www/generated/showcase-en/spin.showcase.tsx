@@ -54,7 +54,7 @@ export const spinShowcase: ShowcaseSpec = {
         },
         {
             title: "Three sizes",
-            description: "size transparently transmits the internal Spinner to control the indicator size.",
+            description: "size is passed to the internal Spinner and controls the indicator size.",
             code: `<>
   <Spin spinning size="sm" />
   <Spin spinning size="md" />

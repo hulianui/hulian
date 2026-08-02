@@ -65,7 +65,7 @@ export const timelineShowcase: ShowcaseSpec = {
         },
         {
             title: "Layout direction",
-            description: "mode Control node location: left (default) / right mirror / alternate Alternate left and right.",
+            description: "mode Control node location: left (default) / right mirror / alternate left and right.",
             code: `<>
   <Timeline items={logistics} mode="right" />
   <Timeline items={approval} mode="alternate" />

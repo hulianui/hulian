@@ -136,7 +136,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
     <NavigationMenuItem value="products">
       <NavigationMenuTrigger>Product</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="grid grid-cols-2 gap-1">{/* NavigationMenuLink list */}</div>
+        <div className="grid-cols-2 gap-1">{/* NavigationMenuLink list */}</div>
       </NavigationMenuContent>
     </NavigationMenuItem>
     <NavigationMenuItem value="pricing">

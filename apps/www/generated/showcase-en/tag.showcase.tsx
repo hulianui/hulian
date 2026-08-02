@@ -36,7 +36,7 @@ export const tagShowcase: ShowcaseSpec = {
         },
         {
             title: "Variant",
-            description: "variant provides soft (default light background) / solid solid background / outline stroke.",
+            description: "variant provides soft (default light background) / solid background / outline stroke.",
             code: `<>
   <Tag variant="soft" tone="brand">soft</Tag>
   <Tag variant="solid" tone="brand">solid</Tag>

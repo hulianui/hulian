@@ -10,9 +10,9 @@ const groups: CommandGroupData[] = [
         heading: "Quick jump",
         items: [
             { value: "go-dashboard", label: "Dashboard", description: "Overview of today's data", keywords: "dashboard Home Overview db", icon: <LayoutDashboard /> },
-            { value: "go-orders", label: "Order Management", description: "View and process orders", keywords: "order Order dd Transaction", icon: <ShoppingCart /> },
+            { value: "go-orders", label: "Order Management", description: "View and process orders", keywords: "order dd Transaction", icon: <ShoppingCart /> },
             { value: "go-products", label: "Product Library", description: "SKU with stock", keywords: "product sku Product Stock", icon: <Package /> },
-            { value: "go-customers", label: "Customer List", description: "Members and portraits", keywords: "customer Customer Member user", icon: <Users /> },
+            { value: "go-customers", label: "Customer List", description: "Members and portraits", keywords: "customer Member user", icon: <Users /> },
         ],
     },
     {
@@ -21,16 +21,16 @@ const groups: CommandGroupData[] = [
             { value: "new-order", label: "Create new order", keywords: "create order New Order", icon: <Plus />, shortcut: "\u2318N" },
             { value: "new-doc", label: "New document", keywords: "create doc Documentation new", icon: <FilePlus /> },
             { value: "import", label: "Import data", description: "Upload CSV / Excel", keywords: "import upload Import Upload", icon: <Upload /> },
-            { value: "search-all", label: "Global search", keywords: "search Search Find", icon: <Search />, shortcut: "\u2318F" },
-            { value: "schedule", label: "Scheduling Calendar", keywords: "calendar Calendar Schedule Schedule", icon: <Calendar /> },
+            { value: "search-all", label: "Global search", keywords: "search Find", icon: <Search />, shortcut: "\u2318F" },
+            { value: "schedule", label: "Scheduling Calendar", keywords: "calendar Schedule", icon: <Calendar /> },
         ],
     },
     {
         heading: "Accounts and Topics",
         items: [
             { value: "theme-light", label: "Switch to light theme", keywords: "theme light theme light bright", icon: <Sun /> },
-            { value: "theme-dark", label: "Switch dark theme", keywords: "theme dark Theme Dark Dark", icon: <Moon /> },
-            { value: "profile", label: "Profile", keywords: "profile account Account Personal", icon: <User /> },
+            { value: "theme-dark", label: "Switch dark theme", keywords: "theme dark Theme Dark", icon: <Moon /> },
+            { value: "profile", label: "Profile", keywords: "profile account Personal", icon: <User /> },
             { value: "settings", label: "Preferences", keywords: "settings preferences Settings Preferences", icon: <Settings />, shortcut: "\u2318," },
             { value: "logout", label: "Log out", description: "End current session", keywords: "logout Exit Log out signout", icon: <LogOut /> },
         ],
@@ -62,7 +62,7 @@ const groups = [
     items: [
       { value: "go-dashboard", label: "Dashboard", description: "Overview of today's data",
         keywords: "dashboard Home", icon: <LayoutDashboard /> },
-      { value: "go-orders", label: "Order Management", keywords: "order Order dd",
+      { value: "go-orders", label: "Order Management", keywords: "order dd",
         icon: <ShoppingCart /> },
     ],
   },

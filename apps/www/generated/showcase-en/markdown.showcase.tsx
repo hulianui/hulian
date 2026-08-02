@@ -63,7 +63,7 @@ Average complexity **O(n log n)**, key points:
         },
         {
             title: "Compact size",
-            description: "size=\"sm\" is transparently transmitted to internal Prose, and the overall typesetting benchmark is reduced to text-sm.",
+            description: "size=\"sm\" is passed to the internal Prose, reducing the typography baseline to text-sm.",
             code: `<Markdown size="sm">{markdownSource}</Markdown>`,
             render: () => (<div className="max-w-2xl">
           <Markdown size="sm">{SAMPLE}</Markdown>

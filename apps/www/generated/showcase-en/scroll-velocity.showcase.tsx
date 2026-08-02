@@ -31,7 +31,7 @@ export const scrollVelocityShowcase: ShowcaseSpec = {
         },
         {
             title: "Highlight main color + fast",
-            description: "Improve velocity accelerated drift, className transparently transmits the text color to the main color.",
+            description: "Increase velocity to speed up the drift; className sets the text to the primary color.",
             code: `<ScrollVelocity
   texts={["SCROLL VELOCITY"]}
   velocity={140}

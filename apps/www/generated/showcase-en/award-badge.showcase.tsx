@@ -23,7 +23,7 @@ export const awardBadgeShowcase: ShowcaseSpec = {
         },
         {
             title: "Skin",
-            description: "outline Stroke (default) / solid Solid / soft Soft, select according to floor background.",
+            description: "outline Stroke (default) / solid / soft, select according to floor background.",
             code: `<>
   <AwardBadge rank={1} kicker="Product Hunt" title="#1 Product of the Day" />
   <AwardBadge rank={1} kicker="Product Hunt" title="#1 Product of the Day" variant="solid" />

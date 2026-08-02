@@ -17,7 +17,7 @@ export const dialogShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Trigger trigger, Portal + focus trap: Esc close, focus return trigger button.",
+            description: "Trigger, Portal + focus trap: Esc close, focus return trigger button.",
             code: `<Dialog>
   <DialogTrigger render={<Button variant="outline">Open dialog box</Button>} />
   <DialogContent title="Hulian Dialog Box" description="Auxiliary explanation copy under the title.">

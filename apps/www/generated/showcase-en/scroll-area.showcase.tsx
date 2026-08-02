@@ -23,7 +23,7 @@ function Both() {
     return (<ScrollArea orientation="both" className="h-48 w-72 border border-border bg-surface p-4">
       <div className="space-y-3">
         {paragraphs.map((n) => (<p key={n} className="whitespace-nowrap text-sm text-muted">
-            No. {n} Line: This is a long text that does not wrap into new lines. It is used to simultaneously support the horizontal and vertical scroll bars and the lower right corner corner.
+            No. {n} Line: This is a long text that does not wrap into new lines. It is used to simultaneously support the horizontal and vertical scroll bars and the lower right corner.
           </p>))}
       </div>
     </ScrollArea>);

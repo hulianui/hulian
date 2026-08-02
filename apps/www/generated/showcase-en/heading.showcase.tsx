@@ -94,13 +94,13 @@ export const headingShowcase: ShowcaseSpec = {
             Regular normal
           </Heading>
           <Heading level={3} weight="medium">
-            Medium medium
+            medium
           </Heading>
           <Heading level={3} weight="semibold">
             Half thick semibold
           </Heading>
           <Heading level={3} weight="bold">
-            Bold bold
+            bold
           </Heading>
         </div>),
         },

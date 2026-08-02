@@ -36,7 +36,7 @@ const sections: {
         title: "Overview",
         level: 2,
         paras: [
-            "Anchor Anchor navigation follows the reading progress to highlight the current chapter and smoothly scrolls to the target position when clicked. It is suitable for any reading page with \"catalog on the left + long text on the right\": API document, privacy agreement, product description, section form of settings page.",
+            "Anchor navigation follows the reading progress to highlight the current chapter and smoothly scrolls to the target position when clicked. It is suitable for any reading page with \"catalog on the left + long text on the right\": API document, privacy agreement, product description, section form of settings page.",
             "Its core is a zero-dependency scrollspy: IntersectionObserver is used internally to observe each section, and the \"frontmost visible item in the document sequence\" is taken as the current anchor point; the sliding indicator bar on the left reuses the same \"Write active geometry into\" Tabs \"CSS variable, pure CSS transition smooth transition\" technique, does not rely on any animation library when running.",
             "Scroll down this text, and you will see the highlight and indicator bar of the table of contents on the left move with the chapter you are currently reading; click on any item in the table of contents, and the right side will scroll smoothly to the corresponding section.",
         ],

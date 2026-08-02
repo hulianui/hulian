@@ -29,7 +29,7 @@ export const lightfallShowcase: ShowcaseSpec = {
         },
         {
             title: "Dense multi-beam (warm orange tone)",
-            description: "streakCount plus beam + custom warm color colors, density density adjustment.",
+            description: "streakCount adds more beams, colors sets a custom warm palette, and density controls spacing.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl"
      style={{ background: "oklch(0.13 0.02 265)" }}>
   <Lightfall

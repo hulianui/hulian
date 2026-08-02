@@ -8,7 +8,7 @@ export const couponShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Coupon type",
-            description: "kind determines the main visual of the denomination area: amount full discount / discount discount / shipping free shipping.",
+            description: "kind defines the offer: amount for money off, discount for a percentage discount, and shipping for free delivery.",
             code: `<div className="grid max-w-md gap-3">
   <Coupon kind="amount" amount={50} threshold={299} title="Universal discount coupon for the entire site" scope="Supports all categories" validUntil="Valid before 2026.06.30" onClaim={() => {}} />
   <Coupon kind="discount" discount={8.5} threshold={199} tone="danger" title="Digital exclusive discount coupon" scope="Digital only 3C" validUntil="Valid within this week" onClaim={() => {}} />

@@ -20,7 +20,7 @@ export const modalShowcase: ShowcaseSpec = {
                     content: "Cannot be restored after deletion.",
                     onOk: () => { },
                 })}>
-          confirm Confirm
+          confirm
         </Button>),
         },
         {
@@ -104,7 +104,7 @@ export const modalShowcase: ShowcaseSpec = {
                     content: "Cannot be restored after deletion.",
                     onOk: () => { },
                 })}>
-          confirm Confirm
+          confirm
         </Button>),
         },
         {
@@ -116,19 +116,19 @@ export const modalShowcase: ShowcaseSpec = {
         {
             name: "success",
             render: () => (<Button variant="outline" onClick={() => modal.success({ title: "Action completed", content: "Data saved." })}>
-          success Success
+          success
         </Button>),
         },
         {
             name: "error",
             render: () => (<Button variant="outline" onClick={() => modal.error({ title: "Operation failed", content: "Network abnormality, please try again later." })}>
-          error Error
+          error
         </Button>),
         },
         {
             name: "warning",
             render: () => (<Button variant="outline" onClick={() => modal.warning({ title: "NOTE", content: "The current space is running out." })}>
-          warning Warning
+          warning
         </Button>),
         },
         {

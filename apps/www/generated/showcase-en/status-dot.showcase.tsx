@@ -12,7 +12,7 @@ export const statusDotShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Health status",
-            description: "Four semantic states: online online / degraded downgrade / offline offline / maintenance maintenance, the color is automatically derived from tone.",
+            description: "Four semantic states: online, degraded, offline, and maintenance. Colors are derived from tone.",
             code: `<>
   <StatusDot status="online" label="Online" />
   <StatusDot status="degraded" label="Downgrade" />

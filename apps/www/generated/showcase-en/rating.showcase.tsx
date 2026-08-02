@@ -50,7 +50,7 @@ export const ratingShowcase: ShowcaseSpec = {
         },
         {
             title: "Custom icon",
-            description: "icon Transparently transmits any icon (such as \u2764\uFE0F), and reuses the same shape in the empty state.",
+            description: "icon accepts any icon, such as \u2764\uFE0F, and the empty state reuses the same shape.",
             code: `<Rating
   defaultValue={3}
   color="var(--color-danger)"

@@ -43,9 +43,9 @@ export const fallingTextShowcase: ShowcaseSpec = {
         {
             title: "Full of flexibility",
             description: "bounce is close to 1, and the word block bounces repeatedly after landing.",
-            code: `<FallingText text="Bounce Bounce" gravity={0.8} bounce={0.9} />`,
+            code: `<FallingText text="Bounce \u00B7 Jump \u00B7 Bounce \u00B7 Jump" gravity={0.8} bounce={0.9} />`,
             render: () => (<Stage>
-          <FallingText text="bouncy bounce bounce bounce bounce" gravity={0.8} bounce={0.9} highlightWords={["bouncy"]} className="text-white/90" fontSize="1.5rem"/>
+          <FallingText text="bouncy bounce jump" gravity={0.8} bounce={0.9} highlightWords={["bouncy"]} className="text-white/90" fontSize="1.5rem"/>
         </Stage>),
         },
     ],
@@ -83,7 +83,7 @@ export const fallingTextShowcase: ShowcaseSpec = {
         {
             name: "Full of elasticity (high rebound)",
             render: () => (<Stage>
-          <FallingText text="bouncy bounce bounce bounce bounce" gravity={0.8} bounce={0.9} highlightWords={["bouncy"]} className="text-white/90" fontSize="1.5rem"/>
+          <FallingText text="bouncy bounce jump" gravity={0.8} bounce={0.9} highlightWords={["bouncy"]} className="text-white/90" fontSize="1.5rem"/>
         </Stage>),
         },
     ],

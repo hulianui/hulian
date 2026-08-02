@@ -37,7 +37,7 @@ export const chipShowcase: ShowcaseSpec = {
         },
         {
             title: "Preamble content",
-            description: "dot status point / startContent icon / avatar avatar Choose one of three (priority avatar > startContent > dot).",
+            description: "dot status point / startContent icon / avatar Choose one of three (priority avatar > startContent > dot).",
             code: `<>
   <Chip dot tone="brand">Online</Chip>
   <Chip tone="brand" startContent={<Sparkles className="size-3.5" />}>New</Chip>

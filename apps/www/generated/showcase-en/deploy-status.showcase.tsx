@@ -33,7 +33,7 @@ export const deployStatusShowcase: ShowcaseSpec = {
         },
         {
             title: "Morphological variant",
-            description: "variant dot Dot + text (building pulse) / icon Icon only (compact cell).",
+            description: "variant dot + text (building pulse) / icon only (compact cell).",
             code: `<>
   <DeployStatus status="building" variant="dot" />
   <DeployStatus status="ready" variant="dot" />

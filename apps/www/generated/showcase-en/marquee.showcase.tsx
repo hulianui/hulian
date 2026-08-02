@@ -88,7 +88,7 @@ export const marqueeShowcase: ShowcaseSpec = {
         </Marquee>),
         },
         {
-            name: "Icon wall (fade fade \u00B7 icon sub-item)",
+            name: "Icon wall (fade \u00B7 icon sub-item)",
             render: () => (<Marquee className="w-80" fade pauseOnHover gap="1.25rem">
           {logos.map((Icon, i) => (<LogoTile key={i}>
               <Icon className="size-6"/>

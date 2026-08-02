@@ -4,14 +4,14 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 import type { ComboboxItemData } from "../../../../packages/ui/src/combobox/combobox.types";
 type Size = "sm" | "md" | "lg";
 const FRUITS: ComboboxItemData[] = [
-    { value: "apple", label: "Apple Apple" },
-    { value: "banana", label: "Banana Banana" },
-    { value: "cherry", label: "Cherry Cherry" },
-    { value: "durian", label: "Durian Durian" },
-    { value: "grape", label: "Grape Grape" },
-    { value: "lemon", label: "Lemon Lemon" },
-    { value: "mango", label: "Mango Mango" },
-    { value: "orange", label: "Orange Orange" },
+    { value: "apple", label: "Apple" },
+    { value: "banana", label: "Banana" },
+    { value: "cherry", label: "Cherry" },
+    { value: "durian", label: "Durian" },
+    { value: "grape", label: "Grape" },
+    { value: "lemon", label: "Lemon" },
+    { value: "mango", label: "Mango" },
+    { value: "orange", label: "Orange" },
 ];
 function Demo({ placeholder = "Select fruit", searchPlaceholder = "Search for fruits...", size = "md", disabled = false, invalid = false, defaultValue, }: {
     placeholder?: string;

@@ -6,7 +6,7 @@ type Side = "top" | "bottom";
 type Size = "sm" | "md" | "lg";
 const FONTS = [
     { value: "sans", label: "Sans serif Sans" },
-    { value: "serif", label: "Serif Serif" },
+    { value: "serif", label: "Serif" },
     { value: "mono", label: "Equal width Mono" },
     { value: "cursive", label: "Handwritten Cursive" },
 ];
@@ -138,7 +138,7 @@ export const selectShowcase: ShowcaseSpec = {
   <SelectGroup>
     <SelectGroupLabel>Western</SelectGroupLabel>
     <SelectItem value="sans">Sans serif Sans</SelectItem>
-    <SelectItem value="serif">serif Serif</SelectItem>
+    <SelectItem value="serif">Serif</SelectItem>
   </SelectGroup>
 </SelectContent>`,
             render: () => <GroupDemo />,

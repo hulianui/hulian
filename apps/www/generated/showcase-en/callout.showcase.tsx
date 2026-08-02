@@ -25,7 +25,7 @@ export const calloutShowcase: ShowcaseSpec = {
             description: "tip / info / warning / success / danger Five kinds of tone, only dye accent edges and titles.",
             code: `<>
   <Callout tone="warning" title="pit">If you directly change the style in node_modules, it will be lost in the next installation. </Callout>
-  <Callout tone="success" title="Correct solution">Use pnpm patch to cure the patch, follow lockfile. </Callout>
+  <Callout tone="success" title="Recommended">Use pnpm patch to persist the patch alongside the lockfile.</Callout>
   <Callout tone="danger" title="Danger">This operation will clear the database, so be sure to back it up first. </Callout>
 </>`,
             render: () => (<div className="w-full max-w-lg">
@@ -33,7 +33,7 @@ export const calloutShowcase: ShowcaseSpec = {
             If you directly change the style in node_modules, it will be lost next time you install it.
           </Callout>
           <Callout tone="success" title="Correct answer">
-            Use pnpm patch to cure the patch and follow lockfile.
+            Use pnpm patch to persist the patch alongside the lockfile.
           </Callout>
           <Callout tone="danger" title="Danger">
             This operation will clear the database, so be sure to back it up first.

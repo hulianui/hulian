@@ -23,7 +23,7 @@ export const chatMessageShowcase: ShowcaseSpec = {
         },
         {
             title: "Loading state",
-            description: "loading renders TypingDots at the text position (agent is being generated), and children is ignored as a placeholder.",
+            description: "While the agent is responding, loading renders TypingDots in the message body and ignores placeholder children.",
             code: `<ChatMessage role="assistant" name="Hulian AI" loading>Placeholder</ChatMessage>`,
             render: () => (<ChatMessage role="assistant" name="Hulian AI" loading>
           Placeholder
