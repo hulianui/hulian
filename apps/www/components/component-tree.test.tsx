@@ -1,20 +1,24 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { ComponentTree } from "./component-tree";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/en/components/button",
 }));
+vi.mock("../lib/docs-locale", async () => {
+  const actual = await vi.importActual<typeof import("../lib/docs-locale")>("../lib/docs-locale");
+  return {
+    ...actual,
+    DOCS_LOCALE: "en" as const,
+    withDocsBasePath: (path: string) => {
+      const bare = actual.stripDocsBasePath(path.startsWith("/") ? path : `/${path}`);
+      return `/en${bare === "/" ? "" : bare}`;
+    },
+  };
+});
 
 describe("ComponentTree English chrome", () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.resetModules();
-  });
-
-  it("localizes filter controls and the empty-state escape hatch", async () => {
-    vi.resetModules();
-    vi.stubEnv("DOCS_LOCALE", "en");
-    const { ComponentTree } = await import("./component-tree");
+  it("localizes filter controls and the empty-state escape hatch", () => {
     render(<ComponentTree />);
 
     const filter = screen.getByRole("textbox", { name: "Filter components in navigation" });
@@ -31,10 +35,7 @@ describe("ComponentTree English chrome", () => {
     ).toBe("/en/search?q=no-such-component");
   }, 30_000);
 
-  it("does not repeat an export name identical to the English short name", async () => {
-    vi.resetModules();
-    vi.stubEnv("DOCS_LOCALE", "en");
-    const { ComponentTree } = await import("./component-tree");
+  it("does not repeat an export name identical to the English short name", () => {
     render(<ComponentTree />);
 
     const buttonLink = screen
