@@ -16,6 +16,7 @@ import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalList
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "../lib/cn";
 import { hasInteractiveAncestorWithin } from "../lib/drag-guard";
+import { useComponentLocale } from "../config/locale";
 import type { KanbanColumn, KanbanMoveEvent, KanbanProps } from "./kanban.types";
 
 // 看板（"use client"·@dnd-kit headless 多容器 + 瑚琏皮肤）：
@@ -120,6 +121,7 @@ function KanbanColumnView<T>({
   renderItem,
   renderColumnHeader,
   columnClassName,
+  emptyColumnLabel,
 }: {
   column: KanbanColumn;
   items: T[];
@@ -127,6 +129,7 @@ function KanbanColumnView<T>({
   renderItem: KanbanProps<T>["renderItem"];
   renderColumnHeader?: KanbanProps<T>["renderColumnHeader"];
   columnClassName?: string;
+  emptyColumnLabel: string;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: `${COL_PREFIX}${column.id}` });
   const ids = items.map(getId);
@@ -150,7 +153,7 @@ function KanbanColumnView<T>({
         >
           {items.length === 0 ? (
             <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-6 text-xs text-muted">
-              拖拽卡片到此
+              {emptyColumnLabel}
             </li>
           ) : (
             items.map((item) => (
@@ -175,6 +178,7 @@ export function Kanban<T>({
   className,
   columnClassName,
 }: KanbanProps<T>) {
+  const emptyColumnLabel = useComponentLocale().kanban?.emptyColumn ?? "拖拽卡片到此";
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -222,6 +226,7 @@ export function Kanban<T>({
             renderItem={renderItem}
             renderColumnHeader={renderColumnHeader}
             columnClassName={columnClassName}
+            emptyColumnLabel={emptyColumnLabel}
           />
         ))}
       </div>

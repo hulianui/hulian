@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { ChatMessage } from "./chat-message";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("ChatMessage", () => {
   it("user 气泡用 primary 底 + 右对齐(flex-row-reverse)", () => {
@@ -42,6 +44,14 @@ describe("ChatMessage", () => {
       </ChatMessage>,
     );
     expect(getByLabelText("发送中")).toBeTruthy();
+  });
+  it("ConfigProvider locale=enUS renders English receipt labels", () => {
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <ChatMessage role="user" status="read">Ready</ChatMessage>
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("Read")).toBeTruthy();
   });
   it("status 在 assistant 气泡不渲染回执", () => {
     const { queryByLabelText } = render(

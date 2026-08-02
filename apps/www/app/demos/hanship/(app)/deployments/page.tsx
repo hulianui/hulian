@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./page.content";
+import { DEMO_RELATIVE_TIME_LOCALE } from "../../../_components/demo-locale";
+
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, ExternalLink, Eye } from "lucide-react";
@@ -33,19 +36,19 @@ type DeployFilter = { kw: string; env: string; status: string };
 const EMPTY_FILTER: DeployFilter = { kw: "", env: "all", status: "all" };
 
 const ENV_OPTIONS = [
-  { value: "all", label: "全部环境" },
-  { value: "production", label: "生产" },
-  { value: "preview", label: "预览" },
+  { value: "all", label: copy("allEnvironments") },
+  { value: "production", label: copy("produce") },
+  { value: "preview", label: copy("preview") },
 ];
 
 const STATUS_OPTIONS = [
-  { value: "all", label: "全部状态" },
-  { value: "ready", label: "已上线" },
-  { value: "building", label: "构建中" },
-  { value: "error", label: "失败" },
-  { value: "canceled", label: "已取消" },
-  { value: "queued", label: "排队" },
-  { value: "skipped", label: "已跳过" },
+  { value: "all", label: copy("allStatus") },
+  { value: "ready", label: copy("alreadyOnline") },
+  { value: "building", label: copy("underConstruction") },
+  { value: "error", label: copy("failed") },
+  { value: "canceled", label: copy("canceled") },
+  { value: "queued", label: copy("queue") },
+  { value: "skipped", label: copy("skipped") },
 ];
 
 type DeployForm = { projectId: string; branch: string };
@@ -62,8 +65,8 @@ export default function DeploymentsPage() {
     initialValues: { projectId: projects[0]?.id ?? "", branch: "main" },
   });
   const reg = {
-    projectId: form.register("projectId", { rules: [{ required: true, message: "请选择项目" }] }),
-    branch: form.register("branch", { rules: [{ required: true, message: "请输入分支" }] }),
+    projectId: form.register("projectId", { rules: [{ required: true, message: copy("pleaseSelectAnItem") }] }),
+    branch: form.register("branch", { rules: [{ required: true, message: copy("pleaseEnterBranch") }] }),
   };
 
   const all = useMemo(() => [...extra, ...(data ?? [])], [extra, data]);
@@ -92,7 +95,7 @@ export default function DeploymentsPage() {
     () => [
       {
         id: "project",
-        header: "项目",
+        header: copy("project"),
         cell: ({ row }) => (
           <span className="font-medium text-foreground">
             {projectById(row.original.projectId)?.name ?? row.original.projectId}
@@ -101,10 +104,10 @@ export default function DeploymentsPage() {
       },
       {
         id: "env",
-        header: "环境",
+        header: copy("environment"),
         cell: ({ row }) => (
           <Tag tone={row.original.env === "production" ? "success" : "warning"} size="sm">
-            {row.original.env === "production" ? "生产" : "预览"}
+            {row.original.env === "production" ? copy("produce2") : copy("preview2")}
           </Tag>
         ),
       },
@@ -124,7 +127,7 @@ export default function DeploymentsPage() {
       },
       {
         id: "url",
-        header: "部署地址",
+        header: copy("deploymentAddress"),
         cell: ({ row }) => (
           <a
             href={`https://${row.original.url}`}
@@ -139,19 +142,19 @@ export default function DeploymentsPage() {
       },
       {
         id: "status",
-        header: "状态",
+        header: copy("status"),
         cell: ({ row }) => <DeployStatus status={row.original.status} size="sm" />,
       },
       {
         id: "created",
-        header: "创建",
+        header: copy("create"),
         cell: ({ row }) => (
-          <RelativeTime value={agoDate(row.original.agoMin)} className="text-xs text-muted" />
+          <RelativeTime value={agoDate(row.original.agoMin)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
         ),
       },
       {
         id: "actions",
-        header: "操作",
+        header: copy("operation"),
         meta: { sticky: "right" },
         cell: ({ row }) => (
           <Button
@@ -159,9 +162,7 @@ export default function DeploymentsPage() {
             size="sm"
             onClick={() => router.push(`${ROOT}/deployments/${row.original.id}`)}
           >
-            <Eye className="size-4" />
-            查看
-          </Button>
+            <Eye className="size-4" />{copy("view")}</Button>
         ),
       },
     ],
@@ -178,9 +179,9 @@ export default function DeploymentsPage() {
       env: "preview",
       branch: v.branch.trim() || "main",
       sha,
-      message: `手动部署（分支 ${v.branch.trim() || "main"}）`,
-      author: "瑚琏",
-      authorInitial: "瑚",
+      message: copy("manualDeploymentBranchValue", v.branch.trim() || "main"),
+      author: copy("hulian"),
+      authorInitial: copy("coral"),
       status: "building",
       url: `${sha.slice(0, 8)}.${slug}.hanship.dev`,
       agoMin: 0,
@@ -190,30 +191,28 @@ export default function DeploymentsPage() {
     setPage(1);
     toast({
       tone: "info",
-      title: "已触发部署",
-      description: `${proj?.name ?? v.projectId} · ${np.branch} 正在构建中。`,
+      title: copy("deploymentTriggered"),
+      description: copy("valueValueIsUnderConstruction", proj?.name ?? v.projectId, np.branch),
     });
   };
 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">部署历史</h1>
-        <p className="text-sm text-muted">跨所有项目的部署记录 · 点开任一条查看构建步骤与日志</p>
+        <h1 className="text-xl font-semibold text-foreground">{copy("deploymentHistory")}</h1>
+        <p className="text-sm text-muted">{copy("deploymentRecordsAcrossAllProjectsClickOn")}</p>
       </div>
 
       {error ? (
-        <Alert tone="danger" title="加载部署列表失败">
+        <Alert tone="danger" title={copy("failedToLoadDeploymentList")}>
           <div className="flex flex-col gap-2">
             <span>{error}</span>
-            <Button variant="outline" size="sm" className="w-fit" onClick={reload}>
-              重试
-            </Button>
+            <Button variant="outline" size="sm" className="w-fit" onClick={reload}>{copy("tryAgain")}</Button>
           </div>
         </Alert>
       ) : (
         <ProTable<Deploy>
-          title="全部部署"
+          title={copy("deployAll")}
           columns={columns}
           data={pageRows}
           getRowId={(d) => d.id}
@@ -229,15 +228,13 @@ export default function DeploymentsPage() {
                 setOpen(true);
               }}
             >
-              <Plus className="size-4" />
-              手动部署
-            </Button>
+              <Plus className="size-4" />{copy("manualDeployment")}</Button>
           }
           search={{
             fields: [
-              { name: "kw", label: "关键词", placeholder: "提交信息 / SHA / 分支 / 项目名" },
-              { name: "env", label: "环境", type: "select", options: ENV_OPTIONS },
-              { name: "status", label: "状态", type: "select", options: STATUS_OPTIONS },
+              { name: "kw", label: copy("keywords"), placeholder: copy("commitInformationShaBranchProjectName") },
+              { name: "env", label: copy("environment2"), type: "select", options: ENV_OPTIONS },
+              { name: "status", label: copy("status2"), type: "select", options: STATUS_OPTIONS },
             ],
             values: filter,
             onChange: (vals) => {
@@ -271,16 +268,16 @@ export default function DeploymentsPage() {
       )}
 
       <ModalForm
-        title="手动部署"
+        title={copy("manualDeployment2")}
         form={form}
         open={open}
         onOpenChange={setOpen}
         onFinish={(v) => handleFinish(v as DeployForm)}
-        submitText="触发部署"
+        submitText={copy("triggerDeployment")}
         className="w-[520px]"
       >
         <div className="flex flex-col gap-1">
-          <Field label="项目" error={reg.projectId.error}>
+          <Field label={copy("project2")} error={reg.projectId.error}>
             <Select
               items={projects.map((p) => ({ value: p.id, label: p.name }))}
               value={reg.projectId.value as string}
@@ -296,7 +293,7 @@ export default function DeploymentsPage() {
               </SelectContent>
             </Select>
           </Field>
-          <Field label="分支" error={reg.branch.error} description="将以预览环境部署该分支的最新提交">
+          <Field label={copy("branch")} error={reg.branch.error} description={copy("theLatestCommitOfThisBranchWill")}>
             <Input
               value={reg.branch.value as string}
               onChange={reg.branch.onChange}

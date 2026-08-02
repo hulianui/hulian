@@ -42,4 +42,6 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 - 应用代码里想要「缺 Provider 就报错」的硬约束，继续用 `useTheme`；库内组件与需要容错的场景用 `useThemeOptional`（缺上下文返回 `null`）。
 
 ## 相关
+
+默认切换标签跟随 `ConfigProvider`（`zhCN` / `enUS`）；显式 `aria-label` 始终优先。
 [Command](../command/command.md) · [ContextMenu](../context-menu/context-menu.md) · [Toolbar](../toolbar/toolbar.md) · [Accordion](../accordion/accordion.md) · [Collapsible](../collapsible/collapsible.md) · [Link](../link/link.md)

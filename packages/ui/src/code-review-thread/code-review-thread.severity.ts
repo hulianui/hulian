@@ -17,6 +17,7 @@ export const SEVERITY: Record<ReviewSeverity, SeverityStyle> = {
   info: { label: "提示", tagTone: "neutral", border: "border-l-border" },
 };
 
-export function severityStyle(s?: ReviewSeverity): SeverityStyle {
-  return s ? SEVERITY[s] : SEVERITY.info;
+export function severityStyle(s?: ReviewSeverity, labels?: Record<ReviewSeverity, string>): SeverityStyle {
+  const key = s ?? "info";
+  return labels ? { ...SEVERITY[key], label: labels[key] } : SEVERITY[key];
 }

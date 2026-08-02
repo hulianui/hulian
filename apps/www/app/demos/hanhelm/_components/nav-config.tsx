@@ -1,3 +1,4 @@
+import { copy } from "./nav-config.content";
 import {
   LayoutDashboard,
   ListTree,
@@ -13,41 +14,41 @@ export const ROOT = "/demos/hanhelm";
 
 // key = 路由段（overview = index）。
 export const NAV_LABEL: Record<string, string> = {
-  overview: "调度总览",
-  queue: "任务队列",
-  routing: "智能路由",
-  agents: "执行器池",
-  alerts: "SLA 告警",
-  settings: "设置",
-  task: "任务详情",
+  overview: copy("overallDispatchOverview"),
+  queue: copy("taskQueue"),
+  routing: copy("intelligentRouting"),
+  agents: copy("actuatorPool"),
+  alerts: copy("slaAlert"),
+  settings: copy("setup"),
+  task: copy("missionDetails"),
 };
 
 const icon = (Comp: typeof LayoutDashboard): ReactNode => <Comp className="size-4" />;
 
 export const MENU: NavMenuNode[] = [
-  { key: "overview", label: "调度总览", icon: icon(LayoutDashboard) },
+  { key: "overview", label: copy("overallDispatchOverview2"), icon: icon(LayoutDashboard) },
   {
     type: "group",
     key: "g-dispatch",
-    label: "调度",
+    label: copy("dispatch"),
     children: [
-      { key: "queue", label: "任务队列", icon: icon(ListTree) },
-      { key: "routing", label: "智能路由", icon: icon(Share2) },
+      { key: "queue", label: copy("taskQueue2"), icon: icon(ListTree) },
+      { key: "routing", label: copy("intelligentRouting2"), icon: icon(Share2) },
     ],
   },
   {
     type: "group",
     key: "g-resource",
-    label: "资源",
-    children: [{ key: "agents", label: "执行器池", icon: icon(Boxes) }],
+    label: copy("resources"),
+    children: [{ key: "agents", label: copy("actuatorPool2"), icon: icon(Boxes) }],
   },
   {
     type: "group",
     key: "g-ops",
-    label: "运维",
+    label: copy("operationsAndMaintenance"),
     children: [
-      { key: "alerts", label: "SLA 告警", icon: icon(BellRing) },
-      { key: "settings", label: "设置", icon: icon(Settings) },
+      { key: "alerts", label: copy("slaAlert2"), icon: icon(BellRing) },
+      { key: "settings", label: copy("setup2"), icon: icon(Settings) },
     ],
   },
 ];

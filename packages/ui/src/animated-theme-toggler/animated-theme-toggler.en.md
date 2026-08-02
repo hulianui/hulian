@@ -44,4 +44,6 @@ Without `aria-label`, the button uses built-in Chinese state-dependent copy: `"\
 - Use `useTheme` when application code must fail without a provider. Library components and tolerant integrations can use `useThemeOptional`, which returns `null` without context.
 
 ## Related
+
+Default toggle labels follow `ConfigProvider` (`zhCN` / `enUS`); an explicit `aria-label` always wins.
 [Command](../command/command.md) · [ContextMenu](../context-menu/context-menu.md) · [Toolbar](../toolbar/toolbar.md) · [Accordion](../accordion/accordion.md) · [Collapsible](../collapsible/collapsible.md) · [Link](../link/link.md)

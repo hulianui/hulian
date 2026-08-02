@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./cs-shell.content";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Moon, Sun } from "lucide-react";
@@ -10,19 +12,15 @@ import { AccountMenu } from "./account-menu";
 function Brand() {
   return (
     <div className="flex items-center gap-2">
-      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        瑚
-      </span>
-      <span className="truncate text-[15px] font-semibold tracking-tight">瑚琏客服</span>
+      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral")}</span>
+      <span className="truncate text-[15px] font-semibold tracking-tight">{copy("hulianCustomerService")}</span>
     </div>
   );
 }
 
 function BrandMark() {
   return (
-    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-      瑚
-    </span>
+    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral2")}</span>
   );
 }
 
@@ -33,7 +31,7 @@ function ThemeToggle() {
       variant="ghost"
       size="sm"
       onClick={toggle}
-      aria-label={theme === "dark" ? "切换到亮色" : "切换到暗色"}
+      aria-label={theme === "dark" ? copy("switchToBrightColors") : copy("switchToDark")}
       className="size-9 px-0"
     >
       {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
@@ -56,13 +54,13 @@ function HeaderExtra() {
         <span className={`size-2 rounded-full ${STATUS_DOT[status]}`} aria-hidden />
         <Segmented
           size="sm"
-          aria-label="坐席状态"
+          aria-label={copy("agentStatus")}
           value={status}
           onValueChange={setStatus}
           items={[
-            { value: "online", label: "在线" },
-            { value: "busy", label: "忙碌" },
-            { value: "away", label: "小休" },
+            { value: "online", label: copy("online") },
+            { value: "busy", label: copy("busy") },
+            { value: "away", label: copy("break") },
           ]}
         />
       </span>

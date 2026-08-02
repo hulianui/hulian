@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./billing-store.content";
+
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { account, initialSubscription, paymentMethods as seedMethods } from "../_data/account";
 import { addonById, planById, unitPrice } from "../_data/plans";
@@ -100,6 +102,6 @@ export function BillingStoreProvider({ children }: { children: ReactNode }) {
 
 export function useBilling(): BillingStore {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useBilling 必须在 BillingStoreProvider 内使用");
+  if (!ctx) throw new Error(copy("usebillingMustBeUsedWithinBillingstoreprovider"));
   return ctx;
 }

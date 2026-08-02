@@ -1,3 +1,4 @@
+import { copy } from "./metrics.content";
 import type { Severity } from "./types";
 
 // 全部确定性写死 / 公式生成，严禁 Math.random / Date.now（SSR/CSR 漂移）。
@@ -44,7 +45,7 @@ export const SEVERITY_DIST: { severity: Severity; count: number }[] = [
 
 // 模块 × 周 问题密度热力（喂 Heatmap）。
 // x = 周 W1..W8，y = 5 个模块，value 0-9，确定性公式。
-const HOTSPOT_MODULES = ["支付网关", "密钥库", "工作台", "商城端", "审计日志"];
+const HOTSPOT_MODULES = [copy("paymentGateway"), copy("keyVault"), copy("workbench"), copy("atTheEndOfTheShoppingMall"), copy("auditLog")];
 export const HOTSPOT: { x: string; y: string; value: number }[] = (() => {
   const rows: { x: string; y: string; value: number }[] = [];
   for (let m = 0; m < HOTSPOT_MODULES.length; m++) {

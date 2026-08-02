@@ -1,4 +1,7 @@
+"use client";
+
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import { Clock, Loader2, CircleCheck, CircleX, Ban, Minus, type IconComponent } from "../_icons";
 import type { DeployState, DeployStatusProps } from "./deploy-status.types";
 
@@ -36,7 +39,8 @@ export function DeployStatus({
   className,
 }: DeployStatusProps) {
   const m = META[status];
-  const text = label ?? m.label;
+  const localizedLabel = useComponentLocale().deployStatus?.[status] ?? m.label;
+  const text = label ?? localizedLabel;
   const iconCls = cn(size === "sm" ? "size-3.5" : "size-4", "shrink-0", m.spin && spin && "animate-spin");
   const Icon = m.Icon;
 
@@ -45,8 +49,8 @@ export function DeployStatus({
     return (
       <span
         role="img"
-        aria-label={typeof text === "string" ? text : m.label}
-        title={typeof text === "string" ? text : m.label}
+        aria-label={typeof text === "string" ? text : localizedLabel}
+        title={typeof text === "string" ? text : localizedLabel}
         className={cn("inline-flex", m.fg, className)}
       >
         <Icon className={iconCls} />

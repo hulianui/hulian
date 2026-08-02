@@ -1,3 +1,4 @@
+import { copy } from "./layout.content";
 import type { ReactNode } from "react";
 import { BackTop, Watermark } from "@hulianui/ui";
 import { ProjectsShell } from "../_components/projects-shell";
@@ -6,7 +7,7 @@ import { ProjectsShell } from "../_components/projects-shell";
 export default function ProjectsAppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="h-dvh">
-      <Watermark content="瑚琏工程 · 演示">
+      <Watermark content={copy("hulianProjectDemonstration")}>
         <ProjectsShell>{children}</ProjectsShell>
       </Watermark>
       <BackTop />

@@ -29,7 +29,7 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 |------|------|------|------|
 | shape | `"text" \| "circle" \| "rect"` | `"text"` | 占位形状 |
 
-预设组件 `ListSkeleton` / `CardSkeleton` 用各自的计数 prop（`rows` / `count`）控制数量，尺寸靠外层 `className` 约束。
+预设组件 `ListSkeleton` / `CardSkeleton` 用各自的计数 prop（`rows` / `count`）控制数量，尺寸靠外层 `className` 约束。三个预设都支持可选 `label` 覆盖无障碍加载文案；未传时跟随 `ConfigProvider`，默认中文。
 
 ## 示例
 ```tsx
@@ -47,6 +47,7 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 
 - 骨架本身是「无 chrome」的占位，预设（Card/List/Table）不自带边框/卡片容器；别再外层套一层 Card 造成双重边框。
 - shimmer 是纯 CSS 动画，与图表/canvas 那类 rAF 动画不同，headless 截图能正常显形，无需特殊处理。
+- 预设读取 `ConfigProvider` 的运行时语言，因此属于客户端组件；服务端组件可以正常导入并渲染它们。
 
 ## 相关
 [Empty](../empty/empty.md) · [Watermark](../watermark/watermark.md) · [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md)

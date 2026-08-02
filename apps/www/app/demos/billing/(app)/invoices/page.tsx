@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./page.content";
+import { DEMO_RELATIVE_TIME_LOCALE } from "../../../_components/demo-locale";
+
 import { useState } from "react";
 import {
   Banner,
@@ -20,10 +23,10 @@ import { formatMoney } from "../../_data/plans";
 import type { Invoice, InvoiceStatus } from "../../_data/types";
 
 const filters: { key: "all" | InvoiceStatus; label: string }[] = [
-  { key: "all", label: "全部" },
-  { key: "paid", label: "已支付" },
-  { key: "failed", label: "支付失败" },
-  { key: "refunded", label: "已退款" },
+  { key: "all", label: copy("all") },
+  { key: "paid", label: copy("paid") },
+  { key: "failed", label: copy("paymentFailed") },
+  { key: "refunded", label: copy("refunded") },
 ];
 
 export default function InvoicesPage() {
@@ -38,10 +41,13 @@ export default function InvoicesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">账单与发票</h1>
-          <p className="mt-1 text-sm text-muted">累计已支付 <span className="font-medium text-foreground">{formatMoney(totalPaid)}</span> · 共 {invoices.length} 张账单</p>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">{copy("billsAndInvoices")}</h1>
+          <p className="mt-1 text-sm text-muted">
+            {copy("totalPaid")} <span className="font-medium text-foreground">{formatMoney(totalPaid)}</span>
+            {copy("invoiceCount", invoices.length)}
+          </p>
         </div>
-        <ButtonGroup aria-label="按状态筛选">
+        <ButtonGroup aria-label={copy("filterByStatus")}>
           {filters.map((f) => (
             <Button key={f.key} variant={filter === f.key ? "solid" : "outline"} size="sm" onClick={() => setFilter(f.key)}>
               {f.label}
@@ -58,31 +64,27 @@ export default function InvoicesPage() {
           icon={<TriangleAlert />}
           align="start"
           action={
-            <Button size="sm" variant="outline" onClick={() => toast({ title: "已发起重新扣款", tone: "info" })}>
-              立即重试
-            </Button>
+            <Button size="sm" variant="outline" onClick={() => toast({ title: copy("reDebitHasBeenInitiated"), tone: "info" })}>{copy("tryAgainNow")}</Button>
           }
-        >
-          有 {failed.length} 笔扣款失败，请更新支付方式或重试，以免影响服务。
-        </Banner>
+        >{copy(failed.length === 1 ? "oneFailedPayment" : "failedPaymentCount", failed.length)}</Banner>
       )}
 
       {/* 账单表 */}
       <section className="overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface">
         {rows.length === 0 ? (
           <div className="py-16">
-            <Empty description="该状态下暂无账单" />
+            <Empty description={copy("thereIsNoBillInThisStatus")} />
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs text-muted">
-                <th className="px-5 py-3 font-medium">发票号</th>
-                <th className="hidden px-5 py-3 font-medium sm:table-cell">项目</th>
-                <th className="px-5 py-3 font-medium">出账</th>
-                <th className="px-5 py-3 text-right font-medium">金额</th>
-                <th className="px-5 py-3 font-medium">状态</th>
-                <th className="px-5 py-3 text-right font-medium">操作</th>
+                <th className="px-5 py-3 font-medium">{copy("invoiceNumber")}</th>
+                <th className="hidden px-5 py-3 font-medium sm:table-cell">{copy("project")}</th>
+                <th className="px-5 py-3 font-medium">{copy("settlement")}</th>
+                <th className="px-5 py-3 text-right font-medium">{copy("amount")}</th>
+                <th className="px-5 py-3 font-medium">{copy("status")}</th>
+                <th className="px-5 py-3 text-right font-medium">{copy("operation")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -93,14 +95,14 @@ export default function InvoicesPage() {
                     <td className="px-5 py-3.5">
                       <Glimpse
                         title={`${inv.id} · ${inv.plan}`}
-                        description={`计费周期 ${inv.period}，合计 ${formatMoney(inv.amount)}，含 ${inv.lines.length} 项明细。`}
+                        description={copy("billingPeriodValueTotalValueIncludingValue", inv.period, formatMoney(inv.amount), inv.lines.length)}
                       >
                         <span className="font-medium text-foreground">{inv.id}</span>
                       </Glimpse>
                     </td>
                     <td className="hidden px-5 py-3.5 text-muted sm:table-cell">{inv.plan}</td>
                     <td className="px-5 py-3.5 text-muted">
-                      <RelativeTime value={inv.date} />
+                      <RelativeTime value={inv.date} locale={DEMO_RELATIVE_TIME_LOCALE} />
                     </td>
                     <td className="px-5 py-3.5 text-right font-medium tabular-nums text-foreground">{formatMoney(inv.amount)}</td>
                     <td className="px-5 py-3.5">
@@ -108,14 +110,12 @@ export default function InvoicesPage() {
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex justify-end gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => setActive(inv)}>
-                          详情
-                        </Button>
+                        <Button size="sm" variant="ghost" onClick={() => setActive(inv)}>{copy("details")}</Button>
                         <Button
                           size="icon"
                           variant="ghost"
-                          aria-label="下载 PDF"
-                          onClick={() => toast({ title: `已下载 ${inv.id}.pdf`, tone: "info" })}
+                          aria-label={copy("downloadPdf")}
+                          onClick={() => toast({ title: copy("downloadedValuePdf", inv.id), tone: "info" })}
                         >
                           <Download className="size-4" />
                         </Button>
@@ -133,15 +133,14 @@ export default function InvoicesPage() {
       <Drawer open={active !== null} onOpenChange={(o) => !o && setActive(null)}>
         <DrawerContent
           side="right"
-          title={active ? `${active.id} · 发票详情` : ""}
+          title={active ? copy("valueInvoiceDetails", active.id) : ""}
           className="w-[min(560px,92vw)]"
           footer={
             active && (
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setActive(null)}>关闭</Button>
-                <Button onClick={() => toast({ title: `已下载 ${active.id}.pdf`, tone: "info" })}>
-                  <Download className="size-4" /> 下载 PDF
-                </Button>
+                <Button variant="outline" onClick={() => setActive(null)}>{copy("close")}</Button>
+                <Button onClick={() => toast({ title: copy("downloadedValuePdf2", active.id), tone: "info" })}>
+                  <Download className="size-4" />{copy("downloadPdf2")}</Button>
               </div>
             )
           }
@@ -154,8 +153,7 @@ export default function InvoicesPage() {
                 </span>
                 <div className="min-w-0">
                   <p className="font-medium text-foreground">{active.plan}</p>
-                  <p className="text-xs text-muted">
-                    出账 <RelativeTime value={active.date} /> · {active.period}
+                  <p className="text-xs text-muted">{copy("settlement2")}<RelativeTime value={active.date} locale={DEMO_RELATIVE_TIME_LOCALE} /> · {active.period}
                   </p>
                 </div>
                 <Tag tone={invoiceStatusMeta[active.status].tone} size="sm" className="ml-auto">
@@ -164,14 +162,14 @@ export default function InvoicesPage() {
               </div>
 
               <Descriptions column={2} bordered>
-                <DescriptionsItem label="发票号">{active.id}</DescriptionsItem>
-                <DescriptionsItem label="开票主体">瀚云数智科技有限公司</DescriptionsItem>
-                <DescriptionsItem label="税号">91110108MA0XXXXX</DescriptionsItem>
-                <DescriptionsItem label="付款方式">{active.status === "paid" ? "自动扣款" : "—"}</DescriptionsItem>
+                <DescriptionsItem label={copy("invoiceNumber2")}>{active.id}</DescriptionsItem>
+                <DescriptionsItem label={copy("invoicingSubject")}>{copy("hanyunDigitalIntelligenceTechnologyCoLtd")}</DescriptionsItem>
+                <DescriptionsItem label={copy("taxIdNumber")}>91110108MA0XXXXX</DescriptionsItem>
+                <DescriptionsItem label={copy("paymentMethod")}>{active.status === "paid" ? copy("automaticDeduction") : "—"}</DescriptionsItem>
               </Descriptions>
 
               <div>
-                <h3 className="mb-2 text-sm font-semibold text-foreground">费用明细</h3>
+                <h3 className="mb-2 text-sm font-semibold text-foreground">{copy("costDetails")}</h3>
                 <table className="w-full text-sm">
                   <tbody className="divide-y divide-border">
                     {active.lines.map((l, i) => (
@@ -181,7 +179,7 @@ export default function InvoicesPage() {
                       </tr>
                     ))}
                     <tr>
-                      <td className="pt-3 font-semibold text-foreground">合计</td>
+                      <td className="pt-3 font-semibold text-foreground">{copy("total2")}</td>
                       <td className="pt-3 text-right text-base font-semibold tabular-nums text-foreground">{formatMoney(active.amount)}</td>
                     </tr>
                   </tbody>

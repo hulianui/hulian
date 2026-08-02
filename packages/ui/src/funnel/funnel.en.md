@@ -66,4 +66,6 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 - The root uses `"\u6f0f\u6597\u56fe"` (“Funnel chart”), and conversion badges prepend `"\u8f6c\u5316 "` (“Conversion ”).
 
 ## Related
+
+The chart accessibility label and conversion prefix follow `ConfigProvider`.
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

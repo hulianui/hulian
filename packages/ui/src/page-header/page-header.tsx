@@ -1,18 +1,18 @@
 // 中后台页面顶部骨架：返回 + 面包屑 + 标题 + 副标题 + 状态标签 + 右侧操作区 + 底部附加区。
 // 纯皮肤布局件、只消费语义 token，dogfood 复用瑚琏 Breadcrumb/Button/Separator。
-// 无 "use client"：本体无 hook/无浏览器 API → 可 RSC；返回按钮的 onClick 由 onBack 守卫，
-// 仅在传入 onBack（消费侧必为 client）时渲染，server 用法下不产出事件处理器（同 Breadcrumb 纯皮肤范式）。
+"use client";
 import { ArrowLeft } from "../_icons";
 import { Button } from "../button";
 import { Separator } from "../separator";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import type { PageHeaderProps } from "./page-header.types";
 
 export function PageHeader({
   title,
   subTitle,
   onBack,
-  backLabel = "返回",
+  backLabel,
   breadcrumb,
   tags,
   extra,
@@ -21,6 +21,8 @@ export function PageHeader({
   className,
   ...props
 }: PageHeaderProps) {
+  const locale = useComponentLocale();
+  const resolvedBackLabel = backLabel ?? locale.pageHeader?.back ?? "返回";
   return (
     <header className={cn("w-full", className)} {...props}>
       {breadcrumb && <div className="mb-2">{breadcrumb}</div>}
@@ -34,7 +36,7 @@ export function PageHeader({
               variant="ghost"
               size="sm"
               className="size-9 shrink-0 px-0"
-              aria-label={backLabel}
+              aria-label={resolvedBackLabel}
               onClick={onBack}
             >
               <ArrowLeft className="size-4" aria-hidden />

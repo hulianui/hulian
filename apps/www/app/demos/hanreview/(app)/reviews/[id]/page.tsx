@@ -1,3 +1,4 @@
+import { copy } from "./page.content";
 import { ReviewDetail } from "../../../_components/review-detail";
 import { REVIEWS } from "../../../_data/reviews";
 import { MODELS } from "../../../_data/models";
@@ -14,7 +15,7 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ i
 
   if (!review) {
     return (
-      <div className="p-12 text-center text-sm text-muted">未找到审查记录 {id}</div>
+      <div className="p-12 text-center text-sm text-muted">{copy("noReviewRecordsFound")}{id}</div>
     );
   }
 

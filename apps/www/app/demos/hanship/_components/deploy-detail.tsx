@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./deploy-detail.content";
+import { DEMO_RELATIVE_TIME_LOCALE } from "../../_components/demo-locale";
+
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { ExternalLink, RefreshCw, RotateCcw, ArrowLeft } from "lucide-react";
@@ -75,22 +78,22 @@ function buildLogLines(status: DeployState): ViewerLine[] {
     const cut = buildLog.filter((l) => l.at <= 72).map(map);
     return [
       ...cut,
-      { level: "error", message: "✗ 构建失败：next build 退出码 1（类型检查报错 3 处）", timestamp: mmss(75) },
+      { level: "error", message: copy("buildFailedNextBuildExitCodeType"), timestamp: mmss(75) },
     ];
   }
   if (status === "queued") {
-    return [{ level: "info", message: "部署已排队，等待可用的构建容器…", timestamp: mmss(0) }];
+    return [{ level: "info", message: copy("deploymentQueuedForAvailableBuildContainer"), timestamp: mmss(0) }];
   }
   if (status === "canceled") {
     const cut = buildLog.filter((l) => l.at <= 9).map(map);
-    return [...cut, { level: "warn", message: "⚠ 部署已被用户取消", timestamp: mmss(12) }];
+    return [...cut, { level: "warn", message: copy("deploymentHasBeenCanceledByUser"), timestamp: mmss(12) }];
   }
   if (status === "skipped") {
-    return [{ level: "info", message: "本次推送未改动构建输出，跳过部署。", timestamp: mmss(0) }];
+    return [{ level: "info", message: copy("theBuildOutputIsUnchangedInThis"), timestamp: mmss(0) }];
   }
   // building：显示前半段，末尾补一条进行中提示。
   const half = buildLog.slice(0, Math.ceil(buildLog.length / 2)).map(map);
-  return [...half, { level: "info", message: "构建进行中…", timestamp: mmss(60) }];
+  return [...half, { level: "info", message: copy("buildInProgress"), timestamp: mmss(60) }];
 }
 
 // —— 部署生命周期 Timeline ——
@@ -123,23 +126,23 @@ function lifecycleItems(status: DeployState): TimelineItemProps[] {
   };
 
   return [
-    { ...stage(0), label: "已入队", children: "部署排队" },
+    { ...stage(0), label: copy("joinedTheTeam"), children: copy("deploymentQueue") },
     {
       ...stage(1),
-      label: status === "queued" ? "等待中" : undefined,
-      children: "构建开始",
+      label: status === "queued" ? copy("waiting") : undefined,
+      children: copy("buildStarts"),
     },
     {
       ...stage(2),
-      children: failed ? "构建失败" : "构建完成",
+      children: failed ? copy("buildFailed") : copy("buildCompleted"),
     },
     {
       ...stage(3),
-      children: "分发到边缘网络",
+      children: copy("distributeToEdgeNetwork"),
     },
     {
       ...stage(4),
-      children: status === "ready" ? "部署就绪" : "等待就绪",
+      children: status === "ready" ? copy("readyToDeploy") : copy("waitingForReady"),
     },
   ];
 }
@@ -179,11 +182,11 @@ export function DeployDetail({ id }: { id: string }) {
       title: s.name,
       description:
         statuses[i] === "wait"
-          ? "等待中"
+          ? copy("waiting2")
           : statuses[i] === "process"
-            ? "进行中…"
+            ? copy("inProgress")
             : statuses[i] === "error"
-              ? "失败"
+              ? copy("failed")
               : formatDuration(s.durationSec),
       status: statuses[i],
     }));
@@ -202,11 +205,9 @@ export function DeployDetail({ id }: { id: string }) {
   if (!deploy || !project) {
     return (
       <div className="grid place-items-center py-16">
-        <Result status="404" title="部署不存在" subTitle="该部署记录可能已被清理，或链接有误。">
+        <Result status="404" title={copy("deploymentDoesNotExist")} subTitle={copy("theDeploymentRecordMayHaveBeenCleaned")}>
           <Button onClick={() => router.push(`${ROOT}/deployments`)}>
-            <ArrowLeft className="size-4" />
-            返回部署历史
-          </Button>
+            <ArrowLeft className="size-4" />{copy("returnToDeploymentHistory")}</Button>
         </Result>
       </div>
     );
@@ -215,28 +216,28 @@ export function DeployDetail({ id }: { id: string }) {
   if (loading) return <DetailSkeleton />;
 
   const descItems: DescriptionsItemData[] = [
-    { label: "部署 ID", children: <span className="font-mono text-xs">{deploy.id}</span> },
+    { label: copy("deploymentId"), children: <span className="font-mono text-xs">{deploy.id}</span> },
     {
-      label: "环境",
+      label: copy("environment"),
       children: (
         <Tag tone={deploy.env === "production" ? "success" : "warning"} size="sm">
-          {deploy.env === "production" ? "生产" : "预览"}
+          {deploy.env === "production" ? copy("produce") : copy("preview")}
         </Tag>
       ),
     },
-    { label: "分支", children: <span className="font-mono text-xs">{deploy.branch}</span> },
-    { label: "提交", children: <span className="font-mono text-xs">{deploy.sha.slice(0, 12)}</span> },
+    { label: copy("branch"), children: <span className="font-mono text-xs">{deploy.branch}</span> },
+    { label: copy("submit"), children: <span className="font-mono text-xs">{deploy.sha.slice(0, 12)}</span> },
     {
-      label: "触发方式",
-      children: deploy.id.startsWith("d-manual") ? "手动" : "Git 推送",
+      label: copy("triggerMode"),
+      children: deploy.id.startsWith("d-manual") ? copy("manual") : copy("gitPush"),
     },
     {
-      label: "创建",
-      children: <RelativeTime value={agoDate(deploy.agoMin)} />,
+      label: copy("create"),
+      children: <RelativeTime value={agoDate(deploy.agoMin)} locale={DEMO_RELATIVE_TIME_LOCALE} />,
     },
-    { label: "构建耗时", children: formatDuration(deploy.durationSec) },
+    { label: copy("timeConsumingToBuild"), children: formatDuration(deploy.durationSec) },
     {
-      label: "地址",
+      label: copy("address"),
       children: (
         <a
           href={`https://${deploy.url}`}
@@ -257,8 +258,8 @@ export function DeployDetail({ id }: { id: string }) {
     <div className="flex flex-col gap-4">
       <Breadcrumb
         items={[
-          { label: "项目", href: ROOT },
-          { label: "部署历史", href: `${ROOT}/deployments` },
+          { label: copy("project"), href: ROOT },
+          { label: copy("deploymentHistory"), href: `${ROOT}/deployments` },
           { label: deploy.sha.slice(0, 7) },
         ]}
       />
@@ -279,9 +280,7 @@ export function DeployDetail({ id }: { id: string }) {
             size="sm"
             render={
               <a href={`https://${deploy.url}`} target="_blank" rel="noreferrer">
-                <ExternalLink className="size-4" />
-                访问部署
-              </a>
+                <ExternalLink className="size-4" />{copy("accessDeployment")}</a>
             }
           />
           <Button
@@ -290,33 +289,29 @@ export function DeployDetail({ id }: { id: string }) {
             onClick={() =>
               toast({
                 tone: "info",
-                title: "已触发重新部署",
-                description: `${project.name} · ${deploy.branch} 正在用相同提交重建。`,
+                title: copy("redeploymentTriggered"),
+                description: copy("valueValueIsRebuildingWithTheSame", project.name, deploy.branch),
               })
             }
           >
-            <RefreshCw className="size-4" />
-            重新部署
-          </Button>
+            <RefreshCw className="size-4" />{copy("redeploy")}</Button>
           {canRollback && (
             <Popconfirm
-              title="回滚到此部署？"
-              description={`生产流量将切换到 ${deploy.sha.slice(0, 7)}（${deploy.branch}）。`}
-              okText="确认回滚"
-              cancelText="取消"
+              title={copy("rollBackToThisDeployment")}
+              description={copy("productionTrafficWillBeSwitchedToValue", deploy.sha.slice(0, 7), deploy.branch)}
+              okText={copy("confirmRollback")}
+              cancelText={copy("cancel")}
               danger
               onConfirm={() => {
                 toast({
                   tone: "success",
-                  title: "已回滚",
-                  description: `${project.name} 生产环境已切换到 ${deploy.sha.slice(0, 7)}。`,
+                  title: copy("rolledBack"),
+                  description: copy("valueTheProductionEnvironmentHasBeenSwitched", project.name, deploy.sha.slice(0, 7)),
                 });
               }}
             >
               <Button variant="outline" tone="danger" size="sm">
-                <RotateCcw className="size-4" />
-                回滚到此
-              </Button>
+                <RotateCcw className="size-4" />{copy("rollBackHere")}</Button>
             </Popconfirm>
           )}
         </div>
@@ -326,14 +321,14 @@ export function DeployDetail({ id }: { id: string }) {
         {/* 左列 */}
         <div className="flex flex-col gap-4">
           <Card>
-            <CardHeader>构建步骤</CardHeader>
+            <CardHeader>{copy("buildSteps")}</CardHeader>
             <CardBody>
               <Steps items={steps} direction="vertical" size="sm" />
             </CardBody>
           </Card>
 
           <Card>
-            <CardHeader>构建日志</CardHeader>
+            <CardHeader>{copy("buildLog")}</CardHeader>
             <CardBody>
               <LogViewer lines={logLines} showTimestamp height={360} autoScroll />
             </CardBody>
@@ -345,7 +340,7 @@ export function DeployDetail({ id }: { id: string }) {
           <Descriptions bordered column={1} layout="horizontal" items={descItems} />
 
           <Card>
-            <CardHeader>部署生命周期</CardHeader>
+            <CardHeader>{copy("deploymentLifeCycle")}</CardHeader>
             <CardBody>
               <Timeline items={timeline} />
             </CardBody>

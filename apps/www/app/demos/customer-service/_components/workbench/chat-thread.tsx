@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./chat-thread.content";
+import { channelLabel } from "../../_data/labels";
+
 import { useState } from "react";
 import { Phone, MoreHorizontal, UserPlus, X } from "lucide-react";
 import {
@@ -20,12 +23,12 @@ import {
   toast,
 } from "@hulianui/ui";
 import type { Conversation as Conv, Customer, Message } from "../../_data/types";
-import { QUICK_REPLIES } from "../../_data/types";
+import { quickReplies } from "../../_data/labels";
 
 const STATUS_TAG: Record<Conv["status"], { tone: "success" | "warning" | "neutral"; label: string }> = {
-  active: { tone: "success", label: "进行中" },
-  waiting: { tone: "warning", label: "待接入" },
-  closed: { tone: "neutral", label: "已结束" },
+  active: { tone: "success", label: copy("inProgress") },
+  waiting: { tone: "warning", label: copy("waitingForAccess") },
+  closed: { tone: "neutral", label: copy("ended") },
 };
 
 const LEVEL_TONE: Record<string, "neutral" | "brand" | "warning" | "success"> = {
@@ -70,7 +73,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
 
   if (!conversation) {
     return (
-      <div className="grid h-full place-items-center bg-bg text-sm text-muted">选择左侧会话开始接待</div>
+      <div className="grid h-full place-items-center bg-bg text-sm text-muted">{copy("selectTheSessionOnTheLeftTo")}</div>
     );
   }
 
@@ -94,7 +97,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                 <HoverCardTrigger
                   render={
                     <span className="cursor-pointer truncate text-sm font-semibold hover:text-primary hover:underline">
-                      {customer?.name ?? "访客"}
+                      {customer?.name ?? copy("visitor")}
                     </span>
                   }
                 />
@@ -111,10 +114,10 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted">
-                        <span>手机：{customer.phone}</span>
-                        <span>地区：{customer.region}</span>
-                        <span>注册：{customer.since}</span>
-                        <span>订单：{customer.orders} 笔</span>
+                        <span>{copy("mobile")}{customer.phone}</span>
+                        <span>{copy("region")}{customer.region}</span>
+                        <span>{copy("register")}{customer.since}</span>
+                        <span>{copy("order")}{customer.orders}{copy("pen")}</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {customer.tags.map((t) => (
@@ -125,7 +128,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                       </div>
                     </div>
                   ) : (
-                    <span className="text-sm text-muted">访客，暂无档案</span>
+                    <span className="text-sm text-muted">{copy("visitorNoProfileYet")}</span>
                   )}
                 </HoverCardContent>
               </HoverCard>
@@ -134,7 +137,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
               </Tag>
             </div>
             <div className="truncate text-xs text-muted">
-              {conversation.channel} · {conversation.subject}
+              {channelLabel[conversation.channel]} · {conversation.subject}
             </div>
           </div>
         </div>
@@ -142,20 +145,20 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
           {/* 转接：Popconfirm 二次确认 */}
           {!disabled && (
             <Popconfirm
-              title="确认转接此会话？"
-              description="会话将移交给其他在线坐席，请确认后操作。"
-              okText="转接"
+              title={copy("confirmToTransferThisConversation")}
+              description={copy("theSessionWillBeHandedOverTo")}
+              okText={copy("transfer")}
               onConfirm={() => onTransfer?.(conversation.id)}
             >
               <Tooltip>
                 <TooltipTrigger
                   render={
-                    <Button variant="ghost" size="sm" aria-label="转接" className="size-9 px-0">
+                    <Button variant="ghost" size="sm" aria-label={copy("transfer2")} className="size-9 px-0">
                       <UserPlus className="size-[18px]" />
                     </Button>
                   }
                 />
-                <TooltipContent>转接会话</TooltipContent>
+                <TooltipContent>{copy("transferSession")}</TooltipContent>
               </Tooltip>
             </Popconfirm>
           )}
@@ -165,46 +168,46 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                 <Button
                   variant="ghost"
                   size="sm"
-                  aria-label="呼叫"
+                  aria-label={copy("call")}
                   className="size-9 px-0"
-                  onClick={() => toast({ title: "呼叫功能", description: "demo 环境暂不支持实际通话", tone: "neutral" })}
+                  onClick={() => toast({ title: copy("callFunction"), description: copy("theDemoEnvironmentDoesNotCurrentlySupport"), tone: "neutral" })}
                 >
                   <Phone className="size-[18px]" />
                 </Button>
               }
             />
-            <TooltipContent>呼叫客户</TooltipContent>
+            <TooltipContent>{copy("callCustomer")}</TooltipContent>
           </Tooltip>
           {/* 关闭会话：Popconfirm 二次确认 */}
           {!disabled && (
             <Popconfirm
-              title="确认关闭此会话？"
-              description="关闭后对话进入已结束状态，客户将无法继续发送消息。"
+              title={copy("areYouSureYouWantToClose")}
+              description={copy("afterClosingTheConversationEntersTheEnded")}
               danger
-              okText="关闭"
+              okText={copy("close")}
               onConfirm={() => onClose?.(conversation.id)}
             >
               <Tooltip>
                 <TooltipTrigger
                   render={
-                    <Button variant="ghost" size="sm" aria-label="关闭会话" className="size-9 px-0">
+                    <Button variant="ghost" size="sm" aria-label={copy("closeSession")} className="size-9 px-0">
                       <X className="size-[18px]" />
                     </Button>
                   }
                 />
-                <TooltipContent>关闭会话</TooltipContent>
+                <TooltipContent>{copy("closeSession2")}</TooltipContent>
               </Tooltip>
             </Popconfirm>
           )}
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button variant="ghost" size="sm" aria-label="更多" className="size-9 px-0">
+                <Button variant="ghost" size="sm" aria-label={copy("more")} className="size-9 px-0">
                   <MoreHorizontal className="size-[18px]" />
                 </Button>
               }
             />
-            <TooltipContent>更多操作</TooltipContent>
+            <TooltipContent>{copy("moreActions")}</TooltipContent>
           </Tooltip>
         </div>
       </header>
@@ -230,7 +233,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                 role === "assistant" ? (
                   <Avatar fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />
                 ) : (
-                  <Avatar fallback="琏" size="sm" />
+                  <Avatar fallback={copy("lian")} size="sm" />
                 )
               }
             >
@@ -243,9 +246,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
             role="assistant"
             avatar={<Avatar fallback={customer?.name.slice(0, 1) ?? "?"} size="sm" />}
             loading
-          >
-            正在输入
-          </ChatMessage>
+          >{copy("entering")}</ChatMessage>
         )}
       </Conversation>
 
@@ -254,12 +255,12 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
         {!disabled && (
           <PromptSuggestions
             className="mb-2"
-            suggestions={QUICK_REPLIES}
+            suggestions={quickReplies}
             onSelect={(v) => onSend(v)}
           />
         )}
         <PromptInput
-          placeholder={disabled ? "会话已结束" : "输入回复，回车发送…"}
+          placeholder={disabled ? copy("sessionEnded") : copy("enterTheReplyAndPressEnterTo")}
           disabled={disabled}
           onSubmit={(v) => onSend(v)}
         />

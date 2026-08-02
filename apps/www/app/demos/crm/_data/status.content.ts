@@ -1,0 +1,68 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    "valueMillion": "¥{0}万",
+    "levelKey": "重要",
+    "levelStandard": "普通",
+    "levelProspect": "潜在",
+    "statusUnassigned": "待分配",
+    "statusActive": "跟进中",
+    "statusWon": "已成交",
+    "statusLost": "已流失",
+    "stageLead": "线索",
+    "stageContact": "初步接触",
+    "stageProposal": "方案报价",
+    "stageNegotiation": "商务谈判",
+    "stageWon": "赢单",
+    "stageLost": "输单",
+    "orderPending": "待付款",
+    "orderPaid": "已付款",
+    "orderShipped": "已发货",
+    "orderCompleted": "已完成",
+    "orderRefunded": "已退款",
+    "followPhone": "电话",
+    "followVisit": "拜访",
+    "followWechat": "微信",
+    "followEmail": "邮件",
+  },
+  en: {
+    "valueMillion": "¥{0}0K",
+    "levelKey": "Key",
+    "levelStandard": "Standard",
+    "levelProspect": "Prospect",
+    "statusUnassigned": "Unassigned",
+    "statusActive": "Active",
+    "statusWon": "Closed won",
+    "statusLost": "Closed lost",
+    "stageLead": "Lead",
+    "stageContact": "Initial contact",
+    "stageProposal": "Proposal",
+    "stageNegotiation": "Negotiation",
+    "stageWon": "Closed won",
+    "stageLost": "Closed lost",
+    "orderPending": "Payment pending",
+    "orderPaid": "Paid",
+    "orderShipped": "Shipped",
+    "orderCompleted": "Completed",
+    "orderRefunded": "Refunded",
+    "followPhone": "Phone",
+    "followVisit": "Visit",
+    "followWechat": "WeChat",
+    "followEmail": "Email",
+  },
+} as const;
+
+export type ContentKey = keyof typeof content["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = {
+  key: "demo-crm-data-status",
+  content: t(content),
+};
+
+export default dictionary;

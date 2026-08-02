@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./conversation-list.content";
+import { channelLabel } from "../../_data/labels";
+
 import { useMemo, useState, type KeyboardEvent } from "react";
 import { Avatar, Badge, List, ListItem, ListItemMeta, Segmented } from "@hulianui/ui";
 import type { Conversation } from "../../_data/types";
@@ -10,9 +13,9 @@ const STATUS_DOT: Record<Conversation["status"], string> = {
   closed: "bg-muted",
 };
 const STATUS_LABEL: Record<Conversation["status"], string> = {
-  waiting: "待接入",
-  active: "进行中",
-  closed: "已结束",
+  waiting: copy("waitingForAccess"),
+  active: copy("inProgress"),
+  closed: copy("ended"),
 };
 
 interface Props {
@@ -50,14 +53,14 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
       <div className="shrink-0 border-b border-border p-3">
         <Segmented
           size="sm"
-          aria-label="会话筛选"
+          aria-label={copy("sessionFiltering")}
           value={filter}
           onValueChange={setFilter}
           className="w-full"
           items={[
-            { value: "all", label: `全部 ${counts.all}` },
-            { value: "waiting", label: `待接入 ${counts.waiting}` },
-            { value: "active", label: `进行中 ${counts.active}` },
+            { value: "all", label: copy("allValue", counts.all) },
+            { value: "waiting", label: copy("pendingAccessValue", counts.waiting) },
+            { value: "active", label: copy("inProgressValue", counts.active) },
           ]}
         />
       </div>
@@ -66,16 +69,16 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
         <List<Conversation>
           items={visible}
           inset
-          empty={<div className="p-6 text-center text-sm text-muted">该分类暂无会话</div>}
+          empty={<div className="p-6 text-center text-sm text-muted">{copy("thereAreCurrentlyNoConversationsInThis")}</div>}
           renderItem={(conv) => {
             const cust = customerById(conv.customerId);
             const last = conv.messages[conv.messages.length - 1];
             const isActive = conv.id === activeId;
             const isTyping = typingId === conv.id;
             const preview = isTyping
-              ? "正在输入…"
+              ? copy("entering")
               : last?.author === "agent"
-                ? `我: ${last.text}`
+                ? copy("meValue", last.text)
                 : (last?.text ?? "");
             return (
               <ListItem
@@ -101,7 +104,7 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
                   }
                   title={
                     <span className="flex items-center justify-between gap-2">
-                      <span className="truncate font-medium">{cust?.name ?? "访客"}</span>
+                      <span className="truncate font-medium">{cust?.name ?? copy("visitor")}</span>
                       <span className="shrink-0 text-[11px] font-normal text-muted">{conv.lastAt}</span>
                     </span>
                   }
@@ -110,7 +113,7 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
                       <span className={`truncate ${isTyping ? "text-primary" : "text-muted"}`}>{preview}</span>
                       <span className="flex items-center justify-between gap-2">
                         <span className="truncate text-[11px] text-muted">
-                          {conv.channel} · {conv.subject}
+                          {channelLabel[conv.channel]} · {conv.subject}
                         </span>
                         <Badge count={conv.unread} size="sm" className="shrink-0" />
                       </span>

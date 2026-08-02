@@ -1,17 +1,18 @@
+import { copy } from "./account.content";
 import type { PaymentMethod, UsageMetric } from "./types";
 
 // 当前登录用户与订阅初始态。RelativeTime 用绝对时间字符串，组件内部按「现在」实时折算。
 export const account = {
-  name: "沈砚之",
+  name: copy("shenYanzhi"),
   email: "shen.yz@hanyun.io",
-  company: "瀚云数智 · 平台研发部",
-  avatar: "沈",
+  company: copy("hanyunDigitalPlatformRDDepartment"),
+  avatar: copy("sink"),
   /** 上次登录（相对时间展示）。 */
   lastLogin: "2026-06-05T08:12:00+08:00",
   memberSince: "2024-03-18T10:00:00+08:00",
   /** 工作状态表情（EmojiPicker 可改）。 */
   status: "🚀",
-  statusText: "正在冲刺 Q2 发布",
+  statusText: copy("sprintingForQ2Release"),
 };
 
 // 当前订阅初始态（store 初值；可在套餐页改）。
@@ -51,14 +52,14 @@ export const paymentMethods: PaymentMethod[] = [
     id: "pm-wechat",
     type: "wallet",
     wallet: "wechat",
-    walletAccount: "shen****z (微信支付)",
+    walletAccount: copy("sheZWechatPay"),
   },
 ];
 
 // 资源用量（概览仪表）。
 export const usage: UsageMetric[] = [
-  { key: "seats", label: "团队席位", used: 8, quota: 8, unit: "席" },
-  { key: "projects", label: "项目数", used: 47, quota: 999, unit: "个" },
-  { key: "storage", label: "存储空间", used: 612, quota: 1024, unit: "GB" },
-  { key: "api", label: "本月 API 调用", used: 184_320, quota: 500_000, unit: "次" },
+  { key: "seats", label: copy("teamSeats"), used: 8, quota: 8, unit: copy("seat") },
+  { key: "projects", label: copy("numberOfItems"), used: 47, quota: 999, unit: copy("a") },
+  { key: "storage", label: copy("storageSpace"), used: 612, quota: 1024, unit: "GB" },
+  { key: "api", label: copy("apiCallsThisMonth"), used: 184_320, quota: 500_000, unit: copy("times") },
 ];

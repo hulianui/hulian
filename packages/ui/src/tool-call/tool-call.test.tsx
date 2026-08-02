@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { ToolCall } from "./tool-call";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("ToolCall", () => {
   it("渲染工具名 + 默认完成状态", () => {
@@ -23,5 +25,14 @@ describe("ToolCall", () => {
     );
     expect(getByText("参数")).toBeTruthy();
     expect(getByText("结果")).toBeTruthy();
+  });
+  it("ConfigProvider locale=enUS localizes the input/output headings", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <ToolCall name="t" defaultOpen input="payload" output="response" />
+      </ConfigProvider>,
+    );
+    expect(getByText("Input")).toBeTruthy();
+    expect(getByText("Output")).toBeTruthy();
   });
 });

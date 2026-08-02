@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./queue-shared.content";
+
 import type { ReactNode } from "react";
 import { Tag } from "@hulianui/ui";
 import type { TagTone } from "@hulianui/ui";
@@ -7,14 +9,14 @@ import { evaluateSla, type SlaStatus } from "../_lib/sla";
 
 /** 能力域中文短标。 */
 export const CAPABILITY_LABEL: Record<Capability, string> = {
-  text: "文本",
-  code: "代码",
-  image: "图像",
-  translate: "翻译",
-  rag: "检索增强",
-  extract: "结构抽取",
-  moderate: "内容审核",
-  orchestrate: "多 Agent 编排",
+  text: copy("text"),
+  code: copy("code"),
+  image: copy("image"),
+  translate: copy("translation"),
+  rag: copy("retrievalEnhancement"),
+  extract: copy("structuralExtraction"),
+  moderate: copy("contentReview"),
+  orchestrate: copy("multiAgentOrchestration"),
 };
 
 /** 优先级泳道配色（token 驱动）。 */
@@ -35,18 +37,18 @@ export const PRIORITY_TAG_TONE: Record<Priority, TagTone> = {
 
 /** 任务状态 Tag 语义色 + 文案。 */
 export const STATUS_META: Record<TaskStatus, { tone: TagTone; label: string }> = {
-  queued: { tone: "neutral", label: "排队中" },
-  running: { tone: "brand", label: "执行中" },
-  done: { tone: "success", label: "已完成" },
-  failed: { tone: "danger", label: "失败" },
-  "at-risk": { tone: "warning", label: "临期" },
+  queued: { tone: "neutral", label: copy("inLine") },
+  running: { tone: "brand", label: copy("inExecution") },
+  done: { tone: "success", label: copy("completed") },
+  failed: { tone: "danger", label: copy("failure") },
+  "at-risk": { tone: "warning", label: copy("theAppointedTimeApproached") },
 };
 
 /** SLA 状态 → Tag 语义色 + 文案。 */
 export const SLA_META: Record<SlaStatus, { tone: TagTone; label: string }> = {
-  met: { tone: "success", label: "达标" },
-  "at-risk": { tone: "warning", label: "临期" },
-  violated: { tone: "danger", label: "违约" },
+  met: { tone: "success", label: copy("meetsTheStandard") },
+  "at-risk": { tone: "warning", label: copy("theAppointedTimeApproached2") },
+  violated: { tone: "danger", label: copy("breachOfContract") },
 };
 
 /**
@@ -75,7 +77,7 @@ export function fmtDuration(ms: number): string {
 
 /** SLA 余量展示文案（正=剩余，负=超时）。 */
 export function fmtSlaMargin(marginMs: number): string {
-  return marginMs >= 0 ? `余 ${fmtDuration(marginMs)}` : `超 ${fmtDuration(marginMs)}`;
+  return marginMs >= 0 ? copy("yuValue", fmtDuration(marginMs)) : copy("superValue", fmtDuration(marginMs));
 }
 
 /** 能力 Tag 群（最多展示 N 个，超出折叠计数）。 */

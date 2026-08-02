@@ -69,7 +69,7 @@ function ConvoNav() {
 
 ## Usage guidelines
 
-The default navigation accessibility label is `"\u4fa7\u8fb9\u5bfc\u822a"` ("Sidebar navigation"). Override `aria-label` for an English runtime surface.
+The default navigation accessibility label follows `ConfigProvider` (`"Sidebar navigation"` in `enUS`, Chinese in `zhCN`). An explicit `aria-label` still takes precedence.
 
 - Put trailing controls in `actions`; the component positions them outside the tree-item button or link. **Do not put interactive elements such as `<button>` directly inside `label`**. That creates invalid nested controls and can cause hydration errors. Actions are available only in inline mode.
 - Expansion uses a CSS `grid-template-rows` transition from `0fr` to `1fr`, avoiding JavaScript height measurement and preserving smooth nested expansion. See [[nested-collapsible-height-via-css-grid-rows-not-js-measure]].

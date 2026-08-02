@@ -42,9 +42,11 @@ import { ToolCall } from "@hulianui/ui"
 |------|------|------|
 | name * | `ReactNode` | Tool name rendered in monospace, such as `search_web` |
 | icon | `ReactNode` | Tool icon slot (default Wrench) |
-| input | `ReactNode` | Input shown below the built-in `"\u53c2\u6570"` (Parameters) heading; typically `<CodeBlock/>` or JSON text |
-| output | `ReactNode` | Result shown below the built-in `"\u7ed3\u679c"` (Result) heading; typically `<CodeBlock/>`, `<Prose/>`, or text |
+| input | `ReactNode` | Input shown below the built-in **Input** heading; typically `<CodeBlock/>` or JSON text |
+| output | `ReactNode` | Result shown below the built-in **Output** heading; typically `<CodeBlock/>`, `<Prose/>`, or text |
 | children | `ReactNode` | Customize panel content (replace input/output) |
+
+Status, Input, and Output labels follow the nearest `ConfigProvider` locale. They retain the Chinese defaults when no provider is present.
 
 ## Examples
 ```tsx

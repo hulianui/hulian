@@ -29,7 +29,7 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 |------|------|------|------|
 | shape | `"text" \| "circle" \| "rect"` | `"text"` | Placeholder shape. |
 
-ListSkeleton and CardSkeleton use `rows` and `count`, respectively; constrain preset dimensions with an outer `className`.
+ListSkeleton and CardSkeleton use `rows` and `count`, respectively; constrain preset dimensions with an outer `className`. All three presets accept an optional `label` override for the accessible loading message. Without one, they follow `ConfigProvider` and default to Chinese.
 
 ## Examples
 ```tsx
@@ -47,7 +47,8 @@ ListSkeleton and CardSkeleton use `rows` and `count`, respectively; constrain pr
 
 - Presets intentionally omit chrome. Do not add an unnecessary Card wrapper that creates duplicate borders.
 - Shimmer uses CSS rather than requestAnimationFrame, so headless screenshots show its shape without special handling.
-- Presets expose the runtime status label `"\u52a0\u8f7d\u4e2d"` ("Loading") to assistive technology.
+- Presets expose a localized runtime loading label to assistive technology.
+- Presets read the runtime locale from `ConfigProvider`, so they are client components; server components can still import and render them.
 
 ## Related
 [Empty](../empty/empty.md) · [Watermark](../watermark/watermark.md) · [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md)

@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./routing-decision-table.content";
+
 // 智能路由 · 决策回放表：对所选任务用当前六维权重重算的 RoutingDecision，
 // 逐候选执行器展示六维分项打分（迷你 Sparkline 条）+ 综合分；淘汰者标灰 + 原因 Tag，
 // 选中者（chosenId）高亮 + reason 文案。
@@ -65,19 +67,15 @@ export function RoutingDecisionTable({ decision }: { decision: RoutingDecision }
     return [
       {
         id: "executor",
-        header: "候选执行器",
+        header: copy("candidateActuators"),
         cell: ({ row }) => {
           const { candidate, isChosen, rank } = row.original;
           return (
             <div className="flex items-center gap-2">
               {isChosen ? (
-                <Tag size="sm" variant="solid" tone="brand">
-                  选中
-                </Tag>
+                <Tag size="sm" variant="solid" tone="brand">{copy("selected")}</Tag>
               ) : candidate.eliminated ? (
-                <Tag size="sm" variant="soft" tone="neutral">
-                  淘汰
-                </Tag>
+                <Tag size="sm" variant="soft" tone="neutral">{copy("elimination")}</Tag>
               ) : (
                 <Tag size="sm" variant="outline" tone="neutral">
                   #{rank}
@@ -100,7 +98,7 @@ export function RoutingDecisionTable({ decision }: { decision: RoutingDecision }
       ...dimCols,
       {
         id: "total",
-        header: "综合分",
+        header: copy("overallScore"),
         cell: ({ row }) => {
           const { candidate, isChosen } = row.original;
           if (candidate.eliminated) {

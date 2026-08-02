@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import Link from "next/link";
 import { CircleDollarSign, Target, UserPlus, Users } from "lucide-react";
 import {
@@ -18,18 +20,18 @@ import {
 } from "@hulianui/ui";
 import { customers } from "../_data/customers";
 import { metrics, monthlyTrend, stageDistribution } from "../_data/metrics";
-import { customerStatusTone, yuan } from "../_data/status";
+import { customerStatusLabel, customerStatusTone, yuan } from "../_data/status";
 
 const trend = monthlyTrend();
 const stage = stageDistribution();
 const recentCustomers = [...customers].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)).slice(0, 6);
 
 const todos = [
-  { id: "t1", text: "晨光文具 · 续约多年期折扣待审批", due: "今天", tone: "danger" as const },
-  { id: "t2", text: "云栖科技 · SaaS 报价单 v2 待客户确认", due: "今天", tone: "warning" as const },
-  { id: "t3", text: "极光新能源 · 充电网管商务条款跟进", due: "明天", tone: "warning" as const },
-  { id: "t4", text: "瑞康制药 · 同行业 GMP 案例待发送", due: "6/5", tone: "brand" as const },
-  { id: "t5", text: "知行教育 / 绿野农业 · 3 条新线索待分配", due: "本周", tone: "neutral" as const },
+  { id: "t1", text: copy("mGStationeryMultiYearDiscountFor"), due: copy("today"), tone: "danger" as const },
+  { id: "t2", text: copy("yunqiTechnologySaasQuotationV2AwaitsCustomer"), due: copy("today2"), tone: "warning" as const },
+  { id: "t3", text: copy("auroraNewEnergyChargingNetworkManagementBusiness"), due: copy("tomorrow"), tone: "warning" as const },
+  { id: "t4", text: copy("ruikangPharmaceuticalGmpCasesInTheSame"), due: "6/5", tone: "brand" as const },
+  { id: "t5", text: copy("zhixingEducationGreenfieldAgricultureNewLeadsTo"), due: copy("thisWeek"), tone: "neutral" as const },
 ];
 
 function StatCard({
@@ -52,7 +54,7 @@ function StatCard({
           label={label}
           value={value}
           delta={delta}
-          deltaLabel="较上月"
+          deltaLabel={copy("comparedWithLastMonth")}
           icon={<span className={`grid size-11 place-items-center rounded-[var(--radius)] ${iconClass}`}>{icon}</span>}
         />
       </CardBody>
@@ -64,39 +66,35 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-5">
       <header>
-        <Heading level={2} size="xl">
-          工作台
-        </Heading>
-        <Text tone="muted" size="sm" className="mt-1">
-          今天是 2026 年 6 月 4 日 · 你有 {todos.length} 条待办、{metrics.following} 个客户跟进中
-        </Text>
+        <Heading level={2} size="xl">{copy("workbench")}</Heading>
+        <Text tone="muted" size="sm" className="mt-1">{copy("dashboardSummary", todos.length, metrics.following)}</Text>
       </header>
 
       {/* 指标卡 */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="客户总数"
+          label={copy("totalNumberOfCustomers")}
           value={metrics.totalCustomers}
           delta={8.3}
           icon={<Users className="size-5" />}
           iconClass="bg-primary/12 text-primary"
         />
         <StatCard
-          label="本月新增"
+          label={copy("newThisMonth")}
           value={metrics.newThisMonth}
           delta={33.3}
           icon={<UserPlus className="size-5" />}
           iconClass="bg-success/12 text-success"
         />
         <StatCard
-          label="商机金额"
+          label={copy("businessOpportunityAmount")}
           value={yuan(metrics.pipelineAmount)}
           delta={12}
           icon={<Target className="size-5" />}
           iconClass="bg-warning/15 text-warning"
         />
         <StatCard
-          label="累计成交"
+          label={copy("accumulatedTransactions")}
           value={yuan(metrics.totalRevenue)}
           delta={5.4}
           icon={<CircleDollarSign className="size-5" />}
@@ -108,23 +106,17 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card variant="outline" className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
-            <Heading level={3} size="base">
-              成交趋势
-            </Heading>
-            <Text size="sm" tone="muted">
-              近 6 个月 · 万元
-            </Text>
+            <Heading level={3} size="base">{copy("transactionTrend")}</Heading>
+            <Text size="sm" tone="muted">{copy("lastMonthsYuan")}</Text>
           </CardHeader>
           <CardBody className="pt-0">
-            <AreaChart data={trend} series={[{ key: "成交额", label: "成交额（万）" }]} xKey="month" height={260} />
+            <AreaChart data={trend} series={[{ key: "成交额", label: copy("turnover2") }]} xKey="month" height={260} />
           </CardBody>
         </Card>
 
         <Card variant="outline">
           <CardHeader>
-            <Heading level={3} size="base">
-              商机阶段分布
-            </Heading>
+            <Heading level={3} size="base">{copy("businessOpportunityStageDistribution")}</Heading>
           </CardHeader>
           <CardBody className="pt-0">
             <PieChart data={stage} donut height={260} />
@@ -136,12 +128,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card variant="outline" className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
-            <Heading level={3} size="base">
-              最近客户
-            </Heading>
-            <Link href="/demos/crm/customers" className="text-sm text-primary hover:underline">
-              查看全部
-            </Link>
+            <Heading level={3} size="base">{copy("recentCustomers")}</Heading>
+            <Link href="/demos/crm/customers" className="text-sm text-primary hover:underline">{copy("viewAll")}</Link>
           </CardHeader>
           <CardBody className="pt-0">
             <List
@@ -154,7 +142,7 @@ export default function DashboardPage() {
                       {yuan(c.amount)}
                     </span>,
                     <Tag key="st" tone={customerStatusTone[c.status]} size="sm">
-                      {c.status}
+                      {customerStatusLabel[c.status]}
                     </Tag>,
                   ]}
                 >
@@ -175,9 +163,7 @@ export default function DashboardPage() {
 
         <Card variant="outline">
           <CardHeader>
-            <Heading level={3} size="base">
-              待办事项
-            </Heading>
+            <Heading level={3} size="base">{copy("toDoList")}</Heading>
           </CardHeader>
           <CardBody className="pt-0">
             <List

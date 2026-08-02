@@ -51,4 +51,6 @@ The bar divides `blocks` according to the `additions:deletions` ratio through th
 Status badge accessibility text remains Chinese at runtime: `"\u65b0\u589e"` ("Added"), `"\u4fee\u6539"` ("Modified"), `"\u5220\u9664"` ("Deleted"), and `"\u91cd\u547d\u540d"` ("Renamed").
 
 ## Related
+
+Status badges follow `ConfigProvider`. DiffStat is a client component; server components can still import and render it.
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md) · [Dot](../dot/dot.md)

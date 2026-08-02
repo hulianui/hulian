@@ -3866,6 +3866,8 @@ import { ElasticSlider } from "@hulianui/ui"
 
 聊天/评论输入框旁需要插入表情时用，emoji 数据（7 分类 + 中英关键词）内置、零依赖、支持搜索。本身只是表情面板，浮层弹出/定位需自配 [Popover](https://hulianui.haloritual.com/components/popover) 等容器。
 
+搜索、空态、最近使用与分类标签跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。显式传入 `searchPlaceholder` 时仍以该 prop 为准。
+
 ## 导入
 ```ts
 import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from "@hulianui/ui"
@@ -4506,7 +4508,7 @@ import { MarkdownEditor } from "@hulianui/ui"
 | value | `string` | — | 受控 markdown 字符串 |
 | defaultValue | `string` | — | 非受控初值 |
 | name | `string` | — | 桥给原生表单 / Field 的隐藏 input name |
-| placeholder | `string` | `"输入 markdown…"` | 空内容占位文案 |
+| placeholder | `string` | — | 空内容占位文案 |
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
 | disabled | `boolean` | `false` | 禁用 |
 | minRows | `number` | `6` | 内容区最小高度（行） |
@@ -5619,6 +5621,8 @@ const [revealed, setRevealed] = useState(false);
 - `copyable` 默认 true，敏感场景按需 `copyable={false}` 关掉复制。
 
 ## 相关
+
+显示、隐藏、复制与已复制标签跟随 `ConfigProvider`。
 [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating) · [Upload](https://hulianui.haloritual.com/components/upload)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -7826,6 +7830,8 @@ const comments = [
 暂无已知坑。`status` 与 `collapsed` 均为「传则受控、不传则内部自管」：受控时必须配 `onStatusChange` / `onCollapsedChange` 回写，否则交互无效。`collapsed` 优先级高于 `defaultCollapsed`，两者勿同时当真值传。
 
 ## 相关
+
+严重度、状态、建议与回复等内置文案跟随 `ConfigProvider`；评论正文与作者仍由业务数据提供。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -8049,6 +8055,8 @@ import { Coupon } from "@hulianui/ui"
 
 在结算确认、钱包、绑卡管理处展示一张银行卡卡面（品牌识别 + 卡号打码 + 正反面）。纯展示组件，不做表单录入；要采集卡号请用表单输入控件，本组件只负责把已有卡信息可视化成一张卡。
 
+持卡人、有效期与无障碍卡片说明跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。
+
 ## 导入
 ```ts
 import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from "@hulianui/ui"
@@ -8197,7 +8205,7 @@ import { DecayCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DeployStatus
 
-> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC) · data-display/info
+> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需 · data-display/info
 
 ## 何时用
 
@@ -8222,7 +8230,7 @@ import { DeployStatus } from "@hulianui/ui"
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| label | `ReactNode` | 覆盖默认中文文案 |
+| label | `ReactNode` | 覆盖 ConfigProvider 提供的本地化文案 |
 
 ## 示例
 ```tsx
@@ -8235,7 +8243,7 @@ import { DeployStatus } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
-暂无已知坑。注意语义边界：本组件是部署生命周期态，不要拿它当服务健康指示灯（那是 StatusDot）。
+注意语义边界：本组件是部署生命周期态，不要拿它当服务健康指示灯（那是 StatusDot）。默认文案跟随 `ConfigProvider`，仅在业务语义需要时传 `label` 覆盖。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -8306,11 +8314,11 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DiffStat
 
-> 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖·RSC · data-display/info
+> 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖 · data-display/info
 
 ## 何时用
 
-PR/提交列表里展示单文件改动量：`+N −M` 数字 + 绿红比例格子条 + 改动状态徽标。本组件是 git diff 统计的微件（零依赖、可 RSC）；要趋势折线用 [Sparkline](https://hulianui.haloritual.com/components/sparkline)，要文件改动状态角标的层级树用 [FileTree](https://hulianui.haloritual.com/components/file-tree)。
+PR/提交列表里展示单文件改动量：`+N −M` 数字 + 绿红比例格子条 + 改动状态徽标。本组件是 git diff 统计的微件；要趋势折线用 [Sparkline](https://hulianui.haloritual.com/components/sparkline)，要文件改动状态角标的层级树用 [FileTree](https://hulianui.haloritual.com/components/file-tree)。
 
 ## 导入
 ```ts
@@ -8345,6 +8353,8 @@ import { DiffStat, splitBlocks } from "@hulianui/ui"
 暂无已知坑。格子条按 `additions:deletions` 比例填充 `blocks` 格（纯函数 `splitBlocks`），二者全 0 时为空条。
 
 ## 相关
+
+状态徽标跟随 `ConfigProvider`；组件为 client 组件，服务端组件仍可导入并渲染它。
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge) · [Dot](https://hulianui.haloritual.com/components/dot)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -9052,6 +9062,8 @@ FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`�
 - `computeFunnel` 纯函数对首级 `conversion` 返回 `null`（无上一级可比），且不除零；自定义渲染时务必判 `conversion == null`。
 
 ## 相关
+
+图表无障碍标签与转化率前缀跟随 `ConfigProvider`。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -9102,6 +9114,8 @@ const tasks: GanttTask[] = [
 - 时间轴可能比容器宽，组件靠横向滚动——外层给确定宽度（如 `w-[680px] max-w-full`）才有滚动条。
 
 ## 相关
+
+图表标签、空态、左列标题与月份刻度跟随 `ConfigProvider`。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -9606,6 +9620,8 @@ const [cards, setCards] = useState(initial);
 - `getId` 须全局唯一且稳定（不仅列内唯一）；卡片含交互子元素时同样要防拖拽拦截点击（[[dnd-kit-draggable-container-guard-interactive-children]]）。
 
 ## 相关
+
+空列占位文案跟随 `ConfigProvider`。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -10990,6 +11006,8 @@ const links: SankeyLink[] = [
 - nodes/links 受控：几何由纯函数 `computeSankeyLayout` 算出带坐标的 laid* 形态，`assignLayers` 负责拓扑分层；不要往里传环路 links（拓扑分层假设有向无环）。
 
 ## 相关
+
+图表无障碍标签跟随 `ConfigProvider`。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -11287,7 +11305,7 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 |------|------|------|------|
 | shape | `"text" \| "circle" \| "rect"` | `"text"` | 占位形状 |
 
-预设组件 `ListSkeleton` / `CardSkeleton` 用各自的计数 prop（`rows` / `count`）控制数量，尺寸靠外层 `className` 约束。
+预设组件 `ListSkeleton` / `CardSkeleton` 用各自的计数 prop（`rows` / `count`）控制数量，尺寸靠外层 `className` 约束。三个预设都支持可选 `label` 覆盖无障碍加载文案；未传时跟随 `ConfigProvider`，默认中文。
 
 ## 示例
 ```tsx
@@ -11305,6 +11323,7 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 
 - 骨架本身是「无 chrome」的占位，预设（Card/List/Table）不自带边框/卡片容器；别再外层套一层 Card 造成双重边框。
 - shimmer 是纯 CSS 动画，与图表/canvas 那类 rAF 动画不同，headless 截图能正常显形，无需特殊处理。
+- 预设读取 `ConfigProvider` 的运行时语言，因此属于客户端组件；服务端组件可以正常导入并渲染它们。
 
 ## 相关
 [Empty](https://hulianui.haloritual.com/components/empty) · [Watermark](https://hulianui.haloritual.com/components/watermark) · [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table)
@@ -12610,6 +12629,8 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 - 应用代码里想要「缺 Provider 就报错」的硬约束，继续用 `useTheme`；库内组件与需要容错的场景用 `useThemeOptional`（缺上下文返回 `null`）。
 
 ## 相关
+
+默认切换标签跟随 `ConfigProvider`（`zhCN` / `enUS`）；显式 `aria-label` 始终优先。
 [Command](https://hulianui.haloritual.com/components/command) · [ContextMenu](https://hulianui.haloritual.com/components/context-menu) · [Toolbar](https://hulianui.haloritual.com/components/toolbar) · [Accordion](https://hulianui.haloritual.com/components/accordion) · [Collapsible](https://hulianui.haloritual.com/components/collapsible) · [Link](https://hulianui.haloritual.com/components/link)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -12744,6 +12765,8 @@ const ref = useRef<HTMLDivElement>(null);
 - 已内置 `prefers-reduced-motion` 降级（smooth → auto），无需消费侧处理。
 
 ## 相关
+
+默认回顶标签跟随 `ConfigProvider`；可继续用 `aria-label` 显式覆盖。
 [Tabs](https://hulianui.haloritual.com/components/tabs) · [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) · [Pagination](https://hulianui.haloritual.com/components/pagination) · [Anchor](https://hulianui.haloritual.com/components/anchor) · [Affix](https://hulianui.haloritual.com/components/affix) · [Stepper](https://hulianui.haloritual.com/components/stepper)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -13775,6 +13798,7 @@ function ConvoNav() {
 
 ## 禁忌 / 坑
 
+- 默认导航无障碍名称跟随 `ConfigProvider`（`zhCN` 为“侧边导航”，`enUS` 为 “Sidebar navigation”）；显式传入 `aria-label` 时以消费方值为准。
 - 行尾操作放 `actions` 槽，组件会渲在 treeitem 按钮/链接【之外】（绝对覆盖行右侧）。**别把 `<button>` 等交互元素直接塞进 `label`**——嵌进 treeitem 按钮是非法 HTML，会触发 hydration 报错。`actions` 仅 inline 态生效。
 - 高度过渡用纯 CSS `grid-template-rows` 0fr→1fr，不靠 JS 测高，嵌套展开也不抖。参见 [[nested-collapsible-height-via-css-grid-rows-not-js-measure]]。
 - 选中/展开态可受控（`selectedKeys`/`openKeys` + 回调）或非受控（`default*`），勿混用同一维度。
@@ -13798,11 +13822,11 @@ function ConvoNav() {
 <!-- ════════════════════════════════════════════════════════ -->
 # PageHeader
 
-> 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖·可 RSC) · navigation/inpage
+> 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖) · navigation/inpage
 
 ## 何时用
 
-详情页 / 管理页顶部的页头骨架：统一安放返回箭头、面包屑、主标题、状态标签、右侧操作区和底部 Tabs。各槽位直接 dogfood 传入瑚琏 [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) / Chip / [Tabs](https://hulianui.haloritual.com/components/tabs)；只需要面包屑导航本身用 Breadcrumb，PageHeader 是把整块页头排版好。不传 `onBack` 时可保持 RSC（无回调）。
+详情页 / 管理页顶部的页头骨架：统一安放返回箭头、面包屑、主标题、状态标签、右侧操作区和底部 Tabs。各槽位直接 dogfood 传入瑚琏 [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) / Chip / [Tabs](https://hulianui.haloritual.com/components/tabs)；只需要面包屑导航本身用 Breadcrumb，PageHeader 是把整块页头排版好。
 
 ## 导入
 ```ts
@@ -13837,7 +13861,7 @@ import { PageHeader } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-// 极简：仅标题 + 操作（可 RSC，无 onBack）
+// 极简：仅标题 + 操作
 <PageHeader title="用户管理" extra={<Button variant="solid" size="sm">新建用户</Button>} />
 
 // 完整页头
@@ -13856,7 +13880,7 @@ import { PageHeader } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - `title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——别再往 DOM 透传字符串 title。
-- 传 `onBack` 即引入回调，该消费组件必须是 client；纯展示页头不传 onBack 可保持 server 组件。
+- 默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。
 
 ## 相关
 [Tabs](https://hulianui.haloritual.com/components/tabs) · [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) · [Pagination](https://hulianui.haloritual.com/components/pagination) · [Anchor](https://hulianui.haloritual.com/components/anchor) · [Affix](https://hulianui.haloritual.com/components/affix) · [BackTop](https://hulianui.haloritual.com/components/back-top)
@@ -15594,11 +15618,11 @@ import { Spin } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Spinner
 
-> 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + RSC · feedback/loading
+> 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + 本地化读屏文案 · feedback/loading
 
 ## 何时用
 
-需要一个裸的加载旋转图标时用（按钮内、行内、空状态占位）：纯 CSS `animate-spin` SVG 环，带 `role=status`，零交互、可作 RSC。需要遮罩/包裹内容区/整页加载用 [Spin](https://hulianui.haloritual.com/components/spin)；已知进度用 [Progress](https://hulianui.haloritual.com/components/progress)。
+需要一个裸的加载旋转图标时用（按钮内、行内、空状态占位）：纯 CSS `animate-spin` SVG 环，带 `role=status`，零交互。需要遮罩/包裹内容区/整页加载用 [Spin](https://hulianui.haloritual.com/components/spin)；已知进度用 [Progress](https://hulianui.haloritual.com/components/progress)。
 
 ## 导入
 ```ts
@@ -15611,7 +15635,7 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
 | tone | `"primary"｜"current"｜"muted"` | `"primary"` | 配色（`current`=继承 currentColor，适合放进彩色按钮内） |
-| label | `string` | `"加载中"` | a11y 文案（role=status 读屏播报） |
+| label | `string` | 跟随 `ConfigProvider` | a11y 文案（role=status 读屏播报）；显式传值优先 |
 | className | `string` | — | 容器类名 |
 
 ## 示例
@@ -15984,11 +16008,13 @@ import { Artifact } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ChatMessage
 
-> 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽·纯皮肤RSC · ai/conversation
+> 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽 · ai/conversation
 
 ## 何时用
 
 渲染单条对话气泡（用户/助手/系统通告）。多条气泡的滚动堆叠交给 [Conversation](https://hulianui.haloritual.com/components/conversation)；气泡下方的操作按钮用 MessageActions 放进 `actions` 槽。
+
+头像回退文案与发送回执的无障碍标签跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。
 
 ## 导入
 ```ts
@@ -16700,6 +16726,8 @@ import { ToolCall } from "@hulianui/ui"
 | input | `ReactNode` | 入参（建议传 `<CodeBlock/>` 或 JSON 文本） |
 | output | `ReactNode` | 结果（建议传 `<CodeBlock/>` / `<Prose/>` 或文本） |
 | children | `ReactNode` | 自定义面板内容（替代 input/output） |
+
+状态及“参数/结果”标题会随 `ConfigProvider` 的 `locale` 自动切换；未提供 Provider 时保持中文默认值。
 
 ## 示例
 ```tsx

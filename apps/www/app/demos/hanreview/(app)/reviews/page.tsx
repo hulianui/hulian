@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -28,18 +30,18 @@ const MODEL_NAME = new Map(MODELS.map((m) => [m.id, m.name]));
 type TabKey = "all" | "reviewing" | "block" | "pass";
 
 const TABS: { value: TabKey; label: string }[] = [
-  { value: "all", label: "全部" },
-  { value: "reviewing", label: "审查中" },
-  { value: "block", label: "已阻断" },
-  { value: "pass", label: "已通过" },
+  { value: "all", label: copy("allOfThem") },
+  { value: "reviewing", label: copy("underReview") },
+  { value: "block", label: copy("blocked") },
+  { value: "pass", label: copy("passed") },
 ];
 
 // AI 审查状态 → StatusDot 语义态 + 文案
 const STATUS_DOT: Record<ReviewStatus, { status: ChannelStatus; label: string }> = {
-  done: { status: "online", label: "完成" },
-  reviewing: { status: "maintenance", label: "审查中" },
-  failed: { status: "offline", label: "失败" },
-  queued: { status: "degraded", label: "排队" },
+  done: { status: "online", label: copy("done") },
+  reviewing: { status: "maintenance", label: copy("underReview2") },
+  failed: { status: "offline", label: copy("failure") },
+  queued: { status: "degraded", label: copy("queue") },
 };
 
 // 问题严重度 → Tag 色
@@ -50,10 +52,10 @@ const SEVERITY_TONE: Record<Severity, TagTone> = {
   info: "neutral",
 };
 const SEVERITY_LABEL: Record<Severity, string> = {
-  critical: "严重",
-  major: "重要",
-  minor: "次要",
-  info: "提示",
+  critical: copy("serious"),
+  major: copy("important"),
+  minor: copy("secondary"),
+  info: copy("tip"),
 };
 const SEVERITY_ORDER: Severity[] = ["critical", "major", "minor", "info"];
 
@@ -104,7 +106,7 @@ export default function ReviewsPage() {
   const columns: ColumnDef<Review>[] = [
     {
       accessorKey: "repoId",
-      header: "仓库",
+      header: copy("warehouse"),
       cell: ({ row }) => {
         const r = row.original;
         return (
@@ -117,7 +119,7 @@ export default function ReviewsPage() {
     },
     {
       accessorKey: "title",
-      header: "标题",
+      header: copy("title"),
       cell: ({ row }) => (
         <Link
           href={`/demos/hanreview/reviews/${row.original.id}`}
@@ -129,7 +131,7 @@ export default function ReviewsPage() {
     },
     {
       accessorKey: "author",
-      header: "作者",
+      header: copy("author"),
       enableSorting: false,
       cell: ({ row }) => {
         const a = row.original.author;
@@ -143,7 +145,7 @@ export default function ReviewsPage() {
     },
     {
       id: "diff",
-      header: "改动规模",
+      header: copy("scaleOfChanges"),
       enableSorting: false,
       cell: ({ row }) => {
         const d = diffOf(row.original);
@@ -152,7 +154,7 @@ export default function ReviewsPage() {
     },
     {
       accessorKey: "status",
-      header: "AI 状态",
+      header: copy("aiStatus"),
       cell: ({ row }) => {
         const s = STATUS_DOT[row.original.status];
         return <StatusDot status={s.status} label={s.label} size="sm" />;
@@ -160,7 +162,7 @@ export default function ReviewsPage() {
     },
     {
       accessorKey: "score",
-      header: "质量分",
+      header: copy("qualityPoints"),
       cell: ({ row }) => {
         const r = row.original;
         const grade = resolveGrade(r.score);
@@ -176,12 +178,12 @@ export default function ReviewsPage() {
     },
     {
       id: "issues",
-      header: "问题数",
+      header: copy("numberOfQuestions"),
       enableSorting: false,
       cell: ({ row }) => {
         const counts = severityCounts(row.original);
         const active = SEVERITY_ORDER.filter((s) => counts[s] > 0);
-        if (active.length === 0) return <span className="text-xs text-muted">无</span>;
+        if (active.length === 0) return <span className="text-xs text-muted">{copy("none")}</span>;
         return (
           <div className="flex flex-wrap items-center gap-1">
             {active.map((s) => (
@@ -195,21 +197,17 @@ export default function ReviewsPage() {
     },
     {
       accessorKey: "gate",
-      header: "门禁",
+      header: copy("gateControl"),
       cell: ({ row }) =>
         row.original.gate === "pass" ? (
-          <Tag tone="success" size="sm">
-            通过
-          </Tag>
+          <Tag tone="success" size="sm">{copy("pass")}</Tag>
         ) : (
-          <Tag tone="danger" size="sm">
-            阻断
-          </Tag>
+          <Tag tone="danger" size="sm">{copy("blocking")}</Tag>
         ),
     },
     {
       accessorKey: "modelId",
-      header: "主审模型",
+      header: copy("leadReviewerModel"),
       cell: ({ row }) => {
         const r = row.original;
         return (
@@ -222,15 +220,13 @@ export default function ReviewsPage() {
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => (
         <Link
           href={`/demos/hanreview/reviews/${row.original.id}`}
           className="text-sm text-primary hover:underline"
-        >
-          查看详情
-        </Link>
+        >{copy("seeDetails")}</Link>
       ),
     },
   ];
@@ -244,10 +240,10 @@ export default function ReviewsPage() {
           setTab(v as TabKey);
           setPage(1);
         }}
-        aria-label="审查状态筛选"
+        aria-label={copy("reviewStatusScreening")}
       />
       <ProTable<Review>
-        title="审查队列"
+        title={copy("queueReview")}
         columns={columns}
         data={paged}
         getRowId={(r) => r.id}
@@ -255,14 +251,14 @@ export default function ReviewsPage() {
           fields: [
             {
               name: "repoId",
-              label: "仓库",
+              label: copy("warehouse2"),
               type: "select",
               options: [
-                { value: "", label: "全部仓库" },
+                { value: "", label: copy("allWarehouses") },
                 ...REPOS.map((r) => ({ value: r.id, label: r.name })),
               ],
             },
-            { name: "keyword", label: "关键词", placeholder: "标题 / 分支 / 作者" },
+            { name: "keyword", label: copy("keywords"), placeholder: copy("titleBranchAuthor") },
           ],
           onSearch: (v) => {
             setFilters(v);

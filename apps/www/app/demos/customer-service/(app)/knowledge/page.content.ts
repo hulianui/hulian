@@ -1,0 +1,98 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    "all2": "全部",
+    "pleaseFillInTheArticleTitle": "请填写文章标题",
+    "noSummaryYet": "（暂无摘要）",
+    "articlePublished": "文章已发布",
+    "valueHasBeenAddedToTheKnowledge": "「{0}」已加入知识库（demo 内存态）",
+    "articleDeleted": "文章已删除",
+    "theKnowledgeBaseEntryHasBeenRemoved": "知识库条目已移除（demo 内存态，刷新还原）",
+    "knowledgeBase": "知识库",
+    "standardResponseAndProcessingProceduresForAgent": "坐席自助检索的标准应答与处理流程，沉淀团队服务经验。",
+    "addNewArticle": "新增文章",
+    "addNewArticle2": "新增文章",
+    "addNewKnowledgeBaseArticle": "新增知识库文章",
+    "searchArticleTitleContent": "搜索文章标题 / 内容…",
+    "articleClassification": "文章分类",
+    "noMatch": "没有匹配「",
+    "articles": "」的文章",
+    "confirmToDeleteThisArticle": "确认删除此文章？",
+    "afterDeletionItWillBeRemovedFrom": "删除后从知识库移除，坐席将无法检索。",
+    "delete": "删除",
+    "deleteArticle": "删除文章",
+    "deleteArticle2": "删除文章",
+    "close": "关闭",
+    "edit": "编辑",
+    "timesRead": "次阅读",
+    "updatedOn": "更新于",
+    "addNewKnowledgeBaseArticle2": "新增知识库文章",
+    "fillInTheStandardResponseContentAnd": "填写标准应答内容，发布后坐席即可检索。",
+    "cancel": "取消",
+    "postAnArticle": "发布文章",
+    "articleTitle": "文章标题",
+    "forExampleReturnAndRefundPolicyAnd": "例如：退货退款政策与时效说明",
+    "category": "所属分类",
+    "summary": "摘要",
+    "theListCardIsDisplayedIfLeft": "列表卡片展示，留空则自动截取正文前 48 字。",
+    "summarizeTheMainPointsOfTheArticle": "一句话概括文章要点…",
+    "text": "正文",
+    "supportMarkdownSyntax": "支持 Markdown 语法。",
+    "processingProcess": "## 处理流程\n1. …\n2. …",
+  },
+  en: {
+    "all2": "All",
+    "pleaseFillInTheArticleTitle": "Please fill in the article title",
+    "noSummaryYet": "(no summary yet)",
+    "articlePublished": "Article published",
+    "valueHasBeenAddedToTheKnowledge": "\"{0}\" has been added to the knowledge base (demo memory state)",
+    "articleDeleted": "Article deleted",
+    "theKnowledgeBaseEntryHasBeenRemoved": "The knowledge base entry has been removed (stored in memory for this demo; reload to restore)",
+    "knowledgeBase": "knowledge base",
+    "standardResponseAndProcessingProceduresForAgent": "Standard response and processing procedures for agent self-service retrieval, accumulating team service experience.",
+    "addNewArticle": "Add new article",
+    "addNewArticle2": "Add new article",
+    "addNewKnowledgeBaseArticle": "Add new knowledge base article",
+    "searchArticleTitleContent": "Search article title/content...",
+    "articleClassification": "Article classification",
+    "noMatch": "No match \"",
+    "articles": "\"Articles",
+    "confirmToDeleteThisArticle": "Confirm to delete this article?",
+    "afterDeletionItWillBeRemovedFrom": "After deletion, it will be removed from the knowledge base and agents will not be able to retrieve it.",
+    "delete": "Delete",
+    "deleteArticle": "Delete article",
+    "deleteArticle2": "Delete article",
+    "close": "close",
+    "edit": "Edit",
+    "timesRead": "times read",
+    "updatedOn": "updated on",
+    "addNewKnowledgeBaseArticle2": "Add new knowledge base article",
+    "fillInTheStandardResponseContentAnd": "Fill in the standard response content and agents can retrieve it after publishing.",
+    "cancel": "Cancel",
+    "postAnArticle": "Post an article",
+    "articleTitle": "Article title",
+    "forExampleReturnAndRefundPolicyAnd": "For example: Return and refund policy and time limit instructions",
+    "category": "Category",
+    "summary": "Summary",
+    "theListCardIsDisplayedIfLeft": "The list card is displayed. If left blank, the first 48 characters of the text will be automatically cut off.",
+    "summarizeTheMainPointsOfTheArticle": "Summarize the main points of the article in one sentence...",
+    "text": "Text",
+    "supportMarkdownSyntax": "Support Markdown syntax.",
+    "processingProcess": "## Processing process\n1....\n2....",
+  },
+} as const;
+
+export type ContentKey = keyof typeof content["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = {
+  key: "demo-customer-service-app-knowledge-page",
+  content: t(content),
+};
+
+export default dictionary;

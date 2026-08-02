@@ -56,4 +56,6 @@ const tasks: GanttTask[] = [
 - Built-in Chinese copy includes `"\u6682\u65e0\u6392\u671f\u6570\u636e"` (“No schedule data”), `"\u9879\u76ee\u6392\u671f\u7518\u7279\u56fe"` (“Project schedule Gantt chart”), `"\u5de5\u5e8f"` (“Task”), and month labels `"1\u6708"` through `"12\u6708"` (“January” through “December”).
 
 ## Related
+
+The chart label, empty state, task-column heading, and month ticks follow `ConfigProvider`.
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

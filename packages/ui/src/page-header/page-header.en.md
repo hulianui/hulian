@@ -10,11 +10,11 @@ status: enriched
 
 # PageHeader
 
-> Page header shell · Back action, breadcrumb, title, tags, actions, and tab footer using library components, with zero dependencies and optional RSC use · navigation/inpage
+> Page header shell · Back action, breadcrumb, title, tags, actions, and tab footer using library components with zero dependencies · navigation/inpage
 
 ## When to use
 
-Use PageHeader to establish a consistent top section for detail and admin pages: back action, breadcrumb, primary title, status tags, right-aligned actions, and optional footer tabs. Its slots can directly compose HulianUI [Breadcrumb](../breadcrumb/breadcrumb.md), Chip, and [Tabs](../tabs/tabs.md). Use Breadcrumb alone when only hierarchy is needed. Omitting `onBack` allows the consumer to remain an RSC.
+Use PageHeader to establish a consistent top section for detail and admin pages: back action, breadcrumb, primary title, status tags, right-aligned actions, and optional footer tabs. Its slots can directly compose HulianUI [Breadcrumb](../breadcrumb/breadcrumb.md), Chip, and [Tabs](../tabs/tabs.md). Use Breadcrumb alone when only hierarchy is needed.
 
 ## Import
 ```ts
@@ -49,7 +49,7 @@ import { PageHeader } from "@hulianui/ui"
 
 ## Example
 ```tsx
-// Minimal title and action; remains an RSC because onBack is absent
+// Minimal title and action
 <PageHeader title="Users" extra={<Button variant="solid" size="sm">New user</Button>} />
 
 // Complete header
@@ -68,7 +68,7 @@ import { PageHeader } from "@hulianui/ui"
 ## Usage guidelines
 
 - `title` is a `ReactNode`, which conflicts with `HTMLAttributes.title?: string`; the native attribute is omitted from the type. Do not expect a string `title` to pass through to the DOM.
-- Supplying `onBack` introduces a callback, so the consuming component must be a client component. A display-only header without `onBack` can remain server-rendered.
+- The default back label follows `ConfigProvider`, while `backLabel` overrides it. PageHeader is therefore a client component; server components can still import and render it.
 
 ## Related
 [Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [BackTop](../back-top/back-top.md)

@@ -77,12 +77,4 @@ export interface Metric {
   hint?: string;
 }
 
-// 快捷回复（坐席台底部 PromptSuggestions 用）
-export const QUICK_REPLIES: string[] = [
-  "您好，很高兴为您服务～",
-  "请稍等，我帮您查询一下",
-  "已为您提交工单，会尽快处理",
-  "还有什么可以帮到您的吗？",
-];
-
 export const AGENTS = ["小琏", "阿瑚", "晚晴", "周明"] as const;

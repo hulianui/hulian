@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import type { GanttProps, GanttTask, GanttUnit } from "./gantt.types";
 
 // 纯皮肤 · 零额外依赖（不引 dayjs/date-fns，自带日期数学）·只读甘特图。取舍说明：
@@ -39,8 +40,6 @@ function startOfISOWeek(d: Date): Date {
   return addDays(d, -back);
 }
 
-const MONTH_LABELS = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
-
 interface Tick {
   /** 距 rangeStart 的天偏移（刻度左缘） */
   offset: number;
@@ -51,7 +50,7 @@ interface Tick {
 }
 
 /** 按 unit 在 [start, end] 闭区间上切刻度；每刻度落到天偏移 + 跨度（天）。 */
-function buildTicks(start: Date, totalDays: number, unit: GanttUnit): Tick[] {
+function buildTicks(start: Date, totalDays: number, unit: GanttUnit, monthLabel: (month: number) => string): Tick[] {
   const ticks: Tick[] = [];
   if (unit === "day") {
     for (let i = 0; i < totalDays; i++) {
@@ -90,7 +89,7 @@ function buildTicks(start: Date, totalDays: number, unit: GanttUnit): Tick[] {
     const left = Math.max(off, 0);
     const right = Math.min(daysBetween(start, next), totalDays);
     const span = right - left;
-    if (span > 0) ticks.push({ offset: left, span, label: MONTH_LABELS[mo] });
+    if (span > 0) ticks.push({ offset: left, span, label: monthLabel(mo + 1) });
     cursor = next;
     if (mo === 11) { mo = 0; y += 1; } else { mo += 1; }
   }
@@ -116,6 +115,7 @@ export function Gantt({
   className,
   ...props
 }: GanttProps) {
+  const locale = useComponentLocale().gantt;
   const model = useMemo(() => {
     if (tasks.length === 0) {
       return null;
@@ -135,7 +135,7 @@ export function Gantt({
 
     // 闭区间总天数（含首尾两端）→ +1。下限 1 防止退化。
     const totalDays = Math.max(daysBetween(start, end) + 1, 1);
-    const ticks = buildTicks(start, totalDays, unit);
+    const ticks = buildTicks(start, totalDays, unit, locale?.month ?? ((month) => `${month}月`));
 
     // today 竖线位置（落在范围内才返回 0-100 的百分比）。
     let todayPct: number | null = null;
@@ -169,7 +169,7 @@ export function Gantt({
     });
 
     return { start, totalDays, ticks, todayPct, rows };
-  }, [tasks, rangeStart, rangeEnd, unit, today]);
+  }, [tasks, rangeStart, rangeEnd, unit, today, locale]);
 
   if (!model) {
     return (
@@ -180,7 +180,7 @@ export function Gantt({
         )}
         {...props}
       >
-        暂无排期数据
+        {locale?.empty ?? "暂无排期数据"}
       </div>
     );
   }
@@ -197,7 +197,7 @@ export function Gantt({
         className,
       )}
       role="table"
-      aria-label="项目排期甘特图"
+      aria-label={locale?.chart ?? "项目排期甘特图"}
       {...props}
     >
       {/* 横向滚动：纯原生 overflow-x-auto + overscroll-x-contain（对齐库内 carousel 写法）。
@@ -225,7 +225,7 @@ export function Gantt({
               className="flex items-center border-r border-border px-3 py-2 text-xs font-medium text-muted"
               role="columnheader"
             >
-              工序
+              {locale?.process ?? "工序"}
             </div>
             <div className="relative" role="columnheader">
               <div className="flex h-full" style={{ minWidth }}>

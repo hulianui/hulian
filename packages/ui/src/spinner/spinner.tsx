@@ -1,8 +1,10 @@
+"use client";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import type { SpinnerProps } from "./spinner.types";
 
-// 纯皮肤(无 Base UI/无 hook → 可 RSC，照 badge/breadcrumb)：SVG 双层环(底环 opacity-20 + 旋转弧)，
+// 纯皮肤 SVG 双层环(底环 opacity-20 + 旋转弧)，
 // stroke=currentColor 吃 tone 色，animate-spin 纯 CSS。role=status + aria-label。
 export const spinnerVariants = cva("inline-block", {
   variants: {
@@ -12,9 +14,11 @@ export const spinnerVariants = cva("inline-block", {
   defaultVariants: { size: "md", tone: "primary" },
 });
 
-export function Spinner({ size, tone, label = "加载中", className }: SpinnerProps) {
+export function Spinner({ size, tone, label, className }: SpinnerProps) {
+  const locale = useComponentLocale();
+  const resolvedLabel = label ?? locale.spinner?.loading ?? "加载中";
   return (
-    <span role="status" aria-label={label} className={cn(spinnerVariants({ size, tone }), className)}>
+    <span role="status" aria-label={resolvedLabel} className={cn(spinnerVariants({ size, tone }), className)}>
       <svg viewBox="0 0 24 24" fill="none" className="size-full animate-spin">
         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-20" />
         <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />

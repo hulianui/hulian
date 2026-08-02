@@ -35,7 +35,7 @@ import { DeployStatus } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| label | `ReactNode` | Replaces the built-in Chinese status label. |
+| label | `ReactNode` | Replaces the localized status label. |
 
 ## Examples
 ```tsx
@@ -48,7 +48,7 @@ import { DeployStatus } from "@hulianui/ui"
 ```
 
 ## Pitfalls
-DeployStatus describes one deployment's lifecycle, not service health. Built-in labels are `"\u6392\u961f\u4e2d"` ("Queued"), `"\u6784\u5efa\u4e2d"` ("Building"), `"\u5df2\u4e0a\u7ebf"` ("Ready"), `"\u5931\u8d25"` ("Failed"), `"\u5df2\u53d6\u6d88"` ("Canceled"), and `"\u5df2\u8df3\u8fc7"` ("Skipped"). Supply `label` for English runtime copy.
+DeployStatus describes one deployment's lifecycle, not service health. Built-in labels follow `ConfigProvider`; use `label` only for a context-specific override.
 
 ## Related
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

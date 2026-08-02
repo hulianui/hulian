@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useState } from "react";
 import { GitBranch, Plus } from "lucide-react";
 import {
@@ -20,7 +22,7 @@ import {
   toast,
 } from "@hulianui/ui";
 import { REPOS } from "../../_data/repos";
-import { MEMBERS } from "../../_data/members";
+import { MEMBERS, MEMBER_ROLE_LABEL } from "../../_data/members";
 
 const ROLE_TONE = { 管理员: "brand", 审查者: "success", 只读: "neutral" } as const;
 
@@ -56,74 +58,71 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-5 p-1">
-      <Section title="接入仓库" desc="配置 Webhook，PR/提交事件触发自动审查">
+      <Section title={copy("connectedToTheWarehouse")} desc={copy("configureWebhooksPrCommitEventsTriggerAutomatic")}>
         <SecretField
           value="whsec_8f3c1a9b7e2d4f6a0c5b8e1d3a7f9c2e"
           maskStrategy="prefix-suffix"
-          onCopy={() => toast({ title: "Webhook 密钥已复制", tone: "info" })}
+          onCopy={() => toast({ title: copy("theWebhookKeyHasBeenCopied"), tone: "info" })}
           actions={
-            <Button variant="ghost" size="sm" onClick={() => toast({ title: "已重置 Webhook 密钥", tone: "danger" })}>
-              重置
-            </Button>
+            <Button variant="ghost" size="sm" onClick={() => toast({ title: copy("theWebhookKeyHasBeenReset"), tone: "danger" })}>{copy("reset")}</Button>
           }
         />
         <List
           items={REPOS}
           renderItem={(r) => (
-            <ListItem key={r.id} actions={[<StatusDot key="s" status="online" label="已接入" />]}>
+            <ListItem key={r.id} actions={[<StatusDot key="s" status="online" label={copy("connected")} />]}>
               <ListItem.Meta
                 avatar={<GitBranch className="size-4 text-muted" />}
                 title={r.name}
-                description={`默认分支 ${r.defaultBranch}`}
+                description={copy("defaultBranchValue", r.defaultBranch)}
               />
             </ListItem>
           )}
         />
-        <Button variant="outline" size="sm" className="self-start" onClick={() => toast({ title: "打开接入向导", tone: "info" })}>
-          <Plus className="size-4" /> 接入新仓库
-        </Button>
+        <Button variant="outline" size="sm" className="self-start" onClick={() => toast({ title: copy("openTheAccessWizard"), tone: "info" })}>
+          <Plus className="size-4" />{copy("connectingToTheNewWarehouse")}</Button>
       </Section>
 
-      <Section title="团队成员" desc="谁可以查看与处理审查">
+      <Section title={copy("teamMembers")} desc={copy("whoCanViewAndHandleTheReview")}>
         <List
           items={MEMBERS}
           renderItem={(m) => (
-            <ListItem key={m.email} actions={[<Tag key="r" tone={ROLE_TONE[m.role]} size="sm">{m.role}</Tag>]}>
+            <ListItem key={m.email} actions={[<Tag key="r" tone={ROLE_TONE[m.role]} size="sm">{MEMBER_ROLE_LABEL[m.role]}</Tag>]}>
               <User name={m.name} description={m.email} avatarProps={{ fallback: m.name.slice(0, 1) }} />
             </ListItem>
           )}
         />
       </Section>
 
-      <Section title="通知" desc="审查结果如何提醒团队">
-        <NotifyRow label="门禁阻断" desc="PR 被质量门禁阻断时通知作者" defaultOn />
-        <NotifyRow label="严重问题" desc="发现 critical 级问题立即通知" defaultOn />
-        <NotifyRow label="每日质量摘要" desc="每天汇总各仓库质量分变化" />
+      <Section title={copy("notification")} desc={copy("howTheReviewResultsRemindedTheTeam")}>
+        <NotifyRow label={copy("theGateWasBlockedAndBlocked")} desc={copy("prNotifiesTheAuthorWhenTheQuality")} defaultOn />
+        <NotifyRow label={copy("aSeriousProblem")} desc={copy("criticalIssuesAreDetectedImmediately")} defaultOn />
+        <NotifyRow label={copy("dailyQualitySummary")} desc={copy("summarizeChangesInQualityScoresFromEach")} />
         <div>
-          <div className="mb-2 text-xs text-muted">通知渠道</div>
-          <ChoiceboxGroup multiple defaultValue={["飞书"]} columns={3} aria-label="通知渠道">
-            <Choicebox value="飞书" title="飞书" description="群机器人" />
-            <Choicebox value="邮件" title="邮件" description="按人推送" />
-            <Choicebox value="Webhook" title="Webhook" description="自定义回调" />
+          <div className="mb-2 text-xs text-muted">{copy("notificationChannels")}</div>
+          <ChoiceboxGroup multiple defaultValue={[copy("sendingAFlyingLetter")]} columns={3} aria-label={copy("notificationChannels2")}>
+            <Choicebox value={copy("sendingAFlyingLetter2")} title={copy("sendingAFlyingLetter3")} description={copy("swarmOfRobots")} />
+            <Choicebox value={copy("email")} title={copy("email2")} description={copy("pushNotificationsAccordingToThePerson")} />
+            <Choicebox value="Webhook" title="Webhook" description={copy("customCallbacks")} />
           </ChoiceboxGroup>
         </div>
       </Section>
 
-      <Section title="AI 预算" desc="控制每月审查的模型调用花费">
+      <Section title={copy("aiBudget")} desc={copy("controlTheSpendingOfMonthlyModelCalls")}>
         <div className="flex items-end gap-4">
           <div>
-            <div className="mb-1 text-xs text-muted">月度预算（¥）</div>
-            <NumberField value={budget} onValueChange={setBudget} min={0} step={100} aria-label="月度预算" />
+            <div className="mb-1 text-xs text-muted">{copy("monthlyBudget")}</div>
+            <NumberField value={budget} onValueChange={setBudget} min={0} step={100} aria-label={copy("monthlyBudget2")} />
           </div>
           <div className="flex-1">
-            <Meter value={1284} max={budget ?? 2000} label="本月已消耗 ¥1,284" showValue />
+            <Meter value={1284} max={budget ?? 2000} label={copy("thisMonthISpent")} showValue />
           </div>
         </div>
         <div>
-          <div className="mb-2 text-xs text-muted">超额策略</div>
-          <ChoiceboxGroup defaultValue="downgrade" columns={2} aria-label="超额策略">
-            <Choicebox value="downgrade" title="降级到经济模型" description="超预算后改用 Haiku/DeepSeek 继续审查" />
-            <Choicebox value="pause" title="暂停审查" description="超预算后队列挂起，等待下月或追加预算" />
+          <div className="mb-2 text-xs text-muted">{copy("excessStrategy")}</div>
+          <ChoiceboxGroup defaultValue="downgrade" columns={2} aria-label={copy("excessStrategy2")}>
+            <Choicebox value="downgrade" title={copy("downgradedToAnEconomicModel")} description={copy("afterOverBudgetingSwitchToHaikuDeepseek")} />
+            <Choicebox value="pause" title={copy("suspensionOfReview")} description={copy("afterExceedingTheBudgetTheQueueIs")} />
           </ChoiceboxGroup>
         </div>
       </Section>

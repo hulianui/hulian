@@ -7,6 +7,7 @@ import {
   type CSSProperties,
 } from "react";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import { computeSankeyLayout } from "./sankey-geometry";
 import type { SankeyLaidLink, SankeyLaidNode, SankeyProps } from "./sankey.types";
 
@@ -39,6 +40,7 @@ export function Sankey({
   onLinkClick,
   className,
 }: SankeyProps) {
+  const chartLabel = useComponentLocale().sankey?.chart ?? "桑基流向图";
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [hover, setHover] = useState<HoverTarget>(null);
@@ -94,7 +96,7 @@ export function Sankey({
         viewBox={`0 0 ${effectiveWidth} ${height}`}
         className="block h-full w-full overflow-visible"
         role="img"
-        aria-label="桑基流向图"
+        aria-label={chartLabel}
       >
         {/* 连线层（ribbon 描边，先画 → 节点压在上层） */}
         <g fill="none" strokeLinecap="butt">

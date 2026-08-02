@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import Link from "next/link";
 import {
   Activity,
@@ -43,17 +45,17 @@ const statusDot: Record<ReviewStatus, ChannelStatus> = {
   queued: "degraded",
 };
 const statusLabel: Record<ReviewStatus, string> = {
-  done: "已完成",
-  reviewing: "审查中",
-  failed: "失败",
-  queued: "排队中",
+  done: copy("completed"),
+  reviewing: copy("underReview"),
+  failed: copy("failure"),
+  queued: copy("inLine"),
 };
 
 const severityLabel: Record<Severity, string> = {
-  critical: "严重",
-  major: "重要",
-  minor: "次要",
-  info: "提示",
+  critical: copy("serious"),
+  major: copy("important"),
+  minor: copy("secondary"),
+  info: copy("tip"),
 };
 
 // 质量分 → Tag 语气色。
@@ -84,14 +86,12 @@ export default function HanReviewOverviewPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">概览</h1>
-        <p className="text-sm text-muted">AI 代码审查态势 · 截至 06-05 14:30</p>
+        <h1 className="text-xl font-semibold text-foreground">{copy("overview")}</h1>
+        <p className="text-sm text-muted">{copy("aiCodeReviewStatusAsOf")}</p>
       </div>
 
       {/* 预算提示 */}
-      <Banner tone="info" icon={<Coins className="size-4" />}>
-        AI 审查预算本月已使用 64%，按当前节奏预计月底用满，可在「路由策略」中下调高价模型权重。
-      </Banner>
+      <Banner tone="info" icon={<Coins className="size-4" />}>{copy("ofTheAiReviewBudgetHasAlready")}</Banner>
 
       {/* KPI 四卡 */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -99,7 +99,7 @@ export default function HanReviewOverviewPage() {
           <CardBody>
             <Stat
               icon={<Activity className="size-4" />}
-              label="本周审查数"
+              label={copy("numberOfReviewsThisWeek")}
               value={<NumberTicker value={weekReviews} />}
               delta={12.5}
             />
@@ -110,7 +110,7 @@ export default function HanReviewOverviewPage() {
             <div className="flex items-center justify-between gap-3">
               <Stat
                 icon={<GaugeCircle className="size-4" />}
-                label="平均质量分"
+                label={copy("averageMassScore")}
                 value={<NumberTicker value={avgScore} />}
                 delta={2.4}
               />
@@ -122,7 +122,7 @@ export default function HanReviewOverviewPage() {
           <CardBody>
             <Stat
               icon={<AlertTriangle className="size-4" />}
-              label="待处理问题"
+              label={copy("issuesToBeAddressed")}
               value={<NumberTicker value={openIssues} />}
               delta={-6.1}
             />
@@ -132,7 +132,7 @@ export default function HanReviewOverviewPage() {
           <CardBody>
             <Stat
               icon={<ShieldCheck className="size-4" />}
-              label="门禁通过率"
+              label={copy("accessControlClearanceRate")}
               value={
                 <span className="tabular-nums">
                   <NumberTicker value={gatePassRate} />%
@@ -148,21 +148,21 @@ export default function HanReviewOverviewPage() {
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
-            <span className="font-medium text-foreground">质量分趋势 · 近 30 日</span>
-            <span className="text-xs text-muted">满分 100</span>
+            <span className="font-medium text-foreground">{copy("qualityTrendNearlyDays")}</span>
+            <span className="text-xs text-muted">{copy("maximumScore")}</span>
           </CardHeader>
           <CardBody>
             <AreaChart
               data={QUALITY_TREND}
               xKey="date"
-              series={[{ key: "score", label: "质量分" }]}
+              series={[{ key: "score", label: copy("qualityPoints") }]}
               height={220}
             />
           </CardBody>
         </Card>
 
         <Card>
-          <CardHeader className="font-medium text-foreground">问题严重度分布</CardHeader>
+          <CardHeader className="font-medium text-foreground">{copy("distributionOfProblemSeverity")}</CardHeader>
           <CardBody className="grid place-items-center">
             <PieChart data={severityPie} donut height={220} />
           </CardBody>
@@ -173,20 +173,20 @@ export default function HanReviewOverviewPage() {
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
-            <span className="font-medium text-foreground">代码热点（模块 × 周）</span>
-            <span className="text-xs text-muted">数值越高问题越密集</span>
+            <span className="font-medium text-foreground">{copy("codeHotspotsModulesWeeks")}</span>
+            <span className="text-xs text-muted">{copy("theHigherTheValueTheMoreNumerous")}</span>
           </CardHeader>
           <CardBody className="overflow-x-auto">
             <Heatmap
               data={HOTSPOT}
               cellSize={18}
-              formatTooltip={(c) => `${c.y} · ${c.x}：${c.value} 个问题`}
+              formatTooltip={(c) => copy("valueValueValueQuestions", c.y, c.x, c.value)}
             />
           </CardBody>
         </Card>
 
         <Card>
-          <CardHeader className="font-medium text-foreground">AI 审查成本（本月）</CardHeader>
+          <CardHeader className="font-medium text-foreground">{copy("aiReviewCostsThisMonth")}</CardHeader>
           <CardBody>
             <List
               items={MODEL_USAGE}
@@ -198,7 +198,7 @@ export default function HanReviewOverviewPage() {
                         {modelName(m.modelId)}
                       </span>
                       <span className="flex shrink-0 items-center gap-2 text-xs text-muted">
-                        <span className="tabular-nums">{m.calls} 次</span>
+                        <span className="tabular-nums">{m.calls}{copy("times")}</span>
                         <span className="tabular-nums font-medium text-foreground">
                           ¥{m.cost.toFixed(2)}
                         </span>
@@ -216,10 +216,8 @@ export default function HanReviewOverviewPage() {
       {/* 最近审查流 */}
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <span className="font-medium text-foreground">最近审查</span>
-          <Link href="/demos/hanreview/reviews" className="text-xs text-primary hover:underline">
-            查看全部
-          </Link>
+          <span className="font-medium text-foreground">{copy("recentReview")}</span>
+          <Link href="/demos/hanreview/reviews" className="text-xs text-primary hover:underline">{copy("viewAll")}</Link>
         </CardHeader>
         <CardBody>
           <List
@@ -243,11 +241,11 @@ export default function HanReviewOverviewPage() {
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <Tag tone={scoreTone(r.score)}>{r.score} 分</Tag>
+                    <Tag tone={scoreTone(r.score)}>{r.score}{copy("points")}</Tag>
                     {r.gate === "pass" ? (
-                      <Tag tone="success">通过</Tag>
+                      <Tag tone="success">{copy("pass")}</Tag>
                     ) : (
-                      <Tag tone="danger">阻断</Tag>
+                      <Tag tone="danger">{copy("blocking")}</Tag>
                     )}
                   </div>
                 </Link>

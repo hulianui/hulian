@@ -1069,6 +1069,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -1538,6 +1539,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/code-block.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/prose.json"
       ],
@@ -3393,6 +3395,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/input.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
@@ -4071,6 +4074,7 @@
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -4410,6 +4414,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -4674,6 +4679,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/field.json",
         "https://hulianui.haloritual.com/r/input.json",
         "https://hulianui.haloritual.com/r/lib.json",
@@ -4737,6 +4743,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -5559,7 +5566,7 @@
           "VoiceRecordProps",
           "VoiceRecordStatus"
         ],
-        "group": "高级录入",
+        "group": "advanced",
         "tags": [],
         "animated": false,
         "webgl": false,
@@ -6180,6 +6187,7 @@
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
@@ -6450,6 +6458,7 @@
         "https://hulianui.haloritual.com/r/avatar.json",
         "https://hulianui.haloritual.com/r/button.json",
         "https://hulianui.haloritual.com/r/code-diff.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/tag.json",
         "https://hulianui.haloritual.com/r/textarea.json"
@@ -6678,6 +6687,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -6844,6 +6854,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -6937,12 +6948,13 @@
       "name": "diff-stat",
       "type": "registry:ui",
       "title": "DiffStat",
-      "description": "改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖·RSC",
+      "description": "改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖",
       "categories": [
         "data-display"
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -7351,6 +7363,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/dot-pattern.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
@@ -7524,6 +7537,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -7581,6 +7595,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -7991,6 +8006,7 @@
         "@dnd-kit/utilities"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -9134,6 +9150,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -9444,6 +9461,7 @@
         "motion"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
@@ -10442,6 +10460,7 @@
         "motion"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
@@ -10493,6 +10512,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/theme.json"
       ],
@@ -10604,6 +10624,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -11468,6 +11489,7 @@
         "motion"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
@@ -11513,7 +11535,7 @@
       "name": "page-header",
       "type": "registry:ui",
       "title": "PageHeader",
-      "description": "页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖·可 RSC)",
+      "description": "页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖)",
       "categories": [
         "navigation"
       ],
@@ -11521,6 +11543,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/separator.json"
       ],
@@ -11571,6 +11594,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
@@ -11840,6 +11864,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -12006,6 +12031,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -12169,7 +12195,7 @@
           "CalloutProps",
           "CalloutTone"
         ],
-        "group": "提示",
+        "group": "message",
         "tags": [],
         "animated": false,
         "webgl": false,
@@ -12473,6 +12499,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -12736,6 +12763,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json",
         "https://hulianui.haloritual.com/r/popover.json"
@@ -13031,7 +13059,7 @@
       "name": "spinner",
       "type": "registry:ui",
       "title": "Spinner",
-      "description": "加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + RSC",
+      "description": "加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + 本地化读屏文案",
       "categories": [
         "feedback"
       ],
@@ -13039,6 +13067,7 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -13089,6 +13118,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
@@ -13349,7 +13379,7 @@
       "name": "chat-message",
       "type": "registry:ui",
       "title": "ChatMessage",
-      "description": "对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽·纯皮肤RSC",
+      "description": "对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽",
       "categories": [
         "ai"
       ],
@@ -13357,6 +13387,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/typing-dots.json"
       ],
@@ -13600,6 +13631,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -13649,6 +13681,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/textarea.json"
       ],
@@ -13851,6 +13884,7 @@
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/animated-shiny-text.json",
         "https://hulianui.haloritual.com/r/collapsible.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -13951,6 +13985,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/collapsible.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/dot.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/spinner.json"

@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useMemo, useState } from "react";
 import { GitBranch, Plus, ShieldCheck, ShieldX } from "lucide-react";
 import {
@@ -29,12 +31,12 @@ import { evalGate } from "../../_lib/gate";
 
 // 规则集中文名 + 一句描述。
 const RULESET_META: Record<FindingType, { name: string; desc: string }> = {
-  bug: { name: "逻辑缺陷", desc: "空指针、边界、并发等运行时错误" },
-  security: { name: "安全", desc: "注入、鉴权、密钥泄露等安全风险" },
-  perf: { name: "性能", desc: "N+1 查询、无谓重渲染、阻塞调用" },
-  style: { name: "风格", desc: "命名、格式、可读性约定" },
-  complexity: { name: "复杂度", desc: "圈复杂度、深嵌套、超长函数" },
-  test: { name: "测试覆盖", desc: "新增逻辑是否伴随测试" },
+  bug: { name: copy("logicalFlaws"), desc: copy("runtimeErrorsSuchAsNullPointersBoundaries") },
+  security: { name: copy("safety"), desc: copy("securityRisksSuchAsInjectionAuthenticationAnd") },
+  perf: { name: copy("performance"), desc: copy("nQueriesFutileReRenderingBlockingCalls") },
+  style: { name: copy("style"), desc: copy("namingFormattingAndReadabilityConventions") },
+  complexity: { name: copy("complexity"), desc: copy("circleComplexityDeepNestingAndUltraLong") },
+  test: { name: copy("testCoverage"), desc: copy("whetherNewLogicIsAddedToThe") },
 };
 
 // 统计一条审查的 critical 批注数（散落在各文件的行内批注里）。
@@ -82,28 +84,28 @@ function GateRuleCard({ rule }: { rule: (typeof GATE_RULES)[number] }) {
           <GitBranch className="size-4 text-muted" />
           <div>
             <div className="text-sm font-semibold text-foreground">{repo?.name ?? rule.repoId}</div>
-            <div className="mt-0.5 text-xs text-muted">门禁分支 {rule.branch}</div>
+            <div className="mt-0.5 text-xs text-muted">{copy("theGateGuardsWereBranched")}{rule.branch}</div>
           </div>
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
         <div className="flex items-center gap-5">
-          <ScoreRing value={rule.minScore} size={56} label="门禁线" />
+          <ScoreRing value={rule.minScore} size={56} label={copy("theAccessLine")} />
           <div className="flex flex-col gap-1 text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-muted">最低质量分</span>
+              <span className="text-muted">{copy("minimumQualityScore")}</span>
               <Tag tone="brand" size="sm">
                 {rule.minScore}
               </Tag>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-muted">严重问题上限</span>
+              <span className="text-muted">{copy("seriousProblemsAtTheUpperLimit")}</span>
               <Tag tone={rule.maxCritical === 0 ? "danger" : "warning"} size="sm">
                 {rule.maxCritical}
               </Tag>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-muted">最低覆盖率</span>
+              <span className="text-muted">{copy("minimumCoverage")}</span>
               <Tag tone="success" size="sm">
                 {rule.minCoverage}%
               </Tag>
@@ -112,7 +114,7 @@ function GateRuleCard({ rule }: { rule: (typeof GATE_RULES)[number] }) {
         </div>
 
         <div className="border-t border-border pt-3">
-          <div className="mb-2 text-xs font-medium text-muted">必过规则集</div>
+          <div className="mb-2 text-xs font-medium text-muted">{copy("mustPassTheRuleSet")}</div>
           <div className="flex flex-col gap-2.5">
             {rulesets.map((rs) => {
               const meta = RULESET_META[rs.key];
@@ -162,15 +164,15 @@ function GateSimulator() {
     <Card>
       <CardHeader>
         <div>
-          <div className="text-sm font-semibold text-foreground">门禁模拟器</div>
-          <div className="mt-0.5 text-xs text-muted">拖动阈值，实时预览最近 10 次审查的通过 / 阻断结果</div>
+          <div className="text-sm font-semibold text-foreground">{copy("accessControlSimulator")}</div>
+          <div className="mt-0.5 text-xs text-muted">{copy("dragThresholdsToPreviewPassBlockResults")}</div>
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-6">
         <div className="grid gap-5 md:grid-cols-3">
           <div>
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-muted">最低质量分</span>
+              <span className="text-muted">{copy("minimumQualityScore2")}</span>
               <span className="font-medium text-foreground">{minScore}</span>
             </div>
             <Slider
@@ -179,12 +181,12 @@ function GateSimulator() {
               min={0}
               max={100}
               step={1}
-              aria-label="最低质量分阈值"
+              aria-label={copy("minimumMassThreshold")}
             />
           </div>
           <div>
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-muted">严重问题上限</span>
+              <span className="text-muted">{copy("seriousProblemsAtTheUpperLimit2")}</span>
               <span className="font-medium text-foreground">{maxCritical}</span>
             </div>
             <Slider
@@ -193,12 +195,12 @@ function GateSimulator() {
               min={0}
               max={5}
               step={1}
-              aria-label="严重问题上限阈值"
+              aria-label={copy("upperLimitThresholdForSeriousProblems")}
             />
           </div>
           <div>
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-muted">最低覆盖率</span>
+              <span className="text-muted">{copy("minimumCoverage2")}</span>
               <span className="font-medium text-foreground">{minCoverage}%</span>
             </div>
             <Slider
@@ -207,7 +209,7 @@ function GateSimulator() {
               min={0}
               max={100}
               step={1}
-              aria-label="最低覆盖率阈值"
+              aria-label={copy("minimumCoverageThreshold")}
             />
           </div>
         </div>
@@ -218,15 +220,13 @@ function GateSimulator() {
           ) : (
             <ShieldCheck className="size-5 text-success" />
           )}
-          <span className="text-foreground">
-            按当前阈值，最近 10 次审查中{" "}
-            <strong className={blocked.length > 0 ? "text-danger" : "text-success"}>{blocked.length}</strong> 次会被阻断
-          </span>
+          <span className="text-foreground">{copy("basedOnTheCurrentThresholdInThe")}{" "}
+            <strong className={blocked.length > 0 ? "text-danger" : "text-success"}>{blocked.length}</strong>{copy("thisWillBeBlocked")}</span>
         </div>
 
         {blocked.length > 0 && (
           <div>
-            <div className="mb-2 text-xs font-medium text-muted">被阻断的审查</div>
+            <div className="mb-2 text-xs font-medium text-muted">{copy("blockedCensorship")}</div>
             <List
               items={blocked}
               renderItem={(item) => (
@@ -259,7 +259,7 @@ export default function GatesPage() {
 
   const reg = {
     repoId: form.register("repoId"),
-    branch: form.register("branch", { rules: [{ required: true, message: "请输入门禁分支" }] }),
+    branch: form.register("branch", { rules: [{ required: true, message: copy("pleaseEnterTheAccessControlBranch") }] }),
     minScore: form.register("minScore"),
     maxCritical: form.register("maxCritical"),
     minCoverage: form.register("minCoverage"),
@@ -274,8 +274,8 @@ export default function GatesPage() {
   const handleFinish = (values: NewGateForm) => {
     const repo = REPOS.find((r) => r.id === values.repoId);
     toast({
-      title: "门禁已创建",
-      description: `${repo?.name ?? values.repoId} · ${values.branch} · 最低分 ${values.minScore ?? 0}`,
+      title: copy("theAccessControlHasBeenEstablished"),
+      description: copy("valueValueMinimumScoreValue", repo?.name ?? values.repoId, values.branch, values.minScore ?? 0),
       tone: "success",
     });
   };
@@ -284,12 +284,11 @@ export default function GatesPage() {
     <div className="mx-auto flex max-w-5xl flex-col gap-6 p-1">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-foreground">质量门禁</h1>
-          <p className="mt-0.5 text-sm text-muted">为每个仓库分支设定准入阈值，不达标的 PR 自动阻断合入</p>
+          <h1 className="text-lg font-semibold text-foreground">{copy("qualityAccessControl")}</h1>
+          <p className="mt-0.5 text-sm text-muted">{copy("setEntryThresholdsForEachWarehouseBranch")}</p>
         </div>
         <Button onClick={openCreate}>
-          <Plus className="size-4" /> 新建门禁
-        </Button>
+          <Plus className="size-4" />{copy("aNewGateGateWasConstructed")}</Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -301,36 +300,36 @@ export default function GatesPage() {
       <GateSimulator />
 
       <ModalForm
-        title="新建门禁"
+        title={copy("aNewGateGateWasConstructed2")}
         form={form}
         open={open}
         onOpenChange={setOpen}
         onFinish={(v) => handleFinish(v as NewGateForm)}
-        submitText="创建门禁"
+        submitText={copy("establishedAccessControls")}
         className="w-[560px]"
       >
         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-          <Field label="目标仓库">
+          <Field label={copy("targetWarehouse")}>
             <ChoiceboxGroup
               value={reg.repoId.value as string}
               onValueChange={(v) => reg.repoId.onChange(v as string)}
               columns={2}
-              aria-label="目标仓库"
+              aria-label={copy("targetWarehouse2")}
             >
               {REPOS.map((r) => (
-                <Choicebox key={r.id} value={r.id} title={r.name} description={`默认分支 ${r.defaultBranch}`} />
+                <Choicebox key={r.id} value={r.id} title={r.name} description={copy("defaultBranchValue", r.defaultBranch)} />
               ))}
             </ChoiceboxGroup>
           </Field>
-          <Field label="门禁分支" className="col-span-2" error={reg.branch.error}>
+          <Field label={copy("theGateGuardsWereBranched2")} className="col-span-2" error={reg.branch.error}>
             <Input
               value={reg.branch.value as string}
               onChange={reg.branch.onChange}
               onBlur={reg.branch.onBlur}
-              placeholder="如：main / release"
+              placeholder={copy("forExampleMainRelease")}
             />
           </Field>
-          <Field label="最低质量分">
+          <Field label={copy("minimumQualityScore3")}>
             <NumberField
               value={reg.minScore.value as number | null}
               onValueChange={(v) => reg.minScore.onChange(v)}
@@ -339,7 +338,7 @@ export default function GatesPage() {
               step={1}
             />
           </Field>
-          <Field label="严重问题上限">
+          <Field label={copy("seriousProblemsAtTheUpperLimit3")}>
             <NumberField
               value={reg.maxCritical.value as number | null}
               onValueChange={(v) => reg.maxCritical.onChange(v)}
@@ -348,7 +347,7 @@ export default function GatesPage() {
               step={1}
             />
           </Field>
-          <Field label="最低覆盖率（%）" className="col-span-2">
+          <Field label={copy("minimumCoverage3")} className="col-span-2">
             <NumberField
               value={reg.minCoverage.value as number | null}
               onValueChange={(v) => reg.minCoverage.onChange(v)}
@@ -357,13 +356,13 @@ export default function GatesPage() {
               step={1}
             />
           </Field>
-          <Field label="必过规则集" className="col-span-2">
+          <Field label={copy("mustPassTheRuleSet2")} className="col-span-2">
             <ChoiceboxGroup
               multiple
               value={reg.rulesets.value as string[]}
               onValueChange={(v) => reg.rulesets.onChange(v as string[])}
               columns={2}
-              aria-label="必过规则集"
+              aria-label={copy("mustPassTheRuleSet3")}
             >
               {(Object.keys(RULESET_META) as FindingType[]).map((key) => (
                 <Choicebox key={key} value={key} title={RULESET_META[key].name} description={RULESET_META[key].desc} />

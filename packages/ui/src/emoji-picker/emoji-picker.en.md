@@ -16,6 +16,8 @@ status: enriched
 
 Use EmojiPicker beside a chat or comment input. It includes searchable emoji data across seven categories with Chinese and English keywords. The component is a panel only; wrap it in [Popover](../popover/popover.md) or another overlay for trigger and positioning behavior.
 
+Search, empty-state, recent-section, and category labels follow the nearest `ConfigProvider` locale (`zhCN` by default, or `enUS`). A supplied `searchPlaceholder` overrides the localized default.
+
 ## Import
 ```ts
 import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from "@hulianui/ui"

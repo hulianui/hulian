@@ -10,11 +10,11 @@ status: enriched
 
 # Spinner
 
-> Loading spinner · CSS `animate-spin` SVG ring with `role=status` and RSC support · feedback/loading
+> Loading spinner · CSS `animate-spin` SVG ring with `role=status` and localized accessibility copy · feedback/loading
 
 ## When to use
 
-Use Spinner as a bare loading icon inside a button, inline status, or empty region. It is a CSS-animated SVG ring with `role=status`, no interaction, and RSC support. Use [Spin](../spin/spin.md) for overlays or fullscreen loading, and [Progress](../progress/progress.md) for known progress.
+Use Spinner as a bare loading icon inside a button, inline status, or empty region. It is a CSS-animated SVG ring with `role=status` and no interaction. Use [Spin](../spin/spin.md) for overlays or fullscreen loading, and [Progress](../progress/progress.md) for known progress.
 
 ## Import
 ```ts
@@ -27,7 +27,7 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | Spinner size. |
 | tone | `"primary"｜"current"｜"muted"` | `"primary"` | Color. `current` inherits `currentColor` for colored controls. |
-| label | `string` | `"\u52a0\u8f7d\u4e2d"` | Screen-reader status copy. The built-in Chinese text means “Loading.” |
+| label | `string` | From `ConfigProvider` | Screen-reader status copy. Explicit values take precedence over the locale. |
 | className | `string` | — | Container class name. |
 
 ## Example

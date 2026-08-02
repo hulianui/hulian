@@ -65,4 +65,6 @@ FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`�
 - `computeFunnel` 纯函数对首级 `conversion` 返回 `null`（无上一级可比），且不除零；自定义渲染时务必判 `conversion == null`。
 
 ## 相关
+
+图表无障碍标签与转化率前缀跟随 `ConfigProvider`。
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

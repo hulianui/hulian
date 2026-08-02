@@ -1,0 +1,98 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    "economy": "经济",
+    "balance": "均衡",
+    "flagship": "旗舰",
+    "testingConfiguration": "测试 / 配置",
+    "standardSourceCode": "普通源码",
+    "defaultBusinessCode": "默认业务代码",
+    "largeFiles": "大文件",
+    "safetySensitivity": "安全敏感",
+    "authenticationPaymentKeys": "鉴权 / 支付 / 密钥",
+    "smartRouter": "智能路由器",
+    "accordingToTheCharacteristicHitRules": "按特征命中规则",
+    "economicBacking": "经济兜底",
+    "balanceTheMainForce": "均衡主力",
+    "securityAudit": "安全审计",
+    "route": "路由",
+    "intelligentRouting": "智能路由",
+    "automaticallySelectsTheOptimalReviewModelBased": "按文件特征自动选择最优审查模型，平衡质量与成本",
+    "modelPool": "模型池",
+    "priceUnitMTokenTheProportionIs": "价格单位 $/1M token · 占比为本月调用量",
+    "input": "输入",
+    "output": "输出",
+    "thisMonthSCallProportion": "本月调用占比",
+    "times": "次",
+    "routingStrategy": "路由策略",
+    "distributionAndFlowDirection": "分发流向",
+    "fileTypeSmartRouterModel": "文件类型 → 智能路由器 → 模型",
+    "routingDecisionReview": "路由决策回放",
+    "selectionReview": "选择审查",
+    "documents": "文件",
+    "scale": "规模",
+    "hitTheRules": "命中规则",
+    "assignTheModel": "派给模型",
+    "cost": "成本 ¥",
+    "alright": "行",
+    "costPerFileVsScale": "每文件成本 vs 规模",
+    "cost2": "成本 ¥",
+    "numberOfLines": "行数",
+    "thereAreNoChangeDocumentsAvailableFor": "该审查暂无变更文件。",
+  },
+  en: {
+    "economy": "Economy",
+    "balance": "Balance",
+    "flagship": "Flagship",
+    "testingConfiguration": "Testing / Configuration",
+    "standardSourceCode": "Standard source code",
+    "defaultBusinessCode": "Default business code",
+    "largeFiles": "Large files",
+    "safetySensitivity": "Safety sensitivity",
+    "authenticationPaymentKeys": "Authentication / payment / keys",
+    "smartRouter": "Smart router",
+    "accordingToTheCharacteristicHitRules": "According to the characteristic hit rules",
+    "economicBacking": "Economic backing",
+    "balanceTheMainForce": "Balance the main force",
+    "securityAudit": "Security audit",
+    "route": "Route",
+    "intelligentRouting": "Intelligent routing",
+    "automaticallySelectsTheOptimalReviewModelBased": "Automatically selects the optimal review model based on file characteristics, balancing quality and cost",
+    "modelPool": "Model pool",
+    "priceUnitMTokenTheProportionIs": "Price unit: $/1M token · The proportion is based on the number of calls this month",
+    "input": "Input",
+    "output": "Output",
+    "thisMonthSCallProportion": "This month's call proportion",
+    "times": "Times",
+    "routingStrategy": "Routing strategy",
+    "distributionAndFlowDirection": "Distribution and flow direction",
+    "fileTypeSmartRouterModel": "File type→ Smart Router → model",
+    "routingDecisionReview": "Routing decision review",
+    "selectionReview": "Selection review",
+    "documents": "Documents",
+    "scale": "Scale",
+    "hitTheRules": "Hit the rules",
+    "assignTheModel": "Assign the model",
+    "cost": "Cost: ¥",
+    "alright": "Alright",
+    "costPerFileVsScale": "Cost per file vs. scale",
+    "cost2": "Cost: ¥",
+    "numberOfLines": "Number of lines",
+    "thereAreNoChangeDocumentsAvailableFor": "There are no change documents available for this review.",
+  },
+} as const;
+
+export type ContentKey = keyof typeof content["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = {
+  key: "demo-hanreview-app-routing-page",
+  content: t(content),
+};
+
+export default dictionary;

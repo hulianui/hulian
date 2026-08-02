@@ -74,4 +74,6 @@ const [revealed, setRevealed] = useState(false);
 - `copyable` defaults to true. Set `copyable={false}` when policy forbids clipboard access.
 
 ## Related
+
+Show, hide, copy, and copied labels follow `ConfigProvider`.
 [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md) · [Upload](../upload/upload.md)

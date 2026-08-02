@@ -71,4 +71,6 @@ const [cards, setCards] = useState(initial);
 - Empty columns show built-in Chinese `"\u62d6\u62fd\u5361\u7247\u5230\u6b64"`, meaning “Drag a card here.”
 
 ## Related
+
+The empty-column message follows `ConfigProvider`.
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

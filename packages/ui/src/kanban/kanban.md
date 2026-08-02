@@ -76,4 +76,6 @@ const [cards, setCards] = useState(initial);
 - `getId` 须全局唯一且稳定（不仅列内唯一）；卡片含交互子元素时同样要防拖拽拦截点击（[[dnd-kit-draggable-container-guard-interactive-children]]）。
 
 ## 相关
+
+空列占位文案跟随 `ConfigProvider`。
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

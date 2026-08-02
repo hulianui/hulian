@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { Funnel } from "./funnel";
 import type { FunnelStage } from "./funnel.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -55,5 +57,11 @@ describe("Funnel 渲染", () => {
       <Funnel stages={stages} renderStage={(s) => <span>自定-{s.id}</span>} />,
     );
     expect(getByText("自定-in")).toBeTruthy();
+  });
+
+  it("图表与转化标签跟随 ConfigProvider", () => {
+    const { getByRole, getByText } = render(<ConfigProvider locale={enUS}><Funnel stages={stages} /></ConfigProvider>);
+    expect(getByRole("list").getAttribute("aria-label")).toBe("Funnel chart");
+    expect(getByText(/Conversion 80\.0%/)).toBeTruthy();
   });
 });

@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./crm-shell.content";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, Moon, Sun } from "lucide-react";
@@ -8,19 +10,15 @@ import { CRM_ROOT, breadcrumbFor, labelOf, menuItems, selectedKeyFor } from "./n
 function Brand() {
   return (
     <div className="flex items-center gap-2">
-      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        瑚
-      </span>
-      <span className="truncate text-[15px] font-semibold tracking-tight">瑚琏 CRM</span>
+      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral")}</span>
+      <span className="truncate text-[15px] font-semibold tracking-tight">{copy("hulianCrm")}</span>
     </div>
   );
 }
 
 function BrandMark() {
   return (
-    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-      瑚
-    </span>
+    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral2")}</span>
   );
 }
 
@@ -31,7 +29,7 @@ function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggle}
-      aria-label={theme === "dark" ? "切换到亮色" : "切换到暗色"}
+      aria-label={theme === "dark" ? copy("switchToBrightColors") : copy("switchToDark")}
     >
       {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
     </Button>
@@ -45,16 +43,16 @@ function HeaderExtra() {
       <Button
         variant="ghost"
         size="icon"
-        aria-label="通知"
-        onClick={() => toast({ title: "暂无新通知", description: "新商机、跟进到期等提醒会在此汇总", tone: "neutral" })}
+        aria-label={copy("notification")}
+        onClick={() => toast({ title: copy("noNewNotificationsYet"), description: copy("remindersSuchAsNewBusinessOpportunitiesAnd"), tone: "neutral" })}
       >
         <Bell className="size-[18px]" />
       </Button>
       <div className="mx-1 h-6 w-px bg-border" aria-hidden />
       <User
-        name="林晚晴"
-        description="销售总监"
-        avatarProps={{ fallback: "林", src: "/demo/avatar-3.jpg" }}
+        name={copy("linWanqing")}
+        description={copy("salesDirector")}
+        avatarProps={{ fallback: copy("forest"), src: "/demo/avatar-3.jpg" }}
       />
     </div>
   );

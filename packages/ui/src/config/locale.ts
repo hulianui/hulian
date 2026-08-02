@@ -156,7 +156,14 @@ export interface ComponentLocale {
     dislike: string;
   };
   thinkingBlock: { title: string };
-  toolCall: { pending: string; running: string; success: string; error: string };
+  toolCall: {
+    pending: string;
+    running: string;
+    success: string;
+    error: string;
+    input: string;
+    output: string;
+  };
   carousel: {
     label: string;
     slide: (index: number, count: number) => string;
@@ -198,6 +205,58 @@ export interface ComponentLocale {
     deleteEdge: string;
     autoLayout: string;
   };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  creditCard?: {
+    card: string;
+    cardholder: string;
+    expires: string;
+    unionPay: string;
+    endingIn: (brand: string, lastFour: string) => string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  emojiPicker?: {
+    search: string;
+    noResults: string;
+    recentlyUsed: string;
+    categories: Record<"smileys" | "gestures" | "animals" | "food" | "activity" | "objects" | "symbols", string>;
+  };
+  chatMessage?: {
+    me: string;
+    sending: string;
+    sent: string;
+    read: string;
+  };
+  navMenu?: { navigation: string };
+  spinner?: { loading: string };
+  animatedThemeToggler?: { switchToLight: string; switchToDark: string };
+  backTop?: { backToTop: string };
+  pageHeader?: { back: string };
+  secretField?: { show: string; hide: string; copy: string; copied: string };
+  kanban?: { emptyColumn: string };
+  gantt?: { chart: string; empty: string; process: string; month: (month: number) => string };
+  funnel?: { chart: string; conversion: string };
+  sankey?: { chart: string };
+  diffStat?: { added: string; modified: string; deleted: string; renamed: string };
+  deployStatus?: {
+    queued: string;
+    building: string;
+    ready: string;
+    error: string;
+    canceled: string;
+    skipped: string;
+  };
+  codeReviewThread?: {
+    suggestedChange: string;
+    adoptSuggestion: string;
+    commentCount: (count: number) => string;
+    resolved: string;
+    falsePositive: string;
+    markResolved: string;
+    reopen: string;
+    replyPlaceholder: string;
+    reply: string;
+    severities: { critical: string; major: string; minor: string; info: string };
+  };
 }
 
 const zhComponents: ComponentLocale = {
@@ -226,7 +285,14 @@ const zhComponents: ComponentLocale = {
     dislike: "踩",
   },
   thinkingBlock: { title: "思考过程" },
-  toolCall: { pending: "等待", running: "运行中", success: "完成", error: "失败" },
+  toolCall: {
+    pending: "等待",
+    running: "运行中",
+    success: "完成",
+    error: "失败",
+    input: "参数",
+    output: "结果",
+  },
   carousel: {
     label: "轮播",
     slide: (index, count) => `第 ${index} / ${count} 张`,
@@ -268,6 +334,46 @@ const zhComponents: ComponentLocale = {
     deleteEdge: "删除连线",
     autoLayout: "智能排版",
   },
+  creditCard: {
+    card: "银行卡",
+    cardholder: "持卡人",
+    expires: "有效期",
+    unionPay: "银联",
+    endingIn: (brand, lastFour) => `${brand} 尾号 ${lastFour}`,
+  },
+  emojiPicker: {
+    search: "搜索表情",
+    noResults: "没有匹配的表情",
+    recentlyUsed: "最近使用",
+    categories: {
+      smileys: "笑脸",
+      gestures: "手势",
+      animals: "动物",
+      food: "食物",
+      activity: "活动",
+      objects: "物品",
+      symbols: "符号",
+    },
+  },
+  chatMessage: { me: "我", sending: "发送中", sent: "已送达", read: "已读" },
+  navMenu: { navigation: "侧边导航" },
+  spinner: { loading: "加载中" },
+  animatedThemeToggler: { switchToLight: "切换到亮色", switchToDark: "切换到暗色" },
+  backTop: { backToTop: "回到顶部" },
+  pageHeader: { back: "返回" },
+  secretField: { show: "显示", hide: "隐藏", copy: "复制", copied: "已复制" },
+  kanban: { emptyColumn: "拖拽卡片到此" },
+  gantt: { chart: "项目排期甘特图", empty: "暂无排期数据", process: "工序", month: (month) => `${month}月` },
+  funnel: { chart: "漏斗图", conversion: "转化" },
+  sankey: { chart: "桑基流向图" },
+  diffStat: { added: "新增", modified: "修改", deleted: "删除", renamed: "重命名" },
+  deployStatus: { queued: "排队中", building: "构建中", ready: "已上线", error: "失败", canceled: "已取消", skipped: "已跳过" },
+  codeReviewThread: {
+    suggestedChange: "建议修改", adoptSuggestion: "采纳建议", commentCount: (count) => `${count} 条批注`,
+    resolved: "已解决", falsePositive: "误报", markResolved: "标记已解决", reopen: "重新打开",
+    replyPlaceholder: "回复这条批注…", reply: "回复",
+    severities: { critical: "严重", major: "重要", minor: "次要", info: "提示" },
+  },
 };
 
 const enComponents: ComponentLocale = {
@@ -296,7 +402,14 @@ const enComponents: ComponentLocale = {
     dislike: "Dislike",
   },
   thinkingBlock: { title: "Thinking" },
-  toolCall: { pending: "Pending", running: "Running", success: "Complete", error: "Failed" },
+  toolCall: {
+    pending: "Pending",
+    running: "Running",
+    success: "Complete",
+    error: "Failed",
+    input: "Input",
+    output: "Output",
+  },
   carousel: {
     label: "Carousel",
     slide: (index, count) => `Slide ${index} of ${count}`,
@@ -337,6 +450,46 @@ const enComponents: ComponentLocale = {
     deleteNode: "Delete node",
     deleteEdge: "Delete edge",
     autoLayout: "Auto layout",
+  },
+  creditCard: {
+    card: "Card",
+    cardholder: "Cardholder",
+    expires: "Expires",
+    unionPay: "UnionPay",
+    endingIn: (brand, lastFour) => `${brand} ending in ${lastFour}`,
+  },
+  emojiPicker: {
+    search: "Search emoji",
+    noResults: "No matching emoji",
+    recentlyUsed: "Recently used",
+    categories: {
+      smileys: "Smileys & emotion",
+      gestures: "People & gestures",
+      animals: "Animals & nature",
+      food: "Food & drink",
+      activity: "Activities",
+      objects: "Objects",
+      symbols: "Symbols",
+    },
+  },
+  chatMessage: { me: "Me", sending: "Sending", sent: "Delivered", read: "Read" },
+  navMenu: { navigation: "Sidebar navigation" },
+  spinner: { loading: "Loading" },
+  animatedThemeToggler: { switchToLight: "Switch to light mode", switchToDark: "Switch to dark mode" },
+  backTop: { backToTop: "Back to top" },
+  pageHeader: { back: "Back" },
+  secretField: { show: "Show", hide: "Hide", copy: "Copy", copied: "Copied" },
+  kanban: { emptyColumn: "Drop cards here" },
+  gantt: { chart: "Project schedule Gantt chart", empty: "No schedule data", process: "Task", month: (month) => `${month}` },
+  funnel: { chart: "Funnel chart", conversion: "Conversion" },
+  sankey: { chart: "Sankey diagram" },
+  diffStat: { added: "Added", modified: "Modified", deleted: "Deleted", renamed: "Renamed" },
+  deployStatus: { queued: "Queued", building: "Building", ready: "Ready", error: "Failed", canceled: "Canceled", skipped: "Skipped" },
+  codeReviewThread: {
+    suggestedChange: "Suggested change", adoptSuggestion: "Apply suggestion", commentCount: (count) => `${count} comments`,
+    resolved: "Resolved", falsePositive: "False positive", markResolved: "Mark resolved", reopen: "Reopen",
+    replyPlaceholder: "Reply to this comment…", reply: "Reply",
+    severities: { critical: "Critical", major: "Major", minor: "Minor", info: "Info" },
   },
 };
 

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 
 import { useState } from "react";
 import {
@@ -28,10 +29,10 @@ import { usePending } from "../../../lib/async";
 const project = projects[0];
 
 const frameworks: Framework[] = ["Next.js", "Vite", "Astro", "Nuxt", "Remix", "静态站点"];
-const frameworkOptions = frameworks.map((f) => ({ value: f, label: f }));
+const frameworkOptions = frameworks.map((f) => ({ value: f, label: f === "静态站点" ? copy("staticSite") : f }));
 const nodeOptions = [
   { value: "18", label: "18.x" },
-  { value: "20", label: "20.x (推荐)" },
+  { value: "20", label: copy("xRecommended") },
   { value: "22", label: "22.x" },
 ];
 
@@ -54,17 +55,15 @@ export default function SettingsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-lg font-semibold">构建设置</h1>
-        <p className="text-sm text-muted">
-          项目 <span className="font-mono">{project.name}</span> 的框架预设、构建命令与 Git 集成。
-        </p>
+        <h1 className="text-lg font-semibold">{copy("buildSettings")}</h1>
+        <p className="text-sm text-muted">{copy("project")}<span className="font-mono">{project.name}</span>{copy("frameworkPresetsBuildCommandsAndGitIntegration")}</p>
       </div>
 
       {/* 框架与构建 */}
       <Card>
-        <CardHeader className="text-sm font-medium">框架与构建</CardHeader>
+        <CardHeader className="text-sm font-medium">{copy("frameworkAndBuild")}</CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <Field label="框架预设" description="切换框架会自动调整默认输出目录">
+          <Field label={copy("framePresets")} description={copy("switchingFrameworksWillAutomaticallyAdjustTheDefault")}>
             <Select
               items={frameworkOptions}
               value={framework}
@@ -84,28 +83,28 @@ export default function SettingsPage() {
               </SelectContent>
             </Select>
           </Field>
-          <Field label="安装命令">
+          <Field label={copy("installationCommand")}>
             <Input
               value={installCmd}
               onChange={(e) => setInstallCmd(e.target.value)}
               placeholder="pnpm install"
             />
           </Field>
-          <Field label="构建命令">
+          <Field label={copy("buildCommand")}>
             <Input
               value={buildCmd}
               onChange={(e) => setBuildCmd(e.target.value)}
               placeholder="pnpm build"
             />
           </Field>
-          <Field label="输出目录" description="构建产物相对仓库根目录的路径">
+          <Field label={copy("outputDirectory")} description={copy("thePathOfTheBuildProductRelative")}>
             <Input
               value={outputDir}
               onChange={(e) => setOutputDir(e.target.value)}
               placeholder="dist"
             />
           </Field>
-          <Field label="Node 版本">
+          <Field label={copy("nodeVersion")}>
             <Select items={nodeOptions} value={nodeVersion} onValueChange={(x) => setNodeVersion(x as string)}>
               <SelectTrigger />
               <SelectContent>
@@ -123,35 +122,33 @@ export default function SettingsPage() {
               disabled={savingBuild}
               onClick={() =>
                 void runBuild(() => {
-                  toast({ tone: "success", title: "构建设置已保存" });
+                  toast({ tone: "success", title: copy("buildSettingsSaved") });
                 })
               }
-            >
-              保存
-            </Button>
+            >{copy("save")}</Button>
           </div>
         </CardBody>
       </Card>
 
       {/* Git 集成 */}
       <Card>
-        <CardHeader className="text-sm font-medium">Git 集成</CardHeader>
+        <CardHeader className="text-sm font-medium">{copy("gitIntegration")}</CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <Field label="仓库" description="在源代码托管商处管理仓库连接">
+          <Field label={copy("warehouse")} description={copy("manageRepositoryConnectionsAtYourSourceCode")}>
             <Input value={project.repo} readOnly />
           </Field>
-          <Field label="生产分支" description="推送到该分支将触发生产部署">
+          <Field label={copy("productionBranch")} description={copy("pushingToThisBranchWillTriggerA")}>
             <Input
               value={prodBranch}
               onChange={(e) => setProdBranch(e.target.value)}
               placeholder="main"
             />
           </Field>
-          <Field label="自动部署" description="分支有新提交时自动构建并部署">
-            <Switch checked={autoDeploy} onCheckedChange={setAutoDeploy} aria-label="自动部署" />
+          <Field label={copy("automaticDeployment")} description={copy("automaticallyBuildAndDeployWhenBranchesHave")}>
+            <Switch checked={autoDeploy} onCheckedChange={setAutoDeploy} aria-label={copy("automaticDeployment2")} />
           </Field>
-          <Field label="PR 预览部署" description="为每个 Pull Request 生成独立预览地址">
-            <Switch checked={prPreview} onCheckedChange={setPrPreview} aria-label="PR 预览部署" />
+          <Field label={copy("prPreviewDeployment")} description={copy("generateIndependentPreviewAddressesForEachPull")}>
+            <Switch checked={prPreview} onCheckedChange={setPrPreview} aria-label={copy("prPreviewDeployment2")} />
           </Field>
           <div className="flex justify-end">
             <Button
@@ -159,43 +156,37 @@ export default function SettingsPage() {
               disabled={savingGit}
               onClick={() =>
                 void runGit(() => {
-                  toast({ tone: "success", title: "Git 集成设置已保存" });
+                  toast({ tone: "success", title: copy("gitIntegrationSettingsSaved") });
                 })
               }
-            >
-              保存
-            </Button>
+            >{copy("save2")}</Button>
           </div>
         </CardBody>
       </Card>
 
       {/* 危险区 */}
       <Card className="border-danger/40">
-        <CardHeader className="text-sm font-medium text-danger">危险区</CardHeader>
+        <CardHeader className="text-sm font-medium text-danger">{copy("dangerZone")}</CardHeader>
         <CardBody className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-sm font-medium">暂停项目</div>
-              <p className="text-sm text-muted">暂停后将停止接收新部署，已有部署继续在线。</p>
+              <div className="text-sm font-medium">{copy("pauseProject")}</div>
+              <p className="text-sm text-muted">{copy("afterTheSuspensionNewDeploymentsWillStop")}</p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger
                 render={
                   <Button variant="outline">
-                    <Pause className="size-4" />
-                    暂停项目
-                  </Button>
+                    <Pause className="size-4" />{copy("pauseProject2")}</Button>
                 }
               />
               <AlertDialogContent
-                title="暂停该项目？"
-                description="暂停后自动部署将停止，可随时恢复。"
+                title={copy("pauseTheProject")}
+                description={copy("automaticDeploymentWillStopAfterPausingAnd")}
               >
                 <AlertDialogClose
                   render={
-                    <Button variant="outline" size="sm">
-                      取消
-                    </Button>
+                    <Button variant="outline" size="sm">{copy("cancel")}</Button>
                   }
                 />
                 <AlertDialogClose
@@ -203,11 +194,9 @@ export default function SettingsPage() {
                     <Button
                       size="sm"
                       onClick={() =>
-                        toast({ tone: "neutral", title: "项目已暂停", description: project.name })
+                        toast({ tone: "neutral", title: copy("projectHasBeenSuspended"), description: project.name })
                       }
-                    >
-                      确认暂停
-                    </Button>
+                    >{copy("confirmPause")}</Button>
                   }
                 />
               </AlertDialogContent>
@@ -216,27 +205,23 @@ export default function SettingsPage() {
 
           <div className="flex items-center justify-between gap-4 border-t border-hairline pt-4">
             <div>
-              <div className="text-sm font-medium">删除项目</div>
-              <p className="text-sm text-muted">永久删除项目、部署记录与域名绑定，此操作不可撤销。</p>
+              <div className="text-sm font-medium">{copy("deleteProject")}</div>
+              <p className="text-sm text-muted">{copy("permanentlyDeleteTheProjectDeploymentRecordAnd")}</p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger
                 render={
                   <Button tone="danger">
-                    <Trash2 className="size-4" />
-                    删除项目
-                  </Button>
+                    <Trash2 className="size-4" />{copy("deleteProject2")}</Button>
                 }
               />
               <AlertDialogContent
-                title="删除该项目？"
-                description={`「${project.name}」及其全部部署、域名绑定将被永久删除，无法恢复。`}
+                title={copy("deleteThisProject")}
+                description={copy("valueAndAllItsDeploymentsAndDomain", project.name)}
               >
                 <AlertDialogClose
                   render={
-                    <Button variant="outline" size="sm">
-                      取消
-                    </Button>
+                    <Button variant="outline" size="sm">{copy("cancel2")}</Button>
                   }
                 />
                 <AlertDialogClose
@@ -245,11 +230,9 @@ export default function SettingsPage() {
                       tone="danger"
                       size="sm"
                       onClick={() =>
-                        toast({ tone: "danger", title: "项目已删除", description: project.name })
+                        toast({ tone: "danger", title: copy("projectDeleted"), description: project.name })
                       }
-                    >
-                      永久删除
-                    </Button>
+                    >{copy("deletePermanently")}</Button>
                   }
                 />
               </AlertDialogContent>

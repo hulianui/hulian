@@ -10,11 +10,13 @@ status: enriched
 
 # ChatMessage
 
-> Conversation bubble · Right-aligned user, left-aligned assistant, and centered system variants · Avatar, name, timestamp, TypingDots loading state, and actions · Presentational RSC · ai/conversation
+> Conversation bubble · Right-aligned user, left-aligned assistant, and centered system variants · Avatar, name, timestamp, TypingDots loading state, and actions · ai/conversation
 
 ## When to Use
 
 Render one user or assistant message, or a centered system notice. Use [Conversation](../conversation/conversation.md) for a scrolling message history and place MessageActions in the `actions` slot for controls below the bubble.
+
+Avatar fallback copy and receipt accessibility labels follow the nearest `ConfigProvider` locale (`zhCN` by default, or `enUS`).
 
 ## Import
 ```ts

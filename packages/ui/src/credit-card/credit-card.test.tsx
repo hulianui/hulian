@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from "./credit-card";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("detectBrand", () => {
   it("visa ^4", () => expect(detectBrand("4111111111111111")).toBe("visa"));
@@ -42,6 +44,19 @@ describe("CreditCard 组件", () => {
     expect(getByText("ZHANG SAN")).toBeTruthy();
     expect(getByText("12/28")).toBeTruthy();
     expect(getByRole("img").getAttribute("aria-label")).toContain("1111");
+    expect(getByText("持卡人")).toBeTruthy();
+    expect(getByText("有效期")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS renders English labels and accessible name", () => {
+    const { getByText, getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="12/28" />
+      </ConfigProvider>,
+    );
+    expect(getByText("Cardholder")).toBeTruthy();
+    expect(getByText("Expires")).toBeTruthy();
+    expect(getByRole("img").getAttribute("aria-label")).toBe("VISA ending in 1111");
   });
 
   it("masked=false 显示完整卡号", () => {

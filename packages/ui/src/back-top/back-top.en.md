@@ -60,4 +60,6 @@ const ref = useRef<HTMLDivElement>(null);
 - Reduced-motion support is built in and changes `smooth` scrolling to `auto`; consumers need no extra handling.
 
 ## Related
+
+The default back-to-top label follows `ConfigProvider`; pass `aria-label` to override it.
 [Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [Stepper](../stepper/stepper.md)

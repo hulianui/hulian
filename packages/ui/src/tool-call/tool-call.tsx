@@ -56,13 +56,13 @@ export function ToolCall({
         <div className="space-y-2">
           {input != null && (
             <div>
-              <p className="mb-1 text-xs font-medium text-foreground">参数</p>
+              <p className="mb-1 text-xs font-medium text-foreground">{labels.input}</p>
               <div className="text-xs">{input}</div>
             </div>
           )}
           {output != null && (
             <div>
-              <p className="mb-1 text-xs font-medium text-foreground">结果</p>
+              <p className="mb-1 text-xs font-medium text-foreground">{labels.output}</p>
               <div className="text-xs">{output}</div>
             </div>
           )}

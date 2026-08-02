@@ -76,4 +76,6 @@ const links: SankeyLink[] = [
 - The root uses built-in Chinese `aria-label` `"\u6851\u57fa\u6d41\u5411\u56fe"`, meaning “Sankey flow diagram.”
 
 ## Related
+
+The chart accessibility label follows `ConfigProvider`.
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

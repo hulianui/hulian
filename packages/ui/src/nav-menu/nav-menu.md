@@ -68,6 +68,7 @@ function ConvoNav() {
 
 ## 禁忌 / 坑
 
+- 默认导航无障碍名称跟随 `ConfigProvider`（`zhCN` 为“侧边导航”，`enUS` 为 “Sidebar navigation”）；显式传入 `aria-label` 时以消费方值为准。
 - 行尾操作放 `actions` 槽，组件会渲在 treeitem 按钮/链接【之外】（绝对覆盖行右侧）。**别把 `<button>` 等交互元素直接塞进 `label`**——嵌进 treeitem 按钮是非法 HTML，会触发 hydration 报错。`actions` 仅 inline 态生效。
 - 高度过渡用纯 CSS `grid-template-rows` 0fr→1fr，不靠 JS 测高，嵌套展开也不抖。参见 [[nested-collapsible-height-via-css-grid-rows-not-js-measure]]。
 - 选中/展开态可受控（`selectedKeys`/`openKeys` + 回调）或非受控（`default*`），勿混用同一维度。

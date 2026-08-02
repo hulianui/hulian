@@ -72,4 +72,6 @@ Both `status` and `collapsed` become controlled when supplied. Pair them with `o
 The built-in interface remains Chinese at runtime. Severity labels are `"\u4e25\u91cd"` ("Critical"), `"\u91cd\u8981"` ("Major"), `"\u6b21\u8981"` ("Minor"), and `"\u63d0\u793a"` ("Info"). Thread copy includes `"\u5efa\u8bae\u4fee\u6539"` ("Suggested change"), `"\u91c7\u7eb3\u5efa\u8bae"` ("Adopt suggestion"), `` `${comments.length} \u6761\u6279\u6ce8` `` ("N comments"), `"\u5df2\u89e3\u51b3"` ("Resolved"), `"\u8bef\u62a5"` ("False positive"), `"\u6807\u8bb0\u5df2\u89e3\u51b3"` ("Mark resolved"), `"\u91cd\u65b0\u6253\u5f00"` ("Reopen"), `"\u56de\u590d\u8fd9\u6761\u6279\u6ce8\u2026"` ("Reply to this comment..."), and `"\u56de\u590d"` ("Reply").
 
 ## Related
+
+Built-in severity, status, suggestion, and reply labels follow `ConfigProvider`; comment bodies and authors remain business data.
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

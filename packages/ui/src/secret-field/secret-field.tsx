@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { cn } from "../lib/cn";
 import { Eye, EyeOff, Copy, Check } from "../_icons";
+import { useComponentLocale } from "../config/locale";
 import type { MaskStrategy, SecretFieldProps } from "./secret-field.types";
 
 // SecretField = 密钥/令牌掩码字段：默认 `sk-abc…wxyz` 掩码，眼睛 toggle 显形，一键复制原值，
@@ -35,6 +36,7 @@ export function SecretField({
   const [revealedState, setRevealedState] = useState(false);
   const revealed = revealedProp ?? revealedState;
   const [copied, setCopied] = useState(false);
+  const locale = useComponentLocale().secretField;
 
   const toggleReveal = () => {
     const next = !revealed;
@@ -65,7 +67,7 @@ export function SecretField({
         <button
           type="button"
           onClick={toggleReveal}
-          aria-label={revealed ? "隐藏" : "显示"}
+          aria-label={revealed ? locale?.hide ?? "隐藏" : locale?.show ?? "显示"}
           className={iconBtn}
         >
           {revealed ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -74,7 +76,7 @@ export function SecretField({
           <button
             type="button"
             onClick={handleCopy}
-            aria-label={copied ? "已复制" : "复制"}
+            aria-label={copied ? locale?.copied ?? "已复制" : locale?.copy ?? "复制"}
             className={iconBtn}
           >
             {copied ? <Check className="size-4 text-primary" /> : <Copy className="size-4" />}

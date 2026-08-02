@@ -10,11 +10,13 @@ status: enriched
 
 # ChatMessage
 
-> 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽·纯皮肤RSC · ai/conversation
+> 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽 · ai/conversation
 
 ## 何时用
 
 渲染单条对话气泡（用户/助手/系统通告）。多条气泡的滚动堆叠交给 [Conversation](../conversation/conversation.md)；气泡下方的操作按钮用 MessageActions 放进 `actions` 槽。
+
+头像回退文案与发送回执的无障碍标签跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。
 
 ## 导入
 ```ts

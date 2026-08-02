@@ -16,6 +16,8 @@ status: enriched
 
 Use CreditCard in checkout confirmation, wallets, or saved-card management to visualize existing card information. It does not collect payment details; use form controls for card input.
 
+Cardholder labels and the accessible card description follow the nearest `ConfigProvider` locale (`zhCN` by default, or `enUS`).
+
 ## Import
 ```ts
 import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from "@hulianui/ui"

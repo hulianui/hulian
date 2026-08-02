@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 // 瀚舵 HanHelm · 智能路由（旗舰页）
 //   1) 顶部桑基流向图：任务类型 → 六维智能路由器 → 执行器池，流宽=派发占比；点节点/连线显占比。
 //   2) 六维权重控制：6 个 Slider 调 capability/cost/latency/load/priority/sla，改权重实时重算决策回放。
@@ -65,7 +67,7 @@ const TASK_OPTIONS = (() => {
   const rest = TASKS.filter((t) => !DAG_TASK_IDS.includes(t.id));
   return [...dag, ...rest].map((t) => ({
     value: t!.id,
-    label: `${t!.title}（${t!.priority} · ${t!.type}）`,
+    label: copy("taskOption", t!.title, t!.priority, t!.type),
   }));
 })();
 
@@ -114,12 +116,10 @@ export default function RoutingPage() {
   return (
     <div className="space-y-5 p-6">
       <PageHeader
-        title="智能路由"
-        subTitle="桑基流向 · 六维权重 · 决策回放"
+        title={copy("intelligentRouting")}
+        subTitle={copy("sangyFlowDirectionSixMaintenanceWeightsDecision")}
         tags={
-          <Tag size="sm" variant="soft" tone="brand">
-            六维加权引擎
-          </Tag>
+          <Tag size="sm" variant="soft" tone="brand">{copy("sixDimensionalWeightingEngine")}</Tag>
         }
       />
 
@@ -127,24 +127,19 @@ export default function RoutingPage() {
       <Card>
         <CardHeader className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-semibold text-foreground">派发流向</div>
-            <div className="text-xs text-muted">
-              任务类型 → 六维智能路由器 → 执行器池；流带宽度 = 派发任务条数占比
-            </div>
+            <div className="text-sm font-semibold text-foreground">{copy("distributionAndDistribution")}</div>
+            <div className="text-xs text-muted">{copy("taskTypeSixDimensionalSmartRouterActuator")}</div>
           </div>
           {focusNode ? (
             (() => {
               const { inbound, outbound } = nodeFlow(focusNode.id);
               return (
                 <Tag size="sm" variant="soft" tone="brand">
-                  {focusNode.label}：入 {inbound} · 出 {outbound} 条
-                </Tag>
+                  {focusNode.label}{copy("toEnter")}{inbound}{copy("andLeft")}{outbound}{copy("article")}</Tag>
               );
             })()
           ) : (
-            <Tag size="sm" variant="outline" tone="neutral">
-              近 1h · 点击节点看流量
-            </Tag>
+            <Tag size="sm" variant="outline" tone="neutral">{copy("nearlyHourClickNodesToCheckTraffic")}</Tag>
           )}
         </CardHeader>
         <CardBody>
@@ -162,8 +157,7 @@ export default function RoutingPage() {
               ) : (
                 <span className="text-xs">
                   {item.link.source} → {item.link.target}：
-                  <span className="font-medium">{item.link.value}</span> 条
-                </span>
+                  <span className="font-medium">{item.link.value}</span>{copy("article2")}</span>
               )
             }
           />
@@ -174,10 +168,8 @@ export default function RoutingPage() {
         {/* 2) 六维权重控制 */}
         <Card>
           <CardHeader>
-            <div className="text-sm font-semibold text-foreground">六维权重</div>
-            <div className="text-xs text-muted">
-              调整任一维 → 右侧决策回放按 scoreExecutors 实时重算
-            </div>
+            <div className="text-sm font-semibold text-foreground">{copy("theSixPillarsHoldGreatWeight")}</div>
+            <div className="text-xs text-muted">{copy("adjustAnyDimensionTheDecisionPlaybackOn")}</div>
           </CardHeader>
           <CardBody>
             <RoutingWeightsPanel
@@ -191,8 +183,8 @@ export default function RoutingPage() {
         {/* 3) 路由策略规则 */}
         <Card>
           <CardHeader>
-            <div className="text-sm font-semibold text-foreground">路由策略规则</div>
-            <div className="text-xs text-muted">按 order 依次匹配，首条命中即生效（演示开关）</div>
+            <div className="text-sm font-semibold text-foreground">{copy("routingStrategyRules")}</div>
+            <div className="text-xs text-muted">{copy("matchSequentiallyByOrderTheFirstHit")}</div>
           </CardHeader>
           <CardBody className="space-y-2.5">
             {ROUTING_RULES.map((rule) => {
@@ -212,20 +204,20 @@ export default function RoutingPage() {
                           {rule.name}
                         </span>
                         <Tag size="sm" variant="soft" tone={RULE_SEVERITY[rule.id] ?? "neutral"}>
-                          {on ? "启用" : "停用"}
+                          {on ? copy("activated") : copy("deactivated")}
                         </Tag>
                       </div>
                       <div className="text-xs text-muted">
-                        <span className="text-foreground">条件</span> {rule.when}
+                        <span className="text-foreground">{copy("conditions")}</span> {rule.when}
                       </div>
                       <div className="text-xs text-muted">
-                        <span className="text-foreground">动作</span> {rule.then}
+                        <span className="text-foreground">{copy("action")}</span> {rule.then}
                       </div>
                     </div>
                     <Switch
                       checked={on}
                       onCheckedChange={() => toggleRule(rule)}
-                      aria-label={`${rule.name} 启用开关`}
+                      aria-label={copy("valueEnableTheSwitch", rule.name)}
                     />
                   </div>
                 </div>
@@ -239,10 +231,8 @@ export default function RoutingPage() {
       <Card>
         <CardHeader className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-sm font-semibold text-foreground">路由决策回放</div>
-            <div className="text-xs text-muted">
-              逐候选执行器的六维分项打分；淘汰者标灰 + 原因，选中者高亮
-            </div>
+            <div className="text-sm font-semibold text-foreground">{copy("routingDecisionReview")}</div>
+            <div className="text-xs text-muted">{copy("scoreEachCandidateActuatorBySixDimensional")}</div>
           </div>
           <div className="w-72 max-w-full">
             <Select
@@ -266,9 +256,7 @@ export default function RoutingPage() {
             <Tag size="sm" variant="soft" tone="neutral">
               {selectedTask.priority}
             </Tag>
-            <span>
-              能力需求：
-              <span className="text-foreground">
+            <span>{copy("capabilityRequirements")}<span className="text-foreground">
                 {selectedTask.capabilities.map((c) => CAPABILITY_LABEL[c]).join(" / ")}
               </span>
             </span>
@@ -277,13 +265,12 @@ export default function RoutingPage() {
               SLA <span className="text-foreground">{Math.round(selectedTask.slaMs / 1000)}s</span>
             </span>
             <span>·</span>
-            <span>
-              预算 <span className="text-foreground">¥{selectedTask.budgetYuan.toFixed(1)}</span>
+            <span>{copy("budget")}<span className="text-foreground">¥{selectedTask.budgetYuan.toFixed(1)}</span>
             </span>
           </div>
           <RoutingDecisionTable decision={decision} />
           <div className="rounded-[var(--radius)] bg-surface-hover/60 p-3 text-xs text-muted">
-            <span className="font-medium text-foreground">引擎裁决：</span>
+            <span className="font-medium text-foreground">{copy("engineJudgment")}</span>
             {decision.reason}
           </div>
         </CardBody>
@@ -292,10 +279,8 @@ export default function RoutingPage() {
       {/* 5) 成本 vs 延迟分布 */}
       <Card>
         <CardHeader>
-          <div className="text-sm font-semibold text-foreground">成本 / 延迟分布</div>
-          <div className="text-xs text-muted">
-            各执行器混合单价与典型延迟（同轴归一指数，越低越优）
-          </div>
+          <div className="text-sm font-semibold text-foreground">{copy("costLatencyDistribution")}</div>
+          <div className="text-xs text-muted">{copy("mixedUnitPriceForEachActuatorAnd")}</div>
         </CardHeader>
         <CardBody>
           <RoutingCostLatencyChart executors={EXECUTORS} />

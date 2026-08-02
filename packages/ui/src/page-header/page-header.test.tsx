@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { PageHeader } from "./page-header";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("PageHeader", () => {
   it("title 渲染为 h1（语义页头标题）", () => {
@@ -41,6 +43,11 @@ describe("PageHeader", () => {
       <PageHeader title="标题" onBack={() => {}} backLabel="返回列表" />,
     );
     expect(container.querySelector('button[aria-label="返回列表"]')).toBeTruthy();
+  });
+
+  it("默认返回标签跟随 ConfigProvider", () => {
+    const { container } = render(<ConfigProvider locale={enUS}><PageHeader title="Title" onBack={() => {}} /></ConfigProvider>);
+    expect(container.querySelector('button[aria-label="Back"]')).toBeTruthy();
   });
 
   it("不提供 onBack → 无返回按钮", () => {

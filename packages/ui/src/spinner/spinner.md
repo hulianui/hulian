@@ -10,11 +10,11 @@ status: enriched
 
 # Spinner
 
-> 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + RSC · feedback/loading
+> 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + 本地化读屏文案 · feedback/loading
 
 ## 何时用
 
-需要一个裸的加载旋转图标时用（按钮内、行内、空状态占位）：纯 CSS `animate-spin` SVG 环，带 `role=status`，零交互、可作 RSC。需要遮罩/包裹内容区/整页加载用 [Spin](../spin/spin.md)；已知进度用 [Progress](../progress/progress.md)。
+需要一个裸的加载旋转图标时用（按钮内、行内、空状态占位）：纯 CSS `animate-spin` SVG 环，带 `role=status`，零交互。需要遮罩/包裹内容区/整页加载用 [Spin](../spin/spin.md)；已知进度用 [Progress](../progress/progress.md)。
 
 ## 导入
 ```ts
@@ -27,7 +27,7 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
 | tone | `"primary"｜"current"｜"muted"` | `"primary"` | 配色（`current`=继承 currentColor，适合放进彩色按钮内） |
-| label | `string` | `"加载中"` | a11y 文案（role=status 读屏播报） |
+| label | `string` | 跟随 `ConfigProvider` | a11y 文案（role=status 读屏播报）；显式传值优先 |
 | className | `string` | — | 容器类名 |
 
 ## 示例

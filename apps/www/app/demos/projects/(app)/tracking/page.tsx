@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { LayoutList, SquareKanban } from "lucide-react";
@@ -18,19 +20,20 @@ import {
 } from "@hulianui/ui";
 import { ROOT } from "../../_components/nav-config";
 import { projects as seed } from "../../_data/projects";
-import { projectStatusTone, wan, yuan } from "../../_data/status";
-import { OWNERS, PROJECT_STAGES, type Project, type ProjectStage } from "../../_data/types";
+import { projectStageLabel, projectStatusLabel, projectStatusTone, wan, yuan } from "../../_data/status";
+import { PROJECT_STAGES, type Project, type ProjectStage } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
 
-const STATUSES = ["待开工", "进行中", "已暂停", "已完工", "已结算"];
+const STATUSES = ["待开工", "进行中", "已暂停", "已完工", "已结算"] as const;
 const PAGE_SIZE = 8;
+const OWNER_OPTIONS = [...new Set(seed.map((project) => project.owner))];
 
-const opt = (arr: readonly string[], allLabel = "全部") => [
+const opt = (arr: readonly string[], labels?: Readonly<Record<string, string>>, allLabel = copy("all")) => [
   { value: "", label: allLabel },
-  ...arr.map((v) => ({ value: v, label: v })),
+  ...arr.map((v) => ({ value: v, label: labels?.[v] ?? v })),
 ];
 
-const KANBAN_COLUMNS: KanbanColumn[] = PROJECT_STAGES.map((s) => ({ id: s, title: s }));
+const KANBAN_COLUMNS: KanbanColumn[] = PROJECT_STAGES.map((s) => ({ id: s, title: projectStageLabel[s] }));
 
 export default function TrackingPage() {
   const { data, loading, error, reload } = useMockData(seed, { failOnce: true });
@@ -65,7 +68,7 @@ export default function TrackingPage() {
   const columns: ColumnDef<Project>[] = [
     {
       accessorKey: "code",
-      header: "项目",
+      header: copy("project"),
       cell: ({ row }) => {
         const p = row.original;
         return (
@@ -80,7 +83,7 @@ export default function TrackingPage() {
     },
     {
       accessorKey: "client",
-      header: "甲方 / 班组",
+      header: copy("partyATeam"),
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="truncate text-sm">{row.original.client}</div>
@@ -88,19 +91,19 @@ export default function TrackingPage() {
         </div>
       ),
     },
-    { accessorKey: "owner", header: "负责人" },
+    { accessorKey: "owner", header: copy("personInCharge") },
     {
       accessorKey: "stage",
-      header: "阶段",
+      header: copy("stage"),
       cell: ({ row }) => (
         <Tag tone="brand" size="sm" variant="soft">
-          {row.original.stage}
+          {projectStageLabel[row.original.stage]}
         </Tag>
       ),
     },
     {
       accessorKey: "progress",
-      header: "进度",
+      header: copy("progress"),
       cell: ({ row }) => (
         <div className="flex w-28 items-center gap-2">
           <Progress variant="linear" value={row.original.progress} className="flex-1" />
@@ -110,27 +113,25 @@ export default function TrackingPage() {
     },
     {
       accessorKey: "contractAmount",
-      header: "合同额",
+      header: copy("contractAmount"),
       cell: ({ row }) => <span className="tabular-nums">{yuan(row.original.contractAmount)}</span>,
     },
     {
       accessorKey: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => (
         <Tag tone={projectStatusTone(row.original.status)} size="sm" dot>
-          {row.original.status}
+          {projectStatusLabel[row.original.status]}
         </Tag>
       ),
     },
-    { accessorKey: "dueAt", header: "计划竣工" },
+    { accessorKey: "dueAt", header: copy("plannedCompletion") },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => (
-        <Button variant="link" size="sm" render={<Link href={`${ROOT}/tracking/${row.original.id}`} />}>
-          查看
-        </Button>
+        <Button variant="link" size="sm" render={<Link href={`${ROOT}/tracking/${row.original.id}`} />}>{copy("view")}</Button>
       ),
     },
   ];
@@ -141,8 +142,8 @@ export default function TrackingPage() {
       value={view}
       onValueChange={setView}
       items={[
-        { value: "list", label: <span className="inline-flex items-center gap-1.5"><LayoutList className="size-4" />列表</span> },
-        { value: "board", label: <span className="inline-flex items-center gap-1.5"><SquareKanban className="size-4" />看板</span> },
+        { value: "list", label: <span className="inline-flex items-center gap-1.5"><LayoutList className="size-4" />{copy("list")}</span> },
+        { value: "board", label: <span className="inline-flex items-center gap-1.5"><SquareKanban className="size-4" />{copy("kanban")}</span> },
       ]}
     />
   );
@@ -150,7 +151,7 @@ export default function TrackingPage() {
   const errorBanner = error ? (
     <Alert tone="danger" className="mb-3" action={
       <Button size="sm" variant="ghost" onClick={reload}>
-        {loading ? <Spinner size="sm" /> : "重试"}
+        {loading ? <Spinner size="sm" /> : copy("tryAgain")}
       </Button>
     }>
       {error}
@@ -162,7 +163,7 @@ export default function TrackingPage() {
       <div className="rounded-[var(--radius-lg)] border border-border bg-surface p-4">
         {errorBanner}
         <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="text-base font-medium text-foreground">项目追踪</div>
+          <div className="text-base font-medium text-foreground">{copy("projectTracking")}</div>
           {viewSwitch}
         </div>
         {loading ? (
@@ -199,7 +200,7 @@ export default function TrackingPage() {
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <Tag tone={projectStatusTone(p.status)} size="sm" dot>
-                      {p.status}
+                      {projectStatusLabel[p.status]}
                     </Tag>
                     <Text size="xs" tone="muted">
                       {wan(p.contractAmount)}
@@ -218,7 +219,7 @@ export default function TrackingPage() {
     <div className="flex flex-col gap-3">
       {errorBanner}
       <ProTable<Project>
-        title="项目追踪"
+        title={copy("projectTracking2")}
         columns={columns}
         data={paged}
         loading={loading}
@@ -226,10 +227,10 @@ export default function TrackingPage() {
         toolbarActions={viewSwitch}
         search={{
           fields: [
-            { name: "keyword", label: "关键词", placeholder: "项目 / 编号 / 甲方" },
-            { name: "stage", label: "阶段", type: "select", options: opt(PROJECT_STAGES) },
-            { name: "status", label: "状态", type: "select", options: opt(STATUSES) },
-            { name: "owner", label: "负责人", type: "select", options: opt(OWNERS) },
+            { name: "keyword", label: copy("keywords"), placeholder: copy("projectNoPartyA") },
+            { name: "stage", label: copy("stage2"), type: "select", options: opt(PROJECT_STAGES, projectStageLabel) },
+            { name: "status", label: copy("status2"), type: "select", options: opt(STATUSES, projectStatusLabel) },
+            { name: "owner", label: copy("personInCharge2"), type: "select", options: opt(OWNER_OPTIONS) },
           ],
           onSearch: (v) => {
             setFilters(v);

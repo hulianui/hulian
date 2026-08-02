@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BackTop } from "./back-top";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -25,6 +27,11 @@ describe("BackTop", () => {
 
   it("支持本地化 aria-label", () => {
     const { container } = render(<BackTop aria-label="Back to top" />);
+    expect(container.querySelector('button[aria-label="Back to top"]')).not.toBeNull();
+  });
+
+  it("默认标签跟随 ConfigProvider", () => {
+    const { container } = render(<ConfigProvider locale={enUS}><BackTop /></ConfigProvider>);
     expect(container.querySelector('button[aria-label="Back to top"]')).not.toBeNull();
   });
 

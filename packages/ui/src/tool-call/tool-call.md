@@ -46,6 +46,8 @@ import { ToolCall } from "@hulianui/ui"
 | output | `ReactNode` | 结果（建议传 `<CodeBlock/>` / `<Prose/>` 或文本） |
 | children | `ReactNode` | 自定义面板内容（替代 input/output） |
 
+状态及“参数/结果”标题会随 `ConfigProvider` 的 `locale` 自动切换；未提供 Provider 时保持中文默认值。
+
 ## 示例
 ```tsx
 <ToolCall

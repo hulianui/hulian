@@ -1,12 +1,36 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { EmojiPicker } from "./emoji-picker";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("EmojiPicker", () => {
   it("默认渲染搜索框与分类页签", () => {
     const { getByLabelText } = render(<EmojiPicker />);
     expect(getByLabelText("搜索表情")).toBeTruthy();
     expect(getByLabelText("笑脸")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS renders English chrome and category labels", () => {
+    const { getByLabelText, getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <EmojiPicker recent={["🔥"]} />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("Search emoji")).toBeTruthy();
+    expect(getByLabelText("Smileys & emotion")).toBeTruthy();
+    expect(getByLabelText("Animals & nature")).toBeTruthy();
+    expect(getByText("Recently used")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS renders the English empty-search message", () => {
+    const { getByLabelText, getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <EmojiPicker />
+      </ConfigProvider>,
+    );
+    fireEvent.change(getByLabelText("Search emoji"), { target: { value: "zzzxxxqqq" } });
+    expect(getByText("No matching emoji")).toBeTruthy();
   });
 
   it("点击 emoji 触发 onSelect", () => {

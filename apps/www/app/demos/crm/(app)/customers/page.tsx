@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Pencil, Plus, Trash2 } from "lucide-react";
@@ -26,18 +28,18 @@ import {
   type ColumnDef,
 } from "@hulianui/ui";
 import { customers as seed } from "../../_data/customers";
-import { customerLevelTone, customerStatusTone, yuan } from "../../_data/status";
+import { customerLevelLabel, customerLevelTone, customerStatusLabel, customerStatusTone, yuan } from "../../_data/status";
 import { OWNERS, type Customer, type CustomerLevel, type CustomerStatus } from "../../_data/types";
 import { useMockData, usePending } from "../../../lib/async";
 
 const LEVELS: CustomerLevel[] = ["重要", "普通", "潜在"];
 const STATUSES: CustomerStatus[] = ["待分配", "跟进中", "已成交", "已流失"];
-const INDUSTRIES = ["制造", "互联网", "金融", "医疗", "教育", "零售", "物流", "餐饮", "能源", "咨询"];
+const INDUSTRIES = [copy("manufacturing"), copy("internet"), copy("finance"), copy("medical"), copy("education"), copy("retail"), copy("logistics"), copy("catering"), copy("energy"), copy("consultation")];
 const PAGE_SIZE = 8;
 
-const opt = (arr: readonly string[], allLabel = "全部") => [
+const opt = (arr: readonly string[], allLabel = copy("all"), labels?: Readonly<Record<string, string>>) => [
   { value: "", label: allLabel },
-  ...arr.map((v) => ({ value: v, label: v })),
+  ...arr.map((v) => ({ value: v, label: labels?.[v] ?? v })),
 ];
 
 type FormState = {
@@ -56,7 +58,7 @@ type FormState = {
 
 const EMPTY: FormState = {
   name: "", company: "", contactName: "", phone: "", email: "",
-  level: "普通", status: "待分配", owner: OWNERS[0], industry: "制造", region: "", regionCodes: [],
+  level: copy("ordinary2"), status: copy("toBeAllocated2"), owner: OWNERS[0], industry: copy("manufacturing2"), region: "", regionCodes: [],
 };
 
 export default function CustomersPage() {
@@ -107,18 +109,18 @@ export default function CustomersPage() {
     return run(() => {
       if (editing) {
         setRows((rs) => rs.map((r) => (r.id === editing.id ? { ...r, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus } : r)));
-        toast({ title: "客户已更新", description: val.name, tone: "success" });
+        toast({ title: copy("customerUpdated"), description: val.name, tone: "success" });
       } else {
         const nextId = `C${1000 + rows.length + 1}`;
         setRows((rs) => [
           {
             id: nextId, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus,
-            amount: 0, lastFollowAt: "2026-06-04", createdAt: "2026-06-04", tags: ["新建"],
+            amount: 0, lastFollowAt: "2026-06-04", createdAt: "2026-06-04", tags: [copy("new")],
           },
           ...rs,
         ]);
         setPage(1);
-        toast({ title: "已新建客户", description: val.name, tone: "success" });
+        toast({ title: copy("newCustomerHasBeenCreated"), description: val.name, tone: "success" });
       }
     });
   };
@@ -126,7 +128,7 @@ export default function CustomersPage() {
   const columns: ColumnDef<Customer>[] = [
     {
       accessorKey: "name",
-      header: "客户",
+      header: copy("customer"),
       cell: ({ row }) => {
         const c = row.original;
         return (
@@ -144,7 +146,7 @@ export default function CustomersPage() {
     },
     {
       accessorKey: "contactName",
-      header: "联系人",
+      header: copy("contactPerson"),
       cell: ({ row }) => (
         <div>
           <div className="text-sm">{row.original.contactName}</div>
@@ -154,54 +156,52 @@ export default function CustomersPage() {
     },
     {
       accessorKey: "level",
-      header: "等级",
+      header: copy("level"),
       cell: ({ row }) => (
         <Tag tone={customerLevelTone[row.original.level]} size="sm">
-          {row.original.level}
+          {customerLevelLabel[row.original.level]}
         </Tag>
       ),
     },
     {
       accessorKey: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => (
         <Tag tone={customerStatusTone[row.original.status]} size="sm" dot>
-          {row.original.status}
+          {customerStatusLabel[row.original.status]}
         </Tag>
       ),
     },
-    { accessorKey: "owner", header: "负责人" },
+    { accessorKey: "owner", header: copy("personInCharge") },
     {
       accessorKey: "amount",
-      header: "累计成交",
+      header: copy("accumulatedTransactions"),
       cell: ({ row }) => <span className="tabular-nums">{yuan(row.original.amount)}</span>,
     },
-    { accessorKey: "lastFollowAt", header: "最近跟进" },
+    { accessorKey: "lastFollowAt", header: copy("latestFollowUp") },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" render={<Link href={`/demos/crm/customers/${row.original.id}`} />}>
-            查看
-          </Button>
+          <Button variant="ghost" size="sm" render={<Link href={`/demos/crm/customers/${row.original.id}`} />}>{copy("view")}</Button>
           <Tooltip>
             <TooltipTrigger render={
               <Button variant="ghost" size="iconSm" onClick={() => openEdit(row.original)}>
                 <Pencil className="size-3.5" />
               </Button>
             } />
-            <TooltipContent>编辑客户</TooltipContent>
+            <TooltipContent>{copy("editCustomer")}</TooltipContent>
           </Tooltip>
           <Popconfirm
-            title="删除该客户？"
-            description="删除后数据不可恢复（demo 内存态，刷新还原）。"
+            title={copy("deleteThisCustomer")}
+            description={copy("theDataCannotBeRecoveredAfterDeletion")}
             danger
-            okText="删除"
+            okText={copy("delete")}
             onConfirm={() => {
               setRows((rs) => rs.filter((r) => r.id !== row.original.id));
-              toast({ title: "已删除客户", description: row.original.name, tone: "danger" });
+              toast({ title: copy("customerDeleted"), description: row.original.name, tone: "danger" });
             }}
           >
             <Tooltip>
@@ -210,7 +210,7 @@ export default function CustomersPage() {
                   <Trash2 className="size-3.5" />
                 </Button>
               } />
-              <TooltipContent>删除客户</TooltipContent>
+              <TooltipContent>{copy("deleteCustomer")}</TooltipContent>
             </Tooltip>
           </Popconfirm>
         </div>
@@ -220,11 +220,11 @@ export default function CustomersPage() {
 
   // 每字段只 register 一次（register 第二次无 config 会覆盖 rules，故集中注册）。
   const reg = {
-    name: form.register("name", { rules: [{ required: true, message: "请输入客户简称" }] }),
-    company: form.register("company", { rules: [{ required: true, message: "请输入公司全称" }] }),
+    name: form.register("name", { rules: [{ required: true, message: copy("pleaseEnterTheCustomerSShortName") }] }),
+    company: form.register("company", { rules: [{ required: true, message: copy("pleaseEnterFullCompanyName") }] }),
     contactName: form.register("contactName"),
-    phone: form.register("phone", { rules: [{ pattern: /\d/, message: "电话需含数字" }] }),
-    email: form.register("email", { rules: [{ pattern: /@/, message: "邮箱需含 @" }] }),
+    phone: form.register("phone", { rules: [{ pattern: /\d/, message: copy("phoneNumberMustIncludeNumbers") }] }),
+    email: form.register("email", { rules: [{ pattern: /@/, message: copy("emailMustContain") }] }),
     region: form.register("region"),
     regionCodes: form.register("regionCodes"),
     owner: form.register("owner"),
@@ -238,28 +238,25 @@ export default function CustomersPage() {
       {error && (
         <Alert tone="danger" className="mb-3">
           {error}{" "}
-          <Button size="sm" variant="ghost" onClick={reload}>
-            重试
-          </Button>
+          <Button size="sm" variant="ghost" onClick={reload}>{copy("tryAgain")}</Button>
         </Alert>
       )}
       <ProTable<Customer>
-        title="客户列表"
+        title={copy("customerList")}
         columns={columns}
         data={paged}
         loading={loading}
         getRowId={(r) => r.id}
         toolbarActions={
           <Button size="sm" onClick={openCreate}>
-            <Plus className="size-4" /> 新建客户
-          </Button>
+            <Plus className="size-4" />{copy("createNewCustomer")}</Button>
         }
         search={{
           fields: [
-            { name: "keyword", label: "关键词", placeholder: "客户 / 公司 / 联系人" },
-            { name: "status", label: "状态", type: "select", options: opt(STATUSES) },
-            { name: "level", label: "等级", type: "select", options: opt(LEVELS) },
-            { name: "owner", label: "负责人", type: "select", options: opt(OWNERS) },
+            { name: "keyword", label: copy("keywords"), placeholder: copy("customerCompanyContact") },
+            { name: "status", label: copy("status2"), type: "select", options: opt(STATUSES, copy("all"), customerStatusLabel) },
+            { name: "level", label: copy("level2"), type: "select", options: opt(LEVELS, copy("all"), customerLevelLabel) },
+            { name: "owner", label: copy("personInCharge2"), type: "select", options: opt(OWNERS) },
           ],
           onSearch: (v) => {
             setFilters(v);
@@ -274,7 +271,7 @@ export default function CustomersPage() {
       />
 
       <ModalForm
-        title={editing ? "编辑客户" : "新建客户"}
+        title={editing ? copy("editCustomer2") : copy("createNewCustomer2")}
         form={form}
         open={open}
         onOpenChange={setOpen}
@@ -282,25 +279,25 @@ export default function CustomersPage() {
         className="w-[560px]"
       >
         <div className="grid grid-cols-2 gap-x-4">
-          <Field label="客户简称" error={reg.name.error}>
-            <Input {...bind(reg.name)} placeholder="如：晨光文具" />
+          <Field label={copy("customerAbbreviation")} error={reg.name.error}>
+            <Input {...bind(reg.name)} placeholder={copy("suchAsMorningLightStationery")} />
           </Field>
-          <Field label="负责人">
+          <Field label={copy("personInCharge3")}>
             <FormSelect field={reg.owner} options={OWNERS} />
           </Field>
-          <Field label="公司全称" className="col-span-2" error={reg.company.error}>
-            <Input {...bind(reg.company)} placeholder="营业执照全称" />
+          <Field label={copy("fullCompanyName")} className="col-span-2" error={reg.company.error}>
+            <Input {...bind(reg.company)} placeholder={copy("fullNameOfBusinessLicense")} />
           </Field>
-          <Field label="联系人">
-            <Input {...bind(reg.contactName)} placeholder="对接人姓名" />
+          <Field label={copy("contactPerson2")}>
+            <Input {...bind(reg.contactName)} placeholder={copy("nameOfContactPerson")} />
           </Field>
-          <Field label="联系电话" error={reg.phone.error}>
-            <Input {...bind(reg.phone)} placeholder="手机 / 座机" />
+          <Field label={copy("contactNumber")} error={reg.phone.error}>
+            <Input {...bind(reg.phone)} placeholder={copy("cellPhoneLandline")} />
           </Field>
-          <Field label="邮箱" error={reg.email.error}>
+          <Field label={copy("email")} error={reg.email.error}>
             <Input {...bind(reg.email)} placeholder="name@company.com" />
           </Field>
-          <Field label="所在地区" className="col-span-2">
+          <Field label={copy("area")} className="col-span-2">
             <RegionCascader
               value={reg.regionCodes.value as string[]}
               onChange={(codes, names) => {
@@ -308,20 +305,20 @@ export default function CustomersPage() {
                 // 将省/市/区名拼成 region 文本字段
                 reg.region.onChange(names.join("/"));
               }}
-              placeholder="省 / 市 / 区县"
+              placeholder={copy("provinceCityDistrictCounty")}
               showSearch
             />
           </Field>
           <div className="col-span-2 py-1">
             <Separator />
           </div>
-          <Field label="客户等级">
-            <FormSelect field={reg.level} options={LEVELS} />
+          <Field label={copy("customerLevel")}>
+            <FormSelect field={reg.level} options={LEVELS} labels={customerLevelLabel} />
           </Field>
-          <Field label="跟进状态">
-            <FormSelect field={reg.status} options={STATUSES} />
+          <Field label={copy("followUpStatus")}>
+            <FormSelect field={reg.status} options={STATUSES} labels={customerStatusLabel} />
           </Field>
-          <Field label="所属行业" className="col-span-2">
+          <Field label={copy("industry")} className="col-span-2">
             <FormSelect field={reg.industry} options={INDUSTRIES} />
           </Field>
         </div>
@@ -342,11 +339,13 @@ function bind(field: ReturnType<ReturnType<typeof useForm>["register"]>) {
 function FormSelect({
   field,
   options,
+  labels,
 }: {
   field: ReturnType<ReturnType<typeof useForm>["register"]>;
   options: readonly string[];
+  labels?: Readonly<Record<string, string>>;
 }) {
-  const items = options.map((o) => ({ value: o, label: o }));
+  const items = options.map((o) => ({ value: o, label: labels?.[o] ?? o }));
   return (
     <Select
       items={items}
@@ -357,7 +356,7 @@ function FormSelect({
       <SelectContent>
         {options.map((o) => (
           <SelectItem key={o} value={o}>
-            {o}
+            {labels?.[o] ?? o}
           </SelectItem>
         ))}
       </SelectContent>
