@@ -1,8 +1,33 @@
-import { describe, it, expect } from "vitest";
-import { render as rtlRender } from "@testing-library/react";
+import { Profiler } from "react";
+import { describe, it, expect, vi } from "vitest";
+import { act, render as rtlRender } from "@testing-library/react";
 import { Button, buttonVariants } from "./button";
 
 describe("buttonVariants", () => {
+  it("稳定父更新时跳过按钮子树", async () => {
+    const onRender = vi.fn();
+    const { rerender } = rtlRender(
+      <div data-parent-version="0">
+        <Profiler id="button" onRender={onRender}>
+          <Button>稳定按钮</Button>
+        </Profiler>
+      </div>,
+    );
+    await act(async () => undefined);
+    onRender.mockClear();
+    rerender(
+      <div data-parent-version="1">
+        <Profiler id="button" onRender={onRender}>
+          <Button>稳定按钮</Button>
+        </Profiler>
+      </div>,
+    );
+
+    const update = onRender.mock.calls.at(-1);
+    expect(update?.[1]).toBe("update");
+    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+  });
+
   it("default = solid brand md", () => {
     const c = buttonVariants({});
     expect(c).toContain("bg-primary");
