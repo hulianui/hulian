@@ -1,4 +1,6 @@
+"use client";
 import { Check, X } from "../_icons";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Spinner } from "../spinner";
 import type { AgentPlanProps, AgentTaskStatus } from "./agent-plan.types";
@@ -14,11 +16,13 @@ function StatusIcon({ status }: { status: AgentTaskStatus }) {
 
 export function AgentPlan({
   tasks,
-  title = "执行计划",
+  title,
   bare = false,
   strikeDone = true,
   className,
 }: AgentPlanProps) {
+  const copy = useComponentLocale().agentPlan ?? zhCN.components!.agentPlan!;
+  const resolvedTitle = title === undefined ? copy.title : title;
   return (
     <div
       className={cn(
@@ -26,7 +30,7 @@ export function AgentPlan({
         className,
       )}
     >
-      {title && <p className="mb-2.5 text-xs font-medium text-muted">{title}</p>}
+      {resolvedTitle && <p className="mb-2.5 text-xs font-medium text-muted">{resolvedTitle}</p>}
       <ol className="space-y-2.5">
         {tasks.map((t, i) => {
           const status = t.status ?? "pending";

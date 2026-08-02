@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState, type MouseEvent } from "react";
 import { ChevronRight, Folder, File } from "../_icons";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { filterFileTree } from "./file-tree-core";
 import type { FileNode, FileStatus, FileTreeProps } from "./file-tree.types";
@@ -120,8 +121,10 @@ export function FileTree({
   defaultExpandedPaths,
   onExpandedChange,
   searchable,
-  searchPlaceholder = "搜索文件",
+  searchPlaceholder,
 }: FileTreeProps) {
+  const copy = useComponentLocale().fileTree ?? zhCN.components!.fileTree!;
+  const resolvedSearchPlaceholder = searchPlaceholder ?? copy.search;
   const [query, setQuery] = useState("");
 
   // 向后兼容初值：各 folder defaultExpanded 收集的 path ∪ defaultExpandedPaths。
@@ -171,8 +174,8 @@ export function FileTree({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={searchPlaceholder}
-          aria-label={searchPlaceholder}
+          placeholder={resolvedSearchPlaceholder}
+          aria-label={resolvedSearchPlaceholder}
           className="w-full rounded-[var(--radius)] border border-border bg-surface px-2.5 py-1.5 text-sm outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         />
       )}

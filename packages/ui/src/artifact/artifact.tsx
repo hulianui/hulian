@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Chip } from "../chip";
 import type { ArtifactProps } from "./artifact.types";
@@ -13,11 +14,12 @@ export function Artifact({
   defaultExpanded = false,
   expanded: expandedProp,
   onExpandedChange,
-  expandLabel = "展开全文",
-  collapseLabel = "收起",
+  expandLabel,
+  collapseLabel,
   className,
   children,
 }: ArtifactProps) {
+  const copy = useComponentLocale().artifact ?? zhCN.components!.artifact!;
   const [inner, setInner] = useState(defaultExpanded);
   const collapsible = collapsedHeight > 0;
   const expanded = expandedProp ?? inner;
@@ -70,7 +72,7 @@ export function Artifact({
           onClick={() => setExpanded(!expanded)}
           className="block w-full border-t border-border py-1.5 text-center text-xs text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
         >
-          {expanded ? collapseLabel : expandLabel}
+          {expanded ? (collapseLabel ?? copy.collapse) : (expandLabel ?? copy.expand)}
         </button>
       )}
     </div>

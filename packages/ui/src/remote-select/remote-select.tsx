@@ -9,6 +9,7 @@ import {
   ComboboxItem,
 } from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { Spinner } from "../spinner/spinner";
 import type {
   RemoteSelectOption,
@@ -53,9 +54,9 @@ export function RemoteSelect(props: RemoteSelectProps) {
     valueKey = "id",
     debounce = 300,
     pageSize = 10,
-    placeholder = "请选择",
-    emptyMessage = "无匹配数据",
-    loadingMessage = "加载中…",
+    placeholder,
+    emptyMessage,
+    loadingMessage,
     size,
     disabled,
     invalid,
@@ -65,6 +66,10 @@ export function RemoteSelect(props: RemoteSelectProps) {
     className,
     popupClassName,
   } = props;
+  const copy = useComponentLocale().remoteSelect ?? zhCN.components!.remoteSelect!;
+  const resolvedPlaceholder = placeholder ?? copy.placeholder;
+  const resolvedEmptyMessage = emptyMessage ?? copy.empty;
+  const resolvedLoadingMessage = loadingMessage ?? copy.loading;
   const multiple = props.multiple === true;
 
   // ── 值（受控 / 非受控）─────────────────────────────────────────────
@@ -304,25 +309,25 @@ export function RemoteSelect(props: RemoteSelectProps) {
   const empty: ReactNode = loading ? (
     <span className="inline-flex items-center gap-2">
       <Spinner size="sm" tone="muted" />
-      {loadingMessage}
+      {resolvedLoadingMessage}
     </span>
   ) : (
-    emptyMessage
+    resolvedEmptyMessage
   );
 
   const footer: ReactNode =
     options.length === 0 ? null : (
       <div className="flex items-center justify-between gap-2 px-2 py-1 text-xs text-muted">
         <span className="tabular-nums">
-          {total != null ? `共 ${total} 条` : `已加载 ${options.length} 条`}
+          {total != null ? copy.total(total) : copy.loaded(options.length)}
         </span>
         {loading ? (
           <span className="inline-flex items-center gap-1.5">
             <Spinner size="sm" tone="muted" className="size-3" />
-            {loadingMessage}
+            {resolvedLoadingMessage}
           </span>
         ) : (
-          <span>{hasMore ? "滚动加载更多" : "没有更多了"}</span>
+          <span>{hasMore ? copy.loadMore : copy.noMore}</span>
         )}
       </div>
     );
@@ -363,7 +368,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
         <ComboboxChips
           size={size}
           invalid={invalid}
-          placeholder={selectedOptions.length ? "" : placeholder}
+          placeholder={selectedOptions.length ? "" : resolvedPlaceholder}
           className={className}
         >
           {/* 必须按 value 顺序：ChipRemove 按渲染序绑定 selectedValue[index]，乱序会删错项。 */}
@@ -393,7 +398,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
     >
       <ComboboxInput
         size={size}
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         invalid={invalid}
         clearable={clearable}
         className={className}

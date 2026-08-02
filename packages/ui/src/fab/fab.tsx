@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Plus } from "../_icons";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { pressableClass } from "../motion";
 import type { FabPosition, FabProps } from "./fab.types";
@@ -29,6 +30,7 @@ export function Fab({
   "aria-label": ariaLabel,
   className,
 }: FabProps) {
+  const copy = useComponentLocale().fab ?? zhCN.components!.fab!;
   const [open, setOpen] = useState(false);
   const [drag, setDrag] = useState({ x: 0, y: 0 });
   // 拖拽态：ox/oy=按下点，dx/dy=按下时已有偏移，moved=越过阈值（用于区分拖拽与点击）。
@@ -119,7 +121,7 @@ export function Fab({
         ))}
       <button
         type="button"
-        aria-label={ariaLabel ?? label ?? "操作"}
+        aria-label={ariaLabel ?? label ?? copy.action}
         aria-expanded={hasActions ? open : undefined}
         onClick={handleMain}
         onPointerDown={onPointerDown}

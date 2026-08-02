@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { EventStreamItem, EventStreamProps, EventStreamTone } from "./event-stream.types";
 
@@ -43,6 +44,7 @@ function Row({
   onItemClick,
   isNew,
   expandedAll,
+  overriddenPrefix,
 }: {
   item: EventStreamItem;
   side: "left" | "right";
@@ -50,6 +52,7 @@ function Row({
   onItemClick: EventStreamProps["onItemClick"];
   isNew: boolean;
   expandedAll: boolean;
+  overriddenPrefix: string;
 }) {
   const [open, setOpen] = useState(expandedAll);
   useEffect(() => setOpen(expandedAll), [expandedAll]);
@@ -125,7 +128,7 @@ function Row({
               aria-hidden
               className="inline-block size-1.5 shrink-0 rounded-full bg-warning"
             />
-            <span className="min-w-0 truncate">已放行：{item.overridden}</span>
+            <span className="min-w-0 truncate">{overriddenPrefix}{item.overridden}</span>
           </div>
         )}
 
@@ -142,13 +145,15 @@ function Row({
 export function EventStream({
   items,
   maxHeight,
-  emptyText = "暂无事件",
+  emptyText,
   onItemClick,
   live = false,
   side = "left",
   defaultExpanded = false,
   className,
 }: EventStreamProps) {
+  const copy = useComponentLocale().eventStream ?? zhCN.components!.eventStream!;
+  const resolvedEmptyText = emptyText ?? copy.empty;
   // 记住上一轮见过的 id，用来判断本轮哪些是新的。
   // 用 ref 而非 state：它只影响渲染样式，不该自己触发一次额外渲染。
   const seen = useRef<Set<string | number> | null>(null);
@@ -174,7 +179,7 @@ export function EventStream({
           className,
         )}
       >
-        {emptyText}
+        {resolvedEmptyText}
       </div>
     );
   }
@@ -193,6 +198,7 @@ export function EventStream({
           onItemClick={onItemClick}
           isNew={fresh.has(item.id)}
           expandedAll={defaultExpanded}
+          overriddenPrefix={copy.overriddenPrefix}
         />
       ))}
     </ol>

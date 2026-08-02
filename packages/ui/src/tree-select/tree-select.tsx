@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { Tree } from "../tree/tree";
@@ -47,7 +48,7 @@ export function TreeSelect({
   defaultValue,
   onChange,
   multiple = false,
-  placeholder = "请选择",
+  placeholder,
   disabled,
   invalid,
   size = "md",
@@ -56,6 +57,8 @@ export function TreeSelect({
   showLine = false,
   className,
 }: TreeSelectProps) {
+  const copy = useComponentLocale().treeSelect ?? zhCN.components!.treeSelect!;
+  const resolvedPlaceholder = placeholder ?? copy.placeholder;
   const index = useMemo(() => buildIndex(nodes), [nodes]);
   const [open, setOpen] = useState(false);
 
@@ -94,7 +97,7 @@ export function TreeSelect({
         )}
       >
         {!hasValue ? (
-          placeholder
+          resolvedPlaceholder
         ) : multiple ? (
           selectedArr.map((k) => (
             <span
@@ -133,7 +136,7 @@ export function TreeSelect({
           {showClear && (
             <button
               type="button"
-              aria-label="清除"
+              aria-label={copy.clear}
               onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.stopPropagation();

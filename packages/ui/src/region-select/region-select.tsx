@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import {
@@ -48,6 +49,7 @@ export function RegionSelect({
   className,
   ...rest
 }: RegionSelectProps) {
+  const copy = useComponentLocale().regionSelect ?? zhCN.components!.regionSelect!;
   const [natural, setNatural] = useState<Natural | null>(
     naturalSize ? { w: naturalSize.width, h: naturalSize.height } : null,
   );
@@ -168,7 +170,7 @@ export function RegionSelect({
         )}
         {...rest}
       >
-        {errorPlaceholder ?? "图片加载失败"}
+        {errorPlaceholder ?? copy.error}
       </div>
     );
   }
@@ -182,7 +184,7 @@ export function RegionSelect({
         )}
         {...rest}
       >
-        {placeholder ?? "载入图片…"}
+        {placeholder ?? copy.loading}
       </div>
     );
   }
@@ -206,7 +208,7 @@ export function RegionSelect({
         onPointerUp={(e) => finish(e, true)}
         onPointerCancel={(e) => finish(e, false)}
         role="img"
-        aria-label={alt || "区域选择画布"}
+        aria-label={alt || copy.canvas}
       >
         <image href={src} x={0} y={0} width={natural.w} height={natural.h} onError={fail} />
 

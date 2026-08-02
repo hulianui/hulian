@@ -1,5 +1,6 @@
 "use client";
 import { cva } from "class-variance-authority";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Marquee } from "../marquee/marquee";
 import type { BannerProps } from "./banner.types";
@@ -42,9 +43,10 @@ export function Banner({
   align = "center",
   scrollable = false,
   onClose,
-  closeLabel = "关闭",
+  closeLabel,
   className,
 }: BannerProps) {
+  const copy = useComponentLocale().banner ?? zhCN.components!.banner!;
   return (
     <div role="status" className={cn(bannerVariants({ variant, tone }), className)}>
       {icon != null && <span className="shrink-0 [&>svg]:size-4">{icon}</span>}
@@ -67,7 +69,7 @@ export function Banner({
             <button
               type="button"
               onClick={onClose}
-              aria-label={closeLabel}
+              aria-label={closeLabel ?? copy.close}
               className="grid size-6 shrink-0 place-items-center rounded-full opacity-70 transition-opacity hover:bg-black/10 hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current dark:hover:bg-white/15"
             >
               <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="size-3.5" aria-hidden>

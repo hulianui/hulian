@@ -1,5 +1,6 @@
 "use client";
 import { useState, type CSSProperties } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Segmented } from "../segmented";
 import type { ViewportDevice, ViewportProps } from "./viewport.types";
@@ -16,12 +17,6 @@ const PRESET: Record<ViewportDevice, string> = {
   phone: "390px",
 };
 
-const DEVICE_ITEMS = [
-  { value: "web", label: "Web" },
-  { value: "tablet", label: "平板" },
-  { value: "phone", label: "手机" },
-];
-
 const toCss = (v: number | string) => (typeof v === "number" ? `${v}px` : v);
 
 export function Viewport({
@@ -36,6 +31,12 @@ export function Viewport({
   children,
   className,
 }: ViewportProps) {
+  const copy = useComponentLocale().viewport ?? zhCN.components!.viewport!;
+  const deviceItems = [
+    { value: "web", label: "Web" },
+    { value: "tablet", label: copy.tablet },
+    { value: "phone", label: copy.phone },
+  ];
   const [internal, setInternal] = useState<ViewportDevice>(defaultDevice);
   const current = device ?? internal;
 
@@ -56,9 +57,9 @@ export function Viewport({
     <div className={cn("flex w-full flex-col items-center gap-3", className)}>
       {controls && (
         <Segmented
-          aria-label="设备预设"
+          aria-label={copy.devicePresets}
           size="sm"
-          items={DEVICE_ITEMS}
+          items={deviceItems}
           value={current}
           onValueChange={(v) => setDevice(v as ViewportDevice)}
         />

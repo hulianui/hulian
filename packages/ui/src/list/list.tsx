@@ -6,6 +6,7 @@
 // - 含交互回调(loadMore onClick) + Context 下发 → 必 "use client"。
 import { Children, createContext, Fragment, useContext, type ReactNode } from "react";
 import { Button } from "../button";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { Empty } from "../empty";
 import { Grid } from "../grid";
 import { cn } from "../lib/cn";
@@ -46,6 +47,7 @@ export function List<T,>({
   "aria-describedby": ariaDescribedBy,
   ...props
 }: ListProps<T>) {
+  const copy = useComponentLocale().list ?? zhCN.components!.list!;
   // 这三个属性单独拎出来喂给 role="list" 的节点，其余原生属性照旧落外层容器。
   const ariaProps = {
     "aria-label": ariaLabel,
@@ -70,7 +72,7 @@ export function List<T,>({
   if (isEmpty) {
     body = (
       <div className={cn(!isGrid && resolvedInset && PAD_X[size])}>
-        {empty ?? <Empty title="暂无数据" size={size === "sm" ? "sm" : "md"} />}
+        {empty ?? <Empty title={copy.empty} size={size === "sm" ? "sm" : "md"} />}
       </div>
     );
   } else if (isGrid) {
@@ -129,7 +131,7 @@ export function List<T,>({
               )}
             >
               <Button variant="outline" size="sm" loading={loadMore.loading} onClick={loadMore.onLoadMore}>
-                {loadMore.text ?? "加载更多"}
+                {loadMore.text ?? copy.loadMore}
               </Button>
             </div>
           )}
