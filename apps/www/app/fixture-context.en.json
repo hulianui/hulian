@@ -1,0 +1,145 @@
+{
+  "blocks": {
+    "about.tsx": {
+      "极致性能": "Peak performance"
+    },
+    "activity-timeline.tsx": {
+      "将工单": "Moved ticket",
+      "关闭了": "Closed",
+      "创建了变更单": "Created change request"
+    },
+    "agent-card.tsx": {
+      "富余": "Available",
+      "适中": "Moderate",
+      "偏高": "High"
+    },
+    "article-body.tsx": {},
+    "article-toc.tsx": {},
+    "banner.tsx": {},
+    "blog-list.tsx": {},
+    "cart-summary.tsx": {
+      "轻奢蚕丝枕套双面桑蚕丝": "Premium Reversible Mulberry Silk Pillowcase"
+    },
+    "changelog.tsx": {},
+    "chart-grid.tsx": {
+      "电话": "Phone",
+      "合作": "Partners",
+      "渠道新增客户": "New customers by channel",
+      "高敏": "Gao Min"
+    },
+    "chat-panel.tsx": {
+      "思考 2.1s": "Thought for 2.1s"
+    },
+    "contact-form.tsx": {},
+    "cta-banner.tsx": {},
+    "cta-card.tsx": {
+      "让团队跑得更快，": "Move faster as a team,",
+      "从瀚云": "Start with HanCloud",
+      "现在": "today",
+      "开始": ""
+    },
+    "cta-newsletter.tsx": {},
+    "cta.tsx": {},
+    "data-table.tsx": {},
+    "detail-drawer.tsx": {},
+    "empty-state.tsx": {
+      "范式二 b · Result 404（无结果）": "Pattern 2b · 404 result (no matches)"
+    },
+    "error-page.tsx": {},
+    "faq.tsx": {},
+    "feature-split.tsx": {},
+    "feature-spotlight.tsx": {},
+    "feature-tabs.tsx": {},
+    "features.tsx": {},
+    "flow-canvas.tsx": {},
+    "footer.tsx": {},
+    "hero-split.tsx": {},
+    "hero-terminal.tsx": {
+      "把应用送上全球边缘": "Deploy your app to the global edge"
+    },
+    "hero-video.tsx": {},
+    "hero-waitlist.tsx": {},
+    "hero.tsx": {
+      "把应用送上": "Deploy your app to the",
+      "全球边缘": "global edge",
+      "只需一次 git push": "with a single git push"
+    },
+    "integrations.tsx": {},
+    "kanban-board.tsx": {},
+    "kpi-rail.tsx": {},
+    "login.tsx": {},
+    "logo-cloud.tsx": {},
+    "milestone-timeline.tsx": {},
+    "navbar.tsx": {},
+    "onboarding.tsx": {},
+    "page-header.tsx": {},
+    "pricing-compare.tsx": {},
+    "pricing-credits.tsx": {},
+    "pricing-table.tsx": {},
+    "pricing-usage.tsx": {},
+    "product-detail.tsx": {
+      "宝石蓝": "Sapphire Blue",
+      "琥珀黄": "Amber Yellow",
+      "薄荷绿": "Mint Green",
+      "午夜黑": "Midnight Black",
+      "轻奢蚕丝枕套双面桑蚕丝": "Premium Reversible Mulberry Silk Pillowcase"
+    },
+    "product-grid.tsx": {
+      "轻奢蚕丝枕套双面桑蚕丝": "Premium Reversible Mulberry Silk Pillowcase",
+      "人体工学办公椅可调节腰托": "Ergonomic Office Chair with Adjustable Lumbar Support",
+      "竹纤维速干浴巾套装 3 件套": "3-Piece Quick-Dry Bamboo Bath Towel Set",
+      "北欧风陶瓷餐具套装 16 件套": "16-Piece Nordic Ceramic Dinnerware Set",
+      "鹅颈手冲咖啡壶套装": "Gooseneck Pour-Over Coffee Set"
+    },
+    "prompt-input.tsx": {
+      "试试这些提示": "Try one of these prompts"
+    },
+    "review-section.tsx": {
+      "宝石蓝 · L": "Sapphire Blue · L",
+      "琥珀黄 · S": "Amber Yellow · S",
+      "薄荷绿 · XL": "Mint Green · XL",
+      "午夜黑 · XL": "Midnight Black · XL"
+    },
+    "settings-panel.tsx": {
+      "紧凑模式": "Compact mode",
+      "新密码": "New password"
+    },
+    "sidebar-nav.tsx": {},
+    "signup.tsx": {
+      "把想法送上": "Take your ideas to the",
+      "全球边缘": "global edge"
+    },
+    "stats.tsx": {},
+    "team-grid.tsx": {
+      "守护多租户隔离边界，把零信任写进每一行配置。": "Guards multi-tenant isolation boundaries and applies zero-trust principles to every line of configuration."
+    },
+    "testimonials.tsx": {},
+    "trust-bar.tsx": {},
+    "user-profile.tsx": {
+      "金牌会员": "Gold Member",
+      "轻奢蚕丝枕套双面桑蚕丝 × 2": "Premium Reversible Mulberry Silk Pillowcase × 2"
+    }
+  },
+  "pages": {
+    "about.tsx": {},
+    "admin-list.tsx": {},
+    "ai-chat.tsx": {},
+    "blog-post-guide.tsx": {},
+    "blog-post.tsx": {},
+    "blog.tsx": {},
+    "changelog.tsx": {},
+    "contact.tsx": {},
+    "dashboard.tsx": {},
+    "faq.tsx": {},
+    "feature.tsx": {},
+    "integrations.tsx": {},
+    "landing.tsx": {},
+    "login.tsx": {},
+    "pricing.tsx": {},
+    "product-detail.tsx": {},
+    "product-list.tsx": {},
+    "result.tsx": {},
+    "settings.tsx": {},
+    "user-center.tsx": {}
+  }
+}

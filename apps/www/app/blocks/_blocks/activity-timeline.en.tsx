@@ -15,7 +15,7 @@ const ACTIVITIES: Activity[] = [
     {
         id: "1",
         actor: "Zhang Xiaoming",
-        action: "Move ticket",
+        action: "Moved ticket",
         target: "TK-20260605-042 \u00B7 Intermittent 503 errors on the production sign-in endpoint",
         time: "just now",
         tag: { label: "Resolved", tone: "success" },
@@ -32,7 +32,7 @@ const ACTIVITIES: Activity[] = [
     {
         id: "3",
         actor: "Wang Xuemei",
-        action: "closed",
+        action: "Closed",
         target: "BUG-1102 \u00B7 Mobile date picker renders incorrectly on iOS 16",
         time: "22 minutes ago",
         tag: { label: "Closed", tone: "danger" },
@@ -41,7 +41,7 @@ const ACTIVITIES: Activity[] = [
     {
         id: "4",
         actor: "Chen Jianguo",
-        action: "Change order created",
+        action: "Created change request",
         target: "RFC-0031 \u00B7 Raise the database connection-pool limit from 200 to 800",
         time: "1 hour ago",
         tag: { label: "Pending approval", tone: "warning" },

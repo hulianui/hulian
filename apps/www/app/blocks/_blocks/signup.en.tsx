@@ -92,7 +92,7 @@ export function SignupBlock() {
             <span className="text-base font-semibold tracking-tight">HanCloud</span>
           </span>
           <Heading level={2} weight="bold" balance className="mt-8 text-3xl leading-tight text-foreground">
-            Send your ideas <AuroraText>Global edge</AuroraText>
+            Take your ideas to the <AuroraText>global edge</AuroraText>
           </Heading>
           <Text tone="muted" className="mt-3 max-w-sm">
             Create an account and start your first project in five minutes. No credit card required.

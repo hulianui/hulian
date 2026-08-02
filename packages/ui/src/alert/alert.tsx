@@ -33,7 +33,14 @@ export const alertVariants = cva("flex w-full items-start gap-3 rounded-[var(--r
 
 // 内联极简 X（关闭是组件结构性能力，非装饰图标 → 不绑图标库；与 showcase 内联 svg 同源）。
 const CloseIcon = (
-  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+  <svg
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    aria-hidden
+  >
     <path d="M5 5l10 10M15 5L5 15" />
   </svg>
 );
@@ -51,7 +58,8 @@ export function Alert({
   children,
   ...props
 }: AlertProps) {
-  const resolvedCloseLabel = closeLabel ?? useComponentLocale().alert.close;
+  const componentLocale = useComponentLocale();
+  const resolvedCloseLabel = closeLabel ?? componentLocale.alert.close;
   // role 由 tone 派生：danger=需打断的错误→assertive(alert)；其余→polite(status)。props.role 可覆盖。
   const resolvedRole = role ?? (tone === "danger" ? "alert" : "status");
 

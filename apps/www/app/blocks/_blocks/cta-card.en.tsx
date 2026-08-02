@@ -17,11 +17,11 @@ export function CtaCardBlock({ ctaHref = "#", secondaryHref = "#", }: {
           </Tag>
 
           <Heading level={2} size="4xl" weight="bold" balance>
-            Make the team run faster,
+            Move faster as a team,
             <br className="hidden sm:block"/>
-            From HanCloud{" "}
-            <AuroraText className="font-bold">Now</AuroraText>{" "}
-            start
+            Start with HanCloud{" "}
+            <AuroraText className="font-bold">today</AuroraText>{" "}
+
           </Heading>
 
           <Text size="lg" className="max-w-xl text-white/85">

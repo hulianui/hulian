@@ -5,7 +5,7 @@ import { Avatar, Button, List, ListItem, Progress, Statistic, Tag, Tabs, TabsLis
 const LEVELS = [
     { name: "Bronze Member", min: 0, max: 999, color: "#b45309", colorDark: "#7c3a06" },
     { name: "Silver Member", min: 1000, max: 4999, color: "#6b7280", colorDark: "#4b5563" },
-    { name: "gold member", min: 5000, max: 19999, color: "#d97706", colorDark: "#92560a" },
+    { name: "Gold Member", min: 5000, max: 19999, color: "#d97706", colorDark: "#92560a" },
     { name: "Diamond Member", min: 20000, max: Infinity, color: "#8b5cf6", colorDark: "#6d28d9" },
 ];
 const MOCK_POINTS = 2680;
@@ -45,7 +45,7 @@ interface Order {
     gradient: string;
 }
 const ORDERS: Order[] = [
-    { id: "o1", name: "Light luxury silk pillowcase double-sided mulberry silk \u00D7 2", price: 596, qty: 2, status: "Awaiting receipt", date: "2026-06-02", gradient: "from-rose-200 to-pink-100" },
+    { id: "o1", name: "Premium Reversible Mulberry Silk Pillowcase \u00D7 2", price: 596, qty: 2, status: "Awaiting receipt", date: "2026-06-02", gradient: "from-rose-200 to-pink-100" },
     { id: "o2", name: "Ergonomic office chair with adjustable lumbar support", price: 1299, qty: 1, status: "Completed", date: "2026-05-18", gradient: "from-slate-200 to-gray-100" },
     { id: "o3", name: "OLED Eye-Care Desk Lamp Pro Max", price: 459, qty: 1, status: "Completed", date: "2026-05-10", gradient: "from-amber-200 to-yellow-100" },
     { id: "o4", name: "Bamboo fiber quick-drying bath towel set 3 pieces", price: 128, qty: 1, status: "Pending payment", date: "2026-06-04", gradient: "from-emerald-200 to-teal-100" },

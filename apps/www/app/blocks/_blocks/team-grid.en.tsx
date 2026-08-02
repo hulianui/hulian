@@ -40,7 +40,7 @@ const MEMBERS = [
         name: "Su Wan",
         fallback: "Su",
         role: "Head of Security Engineering",
-        bio: "Guard multi-tenant isolation boundaries and write zero trust into every line of configuration.",
+        bio: "Guards multi-tenant isolation boundaries and applies zero-trust principles to every line of configuration.",
     },
     {
         name: "Elena Volkov",

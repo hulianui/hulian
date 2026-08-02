@@ -145,12 +145,12 @@ export function SettingsPanelBlock() {
               <div className="flex flex-col gap-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium">compact mode</div>
+                    <div className="text-sm font-medium">Compact mode</div>
                     <Text size="sm" tone="muted" className="mt-0.5">
                       Reduce spacing and font size to display more content
                     </Text>
                   </div>
-                  <Switch checked={compactMode} onCheckedChange={setCompactMode} aria-label="compact mode"/>
+                  <Switch checked={compactMode} onCheckedChange={setCompactMode} aria-label="Compact mode"/>
                 </div>
 
                 <Separator />
@@ -188,7 +188,7 @@ export function SettingsPanelBlock() {
                 <Field label="Current password">
                   <Input type="password" placeholder="Enter current password"/>
                 </Field>
-                <Field label="new password" description="At least 8 characters, including uppercase and lowercase letters and numbers">
+                <Field label="New password" description="At least 8 characters, including uppercase and lowercase letters and numbers">
                   <Input type="password" placeholder="Enter new password"/>
                 </Field>
                 <Field label="Confirm new password">

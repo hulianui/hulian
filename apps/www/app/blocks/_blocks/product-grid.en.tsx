@@ -16,7 +16,7 @@ interface Product {
 const PRODUCTS: Product[] = [
     {
         id: "p1",
-        name: "Light luxury silk pillowcase double-sided mulberry silk",
+        name: "Premium Reversible Mulberry Silk Pillowcase",
         price: 298,
         originalPrice: 498,
         rating: 4.8,

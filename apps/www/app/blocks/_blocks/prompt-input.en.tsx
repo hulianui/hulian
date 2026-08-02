@@ -55,7 +55,7 @@ export function PromptInputBlock() {
     };
     return (<div className="mx-auto w-full max-w-2xl space-y-4">
 
-      <PromptSuggestions title="Try these tips" suggestions={SUGGESTIONS} onSelect={handleSelect} className="justify-center"/>
+      <PromptSuggestions title="Try one of these prompts" suggestions={SUGGESTIONS} onSelect={handleSelect} className="justify-center"/>
 
 
       <div className="rounded-xl border border-border bg-bg shadow-sm">

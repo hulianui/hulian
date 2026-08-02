@@ -8,7 +8,7 @@ const values = [
     },
     {
         icon: Gauge,
-        title: "Ultimate performance",
+        title: "Peak performance",
         desc: "Edge networking and elastic compute run every request close to your users.",
     },
     {

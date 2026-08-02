@@ -31,11 +31,14 @@ test("English output scan reports visible, metadata, and accessible CJK but igno
       <div hidden>找不到页面</div><script>const copy = "复制"</script></body></html>`,
   );
 
-  assert.deepEqual(scanEnglishDocument(file).map(({ field, value }) => ({ field, value })), [
-    { field: "metadata:title", value: "开始" },
-    { field: "attribute:placeholder", value: "请输入" },
-    { field: "attribute:alt", value: "示例" },
-  ]);
+  assert.deepEqual(
+    scanEnglishDocument(file).map(({ field, value }) => ({ field, value })),
+    [
+      { field: "metadata:title", value: "开始" },
+      { field: "attribute:placeholder", value: "请输入" },
+      { field: "attribute:alt", value: "示例" },
+    ],
+  );
 });
 
 test("English output scan reports visible text nodes without concatenating unrelated nodes", () => {
@@ -43,26 +46,33 @@ test("English output scan reports visible text nodes without concatenating unrel
   const file = join(root, "preview.html");
   writeFileSync(file, "<!doctype html><html><body><p>Owner：</p><p>English</p></body></html>");
 
-  assert.deepEqual(scanEnglishDocument(file).map(({ field, value }) => ({ field, value })), [
-    { field: "visible:text", value: "Owner：" },
-  ]);
+  assert.deepEqual(
+    scanEnglishDocument(file).map(({ field, value }) => ({ field, value })),
+    [{ field: "visible:text", value: "Owner：" }],
+  );
 });
 
 test("English output scan rejects duplicate prefixes and unintended Chinese docs links", () => {
   const root = mkdtempSync(join(tmpdir(), "hulian-output-scan-"));
   const file = join(root, "start.html");
-  writeFileSync(file, `<!doctype html><html><body>
+  writeFileSync(
+    file,
+    `<!doctype html><html><body>
     <a href="/en/en/start">Duplicate</a>
     <a href="/blocks/button">Wrong locale</a>
     <a href="/start" hreflang="zh-CN">Chinese language switch</a>
     <a href="/pricing">Fixture route</a>
     <img src="/en/logo.svg" alt="Logo">
-  </body></html>`);
+  </body></html>`,
+  );
 
-  assert.deepEqual(scanEnglishLinks(file).map(({ field, value }) => ({ field, value })), [
-    { field: "duplicate-prefix:href", value: "/en/en/start" },
-    { field: "cross-locale:href", value: "/blocks/button" },
-  ]);
+  assert.deepEqual(
+    scanEnglishLinks(file).map(({ field, value }) => ({ field, value })),
+    [
+      { field: "duplicate-prefix:href", value: "/en/en/start" },
+      { field: "cross-locale:href", value: "/blocks/button" },
+    ],
+  );
 });
 
 test("Task 9 inventory is derived from current block and page metadata", () => {
@@ -86,5 +96,16 @@ test("Task 9 inventory rejects a missing metadata-derived route", () => {
   assert.throws(
     () => task9EnglishRoutes(root),
     /Missing English output route: preview\/blocks\/navbar\.html/,
+  );
+});
+
+test("Task 9 inventory rejects an unexpected theme route", () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-output-inventory-"));
+  writeRouteInventory(root);
+  writeFileSync(join(root, "theme", "experimental.html"), "<!doctype html><html></html>");
+
+  assert.throws(
+    () => task9EnglishRoutes(root),
+    /English theme output differs from the expected route inventory/,
   );
 });

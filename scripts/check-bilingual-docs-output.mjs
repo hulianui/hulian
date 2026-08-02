@@ -5,19 +5,11 @@ import { createRequire } from "node:module";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const requireFromWww = createRequire(
-  new URL("../apps/www/package.json", import.meta.url),
-);
+const requireFromWww = createRequire(new URL("../apps/www/package.json", import.meta.url));
 const { JSDOM } = requireFromWww("jsdom");
 
 const CJK = /[\p{Script=Han}，。！？；：、（）【】《》〈〉「」『』]/u;
-const SCANNED_ATTRIBUTES = [
-  "aria-label",
-  "aria-description",
-  "placeholder",
-  "title",
-  "alt",
-];
+const SCANNED_ATTRIBUTES = ["aria-label", "aria-description", "placeholder", "title", "alt"];
 
 function normalized(value) {
   return value.replace(/\s+/g, " ").trim();
@@ -64,7 +56,8 @@ export function scanEnglishDocument(file) {
   return findings;
 }
 
-const DOCS_ROUTE = /^\/(?:start|changelog|search|theme(?:\/|$)|blocks(?:\/|$)|pages(?:\/|$)|components(?:\/|$))/;
+const DOCS_ROUTE =
+  /^\/(?:start|changelog|search|theme(?:\/|$)|blocks(?:\/|$)|pages(?:\/|$)|components(?:\/|$))/;
 
 export function scanEnglishLinks(file) {
   const dom = new JSDOM(readFileSync(file, "utf8"));
@@ -104,12 +97,8 @@ function metadataSlugs(file) {
 }
 
 export function task9ExpectedRelativeRoutes() {
-  const blockSlugs = metadataSlugs(
-    new URL("../apps/www/app/blocks/_meta.ts", import.meta.url),
-  );
-  const pageSlugs = metadataSlugs(
-    new URL("../apps/www/app/pages/_meta.ts", import.meta.url),
-  );
+  const blockSlugs = metadataSlugs(new URL("../apps/www/app/blocks/_meta.ts", import.meta.url));
+  const pageSlugs = metadataSlugs(new URL("../apps/www/app/pages/_meta.ts", import.meta.url));
   if (blockSlugs.length === 0 || pageSlugs.length === 0) {
     throw new Error("Task 9 route metadata did not contain block/page slugs");
   }
@@ -162,6 +151,14 @@ export function task9EnglishRoutes(root) {
   if (JSON.stringify(actualGalleryRoutes) !== JSON.stringify(expectedGalleryRoutes)) {
     throw new Error("English block/page output differs from the metadata-derived route inventory");
   }
+  const actualThemeRoutes = [join(root, "theme.html"), ...htmlFiles(join(root, "theme"))]
+    .filter(existsSync)
+    .map((file) => relative(root, file).replaceAll("\\", "/"))
+    .sort();
+  const expectedThemeRoutes = expected.filter((route) => /^theme(?:\/|\.html$)/.test(route)).sort();
+  if (JSON.stringify(actualThemeRoutes) !== JSON.stringify(expectedThemeRoutes)) {
+    throw new Error("English theme output differs from the expected route inventory");
+  }
   if (expected.length !== 171) {
     throw new Error(`English Task 9 route inventory: expected 170 + 404, found ${expected.length}`);
   }
@@ -187,13 +184,21 @@ if (invoked) {
     if (findings.length > 0) {
       for (const finding of findings) {
         console.error(
-          `[docs-output] ${relative(root, finding.file)} ${finding.field}: ${JSON.stringify(finding.value)}`,
+          `[docs-output] ${relative(root, finding.file)} ${finding.field}: ${JSON.stringify(
+            finding.value,
+          )}`,
         );
       }
-      console.error(`[docs-output] ${findings.length} content or locale-link finding(s) across ${files.length} routes`);
+      console.error(
+        `[docs-output] ${findings.length} content or locale-link finding(s) across ${files.length} routes`,
+      );
       process.exitCode = 1;
     } else {
-      console.log(`[docs-output] ${files.length - 1} Task 9 routes + /en/404: no visible/metadata CJK, /en/en, or cross-locale docs links`);
+      console.log(
+        `[docs-output] ${
+          files.length - 1
+        } Task 9 routes + /en/404: no visible/metadata CJK, /en/en, or cross-locale docs links`,
+      );
     }
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);

@@ -23,7 +23,7 @@ export function HeroTerminalBlock({ ctaHref = "#" }: {
           <Heading level={1} weight="bold" balance className="text-4xl leading-tight text-foreground sm:text-5xl">
             One command,
             <br className="hidden sm:block"/>
-            Bringing applications to the global edge
+            Deploy your app to the global edge
           </Heading>
 
           <Text tone="muted" size="lg" className="max-w-md">

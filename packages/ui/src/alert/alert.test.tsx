@@ -111,10 +111,22 @@ describe("Alert", () => {
     expect(getByLabelText("dismiss")).toBeTruthy();
   });
 
+  it("closeLabel 在自定义值与本地化默认值之间切换时保持 Hook 顺序", () => {
+    const { getByLabelText, rerender } = render(<Alert onClose={() => {}} closeLabel="dismiss" />);
+    expect(getByLabelText("dismiss")).toBeTruthy();
+
+    expect(() => rerender(<Alert onClose={() => {}} />)).not.toThrow();
+    expect(getByLabelText("关闭")).toBeTruthy();
+  });
+
   it("关闭标签随 enUS 本地化，缺 Provider 与 legacy locale 保持精确中文", () => {
     const { getByLabelText, rerender } = render(<Alert onClose={() => {}} />);
     expect(getByLabelText("关闭")).toBeTruthy();
-    rerender(<ConfigProvider locale={enUS}><Alert onClose={() => {}} /></ConfigProvider>);
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Alert onClose={() => {}} />
+      </ConfigProvider>,
+    );
     expect(getByLabelText("Close")).toBeTruthy();
     rerender(
       <ConfigProvider locale={{ ...zhCN, components: undefined }}>

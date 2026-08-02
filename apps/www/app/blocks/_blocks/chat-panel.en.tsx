@@ -94,7 +94,7 @@ function AsstBody({ msg }: {
     msg: AsstMsg;
 }) {
     return (<div className="space-y-3">
-      {msg.thinking && (<ThinkingBlock thinking={false} duration="Thoughts 2.1s">
+      {msg.thinking && (<ThinkingBlock thinking={false} duration="Thought for 2.1s">
           {msg.thinking}
         </ThinkingBlock>)}
       {msg.toolName && (<ToolCall name={msg.toolName} status="success" input={<pre className="text-xs whitespace-pre-wrap">{msg.toolInput}</pre>} output={<pre className="text-xs whitespace-pre-wrap">{msg.toolOutput}</pre>}/>)}

@@ -10,14 +10,14 @@ const SLIDES = [
 ];
 const COLORS = [
     { hex: "#e11d48", name: "Rose Red" },
-    { hex: "#2563eb", name: "sapphire blue" },
-    { hex: "#d97706", name: "Amber yellow" },
-    { hex: "#10b981", name: "mint green" },
-    { hex: "#1e1b4b", name: "midnight black" },
+    { hex: "#2563eb", name: "Sapphire Blue" },
+    { hex: "#d97706", name: "Amber Yellow" },
+    { hex: "#10b981", name: "Mint Green" },
+    { hex: "#1e1b4b", name: "Midnight Black" },
 ];
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const PRODUCT = {
-    name: "Light luxury silk pillowcase double-sided mulberry silk",
+    name: "Premium Reversible Mulberry Silk Pillowcase",
     tagline: "22-momme Grade A mulberry silk \u00B7 Reversible design \u00B7 Better sleep",
     price: 298,
     originalPrice: 498,

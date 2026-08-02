@@ -13,7 +13,7 @@ interface CartItem {
 const INITIAL_CART: CartItem[] = [
     {
         id: "ci1",
-        name: "Light luxury silk pillowcase double-sided mulberry silk",
+        name: "Premium Reversible Mulberry Silk Pillowcase",
         spec: "Rose Red \u00B7 M",
         price: 298,
         qty: 2,

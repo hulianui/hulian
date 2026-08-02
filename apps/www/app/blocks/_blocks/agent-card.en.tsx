@@ -50,9 +50,9 @@ const AGENTS: AgentData[] = [
     },
 ];
 const LOAD_GRADES = [
-    { min: 0, label: "surplus", tone: "var(--color-success)" },
-    { min: 50, label: "Medium", tone: "var(--color-chart-2)" },
-    { min: 75, label: "Elevated", tone: "var(--color-warning)" },
+    { min: 0, label: "Available", tone: "var(--color-success)" },
+    { min: 50, label: "Moderate", tone: "var(--color-chart-2)" },
+    { min: 75, label: "High", tone: "var(--color-warning)" },
     { min: 90, label: "saturated", tone: "var(--color-danger)" },
 ];
 const HEALTH_STATUS: Record<Health, "online" | "degraded" | "offline"> = {

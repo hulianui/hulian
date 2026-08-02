@@ -37,7 +37,7 @@ export function EmptyStateBlock() {
 
           <div className="rounded-[var(--radius)] border border-border bg-surface p-6">
             <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
-              Paradigm 2 b · Result 404 (no result)
+              Pattern 2b · 404 result (no matches)
             </div>
             <Result status="404" title="No relevant results found" subTitle="Try modifying keywords or adjusting filter conditions, or clear all filters and search again.">
               <Button variant="outline" size="sm">

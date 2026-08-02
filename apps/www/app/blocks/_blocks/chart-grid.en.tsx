@@ -9,10 +9,10 @@ const TREND_DATA = [
 ];
 const BAR_DATA = [
     { channel: "Website", "New": 68 },
-    { channel: "phone", "New": 42 },
+    { channel: "Phone", "New": 42 },
     { channel: "Recommended", "New": 55 },
     { channel: "Exhibition", "New": 29 },
-    { channel: "cooperation", "New": 38 },
+    { channel: "Partners", "New": 38 },
 ];
 const PIE_DATA = [
     { name: "Initial contact", value: 28 },
@@ -45,7 +45,7 @@ export function ChartGridBlock() {
         <Card variant="outline">
           <CardHeader>
             <Heading level={3} size="base">
-              Add new customers to the channel
+              New customers by channel
             </Heading>
           </CardHeader>
           <CardBody className="pt-0">
@@ -78,7 +78,7 @@ export function ChartGridBlock() {
             <BarChart data={[
             { name: "Lin Wanqing", "Closed deals": 58 },
             { name: "Zhou Mingyuan", "Closed deals": 47 },
-            { name: "High sensitivity", "Closed deals": 35 },
+            { name: "Gao Min", "Closed deals": 35 },
             { name: "Chen Ce", "Closed deals": 62 },
             { name: "Su Xiao", "Closed deals": 22 },
         ]} series={[{ key: "Closed deals", label: "Revenue (\u00A510k)" }]} xKey="name" height={240}/>

@@ -14,8 +14,8 @@ export function HeroBlock({ ctaHref = "#", secondaryHref = "#", }: {
         </Tag>
 
         <Heading level={1} weight="bold" balance className="text-4xl leading-tight text-foreground sm:text-5xl md:text-6xl">
-          Send the application <AuroraText>Global edge</AuroraText>
-          <br className="hidden sm:block"/> Just one git push
+          Deploy your app to the <AuroraText>global edge</AuroraText>
+          <br className="hidden sm:block"/> with a single git push
         </Heading>
 
         <Text tone="muted" size="lg" className="max-w-2xl">
