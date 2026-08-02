@@ -2574,6 +2574,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -13226,6 +13227,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/button.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],

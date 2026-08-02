@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "../_icons";
+import { useComponentLocale } from "../config/locale";
 import { cn } from "../lib/cn";
 import {
   dayjs,
@@ -8,7 +9,6 @@ import {
   monthMatrix,
   normISODate as normISO,
   toISODate as toISO,
-  WEEKDAY_LABELS as WEEKDAYS,
   yearMatrix,
 } from "../lib/date";
 import {
@@ -16,9 +16,7 @@ import {
   isDisabledDay,
   isDisabledMonth,
   isDisabledYear,
-  MONTH_LABELS,
   parseValue,
-  TODAY_LABEL,
 } from "./calendar-core";
 import type { CalendarPicker, CalendarProps } from "./calendar.types";
 
@@ -45,12 +43,38 @@ export function Calendar({
   showToday = true,
   disabled,
   readOnly,
-  "aria-label": ariaLabel = "日历",
+  "aria-label": ariaLabelProp,
   className,
 }: CalendarProps) {
+  const locale = useComponentLocale().calendar ?? {
+    label: "日历",
+    previousPage: "上一页",
+    nextPage: "下一页",
+    weekdays: ["日", "一", "二", "三", "四", "五", "六"],
+    months: [
+      "1 月",
+      "2 月",
+      "3 月",
+      "4 月",
+      "5 月",
+      "6 月",
+      "7 月",
+      "8 月",
+      "9 月",
+      "10 月",
+      "11 月",
+      "12 月",
+    ],
+    monthTitle: (year: number, month: number) => `${year} 年 ${month} 月`,
+    yearTitle: (year: number) => `${year} 年`,
+    today: "今天",
+    thisMonth: "本月",
+    thisYear: "今年",
+  };
+  const ariaLabel = ariaLabelProp ?? locale.label;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
-  const value = isControlled ? (valueProp ?? null) : internal;
+  const value = isControlled ? valueProp ?? null : internal;
   const selected = parseValue(value, picker);
 
   // 面板当前展示的层级。picker 决定它的起点与「点了就提交」的那一层。
@@ -119,10 +143,10 @@ export function Calendar({
   const decade: [number, number] = [years[1], years[10]];
   const headerTitle =
     view === "date"
-      ? cursor.format("YYYY 年 M 月")
+      ? locale.monthTitle(cursor.year(), cursor.month() + 1)
       : view === "month"
-        ? cursor.format("YYYY 年")
-        : `${decade[0]} - ${decade[1]}`;
+      ? locale.yearTitle(cursor.year())
+      : `${decade[0]} - ${decade[1]}`;
 
   // 标题可点：date → month → year 逐层上卷。year 层已是顶，不再可点。
   const headerUp = view === "date" ? "month" : view === "month" ? "year" : null;
@@ -131,10 +155,20 @@ export function Calendar({
     <div
       aria-label={ariaLabel}
       data-disabled={disabled ? "" : undefined}
-      className={cn("inline-block text-foreground", disabled && "pointer-events-none opacity-50", className)}
+      className={cn(
+        "inline-block text-foreground",
+        disabled && "pointer-events-none opacity-50",
+        className,
+      )}
     >
       <div className="mb-1 flex items-center justify-between gap-2 px-1">
-        <button type="button" aria-label="上一页" disabled={disabled} onClick={() => step(-1)} className={navBtn}>
+        <button
+          type="button"
+          aria-label={locale.previousPage}
+          disabled={disabled}
+          onClick={() => step(-1)}
+          className={navBtn}
+        >
           <ChevronLeft className="size-4" />
         </button>
         <button
@@ -148,14 +182,20 @@ export function Calendar({
         >
           {headerTitle}
         </button>
-        <button type="button" aria-label="下一页" disabled={disabled} onClick={() => step(1)} className={navBtn}>
+        <button
+          type="button"
+          aria-label={locale.nextPage}
+          disabled={disabled}
+          onClick={() => step(1)}
+          className={navBtn}
+        >
           <ChevronRight className="size-4" />
         </button>
       </div>
 
       {view === "date" && (
         <div className="grid w-[15.75rem] grid-cols-7">
-          {WEEKDAYS.map((w) => (
+          {locale.weekdays.map((w) => (
             <div key={w} className="flex h-8 items-center justify-center text-xs text-muted">
               {w}
             </div>
@@ -196,11 +236,13 @@ export function Calendar({
 
       {view === "month" && (
         <div className="grid w-[15.75rem] grid-cols-3 gap-1">
-          {MONTH_LABELS.map((label, i) => {
+          {locale.months.map((label, i) => {
             const m = cursor.month(i);
             const dis = isDisabledMonth(m, picker, rules);
             const isSelected =
-              selected != null && picker === "month" && formatValue(m, "month") === formatValue(selected, "month");
+              selected != null &&
+              picker === "month" &&
+              formatValue(m, "month") === formatValue(selected, "month");
             return (
               <button
                 key={label}
@@ -212,7 +254,9 @@ export function Calendar({
                 className={cn(
                   cellBase,
                   "h-10",
-                  isSelected ? "bg-primary font-medium text-primary-foreground" : "text-foreground hover:bg-surface-hover",
+                  isSelected
+                    ? "bg-primary font-medium text-primary-foreground"
+                    : "text-foreground hover:bg-surface-hover",
                   dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
                 )}
               >
@@ -241,7 +285,9 @@ export function Calendar({
                 className={cn(
                   cellBase,
                   "h-10",
-                  isSelected ? "bg-primary font-medium text-primary-foreground" : "text-foreground hover:bg-surface-hover",
+                  isSelected
+                    ? "bg-primary font-medium text-primary-foreground"
+                    : "text-foreground hover:bg-surface-hover",
                   outside && !isSelected && "text-muted",
                   dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
                 )}
@@ -261,7 +307,11 @@ export function Calendar({
             disabled={locked}
             className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {TODAY_LABEL[picker]}
+            {picker === "date"
+              ? locale.today
+              : picker === "month"
+              ? locale.thisMonth
+              : locale.thisYear}
           </button>
         </div>
       )}

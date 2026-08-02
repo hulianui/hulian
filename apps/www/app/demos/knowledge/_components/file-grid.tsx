@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./file-grid.content";
 import { useEffect, useState } from "react";
 import {
   File as FileIcon,
@@ -97,7 +98,11 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
   // 切换文件夹清空多选。
   useEffect(() => setPicked([]), [folderId, setPicked]);
 
-  const viewerImages: ImageViewerImage[] = images.map((n) => ({ src: n.src!, alt: n.name, caption: `${n.name} · ${formatSize(n.size)}` }));
+  const viewerImages: ImageViewerImage[] = images.map((n) => ({
+    src: n.src!,
+    alt: n.name,
+    caption: `${n.name} · ${formatSize(n.size)}`,
+  }));
 
   const toggle = (id: string, checked: boolean) =>
     setPicked(checked ? [...picked, id] : picked.filter((x) => x !== id));
@@ -113,22 +118,38 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
   const onCardOpen = (node: VaultNode) => {
     if (node.kind === "folder" || node.kind === "doc") select(node.id);
     else if (node.kind === "image") openImage(node);
-    else toast({ title: "暂不支持预览此文件类型", description: node.name, tone: "neutral" });
+    else
+      toast({
+        title: copy("previewingThisFileTypeIsNotSupportedYet"),
+        description: node.name,
+        tone: "neutral",
+      });
   };
 
   const batchDelete = () => {
     const n = picked.length;
     picked.forEach((id) => v.remove(id));
     setPicked([]);
-    toast({ title: `已删除 ${n} 项`, tone: "info" });
+    toast({ title: copy("deletedItemCount", n), tone: "info" });
   };
 
   if (items.length === 0) {
     return (
       <div className="grid h-full place-items-center p-8">
-        <Empty title="此文件夹为空" description="右键目录树新建文档 / 文件夹，或拖文件到左下角上传区。">
-          <Button size="sm" variant="outline" onClick={() => { const { id, res } = v.createDoc(folderId); toast({ title: res.message, tone: "info" }); select(id); }}>
-            新建文档
+        <Empty
+          title={copy("thisFolderIsEmpty")}
+          description={copy("rightClickTheDirectoryTreeToCreateANewDocument")}
+        >
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              const { id, res } = v.createDoc(folderId);
+              toast({ title: res.message, tone: "info" });
+              select(id);
+            }}
+          >
+            {copy("newDocument")}
           </Button>
         </Empty>
       </div>
@@ -140,14 +161,22 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
       {/* 多选操作条 */}
       {picked.length > 0 && (
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-surface px-5 py-2 text-sm">
-          <span className="text-muted">已选 {picked.length} 项</span>
+          <span className="text-muted">
+            {copy("selected")} {picked.length} {copy("item")}
+          </span>
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => openMove(picked)}>
-              <FolderInput className="size-4" /> 批量移动
+              <FolderInput className="size-4" /> {copy("batchMove")}
             </Button>
-            <Popconfirm title={`删除选中的 ${picked.length} 项？`} description="此操作不可撤销。" danger okText="删除" onConfirm={batchDelete}>
+            <Popconfirm
+              title={copy("deleteSelectedItemsPrompt", picked.length)}
+              description={copy("thisActionCannotBeUndone")}
+              danger
+              okText={copy("remove")}
+              onConfirm={batchDelete}
+            >
               <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/10">
-                <Trash2 className="size-4" /> 批量删除
+                <Trash2 className="size-4" /> {copy("bulkDelete")}
               </Button>
             </Popconfirm>
           </div>
@@ -162,8 +191,15 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
               key={node.id}
               className="group relative overflow-hidden rounded-[var(--radius)] border border-border bg-surface transition-colors hover:border-primary/50"
             >
-              <span className="absolute left-2 top-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 data-[on=true]:opacity-100" data-on={checked}>
-                <Checkbox checked={checked} onCheckedChange={(c) => toggle(node.id, c)} aria-label={`选择 ${node.name}`} />
+              <span
+                className="absolute left-2 top-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 data-[on=true]:opacity-100"
+                data-on={checked}
+              >
+                <Checkbox
+                  checked={checked}
+                  onCheckedChange={(c) => toggle(node.id, c)}
+                  aria-label={copy("selectItemLabel", node.name)}
+                />
               </span>
               <button
                 type="button"
@@ -176,10 +212,16 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
                 <span className="flex flex-col gap-0.5 px-2.5 py-2">
                   <span className="flex items-center gap-1.5">
                     <span className="truncate text-sm font-medium">{node.name}</span>
-                    {node.status === "added" && <Tag size="sm" tone="success">新</Tag>}
+                    {node.status === "added" && (
+                      <Tag size="sm" tone="success">
+                        {copy("new")}
+                      </Tag>
+                    )}
                   </span>
                   <span className="truncate text-xs text-muted">
-                    {node.kind === "folder" ? `${v.childrenOf(node.id).length} 项` : `${node.author} · ${node.updatedAt}`}
+                    {node.kind === "folder"
+                      ? copy("childItemCount", v.childrenOf(node.id).length)
+                      : `${node.author} · ${node.updatedAt}`}
                     {node.size ? ` · ${formatSize(node.size)}` : ""}
                   </span>
                 </span>
@@ -189,7 +231,13 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
         })}
       </div>
 
-      <ImageViewer open={viewerOpen} onOpenChange={setViewerOpen} images={viewerImages} index={viewerIndex} onIndexChange={setViewerIndex} />
+      <ImageViewer
+        open={viewerOpen}
+        onOpenChange={setViewerOpen}
+        images={viewerImages}
+        index={viewerIndex}
+        onIndexChange={setViewerIndex}
+      />
     </div>
   );
 }

@@ -105,6 +105,9 @@ jobs:
       - name: Verify English admin demos in Chromium
         run: pnpm docs:check:admin-demos
 
+      - name: Verify English AI, knowledge, education, and visualization demos in Chromium
+        run: pnpm docs:check:task11-demos
+
       - name: Accessibility gate
         run: pnpm a11y
 

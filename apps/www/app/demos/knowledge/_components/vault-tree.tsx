@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./vault-tree.content";
 import { useState } from "react";
 import { FilePlus2, FolderPlus, Loader2 } from "lucide-react";
 import {
@@ -72,7 +73,7 @@ export function VaultTree() {
 
   const confirmRename = () => {
     if (!renameId || !renameValue.trim()) {
-      toast({ title: "名称不能为空", tone: "danger" });
+      toast({ title: copy("nameCannotBeEmpty"), tone: "danger" });
       return;
     }
     const res = v.rename(renameId, renameValue.trim());
@@ -102,7 +103,11 @@ export function VaultTree() {
     void run(async () => {
       const { res } = v.upload(
         parentId,
-        files.map((f) => ({ name: f.name, size: f.size, isImage: /\.(png|jpe?g|gif|webp|svg)$/i.test(f.name) })),
+        files.map((f) => ({
+          name: f.name,
+          size: f.size,
+          isImage: /\.(png|jpe?g|gif|webp|svg)$/i.test(f.name),
+        })),
       );
       setUploadList(items.map((it) => ({ ...it, status: "success", progress: 100 })));
       toast({ title: res.message, tone: "info" });
@@ -115,27 +120,39 @@ export function VaultTree() {
   return (
     <aside className="flex min-h-0 flex-col border-r border-border bg-bg">
       <div className="flex shrink-0 items-center justify-between px-3 py-2.5">
-        <span className="text-sm font-semibold tracking-tight">目录</span>
+        <span className="text-sm font-semibold tracking-tight">{copy("contents")}</span>
         <div className="flex items-center gap-0.5">
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button variant="ghost" size="sm" className="size-8 px-0" aria-label="新建文档" onClick={() => doCreateDoc(newItemTarget)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="size-8 px-0"
+                  aria-label={copy("newDocument")}
+                  onClick={() => doCreateDoc(newItemTarget)}
+                >
                   <FilePlus2 className="size-[18px]" />
                 </Button>
               }
             />
-            <TooltipContent>新建文档</TooltipContent>
+            <TooltipContent>{copy("newDocument")}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button variant="ghost" size="sm" className="size-8 px-0" aria-label="新建文件夹" onClick={() => doCreateFolder(newItemTarget)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="size-8 px-0"
+                  aria-label={copy("newFolder")}
+                  onClick={() => doCreateFolder(newItemTarget)}
+                >
                   <FolderPlus className="size-[18px]" />
                 </Button>
               }
             />
-            <TooltipContent>新建文件夹</TooltipContent>
+            <TooltipContent>{copy("newFolder")}</TooltipContent>
           </Tooltip>
         </div>
       </div>
@@ -146,18 +163,30 @@ export function VaultTree() {
             <FileTree
               nodes={v.fileNodes}
               searchable
-              searchPlaceholder="搜索文件 / 文档"
+              searchPlaceholder={copy("searchFilesDocuments")}
               selectedPath={selectedPath}
               onSelect={onTreeSelect}
               onContextMenu={onTreeContextMenu}
             />
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem onClick={() => doCreateDoc(activeNode?.kind === "folder" ? activeNode.id : (activeNode?.parentId ?? null))}>
-              新建文档
+            <ContextMenuItem
+              onClick={() =>
+                doCreateDoc(
+                  activeNode?.kind === "folder" ? activeNode.id : activeNode?.parentId ?? null,
+                )
+              }
+            >
+              {copy("newDocument")}
             </ContextMenuItem>
-            <ContextMenuItem onClick={() => doCreateFolder(activeNode?.kind === "folder" ? activeNode.id : (activeNode?.parentId ?? null))}>
-              新建文件夹
+            <ContextMenuItem
+              onClick={() =>
+                doCreateFolder(
+                  activeNode?.kind === "folder" ? activeNode.id : activeNode?.parentId ?? null,
+                )
+              }
+            >
+              {copy("newFolder")}
             </ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuItem
@@ -168,14 +197,21 @@ export function VaultTree() {
                 setRenameId(activeNode.id);
               }}
             >
-              重命名
+              {copy("rename")}
             </ContextMenuItem>
-            <ContextMenuItem disabled={!activeNode} onClick={() => activeNode && openMove([activeNode.id])}>
-              移动到…
+            <ContextMenuItem
+              disabled={!activeNode}
+              onClick={() => activeNode && openMove([activeNode.id])}
+            >
+              {copy("moveTo")}
             </ContextMenuItem>
             <ContextMenuSeparator />
-            <ContextMenuItem variant="danger" disabled={!activeNode} onClick={() => activeNode && setDeleteId(activeNode.id)}>
-              删除
+            <ContextMenuItem
+              variant="danger"
+              disabled={!activeNode}
+              onClick={() => activeNode && setDeleteId(activeNode.id)}
+            >
+              {copy("remove")}
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
@@ -188,32 +224,42 @@ export function VaultTree() {
           variant="dropzone"
           files={uploadList}
           onSelect={onUploadSelect}
-          onReject={(rej) => toast({ title: `${rej.length} 个文件被拒绝`, description: "类型或大小不符", tone: "danger" })}
-          label={pending ? "上传中…" : "拖拽文件到此或点击上传"}
-          hint="支持图片 / PDF / Markdown，单文件 ≤ 10MB"
+          onReject={(rej) =>
+            toast({
+              title: copy("rejectedFileCount", rej.length),
+              description: copy("typeOrSizeMismatch"),
+              tone: "danger",
+            })
+          }
+          label={pending ? copy("uploading") : copy("dropFilesHereOrClickToUpload")}
+          hint={copy("supportImagePDFMarkdownSingleFile10MB")}
         />
         {pending && (
           <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
-            <Loader2 className="size-3.5 animate-spin" /> 正在上传到「{v.get(newItemTarget)?.name ?? "根目录"}」
+            <Loader2 className="size-3.5 animate-spin" />{" "}
+            {copy("uploadingTo", v.get(newItemTarget)?.name ?? copy("rootDirectory"))}
           </p>
         )}
       </div>
 
       {/* 重命名对话框（受控） */}
       <Dialog open={renameId != null} onOpenChange={(o) => !o && setRenameId(null)}>
-        <DialogContent title="重命名" description="为该文档或文件夹输入新名称。">
+        <DialogContent
+          title={copy("rename")}
+          description={copy("enterANewNameForTheDocumentOrFolder")}
+        >
           <div className="space-y-4">
             <Input
               value={renameValue}
               onChange={(e) => setRenameValue(e.target.value)}
-              placeholder="新名称"
+              placeholder={copy("newName")}
               autoFocus
               onKeyDown={(e) => e.key === "Enter" && confirmRename()}
             />
             <div className="flex justify-end gap-2">
-              <DialogClose className={cancelCls}>取消</DialogClose>
+              <DialogClose className={cancelCls}>{copy("cancel")}</DialogClose>
               <Button size="sm" onClick={confirmRename}>
-                确认
+                {copy("confirm")}
               </Button>
             </div>
           </div>
@@ -223,12 +269,12 @@ export function VaultTree() {
       {/* 删除二次确认（重操作 → AlertDialog） */}
       <AlertDialog open={deleteId != null} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent
-          title={`删除「${deleteId ? v.get(deleteId)?.name : ""}」？`}
-          description="文件夹内所有子项会一并删除，此操作不可撤销。"
+          title={copy("delete", deleteId ? v.get(deleteId)?.name : "")}
+          description={copy("allSubItemsInTheFolderWillBeDeletedAt")}
         >
-          <AlertDialogClose className={cancelCls}>取消</AlertDialogClose>
+          <AlertDialogClose className={cancelCls}>{copy("cancel")}</AlertDialogClose>
           <AlertDialogClose className={dangerCls} onClick={confirmDelete}>
-            删除
+            {copy("remove")}
           </AlertDialogClose>
         </AlertDialogContent>
       </AlertDialog>

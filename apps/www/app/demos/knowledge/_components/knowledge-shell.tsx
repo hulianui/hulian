@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./knowledge-shell.content";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { Bell, Moon, Sun, UploadCloud } from "lucide-react";
 import {
@@ -38,7 +39,7 @@ interface KnowledgeCtx {
 const Ctx = createContext<KnowledgeCtx | null>(null);
 export function useKnowledge() {
   const c = useContext(Ctx);
-  if (!c) throw new Error("useKnowledge 必须在 KnowledgeShell 内使用");
+  if (!c) throw new Error(copy("useknowledgeMustBeUsedWithinKnowledgeShell"));
   return c;
 }
 
@@ -46,10 +47,10 @@ function Brand() {
   return (
     <div className="flex items-center gap-2">
       <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        库
+        {copy("library")}
       </span>
-      <span className="truncate text-[15px] font-semibold tracking-tight">瀚库 HanVault</span>
-      <span className="ml-1 hidden text-xs text-muted sm:inline">团队知识库</span>
+      <span className="truncate text-[15px] font-semibold tracking-tight">{copy("hanvault")}</span>
+      <span className="ml-1 hidden text-xs text-muted sm:inline">{copy("teamKnowledgeBase")}</span>
     </div>
   );
 }
@@ -60,12 +61,18 @@ function ThemeToggle() {
     <Tooltip>
       <TooltipTrigger
         render={
-          <Button variant="ghost" size="sm" onClick={toggle} aria-label={theme === "dark" ? "切换到亮色" : "切换到暗色"} className="size-9 px-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggle}
+            aria-label={theme === "dark" ? copy("switchToLight") : copy("switchToDark")}
+            className="size-9 px-0"
+          >
             {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
           </Button>
         }
       />
-      <TooltipContent>{theme === "dark" ? "亮色模式" : "暗色模式"}</TooltipContent>
+      <TooltipContent>{theme === "dark" ? copy("lightMode") : copy("darkMode")}</TooltipContent>
     </Tooltip>
   );
 }
@@ -157,15 +164,24 @@ export function KnowledgeShell() {
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button variant="ghost" size="sm" aria-label="通知" className="size-9 px-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label={copy("notifications")}
+                  className="size-9 px-0"
+                >
                   <Bell className="size-[18px]" />
                 </Button>
               }
             />
-            <TooltipContent>通知</TooltipContent>
+            <TooltipContent>{copy("notifications")}</TooltipContent>
           </Tooltip>
           <div className="mx-1 h-6 w-px bg-border" aria-hidden />
-          <User name="林屿" description="前端 Lead" avatarProps={{ fallback: "林", src: "/demo/avatar-1.jpg" }} />
+          <User
+            name={copy("forestIsland")}
+            description={copy("frontEndLead")}
+            avatarProps={{ fallback: copy("hayashi"), src: "/demo/avatar-1.jpg" }}
+          />
         </div>
       </header>
 
@@ -175,12 +191,12 @@ export function KnowledgeShell() {
         <div className="grid flex-1 place-items-center p-8">
           <Alert
             tone="danger"
-            title="知识库加载失败"
+            title={copy("failedToLoadKnowledgeBase")}
             className="w-full max-w-md"
             action={
               <Button size="sm" onClick={reload}>
                 <UploadCloud className="size-4" />
-                重试
+                {copy("retry")}
               </Button>
             }
           >
@@ -198,7 +214,10 @@ export function KnowledgeShell() {
 export function NothingSelected({ hint }: { hint?: ReactNode }) {
   return (
     <div className="grid h-full place-items-center p-8">
-      <Empty title="未选择内容" description={hint ?? "从左侧目录树选择一个文档或文件夹"} />
+      <Empty
+        title={copy("nothingSelected")}
+        description={hint ?? copy("selectADocumentOrFolderFromTheDirectoryTreeOn")}
+      />
     </div>
   );
 }

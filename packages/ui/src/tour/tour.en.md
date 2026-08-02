@@ -54,10 +54,10 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 
 | Slot | Type | Description |
 |------|------|------|
-| prevText | `ReactNode` | Previous-button override. Built-in Chinese `"\u4e0a\u4e00\u6b65"` means “Previous.” |
-| nextText | `ReactNode` | Next-button override. Built-in Chinese `"\u4e0b\u4e00\u6b65"` means “Next.” |
-| skipText | `ReactNode` | Skip-button override. Built-in Chinese `"\u8df3\u8fc7"` means “Skip.” |
-| finishText | `ReactNode` | Finish-button override. Built-in Chinese `"\u5b8c\u6210"` means “Finish.” |
+| prevText | `ReactNode` | Previous-button override. Defaults to the active `ConfigProvider` locale. |
+| nextText | `ReactNode` | Next-button override. Defaults to the active `ConfigProvider` locale. |
+| skipText | `ReactNode` | Skip-button override. Defaults to the active `ConfigProvider` locale. |
+| finishText | `ReactNode` | Finish-button override. Defaults to the active `ConfigProvider` locale. |
 
 > TourStep `title` and `description` are also ReactNode values, as shown above.
 
@@ -84,8 +84,7 @@ const [current, setCurrent] = useState(0);
 - Tour is fully controlled. Store both `open` and `current`; navigation only calls `onChange`. Failing to write current back leaves the tour on the same step.
 - Prefer a target getter over a selector when the target mounts dynamically.
 - The fullscreen overlay portals to body. For visual verification, open the tour before capturing the screenshot.
-- When a step title is not a string, the card falls back to built-in Chinese `aria-label` `"\u5f15\u5bfc"` (“Guide”). The close control uses `"\u5173\u95ed\u5f15\u5bfc"` (“Close guide”).
-- The progress label is assembled from the built-in Chinese fragments `"\u7b2c "`, `" \u6b65\uff0c\u5171 "`, and `" \u6b65"`, meaning “Step X of Y.”
+- Navigation, close, dialog, and progress labels follow the nearest `ConfigProvider` locale (`zhCN` by default, or `enUS`). Explicit text props take precedence.
 
 ## Related
 [Dialog](../dialog/dialog.md) · [Modal](../modal/modal.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Drawer](../drawer/drawer.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md)

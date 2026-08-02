@@ -1,3 +1,4 @@
+import { copy } from "./org.content";
 import type { TreeNode } from "@hulianui/ui";
 import type { Collaborator } from "./types";
 
@@ -6,41 +7,41 @@ import type { Collaborator } from "./types";
 export const ORG_TREE: TreeNode[] = [
   {
     key: "rd",
-    label: "研发中心",
+    label: copy("rDCenter"),
     children: [
       {
         key: "rd-fe",
-        label: "前端组",
+        label: copy("frontEndGroup"),
         children: [
-          { key: "u-linyu", label: "林屿（前端 Lead）" },
-          { key: "u-chenmo", label: "陈墨" },
-          { key: "u-zhaoyi", label: "赵一" },
+          { key: "u-linyu", label: copy("forestIslandFrontEndLead") },
+          { key: "u-chenmo", label: copy("chenMo") },
+          { key: "u-zhaoyi", label: copy("zhaoYi") },
         ],
       },
       {
         key: "rd-be",
-        label: "后端组",
+        label: copy("backendGroups"),
         children: [
-          { key: "u-sunhao", label: "孙昊" },
-          { key: "u-qianwen", label: "钱文" },
+          { key: "u-sunhao", label: copy("sunHao") },
+          { key: "u-qianwen", label: copy("qianWen") },
         ],
       },
     ],
   },
   {
     key: "design",
-    label: "设计中心",
+    label: copy("designCenter"),
     children: [
-      { key: "u-yangshu", label: "杨舒（设计负责人）" },
-      { key: "u-mojin", label: "墨瑾" },
+      { key: "u-yangshu", label: copy("yangShuHeadOfDesign") },
+      { key: "u-mojin", label: copy("moJin") },
     ],
   },
   {
     key: "pm",
-    label: "产品部",
+    label: copy("productDepartment"),
     children: [
-      { key: "u-zhouqi", label: "周琦" },
-      { key: "u-wangya", label: "王雅" },
+      { key: "u-zhouqi", label: copy("zhouQi") },
+      { key: "u-wangya", label: copy("wangYa") },
     ],
   },
 ];
@@ -51,22 +52,22 @@ export interface Member {
   role: string;
 }
 export const MEMBERS: Member[] = [
-  { name: "林屿", role: "前端 Lead" },
-  { name: "陈墨", role: "前端工程师" },
-  { name: "赵一", role: "前端工程师" },
-  { name: "孙昊", role: "后端工程师" },
-  { name: "钱文", role: "后端工程师" },
-  { name: "杨舒", role: "设计负责人" },
-  { name: "墨瑾", role: "视觉设计" },
-  { name: "周琦", role: "产品经理" },
-  { name: "王雅", role: "产品经理" },
+  { name: copy("forestIsland"), role: copy("frontEndLead") },
+  { name: copy("chenMo"), role: copy("frontEndEngineer") },
+  { name: copy("zhaoYi"), role: copy("frontEndEngineer") },
+  { name: copy("sunHao"), role: copy("backendEngineer") },
+  { name: copy("qianWen"), role: copy("backendEngineer") },
+  { name: copy("yangShu"), role: copy("headOfDesign") },
+  { name: copy("moJin"), role: copy("visualDesign") },
+  { name: copy("zhouQi"), role: copy("productManager") },
+  { name: copy("wangYa"), role: copy("productManager") },
 ];
 
 // 协作者池（详情面板 AvatarCircles + 版本作者），头像走本地 jpg（零外链）。
 export const COLLABORATORS: Record<string, Collaborator> = {
-  林屿: { name: "林屿", role: "前端 Lead", avatar: "/demo/avatar-1.jpg" },
-  杨舒: { name: "杨舒", role: "设计负责人", avatar: "/demo/avatar-2.jpg" },
-  周琦: { name: "周琦", role: "产品经理", avatar: "/demo/avatar-3.jpg" },
-  陈墨: { name: "陈墨", role: "前端工程师", avatar: "/demo/avatar-4.jpg" },
-  孙昊: { name: "孙昊", role: "后端工程师", avatar: "/demo/avatar-12.jpg" },
+  林屿: { name: copy("forestIsland"), role: copy("frontEndLead"), avatar: "/demo/avatar-1.jpg" },
+  杨舒: { name: copy("yangShu"), role: copy("headOfDesign"), avatar: "/demo/avatar-2.jpg" },
+  周琦: { name: copy("zhouQi"), role: copy("productManager"), avatar: "/demo/avatar-3.jpg" },
+  陈墨: { name: copy("chenMo"), role: copy("frontEndEngineer"), avatar: "/demo/avatar-4.jpg" },
+  孙昊: { name: copy("sunHao"), role: copy("backendEngineer"), avatar: "/demo/avatar-12.jpg" },
 };

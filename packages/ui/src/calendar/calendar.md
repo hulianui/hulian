@@ -41,10 +41,10 @@ import { Calendar } from "@hulianui/ui"
 | minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
 | maxDate | `string` | — | 最晚可选日期 |
 | disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
-| showToday | `boolean` | `true` | 底部「今天 / 本月 / 今年」快捷 |
+| showToday | `boolean` | `true` | 底部跟随 locale 的「今天 / 本月 / 今年」快捷 |
 | disabled | `boolean` | `false` | 整块置灰，连翻页都停掉 |
 | readOnly | `boolean` | `false` | 可翻页浏览，但选不动 |
-| aria-label | `string` | `"日历"` | 面板无障碍名 |
+| aria-label | `string` | 来自 `ConfigProvider` | 面板无障碍名；显式值优先 |
 | className | `string` | — | 落在面板外层容器 |
 
 ## Events
@@ -82,6 +82,7 @@ const [date, setDate] = useState<string | null>(null);
 
 ## 禁忌 / 坑
 
+- 月份标题、星期与月份名称、翻页标签和快捷文案跟随最近的 `ConfigProvider` locale；未提供 Provider 时默认中文。ISO 值与选择规则不受 locale 影响。
 - **值是定宽文本，不是 `Date`**：`"YYYY-MM-DD"` 定宽 → 字典序即时间序，区间比较可以直接比字符串，
   也避开了 `new Date("2026-06-08").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。
 - `onValueChange` 的参数类型是 `string` 而非 `string | null`：面板没有清空入口。

@@ -13,13 +13,9 @@ import { useReducedMotion } from "motion/react";
 import { X } from "../_icons";
 import { cn } from "../lib/cn";
 import { Button } from "../button";
+import { useComponentLocale } from "../config/locale";
 import { motionDurationCss, motionEaseCss } from "../motion";
-import {
-  computeCardPosition,
-  computeSpotlight,
-  resolveTarget,
-  type Rect,
-} from "./tour.geometry";
+import { computeCardPosition, computeSpotlight, resolveTarget, type Rect } from "./tour.geometry";
 import type { TourProps } from "./tour.types";
 
 interface CardPos {
@@ -39,11 +35,24 @@ export function Tour({
   spotlightRadius = 8,
   gap = 12,
   zIndex = 100,
-  prevText = "上一步",
-  nextText = "下一步",
-  skipText = "跳过",
-  finishText = "完成",
+  prevText,
+  nextText,
+  skipText,
+  finishText,
 }: TourProps) {
+  const tourLocale = useComponentLocale().tour ?? {
+    dialog: "引导",
+    close: "关闭引导",
+    skip: "跳过",
+    previous: "上一步",
+    next: "下一步",
+    finish: "完成",
+    progress: (step: number, total: number) => `第 ${step} 步，共 ${total} 步`,
+  };
+  const resolvedPrevText = prevText ?? tourLocale.previous;
+  const resolvedNextText = nextText ?? tourLocale.next;
+  const resolvedSkipText = skipText ?? tourLocale.skip;
+  const resolvedFinishText = finishText ?? tourLocale.finish;
   const reduce = useReducedMotion();
   const uid = useId();
   const maskId = `hulian-tour-mask-${uid}`;
@@ -187,7 +196,7 @@ export function Tour({
         ref={cardRef}
         role="dialog"
         aria-modal="true"
-        aria-label={typeof step.title === "string" ? undefined : "引导"}
+        aria-label={typeof step.title === "string" ? undefined : tourLocale.dialog}
         aria-labelledby={step.title != null ? titleId : undefined}
         aria-describedby={step.description != null ? descId : undefined}
         className={cn(
@@ -216,7 +225,7 @@ export function Tour({
           </div>
           <button
             type="button"
-            aria-label="关闭引导"
+            aria-label={tourLocale.close}
             onClick={() => onClose?.()}
             className="-mr-1 -mt-1 inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
@@ -226,7 +235,10 @@ export function Tour({
 
         <div className="mt-4 flex items-center justify-between gap-3">
           {/* 进度 1/N */}
-          <span className="text-xs tabular-nums text-muted" aria-label={`第 ${current + 1} 步，共 ${total} 步`}>
+          <span
+            className="text-xs tabular-nums text-muted"
+            aria-label={tourLocale.progress(current + 1, total)}
+          >
             {current + 1}/{total}
           </span>
           <div className="flex items-center gap-2">
@@ -235,15 +247,15 @@ export function Tour({
               onClick={() => onClose?.()}
               className="rounded-[min(var(--radius),0.375rem)] px-1.5 py-1 text-xs text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {skipText}
+              {resolvedSkipText}
             </button>
             {!isFirst && (
               <Button size="sm" variant="outline" onClick={goPrev}>
-                {prevText}
+                {resolvedPrevText}
               </Button>
             )}
             <Button size="sm" onClick={goNext}>
-              {isLast ? finishText : nextText}
+              {isLast ? resolvedFinishText : resolvedNextText}
             </Button>
           </div>
         </div>

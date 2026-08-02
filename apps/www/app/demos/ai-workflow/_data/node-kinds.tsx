@@ -1,3 +1,4 @@
+import { copy } from "./node-kinds.content";
 import type { ComponentType } from "react";
 import type { FlowHandleSpec } from "@hulianui/ui";
 import { Type, ImageIcon, Sparkles, Maximize, Clapperboard, Download } from "lucide-react";
@@ -6,6 +7,7 @@ import type { FlowNodeData, NodeKind } from "./types";
 
 // 节点类型注册表（SSoT）：驱动左侧节点库、新建默认参数、连接桩、强调色与画布渲染分发。
 export type NodeAccent = "brand" | "violet" | "amber" | "cyan" | "rose" | "neutral";
+export type NodeGroup = "input" | "generate" | "post-processing" | "output";
 
 export interface NodeKindMeta {
   kind: NodeKind;
@@ -13,7 +15,7 @@ export interface NodeKindMeta {
   desc: string;
   icon: ComponentType<{ className?: string }>;
   accent: NodeAccent;
-  group: "输入" | "生成" | "后处理" | "输出";
+  group: NodeGroup;
   /** 连接桩：左 in(target) / 右 out(source)。 */
   io: ("in" | "out")[];
   width: number;
@@ -34,34 +36,34 @@ export const ACCENT: Record<NodeAccent, { bar: string; chip: string; icon: strin
 export const NODE_KINDS: NodeKindMeta[] = [
   {
     kind: "prompt",
-    label: "提示词",
-    desc: "正向 / 负向描述 + 风格",
+    label: copy("prompt"),
+    desc: copy("forwardNegativeDescriptionStyle"),
     icon: Type,
     accent: "brand",
-    group: "输入",
+    group: "input",
     io: ["out"],
     width: 260,
     makeDefault: () => ({
       kind: "prompt",
-      title: "提示词",
+      title: copy("prompt"),
       status: "idle",
-      positive: "一只机械猫坐在霓虹小巷，雨夜，电影感光影",
-      negative: "低分辨率, 多余手指, 水印",
-      styles: ["电影感", "赛博朋克"],
+      positive: copy("aMechanicalCatSittingInANeonAlleyRainyNight"),
+      negative: copy("lowResolutionExtraFingersWatermark"),
+      styles: [copy("cinematicSense"), copy("cyberpunk")],
     }),
   },
   {
     kind: "image-input",
-    label: "参考图",
-    desc: "上传图作为生成参考",
+    label: copy("referenceDiagram"),
+    desc: copy("uploadAnImageAsAGenerativeReference"),
     icon: ImageIcon,
     accent: "cyan",
-    group: "输入",
+    group: "input",
     io: ["out"],
     width: 240,
     makeDefault: () => ({
       kind: "image-input",
-      title: "参考图",
+      title: copy("referenceDiagram"),
       status: "idle",
       fileName: "reference.png",
       seed: randomSeed(),
@@ -69,16 +71,16 @@ export const NODE_KINDS: NodeKindMeta[] = [
   },
   {
     kind: "model",
-    label: "生图模型",
-    desc: "采样器 / 步数 / CFG / 尺寸",
+    label: copy("rawDiagramModel"),
+    desc: copy("samplerStepsCFGDimensions"),
     icon: Sparkles,
     accent: "violet",
-    group: "生成",
+    group: "generate",
     io: ["in", "out"],
     width: 260,
     makeDefault: () => ({
       kind: "model",
-      title: "生图模型",
+      title: copy("rawDiagramModel"),
       status: "idle",
       model: "huapro-xl",
       sampler: "DPM++ 2M Karras",
@@ -90,16 +92,16 @@ export const NODE_KINDS: NodeKindMeta[] = [
   },
   {
     kind: "upscale",
-    label: "高清放大",
-    desc: "超分辨率 + 面部修复",
+    label: copy("highDefinitionMagnification"),
+    desc: copy("superResolutionFacialRepair"),
     icon: Maximize,
     accent: "amber",
-    group: "后处理",
+    group: "post-processing",
     io: ["in", "out"],
     width: 240,
     makeDefault: () => ({
       kind: "upscale",
-      title: "高清放大",
+      title: copy("highDefinitionMagnification"),
       status: "idle",
       factor: 2,
       faceRestore: true,
@@ -107,16 +109,16 @@ export const NODE_KINDS: NodeKindMeta[] = [
   },
   {
     kind: "i2v",
-    label: "图生视频",
-    desc: "时长 / 帧率 / 运动幅度",
+    label: copy("tucsonVideo"),
+    desc: copy("durationFrameRateAmplitudeOfMotion"),
     icon: Clapperboard,
     accent: "rose",
-    group: "后处理",
+    group: "post-processing",
     io: ["in", "out"],
     width: 240,
     makeDefault: () => ({
       kind: "i2v",
-      title: "图生视频",
+      title: copy("tucsonVideo"),
       status: "idle",
       duration: 4,
       fps: 24,
@@ -125,16 +127,16 @@ export const NODE_KINDS: NodeKindMeta[] = [
   },
   {
     kind: "output",
-    label: "输出",
-    desc: "汇总最终产物",
+    label: copy("output"),
+    desc: copy("summarizeTheFinalProduct"),
     icon: Download,
     accent: "neutral",
-    group: "输出",
+    group: "output",
     io: ["in"],
     width: 240,
     makeDefault: () => ({
       kind: "output",
-      title: "输出",
+      title: copy("output"),
       status: "idle",
       format: "image",
     }),
@@ -149,7 +151,7 @@ export const NODE_KIND_MAP: Record<NodeKind, NodeKindMeta> = Object.fromEntries(
 export function handlesFor(kind: NodeKind): FlowHandleSpec[] {
   const meta = NODE_KIND_MAP[kind];
   const hs: FlowHandleSpec[] = [];
-  if (meta.io.includes("in")) hs.push({ id: "in", type: "target", label: "输入" });
-  if (meta.io.includes("out")) hs.push({ id: "out", type: "source", label: "输出" });
+  if (meta.io.includes("in")) hs.push({ id: "in", type: "target", label: copy("input") });
+  if (meta.io.includes("out")) hs.push({ id: "out", type: "source", label: copy("output") });
   return hs;
 }

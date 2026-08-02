@@ -1,3 +1,4 @@
+import { copy } from "./node-card.content";
 import type { ReactNode } from "react";
 import { Play } from "lucide-react";
 import { AspectRatio, Dot, Image, Spinner, Tag, cn } from "@hulianui/ui";
@@ -9,10 +10,10 @@ import type { FlowNodeData, NodeResult, NodeStatus } from "../../_data/types";
 
 function StatusBadge({ status }: { status: NodeStatus }) {
   if (status === "running") return <Spinner size="sm" tone="primary" />;
-  if (status === "queued") return <Dot tone="warning" pulse aria-label="排队中" />;
-  if (status === "done") return <Dot tone="success" aria-label="已完成" />;
-  if (status === "error") return <Dot tone="danger" aria-label="失败" />;
-  return <Dot tone="neutral" aria-label="未运行" />;
+  if (status === "queued") return <Dot tone="warning" pulse aria-label={copy("queued")} />;
+  if (status === "done") return <Dot tone="success" aria-label={copy("completed")} />;
+  if (status === "error") return <Dot tone="danger" aria-label={copy("failed")} />;
+  return <Dot tone="neutral" aria-label={copy("notRunning")} />;
 }
 
 /** 图/视频产物缩略。 */
@@ -21,7 +22,13 @@ function ResultThumb({ result, ratio = 1 }: { result: NodeResult; ratio?: number
     return (
       <div className="relative overflow-hidden rounded-[var(--radius)]">
         <AspectRatio ratio={16 / 9}>
-          <Image src={result.poster ?? ""} alt="视频产物" radius="none" className="size-full" imgClassName="size-full object-cover" />
+          <Image
+            src={result.poster ?? ""}
+            alt={copy("videoProduct")}
+            radius="none"
+            className="size-full"
+            imgClassName="size-full object-cover"
+          />
         </AspectRatio>
         <div className="absolute inset-0 grid place-items-center">
           <span className="grid size-9 place-items-center rounded-full bg-black/55 text-white backdrop-blur">
@@ -51,7 +58,9 @@ function ResultThumb({ result, ratio = 1 }: { result: NodeResult; ratio?: number
 }
 
 function MetaRow({ children }: { children: ReactNode }) {
-  return <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">{children}</div>;
+  return (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">{children}</div>
+  );
 }
 
 function NodeBody({ data }: { data: FlowNodeData }) {
@@ -59,7 +68,9 @@ function NodeBody({ data }: { data: FlowNodeData }) {
     case "prompt":
       return (
         <div className="space-y-2">
-          <p className="line-clamp-3 text-xs leading-relaxed text-foreground">{data.positive || "（空提示词）"}</p>
+          <p className="line-clamp-3 text-xs leading-relaxed text-foreground">
+            {data.positive || copy("emptyPrompt")}
+          </p>
           {data.styles.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {data.styles.map((s) => (
@@ -89,7 +100,9 @@ function NodeBody({ data }: { data: FlowNodeData }) {
           <MetaRow>
             <span>{data.sampler}</span>
             <span>·</span>
-            <span>{data.steps} 步</span>
+            <span>
+              {data.steps} {copy("step")}
+            </span>
             <span>·</span>
             <span>CFG {data.cfg}</span>
             <span>·</span>
@@ -101,11 +114,11 @@ function NodeBody({ data }: { data: FlowNodeData }) {
       return (
         <MetaRow>
           <Tag size="sm" tone="warning" variant="soft">
-            ×{data.factor} 超分
+            ×{data.factor} {copy("overscores")}
           </Tag>
           {data.faceRestore && (
             <Tag size="sm" tone="neutral" variant="outline">
-              面部修复
+              {copy("facialRepair")}
             </Tag>
           )}
         </MetaRow>
@@ -117,7 +130,11 @@ function NodeBody({ data }: { data: FlowNodeData }) {
             {data.duration}s · {data.fps}fps
           </Tag>
           <span>
-            {data.motion === "subtle" ? "轻微运镜" : data.motion === "dynamic" ? "强烈运动" : "中等动态"}
+            {data.motion === "subtle"
+              ? copy("slightMirrorMovement")
+              : data.motion === "dynamic"
+              ? copy("strongExercise")
+              : copy("moderateDynamic")}
           </span>
         </MetaRow>
       );
@@ -125,7 +142,7 @@ function NodeBody({ data }: { data: FlowNodeData }) {
       return (
         <div className="space-y-2">
           <Tag size="sm" tone="neutral" variant="outline">
-            {data.format === "video" ? "视频" : "图片"}
+            {data.format === "video" ? copy("video") : copy("image")}
           </Tag>
         </div>
       );
@@ -144,15 +161,24 @@ export function NodeCard({ node }: { node: FlowNode<FlowNodeData> }) {
   return (
     <div className="overflow-hidden rounded-[calc(var(--radius)+0.25rem)]">
       <header className={cn("flex items-center gap-2 px-3 pt-2.5", "pb-2")}>
-        <span className={cn("grid size-7 shrink-0 place-items-center rounded-[var(--radius)]", accent.chip)}>
+        <span
+          className={cn(
+            "grid size-7 shrink-0 place-items-center rounded-[var(--radius)]",
+            accent.chip,
+          )}
+        >
           <Icon className="size-4" />
         </span>
-        <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-foreground">{data.title}</span>
+        <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-foreground">
+          {data.title}
+        </span>
         <StatusBadge status={data.status} />
       </header>
       <div className="space-y-2 px-3 pb-3">
         <NodeBody data={data} />
-        {showResult && data.result && <ResultThumb result={data.result} ratio={data.result.type === "image" ? 1 : undefined} />}
+        {showResult && data.result && (
+          <ResultThumb result={data.result} ratio={data.result.type === "image" ? 1 : undefined} />
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./learn-shell.content";
 import { Suspense, useCallback, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -38,7 +39,7 @@ function Logo() {
 // ⌘K 搜索：课程。
 const COMMAND_GROUPS: CommandGroupData[] = [
   {
-    heading: "全部课程",
+    heading: copy("allCourses"),
     items: courses.map((c) => ({
       value: c.id,
       label: c.title,
@@ -109,11 +110,13 @@ function LearnNavbar() {
               type="button"
               onClick={() => setCmdOpen(true)}
               className="flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-2.5 text-sm text-muted transition-colors hover:text-foreground"
-              aria-label="搜索课程（⌘K）"
+              aria-label={copy("searchCoursesK")}
             >
               <Search className="size-3.5" aria-hidden />
-              <span className="text-xs">搜索课程</span>
-              <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted">⌘K</span>
+              <span className="text-xs">{copy("searchCourses")}</span>
+              <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted">
+                ⌘K
+              </span>
             </button>
           </li>
           <li className="flex items-center">
@@ -129,10 +132,10 @@ function LearnNavbar() {
         open={cmdOpen}
         onOpenChange={setCmdOpen}
         groups={COMMAND_GROUPS}
-        placeholder="搜索课程…"
+        placeholder={copy("searchCoursesAlternate")}
         shortcut
         onSelectItem={onSelect}
-        emptyMessage="没有找到相关课程"
+        emptyMessage={copy("noRelatedCoursesFound")}
       />
 
       {open && (
@@ -146,7 +149,7 @@ function LearnNavbar() {
               }}
               className="flex items-center gap-2 rounded-[var(--radius)] px-2 py-2 text-sm text-muted hover:bg-surface-hover hover:text-foreground"
             >
-              <Search className="size-4" aria-hidden /> 搜索课程
+              <Search className="size-4" aria-hidden /> {copy("searchCourses")}
             </button>
             {primaryNav.map((link) => (
               <Link
@@ -173,22 +176,46 @@ function LearnFooter() {
           <div className="max-w-xs">
             <Logo />
             <Text tone="muted" size="sm" className="mt-3">
-              {brand.slogan} —— 本平台为 @hulianui/ui 演示，课程与讲师均为虚构。
+              {brand.slogan} {copy("thisPlatformIsAHulianuiUiDemoAndTheCourse")}
             </Text>
           </div>
           <Stack direction="row" gap={10} wrap>
-            <FooterCol title="学习" links={["课程目录", "学习路径", "证书", "题库"]} />
-            <FooterCol title="讲师" links={["成为讲师", "讲师中心", "课程标准", "收益规则"]} />
-            <FooterCol title="关于瀚学" links={["关于我们", "加入我们", "联系客服", "隐私政策"]} />
+            <FooterCol
+              title={copy("learning")}
+              links={[
+                copy("courseCatalog"),
+                copy("learningPath"),
+                copy("certificate"),
+                copy("questionBank"),
+              ]}
+            />
+            <FooterCol
+              title={copy("instructor")}
+              links={[
+                copy("becomeAnInstructor"),
+                copy("instructorCenter"),
+                copy("courseStandards"),
+                copy("earningsRules"),
+              ]}
+            />
+            <FooterCol
+              title={copy("aboutHanxue")}
+              links={[
+                copy("aboutUs"),
+                copy("joinUs"),
+                copy("contactSupport"),
+                copy("privacyPolicy"),
+              ]}
+            />
           </Stack>
         </Stack>
         <Divider className="my-6" />
         <Stack direction="row" justify="between" wrap gap={3} className="text-sm text-muted">
           <Text size="sm" tone="muted">
-            © 2026 {brand.name} {brand.nameEn} · 演示站点
+            © 2026 {brand.name} {brand.nameEn} {copy("demoSite")}
           </Text>
           <Link href="/demos" className="hover:text-foreground">
-            返回 Demo 画廊
+            {copy("backToDemoGallery")}
           </Link>
         </Stack>
       </div>
@@ -204,7 +231,11 @@ function FooterCol({ title, links }: { title: string; links: string[] }) {
       </Text>
       <Stack direction="column" gap={2}>
         {links.map((l) => (
-          <Link key={l} href={LEARN_BASE} className="text-sm text-muted transition-colors hover:text-foreground">
+          <Link
+            key={l}
+            href={LEARN_BASE}
+            className="text-sm text-muted transition-colors hover:text-foreground"
+          >
             {l}
           </Link>
         ))}

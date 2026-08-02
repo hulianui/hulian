@@ -173,6 +173,29 @@ export interface ComponentLocale {
     goTo: (index: number) => string;
   };
   steps: { label: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  tour?: {
+    dialog: string;
+    close: string;
+    skip: string;
+    previous: string;
+    next: string;
+    finish: string;
+    progress: (current: number, total: number) => string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  calendar?: {
+    label: string;
+    previousPage: string;
+    nextPage: string;
+    weekdays: readonly string[];
+    months: readonly string[];
+    monthTitle: (year: number, month: number) => string;
+    yearTitle: (year: number) => string;
+    today: string;
+    thisMonth: string;
+    thisYear: string;
+  };
   numberField: { decrement: string; increment: string };
   pagination: {
     total: (count: number) => string;
@@ -218,7 +241,10 @@ export interface ComponentLocale {
     search: string;
     noResults: string;
     recentlyUsed: string;
-    categories: Record<"smileys" | "gestures" | "animals" | "food" | "activity" | "objects" | "symbols", string>;
+    categories: Record<
+      "smileys" | "gestures" | "animals" | "food" | "activity" | "objects" | "symbols",
+      string
+    >;
   };
   chatMessage?: {
     me: string;
@@ -302,6 +328,40 @@ const zhComponents: ComponentLocale = {
     goTo: (index) => `转到第 ${index} 张`,
   },
   steps: { label: "步骤" },
+  tour: {
+    dialog: "引导",
+    close: "关闭引导",
+    skip: "跳过",
+    previous: "上一步",
+    next: "下一步",
+    finish: "完成",
+    progress: (current, total) => `第 ${current} 步，共 ${total} 步`,
+  },
+  calendar: {
+    label: "日历",
+    previousPage: "上一页",
+    nextPage: "下一页",
+    weekdays: ["日", "一", "二", "三", "四", "五", "六"],
+    months: [
+      "1 月",
+      "2 月",
+      "3 月",
+      "4 月",
+      "5 月",
+      "6 月",
+      "7 月",
+      "8 月",
+      "9 月",
+      "10 月",
+      "11 月",
+      "12 月",
+    ],
+    monthTitle: (year, month) => `${year} 年 ${month} 月`,
+    yearTitle: (year) => `${year} 年`,
+    today: "今天",
+    thisMonth: "本月",
+    thisYear: "今年",
+  },
   numberField: { decrement: "减少", increment: "增加" },
   pagination: {
     total: (count) => `共 ${count} 条`,
@@ -363,14 +423,32 @@ const zhComponents: ComponentLocale = {
   pageHeader: { back: "返回" },
   secretField: { show: "显示", hide: "隐藏", copy: "复制", copied: "已复制" },
   kanban: { emptyColumn: "拖拽卡片到此" },
-  gantt: { chart: "项目排期甘特图", empty: "暂无排期数据", process: "工序", month: (month) => `${month}月` },
+  gantt: {
+    chart: "项目排期甘特图",
+    empty: "暂无排期数据",
+    process: "工序",
+    month: (month) => `${month}月`,
+  },
   sankey: { chart: "桑基流向图" },
   diffStat: { added: "新增", modified: "修改", deleted: "删除", renamed: "重命名" },
-  deployStatus: { queued: "排队中", building: "构建中", ready: "已上线", error: "失败", canceled: "已取消", skipped: "已跳过" },
+  deployStatus: {
+    queued: "排队中",
+    building: "构建中",
+    ready: "已上线",
+    error: "失败",
+    canceled: "已取消",
+    skipped: "已跳过",
+  },
   codeReviewThread: {
-    suggestedChange: "建议修改", adoptSuggestion: "采纳建议", commentCount: (count) => `${count} 条批注`,
-    resolved: "已解决", falsePositive: "误报", markResolved: "标记已解决", reopen: "重新打开",
-    replyPlaceholder: "回复这条批注…", reply: "回复",
+    suggestedChange: "建议修改",
+    adoptSuggestion: "采纳建议",
+    commentCount: (count) => `${count} 条批注`,
+    resolved: "已解决",
+    falsePositive: "误报",
+    markResolved: "标记已解决",
+    reopen: "重新打开",
+    replyPlaceholder: "回复这条批注…",
+    reply: "回复",
     severities: { critical: "严重", major: "重要", minor: "次要", info: "提示" },
   },
 };
@@ -418,6 +496,56 @@ const enComponents: ComponentLocale = {
     goTo: (index) => `Go to slide ${index}`,
   },
   steps: { label: "Steps" },
+  tour: {
+    dialog: "Tour",
+    close: "Close tour",
+    skip: "Skip",
+    previous: "Previous",
+    next: "Next",
+    finish: "Finish",
+    progress: (current, total) => `Step ${current} of ${total}`,
+  },
+  calendar: {
+    label: "Calendar",
+    previousPage: "Previous page",
+    nextPage: "Next page",
+    weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    months: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+    monthTitle: (year, month) =>
+      `${
+        [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ][month - 1]
+      } ${year}`,
+    yearTitle: (year) => `${year}`,
+    today: "Today",
+    thisMonth: "This month",
+    thisYear: "This year",
+  },
   numberField: { decrement: "Decrease", increment: "Increase" },
   pagination: {
     total: (count) => `${count} items`,
@@ -474,19 +602,40 @@ const enComponents: ComponentLocale = {
   chatMessage: { me: "Me", sending: "Sending", sent: "Delivered", read: "Read" },
   navMenu: { navigation: "Sidebar navigation" },
   spinner: { loading: "Loading" },
-  animatedThemeToggler: { switchToLight: "Switch to light mode", switchToDark: "Switch to dark mode" },
+  animatedThemeToggler: {
+    switchToLight: "Switch to light mode",
+    switchToDark: "Switch to dark mode",
+  },
   backTop: { backToTop: "Back to top" },
   pageHeader: { back: "Back" },
   secretField: { show: "Show", hide: "Hide", copy: "Copy", copied: "Copied" },
   kanban: { emptyColumn: "Drop cards here" },
-  gantt: { chart: "Project schedule Gantt chart", empty: "No schedule data", process: "Task", month: (month) => `${month}` },
+  gantt: {
+    chart: "Project schedule Gantt chart",
+    empty: "No schedule data",
+    process: "Task",
+    month: (month) => `${month}`,
+  },
   sankey: { chart: "Sankey diagram" },
   diffStat: { added: "Added", modified: "Modified", deleted: "Deleted", renamed: "Renamed" },
-  deployStatus: { queued: "Queued", building: "Building", ready: "Ready", error: "Failed", canceled: "Canceled", skipped: "Skipped" },
+  deployStatus: {
+    queued: "Queued",
+    building: "Building",
+    ready: "Ready",
+    error: "Failed",
+    canceled: "Canceled",
+    skipped: "Skipped",
+  },
   codeReviewThread: {
-    suggestedChange: "Suggested change", adoptSuggestion: "Apply suggestion", commentCount: (count) => `${count} comments`,
-    resolved: "Resolved", falsePositive: "False positive", markResolved: "Mark resolved", reopen: "Reopen",
-    replyPlaceholder: "Reply to this comment…", reply: "Reply",
+    suggestedChange: "Suggested change",
+    adoptSuggestion: "Apply suggestion",
+    commentCount: (count) => `${count} comments`,
+    resolved: "Resolved",
+    falsePositive: "False positive",
+    markResolved: "Mark resolved",
+    reopen: "Reopen",
+    replyPlaceholder: "Reply to this comment…",
+    reply: "Reply",
     severities: { critical: "Critical", major: "Major", minor: "Minor", info: "Info" },
   },
 };

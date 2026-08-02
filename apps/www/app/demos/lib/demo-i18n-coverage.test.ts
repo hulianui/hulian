@@ -10,6 +10,8 @@ import {
   createSourceFile,
   forEachChild,
   isJsxText,
+  isCallExpression,
+  isIdentifier,
   isStringLiteralLike,
   type Node,
 } from "typescript-api";
@@ -18,21 +20,76 @@ import { DOCS_LOCALE } from "../../../lib/docs-locale";
 const DEMOS_ROOT = new URL("..", import.meta.url).pathname;
 const HAN_OR_CJK_PUNCTUATION = /[\p{Script=Han}，。！？；：、“”‘’（）【】《》〈〉「」『』…]/u;
 const INTERNAL_PROTOCOL_EXEMPTIONS = new Map([
-  ["crm/_data/metrics.ts", "CRM mock discriminators and chart data keys stay aligned with the typed fixture protocol"],
-  ["crm/_data/orders.ts", "CRM order status seeds are typed protocol values and are localized by the status label map at render time"],
-  ["crm/_data/protocol.ts", "CRM canonical owner and industry values are stable protocol values; only their render labels are localized"],
+  [
+    "crm/_data/metrics.ts",
+    "CRM mock discriminators and chart data keys stay aligned with the typed fixture protocol",
+  ],
+  [
+    "crm/_data/orders.ts",
+    "CRM order status seeds are typed protocol values and are localized by the status label map at render time",
+  ],
+  [
+    "crm/_data/protocol.ts",
+    "CRM canonical owner and industry values are stable protocol values; only their render labels are localized",
+  ],
+  [
+    "ai-chat/conversations.ts",
+    "Conversation group IDs stay canonical while CONVERSATION_GROUP_LABELS localizes their presentation",
+  ],
+  [
+    "ai-workflow/_data/templates.ts",
+    "Workflow template category discriminators stay canonical while TEMPLATE_CATEGORY_LABELS localizes their presentation",
+  ],
+  [
+    "knowledge/_data/images.ts",
+    "Knowledge image categories stay canonical while their SVG and visible labels consume the adjacent catalog",
+  ],
+  [
+    "learn/_data/courses.ts",
+    "Course level discriminators stay canonical while COURSE_LEVEL_NAME localizes their presentation",
+  ],
+  [
+    "scheduler/_data/clinic.ts",
+    "Appointment type discriminators stay canonical while TYPE_LABELS localizes their presentation",
+  ],
+  [
+    "dashboard/_data/snapshot.ts",
+    "Region, node status, and event level discriminators stay canonical while typed label maps localize their presentation",
+  ],
+  [
+    "dashboard/_components/header-bar.tsx",
+    "Dashboard data-source values stay canonical while Select labels come from the adjacent catalog",
+  ],
+  [
+    "dashboard/_components/dashboard-shell.tsx",
+    "Dashboard data-source comparisons use the canonical values selected by HeaderBar",
+  ],
+]);
+const TASK_11_DEMOS = new Set([
+  "ai-chat",
+  "ai-workflow",
+  "knowledge",
+  "learn",
+  "scheduler",
+  "dashboard",
 ]);
 
 function chineseLiteralNodes(file: string, source: string): string[] {
-  const sourceFile = createSourceFile(file, source, ScriptTarget.Latest, true, file.endsWith("x") ? ScriptKind.TSX : ScriptKind.TS);
+  const sourceFile = createSourceFile(
+    file,
+    source,
+    ScriptTarget.Latest,
+    true,
+    file.endsWith("x") ? ScriptKind.TSX : ScriptKind.TS,
+  );
   const values: string[] = [];
   const visit = (node: Node) => {
     if (
-      isStringLiteralLike(node)
-      || isJsxText(node)
-      || node.kind === SyntaxKind.TemplateHead
-      || node.kind === SyntaxKind.TemplateMiddle
-      || node.kind === SyntaxKind.TemplateTail
+      isStringLiteralLike(node) ||
+      isJsxText(node) ||
+      node.kind === SyntaxKind.TemplateHead ||
+      node.kind === SyntaxKind.TemplateMiddle ||
+      node.kind === SyntaxKind.TemplateTail
     ) {
       const value = "text" in node ? String(node.text) : node.getText(sourceFile);
       if (HAN_OR_CJK_PUNCTUATION.test(value)) values.push(value.trim());
@@ -43,38 +100,218 @@ function chineseLiteralNodes(file: string, source: string): string[] {
   return values.filter(Boolean);
 }
 
+function consumedContentKeys(file: string, source: string): Set<string> {
+  const sourceFile = createSourceFile(
+    file,
+    source,
+    ScriptTarget.Latest,
+    true,
+    file.endsWith("x") ? ScriptKind.TSX : ScriptKind.TS,
+  );
+  const keys = new Set<string>();
+  const visit = (node: Node) => {
+    if (
+      isCallExpression(node) &&
+      isIdentifier(node.expression) &&
+      node.expression.text === "copy" &&
+      node.arguments[0] &&
+      isStringLiteralLike(node.arguments[0])
+    )
+      keys.add(node.arguments[0].text);
+    else if (
+      isCallExpression(node) &&
+      isIdentifier(node.expression) &&
+      node.expression.text === "copy" &&
+      node.arguments[0]
+    ) {
+      const collectKey = (candidate: Node) => {
+        if (isStringLiteralLike(candidate)) keys.add(candidate.text);
+        else forEachChild(candidate, collectKey);
+      };
+      collectKey(node.arguments[0]);
+    }
+    forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return keys;
+}
+
 const inventory = {
+  "ai-chat": {
+    routes: ["page.tsx"],
+    fixtures: ["conversations.ts"],
+  },
+  "ai-workflow": {
+    routes: [
+      "(app)/gallery/page.tsx",
+      "(app)/page.tsx",
+      "(app)/profile/page.tsx",
+      "(app)/templates/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: ["_data/artifacts.ts", "_data/models.ts", "_data/templates.ts"],
+  },
   billing: {
-    routes: ["(app)/invoices/page.tsx", "(app)/page.tsx", "(app)/payment/page.tsx", "(app)/plans/page.tsx", "(app)/settings/page.tsx", "login/page.tsx"],
+    routes: [
+      "(app)/invoices/page.tsx",
+      "(app)/page.tsx",
+      "(app)/payment/page.tsx",
+      "(app)/plans/page.tsx",
+      "(app)/settings/page.tsx",
+      "login/page.tsx",
+    ],
     fixtures: ["_data/account.ts", "_data/invoices.ts", "_data/plans.ts"],
   },
   crm: {
-    routes: ["(app)/customers/[id]/page.tsx", "(app)/customers/page.tsx", "(app)/opportunities/page.tsx", "(app)/orders/page.tsx", "(app)/page.tsx", "(app)/settings/page.tsx", "login/page.tsx"],
-    fixtures: ["_data/customers.ts", "_data/follows.ts", "_data/metrics.ts", "_data/opportunities.ts", "_data/orders.ts", "_data/protocol.ts", "_data/status.ts"],
+    routes: [
+      "(app)/customers/[id]/page.tsx",
+      "(app)/customers/page.tsx",
+      "(app)/opportunities/page.tsx",
+      "(app)/orders/page.tsx",
+      "(app)/page.tsx",
+      "(app)/settings/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: [
+      "_data/customers.ts",
+      "_data/follows.ts",
+      "_data/metrics.ts",
+      "_data/opportunities.ts",
+      "_data/orders.ts",
+      "_data/protocol.ts",
+      "_data/status.ts",
+    ],
+  },
+  dashboard: {
+    routes: ["(app)/page.tsx"],
+    fixtures: ["_data/snapshot.ts"],
   },
   "customer-service": {
-    routes: ["(app)/analytics/page.tsx", "(app)/knowledge/page.tsx", "(app)/page.tsx", "(app)/settings/page.tsx", "(app)/tickets/[id]/page.tsx", "(app)/tickets/page.tsx", "login/page.tsx"],
-    fixtures: ["_data/conversations.ts", "_data/customers.ts", "_data/knowledge.ts", "_data/labels.ts", "_data/metrics.ts", "_data/tickets.ts"],
+    routes: [
+      "(app)/analytics/page.tsx",
+      "(app)/knowledge/page.tsx",
+      "(app)/page.tsx",
+      "(app)/settings/page.tsx",
+      "(app)/tickets/[id]/page.tsx",
+      "(app)/tickets/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: [
+      "_data/conversations.ts",
+      "_data/customers.ts",
+      "_data/knowledge.ts",
+      "_data/labels.ts",
+      "_data/metrics.ts",
+      "_data/tickets.ts",
+    ],
   },
   projects: {
-    routes: ["(app)/checkout/[id]/page.tsx", "(app)/checkout/page.tsx", "(app)/invoices/page.tsx", "(app)/page.tsx", "(app)/photos/page.tsx", "(app)/quotes/[id]/page.tsx", "(app)/quotes/page.tsx", "(app)/tracking/[id]/page.tsx", "(app)/tracking/page.tsx"],
-    fixtures: ["_data/checkouts.ts", "_data/invoices.ts", "_data/metrics.ts", "_data/photos.ts", "_data/projects.ts", "_data/quotes.ts", "_data/status.ts"],
+    routes: [
+      "(app)/checkout/[id]/page.tsx",
+      "(app)/checkout/page.tsx",
+      "(app)/invoices/page.tsx",
+      "(app)/page.tsx",
+      "(app)/photos/page.tsx",
+      "(app)/quotes/[id]/page.tsx",
+      "(app)/quotes/page.tsx",
+      "(app)/tracking/[id]/page.tsx",
+      "(app)/tracking/page.tsx",
+    ],
+    fixtures: [
+      "_data/checkouts.ts",
+      "_data/invoices.ts",
+      "_data/metrics.ts",
+      "_data/photos.ts",
+      "_data/projects.ts",
+      "_data/quotes.ts",
+      "_data/status.ts",
+    ],
   },
   hanhub: {
-    routes: ["(app)/billing/page.tsx", "(app)/health/page.tsx", "(app)/keys/page.tsx", "(app)/logs/page.tsx", "(app)/models/page.tsx", "(app)/page.tsx", "(app)/playground/page.tsx", "(app)/settings/page.tsx", "login/page.tsx"],
-    fixtures: ["_data/channels.ts", "_data/keys.ts", "_data/logs.ts", "_data/providers.ts", "_data/usage.ts"],
+    routes: [
+      "(app)/billing/page.tsx",
+      "(app)/health/page.tsx",
+      "(app)/keys/page.tsx",
+      "(app)/logs/page.tsx",
+      "(app)/models/page.tsx",
+      "(app)/page.tsx",
+      "(app)/playground/page.tsx",
+      "(app)/settings/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: [
+      "_data/channels.ts",
+      "_data/keys.ts",
+      "_data/logs.ts",
+      "_data/providers.ts",
+      "_data/usage.ts",
+    ],
   },
   hanship: {
-    routes: ["(app)/deployments/[id]/page.tsx", "(app)/deployments/page.tsx", "(app)/domains/page.tsx", "(app)/env/page.tsx", "(app)/page.tsx", "(app)/projects/[id]/page.tsx", "(app)/settings/page.tsx", "login/page.tsx"],
+    routes: [
+      "(app)/deployments/[id]/page.tsx",
+      "(app)/deployments/page.tsx",
+      "(app)/domains/page.tsx",
+      "(app)/env/page.tsx",
+      "(app)/page.tsx",
+      "(app)/projects/[id]/page.tsx",
+      "(app)/settings/page.tsx",
+      "login/page.tsx",
+    ],
     fixtures: ["_data/store.ts"],
   },
   hanreview: {
-    routes: ["(app)/findings/page.tsx", "(app)/gates/page.tsx", "(app)/page.tsx", "(app)/reviews/[id]/page.tsx", "(app)/reviews/page.tsx", "(app)/routing/page.tsx", "(app)/settings/page.tsx", "login/page.tsx"],
-    fixtures: ["_data/findings.ts", "_data/members.ts", "_data/metrics.ts", "_data/models.ts", "_data/repos.ts", "_data/reviews.ts", "_data/rules.ts"],
+    routes: [
+      "(app)/findings/page.tsx",
+      "(app)/gates/page.tsx",
+      "(app)/page.tsx",
+      "(app)/reviews/[id]/page.tsx",
+      "(app)/reviews/page.tsx",
+      "(app)/routing/page.tsx",
+      "(app)/settings/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: [
+      "_data/findings.ts",
+      "_data/members.ts",
+      "_data/metrics.ts",
+      "_data/models.ts",
+      "_data/repos.ts",
+      "_data/reviews.ts",
+      "_data/rules.ts",
+    ],
   },
   hanhelm: {
-    routes: ["(app)/agents/page.tsx", "(app)/alerts/page.tsx", "(app)/page.tsx", "(app)/queue/[id]/page.tsx", "(app)/queue/page.tsx", "(app)/routing/page.tsx", "(app)/settings/page.tsx", "login/page.tsx"],
-    fixtures: ["_data/alerts.ts", "_data/executors.ts", "_data/members.ts", "_data/metrics.ts", "_data/routing-rules.ts", "_data/tasks.ts"],
+    routes: [
+      "(app)/agents/page.tsx",
+      "(app)/alerts/page.tsx",
+      "(app)/page.tsx",
+      "(app)/queue/[id]/page.tsx",
+      "(app)/queue/page.tsx",
+      "(app)/routing/page.tsx",
+      "(app)/settings/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: [
+      "_data/alerts.ts",
+      "_data/executors.ts",
+      "_data/members.ts",
+      "_data/metrics.ts",
+      "_data/routing-rules.ts",
+      "_data/tasks.ts",
+    ],
+  },
+  knowledge: {
+    routes: ["page.tsx"],
+    fixtures: ["_data/images.ts", "_data/org.ts", "_data/vault.ts"],
+  },
+  learn: {
+    routes: ["(app)/courses/[id]/page.tsx", "(app)/page.tsx"],
+    fixtures: ["_data/courses.ts", "_data/poster.ts"],
+  },
+  scheduler: {
+    routes: ["page.tsx"],
+    fixtures: ["_data/clinic.ts"],
   },
 } as const;
 
@@ -88,16 +325,21 @@ function walk(directory: string): string[] {
 describe("admin and developer demo localization inventory", () => {
   it("provides English component defaults and localized shared demo chrome", async () => {
     const layout = readFileSync(join(DEMOS_ROOT, "layout.tsx"), "utf8");
-    const provider = readFileSync(join(DEMOS_ROOT, "_components/demos-locale-provider.tsx"), "utf8");
+    const provider = readFileSync(
+      join(DEMOS_ROOT, "_components/demos-locale-provider.tsx"),
+      "utf8",
+    );
     const chrome = readFileSync(join(DEMOS_ROOT, "_components/demos-chrome.tsx"), "utf8");
-    const shared = await import(pathToFileURL(join(DEMOS_ROOT, "_components/demos-chrome.content.ts")).href);
+    const shared = await import(
+      pathToFileURL(join(DEMOS_ROOT, "_components/demos-chrome.content.ts")).href
+    );
 
     expect(layout).toContain("<DemosLocaleProvider>");
     expect(provider).toContain('DOCS_LOCALE === "en" ? enUS : zhCN');
     expect(chrome).toContain('copy("backToGallery")');
     expect(shared.copy("backToGallery")).toBe(shared.content[DOCS_LOCALE].backToGallery);
     expect(HAN_OR_CJK_PUNCTUATION.test(shared.content.en.backToGallery)).toBe(false);
-    expect(Object.keys(inventory)).toHaveLength(8);
+    expect(Object.keys(inventory)).toHaveLength(14);
   });
 
   for (const [demo, expected] of Object.entries(inventory)) {
@@ -107,10 +349,22 @@ describe("admin and developer demo localization inventory", () => {
         .filter((path) => path.endsWith("/page.tsx"))
         .map((path) => relative(root, path))
         .sort();
-      const fixtures = walk(join(root, "_data"))
-        .filter((path) => path.endsWith(".ts") && !path.endsWith("types.ts") && !path.endsWith(".content.ts") && !path.endsWith(".test.ts"))
-        .map((path) => relative(root, path))
-        .sort();
+      const fixtures =
+        demo === "ai-chat"
+          ? ["conversations.ts"]
+          : existsSync(join(root, "_data"))
+          ? walk(join(root, "_data"))
+              .filter(
+                (path) =>
+                  path.endsWith(".ts") &&
+                  !path.endsWith("types.ts") &&
+                  !path.endsWith(".content.ts") &&
+                  !path.endsWith(".test.ts") &&
+                  !path.endsWith("node-kinds.tsx"),
+              )
+              .map((path) => relative(root, path))
+              .sort()
+          : [];
 
       expect(routes).toEqual([...expected.routes].sort());
       expect(fixtures).toEqual([...expected.fixtures].sort());
@@ -118,7 +372,8 @@ describe("admin and developer demo localization inventory", () => {
         const absolute = join(root, source);
         const sourceText = readFileSync(absolute, "utf8");
         const companion = absolute.replace(/\.(ts|tsx)$/, ".content.ts");
-        if (sourceText.includes("copy(")) expect(existsSync(companion), `${source} companion`).toBe(true);
+        if (sourceText.includes("copy("))
+          expect(existsSync(companion), `${source} companion`).toBe(true);
       }
     });
   }
@@ -138,25 +393,43 @@ describe("admin and developer demo localization inventory", () => {
         for (const key of enKeys) {
           const english = module.content.en[key];
           expect(english.trim(), `${relative(DEMOS_ROOT, contentFile)}:${key}`).not.toBe("");
-          expect(HAN_OR_CJK_PUNCTUATION.test(english), `${relative(DEMOS_ROOT, contentFile)}:${key}`).toBe(false);
+          expect(
+            HAN_OR_CJK_PUNCTUATION.test(english),
+            `${relative(DEMOS_ROOT, contentFile)}:${key}`,
+          ).toBe(false);
           expect(module.copy(key), `${relative(DEMOS_ROOT, contentFile)}:${key} consumer`).toBe(
             module.content[DOCS_LOCALE][key],
           );
           expect(key).not.toMatch(/^copy\d+$/);
+          if (TASK_11_DEMOS.has(demo)) {
+            expect(key, `${relative(DEMOS_ROOT, contentFile)} semantic key`).not.toMatch(
+              /^localized|^(?:alternate|secondary|tertiary|quaternary)$/i,
+            );
+          }
         }
 
-        const sourceFile = [contentFile.replace(/\.content\.ts$/, ".tsx"), contentFile.replace(/\.content\.ts$/, ".ts")]
-          .find((candidate) => existsSync(candidate));
+        const sourceFile = [
+          contentFile.replace(/\.content\.ts$/, ".tsx"),
+          contentFile.replace(/\.content\.ts$/, ".ts"),
+        ].find((candidate) => existsSync(candidate));
         expect(sourceFile, `${relative(DEMOS_ROOT, contentFile)} consumer`).toBeTruthy();
         const source = readFileSync(sourceFile!, "utf8");
-        const consumedKeys = new Set([...source.matchAll(/copy\("([^"]+)"/g)].map((match) => match[1]));
-        for (const line of source.split("\n").filter((row) => row.includes("copy("))) {
-          for (const match of line.matchAll(/"([^"]+)"/g)) if (zhKeys.includes(match[1])) consumedKeys.add(match[1]);
+        const consumedKeys = TASK_11_DEMOS.has(demo)
+          ? consumedContentKeys(sourceFile!, source)
+          : new Set([...source.matchAll(/copy\("([^"]+)"/g)].map((match) => match[1]));
+        if (!TASK_11_DEMOS.has(demo)) {
+          for (const line of source.split("\n").filter((row) => row.includes("copy("))) {
+            for (const match of line.matchAll(/"([^"]+)"/g))
+              if (zhKeys.includes(match[1])) consumedKeys.add(match[1]);
+          }
         }
         for (const key of consumedKeys) {
           expect(zhKeys, `${relative(DEMOS_ROOT, sourceFile!)}:${key}`).toContain(key);
         }
-        expect([...consumedKeys].sort(), `${relative(DEMOS_ROOT, contentFile)} keys are consumed`).toEqual([...zhKeys].sort());
+        expect(
+          [...consumedKeys].sort(),
+          `${relative(DEMOS_ROOT, contentFile)} keys are consumed`,
+        ).toEqual([...zhKeys].sort());
       }
     }
   }, 15_000);
@@ -164,17 +437,29 @@ describe("admin and developer demo localization inventory", () => {
   it("catalogs every source file that still carries Chinese domain discriminators", () => {
     for (const demo of Object.keys(inventory)) {
       const root = join(DEMOS_ROOT, demo);
-      for (const sourceFile of walk(root).filter((path) => /\.(ts|tsx)$/.test(path) && !path.endsWith(".content.ts") && !path.endsWith(".test.ts") && !path.endsWith("types.ts"))) {
+      for (const sourceFile of walk(root).filter(
+        (path) =>
+          /\.(ts|tsx)$/.test(path) &&
+          !path.endsWith(".content.ts") &&
+          !path.endsWith(".test.ts") &&
+          !path.endsWith("types.ts"),
+      )) {
         const source = readFileSync(sourceFile, "utf8");
         const chineseNodes = chineseLiteralNodes(sourceFile, source);
         if (chineseNodes.length === 0) continue;
         const relativeSource = relative(DEMOS_ROOT, sourceFile);
         if (INTERNAL_PROTOCOL_EXEMPTIONS.has(relativeSource)) {
-          expect(INTERNAL_PROTOCOL_EXEMPTIONS.get(relativeSource), `${relativeSource} exemption reason`).toBeTruthy();
-          continue;
+          expect(
+            INTERNAL_PROTOCOL_EXEMPTIONS.get(relativeSource),
+            `${relativeSource} exemption reason`,
+          ).toBeTruthy();
+          if (!TASK_11_DEMOS.has(demo)) continue;
         }
         const companion = sourceFile.replace(/\.(ts|tsx)$/, ".content.ts");
-        expect(existsSync(companion), `${relativeSource} domain-value catalog; found: ${chineseNodes.slice(0, 3).join(" | ")}`).toBe(true);
+        expect(
+          existsSync(companion),
+          `${relativeSource} domain-value catalog; found: ${chineseNodes.slice(0, 3).join(" | ")}`,
+        ).toBe(true);
         expect(source, `${relativeSource} consumes its catalog`).toContain("copy(");
       }
     }

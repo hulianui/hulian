@@ -982,39 +982,46 @@
       "id": "component/calendar/pitfall/1",
       "scope": "calendar",
       "title": "Calendar",
-      "rule": "**值是定宽文本，不是 `Date`**：`\"YYYY-MM-DD\"` 定宽 → 字典序即时间序，区间比较可以直接比字符串， 也避开了 `new Date(\"2026-06-08\").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。",
+      "rule": "月份标题、星期与月份名称、翻页标签和快捷文案跟随最近的 `ConfigProvider` locale；未提供 Provider 时默认中文。ISO 值与选择规则不受 locale 影响。",
       "source": "packages/ui/src/calendar/calendar.md"
     },
     {
       "id": "component/calendar/pitfall/2",
       "scope": "calendar",
       "title": "Calendar",
-      "rule": "`onValueChange` 的参数类型是 `string` 而非 `string | null`：面板没有清空入口。 需要「可清空」用 [DatePicker](../date-picker/date-picker.md)，它的触发器上带清除按钮。",
+      "rule": "**值是定宽文本，不是 `Date`**：`\"YYYY-MM-DD\"` 定宽 → 字典序即时间序，区间比较可以直接比字符串， 也避开了 `new Date(\"2026-06-08\").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。",
       "source": "packages/ui/src/calendar/calendar.md"
     },
     {
       "id": "component/calendar/pitfall/3",
       "scope": "calendar",
       "title": "Calendar",
-      "rule": "**下钻不回调**：`picker=\"date\"` 时点标题上卷到月视图、再点某个月，只是把光标挪过去，不算选中， 只有点到日格才提交。写测试时别把「点了 9 月」当成一次选值。",
+      "rule": "`onValueChange` 的参数类型是 `string` 而非 `string | null`：面板没有清空入口。 需要「可清空」用 [DatePicker](../date-picker/date-picker.md)，它的触发器上带清除按钮。",
       "source": "packages/ui/src/calendar/calendar.md"
     },
     {
       "id": "component/calendar/pitfall/4",
       "scope": "calendar",
       "title": "Calendar",
-      "rule": "`disabledDate` 在 `date` 粒度下逐日调用（一屏 42 次），请保持它是纯计算 —— 别在里面发请求或建对象。 月/年粒度下只对该月/该年首日调一次，**判据也随之变粗**：想精确到天就别用粗粒度 picker。",
+      "rule": "**下钻不回调**：`picker=\"date\"` 时点标题上卷到月视图、再点某个月，只是把光标挪过去，不算选中， 只有点到日格才提交。写测试时别把「点了 9 月」当成一次选值。",
       "source": "packages/ui/src/calendar/calendar.md"
     },
     {
       "id": "component/calendar/pitfall/5",
       "scope": "calendar",
       "title": "Calendar",
-      "rule": "`disabled` 与 `readOnly` 不是一回事：`readOnly` 还能翻页浏览，`disabled` 连翻页按钮都禁掉。",
+      "rule": "`disabledDate` 在 `date` 粒度下逐日调用（一屏 42 次），请保持它是纯计算 —— 别在里面发请求或建对象。 月/年粒度下只对该月/该年首日调一次，**判据也随之变粗**：想精确到天就别用粗粒度 picker。",
       "source": "packages/ui/src/calendar/calendar.md"
     },
     {
       "id": "component/calendar/pitfall/6",
+      "scope": "calendar",
+      "title": "Calendar",
+      "rule": "`disabled` 与 `readOnly` 不是一回事：`readOnly` 还能翻页浏览，`disabled` 连翻页按钮都禁掉。",
+      "source": "packages/ui/src/calendar/calendar.md"
+    },
+    {
+      "id": "component/calendar/pitfall/7",
       "scope": "calendar",
       "title": "Calendar",
       "rule": "面板宽度固定 `15.75rem`（7 列 × 2.25rem），不做响应式收窄 —— 日历一挤压就点不准。 要塞进更窄的容器请自行缩放。",
@@ -7093,18 +7100,25 @@
       "id": "component/tour/pitfall/1",
       "scope": "tour",
       "title": "Tour",
-      "rule": "完全受控：`open` 与 `current` 必须由消费者 state 持有，上一步/下一步只触发 `onChange`，本组件不自管步索引——忘记在 `onChange` 里回写 `current` 会导致引导卡在第一步。",
+      "rule": "导航、关闭、对话框和进度标签跟随最近的 `ConfigProvider` locale；未提供 Provider 时默认中文，显式文案 props 优先。",
       "source": "packages/ui/src/tour/tour.md"
     },
     {
       "id": "component/tour/pitfall/2",
       "scope": "tour",
       "title": "Tour",
-      "rule": "`target` 用函数（`() => ref.current`）比 CSS 选择器更稳，尤其目标 DOM 动态挂载/卸载时。",
+      "rule": "完全受控：`open` 与 `current` 必须由消费者 state 持有，上一步/下一步只触发 `onChange`，本组件不自管步索引——忘记在 `onChange` 里回写 `current` 会导致引导卡在第一步。",
       "source": "packages/ui/src/tour/tour.md"
     },
     {
       "id": "component/tour/pitfall/3",
+      "scope": "tour",
+      "title": "Tour",
+      "rule": "`target` 用函数（`() => ref.current`）比 CSS 选择器更稳，尤其目标 DOM 动态挂载/卸载时。",
+      "source": "packages/ui/src/tour/tour.md"
+    },
+    {
+      "id": "component/tour/pitfall/4",
       "scope": "tour",
       "title": "Tour",
       "rule": "全屏 overlay 经 Portal 挂到 body；截图/可视验证须「先点开始触发 open 再截」（同 Drawer/Popover/Toast）。",
@@ -7514,7 +7528,7 @@
   ],
   "stats": {
     "componentDocs": 372,
-    "componentAdvisories": 1048,
-    "totalAdvisories": 1055
+    "componentAdvisories": 1050,
+    "totalAdvisories": 1057
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./detail-panel.content";
 import { useState } from "react";
 import { Plus, Users } from "lucide-react";
 import {
@@ -33,7 +34,15 @@ function initialAvatar(name: string): string {
 }
 const avatarOf = (name: string) => COLLABORATORS[name]?.avatar ?? initialAvatar(name);
 
-function Section({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
+function Section({
+  title,
+  action,
+  children,
+}: {
+  title: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <section className="space-y-2">
       <div className="flex items-center justify-between">
@@ -58,43 +67,60 @@ export function DetailPanel() {
     return (
       <aside className="border-l border-border bg-bg">
         <div className="grid h-full place-items-center p-6">
-          <Empty size="sm" title="详情" description="选择一个文档或文件查看协作者、版本与权限。" />
+          <Empty
+            size="sm"
+            title={copy("details")}
+            description={copy("selectADocumentOrFileToViewCollaboratorsVersionsAnd")}
+          />
         </div>
       </aside>
     );
   }
 
   const collaborators = node.collaborators ?? [];
-  const avatars: AvatarCirclesItem[] = collaborators.slice(0, 5).map((name) => ({ src: avatarOf(name), alt: name }));
+  const avatars: AvatarCirclesItem[] = collaborators
+    .slice(0, 5)
+    .map((name) => ({ src: avatarOf(name), alt: name }));
   const versions = versionsOf(node.id);
 
   const openCollab = () => {
     setCollabKeys(collaborators.map((n) => `m-${n}`));
     setCollabOpen(true);
   };
-  const memberItems: TransferItem[] = MEMBERS.map((m) => ({ key: `m-${m.name}`, label: m.name, description: m.role }));
+  const memberItems: TransferItem[] = MEMBERS.map((m) => ({
+    key: `m-${m.name}`,
+    label: m.name,
+    description: m.role,
+  }));
   const saveCollab = () => {
     const names = collabKeys.map((k) => k.replace(/^m-/, ""));
     v.updateCollaborators(node.id, names);
     setCollabOpen(false);
-    toast({ title: "已更新协作者", description: `${names.length} 人`, tone: "info" });
+    toast({
+      title: copy("updatedCollaborators"),
+      description: copy("memberCount", names.length),
+      tone: "info",
+    });
   };
 
   const removeTag = (t: string) => {
-    v.updateTags(node.id, (node.tags ?? []).filter((x) => x !== t));
-    toast({ title: "已移除标签", description: t, tone: "info" });
+    v.updateTags(
+      node.id,
+      (node.tags ?? []).filter((x) => x !== t),
+    );
+    toast({ title: copy("tagRemoved"), description: t, tone: "info" });
   };
   const addTag = () => {
     const t = tagInput.trim();
     if (!t) return;
     if ((node.tags ?? []).includes(t)) {
-      toast({ title: "标签已存在", tone: "danger" });
+      toast({ title: copy("tagAlreadyExists"), tone: "danger" });
       return;
     }
     v.updateTags(node.id, [...(node.tags ?? []), t]);
     setTagInput("");
     setAdding(false);
-    toast({ title: "已添加标签", description: t, tone: "info" });
+    toast({ title: copy("labelAdded"), description: t, tone: "info" });
   };
 
   return (
@@ -105,15 +131,26 @@ export function DetailPanel() {
           <h2 className="truncate text-base font-semibold tracking-tight">{node.name}</h2>
           <dl className="mt-2 space-y-1 text-sm">
             <div className="flex justify-between gap-2">
-              <dt className="text-muted">类型</dt>
-              <dd>{({ folder: "文件夹", doc: "文档", image: "图片", file: "文件" } as const)[node.kind]}</dd>
+              <dt className="text-muted">{copy("type")}</dt>
+              <dd>
+                {
+                  (
+                    {
+                      folder: copy("folder"),
+                      doc: copy("document"),
+                      image: copy("image"),
+                      file: copy("file"),
+                    } as const
+                  )[node.kind]
+                }
+              </dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-muted">创建者</dt>
+              <dt className="text-muted">{copy("creator")}</dt>
               <dd>{node.author}</dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-muted">最后修改</dt>
+              <dt className="text-muted">{copy("lastModified")}</dt>
               <dd className="tabular-nums">{node.updatedAt}</dd>
             </div>
           </dl>
@@ -121,26 +158,40 @@ export function DetailPanel() {
 
         {/* 协作者 */}
         <Section
-          title="协作者"
+          title={copy("collaborators")}
           action={
-            <Button variant="ghost" size="sm" className="h-7 gap-1 px-2 text-xs" onClick={openCollab}>
-              <Users className="size-3.5" /> 管理
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1 px-2 text-xs"
+              onClick={openCollab}
+            >
+              <Users className="size-3.5" /> {copy("manage")}
             </Button>
           }
         >
           {avatars.length > 0 ? (
-            <AvatarCircles avatars={avatars} extraCount={Math.max(0, collaborators.length - 5)} size="sm" />
+            <AvatarCircles
+              avatars={avatars}
+              extraCount={Math.max(0, collaborators.length - 5)}
+              size="sm"
+            />
           ) : (
-            <p className="text-sm text-muted">暂无协作者</p>
+            <p className="text-sm text-muted">{copy("noCollaboratorsYet")}</p>
           )}
         </Section>
 
         {/* 标签 */}
         <Section
-          title="标签"
+          title={copy("tag")}
           action={
-            <Button variant="ghost" size="sm" className="h-7 gap-1 px-2 text-xs" onClick={() => setAdding((a) => !a)}>
-              <Plus className="size-3.5" /> 标签
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1 px-2 text-xs"
+              onClick={() => setAdding((a) => !a)}
+            >
+              <Plus className="size-3.5" /> {copy("tag")}
             </Button>
           }
         >
@@ -150,26 +201,28 @@ export function DetailPanel() {
                 {t}
               </Tag>
             ))}
-            {(node.tags ?? []).length === 0 && !adding && <span className="text-sm text-muted">无标签</span>}
+            {(node.tags ?? []).length === 0 && !adding && (
+              <span className="text-sm text-muted">{copy("noTags")}</span>
+            )}
           </div>
           {adding && (
             <div className="flex gap-2">
               <Input
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                placeholder="标签名"
+                placeholder={copy("tagName")}
                 autoFocus
                 onKeyDown={(e) => e.key === "Enter" && addTag()}
               />
               <Button size="sm" onClick={addTag}>
-                添加
+                {copy("add")}
               </Button>
             </div>
           )}
         </Section>
 
         {/* 版本历史 */}
-        <Section title="版本历史">
+        <Section title={copy("versionHistory")}>
           <Timeline
             items={versions.map((ver, i) => ({
               color: i === 0 ? "primary" : "default",
@@ -186,8 +239,10 @@ export function DetailPanel() {
         </Section>
 
         {/* 访问权限 */}
-        <Section title="访问权限">
-          <p className="mb-2 text-xs text-muted">勾选可访问该内容的部门 / 成员（父子级联）。</p>
+        <Section title={copy("access")}>
+          <p className="mb-2 text-xs text-muted">
+            {copy("checkTheDepartmentsMembersParentChildCascadeThatHaveAccess")}
+          </p>
           <div className="rounded-[var(--radius)] border border-border bg-surface p-2">
             <Tree
               key={node.id}
@@ -196,7 +251,11 @@ export function DetailPanel() {
               defaultExpandedKeys={["rd", "design"]}
               defaultCheckedKeys={["rd-fe"]}
               onCheck={(info) =>
-                toast({ title: "已更新访问权限", description: `${info.checkedKeys.length} 个节点`, tone: "info" })
+                toast({
+                  title: copy("accessUpdated"),
+                  description: copy("selectedNodeCount", info.checkedKeys.length),
+                  tone: "info",
+                })
               }
             />
           </div>
@@ -205,7 +264,13 @@ export function DetailPanel() {
 
       {/* 协作者管理（Transfer） */}
       <Dialog open={collabOpen} onOpenChange={setCollabOpen}>
-        <DialogContentCollab keys={collabKeys} setKeys={setCollabKeys} items={memberItems} onCancelCls={cancelCls} onSave={saveCollab} />
+        <DialogContentCollab
+          keys={collabKeys}
+          setKeys={setCollabKeys}
+          items={memberItems}
+          onCancelCls={cancelCls}
+          onSave={saveCollab}
+        />
       </Dialog>
     </aside>
   );
@@ -226,20 +291,23 @@ function DialogContentCollab({
   onSave: () => void;
 }) {
   return (
-    <DialogContent title="管理协作者" description="把成员加入右侧「协作者」即可参与该内容协作。">
+    <DialogContent
+      title={copy("manageCollaborators")}
+      description={copy("addMembersToTheCollaboratorsOnTheRightToCollaborate")}
+    >
       <div className="space-y-4">
         <Transfer
           dataSource={items}
           targetKeys={keys}
           onChange={(next) => setKeys(next)}
-          titles={["全体成员", "协作者"]}
+          titles={[copy("allMembers"), copy("collaborators")]}
           searchable
-          searchPlaceholder="搜索成员"
+          searchPlaceholder={copy("searchMembers")}
         />
         <div className="flex justify-end gap-2">
-          <DialogClose className={onCancelCls}>取消</DialogClose>
+          <DialogClose className={onCancelCls}>{copy("cancel")}</DialogClose>
           <Button size="sm" onClick={onSave}>
-            保存
+            {copy("save")}
           </Button>
         </div>
       </div>

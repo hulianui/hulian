@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./course-player-client.content";
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -20,7 +21,15 @@ import {
   formatTime,
   type TreeNode,
 } from "@hulianui/ui";
-import { ChevronLeft, CheckCircle2, Lock, PlayCircle, Circle, Share2, Bookmark } from "lucide-react";
+import {
+  ChevronLeft,
+  CheckCircle2,
+  Lock,
+  PlayCircle,
+  Circle,
+  Share2,
+  Bookmark,
+} from "lucide-react";
 import type { Course, Lesson } from "../_data/types";
 import { coursePoster } from "../_data/poster";
 import {
@@ -28,6 +37,7 @@ import {
   locateLesson,
   firstLessonId,
   CATEGORY_NAME,
+  COURSE_LEVEL_NAME,
   lessonCount,
   totalMinutes,
 } from "../_data/courses";
@@ -41,8 +51,16 @@ import { DiscussionTab } from "./discussion-tab";
 export function CoursePlayerClient({ course }: { course: Course }) {
   const searchParams = useSearchParams();
   const learn = useLearn();
-  const { isEnrolled, isCompleted, toggleComplete, markComplete, resume, saveResume, setLastLesson, progressOf } =
-    learn;
+  const {
+    isEnrolled,
+    isCompleted,
+    toggleComplete,
+    markComplete,
+    resume,
+    saveResume,
+    setLastLesson,
+    progressOf,
+  } = learn;
   const enrolled = isEnrolled(course.id);
 
   const flat = useMemo(() => allLessons(course), [course]);
@@ -70,7 +88,11 @@ export function CoursePlayerClient({ course }: { course: Course }) {
     const l = lessonMap.get(id);
     if (!l) return;
     if (isLocked(l)) {
-      toast({ title: "报名后解锁本节", description: "可先免费试看带「试看」标记的小节", tone: "neutral" });
+      toast({
+        title: copy("unlockThisSectionAfterSigningUp"),
+        description: copy("tryTheSectionMarkedTryItForFreeFirst"),
+        tone: "neutral",
+      });
       setEnrollOpen(true);
       return;
     }
@@ -105,10 +127,12 @@ export function CoursePlayerClient({ course }: { course: Course }) {
             <span className="min-w-0 flex-1 truncate">{l.title}</span>
             {l.preview && !enrolled && (
               <Tag tone="brand" variant="soft" size="sm">
-                试看
+                {copy("tryItOut")}
               </Tag>
             )}
-            <span className="shrink-0 text-xs tabular-nums text-muted">{formatTime(l.duration)}</span>
+            <span className="shrink-0 text-xs tabular-nums text-muted">
+              {formatTime(l.duration)}
+            </span>
           </span>
         ),
       };
@@ -134,7 +158,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
           className="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-foreground"
         >
           <ChevronLeft className="size-4" aria-hidden />
-          返回课程目录
+          {copy("backToCourseCatalog")}
         </Link>
       </div>
 
@@ -160,25 +184,31 @@ export function CoursePlayerClient({ course }: { course: Course }) {
             onEnded={() => {
               if (enrolled && !isCompleted(current.id)) {
                 markComplete(current.id);
-                toast({ title: "已完成本节", description: current.title, tone: "success" });
+                toast({
+                  title: copy("completedThisSection"),
+                  description: current.title,
+                  tone: "success",
+                });
               }
             }}
             endScreen={
               <div className="flex flex-col items-center gap-3 text-center text-white">
-                <div className="text-sm text-white/70">本节已结束</div>
+                <div className="text-sm text-white/70">{copy("thisSectionHasEnded")}</div>
                 {nextPlayable ? (
                   <>
-                    <div className="text-lg font-semibold">下一节 · {nextLesson!.title}</div>
+                    <div className="text-lg font-semibold">
+                      {copy("nextSection")} {nextLesson!.title}
+                    </div>
                     <button
                       type="button"
                       onClick={() => switchLesson(loc.nextId!)}
                       className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      播放下一节
+                      {copy("playNextSection")}
                     </button>
                   </>
                 ) : (
-                  <div className="text-base font-medium">🎉 已是最后一节</div>
+                  <div className="text-base font-medium">{copy("alreadyInTheLastSection")}</div>
                 )}
               </div>
             }
@@ -198,7 +228,9 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                   onClick={() => {
                     toggleComplete(current.id);
                     toast({
-                      title: isCompleted(current.id) ? "已标记为未完成" : "已标记为完成",
+                      title: isCompleted(current.id)
+                        ? copy("markedIncomplete")
+                        : copy("markedAsDone"),
                       tone: "info",
                     });
                   }}
@@ -206,10 +238,10 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                   {isCompleted(current.id) ? (
                     <>
                       <CheckCircle2 className="mr-1.5 size-4" />
-                      已完成
+                      {copy("completed")}
                     </>
                   ) : (
-                    "标记完成"
+                    copy("markComplete")
                   )}
                 </Button>
               )}
@@ -218,30 +250,30 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                   render={
                     <button
                       type="button"
-                      aria-label="收藏课程"
-                      onClick={() => toast({ title: "已加入收藏", tone: "info" })}
+                      aria-label={copy("favoriteCourses")}
+                      onClick={() => toast({ title: copy("addedToWishlist"), tone: "info" })}
                       className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
                     >
                       <Bookmark className="size-5" aria-hidden />
                     </button>
                   }
                 />
-                <TooltipContent>收藏课程</TooltipContent>
+                <TooltipContent>{copy("favoriteCourses")}</TooltipContent>
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger
                   render={
                     <button
                       type="button"
-                      aria-label="分享课程"
-                      onClick={() => toast({ title: "分享链接已复制", tone: "info" })}
+                      aria-label={copy("shareCourse")}
+                      onClick={() => toast({ title: copy("shareLinkCopied"), tone: "info" })}
                       className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
                     >
                       <Share2 className="size-5" aria-hidden />
                     </button>
                   }
                 />
-                <TooltipContent>分享课程</TooltipContent>
+                <TooltipContent>{copy("shareCourse")}</TooltipContent>
               </Tooltip>
             </div>
           </div>
@@ -250,9 +282,9 @@ export function CoursePlayerClient({ course }: { course: Course }) {
           <div className="mt-6">
             <Tabs defaultValue="intro">
               <TabsList className="mb-5">
-                <TabsTab value="intro">简介</TabsTab>
-                <TabsTab value="notes">笔记</TabsTab>
-                <TabsTab value="discussion">讨论</TabsTab>
+                <TabsTab value="intro">{copy("introduction")}</TabsTab>
+                <TabsTab value="notes">{copy("notes")}</TabsTab>
+                <TabsTab value="discussion">{copy("discussion")}</TabsTab>
               </TabsList>
               <TabsPanel value="intro">
                 <IntroTab course={course} progress={progress} />
@@ -261,7 +293,10 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                 {enrolled ? (
                   <NotesTab course={course} currentLesson={current} />
                 ) : (
-                  <LockedHint onEnroll={() => setEnrollOpen(true)} text="报名后即可记录课程笔记" />
+                  <LockedHint
+                    onEnroll={() => setEnrollOpen(true)}
+                    text={copy("takeCourseNotesOnceYouVeSignedUp")}
+                  />
                 )}
               </TabsPanel>
               <TabsPanel value="discussion">
@@ -280,29 +315,32 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                   {CATEGORY_NAME[course.category]}
                 </Tag>
                 <Tag tone="brand" variant="soft" size="sm">
-                  {course.level}
+                  {COURSE_LEVEL_NAME[course.level]}
                 </Tag>
               </div>
               <h2 className="text-base font-semibold text-foreground">{course.title}</h2>
               <p className="mt-1 text-xs text-muted">
-                {course.instructor.name} · {lessonCount(course)} 节 · 约 {totalMinutes(course)} 分钟
+                {course.instructor.name} · {lessonCount(course)} {copy("lessonDurationJoiner")}{" "}
+                {totalMinutes(course)} {copy("minutes")}
               </p>
               <div className="mt-2 flex items-center gap-1.5">
-                <span className="text-sm font-semibold text-amber-500">{course.rating.toFixed(1)}</span>
+                <span className="text-sm font-semibold text-amber-500">
+                  {course.rating.toFixed(1)}
+                </span>
                 <Rating value={course.rating} readOnly size="sm" />
               </div>
 
               {enrolled ? (
                 <div className="mt-3">
                   <div className="mb-1 flex items-center justify-between text-xs">
-                    <span className="text-muted">学习进度</span>
+                    <span className="text-muted">{copy("learningProgress")}</span>
                     <span className="font-medium text-foreground">{progress}%</span>
                   </div>
                   <Meter value={progress} />
                 </div>
               ) : (
                 <Button className="mt-3 w-full" onClick={() => setEnrollOpen(true)}>
-                  报名学习
+                  {copy("signUpToLearn")}
                 </Button>
               )}
             </div>
@@ -313,14 +351,16 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                 defaultExpandedKeys={course.chapters.map((c) => c.id)}
                 selectedKeys={[currentId]}
                 onSelect={onTreeSelect}
-                aria-label="课程章节"
+                aria-label={copy("courseSection")}
               />
             </div>
           </div>
         </aside>
       </div>
 
-      {course.price >= 0 && <EnrollDialog course={course} open={enrollOpen} onOpenChange={setEnrollOpen} />}
+      {course.price >= 0 && (
+        <EnrollDialog course={course} open={enrollOpen} onOpenChange={setEnrollOpen} />
+      )}
     </div>
   );
 }
@@ -331,7 +371,7 @@ function LockedHint({ onEnroll, text }: { onEnroll: () => void; text: string }) 
       <Lock className="size-6 text-muted" aria-hidden />
       <p className="text-sm text-muted">{text}</p>
       <Button size="sm" onClick={onEnroll}>
-        报名学习
+        {copy("signUpToLearn")}
       </Button>
     </div>
   );

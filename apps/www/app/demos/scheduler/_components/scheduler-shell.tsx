@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./scheduler-shell.content";
 import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -79,7 +80,9 @@ export function SchedulerShell() {
 
   const [view, setView] = useState<SchedulerView>("week");
   const [date, setDate] = useState(todayISO);
-  const [visibleDocs, setVisibleDocs] = useState<Set<string>>(() => new Set(DOCTORS.map((d) => d.id)));
+  const [visibleDocs, setVisibleDocs] = useState<Set<string>>(
+    () => new Set(DOCTORS.map((d) => d.id)),
+  );
 
   // 表单
   const [formOpen, setFormOpen] = useState(false);
@@ -101,7 +104,9 @@ export function SchedulerShell() {
 
   // 统计
   const todayCount = useMemo(
-    () => rows.filter((r) => dayjs(r.start).format("YYYY-MM-DD") === todayISO && r.type !== "停诊").length,
+    () =>
+      rows.filter((r) => dayjs(r.start).format("YYYY-MM-DD") === todayISO && r.type !== "停诊")
+        .length,
     [rows, todayISO],
   );
   const utilization = useMemo(() => {
@@ -121,10 +126,12 @@ export function SchedulerShell() {
 
   const openCreate = (s?: SchedulerSlot) => {
     setEditing(null);
-    setSlot(s ?? {
-      start: dayjs(date).hour(9).minute(0).second(0).format("YYYY-MM-DDTHH:mm:ss"),
-      end: dayjs(date).hour(9).minute(30).second(0).format("YYYY-MM-DDTHH:mm:ss"),
-    });
+    setSlot(
+      s ?? {
+        start: dayjs(date).hour(9).minute(0).second(0).format("YYYY-MM-DDTHH:mm:ss"),
+        end: dayjs(date).hour(9).minute(30).second(0).format("YYYY-MM-DDTHH:mm:ss"),
+      },
+    );
     setFormOpen(true);
   };
 
@@ -152,7 +159,11 @@ export function SchedulerShell() {
               : r,
           ),
         );
-        toast({ title: "预约已更新", description: `${v.patient} · ${dayjs(v.start).format("M/D HH:mm")}`, tone: "success" });
+        toast({
+          title: copy("appointmentUpdated"),
+          description: `${v.patient} · ${dayjs(v.start).format("M/D HH:mm")}`,
+          tone: "success",
+        });
       } else {
         const appt: ClinicAppt = {
           id: `n-${Date.now()}`,
@@ -168,7 +179,11 @@ export function SchedulerShell() {
           subtitle: doc?.dept,
         };
         setRows((rs) => [...rs, appt]);
-        toast({ title: "已建预约", description: `${v.patient} · ${doc?.title} · ${dayjs(v.start).format("M/D HH:mm")}`, tone: "success" });
+        toast({
+          title: copy("appointmentCreated"),
+          description: `${v.patient} · ${doc?.title} · ${dayjs(v.start).format("M/D HH:mm")}`,
+          tone: "success",
+        });
       }
       setFormOpen(false);
     });
@@ -176,19 +191,19 @@ export function SchedulerShell() {
   // 拖移/拖改时长回写
   const handleEventsChange = (next: SchedulerEvent[]) => {
     setRows(next as ClinicAppt[]);
-    toast({ title: "预约已改期", tone: "success" });
+    toast({ title: copy("appointmentRescheduled"), tone: "success" });
   };
 
   const cancelAppt = (appt: ClinicAppt) => {
     setRows((rs) => rs.filter((r) => r.id !== appt.id));
     setDetail(null);
-    toast({ title: "已取消预约", description: `${appt.patient}`, tone: "danger" });
+    toast({ title: copy("appointmentCanceled"), description: `${appt.patient}`, tone: "danger" });
   };
 
   const registerLeave = () =>
     run(() => {
       if (!leaveRange) {
-        toast({ title: "请先选择停诊区间", tone: "danger" });
+        toast({ title: copy("pleaseSelectAStoppingAreaFirst"), tone: "danger" });
         return;
       }
       const [s, e] = leaveRange;
@@ -199,7 +214,11 @@ export function SchedulerShell() {
         return [...rs, ...added.filter((a) => !ids.has(a.id))];
       });
       const doc = DOCTORS.find((d) => d.id === leaveDoctor);
-      toast({ title: "已登记停诊", description: `${doc?.title} · ${s} ~ ${e}`, tone: "success" });
+      toast({
+        title: copy("enrolledToStopVisit"),
+        description: `${doc?.title} · ${s} ~ ${e}`,
+        tone: "success",
+      });
       setLeaveRange(null);
     });
 
@@ -215,7 +234,7 @@ export function SchedulerShell() {
         </Card>
 
         <Card className="flex flex-col gap-2 p-3">
-          <span className="text-xs font-medium text-muted">跳转到某日（切日视图）</span>
+          <span className="text-xs font-medium text-muted">{copy("jumpToADayCrescentView")}</span>
           <DatePicker
             value={date}
             onValueChange={(iso) => {
@@ -224,12 +243,12 @@ export function SchedulerShell() {
                 setView("day");
               }
             }}
-            aria-label="选择日期"
+            aria-label={copy("selectDates")}
           />
         </Card>
 
         <Card className="flex flex-col gap-2 p-3">
-          <span className="text-xs font-medium text-muted">医生</span>
+          <span className="text-xs font-medium text-muted">{copy("doctor")}</span>
           {DOCTORS.map((d) => (
             <label key={d.id} className="flex cursor-pointer items-center gap-2 text-sm">
               <Checkbox checked={visibleDocs.has(d.id)} onCheckedChange={() => toggleDoc(d.id)} />
@@ -243,13 +262,13 @@ export function SchedulerShell() {
         </Card>
 
         <Card className="flex flex-col gap-2 p-3">
-          <span className="text-xs font-medium text-muted">停诊 / 请假登记</span>
+          <span className="text-xs font-medium text-muted">{copy("stopLeaveRegistration")}</span>
           <Select
             items={DOCTORS.map((d) => ({ value: d.id, label: `${d.title} · ${d.dept}` }))}
             value={leaveDoctor}
             onValueChange={(v) => setLeaveDoctor(v as string)}
           >
-            <SelectTrigger aria-label="选择停诊医生" />
+            <SelectTrigger aria-label={copy("selectStoppingDoctor")} />
             <SelectContent>
               {DOCTORS.map((d) => (
                 <SelectItem key={d.id} value={d.id}>
@@ -258,18 +277,31 @@ export function SchedulerShell() {
               ))}
             </SelectContent>
           </Select>
-          <DateRangePicker value={leaveRange} onValueChange={setLeaveRange} placeholder={["开始日", "结束日"]} />
+          <DateRangePicker
+            value={leaveRange}
+            onValueChange={setLeaveRange}
+            placeholder={[copy("startDate"), copy("endDate")]}
+          />
           <Button size="sm" variant="outline" onClick={registerLeave}>
-            登记停诊
+            {copy("enrollmentStoppage")}
           </Button>
         </Card>
 
         <div className="grid grid-cols-2 gap-3">
           <Card className="p-3">
-            <Stat label="今日预约" value={todayCount} delta={12} deltaLabel="人次" />
+            <Stat
+              label={copy("appointmentToday")}
+              value={todayCount}
+              delta={12}
+              deltaLabel={copy("personS")}
+            />
           </Card>
           <Card className="p-3">
-            <Stat label="利用率" value={`${utilization}%`} delta={utilization >= 50 ? 6 : -4} />
+            <Stat
+              label={copy("utilization")}
+              value={`${utilization}%`}
+              delta={utilization >= 50 ? 6 : -4}
+            />
           </Card>
         </div>
       </aside>
@@ -278,22 +310,31 @@ export function SchedulerShell() {
       <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold tracking-tight">瀚约 · 诊所排班台</h1>
-            <p className="text-xs text-muted">拖空白建预约 · 拖事件改期 · 拖下缘改时长</p>
+            <h1 className="text-lg font-semibold tracking-tight">
+              {copy("hanyuoClinicScheduleTable")}
+            </h1>
+            <p className="text-xs text-muted">
+              {copy("draggingBlankToBuildAnAppointmentDraggingEventReschedulingDragging")}
+            </p>
           </div>
           <div className="flex items-center gap-1.5">
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <Button variant="ghost" size="icon" aria-label="刷新排班" onClick={reload}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={copy("refreshSchedule")}
+                    onClick={reload}
+                  >
                     <RotateCw className="size-4" />
                   </Button>
                 }
               />
-              <TooltipContent>刷新排班</TooltipContent>
+              <TooltipContent>{copy("refreshSchedule")}</TooltipContent>
             </Tooltip>
             <Button onClick={() => openCreate()}>
-              <CalendarPlus className="size-4" /> 新建预约
+              <CalendarPlus className="size-4" /> {copy("newAppointment")}
             </Button>
           </div>
         </div>
@@ -302,7 +343,7 @@ export function SchedulerShell() {
           <Alert tone="danger" className="flex items-center justify-between">
             <span>{error}</span>
             <Button size="sm" variant="ghost" onClick={reload}>
-              重试
+              {copy("retry")}
             </Button>
           </Alert>
         ) : loading ? (
@@ -316,7 +357,10 @@ export function SchedulerShell() {
           </Card>
         ) : visibleDocs.size === 0 ? (
           <Card className="flex flex-1 items-center justify-center">
-            <Empty title="未选择医生" description="在左侧勾选至少一名医生以查看其排班。" />
+            <Empty
+              title={copy("noDoctorSelected")}
+              description={copy("checkAtLeastOneDoctorOnTheLeftToSee")}
+            />
           </Card>
         ) : (
           <Scheduler
@@ -348,8 +392,23 @@ export function SchedulerShell() {
 
       {/* 详情抽屉 */}
       <Drawer open={detail !== null} onOpenChange={(o) => !o && setDetail(null)}>
-        <DrawerContent side="right" title={detail ? detail.title : ""} className="w-[min(420px,92vw)]">
-          {detail && <DetailBody appt={detail} onEdit={() => { setEditing(detail); setSlot(undefined); setDetail(null); setFormOpen(true); }} onCancel={() => cancelAppt(detail)} />}
+        <DrawerContent
+          side="right"
+          title={detail ? detail.title : ""}
+          className="w-[min(420px,92vw)]"
+        >
+          {detail && (
+            <DetailBody
+              appt={detail}
+              onEdit={() => {
+                setEditing(detail);
+                setSlot(undefined);
+                setDetail(null);
+                setFormOpen(true);
+              }}
+              onCancel={() => cancelAppt(detail)}
+            />
+          )}
         </DrawerContent>
       </Drawer>
     </div>
@@ -367,11 +426,14 @@ function DetailBody({
 }) {
   const doc = DOCTORS.find((d) => d.id === appt.doctorId);
   const rows: [string, string][] = [
-    ["患者", appt.patient],
-    ["类型", appt.type],
-    ["医生", `${doc?.title ?? "—"} · ${doc?.dept ?? ""}`],
-    ["诊室", appt.room ?? "—"],
-    ["时间", `${dayjs(appt.start).format("M月D日 HH:mm")} – ${dayjs(appt.end).format("HH:mm")}`],
+    [copy("patient"), appt.patient],
+    [copy("type"), appt.type],
+    [copy("doctor"), `${doc?.title ?? "—"} · ${doc?.dept ?? ""}`],
+    [copy("clinic"), appt.room ?? "—"],
+    [
+      copy("time"),
+      `${dayjs(appt.start).format(copy("mmmDDayHHMm"))} – ${dayjs(appt.end).format("HH:mm")}`,
+    ],
   ];
   return (
     <div className="flex flex-col gap-4 p-1">
@@ -391,19 +453,19 @@ function DetailBody({
       <div className="mt-2 flex items-center justify-end gap-2">
         {appt.type !== "停诊" && (
           <Button variant="outline" size="sm" onClick={onEdit}>
-            编辑
+            {copy("edit")}
           </Button>
         )}
         <Popconfirm
-          title="取消该预约？"
-          description="取消后号源释放（demo 内存态，刷新还原）。"
+          title={copy("cancelThisAppointment")}
+          description={copy("cancelThePostNumberSourceReleaseDemoMemoryStateRefresh")}
           danger
-          okText="取消预约"
-          cancelText="再想想"
+          okText={copy("cancelAppointment")}
+          cancelText={copy("thinkAgain")}
           onConfirm={onCancel}
         >
           <Button variant="outline" size="sm" tone="danger">
-            取消预约
+            {copy("cancelAppointment")}
           </Button>
         </Popconfirm>
       </div>

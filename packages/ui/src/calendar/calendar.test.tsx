@@ -1,11 +1,27 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { Calendar } from "./calendar";
 
 // 面板一律用 defaultValue / defaultMonth 定位光标，不依赖「今天」——
 // 否则测试会在月初/月末与跨年时随真实日期漂移。
 
 describe("Calendar", () => {
+  it("标题、星期、导航与快捷按钮跟随 ConfigProvider", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <Calendar defaultValue="2026-06-08" />
+      </ConfigProvider>,
+    );
+
+    expect(screen.getByText("June 2026")).toBeTruthy();
+    expect(screen.getByText("Sun")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Previous page" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Next page" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Today" })).toBeTruthy();
+  });
+
   it("渲染星期头与当月网格，标题跟随光标月份", () => {
     render(<Calendar defaultValue="2026-06-08" />);
     expect(screen.getByText("2026 年 6 月")).toBeTruthy();
@@ -28,8 +44,12 @@ describe("Calendar", () => {
   it("非受控下选中态跟着走", () => {
     render(<Calendar defaultValue="2026-06-08" />);
     fireEvent.click(screen.getByRole("button", { name: "2026-06-15" }));
-    expect(screen.getByRole("button", { name: "2026-06-15" }).getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByRole("button", { name: "2026-06-08" }).getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getByRole("button", { name: "2026-06-15" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "2026-06-08" }).getAttribute("aria-pressed")).toBe(
+      "false",
+    );
   });
 
   it("受控下不自行改选中态，只回调", () => {
@@ -37,7 +57,9 @@ describe("Calendar", () => {
     render(<Calendar value="2026-06-08" onValueChange={onValueChange} />);
     fireEvent.click(screen.getByRole("button", { name: "2026-06-15" }));
     expect(onValueChange).toHaveBeenCalledWith("2026-06-15");
-    expect(screen.getByRole("button", { name: "2026-06-08" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: "2026-06-08" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
   });
 
   it("翻页按钮在 date 层翻月", () => {
@@ -83,10 +105,18 @@ describe("Calendar", () => {
   describe("禁用规则", () => {
     it("min/max 之外的日子被禁用", () => {
       render(<Calendar defaultValue="2026-06-10" minDate="2026-06-05" maxDate="2026-06-20" />);
-      expect((screen.getByRole("button", { name: "2026-06-04" }) as HTMLButtonElement).disabled).toBe(true);
-      expect((screen.getByRole("button", { name: "2026-06-05" }) as HTMLButtonElement).disabled).toBe(false);
-      expect((screen.getByRole("button", { name: "2026-06-20" }) as HTMLButtonElement).disabled).toBe(false);
-      expect((screen.getByRole("button", { name: "2026-06-21" }) as HTMLButtonElement).disabled).toBe(true);
+      expect(
+        (screen.getByRole("button", { name: "2026-06-04" }) as HTMLButtonElement).disabled,
+      ).toBe(true);
+      expect(
+        (screen.getByRole("button", { name: "2026-06-05" }) as HTMLButtonElement).disabled,
+      ).toBe(false);
+      expect(
+        (screen.getByRole("button", { name: "2026-06-20" }) as HTMLButtonElement).disabled,
+      ).toBe(false);
+      expect(
+        (screen.getByRole("button", { name: "2026-06-21" }) as HTMLButtonElement).disabled,
+      ).toBe(true);
     });
 
     it("disabledDate 命中的日子不可点也不回调", () => {
@@ -106,10 +136,18 @@ describe("Calendar", () => {
 
     it("month 粒度下 disabledDate 按该月首日判定", () => {
       render(
-        <Calendar picker="month" defaultValue="2026-06" disabledDate={(iso) => iso === "2026-09-01"} />,
+        <Calendar
+          picker="month"
+          defaultValue="2026-06"
+          disabledDate={(iso) => iso === "2026-09-01"}
+        />,
       );
-      expect((screen.getByRole("button", { name: "9 月" }) as HTMLButtonElement).disabled).toBe(true);
-      expect((screen.getByRole("button", { name: "8 月" }) as HTMLButtonElement).disabled).toBe(false);
+      expect((screen.getByRole("button", { name: "9 月" }) as HTMLButtonElement).disabled).toBe(
+        true,
+      );
+      expect((screen.getByRole("button", { name: "8 月" }) as HTMLButtonElement).disabled).toBe(
+        false,
+      );
     });
   });
 
@@ -125,8 +163,12 @@ describe("Calendar", () => {
 
     it("disabled 连翻页也停掉", () => {
       render(<Calendar defaultValue="2026-06-08" disabled />);
-      expect((screen.getByRole("button", { name: "下一页" }) as HTMLButtonElement).disabled).toBe(true);
-      expect((screen.getByRole("button", { name: "2026-06-15" }) as HTMLButtonElement).disabled).toBe(true);
+      expect((screen.getByRole("button", { name: "下一页" }) as HTMLButtonElement).disabled).toBe(
+        true,
+      );
+      expect(
+        (screen.getByRole("button", { name: "2026-06-15" }) as HTMLButtonElement).disabled,
+      ).toBe(true);
     });
   });
 

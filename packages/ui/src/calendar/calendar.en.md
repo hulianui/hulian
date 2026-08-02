@@ -36,10 +36,10 @@ import { Calendar } from "@hulianui/ui"
 | minDate | `string` | — | Earliest selectable date as any parseable date string; normalized internally. |
 | maxDate | `string` | — | Latest selectable date. |
 | disabledDate | `(isoDate: string) => boolean` | — | Determines whether a date is disabled. The argument is always `"YYYY-MM-DD"`; month/year pickers pass the first day of that month/year. |
-| showToday | `boolean` | `true` | Shows a shortcut whose built-in Chinese copy is `"\u4eca\u5929"` (Today), `"\u672c\u6708"` (This Month), or `"\u4eca\u5e74"` (This Year), depending on `picker`. |
+| showToday | `boolean` | `true` | Shows the locale-aware Today, This month, or This year shortcut for the active `picker`. |
 | disabled | `boolean` | `false` | Disables the entire panel, including navigation. |
 | readOnly | `boolean` | `false` | Allows navigation but prevents selection. |
-| aria-label | `string` | `"\u65e5\u5386"` | Accessible name for the panel; the built-in Chinese copy means “Calendar.” |
+| aria-label | `string` | From `ConfigProvider` | Accessible name for the panel. An explicit value takes precedence. |
 | className | `string` | — | Additional class name for the outer panel container. |
 
 ## Events
@@ -82,6 +82,7 @@ const [date, setDate] = useState<string | null>(null);
 - **Drilling down does not emit a value.** With `picker="date"`, opening the month view and choosing September only moves to that month; the value changes only after a day cell is selected. Tests should not treat choosing the month as a completed date selection.
 - At `date` granularity, `disabledDate` runs once per visible day, typically 42 times per panel. Keep it a pure, inexpensive calculation: do not issue requests or repeatedly allocate heavy objects. Month and year pickers call it only for the first day of each month/year, so the rule is necessarily coarser; use the date picker for day-level precision.
 - `readOnly` still allows navigation, while `disabled` also disables the navigation controls.
+- Month titles, weekday and month names, navigation labels, and shortcut copy follow the nearest `ConfigProvider` locale (`zhCN` by default, or `enUS`). ISO values and selection rules do not change with locale.
 - The panel has a fixed width of `15.75rem` (7 columns × 2.25rem) and does not shrink responsively. Scale it explicitly if it must fit in a narrower container.
 
 ## Related

@@ -1,12 +1,25 @@
 "use client";
+import { copy } from "./page.content";
 import { useRouter } from "next/navigation";
 import { Sparkles, Wand2, Clapperboard } from "lucide-react";
 import { Heading, Link, LoginForm, Meteors, Text } from "@hulianui/ui";
 
 const FEATURES = [
-  { icon: Wand2, title: "可视化节点编排", desc: "拖拽连线即可搭出生图/视频流水线" },
-  { icon: Sparkles, title: "多模型自由组合", desc: "提示词、放大、风格重绘随心拼接" },
-  { icon: Clapperboard, title: "一键文生视频", desc: "从一句话到一段动态画面" },
+  {
+    icon: Wand2,
+    title: copy("visualNodeOrchestration"),
+    desc: copy("dragAndDropToSetUpBirthChartVideoPipeline"),
+  },
+  {
+    icon: Sparkles,
+    title: copy("multiModelFreeCombination"),
+    desc: copy("promptWordsEnlargementStyleRedrawingCasualStitching"),
+  },
+  {
+    icon: Clapperboard,
+    title: copy("oneClickVincentVideo"),
+    desc: copy("fromASentenceToAMovingPicture"),
+  },
 ];
 
 export default function AiWorkflowLoginPage() {
@@ -19,19 +32,19 @@ export default function AiWorkflowLoginPage() {
         <Meteors number={18} />
         <div className="relative z-10 flex items-center gap-2">
           <span className="grid size-8 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-            瑚
+            {copy("coral")}
           </span>
-          <span className="text-base font-semibold tracking-tight">瑚琏 Flow Studio</span>
+          <span className="text-base font-semibold tracking-tight">{copy("reefFlowStudio")}</span>
         </div>
 
         <div className="relative z-10 max-w-md">
           <Heading level={1} size="3xl" balance className="text-white">
-            把创意
+            {copy("puttingIdeas")}
             <br />
-            连成一条流水线
+            {copy("connectToAPipeline")}
           </Heading>
           <Text className="mt-4 text-white/70">
-            可视化编排 AI 生图与视频工作流：提示词、模型、放大、图生视频，拖拽连线即可运行。
+            {copy("visualizeAndOrganizeAIRawDiagramsAndVideoWorkflowsPrompt")}
           </Text>
 
           <ul className="mt-10 flex flex-col gap-5">
@@ -52,7 +65,7 @@ export default function AiWorkflowLoginPage() {
         </div>
 
         <Text size="sm" className="relative z-10 text-white/50">
-          © 2026 瑚琏 Hulian · 内置示例
+          {copy("hulianBuiltInExamples")}
         </Text>
       </aside>
 
@@ -63,25 +76,27 @@ export default function AiWorkflowLoginPage() {
             logo={
               <span className="inline-flex items-center gap-2">
                 <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-                  瑚
+                  {copy("coral")}
                 </span>
-                <span className="text-base font-semibold tracking-tight">瑚琏 Flow Studio</span>
+                <span className="text-base font-semibold tracking-tight">
+                  {copy("reefFlowStudio")}
+                </span>
               </span>
             }
-            subtitle="登录开始你的 AI 创作工作流"
+            subtitle={copy("logInToStartYourAICreationWorkflow")}
             onFinish={async () => {
               await new Promise((r) => setTimeout(r, 600));
               router.push("/demos/ai-workflow");
             }}
             footer={
               <div className="flex justify-between text-sm">
-                <Link href="#">忘记密码</Link>
-                <Link href="#">申请试用</Link>
+                <Link href="#">{copy("forgotPassword")}</Link>
+                <Link href="#">{copy("applyForATrial")}</Link>
               </div>
             }
           />
           <Text size="xs" tone="muted" className="text-center">
-            演示环境：用户名 / 密码任意填写即可登录
+            {copy("demoEnvironmentLogInWithAnyUsernamePassword")}
           </Text>
         </div>
       </div>

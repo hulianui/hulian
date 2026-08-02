@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./use-flow-run.content";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FlowEdge, FlowNode } from "@hulianui/ui";
 import { toast } from "@hulianui/ui";
@@ -53,7 +54,7 @@ function computeResult(node: N, nodes: N[], edges: FlowEdge[]): NodeResult | und
     case "prompt":
       return undefined; // 文本节点无图像产物
     case "image-input":
-      return { type: "image", seed: d.seed, meta: "参考图" };
+      return { type: "image", seed: d.seed, meta: copy("referenceDiagram") };
     case "model": {
       const r = ratioMeta(d.ratio);
       return { type: "image", seed: d.seed, meta: `${r.w}×${r.h}` };
@@ -61,10 +62,15 @@ function computeResult(node: N, nodes: N[], edges: FlowEdge[]): NodeResult | und
     case "upscale": {
       const up = upstream(node.id, nodes, edges).find((n) => n.data.result?.type === "image");
       const seed = up?.data.result?.seed ?? 1;
-      return { type: "image", seed, meta: `×${d.factor} 超分` };
+      return { type: "image", seed, meta: copy("upscaleFactor", d.factor) };
     }
     case "i2v":
-      return { type: "video", videoUrl: "/demo/sample-video.mp4", poster: "/demo/sample-poster.jpg", meta: `${d.duration}s · ${d.fps}fps` };
+      return {
+        type: "video",
+        videoUrl: "/demo/sample-video.mp4",
+        poster: "/demo/sample-poster.jpg",
+        meta: `${d.duration}s · ${d.fps}fps`,
+      };
     case "output": {
       const up = upstream(node.id, nodes, edges).find((n) => n.data.result);
       return up?.data.result ? { ...up.data.result } : undefined;
@@ -98,7 +104,9 @@ export function useFlowRun(
     setActiveId(null);
     setLog([]);
     setProgress(0);
-    setNodes((ns) => ns.map((n) => ({ ...n, data: { ...n.data, status: "idle", result: undefined } })));
+    setNodes((ns) =>
+      ns.map((n) => ({ ...n, data: { ...n.data, status: "idle", result: undefined } })),
+    );
   }, [setNodes]);
 
   const run = useCallback(() => {
@@ -107,7 +115,9 @@ export function useFlowRun(
     if (order.length === 0) return;
     const titleById = new Map(nodes.map((n) => [n.id, n.data.title]));
 
-    setNodes((ns) => ns.map((n) => ({ ...n, data: { ...n.data, status: "queued", result: undefined } })));
+    setNodes((ns) =>
+      ns.map((n) => ({ ...n, data: { ...n.data, status: "queued", result: undefined } })),
+    );
     setRunning(true);
     setActiveId(null);
     setLog([]);
@@ -117,19 +127,37 @@ export function useFlowRun(
       timers.current.push(
         setTimeout(() => {
           setActiveId(id);
-          setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, status: "running" } } : n)));
-          setLog((l) => [...l, { id: `${id}-${i}`, title: titleById.get(id) ?? "节点", text: "生成中…", status: "running" }]);
+          setNodes((ns) =>
+            ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, status: "running" } } : n)),
+          );
+          setLog((l) => [
+            ...l,
+            {
+              id: `${id}-${i}`,
+              title: titleById.get(id) ?? copy("node"),
+              text: copy("generating"),
+              status: "running",
+            },
+          ]);
         }, i * STEP_MS + 100),
       );
       timers.current.push(
         setTimeout(() => {
-          const title = titleById.get(id) ?? "节点";
+          const title = titleById.get(id) ?? copy("node");
           setNodes((ns) =>
-            ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, status: "done", result: computeResult(n, ns, edges) } } : n)),
+            ns.map((n) =>
+              n.id === id
+                ? { ...n, data: { ...n.data, status: "done", result: computeResult(n, ns, edges) } }
+                : n,
+            ),
           );
-          setLog((l) => l.map((e) => (e.id === `${id}-${i}` ? { ...e, text: "完成", status: "done" } : e)));
+          setLog((l) =>
+            l.map((e) =>
+              e.id === `${id}-${i}` ? { ...e, text: copy("done"), status: "done" } : e,
+            ),
+          );
           setProgress(Math.round(((i + 1) / order.length) * 100));
-          toast({ title: `${title} 完成`, tone: "neutral" });
+          toast({ title: copy("stepComplete", title), tone: "neutral" });
         }, i * STEP_MS + STEP_MS - 50),
       );
     });
@@ -138,7 +166,11 @@ export function useFlowRun(
       setTimeout(() => {
         setRunning(false);
         setActiveId(null);
-        toast({ title: "工作流运行完成 🎉", description: `共处理 ${order.length} 个节点`, tone: "info" });
+        toast({
+          title: copy("workflowRunComplete"),
+          description: copy("processedNodeCount", order.length),
+          tone: "info",
+        });
       }, order.length * STEP_MS + 120),
     );
   }, [nodes, edges, setNodes]);
