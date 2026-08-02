@@ -4,13 +4,13 @@ name: QRCode
 category: data-display
 group: info
 tags: []
-exports: [QRCode]
+exports: [QRCode, buildQRCode, qrCodeSvgString, qrCodeToPngDataUrl]
 status: enriched
 ---
 
 # QRCode
 
-> A theme-aware SVG QR code with UTF-8 content, error-correction levels, crisp modules, and an optional center logo.
+> Theme-aware SVG QR codes with UTF-8 content, error-correction boosting, minimum-version control, configurable logo excavation, and matching SVG/PNG/matrix export helpers.
 
 ## When to use
 
@@ -18,7 +18,7 @@ Use QRCode to encode scannable URLs or text in a locally rendered SVG. It suppor
 
 ## Import
 ```ts
-import { QRCode } from "@hulianui/ui"
+import { QRCode, buildQRCode, qrCodeSvgString, qrCodeToPngDataUrl } from "@hulianui/ui"
 ```
 
 ## Props
@@ -35,6 +35,21 @@ import { QRCode } from "@hulianui/ui"
 | aria-label | `string` | The value | Accessibility label. |
 | className | `string` | — | Custom class name. |
 
+### Additional capabilities
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| minVersion | `number` | — | Minimum QR version from 1 to 40. Longer content can still increase the version rather than being truncated; setting a floor keeps a group of codes visually consistent in density. |
+| boostLevel | `boolean` | `true` | Raises the error-correction level when spare capacity allows, without increasing the QR version. |
+| logo.excavate | `boolean` | `true` | Places a background patch under the logo to clear covered modules. Set to `false` for a translucent watermark-style logo. |
+| logo.opacity | `number` | `1` | Logo opacity, commonly combined with `excavate={false}` for a watermark. |
+
+The export helpers use the same encoding core as the component, so their output stays consistent:
+
+- `qrCodeSvgString({ value, size, color, background, ... })` returns a standalone SVG string for downloads, email, print artwork, or server-side use. Exported files need concrete colors such as `#000` and `#fff`; `currentColor` has nothing to inherit outside a page.
+- `qrCodeToPngDataUrl({ value, pixelSize, ... })` returns a browser-side `Promise<string>` containing a PNG data URL. It scales for `devicePixelRatio` so print and high-density displays remain crisp and uses a white background by default.
+- `buildQRCode(options)` returns the pure matrix data `{ count, total, path, level, version }` for custom canvas, poster-composition, or nonstandard rendering.
+
 ## Examples
 ```tsx
 <QRCode value="https://hulian.dev" size={160} level="M" />
@@ -46,6 +61,9 @@ import { QRCode } from "@hulianui/ui"
 
 ## Pitfalls
 
+- **Do not export a PNG with a transparent background.** An exported bitmap cannot inherit the page background, and a transparent code may become unreadable when printed or placed on a white document. `qrCodeToPngDataUrl` defaults to white for this reason.
+- **A logo without excavation must be translucent.** An opaque logo with `excavate={false}` covers modules directly and may make the code unscannable; pair watermark mode with `opacity`.
+- Unlike qrcode.react's fixed black foreground and white background defaults, QRCode uses `currentColor` and a transparent background so it follows the theme. `qrCodeToPngDataUrl` provides export support without adding a second Canvas component and dependency surface.
 - Dark modules default to `currentColor`; set a text class or explicit `color`, and provide sufficient background contrast.
 - Use `level="H"` with `logo`, or the covered modules may exceed available correction capacity.
 - UTF-8 or long content increases QR density. Increase visual size and scanning distance accordingly.

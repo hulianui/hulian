@@ -29,6 +29,8 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | Attached edge and corresponding slide direction. |
 | `DrawerContent.container` | `Element \| Ref` | — | Local portal target. The drawer uses absolute positioning inside it; the target needs `position:relative` and `overflow-hidden`. Useful for phone-frame previews. |
+| `DrawerContent.showClose` | `boolean` | `true` | Whether to render the built-in top-right close button. |
+| `DrawerContent.closeLabel` | `string` | Locale value | Accessible name for the built-in close button; defaults to `locale.drawer.close`. |
 | `DrawerContent.className` | `string` | — | Content-container class name. |
 
 ## Events
@@ -66,6 +68,10 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 - Base UI rc.0 has no standalone Drawer primitive. This component restyles Dialog's Portal, Backdrop, and Popup and uses `translateX/Y` by side. Dialog has no Positioner, so Tooltip and Popover positioning assumptions do not apply. See [[base-ui-dialog-drawer-side-slide-via-transform]].
 - Put Cancel, Save, and Close controls in `footer`; actions at the end of the body scroll out of view.
 - With `container`, the target must use `position:relative` and `overflow-hidden` or the drawer and overlay escape the local frame.
+
+### Close button
+
+`DrawerContent` renders a top-right close button by default through `showClose`. Its accessible name comes from `closeLabel` or the locale's `drawer.close` value. Display-only drawers such as navigation or detail panels may have no footer; previously their only visible escape was the overlay, keyboard users had only Escape, and screen-reader users could not discover a Close control inside the panel (hulianui/hulian#63). The button is absolutely positioned and does not consume layout space.
 
 ## Related
 [Dialog](../dialog/dialog.md) · [Modal](../modal/modal.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md) · [HoverCard](../hover-card/hover-card.md)

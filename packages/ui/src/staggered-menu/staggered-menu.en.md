@@ -54,7 +54,7 @@ StaggeredMenuItem is `{ label; link?; ariaLabel? }`; without link it renders a s
 
 ## Example
 ```tsx
-<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-background">
+<div className="relative h-96 overflow-hidden rounded-xl border border-border bg-bg">
   <StaggeredMenu items={[{ label: "Home", link: "#home" }, { label: "Product", link: "#product" }, { label: "About", link: "#about" }]} socialItems={[{ label: "GitHub", link: "https://github.com" }]} />
 </div>
 ```

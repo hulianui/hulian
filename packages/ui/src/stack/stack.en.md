@@ -25,7 +25,7 @@ import { Stack } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| direction | `StackDirection \| ResponsiveDirection` | `"column"` | Main-axis direction. A string is fixed; `{base,sm,md,lg}` responds by breakpoint. |
+| direction | `StackDirection \| ResponsiveDirection` | `"column"` | Main-axis direction. A string is fixed; `{base,sm,md,lg,xl,2xl}` responds by breakpoint. |
 | gap | `number` | `0` | Child spacing (× 0.25rem, same as Tailwind spacing scale) |
 | align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | — | Cross-axis alignment. |
 | justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | — | Main-axis distribution. |
@@ -40,6 +40,8 @@ import { Stack } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | children | `ReactNode` | child element |
+
+Responsive values cover every Tailwind breakpoint: `base / sm / md / lg / xl / 2xl`. Wide admin layouts often need to change direction at `xl` (1280 px and above); stopping at `lg` forced consumers to split one layout between props and `className` (hulianui/hulian#61). For example: `direction={{ base: "column", xl: "row" }}`.
 
 ## Example
 ```tsx
@@ -60,6 +62,10 @@ import { Stack } from "@hulianui/ui"
 ## Usage guidelines
 
 `gap` uses Tailwind spacing multiples rather than pixels, so `gap={3}` equals 0.75rem. `wrap` and `justify` are most useful with `direction="row"`; use Grid when wrapping rows also need column alignment.
+
+### `as` is type-polymorphic
+
+Properties and event types follow the element selected by `as`: `as="form"` gives `onSubmit` a `FormEvent<HTMLFormElement>`, while `as="a"` accepts `href`. Older typings reduced `event.currentTarget` to `HTMLElement`, forcing consumers to cast away the exact type safety that polymorphism should provide (hulianui/hulian#62).
 
 ## Related
 [Grid](../grid/grid.md) · [Spacer](../spacer/spacer.md) · [Divider](../divider/divider.md) · [Separator](../separator/separator.md) · [Layout](../layout/layout.md) · [AdminLayout](../admin-layout/admin-layout.md)

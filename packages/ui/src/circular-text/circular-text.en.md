@@ -44,7 +44,7 @@ All other native `<div>` attributes are supported. Text inherits `currentColor`,
   spinDuration={14}
   onHover="goBonkers"
   radius={64}
-  className="text-xs font-bold tracking-[0.2em] text-background"
+  className="text-xs font-bold tracking-[0.2em] text-bg"
 />
 ```
 

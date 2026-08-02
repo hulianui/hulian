@@ -74,5 +74,9 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 - When `loadMore.hasMore` is false, the load-more action is not rendered.
 - The built-in empty title is `"\u6682\u65e0\u6570\u636e"`, meaning “No data.”
 
+### Accessible name
+
+`aria-label`, `aria-labelledby`, and `aria-describedby` are forwarded to the node with `role="list"`; other native attributes remain on the outer container. This makes `getByRole("list", { name: "…" })` work and prevents assistive technology from encountering an unnamed list (hulianui/hulian#60).
+
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

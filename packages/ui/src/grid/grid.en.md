@@ -27,7 +27,7 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| cols | `number \| ResponsiveCols` | `1` | Column count. A number creates any fixed count through inline styles; `{ base, sm, md, lg }` uses static responsive classes. |
+| cols | `number \| ResponsiveCols` | `1` | Column count. A number creates any fixed count through inline styles; `{ base, sm, md, lg, xl, 2xl }` uses static responsive classes. |
 | rows | `number` | — | Explicit row count; omit it to let content create rows automatically. |
 | gap | `number` | `0` | Row and column gap (× 0.25rem). |
 | colGap | `number` | — | Column gap, overriding the column component of `gap` (× 0.25rem). |
@@ -59,6 +59,8 @@ Both components forward the remaining `HTMLAttributes<HTMLElement>` to their ren
 |------|------|------|
 | children | `ReactNode` | Content of the grid item. |
 
+Responsive values cover every Tailwind breakpoint: `base / sm / md / lg / xl / 2xl`. Wide admin layouts often need to change columns at `xl` (1280 px and above); stopping at `lg` forced consumers to split one layout between props and `className` (hulianui/hulian#61). For example: `cols={{ base: 1, xl: 4, "2xl": 6 }}`.
+
 ## Examples
 ```tsx
 // Three equal-width columns
@@ -75,7 +77,11 @@ Both components forward the remaining `HTMLAttributes<HTMLElement>` to their ren
 
 ## Usage guidelines
 
-Pass a number to `cols` for an arbitrary fixed count. Pass `{ base, sm, md, lg }` when the count should change at the supported responsive breakpoints. Layout-specific issues involving page centering, card action rows, or collapsible tracks are outside this primitive's contract.
+Pass a number to `cols` for an arbitrary fixed count. Pass `{ base, sm, md, lg, xl, 2xl }` when the count should change at responsive breakpoints. Layout-specific issues involving page centering, card action rows, or collapsible tracks are outside this primitive's contract.
+
+### `as` is type-polymorphic
+
+Properties and event types follow the element selected by `as`: `as="form"` gives `onSubmit` a `FormEvent<HTMLFormElement>`, while `as="a"` accepts `href`. Older typings reduced `event.currentTarget` to `HTMLElement`, forcing consumers to cast away the exact type safety that polymorphism should provide (hulianui/hulian#62).
 
 ## Related
 [Stack](../stack/stack.md) · [Spacer](../spacer/spacer.md) · [Divider](../divider/divider.md) · [Separator](../separator/separator.md) · [Layout](../layout/layout.md) · [AdminLayout](../admin-layout/admin-layout.md)
