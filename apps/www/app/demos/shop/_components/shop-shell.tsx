@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./shop-shell.content";
 import { Suspense, useCallback, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -50,7 +51,7 @@ function Logo() {
 // ⌘K 搜索：商品 + 分类。
 const COMMAND_GROUPS: CommandGroupData[] = [
   {
-    heading: "热门商品",
+    heading: copy("popularProducts"),
     items: products.slice(0, 8).map((p) => ({
       value: `p:${p.id}`,
       label: p.name,
@@ -59,7 +60,7 @@ const COMMAND_GROUPS: CommandGroupData[] = [
     })),
   },
   {
-    heading: "商品分类",
+    heading: copy("productCategories"),
     items: categories.map((c) => ({
       value: `c:${c.key}`,
       label: c.name,
@@ -73,7 +74,7 @@ function CategoryMenu() {
     <NavigationMenu delay={80}>
       <NavigationMenuList>
         <NavigationMenuItem value="all">
-          <NavigationMenuTrigger>全部分类</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{copy("allCategories")}</NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="grid w-[34rem] grid-cols-2 gap-1 p-1">
               {categories.map((c) => (
@@ -104,7 +105,7 @@ function HeaderActions() {
             render={
               <Link
                 href={`${SHOP_BASE}/favorites`}
-                aria-label="我的收藏"
+                aria-label={copy("myFavorites")}
                 className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 <Badge count={favorites.length} tone="danger" size="sm">
@@ -113,7 +114,7 @@ function HeaderActions() {
               </Link>
             }
           />
-          <TooltipContent>我的收藏</TooltipContent>
+          <TooltipContent>{copy("myFavorites")}</TooltipContent>
         </Tooltip>
       </li>
       <li className="flex items-center">
@@ -122,7 +123,7 @@ function HeaderActions() {
             render={
               <Link
                 href={`${SHOP_BASE}/cart`}
-                aria-label="购物车"
+                aria-label={copy("cart")}
                 className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 <Badge count={cartCount} tone="danger" size="sm">
@@ -131,7 +132,7 @@ function HeaderActions() {
               </Link>
             }
           />
-          <TooltipContent>购物车</TooltipContent>
+          <TooltipContent>{copy("cart")}</TooltipContent>
         </Tooltip>
       </li>
       <li className="hidden items-center md:flex">
@@ -140,14 +141,14 @@ function HeaderActions() {
             render={
               <Link
                 href={`${SHOP_BASE}/account`}
-                aria-label="会员中心"
+                aria-label={copy("account")}
                 className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 <User className="size-5" aria-hidden />
               </Link>
             }
           />
-          <TooltipContent>会员中心</TooltipContent>
+          <TooltipContent>{copy("account")}</TooltipContent>
         </Tooltip>
       </li>
     </>
@@ -227,10 +228,10 @@ function ShopNavbar() {
               type="button"
               onClick={() => setCmdOpen(true)}
               className="flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-2.5 text-sm text-muted transition-colors hover:text-foreground"
-              aria-label="搜索商品（⌘K）"
+              aria-label={copy("searchProductsK")}
             >
               <Search className="size-3.5" aria-hidden />
-              <span className="text-xs">搜索商品</span>
+              <span className="text-xs">{copy("searchProducts")}</span>
               <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted">⌘K</span>
             </button>
           </li>
@@ -248,10 +249,10 @@ function ShopNavbar() {
         open={cmdOpen}
         onOpenChange={setCmdOpen}
         groups={COMMAND_GROUPS}
-        placeholder="搜索商品或分类…"
+        placeholder={copy("searchProductsOrCategories")}
         shortcut
         onSelectItem={onSelect}
-        emptyMessage="没有找到相关商品"
+        emptyMessage={copy("noMatchingProductsFound")}
       />
 
       {open && (
@@ -265,7 +266,7 @@ function ShopNavbar() {
               }}
               className="flex items-center gap-2 rounded-[var(--radius)] px-2 py-2 text-sm text-muted hover:bg-surface-hover hover:text-foreground"
             >
-              <Search className="size-4" aria-hidden /> 搜索商品
+              <Search className="size-4" aria-hidden />  {copy("searchProducts")}
             </button>
             {primaryNav.map((link) => (
               <Link
@@ -283,7 +284,8 @@ function ShopNavbar() {
               onClick={() => setOpen(false)}
               className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted hover:bg-surface-hover hover:text-foreground"
             >
-              会员中心
+
+              {copy("account")}
             </Link>
           </Stack>
         </div>
@@ -300,22 +302,23 @@ function ShopFooter() {
           <div className="max-w-xs">
             <Logo />
             <Text tone="muted" size="sm" className="mt-3">
-              {brand.slogan} —— 本商城为 @hulianui/ui 演示，商品与价格均为虚构。
+              {brand.slogan}  {copy("thisStorefrontIsADemoProductsAndPricesAreFictional")}
             </Text>
           </div>
           <Stack direction="row" gap={10} wrap>
-            <FooterCol title="购物指南" links={["新手上路", "支付方式", "配送说明", "售后服务"]} />
-            <FooterCol title="商家服务" links={["商家入驻", "营销中心", "运费规则", "开放平台"]} />
-            <FooterCol title="关于瀚选" links={["关于我们", "加入我们", "联系客服", "隐私政策"]} />
+            <FooterCol title={copy("shoppingGuide")} links={[copy("gettingStarted"), copy("paymentMethods"), copy("deliveryInformation"), copy("returnsSupport")]} />
+            <FooterCol title={copy("sellerServices")} links={[copy("sellOnHanshop"), copy("marketingCenter"), copy("shippingRates"), copy("developerPlatform")]} />
+            <FooterCol title={copy("aboutHanshop")} links={[copy("aboutUs"), copy("careers"), copy("contactSupport"), copy("privacyPolicy")]} />
           </Stack>
         </Stack>
         <Divider className="my-6" />
         <Stack direction="row" justify="between" wrap gap={3} className="text-sm text-muted">
           <Text size="sm" tone="muted">
-            © 2026 {brand.name} {brand.nameEn} · 演示站点
+            © 2026 {brand.name} {brand.nameEn}  {copy("demoSite")}
           </Text>
           <Link href="/demos" className="hover:text-foreground">
-            返回 Demo 画廊
+
+            {copy("backToDemoGallery")}
           </Link>
         </Stack>
       </div>

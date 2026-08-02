@@ -1,6 +1,7 @@
 "use client";
+import { copy } from "./page.content";
 import { LoginForm, Text, Spotlight, toast } from "@hulianui/ui";
-import { brand } from "../_components/nav-config";
+import { brand, SHOP_BASE } from "../_components/nav-config";
 
 // 瀚选商城登录页。不在 (shop) 路由组内，无 ShopShell，自己做极简居中布局。
 // 登录成功 toast + 跳 /demos/shop/account（window.location 触发完整导航）。
@@ -14,7 +15,8 @@ export default function ShopLoginPage() {
         {/* 品牌 Logo */}
         <div className="flex flex-col items-center gap-2">
           <div className="grid size-12 place-items-center rounded-[var(--radius-lg)] bg-primary text-xl font-bold text-primary-foreground shadow-md">
-            瀚
+
+            {copy("h")}
           </div>
           <div className="text-center">
             <p className="text-lg font-bold tracking-tight text-foreground">
@@ -27,29 +29,31 @@ export default function ShopLoginPage() {
         {/* 登录表单（LoginForm 自管 loading 态）*/}
         <div className="w-full">
           <LoginForm
-            subtitle="欢迎回来，登录您的瀚选账户"
+            subtitle={copy("welcomeBackSignInToYourHanshopAccount")}
             onFinish={async () => {
               // 模拟网络请求
               await new Promise((r) => setTimeout(r, 600));
-              toast({ title: "登录成功，欢迎回来！", tone: "success" });
+              toast({ title: copy("signedInWelcomeBack"), tone: "success" });
               await new Promise((r) => setTimeout(r, 350));
-              window.location.href = "/demos/shop/account";
+              window.location.href = `${SHOP_BASE}/account`;
             }}
             footer={
               <div className="flex justify-between text-sm">
                 <button
                   type="button"
                   className="text-primary hover:underline"
-                  onClick={() => toast({ title: "请联系客服找回密码", tone: "info" })}
+                  onClick={() => toast({ title: copy("contactSupportToResetYourPassword"), tone: "info" })}
                 >
-                  忘记密码？
+
+                  {copy("forgotPassword")}
                 </button>
                 <button
                   type="button"
                   className="text-primary hover:underline"
-                  onClick={() => toast({ title: "注册功能开发中", tone: "info" })}
+                  onClick={() => toast({ title: copy("registrationIsComingSoon"), tone: "info" })}
                 >
-                  立即注册
+
+                  {copy("createAccount")}
                 </button>
               </div>
             }
@@ -57,7 +61,8 @@ export default function ShopLoginPage() {
         </div>
 
         <Text size="xs" tone="muted" className="text-center">
-          演示环境：账号 / 密码任意填写即可登录
+
+          {copy("demoModeEnterAnyEmailAndPasswordToSignIn")}
         </Text>
       </div>
     </main>

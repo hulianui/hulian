@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./shop-store.content";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { productById } from "../_data/products";
 import type { CartItem } from "../_data/types";
@@ -34,8 +35,8 @@ export function ShopStoreProvider({ children }: { children: ReactNode }) {
     const air = productById["p-hs-air"];
     const bottle = productById["p-ho-bottle"];
     return [
-      { productId: "p-hs-air", color: "曜石黑", size: "降噪 Pro 版", qty: 1, price: air?.price ?? 899 },
-      { productId: "p-ho-bottle", color: "薄荷绿", size: "900ml", qty: 2, price: bottle?.price ?? 119 },
+      { productId: "p-hs-air", color: copy("obsidianBlack"), size: copy("noiseCancelingPro"), qty: 1, price: air?.price ?? 899 },
+      { productId: "p-ho-bottle", color: copy("mintGreen"), size: "900ml", qty: 2, price: bottle?.price ?? 119 },
     ];
   });
   const [favorites, setFavorites] = useState<string[]>(["p-hp-pro", "p-ho-shoe", "p-hy-serum"]);
@@ -109,6 +110,6 @@ export function ShopStoreProvider({ children }: { children: ReactNode }) {
 
 export function useShop(): ShopStore {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useShop 必须在 ShopStoreProvider 内使用");
+  if (!ctx) throw new Error(copy("useshopMustBeUsedWithinShopstoreprovider"));
   return ctx;
 }

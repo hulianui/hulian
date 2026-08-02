@@ -1,0 +1,86 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    all: "全部",
+    awaitingPayment: "待付款",
+    preparingShipment: "待发货",
+    inTransit: "待收货",
+    completed: "已完成",
+    refundInProgress: "退款中",
+    orderPrefix: "订单",
+    openingPayment: "已跳转支付页",
+    deliveryConfirmedThanksForYourPurchase: "已确认收货，感谢购买！",
+    added: "已将「",
+    toYourCart: "」加入购物车",
+    order: "订单号：",
+    review: "评价",
+    thankYouForYourReview: "感谢您的评价！",
+    total: "共",
+    itemsAndTotal: "件 · 合计：",
+    cancelThisOrder: "确认取消订单？",
+    thisCannotBeUndoneAnyPaymentWillBeRefundedToTheOriginalPaymentMethod: "取消后不可恢复，若已付款将原路退款。",
+    orderCanceled: "订单已取消",
+    cancelOrder: "取消订单",
+    payNow: "去支付",
+    trackShipment: "查看物流",
+    confirmDelivery: "确认已收到货物？",
+    theOrderWillBeMarkedCompleteAndWillNoLongerBeEligibleForARefund: "确认后订单将完成，无法申请退款。",
+    confirmDelivery2: "确认收货",
+    buyAgain: "再次购买",
+    refundStatus: "退款进度",
+    myOrders: "我的订单",
+    noOrdersYet: "暂无订单",
+    findSomethingYouLoveInTheStore: "快去选购心仪的商品吧",
+    no: "暂无「",
+    orders: "」订单",
+    browseProducts: "去逛逛",
+    shipmentTracking: "物流详情",
+  },
+  en: {
+    all: "All",
+    awaitingPayment: "Awaiting payment",
+    preparingShipment: "Preparing shipment",
+    inTransit: "In transit",
+    completed: "Completed",
+    refundInProgress: "Refund in progress",
+    orderPrefix: "Order ",
+    openingPayment: " — opening payment",
+    deliveryConfirmedThanksForYourPurchase: "Delivery confirmed. Thanks for your purchase!",
+    added: "Added ",
+    toYourCart: " to your cart",
+    order: "Order: ",
+    review: "Review",
+    thankYouForYourReview: "Thank you for your review!",
+    total: "Total: ",
+    itemsAndTotal: " items · Total: ",
+    cancelThisOrder: "Cancel this order?",
+    thisCannotBeUndoneAnyPaymentWillBeRefundedToTheOriginalPaymentMethod: "This cannot be undone. Any payment will be refunded to the original payment method.",
+    orderCanceled: "Order canceled",
+    cancelOrder: "Cancel order",
+    payNow: "Pay now",
+    trackShipment: "Track shipment",
+    confirmDelivery: "Confirm delivery?",
+    theOrderWillBeMarkedCompleteAndWillNoLongerBeEligibleForARefund: "The order will be marked complete and will no longer be eligible for a refund.",
+    confirmDelivery2: "Confirm delivery",
+    buyAgain: "Buy again",
+    refundStatus: "Refund status",
+    myOrders: "My orders",
+    noOrdersYet: "No orders yet",
+    findSomethingYouLoveInTheStore: "Find something you love in the store.",
+    no: "No ",
+    orders: " orders",
+    browseProducts: "Browse products",
+    shipmentTracking: "Shipment tracking",
+  },
+} as const;
+
+export type ContentKey = keyof (typeof content)["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = { key: "demo-shop--shop-orders-page", content: t(content) };
+export default dictionary;

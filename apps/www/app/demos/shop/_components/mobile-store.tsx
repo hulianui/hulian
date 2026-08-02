@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./mobile-store.content";
 import { useCallback, useRef, useState } from "react";
 import {
   ActionSheet,
@@ -39,11 +40,11 @@ const homeProducts = products.slice(0, 8);
 
 // 分类品类选项（供 ActionSheet 筛选）
 const SORT_OPTIONS = [
-  { key: "default", label: "综合排序" },
-  { key: "price-asc", label: "价格从低到高" },
-  { key: "price-desc", label: "价格从高到低" },
-  { key: "sales", label: "销量优先" },
-  { key: "rating", label: "好评优先" },
+  { key: "default", label: copy("recommended") },
+  { key: "price-asc", label: copy("priceLowToHigh") },
+  { key: "price-desc", label: copy("priceHighToLow") },
+  { key: "sales", label: copy("bestSelling") },
+  { key: "rating", label: copy("topRated") },
 ];
 
 // 规格/地区 Picker 列
@@ -58,10 +59,10 @@ const sizeColumn = {
 };
 const colorColumn = {
   options: [
-    { value: "black", label: "曜石黑" },
-    { value: "white", label: "云母白" },
-    { value: "blue", label: "雾霾蓝" },
-    { value: "green", label: "复古绿" },
+    { value: "black", label: copy("obsidianBlack") },
+    { value: "white", label: copy("micaWhite") },
+    { value: "blue", label: copy("hazeBlue") },
+    { value: "green", label: copy("vintageGreen") },
   ],
 };
 
@@ -75,7 +76,7 @@ function HomeTab() {
     await sleep(800);
     // 随机打乱顺序模拟刷新
     setDisplayProducts([...products].sort(() => Math.random() - 0.5).slice(0, 8));
-    toast({ title: "已刷新", tone: "info" });
+    toast({ title: copy("updated"), tone: "info" });
   };
 
   return (
@@ -84,9 +85,10 @@ function HomeTab() {
         {/* 限时秒杀横条 */}
         <div className="mx-3 mt-3 overflow-hidden rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-sm font-bold text-white">限时秒杀</span>
+            <span className="text-sm font-bold text-white">{copy("flashSale")}</span>
             <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs text-white">
-              剩余 02:48:33
+
+              {copy("flashSaleTimeRemaining")}
             </span>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -102,7 +104,7 @@ function HomeTab() {
                     qty: 1,
                     price: p.price,
                   });
-                  toast({ title: "已加入购物车", tone: "info" });
+                  toast({ title: copy("addedToCart"), tone: "info" });
                 }}
               >
                 <img
@@ -139,7 +141,7 @@ function HomeTab() {
 
         {/* 猜你喜欢 */}
         <div className="mx-3 mt-4">
-          <p className="mb-2 text-xs font-semibold text-foreground">猜你喜欢</p>
+          <p className="mb-2 text-xs font-semibold text-foreground">{copy("recommendedForYou")}</p>
           <div className="grid grid-cols-2 gap-2">
             {displayProducts.map((p) => (
               <button
@@ -153,7 +155,7 @@ function HomeTab() {
                     qty: 1,
                     price: p.price,
                   });
-                  toast({ title: `${p.name.slice(0, 6)} 已加入购物车`, tone: "info" });
+                  toast({ title: copy("productAddedToCart", p.name), tone: "info" });
                 }}
               >
                 <img
@@ -168,7 +170,8 @@ function HomeTab() {
                   </p>
                   {p.flashSale && (
                     <Tag tone="danger" size="sm" className="mt-1">
-                      秒杀
+
+                      {copy("flashSaleBadge")}
                     </Tag>
                   )}
                 </div>
@@ -185,7 +188,7 @@ function HomeTab() {
 
 function CategoryTab() {
   const [pickerValue, setPickerValue] = useState(["m", "black"]);
-  const [selectedSort, setSelectedSort] = useState("综合排序");
+  const [selectedSort, setSelectedSort] = useState(copy("recommended"));
   const [showPicker, setShowPicker] = useState(false);
   const { addToCart } = useShop();
 
@@ -198,13 +201,13 @@ function CategoryTab() {
             {selectedSort}
           </ActionSheetTrigger>
           <ActionSheetContent
-            title="选择排序方式"
+            title={copy("chooseASortOrder")}
             actions={SORT_OPTIONS.map((o) => ({
               key: o.key,
               label: o.label,
               onClick: () => {
                 setSelectedSort(o.label);
-                toast({ title: `已切换为${o.label}`, tone: "info" });
+                toast({ title: `${copy("sortedBy")}${o.label}`, tone: "info" });
               },
             }))}
           />
@@ -213,14 +216,15 @@ function CategoryTab() {
           className="flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-foreground"
           onClick={() => setShowPicker((v) => !v)}
         >
-          选规格
+
+          {copy("chooseOptions")}
         </button>
       </div>
 
       {/* Picker：选规格 */}
       {showPicker && (
         <div className="border-b border-border bg-surface-hover px-3 py-2">
-          <p className="mb-1 text-[10px] text-muted">选择尺寸 / 颜色</p>
+          <p className="mb-1 text-[10px] text-muted">{copy("chooseSizeColor")}</p>
           <Picker
             columns={[sizeColumn, colorColumn]}
             value={pickerValue}
@@ -229,7 +233,8 @@ function CategoryTab() {
             itemHeight={36}
           />
           <p className="mt-1 text-center text-[10px] text-muted">
-            已选：{pickerValue[0].toUpperCase()} · {colorColumn.options.find((o) => o.value === pickerValue[1])?.label}
+
+            {copy("selected")}{pickerValue[0].toUpperCase()} · {colorColumn.options.find((o) => o.value === pickerValue[1])?.label}
           </p>
         </div>
       )}
@@ -256,7 +261,7 @@ function CategoryTab() {
               right={[
                 {
                   key: "add",
-                  label: "加购",
+                  label: copy("add"),
                   tone: "primary",
                   onClick: () => {
                     addToCart({
@@ -266,7 +271,7 @@ function CategoryTab() {
                       qty: 1,
                       price: p.price,
                     });
-                    toast({ title: "已加入购物车", tone: "info" });
+                    toast({ title: copy("addedToCart"), tone: "info" });
                   },
                 },
               ]}
@@ -307,7 +312,7 @@ function CartTab() {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-2 text-muted">
         <ShoppingCart className="size-10 opacity-30" />
-        <p className="text-sm">购物车是空的</p>
+        <p className="text-sm">{copy("yourCartIsEmpty")}</p>
       </div>
     );
   }
@@ -321,11 +326,11 @@ function CartTab() {
             right={[
               {
                 key: "delete",
-                label: "删除",
+                label: copy("delete"),
                 tone: "danger",
                 onClick: () => {
                   removeFromCart(item.productId, item.color, item.size);
-                  toast({ title: "已移除", tone: "info" });
+                  toast({ title: copy("removed"), tone: "info" });
                 },
               },
             ]}
@@ -374,16 +379,17 @@ function CartTab() {
       <SafeArea edges={["bottom"]} mode="padding" min={4}>
         <div className="flex items-center justify-between border-t border-border bg-surface px-3 py-2">
           <div>
-            <span className="text-xs text-muted">合计：</span>
+            <span className="text-xs text-muted">{copy("total")}</span>
             <span className="text-sm font-bold text-danger">
               {formatPrice(cartTotal)}
             </span>
           </div>
           <button
             className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-            onClick={() => toast({ title: "跳转结算页（demo）", tone: "info" })}
+            onClick={() => toast({ title: copy("openingCheckoutDemo"), tone: "info" })}
           >
-            结算 ({cart.reduce((s, c) => s + c.qty, 0)})
+
+            {copy("checkout")}{cart.reduce((s, c) => s + c.qty, 0)})
           </button>
         </div>
       </SafeArea>
@@ -397,10 +403,10 @@ function MeTab() {
   const { favorites } = useShop();
 
   const ORDER_ENTRIES = [
-    { label: "待付款", icon: <Package className="size-5" /> },
-    { label: "待发货", icon: <Package className="size-5" /> },
-    { label: "待收货", icon: <Package className="size-5" /> },
-    { label: "已完成", icon: <Star className="size-5" /> },
+    { label: copy("awaitingPayment"), icon: <Package className="size-5" /> },
+    { label: copy("preparingShipment"), icon: <Package className="size-5" /> },
+    { label: copy("inTransit"), icon: <Package className="size-5" /> },
+    { label: copy("completed"), icon: <Star className="size-5" /> },
   ];
 
   return (
@@ -409,11 +415,12 @@ function MeTab() {
       <div className="bg-gradient-to-br from-primary/10 to-chart-2/10 p-4">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
-            瀚
+
+            {copy("h")}
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground">瀚选用户</p>
-            <p className="text-xs text-muted">VIP 会员 · 积分 3,280</p>
+            <p className="text-sm font-semibold text-foreground">{copy("hanshopCustomer")}</p>
+            <p className="text-xs text-muted">{copy("vipMember3280Points")}</p>
           </div>
         </div>
       </div>
@@ -421,12 +428,13 @@ function MeTab() {
       {/* 我的订单 */}
       <div className="mx-3 mt-3 rounded-xl bg-surface p-3 shadow-sm">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-xs font-semibold text-foreground">我的订单</span>
+          <span className="text-xs font-semibold text-foreground">{copy("myOrders")}</span>
           <button
             className="text-[10px] text-muted"
-            onClick={() => toast({ title: "查看全部订单（demo）", tone: "info" })}
+            onClick={() => toast({ title: copy("viewAllOrdersDemo"), tone: "info" })}
           >
-            全部 &gt;
+
+            {copy("allGt")}
           </button>
         </div>
         <div className="grid grid-cols-4 gap-2">
@@ -434,7 +442,7 @@ function MeTab() {
             <button
               key={e.label}
               className="flex flex-col items-center gap-1"
-              onClick={() => toast({ title: `${e.label}（demo）`, tone: "info" })}
+              onClick={() => toast({ title: `${e.label}${copy("demo")}`, tone: "info" })}
             >
               <span className="text-muted">{e.icon}</span>
               <span className="text-[10px] text-muted">{e.label}</span>
@@ -447,13 +455,14 @@ function MeTab() {
       <div className="mx-3 mt-3 rounded-xl bg-surface p-3 shadow-sm">
         <div className="mb-2 flex items-center justify-between">
           <span className="text-xs font-semibold text-foreground">
-            我的收藏
+
+            {copy("myFavorites")}
             <span className="ml-1 text-[10px] text-muted">({favorites.length})</span>
           </span>
           <Heart className="size-4 text-rose-400" />
         </div>
         {favorites.length === 0 ? (
-          <p className="text-center text-[10px] text-muted">暂无收藏</p>
+          <p className="text-center text-[10px] text-muted">{copy("noFavoritesYet")}</p>
         ) : (
           <div className="flex gap-2 overflow-x-auto">
             {favorites.slice(0, 4).map((id) => {
@@ -479,15 +488,15 @@ function MeTab() {
       {/* 更多入口 */}
       <div className="mx-3 mt-3 rounded-xl bg-surface shadow-sm">
         {[
-          { label: "地址管理", sub: "管理收货地址" },
-          { label: "优惠券", sub: "查看我的优惠券" },
-          { label: "意见反馈", sub: "告诉我们您的建议" },
-          { label: "关于瀚选", sub: "版本 1.0.0" },
+          { label: copy("addressBook"), sub: copy("manageShippingAddresses") },
+          { label: copy("coupons"), sub: copy("viewMyCoupons") },
+          { label: copy("feedback"), sub: copy("shareYourSuggestions") },
+          { label: copy("aboutHanshop"), sub: copy("version100") },
         ].map((item, i, arr) => (
           <button
             key={item.label}
             className={`flex w-full items-center justify-between px-3 py-3 text-left ${i < arr.length - 1 ? "border-b border-border" : ""}`}
-            onClick={() => toast({ title: `${item.label}（demo）`, tone: "info" })}
+            onClick={() => toast({ title: `${item.label}${copy("demo")}`, tone: "info" })}
           >
             <div>
               <p className="text-xs text-foreground">{item.label}</p>
@@ -506,18 +515,18 @@ function MeTab() {
 // ─── 主组件 ──────────────────────────────────────────────────────────────────
 
 const TAB_ITEMS: TabBarItem[] = [
-  { key: "home", label: "首页", icon: <Home className="size-4" aria-hidden /> },
+  { key: "home", label: copy("home"), icon: <Home className="size-4" aria-hidden /> },
   {
     key: "category",
-    label: "分类",
+    label: copy("categories"),
     icon: <LayoutGrid className="size-4" aria-hidden />,
   },
   {
     key: "cart",
-    label: "购物车",
+    label: copy("cart"),
     icon: <ShoppingCart className="size-4" aria-hidden />,
   },
-  { key: "me", label: "我的", icon: <User className="size-4" aria-hidden /> },
+  { key: "me", label: copy("profile"), icon: <User className="size-4" aria-hidden /> },
 ];
 
 export function MobileStore() {
@@ -532,7 +541,7 @@ export function MobileStore() {
 
   const handleScrollTop = useCallback(() => {
     screenRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-    toast({ title: "已回到顶部", tone: "info" });
+    toast({ title: copy("backAtTheTop"), tone: "info" });
   }, []);
 
   return (
@@ -544,11 +553,11 @@ export function MobileStore() {
       {/* 顶部安全区 + 标题栏 */}
       <SafeArea edges={["top"]} mode="padding" min={0}>
         <div className="flex items-center justify-between border-b border-border bg-surface/90 px-3 py-2 backdrop-blur-sm">
-          <span className="text-sm font-bold text-foreground">瀚选</span>
+          <span className="text-sm font-bold text-foreground">{copy("hanshop")}</span>
           <button
             className="rounded-full bg-surface-hover p-1.5"
-            onClick={() => toast({ title: "搜索功能（demo）", tone: "info" })}
-            aria-label="搜索"
+            onClick={() => toast({ title: copy("searchDemo"), tone: "info" })}
+            aria-label={copy("search")}
           >
             <Search className="size-4 text-muted" />
           </button>
@@ -575,19 +584,19 @@ export function MobileStore() {
       <div className="pointer-events-none absolute inset-0">
         <Fab
           className="pointer-events-auto absolute bottom-14 right-3"
-          aria-label="客服"
+          aria-label={copy("support")}
           icon={<MessageCircle className="size-5" aria-hidden />}
           actions={[
             {
               key: "service",
               icon: <MessageCircle className="size-5" aria-hidden />,
-              label: "在线客服",
-              onClick: () => toast({ title: "接入客服（demo）", tone: "info" }),
+              label: copy("liveSupport"),
+              onClick: () => toast({ title: copy("connectingToSupportDemo"), tone: "info" }),
             },
             {
               key: "top",
               icon: <ChevronUp className="size-5" aria-hidden />,
-              label: "回到顶部",
+              label: copy("backToTop"),
               onClick: handleScrollTop,
             },
           ]}

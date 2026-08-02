@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { Button, Empty, Skeleton, toast } from "@hulianui/ui";
 import { useMockData } from "../../../lib/async";
 import { productById } from "../../_data/products";
@@ -34,19 +35,19 @@ export default function FavoritesPage() {
   const handleAddAllToCart = () => {
     const available = favoriteProducts.filter((p) => p.stock > 0);
     if (available.length === 0) {
-      toast({ title: "收藏的商品均已售罄", tone: "danger" });
+      toast({ title: copy("allSavedItemsAreCurrentlySoldOut"), tone: "danger" });
       return;
     }
     available.forEach((p) => {
       addToCart({
         productId: p.id,
-        color: p.colors[0]?.name ?? "默认",
-        size: p.sizes[0] ?? "默认",
+        color: p.colors[0]?.name ?? copy("default"),
+        size: p.sizes[0] ?? copy("default"),
         qty: 1,
         price: p.price,
       });
     });
-    toast({ title: `已将 ${available.length} 件商品加入购物车`, tone: "info" });
+    toast({ title: `${copy("added")}${available.length}${copy("itemsToYourCart")}`, tone: "info" });
   };
 
   return (
@@ -54,14 +55,15 @@ export default function FavoritesPage() {
       {/* 页头 */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">我的收藏</h1>
+          <h1 className="text-2xl font-bold text-foreground">{copy("myFavorites")}</h1>
           {!loading && favoriteProducts.length > 0 && (
-            <p className="mt-0.5 text-sm text-muted">共 {favoriteProducts.length} 件心仪好物</p>
+            <p className="mt-0.5 text-sm text-muted">{copy("total")} {favoriteProducts.length}  {copy("savedItems")}</p>
           )}
         </div>
         {!loading && favoriteProducts.length > 0 && (
           <Button tone="brand" variant="outline" size="sm" onClick={handleAddAllToCart}>
-            全部加购
+
+            {copy("addAllToCart")}
           </Button>
         )}
       </div>
@@ -70,11 +72,12 @@ export default function FavoritesPage() {
         <FavoriteSkeleton />
       ) : favoriteProducts.length === 0 ? (
         <Empty
-          title="收藏夹空空如也"
-          description="快去逛逛，把心仪的商品加入收藏吧"
+          title={copy("yourFavoritesAreEmpty")}
+          description={copy("browseTheCatalogAndSaveTheProductsYouLove")}
         >
           <Button tone="brand" onClick={() => (window.location.href = `${SHOP_BASE}/products`)}>
-            去逛逛
+
+            {copy("browseProducts")}
           </Button>
         </Empty>
       ) : (

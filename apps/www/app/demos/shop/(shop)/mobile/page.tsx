@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { IPhone } from "@hulianui/ui";
 import { MobileStore } from "../../_components/mobile-store";
 
@@ -11,11 +12,10 @@ export default function MobilePage() {
     <div className="flex min-h-[80vh] flex-col items-center gap-8 px-4 py-10">
       {/* 标题说明 */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-foreground">H5 商城 · 移动端体验</h1>
+        <h1 className="text-2xl font-bold text-foreground">{copy("mobileStorefrontExperience")}</h1>
         <p className="mt-2 max-w-md text-sm text-muted">
-          瀚选移动版完整演示：TabBar 底导、PullToRefresh 下拉刷新、SwipeAction 左滑删除、
-          ActionSheet 筛选、Picker 选规格、Fab 悬浮客服、SafeArea 安全区适配。
-          所有浮层约束在手机屏幕内，不跑出外壳。
+
+          {copy("aCompleteHanshopMobileDemoFeaturingBottomTabNavigationPullToRefreshSwipeActionsFilterSheetsVaria")}
         </p>
       </div>
 
@@ -26,22 +26,22 @@ export default function MobilePage() {
           <IPhone model="16-pro">
             <MobileStore />
           </IPhone>
-          <p className="text-xs text-muted">iPhone 16 Pro · 首页 / 分类 / 购物车 / 我的</p>
+          <p className="text-xs text-muted">{copy("iphone16ProHomeCategoriesCartAccount")}</p>
         </div>
 
         {/* 说明卡片（桌面端 md 以上才显示） */}
         <div className="hidden max-w-xs space-y-4 rounded-xl border border-border bg-surface p-5 shadow-sm md:block">
-          <h2 className="text-base font-semibold text-foreground">Mobile 组件族覆盖清单</h2>
+          <h2 className="text-base font-semibold text-foreground">{copy("mobileComponentCoverage")}</h2>
           <ul className="space-y-2 text-sm text-muted">
             {[
-              ["IPhone", "设备外壳，children 填充屏幕"],
-              ["SafeArea", "顶部刘海 + 底部横条适配"],
-              ["TabBar", "fixed={false} 随文档流贴屏底"],
-              ["PullToRefresh", "首页商品列表下拉刷新"],
-              ["ActionSheet", "分类页筛选排序弹单"],
-              ["Picker", "规格/颜色滚轮选择"],
-              ["SwipeAction", "分类商品行 + 购物车行左滑操作"],
-              ["Fab", "右下角悬浮客服 speed-dial"],
+              ["IPhone", copy("deviceFrameWithChildrenFillingTheScreen")],
+              ["SafeArea", copy("topNotchAndHomeIndicatorAdaptation")],
+              ["TabBar", copy("fixedFalseKeepsTheBarAtTheBottomOfTheDocumentFlow")],
+              ["PullToRefresh", copy("pullToRefreshProductListOnHome")],
+              ["ActionSheet", copy("filterAndSortSheetOnCategories")],
+              ["Picker", copy("wheelPickerForVariantsAndColors")],
+              ["SwipeAction", copy("swipeActionsOnCategoryProductsAndCartRows")],
+              ["Fab", copy("floatingSupportSpeedDialInTheLowerRightCorner")],
             ].map(([name, desc]) => (
               <li key={name} className="flex gap-2">
                 <span className="font-mono text-xs font-medium text-primary">{name}</span>
@@ -52,10 +52,8 @@ export default function MobilePage() {
 
           <div className="border-t border-border pt-3">
             <p className="text-xs text-muted">
-              浮层定位方案：屏幕容器设 <code className="rounded bg-surface-hover px-1 font-mono text-xs">relative</code>，
-              Fab 用 <code className="rounded bg-surface-hover px-1 font-mono text-xs">absolute</code> 覆盖层，
-              TabBar 用 <code className="rounded bg-surface-hover px-1 font-mono text-xs">fixed=&#123;false&#125;</code>，
-              ActionSheet 基于 Base UI Dialog Portal 挂根节点不影响屏内布局。
+
+              {copy("overlayLayoutTheScreenContainerUses")} <code className="rounded bg-surface-hover px-1 font-mono text-xs">relative</code>{copy("fabUses")} <code className="rounded bg-surface-hover px-1 font-mono text-xs">absolute</code>  {copy("overlayPositioningTabbarUses")} <code className="rounded bg-surface-hover px-1 font-mono text-xs">fixed=&#123;false&#125;</code>{copy("andActionsheetUsesABaseUiDialogPortalWithoutAffectingTheInFrameLayout")}
             </p>
           </div>
         </div>

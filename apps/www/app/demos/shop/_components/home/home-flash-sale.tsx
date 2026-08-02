@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./home-flash-sale.content";
 import { Statistic, Tag, Heading, Text, Skeleton } from "@hulianui/ui";
 import { Clock } from "lucide-react";
 import Link from "next/link";
@@ -21,15 +22,18 @@ export function HomeFlashSale({ products, deadline, loading }: Props) {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Tag tone="danger" size="sm" className="shrink-0">
-            限时秒杀
+
+            {copy("flashSale")}
           </Tag>
           <Heading level={2} size="lg" id="home-flash-title">
-            今日秒杀
+
+            {copy("todaySFlashSale")}
           </Heading>
           <div className="flex items-center gap-1.5 rounded-[var(--radius)] bg-danger/10 px-2.5 py-1 text-danger">
             <Clock className="size-3.5 shrink-0" aria-hidden />
             <Text size="xs" className="text-danger font-medium">
-              距结束
+
+              {copy("endsIn")}
             </Text>
             {deadline > 0 && (
               <Statistic.Countdown
@@ -44,7 +48,8 @@ export function HomeFlashSale({ products, deadline, loading }: Props) {
           href={`${SHOP_BASE}/products?flash=1`}
           className="text-sm text-primary hover:underline"
         >
-          查看全部 →
+
+          {copy("viewAll")}
         </Link>
       </div>
 

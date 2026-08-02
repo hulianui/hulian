@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LayoutGrid, List, RefreshCw, SlidersHorizontal, X } from "lucide-react";
@@ -36,11 +37,11 @@ const allBrands = Array.from(new Set(products.map((p) => p.brand)));
 
 // 排序选项
 const SORT_ITEMS = [
-  { value: "default", label: "综合" },
-  { value: "price-asc", label: "价格↑" },
-  { value: "price-desc", label: "价格↓" },
-  { value: "sales", label: "销量" },
-  { value: "rating", label: "评分" },
+  { value: "default", label: copy("recommended") },
+  { value: "price-asc", label: copy("priceLowToHigh") },
+  { value: "price-desc", label: copy("priceHighToLow") },
+  { value: "sales", label: copy("sales") },
+  { value: "rating", label: copy("rating") },
 ];
 
 // 搜索候选项（商品名 + 品牌）
@@ -68,7 +69,7 @@ function FilterSidebar({
     <aside className="w-52 shrink-0 space-y-6">
       {/* 品类 */}
       <div>
-        <p className="mb-2 text-sm font-semibold text-foreground">品类</p>
+        <p className="mb-2 text-sm font-semibold text-foreground">{copy("category")}</p>
         <CheckboxGroup value={selectedCats} onValueChange={setSelectedCats}>
           {categories.map((c) => (
             <Checkbox key={c.key} value={c.key} label={c.name} />
@@ -78,7 +79,7 @@ function FilterSidebar({
 
       {/* 品牌 */}
       <div>
-        <p className="mb-2 text-sm font-semibold text-foreground">品牌</p>
+        <p className="mb-2 text-sm font-semibold text-foreground">{copy("brand")}</p>
         <CheckboxGroup value={selectedBrands} onValueChange={setSelectedBrands}>
           {allBrands.map((b) => (
             <Checkbox key={b} value={b} label={b} />
@@ -89,7 +90,8 @@ function FilterSidebar({
       {/* 价格区间 */}
       <div>
         <p className="mb-2 text-sm font-semibold text-foreground">
-          价格区间
+
+          {copy("priceRange")}
           <span className="ml-2 font-normal text-muted">
             {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
           </span>
@@ -226,7 +228,7 @@ function ProductsInner() {
       ? [
           {
             key: "search",
-            label: `搜索：${searchValue.label}`,
+            label: `${copy("search")}${searchValue.label}`,
             onClose: () => setSearchValue(null),
           },
         ]
@@ -243,8 +245,8 @@ function ProductsInner() {
   };
 
   const breadcrumbItems = [
-    { label: "首页", href: SHOP_BASE },
-    { label: isFlash ? "限时秒杀" : "全部商品" },
+    { label: copy("home"), href: SHOP_BASE },
+    { label: isFlash ? copy("flashSale") : copy("allProducts") },
   ];
 
   return (
@@ -253,9 +255,9 @@ function ProductsInner() {
 
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-xl font-bold text-foreground">
-          {isFlash ? "限时秒杀" : "全部商品"}
+          {isFlash ? copy("flashSale") : copy("allProducts")}
           {!loading && allProducts && (
-            <span className="ml-2 text-sm font-normal text-muted">共 {filtered.length} 件</span>
+            <span className="ml-2 text-sm font-normal text-muted">{copy("total")} {filtered.length}  {copy("items")}</span>
           )}
         </h1>
         {/* 移动端筛选按钮 */}
@@ -266,7 +268,8 @@ function ProductsInner() {
           onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
         >
           <SlidersHorizontal className="mr-1.5 size-4" />
-          筛选
+
+          {copy("filters")}
         </Button>
       </div>
 
@@ -274,11 +277,12 @@ function ProductsInner() {
       {error && (
         <Alert
           tone="danger"
-          title="加载失败"
+          title={copy("unableToLoad")}
           action={
             <Button size="sm" variant="outline" onClick={reload}>
               <RefreshCw className="mr-1.5 size-4" />
-              重试
+
+              {copy("retry")}
             </Button>
           }
           className="mb-6"
@@ -315,10 +319,10 @@ function ProductsInner() {
                   setSearchValue((v as ComboboxItemData) ?? null);
                   setPage(1);
                   setInfiniteCount(PAGE_SIZE);
-                  if (v) toast({ title: `搜索：${(v as ComboboxItemData).label}`, tone: "info" });
+                  if (v) toast({ title: `${copy("search")}${(v as ComboboxItemData).label}`, tone: "info" });
                 }}
               >
-                <ComboboxInput placeholder="搜索商品或品牌…" clearable />
+                <ComboboxInput placeholder={copy("searchProductsOrBrands")} clearable />
                 <ComboboxContent>
                   {(item) => (
                     <ComboboxItem key={item.value} value={item}>
@@ -335,7 +339,7 @@ function ProductsInner() {
               value={sort}
               onValueChange={(v) => { setSort(v); setPage(1); }}
               size="sm"
-              aria-label="排序方式"
+              aria-label={copy("sortOrder")}
             />
 
             {/* 视图切换 */}
@@ -348,16 +352,16 @@ function ProductsInner() {
                 value={viewMode}
                 onValueChange={(v) => setViewMode(v as "page" | "infinite")}
                 size="sm"
-                aria-label="视图模式"
+                aria-label={copy("viewMode")}
               />
-              <span className="text-xs text-muted">{viewMode === "page" ? "分页" : "无限滚"}</span>
+              <span className="text-xs text-muted">{viewMode === "page" ? copy("pages") : copy("infiniteScroll")}</span>
             </div>
           </div>
 
           {/* 已选条件 */}
           {activeFilters.length > 0 && (
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-muted">已选：</span>
+              <span className="text-xs text-muted">{copy("selected")}</span>
               {activeFilters.map((f) => (
                 <Chip
                   key={f.key}
@@ -375,7 +379,8 @@ function ProductsInner() {
                 className="flex items-center gap-0.5 text-xs text-muted hover:text-foreground"
               >
                 <X className="size-3" />
-                清空
+
+                {copy("clear")}
               </button>
             </div>
           )}
@@ -385,18 +390,19 @@ function ProductsInner() {
             <ProductGridSkeleton />
           ) : error ? (
             <Empty
-              title="加载失败"
-              description="请点击上方重试按钮"
+              title={copy("unableToLoad")}
+              description={copy("useTheRetryButtonAbove")}
               size="md"
             />
           ) : filtered.length === 0 ? (
             <Empty
-              title="没有符合条件的商品"
-              description="试试调整筛选条件或搜索其他关键词"
+              title={copy("noMatchingProducts")}
+              description={copy("adjustYourFiltersOrTryAnotherSearch")}
               size="md"
             >
               <Button size="sm" onClick={resetAllFilters}>
-                重置筛选
+
+                {copy("resetFilters")}
               </Button>
             </Empty>
           ) : viewMode === "page" ? (
@@ -420,8 +426,8 @@ function ProductsInner() {
             <InfiniteScroll
               onLoadMore={loadMore}
               hasMore={hasMore}
-              loadingText="加载更多商品…"
-              finishedText={`已显示全部 ${filtered.length} 件商品`}
+              loadingText={copy("loadingMoreProducts")}
+              finishedText={`${copy("allProductsShown")}${filtered.length}${copy("products")}`}
             >
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 {pagedItems.map((p) => (
@@ -436,7 +442,7 @@ function ProductsInner() {
       {/* 快速品类导航（桌面端右侧浮动） */}
       <div className="fixed bottom-24 right-6 hidden xl:block">
         <nav className="rounded-[var(--radius)] border border-border bg-surface p-3 shadow-md">
-          <p className="mb-2 text-xs font-semibold text-muted">品类导航</p>
+          <p className="mb-2 text-xs font-semibold text-muted">{copy("categoryNavigation")}</p>
           <div className="space-y-1">
             {categories.map((c) => (
               <a

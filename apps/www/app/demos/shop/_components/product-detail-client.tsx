@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./product-detail-client.content";
 import { useRef, useState } from "react";
 import { ChevronRight, Heart, Ruler, ShoppingCart, Zap } from "lucide-react";
 import {
@@ -28,9 +29,9 @@ import { SHOP_BASE } from "./nav-config";
 import { useShop } from "../_lib/shop-store";
 
 const ANCHOR_ITEMS = [
-  { href: "#detail", title: "商品详情" },
-  { href: "#spec", title: "规格参数" },
-  { href: "#reviews", title: "用户评价" },
+  { href: "#detail", title: copy("productDetails") },
+  { href: "#spec", title: copy("specifications") },
+  { href: "#reviews", title: copy("customerReviews") },
 ];
 
 /** 尺码对照表内容 */
@@ -42,9 +43,9 @@ function SizeGuideContent({ sizes }: { sizes: string[] }) {
         <table className="w-full border-collapse text-center text-xs">
           <thead>
             <tr className="bg-surface-hover">
-              <th className="border border-border px-3 py-2">码数</th>
-              <th className="border border-border px-3 py-2">脚长 (cm)</th>
-              <th className="border border-border px-3 py-2">建议净体重 (kg)</th>
+              <th className="border border-border px-3 py-2">{copy("shoeSize")}</th>
+              <th className="border border-border px-3 py-2">{copy("footLengthCm")}</th>
+              <th className="border border-border px-3 py-2">{copy("recommendedWeightKg")}</th>
             </tr>
           </thead>
           <tbody>
@@ -65,10 +66,10 @@ function SizeGuideContent({ sizes }: { sizes: string[] }) {
         <table className="w-full border-collapse text-center text-xs">
           <thead>
             <tr className="bg-surface-hover">
-              <th className="border border-border px-3 py-2">规格</th>
-              <th className="border border-border px-3 py-2">胸围 (cm)</th>
-              <th className="border border-border px-3 py-2">腰围 (cm)</th>
-              <th className="border border-border px-3 py-2">身高 (cm)</th>
+              <th className="border border-border px-3 py-2">{copy("optionSize")}</th>
+              <th className="border border-border px-3 py-2">{copy("chestCm")}</th>
+              <th className="border border-border px-3 py-2">{copy("waistCm")}</th>
+              <th className="border border-border px-3 py-2">{copy("heightCm")}</th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +84,7 @@ function SizeGuideContent({ sizes }: { sizes: string[] }) {
           </tbody>
         </table>
       )}
-      <p className="text-xs text-muted">* 以上数据仅供参考，实际以商品吊牌为准</p>
+      <p className="text-xs text-muted">{copy("measurementsAreAGuideOnlyReferToTheProductLabelForFinalSizing")}</p>
     </div>
   );
 }
@@ -100,7 +101,8 @@ export function ProductDetailClient({ productId }: { productId: string }) {
   if (!product) {
     return (
       <div className="flex min-h-96 items-center justify-center text-muted">
-        商品不存在
+
+        {copy("productNotFound")}
       </div>
     );
   }
@@ -114,9 +116,9 @@ export function ProductDetailClient({ productId }: { productId: string }) {
   const selectedColorObj = product.colors.find((c) => c.hex === selectedColor);
 
   const handleAddToCart = () => {
-    if (soldOut) { toast({ title: "该商品已售罄", tone: "danger" }); return; }
-    if (!selectedColorObj) { toast({ title: "请选择颜色", tone: "danger" }); return; }
-    if (!selectedSize) { toast({ title: "请选择规格", tone: "danger" }); return; }
+    if (soldOut) { toast({ title: copy("thisItemIsSoldOut"), tone: "danger" }); return; }
+    if (!selectedColorObj) { toast({ title: copy("chooseAColor"), tone: "danger" }); return; }
+    if (!selectedSize) { toast({ title: copy("chooseAnOption"), tone: "danger" }); return; }
     addToCart({
       productId: product.id,
       color: selectedColorObj.name,
@@ -124,25 +126,25 @@ export function ProductDetailClient({ productId }: { productId: string }) {
       qty,
       price: product.price,
     });
-    toast({ title: `已加入购物车：${product.name}（${selectedColorObj.name} · ${selectedSize} × ${qty}）`, tone: "info" });
+    toast({ title: `${copy("addedToCart")}${product.name}${copy("selectedOptionsSeparator")}${selectedColorObj.name} · ${selectedSize} × ${qty}${copy("selectedOptionsClose")}`, tone: "info" });
   };
 
   const handleBuyNow = () => {
-    if (soldOut) { toast({ title: "该商品已售罄", tone: "danger" }); return; }
-    if (!selectedColorObj) { toast({ title: "请先选择颜色", tone: "danger" }); return; }
-    if (!selectedSize) { toast({ title: "请先选择规格", tone: "danger" }); return; }
+    if (soldOut) { toast({ title: copy("thisItemIsSoldOut"), tone: "danger" }); return; }
+    if (!selectedColorObj) { toast({ title: copy("chooseAColorFirst"), tone: "danger" }); return; }
+    if (!selectedSize) { toast({ title: copy("chooseAnOptionFirst"), tone: "danger" }); return; }
     handleAddToCart();
-    toast({ title: "跳转结算页面…（demo 演示）", tone: "info" });
+    toast({ title: copy("openingCheckoutDemo"), tone: "info" });
   };
 
   const handleFav = () => {
     const added = toggleFavorite(product.id);
-    toast({ title: added ? "已加入收藏" : "已取消收藏", tone: "info" });
+    toast({ title: added ? copy("addedToFavorites") : copy("removedFromFavorites"), tone: "info" });
   };
 
   const breadcrumbItems = [
-    { label: "首页", href: SHOP_BASE },
-    { label: "全部商品", href: `${SHOP_BASE}/products` },
+    { label: copy("home"), href: SHOP_BASE },
+    { label: copy("allProducts"), href: `${SHOP_BASE}/products` },
     { label: product.name },
   ];
 
@@ -158,14 +160,14 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               className="w-full"
               showDots
               showArrows
-              aria-label={`${product.name} 商品图廊`}
+              aria-label={copy("productGalleryLabel", product.name)}
             >
               {gallery.map((src, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={i}
                   src={src}
-                  alt={`${product.name} 图片 ${i + 1}`}
+                  alt={copy("productImageAlt", product.name, i + 1)}
                   className="aspect-square w-full object-cover"
                 />
               ))}
@@ -178,9 +180,9 @@ export function ProductDetailClient({ productId }: { productId: string }) {
           {/* 名称 + 标签 */}
           <div>
             <div className="mb-1.5 flex flex-wrap gap-1.5">
-              {product.flashSale && <Tag tone="danger" size="sm">限时秒杀</Tag>}
-              {product.isNew && <Tag tone="brand" size="sm">新品</Tag>}
-              {soldOut && <Tag tone="neutral" size="sm">售罄</Tag>}
+              {product.flashSale && <Tag tone="danger" size="sm">{copy("flashSale")}</Tag>}
+              {product.isNew && <Tag tone="brand" size="sm">{copy("new")}</Tag>}
+              {soldOut && <Tag tone="neutral" size="sm">{copy("soldOut")}</Tag>}
             </div>
             <h1 className="text-2xl font-bold text-foreground">{product.name}</h1>
             <p className="mt-1 text-sm text-muted">{product.tagline}</p>
@@ -191,9 +193,9 @@ export function ProductDetailClient({ productId }: { productId: string }) {
             <Rating value={product.rating} readOnly size="sm" />
             <span className="font-medium text-foreground">{product.rating.toFixed(1)}</span>
             <span>·</span>
-            <span>{product.reviewCount.toLocaleString()} 条评价</span>
+            <span>{product.reviewCount.toLocaleString()}  {copy("reviews")}</span>
             <span>·</span>
-            <span>月售 {product.sales.toLocaleString()}</span>
+            <span>{copy("monthlySales")} {product.sales.toLocaleString()}</span>
           </div>
 
           {/* 价格 */}
@@ -203,11 +205,11 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               {discount != null && (
                 <>
                   <span className="text-sm text-muted line-through">{formatPrice(product.originalPrice)}</span>
-                  <Chip size="sm" tone="danger" variant="soft">{discount}折</Chip>
+                  <Chip size="sm" tone="danger" variant="soft">{discount}{copy("ofListPrice")}</Chip>
                 </>
               )}
             </div>
-            <p className="mt-1 text-xs text-muted">含税 · 全国包邮（偏远地区除外）</p>
+            <p className="mt-1 text-xs text-muted">{copy("taxIncludedFreeNationwideShippingRemoteAreasExcluded")}</p>
           </div>
 
           {/* 卖点 tags */}
@@ -220,8 +222,8 @@ export function ProductDetailClient({ productId }: { productId: string }) {
           {/* 颜色 SKU */}
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <span className="text-sm font-medium text-foreground">颜色</span>
-              <span className="text-sm text-muted">{selectedColorObj?.name ?? "请选择"}</span>
+              <span className="text-sm font-medium text-foreground">{copy("color")}</span>
+              <span className="text-sm text-muted">{selectedColorObj?.name ?? copy("select")}</span>
             </div>
             <ColorSwatchPicker
               colors={product.colors.map((c) => c.hex)}
@@ -234,20 +236,21 @@ export function ProductDetailClient({ productId }: { productId: string }) {
           {/* 尺寸/容量 SKU */}
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-sm font-medium text-foreground">规格</span>
+              <span className="text-sm font-medium text-foreground">{copy("optionSize")}</span>
               {product.sizes.some((s) => /^\d{2}$/.test(s) || ["S","M","L","XL","XXL"].includes(s)) && (
                 <button
                   type="button"
                   onClick={() =>
                     modal.info({
-                      title: "尺码对照表",
+                      title: copy("sizeChart"),
                       content: <SizeGuideContent sizes={product.sizes} />,
                     })
                   }
                   className="flex items-center gap-0.5 text-xs text-primary hover:underline"
                 >
                   <Ruler className="size-3" />
-                  尺码对照
+
+                  {copy("sizeGuide")}
                   <ChevronRight className="size-3" />
                 </button>
               )}
@@ -275,7 +278,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
           {/* 数量 + 库存 */}
           <div className="flex items-center gap-4">
             <div>
-              <p className="mb-1.5 text-sm font-medium text-foreground">数量</p>
+              <p className="mb-1.5 text-sm font-medium text-foreground">{copy("quantity")}</p>
               <NumberField
                 value={qty}
                 min={1}
@@ -285,9 +288,10 @@ export function ProductDetailClient({ productId }: { productId: string }) {
             </div>
             <div className="flex-1">
               <p className="mb-1.5 text-sm font-medium text-foreground">
-                库存
+
+                {copy("stock")}
                 <span className={`ml-2 text-xs font-normal ${soldOut ? "text-danger" : "text-muted"}`}>
-                  {soldOut ? "售罄" : `剩余 ${product.stock} 件`}
+                  {soldOut ? copy("soldOut") : copy("stockRemaining", product.stock)}
                 </span>
               </p>
               <Meter
@@ -307,7 +311,8 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               className="flex-1"
             >
               <ShoppingCart className="mr-2 size-4" />
-              加入购物车
+
+              {copy("addToCart")}
             </Button>
             <Button
               size="lg"
@@ -316,13 +321,14 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               className="flex-1"
             >
               <Zap className="mr-2 size-4" />
-              立即购买
+
+              {copy("buyNow")}
             </Button>
             <Button
               size="lg"
               variant="ghost"
               onClick={handleFav}
-              aria-label={isFav ? "取消收藏" : "加入收藏"}
+              aria-label={isFav ? copy("removeFromFavorites") : copy("addToFavorites")}
             >
               <Heart className={`size-5 ${isFav ? "fill-danger text-danger" : ""}`} />
             </Button>
@@ -346,7 +352,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
         <div className="min-w-0 flex-1 space-y-2">
           {/* 商品详情 */}
           <section id="detail" className="scroll-mt-20 py-6">
-            <h2 className="mb-4 text-lg font-semibold text-foreground">商品详情</h2>
+            <h2 className="mb-4 text-lg font-semibold text-foreground">{copy("productDetails")}</h2>
 
             {/* 卖点 highlights */}
             <div className="mb-4 space-y-2">
@@ -362,16 +368,16 @@ export function ProductDetailClient({ productId }: { productId: string }) {
 
             {/* 长描述 Collapsible */}
             <Collapsible>
-              <CollapsibleTrigger>展开更多商品说明</CollapsibleTrigger>
+              <CollapsibleTrigger>{copy("showMoreProductInformation")}</CollapsibleTrigger>
               <CollapsiblePanel>
                 <div className="mt-3 space-y-3 text-sm leading-relaxed text-muted">
                   <p>
-                    本商品由{product.brand}精心研制，融合先进工艺与匠心设计，力求在每一个细节上给用户带来卓越体验。
-                    我们严格把控原材料选择与生产工艺，确保每件产品都达到最高品质标准。
+
+                    {copy("developedBy")}{product.brand}{copy("thisProductCombinesAdvancedManufacturingWithThoughtfulDesignToDeliverAnExceptionalExperienceInEv")}
                   </p>
                   <p>
-                    购买前请仔细阅读规格参数，如有疑问可联系客服。支持 7 天无理由退换货，
-                    运费险全程保障，让您购物无忧。
+
+                    {copy("reviewTheSpecificationsBeforeOrderingAndContactSupportWithAnyQuestionsSevenDayReturnsAndShipping")}
                   </p>
                   {/* 程序化详情图 */}
                   <div className="grid grid-cols-2 gap-3 pt-2">
@@ -380,7 +386,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
                       <img
                         key={i}
                         src={src}
-                        alt={`${product.name} 详情图 ${i + 2}`}
+                        alt={copy("detailImageAlt", product.name, i + 2)}
                         className="w-full rounded-[var(--radius)] object-cover"
                       />
                     ))}
@@ -392,22 +398,22 @@ export function ProductDetailClient({ productId }: { productId: string }) {
 
           {/* 规格参数 */}
           <section id="spec" className="scroll-mt-20 border-t border-border py-6">
-            <h2 className="mb-4 text-lg font-semibold text-foreground">规格参数</h2>
+            <h2 className="mb-4 text-lg font-semibold text-foreground">{copy("specifications")}</h2>
             <Descriptions bordered column={2}>
-              <DescriptionsItem label="品牌">{product.brand}</DescriptionsItem>
-              <DescriptionsItem label="品类">{product.subCategory}</DescriptionsItem>
-              <DescriptionsItem label="商品编号">{product.id.toUpperCase()}</DescriptionsItem>
-              <DescriptionsItem label="评分">{product.rating.toFixed(1)} / 5.0</DescriptionsItem>
-              <DescriptionsItem label="月销量">{product.sales.toLocaleString()} 件</DescriptionsItem>
-              <DescriptionsItem label="库存">{soldOut ? "暂无货" : `${product.stock} 件`}</DescriptionsItem>
-              <DescriptionsItem label="颜色规格" span={2}>
-                {product.colors.map((c) => c.name).join("、")}
+              <DescriptionsItem label={copy("brand")}>{product.brand}</DescriptionsItem>
+              <DescriptionsItem label={copy("category")}>{product.subCategory}</DescriptionsItem>
+              <DescriptionsItem label={copy("productId")}>{product.id.toUpperCase()}</DescriptionsItem>
+              <DescriptionsItem label={copy("rating")}>{product.rating.toFixed(1)} / 5.0</DescriptionsItem>
+              <DescriptionsItem label={copy("monthlySales")}>{product.sales.toLocaleString()}  {copy("items")}</DescriptionsItem>
+              <DescriptionsItem label={copy("stock")}>{soldOut ? copy("outOfStock") : copy("stockCount", product.stock)}</DescriptionsItem>
+              <DescriptionsItem label={copy("colorOptions")} span={2}>
+                {product.colors.map((c) => c.name).join(copy("listSeparator"))}
               </DescriptionsItem>
-              <DescriptionsItem label="尺寸/容量" span={2}>
-                {product.sizes.join("、")}
+              <DescriptionsItem label={copy("sizeCapacity")} span={2}>
+                {product.sizes.join(copy("listSeparator"))}
               </DescriptionsItem>
-              <DescriptionsItem label="卖点标签" span={2}>
-                {product.tags.join("、")}
+              <DescriptionsItem label={copy("features")} span={2}>
+                {product.tags.join(copy("listSeparator"))}
               </DescriptionsItem>
             </Descriptions>
           </section>
@@ -430,7 +436,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               )}
               {selectedColorObj && (
                 <span className="text-sm text-muted">
-                  · {selectedColorObj.name} · {selectedSize || "未选规格"}
+                  · {selectedColorObj.name} · {selectedSize || copy("noOptionSelected")}
                 </span>
               )}
             </div>
@@ -442,11 +448,13 @@ export function ProductDetailClient({ productId }: { productId: string }) {
                 size="sm"
               >
                 <ShoppingCart className="mr-1.5 size-4" />
-                加入购物车
+
+                {copy("addToCart")}
               </Button>
               <Button disabled={soldOut} onClick={handleBuyNow} size="sm">
                 <Zap className="mr-1.5 size-4" />
-                立即购买
+
+                {copy("buyNow")}
               </Button>
             </div>
           </div>

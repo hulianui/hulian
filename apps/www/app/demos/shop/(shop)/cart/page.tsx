@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -90,18 +91,18 @@ export default function CartPage() {
       next.delete(key);
       return next;
     });
-    toast({ title: "已移除商品", tone: "info" });
+    toast({ title: copy("itemRemoved"), tone: "info" });
   }
 
   function handleClearCart() {
     clearCart();
     setSelected(new Set());
-    toast({ title: "购物车已清空", tone: "info" });
+    toast({ title: copy("cartCleared"), tone: "info" });
   }
 
   function handleCheckout() {
     if (selectedItems.length === 0) {
-      toast({ title: "请先勾选要结算的商品", tone: "danger" });
+      toast({ title: copy("selectAtLeastOneItemToCheckOut"), tone: "danger" });
       return;
     }
     window.location.href = `${SHOP_BASE}/checkout`;
@@ -113,12 +114,12 @@ export default function CartPage() {
       <Breadcrumb
         className="mb-6"
         items={[
-          { label: "瀚选首页", href: SHOP_BASE },
-          { label: "购物车" },
+          { label: copy("hanshopHome"), href: SHOP_BASE },
+          { label: copy("cart") },
         ]}
       />
 
-      <h1 className="mb-6 text-xl font-semibold text-foreground">购物车</h1>
+      <h1 className="mb-6 text-xl font-semibold text-foreground">{copy("cart")}</h1>
 
       {loading ? (
         /* 骨架屏 */
@@ -129,8 +130,8 @@ export default function CartPage() {
         </div>
       ) : cart.length === 0 ? (
         /* 空购物车 */
-        <Empty title="购物车是空的" description="去逛逛挑点好物吧">
-          <Button render={<Link href={SHOP_BASE} />}>去购物</Button>
+        <Empty title={copy("yourCartIsEmpty")} description={copy("browseTheStoreAndFindSomethingYouLove")}>
+          <Button render={<Link href={SHOP_BASE} />}>{copy("shopNow")}</Button>
         </Empty>
       ) : (
         <>
@@ -142,10 +143,10 @@ export default function CartPage() {
                 checked={allSelected}
                 indeterminate={someSelected}
                 onCheckedChange={toggleAll}
-                aria-label="全选"
+                aria-label={copy("selectAll")}
               />
-              <span className="text-sm text-foreground-muted">全选</span>
-              <span className="ml-auto text-sm text-foreground-muted">共 {cart.length} 种商品</span>
+              <span className="text-sm text-foreground-muted">{copy("selectAll")}</span>
+              <span className="ml-auto text-sm text-foreground-muted">{copy("total")} {cart.length}  {copy("products")}</span>
             </div>
 
             {/* 商品行 */}
@@ -164,7 +165,7 @@ export default function CartPage() {
                   <Checkbox
                     checked={selected.has(key)}
                     onCheckedChange={() => toggleRow(key)}
-                    aria-label={`选择 ${product.name}`}
+                    aria-label={copy("selectProduct", product.name)}
                   />
 
                   {/* 商品图 */}
@@ -200,20 +201,21 @@ export default function CartPage() {
                       value={item.qty}
                       min={1}
                       max={99}
-                      aria-label={`${product.name} 数量`}
+                      aria-label={copy("productQuantity", product.name)}
                       onValueChange={(v) =>
                         updateQty(item.productId, item.color, item.size, v ?? 1)
                       }
                     />
                     <Popconfirm
-                      title="确定删除该商品？"
-                      description="移除后需重新加入购物车。"
+                      title={copy("removeThisItem")}
+                      description={copy("youWillNeedToAddItAgainIfYouChangeYourMind")}
                       danger
-                      okText="删除"
+                      okText={copy("delete")}
                       onConfirm={() => handleRemove(item.productId, item.color, item.size)}
                     >
                       <Button size="sm" variant="ghost" tone="danger">
-                        删除
+
+                        {copy("delete")}
                       </Button>
                     </Popconfirm>
                   </div>
@@ -229,7 +231,7 @@ export default function CartPage() {
                 checked={allSelected}
                 indeterminate={someSelected}
                 onCheckedChange={toggleAll}
-                label="全选"
+                label={copy("selectAll")}
               />
 
               {/* 清空购物车 */}
@@ -237,22 +239,25 @@ export default function CartPage() {
                 <AlertDialogTrigger
                   render={
                     <Button size="sm" variant="ghost" tone="danger">
-                      清空购物车
+
+                      {copy("clearCart")}
                     </Button>
                   }
                 />
                 <AlertDialogContent
-                  title="清空购物车？"
-                  description="购物车内所有商品将被移除，此操作不可撤销。"
+                  title={copy("clearYourCart")}
+                  description={copy("allItemsWillBeRemovedFromYourCartThisCannotBeUndone")}
                 >
                   <AlertDialogClose className="inline-flex h-8 items-center rounded-[var(--radius)] border border-border bg-surface px-3 text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring">
-                    取消
+
+                    {copy("cancel")}
                   </AlertDialogClose>
                   <AlertDialogClose
                     className="inline-flex h-8 items-center rounded-[var(--radius)] bg-danger px-3 text-sm font-medium text-danger-foreground outline-none transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={handleClearCart}
                   >
-                    清空
+
+                    {copy("clear")}
                   </AlertDialogClose>
                 </AlertDialogContent>
               </AlertDialog>
@@ -260,14 +265,17 @@ export default function CartPage() {
 
             <div className="flex items-center gap-4">
               <span className="text-sm text-foreground-muted">
-                已选 <span className="font-semibold text-foreground">{selectedCount}</span> 件
+
+                {copy("selected")} <span className="font-semibold text-foreground">{selectedCount}</span>  {copy("items")}
               </span>
               <div className="flex items-center gap-1 text-sm text-foreground-muted">
-                合计：
+
+                {copy("total2")}
                 <span className="text-base font-bold text-brand">{formatPrice(selectedTotal)}</span>
               </div>
               <Button size="lg" disabled={selectedItems.length === 0} onClick={handleCheckout}>
-                去结算
+
+                {copy("checkout")}
               </Button>
             </div>
           </div>

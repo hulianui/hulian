@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./review-section.content";
 import { useState } from "react";
 import { ThumbsUp } from "lucide-react";
 import { AvatarCircles, Card, CardBody, Comment, CommentAction, Meter, Rating, Tag } from "@hulianui/ui";
@@ -28,15 +29,15 @@ export function ReviewSection({ productId }: { productId: string }) {
   if (reviews.length === 0) {
     return (
       <section id="reviews" className="scroll-mt-20 py-8">
-        <h2 className="mb-4 text-lg font-semibold text-foreground">用户评价</h2>
-        <p className="text-sm text-muted">暂无评价，快来抢先评价吧！</p>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">{copy("customerReviews")}</h2>
+        <p className="text-sm text-muted">{copy("noReviewsYetBeTheFirstToReviewThisProduct")}</p>
       </section>
     );
   }
 
   return (
     <section id="reviews" className="scroll-mt-20 py-8">
-      <h2 className="mb-6 text-lg font-semibold text-foreground">用户评价</h2>
+      <h2 className="mb-6 text-lg font-semibold text-foreground">{copy("customerReviews")}</h2>
 
       {/* 评分概览 */}
       <Card variant="outline" className="mb-6">
@@ -50,14 +51,14 @@ export function ReviewSection({ productId }: { productId: string }) {
               extraCount={Math.max(0, totalReviews - 4)}
               size="sm"
             />
-            <p className="text-xs text-muted">{totalReviews} 条评价</p>
+            <p className="text-xs text-muted">{totalReviews}  {copy("reviews")}</p>
           </div>
 
           {/* 评分分布 Meter */}
           <div className="flex-1 space-y-2">
             {dist.map(({ star, count }) => (
               <div key={star} className="flex items-center gap-3">
-                <span className="w-8 shrink-0 text-right text-sm text-muted">{star} 星</span>
+                <span className="w-8 shrink-0 text-right text-sm text-muted">{star}  {copy("stars")}</span>
                 <div className="flex-1">
                   <Meter
                     value={count}
@@ -96,7 +97,7 @@ export function ReviewSection({ productId }: { productId: string }) {
                       <img
                         key={v}
                         src={productImage(product, v, 120, 120)}
-                        alt={`${r.author} 晒图 ${v + 1}`}
+                        alt={copy("customerPhotoAlt", r.author, v + 1)}
                         className="size-20 rounded-[var(--radius)] object-cover"
                       />
                     ))}

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./home-product-grid.content";
 import { Skeleton, Heading, Text, Result, Button } from "@hulianui/ui";
 import { ProductCard } from "../product-card";
 import type { Product } from "../../_data/types";
@@ -16,10 +17,12 @@ export function HomeProductGrid({ products, loading, error, onReload }: Props) {
     <section aria-labelledby="home-goods-title">
       <div className="mb-4 flex items-baseline justify-between">
         <Heading level={2} size="lg" id="home-goods-title">
-          猜你喜欢
+
+          {copy("recommendedForYou")}
         </Heading>
         <Text size="sm" tone="muted">
-          全部好物 · {products.length} 件
+
+          {copy("allPicks")} {products.length}  {copy("items")}
         </Text>
       </div>
 
@@ -27,10 +30,10 @@ export function HomeProductGrid({ products, loading, error, onReload }: Props) {
       {error && !loading && (
         <Result
           status="error"
-          title="加载失败"
+          title={copy("unableToLoad")}
           subTitle={error}
         >
-          <Button onClick={onReload}>重新加载</Button>
+          <Button onClick={onReload}>{copy("reload")}</Button>
         </Result>
       )}
 

@@ -1,0 +1,88 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    productImage: "商品图",
+    brand: "品牌",
+    category: "品类",
+    currentPrice: "现价",
+    ratingSales: "评分 / 销量",
+    stock: "库存",
+    features: "卖点标签",
+    tagline: "一句话卖点",
+    highlights: "商品亮点",
+    reviews: "评 ·",
+    sold: "+ 销",
+    items: "件",
+    soldOut: "售罄",
+    removedFromComparison: "已从对比中移除",
+    thisItemIsSoldOut: "该商品已售罄",
+    default: "默认",
+    added: "已将「",
+    toYourCart: "」加入购物车",
+    noProductsToCompare: "暂无对比商品",
+    chooseProductsFromTheCatalogToCompareThemHere: "请先从商品列表中选择要对比的商品",
+    chooseProducts: "去选商品",
+    productComparison: "商品对比",
+    selected: "已选",
+    products: "件商品",
+    addProduct: "+ 添加商品",
+    comparisonItem: "对比项",
+    new: "新品",
+    remove: "移除",
+    removeProduct: "移除{0}",
+    best: "最优",
+    actions: "操作",
+    soldOut2: "已售罄",
+    addToCart: "加入购物车",
+    viewDetails: "查看详情",
+    greenHighlightsMarkTheBestValueInEachRowLowestPriceHighestRatingOrMostStock: "绿色高亮为该维度最优值 · 价格最低 · 评分最高 · 库存最多",
+  },
+  en: {
+    productImage: "Product image",
+    brand: "Brand",
+    category: "Category",
+    currentPrice: "Current price",
+    ratingSales: "Rating / sales",
+    stock: "Stock",
+    features: "Features",
+    tagline: "Tagline",
+    highlights: "Highlights",
+    reviews: " reviews · ",
+    sold: "+ sold",
+    items: "items",
+    soldOut: "Sold out",
+    removedFromComparison: "Removed from comparison",
+    thisItemIsSoldOut: "This item is sold out",
+    default: "Default",
+    added: "Added ",
+    toYourCart: " to your cart",
+    noProductsToCompare: "No products to compare",
+    chooseProductsFromTheCatalogToCompareThemHere: "Choose products from the catalog to compare them here.",
+    chooseProducts: "Choose products",
+    productComparison: "Product comparison",
+    selected: "Selected: ",
+    products: " products",
+    addProduct: "+ Add product",
+    comparisonItem: "Comparison item",
+    new: "New",
+    remove: "Remove",
+    removeProduct: "Remove {0}",
+    best: "Best",
+    actions: "Actions",
+    soldOut2: "Sold out",
+    addToCart: "Add to cart",
+    viewDetails: "View details",
+    greenHighlightsMarkTheBestValueInEachRowLowestPriceHighestRatingOrMostStock: "Green highlights mark the best value in each row: lowest price, highest rating, or most stock.",
+  },
+} as const;
+
+export type ContentKey = keyof (typeof content)["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = { key: "demo-shop--shop-compare-page", content: t(content) };
+export default dictionary;
