@@ -18,12 +18,12 @@ function VerticalDemo({ showConversion = true }: {
     showConversion?: boolean;
 }) {
     return (<div className="w-full max-w-md">
-      <Funnel stages={taskStages} orientation="vertical" showConversion={showConversion}/>
+      <Funnel stages={taskStages} orientation="vertical" showConversion={showConversion} ariaLabel="Funnel chart" conversionLabel="Conversion"/>
     </div>);
 }
 function HorizontalDemo() {
     return (<div className="w-full max-w-lg">
-      <Funnel stages={conversionStages} orientation="horizontal"/>
+      <Funnel stages={conversionStages} orientation="horizontal" ariaLabel="Funnel chart" conversionLabel="Conversion"/>
     </div>);
 }
 export const funnelShowcase: ShowcaseSpec = {
@@ -38,6 +38,8 @@ export const funnelShowcase: ShowcaseSpec = {
     { id: "exec", label: "Execute", value: 860, tone: "warning" },
     { id: "done", label: "Complete", value: 720, tone: "success" },
   ]}
+  ariaLabel="Funnel chart"
+  conversionLabel="Conversion"
 />`,
             render: () => <VerticalDemo />,
         },
@@ -52,13 +54,20 @@ export const funnelShowcase: ShowcaseSpec = {
     { id: "pay", label: "Payment", value: 640, tone: "success" },
   ]}
   orientation="horizontal"
+  ariaLabel="Funnel chart"
+  conversionLabel="Conversion"
 />`,
             render: () => <HorizontalDemo />,
         },
         {
             title: "Hide conversion rate logo",
             description: "showConversion={false} Turn off the inter-stage conversion rate and only look at the volume.",
-            code: `<Funnel stages={stages} showConversion={false} />`,
+            code: `<Funnel
+  stages={stages}
+  showConversion={false}
+  ariaLabel="Funnel chart"
+  conversionLabel="Conversion"
+/>`,
             render: () => <VerticalDemo showConversion={false}/>,
         },
         {
@@ -66,15 +75,23 @@ export const funnelShowcase: ShowcaseSpec = {
             description: "After passing onStageClick, the bar changes to a button. Click on the takeback stage to drill down.",
             code: `<Funnel
   stages={stages}
+  ariaLabel="Funnel chart"
+  conversionLabel="Conversion"
   onStageClick={(s) => console.log(s.id)}
 />`,
             render: () => (<div className="w-full max-w-md">
-          <Funnel stages={taskStages} onStageClick={() => { }}/>
+          <Funnel stages={taskStages} ariaLabel="Funnel chart" conversionLabel="Conversion" onStageClick={() => { }}/>
         </div>),
         },
     ],
     controls: [
-        { prop: "orientation", type: "select", options: ["vertical", "horizontal"], defaultValue: "vertical", label: "Direction" },
+        {
+            prop: "orientation",
+            type: "select",
+            options: ["vertical", "horizontal"],
+            defaultValue: "vertical",
+            label: "Direction",
+        },
         { prop: "showConversion", type: "boolean", defaultValue: true, label: "Inter-level conversion rate" },
     ],
     states: [
@@ -95,7 +112,7 @@ export const funnelShowcase: ShowcaseSpec = {
         const orientation = (p.orientation as "vertical" | "horizontal") ?? "vertical";
         const stages = orientation === "horizontal" ? conversionStages : taskStages;
         return (<div className="w-full max-w-lg">
-        <Funnel stages={stages} orientation={orientation} showConversion={p.showConversion as boolean}/>
+        <Funnel stages={stages} orientation={orientation} showConversion={p.showConversion as boolean} ariaLabel="Funnel chart" conversionLabel="Conversion"/>
       </div>);
     },
     toCode: (p) => `<Funnel
@@ -107,6 +124,8 @@ export const funnelShowcase: ShowcaseSpec = {
   ]}
   orientation="${(p.orientation as string) ?? "vertical"}"
   showConversion={${p.showConversion ?? true}}
+  ariaLabel="Funnel chart"
+  conversionLabel="Conversion"
   onStageClick={(s) => console.log(s.id)}
 />`,
 };
