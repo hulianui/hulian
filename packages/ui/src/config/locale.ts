@@ -11,6 +11,14 @@ export interface Locale {
   table: {
     /** 空态默认标题（emptyText 未传时使用）。 */
     empty: string;
+    dragSort?: string;
+    selectAll?: string;
+    selectRow?: string;
+    collapse?: string;
+    expand?: string;
+    filterPlaceholder?: string;
+    filter?: (column: string) => string;
+    resizeColumn?: string;
   };
   proTable: {
     /** 底部总条数文案（参数化）。 */
@@ -353,6 +361,83 @@ export interface ComponentLocale {
   kanban?: { emptyColumn: string };
   gantt?: { chart: string; empty: string; process: string; month: (month: number) => string };
   funnel?: { chart: string; conversion: string };
+  scopeMatrix?: {
+    duplicate: string;
+    count: (count: number) => string;
+    emptyAllow: string;
+    empty: string;
+    remove: (value: string) => string;
+    add: string;
+    allow: string;
+    deny: string;
+    placeholder: string;
+    allowHint: string;
+    denyHint: string;
+    unrestricted: string;
+    denyOnly: (denyLabel: React.ReactNode, count: number) => string;
+    allowOnly: (allowLabel: React.ReactNode, count: number) => string;
+    combined: (
+      denyLabel: React.ReactNode,
+      denyCount: number,
+      allowLabel: React.ReactNode,
+      allowCount: number,
+    ) => string;
+  };
+  interceptCard?: {
+    severity: Record<"block" | "confirm" | "notice", string>;
+    violation: string;
+    suggestion: string;
+    source: string;
+    overridden: string;
+    override: string;
+    overridePlaceholder: string;
+    processing: string;
+    confirmOverride: string;
+    cancel: string;
+  };
+  upload?: {
+    dropLabel: string;
+    buttonLabel: string;
+    progress: (name: string) => string;
+    remove: (name: string) => string;
+    reorder: (name: string) => string;
+    selected: (count: number, limit: number) => string;
+  };
+  jsonViewer?: { copy: string; copied: string };
+  staggeredMenu?: {
+    brand: string;
+    menu: string;
+    close: string;
+    openMenu: string;
+    closeMenu: string;
+    social: string;
+  };
+  transfer?: {
+    allRight: string;
+    right: string;
+    left: string;
+    allLeft: string;
+    selectAll: (title?: string) => string;
+    search: (title?: string) => string;
+    noMatches: string;
+    empty: string;
+    source: string;
+    selected: string;
+    searchPlaceholder: string;
+  };
+  queueLane?: {
+    count: (count: number) => string;
+    empty: string;
+    more: (count: number) => string;
+  };
+  socialButton?: {
+    providers: Record<
+      "wechat" | "alipay" | "qq" | "weibo" | "github" | "google" | "apple" | "x",
+      string
+    >;
+    signInWith: (provider: string) => string;
+  };
+  typingDots?: { typing: string };
   sankey?: { chart: string };
   diffStat?: { added: string; modified: string; deleted: string; renamed: string };
   deployStatus?: {
@@ -397,6 +482,28 @@ export interface ComponentLocale {
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   sortable?: { handle: (index: number) => string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  domeGallery?: {
+    label: string;
+    image: (index: number) => string;
+    viewImage: string;
+    enlargedView: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  heatmap?: {
+    empty: string;
+    tooltip: (y: string | number, x: string | number, value: string) => string;
+    legend: (min: string, max: string) => string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  contributionGraph?: {
+    weekdays: readonly string[];
+    month: (month: number) => string;
+    tooltip: (date: string, count: number, present: boolean) => string;
+    summary: (days: number, total: number) => string;
+    less: string;
+    more: string;
+  };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   coupon?: {
     available: string;
@@ -635,6 +742,90 @@ const zhComponents: ComponentLocale = {
     process: "工序",
     month: (month) => `${month}月`,
   },
+  funnel: { chart: "漏斗图", conversion: "转化" },
+  scopeMatrix: {
+    duplicate: "已存在相同模式",
+    count: (count) => `${count} 条`,
+    emptyAllow: "未设置（不启用白名单）",
+    empty: "未设置",
+    remove: (value) => `移除 ${value}`,
+    add: "添加",
+    allow: "允许",
+    deny: "禁止",
+    placeholder: "输入模式后回车",
+    allowHint: "留空表示不启用白名单，此时只受「禁止」约束",
+    denyHint: "命中即拒绝，优先级高于「允许」",
+    unrestricted: "当前未设置任何范围限制。",
+    denyOnly: (denyLabel, count) =>
+      `未启用白名单：除命中「${String(denyLabel)}」的 ${count} 条模式外，其余全部允许。`,
+    allowOnly: (allowLabel, count) =>
+      `仅允许命中「${String(allowLabel)}」的 ${count} 条模式，其余全部拒绝。`,
+    combined: (denyLabel, denyCount, allowLabel, allowCount) =>
+      `先看「${String(denyLabel)}」（${denyCount} 条）：命中即拒绝；未命中的再看「${String(
+        allowLabel,
+      )}」（${allowCount} 条），命中才允许。`,
+  },
+  interceptCard: {
+    severity: { block: "已拦截", confirm: "待确认", notice: "提醒" },
+    violation: "违反点",
+    suggestion: "建议改法",
+    source: "依据：",
+    overridden: "已放行",
+    override: "放行本次",
+    overridePlaceholder: "为什么这次可以放行？（必填，会进入审计记录）",
+    processing: "处理中…",
+    confirmOverride: "确认放行",
+    cancel: "取消",
+  },
+  upload: {
+    dropLabel: "点击或拖拽文件到此处",
+    buttonLabel: "选择文件",
+    progress: (name) => `${name} 上传进度`,
+    remove: (name) => `移除 ${name}`,
+    reorder: (name) => `拖拽排序 ${name}`,
+    selected: (count, limit) => `已选 ${count}/${limit}`,
+  },
+  jsonViewer: { copy: "复制", copied: "已复制" },
+  staggeredMenu: {
+    brand: "瑚琏",
+    menu: "菜单",
+    close: "关闭",
+    openMenu: "打开菜单",
+    closeMenu: "关闭菜单",
+    social: "社交",
+  },
+  transfer: {
+    allRight: "全部移入",
+    right: "移入选中",
+    left: "移出选中",
+    allLeft: "全部移出",
+    selectAll: (title) => (title ? `全选${title}` : "全选"),
+    search: (title) => (title ? `搜索${title}` : "搜索"),
+    noMatches: "无匹配项",
+    empty: "暂无数据",
+    source: "源列表",
+    selected: "已选",
+    searchPlaceholder: "搜索",
+  },
+  queueLane: {
+    count: (count) => `${count} 条`,
+    empty: "队列空闲",
+    more: (count) => `还有 ${count} 条`,
+  },
+  socialButton: {
+    providers: {
+      wechat: "微信",
+      alipay: "支付宝",
+      qq: "QQ",
+      weibo: "微博",
+      github: "GitHub",
+      google: "Google",
+      apple: "Apple",
+      x: "X",
+    },
+    signInWith: (provider) => `${provider}登录`,
+  },
+  typingDots: { typing: "正在输入" },
   sankey: { chart: "桑基流向图" },
   diffStat: { added: "新增", modified: "修改", deleted: "删除", renamed: "重命名" },
   deployStatus: {
@@ -676,6 +867,26 @@ const zhComponents: ComponentLocale = {
     remaining: (count) => `仅剩 ${count}`,
   },
   sortable: { handle: (index) => `拖拽排序（第 ${index} 项）` },
+  domeGallery: {
+    label: "可拖拽旋转的球面图库",
+    image: (index) => `图片 ${index}`,
+    viewImage: "查看图片",
+    enlargedView: "放大查看",
+  },
+  heatmap: {
+    empty: "无数据",
+    tooltip: (y, x, value) => `${y} · ${x}：${value}`,
+    legend: (min, max) => `色阶：${min} 至 ${max}`,
+  },
+  contributionGraph: {
+    weekdays: ["日", "一", "二", "三", "四", "五", "六"],
+    month: (month) => `${month}月`,
+    tooltip: (date, count, present) =>
+      present || count > 0 ? `${date} · ${count} 次` : `${date} · 无贡献`,
+    summary: (days, total) => `过去 ${days} 天共 ${total} 次贡献`,
+    less: "少",
+    more: "多",
+  },
   coupon: {
     available: "立即领取",
     claimed: "去使用",
@@ -803,13 +1014,51 @@ const enComponents: ComponentLocale = {
     viewSwitcher: "View switcher",
     weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     monthTitle: (year, month) =>
-      `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month - 1]} ${year}`,
+      `${
+        [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ][month - 1]
+      } ${year}`,
     weekDate: (month, day) =>
-      `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1]} ${day}`,
+      `${
+        ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
+          month - 1
+        ]
+      } ${day}`,
     dayTitle: (year, month, day) =>
-      `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month - 1]} ${day}, ${year}`,
+      `${
+        [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ][month - 1]
+      } ${day}, ${year}`,
     dayColumn: (month, day) =>
-      `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1]} ${day}`,
+      `${
+        ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
+          month - 1
+        ]
+      } ${day}`,
     more: (count) => `+${count} more`,
   },
   mentions: { suggestions: "Mention suggestions" },
@@ -932,6 +1181,94 @@ const enComponents: ComponentLocale = {
     process: "Task",
     month: (month) => `${month}`,
   },
+  funnel: { chart: "Funnel chart", conversion: "Conversion" },
+  scopeMatrix: {
+    duplicate: "This pattern already exists",
+    count: (count) => `${count} ${count === 1 ? "item" : "items"}`,
+    emptyAllow: "Not set (allowlist disabled)",
+    empty: "Not set",
+    remove: (value) => `Remove ${value}`,
+    add: "Add",
+    allow: "Allow",
+    deny: "Deny",
+    placeholder: "Enter a pattern and press Enter",
+    allowHint: "Leave empty to disable the allowlist; only deny rules will apply.",
+    denyHint: "Matches are denied and take priority over allow rules.",
+    unrestricted: "No scope restrictions are currently set.",
+    denyOnly: (denyLabel, count) =>
+      `The allowlist is disabled. Everything is allowed except the ${count} ${
+        count === 1 ? "pattern" : "patterns"
+      } matching “${String(denyLabel)}”.`,
+    allowOnly: (allowLabel, count) =>
+      `Only the ${count} ${count === 1 ? "pattern" : "patterns"} matching “${String(
+        allowLabel,
+      )}” are allowed; everything else is denied.`,
+    combined: (denyLabel, denyCount, allowLabel, allowCount) =>
+      `Deny rules are evaluated first (${denyCount} under “${String(
+        denyLabel,
+      )}”); unmatched patterns must then match one of ${allowCount} under “${String(allowLabel)}”.`,
+  },
+  interceptCard: {
+    severity: { block: "Blocked", confirm: "Confirmation required", notice: "Notice" },
+    violation: "Violation",
+    suggestion: "Suggested fix",
+    source: "Source:",
+    overridden: "Allowed",
+    override: "Allow once",
+    overridePlaceholder: "Why can this be allowed? (required and recorded in the audit log)",
+    processing: "Processing…",
+    confirmOverride: "Confirm override",
+    cancel: "Cancel",
+  },
+  upload: {
+    dropLabel: "Click or drag files here",
+    buttonLabel: "Choose files",
+    progress: (name) => `${name} upload progress`,
+    remove: (name) => `Remove ${name}`,
+    reorder: (name) => `Reorder ${name}`,
+    selected: (count, limit) => `${count}/${limit} selected`,
+  },
+  jsonViewer: { copy: "Copy", copied: "Copied" },
+  staggeredMenu: {
+    brand: "Hulian",
+    menu: "Menu",
+    close: "Close",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    social: "Social",
+  },
+  transfer: {
+    allRight: "Move all right",
+    right: "Move selected right",
+    left: "Move selected left",
+    allLeft: "Move all left",
+    selectAll: (title) => (title ? `Select all ${title}` : "Select all"),
+    search: (title) => (title ? `Search ${title}` : "Search"),
+    noMatches: "No matching items",
+    empty: "No data",
+    source: "Source",
+    selected: "Selected",
+    searchPlaceholder: "Search",
+  },
+  queueLane: {
+    count: (count) => `${count} ${count === 1 ? "item" : "items"}`,
+    empty: "Queue is empty",
+    more: (count) => `${count} more ${count === 1 ? "item" : "items"}`,
+  },
+  socialButton: {
+    providers: {
+      wechat: "WeChat",
+      alipay: "Alipay",
+      qq: "QQ",
+      weibo: "Weibo",
+      github: "GitHub",
+      google: "Google",
+      apple: "Apple",
+      x: "X",
+    },
+    signInWith: (provider) => `Sign in with ${provider}`,
+  },
+  typingDots: { typing: "Typing" },
   sankey: { chart: "Sankey diagram" },
   diffStat: { added: "Added", modified: "Modified", deleted: "Deleted", renamed: "Renamed" },
   deployStatus: {
@@ -957,7 +1294,11 @@ const enComponents: ComponentLocale = {
   navbar: { openMenu: "Open menu", closeMenu: "Close menu" },
   tabBar: { navigation: "Bottom navigation" },
   snippet: { copy: "Copy", copied: "Copied" },
-  pullToRefresh: { pulling: "Pull to refresh", armed: "Release to refresh", refreshing: "Refreshing…" },
+  pullToRefresh: {
+    pulling: "Pull to refresh",
+    armed: "Release to refresh",
+    refreshing: "Refreshing…",
+  },
   livePlayer: { follow: "+ Follow", followed: "Following" },
   liveChat: {
     pinned: "Pinned",
@@ -973,6 +1314,37 @@ const enComponents: ComponentLocale = {
     remaining: (count) => `${count} left`,
   },
   sortable: { handle: (index) => `Reorder item ${index}` },
+  domeGallery: {
+    label: "Draggable rotating dome gallery",
+    image: (index) => `Image ${index}`,
+    viewImage: "View image",
+    enlargedView: "Enlarged view",
+  },
+  heatmap: {
+    empty: "No data",
+    tooltip: (y, x, value) => `${y} · ${x}: ${value}`,
+    legend: (min, max) => `Color scale: ${min} to ${max}`,
+  },
+  contributionGraph: {
+    weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    month: (month) =>
+      ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
+        month - 1
+      ] ?? String(month),
+    tooltip: (date, count, present) => {
+      const value =
+        present || count > 0
+          ? `${count} ${count === 1 ? "contribution" : "contributions"}`
+          : "No contributions";
+      return `${date} · ${value}`;
+    },
+    summary: (days, total) =>
+      `${days} ${days === 1 ? "day" : "days"}, ${total} ${
+        total === 1 ? "contribution" : "contributions"
+      }`,
+    less: "Less",
+    more: "More",
+  },
   coupon: {
     available: "Claim now",
     claimed: "Use now",
@@ -991,6 +1363,14 @@ export const zhCN: Locale = {
   components: zhComponents,
   table: {
     empty: "暂无数据",
+    dragSort: "拖拽排序",
+    selectAll: "全选",
+    selectRow: "选择行",
+    collapse: "收起",
+    expand: "展开",
+    filterPlaceholder: "筛选…",
+    filter: (column) => `筛选 ${column}`,
+    resizeColumn: "调整列宽",
   },
   proTable: {
     total: (n) => `共 ${n} 条`,
@@ -1100,6 +1480,14 @@ export const enUS: Locale = {
   components: enComponents,
   table: {
     empty: "No data",
+    dragSort: "Reorder row",
+    selectAll: "Select all",
+    selectRow: "Select row",
+    collapse: "Collapse",
+    expand: "Expand",
+    filterPlaceholder: "Filter…",
+    filter: (column) => `Filter ${column}`,
+    resizeColumn: "Resize column",
   },
   proTable: {
     total: (n) => `${n} items`,

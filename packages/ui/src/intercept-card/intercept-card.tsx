@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { InterceptCardProps, InterceptSeverity } from "./intercept-card.types";
 
@@ -30,12 +31,6 @@ const BADGE: Record<InterceptSeverity, string> = {
   notice: "bg-primary/12 text-primary",
 };
 
-const LABEL: Record<InterceptSeverity, string> = {
-  block: "已拦截",
-  confirm: "待确认",
-  notice: "提醒",
-};
-
 export function InterceptCard({
   severity,
   title,
@@ -44,11 +39,14 @@ export function InterceptCard({
   violation,
   suggestion,
   onOverride,
-  overrideLabel = "放行本次",
-  overridePlaceholder = "为什么这次可以放行？（必填，会进入审计记录）",
+  overrideLabel,
+  overridePlaceholder,
   overridden,
   className,
 }: InterceptCardProps) {
+  const locale = useComponentLocale().interceptCard ?? zhCN.components!.interceptCard!;
+  const resolvedOverrideLabel = overrideLabel ?? locale.override;
+  const resolvedOverridePlaceholder = overridePlaceholder ?? locale.overridePlaceholder;
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
@@ -81,13 +79,8 @@ export function InterceptCard({
 
       <div className="flex flex-col gap-3 py-4 pl-5 pr-4">
         <header className="flex flex-wrap items-center gap-2">
-          <span
-            className={cn(
-              "rounded-full px-2 py-0.5 text-xs font-medium",
-              BADGE[severity],
-            )}
-          >
-            {LABEL[severity]}
+          <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", BADGE[severity])}>
+            {locale.severity[severity]}
           </span>
           <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">{title}</h3>
         </header>
@@ -96,25 +89,29 @@ export function InterceptCard({
 
         {violation != null && (
           <div className="rounded-[var(--radius)] bg-muted/60 px-3 py-2">
-            <div className="mb-1 text-xs font-medium text-muted">违反点</div>
-            <div className="break-all font-mono text-xs leading-relaxed text-foreground">{violation}</div>
+            <div className="mb-1 text-xs font-medium text-muted">{locale.violation}</div>
+            <div className="break-all font-mono text-xs leading-relaxed text-foreground">
+              {violation}
+            </div>
           </div>
         )}
 
         {suggestion != null && (
           <div className="rounded-[var(--radius)] border border-dashed border-border px-3 py-2">
-            <div className="mb-1 text-xs font-medium text-muted">建议改法</div>
+            <div className="mb-1 text-xs font-medium text-muted">{locale.suggestion}</div>
             <div className="text-xs leading-relaxed text-foreground">{suggestion}</div>
           </div>
         )}
 
         {source != null && (
-          <div className="break-all text-xs text-muted">依据：{source}</div>
+          <div className="break-all text-xs text-muted">
+            {locale.source} {source}
+          </div>
         )}
 
         {overridden != null ? (
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-[var(--radius)] bg-muted/50 px-3 py-2 text-xs">
-            <span className="font-medium text-foreground">已放行</span>
+            <span className="font-medium text-foreground">{locale.overridden}</span>
             <span className="min-w-0 flex-1 text-muted">{overridden.reason}</span>
             {overridden.at != null && <span className="text-muted">{overridden.at}</span>}
           </div>
@@ -124,7 +121,7 @@ export function InterceptCard({
               <textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                placeholder={overridePlaceholder}
+                placeholder={resolvedOverridePlaceholder}
                 rows={2}
                 className="w-full resize-y rounded-[var(--radius)] border border-border bg-bg px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring"
               />
@@ -135,7 +132,7 @@ export function InterceptCard({
                   onClick={submit}
                   className="rounded-[var(--radius)] bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground outline-none transition-opacity disabled:cursor-not-allowed disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  {busy ? "处理中…" : "确认放行"}
+                  {busy ? locale.processing : locale.confirmOverride}
                 </button>
                 <button
                   type="button"
@@ -145,7 +142,7 @@ export function InterceptCard({
                   }}
                   className="rounded-[var(--radius)] px-3 py-1.5 text-xs text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  取消
+                  {locale.cancel}
                 </button>
               </div>
             </div>
@@ -156,7 +153,7 @@ export function InterceptCard({
                 onClick={() => setOpen(true)}
                 className="rounded-[var(--radius)] border border-border px-3 py-1.5 text-xs text-foreground outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring"
               >
-                {overrideLabel}
+                {resolvedOverrideLabel}
               </button>
             </div>
           )

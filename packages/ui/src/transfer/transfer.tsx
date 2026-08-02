@@ -2,6 +2,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { Listbox } from "../listbox/listbox";
 import type { ListboxItemData } from "../listbox/listbox.types";
@@ -17,22 +18,24 @@ function defaultFilter(input: string, item: TransferItem) {
 }
 
 const ARROW = {
-  "all-right": { Icon: ChevronsRight, label: "全部移入" },
-  right: { Icon: ChevronRight, label: "移入选中" },
-  left: { Icon: ChevronLeft, label: "移出选中" },
-  "all-left": { Icon: ChevronsLeft, label: "全部移出" },
+  "all-right": ChevronsRight,
+  right: ChevronRight,
+  left: ChevronLeft,
+  "all-left": ChevronsLeft,
 } as const;
 
 function MoveButton({
   dir,
   onClick,
   disabled,
+  label,
 }: {
   dir: keyof typeof ARROW;
   onClick: () => void;
   disabled: boolean;
+  label: string;
 }) {
-  const { Icon, label } = ARROW[dir];
+  const Icon = ARROW[dir];
   return (
     <button
       type="button"
@@ -77,6 +80,7 @@ function TransferPanel({
   listHeight: number;
   showSelectAll: boolean;
 }) {
+  const locale = useComponentLocale().transfer ?? zhCN.components!.transfer!;
   const filtered = search ? items.filter((it) => filterOption(search, it)) : items;
   const listItems: ListboxItemData[] = filtered.map((it) => ({
     key: it.key,
@@ -113,12 +117,14 @@ function TransferPanel({
               indeterminate={!allSelected && someSelected}
               disabled={disabled || selectableKeys.length === 0}
               onCheckedChange={toggleAll}
-              aria-label={titleStr ? `全选${titleStr}` : "全选"}
+              aria-label={locale.selectAll(titleStr)}
             />
           )}
           <span className="truncate font-medium text-foreground">{title}</span>
         </span>
-        <span className="shrink-0 text-xs text-muted">{selCount > 0 ? `${selCount}/${total}` : total}</span>
+        <span className="shrink-0 text-xs text-muted">
+          {selCount > 0 ? `${selCount}/${total}` : total}
+        </span>
       </div>
       {searchable && (
         <div className="border-b border-border p-2">
@@ -128,7 +134,7 @@ function TransferPanel({
             onChange={(e) => onSearch(e.target.value)}
             placeholder={searchPlaceholder}
             disabled={disabled}
-            aria-label={titleStr ? `搜索${titleStr}` : "搜索"}
+            aria-label={locale.search(titleStr)}
             className={cn(
               "h-8 w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-bg px-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted",
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-surface",
@@ -149,7 +155,12 @@ function TransferPanel({
           aria-label={titleStr}
         />
       ) : (
-        <Empty size="sm" icon={null} title={search ? "无匹配项" : "暂无数据"} className="flex-1" />
+        <Empty
+          size="sm"
+          icon={null}
+          title={search ? locale.noMatches : locale.empty}
+          className="flex-1"
+        />
       )}
     </div>
   );
@@ -160,15 +171,18 @@ export function Transfer({
   targetKeys,
   defaultTargetKeys = [],
   onChange,
-  titles = ["源列表", "已选"],
+  titles,
   searchable = false,
-  searchPlaceholder = "搜索",
+  searchPlaceholder,
   filterOption = defaultFilter,
   listHeight = 240,
   showSelectAll = false,
   disabled = false,
   className,
 }: TransferProps) {
+  const locale = useComponentLocale().transfer ?? zhCN.components!.transfer!;
+  const resolvedTitles = titles ?? [locale.source, locale.selected];
+  const resolvedSearchPlaceholder = searchPlaceholder ?? locale.searchPlaceholder;
   const isControlled = targetKeys !== undefined;
   const [internal, setInternal] = useState<string[]>(defaultTargetKeys);
   const target = isControlled ? targetKeys! : internal;
@@ -179,8 +193,14 @@ export function Transfer({
   const [rightSearch, setRightSearch] = useState("");
 
   const targetSet = useMemo(() => new Set(target), [target]);
-  const leftItems = useMemo(() => dataSource.filter((it) => !targetSet.has(it.key)), [dataSource, targetSet]);
-  const rightItems = useMemo(() => dataSource.filter((it) => targetSet.has(it.key)), [dataSource, targetSet]);
+  const leftItems = useMemo(
+    () => dataSource.filter((it) => !targetSet.has(it.key)),
+    [dataSource, targetSet],
+  );
+  const rightItems = useMemo(
+    () => dataSource.filter((it) => targetSet.has(it.key)),
+    [dataSource, targetSet],
+  );
 
   const setTarget = (next: string[], direction: "left" | "right", moved: string[]) => {
     if (!isControlled) setInternal(next);
@@ -213,34 +233,54 @@ export function Transfer({
   return (
     <div className={cn("flex items-stretch gap-3", className)}>
       <TransferPanel
-        title={titles[0]}
+        title={resolvedTitles[0]}
         items={leftItems}
         selected={leftSelected}
         onSelectionChange={setLeftSelected}
         search={leftSearch}
         onSearch={setLeftSearch}
         searchable={searchable}
-        searchPlaceholder={searchPlaceholder}
+        searchPlaceholder={resolvedSearchPlaceholder}
         filterOption={filterOption}
         disabled={disabled}
         listHeight={listHeight}
         showSelectAll={showSelectAll}
       />
       <div className="flex flex-col justify-center gap-2">
-        <MoveButton dir="all-right" onClick={() => moveRight(leftEnabled)} disabled={disabled || leftEnabled.length === 0} />
-        <MoveButton dir="right" onClick={() => moveRight(leftMovable)} disabled={disabled || leftMovable.length === 0} />
-        <MoveButton dir="left" onClick={() => moveLeft(rightMovable)} disabled={disabled || rightMovable.length === 0} />
-        <MoveButton dir="all-left" onClick={() => moveLeft(rightEnabled)} disabled={disabled || rightEnabled.length === 0} />
+        <MoveButton
+          dir="all-right"
+          label={locale.allRight}
+          onClick={() => moveRight(leftEnabled)}
+          disabled={disabled || leftEnabled.length === 0}
+        />
+        <MoveButton
+          dir="right"
+          label={locale.right}
+          onClick={() => moveRight(leftMovable)}
+          disabled={disabled || leftMovable.length === 0}
+        />
+        <MoveButton
+          dir="left"
+          label={locale.left}
+          onClick={() => moveLeft(rightMovable)}
+          disabled={disabled || rightMovable.length === 0}
+        />
+        <MoveButton
+          dir="all-left"
+          label={locale.allLeft}
+          onClick={() => moveLeft(rightEnabled)}
+          disabled={disabled || rightEnabled.length === 0}
+        />
       </div>
       <TransferPanel
-        title={titles[1]}
+        title={resolvedTitles[1]}
         items={rightItems}
         selected={rightSelected}
         onSelectionChange={setRightSelected}
         search={rightSearch}
         onSearch={setRightSearch}
         searchable={searchable}
-        searchPlaceholder={searchPlaceholder}
+        searchPlaceholder={resolvedSearchPlaceholder}
         filterOption={filterOption}
         disabled={disabled}
         listHeight={listHeight}

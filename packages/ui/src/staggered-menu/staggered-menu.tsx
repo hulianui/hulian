@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { StaggeredMenuProps } from "./staggered-menu.types";
@@ -21,7 +22,7 @@ export function StaggeredMenu({
   socialItems = [],
   displaySocials = true,
   displayItemNumbering = true,
-  brand = "瑚琏",
+  brand,
   accentColor = "var(--color-primary)",
   isFixed = false,
   closeOnClickAway = true,
@@ -31,13 +32,16 @@ export function StaggeredMenu({
   style,
   ...props
 }: StaggeredMenuProps) {
+  const locale = useComponentLocale().staggeredMenu ?? zhCN.components!.staggeredMenu!;
+  const resolvedBrand = brand ?? locale.brand;
   const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();
   const panelRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   // 色层取前 4 个，>=3 时丢中间一层（对齐原库的视觉密度），默认走 chart token。
-  const rawLayers = colors && colors.length ? colors.slice(0, 4) : ["var(--color-chart-4)", "var(--color-chart-1)"];
+  const rawLayers =
+    colors && colors.length ? colors.slice(0, 4) : ["var(--color-chart-4)", "var(--color-chart-1)"];
   const layers = [...rawLayers];
   if (layers.length >= 3) layers.splice(Math.floor(layers.length / 2), 1);
 
@@ -85,7 +89,12 @@ export function StaggeredMenu({
     ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
     : {
         hidden: { opacity: 0, y: "60%", rotate: 6 },
-        visible: { opacity: 1, y: "0%", rotate: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
+        visible: {
+          opacity: 1,
+          y: "0%",
+          rotate: 0,
+          transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+        },
       };
 
   return (
@@ -114,8 +123,14 @@ export function StaggeredMenu({
                 )}
                 style={{ background: c }}
                 initial={reduce ? { opacity: 0 } : { x: off }}
-                animate={reduce ? { opacity: 1 } : { x: "0%", transition: { ...SPRING, delay: i * 0.07 } }}
-                exit={reduce ? { opacity: 0 } : { x: off, transition: { duration: 0.3, ease: [0.7, 0, 0.84, 0] as const } }}
+                animate={
+                  reduce ? { opacity: 1 } : { x: "0%", transition: { ...SPRING, delay: i * 0.07 } }
+                }
+                exit={
+                  reduce
+                    ? { opacity: 0 }
+                    : { x: off, transition: { duration: 0.3, ease: [0.7, 0, 0.84, 0] as const } }
+                }
               />
             ))}
         </AnimatePresence>
@@ -123,13 +138,13 @@ export function StaggeredMenu({
         {/* 顶部 header：品牌 + 触发按钮 */}
         <header className="pointer-events-none absolute top-0 left-0 z-20 flex w-full items-center justify-between p-8">
           <div className="pointer-events-auto flex select-none items-center text-base font-semibold text-foreground">
-            {brand}
+            {resolvedBrand}
           </div>
           <button
             ref={toggleRef}
             type="button"
             onClick={toggle}
-            aria-label={open ? "关闭菜单" : "打开菜单"}
+            aria-label={open ? locale.closeMenu : locale.openMenu}
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
             className={cn(
@@ -137,7 +152,10 @@ export function StaggeredMenu({
               "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-ring)]",
             )}
           >
-            <span className="relative inline-block h-[1em] overflow-hidden whitespace-nowrap" aria-hidden>
+            <span
+              className="relative inline-block h-[1em] overflow-hidden whitespace-nowrap"
+              aria-hidden
+            >
               <span
                 className={cn(
                   "flex flex-col leading-none transition-transform duration-300 ease-out",
@@ -145,8 +163,8 @@ export function StaggeredMenu({
                 )}
                 style={{ transform: open ? "translateY(-1em)" : "translateY(0)" }}
               >
-                <span className="block h-[1em]">菜单</span>
-                <span className="block h-[1em]">关闭</span>
+                <span className="block h-[1em]">{locale.menu}</span>
+                <span className="block h-[1em]">{locale.close}</span>
               </span>
             </span>
             <span
@@ -184,7 +202,11 @@ export function StaggeredMenu({
                   ? { opacity: 1 }
                   : { x: "0%", transition: { ...SPRING, delay: layers.length * 0.07 } }
               }
-              exit={reduce ? { opacity: 0 } : { x: off, transition: { duration: 0.32, ease: [0.7, 0, 0.84, 0] as const } }}
+              exit={
+                reduce
+                  ? { opacity: 0 }
+                  : { x: off, transition: { duration: 0.32, ease: [0.7, 0, 0.84, 0] as const } }
+              }
             >
               <m.ul
                 role="list"
@@ -253,7 +275,9 @@ export function StaggeredMenu({
                   initial={reduce ? { opacity: 1 } : { opacity: 0 }}
                   animate={{ opacity: 1, transition: { delay: reduce ? 0 : 0.4, duration: 0.5 } }}
                 >
-                  <h3 className="m-0 text-base font-medium text-[var(--sm-accent)]">社交</h3>
+                  <h3 className="m-0 text-base font-medium text-[var(--sm-accent)]">
+                    {locale.social}
+                  </h3>
                   <ul className="m-0 flex list-none flex-row flex-wrap items-center gap-4 p-0">
                     {socialItems.map((s, i) => (
                       <li key={s.label + i}>

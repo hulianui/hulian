@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { ChevronRight, Copy, Check } from "../_icons";
 import type { JsonValueType, JsonViewerProps } from "./json-viewer.types";
@@ -44,7 +45,8 @@ type Entry = [key: string | number, value: unknown, isIndex: boolean];
 
 function entriesOf(value: unknown, t: JsonValueType): Entry[] {
   if (t === "array") return (value as unknown[]).map((v, i) => [i, v, true]);
-  if (t === "object") return Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, v, false]);
+  if (t === "object")
+    return Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, v, false]);
   return [];
 }
 
@@ -69,6 +71,7 @@ function JsonNode({
   maxAutoExpandKeys,
   onCopyPath,
 }: NodeProps) {
+  const locale = useComponentLocale().jsonViewer ?? zhCN.components!.jsonViewer!;
   const t = valueType(value);
   const isContainer = t === "object" || t === "array";
   const entries = isContainer ? entriesOf(value, t) : [];
@@ -91,7 +94,7 @@ function JsonNode({
     <button
       type="button"
       onClick={copy}
-      aria-label={copied ? "已复制" : "复制"}
+      aria-label={copied ? locale.copied : locale.copy}
       className="ml-2 hidden size-5 shrink-0 items-center justify-center rounded text-muted opacity-0 transition group-hover/row:opacity-100 hover:text-foreground group-hover/row:inline-flex"
     >
       {copied ? <Check className="size-3 text-primary" /> : <Copy className="size-3" />}
@@ -123,7 +126,10 @@ function JsonNode({
           aria-expanded={expanded}
         >
           <ChevronRight
-            className={cn("size-3 shrink-0 text-muted transition-transform", expanded && "rotate-90")}
+            className={cn(
+              "size-3 shrink-0 text-muted transition-transform",
+              expanded && "rotate-90",
+            )}
           />
           {keyLabel}
           {keyLabel && <span className="mr-1 text-muted">:</span>}
