@@ -143,6 +143,34 @@ export async function mergeExports(chineseRoot, englishRoot, finalRoot) {
   await postprocessBilingualRouteMetadata(resolvedFinalRoot);
 }
 
+export async function assembleExportsByRename(chineseRoot, englishRoot, finalRoot) {
+  const resolvedChineseRoot = resolve(chineseRoot);
+  const resolvedEnglishRoot = resolve(englishRoot);
+  const resolvedFinalRoot = resolve(finalRoot);
+
+  await assertRouteParity(resolvedChineseRoot, resolvedEnglishRoot);
+  if (await pathExists(resolvedFinalRoot)) {
+    throw new Error(`Merge destination already exists: ${resolvedFinalRoot}`);
+  }
+
+  await rename(resolvedChineseRoot, resolvedFinalRoot);
+  try {
+    await rename(resolvedEnglishRoot, join(resolvedFinalRoot, "en"));
+  } catch (error) {
+    try {
+      await rename(resolvedFinalRoot, resolvedChineseRoot);
+    } catch (rollbackError) {
+      throw new AggregateError(
+        [error, rollbackError],
+        "Failed to assemble bilingual exports and restore the Chinese export",
+      );
+    }
+    throw error;
+  }
+
+  await postprocessBilingualRouteMetadata(resolvedFinalRoot);
+}
+
 function absoluteLocaleUrl(route, locale) {
   const localizedPath = locale === "en" ? `/en${route === "/" ? "" : route}` : route;
   return localizedPath === "/"
@@ -469,7 +497,9 @@ async function buildBilingualDocs() {
     await buildLocale("zh-CN", zhArtifactsRoot, zhRoot);
     await buildLocale("en", enArtifactsRoot, enRoot);
     routes = await assertRouteParity(zhRoot, enRoot);
-    await mergeExports(zhRoot, enRoot, mergedRoot);
+    // Both locale exports already live below the same build root. Move them into
+    // the final tree instead of copying ~400 MiB into a third temporary tree.
+    await assembleExportsByRename(zhRoot, enRoot, mergedRoot);
     const findings = scanTask9EnglishOutput(join(mergedRoot, "en"));
     if (findings.length > 0) {
       const details = findings

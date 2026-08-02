@@ -17,6 +17,7 @@ import * as cheerio from "cheerio";
 import * as bilingualDocs from "./build-bilingual-docs.mjs";
 
 const {
+  assembleExportsByRename,
   assertRouteParity,
   mergeExports,
   overlayGeneratedArtifacts,
@@ -265,6 +266,32 @@ test("mergeExports refuses to replace an existing destination", async () => {
 
     await assert.rejects(mergeExports(zhRoot, enRoot, outRoot), /already exists/);
     assert.equal(await readFile(join(outRoot, "keep.txt"), "utf8"), "do not overwrite");
+  });
+});
+
+test("assembleExportsByRename consumes locale trees without copying their contents", async () => {
+  await withFixture(async (fixtureRoot) => {
+    const zhRoot = join(fixtureRoot, "zh");
+    const enRoot = join(fixtureRoot, "en");
+    const outRoot = join(fixtureRoot, "out");
+    await writeFixture(zhRoot, {
+      "index.html": routeHtml("zh home"),
+      "components/button.html": routeHtml("zh button"),
+    });
+    await writeFixture(enRoot, {
+      "index.html": routeHtml("en home"),
+      "components/button.html": routeHtml("en button"),
+    });
+
+    await assembleExportsByRename(zhRoot, enRoot, outRoot);
+
+    assert.match(await readFile(join(outRoot, "components/button.html"), "utf8"), /zh button/);
+    assert.match(
+      await readFile(join(outRoot, "en/components/button.html"), "utf8"),
+      /en button/,
+    );
+    await assert.rejects(readFile(join(zhRoot, "index.html")), { code: "ENOENT" });
+    await assert.rejects(readFile(join(enRoot, "index.html")), { code: "ENOENT" });
   });
 });
 
