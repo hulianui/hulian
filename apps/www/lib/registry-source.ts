@@ -7,17 +7,18 @@ import type { RegistryItem, RegistryMeta } from "./install-model";
 // 刻意读 public/ 下的**成品文件**而不是重新解析 _meta.ts：详情页展示的必须与
 // shadcn CLI 真正会拉到的那份字节一致。若产物缺失就直接抛，让构建红掉；
 // 静默降级成「面板不显示」等于把一个数据缺失伪装成设计。
-// （`pnpm --filter www build` 的 pregen 步骤会先生成 /r，CI 亦然。）
+// 双语构建把每种语言的成品生成到 HULIAN_REGISTRY_OUT，详情页必须从同一个
+// 隔离目录读取；普通开发/单语生成仍回退到 public/。
 
-const PUBLIC_DIR = join(process.cwd(), "public");
+const REGISTRY_DIR = process.env.HULIAN_REGISTRY_OUT || join(process.cwd(), "public");
 
 export function readRegistryMeta(): RegistryMeta {
-  const raw = JSON.parse(readFileSync(join(PUBLIC_DIR, "registry.json"), "utf8"));
+  const raw = JSON.parse(readFileSync(join(REGISTRY_DIR, "registry.json"), "utf8"));
   return { version: raw.version, itemUrl: raw.itemUrl, install: raw.install };
 }
 
 export function readRegistryItem(name: string): RegistryItem {
-  return JSON.parse(readFileSync(join(PUBLIC_DIR, "r", `${name}.json`), "utf8")) as RegistryItem;
+  return JSON.parse(readFileSync(join(REGISTRY_DIR, "r", `${name}.json`), "utf8")) as RegistryItem;
 }
 
 /** 递归依赖的展示标题：block-data-table → 「数据表格页」。 */

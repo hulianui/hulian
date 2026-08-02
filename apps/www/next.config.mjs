@@ -40,10 +40,6 @@ const nextConfig = {
   // resolves the same private docs-only import to its own source barrel.
   turbopack: { resolveAlias: { "@hulian-docs/showcase": showcaseSource } },
   experimental: {
-    // The bilingual export runs two full 773-route builds. Keep worker fan-out
-    // bounded so constrained Pages builders do not trade a small speed gain for
-    // multi-gigabyte peak memory pressure.
-    cpus: 2,
     // TypeScript 7 的 npm 包**不再导出编译器 API**（exports 的 "." 只指向 lib/version.cjs，
     // 其余全在 unstable/* 下）。Next 默认走 programmatic API 做构建期类型检查与 tsconfig
     // 解析，因此一升 TS7 就会抛 E1150，`next dev` / `next build` 双双起不来。
