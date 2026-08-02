@@ -26,6 +26,7 @@ const mergedRoot = join(buildRoot, "final");
 const zhArtifactsRoot = join(buildRoot, "artifacts-zh");
 const enArtifactsRoot = join(buildRoot, "artifacts-en");
 const outputRoot = join(wwwRoot, "out");
+const canonicalSiteOrigin = "https://hulianui.haloritual.com";
 const replacementMarkerName = "replacement-in-progress.json";
 const removableBuildDirectories = new Set(
   [zhRoot, enRoot, mergedRoot, zhArtifactsRoot, enArtifactsRoot].map((path) => resolve(path)),
@@ -72,24 +73,29 @@ function routeFromHtml(relativePath) {
   return `/${relativePath.slice(0, -".html".length)}`;
 }
 
-export async function routeSet(root) {
+async function routeDocuments(root) {
   const resolvedRoot = resolve(root);
   const publicAssets = await publicAssetPaths();
-  const routes = new Set();
+  const documents = [];
 
   for (const relativePath of await filePaths(resolvedRoot)) {
     if (
       !relativePath.endsWith(".html") ||
       relativePath.startsWith("_next/") ||
       relativePath.startsWith("en/") ||
-      publicAssets.has(relativePath)
+      publicAssets.has(relativePath) ||
+      !/<html(?:\s|>)/i.test(await readFile(join(resolvedRoot, relativePath), "utf8"))
     ) {
       continue;
     }
-    routes.add(routeFromHtml(relativePath));
+    documents.push({ relativePath, route: routeFromHtml(relativePath) });
   }
 
-  return routes;
+  return documents;
+}
+
+export async function routeSet(root) {
+  return new Set((await routeDocuments(root)).map((document) => document.route));
 }
 
 export async function assertRouteParity(chineseRoot, englishRoot) {
@@ -134,6 +140,100 @@ export async function mergeExports(chineseRoot, englishRoot, finalRoot) {
     errorOnExist: true,
     force: false,
   });
+  await postprocessBilingualRouteMetadata(resolvedFinalRoot);
+}
+
+function absoluteLocaleUrl(route, locale) {
+  const localizedPath = locale === "en" ? `/en${route === "/" ? "" : route}` : route;
+  return localizedPath === "/"
+    ? canonicalSiteOrigin
+    : new URL(localizedPath, canonicalSiteOrigin).href;
+}
+
+function htmlAttribute(tag, name) {
+  const match = tag.match(
+    new RegExp(`(?:\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'=<>]+))`, "i"),
+  );
+  return match?.[1] ?? match?.[2] ?? match?.[3] ?? null;
+}
+
+function linkRelations(tag) {
+  return new Set((htmlAttribute(tag, "rel") ?? "").toLowerCase().split(/\s+/).filter(Boolean));
+}
+
+function seoAlternateLanguage(tag) {
+  if (!linkRelations(tag).has("alternate")) return null;
+  const value = (htmlAttribute(tag, "hreflang") ?? "").toLowerCase();
+  if (value === "zh-cn") return "zh-CN";
+  if (value === "en") return "en";
+  if (value === "x-default") return "x-default";
+  return null;
+}
+
+function repairRouteMetadata(html, route, locale) {
+  const chineseUrl = absoluteLocaleUrl(route, "zh-CN");
+  const englishUrl = absoluteLocaleUrl(route, "en");
+  const canonicalUrl = locale === "en" ? englishUrl : chineseUrl;
+  const closingHead = html.search(/<\/head\s*>/i);
+  if (closingHead === -1) {
+    throw new Error(`Route HTML is missing </head>: ${route}`);
+  }
+  const head = html.slice(0, closingHead);
+  const rest = html.slice(closingHead);
+  const linkPattern = /<link\b[^>]*>/gi;
+  const links = head.match(linkPattern) ?? [];
+  const canonicalLinks = links.filter((tag) => linkRelations(tag).has("canonical"));
+  const expectedAlternates = new Map([
+    ["zh-CN", chineseUrl],
+    ["en", englishUrl],
+    ["x-default", englishUrl],
+  ]);
+  const canonicalIsValid =
+    canonicalLinks.length === 1 && htmlAttribute(canonicalLinks[0], "href") === canonicalUrl;
+  const alternateIsValid = new Map(
+    [...expectedAlternates].map(([language, expectedUrl]) => {
+      const matching = links.filter((tag) => seoAlternateLanguage(tag) === language);
+      return [
+        language,
+        matching.length === 1 && htmlAttribute(matching[0], "href") === expectedUrl,
+      ];
+    }),
+  );
+
+  const repairedHead = head.replace(linkPattern, (tag) => {
+    if (linkRelations(tag).has("canonical") && !canonicalIsValid) return "";
+    const language = seoAlternateLanguage(tag);
+    if (language && !alternateIsValid.get(language)) return "";
+    return tag;
+  });
+  const additions = [];
+  if (!canonicalIsValid) {
+    additions.push(`<link rel="canonical" href="${canonicalUrl}">`);
+  }
+  for (const [language, expectedUrl] of expectedAlternates) {
+    if (!alternateIsValid.get(language)) {
+      additions.push(`<link rel="alternate" hreflang="${language}" href="${expectedUrl}">`);
+    }
+  }
+  return `${repairedHead}${additions.join("")}${rest}`;
+}
+
+export async function postprocessBilingualRouteMetadata(finalRoot) {
+  const resolvedFinalRoot = resolve(finalRoot);
+  await assertRouteParity(resolvedFinalRoot, join(resolvedFinalRoot, "en"));
+  const localeRoots = [
+    ["zh-CN", resolvedFinalRoot],
+    ["en", join(resolvedFinalRoot, "en")],
+  ];
+
+  for (const [locale, localeRoot] of localeRoots) {
+    for (const document of await routeDocuments(localeRoot)) {
+      const file = join(localeRoot, document.relativePath);
+      const html = await readFile(file, "utf8");
+      const repaired = repairRouteMetadata(html, document.route, locale);
+      if (repaired !== html) await writeFile(file, repaired);
+    }
+  }
 }
 
 export async function overlayGeneratedArtifacts(exportRoot, generatedRoot) {
