@@ -14072,8 +14072,37 @@ import { NavMenu } from "@hulianui/ui"
 | onOpenChange | `(openKeys: string[]) => void` | 展开态变化回调 |
 
 ## 示例
+
+### 站点主导航（最常见 · 记得传 `semantics="list"`）
+
 ```tsx
-// 受控选中 + 行尾删除（actions 槽用 group-hover/nav-row 钩子做 hover 才显）
+// 一列导航链接 = list + link，不是 tree widget。不传 semantics 会退回默认 tree 档，
+// 皮肤一模一样但读屏按「列出页面所有链接」一条都找不到（见「语义模式」一节）。
+<NavMenu
+  semantics="list"
+  selectedKeys={[pathname]}
+  items={[
+    { key: "/", label: "工作台", icon: <Home />, render: <Link to="/" /> },
+    {
+      key: "settings",
+      label: "设置",
+      icon: <Settings />,
+      children: [
+        { key: "/settings/profile", label: "个人资料", render: <Link to="/settings/profile" /> },
+        { key: "/settings/security", label: "安全", render: <Link to="/settings/security" /> },
+      ],
+    },
+  ]}
+/>
+```
+
+### 会话列表（受控选中 + 行尾操作）
+
+```tsx
+// 这里是**命令式选择**（onSelect 切会话，行渲染成 <button>），没有链接导航，
+// 所以留在默认 tree 档即可。若你的会话项是真链接（<Link to={`/c/${id}`} />），
+// 照上面主导航那样传 semantics="list"。
+// actions 槽用 group-hover/nav-row 钩子做 hover 才显
 function ConvoNav() {
   const [sel, setSel] = useState<string[]>(["c1"]);
   return (
@@ -14141,8 +14170,9 @@ function ConvoNav() {
   `↑↓` 只在**同层兄弟**间移动、`Home/End` 落本层首尾；roving tabindex 贯穿全树（整棵树只有一个
   tab 落点，深层靠方向键进出，**不要指望 Tab 逐项走进飞出层**）。`semantics="list"` 时这套键盘契约
   整体让位给原生 Tab。
-- **`semantics` 决定的是无障碍树，不是皮肤**：两档长得一模一样，选中高亮、缩进、飞出层行为都不变。
-  别为了「看起来一样」就随便选 —— 站点主导航留在默认 `tree` 档，读屏用户是真的找不到那些链接。
+- **`semantics` 决定的是无障碍树，不是皮肤**：两档长得一模一样，选中高亮、缩进、飞出层行为都不变，
+  所以**看不出选错**，也不会有任何报错。站点主导航**如果**留在默认 `tree` 档，读屏用户按
+  「列出页面所有链接」就真的一条都找不到 —— 那种场景请显式传 `semantics="list"`。
 - collapsed 的**第一层**飞出层用 `position: fixed` + JS 实测坐标，**刻意不是 `absolute`**：图标轨几乎
   总被放进可滚动的侧栏容器（`AdminLayout` 用的就是 `ScrollArea`），`absolute` 面板会被那个祖先的
   `overflow` 整块裁掉——面板在 DOM 里、有尺寸、`opacity:1`，但一个像素都画不出来，

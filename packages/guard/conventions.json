@@ -4405,7 +4405,7 @@
       "id": "component/nav-menu/pitfall/5",
       "scope": "nav-menu",
       "title": "NavMenu",
-      "rule": "**`semantics` 决定的是无障碍树，不是皮肤**：两档长得一模一样，选中高亮、缩进、飞出层行为都不变。 别为了「看起来一样」就随便选 —— 站点主导航留在默认 `tree` 档，读屏用户是真的找不到那些链接。",
+      "rule": "**`semantics` 决定的是无障碍树，不是皮肤**：两档长得一模一样，选中高亮、缩进、飞出层行为都不变， 所以**看不出选错**，也不会有任何报错。站点主导航**如果**留在默认 `tree` 档，读屏用户按 「列出页面所有链接」就真的一条都找不到 —— 那种场景请显式传 `semantics=\"list\"`。",
       "source": "packages/ui/src/nav-menu/nav-menu.md"
     },
     {
