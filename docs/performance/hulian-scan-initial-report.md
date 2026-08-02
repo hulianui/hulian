@@ -2,6 +2,8 @@
 
 > 扫描日期：2026-08-02。范围仅为 HulianUI 仓库内部工具与 HulianUI 自身；不是对外发布的通用 profiler。
 
+> 2026-08-02 优化后复验见文末“优化后复验”。首次扫描数据作为 before 证据保留，不用新基线覆盖。
+
 ## 结论
 
 公开运行时 inventory 共 380 个入口：372 个可渲染入口全部完成场景，8 个非渲染入口都有显式原因，0 个未分类。
@@ -947,3 +949,52 @@ Chromium 151 在本次默认 headless 启动下报告 ANGLE SwiftShader 软件�
 
 这些 `.hulian-scan` 原始文件是本机可恢复证据，按设计不提交 Git；本报告与冻结基线是仓库内的可审阅摘要。
 
+## 优化后复验
+
+### 结果
+
+React 19 全量 workspace 与仓库外 tarball 消费态仍覆盖 372/372 场景，均为 0 执行错误、0 缺失 React commit。Workspace 在 revision `d4addfb` 得到 69 条 findings；packed consumer 在同一 revision 得到 75 条，比首次 packed 的 125 条减少 50 条（40%）。
+
+| 指标 | 首次 packed | 优化后 workspace | 优化后 packed |
+| --- | ---: | ---: | ---: |
+| 场景 | 372/372 | 372/372 | 372/372 |
+| 执行错误 / 缺失 commit | 0 / 0 | 0 / 0 | 0 / 0 |
+| Findings | 125 | 69 | 75 |
+| `avoidable-render` | 55 | 43 | 45 |
+| `cascade-fanout` | 41 | 26 | 29 |
+| `long-task` | 16 | 0 | 1（随后修复） |
+| `dropped-frames` | 13 | 0 | 0 |
+
+全量 packed 之后又完成两项定向修复：
+
+- CircularGallery 在 revision `3244e59` 把占位纹理由 800×600 图片编码/解码改为 64×48 直接 CanvasTexture，把单卡 5000 顶点降为 512 顶点，并共享标题几何体。Apple M1 Pro Metal 的仓库外 tarball 五样本 long task 为 77/71/83/89/76ms，掉帧比约 0.53%，0 findings；因此全量快照中的唯一 106ms `long-task` 已有后续修复证据。
+- Button 在 revision `cf87231` 加入稳定 props 的浅比较边界。React 19 workspace 定向扫描为 0 findings，保留 React 18/19 ref 类型兼容。
+
+因此，当前可信硬件 GPU 证据中已经没有超过 100ms 的 long task 或超过 5% 的 dropped frames。剩余全量 findings 是 45 条低耗时稳定父更新与 29 条交互级联；它们没有被写入基线冒充正常，仍是后续结构优化清单。
+
+### 关键慢路径改善
+
+| 场景 | Before packed median | After packed median | 变化 |
+| --- | ---: | ---: | ---: |
+| `select/stress` | 72.7ms | 36.9ms | -49.2% |
+| `country-select/basic` | 46.2ms | 15.5ms | -66.5% |
+| `qrcode/basic` | 19.1ms | 2.0ms | -89.5% |
+| `scheduler/basic` | 5.1ms | 1.5ms | -70.6% |
+
+Select、Combobox 与 CountrySelect 对大列表启用内部虚拟化；二维码、日程、文件树、播放器、表单/选择与数据展示组件增加了有 Profiler 证据的 memo/派生计算边界。没有加入 JSON stringify 或无界深比较。
+
+### 基线与 React 18 边界
+
+优化后冻结基线只接纳 297 个无硬违规的 React 19 packed-consumer 场景；其余场景继续保持门禁可见。
+
+React 18.3.1 仓库外 tarball smoke 完成 4/4 场景，0 执行错误、0 缺失 commit，组件包完成类型检查与生产 bundle。其唯一 finding 是 `button/basic` 的 4 次 `avoidable-render`：对应 Button Fiber 的 median self duration 为 0ms；同一 revision 的 React 19 定向扫描为 0。React 18 安装同时明确提示扫描器终端依赖 `react-scan -> react-doctor -> ink` 要求 React 19，所以该项记录为 React 18 诊断兼容噪声，不放宽 React 19 正式门禁，也不宣称 React 18 为零 findings。
+
+### 优化后本机证据
+
+- React 19 workspace 全量：`.hulian-scan/global-final-workspace/summary.json`
+- React 19 packed 全量：`.hulian-scan/packed-final/summary.json`
+- CircularGallery 后续 packed：`.hulian-scan/circular-gallery-geometry-packed/summary.json`
+- Button 后续 workspace：`.hulian-scan/button-memo-workspace/summary.json`
+- React 18 packed smoke：`.hulian-scan/react18-button-memo/summary.json`
+
+以上 `.hulian-scan` 文件仍是不提交 Git 的本机证据；本节是可审阅、可追溯的仓库摘要。
