@@ -2,6 +2,7 @@
 import { createContext, useContext, useRef, type RefObject } from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { cva } from "class-variance-authority";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type {
@@ -111,6 +112,7 @@ export function Combobox<Multiple extends boolean = false>({ children, ...props 
 // 内联自动补全：输入框本身即可见字段，直接打字过滤。外壳 span 注册为浮层锚点。
 export function ComboboxInput({ size, placeholder, invalid, clearable, className }: ComboboxInputProps) {
   const anchorRef = useContext(AnchorContext);
+  const copy = useComponentLocale().combobox ?? zhCN.components!.combobox!;
   return (
     <span
       ref={anchorRef as RefObject<HTMLSpanElement> | null}
@@ -124,7 +126,7 @@ export function ComboboxInput({ size, placeholder, invalid, clearable, className
       {clearable && (
         <BaseCombobox.Clear
           className="flex shrink-0 cursor-pointer items-center text-muted transition-colors hover:text-foreground"
-          aria-label="清除"
+          aria-label={copy.clear}
         >
           <ClearIcon />
         </BaseCombobox.Clear>
@@ -262,6 +264,7 @@ export function ComboboxChips({ size, invalid, placeholder, className, children 
 // 单个已选 chip：pill + 删除 ×。删除由 Base UI 按 chip 在容器内的渲染序绑定 selectedValue[index]，
 // 故消费者须按 value 顺序渲染 chip（CountrySelect 即如此）。
 export function ComboboxChip({ children, className }: ComboboxChipProps) {
+  const copy = useComponentLocale().combobox ?? zhCN.components!.combobox!;
   return (
     <BaseCombobox.Chip
       className={cn(
@@ -271,7 +274,7 @@ export function ComboboxChip({ children, className }: ComboboxChipProps) {
     >
       {children}
       <BaseCombobox.ChipRemove
-        aria-label="移除"
+        aria-label={copy.remove}
         className="flex size-4 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
       >
         <ClearIcon />

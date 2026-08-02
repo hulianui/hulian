@@ -52,7 +52,7 @@ describe("runtime defaults follow ConfigProvider locale", () => {
     expect(await screen.findByText("No matching data")).toBeTruthy();
     empty.unmount();
 
-    renderEnglish(
+    const loaded = renderEnglish(
       <RemoteSelect
         defaultOpen
         fetcher={async () => ({ options: [{ id: "1", name: "One" }], total: 1 })}
@@ -60,6 +60,30 @@ describe("runtime defaults follow ConfigProvider locale", () => {
     );
     expect(await screen.findByText("1 items")).toBeTruthy();
     expect(screen.getByText("No more results")).toBeTruthy();
+    loaded.unmount();
+
+    const single = renderEnglish(
+      <RemoteSelect
+        defaultValue="1"
+        fetcher={async () => ({ options: [], total: 0 })}
+        resolveValue={async () => [{ id: "1", name: "One" }]}
+      />,
+    );
+    expect(await screen.findByRole("button", { name: "Clear" })).toBeTruthy();
+    single.unmount();
+
+    renderEnglish(
+      <RemoteSelect
+        multiple
+        value={["1", "2"]}
+        fetcher={async () => ({ options: [], total: 0 })}
+        resolveValue={async () => [
+          { id: "1", name: "One" },
+          { id: "2", name: "Two" },
+        ]}
+      />,
+    );
+    expect(await screen.findAllByRole("button", { name: "Remove" })).toHaveLength(2);
   });
 
   it("localizes Select search, empty, loading, separator, and clear labels", async () => {

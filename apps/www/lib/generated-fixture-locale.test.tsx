@@ -4,6 +4,7 @@ import { ConfigProvider, enUS } from "@hulianui/ui";
 import { ChatPanelBlock } from "../app/blocks/_blocks/chat-panel.en";
 import { ContactFormBlock } from "../app/blocks/_blocks/contact-form.en";
 import { CartSummaryBlock } from "../app/blocks/_blocks/cart-summary.en";
+import { relativeTimeShowcase } from "../generated/showcase-en/relative-time.showcase";
 
 afterEach(() => {
   cleanup();
@@ -51,5 +52,12 @@ describe("generated English fixture modules", () => {
     const confirmation = within(screen.getByRole("dialog"));
     expect(confirmation.getByRole("button", { name: "Remove" })).toBeTruthy();
     expect(confirmation.getByRole("button", { name: "Cancel" })).toBeTruthy();
+  });
+
+  it("lets the English provider drive the RelativeTime playground default", () => {
+    renderEnglish(relativeTimeShowcase.renderWithProps?.({ locale: "auto" }));
+
+    expect(screen.getByText("20m ago")).toBeTruthy();
+    expect(document.body.textContent).not.toMatch(/[\u3400-\u9fff]/);
   });
 });
