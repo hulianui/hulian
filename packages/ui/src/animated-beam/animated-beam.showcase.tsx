@@ -4,10 +4,18 @@ import { Database, Cloud, Cpu, Smartphone, Globe } from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { AnimatedBeam } from "./animated-beam";
 
-function Node({ refEl, children }: { refEl: React.RefObject<HTMLDivElement | null>; children: React.ReactNode }) {
+function Node({
+  refEl,
+  children,
+}: {
+  refEl: { current: HTMLDivElement | null };
+  children: React.ReactNode;
+}) {
   return (
     <div
-      ref={refEl}
+      ref={(node) => {
+        refEl.current = node;
+      }}
       className="z-10 flex size-12 items-center justify-center rounded-full border border-border bg-surface text-foreground shadow-sm"
     >
       {children}
@@ -23,12 +31,12 @@ function Node({ refEl, children }: { refEl: React.RefObject<HTMLDivElement | nul
 type Mode = "ltr" | "hub" | "rtl";
 
 function Demo({ mode = "ltr" }: { mode?: Mode }) {
-  const container = useRef<HTMLDivElement>(null);
-  const l1 = useRef<HTMLDivElement>(null);
-  const l2 = useRef<HTMLDivElement>(null);
-  const r1 = useRef<HTMLDivElement>(null);
-  const r2 = useRef<HTMLDivElement>(null);
-  const hub = useRef<HTMLDivElement>(null);
+  const container = useRef<HTMLDivElement | null>(null);
+  const l1 = useRef<HTMLDivElement | null>(null);
+  const l2 = useRef<HTMLDivElement | null>(null);
+  const r1 = useRef<HTMLDivElement | null>(null);
+  const r2 = useRef<HTMLDivElement | null>(null);
+  const hub = useRef<HTMLDivElement | null>(null);
 
   // 左侧两条光束是否右→左扫（rtl 时整体反向）
   const leftReverse = mode === "rtl";

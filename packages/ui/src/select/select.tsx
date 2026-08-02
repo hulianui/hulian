@@ -307,7 +307,7 @@ function renderMultipleValue(
 
 function setRef<T>(ref: Ref<T> | undefined, value: T | null) {
   if (typeof ref === "function") ref(value);
-  else if (ref) ref.current = value;
+  else if (ref) (ref as { current: T | null }).current = value;
 }
 
 function mergeRefs<T>(...refs: Array<Ref<T> | undefined>): Ref<T> {

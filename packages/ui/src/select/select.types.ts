@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ComponentPropsWithoutRef, ReactNode, Ref } from "react";
 import type { Select as BaseSelect } from "@base-ui/react/select";
 
 export type SelectSize = "sm" | "md" | "lg";
@@ -55,7 +55,8 @@ export interface SelectProps
 }
 
 export interface SelectTriggerProps
-  extends Omit<ComponentProps<"button">, "className" | "size"> {
+  extends Omit<ComponentPropsWithoutRef<"button">, "className" | "size"> {
+  ref?: Ref<HTMLButtonElement>;
   size?: SelectSize;
   /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
   invalid?: boolean;
