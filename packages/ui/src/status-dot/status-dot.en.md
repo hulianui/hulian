@@ -25,9 +25,9 @@ import { StatusDot } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| status* | `"online"｜"degraded"｜"offline"｜"maintenance"` | — | Maps to success, warning, danger, or neutral. |
+| status* | `"online"\|"degraded"\|"offline"\|"maintenance"` | — | Maps to success, warning, danger, or neutral. |
 | pulse | `boolean` | Online only | Explicitly overrides automatic online pulse. |
-| size | `"sm"｜"md"｜"lg"` | `md` | Size. |
+| size | `"sm"\|"md"\|"lg"` | `md` | Size. |
 
 ## Slots
 

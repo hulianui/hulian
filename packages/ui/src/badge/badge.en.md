@@ -30,9 +30,9 @@ import { Badge } from "@hulianui/ui"
 | dot | `boolean` | `false` | Renders only a dot and takes precedence over `count`. |
 | showZero | `boolean` | `false` | Keeps a zero count visible. |
 | invisible | `boolean` | — | Hides the badge while retaining its wrapped child. |
-| tone | `"neutral"｜"brand"｜"success"｜"warning"｜"danger"` | `danger` | Semantic color. |
-| size | `"sm"｜"md"` | `md` | Badge size. |
-| placement | `"top-right"｜"top-left"｜"bottom-right"｜"bottom-left"` | `top-right` | Overlay corner when `children` is supplied. |
+| tone | `"neutral"\|"brand"\|"success"\|"warning"\|"danger"` | `danger` | Semantic color. |
+| size | `"sm"\|"md"` | `md` | Badge size. |
+| placement | `"top-right"\|"top-left"\|"bottom-right"\|"bottom-left"` | `top-right` | Overlay corner when `children` is supplied. |
 | offset | `[number, number]` | — | `[x, y]` pixel adjustment, where positive values move right and down. |
 
 ## Slots

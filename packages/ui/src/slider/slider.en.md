@@ -27,8 +27,8 @@ Accepts Base UI `Slider.Root` props except `render` and `children`. A numeric `v
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `number｜readonly number[]` | — | Controlled value; an array represents a range. |
-| defaultValue | `number｜readonly number[]` | — | Initial value when uncontrolled. |
+| value | `number\|readonly number[]` | — | Controlled value; an array represents a range. |
+| defaultValue | `number\|readonly number[]` | — | Initial value when uncontrolled. |
 | min | `number` | `0` | minimum value |
 | max | `number` | `100` | maximum value |
 | step | `number` | `1` | step amount |
@@ -44,8 +44,8 @@ Common Base UI `Slider.Root` events are passed through with their upstream signa
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: number｜number[], eventDetails) => void` | Value change callback (pass number for single value, number[] for range) |
-| onValueCommitted | `(value: number｜number[], eventDetails) => void` | Callback when dragging ends/submits |
+| onValueChange | `(value: number\|number[], eventDetails) => void` | Value change callback (pass number for single value, number[] for range) |
+| onValueCommitted | `(value: number\|number[], eventDetails) => void` | Callback when dragging ends/submits |
 
 ## Example
 ```tsx

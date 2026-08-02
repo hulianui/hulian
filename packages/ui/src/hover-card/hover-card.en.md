@@ -34,8 +34,8 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | Preferred popup side. |
-| align | `"start"｜"center"｜"end"` | `"center"` | Alignment along the trigger. |
+| side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | Preferred popup side. |
+| align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | sideOffset | `number` | `8` | Distance from the trigger in pixels. |
 | className | `string` | — | Additional class name. |
 

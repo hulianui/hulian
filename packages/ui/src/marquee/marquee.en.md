@@ -27,7 +27,7 @@ Inherits `ComponentPropsWithoutRef<"div">`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| direction | `"left"｜"right"` | `"left"` | Scroll direction; right reverses the animation. |
+| direction | `"left"\|"right"` | `"left"` | Scroll direction; right reverses the animation. |
 | duration | number | 40 | Seconds per cycle; larger is slower. |
 | gap | string | `"1rem"` | CSS gap between items. |
 | pauseOnHover | boolean | false | Pauses while hovered. |

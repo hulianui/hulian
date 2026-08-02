@@ -26,7 +26,7 @@ import { CodeReviewThread, severityStyle, SEVERITY } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | comments* | `ReviewComment[]` | — | Thread comments with author kind, severity, body, and optional suggestion. |
-| status | `"open"｜"resolved"｜"wontfix"` | `open` (internally managed) | Controlled thread status when supplied. |
+| status | `"open"\|"resolved"\|"wontfix"` | `open` (internally managed) | Controlled thread status when supplied. |
 | replyable | `boolean` | `true` | Shows the reply field. |
 | defaultCollapsed | `boolean` | `false` | Initial uncontrolled collapsed state. |
 | collapsed | `boolean` | — | Controlled collapsed state, taking precedence over `defaultCollapsed`. |

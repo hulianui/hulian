@@ -27,9 +27,9 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| type | `"open"｜"success"｜"error"｜"info"｜"warning"` | — | Implied by the method. `open` is neutral without a default icon; other types derive the accent and icon from Alert-aligned tokens. |
+| type | `"open"\|"success"\|"error"\|"info"\|"warning"` | — | Implied by the method. `open` is neutral without a default icon; other types derive the accent and icon from Alert-aligned tokens. |
 | duration | `number` | `4500` | Automatic dismissal in milliseconds. `0` remains open. |
-| placement | `"topRight"｜"topLeft"｜"bottomRight"｜"bottomLeft"` | `"topRight"` | Screen corner. |
+| placement | `"topRight"\|"topLeft"\|"bottomRight"\|"bottomLeft"` | `"topRight"` | Screen corner. |
 
 The returned `NotificationInstance` provides `destroy(): void` for immediate programmatic dismissal.
 

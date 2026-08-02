@@ -27,7 +27,7 @@ import { Spin } from "@hulianui/ui"
 |------|------|------|------|
 | spinning | `boolean` | `true` | Whether loading is active. |
 | delay | `number` | `0` | Milliseconds loading must persist before the overlay appears. |
-| size | `"sm"｜"md"｜"lg"` | `"md"` | Size forwarded to the internal Spinner. |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | Size forwarded to the internal Spinner. |
 | fullscreen | `boolean` | `false` | Uses a fixed viewport overlay and ignores children. |
 | className | `string` | — | Container class name. |
 

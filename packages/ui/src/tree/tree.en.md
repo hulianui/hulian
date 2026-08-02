@@ -36,7 +36,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | checkable | `boolean` | `false` | Adds cascading checkboxes. |
 | checkedKeys | `string[]` | — | Controlled checked keys. |
 | defaultCheckedKeys | `string[]` | — | Initial uncontrolled checked keys. |
-| expandTrigger | `"row" ｜ "icon"` | `"row"` | Row expands parents without selecting them; icon reserves row clicks for selection or checking. |
+| expandTrigger | `"row" \| "icon"` | `"row"` | Row expands parents without selecting them; icon reserves row clicks for selection or checking. |
 | draggable | `boolean` | `false` | Enables native HTML drag sorting only when `onDrop` is supplied. |
 | allowDropInside | `(target: TreeNode) => boolean` | Always true | Controls whether a target accepts reparenting inside it. |
 | virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | Flat virtual rendering, defaulting to height 320, itemHeight 36, and overscan 8. |

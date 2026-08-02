@@ -25,9 +25,9 @@ import { Chip, chipVariants } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variant | `"solid"｜"soft"｜"outline"` | `soft` | Visual style. |
-| tone | `"brand"｜"danger"｜"neutral"` | `brand` | Semantic tone. |
-| size | `"sm"｜"md"` | `md` | Size. |
+| variant | `"solid"\|"soft"\|"outline"` | `soft` | Visual style. |
+| tone | `"brand"\|"danger"\|"neutral"` | `brand` | Semantic tone. |
+| size | `"sm"\|"md"` | `md` | Size. |
 | dot | `boolean` | — | Leading status dot. |
 | isDisabled | `boolean` | — | Lowers opacity and disables pointer actions. |
 | className | `string` | — | Root class. |

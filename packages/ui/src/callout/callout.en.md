@@ -25,7 +25,7 @@ import { Callout } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| tone | `"tip"｜"info"｜"warning"｜"success"｜"danger"` | `"tip"` | Tip/info use the primary color; warning, success, and danger use their semantic tones. |
+| tone | `"tip"\|"info"\|"warning"\|"success"\|"danger"` | `"tip"` | Tip/info use the primary color; warning, success, and danger use their semantic tones. |
 | className | `string` | — | Forwarded to the root container. |
 
 ## Slots

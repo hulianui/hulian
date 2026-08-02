@@ -25,9 +25,9 @@ import { Banner } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| tone | `"neutral"｜"info"｜"brand"｜"success"｜"warning"｜"danger"` | `"info"` | Semantic tone. |
-| variant | `"soft"｜"solid"` | `"soft"` | Light background or prominent solid fill. |
-| align | `"start"｜"center"` | `"center"` | Content alignment. |
+| tone | `"neutral"\|"info"\|"brand"\|"success"\|"warning"\|"danger"` | `"info"` | Semantic tone. |
+| variant | `"soft"\|"solid"` | `"soft"` | Light background or prominent solid fill. |
+| align | `"start"\|"center"` | `"center"` | Content alignment. |
 | scrollable | `boolean` | `false` | Scrolls long copy on one continuous CSS marquee line and pauses on hover. |
 | closeLabel | `string` | `"\u5173\u95ed"` | Close-button accessible label. The built-in Chinese copy means “Close.” |
 | className | `string` | — | Additional class name. |

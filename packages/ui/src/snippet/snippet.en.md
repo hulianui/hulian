@@ -26,7 +26,7 @@ import { Snippet } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | text | `string` | — | Clipboard text; defaults to `children` when it is a string. |
-| symbol | `string ｜ null` | `"$"` | Command prompt; pass `null` for non-command fragments. |
+| symbol | `string \| null` | `"$"` | Command prompt; pass `null` for non-command fragments. |
 | lang | `string` | — | Syntax coloring language (such as `"tsx"`/`"bash"`), only takes effect when children is a string |
 | highlight | `boolean` | `true` | Whether to use syntax coloring, only takes effect when children is a string |
 | copyLabel | `string` | Locale value | Copy-button accessible label; an explicit value takes precedence. |

@@ -27,7 +27,7 @@ import { toast, ToastProvider } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| tone | `"neutral"｜"info"｜"success"｜"warning"｜"danger"` | `"neutral"` | Tone for the left accent and title, aligned with [Alert](../alert/alert.md) and [Tag](../tag/tag.md) semantic tokens. |
+| tone | `"neutral"\|"info"\|"success"\|"warning"\|"danger"` | `"neutral"` | Tone for the left accent and title, aligned with [Alert](../alert/alert.md) and [Tag](../tag/tag.md) semantic tokens. |
 | timeout | `number` | `5000` | Automatic dismissal in milliseconds. `0` stays open until manually closed; omission uses the Provider default. |
 
 ## Slots

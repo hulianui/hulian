@@ -62,8 +62,8 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| mode | `"password"｜"passphrase"` | — | Controlled mode; omit for internal state. |
-| defaultMode | `"password"｜"passphrase"` | `"password"` | Initial mode when uncontrolled. |
+| mode | `"password"\|"passphrase"` | — | Controlled mode; omit for internal state. |
+| defaultMode | `"password"\|"passphrase"` | `"password"` | Initial mode when uncontrolled. |
 | modes | `GeneratorMode[]` | Both modes | Allowed modes. Supplying one mode hides the top switcher. |
 | defaultPasswordOptions | `PasswordOptions` | See below | Initial password-mode options. |
 | defaultPassphraseOptions | `PassphraseOptions` | See below | Initial passphrase-mode options. |

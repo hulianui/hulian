@@ -33,7 +33,7 @@ Pagination is controlled only: store `page` externally and update it from `onPag
 | pageSize | `number` | `10` | Items per page; used only with `totalItems`. |
 | siblingCount | `number` | `1` | Visible page numbers on each side of the current page. |
 | showFirstLast | `boolean` | `false` | Whether to show first-page and last-page buttons. |
-| showTotal | `boolean ｜ (totalItems, [from, to]) => ReactNode` | `false` | Total-items summary on the left. The built-in Chinese format means “N items total.” Requires `totalItems` and silently renders nothing when only `total` is provided. |
+| showTotal | `boolean \| (totalItems, [from, to]) => ReactNode` | `false` | Total-items summary on the left. The built-in Chinese format means “N items total.” Requires `totalItems` and silently renders nothing when only `total` is provided. |
 | showQuickJumper | `boolean` | `false` | Whether to show the page-jump input. Enter and blur submit, clamped to the valid range. |
 | disabled | `boolean` | `false` | Whether all pagination controls are disabled. |
 

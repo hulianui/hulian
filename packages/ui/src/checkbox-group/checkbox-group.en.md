@@ -28,7 +28,7 @@ import { CheckboxGroup } from "@hulianui/ui"
 | value | `string[]` | — | Controlled array of checked values. |
 | defaultValue | `string[]` | — | Initial checked values when uncontrolled. |
 | disabled | `boolean` | `false` | Disables every checkbox in the group. |
-| orientation | `"vertical" ｜ "horizontal"` | `"vertical"` | Layout direction. |
+| orientation | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction. |
 | className | `string` | — | Additional class name for the root element. |
 | aria-label | `string` | — | Accessible label for the group. |
 

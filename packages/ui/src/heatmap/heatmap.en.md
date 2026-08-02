@@ -26,8 +26,8 @@ import { Heatmap, buildMatrix, bucketize } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | data* | `HeatCell[]` | — | Sparse `{x, y, value}` points. |
-| xLabels | `(string｜number)[]` | Derived from data | Explicit column labels. |
-| yLabels | `(string｜number)[]` | Derived from data | Explicit row labels. |
+| xLabels | `(string\|number)[]` | Derived from data | Explicit column labels. |
+| yLabels | `(string\|number)[]` | Derived from data | Explicit row labels. |
 | colorScale | `number` | `5` | Number of color levels. |
 | max | `number` | Data maximum | Full-scale value; `domain` takes precedence when supplied. |
 | domain | `[number, number]` | `[0, max]` | Explicit value range used to bucket `(value-min)/(max-min)`; values at or below min use level zero. |
@@ -45,7 +45,7 @@ import { Heatmap, buildMatrix, bucketize } from "@hulianui/ui"
 
 | Field | Type | Description |
 |------|------|------|
-| x / y | `string｜number` | Column and row labels. |
+| x / y | `string\|number` | Column and row labels. |
 | value | `number` | Cell value; absent cells use `0`, so this does not indicate presence. |
 | empty | `boolean` | Whether the point is absent from `data`; the optional typing preserves compatibility. |
 

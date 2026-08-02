@@ -27,7 +27,7 @@ Inherits `Omit<HTMLAttributes<HTMLDivElement>, "title" | "content">`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| status | `"success"｜"error"｜"info"｜"warning"｜"403"｜"404"｜"500"` | `"info"` | Selects the built-in icon and semantic tone. |
+| status | `"success"\|"error"\|"info"\|"warning"\|"403"\|"404"\|"500"` | `"info"` | Selects the built-in icon and semantic tone. |
 
 ## Slots
 

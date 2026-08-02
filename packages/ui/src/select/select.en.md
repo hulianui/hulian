@@ -30,7 +30,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### Select
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | — | Option data used by Base UI to resolve selected labels in the trigger. |
+| items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | — | Option data used by Base UI to resolve selected labels in the trigger. |
 | placeholder | `ReactNode` | — | Content shown without a selection. Single mode injects a `value: null` item; multiple mode renders it through the trigger's functional Value. |
 | multiple | `boolean` | `false` | Enables multiple selection: `value`, `defaultValue`, and `onValueChange` use `string[]`, and the popup stays open after selection. |
 | clearable | `boolean` | `false` | Shows a clear action on trigger hover/focus. Clearing emits `null` in single mode or `[]` in multiple mode. |
@@ -49,7 +49,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectTrigger
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Visual size. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Visual size. |
 | invalid | `boolean` | `false` | Whether to show invalid styling when the trigger is used outside a Field. |
 | maxDisplay | `number` | `2` | Maximum visible selected labels in multiple mode; remaining selections collapse into `+N`. |
 | className | `string` | — | Additional class name passed through to the element. |
@@ -57,8 +57,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectContent
 | Name | Type | Default | Description |
 |------|------|------|------|
-| side | `"top" ｜ "bottom"` | `"bottom"` | Side on which the popup opens. |
-| align | `"start" ｜ "center" ｜ "end"` | — | Popup alignment relative to the trigger. |
+| side | `"top" \| "bottom"` | `"bottom"` | Side on which the popup opens. |
+| align | `"start" \| "center" \| "end"` | — | Popup alignment relative to the trigger. |
 | sideOffset | `number` | — | Distance between the popup and trigger. |
 
 ### SelectItem
@@ -73,7 +73,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: string ｜ null, eventDetails) => void` (`(value: string[], …)` in multiple mode) | Base UI `Select.Root` value-change callback. |
+| onValueChange | `(value: string \| null, eventDetails) => void` (`(value: string[], …)` in multiple mode) | Base UI `Select.Root` value-change callback. |
 | onOpenChange | `(open: boolean, eventDetails) => void` | Base UI `Select.Root` open-state callback. |
 
 ## Slots

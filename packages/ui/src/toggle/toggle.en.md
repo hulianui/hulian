@@ -31,8 +31,8 @@ import { Toggle, ToggleGroup, toggleVariants } from "@hulianui/ui"
 | defaultPressed | `boolean` | `false` | Uncontrolled initial press state |
 | disabled | `boolean` | `false` | Disable |
 | value | `string` | — | Identifies the item within the ToggleGroup |
-| variant | `"default"｜"outline"｜"pill"` | `"default"` | default=grey background soft selection / outline=main color solid / pill=rounded stroke + soft main color selection (AI toolbar switch style) |
-| size | `"sm"｜"md"` | `"md"` | — |
+| variant | `"default"\|"outline"\|"pill"` | `"default"` | default=grey background soft selection / outline=main color solid / pill=rounded stroke + soft main color selection (AI toolbar switch style) |
+| size | `"sm"\|"md"` | `"md"` | — |
 | className | `string` | — | — |
 | aria-label | `string` | — | Required if only icon |
 
@@ -44,7 +44,7 @@ import { Toggle, ToggleGroup, toggleVariants } from "@hulianui/ui"
 | defaultValue | `string[]` | — | Uncontrolled initial item-by-item array |
 | disabled | `boolean` | `false` | Disable entire group |
 | multiple | `boolean` | `false` | true=multiple selections coexist; false=single selections are mutually exclusive |
-| orientation | `"horizontal"｜"vertical"` | `"horizontal"` | — |
+| orientation | `"horizontal"\|"vertical"` | `"horizontal"` | — |
 | className | `string` | — | — |
 
 ## Events

@@ -25,7 +25,7 @@ import { NumberField } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `number｜null` | — | Controlled value; `null` represents empty. |
+| value | `number\|null` | — | Controlled value; `null` represents empty. |
 | defaultValue | `number` | — | Initial value when uncontrolled. |
 | min | `number` | — | Minimum value. |
 | max | `number` | — | Maximum value. |
@@ -42,7 +42,7 @@ import { NumberField } from "@hulianui/ui"
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(value: number｜null) => void` | Called with the new value. HulianUI intentionally omits Base UI's `eventDetails`. |
+| onValueChange | `(value: number\|null) => void` | Called with the new value. HulianUI intentionally omits Base UI's `eventDetails`. |
 
 ## Example
 ```tsx

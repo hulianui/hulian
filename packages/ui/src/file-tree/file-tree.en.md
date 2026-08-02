@@ -41,8 +41,8 @@ import { FileTree, fileStatusMeta, filterFileTree } from "@hulianui/ui"
 | onContextMenu | `(node: FileNode, path: string, e: React.MouseEvent) => void` | Fires on a row context menu; pair it with ContextMenu for cursor-anchored actions. |
 | onExpandedChange | `(paths: string[]) => void` | Fires whenever expansion changes in either controlled or uncontrolled mode. |
 
-`FileNode` is `{ name: string; type: "file"｜"folder"; status?: FileStatus; children?: FileNode[]; defaultExpanded?: boolean }`.
-`FileStatus` is `"added"｜"modified"｜"deleted"｜"untracked"｜"renamed"`, rendered as an A/M/D/U/R marker.
+`FileNode` is `{ name: string; type: "file"\|"folder"; status?: FileStatus; children?: FileNode[]; defaultExpanded?: boolean }`.
+`FileStatus` is `"added"\|"modified"\|"deleted"\|"untracked"\|"renamed"`, rendered as an A/M/D/U/R marker.
 
 ## Examples
 ```tsx

@@ -28,7 +28,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | Name | Type | Default | Description |
 |------|------|------|------|
 | items | `ComboboxItemData[]` | — | Options in `{ value, label }` form. The label is displayed while the value identifies the option. |
-| value | `ComboboxItemData｜ComboboxItemData[]` | — | Controlled selection; use an array when `multiple` is true. |
+| value | `ComboboxItemData\|ComboboxItemData[]` | — | Controlled selection; use an array when `multiple` is true. |
 | defaultValue | Same as above | — | Initial selection when uncontrolled. |
 | multiple | `boolean` | `false` | Changes `value` and `onValueChange` to arrays. |
 | disabled | `boolean` | `false` | Disables the control. |
@@ -37,7 +37,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm"｜"md"｜"lg"` | `"md"` | Trigger size. |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | Trigger size. |
 | placeholder | `string` | — | Text shown when nothing is selected. |
 | invalid | `boolean` | `false` | Applies invalid styling when used outside Field. |
 | className | `string` | — | Additional class name for the trigger. |
@@ -46,7 +46,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm"｜"md"｜"lg"` | `"md"` | Input size. |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | Input size. |
 | placeholder | `string` | — | Input placeholder. |
 | invalid | `boolean` | `false` | Applies invalid styling. |
 | clearable | `boolean` | `false` | Shows a clear button when the field has a value. |
@@ -57,8 +57,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | Name | Type | Default | Description |
 |------|------|------|------|
 | searchPlaceholder | `string` | — | Adds a search field to the popup when used with `ComboboxTrigger`. Omit it when `ComboboxInput` already provides inline search. |
-| side | `"top"｜"bottom"` | — | Preferred side of the trigger on which to place the popup. |
-| align | `"start"｜"center"｜"end"` | — | Popup alignment relative to the trigger. |
+| side | `"top"\|"bottom"` | — | Preferred side of the trigger on which to place the popup. |
+| align | `"start"\|"center"\|"end"` | — | Popup alignment relative to the trigger. |
 | sideOffset | `number` | — | Distance from the trigger in pixels. |
 | onListScroll | `UIEventHandler<HTMLDivElement>` | — | Called when the option list scrolls. `e.currentTarget` is the scroll container, which can be inspected to implement load-on-scroll pagination; see [RemoteSelect](../remote-select/remote-select.md). |
 | footer | `ReactNode` | — | Fixed content below the scrolling list, such as loading, count, or end-of-results feedback. |

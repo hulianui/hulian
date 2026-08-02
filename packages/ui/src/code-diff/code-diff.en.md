@@ -27,13 +27,13 @@ import { CodeDiff, diffLines, diffStat } from "@hulianui/ui"
 |------|------|------|------|
 | oldText* | `string` | — | old text |
 | newText* | `string` | — | new text |
-| mode | `"unified" ｜ "split"` | `"unified"` | Unified single-column or split side-by-side comparison. |
+| mode | `"unified" \| "split"` | `"unified"` | Unified single-column or split side-by-side comparison. |
 | filename | `string` | — | Header file name bar; if omitted, the header will not be rendered. |
 | showLineNumbers | `boolean` | `true` | Show line number slot |
 | annotations | `CodeDiffAnnotation[]` | — | Row-anchored annotations: Insert full-width content slot below matching row rendering gutter tag + row (unified mode inserts content only) |
 | className | `string` | — | Container class name |
 
-`CodeDiffAnnotation` has the shape `{ side?: "old"｜"new"（default "new"）; line: number（1-based）; gutter?: ReactNode; content?: ReactNode }`.
+`CodeDiffAnnotation` has the shape `{ side?: "old"\|"new"(default "new"); line: number(1-based); gutter?: ReactNode; content?: ReactNode }`.
 
 ## Examples
 ```tsx

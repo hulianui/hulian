@@ -28,8 +28,8 @@ import { Annotation } from "@hulianui/ui/annotation"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | note | `ReactNode` | — | Handwritten label content. Omit it for a highlight without an arrow or label. |
-| side | `"n"｜"ne"｜"e"｜"se"｜"s"｜"sw"｜"w"｜"nw"` | `ne` | Label position; the arrow points back to the target. |
-| tone | `"neutral"｜"primary"｜"success"｜"warning"｜"danger"｜"rainbow"` | `neutral` | Annotation color; the annotated content keeps its own color. |
+| side | `"n"\|"ne"\|"e"\|"se"\|"s"\|"sw"\|"w"\|"nw"` | `ne` | Label position; the arrow points back to the target. |
+| tone | `"neutral"\|"primary"\|"success"\|"warning"\|"danger"\|"rainbow"` | `neutral` | Annotation color; the annotated content keeps its own color. |
 | mark | `boolean` | `true` | Shows the highlighter background controlled by `--hl-ann-spread`. |
 | rotate | `number` | `-4` | Label rotation in degrees; use `0` to align it. |
 | labelWidth | `number` | `150` | Maximum label width before wrapping, in pixels. |

@@ -27,7 +27,7 @@ Inherit the native `<input>` properties (except `size`/`prefix` are overridden b
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Size (CVA variant, overrides native size) |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size) |
 | invalid | `boolean` | `false` | Marked red when used independently; automatically driven by Field.Root invalid in hulian Field, no need to repeat the transmission |
 | disabled | `boolean` | `false` | Disable |
 | ref | `Ref<HTMLInputElement>` | — | Forward to the inner native `<input>` (not the shell span). `focus()` / `select()` / `register()` from `.value` / react-hook-form all rely on it |

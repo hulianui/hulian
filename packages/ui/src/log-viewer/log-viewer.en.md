@@ -34,7 +34,7 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 | className | `string` | — | Custom class name. |
 
 `LogLine` is `{ level?: LogLevel; message: ReactNode; timestamp?: string; source?: string }`.
-`LogLevel` is `"info"｜"warn"｜"error"｜"debug"｜"success"｜"command"` (`info` by default; `command` highlights executed commands or prompt lines, while `source`, such as `"[build]"`, is muted before the message).
+`LogLevel` is `"info"\|"warn"\|"error"\|"debug"\|"success"\|"command"` (`info` by default; `command` highlights executed commands or prompt lines, while `source`, such as `"[build]"`, is muted before the message).
 
 ## Examples
 ```tsx

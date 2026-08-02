@@ -29,7 +29,7 @@ import { Sortable } from "@hulianui/ui"
 |------|------|------|------|
 | items * | T[] | — | Controlled array; write the reordered array from `onChange` back to state. |
 | getId | (item: T) => UniqueIdentifier | Reads `item.id` | Returns a stable unique id. |
-| orientation | `"vertical"｜"horizontal"` | `"vertical"` | List direction. |
+| orientation | `"vertical"\|"horizontal"` | `"vertical"` | List direction. |
 | handle | boolean | false | Restricts dragging to a visible handle; otherwise the whole noninteractive item is draggable. |
 | className | string | — | Container class name. |
 

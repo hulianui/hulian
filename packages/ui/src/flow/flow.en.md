@@ -30,14 +30,14 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 | nodes * | FlowNode\<T\>[] | — | Controlled `{ id, position, data, width? }` nodes. |
 | edges * | FlowEdge[] | — | Controlled `{ id, source, target, sourceHandle?, targetHandle? }` edges. |
 | getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | — | Declares left target and right source handles, distributed vertically in return order. |
-| selectedId | string ｜ null | — | Controlled selected node id. |
+| selectedId | string \| null | — | Controlled selected node id. |
 | defaultNodeWidth | number | 240 | Default node width in canvas pixels. |
 | minZoom | number | 0.35 | Minimum zoom. |
 | maxZoom | number | 2 | Maximum zoom. |
 | controls | boolean | true | Shows zoom and fit controls. |
 | isEdgeAnimated | (edge: FlowEdge) => boolean | — | Enables flow animation for selected edges. |
 | className | string | — | Canvas wrapper class; it must establish a height. |
-| apiRef | MutableRefObject\<FlowApi ｜ null\> | — | Exposes fitView, zoomIn, zoomOut, reset, and autoLayout. |
+| apiRef | MutableRefObject\<FlowApi \| null\> | — | Exposes fitView, zoomIn, zoomOut, reset, and autoLayout. |
 
 ## Events
 
@@ -47,14 +47,14 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 | onConnect | (connection: FlowConnection) => void | Reports a valid output-to-input connection without an id. |
 | onEdgesDelete | (ids: string[]) => void | Requests deletion of selected edges. |
 | onNodeDelete | (id: string) => void | Requests deletion of the selected node. |
-| onSelectNode | (id: string ｜ null) => void | Reports node or blank-canvas selection. |
+| onSelectNode | (id: string \| null) => void | Reports node or blank-canvas selection. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
 | renderNode * | (node: FlowNode\<T\>, state: { selected: boolean }) => ReactNode | Renders node content while Flow owns the frame, handles, and selected state. |
-| background | ReactNode ｜ false | Canvas background; false disables the built-in dot grid. |
+| background | ReactNode \| false | Canvas background; false disables the built-in dot grid. |
 
 ## Example
 ```tsx

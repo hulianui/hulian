@@ -32,7 +32,7 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | disabled | `boolean` | `false` | Disables the entire group. |
 | required | `boolean` | — | Marks the native form control as required. |
 | name | `string` | — | Native form name |
-| orientation | `"vertical"｜"horizontal"` | `"vertical"` | Controls layout only. |
+| orientation | `"vertical"\|"horizontal"` | `"vertical"` | Controls layout only. |
 | className | `string` | — | — |
 | aria-label | `string` | — | Provided when no title is visible |
 

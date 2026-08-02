@@ -31,7 +31,7 @@ import { Segmented } from "@hulianui/ui"
 | value | `string` | — | Selected value in controlled mode. |
 | defaultValue | `string` | First non-disabled segment | Initial selected value in uncontrolled mode. |
 | disabled | `boolean` | `false` | Whether to disable the entire control. |
-| size | `"sm"｜"md"` | `"md"` | Visual size. |
+| size | `"sm"\|"md"` | `"md"` | Visual size. |
 | className | `string` | — | Additional class name for the root element. |
 | aria-label | `string` | — | Accessible label for the control when no visible title is present. |
 

@@ -28,8 +28,8 @@ import { Popconfirm } from "@hulianui/ui"
 | danger | `boolean` | `false` | Uses danger tone for the confirm button and default icon. |
 | open | `boolean` | — | Controlled open state, paired with onOpenChange. |
 | defaultOpen | `boolean` | `false` | Initial open state when uncontrolled. |
-| side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | Preferred popup side. |
-| align | `"start"｜"center"｜"end"` | `"center"` | Popup alignment. |
+| side | `"top"\|"right"\|"bottom"\|"left"` | `"top"` | Preferred popup side. |
+| align | `"start"\|"center"\|"end"` | `"center"` | Popup alignment. |
 | sideOffset | `number` | `8` | Distance from the trigger. |
 | disabled | `boolean` | `false` | Keeps the trigger visible but prevents opening. |
 | className | `string` | — | Class name forwarded to Popup. |

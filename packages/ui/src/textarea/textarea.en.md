@@ -27,7 +27,7 @@ Inherit the native `<textarea>` properties (except `size` is overwritten, such a
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Size (CVA variant, overrides native size) |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size) |
 | invalid | `boolean` | `false` | Marked red when used independently; automatically driven by Field.Root invalid in hulian Field |
 | autoResize | `boolean` | `false` | Adapt height according to content (JS scrollHeight, `rows` is the lower limit) |
 | rows | `number` | `3` | Initial/minimum row height |

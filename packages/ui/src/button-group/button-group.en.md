@@ -25,9 +25,9 @@ import { ButtonGroup } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| orientation | `"horizontal" ｜ "vertical"` | `"horizontal"` | Layout direction. |
+| orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. |
 | attached | `boolean` | `true` | Joins child controls by removing inner radii and merging adjacent borders. Pass `false` to keep the configured gap. |
-| gap | `"sm" ｜ "md"` | `"sm"` | Gap between children when `attached={false}`. |
+| gap | `"sm" \| "md"` | `"sm"` | Gap between children when `attached={false}`. |
 | className | `string` | — | Additional class name for the root element. |
 | aria-label | `string` | — | Accessible label for the group. |
 

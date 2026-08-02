@@ -28,8 +28,8 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 | stages* | `FunnelStage[]` | — | `{id, label, value, tone?}` stages sized proportionally to value. |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | Rows sized by width or columns sized by height. |
 | showConversion | `boolean` | `true` | Shows conversion between adjacent stages. |
-| ariaLabel | `string` | <span data-i18n-allow-cjk>`"漏斗图"`</span> | Accessible chart name. Pass a localized value for non-Chinese interfaces. |
-| conversionLabel | `string` | <span data-i18n-allow-cjk>`"转化"`</span> | Conversion badge prefix. Pass a localized value for non-Chinese interfaces. |
+| ariaLabel | `string` | `"Funnel chart"` with `enUS` | Accessible chart name. Pass a localized value for other interfaces. |
+| conversionLabel | `string` | `"Conversion"` with `enUS` | Conversion badge prefix. Pass a localized value for other interfaces. |
 | className | `string` | — | Root class name. |
 
 `FunnelStage.tone` is `"neutral" | "brand" | "success" | "warning" | "danger"`, defaulting to brand.

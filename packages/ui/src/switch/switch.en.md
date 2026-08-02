@@ -31,7 +31,7 @@ import { Switch } from "@hulianui/ui"
 | id | `string` | — | HTML identifier used to associate the switch with a label. |
 | className | `string` | — | Additional class name for the switch root. |
 | aria-label | `string` | — | Accessible label when no visible label is present. |
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | Visual size: 36×20, 40×24, or 48×28 px. The default `md` size preserves the original dimensions. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Visual size: 36×20, 40×24, or 48×28 px. The default `md` size preserves the original dimensions. |
 | touchTarget | `boolean` | `false` | Expands the invisible hit area to at least 44 px without changing layout or appearance; enable it for touch interfaces when spacing permits. |
 
 ## Events

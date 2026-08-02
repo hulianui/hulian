@@ -27,10 +27,10 @@ Inherit native `<button>` properties (except `children` controlled override).
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| provider* | `"wechat" ｜ "alipay" ｜ "qq" ｜ "weibo" ｜ "github" ｜ "google" ｜ "apple" ｜ "x"` | — | Determines the logo, default label, and brand color. |
-| variant | `"solid" ｜ "outline"` | `"outline"` | `solid` uses a brand fill; monochrome brands use theme foreground. `outline` uses a neutral border and brand-color logo. |
-| shape | `"button" ｜ "icon"` | `"button"` | `button` includes a label; `icon` renders a square logo-only button. |
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | size |
+| provider* | `"wechat" \| "alipay" \| "qq" \| "weibo" \| "github" \| "google" \| "apple" \| "x"` | — | Determines the logo, default label, and brand color. |
+| variant | `"solid" \| "outline"` | `"outline"` | `solid` uses a brand fill; monochrome brands use theme foreground. `outline` uses a neutral border and brand-color logo. |
+| shape | `"button" \| "icon"` | `"button"` | `button` includes a label; `icon` renders a square logo-only button. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | size |
 | loading | `boolean` | `false` | Submitting: Replace the logo with a spinning circle and disable it |
 | className | `string` | — | Transparently transmit the root node class name |
 

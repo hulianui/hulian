@@ -27,8 +27,8 @@ Inherits `HTMLAttributes<HTMLDivElement>` except `title`, plus `alertVariants`:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| tone | `"neutral"｜"brand"｜"info"｜"success"｜"warning"｜"danger"` | `"info"` | Semantic tone. `info` is a legacy alias of `brand` with the same recipe. |
-| variant | `"soft"｜"outline"` | `"soft"` | Soft background or outlined treatment. |
+| tone | `"neutral"\|"brand"\|"info"\|"success"\|"warning"\|"danger"` | `"info"` | Semantic tone. `info` is a legacy alias of `brand` with the same recipe. |
+| variant | `"soft"\|"outline"` | `"soft"` | Soft background or outlined treatment. |
 | closeLabel | `string` | `"\u5173\u95ed"` | Close-button accessible label. The built-in Chinese copy means “Close.” |
 
 ## Events

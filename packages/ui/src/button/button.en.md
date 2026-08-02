@@ -25,9 +25,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variant | `"solid" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | Visual style. |
-| tone | `"brand" ｜ "danger"` | `"brand"` | Semantic color tone. |
-| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm"` | `"md"` | Control size; `icon` and `iconSm` create square icon buttons. |
+| variant | `"solid" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. |
+| tone | `"brand" \| "danger"` | `"brand"` | Semantic color tone. |
+| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm"` | `"md"` | Control size; `icon` and `iconSm` create square icon buttons. |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled` and `type`. |
 

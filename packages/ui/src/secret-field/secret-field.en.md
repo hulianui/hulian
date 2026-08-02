@@ -29,10 +29,10 @@ import { SecretField, maskSecret } from "@hulianui/ui"
 |------|------|------|------|
 | value * | `string` | — | Original unmasked secret. |
 | revealed | `boolean` | — | Controlled reveal state; omit for internal state. |
-| maskStrategy | `"full"｜"prefix-suffix"` | `"prefix-suffix"` | `full` masks everything; `prefix-suffix` retains the beginning and end. |
+| maskStrategy | `"full"\|"prefix-suffix"` | `"prefix-suffix"` | `full` masks everything; `prefix-suffix` retains the beginning and end. |
 | copyable | `boolean` | `true` | Whether to display the copy button |
 | readOnly | `boolean` | `false` | Read-only appearance (remove interactive strokes) |
-| size | `"sm"｜"md"` | `"md"` | — |
+| size | `"sm"\|"md"` | `"md"` | — |
 | className | `string` | — | — |
 
 ## Events

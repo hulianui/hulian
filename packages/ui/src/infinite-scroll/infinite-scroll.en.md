@@ -33,7 +33,7 @@ import { InfiniteScroll } from "@hulianui/ui"
 
 | Event | Type | Description |
 |------|------|------|
-| onLoadMore* | `() => Promise<void>｜void` | Loads the next page; a returned Promise prevents repeat triggers while pending. |
+| onLoadMore* | `() => Promise<void>\|void` | Loads the next page; a returned Promise prevents repeat triggers while pending. |
 
 ## Slots
 
