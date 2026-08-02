@@ -12,11 +12,11 @@ export const content = {
   },
   en: {
     "callValueValue": "Call {0} · {1}",
-    "valueExecutionFailsTriggeringDegradation": "⚠ {0} Execution fails, triggering degradation.",
-    "valueFailureDowngradedToValue": "{0} Failure, Downgraded to {1}",
-    "pressTheDowngradeChainToSwitchTo": "Press the downgrade chain to switch to {0} retry...",
-    "valueCompletedValueSValue": "{0} Completed ({1}s · ¥{2})",
-    "allTaskSubNodesHaveCompletedExecution": "All task sub-nodes have completed execution, and orchestration is finished.",
+    "valueExecutionFailsTriggeringDegradation": "⚠ {0} failed. Starting fallback.",
+    "valueFailureDowngradedToValue": "{0} failed; switched to {1}",
+    "pressTheDowngradeChainToSwitchTo": "Fallback selected {0}; retrying...",
+    "valueCompletedValueSValue": "{0} completed ({1}s · ¥{2})",
+    "allTaskSubNodesHaveCompletedExecution": "All subtasks completed; orchestration finished.",
   },
 } as const;
 

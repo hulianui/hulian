@@ -11,7 +11,7 @@ export const content = {
   en: {
     "candidateActuators": "Candidate executors",
     "selected": "Selected",
-    "elimination": "Elimination",
+    "elimination": "Excluded",
     "overallScore": "Overall score",
   },
 } as const;

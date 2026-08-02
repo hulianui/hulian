@@ -37,7 +37,7 @@ export const content = {
   },
   en: {
     "inProgress": "In progress",
-    "waitingForAccess": "Waiting for access",
+    "waitingForAccess": "Waiting for agent",
     "ended": "Ended",
     "selectTheSessionOnTheLeftTo": "Select a conversation to start helping the customer",
     "visitor": "Visitor",

@@ -9,7 +9,7 @@ export const content = {
   },
   en: {
     "qualityScoreValueLowerThanAccessControl": "Quality score {0} is below the gate threshold of {1}",
-    "seriousIssuesValueExceedingTheLimitValue": "Serious Issues {0} Exceeding the Limit {1}",
+    "seriousIssuesValueExceedingTheLimitValue": "Critical findings {0} exceed the limit of {1}",
     "coverageOfValueIsBelowValue": "Coverage of {0}% is below {1}%",
   },
 } as const;

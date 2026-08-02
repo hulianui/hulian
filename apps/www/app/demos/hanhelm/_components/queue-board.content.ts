@@ -12,13 +12,13 @@ export const content = {
     "onTheRoad": "在途",
   },
   en: {
-    "p0Emergency": "P0 Emergency",
-    "p1IsHigh": "P1 is high",
-    "p2IsAverage": "P2 is average",
-    "p3IsLow": "P3 is low",
+    "p0Emergency": "P0 Critical",
+    "p1IsHigh": "P1 High",
+    "p2IsAverage": "P2 Medium",
+    "p3IsLow": "P3 Low",
     "depth": "Depth",
-    "equal": "Equal",
-    "onTheRoad": "On the road",
+    "equal": "Average wait",
+    "onTheRoad": "In progress",
   },
 } as const;
 

@@ -16,15 +16,15 @@ export const content = {
   },
   en: {
     "health": "Health",
-    "downgrade": "Downgrade",
+    "downgrade": "Degraded",
     "offline": "Offline",
-    "surplus": "Surplus",
+    "surplus": "Available",
     "moderate": "Moderate",
-    "relativelyHigh": "Relatively high",
+    "relativelyHigh": "High",
     "saturated": "Saturated",
     "model": "Model",
     "currentLoad": "Current load",
-    "andIssuedThemSimultaneously": "and issued them simultaneously",
+    "andIssuedThemSimultaneously": "concurrent tasks",
   },
 } as const;
 

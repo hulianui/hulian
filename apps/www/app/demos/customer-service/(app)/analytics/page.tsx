@@ -83,7 +83,7 @@ export default function AnalyticsPage() {
 
       {/* 趋势图 */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2" data-admin-demo-chart="conversation-volume">
           <CardHeader>{copy("todaySSessionVolumeByHour")}</CardHeader>
           <CardBody>
             <AreaChart data={volume} series={[{ key: "volume", label: copy("sessionVolume2") }]} xKey="hour" height={260} />
@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2" data-admin-demo-chart="csat-trend">
           <CardHeader>{copy("satisfactionTrendsCsatOverTheLastDays")}</CardHeader>
           <CardBody>
             <AreaChart data={csat} series={[{ key: "csat", label: "CSAT %" }]} xKey="day" height={240} />

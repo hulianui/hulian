@@ -9,10 +9,10 @@ export const content = {
     "noOnlineExecutorMeetingCapabilityRequirementsTasks": "无满足能力要求的在线执行器，任务进入等待重试。",
   },
   en: {
-    "abilityNotMetValue": "Ability not met: {0}",
+    "abilityNotMetValue": "Missing capability: {0}",
     "actuatorsAreOffline": "Executors are offline",
-    "optimalComprehensiveSixDimensionsValueAbilityMatching": "Optimal Comprehensive Six Dimensions: {0} (Ability Matching, Comprehensive Score {1})",
-    "noOnlineExecutorMeetingCapabilityRequirementsTasks": "No online executor meeting capability requirements; tasks enter and wait for retry.",
+    "optimalComprehensiveSixDimensionsValueAbilityMatching": "Best six-weight score: {0} (capability match; overall score {1})",
+    "noOnlineExecutorMeetingCapabilityRequirementsTasks": "No online executor meets the capability requirements; queue the task for retry.",
   },
 } as const;
 

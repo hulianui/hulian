@@ -11,10 +11,10 @@ export const content = {
   },
   en: {
     "actuatorPool": "Executor pool",
-    "modelAgentFleetCapabilityProfileRealTime": "Model + Agent fleet · Capability profile · Real-time load · Health · De-escalation chain orchestration",
-    "poolCapacityMaximumConcurrency": "Pool Capacity (Maximum Concurrency)",
+    "modelAgentFleetCapabilityProfileRealTime": "Model and agent fleet · Capabilities · Real-time load · Health · Fallback chains",
+    "poolCapacityMaximumConcurrency": "Pool capacity (maximum concurrency)",
     "averageUtilization": "Average utilization",
-    "healthActuators": "Health executors",
+    "healthActuators": "Healthy executors",
   },
 } as const;
 

@@ -14,13 +14,13 @@ export const content = {
   },
   en: {
     "noCustomerProfile": "No customer profile",
-    "mobilePhone": "mobile phone",
-    "area": "area",
-    "register": "Register",
-    "accumulatedConsumption": "Accumulated consumption",
-    "cumulativeOrders": "Cumulative orders",
+    "mobilePhone": "Mobile",
+    "area": "Region",
+    "register": "Joined",
+    "accumulatedConsumption": "Lifetime spend",
+    "cumulativeOrders": "Total orders",
     "valuePen": "{0} orders",
-    "historicalInteraction": "historical interaction",
+    "historicalInteraction": "Interaction history",
   },
 } as const;
 

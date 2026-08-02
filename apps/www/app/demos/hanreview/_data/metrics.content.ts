@@ -13,7 +13,7 @@ export const content = {
     "paymentGateway": "Payment gateway",
     "keyVault": "Key vault",
     "workbench": "Workbench",
-    "atTheEndOfTheShoppingMall": "At the end of the shopping mall",
+    "atTheEndOfTheShoppingMall": "Storefront backend",
     "auditLog": "Audit log",
   },
 } as const;

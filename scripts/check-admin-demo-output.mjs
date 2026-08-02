@@ -14,6 +14,71 @@ export const ADMIN_DEMO_ROUTES = [
   "hanhelm", "hanhelm/agents", "hanhelm/alerts", "hanhelm/queue", "hanhelm/queue/task-bulk-classify", "hanhelm/routing", "hanhelm/settings", "hanhelm/login",
 ];
 
+export const ADMIN_DEMO_BREADCRUMB_COUNTS = {
+  "billing": 0,
+  "billing/invoices": 0,
+  "billing/payment": 0,
+  "billing/plans": 0,
+  "billing/settings": 0,
+  "billing/login": 0,
+  "crm": 0,
+  "crm/customers": 1,
+  "crm/customers/C1001": 2,
+  "crm/opportunities": 1,
+  "crm/orders": 1,
+  "crm/settings": 1,
+  "crm/login": 0,
+  "customer-service": 0,
+  "customer-service/analytics": 1,
+  "customer-service/knowledge": 1,
+  "customer-service/tickets": 1,
+  "customer-service/tickets/T-2059": 2,
+  "customer-service/settings": 1,
+  "customer-service/login": 0,
+  "projects": 0,
+  "projects/checkout": 1,
+  "projects/checkout/co1": 2,
+  "projects/invoices": 1,
+  "projects/photos": 1,
+  "projects/quotes": 1,
+  "projects/quotes/q1": 2,
+  "projects/tracking": 1,
+  "projects/tracking/p1": 2,
+  "hanhub": 0,
+  "hanhub/billing": 0,
+  "hanhub/health": 0,
+  "hanhub/keys": 0,
+  "hanhub/logs": 0,
+  "hanhub/models": 0,
+  "hanhub/playground": 0,
+  "hanhub/settings": 0,
+  "hanhub/login": 0,
+  "hanship": 0,
+  "hanship/deployments": 0,
+  "hanship/deployments/d-console-1": 2,
+  "hanship/domains": 0,
+  "hanship/env": 0,
+  "hanship/projects/console": 1,
+  "hanship/settings": 0,
+  "hanship/login": 0,
+  "hanreview": 0,
+  "hanreview/findings": 1,
+  "hanreview/gates": 1,
+  "hanreview/reviews": 1,
+  "hanreview/reviews/rev-001": 2,
+  "hanreview/routing": 1,
+  "hanreview/settings": 1,
+  "hanreview/login": 0,
+  "hanhelm": 0,
+  "hanhelm/agents": 0,
+  "hanhelm/alerts": 0,
+  "hanhelm/queue": 0,
+  "hanhelm/queue/task-bulk-classify": 0,
+  "hanhelm/routing": 0,
+  "hanhelm/settings": 0,
+  "hanhelm/login": 0,
+};
+
 const MIME = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -33,28 +98,35 @@ export function staticCandidates(outputRoot, pathname) {
   return [direct, `${direct}.html`, join(direct, "index.html")];
 }
 
-async function firstFile(candidates) {
+export async function firstFile(candidates) {
   for (const candidate of candidates) {
     try {
       if ((await stat(candidate)).isFile()) return candidate;
-    } catch {
-      // Try the next static-export shape.
+    } catch (error) {
+      if (error?.code !== "ENOENT" && error?.code !== "ENOTDIR") throw error;
     }
   }
   return null;
 }
 
+async function serveStaticRequest(root, request, response) {
+  const pathname = new URL(request.url ?? "/", "http://127.0.0.1").pathname;
+  const file = await firstFile(staticCandidates(root, pathname));
+  if (!file || !resolve(file).startsWith(root)) {
+    response.writeHead(404).end("Not found");
+    return;
+  }
+  response.writeHead(200, { "content-type": MIME[extname(file)] ?? "application/octet-stream" });
+  response.end(await readFile(file));
+}
+
 export async function startStaticExportServer(outputRoot) {
   const root = resolve(outputRoot);
-  const server = createServer(async (request, response) => {
-    const pathname = new URL(request.url ?? "/", "http://127.0.0.1").pathname;
-    const file = await firstFile(staticCandidates(root, pathname));
-    if (!file || !resolve(file).startsWith(root)) {
-      response.writeHead(404).end("Not found");
-      return;
-    }
-    response.writeHead(200, { "content-type": MIME[extname(file)] ?? "application/octet-stream" });
-    response.end(await readFile(file));
+  const server = createServer((request, response) => {
+    void serveStaticRequest(root, request, response).catch((error) => {
+      response.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
+      response.end(`Static export server error: ${error instanceof Error ? error.message : String(error)}`);
+    });
   });
   await new Promise((accept) => server.listen(0, "127.0.0.1", accept));
   const address = server.address();
@@ -85,7 +157,14 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
       assertEnglishText(await page.locator("body").innerText(), path);
 
       const breadcrumb = page.locator('nav[aria-label="breadcrumb"] a');
+      const expectedBreadcrumbCount = ADMIN_DEMO_BREADCRUMB_COUNTS[route];
+      if (expectedBreadcrumbCount > 0) {
+        await breadcrumb.nth(expectedBreadcrumbCount - 1).waitFor({ state: "visible" });
+      }
       const breadcrumbCount = await breadcrumb.count();
+      if (breadcrumbCount !== expectedBreadcrumbCount) {
+        throw new Error(`${path} rendered ${breadcrumbCount} breadcrumb links; expected ${expectedBreadcrumbCount}`);
+      }
       for (let index = 0; index < breadcrumbCount; index += 1) {
         await page.goto(`${origin}${path}`, { waitUntil: "networkidle" });
         const link = page.locator('nav[aria-label="breadcrumb"] a').nth(index);
@@ -100,21 +179,52 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
     }
 
     await page.goto(`${origin}/en/demos/customer-service/analytics`, { waitUntil: "networkidle" });
-    const graphPaths = page.locator('.recharts-area path[d], path.recharts-area-curve[d], path.recharts-area-area[d]');
-    const graphPathCount = await graphPaths.count();
-    if (graphPathCount < 2) throw new Error("Customer-service analytics did not render both chart series");
-    for (let index = 0; index < Math.min(2, graphPathCount); index += 1) {
-      if (!(await graphPaths.nth(index).getAttribute("d"))?.trim()) throw new Error("Customer-service analytics rendered an empty graph path");
+    let graphPathCount = 0;
+    for (const chartName of ["conversation-volume", "csat-trend"]) {
+      const chart = page.locator(`[data-admin-demo-chart="${chartName}"]`);
+      if (await chart.count() !== 1) throw new Error(`Customer-service analytics is missing the ${chartName} chart`);
+      const graphPaths = chart.locator('.recharts-area path[d], path.recharts-area-curve[d], path.recharts-area-area[d]');
+      const chartPathCount = await graphPaths.count();
+      if (chartPathCount === 0) throw new Error(`Customer-service analytics ${chartName} chart has no graph path`);
+      for (let index = 0; index < chartPathCount; index += 1) {
+        if (!(await graphPaths.nth(index).getAttribute("d"))?.trim()) {
+          throw new Error(`Customer-service analytics ${chartName} chart rendered an empty graph path`);
+        }
+      }
+      graphPathCount += chartPathCount;
     }
 
-    await page.goto(`${origin}/en/demos/crm/opportunities`, { waitUntil: "networkidle" });
-    await page.getByText("All owners", { exact: true }).first().click();
-    for (const owner of ["Lin Wanqing", "Zhou Mingyuan", "Gao Min", "Chen Ce", "Su Xiao"]) {
-      await page.getByText(owner, { exact: true }).last().waitFor({ state: "visible" });
+    await page.goto(`${origin}/en/demos/crm/customers`, { waitUntil: "networkidle" });
+    const retry = page.getByRole("button", { name: "Try again" });
+    await page.waitForFunction(() => (
+      document.querySelectorAll("tbody tr").length === 8
+      || [...document.querySelectorAll("button")].some((button) => button.textContent?.trim() === "Try again")
+    ));
+    if (await retry.isVisible()) {
+      await retry.click();
     }
-    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => document.querySelectorAll("tbody tr").length === 8);
+    await page.getByRole("button", { name: "Expand" }).click();
+    await page.getByRole("combobox", { name: "Owner" }).click();
+    await page.getByRole("option", { name: "Zhou Mingyuan" }).click();
+    await page.getByRole("button", { name: "Search", exact: true }).click();
+    const customerRows = page.locator("tbody tr");
+    await page.waitForFunction(() => document.querySelectorAll("tbody tr").length === 5);
+    if (await customerRows.count() !== 5) throw new Error("CRM owner filter did not return the expected 5 customers");
+    const filteredCustomers = (await customerRows.allInnerTexts()).join("\n");
+    for (const customer of ["Yunqi Technology", "Jinxiu Textile", "Intelligent Link Software", "Golden Harvest Bank", "Hongtu printing"]) {
+      if (!filteredCustomers.includes(customer)) throw new Error(`CRM owner filter omitted ${customer}`);
+    }
+    if (filteredCustomers.includes("M&G Stationery")) throw new Error("CRM owner filter retained a customer owned by Lin Wanqing");
 
-    if (breadcrumbClicks === 0) throw new Error("No English breadcrumb links were exercised");
+    await page.goto(`${origin}/en/demos/hanhelm`, { waitUntil: "networkidle" });
+    const funnelContract = page.locator('[data-rsc-contract="funnel-render-stage"]');
+    if (await funnelContract.count() !== 1) throw new Error("HanHelm is missing the Funnel Server Component contract fixture");
+    if (!(await funnelContract.textContent())?.includes("1. Submitted")) {
+      throw new Error("Funnel renderStage did not render through the Next Server Component build");
+    }
+
+    if (breadcrumbClicks !== 33) throw new Error(`Expected 33 English breadcrumb clicks, received ${breadcrumbClicks}`);
     if (browserErrors.length) throw new Error(`Browser page errors:\n${browserErrors.join("\n")}`);
     return { routes: ADMIN_DEMO_ROUTES.length, breadcrumbClicks, graphPaths: graphPathCount };
   } finally {

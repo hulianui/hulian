@@ -14,7 +14,7 @@ export const content = {
     "securitySensitivePathsTheStrongestModel": "Security-sensitive paths → the strongest model",
     "largeFileBalancedModel": "Large file → balanced model",
     "defaultEqualizationModel": "Default path → balanced model",
-    "valueDowngradingAboveCostCap": "{0} (Downgrading above cost cap)",
+    "valueDowngradingAboveCostCap": "{0} (fallback: cost cap exceeded)",
   },
 } as const;
 

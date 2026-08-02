@@ -11,12 +11,12 @@ export const content = {
     "assignIt": "· 派给",
   },
   en: {
-    "inLine": "In line",
-    "inExecution": "In execution",
+    "inLine": "Queued",
+    "inExecution": "Running",
     "completed": "Completed",
-    "failure": "Failure",
+    "failure": "Failed",
     "theAppointedTimeApproached": "SLA deadline approaching",
-    "assignIt": "· Assign it",
+    "assignIt": "· Assigned to",
   },
 } as const;
 

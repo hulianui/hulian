@@ -17,9 +17,9 @@ export const content = {
   },
   en: {
     "rudder": "Rudder",
-    "hanhelmHanhelm": "HanHelm HanHelm",
+    "hanhelmHanhelm": "HanHelm",
     "switchThemes": "Switch themes",
-    "schedulingEngines": "Scheduling engines",
+    "schedulingEngines": "Orchestration engine",
     "running": "Running",
     "account": "Account",
     "rudder2": "Rudder",

@@ -15,8 +15,8 @@ export const content = {
     "conversationValueHasBeenTransferredToAnother": "Conversation {0} has been transferred to another agent.",
     "sessionClosed": "Session closed",
     "sessionValueEndedAndArchived": "Session {0} ended and archived",
-    "valuePeopleCurrentlyQueued": "{0} people currently queued",
-    "thereIsAPeakIncomingCallsPlease": "Inbound volume is peaking. Work the oldest conversations first or bring a backup agent online.",
+    "valuePeopleCurrentlyQueued": "{0} customers waiting",
+    "thereIsAPeakIncomingCallsPlease": "Inbound volume is expected to peak from 14:00 to 16:00; keep two agents available for overflow.",
   },
 } as const;
 

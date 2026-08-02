@@ -6,7 +6,7 @@ export const content = {
     "waited": "已等待",
   },
   en: {
-    "waited": "Waited",
+    "waited": "Waiting",
   },
 } as const;
 

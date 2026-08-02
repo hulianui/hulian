@@ -15,16 +15,16 @@ export const content = {
     "costCapGuaranteesTheBottomAndOver": "成本封顶兜底，超限自动降级到 Haiku 控制单次审查开销。",
   },
   en: {
-    "fileForTestConfigurationIstestorconfig": "File for Test / Configuration (isTestOrConfig)",
+    "fileForTestConfigurationIstestorconfig": "Test or configuration file (isTestOrConfig)",
     "testingAndProfileReviewHaveLowValue": "Tests and configuration usually need a focused review, so route them to the lower-cost Haiku model.",
-    "securitySensitivePathsSuchAsAuthenticationPayment": "Security-sensitive paths (such as authentication / payment / key)",
-    "securityIssuesAreCostlyForcingADeep": "Security issues are costly, forcing a deep audit upgrade to the strongest model, Opus.",
+    "securitySensitivePathsSuchAsAuthenticationPayment": "Security-sensitive paths such as authentication, payments, or secrets",
+    "securityIssuesAreCostlyForcingADeep": "Security failures are costly, so route these files to Opus for the deepest review.",
     "largeFilesLines": "Large files (lines > 300)",
-    "longDiffsRequireRobustLogicalReasoningSo": "Long diffs require robust logical reasoning, so the equilibrium model Sonnet is used.",
+    "longDiffsRequireRobustLogicalReasoningSo": "Long diffs need sustained reasoning, so route them to the balanced Sonnet model.",
     "defaultStandardBusinessCode": "Default (standard business code)",
-    "theVastMajorityOfPrGoesThrough": "The vast majority of PR goes through Sonnet, balancing quality and cost.",
-    "estimatedCostsExceedCostcapAndAreNot": "Estimated cost exceeds costCap; downgrade to the low-cost model",
-    "costCapGuaranteesTheBottomAndOver": "Cost cap guarantees the bottom, and over-limit automatic downgrade to Haiku controlling the cost per review.",
+    "theVastMajorityOfPrGoesThrough": "Route most pull requests through Sonnet to balance review quality and cost.",
+    "estimatedCostsExceedCostcapAndAreNot": "Estimated cost exceeds costCap; fall back to the low-cost model",
+    "costCapGuaranteesTheBottomAndOver": "When the estimated cost exceeds the cap, route the review to Haiku to keep per-review spending within budget.",
   },
 } as const;
 

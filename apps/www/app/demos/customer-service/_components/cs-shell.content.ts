@@ -14,15 +14,15 @@ export const content = {
     "break": "小休",
   },
   en: {
-    "coral": "coral",
-    "hulianCustomerService": "Hulian customer service",
-    "coral2": "coral",
-    "switchToBrightColors": "switch to bright colors",
-    "switchToDark": "switch to dark",
+    "coral": "Hulian",
+    "hulianCustomerService": "Hulian Support",
+    "coral2": "Hulian",
+    "switchToBrightColors": "Switch to light theme",
+    "switchToDark": "Switch to dark theme",
     "agentStatus": "Agent status",
-    "online": "online",
-    "busy": "busy",
-    "break": "break",
+    "online": "Online",
+    "busy": "Busy",
+    "break": "Break",
   },
 } as const;
 
