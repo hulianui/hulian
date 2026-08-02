@@ -38,7 +38,7 @@ import { LiquidEther } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | Content rendered inside the static multipoint chart-token gradient when reduced motion is enabled |
+| fallback | `ReactNode` | Decorative content rendered inside the static multipoint chart-token gradient when reduced motion is enabled; the fallback root is `aria-hidden` |
 
 ## Examples
 
@@ -62,7 +62,7 @@ import { LiquidEther } from "@hulianui/ui"
 ## Usage Guidelines
 
 - The live root is `absolute inset-0 z-0` and receives pointer events. Put it in a `relative overflow-hidden` parent, layer content at `relative z-10`, and use `pointer-events-none` only on decorative foreground copy so movement can still reach LiquidEther. See [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
-- WebGL starts on the client. Reduced motion renders the static gradient and custom `fallback`; SSR and WebGL setup failure leave the live root without a rendered canvas or fallback content.
+- During SSR, the live root has no canvas. After hydration, a canvas is appended before OGL import and scene setup; if either step fails, that uninitialized or blank canvas remains and LiquidEther does not switch to the reduced-motion fallback. Reduced motion instead renders the static gradient plus decorative `fallback` content.
 - CSS variables in `colors` are resolved through an off-screen canvas. Use full names such as `var(--color-chart-1)`; bare values such as `var(--primary)` cannot be resolved. See [[oklch-css-var-color-must-parse-via-offscreen-canvas]].
 - A throttled animation frame loop can make headless screenshots appear static or empty. Verify motion on a real device or through Playwright frame measurements; see [[recharts-headless-screenshot-blank-clippath-animation-starved]].
 

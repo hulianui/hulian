@@ -45,7 +45,7 @@ import { Prism } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | Content rendered inside the static chart-token radial glow when reduced motion is enabled |
+| fallback | `ReactNode` | Decorative content rendered inside the static chart-token radial glow when reduced motion is enabled; the fallback root is `aria-hidden` |
 
 ## Examples
 
@@ -68,7 +68,7 @@ import { Prism } from "@hulianui/ui"
 
 - Prism is an `absolute inset-0 z-0` decorative layer. Give its parent `position: relative`, explicit dimensions, and clipping as needed; place foreground content at `relative z-10` or above. See [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
 - `animationType="hover"` follows the **global pointer**, not just movement within the container. Only this mode installs pointer listeners; `rotate` and `3drotate` ignore pointer movement.
-- WebGL starts on the client. Reduced motion renders the static radial glow plus custom `fallback`; SSR and WebGL setup failure leave the decorative root empty.
+- During SSR, the live root has no canvas. After hydration, a canvas is appended before OGL import and scene setup; if either step fails, that uninitialized or blank canvas remains and Prism does not switch to the reduced-motion fallback. Reduced motion instead renders the static radial glow plus decorative `fallback` content.
 - When `hueShift` is omitted, the base hue is derived from `--color-chart-1` through an off-screen canvas. An explicit `hueShift` replaces that derived value. Theme variables must use the `--color-` prefix. See [[oklch-css-var-color-must-parse-via-offscreen-canvas]].
 - Throttled animation frames can make headless screenshots appear static or empty. Verify rotation on a real device or with Playwright frame measurements; see [[recharts-headless-screenshot-blank-clippath-animation-starved]].
 

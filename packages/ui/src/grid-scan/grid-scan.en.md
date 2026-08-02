@@ -43,12 +43,12 @@ import { GridScan } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Foreground content wrapped by GridScan in a full-size `relative z-10` layer with pointer events restored |
-| fallback | `ReactNode` | Content rendered inside the static token-colored grid when reduced motion is enabled |
+| children | `ReactNode` | Purely decorative content wrapped in a full-size `relative z-10` layer; it remains inside the root's `aria-hidden` subtree |
+| fallback | `ReactNode` | Purely decorative content rendered inside the static token-colored grid when reduced motion is enabled |
 
 ## Examples
 ```tsx
-// Pass foreground content as children; GridScan supplies its internal z-10 wrapper
+// Keep necessary, accessible foreground content as a sibling above GridScan
 <div className="relative h-64 overflow-hidden rounded-xl">
   <GridScan />
   <div className="relative z-10 flex h-full items-center justify-center">
@@ -63,9 +63,10 @@ import { GridScan } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- GridScan is an `absolute inset-0 z-0` decorative layer. Put it in a `relative` container with an explicit height and `overflow-hidden`; pass content through `children` to use the component's built-in foreground wrapper.
-- OGL/WebGL starts on the client. Reduced motion renders the static grid plus the same `children` and custom `fallback`; SSR and WebGL setup failure leave the canvas absent but retain `children`.
-- The root defaults to `pointer-events-none`. Parallax responds when pointer events bubble from the built-in `children` layer; without a hit-testable child, the decorative root does not receive pointer movement. Because the root is also `aria-hidden`, keep essential accessible content outside GridScan.
+- GridScan is an `absolute inset-0 z-0` decorative layer. Put it in a `relative` container with an explicit height and `overflow-hidden`, then place necessary, accessible foreground content in a sibling at `relative z-10` or above.
+- Both `children` and `fallback` remain inside GridScan's `aria-hidden` root. Use them only for decoration that does not need to enter the accessibility tree.
+- OGL/WebGL starts on the client. During SSR, the live root has no canvas. After hydration, a canvas is appended before OGL import and scene setup; if either step fails, that uninitialized or blank canvas remains and the component does not switch to the reduced-motion fallback. Reduced motion instead renders the static grid plus decorative `children` and `fallback`.
+- The live root defaults to `pointer-events-none`. Add `pointer-events-auto` through `className` if parallax is required, and make sure covering siblings do not take those pointer hits.
 - An opaque parent in a separate stacking context can cover a full-size background layer. If the canvas exists but is invisible, inspect stacking and background paint; see [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
 - CSS variables for `scanColor` and `linesColor` require full token names such as `var(--color-primary)`. Bare values such as `var(--primary)` do not resolve; see [[hulian-token-color-var-needs-color-prefix]].
 

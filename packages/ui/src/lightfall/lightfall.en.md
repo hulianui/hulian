@@ -46,7 +46,7 @@ import { Lightfall } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | Content rendered inside the static gradient cover when reduced motion is enabled |
+| fallback | `ReactNode` | Decorative content rendered inside the static gradient cover when reduced motion is enabled; the fallback root is `aria-hidden` |
 
 ## Examples
 ```tsx
@@ -66,7 +66,7 @@ import { Lightfall } from "@hulianui/ui"
 ## Usage Guidelines
 
 - Lightfall is an `absolute inset-0 z-0` decorative layer. Give its parent `position: relative`, explicit dimensions, and clipping; keep foreground content at `relative z-10` or above.
-- OGL/WebGL starts on the client. Reduced motion renders the static gradient plus custom `fallback`; SSR and WebGL setup failure leave the decorative root empty.
+- During SSR, the live root has no canvas. After hydration, a canvas is appended before OGL import and scene setup; if either step fails, that uninitialized or blank canvas remains and Lightfall does not switch to the reduced-motion fallback. Reduced motion instead renders the static gradient plus decorative `fallback` content.
 - The live root defaults to `pointer-events-none`. Add `pointer-events-auto` through `className` if `mouseInteraction` should receive pointer movement, and keep covering foreground layers from intercepting those events.
 - An opaque parent or unexpected stacking context can cover the full-size canvas. If rendering succeeds but the effect is invisible, inspect those layers; see [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
 - CSS variables in `colors` and `backgroundColor` require full names such as `var(--color-chart-1)`. See [[hulian-token-color-var-needs-color-prefix]].

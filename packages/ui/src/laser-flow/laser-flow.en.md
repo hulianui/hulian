@@ -47,7 +47,7 @@ import { LaserFlow } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | Content rendered over the static theme-token beam when reduced motion is enabled |
+| fallback | `ReactNode` | Decorative content rendered over the static theme-token beam when reduced motion is enabled; the fallback root is `aria-hidden` |
 
 ## Examples
 ```tsx
@@ -71,7 +71,8 @@ Warm beam with denser fog:
 
 - LaserFlow is an `absolute inset-0 z-0` decorative layer. Use a `relative overflow-hidden` parent with an explicit height and place foreground content at `relative z-10` or above.
 - Its WebGL lifecycle creates a fresh canvas for each mount, avoiding context reuse after cleanup during React StrictMode remounts. See [[webgl-canvas-loseContext-poisons-strictmode-remount]].
-- Reduced motion renders the theme-token gradient plus `fallback`. SSR and WebGL setup failure leave the decorative root empty rather than switching to that fallback, so provide any essential content outside LaserFlow.
+- During SSR, the live root has no canvas. After hydration, a canvas is appended before OGL import and scene setup; if either step fails, that uninitialized or blank canvas remains and LaserFlow does not switch to the reduced-motion fallback. Reduced motion instead renders the theme-token gradient plus decorative `fallback` content.
+- The live and fallback roots are `aria-hidden`, so provide all essential content outside LaserFlow.
 - The live root defaults to `pointer-events-none`. Add `pointer-events-auto` through `className` if pointer tilt is required, and make sure foreground layers do not take those pointer hits.
 
 ## Related

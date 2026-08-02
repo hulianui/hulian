@@ -68,7 +68,7 @@ import { SoftAurora } from "@hulianui/ui"
 ## Usage Guidelines
 
 - SoftAurora does not add `inset-0` itself. Position it explicitly, for example with `absolute inset-0`, inside a `relative` parent that has measurable dimensions and `overflow-hidden`.
-- WebGL starts on the client. Reduced motion keeps the root, replaces the canvas with token gradients, and renders `fallback` above that static layer. SSR and WebGL setup failure leave the live root empty.
+- During SSR, the live root has no canvas. After hydration, a canvas is appended before OGL import and scene setup; if either step fails, that uninitialized or blank canvas remains and SoftAurora does not switch to the reduced-motion fallback. Reduced motion instead keeps the root, replaces the canvas with token gradients, and renders `fallback` above that static layer.
 - `color1` and `color2` are parsed through an off-screen canvas. Use full theme variables such as `var(--color-chart-1)`; bare values such as `var(--primary)` do not resolve. See [[hulian-token-color-var-needs-color-prefix]].
 - Pointer parallax is decorative and is disabled by fallback paths. Keep essential information in normal foreground content rather than encoding it in motion.
 

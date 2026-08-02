@@ -40,7 +40,7 @@ import { LightPillar } from "@hulianui/ui"
 
 | Slot | Type | Description |
 |------|------|------|
-| fallback | `ReactNode` | Content rendered inside the static two-color token gradient when reduced motion is enabled |
+| fallback | `ReactNode` | Decorative content rendered inside the static two-color token gradient when reduced motion is enabled; the fallback root is `aria-hidden` |
 
 ## Examples
 ```tsx
@@ -60,7 +60,7 @@ import { LightPillar } from "@hulianui/ui"
 ## Usage Guidelines
 
 - LightPillar is a full-size decorative layer. Use a `relative overflow-hidden` parent with an explicit height and place foreground content above it with `relative z-10`.
-- OGL/WebGL starts on the client. Reduced motion renders the static two-color beam plus custom `fallback`; SSR and WebGL setup failure leave the decorative root empty.
+- During SSR, the live root has no canvas. After hydration, a canvas is appended before OGL import and scene setup; if either step fails, that uninitialized or blank canvas remains and LightPillar does not switch to the reduced-motion fallback. Reduced motion instead renders the static two-color beam plus decorative `fallback` content.
 - `glowAmount` is intentionally small (`0.005` by default). Adjust it in small increments such as `0.009`; large increases quickly clip the beam to white.
 - CSS variables for `topColor` and `bottomColor` require full token names such as `var(--color-chart-1)`. See [[hulian-token-color-var-needs-color-prefix]].
 - If a full-size canvas is present but hidden, inspect parent backgrounds and stacking contexts; see [[webgl-canvas-rendered-but-invisible-negative-zindex-covered]].
