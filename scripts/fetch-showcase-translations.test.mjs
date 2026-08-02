@@ -1,16 +1,16 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import ts from "typescript-api";
 import {
   CJK,
-  inventoryValues,
   parseBatchTranslation,
   protect,
   protectedTokens,
   restore,
+  showcaseAstValues,
 } from "./fetch-showcase-translations.mjs";
 
-const inventoryFile = process.env.SHOWCASE_CJK_INVENTORY ?? "/tmp/showcase-cjk-inventory.json";
 const copyFile = "apps/www/i18n/showcase-copy.en.json";
 
 function occurrences(values) {
@@ -53,16 +53,15 @@ test("parses uniquely identified batched translations without depending on line 
   assert.throws(() => parseBatchTranslation("⟦HL000007⟧ First", entries), /marker mismatch/);
 });
 
-test("committed showcase copy exactly covers the current inventory with no unused or duplicate keys", () => {
-  const inventory = JSON.parse(readFileSync(inventoryFile, "utf8"));
+test("committed showcase copy covers repository AST literals with no duplicate keys", () => {
   const raw = readFileSync(copyFile, "utf8");
   const copy = JSON.parse(raw);
-  const expected = inventoryValues(inventory);
-  const actual = Object.keys(copy.exact);
+  const expected = [...showcaseAstValues()];
+  const missing = expected.filter((key) => !Object.hasOwn(copy.exact, key));
   assert.deepEqual(
-    actual,
-    expected,
-    "translation keys must be sorted and exactly match the inventory",
+    missing,
+    [],
+    "every CJK-bearing literal line in the checked-out showcase source needs committed copy",
   );
   assert.deepEqual(duplicateTopLevelKeys(raw), []);
 });
@@ -80,5 +79,79 @@ test("every English value is non-empty, CJK-free, and retains protected tokens",
         `protected token mismatch: ${source} -> ${english}; missing ${token}`,
       );
     }
+  }
+});
+
+test("keeps executable date and countdown formats valid in exact and embedded code copy", () => {
+  const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
+  const formats = new Map([
+    ["YYYY 年 M 月 D 日", "MMM D, YYYY"],
+    ["M 月 D 日 HH:mm", "MMM D, HH:mm"],
+    ["D 天 HH:mm:ss", "D · HH:mm:ss"],
+  ]);
+  for (const [sourceFormat, englishFormat] of formats) {
+    assert.equal(copy[sourceFormat], englishFormat);
+    for (const [source, english] of Object.entries(copy)) {
+      if (!source.includes(sourceFormat)) continue;
+      assert.ok(english.includes(englishFormat), `${source} -> ${english}`);
+      assert.doesNotMatch(english, /YYYY year|M Month D Day|D days HH:mm:ss/iu);
+    }
+  }
+});
+
+test("preserves regexes, URLs, API tokens, and parseable JSX code semantics", () => {
+  const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
+  const regexLiteral = /pattern:\s*(\/(?:\\.|[^/\n])+\/[a-z]*)/gu;
+  for (const [source, english] of Object.entries(copy)) {
+    for (const match of source.matchAll(regexLiteral)) {
+      assert.ok(english.includes(match[1]), `${source} -> ${english}; lost regex ${match[1]}`);
+    }
+    if (!source.trim().startsWith("<") || source.trim().startsWith("<!--")) continue;
+    const wrap = (value) => `const showcase = (<>${value}</>);`;
+    const sourceDiagnostics = ts.createSourceFile(
+      "source.tsx",
+      wrap(source),
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TSX,
+    ).parseDiagnostics;
+    if (sourceDiagnostics.length > 0) continue;
+    const englishDiagnostics = ts.createSourceFile(
+      "english.tsx",
+      wrap(english),
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TSX,
+    ).parseDiagnostics;
+    assert.deepEqual(
+      englishDiagnostics.map((diagnostic) => diagnostic.messageText),
+      [],
+      `${source} -> ${english}`,
+    );
+  }
+});
+
+test("locks identity, weekday, terminology, and fullwidth-symbol overrides", () => {
+  const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
+  assert.equal(copy["李四"], "Li Si");
+  for (const [source, english] of Object.entries(copy)) {
+    if (!source.includes("李四")) continue;
+    assert.match(english, /Li Si/u, `${source} -> ${english}`);
+    assert.doesNotMatch(english, /John Doe/u, `${source} -> ${english}`);
+  }
+  assert.equal(
+    copy['yLabels={["一", "二", "三", "四", "五", "六", "日"]}'],
+    'yLabels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}',
+  );
+  assert.equal(copy["CI 流水线"], "CI pipeline");
+  assert.equal(copy["禁用项"], "Disabled item");
+  assert.equal(copy["含禁用项"], "Includes disabled items");
+  assert.equal(copy["潮汐 Tide"], "Tide");
+  assert.equal(copy["瑚琏 · HULIAN ·"], "HULIAN ·");
+  assert.equal(copy["￥"], "¥");
+  assert.equal(CJK.test("￥"), true, "the residue regex must include the fullwidth yen sign");
+  assert.equal(CJK.test(copy["￥"]), false);
+  for (const english of Object.values(copy)) {
+    assert.doesNotMatch(english, /placeholder\s+placeholder|Tide\s+Tide|HULIAN\s*·\s*HULIAN/iu);
   }
 });

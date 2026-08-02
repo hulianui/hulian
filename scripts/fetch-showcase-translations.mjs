@@ -4,8 +4,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript-api";
 
-export const CJK =
-  /[\p{Script=Han}\u3000-\u303f\uff01-\uff0f\uff1a-\uff20\uff3b-\uff40\uff5b-\uff65]/u;
+export const CJK = /[\p{Script=Han}\u3000-\u303f\uff00-\uffef]/u;
 
 const TRANSLATE_ENDPOINT = "https://translate.googleapis.com/translate_a/single";
 const DEFAULT_INVENTORY = "/tmp/showcase-cjk-inventory.json";
@@ -18,6 +17,48 @@ const DEFAULT_SHOWCASE_ROOT = join(REPO_ROOT, "packages/ui/src");
 const MANUAL_COPY = new Map([
   [" 号店", " Store"],
   ["号店", "Store"],
+  ["￥", "¥"],
+  ["YYYY 年 M 月 D 日", "MMM D, YYYY"],
+  ["M 月 D 日 HH:mm", "MMM D, HH:mm"],
+  ["D 天 HH:mm:ss", "D · HH:mm:ss"],
+  ["李四", "Li Si"],
+  ["CI 流水线", "CI pipeline"],
+  ["禁用项", "Disabled item"],
+  ["含禁用项", "Includes disabled items"],
+  ["多选支付方式（含禁用项）", "Multiple payment methods (includes disabled items)"],
+  ["default（收起·点汉堡展开）", "default (collapsed · click the menu button to expand)"],
+  [
+    "顶栏汉堡 / 品牌 / CTA，点汉堡整条胶囊展开，内部卡片逐张错峰浮现。非受控时组件自管开合，点汉堡即可展开。",
+    "The top bar contains a menu button, brand, and CTA. Click the menu button to expand the capsule and reveal each card in sequence. In uncontrolled mode, the component manages its own open state.",
+  ],
+  [
+    "最简输入框，传 placeholder 占位。",
+    "A minimal input; use placeholder for empty-state guidance.",
+  ],
+  [
+    "items 提供选项数据，placeholder 作占位。",
+    "items provides the options; placeholder supplies the empty-state prompt.",
+  ],
+  ["潮汐 Tide", "Tide"],
+  ["瑚琏 · HULIAN ·", "HULIAN ·"],
+  ["瑚琏 · HULIAN UI · 设计系统 ·", "HULIAN UI · Design system ·"],
+  [
+    '<CircularText text="瑚琏 · HULIAN UI · " spinDuration={',
+    '<CircularText text="HULIAN UI · " spinDuration={',
+  ],
+  [
+    '<CurvedLoop text="瑚琏 · HULIAN · " className="text-white" />',
+    '<CurvedLoop text="HULIAN · " className="text-white" />',
+  ],
+  ['text="瑚琏 · HULIAN UI · 设计系统 · "', 'text="HULIAN UI · Design System · "'],
+  [
+    'yLabels={["一", "二", "三", "四", "五", "六", "日"]}',
+    'yLabels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}',
+  ],
+  [
+    '<Comment type="log" author="系统" content="将工单状态改为「处理中」" datetime="14:25" />',
+    '<Comment type="log" author="System" content="Set the ticket status to Processing" datetime="14:25" />',
+  ],
   ["瑚琏 Hulian", "Hulian"],
   ["主题", "Theme"],
   ["操作", "Actions"],
@@ -189,6 +230,7 @@ function normalizeEnglish(value) {
     .replace(/[》〉」』]/gu, '"')
     .replace(/…/gu, "...")
     .replace(/\u3000/gu, " ")
+    .replace(/￥/gu, "¥")
     .replace(/ {2,}/gu, " ")
     .replace(/[ \t]+\n/gu, "\n")
     .trim();
@@ -196,10 +238,22 @@ function normalizeEnglish(value) {
 
 function normalizeSourceEnglish(source, value) {
   let english = normalizeEnglish(value);
+  if (source.includes("YYYY 年 M 月 D 日")) {
+    english = english.replace(/YYYY\s+year\s+M\s+month\s+D\s+day/giu, "MMM D, YYYY");
+  }
+  if (source.includes("M 月 D 日 HH:mm")) {
+    english = english.replace(/M\s+Month\s+D\s+Day\s+HH:mm/giu, "MMM D, HH:mm");
+  }
+  if (source.includes("D 天 HH:mm:ss")) {
+    english = english.replace(/D\s+days?\s+HH:mm:ss/giu, "D · HH:mm:ss");
+  }
+  english = english.replace(/\bTide\s+Tide\b/gu, "Tide");
   if (source.includes("瑚琏")) {
     english = english
       .replace(/Hu\s+(?:Li|Jue)/giu, "Hulian")
-      .replace(/\b(?:Hulu|Huli|corals?)\b/giu, "Hulian");
+      .replace(/\b(?:Hulu|Huli|corals?)\b/giu, "Hulian")
+      .replace(/HULIAN\s*·\s*HULIAN UI/gu, "HULIAN UI")
+      .replace(/HULIAN\s*·\s*HULIAN/gu, "HULIAN");
   }
   return english;
 }
