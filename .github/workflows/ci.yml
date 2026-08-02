@@ -107,6 +107,9 @@ jobs:
       - name: Verify bilingual route parity and links
         run: pnpm docs:i18n:links
 
+      - name: Verify hydrated English component showcases
+        run: pnpm docs:check:showcase-browser
+
       - name: Verify English admin demos in Chromium
         run: pnpm docs:check:admin-demos
 

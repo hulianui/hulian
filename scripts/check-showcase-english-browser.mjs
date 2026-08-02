@@ -6,7 +6,7 @@ import { pathToFileURL } from "node:url";
 
 import { gotoAndSettle, OUT_DIR, startStaticServer } from "./static-server.mjs";
 
-const CJK_RE = /\p{Script=Han}/u;
+const CJK_RE = /[\p{Script=Han}\u3000-\u303f\uff00-\uffef]/u;
 const COMPONENT_OUT_DIR = `${OUT_DIR}/en/components`;
 const INTERACTION_ROUTES = ["dialog", "toast", "table", "form"];
 

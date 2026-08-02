@@ -16,12 +16,22 @@ test("findCjkLeaks catches Han text in visible, hidden, code, and accessible fie
     { kind: "alt", locator: "img", value: "头像" },
     { kind: "placeholder", locator: "input", value: "请输入" },
     { kind: "aria-label", locator: "button", value: "关闭" },
+    { kind: "visible-text", locator: "p", value: "Full-width residue：" },
     { kind: "visible-text", locator: "main", value: "English only" },
   ]);
 
   assert.deepEqual(
     leaks.map(({ kind }) => kind),
-    ["visible-text", "hidden-text", "code", "title", "alt", "placeholder", "aria-label"],
+    [
+      "visible-text",
+      "hidden-text",
+      "code",
+      "title",
+      "alt",
+      "placeholder",
+      "aria-label",
+      "visible-text",
+    ],
   );
 });
 
