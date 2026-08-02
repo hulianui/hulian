@@ -46,9 +46,9 @@ export const brandShowcase: ShowcaseSpec = {
             description: "href uses ordinary links; render connects to frame routing components (react-router / next/link) to avoid SPA full page refresh.",
             code: `<Brand name="Hulian" href="/" />
 <Brand name="Hulian" render={<Link to="/" />} />`,
-            render: () => (<div className="flex flex-wrap items-center gap-8">
-          <Brand name="Hulian" href="/"/>
-          <Brand mark={<Mark />} name="Hulian" description="Click me to return to the home page" href="/"/>
+            render: () => (<div id="home" className="flex flex-wrap items-center gap-8">
+          <Brand name="Hulian" href="#home"/>
+          <Brand mark={<Mark />} name="Hulian" description="Click me to return to the home page" href="#home"/>
         </div>),
         },
     ],
