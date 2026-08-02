@@ -42,6 +42,7 @@
     "docs:i18n:check": "node scripts/check-component-doc-translations.mjs",
     "docs:i18n:output": "node scripts/check-english-output.mjs apps/www/out",
     "docs:i18n:links": "node scripts/check-bilingual-links.mjs apps/www/out",
+    "docs:verify:public": "node scripts/verify-public-bilingual-sites.mjs",
     "install-hooks": "sh scripts/install-hooks.sh",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm llms-registry && pnpm changelog",
