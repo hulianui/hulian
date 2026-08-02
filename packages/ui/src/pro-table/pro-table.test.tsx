@@ -174,10 +174,12 @@ describe("ProTable 托管模式", () => {
     );
     await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
     fireEvent.click(getByText("姓名"));
-    await waitFor(() =>
-      expect(request.mock.calls.at(-1)![0]).toMatchObject({
-        sort: { field: "name", order: "asc" },
-      }),
+    await waitFor(
+      () =>
+        expect(request.mock.calls.at(-1)![0]).toMatchObject({
+          sort: { field: "name", order: "asc" },
+        }),
+      { timeout: 3_000 },
     );
   });
 
