@@ -22,6 +22,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import { hasInteractiveAncestorWithin } from "../lib/drag-guard";
 import type { SortableProps } from "./sortable.types";
 
@@ -76,12 +77,14 @@ function SortableRow<T>({
   index,
   renderItem,
   handle,
+  handleLabel,
 }: {
   id: UniqueIdentifier;
   item: T;
   index: number;
   renderItem: SortableProps<T>["renderItem"];
   handle: boolean;
+  handleLabel: (index: number) => string;
 }) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
     useSortable({ id });
@@ -119,7 +122,7 @@ function SortableRow<T>({
           {...listeners}
           // 手柄自身是 <button>，会被交互元素守卫误伤；打标记让守卫无条件放行
           data-sortable-handle=""
-          aria-label={`拖拽排序（第 ${index + 1} 项）`}
+          aria-label={handleLabel(index + 1)}
           className="-ml-1 shrink-0 cursor-grab touch-none rounded text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
         >
           <GripVertical className="size-4" aria-hidden />
@@ -139,6 +142,9 @@ export function Sortable<T>({
   handle = false,
   className,
 }: SortableProps<T>) {
+  const labels = useComponentLocale().sortable ?? {
+    handle: (index: number) => `拖拽排序（第 ${index} 项）`,
+  };
   const sensors = useSensors(
     useSensor(InteractiveAwarePointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -170,6 +176,7 @@ export function Sortable<T>({
               index={index}
               renderItem={renderItem}
               handle={handle}
+              handleLabel={labels.handle}
             />
           ))}
         </ul>

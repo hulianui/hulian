@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./work-detail.content";
 
 import Link from "next/link";
 import {
@@ -31,10 +32,11 @@ import {
 } from "@hulianui/ui";
 import { ArrowLeft, ArrowRight, ExternalLink, Code2 } from "lucide-react";
 import { useMockData } from "../../lib/async";
-import { workBySlug, workNav, type Work } from "../_data/works";
+import { WORK_STATUS_LABELS, workBySlug, workNav, type Work } from "../_data/works";
+import { demoHref } from "../../_components/demo-locale";
 import { workShot } from "../_lib/art";
 
-const BASE = "/demos/personal";
+const BASE = demoHref("/demos/personal");
 
 // ---------------------------------------------------------------------------
 // 状态 → Tag tone 映射（与 work section 保持一致）
@@ -165,12 +167,12 @@ function DeviceMockup({ work }: { work: Work }) {
       const lines: TerminalLine[] = [];
       if (work.install) {
         lines.push({ prompt: "$", text: work.install, tone: "command" });
-        lines.push({ text: "Resolving dependencies…", tone: "muted" });
+        lines.push({ text: copy("resolvingDependencies"), tone: "muted" });
         lines.push({ text: "Done in 1.23s", tone: "success" });
       }
       if (work.codeSample) {
         lines.push({ prompt: "$", text: `${work.slug} run`, tone: "command" });
-        lines.push({ text: `Running ${work.codeSample.title}…`, tone: "muted" });
+        lines.push({ text: `Running ${work.codeSample.title}${copy("text")}`, tone: "muted" });
         lines.push({ text: "All tasks completed successfully", tone: "success" });
       }
       if (lines.length === 0) {
@@ -273,7 +275,8 @@ function WorkDetailContent({ work }: { work: Work }) {
             className="mb-8 inline-flex items-center gap-1.5 text-sm text-white/60 transition-colors hover:text-white"
           >
             <ArrowLeft className="size-4" aria-hidden />
-            所有作品
+
+            {copy("allProjects")}
           </Link>
 
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -310,7 +313,7 @@ function WorkDetailContent({ work }: { work: Work }) {
                 dot
                 pulse={work.status === "在线"}
               >
-                {work.status}
+                {WORK_STATUS_LABELS[work.status]}
               </Tag>
             </div>
 
@@ -360,7 +363,7 @@ function WorkDetailContent({ work }: { work: Work }) {
       <div className="mx-auto max-w-5xl space-y-16 px-6 py-16">
 
         {/* 设备外壳 */}
-        <section aria-label="产品预览" className="flex justify-center">
+        <section aria-label={copy("productPreview")} className="flex justify-center">
           <DeviceMockup work={work} />
         </section>
 
@@ -370,7 +373,8 @@ function WorkDetailContent({ work }: { work: Work }) {
             id="summary-heading"
             className="mb-4 font-mono text-xs uppercase tracking-widest text-muted"
           >
-            产品故事
+
+            {copy("productStory")}
           </h2>
           <div className="space-y-4">
             {work.summary.map((para, i) => (
@@ -387,7 +391,8 @@ function WorkDetailContent({ work }: { work: Work }) {
             id="metrics-heading"
             className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
           >
-            关键指标
+
+            {copy("keyMetrics")}
           </h2>
           <div className="flex flex-wrap gap-10">
             {work.metrics.map((m) => (
@@ -405,12 +410,13 @@ function WorkDetailContent({ work }: { work: Work }) {
             id="shots-heading"
             className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
           >
-            截图
+
+            {copy("screenshot")}
           </h2>
           <Carousel
             autoplay
             loop
-            aria-label={`${work.name} 截图`}
+            aria-label={`${work.name}${copy("screenshot")}`}
             className="w-full overflow-hidden rounded-[var(--radius)] border border-border"
           >
             {work.shots.map((shot, i) => (
@@ -437,11 +443,12 @@ function WorkDetailContent({ work }: { work: Work }) {
             id="video-heading"
             className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
           >
-            演示视频
+
+            {copy("demoVideo")}
           </h2>
           <HeroVideoDialog
             thumbnailSrc={workShot(work.shots[0], work.hue)}
-            thumbnailAlt={`${work.name} 演示预览`}
+            thumbnailAlt={`${work.name}${copy("livePreview")}`}
             videoSrc="/demo/sample-video.mp4"
             className="w-full max-w-2xl"
           />
@@ -453,7 +460,8 @@ function WorkDetailContent({ work }: { work: Work }) {
             id="highlights-heading"
             className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
           >
-            核心功能
+
+            {copy("coreFeatures")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {work.highlights.map((h) => (
@@ -490,7 +498,8 @@ function WorkDetailContent({ work }: { work: Work }) {
               id="install-heading"
               className="mb-4 font-mono text-xs uppercase tracking-widest text-muted"
             >
-              快速安装
+
+              {copy("quickInstall")}
             </h2>
             <Snippet>{work.install}</Snippet>
           </section>
@@ -519,7 +528,7 @@ function WorkDetailContent({ work }: { work: Work }) {
 
         {/* 上/下一篇 */}
         {nav && (
-          <nav aria-label="作品导航" className="border-t border-border pt-10">
+          <nav aria-label={copy("projectNavigation")} className="border-t border-border pt-10">
             <div className="grid grid-cols-2 gap-4">
               {/* 上一篇 */}
               <Link
@@ -531,7 +540,8 @@ function WorkDetailContent({ work }: { work: Work }) {
               >
                 <span className="flex items-center gap-1 text-xs text-muted">
                   <ArrowLeft className="size-3.5" aria-hidden />
-                  上一个
+
+                  {copy("previous")}
                 </span>
                 <span
                   className="font-mono text-[10px] uppercase tracking-wider"
@@ -553,7 +563,8 @@ function WorkDetailContent({ work }: { work: Work }) {
                 )}
               >
                 <span className="flex items-center gap-1 text-xs text-muted">
-                  下一个
+
+                  {copy("next")}
                   <ArrowRight className="size-3.5" aria-hidden />
                 </span>
                 <span
@@ -587,8 +598,8 @@ export function WorkDetail({ slug }: { slug: string }) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-6">
         <Empty
-          title="作品不存在"
-          description={`找不到 slug 为 "${slug}" 的作品。`}
+          title={copy("projectNotFound")}
+          description={`${copy("noProjectFoundWithSlug")}${slug}${copy("text2")}`}
         />
       </div>
     );

@@ -29,6 +29,8 @@ import { Snippet } from "@hulianui/ui"
 | symbol | `string ｜ null` | `"$"` | Command prompt; pass `null` for non-command fragments. |
 | lang | `string` | — | Syntax coloring language (such as `"tsx"`/`"bash"`), only takes effect when children is a string |
 | highlight | `boolean` | `true` | Whether to use syntax coloring, only takes effect when children is a string |
+| copyLabel | `string` | Locale value | Copy-button accessible label; an explicit value takes precedence. |
+| copiedLabel | `string` | Locale value | Post-copy accessible label; an explicit value takes precedence. |
 | className | `string` | — | Container class name |
 
 ## Slots
@@ -48,6 +50,7 @@ import { Snippet } from "@hulianui/ui"
 ## Usage guidelines
 
 - Syntax highlighting through `lang`/`highlight` and automatic clipboard text apply only when `children` is a **string**. For a React node, provide `text` explicitly for copying.
+- Default copy labels follow `ConfigProvider locale`; `enUS` provides “Copy / Copied”, and the no-provider fallback remains Chinese.
 
 ## Related
 [Code](../code/code.md) · [CodeBlock](../code-block/code-block.md) · [CodeDiff](../code-diff/code-diff.md) · [Kbd](../kbd/kbd.md) · [Text](../text/text.md) · [Heading](../heading/heading.md)

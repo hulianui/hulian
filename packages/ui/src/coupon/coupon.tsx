@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import type { CouponProps, CouponStatus, CouponTone } from "./coupon.types";
 
 // Coupon = 撕票造型优惠券。左侧面额区(tone 实色) + 中缝虚线撕边/上下半圆穿孔 + 右侧信息/操作区。
@@ -18,13 +19,6 @@ const toneText: Record<CouponTone, string> = {
   neutral: "text-foreground",
 };
 
-const statusLabel: Record<CouponStatus, string> = {
-  available: "立即领取",
-  claimed: "去使用",
-  used: "已使用",
-  expired: "已过期",
-};
-
 // 左侧面板宽度（与穿孔/中缝定位的 left 偏移强绑定）。
 const PANEL = { sm: "w-20", md: "w-28" } as const;
 const PANEL_LEFT = { sm: "left-20", md: "left-28" } as const;
@@ -36,18 +30,23 @@ function Denomination({
   discount,
   threshold,
   size,
-}: Pick<CouponProps, "kind" | "amount" | "discount" | "threshold" | "size">) {
+  discountSuffix,
+  freeShipping,
+}: Pick<CouponProps, "kind" | "amount" | "discount" | "threshold" | "size"> & {
+  discountSuffix: string;
+  freeShipping: string;
+}) {
   const big = size === "sm" ? "text-2xl" : "text-3xl";
   if (kind === "discount") {
     return (
       <div className="flex items-baseline font-bold leading-none">
         <span className={big}>{discount}</span>
-        <span className="ml-0.5 text-sm font-semibold">折</span>
+        <span className="ml-0.5 text-sm font-semibold">{discountSuffix}</span>
       </div>
     );
   }
   if (kind === "shipping") {
-    return <div className={cn("font-bold leading-none", size === "sm" ? "text-lg" : "text-xl")}>包邮</div>;
+    return <div className={cn("font-bold leading-none", size === "sm" ? "text-lg" : "text-xl")}>{freeShipping}</div>;
   }
   return (
     <div className="flex items-baseline font-bold leading-none">
@@ -76,11 +75,21 @@ export function Coupon({
   onSelect,
   className,
 }: CouponProps) {
+  const labels = useComponentLocale().coupon ?? {
+    available: "立即领取",
+    claimed: "去使用",
+    used: "已使用",
+    expired: "已过期",
+    noMinimumSpend: "无门槛",
+    minimumSpend: (amount: number) => `满${amount}可用`,
+    discountSuffix: "折",
+    freeShipping: "包邮",
+  };
   const inactive = status === "used" || status === "expired";
   const thresholdText =
-    kind === "shipping" ? "无门槛" : threshold ? `满${threshold}可用` : "无门槛";
+    kind === "shipping" ? labels.noMinimumSpend : threshold ? labels.minimumSpend(threshold) : labels.noMinimumSpend;
   const action = status === "available" ? onClaim : status === "claimed" ? onUse : undefined;
-  const label = actionLabel ?? statusLabel[status];
+  const label = actionLabel ?? labels[status];
 
   return (
     <div
@@ -124,7 +133,15 @@ export function Coupon({
             style={{ animation: "hulian-coupon-shine 3.4s ease-in-out infinite" }}
           />
         )}
-        <Denomination kind={kind} amount={amount} discount={discount} threshold={threshold} size={size} />
+        <Denomination
+          kind={kind}
+          amount={amount}
+          discount={discount}
+          threshold={threshold}
+          size={size}
+          discountSuffix={labels.discountSuffix}
+          freeShipping={labels.freeShipping}
+        />
         <span className="text-center text-[11px] leading-tight opacity-90">{thresholdText}</span>
       </div>
 

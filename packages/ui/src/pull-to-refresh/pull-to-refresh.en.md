@@ -40,9 +40,9 @@ import { PullToRefresh } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | `children` * | `ReactNode` | Scrollable content |
-| `pullingText` | `ReactNode` | Pulling-state content; defaults to `\u4e0b\u62c9\u5237\u65b0` ("Pull to refresh") |
-| `armedText` | `ReactNode` | Armed-state content; defaults to `\u91ca\u653e\u5237\u65b0` ("Release to refresh") |
-| `refreshingText` | `ReactNode` | Refreshing-state content; defaults to `\u5237\u65b0\u4e2d\u2026` ("Refreshing...") |
+| `pullingText` | `ReactNode` | Pulling-state content; defaults to the locale value and explicit content takes precedence. |
+| `armedText` | `ReactNode` | Armed-state content; defaults to the locale value. |
+| `refreshingText` | `ReactNode` | Refreshing-state content; defaults to the locale value. |
 
 ## Examples
 ```tsx
@@ -54,6 +54,7 @@ import { PullToRefresh } from "@hulianui/ui"
 ## Usage Guidelines
 - To keep the indicator visible while loading, `onRefresh` must **return a promise** that resolves after the data is ready. Returning void rebounds immediately.
 - The pull-down gesture is only entered when the content is scrolled to the top, and will not be accidentally triggered during scrolling.
+- All three state labels follow `ConfigProvider locale`; `enUS` provides English labels, and the no-provider fallback remains Chinese.
 
 ## Related
 [SwipeAction](../swipe-action/swipe-action.md) · [TabBar](../tab-bar/tab-bar.md) · [Fab](../fab/fab.md) · [ActionSheet](../action-sheet/action-sheet.md) · [Picker](../picker/picker.md) · [SafeArea](../safe-area/safe-area.md)

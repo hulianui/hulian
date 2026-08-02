@@ -59,7 +59,7 @@ const item: LiveChatItem = r === 0 ? { id, type: "enter", user: { name } }
 - Scrolling up pauses sticky-bottom behavior and exposes a new-message recovery button; do not force external scrolling.
 - Give the stream a fixed-height container.
 - Keep `maxItems` bounded rather than passing complete history.
-- Built-in runtime copy is Chinese: `"\u7f6e\u9876"` ("Pinned"), `` `${unread} \u6761\u65b0\u6d88\u606f \u2193` `` ("N new messages"), `"\u6765\u4e86"` ("joined"), `"\u5173\u6ce8\u4e86\u4e3b\u64ad \u2764"` ("followed the host"), and `"\u9001\u51fa"` ("sent").
+- Built-in “Pinned / new messages / joined / followed / sent” copy follows `ConfigProvider locale`; `enUS` provides English, and the no-provider fallback remains Chinese.
 
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

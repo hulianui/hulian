@@ -1,3 +1,5 @@
+import { copy } from "./site.content";
+import { demoHref } from "../../_components/demo-locale";
 // 瀚云 HanCloud 官网内容 SSoT。纯数据 + lucide 图标引用，被各 section 与子页消费。
 import {
   Rocket,
@@ -16,10 +18,10 @@ import {
 } from "lucide-react";
 
 export const brand = {
-  name: "瀚云",
+  name: copy("hancloud"),
   nameEn: "HanCloud",
-  tagline: "一体化云原生应用平台",
-  description: "从 git push 到全球上线，瀚云把部署、弹性算力与端到端可观测收进同一个平台。",
+  tagline: copy("theIntegratedCloudNativeApplicationPlatform"),
+  description: copy("hancloudTakesYouFromGitPushToAGlobalReleaseWithDeploymentElasticComputeAndEndToEndObservabilityO"),
 } as const;
 
 export interface NavLink {
@@ -28,10 +30,10 @@ export interface NavLink {
 }
 
 export const navLinks: NavLink[] = [
-  { label: "能力", href: "/demos/website#features" },
-  { label: "客户", href: "/demos/website#testimonials" },
-  { label: "定价", href: "/demos/website/pricing" },
-  { label: "联系", href: "/demos/website/contact" },
+  { label: copy("capabilities"), href: demoHref("/demos/website#features") },
+  { label: copy("customers"), href: demoHref("/demos/website#testimonials") },
+  { label: copy("pricing"), href: demoHref("/demos/website/pricing") },
+  { label: copy("contact"), href: demoHref("/demos/website/contact") },
 ];
 
 export interface Stat {
@@ -42,10 +44,10 @@ export interface Stat {
 }
 
 export const stats: Stat[] = [
-  { label: "累计部署次数", value: 2.4, suffix: "M+", decimals: 1 },
-  { label: "企业客户", value: 18000, suffix: "+" },
-  { label: "服务可用性", value: 99.99, suffix: "%", decimals: 2 },
-  { label: "全球边缘节点", value: 320, suffix: "" },
+  { label: copy("totalDeployments"), value: 2.4, suffix: "M+", decimals: 1 },
+  { label: copy("enterpriseCustomers"), value: 18000, suffix: "+" },
+  { label: copy("serviceAvailability"), value: 99.99, suffix: "%", decimals: 2 },
+  { label: copy("globalEdgeNodes"), value: 320, suffix: "" },
 ];
 
 export interface Feature {
@@ -59,35 +61,35 @@ export interface Feature {
 export const features: Feature[] = [
   {
     icon: Rocket,
-    title: "一键部署",
-    description: "git push 即上线，构建缓存命中秒级完成，异常一键回滚到任意历史版本。",
+    title: copy("oneClickDeployment"),
+    description: copy("deployOnGitPushCompleteCachedBuildsInSecondsAndRollBackAFailedReleaseToAnyPreviousVersionInOneCl"),
     span: "sm:col-span-2",
   },
   {
     icon: Cpu,
-    title: "弹性算力",
-    description: "按请求自动伸缩，闲时归零不计费。",
+    title: copy("elasticCompute"),
+    description: copy("automaticallyScalesUpAndDownBasedOnRequestsAndReturnsToZeroWhenIdleWithoutBilling"),
   },
   {
     icon: Globe,
-    title: "全球边缘网络",
-    description: "320 个边缘节点就近响应，静态资源与函数同图下发。",
+    title: copy("globalEdgeNetwork"),
+    description: copy("serveStaticAssetsAndFunctionsCloseToUsersFrom320EdgeNodes"),
   },
   {
     icon: Activity,
-    title: "端到端可观测",
-    description: "指标、日志、链路追踪开箱即用，无需自建采集栈。",
+    title: copy("endToEndObservability"),
+    description: copy("metricsLogsAndDistributedTracesWorkOutOfTheBoxWithNoCollectionStackToMaintain"),
     span: "sm:col-span-2",
   },
   {
     icon: ShieldCheck,
-    title: "企业级安全",
-    description: "SOC 2 Type II 与等保三级合规，密钥托管与审计全覆盖。",
+    title: copy("enterpriseGradeSecurity"),
+    description: copy("soc2TypeIiAndMlpsLevel3ComplianceWithManagedSecretsAndCompleteAuditing"),
   },
   {
     icon: Users,
-    title: "团队协作",
-    description: "细粒度角色权限、环境隔离与变更审计，多团队安全共用一套平台。",
+    title: copy("teamwork"),
+    description: copy("fineGrainedRolePermissionsEnvironmentIsolationAndChangeAuditingAllowMultipleTeamsToSafelyShareAP"),
     span: "sm:col-span-2",
   },
 ];
@@ -115,37 +117,37 @@ export interface Testimonial {
 
 export const testimonials: Testimonial[] = [
   {
-    quote: "迁移到瀚云后，我们的发布频率从每周一次提升到每天十几次，回滚再也不用值班同学手抖。",
-    name: "陈航",
-    title: "极光科技 · 工程 VP",
-    initial: "陈",
+    quote: copy("afterMovingToHancloudWeWentFromOneReleaseAWeekToMoreThanTenADayAndOurOnCallEngineersCanRollBackW"),
+    name: copy("chenHang"),
+    title: copy("auroraTechnologyEngineeringVp"),
+    initial: copy("chen"),
   },
   {
-    quote: "弹性算力闲时归零这一条，直接把我们的预发环境账单砍掉了七成。",
-    name: "林悦",
-    title: "云图数据 · 基础架构负责人",
-    initial: "林",
+    quote: copy("scalingElasticComputeToZeroWhenIdleCutOurStagingBillBy70"),
+    name: copy("linYue"),
+    title: copy("yuntuDataHeadOfInfrastructure"),
+    initial: copy("lin"),
   },
   {
-    quote: "可观测开箱即用，新同事第一天就能顺着链路追踪定位线上问题，省掉了搭一整套采集栈的活。",
+    quote: copy("observabilityWorksOutOfTheBoxSoNewEngineersCanTraceProductionIssuesOnDayOneWithoutBuildingATelem"),
     name: "Marco Reyes",
     title: "Northwind · Platform Lead",
     initial: "M",
   },
   {
-    quote: "全球边缘节点让海外用户的首屏时间从 1.8s 降到 0.4s，转化率肉眼可见地涨了。",
-    name: "苏晴",
-    title: "远帆出海 · CTO",
-    initial: "苏",
+    quote: copy("globalEdgeNodesCutInitialPageLoadTimeForInternationalUsersFrom18STo04SWithAClearLiftInConversion"),
+    name: copy("suQing"),
+    title: copy("farsailGlobalCto"),
+    initial: copy("su"),
   },
   {
-    quote: "合规这块原本要专人盯一个季度，瀚云的审计与密钥托管让我们一次过了等保。",
-    name: "赵明远",
-    title: "稳信金融 · 安全总监",
-    initial: "赵",
+    quote: copy("complianceUsedToConsumeAnEngineerSEntireQuarterHancloudSAuditTrailAndManagedKeysHelpedUsPassTheS"),
+    name: copy("zhaoMingyuan"),
+    title: copy("wenxinFinancialSecurityDirector"),
+    initial: copy("zhao"),
   },
   {
-    quote: "从 Demo 到生产，团队只学了一套心智模型。瀚云是我们用过最不打扰开发的平台。",
+    quote: copy("theSameWorkflowTookUsFromDemoToProductionHancloudStaysOutOfTheWayBetterThanAnyPlatformWeVeUsed"),
     name: "Aisha Khan",
     title: "Lumen AI · Head of Eng",
     initial: "A",
@@ -166,44 +168,44 @@ export interface Plan {
 
 export const plans: Plan[] = [
   {
-    name: "入门",
-    tagline: "个人项目与原型验证",
+    name: copy("gettingStarted"),
+    tagline: copy("personalProjectsAndPrototypeVerification"),
     monthly: 0,
     yearly: 0,
-    features: ["1 个生产项目", "每月 100 GB 流量", "社区支持", "自动 HTTPS 与全球 CDN", "单人协作"],
-    cta: "免费开始",
+    features: [copy("text1ProductionProject"), copy("text100GbPerMonth"), copy("communitySupport"), copy("automaticHttpsAndGlobalCdn"), copy("forIndividuals")],
+    cta: copy("startForFree"),
   },
   {
-    name: "专业",
-    tagline: "成长中的团队与生产业务",
+    name: copy("professional"),
+    tagline: copy("growingTeamAndProductionOperations"),
     monthly: 199,
     yearly: 1990,
     features: [
-      "无限项目",
-      "每月 1 TB 流量",
-      "弹性算力自动伸缩",
-      "指标 / 日志 / 链路追踪",
-      "最多 10 名成员",
-      "工单 4 小时响应",
+      copy("unlimitedProjects"),
+      copy("text1TbPerMonth"),
+      copy("autoscalingCompute"),
+      copy("metricsLogsDistributedTraces"),
+      copy("upTo10Members"),
+      copy("fourHourTicketResponse"),
     ],
-    cta: "开始 14 天试用",
+    cta: copy("startA14DayTrial"),
     highlight: true,
   },
   {
-    name: "企业",
-    tagline: "合规、私有化与专属支持",
+    name: copy("enterprise"),
+    tagline: copy("compliancePrivateDeploymentAndDedicatedSupport"),
     monthly: 0,
     yearly: 0,
-    customPrice: "定制",
+    customPrice: copy("custom"),
     features: [
-      "专属边缘节点与算力池",
-      "SOC 2 / 等保三级合规",
-      "SSO 与细粒度审计",
-      "专属客户成功经理",
-      "99.99% SLA 保障",
-      "私有化部署可选",
+      copy("dedicatedEdgeNodesAndComputePool"),
+      copy("soc2ClassIiiCompliance"),
+      copy("ssoAndFineGrainedAuditing"),
+      copy("dedicatedCustomerSuccessManager"),
+      copy("text9999SlaGuaranteed"),
+      copy("privateDeploymentOptional"),
     ],
-    cta: "预约演示",
+    cta: copy("bookADemo"),
   },
 ];
 
@@ -214,29 +216,29 @@ export interface Faq {
 
 export const faqs: Faq[] = [
   {
-    question: "从其他平台迁移瀚云复杂吗？",
+    question: copy("isItDifficultToMigrateToHancloud"),
     answer:
-      "大多数项目无需改代码。瀚云自动识别框架并生成构建配置，你只需连接代码仓库；我们也提供一对一迁移协助。",
+      copy("mostProjectsNeedNoCodeChangesConnectARepositoryAndHancloudDetectsTheFrameworkAndCreatesTheBuildC"),
   },
   {
-    question: "免费版会不会有隐藏限制？",
+    question: copy("areThereAnyHiddenLimitationsInTheFreeVersion"),
     answer:
-      "免费版包含 1 个生产项目、每月 100 GB 流量与全球 CDN，足以承载真实的个人项目，且不会因到期强制升级。",
+      copy("freeIncludesOneProductionProject100GbOfMonthlyTrafficAndAGlobalCdnEnoughForRealPersonalProjectsW"),
   },
   {
-    question: "弹性算力是如何计费的？",
+    question: copy("howIsElasticComputeBilled"),
     answer:
-      "按实际请求时长计费，闲时自动归零不产生费用。你可以为每个环境设置预算上限，超出前会提前告警。",
+      copy("payOnlyForRequestExecutionTimeWithNoIdleChargesAfterScalingToZeroSetABudgetCapForEachEnvironment"),
   },
   {
-    question: "支持哪些合规认证？",
+    question: copy("whatComplianceCertificationsAreSupported"),
     answer:
-      "专业版与企业版均运行在通过 SOC 2 Type II 审计的基础设施上，企业版额外提供等保三级、SSO 与私有化部署。",
+      copy("proAndEnterpriseRunOnSoc2TypeIiAuditedInfrastructureEnterpriseAlsoIncludesMlpsLevel3ComplianceSs"),
   },
   {
-    question: "出现故障时如何获得支持？",
+    question: copy("howDoIGetHelpDuringAnIncident"),
     answer:
-      "免费版享社区支持，专业版工单 4 小时内响应，企业版配备专属客户成功经理与 99.99% SLA。",
+      copy("freeIncludesCommunitySupportProIncludesAFourHourTicketResponseAndEnterpriseIncludesADedicatedCus"),
   },
 ];
 
@@ -247,38 +249,38 @@ export interface FooterColumn {
 
 export const footerColumns: FooterColumn[] = [
   {
-    title: "产品",
+    title: copy("products"),
     links: [
-      { label: "一键部署", href: "/demos/website#features" },
-      { label: "弹性算力", href: "/demos/website#features" },
-      { label: "边缘网络", href: "/demos/website#features" },
-      { label: "可观测", href: "/demos/website#features" },
+      { label: copy("oneClickDeployment"), href: demoHref("/demos/website#features") },
+      { label: copy("elasticCompute"), href: demoHref("/demos/website#features") },
+      { label: copy("edgeNetwork"), href: demoHref("/demos/website#features") },
+      { label: copy("observability"), href: demoHref("/demos/website#features") },
     ],
   },
   {
-    title: "解决方案",
+    title: copy("solutions"),
     links: [
-      { label: "初创团队", href: "/demos/website#testimonials" },
-      { label: "电商出海", href: "/demos/website#testimonials" },
-      { label: "AI 应用", href: "/demos/website#testimonials" },
+      { label: copy("startups"), href: demoHref("/demos/website#testimonials") },
+      { label: copy("globalEcommerce"), href: demoHref("/demos/website#testimonials") },
+      { label: copy("aiApplications"), href: demoHref("/demos/website#testimonials") },
     ],
   },
   {
-    title: "资源",
+    title: copy("resources"),
     links: [
-      { label: "文档", href: "/demos/website" },
-      { label: "博客", href: "/demos/website" },
-      { label: "服务状态", href: "/demos/website" },
-      { label: "更新日志", href: "/demos/website" },
+      { label: copy("documentation"), href: demoHref("/demos/website") },
+      { label: copy("blog"), href: demoHref("/demos/website") },
+      { label: copy("serviceStatus"), href: demoHref("/demos/website") },
+      { label: copy("changelog"), href: demoHref("/demos/website") },
     ],
   },
   {
-    title: "公司",
+    title: copy("company"),
     links: [
-      { label: "关于我们", href: "/demos/website" },
-      { label: "加入我们", href: "/demos/website" },
-      { label: "联系销售", href: "/demos/website/contact" },
-      { label: "隐私政策", href: "/demos/website" },
+      { label: copy("aboutUs"), href: demoHref("/demos/website") },
+      { label: copy("careers"), href: demoHref("/demos/website") },
+      { label: copy("contactSales"), href: demoHref("/demos/website/contact") },
+      { label: copy("privacyPolicy"), href: demoHref("/demos/website") },
     ],
   },
 ];

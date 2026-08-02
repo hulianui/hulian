@@ -1,3 +1,4 @@
+import { copy } from "./testimonials.content";
 import { Marquee, Card, CardBody, Avatar, Text } from "@hulianui/ui";
 import { Section } from "../section";
 import { testimonials, type Testimonial } from "../../_data/site";
@@ -6,7 +7,7 @@ function QuoteCard({ t }: { t: Testimonial }) {
   return (
     <Card variant="outline" className="w-[340px] shrink-0">
       <CardBody className="flex flex-col gap-4 p-5">
-        <Text className="leading-relaxed">“{t.quote}”</Text>
+        <Text className="leading-relaxed">{copy("text")}{t.quote}{copy("text2")}</Text>
         <div className="flex items-center gap-3">
           <Avatar size="sm" fallback={t.initial} />
           <div className="min-w-0">
@@ -30,9 +31,9 @@ export function Testimonials() {
   return (
     <Section
       id="testimonials"
-      eyebrow="客户怎么说"
-      title="被认真做产品的团队信赖"
-      subtitle="从初创到上市公司，他们用瀚云更快、更稳地把想法送到用户面前。"
+      eyebrow={copy("whatCustomersSay")}
+      title={copy("trustedByTeamsThatCareAboutCraft")}
+      subtitle={copy("fromStartupsToPublicCompaniesTeamsUseHancloudToShipIdeasFasterAndMoreReliably")}
     >
       <div className="flex flex-col gap-5">
         <Marquee pauseOnHover duration={40} gap="1.25rem">

@@ -1,3 +1,5 @@
+import { copy } from "./cta.content";
+import { demoHref } from "../../../_components/demo-locale";
 import Link from "next/link";
 import { ShimmerButton, Button, Heading, Text, Meteors } from "@hulianui/ui";
 import { ArrowRight } from "lucide-react";
@@ -14,23 +16,27 @@ export function Cta() {
         <Meteors number={24} className="text-border" />
         <div className="relative flex flex-col items-center gap-5">
           <Heading level={2} size="3xl" weight="bold" balance>
-            5 分钟，把你的第一个项目送上瀚云
+
+            {copy("deployYourFirstProjectOnHancloudIn5Minutes")}
           </Heading>
           <Text tone="muted" size="lg" className="max-w-xl">
-            免费开始，无需信用卡。需要规模化与合规支持时，我们的团队随时在线。
+
+            {copy("startFreeWithNoCreditCardTalkToOurTeamWhenYouNeedHelpWithScaleOrCompliance")}
           </Text>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <ShimmerButton
               background="var(--color-primary-foreground)"
               shimmerColor="var(--color-primary)"
               className="text-primary"
-              render={<Link href="/demos/website/contact" />}
+              render={<Link href={demoHref("/demos/website/contact")} />}
             >
-              免费开始
+
+              {copy("startForFree")}
               <ArrowRight className="ml-2 size-4" aria-hidden />
             </ShimmerButton>
-            <Button variant="outline" size="lg" render={<Link href="/demos/website/pricing" />}>
-              对比套餐
+            <Button variant="outline" size="lg" render={<Link href={demoHref("/demos/website/pricing")} />}>
+
+              {copy("comparePlans")}
             </Button>
           </div>
         </div>

@@ -11,7 +11,7 @@ import { orders, STATUS_LABEL, STATUS_TONE } from "../../_data/orders";
 import { productById, productImage, formatPrice } from "../../_data/products";
 import { useShop } from "../../_lib/shop-store";
 import type { Order } from "../../_data/types";
-import { SHOP_BASE } from "../../_components/nav-config";
+import { SHOP_LOCATION_BASE } from "../../_components/nav-config";
 
 // 订单状态 Tabs
 const TAB_FILTERS = [
@@ -251,7 +251,7 @@ export default function OrdersPage() {
               >
                 <Button
                   tone="brand"
-                  onClick={() => (window.location.href = `${SHOP_BASE}/products`)}
+                  onClick={() => (window.location.href = `${SHOP_LOCATION_BASE}/products`)}
                 >
 
                   {copy("browseProducts")}

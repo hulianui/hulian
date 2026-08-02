@@ -82,5 +82,5 @@ export function copy(key: ContentKey, ...values: readonly unknown[]): string {
   return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
 }
 
-const dictionary: Dictionary = { key: "demo-shop--shop-orders-page", content: t(content) };
+const dictionary: Dictionary = { key: "demo-shop-shop-orders-page", content: t(content) };
 export default dictionary;

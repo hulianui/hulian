@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { RefreshCw } from "../_icons";
 import { cn } from "../lib/cn";
 import type { PullToRefreshProps } from "./pull-to-refresh.types";
+import { useComponentLocale } from "../config/locale";
 
 // 下拉刷新（"use client"·零依赖）：滚动容器置顶时下拉，内容 translateY 跟手(带阻尼)，越过 threshold 进 armed，
 // 松手触发 onRefresh 并保持刷新态直至 Promise 结束再回弹。头部指示器高度随下拉距离生长。
@@ -15,11 +16,19 @@ export function PullToRefresh({
   children,
   threshold = 64,
   resistance = 0.5,
-  pullingText = "下拉刷新",
-  armedText = "释放刷新",
-  refreshingText = "刷新中…",
+  pullingText,
+  armedText,
+  refreshingText,
   className,
 }: PullToRefreshProps) {
+  const locale = useComponentLocale().pullToRefresh ?? {
+    pulling: "下拉刷新",
+    armed: "释放刷新",
+    refreshing: "刷新中…",
+  };
+  const resolvedPullingText = pullingText ?? locale.pulling;
+  const resolvedArmedText = armedText ?? locale.armed;
+  const resolvedRefreshingText = refreshingText ?? locale.refreshing;
   const scroller = useRef<HTMLDivElement>(null);
   const [dist, setDist] = useState(0);
   const [status, setStatus] = useState<Status>("idle");
@@ -130,7 +139,13 @@ export function PullToRefresh({
             )}
             aria-hidden
           />
-          <span>{refreshing ? refreshingText : status === "armed" ? armedText : pullingText}</span>
+          <span>
+            {refreshing
+              ? resolvedRefreshingText
+              : status === "armed"
+                ? resolvedArmedText
+                : resolvedPullingText}
+          </span>
         </div>
       </div>
       <div

@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./site-shell.content";
+import { demoHref } from "../../_components/demo-locale";
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
@@ -22,13 +24,13 @@ import {
 import { Code2, AtSign, Mail, Rss, Palette, ArrowUpRight } from "lucide-react";
 import { profile, type SocialKind } from "../_data/profile";
 
-const BASE = "/demos/personal";
+const BASE = demoHref("/demos/personal");
 
 const NAV = [
-  { label: "作品", href: `${BASE}#work` },
-  { label: "关于", href: `${BASE}#about` },
-  { label: "历程", href: `${BASE}#journey` },
-  { label: "留言板", href: `${BASE}/guestbook` },
+  { label: copy("work"), href: `${BASE}#work` },
+  { label: copy("about"), href: `${BASE}#about` },
+  { label: copy("journey"), href: `${BASE}#journey` },
+  { label: copy("guestbook"), href: `${BASE}/guestbook` },
 ];
 
 // lucide v1 无品牌图标 → 用语义相近的通用图标。
@@ -44,7 +46,8 @@ function Brand() {
   return (
     <Link href={BASE} className="flex items-center gap-2.5">
       <span className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[var(--color-chart-2)] text-sm font-bold text-primary-foreground">
-        林
+
+        {copy("lin")}
       </span>
       <span className="flex items-baseline gap-1.5">
         <span className="text-base font-semibold tracking-tight text-foreground">{profile.name}</span>
@@ -99,7 +102,8 @@ function TopNav() {
           </li>
           <li className="hidden md:flex">
             <Button size="sm" render={<Link href={`${BASE}#contact`} />}>
-              联系我
+
+              {copy("contactMe")}
             </Button>
           </li>
           <li className="flex md:hidden">
@@ -123,7 +127,8 @@ function TopNav() {
             ))}
             <Divider className="my-2" />
             <Button size="sm" className="w-full" render={<Link href={`${BASE}#contact`} onClick={() => setOpen(false)} />}>
-              联系我
+
+              {copy("contactMe")}
             </Button>
           </Stack>
         </div>
@@ -140,7 +145,7 @@ function SiteFooter() {
           <div>
             <Brand />
             <Text tone="muted" size="sm" className="mt-3 max-w-xs">
-              {profile.tagline} 本站 100% 由 @hulianui/ui 搭建，人物与产品均为虚构。
+              {profile.tagline}  {copy("thisSiteIsBuiltEntirelyWithAllPeopleAndProductsAreFictional")}
             </Text>
           </div>
           <Stack direction="row" gap={1.5} wrap>
@@ -175,7 +180,8 @@ function SiteFooter() {
             href="/demos"
             className="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-foreground"
           >
-            返回示例库 <ArrowUpRight className="size-3.5" aria-hidden />
+
+            {copy("backToDemos")} <ArrowUpRight className="size-3.5" aria-hidden />
           </Link>
         </Stack>
       </div>

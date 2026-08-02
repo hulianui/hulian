@@ -49,7 +49,7 @@ Each subcomponent inherits the attributes of its underlying native element.
 | Name | Type | Default | Description |
 |------|------|------|------|
 | isOpen | `boolean` | `false` | Controlled open state. |
-| aria-label | `string` | Based on `isOpen` | Accessible label. The built-in Chinese labels mean “Close menu” when open and “Open menu” when closed. |
+| aria-label | `string` | Locale value based on `isOpen` | Accessible label. An explicit value takes precedence over `ConfigProvider`. |
 | className | `string` | — | Additional class name. |
 
 `NavbarBrand` is a container with no component-specific props.
@@ -90,7 +90,7 @@ function Header() {
 
 ## Usage guidelines
 
-The mobile toggle uses `"\u5173\u95ed\u83dc\u5355"` ("Close menu") and `"\u6253\u5f00\u83dc\u5355"` ("Open menu") when `aria-label` is absent. Supply `aria-label` for English runtime copy.
+Without an explicit `aria-label`, the mobile toggle follows `ConfigProvider locale`: `enUS` provides “Open menu” and “Close menu”, while the no-provider fallback remains Chinese.
 
 - `NavbarMenuToggle` is controlled: maintain `isOpen` and `onToggle` in application state. The component does not render or manage a mobile menu panel, so conditionally render that panel from `open` yourself.
 - No other known caveats.

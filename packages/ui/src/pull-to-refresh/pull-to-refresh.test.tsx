@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PullToRefresh } from "./pull-to-refresh";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -40,6 +42,46 @@ describe("PullToRefresh", () => {
     fireEvent.pointerDown(el, { clientY: 0 });
     fireEvent.pointerMove(el, { clientY: 40 }); // 20 < 64
     expect(getByText("下拉刷新")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes the default pulling text", () => {
+    const { container, getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <PullToRefresh onRefresh={() => {}} threshold={64}>
+          <div>content</div>
+        </PullToRefresh>
+      </ConfigProvider>,
+    );
+    const el = scroller(container);
+    fireEvent.pointerDown(el, { clientY: 0 });
+    fireEvent.pointerMove(el, { clientY: 40 });
+    expect(getByText("Pull to refresh")).toBeTruthy();
+  });
+
+  it("legacy locale falls back to Chinese while explicit text overrides enUS", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, pullToRefresh: undefined } };
+    const { container, getByText, rerender } = render(
+      <ConfigProvider locale={legacy}>
+        <PullToRefresh onRefresh={() => {}} threshold={64}>
+          <div>content</div>
+        </PullToRefresh>
+      </ConfigProvider>,
+    );
+    let el = scroller(container);
+    fireEvent.pointerDown(el, { clientY: 0 });
+    fireEvent.pointerMove(el, { clientY: 40 });
+    expect(getByText("下拉刷新")).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <PullToRefresh onRefresh={() => {}} threshold={64} pullingText="Drag to reload">
+          <div>content</div>
+        </PullToRefresh>
+      </ConfigProvider>,
+    );
+    el = scroller(container);
+    fireEvent.pointerDown(el, { clientY: 0 });
+    fireEvent.pointerMove(el, { clientY: 40 });
+    expect(getByText("Drag to reload")).toBeTruthy();
   });
 
   it("armed 后松手触发 onRefresh，结束回弹归零", async () => {

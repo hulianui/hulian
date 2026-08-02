@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
 import type { LiveChatItem, LiveChatProps } from "./live-chat.types";
+import { useComponentLocale } from "../config/locale";
 
 /** 距底 px 阈值内即视为「在底部」。 */
 const BOTTOM_THRESHOLD = 24;
@@ -16,6 +17,13 @@ export function LiveChat({
   overlay = false,
   className,
 }: LiveChatProps) {
+  const labels = useComponentLocale().liveChat ?? {
+    pinned: "置顶",
+    newMessages: (count: number) => `${count} 条新消息 ↓`,
+    entered: "来了",
+    followed: "关注了主播 ❤",
+    sent: "送出",
+  };
   const scrollRef = useRef<HTMLDivElement>(null);
   const atBottom = useRef(true);
   const [unread, setUnread] = useState(0);
@@ -60,7 +68,7 @@ export function LiveChat({
               key={it.id}
               className="rounded-[var(--radius)] border border-primary/30 bg-primary/10 px-2.5 py-1.5 text-xs text-foreground"
             >
-              <span className="mr-1 font-semibold text-primary">置顶</span>
+              <span className="mr-1 font-semibold text-primary">{labels.pinned}</span>
               {it.text}
             </div>
           ))}
@@ -87,7 +95,7 @@ export function LiveChat({
           onClick={resume}
           className="absolute inset-x-0 bottom-1 mx-auto w-fit rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-md transition hover:bg-primary-hover"
         >
-          {unread} 条新消息 ↓
+          {labels.newMessages(unread)}
         </button>
       )}
     </div>
@@ -103,6 +111,13 @@ function LevelBadge({ level }: { level: number }) {
 }
 
 function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }) {
+  const labels = useComponentLocale().liveChat ?? {
+    pinned: "置顶",
+    newMessages: (count: number) => `${count} 条新消息 ↓`,
+    entered: "来了",
+    followed: "关注了主播 ❤",
+    sent: "送出",
+  };
   // 浅色态（叠加在视频上）：主文字白、次要文字半透白，带文字阴影。
   const nameMuted = overlay ? "text-white/65" : "text-muted";
   const body = overlay ? "text-white" : "text-foreground";
@@ -114,7 +129,7 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
   if (item.type === "enter") {
     return (
       <div className={cn("text-xs", nameMuted, shadow)}>
-        <span className="text-chart-3">{item.user?.name}</span> 来了
+        <span className="text-chart-3">{item.user?.name}</span> {labels.entered}
       </div>
     );
   }
@@ -122,7 +137,7 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
     return (
       <div className={cn("text-xs", shadow)}>
         <span className="font-medium text-chart-1">{item.user?.name}</span>
-        <span className={nameMuted}> 关注了主播 ❤</span>
+        <span className={nameMuted}> {labels.followed}</span>
       </div>
     );
   }
@@ -130,7 +145,7 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
     return (
       <div className={cn("flex items-center gap-1.5 rounded-[var(--radius)] bg-chart-4/15 px-2 py-1 text-xs", shadow)}>
         <span className={cn("font-medium", body)}>{item.user?.name}</span>
-        <span className={nameMuted}>送出</span>
+        <span className={nameMuted}>{labels.sent}</span>
         <span className="font-semibold text-chart-4">
           {item.gift?.icon} {item.gift?.name}
         </span>

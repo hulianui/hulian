@@ -30,6 +30,7 @@ import { TabBar } from "@hulianui/ui"
 | `defaultValue` | `string` | 首项 key | 非受控初始 key |
 | `safeArea` | `boolean` | `true` | 吃底部安全区 inset |
 | `fixed` | `boolean` | `true` | fixed 贴底；false 则随文档流 |
+| `aria-label` | `string` | 跟随 locale | 导航区无障碍标签；显式传值优先 |
 | `className` | `string` | — | — |
 
 **TabBarItem**：`key: string` · `label: ReactNode` · `icon?: ReactNode`（默认态图标）· `activeIcon?: ReactNode`（激活态，缺省复用 icon）· `dot?: boolean`（红点）· `badge?: ReactNode`（角标，优先于 dot）· `disabled?: boolean`。
@@ -57,6 +58,7 @@ const [tab, setTab] = useState("home");
 ## 禁忌 / 坑
 - 默认 `fixed` 贴视口底 + 吃底部安全区。放进手机框/容器内演示时须 `fixed={false}` 收进文档流，否则会飘到整页底部；容器内不需要安全区时再加 `safeArea={false}`。
 - `badge` 与 `dot` 同时给时 `badge` 优先。
+- 导航区标签跟随 `ConfigProvider locale`：`zhCN` 为“底部导航”，`enUS` 为 “Bottom navigation”。
 
 ## 相关
 [Fab](../fab/fab.md) · [ActionSheet](../action-sheet/action-sheet.md) · [Picker](../picker/picker.md) · [SwipeAction](../swipe-action/swipe-action.md) · [PullToRefresh](../pull-to-refresh/pull-to-refresh.md) · [SafeArea](../safe-area/safe-area.md)

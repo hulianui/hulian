@@ -5,7 +5,7 @@ import { useMockData } from "../../../lib/async";
 import { productById } from "../../_data/products";
 import { useShop } from "../../_lib/shop-store";
 import { ProductCard } from "../../_components/product-card";
-import { SHOP_BASE } from "../../_components/nav-config";
+import { SHOP_LOCATION_BASE } from "../../_components/nav-config";
 import type { Product } from "../../_data/types";
 
 function FavoriteSkeleton() {
@@ -75,7 +75,7 @@ export default function FavoritesPage() {
           title={copy("yourFavoritesAreEmpty")}
           description={copy("browseTheCatalogAndSaveTheProductsYouLove")}
         >
-          <Button tone="brand" onClick={() => (window.location.href = `${SHOP_BASE}/products`)}>
+          <Button tone="brand" onClick={() => (window.location.href = `${SHOP_LOCATION_BASE}/products`)}>
 
             {copy("browseProducts")}
           </Button>

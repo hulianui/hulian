@@ -1,7 +1,8 @@
 import { copy } from "./nav-config.content";
-import { withDocsBasePath } from "../../../../lib/docs-locale";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 // 商城导航配置 SSoT。
-export const SHOP_BASE = withDocsBasePath("/demos/shop");
+export const SHOP_BASE = demoHref("/demos/shop");
+export const SHOP_LOCATION_BASE = demoLocationHref("/demos/shop");
 
 export const primaryNav = [
   { label: copy("home"), href: SHOP_BASE },

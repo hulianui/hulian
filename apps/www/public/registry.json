@@ -1963,6 +1963,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
         "https://hulianui.haloritual.com/r/code-block.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -3003,6 +3004,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -6644,6 +6646,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -8172,6 +8175,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -8223,6 +8227,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/avatar.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/number-ticker.json"
       ],
@@ -8272,6 +8277,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -9533,6 +9539,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -11382,6 +11389,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -19148,6 +19156,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -19293,6 +19302,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {

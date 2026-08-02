@@ -31,7 +31,7 @@ import { ColorSwatchPicker } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Color block size |
 | disabled | `boolean` | `false` | Disable entire group |
 | className | `string` | — | Additional class name for the container. |
-| aria-label | `string` | `"\u989c\u8272\u8272\u677f"` | Accessible name; the built-in Chinese copy means “Color palette.” |
+| aria-label | `string` | Locale default | Accessible name; `enUS` provides “Color swatches”, and an explicit value takes precedence. |
 
 ## Events
 
@@ -53,6 +53,7 @@ const [v, setV] = useState("#3b82f6");
 
 - A controlled `value` must be **strictly equal** to an entry in `colors` to show as selected. `"#FFF"` differs from `"#ffffff"`, and `"#3b82f6"` differs from `"rgb(59,130,246)"`; normalize casing and format before passing values.
 - The component supports single selection only.
+- The default group label follows `ConfigProvider locale`; the no-provider fallback remains Chinese.
 
 ## Related
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

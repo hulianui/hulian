@@ -2,6 +2,8 @@ import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TabBar } from "./tab-bar";
 import type { TabBarItem } from "./tab-bar.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -14,8 +16,9 @@ const items: TabBarItem[] = [
 
 describe("TabBar", () => {
   it("非受控默认激活首项（aria-current=page）", () => {
-    const { getByText } = render(<TabBar items={items} />);
+    const { getByText, getByRole } = render(<TabBar items={items} />);
     expect(getByText("甲").closest("button")?.getAttribute("aria-current")).toBe("page");
+    expect(getByRole("navigation", { name: "底部导航" })).toBeTruthy();
   });
 
   it("点击切换激活项并触发 onChange", () => {
@@ -50,5 +53,30 @@ describe("TabBar", () => {
   it("defaultValue 指定初始激活项", () => {
     const { getByText } = render(<TabBar items={items} defaultValue="b" />);
     expect(getByText("乙").closest("button")?.getAttribute("aria-current")).toBe("page");
+  });
+
+  it("ConfigProvider locale=enUS localizes the navigation label", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <TabBar items={items} fixed={false} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("navigation", { name: "Bottom navigation" })).toBeTruthy();
+  });
+
+  it("legacy locale falls back to Chinese and aria-label overrides the locale", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, tabBar: undefined } };
+    const { getByRole, rerender } = render(
+      <ConfigProvider locale={legacy}>
+        <TabBar items={items} fixed={false} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("navigation", { name: "底部导航" })).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <TabBar items={items} fixed={false} aria-label="Primary app navigation" />
+      </ConfigProvider>,
+    );
+    expect(getByRole("navigation", { name: "Primary app navigation" })).toBeTruthy();
   });
 });

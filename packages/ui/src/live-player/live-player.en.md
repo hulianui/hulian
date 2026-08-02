@@ -65,7 +65,7 @@ import { LivePlayer } from "@hulianui/ui"
 - Quality is controlled; write changes back.
 - Omit host.onFollow for display-only host details.
 - Surface overrides src. The built-in video intentionally exposes no VOD controls.
-- The host control uses the runtime strings `"\u5df2\u5173\u6ce8"` ("Following") and `"+ \u5173\u6ce8"` ("+ Follow").
+- Follow-state copy follows `ConfigProvider locale`; `enUS` provides “+ Follow / Following”, and the no-provider fallback remains Chinese.
 
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

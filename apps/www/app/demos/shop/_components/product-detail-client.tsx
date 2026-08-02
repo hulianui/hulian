@@ -25,7 +25,7 @@ import {
 } from "@hulianui/ui";
 import { productById, productGallery, formatPrice } from "../_data/products";
 import { ReviewSection } from "./review-section";
-import { SHOP_BASE } from "./nav-config";
+import { SHOP_LOCATION_BASE } from "./nav-config";
 import { useShop } from "../_lib/shop-store";
 
 const ANCHOR_ITEMS = [
@@ -143,8 +143,8 @@ export function ProductDetailClient({ productId }: { productId: string }) {
   };
 
   const breadcrumbItems = [
-    { label: copy("home"), href: SHOP_BASE },
-    { label: copy("allProducts"), href: `${SHOP_BASE}/products` },
+    { label: copy("home"), href: SHOP_LOCATION_BASE },
+    { label: copy("allProducts"), href: `${SHOP_LOCATION_BASE}/products` },
     { label: product.name },
   ];
 

@@ -81,7 +81,7 @@ const [items, setItems] = useState(fields);
 - Inputs, controls, links, and contenteditable descendants are guarded from pointer dragging even when `handle={false}`; see [[dnd-kit-draggable-container-guard-interactive-children]]. Add `data-no-drag` to custom interactive canvases.
 - The guard stops at the item element and will not lock the list because an outer anchor or label exists.
 - Use `state.index` instead of repeatedly calling `items.findIndex`.
-- Each drag control is labeled with Chinese `"\u62d6\u62fd\u6392\u5e8f\uff08\u7b2c N \u9879\uff09"`, meaning “Drag to reorder item N.”
+- Drag-handle accessible labels follow `ConfigProvider locale`; `enUS` provides “Reorder item N”, while the no-provider fallback remains Chinese.
 
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

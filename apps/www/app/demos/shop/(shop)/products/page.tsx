@@ -28,7 +28,7 @@ import { categories } from "../../_data/categories";
 import type { CategoryKey, Product } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
 import { ProductCard } from "../../_components/product-card";
-import { SHOP_BASE } from "../../_components/nav-config";
+import { SHOP_BASE, SHOP_LOCATION_BASE } from "../../_components/nav-config";
 
 const PAGE_SIZE = 8;
 
@@ -245,7 +245,7 @@ function ProductsInner() {
   };
 
   const breadcrumbItems = [
-    { label: copy("home"), href: SHOP_BASE },
+    { label: copy("home"), href: SHOP_LOCATION_BASE },
     { label: isFlash ? copy("flashSale") : copy("allProducts") },
   ];
 
@@ -447,7 +447,7 @@ function ProductsInner() {
             {categories.map((c) => (
               <a
                 key={c.key}
-                href={`${SHOP_BASE}/products?cat=${c.key}`}
+                href={`${SHOP_LOCATION_BASE}/products?cat=${c.key}`}
                 className="block rounded px-2 py-1 text-xs text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 {c.name}

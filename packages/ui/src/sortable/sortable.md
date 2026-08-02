@@ -92,6 +92,7 @@ const [items, setItems] = useState(fields);
 - 受控组件：`onChange` 不会替你改 state，必须自己把新数组写回（`onChange={setItems}`）。
 - `getId` 返回的 id 必须稳定唯一；用数组下标当 id 会在重排后错乱。
 - 行内的 `input / textarea / select / button / label / a / [role=button] / [role=link] / [contenteditable]` 不会劫持拖拽——守卫内置在指针 sensor 里，**默认（`handle={false}`）就安全**，不必为此设 `handle`（参考 [[dnd-kit-draggable-container-guard-interactive-children]]）。自绘的可拖控件（色卡、滑块、画布）不在上述标签之列，给它加 `data-no-drag` 即可放行。
+- 拖拽手柄的无障碍名称跟随 `ConfigProvider locale`；`enUS` 提供 “Reorder item N”，未包 Provider 时保持中文。
 - 守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。
 - 展示序号别用 `items.findIndex(...)` 反查（O(n²)），直接取 `renderItem` 第二参的 `state.index`。
 

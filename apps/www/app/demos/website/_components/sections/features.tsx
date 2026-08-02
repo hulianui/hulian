@@ -1,3 +1,4 @@
+import { copy } from "./features.content";
 import { BentoGrid, BentoCard, BorderBeam } from "@hulianui/ui";
 import { Section } from "../section";
 import { features } from "../../_data/site";
@@ -7,9 +8,9 @@ export function Features() {
   return (
     <Section
       id="features"
-      eyebrow="平台能力"
-      title="一个平台，覆盖应用上线的每一环"
-      subtitle="从部署到弹性算力，再到端到端可观测——不必再拼凑五六套工具与脚本。"
+      eyebrow={copy("platformCapabilities")}
+      title={copy("onePlatformForEveryStepFromCodeToProduction")}
+      subtitle={copy("deploymentElasticComputeAndEndToEndObservabilityWorkTogetherWithoutAPatchworkOfToolsAndScripts")}
     >
       <BentoGrid className="sm:auto-rows-[11rem]">
         {features.map((f) => {

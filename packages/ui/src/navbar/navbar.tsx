@@ -7,6 +7,7 @@ import type {
   NavbarItemProps,
   NavbarMenuToggleProps,
 } from "./navbar.types";
+import { useComponentLocale } from "../config/locale";
 
 // 复合导航栏皮肤（含可交互 MenuToggle 故 "use client"）。
 // 布局/路由由消费者用子件组合，本件只负责皮肤与无障碍语义。
@@ -70,12 +71,13 @@ export function NavbarMenuToggle({
   className,
   "aria-label": ariaLabel,
 }: NavbarMenuToggleProps) {
+  const labels = useComponentLocale().navbar ?? { openMenu: "打开菜单", closeMenu: "关闭菜单" };
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-expanded={isOpen}
-      aria-label={ariaLabel ?? (isOpen ? "关闭菜单" : "打开菜单")}
+      aria-label={ariaLabel ?? (isOpen ? labels.closeMenu : labels.openMenu)}
       className={cn(
         // size-11 = 44px：移动端专属控件（sm:hidden），满足触控目标 ≥44px
         "inline-flex size-11 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring sm:hidden",

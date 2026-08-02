@@ -1,3 +1,5 @@
+import { copy } from "./product.content";
+import { demoHref } from "../../../_components/demo-locale";
 import Link from "next/link";
 import {
   Safari,
@@ -13,17 +15,17 @@ import {
 import { CheckCircle2, ArrowRight, GitBranch, Rocket, Smartphone, Wifi } from "lucide-react";
 
 const highlights = [
-  "实时构建日志与部署预览，每个 PR 自动生成独立环境",
-  "一键回滚到任意历史版本，平均恢复时间 < 30 秒",
-  "指标 / 日志 / 链路追踪同屏，问题定位不再跳工具",
+  copy("liveBuildLogsAndDeploymentPreviewsWithAnIsolatedEnvironmentForEveryPullRequest"),
+  copy("rollBackToAnyPreviousVersionInOneClickWithAnAverageRecoveryTimeUnder30Seconds"),
+  copy("metricsLogsAndTracesInOneViewSoInvestigationsStayInOneTool"),
 ];
 
 // 内嵌在 Safari 外壳里的迷你「部署面板」，100% 由 hulian 原语拼成。
 function DeployDashboard() {
   const deploys = [
-    { branch: "main", env: "生产", status: "已上线", tone: "success" as const, time: "12 秒前" },
-    { branch: "feat/checkout", env: "预览", status: "构建中", tone: "warning" as const, time: "刚刚" },
-    { branch: "fix/cache", env: "预览", status: "已上线", tone: "success" as const, time: "3 分钟前" },
+    { branch: "main", env: copy("production"), status: copy("live"), tone: "success" as const, time: copy("text12SecondsAgo") },
+    { branch: "feat/checkout", env: copy("preview"), status: copy("building"), tone: "warning" as const, time: copy("justNow") },
+    { branch: "fix/cache", env: copy("preview"), status: copy("live"), tone: "success" as const, time: copy("text3MinutesAgo") },
   ];
   return (
     <div className="bg-background p-4 sm:p-5">
@@ -35,15 +37,16 @@ function DeployDashboard() {
           <Text weight="semibold">hancloud-web</Text>
         </Stack>
         <Tag variant="soft" tone="success" size="sm" dot>
-          运行中
+
+          {copy("running")}
         </Tag>
       </Stack>
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "请求 / 分", value: "24.8k" },
-          { label: "P95 延迟", value: "42ms" },
-          { label: "错误率", value: "0.01%" },
+          { label: copy("requestsMin"), value: "24.8k" },
+          { label: copy("p95Latency"), value: "42ms" },
+          { label: copy("errorRate"), value: "0.01%" },
         ].map((m) => (
           <div key={m.label} className="rounded-[var(--radius)] border border-border bg-surface p-3">
             <Text size="xs" tone="muted">
@@ -59,7 +62,8 @@ function DeployDashboard() {
       <Divider className="my-4" />
 
       <Text size="xs" tone="muted" className="mb-2">
-        最近部署
+
+        {copy("recentDeployments")}
       </Text>
       <Stack direction="column" gap={2}>
         {deploys.map((d, i) => (
@@ -91,9 +95,9 @@ function DeployDashboard() {
 // 内嵌在 IPhone 外壳里的移动端「告警推送」界面，100% hulian 原语。
 function MobileAlertScreen() {
   const alerts = [
-    { level: "P0", title: "构建失败", desc: "feat/checkout · 12 分钟前", tone: "danger" as const },
-    { level: "P1", title: "内存超阈值", desc: "hancloud-web-prod · 刚刚", tone: "warning" as const },
-    { level: "已恢复", title: "全量回滚完成", desc: "v2.3.1 已上线 · 3 分钟前", tone: "success" as const },
+    { level: "P0", title: copy("buildFailed"), desc: copy("featCheckout12MinutesAgo"), tone: "danger" as const },
+    { level: "P1", title: copy("memoryThresholdExceeded"), desc: copy("hancloudWebProdJustNow"), tone: "warning" as const },
+    { level: copy("recovered"), title: copy("fullRollbackCompleted"), desc: copy("v231Deployed3MinutesAgo"), tone: "success" as const },
   ];
   const toneColor: Record<string, string> = {
     danger: "bg-danger/15 text-danger",
@@ -104,10 +108,12 @@ function MobileAlertScreen() {
     <div className="flex h-full flex-col gap-0 bg-background">
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <Text size="xs" weight="semibold" className="text-foreground">
-          瀚云告警
+
+          {copy("hancloudAlerts")}
         </Text>
         <Tag variant="soft" tone="danger" size="sm" dot pulse>
-          2 未读
+
+          {copy("text2Unread")}
         </Tag>
       </div>
       <div className="flex-1 space-y-2 overflow-hidden p-2">
@@ -136,7 +142,8 @@ function MobileAlertScreen() {
         <div className="flex items-center justify-center gap-1">
           <Wifi className="size-3 text-success" />
           <Text size="xs" tone="muted">
-            已连接 · 所有服务正常
+
+            {copy("connectedAllServicesOperational")}
           </Text>
         </div>
       </div>
@@ -147,9 +154,9 @@ function MobileAlertScreen() {
 // 内嵌在 Android 外壳里的「快速操作」面板。
 function AndroidDashScreen() {
   const metrics = [
-    { label: "今日部署", value: "14", color: "text-primary" },
-    { label: "成功率", value: "99%", color: "text-success" },
-    { label: "平均耗时", value: "38s", color: "text-foreground" },
+    { label: copy("deploymentsToday"), value: "14", color: "text-primary" },
+    { label: copy("successRate"), value: "99%", color: "text-success" },
+    { label: copy("averageDuration"), value: "38s", color: "text-foreground" },
   ];
   return (
     <div className="flex h-full flex-col bg-background">
@@ -159,7 +166,8 @@ function AndroidDashScreen() {
             <Smartphone className="size-3" aria-hidden />
           </span>
           <Text size="xs" weight="semibold" className="text-foreground">
-            控制台
+
+            {copy("console")}
           </Text>
         </Stack>
       </div>
@@ -177,13 +185,13 @@ function AndroidDashScreen() {
         ))}
       </div>
       <div className="flex-1 space-y-1.5 px-2">
-        {["main → 生产", "feat/pay → 预览", "fix/tz → 预览"].map((branch, i) => (
+        {[copy("mainProduction"), copy("featPayPreview"), copy("fixTzPreview")].map((branch, i) => (
           <div key={branch} className="flex items-center justify-between rounded border border-border bg-surface px-2 py-1.5">
             <Text size="xs" className="font-mono text-foreground">
               {branch}
             </Text>
             <Tag variant="soft" tone={i === 0 ? "success" : i === 2 ? "warning" : "success"} size="sm" dot>
-              {i === 2 ? "构建中" : "✓"}
+              {i === 2 ? copy("building") : "✓"}
             </Tag>
           </div>
         ))}
@@ -199,13 +207,16 @@ export function Product() {
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2">
         <div>
           <Tag variant="soft" tone="brand" size="sm" className="mb-4">
-            一屏掌控
+
+            {copy("everythingInOneView")}
           </Tag>
           <Heading level={2} size="3xl" weight="bold" balance className="text-foreground">
-            部署、监控、回滚，都在同一块面板
+
+            {copy("deployMonitorAndRollBackFromOneDashboard")}
           </Heading>
           <Text tone="muted" size="lg" className="mt-4">
-            不必在 CI、监控、日志平台之间反复横跳。瀚云把交付链路收进一个清爽的控制台。
+
+            {copy("stopJumpingBetweenCiMonitoringAndLogPlatformsHancloudBringsTheEntireDeliveryPipelineIntoOneClear")}
           </Text>
 
           <Stack direction="column" gap={3} className="mt-6">
@@ -220,9 +231,10 @@ export function Product() {
           <Button
             variant="outline"
             className="mt-8"
-            render={<Link href="/demos/website/contact" />}
+            render={<Link href={demoHref("/demos/website/contact")} />}
           >
-            预约一对一演示
+
+            {copy("bookAOneOnOneDemo")}
             <ArrowRight className="ml-2 size-4" aria-hidden />
           </Button>
         </div>
@@ -254,20 +266,23 @@ export function ProductMobile() {
 
         <div>
           <Tag variant="soft" tone="brand" size="sm" className="mb-4">
-            随时随地
+
+            {copy("anywhereAnytime")}
           </Tag>
           <Heading level={2} size="3xl" weight="bold" balance className="text-foreground">
-            移动端同步告警，随时掌控部署状态
+
+            {copy("receiveAlertsOnMobileAndTrackDeploymentStatusAnywhere")}
           </Heading>
           <Text tone="muted" size="lg" className="mt-4">
-            告警推送直达手机，P0 故障一触即知；iOS、Android 原生 App 体验一致，告别盯桌面。
+
+            {copy("alertsArriveDirectlyOnYourPhoneSoP0IncidentsAreImpossibleToMissNativeIosAndAndroidAppsKeepTheExp")}
           </Text>
 
           <Stack direction="column" gap={3} className="mt-6">
             {[
-              "P0/P1 分级推送，关键告警零延迟",
-              "一键回滚，手机直接操作不等 PC",
-              "告警静默时段自定义，夜间不被打扰",
+              copy("tieredP0P1NotificationsWithImmediateDeliveryForCriticalAlerts"),
+              copy("rollBackFromYourPhoneInOneTapWithoutWaitingForAComputer"),
+              copy("setCustomQuietHoursSoNoncriticalAlertsDoNotInterruptYourNight"),
             ].map((h) => (
               <Stack key={h} direction="row" align="start" gap={2}>
                 <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
@@ -279,9 +294,10 @@ export function ProductMobile() {
           <Button
             variant="outline"
             className="mt-8"
-            render={<Link href="/demos/website/contact" />}
+            render={<Link href={demoHref("/demos/website/contact")} />}
           >
-            了解移动端功能
+
+            {copy("exploreMobileFeatures")}
             <ArrowRight className="ml-2 size-4" aria-hidden />
           </Button>
         </div>

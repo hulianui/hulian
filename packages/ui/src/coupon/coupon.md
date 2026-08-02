@@ -70,6 +70,7 @@ import { Coupon } from "@hulianui/ui"
 - `status="used" | "expired"` 时操作区自动置灰、`shine` 扫光不播；不必额外手动禁用。
 - 撕票穿孔/中缝是纯 CSS 伪元素绘制，外层不要再裹会裁剪溢出的 `overflow-hidden` 容器，否则半圆穿孔被切。
 - `onClaim`/`onUse`/`onSelect` 三类回调对应不同 status 与点击区，互相独立——结算选券走 `onSelect`（整券），领取走 `onClaim`（右侧按钮）。
+- 操作文案、面额后缀和使用门槛跟随 `ConfigProvider locale`；显式 `actionLabel` 优先，未包 Provider 时保持中文。
 
 ## 相关
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

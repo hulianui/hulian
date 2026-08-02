@@ -4,6 +4,7 @@ import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
 import { HighlightedCode } from "../code-block/highlighted-code";
 import type { SnippetProps } from "./snippet.types";
+import { useComponentLocale } from "../config/locale";
 
 // 可复制命令/代码片段（含剪贴板交互故 "use client"）。复制成功反馈 1.5s 切回。
 // children 为字符串时默认语法着色（命令多为纯色，JS 片段会着色）；非字符串原样渲染。
@@ -13,10 +14,13 @@ export function Snippet({
   symbol = "$",
   lang,
   highlight = true,
-  copyLabel = "复制",
-  copiedLabel = "已复制",
+  copyLabel,
+  copiedLabel,
   className,
 }: SnippetProps) {
+  const locale = useComponentLocale().snippet ?? { copy: "复制", copied: "已复制" };
+  const resolvedCopyLabel = copyLabel ?? locale.copy;
+  const resolvedCopiedLabel = copiedLabel ?? locale.copied;
   const [copied, setCopied] = useState(false);
   const copyText = text ?? (typeof children === "string" ? children : "");
   const colorable = highlight && typeof children === "string";
@@ -43,7 +47,7 @@ export function Snippet({
       <button
         type="button"
         onClick={onCopy}
-        aria-label={copied ? copiedLabel : copyLabel}
+        aria-label={copied ? resolvedCopiedLabel : resolvedCopyLabel}
         className="ml-auto inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
       >
         {copied ? <Check className="size-4 text-primary" /> : <Copy className="size-4" />}

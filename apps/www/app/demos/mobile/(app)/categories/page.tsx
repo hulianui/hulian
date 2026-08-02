@@ -1,11 +1,13 @@
 "use client";
+import { copy } from "./page.content";
 import Link from "next/link";
 import { useState } from "react";
 import { Avatar, CardSkeleton, Divider, Rating, Tag } from "@hulianui/ui";
 import { useMockData } from "../../../lib/async";
-import { CATEGORIES, services } from "../../_data/services";
+import { CATEGORIES, SERVICE_CATEGORY_LABELS, services } from "../../_data/services";
 import type { ServiceCategory } from "../../_data/types";
 import { serviceCover } from "../../_lib/cover";
+import { demoHref } from "../../../_components/demo-locale";
 
 const TAG_TONE = { 爆款: "danger", 好评: "success", 热门: "warning", 急修: "primary", 包搬运: "neutral", 快速上门: "primary", 保修: "success", 超值: "warning" } as const;
 
@@ -36,7 +38,7 @@ export default function CategoriesPage() {
             className={`flex w-full flex-col items-center gap-1 px-2 py-3 text-center text-[11px] transition-colors ${selected === cat ? "bg-surface font-semibold text-primary" : "text-muted hover:text-foreground"}`}
           >
             <span className="text-2xl leading-none">{CATEGORY_ICON[cat]}</span>
-            <span className="leading-tight">{cat}</span>
+            <span className="leading-tight">{SERVICE_CATEGORY_LABELS[cat]}</span>
             {selected === cat && (
               <div className="h-0.5 w-6 rounded-full bg-primary" />
             )}
@@ -48,8 +50,8 @@ export default function CategoriesPage() {
       <div className="flex-1 overflow-y-auto px-3 py-3">
         <div className="mb-2 flex items-center gap-2">
           <span className="text-lg">{CATEGORY_ICON[selected]}</span>
-          <span className="text-sm font-semibold">{selected}</span>
-          <Tag tone="neutral" size="sm">{filtered.length} 个服务</Tag>
+          <span className="text-sm font-semibold">{SERVICE_CATEGORY_LABELS[selected]}</span>
+          <Tag tone="neutral" size="sm">{filtered.length}  {copy("services")}</Tag>
         </div>
         <Divider className="mb-3" />
         {loading ? (
@@ -59,7 +61,7 @@ export default function CategoriesPage() {
             {filtered.map((s) => (
               <Link
                 key={s.id}
-                href={`/demos/mobile/services/${s.id}`}
+                href={demoHref(`/demos/mobile/services/${s.id}`)}
                 className="flex gap-3 rounded-xl border border-border bg-surface p-3 hover:bg-surface-hover transition-colors"
               >
                 <div className="size-14 shrink-0 overflow-hidden rounded-lg">
@@ -69,7 +71,7 @@ export default function CategoriesPage() {
                   <div className="truncate text-sm font-medium">{s.title}</div>
                   <div className="mt-0.5 flex items-center gap-1">
                     <Rating value={s.rating} readOnly size="sm" />
-                    <span className="text-xs text-muted">{s.reviewCount} 评</span>
+                    <span className="text-xs text-muted">{s.reviewCount}  {copy("reviews")}</span>
                   </div>
                   <div className="mt-1 flex items-center justify-between">
                     <div className="flex items-center gap-1">

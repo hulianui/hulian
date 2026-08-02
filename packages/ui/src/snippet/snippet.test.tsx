@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Snippet } from "./snippet";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 const writeText = vi.fn().mockResolvedValue(undefined);
 beforeEach(() => {
@@ -48,6 +50,33 @@ describe("Snippet", () => {
     );
     fireEvent.click(getByLabelText("Copy"));
     expect(getByLabelText("Copied")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes default copy labels", () => {
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <Snippet>x</Snippet>
+      </ConfigProvider>,
+    );
+    fireEvent.click(getByLabelText("Copy"));
+    expect(getByLabelText("Copied")).toBeTruthy();
+  });
+
+  it("legacy locale falls back to Chinese while explicit labels override enUS", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, snippet: undefined } };
+    const { getByLabelText, rerender } = render(
+      <ConfigProvider locale={legacy}>
+        <Snippet>x</Snippet>
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("复制")).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Snippet copyLabel="Duplicate" copiedLabel="Duplicated">x</Snippet>
+      </ConfigProvider>,
+    );
+    fireEvent.click(getByLabelText("Duplicate"));
+    expect(getByLabelText("Duplicated")).toBeTruthy();
   });
 
   it("透传 className 到外壳", () => {

@@ -31,7 +31,7 @@ import {
 import { ShoppingCart, Heart, User, Search, Menu, Store } from "lucide-react";
 import { categories } from "../_data/categories";
 import { products, formatPrice } from "../_data/products";
-import { brand, primaryNav, SHOP_BASE } from "./nav-config";
+import { brand, primaryNav, SHOP_BASE, SHOP_LOCATION_BASE } from "./nav-config";
 import { ShopStoreProvider, useShop } from "../_lib/shop-store";
 
 function Logo() {
@@ -80,7 +80,7 @@ function CategoryMenu() {
               {categories.map((c) => (
                 <NavigationMenuLink
                   key={c.key}
-                  href={`${SHOP_BASE}/products?cat=${c.key}`}
+                  href={`${SHOP_LOCATION_BASE}/products?cat=${c.key}`}
                   className="block rounded-[var(--radius)] px-3 py-2"
                 >
                   <div className="font-medium text-foreground">{c.name}</div>
@@ -202,8 +202,8 @@ function ShopNavbar() {
   const [cmdOpen, setCmdOpen] = useState(false);
 
   const onSelect = useCallback((value: string) => {
-    if (value.startsWith("p:")) window.location.href = `${SHOP_BASE}/product/${value.slice(2)}`;
-    else if (value.startsWith("c:")) window.location.href = `${SHOP_BASE}/products?cat=${value.slice(2)}`;
+    if (value.startsWith("p:")) window.location.href = `${SHOP_LOCATION_BASE}/product/${value.slice(2)}`;
+    else if (value.startsWith("c:")) window.location.href = `${SHOP_LOCATION_BASE}/products?cat=${value.slice(2)}`;
   }, []);
 
   return (

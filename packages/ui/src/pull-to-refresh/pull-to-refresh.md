@@ -40,9 +40,9 @@ import { PullToRefresh } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | `children` * | `ReactNode` | 可滚动内容 |
-| `pullingText` | `ReactNode` | 下拉中文案 |
-| `armedText` | `ReactNode` | 越过阈值待释放时的文案 |
-| `refreshingText` | `ReactNode` | 刷新中文案 |
+| `pullingText` | `ReactNode` | 下拉中文案；默认跟随 locale，显式传值优先 |
+| `armedText` | `ReactNode` | 越过阈值待释放时的文案；默认跟随 locale |
+| `refreshingText` | `ReactNode` | 刷新中文案；默认跟随 locale |
 
 ## 示例
 ```tsx
@@ -54,6 +54,7 @@ import { PullToRefresh } from "@hulianui/ui"
 ## 禁忌 / 坑
 - `onRefresh` 想让指示器在加载期间持续显示，必须**返回 Promise** 并在数据就绪后 resolve；返回 void 会立即回弹，看不到刷新态。
 - 只在内容滚到顶部时下拉才进入手势，中途滚动不会误触发。
+- 三个状态文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供 “Pull / Release to refresh / Refreshing…”。
 
 ## 相关
 [SwipeAction](../swipe-action/swipe-action.md) · [TabBar](../tab-bar/tab-bar.md) · [Fab](../fab/fab.md) · [ActionSheet](../action-sheet/action-sheet.md) · [Picker](../picker/picker.md) · [SafeArea](../safe-area/safe-area.md)

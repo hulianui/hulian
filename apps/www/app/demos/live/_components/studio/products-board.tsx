@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./products-board.content";
 import { useState } from "react";
 import {
   Button,
@@ -24,19 +25,19 @@ export function ProductsBoard() {
 
   const startExplain = (p: LiveProduct) => {
     setExplainingId(p.id);
-    toast({ title: `已上架讲解：${p.index} 号 · ${p.title.slice(0, 12)}…`, tone: "info" });
+    toast({ title: `${copy("nowPresenting")}${p.index}${copy("product")}${p.title.slice(0, 12)}${copy("text")}`, tone: "info" });
   };
 
   const columns: ColumnDef<LiveProduct>[] = [
-    { accessorKey: "index", header: "链接", cell: ({ row }) => <span className="font-mono tabular-nums">{row.original.index} 号</span> },
+    { accessorKey: "index", header: copy("link"), cell: ({ row }) => <span className="font-mono tabular-nums">{row.original.index}  {copy("product2")}</span> },
     {
       accessorKey: "title",
-      header: "商品",
+      header: copy("products"),
       cell: ({ row }) => <span className="line-clamp-1 max-w-[260px]">{row.original.title}</span>,
     },
     {
       accessorKey: "price",
-      header: "价格",
+      header: copy("price"),
       cell: ({ row }) => (
         <span>
           <span className="font-semibold text-danger">¥{row.original.price}</span>
@@ -44,19 +45,21 @@ export function ProductsBoard() {
         </span>
       ),
     },
-    { accessorKey: "stock", header: "库存", cell: ({ row }) => <span className="tabular-nums">{row.original.stock}</span> },
-    { accessorKey: "sold", header: "已售", cell: ({ row }) => <span className="tabular-nums">{row.original.sold}</span> },
+    { accessorKey: "stock", header: copy("inventory"), cell: ({ row }) => <span className="tabular-nums">{row.original.stock}</span> },
+    { accessorKey: "sold", header: copy("sold"), cell: ({ row }) => <span className="tabular-nums">{row.original.sold}</span> },
     {
       id: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) =>
         row.original.id === explainingId ? (
           <Tag tone="danger" size="sm" dot>
-            讲解中
+
+            {copy("presenting")}
           </Tag>
         ) : (
           <Button size="sm" variant="outline" onClick={() => startExplain(row.original)}>
-            开始讲解
+
+            {copy("startPresenting")}
           </Button>
         ),
     },
@@ -66,13 +69,13 @@ export function ProductsBoard() {
     <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-foreground">小黄车 · {products.length} 件商品</h2>
+          <h2 className="text-base font-semibold text-foreground">{copy("shoppingPanel")} {products.length}  {copy("products2")}</h2>
           <Segmented
             value={view}
             onValueChange={setView}
             items={[
-              { value: "sort", label: "讲解排序" },
-              { value: "table", label: "商品表格" },
+              { value: "sort", label: copy("presentationOrder") },
+              { value: "table", label: copy("productTable") },
             ]}
           />
         </div>
@@ -97,11 +100,13 @@ export function ProductsBoard() {
                 action={
                   p.id === explainingId ? (
                     <Tag tone="danger" size="sm" dot>
-                      讲解中
+
+                      {copy("presenting")}
                     </Tag>
                   ) : (
                     <Button size="sm" variant="outline" onClick={() => startExplain(p)}>
-                      讲解
+
+                      {copy("present")}
                     </Button>
                   )
                 }
@@ -110,12 +115,12 @@ export function ProductsBoard() {
           />
         ) : (
           <ProTable<LiveProduct>
-            title="商品列表"
+            title={copy("productList")}
             columns={columns}
             data={tableRows}
             getRowId={(r) => r.id}
             search={{
-              fields: [{ name: "keyword", label: "关键词", placeholder: "商品名" }],
+              fields: [{ name: "keyword", label: copy("keywords"), placeholder: copy("product3") }],
               onSearch: (v) => setKeyword(((v as { keyword?: string }).keyword ?? "").trim()),
             }}
           />
@@ -123,7 +128,7 @@ export function ProductsBoard() {
       </div>
 
       <div className="space-y-3">
-        <div className="text-sm font-medium text-foreground">当前讲解预览</div>
+        <div className="text-sm font-medium text-foreground">{copy("currentProductPreview")}</div>
         <LiveProductCard
           layout="card"
           index={explaining.index}
@@ -136,13 +141,15 @@ export function ProductsBoard() {
           sold={explaining.sold}
           tag={explaining.tag}
           action={
-            <Button size="sm" className="w-full" onClick={() => toast({ title: "已弹出小黄车到直播间", tone: "info" })}>
-              弹出到直播间
+            <Button size="sm" className="w-full" onClick={() => toast({ title: copy("audienceShoppingPanelOpened"), tone: "info" })}>
+
+              {copy("openInAudienceRoom")}
             </Button>
           }
         />
         <p className="text-xs leading-relaxed text-muted">
-          拖动左侧卡片调整讲解顺序，点「讲解」即把该商品置为讲解中并同步到观众端小黄车。
+
+          {copy("dragCardsToReorderTheRundownSelectPresentToFeatureAProductAndSyncItToTheAudienceShoppingPanel")}
         </p>
       </div>
     </div>

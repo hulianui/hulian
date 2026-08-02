@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./room-view.content";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Gift, Headset, Heart, Send, ShoppingBag } from "lucide-react";
@@ -23,6 +24,7 @@ import {
 import { GIFT_PANEL, PRODUCTS, STREAMER } from "../../_data/content";
 import { replyFor } from "../../_lib/live-sim";
 import { useLiveSim } from "../../_lib/use-live-sim";
+import { demoHref } from "../../../_components/demo-locale";
 
 interface CsMessage {
   id: string;
@@ -42,7 +44,7 @@ export function RoomView() {
   const [giftOpen, setGiftOpen] = useState(false);
   const [csOpen, setCsOpen] = useState(false);
   const [cs, setCs] = useState<CsMessage[]>([
-    { id: "cs0", role: "assistant", text: "你好呀~我是瀚选 AI 客服，商品、优惠、物流都可以问我哦。" },
+    { id: "cs0", role: "assistant", text: copy("hiIAmTheHanselectAiAssistantAskMeAboutProductsOffersOrDelivery") },
   ]);
 
   const explaining = PRODUCTS[0];
@@ -86,7 +88,7 @@ export function RoomView() {
           aspectRatio="fill"
           orientation="portrait"
           viewers={state.viewers}
-          host={{ name: STREAMER.name, meta: STREAMER.meta, onFollow: () => toast({ title: "已关注主播", tone: "info" }) }}
+          host={{ name: STREAMER.name, meta: STREAMER.meta, onFollow: () => toast({ title: copy("hostFollowed"), tone: "info" }) }}
           overlay={
             <>
               <Danmaku items={state.danmaku} tracks={4} speed={92} area={0.42} className="top-14" />
@@ -132,23 +134,23 @@ export function RoomView() {
                 <input
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
-                  placeholder="说点什么…"
+                  placeholder={copy("writeAMessage")}
                   className="h-9 w-full bg-transparent text-sm text-white placeholder:text-white/55 focus:outline-none"
                 />
-                <button type="submit" aria-label="发送" className="text-white/80">
+                <button type="submit" aria-label={copy("send")} className="text-white/80">
                   <Send className="size-4" />
                 </button>
               </form>
-              <RoundBtn label="小黄车" onClick={() => setCartOpen(true)}>
+              <RoundBtn label={copy("shoppingPanel")} onClick={() => setCartOpen(true)}>
                 <ShoppingBag className="size-5" />
                 <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-chart-4 text-[10px] font-bold">
                   {PRODUCTS.length}
                 </span>
               </RoundBtn>
-              <RoundBtn label="礼物" onClick={() => setGiftOpen(true)}>
+              <RoundBtn label={copy("gifts")} onClick={() => setGiftOpen(true)}>
                 <Gift className="size-5" />
               </RoundBtn>
-              <RoundBtn label="点赞" onClick={like}>
+              <RoundBtn label={copy("like")} onClick={like}>
                 <Heart className="size-5" />
               </RoundBtn>
             </div>
@@ -157,9 +159,9 @@ export function RoomView() {
 
         {/* 返回 + AI 客服 悬浮 */}
         <Link
-          href="/demos/live"
+          href={demoHref("/demos/live")}
           className="absolute left-3 top-3 z-20 grid size-8 place-items-center rounded-full bg-black/40 text-white backdrop-blur-sm"
-          aria-label="返回中控台"
+          aria-label={copy("backToHostConsole")}
         >
           <ArrowLeft className="size-4" />
         </Link>
@@ -167,7 +169,7 @@ export function RoomView() {
           type="button"
           onClick={() => setCsOpen(true)}
           className="absolute right-3 top-16 z-20 grid size-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg"
-          aria-label="AI 客服"
+          aria-label={copy("aiSupport")}
         >
           <Headset className="size-5" />
         </button>
@@ -175,7 +177,7 @@ export function RoomView() {
 
       {/* 小黄车抽屉 */}
       <Drawer open={cartOpen} onOpenChange={setCartOpen}>
-        <DrawerContent side="bottom" title="小黄车" container={frameRef} className="rounded-t-[20px]">
+        <DrawerContent side="bottom" title={copy("shoppingPanel")} container={frameRef} className="rounded-t-[20px]">
           <div className="max-h-[60vh] space-y-2 overflow-y-auto p-1">
             {PRODUCTS.map((p) => (
               <LiveProductCard
@@ -190,8 +192,9 @@ export function RoomView() {
                 sold={p.sold}
                 tag={p.tag}
                 action={
-                  <Button size="sm" tone="danger" onClick={() => toast({ title: `已下单：${p.index} 号`, tone: "info" })}>
-                    去抢购
+                  <Button size="sm" tone="danger" onClick={() => toast({ title: `${copy("orderPlaced")}${p.index}${copy("product")}`, tone: "info" })}>
+
+                    {copy("buyNow")}
                   </Button>
                 }
               />
@@ -202,7 +205,7 @@ export function RoomView() {
 
       {/* 礼物面板 */}
       <Drawer open={giftOpen} onOpenChange={setGiftOpen}>
-        <DrawerContent side="bottom" title="送礼物" container={frameRef} className="rounded-t-[20px]">
+        <DrawerContent side="bottom" title={copy("sendAGift")} container={frameRef} className="rounded-t-[20px]">
           <div className="grid grid-cols-4 gap-2 p-2">
             {GIFT_PANEL.map((g) => (
               <button
@@ -213,32 +216,32 @@ export function RoomView() {
               >
                 <span className="text-3xl">{g.icon}</span>
                 <span className="text-xs text-foreground">{g.name}</span>
-                <span className="text-[11px] text-muted">{g.coins} 币</span>
+                <span className="text-[11px] text-muted">{g.coins}  {copy("coins")}</span>
               </button>
             ))}
           </div>
-          <p className="px-2 pb-1 text-center text-xs text-muted">连续点击同一礼物即可连击 combo～</p>
+          <p className="px-2 pb-1 text-center text-xs text-muted">{copy("tapTheSameGiftRepeatedlyToBuildACombo")}</p>
         </DrawerContent>
       </Drawer>
 
       {/* AI 客服 */}
       <Drawer open={csOpen} onOpenChange={setCsOpen}>
-        <DrawerContent side="bottom" title="AI 客服" container={frameRef} className="flex h-[70%] flex-col rounded-t-[20px]">
+        <DrawerContent side="bottom" title={copy("aiSupport")} container={frameRef} className="flex h-[70%] flex-col rounded-t-[20px]">
           <Conversation className="flex-1 space-y-3 overflow-y-auto px-1 py-2">
             {cs.map((m) =>
               m.role === "user" ? (
-                <ChatMessage key={m.id} role="user" avatar={<Avatar size="sm" fallback="我" />}>
+                <ChatMessage key={m.id} role="user" avatar={<Avatar size="sm" fallback={copy("me")} />}>
                   {m.text}
                 </ChatMessage>
               ) : (
-                <ChatMessage key={m.id} role="assistant" name="瀚选客服" avatar={<Avatar size="sm" fallback="瀚" />}>
+                <ChatMessage key={m.id} role="assistant" name={copy("hanselectSupport")} avatar={<Avatar size="sm" fallback={copy("han")} />}>
                   <StreamingText text={m.text} streaming className="text-sm leading-relaxed" />
                 </ChatMessage>
               ),
             )}
           </Conversation>
           <div className="border-t border-border pt-2">
-            <PromptInput placeholder="问问客服：尺码 / 优惠 / 发货…" onSubmit={(v) => v.trim() && askCs(v.trim())} />
+            <PromptInput placeholder={copy("askSupportAboutSizingOffersOrDelivery")} onSubmit={(v) => v.trim() && askCs(v.trim())} />
           </div>
         </DrawerContent>
       </Drawer>

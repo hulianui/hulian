@@ -5,7 +5,7 @@ import { Button, Empty, Chip, Rating, Tag, toast } from "@hulianui/ui";
 import { products, productById, productImage, formatCompactCount, formatPrice } from "../../_data/products";
 import { useShop } from "../../_lib/shop-store";
 import type { Product } from "../../_data/types";
-import { SHOP_BASE } from "../../_components/nav-config";
+import { SHOP_BASE, SHOP_LOCATION_BASE } from "../../_components/nav-config";
 import Link from "next/link";
 
 // 默认对比 4 件商品（取前 4 种不同品类，演示差异）
@@ -135,7 +135,7 @@ export default function ComparePage() {
     return (
       <main className="mx-auto max-w-5xl px-4 py-16">
         <Empty title={copy("noProductsToCompare")} description={copy("chooseProductsFromTheCatalogToCompareThemHere")}>
-          <Button tone="brand" onClick={() => (window.location.href = `${SHOP_BASE}/products`)}>
+          <Button tone="brand" onClick={() => (window.location.href = `${SHOP_LOCATION_BASE}/products`)}>
 
             {copy("chooseProducts")}
           </Button>

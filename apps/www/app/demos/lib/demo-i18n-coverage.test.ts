@@ -159,6 +159,62 @@ const INTERNAL_PROTOCOL_EXEMPTIONS = new Map<string, ProtocolExemption>([
       mappingEvidence: ["DATA_SOURCE_LABELS[s]"],
     },
   ],
+  [
+    "mobile/_data/services.ts",
+    {
+      literals: ["家政保洁", "家电维修", "上门美甲", "管道疏通", "搬家搬运", "开锁换锁"],
+      reason: "Mobile service categories remain canonical filter identifiers",
+      mappingEvidence: ["SERVICE_CATEGORY_LABELS", 'copy("homeCleaning")'],
+    },
+  ],
+  [
+    "mobile/_data/orders.ts",
+    {
+      literals: ["家政保洁", "待评价", "家电维修", "服务中", "上门美甲", "待确认", "已完成", "管道疏通", "已取消"],
+      reason: "Mobile order categories and statuses remain canonical fixture identifiers",
+      mappingEvidence: ["ORDER_STATUS_LABELS", 'copy("pendingConfirmation")'],
+    },
+  ],
+  [
+    "mobile/(app)/categories/page.tsx",
+    {
+      literals: ["家政保洁"],
+      reason: "The initial category state uses the canonical filter identifier",
+      mappingEvidence: ["SERVICE_CATEGORY_LABELS[cat]", "SERVICE_CATEGORY_LABELS[selected]"],
+    },
+  ],
+  [
+    "mobile/(app)/orders/page.tsx",
+    {
+      literals: ["待评价", "已完成", "已取消"],
+      reason: "Order actions compare canonical status identifiers",
+      mappingEvidence: ["ORDER_STATUS_LABELS[order.status]"],
+    },
+  ],
+  [
+    "personal/_data/works.ts",
+    {
+      literals: ["在线", "开源", "已下架"],
+      reason: "Portfolio availability values remain canonical work identifiers",
+      mappingEvidence: ["WORK_STATUS_LABELS", 'copy("online")'],
+    },
+  ],
+  [
+    "personal/_components/sections/work.tsx",
+    {
+      literals: ["在线"],
+      reason: "Pulse behavior compares the canonical online status",
+      mappingEvidence: ["WORK_STATUS_LABELS[work.status]"],
+    },
+  ],
+  [
+    "personal/_components/work-detail.tsx",
+    {
+      literals: ["在线"],
+      reason: "Detail pulse behavior compares the canonical online status",
+      mappingEvidence: ["WORK_STATUS_LABELS[work.status]"],
+    },
+  ],
 ]);
 const TASK_11_DEMOS = new Set([
   "ai-chat",
@@ -168,6 +224,8 @@ const TASK_11_DEMOS = new Set([
   "scheduler",
   "dashboard",
 ]);
+const TASK_12_DEMOS = new Set(["live", "mobile", "personal", "shop", "website"]);
+const STRICT_DEMOS = new Set([...TASK_11_DEMOS, ...TASK_12_DEMOS]);
 
 function chineseLiteralNodes(file: string, source: string): string[] {
   const sourceFile = createSourceFile(
@@ -408,6 +466,57 @@ const inventory = {
     routes: ["page.tsx"],
     fixtures: ["_data/clinic.ts"],
   },
+  live: {
+    routes: [
+      "(studio)/page.tsx",
+      "(studio)/products/page.tsx",
+      "(studio)/review/page.tsx",
+      "login/page.tsx",
+      "room/page.tsx",
+    ],
+    fixtures: ["_data/content.ts"],
+  },
+  mobile: {
+    routes: [
+      "(app)/categories/page.tsx",
+      "(app)/orders/page.tsx",
+      "(app)/page.tsx",
+      "(app)/profile/page.tsx",
+      "(app)/services/[id]/page.tsx",
+    ],
+    fixtures: ["_data/orders.ts", "_data/services.ts"],
+  },
+  personal: {
+    routes: ["(site)/guestbook/page.tsx", "(site)/page.tsx", "(site)/work/[slug]/page.tsx"],
+    fixtures: ["_data/guestbook.ts", "_data/profile.ts", "_data/works.ts"],
+  },
+  shop: {
+    routes: [
+      "(shop)/account/page.tsx",
+      "(shop)/cart/page.tsx",
+      "(shop)/checkout/page.tsx",
+      "(shop)/compare/page.tsx",
+      "(shop)/favorites/page.tsx",
+      "(shop)/mobile/page.tsx",
+      "(shop)/orders/page.tsx",
+      "(shop)/page.tsx",
+      "(shop)/product/[id]/page.tsx",
+      "(shop)/products/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: [
+      "_data/art.ts",
+      "_data/categories.ts",
+      "_data/coupons.ts",
+      "_data/orders.ts",
+      "_data/products.ts",
+      "_data/reviews.ts",
+    ],
+  },
+  website: {
+    routes: ["(site)/contact/page.tsx", "(site)/page.tsx", "(site)/pricing/page.tsx"],
+    fixtures: ["_data/site.ts"],
+  },
 } as const;
 
 function walk(directory: string): string[] {
@@ -446,7 +555,7 @@ describe("admin and developer demo localization inventory", () => {
     expect(chrome).toContain('copy("backToGallery")');
     expect(shared.copy("backToGallery")).toBe(shared.content[DOCS_LOCALE].backToGallery);
     expect(HAN_OR_CJK_PUNCTUATION.test(shared.content.en.backToGallery)).toBe(false);
-    expect(Object.keys(inventory)).toHaveLength(14);
+    expect(Object.keys(inventory)).toHaveLength(19);
   });
 
   for (const [demo, expected] of Object.entries(inventory)) {
@@ -508,7 +617,7 @@ describe("admin and developer demo localization inventory", () => {
             module.content[DOCS_LOCALE][key],
           );
           expect(key).not.toMatch(/^copy\d+$/);
-          if (TASK_11_DEMOS.has(demo)) {
+          if (STRICT_DEMOS.has(demo)) {
             expect(key, `${relative(DEMOS_ROOT, contentFile)} semantic key`).not.toMatch(
               /^localized|^(?:alternate|secondary|tertiary|quaternary)$/i,
             );
@@ -521,10 +630,10 @@ describe("admin and developer demo localization inventory", () => {
         ].find((candidate) => existsSync(candidate));
         expect(sourceFile, `${relative(DEMOS_ROOT, contentFile)} consumer`).toBeTruthy();
         const source = readFileSync(sourceFile!, "utf8");
-        const consumedKeys = TASK_11_DEMOS.has(demo)
+        const consumedKeys = STRICT_DEMOS.has(demo)
           ? consumedContentKeys(sourceFile!, source)
           : new Set([...source.matchAll(/copy\("([^"]+)"/g)].map((match) => match[1]));
-        if (!TASK_11_DEMOS.has(demo)) {
+        if (!STRICT_DEMOS.has(demo)) {
           for (const line of source.split("\n").filter((row) => row.includes("copy("))) {
             for (const match of line.matchAll(/"([^"]+)"/g))
               if (zhKeys.includes(match[1])) consumedKeys.add(match[1]);
@@ -567,7 +676,7 @@ describe("admin and developer demo localization inventory", () => {
           }
           continue;
         }
-        if (TASK_11_DEMOS.has(demo)) {
+        if (STRICT_DEMOS.has(demo)) {
           expect.fail(
             `${relativeSource} must declare exact protocol literals and locale mapping evidence; found: ${chineseNodes.join(" | ")}`,
           );

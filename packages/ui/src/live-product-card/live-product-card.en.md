@@ -66,7 +66,7 @@ Card layout:
 
 - Action is a slot so the caller owns checkout behavior.
 - Original price renders only when supplied; currency applies to both prices.
-- Built-in runtime labels are `"\u8bb2\u89e3\u4e2d"` ("Being presented"), `` `\u5df2\u552e ${sold}` `` ("Sold N"), and `` `\u4ec5\u5269 ${stock}` `` ("Only N left").
+- Built-in presentation, sold-count, and remaining-stock labels follow `ConfigProvider locale`; `enUS` provides “Presenting”, “Sold N”, and “N left”, while the no-provider fallback remains Chinese.
 
 ## Related
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md) · [Dot](../dot/dot.md)

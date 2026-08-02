@@ -1,7 +1,7 @@
 "use client";
 import { copy } from "./page.content";
 import { LoginForm, Text, Spotlight, toast } from "@hulianui/ui";
-import { brand, SHOP_BASE } from "../_components/nav-config";
+import { brand, SHOP_LOCATION_BASE } from "../_components/nav-config";
 
 // 瀚选商城登录页。不在 (shop) 路由组内，无 ShopShell，自己做极简居中布局。
 // 登录成功 toast + 跳 /demos/shop/account（window.location 触发完整导航）。
@@ -35,7 +35,7 @@ export default function ShopLoginPage() {
               await new Promise((r) => setTimeout(r, 600));
               toast({ title: copy("signedInWelcomeBack"), tone: "success" });
               await new Promise((r) => setTimeout(r, 350));
-              window.location.href = `${SHOP_BASE}/account`;
+              window.location.href = `${SHOP_LOCATION_BASE}/account`;
             }}
             footer={
               <div className="flex justify-between text-sm">

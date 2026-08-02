@@ -369,6 +369,39 @@ export interface ComponentLocale {
     reply: string;
     severities: { critical: string; major: string; minor: string; info: string };
   };
+  navbar?: { openMenu: string; closeMenu: string };
+  tabBar?: { navigation: string };
+  snippet?: { copy: string; copied: string };
+  pullToRefresh?: { pulling: string; armed: string; refreshing: string };
+  livePlayer?: { follow: string; followed: string };
+  liveChat?: {
+    pinned: string;
+    newMessages: (count: number) => string;
+    entered: string;
+    followed: string;
+    sent: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  liveProductCard?: {
+    presenting: string;
+    sold: (count: number) => string;
+    remaining: (count: number) => string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  sortable?: { handle: (index: number) => string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  coupon?: {
+    available: string;
+    claimed: string;
+    used: string;
+    expired: string;
+    noMinimumSpend: string;
+    minimumSpend: (amount: number) => string;
+    discountSuffix: string;
+    freeShipping: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  colorSwatchPicker?: { label: string };
 }
 
 const zhComponents: ComponentLocale = {
@@ -612,6 +645,35 @@ const zhComponents: ComponentLocale = {
     reply: "回复",
     severities: { critical: "严重", major: "重要", minor: "次要", info: "提示" },
   },
+  navbar: { openMenu: "打开菜单", closeMenu: "关闭菜单" },
+  tabBar: { navigation: "底部导航" },
+  snippet: { copy: "复制", copied: "已复制" },
+  pullToRefresh: { pulling: "下拉刷新", armed: "释放刷新", refreshing: "刷新中…" },
+  livePlayer: { follow: "+ 关注", followed: "已关注" },
+  liveChat: {
+    pinned: "置顶",
+    newMessages: (count) => `${count} 条新消息 ↓`,
+    entered: "来了",
+    followed: "关注了主播 ❤",
+    sent: "送出",
+  },
+  liveProductCard: {
+    presenting: "讲解中",
+    sold: (count) => `已售 ${count}`,
+    remaining: (count) => `仅剩 ${count}`,
+  },
+  sortable: { handle: (index) => `拖拽排序（第 ${index} 项）` },
+  coupon: {
+    available: "立即领取",
+    claimed: "去使用",
+    used: "已使用",
+    expired: "已过期",
+    noMinimumSpend: "无门槛",
+    minimumSpend: (amount) => `满${amount}可用`,
+    discountSuffix: "折",
+    freeShipping: "包邮",
+  },
+  colorSwatchPicker: { label: "颜色色板" },
 };
 
 const enComponents: ComponentLocale = {
@@ -878,6 +940,35 @@ const enComponents: ComponentLocale = {
     reply: "Reply",
     severities: { critical: "Critical", major: "Major", minor: "Minor", info: "Info" },
   },
+  navbar: { openMenu: "Open menu", closeMenu: "Close menu" },
+  tabBar: { navigation: "Bottom navigation" },
+  snippet: { copy: "Copy", copied: "Copied" },
+  pullToRefresh: { pulling: "Pull to refresh", armed: "Release to refresh", refreshing: "Refreshing…" },
+  livePlayer: { follow: "+ Follow", followed: "Following" },
+  liveChat: {
+    pinned: "Pinned",
+    newMessages: (count) => `${count} new ${count === 1 ? "message" : "messages"} ↓`,
+    entered: "joined",
+    followed: "followed the host ❤",
+    sent: "sent",
+  },
+  liveProductCard: {
+    presenting: "Presenting",
+    sold: (count) => `Sold ${count}`,
+    remaining: (count) => `${count} left`,
+  },
+  sortable: { handle: (index) => `Reorder item ${index}` },
+  coupon: {
+    available: "Claim now",
+    claimed: "Use now",
+    used: "Used",
+    expired: "Expired",
+    noMinimumSpend: "No minimum spend",
+    minimumSpend: (amount) => `Spend ¥${amount} to use`,
+    discountSuffix: "off",
+    freeShipping: "Free shipping",
+  },
+  colorSwatchPicker: { label: "Color swatches" },
 };
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */

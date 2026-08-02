@@ -1,3 +1,4 @@
+import { copy } from "./integrations.content";
 import {
   OrbitingCircles,
   Heading,
@@ -51,13 +52,16 @@ export function Integrations() {
 
         <div>
           <Tag variant="soft" tone="brand" size="sm" className="mb-4">
-            生态集成
+
+            {copy("integrations")}
           </Tag>
           <Heading level={2} size="3xl" weight="bold" balance className="text-foreground">
-            接入你已经在用的工具
+
+            {copy("connectToTheToolsYouAlreadyUse")}
           </Heading>
           <Text tone="muted" size="lg" className="mt-4">
-            GitHub、Docker、Kubernetes、Slack、Postgres、Datadog…… 一次连接，自动同步。瀚云不替换你的工具链，而是把它们串成一条顺畅的交付流水线。
+
+            {copy("connectGithubDockerKubernetesSlackPostgresAndDatadogOnceAndKeepThemInSyncHancloudConnectsYourExi")}
           </Text>
           <Stack direction="row" gap={2} wrap className="mt-6">
             {integrations.map((it) => (

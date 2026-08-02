@@ -1,7 +1,8 @@
 "use client";
+import { copy } from "./_booking-client.content";
 import { useState } from "react";
 import { Avatar, Divider, Picker, Rating, Tag, toast } from "@hulianui/ui";
-import type { ServiceWithCover } from "../../../_data/services";
+import { SERVICE_CATEGORY_LABELS, type ServiceWithCover } from "../../../_data/services";
 
 // Stepper 组件（简单实现，NumberField 替代）
 function Stepper({ value, onChange, min = 1, max = 10 }: { value: number; onChange: (v: number) => void; min?: number; max?: number }) {
@@ -30,11 +31,11 @@ function Stepper({ value, onChange, min = 1, max = 10 }: { value: number; onChan
 
 // 预约时间 Picker 数据（确定性，不用 Date.now）
 const DATE_OPTIONS = [
-  { label: "今天 06/04", value: "0604" },
-  { label: "明天 06/05", value: "0605" },
-  { label: "后天 06/06", value: "0606" },
-  { label: "周六 06/07", value: "0607" },
-  { label: "周日 06/08", value: "0608" },
+  { label: copy("today0604"), value: "0604" },
+  { label: copy("tomorrow0605"), value: "0605" },
+  { label: copy("inTwoDays0606"), value: "0606" },
+  { label: copy("saturday0607"), value: "0607" },
+  { label: copy("sunday0608"), value: "0608" },
 ];
 const TIME_OPTIONS = [
   { label: "09:00–11:00", value: "09" },
@@ -52,15 +53,18 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
   const [pickerVal, setPickerVal] = useState(["0604", "14"]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [booked, setBooked] = useState(false);
 
   const selectedDate = DATE_OPTIONS.find((d) => d.value === pickerVal[0])?.label ?? pickerVal[0];
   const selectedTime = TIME_OPTIONS.find((t) => t.value === pickerVal[1])?.label ?? pickerVal[1];
 
   const handleOrder = async () => {
+    setBooked(false);
     setSubmitting(true);
     await new Promise((r) => setTimeout(r, 700));
     setSubmitting(false);
-    toast({ title: `已预约 ${service.title}`, description: `${selectedDate} ${selectedTime} 师傅上门`, tone: "neutral" });
+    setBooked(true);
+    toast({ title: `${copy("booked")}${service.title}`, description: `${selectedDate} ${selectedTime}${copy("professionalArrives")}`, tone: "neutral" });
   };
 
   return (
@@ -74,7 +78,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
             <h1 className="text-base font-bold text-white">{service.title}</h1>
             <div className="mt-0.5 flex items-center gap-1.5">
               <Rating value={service.rating} readOnly size="sm" className="[--rating-color:hsl(var(--color-warning))]" />
-              <span className="text-xs text-white/85">{service.rating} · {service.reviewCount} 评</span>
+              <span className="text-xs text-white/85">{service.rating} · {service.reviewCount}  {copy("reviews")}</span>
             </div>
           </div>
           <Tag tone={TAG_TONE[service.tag] ?? "neutral"} size="sm">{service.tag}</Tag>
@@ -86,11 +90,11 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
         <Avatar fallback={service.workerAvatar} size="md" />
         <div className="flex-1">
           <div className="text-sm font-medium">{service.workerName}</div>
-          <div className="text-xs text-muted mt-0.5">{service.category} · 认证师傅</div>
+          <div className="text-xs text-muted mt-0.5">{SERVICE_CATEGORY_LABELS[service.category]} {copy("verifiedProfessional")}</div>
         </div>
         <button
           type="button"
-          onClick={() => toast({ title: `正在拨打 ${service.workerName} 电话…`, tone: "info" })}
+          onClick={() => toast({ title: `${copy("calling")}${service.workerName}${copy("calling2")}`, tone: "info" })}
           className="flex size-9 items-center justify-center rounded-full border border-border hover:bg-surface-hover"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width="16" height="16" aria-hidden>
@@ -101,13 +105,13 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
 
       {/* 服务说明 */}
       <div className="px-4 py-3 border-b border-border">
-        <div className="text-sm font-semibold mb-1.5">服务说明</div>
+        <div className="text-sm font-semibold mb-1.5">{copy("serviceDetails")}</div>
         <p className="text-xs text-muted leading-relaxed">{service.description}</p>
       </div>
 
       {/* 预约时间（Picker 触发） */}
       <div className="px-4 py-3 border-b border-border">
-        <div className="mb-2 text-sm font-semibold">预约时间</div>
+        <div className="mb-2 text-sm font-semibold">{copy("appointmentTime")}</div>
         <button
           type="button"
           onClick={() => setPickerOpen(true)}
@@ -138,17 +142,19 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
                 onClick={() => setPickerOpen(false)}
                 className="flex-1 rounded-xl border border-border py-2 text-sm hover:bg-surface-hover"
               >
-                取消
+
+                {copy("cancel")}
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setPickerOpen(false);
-                  toast({ title: `预约时间已选：${selectedDate} ${selectedTime}`, tone: "neutral" });
+                  toast({ title: `${copy("selectedAppointment")}${selectedDate} ${selectedTime}`, tone: "neutral" });
                 }}
                 className="flex-1 rounded-xl bg-primary py-2 text-sm text-primary-foreground hover:brightness-105"
               >
-                确认
+
+                {copy("confirm")}
               </button>
             </div>
           </div>
@@ -157,7 +163,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
 
       {/* 数量/时长 Stepper */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <span className="text-sm font-semibold">服务数量</span>
+        <span className="text-sm font-semibold">{copy("quantity")}</span>
         <Stepper value={qty} onChange={setQty} min={1} max={5} />
       </div>
 
@@ -166,7 +172,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
       {/* 底部下单栏 */}
       <div className="px-4 py-3">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs text-muted">合计</span>
+          <span className="text-xs text-muted">{copy("total")}</span>
           <span className="text-xl font-bold text-primary">
             ¥{service.price * qty}
             <span className="text-xs font-normal text-muted"> · {qty}{service.unit}</span>
@@ -178,8 +184,13 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
           disabled={submitting}
           className="w-full rounded-2xl bg-primary py-3.5 text-base font-semibold text-primary-foreground hover:brightness-105 disabled:opacity-60 transition-all"
         >
-          {submitting ? "下单中…" : "立即预约"}
+          {submitting ? copy("booking") : copy("bookNow")}
         </button>
+        {booked && (
+          <p role="status" className="mt-2 text-center text-sm font-medium text-success">
+            {copy("booked")}: {service.title}
+          </p>
+        )}
       </div>
     </div>
   );

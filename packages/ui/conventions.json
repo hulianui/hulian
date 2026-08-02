@@ -1521,6 +1521,13 @@
       "id": "component/color-swatch-picker/pitfall/2",
       "scope": "color-swatch-picker",
       "title": "ColorSwatchPicker",
+      "rule": "默认无障碍名称跟随 `ConfigProvider locale`；显式 `aria-label` 优先，未包 Provider 时保持中文。",
+      "source": "packages/ui/src/color-swatch-picker/color-swatch-picker.md"
+    },
+    {
+      "id": "component/color-swatch-picker/pitfall/3",
+      "scope": "color-swatch-picker",
+      "title": "ColorSwatchPicker",
       "rule": "仅支持单选；多选场景不在本组件范围内。",
       "source": "packages/ui/src/color-swatch-picker/color-swatch-picker.md"
     },
@@ -1718,6 +1725,13 @@
       "scope": "coupon",
       "title": "Coupon",
       "rule": "`onClaim`/`onUse`/`onSelect` 三类回调对应不同 status 与点击区，互相独立——结算选券走 `onSelect`（整券），领取走 `onClaim`（右侧按钮）。",
+      "source": "packages/ui/src/coupon/coupon.md"
+    },
+    {
+      "id": "component/coupon/pitfall/4",
+      "scope": "coupon",
+      "title": "Coupon",
+      "rule": "操作文案、面额后缀和使用门槛跟随 `ConfigProvider locale`；显式 `actionLabel` 优先，未包 Provider 时保持中文。",
       "source": "packages/ui/src/coupon/coupon.md"
     },
     {
@@ -3849,6 +3863,13 @@
       "source": "packages/ui/src/live-chat/live-chat.md"
     },
     {
+      "id": "component/live-chat/pitfall/4",
+      "scope": "live-chat",
+      "title": "LiveChat",
+      "rule": "内置“置顶 / 新消息 / 进入 / 关注 / 送出”文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供英文。",
+      "source": "packages/ui/src/live-chat/live-chat.md"
+    },
+    {
       "id": "component/live-player/pitfall/1",
       "scope": "live-player",
       "title": "LivePlayer",
@@ -3866,11 +3887,18 @@
       "id": "component/live-player/pitfall/3",
       "scope": "live-player",
       "title": "LivePlayer",
-      "rule": "`surface` 优先于 `src`：两者都传时只渲染 `surface`（用于程序化/Canvas 画面）。",
+      "rule": "关注态文案跟随 `ConfigProvider locale`；无 Provider 时保持“+ 关注 / 已关注”，`enUS` 为 “+ Follow / Following”。",
       "source": "packages/ui/src/live-player/live-player.md"
     },
     {
       "id": "component/live-player/pitfall/4",
+      "scope": "live-player",
+      "title": "LivePlayer",
+      "rule": "`surface` 优先于 `src`：两者都传时只渲染 `surface`（用于程序化/Canvas 画面）。",
+      "source": "packages/ui/src/live-player/live-player.md"
+    },
+    {
+      "id": "component/live-player/pitfall/5",
       "scope": "live-player",
       "title": "LivePlayer",
       "rule": "内置 `<video>` 固定 muted/autoPlay/loop/playsInline，不暴露播放控制；要进度条/音量等点播 chrome 请改用 Video。",
@@ -3888,6 +3916,13 @@
       "scope": "live-product-card",
       "title": "LiveProductCard",
       "rule": "划线原价仅在 `originalPrice` 存在时渲染；`currency` 同时作用于现价与原价。",
+      "source": "packages/ui/src/live-product-card/live-product-card.md"
+    },
+    {
+      "id": "component/live-product-card/pitfall/3",
+      "scope": "live-product-card",
+      "title": "LiveProductCard",
+      "rule": "“讲解中”、销量和剩余库存文案跟随 `ConfigProvider locale`；`enUS` 分别提供 “Presenting”、“Sold N” 和 “N left”，未包 Provider 时保持中文。",
       "source": "packages/ui/src/live-product-card/live-product-card.md"
     },
     {
@@ -4364,6 +4399,13 @@
       "scope": "navbar",
       "title": "Navbar",
       "rule": "`NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。",
+      "source": "packages/ui/src/navbar/navbar.md"
+    },
+    {
+      "id": "component/navbar/pitfall/2",
+      "scope": "navbar",
+      "title": "Navbar",
+      "rule": "默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。",
       "source": "packages/ui/src/navbar/navbar.md"
     },
     {
@@ -5085,6 +5127,13 @@
       "scope": "pull-to-refresh",
       "title": "PullToRefresh",
       "rule": "只在内容滚到顶部时下拉才进入手势，中途滚动不会误触发。",
+      "source": "packages/ui/src/pull-to-refresh/pull-to-refresh.md"
+    },
+    {
+      "id": "component/pull-to-refresh/pitfall/3",
+      "scope": "pull-to-refresh",
+      "title": "PullToRefresh",
+      "rule": "三个状态文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供 “Pull / Release to refresh / Refreshing…”。",
       "source": "packages/ui/src/pull-to-refresh/pull-to-refresh.md"
     },
     {
@@ -6075,6 +6124,13 @@
       "source": "packages/ui/src/snippet/snippet.md"
     },
     {
+      "id": "component/snippet/pitfall/2",
+      "scope": "snippet",
+      "title": "Snippet",
+      "rule": "默认复制标签跟随 `ConfigProvider locale`；无 Provider 时保持“复制 / 已复制”，`enUS` 为 “Copy / Copied”。",
+      "source": "packages/ui/src/snippet/snippet.md"
+    },
+    {
       "id": "component/soft-aurora/pitfall/1",
       "scope": "soft-aurora",
       "title": "SoftAurora",
@@ -6127,11 +6183,18 @@
       "id": "component/sortable/pitfall/4",
       "scope": "sortable",
       "title": "Sortable",
-      "rule": "守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。",
+      "rule": "拖拽手柄的无障碍名称跟随 `ConfigProvider locale`；`enUS` 提供 “Reorder item N”，未包 Provider 时保持中文。",
       "source": "packages/ui/src/sortable/sortable.md"
     },
     {
       "id": "component/sortable/pitfall/5",
+      "scope": "sortable",
+      "title": "Sortable",
+      "rule": "守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。",
+      "source": "packages/ui/src/sortable/sortable.md"
+    },
+    {
+      "id": "component/sortable/pitfall/6",
       "scope": "sortable",
       "title": "Sortable",
       "rule": "展示序号别用 `items.findIndex(...)` 反查（O(n²)），直接取 `renderItem` 第二参的 `state.index`。",
@@ -6506,6 +6569,13 @@
       "scope": "tab-bar",
       "title": "TabBar",
       "rule": "`badge` 与 `dot` 同时给时 `badge` 优先。",
+      "source": "packages/ui/src/tab-bar/tab-bar.md"
+    },
+    {
+      "id": "component/tab-bar/pitfall/3",
+      "scope": "tab-bar",
+      "title": "TabBar",
+      "rule": "导航区标签跟随 `ConfigProvider locale`：`zhCN` 为“底部导航”，`enUS` 为 “Bottom navigation”。",
       "source": "packages/ui/src/tab-bar/tab-bar.md"
     },
     {
@@ -7556,7 +7626,7 @@
   ],
   "stats": {
     "componentDocs": 372,
-    "componentAdvisories": 1054,
-    "totalAdvisories": 1061
+    "componentAdvisories": 1064,
+    "totalAdvisories": 1071
   }
 }

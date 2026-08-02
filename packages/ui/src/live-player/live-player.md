@@ -70,6 +70,7 @@ import { LivePlayer } from "@hulianui/ui"
 
 - `quality` 是受控的：传了 `quality` 就必须配 `onQualityChange` 回写，否则菜单选了不变。
 - 关注钮以 `host.onFollow` 是否存在决定显隐——纯展示场景不传即可隐藏。
+- 关注态文案跟随 `ConfigProvider locale`；无 Provider 时保持“+ 关注 / 已关注”，`enUS` 为 “+ Follow / Following”。
 - `surface` 优先于 `src`：两者都传时只渲染 `surface`（用于程序化/Canvas 画面）。
 - 内置 `<video>` 固定 muted/autoPlay/loop/playsInline，不暴露播放控制；要进度条/音量等点播 chrome 请改用 Video。
 

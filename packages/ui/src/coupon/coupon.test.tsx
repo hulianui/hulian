@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { Coupon } from "./coupon";
 
 describe("Coupon", () => {
@@ -81,6 +83,44 @@ describe("Coupon", () => {
       <Coupon amount={20} title="券" status="available" actionLabel="马上抢" onClaim={() => {}} />,
     );
     expect(getByText("马上抢")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes denomination, threshold, and status labels", () => {
+    const { getByText, rerender } = render(
+      <ConfigProvider locale={enUS}>
+        <Coupon kind="discount" discount={8.5} threshold={199} title="Offer" onClaim={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("off")).toBeTruthy();
+    expect(getByText("Spend ¥199 to use")).toBeTruthy();
+    expect(getByText("Claim now")).toBeTruthy();
+
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Coupon kind="shipping" title="Delivery" status="claimed" onUse={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Free shipping")).toBeTruthy();
+    expect(getByText("No minimum spend")).toBeTruthy();
+    expect(getByText("Use now")).toBeTruthy();
+  });
+
+  it("legacy component dictionaries fall back to Chinese while actionLabel overrides enUS", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, coupon: undefined } };
+    const { getByText, rerender } = render(
+      <ConfigProvider locale={legacy}>
+        <Coupon amount={20} title="券" onClaim={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("无门槛")).toBeTruthy();
+    expect(getByText("立即领取")).toBeTruthy();
+
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Coupon amount={20} title="Offer" actionLabel="Redeem" onClaim={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Redeem")).toBeTruthy();
   });
 
   it("透传 className", () => {

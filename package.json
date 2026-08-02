@@ -37,6 +37,7 @@
     "docs:check:routes": "node scripts/build-bilingual-docs.mjs --check-routes",
     "docs:check:admin-demos": "node scripts/check-admin-demo-output.mjs apps/www/out",
     "docs:check:task11-demos": "node scripts/check-task11-demo-output.mjs apps/www/out",
+    "docs:check:task12-demos": "node scripts/check-task12-demo-output.mjs apps/www/out",
     "docs:i18n:check": "node scripts/check-component-doc-translations.mjs",
     "install-hooks": "sh scripts/install-hooks.sh",
     "changeset": "changeset",

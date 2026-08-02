@@ -30,6 +30,7 @@ import { TabBar } from "@hulianui/ui"
 | `defaultValue` | `string` | First key | Uncontrolled initial key |
 | `safeArea` | `boolean` | `true` | Adds the bottom safe-area inset |
 | `fixed` | `boolean` | `true` | fixed to the bottom; false to follow the document flow |
+| `aria-label` | `string` | Locale value | Accessible navigation landmark label; an explicit value takes precedence. |
 | `className` | `string` | — | — |
 
 **TabBarItem**: `key: string` · `label: ReactNode` · `icon?: ReactNode` (default icon) · `activeIcon?: ReactNode` (activated state, default reuse icon) · `dot?: boolean` (red dot) · `badge?: ReactNode` (corner mark, takes precedence over dot) · `disabled?: boolean`.
@@ -57,7 +58,7 @@ const [tab, setTab] = useState("home");
 ## Usage Guidelines
 - Default `fixed` sticks to the bottom of the viewport + eats the bottom safe area. When putting it into a mobile phone frame/container for demonstration, `fixed={false}` must be included in the document flow, otherwise it will float to the bottom of the page; add `safeArea={false}` when no safe area is needed in the container.
 - When `badge` and `dot` are supplied at the same time, `badge` takes priority.
-- The navigation landmark has the built-in Chinese label `\u5e95\u90e8\u5bfc\u822a` ("Bottom navigation").
+- The navigation landmark follows `ConfigProvider locale`; `enUS` provides “Bottom navigation”, and the no-provider fallback remains Chinese.
 
 ## Related
 [Fab](../fab/fab.md) · [ActionSheet](../action-sheet/action-sheet.md) · [Picker](../picker/picker.md) · [SwipeAction](../swipe-action/swipe-action.md) · [PullToRefresh](../pull-to-refresh/pull-to-refresh.md) · [SafeArea](../safe-area/safe-area.md)

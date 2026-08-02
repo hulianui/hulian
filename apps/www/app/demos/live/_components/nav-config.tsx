@@ -1,23 +1,26 @@
+import { copy } from "./nav-config.content";
 import { MonitorPlay, ShoppingBag, BarChart3 } from "lucide-react";
 import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
-export const LIVE_ROOT = "/demos/live";
+export const LIVE_ROOT = demoHref("/demos/live");
+const LIVE_LOCATION_ROOT = demoLocationHref("/demos/live");
 
 /** 侧栏菜单（key 即路由）。 */
 export const menuItems: NavMenuNode[] = [
   {
     type: "group",
     key: "g-live",
-    label: "开播",
-    children: [{ key: LIVE_ROOT, label: "直播中控", icon: <MonitorPlay className="size-4" /> }],
+    label: copy("goLive"),
+    children: [{ key: LIVE_ROOT, label: copy("liveConsole"), icon: <MonitorPlay className="size-4" /> }],
   },
   {
     type: "group",
     key: "g-ops",
-    label: "运营",
+    label: copy("operations"),
     children: [
-      { key: `${LIVE_ROOT}/products`, label: "小黄车", icon: <ShoppingBag className="size-4" /> },
-      { key: `${LIVE_ROOT}/review`, label: "数据复盘", icon: <BarChart3 className="size-4" /> },
+      { key: `${LIVE_ROOT}/products`, label: copy("shoppingPanel"), icon: <ShoppingBag className="size-4" /> },
+      { key: `${LIVE_ROOT}/review`, label: copy("performanceReview"), icon: <BarChart3 className="size-4" /> },
     ],
   },
 ];
@@ -29,14 +32,14 @@ export function selectedKeyFor(pathname: string): string | undefined {
 }
 
 const META: Record<string, string> = {
-  [LIVE_ROOT]: "直播中控",
-  [`${LIVE_ROOT}/products`]: "小黄车",
-  [`${LIVE_ROOT}/review`]: "数据复盘",
+  [LIVE_ROOT]: copy("liveConsole"),
+  [`${LIVE_ROOT}/products`]: copy("shoppingPanel"),
+  [`${LIVE_ROOT}/review`]: copy("performanceReview"),
 };
 
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
-  if (pathname === LIVE_ROOT) return [{ label: "直播中控", current: true }];
-  const items: BreadcrumbItem[] = [{ label: "直播中控", href: LIVE_ROOT }];
+  if (pathname === LIVE_ROOT) return [{ label: copy("liveConsole"), current: true }];
+  const items: BreadcrumbItem[] = [{ label: copy("liveConsole"), href: LIVE_LOCATION_ROOT }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== LIVE_ROOT) {
     items.push({ label: META[selected] ?? "", current: true });
@@ -45,5 +48,5 @@ export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
 }
 
 export function labelOf(key: string): string {
-  return META[key] ?? "直播中控";
+  return META[key] ?? copy("liveConsole");
 }

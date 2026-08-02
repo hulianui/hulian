@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./stack.content";
 
 import { Meter, Chip, Marquee, Heading, Text, cn } from "@hulianui/ui";
 import { Section } from "./section";
@@ -11,9 +12,9 @@ export function Stack() {
   return (
     <Section
       id="stack"
-      eyebrow="技能矩阵"
-      title="我用什么把想法变成产品"
-      description="六年里我在这些方向上反复打磨——前端是主场，全栈与原生是延伸，设计与增长让一个人也能闭环。"
+      eyebrow={copy("skillsMatrix")}
+      title={copy("howITurnIdeasIntoProducts")}
+      description={copy("forSixYearsIHaveRefinedTheseDisciplinesFrontendIsMyFoundationFullStackAndNativeWorkExtendItAndDe")}
       width="6xl"
       className="bg-surface/30"
     >

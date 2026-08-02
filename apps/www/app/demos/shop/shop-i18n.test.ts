@@ -20,10 +20,11 @@ import { coupons } from "./_data/coupons";
 import { orders, STATUS_LABEL } from "./_data/orders";
 import { formatCompactCount, products } from "./_data/products";
 import { reviews } from "./_data/reviews";
-import { SHOP_BASE } from "./_components/nav-config";
+import { SHOP_BASE, SHOP_LOCATION_BASE } from "./_components/nav-config";
 
 const CJK = /[\p{Script=Han}，。！？；：“”‘’（）【】《》〈〉「」『』…]/u;
 const SHOP_ROOT = new URL(".", import.meta.url).pathname;
+const englishIt = process.env.DOCS_LOCALE === "en" ? it : it.skip;
 
 function walk(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -87,15 +88,26 @@ function cjkLiterals(file: string, source: string): string[] {
 }
 
 describe("shop English fixtures", () => {
-  it("keeps Shop navigation inside the English static export", () => {
-    expect(SHOP_BASE).toBe("/en/demos/shop");
+  englishIt("keeps Shop navigation inside the English static export", () => {
+    expect(SHOP_BASE).toBe("/demos/shop");
+    expect(SHOP_LOCATION_BASE).toBe("/en/demos/shop");
   });
 
   it("keeps every colocated catalog complete, semantic, consumed, and CJK-free in English", async () => {
     const contentFiles = walk(SHOP_ROOT).filter((file) => file.endsWith(".content.ts"));
     expect(contentFiles).toHaveLength(26);
+    const dictionaryKeys = new Set<string>();
 
     for (const contentFile of contentFiles) {
+      const contentSource = readFileSync(contentFile, "utf8");
+      const dictionaryKey = contentSource.match(/key:\s*"([^"]+)"/)?.[1];
+      expect(dictionaryKey, `${relative(SHOP_ROOT, contentFile)} dictionary key`).toMatch(
+        /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      );
+      expect(dictionaryKeys.has(dictionaryKey!), `${dictionaryKey} unique dictionary key`).toBe(
+        false,
+      );
+      dictionaryKeys.add(dictionaryKey!);
       const module = await import(pathToFileURL(contentFile).href);
       const zhKeys = Object.keys(module.content["zh-CN"]);
       const enKeys = Object.keys(module.content.en);
@@ -122,6 +134,7 @@ describe("shop English fixtures", () => {
         [...zhKeys].sort(),
       );
     }
+    expect(dictionaryKeys.size).toBe(26);
 
     const sourceFiles = walk(SHOP_ROOT).filter(
       (file) =>
@@ -138,7 +151,7 @@ describe("shop English fixtures", () => {
     }
   });
 
-  it("preserves product and category protocol identifiers while presenting reviewed English", () => {
+  englishIt("preserves product and category protocol identifiers while presenting reviewed English", () => {
     expect(formatCompactCount(12_000)).toBe("12K");
     expect(categories.map((category) => category.key)).toEqual([
       "digital",
@@ -187,7 +200,7 @@ describe("shop English fixtures", () => {
     ).toBe(false);
   });
 
-  it("preserves coupon, order, and review relations while localizing customer-facing fixtures", () => {
+  englishIt("preserves coupon, order, and review relations while localizing customer-facing fixtures", () => {
     expect(coupons.map(({ id, kind, status }) => ({ id, kind, status }))).toEqual([
       { id: "cp-1", kind: "amount", status: "available" },
       { id: "cp-2", kind: "amount", status: "available" },

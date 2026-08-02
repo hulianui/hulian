@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale";
 import type { LiveProductCardProps } from "./live-product-card.types";
 
 function fmt(n: number): string {
@@ -22,6 +23,11 @@ export function LiveProductCard({
   onClick,
   className,
 }: LiveProductCardProps) {
+  const labels = useComponentLocale().liveProductCard ?? {
+    presenting: "讲解中",
+    sold: (count: number) => `已售 ${count}`,
+    remaining: (count: number) => `仅剩 ${count}`,
+  };
   const isCard = layout === "card";
 
   const Price = (
@@ -51,7 +57,7 @@ export function LiveProductCard({
       {explaining && (
         <span className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-1 bg-danger/90 py-0.5 text-[10px] font-medium text-danger-foreground">
           <span className="size-1 animate-pulse rounded-full bg-white" />
-          讲解中
+          {labels.presenting}
         </span>
       )}
     </div>
@@ -81,9 +87,9 @@ export function LiveProductCard({
             {Price}
             {(stock != null || sold != null) && (
               <div className="mt-0.5 text-[11px] text-muted">
-                {sold != null && <span>已售 {sold}</span>}
+                {sold != null && <span>{labels.sold(sold)}</span>}
                 {sold != null && stock != null && <span> · </span>}
-                {stock != null && <span>仅剩 {stock}</span>}
+                {stock != null && <span>{labels.remaining(stock)}</span>}
               </div>
             )}
           </div>

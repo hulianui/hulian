@@ -2123,6 +2123,8 @@ import { Snippet } from "@hulianui/ui"
 | symbol | `string ｜ null` | `"$"` | 命令提示符；传 `null` 不显示，适合非命令片段 |
 | lang | `string` | — | 语法着色语言（如 `"tsx"`/`"bash"`），仅 children 为字符串时生效 |
 | highlight | `boolean` | `true` | 是否语法着色，仅 children 为字符串时生效 |
+| copyLabel | `string` | 跟随 locale | 复制按钮无障碍标签；显式传值优先 |
+| copiedLabel | `string` | 跟随 locale | 复制成功后的无障碍标签；显式传值优先 |
 | className | `string` | — | 容器类名 |
 
 ## Slots
@@ -2142,6 +2144,7 @@ import { Snippet } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - `text`/`lang`/`highlight` 的着色与复制兜底仅在 `children` 为**字符串**时生效；传入节点时只能手动给 `text` 指定复制内容。
+- 默认复制标签跟随 `ConfigProvider locale`；无 Provider 时保持“复制 / 已复制”，`enUS` 为 “Copy / Copied”。
 
 ## 相关
 [Code](https://hulianui.haloritual.com/components/code) · [CodeBlock](https://hulianui.haloritual.com/components/code-block) · [CodeDiff](https://hulianui.haloritual.com/components/code-diff) · [Kbd](https://hulianui.haloritual.com/components/kbd) · [Text](https://hulianui.haloritual.com/components/text) · [Heading](https://hulianui.haloritual.com/components/heading)
@@ -3340,6 +3343,7 @@ const [v, setV] = useState("#3b82f6");
 ## 禁忌 / 坑
 
 - 受控 `value` 必须与 `colors` 中某项**严格字符串相等**才会高亮；`"#FFF"` 与 `"#ffffff"`、`"#3b82f6"` 与 `"rgb(59,130,246)"` 视为不同值。统一大小写与写法。
+- 默认无障碍名称跟随 `ConfigProvider locale`；显式 `aria-label` 优先，未包 Provider 时保持中文。
 - 仅支持单选；多选场景不在本组件范围内。
 
 ## 相关
@@ -8071,6 +8075,7 @@ import { Coupon } from "@hulianui/ui"
 - `status="used" | "expired"` 时操作区自动置灰、`shine` 扫光不播；不必额外手动禁用。
 - 撕票穿孔/中缝是纯 CSS 伪元素绘制，外层不要再裹会裁剪溢出的 `overflow-hidden` 容器，否则半圆穿孔被切。
 - `onClaim`/`onUse`/`onSelect` 三类回调对应不同 status 与点击区，互相独立——结算选券走 `onSelect`（整券），领取走 `onClaim`（右侧按钮）。
+- 操作文案、面额后缀和使用门槛跟随 `ConfigProvider locale`；显式 `actionLabel` 优先，未包 Provider 时保持中文。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -9845,6 +9850,7 @@ const item: LiveChatItem =
 - 自动贴底依赖「当前是否贴底」判定：用户上滚查看历史时 `autoScroll` 暂停，浮出「N 条新消息」钮，点它才恢复贴底——不要在外部强行 scrollTo 干扰。
 - `items` 须给容器固定高度（如 `className="h-full"` + 父容器定高），否则滚动区无法形成。
 - 高频追加时靠 `maxItems` 截断窗口；不要把全量历史塞进 `items`。
+- 内置“置顶 / 新消息 / 进入 / 关注 / 送出”文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供英文。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -9912,6 +9918,7 @@ import { LivePlayer } from "@hulianui/ui"
 
 - `quality` 是受控的：传了 `quality` 就必须配 `onQualityChange` 回写，否则菜单选了不变。
 - 关注钮以 `host.onFollow` 是否存在决定显隐——纯展示场景不传即可隐藏。
+- 关注态文案跟随 `ConfigProvider locale`；无 Provider 时保持“+ 关注 / 已关注”，`enUS` 为 “+ Follow / Following”。
 - `surface` 优先于 `src`：两者都传时只渲染 `surface`（用于程序化/Canvas 画面）。
 - 内置 `<video>` 固定 muted/autoPlay/loop/playsInline，不暴露播放控制；要进度条/音量等点播 chrome 请改用 Video。
 
@@ -9986,6 +9993,7 @@ import { LiveProductCard } from "@hulianui/ui"
 
 - `action` 是插槽，组件不内置按钮——抢购钮由调用方传入（Button 等），便于挂自己的下单逻辑。
 - 划线原价仅在 `originalPrice` 存在时渲染；`currency` 同时作用于现价与原价。
+- “讲解中”、销量和剩余库存文案跟随 `ConfigProvider locale`；`enUS` 分别提供 “Presenting”、“Sold N” 和 “N left”，未包 Provider 时保持中文。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge) · [Dot](https://hulianui.haloritual.com/components/dot)
@@ -11445,6 +11453,7 @@ const [items, setItems] = useState(fields);
 - 受控组件：`onChange` 不会替你改 state，必须自己把新数组写回（`onChange={setItems}`）。
 - `getId` 返回的 id 必须稳定唯一；用数组下标当 id 会在重排后错乱。
 - 行内的 `input / textarea / select / button / label / a / [role=button] / [role=link] / [contenteditable]` 不会劫持拖拽——守卫内置在指针 sensor 里，**默认（`handle={false}`）就安全**，不必为此设 `handle`（参考 [[dnd-kit-draggable-container-guard-interactive-children]]）。自绘的可拖控件（色卡、滑块、画布）不在上述标签之列，给它加 `data-no-drag` 即可放行。
+- 拖拽手柄的无障碍名称跟随 `ConfigProvider locale`；`enUS` 提供 “Reorder item N”，未包 Provider 时保持中文。
 - 守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。
 - 展示序号别用 `items.findIndex(...)` 反查（O(n²)），直接取 `renderItem` 第二参的 `state.index`。
 
@@ -13670,7 +13679,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | isOpen | `boolean` | — | 受控展开态 |
-| aria-label | `string` | 按 isOpen 切换 | 无障碍标签 |
+| aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
 | className | `string` | — | 类名 |
 
 `NavbarBrand` 为纯容器，无专属 prop。
@@ -13712,6 +13721,7 @@ function Header() {
 ## 禁忌 / 坑
 
 - `NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。
+- 默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。
 - 暂无其他已知坑。
 
 ## 相关
@@ -22670,9 +22680,9 @@ import { PullToRefresh } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | `children` * | `ReactNode` | 可滚动内容 |
-| `pullingText` | `ReactNode` | 下拉中文案 |
-| `armedText` | `ReactNode` | 越过阈值待释放时的文案 |
-| `refreshingText` | `ReactNode` | 刷新中文案 |
+| `pullingText` | `ReactNode` | 下拉中文案；默认跟随 locale，显式传值优先 |
+| `armedText` | `ReactNode` | 越过阈值待释放时的文案；默认跟随 locale |
+| `refreshingText` | `ReactNode` | 刷新中文案；默认跟随 locale |
 
 ## 示例
 ```tsx
@@ -22684,6 +22694,7 @@ import { PullToRefresh } from "@hulianui/ui"
 ## 禁忌 / 坑
 - `onRefresh` 想让指示器在加载期间持续显示，必须**返回 Promise** 并在数据就绪后 resolve；返回 void 会立即回弹，看不到刷新态。
 - 只在内容滚到顶部时下拉才进入手势，中途滚动不会误触发。
+- 三个状态文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供 “Pull / Release to refresh / Refreshing…”。
 
 ## 相关
 [SwipeAction](https://hulianui.haloritual.com/components/swipe-action) · [TabBar](https://hulianui.haloritual.com/components/tab-bar) · [Fab](https://hulianui.haloritual.com/components/fab) · [ActionSheet](https://hulianui.haloritual.com/components/action-sheet) · [Picker](https://hulianui.haloritual.com/components/picker) · [SafeArea](https://hulianui.haloritual.com/components/safe-area)
@@ -22804,6 +22815,7 @@ import { TabBar } from "@hulianui/ui"
 | `defaultValue` | `string` | 首项 key | 非受控初始 key |
 | `safeArea` | `boolean` | `true` | 吃底部安全区 inset |
 | `fixed` | `boolean` | `true` | fixed 贴底；false 则随文档流 |
+| `aria-label` | `string` | 跟随 locale | 导航区无障碍标签；显式传值优先 |
 | `className` | `string` | — | — |
 
 **TabBarItem**：`key: string` · `label: ReactNode` · `icon?: ReactNode`（默认态图标）· `activeIcon?: ReactNode`（激活态，缺省复用 icon）· `dot?: boolean`（红点）· `badge?: ReactNode`（角标，优先于 dot）· `disabled?: boolean`。
@@ -22831,6 +22843,7 @@ const [tab, setTab] = useState("home");
 ## 禁忌 / 坑
 - 默认 `fixed` 贴视口底 + 吃底部安全区。放进手机框/容器内演示时须 `fixed={false}` 收进文档流，否则会飘到整页底部；容器内不需要安全区时再加 `safeArea={false}`。
 - `badge` 与 `dot` 同时给时 `badge` 优先。
+- 导航区标签跟随 `ConfigProvider locale`：`zhCN` 为“底部导航”，`enUS` 为 “Bottom navigation”。
 
 ## 相关
 [Fab](https://hulianui.haloritual.com/components/fab) · [ActionSheet](https://hulianui.haloritual.com/components/action-sheet) · [Picker](https://hulianui.haloritual.com/components/picker) · [SwipeAction](https://hulianui.haloritual.com/components/swipe-action) · [PullToRefresh](https://hulianui.haloritual.com/components/pull-to-refresh) · [SafeArea](https://hulianui.haloritual.com/components/safe-area)

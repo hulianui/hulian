@@ -2,6 +2,8 @@ import { describe, it, expect, afterEach } from "vitest";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import { LiveChat } from "./live-chat";
 import type { LiveChatItem } from "./live-chat.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -32,6 +34,25 @@ describe("LiveChat", () => {
     const { getByText } = render(<LiveChat items={base} pinned={[{ id: "p", type: "system", text: "公告内容" }]} />);
     expect(getByText("置顶")).toBeTruthy();
     expect(getByText("公告内容")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes the pinned label", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <LiveChat items={base} pinned={[{ id: "p", type: "system", text: "Notice" }]} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Pinned")).toBeTruthy();
+  });
+
+  it("a legacy locale without liveChat keeps the Chinese pinned label", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, liveChat: undefined } };
+    const { getByText } = render(
+      <ConfigProvider locale={legacy}>
+        <LiveChat items={base} pinned={[{ id: "p", type: "system", text: "公告内容" }]} />
+      </ConfigProvider>,
+    );
+    expect(getByText("置顶")).toBeTruthy();
   });
 
   it("maxItems 截断只保留最近 N 条", () => {

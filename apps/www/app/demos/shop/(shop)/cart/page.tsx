@@ -19,7 +19,7 @@ import {
 import { productById, productImage, formatPrice } from "../../_data/products";
 import { useMockData } from "../../../lib/async";
 import { useShop } from "../../_lib/shop-store";
-import { SHOP_BASE } from "../../_components/nav-config";
+import { SHOP_BASE, SHOP_LOCATION_BASE } from "../../_components/nav-config";
 
 // 购物车骨架屏行
 function CartRowSkeleton() {
@@ -105,7 +105,7 @@ export default function CartPage() {
       toast({ title: copy("selectAtLeastOneItemToCheckOut"), tone: "danger" });
       return;
     }
-    window.location.href = `${SHOP_BASE}/checkout`;
+    window.location.href = `${SHOP_LOCATION_BASE}/checkout`;
   }
 
   return (
@@ -114,7 +114,7 @@ export default function CartPage() {
       <Breadcrumb
         className="mb-6"
         items={[
-          { label: copy("hanshopHome"), href: SHOP_BASE },
+          { label: copy("hanshopHome"), href: SHOP_LOCATION_BASE },
           { label: copy("cart") },
         ]}
       />
