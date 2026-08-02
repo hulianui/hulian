@@ -31,6 +31,21 @@ describe("DatePicker", () => {
     expect(screen.getByText("Select year")).toBeTruthy();
   });
 
+  it("explicit placeholders override enUS date, month, and year defaults", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <div>
+          <DatePicker aria-label="Date" placeholder="Choose a day" />
+          <DatePicker picker="month" aria-label="Month" placeholder="Choose a billing month" />
+          <DatePicker picker="year" aria-label="Year" placeholder="Choose a fiscal year" />
+        </div>
+      </ConfigProvider>,
+    );
+    expect(screen.getByText("Choose a day")).toBeTruthy();
+    expect(screen.getByText("Choose a billing month")).toBeTruthy();
+    expect(screen.getByText("Choose a fiscal year")).toBeTruthy();
+  });
+
   it("an old custom datePicker locale with only clear keeps Chinese picker placeholders", () => {
     const locale = {
       ...enUS,

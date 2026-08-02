@@ -48,8 +48,8 @@ export function MarkdownEditor({
   className,
   "aria-label": ariaLabelProp,
 }: MarkdownEditorProps) {
-  const ariaLabel =
-    ariaLabelProp ?? useComponentLocale().markdownEditor?.editor ?? "Markdown 编辑器";
+  const componentLocale = useComponentLocale();
+  const ariaLabel = ariaLabelProp ?? componentLocale.markdownEditor?.editor ?? "Markdown 编辑器";
   const init = value ?? defaultValue ?? "";
   const lastEmitted = useRef<string>(init);
   const [mdValue, setMdValue] = useState(init);

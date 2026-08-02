@@ -85,6 +85,28 @@ describe("MarkdownEditor", () => {
     }
   });
 
+  it("can toggle an explicit editor label in both directions without changing hook order", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const view = (ariaLabel?: string) => (
+      <ConfigProvider locale={enUS}>
+        <MarkdownEditor defaultValue="abc" aria-label={ariaLabel} />
+      </ConfigProvider>
+    );
+    try {
+      const { rerender } = render(view());
+      await screen.findByRole("textbox", { name: "Markdown editor" });
+
+      rerender(view("Knowledge editor"));
+      await screen.findByRole("textbox", { name: "Knowledge editor" });
+
+      rerender(view());
+      await screen.findByRole("textbox", { name: "Markdown editor" });
+      expect(consoleError.mock.calls.flat().join(" ")).not.toContain("change in the order of Hooks");
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
   it("a legacy custom locale without markdownEditor keeps the Chinese labels", async () => {
     const locale = { ...enUS, components: { ...enUS.components!, markdownEditor: undefined } };
     render(

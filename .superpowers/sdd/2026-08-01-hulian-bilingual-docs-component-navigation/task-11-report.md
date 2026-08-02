@@ -138,6 +138,21 @@ command is wired into CI after the existing admin-demo scan.
   being routed to the fallback fixture. The English intent-routing unit test
   failed first, then passed with the corrected local selector.
 
+## Round-three review follow-up
+
+- `MarkdownEditor` now calls `useComponentLocale()` unconditionally before
+  resolving the editor label as explicit `aria-label`, locale value, then the
+  exact Chinese fallback. This removes the conditional Hook path created by
+  nullish-coalescing short-circuit evaluation.
+- Added a real rerender regression that switches the editor from locale label
+  to an explicit label and back. Before the fix it captured React's Hook-order
+  runtime error; after the fix it verifies both accessible labels without an
+  error.
+- Added an enUS regression proving explicit DatePicker placeholders override
+  the localized defaults for date, month, and year. Temporarily removing the
+  explicit-placeholder branch made the focused test fail before the original
+  runtime branch was restored.
+
 ## Verification
 
 All commands used Node 22.22.3.
@@ -146,7 +161,8 @@ All commands used Node 22.22.3.
 | --- | --- |
 | `pnpm --filter www exec vitest run app/demos/lib/demo-i18n-coverage.test.ts app/demos/task11-fixture-quality.test.ts app/demos/ai-chat/ai-chat-i18n.test.ts` | PASS, 3 files / 52 tests |
 | `pnpm --filter www test -- --reporter=dot` | PASS, 33 files / 302 tests |
-| `pnpm --filter @hulianui/ui test -- scheduler/scheduler.test.tsx mentions/mentions.test.tsx video/video.test.tsx date-picker/date-picker.test.tsx date-time-picker/date-time-picker.test.tsx time-field/time-field.test.tsx markdown-editor/markdown-editor.test.tsx chip/chip.test.tsx tag/tag.test.tsx tree/tree.test.tsx --run` | PASS, 10 files / 176 tests |
+| `pnpm --filter @hulianui/ui test -- scheduler/scheduler.test.tsx mentions/mentions.test.tsx video/video.test.tsx date-picker/date-picker.test.tsx date-time-picker/date-time-picker.test.tsx time-field/time-field.test.tsx markdown-editor/markdown-editor.test.tsx chip/chip.test.tsx tag/tag.test.tsx tree/tree.test.tsx --run` | PASS, 10 files / 178 tests |
+| `node --test scripts/check-task11-demo-output.test.mjs` | PASS, 5/5 tests |
 | `DOCS_LOCALE=en pnpm --filter www typecheck` | PASS |
 | `pnpm --filter @hulianui/ui typecheck` | PASS |
 | `pnpm test:scripts` | PASS, 99/99 tests |
