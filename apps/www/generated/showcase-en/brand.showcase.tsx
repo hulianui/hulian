@@ -47,8 +47,8 @@ export const brandShowcase: ShowcaseSpec = {
             code: `<Brand name="Hulian" href="/" />
 <Brand name="Hulian" render={<Link to="/" />} />`,
             render: () => (<div className="flex flex-wrap items-center gap-8">
-          <Brand name="Hulian" href="#home"/>
-          <Brand mark={<Mark />} name="Hulian" description="Click me to return to the home page" href="#home"/>
+          <Brand name="Hulian" href="/"/>
+          <Brand mark={<Mark />} name="Hulian" description="Click me to return to the home page" href="/"/>
         </div>),
         },
     ],
