@@ -88,7 +88,7 @@ export function FlowNodeView<T>({
         <button
           type="button"
           data-no-drag
-          aria-label="删除节点"
+          aria-label={labels.deleteNode}
           onClick={(e) => {
             e.stopPropagation();
             onDelete(node.id);
@@ -166,7 +166,7 @@ function Handle({
       data-node-id={nodeId}
       data-handle-type={handle.type}
       data-connected={connected ? "" : undefined}
-      title={label}
+      title={handle.label}
       aria-label={label}
       onPointerDown={onPointerDown}
       className={cn(

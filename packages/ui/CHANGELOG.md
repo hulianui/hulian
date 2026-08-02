@@ -679,7 +679,7 @@
 
 ### Minor Changes
 
-- 新增 ColorField —— 紧凑单行颜色输入框（forms/advanced）
+- 新增 ColorField —— 紧凑单行颜色输入框（forms/advanced） <!-- parity-id: ui-0.10.0-color-field -->
 
   表单里一行的颜色输入：左侧色块调起系统取色器 + 十六进制文本输入。与 ColorPicker 的分工是「不抢版面」——后者是完整取色面板（饱和度方块 + 格式切换器），适合独立占一块地方；ColorField 适合主题配置表、设计 token 编辑器这类一行一色的场景。
 
@@ -692,7 +692,7 @@
 
   动因：Quay 从 HeroUI 收敛到瑚琏时，`ColorField`（hex 文本输入）是库里唯一缺的等价物 —— 现有 ColorPicker 是完整面板，塞进设置页一行会撑坏版式。
 
-- ProTable 托管模式增强：defaultSorting / params，以及内联 request 的无限请求防呆
+- ProTable 托管模式增强：defaultSorting / params，以及内联 request 的无限请求防呆 <!-- parity-id: ui-0.10.0-pro-table -->
 
   - `defaultSorting?: SortingState`：托管模式内部排序 state 的**首次挂载初值**（非受控默认值语义，后续改 prop 不回灌）。首拉即带 sort，因此能表达「默认按某列倒序」。展示模式的默认排序仍直接传受控 `sorting`
   - `params?: Record<string, unknown>`：托管模式固定查询参数，**浅比较**（键集合 + `Object.is` 逐值）后内容变化才回第 1 页重查，仅引用变化不触发——所以 `params={{ scopeId }}` 写内联对象字面量无需 `useMemo`
@@ -707,7 +707,7 @@
 
   `params` 变化的重置走「渲染期派生 state」而非 `useEffect`，好让新 params 与 `page=1` 在同一次提交生效，避免先用旧页码发一次废请求。
 
-- 新增 RemoteSelect —— 远程搜索选择器（forms/advanced），含 multiple 多选
+- 新增 RemoteSelect —— 远程搜索选择器（forms/advanced），含 multiple 多选 <!-- parity-id: ui-0.10.0-remote-select -->
 
   补上库里唯一缺的「远程数据」能力：此前 Combobox 只有 Base UI 的本地 filter，选项必须先全量落到前端，门店/会员/商品这类几万条的字典没法用。RemoteSelect 把过滤权交给服务端。
 
@@ -722,7 +722,7 @@
 
   动因：对标 hulian-admin Vue 后台的 `baInput/remoteSelect.vue`（355 行），React 侧缺等价物，表单页的远程字典只能各自手搓。
 
-- Select 新增 clearable / searchable / loading 与选项分组
+- Select 新增 clearable / searchable / loading 与选项分组 <!-- parity-id: ui-0.10.0-select -->
 
   把 el-select 上最常用的几个开关补齐，心智对齐——都挂在 `<Select>` 上，而不是散到 Trigger / Content 子件。全部可选、默认关闭，既有用法零影响。
 
@@ -739,7 +739,7 @@
 
   新增导出类型：`SelectGroupProps` / `SelectGroupLabelProps` / `SelectItemData`。
 
-- Table 新增列几何能力与行拖拽排序
+- Table 新增列几何能力与行拖拽排序 <!-- parity-id: ui-0.10.0-table -->
 
   补齐对标 el-table-column 的列控制，以及列表页排序的刚需交互。两组能力默认全关，不传 prop 时行为与改造前逐字一致。
 
@@ -762,7 +762,7 @@
 
   新增导出类型：`TableColumnAlign` / `ColumnSizingState` / `RowDragEndEvent` / `RowDropPosition`。
 
-- Upload 新增 limit / renderPreview / sortable，并拆出传输层 useUpload
+- Upload 新增 limit / renderPreview / sortable，并拆出传输层 useUpload <!-- parity-id: ui-0.10.0-upload -->
 
   **皮肤层**
 
@@ -783,7 +783,7 @@
 
   已知取舍：`sortable` 让 upload.tsx 静态 import 了 @dnd-kit，未用该功能的消费者在 source 分发下也会打进包（未引新依赖，但确实增加 Upload 最小体积）；`limit` 按受控 `files.length` 计，非受控用法下只能拦住「单次选太多」，拦不住累计。两点均已写进 upload.md。
 
-- fix(nav-menu): collapsed 态飞出层补齐无限级级联，并改用 fixed 定位逃出侧栏裁剪
+- fix(nav-menu): collapsed 态飞出层补齐无限级级联，并改用 fixed 定位逃出侧栏裁剪 <!-- parity-id: ui-0.10.0-nav-menu -->
 
   收起态此前有两处**功能缺失**，叠在一起等于「侧栏收起后没有子菜单」：
 
@@ -872,7 +872,7 @@
 
 ### Minor Changes
 
-- 迁移 Base UI 到稳定版：同伴包从已废弃的 `@base-ui-components/react@1.0.0-rc.0` 换为 `@base-ui/react@^1.5.0`（官方改名后的稳定线），消除安装时的 deprecated 警告。
+- 迁移 Base UI 到稳定版：同伴包从已废弃的 `@base-ui-components/react@1.0.0-rc.0` 换为 `@base-ui/react@^1.5.0`（官方改名后的稳定线），消除安装时的 deprecated 警告。 <!-- parity-id: ui-0.5.0-base-ui -->
 
   **破坏性（peer）**：消费者需把安装的同伴包从 `@base-ui-components/react` 换成 `@base-ui/react`。组件 API 与导入方式（从根入口 `@hulianui/ui` 导入）不变。
 
@@ -882,13 +882,13 @@
 
 ### Patch Changes
 
-- 修复：`lucide-react` 之前误放在 `devDependencies`，但大量组件运行时 import 它，导致 monorepo 之外的消费者打包时报 `Could not resolve "lucide-react"`。已改为 `dependencies`，安装时自动带上。同时把仅离线烘焙用的 `*.bake.mjs`（引用 dotted-map/proj4 等开发期工具）排出发布包。
+- 修复：`lucide-react` 之前误放在 `devDependencies`，但大量组件运行时 import 它，导致 monorepo 之外的消费者打包时报 `Could not resolve "lucide-react"`。已改为 `dependencies`，安装时自动带上。同时把仅离线烘焙用的 `*.bake.mjs`（引用 dotted-map/proj4 等开发期工具）排出发布包。 <!-- parity-id: ui-0.4.2-lucide -->
 
 ## 0.4.1
 
 ### Patch Changes
 
-- 发布包瘦身：排除 `*.test.ts` / `*.test.tsx`，367 个测试文件不再随包发布（tarball 2181→1814 文件、解包 6.6MB→5.5MB）。`./showcase` 公开入口与组件源照常保留。
+- 发布包瘦身：排除 `*.test.ts` / `*.test.tsx`，367 个测试文件不再随包发布（tarball 2181→1814 文件、解包 6.6MB→5.5MB）。`./showcase` 公开入口与组件源照常保留。 <!-- parity-id: ui-0.4.1-package -->
 
 ## 0.4.0
 
@@ -905,7 +905,7 @@
 
 ### Minor Changes
 
-- Admin-grade data component growth, driven by the admin-starter vertical slices:
+- Admin-grade data component growth, driven by the admin-starter vertical slices: <!-- parity-id: ui-0.3.0-admin -->
 
   - **pro-table**: cursor pagination mode for managed requests (`paginationMode="cursor"`, prev/next navigation with internal cursor stack, resets on filter/sort/pageSize changes); `pageSizeOptions` with per-page switcher; managed request rejections are now caught (`onRequestError` prop, defaults to console.error); `search.onSearch` is now optional in types (runtime was already optional).
   - **table**: `rowClassName` row-level styling hook (merges with zebra/selection classes); customizable empty state via `emptyText`/`renderEmpty`, default text now flows through the locale system (`table.empty`, zh/en).
@@ -913,11 +913,11 @@
 
   Note: `Locale` gained a required `table.empty` field — consumers spreading `zhCN`/`enUS` are unaffected; hand-built full `Locale` objects need the new key.
 
-- New agent/conversation building blocks: `Dossier` (slot-filling progress panel), `Artifact` + `ConfirmCard` (inline conversation cards), `ThreadList` (conversation history sidebar), `ImageCropper` (react-easy-crop wrapper with fixed-ratio frame and pinch zoom), `Conversation` `hideScrollbar` prop, and `ThemeProvider` `forcedTheme` for route-level forced theming.
+- New agent/conversation building blocks: `Dossier` (slot-filling progress panel), `Artifact` + `ConfirmCard` (inline conversation cards), `ThreadList` (conversation history sidebar), `ImageCropper` (react-easy-crop wrapper with fixed-ratio frame and pinch zoom), `Conversation` `hideScrollbar` prop, and `ThemeProvider` `forcedTheme` for route-level forced theming. <!-- parity-id: ui-0.3.0-agent -->
 
 ### Patch Changes
 
-- Fixes: chat-message bubble max-width constrained by available width (mobile overflow); prompt-input focus ring-offset residue (ring-0 paired with ring-offset-0); thread-list delete button 44px touch target.
+- Fixes: chat-message bubble max-width constrained by available width (mobile overflow); prompt-input focus ring-offset residue (ring-0 paired with ring-offset-0); thread-list delete button 44px touch target. <!-- parity-id: ui-0.3.0-fixes -->
 
 ## 0.2.3
 
@@ -983,10 +983,10 @@
 
 ### Patch Changes
 
-- 新增主题感知的发丝边框令牌 `--color-hairline`（亮色 transparent / 暗色取 border）。有阴影的组件亮色去硬 border、暗色保留发丝轮缘，~34 处 `border-border` → `hairline`。
+- 新增主题感知的发丝边框令牌 `--color-hairline`（亮色 transparent / 暗色取 border）。有阴影的组件亮色去硬 border、暗色保留发丝轮缘，~34 处 `border-border` → `hairline`。 <!-- parity-id: ui-0.1.2-hairline -->
 
 ## 0.1.1
 
 ### Patch Changes
 
-- video 组件 SSR 安全：MediaPlayer 加挂载守卫，首帧渲同比例占位、挂载后再渲真播放器，避免 Vidstack 在 SSR/静态导出时摸 `window` 报错。
+- video 组件 SSR 安全：MediaPlayer 加挂载守卫，首帧渲同比例占位、挂载后再渲真播放器，避免 Vidstack 在 SSR/静态导出时摸 `window` 报错。 <!-- parity-id: ui-0.1.1-video -->

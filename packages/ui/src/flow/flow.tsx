@@ -438,27 +438,12 @@ export function Flow<T>({
                     height={18}
                     className="pointer-events-auto overflow-visible"
                   >
-                    <button
-                      type="button"
-                      aria-label="删除连线"
-                      onPointerDown={(e) => e.stopPropagation()}
-                      onClick={() => {
+                    <FlowEdgeDeleteButton
+                      onDelete={() => {
                         onEdgesDelete([edge.id]);
                         setSelectedEdge(null);
                       }}
-                      className="grid size-[18px] place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm hover:border-danger hover:text-danger"
-                    >
-                      <svg
-                        viewBox="0 0 16 16"
-                        className="size-2.5"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2.5}
-                        aria-hidden
-                      >
-                        <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
-                      </svg>
-                    </button>
+                    />
                   </foreignObject>
                 )}
               </g>
@@ -545,7 +530,7 @@ export function Flow<T>({
             </svg>
           </ControlBtn>
           {onNodesChange && (
-            <ControlBtn label="智能排版" onClick={autoLayout}>
+            <ControlBtn label={labels.autoLayout} onClick={autoLayout}>
               <svg
                 viewBox="0 0 20 20"
                 className="size-4"
@@ -568,6 +553,31 @@ export function Flow<T>({
         </div>
       )}
     </div>
+  );
+}
+
+/** Internal edge action extracted so its conditional locale contract is directly testable. */
+export function FlowEdgeDeleteButton({ onDelete }: { onDelete: () => void }) {
+  const labels = useComponentLocale().flow;
+  return (
+    <button
+      type="button"
+      aria-label={labels.deleteEdge}
+      onPointerDown={(event) => event.stopPropagation()}
+      onClick={onDelete}
+      className="grid size-[18px] place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm hover:border-danger hover:text-danger"
+    >
+      <svg
+        viewBox="0 0 16 16"
+        className="size-2.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.5}
+        aria-hidden
+      >
+        <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
+      </svg>
+    </button>
   );
 }
 

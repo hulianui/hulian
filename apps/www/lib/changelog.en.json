@@ -209,43 +209,50 @@
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Add `ColorField`, a compact single-row advanced color input."
+        "body": "Add `ColorField`, a compact single-row advanced color input.",
+        "parityId": "ui-0.10.0-color-field"
       },
       {
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Enhance controlled `ProTable` usage with `defaultSorting` and `params`, and prevent infinite requests caused by inline request functions."
+        "body": "Enhance controlled `ProTable` usage with `defaultSorting` and `params`, and prevent infinite requests caused by inline request functions.",
+        "parityId": "ui-0.10.0-pro-table"
       },
       {
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Add `RemoteSelect`, including remote search and multiple selection."
+        "body": "Add `RemoteSelect`, including remote search and multiple selection.",
+        "parityId": "ui-0.10.0-remote-select"
       },
       {
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Add `clearable`, `searchable`, `loading`, and grouped options to `Select`."
+        "body": "Add `clearable`, `searchable`, `loading`, and grouped options to `Select`.",
+        "parityId": "ui-0.10.0-select"
       },
       {
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Add column geometry controls and row drag sorting to `Table`."
+        "body": "Add column geometry controls and row drag sorting to `Table`.",
+        "parityId": "ui-0.10.0-table"
       },
       {
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Add `limit`, `renderPreview`, and `sortable` to `Upload`, and extract transport behavior into `useUpload`."
+        "body": "Add `limit`, `renderPreview`, and `sortable` to `Upload`, and extract transport behavior into `useUpload`.",
+        "parityId": "ui-0.10.0-upload"
       },
       {
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Fix `NavMenu` in collapsed mode with unlimited cascading flyouts and fixed positioning that escapes sidebar clipping."
+        "body": "Fix `NavMenu` in collapsed mode with unlimited cascading flyouts and fixed positioning that escapes sidebar clipping.",
+        "parityId": "ui-0.10.0-nav-menu"
       }
     ]
   },
@@ -341,8 +348,9 @@
       {
         "sha": null,
         "bump": "minor",
-        "breaking": false,
-        "body": "Migrate Base UI from deprecated `@base-ui-components/react@1.0.0-rc.0` to the stable renamed package `@base-ui/react@^1.5.0`."
+        "breaking": true,
+        "body": "**BREAKING**: Migrate Base UI from deprecated `@base-ui-components/react@1.0.0-rc.0` to the stable renamed package `@base-ui/react@^1.5.0`.",
+        "parityId": "ui-0.5.0-base-ui"
       }
     ]
   },
@@ -355,7 +363,8 @@
         "sha": null,
         "bump": "patch",
         "breaking": false,
-        "body": "Move runtime dependency `lucide-react` from `devDependencies` to `dependencies` so external consumers can bundle icon-using components, and exclude offline-only `*.bake.mjs` tools from the published package."
+        "body": "Move runtime dependency `lucide-react` from `devDependencies` to `dependencies` so external consumers can bundle icon-using components, and exclude offline-only `*.bake.mjs` tools from the published package.",
+        "parityId": "ui-0.4.2-lucide"
       }
     ]
   },
@@ -368,7 +377,8 @@
         "sha": null,
         "bump": "patch",
         "breaking": false,
-        "body": "Exclude `*.test.ts` and `*.test.tsx` from the package while retaining component source and the public `./showcase` export, reducing the tarball from 2,181 to 1,814 files and unpacked size from 6.6 MB to 5.5 MB."
+        "body": "Exclude `*.test.ts` and `*.test.tsx` from the package while retaining component source and the public `./showcase` export, reducing the tarball from 2,181 to 1,814 files and unpacked size from 6.6 MB to 5.5 MB.",
+        "parityId": "ui-0.4.1-package"
       }
     ]
   },
@@ -394,19 +404,22 @@
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Expand admin-grade data components based on admin-starter vertical slices, including richer table, filter, pagination, and management workflows."
+        "body": "Expand admin-grade data components based on admin-starter vertical slices, including richer table, filter, pagination, and management workflows.",
+        "parityId": "ui-0.3.0-admin"
       },
       {
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "Add agent and conversation building blocks: `Dossier`, `Artifact`, `ConfirmCard`, `ThreadList`, and `ImageCropper`; add `Conversation.hideScrollbar` and route-level `ThemeProvider.forcedTheme`."
+        "body": "Add agent and conversation building blocks: `Dossier`, `Artifact`, `ConfirmCard`, `ThreadList`, and `ImageCropper`; add `Conversation.hideScrollbar` and route-level `ThemeProvider.forcedTheme`.",
+        "parityId": "ui-0.3.0-agent"
       },
       {
         "sha": null,
         "bump": "patch",
         "breaking": false,
-        "body": "Fix mobile overflow in chat-message bubbles, remove prompt-input focus ring-offset residue, and give the ThreadList delete action a 44px touch target."
+        "body": "Fix mobile overflow in chat-message bubbles, remove prompt-input focus ring-offset residue, and give the ThreadList delete action a 44px touch target.",
+        "parityId": "ui-0.3.0-fixes"
       }
     ]
   },
@@ -458,7 +471,8 @@
         "sha": null,
         "bump": "patch",
         "breaking": false,
-        "body": "Add theme-aware `--color-hairline`, transparent in light mode and mapped to border in dark mode, so elevated surfaces avoid double borders in light mode and retain outlines in dark mode."
+        "body": "Add theme-aware `--color-hairline`, transparent in light mode and mapped to border in dark mode, so elevated surfaces avoid double borders in light mode and retain outlines in dark mode.",
+        "parityId": "tokens-0.1.1-hairline"
       }
     ]
   },
@@ -502,7 +516,8 @@
         "sha": null,
         "bump": "patch",
         "breaking": false,
-        "body": "Add theme-aware `--color-hairline`: transparent in light mode and border-colored in dark mode. Elevated components use it to avoid double borders while retaining dark-mode outlines."
+        "body": "Add theme-aware `--color-hairline`: transparent in light mode and border-colored in dark mode. Elevated components use it to avoid double borders while retaining dark-mode outlines.",
+        "parityId": "ui-0.1.2-hairline"
       }
     ]
   },
@@ -515,7 +530,8 @@
         "sha": null,
         "bump": "patch",
         "breaking": false,
-        "body": "Make `Video` SSR-safe by rendering an aspect-ratio placeholder before mount and the real Vidstack player afterward, avoiding access to `window` during SSR and static export."
+        "body": "Make `Video` SSR-safe by rendering an aspect-ratio placeholder before mount and the real Vidstack player afterward, avoiding access to `window` during SSR and static export.",
+        "parityId": "ui-0.1.1-video"
       }
     ]
   }

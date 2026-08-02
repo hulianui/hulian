@@ -24,6 +24,7 @@ import {
   toast,
   type ColumnDef,
 } from "../../../lib/fixture-ui";
+import { translateFixtureText } from "../../../lib/fixture-copy";
 
 type OrderStatus = "待处理" | "进行中" | "已完成" | "已取消";
 type Priority = "高" | "中" | "低";
@@ -109,8 +110,8 @@ export function DataTableBlock() {
         <div className="flex items-center gap-3">
           <Avatar fallback={row.original.assignee.slice(0, 1)} size="sm" />
           <div className="min-w-0">
-            <div className="truncate font-medium text-foreground">{row.original.title}</div>
-            <div className="text-xs text-muted">{row.original.assignee} · {row.original.department}</div>
+            <div className="truncate font-medium text-foreground">{translateFixtureText(row.original.title)}</div>
+            <div className="text-xs text-muted">{translateFixtureText(row.original.assignee)} · {translateFixtureText(row.original.department)}</div>
           </div>
         </div>
       ),
@@ -120,7 +121,7 @@ export function DataTableBlock() {
       header: "优先级",
       cell: ({ row }) => (
         <Tag tone={PRIORITY_TONE[row.original.priority]} size="sm" variant="soft">
-          {row.original.priority}
+          {translateFixtureText(row.original.priority)}
         </Tag>
       ),
     },
@@ -129,7 +130,7 @@ export function DataTableBlock() {
       header: "状态",
       cell: ({ row }) => (
         <Tag tone={STATUS_TONE[row.original.status]} size="sm" dot>
-          {row.original.status}
+          {translateFixtureText(row.original.status)}
         </Tag>
       ),
     },

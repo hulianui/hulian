@@ -4,6 +4,7 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { AnchorItem, AnchorProps } from "./anchor.types";
+import { useComponentLocale } from "../config/locale";
 
 // 递归扁平化锚点项（保持文档顺序），供 scrollspy 取「文档顺序最靠前的可见项」。纯函数，可单测。
 export function flattenAnchorItems(items: AnchorItem[]): AnchorItem[] {
@@ -27,9 +28,10 @@ export function Anchor({
   onChange,
   getContainer,
   className,
-  "aria-label": ariaLabel = "锚点导航",
+  "aria-label": ariaLabel,
   ...props
 }: AnchorProps) {
+  const labels = useComponentLocale().anchor;
   const flat = useMemo(() => flattenAnchorItems(items), [items]);
   const ids = useMemo(() => flat.map((i) => hrefToId(i.href)), [flat]);
 
@@ -133,7 +135,7 @@ export function Anchor({
     });
 
   return (
-    <nav aria-label={ariaLabel} className={cn("text-sm", className)} {...props}>
+    <nav aria-label={ariaLabel ?? labels.navigation} className={cn("text-sm", className)} {...props}>
       <ul className="relative space-y-0.5 border-l border-border">
         {/* 滑动指示条：几何由激活链接测量后写入 CSS 变量，纯 CSS transition 平滑滑动（零 motion 运行时） */}
         <span

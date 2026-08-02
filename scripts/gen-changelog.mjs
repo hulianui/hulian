@@ -65,6 +65,13 @@ function previousDates(outPath = OUT) {
  * 要求加粗前缀而不是裸词，避免正文里议论「破坏性」时被误判。
  */
 const BREAKING_RE = /\*\*(?:BREAKING|破坏性)/;
+const PARITY_ID_RE = /\s*<!--\s*parity-id:\s*([a-z0-9][a-z0-9._-]*)\s*-->/i;
+
+function markdownLinkTargets(body) {
+  return [...body.matchAll(/!?\[[^\]]*\]\(([^)\s]+)(?:\s+["'][^"']*["'])?\)/g)].map(
+    (match) => match[1],
+  );
+}
 
 /**
  * 解析一份 changesets CHANGELOG.md。
@@ -79,9 +86,14 @@ export function parseChangelog(md) {
 
   const flushEntry = () => {
     if (!entry) return;
-    const body = entry.lines.join("\n").replace(/\n+$/, "");
-    if (body.trim())
-      cur.entries.push({ sha: entry.sha, bump, breaking: BREAKING_RE.test(body), body });
+    const rawBody = entry.lines.join("\n").replace(/\n+$/, "");
+    const parityMatch = rawBody.match(PARITY_ID_RE);
+    const body = rawBody.replace(PARITY_ID_RE, "").replace(/\s+$/, "");
+    if (body.trim()) {
+      const parsed = { sha: entry.sha, bump, breaking: BREAKING_RE.test(body), body };
+      if (parityMatch) parsed.parityId = parityMatch[1];
+      cur.entries.push(parsed);
+    }
     entry = null;
   };
 
@@ -129,6 +141,14 @@ export function assertLocaleParity(pkg, chinese, english) {
     throw new Error(`[changelog] ${pkg} has unknown English versions: ${extraEnglish.join(", ")}`);
   }
 
+  const zhOrder = chinese.map((release) => release.version);
+  const enOrder = english.map((release) => release.version);
+  if (JSON.stringify(zhOrder) !== JSON.stringify(enOrder)) {
+    throw new Error(
+      `[changelog] ${pkg} version order differs: zh-CN=${zhOrder.join(", ")}, en=${enOrder.join(", ")}`,
+    );
+  }
+
   for (const [version, zhRelease] of zhVersions) {
     const enRelease = enVersions.get(version);
     if (zhRelease.entries.length !== enRelease.entries.length) {
@@ -138,10 +158,29 @@ export function assertLocaleParity(pkg, chinese, english) {
     }
     zhRelease.entries.forEach((entry, index) => {
       const translated = enRelease.entries[index];
-      if (entry.bump !== translated.bump || entry.sha !== translated.sha) {
+      if (!entry.sha && !entry.parityId) {
+        throw new Error(`[changelog] ${pkg} ${version} entry ${index + 1} missing parity-id in zh-CN`);
+      }
+      if (!translated.sha && !translated.parityId) {
+        throw new Error(`[changelog] ${pkg} ${version} entry ${index + 1} missing parity-id in en`);
+      }
+      const identity = entry.sha ?? entry.parityId;
+      const translatedIdentity = translated.sha ?? translated.parityId;
+      if (entry.bump !== translated.bump || identity !== translatedIdentity) {
         throw new Error(
           `[changelog] ${pkg} ${version} entry ${index + 1} identity differs: ` +
-            `zh-CN=${entry.bump}/${entry.sha ?? "no-sha"}, en=${translated.bump}/${translated.sha ?? "no-sha"}`,
+            `zh-CN=${entry.bump}/${identity}, en=${translated.bump}/${translatedIdentity}`,
+        );
+      }
+      if (entry.breaking !== translated.breaking) {
+        throw new Error(`[changelog] ${pkg} ${version} entry ${index + 1} breaking marker differs`);
+      }
+      const zhLinks = markdownLinkTargets(entry.body);
+      const enLinks = markdownLinkTargets(translated.body);
+      if (JSON.stringify(zhLinks) !== JSON.stringify(enLinks)) {
+        throw new Error(
+          `[changelog] ${pkg} ${version} entry ${index + 1} link targets differ: ` +
+            `zh-CN=${zhLinks.join(",")}, en=${enLinks.join(",")}`,
         );
       }
     });
@@ -185,8 +224,10 @@ export function generateChangelogs() {
     );
     assertLocaleParity(packageName, chinese, english);
 
-    for (const [index, chineseVersion] of chinese.entries()) {
-      const englishVersion = english[index];
+    const englishByVersion = new Map(english.map((release) => [release.version, release]));
+    for (const chineseVersion of chinese) {
+      const englishVersion = englishByVersion.get(chineseVersion.version);
+      if (!englishVersion) throw new Error(`[changelog] missing English version ${chineseVersion.version}`);
       const key = `${packageName}@${chineseVersion.version}`;
       const date = dates.get(key) ?? fallbackDates.get(key) ?? fallbackDatesEn.get(key) ?? null;
       releases.push({ pkg: packageName, version: chineseVersion.version, date, entries: chineseVersion.entries });

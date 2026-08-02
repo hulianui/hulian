@@ -10,10 +10,11 @@ import { previewContent } from "../app/preview/preview.content";
 import { installPanelContent } from "../components/install-panel.content";
 import { docsSearchContent } from "../components/docs-search.content";
 import { sharedChromeContent } from "../components/shared-chrome.content";
-import { blockFixturesContent } from "../app/blocks/block-fixtures.content";
-import { pageFixturesContent } from "../app/pages/page-fixtures.content";
+import { notFoundContent } from "../app/not-found.content";
 import blockSourcesEn from "../app/blocks/block-fixture-sources.en.json";
 import pageSourcesEn from "../app/pages/page-fixture-sources.en.json";
+import blockFixturesEn from "../app/blocks/block-fixtures.en.json";
+import pageFixturesEn from "../app/pages/page-fixtures.en.json";
 import { blocks } from "../app/blocks/_meta";
 import { pages } from "../app/pages/_meta";
 
@@ -78,8 +79,7 @@ describe("public documentation localization", () => {
     installPanel: installPanelContent,
     search: docsSearchContent,
     sharedChrome: sharedChromeContent,
-    blockFixtures: blockFixturesContent,
-    pageFixtures: pageFixturesContent,
+    notFound: notFoundContent,
   } satisfies Record<string, BilingualContent>;
 
   for (const [name, content] of Object.entries(surfaces)) {
@@ -117,6 +117,14 @@ describe("public documentation localization", () => {
       expect(source, `${file} source must not expose the docs localization runtime`).not.toContain(
         "fixture-jsx",
       );
+    }
+  });
+
+  it("validates the JSON maps actually consumed by the preview adapter", () => {
+    for (const [source, english] of Object.entries({ ...blockFixturesEn, ...pageFixturesEn })) {
+      expect(source.trim()).not.toBe("");
+      expect(english.trim()).not.toBe("");
+      expect(HAN_OR_CJK_PUNCTUATION.test(english), source).toBe(false);
     }
   });
 });

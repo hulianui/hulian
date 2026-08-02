@@ -3,7 +3,7 @@
 export * from "@hulianui/ui";
 
 import { toast as baseToast } from "@hulianui/ui";
-import { translateFixtureValue } from "./fixture-copy";
+import { translateFixtureProps } from "./fixture-copy";
 
 export const toast: typeof baseToast = (options) =>
-  baseToast(translateFixtureValue(options) as Parameters<typeof baseToast>[0]);
+  baseToast(translateFixtureProps(options as Record<string, unknown>) as Parameters<typeof baseToast>[0]);

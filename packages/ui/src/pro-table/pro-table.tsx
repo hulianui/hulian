@@ -328,8 +328,8 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             {features?.density && (
               <button
                 type="button"
-                aria-label={`${t.density}：${density}`}
-                title={`${t.density}：${density}`}
+                aria-label={t.densityValue(density)}
+                title={t.densityValue(density)}
                 onClick={cycleDensity}
                 className={iconBtn}
               >

@@ -17,6 +17,8 @@ export interface Locale {
     total: (count: number) => string;
     reload: string;
     density: string;
+    /** Density toolbar button label with its current value. */
+    densityValue: (density: string) => string;
     columnSetting: string;
     fullscreen: string;
     exitFullscreen: string;
@@ -129,7 +131,14 @@ export interface Locale {
 }
 
 export interface ComponentLocale {
-  promptInput: { stop: string; send: string };
+  promptInput: { placeholder: string; stop: string; send: string };
+  codeBlock: {
+    copy: string;
+    copied: string;
+    region: (language?: string) => string;
+  };
+  markdown: { dataTable: string };
+  anchor: { navigation: string };
   rating: {
     value: (value: number, max: number) => string;
     group: (max: number) => string;
@@ -182,11 +191,21 @@ export interface ComponentLocale {
     zoomIn: string;
     zoomOut: string;
     fitView: string;
+    deleteNode: string;
+    deleteEdge: string;
+    autoLayout: string;
   };
 }
 
 const zhComponents: ComponentLocale = {
-  promptInput: { stop: "停止生成", send: "发送" },
+  promptInput: { placeholder: "发消息…", stop: "停止生成", send: "发送" },
+  codeBlock: {
+    copy: "复制",
+    copied: "已复制",
+    region: (language) => (language ? `${language} 代码` : "代码"),
+  },
+  markdown: { dataTable: "数据表格" },
+  anchor: { navigation: "锚点导航" },
   rating: {
     value: (value, max) => `评分 ${value} / ${max}`,
     group: (max) => `评分，共 ${max} 级`,
@@ -239,15 +258,25 @@ const zhComponents: ComponentLocale = {
     zoomIn: "放大",
     zoomOut: "缩小",
     fitView: "适配视图",
+    deleteNode: "删除节点",
+    deleteEdge: "删除连线",
+    autoLayout: "智能排版",
   },
 };
 
 const enComponents: ComponentLocale = {
-  promptInput: { stop: "Stop generating", send: "Send" },
+  promptInput: { placeholder: "Message…", stop: "Stop generating", send: "Send" },
+  codeBlock: {
+    copy: "Copy",
+    copied: "Copied",
+    region: (language) => (language ? `${language} code` : "Code"),
+  },
+  markdown: { dataTable: "Data table" },
+  anchor: { navigation: "On this page" },
   rating: {
     value: (value, max) => `Rating ${value} / ${max}`,
     group: (max) => `Rating, ${max} levels`,
-    star: (value) => `${value} stars`,
+    star: (value) => `${value} ${value === 1 ? "star" : "stars"}`,
   },
   heroVideoDialog: { play: "Play video", close: "Close", iframeTitle: "Video" },
   messageActions: {
@@ -296,6 +325,9 @@ const enComponents: ComponentLocale = {
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
     fitView: "Fit view",
+    deleteNode: "Delete node",
+    deleteEdge: "Delete edge",
+    autoLayout: "Auto layout",
   },
 };
 
@@ -309,6 +341,7 @@ export const zhCN: Locale = {
     total: (n) => `共 ${n} 条`,
     reload: "刷新",
     density: "密度",
+    densityValue: (density) => `密度：${density}`,
     columnSetting: "列设置",
     fullscreen: "全屏",
     exitFullscreen: "退出全屏",
@@ -414,6 +447,7 @@ export const enUS: Locale = {
     total: (n) => `${n} items`,
     reload: "Refresh",
     density: "Density",
+    densityValue: (density) => `Density: ${density}`,
     columnSetting: "Columns",
     fullscreen: "Fullscreen",
     exitFullscreen: "Exit fullscreen",

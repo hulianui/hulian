@@ -14,7 +14,7 @@ export function PromptInput({
   defaultValue = "",
   onValueChange,
   onSubmit,
-  placeholder = "发消息…",
+  placeholder,
   loading,
   onStop,
   disabled,
@@ -62,7 +62,7 @@ export function PromptInput({
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={onKeyDown}
-        placeholder={placeholder}
+        placeholder={placeholder ?? labels.placeholder}
         disabled={disabled}
         autoResize
         rows={1}
