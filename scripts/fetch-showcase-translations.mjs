@@ -93,6 +93,18 @@ const MANUAL_COPY = new Map([
     '<StatusDot status="degraded" label="Degraded" />',
   ],
   [
+    '<StatusDot status="online" label="自动脉冲" />',
+    '<StatusDot status="online" label="Automatic pulse" />',
+  ],
+  [
+    '<StatusDot status="degraded" label="强制脉冲" pulse />',
+    '<StatusDot status="degraded" label="Forced pulse" pulse />',
+  ],
+  [
+    '<StatusDot status="online" label="关闭脉冲" pulse={false} />',
+    '<StatusDot status="online" label="Turn off pulse" pulse={false} />',
+  ],
+  [
     '<ChatMessage role="assistant" name="瑚琏 AI">好的，我先看下现有结构再动手。</ChatMessage>',
     '<ChatMessage role="assistant" name="Hulian AI">Okay, let me take a look at the existing structure before starting.</ChatMessage>',
   ],

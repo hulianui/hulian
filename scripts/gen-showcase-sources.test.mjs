@@ -156,6 +156,33 @@ test("translation rejects static JSX copy that drifts between code and preview",
   assert.match(result.code, /timestamp="Just now"/u);
 });
 
+test("translation protects StatusDot code-preview labels from drifting", () => {
+  const source = `
+    export const statusDotShowcase = {
+      examples: [{
+        code: \`<StatusDot label="自动脉冲" />\`,
+        render: () => <StatusDot label="自动脉冲" />,
+      }],
+    };
+  `;
+
+  assert.throws(
+    () =>
+      translateShowcaseModule(source, {
+        sourceFile: "packages/ui/src/status-dot/status-dot.showcase.tsx",
+        outputFile: "apps/www/generated/showcase-en/status-dot.showcase.tsx",
+        copy: {
+          exact: {
+            '<StatusDot label="自动脉冲" />': '<StatusDot label="Auto pulse" />',
+            自动脉冲: "Automatic pulse",
+          },
+          files: {},
+        },
+      }),
+    /code-preview parity mismatch.*StatusDot.*自动脉冲/su,
+  );
+});
+
 test("translation rejects empty or residue-bearing English copy before generation", () => {
   const options = {
     sourceFile: "packages/ui/src/button/button.showcase.tsx",

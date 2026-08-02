@@ -13,6 +13,7 @@ const CODE_PREVIEW_PARITY_COMPONENTS = new Set([
   "Callout",
   "ChatMessage",
   "MessageActions",
+  "StatusDot",
 ]);
 
 function posixPath(value) {

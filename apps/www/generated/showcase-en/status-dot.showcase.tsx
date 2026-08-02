@@ -42,9 +42,9 @@ export const statusDotShowcase: ShowcaseSpec = {
             title: "Pulse",
             description: "online Default respiratory pulse; can be switched explicitly with pulse.",
             code: `<>
-  <StatusDot status="online" label="Auto pulse" />
-  <StatusDot status="degraded" label="Forced Pulse" pulse />
-  <StatusDot status="online" label="Off pulse" pulse={false} />
+  <StatusDot status="online" label="Automatic pulse" />
+  <StatusDot status="degraded" label="Forced pulse" pulse />
+  <StatusDot status="online" label="Turn off pulse" pulse={false} />
 </>`,
             render: () => (<div className="flex flex-wrap items-center gap-4">
           <StatusDot status="online" label="Automatic pulse"/>

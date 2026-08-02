@@ -268,6 +268,18 @@ test("locks final reviewed prose and Callout code-preview parity", () => {
     copy['<ChatMessage role="user" name="我">帮我把首页重写成 100% dogfood</ChatMessage>'],
     '<ChatMessage role="user" name="Me">Help me rewrite the homepage to 100% dogfood</ChatMessage>',
   );
+  assert.equal(
+    copy['<StatusDot status="online" label="自动脉冲" />'],
+    '<StatusDot status="online" label="Automatic pulse" />',
+  );
+  assert.equal(
+    copy['<StatusDot status="degraded" label="强制脉冲" pulse />'],
+    '<StatusDot status="degraded" label="Forced pulse" pulse />',
+  );
+  assert.equal(
+    copy['<StatusDot status="online" label="关闭脉冲" pulse={false} />'],
+    '<StatusDot status="online" label="Turn off pulse" pulse={false} />',
+  );
 });
 
 test("keeps executable class tokens distinct from human-word repetition", () => {
