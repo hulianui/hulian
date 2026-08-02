@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { useMotionValue, useReducedMotion, useSpring } from "motion/react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { ChromaGridItem, ChromaGridProps } from "./chroma-grid.types";
 
@@ -16,45 +17,33 @@ import type { ChromaGridItem, ChromaGridProps } from "./chroma-grid.types";
 // 4. "use client"（用 ref/effect/pointer + motion value）。
 // 5. 关键帧 hulian-chroma-grid 仅用于无 children 占位 demo 的卡片轻微入场（落 preset.css）。
 
-const DEFAULT_DEMO: ChromaGridItem[] = [
+const DEFAULT_DEMO_STYLE: Array<Omit<ChromaGridItem, "title" | "subtitle">> = [
   {
-    title: "林屿",
-    subtitle: "全栈工程师",
     handle: "@linyu",
     borderColor: "var(--color-chart-1)",
     gradient: "linear-gradient(145deg, var(--color-chart-1), transparent)",
   },
   {
-    title: "陈墨",
-    subtitle: "DevOps 工程师",
     handle: "@chenmo",
     borderColor: "var(--color-chart-2)",
     gradient: "linear-gradient(210deg, var(--color-chart-2), transparent)",
   },
   {
-    title: "苏黎",
-    subtitle: "UI/UX 设计师",
     handle: "@suli",
     borderColor: "var(--color-chart-3)",
     gradient: "linear-gradient(165deg, var(--color-chart-3), transparent)",
   },
   {
-    title: "周野",
-    subtitle: "数据科学家",
     handle: "@zhouye",
     borderColor: "var(--color-chart-4)",
     gradient: "linear-gradient(195deg, var(--color-chart-4), transparent)",
   },
   {
-    title: "金溪",
-    subtitle: "移动端开发",
     handle: "@jinxi",
     borderColor: "var(--color-chart-5)",
     gradient: "linear-gradient(225deg, var(--color-chart-5), transparent)",
   },
   {
-    title: "唐衍",
-    subtitle: "云架构师",
     handle: "@tangyan",
     borderColor: "var(--color-chart-1)",
     gradient: "linear-gradient(135deg, var(--color-chart-1), transparent)",
@@ -83,9 +72,12 @@ export function ChromaGrid({
   className,
   style,
 }: ChromaGridProps) {
+  const locale = useComponentLocale().chromaGrid ?? zhCN.components!.chromaGrid!;
   const reduce = useReducedMotion();
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const data = items?.length ? items : DEFAULT_DEMO;
+  const data = items?.length
+    ? items
+    : DEFAULT_DEMO_STYLE.map((item, index) => ({ ...item, ...locale.demo[index] }));
 
   // damping(0~1) 映射到弹簧刚度：越大越黏（刚度低）。reduce 时刚度极高=即时吸附。
   const stiffness = reduce ? 1000 : Math.max(40, 320 * (1 - Math.min(0.95, damping)));

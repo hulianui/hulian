@@ -226,6 +226,7 @@ export interface ComponentLocale {
   mentions?: { suggestions: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   chip?: { remove: string };
+  combobox?: { clear: string; remove: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   tag?: { remove: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
@@ -458,7 +459,13 @@ export interface ComponentLocale {
     signInWith: (provider: string) => string;
   };
   typingDots?: { typing: string };
-  countrySelect?: { placeholder: string; searchPlaceholder: string };
+  countrySelect?: {
+    placeholder: string;
+    searchPlaceholder: string;
+    name: (chinese: string, english: string) => string;
+    secondaryName: (chinese: string, english: string) => string | null;
+  };
+  chromaGrid?: { demo: readonly { title: string; subtitle: string }[] };
   colorPicker?: { hex: string; rgb: string; hsl: string; format: string };
   imageCropper?: { confirm: string; cancel: string; zoom: string };
   iconPicker?: { searchPlaceholder: string; empty: string; clear: string; recent: string };
@@ -470,7 +477,12 @@ export interface ComponentLocale {
     avatar: (name: string) => string;
     contactName: (name: string) => string;
   };
-  regionCascader?: { provinceCity: string; full: string; searchPlaceholder: string };
+  regionCascader?: {
+    provinceCity: string;
+    full: string;
+    searchPlaceholder: string;
+    name: (code: string, chinese: string) => string;
+  };
   voiceRecord?: {
     idle: string;
     recording: string;
@@ -730,6 +742,7 @@ const zhComponents: ComponentLocale = {
   },
   mentions: { suggestions: "提及候选" },
   chip: { remove: "移除" },
+  combobox: { clear: "清除", remove: "移除" },
   tag: { remove: "移除" },
   tree: {
     label: "树",
@@ -949,7 +962,22 @@ const zhComponents: ComponentLocale = {
     signInWith: (provider) => `${provider}登录`,
   },
   typingDots: { typing: "正在输入" },
-  countrySelect: { placeholder: "选择国家/地区", searchPlaceholder: "搜索国家 / 区号…" },
+  countrySelect: {
+    placeholder: "选择国家/地区",
+    searchPlaceholder: "搜索国家 / 区号…",
+    name: (chinese) => chinese,
+    secondaryName: (_chinese, english) => english,
+  },
+  chromaGrid: {
+    demo: [
+      { title: "林屿", subtitle: "全栈工程师" },
+      { title: "陈墨", subtitle: "DevOps 工程师" },
+      { title: "苏黎", subtitle: "UI/UX 设计师" },
+      { title: "周野", subtitle: "数据科学家" },
+      { title: "金溪", subtitle: "移动端开发" },
+      { title: "唐衍", subtitle: "云架构师" },
+    ],
+  },
   colorPicker: {
     hex: "十六进制颜色值",
     rgb: "RGB 颜色值",
@@ -975,6 +1003,7 @@ const zhComponents: ComponentLocale = {
     provinceCity: "请选择省/市",
     full: "请选择省/市/区",
     searchPlaceholder: "搜索省/市/区…",
+    name: (_code, chinese) => chinese,
   },
   voiceRecord: {
     idle: "按住说话",
@@ -1283,6 +1312,7 @@ const enComponents: ComponentLocale = {
   },
   mentions: { suggestions: "Mention suggestions" },
   chip: { remove: "Remove" },
+  combobox: { clear: "Clear", remove: "Remove" },
   tag: { remove: "Remove" },
   tree: {
     label: "Tree",
@@ -1519,7 +1549,22 @@ const enComponents: ComponentLocale = {
     signInWith: (provider) => `Sign in with ${provider}`,
   },
   typingDots: { typing: "Typing" },
-  countrySelect: { placeholder: "Select a country or region", searchPlaceholder: "Search countries or calling codes…" },
+  countrySelect: {
+    placeholder: "Select a country or region",
+    searchPlaceholder: "Search countries or calling codes…",
+    name: (_chinese, english) => english,
+    secondaryName: () => null,
+  },
+  chromaGrid: {
+    demo: [
+      { title: "Lin Yu", subtitle: "Full-stack Engineer" },
+      { title: "Chen Mo", subtitle: "DevOps Engineer" },
+      { title: "Su Li", subtitle: "UI/UX Designer" },
+      { title: "Zhou Ye", subtitle: "Data Scientist" },
+      { title: "Jin Xi", subtitle: "Mobile Developer" },
+      { title: "Tang Yan", subtitle: "Cloud Architect" },
+    ],
+  },
   colorPicker: {
     hex: "Hex color value",
     rgb: "RGB color value",
@@ -1545,6 +1590,45 @@ const enComponents: ComponentLocale = {
     provinceCity: "Select province/city",
     full: "Select province/city/district",
     searchPlaceholder: "Search province/city/district…",
+    name: (code) =>
+      ({
+        "11": "Beijing",
+        "12": "Tianjin",
+        "13": "Hebei",
+        "14": "Shanxi",
+        "15": "Inner Mongolia",
+        "21": "Liaoning",
+        "22": "Jilin",
+        "23": "Heilongjiang",
+        "31": "Shanghai",
+        "32": "Jiangsu",
+        "33": "Zhejiang",
+        "34": "Anhui",
+        "35": "Fujian",
+        "36": "Jiangxi",
+        "37": "Shandong",
+        "41": "Henan",
+        "42": "Hubei",
+        "43": "Hunan",
+        "44": "Guangdong",
+        "45": "Guangxi",
+        "46": "Hainan",
+        "50": "Chongqing",
+        "51": "Sichuan",
+        "52": "Guizhou",
+        "53": "Yunnan",
+        "54": "Tibet",
+        "61": "Shaanxi",
+        "62": "Gansu",
+        "63": "Qinghai",
+        "64": "Ningxia",
+        "65": "Xinjiang",
+        "1101": "Beijing Municipality",
+        "110105": "Chaoyang District",
+        "3101": "Shanghai Municipality",
+        "310115": "Pudong New Area",
+        "4401": "Guangzhou",
+      })[code] ?? `Region ${code}`,
   },
   voiceRecord: {
     idle: "Hold to talk",
