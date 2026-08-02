@@ -1,5 +1,13 @@
 "use client";
-import { Fragment, useRef, useState, type KeyboardEvent, type ClipboardEvent, type ChangeEvent } from "react";
+import {
+  Fragment,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ClipboardEvent,
+  type ChangeEvent,
+} from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { InputOTPProps } from "./input-otp.types";
 
@@ -16,8 +24,10 @@ export function InputOTP({
   invalid = false,
   groupGap = false,
   className,
-  "aria-label": ariaLabel = "验证码",
+  "aria-label": ariaLabel,
 }: InputOTPProps) {
+  const locale = useComponentLocale().inputOtp ?? zhCN.components!.inputOtp!;
+  const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
   const isControlled = value !== undefined;
   const [internal, setInternal] = useState(defaultValue);
   const raw = isControlled ? value! : internal;
@@ -31,7 +41,10 @@ export function InputOTP({
   const focusAt = (i: number) => refs.current[Math.max(0, Math.min(length - 1, i))]?.focus();
 
   const commit = (arr: string[]) => {
-    const next = arr.map((c) => (c === "" ? " " : c)).join("").replace(/\s+$/g, "");
+    const next = arr
+      .map((c) => (c === "" ? " " : c))
+      .join("")
+      .replace(/\s+$/g, "");
     if (!isControlled) setInternal(next);
     onChange?.(next);
     if (next.length === length && !next.includes(" ")) onComplete?.(next);
@@ -82,7 +95,11 @@ export function InputOTP({
   };
 
   return (
-    <div role="group" aria-label={ariaLabel} className={cn("inline-flex items-center gap-2", className)}>
+    <div
+      role="group"
+      aria-label={resolvedAriaLabel}
+      className={cn("inline-flex items-center gap-2", className)}
+    >
       {chars.map((ch, i) => (
         <Fragment key={i}>
           {groupGap && i === Math.floor(length / 2) && (

@@ -18,6 +18,7 @@
 //      正文走 token 的 `text-foreground`，随主题自适应。
 //
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 
 export interface DocumentSheetProps extends HTMLAttributes<HTMLDivElement> {
@@ -37,6 +38,7 @@ export interface DocumentSheetProps extends HTMLAttributes<HTMLDivElement> {
  */
 export const DocumentSheet = forwardRef<HTMLDivElement, DocumentSheetProps>(
   ({ size = "a4", toolbar, onPrint, printable = true, children, className, ...props }, ref) => {
+    const locale = useComponentLocale().documentSheet ?? zhCN.components!.documentSheet!;
     const handlePrint = () => {
       if (onPrint) onPrint();
       else if (typeof window !== "undefined") window.print();
@@ -73,7 +75,7 @@ export const DocumentSheet = forwardRef<HTMLDivElement, DocumentSheetProps>(
                   <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                   <rect x="6" y="14" width="12" height="8" rx="1" />
                 </svg>
-                打印
+                {locale.print}
               </button>
             )}
           </div>
@@ -166,10 +168,7 @@ export const DocumentSheetSignature = forwardRef<HTMLDivElement, DocumentSheetSi
       <div ref={ref} className={cn("text-xs text-muted", className)} {...props}>
         {/* 物理签字 / 盖章留白 */}
         <div className="h-12" aria-hidden />
-        <div
-          className="border-t border-foreground/40 pt-1.5 text-center"
-          style={{ width: w }}
-        >
+        <div className="border-t border-foreground/40 pt-1.5 text-center" style={{ width: w }}>
           {label}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { Lanyard } from "./lanyard";
 
 // 结构：根容器 > 锚点钉 + 挂绳 SVG(path) + 工牌(motion div)。
@@ -73,5 +74,15 @@ describe("Lanyard", () => {
 
     addSpy.mockRestore();
     removeSpy.mockRestore();
+  });
+
+  it("ConfigProvider locale=enUS localizes the default badge copy", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <Lanyard />
+      </ConfigProvider>,
+    );
+    expect(getByText("Hulian · HULIAN")).toBeTruthy();
+    expect(getByText("Drag to swing")).toBeTruthy();
   });
 });

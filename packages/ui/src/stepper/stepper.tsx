@@ -1,4 +1,6 @@
 "use client";
+"use client";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { StepperProps } from "./stepper.types";
 
@@ -46,11 +48,9 @@ function StepIcon({ index, done, active }: { index: number; done: boolean; activ
 }
 
 export function Stepper({ steps, activeStep, className }: StepperProps) {
+  const locale = useComponentLocale().stepper ?? zhCN.components!.stepper!;
   return (
-    <ol
-      className={cn("flex w-full items-start", className)}
-      aria-label="步骤进度"
-    >
+    <ol className={cn("flex w-full items-start", className)} aria-label={locale.progress}>
       {steps.map((s, i) => {
         const done = i < activeStep;
         const active = i === activeStep;

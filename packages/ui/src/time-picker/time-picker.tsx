@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Clock, X } from "../_icons";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { TimeColumn } from "./time-column";
@@ -39,7 +40,7 @@ export function TimePicker({
   secondStep = 1,
   minTime,
   maxTime,
-  placeholder = "选择时间",
+  placeholder,
   clearable = true,
   showNow = true,
   disabled,
@@ -47,9 +48,11 @@ export function TimePicker({
   "aria-label": ariaLabel,
   className,
 }: TimePickerProps) {
+  const locale = useComponentLocale().timePicker ?? zhCN.components!.timePicker!;
+  const resolvedPlaceholder = placeholder === undefined ? locale.placeholder : placeholder;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
-  const value = isControlled ? (valueProp ?? null) : internal;
+  const value = isControlled ? valueProp ?? null : internal;
   const parsed = parseTime(value);
 
   const [open, setOpen] = useState(false);
@@ -78,7 +81,11 @@ export function TimePicker({
   function pickNow() {
     if (readOnly) return;
     const d = new Date();
-    const snapped = snapToStep({ h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() }, minuteStep, secondStep);
+    const snapped = snapToStep(
+      { h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() },
+      minuteStep,
+      secondStep,
+    );
     commit(formatTime(clampTime(snapped, withSeconds, minTime, maxTime), withSeconds));
     setOpen(false);
   }
@@ -114,14 +121,16 @@ export function TimePicker({
               )}
             >
               <Clock className="size-4 shrink-0 text-muted" aria-hidden />
-              <span className={cn("truncate tabular-nums", !text && "text-muted")}>{text || placeholder}</span>
+              <span className={cn("truncate tabular-nums", !text && "text-muted")}>
+                {text || resolvedPlaceholder}
+              </span>
             </button>
           }
         />
         {showClear && (
           <button
             type="button"
-            aria-label="清除"
+            aria-label={locale.clear}
             onClick={clearValue}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >
@@ -141,7 +150,7 @@ export function TimePicker({
           >
             <div className="flex divide-x divide-border">
               <TimeColumn
-                label="时"
+                label={locale.hour}
                 values={hours}
                 active={parsed?.h ?? null}
                 isDisabled={(h) => isHourDisabled(h, minTime, maxTime)}
@@ -149,7 +158,7 @@ export function TimePicker({
                 open={open}
               />
               <TimeColumn
-                label="分"
+                label={locale.minute}
                 values={minutes}
                 active={parsed?.m ?? null}
                 isDisabled={(m) => isMinuteDisabled(base.h, m, minTime, maxTime)}
@@ -158,7 +167,7 @@ export function TimePicker({
               />
               {withSeconds && (
                 <TimeColumn
-                  label="秒"
+                  label={locale.second}
                   values={seconds}
                   active={parsed?.s ?? null}
                   isDisabled={(s) => isSecondDisabled(base.h, base.m, s, minTime, maxTime)}
@@ -175,14 +184,14 @@ export function TimePicker({
                   disabled={readOnly}
                   className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  此刻
+                  {locale.now}
                 </button>
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
                   className="rounded-md px-2 py-1 text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
-                  确定
+                  {locale.confirm}
                 </button>
               </div>
             )}

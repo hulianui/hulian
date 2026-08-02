@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { Listbox } from "./listbox";
 import type { ListboxItemData } from "./listbox.types";
 
@@ -25,7 +26,9 @@ describe("Listbox", () => {
 
   it("single 模式再点另一项替换选中", () => {
     const onChange = vi.fn();
-    const { getByText } = render(<Listbox items={items} defaultSelectedKeys={["a"]} onSelectionChange={onChange} />);
+    const { getByText } = render(
+      <Listbox items={items} defaultSelectedKeys={["a"]} onSelectionChange={onChange} />,
+    );
     fireEvent.click(getByText("Cherry"));
     expect(onChange).toHaveBeenLastCalledWith(["c"]);
   });
@@ -33,7 +36,12 @@ describe("Listbox", () => {
   it("multiple 模式点击切换累加", () => {
     const onChange = vi.fn();
     const { getByText } = render(
-      <Listbox items={items} selectionMode="multiple" defaultSelectedKeys={["a"]} onSelectionChange={onChange} />,
+      <Listbox
+        items={items}
+        selectionMode="multiple"
+        defaultSelectedKeys={["a"]}
+        onSelectionChange={onChange}
+      />,
     );
     fireEvent.click(getByText("Cherry"));
     expect(onChange).toHaveBeenLastCalledWith(["a", "c"]);
@@ -42,7 +50,12 @@ describe("Listbox", () => {
   it("multiple 模式再点已选项取消", () => {
     const onChange = vi.fn();
     const { getByText } = render(
-      <Listbox items={items} selectionMode="multiple" defaultSelectedKeys={["a", "c"]} onSelectionChange={onChange} />,
+      <Listbox
+        items={items}
+        selectionMode="multiple"
+        defaultSelectedKeys={["a", "c"]}
+        onSelectionChange={onChange}
+      />,
     );
     fireEvent.click(getByText("Apple"));
     expect(onChange).toHaveBeenLastCalledWith(["c"]);
@@ -61,12 +74,19 @@ describe("Listbox", () => {
     const onAction = vi.fn();
     const onChange = vi.fn();
     const { getByText } = render(
-      <Listbox items={items} selectionMode="none" onAction={onAction} onSelectionChange={onChange} />,
+      <Listbox
+        items={items}
+        selectionMode="none"
+        onAction={onAction}
+        onSelectionChange={onChange}
+      />,
     );
     fireEvent.click(getByText("Cherry"));
     expect(onAction).toHaveBeenCalledWith("c");
     expect(onChange).not.toHaveBeenCalled();
-    expect(getByText("Cherry").closest('[role="option"]')!.getAttribute("aria-selected")).toBeNull();
+    expect(
+      getByText("Cherry").closest('[role="option"]')!.getAttribute("aria-selected"),
+    ).toBeNull();
   });
 
   it("方向键跳过禁用项漫游", () => {
@@ -90,5 +110,14 @@ describe("Listbox", () => {
     const list = getAllByRole("option")[0].parentElement!;
     fireEvent.keyDown(list, { key: "c" });
     expect(getAllByRole("option")[2].getAttribute("tabindex")).toBe("0");
+  });
+
+  it("ConfigProvider locale=enUS localizes the default accessible name", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <Listbox items={items} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("listbox", { name: "Options" })).toBeTruthy();
   });
 });

@@ -1,4 +1,6 @@
+"use client";
 import { Fragment } from "react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { parseMath } from "./math-text.parse";
 import type { MathNode, MathTextProps } from "./math-text.types";
@@ -10,16 +12,14 @@ import type { MathNode, MathTextProps } from "./math-text.types";
 
 function renderNodes(
   nodes: MathNode[],
-  opts: { blankWidth: number; scriptScale: number },
+  opts: { blankWidth: number; scriptScale: number; blankLabel: string },
 ): React.ReactNode {
-  return nodes.map((node, i) => (
-    <Fragment key={i}>{renderNode(node, opts)}</Fragment>
-  ));
+  return nodes.map((node, i) => <Fragment key={i}>{renderNode(node, opts)}</Fragment>);
 }
 
 function renderNode(
   node: MathNode,
-  opts: { blankWidth: number; scriptScale: number },
+  opts: { blankWidth: number; scriptScale: number; blankLabel: string },
 ): React.ReactNode {
   switch (node.kind) {
     case "text":
@@ -90,7 +90,7 @@ function renderNode(
           className="inline-block border-b border-current align-baseline mx-[0.2em]"
           style={{ minWidth: `${opts.blankWidth}em` }}
           role="img"
-          aria-label="填空"
+          aria-label={opts.blankLabel}
         />
       );
   }
@@ -102,10 +102,11 @@ export function MathText({
   scriptScale = 0.75,
   className,
 }: MathTextProps) {
-  const nodes = parseMath(children ?? "");
+  const locale = useComponentLocale().mathText ?? zhCN.components!.mathText!;
+  const nodes = parseMath(children ?? "", { rowSeparator: locale.rowSeparator });
   return (
     <span className={cn("[&_sup]:align-super [&_sub]:align-sub", className)}>
-      {renderNodes(nodes, { blankWidth, scriptScale })}
+      {renderNodes(nodes, { blankWidth, scriptScale, blankLabel: locale.blank })}
     </span>
   );
 }

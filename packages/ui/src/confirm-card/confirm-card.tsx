@@ -1,21 +1,26 @@
 "use client";
 import { cn } from "../lib/cn";
 import { Button } from "../button";
+import { useComponentLocale, zhCN } from "../config/locale";
 import type { ConfirmCardProps } from "./confirm-card.types";
 
 export function ConfirmCard({
-  title = "请确认以下信息",
+  title,
   items,
-  confirmText = "确认无误",
-  editText = "需要修改",
+  confirmText,
+  editText,
   onConfirm,
   onEdit,
   acted = null,
   className,
 }: ConfirmCardProps) {
+  const locale = useComponentLocale().confirmCard ?? zhCN.components!.confirmCard!;
+  const resolvedTitle = title === undefined ? locale.title : title;
+  const resolvedConfirmText = confirmText === undefined ? locale.confirm : confirmText;
+  const resolvedEditText = editText === undefined ? locale.edit : editText;
   return (
     <div className={cn("rounded-[var(--radius)] border border-border bg-surface p-3", className)}>
-      {title && <p className="mb-2.5 text-xs font-medium text-muted">{title}</p>}
+      {resolvedTitle && <p className="mb-2.5 text-xs font-medium text-muted">{resolvedTitle}</p>}
       <dl className="space-y-1.5">
         {items.map((it, i) => (
           <div key={i} className="flex gap-3 text-sm">
@@ -26,12 +31,12 @@ export function ConfirmCard({
       </dl>
       <div className="mt-3 flex items-center gap-2">
         <Button size="sm" disabled={acted !== null} onClick={onConfirm}>
-          {acted === "confirmed" ? "已确认" : confirmText}
+          {acted === "confirmed" ? locale.confirmed : resolvedConfirmText}
         </Button>
         {/* 单动作场景（如仅「去充值」）：不传 onEdit 即不渲染修改钮，避免出现无响应的死按钮 */}
         {onEdit && (
           <Button size="sm" variant="ghost" disabled={acted !== null} onClick={onEdit}>
-            {acted === "edited" ? "修改中" : editText}
+            {acted === "edited" ? locale.editing : resolvedEditText}
           </Button>
         )}
       </div>

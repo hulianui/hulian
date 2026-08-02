@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { LogoLoop } from "./logo-loop";
 import type { LogoItem } from "./logo-loop.types";
 
@@ -20,9 +21,7 @@ describe("LogoLoop", () => {
   });
 
   it("gap / logoHeight 落 CSS 变量，fade token 默认吃 surface", () => {
-    const { container } = render(
-      <LogoLoop logos={LOGOS} gap={48} logoHeight={40} fadeOut />,
-    );
+    const { container } = render(<LogoLoop logos={LOGOS} gap={48} logoHeight={40} fadeOut />);
     const root = container.firstElementChild as HTMLElement;
     expect(root.style.getPropertyValue("--hl-loop-gap")).toBe("48px");
     expect(root.style.getPropertyValue("--hl-loop-logo-h")).toBe("40px");
@@ -33,12 +32,7 @@ describe("LogoLoop", () => {
 
   it("className / style / ariaLabel 透传，will-change 轨道存在", () => {
     const { container } = render(
-      <LogoLoop
-        logos={LOGOS}
-        className="my-loop"
-        ariaLabel="伙伴墙"
-        style={{ opacity: 0.5 }}
-      />,
+      <LogoLoop logos={LOGOS} className="my-loop" ariaLabel="伙伴墙" style={{ opacity: 0.5 }} />,
     );
     const root = container.firstElementChild as HTMLElement;
     expect(root.getAttribute("class")).toContain("my-loop");
@@ -57,11 +51,19 @@ describe("LogoLoop", () => {
 
   it("renderItem 自定义渲染覆盖默认", () => {
     const { container } = render(
-      <LogoLoop
-        logos={LOGOS}
-        renderItem={(_, i) => <b data-testid="custom">item-{i}</b>}
-      />,
+      <LogoLoop logos={LOGOS} renderItem={(_, i) => <b data-testid="custom">item-{i}</b>} />,
     );
     expect(container.querySelectorAll('[data-testid="custom"]').length).toBeGreaterThan(0);
+  });
+
+  it("ConfigProvider locale=enUS localizes generated accessibility labels", () => {
+    const logos: LogoItem[] = [{ node: <span>Acme</span>, href: "https://example.com" }];
+    const { getByRole, getAllByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <LogoLoop logos={logos} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("region", { name: "Partner logos" })).toBeTruthy();
+    expect(getAllByRole("link", { name: "Logo link" }).length).toBeGreaterThan(0);
   });
 });
