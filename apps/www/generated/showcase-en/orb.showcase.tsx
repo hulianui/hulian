@@ -30,7 +30,7 @@ export const orbShowcase: ShowcaseSpec = {
         </OrbFrame>),
         },
         {
-            title: "Force hover state",
+            title: "Forced hover state",
             description: "forceHoverState permanent glow + distortion, suitable for demonstrations/screenshots; hoverIntensity adjusts distortion intensity.",
             code: `<Orb forceHoverState hoverIntensity={0.4} />`,
             render: () => (<OrbFrame>
@@ -52,7 +52,7 @@ export const orbShowcase: ShowcaseSpec = {
         { prop: "hue", type: "number", defaultValue: 0, label: "Hue rotation (degrees)" },
         { prop: "hoverIntensity", type: "number", defaultValue: 0.2, label: "Hover Strength" },
         { prop: "rotateOnHover", type: "boolean", defaultValue: true, label: "Hover rotation" },
-        { prop: "forceHoverState", type: "boolean", defaultValue: false, label: "Force hover state" },
+        { prop: "forceHoverState", type: "boolean", defaultValue: false, label: "Forced hover state" },
     ],
     states: [
         {

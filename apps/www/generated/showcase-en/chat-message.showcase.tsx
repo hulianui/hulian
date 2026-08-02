@@ -31,7 +31,7 @@ export const chatMessageShowcase: ShowcaseSpec = {
         },
         {
             title: "Read receipt",
-            description: "status Rendering only at role=user (right bubble): sending circle / sent single hook / read double blue hook.",
+            description: "status Only in role=user (right bubble) Rendering: sending circle / sent single hook / read double blue hook.",
             code: `<>
   <ChatMessage role="user" name="Agent\u00B7Xiao Lian" timestamp="Just now" status="sent">A work order has been submitted for you. </ChatMessage>
   <ChatMessage role="user" name="Agent\u00B7Xiao Lian" timestamp="Just" status="read">Refund expected 1-3 Arrival within working days. </ChatMessage>

@@ -13,7 +13,7 @@ export const toggleShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "A single Toggle is a switchable pressed button, defaultPressed is initially selected.",
+            description: "A single Toggle is a switchable pressed button, and defaultPressed is initially selected.",
             code: `<>
   <Toggle aria-label="bold"><Bold className="size-4" /></Toggle>
   <Toggle defaultPressed aria-label="bold"><Bold className="size-4" /></Toggle>
@@ -25,7 +25,7 @@ export const toggleShowcase: ShowcaseSpec = {
         },
         {
             title: "Single choice group",
-            description: "ToggleGroup The default is mutually exclusive radio selection, suitable for switching such as alignment.",
+            description: "ToggleGroup Default mutually exclusive radio selection, suitable for switching such as alignment.",
             code: `<ToggleGroup defaultValue={["center"]}>
   <Toggle value="left" aria-label="Left justified"><AlignLeft className="size-4" /></Toggle>
   <Toggle value="center" aria-label="center"><AlignCenter className="size-4" /></Toggle>
@@ -52,12 +52,12 @@ export const toggleShowcase: ShowcaseSpec = {
         </ToggleGroup>),
         },
         {
-            title: "Variant",
+            title: "Variants",
             description: "default soft bottom / outline main color solid / pill rounded corners chip (AI toolbar switch style).",
             code: `<>
   <Toggle defaultPressed aria-label="default"><Bold className="size-4" /></Toggle>
   <Toggle variant="outline" defaultPressed aria-label="outline"><Bold className="size-4" /></Toggle>
-  <Toggle variant="pill" size="sm" defaultPressed aria-label="Deep Thoughts">
+  <Toggle variant="pill" size="sm" defaultPressed aria-label="Deep Thought">
     <Sparkles className="size-3.5" /> Deep Thoughts
   </Toggle>
 </>`,

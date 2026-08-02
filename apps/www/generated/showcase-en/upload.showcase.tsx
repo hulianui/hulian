@@ -69,7 +69,7 @@ function useObjectUrls() {
 function PreviewSortDemo() {
     const up = useUpload({ request: demoRequest, concurrency: 3 });
     const srcOf = useObjectUrls();
-    return (<Upload className="w-80" multiple accept="image/*" limit={6} sortable hint="Up to 6 pictures, you can drag the handle to sequence" files={up.files} onSelect={up.add} onRemove={up.remove} onSort={up.reorder} renderPreview={(f) => {
+    return (<Upload className="w-80" multiple accept="image/*" limit={6} sortable hint="Up to 6 pictures, drag handle to sequence" files={up.files} onSelect={up.add} onRemove={up.remove} onSort={up.reorder} renderPreview={(f) => {
             const src = srcOf(f);
             return src ? <img src={src} alt={f.name}/> : null;
         }}/>);
@@ -86,7 +86,7 @@ const REMOTE_FILES: UploadFile[] = [
 ];
 function RemoteSortDemo() {
     const [list, setList] = useState(REMOTE_FILES);
-    return (<Upload className="w-80" variant="button" multiple limit={3} sortable buttonLabel="Add picture" files={list} onSort={setList} onRemove={(id) => setList((prev) => prev.filter((f) => f.id !== id))} renderPreview={(f) => (f.url ? <img src={f.url} alt={f.name}/> : null)}/>);
+    return (<Upload className="w-80" variant="button" multiple limit={3} sortable buttonLabel="Add image" files={list} onSort={setList} onRemove={(id) => setList((prev) => prev.filter((f) => f.id !== id))} renderPreview={(f) => (f.url ? <img src={f.url} alt={f.name}/> : null)}/>);
 }
 export const uploadShowcase: ShowcaseSpec = {
     examples: [

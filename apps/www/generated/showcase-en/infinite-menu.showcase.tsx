@@ -12,7 +12,7 @@ function Stage({ children }: {
 const DEMO_ITEMS: InfiniteMenuItem[] = [
     { title: "Overview", description: "Project global view", link: "https://example.com" },
     { title: "Task", description: "Workflow in progress" },
-    { title: "Member", description: "Team and Permissions" },
+    { title: "Member", description: "Teams and Permissions" },
     { title: "Documentation", description: "Knowledge Base and Specifications" },
     { title: "Data", description: "Indicators and Reports" },
     { title: "Settings", description: "Preferences and Integration" },
@@ -42,7 +42,7 @@ export const infiniteMenuShowcase: ShowcaseSpec = {
         },
         {
             title: "Enlarge the sphere \u00B7 Large card",
-            description: "scale zooms in on the sphere, itemSize enlarges the diameter of a single card.",
+            description: "scale zooms in on the sphere, itemSize zooms in on the single card diameter.",
             code: `<InfiniteMenu items={items} scale={1.15} itemSize={104} />`,
             render: () => (<Stage>
           <InfiniteMenu items={DEMO_ITEMS} scale={1.15} itemSize={104}/>

@@ -10,7 +10,7 @@ function Stage({ children }: {
 }
 const WORDS = [
     "Hulian",
-    "Component library",
+    "Component Library",
     "Enterprise level",
     "High quality",
     "Native adaptation",

@@ -20,7 +20,7 @@ export const passwordGeneratorShowcase: ShowcaseSpec = {
         },
         {
             title: "Passphrase",
-            description: "Randomly select words from the built-in 1747 word list to spell phrases - easy to remember, easy to pronounce, and easy to type on your mobile phone. Note that the number of words is the only strength variable: the phrase looks long, and 3 words are only 32 bit, and 6 words or more are enough.",
+            description: "Randomly pick words from the built-in 1747 word list and spell them into phrases - easy to remember, easy to pronounce, and easy to type on your mobile phone. Note that the number of words is the only strength variable: the phrase looks long, and 3 words are only 32 bit, and 6 words or more are enough.",
             code: `<PasswordGenerator
   defaultMode="passphrase"
   defaultPassphraseOptions={{ words: 6, separator: "-", capitalize: true }}
@@ -47,7 +47,7 @@ export const passwordGeneratorShowcase: ShowcaseSpec = {
         },
         {
             title: "Lite version: insert elastic layer",
-            description: "Turn off the parameter area and leave only \"result + change + copy\". After narrowing the width, it just hangs in Popover next to the password input box. The library does not create additional field components with elastic layers - just use the Popover + Button combination as needed.",
+            description: "Turn off the parameter area and leave only \"Result + Change + Copy\". After narrowing the width, it just hangs in Popover next to the password input box. The library does not create additional field components with elastic layers - just use the Popover + Button combination as needed.",
             code: `<Popover>
   <PopoverTrigger render={<Button variant="outline" size="sm">Generate password</Button>} />
   <PopoverContent className="w-72 p-0">
@@ -74,7 +74,7 @@ export const passwordGeneratorShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "No intensity bar required",
+            title: "No intensity bar",
             description: "showStrength=false Take away entropy and rating. It is suitable for scenarios where password rules have been displayed uniformly elsewhere on the page - but do not turn it off by default. Users rely on it to judge whether it is \"long enough\".",
             code: `<PasswordGenerator showStrength={false} modes={["password"]} />`,
             render: () => (<div className="max-w-sm">

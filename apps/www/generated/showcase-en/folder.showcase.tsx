@@ -35,7 +35,7 @@ export const folderShowcase: ShowcaseSpec = {
                 Documentation
               </span>,
                     <span key="2" className="flex h-full w-full items-center justify-center text-[8px] text-foreground">
-                Picture
+                Pictures
               </span>,
                     <span key="3" className="flex h-full w-full items-center justify-center text-[8px] text-foreground">
                 Video
@@ -96,7 +96,7 @@ export const folderShowcase: ShowcaseSpec = {
                 Documentation
               </span>,
                     <span key="2" className="flex h-full w-full items-center justify-center text-[8px] text-foreground">
-                Picture
+                Pictures
               </span>,
                     <span key="3" className="flex h-full w-full items-center justify-center text-[8px] text-foreground">
                 Video

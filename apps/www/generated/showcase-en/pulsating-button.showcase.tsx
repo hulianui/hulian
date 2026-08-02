@@ -11,7 +11,7 @@ export const pulsatingButtonShowcase: ShowcaseSpec = {
         {
             title: "Pulse speed",
             description: "duration Controls the duration of one round of pulses. The smaller the pulse, the more rapid it is.",
-            code: `<PulsatingButton duration="1s">Urgent</PulsatingButton>
+            code: `<PulsatingButton duration="1s">hurried</PulsatingButton>
 <PulsatingButton duration="2.5s">Smooth</PulsatingButton>`,
             render: () => (<>
           <PulsatingButton duration="1s">Urgent</PulsatingButton>
@@ -19,7 +19,7 @@ export const pulsatingButtonShowcase: ShowcaseSpec = {
         </>),
         },
         {
-            title: "Custom halo color",
+            title: "Customized halo color",
             description: "pulseColor specifies the pulse halo color, which defaults to 70% of primary.",
             code: `<PulsatingButton pulseColor="var(--color-danger)">Live broadcast</PulsatingButton>`,
             render: () => <PulsatingButton pulseColor="var(--color-danger)">Live broadcast</PulsatingButton>,

@@ -17,7 +17,7 @@ export const messageActionsShowcase: ShowcaseSpec = {
         },
         {
             title: "Copy only",
-            description: "Only when transmitting content, the copy button is displayed separately. After clicking, Check returns 1.5s.",
+            description: "When only transmitting content, the copy button is displayed separately. After clicking, Check returns 1.5s.",
             code: `<MessageActions content="Read-only fragment, for copying only." />`,
             render: () => <MessageActions content="Read-only fragment, for copying only."/>,
         },

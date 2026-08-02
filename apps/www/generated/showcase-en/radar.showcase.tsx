@@ -12,7 +12,7 @@ export const radarShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The default main color is chart token, and the background color is transparent; it comes with absolute inset-0 z-0 when placed in the relative container.",
+            description: "The default main color is chart token, and the background color is transparent; placed in the relative container, it comes with absolute inset-0 z-0.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl"
      style={{ background: "oklch(0.14 0.02 255)" }}>
   <Radar />
@@ -34,7 +34,7 @@ export const radarShowcase: ShowcaseSpec = {
         },
         {
             title: "Customize the main color",
-            description: "color Pass any CSS color to overwrite the default token, brightness brighten the entire disk.",
+            description: "color Pass any CSS color to overwrite the default token, brightness brightens the entire disk.",
             code: `<Radar color="oklch(0.78 0.16 165)" brightness={1.4} scale={0.45} />`,
             render: () => (<Stage>
           <Radar color="oklch(0.78 0.16 165)" brightness={1.4} scale={0.45}/>
@@ -42,7 +42,7 @@ export const radarShowcase: ShowcaseSpec = {
         },
         {
             title: "Wide scan arm \u00B7 No spokes",
-            description: "spokeCount=0 Remove the spokes, sweepWidth widen the scanning beam, turn off the mouse parallax to make a purely static background.",
+            description: "spokeCount=0 Remove the spokes, sweepWidth widen the scanning beam, turn off the mouse parallax to make a pure static background.",
             code: `<Radar
   spokeCount={0}
   sweepWidth={1}
@@ -59,7 +59,7 @@ export const radarShowcase: ShowcaseSpec = {
         { prop: "ringCount", type: "number", defaultValue: 10, label: "Ring number" },
         { prop: "spokeCount", type: "number", defaultValue: 10, label: "Number of spokes" },
         { prop: "sweepSpeed", type: "number", defaultValue: 1, label: "Scan speed" },
-        { prop: "sweepLobes", type: "number", defaultValue: 1, label: "Number of scanning flaps" },
+        { prop: "sweepLobes", type: "number", defaultValue: 1, label: "Scan number of flaps" },
         { prop: "brightness", type: "number", defaultValue: 1, label: "Brightness" },
         {
             prop: "enableMouseInteraction",

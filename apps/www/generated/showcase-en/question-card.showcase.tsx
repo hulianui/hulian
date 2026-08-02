@@ -72,7 +72,7 @@ When
             label: "Question type",
         },
         { prop: "stem", type: "text", defaultValue: "Convert \\frac{3}{8} into a decimal ( ).", label: "Question stem" },
-        { prop: "difficulty", type: "text", defaultValue: "A Group", label: "Layered" },
+        { prop: "difficulty", type: "text", defaultValue: "A Group", label: "Layering" },
         { prop: "compact", type: "boolean", defaultValue: false, label: "Compact" },
     ],
     states: [

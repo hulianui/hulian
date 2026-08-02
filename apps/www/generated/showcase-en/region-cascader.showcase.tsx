@@ -25,7 +25,7 @@ export const regionCascaderShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Level 3 (province/city/district/county)",
-            description: "Built-in full administrative divisions, default three-level linkage. onChange Give code both the path and the name path (the form's permanent name).",
+            description: "Built-in full administrative divisions, with three-level linkage by default. onChange Give code both the path and the name path (the form's permanent name).",
             code: `<RegionCascader
   value={codes}
   onChange={(codes, names) => save(codes, names)}

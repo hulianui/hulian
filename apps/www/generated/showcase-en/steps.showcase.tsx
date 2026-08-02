@@ -16,7 +16,7 @@ function Interactive() {
       <Steps items={ORDER} current={current} onChange={setCurrent}/>
       <div className="flex gap-2">
         <Button variant="outline" size="sm" disabled={current === 0} onClick={() => setCurrent((c) => c - 1)}>
-          Previous step
+          Previous
         </Button>
         <Button size="sm" disabled={current === ORDER.length - 1} onClick={() => setCurrent((c) => c + 1)}>
           Next step
@@ -51,7 +51,7 @@ export const stepsShowcase: ShowcaseSpec = {
         },
         {
             title: "Vertical orientation",
-            description: "direction=\"vertical\" Arrange lengthwise, suitable for side rails or narrow containers.",
+            description: "direction=\"vertical\" Arrange vertically, suitable for side rails or narrow containers.",
             code: `<Steps direction="vertical" items={items} current={2} />`,
             render: () => (<div className="w-full max-w-md">
           <Steps direction="vertical" items={ORDER} current={2}/>
@@ -67,7 +67,7 @@ export const stepsShowcase: ShowcaseSpec = {
         },
         {
             title: "Clickable + Controlled",
-            description: "After passing in onChange, each step can be clicked, and cooperate with useState to realize the previous/next step navigation.",
+            description: "After inputting onChange, each step can be clicked, and cooperate with useState to realize the previous/next step navigation.",
             code: `function Wizard() {
   const [current, setCurrent] = useState(1);
   return (

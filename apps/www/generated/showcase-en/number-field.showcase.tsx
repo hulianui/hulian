@@ -22,7 +22,7 @@ export const numberFieldShowcase: ShowcaseSpec = {
         },
         {
             title: "Step size",
-            description: "step Set the amount of increase or decrease each time, here each step is 5.",
+            description: "step Set the amount of each increase or decrease, here each step is 5.",
             code: `<NumberField aria-label="Step size 5" defaultValue={10} step={5} />`,
             render: () => <NumberField aria-label="Step size 5" defaultValue={10} step={5}/>,
         },

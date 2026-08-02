@@ -7,9 +7,9 @@ const dispatchNodes: SankeyNode[] = [
     { id: "code", label: "Code Task", tone: "var(--color-chart-2)" },
     { id: "image", label: "Image Task", tone: "var(--color-chart-3)" },
     { id: "router", label: "Smart Router", tone: "var(--color-primary)" },
-    { id: "haiku", label: "Haiku Pool", tone: "var(--color-chart-4)" },
-    { id: "sonnet", label: "Sonnet pool", tone: "var(--color-chart-5)" },
-    { id: "opus", label: "Opus pool", tone: "var(--color-chart-1)" },
+    { id: "haiku", label: "Haiku pool", tone: "var(--color-chart-4)" },
+    { id: "sonnet", label: "Sonnet Pool", tone: "var(--color-chart-5)" },
+    { id: "opus", label: "Opus Pool", tone: "var(--color-chart-1)" },
 ];
 const dispatchLinks: SankeyLink[] = [
     { source: "text", target: "router", value: 42 },
@@ -54,7 +54,7 @@ export const sankeyShowcase: ShowcaseSpec = {
     { id: "code", label: "Code Task", tone: "var(--color-chart-2)" },
     { id: "router", label: "Smart Router", tone: "var(--color-primary)" },
     { id: "haiku", label: "Haiku Pool", tone: "var(--color-chart-4)" },
-    { id: "sonnet", label: "Sonnet pool", tone: "var(--color-chart-5)" },
+    { id: "sonnet", label: "Sonnet Pool", tone: "var(--color-chart-5)" },
   ]}
   links={[
     { source: "text", target: "router", value: 42 },
@@ -91,7 +91,7 @@ export const sankeyShowcase: ShowcaseSpec = {
         },
         {
             title: "Bold node strips + flow adjustment with transparency",
-            description: "nodeWidth enlarges the width of the node rectangle, linkOpacity adjusts the transparency of the flow band stroke.",
+            description: "nodeWidth enlarges the node rectangle width, linkOpacity adjusts the flow band stroke transparency.",
             code: `<Sankey
   nodes={nodes}
   links={links}
@@ -110,7 +110,7 @@ export const sankeyShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "Scheduling flow direction (task type \u2192 router \u2192 executor pool \u00B7 three layers)",
+            name: "Scheduling flow (task type \u2192 router \u2192 executor pool \u00B7 three layers)",
             render: () => (<Frame>
           <Sankey nodes={dispatchNodes} links={dispatchLinks} height={300} renderTooltip={(item) => item.type === "node" ? (<span>{item.node.label}</span>) : (<span>
                   {item.link.source} → {item.link.target}:{item.link.value}

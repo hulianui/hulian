@@ -32,7 +32,7 @@ export const asciiTextShowcase: ShowcaseSpec = {
         },
         {
             title: "Static character painting",
-            description: "Close enableWaves and enableHue to get pure character paintings without animation.",
+            description: "Turn off enableWaves and enableHue to get pure character paintings without animation.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl">
   <ASCIIText text="ASCII" enableWaves={false} enableHue={false} />
 </div>`,

@@ -50,7 +50,7 @@ export const imageCropperShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Increase the scaling limit",
+            title: "Increase scaling limit",
             description: "maxZoom Zoom in to crop a closer part; the slider range changes accordingly.",
             code: `<ImageCropper image={objectUrl} aspect={1} maxZoom={5} onCropped={save} />`,
             render: () => (<div className="w-96 max-w-full">

@@ -65,7 +65,7 @@ export const fuzzyTextShowcase: ShowcaseSpec = {
             type: "select",
             options: ["horizontal", "vertical", "both"],
             defaultValue: "horizontal",
-            label: "Vibration direction",
+            label: "Jitter direction",
         },
         { prop: "enableHover", type: "boolean", defaultValue: true, label: "Hover enhancement" },
     ],

@@ -80,7 +80,7 @@ export const kanbanShowcase: ShowcaseSpec = {
             render: () => <ReadOnlyBoard />,
         },
         {
-            title: "Drag and drop across columns (controlled reconciliation)",
+            title: "Drag across columns (controlled reconciliation)",
             description: "The component does not directly change the business field, but only returns onMove; the consumer changes status accordingly and inserts back the target column according to toIndex. Supports pointer and keyboard (focus card Space to grab / arrow keys to move / Space to put down).",
             code: `const [cards, setCards] = useState(INITIAL);
 
@@ -96,7 +96,7 @@ export const kanbanShowcase: ShowcaseSpec = {
         },
         {
             title: "Custom column header statistics",
-            description: "renderColumnHeader After getting this column of cards, you can aggregate the number of items/progress and so on.",
+            description: "renderColumnHeader After getting this column of cards, you can aggregate the number of items/progress, etc.",
             code: `<Kanban
   items={cards}
   columns={columns}

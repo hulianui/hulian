@@ -35,7 +35,7 @@ export const tagShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Variant",
+            title: "Variants",
             description: "variant provides soft (default light background) / solid background / outline stroke.",
             code: `<>
   <Tag variant="soft" tone="brand">soft</Tag>
@@ -162,5 +162,5 @@ export const tagShowcase: ShowcaseSpec = {
     renderWithProps: (p) => (<Tag variant={(p.variant as Variant) ?? "soft"} tone={(p.tone as Tone) ?? "neutral"} dot>
       Status Label
     </Tag>),
-    toCode: (p) => `<Tag${p.variant && p.variant !== "soft" ? ` variant="${p.variant}"` : ""}${p.tone && p.tone !== "neutral" ? ` tone="${p.tone}"` : ""} dot>Status Tag</Tag>`,
+    toCode: (p) => `<Tag${p.variant && p.variant !== "soft" ? ` variant="${p.variant}"` : ""}${p.tone && p.tone !== "neutral" ? ` tone="${p.tone}"` : ""} dot>Status Label</Tag>`,
 };

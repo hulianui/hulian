@@ -30,7 +30,7 @@ export const swipeActionShowcase: ShowcaseSpec = {
         },
         {
             title: "Left and right two-way action",
-            description: "left / right can be configured at the same time; multiple buttons can be arranged on each side, arranged in order.",
+            description: "left / right can be configured at the same time; multiple buttons can be arranged on each side, arranged in sequence.",
             code: `<SwipeAction
   left={[{ key: "read", label: "Mark as read", tone: "primary" }]}
   right={[

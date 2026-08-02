@@ -47,7 +47,7 @@ export const magnetShowcase: ShowcaseSpec = {
         },
         {
             title: "Large sensing area + weak suction",
-            description: "padding Turn up the \"Long Range Sensing\", magnetStrength turn it up to make the displacement more restrained.",
+            description: "padding Turn up the \"long range sensing\", magnetStrength turn it up to make the displacement more restrained.",
             code: `<Magnet padding={180} magnetStrength={5}>
   <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl border bg-surface shadow-md">
     \u2726
@@ -109,7 +109,7 @@ export const magnetShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "disabled (no follow\u00B7still center)\nWhen",
+            name: "disabled (no follow\u00B7still center)",
             render: () => (<Stage>
           <Magnet disabled>
             <Pill label="Disabled"/>

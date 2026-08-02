@@ -18,7 +18,7 @@ export const safariShowcase: ShowcaseSpec = {
         </Safari>),
         },
         {
-            title: "Customize address bar",
+            title: "Customize the address bar",
             description: "Set address bar text via url.",
             code: `<Safari url="app.hulian.design/dashboard" style={{ width: 375 }}>
   <img src="/screenshot.png" alt="" />

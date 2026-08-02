@@ -160,7 +160,7 @@ export const loginFormShowcase: ShowcaseSpec = {
         },
         {
             title: "Split-screen login page (surface={false})",
-            description: "When the left brand panel + the right form is used, the visual weight is already borne by AuthPanel. Another card on the right half is the card within the card. surface={false} Turn off the border/background/shadow/padding together, and give the surface to the outer layer - there is no need to use className to offset the surface of the inventory item one by one.",
+            description: "When the left brand panel + the right form is used, the visual weight has been borne by AuthPanel. Another card on the right half is the card within the card. surface={false} Turn off the border/background/shadow/padding together, and give the surface to the outer layer - there is no need to use className to offset the surface of the inventory item one by one.",
             code: `<div className="grid xl:grid-cols-2">
   <AuthPanel title="Welcome back" description="Unified identity authentication platform" />
   <div className="grid place-items-center p-8">

@@ -21,7 +21,7 @@ export const tabsShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "TabsList is installed with TabsTab, and each TabsPanel is corresponding with value; defaultValue sets the initial selection page.",
+            description: "TabsList installs TabsTab, and each TabsPanel corresponds to value; defaultValue sets the initial selection page.",
             code: `<Tabs defaultValue="account" className="w-80">
   <TabsList>
     <TabsTab value="account">Account</TabsTab>
@@ -48,7 +48,7 @@ export const tabsShowcase: ShowcaseSpec = {
     <TabsTab value="password">Password</TabsTab>
     <TabsTab value="team">Team</TabsTab>
   </TabsList>
-  <TabsPanel value="account">Account Panel. </TabsPanel>
+  <TabsPanel value="account">Account panel. </TabsPanel>
   <TabsPanel value="password">Password panel. </TabsPanel>
   <TabsPanel value="team">Team Panel. </TabsPanel>
 </Tabs>`,
@@ -101,7 +101,7 @@ export const tabsShowcase: ShowcaseSpec = {
   <div className="flex-1">
     <TabsPanel value="general">General settings. </TabsPanel>
     <TabsPanel value="security">Security settings. </TabsPanel>
-    <TabsPanel value="billing">Billing settings. </TabsPanel>
+    <TabsPanel value="billing">Bill settings. </TabsPanel>
   </div>
 </Tabs>`,
             render: () => (<Tabs defaultValue="general" orientation="vertical" className="flex w-96 gap-4">

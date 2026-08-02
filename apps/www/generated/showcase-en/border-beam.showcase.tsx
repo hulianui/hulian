@@ -24,7 +24,7 @@ export const borderBeamShowcase: ShowcaseSpec = {
         },
         {
             title: "Reverse \u00B7 Slow down",
-            description: "reverse makes the beam go around in the opposite direction, duration adjusts the seconds of one revolution, and size adjusts the length of the beam square.",
+            description: "reverse makes the beam go around in the reverse direction, duration adjusts the seconds of one revolution, and size adjusts the length of the beam square.",
             code: `<BorderBeam reverse duration={10} size={80} />`,
             render: () => (<Card>
           <div className="grid h-full place-items-center text-sm text-muted">Reverse</div>

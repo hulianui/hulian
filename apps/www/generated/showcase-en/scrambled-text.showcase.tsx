@@ -13,7 +13,7 @@ export const scrambledTextShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Move the pointer over the text, and the characters within the radius will roll over into garbled characters one by one and then converge back to the original characters.",
+            description: "Move the pointer over the text, and the characters within the radius will roll over one by one into garbled characters and then converge back to the original characters.",
             code: `<ScrambledText>
   Move the pointer over this text \u2014 Hover scrambles the glyphs.
 </ScrambledText>`,
@@ -43,7 +43,7 @@ export const scrambledTextShowcase: ShowcaseSpec = {
         },
         {
             title: "Fast convergence",
-            description: "When speed is turned up and duration is turned down, the garbled characters flash faster and the words return more quickly, like binary decay.",
+            description: "When speed is turned up and duration is turned down, the garbled characters flash faster and the words return more rapidly, like binary decay.",
             code: `<ScrambledText duration={0.6} speed={0.9} scrambleChars="01">
   0101 binary decay 1010
 </ScrambledText>`,

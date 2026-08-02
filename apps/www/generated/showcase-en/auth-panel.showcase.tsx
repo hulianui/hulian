@@ -22,7 +22,7 @@ export const authPanelShowcase: ShowcaseSpec = {
   </div>
 </div>`,
             render: () => (<div className={`grid md:grid-cols-2 ${BOX}`}>
-          <AuthPanel brand={<Brand name="Hanyun" description="Global Edge Computing"/>} title="Taking ideas to the edge of the world" description="Create an account and start your first project in five minutes." highlights={HIGHLIGHTS.slice(0, 2)}/>
+          <AuthPanel brand={<Brand name="Hanyun" description="Global Edge Computing"/>} title="Taking ideas to the edge of the world" description="Create an account in five minutes and start your first project." highlights={HIGHLIGHTS.slice(0, 2)}/>
           <div className="hidden place-items-center overflow-auto p-6 md:grid">
             <LoginForm surface={false} showRemember={false}/>
           </div>
@@ -30,7 +30,7 @@ export const authPanelShowcase: ShowcaseSpec = {
         },
         {
             title: "Background recipe",
-            description: "The three levels are all written in the component with token color mixing (use --color-bg as base, and dark colors will follow automatically). The Tailwind tool class cannot provide radial-gradient with color-mix, and guard prohibits consumers from transmitting style to the library - this is the reason for the existence of this component.",
+            description: "The three levels are all written in the component with token color mixing (use --color-bg as base, and dark colors will automatically follow). The Tailwind tool class cannot provide radial-gradient with color-mix, and guard prohibits consumers from transmitting style to the library - this is the reason for the existence of this component.",
             code: `<>
   <AuthPanel gradient="radial" title="radial" />
   <AuthPanel gradient="linear" title="linear" />
@@ -44,7 +44,7 @@ export const authPanelShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Brand Color",
+            title: "Brand color",
             description: "color goes to resolveTone, which is the same path as Brand.color / Dot.color / ChartSeries.color: semantic color name, any CSS color or variable can be received. The gradient changes color along with the check mark.",
             code: `<AuthPanel color="chart-2" title="Change brand color" highlights={["Gradient follows with check mark"]} />`,
             render: () => (<div className="grid gap-3 sm:grid-cols-2">
@@ -58,7 +58,7 @@ export const authPanelShowcase: ShowcaseSpec = {
         },
         {
             title: "Bottom area",
-            description: "footer is affixed to the bottom of the panel (Registration Number/Copyright/Secondary Links), with the top content aligned to both ends of it.",
+            description: "footer is affixed to the bottom of the panel (Registration Number / Copyright / Secondary Links), with the top content aligned to both ends of it.",
             code: `<AuthPanel
   brand={<Brand name="Hanyun" />}
   title="Welcome back"
@@ -82,10 +82,10 @@ export const authPanelShowcase: ShowcaseSpec = {
             type: "select",
             options: ["primary", "success", "warning", "danger", "chart-2", "chart-4"],
             defaultValue: "primary",
-            label: "Brand Color",
+            label: "Brand color",
         },
         { prop: "title", type: "text", defaultValue: "Taking ideas to the edge of the world" },
-        { prop: "description", type: "text", defaultValue: "Create an account and start your first project in five minutes." },
+        { prop: "description", type: "text", defaultValue: "Create an account in five minutes and start your first project." },
     ],
     states: [
         {
@@ -103,7 +103,7 @@ export const authPanelShowcase: ShowcaseSpec = {
         {
             name: "none (for self-stacked patterns)",
             render: () => (<div className="h-40 w-72 overflow-hidden rounded-[var(--radius)] border border-border">
-          <AuthPanel gradient="none" title="Pure bottom"/>
+          <AuthPanel gradient="none" title="Pure base"/>
         </div>),
         },
     ],

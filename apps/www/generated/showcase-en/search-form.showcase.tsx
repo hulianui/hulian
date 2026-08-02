@@ -45,7 +45,7 @@ export const searchFormShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "fields configures the driver; omit values/onChange to enter the internal uncontrolled state. Enter/query trigger onSearch.",
+            description: "fields configuration driver; omit values/onChange to enter the internal uncontrolled state. Enter/query trigger onSearch.",
             code: `<SearchForm
   fields={[
     { name: "keyword", label: "Keywords", placeholder: "Order number / customer name" },
@@ -62,7 +62,7 @@ export const searchFormShowcase: ShowcaseSpec = {
         },
         {
             title: "Foldable + Spanning Columns",
-            description: "The field can be collapsed when filled with multiple rows (only the first row is displayed when collapsed by default); date-range uses colSpan to span two columns.",
+            description: "The field can be folded when it is filled with multiple rows (only the first row is displayed when collapsed by default); date-range uses colSpan to span two columns.",
             code: `<SearchForm
   fields={fields} // 6+ fields
   collapsible // Enough fields to automatically enable "expand/collapse"
@@ -74,7 +74,7 @@ export const searchFormShowcase: ShowcaseSpec = {
         },
         {
             title: "Customize the number of columns and copywriting",
-            description: "columns controls the number of desktop columns, submitText / resetText covers button copy.",
+            description: "columns controls the number of desktop columns, submitText / resetText covers the button copy.",
             code: `<SearchForm
   fields={fields}
   columns={2}

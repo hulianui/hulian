@@ -120,7 +120,7 @@ export const popconfirmShowcase: ShowcaseSpec = {
     </Popconfirm>),
     toCode: (p) => `<Popconfirm
   title="${p.title}"
-  description="It cannot be recovered after deletion. "${p.danger ? "\n  danger" : ""}
+  description="Cannot be recovered after deletion."${p.danger ? "\n  danger" : ""}
   side="${p.side}"
   onConfirm={async () => { await api.remove(id); }}
 >

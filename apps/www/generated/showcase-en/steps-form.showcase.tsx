@@ -179,7 +179,7 @@ export const stepsFormShowcase: ShowcaseSpec = {
     states: [
         { name: "Step-by-step form \u00B7 Step-by-step verification + step-by-step preservation + submission", render: () => <Demo /> },
         {
-            name: "per-step Navigation Control \u00B7 nextDisabled / nextText / showNav=false + Check loading",
+            name: "per-step Navigation Control \u00B7 nextDisabled / nextText / showNav=false + Verification loading",
             render: () => <NavControlDemo />,
         },
     ],

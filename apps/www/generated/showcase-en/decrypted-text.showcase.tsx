@@ -14,7 +14,7 @@ export const decryptedTextShowcase: ShowcaseSpec = {
         },
         {
             title: "Hover decoding",
-            description: "animateOn=\"hover\" is decoded and reset to garbled characters when hovering.",
+            description: "animateOn=\"hover\" decodes when hovering and resets to garbled characters when moved out.",
             code: `<DecryptedText
   text="Hover to decrypt"
   animateOn="hover"

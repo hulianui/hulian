@@ -53,7 +53,7 @@ export const animatedBeamShowcase: ShowcaseSpec = {
         },
         {
             title: "Gathering around",
-            description: "The light beam flows into the center on the left side and in the reverse direction on the right side, creating the impression that data is gathered into the center.",
+            description: "The light beam flows into the center on the left side and in the opposite direction on the right side, creating the impression that data is gathered into the center.",
             code: `{/* The left two lines reverse=false flow into the center, the right two lines reverse=true flow into the center */}
 <AnimatedBeam containerRef={container} fromRef={l1} toRef={hub} curvature={30} reverse={false} />
 <AnimatedBeam containerRef={container} fromRef={hub} toRef={r1} curvature={-30} reverse={true} />`,
@@ -61,7 +61,7 @@ export const animatedBeamShowcase: ShowcaseSpec = {
         },
         {
             title: "Right to left flow",
-            description: "The overall reverse direction, the beam sweeps from right to left, expressing the direction of reflow/response.",
+            description: "The overall reverse direction, the beam sweeps from right to left, expressing the reflow/response direction.",
             code: `<AnimatedBeam containerRef={container} fromRef={l1} toRef={hub} curvature={30} reverse={true} />`,
             render: () => <Demo mode="rtl"/>,
         },

@@ -54,7 +54,7 @@ export const shieldBadgeShowcase: ShowcaseSpec = {
         },
         {
             title: "Skin \u00B7 Appearance",
-            description: "solid Sticker feel (default) / soft (embedded in the text without stealing the show) / outline Stroke; shape Change to rounded corners.",
+            description: "solid Sticky feel (default) / soft (embedded in the text without stealing the show) / outline Stroke; shape Change to rounded corners.",
             code: `<>
   <ShieldBadge label="build" value="passing" tone="success" variant="soft" />
   <ShieldBadge label="build" value="passing" tone="success" variant="outline" />

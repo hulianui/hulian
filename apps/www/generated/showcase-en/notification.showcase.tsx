@@ -52,8 +52,7 @@ notification.warning({ title: "Insufficient space", description: "The remaining 
             description: "placement Specifies the pop-up location: topRight / topLeft / bottomRight / bottomLeft.",
             code: `notification.info({ title: "Prompt", description: "Bounce at the specified corner", placement: "bottomLeft" });`,
             render: () => (<div className="flex flex-wrap gap-2">
-          {(["topRight", "topLeft", "bottomRight", "bottomLeft"] as NotificationPlacement[]).map((p) => (<Button key={p} variant="outline" size="sm" onClick={() => notification.info({ title: p, description: `Bounce in
-Details of ${p}`, placement: p })}>
+          {(["topRight", "topLeft", "bottomRight", "bottomLeft"] as NotificationPlacement[]).map((p) => (<Button key={p} variant="outline" size="sm" onClick={() => notification.info({ title: p, description: `Bounce in ${p}`, placement: p })}>
               {p}
             </Button>))}
         </div>),
@@ -116,8 +115,7 @@ Details of ${p}`, placement: p })}>
         {
             name: "Four corner positions",
             render: () => (<div className="flex flex-wrap gap-2">
-          {(["topRight", "topLeft", "bottomRight", "bottomLeft"] as NotificationPlacement[]).map((p) => (<Button key={p} variant="outline" size="sm" onClick={() => notification.info({ title: p, description: `Bounce in
-Details of ${p}`, placement: p })}>
+          {(["topRight", "topLeft", "bottomRight", "bottomLeft"] as NotificationPlacement[]).map((p) => (<Button key={p} variant="outline" size="sm" onClick={() => notification.info({ title: p, description: `Bounce in ${p}`, placement: p })}>
               {p}
             </Button>))}
         </div>),
@@ -129,7 +127,7 @@ Details of ${p}`, placement: p })}>
             placement: p.placement as NotificationPlacement,
             duration: p.duration as number,
         })}>
-      Pop notification
+      Popup notification
     </Button>),
     toCode: (p) => `notification.${p.type}({
   title: "${p.title}",

@@ -127,7 +127,7 @@ export const cascaderShowcase: ShowcaseSpec = {
         },
         {
             title: "Default vs. searchable",
-            description: "defaultValue echo path; showSearch Open the search box at the top of the floating layer and enter the direct link to the leaf.",
+            description: "defaultValue echo path; showSearch A search box appears at the top of the floating layer and enter the direct link to the leaf.",
             code: `<Cascader
   nodes={nodes}
   defaultValue={["zhejiang", "hangzhou", "xihu"]}

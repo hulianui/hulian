@@ -7,7 +7,7 @@ import { ThreadList } from "../../../../packages/ui/src/thread-list/thread-list"
 const seed = [
     { id: "a", title: "Yunqi Technology \u00B7 President's Personal Secretary", meta: "3 minutes ago" },
     { id: "b", title: "Morningstar Group \u00B7 Executive Director", meta: "Yesterday" },
-    { id: "c", title: "New Resume Dialogue", meta: "Last week" },
+    { id: "c", title: "New resume conversation", meta: "Last week" },
 ];
 function InteractiveDemo() {
     const [items, setItems] = useState(seed);
@@ -36,7 +36,7 @@ export const threadListShowcase: ShowcaseSpec = {
           <ThreadList items={[
                     { id: "a", title: "Yunqi Technology \u00B7 President's Personal Secretary", meta: "3 minutes ago", active: true },
                     { id: "b", title: "Morningstar Group \u00B7 Executive Director", meta: "Yesterday" },
-                    { id: "c", title: "New Resume Dialogue", meta: "Last week" },
+                    { id: "c", title: "New resume conversation", meta: "Last week" },
                 ]}/>
         </div>),
         },
@@ -59,7 +59,7 @@ export const threadListShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Head action slot",
+            title: "Head Action Slot",
             description: "title Custom + action slot for the \"New Conversation\" button.",
             code: `<ThreadList
   title="Recent Conversations"
@@ -103,7 +103,7 @@ export const threadListShowcase: ShowcaseSpec = {
     ],
     controls: [],
     states: [
-        { name: "Session list (switchable/deletable)", render: () => <InteractiveDemo /> },
+        { name: "Session list (can be switched/delete)", render: () => <InteractiveDemo /> },
         {
             name: "Empty",
             render: () => (<div className="w-full max-w-60">

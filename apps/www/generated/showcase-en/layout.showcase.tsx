@@ -142,7 +142,7 @@ export const layoutShowcase: ShowcaseSpec = {
         },
         {
             title: "Close the sidebar by default",
-            description: "defaultCollapsed causes the sidebar to collapse initially, and NavMenu switches to the collapsed icon track.",
+            description: "defaultCollapsed makes the sidebar initially retracted, and NavMenu switches to the collapsed icon track.",
             code: `<Layout.Sider collapsible defaultCollapsed>
   <NavMenu items={items} mode="collapsed" />
 </Layout.Sider>`,
@@ -196,7 +196,7 @@ export const layoutShowcase: ShowcaseSpec = {
         </Frame>),
         },
         {
-            name: "Responsive breakpoint (md): narrow screen automatically retracts",
+            name: "Responsive breakpoint (md): Narrow screen automatically retracts",
             render: () => (<Frame>
           <ClassicShell breakpoint="md"/>
         </Frame>),

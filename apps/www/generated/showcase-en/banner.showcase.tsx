@@ -56,7 +56,7 @@ export const bannerShowcase: ShowcaseSpec = {
         },
         {
             title: "Operation + Can be closed",
-            description: "Put the action slot on the right side and pass the onClose render close button.",
+            description: "Put the action slot on the right side of the operation and pass the onClose rendering close button.",
             code: `<Banner
   tone="neutral"
   icon={<Megaphone />}

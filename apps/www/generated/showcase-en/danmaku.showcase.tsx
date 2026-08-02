@@ -16,7 +16,7 @@ const POOL = [
     "The price is really good",
     "Light sign support \uD83D\uDD06",
     "The anchor's voice is really nice",
-    "Barrage drifting by~",
+    "The barrage floated by~",
     "Very high technical content",
     "Squat a source code",
 ];
@@ -54,7 +54,7 @@ function DanmakuDemo({ tracks = 4, speed = 100, density = "normal", paused = fal
     </div>);
 }
 const SCROLL_ITEMS: DanmakuItem[] = [
-    { id: "x1", text: "Barrage drifting by~" },
+    { id: "x1", text: "The barrage floated by~" },
     { id: "x2", text: "The anchor is so cool!", color: "var(--color-chart-1)", bold: true },
     { id: "x3", text: "This component library is so convenient.", color: "var(--color-chart-2)" },
     { id: "x4", text: "Three times in a row \u2764\uFE0F", color: "var(--color-chart-3)" },
@@ -95,7 +95,7 @@ export const danmakuShowcase: ShowcaseSpec = {
         },
         {
             title: "Top stay barrage",
-            description: "The barrage of mode='top' stays at the top for a period of time (non-scrolling), suitable for announcements/top posts.",
+            description: "The barrage of mode='top' stays at the top for a period of time (non-scrolling), suitable for announcements/sticking.",
             code: `<Danmaku
   items={[
     { id: "y0", text: "The draw will be held at 8 o'clock tonight, pay attention to not get lost", mode: "top", bold: true },
@@ -123,7 +123,7 @@ export const danmakuShowcase: ShowcaseSpec = {
         { prop: "paused", type: "boolean", defaultValue: false, label: "Pause" },
     ],
     states: [
-        { name: "Barrage flying over (anti-overlap track + top stay barrage)", render: () => <DanmakuDemo /> },
+        { name: "Barrage flying over (track anti-overlap + top stay barrage)", render: () => <DanmakuDemo /> },
         { name: "High Density \u00B7 Fast", render: () => <DanmakuDemo density="high" speed={160} tracks={6}/> },
     ],
     renderWithProps: (p) => (<DanmakuDemo tracks={p.tracks as number} speed={p.speed as number} density={p.density as "low" | "normal" | "high"} paused={p.paused as boolean}/>),

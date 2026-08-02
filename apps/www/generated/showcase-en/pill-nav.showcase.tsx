@@ -64,7 +64,7 @@ export const pillNavShowcase: ShowcaseSpec = {
             type: "select",
             options: ["#home", "#features", "#pricing", "#docs"],
             defaultValue: "#home",
-            label: "Activation",
+            label: "Activation Item",
         },
         { prop: "withLogo", type: "boolean", defaultValue: true, label: "Show logo" },
         { prop: "initialLoadAnimation", type: "boolean", defaultValue: true, label: "Entrance animation" },

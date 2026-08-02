@@ -62,7 +62,7 @@ export const paginationShowcase: ShowcaseSpec = {
             render: () => <Demo total={20} initial={10}/>,
         },
         {
-            name: "Header border (disabled on previous page)",
+            name: "Header boundary (disabled on previous page)",
             render: () => <Demo total={20} initial={1}/>,
         },
         {
@@ -78,7 +78,7 @@ export const paginationShowcase: ShowcaseSpec = {
             render: () => <Demo total={20} initial={10} siblingCount={2}/>,
         },
         {
-            name: "Do not omit few pages (3 pages)",
+            name: "Do not omit missing pages (3 pages)",
             render: () => <Demo total={3} initial={2}/>,
         },
         {

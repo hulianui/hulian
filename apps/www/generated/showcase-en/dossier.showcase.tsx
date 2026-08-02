@@ -16,7 +16,7 @@ export const dossierShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Three-state field (archived/partial/empty) + the current collection field is highlighted, and the progress is automatically calculated in the head.",
+            description: "Three-state field (archived/partial/empty) + the current collection field is highlighted, and the head automatically calculates the progress.",
             code: `<Dossier
   sections={[
     { key: "basic", label: "Basic information", status: "done", summary: "Lin Wanqing \u00B7 138-0000-0000" },

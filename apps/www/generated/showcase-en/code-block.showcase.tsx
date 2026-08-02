@@ -9,7 +9,7 @@ const longer = `import { Button } from "@hulianui/ui";
 // Click counting example
 export function Demo() {
   const [n, setN] = useState(0);
-  return <Button onClick={() => setN(n + 1)}> Clicked {n} times</Button>;
+  return <Button onClick={() => setN(n + 1)}> clicked {n} times</Button>;
 }`;
 const shell = `# Install and build
 pnpm add @hulianui/ui
@@ -34,7 +34,7 @@ export const codeBlockShowcase: ShowcaseSpec = {
         },
         {
             title: "Shell command",
-            description: "lang=\"bash\" Color the command name with flag according to Shell rules.",
+            description: "lang=\"bash\" Colorize the command name according to Shell rules with flag.",
             code: `<CodeBlock code={shell} lang="bash" />`,
             render: () => <CodeBlock code={shell} lang="bash"/>,
         },

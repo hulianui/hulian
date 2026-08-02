@@ -66,9 +66,9 @@ export const cubesShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "gridSize", type: "number", defaultValue: 8, label: "Grid side length" },
-        { prop: "maxAngle", type: "number", defaultValue: 45, label: "Maximum tilt angle\u00B0" },
+        { prop: "maxAngle", type: "number", defaultValue: 45, label: "Maximum inclination angle\u00B0" },
         { prop: "radius", type: "number", defaultValue: 3, label: "Radius of influence (grid)" },
-        { prop: "rippleSpeed", type: "number", defaultValue: 2, label: "Ripple Speed" },
+        { prop: "rippleSpeed", type: "number", defaultValue: 2, label: "Ripple speed" },
         { prop: "autoAnimate", type: "boolean", defaultValue: true, label: "Automatic roaming when idle" },
         { prop: "rippleOnClick", type: "boolean", defaultValue: true, label: "Click on Ripple" },
     ],

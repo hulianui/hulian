@@ -28,7 +28,7 @@ export const plasmaShowcase: ShowcaseSpec = {
         },
         {
             title: "Custom color \u00B7 Reciprocating flow",
-            description: "color connects to any CSS color; direction=\"pingpong\" allows the plasma to reciprocate smoothly forward and backward (smoothstep slows down without sudden changes).",
+            description: "color connects to any CSS color; direction=\"pingpong\" allows the plasma to reciprocate smoothly in forward and reverse directions (smoothstep slows down without sudden changes).",
             code: `<Plasma color="oklch(0.72 0.22 30)" direction="pingpong" speed={1.4} />`,
             render: () => (<Stage>
           <Plasma color="oklch(0.72 0.22 30)" direction="pingpong" speed={1.4}/>

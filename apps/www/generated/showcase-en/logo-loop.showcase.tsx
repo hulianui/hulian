@@ -26,7 +26,7 @@ export const logoLoopShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Pass in the logos list (mixed icons or pictures), and the sequence is automatically copied to achieve seamless infinite scrolling; fadeOut adds fade masks to both ends (eat surface token).",
+            description: "Pass in the logos list (mixed arrangement of icons or pictures), and the sequence is automatically copied to achieve seamless infinite scrolling; fadeOut adds fade masks to both ends (eat surface token).",
             code: `const logos = [
   { node: <Hexagon />, ariaLabel: "Hexagon" },
   { node: <Cloud />, ariaLabel: "Cloud" },

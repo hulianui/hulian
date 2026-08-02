@@ -13,7 +13,7 @@ export const promptInputShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Enter submission / Shift+Enter line feed / IME No accidental touch during synthesis; onSubmit The text after receiving trim will be automatically cleared internally when it is not controlled.",
+            description: "Enter Submit / Shift+Enter Line break / IME No accidental touch during synthesis; onSubmit The text after receiving trim will be automatically cleared internally when it is not controlled.",
             code: `<PromptInput onSubmit={(v) => send(v)} />`,
             render: () => <Demo />,
         },

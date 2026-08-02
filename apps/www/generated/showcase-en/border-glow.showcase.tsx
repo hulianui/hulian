@@ -29,7 +29,7 @@ export const borderGlowShowcase: ShowcaseSpec = {
   <BorderGlow>
     <div className="w-64 p-7">
       <p className="text-base font-semibold text-white">Hulian Component Library</p>
-      <p className="mt-1.5 text-sm text-white/55">Move the pointer over the card and the border will light up along the light cone. </p>
+      <p className="mt-1.5 text-sm text-white/55">Move the pointer over the card, and the border will light up along the light cone. </p>
     </div>
   </BorderGlow>
 </div>`,
@@ -76,7 +76,7 @@ export const borderGlowShowcase: ShowcaseSpec = {
                     "var(--color-chart-4)",
                     "var(--color-chart-5)",
                 ]} glowRadius={56}>
-            <CardBody title="Cyan Neon" desc="Glow color / Grid color full range chart token."/>
+            <CardBody title="Cyan neon" desc="Glow color/Grid color full range chart token."/>
           </BorderGlow>
         </Stage>),
         },
@@ -132,7 +132,7 @@ export const borderGlowShowcase: ShowcaseSpec = {
                     "var(--color-chart-4)",
                     "var(--color-chart-5)",
                 ]} glowRadius={56}>
-            <CardBody title="Cyan Neon" desc="Glow color / Grid color full range chart token."/>
+            <CardBody title="Cyan neon" desc="Glow color/Grid color full range chart token."/>
           </BorderGlow>
         </Stage>),
         },

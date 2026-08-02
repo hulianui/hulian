@@ -48,14 +48,14 @@ export const liquidEtherShowcase: ShowcaseSpec = {
         },
         {
             title: "Still waiting for interaction",
-            description: "autoDemo={false} Turn off the automatic tour, the screen remains still and wait for the real pointer; mouseForce turns it up to make the stirring more convenient.",
+            description: "autoDemo={false} Turn off the automatic tour, the screen remains still and wait for the real pointer; mouseForce Turn it up to make the stirring more convenient.",
             code: `<LiquidEther autoDemo={false} mouseForce={1.5} />`,
             render: () => (<Stage>
           <LiquidEther autoDemo={false} mouseForce={1.5}/>
         </Stage>),
         },
         {
-            title: "Wallpaper-level overlay",
+            title: "Wallpaper level overlay",
             description: "Slow + Translucent (opacity) reduces the visual weight and serves as the title area background to overlap below the text.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
   <LiquidEther speed={0.3} scale={1.2} opacity={0.7} />
@@ -91,7 +91,7 @@ export const liquidEtherShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Warm orange \u00B7 Large lump",
+            name: "Warm orange tone \u00B7 Large lump",
             render: () => (<Stage>
           <LiquidEther colors={[
                     "var(--color-chart-3)",

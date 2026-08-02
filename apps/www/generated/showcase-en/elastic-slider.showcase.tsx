@@ -21,7 +21,7 @@ export const elasticSliderShowcase: ShowcaseSpec = {
         },
         {
             title: "Custom icon",
-            description: "Replace icons at both ends with leftIcon / rightIcon, such as brightness adjustment.",
+            description: "Replace the icons at both ends with leftIcon / rightIcon, such as brightness adjustment.",
             code: `<ElasticSlider
   defaultValue={65}
   leftIcon={<SunDim className="size-5" aria-hidden />}
@@ -32,7 +32,7 @@ export const elasticSliderShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "Step adsorption",
+            title: "Step size adsorption",
             description: "After turning on isStepped, drag and press stepSize to round and adsorb.",
             code: `<ElasticSlider defaultValue={30} isStepped stepSize={10} />`,
             render: () => (<Stage>
@@ -57,7 +57,7 @@ export const elasticSliderShowcase: ShowcaseSpec = {
         { prop: "defaultValue", type: "number", defaultValue: 50, label: "Initial value" },
         { prop: "startingValue", type: "number", defaultValue: 0, label: "Nether" },
         { prop: "maxValue", type: "number", defaultValue: 100, label: "Upper bound" },
-        { prop: "isStepped", type: "boolean", defaultValue: false, label: "Step adsorption" },
+        { prop: "isStepped", type: "boolean", defaultValue: false, label: "Step size adsorption" },
         { prop: "stepSize", type: "number", defaultValue: 10, label: "Step size" },
         { prop: "showValue", type: "boolean", defaultValue: true, label: "Display value" },
     ],
@@ -81,7 +81,7 @@ export const elasticSliderShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Customized range (-50 ~ 50 \u00B7 hidden value)",
+            name: "Customized range (-50 ~ 50 \u00B7 Hidden value)",
             render: () => (<Stage>
           <ElasticSlider defaultValue={0} startingValue={-50} maxValue={50} showValue={false}/>
         </Stage>),

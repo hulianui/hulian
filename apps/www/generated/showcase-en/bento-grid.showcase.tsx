@@ -7,7 +7,7 @@ function Demo() {
       <BentoCard className="sm:col-span-2" icon={<Zap />} title="Extreme speed" description="Pure CSS first, zero runtime overhead"/>
       <BentoCard icon={<Shield />} title="Reliable" description="WAI-ARIA + test coverage"/>
       <BentoCard icon={<Globe />} title="Theme" description="OKLCH Light and dark double layer token"/>
-      <BentoCard className="sm:col-span-2" icon={<Sparkles />} title="Composable building blocks" description="Learn from the strengths of others and unify them into one set of Hulian API"/>
+      <BentoCard className="sm:col-span-2" icon={<Sparkles />} title="Composable building blocks" description="Learn from everyone's strengths and unify them into one set of Hulian API"/>
     </BentoGrid>);
 }
 export const bentoGridShowcase: ShowcaseSpec = {
@@ -28,7 +28,7 @@ export const bentoGridShowcase: ShowcaseSpec = {
         },
         {
             title: "Cross columns and rows",
-            description: "Use className (col-span / row-span) on BentoCard to control single card occupancy and spell out the error layout.",
+            description: "Use className (col-span / row-span) on BentoCard to control the single card occupancy and spell out the error layout.",
             code: `<BentoGrid>
   <BentoCard className="sm:col-span-2" icon={<Zap />} title="Extreme speed" description="Pure CSS Priority" />
   <BentoCard icon={<Shield />} title="Reliable" description="WAI-ARIA" />

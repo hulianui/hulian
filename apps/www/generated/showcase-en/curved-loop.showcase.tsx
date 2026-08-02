@@ -38,7 +38,7 @@ export const curvedLoopShowcase: ShowcaseSpec = {
         },
         {
             title: "Pure display (no dragging)",
-            description: "interactive={false} Turn off drag and drop interaction, only automatic scrolling.",
+            description: "interactive={false} Turn off drag interaction, only automatic scrolling.",
             code: `<CurvedLoop text="HULIAN UI \u00B7 " interactive={false} />`,
             render: () => (<Stage>
           <CurvedLoop text="HULIAN UI · " interactive={false} className="text-white/80"/>
@@ -56,7 +56,7 @@ export const curvedLoopShowcase: ShowcaseSpec = {
             defaultValue: "left",
             label: "Direction",
         },
-        { prop: "interactive", type: "boolean", defaultValue: true, label: "Draggable" },
+        { prop: "interactive", type: "boolean", defaultValue: true, label: "Can be dragged" },
     ],
     states: [
         {

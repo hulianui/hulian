@@ -116,7 +116,7 @@ export const tiltShowcase: ShowcaseSpec = {
             title: "Read real-time angle",
             description: "onTiltMove Each frame returns the angle and reflection intensity, which can be used to drive other layers to create multi-layer parallax.",
             code: `<Tilt onTiltMove={({ angles, glare }) => setState(...)}>
-  <DarkCard>Move above me</DarkCard>
+  <DarkCard>Move on top of me</DarkCard>
 </Tilt>`,
             render: () => <ReadoutDemo />,
         },

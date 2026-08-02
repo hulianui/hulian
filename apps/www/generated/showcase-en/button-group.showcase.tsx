@@ -35,7 +35,7 @@ export const buttonGroupShowcase: ShowcaseSpec = {
         },
         {
             title: "Split button",
-            description: "Main operation + a drop-down triggered \"More\", common in save/submit scenarios.",
+            description: "Main operation + a drop-down triggered \"More\", commonly seen in save/submit scenarios.",
             code: `<ButtonGroup aria-label="Save">
   <Button>Save</Button>
   <Button size="icon" aria-label="More saving options"><ChevronDown className="size-4" /></Button>
@@ -47,7 +47,7 @@ export const buttonGroupShowcase: ShowcaseSpec = {
         },
         {
             title: "Vertically arranged",
-            description: "orientation=\"vertical\" Change to upper and lower rows, and smooth the upper and lower inner fillets.",
+            description: "orientation=\"vertical\" Change to upper and lower rows, smooth the upper and lower inner fillets.",
             code: `<ButtonGroup orientation="vertical" aria-label="Tools">
   <Button variant="outline">Copy</Button>
   <Button variant="outline">Paste</Button>

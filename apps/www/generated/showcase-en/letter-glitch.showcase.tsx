@@ -12,7 +12,7 @@ export const letterGlitchShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Put it into the relative dark container, the components are filled with the chart token palette by default.",
+            description: "Put it into the relative dark container, and the components will be filled with the chart token palette by default.",
             code: `<div className="relative h-56 overflow-hidden rounded-xl"
      style={{ background: "oklch(0.14 0.02 255)" }}>
   <LetterGlitch className="absolute inset-0" />

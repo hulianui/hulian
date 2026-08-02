@@ -166,7 +166,7 @@ export const documentSheetShowcase: ShowcaseSpec = {
     <div>Quotation \u00B7 QT-2026-0604</div>
   </DocumentSheetHeader>
   <DocumentSheetSection title="Service Details">
-    <table>{/* Detail row */}</table>
+    <table>{/* Detail line */}</table>
   </DocumentSheetSection>
   <DocumentSheetFooter>Total\u00B7Signature Position</DocumentSheetFooter>
 </DocumentSheet>`,

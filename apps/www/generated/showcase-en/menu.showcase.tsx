@@ -70,7 +70,7 @@ export const menuShowcase: ShowcaseSpec = {
         },
         {
             title: "Grouping",
-            description: "MenuGroup + MenuGroupLabel Add a subtitle to a group of menu items.",
+            description: "MenuGroup + MenuGroupLabel Add subtitles to a group of menu items.",
             code: `<Menu>
   <MenuTrigger render={<Button variant="outline">Menu</Button>} />
   <MenuContent>

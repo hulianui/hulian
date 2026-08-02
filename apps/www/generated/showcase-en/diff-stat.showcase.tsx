@@ -27,7 +27,7 @@ export const diffStatShowcase: ShowcaseSpec = {
         },
         {
             title: "Grid strips only",
-            description: "\u200B\u200BshowCounts={false} hides the numbers, leaving only compact green and red grid bars.",
+            description: "showCounts={false} hides the numbers, leaving only compact green and red grid bars.",
             code: `<DiffStat additions={7} deletions={2} showCounts={false} />`,
             render: () => <DiffStat additions={7} deletions={2} showCounts={false}/>,
         },
@@ -45,7 +45,7 @@ export const diffStatShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "additions", type: "number", defaultValue: 24, label: "New line" },
+        { prop: "additions", type: "number", defaultValue: 24, label: "New row" },
         { prop: "deletions", type: "number", defaultValue: 6, label: "Delete row" },
         {
             prop: "status",

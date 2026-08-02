@@ -11,7 +11,7 @@ export const glitchTextShowcase: ShowcaseSpec = {
         },
         {
             title: "Hover trigger",
-            description: "enableOnHover is normal text when resting, and fails when hovering.",
+            description: "enableOnHover Rests as normal text, and fails when hovering.",
             code: `<GlitchText enableOnHover className="text-4xl font-extrabold tracking-tight">
   GLITCH
 </GlitchText>`,

@@ -72,7 +72,7 @@ export const rippleGridShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "rippleIntensity", type: "number", defaultValue: 0.05, label: "Ripple Strength" },
+        { prop: "rippleIntensity", type: "number", defaultValue: 0.05, label: "Ripple intensity" },
         { prop: "gridSize", type: "number", defaultValue: 10, label: "Grid density" },
         { prop: "gridThickness", type: "number", defaultValue: 15, label: "Line sharpness" },
         { prop: "glowIntensity", type: "number", defaultValue: 0.1, label: "Glow intensity" },
@@ -93,7 +93,7 @@ export const rippleGridShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Dense mesh + strong glow (gridSize=18\u00B7glow=0.3)",
+            name: "Dense grid + strong glow (gridSize=18\u00B7glow=0.3)",
             render: () => (<Stage>
           <RippleGrid gridSize={18} glowIntensity={0.3} gridThickness={20}/>
           <div className="relative z-10 flex h-full items-center justify-center">
@@ -102,7 +102,7 @@ export const rippleGridShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Rainbow cycle color matching (enableRainbow)",
+            name: "Rainbow cycle color (enableRainbow)",
             render: () => (<Stage>
           <RippleGrid enableRainbow rippleIntensity={0.08} gridSize={12}/>
           <div className="relative z-10 flex h-full items-center justify-center">

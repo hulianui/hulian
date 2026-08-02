@@ -35,7 +35,7 @@ export const ghostCursorShowcase: ShowcaseSpec = {
   trailLength={48}
   inertia={0.78}
 />`,
-            render: () => (<Stage hint="The tail is longer and more floaty">
+            render: () => (<Stage hint="The tail is longer and more floating">
           <GhostCursor color="oklch(0.72 0.2 50)" trailLength={48} inertia={0.78}/>
         </Stage>),
         },
@@ -54,7 +54,7 @@ export const ghostCursorShowcase: ShowcaseSpec = {
         },
         {
             title: "Diffuse soft light",
-            description: "scale The smaller the smoke ball, the more diffuse it is, and the soft ambient light is obtained with the main color of green.",
+            description: "scale The smaller the smoke ball, the more diffuse it is, and the soft ambient light with the main color of green is obtained.",
             code: `<GhostCursor
   color="oklch(0.78 0.16 175)"
   scale={0.7}
@@ -82,7 +82,7 @@ export const ghostCursorShowcase: ShowcaseSpec = {
         },
         {
             name: "Warm orange long tail (high inertia)",
-            render: () => (<Stage hint="The tail is longer and more floaty">
+            render: () => (<Stage hint="The tail is longer and more floating">
           <GhostCursor color="oklch(0.72 0.2 50)" trailLength={48} inertia={0.78}/>
         </Stage>),
         },
@@ -93,7 +93,7 @@ export const ghostCursorShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Green diffuse (large smoke ball)",
+            name: "Green diffuse (big smoke)",
             render: () => (<Stage hint="Diffuse soft light">
           <GhostCursor color="oklch(0.78 0.16 175)" scale={0.7} inertia={0.6} brightness={1.3}/>
         </Stage>),

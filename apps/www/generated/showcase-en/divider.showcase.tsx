@@ -4,7 +4,7 @@ export const dividerShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Do not pass children, which is a pure horizontal dividing line that separates the upper and lower content.",
+            description: "Do not pass children, which is a pure horizontal dividing line that separates the upper and lower sections of content.",
             code: `<p>Previous paragraph</p>
 <Divider />
 <p>Next paragraph</p>`,
@@ -71,7 +71,7 @@ export const dividerShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "Pure divider",
+            name: "Pure dividing line",
             render: () => (<div className="w-full">
           <p className="text-sm text-muted">Previous paragraph</p>
           <Divider />

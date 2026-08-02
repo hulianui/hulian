@@ -77,7 +77,7 @@ export const stickerPeelShowcase: ShowcaseSpec = {
         { prop: "peelBackHoverPct", type: "number", defaultValue: 30, label: "hover Revealed %" },
         { prop: "peelBackActivePct", type: "number", defaultValue: 42, label: "Press and hold to uncover %" },
         { prop: "lightingIntensity", type: "number", defaultValue: 0.4, label: "Highlight intensity 0~1" },
-        { prop: "draggable", type: "boolean", defaultValue: true, label: "Draggable" },
+        { prop: "draggable", type: "boolean", defaultValue: true, label: "Can be dragged" },
     ],
     states: [
         {

@@ -39,7 +39,7 @@ export const backTopShowcase: ShowcaseSpec = {
         },
         {
             title: "Specify scroll container",
-            description: "When the page scrolling body is not window, target returns the container element, and both monitoring and backing fall on it.",
+            description: "When the page scroll body is not window, target returns the container element, and both monitoring and backing fall on it.",
             code: `const ref = useRef<HTMLDivElement>(null);
 
 <div ref={ref} className="h-44 overflow-y-auto">{/* Long content */}</div>

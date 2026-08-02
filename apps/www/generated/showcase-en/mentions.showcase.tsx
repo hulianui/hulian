@@ -45,7 +45,7 @@ export const mentionsShowcase: ShowcaseSpec = {
         },
         {
             title: "Invalid state",
-            description: "invalid is marked with a red border and lacks mention in the form verification prompt.",
+            description: "invalid is marked with a red border and lacks mention in conjunction with the form verification prompt.",
             code: `<Mentions options={people} invalid defaultValue="Missing @person in charge" />`,
             render: () => (<Mentions options={PEOPLE} invalid defaultValue="Missing @person in charge" className="w-72"/>),
         },

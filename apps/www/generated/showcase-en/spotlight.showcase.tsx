@@ -34,7 +34,7 @@ export const spotlightShowcase: ShowcaseSpec = {
         },
         {
             title: "Semantic Color Glow",
-            description: "color Connect to any CSS color/variable, and change it to the success color to create a positive feedback hero/empty status background.",
+            description: "color Connect any CSS color/variable, and change it to the success color to create a hero/empty status background for positive feedback.",
             code: `<div className="relative ...">
   <Spotlight color="var(--color-success)" y="50%" size="100%" intensity={16} />
   <div className="relative z-10">...content...</div>

@@ -11,7 +11,7 @@ export const avatarCirclesShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "avatars are stacked in order (the latter overrides the former) to form an overlapping avatar group.",
+            description: "avatars are stacked in order (the latter over the former) to form an overlapping avatar group.",
             code: `const avatars = [
   { src: "/demo/avatar-1.jpg", alt: "u1" },
   { src: "/demo/avatar-2.jpg", alt: "u2" },
@@ -24,7 +24,7 @@ export const avatarCirclesShowcase: ShowcaseSpec = {
         },
         {
             title: "Extra Count",
-            description: "extraCount Add \"+N\" circle at the end to indicate the overflow number of people.",
+            description: "extraCount Add a \"+N\" circle at the end to indicate the number of people overflowing.",
             code: `<AvatarCircles avatars={avatars} extraCount={9} />`,
             render: () => <AvatarCircles avatars={avatars} extraCount={9}/>,
         },

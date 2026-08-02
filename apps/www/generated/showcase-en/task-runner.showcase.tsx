@@ -107,7 +107,7 @@ export const taskRunnerShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "failed",
+            title: "Failed",
             description: "status=error red logo; use detail to indicate the reason for failed steps.",
             code: `<TaskRunner
   title="Deploy"
@@ -162,7 +162,7 @@ export const taskRunnerShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            name: "failed",
+            name: "Failed",
             render: () => (<div className="w-full max-w-md">
           <TaskRunner title="Deploy" status="error" steps={[
                     { title: "Build image", status: "done", meta: "31s" },

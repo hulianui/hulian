@@ -28,7 +28,7 @@ export const bounceCardsShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage (pictures)",
-            description: "Pass the images array. Each picture is rendered as a card. When entering, the cards will be popped in one by one and pushed to give way by hovering.",
+            description: "Pass the images array, and each picture is rendered as a card. When entering, the cards will be popped in one by one, hovering and pushed to give way.",
             code: `<BounceCards
   images={["/1.jpg", "/2.jpg", "/3.jpg", "/4.jpg", "/5.jpg"]}
   containerWidth={460}
@@ -83,7 +83,7 @@ export const bounceCardsShowcase: ShowcaseSpec = {
         },
         {
             title: "More exaggerated pushing distance",
-            description: "pushDistance Increase the size to make it more obvious for the cards on both sides to give way when hovering.",
+            description: "pushDistance Increase the size to make the cards on both sides give way more obviously when hovering.",
             code: `<BounceCards
   containerWidth={460}
   containerHeight={240}
@@ -106,7 +106,7 @@ export const bounceCardsShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "default (five fan-shaped spreads \u00B7 hover push)",
+            name: "default (Five fan-shaped spreads \u00B7 hover push)",
             render: () => (<Stage>
           <BounceCards containerWidth={460} containerHeight={240}>
             {SWATCHES}

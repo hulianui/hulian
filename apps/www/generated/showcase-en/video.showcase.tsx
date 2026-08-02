@@ -15,15 +15,15 @@ export const videoShowcase: ShowcaseSpec = {
         },
         {
             title: "With poster",
-            description: "poster Display cover image before the first frame is loaded.",
+            description: "poster Show the cover image before the first frame is loaded.",
             code: `<Video src="/demo/sample-video.mp4" poster="/demo/sample-poster.jpg" title="With poster" className="w-full max-w-2xl" />`,
             render: () => <Video src={MP4} poster={POSTER} title="With poster" className={W}/>,
         },
         {
-            title: "HLS streaming",
+            title: "HLS stream",
             description: "src Transfer .m3u8 to play the HLS live/on-demand stream.",
             code: `<Video src="/demo/hls/stream.m3u8" title="HLS flow" className="w-full max-w-2xl" />`,
-            render: () => <Video src={HLS} title="HLS streaming" className={W}/>,
+            render: () => <Video src={HLS} title="HLS stream" className={W}/>,
         },
         {
             title: "Chapter Markers",
@@ -57,7 +57,7 @@ export const videoShowcase: ShowcaseSpec = {
     states: [
         { name: "Default (MP4 file)", render: () => <Video src={MP4} title="Demonstration video" className={W}/> },
         { name: "With poster", render: () => <Video src={MP4} poster={POSTER} title="With poster" className={W}/> },
-        { name: "HLS stream (.m3u8)", render: () => <Video src={HLS} title="HLS streaming" className={W}/> },
+        { name: "HLS stream (.m3u8)", render: () => <Video src={HLS} title="HLS stream" className={W}/> },
         { name: "Square 1/1", render: () => <Video src={MP4} aspectRatio="1/1" className="w-72"/> },
         {
             name: "Chapter mark (progress bar cue points)",

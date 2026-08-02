@@ -8,7 +8,7 @@ interface Job extends QueueItem {
     executor: string;
 }
 const priorityLanes: QueueLaneDef[] = [
-    { id: "p0", label: "P0 Urgent", tone: "var(--color-chart-3)", meta: "Equal 0.4s" },
+    { id: "p0", label: "P0 Emergency", tone: "var(--color-chart-3)", meta: "Equal 0.4s" },
     { id: "p1", label: "P1 High", tone: "var(--color-chart-4)", meta: "Equal 1.2s" },
     { id: "p2", label: "P2 Normal", tone: "var(--color-primary)", meta: "Equal 3.5s" },
     { id: "p3", label: "P3 Low", tone: "var(--color-muted-foreground)", meta: "Equal 12s" },
@@ -34,7 +34,7 @@ const categoryLanes: QueueLaneDef[] = [
 ];
 const categoryJobs: Job[] = [
     { id: "c1", laneId: "text", title: "Marketing copywriting rewriting", wait: "0.8s", executor: "Sonnet 4.6" },
-    { id: "c2", laneId: "text", title: "Email drafting", wait: "1.1s", executor: "Haiku 4.5" },
+    { id: "c2", laneId: "text", title: "Email Drafting", wait: "1.1s", executor: "Haiku 4.5" },
     { id: "c3", laneId: "code", title: "Single test completion", wait: "1.6s", executor: "Sonnet 4.6" },
     { id: "c4", laneId: "code", title: "SQL Optimization Suggestions", wait: "2.2s", executor: "Opus 4.7" },
     { id: "c5", laneId: "image", title: "Poster generation", wait: "4.5s", executor: "Image Organizer" },
@@ -85,7 +85,7 @@ export const queueLaneShowcase: ShowcaseSpec = {
         },
         {
             title: "Super long queue collapse",
-            description: "maxVisible limits the number of items displayed directly in each channel. If it exceeds the limit, it will be folded as \"there are N items left\".",
+            description: "maxVisible limits the number of directly displayed items per channel, and will be folded as \"N items remain\" if exceeded.",
             code: `<QueueLane
   lanes={lanes}
   items={jobs}

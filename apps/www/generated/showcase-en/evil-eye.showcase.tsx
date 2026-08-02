@@ -22,7 +22,7 @@ export const evilEyeShowcase: ShowcaseSpec = {
         },
         {
             title: "More fierce (constricted pupils + high intensity)",
-            description: "Decrease the pupilSize harvest seam, increase the intensity / flameSpeed to make the flame brighter and more restless.",
+            description: "Reduce the pupilSize harvest seam and increase the intensity / flameSpeed to make the flame brighter and more restless.",
             code: `<EvilEye
   className="absolute inset-0"
   pupilSize={0.35}

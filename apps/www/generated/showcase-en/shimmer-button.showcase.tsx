@@ -4,7 +4,7 @@ export const shimmerButtonShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The default primary background color, with a circle of high-gloss sparkles on the edge, is suitable for the first screen owner CTA.",
+            description: "Default primary background color, with a circle of high-gloss sparkles on the edge, suitable for the first screen owner CTA.",
             code: `<ShimmerButton>Start using Hulian</ShimmerButton>`,
             render: () => <ShimmerButton>Start using Hulian</ShimmerButton>,
         },
@@ -16,7 +16,7 @@ export const shimmerButtonShowcase: ShowcaseSpec = {
         },
         {
             title: "Spark Speed",
-            description: "shimmerDuration Controls the duration of a round of spark wandering, the smaller it is, the faster it is.",
+            description: "shimmerDuration Controls the duration of a round of spark wandering, the smaller the faster it is.",
             code: `<ShimmerButton shimmerDuration="2s">Rapid</ShimmerButton>
 <ShimmerButton shimmerDuration="5s">Soothing</ShimmerButton>`,
             render: () => (<>

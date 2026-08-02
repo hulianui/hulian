@@ -26,7 +26,7 @@ export const flyingPostersShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Pass in an array of poster image addresses, with an infinite loop connected end to end; the default is automatic scrolling, and the scroll wheel/drag can be used to scroll manually.",
+            description: "Pass in an array of poster image addresses, connected end to end in an infinite loop; the default is automatic scrolling, and the scroll wheel/drag can be used to scroll manually.",
             code: `<div
   className="relative h-80 overflow-hidden rounded-xl"
   style={{ background: "oklch(0.14 0.02 270)" }}
@@ -47,7 +47,7 @@ export const flyingPostersShowcase: ShowcaseSpec = {
         },
         {
             title: "Wide angle perspective",
-            description: "cameraFov Increase the perspective, and the arc of posters flying in and out becomes more obvious; cameraZ Zoom out to see more posters.",
+            description: "cameraFov Increase the perspective, and the arc of the posters flying in and out becomes more obvious; cameraZ Zoom out to see more posters.",
             code: `<FlyingPosters
   items={posters}
   cameraFov={70}

@@ -11,7 +11,7 @@ export const reflectiveCardShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Out-of-the-box metal reflective ID card, with high-gloss strips sweeping back and forth along the diagonal, built-in by default on title / subtitle / footer.",
+            description: "Metal reflective ID card ready to use out of the box, with high-gloss strips sweeping back and forth along the diagonal, built-in by default on title / subtitle / footer.",
             code: `<ReflectiveCard />`,
             render: () => (<Stage>
           <ReflectiveCard />

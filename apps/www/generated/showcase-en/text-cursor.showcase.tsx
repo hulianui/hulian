@@ -39,7 +39,7 @@ export const textCursorShowcase: ShowcaseSpec = {
         },
         {
             title: "Keep the font horizontal",
-            description: "When followMouseDirection=false, the font does not rotate with the movement direction and is always horizontal.",
+            description: "When followMouseDirection=false, the font does not rotate with the moving direction and is always horizontal.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl">
   <TextCursor text="Hulian" followMouseDirection={false} spacing={60} />
 </div>`,
@@ -75,7 +75,7 @@ export const textCursorShowcase: ShowcaseSpec = {
             prop: "randomFloat",
             type: "boolean",
             defaultValue: true,
-            label: "Random floating",
+            label: "Random float",
         },
         { prop: "maxPoints", type: "number", defaultValue: 5, label: "Trailing upper limit" },
     ],

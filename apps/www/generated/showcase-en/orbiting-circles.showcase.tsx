@@ -27,7 +27,7 @@ export const orbitingCirclesShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The child elements surround the circle at a uniform speed, with the logo /Logo placed in the center.",
+            description: "Child elements orbit at a constant speed, with a mark or logo in the center.",
             code: `<div className="relative flex size-[340px] items-center justify-center">
   <span className="text-sm font-medium text-muted">Hulian</span>
   <OrbitingCircles radius={140} duration={20}>

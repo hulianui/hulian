@@ -41,8 +41,8 @@ export const prismShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "High Glow\u00B7Pure",
-            description: "glow brightens the volumetric light, noise=0 removes film grain and obtains a clean and transparent light spectrum.",
+            title: "High Glow\u00B7Purity",
+            description: "glow brightens volumetric light, noise=0 removes film grain and obtains a clean and transparent light spectrum.",
             code: `<Prism animationType="3drotate" glow={1.6} bloom={1.3} noise={0} />`,
             render: () => (<Stage>
           <Prism animationType="3drotate" glow={1.6} bloom={1.3} noise={0}/>

@@ -17,7 +17,7 @@ export const inputShowcase: ShowcaseSpec = {
         },
         {
             title: "Dimensions",
-            description: "size provides three gears: sm / md (default) / lg.",
+            description: "size provides three levels of sm / md (default) / lg.",
             code: `<>
   <Input size="sm" placeholder="sm" className="w-64" />
   <Input size="md" placeholder="md" className="w-64" />

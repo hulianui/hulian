@@ -20,7 +20,7 @@ function ColumnSettingDemo({ handle = true }: {
 }) {
     const [fields, setFields] = useState(initialFields);
     return (<div className="w-80">
-      <p className="mb-2 text-xs text-muted">Drag to adjust the column order (grab Space after handle dragging/focus on the handle·Move with arrow keys·Put down Space)</p>
+      <p className="mb-2 text-xs text-muted">Drag to adjust column order (grab Space after handle dragging/focus on the handle·Move with direction keys·Put down Space)</p>
       <Sortable items={fields} onChange={setFields} handle={handle} renderItem={(f) => (<div className="flex items-center justify-between gap-3">
             <span className="font-medium text-foreground">{f.label}</span>
             <span className="shrink-0 text-xs text-muted">{f.hint}</span>
@@ -111,7 +111,7 @@ export const sortableShowcase: ShowcaseSpec = {
     <div className="flex items-center gap-2">
       <span className="w-14 shrink-0 text-xs text-muted">Question {index + 1}</span>
       <span className="min-w-0 flex-1 truncate">{q.title}</span>
-      {/* The input box can be dragged to select text and the button can be clicked, but the sorting will not be triggered */}
+      {/* The input box can be dragged to select text and the button can be clicked, but it will not trigger sorting */}
       <input type="number" value={q.score} aria-label={\`\${index + 1} question score\`} onChange={...} />
       <button type="button" aria-label={\`Delete question \${index + 1}\`} onClick={...}>Delete</button>
     </div>

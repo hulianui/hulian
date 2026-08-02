@@ -67,7 +67,7 @@ export const checkboxShowcase: ShowcaseSpec = {
   <Checkbox label="I have read and agree" />
 </Field>`,
             render: () => (<Field label="Terms of Service" error="Must be checked to continue" className="w-72">
-          <Checkbox label="I have read and agree"/>
+          <Checkbox label="I have read and agreed"/>
         </Field>),
         },
     ],
@@ -86,7 +86,7 @@ export const checkboxShowcase: ShowcaseSpec = {
         {
             name: "in-field",
             render: () => (<Field label="Terms of Service" error="Must be checked to continue" className="w-72">
-          <Checkbox label="I have read and agree"/>
+          <Checkbox label="I have read and agreed"/>
         </Field>),
         },
     ],

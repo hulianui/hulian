@@ -15,7 +15,7 @@ function Demo({ maskClosable = false }: {
     const steps: TourStep[] = [
         {
             title: "Welcome to Hulian",
-            description: "Take you to know the three core functions of this workbench in 30 seconds.",
+            description: "Take you through the three core functions of this workbench in 30 seconds.",
         },
         {
             target: () => searchRef.current,
@@ -98,7 +98,7 @@ const steps = [
         },
         {
             title: "Point mask off",
-            description: "maskClosable allows you to click on the dark mask area to directly end the boot (default false, to prevent accidental touches).",
+            description: "maskClosable allows you to click on the dark mask area to directly end the boot (default false, to prevent accidental touch).",
             code: `<Tour
   steps={steps}
   open={open}

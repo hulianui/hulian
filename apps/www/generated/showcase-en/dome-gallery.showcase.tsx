@@ -12,7 +12,7 @@ export const domeGalleryShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "When not transmitting images, the built-in placeholder gradient tiles can be used to rotate the spherical surface by dragging it and click to open it for enlargement.",
+            description: "When not transmitting images, the built-in placeholder gradient tiles can be used to rotate the spherical surface by dragging it and click to open it for a larger view.",
             code: `<div className="relative h-80 overflow-hidden rounded-xl bg-bg">
   <DomeGallery />
 </div>`,

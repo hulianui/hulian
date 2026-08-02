@@ -29,7 +29,7 @@ export const textPressureShowcase: ShowcaseSpec = {
         },
         {
             title: "Stroke hollow",
-            description: "stroke Make the center of the text transparent and leave only the stroke outline of token to create a hollow neon title.",
+            description: "stroke Make the center of the text transparent and leave only the token stroke outline to create a hollow neon title.",
             code: `<TextPressure
   text="Hulian"
   stroke

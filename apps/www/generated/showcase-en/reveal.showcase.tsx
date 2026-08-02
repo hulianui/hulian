@@ -43,7 +43,7 @@ export const revealShowcase: ShowcaseSpec = {
               <Card>Second line</Card>
             </StaggerItem>
             <StaggerItem y={22} scale={0.94} blur={12}>
-              <Card>Finale: heavier blur + scale</Card>
+              <Card>The finale: the heavier blur + scale</Card>
             </StaggerItem>
           </div>
         </Stagger>),
@@ -61,7 +61,7 @@ export const revealShowcase: ShowcaseSpec = {
             render: () => (<div className="max-h-72 w-full max-w-md overflow-auto rounded-xl border border-border bg-bg p-4">
           <div className="h-64"/>
           <Reveal>
-            <Card>Appears when scrolling here (one-time use).</Card>
+            <Card>Appears when scrolling here (one-time only).</Card>
           </Reveal>
           <div className="h-40"/>
         </div>),
@@ -110,7 +110,7 @@ export const revealShowcase: ShowcaseSpec = {
             render: () => (<div className="max-h-72 w-full max-w-md overflow-auto rounded-xl border border-border bg-bg p-4">
           <div className="h-64"/>
           <Reveal>
-            <Card>Appears when scrolling here (one-time use).</Card>
+            <Card>Appears when scrolling here (one-time only).</Card>
           </Reveal>
           <div className="h-40"/>
         </div>),

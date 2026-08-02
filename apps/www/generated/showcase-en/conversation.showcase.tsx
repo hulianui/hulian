@@ -20,7 +20,7 @@ export const conversationShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Get an independent scrolling message flow at a given height; stack ChatMessage internally vertically, and the content will automatically stick to the bottom as it grows.",
+            description: "Get an independent scrolling message flow at a given height; stack ChatMessage vertically inside, and the content will automatically stick to the bottom as it grows.",
             code: `<Conversation className="h-72 max-w-lg">
   <ChatMessage role="user" name="me">Does Hulian support dark colors? </ChatMessage>
   <ChatMessage role="assistant" name="Hulian AI">

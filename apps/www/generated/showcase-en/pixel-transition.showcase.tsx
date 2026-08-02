@@ -24,7 +24,7 @@ export const pixelTransitionShowcase: ShowcaseSpec = {
   secondContent={<img src="/b.jpg" alt="" className="h-full w-full object-cover" />}
 />`,
             render: () => (<Stage>
-          <PixelTransition firstContent={<Face label="Hulian" tone="oklch(0.55 0.16 255)"/>} secondContent={<Face label="Component library" tone="oklch(0.62 0.2 25)"/>}/>
+          <PixelTransition firstContent={<Face label="Hulian" tone="oklch(0.55 0.16 255)"/>} secondContent={<Face label="Component Library" tone="oklch(0.62 0.2 25)"/>}/>
         </Stage>),
         },
         {
@@ -76,7 +76,7 @@ export const pixelTransitionShowcase: ShowcaseSpec = {
         {
             name: "default (hover/focus trigger)",
             render: () => (<Stage>
-          <PixelTransition firstContent={<Face label="Hulian" tone="oklch(0.55 0.16 255)"/>} secondContent={<Face label="Component library" tone="oklch(0.62 0.2 25)"/>}/>
+          <PixelTransition firstContent={<Face label="Hulian" tone="oklch(0.55 0.16 255)"/>} secondContent={<Face label="Component Library" tone="oklch(0.62 0.2 25)"/>}/>
         </Stage>),
         },
         {
@@ -99,7 +99,7 @@ export const pixelTransitionShowcase: ShowcaseSpec = {
         },
     ],
     renderWithProps: (p) => (<Stage>
-      <PixelTransition gridSize={p.gridSize as number} animationStepDuration={p.animationStepDuration as number} once={p.once as boolean} firstContent={<Face label="Hulian" tone="oklch(0.55 0.16 255)"/>} secondContent={<Face label="Component library" tone="oklch(0.62 0.2 25)"/>}/>
+      <PixelTransition gridSize={p.gridSize as number} animationStepDuration={p.animationStepDuration as number} once={p.once as boolean} firstContent={<Face label="Hulian" tone="oklch(0.55 0.16 255)"/>} secondContent={<Face label="Component Library" tone="oklch(0.62 0.2 25)"/>}/>
     </Stage>),
     toCode: (p) => [
         `<PixelTransition`,

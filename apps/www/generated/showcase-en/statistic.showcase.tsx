@@ -14,7 +14,7 @@ export const statisticShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "number is formatted in thousandths, and string is output as is.",
+            description: "number is formatted to thousandths, and string is output as is.",
             code: `<Statistic title="Active User" value={112893} />`,
             render: () => <Statistic title="Active User" value={112893}/>,
         },
@@ -40,7 +40,7 @@ export const statisticShowcase: ShowcaseSpec = {
             title: "Custom color",
             description: "valueStyle covers the numerical row style and can express rising and falling colors.",
             code: `<Statistic
-  title="Compared with yesterday"
+  title="More than yesterday"
   value={11.28}
   precision={2}
   prefix="\u2191"

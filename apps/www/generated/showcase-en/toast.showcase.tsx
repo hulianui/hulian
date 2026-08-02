@@ -7,7 +7,7 @@ export const toastShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Imperative call toast(), which can be adjusted anywhere on the page (need to hang a single <ToastProvider/>).",
+            description: "Imperative call toast(), adjustable anywhere on the page (need to hang a single <ToastProvider/>).",
             code: `toast({ title: "Copied to clipboard" });`,
             render: () => (<Button variant="outline" onClick={() => toast({ title: "Copied to clipboard" })}>
           Pop-up

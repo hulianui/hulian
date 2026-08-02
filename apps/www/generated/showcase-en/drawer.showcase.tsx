@@ -14,7 +14,7 @@ function Demo({ side }: {
           </>}>
 
         <div className="flex flex-col gap-3 text-sm text-muted">
-          {Array.from({ length: 12 }, (_, i) => (<p key={i}>Configuration items {i + 1}: Here is a longer explanatory copy to demonstrate the scrolling behavior when the main text exceeds.</p>))}
+          {Array.from({ length: 12 }, (_, i) => (<p key={i}>Configuration items {i + 1}: Here is a longer explanatory copy to demonstrate the scrolling behavior when the text exceeds the limit.</p>))}
         </div>
       </DrawerContent>
     </Drawer>);
@@ -23,7 +23,7 @@ export const drawerShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "By default, it slides in from the right side; Esc / point mask / close button can be retracted, and the focus is locked in the drawer.",
+            description: "By default, it slides in from the right side; Esc / click mask / close button can be retracted, and the focus is locked in the drawer.",
             code: `<Drawer>
   <DrawerTrigger render={<Button variant="outline">Open drawer</Button>} />
   <DrawerContent
@@ -61,7 +61,7 @@ export const drawerShowcase: ShowcaseSpec = {
         },
         {
             title: "Long content scrolling + bottoming operation area",
-            description: "The text scrolls independently when the text is too long. footer is always visible at the bottom and is not crowded out by the content.",
+            description: "The text scrolls independently when the text is too long. footer is always visible at the bottom and is not squeezed out by the content.",
             code: `<Drawer>
   <DrawerTrigger render={<Button variant="outline">Open</Button>} />
   <DrawerContent

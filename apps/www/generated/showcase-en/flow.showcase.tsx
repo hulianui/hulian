@@ -104,7 +104,7 @@ const [edges, setEdges] = useState(initialEdges);
         },
         {
             title: "Running (connected to streamer)",
-            description: "isEdgeAnimated returns the connection streamer animation of true, which is often used to mark the link being executed.",
+            description: "isEdgeAnimated returns the connection flow animation of true, which is often used to mark the link being executed.",
             code: `<Flow
   nodes={nodes}
   edges={edges}
@@ -129,11 +129,11 @@ const [edges, setEdges] = useState(initialEdges);
     ],
     controls: [
         { prop: "controls", type: "boolean", defaultValue: true, label: "Zoom control bar" },
-        { prop: "animated", type: "boolean", defaultValue: false, label: "Connect Streamer" },
+        { prop: "animated", type: "boolean", defaultValue: false, label: "Connect streamer" },
     ],
     states: [
         {
-            name: "AI Drawing pipeline (drag nodes/drag out pile connections/wheel panning \u00B7 Ctrl+wheel zoom)",
+            name: "AI Drawing pipeline (drag nodes / drag out pile connections / wheel translation \u00B7 Ctrl + wheel zoom)",
             render: () => <FlowDemo />,
         },
         {

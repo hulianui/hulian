@@ -4,7 +4,7 @@ import { Gantt } from "../../../../packages/ui/src/gantt/gantt";
 import type { GanttTask, GanttUnit } from "../../../../packages/ui/src/gantt/gantt.types";
 const construction: GanttTask[] = [
     { id: "t1", name: "Site Survey", start: "2026-06-01", end: "2026-06-05", progress: 100, group: "Early stage" },
-    { id: "t2", name: "Material entry", start: "2026-06-04", end: "2026-06-09", progress: 100, group: "Early stage" },
+    { id: "t2", name: "Materials coming in", start: "2026-06-04", end: "2026-06-09", progress: 100, group: "Early stage" },
     { id: "t3", name: "Main construction", start: "2026-06-08", end: "2026-06-24", progress: 60, group: "Construction" },
     { id: "t4", name: "Electrical and Mechanical Installation", start: "2026-06-20", end: "2026-07-02", progress: 25, group: "Construction" },
     { id: "t5", name: "Completion acceptance", start: "2026-07-01", end: "2026-07-06", progress: 0, group: "Closing" },
@@ -45,7 +45,7 @@ export const ganttShowcase: ShowcaseSpec = {
             code: `const tasks = [
   { id: "t1", name: "Site Survey", start: "2026-06-01", end: "2026-06-05", progress: 100, group: "early period" },
   { id: "t3", name: "Main Construction", start: "2026-06-08", end: "2026-06-24", progress: 60, group: "Construction" },
-  { id: "t5", name: "Completion acceptance", start: "2026-07-01", end: "2026-07-06", progress: 0, group: "End" },
+  { id: "t5", name: "Complete Acceptance", start: "2026-07-01", end: "2026-07-06", progress: 0, group: "End" },
 ];
 
 <Gantt tasks={tasks} unit="week" today="2026-06-18" />`,

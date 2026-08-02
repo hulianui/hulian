@@ -25,7 +25,7 @@ export const lanyardShowcase: ShowcaseSpec = {
         },
         {
             title: "Customize work badge content",
-            description: "Passed children to replace the placeholder badge, and the lanyard physics and dragging behavior remain unchanged.",
+            description: "Passed children to replace the placeholder badge, and the lanyard physics and drag behavior remain unchanged.",
             code: `<Lanyard className="absolute inset-0">
   <div className="w-44 rounded-xl border border-border bg-surface p-4 text-center shadow-lg">
     <div className="mx-auto mb-3 size-14 rounded-full bg-gradient-to-br from-primary/30 to-primary/5" />
@@ -45,7 +45,7 @@ export const lanyardShowcase: ShowcaseSpec = {
         },
         {
             title: "Soft heave",
-            description: "Long rope + low stiffness + high damping, longer and softer swing after letting go.",
+            description: "Long rope + low stiffness + high damping, the remaining swing is longer and softer after letting go.",
             code: `<Lanyard
   className="absolute inset-0"
   ropeLength={160}
@@ -55,7 +55,7 @@ export const lanyardShowcase: ShowcaseSpec = {
   subtitle="Drag and let go to see the remaining swing"
 />`,
             render: () => (<Stage>
-          <Lanyard className="absolute inset-0" ropeLength={160} stiffness={0.025} damping={0.965} title="Slow Shake Gongpai" subtitle="Drag and let go to see the rest of the swing"/>
+          <Lanyard className="absolute inset-0" ropeLength={160} stiffness={0.025} damping={0.965} title="Slow shake work card" subtitle="Drag and let go to see the rest of the swing"/>
         </Stage>),
         },
         {
@@ -99,7 +99,7 @@ export const lanyardShowcase: ShowcaseSpec = {
         {
             name: "Long rope\u00B7soft swing (low stiffness and high damping)",
             render: () => (<Stage>
-          <Lanyard className="absolute inset-0" ropeLength={160} stiffness={0.025} damping={0.965} title="Slow Shake Gongpai" subtitle="Drag and let go to see the rest of the swing"/>
+          <Lanyard className="absolute inset-0" ropeLength={160} stiffness={0.025} damping={0.965} title="Slow shake work card" subtitle="Drag and let go to see the rest of the swing"/>
         </Stage>),
         },
         {

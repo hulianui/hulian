@@ -55,7 +55,7 @@ export const regionSelectShowcase: ShowcaseSpec = {
         },
         {
             title: "Other boxes on the same page",
-            description: "boxes transfers other read-only boxes (dashed line + label), and the currently edited one is still the solid line main box.",
+            description: "boxes transfers read-only other boxes (dashed line + label), and the currently edited one is still the solid line main box.",
             code: `<RegionSelect
   src={pageUrl}
   value={box}
@@ -69,7 +69,7 @@ export const regionSelectShowcase: ShowcaseSpec = {
         },
         {
             title: "Fixed ratio \u00B7 Read only",
-            description: "aspect fixed aspect ratio (the whole aspect ratio will be reduced when hitting the boundary, and the proportion will not be destroyed by single-axis clamping); readOnly can only be viewed without modification.",
+            description: "aspect has a fixed aspect ratio (the entire aspect ratio will be reduced when hitting the boundary, and the proportion will not be destroyed by single-axis clamping); readOnly only cannot be changed.",
             code: `<RegionSelect src={pageUrl} value={box} onChange={setBox} aspect={16 / 9} />
 <RegionSelect src={pageUrl} value={box} readOnly />`,
             render: () => (<div className="flex flex-col gap-4">

@@ -53,8 +53,8 @@ export const contributionGraphShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Weekday tag \u00B7 Counts starting on Monday \u00B7 Drill-down possible",
-            description: "showWeekdayLabels Follow the convention of GitHub to only mark odd-numbered rows; onDayClick makes the grid focusable.",
+            title: "Weekday label \u00B7 Counts starting on Monday \u00B7 Drill-down possible",
+            description: "showWeekdayLabels According to GitHub convention, only odd-numbered rows are marked; onDayClick makes the grid focusable button.",
             code: `<ContributionGraph
   data={commits}
   days={120}
@@ -66,7 +66,7 @@ export const contributionGraphShowcase: ShowcaseSpec = {
         },
         {
             title: "Color \u00B7 Density",
-            description: "tone is the color changing system; cellSize/gap is the density adjustment, and levels is the number of color adjustment levels.",
+            description: "tone changes the color system; cellSize/gap adjusts the density, and levels adjusts the color level.",
             code: `<>
   <ContributionGraph data={commits} days={180} tone="chart-4" cellSize={9} gap={2} />
   <ContributionGraph data={commits} days={180} tone="warning" levels={3} cellSize={14} />
@@ -100,7 +100,7 @@ export const contributionGraphShowcase: ShowcaseSpec = {
             render: () => (<ContributionGraph layout="strip" days={30} endDate={END} data={monthData} tone="danger"/>),
         },
         {
-            name: "Weekday tag \u00B7 Counts starting on Monday \u00B7 Drill-down possible",
+            name: "Weekday label \u00B7 Counts starting on Monday \u00B7 Drill-down possible",
             render: () => (<ContributionGraph data={yearData} days={120} endDate={END} weekStart={1} showWeekdayLabels onDayClick={() => { }}/>),
         },
         {

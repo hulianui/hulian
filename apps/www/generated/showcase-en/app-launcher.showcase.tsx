@@ -213,7 +213,7 @@ export const appLauncherShowcase: ShowcaseSpec = {
         },
         {
             title: "Tag \u00B7 Linked items \u00B7 Disabled items",
-            description: "badge in the corner of the hanging icon; href makes the entry <a>; disabled cannot be clicked or entered into the tab sequence.",
+            description: "badge in the corner of the hanging icon; href makes the entry <a>; disabled cannot be clicked or entered in the tab sequence.",
             code: `<AppLauncher
   items={[
     { id: "mail", label: "Mail", icon: <MailIcon />, badge: <Dot>9</Dot> },

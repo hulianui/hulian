@@ -64,7 +64,7 @@ export const stackShowcase: ShowcaseSpec = {
         },
         {
             title: "Line break",
-            description: "wrap causes row to wrap when there is insufficient space (only meaningful for row).",
+            description: "wrap Make row wrap when there is insufficient space (only meaningful for row).",
             code: `<Stack direction="row" gap={2} wrap className="w-48">
   <Box>1</Box>
   <Box>2</Box>

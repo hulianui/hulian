@@ -40,7 +40,7 @@ export const typingAnimationShowcase: ShowcaseSpec = {
   startOnView
   className="text-xl font-medium text-foreground"
 />`,
-            render: () => (<TypingAnimation text="Scroll here to start typing" startOnView className="text-xl font-medium text-foreground"/>),
+            render: () => (<TypingAnimation text="Scroll here before starting typing" startOnView className="text-xl font-medium text-foreground"/>),
         },
     ],
     controls: [
@@ -49,7 +49,7 @@ export const typingAnimationShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "default (enter the viewport and type word by word + blinking cursor)",
+            name: "default (Enter the viewport and type word by word + blinking cursor)",
             render: () => (<TypingAnimation text="Hulian — Composable design system" className="text-2xl font-semibold text-foreground" startOnView={false}/>),
         },
     ],

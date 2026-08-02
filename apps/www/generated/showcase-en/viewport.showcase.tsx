@@ -41,7 +41,7 @@ export const viewportShowcase: ShowcaseSpec = {
         },
         {
             title: "Fixed device presets",
-            description: "Directly upload device and lock it to a preset width, and the mobile phone 390 places a single column vertically.",
+            description: "Directly upload device to lock to a certain preset width, and the mobile phone 390 places a single column vertically.",
             code: `<Viewport device="phone">
   <ResponsiveLayout />
 </Viewport>`,

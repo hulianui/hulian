@@ -12,7 +12,7 @@ export const particlesShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Put it into the relative container. Particles comes with absolute and inset-0. When color is not transferred, the theme foreground color will be used, and the mouse will be magnetically displaced when approaching it.",
+            description: "Put it into the relative container. Particles comes with absolute and inset-0. If color is not transferred, the theme foreground color will be used, and the mouse will be magnetically displaced when approaching it.",
             code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
   <Particles quantity={120} />
   <div className="grid h-full place-items-center text-sm text-muted">Particles</div>

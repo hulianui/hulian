@@ -22,7 +22,7 @@ function Payments() {
     const [v, setV] = useState<string | string[]>([]);
     return (<ChoiceboxGroup multiple value={v} onValueChange={setV} columns={1} aria-label="Payment method" className="w-72">
       <Choicebox value="card" icon={<CreditCard />} title="Bank card" description="Debit Card/Credit Card"/>
-      <Choicebox value="wallet" icon={<Wallet />} title="Electronic wallet" description="WeChat / Alipay"/>
+      <Choicebox value="wallet" icon={<Wallet />} title="Electronic Wallet" description="WeChat / Alipay"/>
       <Choicebox value="cash" icon={<Banknote />} title="Cash on delivery" disabled description="This region is not supported yet."/>
     </ChoiceboxGroup>);
 }
@@ -58,7 +58,7 @@ export const choiceboxShowcase: ShowcaseSpec = {
 </ChoiceboxGroup>`,
             render: () => (<ChoiceboxGroup multiple defaultValue={["card"]} columns={1} aria-label="Payment method" className="w-72">
           <Choicebox value="card" icon={<CreditCard />} title="Bank card" description="Debit Card/Credit Card"/>
-          <Choicebox value="wallet" icon={<Wallet />} title="Electronic wallet" description="WeChat / Alipay"/>
+          <Choicebox value="wallet" icon={<Wallet />} title="Electronic Wallet" description="WeChat / Alipay"/>
           <Choicebox value="cash" icon={<Banknote />} title="Cash on delivery" disabled description="This region is not supported yet."/>
         </ChoiceboxGroup>),
         },
@@ -75,7 +75,7 @@ export const choiceboxShowcase: ShowcaseSpec = {
           <Choicebox value="a" title="Light color" description="Bright interface"/>
           <Choicebox value="b" title="Dark" description="Dark interface"/>
           <Choicebox value="c" title="Follow the system" description="Automatic switching"/>
-          <Choicebox value="d" title="High contrast" description="Accessible"/>
+          <Choicebox value="d" title="High contrast" description="Accessibility"/>
         </ChoiceboxGroup>),
         },
     ],
@@ -92,7 +92,7 @@ export const choiceboxShowcase: ShowcaseSpec = {
           <Choicebox value="a" title="Light color" description="Bright interface"/>
           <Choicebox value="b" title="Dark" description="Dark interface"/>
           <Choicebox value="c" title="Follow the system" description="Automatic switching"/>
-          <Choicebox value="d" title="High contrast" description="Accessible"/>
+          <Choicebox value="d" title="High contrast" description="Accessibility"/>
         </ChoiceboxGroup>),
         },
     ],

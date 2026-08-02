@@ -2,7 +2,7 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { StaggeredMenu } from "../../../../packages/ui/src/staggered-menu/staggered-menu";
 const items = [
-    { label: "Home", link: "#home", ariaLabel: "Go to homepage" },
+    { label: "Home", link: "#home", ariaLabel: "Go to home page" },
     { label: "Products", link: "#product", ariaLabel: "View product" },
     { label: "Solution", link: "#solution", ariaLabel: "View plan" },
     { label: "About", link: "#about", ariaLabel: "About Us" },
@@ -43,7 +43,7 @@ export const staggeredMenuShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "Slide in from left + Custom brand",
+            title: "Slide in on the left + Custom brand",
             description: "position=\"left\" Let the panel and color layer slide in from the left, and brand slots to customize the brand text in the upper left corner.",
             code: `<StaggeredMenu
   position="left"

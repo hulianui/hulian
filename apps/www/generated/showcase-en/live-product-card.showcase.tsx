@@ -16,7 +16,7 @@ export const liveProductCardShowcase: ShowcaseSpec = {
   image={url}
   title="Winter thickened sherpa jacket, same style for men and women, exclusive for live broadcast"
   price={129}
-  action={<button>Go and buy</button>}
+  action={<button>Go to buy</button>}
 />`,
             render: () => (<div className="w-80">
           <LiveProductCard index={1} image={IMG(20)} title="Winter thickened sherpa jacket, same style for men and women, exclusive for live broadcast" price={129} action={Buy}/>
@@ -34,7 +34,7 @@ export const liveProductCardShowcase: ShowcaseSpec = {
   tag="Flash Sale"
   stock={86}
   sold={1240}
-  action={<button>Go and buy</button>}
+  action={<button>Go to buy</button>}
 />`,
             render: () => (<div className="w-80">
           <LiveProductCard index={1} image={IMG(20)} title="Winter thickened sherpa jacket, same style for men and women, exclusive for live broadcast" price={129} originalPrice={399} tag="Flash Sale" stock={86} sold={1240} action={Buy}/>
@@ -51,7 +51,7 @@ export const liveProductCardShowcase: ShowcaseSpec = {
   originalPrice={99}
   explaining
   sold={3580}
-  action={<button>Go and buy</button>}
+  action={<button>Go to buy</button>}
 />`,
             render: () => (<div className="w-80">
           <LiveProductCard index={2} image={IMG(200)} title="Portable thermos cup 316 stainless steel 500ml" price={49.9} originalPrice={99} explaining sold={3580} action={Buy}/>
@@ -61,7 +61,7 @@ export const liveProductCardShowcase: ShowcaseSpec = {
             title: "Grid Card",
             description: "layout=\"card\" Cut the card vertically, and the thumbnails occupy the entire row, suitable for the product display window grid.",
             code: `<div className="grid grid-cols-2 gap-2">
-  <LiveProductCard layout="card" index={3} image={url} title="Wireless Bluetooth Headphones Noise Canceling Version" price={199} originalPrice={499} tag="Limited Edition" sold={920} action={<button>Go and buy</button>} />
+  <LiveProductCard layout="card" index={3} image={url} title="Wireless Bluetooth Headset Noise Canceling Version" price={199} originalPrice={499} tag="Limited Edition" sold={920} action={<button>Go and buy</button>} />
   <LiveProductCard layout="card" index={4} image={url} title="Desktop atmosphere light RGB Smart" price={69} originalPrice={159} explaining sold={460} action={<button>Go and buy</button>} />
 </div>`,
             render: () => (<div className="grid w-80 grid-cols-2 gap-2">

@@ -46,7 +46,7 @@ export const dialogShowcase: ShowcaseSpec = {
   />
 </Dialog>`,
             render: () => (<Dialog>
-          <DialogTrigger render={<Button>Delete project</Button>}/>
+          <DialogTrigger render={<Button>Delete item</Button>}/>
           <DialogContent title="Confirm deletion" description="This operation is irreversible. Are you sure you want to delete this item?" footer={<>
                 <DialogClose render={<Button variant="ghost">Cancel</Button>}/>
                 <DialogClose render={<Button tone="danger">Delete</Button>}/>

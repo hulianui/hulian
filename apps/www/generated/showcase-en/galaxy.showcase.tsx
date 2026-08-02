@@ -12,7 +12,7 @@ export const galaxyShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Put it into the relative container and it will be filled. The components come with absolute inset-0 z-0; the content is placed in z-10.",
+            description: "Put it into the relative container and it will be filled. The component comes with absolute inset-0 z-0; the content is placed in z-10.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
   <Galaxy />
   <div className="relative z-10 flex h-full items-center justify-center text-white/80">
@@ -36,7 +36,7 @@ export const galaxyShowcase: ShowcaseSpec = {
         },
         {
             title: "Central star ring",
-            description: "autoCenterRepulsion > 0 When the star point is repelled from the center outward, it forms the appearance of a star ring in the center of the hollow.",
+            description: "autoCenterRepulsion > 0 When the star point is repelled outward from the center, it forms the appearance of a star ring in the center of the hollow.",
             code: `<Galaxy autoCenterRepulsion={2} density={1.2} hueShift={200} mouseInteraction={false} />`,
             render: () => (<Stage>
           <Galaxy autoCenterRepulsion={2} density={1.2} hueShift={200} mouseInteraction={false}/>

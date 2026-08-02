@@ -4,9 +4,9 @@ export const scoreRingShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "value drive ring progress and center number, the default full score is 100, and the A-F level word is displayed.",
+            description: "value drive ring progress and center number, the default score is 100, and the A-F level word is displayed.",
             code: `<ScoreRing value={82} label="Quality Points" />`,
-            render: () => <ScoreRing value={82} label="Quality score"/>,
+            render: () => <ScoreRing value={82} label="Quality points"/>,
         },
         {
             title: "Level belt",
@@ -18,10 +18,10 @@ export const scoreRingShowcase: ShowcaseSpec = {
   <ScoreRing value={42} label="Quality Points" />
 </>`,
             render: () => (<div className="flex flex-wrap items-center gap-4">
-          <ScoreRing value={95} label="Quality score"/>
-          <ScoreRing value={82} label="Quality score"/>
-          <ScoreRing value={68} label="Quality score"/>
-          <ScoreRing value={42} label="Quality score"/>
+          <ScoreRing value={95} label="Quality points"/>
+          <ScoreRing value={82} label="Quality points"/>
+          <ScoreRing value={68} label="Quality points"/>
+          <ScoreRing value={42} label="Quality points"/>
         </div>),
         },
         {
@@ -34,8 +34,8 @@ export const scoreRingShowcase: ShowcaseSpec = {
 </>`,
             render: () => (<div className="flex flex-wrap items-center gap-4">
           <ScoreRing value={88} size={48} thickness={5} showGrade={false}/>
-          <ScoreRing value={88} size={96} thickness={8} label="Quality score"/>
-          <ScoreRing value={88} size={128} thickness={12} label="Quality score"/>
+          <ScoreRing value={88} size={96} thickness={8} label="Quality points"/>
+          <ScoreRing value={88} size={128} thickness={12} label="Quality points"/>
         </div>),
         },
     ],
@@ -46,12 +46,12 @@ export const scoreRingShowcase: ShowcaseSpec = {
         { prop: "showGrade", type: "boolean", defaultValue: true, label: "Show level" },
     ],
     states: [
-        { name: "A Excellent", render: () => <ScoreRing value={95} label="Quality score"/> },
-        { name: "B Good", render: () => <ScoreRing value={82} label="Quality score"/> },
-        { name: "C Passed", render: () => <ScoreRing value={68} label="Quality score"/> },
-        { name: "F Failed", render: () => <ScoreRing value={42} label="Quality score"/> },
+        { name: "A Excellent", render: () => <ScoreRing value={95} label="Quality points"/> },
+        { name: "B Good", render: () => <ScoreRing value={82} label="Quality points"/> },
+        { name: "C Passed", render: () => <ScoreRing value={68} label="Quality points"/> },
+        { name: "F failed", render: () => <ScoreRing value={42} label="Quality points"/> },
         { name: "Small size mini", render: () => <ScoreRing value={88} size={48} thickness={5} showGrade={false}/> },
     ],
-    renderWithProps: (p) => (<ScoreRing value={Number(p.value)} size={Number(p.size)} thickness={Number(p.thickness)} showGrade={p.showGrade as boolean} label="Quality score"/>),
+    renderWithProps: (p) => (<ScoreRing value={Number(p.value)} size={Number(p.size)} thickness={Number(p.thickness)} showGrade={p.showGrade as boolean} label="Quality points"/>),
     toCode: (p) => `<ScoreRing value={${Number(p.value)}} size={${Number(p.size)}} thickness={${Number(p.thickness)}}${p.showGrade ? "" : " showGrade={false}"} label="Quality Points" />`,
 };

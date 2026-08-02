@@ -65,7 +65,7 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
     ],
     states: [
         { name: "default", render: () => <Demo /> },
-        { name: "With default interval", render: () => <Demo initial={["2026-06-08", "2026-06-20"]}/> },
+        { name: "With default range", render: () => <Demo initial={["2026-06-08", "2026-06-20"]}/> },
         {
             name: "Limited range (min/max + disabled weekends)",
             render: () => (<DateRangePicker defaultValue={["2026-06-10", "2026-06-12"]} minDate="2026-06-01" maxDate="2026-06-30" disabledDate={(iso) => {

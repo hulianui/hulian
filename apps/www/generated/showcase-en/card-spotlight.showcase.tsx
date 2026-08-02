@@ -91,7 +91,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
             render: () => (<div className="flex flex-wrap gap-4">
           <FeatureCard icon="🎨" title="Design" description="Pixel-level restoration, the theme is linked with the system." color="var(--color-chart-1)"/>
           <FeatureCard icon="⚙️" title="Engineering" description="TypeScript Full coverage, the type is the document." color="var(--color-chart-2)"/>
-          <FeatureCard icon="♿" title="Accessible" description="WCAG AA·Compatible with all keyboard/screen readers." color="var(--color-chart-4)"/>
+          <FeatureCard icon="♿" title="Accessibility" description="WCAG AA·Compatible with all keyboard/screen readers." color="var(--color-chart-4)"/>
         </div>),
         },
     ],

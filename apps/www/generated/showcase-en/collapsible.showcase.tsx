@@ -13,7 +13,7 @@ export const collapsibleShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Click the title to expand/collapse the supplementary content, which is collapsed by default.",
+            description: "Click the title to expand/collapse the supplementary content. It is collapsed by default.",
             code: `<Collapsible className="w-80">
   <CollapsibleTrigger>Expand to view details</CollapsibleTrigger>
   <CollapsiblePanel>Here is the supplementary content that is collapsed by default. Click the title to expand it. </CollapsiblePanel>

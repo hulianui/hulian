@@ -36,7 +36,7 @@ export const inputOtpShowcase: ShowcaseSpec = {
         },
         {
             title: "Invalid state",
-            description: "invalid is marked with a red border and will prompt you to re-enter when the verification fails.",
+            description: "invalid is marked with a red border and prompts you to re-enter when the verification fails.",
             code: `<InputOTP length={4} invalid value={otp} onChange={setOtp} />`,
             render: () => <InputOTP length={4} invalid defaultValue="9999"/>,
         },

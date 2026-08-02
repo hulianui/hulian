@@ -28,11 +28,11 @@ export const alertShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Five tone",
-            description: "tone offers neutral / info / success / warning / danger with icon slot.",
+            description: "tone provides neutral / info / success / warning / danger with icon slot.",
             code: `<>
-  <Alert tone="info" icon={<InfoIcon />} title="Information Tip">This is a general information tip. </Alert>
+  <Alert tone="info" icon={<InfoIcon />} title="Information prompt">This is a general information prompt. </Alert>
   <Alert tone="success" icon={<SuccessIcon />} title="Operation successful">Personal information has been saved. </Alert>
-  <Alert tone="warning" icon={<WarningIcon />} title="Planned maintenance">Service will be maintained on Sunday. </Alert>
+  <Alert tone="warning" icon={<WarningIcon />} title="Planned Maintenance">The service will be maintained on Sunday. </Alert>
   <Alert tone="danger" icon={<DangerIcon />} title="Unable to connect to the server">Please try again later. </Alert>
 </>`,
             render: () => (<div className="flex w-96 flex-col gap-3">
@@ -53,7 +53,7 @@ export const alertShowcase: ShowcaseSpec = {
         {
             title: "With action button",
             description: "action slots the operation buttons on the right side, side by side with the text.",
-            code: `<Alert tone="info" icon={<InfoIcon />} title="Update available" action={<Button size="sm">Refresh</Button>}>
+            code: `<Alert tone="info" icon={<InfoIcon />} title="Updates available" action={<Button size="sm">Refresh</Button>}>
   There is a new version of the app, please refresh to get the latest features.
 </Alert>`,
             render: () => (<Alert tone="info" icon={InfoIcon} title="Update available" action={<Button size="sm">Refresh</Button>} className="w-96">

@@ -43,7 +43,7 @@ export const virtualListShowcase: ShowcaseSpec = {
         },
     ],
     controls: [],
-    states: [{ name: "10,000 lines (only render visible area)", render: () => <Demo /> }],
+    states: [{ name: "10,000 lines (only rendering visible area)", render: () => <Demo /> }],
     renderWithProps: () => <Demo />,
     toCode: () => `<VirtualList
   items={rows}

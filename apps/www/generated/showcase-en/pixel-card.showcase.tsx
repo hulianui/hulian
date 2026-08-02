@@ -66,7 +66,7 @@ export const pixelCardShowcase: ShowcaseSpec = {
         },
         {
             title: "Disable focus triggering",
-            description: "When noFocus, only mouse hover triggers the animation, and the root container cannot be keyboard focused.",
+            description: "noFocus Only mouse hover triggers the animation, and the root container cannot be keyboard focused.",
             code: `<PixelCard variant="default" noFocus className="h-48 w-64">
   \u2026
 </PixelCard>`,
@@ -81,7 +81,7 @@ export const pixelCardShowcase: ShowcaseSpec = {
             type: "select",
             options: [...variantOptions],
             defaultValue: "blue",
-            label: "Variant",
+            label: "Variants",
         },
         { prop: "gap", type: "number", defaultValue: 6, label: "Pixel pitch px" },
         { prop: "speed", type: "number", defaultValue: 35, label: "Speed 0\u2013100" },

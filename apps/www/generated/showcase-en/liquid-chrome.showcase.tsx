@@ -12,7 +12,7 @@ export const liquidChromeShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "LiquidChrome itself is covered with absolute inset-0 and needs to be placed in the relative + overflow-hidden container; the default reading is --color-chart-2 following the theme.",
+            description: "LiquidChrome itself is filled with absolute inset-0 and needs to be placed in the relative + overflow-hidden container; the default reading is --color-chart-2 following the theme.",
             code: `<div className="relative h-48 overflow-hidden rounded-xl">
   <LiquidChrome />
 </div>`,

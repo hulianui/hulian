@@ -23,7 +23,7 @@ export const rippleShowcase: ShowcaseSpec = {
         },
         {
             title: "Number of turns and starting size",
-            description: "numCircles controls the number of turns, mainCircleSize controls the diameter of the innermost circle - fewer turns are more focused.",
+            description: "numCircles controls the number of turns, mainCircleSize controls the diameter of the innermost ring - fewer turns are more focused.",
             code: `<div className="relative grid place-items-center ...">
   <Ripple mainCircleSize={140} numCircles={5} />
 </div>`,

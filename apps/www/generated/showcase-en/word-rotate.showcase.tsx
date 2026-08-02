@@ -6,7 +6,7 @@ export const wordRotateShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Pass in the word array, AnimatePresence rotates up and down word by word (the default stay is 2.5s for each word).",
+            description: "Pass in the word array, AnimatePresence rotates up and down word by word (the default stay is 2.5s per word).",
             code: `<div className="text-3xl font-bold text-foreground">
   Let the development <WordRotate words={["faster", "more stable", "more beautiful", "Hulian"]} className="text-primary" />
 </div>`,

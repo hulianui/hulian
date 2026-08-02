@@ -11,7 +11,7 @@ export const retroGridShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "relative Place a layer of RetroGrid in the container to get a perspective scrolling grid. The default tilt angle is 65\u00B0, 12s one round, and text-border.",
+            description: "relative Place a layer of RetroGrid in the container to get a perspective scrolling grid, with a default tilt angle of 65\u00B0, 12s round, and text-border.",
             code: `<div className="relative h-56 w-full overflow-hidden rounded-xl border border-border bg-surface">
   <RetroGrid />
 </div>`,
@@ -47,7 +47,7 @@ export const retroGridShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "default (65\u00B0 \u00B7 Roll)",
+            name: "default (65\u00B0 \u00B7 Rolling)",
             render: () => (<Frame>
           <RetroGrid />
         </Frame>),

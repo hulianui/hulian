@@ -32,7 +32,7 @@ export const lightningShowcase: ShowcaseSpec = {
         },
         {
             title: "Warm orange phase (high intensity)",
-            description: "hue=30 Cut warm orange, intensity / speed turn it up to be brighter and noisier.",
+            description: "\u200B\u200Bhue=30 Cut warm orange, intensity / speed turn it up to be brighter and noisier.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl"
      style={{ background: "oklch(0.10 0.02 265)" }}>
   <Lightning hue={30} intensity={1.4} speed={1.3} />

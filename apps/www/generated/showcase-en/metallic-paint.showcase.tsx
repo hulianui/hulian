@@ -37,7 +37,7 @@ export const metallicPaintShowcase: ShowcaseSpec = {
         },
         {
             title: "Strong refractive iridescence",
-            description: "Improve refraction and strengthen RGB three-channel dislocation, with chart color to achieve iridescent color dispersion.",
+            description: "Improve refraction and strengthen the three-channel dislocation of RGB, and match chart to achieve iridescent color dispersion.",
             code: `<MetallicPaint
   refraction={1.8}
   lightColor="var(--color-chart-2)"

@@ -58,7 +58,7 @@ const rows = [
     controls: [{ prop: "stickyHeader", type: "boolean", defaultValue: true, label: "Meter head ceiling" }],
     states: [
         {
-            name: "Model Pricing Comparison",
+            name: "Model pricing comparison",
             render: () => (<div className="w-full max-w-2xl">
           <PricingTable columns={columns} rows={rows}/>
         </div>),

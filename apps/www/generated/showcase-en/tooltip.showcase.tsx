@@ -22,7 +22,7 @@ export const tooltipShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Display a short prompt on hover/focus trigger; TooltipProvider unified management of opening delay.",
+            description: "Display short prompts on hover/focus triggers; TooltipProvider unified management of opening delays.",
             code: `<TooltipProvider>
   <Tooltip>
     <TooltipTrigger render={<Button variant="outline">Hover to view</Button>} />
@@ -33,10 +33,10 @@ export const tooltipShowcase: ShowcaseSpec = {
         },
         {
             title: "Prompt direction",
-            description: "side controls the direction in which the prompt appears, and the arrow automatically points to the trigger.",
+            description: "side Controls the direction in which the prompt appears, and the arrow automatically points to the trigger.",
             code: `<>
   <Tooltip>
-    <TooltipTrigger render={<Button variant="outline">Right</Button>} />
+    <TooltipTrigger render={<Button variant="outline">right</Button>} />
     <TooltipContent side="right">To the right</TooltipContent>
   </Tooltip>
   <Tooltip>

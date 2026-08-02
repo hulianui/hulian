@@ -177,7 +177,7 @@ When
     ],
     controls: [],
     states: [
-        { name: "Basics (Base UI submitted)", render: () => <Demo /> },
+        { name: "Basics(Base UI submitted)", render: () => <Demo /> },
         { name: "Verification rules + field linkage", render: () => <ValidationDemo /> },
         { name: "FormList dynamic list", render: () => <FormListDemo /> },
     ],

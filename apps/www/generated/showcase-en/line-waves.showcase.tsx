@@ -36,7 +36,7 @@ export const lineWavesShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "Classic White Line",
+            title: "Classic white line",
             description: "Transmit all three color channels to the same value (such as #ffffff) and turn off the hue cycle (colorCycleSpeed=0) to restore the original single-color white line of react-bits.",
             code: `<LineWaves
   color1="#ffffff"
@@ -83,7 +83,7 @@ export const lineWavesShowcase: ShowcaseSpec = {
           <LineWaves />
           <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2">
             <p className="text-2xl font-bold tracking-tight text-white/90">LineWaves</p>
-            <p className="text-sm text-white/50">Flowing ripple linear array · Try moving the mouse</p>
+            <p className="text-sm text-white/50">Flowing corrugated linear array · Try moving the mouse</p>
           </div>
         </Stage>),
         },

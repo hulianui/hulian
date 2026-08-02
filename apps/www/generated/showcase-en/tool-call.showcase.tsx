@@ -12,7 +12,7 @@ export const toolCallShowcase: ShowcaseSpec = {
   status="success"
   defaultOpen
   input={<CodeBlock lang="json" code={'{ "query": "Hulian Design System" }'} />}
-  output="3 related results found, consolidated."
+  output="Found 3 related results, combined."
 />`,
             render: () => (<div className="w-full max-w-lg">
           <ToolCall name="search_web" status="success" defaultOpen input={<CodeBlock lang="json" code={"{ \"query\": \"Hulian Design System\" }"}/>} output="Found 3 related results, summarized."/>
@@ -28,7 +28,7 @@ export const toolCallShowcase: ShowcaseSpec = {
         },
         {
             title: "Failure status",
-            description: "error The status point turns red, expand to see the error details.",
+            description: "error The status point turns red, expand it to see the error details.",
             code: `<ToolCall
   name="fetch_url"
   status="error"
@@ -71,7 +71,7 @@ export const toolCallShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            name: "failed",
+            name: "Failed",
             render: () => (<div className="w-full max-w-lg">
           <ToolCall name="fetch_url" status="error" defaultOpen output="Timeout: 30s No response."/>
         </div>),

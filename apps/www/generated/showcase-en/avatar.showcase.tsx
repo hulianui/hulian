@@ -41,7 +41,7 @@ export const avatarShowcase: ShowcaseSpec = {
         { prop: "fallback", type: "text", defaultValue: "ZS", label: "fallback" },
     ],
     states: [
-        { name: "Picture", render: () => <Avatar src={IMG} alt="demo" fallback="ZS"/> },
+        { name: "Pictures", render: () => <Avatar src={IMG} alt="demo" fallback="ZS"/> },
         { name: "fallback", render: () => <Avatar fallback="Hu"/> },
         { name: "sm", render: () => <Avatar size="sm" fallback="S"/> },
         { name: "lg", render: () => <Avatar size="lg" fallback="L"/> },

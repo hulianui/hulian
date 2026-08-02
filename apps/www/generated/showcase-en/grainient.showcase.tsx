@@ -28,7 +28,7 @@ export const grainientShowcase: ShowcaseSpec = {
         },
         {
             title: "Pure gradient (no particles)",
-            description: "grainAmount={0} Turns off film grain for a clean, gamut-distorted color field.",
+            description: "grainAmount={0} Turns off film grain, resulting in a clean, gamut-distorted color field.",
             code: `<Grainient grainAmount={0} timeSpeed={0.18} />`,
             render: () => (<Stage>
           <Grainient grainAmount={0} timeSpeed={0.18}/>
@@ -44,7 +44,7 @@ export const grainientShowcase: ShowcaseSpec = {
         },
         {
             title: "Customized three colors + zoom view",
-            description: "color1/2/3 Pass any CSS color. The smaller the zoom, the larger the color field range you can see.",
+            description: "color1/2/3 Pass any CSS color. The smaller the zoom, the wider the color field range you can see.",
             code: `<Grainient
   color1="oklch(0.82 0.16 70)"
   color2="oklch(0.62 0.2 30)"
@@ -87,7 +87,7 @@ export const grainientShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Custom warm orange tone (custom three colors + zoom view)",
+            name: "Custom warm orange tone (custom three colors + zoom in)",
             render: () => (<Stage>
           <Grainient color1="oklch(0.82 0.16 70)" color2="oklch(0.62 0.2 30)" color3="oklch(0.32 0.06 300)" zoom={1.3} timeSpeed={0.35}/>
           <div className="relative z-10 flex h-full flex-col items-center justify-center gap-1">

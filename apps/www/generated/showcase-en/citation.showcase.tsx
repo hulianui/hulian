@@ -5,7 +5,7 @@ export const citationShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "External link chip",
-            description: "Serial number subtitle + title + source; when there is href, it will be rendered as a new tab page external link.",
+            description: "Serial number subscript + title + source; when there is href, it will be rendered as a new tab page external link.",
             code: `<Citation index={1} title="Base UI Document" href="https://base-ui.com" source="base-ui.com" />`,
             render: () => (<Citation index={1} title="Base UI Documentation" href="https://base-ui.com" source="base-ui.com"/>),
         },

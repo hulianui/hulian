@@ -15,7 +15,7 @@ export const profileCardShowcase: ShowcaseSpec = {
             description: "When there is no avatar, the \"initial\" placeholder is dropped, and the pointer tilt + holographic gloss is turned on by default.",
             code: `<ProfileCard name="Lin Yu" title="Independent developer" handle="linyu" />`,
             render: () => (<Stage>
-          <ProfileCard name="Lin Yu" title="Independent developer" handle="linyu"/>
+          <ProfileCard name="Lin Yu" title="Independent Developer" handle="linyu"/>
         </Stage>),
         },
         {
@@ -61,7 +61,7 @@ export const profileCardShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "name", type: "text", defaultValue: "Lin Yu", label: "Name" },
-        { prop: "title", type: "text", defaultValue: "Independent developer", label: "Positions" },
+        { prop: "title", type: "text", defaultValue: "Independent Developer", label: "Position" },
         { prop: "handle", type: "text", defaultValue: "linyu", label: "Handle" },
         { prop: "status", type: "text", defaultValue: "Online", label: "Status" },
         { prop: "enableTilt", type: "boolean", defaultValue: true, label: "Tilt interaction" },
@@ -82,7 +82,7 @@ export const profileCardShowcase: ShowcaseSpec = {
         {
             name: "default (initial letter placeholder\u00B7inclined to open)",
             render: () => (<Stage>
-          <ProfileCard name="Lin Yu" title="Independent developer" handle="linyu"/>
+          <ProfileCard name="Lin Yu" title="Independent Developer" handle="linyu"/>
         </Stage>),
         },
         {
@@ -98,7 +98,7 @@ export const profileCardShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "No message",
+            name: "No message bar",
             render: () => (<Stage>
           <ProfileCard name="Javi Torres" title="Software Engineer" showUserInfo={false} glowColor="var(--color-chart-2)"/>
         </Stage>),

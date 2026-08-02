@@ -11,7 +11,7 @@ export interface DemoUser {
     avatar: string;
 }
 const SURNAME = ["Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Zhao", "Yellow", "Week", "Wu", "Xu", "Sun", "Horse", "Zhu", "Hu", "Guo", "Ho", "High", "Lin", "Zheng"];
-const GIVEN = ["Wei", "Min", "Jing", "Li", "Strong", "Lei", "Army", "Foreign", "Yong", "Yan", "Jay", "Juan", "Tao", "Ming", "Super", "Xia", "Flat", "Just", "Guiying", "Xiulan"];
+const GIVEN = ["Wei", "Min", "Jing", "Li", "Strong", "Lei", "Military", "Foreign", "Yong", "Yan", "Jay", "Juan", "Tao", "Ming", "Super", "Xia", "Flat", "Just", "Guiying", "Xiulan"];
 const ROLES = ["Administrator", "Edit", "Guest"];
 function makeUsers(count: number): DemoUser[] {
     return Array.from({ length: count }, (_, i) => ({
@@ -131,7 +131,7 @@ const org: OrgNode[] = [
 ];
 const orgColumns: ColumnDef<OrgNode, any>[] = [
     { accessorKey: "name", header: "Name" },
-    { accessorKey: "title", header: "Positions", cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span> },
+    { accessorKey: "title", header: "Position", cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span> },
 ];
 function TreeDemo() {
     return <Table columns={orgColumns} data={org} getSubRows={(r) => r.reports}/>;
@@ -149,7 +149,7 @@ function RowClickDemo() {
         },
     ];
     return (<div className="flex flex-col gap-2">
-      <Table columns={actionColumns} data={users.slice(0, 4)} onRowClick={(row) => setLast(`Click on the line \u2192 Enter ${row.name} Details`)}/>
+      <Table columns={actionColumns} data={users.slice(0, 4)} onRowClick={(row) => setLast(`Click on the line \u2192 Enter ${row.name} Component library for`)}/>
       <p className="text-sm text-muted">{last ?? "Click any blank space in the entire line, or click the \"Edit\" button within the line to try"}</p>
     </div>);
 }
@@ -185,11 +185,11 @@ export const tableShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Just pass columns + data; the table header can be sorted by clicking on the default even-numbered rows with zebra pattern.",
+            description: "Just pass columns + data; the table header can be sorted by clicking, and even-numbered rows are zebra pattern by default.",
             code: `const columns: ColumnDef<DemoUser, any>[] = [
   { accessorKey: "name", header: "Name" },
   { accessorKey: "email", header: "Email" },
-  { accessorKey: "role", header: "Character" },
+  { accessorKey: "role", header: "Role" },
 ];
 
 <Table columns={columns} data={users} />`,
@@ -271,7 +271,7 @@ export const tableShowcase: ShowcaseSpec = {
         },
         {
             title: "Row drag and drop sorting",
-            description: "rowDraggable inserts the drag handle column; onRowDragEnd returns relative position semantics (activeId / overId / position), which can directly map the backend { move, target, direction } Sorting interface. The components do not change data, the order is under your control.",
+            description: "rowDraggable inserts the drag handle column forward; onRowDragEnd returns relative position semantics (activeId / overId / position), which can directly map the backend { move, target, direction } Sorting interface. The components do not change data, the order is under your control.",
             code: `<Table
   columns={columns}
   data={rows}

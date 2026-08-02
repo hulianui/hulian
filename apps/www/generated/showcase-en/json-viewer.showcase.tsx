@@ -29,14 +29,14 @@ export const jsonViewerShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Pass data to render the foldable JSON tree, and expand the first layer by default.",
+            description: "Passing data will render the foldable JSON tree, and the first layer will be expanded by default.",
             code: `<JsonViewer data={response} />`,
             render: () => (<div className="w-full max-w-xl rounded-[var(--radius)] border border-border bg-surface p-3">
           <JsonViewer data={SAMPLE}/>
         </div>),
         },
         {
-            title: "Control initial expansion depth",
+            title: "Control the initial expansion depth",
             description: "defaultExpandedDepth controls the initial expansion level (root direct child node depth=1).",
             code: `<JsonViewer data={response.usage} defaultExpandedDepth={3} />`,
             render: () => (<div className="w-full max-w-xl rounded-[var(--radius)] border border-border bg-surface p-3">
@@ -45,7 +45,7 @@ export const jsonViewerShowcase: ShowcaseSpec = {
         },
         {
             title: "Copy node path",
-            description: "onCopyPath Returns the node JSON path when copying on hover; rootName determines the path prefix (e.g. $.response.usage).",
+            description: "onCopyPath returns the node JSON path when copying on hover; rootName determines the path prefix (e.g. $.response.usage).",
             code: `<JsonViewer
   data={response}
   rootName="response"
@@ -67,7 +67,7 @@ export const jsonViewerShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            name: "Full Expand",
+            name: "Full expansion",
             render: () => (<div className="w-full max-w-xl rounded-[var(--radius)] border border-border bg-surface p-3">
           <JsonViewer data={SAMPLE.usage} defaultExpandedDepth={3}/>
         </div>),

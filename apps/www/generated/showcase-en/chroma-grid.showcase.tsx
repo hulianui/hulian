@@ -43,19 +43,19 @@ export const chromaGridShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Revert to the built-in placeholder wall when not transmitting items; move the mouse in to reveal a full-color window around the cursor.",
+            description: "Revert to the built-in placeholder wall when items is not passed; move the mouse in to reveal a full-color window around the cursor.",
             code: `<ChromaGrid columns={3} />`,
             render: () => (<Stage>
           <ChromaGrid columns={3}/>
         </Stage>),
         },
         {
-            title: "Custom Team Card",
+            title: "Custom team card",
             description: "Pass items array, each item contains title/subtitle/handle and chart token stroke gradient.",
             code: `const team = [
   {
     title: "Linyu",
-    subtitle: "Full stack engineer",
+    subtitle: "Full Stack Engineer",
     handle: "@linyu",
     borderColor: "var(--color-chart-1)",
     gradient: "linear-gradient(145deg, var(--color-chart-1), transparent)",

@@ -15,7 +15,7 @@ const longPath: BreadcrumbItem[] = [
     { label: "Home", href: "https://example.com/" },
     { label: "Documentation", href: "https://example.com/docs" },
     { label: "Design System", href: "https://example.com/docs/design-system" },
-    { label: "Navigation family", href: "https://example.com/docs/design-system/navigation" },
+    { label: "Navigation Family", href: "https://example.com/docs/design-system/navigation" },
     { label: "Breadcrumb component", href: "https://example.com/docs/design-system/navigation/breadcrumb" },
     { label: "Accessibility Semantics" },
 ];

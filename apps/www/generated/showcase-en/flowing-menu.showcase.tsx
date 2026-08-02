@@ -69,7 +69,7 @@ export const flowingMenuShowcase: ShowcaseSpec = {
         },
         {
             title: "Speed and copies",
-            description: "speed The larger the marquee, the slower it is; repeat controls the number of repeats within a single item, making it full and ensuring seamless circulation (minimum 2).",
+            description: "speed The larger the marquee, the slower it is; repeat controls the number of repeats within a single item, filling it up and ensuring seamless circulation (minimum 2).",
             code: `<FlowingMenu items={items} speed={30} repeat={6} />`,
             render: () => (<Stage>
           <FlowingMenu items={demoItems.slice(0, 3)} speed={30} repeat={6}/>
@@ -82,7 +82,7 @@ export const flowingMenuShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "default (Hover to view the unveiling)",
+            name: "default (hover the item to view the unveiling)",
             render: () => (<Stage>
           <FlowingMenu items={demoItems}/>
         </Stage>),

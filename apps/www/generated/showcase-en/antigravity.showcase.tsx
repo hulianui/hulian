@@ -41,7 +41,7 @@ export const antigravityShowcase: ShowcaseSpec = {
         },
         {
             title: "Automatic patrol",
-            description: "autoAnimate Let the cursor remain still for 2s and then the particles will cruise on their own, suitable for unattended large-screen display.",
+            description: "autoAnimate Make the cursor stationary 2s and then the particles will cruise on their own, suitable for unattended large-screen display.",
             code: `<Antigravity
   className="absolute inset-0"
   autoAnimate

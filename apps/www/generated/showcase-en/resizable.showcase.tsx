@@ -152,7 +152,7 @@ export const resizableShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "Editor three columns (drag the handle to adjust: file tree/editor/preview)",
+            name: "Editor three columns (drag the handle to adjust: File Tree/Editor/Preview)",
             render: () => (<div className="h-64 w-[34rem] max-w-full overflow-hidden rounded-[var(--radius)] border border-border">
           <ResizablePanelGroup direction="horizontal" defaultSizes={[24, 46, 30]}>
             <ResizablePanel min={15}>

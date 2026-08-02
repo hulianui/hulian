@@ -69,7 +69,7 @@ export const deployStatusShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            name: "dot \u00B7 Dot + text (building pulse)",
+            name: "dot \u00B7 Marker and label (building pulse)",
             render: () => (<div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           {ALL.map((s) => (<DeployStatus key={s} status={s} variant="dot"/>))}
         </div>),

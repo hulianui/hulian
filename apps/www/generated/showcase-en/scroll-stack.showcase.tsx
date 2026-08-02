@@ -45,7 +45,7 @@ export const scrollStackShowcase: ShowcaseSpec = {
         },
         {
             title: "Sector rotation",
-            description: "rotationAmount Superimpose rotation increments on each layer of cards to form a poker-like fan-shaped dislocation.",
+            description: "rotationAmount Superimpose rotation increments on each layer of cards to form a poker-style fan-shaped dislocation.",
             code: `<ScrollStack rotationAmount={3}>
   <ScrollStackItem>Card 1</ScrollStackItem>
   <ScrollStackItem>Card 2</ScrollStackItem>

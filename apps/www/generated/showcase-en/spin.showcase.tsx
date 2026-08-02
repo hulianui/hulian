@@ -48,7 +48,7 @@ export const spinShowcase: ShowcaseSpec = {
         },
         {
             title: "Pure indicator",
-            description: "When children is not transmitted, Spin is used as an independent loading indicator (without mask) and can have prompt copy.",
+            description: "When children is not transmitted, Spin acts as an independent loading indicator (without mask) and can have prompt copy.",
             code: `<Spin spinning tip="Processing" />`,
             render: () => <Spin spinning tip="Processing"/>,
         },

@@ -10,7 +10,7 @@ export const blurTextShowcase: ShowcaseSpec = {
             render: () => (<BlurText text="Isn't this so cool?!" className="text-3xl font-bold text-foreground"/>),
         },
         {
-            title: "Verbatim \u00B7 Chinese \u00B7 Float in from bottom",
+            title: "Verbatim \u00B7 Chinese \u00B7 Float in from the bottom",
             description: "splitType=\"char\" is parsed word by word, direction=\"bottom\" floats in from below.",
             code: `<BlurText
   text="Clearly emerging Hulian title"
@@ -18,7 +18,7 @@ export const blurTextShowcase: ShowcaseSpec = {
   direction="bottom"
   className="text-3xl font-bold text-primary"
 />`,
-            render: () => (<BlurText text="The clearly revealed title of Hulian" splitType="char" direction="bottom" className="text-3xl font-bold text-primary"/>),
+            render: () => (<BlurText text="The clearly displayed title of Hulian" splitType="char" direction="bottom" className="text-3xl font-bold text-primary"/>),
         },
         {
             title: "Starting blur and peak shifting",
@@ -46,7 +46,7 @@ export const blurTextShowcase: ShowcaseSpec = {
         },
         {
             name: "char (Verbatim \u00B7 Chinese \u00B7 Float in from below)",
-            render: () => (<BlurText text="The clearly revealed title of Hulian" splitType="char" direction="bottom" className="text-3xl font-bold text-primary"/>),
+            render: () => (<BlurText text="The clearly displayed title of Hulian" splitType="char" direction="bottom" className="text-3xl font-bold text-primary"/>),
         },
         {
             name: "Large size slow peak shifting (hero grade)",

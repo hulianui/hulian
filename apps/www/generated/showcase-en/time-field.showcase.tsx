@@ -16,7 +16,7 @@ export const timeFieldShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Each hour/minute is a segment. You can record without taking your hands off the keyboard: \u2191\u2193 to adjust the value, \u2190\u2192 to cut into segments, overwrite directly with numbers (enter two digits to automatically jump to the next segment), and Backspace to clear segments. It is important to choose TimePicker.",
+            description: "Each hour/minute is a segment, and you can record without taking your hands off the keyboard: \u2191\u2193 to adjust the value, \u2190\u2192 to cut into segments, overwrite directly with numbers (enter two digits to automatically jump to the next segment), and Backspace to clear segments. It is important to choose TimePicker.",
             code: `<TimeField defaultValue="09:30" />`,
             render: () => <TimeField defaultValue="09:30"/>,
         },
@@ -28,7 +28,7 @@ export const timeFieldShowcase: ShowcaseSpec = {
         },
         {
             title: "Limited optional range",
-            description: "minTime / maxTime is clamped at the moment when **the entire segment is lost** - segment-level restrictions will make it impossible to lose \"first lose 23 points and then lose minutes\".",
+            description: "minTime / maxTime is clamped at the moment when **the entire segment is lost** - segment level restrictions will make it impossible to lose \"first lose 23 points and then lose minutes\".",
             code: `<TimeField defaultValue="12:00" minTime="09:30" maxTime="18:00" />`,
             render: () => <TimeField defaultValue="12:00" minTime="09:30" maxTime="18:00"/>,
         },

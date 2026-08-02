@@ -73,7 +73,7 @@ export const remoteSelectShowcase: ShowcaseSpec = {
         },
         {
             title: "Initial value echo (required for editing form)",
-            description: "When value already exists but is not in the first screen list, use resolveValue and press id to batch solve label once; if it is not matched, only bare id will be displayed.",
+            description: "When value already exists but is not in the home screen list, use resolveValue and press id to batch solve label once; if it is not matched, only bare id will be displayed.",
             code: `<RemoteSelect
   valueKey="store_id"
   labelKey="store_name"
@@ -119,7 +119,7 @@ export const remoteSelectShowcase: ShowcaseSpec = {
         },
         {
             title: "size / disabled / invalid state",
-            description: "size controls the height of the field; disabled is grayed out; invalid is marked with a red border.",
+            description: "size controls the field height; disabled is grayed out overall; invalid is marked with a red border.",
             code: `<>
   <RemoteSelect size="sm" fetcher={fetchStores} placeholder="Search store..." />
   <RemoteSelect disabled fetcher={fetchStores} placeholder="Search store..." />

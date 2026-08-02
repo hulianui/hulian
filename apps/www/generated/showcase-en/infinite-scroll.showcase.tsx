@@ -22,7 +22,7 @@ function Demo() {
 export const infiniteScrollShowcase: ShowcaseSpec = {
     examples: [
         {
-            title: "Scroll to the end and load automatically",
+            title: "Automatically load when scrolling to the end",
             description: "When the bottom sentry enters the viewport, it is adjusted to onLoadMore; the returned Promise will not be triggered repeatedly.",
             code: `<InfiniteScroll onLoadMore={loadMore} hasMore={hasMore}>
   {items.map((it) => (

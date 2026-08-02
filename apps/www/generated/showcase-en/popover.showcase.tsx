@@ -27,7 +27,7 @@ export const popoverShowcase: ShowcaseSpec = {
             description: "Click the trigger to pop up the floating layer, click outside or Esc to close; with title + description + operation area.",
             code: `<Popover>
   <PopoverTrigger render={<Button>Open elastic layer</Button>} />
-  <PopoverContent title="Hulian elastic layer" description="Click outside or Esc to close. ">
+  <PopoverContent title="Hulian elastic layer" description="Click outside or Esc to close.">
     <div className="flex justify-end gap-2">
       <PopoverClose render={<Button variant="ghost">Cancel</Button>} />
       <PopoverClose render={<Button>OK</Button>} />
@@ -42,11 +42,11 @@ export const popoverShowcase: ShowcaseSpec = {
             code: `<>
   <Popover>
     <PopoverTrigger render={<Button>Bounce up</Button>} />
-    <PopoverContent side="top" title="Bounce up" description="side=\\"top\\". " />
+    <PopoverContent side="top" title="Bounce up" description="side=\\"top\\"." />
   </Popover>
   <Popover>
     <PopoverTrigger render={<Button>Bounce right</Button>} />
-    <PopoverContent side="right" title="Bounce right" description="side=\\"right\\". " />
+    <PopoverContent side="right" title="Bounce right" description="side=\\"right\\"." />
   </Popover>
 </>`,
             render: () => (<div className="flex flex-wrap gap-3">
@@ -59,7 +59,7 @@ export const popoverShowcase: ShowcaseSpec = {
             description: "align controls edge alignment (start / center / end), and works with side to fine-tune the floating layer placement point.",
             code: `<Popover>
   <PopoverTrigger render={<Button>Align bottom left</Button>} />
-  <PopoverContent side="bottom" align="start" title="Left justified" description="align=\\"start\\". " />
+  <PopoverContent side="bottom" align="start" title="Left justified" description="align=\\"start\\"." />
 </Popover>`,
             render: () => <Demo side="bottom" align="start" title="Align left"/>,
         },

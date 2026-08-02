@@ -34,7 +34,7 @@ const SLIDES = [
         eyebrow: "Trade-in",
         title: "Digital recycling subsidy",
         desc: "The maximum estimated price for an old machine is 1,200 yuan, and an additional 300 yuan will be charged for a new one.",
-        cta: "Valuation Recovery",
+        cta: "Valuation recovery",
         bg: "bg-surface text-foreground",
     },
 ];
@@ -71,8 +71,8 @@ export const carouselShowcase: ShowcaseSpec = {
             render: () => <Demo />,
         },
         {
-            title: "Autoplay + Loop",
-            description: "autoplay automatically turns pages every 4s, loop lets the last page go back to the first; automatically pauses when hovering/focusing.",
+            title: "Auto play + loop",
+            description: "autoplay automatically turns pages every 4s, loop lets the last page go back to the first one; automatically pauses when hovering/focusing.",
             code: `<Carousel autoplay loop className="w-96">
   <Slide title="618 Mid-Year Sale" />
   <Slide title="Summer Thin and Light Series" />

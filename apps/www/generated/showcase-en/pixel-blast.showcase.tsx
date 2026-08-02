@@ -60,7 +60,7 @@ export const pixelBlastShowcase: ShowcaseSpec = {
         },
         {
             title: "Custom color + strong fade",
-            description: "color can be connected to any CSS color; edgeFade can be increased to make the four corners fade out softer, making it easier to use the dot matrix as a content background.",
+            description: "color is connected to any CSS color; edgeFade is increased to make the four corners fade out softer, making it easier to use the dot matrix as the content background.",
             code: `<PixelBlast
   variant="square"
   color="oklch(0.65 0.26 285)"
@@ -101,7 +101,7 @@ export const pixelBlastShowcase: ShowcaseSpec = {
         { prop: "pixelSizeJitter", type: "number", defaultValue: 0, label: "Size jitter" },
         { prop: "speed", type: "number", defaultValue: 0.5, label: "Speed" },
         { prop: "edgeFade", type: "number", defaultValue: 0.5, label: "Edge fade" },
-        { prop: "color", type: "text", defaultValue: "", label: "Custom color (leave blank =primary)" },
+        { prop: "color", type: "text", defaultValue: "", label: "Custom color (leave blank=primary)" },
     ],
     states: [
         {

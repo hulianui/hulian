@@ -10,7 +10,7 @@ export const calloutShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Long article inline prompt: left accent vertical edge + very light background color, title in tone color, and body text remains foreground readable.",
+            description: "Long text inline tip: left accent vertical edge + very light background color, title tone color, body text remains foreground readable.",
             code: `<Callout title="Tip" tone="tip">
   Different from Alert (whole-dyed notification banner), Callout is specially designed for "pits/correct answers/tips" in articles/documents.
 </Callout>`,
@@ -30,7 +30,7 @@ export const calloutShowcase: ShowcaseSpec = {
 </>`,
             render: () => (<div className="w-full max-w-lg">
           <Callout tone="warning" title="Pit">
-            If you directly change the style in node_modules, it will be lost next time you install it.
+            If you directly change the style in node_modules, it will be lost in the next installation.
           </Callout>
           <Callout tone="success" title="Correct answer">
             Use pnpm patch to persist the patch alongside the lockfile.
@@ -79,7 +79,7 @@ export const calloutShowcase: ShowcaseSpec = {
         {
             name: "success",
             render: () => (<Callout tone="success" title="Correct answer" className="w-full max-w-lg">
-          Cure patch with pnpm patch.
+          Persist the fix with pnpm patch.
         </Callout>),
         },
         {

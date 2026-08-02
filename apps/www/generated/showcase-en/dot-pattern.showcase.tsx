@@ -11,7 +11,7 @@ export const dotPatternShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Place a layer of DotPattern in the relative container to get the dot matrix background. The default is 16px unit and text-border theme.",
+            description: "Place a layer of DotPattern in the relative container to get a dot matrix background. The default is 16px unit and text-border theme.",
             code: `<div className="relative h-48 w-full overflow-hidden rounded-xl border border-border bg-surface">
   <DotPattern />
 </div>`,

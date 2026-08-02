@@ -65,7 +65,7 @@ export const pullToRefreshShowcase: ShowcaseSpec = {
             description: "pullingText / armedText / refreshingText can be changed to business semantic copywriting.",
             code: `<PullToRefresh
   onRefresh={refresh}
-  pullingText="Continue to pull down"
+  pullingText="Continue to drop down"
   armedText="Release to update"
   className="h-full"
 >

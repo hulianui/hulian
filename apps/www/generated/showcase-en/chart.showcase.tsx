@@ -112,7 +112,7 @@ export const chartShowcase: ShowcaseSpec = {
         },
         {
             title: "Horizontal columnar (CJK category adaptive axis width)",
-            description: "horizontal Move the category to the Y axis. The axis width is adapted according to the longest label by default (CJK full-width estimated width, 48\u2013160px), and Chinese characters are no longer truncated; the transmission yAxisWidth must be accurately controlled.",
+            description: "horizontal Move the category to the Y axis. The axis width is adapted according to the longest label by default (CJK full-angle estimated width, 48\u2013160px), and Chinese characters are no longer truncated; the transmission yAxisWidth must be accurately controlled.",
             code: `<BarChart
   horizontal
   data={[

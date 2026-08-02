@@ -88,7 +88,7 @@ export const commentShowcase: ShowcaseSpec = {
             defaultValue: "comment",
             label: "Type",
         },
-        { prop: "connector", type: "boolean", defaultValue: true, label: "Cable" },
+        { prop: "connector", type: "boolean", defaultValue: true, label: "Connecting cable" },
     ],
     states: [
         {

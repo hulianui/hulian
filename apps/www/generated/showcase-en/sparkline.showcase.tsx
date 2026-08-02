@@ -110,7 +110,7 @@ export const sparklineShowcase: ShowcaseSpec = {
             render: () => (<Sparkline data={dipSeries} variant="bar" tone="var(--color-chart-4)" width={140} height={36}/>),
         },
         {
-            name: "Table inline (one trend per row \u00B7 Native point-by-point tooltip)",
+            name: "Table inline (one trend per row \u00B7 native point-by-point tooltip)",
             render: () => <InlineTable />,
         },
     ],

@@ -39,7 +39,7 @@ export const livePlayerShowcase: ShowcaseSpec = {
   viewers={12840}
   host={{
     name: "Excellent products\u00B7Anchor Anan",
-    meta: "Fans 28.6w",
+    meta: "Fan 28.6w",
     onFollow: () => follow(),
   }}
 />`,
@@ -56,7 +56,7 @@ export const livePlayerShowcase: ShowcaseSpec = {
   qualities={["Blu-ray", "UHD", "HD", "SD"]}
   quality={quality}
   onQualityChange={setQuality}
-  host={{ name: "Anchor A Nan", meta: "Fans 28.6w", followed, onFollow }}
+  host={{ name: "Anchor Anan", meta: "Fans 28.6w", followed, onFollow }}
   footer={<div className="bg-gradient-to-t from-black/50 to-transparent p-3 text-xs text-white/80">Say something...</div>}
 />`,
             render: () => <LivePlayerDemo />,

@@ -26,7 +26,7 @@ export const fieldShowcase: ShowcaseSpec = {
         },
         {
             title: "Error status",
-            description: "If error is not empty, it implies invalid (marked red + displays error), and there is no need to pass invalid separately.",
+            description: "If error is not empty, it implies invalid (marked red + shows error), and there is no need to pass invalid separately.",
             code: `<Field label="Email" error="The email format is incorrect">
   <Input defaultValue="not-an-email" />
 </Field>`,

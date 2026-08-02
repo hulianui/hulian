@@ -29,14 +29,14 @@ export const glimpseShowcase: ShowcaseSpec = {
         },
         {
             title: "Plain text term",
-            description: "When image / href is not passed, it degenerates into a pure terminology explanation card (no cover, no domain name), and the trigger is span in the line.",
+            description: "When image / href is not passed, it degrades to a pure terminology explanation card (no cover, no domain name), and the trigger is span in the line.",
             code: `<p>
   This is a {" "}
   <Glimpse title="Dogfood" description="I use my own products. The documentation site is all built with @hulianui/ui's own components.">
     dogfood
   </Glimpse>{" "}
   .
-Component library for
+Details of
 </p>`,
             render: () => (<p className="max-w-md leading-7 text-foreground">
           This is a{" "}
@@ -44,15 +44,15 @@ Component library for
             dogfood
           </Glimpse>{" "}
           .
-Component library for
+Details of
         </p>),
         },
         {
             title: "Multiple side by side",
-            description: "Multiple inline links in the same paragraph can be previewed independently without interfering with each other.",
+            description: "Multiple inline links in the same paragraph are previewed independently without interfering with each other.",
             code: `<p>
   Recommended reading{" "}
-  <Glimpse href="https://example.com/a" image={coverA} title="Component Overview" description="160+ Component Classification Index.">
+  <Glimpse href="https://example.com/a" image={coverA} title="Component Overview" description="160+ component classification index.">
     Component Overview
   </Glimpse>
   ,
@@ -67,7 +67,7 @@ Component library for
             Component Overview
           </Glimpse>
           ,
-          <Glimpse href="https://example.com/b" image={cover(280)} title="Theme customization" description="Change one part token and reskin the entire site.">
+          <Glimpse href="https://example.com/b" image={cover(280)} title="Theme customization" description="Change one place token and reskin the entire site.">
             Theme customization
           </Glimpse>{" "}
           Two articles.
@@ -89,14 +89,14 @@ Component library for
         </p>),
         },
         {
-            name: "Plain text terms (no pictures or links)",
+            name: "Plain text terms (no pictures and no links)",
             render: () => (<p className="max-w-md leading-7 text-foreground">
           This is a{" "}
           <Glimpse title="Dogfood" description="Use your own products. The documentation site is all built with @hulianui/ui's own components.">
             dogfood
           </Glimpse>{" "}
           .
-Component library for
+Details of
         </p>),
         },
         {
@@ -107,7 +107,7 @@ Component library for
             Component Overview
           </Glimpse>
           ,
-          <Glimpse href="https://example.com/b" image={cover(280)} title="Theme customization" description="Change one part token and reskin the entire site.">
+          <Glimpse href="https://example.com/b" image={cover(280)} title="Theme customization" description="Change one place token and reskin the entire site.">
             Theme customization
           </Glimpse>{" "}
           Two articles.

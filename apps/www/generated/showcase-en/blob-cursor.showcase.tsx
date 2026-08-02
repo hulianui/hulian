@@ -12,7 +12,7 @@ export const blobCursorShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Wrap any content, and jelly water droplets will appear as you move the mouse into it; children is layered on top of the water droplets.",
+            description: "Wrap any content, and jelly water droplets will appear as you move the mouse over it; children is layered on top of the water droplets.",
             code: `<div
   className="relative h-64 overflow-hidden rounded-xl"
   style={{ background: "oklch(0.16 0.02 265)" }}
@@ -41,7 +41,7 @@ export const blobCursorShowcase: ShowcaseSpec = {
         },
         {
             title: "Long tail",
-            description: "Increase trailCount, decrease trailStiffness, and the tail will be longer and sticky.",
+            description: "Increase trailCount, reduce trailStiffness, and the tail will be longer and sticky.",
             code: `<BlobCursor trailCount={5} trailStiffness={70} />`,
             render: () => (<Stage>
           <BlobCursor trailCount={5} trailStiffness={70}/>
@@ -64,7 +64,7 @@ export const blobCursorShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "default (Move to the stage and try)",
+            name: "default (Move to the stage to try)",
             render: () => (<Stage>
           <BlobCursor>
             <div className="pointer-events-none flex h-full items-center justify-center text-sm font-medium text-white/70">

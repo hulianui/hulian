@@ -25,7 +25,7 @@ export const fabShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "By default, fixed is attached to the lower right side of the viewport; without actions, the main button triggers onClick directly.",
+            description: "By default, fixed is attached to the lower right side of the viewport; without actions, the main button directly triggers onClick.",
             code: `<Fab icon={<Plus />} onClick={() => alert("New")} />`,
             render: () => <FabBox />,
         },
@@ -48,10 +48,10 @@ export const fabShowcase: ShowcaseSpec = {
             render: () => <FabBox withActions/>,
         },
         {
-            title: "Draggable",
+            title: "Can be dragged",
             description: "draggable is closed by default (press and hold if not open). After turning it on, press and hold the main button to drag to any position; the displacement exceeds 3px as dragging, and raising your hand this time will not trigger onClick.",
             code: `<Fab draggable label="Hold and drag me" icon={<GripVertical />} onClick={() => alert("New")} />`,
-            render: () => <FabBox draggable label="Press and drag me"/>,
+            render: () => <FabBox draggable label="Hold and drag me"/>,
         },
     ],
     controls: [],
@@ -59,7 +59,7 @@ export const fabShowcase: ShowcaseSpec = {
         { name: "Single button", render: () => <FabBox /> },
         { name: "Extended capsule (with text)", render: () => <FabBox label="Return to sample library"/> },
         { name: "Speed-dial Sub-Action", render: () => <FabBox withActions/> },
-        { name: "Draggable (draggable)", render: () => <FabBox draggable label="Press and drag me"/> },
+        { name: "Draggable (draggable)", render: () => <FabBox draggable label="Hold and drag me"/> },
     ],
     renderWithProps: () => <FabBox withActions/>,
     toCode: () => `<Fab

@@ -12,10 +12,10 @@ export const statShowcase: ShowcaseSpec = {
         },
         {
             title: "Chain trend",
-            description: "delta>=0 liter (text-primary) / <0 drop (text-danger), with deltaLabel Description caliber.",
+            description: "delta>=0 liter (text-primary)/<0 drop (text-danger), with deltaLabel Description caliber.",
             code: `<>
   <Stat label="This month GMV" value="\u00A5128,400" delta={12.5} deltaLabel="Compared with last month" />
-  <Stat label="Refund rate" value="2.3%" delta={-4.1} deltaLabel="Compared with previous month" />
+  <Stat label="Refund rate" value="2.3%" delta={-4.1} deltaLabel="Compared with last month" />
 </>`,
             render: () => (<div className="flex flex-wrap gap-4">
           <Stat label="This month GMV" value="¥128,400" delta={12.5} deltaLabel="Compared with last month" className="w-64"/>
@@ -29,7 +29,7 @@ export const statShowcase: ShowcaseSpec = {
   label="This month GMV"
   value="\u00A5128,400"
   delta={12.5}
-  deltaLabel="From last month"
+  deltaLabel="Compared with last month"
   icon={<Activity className="size-4" />}
 />`,
             render: () => (<Stat label="This month GMV" value="¥128,400" delta={12.5} deltaLabel="Compared with last month" icon={<Activity className="size-4"/>} className="w-64"/>),
@@ -42,7 +42,7 @@ export const statShowcase: ShowcaseSpec = {
   <Stat label="Reference number of people" value="38" delta={6.4} deltaLabel="More qualified" hint="2 people have not submitted their papers" />
 </>`,
             render: () => (<div className="flex flex-wrap gap-4">
-          <Stat label="Number of questions in the question basket" value="12" hint="Maximum 200 questions" className="w-64"/>
+          <Stat label="Number of questions in the question basket" value="12" hint="Maximum of 200 questions" className="w-64"/>
           <Stat label="Reference number" value="38" delta={6.4} deltaLabel="More advanced" hint="2 people have not submitted their papers" className="w-64"/>
         </div>),
         },
@@ -75,7 +75,7 @@ export const statShowcase: ShowcaseSpec = {
         },
         {
             name: "Footnote only",
-            render: () => (<Stat label="Number of questions in the question basket" value="12" hint="Maximum 200 questions" icon={<Users className="size-4"/>} className="w-64"/>),
+            render: () => (<Stat label="Number of questions in the question basket" value="12" hint="Maximum of 200 questions" icon={<Users className="size-4"/>} className="w-64"/>),
         },
         {
             name: "Trend + Footnote",

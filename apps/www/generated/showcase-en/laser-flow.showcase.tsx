@@ -39,7 +39,7 @@ export const laserFlowShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "Dense Streamer\u00B7Fast Pulse",
+            title: "Dense streamer \u00B7 Fast pulse",
             description: "wispDensity/wispIntensity encrypts micro-streamer, flowSpeed/flowStrength enhances pulse feeling.",
             code: `<LaserFlow
   wispDensity={1.6}

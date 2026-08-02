@@ -61,10 +61,10 @@ export const beamsShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "beamNumber", type: "number", defaultValue: 12, label: "Number of beams" },
-        { prop: "beamWidth", type: "number", defaultValue: 2, label: "Beam width" },
+        { prop: "beamWidth", type: "number", defaultValue: 2, label: "Beam Width" },
         { prop: "speed", type: "number", defaultValue: 2, label: "Flow speed" },
         { prop: "scale", type: "number", defaultValue: 0.2, label: "Noise Scaling" },
-        { prop: "rotation", type: "number", defaultValue: 30, label: "Rotation angle\u00B0" },
+        { prop: "rotation", type: "number", defaultValue: 30, label: "Rotation angle \u00B0" },
         { prop: "noiseIntensity", type: "number", defaultValue: 1.75, label: "Particle strength" },
     ],
     states: [

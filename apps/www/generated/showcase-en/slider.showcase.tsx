@@ -17,7 +17,7 @@ export const sliderShowcase: ShowcaseSpec = {
         },
         {
             title: "Interval selection",
-            description: "defaultValue The passed array automatically changes to a double slider interval selection.",
+            description: "defaultValue The passed array automatically becomes a double slider interval selection.",
             code: `<Slider defaultValue={[25, 75]} showValue className="w-64" />`,
             render: () => <Slider defaultValue={[25, 75]} showValue className="w-64"/>,
         },

@@ -44,7 +44,7 @@ export const formDialogShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Pop-up form",
-            description: "trigger triggers opening, and successful submission (onFinish resolve) automatically closes.",
+            description: "trigger triggers opening, and submission is successful (onFinish resolve) automatically closes.",
             code: `<ModalForm
   title="New employee"
   trigger={<Button>New</Button>}
@@ -104,7 +104,7 @@ export const formDialogShowcase: ShowcaseSpec = {
         },
         {
             title: "Custom button copy",
-            description: "submitText / cancelText override the default submit/cancel copy.",
+            description: "submitText / cancelText overrides the default submit/cancel copy.",
             code: `<ModalForm
   title="Export report"
   submitText="Export now"

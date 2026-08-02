@@ -24,7 +24,7 @@ export const shuffleShowcase: ShowcaseSpec = {
         },
         {
             title: "Parse left",
-            description: "When shuffleDirection=left, the characters are locked in sequence from right to left, and duration controls the entire duration.",
+            description: "When shuffleDirection=left, the characters are locked from right to left, and duration controls the entire duration.",
             code: `<Shuffle
   text="DECRYPTING\u2026"
   shuffleDirection="left"

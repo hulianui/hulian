@@ -14,7 +14,7 @@ const blocked = {
 const confirmed = {
     severity: "confirm" as const,
     title: "Confirmation is required when writing meta-products",
-    message: "Do not take the initiative to write meta-products such as \"pit trampling records/candidate marks/drift description\" (users will write them after asking)",
+    message: "Don't take the initiative to write meta-products such as \"pit trampling records/candidate marks/drift explanations\" (will be written after users ask)",
     source: "Team Agreement \u00B7 Hard Constraint 5",
     violation: "~/.config/notes/skills/xxx/NOTE.md",
     suggestion: "Confirm that this is the output explicitly requested by the user before releasing it.",
@@ -53,7 +53,7 @@ export const interceptCardShowcase: ShowcaseSpec = {
         { name: "Reminder notice", render: () => <InterceptCard {...noticed}/> },
         {
             name: "Released",
-            render: () => (<InterceptCard {...blocked} overridden={{ reason: "We really need a third one this time", at: "09:13" }}/>),
+            render: () => (<InterceptCard {...blocked} overridden={{ reason: "I really need a third one this time", at: "09:13" }}/>),
         },
     ],
     examples: [

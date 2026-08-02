@@ -27,7 +27,7 @@ export const rippleButtonShowcase: ShowcaseSpec = {
         },
     ],
     controls: [{ prop: "duration", type: "select", options: ["400ms", "600ms", "900ms"], defaultValue: "600ms" }],
-    states: [{ name: "default (click the drop point to diffuse ripples)", render: () => <RippleButton>Click here to see the ripples</RippleButton> }],
+    states: [{ name: "default (Click the drop point to diffuse ripples)", render: () => <RippleButton>Click here to see the ripples</RippleButton> }],
     renderWithProps: (p) => <RippleButton duration={p.duration as string}>Click here to see the ripples</RippleButton>,
     toCode: (p) => `<RippleButton duration="${p.duration}">Click here to see the ripples</RippleButton>`,
 };

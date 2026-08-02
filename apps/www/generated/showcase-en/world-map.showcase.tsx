@@ -34,7 +34,7 @@ export const worldMapShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Single connection",
-            description: "Input the start/end point longitude and latitude, and the arc will be automatically drawn and looped.",
+            description: "Input the starting point/end point longitude and latitude, and the arc will be automatically drawn and looped.",
             code: `<WorldMap
   dots={[{ start: { lat: 39.9, lng: 116.4 }, end: { lat: 40.7, lng: -74 } }]}
 />`,
@@ -97,7 +97,7 @@ export const worldMapShowcase: ShowcaseSpec = {
     states: [
         { name: "Single connection", render: () => <Frame><WorldMap dots={single}/></Frame> },
         { name: "Multi-point radiation", render: () => <Frame><WorldMap dots={radial}/></Frame> },
-        { name: "Emerald green", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-2)"/></Frame> },
+        { name: "Emerald Green", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-2)"/></Frame> },
         { name: "Amber", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-3)"/></Frame> },
         { name: "Violet", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-4)"/></Frame> },
         { name: "Main color emphasis", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-primary)" dotColor="var(--color-muted)"/></Frame> },
@@ -107,7 +107,7 @@ export const worldMapShowcase: ShowcaseSpec = {
         { name: "Node stacking flying line", render: () => <Frame><WorldMap points={NODES} dots={radial}/></Frame> },
         { name: "Click to drill down", render: () => <Frame><WorldMap points={NODES} showLabels onPointClick={(n) => alert(`Drill down:${n.label}`)}/></Frame> },
         { name: "Airplane\u2708\uFE0F", render: () => <Frame><WorldMap dots={radial} flyingMarker="plane"/></Frame> },
-        { name: "Light spot comet tail", render: () => <Frame><WorldMap dots={multiColor} flyingMarker="comet"/></Frame> },
+        { name: "Light point comet tail", render: () => <Frame><WorldMap dots={multiColor} flyingMarker="comet"/></Frame> },
         { name: "Arrow", render: () => <Frame><WorldMap dots={radial} flyingMarker="arrow"/></Frame> },
         { name: "Node + Aircraft", render: () => <Frame><WorldMap points={NODES} dots={radial} flyingMarker="plane"/></Frame> },
         { name: "Pure base map", render: () => <Frame><WorldMap /></Frame> },

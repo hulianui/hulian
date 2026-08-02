@@ -11,7 +11,7 @@ export const textareaShowcase: ShowcaseSpec = {
         },
         {
             title: "Dimensions",
-            description: "size provides three gears: sm / md (default) / lg.",
+            description: "size provides three levels of sm / md (default) / lg.",
             code: `<>
   <Textarea size="sm" placeholder="sm" className="w-64" />
   <Textarea size="md" placeholder="md" className="w-64" />

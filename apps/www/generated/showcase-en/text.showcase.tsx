@@ -30,7 +30,7 @@ export const textShowcase: ShowcaseSpec = {
 <Text size="sm">sm Minor</Text>
 <Text size="base">base text benchmark</Text>
 <Text size="lg">lg Large text</Text>
-<Text size="xl">xl Introduction</Text>`,
+<Text size="xl">xl Instructions</Text>`,
             render: () => (<div className="flex flex-col gap-1.5">
           <Text size="xs">xs Minimal Assist</Text>
           <Text size="sm">sm Minor</Text>

@@ -17,7 +17,7 @@ const conversation: ReviewComment[] = [
         id: "c1",
         author: { name: "AI Examiner", kind: "ai" },
         severity: "major",
-        body: "This loop is at O(n\u00B2), and it will get stuck when the list is large.",
+        body: "This loop is in O(n\u00B2), and it will get stuck when the list is large.",
         time: "2 minutes ago",
     },
     { id: "c2", author: { name: "Lin Kaifa", kind: "human" }, body: "The upper limit of data volume is 50, so let's do this for now.", time: "1 minute ago" },

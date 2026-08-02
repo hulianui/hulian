@@ -38,7 +38,7 @@ export const gooeyNavShowcase: ShowcaseSpec = {
         },
         {
             title: "Specify initial selection",
-            description: "Set the uncontrolled initial highlight position via initialActiveIndex.",
+            description: "Set uncontrolled initial highlight position via initialActiveIndex.",
             code: `<GooeyNav items={items} initialActiveIndex={2} />`,
             render: () => (<Stage>
           <GooeyNav items={items} initialActiveIndex={2}/>
@@ -92,7 +92,7 @@ export const gooeyNavShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Warm Particle Palette",
+            name: "Warm particle palette",
             render: () => (<Stage>
           <GooeyNav items={items} colors={[3, 4, 5, 3]} initialActiveIndex={1}/>
         </Stage>),

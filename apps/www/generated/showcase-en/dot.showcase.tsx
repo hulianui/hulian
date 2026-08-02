@@ -43,7 +43,7 @@ export const dotShowcase: ShowcaseSpec = {
         },
         {
             title: "Any color (chart legend)",
-            description: "color connects to semantic color name / any CSS color, the same resolveTone path as ChartSeries.color and Brand.color - the fifth gear tone cannot be connected chart-1..6. Note that style={{ color }} cannot change the dots (that is the text color and is silently disabled).",
+            description: "color connects to the semantic color name / any CSS color, the same resolveTone path as ChartSeries.color and Brand.color - the fifth gear tone cannot be connected chart-1..6. Note that style={{ color }} cannot change the dots (that is the text color and is silently disabled).",
             code: `<>
   <Dot color="chart-1" />
   <Dot color="chart-2" />
@@ -62,11 +62,11 @@ export const dotShowcase: ShowcaseSpec = {
             description: "Dot As an inline primitive, it is often used as the status leader point of list items.",
             code: `<span className="inline-flex items-center gap-2">
   <Dot tone="success" />
-  Service is running
+  The service is running
 </span>`,
             render: () => (<span className="inline-flex items-center gap-2 text-sm text-foreground">
           <Dot tone="success"/>
-          Service is running
+          The service is running
         </span>),
         },
     ],

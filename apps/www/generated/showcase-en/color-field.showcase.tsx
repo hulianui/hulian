@@ -39,7 +39,7 @@ export const colorFieldShowcase: ShowcaseSpec = {
             render: () => (<span className="inline-flex items-center gap-3">
           <ColorField showSwatch={false} defaultValue="#38e8ff" className="w-32" aria-label="Colorless block"/>
           <ColorField disabled defaultValue="#6b7d93" className="w-36" aria-label="Disabled"/>
-          <ColorField invalid defaultValue="#ff6b6b" className="w-36" aria-label="Marked red"/>
+          <ColorField invalid defaultValue="#ff6b6b" className="w-36" aria-label="Marked in red"/>
         </span>),
         },
     ],
@@ -53,7 +53,7 @@ export const colorFieldShowcase: ShowcaseSpec = {
             render: () => <ColorField showSwatch={false} defaultValue="#38e8ff" className="w-32" aria-label="Colorless block"/>,
         },
         { name: "disabled", render: () => <ColorField disabled defaultValue="#6b7d93" className="w-36" aria-label="Disabled"/> },
-        { name: "invalid", render: () => <ColorField invalid defaultValue="#ff6b6b" className="w-36" aria-label="Marked red"/> },
+        { name: "invalid", render: () => <ColorField invalid defaultValue="#ff6b6b" className="w-36" aria-label="Marked in red"/> },
     ],
     renderWithProps: () => <ColorField defaultValue="#38e8ff" className="w-40" aria-label="Main color"/>,
     toCode: () => `<ColorField defaultValue="#38e8ff" className="w-40" aria-label="Main Color" />`,

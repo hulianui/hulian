@@ -52,7 +52,7 @@ export const mathTextShowcase: ShowcaseSpec = {
     ],
     states: [
         { name: "Score", render: () => <MathText>{"\\frac{16}{9}"}</MathText> },
-        { name: "Superscript", render: () => <MathText>{"y=ax^{2}+bx+c"}</MathText> },
+        { name: "superscript", render: () => <MathText>{"y=ax^{2}+bx+c"}</MathText> },
         { name: "Subscript", render: () => <MathText>{"a_1+a_2=S_n"}</MathText> },
         { name: "Root number", render: () => <MathText>{"\\sqrt{a^{2}+b^{2}}"}</MathText> },
         { name: "Fill in the blanks", render: () => <MathText>{"Can be recorded as ____ million yuan"}</MathText> },

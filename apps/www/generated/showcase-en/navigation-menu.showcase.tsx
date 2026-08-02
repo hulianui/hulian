@@ -27,7 +27,7 @@ function Demo({ delay = 100 }: {
           <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="w-56">
-              {["Document Center", "Component library", "Update log", "Status Page"].map((t) => (<li key={t}>
+              {["Document Center", "Component Library", "Update log", "Status Page"].map((t) => (<li key={t}>
                   <NavigationMenuLink href="#" className="block px-3 py-2">
                     {t}
                   </NavigationMenuLink>
@@ -45,7 +45,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Trigger + Content combination hovers to expand the shared floating layer; pure link items are directly placed in Link without Content.",
+            description: "Trigger + Content combination hover to expand the shared floating layer; pure link items are directly placed in Link without Content.",
             code: `<NavigationMenu>
   <NavigationMenuList>
     <NavigationMenuItem value="resources">
@@ -68,7 +68,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
               <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="w-56">
-                  {["Document Center", "Component library", "Update log", "Status Page"].map((t) => (<li key={t}>
+                  {["Document Center", "Component Library", "Update log", "Status Page"].map((t) => (<li key={t}>
                       <NavigationMenuLink href="#" className="block px-3 py-2">
                         {t}
                       </NavigationMenuLink>
@@ -84,7 +84,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
         },
         {
             title: "Mega panel",
-            description: "Content has free layout and can be placed in a multi-column card grid to make a large navigation panel. The panel size automatically deforms with the content.",
+            description: "Content has free layout, and you can place a multi-column card grid to make a large navigation panel, and the panel size automatically deforms with the content.",
             code: `<NavigationMenu>
   <NavigationMenuList>
     <NavigationMenuItem value="products">
@@ -128,7 +128,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
     controls: [{ prop: "delay", type: "number", defaultValue: 100, label: "Hover start delay (ms)" }],
     states: [
         { name: "Navigation menu (Product mega Panel / Resource List / Price Pure Link)", render: () => <Demo /> },
-        { name: "Zero delay (hover instant on)", render: () => <Demo delay={0}/> },
+        { name: "Zero delay (hover opens immediately)", render: () => <Demo delay={0}/> },
     ],
     renderWithProps: (p) => <Demo delay={Number(p.delay) || 0}/>,
     toCode: () => `<NavigationMenu>
@@ -136,7 +136,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
     <NavigationMenuItem value="products">
       <NavigationMenuTrigger>Product</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="grid-cols-2 gap-1">{/* NavigationMenuLink list */}</div>
+        <div className="grid grid-cols-2 gap-1">{/* NavigationMenuLink list */}</div>
       </NavigationMenuContent>
     </NavigationMenuItem>
     <NavigationMenuItem value="pricing">

@@ -10,7 +10,7 @@ export const auroraTextShowcase: ShowcaseSpec = {
         },
         {
             title: "Flow speed",
-            description: "speed controls the streamer speed magnification, the larger the value, the faster it is (default 1).",
+            description: "speed Controls the streamer speed magnification, the larger it is, the faster it is (default 1).",
             code: `<AuroraText className="text-4xl font-bold" speed={3}>
   Aurora
 </AuroraText>`,

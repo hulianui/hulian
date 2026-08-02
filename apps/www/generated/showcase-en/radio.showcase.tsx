@@ -54,7 +54,7 @@ export const radioShowcase: ShowcaseSpec = {
         </RadioGroup>),
         },
         {
-            title: "with Field calibration",
+            title: "With Field verification",
             description: "Package into Field to get labels and error prompts, and the check state will be transmitted to the circle stroke.",
             code: `<Field label="Package" error="Please select a package" className="w-72">
   <RadioGroup defaultValue="">

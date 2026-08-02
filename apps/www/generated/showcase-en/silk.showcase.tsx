@@ -136,7 +136,7 @@ export const silkShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Customized Aurora Blue and Purple",
+            name: "Customized Aurora Blue Purple",
             render: () => (<Stage>
           <Silk color="oklch(0.65 0.28 285)" speed={3} noiseIntensity={2}/>
           <div className="relative z-10 flex h-full items-center justify-center">
@@ -187,7 +187,7 @@ export const silkShowcase: ShowcaseSpec = {
               </span>
             </div>
             <h1 className="text-center text-3xl font-bold tracking-tight text-white">
-              Code Ruler・Code Measurement Platform
+              Code Measurement Platform
             </h1>
             <p className="text-center text-sm leading-relaxed text-white/50">
               Visualize code quality · Intelligent tracking of technical debt · Team performance insights

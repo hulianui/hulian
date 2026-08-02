@@ -27,7 +27,7 @@ export const floatingReactionsShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Imperative trigger",
-            description: "Use ref.emit to spray floating emoticons, and count to fire multiple ones at once. Click the button to try it.",
+            description: "By ref.emit spraying floating emoticons, count fires multiple at once. Click the button to try it.",
             code: `const ref = useRef<FloatingReactionsHandle>(null);
 
 <button onClick={() => ref.current?.emit("\u2764\uFE0F", { count: 3 })}> Like \u2764\uFE0F</button>
@@ -43,7 +43,7 @@ export const floatingReactionsShowcase: ShowcaseSpec = {
         },
         {
             title: "Automatic burst",
-            description: "Call emit regularly to simulate the exciting atmosphere of continuous likes in the live broadcast room.",
+            description: "Call emit regularly to simulate the happy atmosphere of continuous likes in the live broadcast room.",
             code: `useEffect(() => {
   const id = setInterval(() => ref.current?.emit(undefined, { count: 2 }), 500);
   return () => clearInterval(id);

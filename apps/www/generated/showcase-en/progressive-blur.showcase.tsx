@@ -26,7 +26,7 @@ export const progressiveBlurShowcase: ShowcaseSpec = {
         },
         {
             title: "Top progressive blur",
-            description: "side Switches the blur enhancement direction. The top is the most blurry, suitable for top bar adsorption scenes.",
+            description: "side Switches the blur enhancement direction. The top is the most blurry, which is suitable for the top bar adsorption scene.",
             code: `<ProgressiveBlur side="top" />`,
             render: () => <Demo side="top"/>,
         },

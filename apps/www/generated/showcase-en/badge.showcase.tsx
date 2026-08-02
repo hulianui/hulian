@@ -41,7 +41,7 @@ export const badgeShowcase: ShowcaseSpec = {
         },
         {
             title: "Tone color",
-            description: "tone provides danger (default)/brand/success/warning/neutral.",
+            description: "tone provides danger (default) / brand / success / warning / neutral.",
             code: `<>
   <Badge count={3} tone="danger" />
   <Badge count={3} tone="brand" />

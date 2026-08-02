@@ -54,7 +54,7 @@ export const splitTextShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "default (vertical bottom fade in)",
+            name: "default (vertical bottom fade-in)",
             render: () => (<SplitText text="Make development faster, more stable and more beautiful" className="text-3xl font-bold text-foreground"/>),
         },
         {
@@ -62,6 +62,6 @@ export const splitTextShowcase: ShowcaseSpec = {
             render: () => (<SplitText text="Build faster with Hulian" splitType="word" from="left" className="text-3xl font-bold text-primary"/>),
         },
     ],
-    renderWithProps: (p) => (<SplitText key={`${p.splitType}-${p.from}-${p.delay}`} text="The title of entering the market at different peaks step by step" splitType={p.splitType as "char" | "word"} from={p.from as "bottom"} delay={p.delay as number} className="text-3xl font-bold text-foreground"/>),
-    toCode: (p) => `<SplitText text="Title of peak-staggered entry step by step" splitType="${p.splitType}" from="${p.from}" delay={${p.delay}} />`,
+    renderWithProps: (p) => (<SplitText key={`${p.splitType}-${p.from}-${p.delay}`} text="The title of entering the market at different peaks section by section" splitType={p.splitType as "char" | "word"} from={p.from as "bottom"} delay={p.delay as number} className="text-3xl font-bold text-foreground"/>),
+    toCode: (p) => `<SplitText text="Title of peak staggered entry step by step" splitType="${p.splitType}" from="${p.from}" delay={${p.delay}} />`,
 };

@@ -19,7 +19,7 @@ export const targetCursorShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Container scope: The root node absolute is anchored to the parent container, the pointer appears as soon as it enters, moves to the .cursor-target element, and the four-corner crosshair expands and wraps its bounding box.",
+            description: "Container scope: The root node absolute is anchored to the parent container. The pointer appears as soon as it enters and moves to the .cursor-target element. The four-corner crosshair expands and wraps its bounding box.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl border">
   <button className="cursor-target rounded-lg border px-5 py-3">Aim at me</button>
   <button className="cursor-target rounded-lg border px-5 py-3">Try this too</button>
@@ -33,7 +33,7 @@ export const targetCursorShowcase: ShowcaseSpec = {
         },
         {
             title: "Main color cursor \u00B7 Fast rotation",
-            description: "color passes token to change the main color of the cursor. The smaller the spinDuration, the faster the four corners will rotate.",
+            description: "color passes token to change the main color of the cursor. The smaller the spinDuration is, the faster the four corners will rotate.",
             code: `<div className="relative">
   <button className="cursor-target">primary</button>
   <TargetCursor color="var(--color-primary)" spinDuration={0.8} />

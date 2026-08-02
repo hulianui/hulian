@@ -41,7 +41,7 @@ export const accordionShowcase: ShowcaseSpec = {
             code: `<Accordion defaultValue={["ship"]} className="w-80">
   <AccordionItem value="ship">
     <AccordionTrigger> How to publish the version of Hulian? </AccordionTrigger>
-    <AccordionPanel> Local master direct commit. </AccordionPanel>
+    <AccordionPanel> Local master Direct commit. </AccordionPanel>
   </AccordionItem>
   {/* ...more item */}
 </Accordion>`,
@@ -61,7 +61,7 @@ export const accordionShowcase: ShowcaseSpec = {
             code: `<Accordion defaultValue={["ship"]} className="w-80">
   <AccordionItem value="ship">
     <AccordionTrigger> How to publish the version of Hulian? </AccordionTrigger>
-    <AccordionPanel> Local master direct commit. </AccordionPanel>
+    <AccordionPanel> Local master Direct commit. </AccordionPanel>
   </AccordionItem>
   <AccordionItem value="token" disabled>
     <AccordionTrigger>How to adapt colors to light and dark? </AccordionTrigger>
@@ -73,7 +73,7 @@ export const accordionShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "multiple", type: "boolean", defaultValue: false, label: "multiple (multiple)" },
-        { prop: "disabledItem", type: "boolean", defaultValue: false, label: "Disable second item" },
+        { prop: "disabledItem", type: "boolean", defaultValue: false, label: "Disable the second item" },
     ],
     states: [
         { name: "Single opening (default closed)", render: () => <Demo multiple={false}/> },

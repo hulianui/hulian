@@ -33,7 +33,7 @@ export const containerShowcase: ShowcaseSpec = {
         },
         {
             title: "Semantic tags",
-            description: "as renders containers into semantic labels (section / main / article), decoupling layout and semantics.",
+            description: "as renders containers into semantic tags (section / main / article), decoupling layout and semantics.",
             code: `<Container as="section" size="lg">
   <YourContent />
 </Container>`,

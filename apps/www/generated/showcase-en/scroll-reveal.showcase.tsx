@@ -5,7 +5,7 @@ export const scrollRevealShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "As the container scrolls across the viewport, the entire paragraph is first slightly rotated back to the straight line, and then word by word is parsed from blurry to clear (scroll down in the box to observe).",
+            description: "As the container scrolls across the viewport, the entire paragraph is first slightly rotated back to the straight line, and then parsed from blurry to clear word by word (scroll down in the box to observe).",
             code: `<ScrollReveal className="text-xl font-semibold">
   When you scroll this block the words resolve from blur to focus one by one.
 </ScrollReveal>`,

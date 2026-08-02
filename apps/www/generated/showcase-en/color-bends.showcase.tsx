@@ -25,7 +25,7 @@ export const colorBendsShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "Custom color + high frequency",
+            title: "Custom color matching + high frequency",
             description: "colors transfers the warm color array, and increases frequency to make the ribbon thinner.",
             code: `<ColorBends
   colors={[

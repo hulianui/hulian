@@ -23,7 +23,7 @@ export const marqueeShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Children scroll left in a seamless loop, pauseOnHover pauses when hovering.",
+            description: "The children scroll to the left in a seamless loop, and pauseOnHover pauses when hovering.",
             code: `<Marquee pauseOnHover>
   {items.map((c) => (
     <Chip key={c}>{c}</Chip>
@@ -35,7 +35,7 @@ export const marqueeShowcase: ShowcaseSpec = {
         },
         {
             title: "Icon wall (fade fades out)",
-            description: "fade Add mask at both ends to fade, and add icon sub-items to make logo / icon wall look and feel.",
+            description: "fade Add mask to fade out at both ends, and add icon sub-items to make logo / icon wall look and feel.",
             code: `<Marquee fade pauseOnHover gap="1.25rem">
   {logos.map((Icon, i) => (
     <LogoTile key={i}>
@@ -62,7 +62,7 @@ export const marqueeShowcase: ShowcaseSpec = {
         </Marquee>),
         },
         {
-            title: "Vertical scroll (vertical)",
+            title: "Vertical scrolling (vertical)",
             description: "vertical rolls along the Y axis, and the height of the container needs to be fixed.",
             code: `<Marquee className="h-56" vertical fade pauseOnHover>
   {items.map((c) => (

@@ -44,7 +44,7 @@ export const contextMenuShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Right-click (or long-press) on the Trigger area to pop up the menu, and the menu is anchored to the cursor. Item supports disabled and variant=\"danger\".",
+            description: "Right-click (or long-press) on the Trigger area to pop up a menu, and the menu is anchored to the cursor. Item supports disabled and variant=\"danger\".",
             code: `<ContextMenu>
   <ContextMenuTrigger className="...right-click this area">
     Right click on this area

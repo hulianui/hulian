@@ -11,7 +11,7 @@ export const starBorderShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The default rendering is as a button, with the upper and lower meteor light strips sweeping back and forth along the stroke; the light strip color is primary token.",
+            description: "The default rendering is a button, with the upper and lower meteor light strips sweeping back and forth along the stroke; the light strip color is primary token.",
             code: `<StarBorder>Start now</StarBorder>`,
             render: () => (<Stage>
           <StarBorder>Start now</StarBorder>
@@ -27,7 +27,7 @@ export const starBorderShowcase: ShowcaseSpec = {
         },
         {
             title: "Speed and thickness",
-            description: "speed The smaller it is, the more active it is; thickness spreads the upper and lower padding to determine the thickness of the stroke.",
+            description: "speed The smaller it is, the more active it is; thickness spreads the upper and lower padding to determine the stroke thickness.",
             code: `<StarBorder speed={3} thickness={2}>
   Highly active
 </StarBorder>`,
@@ -77,7 +77,7 @@ export const starBorderShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Polymorphism: link (as=a)",
+            name: "Polymorphic: link (as=a)",
             render: () => (<Stage>
           <StarBorder as="a" color="var(--color-chart-2)" className="cursor-pointer">
             View document →

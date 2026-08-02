@@ -44,7 +44,7 @@ export const threadsShowcase: ShowcaseSpec = {
         },
         {
             title: "Amplitude and line spacing",
-            description: "amplitude controls the wire swing, and distance widens the longitudinal spacing of each wire.",
+            description: "amplitude controls the wire swing, and distance increases the longitudinal spacing of each wire.",
             code: `<Threads color="var(--color-chart-3)" amplitude={2.5} distance={0.3} />`,
             render: () => (<Stage>
           <Threads color="var(--color-chart-3)" amplitude={2.5} distance={0.3}/>
@@ -71,7 +71,7 @@ export const threadsShowcase: ShowcaseSpec = {
   <Threads color={[0.18, 0.45, 0.88]} amplitude={1.4} distance={0.2} />
   <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3 text-center">
     <h2 className="text-2xl font-bold text-white">Hulian Component Library</h2>
-    <p className="max-w-sm text-sm text-white/60">Enterprise level \u00B7 High quality \u00B7 Native adaptation of light and dark themes</p>
+    <p className="max-w-sm text-sm text-white/60">Enterprise level \u00B7 High quality \u00B7 Native adaptive light and dark themes</p>
   </div>
 </div>`,
             render: () => (<Stage height="h-80">
@@ -79,7 +79,7 @@ export const threadsShowcase: ShowcaseSpec = {
           <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
             <h2 className="text-2xl font-bold text-white">Hulian component library</h2>
             <p className="max-w-sm text-sm text-white/60">
-              Enterprise level · High quality · Native adaptation of light and dark themes
+              Enterprise level · High quality · Native adaptation to light and dark themes
             </p>
           </div>
         </Stage>),
@@ -176,7 +176,7 @@ export const threadsShowcase: ShowcaseSpec = {
           <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
             <h2 className="text-2xl font-bold text-white">Hulian component library</h2>
             <p className="max-w-sm text-sm text-white/60">
-              Enterprise level · High quality · Native adaptation of light and dark themes
+              Enterprise level · High quality · Native adaptation to light and dark themes
             </p>
           </div>
         </Stage>),

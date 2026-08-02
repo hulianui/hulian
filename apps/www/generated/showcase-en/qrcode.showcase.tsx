@@ -81,7 +81,7 @@ export const qrcodeShowcase: ShowcaseSpec = {
         },
         {
             title: "Stable density \u00B7 Automatic upgrade",
-            description: "minVersion pegs the lower limit of the version to make a group of code density consistent (the content will not jump when the content becomes longer); boostLevel is enabled by default, and you can get higher error correction for free without upgrading the version.",
+            description: "minVersion pins the lower limit of the version to make a group of code density consistent (the content will not jump when the content becomes longer); boostLevel is enabled by default, and you can get higher error correction for free without upgrading the version.",
             code: `<>
   <QRCode value="A" minVersion={4} />
   <QRCode value="https://hulian.dev/components/qrcode" minVersion={4} />

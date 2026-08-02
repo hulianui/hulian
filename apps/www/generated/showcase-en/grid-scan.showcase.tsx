@@ -13,7 +13,7 @@ export const gridScanShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Default round-trip scan; children layered over the perspective grid via relative z-10.",
+            description: "Default round-trip scan; children layered on top of perspective grid via relative z-10.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl bg-neutral-950">
   <GridScan>
     <div className="flex h-full items-center justify-center text-white/80">
@@ -31,14 +31,14 @@ export const gridScanShowcase: ShowcaseSpec = {
         },
         {
             title: "Dashed grid \u00B7 Scan forward",
-            description: "lineStyle switches the solid/dotted/dotted line, and scanDirection controls the direction of the scan belt movement.",
+            description: "lineStyle switches among solid, dashed, and dotted lines; scanDirection controls the scan direction.",
             code: `<GridScan lineStyle="dashed" scanDirection="forward" scanOpacity={0.6} />`,
             render: () => (<Stage>
           <GridScan lineStyle="dashed" scanDirection="forward" scanOpacity={0.6}/>
         </Stage>),
         },
         {
-            title: "Dotted grid + custom scan color",
+            title: "Dotted line grid + custom scan color",
             description: "gridScale The smaller the grid, the denser it is. scanColor changes the scanning pulse luminous color.",
             code: `<GridScan lineStyle="dotted" gridScale={0.07} scanColor="var(--color-chart-4)" />`,
             render: () => (<Stage>
@@ -47,7 +47,7 @@ export const gridScanShowcase: ShowcaseSpec = {
         },
         {
             title: "Sparse slow scan (wallpaper level)",
-            description: "Large gridScale + Long scanDuration + High scanSoftness Get a leisurely wide light band.",
+            description: "Large gridScale + long scanDuration + high scanSoftness to get a leisurely wide light band.",
             code: `<GridScan
   gridScale={0.18}
   scanDuration={4}

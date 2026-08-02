@@ -94,7 +94,7 @@ Average complexity **O(n log n)**, key points:
         `<Markdown size="${(p.size as string) ?? "base"}">{\``,
         `## Title`,
         ``,
-        `Text **Bold** and \\\`Code\\\``,
+        `Text **bold** and \\\`code\\\``,
         `\`}</Markdown>`,
     ].join("\\n"),
 };

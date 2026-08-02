@@ -55,7 +55,7 @@ export const lightRaysShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "Pulsating + Noise texture",
+            title: "Pulsation + Noise texture",
             description: "pulsating has overall brightness breathing, noiseAmount has superimposed subtle noise.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl"
      style={{ background: "oklch(0.13 0.02 265)" }}>
@@ -73,7 +73,7 @@ export const lightRaysShowcase: ShowcaseSpec = {
         },
         {
             title: "Bottom up shot \u00B7 Gathering narrow beam",
-            description: "bottom-center + small lightSpread gather into a narrow beam, children stacks the header (note: component root aria-hidden).",
+            description: "bottom-center + small lightSpread are gathered into a narrow beam, children is stacked with headers (note: component root aria-hidden).",
             code: `<div className="relative h-64 overflow-hidden rounded-xl"
      style={{ background: "oklch(0.13 0.02 265)" }}>
   <LightRays
@@ -136,7 +136,7 @@ export const lightRaysShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Pulsating + Noise texture",
+            name: "Pulsation + Noise texture",
             render: () => (<Stage>
           <LightRays raysOrigin="top-center" pulsating noiseAmount={0.25} raysSpeed={1.4} className="opacity-90"/>
         </Stage>),

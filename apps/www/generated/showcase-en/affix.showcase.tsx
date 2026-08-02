@@ -13,13 +13,13 @@ function AffixDemo({ offsetTop, offsetBottom, affixedClassName, }: {
     const toBottom = offsetBottom != null;
     const bar = (<Affix target={() => ref.current} offsetTop={toBottom ? undefined : (offsetTop ?? 8)} offsetBottom={offsetBottom} onChange={setAffixed} affixedClassName={affixedClassName}>
       <div className="flex items-center justify-between rounded-[var(--radius)] border border-border bg-primary px-4 py-2 text-bg">
-        <span className="text-sm font-medium">Action bar</span>
+        <span className="text-sm font-medium">Action Bar</span>
         <span className="text-xs opacity-80">{affixed ? "Adsorbed" : "Not adsorbed"}</span>
       </div>
     </Affix>);
     return (<div ref={ref} className="h-64 w-80 overflow-auto rounded-[var(--radius)] border border-border bg-surface p-4">
       <p className="mb-3 text-sm text-muted">
-        {toBottom ? "Scroll up \u2191 Let the action bar suck to the bottom" : "Scroll down \u2193 Let the action bar snap to the top"}
+        {toBottom ? "Scroll up \u2191 Let the action bar suck to the bottom" : "Scroll down \u2193 Make the action bar ceiling"}
       </p>
       {!toBottom && bar}
       <div className="mt-3 space-y-2">
@@ -42,7 +42,7 @@ export const affixShowcase: ShowcaseSpec = {
         },
         {
             title: "Bottom suction",
-            description: "Use offsetBottom instead, and pin content to the bottom when scrolling past the container bottom threshold (only takes effect when offsetTop is not given).",
+            description: "Use offsetBottom instead, nailing content to the bottom when scrolling past the container bottom threshold (only takes effect when offsetTop is not given).",
             code: `<Affix offsetBottom={8}>
   <div className="rounded border bg-primary px-4 py-2 text-bg">Operation bar</div>
 </Affix>`,

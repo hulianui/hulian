@@ -16,7 +16,7 @@ export const codeShowcase: ShowcaseSpec = {
         },
         {
             title: "Shade Variants",
-            description: "tone takes semantics token: default / primary / danger.",
+            description: "tone uses semantics token: default / primary / danger.",
             code: `<>
   <Code>const x = 1</Code>
   <Code tone="primary">--filter=www</Code>

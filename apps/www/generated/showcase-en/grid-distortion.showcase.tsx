@@ -33,7 +33,7 @@ export const gridDistortionShowcase: ShowcaseSpec = {
         },
         {
             title: "Long finish (high relaxation)",
-            description: "relaxation The closer it is to 1, the slower the ripple decays and the longer the aftertaste.",
+            description: "relaxation The closer it is to 1, the slower the ripple decay and the longer the aftertaste.",
             code: `<GridDistortion relaxation={0.96} strength={0.2} />`,
             render: () => (<Stage>
           <GridDistortion relaxation={0.96} strength={0.2}/>

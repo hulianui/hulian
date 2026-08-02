@@ -45,7 +45,7 @@ function GridDemo() {
     const bind = (f: typeof reg.first) => ({ value: f.value as string, onChange: f.onChange, onBlur: f.onBlur });
     return (<div className="w-full max-w-2xl resize-x overflow-auto rounded-[var(--radius)] border border-dashed border-border p-4">
       <ProForm form={form} columns={2} submitText="Save" onFinish={() => { }}>
-        <Field label="name">
+        <Field label="Name">
           <Input {...bind(reg.first)}/>
         </Field>
         <Field label="Last name">
@@ -100,7 +100,7 @@ export const proFormShowcase: ShowcaseSpec = {
 </ProForm>`,
             render: () => (<div className="w-full max-w-2xl">
           <ProForm columns={2} submitText="Save" onFinish={() => { }}>
-            <Field label="name">
+            <Field label="Name">
               <Input defaultValue="Hu"/>
             </Field>
             <Field label="Last name">
@@ -114,7 +114,7 @@ export const proFormShowcase: ShowcaseSpec = {
         },
         {
             title: "Bottom right aligned",
-            description: "footerAlign=right makes the operation area stick to the right; use showReset={false} to hide the reset.",
+            description: "footerAlign=right makes the operating area stick to the right; use showReset={false} to hide the reset.",
             code: `<ProForm footerAlign="right" showReset={false} submitText="Submit">
   <Field label="Remarks">
     <Input />
@@ -135,10 +135,10 @@ export const proFormShowcase: ShowcaseSpec = {
         { name: "Responsive Raster \u00B7 columns container query (narrow to single column) + Field colSpan across columns", render: () => <GridDemo /> },
     ],
     renderWithProps: () => <Demo />,
-    toCode: () => `// columns uses container query to adapt: the form narrows and automatically collapses into a single column, without handwriting breakpoints; for cross-row fields, use colSpan="full"
+    toCode: () => `// columns uses container query to adapt: the form narrows and automatically collapses into a single column, no need to hand-write breakpoints; cross-row fields use colSpan="full"
 <ProForm form={form} columns={2}>
   <Field label="name"><Input {...bindFirst} /></Field>
-  <Field label="surname"><Input {...bindLast} /></Field>
+  <Field label="Last name"><Input {...bindLast} /></Field>
   <Field label="Detailed address" colSpan="full"><Input {...bindAddr} /></Field>
 </ProForm>`,
 };

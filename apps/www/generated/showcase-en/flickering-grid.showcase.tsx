@@ -88,7 +88,7 @@ export const flickeringGridShowcase: ShowcaseSpec = {
         </Frame>),
         },
         {
-            name: "Dense cells \u00B7 High frequency flashing",
+            name: "Dense cells \u00B7 High frequency flickering",
             render: () => (<Frame>
           <FlickeringGrid className="absolute inset-0" squareSize={2} gridGap={2} flickerChance={0.7} maxOpacity={0.25}/>
         </Frame>),

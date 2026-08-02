@@ -72,7 +72,7 @@ export const treeShowcase: ShowcaseSpec = {
         </Box>),
         },
         {
-            title: "Cable",
+            title: "Connecting cable",
             description: "showLine displays hierarchical connection lines, making the structure hierarchy clearer.",
             code: `<Tree nodes={nodes} showLine defaultExpandedKeys={["components", "form"]} />`,
             render: () => (<Box>
@@ -81,7 +81,7 @@ export const treeShowcase: ShowcaseSpec = {
         },
         {
             title: "Search within the tree",
-            description: "searchable provides a search box, hit nodes are highlighted, and ancestor paths are automatically expanded.",
+            description: "searchable provides a search box, where hit nodes are highlighted and ancestor paths are automatically expanded.",
             code: `<Tree nodes={nodes} searchable searchPlaceholder="Search component" />`,
             render: () => (<Box>
           <Tree nodes={NODES} searchable searchPlaceholder="Search component"/>

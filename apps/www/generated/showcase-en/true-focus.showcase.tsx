@@ -62,7 +62,7 @@ export const trueFocusShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "blurAmount", type: "number", defaultValue: 5, label: "Out of focus blur px" },
-        { prop: "manualMode", type: "boolean", defaultValue: false, label: "Manual hover" },
+        { prop: "manualMode", type: "boolean", defaultValue: false, label: "Manual Hover" },
         { prop: "animationDuration", type: "number", defaultValue: 1.2, label: "Stay seconds" },
     ],
     states: [

@@ -38,7 +38,7 @@ export const hyperspeedShowcase: ShowcaseSpec = {
         },
         {
             title: "Full throttle (high-speed intensive)",
-            description: "speed increases the volume + density adjusts the density to create a sense of hyperspace jump acceleration.",
+            description: "speed increases the volume + density increases the density to create a sense of hyperspace jump acceleration.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl bg-black">
   <Hyperspeed speed={3} density={90} className="absolute inset-0" />
 </div>`,

@@ -49,7 +49,7 @@ export const artifactShowcase: ShowcaseSpec = {
         {
             title: "Expand by default",
             description: "defaultExpanded Let the full text be spread out at the beginning of the output.",
-            code: `<Artifact title="Draft Resume" version="v1" defaultExpanded>
+            code: `<Artifact title="Draft resume" version="v1" defaultExpanded>
   {body}
 </Artifact>`,
             render: () => (<div className="w-full max-w-md">

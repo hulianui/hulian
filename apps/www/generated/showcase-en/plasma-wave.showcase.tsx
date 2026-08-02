@@ -28,7 +28,7 @@ export const plasmaWaveShowcase: ShowcaseSpec = {
         },
         {
             title: "Oblique rotation + strong focus",
-            description: "rotationDeg The overall rotating wave belt creates oblique tension; focalLength The larger the ripples are, the more concentrated they are and the deeper they are.",
+            description: "rotationDeg The overall rotating wave belt creates oblique tension; focalLength The larger the corrugations are, the more concentrated they are and the deeper they are.",
             code: `<PlasmaWave className="absolute inset-0" rotationDeg={28} focalLength={1.3} />`,
             render: () => (<Stage>
           <PlasmaWave className="absolute inset-0" rotationDeg={28} focalLength={1.3}/>

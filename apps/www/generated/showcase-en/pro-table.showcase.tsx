@@ -204,7 +204,7 @@ export const proTableShowcase: ShowcaseSpec = {
         },
         {
             title: "Default sorting + fixed query parameters",
-            description: "defaultSorting allows request to be sorted for the first time; params is the condition for the page context to be nailed, and the shallow comparison changes will return to page 1 for rechecking. request/params can all be inlined and no requests will be repeated.",
+            description: "defaultSorting allows request to be sorted for the first time; params is the condition for nailing the page context, and the shallow comparison changes will return to page 1 for rechecking. request/params can all be inlined and no requests will be repeated.",
             code: `<ProTable
   title="Default is in descending order of monthly salary"
   columns={columns}

@@ -13,7 +13,7 @@ const DEMO_ITEMS = [
     { label: "Overview", title: "Overview Panel", description: "Centralized data view" },
     { label: "Teamwork", title: "Teamwork", description: "Seamless real-time collaboration" },
     { label: "Efficiency", title: "Automation", description: "Streamline repetitive workflows" },
-    { label: "Protection", title: "Safety protection", description: "Enterprise-level permissions and auditing", colSpan: 2 },
+    { label: "Protection", title: "Security Protection", description: "Enterprise-level permissions and auditing", colSpan: 2 },
 ];
 export const magicBentoShowcase: ShowcaseSpec = {
     examples: [

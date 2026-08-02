@@ -28,7 +28,7 @@ const groups: CommandGroupData[] = [
     {
         heading: "Accounts and Topics",
         items: [
-            { value: "theme-light", label: "Switch to light theme", keywords: "theme light theme light bright", icon: <Sun /> },
+            { value: "theme-light", label: "Switch to light theme", keywords: "theme light bright", icon: <Sun /> },
             { value: "theme-dark", label: "Switch dark theme", keywords: "theme dark Theme Dark", icon: <Moon /> },
             { value: "profile", label: "Profile", keywords: "profile account Personal", icon: <User /> },
             { value: "settings", label: "Preferences", keywords: "settings preferences Settings Preferences", icon: <Settings />, shortcut: "\u2318," },
@@ -58,11 +58,11 @@ export const commandShowcase: ShowcaseSpec = {
 
 const groups = [
   {
-    heading: "Quick Jump",
+    heading: "Quick jump",
     items: [
       { value: "go-dashboard", label: "Dashboard", description: "Overview of today's data",
         keywords: "dashboard Home", icon: <LayoutDashboard /> },
-      { value: "go-orders", label: "Order Management", keywords: "order dd",
+      { value: "go-orders", label: "Order Management", keywords: "order Order dd",
         icon: <ShoppingCart /> },
     ],
   },
@@ -91,7 +91,7 @@ const groups = [
         },
         {
             title: "Keep open after selection",
-            description: "When closeOnSelect={false}, the panel does not close after executing the command, which is suitable for scenarios with multiple consecutive operations.",
+            description: "closeOnSelect={false} The panel does not close after executing the command, which is suitable for scenarios with multiple consecutive operations.",
             code: `<Command
   open={open}
   onOpenChange={setOpen}

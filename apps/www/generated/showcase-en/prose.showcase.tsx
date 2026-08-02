@@ -40,7 +40,7 @@ export const proseShowcase: ShowcaseSpec = {
   </p>
   <ul>
     <li>Zero dependency, can be rendered in RSC</li>
-    <li> For emphasis, use <strong>bold</strong> and <em>italic</em></li>
+    <li> emphasize with <strong>bold</strong> and <em>italic</em></li>
   </ul>
   <blockquote> Typography is a silent design. </blockquote>
 </Prose>`,
@@ -54,7 +54,7 @@ export const proseShowcase: ShowcaseSpec = {
   <p> is suitable for dense scenes such as sidebar descriptions and long text in cards. The rest of the layout rules remain consistent. </p>
   <ul>
     <li>Sidebar Document</li>
-    <li>Rich text in card</li>
+    <li>Rich text in the card</li>
   </ul>
 </Prose>`,
             render: () => (<Prose size="sm" className="max-w-2xl">

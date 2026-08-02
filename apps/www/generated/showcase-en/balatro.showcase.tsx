@@ -23,7 +23,7 @@ export const balatroShowcase: ShowcaseSpec = {
           <Balatro />
           <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2">
             <p className="text-2xl font-bold tracking-tight text-white/90">Balatro</p>
-            <p className="text-sm text-white/50">Spiral Oil Paint WebGL Background</p>
+            <p className="text-sm text-white/50">Spiral oil paint WebGL background</p>
           </div>
         </Stage>),
         },
@@ -83,7 +83,7 @@ export const balatroShowcase: ShowcaseSpec = {
           <Balatro />
           <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2">
             <p className="text-2xl font-bold tracking-tight text-white/90">Balatro</p>
-            <p className="text-sm text-white/50">Spiral Oil Paint WebGL Background</p>
+            <p className="text-sm text-white/50">Spiral oil paint WebGL background</p>
           </div>
         </Stage>),
         },

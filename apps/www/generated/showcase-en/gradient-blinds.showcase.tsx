@@ -65,7 +65,7 @@ export const gradientBlindsShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "blindCount", type: "number", defaultValue: 16, label: "Number of louvers" },
-        { prop: "angle", type: "number", defaultValue: 0, label: "Rotation angle\u00B0" },
+        { prop: "angle", type: "number", defaultValue: 0, label: "Rotation angle \u00B0" },
         { prop: "noise", type: "number", defaultValue: 0.3, label: "Noise intensity" },
         {
             prop: "shineDirection",

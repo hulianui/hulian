@@ -7,7 +7,7 @@ export const heroVideoDialogShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Pass the thumbnail + video address embed, click the thumbnail to pop up the centered video layer (Esc / point mask off).",
+            description: "Pass the thumbnail + video address embed, click on the thumbnail to pop up the centered video layer (Esc / point mask off).",
             code: `<HeroVideoDialog
   thumbnailSrc="/cover.jpg"
   thumbnailAlt="Product Preview"

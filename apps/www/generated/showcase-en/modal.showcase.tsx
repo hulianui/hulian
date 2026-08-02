@@ -7,7 +7,7 @@ export const modalShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Confirmation dialog box",
-            description: "modal.confirm Command-style pop-up window with cancel/confirm double keys (requires a <ModalProvider /> on the page).",
+            description: "modal.confirm Command-style pop-up window with Cancel/Confirm double keys (requires a <ModalProvider /> on the page).",
             code: `modal.confirm({
   title: "Confirm to delete this record?",
   content: "Cannot be restored after deletion.",
@@ -27,7 +27,7 @@ export const modalShowcase: ShowcaseSpec = {
             title: "Information prompt type",
             description: "info / success / error / warning Derive different icons and main colors, and only render a single OK key.",
             code: `<>
-  <Button onClick={() => modal.info({ title: "System prompt", content: "New version has been released." })}>info</Button>
+  <Button onClick={() => modal.info({ title: "System prompts", content: "A new version has been released." })}>info</Button>
   <Button onClick={() => modal.success({ title: "The operation was successful", content: "The data has been saved." })}>success</Button>
   <Button onClick={() => modal.error({ title: "Operation failed", content: "Network abnormality, please try again later." })}>error</Button>
   <Button onClick={() => modal.warning({ title: "Attention", content: "The current space is about to be exhausted." })}>warning</Button>

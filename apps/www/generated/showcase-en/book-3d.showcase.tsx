@@ -33,7 +33,7 @@ export const book3dShowcase: ShowcaseSpec = {
         },
         {
             title: "Bookshelf Arrangement",
-            description: "Multiple books side by side, hover to correct each one.",
+            description: "Multiple books side by side, hover over to correct each one.",
             code: `<div className="flex flex-wrap gap-8">
   <Book3D title="CSS" subtitle="Convert" ribbon="NEW" coverColor={{ from: "#f7b733", to: "#e0992b" }} />
   <Book3D title="JS" subtitle="FUNCTION" coverColor={{ from: "#5aa6e0", to: "#3f7fc0" }} />

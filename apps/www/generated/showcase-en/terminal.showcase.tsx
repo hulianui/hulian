@@ -18,7 +18,7 @@ export const terminalShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "lines is rendered line by line, and when mounted, it fades in according to the lineDelay order.",
+            description: "lines is rendered line by line, and when mounted, it fades in the order of lineDelay.",
             code: `<Terminal
   lines={[
     { prompt: "$", text: "pnpm add @hulianui/ui", tone: "command" },

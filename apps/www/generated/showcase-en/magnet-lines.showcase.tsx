@@ -64,7 +64,7 @@ export const magnetLinesShowcase: ShowcaseSpec = {
     controls: [
         { prop: "rows", type: "number", defaultValue: 9, label: "Number of lines" },
         { prop: "columns", type: "number", defaultValue: 9, label: "Number of columns" },
-        { prop: "baseAngle", type: "number", defaultValue: -10, label: "Initial angle \u00B0" },
+        { prop: "baseAngle", type: "number", defaultValue: -10, label: "Initial angle\u00B0" },
     ],
     states: [
         {
@@ -80,7 +80,7 @@ export const magnetLinesShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Sparse thick lines (6\u00D76\u00B7Brand color)",
+            name: "Sparse thick lines (6\u00D76\u00B7brand color)",
             render: () => (<Stage>
           <MagnetLines rows={6} columns={6} containerSize="16rem" lineWidth="0.8rem" lineHeight="3rem" lineColor="var(--color-primary)"/>
         </Stage>),

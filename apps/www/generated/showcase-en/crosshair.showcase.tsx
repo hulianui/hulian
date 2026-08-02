@@ -16,7 +16,7 @@ export const crosshairShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Component self-rendering absolute inset-0 is filled with the parent crosshair layer, and the following crosshair will appear when the mouse is moved into it.",
+            description: "Component self-rendering absolute inset-0 is covered with the parent crosshair layer, and the following crosshair will appear when the mouse is moved into it.",
             code: `<div
   className="relative h-56 overflow-hidden rounded-xl"
   style={{ background: "oklch(0.14 0.02 255)" }}

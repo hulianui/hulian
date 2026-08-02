@@ -16,7 +16,7 @@ export const emptyShowcase: ShowcaseSpec = {
             code: `<Empty title="No project yet" description="Create your first project to get started">
   <Button size="sm">New project</Button>
 </Empty>`,
-            render: () => (<Empty title="No projects yet" description="Create your first project and get started">
+            render: () => (<Empty title="No projects yet" description="Create your first project to get started">
           <Button size="sm">New project</Button>
         </Empty>),
         },
@@ -45,7 +45,7 @@ export const emptyShowcase: ShowcaseSpec = {
         },
         {
             name: "With operation",
-            render: () => (<Empty title="No projects yet" description="Create your first project and get started">
+            render: () => (<Empty title="No projects yet" description="Create your first project to get started">
           <Button size="sm">New project</Button>
         </Empty>),
         },

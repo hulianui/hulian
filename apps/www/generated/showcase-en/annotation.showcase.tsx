@@ -68,7 +68,7 @@ export const annotationShowcase: ShowcaseSpec = {
             title: "Tone color",
             description: "tone only dyes and annotates itself (the background color of the highlighter is derived from it), and the annotated text remains in its original color. rainbow is a cycle of hues, purely for decoration; it will stop at the starting color when the animation preference is reduced.",
             code: `<Annotation note="Neutral" tone="neutral">Default</Annotation>
-<Annotation note="Main color" tone="primary">Accent</Annotation>
+<Annotation note="Main Color" tone="primary">Accent</Annotation>
 <Annotation note="Correct answer" tone="success">Passed</Annotation>
 <Annotation note="Attention" tone="warning">Warning</Annotation>
 <Annotation note="pit" tone="danger">Danger</Annotation>
@@ -110,8 +110,8 @@ export const annotationShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Tag ReactNode",
-            description: "note is a real DOM node rather than a content pseudo-element of CSS, so it can be placed in any ReactNode - embedded code, links, emphasis, etc., and can be read by screen readers.",
+            title: "Label ReactNode",
+            description: "note is a real DOM node rather than a content pseudo-element of CSS, so it can be placed in any ReactNode - embedded code, links, emphasis, and can be read by screen readers.",
             code: `<Annotation
   note={<>See <code>docs/specs</code></>}
   side="e"
@@ -130,7 +130,7 @@ export const annotationShowcase: ShowcaseSpec = {
         {
             title: "Handwritten fonts and alignment",
             description: "The Chinese fonts (Handwritten/Pianpian/Xingkai) in the handwriting font stack are system fonts, which are only available if they are installed; if they are not installed, they will fall back to the main text fonts, and the tilt angle and color matching are still there. To be more restrained in formal documents, you can use handwritten={false} with rotate={0}.",
-            code: `<Annotation note="Handwriting \u00B7 Default slanted" side="n">Default</Annotation>
+            code: `<Annotation note="Handwriting \u00B7 Default slant" side="n">Default</Annotation>
 <Annotation note="Text \u00B7 Straighten" side="n" handwritten={false} rotate={0}>Restraint</Annotation>`,
             render: () => (<div className="flex items-center justify-center gap-x-24 px-10 py-16 text-[0.95rem]">
           <Annotation note="Handwriting · Default italic" side="n" labelWidth={120}>
@@ -187,7 +187,7 @@ export const annotationShowcase: ShowcaseSpec = {
         {
             name: "Just circle without note",
             render: () => (<div className="px-8 py-8">
-          <Annotation tone="primary">This paragraph</Annotation>
+          <Annotation tone="primary">This section</Annotation>
         </div>),
         },
         {

@@ -11,9 +11,9 @@ function Stage({ children }: {
 const SAMPLE = [
     { text: "Hanshu" },
     { text: "Han Duo" },
-    { text: "Hanjian" },
-    { text: "Hanfu" },
-    { text: "Hanbo" },
+    { text: "Hanship" },
+    { text: "Han Fu" },
+    { text: "Han Bo" },
     { text: "Hanyun" },
     { text: "Hanku" },
     { text: "Han Shen" },
@@ -22,7 +22,7 @@ export const circularGalleryShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Just pass in items, scroll wheel/drag to pan, and seamlessly cycle from beginning to end; use the built-in placeholder card if you don't pass in items.",
+            description: "Just pass in items, scroll wheel/drag to pan, start and end seamlessly cycle; use the built-in placeholder card if you don't pass in items.",
             code: `<div
   className="relative h-72 overflow-hidden rounded-xl"
   style={{ background: "oklch(0.14 0.02 255)" }}

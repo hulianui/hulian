@@ -46,7 +46,7 @@ export const splashCursorShowcase: ShowcaseSpec = {
         },
         {
             title: "Light and soft",
-            description: "opacity Darken the content and stack it under the light content to avoid overpowering the content.",
+            description: "opacity Darken the content and stack it below the light content to avoid overpowering the content.",
             code: `<SplashCursor opacity={0.7} splatRadius={48} />`,
             render: () => (<Stage dark={false} hint="Light base can also be layered with colors">
           <SplashCursor opacity={0.7} splatRadius={48}/>
@@ -80,7 +80,7 @@ export const splashCursorShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Light base \u00B7 Soft",
+            name: "Light color base \u00B7 Soft",
             render: () => (<Stage dark={false} hint="Light base can also be layered with colors">
           <SplashCursor opacity={0.7} splatRadius={48}/>
         </Stage>),

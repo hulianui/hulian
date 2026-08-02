@@ -45,7 +45,7 @@ export const safeAreaShowcase: ShowcaseSpec = {
     states: [
         { name: "Full edge (min 16)", render: () => <Demo min={16}/> },
         { name: "Bottom only (min 24)", render: () => <Demo edges={["bottom"]} min={24}/> },
-        { name: "Horizontal direction (min 20)", render: () => <Demo edges="horizontal" min={20}/> },
+        { name: "Horizontal orientation (min 20)", render: () => <Demo edges="horizontal" min={20}/> },
     ],
     renderWithProps: () => <Demo min={16}/>,
     toCode: () => `<SafeArea edges="all" min={0}>

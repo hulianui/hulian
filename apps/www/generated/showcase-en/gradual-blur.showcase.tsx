@@ -28,7 +28,7 @@ export const gradualBlurShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Put it into the container of relative + overflow-hidden, and apply a layer of gradual softening from clear to blur along the edge specified by position.",
+            description: "Put it into the container of relative + overflow-hidden, and apply a layer of progressive softening from clear to blur along the edge specified by position.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl">
   {/* ...lower content... */}
   <GradualBlur position="bottom" height="7rem" />

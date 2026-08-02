@@ -8,7 +8,7 @@ export const resultShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Successful result",
-            description: "Successful feedback after the operation is completed, the content slot carries supplementary information, and the children slot holds subsequent operations.",
+            description: "Success feedback after the operation is completed, the content slot carries supplementary information, and the children slot holds subsequent operations.",
             code: `<Result status="success" title="Payment successful" subTitle="Order #2024-0612 has been completed and is expected to ship within 3 days.">
   <Button size="sm">View order</Button>
   <Button size="sm" variant="outline">Return to homepage</Button>
@@ -63,7 +63,7 @@ export const resultShowcase: ShowcaseSpec = {
             title: "Hide icon",
             description: "icon passes null without rendering the icon area, only retaining the title and description.",
             code: `<Result icon={null} status="info" title="No icon results" subTitle="Only display text, do not render top status icon." />`,
-            render: () => (<Result icon={null} status="info" title="No icon results" subTitle="Display text only and do not render the top status icon."/>),
+            render: () => (<Result icon={null} status="info" title="No icon result" subTitle="Only displays text and does not render the top status icon."/>),
         },
     ],
     controls: [
@@ -82,7 +82,7 @@ export const resultShowcase: ShowcaseSpec = {
         </Result>),
         },
         {
-            name: "failed",
+            name: "Failed",
             render: () => (<Result status="error" title="Submission failed" subTitle="Please check and modify the following information and try again." content="The account name contains illegal characters; the mobile phone number format is incorrect.">
           <Button size="sm">Return to modification</Button>
         </Result>),

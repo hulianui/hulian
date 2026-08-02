@@ -22,7 +22,7 @@ function MultiDemo({ defaultValue = [] as string[] }: {
     const [codes, setCodes] = useState<string[]>(defaultValue);
     return (<div className="w-80 space-y-2">
       <CountrySelect multiple value={codes} onChange={(v) => setCodes(v as string[])} showDialCode/>
-      <div className="text-xs text-muted">value: [{codes.join(", ") || "(empty)"}]</div>
+      <div className="text-xs text-muted">value:[{codes.join(", ") || "(empty)"}]</div>
     </div>);
 }
 export const countrySelectShowcase: ShowcaseSpec = {

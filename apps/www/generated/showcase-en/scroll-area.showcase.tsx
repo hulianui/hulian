@@ -34,7 +34,7 @@ export const scrollAreaShowcase: ShowcaseSpec = {
             title: "Vertical scroll",
             description: "Default orientation=vertical, a thin scroll bar is displayed when the content exceeds the height of the container.",
             code: `<ScrollArea className="h-48 w-72 border border-border p-4">
-  {/* Content exceeding the height of the container */}
+  {/* Content that exceeds the height of the container */}
 </ScrollArea>`,
             render: () => <Vertical />,
         },
@@ -47,7 +47,7 @@ export const scrollAreaShowcase: ShowcaseSpec = {
             render: () => <Horizontal />,
         },
         {
-            title: "Bidirectional scrolling",
+            title: "Bi-directional scrolling",
             description: "orientation=both, horizontal and vertical scroll bars appear at the same time and corner is added in the lower right corner.",
             code: `<ScrollArea orientation="both" className="h-48 w-72 border border-border p-4">
   {/* wide and tall content */}

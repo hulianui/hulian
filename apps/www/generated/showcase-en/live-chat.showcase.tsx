@@ -4,7 +4,7 @@ import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { LiveChat } from "../../../../packages/ui/src/live-chat/live-chat";
 import type { LiveChatItem } from "../../../../packages/ui/src/live-chat/live-chat.types";
 const NAMES = ["Abai", "momo", "Night sailing", "Fawn", "Kris", "Doudoulong", "tits", "Sea Breeze", "Nan", "Coke"];
-const MSGS = ["Hello anchor~", "How to buy this", "Ask for link", "Already following", "Let's talk about it", "So beautiful", "Squat", "Front row", "Placed an order", "Good deal"];
+const MSGS = ["Hello anchor~", "How to buy this", "Ask for link", "Already following", "Let's talk about it", "So beautiful", "Squat", "Front row", "Placed an order", "What a bargain"];
 function pick<T>(arr: T[], i: number): T {
     return arr[i % arr.length];
 }
@@ -87,7 +87,7 @@ export const liveChatShowcase: ShowcaseSpec = {
         },
     ],
     controls: [],
-    states: [{ name: "Live public screen (multiple types of messages \u00B7 Automatic scrolling \u00B7 Scroll up to display \"N new messages\" recovery button)", render: () => <LiveChatDemo /> }],
+    states: [{ name: "Live public screen (multiple types of messages \u00B7 Automatic scrolling \u00B7 Scroll up and the \"N new messages\" recovery button will appear)", render: () => <LiveChatDemo /> }],
     renderWithProps: () => <LiveChatDemo />,
     toCode: () => `<LiveChat
   items={items}

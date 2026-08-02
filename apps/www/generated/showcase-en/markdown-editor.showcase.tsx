@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { MarkdownEditor } from "../../../../packages/ui/src/markdown-editor/markdown-editor";
 import { Field } from "../../../../packages/ui/src/field";
-const SAMPLE = "# Order notes\n\nThis is a **key** explanation, including:\n\n- List item one\n- List item two\n\n> Quote block\n\n`Inline code`";
+const SAMPLE = "# Order remarks\n\nThis is a **key** explanation, including:\n\n- List item one\n- List item two\n\n> Quote block\n\n`Inline code`";
 function ControlledDemo() {
     const [md, setMd] = useState("# Real-time echo\n\nThe current markdown is displayed below");
     return (<div className="w-[32rem] space-y-2">

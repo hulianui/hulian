@@ -62,7 +62,7 @@ const [index, setIndex] = useState(0);
 />`,
             render: () => (<>
           <span className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground">
-            View larger image
+            View large image
           </span>
           <ImageViewer open={false} onOpenChange={() => { }} images={[IMAGES[0]]} index={0} onIndexChange={() => { }}/>
         </>),

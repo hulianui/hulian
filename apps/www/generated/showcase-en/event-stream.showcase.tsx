@@ -24,7 +24,7 @@ const auditEvents: EventStreamItem[] = [
         meta: "0.8ms",
         overridden: "This time we really need to record",
     },
-    { id: 6, ts: "09:14:20", tone: "info", title: "The acceptance command is executed \u00B7 Exit code 0", meta: "12.4s" },
+    { id: 6, ts: "09:14:20", tone: "info", title: "Acceptance command execution completed \u00B7 Exit code 0", meta: "12.4s" },
 ];
 const ciEvents: EventStreamItem[] = [
     { id: "a", ts: "14:02:11", tone: "info", title: "Pull code \u00B7 main@a1b2c3d", meta: "3.2s" },
@@ -60,7 +60,7 @@ export const eventStreamShowcase: ShowcaseSpec = {
         { name: "Default", render: () => <EventStream items={auditEvents}/> },
         { name: "Expand all details", render: () => <EventStream items={auditEvents} defaultExpanded/> },
         { name: "Height limit and internal roll", render: () => <EventStream items={[...auditEvents, ...ciEvents]} maxHeight={240}/> },
-        { name: "Empty", render: () => <EventStream items={[]} emptyText="There are no events yet for this session"/> },
+        { name: "Empty", render: () => <EventStream items={[]} emptyText="There are no events for this session yet"/> },
     ],
     examples: [
         {
@@ -87,7 +87,7 @@ export const eventStreamShowcase: ShowcaseSpec = {
         },
         {
             title: "Time axis right",
-            description: "When embedding a narrow column on the right side of the main content on the left, placing the axis on the right side is better suited to the line of sight.",
+            description: "When embedding the narrow column on the right side of the main content on the left, placing the axis on the right side better fits the line of sight.",
             code: `<EventStream items={events} side="right" />`,
             render: () => <EventStream items={ciEvents} side="right"/>,
         },

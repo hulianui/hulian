@@ -17,7 +17,7 @@ export const calendarShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Resident calendar panel, without triggers or floating layers - if you want \"input box + pop-up layer\", use DatePicker, which is the panel inside. The external value is ISO date string YYYY-MM-DD.",
+            description: "Resident calendar panel, without trigger or floating layer - if you want \"input box + pop-up layer\", use DatePicker, which is the panel inside. The external value is ISO date string YYYY-MM-DD.",
             code: `<Calendar defaultValue="2026-06-08" />`,
             render: () => <Calendar defaultValue="2026-06-08"/>,
         },
@@ -49,7 +49,7 @@ export const calendarShowcase: ShowcaseSpec = {
                 }}/>),
         },
         {
-            title: "Specify initial month",
+            title: "Specify the initial month",
             description: "defaultMonth only determines which screen the panel stops on, regardless of the selected value - suitable for \"no value but want to start viewing from a certain month\".",
             code: `<Calendar defaultMonth="2026-09-01" />`,
             render: () => <Calendar defaultMonth="2026-09-01"/>,

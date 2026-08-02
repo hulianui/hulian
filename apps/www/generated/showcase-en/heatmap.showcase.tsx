@@ -24,7 +24,7 @@ export const heatmapShowcase: ShowcaseSpec = {
         },
         {
             title: "Contribution Activity Diagram",
-            description: "GitHub-style 12-week activity heat with the grid turned down for a more compact fit.",
+            description: "GitHub-style 12-week active heat with the grid turned down for a more compact fit.",
             code: `<Heatmap
   data={contribData}
   xLabels={weeks}
@@ -90,7 +90,7 @@ export const heatmapShowcase: ShowcaseSpec = {
     controls: [
         { prop: "colorScale", type: "number", defaultValue: 5, label: "Number of color levels" },
         { prop: "cellSize", type: "number", defaultValue: 16, label: "Grid side length" },
-        { prop: "showLabels", type: "boolean", defaultValue: true, label: "Show label" },
+        { prop: "showLabels", type: "boolean", defaultValue: true, label: "Show tags" },
     ],
     states: [
         {

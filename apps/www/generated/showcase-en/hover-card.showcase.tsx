@@ -29,7 +29,7 @@ export const hoverCardShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The information card is delayed when hovering the link/entry, and is closed when removed; it is non-modal, does not lock the scroll, and does not grab the focus.",
+            description: "The information card is delayed when hovering the link/entry, and is closed when moved out; it is non-modal, does not lock the scroll, and does not grab the focus.",
             code: `<HoverCard>
   <HoverCardTrigger render={<button type="button">@HulianDesignSystem</button>} />
   <HoverCardContent>

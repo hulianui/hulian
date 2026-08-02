@@ -24,7 +24,7 @@ export const shapeBlurShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Default is rounded rectangular stroke. When the mouse is close, the soft light circle will polish the edge of the shape; color foreground token.",
+            description: "Default is rounded rectangle stroke. When the mouse is close, the soft light circle will polish the edge of the shape; color foreground token.",
             code: `<div className="relative h-64 overflow-hidden rounded-xl">
   <ShapeBlur variation="round-rect" />
 </div>`,
@@ -33,10 +33,10 @@ export const shapeBlurShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            title: "Solid circle",
+            title: "Solid Circle",
             description: "variation=\"circle-fill\", circleSize Enlarge the polished area.",
             code: `<ShapeBlur variation="circle-fill" circleSize={0.4} />`,
-            render: () => (<Stage hint="Mouse polish the solid circle">
+            render: () => (<Stage hint="Mouse polish the filled circle">
           <ShapeBlur variation="circle-fill" circleSize={0.4}/>
         </Stage>),
         },
@@ -83,7 +83,7 @@ export const shapeBlurShowcase: ShowcaseSpec = {
             prop: "color",
             type: "text",
             defaultValue: "",
-            label: "Custom color (leave blank=foreground)",
+            label: "Custom color (leave blank =foreground)",
         },
     ],
     states: [
@@ -95,7 +95,7 @@ export const shapeBlurShowcase: ShowcaseSpec = {
         },
         {
             name: "Solid circle (circle-fill)",
-            render: () => (<Stage hint="Mouse polish the solid circle">
+            render: () => (<Stage hint="Mouse polish the filled circle">
           <ShapeBlur variation="circle-fill" circleSize={0.4}/>
         </Stage>),
         },

@@ -37,7 +37,7 @@ const sections: {
         level: 2,
         paras: [
             "Anchor navigation follows the reading progress to highlight the current chapter and smoothly scrolls to the target position when clicked. It is suitable for any reading page with \"catalog on the left + long text on the right\": API document, privacy agreement, product description, section form of settings page.",
-            "Its core is a zero-dependency scrollspy: IntersectionObserver is used internally to observe each section, and the \"frontmost visible item in the document sequence\" is taken as the current anchor point; the sliding indicator bar on the left reuses the same \"Write active geometry into\" Tabs \"CSS variable, pure CSS transition smooth transition\" technique, does not rely on any animation library when running.",
+            "Its core is a zero-dependency scrollspy: Internally, IntersectionObserver is used to observe each section, and the \"frontmost visible item in the document sequence\" is taken as the current anchor point; the sliding indicator bar on the left reuses the same \"Write active geometry into\" Tabs \"CSS variable, pure CSS transition smooth transition\" technique, does not rely on any animation library when running.",
             "Scroll down this text, and you will see the highlight and indicator bar of the table of contents on the left move with the chapter you are currently reading; click on any item in the table of contents, and the right side will scroll smoothly to the corresponding section.",
         ],
     },
@@ -45,7 +45,7 @@ const sections: {
         id: "sec-guide",
         title: "Get started quickly",
         level: 2,
-        paras: ["is divided into three steps: installation, adding id to each chapter in the content area, and feeding the same structure to items of Anchor."],
+        paras: ["Divided into three steps: installation, adding id to each chapter in the content area, and feeding the same structure to items of Anchor."],
     },
     {
         id: "sec-install",
@@ -110,7 +110,7 @@ const sections: {
         title: "FAQ",
         level: 2,
         paras: [
-            "Can't click the directory? Most likely, the real scrolling body of the page is not window - just use getContainer to point to the overflow container.",
+            "Can't click on the directory? Most likely, the real scrolling body of the page is not window - just use getContainer to point to the overflow container.",
             "The highlight is always half a beat slower than the visual or misaligned? Check whether offsetTop is equal to the height of the fixed header.",
             "Want to use the browser's native hash scrolling? Connect onChange to the route and let the anchor point change be written back to URL, so that you can obtain a shareable deep link without destroying scrollspy.",
         ],
@@ -191,7 +191,7 @@ export const anchorShowcase: ShowcaseSpec = {
             render: () => <AnchorDemo />,
         },
         {
-            name: "Structure overview (secondary indentation + static)",
+            name: "Structure Overview (Level 2 Indentation + Static)",
             render: () => (<div className="rounded-[var(--radius)] border border-border p-4">
           <Anchor items={docItems} className="w-48"/>
         </div>),

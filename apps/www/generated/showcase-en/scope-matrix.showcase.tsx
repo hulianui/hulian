@@ -46,7 +46,7 @@ export const scopeMatrixShowcase: ShowcaseSpec = {
         },
         {
             title: "With syntax check",
-            description: "The component does not have built-in schema syntax checking - glob / Regular / ant The style is very different, and guessing wrong is worse than not guessing at all. If needed, please send validate.",
+            description: "The component does not have built-in pattern syntax checking - glob / Regular / ant The style is very different, and guessing wrong is worse than not guessing at all. If needed, please send validate.",
             code: `<ScopeMatrix
   allow={allow}
   deny={deny}

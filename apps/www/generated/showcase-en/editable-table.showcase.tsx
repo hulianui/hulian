@@ -48,7 +48,7 @@ export const editableTableShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Inline editing \u00B7 Add and delete lines",
-            description: "Click the editable column to enter the editing state, editor custom cell editor (drop-down/number); addable + newRow add rows, deletable delete rows; onChange returns complete new data.",
+            description: "Click the editable column to enter the editing state, editor customizes the cell editor (drop-down/number); addable + newRow adds rows, deletable deletes rows; onChange returns complete new data.",
             code: `const [data, setData] = useState(rows);
 const columns: EditableColumn<Row>[] = [
   { key: "name", title: "Name", editable: true, width: 160 },

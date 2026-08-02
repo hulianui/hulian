@@ -15,7 +15,7 @@ export const codeDiffShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage (unified single column)",
-            description: "Input oldText / newText, automatically diff line by line, add green/delete red.",
+            description: "Input oldText / newText, automatically line by line diff, add green / delete red.",
             code: `<CodeDiff filename="greet.ts" oldText={oldText} newText={newText} />`,
             render: () => (<div className="w-full max-w-xl">
           <CodeDiff filename="greet.ts" oldText={OLD} newText={NEW}/>

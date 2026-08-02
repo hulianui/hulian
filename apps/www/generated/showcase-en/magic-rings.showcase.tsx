@@ -59,7 +59,7 @@ export const magicRingsShowcase: ShowcaseSpec = {
             render: () => (<Stage>
           <MagicRings className="absolute inset-0" followMouse clickBurst hoverScale={1.25}/>
           <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-white/50">
-            Moving the mouse creates parallax · Clicking triggers the burst
+            Move the mouse to create parallax · Click to trigger the burst
           </div>
         </Stage>),
         },
@@ -68,7 +68,7 @@ export const magicRingsShowcase: ShowcaseSpec = {
         { prop: "ringCount", type: "number", defaultValue: 6, label: "Ring number 1\u201310" },
         { prop: "speed", type: "number", defaultValue: 1, label: "Speed multiplier" },
         { prop: "attenuation", type: "number", defaultValue: 10, label: "Attenuation (sharpness)" },
-        { prop: "ringGap", type: "number", defaultValue: 1.5, label: "Angular crack" },
+        { prop: "ringGap", type: "number", defaultValue: 1.5, label: "Angular Crack" },
         { prop: "blur", type: "number", defaultValue: 0, label: "Blur px" },
         { prop: "followMouse", type: "boolean", defaultValue: false, label: "Mouse Parallax" },
         { prop: "clickBurst", type: "boolean", defaultValue: false, label: "Click to explode" },
@@ -81,7 +81,7 @@ export const magicRingsShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Dense Ring + Slow Speed (Wallpaper Level)",
+            name: "Dense Ring + Slow (Wallpaper Level)",
             render: () => (<Stage>
           <MagicRings className="absolute inset-0" ringCount={9} speed={0.5} radiusStep={0.07}/>
         </Stage>),
@@ -97,7 +97,7 @@ export const magicRingsShowcase: ShowcaseSpec = {
             render: () => (<Stage>
           <MagicRings className="absolute inset-0" followMouse clickBurst hoverScale={1.25}/>
           <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-white/50">
-            Moving the mouse creates parallax · Clicking triggers the burst
+            Move the mouse to create parallax · Click to trigger the burst
           </div>
         </Stage>),
         },

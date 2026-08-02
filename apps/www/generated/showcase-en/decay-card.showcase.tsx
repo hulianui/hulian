@@ -53,11 +53,11 @@ export const decayCardShowcase: ShowcaseSpec = {
   maxDisplacement={600}
   seed={2}
 >
-  Coarse block
+  thick block
 </DecayCard>`,
             render: () => (<Stage>
           <DecayCard image={DEMO_IMG} baseFrequency={0.008} maxDisplacement={600} seed={2}>
-            Coarse block
+            thick block
           </DecayCard>
         </Stage>),
         },
@@ -110,12 +110,12 @@ export const decayCardShowcase: ShowcaseSpec = {
             name: "Rough and chunky (low frequency + large displacement)",
             render: () => (<Stage>
           <DecayCard image={DEMO_IMG} baseFrequency={0.008} maxDisplacement={600} seed={2}>
-            Coarse block
+            thick block
           </DecayCard>
         </Stage>),
         },
         {
-            name: "Small size \u00B7 Strong translation boundaries",
+            name: "Small size \u00B7 Strong translation boundary",
             render: () => (<Stage>
           <DecayCard image={DEMO_IMG} width={220} height={300} movementBound={90}>
             Mini

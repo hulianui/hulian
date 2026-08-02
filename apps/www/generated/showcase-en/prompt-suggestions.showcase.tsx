@@ -5,7 +5,7 @@ import { PromptSuggestions } from "../../../../packages/ui/src/prompt-suggestion
 function Demo() {
     const [picked, setPicked] = useState<string | null>(null);
     return (<div className="w-full max-w-lg space-y-3">
-      <PromptSuggestions title="You can try" suggestions={["Help me rewrite the home page copy", "Explain this code", "Summary of key points", "Translated into English"]} onSelect={setPicked}/>
+      <PromptSuggestions title="You can try" suggestions={["Help me rewrite the homepage copy", "Explain this code", "Summary of key points", "Translated into English"]} onSelect={setPicked}/>
       {picked && <p className="text-xs text-muted">Selected:{picked}</p>}
     </div>);
 }
@@ -19,7 +19,7 @@ export const promptSuggestionsShowcase: ShowcaseSpec = {
   onSelect={(v) => fill(v)}
 />`,
             render: () => (<div className="w-full max-w-lg">
-          <PromptSuggestions suggestions={["Help me rewrite the home page copy", "Explain this code", "Summary of key points", "Translated into English"]}/>
+          <PromptSuggestions suggestions={["Help me rewrite the homepage copy", "Explain this code", "Summary of key points", "Translated into English"]}/>
         </div>),
         },
         {
@@ -31,7 +31,7 @@ export const promptSuggestionsShowcase: ShowcaseSpec = {
   onSelect={(v) => fill(v)}
 />`,
             render: () => (<div className="w-full max-w-lg">
-          <PromptSuggestions title="You can try" suggestions={["Help me rewrite the home page copy", "Explain this code", "Summary of key points"]}/>
+          <PromptSuggestions title="You can try" suggestions={["Help me rewrite the homepage copy", "Explain this code", "Summary of key points"]}/>
         </div>),
         },
         {

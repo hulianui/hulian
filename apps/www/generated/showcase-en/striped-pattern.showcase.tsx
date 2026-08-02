@@ -20,7 +20,7 @@ export const stripedPatternShowcase: ShowcaseSpec = {
         </Frame>),
         },
         {
-            title: "Angle and Density",
+            title: "Angle and density",
             description: "angle controls the stripe inclination angle, size controls the stripe + spacer unit width - vertical sparse stripes, that is, angle=90, size increases.",
             code: `<div className="relative h-48 w-full overflow-hidden rounded-xl border border-border bg-surface">
   <StripedPattern angle={90} size={20} />
@@ -41,7 +41,7 @@ export const stripedPatternShowcase: ShowcaseSpec = {
         },
         {
             title: "Mask fade",
-            description: "Overlay mask-image to make the stripes fade out toward the edges, making the background of the block softer.",
+            description: "Overlay mask-image to make the stripes fade toward the edges and make the background of the block softer.",
             code: `<div className="relative h-48 w-full overflow-hidden rounded-xl border border-border bg-surface">
   <StripedPattern className="[mask-image:radial-gradient(closest-side,black,transparent)]" />
 </div>`,

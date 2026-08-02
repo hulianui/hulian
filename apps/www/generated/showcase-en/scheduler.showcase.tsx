@@ -53,7 +53,7 @@ export const schedulerShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Controlled usage",
-            description: "events / view / date are all controlled, state is held by consumers; onEventsChange gives back the entire set of new events (according to the Kanban controlled paradigm).",
+            description: "events / view / date are all controlled, state is held by consumers; onEventsChange gives back the entire set of new events (according to Kanban controlled paradigm).",
             code: `const [events, setEvents] = useState(INITIAL);
 const [view, setView] = useState<SchedulerView>("week");
 const [date, setDate] = useState(monday);

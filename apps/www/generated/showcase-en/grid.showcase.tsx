@@ -25,7 +25,7 @@ export const gridShowcase: ShowcaseSpec = {
         },
         {
             title: "Cross column",
-            description: "Use colSpan of GridItem to make cells span multiple columns.",
+            description: "Make cells span multiple columns using colSpan of GridItem.",
             code: `<Grid cols={3} gap={3}>
   <GridItem colSpan={2}>across 2 columns</GridItem>
   <div>3</div>
@@ -45,7 +45,7 @@ export const gridShowcase: ShowcaseSpec = {
         },
         {
             title: "Responsive columns",
-            description: "cols passes {base, sm, md, lg}, and switches the column number according to the breakpoint (static Tailwind class).",
+            description: "cols passes {base, sm, md, lg}, and press the breakpoint to switch the column number (static Tailwind class).",
             code: `<Grid cols={{ base: 1, sm: 2, md: 3 }} gap={3}>
   {items.map((it) => <Card key={it.id} {...it} />)}
 </Grid>`,
@@ -55,7 +55,7 @@ export const gridShowcase: ShowcaseSpec = {
         },
         {
             title: "Separation of row and row spacing",
-            description: "colGap / rowGap can cover gap respectively, making different horizontal and vertical spacing.",
+            description: "colGap / rowGap can cover gap respectively to create different horizontal and vertical spacing.",
             code: `<Grid cols={3} colGap={4} rowGap={2}>
   {/* 1rem between columns, 0.5rem between rows */}
 </Grid>`,

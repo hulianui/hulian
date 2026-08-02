@@ -6,7 +6,7 @@ const cancelCls = "inline-flex h-8 items-center rounded-[var(--radius)] border b
 const dangerCls = "inline-flex h-8 items-center rounded-[var(--radius)] bg-danger px-3 text-sm font-medium text-danger-foreground outline-none transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring";
 function Demo() {
     return (<AlertDialog>
-      <AlertDialogTrigger className={triggerCls}>Delete project</AlertDialogTrigger>
+      <AlertDialogTrigger className={triggerCls}>Delete item</AlertDialogTrigger>
       <AlertDialogContent title="Delete project?" description="This operation is irreversible and the project data will be permanently deleted.">
         <AlertDialogClose className={cancelCls}>Cancel</AlertDialogClose>
         <AlertDialogClose className={dangerCls}>Delete</AlertDialogClose>
@@ -26,7 +26,7 @@ export const alertDialogShowcase: ShowcaseSpec = {
   </AlertDialogContent>
 </AlertDialog>`,
             render: () => (<AlertDialog>
-          <AlertDialogTrigger className={triggerCls}>Delete project</AlertDialogTrigger>
+          <AlertDialogTrigger className={triggerCls}>Delete item</AlertDialogTrigger>
           <AlertDialogContent title="Delete project?" description="This operation is irreversible and the project data will be permanently deleted.">
             <AlertDialogClose className={cancelCls}>Cancel</AlertDialogClose>
             <AlertDialogClose className={dangerCls}>Delete</AlertDialogClose>
