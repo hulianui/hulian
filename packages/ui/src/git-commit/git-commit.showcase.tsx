@@ -32,7 +32,7 @@ export const gitCommitShowcase: ShowcaseSpec = {
     },
     {
       title: "两行排版",
-      description: "layout=\"stacked\" 信息在上、引用在下，表格/列表单元格刚需。",
+      description: 'layout="stacked" 信息在上、引用在下，表格/列表单元格刚需。',
       code: `<GitCommit
   layout="stacked"
   branch="master"
@@ -63,21 +63,32 @@ export const gitCommitShowcase: ShowcaseSpec = {
 </>`,
       render: () => (
         <div className="flex flex-col gap-2.5">
-          <GitCommit sha="cb2ae42ddd0099" branch="release" href="#cb2ae42" message="chore(release): @hulianui/ui@0.1.2" />
+          <GitCommit
+            sha="cb2ae42ddd0099"
+            branch="release"
+            href="https://example.com/#cb2ae42"
+            message="chore(release): @hulianui/ui@0.1.2"
+          />
           <GitCommit sha="f79cbb812345" shaLength={12} branch="hotfix" message="发丝边框 token" />
         </div>
       ),
     },
     {
       title: "小尺寸 · 仅引用",
-      description: "size=\"sm\" 紧凑化；省略 message 只渲分支 + 哈希引用。",
+      description: 'size="sm" 紧凑化；省略 message 只渲分支 + 哈希引用。',
       code: `<>
   <GitCommit size="sm" branch="master" sha="10577b9000" author="瑚琏" avatar={<Avatar>瑚</Avatar>} />
   <GitCommit size="sm" branch="feat/x" sha="abcdef0123" />
 </>`,
       render: () => (
         <div className="flex flex-col gap-2">
-          <GitCommit size="sm" sha="10577b9000" branch="master" author="瑚琏" avatar={<Avatar>瑚</Avatar>} />
+          <GitCommit
+            size="sm"
+            sha="10577b9000"
+            branch="master"
+            author="瑚琏"
+            avatar={<Avatar>瑚</Avatar>}
+          />
           <GitCommit size="sm" sha="abcdef0123" branch="feat/x" />
         </div>
       ),
@@ -93,10 +104,18 @@ export const gitCommitShowcase: ShowcaseSpec = {
       render: () => (
         <div className="w-[30rem] max-w-full">
           <Row>
-            <GitCommit sha="10577b9aaaa" branch="master" message="fix(www,mocks): ai-chat 部署站无响应" />
+            <GitCommit
+              sha="10577b9aaaa"
+              branch="master"
+              message="fix(www,mocks): ai-chat 部署站无响应"
+            />
           </Row>
           <Row>
-            <GitCommit sha="33434b9bbbb" branch="feat/loading" message="feat(www): 组件页加 loading 骨架" />
+            <GitCommit
+              sha="33434b9bbbb"
+              branch="feat/loading"
+              message="feat(www): 组件页加 loading 骨架"
+            />
           </Row>
         </div>
       ),
@@ -132,7 +151,12 @@ export const gitCommitShowcase: ShowcaseSpec = {
       name: "可点击短哈希 + 自定义位数",
       render: () => (
         <div className="flex flex-col gap-2.5">
-          <GitCommit sha="cb2ae42ddd0099" branch="release" href="#cb2ae42" message="chore(release): @hulianui/ui@0.1.2" />
+          <GitCommit
+            sha="cb2ae42ddd0099"
+            branch="release"
+            href="https://example.com/#cb2ae42"
+            message="chore(release): @hulianui/ui@0.1.2"
+          />
           <GitCommit sha="f79cbb812345" shaLength={12} branch="hotfix" message="发丝边框 token" />
         </div>
       ),
@@ -141,7 +165,13 @@ export const gitCommitShowcase: ShowcaseSpec = {
       name: "小尺寸 · 仅引用（无 message）",
       render: () => (
         <div className="flex flex-col gap-2">
-          <GitCommit size="sm" sha="10577b9000" branch="master" author="瑚琏" avatar={<Avatar>瑚</Avatar>} />
+          <GitCommit
+            size="sm"
+            sha="10577b9000"
+            branch="master"
+            author="瑚琏"
+            avatar={<Avatar>瑚</Avatar>}
+          />
           <GitCommit size="sm" sha="abcdef0123" branch="feat/x" />
         </div>
       ),
@@ -161,5 +191,7 @@ export const gitCommitShowcase: ShowcaseSpec = {
     </div>
   ),
   toCode: (p) =>
-    `<GitCommit\n  branch="master"\n  sha={deploy.sha}\n  message={deploy.message}${p.layout === "stacked" ? '\n  layout="stacked"' : ""}${p.size === "sm" ? '\n  size="sm"' : ""}\n/>`,
+    `<GitCommit\n  branch="master"\n  sha={deploy.sha}\n  message={deploy.message}${
+      p.layout === "stacked" ? '\n  layout="stacked"' : ""
+    }${p.size === "sm" ? '\n  size="sm"' : ""}\n/>`,
 };

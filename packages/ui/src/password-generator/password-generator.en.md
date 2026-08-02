@@ -157,7 +157,7 @@ generatePassword({ length: 8 }, () => 0); // fixed sequence → fixed result
 
 ## i18n
 
-Copy comes from [ConfigProvider](../config/config.md) at `locale.passwordGenerator`, with built-in `zhCN` and `enUS` locales. Override individual strings with `labels`, which takes priority over the locale.
+Copy comes from `ConfigProvider` at `locale.passwordGenerator`, with built-in `zhCN` and `enUS` locales. Override individual strings with `labels`, which takes priority over the locale.
 
 ## Usage guidelines
 

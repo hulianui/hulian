@@ -18,9 +18,9 @@ const items = [
     bgColor: "var(--color-chart-1)",
     textColor: "var(--color-primary-foreground)",
     links: [
-      { label: "概览", href: "#overview" },
-      { label: "定价", href: "#pricing" },
-      { label: "更新日志", href: "#changelog" },
+      { label: "概览", href: "https://example.com/#overview" },
+      { label: "定价", href: "https://example.com/#pricing" },
+      { label: "更新日志", href: "https://example.com/#changelog" },
     ],
   },
   {
@@ -28,8 +28,8 @@ const items = [
     bgColor: "var(--color-chart-2)",
     textColor: "var(--color-primary-foreground)",
     links: [
-      { label: "关于我们", href: "#about" },
-      { label: "招聘", href: "#careers" },
+      { label: "关于我们", href: "https://example.com/#about" },
+      { label: "招聘", href: "https://example.com/#careers" },
     ],
   },
   {
@@ -37,8 +37,8 @@ const items = [
     bgColor: "var(--color-chart-4)",
     textColor: "var(--color-primary-foreground)",
     links: [
-      { label: "文档", href: "#docs" },
-      { label: "社区", href: "#community" },
+      { label: "文档", href: "https://example.com/#docs" },
+      { label: "社区", href: "https://example.com/#community" },
     ],
   },
 ];
@@ -87,12 +87,7 @@ export const cardNavShowcase: ShowcaseSpec = {
 />`,
       render: () => (
         <Stage>
-          <ControlledCardNav
-            brand="瑚琏 UI"
-            items={items}
-            ctaLabel="开始使用"
-            defaultOpen
-          />
+          <ControlledCardNav brand="瑚琏 UI" items={items} ctaLabel="开始使用" defaultOpen />
         </Stage>
       ),
     },
@@ -102,12 +97,7 @@ export const cardNavShowcase: ShowcaseSpec = {
       code: `<CardNav brand="HanShip" items={items} ctaLabel={null} />`,
       render: () => (
         <Stage>
-          <ControlledCardNav
-            brand="HanShip"
-            items={items}
-            ctaLabel={null}
-            defaultOpen
-          />
+          <ControlledCardNav brand="HanShip" items={items} ctaLabel={null} defaultOpen />
         </Stage>
       ),
     },

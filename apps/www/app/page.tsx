@@ -208,7 +208,7 @@ export default function Home() {
             className="w-full [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
           >
             {STACK_TAGS.map((tag) => (
-              <Tag key={tag} variant="soft" className="mx-1 whitespace-nowrap">
+              <Tag key={tag} variant="solid" className="mx-1 whitespace-nowrap">
                 {tag}
               </Tag>
             ))}

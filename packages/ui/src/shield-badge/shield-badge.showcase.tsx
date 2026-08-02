@@ -68,7 +68,8 @@ export const shieldBadgeShowcase: ShowcaseSpec = {
     },
     {
       title: "皮肤 · 外形",
-      description: "solid 贴纸感（默认）/ soft 柔和（嵌进正文不抢戏）/ outline 描边；shape 换圆角。",
+      description:
+        "solid 贴纸感（默认）/ soft 柔和（嵌进正文不抢戏）/ outline 描边；shape 换圆角。",
       code: `<>
   <ShieldBadge label="build" value="passing" tone="success" variant="soft" />
   <ShieldBadge label="build" value="passing" tone="success" variant="outline" />
@@ -100,22 +101,37 @@ export const shieldBadgeShowcase: ShowcaseSpec = {
 </>`,
       render: () => (
         <ShieldBadgeGroup gap="md">
-          <ShieldBadge label="stars" value={compactCount(1500)} icon={<GithubMark />} href="#stars" />
-          <ShieldBadge value="sponsor" color="chart-5" href="#sponsor" />
+          <ShieldBadge
+            label="stars"
+            value={compactCount(1500)}
+            icon={<GithubMark />}
+            href="https://example.com/#stars"
+          />
+          <ShieldBadge value="sponsor" color="chart-5" href="https://example.com/#sponsor" />
           <ShieldBadge label="node" value=">=22" size="sm" tone="neutral" />
         </ShieldBadgeGroup>
       ),
     },
   ],
   controls: [
-    { prop: "variant", type: "select", options: ["solid", "soft", "outline"], defaultValue: "solid" },
+    {
+      prop: "variant",
+      type: "select",
+      options: ["solid", "soft", "outline"],
+      defaultValue: "solid",
+    },
     {
       prop: "tone",
       type: "select",
       options: ["neutral", "brand", "success", "warning", "danger"],
       defaultValue: "brand",
     },
-    { prop: "shape", type: "select", options: ["rounded", "square", "pill"], defaultValue: "rounded" },
+    {
+      prop: "shape",
+      type: "select",
+      options: ["rounded", "square", "pill"],
+      defaultValue: "rounded",
+    },
     { prop: "size", type: "select", options: ["md", "sm"], defaultValue: "md" },
     { prop: "label", type: "text", defaultValue: "license" },
     { prop: "value", type: "text", defaultValue: "MIT" },
@@ -156,8 +172,13 @@ export const shieldBadgeShowcase: ShowcaseSpec = {
       name: "可点击 · 单段 · 小尺寸",
       render: () => (
         <ShieldBadgeGroup gap="md">
-          <ShieldBadge label="stars" value={compactCount(1500)} icon={<GithubMark />} href="#stars" />
-          <ShieldBadge value="sponsor" color="chart-5" href="#sponsor" />
+          <ShieldBadge
+            label="stars"
+            value={compactCount(1500)}
+            icon={<GithubMark />}
+            href="https://example.com/#stars"
+          />
+          <ShieldBadge value="sponsor" color="chart-5" href="https://example.com/#sponsor" />
           <ShieldBadge label="node" value=">=22" size="sm" tone="neutral" />
         </ShieldBadgeGroup>
       ),

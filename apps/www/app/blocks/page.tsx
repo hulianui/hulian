@@ -11,7 +11,10 @@ import { DOCS_LOCALE } from "../../lib/docs-locale";
 
 const content = getIntlayer("blocks", DOCS_LOCALE).index;
 
-export const metadata: Metadata = { title: content.metadataTitle };
+export const metadata: Metadata = {
+  title: `${content.metadataTitle}`,
+  description: `${content.description}`,
+};
 
 // 区块画廊 —— 每张卡渲染区块真实缩略图,先看到样子再点进详情。
 // 卡片用 stretched-link:Link 是绝对定位覆盖层(非内容祖先),避免缩略图里区块自带的 <a> 被嵌套进卡片 <a>。

@@ -52,7 +52,7 @@ export default function ComponentsIndexPage() {
                           {m.tags?.includes("animated") && (
                             <Sparkles
                               className="size-3.5 shrink-0 text-primary/60"
-                              aria-label="动效"
+                              aria-label={DOCS_LOCALE === "en" ? "Animated" : "动效"}
                             />
                           )}
                         </div>
@@ -69,13 +69,17 @@ export default function ComponentsIndexPage() {
 
       {/* 数据层 mock 能力总览（保留 P1 的 faker / MSW 演示可达）*/}
       <section className="space-y-4">
-        <h2 className="text-sm font-medium text-muted">真实样例数据（faker）</h2>
+        <h2 className="text-sm font-medium text-muted">
+          {DOCS_LOCALE === "en" ? "Realistic sample data (Faker)" : "真实样例数据（faker）"}
+        </h2>
         <div className="rounded-[var(--radius)] border border-border p-4">
           <SampleTable />
         </div>
       </section>
       <section className="space-y-4">
-        <h2 className="text-sm font-medium text-muted">异步加载 + 分页（MSW）</h2>
+        <h2 className="text-sm font-medium text-muted">
+          {DOCS_LOCALE === "en" ? "Async loading and pagination (MSW)" : "异步加载 + 分页（MSW）"}
+        </h2>
         <div className="rounded-[var(--radius)] border border-border p-4">
           <AsyncUsers />
         </div>

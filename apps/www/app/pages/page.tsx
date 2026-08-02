@@ -11,7 +11,10 @@ import { DOCS_LOCALE } from "../../lib/docs-locale";
 
 const content = getIntlayer("pages", DOCS_LOCALE).index;
 
-export const metadata: Metadata = { title: content.metadataTitle };
+export const metadata: Metadata = {
+  title: `${content.metadataTitle}`,
+  description: `${content.description}`,
+};
 
 // 页面画廊 —— 每张卡渲染整页真实缩略图(FitScreen 缩放·设计高度调大多露几屏)。
 //

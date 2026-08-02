@@ -35,10 +35,10 @@ const products = [
 ];
 
 const navItems = [
-  { label: "方案", href: "#solutions" },
-  { label: "定价", href: "#pricing" },
-  { label: "文档", href: "#docs" },
-  { label: "博客", href: "#blog" },
+  { label: "方案", href: "https://example.com/#solutions" },
+  { label: "定价", href: "https://example.com/#pricing" },
+  { label: "文档", href: "https://example.com/#docs" },
+  { label: "博客", href: "https://example.com/#blog" },
 ];
 
 export function NavbarBlock() {
@@ -92,12 +92,12 @@ export function NavbarBlock() {
       {/* 右：登录 + 免费开始 */}
       <NavbarContent justify="end" className="hidden md:flex">
         <NavbarItem className="px-0">
-          <Button variant="ghost" size="sm" render={<Link href="#login" />}>
+          <Button variant="ghost" size="sm" render={<Link href="https://example.com/#login" />}>
             登录
           </Button>
         </NavbarItem>
         <NavbarItem className="px-0">
-          <Button size="sm" render={<Link href="#signup" />}>
+          <Button size="sm" render={<Link href="https://example.com/#signup" />}>
             免费开始
           </Button>
         </NavbarItem>
@@ -125,10 +125,10 @@ export function NavbarBlock() {
               </Link>
             ))}
             <div className="mt-4 flex flex-col gap-2">
-              <Button variant="outline" render={<Link href="#login" />}>
+              <Button variant="outline" render={<Link href="https://example.com/#login" />}>
                 登录
               </Button>
-              <Button render={<Link href="#signup" />}>免费开始</Button>
+              <Button render={<Link href="https://example.com/#signup" />}>免费开始</Button>
             </div>
           </nav>
         </DrawerContent>

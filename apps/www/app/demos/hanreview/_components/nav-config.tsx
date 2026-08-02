@@ -1,7 +1,14 @@
 import { copy } from "./nav-config.content";
-import { LayoutDashboard, GitPullRequest, ListChecks, ShieldCheck, Network, Settings } from "lucide-react";
+import {
+  LayoutDashboard,
+  GitPullRequest,
+  ListChecks,
+  ShieldCheck,
+  Network,
+  Settings,
+} from "lucide-react";
 import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
-import { demoHref } from "../../_components/demo-locale";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
 export const HR_ROOT = "/demos/hanreview";
 
@@ -11,15 +18,29 @@ export const menuItems: NavMenuNode[] = [
     type: "group",
     key: "g-overview",
     label: copy("overview"),
-    children: [{ key: HR_ROOT, label: copy("codeHealthOverview"), icon: <LayoutDashboard className="size-4" /> }],
+    children: [
+      {
+        key: HR_ROOT,
+        label: copy("codeHealthOverview"),
+        icon: <LayoutDashboard className="size-4" />,
+      },
+    ],
   },
   {
     type: "group",
     key: "g-review",
     label: copy("review"),
     children: [
-      { key: `${HR_ROOT}/reviews`, label: copy("queueReview"), icon: <GitPullRequest className="size-4" /> },
-      { key: `${HR_ROOT}/findings`, label: copy("theCoreOfTheProblem"), icon: <ListChecks className="size-4" /> },
+      {
+        key: `${HR_ROOT}/reviews`,
+        label: copy("queueReview"),
+        icon: <GitPullRequest className="size-4" />,
+      },
+      {
+        key: `${HR_ROOT}/findings`,
+        label: copy("theCoreOfTheProblem"),
+        icon: <ListChecks className="size-4" />,
+      },
     ],
   },
   {
@@ -27,15 +48,25 @@ export const menuItems: NavMenuNode[] = [
     key: "g-policy",
     label: copy("strategy"),
     children: [
-      { key: `${HR_ROOT}/gates`, label: copy("qualityAccessControl"), icon: <ShieldCheck className="size-4" /> },
-      { key: `${HR_ROOT}/routing`, label: copy("intelligentRouting"), icon: <Network className="size-4" /> },
+      {
+        key: `${HR_ROOT}/gates`,
+        label: copy("qualityAccessControl"),
+        icon: <ShieldCheck className="size-4" />,
+      },
+      {
+        key: `${HR_ROOT}/routing`,
+        label: copy("intelligentRouting"),
+        icon: <Network className="size-4" />,
+      },
     ],
   },
   {
     type: "group",
     key: "g-system",
     label: copy("system"),
-    children: [{ key: `${HR_ROOT}/settings`, label: copy("setup"), icon: <Settings className="size-4" /> }],
+    children: [
+      { key: `${HR_ROOT}/settings`, label: copy("setup"), icon: <Settings className="size-4" /> },
+    ],
   },
 ];
 
@@ -64,11 +95,15 @@ const META: Record<string, string> = {
 
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
   if (pathname === HR_ROOT) return [{ label: copy("codeHealthOverview3"), current: true }];
-  const items: BreadcrumbItem[] = [{ label: copy("overview2"), href: demoHref(HR_ROOT) }];
+  const items: BreadcrumbItem[] = [{ label: copy("overview2"), href: demoLocationHref(HR_ROOT) }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== HR_ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : demoHref(selected), current: isLeaf });
+    items.push({
+      label: META[selected] ?? "",
+      href: isLeaf ? undefined : demoLocationHref(selected),
+      current: isLeaf,
+    });
   }
   if (selected === `${HR_ROOT}/reviews` && pathname !== `${HR_ROOT}/reviews`) {
     items.push({ label: copy("reviewTheDetails"), current: true });

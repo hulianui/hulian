@@ -34,11 +34,16 @@ export async function generateMetadata({
   const display = pageMeta(p);
   const title = content.metadataTitle.replace("{name}", display.name);
   const description = content.metadataDescription.replace("{description}", display.description);
-  const path = withDocsBasePath(`/pages/${slug}`);
+  const barePath = `/pages/${slug}`;
+  const path = withDocsBasePath(barePath);
+  const englishPath = withDocsBasePath(barePath, "en");
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates: {
+      canonical: path,
+      languages: { "zh-CN": barePath, en: englishPath, "x-default": englishPath },
+    },
     openGraph: { type: "article", title, description, url: path, images: ["/opengraph-image.png"] },
   };
 }

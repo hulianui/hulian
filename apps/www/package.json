@@ -11,7 +11,9 @@
     "start": "next start -p 5512",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "demos:coverage": "node scripts/demos-coverage.mjs"
+    "demos:coverage": "node scripts/demos-coverage.mjs",
+    "i18n:output": "node ../../scripts/check-english-output.mjs out",
+    "i18n:links": "node ../../scripts/check-bilingual-links.mjs out"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

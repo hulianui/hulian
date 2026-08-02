@@ -10,8 +10,8 @@ const content = getIntlayer("start", DOCS_LOCALE);
 const guide = aiGuide(DOCS_LOCALE);
 
 export const metadata: Metadata = {
-  title: content.metadataTitle,
-  description: content.metadataDescription,
+  title: `${content.metadataTitle}`,
+  description: `${content.metadataDescription}`,
 };
 
 export default function StartPage() {

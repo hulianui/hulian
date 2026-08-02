@@ -6,12 +6,11 @@ import { DocsProviders } from "../components/docs-providers";
 import { MswProvider } from "../components/msw-provider";
 import { RouteProgress } from "../components/route-progress";
 import { RegionMirrorBanner } from "../components/region-mirror-banner";
-import { DOCS_LOCALE, withDocsBasePath } from "../lib/docs-locale";
+import { DOCS_LOCALE } from "../lib/docs-locale";
 import { languageInitScript } from "../lib/language-init-script";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
 
 const english = DOCS_LOCALE === "en";
-const canonicalPath = withDocsBasePath("/", DOCS_LOCALE);
 const localizedSite = english
   ? {
       name: "Hulian UI",
@@ -56,10 +55,6 @@ export const metadata: Metadata = {
   keywords: localizedSite.keywords,
   applicationName: localizedSite.name,
   authors: [{ name: english ? "Abel" : "瑚琏 Abel" }],
-  alternates: {
-    canonical: canonicalPath,
-    languages: { "zh-CN": "/", en: "/en", "x-default": "/en" },
-  },
   // Google Search Console 站点验证（meta 标签法）。另有 public/google*.html 文件法双保险。
   verification: { google: "BAmlAt7dL6BpLmwByJZLoKqfl--ARBLLR68KUFxE-Is" },
   openGraph: {

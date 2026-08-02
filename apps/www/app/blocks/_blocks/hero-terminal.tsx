@@ -38,7 +38,8 @@ export function HeroTerminalBlock({ ctaHref = "#" }: { ctaHref?: string }) {
           </Heading>
 
           <Text tone="muted" size="lg" className="max-w-md">
-            零配置、零运维。瀚云 CLI 自动识别框架、构建并分发到全球节点，部署快到只需一杯咖啡的间隙。
+            零配置、零运维。瀚云 CLI
+            自动识别框架、构建并分发到全球节点，部署快到只需一杯咖啡的间隙。
           </Text>
 
           <div className="mt-2 flex flex-wrap items-center gap-3">
@@ -46,7 +47,7 @@ export function HeroTerminalBlock({ ctaHref = "#" }: { ctaHref?: string }) {
               安装 CLI
               <ArrowRight className="ml-2 size-4" aria-hidden />
             </Button>
-            <Button variant="outline" size="lg" render={<Link href="#docs" />}>
+            <Button variant="outline" size="lg" render={<Link href="https://example.com/#docs" />}>
               阅读文档
             </Button>
           </div>
@@ -58,7 +59,11 @@ export function HeroTerminalBlock({ ctaHref = "#" }: { ctaHref?: string }) {
 
         {/* 右：终端演示 */}
         <div className="md:justify-self-end">
-          <Terminal title="bash — hulian deploy" lines={LINES} className="max-w-full shadow-xl md:max-w-lg" />
+          <Terminal
+            title="bash — hulian deploy"
+            lines={LINES}
+            className="max-w-full shadow-xl md:max-w-lg"
+          />
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 "use client";
 import { copy } from "./deploy-detail.content";
-import { DEMO_RELATIVE_TIME_LOCALE, demoHref } from "../../_components/demo-locale";
+import { DEMO_RELATIVE_TIME_LOCALE, demoLocationHref } from "../../_components/demo-locale";
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -30,12 +30,7 @@ import type {
   DescriptionsItemData,
   LogLine as ViewerLine,
 } from "@hulianui/ui";
-import {
-  deployById,
-  projectById,
-  buildSteps,
-  buildLog,
-} from "../_data/store";
+import { deployById, projectById, buildSteps, buildLog } from "../_data/store";
 import type { DeployState, LogLine } from "../_data/types";
 import { formatDuration, mmss, agoDate } from "../_lib/format";
 import { useMockData } from "../../lib/async";
@@ -82,14 +77,25 @@ function buildLogLines(status: DeployState): ViewerLine[] {
     ];
   }
   if (status === "queued") {
-    return [{ level: "info", message: copy("deploymentQueuedForAvailableBuildContainer"), timestamp: mmss(0) }];
+    return [
+      {
+        level: "info",
+        message: copy("deploymentQueuedForAvailableBuildContainer"),
+        timestamp: mmss(0),
+      },
+    ];
   }
   if (status === "canceled") {
     const cut = buildLog.filter((l) => l.at <= 9).map(map);
-    return [...cut, { level: "warn", message: copy("deploymentHasBeenCanceledByUser"), timestamp: mmss(12) }];
+    return [
+      ...cut,
+      { level: "warn", message: copy("deploymentHasBeenCanceledByUser"), timestamp: mmss(12) },
+    ];
   }
   if (status === "skipped") {
-    return [{ level: "info", message: copy("theBuildOutputIsUnchangedInThis"), timestamp: mmss(0) }];
+    return [
+      { level: "info", message: copy("theBuildOutputIsUnchangedInThis"), timestamp: mmss(0) },
+    ];
   }
   // building：显示前半段，末尾补一条进行中提示。
   const half = buildLog.slice(0, Math.ceil(buildLog.length / 2)).map(map);
@@ -109,13 +115,7 @@ function lifecycleItems(status: DeployState): TimelineItemProps[] {
   //   queued   → 1（已入队=完成，"构建开始"等待中）
   //   canceled/skipped → 1（入队后中止）
   const activeStage =
-    status === "ready"
-      ? 5
-      : status === "building"
-        ? 1
-        : status === "error"
-          ? 2
-          : 1; // queued / canceled / skipped
+    status === "ready" ? 5 : status === "building" ? 1 : status === "error" ? 2 : 1; // queued / canceled / skipped
 
   // 单个节点按其 index 与 activeStage 的关系着色（done…active…pending 单调）。
   const stage = (index: number): { color: TimelineItemProps["color"]; pending?: boolean } => {
@@ -184,10 +184,10 @@ export function DeployDetail({ id }: { id: string }) {
         statuses[i] === "wait"
           ? copy("waiting2")
           : statuses[i] === "process"
-            ? copy("inProgress")
-            : statuses[i] === "error"
-              ? copy("failed")
-              : formatDuration(s.durationSec),
+          ? copy("inProgress")
+          : statuses[i] === "error"
+          ? copy("failed")
+          : formatDuration(s.durationSec),
       status: statuses[i],
     }));
   }, [deploy]);
@@ -205,9 +205,15 @@ export function DeployDetail({ id }: { id: string }) {
   if (!deploy || !project) {
     return (
       <div className="grid place-items-center py-16">
-        <Result status="404" title={copy("deploymentDoesNotExist")} subTitle={copy("theDeploymentRecordMayHaveBeenCleaned")}>
+        <Result
+          status="404"
+          title={copy("deploymentDoesNotExist")}
+          subTitle={copy("theDeploymentRecordMayHaveBeenCleaned")}
+        >
           <Button onClick={() => router.push(`${ROOT}/deployments`)}>
-            <ArrowLeft className="size-4" />{copy("returnToDeploymentHistory")}</Button>
+            <ArrowLeft className="size-4" />
+            {copy("returnToDeploymentHistory")}
+          </Button>
         </Result>
       </div>
     );
@@ -216,7 +222,10 @@ export function DeployDetail({ id }: { id: string }) {
   if (loading) return <DetailSkeleton />;
 
   const descItems: DescriptionsItemData[] = [
-    { label: copy("deploymentId"), children: <span className="font-mono text-xs">{deploy.id}</span> },
+    {
+      label: copy("deploymentId"),
+      children: <span className="font-mono text-xs">{deploy.id}</span>,
+    },
     {
       label: copy("environment"),
       children: (
@@ -226,7 +235,10 @@ export function DeployDetail({ id }: { id: string }) {
       ),
     },
     { label: copy("branch"), children: <span className="font-mono text-xs">{deploy.branch}</span> },
-    { label: copy("submit"), children: <span className="font-mono text-xs">{deploy.sha.slice(0, 12)}</span> },
+    {
+      label: copy("submit"),
+      children: <span className="font-mono text-xs">{deploy.sha.slice(0, 12)}</span>,
+    },
     {
       label: copy("triggerMode"),
       children: deploy.id.startsWith("d-manual") ? copy("manual") : copy("gitPush"),
@@ -258,8 +270,8 @@ export function DeployDetail({ id }: { id: string }) {
     <div className="flex flex-col gap-4">
       <Breadcrumb
         items={[
-          { label: copy("project"), href: demoHref(ROOT) },
-          { label: copy("deploymentHistory"), href: demoHref(`${ROOT}/deployments`) },
+          { label: copy("project"), href: demoLocationHref(ROOT) },
+          { label: copy("deploymentHistory"), href: demoLocationHref(`${ROOT}/deployments`) },
           { label: deploy.sha.slice(0, 7) },
         ]}
       />
@@ -280,7 +292,9 @@ export function DeployDetail({ id }: { id: string }) {
             size="sm"
             render={
               <a href={`https://${deploy.url}`} target="_blank" rel="noreferrer">
-                <ExternalLink className="size-4" />{copy("accessDeployment")}</a>
+                <ExternalLink className="size-4" />
+                {copy("accessDeployment")}
+              </a>
             }
           />
           <Button
@@ -294,11 +308,17 @@ export function DeployDetail({ id }: { id: string }) {
               })
             }
           >
-            <RefreshCw className="size-4" />{copy("redeploy")}</Button>
+            <RefreshCw className="size-4" />
+            {copy("redeploy")}
+          </Button>
           {canRollback && (
             <Popconfirm
               title={copy("rollBackToThisDeployment")}
-              description={copy("productionTrafficWillBeSwitchedToValue", deploy.sha.slice(0, 7), deploy.branch)}
+              description={copy(
+                "productionTrafficWillBeSwitchedToValue",
+                deploy.sha.slice(0, 7),
+                deploy.branch,
+              )}
               okText={copy("confirmRollback")}
               cancelText={copy("cancel")}
               danger
@@ -306,12 +326,18 @@ export function DeployDetail({ id }: { id: string }) {
                 toast({
                   tone: "success",
                   title: copy("rolledBack"),
-                  description: copy("valueTheProductionEnvironmentHasBeenSwitched", project.name, deploy.sha.slice(0, 7)),
+                  description: copy(
+                    "valueTheProductionEnvironmentHasBeenSwitched",
+                    project.name,
+                    deploy.sha.slice(0, 7),
+                  ),
                 });
               }}
             >
               <Button variant="outline" tone="danger" size="sm">
-                <RotateCcw className="size-4" />{copy("rollBackHere")}</Button>
+                <RotateCcw className="size-4" />
+                {copy("rollBackHere")}
+              </Button>
             </Popconfirm>
           )}
         </div>

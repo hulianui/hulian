@@ -1,7 +1,7 @@
 import { copy } from "./nav-config.content";
 import { LayoutDashboard, FolderKanban, Images, FileText, Receipt, Wallet } from "lucide-react";
 import type { BreadcrumbItem, NavMenuNode } from "@hulianui/ui";
-import { demoHref } from "../../_components/demo-locale";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
 export const ROOT = "/demos/projects";
 
@@ -11,14 +11,20 @@ export const menuItems: NavMenuNode[] = [
     type: "group",
     key: "g-overview",
     label: copy("overview"),
-    children: [{ key: ROOT, label: copy("workbench"), icon: <LayoutDashboard className="size-4" /> }],
+    children: [
+      { key: ROOT, label: copy("workbench"), icon: <LayoutDashboard className="size-4" /> },
+    ],
   },
   {
     type: "group",
     key: "g-project",
     label: copy("project"),
     children: [
-      { key: `${ROOT}/tracking`, label: copy("projectTracking"), icon: <FolderKanban className="size-4" /> },
+      {
+        key: `${ROOT}/tracking`,
+        label: copy("projectTracking"),
+        icon: <FolderKanban className="size-4" />,
+      },
       { key: `${ROOT}/photos`, label: copy("workPhotos"), icon: <Images className="size-4" /> },
     ],
   },
@@ -28,8 +34,16 @@ export const menuItems: NavMenuNode[] = [
     label: copy("businessFinance"),
     children: [
       { key: `${ROOT}/quotes`, label: copy("quotation"), icon: <FileText className="size-4" /> },
-      { key: `${ROOT}/invoices`, label: copy("invoiceCollection"), icon: <Receipt className="size-4" /> },
-      { key: `${ROOT}/checkout`, label: copy("collectMoneyOnline"), icon: <Wallet className="size-4" /> },
+      {
+        key: `${ROOT}/invoices`,
+        label: copy("invoiceCollection"),
+        icon: <Receipt className="size-4" />,
+      },
+      {
+        key: `${ROOT}/checkout`,
+        label: copy("collectMoneyOnline"),
+        icon: <Wallet className="size-4" />,
+      },
     ],
   },
 ];
@@ -67,11 +81,15 @@ const DETAIL_LABEL: Record<string, string> = {
 /** 顶栏面包屑：工作台 → 当前页（→ 详情）。 */
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
   if (pathname === ROOT) return [{ label: copy("workbench3"), current: true }];
-  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: demoHref(ROOT) }];
+  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: demoLocationHref(ROOT) }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : demoHref(selected), current: isLeaf });
+    items.push({
+      label: META[selected] ?? "",
+      href: isLeaf ? undefined : demoLocationHref(selected),
+      current: isLeaf,
+    });
     if (!isLeaf && DETAIL_LABEL[selected]) {
       items.push({ label: DETAIL_LABEL[selected], current: true });
     }

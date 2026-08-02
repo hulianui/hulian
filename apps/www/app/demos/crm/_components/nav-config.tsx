@@ -2,7 +2,7 @@ import { copy } from "./nav-config.content";
 import { LayoutDashboard, Users, KanbanSquare, ShoppingCart, Settings } from "lucide-react";
 import type { NavMenuNode } from "@hulianui/ui";
 import type { BreadcrumbItem } from "@hulianui/ui";
-import { demoHref } from "../../_components/demo-locale";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
 export const CRM_ROOT = "/demos/crm";
 
@@ -12,23 +12,43 @@ export const menuItems: NavMenuNode[] = [
     type: "group",
     key: "g-overview",
     label: copy("overview"),
-    children: [{ key: CRM_ROOT, label: copy("workbench"), icon: <LayoutDashboard className="size-4" /> }],
+    children: [
+      { key: CRM_ROOT, label: copy("workbench"), icon: <LayoutDashboard className="size-4" /> },
+    ],
   },
   {
     type: "group",
     key: "g-biz",
     label: copy("business"),
     children: [
-      { key: `${CRM_ROOT}/customers`, label: copy("customerList"), icon: <Users className="size-4" /> },
-      { key: `${CRM_ROOT}/opportunities`, label: copy("businessOpportunityBoard"), icon: <KanbanSquare className="size-4" /> },
-      { key: `${CRM_ROOT}/orders`, label: copy("orderManagement"), icon: <ShoppingCart className="size-4" /> },
+      {
+        key: `${CRM_ROOT}/customers`,
+        label: copy("customerList"),
+        icon: <Users className="size-4" />,
+      },
+      {
+        key: `${CRM_ROOT}/opportunities`,
+        label: copy("businessOpportunityBoard"),
+        icon: <KanbanSquare className="size-4" />,
+      },
+      {
+        key: `${CRM_ROOT}/orders`,
+        label: copy("orderManagement"),
+        icon: <ShoppingCart className="size-4" />,
+      },
     ],
   },
   {
     type: "group",
     key: "g-system",
     label: copy("system"),
-    children: [{ key: `${CRM_ROOT}/settings`, label: copy("systemSettings"), icon: <Settings className="size-4" /> }],
+    children: [
+      {
+        key: `${CRM_ROOT}/settings`,
+        label: copy("systemSettings"),
+        icon: <Settings className="size-4" />,
+      },
+    ],
   },
 ];
 
@@ -57,11 +77,15 @@ const META: Record<string, string> = {
 /** 顶栏面包屑：工作台 → 当前页（详情页追加「客户详情」）。 */
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
   if (pathname === CRM_ROOT) return [{ label: copy("workbench3"), current: true }];
-  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: demoHref(CRM_ROOT) }];
+  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: demoLocationHref(CRM_ROOT) }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== CRM_ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : demoHref(selected), current: isLeaf });
+    items.push({
+      label: META[selected] ?? "",
+      href: isLeaf ? undefined : demoLocationHref(selected),
+      current: isLeaf,
+    });
   }
   if (selected === `${CRM_ROOT}/customers` && pathname !== `${CRM_ROOT}/customers`) {
     items.push({ label: copy("customerDetails"), current: true });
@@ -77,6 +101,7 @@ export function labelOf(key: string): string {
 /** 当前页标题（用于 document/页签 label）。 */
 export function titleFor(pathname: string): string {
   const selected = selectedKeyFor(pathname);
-  if (selected === `${CRM_ROOT}/customers` && pathname !== selected) return copy("customerDetails2");
+  if (selected === `${CRM_ROOT}/customers` && pathname !== selected)
+    return copy("customerDetails2");
   return (selected && META[selected]) || copy("workbench6");
 }

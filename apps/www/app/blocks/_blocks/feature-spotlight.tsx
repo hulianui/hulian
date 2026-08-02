@@ -28,7 +28,7 @@ const CARDS: SpotlightCard[] = [
     title: "为速度而生的边缘运行时",
     description:
       "请求在离用户最近的节点冷启动，毫秒级响应；流量激增时自动扩容，回落即归零，闲时零成本。",
-    href: "#performance",
+    href: "https://example.com/#performance",
     cta: "查看性能白皮书",
     color: "var(--color-chart-1)",
     stats: [
@@ -43,7 +43,7 @@ const CARDS: SpotlightCard[] = [
     title: "默认安全，无需额外配置",
     description:
       "自动签发并续期 HTTPS 证书，密钥加密托管，所有变更进入审计日志。合规交给我们，你专注业务。",
-    href: "#security",
+    href: "https://example.com/#security",
     cta: "了解合规与审计",
     color: "var(--color-chart-3)",
     stats: [
