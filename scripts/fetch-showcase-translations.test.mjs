@@ -155,3 +155,19 @@ test("locks identity, weekday, terminology, and fullwidth-symbol overrides", () 
     assert.doesNotMatch(english, /placeholder\s+placeholder|Tide\s+Tide|HULIAN\s*·\s*HULIAN/iu);
   }
 });
+
+test("rejects adjacent duplicate words and known machine-translation phrasing", () => {
+  const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
+  const awkward = [
+    /\b([A-Za-z][A-Za-z-]*)\s+\1\b/iu,
+    /agent is being generated/iu,
+    /cure the patch/iu,
+    /transparently transmits?/iu,
+    /degraded downgrade/iu,
+  ];
+  for (const [source, english] of Object.entries(copy)) {
+    for (const pattern of awkward) {
+      assert.doesNotMatch(english, pattern, `${source} -> ${english}`);
+    }
+  }
+});

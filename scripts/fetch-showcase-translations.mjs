@@ -40,6 +40,59 @@ const MANUAL_COPY = new Map([
     "items provides the options; placeholder supplies the empty-state prompt.",
   ],
   ["潮汐 Tide", "Tide"],
+  [
+    '<SelectItem value="serif">衬线 Serif</SelectItem>',
+    '<SelectItem value="serif">Serif</SelectItem>',
+  ],
+  [
+    '<FallingText text="弹 跳 弹 跳" gravity={0.8} bounce={0.9} />',
+    '<FallingText text="Bounce · Jump · Bounce · Jump" gravity={0.8} bounce={0.9} />',
+  ],
+  ["bouncy 弹 跳 弹 跳 弹 跳", "bouncy bounce jump"],
+  [
+    "四种语义态：online 在线 / degraded 降级 / offline 离线 / maintenance 维护，颜色随 tone 自动派生。",
+    "Four semantic states: online, degraded, offline, and maintenance. Colors are derived from tone.",
+  ],
+  [
+    "loading 在正文位置渲染 TypingDots（agent 生成中），children 作占位被忽略。",
+    "While the agent is responding, loading renders TypingDots in the message body and ignores placeholder children.",
+  ],
+  [
+    "用 pnpm patch 固化补丁，随 lockfile 走。",
+    "Use pnpm patch to persist the patch alongside the lockfile.",
+  ],
+  [
+    '<Callout tone="success" title="正解">用 pnpm patch 固化补丁，随 lockfile 走。</Callout>',
+    '<Callout tone="success" title="Recommended">Use pnpm patch to persist the patch alongside the lockfile.</Callout>',
+  ],
+  [
+    "提高 velocity 加速漂移，className 透传到文本上色为主色。",
+    "Increase velocity to speed up the drift; className sets the text to the primary color.",
+  ],
+  [
+    "disabled 透传 Field.Root，控件随之禁用。",
+    "disabled is passed to Field.Root, which disables the control.",
+  ],
+  [
+    "icon 透传任意图标（如 ❤️），空状态复用同形状。",
+    "icon accepts any icon, such as ❤️, and the empty state reuses the same shape.",
+  ],
+  [
+    "size 透传内部 Spinner，控制指示器大小。",
+    "size is passed to the internal Spinner and controls the indicator size.",
+  ],
+  [
+    'size="sm" 透传给内部 Prose，整体排版基准降到 text-sm。',
+    'size="sm" is passed to the internal Prose, reducing the typography baseline to text-sm.',
+  ],
+  [
+    "kind 决定面额区主视觉：amount 满减 / discount 折扣 / shipping 包邮。",
+    "kind defines the offer: amount for money off, discount for a percentage discount, and shipping for free delivery.",
+  ],
+  [
+    "streakCount 加束 + 自定义暖色 colors，density 调密。",
+    "streakCount adds more beams, colors sets a custom warm palette, and density controls spacing.",
+  ],
   ["瑚琏 · HULIAN ·", "HULIAN ·"],
   ["瑚琏 · HULIAN UI · 设计系统 ·", "HULIAN UI · Design system ·"],
   [
@@ -213,6 +266,7 @@ function normalizeEnglish(value) {
     .replace(/(?:Absorption|Absorbent) polymerization design system/giu, "Composable design system")
     .replace(/Absorption polymerization/giu, "Composable building blocks")
     .replace(/documentation station/giu, "documentation site")
+    .replace(/\b([A-Za-z][A-Za-z-]*)\s+\1\b/giu, "$1")
     .replace(/[“”]/gu, '"')
     .replace(/[‘’]/gu, "'")
     .replace(/，/gu, ", ")
