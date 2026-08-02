@@ -137,8 +137,14 @@ export function installedVersion(root, name, declared = null) {
  *
  * 两条独立判据，任一成立即算本地接入：
  *   · 声明的 specifier 是 `workspace:` / `link:` / `file:` —— 那是使用者写下的真实意图
- *   · 解析后的真实路径**逃出**了这一层 node_modules 树 —— pnpm store 的 realpath 仍在树内，
- *     指向兄弟仓或 workspace 包则在树外
+ *   · 解析后的真实路径**逃出了所有 node_modules 树** —— pnpm store 的 realpath 仍在某层树内，
+ *     指向兄弟仓或 workspace 包则哪层都不在
+ *
+ * 第二条的基准是**沿途每一层** node_modules，不是发现该包的那一层（#68）：
+ * pnpm workspace 子项目里 `apps/web/node_modules/@hulianui/ui` 指向的是**仓库根**的
+ * `node_modules/.pnpm/…`，天然「逃出」了 apps/web 那层 —— 只比对发现层会把每个 workspace
+ * 子项目里的普通 registry 包都判成 local-link，版本漂移门禁又一次静默失效。
+ * 单包项目下 `.pnpm` 恰好与发现层同级，所以 #45 的回归测试当时能过，缺陷藏了下来。
  *
  * workspace 与 link/file 语义不同（前者是 monorepo 内的一等公民，后者是临时联调），
  * 分开标注，调用方按需区分；两者都不该参与「声明 vs 实装」的漂移比对。
@@ -149,12 +155,23 @@ function linkKindOf(nodeModulesDir, entry, declared) {
   if (spec.startsWith("link:") || spec.startsWith("file:")) return "local-link";
   try {
     const real = realpathSync(entry);
-    const base = realpathSync(nodeModulesDir);
-    if (real !== base && !real.startsWith(base + sep)) return "local-link";
+    // 从该 node_modules 的宿主目录一路向上，任一层的 node_modules 收得住就不算本地接入。
+    let dir = dirname(nodeModulesDir);
+    for (;;) {
+      const candidate = join(dir, "node_modules");
+      if (existsSync(candidate)) {
+        const base = realpathSync(candidate);
+        if (real === base || real.startsWith(base + sep)) return null;
+      }
+      const parent = dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+    return "local-link";
   } catch {
     // 读不到就当不是：宁可漏报一次联调，也不能把 pnpm store 软链误判成联调
+    return null;
   }
-  return null;
 }
 
 /**
