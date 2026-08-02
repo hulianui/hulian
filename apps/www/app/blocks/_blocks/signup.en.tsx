@@ -1,8 +1,8 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { Field, Input, Checkbox, Button, Divider, SocialButton, Heading, Text, AuroraText, Spinner, toast, } from "@hulianui/ui";
-import { Rocket, Check } from "lucide-react";
+import { AuthPanel, Brand, Field, Input, Checkbox, Button, Divider, SocialButton, Heading, Text, AuroraText, Spinner, toast, } from "@hulianui/ui";
+import { Rocket } from "lucide-react";
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 interface FormState {
     name: string;
@@ -81,30 +81,9 @@ export function SignupBlock() {
     };
     return (<section className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-[var(--radius)] border border-border bg-surface shadow-sm md:grid-cols-2">
 
-      <div className="hidden flex-col justify-between gap-10 p-10 md:flex" style={{
-            background: "radial-gradient(125% 125% at 0% 0%, color-mix(in oklab, var(--color-primary) 12%, var(--color-bg)) 0%, var(--color-bg) 60%)",
-        }}>
-        <div>
-          <span className="inline-flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-              Han
-            </span>
-            <span className="text-base font-semibold tracking-tight">HanCloud</span>
-          </span>
-          <Heading level={2} weight="bold" balance className="mt-8 text-3xl leading-tight text-foreground">
+      <AuthPanel className="hidden md:flex" brand={<Brand name="HanCloud" mark="Han"/>} title={<>
             Take your ideas to the <AuroraText>global edge</AuroraText>
-          </Heading>
-          <Text tone="muted" className="mt-3 max-w-sm">
-            Create an account and start your first project in five minutes. No credit card required.
-          </Text>
-        </div>
-        <ul className="space-y-3">
-          {highlights.map((h) => (<li key={h} className="flex items-start gap-2 text-sm text-foreground">
-              <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden/>
-              <span>{h}</span>
-            </li>))}
-        </ul>
-      </div>
+          </>} description="Create an account and start your first project in five minutes. No credit card required." highlights={highlights}/>
 
 
       <div className="p-8 sm:p-10">
@@ -134,9 +113,7 @@ export function SignupBlock() {
 
           {values.password.length > 0 && (<div aria-live="polite">
               <div className="flex gap-1.5">
-                {[0, 1, 2, 3].map((i) => (<span key={i} className="h-1.5 flex-1 rounded-full bg-surface-hover" style={i < strength
-                    ? { background: strengthMeta[strength].tone }
-                    : undefined}/>))}
+                {[0, 1, 2, 3].map((i) => (<span key={i} className="h-1.5 flex-1 rounded-full bg-surface-hover" style={i < strength ? { background: strengthMeta[strength].tone } : undefined}/>))}
               </div>
               <Text size="xs" tone="muted" className="mt-1.5">
                 Password strength:{strengthMeta[strength].label}
