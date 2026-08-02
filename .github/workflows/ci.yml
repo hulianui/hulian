@@ -94,6 +94,11 @@ jobs:
       - name: Smoke all registry pages
         run: pnpm registry:smoke:pages
 
+      # build:locale 会运行生成器并覆盖 generated/showcase-en；必须先以只读模式检查，
+      # 否则提交缺失或过期的 generated 文件会被构建过程自动修复，CI 仍然错误通过。
+      - name: Check generated English showcases
+        run: pnpm showcase:check
+
       # 生产构建：仅 apps/www 静态导出（含其依赖的 workspace 包）。
       # 排除 desktop#build —— 那是 Tauri 构建，需 Rust + 系统库，且会与 www build 抢 next 锁，不适合本 CI。
       - name: Build
