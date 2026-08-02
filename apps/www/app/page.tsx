@@ -200,7 +200,7 @@ export default function Home() {
 
         {/* 技术底座（新区块）：dogfood Marquee 滚动展示吸取的上游 */}
         <section className="hl-rise mt-20 sm:mt-24" style={rise(9)}>
-          <Heading as="p" size="sm" weight="medium" className="mb-4 text-muted">
+          <Heading as="p" size="sm" weight="medium" className="mb-4 text-muted-foreground">
             {content.foundations}
           </Heading>
           <Marquee

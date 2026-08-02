@@ -20,6 +20,14 @@ export function componentRouteFromHtmlPath(file) {
   return `/en/components/${normalized.slice(0, -".html".length)}`;
 }
 
+export function isIgnorableRequestFailure({ errorText, resourceType, isNavigationRequest }) {
+  return (
+    errorText === "net::ERR_ABORTED" &&
+    resourceType !== "document" &&
+    isNavigationRequest !== true
+  );
+}
+
 function walkHtmlFiles(directory, root = directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const absolute = `${directory}/${entry.name}`;
@@ -152,7 +160,17 @@ async function openRoute(context, staticServer, route) {
   const failed = [];
   page.on("requestfailed", (request) => {
     if (request.url().startsWith(staticServer.baseUrl)) {
-      failed.push(`request:${request.failure()?.errorText ?? "unknown"}:${request.url()}`);
+      const errorText = request.failure()?.errorText ?? "unknown";
+      if (
+        isIgnorableRequestFailure({
+          errorText,
+          resourceType: request.resourceType(),
+          isNavigationRequest: request.isNavigationRequest(),
+        })
+      ) {
+        return;
+      }
+      failed.push(`request:${errorText}:${request.url()}`);
     }
   });
   page.on("response", (response) => {

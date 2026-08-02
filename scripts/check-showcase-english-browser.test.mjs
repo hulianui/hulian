@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   componentRouteFromHtmlPath,
   findCjkLeaks,
+  isIgnorableRequestFailure,
   validateShowcaseRouteResult,
 } from "./check-showcase-english-browser.mjs";
 
@@ -39,6 +40,33 @@ test("componentRouteFromHtmlPath maps exported component files to English routes
   assert.equal(componentRouteFromHtmlPath("button.html"), "/en/components/button");
   assert.equal(componentRouteFromHtmlPath("nested/item.html"), "/en/components/nested/item");
   assert.equal(componentRouteFromHtmlPath("index.html"), null);
+});
+
+test("ignores only aborted non-navigation prefetches", () => {
+  assert.equal(
+    isIgnorableRequestFailure({
+      errorText: "net::ERR_ABORTED",
+      resourceType: "fetch",
+      isNavigationRequest: false,
+    }),
+    true,
+  );
+  assert.equal(
+    isIgnorableRequestFailure({
+      errorText: "net::ERR_ABORTED",
+      resourceType: "document",
+      isNavigationRequest: true,
+    }),
+    false,
+  );
+  assert.equal(
+    isIgnorableRequestFailure({
+      errorText: "net::ERR_NAME_NOT_RESOLVED",
+      resourceType: "fetch",
+      isNavigationRequest: false,
+    }),
+    false,
+  );
 });
 
 test("validateShowcaseRouteResult rejects browser, load, and dynamic CJK failures", () => {
