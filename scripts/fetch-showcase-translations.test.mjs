@@ -12,11 +12,41 @@ import {
 } from "./fetch-showcase-translations.mjs";
 
 const copyFile = "apps/www/i18n/showcase-copy.en.json";
+const executableFormats = new Map([
+  ["YYYY 年 M 月 D 日", "MMM D, YYYY"],
+  ["M 月 D 日 HH:mm", "MMM D, HH:mm"],
+  ["D 天 HH:mm:ss", "D · HH:mm:ss"],
+]);
+const localizedProseTokens = new Map([
+  [
+    "卡片不指定 bgColor / textColor 时吃瑚琏 token，自动随明暗主题。",
+    new Map([["token", "tokens"]]),
+  ],
+  ["默认吃瑚琏 chart token 渐变，自动适配明暗主题。", new Map([["chart token", "chart-token"]])],
+  ["子元素沿圆周匀速环绕，中心放置标识/Logo。", new Map([["Logo", "logo"]])],
+  ["GitHub 风格的 12 周活动热力，格子调小更紧凑。", new Map([["GitHub", "GitHub-style"]])],
+  [
+    "hideScrollbar 隐藏滚动条（内容仍可滚动），适合 ChatGPT 式沉浸聊天区。",
+    new Map([["ChatGPT", "ChatGPT-style"]]),
+  ],
+]);
 
 function occurrences(values) {
   const counts = new Map();
   for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
   return counts;
+}
+
+function literalOccurrences(value, token) {
+  const escaped = token.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+  const identifierLike = /^[A-Za-z0-9_$-]+$/u.test(token);
+  const prefix = identifierLike
+    ? /^\d/u.test(token)
+      ? "(?<![A-Za-z0-9_$])"
+      : "(?<![A-Za-z0-9_$-])"
+    : "";
+  const suffix = identifierLike ? "(?![A-Za-z0-9_$-])" : "";
+  return [...value.matchAll(new RegExp(`${prefix}${escaped}${suffix}`, "gu"))].length;
 }
 
 function duplicateTopLevelKeys(json) {
@@ -72,10 +102,17 @@ test("every English value is non-empty, CJK-free, and retains protected tokens",
     assert.equal(typeof english, "string", source);
     assert.notEqual(english.trim(), "", source);
     assert.equal(CJK.test(english), false, `${source} -> ${english}`);
-    const sourceTokens = occurrences(protectedTokens(source));
+    let tokenSource = [...executableFormats].reduce(
+      (value, [sourceFormat, englishFormat]) => value.replaceAll(sourceFormat, englishFormat),
+      source,
+    );
+    for (const [sourceToken, englishToken] of localizedProseTokens.get(source) ?? []) {
+      tokenSource = tokenSource.replaceAll(sourceToken, englishToken);
+    }
+    const sourceTokens = occurrences(protectedTokens(tokenSource));
     for (const [token, count] of sourceTokens) {
       assert.ok(
-        english.split(token).length - 1 >= count,
+        literalOccurrences(english, token) >= count,
         `protected token mismatch: ${source} -> ${english}; missing ${token}`,
       );
     }
@@ -84,12 +121,7 @@ test("every English value is non-empty, CJK-free, and retains protected tokens",
 
 test("keeps executable date and countdown formats valid in exact and embedded code copy", () => {
   const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
-  const formats = new Map([
-    ["YYYY 年 M 月 D 日", "MMM D, YYYY"],
-    ["M 月 D 日 HH:mm", "MMM D, HH:mm"],
-    ["D 天 HH:mm:ss", "D · HH:mm:ss"],
-  ]);
-  for (const [sourceFormat, englishFormat] of formats) {
+  for (const [sourceFormat, englishFormat] of executableFormats) {
     assert.equal(copy[sourceFormat], englishFormat);
     for (const [source, english] of Object.entries(copy)) {
       if (!source.includes(sourceFormat)) continue;
@@ -158,16 +190,34 @@ test("locks identity, weekday, terminology, and fullwidth-symbol overrides", () 
 
 test("rejects adjacent duplicate words and known machine-translation phrasing", () => {
   const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
-  const awkward = [
+  const humanAwkward = [
     /\b([A-Za-z][A-Za-z-]*)\s+\1\b/iu,
+    /logo\s*\/\s*logo/iu,
+    /dot\s*·\s*dot/iu,
+    /solid\s*\/\s*dotted\s*\/\s*dotted/iu,
+    /theme light\s+theme light/iu,
+  ];
+  const knownAwkward = [
     /agent is being generated/iu,
     /cure the patch/iu,
     /transparently transmits?/iu,
     /degraded downgrade/iu,
   ];
   for (const [source, english] of Object.entries(copy)) {
-    for (const pattern of awkward) {
+    const codeBearing = /[<>{}\[\]="'`;]/u.test(source);
+    for (const pattern of codeBearing ? knownAwkward : [...humanAwkward, ...knownAwkward]) {
       assert.doesNotMatch(english, pattern, `${source} -> ${english}`);
     }
   }
+});
+
+test("keeps executable class tokens distinct from human-word repetition", () => {
+  const copy = JSON.parse(readFileSync(copyFile, "utf8")).exact;
+  const source = '<div className="grid grid-cols-2 gap-1">{/* NavigationMenuLink 列表 */}</div>';
+  assert.equal(
+    copy[source],
+    '<div className="grid grid-cols-2 gap-1">{/* NavigationMenuLink list */}</div>',
+  );
+  assert.equal(literalOccurrences(copy[source], "grid"), 1);
+  assert.equal(literalOccurrences(copy[source], "grid-cols-2"), 1);
 });

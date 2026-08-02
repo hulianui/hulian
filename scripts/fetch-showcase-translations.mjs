@@ -17,6 +17,7 @@ const DEFAULT_SHOWCASE_ROOT = join(REPO_ROOT, "packages/ui/src");
 const MANUAL_COPY = new Map([
   [" 号店", " Store"],
   ["号店", "Store"],
+  ["名", "Name"],
   ["￥", "¥"],
   ["YYYY 年 M 月 D 日", "MMM D, YYYY"],
   ["M 月 D 日 HH:mm", "MMM D, HH:mm"],
@@ -45,6 +46,10 @@ const MANUAL_COPY = new Map([
     '<SelectItem value="serif">Serif</SelectItem>',
   ],
   [
+    '<div className="grid grid-cols-2 gap-1">{/* NavigationMenuLink 列表 */}</div>',
+    '<div className="grid grid-cols-2 gap-1">{/* NavigationMenuLink list */}</div>',
+  ],
+  [
     '<FallingText text="弹 跳 弹 跳" gravity={0.8} bounce={0.9} />',
     '<FallingText text="Bounce · Jump · Bounce · Jump" gravity={0.8} bounce={0.9} />',
   ],
@@ -61,6 +66,7 @@ const MANUAL_COPY = new Map([
     "用 pnpm patch 固化补丁，随 lockfile 走。",
     "Use pnpm patch to persist the patch alongside the lockfile.",
   ],
+  ["用 pnpm patch 固化补丁。", "Persist the fix with pnpm patch."],
   [
     '<Callout tone="success" title="正解">用 pnpm patch 固化补丁，随 lockfile 走。</Callout>',
     '<Callout tone="success" title="Recommended">Use pnpm patch to persist the patch alongside the lockfile.</Callout>',
@@ -93,6 +99,16 @@ const MANUAL_COPY = new Map([
     "streakCount 加束 + 自定义暖色 colors，density 调密。",
     "streakCount adds more beams, colors sets a custom warm palette, and density controls spacing.",
   ],
+  [
+    "子元素沿圆周匀速环绕，中心放置标识/Logo。",
+    "Child elements orbit at a constant speed, with a mark or logo in the center.",
+  ],
+  ["dot · 圆点+文字（building 脉冲）", "dot · Marker and label (building pulse)"],
+  [
+    "lineStyle 切换实/虚/点线，scanDirection 控制扫描带运动方向。",
+    "lineStyle switches among solid, dashed, and dotted lines; scanDirection controls the scan direction.",
+  ],
+  ["theme light 主题 浅色 亮", "theme light bright"],
   ["瑚琏 · HULIAN ·", "HULIAN ·"],
   ["瑚琏 · HULIAN UI · 设计系统 ·", "HULIAN UI · Design system ·"],
   [
@@ -148,7 +164,13 @@ const PROTECTED_TOKEN = new RegExp(
     String.raw`mailto:[^\s"'<>]+`,
     String.raw`\$\{[^{}]+\}`,
     String.raw`\{\{[^{}]+\}\}`,
+    String.raw`\\(?:[A-Za-z]+|[0'"\\])`,
     String.raw`%[sdif]`,
+    String.raw`#[0-9A-Fa-f]{3,8}(?![0-9A-Fa-f])`,
+    String.raw`\d+(?:\.\d+)?(?:px|rem|em|ms|s|MB|GB|K|k|M|%)(?![A-Za-z0-9_])`,
+    String.raw`\d+-?[A-Za-z][A-Za-z0-9_-]*(?![A-Za-z0-9_])`,
+    String.raw`[A-Za-z][A-Za-z0-9_-]*-\*`,
+    String.raw`[A-Za-z][A-Za-z0-9_-]*-\[[^\]\s]+\]`,
     String.raw`@[a-zA-Z0-9_.~/-]+`,
     String.raw`--[a-zA-Z0-9_-]+`,
     String.raw`[A-Za-z_$][A-Za-z0-9_$]*(?:[./:#-][A-Za-z0-9_$@~-]+)*`,
@@ -266,7 +288,8 @@ function normalizeEnglish(value) {
     .replace(/(?:Absorption|Absorbent) polymerization design system/giu, "Composable design system")
     .replace(/Absorption polymerization/giu, "Composable building blocks")
     .replace(/documentation station/giu, "documentation site")
-    .replace(/\b([A-Za-z][A-Za-z-]*)\s+\1\b/giu, "$1")
+    .replace(/FujianICPPrepared(?=\d)/gu, "Fujian ICP No. ")
+    .replace(/FujianICP\s+No/gu, "Fujian ICP No")
     .replace(/[“”]/gu, '"')
     .replace(/[‘’]/gu, "'")
     .replace(/，/gu, ", ")
@@ -292,6 +315,8 @@ function normalizeEnglish(value) {
 
 function normalizeSourceEnglish(source, value) {
   let english = normalizeEnglish(value);
+  const codeBearing = /[<>{}\[\]="'`;]/u.test(source);
+  if (!codeBearing) english = english.replace(/\b([A-Za-z][A-Za-z-]*)\s+\1\b/giu, "$1");
   if (source.includes("YYYY 年 M 月 D 日")) {
     english = english.replace(/YYYY\s+year\s+M\s+month\s+D\s+day/giu, "MMM D, YYYY");
   }
