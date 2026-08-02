@@ -53,7 +53,7 @@ export const iridescenceShowcase: ShowcaseSpec = {
             code: `<div className="relative h-72 overflow-hidden rounded-xl">
   <Iridescence speed={0.3} mouseReact={false} />
   <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-    <p className="text-lg font-semibold text-white">Tide Tide</p>
+    <p className="text-lg font-semibold text-white">Tide</p>
     <p className="text-xs text-white/50">Hulian component library \u00B7 Enterprise level \u00B7 High quality</p>
   </div>
 </div>`,
@@ -61,7 +61,7 @@ export const iridescenceShowcase: ShowcaseSpec = {
           <Iridescence speed={0.3} mouseReact={false}/>
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
             <p className="text-lg font-semibold text-white drop-shadow-sm">
-              Tide Tide
+              Tide
             </p>
             <p className="text-xs text-white/50">
               Hulian component library · Enterprise level · High quality
@@ -137,7 +137,7 @@ export const iridescenceShowcase: ShowcaseSpec = {
           <Iridescence speed={0.3} mouseReact={false}/>
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
             <p className="text-lg font-semibold text-white drop-shadow-sm">
-              Tide Tide
+              Tide
             </p>
             <p className="text-xs text-white/50">
               Hulian component library · Enterprise level · High quality

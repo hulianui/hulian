@@ -49,7 +49,7 @@ export const cardNavShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "Top bar burger / brand / CTA, when you order the burger, the entire capsule unfolds, and the internal cards emerge one by one at staggered peaks. When not under control, the components open and close on their own and can be expanded by ordering a hamburger.",
+            description: "The top bar contains a menu button, brand, and CTA. Click the menu button to expand the capsule and reveal each card in sequence. In uncontrolled mode, the component manages its own open state.",
             code: `<CardNav
   brand="Hulian UI"
   ctaLabel="Get started"
@@ -110,7 +110,7 @@ export const cardNavShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "default (Collapse\u00B7Order burger to expand)",
+            name: "default (collapsed \u00B7 click the menu button to expand)",
             render: () => (<Stage>
           <CardNav brand="Hulian UI" items={items} ctaLabel="Get started"/>
         </Stage>),

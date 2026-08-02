@@ -53,7 +53,7 @@ export const tabBarShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Prohibited Items",
+            title: "Disabled item",
             description: "item.disabled is grayed out and unclickable.",
             code: `<TabBar
   defaultValue="home"

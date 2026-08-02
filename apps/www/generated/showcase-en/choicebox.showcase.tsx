@@ -85,7 +85,7 @@ export const choiceboxShowcase: ShowcaseSpec = {
     ],
     states: [
         { name: "Single choice package card (controlled)", render: () => <Plans /> },
-        { name: "Multiple selection of payment methods (including prohibited items)", render: () => <Payments /> },
+        { name: "Multiple payment methods (includes disabled items)", render: () => <Payments /> },
         {
             name: "Two column grid",
             render: () => (<ChoiceboxGroup defaultValue="b" columns={2} aria-label="Theme" className="w-[28rem]">

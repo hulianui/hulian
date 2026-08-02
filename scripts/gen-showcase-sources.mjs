@@ -3,7 +3,7 @@ import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript-api";
 
-const CJK = /[\p{Script=Han}\u3000-\u303f\uff01-\uff0f\uff1a-\uff20\uff3b-\uff40\uff5b-\uff65]/u;
+const CJK = /[\p{Script=Han}\u3000-\u303f\uff00-\uffef]/u;
 const REPO_ROOT = fileURLToPath(new URL("../", import.meta.url));
 const DEFAULT_SOURCE_ROOT = join(REPO_ROOT, "packages/ui/src");
 const DEFAULT_OUTPUT_ROOT = join(REPO_ROOT, "apps/www/generated/showcase-en");

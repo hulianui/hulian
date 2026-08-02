@@ -74,7 +74,7 @@ export const eventStreamShowcase: ShowcaseSpec = {
             render: () => <EventStream items={auditEvents} maxHeight={320}/>,
         },
         {
-            title: "CI assembly line",
+            title: "CI pipeline",
             description: "The same component can be used as a pipeline stage flow by changing a set of data; it takes time to put the meta column, and the equal-width numbers are naturally aligned.",
             code: `<EventStream items={pipelineSteps} defaultExpanded />`,
             render: () => <EventStream items={ciEvents} defaultExpanded/>,

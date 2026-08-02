@@ -14,7 +14,7 @@ const ROLE_LABEL: Record<Row["role"], string> = { admin: "Administrator", editor
 function Demo() {
     const [data, setData] = useState<Row[]>([
         { id: 1, name: "Zhang San", role: "admin", salary: 24000 },
-        { id: 2, name: "John Doe", role: "editor", salary: 16000 },
+        { id: 2, name: "Li Si", role: "editor", salary: 16000 },
         { id: 3, name: "Wang Wu", role: "viewer", salary: 12000 },
     ]);
     let seq = data.length;

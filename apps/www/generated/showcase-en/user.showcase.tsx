@@ -17,7 +17,7 @@ export const userShowcase: ShowcaseSpec = {
             title: "Initials",
             description: "Use fallback to render the initial placeholder when there is no avatar image.",
             code: `<User name="Li Si" description="Product Manager" avatarProps={{ fallback: "Li" }} />`,
-            render: () => (<User name="John Doe" description="Product Manager" avatarProps={{ fallback: "Li" }}/>),
+            render: () => (<User name="Li Si" description="Product Manager" avatarProps={{ fallback: "Li" }}/>),
         },
         {
             title: "Name only",
@@ -46,7 +46,7 @@ export const userShowcase: ShowcaseSpec = {
         },
         {
             name: "fallback-initials",
-            render: () => <User name="John Doe" description="Product Manager" avatarProps={{ fallback: "Li" }}/>,
+            render: () => <User name="Li Si" description="Product Manager" avatarProps={{ fallback: "Li" }}/>,
         },
         {
             name: "name-only",

@@ -71,7 +71,7 @@ export const selectShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "items provides option data, and placeholder is used as placeholder.",
+            description: "items provides the options; placeholder supplies the empty-state prompt.",
             code: `<Select items={fonts} placeholder="Please select a font">
   <SelectTrigger />
   <SelectContent>

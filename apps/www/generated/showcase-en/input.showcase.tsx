@@ -5,7 +5,7 @@ export const inputShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The simplest input box, pass placeholder placeholder.",
+            description: "A minimal input; use placeholder for empty-state guidance.",
             code: `<Input placeholder="Please enter..." className="w-64" />`,
             render: () => <Input placeholder="Please enter..." className="w-64"/>,
         },

@@ -85,6 +85,31 @@ test("translation fails closed when a rendered literal has no English copy", () 
   );
 });
 
+test("translation treats fullwidth yen as residue and converts it to ASCII yen", () => {
+  const options = {
+    sourceFile: "packages/ui/src/statistic/statistic.showcase.tsx",
+    outputFile: "apps/www/generated/showcase-en/statistic.showcase.tsx",
+  };
+
+  assert.throws(
+    () =>
+      translateShowcaseModule(`export const prefix = "￥";`, {
+        ...options,
+        copy: { exact: {}, files: {} },
+      }),
+    /missing English copy.*statistic\.showcase\.tsx.*￥/,
+  );
+
+  const result = translateShowcaseModule(`export const prefix = "￥";`, {
+    ...options,
+    copy: { exact: { "￥": "¥" }, files: {} },
+  });
+
+  assert.match(result.code, /prefix = "\\u00A5"/);
+  assert.doesNotMatch(result.code, /￥/u);
+  assert.deepEqual(result.usage, { exact: 1, file: 0, fallback: 0 });
+});
+
 test("translation rejects empty or residue-bearing English copy before generation", () => {
   const options = {
     sourceFile: "packages/ui/src/button/button.showcase.tsx",

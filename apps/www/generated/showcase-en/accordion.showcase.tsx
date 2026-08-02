@@ -56,7 +56,7 @@ export const accordionShowcase: ShowcaseSpec = {
             render: () => <Demo multiple defaultValue={["ship", "token"]}/>,
         },
         {
-            title: "Prohibited Items",
+            title: "Disabled item",
             description: "Add disabled to AccordionItem. This item cannot be expanded and is grayed out.",
             code: `<Accordion defaultValue={["ship"]} className="w-80">
   <AccordionItem value="ship">
@@ -79,7 +79,7 @@ export const accordionShowcase: ShowcaseSpec = {
         { name: "Single opening (default closed)", render: () => <Demo multiple={false}/> },
         { name: "Single opening\u00B7First item expansion", render: () => <Demo multiple={false} defaultValue={["ship"]}/> },
         { name: "Open more", render: () => <Demo multiple defaultValue={["ship", "token"]}/> },
-        { name: "Contains prohibited items", render: () => <Demo disabledItem defaultValue={["ship"]}/> },
+        { name: "Includes disabled items", render: () => <Demo disabledItem defaultValue={["ship"]}/> },
     ],
     renderWithProps: (p) => (<Demo multiple={p.multiple as boolean} disabledItem={p.disabledItem as boolean} defaultValue={["ship"]}/>),
     toCode: (p) => `<Accordion${p.multiple ? " multiple" : ""} defaultValue={["ship"]}>

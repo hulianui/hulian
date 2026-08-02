@@ -41,8 +41,8 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
         {
             title: "Custom display format",
             description: "displayFormat Only changes the display on the trigger, and the shape of the external value remains unchanged.",
-            code: `<DateTimePicker defaultValue="2026-06-08 09:30" displayFormat="M Month D Day HH:mm" />`,
-            render: () => (<DateTimePicker defaultValue="2026-06-08 09:30" displayFormat="M Month D Day HH:mm" aria-label="Select date and time"/>),
+            code: `<DateTimePicker defaultValue="2026-06-08 09:30" displayFormat="MMM D, HH:mm" />`,
+            render: () => (<DateTimePicker defaultValue="2026-06-08 09:30" displayFormat="MMM D, HH:mm" aria-label="Select date and time"/>),
         },
         {
             title: "Disabled / Read Only",

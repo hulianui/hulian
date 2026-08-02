@@ -14,10 +14,10 @@ export const curvedLoopShowcase: ShowcaseSpec = {
             title: "Basic usage",
             description: "The copy scrolls seamlessly along the quadratic Bezier curve. By default, it bends downward and rolls to the left, and can be dragged and moved.",
             code: `<div className="flex h-44 items-center overflow-hidden rounded-xl">
-  <CurvedLoop text="HULIAN \u00B7 HULIAN \u00B7 " className="text-white" />
+  <CurvedLoop text="HULIAN \u00B7 " className="text-white" />
 </div>`,
             render: () => (<Stage>
-          <CurvedLoop text="HULIAN · HULIAN · " className="text-white"/>
+          <CurvedLoop text="HULIAN · " className="text-white"/>
         </Stage>),
         },
         {
@@ -46,7 +46,7 @@ export const curvedLoopShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "text", type: "text", defaultValue: "HULIAN \u00B7 HULIAN \u00B7 ", label: "Copywriting" },
+        { prop: "text", type: "text", defaultValue: "HULIAN \u00B7 ", label: "Copywriting" },
         { prop: "speed", type: "number", defaultValue: 2, label: "Speed px/frame" },
         { prop: "curveAmount", type: "number", defaultValue: 320, label: "Bending amount" },
         {
@@ -62,7 +62,7 @@ export const curvedLoopShowcase: ShowcaseSpec = {
         {
             name: "default (bend downward\u00B7roll left)",
             render: () => (<Stage>
-          <CurvedLoop text="HULIAN · HULIAN · " className="text-white"/>
+          <CurvedLoop text="HULIAN · " className="text-white"/>
         </Stage>),
         },
         {

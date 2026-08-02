@@ -8,7 +8,7 @@ function CountdownDemo() {
 }
 function CountdownDayDemo() {
     const [deadline] = useState(() => Date.now() + 1000 * 60 * 60 * 50);
-    return <Statistic.Countdown title="Since going online" deadline={deadline} format="D days HH:mm:ss"/>;
+    return <Statistic.Countdown title="Since going online" deadline={deadline} format="D · HH:mm:ss"/>;
 }
 export const statisticShowcase: ShowcaseSpec = {
     examples: [
@@ -22,11 +22,11 @@ export const statisticShowcase: ShowcaseSpec = {
             title: "Precision and suffix",
             description: "precision controls the decimal place, and prefix/suffix connects to the currency symbol or unit.",
             code: `<>
-  <Statistic title="Account Balance" value={89234.56} precision={2} prefix="\uFFE5" />
+  <Statistic title="Account Balance" value={89234.56} precision={2} prefix="\u00A5" />
   <Statistic title="Conversion rate" value={68.4} precision={1} suffix="%" />
 </>`,
             render: () => (<div className="flex flex-wrap gap-10">
-          <Statistic title="Account balance" value={89234.56} precision={2} prefix="￥"/>
+          <Statistic title="Account balance" value={89234.56} precision={2} prefix="¥"/>
           <Statistic title="Conversion rate" value={68.4} precision={1} suffix="%"/>
         </div>),
         },
@@ -59,7 +59,7 @@ export const statisticShowcase: ShowcaseSpec = {
     controls: [
         { prop: "value", type: "number", defaultValue: 112893, label: "Value" },
         { prop: "precision", type: "number", defaultValue: 0, label: "Decimal places" },
-        { prop: "prefix", type: "text", defaultValue: "\uFFE5", label: "Prefix" },
+        { prop: "prefix", type: "text", defaultValue: "\u00A5", label: "Prefix" },
         { prop: "suffix", type: "text", defaultValue: "", label: "Suffix" },
         { prop: "animate", type: "boolean", defaultValue: false, label: "Admission rolling" },
     ],
@@ -67,7 +67,7 @@ export const statisticShowcase: ShowcaseSpec = {
         { name: "Basics", render: () => <Statistic title="Active User" value={112893}/> },
         {
             name: "Decimal + suffix",
-            render: () => <Statistic title="Account balance" value={89234.56} precision={2} prefix="￥"/>,
+            render: () => <Statistic title="Account balance" value={89234.56} precision={2} prefix="¥"/>,
         },
         {
             name: "Percent suffix",

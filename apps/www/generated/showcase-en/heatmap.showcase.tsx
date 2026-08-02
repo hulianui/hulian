@@ -28,7 +28,7 @@ export const heatmapShowcase: ShowcaseSpec = {
             code: `<Heatmap
   data={contribData}
   xLabels={weeks}
-  yLabels={["1", "2", "Three", "Four", "Five", "Six", "Day"]}
+  yLabels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
   cellSize={14}
 />`,
             render: () => (<Heatmap data={contribData} xLabels={weeks} yLabels={["1", "2", "Three", "Four", "Five", "Six", "Day"]} cellSize={14}/>),

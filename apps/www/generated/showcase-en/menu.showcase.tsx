@@ -51,7 +51,7 @@ export const menuShowcase: ShowcaseSpec = {
         </Menu>),
         },
         {
-            title: "Prohibited Items",
+            title: "Disabled item",
             description: "MenuItem cannot be highlighted or clicked after adding disabled.",
             code: `<Menu>
   <MenuTrigger render={<Button variant="outline">Menu</Button>} />

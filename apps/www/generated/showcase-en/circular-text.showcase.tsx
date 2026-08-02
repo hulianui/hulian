@@ -1,14 +1,14 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { CircularText } from "../../../../packages/ui/src/circular-text/circular-text";
-const DEMO_TEXT = "HULIAN \u00B7 HULIAN UI \u00B7 Design system \u00B7 ";
+const DEMO_TEXT = "HULIAN UI \u00B7 Design system \u00B7 ";
 export const circularTextShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
             description: "Each word is arranged on the circumference according to the equal angle, and the whole rotates at a constant speed; hovering accelerates by default.",
             code: `<CircularText
-  text="HULIAN \u00B7 HULIAN UI \u00B7 Design System \u00B7 "
+  text="HULIAN UI \u00B7 Design System \u00B7 "
   className="text-sm font-semibold tracking-widest text-primary"
 />`,
             render: () => (<div className="flex justify-center py-6">
@@ -19,7 +19,7 @@ export const circularTextShowcase: ShowcaseSpec = {
             title: "Hover Pause \u00B7 Slow Base",
             description: "spinDuration slows down the rotation speed, onHover=\"pause\" hovers to freeze the rotation.",
             code: `<CircularText
-  text="HULIAN \u00B7 HULIAN UI \u00B7 Design System \u00B7 "
+  text="HULIAN UI \u00B7 Design System \u00B7 "
   spinDuration={36}
   onHover="pause"
   className="text-sm font-semibold tracking-widest text-foreground"
@@ -83,5 +83,5 @@ export const circularTextShowcase: ShowcaseSpec = {
     renderWithProps: (p) => (<div className="flex justify-center py-6">
       <CircularText text={DEMO_TEXT} spinDuration={p.spinDuration as number} onHover={p.onHover as "speedUp"} radius={p.radius as number} className="text-sm font-semibold tracking-widest text-primary"/>
     </div>),
-    toCode: (p) => `<CircularText text="HULIAN \u00B7 HULIAN UI \u00B7 " spinDuration={${p.spinDuration}} onHover="${p.onHover}" radius={${p.radius}} />`,
+    toCode: (p) => `<CircularText text="HULIAN UI \u00B7 " spinDuration={${p.spinDuration}} onHover="${p.onHover}" radius={${p.radius}} />`,
 };

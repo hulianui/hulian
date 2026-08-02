@@ -54,14 +54,14 @@ export const commentShowcase: ShowcaseSpec = {
   />
 </Comment>`,
             render: () => (<Comment author="Hulian" avatar={{ fallback: "Hu" }} datetime="2 hours ago" content="The problem has been reproduced." connector>
-          <Comment author="John Doe" avatar={{ fallback: "Li" }} datetime="1 hour ago" content="Received and investigating the root cause."/>
+          <Comment author="Li Si" avatar={{ fallback: "Li" }} datetime="1 hour ago" content="Received and investigating the root cause."/>
         </Comment>),
         },
         {
             title: "System log",
             description: "type=\"log\" is weakened to dot mark + single line inline (work order status change, etc.).",
             code: `<>
-  <Comment type="log" author="System" content="Change the work order status to "Processing"" datetime="14:25" />
+  <Comment type="log" author="System" content="Set the ticket status to Processing" datetime="14:25" />
   <Comment type="log" author="Zhang San" content="Assigned to @Li Si" datetime="14:26" />
 </>`,
             render: () => (<div className="space-y-2">
@@ -94,7 +94,7 @@ export const commentShowcase: ShowcaseSpec = {
         {
             name: "Nested threads",
             render: () => (<Comment author="Hulian" datetime="2 hours ago" avatar={{ fallback: "Hu" }} content="The work order has been assigned, please @Li Si @Wang Wu to follow up." actions={actions} connector>
-          <Comment author="John Doe" datetime="1 hour ago" avatar={{ fallback: "Li" }} content="Received @Hulian, we are investigating the root cause, and we expect to give a conclusion today." actions={<CommentAction href="https://example.com/#reply">Reply</CommentAction>}/>
+          <Comment author="Li Si" datetime="1 hour ago" avatar={{ fallback: "Li" }} content="Received @Hulian, we are investigating the root cause, and we expect to give a conclusion today." actions={<CommentAction href="https://example.com/#reply">Reply</CommentAction>}/>
           <Comment author="Wang Wu" datetime="40 minutes ago" avatar={{ fallback: "Wang" }} content="Supplement: The relevant logs are attached and can be referenced together."/>
         </Comment>),
         },
@@ -116,7 +116,7 @@ export const commentShowcase: ShowcaseSpec = {
         const type = (props.type as "comment" | "log") ?? "comment";
         const connector = Boolean(props.connector);
         return (<Comment type={type} author="Hulian" avatar={{ fallback: "Hu" }} datetime="2 hours ago" content="This is a comment and can be nested into sub-replies." actions={type === "comment" ? actions : undefined} connector={connector}>
-        {type === "comment" && (<Comment author="John Doe" avatar={{ fallback: "Li" }} datetime="1 hour ago" content="This is a sub-reply."/>)}
+        {type === "comment" && (<Comment author="Li Si" avatar={{ fallback: "Li" }} datetime="1 hour ago" content="This is a sub-reply."/>)}
       </Comment>);
     },
     toCode: (props) => {
