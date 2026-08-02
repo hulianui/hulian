@@ -111,6 +111,18 @@ export const chartShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "图例",
+      description:
+        "多序列图不给图例，读者无从知道哪条线是哪条序列。legend 开一行色点（走 Dot 的 color，与序列色同源）；\"top\" / \"bottom\" 选位置。height 仍是组件总高——画布相应变矮，不会把总高撑高。",
+      code: `<AreaChart data={data} series={series} xKey="month" legend />`,
+      render: () => (
+        <div className="flex flex-col gap-4">
+          <AreaChart data={data} series={series} xKey="month" legend className={W} />
+          <LineChart data={data} series={series} xKey="month" legend="top" className={W} />
+        </div>
+      ),
+    },
+    {
       title: "堆叠",
       description: "stacked 让多序列堆叠（Area/Bar 生效）。",
       code: `<BarChart data={data} series={series} xKey="month" stacked />`,
