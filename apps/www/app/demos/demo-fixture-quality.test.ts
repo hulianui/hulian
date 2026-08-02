@@ -38,7 +38,8 @@ import { content as helmLogin } from "./hanhelm/login/page.content";
 
 const dictionaries = [
   analytics, csMetrics, workbench, customers, knowledge, tickets,
-  reviewLogin, reviewShell, reviewFindings, reviewModels, reviewNav, reviews, reviewRules, reviewRouting,
+  reviewLogin, reviewOverview, reviewList, reviewFindingList, reviewGates, reviewDetail,
+  reviewShell, reviewFindings, reviewModels, reviewNav, reviews, reviewRules, reviewRouting,
   helmPage, helmSettings, helmAlertsPage, helmQueuePage, helmRoutingPage,
   helmOverviewFlow, helmAgents, helmQueueBoard, helmQueueShared, helmWeights, helmTaskDetail,
   helmAlerts, helmRoutingRules, helmTasks, helmLogin,
@@ -73,6 +74,7 @@ describe("English demo fixture quality", () => {
         reviewDetail.en.secondary,
         reviewDetail.en.tip,
       ],
+      qualityScore: reviewOverview.en.qualityPoints,
       maximumCriticalFindings: reviewGates.en.seriousProblemsAtTheUpperLimit3,
       hoverState: reviews.en.unifiedButtonRoundedCornersAndFloatingState,
     }).toEqual({
@@ -80,6 +82,7 @@ describe("English demo fixture quality", () => {
       reviewList: ["Critical", "Major", "Minor", "Info"],
       findingList: ["Critical", "Major", "Minor", "Info"],
       reviewDetail: ["Critical", "Major", "Minor", "Info"],
+      qualityScore: "Quality score",
       maximumCriticalFindings: "Maximum critical findings",
       hoverState: "Unify button corner radii and hover states",
     });

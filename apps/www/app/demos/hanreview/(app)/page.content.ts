@@ -51,7 +51,7 @@ export const content = {
     "accessControlClearanceRate": "Gate pass rate",
     "qualityTrendNearlyDays": "Quality trend · Last 30 days",
     "maximumScore": "Maximum score: 100",
-    "qualityPoints": "Quality points",
+    "qualityPoints": "Quality score",
     "distributionOfProblemSeverity": "Distribution of problem severity",
     "codeHotspotsModulesWeeks": "Code hotspots (modules × weeks)",
     "theHigherTheValueTheMoreNumerous": "Higher values indicate more findings",
