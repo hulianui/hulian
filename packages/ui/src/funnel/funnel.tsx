@@ -1,7 +1,4 @@
-"use client";
-
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
 import { computeFunnel } from "./funnel-geometry";
 import type { FunnelProps, FunnelStage, FunnelTone } from "./funnel.types";
 
@@ -35,11 +32,12 @@ export function Funnel<S extends FunnelStage>({
   stages,
   orientation = "vertical",
   showConversion = true,
+  ariaLabel = "漏斗图",
+  conversionLabel = "转化",
   renderStage,
   onStageClick,
   className,
 }: FunnelProps<S>) {
-  const locale = useComponentLocale().funnel;
   const data = computeFunnel(stages);
   const clickable = typeof onStageClick === "function";
 
@@ -48,7 +46,7 @@ export function Funnel<S extends FunnelStage>({
       <div
         className={cn("flex items-end gap-2", className)}
         role="list"
-        aria-label={locale?.chart ?? "漏斗图"}
+        aria-label={ariaLabel}
       >
         {data.map(({ stage, widthRatio, conversion }, i) => {
           const tone = stage.tone ?? "brand";
@@ -103,7 +101,7 @@ export function Funnel<S extends FunnelStage>({
 
   // vertical：每级一行，居中梯形条按宽度比，级间显转化率徽标。
   return (
-    <div className={cn("flex flex-col gap-2", className)} role="list" aria-label={locale?.chart ?? "漏斗图"}>
+    <div className={cn("flex flex-col gap-2", className)} role="list" aria-label={ariaLabel}>
       {data.map(({ stage, widthRatio, conversion }, i) => {
         const tone = stage.tone ?? "brand";
         const content = renderStage ? (
@@ -142,7 +140,7 @@ export function Funnel<S extends FunnelStage>({
             {showConversion && conversion !== null ? (
               <div className="mb-1 flex justify-center">
                 <span className="rounded-full bg-surface-hover px-2 py-0.5 text-[11px] font-medium tabular-nums text-muted">
-                  {locale?.conversion ?? "转化"} {conversionText(conversion)}
+                  {conversionLabel} {conversionText(conversion)}
                 </span>
               </div>
             ) : null}

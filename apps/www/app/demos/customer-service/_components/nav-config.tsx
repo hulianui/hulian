@@ -1,6 +1,7 @@
 import { copy } from "./nav-config.content";
 import { MessagesSquare, Ticket, BookOpen, BarChart3, Settings } from "lucide-react";
 import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
+import { demoHref } from "../../_components/demo-locale";
 
 export const CS_ROOT = "/demos/customer-service";
 
@@ -59,11 +60,11 @@ const META: Record<string, string> = {
 /** 顶栏面包屑：工作台 → 当前页（工单详情页追加「工单详情」）。 */
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
   if (pathname === CS_ROOT) return [{ label: copy("sessionWorkbench3"), current: true }];
-  const items: BreadcrumbItem[] = [{ label: copy("sessionWorkbench4"), href: CS_ROOT }];
+  const items: BreadcrumbItem[] = [{ label: copy("sessionWorkbench4"), href: demoHref(CS_ROOT) }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== CS_ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : selected, current: isLeaf });
+    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : demoHref(selected), current: isLeaf });
   }
   if (selected === `${CS_ROOT}/tickets` && pathname !== `${CS_ROOT}/tickets`) {
     items.push({ label: copy("workOrderDetails"), current: true });

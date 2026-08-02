@@ -37,7 +37,7 @@ export const content = {
     "hulianBuiltInExample": "© 2026 Hulian · Built-in example",
     "coral2": "Coral",
     "hanreviewHanreview2": "HanReview HanReview",
-    "logInToEnterTheCodeReview": "Log in to enter the code review review console",
+    "logInToEnterTheCodeReview": "Sign in to the code review console",
     "forgotThePassword": "Forgot the password",
     "connectToYourWarehouse": "Connect your repository",
     "demoEnvironmentLogInByEnteringAny": "Demo environment: Log in by entering any username or password",

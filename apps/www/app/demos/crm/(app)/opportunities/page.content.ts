@@ -10,11 +10,6 @@ export const content = {
     "allPersonsInCharge": "全部负责人",
     "allPersonsInCharge2": "全部负责人",
     "loadingOpportunities": "加载商机中…",
-    "linWanqing": "林晚晴",
-    "zhouMingyuan": "周明远",
-    "gaoMin": "高敏",
-    "chenCe": "陈策",
-    "suXiao": "苏晓",
   },
   en: {
     "winRate": "Win rate ",
@@ -24,11 +19,6 @@ export const content = {
     "allPersonsInCharge": "All owners",
     "allPersonsInCharge2": "All owners",
     "loadingOpportunities": "Loading opportunities...",
-    "linWanqing": "Lin Wanqing",
-    "zhouMingyuan": "Zhou Mingyuan",
-    "gaoMin": "Gao Min",
-    "chenCe": "Chen Ce",
-    "suXiao": "Su Xiao",
   },
 } as const;
 

@@ -28,6 +28,8 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 | stages* | `FunnelStage[]` | — | `{id, label, value, tone?}` stages sized proportionally to value. |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | Rows sized by width or columns sized by height. |
 | showConversion | `boolean` | `true` | Shows conversion between adjacent stages. |
+| ariaLabel | `string` | <span data-i18n-allow-cjk>`"漏斗图"`</span> | Accessible chart name. Pass a localized value for non-Chinese interfaces. |
+| conversionLabel | `string` | <span data-i18n-allow-cjk>`"转化"`</span> | Conversion badge prefix. Pass a localized value for non-Chinese interfaces. |
 | className | `string` | — | Root class name. |
 
 `FunnelStage.tone` is `"neutral" | "brand" | "success" | "warning" | "danger"`, defaulting to brand.
@@ -55,6 +57,8 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
   ]}
   orientation="vertical"
   showConversion
+  ariaLabel="Funnel chart"
+  conversionLabel="Conversion"
   onStageClick={(s) => console.log(s.id)}
 />
 ```
@@ -63,9 +67,8 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 
 - Tone is a fixed semantic enum. Use `renderStage` for arbitrary colors.
 - `computeFunnel` returns `null` conversion for the first stage and never divides by zero; custom renderers must handle `conversion == null`.
-- The root uses `"\u6f0f\u6597\u56fe"` (“Funnel chart”), and conversion badges prepend `"\u8f6c\u5316 "` (“Conversion ”).
+- `Funnel` has no client boundary, so server components and server-compatible `renderStage` functions remain supported. Localize `ariaLabel` and `conversionLabel` explicitly when needed.
 
 ## Related
 
-The chart accessibility label and conversion prefix follow `ConfigProvider`.
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

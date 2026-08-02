@@ -1,6 +1,7 @@
 import { copy } from "./nav-config.content";
 import { LayoutDashboard, GitPullRequest, ListChecks, ShieldCheck, Network, Settings } from "lucide-react";
 import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
+import { demoHref } from "../../_components/demo-locale";
 
 export const HR_ROOT = "/demos/hanreview";
 
@@ -63,11 +64,11 @@ const META: Record<string, string> = {
 
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
   if (pathname === HR_ROOT) return [{ label: copy("codeHealthOverview3"), current: true }];
-  const items: BreadcrumbItem[] = [{ label: copy("overview2"), href: HR_ROOT }];
+  const items: BreadcrumbItem[] = [{ label: copy("overview2"), href: demoHref(HR_ROOT) }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== HR_ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : selected, current: isLeaf });
+    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : demoHref(selected), current: isLeaf });
   }
   if (selected === `${HR_ROOT}/reviews` && pathname !== `${HR_ROOT}/reviews`) {
     items.push({ label: copy("reviewTheDetails"), current: true });

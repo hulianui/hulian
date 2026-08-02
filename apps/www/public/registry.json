@@ -7537,7 +7537,6 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {

@@ -28,13 +28,13 @@ import {
   type ColumnDef,
 } from "@hulianui/ui";
 import { customers as seed } from "../../_data/customers";
-import { customerLevelLabel, customerLevelTone, customerStatusLabel, customerStatusTone, yuan } from "../../_data/status";
-import { OWNERS, type Customer, type CustomerLevel, type CustomerStatus } from "../../_data/types";
+import { customerIndustryLabel, customerLevelLabel, customerLevelTone, customerOwnerLabel, customerStatusLabel, customerStatusTone, yuan } from "../../_data/status";
+import { INDUSTRIES, OWNERS, type Customer, type CustomerLevel, type CustomerStatus } from "../../_data/types";
+import { assertCustomerFormValues, createCustomer, filterCustomers, type CustomerFilters, type CustomerFormValues } from "../../_lib/customer-domain";
 import { useMockData, usePending } from "../../../lib/async";
 
 const LEVELS: CustomerLevel[] = ["重要", "普通", "潜在"];
 const STATUSES: CustomerStatus[] = ["待分配", "跟进中", "已成交", "已流失"];
-const INDUSTRIES = [copy("manufacturing"), copy("internet"), copy("finance"), copy("medical"), copy("education"), copy("retail"), copy("logistics"), copy("catering"), copy("energy"), copy("consultation")];
 const PAGE_SIZE = 8;
 
 const opt = (arr: readonly string[], allLabel = copy("all"), labels?: Readonly<Record<string, string>>) => [
@@ -42,23 +42,11 @@ const opt = (arr: readonly string[], allLabel = copy("all"), labels?: Readonly<R
   ...arr.map((v) => ({ value: v, label: labels?.[v] ?? v })),
 ];
 
-type FormState = {
-  name: string;
-  company: string;
-  contactName: string;
-  phone: string;
-  email: string;
-  level: string;
-  status: string;
-  owner: string;
-  industry: string;
-  region: string;
-  regionCodes: string[];
-};
+type FormState = CustomerFormValues;
 
 const EMPTY: FormState = {
   name: "", company: "", contactName: "", phone: "", email: "",
-  level: copy("ordinary2"), status: copy("toBeAllocated2"), owner: OWNERS[0], industry: copy("manufacturing2"), region: "", regionCodes: [],
+  level: "普通", status: "待分配", owner: OWNERS[0], industry: "制造", region: "", regionCodes: [],
 };
 
 export default function CustomersPage() {
@@ -76,16 +64,10 @@ export default function CustomersPage() {
 
   const form = useForm<FormState>({ initialValues: EMPTY });
 
-  const filtered = useMemo(() => {
-    const kw = String(filters.keyword ?? "").trim();
-    return rows.filter((r) => {
-      if (kw && !`${r.name}${r.company}${r.contactName}`.includes(kw)) return false;
-      if (filters.status && r.status !== filters.status) return false;
-      if (filters.level && r.level !== filters.level) return false;
-      if (filters.owner && r.owner !== filters.owner) return false;
-      return true;
-    });
-  }, [rows, filters]);
+  const filtered = useMemo(
+    () => filterCustomers(rows, filters as CustomerFilters),
+    [rows, filters],
+  );
 
   const total = filtered.length;
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -105,18 +87,16 @@ export default function CustomersPage() {
   };
 
   const handleFinish = (v: Record<string, unknown>) => {
-    const val = v as FormState;
+    assertCustomerFormValues(v);
+    const val = v;
     return run(() => {
       if (editing) {
-        setRows((rs) => rs.map((r) => (r.id === editing.id ? { ...r, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus } : r)));
+        const { regionCodes: _regionCodes, ...stored } = val;
+        setRows((rs) => rs.map((r) => (r.id === editing.id ? { ...r, ...stored } : r)));
         toast({ title: copy("customerUpdated"), description: val.name, tone: "success" });
       } else {
-        const nextId = `C${1000 + rows.length + 1}`;
         setRows((rs) => [
-          {
-            id: nextId, ...val, level: val.level as CustomerLevel, status: val.status as CustomerStatus,
-            amount: 0, lastFollowAt: "2026-06-04", createdAt: "2026-06-04", tags: [copy("new")],
-          },
+          { ...createCustomer(rs, val), tags: [copy("new")] },
           ...rs,
         ]);
         setPage(1);
@@ -172,7 +152,7 @@ export default function CustomersPage() {
         </Tag>
       ),
     },
-    { accessorKey: "owner", header: copy("personInCharge") },
+    { accessorKey: "owner", header: copy("personInCharge"), cell: ({ row }) => customerOwnerLabel[row.original.owner] },
     {
       accessorKey: "amount",
       header: copy("accumulatedTransactions"),
@@ -256,7 +236,7 @@ export default function CustomersPage() {
             { name: "keyword", label: copy("keywords"), placeholder: copy("customerCompanyContact") },
             { name: "status", label: copy("status2"), type: "select", options: opt(STATUSES, copy("all"), customerStatusLabel) },
             { name: "level", label: copy("level2"), type: "select", options: opt(LEVELS, copy("all"), customerLevelLabel) },
-            { name: "owner", label: copy("personInCharge2"), type: "select", options: opt(OWNERS) },
+            { name: "owner", label: copy("personInCharge2"), type: "select", options: opt(OWNERS, copy("all"), customerOwnerLabel) },
           ],
           onSearch: (v) => {
             setFilters(v);
@@ -283,7 +263,7 @@ export default function CustomersPage() {
             <Input {...bind(reg.name)} placeholder={copy("suchAsMorningLightStationery")} />
           </Field>
           <Field label={copy("personInCharge3")}>
-            <FormSelect field={reg.owner} options={OWNERS} />
+            <FormSelect field={reg.owner} options={OWNERS} labels={customerOwnerLabel} />
           </Field>
           <Field label={copy("fullCompanyName")} className="col-span-2" error={reg.company.error}>
             <Input {...bind(reg.company)} placeholder={copy("fullNameOfBusinessLicense")} />
@@ -319,7 +299,7 @@ export default function CustomersPage() {
             <FormSelect field={reg.status} options={STATUSES} labels={customerStatusLabel} />
           </Field>
           <Field label={copy("industry")} className="col-span-2">
-            <FormSelect field={reg.industry} options={INDUSTRIES} />
+            <FormSelect field={reg.industry} options={INDUSTRIES} labels={customerIndustryLabel} />
           </Field>
         </div>
       </ModalForm>

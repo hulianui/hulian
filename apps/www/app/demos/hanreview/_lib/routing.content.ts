@@ -10,10 +10,10 @@ export const content = {
     "valueDowngradingAboveCostCap": "{0}（超成本上限降级）",
   },
   en: {
-    "testProfileEconomicModel": "Test/profile → economic model",
+    "testProfileEconomicModel": "Test/config file → low-cost model",
     "securitySensitivePathsTheStrongestModel": "Security-sensitive paths → the strongest model",
     "largeFileBalancedModel": "Large file → balanced model",
-    "defaultEqualizationModel": "Default → equalization model",
+    "defaultEqualizationModel": "Default path → balanced model",
     "valueDowngradingAboveCostCap": "{0} (Downgrading above cost cap)",
   },
 } as const;

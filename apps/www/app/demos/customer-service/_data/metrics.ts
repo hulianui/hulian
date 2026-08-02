@@ -21,7 +21,7 @@ export const todayMetrics: Metric[] = [
 export function hourlyVolume() {
   const base = [42, 28, 18, 64, 120, 156, 138, 172, 198, 164, 110, 86];
   const hours = [copy("oClock"), copy("oClock2"), copy("oClock3"), copy("oClock4"), copy("oClock5"), copy("localizedText"), copy("localizedText2"), copy("localizedText3"), copy("localizedText4"), copy("localizedText5"), copy("localizedText6"), copy("localizedText7")];
-  return hours.map((hour, i) => ({ hour, 会话量: base[i] }));
+  return hours.map((hour, i) => ({ hour, volume: base[i] }));
 }
 
 /** 渠道分布（由当前会话现算占比，donut 饼图）。 */
@@ -37,7 +37,7 @@ export function channelDistribution() {
 export function csatTrend() {
   const days = [copy("monday"), copy("tuesday"), copy("wednesday"), copy("thursday"), copy("friday"), copy("saturday"), copy("sunday")];
   const csat = [95.2, 96.1, 95.8, 97.0, 96.5, 98.2, 96.8];
-  return days.map((day, i) => ({ day, 满意度: csat[i] }));
+  return days.map((day, i) => ({ day, csat: csat[i] }));
 }
 
 /** 坐席接待排行（接待量 + 满意度）。 */

@@ -81,7 +81,7 @@ export const content = {
     "thisMonthISpent": "This month, I spent ¥1,284",
     "excessStrategy": "Excess strategy",
     "excessStrategy2": "Excess strategy",
-    "downgradedToAnEconomicModel": "Downgraded to an economic model",
+    "downgradedToAnEconomicModel": "Downgraded to a lower-cost model",
     "afterOverBudgetingSwitchToHaikuDeepseek": "After over-budgeting, switch to Haiku/DeepSeek for continued review",
     "suspensionOfReview": "Suspension of review",
     "afterExceedingTheBudgetTheQueueIs": "After exceeding the budget, the queue is suspended, waiting for next month or additional budget",

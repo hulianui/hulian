@@ -28,6 +28,8 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 | stages* | `FunnelStage[]` | — | 阶段数组。`{id, label, value, tone?}`；漏斗宽/高按 value 比例缩放 |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | vertical 每级一行按宽度比 / horizontal 每列按高度比 |
 | showConversion | `boolean` | `true` | 是否显示级间转化率徽标 |
+| ariaLabel | `string` | `"漏斗图"` | 图表无障碍名称；非中文界面应显式传入本地化文案 |
+| conversionLabel | `string` | `"转化"` | 转化率徽标前缀；非中文界面应显式传入本地化文案 |
 | className | `string` | — | 外层类名 |
 
 FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`，缺省 `brand`（同 Tag 的 tone 语义，吃 token）。
@@ -63,8 +65,8 @@ FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`�
 
 - tone 是固定语义枚举（neutral/brand/success/warning/danger），不接受任意 CSS 颜色——要自定义配色走 `renderStage`。
 - `computeFunnel` 纯函数对首级 `conversion` 返回 `null`（无上一级可比），且不除零；自定义渲染时务必判 `conversion == null`。
+- `Funnel` 不声明客户端边界，可在服务端组件中使用，也可接收服务端兼容的 `renderStage` 函数。需要其他语言时显式传 `ariaLabel` 与 `conversionLabel`。
 
 ## 相关
 
-图表无障碍标签与转化率前缀跟随 `ConfigProvider`。
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

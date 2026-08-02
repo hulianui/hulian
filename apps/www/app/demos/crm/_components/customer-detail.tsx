@@ -34,7 +34,7 @@ import { customerById } from "../_data/customers";
 import { followsByCustomer } from "../_data/follows";
 import { opportunities } from "../_data/opportunities";
 import { orders } from "../_data/orders";
-import { customerLevelLabel, customerLevelTone, customerStatusLabel, customerStatusTone, followTypeLabel, oppStageLabel, oppStageTone, orderStatusLabel, orderStatusTone, yuan } from "../_data/status";
+import { customerIndustryLabel, customerLevelLabel, customerLevelTone, customerOwnerLabel, customerStatusLabel, customerStatusTone, followTypeLabel, oppStageLabel, oppStageTone, orderStatusLabel, orderStatusTone, yuan } from "../_data/status";
 import type { Follow, FollowType } from "../_data/types";
 
 const FOLLOW_TYPES: FollowType[] = ["电话", "拜访", "微信", "邮件"];
@@ -100,8 +100,8 @@ export function CustomerDetail({ id }: { id: string }) {
           <Descriptions
             column={3}
             items={[
-              { label: copy("personInCharge"), children: customer.owner },
-              { label: copy("industry"), children: customer.industry },
+              { label: copy("personInCharge"), children: customerOwnerLabel[customer.owner] },
+              { label: copy("industry"), children: customerIndustryLabel[customer.industry] },
               { label: copy("area"), children: customer.region },
               { label: copy("contactPerson"), children: customer.contactName },
               { label: copy("contactNumber"), children: <span className="tabular-nums">{customer.phone}</span> },
@@ -128,7 +128,7 @@ export function CustomerDetail({ id }: { id: string }) {
               {followList.length ? (
                 <Timeline
                   items={followList.map((fw) => ({
-                    label: `${fw.createdAt} · ${fw.owner}`,
+                    label: `${fw.createdAt} · ${customerOwnerLabel[fw.owner]}`,
                     color: followDot[fw.type],
                     children: (
                       <div className="flex flex-col gap-1 pb-1">
@@ -160,7 +160,7 @@ export function CustomerDetail({ id }: { id: string }) {
                         </span>,
                       ]}
                     >
-                      <ListItemMeta title={o.title} description={copy("personInChargeValueWinRateValue", o.owner, o.probability, o.expectedCloseAt)} />
+                      <ListItemMeta title={o.title} description={copy("personInChargeValueWinRateValue", customerOwnerLabel[o.owner], o.probability, o.expectedCloseAt)} />
                     </ListItem>
                   )}
                 />

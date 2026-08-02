@@ -86,7 +86,7 @@ export default function AnalyticsPage() {
         <Card className="lg:col-span-2">
           <CardHeader>{copy("todaySSessionVolumeByHour")}</CardHeader>
           <CardBody>
-            <AreaChart data={volume} series={[{ key: copy("sessionVolume"), label: copy("sessionVolume2") }]} xKey="hour" height={260} />
+            <AreaChart data={volume} series={[{ key: "volume", label: copy("sessionVolume2") }]} xKey="hour" height={260} />
           </CardBody>
         </Card>
         <Card>
@@ -101,7 +101,7 @@ export default function AnalyticsPage() {
         <Card className="lg:col-span-2">
           <CardHeader>{copy("satisfactionTrendsCsatOverTheLastDays")}</CardHeader>
           <CardBody>
-            <AreaChart data={csat} series={[{ key: copy("satisfaction"), label: "CSAT %" }]} xKey="day" height={240} />
+            <AreaChart data={csat} series={[{ key: "csat", label: "CSAT %" }]} xKey="day" height={240} />
           </CardBody>
         </Card>
 

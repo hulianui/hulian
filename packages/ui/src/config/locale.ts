@@ -161,8 +161,8 @@ export interface ComponentLocale {
     running: string;
     success: string;
     error: string;
-    input: string;
-    output: string;
+    input?: string;
+    output?: string;
   };
   carousel: {
     label: string;
@@ -364,7 +364,6 @@ const zhComponents: ComponentLocale = {
   secretField: { show: "显示", hide: "隐藏", copy: "复制", copied: "已复制" },
   kanban: { emptyColumn: "拖拽卡片到此" },
   gantt: { chart: "项目排期甘特图", empty: "暂无排期数据", process: "工序", month: (month) => `${month}月` },
-  funnel: { chart: "漏斗图", conversion: "转化" },
   sankey: { chart: "桑基流向图" },
   diffStat: { added: "新增", modified: "修改", deleted: "删除", renamed: "重命名" },
   deployStatus: { queued: "排队中", building: "构建中", ready: "已上线", error: "失败", canceled: "已取消", skipped: "已跳过" },
@@ -481,7 +480,6 @@ const enComponents: ComponentLocale = {
   secretField: { show: "Show", hide: "Hide", copy: "Copy", copied: "Copied" },
   kanban: { emptyColumn: "Drop cards here" },
   gantt: { chart: "Project schedule Gantt chart", empty: "No schedule data", process: "Task", month: (month) => `${month}` },
-  funnel: { chart: "Funnel chart", conversion: "Conversion" },
   sankey: { chart: "Sankey diagram" },
   diffStat: { added: "Added", modified: "Modified", deleted: "Deleted", renamed: "Renamed" },
   deployStatus: { queued: "Queued", building: "Building", ready: "Ready", error: "Failed", canceled: "Canceled", skipped: "Skipped" },

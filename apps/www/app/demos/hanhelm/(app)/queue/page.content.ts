@@ -39,7 +39,7 @@ export const content = {
     "allOfThem": "All of them",
     "inLine": "In line",
     "inExecution": "In execution",
-    "theAppointedTimeApproached": "The appointed time approached",
+    "theAppointedTimeApproached": "SLA deadline approaching",
     "failure": "Failure",
     "fullCapacity": "Full capacity",
     "allPriorities": "All priorities",

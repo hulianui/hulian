@@ -164,7 +164,13 @@ export default function OverviewPage() {
             <span className="text-xs text-muted">{copy("incomingRoutingExecutesComplete")}</span>
           </CardHeader>
           <CardBody>
-            <Funnel stages={FUNNEL_STAGES} orientation="vertical" showConversion />
+            <Funnel
+              stages={FUNNEL_STAGES}
+              orientation="vertical"
+              showConversion
+              ariaLabel={copy("funnelChart")}
+              conversionLabel={copy("conversion")}
+            />
           </CardBody>
         </Card>
 

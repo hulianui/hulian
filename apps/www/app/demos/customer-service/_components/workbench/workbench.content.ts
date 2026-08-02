@@ -16,7 +16,7 @@ export const content = {
     "sessionClosed": "Session closed",
     "sessionValueEndedAndArchived": "Session {0} ended and archived",
     "valuePeopleCurrentlyQueued": "{0} people currently queued",
-    "thereIsAPeakIncomingCallsPlease": "There is a peak incoming calls, please speed up the processing or call the backup agent to come online.",
+    "thereIsAPeakIncomingCallsPlease": "Inbound volume is peaking. Work the oldest conversations first or bring a backup agent online.",
   },
 } as const;
 

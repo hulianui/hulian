@@ -1,7 +1,35 @@
 import { copy } from "./status.content";
 import type { TagTone } from "@hulianui/ui";
 import { DOCS_LOCALE } from "../../../../lib/docs-locale";
-import type { CustomerLevel, CustomerStatus, FollowType, OppStage, OrderStatus } from "./types";
+import type { CustomerIndustry, CustomerLevel, CustomerOwner, CustomerStatus, FollowType, OppStage, OrderStatus } from "./types";
+
+export const customerOwnerLabel: Record<CustomerOwner, string> = {
+  林晚晴: copy("ownerLin"),
+  周明远: copy("ownerZhou"),
+  高敏: copy("ownerGao"),
+  陈策: copy("ownerChen"),
+  苏晓: copy("ownerSu"),
+};
+
+export const customerIndustryLabel: Record<CustomerIndustry, string> = {
+  制造: copy("industryManufacturing"),
+  互联网: copy("industryInternet"),
+  餐饮: copy("industryCatering"),
+  医疗: copy("industryMedical"),
+  教育: copy("industryEducation"),
+  物流: copy("industryLogistics"),
+  传媒: copy("industryMedia"),
+  地产: copy("industryRealEstate"),
+  农业: copy("industryAgriculture"),
+  贸易: copy("industryTrade"),
+  金融: copy("industryFinance"),
+  零售: copy("industryRetail"),
+  出行: copy("industryTravel"),
+  建材: copy("industryBuildingMaterials"),
+  咨询: copy("industryConsulting"),
+  食品: copy("industryFood"),
+  能源: copy("industryEnergy"),
+};
 
 export const customerLevelLabel: Record<CustomerLevel, string> = {
   重要: copy("levelKey"),

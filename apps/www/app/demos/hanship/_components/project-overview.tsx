@@ -1,6 +1,6 @@
 "use client";
 import { copy } from "./project-overview.content";
-import { DEMO_RELATIVE_TIME_LOCALE } from "../../_components/demo-locale";
+import { DEMO_RELATIVE_TIME_LOCALE, demoHref } from "../../_components/demo-locale";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -171,7 +171,7 @@ export function ProjectOverview({ id }: { id: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Breadcrumb items={[{ label: copy("project"), href: ROOT }, { label: project.name }]} />
+      <Breadcrumb items={[{ label: copy("project"), href: demoHref(ROOT) }, { label: project.name }]} />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">

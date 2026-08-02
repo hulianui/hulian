@@ -15,7 +15,7 @@ export const content = {
     "inExecution": "In execution",
     "completed": "Completed",
     "failure": "Failure",
-    "theAppointedTimeApproached": "The appointed time approached",
+    "theAppointedTimeApproached": "SLA deadline approaching",
     "assignIt": "· Assign it",
   },
 } as const;

@@ -20,6 +20,7 @@ const HAN_OR_CJK_PUNCTUATION = /[\p{Script=Han}，。！？；：、“”‘’
 const INTERNAL_PROTOCOL_EXEMPTIONS = new Map([
   ["crm/_data/metrics.ts", "CRM mock discriminators and chart data keys stay aligned with the typed fixture protocol"],
   ["crm/_data/orders.ts", "CRM order status seeds are typed protocol values and are localized by the status label map at render time"],
+  ["crm/_data/protocol.ts", "CRM canonical owner and industry values are stable protocol values; only their render labels are localized"],
 ]);
 
 function chineseLiteralNodes(file: string, source: string): string[] {
@@ -49,7 +50,7 @@ const inventory = {
   },
   crm: {
     routes: ["(app)/customers/[id]/page.tsx", "(app)/customers/page.tsx", "(app)/opportunities/page.tsx", "(app)/orders/page.tsx", "(app)/page.tsx", "(app)/settings/page.tsx", "login/page.tsx"],
-    fixtures: ["_data/customers.ts", "_data/follows.ts", "_data/metrics.ts", "_data/opportunities.ts", "_data/orders.ts", "_data/status.ts"],
+    fixtures: ["_data/customers.ts", "_data/follows.ts", "_data/metrics.ts", "_data/opportunities.ts", "_data/orders.ts", "_data/protocol.ts", "_data/status.ts"],
   },
   "customer-service": {
     routes: ["(app)/analytics/page.tsx", "(app)/knowledge/page.tsx", "(app)/page.tsx", "(app)/settings/page.tsx", "(app)/tickets/[id]/page.tsx", "(app)/tickets/page.tsx", "login/page.tsx"],
@@ -107,7 +108,7 @@ describe("admin and developer demo localization inventory", () => {
         .map((path) => relative(root, path))
         .sort();
       const fixtures = walk(join(root, "_data"))
-        .filter((path) => path.endsWith(".ts") && !path.endsWith("types.ts") && !path.endsWith(".content.ts"))
+        .filter((path) => path.endsWith(".ts") && !path.endsWith("types.ts") && !path.endsWith(".content.ts") && !path.endsWith(".test.ts"))
         .map((path) => relative(root, path))
         .sort();
 
@@ -182,8 +183,8 @@ describe("admin and developer demo localization inventory", () => {
   it("keeps CRM owner filter values stable while localizing their visible labels", () => {
     const source = readFileSync(join(DEMOS_ROOT, "crm/(app)/opportunities/page.tsx"), "utf8");
 
-    expect(source).toContain("const OWNER_LABELS");
-    expect(source).toContain("value: o, label: OWNER_LABELS[o]");
-    expect(source).toContain("{OWNER_LABELS[o]}");
+    expect(source).toContain("customerOwnerLabel");
+    expect(source).toContain("value: o, label: customerOwnerLabel[o]");
+    expect(source).toContain("{customerOwnerLabel[o]}");
   });
 });

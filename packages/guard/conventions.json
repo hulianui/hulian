@@ -2715,6 +2715,13 @@
       "source": "packages/ui/src/funnel/funnel.md"
     },
     {
+      "id": "component/funnel/pitfall/3",
+      "scope": "funnel",
+      "title": "Funnel",
+      "rule": "`Funnel` 不声明客户端边界，可在服务端组件中使用，也可接收服务端兼容的 `renderStage` 函数。需要其他语言时显式传 `ariaLabel` 与 `conversionLabel`。",
+      "source": "packages/ui/src/funnel/funnel.md"
+    },
+    {
       "id": "component/fuzzy-text/pitfall/1",
       "scope": "fuzzy-text",
       "title": "FuzzyText",
@@ -7507,7 +7514,7 @@
   ],
   "stats": {
     "componentDocs": 372,
-    "componentAdvisories": 1047,
-    "totalAdvisories": 1054
+    "componentAdvisories": 1048,
+    "totalAdvisories": 1055
   }
 }

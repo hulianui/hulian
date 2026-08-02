@@ -2,6 +2,7 @@ import { copy } from "./nav-config.content";
 import { LayoutDashboard, Users, KanbanSquare, ShoppingCart, Settings } from "lucide-react";
 import type { NavMenuNode } from "@hulianui/ui";
 import type { BreadcrumbItem } from "@hulianui/ui";
+import { demoHref } from "../../_components/demo-locale";
 
 export const CRM_ROOT = "/demos/crm";
 
@@ -56,11 +57,11 @@ const META: Record<string, string> = {
 /** 顶栏面包屑：工作台 → 当前页（详情页追加「客户详情」）。 */
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
   if (pathname === CRM_ROOT) return [{ label: copy("workbench3"), current: true }];
-  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: CRM_ROOT }];
+  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: demoHref(CRM_ROOT) }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== CRM_ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : selected, current: isLeaf });
+    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : demoHref(selected), current: isLeaf });
   }
   if (selected === `${CRM_ROOT}/customers` && pathname !== `${CRM_ROOT}/customers`) {
     items.push({ label: copy("customerDetails"), current: true });

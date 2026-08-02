@@ -20,7 +20,7 @@ import {
 } from "@hulianui/ui";
 import { customers } from "../_data/customers";
 import { metrics, monthlyTrend, stageDistribution } from "../_data/metrics";
-import { customerStatusLabel, customerStatusTone, yuan } from "../_data/status";
+import { customerOwnerLabel, customerStatusLabel, customerStatusTone, yuan } from "../_data/status";
 
 const trend = monthlyTrend();
 const stage = stageDistribution();
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                         {c.name}
                       </Link>
                     }
-                    description={`${c.company} · ${c.owner}`}
+                    description={`${c.company} · ${customerOwnerLabel[c.owner]}`}
                   />
                 </ListItem>
               )}

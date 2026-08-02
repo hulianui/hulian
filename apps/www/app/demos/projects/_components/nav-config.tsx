@@ -1,6 +1,7 @@
 import { copy } from "./nav-config.content";
 import { LayoutDashboard, FolderKanban, Images, FileText, Receipt, Wallet } from "lucide-react";
 import type { BreadcrumbItem, NavMenuNode } from "@hulianui/ui";
+import { demoHref } from "../../_components/demo-locale";
 
 export const ROOT = "/demos/projects";
 
@@ -66,11 +67,11 @@ const DETAIL_LABEL: Record<string, string> = {
 /** 顶栏面包屑：工作台 → 当前页（→ 详情）。 */
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
   if (pathname === ROOT) return [{ label: copy("workbench3"), current: true }];
-  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: ROOT }];
+  const items: BreadcrumbItem[] = [{ label: copy("workbench4"), href: demoHref(ROOT) }];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : selected, current: isLeaf });
+    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : demoHref(selected), current: isLeaf });
     if (!isLeaf && DETAIL_LABEL[selected]) {
       items.push({ label: DETAIL_LABEL[selected], current: true });
     }

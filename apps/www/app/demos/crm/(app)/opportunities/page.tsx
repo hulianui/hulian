@@ -21,7 +21,7 @@ import {
   toast,
 } from "@hulianui/ui";
 import { opportunities as seed } from "../../_data/opportunities";
-import { oppStageLabel, yuan } from "../../_data/status";
+import { customerOwnerLabel, oppStageLabel, yuan } from "../../_data/status";
 import { OPP_STAGES, OWNERS, type Opportunity, type OppStage } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
 
@@ -43,14 +43,6 @@ function winRateTone(o: Opportunity): "neutral" | "success" | "danger" {
 }
 
 const COLUMNS: KanbanColumn[] = OPP_STAGES.map((s) => ({ id: s, title: oppStageLabel[s] }));
-const OWNER_LABELS: Record<(typeof OWNERS)[number], string> = {
-  "林晚晴": copy("linWanqing"),
-  "周明远": copy("zhouMingyuan"),
-  "高敏": copy("gaoMin"),
-  "陈策": copy("chenCe"),
-  "苏晓": copy("suXiao"),
-};
-
 /** 把拖拽事件落到受控数组：改 stage + 按 toIndex 插回目标列（anchor 取自当前可见视图，与 Kanban 看到的列表一致）。 */
 function applyMove(all: Opportunity[], view: Opportunity[], e: KanbanMoveEvent): Opportunity[] {
   const moving = all.find((o) => o.id === e.id);
@@ -88,9 +80,9 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
         <div className="flex items-center justify-between text-xs text-muted">
           <span className="inline-flex items-center gap-1.5">
             <span className="grid size-5 place-items-center rounded-full bg-surface-hover text-[10px] font-medium text-foreground">
-              {o.owner.slice(0, 1)}
+              {customerOwnerLabel[o.owner].slice(0, 1)}
             </span>
-            {o.owner}
+            {customerOwnerLabel[o.owner]}
           </span>
           <span className="tabular-nums">{o.expectedCloseAt}</span>
         </div>
@@ -131,7 +123,7 @@ export default function OpportunitiesPage() {
         </div>
         <div className="w-44">
           <Select
-            items={[{ value: "", label: copy("allPersonsInCharge") }, ...OWNERS.map((o) => ({ value: o, label: OWNER_LABELS[o] }))]}
+            items={[{ value: "", label: copy("allPersonsInCharge") }, ...OWNERS.map((o) => ({ value: o, label: customerOwnerLabel[o] }))]}
             value={owner}
             onValueChange={(v) => setOwner((v as string) ?? "")}
           >
@@ -140,7 +132,7 @@ export default function OpportunitiesPage() {
               <SelectItem value="">{copy("allPersonsInCharge2")}</SelectItem>
               {OWNERS.map((o) => (
                 <SelectItem key={o} value={o}>
-                  {OWNER_LABELS[o]}
+                  {customerOwnerLabel[o]}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -16,14 +16,14 @@ export const content = {
   },
   en: {
     "fileForTestConfigurationIstestorconfig": "File for Test / Configuration (isTestOrConfig)",
-    "testingAndProfileReviewHaveLowValue": "Testing and profile review have low value density; the Pai economic model Haiku has the lowest unit price.",
+    "testingAndProfileReviewHaveLowValue": "Tests and configuration usually need a focused review, so route them to the lower-cost Haiku model.",
     "securitySensitivePathsSuchAsAuthenticationPayment": "Security-sensitive paths (such as authentication / payment / key)",
     "securityIssuesAreCostlyForcingADeep": "Security issues are costly, forcing a deep audit upgrade to the strongest model, Opus.",
     "largeFilesLines": "Large files (lines > 300)",
     "longDiffsRequireRobustLogicalReasoningSo": "Long diffs require robust logical reasoning, so the equilibrium model Sonnet is used.",
     "defaultStandardBusinessCode": "Default (standard business code)",
     "theVastMajorityOfPrGoesThrough": "The vast majority of PR goes through Sonnet, balancing quality and cost.",
-    "estimatedCostsExceedCostcapAndAreNot": "Estimated costs exceed costCap and are not economic models",
+    "estimatedCostsExceedCostcapAndAreNot": "Estimated cost exceeds costCap; downgrade to the low-cost model",
     "costCapGuaranteesTheBottomAndOver": "Cost cap guarantees the bottom, and over-limit automatic downgrade to Haiku controlling the cost per review.",
   },
 } as const;

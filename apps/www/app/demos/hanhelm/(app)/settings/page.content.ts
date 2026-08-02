@@ -118,7 +118,7 @@ export const content = {
     "downgradedToACheaperModel": "Downgraded to a cheaper model",
     "switchToLowCostActuatorsByDowngrade": "Switch to low-cost executors by downgrade chain, ensuring completion but not quality.",
     "retryTheOriginalActuator": "Retry the original executor",
-    "indexRetreatRetriesTheCurrentActuatorUp": "Index retreat retries the current executor, up to 3 times before switching to manual mode.",
+    "indexRetreatRetriesTheCurrentActuatorUp": "Retry the current executor with exponential backoff up to three times, then require manual handling.",
     "pauseAndAlert": "Pause and alert",
     "tasksAreSuspendedAndNotifiedOnDuty": "Tasks are suspended and notified on duty, waiting for human intervention to make decisions.",
     "alertNotification": "Alert notification",
