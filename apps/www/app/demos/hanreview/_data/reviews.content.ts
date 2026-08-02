@@ -270,7 +270,7 @@ export const content = {
     "runEslint2": "Run ESLint",
     "checkCountingSemantics": "Check counting semantics",
     "theOldImplementationUsesItemsLengthTo": "The old implementation counted line items rather than purchased units. The new reduction fixes that behavior, but must treat a missing qty as zero. Coverage remains below the gate and needs boundary cases.",
-    "unifiedButtonRoundedCornersAndFloatingState": "Unified button rounded corners and floating state",
+    "unifiedButtonRoundedCornersAndFloatingState": "Unify button corner radii and hover states",
     "shenZhiwei2": "Shen Zhiwei",
     "aiCensor18": "AI reviewer",
     "itIsRecommendedToSubtractRoundedCorners": "Extract the border radius into a design token such as radius-md to avoid inconsistent rounded-* values.",

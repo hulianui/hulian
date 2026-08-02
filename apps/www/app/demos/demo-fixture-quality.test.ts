@@ -8,6 +8,11 @@ import { content as customers } from "./customer-service/_data/customers.content
 import { content as knowledge } from "./customer-service/_data/knowledge.content";
 import { content as tickets } from "./customer-service/_data/tickets.content";
 import { content as reviewLogin } from "./hanreview/login/page.content";
+import { content as reviewOverview } from "./hanreview/(app)/page.content";
+import { content as reviewList } from "./hanreview/(app)/reviews/page.content";
+import { content as reviewFindingList } from "./hanreview/(app)/findings/page.content";
+import { content as reviewGates } from "./hanreview/(app)/gates/page.content";
+import { content as reviewDetail } from "./hanreview/_components/review-detail.content";
 import { content as reviewShell } from "./hanreview/_components/review-shell.content";
 import { content as reviewFindings } from "./hanreview/_data/findings.content";
 import { content as reviewModels } from "./hanreview/_data/models.content";
@@ -42,6 +47,44 @@ const dictionaries = [
 const englishFixtureText = dictionaries.flatMap((dictionary) => Object.values(dictionary.en)).join("\n");
 
 describe("English demo fixture quality", () => {
+  it("keeps severity protocol labels and related review terms consistent", () => {
+    expect({
+      overview: [
+        reviewOverview.en.serious,
+        reviewOverview.en.important,
+        reviewOverview.en.secondary,
+        reviewOverview.en.tip,
+      ],
+      reviewList: [
+        reviewList.en.serious,
+        reviewList.en.important,
+        reviewList.en.secondary,
+        reviewList.en.tip,
+      ],
+      findingList: [
+        reviewFindingList.en.serious,
+        reviewFindingList.en.important,
+        reviewFindingList.en.secondary,
+        reviewFindingList.en.tips,
+      ],
+      reviewDetail: [
+        reviewDetail.en.serious,
+        reviewDetail.en.important,
+        reviewDetail.en.secondary,
+        reviewDetail.en.tip,
+      ],
+      maximumCriticalFindings: reviewGates.en.seriousProblemsAtTheUpperLimit3,
+      hoverState: reviews.en.unifiedButtonRoundedCornersAndFloatingState,
+    }).toEqual({
+      overview: ["Critical", "Major", "Minor", "Info"],
+      reviewList: ["Critical", "Major", "Minor", "Info"],
+      findingList: ["Critical", "Major", "Minor", "Info"],
+      reviewDetail: ["Critical", "Major", "Minor", "Info"],
+      maximumCriticalFindings: "Maximum critical findings",
+      hoverState: "Unify button corner radii and hover states",
+    });
+  });
+
   it("keeps the reviewed code-review, scheduling, and support terminology", () => {
     expect({
       reviewBrand: reviewLogin.en.hanreviewHanreview,

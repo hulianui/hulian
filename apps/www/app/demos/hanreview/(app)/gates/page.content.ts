@@ -95,7 +95,7 @@ export const content = {
     "theGateGuardsWereBranched2": "Protected branches",
     "forExampleMainRelease": "For example: main / release",
     "minimumQualityScore3": "Minimum quality score",
-    "seriousProblemsAtTheUpperLimit3": "Serious problems at the upper limit",
+    "seriousProblemsAtTheUpperLimit3": "Maximum critical findings",
     "minimumCoverage3": "Minimum coverage (%)",
     "mustPassTheRuleSet2": "Required rule sets",
     "mustPassTheRuleSet3": "Required rule sets",
