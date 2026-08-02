@@ -12,12 +12,16 @@ const uiVersion = JSON.parse(
 ).version;
 writeFileSync(
   join(__dirname, "lib/ui-version.ts"),
-  `// 自动生成（next.config.mjs 构建期写入），请勿手改。源：packages/ui/package.json\nexport const UI_VERSION = ${JSON.stringify(uiVersion)};\n`,
+  `// 自动生成（next.config.mjs 构建期写入），请勿手改。源：packages/ui/package.json\nexport const UI_VERSION = ${JSON.stringify(
+    uiVersion,
+  )};\n`,
 );
 
 const docsLocale = process.env.DOCS_LOCALE === "en" ? "en" : "zh-CN";
 const basePath = docsLocale === "en" ? "/en" : "";
 const localeBuildDir = docsLocale === "en" ? ".bilingual-build/en" : ".bilingual-build/zh";
+const showcaseSource =
+  docsLocale === "en" ? "./generated/showcase-en/index.ts" : "../../packages/ui/src/showcase.ts";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -32,6 +36,9 @@ const nextConfig = {
   images: { unoptimized: true },
   // 工作区包以 TS 源码形式发布，需让 Next 转译
   transpilePackages: ["@hulianui/ui", "@hulianui/mocks"],
+  // Showcase specs are executable modules, not inert copy. Each locale build
+  // resolves the same private docs-only import to its own source barrel.
+  turbopack: { resolveAlias: { "@hulian-docs/showcase": showcaseSource } },
   experimental: {
     // TypeScript 7 的 npm 包**不再导出编译器 API**（exports 的 "." 只指向 lib/version.cjs，
     // 其余全在 unstable/* 下）。Next 默认走 programmatic API 做构建期类型检查与 tsconfig

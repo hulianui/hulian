@@ -5,6 +5,11 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   resolve: {
     alias: {
+      "@hulian-docs/showcase": fileURLToPath(
+        process.env.DOCS_LOCALE === "en"
+          ? new URL("./generated/showcase-en/index.ts", import.meta.url)
+          : new URL("../../packages/ui/src/showcase.ts", import.meta.url),
+      ),
       // Dictionary files are imported by demo runtime modules in unit tests. The
       // production Intlayer entry also loads its Node compiler stack (including
       // esbuild), which cannot initialize after jsdom replaces typed-array

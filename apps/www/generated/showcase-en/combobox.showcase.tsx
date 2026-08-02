@@ -1,0 +1,161 @@
+"use client";
+import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem } from "../../../../packages/ui/src/combobox/combobox";
+import type { ComboboxItemData } from "../../../../packages/ui/src/combobox/combobox.types";
+type Size = "sm" | "md" | "lg";
+const FRUITS: ComboboxItemData[] = [
+    { value: "apple", label: "Apple Apple" },
+    { value: "banana", label: "Banana Banana" },
+    { value: "cherry", label: "Cherry Cherry" },
+    { value: "durian", label: "Durian Durian" },
+    { value: "grape", label: "Grape Grape" },
+    { value: "lemon", label: "Lemon Lemon" },
+    { value: "mango", label: "Mango Mango" },
+    { value: "orange", label: "Orange Orange" },
+];
+function Demo({ placeholder = "Select fruit", searchPlaceholder = "Search for fruits...", size = "md", disabled = false, invalid = false, defaultValue, }: {
+    placeholder?: string;
+    searchPlaceholder?: string;
+    size?: Size;
+    disabled?: boolean;
+    invalid?: boolean;
+    defaultValue?: ComboboxItemData;
+}) {
+    return (<div className="w-60">
+      <Combobox items={FRUITS} defaultValue={defaultValue} disabled={disabled}>
+        <ComboboxTrigger size={size} placeholder={placeholder} invalid={invalid}/>
+        <ComboboxContent searchPlaceholder={searchPlaceholder}>
+          {(item) => (<ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>)}
+        </ComboboxContent>
+      </Combobox>
+    </div>);
+}
+function InlineDemo() {
+    return (<div className="w-60">
+      <Combobox items={FRUITS}>
+        <ComboboxInput placeholder="Search for fruits..." clearable/>
+        <ComboboxContent>
+          {(item) => (<ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>)}
+        </ComboboxContent>
+      </Combobox>
+    </div>);
+}
+export const comboboxShowcase: ShowcaseSpec = {
+    examples: [
+        {
+            title: "Search within elastic layer (Figure 4 paradigm)",
+            description: "The trigger button displays the selected options. Click to expand the floating layer with the search box.",
+            code: `<Combobox items={fruits}>
+  <ComboboxTrigger placeholder="Select Fruit" />
+  <ComboboxContent searchPlaceholder="Search for fruits...">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+            render: () => <Demo />,
+        },
+        {
+            title: "Inline auto-completion",
+            description: "The fields are visible in the input box itself and can be filtered by typing directly. clearable displays the clear button.",
+            code: `<Combobox items={fruits}>
+  <ComboboxInput placeholder="Search for fruits..." clearable />
+  <ComboboxContent>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+            render: () => <InlineDemo />,
+        },
+        {
+            title: "Default selected value",
+            description: "defaultValue Pass in the option object as an uncontrolled initial value.",
+            code: `<Combobox items={fruits} defaultValue={fruits[2]}>
+  <ComboboxTrigger placeholder="Select Fruit" />
+  <ComboboxContent searchPlaceholder="Search for fruits...">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+            render: () => <Demo defaultValue={FRUITS[2]}/>,
+        },
+        {
+            title: "Disabled and invalid state",
+            description: "disabled is overall gray; invalid trigger is marked red.",
+            code: `<>
+  <Combobox items={fruits} defaultValue={fruits[0]} disabled>
+    <ComboboxTrigger placeholder="Select Fruit" />
+    <ComboboxContent searchPlaceholder="Search for fruits...">
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxContent>
+  </Combobox>
+  <Combobox items={fruits}>
+    <ComboboxTrigger placeholder="Select Fruit" invalid />
+    <ComboboxContent searchPlaceholder="Search for fruits...">
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxContent>
+  </Combobox>
+</>`,
+            render: () => (<div className="flex flex-col gap-3">
+          <Demo disabled defaultValue={FRUITS[0]}/>
+          <Demo invalid/>
+        </div>),
+        },
+        {
+            title: "Dimensions",
+            description: "size controls the trigger height (sm / md / lg).",
+            code: `<Combobox items={fruits}>
+  <ComboboxTrigger size="sm" placeholder="Select Fruit" />
+  <ComboboxContent searchPlaceholder="Search for fruits...">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+            render: () => <Demo size="sm"/>,
+        },
+    ],
+    controls: [
+        { prop: "placeholder", type: "text", defaultValue: "Select fruit", label: "Placeholder copywriting" },
+        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },
+        { prop: "disabled", type: "boolean", defaultValue: false, label: "Disabled" },
+        { prop: "invalid", type: "boolean", defaultValue: false, label: "Invalid state" },
+    ],
+    states: [
+        { name: "default", render: () => <Demo /> },
+        { name: "Selected value", render: () => <Demo defaultValue={FRUITS[2]}/> },
+        { name: "Disabled", render: () => <Demo disabled defaultValue={FRUITS[0]}/> },
+        { name: "Invalid state", render: () => <Demo invalid/> },
+        { name: "small", render: () => <Demo size="sm"/> },
+        { name: "Inline auto-completion", render: () => <InlineDemo /> },
+    ],
+    renderWithProps: (p) => (<Demo placeholder={p.placeholder as string} size={p.size as Size} disabled={p.disabled as boolean} invalid={p.invalid as boolean}/>),
+    toCode: (p) => `<Combobox items={items} defaultValue={items[0]}>
+  <ComboboxTrigger size="${p.size}" placeholder="${p.placeholder}" />
+  <ComboboxContent searchPlaceholder="Search for fruits...">
+    {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
+  </ComboboxContent>
+</Combobox>`,
+};

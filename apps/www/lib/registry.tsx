@@ -375,7 +375,7 @@ import {
   datePickerShowcase,
   dateTimePickerShowcase,
   timeFieldShowcase,
-} from "@hulianui/ui/showcase";
+} from "@hulian-docs/showcase";
 
 // 唯一 import @hulianui/ui 渲染 spec 的地方；只被 ComponentDoc client 岛 import。
 export const specBySlug: Record<string, ShowcaseSpec> = {
