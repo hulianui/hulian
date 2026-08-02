@@ -21,7 +21,7 @@ const INITIAL_CART: CartItem[] = [
     },
     {
         id: "ci2",
-        name: "Ergonomic office chair with adjustable lumbar support",
+        name: "Ergonomic Office Chair with Adjustable Lumbar Support",
         spec: "Obsidian Black \u00B7 Standard",
         price: 1299,
         qty: 1,

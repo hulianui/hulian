@@ -15,21 +15,28 @@ const fixtureContextEnglish = JSON.parse(
 const CJK = /[\p{Script=Han}，。！？；：“”‘’（）【】《》〈〉「」『』…]/u;
 const REPO_ROOT = fileURLToPath(new URL("../", import.meta.url));
 
-function createTranslator(copy, contextualCopy = {}) {
+function createTranslator(copy, contextualCopy = {}, consumedContext = new Set()) {
   const exactCopy = { ...copy, ...contextualCopy };
-  const entries = Object.entries(exactCopy).sort(([a], [b]) => b.length - a.length);
+  const contextualKeys = new Set(Object.keys(contextualCopy));
+  const entries = Object.entries(exactCopy)
+    .map(([source, target]) => [source, target, contextualKeys.has(source)])
+    .sort(([a], [b]) => b.length - a.length);
   return (value, file) => {
     if (!CJK.test(value)) return value;
     const key = value.trim().replace(/\s+/g, " ");
     if (Object.hasOwn(exactCopy, key)) {
+      if (contextualKeys.has(key)) consumedContext.add(key);
       const leading = value.match(/^\s*/u)?.[0] ?? "";
       const trailing = value.match(/\s*$/u)?.[0] ?? "";
       return `${leading}${exactCopy[key]}${trailing}`;
     }
 
     let translated = value;
-    for (const [source, target] of entries) {
-      if (translated.includes(source)) translated = translated.replaceAll(source, target);
+    for (const [source, target, contextual] of entries) {
+      if (translated.includes(source)) {
+        translated = translated.replaceAll(source, target);
+        if (contextual) consumedContext.add(source);
+      }
     }
     if (CJK.test(translated)) {
       throw new Error(`[fixture-source] missing English copy in ${file}: ${JSON.stringify(value)}`);
@@ -39,7 +46,8 @@ function createTranslator(copy, contextualCopy = {}) {
 }
 
 export function translateFixtureModule(source, file, copy, kind, contextualCopy = {}) {
-  const translate = createTranslator(copy, contextualCopy);
+  const consumedContext = new Set();
+  const translate = createTranslator(copy, contextualCopy, consumedContext);
   const sourceFile = ts.createSourceFile(
     file,
     source,
@@ -101,10 +109,21 @@ export function translateFixtureModule(source, file, copy, kind, contextualCopy 
   };
   const result = ts.transform(sourceFile, [transformer]);
   try {
-    return ts
+    const output = ts
       .createPrinter({ newLine: ts.NewLineKind.LineFeed, removeComments: true })
       .printFile(result.transformed[0])
       .replace(/[ \t]+$/gm, "");
+    const unused = Object.keys(contextualCopy)
+      .filter((key) => !consumedContext.has(key))
+      .sort();
+    if (unused.length > 0) {
+      throw new Error(
+        `[fixture-source] unused contextual override(s) in ${file}: ${unused
+          .map((key) => JSON.stringify(key))
+          .join(", ")}`,
+      );
+    }
+    return output;
   } finally {
     result.dispose();
   }

@@ -23,7 +23,7 @@ const AGENTS: AgentData[] = [
         health: "healthy",
         loadPct: 42,
         trend: [18, 25, 31, 28, 42, 38, 42],
-        capabilities: ["Orchestration", "routing", "Monitor"],
+        capabilities: ["Orchestration", "Routing", "Monitoring"],
         latencyMs: 38,
     },
     {
@@ -45,7 +45,7 @@ const AGENTS: AgentData[] = [
         health: "degraded",
         loadPct: 91,
         trend: [60, 72, 80, 88, 85, 90, 91],
-        capabilities: ["Search", "extract", "Summary"],
+        capabilities: ["Search", "Extraction", "Summarization"],
         latencyMs: 540,
     },
 ];
@@ -53,7 +53,7 @@ const LOAD_GRADES = [
     { min: 0, label: "Available", tone: "var(--color-success)" },
     { min: 50, label: "Moderate", tone: "var(--color-chart-2)" },
     { min: 75, label: "High", tone: "var(--color-warning)" },
-    { min: 90, label: "saturated", tone: "var(--color-danger)" },
+    { min: 90, label: "Saturated", tone: "var(--color-danger)" },
 ];
 const HEALTH_STATUS: Record<Health, "online" | "degraded" | "offline"> = {
     healthy: "online",
@@ -61,8 +61,8 @@ const HEALTH_STATUS: Record<Health, "online" | "degraded" | "offline"> = {
     offline: "offline",
 };
 const HEALTH_LABEL: Record<Health, string> = {
-    healthy: "health",
-    degraded: "Downgrade",
+    healthy: "Healthy",
+    degraded: "Degraded",
     offline: "Offline",
 };
 function sparklineTone(loadPct: number): string {

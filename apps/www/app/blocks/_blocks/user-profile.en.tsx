@@ -46,9 +46,9 @@ interface Order {
 }
 const ORDERS: Order[] = [
     { id: "o1", name: "Premium Reversible Mulberry Silk Pillowcase \u00D7 2", price: 596, qty: 2, status: "Awaiting receipt", date: "2026-06-02", gradient: "from-rose-200 to-pink-100" },
-    { id: "o2", name: "Ergonomic office chair with adjustable lumbar support", price: 1299, qty: 1, status: "Completed", date: "2026-05-18", gradient: "from-slate-200 to-gray-100" },
+    { id: "o2", name: "Ergonomic Office Chair with Adjustable Lumbar Support", price: 1299, qty: 1, status: "Completed", date: "2026-05-18", gradient: "from-slate-200 to-gray-100" },
     { id: "o3", name: "OLED Eye-Care Desk Lamp Pro Max", price: 459, qty: 1, status: "Completed", date: "2026-05-10", gradient: "from-amber-200 to-yellow-100" },
-    { id: "o4", name: "Bamboo fiber quick-drying bath towel set 3 pieces", price: 128, qty: 1, status: "Pending payment", date: "2026-06-04", gradient: "from-emerald-200 to-teal-100" },
+    { id: "o4", name: "3-Piece Quick-Dry Bamboo Bath Towel Set", price: 128, qty: 1, status: "Pending payment", date: "2026-06-04", gradient: "from-emerald-200 to-teal-100" },
 ];
 const ADDRESSES = [
     { id: "a1", name: "Zhang Wei", phone: "138****8866", addr: "HanCloud Building, 969 Wenyi West Road, Yuhang District, Hangzhou, Zhejiang", isDefault: true },
@@ -132,7 +132,7 @@ export function UserProfileBlock() {
       <div className="mb-6 overflow-hidden rounded-2xl p-6 text-white shadow-lg" style={{ background: `linear-gradient(135deg, ${level.color}, ${level.colorDark})` }}>
 
         <div className="flex items-start gap-4">
-          <Avatar fallback="use" size="lg" className="ring-2 ring-white/40"/>
+          <Avatar fallback="U" size="lg" className="ring-2 ring-white/40"/>
           <div className="flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-lg font-bold">HanSelect Member</span>

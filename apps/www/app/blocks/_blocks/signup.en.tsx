@@ -149,11 +149,11 @@ export function SignupBlock() {
             if (c)
                 setErrors((e) => (e.agree ? { ...e, agree: undefined } : e));
         }} label={<span className="text-sm text-foreground">
-                  I have read and agree{" "}
+                  I have read and agree to the{" "}
                   <Link href="#" className="text-primary underline-offset-4 hover:underline">
                     Terms of Service
                   </Link>{" "}
-                  with{" "}
+                  and{" "}
                   <Link href="#" className="text-primary underline-offset-4 hover:underline">
                     Privacy Policy
                   </Link>

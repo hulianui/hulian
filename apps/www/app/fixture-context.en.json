@@ -11,14 +11,24 @@
     "agent-card.tsx": {
       "富余": "Available",
       "适中": "Moderate",
-      "偏高": "High"
+      "偏高": "High",
+      "饱和": "Saturated",
+      "健康": "Healthy",
+      "降级": "Degraded",
+      "编排": "Orchestration",
+      "路由": "Routing",
+      "监控": "Monitoring",
+      "检索": "Search",
+      "抽取": "Extraction",
+      "摘要": "Summarization"
     },
     "article-body.tsx": {},
     "article-toc.tsx": {},
     "banner.tsx": {},
     "blog-list.tsx": {},
     "cart-summary.tsx": {
-      "轻奢蚕丝枕套双面桑蚕丝": "Premium Reversible Mulberry Silk Pillowcase"
+      "轻奢蚕丝枕套双面桑蚕丝": "Premium Reversible Mulberry Silk Pillowcase",
+      "人体工学办公椅腰托可调": "Ergonomic Office Chair with Adjustable Lumbar Support"
     },
     "changelog.tsx": {},
     "chart-grid.tsx": {
@@ -86,10 +96,12 @@
     },
     "product-grid.tsx": {
       "轻奢蚕丝枕套双面桑蚕丝": "Premium Reversible Mulberry Silk Pillowcase",
-      "人体工学办公椅可调节腰托": "Ergonomic Office Chair with Adjustable Lumbar Support",
-      "竹纤维速干浴巾套装 3 件套": "3-Piece Quick-Dry Bamboo Bath Towel Set",
-      "北欧风陶瓷餐具套装 16 件套": "16-Piece Nordic Ceramic Dinnerware Set",
-      "鹅颈手冲咖啡壶套装": "Gooseneck Pour-Over Coffee Set"
+      "人体工学办公椅腰托可调": "Ergonomic Office Chair with Adjustable Lumbar Support",
+      "竹纤维速干浴巾套装 3 件": "3-Piece Quick-Dry Bamboo Bath Towel Set",
+      "北欧风陶瓷餐具套装 16 件": "16-Piece Nordic Ceramic Dinnerware Set",
+      "手冲咖啡壶套装鹅颈细嘴": "Gooseneck Pour-Over Coffee Set",
+      "无线降噪耳机头戴式 ANC": "Over-Ear ANC Headphones",
+      "天然乳胶床垫 180×200cm": "Natural Latex Mattress, 180 × 200 cm"
     },
     "prompt-input.tsx": {
       "试试这些提示": "Try one of these prompts"
@@ -107,7 +119,9 @@
     "sidebar-nav.tsx": {},
     "signup.tsx": {
       "把想法送上": "Take your ideas to the",
-      "全球边缘": "global edge"
+      "全球边缘": "global edge",
+      "我已阅读并同意": "I have read and agree to the",
+      "与": "and"
     },
     "stats.tsx": {},
     "team-grid.tsx": {
@@ -117,7 +131,10 @@
     "trust-bar.tsx": {},
     "user-profile.tsx": {
       "金牌会员": "Gold Member",
-      "轻奢蚕丝枕套双面桑蚕丝 × 2": "Premium Reversible Mulberry Silk Pillowcase × 2"
+      "轻奢蚕丝枕套双面桑蚕丝 × 2": "Premium Reversible Mulberry Silk Pillowcase × 2",
+      "人体工学办公椅腰托可调": "Ergonomic Office Chair with Adjustable Lumbar Support",
+      "竹纤维速干浴巾套装 3 件": "3-Piece Quick-Dry Bamboo Bath Towel Set",
+      "用": "U"
     }
   },
   "pages": {

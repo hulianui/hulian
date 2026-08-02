@@ -27,7 +27,7 @@ const PRODUCTS: Product[] = [
     },
     {
         id: "p2",
-        name: "Ergonomic office chair with adjustable lumbar support",
+        name: "Ergonomic Office Chair with Adjustable Lumbar Support",
         price: 1299,
         originalPrice: 1899,
         rating: 4.7,
@@ -49,7 +49,7 @@ const PRODUCTS: Product[] = [
     },
     {
         id: "p4",
-        name: "Bamboo fiber quick-drying bath towel set 3 pieces",
+        name: "3-Piece Quick-Dry Bamboo Bath Towel Set",
         price: 128,
         originalPrice: 198,
         rating: 4.6,
@@ -60,7 +60,7 @@ const PRODUCTS: Product[] = [
     },
     {
         id: "p5",
-        name: "Nordic style ceramic tableware set 16 pieces",
+        name: "16-Piece Nordic Ceramic Dinnerware Set",
         price: 368,
         originalPrice: 568,
         rating: 4.5,
@@ -71,7 +71,7 @@ const PRODUCTS: Product[] = [
     },
     {
         id: "p6",
-        name: "Gooseneck pour-over coffee set",
+        name: "Gooseneck Pour-Over Coffee Set",
         price: 218,
         originalPrice: 318,
         rating: 4.8,
@@ -82,7 +82,7 @@ const PRODUCTS: Product[] = [
     },
     {
         id: "p7",
-        name: "Over-ear ANC headphones",
+        name: "Over-Ear ANC Headphones",
         price: 799,
         originalPrice: 1199,
         rating: 4.7,
@@ -93,7 +93,7 @@ const PRODUCTS: Product[] = [
     },
     {
         id: "p8",
-        name: "Natural latex mattress 180\u00D7200cm",
+        name: "Natural Latex Mattress, 180 \u00D7 200 cm",
         price: 2188,
         originalPrice: 3588,
         rating: 4.9,

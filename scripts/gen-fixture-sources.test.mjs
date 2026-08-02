@@ -78,6 +78,23 @@ test("file context overrides global fragments for composed copy and proper names
   assert.doesNotMatch(english, /High sensitivity|Send the application|Just one git push/);
 });
 
+test("generation rejects a contextual override that its declared module does not consume", () => {
+  assert.throws(
+    () =>
+      translateFixtureModule(
+        `export function Fixture() { return <p>健康</p>; }`,
+        "agent-card.tsx",
+        { 健康: "health" },
+        "block",
+        { "2-缺失": "Missing second", "1-缺失": "Missing first" },
+      ),
+    {
+      message:
+        '[fixture-source] unused contextual override(s) in agent-card.tsx: "1-缺失", "2-缺失"',
+    },
+  );
+});
+
 test("generation removes only stale direct English module siblings", () => {
   const root = mkdtempSync(join(tmpdir(), "hulian-fixture-orphans-"));
   writeFileSync(join(root, "hero.tsx"), "export const Hero = null;\n");
