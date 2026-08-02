@@ -30,18 +30,17 @@ function Denomination({
   discount,
   threshold,
   size,
-  discountSuffix,
+  formatDiscount,
   freeShipping,
 }: Pick<CouponProps, "kind" | "amount" | "discount" | "threshold" | "size"> & {
-  discountSuffix: string;
+  formatDiscount: (discount: number) => string;
   freeShipping: string;
 }) {
   const big = size === "sm" ? "text-2xl" : "text-3xl";
   if (kind === "discount") {
     return (
-      <div className="flex items-baseline font-bold leading-none">
-        <span className={big}>{discount}</span>
-        <span className="ml-0.5 text-sm font-semibold">{discountSuffix}</span>
+      <div className="font-bold leading-none">
+        <span className={big}>{formatDiscount(discount ?? 0)}</span>
       </div>
     );
   }
@@ -82,9 +81,10 @@ export function Coupon({
     expired: "已过期",
     noMinimumSpend: "无门槛",
     minimumSpend: (amount: number) => `满${amount}可用`,
-    discountSuffix: "折",
+    formatDiscount: (discount: number) => `${discount}折`,
     freeShipping: "包邮",
   };
+  const formatDiscount = labels.formatDiscount ?? ((discount: number) => `${discount}折`);
   const inactive = status === "used" || status === "expired";
   const thresholdText =
     kind === "shipping" ? labels.noMinimumSpend : threshold ? labels.minimumSpend(threshold) : labels.noMinimumSpend;
@@ -139,7 +139,7 @@ export function Coupon({
           discount={discount}
           threshold={threshold}
           size={size}
-          discountSuffix={labels.discountSuffix}
+          formatDiscount={formatDiscount}
           freeShipping={labels.freeShipping}
         />
         <span className="text-center text-[11px] leading-tight opacity-90">{thresholdText}</span>

@@ -68,7 +68,7 @@ import { Coupon } from "@hulianui/ui"
 - Used and expired states disable actions and shine automatically.
 - Do not wrap the CSS ticket in overflow-hidden or its punched semicircles are clipped.
 - Claim, use, and select map to different states and click regions.
-- Built-in action, value, and eligibility labels follow `ConfigProvider locale`; `enUS` provides “Claim now”, “Use now”, “Used”, “Expired”, “off”, “Free shipping”, and English minimum-spend labels. `actionLabel` still has explicit precedence, and the no-provider fallback remains Chinese.
+- Built-in action, complete discount values, and eligibility labels follow `ConfigProvider locale`; for example, `discount={8.5}` uses the native Chinese discount notation by default and renders `15% off` with `enUS`. `actionLabel` still has explicit precedence. Older dictionaries without `formatDiscount` safely use the complete Chinese fallback.
 
 ## Related
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

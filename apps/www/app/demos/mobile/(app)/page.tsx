@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Avatar, Fab, ListSkeleton, PullToRefresh, Rating, Tag, toast } from "@hulianui/ui";
 import { useMockData, sleep } from "../../lib/async";
-import { services } from "../_data/services";
+import { SERVICE_TAG_LABELS, SERVICE_TAG_TONES, services } from "../_data/services";
 
 // 一键下单图标
 function BoltIcon() {
@@ -32,8 +32,6 @@ function HeartIcon() {
     </svg>
   );
 }
-
-const TAG_TONE: Record<string, "neutral" | "brand" | "success" | "warning" | "danger"> = { 爆款: "danger", 好评: "success", 热门: "warning", 急修: "danger", 包搬运: "neutral", 快速上门: "danger", 保修: "success", 超值: "warning" };
 
 export default function HomePage() {
   const { data, loading } = useMockData(services, { delay: 600 });
@@ -89,8 +87,8 @@ export default function HomePage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start gap-1.5">
                       <span className="truncate text-sm font-medium">{s.title}</span>
-                      <Tag tone={TAG_TONE[s.tag] ?? "neutral"} size="sm" className="shrink-0">
-                        {s.tag}
+                      <Tag tone={SERVICE_TAG_TONES[s.tag]} size="sm" className="shrink-0">
+                        {SERVICE_TAG_LABELS[s.tag]}
                       </Tag>
                     </div>
                     <div className="mt-1 flex items-center gap-1">

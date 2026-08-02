@@ -23,6 +23,7 @@ export function LiveChat({
     entered: "来了",
     followed: "关注了主播 ❤",
     sent: "送出",
+    messageSeparator: "：",
   };
   const scrollRef = useRef<HTMLDivElement>(null);
   const atBottom = useRef(true);
@@ -164,7 +165,7 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
       <div className="min-w-0 leading-snug">
         {item.user?.level != null && <LevelBadge level={item.user.level} />}
         {item.user?.badge}
-        <span className={cn("mr-1", nameMuted)}>{item.user?.name}：</span>
+        <span className={cn("mr-1", nameMuted)}>{item.user?.name}{labels.messageSeparator ?? "："}</span>
         <span className={body}>{item.text}</span>
       </div>
     </div>

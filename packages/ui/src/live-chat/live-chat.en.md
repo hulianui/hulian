@@ -56,6 +56,8 @@ const item: LiveChatItem = r === 0 ? { id, type: "enter", user: { name } }
 
 ## Usage notes
 
+- The separator after a message author follows `ConfigProvider locale`: the Chinese default is exactly `：`, while `enUS` uses `:`. Older custom dictionaries without this field keep the Chinese fallback.
+
 - Scrolling up pauses sticky-bottom behavior and exposes a new-message recovery button; do not force external scrolling.
 - Give the stream a fixed-height container.
 - Keep `maxItems` bounded rather than passing complete history.

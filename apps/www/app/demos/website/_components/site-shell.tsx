@@ -22,7 +22,7 @@ import {
 } from "@hulianui/ui";
 import { Cloud, Search, Rocket, BookOpen, CreditCard, Phone, Globe, Cpu, Activity } from "lucide-react";
 import { brand, navLinks, footerColumns } from "../_data/site";
-import { demoHref } from "../../_components/demo-locale";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
 // ⌘K 站内搜索数据（分组：页面 + 功能）。
 const COMMAND_GROUPS: CommandGroupData[] = [
@@ -51,13 +51,13 @@ const COMMAND_GROUPS: CommandGroupData[] = [
 ];
 
 const PAGE_HREFS: Record<string, string> = {
-  home: demoHref("/demos/website"),
-  pricing: demoHref("/demos/website/pricing"),
-  contact: demoHref("/demos/website/contact"),
-  deploy: demoHref("/demos/website#features"),
-  compute: demoHref("/demos/website#features"),
-  observe: demoHref("/demos/website#features"),
-  docs: demoHref("/demos/website"),
+  home: demoLocationHref("/demos/website"),
+  pricing: demoLocationHref("/demos/website/pricing"),
+  contact: demoLocationHref("/demos/website/contact"),
+  deploy: demoLocationHref("/demos/website#features"),
+  compute: demoLocationHref("/demos/website#features"),
+  observe: demoLocationHref("/demos/website#features"),
+  docs: demoLocationHref("/demos/website"),
 };
 
 function Logo() {

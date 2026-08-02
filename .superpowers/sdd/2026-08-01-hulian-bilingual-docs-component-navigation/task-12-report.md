@@ -4,7 +4,7 @@
 
 COMPLETE. Live, Mobile, Personal, Shop, and Website now render reviewed Chinese
 and English copy from the same React route trees. The production-export browser
-gate covers all 54 public route instances and five meaningful interaction flows.
+gate covers all 54 public route instances and six meaningful interaction flows.
 
 ## Implementation
 
@@ -25,6 +25,10 @@ gate covers all 54 public route instances and five meaningful interaction flows.
   without producing either `/demos/...` or `/en/en/...` links.
 - Added English intent matching to the Live AI support flow and persistent,
   accessible booking confirmation to the Mobile service flow.
+- Kept Mobile service categories and tags as stable protocol IDs. Category and
+  tag labels are localized only at presentation boundaries, while centralized
+  tag-tone mappings remain independent of display copy. Text-bearing service
+  cover SVGs now receive the localized category label explicitly.
 
 ## Upstream component locale gaps fixed
 
@@ -45,16 +49,17 @@ cover the new contracts.
 Chromium to verify:
 
 - all 54 `/en/demos/...` route instances return successfully, retain
-  `lang="en"`, render a route-specific marker, and contain no Han text across
-  visible content, `aria-label`, `title`, `alt`, or `placeholder` surfaces;
+  `lang="en"`, render a route-specific marker, and contain no Han/CJK or
+  fullwidth residue across visible content, `aria-label`, `title`, `alt`, or
+  `placeholder` surfaces and decoded text-bearing SVG data URIs;
 - no reviewed anchor loses `/en` or duplicates it as `/en/en`;
 - known error/retry UI is rejected unless declared as a route's designed
   fail-once precondition, after which the route must recover to a distinct
   success marker;
 - Personal guestbook recovers, Live AI support answers an English delivery
   question, Mobile booking renders persistent English confirmation, Shop
-  recovers and opens a product without losing locale, and Website pricing
-  navigation remains in English.
+  recovers and opens a product without losing locale, and both Website navbar
+  and command-menu pricing navigation remain in English.
 
 The route and interaction inventory, accessible-surface scan, and failure
 detection have Node regressions and the command is wired as
@@ -77,6 +82,19 @@ detection have Node regressions and the command is wired as
 - The interaction gate exposed Chinese-only Live intent regexes and a
   toast-only Mobile booking confirmation. Both received behavior fixes and
   regressions before the final 54-route scan passed.
+- Review round one reproduced all five Important findings before production
+  fixes: Mobile tags were translated labels and decoded covers still contained
+  `家政保洁`; the Website command menu navigated to `/demos/website/pricing`
+  and timed out waiting for `/en/demos/website/pricing`; enUS LiveChat rendered
+  `Alex：`, while the gate ignored both `：` and `＋` and had no SVG decoder;
+  Coupon could not render the exact complete values `8.5折` or `15% off` and an
+  old suffix dictionary produced `8.5` + `off`; both Website catalogs exposed
+  `SOC 2 / Class III compliance` instead of the contextual standard name.
+- The corresponding regressions now prove stable Mobile tag IDs/tone maps and
+  localized decoded covers, `demoLocationHref` command navigation, exact
+  LiveChat/default/legacy separators, fullwidth/SVG gate coverage, complete
+  Coupon formatters with legacy Chinese fallback, and consistent
+  `SOC 2 / MLPS Level 3 compliance` copy.
 
 ## Verification
 
@@ -87,7 +105,9 @@ All commands used Node 22.22.3.
 | `pnpm exec turbo run test --concurrency=1` | PASS, all 5 test tasks; WWW 311 passed / 4 locale-specific skipped, UI 3601/3601, Guard 13/13, MCP 103/103, Mocks 7/7 |
 | `DOCS_LOCALE=en pnpm --filter www test -- app/demos/lib/demo-i18n-coverage.test.ts app/demos/task12-fixture-quality.test.ts app/demos/live app/demos/mobile app/demos/personal app/demos/shop app/demos/website app/demos/_components/demo-locale.test.ts` | PASS, 5 files / 44 tests |
 | `pnpm --filter @hulianui/ui test --` with the 10 affected component test files | PASS, 10 files / 113 tests |
-| `pnpm test:scripts` | PASS, 102/102 tests |
+| `DOCS_LOCALE=en pnpm --filter www exec vitest run app/demos/task12-fixture-quality.test.ts app/demos/lib/demo-i18n-coverage.test.ts` | PASS, 31/31 tests |
+| `pnpm --filter @hulianui/ui exec vitest run src/live-chat/live-chat.test.tsx src/coupon/coupon.test.tsx` | PASS, 28/28 tests |
+| `pnpm test:scripts` | PASS, 103/103 tests |
 | `DOCS_LOCALE=en pnpm --filter www typecheck` | PASS |
 | `pnpm --filter @hulianui/ui typecheck` | PASS |
 | `pnpm --filter www demos:coverage` | PASS, 202/369 components covered and 0 remote assets |
@@ -96,9 +116,9 @@ All commands used Node 22.22.3.
 | `pnpm docs:check:routes` | PASS, 769 bilingual routes |
 | `pnpm docs:check:output` | PASS, 170 Task 9 routes plus `/en/404` |
 | `pnpm docs:i18n:check` | PASS, component Markdown coverage complete |
-| `pnpm conventions:check` | PASS, 4 executable rules and 1071 advisories |
+| `pnpm conventions:check` | PASS, 4 executable rules and 1072 advisories |
 | `pnpm registry:smoke:pages` | PASS, 20/20 pages installed and typechecked |
-| `pnpm docs:check:task12-demos` | PASS, 54 routes / 5 interactions |
+| `pnpm docs:check:task12-demos` | PASS, 54 routes / 6 interactions, including command-menu navigation and decoded SVG/fullwidth scanning |
 | `git diff --check` | PASS |
 
 The production builds retained the existing non-fatal worktree-root,

@@ -162,7 +162,7 @@ export const content = {
     compliancePrivateDeploymentAndDedicatedSupport: "Compliance, private deployment, and dedicated support",
     custom: "Custom",
     dedicatedEdgeNodesAndComputePool: "Dedicated edge nodes and compute pool",
-    soc2ClassIiiCompliance: "SOC 2 / Class III compliance",
+    soc2ClassIiiCompliance: "SOC 2 / MLPS Level 3 compliance",
     ssoAndFineGrainedAuditing: "SSO and fine-grained auditing",
     dedicatedCustomerSuccessManager: "Dedicated Customer Success Manager",
     text9999SlaGuaranteed: "99.99% SLA guaranteed",

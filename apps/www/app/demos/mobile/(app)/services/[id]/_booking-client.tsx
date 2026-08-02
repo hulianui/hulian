@@ -2,7 +2,12 @@
 import { copy } from "./_booking-client.content";
 import { useState } from "react";
 import { Avatar, Divider, Picker, Rating, Tag, toast } from "@hulianui/ui";
-import { SERVICE_CATEGORY_LABELS, type ServiceWithCover } from "../../../_data/services";
+import {
+  SERVICE_CATEGORY_LABELS,
+  SERVICE_TAG_LABELS,
+  SERVICE_TAG_TONES,
+  type ServiceWithCover,
+} from "../../../_data/services";
 
 // Stepper 组件（简单实现，NumberField 替代）
 function Stepper({ value, onChange, min = 1, max = 10 }: { value: number; onChange: (v: number) => void; min?: number; max?: number }) {
@@ -23,7 +28,7 @@ function Stepper({ value, onChange, min = 1, max = 10 }: { value: number; onChan
         disabled={value >= max}
         className="flex size-8 items-center justify-center rounded-full border border-border text-lg font-medium disabled:opacity-30 hover:bg-surface-hover"
       >
-        ＋
+        +
       </button>
     </div>
   );
@@ -44,8 +49,6 @@ const TIME_OPTIONS = [
   { label: "15:00–17:00", value: "15" },
   { label: "18:00–20:00", value: "18" },
 ];
-
-const TAG_TONE: Record<string, "neutral" | "brand" | "success" | "warning" | "danger"> = { 爆款: "danger", 好评: "success", 热门: "warning", 急修: "danger", 包搬运: "neutral", 快速上门: "danger", 保修: "success", 超值: "warning" };
 
 /** 服务详情 + 下单 client 子组件（接受 server 传入的 service 数据） */
 export function BookingClient({ service }: { service: ServiceWithCover }) {
@@ -81,7 +84,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
               <span className="text-xs text-white/85">{service.rating} · {service.reviewCount}  {copy("reviews")}</span>
             </div>
           </div>
-          <Tag tone={TAG_TONE[service.tag] ?? "neutral"} size="sm">{service.tag}</Tag>
+          <Tag tone={SERVICE_TAG_TONES[service.tag]} size="sm">{SERVICE_TAG_LABELS[service.tag]}</Tag>
         </div>
       </div>
 

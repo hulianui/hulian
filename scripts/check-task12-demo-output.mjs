@@ -64,6 +64,7 @@ export const TASK12_INTERACTION_CHECKS = [
   "mobile-service-booking",
   "shop-product-retry-navigation",
   "website-pricing-navigation",
+  "website-command-menu-navigation",
 ];
 export const TASK12_FAILURE_MARKERS = [
   "Failed to load",
@@ -83,8 +84,26 @@ export const TASK12_RECOVERY_MARKERS = {
   "shop/products": "All products",
 };
 
+const CJK_OR_FULLWIDTH = /[\p{Script=Han}\u3000-\u303F\uFE10-\uFE1F\uFE30-\uFE4F\uFF01-\uFF20\uFF3B-\uFF40\uFF5B-\uFF65]/u;
+
 export function collectCjkLines(text) {
-  return text.split("\n").filter((line) => /\p{Script=Han}/u.test(line)).slice(0, 12);
+  return text.split("\n").filter((line) => CJK_OR_FULLWIDTH.test(line)).slice(0, 12);
+}
+
+export function decodeTextBearingSvgDataUri(dataUri) {
+  if (typeof dataUri !== "string" || !dataUri.startsWith("data:image/svg+xml")) return "";
+  const comma = dataUri.indexOf(",");
+  if (comma < 0) return "";
+  try {
+    const metadata = dataUri.slice(0, comma);
+    const payload = dataUri.slice(comma + 1);
+    const svg = metadata.includes(";base64")
+      ? Buffer.from(payload, "base64").toString("utf8")
+      : decodeURIComponent(payload);
+    return /<text(?:\s|>)/i.test(svg) ? svg : "";
+  } catch {
+    return "";
+  }
 }
 
 export function collectUnexpectedFailureMarkers(text, allowedMarkers = []) {
@@ -93,7 +112,7 @@ export function collectUnexpectedFailureMarkers(text, allowedMarkers = []) {
 }
 
 async function assertEnglishPage(page, context) {
-  const { surfaces, invalidDemoLinks } = await page.evaluate((attributes) => {
+  const { surfaces, invalidDemoLinks, svgDataUris } = await page.evaluate((attributes) => {
     const values = [document.body.innerText];
     for (const attribute of attributes) {
       for (const element of document.querySelectorAll(`[${attribute}]`)) {
@@ -104,10 +123,14 @@ async function assertEnglishPage(page, context) {
     const invalidDemoLinks = Array.from(document.querySelectorAll("a[href]"))
       .map((element) => element.getAttribute("href"))
       .filter((href) => href?.startsWith("/demos") || href?.startsWith("/en/en/"));
-    return { surfaces: values.join("\n"), invalidDemoLinks };
+    const svgDataUris = Array.from(document.querySelectorAll('img[src^="data:image/svg+xml"]'))
+      .map((element) => element.getAttribute("src"))
+      .filter(Boolean);
+    return { surfaces: values.join("\n"), invalidDemoLinks, svgDataUris };
   }, TASK12_ACCESSIBLE_ATTRIBUTES);
-  const residue = collectCjkLines(surfaces);
-  if (residue.length) throw new Error(`${context} contains CJK text:\n${residue.join("\n")}`);
+  const decodedSvgText = svgDataUris.map(decodeTextBearingSvgDataUri).filter(Boolean).join("\n");
+  const residue = collectCjkLines(`${surfaces}\n${decodedSvgText}`);
+  if (residue.length) throw new Error(`${context} contains CJK or fullwidth text:\n${residue.join("\n")}`);
   if (invalidDemoLinks.length) {
     throw new Error(`${context} contains locale-breaking demo links:\n${invalidDemoLinks.join("\n")}`);
   }
@@ -202,6 +225,13 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     await assertEnglishLocation(page, "/en/demos/website/pricing");
     await page.getByText("Choose a plan", { exact: false }).first().waitFor();
     await assertEnglishPage(page, "website pricing navigation");
+
+    await page.goto(`${origin}/en/demos/website`, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "Open search (⌘K)" }).click();
+    await page.getByRole("option", { name: /Pricing/ }).click();
+    await assertEnglishLocation(page, "/en/demos/website/pricing");
+    await page.getByText("Choose a plan", { exact: false }).first().waitFor();
+    await assertEnglishPage(page, "website command menu navigation");
 
     if (browserErrors.length) throw new Error(`Browser page errors:\n${browserErrors.join("\n")}`);
     return { routes: TASK12_DEMO_ROUTES.length, interactions: TASK12_INTERACTION_CHECKS.length };

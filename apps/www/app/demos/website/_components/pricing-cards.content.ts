@@ -37,7 +37,7 @@ export const content = {
     metricsLogsDistributedTraces: "Metrics / logs / distributed traces",
     upTo10Members: "Up to 10 members",
     fourHourTicketResponse: "Four-hour ticket response",
-    soc2ClassIiiCompliance: "SOC 2 / Class III compliance",
+    soc2ClassIiiCompliance: "SOC 2 / MLPS Level 3 compliance",
     ssoAndFineGrainedAuditing: "SSO and fine-grained auditing",
     text9999SlaGuaranteed: "99.99% SLA guaranteed",
     privateDeploymentOptional: "Private deployment optional",

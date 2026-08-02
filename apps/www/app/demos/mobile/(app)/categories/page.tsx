@@ -9,8 +9,6 @@ import type { ServiceCategory } from "../../_data/types";
 import { serviceCover } from "../../_lib/cover";
 import { demoHref } from "../../../_components/demo-locale";
 
-const TAG_TONE = { 爆款: "danger", 好评: "success", 热门: "warning", 急修: "primary", 包搬运: "neutral", 快速上门: "primary", 保修: "success", 超值: "warning" } as const;
-
 const CATEGORY_ICON: Record<ServiceCategory, string> = {
   家政保洁: "🧹",
   家电维修: "🔧",
@@ -65,7 +63,7 @@ export default function CategoriesPage() {
                 className="flex gap-3 rounded-xl border border-border bg-surface p-3 hover:bg-surface-hover transition-colors"
               >
                 <div className="size-14 shrink-0 overflow-hidden rounded-lg">
-                  <img src={serviceCover(s.category, s.title)} alt={s.title} className="h-full w-full object-cover" />
+                  <img src={serviceCover(s.category, s.title, SERVICE_CATEGORY_LABELS[s.category])} alt={s.title} className="h-full w-full object-cover" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium">{s.title}</div>

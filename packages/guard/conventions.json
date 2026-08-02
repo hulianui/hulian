@@ -1731,7 +1731,7 @@
       "id": "component/coupon/pitfall/4",
       "scope": "coupon",
       "title": "Coupon",
-      "rule": "操作文案、面额后缀和使用门槛跟随 `ConfigProvider locale`；显式 `actionLabel` 优先，未包 Provider 时保持中文。",
+      "rule": "操作文案、完整折扣值和使用门槛跟随 `ConfigProvider locale`；例如 `discount={8.5}` 默认显示 `8.5折`，`enUS` 显示 `15% off`。显式 `actionLabel` 优先；旧字典没有 `formatDiscount` 时安全回退中文完整值。",
       "source": "packages/ui/src/coupon/coupon.md"
     },
     {
@@ -3845,25 +3845,32 @@
       "id": "component/live-chat/pitfall/1",
       "scope": "live-chat",
       "title": "LiveChat",
-      "rule": "自动贴底依赖「当前是否贴底」判定：用户上滚查看历史时 `autoScroll` 暂停，浮出「N 条新消息」钮，点它才恢复贴底——不要在外部强行 scrollTo 干扰。",
+      "rule": "消息作者后的分隔符跟随 `ConfigProvider locale`：默认中文精确使用 `：`，`enUS` 使用 `:`；旧自定义字典没有该字段时保持中文回退。",
       "source": "packages/ui/src/live-chat/live-chat.md"
     },
     {
       "id": "component/live-chat/pitfall/2",
       "scope": "live-chat",
       "title": "LiveChat",
-      "rule": "`items` 须给容器固定高度（如 `className=\"h-full\"` + 父容器定高），否则滚动区无法形成。",
+      "rule": "自动贴底依赖「当前是否贴底」判定：用户上滚查看历史时 `autoScroll` 暂停，浮出「N 条新消息」钮，点它才恢复贴底——不要在外部强行 scrollTo 干扰。",
       "source": "packages/ui/src/live-chat/live-chat.md"
     },
     {
       "id": "component/live-chat/pitfall/3",
       "scope": "live-chat",
       "title": "LiveChat",
-      "rule": "高频追加时靠 `maxItems` 截断窗口；不要把全量历史塞进 `items`。",
+      "rule": "`items` 须给容器固定高度（如 `className=\"h-full\"` + 父容器定高），否则滚动区无法形成。",
       "source": "packages/ui/src/live-chat/live-chat.md"
     },
     {
       "id": "component/live-chat/pitfall/4",
+      "scope": "live-chat",
+      "title": "LiveChat",
+      "rule": "高频追加时靠 `maxItems` 截断窗口；不要把全量历史塞进 `items`。",
+      "source": "packages/ui/src/live-chat/live-chat.md"
+    },
+    {
+      "id": "component/live-chat/pitfall/5",
       "scope": "live-chat",
       "title": "LiveChat",
       "rule": "内置“置顶 / 新消息 / 进入 / 关注 / 送出”文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供英文。",
@@ -7626,7 +7633,7 @@
   ],
   "stats": {
     "componentDocs": 372,
-    "componentAdvisories": 1064,
-    "totalAdvisories": 1071
+    "componentAdvisories": 1065,
+    "totalAdvisories": 1072
   }
 }

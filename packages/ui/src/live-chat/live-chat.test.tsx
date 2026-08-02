@@ -45,6 +45,44 @@ describe("LiveChat", () => {
     expect(getByText("Pinned")).toBeTruthy();
   });
 
+  it("ConfigProvider locale=enUS uses an ASCII separator for message authors", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <LiveChat items={[{ id: "en", type: "message", user: { name: "Alex" }, text: "Hello" }]} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Alex:")).toBeTruthy();
+  });
+
+  it("keeps the exact Chinese separator without a provider", () => {
+    const { getByText } = render(
+      <LiveChat items={[{ id: "zh", type: "message", user: { name: "阿白" }, text: "你好" }]} />,
+    );
+    expect(getByText("阿白：")).toBeTruthy();
+  });
+
+  it("old liveChat locale dictionaries without a separator keep the Chinese fallback", () => {
+    const oldLiveChatLocale = {
+      ...enUS,
+      components: {
+        ...enUS.components!,
+        liveChat: {
+          pinned: "Pinned",
+          newMessages: (count: number) => `${count} messages`,
+          entered: "joined",
+          followed: "followed",
+          sent: "sent",
+        },
+      },
+    };
+    const { getByText } = render(
+      <ConfigProvider locale={oldLiveChatLocale}>
+        <LiveChat items={[{ id: "old", type: "message", user: { name: "Alex" }, text: "Hello" }]} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Alex：")).toBeTruthy();
+  });
+
   it("a legacy locale without liveChat keeps the Chinese pinned label", () => {
     const legacy = { ...enUS, components: { ...enUS.components!, liveChat: undefined } };
     const { getByText } = render(

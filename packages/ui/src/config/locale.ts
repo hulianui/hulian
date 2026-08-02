@@ -380,6 +380,8 @@ export interface ComponentLocale {
     entered: string;
     followed: string;
     sent: string;
+    /** Optional so custom dictionaries created before localized message punctuation stay compatible. */
+    messageSeparator?: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   liveProductCard?: {
@@ -397,7 +399,10 @@ export interface ComponentLocale {
     expired: string;
     noMinimumSpend: string;
     minimumSpend: (amount: number) => string;
-    discountSuffix: string;
+    /** Formats the complete discount value, for example 8.5折 or 15% off. */
+    formatDiscount?: (discount: number) => string;
+    /** @deprecated Kept only so older custom dictionaries remain type-compatible. */
+    discountSuffix?: string;
     freeShipping: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
@@ -656,6 +661,7 @@ const zhComponents: ComponentLocale = {
     entered: "来了",
     followed: "关注了主播 ❤",
     sent: "送出",
+    messageSeparator: "：",
   },
   liveProductCard: {
     presenting: "讲解中",
@@ -670,7 +676,7 @@ const zhComponents: ComponentLocale = {
     expired: "已过期",
     noMinimumSpend: "无门槛",
     minimumSpend: (amount) => `满${amount}可用`,
-    discountSuffix: "折",
+    formatDiscount: (discount) => `${discount}折`,
     freeShipping: "包邮",
   },
   colorSwatchPicker: { label: "颜色色板" },
@@ -951,6 +957,7 @@ const enComponents: ComponentLocale = {
     entered: "joined",
     followed: "followed the host ❤",
     sent: "sent",
+    messageSeparator: ":",
   },
   liveProductCard: {
     presenting: "Presenting",
@@ -965,7 +972,7 @@ const enComponents: ComponentLocale = {
     expired: "Expired",
     noMinimumSpend: "No minimum spend",
     minimumSpend: (amount) => `Spend ¥${amount} to use`,
-    discountSuffix: "off",
+    formatDiscount: (discount) => `${Number(((10 - discount) * 10).toFixed(2))}% off`,
     freeShipping: "Free shipping",
   },
   colorSwatchPicker: { label: "Color swatches" },
