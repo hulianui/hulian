@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { DomeGallery } from "./dome-gallery";
 
 describe("DomeGallery", () => {
@@ -48,5 +49,44 @@ describe("DomeGallery", () => {
     );
     const img = container.querySelector("img") as HTMLImageElement;
     expect(img.style.filter).toBe("none");
+  });
+
+  it("ConfigProvider locale=enUS localizes every generated accessibility label", () => {
+    const { container } = render(
+      <ConfigProvider locale={enUS}>
+        <DomeGallery />
+      </ConfigProvider>,
+    );
+
+    expect(
+      screen.getByRole("group", { name: "Draggable rotating dome gallery" }),
+    ).toBeTruthy();
+    expect(
+      screen.getAllByRole("button", { name: "Image 1" }).length,
+    ).toBeGreaterThan(0);
+    expect(container.innerHTML).not.toMatch(/[\u3400-\u9fff]/u);
+  });
+
+  it("ConfigProvider locale=enUS localizes empty-alt tile and viewer fallbacks", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <DomeGallery images={["x.jpg"]} />
+      </ConfigProvider>,
+    );
+
+    const tile = screen.getAllByRole("button", { name: "View image" })[0]!;
+    fireEvent.click(tile);
+    expect(screen.getByRole("dialog", { name: "Enlarged view" })).toBeTruthy();
+  });
+
+  it("未提供 ConfigProvider 时保持中文默认文案", () => {
+    render(<DomeGallery />);
+
+    expect(
+      screen.getByRole("group", { name: "可拖拽旋转的球面图库" }),
+    ).toBeTruthy();
+    expect(
+      screen.getAllByRole("button", { name: "图片 1" }).length,
+    ).toBeGreaterThan(0);
   });
 });

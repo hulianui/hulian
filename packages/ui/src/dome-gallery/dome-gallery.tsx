@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
+import { useComponentLocale, zhCN } from "../config/locale";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { DomeGalleryImage, DomeGalleryProps } from "./dome-gallery.types";
@@ -19,11 +20,6 @@ import type { DomeGalleryImage, DomeGalleryProps } from "./dome-gallery.types";
 //        ③ 颜色全吃 token（边缘渐隐 / 中心遮罩走 var(--color-background)，瓦片占位走 chart token），无品牌写死色；
 //        ④ reduced-motion → useReducedMotion() 关惯性/自转/放大过渡，但内容 DOM 不变（避 reveal 不可见坑）；
 //        ⑤ "use client"（用 ref/effect/PointerEvents）；关键帧 hulian-dome-gallery 落 preset.css 供自转引用。
-
-const DEFAULT_IMAGES: DomeGalleryImage[] = Array.from({ length: 14 }, (_, i) => ({
-  src: "",
-  alt: `图片 ${i + 1}`,
-}));
 
 const clamp = (v: number, min: number, max: number) =>
   Math.min(Math.max(v, min), max);
@@ -78,7 +74,7 @@ function placeholderBg(i: number): string {
 }
 
 export function DomeGallery({
-  images = DEFAULT_IMAGES,
+  images,
   segments = 24,
   fit = 0.5,
   minRadius = 380,
@@ -98,6 +94,16 @@ export function DomeGallery({
 }: DomeGalleryProps &
   Omit<HTMLAttributes<HTMLDivElement>, "style" | "className">) {
   const reduce = useReducedMotion();
+  const copy = useComponentLocale().domeGallery ?? zhCN.components!.domeGallery!;
+  const resolvedImages = useMemo<DomeGalleryImage[]>(
+    () =>
+      images ??
+      Array.from({ length: 14 }, (_, index) => ({
+        src: "",
+        alt: copy.image(index + 1),
+      })),
+    [copy, images],
+  );
 
   const rootRef = useRef<HTMLDivElement>(null);
   const sphereRef = useRef<HTMLDivElement>(null);
@@ -106,8 +112,8 @@ export function DomeGallery({
   const [opened, setOpened] = useState<Tile | null>(null);
 
   const tiles = useMemo(
-    () => buildTiles(images, segments),
-    [images, segments],
+    () => buildTiles(resolvedImages, segments),
+    [resolvedImages, segments],
   );
 
   // 旋转状态保存在 ref（高频更新走命令式 transform，避免 React 重渲染抖动）
@@ -311,7 +317,7 @@ export function DomeGallery({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
         role="group"
-        aria-label="可拖拽旋转的球面图库"
+        aria-label={copy.label}
       >
         <div
           ref={sphereRef}
@@ -324,7 +330,7 @@ export function DomeGallery({
               <button
                 key={`${tile.lon},${tile.lat},${i}`}
                 type="button"
-                aria-label={tile.alt || "查看图片"}
+                aria-label={tile.alt || copy.viewImage}
                 onClick={() => openTile(tile)}
                 className={cn(
                   "group absolute left-1/2 top-1/2 block cursor-pointer overflow-hidden",
@@ -404,7 +410,7 @@ export function DomeGallery({
               onClick={() => setOpened(null)}
               role="dialog"
               aria-modal="true"
-              aria-label={opened.alt || "放大查看"}
+              aria-label={opened.alt || copy.enlargedView}
             >
               <div
                 aria-hidden
