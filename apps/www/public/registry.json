@@ -2462,6 +2462,55 @@
       ]
     },
     {
+      "name": "auth-panel",
+      "type": "registry:ui",
+      "title": "AuthPanel",
+      "description": "认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/heading.json",
+        "https://hulianui.haloritual.com/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { AuthPanel } from \"@hulianui/ui\"",
+        "exports": [
+          "AuthPanel"
+        ],
+        "types": [
+          "AuthPanelProps",
+          "AuthPanelGradient"
+        ],
+        "group": "framework",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md",
+        "docLocal": "packages/ui/src/auth-panel/auth-panel.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/auth-panel/auth-panel.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/auth-panel/auth-panel.tsx"
+        },
+        {
+          "path": "components/hulianui/auth-panel/auth-panel.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/auth-panel/auth-panel.types.ts"
+        },
+        {
+          "path": "components/hulianui/auth-panel/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/auth-panel/index.ts"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
@@ -3821,7 +3870,7 @@
       "name": "login-form",
       "type": "registry:ui",
       "title": "LoginForm",
-      "description": "登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Fiel…",
+      "description": "登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + field…",
       "categories": [
         "forms"
       ],
@@ -3842,7 +3891,10 @@
         ],
         "types": [
           "LoginFormProps",
-          "LoginValues"
+          "LoginValues",
+          "LoginFormRules",
+          "LoginFormFields",
+          "LoginFieldSlot"
         ],
         "group": "framework",
         "tags": [],
@@ -4520,18 +4572,20 @@
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
-        "import": "import { RegionSelect, toImagePoint, normalizeBox, applyAspect, boxMinSide, strokeWidthFor } from \"@hulianui/ui\"",
+        "import": "import { RegionSelect, toImagePoint, normalizeBox, applyAspect, boxMinSide, roundBox, strokeWidthFor } from \"@hulianui/ui\"",
         "exports": [
           "RegionSelect",
           "toImagePoint",
           "normalizeBox",
           "applyAspect",
           "boxMinSide",
+          "roundBox",
           "strokeWidthFor"
         ],
         "types": [
           "RegionBox",
           "RegionRect",
+          "RegionRound",
           "RegionSelectProps",
           "RegionSelectBox"
         ],
@@ -6290,6 +6344,7 @@
         "recharts"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/dot.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -11585,7 +11640,7 @@
       "name": "nav-menu",
       "type": "registry:ui",
       "title": "NavMenu",
-      "description": "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游",
+      "description": "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游 + sema…",
       "categories": [
         "navigation"
       ],
