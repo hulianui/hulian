@@ -436,6 +436,13 @@ export function rewritePageBlockImports(code) {
   );
 }
 
+/** 文档站编译期双语适配不属于可安装区块，registry 必须还原为公开包入口。 */
+export function removeDocsFixtureAdapters(code) {
+  return code
+    .replace(/^\/\*\* @jsxImportSource \.\.\/\.\.\/\.\.\/lib\/fixture-jsx \*\/\n/, "")
+    .replaceAll('from "../../../lib/fixture-ui"', 'from "@hulianui/ui"');
+}
+
 /** 从仓库内页面源码提取它安装时必须先注入的区块 registry item。 */
 export function scanPageBlockDeps(code) {
   const deps = new Set();
@@ -454,7 +461,7 @@ export function buildCompositeItems(metaFile, srcDir, kind) {
   for (const meta of metas) {
     const abs = join(srcDir, meta.file);
     if (!existsSync(abs)) continue;
-    const source = readFileSync(abs, "utf8");
+    const source = removeDocsFixtureAdapters(readFileSync(abs, "utf8"));
     const pageBlockDeps = kind === "page" ? scanPageBlockDeps(source) : [];
     if (kind === "page") {
       const relativeImports = [

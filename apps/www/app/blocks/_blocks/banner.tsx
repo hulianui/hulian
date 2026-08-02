@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { useState } from "react";
@@ -24,6 +25,7 @@ export function BannerBlock() {
           icon={<Rocket />}
           align="center"
           onClose={() => setShowInfo(false)}
+          closeLabel="关闭"
           action={
             <Link href="#changelog" className="text-current underline">
               查看更新日志
@@ -42,6 +44,7 @@ export function BannerBlock() {
           icon={<Sparkles />}
           align="center"
           onClose={() => setShowPromo(false)}
+          closeLabel="关闭"
           action={
             <Link href="#upgrade" className="text-current underline">
               立即领取

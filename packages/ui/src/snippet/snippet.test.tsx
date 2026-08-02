@@ -40,6 +40,16 @@ describe("Snippet", () => {
     expect(getByLabelText("已复制")).toBeTruthy();
   });
 
+  it("支持本地化复制按钮标签", () => {
+    const { getByLabelText } = render(
+      <Snippet copyLabel="Copy" copiedLabel="Copied">
+        x
+      </Snippet>,
+    );
+    fireEvent.click(getByLabelText("Copy"));
+    expect(getByLabelText("Copied")).toBeTruthy();
+  });
+
   it("透传 className 到外壳", () => {
     const { container } = render(<Snippet className="my-snip">x</Snippet>);
     expect(container.firstElementChild!.classList.contains("my-snip")).toBe(true);

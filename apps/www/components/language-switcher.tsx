@@ -8,11 +8,7 @@ import {
   withDocsBasePath,
   type DocsLocale,
 } from "../lib/docs-locale";
-
-const localeOptions = [
-  { locale: "zh-CN", label: "中文", ariaLabel: "切换到中文" },
-  { locale: "en", label: "EN", ariaLabel: "Switch to English" },
-] as const;
+import { sharedChromeContent } from "./shared-chrome.data";
 
 function getCurrentBrowserUrl() {
   const { pathname, search, hash } = window.location;
@@ -20,8 +16,13 @@ function getCurrentBrowserUrl() {
 }
 
 export function LanguageSwitcher({ pathname }: { pathname?: string }) {
-  const [currentUrl, setCurrentUrl] = useState(() =>
-    pathname ?? withDocsBasePath("/", DOCS_LOCALE),
+  const content = sharedChromeContent[DOCS_LOCALE];
+  const localeOptions = [
+    { locale: "zh-CN", label: content.chinese, ariaLabel: content.switchChinese },
+    { locale: "en", label: content.english, ariaLabel: content.switchEnglish },
+  ] as const;
+  const [currentUrl, setCurrentUrl] = useState(
+    () => pathname ?? withDocsBasePath("/", DOCS_LOCALE),
   );
 
   useEffect(() => {
@@ -45,21 +46,15 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
     }
   };
 
-  const activateLocale = (
-    event: MouseEvent<HTMLAnchorElement>,
-    locale: DocsLocale,
-  ) => {
-    event.currentTarget.setAttribute(
-      "href",
-      switchLocaleUrl(getCurrentBrowserUrl(), locale),
-    );
+  const activateLocale = (event: MouseEvent<HTMLAnchorElement>, locale: DocsLocale) => {
+    event.currentTarget.setAttribute("href", switchLocaleUrl(getCurrentBrowserUrl(), locale));
     rememberLocale(locale);
   };
 
   return (
     <div
       role="group"
-      aria-label="语言 / Language"
+      aria-label={content.languageGroup}
       className="inline-flex h-11 shrink-0 items-center rounded-[min(var(--radius),0.5rem)] border border-border bg-surface text-xs font-medium"
     >
       {localeOptions.map(({ locale, label, ariaLabel }) => {
@@ -71,7 +66,6 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
             hrefLang={locale}
             lang={locale}
             aria-label={ariaLabel}
-            data-i18n-allow-cjk={locale === "zh-CN" ? "" : undefined}
             aria-current={current ? "page" : undefined}
             onClick={(event) => activateLocale(event, locale)}
             className={`inline-flex h-full min-w-11 items-center justify-center rounded-[min(var(--radius),0.375rem)] px-1.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg ${

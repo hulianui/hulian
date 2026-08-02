@@ -2,6 +2,7 @@
 import { Check, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type { StepsItem, StepStatus, StepsProps } from "./steps.types";
+import { useComponentLocale } from "../config/locale";
 
 // Steps = 零依赖原生步骤条（替代重型 MUI stepper 桥件）。数据驱动 items；状态由 current 派生、可被 item.status 覆盖。
 // 仅消费语义 token；连接线颜色取「线左侧那一步是否 finish」。可点击时整个步头(指示器+标题)成 button。
@@ -37,7 +38,17 @@ function resolveStatus(
   return "wait";
 }
 
-function Indicator({ status, index, item, box }: { status: StepStatus; index: number; item: StepsItem; box: string }) {
+function Indicator({
+  status,
+  index,
+  item,
+  box,
+}: {
+  status: StepStatus;
+  index: number;
+  item: StepsItem;
+  box: string;
+}) {
   return (
     <span
       className={cn(
@@ -61,13 +72,14 @@ export function Steps({
   onChange,
   className,
 }: StepsProps) {
+  const labels = useComponentLocale().steps;
   const sz = sizeMap[size];
   const vertical = direction === "vertical";
 
   return (
     <ol
       className={cn("flex", vertical ? "flex-col" : "flex-row items-start", className)}
-      aria-label="步骤"
+      aria-label={labels.label}
     >
       {items.map((item, i) => {
         const st = resolveStatus(i, current, status, item.status);
@@ -77,7 +89,10 @@ export function Steps({
         const Comp = interactive ? "button" : "div";
         // 连接线：线左侧/上侧那一步 finish 则点亮。
         const connectorOn = st === "finish";
-        const connectorClass = cn("rounded-full transition-colors", connectorOn ? "bg-primary" : "bg-border");
+        const connectorClass = cn(
+          "rounded-full transition-colors",
+          connectorOn ? "bg-primary" : "bg-border",
+        );
 
         const head = (
           <Comp
@@ -97,7 +112,8 @@ export function Steps({
                   <span
                     className={cn(
                       "rounded-full",
-                      canClick && "transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2",
+                      canClick &&
+                        "transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2",
                     )}
                   >
                     <Indicator status={st} index={i} item={item} box={sz.box} />
@@ -105,9 +121,13 @@ export function Steps({
                   {!isLast && <span className={cn("mt-1 w-0.5 flex-1", connectorClass)} />}
                 </span>
                 <span className={cn("min-w-0 flex-1", isLast ? "pb-0" : "pb-6")}>
-                  <span className={cn("block leading-tight", sz.title, titleByStatus[st])}>{item.title}</span>
+                  <span className={cn("block leading-tight", sz.title, titleByStatus[st])}>
+                    {item.title}
+                  </span>
                   {item.description != null && (
-                    <span className={cn("mt-0.5 block text-muted", sz.desc)}>{item.description}</span>
+                    <span className={cn("mt-0.5 block text-muted", sz.desc)}>
+                      {item.description}
+                    </span>
                   )}
                 </span>
               </>
@@ -117,7 +137,8 @@ export function Steps({
                   <span
                     className={cn(
                       "rounded-full",
-                      canClick && "transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2",
+                      canClick &&
+                        "transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2",
                     )}
                   >
                     <Indicator status={st} index={i} item={item} box={sz.box} />
@@ -125,9 +146,13 @@ export function Steps({
                   {!isLast && <span className={cn("mx-2 h-0.5 flex-1", connectorClass)} />}
                 </span>
                 <span className={cn("mt-2 pr-4", isLast && "pr-0")}>
-                  <span className={cn("block leading-tight", sz.title, titleByStatus[st])}>{item.title}</span>
+                  <span className={cn("block leading-tight", sz.title, titleByStatus[st])}>
+                    {item.title}
+                  </span>
                   {item.description != null && (
-                    <span className={cn("mt-0.5 block text-muted", sz.desc)}>{item.description}</span>
+                    <span className={cn("mt-0.5 block text-muted", sz.desc)}>
+                      {item.description}
+                    </span>
                   )}
                 </span>
               </>

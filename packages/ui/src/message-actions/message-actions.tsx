@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Copy, Check, RefreshCw, ThumbsUp, ThumbsDown } from "../_icons";
 import { cn } from "../lib/cn";
 import type { MessageActionsProps } from "./message-actions.types";
+import { useComponentLocale } from "../config/locale";
 
 // 消息操作条：复制(剪贴板+Check反馈) / 重新生成 / 赞 / 踩。各键仅在对应回调或 content 存在时渲染。
 function IconBtn({
@@ -45,13 +46,12 @@ export function MessageActions({
   children,
   ...props
 }: MessageActionsProps) {
+  const labels = useComponentLocale().messageActions;
   const [copied, setCopied] = useState(false);
   const [feeling, setFeeling] = useState<"like" | "dislike" | null>(null);
   const showCopy = content != null || !!onCopy;
   // 复制反馈复位计时器：用 ref 持有以便重复点击时去抖、卸载时清理，避免对已卸载组件 setState
-  const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => () => clearTimeout(copiedTimer.current), []);
 
@@ -72,18 +72,18 @@ export function MessageActions({
   return (
     <div className={cn("flex items-center gap-0.5", className)} {...props}>
       {showCopy && (
-        <IconBtn label={copied ? "已复制" : "复制"} onClick={copy}>
+        <IconBtn label={copied ? labels.copied : labels.copy} onClick={copy}>
           {copied ? <Check className="text-success" /> : <Copy />}
         </IconBtn>
       )}
       {onRegenerate && (
-        <IconBtn label="重新生成" onClick={onRegenerate}>
+        <IconBtn label={labels.regenerate} onClick={onRegenerate}>
           <RefreshCw />
         </IconBtn>
       )}
       {onLike && (
         <IconBtn
-          label="赞"
+          label={labels.like}
           active={feeling === "like"}
           onClick={() => {
             setFeeling((f) => (f === "like" ? null : "like"));
@@ -95,7 +95,7 @@ export function MessageActions({
       )}
       {onDislike && (
         <IconBtn
-          label="踩"
+          label={labels.dislike}
           active={feeling === "dislike"}
           onClick={() => {
             setFeeling((f) => (f === "dislike" ? null : "dislike"));

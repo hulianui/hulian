@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 中后台列表页主体区块 —— 顶部查询工具栏（搜索 + Select 筛选 + 新建按钮）
@@ -22,7 +23,7 @@ import {
   TooltipTrigger,
   toast,
   type ColumnDef,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 
 type OrderStatus = "待处理" | "进行中" | "已完成" | "已取消";
 type Priority = "高" | "中" | "低";

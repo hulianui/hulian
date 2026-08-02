@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Avatar, Card, Heading, Tag, Text } from "@hulianui/ui";
 
 const FEATURED = {

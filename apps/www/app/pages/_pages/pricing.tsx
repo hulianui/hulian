@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { HeroBlock } from "../../blocks/_blocks/hero";
 import { PricingTableBlock } from "../../blocks/_blocks/pricing-table";
 import { FaqBlock } from "../../blocks/_blocks/faq";

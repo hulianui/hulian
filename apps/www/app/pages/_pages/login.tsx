@@ -1,7 +1,8 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { BarChart3, ShieldCheck, Workflow } from "lucide-react";
-import { Heading, Link, LoginForm, Spotlight, Text, toast } from "@hulianui/ui";
+import { Heading, Link, LoginForm, Spotlight, Text, toast } from "../../../lib/fixture-ui";
 
 // 登录页 —— 左品牌叙事面板（Spotlight 光晕 + 卖点列表）+ 右 LoginForm 表单的经典分屏范式。
 // 复制后改 FEATURES 文案与 onFinish 真实登录逻辑即可。演示用 min-h 固定高度（避免整页 h-dvh）。

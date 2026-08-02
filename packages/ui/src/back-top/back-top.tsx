@@ -9,6 +9,7 @@ import type { BackTopProps } from "./back-top.types";
 // 默认右下圆形悬浮钮吃 surface/border token + 阴影；children 可自定义内容。
 
 export function BackTop({
+  "aria-label": ariaLabel = "回到顶部",
   target,
   visibilityHeight = 400,
   onClick,
@@ -25,8 +26,7 @@ export function BackTop({
 
   useEffect(() => {
     const el = getTarget();
-    const getScrollTop = () =>
-      el === window ? window.scrollY : (el as HTMLElement).scrollTop;
+    const getScrollTop = () => (el === window ? window.scrollY : (el as HTMLElement).scrollTop);
     const onScroll = () => setVisible(getScrollTop() > visibilityHeight);
     onScroll(); // 挂载即按当前滚动位判定一次
     el.addEventListener("scroll", onScroll, { passive: true });
@@ -47,7 +47,7 @@ export function BackTop({
   return (
     <button
       type="button"
-      aria-label="回到顶部"
+      aria-label={ariaLabel}
       onClick={handleClick}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}

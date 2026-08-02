@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import Link from "next/link";
 import { ShimmerButton, Button, Heading, Text, Meteors } from "@hulianui/ui";
 import { ArrowRight } from "lucide-react";

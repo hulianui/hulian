@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { ProductDetailBlock } from "../../blocks/_blocks/product-detail";
 import { ReviewSectionBlock } from "../../blocks/_blocks/review-section";
 import { ProductGridBlock } from "../../blocks/_blocks/product-grid";

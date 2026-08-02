@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { ArticleTocBlock } from "../../blocks/_blocks/article-toc";
 import { CtaBlock } from "../../blocks/_blocks/cta";
 

@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 商品卡网格区块 —— 4 列响应式网格，卡片含渐变占位封面、标题、价格（划线原价+现价）、Rating、Tag、加购 Button。
@@ -5,7 +6,7 @@
 
 import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
-import { Button, Card, CardBody, Chip, Heading, Rating, Tag, Text, toast } from "@hulianui/ui";
+import { Button, Card, CardBody, Chip, Heading, Rating, Tag, Text, toast } from "../../../lib/fixture-ui";
 
 interface Product {
   id: string;

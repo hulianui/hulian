@@ -3,6 +3,7 @@ import { useId, useState } from "react";
 import { Star } from "../_icons";
 import { cn } from "../lib/cn";
 import type { RatingProps } from "./rating.types";
+import { useComponentLocale } from "../config/locale";
 
 // 自研星级评分（零依赖）。此前是 @mui/material/Rating 的薄包装 —— 为了这一个组件，
 // 全库拖着 emotion 这套 runtime CSS-in-JS（不兼容 RSC），且任何人装 @hulianui/ui
@@ -26,17 +27,20 @@ export function Rating({
   emptyIcon,
   className,
 }: RatingProps) {
+  const labels = useComponentLocale().rating;
   const name = useId();
   const [inner, setInner] = useState(defaultValue ?? 0);
   const [hover, setHover] = useState<number | null>(null);
   const isControlled = value !== undefined;
-  const current = isControlled ? (value ?? 0) : inner;
+  const current = isControlled ? value ?? 0 : inner;
   // hover 只在可交互时抢显示权，否则静态值说了算
   const shown = hover ?? current;
 
   const iconCls = cn(SIZE[size], "shrink-0");
   const filledNode = icon ?? <Star className={iconCls} fill="currentColor" strokeWidth={0} />;
-  const emptyNode = emptyIcon ?? icon ?? <Star className={iconCls} fill="currentColor" strokeWidth={0} />;
+  const emptyNode = emptyIcon ?? icon ?? (
+    <Star className={iconCls} fill="currentColor" strokeWidth={0} />
+  );
   // hover 态用 color-mix 从主色派生，兼容 var() 与任意 CSS 颜色（与旧 MUI 皮肤一致）
   const hoverColor = `color-mix(in srgb, ${color}, black 15%)`;
 
@@ -51,7 +55,7 @@ export function Rating({
     return (
       <span
         role="img"
-        aria-label={`评分 ${current} / ${max}`}
+        aria-label={labels.value(current, max)}
         className={cn("inline-flex items-center gap-0.5", className)}
       >
         {items.map((i) => (
@@ -72,7 +76,7 @@ export function Rating({
   return (
     <span
       role="radiogroup"
-      aria-label={`评分，共 ${max} 级`}
+      aria-label={labels.group(max)}
       className={cn("inline-flex items-center gap-0.5", disabled && "opacity-50", className)}
       onMouseLeave={() => setHover(null)}
     >
@@ -94,7 +98,7 @@ export function Rating({
             disabled={disabled}
             onChange={() => commit(i)}
             className="absolute size-0 opacity-0"
-            aria-label={`${i} 星`}
+            aria-label={labels.star(i)}
           />
           <span aria-hidden style={{ color: paint(i) }}>
             {i <= shown ? filledNode : emptyNode}

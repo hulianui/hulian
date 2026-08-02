@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { useMemo, useState } from "react";

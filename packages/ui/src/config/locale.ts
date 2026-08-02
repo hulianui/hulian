@@ -6,6 +6,8 @@ import { createContext, useContext } from "react";
  * 后续组件接入 i18n 时在此扩展（原子件文案为渐进迁移项，见 docs/enterprise-roadmap.md）。
  */
 export interface Locale {
+  /** Shared copy for lower-level interactive components. Optional for backwards compatibility. */
+  components?: ComponentLocale;
   table: {
     /** 空态默认标题（emptyText 未传时使用）。 */
     empty: string;
@@ -126,8 +128,180 @@ export interface Locale {
   };
 }
 
+export interface ComponentLocale {
+  promptInput: { stop: string; send: string };
+  rating: {
+    value: (value: number, max: number) => string;
+    group: (max: number) => string;
+    star: (value: number) => string;
+  };
+  heroVideoDialog: { play: string; close: string; iframeTitle: string };
+  messageActions: {
+    copy: string;
+    copied: string;
+    regenerate: string;
+    like: string;
+    dislike: string;
+  };
+  thinkingBlock: { title: string };
+  toolCall: { pending: string; running: string; success: string; error: string };
+  carousel: {
+    label: string;
+    slide: (index: number, count: number) => string;
+    previous: string;
+    next: string;
+    navigation: string;
+    goTo: (index: number) => string;
+  };
+  steps: { label: string };
+  numberField: { decrement: string; increment: string };
+  pagination: {
+    total: (count: number) => string;
+    first: string;
+    previous: string;
+    page: (page: number) => string;
+    more: string;
+    next: string;
+    last: string;
+    jump: string;
+    jumpPrefix: string;
+    jumpSuffix: string;
+  };
+  searchForm: {
+    selectPlaceholder: string;
+    submit: string;
+    reset: string;
+    expand: string;
+    collapse: string;
+  };
+  flow: {
+    canvas: string;
+    node: string;
+    source: string;
+    target: string;
+    zoomIn: string;
+    zoomOut: string;
+    fitView: string;
+  };
+}
+
+const zhComponents: ComponentLocale = {
+  promptInput: { stop: "停止生成", send: "发送" },
+  rating: {
+    value: (value, max) => `评分 ${value} / ${max}`,
+    group: (max) => `评分，共 ${max} 级`,
+    star: (value) => `${value} 星`,
+  },
+  heroVideoDialog: { play: "播放视频", close: "关闭", iframeTitle: "视频" },
+  messageActions: {
+    copy: "复制",
+    copied: "已复制",
+    regenerate: "重新生成",
+    like: "赞",
+    dislike: "踩",
+  },
+  thinkingBlock: { title: "思考过程" },
+  toolCall: { pending: "等待", running: "运行中", success: "完成", error: "失败" },
+  carousel: {
+    label: "轮播",
+    slide: (index, count) => `第 ${index} / ${count} 张`,
+    previous: "上一张",
+    next: "下一张",
+    navigation: "幻灯片导航",
+    goTo: (index) => `转到第 ${index} 张`,
+  },
+  steps: { label: "步骤" },
+  numberField: { decrement: "减少", increment: "增加" },
+  pagination: {
+    total: (count) => `共 ${count} 条`,
+    first: "跳到首页",
+    previous: "上一页",
+    page: (page) => `第 ${page} 页`,
+    more: "更多页面",
+    next: "下一页",
+    last: "跳到末页",
+    jump: "跳至第几页",
+    jumpPrefix: "跳至",
+    jumpSuffix: "页",
+  },
+  searchForm: {
+    selectPlaceholder: "请选择",
+    submit: "查询",
+    reset: "重置",
+    expand: "展开",
+    collapse: "收起",
+  },
+  flow: {
+    canvas: "工作流画布",
+    node: "工作流节点",
+    source: "输出",
+    target: "输入",
+    zoomIn: "放大",
+    zoomOut: "缩小",
+    fitView: "适配视图",
+  },
+};
+
+const enComponents: ComponentLocale = {
+  promptInput: { stop: "Stop generating", send: "Send" },
+  rating: {
+    value: (value, max) => `Rating ${value} / ${max}`,
+    group: (max) => `Rating, ${max} levels`,
+    star: (value) => `${value} stars`,
+  },
+  heroVideoDialog: { play: "Play video", close: "Close", iframeTitle: "Video" },
+  messageActions: {
+    copy: "Copy",
+    copied: "Copied",
+    regenerate: "Regenerate",
+    like: "Like",
+    dislike: "Dislike",
+  },
+  thinkingBlock: { title: "Thinking" },
+  toolCall: { pending: "Pending", running: "Running", success: "Complete", error: "Failed" },
+  carousel: {
+    label: "Carousel",
+    slide: (index, count) => `Slide ${index} of ${count}`,
+    previous: "Previous slide",
+    next: "Next slide",
+    navigation: "Slide navigation",
+    goTo: (index) => `Go to slide ${index}`,
+  },
+  steps: { label: "Steps" },
+  numberField: { decrement: "Decrease", increment: "Increase" },
+  pagination: {
+    total: (count) => `${count} items`,
+    first: "First page",
+    previous: "Previous page",
+    page: (page) => `Page ${page}`,
+    more: "More pages",
+    next: "Next page",
+    last: "Last page",
+    jump: "Page to jump to",
+    jumpPrefix: "Go to",
+    jumpSuffix: "page",
+  },
+  searchForm: {
+    selectPlaceholder: "Select",
+    submit: "Search",
+    reset: "Reset",
+    expand: "Expand",
+    collapse: "Collapse",
+  },
+  flow: {
+    canvas: "Workflow canvas",
+    node: "Workflow node",
+    source: "Output",
+    target: "Input",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    fitView: "Fit view",
+  },
+};
+
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */
 export const zhCN: Locale = {
+  components: zhComponents,
   table: {
     empty: "暂无数据",
   },
@@ -232,6 +406,7 @@ export const zhCN: Locale = {
 
 /** 英文（en-US），演示 i18n 可切换；消费者亦可 spread zhCN/enUS 自定义。 */
 export const enUS: Locale = {
+  components: enComponents,
   table: {
     empty: "No data",
   },
@@ -296,7 +471,8 @@ export const enUS: Locale = {
   clickCaptcha: {
     hint: "Click the prompted targets in order",
     hintImageAlt: "Click prompt",
-    areaLabel: "Click captcha area: arrow keys move the cursor, Enter or Space drops a point, Backspace undoes",
+    areaLabel:
+      "Click captcha area: arrow keys move the cursor, Enter or Space drops a point, Backspace undoes",
     selected: "Points selected",
     undo: "Undo last point",
     refresh: "Refresh image",
@@ -339,4 +515,8 @@ export const LocaleContext = createContext<Locale | null>(null);
 /** 取当前 Locale；缺 ConfigProvider 时回退默认 zhCN（组件须能脱离 Provider 渲染，故不抛）。 */
 export function useLocale(): Locale {
   return useContext(LocaleContext) ?? zhCN;
+}
+
+export function useComponentLocale(): ComponentLocale {
+  return useLocale().components ?? zhComponents;
 }

@@ -11,5 +11,9 @@ export interface SnippetProps {
   lang?: string;
   /** 是否语法着色（默认 true，仅 children 为字符串时生效）。命令多为纯色，JS 片段会着色。 */
   highlight?: boolean;
+  /** Accessible label for the copy action. */
+  copyLabel?: string;
+  /** Accessible label shown after copying. */
+  copiedLabel?: string;
   className?: string;
 }

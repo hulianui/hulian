@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 新手引导区块 —— 横向 Steps 步骤条 + 当前步卡片内容 + 进度条 + 上一步/下一步。

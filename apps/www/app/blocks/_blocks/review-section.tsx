@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 商品评价区块 —— 左侧总评分（大数字 + Rating + 各星级占比 Meter）+ 右侧用户评论列表（Avatar + 名 + Rating + 评论文 + 时间）。

@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Avatar, Heading, Prose, Tag, Text } from "@hulianui/ui";
 
 export function ArticleBodyBlock() {

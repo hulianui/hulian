@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
+import { useIntlayer } from "next-intlayer";
 import { Command, Kbd, Tag, type CommandGroupData } from "@hulianui/ui";
 import {
   TYPE_LABEL,
@@ -40,6 +41,7 @@ function hitItems(hits: SearchHit[], go: (href: string) => void) {
 }
 
 export function DocsSearch() {
+  const content = useIntlayer("docs-search");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -53,15 +55,17 @@ export function DocsSearch() {
       const result: CommandGroupData[] = panel.map((g) => ({
         // 截断时把「显示了几条 / 一共几条」写在组标题上，别让人以为这就是全部。
         heading: g.truncated
-          ? `${TYPE_LABEL[g.type]}（${g.hits.length} / ${g.total}）`
-          : `${TYPE_LABEL[g.type]}（${g.total}）`,
+          ? `${TYPE_LABEL[g.type]} (${content.count.replace("{shown}", String(g.hits.length)).replace("{total}", String(g.total))})`
+          : `${TYPE_LABEL[g.type]} (${g.total})`,
         items: [
           ...hitItems(g.hits, go),
           ...(g.truncated && trimmed
             ? [
                 {
                   value: `__more-${g.type}__`,
-                  label: `查看${TYPE_LABEL[g.type]}的全部 ${g.total} 条`,
+                  label: content.viewAllType
+                    .replace("{name}", TYPE_LABEL[g.type])
+                    .replace("{count}", String(g.total)),
                   onSelect: () =>
                     go(withDocsBasePath(`/search?q=${encodeURIComponent(trimmed)}&type=${g.type}`)),
                 },
@@ -74,7 +78,7 @@ export function DocsSearch() {
           items: [
             {
               value: "__all__",
-              label: `查看「${trimmed}」的全部结果`,
+              label: content.viewAllQuery.replace("{query}", trimmed),
               onSelect: () => go(withDocsBasePath(`/search?q=${encodeURIComponent(trimmed)}`)),
             },
           ],
@@ -90,35 +94,35 @@ export function DocsSearch() {
     const fallback: CommandGroupData[] = [];
     if (relaxed) {
       fallback.push({
-        heading: `近似结果（按「${relaxed}」）`,
+        heading: content.approximate.replace("{query}", relaxed),
         items: hitItems(searchAll(relaxed, { limit: 8 }), go),
       });
     }
     fallback.push({
-      heading: "换个找法",
+      heading: content.alternatives,
       items: [
         {
           value: "__browse-pages__",
-          label: "浏览全部页面",
-          description: "由区块拼成的完整整页，最省事的起点",
+          label: content.browsePages,
+          description: content.browsePagesDescription,
           onSelect: () => go(withDocsBasePath("/pages")),
         },
         {
           value: "__browse-blocks__",
-          label: "浏览全部区块",
-          description: "自包含的页面区块，复制即用",
+          label: content.browseBlocks,
+          description: content.browseBlocksDescription,
           onSelect: () => go(withDocsBasePath("/blocks")),
         },
         {
           value: "__browse-components__",
-          label: "浏览全部组件",
-          description: `按分类查看 ${COMPONENT_COUNT} 个组件`,
+          label: content.browseComponents,
+          description: content.browseComponentsDescription.replace("{count}", String(COMPONENT_COUNT)),
           onSelect: () => go(withDocsBasePath("/components")),
         },
         {
           value: "__registry__",
-          label: "打开 registry",
-          description: "shadcn CLI 可直接消费的机器可读清单",
+          label: content.registry,
+          description: content.registryDescription,
           onSelect: () => {
             window.open(withDocsBasePath("/registry.json"), "_blank", "noreferrer");
           },
@@ -126,7 +130,7 @@ export function DocsSearch() {
       ],
     });
     return fallback;
-  }, [query, router]);
+  }, [content, query, router]);
 
   return (
     <>
@@ -136,13 +140,13 @@ export function DocsSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="搜索文档"
+        aria-label={content.trigger}
         aria-keyshortcuts="Meta+K Control+K"
         className="flex h-9 items-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-2.5 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:w-56 sm:justify-between sm:px-3"
       >
         <span className="flex items-center gap-2">
           <Search className="size-4 shrink-0" aria-hidden />
-          <span className="hidden sm:inline">搜索文档…</span>
+          <span className="hidden sm:inline">{content.triggerPlaceholder}</span>
         </span>
         <Kbd className="hidden sm:inline-flex">⌘K</Kbd>
       </button>
@@ -154,13 +158,13 @@ export function DocsSearch() {
         groups={groups}
         filter={() => true}
         onQueryChange={setQuery}
-        aria-label="全站搜索"
-        placeholder="搜页面 / 区块 / 组件 / 模版 / 指南，或直接描述任务…"
+        aria-label={content.dialogLabel}
+        placeholder={content.placeholder}
         emptyMessage={
           <span className="flex flex-col items-center gap-2">
-            <span>没有匹配的内容</span>
+            <span>{content.empty}</span>
             <span className="flex flex-wrap justify-center gap-1.5">
-              {(["页面", "区块", "组件"] as const).map((t) => (
+              {([content.pages, content.blocks, content.components] as const).map((t) => (
                 <Tag key={t} variant="soft" tone="neutral" size="sm">
                   {t}
                 </Tag>

@@ -6,13 +6,14 @@ import { Dot } from "../dot";
 import { Spinner } from "../spinner";
 import type { DotTone } from "../dot";
 import type { ToolCallProps, ToolCallStatus } from "./tool-call.types";
+import { useComponentLocale } from "../config/locale";
 
 // 工具调用卡：dogfood Collapsible(头部=工具名+状态，面板=参数/结果) + Dot(状态色) + Spinner(运行中)。
-const statusMeta: Record<ToolCallStatus, { tone: DotTone; label: string }> = {
-  pending: { tone: "neutral", label: "等待" },
-  running: { tone: "brand", label: "运行中" },
-  success: { tone: "success", label: "完成" },
-  error: { tone: "danger", label: "失败" },
+const statusTone: Record<ToolCallStatus, DotTone> = {
+  pending: "neutral",
+  running: "brand",
+  success: "success",
+  error: "danger",
 };
 
 export function ToolCall({
@@ -27,7 +28,7 @@ export function ToolCall({
   className,
   children,
 }: ToolCallProps) {
-  const meta = statusMeta[status];
+  const labels = useComponentLocale().toolCall;
   return (
     <Collapsible
       defaultOpen={defaultOpen}
@@ -37,15 +38,17 @@ export function ToolCall({
     >
       <CollapsibleTrigger>
         <span className="flex min-w-0 items-center gap-2">
-          <span className="shrink-0 text-muted [&>svg]:size-4">{icon ?? <Wrench aria-hidden />}</span>
+          <span className="shrink-0 text-muted [&>svg]:size-4">
+            {icon ?? <Wrench aria-hidden />}
+          </span>
           <span className="truncate font-mono text-xs text-foreground">{name}</span>
           <span className="ml-1 flex items-center gap-1.5 text-xs font-normal text-muted">
             {status === "running" ? (
               <Spinner size="sm" tone="muted" />
             ) : (
-              <Dot tone={meta.tone} />
+              <Dot tone={statusTone[status]} />
             )}
-            {meta.label}
+            {labels[status]}
           </span>
         </span>
       </CollapsibleTrigger>

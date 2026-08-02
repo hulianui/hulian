@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // AI 对话面板 Block —— 自包含、可整段复制。
@@ -19,7 +20,7 @@ import {
   TypingDots,
   StreamingText,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 import { Bot } from "lucide-react";
 
 // ── 静态 mock 对话（复制时替换即可） ──────────────────────────

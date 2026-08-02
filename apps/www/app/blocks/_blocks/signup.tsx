@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
@@ -14,7 +15,7 @@ import {
   AuroraText,
   Spinner,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 import { Rocket, Check } from "lucide-react";
 
 // 注册 Block —— 自包含、可整段复制。

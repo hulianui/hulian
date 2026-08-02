@@ -14,12 +14,13 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PACKAGES = ["ui", "tokens"];
 const OUT = join(ROOT, "apps", "www", "lib", "changelog.json");
+const OUT_EN = join(ROOT, "apps", "www", "lib", "changelog.en.json");
 
 /** tag 名 → 发布日期（YYYY-MM-DD）。tag 缺失（未 fetch / 未发版）时该版本 date 为 null。 */
 function tagDates() {
@@ -44,9 +45,9 @@ function tagDates() {
  * 是本地带全量 tag 生成的，正好可以当这份日期的兜底来源——只补日期，正文一律以当前
  * CHANGELOG.md 为准。
  */
-function previousDates() {
+function previousDates(outPath = OUT) {
   try {
-    const prev = JSON.parse(readFileSync(OUT, "utf8"));
+    const prev = JSON.parse(readFileSync(outPath, "utf8"));
     return new Map(prev.filter((r) => r.date).map((r) => [`${r.pkg}@${r.version}`, r.date]));
   } catch {
     return new Map(); // 首次生成，无既有产物
@@ -70,7 +71,7 @@ const BREAKING_RE = /\*\*(?:BREAKING|破坏性)/;
  * 结构：`## <version>` → `### Major|Minor|Patch Changes` → `- [sha: ]正文`，
  * 正文续行缩进 2 空格（子列表 / 多段落），去缩进后原样交给 Markdown 渲染。
  */
-function parseChangelog(md) {
+export function parseChangelog(md) {
   const versions = [];
   let cur = null;
   let bump = null;
@@ -115,18 +116,34 @@ function parseChangelog(md) {
   return versions;
 }
 
-const dates = tagDates();
-const fallbackDates = previousDates();
-const releases = [];
-for (const pkg of PACKAGES) {
-  const md = readFileSync(join(ROOT, "packages", pkg, "CHANGELOG.md"), "utf8");
-  for (const v of parseChangelog(md)) {
-    const key = `@hulianui/${pkg}@${v.version}`;
-    releases.push({
-      pkg: `@hulianui/${pkg}`,
-      version: v.version,
-      date: dates.get(key) ?? fallbackDates.get(key) ?? null,
-      entries: v.entries,
+export function assertLocaleParity(pkg, chinese, english) {
+  const zhVersions = new Map(chinese.map((release) => [release.version, release]));
+  const enVersions = new Map(english.map((release) => [release.version, release]));
+  const missingEnglish = [...zhVersions.keys()].filter((version) => !enVersions.has(version));
+  const extraEnglish = [...enVersions.keys()].filter((version) => !zhVersions.has(version));
+
+  if (missingEnglish.length > 0) {
+    throw new Error(`[changelog] ${pkg} missing English versions: ${missingEnglish.join(", ")}`);
+  }
+  if (extraEnglish.length > 0) {
+    throw new Error(`[changelog] ${pkg} has unknown English versions: ${extraEnglish.join(", ")}`);
+  }
+
+  for (const [version, zhRelease] of zhVersions) {
+    const enRelease = enVersions.get(version);
+    if (zhRelease.entries.length !== enRelease.entries.length) {
+      throw new Error(
+        `[changelog] ${pkg} ${version} entry count differs: zh-CN=${zhRelease.entries.length}, en=${enRelease.entries.length}`,
+      );
+    }
+    zhRelease.entries.forEach((entry, index) => {
+      const translated = enRelease.entries[index];
+      if (entry.bump !== translated.bump || entry.sha !== translated.sha) {
+        throw new Error(
+          `[changelog] ${pkg} ${version} entry ${index + 1} identity differs: ` +
+            `zh-CN=${entry.bump}/${entry.sha ?? "no-sha"}, en=${translated.bump}/${translated.sha ?? "no-sha"}`,
+        );
+      }
     });
   }
 }
@@ -141,17 +158,55 @@ const cmpSemver = (a, b) => {
 // CI 与 Release workflow 并发，构建站点时 tag 尚不存在）。语义上它是**最新的一版**。
 // 按空串排序会把它甩到列表末尾，站点顶部就还停在上一版——看起来就像 changelog 没更新。
 const dateKey = (r) => r.date ?? "9999-12-31";
-releases.sort((a, b) =>
-  dateKey(a) === dateKey(b)
-    ? a.pkg === b.pkg
-      ? cmpSemver(a.version, b.version)
-      : a.pkg.localeCompare(b.pkg)
-    : dateKey(b).localeCompare(dateKey(a)),
-);
+function sortReleases(releases) {
+  releases.sort((a, b) =>
+    dateKey(a) === dateKey(b)
+      ? a.pkg === b.pkg
+        ? cmpSemver(a.version, b.version)
+        : a.pkg.localeCompare(b.pkg)
+      : dateKey(b).localeCompare(dateKey(a)),
+  );
+}
 
-writeFileSync(OUT, `${JSON.stringify(releases, null, 2)}\n`);
-const undated = releases.filter((r) => !r.date).length;
-console.log(
-  `[changelog] ${releases.length} 个版本 · ${releases.reduce((n, r) => n + r.entries.length, 0)} 条记录` +
-    (undated ? ` · ${undated} 个版本无 tag 日期（跑 git fetch --tags 后重试）` : ""),
-);
+export function generateChangelogs() {
+  const dates = tagDates();
+  const fallbackDates = previousDates();
+  const fallbackDatesEn = previousDates(OUT_EN);
+  const releases = [];
+  const releasesEn = [];
+
+  for (const pkg of PACKAGES) {
+    const packageName = `@hulianui/${pkg}`;
+    const chinese = parseChangelog(
+      readFileSync(join(ROOT, "packages", pkg, "CHANGELOG.md"), "utf8"),
+    );
+    const english = parseChangelog(
+      readFileSync(join(ROOT, "packages", pkg, "CHANGELOG.en.md"), "utf8"),
+    );
+    assertLocaleParity(packageName, chinese, english);
+
+    for (const [index, chineseVersion] of chinese.entries()) {
+      const englishVersion = english[index];
+      const key = `${packageName}@${chineseVersion.version}`;
+      const date = dates.get(key) ?? fallbackDates.get(key) ?? fallbackDatesEn.get(key) ?? null;
+      releases.push({ pkg: packageName, version: chineseVersion.version, date, entries: chineseVersion.entries });
+      releasesEn.push({ pkg: packageName, version: englishVersion.version, date, entries: englishVersion.entries });
+    }
+  }
+
+  sortReleases(releases);
+  sortReleases(releasesEn);
+  writeFileSync(OUT, `${JSON.stringify(releases, null, 2)}\n`);
+  writeFileSync(OUT_EN, `${JSON.stringify(releasesEn, null, 2)}\n`);
+
+  const undated = releases.filter((release) => !release.date).length;
+  console.log(
+    `[changelog] ${releases.length} releases per locale · ` +
+      `${releases.reduce((count, release) => count + release.entries.length, 0)} entries per locale` +
+      (undated ? ` · ${undated} releases have no tag date (run git fetch --tags and retry)` : ""),
+  );
+}
+
+if (resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url)) {
+  generateChangelogs();
+}

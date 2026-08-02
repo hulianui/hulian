@@ -21,6 +21,7 @@ import { blocks } from "../app/blocks/_meta";
 import { pages } from "../app/pages/_meta";
 import { demos } from "../app/demos/lib/demos";
 import { ComponentQuickJump } from "./component-quick-jump";
+import { useIntlayer } from "next-intlayer";
 
 const CATEGORY_ICON: Record<CategoryKey, LucideIcon> = {
   layout: LayoutGrid,
@@ -110,13 +111,14 @@ function rowsFor(tier: string): Row[] {
 
 // 首页浏览区 —— 按「组件 / 区块 / 页面 / 示例」四档切换的发丝线列表(dogfood Segmented)。
 export function TierBrowser() {
+  const content = useIntlayer("shared-chrome");
   const [tier, setTier] = useState("components");
   const rows = rowsFor(tier);
 
   return (
     <div>
       <Segmented
-        aria-label="浏览分类"
+        aria-label={content.browseCategories}
         items={TIERS}
         value={tier}
         onValueChange={setTier}
@@ -129,12 +131,12 @@ export function TierBrowser() {
             href={withDocsBasePath("/components")}
             className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {DOCS_LOCALE === "en" ? "View all components" : "查看全部组件"}
+            {content.viewAllComponents}
             <ArrowRight className="size-4" aria-hidden />
           </a>
         </div>
       )}
-      <nav className="border-t border-border" aria-label="浏览列表">
+      <nav className="border-t border-border" aria-label={content.browseList}>
         {rows.map(({ key, icon: Icon, label, blurb, trailing, href }) => (
           <a
             key={key}

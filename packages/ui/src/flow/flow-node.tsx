@@ -1,16 +1,13 @@
 "use client";
-import {
-  useEffect,
-  useRef,
-  type PointerEvent as ReactPointerEvent,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { handleKey, handleOffsetRatio } from "./flow-geometry";
 import type { FlowHandleSpec, FlowNode, FlowSize } from "./flow.types";
+import { useComponentLocale } from "../config/locale";
 
 // 节点内交互元素：在其上按下不触发节点拖拽（仍选中），让表单控件可用。照 React Flow .nodrag 思路。
-const INTERACTIVE = 'input,textarea,select,button,a,[role="slider"],[role="combobox"],[role="switch"],[contenteditable="true"],[data-no-drag]';
+const INTERACTIVE =
+  'input,textarea,select,button,a,[role="slider"],[role="combobox"],[role="switch"],[contenteditable="true"],[data-no-drag]';
 
 function isInteractive(target: EventTarget | null): boolean {
   return target instanceof Element && !!target.closest(INTERACTIVE);
@@ -48,6 +45,7 @@ export function FlowNodeView<T>({
   onHandlePointerDown,
   onDelete,
 }: FlowNodeViewProps<T>) {
+  const labels = useComponentLocale().flow;
   const ref = useRef<HTMLDivElement>(null);
 
   // 测量节点尺寸供连线几何对齐（ResizeObserver 带守卫，SSR/jsdom 安全）。
@@ -70,7 +68,7 @@ export function FlowNodeView<T>({
       ref={ref}
       data-flow-node={node.id}
       role="group"
-      aria-label="工作流节点"
+      aria-label={labels.node}
       className={cn(
         "absolute select-none rounded-[calc(var(--radius)+0.25rem)] border bg-surface shadow-sm transition-shadow",
         selected ? "border-primary ring-2 ring-primary/40" : "border-border hover:border-muted",
@@ -97,7 +95,14 @@ export function FlowNodeView<T>({
           }}
           className="absolute -right-2.5 -top-2.5 grid size-5 place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm transition-colors hover:border-danger hover:text-danger"
         >
-          <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+          <svg
+            viewBox="0 0 16 16"
+            className="size-3"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden
+          >
             <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
           </svg>
         </button>
@@ -153,14 +158,16 @@ function Handle({
   connected: boolean;
   onPointerDown?: (e: ReactPointerEvent) => void;
 }) {
+  const labels = useComponentLocale().flow;
+  const label = handle.label ?? (handle.type === "source" ? labels.source : labels.target);
   return (
     <span
       data-flow-handle={handle.id}
       data-node-id={nodeId}
       data-handle-type={handle.type}
       data-connected={connected ? "" : undefined}
-      title={handle.label}
-      aria-label={handle.label ?? (handle.type === "source" ? "输出" : "输入")}
+      title={label}
+      aria-label={label}
       onPointerDown={onPointerDown}
       className={cn(
         // 桩 = 不透明实心圆点 + surface 描边环，半压在节点边缘也不被底下 accent 条透色染脏。
@@ -169,8 +176,8 @@ function Handle({
         handle.type === "source"
           ? "cursor-crosshair bg-primary hover:scale-125"
           : connected
-            ? "bg-primary"
-            : "bg-muted",
+          ? "bg-primary"
+          : "bg-muted",
         "transition-transform",
       )}
       style={{

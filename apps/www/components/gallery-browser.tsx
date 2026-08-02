@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { Empty, Input } from "@hulianui/ui";
+import { useIntlayer } from "next-intlayer";
 import { categoriesOf, searchAll, type DocType } from "../lib/search-index";
 
 // 画廊的搜索 / 分类筛选 —— /blocks 与 /pages 共用。
@@ -28,6 +29,9 @@ export function GalleryBrowser({
   cards: Record<string, ReactNode>;
   placeholder: string;
 }) {
+  const blocksContent = useIntlayer("blocks").index;
+  const pagesContent = useIntlayer("pages").index;
+  const content = type === "block" ? blocksContent : pagesContent;
   const router = useRouter();
   const params = useSearchParams();
   const q = params.get("q") ?? "";
@@ -65,12 +69,12 @@ export function GalleryBrowser({
           value={q}
           onChange={(e) => setParams({ q: e.target.value })}
           placeholder={placeholder}
-          aria-label={`搜索${type === "block" ? "区块" : "页面"}`}
+          aria-label={content.searchPlaceholder}
           prefix={<Search className="size-4" aria-hidden />}
         />
         <div className="flex flex-wrap items-center gap-2">
           <Chip active={!category} onClick={() => setParams({ category: null })}>
-            全部 {total}
+            {content.all} {total}
           </Chip>
           {categories.map((c) => (
             <Chip
@@ -92,18 +96,18 @@ export function GalleryBrowser({
       {visible.length === 0 ? (
         <div className="py-10">
           <Empty
-            title={`没有匹配「${q.trim()}」的${type === "block" ? "区块" : "页面"}`}
-            description="这里只搜当前货架。换成全站搜索，组件、模版和指南也一并找。"
+            title={content.emptyTitle.replace("{query}", q.trim())}
+            description={content.emptyDescription}
           />
           <div className="mt-4 flex justify-center gap-2">
             <Chip active={false} onClick={() => setParams({ q: null, category: null })}>
-              清除筛选
+              {content.clear}
             </Chip>
             <Link
               href={`/search?q=${encodeURIComponent(q)}`}
               className="inline-flex items-center rounded-full border border-border px-3 py-1 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             >
-              去全站搜索
+              {content.searchAll}
             </Link>
           </div>
         </div>

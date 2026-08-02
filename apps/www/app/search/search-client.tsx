@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
+import { useIntlayer } from "next-intlayer";
 import { Card, Empty, Heading, Input, Tag, Text } from "@hulianui/ui";
 import {
   TYPE_LABEL,
@@ -13,6 +14,7 @@ import {
   searchAll,
   type DocType,
 } from "../../lib/search-index";
+import { stripDocsBasePath, withDocsBasePath } from "../../lib/docs-locale";
 
 // 全量搜索结果页 —— 与顶栏 ⌘K 面板共用 lib/search-index 的同一套排序，只是这里
 // **状态全在 URL 上**（?q= / ?type= / ?category=），因此可后退、可刷新、可分享。
@@ -21,6 +23,7 @@ import {
 const isDocType = (v: string | null): v is DocType => !!v && (TYPE_ORDER as string[]).includes(v);
 
 export function SearchClient() {
+  const content = useIntlayer("docs-search");
   const router = useRouter();
   const params = useSearchParams();
 
@@ -38,7 +41,10 @@ export function SearchClient() {
         if (value) next.set(key, value);
         else next.delete(key);
       }
-      router.replace(next.size ? `/search?${next}` : "/search", { scroll: false });
+      router.replace(
+        stripDocsBasePath(withDocsBasePath(next.size ? `/search?${next}` : "/search")),
+        { scroll: false },
+      );
     },
     [params, router],
   );
@@ -60,18 +66,18 @@ export function SearchClient() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-16">
       <Heading level={1} size="3xl">
-        搜索
+        {content.pageTitle}
       </Heading>
       <Text tone="muted" className="mt-2">
-        跨页面、区块、组件、模版与指南 —— 直接描述任务（如「用户 管理 列表」），优先给能整块复用的积木。
+        {content.pageDescription}
       </Text>
 
       <div className="mt-6">
         <Input
           value={q}
           onChange={(e) => setParams({ q: e.target.value })}
-          placeholder="描述任务或输入名称 / 导出名 / slug…"
-          aria-label="搜索站内内容"
+          placeholder={content.inputPlaceholder}
+          aria-label={content.inputLabel}
           prefix={<Search className="size-4" aria-hidden />}
         />
       </div>
@@ -79,7 +85,7 @@ export function SearchClient() {
       {/* 类型筛选：始终展示全部五类及其命中数，选中项再展开该类的分类芯片。 */}
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <FilterChip active={!type} onClick={() => setParams({ type: null, category: null })}>
-          全部 {hitsLabel(TYPE_ORDER.reduce((n, t) => n + countByType[t], 0))}
+          {content.all} {hitsLabel(TYPE_ORDER.reduce((n, t) => n + countByType[t], 0))}
         </FilterChip>
         {TYPE_ORDER.map((t) => (
           <FilterChip
@@ -96,7 +102,7 @@ export function SearchClient() {
       {categories.length > 0 && (
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <FilterChip active={!category} onClick={() => setParams({ category: null })}>
-            全部分类
+            {content.allCategories}
           </FilterChip>
           {categories.map((c) => (
             <FilterChip
@@ -113,29 +119,27 @@ export function SearchClient() {
       {hits.length === 0 ? (
         <div className="mt-10">
           <Empty
-            title={q.trim() ? `没有匹配「${q.trim()}」的内容` : "输入关键词开始搜索"}
-            description={
-              filtering
-                ? "当前还叠加了类型/分类筛选，先清掉筛选看看全量结果。"
-                : "换个说法，或直接从整页与区块开始挑。"
+            title={
+              q.trim() ? content.emptyQueryMatch.replace("{query}", q.trim()) : content.emptyQuery
             }
+            description={filtering ? content.emptyFilteredDescription : content.emptyDescription}
           />
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {filtering && (
               <FilterChip active={false} onClick={() => setParams({ type: null, category: null })}>
-                清除筛选
+                {content.clearFilters}
               </FilterChip>
             )}
             {relaxed && (
               <FilterChip active={false} onClick={() => setParams({ q: relaxed })}>
-                试试「{relaxed}」
+                {content.tryQuery.replace("{query}", relaxed)}
               </FilterChip>
             )}
-            <LinkChip href="/pages">浏览全部页面</LinkChip>
-            <LinkChip href="/blocks">浏览全部区块</LinkChip>
-            <LinkChip href="/components">浏览全部组件</LinkChip>
-            <LinkChip href="/registry.json" external>
-              打开 registry
+            <LinkChip href="/pages">{content.browsePages}</LinkChip>
+            <LinkChip href="/blocks">{content.browseBlocks}</LinkChip>
+            <LinkChip href="/components">{content.browseComponents}</LinkChip>
+            <LinkChip href={withDocsBasePath("/registry.json")} external>
+              {content.registry}
             </LinkChip>
           </div>
         </div>
@@ -145,7 +149,9 @@ export function SearchClient() {
             <section key={g.type}>
               <Heading level={2} size="lg" className="mb-3">
                 {TYPE_LABEL[g.type]}
-                <span className="ml-2 text-sm font-normal text-muted tabular-nums">{g.hits.length}</span>
+                <span className="ml-2 text-sm font-normal text-muted tabular-nums">
+                  {g.hits.length}
+                </span>
               </Heading>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {g.hits.map((h) => (
@@ -156,7 +162,9 @@ export function SearchClient() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="font-medium">{h.title}</span>
-                        {h.en && <span className="shrink-0 font-mono text-xs text-muted">{h.en}</span>}
+                        {h.en && (
+                          <span className="shrink-0 font-mono text-xs text-muted">{h.en}</span>
+                        )}
                       </div>
                       <Text tone="muted" size="sm" className="mt-1 line-clamp-2">
                         {h.description}
@@ -168,7 +176,7 @@ export function SearchClient() {
                       )}
                       {/* stretched-link：整卡可点但不做内容祖先，避免卡内元素被嵌进 <a>。 */}
                       <Link
-                        href={h.href}
+                        href={stripDocsBasePath(h.href)}
                         aria-label={h.title}
                         className="absolute inset-0 rounded-[inherit] focus:outline-none"
                       />

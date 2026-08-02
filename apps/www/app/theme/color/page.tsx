@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getIntlayer } from "next-intlayer";
 import {
   SEMANTIC_GROUPS,
   CHART_COLORS,
@@ -6,8 +7,10 @@ import {
   type SemanticColor,
 } from "../../../lib/theme-manifest";
 import { DocHeader, Section, Code } from "../_components/doc-kit";
+import { DOCS_LOCALE } from "../../../lib/docs-locale";
 
-export const metadata: Metadata = { title: "颜色 Color · 瑚琏 Hulian" };
+const content = getIntlayer("theme", DOCS_LOCALE).color;
+export const metadata: Metadata = { title: `${content.title} · Hulian UI` };
 
 // 棋盘格底：不透明色完全遮住它，只有 transparent 的令牌（如 hairline 在浅色主题）会露出格子，
 // 让「这个色现在是透明的」在色卡上就看得见，而不是伪装成白色。
@@ -34,7 +37,7 @@ function SwatchRow({ c }: { c: SemanticColor }) {
           <Code>--{c.token}</Code>
         </div>
         <p className="mt-0.5 text-xs text-muted">
-          亮 <span className="font-mono">{c.light}</span> · 暗{" "}
+          {content.light} <span className="font-mono">{c.light}</span> · {content.dark}{" "}
           <span className="font-mono">{c.dark}</span>
         </p>
         {c.note ? <p className="mt-1 text-xs leading-relaxed text-warning">{c.note}</p> : null}
@@ -44,7 +47,7 @@ function SwatchRow({ c }: { c: SemanticColor }) {
           className="hidden shrink-0 rounded-[var(--radius)] px-3 py-1.5 text-xs font-medium sm:block"
           style={{ background: `var(--${c.token})`, color: `var(--${c.fg})` }}
         >
-          前景示意
+          {content.foregroundSample}
         </span>
       ) : null}
     </div>
@@ -55,14 +58,9 @@ export default function ColorPage() {
   return (
     <div>
       <DocHeader
-        title="颜色"
-        en="Color"
-        lede={
-          <>
-            组件只消费<strong className="text-foreground">语义色</strong>（按用途命名），它们在亮/暗主题下映射到不同的原始色。
-            因此切主题只换值、不换类名。
-          </>
-        }
+        title={content.title}
+        en={content.eyebrow}
+        lede={content.lede}
       />
 
       {SEMANTIC_GROUPS.map((g) => (
@@ -76,8 +74,8 @@ export default function ColorPage() {
       ))}
 
       <Section
-        title="图表分类色"
-        desc={<>数据序列专用，SVG 直接 var() 消费，明暗各自调亮度以保对比。</>}
+        title={content.chart}
+        desc={content.chartDescription}
       >
         <div className="flex flex-wrap gap-3">
           {CHART_COLORS.map((t, i) => (
@@ -94,8 +92,8 @@ export default function ColorPage() {
       </Section>
 
       <Section
-        title="原始灰阶"
-        desc={<>底层调色盘（<Code>primitives.css</Code>），明暗共用、不随主题变。语义色由它们派生。</>}
+        title={content.gray}
+        desc={content.grayDescription}
       >
         <div className="overflow-hidden rounded-[var(--radius)] border border-border">
           <div className="flex">

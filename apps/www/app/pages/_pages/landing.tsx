@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { HeroBlock } from "../../blocks/_blocks/hero";
 import { TrustBarBlock } from "../../blocks/_blocks/trust-bar";
 import { FeaturesBlock } from "../../blocks/_blocks/features";

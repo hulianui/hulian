@@ -23,6 +23,11 @@ describe("BackTop", () => {
     expect(btn.querySelector("svg")).not.toBeNull();
   });
 
+  it("支持本地化 aria-label", () => {
+    const { container } = render(<BackTop aria-label="Back to top" />);
+    expect(container.querySelector('button[aria-label="Back to top"]')).not.toBeNull();
+  });
+
   it("初始未超阈值时隐藏（aria-hidden + opacity-0 + tabIndex -1）", () => {
     const box = makeBox();
     const { container } = render(<BackTop target={() => box} visibilityHeight={100} />);
@@ -47,7 +52,9 @@ describe("BackTop", () => {
     const scrollTo = vi.fn();
     box.scrollTo = scrollTo as unknown as typeof box.scrollTo;
     const onClick = vi.fn();
-    const { container } = render(<BackTop target={() => box} visibilityHeight={50} onClick={onClick} />);
+    const { container } = render(
+      <BackTop target={() => box} visibilityHeight={50} onClick={onClick} />,
+    );
     Object.defineProperty(box, "scrollTop", { value: 300, configurable: true });
     fireEvent.scroll(box);
     fireEvent.click(getBtn(container));

@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
+import { getIntlayer } from "next-intlayer";
 import { CURSORS } from "../../../lib/theme-manifest";
 import { DocHeader, Section, Code } from "../_components/doc-kit";
+import { DOCS_LOCALE } from "../../../lib/docs-locale";
 
-export const metadata: Metadata = { title: "光标 Cursors · 瑚琏 Hulian" };
+const content = getIntlayer("theme", DOCS_LOCALE).cursors;
+export const metadata: Metadata = { title: `${content.title} · Hulian UI` };
 
 export default function CursorsPage() {
   return (
     <div>
       <DocHeader
-        title="光标"
-        en="Cursors"
-        lede={
-          <>
-            指针形状是一种<strong className="text-foreground">免费的可供性提示</strong>：悬停即暗示「能做什么」。
-            把鼠标移到下面每个方块上感受对应 <Code>cursor-*</Code>。
-          </>
-        }
+        title={content.title}
+        en={content.eyebrow}
+        lede={content.lede}
       />
 
-      <Section title="语义对照" desc="悬停方块查看实际指针。">
+      <Section title={content.semantics} desc={content.semanticsDescription}>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {CURSORS.map((c) => (
             <div

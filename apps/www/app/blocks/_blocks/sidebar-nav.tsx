@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 中后台侧边导航区块 —— 独立侧栏片段（非整页壳，整页壳见 AdminLayout）。

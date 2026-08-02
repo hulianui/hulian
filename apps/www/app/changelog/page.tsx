@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
 import { Tag, Text } from "@hulianui/ui";
 import { SiteNavbar } from "../../components/site-navbar";
+import { getIntlayer } from "next-intlayer";
 import { UI_VERSION } from "../../lib/ui-version";
 import changelog from "../../lib/changelog.json";
+import changelogEn from "../../lib/changelog.en.json";
 import { ChangelogView, type Release } from "./changelog-view";
+import { DOCS_LOCALE } from "../../lib/docs-locale";
+
+const content = getIntlayer("changelog", DOCS_LOCALE);
 
 export const metadata: Metadata = {
-  title: "更新日志 · 瑚琏 Hulian",
-  description:
-    "瑚琏 Hulian（@hulianui/ui · @hulianui/tokens）逐版本更新记录：新功能、修复与破坏性变更，含对应 commit 与 issue。",
+  title: content.metadataTitle,
+  description: content.metadataDescription,
 };
 
 const REPO = "https://github.com/hulianui/hulian";
 
 export default function ChangelogPage() {
-  const releases = changelog as Release[];
+  const releases = (DOCS_LOCALE === "en" ? changelogEn : changelog) as Release[];
 
   return (
     <>
@@ -23,17 +27,15 @@ export default function ChangelogPage() {
           正文本身仍收在可读行宽内（由 ChangelogView 的 flex-1 承担）。 */}
       <main className="mx-auto max-w-5xl px-6 pb-20 pt-10">
         <header className="pb-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Changelog</p>
-          <h1 className="mt-2 text-[1.7rem] font-semibold tracking-tight">更新日志</h1>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">{content.eyebrow}</p>
+          <h1 className="mt-2 text-[1.7rem] font-semibold tracking-tight">{content.title}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-            两个包各自独立发版：<code className="font-mono">@hulianui/ui</code>（组件）与{" "}
-            <code className="font-mono">@hulianui/tokens</code>（设计令牌 CSS）。遵循语义化版本，记录由
-            changesets 生成，每条可追到对应 commit 与 issue。
+            {content.description}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <span className="flex items-center gap-2">
               <Text size="sm" tone="muted">
-                当前版本
+                {content.currentVersion}
               </Text>
               <Tag variant="soft" tone="brand" size="sm">
                 v{UI_VERSION}

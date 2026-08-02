@@ -4,10 +4,17 @@ import { createPortal } from "react-dom";
 import { Play, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type { HeroVideoDialogProps } from "./hero-video-dialog.types";
+import { useComponentLocale } from "../config/locale";
 
 // 吸取自 magicui.design Hero Video Dialog：缩略图 + 播放钮，点击弹出居中视频层（含状态/Portal/Esc 故 "use client"）。
 // 瑚琏化：遮罩/卡片走 token；自管 Portal 模态（不耦合 Base UI Dialog）；Esc + 点遮罩关闭；body 锁滚。
-export function HeroVideoDialog({ thumbnailSrc, thumbnailAlt = "", videoSrc, className }: HeroVideoDialogProps) {
+export function HeroVideoDialog({
+  thumbnailSrc,
+  thumbnailAlt = "",
+  videoSrc,
+  className,
+}: HeroVideoDialogProps) {
+  const labels = useComponentLocale().heroVideoDialog;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -31,7 +38,7 @@ export function HeroVideoDialog({ thumbnailSrc, thumbnailAlt = "", videoSrc, cla
           "group relative block overflow-hidden rounded-[var(--radius)] border border-border outline-none focus-visible:ring-2 focus-visible:ring-ring",
           className,
         )}
-        aria-label="播放视频"
+        aria-label={labels.play}
       >
         <img src={thumbnailSrc} alt={thumbnailAlt} className="block size-full object-cover" />
         <span className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/30">
@@ -52,7 +59,7 @@ export function HeroVideoDialog({ thumbnailSrc, thumbnailAlt = "", videoSrc, cla
           >
             <button
               type="button"
-              aria-label="关闭"
+              aria-label={labels.close}
               onClick={() => setOpen(false)}
               className="absolute right-4 top-4 inline-flex size-9 items-center justify-center rounded-full bg-surface/80 text-foreground outline-none hover:bg-surface focus-visible:ring-2 focus-visible:ring-ring"
             >
@@ -64,7 +71,7 @@ export function HeroVideoDialog({ thumbnailSrc, thumbnailAlt = "", videoSrc, cla
             >
               <iframe
                 src={videoSrc}
-                title="视频"
+                title={labels.iframeTitle}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="size-full"

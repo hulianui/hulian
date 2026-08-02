@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // C 端个人中心区块 —— 顶部头像 + 昵称 + 等级 Tag + 一排数据 Statistic（积分/优惠券/收藏/余额）。
@@ -20,7 +21,7 @@ import {
   TabsTab,
   Text,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 
 // ---- 等级配置 ----
 const LEVELS = [

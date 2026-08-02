@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { Anchor, Empty, Markdown, ScrollArea, Segmented, Tag, Text, Timeline } from "@hulianui/ui";
+import { useIntlayer } from "next-intlayer";
 
 const REPO = "https://github.com/hulianui/hulian";
 
@@ -30,10 +31,10 @@ export interface Release {
 type Kind = "breaking" | "feature" | "fix";
 
 // 破坏性最扎眼，修复最弱，与 Timeline 圆点语气色对齐。
-const KIND = {
-  breaking: { label: "破坏性", tone: "danger", dot: "danger", dotClass: "bg-danger" },
-  feature: { label: "新功能", tone: "brand", dot: "primary", dotClass: "bg-primary" },
-  fix: { label: "修复", tone: "neutral", dot: "default", dotClass: "bg-muted" },
+const KIND_STYLE = {
+  breaking: { tone: "danger", dot: "danger", dotClass: "bg-danger" },
+  feature: { tone: "brand", dot: "primary", dotClass: "bg-primary" },
+  fix: { tone: "neutral", dot: "default", dotClass: "bg-muted" },
 } as const;
 
 const RANK: Record<Kind, number> = { fix: 0, feature: 1, breaking: 2 };
@@ -44,12 +45,6 @@ const kindOf = (e: Entry): Kind =>
 // 默认只出最近这么多个版本。更新日志天然只增不减，全量铺开会越来越长，
 // 而绝大多数来访只关心「最近发生了什么」；想看全史一键切「全部」。
 const RECENT_COUNT = 5;
-
-const VIEWS = [
-  { value: "recent", label: `最近 ${RECENT_COUNT} 版` },
-  { value: "all", label: "全部" },
-  { value: "breaking", label: "仅破坏性" },
-];
 
 /** 正文里的 #123 转成指向 issue 的链接（跳过行内代码；含围栏代码块的正文整体放行）。 */
 function linkifyIssues(md: string): string {
@@ -76,6 +71,17 @@ export function ChangelogView({
   releases: Release[];
   currentVersion: string;
 }) {
+  const content = useIntlayer("changelog");
+  const kind = {
+    breaking: { ...KIND_STYLE.breaking, label: content.breaking },
+    feature: { ...KIND_STYLE.feature, label: content.feature },
+    fix: { ...KIND_STYLE.fix, label: content.fix },
+  } as const;
+  const views = [
+    { value: "recent", label: content.recent.replace("{count}", String(RECENT_COUNT)) },
+    { value: "all", label: content.all },
+    { value: "breaking", label: content.breakingOnly },
+  ];
   const [view, setView] = useState("recent");
 
   const shown = useMemo(() => {
@@ -97,12 +103,12 @@ export function ChangelogView({
         title: (
           <span className="flex items-center gap-2">
             <span
-              className={`size-1.5 shrink-0 rounded-full ${KIND[topKind(r)].dotClass}`}
+              className={`size-1.5 shrink-0 rounded-full ${kind[topKind(r)].dotClass}`}
               aria-hidden
             />
             <span className="font-mono text-xs">v{r.version}</span>
             {r.version === currentVersion && r.pkg === "@hulianui/ui" ? (
-              <span className="shrink-0 text-[0.65rem] text-primary">当前</span>
+              <span className="shrink-0 text-[0.65rem] text-primary">{content.current}</span>
             ) : (
               // 条目数给个预期：一眼知道点进去是一行还是十行，省得跳过去才发现要滚很久
               <span className="shrink-0 text-[0.65rem] text-muted/70">{r.entries.length}</span>
@@ -110,7 +116,7 @@ export function ChangelogView({
           </span>
         ),
       })),
-    [shown, currentVersion],
+    [content.current, kind, shown, currentVersion],
   );
 
   return (
@@ -119,7 +125,7 @@ export function ChangelogView({
           限高 + 内部滚动，避免版本多了目录自己顶穿视口。 */}
       <aside className="hidden lg:sticky lg:top-24 lg:block lg:w-40 lg:shrink-0">
         <Text size="sm" tone="muted" className="mb-2 block">
-          版本
+          {content.versions}
         </Text>
         {/* offsetTop 让滚动高亮与 scroll-mt-20 的落点对齐，否则高亮总慢一格。
             只有版本多到会顶穿视口时才套 ScrollArea —— 它的滚动条轨道即使内容不溢出也会画出来，
@@ -136,17 +142,17 @@ export function ChangelogView({
       <div className="min-w-0 flex-1">
         <div className="mb-8">
           <Segmented
-            items={VIEWS}
+            items={views}
             value={view}
             onValueChange={setView}
-            aria-label="更新日志视图"
+            aria-label={content.viewLabel}
           />
         </div>
 
         {shown.length === 0 ? (
           <Empty
-            title="没有破坏性变更"
-            description="到目前为止所有版本都是向后兼容的。切回「全部」查看完整记录。"
+            title={content.emptyTitle}
+            description={content.emptyDescription}
           />
         ) : (
           <Timeline
@@ -156,7 +162,7 @@ export function ChangelogView({
               const kinds = [...new Set(r.entries.map(kindOf))].sort((a, b) => RANK[b] - RANK[a]);
               const anchor = anchorOf(r);
               return {
-                color: KIND[top].dot,
+                color: kind[top].dot,
                 children: (
                   <section id={anchor} className="scroll-mt-20 pb-2">
                     {/* 版本头吸顶：单条 changeset 动辄十几行，滚进正文深处就不知道自己在哪一版了。
@@ -173,8 +179,8 @@ export function ChangelogView({
                         {r.pkg}
                       </Tag>
                       {kinds.map((k) => (
-                        <Tag key={k} variant="soft" tone={KIND[k].tone} size="sm">
-                          {KIND[k].label}
+                        <Tag key={k} variant="soft" tone={kind[k].tone} size="sm">
+                          {kind[k].label}
                         </Tag>
                       ))}
                       {r.date ? (
@@ -210,7 +216,7 @@ export function ChangelogView({
 
         {view === "recent" && releases.length > RECENT_COUNT ? (
           <p className="mt-8 text-sm text-muted">
-            还有 {releases.length - RECENT_COUNT} 个更早的版本，切到「全部」查看。
+            {content.older.replace("{count}", String(releases.length - RECENT_COUNT))}
           </p>
         ) : null}
       </div>

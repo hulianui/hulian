@@ -1,25 +1,22 @@
 import type { Metadata } from "next";
+import { getIntlayer } from "next-intlayer";
 import { BREAKPOINTS } from "../../../lib/theme-manifest";
 import { DocHeader, Section, Code, Note } from "../_components/doc-kit";
+import { DOCS_LOCALE } from "../../../lib/docs-locale";
 
-export const metadata: Metadata = { title: "断点 Breakpoints · 瑚琏 Hulian" };
+const content = getIntlayer("theme", DOCS_LOCALE).breakpoints;
+export const metadata: Metadata = { title: `${content.title} · Hulian UI` };
 
 export default function BreakpointsPage() {
   return (
     <div>
       <DocHeader
-        title="断点"
-        en="Breakpoints"
-        lede={
-          <>
-            响应式断点是一组 <strong className="text-foreground">min-width</strong> 阈值：当视口宽度{" "}
-            ≥ 某断点时，对应的 <Code>sm:</Code> / <Code>md:</Code> … 工具类生效。瑚琏沿用 5 档，
-            真源在 <Code>preset.css</Code>。
-          </>
-        }
+        title={content.title}
+        en={content.eyebrow}
+        lede={content.lede}
       />
 
-      <Section title="实时断点" desc="缩放浏览器窗口，下方高亮当前命中的最大断点。">
+      <Section title={content.live} desc={content.liveDescription}>
         <div className="flex flex-wrap gap-2 rounded-[var(--radius)] border border-border bg-surface p-5">
           {/* < sm：仅在最窄时高亮 */}
           <BpChip name="< sm" activeClass="inline-flex sm:hidden" idleClass="hidden sm:inline-flex" />
@@ -31,15 +28,15 @@ export default function BreakpointsPage() {
         </div>
       </Section>
 
-      <Section title="断点表">
+      <Section title={content.table}>
         <div className="overflow-hidden rounded-[var(--radius)] border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-surface text-left text-xs uppercase tracking-wide text-muted">
-                <th className="px-4 py-2.5 font-medium">前缀</th>
-                <th className="px-4 py-2.5 font-medium">≥ 宽度</th>
+                <th className="px-4 py-2.5 font-medium">{content.prefix}</th>
+                <th className="px-4 py-2.5 font-medium">{content.width}</th>
                 <th className="px-4 py-2.5 font-medium">rem</th>
-                <th className="hidden px-4 py-2.5 font-medium sm:table-cell">典型设备</th>
+                <th className="hidden px-4 py-2.5 font-medium sm:table-cell">{content.device}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border bg-surface">
@@ -59,8 +56,8 @@ export default function BreakpointsPage() {
       </Section>
 
       <Section
-        title="响应式用法"
-        desc={<>移动优先：基础类无前缀（最窄），更宽屏用前缀覆盖。下方栅格随窗口由 1 → 2 → 4 列。</>}
+        title={content.usage}
+        desc={content.usageDescription}
       >
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
           {[1, 2, 3, 4].map((n) => (
@@ -68,7 +65,7 @@ export default function BreakpointsPage() {
               key={n}
               className="flex h-16 items-center justify-center rounded-[var(--radius)] border border-border bg-surface text-sm text-muted"
             >
-              卡片 {n}
+              {content.card} {n}
             </div>
           ))}
         </div>
@@ -77,12 +74,9 @@ export default function BreakpointsPage() {
         </pre>
       </Section>
 
-      <Section title="真源与定制">
+      <Section title={content.source}>
         <Note>
-          <p>
-            5 档断点在 <Code>@hulianui/tokens/preset.css</Code> 的 <Code>@theme</Code> 块里声明为{" "}
-            <Code>--breakpoint-sm…2xl</Code>。改这里即同时改全站工具类断点 + 本页表格——单一真源。
-          </p>
+          <p>{content.sourceDescription}</p>
           <pre className="mt-3 overflow-x-auto font-mono text-[0.78rem] leading-relaxed text-foreground">
             @theme {"{"}
             {"\n"}  --breakpoint-sm: 40rem;  <span className="text-muted">{"/* 640px */"}</span>

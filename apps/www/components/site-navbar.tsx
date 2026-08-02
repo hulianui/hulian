@@ -2,6 +2,7 @@
 import { useState, type SVGProps } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useIntlayer } from "next-intlayer";
 import {
   AnimatedThemeToggler,
   Button,
@@ -15,18 +16,10 @@ import {
 import { UI_VERSION } from "../lib/ui-version";
 import { DocsSearch } from "./docs-search";
 import { LanguageSwitcher } from "./language-switcher";
+import { withDocsBasePath } from "../lib/docs-locale";
 
 // 站点统一顶栏(dogfood @hulianui/ui Navbar)—— 首页 + 区块/页面画廊共用。
 // 品牌回首页 + 五档导航(开始/组件/区块/页面/模版)+ 更新日志 + 主题切换;移动端折叠菜单。
-const TIERS = [
-  { href: "/start", label: "开始", match: "/start" },
-  { href: "/components", label: "组件", match: "/components" },
-  { href: "/blocks", label: "区块", match: "/blocks" },
-  { href: "/pages", label: "页面", match: "/pages" },
-  { href: "/demos", label: "模版", match: "/demos" },
-  { href: "/changelog", label: "更新", match: "/changelog" },
-];
-
 const REPO = "https://github.com/hulianui/hulian";
 
 // GitHub mark 内联在这里，不进 packages/ui/src/_icons —— 那个图标集只收「组件运行时真正
@@ -42,9 +35,18 @@ function GithubIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 export function SiteNavbar() {
+  const content = useIntlayer("site-shell");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const isActive = (m: string) => pathname === m || pathname.startsWith(`${m}/`);
+  const tiers = [
+    { href: "/start", label: content.nav.start, match: "/start" },
+    { href: "/components", label: content.nav.components, match: "/components" },
+    { href: "/blocks", label: content.nav.blocks, match: "/blocks" },
+    { href: "/pages", label: content.nav.pages, match: "/pages" },
+    { href: "/demos", label: content.nav.demos, match: "/demos" },
+    { href: "/changelog", label: content.nav.changelog, match: "/changelog" },
+  ];
 
   return (
     <>
@@ -52,6 +54,7 @@ export function SiteNavbar() {
         <NavbarMenuToggle
           isOpen={open}
           onToggle={() => setOpen((v) => !v)}
+          aria-label={open ? content.closeMenu : content.openMenu}
           className="sm:inline-flex xl:hidden"
         />
         {/* min-w-0 让品牌区可收缩：375px 下顶栏要塞下 汉堡+品牌+搜索+语言+开源+主题切换，
@@ -61,13 +64,21 @@ export function SiteNavbar() {
           {/* 版本徽标点进更新日志。必须与品牌 Link 并列而非嵌套——<a> 套 <a> 会 hydration 报错。 */}
           <Link href="/" className="flex min-w-0 items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element -- 静态 logo,免 next/image 优化开销 */}
-            <img src="/logo.svg" alt="瑚琏" width={26} height={26} className="shrink-0 rounded-[6px]" />
-            <span className="hidden truncate tracking-tight min-[480px]:inline">瑚琏 Hulian</span>
+            <img
+              src={withDocsBasePath("/logo.svg")}
+              alt={content.logoAlt}
+              width={26}
+              height={26}
+              className="shrink-0 rounded-[6px]"
+            />
+            <span className="hidden truncate tracking-tight min-[480px]:inline">
+              {content.brand}
+            </span>
           </Link>
           {/* 版本号在最窄屏让位：它是「锦上添花」，主题切换钮是功能。 */}
           <Link
             href="/changelog"
-            aria-label={`当前版本 v${UI_VERSION}，查看更新日志`}
+            aria-label={content.currentVersion.replace("{version}", UI_VERSION)}
             className="ml-2 hidden shrink-0 2xl:block"
           >
             <Tag variant="soft" tone="brand" size="sm">
@@ -76,7 +87,7 @@ export function SiteNavbar() {
           </Link>
         </NavbarBrand>
         <NavbarContent justify="end" className="hidden xl:flex">
-          {TIERS.map((t) => (
+          {tiers.map((t) => (
             <NavbarItem key={t.href} isActive={isActive(t.match)}>
               <Link href={t.href}>{t.label}</Link>
             </NavbarItem>
@@ -90,17 +101,17 @@ export function SiteNavbar() {
         <Button
           variant="ghost"
           size="icon"
-          aria-label="在 GitHub 上查看瑚琏源码"
+          aria-label={content.github}
           render={<a href={REPO} target="_blank" rel="noreferrer" />}
         >
           <GithubIcon className="size-[18px]" />
         </Button>
-        <AnimatedThemeToggler />
+        <AnimatedThemeToggler aria-label={content.toggleTheme} />
       </Navbar>
 
       {open && (
         <ul className="flex flex-col gap-1 border-b border-border bg-bg p-2 xl:hidden">
-          {TIERS.map((t) => (
+          {tiers.map((t) => (
             <NavbarItem key={t.href} isActive={isActive(t.match)} onClick={() => setOpen(false)}>
               <Link href={t.href} className="block px-2 py-1.5">
                 {t.label}

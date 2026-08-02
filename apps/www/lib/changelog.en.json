@@ -1,0 +1,522 @@
+[
+  {
+    "pkg": "@hulianui/tokens",
+    "version": "0.3.0",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "48c9f9a",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add tokens for `Annotation`, including the short `--hl-annotation-font` handwritten font stack and inherited animatable `--hl-ann-hue` property for rainbow tones."
+      },
+      {
+        "sha": "4237cf3",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Increase text and surface contrast for primary, danger, success, and warning semantic colors in both themes, and add reusable light and dark steps for danger and warning."
+      },
+      {
+        "sha": "9f2ad65",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Upgrade safe dependencies within semver ranges, update component runtime dependencies, and align the Tiptap package family to remove peer-version warnings."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.16.0",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "679de2b",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `Command.onQueryChange`, allowing consumers to own ranking, grouping, empty states, and links to complete search results while retaining the default filter when the prop is omitted."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.15.1",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "4e0f452",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fix two issues that made documented public subpath exports unusable (#35 and #36 P0-2): add declarations for `@hulianui/ui/vitest-preset` and align guard/convention checks with the package's real exports."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.15.0",
+    "date": "2026-08-01",
+    "entries": [
+      {
+        "sha": "48c9f9a",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `Annotation`, an inline handwritten annotation component with highlight, arrow, label, semantic tones, real DOM content, and a configurable `--hl-ann-spread`."
+      },
+      {
+        "sha": "7e1b107",
+        "bump": "minor",
+        "breaking": true,
+        "body": "**BREAKING**: Replace the entire date family with dependency-free in-house components, remove MUI and Emotion, remove `@hulianui/ui/date-pickers` and `MuiBridgeProvider`, and export `Calendar`, `DatePicker`, `DateTimePicker`, `TimeField`, `TimePicker`, and `DateRangePicker` from the root package."
+      },
+      {
+        "sha": "ce1c41b",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `MathText` and `QuestionCard`; fix cached `Image` instances remaining at `opacity-0`, and correct `Table` behavior discovered while dogfooding the new components."
+      },
+      {
+        "sha": "15ef604",
+        "bump": "minor",
+        "breaking": true,
+        "body": "**BREAKING**: Move the date family to a subpath and make MUI and Emotion optional peer dependencies. This intermediate contract is superseded by the dependency-free date family later in 0.15.0 but remains part of the release history."
+      },
+      {
+        "sha": "a502b85",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `PasswordGenerator`, a Bitwarden-style two-mode password and passphrase generator with strength feedback and copy actions."
+      },
+      {
+        "sha": "720fa91",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Upgrade the `ImageCropper` engine `react-easy-crop` to 6.2.3."
+      },
+      {
+        "sha": "20f2f57",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `@hulianui/ui/vite`, which configures linked-source consumers so development servers resolve and optimize Hulian UI correctly."
+      },
+      {
+        "sha": "ce9b419",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Reduce consumer bundle cost by marking icon factories as pure and lazily loading animation support; Button first-load output drops by 75%, and icon-using components save about 3.7 KB."
+      },
+      {
+        "sha": "bd4ffd4",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Align date-family public imports and dependency requirements across documentation, registry output, conventions, and MCP guidance."
+      },
+      {
+        "sha": "9f2ad65",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Upgrade safe dependencies within their semver ranges, update component runtime dependencies, and align the Tiptap package family to remove peer-version warnings."
+      },
+      {
+        "sha": "235cee5",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Add executable `@hulianui/guard` convention checks and extend MCP install guidance with recursive page dependencies, explicit integration work, and post-install verification commands."
+      },
+      {
+        "sha": "f4328bb",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fix TS2882 for TypeScript 6 and 7 consumers importing `Video` by making the required side-effect stylesheet import resolvable."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
+    "version": "0.2.0",
+    "date": "2026-07-29",
+    "entries": [
+      {
+        "sha": "8ff9043",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Unify motion tokens and utilities: share the easing source of truth, add `--ease-drawer`, align default transitions, and support consistent trigger origins and press feedback."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.14.0",
+    "date": "2026-07-29",
+    "entries": [
+      {
+        "sha": "be31a60",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Resolve issues #19, #20, #21, and #31, including component behavior, accessibility, and integration defects reported by downstream use."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.13.0",
+    "date": "2026-07-29",
+    "entries": [
+      {
+        "sha": "8ff9043",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Resolve issues #24 through #29 and two additional bugs found during the same motion-system review."
+      },
+      {
+        "sha": "8ff9043",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Unify motion feel through one easing source of truth, trigger-relative overlay origins, shared press feedback, shorter high-frequency transitions, and improved reduced-motion behavior."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.12.0",
+    "date": "2026-07-28",
+    "entries": [
+      {
+        "sha": "64106c0",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add missing downstream capabilities: the complete date/time family, `IconPicker`, `RouteTabs`, and virtual scrolling plus drag-and-drop for `Tree`."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.11.0",
+    "date": "2026-07-28",
+    "entries": [
+      {
+        "sha": "38d57d5",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Bring downstream dogfood improvements back into the library across accessibility, explicit integration contracts, tables, and forms."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.10.0",
+    "date": "2026-07-28",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `ColorField`, a compact single-row advanced color input."
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Enhance controlled `ProTable` usage with `defaultSorting` and `params`, and prevent infinite requests caused by inline request functions."
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `RemoteSelect`, including remote search and multiple selection."
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `clearable`, `searchable`, `loading`, and grouped options to `Select`."
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add column geometry controls and row drag sorting to `Table`."
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `limit`, `renderPreview`, and `sortable` to `Upload`, and extract transport behavior into `useUpload`."
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Fix `NavMenu` in collapsed mode with unlimited cascading flyouts and fixed positioning that escapes sidebar clipping."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
+    "version": "0.1.2",
+    "date": "2026-07-27",
+    "entries": [
+      {
+        "sha": "549d24b",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Document that `--color-hairline` is only for `border-*`. It is transparent in light mode, so using it for `text-*`, `bg-*`, or `fill-*` silently hides content; use `--color-border` or `--color-muted` instead."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.9.0",
+    "date": "2026-07-27",
+    "entries": [
+      {
+        "sha": "72b94d4",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Expand `ToastTone` from `info | danger | neutral` to `neutral | info | success | warning | danger`, matching Alert and Tag."
+      },
+      {
+        "sha": "20c98d3",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Cap `DialogContent` at 85dvh and make its body scroll internally."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.8.0",
+    "date": "2026-07-23",
+    "entries": [
+      {
+        "sha": "7830039",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add the responsive `AdminLayout.breakpoint` contract and fix narrow sidebars (#14); allow `ToastProvider` to render children so wrapper usage no longer drops the application subtree (#13)."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.7.1",
+    "date": "2026-07-23",
+    "entries": [
+      {
+        "sha": "5ea7c69",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Narrow Tiptap Markdown extensions to `AnyExtension`, fixing consumer TypeScript failures caused by `tiptap-markdown` 0.8.x types targeting Tiptap v2."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.7.0",
+    "date": "2026-07-23",
+    "entries": [
+      {
+        "sha": "eec0d69",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Make horizontal `BarChart` category-axis width adapt to the longest label with a `yAxisWidth` escape hatch (#6); add proportional decimal domains, `valueFormat`, `unit`, and `showLegend` to `Heatmap` (#10)."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.6.0",
+    "date": "2026-07-16",
+    "entries": [
+      {
+        "sha": "0278e6d",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add `VoiceRecord` and fix the mobile interaction deadlock in press-and-hold recording."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.5.0",
+    "date": "2026-06-17",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Migrate Base UI from deprecated `@base-ui-components/react@1.0.0-rc.0` to the stable renamed package `@base-ui/react@^1.5.0`."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.4.2",
+    "date": "2026-06-17",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "Move runtime dependency `lucide-react` from `devDependencies` to `dependencies` so external consumers can bundle icon-using components, and exclude offline-only `*.bake.mjs` tools from the published package."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.4.1",
+    "date": "2026-06-17",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "Exclude `*.test.ts` and `*.test.tsx` from the package while retaining component source and the public `./showcase` export, reducing the tarball from 2,181 to 1,814 files and unpacked size from 6.6 MB to 5.5 MB."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.4.0",
+    "date": "2026-06-15",
+    "entries": [
+      {
+        "sha": "2bf8ebc",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Introduce the AI-first component documentation system, the Vant-style examples API, and fixes for 12 components."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.3.0",
+    "date": "2026-06-11",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Expand admin-grade data components based on admin-starter vertical slices, including richer table, filter, pagination, and management workflows."
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add agent and conversation building blocks: `Dossier`, `Artifact`, `ConfirmCard`, `ThreadList`, and `ImageCropper`; add `Conversation.hideScrollbar` and route-level `ThemeProvider.forcedTheme`."
+      },
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fix mobile overflow in chat-message bubbles, remove prompt-input focus ring-offset residue, and give the ThreadList delete action a 44px touch target."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.2.3",
+    "date": "2026-06-10",
+    "entries": [
+      {
+        "sha": "d923732",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fix gallery rendering for 17 visual-effect and motion components using CDP evidence and verification in a headed browser."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.2.2",
+    "date": "2026-06-07",
+    "entries": [
+      {
+        "sha": "3b81b35",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Remove the React 19 `flushSync` warning emitted by the Base UI rc.0 Toast implementation."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.2.1",
+    "date": "2026-06-06",
+    "entries": [
+      {
+        "sha": "6195d52",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fix three rendering defects in `Book3D`."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
+    "version": "0.1.1",
+    "date": "2026-06-05",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "Add theme-aware `--color-hairline`, transparent in light mode and mapped to border in dark mode, so elevated surfaces avoid double borders in light mode and retain outlines in dark mode."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.2.0",
+    "date": "2026-06-05",
+    "entries": [
+      {
+        "sha": "54d02ff",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Add a `footer` slot to `DialogContent`, aligned with `DrawerContent`, rendering a separated right-aligned action area below the body."
+      },
+      {
+        "sha": "9debc9e",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Restyle `ProTable` as an elevated card surface and add the `Table.bordered` prop based on mock-pilot dogfooding."
+      },
+      {
+        "sha": "b8db07a",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Refine table headers and refresh actions based on mock-pilot dogfooding."
+      },
+      {
+        "sha": "14c3b6d",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fix two dark-theme and visual-quality issues found through mock-pilot dogfooding."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.1.2",
+    "date": "2026-06-05",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "Add theme-aware `--color-hairline`: transparent in light mode and border-colored in dark mode. Elevated components use it to avoid double borders while retaining dark-mode outlines."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.1.1",
+    "date": "2026-06-05",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "Make `Video` SSR-safe by rendering an aspect-ratio placeholder before mount and the real Vidstack player afterward, avoiding access to `window` during SSR and static export."
+      }
+    ]
+  }
+]

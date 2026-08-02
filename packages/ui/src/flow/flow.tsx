@@ -32,6 +32,7 @@ import type {
   FlowSize,
   FlowViewport,
 } from "./flow.types";
+import { useComponentLocale } from "../config/locale";
 
 const DEFAULT_WIDTH = 240;
 const ZOOM_STEP = 1.2;
@@ -65,6 +66,7 @@ export function Flow<T>({
   className,
   apiRef,
 }: FlowProps<T>) {
+  const labels = useComponentLocale().flow;
   const containerRef = useRef<HTMLDivElement>(null);
   const [vp, setVp] = useState<FlowViewport>({ x: 0, y: 0, zoom: 1 });
   const [sizes, setSizes] = useState<Record<string, FlowSize>>({});
@@ -156,7 +158,10 @@ export function Flow<T>({
   };
 
   // 一次性创建、互相引用以便彼此解绑（稳定身份，全程不重建）。
-  const handlers = useRef<{ move: (e: PointerEvent) => void; up: (e: PointerEvent) => void } | null>(null);
+  const handlers = useRef<{
+    move: (e: PointerEvent) => void;
+    up: (e: PointerEvent) => void;
+  } | null>(null);
   if (!handlers.current) {
     const move = (e: PointerEvent) => {
       const g = gesture.current;
@@ -166,7 +171,10 @@ export function Flow<T>({
       if (g.kind === "pan") {
         setVp({ ...g.vp, x: g.vp.x + (e.clientX - g.startX), y: g.vp.y + (e.clientY - g.startY) });
       } else if (g.kind === "node") {
-        setDragDelta({ x: (e.clientX - g.startX) / cur.zoom, y: (e.clientY - g.startY) / cur.zoom });
+        setDragDelta({
+          x: (e.clientX - g.startX) / cur.zoom,
+          y: (e.clientY - g.startY) / cur.zoom,
+        });
       } else if (g.kind === "connect") {
         const rel = pointerRel(e.clientX, e.clientY);
         setConnectTo(screenToCanvas(rel.x, rel.y, cur));
@@ -180,10 +188,21 @@ export function Flow<T>({
         const handleEl = el?.closest<HTMLElement>('[data-flow-handle][data-handle-type="target"]');
         const target = handleEl?.dataset.nodeId;
         if (target && target !== g.source) {
-          onC?.({ source: g.source, sourceHandle: g.sourceHandle, target, targetHandle: handleEl?.dataset.flowHandle });
+          onC?.({
+            source: g.source,
+            sourceHandle: g.sourceHandle,
+            target,
+            targetHandle: handleEl?.dataset.flowHandle,
+          });
         }
       } else if (g?.kind === "node" && dd && (dd.x !== 0 || dd.y !== 0)) {
-        onNC?.(ns.map((n) => (n.id === g.id ? { ...n, position: { x: n.position.x + dd.x, y: n.position.y + dd.y } } : n)));
+        onNC?.(
+          ns.map((n) =>
+            n.id === g.id
+              ? { ...n, position: { x: n.position.x + dd.x, y: n.position.y + dd.y } }
+              : n,
+          ),
+        );
       }
       gesture.current = null;
       setDragDelta(null);
@@ -249,7 +268,9 @@ export function Flow<T>({
         // 归一 deltaMode：行模式(×~16)/页模式(×容器高)折算成像素，跨鼠标/触控板手感一致。
         const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? rect.height : 1;
         const factor = Math.exp(-e.deltaY * unit * 0.0012);
-        setVp((cur) => zoomAtPoint(cur, factor, e.clientX - rect.left, e.clientY - rect.top, minZoom, maxZoom));
+        setVp((cur) =>
+          zoomAtPoint(cur, factor, e.clientX - rect.left, e.clientY - rect.top, minZoom, maxZoom),
+        );
       } else {
         setVp((cur) => ({ ...cur, x: cur.x - e.deltaX, y: cur.y - e.deltaY }));
       }
@@ -286,7 +307,10 @@ export function Flow<T>({
     onNodesChange?.(next);
     const el = containerRef.current;
     const b = nodesBounds(next, sizes, defaultNodeWidth);
-    if (el && b) setVp(fitViewport(b, { width: el.clientWidth, height: el.clientHeight }, 48, minZoom, maxZoom));
+    if (el && b)
+      setVp(
+        fitViewport(b, { width: el.clientWidth, height: el.clientHeight }, 48, minZoom, maxZoom),
+      );
   }, [nodes, edges, sizes, defaultNodeWidth, onNodesChange, minZoom, maxZoom]);
 
   useEffect(() => {
@@ -304,7 +328,8 @@ export function Flow<T>({
   const onKeyDown = (e: ReactKeyboardEvent) => {
     if (e.key !== "Delete" && e.key !== "Backspace") return;
     const active = document.activeElement;
-    if (active instanceof HTMLElement && active.closest('input,textarea,[contenteditable="true"]')) return;
+    if (active instanceof HTMLElement && active.closest('input,textarea,[contenteditable="true"]'))
+      return;
     if (selectedEdge) {
       e.preventDefault();
       onEdgesDelete?.([selectedEdge]);
@@ -326,7 +351,7 @@ export function Flow<T>({
   const bg =
     background === false
       ? null
-      : (background ?? (
+      : background ?? (
           <DotPattern
             className="text-border"
             width={dotSpacing}
@@ -337,7 +362,7 @@ export function Flow<T>({
             x={vp.x}
             y={vp.y}
           />
-        ));
+        );
 
   // 连线预览源点
   const previewFrom =
@@ -350,7 +375,7 @@ export function Flow<T>({
       ref={containerRef}
       tabIndex={0}
       role="application"
-      aria-label="工作流画布"
+      aria-label={labels.canvas}
       onPointerDown={onBackgroundPointerDown}
       onKeyDown={onKeyDown}
       className={cn(
@@ -396,7 +421,8 @@ export function Flow<T>({
                   d={d}
                   className={cn(
                     active ? "text-primary" : "text-muted",
-                    animated && "[stroke-dasharray:6_6] motion-safe:animate-[hulian-flow-dash_0.6s_linear_infinite] motion-reduce:[stroke-dasharray:none]",
+                    animated &&
+                      "[stroke-dasharray:6_6] motion-safe:animate-[hulian-flow-dash_0.6s_linear_infinite] motion-reduce:[stroke-dasharray:none]",
                   )}
                   stroke="currentColor"
                   strokeWidth={active ? 3 : 2}
@@ -422,7 +448,14 @@ export function Flow<T>({
                       }}
                       className="grid size-[18px] place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm hover:border-danger hover:text-danger"
                     >
-                      <svg viewBox="0 0 16 16" className="size-2.5" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden>
+                      <svg
+                        viewBox="0 0 16 16"
+                        className="size-2.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                        aria-hidden
+                      >
                         <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
                       </svg>
                     </button>
@@ -471,28 +504,64 @@ export function Flow<T>({
       {/* 缩放控制条 */}
       {controls && (
         <div className="absolute bottom-3 right-3 flex flex-col overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface shadow-sm">
-          <ControlBtn label="放大" onClick={() => zoomBy(ZOOM_STEP)}>
-            <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+          <ControlBtn label={labels.zoomIn} onClick={() => zoomBy(ZOOM_STEP)}>
+            <svg
+              viewBox="0 0 20 20"
+              className="size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden
+            >
               <path d="M10 5v10M5 10h10" strokeLinecap="round" />
             </svg>
           </ControlBtn>
-          <ControlBtn label="缩小" onClick={() => zoomBy(1 / ZOOM_STEP)}>
-            <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+          <ControlBtn label={labels.zoomOut} onClick={() => zoomBy(1 / ZOOM_STEP)}>
+            <svg
+              viewBox="0 0 20 20"
+              className="size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden
+            >
               <path d="M5 10h10" strokeLinecap="round" />
             </svg>
           </ControlBtn>
-          <ControlBtn label="适配视图" onClick={fitView}>
-            <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-              <path d="M4 7V4h3M16 7V4h-3M4 13v3h3M16 13v3h-3" strokeLinecap="round" strokeLinejoin="round" />
+          <ControlBtn label={labels.fitView} onClick={fitView}>
+            <svg
+              viewBox="0 0 20 20"
+              className="size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden
+            >
+              <path
+                d="M4 7V4h3M16 7V4h-3M4 13v3h3M16 13v3h-3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </ControlBtn>
           {onNodesChange && (
             <ControlBtn label="智能排版" onClick={autoLayout}>
-              <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
+              <svg
+                viewBox="0 0 20 20"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                aria-hidden
+              >
                 <rect x="2.5" y="7.5" width="5" height="5" rx="1.2" />
                 <rect x="12.5" y="3" width="5" height="4" rx="1.2" />
                 <rect x="12.5" y="13" width="5" height="4" rx="1.2" />
-                <path d="M7.5 10h2.5M10 10V5h2.5M10 10v5h2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M7.5 10h2.5M10 10V5h2.5M10 10v5h2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </ControlBtn>
           )}
@@ -502,7 +571,15 @@ export function Flow<T>({
   );
 }
 
-function ControlBtn({ label, onClick, children }: { label: string; onClick: () => void; children: ReactNode }) {
+function ControlBtn({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: ReactNode;
+}) {
   return (
     <button
       type="button"

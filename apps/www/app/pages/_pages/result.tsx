@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import Link from "next/link";
 import { Result, Button } from "@hulianui/ui";
 

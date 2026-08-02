@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import Link from "next/link";
 import { Button, Terminal, Tag, Heading, Text } from "@hulianui/ui";
 import { ArrowRight, TerminalSquare } from "lucide-react";

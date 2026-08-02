@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import Link from "next/link";
 import { CardSpotlight, Heading, Tag, Text } from "@hulianui/ui";
 import { Gauge, ShieldCheck, ArrowRight, type LucideIcon } from "lucide-react";
