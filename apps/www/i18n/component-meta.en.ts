@@ -133,18 +133,20 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   stack: {
     shortName: "Stack",
     description:
-      "Arranges polymorphic content with configurable flex direction, gap, alignment, and wrapping.",
-    keywords: ["stack", "layout", "arrange"],
+      "Arranges type-safe polymorphic flex content with gap, alignment, wrapping, and responsive direction through 2xl.",
+    keywords: ["stack", "flex", "responsive", "polymorphic", "layout", "arrange"],
   },
   container: {
     shortName: "Container",
-    description: "Centers content within preset maximum widths and safe horizontal padding.",
-    keywords: ["container", "layout"],
+    description:
+      "Constrains type-safe polymorphic content through 3xl widths with independent centering and horizontal padding controls.",
+    keywords: ["container", "width", "centered", "padded", "polymorphic", "layout"],
   },
   grid: {
     shortName: "Grid",
-    description: "Defines grid columns and gaps with child controls for row and column spans.",
-    keywords: ["grid", "layout", "arrange"],
+    description:
+      "Defines type-safe polymorphic grid columns through the 2xl breakpoint with gaps and child row or column spans.",
+    keywords: ["grid", "responsive", "polymorphic", "columns", "layout", "arrange"],
   },
   spacer: {
     shortName: "Spacer",
@@ -251,8 +253,9 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "circular-text": {
     shortName: "CircularText",
-    description: "Places text around a rotating circular path with hover-sensitive motion.",
-    keywords: ["circular", "text", "typography"],
+    description:
+      "Places characters evenly around a rotating circular path with hover speed modes, inherited color, and a static reduced-motion state.",
+    keywords: ["circular", "text", "rotation", "hover", "typography", "animated"],
   },
   "scroll-reveal": {
     shortName: "ScrollReveal",
@@ -437,6 +440,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Lets users pan, pinch, zoom, and crop an image to a fixed ratio before Blob export.",
     keywords: ["image", "cropper", "forms", "advanced"],
   },
+  "region-select": {
+    shortName: "RegionSelect",
+    description:
+      "Selects normalized original-image pixel boxes with aspect constraints, deterministic rounding, overlays, and explicit load failures.",
+    keywords: ["region", "select", "image", "coordinates", "annotation", "forms", "advanced"],
+  },
   "scope-matrix": {
     shortName: "ScopeMatrix",
     description:
@@ -567,8 +576,23 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   "login-form": {
     shortName: "LoginForm",
     description:
-      "Provides a complete credential sign-in form with validation and auxiliary actions.",
-    keywords: ["login", "form", "forms", "framework"],
+      "Provides a managed credential form with validation, controlled values, field appearance slots, remember copy, and an optional card surface.",
+    keywords: [
+      "login",
+      "form",
+      "authentication",
+      "fields",
+      "surface",
+      "remember",
+      "forms",
+      "framework",
+    ],
+  },
+  "auth-panel": {
+    shortName: "AuthPanel",
+    description:
+      "Builds the branded half of a split authentication page with token-based gradients, highlights, content, and a footer.",
+    keywords: ["authentication", "panel", "login", "signup", "gradient", "forms", "framework"],
   },
   "click-captcha": {
     shortName: "ClickCaptcha",
@@ -622,8 +646,17 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   list: {
     shortName: "List",
-    description: "Presents structured items with headers, metadata, actions, and empty states.",
-    keywords: ["list", "data-display", "collection"],
+    description:
+      "Presents accessible named lists with structured items, metadata, actions, grid mode, empty states, and pagination or load-more controls.",
+    keywords: [
+      "list",
+      "accessible",
+      "aria",
+      "pagination",
+      "load more",
+      "data-display",
+      "collection",
+    ],
   },
   descriptions: {
     shortName: "Descriptions",
@@ -821,8 +854,9 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   dot: {
     shortName: "Dot",
-    description: "Renders a small semantic color indicator with optional pulse.",
-    keywords: ["dot", "data-display", "info"],
+    description:
+      "Renders a semantic or arbitrary-color status indicator with optional pulse and accessible labeling.",
+    keywords: ["dot", "status", "color", "legend", "pulse", "data-display", "info"],
   },
   "status-dot": {
     shortName: "StatusDot",
@@ -870,8 +904,18 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   qrcode: {
     shortName: "QRCode",
     description:
-      "Generates a scannable QR code with configurable size, correction, and center mark.",
-    keywords: ["qrcode", "data-display", "info"],
+      "Generates theme-aware QR SVGs with version and correction boosting, excavated or watermark logos, plus SVG and high-DPI PNG export helpers.",
+    keywords: [
+      "qrcode",
+      "qr",
+      "svg",
+      "png",
+      "export",
+      "logo",
+      "correction",
+      "data-display",
+      "info",
+    ],
   },
   comment: {
     shortName: "Comment",
@@ -937,8 +981,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   chart: {
     shortName: "Chart",
     description:
-      "Wraps responsive Recharts area and bar charts with Hulian theme tokens and axis sizing.",
-    keywords: ["chart", "data-display", "stat"],
+      "Wraps responsive Recharts area, bar, line, pie, radar, and radial charts with theme tokens, axis sizing, and series legends.",
+    keywords: ["chart", "area", "bar", "line", "pie", "radar", "legend", "data-display", "stat"],
   },
   meter: {
     shortName: "Meter",
@@ -993,10 +1037,27 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Opens a searchable grid of application shortcuts from global navigation.",
     keywords: ["app", "launcher", "navigation", "global"],
   },
+  brand: {
+    shortName: "Brand",
+    description:
+      "Combines a square brand mark, name, and optional description with collapsed and router-link modes.",
+    keywords: ["brand", "logo", "identity", "navigation", "global"],
+  },
   "nav-menu": {
     shortName: "NavMenu",
-    description: "Renders collapsible grouped application navigation with active-route state.",
-    keywords: ["nav", "menu", "navigation", "global"],
+    description:
+      "Renders controlled multilevel navigation in tree or semantic list-and-link mode with inline and collapsed presentation.",
+    keywords: [
+      "nav",
+      "menu",
+      "tree",
+      "list",
+      "link",
+      "semantics",
+      "accessibility",
+      "navigation",
+      "global",
+    ],
   },
   "navigation-menu": {
     shortName: "NavigationMenu",
@@ -1121,8 +1182,8 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   drawer: {
     shortName: "Drawer",
     description:
-      "Slides contextual or task content from a screen edge with modal focus management.",
-    keywords: ["drawer", "feedback", "overlay"],
+      "Slides contextual or task content from any screen edge with modal focus management and a localized optional close button.",
+    keywords: ["drawer", "close", "modal", "feedback", "overlay"],
   },
   popover: {
     shortName: "Popover",
@@ -1648,6 +1709,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Moves child items along preset or custom CSS offset paths with spacing and tilt controls.",
     keywords: ["orbit", "images", "decoration", "overlay-fx"],
   },
+  tilt: {
+    shortName: "Tilt",
+    description:
+      "Wraps arbitrary content in pointer, gyroscope, or manually driven 3D tilt with optional geometric glare.",
+    keywords: ["tilt", "parallax", "glare", "gyroscope", "decoration", "overlay", "animated"],
+  },
   "pixel-trail": {
     shortName: "PixelTrail",
     description: "Leaves a fading pixel-grid trail behind pointer movement.",
@@ -1729,8 +1796,9 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "staggered-menu": {
     shortName: "StaggeredMenu",
-    description: "Opens a layered side panel with staggered links, numbering, and social actions.",
-    keywords: ["staggered", "menu", "navigation", "global"],
+    description:
+      "Opens a token-themed layered side panel with staggered links, numbering, social actions, and reduced-motion behavior.",
+    keywords: ["staggered", "menu", "layered", "animated", "navigation", "global"],
   },
   "bounce-cards": {
     shortName: "BounceCards",
@@ -1755,8 +1823,9 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
   },
   "dome-gallery": {
     shortName: "DomeGallery",
-    description: "Arranges images on a draggable curved dome with depth perspective.",
-    keywords: ["dome", "gallery", "data-display", "collection"],
+    description:
+      "Arranges images across a draggable CSS 3D dome with inertial rotation, click-to-zoom viewing, and reduced-motion behavior.",
+    keywords: ["dome", "gallery", "3d", "drag", "inertia", "zoom", "data-display", "collection"],
   },
   "flying-posters": {
     shortName: "FlyingPosters",
