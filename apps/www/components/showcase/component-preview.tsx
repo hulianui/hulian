@@ -1,15 +1,19 @@
 "use client";
 import type { ReactNode } from "react";
 import { Tabs, TabsList, TabsTab, TabsPanel, CodeBlock } from "@hulianui/ui";
+import { DOCS_LOCALE } from "../../lib/docs-locale";
 
 export function ComponentPreview({ children, code }: { children: ReactNode; code: string }) {
+  const labels =
+    DOCS_LOCALE === "en" ? { preview: "Preview", code: "Code" } : { preview: "预览", code: "代码" };
+
   return (
     <div className="overflow-hidden rounded-[var(--radius)] border border-border bg-surface shadow-sm">
       <Tabs defaultValue="preview">
         <div className="border-b border-border bg-surface px-2 py-1.5">
           <TabsList variant="solid">
-            <TabsTab value="preview">预览</TabsTab>
-            <TabsTab value="code">代码</TabsTab>
+            <TabsTab value="preview">{labels.preview}</TabsTab>
+            <TabsTab value="code">{labels.code}</TabsTab>
           </TabsList>
         </div>
         <TabsPanel value="preview" className="mt-0 rounded-none">
