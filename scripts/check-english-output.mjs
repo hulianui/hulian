@@ -9,20 +9,7 @@ import * as cheerio from "cheerio";
 const RESIDUE =
   /[\p{Script=Han}\u3000-\u303f\uff01-\uff0f\uff1a-\uff20\uff3b-\uff40\uff5b-\uff65]/u;
 const HUMAN_ATTRIBUTES = ["title", "alt", "placeholder", "aria-label", "aria-description"];
-const HIDDEN_SELECTOR =
-  "[hidden], [inert], [aria-hidden='true'], template, noscript, input[type='hidden']";
-const HUMAN_JSON_KEYS = new Set([
-  "description",
-  "guidance",
-  "instead",
-  "label",
-  "message",
-  "rationale",
-  "reason",
-  "summary",
-  "title",
-  "warning",
-]);
+const HIDDEN_SELECTOR = "[hidden], template, noscript, input[type='hidden']";
 
 function slash(path) {
   return path.split(sep).join("/");
@@ -98,6 +85,17 @@ function isDirectlyAllowed($, element) {
   return $(element).is("[data-i18n-allow-cjk]");
 }
 
+function exposeNextStreamedContent($) {
+  $("script:not([src])").each((_, script) => {
+    const source = $(script).text();
+    for (const match of source.matchAll(/\$RC\(\s*["']([^"']+)["']\s*,\s*["']([^"']+)["']\s*\)/g)) {
+      const [, placeholderId, segmentId] = match;
+      if (!$(`#${placeholderId.replace(/([:.])/g, "\\$1")}`).length) continue;
+      $(`#${segmentId.replace(/([:.])/g, "\\$1")}`).removeAttr("hidden");
+    }
+  });
+}
+
 function finding(root, file, route, kind, location, rawValue) {
   return {
     kind,
@@ -169,6 +167,7 @@ export function scanEnglishHtml(file, options = {}) {
   const source = readFileSync(file, "utf8");
   const $ = cheerio.load(source);
   const findings = [];
+  exposeNextStreamedContent($);
 
   const addCjk = (location, value) => {
     if (RESIDUE.test(String(value ?? ""))) {
@@ -220,15 +219,18 @@ export function scanEnglishHtml(file, options = {}) {
     }
   });
 
-  $("body *")
-    .contents()
-    .filter((_, node) => node.type === "text")
-    .each((_, node) => {
-      const parent = node.parent;
-      if (!parent || isHidden($, parent) || ["script", "style"].includes(parent.name)) return;
-      if (isDirectlyAllowed($, parent)) return;
-      addCjk(`${selectorFor($, parent)}#text`, node.data);
-    });
+  const bodyElements = [...$("body").toArray(), ...$("body *").toArray()];
+  for (const element of bodyElements) {
+    $(element)
+      .contents()
+      .filter((_, node) => node.type === "text")
+      .each((_, node) => {
+        const parent = node.parent;
+        if (!parent || isHidden($, parent) || ["script", "style"].includes(parent.name)) return;
+        if (isDirectlyAllowed($, parent)) return;
+        addCjk(`${selectorFor($, parent)}#text`, node.data);
+      });
+  }
 
   for (const attribute of HUMAN_ATTRIBUTES) {
     $(`body [${attribute}]`).each((_, element) => {
@@ -278,20 +280,30 @@ function scanHumanJson(file, root, route) {
     ];
   }
   const findings = [];
-  const visit = (value, path = "$", key = "") => {
+  const isMachineString = (segments) => {
+    if (segments[0] === "cssVars") return true;
+    if (segments.includes("matcher")) return true;
+    const fileIndex = segments.lastIndexOf("files");
+    return (
+      fileIndex >= 0 &&
+      typeof segments[fileIndex + 1] === "number" &&
+      segments[fileIndex + 2] === "content"
+    );
+  };
+  const visit = (value, path = "$", segments = []) => {
     if (typeof value === "string") {
-      if (HUMAN_JSON_KEYS.has(key) && RESIDUE.test(value)) {
+      if (!isMachineString(segments) && RESIDUE.test(value)) {
         findings.push(finding(root, file, route, "cjk", path, value));
       }
       return;
     }
     if (Array.isArray(value)) {
-      value.forEach((item, index) => visit(item, `${path}[${index}]`, key));
+      value.forEach((item, index) => visit(item, `${path}[${index}]`, [...segments, index]));
       return;
     }
     if (!value || typeof value !== "object") return;
     for (const [childKey, child] of Object.entries(value)) {
-      visit(child, `${path}.${childKey}`, childKey);
+      visit(child, `${path}.${childKey}`, [...segments, childKey]);
     }
   };
   visit(data);

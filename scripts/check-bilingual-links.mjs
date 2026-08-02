@@ -270,27 +270,38 @@ function checkSeoAlternates($, document, localizedRoutes, physicalPaths, finding
   const canonical = $("link[href]")
     .toArray()
     .filter((element) => relationSet($, element).has("canonical"));
-  if (canonical.length === 0) return;
-
-  const canonicalElement = canonical[0];
-  const canonicalHref = $(canonicalElement).attr("href");
-  const canonicalTarget = resolveInternalHref(
-    canonicalHref,
-    document,
-    localizedRoutes,
-    physicalPaths,
-  );
-  if (canonical.length !== 1 || !isExactRouteTarget(canonicalTarget, document.route)) {
+  if (canonical.length === 0) {
     findings.push(
       makeFinding(
         document,
-        "invalid-canonical",
-        `${selectorFor($, canonicalElement)}@href`,
-        canonicalHref,
+        "missing-canonical",
+        "html > head",
+        "",
         document.route,
-        "canonical must appear once and point to the current physical route without query or hash",
+        "physical route is missing rel=canonical",
       ),
     );
+  } else {
+    const canonicalElement = canonical[0];
+    const canonicalHref = $(canonicalElement).attr("href");
+    const canonicalTarget = resolveInternalHref(
+      canonicalHref,
+      document,
+      localizedRoutes,
+      physicalPaths,
+    );
+    if (canonical.length !== 1 || !isExactRouteTarget(canonicalTarget, document.route)) {
+      findings.push(
+        makeFinding(
+          document,
+          "invalid-canonical",
+          `${selectorFor($, canonicalElement)}@href`,
+          canonicalHref,
+          document.route,
+          "canonical must appear once and point to the current physical route without query or hash",
+        ),
+      );
+    }
   }
 
   const expected = new Map([
@@ -314,7 +325,7 @@ function checkSeoAlternates($, document, localizedRoutes, physicalPaths, finding
           "html > head",
           "",
           expectedRoute,
-          `canonical page is missing rel=alternate hreflang=${hreflang}`,
+          `physical route is missing rel=alternate hreflang=${hreflang}`,
         ),
       );
       continue;
@@ -541,11 +552,12 @@ export async function checkBilingualLinks(root) {
     ["cross-language-link", 6],
     ["missing-fragment", 7],
     ["language-pair-state-loss", 8],
-    ["invalid-canonical", 9],
-    ["missing-seo-alternate", 10],
-    ["invalid-seo-alternate", 11],
-    ["missing-document-title", 12],
-    ["missing-meta-description", 13],
+    ["missing-canonical", 9],
+    ["invalid-canonical", 10],
+    ["missing-seo-alternate", 11],
+    ["invalid-seo-alternate", 12],
+    ["missing-document-title", 13],
+    ["missing-meta-description", 14],
   ]);
   findings.sort(
     (a, b) =>

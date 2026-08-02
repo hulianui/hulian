@@ -23,10 +23,20 @@ function document(body, head = "") {
   return `<!doctype html><html><head><title>Fixture</title><meta name="description" content="Fixture description">${head}</head><body>${body}</body></html>`;
 }
 
-function writePair(root, route, { zh = "", en = "", zhHead = "", enHead = "" } = {}) {
+function seoHead(route, locale) {
+  const bare = route.endsWith("/index") ? route.slice(0, -"/index".length) || "/" : route;
+  const english = `/en${bare === "/" ? "" : bare}`;
+  const canonical = locale === "en" ? english : bare;
+  return `<link rel="canonical" href="${canonical}">
+    <link rel="alternate" hreflang="zh-CN" href="${bare}">
+    <link rel="alternate" hreflang="en" href="${english}">
+    <link rel="alternate" hreflang="x-default" href="${english}">`;
+}
+
+function writePair(root, route, { zh = "", en = "", zhHead = "", enHead = "", seo = true } = {}) {
   const relativePath = route === "/" ? "index.html" : `${route.slice(1)}.html`;
-  write(root, relativePath, document(zh, zhHead));
-  write(root, join("en", relativePath), document(en, enHead));
+  write(root, relativePath, document(zh, zhHead || (seo ? seoHead(route, "zh-CN") : "")));
+  write(root, join("en", relativePath), document(en, enHead || (seo ? seoHead(route, "en") : "")));
 }
 
 test("route parity is derived from every physical route including 404 and _not-found", async (t) => {
@@ -34,8 +44,8 @@ test("route parity is derived from every physical route including 404 and _not-f
   writePair(root, "/");
   writePair(root, "/404");
   writePair(root, "/_not-found");
-  write(root, "only-chinese.html", document("Chinese"));
-  write(root, "en/only-english.html", document("English"));
+  write(root, "only-chinese.html", document("Chinese", seoHead("/only-chinese", "zh-CN")));
+  write(root, "en/only-english.html", document("English", seoHead("/only-english", "en")));
   write(root, "google-verification.html", "google-site-verification: token");
   write(root, "en/google-verification.html", "google-site-verification: token");
 
@@ -44,7 +54,9 @@ test("route parity is derived from every physical route including 404 and _not-f
   assert.equal(result.counts.chineseRoutes, 4);
   assert.equal(result.counts.englishRoutes, 4);
   assert.deepEqual(
-    result.findings.map(({ kind, route, target }) => [kind, route, target]),
+    result.findings
+      .filter(({ kind }) => kind === "missing-language-pair")
+      .map(({ kind, route, target }) => [kind, route, target]),
     [
       ["missing-language-pair", "/en/only-english", "/only-english"],
       ["missing-language-pair", "/only-chinese", "/en/only-chinese"],
@@ -58,9 +70,12 @@ test("every physical route requires a non-empty title and meta description", asy
   write(
     root,
     "broken.html",
-    '<!doctype html><html><head><title></title><meta name="description" content=""></head><body>Broken</body></html>',
+    `<!doctype html><html><head><title></title><meta name="description" content="">${seoHead(
+      "/broken",
+      "zh-CN",
+    )}</head><body>Broken</body></html>`,
   );
-  write(root, "en/broken.html", document("English"));
+  write(root, "en/broken.html", document("English", seoHead("/broken", "en")));
 
   const result = await checkBilingualLinks(root);
 
@@ -87,7 +102,8 @@ test("crawler resolves root, relative, html, index, query, hash, encoded paths, 
   write(
     root,
     "guide/index.html",
-    document(`<main id="api">
+    document(
+      `<main id="api">
       <a href="/guide/index.html?tab=all#api">Root HTML</a>
       <a href="next.html">Relative HTML</a>
       <a href="/caf%C3%A9">Encoded route</a>
@@ -98,19 +114,24 @@ test("crawler resolves root, relative, html, index, query, hash, encoded paths, 
       <a href="tel:+10000000000">Phone</a>
       <a href="data:text/plain,hello">Data</a>
       <a href="https://example.com/path">External</a>
-    </main>`),
+    </main>`,
+      seoHead("/guide", "zh-CN"),
+    ),
   );
   write(
     root,
     "en/guide/index.html",
-    document(`<main id="api">
+    document(
+      `<main id="api">
       <a href="/en/guide/index.html?tab=all#api">Root HTML</a>
       <a href="next.html">Relative HTML</a>
       <a href="/en/caf%C3%A9">Encoded route</a>
       <a href="/en/registry.json?raw=1">JSON</a>
       <a href="/en/assets/logo.svg">Asset</a>
       <a href="#api">Local fragment</a>
-    </main>`),
+    </main>`,
+      seoHead("/guide", "en"),
+    ),
   );
 
   const result = await checkBilingualLinks(root);
@@ -118,7 +139,7 @@ test("crawler resolves root, relative, html, index, query, hash, encoded paths, 
   assert.equal(result.findings.length, 0);
   assert.equal(result.counts.chineseRoutes, 4);
   assert.equal(result.counts.englishRoutes, 4);
-  assert.equal(result.counts.links, 16);
+  assert.equal(result.counts.links, 48);
 });
 
 test("crawler reports missing targets, unsafe JavaScript, duplicate prefixes, and bad fragments", async (t) => {
@@ -206,6 +227,27 @@ test("canonical pages require one exact canonical and complete exact hreflang li
       ["invalid-canonical", "/en/guide", "/en/guide"],
       ["missing-seo-alternate", "/en/guide", "/en/guide"],
       ["invalid-seo-alternate", "/en/guide", "/en/guide"],
+    ],
+  );
+});
+
+test("every physical route reports a missing canonical and checks hreflang independently", async (t) => {
+  const root = temporaryTree(t);
+  writePair(root, "/", { seo: false });
+
+  const result = await checkBilingualLinks(root);
+
+  assert.deepEqual(
+    result.findings.map(({ kind, route, target }) => [kind, route, target]),
+    [
+      ["missing-canonical", "/en", "/en"],
+      ["missing-seo-alternate", "/en", "/"],
+      ["missing-seo-alternate", "/en", "/en"],
+      ["missing-seo-alternate", "/en", "/en"],
+      ["missing-canonical", "/", "/"],
+      ["missing-seo-alternate", "/", "/"],
+      ["missing-seo-alternate", "/", "/en"],
+      ["missing-seo-alternate", "/", "/en"],
     ],
   );
 });

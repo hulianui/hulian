@@ -66,7 +66,7 @@ test("HTML scan reports every human-facing CJK surface with actionable locations
   assert.ok(findings.every(({ excerpt }) => excerpt.length > 0));
 });
 
-test("HTML scan ignores non-rendered executable payloads but scans displayed code", (t) => {
+test("HTML scan ignores genuinely non-rendered payloads but scans displayed code and aria state", (t) => {
   const root = temporaryTree(t);
   const file = write(
     root,
@@ -75,7 +75,8 @@ test("HTML scan ignores non-rendered executable payloads but scans displayed cod
       <p>English prose</p>
       <pre><code>console.log("可见")</code></pre>
       <div hidden>隐藏</div>
-      <div aria-hidden="true">忽略</div>
+      <div aria-hidden="true">视觉内容</div>
+      <div inert>非交互内容</div>
       <script>const message = "脚本"</script>
       <style>.例子::after { content: "样式"; }</style>
       <template>模板</template>
@@ -85,7 +86,36 @@ test("HTML scan ignores non-rendered executable payloads but scans displayed cod
 
   assert.deepEqual(
     scanEnglishHtml(file, { root, route: "/en" }).map(({ excerpt }) => excerpt),
-    ['console.log("可见")'],
+    ['console.log("可见")', "视觉内容", "非交互内容"],
+  );
+});
+
+test("HTML scan reconstructs Next streaming $RC content before applying hidden filtering", (t) => {
+  const root = temporaryTree(t);
+  const file = write(
+    root,
+    "en/streamed.html",
+    html(`<main>
+      <template id="B:0"></template><p>Loading...</p><!--/$-->
+    </main>
+    <div hidden id="S:0"><article><h1>流式正文</h1></article></div>
+    <div hidden id="S:1"><article><h1>未挂载正文</h1></article></div>
+    <script>$RC("B:0","S:0")</script>`),
+  );
+
+  assert.deepEqual(
+    scanEnglishHtml(file, { root, route: "/en/streamed" }).map(({ excerpt }) => excerpt),
+    ["流式正文"],
+  );
+});
+
+test("HTML scan includes text nodes that are direct children of body", (t) => {
+  const root = temporaryTree(t);
+  const file = write(root, "en/direct.html", html("正文直接文本<main>English</main>"));
+
+  assert.deepEqual(
+    scanEnglishHtml(file, { root, route: "/en/direct" }).map(({ excerpt }) => excerpt),
+    ["正文直接文本"],
   );
 });
 
@@ -138,6 +168,7 @@ test("output scan enumerates physical HTML plus public human-readable JSON and t
     JSON.stringify({
       title: "Button",
       description: "Action trigger",
+      cssVars: { light: { font: '"楷体", sans-serif' } },
       files: [{ path: "button.tsx", content: "// 技术源码不属于人类展示字段" }],
     }),
   );
@@ -146,7 +177,18 @@ test("output scan enumerates physical HTML plus public human-readable JSON and t
     "en/conventions.json",
     JSON.stringify({
       executableRules: [
-        { id: "rule", matcher: { sourcePattern: "中文字面协议" }, message: "规则说明" },
+        {
+          id: "rule",
+          matcher: { sourcePattern: "中文字面协议" },
+          message: "规则说明",
+          rule: "规则正文",
+          why: "原因说明",
+          when: "适用场景",
+          notThis: "错误方式",
+          right: "正确示例",
+          wrong: "错误示例",
+          arbitraryHumanField: "任意人类说明",
+        },
       ],
     }),
   );
@@ -164,7 +206,14 @@ test("output scan enumerates physical HTML plus public human-readable JSON and t
   assert.deepEqual(
     result.findings.map(({ file, location }) => [file, location]),
     [
+      ["en/conventions.json", "$.executableRules[0].arbitraryHumanField"],
       ["en/conventions.json", "$.executableRules[0].message"],
+      ["en/conventions.json", "$.executableRules[0].notThis"],
+      ["en/conventions.json", "$.executableRules[0].right"],
+      ["en/conventions.json", "$.executableRules[0].rule"],
+      ["en/conventions.json", "$.executableRules[0].when"],
+      ["en/conventions.json", "$.executableRules[0].why"],
+      ["en/conventions.json", "$.executableRules[0].wrong"],
       ["en/llms.txt", "line 2"],
       ["en/nested/page.html", "html > body > p#text"],
       ["en/registry.json", "$.items[0].description"],
