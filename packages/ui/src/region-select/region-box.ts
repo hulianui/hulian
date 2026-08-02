@@ -81,6 +81,30 @@ export function boxMinSide(box: RegionBox): number {
   return Math.min(box[2] - box[0], box[3] - box[1]);
 }
 
+/** 出口坐标取整方式。 */
+export type RegionRound = "expand" | "nearest" | "none";
+
+/**
+ * 出口取整：像素是可数的格子，坐标该是整数。
+ *
+ * 拖拽过程内部仍走浮点（视觉上更跟手），只在**出口**（onChange）取整一次——
+ * 落库（`list[int]` 校验）、服务端裁图（PIL/OpenCV/sharp 的 crop 都要整数）、
+ * 「有没有改过」的等值判断，三处都吃不下浮点。
+ *
+ * 默认 `expand`（左上 floor、右下 ceil）而不是 `nearest`：nearest 可能把两边各往里收
+ * 半像素，让一个刚好等于 `minSide` 的框变成 `minSide - 1`，人明明拖够了却存不上。
+ * 所以取整**不缩小框**，且 `minSide` 判定放在取整之后（见 region-select.tsx）。
+ *
+ * 极易漏测：缩放恰好是整数倍时坐标本就落在整数上，测试要用除不尽的比例。
+ */
+export function roundBox(box: RegionBox, mode: RegionRound = "expand"): RegionBox {
+  if (mode === "none") return box;
+  if (mode === "nearest") {
+    return [Math.round(box[0]), Math.round(box[1]), Math.round(box[2]), Math.round(box[3])];
+  }
+  return [Math.floor(box[0]), Math.floor(box[1]), Math.ceil(box[2]), Math.ceil(box[3])];
+}
+
 /**
  * 描边宽度按图宽给：3000px 宽的扫描页上 2px 的线细到看不见。
  * 返回的是**图像素**宽度（画在 viewBox 坐标系里）。

@@ -6,6 +6,7 @@ import {
   applyAspect,
   boxMinSide,
   normalizeBox,
+  roundBox,
   strokeWidthFor,
   toImagePoint,
   type RegionBox,
@@ -41,20 +42,36 @@ export function RegionSelect({
   readOnly = false,
   naturalSize,
   placeholder,
+  errorPlaceholder,
+  onError,
+  round = "expand",
   className,
   ...rest
 }: RegionSelectProps) {
   const [natural, setNatural] = useState<Natural | null>(
     naturalSize ? { w: naturalSize.width, h: naturalSize.height } : null,
   );
+  const [failed, setFailed] = useState(false);
   const [draft, setDraft] = useState<RegionBox | null>(null);
   const anchorRef = useRef<[number, number] | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const accent = resolveTone(color) ?? "var(--color-primary)";
 
+  // onError 常是内联函数，进依赖数组会让预读每次渲染重挂。用 latest ref 读最新值
+  //（失败回调恒为异步触发，effect 早已跑过，读到的一定是最新的那个）。
+  const onErrorRef = useRef(onError);
+  useEffect(() => {
+    onErrorRef.current = onError;
+  });
+  const fail = (event: unknown) => {
+    setFailed(true);
+    onErrorRef.current?.(event);
+  };
+
   // 自然尺寸必须自己量，量到之前不画任何框：拿上一张图的比例摆框，位置一定是错的。
   // 调用方已知尺寸（库里存着）时直接传 naturalSize，省一次预读。
   useEffect(() => {
+    setFailed(false);
     if (naturalSize) {
       setNatural({ w: naturalSize.width, h: naturalSize.height });
       return;
@@ -66,12 +83,24 @@ export function RegionSelect({
       if (alive && probe.naturalWidth > 0) setNatural({ w: probe.naturalWidth, h: probe.naturalHeight });
     };
     probe.onload = take;
+    // onerror 必须与 onload 对称：只挂 onload 时，src 404/403/网络失败会让 natural 恒为 null，
+    // 组件永久停在「载入图片…」——「正在等」和「根本取不到」长得一模一样，人会一直等下去。
+    probe.onerror = (event) => {
+      if (!alive) return;
+      setFailed(true);
+      onErrorRef.current?.(event);
+    };
     probe.src = src;
-    // 缓存命中时 load 事件可能早于处理器挂上就烧完了，补查一次 complete。
-    if (probe.complete) take();
+    // 缓存命中时 load/error 事件可能早于处理器挂上就烧完了，补查一次 complete。
+    // complete 且 naturalWidth 为 0 = 加载已结束且失败（失败结果同样进浏览器缓存）。
+    if (probe.complete) {
+      if (probe.naturalWidth > 0) take();
+      else setFailed(true);
+    }
     return () => {
       alive = false;
       probe.onload = null;
+      probe.onerror = null;
     };
   }, [src, naturalSize]);
 
@@ -118,12 +147,31 @@ export function RegionSelect({
     } catch {
       /* 同上 */
     }
-    const next = boxFrom(anchor, pointAt(e, natural), natural);
     setDraft(null);
     onDrafting?.(null);
+    // 出口取整一次；minSide 判定放在取整**之后**，与最终交出去的框一致
+    //（否则 expand 撑大后的框可能刚好跨过阈值，或 nearest 内收后跌破阈值，症状是「拖了没反应」）。
+    const next = roundBox(boxFrom(anchor, pointAt(e, natural), natural), round);
     // 误点（短边太小）不算一次框选：手一抖点一下不该把已有的框清掉。
     if (commit && boxMinSide(next) >= minSide) onChange?.(next);
   };
+
+  // 底图取不到时给出口：与 placeholder 分开，人才知道该重试还是该等。
+  // 预读（naturalSize 已传时不跑）与画布 <image> 共用这一个状态——中途鉴权过期导致
+  // SVG 那次请求单独失败时，同样有出口。
+  if (failed) {
+    return (
+      <div
+        className={cn(
+          "grid place-items-center rounded-[var(--radius)] border border-border bg-surface-hover p-8 text-sm text-muted",
+          className,
+        )}
+        {...rest}
+      >
+        {errorPlaceholder ?? "图片加载失败"}
+      </div>
+    );
+  }
 
   if (!natural) {
     return (
@@ -160,7 +208,7 @@ export function RegionSelect({
         role="img"
         aria-label={alt || "区域选择画布"}
       >
-        <image href={src} x={0} y={0} width={natural.w} height={natural.h} />
+        <image href={src} x={0} y={0} width={natural.w} height={natural.h} onError={fail} />
 
         {boxes?.map((b, i) => {
           const c = resolveTone(b.color) ?? "var(--color-muted)";

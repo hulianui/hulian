@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
-import type { RegionBox } from "./region-box";
+import type { RegionBox, RegionRound } from "./region-box";
 
 export interface RegionSelectBox {
   box: RegionBox;
@@ -10,7 +10,7 @@ export interface RegionSelectBox {
 }
 
 export interface RegionSelectProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "children"> {
+  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onError" | "children"> {
   /** 底图地址。 */
   src: string;
   alt?: string;
@@ -18,10 +18,18 @@ export interface RegionSelectProps
   value?: RegionBox | null;
   /** 拖完一次给一个**规范化**的框（反向拖也成立）；短边小于 `minSide` 视为误点，不触发。 */
   onChange?: (box: RegionBox) => void;
-  /** 拖拽过程中的实时框（想跟随预览时用；不传不影响拖拽）。 */
+  /** 拖拽过程中的实时框（想跟随预览时用；不传不影响拖拽）。拖拽预览是**浮点**，不受 `round` 影响。 */
   onDrafting?: (box: RegionBox | null) => void;
-  /** 误点阈值：框短边小于它（原图像素）不算一次框选。@default 8 */
+  /** 误点阈值：框短边小于它（原图像素）不算一次框选。判定在 `round` 取整**之后**，与最终出口一致。@default 8 */
   minSide?: number;
+  /**
+   * `onChange` 出口坐标的取整方式。像素是可数的格子，落库/裁图/等值判断都要整数。
+   *  · `"expand"`：左上 `floor`、右下 `ceil` —— **不会缩小框**，故不会让刚好够 `minSide` 的框存不上；
+   *  · `"nearest"`：四舍五入，框可能各边内收半像素；
+   *  · `"none"`：保留浮点，给确实需要亚像素的场景。
+   * @default "expand"
+   */
+  round?: RegionRound;
   /** 只读的其它框（同页多图时一并显示）。 */
   boxes?: RegionSelectBox[];
   /** 固定宽高比（宽/高）；不传则自由框选。 */
@@ -39,5 +47,13 @@ export interface RegionSelectProps
   naturalSize?: { width: number; height: number };
   /** 图未量到自然尺寸前的占位。 */
   placeholder?: ReactNode;
+  /**
+   * 底图加载失败（404 / 403 / 跨域 / 网络）时的占位，与 `placeholder` 对称。
+   * 「正在载入」和「这张图根本取不到」是两件事，长得一样人会一直等下去。
+   * @default "图片加载失败"
+   */
+  errorPlaceholder?: ReactNode;
+  /** 底图加载失败时触发（预读与画布上的 `<image>` 共用同一出口）。 */
+  onError?: (event: unknown) => void;
   className?: string;
 }
