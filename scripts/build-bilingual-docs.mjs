@@ -23,11 +23,21 @@ const buildRoot = join(wwwRoot, ".bilingual-build");
 const zhRoot = join(buildRoot, "zh");
 const enRoot = join(buildRoot, "en");
 const mergedRoot = join(buildRoot, "final");
+const zhArtifactsRoot = join(buildRoot, "artifacts-zh");
+const enArtifactsRoot = join(buildRoot, "artifacts-en");
 const outputRoot = join(wwwRoot, "out");
 const replacementMarkerName = "replacement-in-progress.json";
 const removableBuildDirectories = new Set(
-  [zhRoot, enRoot, mergedRoot].map((path) => resolve(path)),
+  [zhRoot, enRoot, mergedRoot, zhArtifactsRoot, enArtifactsRoot].map((path) => resolve(path)),
 );
+const generatedArtifactPaths = [
+  "llms.txt",
+  "llms-full.txt",
+  "registry.json",
+  "conventions.json",
+  "d",
+  "r",
+];
 
 async function pathExists(path) {
   try {
@@ -87,12 +97,8 @@ export async function assertRouteParity(chineseRoot, englishRoot) {
     routeSet(chineseRoot),
     routeSet(englishRoot),
   ]);
-  const missingFromEnglish = [...chineseRoutes]
-    .filter((route) => !englishRoutes.has(route))
-    .sort();
-  const missingFromChinese = [...englishRoutes]
-    .filter((route) => !chineseRoutes.has(route))
-    .sort();
+  const missingFromEnglish = [...chineseRoutes].filter((route) => !englishRoutes.has(route)).sort();
+  const missingFromChinese = [...englishRoutes].filter((route) => !chineseRoutes.has(route)).sort();
 
   if (missingFromEnglish.length || missingFromChinese.length) {
     const details = [];
@@ -128,6 +134,27 @@ export async function mergeExports(chineseRoot, englishRoot, finalRoot) {
     errorOnExist: true,
     force: false,
   });
+}
+
+export async function overlayGeneratedArtifacts(exportRoot, generatedRoot) {
+  const resolvedExportRoot = resolve(exportRoot);
+  const resolvedGeneratedRoot = resolve(generatedRoot);
+  for (const root of [resolvedExportRoot, resolvedGeneratedRoot]) {
+    const stat = await lstat(root);
+    if (!stat.isDirectory() || stat.isSymbolicLink()) {
+      throw new Error(`Generated artifact root must be a physical directory: ${root}`);
+    }
+  }
+
+  for (const artifact of generatedArtifactPaths) {
+    const source = join(resolvedGeneratedRoot, artifact);
+    if (!(await pathExists(source))) {
+      throw new Error(`Locale generation did not produce ${artifact} in ${resolvedGeneratedRoot}`);
+    }
+    const destination = join(resolvedExportRoot, artifact);
+    await rm(destination, { recursive: true, force: true });
+    await cp(source, destination, { recursive: true, errorOnExist: true, force: false });
+  }
 }
 
 async function canonicalDirectoryWithoutSymlinks(directory) {
@@ -217,10 +244,7 @@ export async function recoverInterruptedOutput(
   finalOutputRoot,
 ) {
   const resolvedBuildRoot = resolve(exactBuildRoot);
-  const resolvedBackup = await assertPhysicalBuildChild(
-    previousOutputBackup,
-    resolvedBuildRoot,
-  );
+  const resolvedBackup = await assertPhysicalBuildChild(previousOutputBackup, resolvedBuildRoot);
   const resolvedOutput = resolve(finalOutputRoot);
   const resolvedOutputParent = resolve(dirname(resolvedOutput));
   if (resolvedOutputParent !== dirname(resolvedBuildRoot)) {
@@ -264,14 +288,33 @@ export async function recoverInterruptedOutput(
   return true;
 }
 
-function buildLocale(locale) {
+async function buildLocale(locale, generatedRoot, localeRoot) {
   execFileSync("pnpm", ["--filter", "www", "build:locale"], {
     cwd: repositoryRoot,
     env: {
       ...process.env,
       DOCS_BILINGUAL_BUILD: "1",
       DOCS_LOCALE: locale,
+      HULIAN_REGISTRY_OUT: generatedRoot,
+      HULIAN_REGISTRY_BASE: "",
     },
+    stdio: "inherit",
+  });
+  await overlayGeneratedArtifacts(localeRoot, generatedRoot);
+}
+
+function restoreCanonicalChineseArtifacts() {
+  const env = { ...process.env, DOCS_LOCALE: "zh-CN" };
+  delete env.HULIAN_REGISTRY_OUT;
+  delete env.HULIAN_REGISTRY_BASE;
+  execFileSync("pnpm", ["llms-registry"], {
+    cwd: repositoryRoot,
+    env,
+    stdio: "inherit",
+  });
+  execFileSync("pnpm", ["conventions"], {
+    cwd: repositoryRoot,
+    env,
     stdio: "inherit",
   });
 }
@@ -317,25 +360,39 @@ async function buildBilingualDocs() {
     safeRemoveBuildDirectory(zhRoot),
     safeRemoveBuildDirectory(enRoot),
     safeRemoveBuildDirectory(mergedRoot),
+    safeRemoveBuildDirectory(zhArtifactsRoot),
+    safeRemoveBuildDirectory(enArtifactsRoot),
   ]);
 
-  buildLocale("zh-CN");
-  buildLocale("en");
-  const routes = await assertRouteParity(zhRoot, enRoot);
-  await mergeExports(zhRoot, enRoot, mergedRoot);
-  const findings = scanTask9EnglishOutput(join(mergedRoot, "en"));
-  if (findings.length > 0) {
-    const details = findings
-      .slice(0, 20)
-      .map((finding) =>
-        `${relative(join(mergedRoot, "en"), finding.file)} ${finding.field}: ${JSON.stringify(finding.value)}`,
-      )
-      .join("\n");
-    throw new Error(
-      `English Task 9 output gate found ${findings.length} content or locale-link issue(s):\n${details}`,
-    );
+  let routes;
+  try {
+    await buildLocale("zh-CN", zhArtifactsRoot, zhRoot);
+    await buildLocale("en", enArtifactsRoot, enRoot);
+    routes = await assertRouteParity(zhRoot, enRoot);
+    await mergeExports(zhRoot, enRoot, mergedRoot);
+    const findings = scanTask9EnglishOutput(join(mergedRoot, "en"));
+    if (findings.length > 0) {
+      const details = findings
+        .slice(0, 20)
+        .map(
+          (finding) =>
+            `${relative(join(mergedRoot, "en"), finding.file)} ${finding.field}: ${JSON.stringify(
+              finding.value,
+            )}`,
+        )
+        .join("\n");
+      throw new Error(
+        `English Task 9 output gate found ${findings.length} content or locale-link issue(s):\n${details}`,
+      );
+    }
+    await replaceOutput();
+    restoreCanonicalChineseArtifacts();
+  } finally {
+    await Promise.all([
+      safeRemoveBuildDirectory(zhArtifactsRoot),
+      safeRemoveBuildDirectory(enArtifactsRoot),
+    ]);
   }
-  await replaceOutput();
   console.log(`Built ${routes.size} bilingual routes in ${outputRoot}`);
 }
 

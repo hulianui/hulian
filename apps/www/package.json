@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "next dev -p 5512",
     "dev:desktop": "next dev -p 5514",
-    "gen": "node ../../scripts/gen-llms-registry.mjs && node ../../scripts/gen-conventions.mjs && node ../../scripts/gen-changelog.mjs && node ../../scripts/gen-fixture-sources.mjs",
+    "gen": "pnpm gen:ai && node ../../scripts/gen-changelog.mjs && node ../../scripts/gen-fixture-sources.mjs",
+    "gen:ai": "node ../../scripts/gen-llms-registry.mjs && node ../../scripts/gen-conventions.mjs",
     "build": "node ../../scripts/build-bilingual-docs.mjs",
     "build:locale": "pnpm gen && next build",
     "start": "next start -p 5512",

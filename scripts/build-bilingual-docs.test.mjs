@@ -18,6 +18,7 @@ import * as bilingualDocs from "./build-bilingual-docs.mjs";
 const {
   assertRouteParity,
   mergeExports,
+  overlayGeneratedArtifacts,
   routeSet,
   safeRemoveBuildDirectory,
 } = bilingualDocs;
@@ -31,9 +32,7 @@ async function writeFixture(root, files) {
 }
 
 async function withFixture(run) {
-  const fixtureRoot = await mkdtemp(
-    join(await realpath(tmpdir()), "hulian-bilingual-docs-"),
-  );
+  const fixtureRoot = await mkdtemp(join(await realpath(tmpdir()), "hulian-bilingual-docs-"));
   try {
     await run(fixtureRoot);
   } finally {
@@ -50,10 +49,7 @@ test("routeSet includes content HTML and ignores framework and public assets", a
       "logo.svg": "public",
     });
 
-    assert.deepEqual(
-      [...(await routeSet(fixtureRoot))].sort(),
-      ["/", "/components/button"],
-    );
+    assert.deepEqual([...(await routeSet(fixtureRoot))].sort(), ["/", "/components/button"]);
   });
 });
 
@@ -70,14 +66,11 @@ test("assertRouteParity reports routes missing from either locale", async () => 
       "components/input.html": "en input",
     });
 
-    await assert.rejects(
-      assertRouteParity(zhRoot, enRoot),
-      (error) => {
-        assert.match(error.message, /missing from English: \/components\/button/);
-        assert.match(error.message, /missing from Chinese: \/components\/input/);
-        return true;
-      },
-    );
+    await assert.rejects(assertRouteParity(zhRoot, enRoot), (error) => {
+      assert.match(error.message, /missing from English: \/components\/button/);
+      assert.match(error.message, /missing from Chinese: \/components\/input/);
+      return true;
+    });
   });
 });
 
@@ -121,6 +114,42 @@ test("mergeExports refuses to replace an existing destination", async () => {
   });
 });
 
+test("locale builds replace stale AI endpoints from an isolated generated root", async () => {
+  await withFixture(async (fixtureRoot) => {
+    const exportRoot = join(fixtureRoot, "export");
+    const generatedRoot = join(fixtureRoot, "generated");
+    await writeFixture(exportRoot, {
+      "llms.txt": "stale",
+      "llms-full.txt": "stale",
+      "registry.json": "stale",
+      "conventions.json": "stale",
+      "d/stale.md": "stale",
+      "r/stale.json": "stale",
+      "logo.svg": "keep",
+    });
+    await writeFixture(generatedRoot, {
+      "llms.txt": "localized index",
+      "llms-full.txt": "localized corpus",
+      "registry.json": "localized registry",
+      "conventions.json": "localized conventions",
+      "d/button.md": "localized component guide",
+      "r/button.json": "localized endpoint",
+    });
+
+    await overlayGeneratedArtifacts(exportRoot, generatedRoot);
+
+    assert.equal(await readFile(join(exportRoot, "llms.txt"), "utf8"), "localized index");
+    assert.equal(
+      await readFile(join(exportRoot, "d/button.md"), "utf8"),
+      "localized component guide",
+    );
+    assert.equal(await readFile(join(exportRoot, "r/button.json"), "utf8"), "localized endpoint");
+    assert.equal(await readFile(join(exportRoot, "logo.svg"), "utf8"), "keep");
+    await assert.rejects(readFile(join(exportRoot, "d/stale.md")), { code: "ENOENT" });
+    await assert.rejects(readFile(join(exportRoot, "r/stale.json")), { code: "ENOENT" });
+  });
+});
+
 test("safeRemoveBuildDirectory rejects paths outside the exact build root", async () => {
   await withFixture(async (fixtureRoot) => {
     const buildRoot = join(fixtureRoot, ".bilingual-build");
@@ -160,10 +189,7 @@ test("startup recovery restores the previous output after interruption following
     const markerPath = join(buildRoot, "replacement-in-progress.json");
     await writeFixture(outputRoot, { "index.html": "previous output" });
     await writeFixture(finalRoot, { "index.html": "new output" });
-    await writeFile(
-      markerPath,
-      JSON.stringify({ version: 1, previousOutputBackup: "zh" }),
-    );
+    await writeFile(markerPath, JSON.stringify({ version: 1, previousOutputBackup: "zh" }));
     await rename(outputRoot, backupRoot);
 
     await bilingualDocs.recoverInterruptedOutput(buildRoot, backupRoot, outputRoot);

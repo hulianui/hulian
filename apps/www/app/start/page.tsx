@@ -3,12 +3,11 @@ import { getIntlayer } from "next-intlayer";
 import { Markdown } from "@hulianui/ui";
 import { SiteNavbar } from "../../components/site-navbar";
 import { CopyMarkdownButton } from "../../components/copy-markdown-button";
-import { AI_GUIDE_MD } from "../../lib/ai-guide";
-import { AI_GUIDE_EN_MD } from "../../lib/ai-guide.en";
+import { aiGuide } from "../../lib/ai-guide";
 import { DOCS_LOCALE } from "../../lib/docs-locale";
 
 const content = getIntlayer("start", DOCS_LOCALE);
-const guide = DOCS_LOCALE === "en" ? AI_GUIDE_EN_MD : AI_GUIDE_MD;
+const guide = aiGuide(DOCS_LOCALE);
 
 export const metadata: Metadata = {
   title: content.metadataTitle,
@@ -23,9 +22,7 @@ export default function StartPage() {
         <header className="flex items-start justify-between gap-4 pb-6">
           <div className="min-w-0">
             <h1 className="text-[1.7rem] font-semibold tracking-tight">{content.title}</h1>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              {content.description}
-            </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{content.description}</p>
           </div>
           <CopyMarkdownButton text={guide} label={content.copy} className="shrink-0" />
         </header>
