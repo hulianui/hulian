@@ -1,6 +1,7 @@
 "use client";
 import { Fragment } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { parseMath } from "./math-text.parse";
 import type { MathNode, MathTextProps } from "./math-text.types";
@@ -102,7 +103,7 @@ export function MathText({
   scriptScale = 0.75,
   className,
 }: MathTextProps) {
-  const locale = useComponentLocale().mathText ?? zhCN.components!.mathText!;
+  const locale = useComponentLocale().mathText ?? { blank: "填空", rowSeparator: "；" };
   const nodes = parseMath(children ?? "", { rowSeparator: locale.rowSeparator });
   return (
     <span className={cn("[&_sup]:align-super [&_sub]:align-sub", className)}>

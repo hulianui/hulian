@@ -1,7 +1,8 @@
 "use client";
 import { useMemo, useState, type ReactNode } from "react";
 import { Search, X } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { Input } from "../input/input";
 import { cn } from "../lib/cn";
 import type { IconPickerProps, IconPickerSource } from "./icon-picker.types";
@@ -38,12 +39,17 @@ export function IconPicker({
   emptyMessage,
   className,
 }: IconPickerProps) {
-  const locale = useComponentLocale().iconPicker ?? zhCN.components!.iconPicker!;
+  const locale = useComponentLocale().iconPicker ?? {
+    searchPlaceholder: "搜索图标",
+    empty: "没有匹配的图标",
+    clear: "清除",
+    recent: "最近使用",
+  };
   const resolvedSearchPlaceholder = searchPlaceholder ?? locale.searchPlaceholder;
   const resolvedEmptyMessage = emptyMessage ?? locale.empty;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
-  const value = isControlled ? (valueProp ?? null) : internal;
+  const value = isControlled ? valueProp ?? null : internal;
 
   const [query, setQuery] = useState("");
   const [activeKey, setActiveKey] = useState(defaultSource ?? sources[0]?.key);
@@ -84,9 +90,14 @@ export function IconPicker({
 
   const renderGrid = (items: Hit[], emptyHint?: ReactNode) =>
     items.length === 0 ? (
-      emptyHint ? <div className="grid place-items-center py-10 text-sm text-muted">{emptyHint}</div> : null
+      emptyHint ? (
+        <div className="grid place-items-center py-10 text-sm text-muted">{emptyHint}</div>
+      ) : null
     ) : (
-      <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+      <div
+        className="grid gap-0.5"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
         {items.map((it) => {
           const selected = it.name === value;
           return (
@@ -120,7 +131,12 @@ export function IconPicker({
     .filter((x): x is Hit => x != null);
 
   return (
-    <div className={cn("flex w-72 flex-col rounded-[var(--radius)] border border-border bg-surface", className)}>
+    <div
+      className={cn(
+        "flex w-72 flex-col rounded-[var(--radius)] border border-border bg-surface",
+        className,
+      )}
+    >
       {searchable && (
         <div className="border-b border-border p-2">
           <Input
@@ -145,7 +161,9 @@ export function IconPicker({
               title={typeof s.label === "string" ? s.label : undefined}
               className={cn(
                 "shrink-0 rounded-[min(var(--radius),0.5rem)] px-2 py-1 text-xs transition-colors [&>svg]:size-4",
-                s.key === current?.key ? "bg-primary/12 text-primary" : "text-muted hover:bg-surface-hover",
+                s.key === current?.key
+                  ? "bg-primary/12 text-primary"
+                  : "text-muted hover:bg-surface-hover",
               )}
             >
               {s.tabIcon ?? s.label}
@@ -157,7 +175,9 @@ export function IconPicker({
       {clearable && value != null && (
         <div className="flex items-center justify-between gap-2 border-b border-border px-2 py-1.5 text-xs">
           <span className="flex min-w-0 items-center gap-1.5 text-muted">
-            <span className="shrink-0 text-foreground [&>svg]:size-4">{sourceOf(value)?.renderIcon(value)}</span>
+            <span className="shrink-0 text-foreground [&>svg]:size-4">
+              {sourceOf(value)?.renderIcon(value)}
+            </span>
             <span className="truncate">{value}</span>
           </span>
           <button

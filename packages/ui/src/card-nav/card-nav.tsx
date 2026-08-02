@@ -3,7 +3,8 @@ import { useState } from "react";
 import type { CSSProperties } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { CardNavProps } from "./card-nav.types";
@@ -23,7 +24,10 @@ export function CardNav({
   style,
   ...props
 }: CardNavProps & React.HTMLAttributes<HTMLDivElement>) {
-  const locale = useComponentLocale().cardNav ?? zhCN.components!.cardNav!;
+  const locale = useComponentLocale().cardNav ?? {
+    expandMenu: "展开菜单",
+    collapseMenu: "收起菜单",
+  };
   const reduce = useReducedMotion();
   const [openState, setOpenState] = useState(false);
   const isControlled = openProp !== undefined;

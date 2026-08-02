@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { Clock, Loader2, CircleCheck, CircleX, Ban, Minus, type IconComponent } from "../_icons";
 import type { DeployState, DeployStatusProps } from "./deploy-status.types";
 
@@ -22,12 +22,49 @@ interface Meta {
 }
 
 const META: Record<DeployState, Meta> = {
-  queued: { Icon: Clock, label: "排队中", soft: "bg-surface-hover text-muted", fg: "text-muted", dot: "bg-muted" },
-  building: { Icon: Loader2, label: "构建中", soft: "bg-primary/12 text-primary", fg: "text-primary", dot: "bg-primary", spin: true },
-  ready: { Icon: CircleCheck, label: "已上线", soft: "bg-success/12 text-success", fg: "text-success", dot: "bg-success" },
-  error: { Icon: CircleX, label: "失败", soft: "bg-danger/12 text-danger", fg: "text-danger", dot: "bg-danger" },
-  canceled: { Icon: Ban, label: "已取消", soft: "bg-surface-hover text-muted", fg: "text-muted", dot: "bg-muted" },
-  skipped: { Icon: Minus, label: "已跳过", soft: "bg-surface-hover text-muted", fg: "text-muted", dot: "bg-muted" },
+  queued: {
+    Icon: Clock,
+    label: "排队中",
+    soft: "bg-surface-hover text-muted",
+    fg: "text-muted",
+    dot: "bg-muted",
+  },
+  building: {
+    Icon: Loader2,
+    label: "构建中",
+    soft: "bg-primary/12 text-primary",
+    fg: "text-primary",
+    dot: "bg-primary",
+    spin: true,
+  },
+  ready: {
+    Icon: CircleCheck,
+    label: "已上线",
+    soft: "bg-success/12 text-success",
+    fg: "text-success",
+    dot: "bg-success",
+  },
+  error: {
+    Icon: CircleX,
+    label: "失败",
+    soft: "bg-danger/12 text-danger",
+    fg: "text-danger",
+    dot: "bg-danger",
+  },
+  canceled: {
+    Icon: Ban,
+    label: "已取消",
+    soft: "bg-surface-hover text-muted",
+    fg: "text-muted",
+    dot: "bg-muted",
+  },
+  skipped: {
+    Icon: Minus,
+    label: "已跳过",
+    soft: "bg-surface-hover text-muted",
+    fg: "text-muted",
+    dot: "bg-muted",
+  },
 };
 
 export function DeployStatus({
@@ -41,7 +78,11 @@ export function DeployStatus({
   const m = META[status];
   const localizedLabel = useComponentLocale().deployStatus?.[status] ?? m.label;
   const text = label ?? localizedLabel;
-  const iconCls = cn(size === "sm" ? "size-3.5" : "size-4", "shrink-0", m.spin && spin && "animate-spin");
+  const iconCls = cn(
+    size === "sm" ? "size-3.5" : "size-4",
+    "shrink-0",
+    m.spin && spin && "animate-spin",
+  );
   const Icon = m.Icon;
 
   // 仅图标：保留语义可读性（屏幕阅读器播报状态文案）。
@@ -60,8 +101,20 @@ export function DeployStatus({
 
   if (variant === "dot") {
     return (
-      <span className={cn("inline-flex items-center gap-1.5", size === "sm" ? "text-xs" : "text-sm", className)}>
-        <span className={cn("relative inline-flex shrink-0 rounded-full", size === "sm" ? "size-1.5" : "size-2", m.dot)}>
+      <span
+        className={cn(
+          "inline-flex items-center gap-1.5",
+          size === "sm" ? "text-xs" : "text-sm",
+          className,
+        )}
+      >
+        <span
+          className={cn(
+            "relative inline-flex shrink-0 rounded-full",
+            size === "sm" ? "size-1.5" : "size-2",
+            m.dot,
+          )}
+        >
           {status === "building" && (
             <span className={cn("absolute inset-0 animate-ping rounded-full opacity-75", m.dot)} />
           )}

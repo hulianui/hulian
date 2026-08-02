@@ -7,9 +7,13 @@ import { Tag } from "../tag";
 import { Button } from "../button";
 import { Textarea } from "../textarea";
 import { CodeDiff } from "../code-diff";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { severityStyle } from "./code-review-thread.severity";
-import type { CodeReviewThreadProps, ReviewComment, ReviewThreadStatus } from "./code-review-thread.types";
+import type {
+  CodeReviewThreadProps,
+  ReviewComment,
+  ReviewThreadStatus,
+} from "./code-review-thread.types";
 
 // 代码审查评论线程：行锚定批注卡。可塞进 CodeDiff 的 annotations.content 槽，也可独立列用。
 // severity 左边色条 + AI/人类作者 + 内嵌建议修改 diff(可采纳) + 回复 + 标记已解决/误报 + 折叠。
@@ -27,7 +31,12 @@ function CommentRow({
   const sev = severityStyle(c.severity, labels.severities);
   return (
     <div className="flex gap-3">
-      <Avatar size="sm" src={c.author.avatar} alt={c.author.name} fallback={c.author.name.slice(0, 1)} />
+      <Avatar
+        size="sm"
+        src={c.author.avatar}
+        alt={c.author.name}
+        fallback={c.author.name.slice(0, 1)}
+      />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <span className="font-medium text-foreground">{c.author.name}</span>
@@ -75,9 +84,15 @@ export function CodeReviewThread({
   className,
 }: CodeReviewThreadProps) {
   const labels = useComponentLocale().codeReviewThread ?? {
-    suggestedChange: "建议修改", adoptSuggestion: "采纳建议", commentCount: (count: number) => `${count} 条批注`,
-    resolved: "已解决", falsePositive: "误报", markResolved: "标记已解决", reopen: "重新打开",
-    replyPlaceholder: "回复这条批注…", reply: "回复",
+    suggestedChange: "建议修改",
+    adoptSuggestion: "采纳建议",
+    commentCount: (count: number) => `${count} 条批注`,
+    resolved: "已解决",
+    falsePositive: "误报",
+    markResolved: "标记已解决",
+    reopen: "重新打开",
+    replyPlaceholder: "回复这条批注…",
+    reply: "回复",
     severities: { critical: "严重", major: "重要", minor: "次要", info: "提示" },
   };
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
@@ -105,21 +120,40 @@ export function CodeReviewThread({
   };
 
   return (
-    <div className={cn("rounded-[var(--radius)] border border-l-4 border-border bg-surface", sev.border, className)}>
+    <div
+      className={cn(
+        "rounded-[var(--radius)] border border-l-4 border-border bg-surface",
+        sev.border,
+        className,
+      )}
+    >
       <div className="flex items-center justify-between gap-2 px-3 py-2">
         <button
           type="button"
           onClick={() => setCollapsed(!isCollapsed)}
           className="flex min-w-0 items-center gap-1 text-xs text-muted hover:text-foreground"
         >
-          {isCollapsed ? <ChevronRight className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+          {isCollapsed ? (
+            <ChevronRight className="size-3.5" />
+          ) : (
+            <ChevronDown className="size-3.5" />
+          )}
           <span className="truncate">
-            {labels.commentCount(comments.length)}{first?.author ? ` · ${first.author.name}` : ""}
+            {labels.commentCount(comments.length)}
+            {first?.author ? ` · ${first.author.name}` : ""}
           </span>
         </button>
         <div className="flex shrink-0 items-center gap-1.5">
-          {curStatus === "resolved" && <Tag tone="success" size="sm" dot>{labels.resolved}</Tag>}
-          {curStatus === "wontfix" && <Tag tone="neutral" size="sm">{labels.falsePositive}</Tag>}
+          {curStatus === "resolved" && (
+            <Tag tone="success" size="sm" dot>
+              {labels.resolved}
+            </Tag>
+          )}
+          {curStatus === "wontfix" && (
+            <Tag tone="neutral" size="sm">
+              {labels.falsePositive}
+            </Tag>
+          )}
           {curStatus === "open" ? (
             <>
               <Button variant="ghost" size="sm" onClick={() => changeStatus("resolved")}>

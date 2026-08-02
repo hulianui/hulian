@@ -2,7 +2,8 @@
 import { useMemo, useState } from "react";
 import { Search } from "../_icons";
 import { cn } from "../lib/cn";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { Input } from "../input/input";
 import { EMOJI_CATEGORIES, ALL_EMOJI } from "./emoji-data";
 import type { EmojiPickerProps } from "./emoji-picker.types";
@@ -18,7 +19,20 @@ export function EmojiPicker({
   searchPlaceholder,
   className,
 }: EmojiPickerProps) {
-  const copy = useComponentLocale().emojiPicker ?? zhCN.components!.emojiPicker!;
+  const copy = useComponentLocale().emojiPicker ?? {
+    search: "搜索表情",
+    noResults: "没有匹配的表情",
+    recentlyUsed: "最近使用",
+    categories: {
+      smileys: "笑脸",
+      gestures: "手势",
+      animals: "动物",
+      food: "食物",
+      activity: "活动",
+      objects: "物品",
+      symbols: "符号",
+    },
+  };
   const searchLabel = searchPlaceholder ?? copy.search;
   const [query, setQuery] = useState("");
   const [activeCat, setActiveCat] = useState(defaultCategory ?? EMOJI_CATEGORIES[0].key);
@@ -45,7 +59,10 @@ export function EmojiPicker({
     items.length === 0 ? (
       <div className="grid h-full place-items-center py-10 text-sm text-muted">{emptyHint}</div>
     ) : (
-      <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+      <div
+        className="grid gap-0.5"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
         {items.map((it, i) => (
           <button
             key={`${it.e}-${i}`}
@@ -61,7 +78,12 @@ export function EmojiPicker({
     );
 
   return (
-    <div className={cn("flex w-72 flex-col rounded-[var(--radius)] border border-border bg-surface", className)}>
+    <div
+      className={cn(
+        "flex w-72 flex-col rounded-[var(--radius)] border border-border bg-surface",
+        className,
+      )}
+    >
       {searchable && (
         <div className="border-b border-border p-2">
           <Input
@@ -80,20 +102,20 @@ export function EmojiPicker({
           {EMOJI_CATEGORIES.map((c) => {
             const categoryLabel = copy.categories[c.key as keyof typeof copy.categories] ?? c.label;
             return (
-            <button
-              key={c.key}
-              type="button"
-              onClick={() => setActiveCat(c.key)}
-              aria-label={categoryLabel}
-              aria-pressed={c.key === activeCat}
-              title={categoryLabel}
-              className={cn(
-                "grid size-8 shrink-0 place-items-center rounded-[min(var(--radius),0.5rem)] text-lg leading-none transition-colors",
-                c.key === activeCat ? "bg-primary/12" : "hover:bg-surface-hover",
-              )}
-            >
-              {c.icon}
-            </button>
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => setActiveCat(c.key)}
+                aria-label={categoryLabel}
+                aria-pressed={c.key === activeCat}
+                title={categoryLabel}
+                className={cn(
+                  "grid size-8 shrink-0 place-items-center rounded-[min(var(--radius),0.5rem)] text-lg leading-none transition-colors",
+                  c.key === activeCat ? "bg-primary/12" : "hover:bg-surface-hover",
+                )}
+              >
+                {c.icon}
+              </button>
             );
           })}
         </div>

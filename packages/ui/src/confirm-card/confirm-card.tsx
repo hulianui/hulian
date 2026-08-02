@@ -1,7 +1,8 @@
 "use client";
 import { cn } from "../lib/cn";
 import { Button } from "../button";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import type { ConfirmCardProps } from "./confirm-card.types";
 
 export function ConfirmCard({
@@ -14,7 +15,13 @@ export function ConfirmCard({
   acted = null,
   className,
 }: ConfirmCardProps) {
-  const locale = useComponentLocale().confirmCard ?? zhCN.components!.confirmCard!;
+  const locale = useComponentLocale().confirmCard ?? {
+    title: "请确认以下信息",
+    confirm: "确认无误",
+    edit: "需要修改",
+    confirmed: "已确认",
+    editing: "修改中",
+  };
   const resolvedTitle = title === undefined ? locale.title : title;
   const resolvedConfirmText = confirmText === undefined ? locale.confirm : confirmText;
   const resolvedEditText = editText === undefined ? locale.edit : editText;

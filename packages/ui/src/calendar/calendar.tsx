@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "../_icons";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import {
   dayjs,

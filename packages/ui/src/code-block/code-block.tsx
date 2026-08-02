@@ -4,13 +4,23 @@ import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
 import { HighlightedCode } from "./highlighted-code";
 import type { CodeBlockProps } from "./code-block.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 多行代码块（区别于行内 Code、单行命令 Snippet）：<pre> 容器 + 右上角复制按钮 + 可选语言标签。
 // 含剪贴板交互故 "use client"；复制成功反馈 1.5s 切回。皮肤走语义 token。
 // 语法着色由零依赖 tokenizeCode 产出 token 列表，逐段套 <span>（见 code-highlight.ts）。
-export function CodeBlock({ code, lang, copyable = true, highlight = true, className }: CodeBlockProps) {
-  const labels = useComponentLocale().codeBlock;
+export function CodeBlock({
+  code,
+  lang,
+  copyable = true,
+  highlight = true,
+  className,
+}: CodeBlockProps) {
+  const labels = useComponentLocale().codeBlock ?? {
+    copy: "复制",
+    copied: "已复制",
+    region: (language) => (language ? `${language} 代码` : "代码"),
+  };
   const [copied, setCopied] = useState(false);
 
   const onCopy = () => {

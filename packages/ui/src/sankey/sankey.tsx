@@ -1,13 +1,7 @@
 "use client";
-import {
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
+import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { computeSankeyLayout } from "./sankey-geometry";
 import type { SankeyLaidLink, SankeyLaidNode, SankeyProps } from "./sankey.types";
 
@@ -85,11 +79,7 @@ export function Sankey({
   const anyHover = hover !== null;
 
   return (
-    <div
-      ref={containerRef}
-      className={cn("relative w-full", className)}
-      style={{ height }}
-    >
+    <div ref={containerRef} className={cn("relative w-full", className)} style={{ height }}>
       <svg
         width={effectiveWidth}
         height={height}
@@ -111,10 +101,7 @@ export function Sankey({
                 stroke={color}
                 strokeWidth={l.width}
                 strokeOpacity={hot ? 0.6 : dimmed ? linkOpacity * 0.4 : linkOpacity}
-                className={cn(
-                  "transition-[stroke-opacity]",
-                  onLinkClick && "cursor-pointer",
-                )}
+                className={cn("transition-[stroke-opacity]", onLinkClick && "cursor-pointer")}
                 onMouseEnter={(e) => {
                   setHover({ type: "link", link: l });
                   setTip(pointerIn(containerRef.current, e));

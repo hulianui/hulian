@@ -5,7 +5,7 @@ import { cn } from "../lib/cn";
 import { Button } from "../button";
 import { Textarea } from "../textarea";
 import type { PromptInputProps } from "./prompt-input.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 提示输入：复用瑚琏 Textarea(autoResize 自增高) + 发送/停止键。
 // Enter 提交、Shift+Enter 换行、IME 合成中不误触发。受控/非受控两用。
@@ -23,7 +23,11 @@ export function PromptInput({
   trailing,
   className,
 }: PromptInputProps) {
-  const labels = useComponentLocale().promptInput;
+  const labels = useComponentLocale().promptInput ?? {
+    placeholder: "发消息…",
+    stop: "停止生成",
+    send: "发送",
+  };
   const [inner, setInner] = useState(defaultValue);
   const isControlled = value !== undefined;
   const text = isControlled ? value : inner;

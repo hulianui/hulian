@@ -2,7 +2,7 @@
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
 import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { ColorSwatchPickerProps, SwatchSize } from "./color-swatch-picker.types";
 
 // 离散预设色块单选网格：HeroUI ColorSwatchPicker 的零依赖对标。

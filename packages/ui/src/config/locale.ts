@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext } from "react";
+import { useLocaleContext } from "./locale-context";
 
 /**
  * 组件内置文案的 i18n 字典。当前覆盖企业层 ProTable / AdminLayout 的可见文案；
@@ -2025,13 +2025,7 @@ export const enUS: Locale = {
   },
 };
 
-export const LocaleContext = createContext<Locale | null>(null);
-
 /** 取当前 Locale；缺 ConfigProvider 时回退默认 zhCN（组件须能脱离 Provider 渲染，故不抛）。 */
 export function useLocale(): Locale {
-  return useContext(LocaleContext) ?? zhCN;
-}
-
-export function useComponentLocale(): ComponentLocale {
-  return useLocale().components ?? zhComponents;
+  return useLocaleContext() ?? zhCN;
 }

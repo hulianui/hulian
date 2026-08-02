@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
 import type { LiveChatItem, LiveChatProps } from "./live-chat.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 /** 距底 px 阈值内即视为「在底部」。 */
 const BOTTOM_THRESHOLD = 24;
@@ -87,7 +87,9 @@ export function LiveChat({
         )}
       >
         {windowed.map((it) => (
-          <div key={it.id}>{renderItem ? renderItem(it) : <DefaultRow item={it} overlay={overlay} />}</div>
+          <div key={it.id}>
+            {renderItem ? renderItem(it) : <DefaultRow item={it} overlay={overlay} />}
+          </div>
         ))}
       </div>
       {unread > 0 && (
@@ -125,7 +127,11 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
   const shadow = overlay ? "[text-shadow:0_1px_3px_rgba(0,0,0,0.6)]" : "";
 
   if (item.type === "system") {
-    return <div className={cn("text-center text-xs", overlay ? "text-white/70" : "text-muted", shadow)}>{item.text}</div>;
+    return (
+      <div className={cn("text-center text-xs", overlay ? "text-white/70" : "text-muted", shadow)}>
+        {item.text}
+      </div>
+    );
   }
   if (item.type === "enter") {
     return (
@@ -144,7 +150,12 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
   }
   if (item.type === "gift") {
     return (
-      <div className={cn("flex items-center gap-1.5 rounded-[var(--radius)] bg-chart-4/15 px-2 py-1 text-xs", shadow)}>
+      <div
+        className={cn(
+          "flex items-center gap-1.5 rounded-[var(--radius)] bg-chart-4/15 px-2 py-1 text-xs",
+          shadow,
+        )}
+      >
         <span className={cn("font-medium", body)}>{item.user?.name}</span>
         <span className={nameMuted}>{labels.sent}</span>
         <span className="font-semibold text-chart-4">
@@ -160,12 +171,20 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
   return (
     <div className={cn("flex items-start gap-2 text-sm", shadow)}>
       {item.user?.avatar !== undefined && (
-        <Avatar size="sm" src={item.user.avatar} alt={item.user.name} fallback={item.user.name?.[0]} />
+        <Avatar
+          size="sm"
+          src={item.user.avatar}
+          alt={item.user.name}
+          fallback={item.user.name?.[0]}
+        />
       )}
       <div className="min-w-0 leading-snug">
         {item.user?.level != null && <LevelBadge level={item.user.level} />}
         {item.user?.badge}
-        <span className={cn("mr-1", nameMuted)}>{item.user?.name}{labels.messageSeparator ?? "："}</span>
+        <span className={cn("mr-1", nameMuted)}>
+          {item.user?.name}
+          {labels.messageSeparator ?? "："}
+        </span>
         <span className={body}>{item.text}</span>
       </div>
     </div>

@@ -8,7 +8,8 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { RotateCcw } from "lucide-react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ModelViewerProps } from "./model-viewer.types";
 
@@ -45,7 +46,7 @@ export function ModelViewer({
   style,
   ...props
 }: ModelViewerProps) {
-  const locale = useComponentLocale().modelViewer ?? zhCN.components!.modelViewer!;
+  const locale = useComponentLocale().modelViewer ?? { reset: "重置视角" };
   // SSR 安全的 reduced-motion 探测：初始 false，客户端首帧 effect 同步真实媒体查询。
   // 不用 motion 的 useReducedMotion——它在 jsdom/测试下不随 matchMedia mock 同步刷新。
   const [reduced, setReduced] = useState(false);

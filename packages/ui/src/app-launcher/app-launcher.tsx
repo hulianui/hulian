@@ -2,7 +2,8 @@
 import { useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { cn } from "../lib/cn";
 import { Search } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { pressableClass } from "../motion";
 import { filterApps, groupSections } from "./app-launcher.filter";
 import type { AppLauncherItem, AppLauncherProps } from "./app-launcher.types";
@@ -40,7 +41,12 @@ export function AppLauncher({
   className,
   ...rest
 }: AppLauncherProps) {
-  const locale = useComponentLocale().appLauncher ?? zhCN.components!.appLauncher!;
+  const locale = useComponentLocale().appLauncher ?? {
+    all: "全部",
+    empty: "没有匹配的应用",
+    search: "搜索应用",
+    categories: "应用分类",
+  };
   const resolvedAllLabel = allLabel ?? locale.all;
   const resolvedEmptyText = emptyText ?? locale.empty;
   const [innerSearch, setInnerSearch] = useState(defaultSearch);
@@ -76,9 +82,16 @@ export function AppLauncher({
     const current = cells.indexOf(document.activeElement as HTMLElement);
     if (current < 0) return;
     const step =
-      e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : e.key === "ArrowDown" ? columns : e.key === "ArrowUp" ? -columns : 0;
-    const next =
-      e.key === "Home" ? 0 : e.key === "End" ? cells.length - 1 : current + step;
+      e.key === "ArrowRight"
+        ? 1
+        : e.key === "ArrowLeft"
+        ? -1
+        : e.key === "ArrowDown"
+        ? columns
+        : e.key === "ArrowUp"
+        ? -columns
+        : 0;
+    const next = e.key === "Home" ? 0 : e.key === "End" ? cells.length - 1 : current + step;
     if (next < 0 || next >= cells.length) return; // 越界不回绕：撞到边界比跳到对角更好预期
     e.preventDefault();
     cells[next].focus();
@@ -102,9 +115,7 @@ export function AppLauncher({
         >
           {item.label}
         </span>
-        {item.badge != null && (
-          <span className="absolute right-1 top-0 z-10">{item.badge}</span>
-        )}
+        {item.badge != null && <span className="absolute right-1 top-0 z-10">{item.badge}</span>}
       </>
     );
 
@@ -162,14 +173,20 @@ export function AppLauncher({
               />
             </span>
           ) : (
-            <span className="min-w-0 flex-1 truncate text-lg font-semibold text-foreground">{title}</span>
+            <span className="min-w-0 flex-1 truncate text-lg font-semibold text-foreground">
+              {title}
+            </span>
           )}
           {actions}
         </div>
       )}
 
       {categories && categories.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto pb-3" role="group" aria-label={locale.categories}>
+        <div
+          className="flex gap-2 overflow-x-auto pb-3"
+          role="group"
+          aria-label={locale.categories}
+        >
           {/* 用 group + aria-pressed 而不是 tablist/tab：网格不是 tabpanel，套 tab 角色会给读屏
               用户一个并不存在的「面板切换」心智，也过不了「tab 须有 tabpanel」这类审计。 */}
           {[{ key: "", label: resolvedAllLabel }, ...categories].map((c) => {

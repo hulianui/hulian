@@ -3,7 +3,7 @@ import { Toast } from "@base-ui/react/toast";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { ToastOptions, ToastProviderProps, ToastTone } from "./toast.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 模块级全局单例 manager：触发(toast())与渲染(<ToastProvider/>)解耦。框架无关、SSR 安全。
 const hulianToastManager = Toast.createToastManager();
@@ -44,7 +44,7 @@ const overlayTransition = {
 
 function ToastList() {
   const { toasts } = Toast.useToastManager();
-  const { close } = useComponentLocale().toast;
+  const { close } = useComponentLocale().toast ?? { close: "关闭" };
   return toasts.map((t) => {
     const tone = (t.type as ToastTone) ?? "neutral";
     return (
@@ -60,14 +60,22 @@ function ToastList() {
         style={overlayTransition}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <Toast.Title className={cn("text-sm font-medium", toneTitle[tone] ?? toneTitle.neutral)} />
+          <Toast.Title
+            className={cn("text-sm font-medium", toneTitle[tone] ?? toneTitle.neutral)}
+          />
           <Toast.Description className="text-sm text-muted" />
         </div>
         <Toast.Close
           aria-label={close}
           className="shrink-0 rounded-[var(--radius)] p-0.5 text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <svg
+            viewBox="0 0 16 16"
+            className="size-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
             <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
           </svg>
         </Toast.Close>

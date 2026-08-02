@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Clock, X } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { TimeColumn } from "./time-column";
@@ -48,7 +49,15 @@ export function TimePicker({
   "aria-label": ariaLabel,
   className,
 }: TimePickerProps) {
-  const locale = useComponentLocale().timePicker ?? zhCN.components!.timePicker!;
+  const locale = useComponentLocale().timePicker ?? {
+    placeholder: "选择时间",
+    clear: "清除",
+    hour: "时",
+    minute: "分",
+    second: "秒",
+    now: "此刻",
+    confirm: "确定",
+  };
   const resolvedPlaceholder = placeholder === undefined ? locale.placeholder : placeholder;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);

@@ -3,7 +3,7 @@ import { useId, useState } from "react";
 import { Star } from "../_icons";
 import { cn } from "../lib/cn";
 import type { RatingProps } from "./rating.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 自研星级评分（零依赖）。此前是 @mui/material/Rating 的薄包装 —— 为了这一个组件，
 // 全库拖着 emotion 这套 runtime CSS-in-JS（不兼容 RSC），且任何人装 @hulianui/ui
@@ -27,7 +27,11 @@ export function Rating({
   emptyIcon,
   className,
 }: RatingProps) {
-  const labels = useComponentLocale().rating;
+  const labels = useComponentLocale().rating ?? {
+    value: (value, max) => `评分 ${value} / ${max}`,
+    group: (max) => `评分，共 ${max} 级`,
+    star: (value) => `${value} 星`,
+  };
   const name = useId();
   const [inner, setInner] = useState(defaultValue ?? 0);
   const [hover, setHover] = useState<number | null>(null);

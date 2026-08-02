@@ -3,7 +3,7 @@ import { cloneElement, useEffect, useMemo, useRef, useState, type MouseEvent } f
 import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { NavMenuGroup, NavMenuItem, NavMenuNode, NavMenuProps } from "./nav-menu.types";
 
 const isGroup = (node: NavMenuNode): node is NavMenuGroup =>
@@ -149,7 +149,15 @@ export function NavMenu({
 
   const openKey = open.join("\u0000"); // 稳定依赖键，避免数组引用每次新建触发 memo 失效
   const flat = useMemo(
-    () => flattenVisible(items, new Set(openKey ? openKey.split("\u0000") : []), collapsed, 0, null, []),
+    () =>
+      flattenVisible(
+        items,
+        new Set(openKey ? openKey.split("\u0000") : []),
+        collapsed,
+        0,
+        null,
+        [],
+      ),
     [items, openKey, collapsed],
   );
 
@@ -162,7 +170,7 @@ export function NavMenu({
   const firstSelected =
     collapsed && selectedRowKey ? rootKeyOf(flat, selectedRowKey) : selectedRowKey;
   const effectiveActive =
-    activeKey && flatKeys.includes(activeKey) ? activeKey : (firstSelected ?? flatKeys[0] ?? null);
+    activeKey && flatKeys.includes(activeKey) ? activeKey : firstSelected ?? flatKeys[0] ?? null;
 
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const focusKey = (key: string) => {
@@ -411,9 +419,14 @@ export function NavMenu({
                   {
                     ...shared,
                     "aria-current": isSelected ? "page" : undefined,
-                    className: cn(shared.className, (child.render.props as { className?: string }).className),
+                    className: cn(
+                      shared.className,
+                      (child.render.props as { className?: string }).className,
+                    ),
                     onClick: (event: MouseEvent) => {
-                      (child.render!.props as { onClick?: (e: MouseEvent) => void }).onClick?.(event);
+                      (child.render!.props as { onClick?: (e: MouseEvent) => void }).onClick?.(
+                        event,
+                      );
                       if (child.disabled) return;
                       setActiveKey(child.key);
                       selectLeaf(child.key);
@@ -527,7 +540,9 @@ export function NavMenu({
                   )}
                 >
                   <span aria-hidden className="[&>svg]:size-5">
-                    {item.icon ?? <span className="text-sm font-medium">{firstGlyph(item.label)}</span>}
+                    {item.icon ?? (
+                      <span className="text-sm font-medium">{firstGlyph(item.label)}</span>
+                    )}
                   </span>
                 </button>
                 {/* 飞出层：hover / focus-within 才显示；第一层用 fixed + 实测坐标贴在图标右侧，
@@ -659,7 +674,10 @@ export function NavMenu({
             {
               ...shared,
               "aria-current": isSelected ? "page" : undefined,
-              className: cn(shared.className, (node.render.props as { className?: string }).className),
+              className: cn(
+                shared.className,
+                (node.render.props as { className?: string }).className,
+              ),
               onClick: (event: MouseEvent) => {
                 (node.render!.props as { onClick?: (e: MouseEvent) => void }).onClick?.(event);
                 leafClick();
@@ -713,7 +731,10 @@ export function NavMenu({
           {hasChildren ? (
             <div
               data-submenu
-              className={cn("grid transition-[grid-template-rows]", expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
+              className={cn(
+                "grid transition-[grid-template-rows]",
+                expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+              )}
               style={{
                 transitionDuration: reduced ? "0ms" : motionDurationCss.base,
                 transitionTimingFunction: motionEaseCss.out,

@@ -8,7 +8,7 @@ import { RemoteSelect } from "../remote-select";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
 import { canCollapse, planLayout } from "./search-form.layout";
 import type { SearchField, SearchFormProps } from "./search-form.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 const ChevronDown = ({ className }: { className?: string }) => (
   <svg
@@ -231,7 +231,13 @@ export function SearchForm({
   loading = false,
   className,
 }: SearchFormProps) {
-  const labels = useComponentLocale().searchForm;
+  const labels = useComponentLocale().searchForm ?? {
+    selectPlaceholder: "请选择",
+    submit: "查询",
+    reset: "重置",
+    expand: "展开",
+    collapse: "收起",
+  };
   const isControlled = values !== undefined;
   const [internal, setInternal] = useState<Record<string, unknown>>(() => seedDefaults(fields));
   const current = isControlled ? values : internal;

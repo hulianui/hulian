@@ -5,7 +5,7 @@ import { cn } from "../lib/cn";
 import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "../collapsible";
 import { AnimatedShinyText } from "../animated-shiny-text";
 import type { ThinkingBlockProps } from "./thinking-block.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 思考折叠块：dogfood Collapsible(自带 chevron + 平滑高度)，头部承载思考态。
 // thinking 时标题转圈 + AnimatedShinyText 高光流动 + 默认展开；思考结束自动收起 chain-of-thought。
@@ -21,7 +21,7 @@ export function ThinkingBlock({
   className,
   children,
 }: ThinkingBlockProps) {
-  const labels = useComponentLocale().thinkingBlock;
+  const labels = useComponentLocale().thinkingBlock ?? { title: "思考过程" };
   const resolvedTitle = title ?? labels.title;
   const isControlled = open !== undefined;
   const [internalOpen, setInternalOpen] = useState(defaultOpen ?? thinking ?? false);

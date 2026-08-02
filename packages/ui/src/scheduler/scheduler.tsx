@@ -5,7 +5,8 @@ import { ChevronLeft, ChevronRight } from "../_icons";
 import { Segmented } from "../segmented";
 import { dayjs } from "../lib/date";
 import { cn } from "../lib/cn";
-import { useComponentLocale, type ComponentLocale } from "../config/locale";
+import { type ComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { MonthView } from "./scheduler-month";
 import { TimeGrid } from "./scheduler-time-grid";
 import { dayColumns, resourceColumns, startOfWeekISO, weekColumns } from "./scheduler-geometry";
@@ -33,7 +34,10 @@ function titleFor(view: SchedulerView, date: string, labels: SchedulerLabels): s
   if (view === "week") {
     const monday = dayjs(startOfWeekISO(date));
     const sunday = monday.add(6, "day");
-    return `${labels.weekDate(monday.month() + 1, monday.date())} – ${labels.weekDate(sunday.month() + 1, sunday.date())}`;
+    return `${labels.weekDate(monday.month() + 1, monday.date())} – ${labels.weekDate(
+      sunday.month() + 1,
+      sunday.date(),
+    )}`;
   }
   return labels.dayTitle(d.year(), d.month() + 1, d.date());
 }
@@ -85,10 +89,10 @@ export function Scheduler({
     view === "week"
       ? weekColumns(date, todayISO, labels)
       : view === "day"
-        ? dayColumns(date, todayISO, labels)
-        : view === "resource"
-          ? resourceColumns(date, resources)
-          : [];
+      ? dayColumns(date, todayISO, labels)
+      : view === "resource"
+      ? resourceColumns(date, resources)
+      : [];
 
   return (
     <div
@@ -121,7 +125,9 @@ export function Scheduler({
             >
               <ChevronRight className="size-4" />
             </Button>
-            <span className="ml-1 text-sm font-medium tabular-nums">{titleFor(view, date, labels)}</span>
+            <span className="ml-1 text-sm font-medium tabular-nums">
+              {titleFor(view, date, labels)}
+            </span>
           </div>
           <Segmented
             items={viewItems}

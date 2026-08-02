@@ -2,7 +2,7 @@
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import type { AlertProps } from "./alert.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 纯皮肤（照 badge.tsx）：base 设布局；tone/variant 留空由 compound 填「底色/边框 + accent 文字色」。
 // accent 作用于 icon + title；description 显式 text-muted 覆盖（正文恒中性可读，不被 tone 染色）。
@@ -58,8 +58,8 @@ export function Alert({
   children,
   ...props
 }: AlertProps) {
-  const componentLocale = useComponentLocale();
-  const resolvedCloseLabel = closeLabel ?? componentLocale.alert.close;
+  const alertLocale = useComponentLocale().alert ?? { close: "关闭" };
+  const resolvedCloseLabel = closeLabel ?? alertLocale.close;
   // role 由 tone 派生：danger=需打断的错误→assertive(alert)；其余→polite(status)。props.role 可覆盖。
   const resolvedRole = role ?? (tone === "danger" ? "alert" : "status");
 

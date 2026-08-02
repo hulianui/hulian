@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { Play, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type { HeroVideoDialogProps } from "./hero-video-dialog.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 吸取自 magicui.design Hero Video Dialog：缩略图 + 播放钮，点击弹出居中视频层（含状态/Portal/Esc 故 "use client"）。
 // 瑚琏化：遮罩/卡片走 token；自管 Portal 模态（不耦合 Base UI Dialog）；Esc + 点遮罩关闭；body 锁滚。
@@ -14,7 +14,11 @@ export function HeroVideoDialog({
   videoSrc,
   className,
 }: HeroVideoDialogProps) {
-  const labels = useComponentLocale().heroVideoDialog;
+  const labels = useComponentLocale().heroVideoDialog ?? {
+    play: "播放视频",
+    close: "关闭",
+    iframeTitle: "视频",
+  };
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

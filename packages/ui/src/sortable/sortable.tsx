@@ -22,7 +22,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { hasInteractiveAncestorWithin } from "../lib/drag-guard";
 import type { SortableProps } from "./sortable.types";
 
@@ -43,7 +43,10 @@ import type { SortableProps } from "./sortable.types";
  * @param target 事件的 target（真实按下的最内层元素）
  * @param container activator 所在元素（整项可拖时是 `<li>`；handle 模式下是手柄按钮本身）
  */
-export function shouldStartDragFrom(target: EventTarget | null, container: Element | null): boolean {
+export function shouldStartDragFrom(
+  target: EventTarget | null,
+  container: Element | null,
+): boolean {
   if (!(target instanceof Element)) return true;
   // 双保险：手柄自身带显式标记，即使 activator 未来挂到手柄的祖先上也不会被守卫误挡。
   if (target.closest("[data-sortable-handle]")) return true;
@@ -86,8 +89,15 @@ function SortableRow<T>({
   handle: boolean;
   handleLabel: (index: number) => string;
 }) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
-    useSortable({ id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
 
   const style = { transform: CSS.Translate.toString(transform), transition };
 
@@ -165,9 +175,16 @@ export function Sortable<T>({
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext
         items={ids}
-        strategy={orientation === "horizontal" ? horizontalListSortingStrategy : verticalListSortingStrategy}
+        strategy={
+          orientation === "horizontal" ? horizontalListSortingStrategy : verticalListSortingStrategy
+        }
       >
-        <ul className={cn(orientation === "horizontal" ? "flex flex-wrap gap-2" : "space-y-2", className)}>
+        <ul
+          className={cn(
+            orientation === "horizontal" ? "flex flex-wrap gap-2" : "space-y-2",
+            className,
+          )}
+        >
           {items.map((item, index) => (
             <SortableRow
               key={String(getId(item))}

@@ -9,7 +9,8 @@ import {
   ComboboxTrigger,
 } from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { countries } from "./countries.data";
 import { countrySearchText, flagEmoji, getCountry } from "./country-select.logic";
 import type { CountrySelectProps } from "./country-select.types";
@@ -30,23 +31,28 @@ export function CountrySelect({
   invalid,
   className,
 }: CountrySelectProps) {
-  const locale = useComponentLocale().countrySelect ?? zhCN.components!.countrySelect!;
+  const locale = useComponentLocale().countrySelect ?? {
+    placeholder: "选择国家/地区",
+    searchPlaceholder: "搜索国家 / 区号…",
+    name: (chinese) => chinese,
+    secondaryName: (_chinese, english) => english,
+  };
   const resolvedPlaceholder = placeholder ?? locale.placeholder;
   const resolvedSearchPlaceholder = searchPlaceholder ?? locale.searchPlaceholder;
   const items = useMemo(
     () =>
-      countries.map((country): ComboboxItemData => ({
-        value: country.code,
-        label: `${flagEmoji(country.code)} ${locale.name(country.cn, country.en)}`,
-      })),
+      countries.map(
+        (country): ComboboxItemData => ({
+          value: country.code,
+          label: `${flagEmoji(country.code)} ${locale.name(country.cn, country.en)}`,
+        }),
+      ),
     [locale],
   );
   const itemByCode = useMemo(() => new Map(items.map((i) => [i.value, i])), [items]);
 
   // 公开 value 用 code(s)，内部 Combobox 用 ComboboxItemData(s)；这里管受控/非受控并双向映射。
-  const [internal, setInternal] = useState<string | string[]>(
-    defaultValue ?? (multiple ? [] : ""),
-  );
+  const [internal, setInternal] = useState<string | string[]>(defaultValue ?? (multiple ? [] : ""));
   const codes = value ?? internal;
 
   // 搜索按富文本匹配（中文/英文/码/区号），而非紧凑 label。
@@ -133,7 +139,12 @@ export function CountrySelect({
         onChange?.(code);
       }}
     >
-      <ComboboxTrigger size={size} placeholder={resolvedPlaceholder} invalid={invalid} className={className} />
+      <ComboboxTrigger
+        size={size}
+        placeholder={resolvedPlaceholder}
+        invalid={invalid}
+        className={className}
+      />
       <ComboboxContent searchPlaceholder={resolvedSearchPlaceholder}>
         {(item) => (
           <ComboboxItem key={item.value} value={item}>

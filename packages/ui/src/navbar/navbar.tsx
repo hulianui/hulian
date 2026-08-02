@@ -7,11 +7,17 @@ import type {
   NavbarItemProps,
   NavbarMenuToggleProps,
 } from "./navbar.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 复合导航栏皮肤（含可交互 MenuToggle 故 "use client"）。
 // 布局/路由由消费者用子件组合，本件只负责皮肤与无障碍语义。
-export function Navbar({ sticky = false, bordered = true, className, children, ...props }: NavbarProps) {
+export function Navbar({
+  sticky = false,
+  bordered = true,
+  className,
+  children,
+  ...props
+}: NavbarProps) {
   return (
     <nav
       className={cn(
@@ -29,7 +35,10 @@ export function Navbar({ sticky = false, bordered = true, className, children, .
 
 export function NavbarBrand({ className, children, ...props }: NavbarProps) {
   return (
-    <div className={cn("flex shrink-0 items-center gap-2 font-semibold text-foreground", className)} {...props}>
+    <div
+      className={cn("flex shrink-0 items-center gap-2 font-semibold text-foreground", className)}
+      {...props}
+    >
       {children}
     </div>
   );
@@ -41,9 +50,17 @@ const justifyClass = {
   end: "justify-end",
 } as const;
 
-export function NavbarContent({ justify = "start", className, children, ...props }: NavbarContentProps) {
+export function NavbarContent({
+  justify = "start",
+  className,
+  children,
+  ...props
+}: NavbarContentProps) {
   return (
-    <ul className={cn("flex flex-1 items-center gap-2 sm:gap-4", justifyClass[justify], className)} {...props}>
+    <ul
+      className={cn("flex flex-1 items-center gap-2 sm:gap-4", justifyClass[justify], className)}
+      {...props}
+    >
       {children}
     </ul>
   );

@@ -2,7 +2,8 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { Listbox } from "../listbox/listbox";
 import type { ListboxItemData } from "../listbox/listbox.types";
@@ -80,7 +81,19 @@ function TransferPanel({
   listHeight: number;
   showSelectAll: boolean;
 }) {
-  const locale = useComponentLocale().transfer ?? zhCN.components!.transfer!;
+  const locale = useComponentLocale().transfer ?? {
+    allRight: "全部移入",
+    right: "移入选中",
+    left: "移出选中",
+    allLeft: "全部移出",
+    selectAll: (title) => (title ? `全选${title}` : "全选"),
+    search: (title) => (title ? `搜索${title}` : "搜索"),
+    noMatches: "无匹配项",
+    empty: "暂无数据",
+    source: "源列表",
+    selected: "已选",
+    searchPlaceholder: "搜索",
+  };
   const filtered = search ? items.filter((it) => filterOption(search, it)) : items;
   const listItems: ListboxItemData[] = filtered.map((it) => ({
     key: it.key,
@@ -180,7 +193,19 @@ export function Transfer({
   disabled = false,
   className,
 }: TransferProps) {
-  const locale = useComponentLocale().transfer ?? zhCN.components!.transfer!;
+  const locale = useComponentLocale().transfer ?? {
+    allRight: "全部移入",
+    right: "移入选中",
+    left: "移出选中",
+    allLeft: "全部移出",
+    selectAll: (title) => (title ? `全选${title}` : "全选"),
+    search: (title) => (title ? `搜索${title}` : "搜索"),
+    noMatches: "无匹配项",
+    empty: "暂无数据",
+    source: "源列表",
+    selected: "已选",
+    searchPlaceholder: "搜索",
+  };
   const resolvedTitles = titles ?? [locale.source, locale.selected];
   const resolvedSearchPlaceholder = searchPlaceholder ?? locale.searchPlaceholder;
   const isControlled = targetKeys !== undefined;

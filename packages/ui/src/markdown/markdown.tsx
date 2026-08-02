@@ -5,7 +5,7 @@ import { Prose } from "../prose";
 import { CodeBlock } from "../code-block";
 import { parseBlocks, type MdBlock } from "./parse";
 import type { MarkdownProps } from "./markdown.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 零依赖只读 Markdown 渲染：parseBlocks 切块 → Prose 排版皮肤 + 围栏代码块委托 CodeBlock。
 // 行内支持 `代码` / **粗体** / *斜体* / [链接](url)。区别 MarkdownEditor(可编辑·TipTap)：本件纯渲染、RSC 安全。
@@ -119,7 +119,7 @@ function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
 }
 
 export function Markdown({ children = "", size = "base", className }: MarkdownProps) {
-  const labels = useComponentLocale().markdown;
+  const labels = useComponentLocale().markdown ?? { dataTable: "数据表格" };
   const blocks = parseBlocks(children);
   // 连续文本块分组进 Prose，围栏代码块作为独立 CodeBlock 夹在中间 ——
   // 关键：CodeBlock 不能当 Prose 的后代 pre，否则 Prose 的 [&_pre] 样式(p-4/border/bg)会覆盖

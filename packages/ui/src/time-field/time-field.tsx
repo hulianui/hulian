@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import { Clock, X } from "../_icons";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import {
   clampTime,
   EMPTY_PARTS,

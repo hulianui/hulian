@@ -13,7 +13,7 @@ import { useReducedMotion } from "motion/react";
 import { X } from "../_icons";
 import { cn } from "../lib/cn";
 import { Button } from "../button";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { computeCardPosition, computeSpotlight, resolveTarget, type Rect } from "./tour.geometry";
 import type { TourProps } from "./tour.types";

@@ -1,7 +1,7 @@
 "use client";
 import { useId, useState, type FormEvent, type ReactElement } from "react";
 import { Button } from "../button";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { Dialog, DialogContent, DialogTrigger } from "../dialog";
 import { Drawer, DrawerContent, DrawerTrigger } from "../drawer";
 import type { FormInstance, FormValues } from "../form/use-form";
@@ -15,7 +15,11 @@ import type { DrawerFormProps, ModalFormProps } from "./form-dialog.types";
 // 早期实现绕过了它），且按钮的阴影/焦点环会被滚动容器裁掉。
 // 代价是按钮与 <form> 不再是父子关系 —— 用 HTML 的 form 属性按 id 把外部 submit 按钮关联回表单。
 
-function useOpenState(open: boolean | undefined, defaultOpen: boolean | undefined, onOpenChange?: (o: boolean) => void) {
+function useOpenState(
+  open: boolean | undefined,
+  defaultOpen: boolean | undefined,
+  onOpenChange?: (o: boolean) => void,
+) {
   const [internal, setInternal] = useState(defaultOpen ?? false);
   const value = open ?? internal;
   const set = (o: boolean) => {
@@ -75,7 +79,10 @@ interface FooterProps {
 }
 
 function FormDialogFooter({ formId, loading, submitText, cancelText, onClose }: FooterProps) {
-  const loc = useLocale().modalForm;
+  const loc = useLocaleValue("modalForm", {
+    submit: "提交",
+    cancel: "取消",
+  });
   // 不包 div：footer 槽自身已是 flex + justify-end + gap-2 的行容器，再套一层会破坏其对齐
   return (
     <>

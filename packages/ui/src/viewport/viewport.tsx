@@ -1,6 +1,7 @@
 "use client";
 import { useState, type CSSProperties } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { Segmented } from "../segmented";
 import type { ViewportDevice, ViewportProps } from "./viewport.types";
@@ -31,7 +32,11 @@ export function Viewport({
   children,
   className,
 }: ViewportProps) {
-  const copy = useComponentLocale().viewport ?? zhCN.components!.viewport!;
+  const copy = useComponentLocale().viewport ?? {
+    devicePresets: "设备预设",
+    tablet: "平板",
+    phone: "手机",
+  };
   const deviceItems = [
     { value: "web", label: "Web" },
     { value: "tablet", label: copy.tablet },

@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { StaggeredMenuProps } from "./staggered-menu.types";
@@ -32,7 +33,14 @@ export function StaggeredMenu({
   style,
   ...props
 }: StaggeredMenuProps) {
-  const locale = useComponentLocale().staggeredMenu ?? zhCN.components!.staggeredMenu!;
+  const locale = useComponentLocale().staggeredMenu ?? {
+    brand: "瑚琏",
+    menu: "菜单",
+    close: "关闭",
+    openMenu: "打开菜单",
+    closeMenu: "关闭菜单",
+    social: "社交",
+  };
   const resolvedBrand = brand ?? locale.brand;
   const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();

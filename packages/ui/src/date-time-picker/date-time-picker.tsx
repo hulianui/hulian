@@ -4,7 +4,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { dayjs } from "../lib/date";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { TimeColumn } from "../time-picker/time-column";
@@ -68,7 +68,7 @@ export function DateTimePicker({
   const placeholder = placeholderProp ?? labels.placeholder;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
-  const value = isControlled ? (valueProp ?? null) : internal;
+  const value = isControlled ? valueProp ?? null : internal;
   const { date, time } = splitDateTime(value);
 
   const [open, setOpen] = useState(false);
@@ -78,7 +78,8 @@ export function DateTimePicker({
   const parsedTime = parseTime(time);
   // 尚未选时间时的隐含基准，同 TimePicker：把 00:00:00 夹进 [min,max]，
   // 否则 minTime="09:30" 下基准小时恒为 0，分钟列会被整列判死，面板看着像坏了。
-  const base: TimeParts = parsedTime ?? clampTime({ h: 0, m: 0, s: 0 }, withSeconds, minTime, maxTime);
+  const base: TimeParts =
+    parsedTime ?? clampTime({ h: 0, m: 0, s: 0 }, withSeconds, minTime, maxTime);
 
   function commit(next: string | null) {
     if (!isControlled) setInternal(next);
@@ -100,7 +101,10 @@ export function DateTimePicker({
     // 换天会换掉时间边界，所以时间要按新那天的边界重夹一次
     const bounds = effectiveTimeBounds(nextDate, minDateTime, maxDateTime);
     const t = parsedTime ?? { h: 0, m: 0, s: 0 };
-    commitParts(nextDate, formatTimeParts(clampTime(t, withSeconds, bounds.minTime, bounds.maxTime), withSeconds));
+    commitParts(
+      nextDate,
+      formatTimeParts(clampTime(t, withSeconds, bounds.minTime, bounds.maxTime), withSeconds),
+    );
   }
 
   function pickTime(patch: Partial<TimeParts>) {
@@ -115,8 +119,15 @@ export function DateTimePicker({
     const d = new Date();
     const today = dayjs(d).format("YYYY-MM-DD");
     const bounds = effectiveTimeBounds(today, minDateTime, maxDateTime);
-    const snapped = snapToStep({ h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() }, minuteStep, secondStep);
-    commitParts(today, formatTimeParts(clampTime(snapped, withSeconds, bounds.minTime, bounds.maxTime), withSeconds));
+    const snapped = snapToStep(
+      { h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() },
+      minuteStep,
+      secondStep,
+    );
+    commitParts(
+      today,
+      formatTimeParts(clampTime(snapped, withSeconds, bounds.minTime, bounds.maxTime), withSeconds),
+    );
     setOpen(false);
   }
 
@@ -126,11 +137,7 @@ export function DateTimePicker({
   }
 
   const showClear = clearable && value != null && !disabled && !readOnly;
-  const text = value
-    ? displayFormat
-      ? dayjs(value).format(displayFormat)
-      : value
-    : "";
+  const text = value ? (displayFormat ? dayjs(value).format(displayFormat) : value) : "";
 
   return (
     <BasePopover.Root
@@ -155,7 +162,9 @@ export function DateTimePicker({
               )}
             >
               <CalendarIcon className="size-4 shrink-0 text-muted" aria-hidden />
-              <span className={cn("truncate tabular-nums", !text && "text-muted")}>{text || placeholder}</span>
+              <span className={cn("truncate tabular-nums", !text && "text-muted")}>
+                {text || placeholder}
+              </span>
             </button>
           }
         />

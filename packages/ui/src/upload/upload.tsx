@@ -18,7 +18,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { UploadFile, UploadProps, UploadRejection } from "./upload.types";
 
@@ -79,7 +80,14 @@ interface RowProps {
 
 /** 行内容（无 hook，静态行与可拖行共用）。 */
 function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
-  const locale = useComponentLocale().upload ?? zhCN.components!.upload!;
+  const locale = useComponentLocale().upload ?? {
+    dropLabel: "点击或拖拽文件到此处",
+    buttonLabel: "选择文件",
+    progress: (name) => `${name} 上传进度`,
+    remove: (name) => `移除 ${name}`,
+    reorder: (name) => `拖拽排序 ${name}`,
+    selected: (count, limit) => `已选 ${count}/${limit}`,
+  };
   const dot = STATUS_DOT[f.status ?? "ready"];
   const preview = renderPreview?.(f);
   const pct = f.progress == null ? 0 : Math.min(100, Math.max(0, f.progress));
@@ -161,7 +169,14 @@ function StaticRow(props: RowProps) {
 
 /** 可拖调序的行：手柄式 activator（行内有移除按钮，整行可拖会吞掉点击）。 */
 function SortableRow(props: RowProps) {
-  const locale = useComponentLocale().upload ?? zhCN.components!.upload!;
+  const locale = useComponentLocale().upload ?? {
+    dropLabel: "点击或拖拽文件到此处",
+    buttonLabel: "选择文件",
+    progress: (name) => `${name} 上传进度`,
+    remove: (name) => `移除 ${name}`,
+    reorder: (name) => `拖拽排序 ${name}`,
+    selected: (count, limit) => `已选 ${count}/${limit}`,
+  };
   const {
     attributes,
     listeners,
@@ -219,7 +234,14 @@ export function Upload({
   children,
   className,
 }: UploadProps) {
-  const locale = useComponentLocale().upload ?? zhCN.components!.upload!;
+  const locale = useComponentLocale().upload ?? {
+    dropLabel: "点击或拖拽文件到此处",
+    buttonLabel: "选择文件",
+    progress: (name) => `${name} 上传进度`,
+    remove: (name) => `移除 ${name}`,
+    reorder: (name) => `拖拽排序 ${name}`,
+    selected: (count, limit) => `已选 ${count}/${limit}`,
+  };
   const resolvedLabel = label ?? locale.dropLabel;
   const resolvedButtonLabel = buttonLabel ?? locale.buttonLabel;
   const inputRef = useRef<HTMLInputElement>(null);

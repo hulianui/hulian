@@ -1,5 +1,13 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type UIEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  type UIEvent,
+} from "react";
 import {
   Combobox,
   ComboboxChip,
@@ -9,7 +17,8 @@ import {
   ComboboxItem,
 } from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { Spinner } from "../spinner/spinner";
 import type {
   RemoteSelectOption,
@@ -24,7 +33,9 @@ const LOAD_MORE_THRESHOLD = 24;
 const EMPTY_VALUES: string[] = [];
 
 /** 对外 value（单选标量 / 多选数组 / number / null）归一为内部 string[]，顺序保持不变。 */
-function toValueArray(input: RemoteSelectRawValue | RemoteSelectRawValue[] | null | undefined): string[] {
+function toValueArray(
+  input: RemoteSelectRawValue | RemoteSelectRawValue[] | null | undefined,
+): string[] {
   if (input == null || input === "") return EMPTY_VALUES;
   if (Array.isArray(input)) {
     return input.filter((v) => v != null && v !== "").map((v) => String(v));
@@ -66,7 +77,15 @@ export function RemoteSelect(props: RemoteSelectProps) {
     className,
     popupClassName,
   } = props;
-  const copy = useComponentLocale().remoteSelect ?? zhCN.components!.remoteSelect!;
+  const copy = useComponentLocale().remoteSelect ?? {
+    placeholder: "请选择",
+    empty: "无匹配数据",
+    loading: "加载中…",
+    total: (count) => `共 ${count} 条`,
+    loaded: (count) => `已加载 ${count} 条`,
+    loadMore: "滚动加载更多",
+    noMore: "没有更多了",
+  };
   const resolvedPlaceholder = placeholder ?? copy.placeholder;
   const resolvedEmptyMessage = emptyMessage ?? copy.empty;
   const resolvedLoadingMessage = loadingMessage ?? copy.loading;
@@ -246,7 +265,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
     () => values.map((v) => known.get(v) ?? { value: v, label: v, raw: {} }),
     [values, known],
   );
-  const selectedLabel = multiple ? "" : (selectedOptions[0]?.label ?? "");
+  const selectedLabel = multiple ? "" : selectedOptions[0]?.label ?? "";
 
   // 单选：受控 inputValue 不会被 Base UI 自动回填，已选 label（含 resolveValue 迟到解出的）
   // 需要自己同步进输入框；打开中不覆盖，否则会把用户正在输入的搜索词吞掉。

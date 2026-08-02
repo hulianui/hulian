@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "../lib/cn";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import type { CardBrand, CreditCardProps } from "./credit-card.types";
 
 // 银行卡可视化展示（结算页确认 / 钱包卡片 / 账单页）。卡号品牌识别与格式化抽成纯函数可测，
@@ -84,7 +85,13 @@ export function CreditCard({
 }: CreditCardProps) {
   const brand = brandProp ?? detectBrand(number);
   const meta = BRAND_META[brand];
-  const copy = useComponentLocale().creditCard ?? zhCN.components!.creditCard!;
+  const copy = useComponentLocale().creditCard ?? {
+    card: "银行卡",
+    cardholder: "持卡人",
+    expires: "有效期",
+    unionPay: "银联",
+    endingIn: (brand, lastFour) => `${brand} 尾号 ${lastFour}`,
+  };
   const brandLabel = brand === "unionpay" ? copy.unionPay : meta.label;
   const display = masked ? maskCardNumber(number, brand) : formatCardNumber(number, brand);
 
@@ -99,8 +106,14 @@ export function CreditCard({
       aria-label={copy.endingIn(brandLabel || copy.card, onlyDigits(number).slice(-4))}
     >
       {/* 装饰光斑 */}
-      <span className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-white/10" aria-hidden />
-      <span className="pointer-events-none absolute -bottom-16 -left-6 size-44 rounded-full bg-white/5" aria-hidden />
+      <span
+        className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-white/10"
+        aria-hidden
+      />
+      <span
+        className="pointer-events-none absolute -bottom-16 -left-6 size-44 rounded-full bg-white/5"
+        aria-hidden
+      />
 
       {flipped ? (
         // 背面：磁条 + CVC
@@ -113,7 +126,9 @@ export function CreditCard({
                 {cvc ?? "•••"}
               </div>
             </div>
-            <div className="mt-2 text-right text-[10px] uppercase tracking-wide text-white/70">CVC</div>
+            <div className="mt-2 text-right text-[10px] uppercase tracking-wide text-white/70">
+              CVC
+            </div>
           </div>
           <div className="flex justify-end px-5 pb-4">
             <BrandMark brand={brand} label={brandLabel} />
@@ -124,7 +139,10 @@ export function CreditCard({
         <div className="flex h-full flex-col justify-between p-5">
           <div className="flex items-start justify-between">
             {/* 芯片 */}
-            <span className="grid h-8 w-11 grid-cols-3 gap-px overflow-hidden rounded-md bg-gradient-to-br from-yellow-200 to-yellow-400 p-1" aria-hidden>
+            <span
+              className="grid h-8 w-11 grid-cols-3 gap-px overflow-hidden rounded-md bg-gradient-to-br from-yellow-200 to-yellow-400 p-1"
+              aria-hidden
+            >
               {Array.from({ length: 6 }).map((_, i) => (
                 <span key={i} className="rounded-[1px] bg-yellow-500/40" />
               ))}
@@ -138,11 +156,15 @@ export function CreditCard({
 
           <div className="flex items-end justify-between gap-4">
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-wide text-white/60">{copy.cardholder}</div>
+              <div className="text-[10px] uppercase tracking-wide text-white/60">
+                {copy.cardholder}
+              </div>
               <div className="truncate font-medium tracking-wide">{holder || "YOUR NAME"}</div>
             </div>
             <div className="shrink-0 text-right">
-              <div className="text-[10px] uppercase tracking-wide text-white/60">{copy.expires}</div>
+              <div className="text-[10px] uppercase tracking-wide text-white/60">
+                {copy.expires}
+              </div>
               <div className="font-mono tracking-wide tabular-nums">{expiry || "MM/YY"}</div>
             </div>
           </div>

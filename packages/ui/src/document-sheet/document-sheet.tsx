@@ -18,7 +18,8 @@
 //      正文走 token 的 `text-foreground`，随主题自适应。
 //
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 
 export interface DocumentSheetProps extends HTMLAttributes<HTMLDivElement> {
@@ -38,7 +39,7 @@ export interface DocumentSheetProps extends HTMLAttributes<HTMLDivElement> {
  */
 export const DocumentSheet = forwardRef<HTMLDivElement, DocumentSheetProps>(
   ({ size = "a4", toolbar, onPrint, printable = true, children, className, ...props }, ref) => {
-    const locale = useComponentLocale().documentSheet ?? zhCN.components!.documentSheet!;
+    const locale = useComponentLocale().documentSheet ?? { print: "打印" };
     const handlePrint = () => {
       if (onPrint) onPrint();
       else if (typeof window !== "undefined") window.print();

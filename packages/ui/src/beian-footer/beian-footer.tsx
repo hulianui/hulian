@@ -1,7 +1,8 @@
 "use client";
 import { cn } from "../lib/cn";
 import { PoliceBadge } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import type { BeianFooterProps } from "./beian-footer.types";
 
 const MIIT = "https://beian.miit.gov.cn/";
@@ -21,7 +22,7 @@ export function BeianFooter({
   copyright,
   className,
 }: BeianFooterProps) {
-  const locale = useComponentLocale().beianFooter ?? zhCN.components!.beianFooter!;
+  const locale = useComponentLocale().beianFooter ?? { icp: "ICP备案" };
   const resolvedIcpLabel = icpLabel === undefined ? locale.icp : icpLabel;
   return (
     <div

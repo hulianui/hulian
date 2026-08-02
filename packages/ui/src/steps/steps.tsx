@@ -2,7 +2,7 @@
 import { Check, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type { StepsItem, StepStatus, StepsProps } from "./steps.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // Steps = 零依赖原生步骤条（替代重型 MUI stepper 桥件）。数据驱动 items；状态由 current 派生、可被 item.status 覆盖。
 // 仅消费语义 token；连接线颜色取「线左侧那一步是否 finish」。可点击时整个步头(指示器+标题)成 button。
@@ -72,7 +72,7 @@ export function Steps({
   onChange,
   className,
 }: StepsProps) {
-  const labels = useComponentLocale().steps;
+  const labels = useComponentLocale().steps ?? { label: "步骤" };
   const sz = sizeMap[size];
   const vertical = direction === "vertical";
 

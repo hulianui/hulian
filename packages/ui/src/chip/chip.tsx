@@ -1,31 +1,34 @@
 "use client";
 import { cva } from "class-variance-authority";
 import { X } from "../_icons";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ChipProps } from "./chip.types";
 
 // Chip = 可移除标签/令牌（比 Badge 大、可带 dot/头像/前后缀与关闭按钮）。CVA 配方同 Badge tone/variant，
 // 但 size 更大、含 onClose 交互（故 "use client"）。只消费语义 token。
-export const chipVariants = cva("inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-medium", {
-  variants: {
-    variant: { solid: "", soft: "", outline: "border" },
-    tone: { brand: "", danger: "", neutral: "" },
-    size: { sm: "h-6 px-2.5 text-xs", md: "h-7 px-3 text-sm" },
+export const chipVariants = cva(
+  "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-medium",
+  {
+    variants: {
+      variant: { solid: "", soft: "", outline: "border" },
+      tone: { brand: "", danger: "", neutral: "" },
+      size: { sm: "h-6 px-2.5 text-xs", md: "h-7 px-3 text-sm" },
+    },
+    compoundVariants: [
+      { variant: "solid", tone: "brand", class: "bg-primary text-primary-foreground" },
+      { variant: "solid", tone: "danger", class: "bg-danger text-danger-foreground" },
+      { variant: "solid", tone: "neutral", class: "bg-surface-hover text-foreground" },
+      { variant: "soft", tone: "brand", class: "bg-primary/12 text-primary" },
+      { variant: "soft", tone: "danger", class: "bg-danger/12 text-danger" },
+      { variant: "soft", tone: "neutral", class: "bg-surface-hover text-muted" },
+      { variant: "outline", tone: "brand", class: "border-primary text-primary" },
+      { variant: "outline", tone: "danger", class: "border-danger text-danger" },
+      { variant: "outline", tone: "neutral", class: "border-border text-foreground" },
+    ],
+    defaultVariants: { variant: "soft", tone: "brand", size: "md" },
   },
-  compoundVariants: [
-    { variant: "solid", tone: "brand", class: "bg-primary text-primary-foreground" },
-    { variant: "solid", tone: "danger", class: "bg-danger text-danger-foreground" },
-    { variant: "solid", tone: "neutral", class: "bg-surface-hover text-foreground" },
-    { variant: "soft", tone: "brand", class: "bg-primary/12 text-primary" },
-    { variant: "soft", tone: "danger", class: "bg-danger/12 text-danger" },
-    { variant: "soft", tone: "neutral", class: "bg-surface-hover text-muted" },
-    { variant: "outline", tone: "brand", class: "border-primary text-primary" },
-    { variant: "outline", tone: "danger", class: "border-danger text-danger" },
-    { variant: "outline", tone: "neutral", class: "border-border text-foreground" },
-  ],
-  defaultVariants: { variant: "soft", tone: "brand", size: "md" },
-});
+);
 
 const dotByTone = { brand: "bg-primary", danger: "bg-danger", neutral: "bg-muted" } as const;
 // avatar 存在时缩小左内边距让头像贴边，并按 size 把头像约束为正方形。
@@ -57,7 +60,9 @@ export function Chip({
       aria-disabled={isDisabled || undefined}
     >
       {avatar ? (
-        <span className={cn("-ml-0.5 flex shrink-0 items-center", avatarSizeBySize[size])}>{avatar}</span>
+        <span className={cn("-ml-0.5 flex shrink-0 items-center", avatarSizeBySize[size])}>
+          {avatar}
+        </span>
       ) : startContent ? (
         <span className="flex shrink-0 items-center">{startContent}</span>
       ) : (

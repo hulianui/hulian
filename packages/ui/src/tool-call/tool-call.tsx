@@ -6,7 +6,7 @@ import { Dot } from "../dot";
 import { Spinner } from "../spinner";
 import type { DotTone } from "../dot";
 import type { ToolCallProps, ToolCallStatus } from "./tool-call.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 工具调用卡：dogfood Collapsible(头部=工具名+状态，面板=参数/结果) + Dot(状态色) + Spinner(运行中)。
 const statusTone: Record<ToolCallStatus, DotTone> = {
@@ -28,7 +28,14 @@ export function ToolCall({
   className,
   children,
 }: ToolCallProps) {
-  const labels = useComponentLocale().toolCall;
+  const labels = useComponentLocale().toolCall ?? {
+    pending: "等待",
+    running: "运行中",
+    success: "完成",
+    error: "失败",
+    input: "参数",
+    output: "结果",
+  };
   return (
     <Collapsible
       defaultOpen={defaultOpen}

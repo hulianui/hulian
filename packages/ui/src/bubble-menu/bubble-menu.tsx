@@ -2,7 +2,8 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { BubbleMenuItem, BubbleMenuProps } from "./bubble-menu.types";
@@ -23,16 +24,70 @@ export function BubbleMenu({
   animationDuration = 0.5,
   staggerDelay = 0.12,
 }: BubbleMenuProps) {
-  const locale = useComponentLocale().bubbleMenu ?? zhCN.components!.bubbleMenu!;
+  const locale = useComponentLocale().bubbleMenu ?? {
+    home: "首页",
+    about: "关于",
+    work: "作品",
+    blog: "博客",
+    contact: "联系",
+    toggle: "切换菜单",
+    navigation: "主导航",
+    menuLink: "菜单链接",
+  };
   const [isOpen, setIsOpen] = useState(false);
   const reduce = useReducedMotion();
 
   const defaultItems: BubbleMenuItem[] = [
-    { label: locale.home, href: "#", ariaLabel: locale.home, rotation: -8, hoverStyles: { bgColor: "var(--color-chart-1)", textColor: "var(--color-primary-foreground)" } },
-    { label: locale.about, href: "#", ariaLabel: locale.about, rotation: 8, hoverStyles: { bgColor: "var(--color-chart-2)", textColor: "var(--color-primary-foreground)" } },
-    { label: locale.work, href: "#", ariaLabel: locale.work, rotation: 8, hoverStyles: { bgColor: "var(--color-chart-3)", textColor: "var(--color-primary-foreground)" } },
-    { label: locale.blog, href: "#", ariaLabel: locale.blog, rotation: 8, hoverStyles: { bgColor: "var(--color-chart-4)", textColor: "var(--color-primary-foreground)" } },
-    { label: locale.contact, href: "#", ariaLabel: locale.contact, rotation: -8, hoverStyles: { bgColor: "var(--color-chart-5)", textColor: "var(--color-primary-foreground)" } },
+    {
+      label: locale.home,
+      href: "#",
+      ariaLabel: locale.home,
+      rotation: -8,
+      hoverStyles: {
+        bgColor: "var(--color-chart-1)",
+        textColor: "var(--color-primary-foreground)",
+      },
+    },
+    {
+      label: locale.about,
+      href: "#",
+      ariaLabel: locale.about,
+      rotation: 8,
+      hoverStyles: {
+        bgColor: "var(--color-chart-2)",
+        textColor: "var(--color-primary-foreground)",
+      },
+    },
+    {
+      label: locale.work,
+      href: "#",
+      ariaLabel: locale.work,
+      rotation: 8,
+      hoverStyles: {
+        bgColor: "var(--color-chart-3)",
+        textColor: "var(--color-primary-foreground)",
+      },
+    },
+    {
+      label: locale.blog,
+      href: "#",
+      ariaLabel: locale.blog,
+      rotation: 8,
+      hoverStyles: {
+        bgColor: "var(--color-chart-4)",
+        textColor: "var(--color-primary-foreground)",
+      },
+    },
+    {
+      label: locale.contact,
+      href: "#",
+      ariaLabel: locale.contact,
+      rotation: -8,
+      hoverStyles: {
+        bgColor: "var(--color-chart-5)",
+        textColor: "var(--color-primary-foreground)",
+      },
+    },
   ];
   const menuItems = items?.length ? items : defaultItems;
   const position = useFixedPosition ? "fixed" : "absolute";
@@ -115,11 +170,20 @@ export function BubbleMenu({
               {menuItems.map((item, idx) => {
                 const rotation = item.rotation ?? 0;
                 const enter = reduce
-                  ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 1 }, transition: { duration: 0 } }
+                  ? {
+                      initial: { opacity: 1 },
+                      animate: { opacity: 1 },
+                      exit: { opacity: 1 },
+                      transition: { duration: 0 },
+                    }
                   : {
                       initial: { scale: 0, opacity: 0 },
                       animate: { scale: 1, opacity: 1 },
-                      exit: { scale: 0, opacity: 0, transition: { duration: 0.2, ease: "easeIn" as const } },
+                      exit: {
+                        scale: 0,
+                        opacity: 0,
+                        transition: { duration: 0.2, ease: "easeIn" as const },
+                      },
                       transition: {
                         type: "spring" as const,
                         stiffness: 320,
@@ -162,7 +226,11 @@ export function BubbleMenu({
                         transition={
                           reduce
                             ? { duration: 0 }
-                            : { duration: animationDuration, ease: "easeOut", delay: idx * staggerDelay + 0.05 }
+                            : {
+                                duration: animationDuration,
+                                ease: "easeOut",
+                                delay: idx * staggerDelay + 0.05,
+                              }
                         }
                       >
                         {item.label}

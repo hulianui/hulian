@@ -5,12 +5,19 @@ import { Avatar } from "../avatar";
 import { TypingDots } from "../typing-dots";
 import { Check, CheckCheck, Loader2 } from "../_icons";
 import type { ChatMessageProps, ChatRole } from "./chat-message.types";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 
 // 对话气泡：复用 Avatar(头像) + TypingDots(加载态)。纯皮肤·RSC（无 hook）。
 // 正文 children 不强制 Prose——markdown 由消费侧外包 <Prose/>，纯文本直接传。
 // 已读回执（仅右气泡）：发送中转圈 / 已送达单勾 / 已读双蓝勾。
-function Receipt({ status, labels }: { status: NonNullable<ChatMessageProps["status"]>; labels: { sending: string; sent: string; read: string } }) {
+function Receipt({
+  status,
+  labels,
+}: {
+  status: NonNullable<ChatMessageProps["status"]>;
+  labels: { sending: string; sent: string; read: string };
+}) {
   if (status === "sending") {
     return <Loader2 aria-label={labels.sending} className="size-3.5 animate-spin text-muted" />;
   }
@@ -32,7 +39,12 @@ export function ChatMessage({
   children,
   ...props
 }: ChatMessageProps) {
-  const copy = useComponentLocale().chatMessage ?? zhCN.components!.chatMessage!;
+  const copy = useComponentLocale().chatMessage ?? {
+    me: "我",
+    sending: "发送中",
+    sent: "已送达",
+    read: "已读",
+  };
   const fallbackByRole: Record<ChatRole, string> = { user: copy.me, assistant: "AI", system: "⚙" };
   // system 消息：居中弱化通告，不进气泡/头像体系
   if (role === "system") {

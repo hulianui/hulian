@@ -32,7 +32,7 @@ import type {
   FlowSize,
   FlowViewport,
 } from "./flow.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 const DEFAULT_WIDTH = 240;
 const ZOOM_STEP = 1.2;
@@ -66,7 +66,18 @@ export function Flow<T>({
   className,
   apiRef,
 }: FlowProps<T>) {
-  const labels = useComponentLocale().flow;
+  const labels = useComponentLocale().flow ?? {
+    canvas: "工作流画布",
+    node: "工作流节点",
+    source: "输出",
+    target: "输入",
+    zoomIn: "放大",
+    zoomOut: "缩小",
+    fitView: "适配视图",
+    deleteNode: "删除节点",
+    deleteEdge: "删除连线",
+    autoLayout: "智能排版",
+  };
   const containerRef = useRef<HTMLDivElement>(null);
   const [vp, setVp] = useState<FlowViewport>({ x: 0, y: 0, zoom: 1 });
   const [sizes, setSizes] = useState<Record<string, FlowSize>>({});
@@ -558,7 +569,18 @@ export function Flow<T>({
 
 /** Internal edge action extracted so its conditional locale contract is directly testable. */
 export function FlowEdgeDeleteButton({ onDelete }: { onDelete: () => void }) {
-  const labels = useComponentLocale().flow;
+  const labels = useComponentLocale().flow ?? {
+    canvas: "工作流画布",
+    node: "工作流节点",
+    source: "输出",
+    target: "输入",
+    zoomIn: "放大",
+    zoomOut: "缩小",
+    fitView: "适配视图",
+    deleteNode: "删除节点",
+    deleteEdge: "删除连线",
+    autoLayout: "智能排版",
+  };
   return (
     <button
       type="button"

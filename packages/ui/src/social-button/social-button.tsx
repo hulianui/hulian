@@ -1,6 +1,7 @@
 "use client";
 import { Loader2 } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { pressableClass } from "../motion";
 import type { SocialButtonProps, SocialProvider } from "./social-button.types";
@@ -108,7 +109,19 @@ export function SocialButton({
   children,
   ...props
 }: SocialButtonProps) {
-  const locale = useComponentLocale().socialButton ?? zhCN.components!.socialButton!;
+  const locale = useComponentLocale().socialButton ?? {
+    providers: {
+      wechat: "微信",
+      alipay: "支付宝",
+      qq: "QQ",
+      weibo: "微博",
+      github: "GitHub",
+      google: "Google",
+      apple: "Apple",
+      x: "X",
+    },
+    signInWith: (provider) => `${provider}登录`,
+  };
   const brand = BRANDS[provider];
   const brandLabel = locale.providers[provider];
   const sz = SIZE[size];

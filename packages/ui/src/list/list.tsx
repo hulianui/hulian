@@ -6,7 +6,8 @@
 // - 含交互回调(loadMore onClick) + Context 下发 → 必 "use client"。
 import { Children, createContext, Fragment, useContext, type ReactNode } from "react";
 import { Button } from "../button";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { Empty } from "../empty";
 import { Grid } from "../grid";
 import { cn } from "../lib/cn";
@@ -27,7 +28,7 @@ const ListContext = createContext<ListCtx>({ size: "md", grid: false, inset: fal
 
 const DEFAULT_GRID = { cols: 3, gap: 4 };
 
-export function List<T,>({
+export function List<T>({
   items,
   renderItem,
   children,
@@ -47,7 +48,7 @@ export function List<T,>({
   "aria-describedby": ariaDescribedBy,
   ...props
 }: ListProps<T>) {
-  const copy = useComponentLocale().list ?? zhCN.components!.list!;
+  const copy = useComponentLocale().list ?? { empty: "暂无数据", loadMore: "加载更多" };
   // 这三个属性单独拎出来喂给 role="list" 的节点，其余原生属性照旧落外层容器。
   const ariaProps = {
     "aria-label": ariaLabel,
@@ -63,7 +64,9 @@ export function List<T,>({
   const hasItems = items != null;
   const itemNodes: ReactNode = hasItems
     ? items.map((it, i) => (
-        <Fragment key={i}>{renderItem ? renderItem(it, i) : <ListItem>{it as ReactNode}</ListItem>}</Fragment>
+        <Fragment key={i}>
+          {renderItem ? renderItem(it, i) : <ListItem>{it as ReactNode}</ListItem>}
+        </Fragment>
       ))
     : children;
   const isEmpty = hasItems ? items.length === 0 : Children.count(children) === 0;
@@ -99,7 +102,8 @@ export function List<T,>({
         // 早先 aria-* 随 {...props} 落到最外层 div，读屏用户听到的是一个**无名列表**，
         // getByRole("list", { name }) 也永远找不到。其余原生属性仍留在外层容器。
         {...ariaProps}
-        className={cn("m-0 list-none p-0", split && "divide-y divide-border")}>
+        className={cn("m-0 list-none p-0", split && "divide-y divide-border")}
+      >
         {itemNodes}
       </ul>
     );
@@ -119,7 +123,16 @@ export function List<T,>({
           {...props}
         >
           {header != null && (
-            <div className={cn("font-medium", slotPadX, PAD_Y[size], framed && "border-b border-border")}>{header}</div>
+            <div
+              className={cn(
+                "font-medium",
+                slotPadX,
+                PAD_Y[size],
+                framed && "border-b border-border",
+              )}
+            >
+              {header}
+            </div>
           )}
           {body}
           {loadMore && loadMore.hasMore !== false && (
@@ -130,13 +143,25 @@ export function List<T,>({
                 framed && "border-t border-border",
               )}
             >
-              <Button variant="outline" size="sm" loading={loadMore.loading} onClick={loadMore.onLoadMore}>
+              <Button
+                variant="outline"
+                size="sm"
+                loading={loadMore.loading}
+                onClick={loadMore.onLoadMore}
+              >
                 {loadMore.text ?? copy.loadMore}
               </Button>
             </div>
           )}
           {footer != null && (
-            <div className={cn("text-sm text-muted", slotPadX, PAD_Y[size], framed && "border-t border-border")}>
+            <div
+              className={cn(
+                "text-sm text-muted",
+                slotPadX,
+                PAD_Y[size],
+                framed && "border-t border-border",
+              )}
+            >
               {footer}
             </div>
           )}
@@ -166,7 +191,9 @@ function ListItemBase({ actions, children, className, ...props }: ListItemProps)
     >
       <div className="min-w-0 flex-1">{children}</div>
       {actions && actions.length > 0 && (
-        <div className={cn("flex items-center gap-3 text-sm text-muted", grid ? "mt-3" : "shrink-0")}>
+        <div
+          className={cn("flex items-center gap-3 text-sm text-muted", grid ? "mt-3" : "shrink-0")}
+        >
           {actions.map((a, i) => (
             <Fragment key={i}>
               {i > 0 && <span aria-hidden className="h-3 w-px bg-border" />}
@@ -180,7 +207,13 @@ function ListItemBase({ actions, children, className, ...props }: ListItemProps)
 }
 ListItemBase.displayName = "ListItem";
 
-export function ListItemMeta({ avatar, title, description, className, ...props }: ListItemMetaProps) {
+export function ListItemMeta({
+  avatar,
+  title,
+  description,
+  className,
+  ...props
+}: ListItemMetaProps) {
   return (
     <div className={cn("flex items-start gap-3", className)} {...props}>
       {avatar != null && <div className="shrink-0">{avatar}</div>}

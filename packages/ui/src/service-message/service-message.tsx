@@ -1,7 +1,8 @@
 "use client";
 import { Avatar } from "../avatar/avatar";
 import { ChevronRight, Ellipsis } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ServiceMessageField, ServiceMessageProps } from "./service-message.types";
 
@@ -33,7 +34,11 @@ export function ServiceMessage({
   children,
   ...props
 }: ServiceMessageProps) {
-  const locale = useComponentLocale().serviceMessage ?? zhCN.components!.serviceMessage!;
+  const locale = useComponentLocale().serviceMessage ?? {
+    footer: "进入小程序查看",
+    action: "小程序",
+    more: "更多",
+  };
   const resolvedFooter = footer === undefined ? locale.footer : footer;
   const hasHeader = avatar != null || source != null || onMore != null;
   const showFooter = resolvedFooter !== null; // 默认字符串显示；显式传 null 才隐藏
@@ -61,7 +66,11 @@ export function ServiceMessage({
         <>
           <div className="flex items-center gap-2 px-5 py-3.5">
             {avatar != null && (
-              <Avatar size="sm" {...avatar} className={cn("size-5 text-[10px]", avatar.className)} />
+              <Avatar
+                size="sm"
+                {...avatar}
+                className={cn("size-5 text-[10px]", avatar.className)}
+              />
             )}
             {source != null && (
               <span className="min-w-0 flex-1 truncate text-sm text-muted">{source}</span>

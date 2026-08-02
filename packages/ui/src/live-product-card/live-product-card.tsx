@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { LiveProductCardProps } from "./live-product-card.types";
 
 function fmt(n: number): string {
@@ -46,7 +46,12 @@ export function LiveProductCard({
   );
 
   const Thumb = (
-    <div className={cn("relative shrink-0 overflow-hidden rounded-[var(--radius)]", isCard ? "aspect-square w-full" : "size-16")}>
+    <div
+      className={cn(
+        "relative shrink-0 overflow-hidden rounded-[var(--radius)]",
+        isCard ? "aspect-square w-full" : "size-16",
+      )}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={image} alt="" className="size-full object-cover" />
       {index != null && (
@@ -78,7 +83,9 @@ export function LiveProductCard({
       <div className={cn("min-w-0 flex-1", isCard && "w-full")}>
         <div className="flex items-start gap-1">
           {tag && (
-            <span className="shrink-0 rounded bg-danger/15 px-1 text-[10px] font-medium leading-4 text-danger">{tag}</span>
+            <span className="shrink-0 rounded bg-danger/15 px-1 text-[10px] font-medium leading-4 text-danger">
+              {tag}
+            </span>
           )}
           <div className="line-clamp-2 text-sm leading-snug">{title}</div>
         </div>

@@ -1,7 +1,8 @@
 "use client";
 import { useMemo, useState, type MouseEvent } from "react";
 import { ChevronRight, Folder, File } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { filterFileTree } from "./file-tree-core";
 import type { FileNode, FileStatus, FileTreeProps } from "./file-tree.types";
@@ -53,7 +54,17 @@ interface RowProps {
   visible: Set<string> | null;
 }
 
-function Row({ node, depth, path, selectedPath, expandedSet, toggle, onSelect, onContextMenu, visible }: RowProps) {
+function Row({
+  node,
+  depth,
+  path,
+  selectedPath,
+  expandedSet,
+  toggle,
+  onSelect,
+  onContextMenu,
+  visible,
+}: RowProps) {
   if (visible && !visible.has(path)) return null;
   const isFolder = node.type === "folder";
   const open = isFolder && expandedSet.has(path);
@@ -123,7 +134,7 @@ export function FileTree({
   searchable,
   searchPlaceholder,
 }: FileTreeProps) {
-  const copy = useComponentLocale().fileTree ?? zhCN.components!.fileTree!;
+  const copy = useComponentLocale().fileTree ?? { search: "搜索文件" };
   const resolvedSearchPlaceholder = searchPlaceholder ?? copy.search;
   const [query, setQuery] = useState("");
 
@@ -144,7 +155,10 @@ export function FileTree({
   );
 
   // 搜索激活：可见集 = 命中 path + 其所有祖先；展开集 = 用户展开 ∪ 自动展开。
-  const { visible, expandedSet } = useMemo<{ visible: Set<string> | null; expandedSet: Set<string> }>(() => {
+  const { visible, expandedSet } = useMemo<{
+    visible: Set<string> | null;
+    expandedSet: Set<string>;
+  }>(() => {
     if (!search || query.trim() === "") return { visible: null, expandedSet: userExpanded };
     const vis = new Set<string>();
     for (const p of search.matchedPaths) {

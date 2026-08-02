@@ -15,7 +15,8 @@ import {
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { cva } from "class-variance-authority";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import {
   Combobox,
@@ -140,7 +141,13 @@ export function Select({
   children,
   ...props
 }: SelectProps) {
-  const copy = useComponentLocale().select ?? zhCN.components!.select!;
+  const copy = useComponentLocale().select ?? {
+    search: "搜索",
+    empty: "无匹配项",
+    loading: "加载中",
+    separator: "、",
+    clear: "清除",
+  };
   const resolvedSearchPlaceholder = searchPlaceholder ?? copy.search;
   const resolvedEmptyMessage = emptyMessage ?? copy.empty;
   const resolvedLoadingText = loadingText ?? copy.loading;
@@ -321,7 +328,13 @@ export function SelectTrigger({
   ref: forwardedRef,
   ...triggerProps
 }: SelectTriggerProps) {
-  const copy = useComponentLocale().select ?? zhCN.components!.select!;
+  const copy = useComponentLocale().select ?? {
+    search: "搜索",
+    empty: "无匹配项",
+    loading: "加载中",
+    separator: "、",
+    clear: "清除",
+  };
   const { items, placeholder, multiple, searchable, clearable, loading, hasValue, onClear } =
     useContext(SelectMetaContext);
   const anchorRef = useContext(ComboboxAnchorContext);
@@ -380,7 +393,8 @@ export function SelectTrigger({
           多选走函数式 children 平铺已选 label + 超出 +N。data-placeholder 态置 muted。 */}
       <BaseSelect.Value className="truncate data-[placeholder]:text-muted">
         {multiple
-          ? (value: unknown) => renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)
+          ? (value: unknown) =>
+              renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)
           : undefined}
       </BaseSelect.Value>
       {tail ?? (

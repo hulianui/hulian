@@ -1,6 +1,7 @@
 "use client";
 import { Check, X } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { Spinner } from "../spinner";
 import type { AgentPlanProps, AgentTaskStatus } from "./agent-plan.types";
@@ -21,7 +22,7 @@ export function AgentPlan({
   strikeDone = true,
   className,
 }: AgentPlanProps) {
-  const copy = useComponentLocale().agentPlan ?? zhCN.components!.agentPlan!;
+  const copy = useComponentLocale().agentPlan ?? { title: "执行计划" };
   const resolvedTitle = title === undefined ? copy.title : title;
   return (
     <div

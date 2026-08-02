@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { ChevronRight, Copy, Check } from "../_icons";
 import type { JsonValueType, JsonViewerProps } from "./json-viewer.types";
@@ -71,7 +72,7 @@ function JsonNode({
   maxAutoExpandKeys,
   onCopyPath,
 }: NodeProps) {
-  const locale = useComponentLocale().jsonViewer ?? zhCN.components!.jsonViewer!;
+  const locale = useComponentLocale().jsonViewer ?? { copy: "复制", copied: "已复制" };
   const t = valueType(value);
   const isContainer = t === "object" || t === "array";
   const entries = isContainer ? entriesOf(value, t) : [];

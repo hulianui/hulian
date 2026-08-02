@@ -4,7 +4,7 @@ import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
 import { HighlightedCode } from "../code-block/highlighted-code";
 import type { SnippetProps } from "./snippet.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 可复制命令/代码片段（含剪贴板交互故 "use client"）。复制成功反馈 1.5s 切回。
 // children 为字符串时默认语法着色（命令多为纯色，JS 片段会着色）；非字符串原样渲染。

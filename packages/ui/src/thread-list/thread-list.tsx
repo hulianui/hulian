@@ -1,6 +1,7 @@
 "use client";
 import { X } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ThreadListProps } from "./thread-list.types";
 
@@ -14,7 +15,11 @@ export function ThreadList({
   bare = false,
   className,
 }: ThreadListProps) {
-  const locale = useComponentLocale().threadList ?? zhCN.components!.threadList!;
+  const locale = useComponentLocale().threadList ?? {
+    title: "历史",
+    empty: "暂无历史",
+    deleteThread: "删除会话",
+  };
   const resolvedTitle = title ?? locale.title;
   const resolvedEmpty = empty ?? locale.empty;
   return (

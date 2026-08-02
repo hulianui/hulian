@@ -26,7 +26,7 @@ import {
   RefreshCw,
 } from "../_icons";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { chapterMarkers, type VideoChapter } from "./video.types";
 
 const btn =
@@ -161,7 +161,11 @@ export function VideoControls({
 
       <Controls.Group className="relative flex items-center gap-1 px-2 pb-2">
         <PlayButton className={btn} aria-label={isPaused ? labels.play : labels.pause}>
-          {isPaused ? <Play className="size-5 fill-current" /> : <Pause className="size-5 fill-current" />}
+          {isPaused ? (
+            <Play className="size-5 fill-current" />
+          ) : (
+            <Pause className="size-5 fill-current" />
+          )}
         </PlayButton>
 
         <MuteButton className={btn} aria-label={isMuted ? labels.unmute : labels.mute}>

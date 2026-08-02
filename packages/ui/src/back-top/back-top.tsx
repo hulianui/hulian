@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ArrowUp } from "../_icons";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { BackTopProps } from "./back-top.types";
 
 // 回顶悬浮钮（"use client"·零依赖）：监听滚动容器(默认 window)，scrollTop 超 visibilityHeight 淡入；

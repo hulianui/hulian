@@ -4,7 +4,7 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { AnchorItem, AnchorProps } from "./anchor.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 递归扁平化锚点项（保持文档顺序），供 scrollspy 取「文档顺序最靠前的可见项」。纯函数，可单测。
 export function flattenAnchorItems(items: AnchorItem[]): AnchorItem[] {
@@ -31,7 +31,7 @@ export function Anchor({
   "aria-label": ariaLabel,
   ...props
 }: AnchorProps) {
-  const labels = useComponentLocale().anchor;
+  const labels = useComponentLocale().anchor ?? { navigation: "锚点导航" };
   const flat = useMemo(() => flattenAnchorItems(items), [items]);
   const ids = useMemo(() => flat.map((i) => hrefToId(i.href)), [flat]);
 
@@ -62,7 +62,8 @@ export function Anchor({
     const root = getContainer?.() ?? null;
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) visibleRef.current[(e.target as HTMLElement).id] = e.isIntersecting;
+        for (const e of entries)
+          visibleRef.current[(e.target as HTMLElement).id] = e.isIntersecting;
         const first = ids.find((id) => visibleRef.current[id]);
         if (first) updateActive(`#${first}`);
       },
@@ -97,7 +98,10 @@ export function Anchor({
     if (container) {
       // 目标相对容器内容顶部的距离 = 两者视口 rect 差 + 容器已滚距离 - 偏移
       const top =
-        el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - offsetTop;
+        el.getBoundingClientRect().top -
+        container.getBoundingClientRect().top +
+        container.scrollTop -
+        offsetTop;
       container.scrollTo({ top, behavior });
     } else {
       const top = el.getBoundingClientRect().top + window.scrollY - offsetTop;
@@ -135,7 +139,11 @@ export function Anchor({
     });
 
   return (
-    <nav aria-label={ariaLabel ?? labels.navigation} className={cn("text-sm", className)} {...props}>
+    <nav
+      aria-label={ariaLabel ?? labels.navigation}
+      className={cn("text-sm", className)}
+      {...props}
+    >
       <ul className="relative space-y-0.5 border-l border-border">
         {/* 滑动指示条：几何由激活链接测量后写入 CSS 变量，纯 CSS transition 平滑滑动（零 motion 运行时） */}
         <span

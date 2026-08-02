@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { groupByLane } from "./queue-lane-utils";
 import type { QueueItem, QueueLaneDef, QueueLaneProps } from "./queue-lane.types";
@@ -36,7 +37,11 @@ function QueueLaneColumn<T extends QueueItem>({
   orientation: "horizontal" | "vertical";
   onItemClick: QueueLaneProps<T>["onItemClick"];
 }) {
-  const locale = useComponentLocale().queueLane ?? zhCN.components!.queueLane!;
+  const locale = useComponentLocale().queueLane ?? {
+    count: (count) => `${count} 条`,
+    empty: "队列空闲",
+    more: (count) => `还有 ${count} 条`,
+  };
   const total = items.length;
   const visible = maxVisible != null ? items.slice(0, maxVisible) : items;
   const hidden = total - visible.length;

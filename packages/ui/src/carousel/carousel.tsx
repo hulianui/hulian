@@ -11,7 +11,7 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { CarouselProps } from "./carousel.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 圆点宽度/颜色过渡复用 motion-token CSS 镜像（零散写 transition）。
 const DOT_TRANSITION = {
@@ -38,7 +38,14 @@ export function Carousel({
   slideClassName,
   ...rest
 }: CarouselProps) {
-  const labels = useComponentLocale().carousel;
+  const labels = useComponentLocale().carousel ?? {
+    label: "轮播",
+    slide: (index, count) => `第 ${index} / ${count} 张`,
+    previous: "上一张",
+    next: "下一张",
+    navigation: "幻灯片导航",
+    goTo: (index) => `转到第 ${index} 张`,
+  };
   const slides = Children.toArray(children);
   const count = slides.length;
 

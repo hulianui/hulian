@@ -1,7 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { GanttProps, GanttTask, GanttUnit } from "./gantt.types";
 
 // 纯皮肤 · 零额外依赖（不引 dayjs/date-fns，自带日期数学）·只读甘特图。取舍说明：
@@ -50,7 +50,12 @@ interface Tick {
 }
 
 /** 按 unit 在 [start, end] 闭区间上切刻度；每刻度落到天偏移 + 跨度（天）。 */
-function buildTicks(start: Date, totalDays: number, unit: GanttUnit, monthLabel: (month: number) => string): Tick[] {
+function buildTicks(
+  start: Date,
+  totalDays: number,
+  unit: GanttUnit,
+  monthLabel: (month: number) => string,
+): Tick[] {
   const ticks: Tick[] = [];
   if (unit === "day") {
     for (let i = 0; i < totalDays; i++) {
@@ -91,7 +96,12 @@ function buildTicks(start: Date, totalDays: number, unit: GanttUnit, monthLabel:
     const span = right - left;
     if (span > 0) ticks.push({ offset: left, span, label: monthLabel(mo + 1) });
     cursor = next;
-    if (mo === 11) { mo = 0; y += 1; } else { mo += 1; }
+    if (mo === 11) {
+      mo = 0;
+      y += 1;
+    } else {
+      mo += 1;
+    }
   }
   return ticks;
 }
@@ -306,11 +316,7 @@ export function Gantt({
                       {t.name}
                     </span>
                   </div>
-                  <div
-                    className="relative"
-                    style={{ height: rowHeight, minWidth }}
-                    role="cell"
-                  >
+                  <div className="relative" style={{ height: rowHeight, minWidth }} role="cell">
                     {/* 条形：底层 primary/20 全宽 + 内层 progress 深色填充。task.color 覆盖底色。 */}
                     <div
                       className="absolute top-1/2 flex -translate-y-1/2 items-center overflow-hidden rounded-[var(--radius)]"
@@ -326,17 +332,11 @@ export function Gantt({
                     >
                       {/* 底色：无 color 时走 token bg-primary/20 */}
                       {t.color == null && (
-                        <span
-                          className="absolute inset-0 bg-primary/20"
-                          aria-hidden="true"
-                        />
+                        <span className="absolute inset-0 bg-primary/20" aria-hidden="true" />
                       )}
                       {/* 进度填充层（更深）：有 color 时叠半透明黑使其更深，否则走 bg-primary */}
                       <span
-                        className={cn(
-                          "absolute inset-y-0 left-0",
-                          t.color == null && "bg-primary",
-                        )}
+                        className={cn("absolute inset-y-0 left-0", t.color == null && "bg-primary")}
                         style={{
                           width: `${progress}%`,
                           backgroundColor: t.color != null ? "rgba(0,0,0,0.28)" : undefined,

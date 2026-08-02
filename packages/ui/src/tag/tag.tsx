@@ -1,7 +1,7 @@
 "use client";
 import { cva } from "class-variance-authority";
 import { X } from "../_icons";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { TagProps, TagTone } from "./tag.types";
 
@@ -76,11 +76,17 @@ export function Tag({
           <span className="relative flex size-1.5 shrink-0 items-center justify-center">
             {pulse && (
               <span
-                className={cn("absolute inline-flex size-full animate-ping rounded-full opacity-60", dotByTone[tone])}
+                className={cn(
+                  "absolute inline-flex size-full animate-ping rounded-full opacity-60",
+                  dotByTone[tone],
+                )}
                 aria-hidden
               />
             )}
-            <span className={cn("relative inline-flex size-1.5 rounded-full", dotByTone[tone])} aria-hidden />
+            <span
+              className={cn("relative inline-flex size-1.5 rounded-full", dotByTone[tone])}
+              aria-hidden
+            />
           </span>
         )
       )}

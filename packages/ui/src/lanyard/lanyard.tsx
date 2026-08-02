@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { LanyardProps } from "./lanyard.types";
 
@@ -24,7 +25,7 @@ export function Lanyard({
   style,
   ...props
 }: LanyardProps & Omit<React.HTMLAttributes<HTMLDivElement>, keyof LanyardProps>) {
-  const locale = useComponentLocale().lanyard ?? zhCN.components!.lanyard!;
+  const locale = useComponentLocale().lanyard ?? { title: "瑚琏 · HULIAN", subtitle: "拖动摆一摆" };
   const resolvedTitle = title === undefined ? locale.title : title;
   const resolvedSubtitle = subtitle === undefined ? locale.subtitle : subtitle;
   const reduce = useReducedMotion();

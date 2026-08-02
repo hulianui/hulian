@@ -9,7 +9,8 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { DomeGalleryImage, DomeGalleryProps } from "./dome-gallery.types";
@@ -21,8 +22,7 @@ import type { DomeGalleryImage, DomeGalleryProps } from "./dome-gallery.types";
 //        ④ reduced-motion → useReducedMotion() 关惯性/自转/放大过渡，但内容 DOM 不变（避 reveal 不可见坑）；
 //        ⑤ "use client"（用 ref/effect/PointerEvents）；关键帧 hulian-dome-gallery 落 preset.css 供自转引用。
 
-const clamp = (v: number, min: number, max: number) =>
-  Math.min(Math.max(v, min), max);
+const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 const wrapAngleSigned = (deg: number) => {
   const a = (((deg + 180) % 360) + 360) % 360;
   return a - 180;
@@ -56,9 +56,7 @@ function buildTiles(images: DomeGalleryImage[], segments: number): Tile[] {
     images.length === 0
       ? [{ src: "", alt: "" }]
       : images.map((im) =>
-          typeof im === "string"
-            ? { src: im, alt: "" }
-            : { src: im.src ?? "", alt: im.alt ?? "" },
+          typeof im === "string" ? { src: im, alt: "" } : { src: im.src ?? "", alt: im.alt ?? "" },
         );
 
   return coords.map((c, i) => {
@@ -91,10 +89,14 @@ export function DomeGallery({
   className,
   style,
   ...props
-}: DomeGalleryProps &
-  Omit<HTMLAttributes<HTMLDivElement>, "style" | "className">) {
+}: DomeGalleryProps & Omit<HTMLAttributes<HTMLDivElement>, "style" | "className">) {
   const reduce = useReducedMotion();
-  const copy = useComponentLocale().domeGallery ?? zhCN.components!.domeGallery!;
+  const copy = useComponentLocale().domeGallery ?? {
+    label: "可拖拽旋转的球面图库",
+    image: (index) => `图片 ${index}`,
+    viewImage: "查看图片",
+    enlargedView: "放大查看",
+  };
   const resolvedImages = useMemo<DomeGalleryImage[]>(
     () =>
       images ??
@@ -111,10 +113,7 @@ export function DomeGallery({
   const [radius, setRadius] = useState(520);
   const [opened, setOpened] = useState<Tile | null>(null);
 
-  const tiles = useMemo(
-    () => buildTiles(resolvedImages, segments),
-    [resolvedImages, segments],
-  );
+  const tiles = useMemo(() => buildTiles(resolvedImages, segments), [resolvedImages, segments]);
 
   // 旋转状态保存在 ref（高频更新走命令式 transform，避免 React 重渲染抖动）
   const rotation = useRef({ x: 0, y: 0 });
@@ -180,23 +179,14 @@ export function DomeGallery({
         -maxVerticalRotationDeg,
         maxVerticalRotationDeg,
       );
-      const nextY = wrapAngleSigned(
-        rotation.current.y + velocity.current.x / dragSensitivity,
-      );
+      const nextY = wrapAngleSigned(rotation.current.y + velocity.current.x / dragSensitivity);
       rotation.current = { x: nextX, y: nextY };
       applyTransform();
       rafId.current = requestAnimationFrame(step);
     };
     stopInertia();
     rafId.current = requestAnimationFrame(step);
-  }, [
-    reduce,
-    dragDampening,
-    dragSensitivity,
-    maxVerticalRotationDeg,
-    applyTransform,
-    stopInertia,
-  ]);
+  }, [reduce, dragDampening, dragSensitivity, maxVerticalRotationDeg, applyTransform, stopInertia]);
 
   // 无拖拽时的缓慢自转
   useEffect(() => {
@@ -275,8 +265,7 @@ export function DomeGallery({
       }
       if (
         moved.current &&
-        (Math.abs(velocity.current.x) > 0.05 ||
-          Math.abs(velocity.current.y) > 0.05)
+        (Math.abs(velocity.current.x) > 0.05 || Math.abs(velocity.current.y) > 0.05)
       ) {
         startInertia();
       }
@@ -301,10 +290,7 @@ export function DomeGallery({
   return (
     <div
       ref={rootRef}
-      className={cn(
-        "relative h-full w-full select-none overflow-hidden",
-        className,
-      )}
+      className={cn("relative h-full w-full select-none overflow-hidden", className)}
       style={style}
       {...props}
     >
@@ -344,9 +330,7 @@ export function DomeGallery({
                   marginTop: -tileSize / 2,
                   borderRadius: imageBorderRadius,
                   transform: `rotateY(${tile.lon}deg) rotateX(${tile.lat}deg) translateZ(${radius}px)`,
-                  transition: reduce
-                    ? "none"
-                    : `transform ${enlargeTransitionMs}ms ease`,
+                  transition: reduce ? "none" : `transform ${enlargeTransitionMs}ms ease`,
                   WebkitBackfaceVisibility: "hidden",
                   backfaceVisibility: "hidden",
                 }}
@@ -415,7 +399,9 @@ export function DomeGallery({
               <div
                 aria-hidden
                 className="absolute inset-0 backdrop-blur-sm"
-                style={{ background: "color-mix(in oklch, var(--color-foreground) 40%, transparent)" }}
+                style={{
+                  background: "color-mix(in oklch, var(--color-foreground) 40%, transparent)",
+                }}
               />
               <m.div
                 className="relative z-10 aspect-square w-full max-w-md overflow-hidden border border-border shadow-xl"
@@ -428,11 +414,7 @@ export function DomeGallery({
               >
                 {opened.src ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={opened.src}
-                    alt={opened.alt}
-                    className="h-full w-full object-cover"
-                  />
+                  <img src={opened.src} alt={opened.alt} className="h-full w-full object-cover" />
                 ) : (
                   <span
                     aria-hidden

@@ -3,7 +3,7 @@ import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
 import { Minus, Plus } from "../_icons";
 import { cn } from "../lib/cn";
 import type { NumberFieldProps } from "./number-field.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 外壳复刻 Input 家风（focus-within ring）；±按钮居两侧；Input 居中 tabular-nums。
 // 键盘 ↑↓/PageUp/Down/Home/End + 到达 min/max 时按钮自动禁用，全由 Base UI 兜底。
@@ -18,7 +18,7 @@ export function NumberField({
   onValueChange,
   ...props
 }: NumberFieldProps) {
-  const labels = useComponentLocale().numberField;
+  const labels = useComponentLocale().numberField ?? { decrement: "减少", increment: "增加" };
   return (
     <BaseNumberField.Root
       {...props}

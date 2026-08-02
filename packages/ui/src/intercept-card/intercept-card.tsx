@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { InterceptCardProps, InterceptSeverity } from "./intercept-card.types";
 
@@ -44,7 +45,18 @@ export function InterceptCard({
   overridden,
   className,
 }: InterceptCardProps) {
-  const locale = useComponentLocale().interceptCard ?? zhCN.components!.interceptCard!;
+  const locale = useComponentLocale().interceptCard ?? {
+    severity: { block: "已拦截", confirm: "待确认", notice: "提醒" },
+    violation: "违反点",
+    suggestion: "建议改法",
+    source: "依据：",
+    overridden: "已放行",
+    override: "放行本次",
+    overridePlaceholder: "为什么这次可以放行？（必填，会进入审计记录）",
+    processing: "处理中…",
+    confirmOverride: "确认放行",
+    cancel: "取消",
+  };
   const resolvedOverrideLabel = overrideLabel ?? locale.override;
   const resolvedOverridePlaceholder = overridePlaceholder ?? locale.overridePlaceholder;
   const [reason, setReason] = useState("");

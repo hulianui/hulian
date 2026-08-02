@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Check, Copy, RefreshCw } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { Input } from "../input/input";
 import { cn } from "../lib/cn";
 import { NumberField } from "../number-field/number-field";
@@ -77,11 +77,34 @@ export function PasswordGenerator({
   labels,
   className,
 }: PasswordGeneratorProps) {
-  const locale = useLocale();
-  const t: PasswordGeneratorLabels = useMemo(
-    () => ({ ...locale.passwordGenerator, ...labels }),
-    [locale, labels],
-  );
+  const locale = useLocaleValue("passwordGenerator", {
+    password: "密码",
+    passphrase: "密码短语",
+    regenerate: "重新生成",
+    copy: "复制",
+    copied: "已复制",
+    strength: "强度",
+    weak: "弱",
+    fair: "一般",
+    good: "强",
+    strong: "很强",
+    length: "长度",
+    uppercase: "大写 A-Z",
+    lowercase: "小写 a-z",
+    digits: "数字 0-9",
+    special: "符号 !@#$%^&*",
+    minDigits: "最少数字",
+    minSpecial: "最少符号",
+    avoidAmbiguous: "排除形近字符",
+    words: "词数",
+    separator: "分隔符",
+    capitalize: "首字母大写",
+    includeNumber: "包含数字",
+    entropyUnit: "bit",
+    result: "生成结果",
+    unavailable: "当前环境不支持安全随机数，无法生成",
+  });
+  const t: PasswordGeneratorLabels = useMemo(() => ({ ...locale, ...labels }), [locale, labels]);
 
   const uid = useId();
   const [modeState, setModeState] = useState<GeneratorMode>(modes[0] ?? defaultMode);
@@ -137,7 +160,11 @@ export function PasswordGenerator({
   useEffect(() => generate(), [generate]);
 
   const notifyOptions = useCallback(
-    (next: { mode?: GeneratorMode; password?: PasswordOptions; passphrase?: PassphraseOptions }) => {
+    (next: {
+      mode?: GeneratorMode;
+      password?: PasswordOptions;
+      passphrase?: PassphraseOptions;
+    }) => {
       onOptionsChangeRef.current?.({
         mode: next.mode ?? mode,
         password: next.password ?? pwOptions,

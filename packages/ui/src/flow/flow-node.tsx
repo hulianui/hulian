@@ -3,7 +3,7 @@ import { useEffect, useRef, type PointerEvent as ReactPointerEvent, type ReactNo
 import { cn } from "../lib/cn";
 import { handleKey, handleOffsetRatio } from "./flow-geometry";
 import type { FlowHandleSpec, FlowNode, FlowSize } from "./flow.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 节点内交互元素：在其上按下不触发节点拖拽（仍选中），让表单控件可用。照 React Flow .nodrag 思路。
 const INTERACTIVE =
@@ -45,7 +45,18 @@ export function FlowNodeView<T>({
   onHandlePointerDown,
   onDelete,
 }: FlowNodeViewProps<T>) {
-  const labels = useComponentLocale().flow;
+  const labels = useComponentLocale().flow ?? {
+    canvas: "工作流画布",
+    node: "工作流节点",
+    source: "输出",
+    target: "输入",
+    zoomIn: "放大",
+    zoomOut: "缩小",
+    fitView: "适配视图",
+    deleteNode: "删除节点",
+    deleteEdge: "删除连线",
+    autoLayout: "智能排版",
+  };
   const ref = useRef<HTMLDivElement>(null);
 
   // 测量节点尺寸供连线几何对齐（ResizeObserver 带守卫，SSR/jsdom 安全）。
@@ -158,7 +169,18 @@ function Handle({
   connected: boolean;
   onPointerDown?: (e: ReactPointerEvent) => void;
 }) {
-  const labels = useComponentLocale().flow;
+  const labels = useComponentLocale().flow ?? {
+    canvas: "工作流画布",
+    node: "工作流节点",
+    source: "输出",
+    target: "输入",
+    zoomIn: "放大",
+    zoomOut: "缩小",
+    fitView: "适配视图",
+    deleteNode: "删除节点",
+    deleteEdge: "删除连线",
+    autoLayout: "智能排版",
+  };
   const label = handle.label ?? (handle.type === "source" ? labels.source : labels.target);
   return (
     <span

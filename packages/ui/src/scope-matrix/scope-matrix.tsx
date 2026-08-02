@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ScopeMatrixProps } from "./scope-matrix.types";
 
@@ -43,7 +44,28 @@ function Bucket({
   validate: ScopeMatrixProps["validate"];
   placeholder: string;
 }) {
-  const locale = useComponentLocale().scopeMatrix ?? zhCN.components!.scopeMatrix!;
+  const locale = useComponentLocale().scopeMatrix ?? {
+    duplicate: "已存在相同模式",
+    count: (count) => `${count} 条`,
+    emptyAllow: "未设置（不启用白名单）",
+    empty: "未设置",
+    remove: (value) => `移除 ${value}`,
+    add: "添加",
+    allow: "允许",
+    deny: "禁止",
+    placeholder: "输入模式后回车",
+    allowHint: "留空表示不启用白名单，此时只受「禁止」约束",
+    denyHint: "命中即拒绝，优先级高于「允许」",
+    unrestricted: "当前未设置任何范围限制。",
+    denyOnly: (denyLabel, count) =>
+      `未启用白名单：除命中「${String(denyLabel)}」的 ${count} 条模式外，其余全部允许。`,
+    allowOnly: (allowLabel, count) =>
+      `仅允许命中「${String(allowLabel)}」的 ${count} 条模式，其余全部拒绝。`,
+    combined: (denyLabel, denyCount, allowLabel, allowCount) =>
+      `先看「${String(denyLabel)}」（${denyCount} 条）：命中即拒绝；未命中的再看「${String(
+        allowLabel,
+      )}」（${allowCount} 条），命中才允许。`,
+  };
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -181,7 +203,28 @@ export function ScopeMatrix({
   placeholder,
   className,
 }: ScopeMatrixProps) {
-  const locale = useComponentLocale().scopeMatrix ?? zhCN.components!.scopeMatrix!;
+  const locale = useComponentLocale().scopeMatrix ?? {
+    duplicate: "已存在相同模式",
+    count: (count) => `${count} 条`,
+    emptyAllow: "未设置（不启用白名单）",
+    empty: "未设置",
+    remove: (value) => `移除 ${value}`,
+    add: "添加",
+    allow: "允许",
+    deny: "禁止",
+    placeholder: "输入模式后回车",
+    allowHint: "留空表示不启用白名单，此时只受「禁止」约束",
+    denyHint: "命中即拒绝，优先级高于「允许」",
+    unrestricted: "当前未设置任何范围限制。",
+    denyOnly: (denyLabel, count) =>
+      `未启用白名单：除命中「${String(denyLabel)}」的 ${count} 条模式外，其余全部允许。`,
+    allowOnly: (allowLabel, count) =>
+      `仅允许命中「${String(allowLabel)}」的 ${count} 条模式，其余全部拒绝。`,
+    combined: (denyLabel, denyCount, allowLabel, allowCount) =>
+      `先看「${String(denyLabel)}」（${denyCount} 条）：命中即拒绝；未命中的再看「${String(
+        allowLabel,
+      )}」（${allowCount} 条），命中才允许。`,
+  };
   const resolvedAllowLabel = allowLabel ?? locale.allow;
   const resolvedDenyLabel = denyLabel ?? locale.deny;
   const resolvedPlaceholder = placeholder ?? locale.placeholder;

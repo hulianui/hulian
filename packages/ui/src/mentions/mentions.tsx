@@ -10,7 +10,7 @@ import {
   type MouseEvent,
 } from "react";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { textareaVariants } from "../textarea/textarea";
 import {
   findTrigger,
@@ -128,7 +128,13 @@ export function Mentions({
     if (!trigger || !opt || opt.disabled) return;
     const el = taRef.current;
     const caret = el?.selectionStart ?? text.length;
-    const { value: next, caret: nextCaret } = insertMention(text, trigger.start, caret, prefix, opt.label);
+    const { value: next, caret: nextCaret } = insertMention(
+      text,
+      trigger.start,
+      caret,
+      prefix,
+      opt.label,
+    );
     commit(next);
     close();
     pendingCaret.current = nextCaret;
@@ -205,10 +211,7 @@ export function Mentions({
         >
           {segments.map((seg, i) =>
             seg.mention ? (
-              <mark
-                key={i}
-                className="rounded-[0.25rem] bg-primary/12 text-primary"
-              >
+              <mark key={i} className="rounded-[0.25rem] bg-primary/12 text-primary">
                 {seg.text}
               </mark>
             ) : (
@@ -243,7 +246,10 @@ export function Mentions({
         }}
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
         // 文本透明、背景透明（露出背板），仅保留光标色；彩色字形交给背板渲染。
-        className={cn(textareaVariants({ size }), "relative resize-y bg-transparent text-transparent caret-foreground")}
+        className={cn(
+          textareaVariants({ size }),
+          "relative resize-y bg-transparent text-transparent caret-foreground",
+        )}
       />
 
       {open && (
@@ -277,8 +283,8 @@ export function Mentions({
                   opt.disabled
                     ? "cursor-not-allowed text-muted opacity-50"
                     : isActive
-                      ? "bg-surface-hover text-foreground"
-                      : "text-foreground",
+                    ? "bg-surface-hover text-foreground"
+                    : "text-foreground",
                 )}
               >
                 {opt.startContent && <span className="shrink-0">{opt.startContent}</span>}

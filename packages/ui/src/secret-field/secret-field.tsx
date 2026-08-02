@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { cn } from "../lib/cn";
 import { Eye, EyeOff, Copy, Check } from "../_icons";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { MaskStrategy, SecretFieldProps } from "./secret-field.types";
 
 // SecretField = 密钥/令牌掩码字段：默认 `sk-abc…wxyz` 掩码，眼睛 toggle 显形，一键复制原值，
@@ -36,7 +36,12 @@ export function SecretField({
   const [revealedState, setRevealedState] = useState(false);
   const revealed = revealedProp ?? revealedState;
   const [copied, setCopied] = useState(false);
-  const locale = useComponentLocale().secretField;
+  const locale = useComponentLocale().secretField ?? {
+    show: "显示",
+    hide: "隐藏",
+    copy: "复制",
+    copied: "已复制",
+  };
 
   const toggleReveal = () => {
     const next = !revealed;

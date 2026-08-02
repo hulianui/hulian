@@ -18,7 +18,7 @@ import {
   Minus,
 } from "../_icons";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 const FALLBACK_LABELS = {
   toolbar: "格式工具栏",

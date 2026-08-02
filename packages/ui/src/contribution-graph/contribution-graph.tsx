@@ -1,5 +1,6 @@
 "use client";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import { bucketize } from "../heatmap/heatmap.matrix";
@@ -40,7 +41,15 @@ export function ContributionGraph({
   className,
   ...rest
 }: ContributionGraphProps) {
-  const locale = useComponentLocale().contributionGraph ?? zhCN.components!.contributionGraph!;
+  const locale = useComponentLocale().contributionGraph ?? {
+    weekdays: ["日", "一", "二", "三", "四", "五", "六"],
+    month: (month) => `${month}月`,
+    tooltip: (date, count, present) =>
+      present || count > 0 ? `${date} · ${count} 次` : `${date} · 无贡献`,
+    summary: (days, total) => `过去 ${days} 天共 ${total} 次贡献`,
+    less: "少",
+    more: "多",
+  };
   const calendar = buildContributionCalendar(data, { days, endDate, weekStart });
   const accent = resolveTone(tone) ?? "var(--color-primary)";
   const domainMax = max ?? calendar.max;

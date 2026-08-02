@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { InfiniteMenuItem, InfiniteMenuProps } from "./infinite-menu.types";
 
@@ -70,7 +71,12 @@ export function InfiniteMenu({
   className,
   style,
 }: InfiniteMenuProps) {
-  const locale = useComponentLocale().infiniteMenu ?? zhCN.components!.infiniteMenu!;
+  const locale = useComponentLocale().infiniteMenu ?? {
+    openItem: (title) => `打开 ${title}`,
+    openActive: "打开激活项",
+    placeholderTitle: (index) => `菜单项 ${index}`,
+    placeholderDescription: "占位项 · 传入 items 替换",
+  };
   const reduced = useReducedMotion();
 
   const placeholderItems = useMemo<InfiniteMenuItem[]>(

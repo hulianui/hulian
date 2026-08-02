@@ -1,5 +1,6 @@
 "use client";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { buildMatrix, bucketize } from "./heatmap.matrix";
 import type { HeatmapCellInfo, HeatmapProps } from "./heatmap.types";
@@ -30,7 +31,11 @@ export function Heatmap({
   onCellClick,
   className,
 }: HeatmapProps) {
-  const locale = useComponentLocale().heatmap ?? zhCN.components!.heatmap!;
+  const locale = useComponentLocale().heatmap ?? {
+    empty: "无数据",
+    tooltip: (y, x, value) => `${y} · ${x}：${value}`,
+    legend: (min, max) => `色阶：${min} 至 ${max}`,
+  };
   const { xs, ys, get } = buildMatrix(data, xLabels, yLabels);
   // 值域：domain 显式最优先；否则 [0, max ?? 数据最大]。数据最大 <1（小数/比率）不再抬到 1，
   // 保持小数据也能铺满色阶；全 0/空数据回落 1 防除零。

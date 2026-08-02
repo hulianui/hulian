@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { RelativeTimeLocale, RelativeTimeProps } from "./relative-time.types";
 

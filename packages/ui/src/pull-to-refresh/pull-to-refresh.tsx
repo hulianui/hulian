@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { RefreshCw } from "../_icons";
 import { cn } from "../lib/cn";
 import type { PullToRefreshProps } from "./pull-to-refresh.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 下拉刷新（"use client"·零依赖）：滚动容器置顶时下拉，内容 translateY 跟手(带阻尼)，越过 threshold 进 armed，
 // 松手触发 onRefresh 并保持刷新态直至 Promise 结束再回弹。头部指示器高度随下拉距离生长。
@@ -56,7 +56,10 @@ export function PullToRefresh({
       if (cur.status === "refreshing") return;
       if (el.scrollTop <= 0 && e.deltaY < 0) {
         e.preventDefault();
-        wheelAcc.current = Math.min(cur.threshold * 2, wheelAcc.current + -e.deltaY * cur.resistance);
+        wheelAcc.current = Math.min(
+          cur.threshold * 2,
+          wheelAcc.current + -e.deltaY * cur.resistance,
+        );
         setDist(wheelAcc.current);
         setStatus(wheelAcc.current >= cur.threshold ? "armed" : "pulling");
         clearTimeout(wheelTimer.current);
@@ -143,8 +146,8 @@ export function PullToRefresh({
             {refreshing
               ? resolvedRefreshingText
               : status === "armed"
-                ? resolvedArmedText
-                : resolvedPullingText}
+              ? resolvedArmedText
+              : resolvedPullingText}
           </span>
         </div>
       </div>

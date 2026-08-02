@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Copy, Check, RefreshCw, ThumbsUp, ThumbsDown } from "../_icons";
 import { cn } from "../lib/cn";
 import type { MessageActionsProps } from "./message-actions.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 消息操作条：复制(剪贴板+Check反馈) / 重新生成 / 赞 / 踩。各键仅在对应回调或 content 存在时渲染。
 function IconBtn({
@@ -46,7 +46,13 @@ export function MessageActions({
   children,
   ...props
 }: MessageActionsProps) {
-  const labels = useComponentLocale().messageActions;
+  const labels = useComponentLocale().messageActions ?? {
+    copy: "复制",
+    copied: "已复制",
+    regenerate: "重新生成",
+    like: "赞",
+    dislike: "踩",
+  };
   const [copied, setCopied] = useState(false);
   const [feeling, setFeeling] = useState<"like" | "dislike" | null>(null);
   const showCopy = content != null || !!onCopy;

@@ -7,7 +7,8 @@ import {
   type ClipboardEvent,
   type ChangeEvent,
 } from "react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { InputOTPProps } from "./input-otp.types";
 
@@ -26,7 +27,7 @@ export function InputOTP({
   className,
   "aria-label": ariaLabel,
 }: InputOTPProps) {
-  const locale = useComponentLocale().inputOtp ?? zhCN.components!.inputOtp!;
+  const locale = useComponentLocale().inputOtp ?? { label: "验证码" };
   const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
   const isControlled = value !== undefined;
   const [internal, setInternal] = useState(defaultValue);

@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { CouponProps, CouponStatus, CouponTone } from "./coupon.types";
 
 // Coupon = 撕票造型优惠券。左侧面额区(tone 实色) + 中缝虚线撕边/上下半圆穿孔 + 右侧信息/操作区。
@@ -45,7 +45,11 @@ function Denomination({
     );
   }
   if (kind === "shipping") {
-    return <div className={cn("font-bold leading-none", size === "sm" ? "text-lg" : "text-xl")}>{freeShipping}</div>;
+    return (
+      <div className={cn("font-bold leading-none", size === "sm" ? "text-lg" : "text-xl")}>
+        {freeShipping}
+      </div>
+    );
   }
   return (
     <div className="flex items-baseline font-bold leading-none">
@@ -87,7 +91,11 @@ export function Coupon({
   const formatDiscount = labels.formatDiscount ?? ((discount: number) => `${discount}折`);
   const inactive = status === "used" || status === "expired";
   const thresholdText =
-    kind === "shipping" ? labels.noMinimumSpend : threshold ? labels.minimumSpend(threshold) : labels.noMinimumSpend;
+    kind === "shipping"
+      ? labels.noMinimumSpend
+      : threshold
+      ? labels.minimumSpend(threshold)
+      : labels.noMinimumSpend;
   const action = status === "available" ? onClaim : status === "claimed" ? onUse : undefined;
   const label = actionLabel ?? labels[status];
 
@@ -113,7 +121,9 @@ export function Coupon({
         HEIGHT[size],
         selected && "border-primary ring-2 ring-ring",
         inactive && "opacity-60 grayscale",
-        onSelect && !inactive && "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        onSelect &&
+          !inactive &&
+          "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
     >

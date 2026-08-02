@@ -5,7 +5,7 @@ import { ArrowLeft } from "../_icons";
 import { Button } from "../button";
 import { Separator } from "../separator";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import type { PageHeaderProps } from "./page-header.types";
 
 export function PageHeader({

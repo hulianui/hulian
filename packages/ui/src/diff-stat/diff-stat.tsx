@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { splitBlocks } from "./diff-stat.split";
 import type { DiffStatProps, DiffStatStatus } from "./diff-stat.types";
 

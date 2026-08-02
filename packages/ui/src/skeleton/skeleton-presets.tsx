@@ -1,6 +1,6 @@
 "use client";
 
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { Skeleton } from "./skeleton";
 
 // 组合骨架：把 Skeleton 原语按常见信息结构排好，免去各处手搓占位布局。
@@ -39,7 +39,11 @@ export function CardSkeleton({ count = 3, label }: CardSkeletonProps) {
   const locale = useComponentLocale();
   const loadingLabel = label ?? locale.spinner?.loading ?? "加载中";
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" role="status" aria-label={loadingLabel}>
+    <div
+      className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+      role="status"
+      aria-label={loadingLabel}
+    >
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="space-y-3">
           <Skeleton className="h-5 w-1/2" />

@@ -1,7 +1,8 @@
 "use client";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { Check } from "../_icons";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ListboxProps, ListboxItemData } from "./listbox.types";
 
@@ -19,7 +20,7 @@ export function Listbox({
   style,
   "aria-label": ariaLabel,
 }: ListboxProps) {
-  const locale = useComponentLocale().listbox ?? zhCN.components!.listbox!;
+  const locale = useComponentLocale().listbox ?? { label: "选项列表" };
   const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
   const isControlled = selectedKeys !== undefined;
   const [internal, setInternal] = useState<string[]>(defaultSelectedKeys);

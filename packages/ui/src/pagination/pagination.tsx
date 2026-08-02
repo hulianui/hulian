@@ -24,7 +24,7 @@ import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { getPaginationRange } from "./pagination.range";
 import type { PaginationProps } from "./pagination.types";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 
 // 方块按钮：复用 buttonVariants 的 focus-ring/disabled，仅覆写尺寸为定高、多位数可横向生长。
 const SQUARE = "h-9 min-w-9 px-1.5";
@@ -93,7 +93,18 @@ export function Pagination({
   "aria-label": ariaLabel = "pagination",
   ...props
 }: PaginationProps) {
-  const labels = useComponentLocale().pagination;
+  const labels = useComponentLocale().pagination ?? {
+    total: (count) => `共 ${count} 条`,
+    first: "跳到首页",
+    previous: "上一页",
+    page: (page) => `第 ${page} 页`,
+    more: "更多页面",
+    next: "下一页",
+    last: "跳到末页",
+    jump: "跳至第几页",
+    jumpPrefix: "跳至",
+    jumpSuffix: "页",
+  };
   // 页数真源：total（页数）优先，其次由 totalItems/pageSize 算。
   // 两条路并存是为了兼容既有调用方 —— `total` 一开始就被定义成「总页数」，而几乎所有后端回的
   // 是总条数，于是每个消费方都在调用处补一次 Math.ceil。语义修正留到 1.0 主版本一次性做。

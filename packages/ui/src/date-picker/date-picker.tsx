@@ -5,7 +5,7 @@ import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
 import { PICKER_FORMAT, PICKER_PLACEHOLDER, parseValue } from "../calendar/calendar-core";
 import { cn } from "../lib/cn";
-import { useComponentLocale } from "../config/locale";
+import { useComponentLocale } from "../config/locale-context";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DatePickerProps } from "./date-picker.types";
 
@@ -42,7 +42,7 @@ export function DatePicker({
   };
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
-  const value = isControlled ? (valueProp ?? null) : internal;
+  const value = isControlled ? valueProp ?? null : internal;
   const selected = parseValue(value, picker);
 
   const [open, setOpen] = useState(false);

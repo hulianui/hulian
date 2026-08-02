@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useReducedMotion } from "motion/react";
-import { useComponentLocale, zhCN } from "../config/locale";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { LogoItem, LogoLoopProps } from "./logo-loop.types";
 
@@ -36,7 +37,7 @@ export function LogoLoop({
   className,
   style,
 }: LogoLoopProps) {
-  const locale = useComponentLocale().logoLoop ?? zhCN.components!.logoLoop!;
+  const locale = useComponentLocale().logoLoop ?? { label: "合作伙伴 logo", link: "logo 链接" };
   const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);

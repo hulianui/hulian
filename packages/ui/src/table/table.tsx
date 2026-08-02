@@ -40,7 +40,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight, GripVertical } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { Empty } from "../empty";
 import { cn } from "../lib/cn";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip/tooltip";
@@ -205,7 +205,17 @@ const RowDragContext = createContext<RowDragHandleCtx | null>(null);
 
 /** 手柄列单元格：只有它是 activator，行内其余区域照常点击/选择（dragHandle="cell"）。 */
 function RowDragHandle() {
-  const loc = useLocale().table;
+  const loc = useLocaleValue("table", {
+    empty: "暂无数据",
+    dragSort: "拖拽排序",
+    selectAll: "全选",
+    selectRow: "选择行",
+    collapse: "收起",
+    expand: "展开",
+    filterPlaceholder: "筛选…",
+    filter: (column) => `筛选 ${column}`,
+    resizeColumn: "调整列宽",
+  });
   const ctx = useContext(RowDragContext);
   // 无 context（理论不可达）→ 占位保持列宽，不渲染可交互元素
   if (!ctx) return <span className="inline-block size-5" />;
@@ -430,7 +440,17 @@ export function Table<TData>({
   emptyText,
   renderEmpty,
 }: TableProps<TData>) {
-  const loc = useLocale().table;
+  const loc = useLocaleValue("table", {
+    empty: "暂无数据",
+    dragSort: "拖拽排序",
+    selectAll: "全选",
+    selectRow: "选择行",
+    collapse: "收起",
+    expand: "展开",
+    filterPlaceholder: "筛选…",
+    filter: (column) => `筛选 ${column}`,
+    resizeColumn: "调整列宽",
+  });
   const selectionEnabled = Boolean(enableRowSelection);
   const treeMode = Boolean(getSubRows);
   const panelMode = Boolean(renderExpandedRow);
