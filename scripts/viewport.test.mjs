@@ -2,6 +2,21 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { DOCS_ROUTES, MD_BREAKPOINT, VIEWPORTS, checkProbe, isDesktop } from "./viewport.mjs";
+import * as viewport from "./viewport.mjs";
+
+test("视口路由矩阵补齐中英文并去重已带 /en 的路由", () => {
+  assert.equal(typeof viewport.expandBilingualRoutes, "function");
+  assert.deepEqual(
+    viewport.expandBilingualRoutes([
+      { route: "/components/button", heading: "Button" },
+      { route: "/en/components/button", heading: "Button" },
+    ]),
+    [
+      { route: "/components/button", heading: "Button", locale: "zh-CN" },
+      { route: "/en/components/button", heading: "Button", locale: "en" },
+    ],
+  );
+});
 
 // 一份「全都对」的桌面快照，各用例只覆盖要断言的那一项。
 const desktopProbe = {
@@ -43,6 +58,15 @@ test("门禁覆盖 #39 报告的两条链路与 md 断点两侧", () => {
   const routes = DOCS_ROUTES.map((r) => r.route);
   assert.ok(routes.some((r) => r.startsWith("/components")));
   assert.ok(routes.some((r) => r.startsWith("/theme")));
+  assert.deepEqual(
+    DOCS_ROUTES.filter(({ route }) => route.endsWith("/theme/color")).map(
+      ({ route, locale, heading }) => ({ route, locale, heading }),
+    ),
+    [
+      { route: "/theme/color", locale: "zh-CN", heading: "颜色" },
+      { route: "/en/theme/color", locale: "en", heading: "Color" },
+    ],
+  );
 });
 
 test("767 归移动端、768 归桌面 —— 断点两侧不许各自解释", () => {
@@ -68,6 +92,17 @@ test("正文被复制成移动/桌面两份必须失败", () => {
 test("h1 缺失、文本不符、或不可见都失败", () => {
   assert.match(mobile({ headingVisible: false }).join("\n"), /h1 不可见/);
   assert.match(mobile({ headingText: "别的" }).join("\n"), /应为 "Button"/);
+});
+
+test("视口失败原因带语言，避免双语矩阵里无法定位", () => {
+  const failures = checkProbe({
+    route: "/en/components/button",
+    locale: "en",
+    heading: "Button",
+    width: 390,
+    probe: { ...mobileProbe, contentWidth: 0, contentHeight: 0 },
+  });
+  assert.match(failures.join("\n"), /\[en\].*\/en\/components\/button/);
 });
 
 test("不许靠横向滚出屏幕冒充「显示」", () => {

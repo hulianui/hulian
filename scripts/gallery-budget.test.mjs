@@ -2,6 +2,21 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { GALLERY_BUDGETS, checkBudget } from "./gallery-budget.mjs";
+import * as gallery from "./gallery-budget.mjs";
+
+test("画廊路由矩阵补齐中英文并去重已带 /en 的路由", () => {
+  assert.equal(typeof gallery.expandBilingualRoutes, "function");
+  assert.deepEqual(
+    gallery.expandBilingualRoutes([
+      { route: "/pages", maxDomNodes: 4200 },
+      { route: "/en/pages", maxDomNodes: 4200 },
+    ]),
+    [
+      { route: "/pages", maxDomNodes: 4200, locale: "zh-CN" },
+      { route: "/en/pages", maxDomNodes: 4200, locale: "en" },
+    ],
+  );
+});
 
 const budget = {
   route: "/pages",
@@ -24,7 +39,16 @@ const check = (patch) => checkBudget(budget, { ...ok, ...patch });
 
 test("门禁覆盖 issue #40 点名的两个画廊", () => {
   const routes = GALLERY_BUDGETS.map((b) => b.route);
-  assert.deepEqual(routes, ["/pages", "/blocks"]);
+  assert.deepEqual(routes, ["/pages", "/en/pages", "/blocks", "/en/blocks"]);
+  assert.deepEqual(
+    GALLERY_BUDGETS.map(({ route, locale }) => ({ route, locale })),
+    [
+      { route: "/pages", locale: "zh-CN" },
+      { route: "/en/pages", locale: "en" },
+      { route: "/blocks", locale: "zh-CN" },
+      { route: "/en/blocks", locale: "en" },
+    ],
+  );
 });
 
 test("当前实现（20 个里挂 9 个）通过", () => {
@@ -56,4 +80,12 @@ test("控制台 warning 超预算失败（头像预加载那类回归）", () =>
 test("缩略图丢了 inert / 焦点真的跑进去了才失败（预览里本来就有 a 和 button）", () => {
   assert.match(check({ thumbsMissingInert: 2 }).join("\n"), /2 个缩略图缺 inert/);
   assert.match(check({ focusEscapes: 3 }).join("\n"), /3 个元素真的拿到了焦点/);
+});
+
+test("画廊失败原因带语言，避免双语矩阵里无法定位", () => {
+  const failures = checkBudget(
+    { ...budget, route: "/en/pages", locale: "en" },
+    { ...ok, domNodes: 4201 },
+  );
+  assert.match(failures.join("\n"), /\[en\].*\/en\/pages/);
 });

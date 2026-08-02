@@ -146,7 +146,11 @@ describe("中英双语与导出名", () => {
     const formDialog = searchDocs.find((doc) => doc.id === "component:form-dialog");
     const tour = searchDocs.find((doc) => doc.id === "component:tour");
 
-    expect(formDialog?.identityAliases).toEqual(["ModalForm", "DrawerForm"]);
+    expect(formDialog?.identityAliases).toEqual([
+      "弹窗/抽屉表单",
+      "ModalForm",
+      "DrawerForm",
+    ]);
     expect(tour?.keywords).toContain("引导");
     expect(tour?.identityAliases ?? []).not.toContain("引导");
   });
@@ -257,5 +261,17 @@ describe("English catalog search", () => {
 
     expect(englishSearch.searchAll("按钮").map((hit) => hit.id)).toContain("component:button");
     expect(englishSearch.searchAll("客户管理").map((hit) => hit.id)).toContain("demo:crm");
+  });
+
+  it("keeps only the canonical Chinese component short name as an English exact identity", async () => {
+    vi.stubEnv("DOCS_LOCALE", "en");
+    vi.resetModules();
+    const englishSearch = await import("./search-index");
+
+    const button = englishSearch.searchDocs.find((doc) => doc.id === "component:button");
+    const tour = englishSearch.searchDocs.find((doc) => doc.id === "component:tour");
+    expect(button?.identityAliases).toContain("按钮");
+    expect(tour?.identityAliases).toContain("漫游引导");
+    expect(tour?.identityAliases).not.toContain("引导");
   });
 });

@@ -161,4 +161,22 @@ describe("ComponentQuickJump", () => {
       vi.resetModules();
     }
   });
+
+  it("navigates the canonical Chinese short name on Enter in the English build", async () => {
+    vi.resetModules();
+    vi.stubEnv("DOCS_LOCALE", "en");
+    try {
+      const { ComponentQuickJump: EnglishQuickJump } = await import("./component-quick-jump");
+      render(<EnglishQuickJump placement="catalog" />);
+
+      const input = screen.getByRole("combobox", { name: "Quick jump to a component" });
+      fireEvent.change(input, { target: { value: "按钮" } });
+      fireEvent.keyDown(input, { key: "Enter" });
+
+      expect(push).toHaveBeenCalledWith("/components/button");
+    } finally {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    }
+  });
 });

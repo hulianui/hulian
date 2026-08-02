@@ -33,20 +33,25 @@ export interface SearchDoc {
   categoryLabel?: string;
   /** 附加检索词（tags、小类名等）。 */
   keywords: string[];
-  /** 仅指向同一组件的次级公共导出/技术别名；不含分类、分组、标签或一般检索词。 */
+  /** 同一组件的跨语言规范短名与次级公共导出；不含分类、分组、标签或一般检索词。 */
   identityAliases?: string[];
 }
 
 /**
- * Sparse by design. Each entry must be a verified public identity of the same component.
+ * Sparse by design. Each entry must be a verified secondary public identity of the same component.
  * `form-dialog` is exported as both names by packages/ui/src/form-dialog/index.ts and registry
- * meta.exports; general search metadata stays in `keywords` below.
+ * meta.exports. Every component also receives its canonical Chinese short name below; general
+ * search metadata stays in `keywords`.
  */
 const COMPONENT_IDENTITY_ALIASES: Readonly<
   Partial<Record<ComponentMeta["slug"], readonly string[]>>
 > = {
   "form-dialog": ["ModalForm", "DrawerForm"],
 };
+
+function canonicalChineseShortName(item: ComponentMeta): string {
+  return item.description.split(" · ")[0].trim();
+}
 
 export const TYPE_LABEL: Record<DocType, string> =
   DOCS_LOCALE === "en"
@@ -80,7 +85,10 @@ function componentDocs(): SearchDoc[] {
       description: localized.description,
       category: m.category,
       categoryLabel: localized.categoryLabel,
-      identityAliases: [...(COMPONENT_IDENTITY_ALIASES[m.slug] ?? [])],
+      identityAliases: [
+        canonicalChineseShortName(m),
+        ...(COMPONENT_IDENTITY_ALIASES[m.slug] ?? []),
+      ],
       keywords: [m.slug, localized.groupLabel, ...localized.tags, ...localized.keywords].filter(
         Boolean,
       ),
