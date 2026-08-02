@@ -308,15 +308,17 @@ const CONFUSABLES_EN = [
 
 // -------------------------------------------------- 组件级约束（自动提取）--
 
-/** 取 md 里 `## 禁忌 / 坑` 到下一个 `## ` 之间的正文。 */
-function extractPitfalls(md, locale = DOCS_LOCALE) {
+/** 取当前语言的约束章节到下一个二级标题或真实 EOF 之间的正文。 */
+export function extractPitfalls(md, locale = DOCS_LOCALE) {
   const heading =
-    locale === "en" ? "(?:Usage guidelines|Usage notes|Usage|Pitfalls)" : "禁忌\\s*\\/\\s*坑";
-  const m = md.match(
-    new RegExp(`^##\\s*${heading}\\s*$([\\s\\S]*?)(?=^##\\s|\\Z)`, locale === "en" ? "mi" : "m"),
-  );
-  if (!m) return [];
-  const body = m[1].trim();
+    locale === "en"
+      ? /^##\s*(?:Usage guidelines|Usage notes|Usage|Pitfalls)\s*$/im
+      : /^##\s*禁忌\s*\/\s*坑\s*$/m;
+  const headingMatch = heading.exec(md);
+  if (!headingMatch) return [];
+  const tail = md.slice(headingMatch.index + headingMatch[0].length);
+  const nextHeading = /^##\s/m.exec(tail);
+  const body = tail.slice(0, nextHeading?.index ?? tail.length).trim();
   if (!body || (locale !== "en" && /^暂无/.test(body))) return [];
 
   // 按 markdown 列表项切分；条目可能跨多行
@@ -349,38 +351,6 @@ function normalizeEnglishDistribution(source) {
     );
 }
 
-function alignEnglishRules(rules, targetCount, slug) {
-  if (targetCount === 0) return [];
-  if (rules.length === 0) {
-    throw new Error(`English usage guidelines for ${slug} contain no advisory text`);
-  }
-  const aligned = rules.map((item) => item.rule);
-  while (aligned.length < targetCount) {
-    let splitIndex = -1;
-    let splitParts = null;
-    for (const [index, rule] of aligned.entries()) {
-      const parts = rule
-        .split(/(?<=[.!?])\s+(?=[A-Z`*])/)
-        .map((part) => part.trim())
-        .filter(Boolean);
-      if (parts.length > 1 && (!splitParts || rule.length > aligned[splitIndex].length)) {
-        splitIndex = index;
-        splitParts = parts;
-      }
-    }
-    if (!splitParts) {
-      aligned.push(aligned[aligned.length - 1]);
-      continue;
-    }
-    aligned.splice(splitIndex, 1, ...splitParts);
-  }
-  while (aligned.length > targetCount) {
-    const tail = aligned.pop();
-    aligned[aligned.length - 1] = `${aligned[aligned.length - 1]} ${tail}`;
-  }
-  return aligned.map((rule) => ({ rule }));
-}
-
 export function buildConventions(locale = DOCS_LOCALE) {
   const slugs = readdirSync(UI_SRC).filter((d) => existsSync(join(UI_SRC, d, `${d}.md`)));
   const globalRules = locale === "en" ? GLOBAL_EN : GLOBAL;
@@ -402,13 +372,7 @@ export function buildConventions(locale = DOCS_LOCALE) {
     if (!existsSync(file)) throw new Error(`Missing ${locale} conventions source: ${file}`);
     const raw = readFileSync(file, "utf8");
     const md = locale === "en" ? normalizeEnglishDistribution(raw) : raw;
-    const canonicalRuleCount = extractPitfalls(
-      readFileSync(join(UI_SRC, slug, `${slug}.md`), "utf8"),
-      "zh-CN",
-    ).length;
-    const extracted = extractPitfalls(md, locale);
-    const rules =
-      locale === "en" ? alignEnglishRules(extracted, canonicalRuleCount, slug) : extracted;
+    const rules = extractPitfalls(md, locale);
     if (!rules.length) continue;
     const title = (md.match(/^name:\s*(.+)$/m) || [])[1]?.trim() || slug;
     rules.forEach((rule, index) => {
