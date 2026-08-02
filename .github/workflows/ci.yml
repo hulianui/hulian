@@ -99,6 +99,9 @@ jobs:
       - name: Build
         run: pnpm --filter www build
 
+      - name: Verify English documentation output
+        run: pnpm docs:check:output
+
       - name: Accessibility gate
         run: pnpm a11y
 

@@ -5,7 +5,6 @@
 // Stat 本身已含卡片边框/背景（border-border bg-surface p-5），此处用 relative 容器叠加 Sparkline 右上角。
 
 import { Sparkline, Stat } from "@hulianui/ui";
-import { translateFixtureText } from "../../../lib/fixture-copy";
 
 const KPIS = [
   {
@@ -51,7 +50,7 @@ export function KpiRailBlock() {
           <div key={kpi.label} className="relative">
             <Stat
               label={kpi.label}
-              value={translateFixtureText(kpi.value)}
+              value={kpi.value}
               delta={kpi.delta}
               deltaLabel={kpi.deltaLabel}
             />

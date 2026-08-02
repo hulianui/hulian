@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { DOCS_LOCALE } from "../../lib/docs-locale";
+import { blockPreviews as englishBlockPreviews } from "./_registry.en";
 import { HeroBlock } from "./_blocks/hero";
 import { TrustBarBlock } from "./_blocks/trust-bar";
 import { FeaturesBlock } from "./_blocks/features";
@@ -67,7 +69,7 @@ import { FlowCanvasBlock } from "./_blocks/flow-canvas";
 export { blocks, getBlock, blockMeta, CATEGORY_LABEL, type BlockMeta } from "./_meta";
 
 // slug → 预览渲染。block 自身是 client/RSC 组件，server detail 页可直接渲染。
-export const blockPreviews: Record<string, () => ReactNode> = {
+const chineseBlockPreviews: Record<string, () => ReactNode> = {
   hero: () => <HeroBlock />,
   "hero-split": () => <HeroSplitBlock />,
   "hero-video": () => <HeroVideoBlock />,
@@ -129,3 +131,5 @@ export const blockPreviews: Record<string, () => ReactNode> = {
   "agent-card": () => <AgentCardBlock />,
   "flow-canvas": () => <FlowCanvasBlock />,
 };
+
+export const blockPreviews = DOCS_LOCALE === "en" ? englishBlockPreviews : chineseBlockPreviews;

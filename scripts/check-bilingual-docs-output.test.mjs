@@ -1,10 +1,24 @@
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, relative } from "node:path";
 import test from "node:test";
 
-import { scanEnglishDocument, scanEnglishLinks } from "./check-bilingual-docs-output.mjs";
+import {
+  scanEnglishDocument,
+  scanEnglishLinks,
+  task9EnglishRoutes,
+  task9ExpectedRelativeRoutes,
+} from "./check-bilingual-docs-output.mjs";
+
+function writeRouteInventory(root, excluded) {
+  for (const route of task9ExpectedRelativeRoutes()) {
+    if (route === excluded) continue;
+    const file = join(root, route);
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, "<!doctype html><html><body>English</body></html>");
+  }
+}
 
 test("English output scan reports visible, metadata, and accessible CJK but ignores hidden payloads", () => {
   const root = mkdtempSync(join(tmpdir(), "hulian-output-scan-"));
@@ -49,4 +63,28 @@ test("English output scan rejects duplicate prefixes and unintended Chinese docs
     { field: "duplicate-prefix:href", value: "/en/en/start" },
     { field: "cross-locale:href", value: "/blocks/button" },
   ]);
+});
+
+test("Task 9 inventory is derived from current block and page metadata", () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-output-inventory-"));
+  const expected = task9ExpectedRelativeRoutes();
+  writeRouteInventory(root);
+
+  assert.equal(expected.length, 171);
+  assert.equal(expected.filter((route) => route.startsWith("blocks/")).length, 57);
+  assert.equal(expected.filter((route) => route.startsWith("pages/")).length, 20);
+  assert.deepEqual(
+    task9EnglishRoutes(root).map((file) => relative(root, file).replaceAll("\\", "/")),
+    expected,
+  );
+});
+
+test("Task 9 inventory rejects a missing metadata-derived route", () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-output-inventory-"));
+  writeRouteInventory(root, "preview/blocks/navbar.html");
+
+  assert.throws(
+    () => task9EnglishRoutes(root),
+    /Missing English output route: preview\/blocks\/navbar\.html/,
+  );
 });

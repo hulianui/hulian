@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
+import { readFileSync, readdirSync } from "node:fs";
 import { homeContent } from "../app/home.content";
 import { startContent } from "../app/start/start.content";
 import { themeContent } from "../app/theme/theme.content";
@@ -116,6 +117,44 @@ describe("public documentation localization", () => {
       expect(HAN_OR_CJK_PUNCTUATION.test(source), `${file} English source contains CJK`).toBe(false);
       expect(source, `${file} source must not expose the docs localization runtime`).not.toContain(
         "fixture-jsx",
+      );
+    }
+  });
+
+  it("commits clean executable English modules for every gallery fixture", () => {
+    const areas = [
+      {
+        directory: new URL("../app/blocks/_blocks/", import.meta.url),
+        expected: blocks.map((item) => item.file.replace(/\.tsx$/, ".en.tsx")),
+      },
+      {
+        directory: new URL("../app/pages/_pages/", import.meta.url),
+        expected: pages.map((item) => item.file.replace(/\.tsx$/, ".en.tsx")),
+      },
+    ];
+
+    for (const { directory, expected } of areas) {
+      const files = readdirSync(directory)
+        .filter((file) => file.endsWith(".en.tsx"))
+        .sort();
+      expect(files).toEqual(expected.sort());
+      for (const file of files) {
+        const source = readFileSync(new URL(file, directory), "utf8");
+        expect(HAN_OR_CJK_PUNCTUATION.test(source), file).toBe(false);
+        expect(source, `${file} has trailing whitespace`).not.toMatch(/[ \t]+$/m);
+        expect(source, file).not.toMatch(/fixture-(?:jsx|ui|copy)|translateFixture|DOCS_LOCALE/);
+      }
+    }
+
+    for (const registry of [
+      new URL("../app/blocks/_registry.en.tsx", import.meta.url),
+      new URL("../app/pages/_registry.en.tsx", import.meta.url),
+    ]) {
+      const source = readFileSync(registry, "utf8");
+      expect(HAN_OR_CJK_PUNCTUATION.test(source), registry.pathname).toBe(false);
+      expect(source, `${registry.pathname} has trailing whitespace`).not.toMatch(/[ \t]+$/m);
+      expect(source, registry.pathname).not.toMatch(
+        /fixture-(?:jsx|ui|copy)|translateFixture|DOCS_LOCALE/,
       );
     }
   });

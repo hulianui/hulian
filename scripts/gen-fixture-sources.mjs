@@ -17,7 +17,11 @@ function createTranslator(copy) {
   return (value, file) => {
     if (!CJK.test(value)) return value;
     const key = value.trim().replace(/\s+/g, " ");
-    if (copy[key]) return copy[key];
+    if (copy[key]) {
+      const leading = value.match(/^\s*/u)?.[0] ?? "";
+      const trailing = value.match(/\s*$/u)?.[0] ?? "";
+      return `${leading}${copy[key]}${trailing}`;
+    }
 
     let translated = value;
     for (const [source, target] of entries) {
@@ -30,7 +34,7 @@ function createTranslator(copy) {
   };
 }
 
-function translateSource(source, file, copy) {
+export function translateFixtureModule(source, file, copy, kind) {
   const translate = createTranslator(copy);
   const sourceFile = ts.createSourceFile(
     file,
@@ -41,6 +45,21 @@ function translateSource(source, file, copy) {
   );
   const transformer = (context) => {
     const visit = (node) => {
+      if (
+        ts.isImportDeclaration(node) &&
+        ts.isStringLiteral(node.moduleSpecifier) &&
+        node.moduleSpecifier.text.endsWith("/lib/fixture-copy")
+      ) {
+        return undefined;
+      }
+      if (
+        ts.isCallExpression(node) &&
+        ts.isIdentifier(node.expression) &&
+        node.expression.text === "translateFixtureText" &&
+        node.arguments.length === 1
+      ) {
+        return ts.visitNode(node.arguments[0], visit);
+      }
       if (ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && CJK.test(node.name.text)) {
         return ts.factory.updatePropertyAssignment(
           node,
@@ -51,6 +70,9 @@ function translateSource(source, file, copy) {
       if (ts.isStringLiteral(node)) {
         if (node.text.endsWith("/lib/fixture-ui")) {
           return ts.factory.createStringLiteral("@hulianui/ui");
+        }
+        if (kind === "page" && /^\.\.\/\.\.\/blocks\/_blocks\/[^/]+$/.test(node.text)) {
+          return ts.factory.createStringLiteral(`${node.text}.en`);
         }
         return ts.factory.createStringLiteral(translate(node.text, file));
       }
@@ -77,33 +99,73 @@ function translateSource(source, file, copy) {
   try {
     return ts
       .createPrinter({ newLine: ts.NewLineKind.LineFeed, removeComments: true })
-      .printFile(result.transformed[0]);
+      .printFile(result.transformed[0])
+      .replace(/[ \t]+$/gm, "");
   } finally {
     result.dispose();
   }
 }
 
-function generate(directory, output, copy) {
+function generate(directory, output, copy, kind) {
   const root = resolve(directory);
   const sources = Object.fromEntries(
     readdirSync(root)
-      .filter((file) => file.endsWith(".tsx"))
+      .filter((file) => file.endsWith(".tsx") && !file.endsWith(".en.tsx"))
       .sort()
-      .map((file) => [file, translateSource(readFileSync(join(root, file), "utf8"), file, copy)]),
+      .map((file) => {
+        const source = translateFixtureModule(readFileSync(join(root, file), "utf8"), file, copy, kind);
+        writeFileSync(join(root, file.replace(/\.tsx$/, ".en.tsx")), `${source.trimEnd()}\n`);
+        return [file, source];
+      }),
   );
   writeFileSync(output, `${JSON.stringify(sources, null, 2)}\n`);
   return Object.keys(sources).length;
 }
 
-const blockCount = generate(
-  join(REPO_ROOT, "apps/www/app/blocks/_blocks"),
-  join(REPO_ROOT, "apps/www/app/blocks/block-fixture-sources.en.json"),
-  blockEnglish,
-);
-const pageCount = generate(
-  join(REPO_ROOT, "apps/www/app/pages/_pages"),
-  join(REPO_ROOT, "apps/www/app/pages/page-fixture-sources.en.json"),
-  pageEnglish,
-);
+export function generatedEnglishRegistry(source, kind) {
+  const directory = kind === "block" ? "_blocks" : "_pages";
+  const previewName = kind === "block" ? "Block" : "Page";
+  return `${source
+    .replace(/^\s*\/\/[^\n]*[\p{Script=Han}，。！？；：“”‘’（）【】《》〈〉「」『』…][^\n]*(?:\n|$)/gmu, "")
+    .replace(/^import \{ DOCS_LOCALE \} from .*\n/m, "")
+    .replace(/^import \{ .*Previews as english.* \} from ["']\.\/_registry\.en["'];\n/m, "")
+    .replace(
+      new RegExp(`const chinese${previewName}Previews`),
+      `export const ${kind}Previews`,
+    )
+    .replace(
+      new RegExp(`\nexport const ${kind}Previews = DOCS_LOCALE[^\n]+\n`),
+      "\n",
+    )
+    .replace(
+      new RegExp(`(from ["']\\./${directory}/[^"']+)(["'])`, "g"),
+      "$1.en$2",
+    )
+    .trimEnd()}\n`;
+}
 
-console.log(`[fixture-sources] ${blockCount} blocks · ${pageCount} pages`);
+function main() {
+  const blockCount = generate(
+    join(REPO_ROOT, "apps/www/app/blocks/_blocks"),
+    join(REPO_ROOT, "apps/www/app/blocks/block-fixture-sources.en.json"),
+    blockEnglish,
+    "block",
+  );
+  const pageCount = generate(
+    join(REPO_ROOT, "apps/www/app/pages/_pages"),
+    join(REPO_ROOT, "apps/www/app/pages/page-fixture-sources.en.json"),
+    pageEnglish,
+    "page",
+  );
+  for (const [area, kind] of [["blocks", "block"], ["pages", "page"]]) {
+    const registry = join(REPO_ROOT, "apps/www/app", area, "_registry.tsx");
+    writeFileSync(
+      join(REPO_ROOT, "apps/www/app", area, "_registry.en.tsx"),
+      generatedEnglishRegistry(readFileSync(registry, "utf8"), kind),
+    );
+  }
+  console.log(`[fixture-sources] ${blockCount} blocks · ${pageCount} pages`);
+}
+
+const invoked = resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url);
+if (invoked) main();

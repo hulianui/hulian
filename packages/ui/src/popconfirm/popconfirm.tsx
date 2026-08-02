@@ -7,6 +7,7 @@ import { motionDurationCss, motionEaseCss } from "../motion";
 import { Button } from "../button/button";
 import { Popover, PopoverTrigger } from "../popover/popover";
 import type { PopconfirmProps } from "./popconfirm.types";
+import { useComponentLocale } from "../config/locale";
 
 // 与 Popover 同款过渡（transition 简写避 shorthand/longhand 混用警告，见 popover.tsx）。
 const overlayTransition = {
@@ -22,8 +23,8 @@ export function Popconfirm({
   title,
   description,
   icon,
-  okText = "确认",
-  cancelText = "取消",
+  okText,
+  cancelText,
   danger = false,
   onConfirm,
   onCancel,
@@ -37,6 +38,9 @@ export function Popconfirm({
   children,
   className,
 }: PopconfirmProps) {
+  const componentLocale = useComponentLocale().popconfirm;
+  const resolvedOkText = okText ?? componentLocale.confirm;
+  const resolvedCancelText = cancelText ?? componentLocale.cancel;
   const isControlled = openProp !== undefined;
   const [internalOpen, setInternalOpen] = useState(defaultOpen ?? false);
   const open = openProp ?? internalOpen;
@@ -104,7 +108,7 @@ export function Popconfirm({
                 )}
                 <div className="mt-3 flex justify-end gap-2">
                   <Button size="sm" variant="ghost" onClick={handleCancel}>
-                    {cancelText}
+                    {resolvedCancelText}
                   </Button>
                   <Button
                     size="sm"
@@ -114,7 +118,7 @@ export function Popconfirm({
                       void handleConfirm();
                     }}
                   >
-                    {okText}
+                    {resolvedOkText}
                   </Button>
                 </div>
               </div>

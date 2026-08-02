@@ -3,6 +3,7 @@ import { Toast } from "@base-ui/react/toast";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { ToastOptions, ToastProviderProps, ToastTone } from "./toast.types";
+import { useComponentLocale } from "../config/locale";
 
 // 模块级全局单例 manager：触发(toast())与渲染(<ToastProvider/>)解耦。框架无关、SSR 安全。
 const hulianToastManager = Toast.createToastManager();
@@ -43,6 +44,7 @@ const overlayTransition = {
 
 function ToastList() {
   const { toasts } = Toast.useToastManager();
+  const { close } = useComponentLocale().toast;
   return toasts.map((t) => {
     const tone = (t.type as ToastTone) ?? "neutral";
     return (
@@ -62,7 +64,7 @@ function ToastList() {
           <Toast.Description className="text-sm text-muted" />
         </div>
         <Toast.Close
-          aria-label="关闭"
+          aria-label={close}
           className="shrink-0 rounded-[var(--radius)] p-0.5 text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5">

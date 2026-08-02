@@ -98,52 +98,74 @@ function htmlFiles(dir) {
     .sort();
 }
 
+function metadataSlugs(file) {
+  const source = readFileSync(file, "utf8");
+  return [...source.matchAll(/^\s+slug:\s*["']([^"']+)["'],?$/gm)].map((match) => match[1]);
+}
+
+export function task9ExpectedRelativeRoutes() {
+  const blockSlugs = metadataSlugs(
+    new URL("../apps/www/app/blocks/_meta.ts", import.meta.url),
+  );
+  const pageSlugs = metadataSlugs(
+    new URL("../apps/www/app/pages/_meta.ts", import.meta.url),
+  );
+  if (blockSlugs.length === 0 || pageSlugs.length === 0) {
+    throw new Error("Task 9 route metadata did not contain block/page slugs");
+  }
+  const theme = [
+    "theme.html",
+    "theme/breakpoints.html",
+    "theme/color.html",
+    "theme/cursors.html",
+    "theme/dark-mode.html",
+    "theme/motion.html",
+    "theme/radius.html",
+    "theme/shadows.html",
+    "theme/spacing.html",
+    "theme/typography.html",
+  ];
+  return [
+    "index.html",
+    "start.html",
+    "changelog.html",
+    "search.html",
+    "blocks.html",
+    "pages.html",
+    ...theme,
+    ...blockSlugs.map((slug) => `blocks/${slug}.html`),
+    ...blockSlugs.map((slug) => `preview/blocks/${slug}.html`),
+    ...pageSlugs.map((slug) => `pages/${slug}.html`),
+    ...pageSlugs.map((slug) => `preview/pages/${slug}.html`),
+    "404.html",
+  ];
+}
+
 export function task9EnglishRoutes(root) {
-  const fixed = ["index.html", "start.html", "changelog.html", "search.html", "blocks.html", "pages.html"]
-    .map((file) => join(root, file));
-  const theme = [join(root, "theme.html"), ...htmlFiles(join(root, "theme"))];
-  const blockDetails = htmlFiles(join(root, "blocks"));
-  const blockPreviews = htmlFiles(join(root, "preview", "blocks"));
-  const pageDetails = htmlFiles(join(root, "pages"));
-  const pagePreviews = htmlFiles(join(root, "preview", "pages"));
-
-  const counts = {
-    fixed: fixed.length,
-    theme: theme.length,
-    blockDetails: blockDetails.length,
-    blockPreviews: blockPreviews.length,
-    pageDetails: pageDetails.length,
-    pagePreviews: pagePreviews.length,
-  };
-  const expected = {
-    fixed: 6,
-    theme: 10,
-    blockDetails: 57,
-    blockPreviews: 57,
-    pageDetails: 20,
-    pagePreviews: 20,
-  };
-  for (const [group, count] of Object.entries(expected)) {
-    if (counts[group] !== count) {
-      throw new Error(`English Task 9 route inventory ${group}: expected ${count}, found ${counts[group]}`);
-    }
-  }
-  const basenames = (files) => files.map((file) => file.slice(file.lastIndexOf("/") + 1));
-  if (JSON.stringify(basenames(blockDetails)) !== JSON.stringify(basenames(blockPreviews))) {
-    throw new Error("English block detail and preview route sets differ");
-  }
-  if (JSON.stringify(basenames(pageDetails)) !== JSON.stringify(basenames(pagePreviews))) {
-    throw new Error("English page detail and preview route sets differ");
-  }
-
-  const taskRoutes = [...fixed, ...theme, ...blockDetails, ...blockPreviews, ...pageDetails, ...pagePreviews];
-  for (const file of [...taskRoutes, join(root, "404.html")]) {
+  const expected = task9ExpectedRelativeRoutes();
+  for (const route of expected) {
+    const file = join(root, route);
     if (!existsSync(file)) throw new Error(`Missing English output route: ${relative(root, file)}`);
   }
-  if (taskRoutes.length !== 170) {
-    throw new Error(`English Task 9 route inventory: expected 170, found ${taskRoutes.length}`);
+
+  const actualGalleryRoutes = [
+    ...htmlFiles(join(root, "blocks")),
+    ...htmlFiles(join(root, "preview", "blocks")),
+    ...htmlFiles(join(root, "pages")),
+    ...htmlFiles(join(root, "preview", "pages")),
+  ]
+    .map((file) => relative(root, file).replaceAll("\\", "/"))
+    .sort();
+  const expectedGalleryRoutes = expected
+    .filter((route) => /^(?:blocks|pages|preview\/(?:blocks|pages))\//.test(route))
+    .sort();
+  if (JSON.stringify(actualGalleryRoutes) !== JSON.stringify(expectedGalleryRoutes)) {
+    throw new Error("English block/page output differs from the metadata-derived route inventory");
   }
-  return [...taskRoutes, join(root, "404.html")];
+  if (expected.length !== 171) {
+    throw new Error(`English Task 9 route inventory: expected 170 + 404, found ${expected.length}`);
+  }
+  return expected.map((route) => join(root, route));
 }
 
 export function scanTask9EnglishOutput(root) {

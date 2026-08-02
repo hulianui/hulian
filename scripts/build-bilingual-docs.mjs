@@ -13,6 +13,7 @@ import {
 } from "node:fs/promises";
 import { dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { scanTask9EnglishOutput } from "./check-bilingual-docs-output.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(scriptRoot, "..");
@@ -322,6 +323,18 @@ async function buildBilingualDocs() {
   buildLocale("en");
   const routes = await assertRouteParity(zhRoot, enRoot);
   await mergeExports(zhRoot, enRoot, mergedRoot);
+  const findings = scanTask9EnglishOutput(join(mergedRoot, "en"));
+  if (findings.length > 0) {
+    const details = findings
+      .slice(0, 20)
+      .map((finding) =>
+        `${relative(join(mergedRoot, "en"), finding.file)} ${finding.field}: ${JSON.stringify(finding.value)}`,
+      )
+      .join("\n");
+    throw new Error(
+      `English Task 9 output gate found ${findings.length} content or locale-link issue(s):\n${details}`,
+    );
+  }
   await replaceOutput();
   console.log(`Built ${routes.size} bilingual routes in ${outputRoot}`);
 }

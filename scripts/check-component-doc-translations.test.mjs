@@ -332,14 +332,14 @@ test("registry rewriting keeps fences authoritative over unmatched inline delimi
   );
 });
 
-test("package script defaults to all docs and forwards pnpm category arguments", () => {
+test("package script passes complete docs and forwards pnpm category arguments", () => {
   const env = {
     ...process.env,
     PATH: `${process.env.HOME}/.nvm/versions/node/v22.22.3/bin:${process.env.PATH}`,
   };
   const all = spawnSync("pnpm", ["docs:i18n:check"], { cwd: ROOT, env, encoding: "utf8" });
-  assert.equal(all.status, 1, all.stderr);
-  assert.match(`${all.stdout}\n${all.stderr}`, /\[docs:i18n\] 372 issue\(s\)/);
+  assert.equal(all.status, 0, all.stderr);
+  assert.match(`${all.stdout}\n${all.stderr}`, /\[docs:i18n\] component Markdown coverage complete/);
 
   const uncatalogued = spawnSync("pnpm", ["docs:i18n:check", "--", "--categories=uncatalogued"], {
     cwd: ROOT,
@@ -347,11 +347,8 @@ test("package script defaults to all docs and forwards pnpm category arguments",
     encoding: "utf8",
   });
   const output = `${uncatalogued.stdout}\n${uncatalogued.stderr}`;
-  assert.equal(uncatalogued.status, 1, output);
-  assert.match(output, /access\/access\.en\.md/);
-  assert.match(output, /config\/config\.en\.md/);
-  assert.match(output, /theme\/theme\.en\.md/);
-  assert.match(output, /\[docs:i18n\] 3 issue\(s\)/);
+  assert.equal(uncatalogued.status, 0, output);
+  assert.match(output, /\[docs:i18n\] component Markdown coverage complete/);
   assert.doesNotMatch(output, /Unknown arguments|Use either --all/);
 });
 

@@ -22,7 +22,6 @@ import {
   toast,
 } from "../../../lib/fixture-ui";
 import { Bot } from "lucide-react";
-import { translateFixtureText } from "../../../lib/fixture-copy";
 
 // ── 静态 mock 对话（复制时替换即可） ──────────────────────────
 interface UserMsg {
@@ -224,7 +223,7 @@ export function ChatPanelBlock() {
               <ChatMessage
                 key={m.id}
                 role="assistant"
-                name={translateFixtureText("瑚琏助手")}
+                name="瑚琏助手"
                 avatar={<Avatar size="sm" fallback={<Bot className="size-4" />} />}
               >
                 {m.text ? (

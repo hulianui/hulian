@@ -64,7 +64,7 @@ export function OnboardingBlock() {
               {STEPS[current].title}
             </Heading>
             <Text tone="muted" size="sm">
-              第 {current + 1} 步 / 共 {total} 步
+              步骤 {current + 1} / {total}
             </Text>
           </div>
         </div>

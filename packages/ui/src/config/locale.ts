@@ -131,6 +131,9 @@ export interface Locale {
 }
 
 export interface ComponentLocale {
+  popconfirm: { confirm: string; cancel: string };
+  toast: { close: string };
+  alert: { close: string };
   promptInput: { placeholder: string; stop: string; send: string };
   codeBlock: {
     copy: string;
@@ -198,6 +201,9 @@ export interface ComponentLocale {
 }
 
 const zhComponents: ComponentLocale = {
+  popconfirm: { confirm: "确认", cancel: "取消" },
+  toast: { close: "关闭" },
+  alert: { close: "关闭" },
   promptInput: { placeholder: "发消息…", stop: "停止生成", send: "发送" },
   codeBlock: {
     copy: "复制",
@@ -265,6 +271,9 @@ const zhComponents: ComponentLocale = {
 };
 
 const enComponents: ComponentLocale = {
+  popconfirm: { confirm: "Confirm", cancel: "Cancel" },
+  toast: { close: "Close" },
+  alert: { close: "Close" },
   promptInput: { placeholder: "Message…", stop: "Stop generating", send: "Send" },
   codeBlock: {
     copy: "Copy",
