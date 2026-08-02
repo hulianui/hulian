@@ -4,6 +4,7 @@ import { flushSync } from "react-dom";
 import { Moon, Sun } from "../_icons";
 import { cn } from "../lib/cn";
 import { isDev } from "../lib/is-dev";
+import { useComponentLocale } from "../config/locale-context";
 import { THEME_STORAGE_KEY, useThemeOptional, type Theme } from "../theme/use-theme";
 import type { AnimatedThemeTogglerProps } from "./animated-theme-toggler.types";
 
@@ -29,10 +30,10 @@ function useStandaloneTheme(enabled: boolean) {
       attr === "dark" || attr === "light"
         ? attr
         : stored === "dark" || stored === "light"
-          ? stored
-          : window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
+        ? stored
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     setTheme(initial);
     if (isDev) {
       console.warn(
@@ -63,6 +64,7 @@ export function AnimatedThemeToggler({
   const theme = ctx?.theme ?? standalone.theme;
   const toggle = ctx?.toggle ?? standalone.toggle;
   const ref = useRef<HTMLButtonElement>(null);
+  const locale = useComponentLocale().animatedThemeToggler;
 
   const onClick = async () => {
     const doc = document as DocVT;
@@ -70,16 +72,17 @@ export function AnimatedThemeToggler({
       toggle();
       return;
     }
-    await doc
-      .startViewTransition(() => {
-        flushSync(() => toggle());
-      })
-      .ready;
+    await doc.startViewTransition(() => {
+      flushSync(() => toggle());
+    }).ready;
 
     const { top, left, width, height } = ref.current.getBoundingClientRect();
     const x = left + width / 2;
     const y = top + height / 2;
-    const maxR = Math.hypot(Math.max(left, window.innerWidth - left), Math.max(top, window.innerHeight - top));
+    const maxR = Math.hypot(
+      Math.max(left, window.innerWidth - left),
+      Math.max(top, window.innerHeight - top),
+    );
     document.documentElement.animate(
       { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${maxR}px at ${x}px ${y}px)`] },
       { duration, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" },
@@ -91,7 +94,12 @@ export function AnimatedThemeToggler({
       ref={ref}
       type="button"
       onClick={onClick}
-      aria-label={ariaLabel ?? (theme === "dark" ? "切换到亮色" : "切换到暗色")}
+      aria-label={
+        ariaLabel ??
+        (theme === "dark"
+          ? locale?.switchToLight ?? "切换到亮色"
+          : locale?.switchToDark ?? "切换到暗色")
+      }
       className={cn(
         "inline-flex size-9 items-center justify-center rounded-[min(var(--radius),0.5rem)] border border-border bg-surface text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring",
         className,

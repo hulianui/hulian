@@ -28,7 +28,7 @@ import { MarkdownEditor } from "@hulianui/ui"
 | value | `string` | — | 受控 markdown 字符串 |
 | defaultValue | `string` | — | 非受控初值 |
 | name | `string` | — | 桥给原生表单 / Field 的隐藏 input name |
-| placeholder | `string` | `"输入 markdown…"` | 空内容占位文案 |
+| placeholder | `string` | — | 空内容占位文案 |
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
 | disabled | `boolean` | `false` | 禁用 |
 | minRows | `number` | `6` | 内容区最小高度（行） |
@@ -40,6 +40,12 @@ import { MarkdownEditor } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onChange | `(markdown: string) => void` | 内容变化回调，参数为 markdown 字符串 |
+
+## 国际化
+
+编辑区与格式工具栏的无障碍名称、全部格式按钮，以及链接地址提示跟随最近的
+`ConfigProvider locale`。显式 `aria-label` 优先于 Locale。旧自定义 Locale 若没有
+`components.markdownEditor`，仍使用原有中文兼容默认值。
 
 ## 示例
 ```tsx

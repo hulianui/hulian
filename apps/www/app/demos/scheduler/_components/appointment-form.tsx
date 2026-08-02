@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./appointment-form.content";
 import { useEffect } from "react";
 import {
   Combobox,
@@ -17,10 +18,16 @@ import {
   type ComboboxItemData,
   type FormValues,
 } from "@hulianui/ui";
-import { DOCTORS, PATIENTS, ROOMS, type ApptType, type ClinicAppt } from "../_data/clinic";
+import {
+  DOCTORS,
+  PATIENTS,
+  ROOMS,
+  TYPE_LABELS,
+  type ApptType,
+  type ClinicAppt,
+} from "../_data/clinic";
 
 const TYPES: ApptType[] = ["初诊", "复诊", "检查", "处置"];
-
 const PATIENT_ITEMS: ComboboxItemData[] = PATIENTS.map((p) => ({
   value: p.name,
   label: `${p.name} · ${p.phone}`,
@@ -45,7 +52,13 @@ interface AppointmentFormProps {
   onSubmit: (v: ApptFormValue) => void | Promise<void>;
 }
 
-export function AppointmentForm({ open, onOpenChange, slot, editing, onSubmit }: AppointmentFormProps) {
+export function AppointmentForm({
+  open,
+  onOpenChange,
+  slot,
+  editing,
+  onSubmit,
+}: AppointmentFormProps) {
   const form = useForm<ApptFormValue>({
     initialValues: {
       patient: "",
@@ -64,7 +77,10 @@ export function AppointmentForm({ open, onOpenChange, slot, editing, onSubmit }:
       form.setFieldsValue({
         patient: editing.patient,
         doctorId: editing.doctorId,
-        room: editing.subtitle && ROOMS.includes(editing.subtitle as (typeof ROOMS)[number]) ? editing.subtitle : ROOMS[0],
+        room:
+          editing.subtitle && ROOMS.includes(editing.subtitle as (typeof ROOMS)[number])
+            ? editing.subtitle
+            : ROOMS[0],
         type: editing.type,
         start: editing.start,
         end: editing.end,
@@ -82,34 +98,40 @@ export function AppointmentForm({ open, onOpenChange, slot, editing, onSubmit }:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editing, slot]);
 
-  const patient = form.register("patient", { rules: [{ required: true, message: "请选择患者" }] });
+  const patient = form.register("patient", {
+    rules: [{ required: true, message: copy("pleaseSelectPatient") }],
+  });
   const doctorId = form.register("doctorId");
   const room = form.register("room");
   const type = form.register("type");
-  const start = form.register("start", { rules: [{ required: true, message: "请选择起诊时间" }] });
-  const end = form.register("end", { rules: [{ required: true, message: "请选择结束时间" }] });
+  const start = form.register("start", {
+    rules: [{ required: true, message: copy("pleaseSelectAStartTime") }],
+  });
+  const end = form.register("end", {
+    rules: [{ required: true, message: copy("pleaseSelectAnEndTime") }],
+  });
 
   const handleFinish = (v: FormValues) => onSubmit(v as ApptFormValue);
 
   return (
     <ModalForm
-      title={editing ? "编辑预约" : "新建预约"}
+      title={editing ? copy("editAppointment") : copy("newAppointment")}
       form={form}
       open={open}
       onOpenChange={onOpenChange}
       onFinish={handleFinish}
-      submitText={editing ? "保存" : "建预约"}
+      submitText={editing ? copy("save") : copy("buildAppointment")}
       className="w-[520px]"
     >
       <div className="grid grid-cols-2 gap-x-4">
-        <Field label="患者" className="col-span-2" error={patient.error}>
+        <Field label={copy("patient")} className="col-span-2" error={patient.error}>
           <Combobox
             items={PATIENT_ITEMS}
             value={PATIENT_ITEMS.find((p) => p.value === patient.value) ?? undefined}
             onValueChange={(item) => patient.onChange((item?.value as string) ?? "")}
           >
-            <ComboboxTrigger placeholder="搜索 / 选择患者" className="w-full" />
-            <ComboboxContent searchPlaceholder="搜索患者姓名 / 手机…">
+            <ComboboxTrigger placeholder={copy("searchSelectPatients")} className="w-full" />
+            <ComboboxContent searchPlaceholder={copy("searchForPatientNamePhone")}>
               {(item) => (
                 <ComboboxItem key={item.value} value={item}>
                   {item.label}
@@ -119,26 +141,41 @@ export function AppointmentForm({ open, onOpenChange, slot, editing, onSubmit }:
           </Combobox>
         </Field>
 
-        <Field label="接诊医生">
-          <PlainSelect value={doctorId.value as string} onChange={doctorId.onChange} options={DOCTORS.map((d) => ({ value: d.id, label: `${d.title} · ${d.dept}` }))} />
+        <Field label={copy("attendingPhysician")}>
+          <PlainSelect
+            value={doctorId.value as string}
+            onChange={doctorId.onChange}
+            options={DOCTORS.map((d) => ({ value: d.id, label: `${d.title} · ${d.dept}` }))}
+          />
         </Field>
-        <Field label="诊室">
-          <PlainSelect value={room.value as string} onChange={room.onChange} options={ROOMS.map((r) => ({ value: r, label: r }))} />
+        <Field label={copy("clinic")}>
+          <PlainSelect
+            value={room.value as string}
+            onChange={room.onChange}
+            options={ROOMS.map((r) => ({ value: r, label: r }))}
+          />
         </Field>
 
-        <Field label="预约类型" className="col-span-2">
-          <PlainSelect value={type.value as string} onChange={type.onChange} options={TYPES.map((t) => ({ value: t, label: t }))} />
+        <Field label={copy("appointmentType")} className="col-span-2">
+          <PlainSelect
+            value={type.value as string}
+            onChange={type.onChange}
+            options={TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))}
+          />
         </Field>
 
-        <Field label="起诊时间" error={start.error}>
+        <Field label={copy("visitStartTime")} error={start.error}>
           <DateTimePicker
             value={(start.value as string) || null}
             onValueChange={(iso) => start.onChange(iso ?? "")}
             minuteStep={5}
           />
         </Field>
-        <Field label="结束时间" error={end.error}>
-          <TimeField value={(end.value as string) || null} onValueChange={(iso) => end.onChange(iso ?? "")} />
+        <Field label={copy("endTime")} error={end.error}>
+          <TimeField
+            value={(end.value as string) || null}
+            onValueChange={(iso) => end.onChange(iso ?? "")}
+          />
         </Field>
       </div>
     </ModalForm>

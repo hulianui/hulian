@@ -1,3 +1,4 @@
+import { copy } from "./snapshot.content";
 // 瀚云全球调度指挥中心 · 数据层（全程序化、零外链、确定性）。
 // mulberry32 确定性 PRNG：同一 seed 必出同一快照，SSR / 静态导出安全，不用 Date.now()/Math.random()。
 import type { WorldMapDot, WorldMapNode } from "@hulianui/ui";
@@ -15,6 +16,27 @@ function mulberry32(seed: number) {
 
 export type Region = "亚太" | "北美" | "欧洲" | "中东" | "南美" | "非洲";
 export type NodeStatus = "正常" | "繁忙" | "告警";
+export type EventLevel = "严重" | "警告" | "提示" | "信息";
+
+export const REGION_LABELS: Record<Region, string> = {
+  亚太: copy("asiaPacific"),
+  北美: copy("northAmerica"),
+  欧洲: copy("europe"),
+  中东: copy("middleEast"),
+  南美: copy("southAmerica"),
+  非洲: copy("africa"),
+};
+export const NODE_STATUS_LABELS: Record<NodeStatus, string> = {
+  正常: copy("normal"),
+  繁忙: copy("busy"),
+  告警: copy("warning"),
+};
+export const EVENT_LEVEL_LABELS: Record<EventLevel, string> = {
+  严重: copy("critical"),
+  警告: copy("caution"),
+  提示: copy("notice"),
+  信息: copy("information"),
+};
 
 export interface PopNode {
   id: string;
@@ -37,7 +59,7 @@ export interface PopNode {
 
 export interface DashEvent {
   id: string;
-  level: "严重" | "警告" | "提示" | "信息";
+  level: EventLevel;
   text: string;
 }
 
@@ -53,13 +75,13 @@ export interface Snapshot {
     linkCount: number;
   };
   /** 24h QPS 折线：请求 / 命中（万次/秒）。 */
-  qpsSeries: { hour: string; 请求: number; 命中: number }[];
+  qpsSeries: { hour: string; requests: number; hits: number }[];
   /** 区域带宽对比（Gbps）。 */
-  regionBars: { region: string; 带宽: number }[];
+  regionBars: { region: string; bandwidth: number }[];
   /** 流量占比（按区域）。 */
   trafficPie: { name: string; value: number }[];
   /** 各大区带宽趋势（堆叠面积，Gbps）。 */
-  bandwidthArea: { t: string; 亚太: number; 北美: number; 欧洲: number }[];
+  bandwidthArea: { t: string; asiaPacific: number; northAmerica: number; europe: number }[];
   /** 区域负载（Meter，%）。 */
   regionLoad: { region: Region; load: number }[];
   events: DashEvent[];
@@ -75,19 +97,19 @@ interface GeoCity {
 
 // 13 个真实城市经纬度（含非洲开普敦补满 6 大区）。
 export const CITIES: GeoCity[] = [
-  { id: "bj", city: "北京", region: "亚太", lat: 39.9, lng: 116.4 },
-  { id: "sh", city: "上海", region: "亚太", lat: 31.2, lng: 121.5 },
-  { id: "tk", city: "东京", region: "亚太", lat: 35.7, lng: 139.7 },
-  { id: "sg", city: "新加坡", region: "亚太", lat: 1.35, lng: 103.8 },
-  { id: "bom", city: "孟买", region: "亚太", lat: 19.1, lng: 72.9 },
-  { id: "syd", city: "悉尼", region: "亚太", lat: -33.9, lng: 151.2 },
-  { id: "fra", city: "法兰克福", region: "欧洲", lat: 50.1, lng: 8.7 },
-  { id: "lon", city: "伦敦", region: "欧洲", lat: 51.5, lng: -0.1 },
-  { id: "nyc", city: "纽约", region: "北美", lat: 40.7, lng: -74 },
-  { id: "sfo", city: "旧金山", region: "北美", lat: 37.8, lng: -122.4 },
-  { id: "gru", city: "圣保罗", region: "南美", lat: -23.5, lng: -46.6 },
-  { id: "dxb", city: "迪拜", region: "中东", lat: 25.2, lng: 55.3 },
-  { id: "cpt", city: "开普敦", region: "非洲", lat: -33.9, lng: 18.4 },
+  { id: "bj", city: copy("beijing"), region: "亚太", lat: 39.9, lng: 116.4 },
+  { id: "sh", city: copy("shanghai"), region: "亚太", lat: 31.2, lng: 121.5 },
+  { id: "tk", city: copy("tokyo"), region: "亚太", lat: 35.7, lng: 139.7 },
+  { id: "sg", city: copy("singapore"), region: "亚太", lat: 1.35, lng: 103.8 },
+  { id: "bom", city: copy("mumbai"), region: "亚太", lat: 19.1, lng: 72.9 },
+  { id: "syd", city: copy("sydney"), region: "亚太", lat: -33.9, lng: 151.2 },
+  { id: "fra", city: copy("frankfurt"), region: "欧洲", lat: 50.1, lng: 8.7 },
+  { id: "lon", city: copy("london"), region: "欧洲", lat: 51.5, lng: -0.1 },
+  { id: "nyc", city: copy("newYork"), region: "北美", lat: 40.7, lng: -74 },
+  { id: "sfo", city: copy("sanFrancisco"), region: "北美", lat: 37.8, lng: -122.4 },
+  { id: "gru", city: copy("sOPaulo"), region: "南美", lat: -23.5, lng: -46.6 },
+  { id: "dxb", city: copy("dubai"), region: "中东", lat: 25.2, lng: 55.3 },
+  { id: "cpt", city: copy("capeTown"), region: "非洲", lat: -33.9, lng: 18.4 },
 ];
 
 // 跨境调度链路（飞线）：city id 对 + chart token 配色。
@@ -105,14 +127,14 @@ const LINKS: [string, string, string][] = [
 const REGIONS: Region[] = ["亚太", "北美", "欧洲", "中东", "南美", "非洲"];
 
 const EVENT_POOL: Omit<DashEvent, "id">[] = [
-  { level: "严重", text: "东京节点出口丢包率突增至 4.2%，已触发自动切流" },
-  { level: "警告", text: "法兰克福 ↔ 圣保罗 链路 RTT 抬升至 218ms" },
-  { level: "提示", text: "新加坡机房扩容完成，新增 12 台边缘节点已上线" },
-  { level: "信息", text: "全网证书轮换任务已完成，覆盖 13 个区域" },
-  { level: "警告", text: "迪拜节点 CPU 负载达 86%，建议分流孟买" },
-  { level: "提示", text: "北美大区缓存命中率回升至 96.4%" },
-  { level: "信息", text: "调度策略 v2.7 已灰度至 30% 流量" },
-  { level: "严重", text: "圣保罗节点心跳延迟超阈值，降级为只读" },
+  { level: "严重", text: copy("thePacketLossRateAtTheTokyoNodeExitHas") },
+  { level: "警告", text: copy("frankfurtSOPauloLinkRTTRaisedTo218ms") },
+  { level: "提示", text: copy("singaporeComputerRoomExpansionCompletedNewEdgeNodesAreOnline") },
+  { level: "信息", text: copy("theWholeNetworkCertificateRotationTaskHasBeenCompletedCovering") },
+  { level: "警告", text: copy("dubaiNodeCPULoadIsItIsRecommendedToDivert") },
+  { level: "提示", text: copy("cacheHitRateInNorthAmericaRisesBackTo") },
+  { level: "信息", text: copy("schedulingPolicyVGrayscaleToTraffic") },
+  { level: "严重", text: copy("sOPauloNodeHeartRateDelayOverThresholdDowngraded") },
 ];
 
 function statusOf(load: number): NodeStatus {
@@ -158,28 +180,33 @@ export function buildSnapshot(seed: number): Snapshot {
 
   const regionLoad = REGIONS.map((region) => {
     const rs = nodes.filter((n) => n.region === region);
-    const avg = rs.length ? Math.round(rs.reduce((a, n) => a + n.load, 0) / rs.length) : Math.round(pick(40, 80));
+    const avg = rs.length
+      ? Math.round(rs.reduce((a, n) => a + n.load, 0) / rs.length)
+      : Math.round(pick(40, 80));
     return { region, load: avg };
   });
 
   const regionBars = REGIONS.map((region) => {
     const rs = nodes.filter((n) => n.region === region);
-    return { region, 带宽: rs.reduce((a, n) => a + n.bandwidth, 0) || Math.round(pick(200, 600)) };
+    return {
+      region: REGION_LABELS[region],
+      bandwidth: rs.reduce((a, n) => a + n.bandwidth, 0) || Math.round(pick(200, 600)),
+    };
   });
 
-  const trafficPie = regionBars.map((r) => ({ name: r.region, value: r.带宽 }));
+  const trafficPie = regionBars.map((r) => ({ name: r.region, value: r.bandwidth }));
 
   const qpsSeries = HOURS.map((hour, i) => {
     const base = 18 + Math.sin((i / 24) * Math.PI * 2 - 1.2) * 9 + pick(-1.5, 1.5);
-    const 请求 = Math.max(4, Number(base.toFixed(1)));
-    return { hour, 请求, 命中: Number((请求 * (0.9 + rnd() * 0.07)).toFixed(1)) };
+    const requests = Math.max(4, Number(base.toFixed(1)));
+    return { hour, requests, hits: Number((requests * (0.9 + rnd() * 0.07)).toFixed(1)) };
   });
 
   const bandwidthArea = Array.from({ length: 12 }, (_, i) => ({
     t: `${i * 2}h`,
-    亚太: Math.round(pick(800, 1500)),
-    北美: Math.round(pick(400, 900)),
-    欧洲: Math.round(pick(300, 700)),
+    asiaPacific: Math.round(pick(800, 1500)),
+    northAmerica: Math.round(pick(400, 900)),
+    europe: Math.round(pick(300, 700)),
   }));
 
   const events: DashEvent[] = EVENT_POOL.map((e, i) => ({ ...e, id: `e${seed}-${i}` }));
@@ -229,16 +256,19 @@ export function tickSnapshot(prev: Snapshot, tick: number): Snapshot {
 
   const regionLoad = prev.regionLoad.map((r) => {
     const rs = nodes.filter((n) => n.region === r.region);
-    return { ...r, load: rs.length ? Math.round(rs.reduce((a, n) => a + n.load, 0) / rs.length) : r.load };
+    return {
+      ...r,
+      load: rs.length ? Math.round(rs.reduce((a, n) => a + n.load, 0) / rs.length) : r.load,
+    };
   });
 
   // QPS 折线整体滚动：丢首点、尾点续新值
   const last = prev.qpsSeries[prev.qpsSeries.length - 1];
-  const 请求 = Math.max(4, Number((last.请求 + (rnd() - 0.5) * 3).toFixed(1)));
+  const requests = Math.max(4, Number((last.requests + (rnd() - 0.5) * 3).toFixed(1)));
   const nextHour = `${String((parseInt(last.hour) + 1) % 24).padStart(2, "0")}:00`;
   const qpsSeries = [
     ...prev.qpsSeries.slice(1),
-    { hour: nextHour, 请求, 命中: Number((请求 * (0.9 + rnd() * 0.07)).toFixed(1)) },
+    { hour: nextHour, requests, hits: Number((requests * (0.9 + rnd() * 0.07)).toFixed(1)) },
   ];
 
   // 偶发新事件（约 1/3 概率），保持队列不超过 8 条
@@ -264,7 +294,9 @@ export function tickSnapshot(prev: Snapshot, tick: number): Snapshot {
       totalQps,
       avgLatency,
       onlineNodes: jig(prev.kpis.onlineNodes, 6, 1180, 1400),
-      hitRate: Number(Math.min(99, Math.max(90, prev.kpis.hitRate + (rnd() - 0.5) * 0.6)).toFixed(1)),
+      hitRate: Number(
+        Math.min(99, Math.max(90, prev.kpis.hitRate + (rnd() - 0.5) * 0.6)).toFixed(1),
+      ),
     },
   };
 }

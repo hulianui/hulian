@@ -130,7 +130,7 @@ export function Segmented({
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}
       className={cn(
-        "relative inline-flex items-center gap-1 rounded-[var(--radius)] bg-surface-hover p-1 text-muted",
+        "relative inline-flex items-center gap-1 rounded-[var(--radius)] bg-surface-hover p-1 text-foreground",
         sizeClasses[size].root,
         disabled && "pointer-events-none opacity-50",
         className,

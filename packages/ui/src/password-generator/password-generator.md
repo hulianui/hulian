@@ -158,7 +158,7 @@ generatePassword({ length: 8 }, () => 0); // 固定序列 → 固定结果
 
 ## i18n
 
-文案走 [ConfigProvider](../config/config.md) 的 `locale.passwordGenerator`（内置 zhCN / enUS）。单点覆盖用 `labels` prop，优先级高于 locale。
+文案走 `ConfigProvider` 的 `locale.passwordGenerator`（内置 zhCN / enUS）。单点覆盖用 `labels` prop，优先级高于 locale。
 
 ## 注意
 

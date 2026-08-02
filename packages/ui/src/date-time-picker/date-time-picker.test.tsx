@@ -1,10 +1,48 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { DateTimePicker } from "./date-time-picker";
 
 const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择日期时间" }));
 
 describe("DateTimePicker", () => {
+  it("enUS localizes the trigger controls and time columns", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <DateTimePicker defaultValue="2026-06-08 09:30" aria-label="Select date and time" />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Select date and time" }));
+    expect(screen.getByRole("listbox", { name: "Hour" })).toBeTruthy();
+    expect(screen.getByRole("listbox", { name: "Minute" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Now" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Confirm" })).toBeTruthy();
+  });
+
+  it("a legacy custom locale without dateTimePicker keeps the Chinese controls", () => {
+    const locale = {
+      ...enUS,
+      components: { ...enUS.components!, dateTimePicker: undefined },
+    };
+    render(
+      <ConfigProvider locale={locale}>
+        <div>
+          <DateTimePicker defaultValue="2026-06-08 09:30" aria-label="Legacy date time" />
+          <DateTimePicker aria-label="Empty legacy date time" />
+        </div>
+      </ConfigProvider>,
+    );
+    expect(screen.getByText("选择日期时间")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "清除" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Legacy date time" }));
+    expect(screen.getByRole("listbox", { name: "时" })).toBeTruthy();
+    expect(screen.getByRole("listbox", { name: "分" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "此刻" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "确定" })).toBeTruthy();
+  });
+
   it("无值时显示占位", () => {
     render(<DateTimePicker aria-label="选择日期时间" />);
     expect(screen.getByText("选择日期时间")).toBeTruthy();

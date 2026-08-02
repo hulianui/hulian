@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./projects-shell.content";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, Moon, Sun } from "lucide-react";
@@ -8,19 +10,15 @@ import { ROOT, breadcrumbFor, labelOf, menuItems, selectedKeyFor } from "./nav-c
 function Brand() {
   return (
     <div className="flex items-center gap-2">
-      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        筑
-      </span>
-      <span className="truncate text-[15px] font-semibold tracking-tight">瑚琏 · 工程协同</span>
+      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("build")}</span>
+      <span className="truncate text-[15px] font-semibold tracking-tight">{copy("hulianEngineeringCollaboration")}</span>
     </div>
   );
 }
 
 function BrandMark() {
   return (
-    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-      筑
-    </span>
+    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("build2")}</span>
   );
 }
 
@@ -31,7 +29,7 @@ function ThemeToggle() {
       variant="ghost"
       size="sm"
       onClick={toggle}
-      aria-label={theme === "dark" ? "切换到亮色" : "切换到暗色"}
+      aria-label={theme === "dark" ? copy("switchToBrightColors") : copy("switchToDark")}
       className="size-9 px-0"
     >
       {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
@@ -43,14 +41,14 @@ function HeaderExtra() {
   return (
     <div className="flex items-center gap-1.5">
       <ThemeToggle />
-      <Button variant="ghost" size="sm" aria-label="通知" className="size-9 px-0">
+      <Button variant="ghost" size="sm" aria-label={copy("notification")} className="size-9 px-0">
         <Bell className="size-[18px]" />
       </Button>
       <div className="mx-1 h-6 w-px bg-border" aria-hidden />
       <User
-        name="陈工"
-        description="工程项目经理"
-        avatarProps={{ fallback: "陈", src: "/demo/avatar-3.jpg" }}
+        name={copy("chenGong")}
+        description={copy("engineeringProjectManager")}
+        avatarProps={{ fallback: copy("chen"), src: "/demo/avatar-3.jpg" }}
       />
     </div>
   );

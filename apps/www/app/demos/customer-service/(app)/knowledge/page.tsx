@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import { Search, Eye, Clock, Plus, Trash2 } from "lucide-react";
 import {
@@ -45,7 +47,7 @@ export default function KnowledgePage() {
   const { data, loading } = useMockData(seed);
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [keyword, setKeyword] = useState("");
-  const [category, setCategory] = useState("全部");
+  const [category, setCategory] = useState(copy("all2"));
   const [active, setActive] = useState<KnowledgeArticle | null>(null);
   const [creating, setCreating] = useState(false);
   const [draft, setDraft] = useState(EMPTY_DRAFT);
@@ -64,11 +66,11 @@ export default function KnowledgePage() {
   const submitDraft = () => {
     const title = draft.title.trim();
     if (!title) {
-      setTitleError("请填写文章标题");
+      setTitleError(copy("pleaseFillInTheArticleTitle"));
       return;
     }
     const body = draft.body.trim();
-    const excerpt = draft.excerpt.trim() || body.slice(0, 48) || "（暂无摘要）";
+    const excerpt = draft.excerpt.trim() || body.slice(0, 48) || copy("noSummaryYet");
     const article: KnowledgeArticle = {
       id: `kb-${Date.now()}`,
       title,
@@ -79,7 +81,7 @@ export default function KnowledgePage() {
       updatedAt: new Date().toISOString().slice(0, 10),
     };
     setArticles((prev) => [article, ...prev]);
-    toast({ title: "文章已发布", description: `「${title}」已加入知识库（demo 内存态）`, tone: "success" });
+    toast({ title: copy("articlePublished"), description: copy("valueHasBeenAddedToTheKnowledge", title), tone: "success" });
     setCreating(false);
   };
 
@@ -95,29 +97,24 @@ export default function KnowledgePage() {
   const deleteArticle = (id: string) => {
     setArticles((prev) => prev.filter((a) => a.id !== id));
     setActive((prev) => (prev?.id === id ? null : prev));
-    toast({ title: "文章已删除", description: "知识库条目已移除（demo 内存态，刷新还原）", tone: "info" });
+    toast({ title: copy("articleDeleted"), description: copy("theKnowledgeBaseEntryHasBeenRemoved"), tone: "info" });
   };
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <Heading level={1} size="xl">
-            知识库
-          </Heading>
-          <Text tone="muted" className="mt-1">
-            坐席自助检索的标准应答与处理流程，沉淀团队服务经验。
-          </Text>
+          <Heading level={1} size="xl">{copy("knowledgeBase")}</Heading>
+          <Text tone="muted" className="mt-1">{copy("standardResponseAndProcessingProceduresForAgent")}</Text>
         </div>
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button size="sm" aria-label="新增文章" onClick={openCreate}>
-                <Plus className="size-4" /> 新增文章
-              </Button>
+              <Button size="sm" aria-label={copy("addNewArticle")} onClick={openCreate}>
+                <Plus className="size-4" />{copy("addNewArticle2")}</Button>
             }
           />
-          <TooltipContent>新增知识库文章</TooltipContent>
+          <TooltipContent>{copy("addNewKnowledgeBaseArticle")}</TooltipContent>
         </Tooltip>
       </div>
 
@@ -126,13 +123,13 @@ export default function KnowledgePage() {
         <Input
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          placeholder="搜索文章标题 / 内容…"
+          placeholder={copy("searchArticleTitleContent")}
           prefix={<Search className="size-4 text-muted" />}
           className="sm:max-w-xs"
         />
         <Segmented
           size="sm"
-          aria-label="文章分类"
+          aria-label={copy("articleClassification")}
           value={category}
           onValueChange={setCategory}
           items={KB_CATEGORIES.map((c) => ({ value: c, label: c }))}
@@ -143,9 +140,7 @@ export default function KnowledgePage() {
       {loading ? (
         <CardSkeleton count={6} />
       ) : list.length === 0 ? (
-        <div className="grid place-items-center rounded-[var(--radius)] border border-dashed border-border py-16 text-sm text-muted">
-          没有匹配「{keyword || category}」的文章
-        </div>
+        <div className="grid place-items-center rounded-[var(--radius)] border border-dashed border-border py-16 text-sm text-muted">{copy("noMatch")}{keyword || category}{copy("articles")}</div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((a) => (
@@ -185,10 +180,10 @@ export default function KnowledgePage() {
                   </div>
                   {/* 删除：独立拦截点击冒泡，避免触发卡片打开 */}
                   <Popconfirm
-                    title="确认删除此文章？"
-                    description="删除后从知识库移除，坐席将无法检索。"
+                    title={copy("confirmToDeleteThisArticle")}
+                    description={copy("afterDeletionItWillBeRemovedFrom")}
                     danger
-                    okText="删除"
+                    okText={copy("delete")}
                     onConfirm={() => deleteArticle(a.id)}
                   >
                     <Tooltip>
@@ -198,14 +193,14 @@ export default function KnowledgePage() {
                             variant="ghost"
                             size="sm"
                             className="size-6 px-0 text-muted hover:text-danger"
-                            aria-label="删除文章"
+                            aria-label={copy("deleteArticle")}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Trash2 className="size-3.5" />
                           </Button>
                         }
                       />
-                      <TooltipContent>删除文章</TooltipContent>
+                      <TooltipContent>{copy("deleteArticle2")}</TooltipContent>
                     </Tooltip>
                   </Popconfirm>
                 </div>
@@ -223,7 +218,7 @@ export default function KnowledgePage() {
           className="w-full max-w-xl"
           footer={
             <>
-              <DrawerClose render={<Button variant="outline">关闭</Button>} />
+              <DrawerClose render={<Button variant="outline">{copy("close")}</Button>} />
               <Button
                 onClick={() => {
                   if (active) {
@@ -233,9 +228,7 @@ export default function KnowledgePage() {
                     setCreating(true);
                   }
                 }}
-              >
-                编辑
-              </Button>
+              >{copy("edit")}</Button>
             </>
           }
         >
@@ -246,10 +239,9 @@ export default function KnowledgePage() {
                   {active.category}
                 </Tag>
                 <span className="inline-flex items-center gap-1">
-                  <Eye className="size-3.5" /> {active.views.toLocaleString("zh-CN")} 次阅读
-                </span>
+                  <Eye className="size-3.5" /> {active.views.toLocaleString("zh-CN")}{copy("timesRead")}</span>
                 <span className="inline-flex items-center gap-1">
-                  <Clock className="size-3.5" /> 更新于 {active.updatedAt}
+                  <Clock className="size-3.5" />{copy("updatedOn")}{active.updatedAt}
                 </span>
               </div>
               <Markdown>{active.body}</Markdown>
@@ -262,25 +254,21 @@ export default function KnowledgePage() {
       <Drawer open={creating} onOpenChange={setCreating}>
         <DrawerContent
           side="right"
-          title="新增知识库文章"
-          description="填写标准应答内容，发布后坐席即可检索。"
+          title={copy("addNewKnowledgeBaseArticle2")}
+          description={copy("fillInTheStandardResponseContentAnd")}
           className="w-full max-w-xl"
           footer={
             <>
-              <Button variant="outline" onClick={() => setCreating(false)}>
-                取消
-              </Button>
+              <Button variant="outline" onClick={() => setCreating(false)}>{copy("cancel")}</Button>
               <Button onClick={submitDraft}>
-                <Plus className="size-4" /> 发布文章
-              </Button>
+                <Plus className="size-4" />{copy("postAnArticle")}</Button>
             </>
           }
         >
           <div className="flex flex-col gap-4">
             <Field
               label={
-                <>
-                  文章标题 <span className="text-danger">*</span>
+                <>{copy("articleTitle")}<span className="text-danger">*</span>
                 </>
               }
               error={titleError}
@@ -291,10 +279,10 @@ export default function KnowledgePage() {
                   setDraft((d) => ({ ...d, title: e.target.value }));
                   if (titleError) setTitleError("");
                 }}
-                placeholder="例如：退货退款政策与时效说明"
+                placeholder={copy("forExampleReturnAndRefundPolicyAnd")}
               />
             </Field>
-            <Field label="所属分类">
+            <Field label={copy("category")}>
               <Select
                 items={FORM_CATEGORIES.map((c) => ({ value: c, label: c }))}
                 value={draft.category}
@@ -310,20 +298,20 @@ export default function KnowledgePage() {
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="摘要" description="列表卡片展示，留空则自动截取正文前 48 字。">
+            <Field label={copy("summary")} description={copy("theListCardIsDisplayedIfLeft")}>
               <Textarea
                 value={draft.excerpt}
                 onChange={(e) => setDraft((d) => ({ ...d, excerpt: e.target.value }))}
                 rows={2}
-                placeholder="一句话概括文章要点…"
+                placeholder={copy("summarizeTheMainPointsOfTheArticle")}
               />
             </Field>
-            <Field label="正文" description="支持 Markdown 语法。">
+            <Field label={copy("text")} description={copy("supportMarkdownSyntax")}>
               <Textarea
                 value={draft.body}
                 onChange={(e) => setDraft((d) => ({ ...d, body: e.target.value }))}
                 rows={8}
-                placeholder={"## 处理流程\n1. …\n2. …"}
+                placeholder={copy("processingProcess")}
               />
             </Field>
           </div>

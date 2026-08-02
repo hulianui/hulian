@@ -29,6 +29,8 @@ import { Snippet } from "@hulianui/ui"
 | symbol | `string ｜ null` | `"$"` | 命令提示符；传 `null` 不显示，适合非命令片段 |
 | lang | `string` | — | 语法着色语言（如 `"tsx"`/`"bash"`），仅 children 为字符串时生效 |
 | highlight | `boolean` | `true` | 是否语法着色，仅 children 为字符串时生效 |
+| copyLabel | `string` | 跟随 locale | 复制按钮无障碍标签；显式传值优先 |
+| copiedLabel | `string` | 跟随 locale | 复制成功后的无障碍标签；显式传值优先 |
 | className | `string` | — | 容器类名 |
 
 ## Slots
@@ -48,6 +50,7 @@ import { Snippet } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - `text`/`lang`/`highlight` 的着色与复制兜底仅在 `children` 为**字符串**时生效；传入节点时只能手动给 `text` 指定复制内容。
+- 默认复制标签跟随 `ConfigProvider locale`；无 Provider 时保持“复制 / 已复制”，`enUS` 为 “Copy / Copied”。
 
 ## 相关
 [Code](../code/code.md) · [CodeBlock](../code-block/code-block.md) · [CodeDiff](../code-diff/code-diff.md) · [Kbd](../kbd/kbd.md) · [Text](../text/text.md) · [Heading](../heading/heading.md)

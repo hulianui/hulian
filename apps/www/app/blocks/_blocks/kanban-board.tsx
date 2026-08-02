@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 多列看板区块 —— 待处理/进行中/已完成/已归档四列，列内任务卡
@@ -13,7 +14,7 @@ import {
   Tag,
   Text,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 
 type Column = "待处理" | "进行中" | "已完成" | "已归档";
 type Priority = "紧急" | "高" | "中" | "低";

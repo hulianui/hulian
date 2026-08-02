@@ -12,6 +12,14 @@ const CATEGORY_HUE: Record<ImageCategory, [number, number]> = {
   原型: [42, 28], // 琥珀
 };
 
+const CATEGORY_LABEL: Record<ImageCategory, string> = {
+  设计稿: copy("designDraft"),
+  海报: copy("poster"),
+  截图: copy("screenshot"),
+  插画: copy("illustration"),
+  原型: copy("prototype"),
+};
+
 const xmlEscape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -36,9 +44,16 @@ export function vaultImage(title: string, category: ImageCategory, w = 800, h = 
   <rect width="100%" height="100%" fill="url(#bg)"/>
   <rect width="100%" height="100%" fill="url(#grid)"/>
   <rect width="100%" height="100%" fill="url(#glow)"/>
-  <circle cx="${(w * 0.2).toFixed(0)}" cy="${(h * 0.82).toFixed(0)}" r="${(w * 0.22).toFixed(0)}" fill="rgba(255,255,255,0.05)"/>
-  <text x="50%" y="49%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="${fontSize}" font-weight="700" fill="#fff">${xmlEscape(title)}</text>
-  <text x="50%" y="56%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="20" letter-spacing="2" fill="rgba(255,255,255,0.8)">${xmlEscape(category)}</text>
+  <circle cx="${(w * 0.2).toFixed(0)}" cy="${(h * 0.82).toFixed(0)}" r="${(w * 0.22).toFixed(
+    0,
+  )}" fill="rgba(255,255,255,0.05)"/>
+  <text x="50%" y="49%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="${fontSize}" font-weight="700" fill="#fff">${xmlEscape(
+    title,
+  )}</text>
+  <text x="50%" y="56%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="20" letter-spacing="2" fill="rgba(255,255,255,0.8)">${xmlEscape(
+    CATEGORY_LABEL[category],
+  )}</text>
 </svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
+import { copy } from "./images.content";

@@ -1,12 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { Tour } from "./tour";
 import type { TourStep } from "./tour.types";
-import {
-  computeCardPosition,
-  computeSpotlight,
-  resolveTarget,
-} from "./tour.geometry";
+import { computeCardPosition, computeSpotlight, resolveTarget } from "./tour.geometry";
 
 afterEach(cleanup);
 
@@ -48,7 +46,13 @@ describe("tour.geometry 纯函数", () => {
 
   it("computeCardPosition：bottom 默认在目标下方且水平居中", () => {
     const spot = { top: 100, left: 100, width: 100, height: 40 };
-    const pos = computeCardPosition(spot, "bottom", { width: 200, height: 100 }, { width: 1000, height: 800 }, 12);
+    const pos = computeCardPosition(
+      spot,
+      "bottom",
+      { width: 200, height: 100 },
+      { width: 1000, height: 800 },
+      12,
+    );
     expect(pos.placement).toBe("bottom");
     expect(pos.top).toBe(100 + 40 + 12); // 目标底 + gap
     expect(pos.left).toBe(100 + 50 - 100); // 目标水平中心 - 卡片半宽
@@ -57,19 +61,61 @@ describe("tour.geometry 纯函数", () => {
   it("computeCardPosition：下方放不下 → 翻转到 top", () => {
     // 目标贴近视口底部，bottom 放不下、top 放得下 → 翻转
     const spot = { top: 700, left: 100, width: 100, height: 40 };
-    const pos = computeCardPosition(spot, "bottom", { width: 200, height: 200 }, { width: 1000, height: 800 }, 12);
+    const pos = computeCardPosition(
+      spot,
+      "bottom",
+      { width: 200, height: 200 },
+      { width: 1000, height: 800 },
+      12,
+    );
     expect(pos.placement).toBe("top");
   });
 
   it("computeCardPosition：坐标夹进视口（目标贴边时不溢出）", () => {
     const spot = { top: 100, left: 0, width: 40, height: 40 };
-    const pos = computeCardPosition(spot, "bottom", { width: 300, height: 100 }, { width: 1000, height: 800 }, 12);
+    const pos = computeCardPosition(
+      spot,
+      "bottom",
+      { width: 300, height: 100 },
+      { width: 1000, height: 800 },
+      12,
+    );
     expect(pos.left).toBeGreaterThanOrEqual(8); // MARGIN 兜底
     expect(pos.left + 300).toBeLessThanOrEqual(1000 - 8);
   });
 });
 
 describe("Tour 行为", () => {
+  it("内置导航、关闭与进度文案跟随 ConfigProvider，显式 props 优先", () => {
+    const { rerender } = render(
+      <ConfigProvider locale={enUS}>
+        <Tour steps={steps} open current={1} />
+      </ConfigProvider>,
+    );
+
+    expect(screen.getByRole("button", { name: "Previous" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Next" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Skip" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Close tour" })).toBeTruthy();
+    expect(screen.getByText("2/3").getAttribute("aria-label")).toBe("Step 2 of 3");
+
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Tour
+          steps={steps}
+          open
+          current={1}
+          prevText="Back"
+          nextText="Continue"
+          skipText="Dismiss"
+        />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("button", { name: "Back" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Continue" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Dismiss" })).toBeTruthy();
+  });
+
   it("open=false 时不渲染任何遮罩 / 卡片", () => {
     render(<Tour steps={steps} open={false} current={0} />);
     expect(screen.queryByRole("dialog")).toBeNull();

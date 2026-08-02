@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Plus } from "../_icons";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { pressableClass } from "../motion";
 import type { FabPosition, FabProps } from "./fab.types";
@@ -29,6 +31,7 @@ export function Fab({
   "aria-label": ariaLabel,
   className,
 }: FabProps) {
+  const copy = useComponentLocale().fab ?? { action: "操作" };
   const [open, setOpen] = useState(false);
   const [drag, setDrag] = useState({ x: 0, y: 0 });
   // 拖拽态：ox/oy=按下点，dx/dy=按下时已有偏移，moved=越过阈值（用于区分拖拽与点击）。
@@ -51,7 +54,14 @@ export function Fab({
 
   const onPointerDown = (e: ReactPointerEvent<HTMLButtonElement>) => {
     if (!draggable) return;
-    st.current = { ox: e.clientX, oy: e.clientY, dx: drag.x, dy: drag.y, moved: false, active: true };
+    st.current = {
+      ox: e.clientX,
+      oy: e.clientY,
+      dx: drag.x,
+      dy: drag.y,
+      moved: false,
+      active: true,
+    };
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onPointerMove = (e: ReactPointerEvent<HTMLButtonElement>) => {
@@ -75,13 +85,18 @@ export function Fab({
   // 拖拽偏移走 inline transform（覆盖 bottom-center 的 -translate-x-1/2，故 base 里补回 -50%）。
   const dragStyle = draggable
     ? {
-        transform: `${position === "bottom-center" ? "translateX(-50%) " : ""}translate3d(${drag.x}px, ${drag.y}px, 0)`,
+        transform: `${position === "bottom-center" ? "translateX(-50%) " : ""}translate3d(${
+          drag.x
+        }px, ${drag.y}px, 0)`,
         touchAction: "none" as const,
       }
     : undefined;
 
   return (
-    <div className={cn("fixed z-50 flex flex-col gap-3", POSITION[position], className)} style={dragStyle}>
+    <div
+      className={cn("fixed z-50 flex flex-col gap-3", POSITION[position], className)}
+      style={dragStyle}
+    >
       {hasActions &&
         actions!.map((a, i) => (
           <div
@@ -119,7 +134,7 @@ export function Fab({
         ))}
       <button
         type="button"
-        aria-label={ariaLabel ?? label ?? "操作"}
+        aria-label={ariaLabel ?? label ?? copy.action}
         aria-expanded={hasActions ? open : undefined}
         onClick={handleMain}
         onPointerDown={onPointerDown}
@@ -139,7 +154,12 @@ export function Fab({
           draggable && "cursor-grab touch-none active:cursor-grabbing",
         )}
       >
-        <span className={cn("flex transition-transform duration-200 motion-reduce:transition-none", open && "rotate-45")}>
+        <span
+          className={cn(
+            "flex transition-transform duration-200 motion-reduce:transition-none",
+            open && "rotate-45",
+          )}
+        >
           {icon ?? <Plus className={sz.icon} aria-hidden />}
         </span>
         {label && <span className="text-sm font-medium">{label}</span>}

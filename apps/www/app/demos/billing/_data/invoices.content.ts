@@ -1,0 +1,96 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    "professionalEditionAnnualPayment": "专业版（年付）",
+    "professionalEditionSeatsAnnualPayment": "专业版 × 8 席（年付）",
+    "aiSmartAssistantAnnualPayment": "AI 智能助手（年付）",
+    "extendedStorageTbAnnualPayment": "扩展存储 1TB（年付）",
+    "vat": "增值税 6%",
+    "usageExceeded": "2026-05 用量超额",
+    "usageSettlement": "用量结算",
+    "apiExceededTimes": "API 超额 32.6 万次",
+    "usageExceeded2": "2026-04 用量超额",
+    "usageSettlement2": "用量结算",
+    "apiExceededTimes2": "API 超额 21.8 万次",
+    "seatExpansion": "席位扩容",
+    "seatChange": "席位变更",
+    "newSeatsAddedProportional": "新增 3 席（按比例）",
+    "refundForDowngrade": "降配退款",
+    "usageExceeded3": "2026-03 用量超额",
+    "usageSettlement3": "用量结算",
+    "apiExceededTimes3": "API 超额 19.4 万次",
+    "professionalEditionAnnualPayment2": "专业版（年付）",
+    "professionalEditionSeatsAnnualPayment2": "专业版 × 5 席（年付）",
+    "aiSmartAssistantAnnualPayment2": "AI 智能助手（年付）",
+    "vat2": "增值税 6%",
+    "firstTimeOpening": "首次开通",
+    "professionalVersionTrialToRegularVersion": "专业版试用转正",
+    "professionalVersionMonthlyPaymentFirstMonth": "专业版（月付）首月",
+    "november": "11月",
+    "december": "12月",
+    "january": "1月",
+    "february": "2月",
+    "march": "3月",
+    "april": "4月",
+    "may": "5月",
+    "june": "6月",
+    "paid": "已支付",
+    "toBePaid": "待支付",
+    "paymentFailed": "支付失败",
+    "refunded": "已退款",
+  },
+  en: {
+    "professionalEditionAnnualPayment": "Annual Pro plan",
+    "professionalEditionSeatsAnnualPayment": "Annual Pro plan × 8 seats",
+    "aiSmartAssistantAnnualPayment": "AI assistant · annual add-on",
+    "extendedStorageTbAnnualPayment": "1 TB storage add-on · annual",
+    "vat": "VAT 6%",
+    "usageExceeded": "May 2026 overage",
+    "usageSettlement": "Usage overage",
+    "apiExceededTimes": "326,000 excess API calls",
+    "usageExceeded2": "April 2026 overage",
+    "usageSettlement2": "Usage overage",
+    "apiExceededTimes2": "218,000 excess API calls",
+    "seatExpansion": "Seat expansion",
+    "seatChange": "Seat change",
+    "newSeatsAddedProportional": "3 additional seats · prorated",
+    "refundForDowngrade": "Refund for downgrade",
+    "usageExceeded3": "March 2026 overage",
+    "usageSettlement3": "Usage overage",
+    "apiExceededTimes3": "194,000 excess API calls",
+    "professionalEditionAnnualPayment2": "Annual Pro plan",
+    "professionalEditionSeatsAnnualPayment2": "Annual Pro plan × 5 seats",
+    "aiSmartAssistantAnnualPayment2": "AI assistant · annual add-on",
+    "vat2": "VAT 6%",
+    "firstTimeOpening": "Initial subscription",
+    "professionalVersionTrialToRegularVersion": "Pro trial conversion",
+    "professionalVersionMonthlyPaymentFirstMonth": "First month of Pro",
+    "november": "November",
+    "december": "December",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "paid": "Paid",
+    "toBePaid": "Pending",
+    "paymentFailed": "Payment failed",
+    "refunded": "Refunded",
+  },
+} as const;
+
+export type ContentKey = keyof typeof content["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = {
+  key: "demo-billing-data-invoices",
+  content: t(content),
+};
+
+export default dictionary;

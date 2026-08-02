@@ -1,7 +1,9 @@
 import { customers } from "./customers";
 import { opportunities } from "./opportunities";
 import { orders } from "./orders";
+import { oppStageLabel } from "./status";
 import { OPP_STAGES } from "./types";
+import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 
 // 工作台指标：全部由 mock 数据现算（单一口径，供 Stat/Chart 复用）。
 const MONTH_OPEN = "2026-05-01"; // 「本月/近期新增」口径
@@ -26,14 +28,17 @@ export function monthlyTrend() {
       .filter((o) => o.createdAt.startsWith(m) && o.status !== "已退款")
       .reduce((s, o) => s + o.amount, 0);
     const newCustomers = customers.filter((c) => c.createdAt.startsWith(m)).length;
-    return { month: `${Number(m.slice(5))}月`, 成交额: Math.round(revenue / 10000), 新增客户: newCustomers };
+    const month = DOCS_LOCALE === "en"
+      ? new Intl.DateTimeFormat("en", { month: "short", timeZone: "UTC" }).format(new Date(`${m}-01T00:00:00Z`))
+      : `${Number(m.slice(5))}月`;
+    return { month, 成交额: Math.round(revenue / 10000), 新增客户: newCustomers };
   });
 }
 
 /** 商机阶段分布（活跃阶段的商机数，输单不计）。 */
 export function stageDistribution() {
   return OPP_STAGES.filter((s) => s !== "输单").map((stage) => ({
-    name: stage,
+    name: oppStageLabel[stage],
     value: opportunities.filter((o) => o.stage === stage).length,
   }));
 }

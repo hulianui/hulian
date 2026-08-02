@@ -1,3 +1,4 @@
+import { copy } from "./providers.content";
 import type { ModelMeta, ProviderMeta } from "./types";
 
 // 厂商目录。color 用于 logo 方块，glyph 为 1-2 字标识。
@@ -6,9 +7,9 @@ export const providers: ProviderMeta[] = [
   { id: "anthropic", name: "Anthropic", color: "#d97757", glyph: "An" },
   { id: "google", name: "Google", color: "#4285f4", glyph: "G" },
   { id: "deepseek", name: "DeepSeek", color: "#4d6bfe", glyph: "DS" },
-  { id: "alibaba", name: "阿里通义", color: "#615ced", glyph: "通" },
-  { id: "moonshot", name: "月之暗面", color: "#16161a", glyph: "Ki" },
-  { id: "zhipu", name: "智谱 GLM", color: "#3859ff", glyph: "智" },
+  { id: "alibaba", name: copy("aliTongyi"), color: "#615ced", glyph: copy("pass") },
+  { id: "moonshot", name: copy("darkSideOfTheMoon"), color: "#16161a", glyph: "Ki" },
+  { id: "zhipu", name: copy("glm"), color: "#3859ff", glyph: copy("wisdom") },
 ];
 
 // 模型目录 —— 定价 grounded 2026（USD / 1M tokens）。markup = 网关加价倍率。
@@ -29,11 +30,11 @@ export const models: ModelMeta[] = [
 ];
 
 export const capabilityLabel: Record<string, string> = {
-  chat: "对话",
-  reason: "推理",
-  vision: "视觉",
-  function: "函数调用",
-  longContext: "长上下文",
+  chat: copy("dialogue"),
+  reason: copy("reasoning"),
+  vision: copy("vision"),
+  function: copy("functionCall"),
+  longContext: copy("longContext"),
 };
 
 export function providerOf(id: string): ProviderMeta {

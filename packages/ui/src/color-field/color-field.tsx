@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { inputShellVariants } from "../input/input";
 import type { ColorFieldProps } from "./color-field.types";
@@ -54,8 +56,9 @@ export function ColorField({
   onBlur,
   ...props
 }: ColorFieldProps) {
+  const locale = useComponentLocale().colorField ?? { openPicker: "打开取色器" };
   const [inner, setInner] = useState(() => normalizeHex(defaultValue) ?? "#3b82f6");
-  const committed = value !== undefined ? (normalizeHex(value) ?? inner) : inner;
+  const committed = value !== undefined ? normalizeHex(value) ?? inner : inner;
 
   // null = 没有正在编辑的草稿，显示规范值
   const [draft, setDraft] = useState<string | null>(null);
@@ -93,7 +96,7 @@ export function ColorField({
               外观仍由上面的 span 用 token 控制（原生 input[type=color] 的外观改不动）。 */}
           <input
             type="color"
-            aria-label="打开取色器"
+            aria-label={locale.openPicker}
             tabIndex={-1}
             disabled={disabled}
             value={committed}

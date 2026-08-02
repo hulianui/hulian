@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./about.content";
 
 import { Avatar, Prose, Chip, Text, FlickeringGrid } from "@hulianui/ui";
 import { MapPin, AtSign } from "lucide-react";
@@ -10,8 +11,8 @@ export function About() {
   return (
     <Section
       id="about"
-      eyebrow="关于我"
-      title="一个把自己的痒处做成产品的人"
+      eyebrow={copy("aboutMe")}
+      title={copy("aMakerWhoTurnsPersonalPainPointsIntoProducts")}
       width="6xl"
       backdrop={
         // subtle 闪烁网格背景，低透明度不抢内容
@@ -32,7 +33,7 @@ export function About() {
             size="lg"
             src={avatarArt(profile.name, 255, 144)}
             alt={profile.name}
-            fallback="林"
+            fallback={copy("lin")}
             className="size-24 ring-2 ring-primary/20 ring-offset-2 ring-offset-surface"
           />
           <div className="flex flex-col gap-1">

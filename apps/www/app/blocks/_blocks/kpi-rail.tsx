@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 // KPI 指标卡横轨 —— 4 张卡，每张含指标名、大数字、环比 delta（涨绿跌红）、迷你 Sparkline 趋势。
 // 复制后改：KPIS 数组中的 label / value / delta / data 字段即可。
 // delta 正数=涨(text-primary)、负数=跌(text-danger)，符合 Stat 组件约定。

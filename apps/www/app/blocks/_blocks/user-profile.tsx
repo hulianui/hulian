@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // C 端个人中心区块 —— 顶部头像 + 昵称 + 等级 Tag + 一排数据 Statistic（积分/优惠券/收藏/余额）。
@@ -20,7 +21,7 @@ import {
   TabsTab,
   Text,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 
 // ---- 等级配置 ----
 const LEVELS = [
@@ -232,7 +233,7 @@ export function UserProfileBlock() {
               <div className="mb-1.5 flex justify-between text-xs text-white/70">
                 <span>{level.name}</span>
                 {next ? (
-                  <span>距 {next.name} 还差 {(next.min - MOCK_POINTS).toLocaleString()} 积分</span>
+                  <span>再获得 {(next.min - MOCK_POINTS).toLocaleString()} 积分即可升级至 {next.name}</span>
                 ) : (
                   <span>已达最高等级</span>
                 )}
@@ -252,7 +253,7 @@ export function UserProfileBlock() {
           />
           <Statistic
             value={MOCK_COUPONS}
-            suffix={<span style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.7rem" }}>张</span>}
+            suffix={<span style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.7rem" }}>张优惠券</span>}
             title={<span className="text-xs text-white/60">优惠券</span>}
             valueStyle={{ color: "white", fontSize: "1.25rem", fontWeight: 700 }}
           />

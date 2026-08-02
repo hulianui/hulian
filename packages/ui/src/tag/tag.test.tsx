@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Tag } from "./tag";
+import { ConfigProvider, enUS } from "../config";
 
 describe("Tag", () => {
   it("渲染内容", () => {
@@ -69,6 +70,27 @@ describe("Tag", () => {
     const { getByLabelText } = render(<Tag onClose={fn}>x</Tag>);
     fireEvent.click(getByLabelText("移除"));
     expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it("enUS localizes the close button accessible label", () => {
+    const fn = vi.fn();
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <Tag onClose={fn}>Status</Tag>
+      </ConfigProvider>,
+    );
+    fireEvent.click(getByLabelText("Remove"));
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it("a legacy custom locale without tag keeps the Chinese close label", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, tag: undefined } };
+    const { getByLabelText } = render(
+      <ConfigProvider locale={locale}>
+        <Tag onClose={() => {}}>Status</Tag>
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("移除")).toBeTruthy();
   });
 
   it("isDisabled 降透明度且关闭按钮禁用不触发", () => {

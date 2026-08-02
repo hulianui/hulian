@@ -7,6 +7,7 @@ import { motionDurationCss, motionEaseCss } from "../motion";
 import { Button } from "../button/button";
 import { Popover, PopoverTrigger } from "../popover/popover";
 import type { PopconfirmProps } from "./popconfirm.types";
+import { useComponentLocale } from "../config/locale-context";
 
 // 与 Popover 同款过渡（transition 简写避 shorthand/longhand 混用警告，见 popover.tsx）。
 const overlayTransition = {
@@ -22,8 +23,8 @@ export function Popconfirm({
   title,
   description,
   icon,
-  okText = "确认",
-  cancelText = "取消",
+  okText,
+  cancelText,
   danger = false,
   onConfirm,
   onCancel,
@@ -37,6 +38,9 @@ export function Popconfirm({
   children,
   className,
 }: PopconfirmProps) {
+  const componentLocale = useComponentLocale().popconfirm ?? { confirm: "确认", cancel: "取消" };
+  const resolvedOkText = okText ?? componentLocale.confirm;
+  const resolvedCancelText = cancelText ?? componentLocale.cancel;
   const isControlled = openProp !== undefined;
   const [internalOpen, setInternalOpen] = useState(defaultOpen ?? false);
   const open = openProp ?? internalOpen;
@@ -75,7 +79,10 @@ export function Popconfirm({
   // 默认图标随 danger 切色；icon===null 显式隐藏。
   const resolvedIcon =
     icon === undefined ? (
-      <TriangleAlert className={cn("size-5 shrink-0", danger ? "text-danger" : "text-warning")} aria-hidden />
+      <TriangleAlert
+        className={cn("size-5 shrink-0", danger ? "text-danger" : "text-warning")}
+        aria-hidden
+      />
     ) : (
       icon
     );
@@ -96,7 +103,9 @@ export function Popconfirm({
             <div className="flex gap-3">
               {resolvedIcon}
               <div className="min-w-0 flex-1">
-                <BasePopover.Title className="text-sm font-semibold text-foreground">{title}</BasePopover.Title>
+                <BasePopover.Title className="text-sm font-semibold text-foreground">
+                  {title}
+                </BasePopover.Title>
                 {description != null && (
                   <BasePopover.Description className="mt-1 text-xs text-muted">
                     {description}
@@ -104,7 +113,7 @@ export function Popconfirm({
                 )}
                 <div className="mt-3 flex justify-end gap-2">
                   <Button size="sm" variant="ghost" onClick={handleCancel}>
-                    {cancelText}
+                    {resolvedCancelText}
                   </Button>
                   <Button
                     size="sm"
@@ -114,7 +123,7 @@ export function Popconfirm({
                       void handleConfirm();
                     }}
                   >
-                    {okText}
+                    {resolvedOkText}
                   </Button>
                 </div>
               </div>

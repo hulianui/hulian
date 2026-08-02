@@ -63,5 +63,7 @@ import { Chip, chipVariants } from "@hulianui/ui"
 
 暂无已知坑。前导内容互斥优先级为 `avatar > startContent > dot`——三者同传只渲染 avatar。要出现 × 关闭按钮必须传 `onClose`（即便回调为空函数）。`isDisabled` 会屏蔽整片指针事件，连 × 也点不动。
 
+关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。为兼容旧自定义 locale，缺少 `components.chip` 时仍回退中文。
+
 ## 相关
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

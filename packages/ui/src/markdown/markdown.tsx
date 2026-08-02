@@ -1,9 +1,11 @@
+"use client";
 import { Fragment, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Prose } from "../prose";
 import { CodeBlock } from "../code-block";
 import { parseBlocks, type MdBlock } from "./parse";
 import type { MarkdownProps } from "./markdown.types";
+import { useComponentLocale } from "../config/locale-context";
 
 // 零依赖只读 Markdown 渲染：parseBlocks 切块 → Prose 排版皮肤 + 围栏代码块委托 CodeBlock。
 // 行内支持 `代码` / **粗体** / *斜体* / [链接](url)。区别 MarkdownEditor(可编辑·TipTap)：本件纯渲染、RSC 安全。
@@ -56,7 +58,7 @@ function renderText(text: string): ReactNode[] {
 type ProseBlock = Exclude<MdBlock, { type: "code" }>;
 
 // 渲染单个非代码块（在 Prose 排版作用域内，吃 Prose 的标题/段落/列表/引用样式）。
-function renderProseBlock(b: ProseBlock, key: number) {
+function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
   switch (b.type) {
     case "heading": {
       const H = `h${b.level}` as "h1" | "h2" | "h3";
@@ -82,7 +84,7 @@ function renderProseBlock(b: ProseBlock, key: number) {
       // 圆角描边容器 + 表头浅色底 + 行斑马纹 + 仅横向分隔（去满格网格线，主题感知）。
       return (
         <div key={key} className="my-4 overflow-hidden rounded-lg border border-border">
-          <div className="overflow-x-auto" tabIndex={0} aria-label="数据表格">
+          <div className="overflow-x-auto" tabIndex={0} aria-label={dataTableLabel}>
             <table className="w-full border-collapse text-[0.92em] [&_tr:last-child>td]:border-b-0">
               <thead>
                 <tr className="bg-muted/[0.06]">
@@ -117,6 +119,7 @@ function renderProseBlock(b: ProseBlock, key: number) {
 }
 
 export function Markdown({ children = "", size = "base", className }: MarkdownProps) {
+  const labels = useComponentLocale().markdown ?? { dataTable: "数据表格" };
   const blocks = parseBlocks(children);
   // 连续文本块分组进 Prose，围栏代码块作为独立 CodeBlock 夹在中间 ——
   // 关键：CodeBlock 不能当 Prose 的后代 pre，否则 Prose 的 [&_pre] 样式(p-4/border/bg)会覆盖
@@ -129,7 +132,7 @@ export function Markdown({ children = "", size = "base", className }: MarkdownPr
     const items = run;
     out.push(
       <Prose key={`p${key++}`} size={size}>
-        {items.map((b, j) => renderProseBlock(b, j))}
+        {items.map((b, j) => renderProseBlock(b, j, labels.dataTable))}
       </Prose>,
     );
     run = [];

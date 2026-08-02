@@ -1,7 +1,7 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Button } from "../button";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { Input } from "../input";
 import { cn } from "../lib/cn";
 import type { EditableTableProps } from "./editable-table.types";
@@ -22,7 +22,15 @@ export function EditableTable<T>({
   summary,
   className,
 }: EditableTableProps<T>) {
-  const loc = useLocale().editableTable;
+  const loc = useLocaleValue("editableTable", {
+    edit: "编辑",
+    save: "保存",
+    cancel: "取消",
+    delete: "删除",
+    add: "新增一行",
+    actions: "操作",
+    empty: "暂无数据",
+  });
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [draft, setDraft] = useState<T | null>(null);
 
@@ -127,7 +135,12 @@ export function EditableTable<T>({
                         </span>
                       ) : (
                         <span className="inline-flex gap-1.5">
-                          <Button size="sm" variant="ghost" onClick={() => startEdit(row)} disabled={busy}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => startEdit(row)}
+                            disabled={busy}
+                          >
                             {loc.edit}
                           </Button>
                           {deletable && (

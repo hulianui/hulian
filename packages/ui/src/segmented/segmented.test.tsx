@@ -23,6 +23,13 @@ describe("Segmented", () => {
     expect(radios[1].getAttribute("aria-checked")).toBe("false");
   });
 
+  it("未选中段使用暗色背景下满足正文对比度的前景色", () => {
+    const { getByRole } = render(<Segmented items={items} aria-label="周期" />);
+    const root = getByRole("radiogroup");
+    expect(root.className).toContain("text-foreground");
+    expect(root.className).not.toContain("text-muted");
+  });
+
   it("defaultValue 指定初始选中段", () => {
     const { getByText } = render(<Segmented items={items} defaultValue="week" aria-label="周期" />);
     expect(getByText("周").getAttribute("aria-checked")).toBe("true");

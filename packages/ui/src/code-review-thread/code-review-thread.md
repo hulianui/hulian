@@ -70,4 +70,6 @@ const comments = [
 暂无已知坑。`status` 与 `collapsed` 均为「传则受控、不传则内部自管」：受控时必须配 `onStatusChange` / `onCollapsedChange` 回写，否则交互无效。`collapsed` 优先级高于 `defaultCollapsed`，两者勿同时当真值传。
 
 ## 相关
+
+严重度、状态、建议与回复等内置文案跟随 `ConfigProvider`；评论正文与作者仍由业务数据提供。
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

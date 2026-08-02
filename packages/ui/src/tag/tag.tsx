@@ -1,6 +1,7 @@
 "use client";
 import { cva } from "class-variance-authority";
 import { X } from "../_icons";
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { TagProps, TagTone } from "./tag.types";
 
@@ -58,6 +59,7 @@ export function Tag({
   className,
   children,
 }: TagProps) {
+  const labels = { remove: "移除", ...useComponentLocale().tag };
   return (
     <span
       className={cn(
@@ -74,11 +76,17 @@ export function Tag({
           <span className="relative flex size-1.5 shrink-0 items-center justify-center">
             {pulse && (
               <span
-                className={cn("absolute inline-flex size-full animate-ping rounded-full opacity-60", dotByTone[tone])}
+                className={cn(
+                  "absolute inline-flex size-full animate-ping rounded-full opacity-60",
+                  dotByTone[tone],
+                )}
                 aria-hidden
               />
             )}
-            <span className={cn("relative inline-flex size-1.5 rounded-full", dotByTone[tone])} aria-hidden />
+            <span
+              className={cn("relative inline-flex size-1.5 rounded-full", dotByTone[tone])}
+              aria-hidden
+            />
           </span>
         )
       )}
@@ -88,7 +96,7 @@ export function Tag({
           type="button"
           onClick={onClose}
           disabled={isDisabled}
-          aria-label="移除"
+          aria-label={labels.remove}
           className="-mr-0.5 inline-flex size-3.5 items-center justify-center rounded-full opacity-60 outline-none transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed"
         >
           <X className="size-2.5" />

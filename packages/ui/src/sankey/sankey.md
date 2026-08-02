@@ -79,4 +79,6 @@ const links: SankeyLink[] = [
 - nodes/links 受控：几何由纯函数 `computeSankeyLayout` 算出带坐标的 laid* 形态，`assignLayers` 负责拓扑分层；不要往里传环路 links（拓扑分层假设有向无环）。
 
 ## 相关
+
+图表无障碍标签跟随 `ConfigProvider`。
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

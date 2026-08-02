@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 
 import { startStaticServer } from "./static-server.mjs";
 
-export const ROUTES = [
+const BASE_ROUTES = [
   "/",
   "/start",
   "/blocks",
@@ -16,6 +16,38 @@ export const ROUTES = [
   "/pages/admin-list",
   "/pages/product-list",
 ];
+export const DOCS_LOCALES = ["zh-CN", "en"];
+
+function stripEnglishPrefix(route) {
+  return route === "/en" ? "/" : route.startsWith("/en/") ? route.slice(3) : route;
+}
+
+function routeForLocale(route, locale) {
+  const bare = stripEnglishPrefix(route);
+  return locale === "en" ? `/en${bare === "/" ? "" : bare}` : bare;
+}
+
+export function expandBilingualRoutes(entries) {
+  const expanded = [];
+  const seen = new Set();
+  for (const entry of entries) {
+    const descriptor = typeof entry === "string" ? { route: entry } : entry;
+    for (const locale of DOCS_LOCALES) {
+      const localized = { ...descriptor, route: routeForLocale(descriptor.route, locale), locale };
+      const key = `${locale}:${localized.route}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      expanded.push(localized);
+    }
+  }
+  return expanded;
+}
+
+export function formatRouteLabel({ locale, route }) {
+  return `[${locale ?? (route?.startsWith("/en") ? "en" : "zh-CN")}] ${route}`;
+}
+
+export const ROUTES = expandBilingualRoutes(BASE_ROUTES);
 export const THEMES = ["light", "dark"];
 
 export function classify(violations) {
@@ -29,7 +61,7 @@ export function classify(violations) {
 export function validateRouteResult(result) {
   if (result.loadFailed) {
     throw new Error(
-      `route load failed: ${result.route} (status ${result.status ?? "none"}; failed ${
+      `${formatRouteLabel(result)} route load failed: ${result.route} (status ${result.status ?? "none"}; failed ${
         result.failed?.join(", ") || "none"
       })`,
     );
@@ -61,7 +93,7 @@ export async function runA11y() {
         document.documentElement.setAttribute("data-theme", selectedTheme);
       }, theme);
       try {
-        for (const route of ROUTES) {
+        for (const { route, locale } of ROUTES) {
           const page = await context.newPage();
           const failed = [];
           page.on("requestfailed", (request) => {
@@ -88,6 +120,7 @@ export async function runA11y() {
           const result = {
             theme,
             route,
+            locale,
             status: response?.status(),
             loadFailed,
             failed,
@@ -110,7 +143,7 @@ export async function runA11y() {
     const { blocking, reported } = validateRouteResult(result);
     blockingCount += blocking.length;
     console.log(
-      `[a11y] ${result.theme} ${result.route} · blocking ${blocking.length} · moderate/minor ${reported.length}`,
+      `[a11y] ${result.theme} ${formatRouteLabel(result)} · blocking ${blocking.length} · moderate/minor ${reported.length}`,
     );
     for (const violation of [...blocking, ...reported]) {
       console.log(`  [${violation.impact ?? "unknown"}] ${violation.id}: ${violation.help}`);

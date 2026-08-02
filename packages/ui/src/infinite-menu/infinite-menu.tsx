@@ -1,13 +1,9 @@
 "use client";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { InfiniteMenuItem, InfiniteMenuProps } from "./infinite-menu.types";
 
@@ -75,9 +71,23 @@ export function InfiniteMenu({
   className,
   style,
 }: InfiniteMenuProps) {
+  const locale = useComponentLocale().infiniteMenu ?? {
+    openItem: (title) => `打开 ${title}`,
+    openActive: "打开激活项",
+    placeholderTitle: (index) => `菜单项 ${index}`,
+    placeholderDescription: "占位项 · 传入 items 替换",
+  };
   const reduced = useReducedMotion();
 
-  const data = items.length > 0 ? items : PLACEHOLDER_ITEMS;
+  const placeholderItems = useMemo<InfiniteMenuItem[]>(
+    () =>
+      Array.from({ length: 12 }, (_, i) => ({
+        title: locale.placeholderTitle(i + 1),
+        description: locale.placeholderDescription,
+      })),
+    [locale],
+  );
+  const data = items.length > 0 ? items : placeholderItems;
   const points = useMemo(() => fibonacciSphere(data.length), [data.length]);
 
   // 球半径（px）：随 scale 缩放
@@ -223,10 +233,7 @@ export function InfiniteMenu({
 
   return (
     <div
-      className={cn(
-        "relative h-full min-h-[20rem] w-full select-none overflow-hidden",
-        className,
-      )}
+      className={cn("relative h-full min-h-[20rem] w-full select-none overflow-hidden", className)}
       style={style}
       data-infinite-menu=""
     >
@@ -265,7 +272,9 @@ export function InfiniteMenu({
                   height: itemSize,
                   marginLeft: -itemSize / 2,
                   marginTop: -itemSize / 2,
-                  transform: `translate3d(${p.x * radius}px, ${-p.y * radius}px, ${p.z * radius}px) scale(${itemScale})`,
+                  transform: `translate3d(${p.x * radius}px, ${-p.y * radius}px, ${
+                    p.z * radius
+                  }px) scale(${itemScale})`,
                   opacity,
                   zIndex: Math.round(depth * 1000),
                 }}
@@ -316,7 +325,7 @@ export function InfiniteMenu({
         <button
           type="button"
           onClick={handleActivate}
-          aria-label={activeItem.title ? `打开 ${activeItem.title}` : "打开激活项"}
+          aria-label={activeItem.title ? locale.openItem(activeItem.title) : locale.openActive}
           className={cn(
             "absolute right-4 top-4 z-[2000] grid size-10 place-items-center rounded-full",
             "bg-primary text-primary-foreground shadow-md transition-[scale,opacity,filter] duration-300 ease-out",
@@ -330,8 +339,3 @@ export function InfiniteMenu({
     </div>
   );
 }
-
-const PLACEHOLDER_ITEMS: InfiniteMenuItem[] = Array.from({ length: 12 }, (_, i) => ({
-  title: `菜单项 ${i + 1}`,
-  description: "占位项 · 传入 items 替换",
-}));

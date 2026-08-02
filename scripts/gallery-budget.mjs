@@ -3,6 +3,9 @@
 import { pathToFileURL } from "node:url";
 
 import { gotoAndSettle, startStaticServer } from "./static-server.mjs";
+import { expandBilingualRoutes, formatRouteLabel } from "./a11y.mjs";
+
+export { expandBilingualRoutes } from "./a11y.mjs";
 
 // 画廊预算门禁 —— 拦 hulianui/hulian#40 那一类「把整座画廊当活组件同时挂上」的回归。
 //
@@ -20,7 +23,7 @@ import { gotoAndSettle, startStaticServer } from "./static-server.mjs";
  * 各画廊的预算。数字来自静态导出产物上的实测值 + 余量，不是拍脑袋：
  * 收紧到「刚好卡住当前实现」会让任何无关改动都红，留太松则等于没门禁。
  */
-export const GALLERY_BUDGETS = [
+export const GALLERY_BUDGETS = expandBilingualRoutes([
   {
     route: "/pages",
     /** 该画廊总共有多少个预览（低于此说明卡片渲染坏了，不是「优化」）。 */
@@ -38,7 +41,7 @@ export const GALLERY_BUDGETS = [
     maxDomNodes: 4200,
     maxConsoleWarnings: 6,
   },
-];
+]);
 
 /** 判据。probe 见 probeGallery；返回失败原因数组，空 = 通过。 */
 export function checkBudget(budget, probe) {
@@ -73,7 +76,8 @@ export function checkBudget(budget, probe) {
   if (probe.focusEscapes > 0) {
     failures.push(`缩略图内有 ${probe.focusEscapes} 个元素真的拿到了焦点（inert 失效）`);
   }
-  return failures;
+  const label = formatRouteLabel(budget);
+  return failures.map((failure) => `${label}: ${failure}`);
 }
 
 // 必须是真函数：page.evaluate 收字符串时按表达式求值，函数源码只会求出个函数对象。
@@ -125,7 +129,12 @@ export async function runGalleryBudget() {
       // 多等一会儿：预算量的是「稳定后」的挂载数，IO 与瀑布流列高要settle 完。
       await gotoAndSettle(page, `${staticServer.baseUrl}${budget.route}`, { settleMs: 900 });
       const probe = { ...(await page.evaluate(probeGallery)), consoleWarnings };
-      results.push({ route: budget.route, probe, failures: checkBudget(budget, probe) });
+      results.push({
+        route: budget.route,
+        locale: budget.locale,
+        probe,
+        failures: checkBudget(budget, probe),
+      });
       await context.close();
     }
   } finally {
@@ -138,11 +147,11 @@ export async function runGalleryBudget() {
     const { previewTotal, mounted, domNodes, consoleWarnings } = r.probe;
     const line = `预览 ${mounted}/${previewTotal} 已挂载 · DOM ${domNodes} · warning ${consoleWarnings}`;
     if (r.failures.length === 0) {
-      console.log(`[gallery] ${r.route} · OK · ${line}`);
+      console.log(`[gallery] ${formatRouteLabel(r)} · OK · ${line}`);
       continue;
     }
     failed += 1;
-    console.log(`[gallery] ${r.route} · FAIL · ${line}`);
+    console.log(`[gallery] ${formatRouteLabel(r)} · FAIL · ${line}`);
     for (const reason of r.failures) console.log(`    ${reason}`);
   }
   if (failed > 0) throw new Error(`画廊预算门禁失败 ${failed}/${results.length} 条路由`);

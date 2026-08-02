@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./discussion-tab.content";
 import { useState } from "react";
 import {
   Mentions,
@@ -22,31 +23,39 @@ export function DiscussionTab({ course }: { course: Course }) {
   const [pending, run] = usePending();
 
   const mentionOptions: MentionOption[] = [
-    { value: course.instructor.name, label: course.instructor.name, description: "讲师" },
-    { value: "助教-小研", label: "助教-小研", description: "课程助教" },
-    { value: "夏小满", label: "夏小满", description: "同学" },
-    { value: "陈起", label: "陈起", description: "同学" },
+    {
+      value: course.instructor.name,
+      label: course.instructor.name,
+      description: copy("instructor"),
+    },
+    {
+      value: "助教-小研",
+      label: copy("assistantTeacherXiaoyan"),
+      description: copy("courseAssistant"),
+    },
+    { value: "夏小满", label: copy("xiaXiaoman"), description: copy("classmates") },
+    { value: "陈起", label: copy("chenQi"), description: copy("classmates") },
   ];
 
   const publish = () => {
     if (!draft.trim()) {
-      toast({ title: "说点什么再发布吧", tone: "danger" });
+      toast({ title: copy("saySomethingBeforeYouPublish"), tone: "danger" });
       return;
     }
     void run(() => {
       setList((prev) => [
         {
           id: `new-${prev.length}-${draft.length}`,
-          author: "我",
-          role: "学员",
-          datetime: "刚刚",
+          author: copy("me"),
+          role: copy("learners"),
+          datetime: copy("justNow"),
           content: draft,
           likes: 0,
         },
         ...prev,
       ]);
       setDraft("");
-      toast({ title: "已发布讨论", tone: "success" });
+      toast({ title: copy("discussionPublished"), tone: "success" });
     });
   };
 
@@ -59,8 +68,10 @@ export function DiscussionTab({ course }: { course: Course }) {
       author={
         <span className="flex items-center gap-1.5">
           {d.author}
-          {d.role === "讲师" && (
-            <span className="rounded bg-primary/12 px-1.5 py-0.5 text-[11px] font-medium text-primary">讲师</span>
+          {d.role === copy("instructor") && (
+            <span className="rounded bg-primary/12 px-1.5 py-0.5 text-[11px] font-medium text-primary">
+              {copy("instructor")}
+            </span>
           )}
         </span>
       }
@@ -77,8 +88,12 @@ export function DiscussionTab({ course }: { course: Course }) {
             <ThumbsUp className="mr-1 inline size-3" />
             {liked.includes(d.id) ? d.likes + 1 : d.likes}
           </CommentAction>
-          <CommentAction onClick={() => toast({ title: "回复功能为演示占位", tone: "neutral" })}>
-            回复
+          <CommentAction
+            onClick={() =>
+              toast({ title: copy("theReplyFunctionIsThePlaceholderOfTheDemo"), tone: "neutral" })
+            }
+          >
+            {copy("reply")}
           </CommentAction>
         </>
       }
@@ -90,26 +105,30 @@ export function DiscussionTab({ course }: { course: Course }) {
   return (
     <div className="space-y-6">
       <div className="flex gap-3">
-        <Avatar fallback="我" />
+        <Avatar fallback={copy("me")} />
         <div className="flex-1">
           <Mentions
             value={draft}
             onChange={setDraft}
             options={mentionOptions}
-            placeholder="参与讨论，输入 @ 提及讲师或同学…"
-            aria-label="发布讨论"
+            placeholder={copy("joinTheDiscussionTypeMentionAnInstructorOrClassmate")}
+            aria-label={copy("postDiscussion")}
           />
           <div className="mt-2 flex justify-end">
             <Button onClick={publish} loading={pending} size="sm">
               <MessageSquare className="mr-1.5 size-4" aria-hidden />
-              发布
+              {copy("publish")}
             </Button>
           </div>
         </div>
       </div>
 
       {list.length === 0 ? (
-        <Empty size="sm" title="还没有讨论" description="来做第一个提问的人吧" />
+        <Empty
+          size="sm"
+          title={copy("noDiscussionsYet")}
+          description={copy("beTheFirstToAskAQuestion")}
+        />
       ) : (
         <div className="space-y-1">{list.map(renderComment)}</div>
       )}

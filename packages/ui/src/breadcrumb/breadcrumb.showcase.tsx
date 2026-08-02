@@ -12,17 +12,17 @@ const Chevron = (
 );
 
 const sample: BreadcrumbItem[] = [
-  { label: "首页", href: "/" },
-  { label: "组件", href: "/components" },
+  { label: "首页", href: "https://example.com/" },
+  { label: "组件", href: "https://example.com/components" },
   { label: "面包屑" },
 ];
 
 const longPath: BreadcrumbItem[] = [
-  { label: "首页", href: "/" },
-  { label: "文档", href: "/docs" },
-  { label: "设计系统", href: "/docs/design-system" },
-  { label: "导航族", href: "/docs/design-system/navigation" },
-  { label: "面包屑组件", href: "/docs/design-system/navigation/breadcrumb" },
+  { label: "首页", href: "https://example.com/" },
+  { label: "文档", href: "https://example.com/docs" },
+  { label: "设计系统", href: "https://example.com/docs/design-system" },
+  { label: "导航族", href: "https://example.com/docs/design-system/navigation" },
+  { label: "面包屑组件", href: "https://example.com/docs/design-system/navigation/breadcrumb" },
   { label: "无障碍语义" },
 ];
 
@@ -48,7 +48,8 @@ export const breadcrumbShowcase: ShowcaseSpec = {
     },
     {
       title: "自定义分隔符",
-      description: "separator 接受任意 ReactNode（字符或图标），默认 \"/\"，分隔符自动加 aria-hidden。",
+      description:
+        'separator 接受任意 ReactNode（字符或图标），默认 "/"，分隔符自动加 aria-hidden。',
       code: `<Breadcrumb items={items} separator={<ChevronIcon />} />`,
       render: () => <Breadcrumb items={sample} separator={Chevron} />,
     },
@@ -64,7 +65,11 @@ export const breadcrumbShowcase: ShowcaseSpec = {
 />`,
       render: () => (
         <Breadcrumb
-          items={[{ label: "首页", href: "/" }, { label: "归档" }, { label: "2026 年报" }]}
+          items={[
+            { label: "首页", href: "https://example.com/" },
+            { label: "归档" },
+            { label: "2026 年报" },
+          ]}
         />
       ),
     },
@@ -103,7 +108,11 @@ export const breadcrumbShowcase: ShowcaseSpec = {
       name: "含不可点中间项（无 href）",
       render: () => (
         <Breadcrumb
-          items={[{ label: "首页", href: "/" }, { label: "归档" }, { label: "2026 年报" }]}
+          items={[
+            { label: "首页", href: "https://example.com/" },
+            { label: "归档" },
+            { label: "2026 年报" },
+          ]}
         />
       ),
     },

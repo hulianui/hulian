@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./home-category-grid.content";
 import Link from "next/link";
 import { Card, CardBody, Heading } from "@hulianui/ui";
 import type { Category } from "../../_data/types";
@@ -13,7 +14,8 @@ export function HomeCategoryGrid({ categories }: Props) {
   return (
     <section aria-labelledby="home-cats-title">
       <Heading level={2} size="lg" id="home-cats-title" className="mb-4">
-        全部品类
+
+        {copy("allCategories")}
       </Heading>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
         {categories.map((cat) => (
@@ -21,7 +23,7 @@ export function HomeCategoryGrid({ categories }: Props) {
             key={cat.key}
             href={`${SHOP_BASE}/products?cat=${cat.key}`}
             className="group focus:outline-none"
-            aria-label={`浏览 ${cat.name}`}
+            aria-label={copy("browseCategory", cat.name)}
           >
             <Card
               variant="outline"

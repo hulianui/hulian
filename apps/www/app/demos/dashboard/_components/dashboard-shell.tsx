@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./dashboard-shell.content";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Button, Spinner, toast } from "@hulianui/ui";
 import { sleep } from "../../lib/async";
@@ -7,7 +8,7 @@ import { useTicker } from "../_lib/use-live";
 import { AlertTicker } from "./alert-ticker";
 import { ChartStack, BandwidthArea } from "./chart-stack";
 import { GlobePanel } from "./globe-panel";
-import { HeaderBar, type DataSource } from "./header-bar";
+import { DATA_SOURCE_LABELS, HeaderBar, type DataSource } from "./header-bar";
 import { KpiRail } from "./kpi-rail";
 import { NodeDrawer } from "./node-drawer";
 import { RegionMeters } from "./region-meters";
@@ -31,7 +32,7 @@ export function DashboardShell() {
     setSnap(null);
     await sleep(620); // 让 Skeleton 加载帧肉眼可见（≥300ms）
     if (source === "异常") {
-      setError("数据源「异常」：调度中心心跳超时，实时指标拉取失败。请切回「正常」或稍后重试。");
+      setError(copy("dataSourceAbnormalTheHeartbeatOfTheDispatchCenterTimed"));
       setLoading(false);
       return;
     }
@@ -48,7 +49,7 @@ export function DashboardShell() {
   const view = live ?? snap;
 
   const pickedNode = useMemo(
-    () => (pickedId ? (view?.nodes.find((n) => n.id === pickedId) ?? null) : null),
+    () => (pickedId ? view?.nodes.find((n) => n.id === pickedId) ?? null : null),
     [pickedId, view],
   );
 
@@ -59,17 +60,23 @@ export function DashboardShell() {
 
   const handleSource = (s: DataSource) => {
     setSource(s);
-    toast({ title: `已切换数据源：${s}`, tone: s === "异常" ? "danger" : "info" });
+    toast({
+      title: copy("dataSourceSwitched", DATA_SOURCE_LABELS[s]),
+      tone: s === "异常" ? "danger" : "info",
+    });
   };
 
   const handleRefresh = () => {
     void load();
-    toast({ title: "正在刷新实时指标…", tone: "info" });
+    toast({ title: copy("refreshingLiveMetrics"), tone: "info" });
   };
 
   const handleToggleRunning = (next: boolean) => {
     setRunning(next);
-    toast({ title: next ? "已恢复实时刷新" : "已停止实时刷新", tone: next ? "info" : "neutral" });
+    toast({
+      title: next ? copy("realTimeRefreshResumed") : copy("liveRefreshStopped"),
+      tone: next ? "info" : "neutral",
+    });
   };
 
   return (
@@ -89,10 +96,10 @@ export function DashboardShell() {
           <Alert
             tone="danger"
             className="max-w-xl"
-            title="实时数据源异常"
+            title={copy("realTimeDataSourceException")}
             action={
               <Button size="sm" variant="ghost" onClick={() => void load()}>
-                {loading ? <Spinner size="sm" /> : "重试"}
+                {loading ? <Spinner size="sm" /> : copy("retry")}
               </Button>
             }
           >

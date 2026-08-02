@@ -2,7 +2,7 @@
 slug: voice-record
 name: VoiceRecord
 category: forms
-group: 高级录入
+group: advanced
 tags: []
 exports: [VoiceRecord]
 status: enriched

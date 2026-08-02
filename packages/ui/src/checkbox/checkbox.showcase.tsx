@@ -5,9 +5,9 @@ import { Checkbox } from "./checkbox";
 import { Field } from "../field/field";
 
 const STATE_MAP: Record<string, { checked: boolean; indeterminate: boolean }> = {
-  未选: { checked: false, indeterminate: false },
-  已选: { checked: true, indeterminate: false },
-  半选: { checked: false, indeterminate: true },
+  "未选": { checked: false, indeterminate: false },
+  "已选": { checked: true, indeterminate: false },
+  "半选": { checked: false, indeterminate: true },
 };
 
 function CheckboxPlayground(p: Record<string, unknown>) {

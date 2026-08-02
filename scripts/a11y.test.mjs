@@ -8,6 +8,28 @@ import {
   shouldIgnoreRequestFailure,
   validateRouteResult,
 } from "./a11y.mjs";
+import * as a11y from "./a11y.mjs";
+
+test("无障碍路由矩阵补齐中英文并去重已带 /en 的路由", () => {
+  assert.equal(typeof a11y.expandBilingualRoutes, "function");
+  assert.deepEqual(
+    a11y.expandBilingualRoutes([
+      "/components/button",
+      "/en/components/button",
+    ]),
+    [
+      { route: "/components/button", locale: "zh-CN" },
+      { route: "/en/components/button", locale: "en" },
+    ],
+  );
+  assert.deepEqual(
+    a11y.ROUTES.filter(({ route }) => route.endsWith("/components/button")),
+    [
+      { route: "/components/button", locale: "zh-CN" },
+      { route: "/en/components/button", locale: "en" },
+    ],
+  );
+});
 
 test("无障碍门禁固定覆盖亮色与暗色，不继承运行机器偏好", () => {
   assert.deepEqual(THEMES, ["light", "dark"]);
@@ -22,8 +44,14 @@ test("axe 分级只阻塞 critical 与 serious", () => {
 
 test("路由或资源加载失败不能伪装成零违规", () => {
   assert.throws(
-    () => validateRouteResult({ route: "/broken", loadFailed: true, violations: [] }),
-    /route load failed.*\/broken/i,
+    () =>
+      validateRouteResult({
+        route: "/en/broken",
+        locale: "en",
+        loadFailed: true,
+        violations: [],
+      }),
+    /\[en\].*route load failed.*\/en\/broken/i,
   );
 });
 

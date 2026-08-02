@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+import { DEMO_RELATIVE_TIME_LOCALE } from "../../../_components/demo-locale";
 
 import { useMemo, useState } from "react";
 import {
@@ -32,14 +34,14 @@ import { agoDateDays } from "../../_lib/format";
 import { useMockData } from "../../../lib/async";
 
 const envLabel: Record<Environment, string> = {
-  production: "生产",
-  preview: "预览",
+  production: copy("produce"),
+  preview: copy("preview"),
 };
 
 const filterItems = [
-  { value: "all", label: "全部" },
-  { value: "production", label: "生产" },
-  { value: "preview", label: "预览" },
+  { value: "all", label: copy("all") },
+  { value: "production", label: copy("produce2") },
+  { value: "preview", label: copy("preview2") },
 ];
 
 type AddEnvValues = {
@@ -61,13 +63,13 @@ export default function EnvPage() {
   });
   const reg = {
     key: form.register("key", {
-      rules: [{ required: true, message: "请输入变量名" }],
+      rules: [{ required: true, message: copy("pleaseEnterVariableName") }],
     }),
     value: form.register("value", {
-      rules: [{ required: true, message: "请输入变量值" }],
+      rules: [{ required: true, message: copy("pleaseEnterVariableValue") }],
     }),
     targets: form.register("targets", {
-      rules: [{ required: true, message: "至少选择一个环境" }],
+      rules: [{ required: true, message: copy("chooseAtLeastOneEnvironment") }],
     }),
     secret: form.register("secret"),
   };
@@ -81,7 +83,7 @@ export default function EnvPage() {
 
   const handleDelete = (v: EnvVar) => {
     setRemoved((prev) => [...prev, v.id]);
-    toast({ tone: "danger", title: "变量已删除", description: v.key });
+    toast({ tone: "danger", title: copy("variableDeleted"), description: v.key });
   };
 
   const targetValues = (reg.targets.value as string[] | undefined) ?? [];
@@ -89,12 +91,12 @@ export default function EnvPage() {
   const columns: ColumnDef<EnvVar, unknown>[] = [
     {
       id: "key",
-      header: "键",
+      header: copy("key"),
       cell: ({ row }) => <span className="font-mono text-sm">{row.original.key}</span>,
     },
     {
       id: "value",
-      header: "值",
+      header: copy("value"),
       cell: ({ row }) => {
         const v = row.original;
         if (v.secret) {
@@ -104,7 +106,7 @@ export default function EnvPage() {
               readOnly
               size="sm"
               maskStrategy="prefix-suffix"
-              onCopy={() => toast({ tone: "info", title: "已复制" })}
+              onCopy={() => toast({ tone: "info", title: copy("copied") })}
             />
           );
         }
@@ -114,9 +116,9 @@ export default function EnvPage() {
             className="font-mono text-sm text-muted transition-colors hover:text-foreground"
             onClick={() => {
               void navigator.clipboard?.writeText(v.value);
-              toast({ tone: "info", title: "已复制" });
+              toast({ tone: "info", title: copy("copied2") });
             }}
-            aria-label={`复制 ${v.key} 的值`}
+            aria-label={copy("copyTheValueOfValue", v.key)}
           >
             {v.value}
           </button>
@@ -125,7 +127,7 @@ export default function EnvPage() {
     },
     {
       id: "targets",
-      header: "环境",
+      header: copy("environment"),
       cell: ({ row }) => (
         <div className="flex flex-wrap gap-1">
           {row.original.targets.map((t) => (
@@ -138,30 +140,28 @@ export default function EnvPage() {
     },
     {
       id: "updated",
-      header: "更新",
+      header: copy("update"),
       cell: ({ row }) => (
-        <RelativeTime value={agoDateDays(row.original.updatedAgoDays)} className="text-xs text-muted" />
+        <RelativeTime value={agoDateDays(row.original.updatedAgoDays)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
       ),
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       meta: { sticky: "right" },
       cell: ({ row }) => {
         const v = row.original;
         return (
           <div className="flex items-center justify-end">
             <Popconfirm
-              title="删除该变量？"
-              description={`${v.key} 将从所选环境中移除，下次部署生效。`}
-              okText="删除"
-              cancelText="取消"
+              title={copy("deleteThisVariable")}
+              description={copy("valueWillBeRemovedFromTheSelected", v.key)}
+              okText={copy("delete")}
+              cancelText={copy("cancel")}
               danger
               onConfirm={() => handleDelete(v)}
             >
-              <Button variant="ghost" size="sm" tone="danger">
-                删除
-              </Button>
+              <Button variant="ghost" size="sm" tone="danger">{copy("delete2")}</Button>
             </Popconfirm>
           </div>
         );
@@ -173,24 +173,22 @@ export default function EnvPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">环境变量</h1>
-          <p className="text-sm text-muted">为生产与预览环境配置构建期 / 运行期变量，密文值加密存储。</p>
+          <h1 className="text-lg font-semibold">{copy("environmentVariables")}</h1>
+          <p className="text-sm text-muted">{copy("configureBuildRuntimeVariablesForProductionAnd")}</p>
         </div>
         <Button onClick={() => setOpen(true)}>
-          <Plus className="size-4" />
-          新增变量
-        </Button>
+          <Plus className="size-4" />{copy("addNewVariable")}</Button>
       </div>
 
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <span className="text-sm font-medium">变量列表</span>
+          <span className="text-sm font-medium">{copy("variableList")}</span>
           <Segmented
             items={filterItems}
             value={filter}
             onValueChange={setFilter}
             size="sm"
-            aria-label="按环境筛选"
+            aria-label={copy("filterByEnvironment")}
           />
         </CardHeader>
         <CardBody>
@@ -202,18 +200,14 @@ export default function EnvPage() {
             </div>
           ) : rows.length === 0 ? (
             <Empty
-              title={filter === "all" ? "还没有环境变量" : "该环境下没有变量"}
-              description={filter === "all" ? "新增变量后将在下次部署注入构建。" : "切换到「全部」查看其他环境的变量。"}
+              title={filter === "all" ? copy("thereAreNoEnvironmentVariablesYet") : copy("thereAreNoVariablesInThisEnvironment")}
+              description={filter === "all" ? copy("afterAddingTheVariableItWillBe") : copy("switchToAllToViewVariablesFrom")}
             >
               {filter === "all" ? (
                 <Button onClick={() => setOpen(true)}>
-                  <Plus className="size-4" />
-                  新增变量
-                </Button>
+                  <Plus className="size-4" />{copy("addNewVariable2")}</Button>
               ) : (
-                <Button variant="outline" onClick={() => setFilter("all")}>
-                  查看全部
-                </Button>
+                <Button variant="outline" onClick={() => setFilter("all")}>{copy("viewAll")}</Button>
               )}
             </Empty>
           ) : (
@@ -228,11 +222,11 @@ export default function EnvPage() {
       </Card>
 
       <ModalForm
-        title="新增环境变量"
+        title={copy("addEnvironmentVariables")}
         form={form}
         open={open}
         onOpenChange={setOpen}
-        submitText="保存"
+        submitText={copy("save")}
         className="w-[520px]"
         onFinish={(values) => {
           const v = values as AddEnvValues;
@@ -248,10 +242,10 @@ export default function EnvPage() {
           };
           setExtra((prev) => [fresh, ...prev]);
           form.resetFields();
-          toast({ tone: "success", title: "变量已保存", description: `${fresh.key} 将在下次部署生效` });
+          toast({ tone: "success", title: copy("variableSaved"), description: copy("valueWillTakeEffectInTheNext", fresh.key) });
         }}
       >
-        <Field label="变量名" error={reg.key.error} description="如 DATABASE_URL">
+        <Field label={copy("variableName")} error={reg.key.error} description={copy("suchAsDatabaseUrl")}>
           <Input
             value={String(reg.key.value ?? "")}
             onChange={(e) => reg.key.onChange(e.target.value)}
@@ -259,7 +253,7 @@ export default function EnvPage() {
             placeholder="DATABASE_URL"
           />
         </Field>
-        <Field label="变量值" error={reg.value.error}>
+        <Field label={copy("variableValue")} error={reg.value.error}>
           <Input
             value={String(reg.value.value ?? "")}
             onChange={(e) => reg.value.onChange(e.target.value)}
@@ -267,22 +261,22 @@ export default function EnvPage() {
             placeholder="postgres://…"
           />
         </Field>
-        <Field label="环境" error={reg.targets.error} description="变量将注入所选环境">
+        <Field label={copy("environment2")} error={reg.targets.error} description={copy("variablesWillBeInjectedIntoTheSelected")}>
           <CheckboxGroup
             value={targetValues}
             onValueChange={(val) => reg.targets.onChange(val)}
             orientation="horizontal"
-            aria-label="目标环境"
+            aria-label={copy("targetEnvironment")}
           >
-            <Checkbox value="production" label="生产" />
-            <Checkbox value="preview" label="预览" />
+            <Checkbox value="production" label={copy("produce3")} />
+            <Checkbox value="preview" label={copy("preview3")} />
           </CheckboxGroup>
         </Field>
-        <Field label="密文" description="开启后值将被加密，列表中以掩码展示">
+        <Field label={copy("ciphertext")} description={copy("whenTurnedOnTheValueWillBe")}>
           <Switch
             checked={Boolean(reg.secret.value)}
             onCheckedChange={(c) => reg.secret.onChange(c)}
-            aria-label="标记为密文"
+            aria-label={copy("markAsRedacted")}
           />
         </Field>
       </ModalForm>

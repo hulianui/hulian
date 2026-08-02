@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useState } from "react";
 import type { ReactNode } from "react";
 import {
@@ -48,10 +50,10 @@ interface Source {
   statusLabel: string;
 }
 const SOURCES: Source[] = [
-  { id: "s-api", name: "OpenAPI 任务提交", desc: "POST /v1/tasks · 内部业务系统直连", status: "online", statusLabel: "在线" },
-  { id: "s-wecom", name: "企业微信审批流", desc: "审批通过自动建任务", status: "online", statusLabel: "在线" },
-  { id: "s-cron", name: "定时批处理调度", desc: "每日 02:00 离线任务批量入队", status: "degraded", statusLabel: "降级" },
-  { id: "s-mq", name: "Kafka 事件总线", desc: "topic: ai-tasks · 消费滞后告警", status: "offline", statusLabel: "离线" },
+  { id: "s-api", name: copy("openapiTaskSubmission"), desc: copy("postV1TasksDirectConnectionToInternal"), status: "online", statusLabel: copy("online") },
+  { id: "s-wecom", name: copy("wecomApprovalFlow"), desc: copy("approvalIsGrantedAndTheTaskIs"), status: "online", statusLabel: copy("online2") },
+  { id: "s-cron", name: copy("scheduledBatchScheduling"), desc: copy("batchOnboardingForOfflineTasksAtDaily"), status: "degraded", statusLabel: copy("downgrade") },
+  { id: "s-mq", name: copy("kafkaEventBus"), desc: copy("topicAiTasksDelayedConsumptionAlert"), status: "offline", statusLabel: copy("offline") },
 ];
 
 // 角色 → Tag 语义色。
@@ -108,8 +110,8 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     toast({
-      title: "设置已保存",
-      description: "全局调度策略与通知配置已生效（mock）。",
+      title: copy("settingsSaved"),
+      description: copy("globalSchedulingStrategyAndNotificationConfigurationHave"),
       tone: "success",
     });
   };
@@ -117,12 +119,10 @@ export default function SettingsPage() {
   return (
     <div className="flex flex-col gap-5 p-6">
       <PageHeader
-        title="设置"
-        subTitle="任务接入 · 团队成员 · 全局调度策略 · 告警通知"
+        title={copy("setup")}
+        subTitle={copy("taskAccessTeamMembersGlobalSchedulingStrategy")}
         extra={
-          <Button variant="solid" onClick={handleSave}>
-            保存设置
-          </Button>
+          <Button variant="solid" onClick={handleSave}>{copy("saveTheSettings")}</Button>
         }
       />
 
@@ -130,38 +130,32 @@ export default function SettingsPage() {
         {/* —— 接入 —— */}
         <Section
           icon={<Webhook className="size-5" />}
-          title="任务来源接入"
-          description="对接外部系统的 Webhook 凭证与已接来源"
+          title={copy("taskSourceAccessIsProvided")}
+          description={copy("connectsTheExternalSystemSWebhookCredentials")}
         >
           <Field
             label={
               <span className="inline-flex items-center gap-1.5">
-                <KeyRound className="size-3.5 text-muted" />
-                接入密钥 Token
-              </span>
+                <KeyRound className="size-3.5 text-muted" />{copy("accessKeyToken")}</span>
             }
-            description="外部系统调用任务提交 API 时携带此密钥；泄露请立即吊销重置。"
+            description={copy("carryThisKeyWhenExternalSystemsCall")}
           >
             <SecretField
               value={MOCK_TOKEN}
-              onCopy={() => toast({ title: "已复制接入密钥", tone: "neutral" })}
+              onCopy={() => toast({ title: copy("theAccessKeyHasBeenCopied"), tone: "neutral" })}
               actions={
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => toast({ title: "已重新生成密钥", description: "旧密钥即刻失效。", tone: "danger" })}
+                  onClick={() => toast({ title: copy("theKeyHasBeenRegenerated"), description: copy("theOldKeyImmediatelyBecameInvalid"), tone: "danger" })}
                 >
-                  <RefreshCw className="size-3.5" />
-                  重置
-                </Button>
+                  <RefreshCw className="size-3.5" />{copy("reset")}</Button>
               }
             />
           </Field>
 
           <div className="mt-4">
-            <Text size="sm" tone="muted" className="mb-1.5 block">
-              已接来源
-            </Text>
+            <Text size="sm" tone="muted" className="mb-1.5 block">{copy("sourceReceived")}</Text>
             <List
               size="sm"
               bordered
@@ -187,8 +181,8 @@ export default function SettingsPage() {
         {/* —— 团队成员 —— */}
         <Section
           icon={<KeyRound className="size-5" />}
-          title="团队成员"
-          description="调度平台协作成员与角色权限"
+          title={copy("teamMembers")}
+          description={copy("schedulingPlatformCollaborationMembersAndRolePermissions")}
         >
           <List
             size="md"
@@ -206,14 +200,14 @@ export default function SettingsPage() {
                     key="online"
                     status={m.online ? "online" : "offline"}
                     size="md"
-                    label={m.online ? "在线" : "离线"}
+                    label={m.online ? copy("online3") : copy("offline2")}
                   />,
                 ]}
               >
                 <ListItemMeta
                   avatar={<Avatar fallback={m.avatar} />}
                   title={<span className="text-sm font-medium">{m.name}</span>}
-                  description={<span className="text-xs text-muted">成员 ID · {m.id}</span>}
+                  description={<span className="text-xs text-muted">{copy("memberId")}{m.id}</span>}
                 />
               </ListItem>
             )}
@@ -223,11 +217,11 @@ export default function SettingsPage() {
         {/* —— 全局策略 —— */}
         <Section
           icon={<ArrowDownWideNarrow className="size-5" />}
-          title="全局调度策略"
-          description="任务默认值与失败时的降级行为"
+          title={copy("globalSchedulingStrategy")}
+          description={copy("taskDefaultValuesAndDegradationBehaviorUpon")}
         >
           <div className="flex flex-col gap-4">
-            <Field label="默认优先级" description="未显式指定优先级的任务采用此默认值。">
+            <Field label={copy("defaultPriority")} description={copy("tasksWithoutExplicitPriorityAreGivenThis")}>
               <Select
                 items={["P0", "P1", "P2", "P3"].map((p) => ({ value: p, label: p }))}
                 value={defaultPriority}
@@ -244,40 +238,40 @@ export default function SettingsPage() {
               </Select>
             </Field>
 
-            <Field label="全局成本上限（元 / 任务）" description="单任务累计成本超过上限即触发降级 / 暂停。">
+            <Field label={copy("globalCostCapYuanTask")} description={copy("ifTheCumulativeCostOfASingle")}>
               <NumberField
                 value={costCap}
                 onValueChange={setCostCap}
                 min={0}
                 step={0.5}
-                aria-label="全局成本上限"
+                aria-label={copy("globalCostCap")}
               />
             </Field>
 
-            <Field label="默认降级策略" description="执行器失败 / 超载 / 超预算时的兜底动作。">
+            <Field label={copy("defaultDowngradeStrategy")} description={copy("catchAllActionWhenActuatorFailsIs")}>
               <ChoiceboxGroup
                 value={degradePolicy}
                 onValueChange={(v) => setDegradePolicy(v as string)}
                 columns={1}
-                aria-label="默认降级策略"
+                aria-label={copy("defaultDowngradeStrategy2")}
               >
                 <Choicebox
                   value="cheaper"
                   icon={<ArrowDownWideNarrow className="size-5" />}
-                  title="降级到便宜模型"
-                  description="按降级链切换至低成本执行器，保完成不保质量。"
+                  title={copy("downgradedToACheaperModel")}
+                  description={copy("switchToLowCostActuatorsByDowngrade")}
                 />
                 <Choicebox
                   value="retry"
                   icon={<RefreshCw className="size-5" />}
-                  title="原执行器重试"
-                  description="指数退避重试当前执行器，最多 3 次后转人工。"
+                  title={copy("retryTheOriginalActuator")}
+                  description={copy("indexRetreatRetriesTheCurrentActuatorUp")}
                 />
                 <Choicebox
                   value="pause"
                   icon={<PauseCircle className="size-5" />}
-                  title="暂停并告警"
-                  description="挂起任务并通知值班，等待人工介入决策。"
+                  title={copy("pauseAndAlert")}
+                  description={copy("tasksAreSuspendedAndNotifiedOnDuty")}
                 />
               </ChoiceboxGroup>
             </Field>
@@ -287,43 +281,43 @@ export default function SettingsPage() {
         {/* —— 通知 —— */}
         <Section
           icon={<Bell className="size-5" />}
-          title="告警通知"
-          description="告警触达渠道与通知时机"
+          title={copy("alertNotification")}
+          description={copy("alertReachChannelsAndTimingOfNotifications")}
         >
           <div className="flex flex-col gap-4">
-            <Field label="告警渠道" description="SLA 违约 / 失败率 / 队列积压 / 成本超预算时的触达渠道（可多选）。">
+            <Field label={copy("alertChannels")} description={copy("reachChannelsForSlaBreachesFailureRates")}>
               <ChoiceboxGroup
                 multiple
                 value={alertChannels}
                 onValueChange={(v) => setAlertChannels(v as string[])}
                 columns={2}
-                aria-label="告警渠道"
+                aria-label={copy("alertChannels2")}
               >
-                <Choicebox value="wecom" title="企业微信" description="值班群机器人推送" />
-                <Choicebox value="sms" title="短信" description="P0 critical 兜底" />
-                <Choicebox value="email" title="邮件" description="日报 / 周报汇总" />
-                <Choicebox value="webhook" title="Webhook" description="对接 PagerDuty / 飞书" />
+                <Choicebox value="wecom" title={copy("wechatWork")} description={copy("dutyGroupRobotPushes")} />
+                <Choicebox value="sms" title={copy("sms")} description={copy("p0CriticalIsASafetyNet")} />
+                <Choicebox value="email" title={copy("email")} description={copy("dailyWeeklyReportSummary")} />
+                <Choicebox value="webhook" title="Webhook" description={copy("integrationWithPagerdutyFeishu")} />
               </ChoiceboxGroup>
             </Field>
 
-            <Field label="通知时机">
+            <Field label={copy("notifyTheTiming")}>
               <List size="sm" bordered split>
-                <ListItem actions={[<Switch key="t" checked={notifyFiring} onCheckedChange={setNotifyFiring} aria-label="告警触发即通知" />]}>
+                <ListItem actions={[<Switch key="t" checked={notifyFiring} onCheckedChange={setNotifyFiring} aria-label={copy("notificationIsSentImmediatelyWhenAnAlarm")} />]}>
                   <ListItemMeta
-                    title={<span className="text-[13px] font-medium">告警触发即通知</span>}
-                    description={<span className="text-[11px] text-muted">规则命中阈值的瞬间实时推送。</span>}
+                    title={<span className="text-[13px] font-medium">{copy("notificationIsSentImmediatelyWhenAnAlarm2")}</span>}
+                    description={<span className="text-[11px] text-muted">{copy("realTimePushNotificationsAtTheInstant")}</span>}
                   />
                 </ListItem>
-                <ListItem actions={[<Switch key="r" checked={notifyResolved} onCheckedChange={setNotifyResolved} aria-label="告警恢复通知" />]}>
+                <ListItem actions={[<Switch key="r" checked={notifyResolved} onCheckedChange={setNotifyResolved} aria-label={copy("alertAndRestorationNotification")} />]}>
                   <ListItemMeta
-                    title={<span className="text-[13px] font-medium">告警恢复通知</span>}
-                    description={<span className="text-[11px] text-muted">指标回落至阈值内时推送恢复消息。</span>}
+                    title={<span className="text-[13px] font-medium">{copy("alertAndRestorationNotification2")}</span>}
+                    description={<span className="text-[11px] text-muted">{copy("whenTheIndicatorFallsBackToThe")}</span>}
                   />
                 </ListItem>
-                <ListItem actions={[<Switch key="d" checked={notifyDigest} onCheckedChange={setNotifyDigest} aria-label="每日汇总摘要" />]}>
+                <ListItem actions={[<Switch key="d" checked={notifyDigest} onCheckedChange={setNotifyDigest} aria-label={copy("dailySummarySummary")} />]}>
                   <ListItemMeta
-                    title={<span className="text-[13px] font-medium">每日汇总摘要</span>}
-                    description={<span className="text-[11px] text-muted">每日 09:00 汇总昨日 SLA / 成本 / 失败概览。</span>}
+                    title={<span className="text-[13px] font-medium">{copy("dailySummarySummary2")}</span>}
+                    description={<span className="text-[11px] text-muted">{copy("dailySummaryOfYesterdaySSlaCosts")}</span>}
                   />
                 </ListItem>
               </List>

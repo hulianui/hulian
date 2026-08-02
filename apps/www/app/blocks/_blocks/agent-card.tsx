@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 智能体卡片网格 Block —— 自包含、可整段复制。
@@ -17,7 +18,7 @@ import {
   Tag,
   Text,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 import { Bot, Cpu } from "lucide-react";
 
 // ── mock 数据 ──────────────────────────────────────────────────

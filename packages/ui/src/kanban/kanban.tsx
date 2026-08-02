@@ -12,10 +12,16 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "../lib/cn";
 import { hasInteractiveAncestorWithin } from "../lib/drag-guard";
+import { useComponentLocale } from "../config/locale-context";
 import type { KanbanColumn, KanbanMoveEvent, KanbanProps } from "./kanban.types";
 
 // 看板（"use client"·@dnd-kit headless 多容器 + 瑚琏皮肤）：
@@ -38,7 +44,10 @@ const COL_PREFIX = "kbcol:";
  *   于是每次按下都被判成「按在交互元素上」，整卡拖拽全部失效。
  *   省略只为兼容旧签名，行为退化成有此缺陷的老版本。
  */
-export function isInteractiveDragTarget(target: EventTarget | null, card?: Element | null): boolean {
+export function isInteractiveDragTarget(
+  target: EventTarget | null,
+  card?: Element | null,
+): boolean {
   return hasInteractiveAncestorWithin(target, card ?? null);
 }
 
@@ -67,7 +76,9 @@ export function resolveKanbanMove<T>(
   if (!columns.some((c) => c.id === toColumn)) return null;
 
   // 目标列卡片（剔除被拖卡片后，保持数组原序）
-  const targetIds = items.filter((i) => getColumnId(i) === toColumn && getId(i) !== activeId).map(getId);
+  const targetIds = items
+    .filter((i) => getColumnId(i) === toColumn && getId(i) !== activeId)
+    .map(getId);
   let toIndex = targetIds.length; // 落到列空白/列尾 → 追加
   if (!overId.startsWith(COL_PREFIX)) {
     const idx = targetIds.indexOf(overId);
@@ -85,7 +96,9 @@ function KanbanCard<T>({
   item: T;
   renderItem: KanbanProps<T>["renderItem"];
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
   const style = { transform: CSS.Translate.toString(transform), transition };
   // 放行交互子元素：pointerdown 落在链接/按钮等上时不进 dnd 传感器，clicks/输入正常工作。
   const guardedListeners = listeners && {
@@ -120,6 +133,7 @@ function KanbanColumnView<T>({
   renderItem,
   renderColumnHeader,
   columnClassName,
+  emptyColumnLabel,
 }: {
   column: KanbanColumn;
   items: T[];
@@ -127,6 +141,7 @@ function KanbanColumnView<T>({
   renderItem: KanbanProps<T>["renderItem"];
   renderColumnHeader?: KanbanProps<T>["renderColumnHeader"];
   columnClassName?: string;
+  emptyColumnLabel: string;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: `${COL_PREFIX}${column.id}` });
   const ids = items.map(getId);
@@ -138,7 +153,9 @@ function KanbanColumnView<T>({
         columnClassName,
       )}
     >
-      <header className="px-3 pt-3">{renderColumnHeader ? renderColumnHeader(column, items) : (column.header ?? column.title)}</header>
+      <header className="px-3 pt-3">
+        {renderColumnHeader ? renderColumnHeader(column, items) : column.header ?? column.title}
+      </header>
       <SortableContext items={ids} strategy={verticalListSortingStrategy}>
         <ul
           ref={setNodeRef}
@@ -150,7 +167,7 @@ function KanbanColumnView<T>({
         >
           {items.length === 0 ? (
             <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-6 text-xs text-muted">
-              拖拽卡片到此
+              {emptyColumnLabel}
             </li>
           ) : (
             items.map((item) => (
@@ -175,6 +192,7 @@ export function Kanban<T>({
   className,
   columnClassName,
 }: KanbanProps<T>) {
+  const emptyColumnLabel = useComponentLocale().kanban?.emptyColumn ?? "拖拽卡片到此";
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -199,7 +217,14 @@ export function Kanban<T>({
   }
   function handleDragEnd(e: DragEndEvent) {
     setActiveId(null);
-    const move = resolveKanbanMove(String(e.active.id), e.over ? String(e.over.id) : null, columns, items, getId, getColumnId);
+    const move = resolveKanbanMove(
+      String(e.active.id),
+      e.over ? String(e.over.id) : null,
+      columns,
+      items,
+      getId,
+      getColumnId,
+    );
     if (move) onMove(move);
   }
 
@@ -222,10 +247,15 @@ export function Kanban<T>({
             renderItem={renderItem}
             renderColumnHeader={renderColumnHeader}
             columnClassName={columnClassName}
+            emptyColumnLabel={emptyColumnLabel}
           />
         ))}
       </div>
-      <DragOverlay>{activeItem ? <div className="cursor-grabbing">{renderItem(activeItem, { dragging: true })}</div> : null}</DragOverlay>
+      <DragOverlay>
+        {activeItem ? (
+          <div className="cursor-grabbing">{renderItem(activeItem, { dragging: true })}</div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }

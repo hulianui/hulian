@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./task-detail-frames.content";
+
 // 任务详情右栏：执行过程帧回放。
 // 按 RunFrame.kind 分发到 @hulianui/ui 的 AI 过程帧组件：
 //   thinking → ThinkingBlock、tool → ToolCall、stream → StreamingText、event → 事件行。
@@ -15,9 +17,7 @@ export function TaskDetailFrames({ frames }: { frames: RunFrame[] }) {
   if (frames.length === 0) {
     return (
       <div className="grid h-40 place-items-center rounded-[var(--radius)] border border-dashed border-border">
-        <Text size="sm" tone="muted">
-          点击「运行」回放该任务的多 agent 编排过程
-        </Text>
+        <Text size="sm" tone="muted">{copy("clickRunToReplayTheMultiAgent")}</Text>
       </div>
     );
   }
@@ -28,7 +28,7 @@ export function TaskDetailFrames({ frames }: { frames: RunFrame[] }) {
         if (f.kind === "thinking") {
           return (
             <li key={key}>
-              <ThinkingBlock title="推理" duration={`${(f.at / 1000).toFixed(1)}s`} defaultOpen>
+              <ThinkingBlock title={copy("reasoning")} duration={`${(f.at / 1000).toFixed(1)}s`} defaultOpen>
                 <Text size="sm" tone="muted">
                   {f.text}
                 </Text>

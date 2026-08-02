@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
 import { NumberTicker } from "../number-ticker";
 import type { LivePlayerProps } from "./live-player.types";
+import { useComponentLocale } from "../config/locale-context";
 
 export function LivePlayer({
   src,
@@ -21,10 +22,11 @@ export function LivePlayer({
   aspectRatio,
   className,
 }: LivePlayerProps) {
+  const labels = useComponentLocale().livePlayer ?? { follow: "+ 关注", followed: "已关注" };
   const [menuOpen, setMenuOpen] = useState(false);
   // aspectRatio="fill" → 不锁比例，铺满父容器（沉浸式竖屏直播间用）。
   const fill = aspectRatio === "fill";
-  const ratio = fill ? undefined : (aspectRatio ?? (orientation === "portrait" ? "9/16" : "16/9"));
+  const ratio = fill ? undefined : aspectRatio ?? (orientation === "portrait" ? "9/16" : "16/9");
 
   return (
     <div
@@ -67,14 +69,16 @@ export function LivePlayer({
               </div>
               {host.onFollow &&
                 (host.followed ? (
-                  <span className="ml-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-white/80">已关注</span>
+                  <span className="ml-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-white/80">
+                    {labels.followed}
+                  </span>
                 ) : (
                   <button
                     type="button"
                     onClick={host.onFollow}
                     className="ml-1 rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-medium text-primary-foreground transition hover:bg-primary-hover"
                   >
-                    + 关注
+                    {labels.follow}
                   </button>
                 ))}
             </div>
@@ -92,7 +96,11 @@ export function LivePlayer({
             )}
             {viewers != null && (
               <span className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[11px] leading-none backdrop-blur-sm">
-                <svg viewBox="0 0 24 24" className="size-3 fill-none stroke-current" strokeWidth={2}>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-3 fill-none stroke-current"
+                  strokeWidth={2}
+                >
                   <path d="M12 5c-5 0-9 5-9 7s4 7 9 7 9-5 9-7-4-7-9-7Z" />
                   <circle cx="12" cy="12" r="2.5" />
                 </svg>

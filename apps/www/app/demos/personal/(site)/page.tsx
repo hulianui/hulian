@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 
 import {
   Anchor,
@@ -19,22 +20,22 @@ import { Contact } from "../_components/sections/contact";
 
 // 右侧 scrollspy 目录（走 window 滚动，不传 getContainer）。
 const anchorItems: AnchorItem[] = [
-  { href: "#hero", title: "首页" },
-  { href: "#about", title: "关于" },
-  { href: "#stack", title: "技能" },
-  { href: "#work", title: "作品" },
-  { href: "#journey", title: "历程" },
-  { href: "#contact", title: "联系" },
+  { href: "#hero", title: copy("home") },
+  { href: "#about", title: copy("about") },
+  { href: "#stack", title: copy("skills") },
+  { href: "#work", title: copy("work") },
+  { href: "#journey", title: copy("journey") },
+  { href: "#contact", title: copy("contact") },
 ];
 
 // 底部 Dock 的快捷锚点。
 const dockLinks = [
-  { href: "#hero", label: "首页", icon: Home },
-  { href: "#about", label: "关于", icon: User },
-  { href: "#stack", label: "技能", icon: Cpu },
-  { href: "#work", label: "作品", icon: Package },
-  { href: "#journey", label: "历程", icon: Rocket },
-  { href: "#contact", label: "联系", icon: Mail },
+  { href: "#hero", label: copy("home"), icon: Home },
+  { href: "#about", label: copy("about"), icon: User },
+  { href: "#stack", label: copy("skills"), icon: Cpu },
+  { href: "#work", label: copy("work"), icon: Package },
+  { href: "#journey", label: copy("journey"), icon: Rocket },
+  { href: "#contact", label: copy("contact"), icon: Mail },
 ];
 
 export default function PersonalHomePage() {
@@ -51,7 +52,7 @@ export default function PersonalHomePage() {
       {/* 右侧 sticky 锚点导航（超宽屏才显，避免遮挡内容） */}
       <aside
         className="fixed right-6 top-1/2 z-30 hidden -translate-y-1/2 xl:block"
-        aria-label="章节导航"
+        aria-label={copy("sectionNavigation")}
       >
         <div className="rounded-[var(--radius)] border border-border/60 bg-surface/70 px-3 py-3 backdrop-blur-md">
           <Anchor items={anchorItems} offsetTop={80} className="w-28" />
@@ -89,14 +90,14 @@ export default function PersonalHomePage() {
                 render={
                   <a
                     href="#hero"
-                    aria-label="回到顶部"
+                    aria-label={copy("backToTop")}
                     className="flex size-full items-center justify-center text-primary transition-colors hover:text-primary-hover"
                   >
                     <ArrowUp className="size-5" aria-hidden />
                   </a>
                 }
               />
-              <TooltipContent>回到顶部</TooltipContent>
+              <TooltipContent>{copy("backToTop")}</TooltipContent>
             </Tooltip>
           </DockIcon>
         </Dock>

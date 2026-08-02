@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 详情抽屉区块 —— 按钮触发右滑 Drawer，展示单条记录的

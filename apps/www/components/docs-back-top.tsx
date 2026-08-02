@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { BackTop } from "@hulianui/ui";
+import { useIntlayer } from "next-intlayer";
 
 // dogfood：文档站的滚动体**按断点变**，回顶钮必须跟着换目标，否则移动端永远不出现。
 //   - md+：外壳定高，<main data-layout-content> 自己滚 → target 指向它。
@@ -9,6 +10,7 @@ import { BackTop } from "@hulianui/ui";
 // target 是 function prop，不能跨 RSC 边界传，这层客户端包装承接；
 // 断点变化时返回新的 target 引用，BackTop 的 effect 依赖 getTarget 会重新订阅滚动。
 export function DocsBackTop() {
+  const content = useIntlayer("shared-chrome");
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -25,5 +27,5 @@ export function DocsBackTop() {
     [isDesktop],
   );
 
-  return <BackTop target={target} visibilityHeight={300} />;
+  return <BackTop target={target} visibilityHeight={300} aria-label={content.backToTop} />;
 }

@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BackTop } from "./back-top";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -21,6 +23,16 @@ describe("BackTop", () => {
     const btn = getBtn(container);
     expect(btn).not.toBeNull();
     expect(btn.querySelector("svg")).not.toBeNull();
+  });
+
+  it("支持本地化 aria-label", () => {
+    const { container } = render(<BackTop aria-label="Back to top" />);
+    expect(container.querySelector('button[aria-label="Back to top"]')).not.toBeNull();
+  });
+
+  it("默认标签跟随 ConfigProvider", () => {
+    const { container } = render(<ConfigProvider locale={enUS}><BackTop /></ConfigProvider>);
+    expect(container.querySelector('button[aria-label="Back to top"]')).not.toBeNull();
   });
 
   it("初始未超阈值时隐藏（aria-hidden + opacity-0 + tabIndex -1）", () => {
@@ -47,7 +59,9 @@ describe("BackTop", () => {
     const scrollTo = vi.fn();
     box.scrollTo = scrollTo as unknown as typeof box.scrollTo;
     const onClick = vi.fn();
-    const { container } = render(<BackTop target={() => box} visibilityHeight={50} onClick={onClick} />);
+    const { container } = render(
+      <BackTop target={() => box} visibilityHeight={50} onClick={onClick} />,
+    );
     Object.defineProperty(box, "scrollTop", { value: 300, configurable: true });
     fireEvent.scroll(box);
     fireEvent.click(getBtn(container));

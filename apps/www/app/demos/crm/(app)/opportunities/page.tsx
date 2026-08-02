@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -19,7 +21,7 @@ import {
   toast,
 } from "@hulianui/ui";
 import { opportunities as seed } from "../../_data/opportunities";
-import { yuan } from "../../_data/status";
+import { customerOwnerLabel, oppStageLabel, yuan } from "../../_data/status";
 import { OPP_STAGES, OWNERS, type Opportunity, type OppStage } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
 
@@ -40,8 +42,7 @@ function winRateTone(o: Opportunity): "neutral" | "success" | "danger" {
   return "neutral";
 }
 
-const COLUMNS: KanbanColumn[] = OPP_STAGES.map((s) => ({ id: s, title: s }));
-
+const COLUMNS: KanbanColumn[] = OPP_STAGES.map((s) => ({ id: s, title: oppStageLabel[s] }));
 /** 把拖拽事件落到受控数组：改 stage + 按 toIndex 插回目标列（anchor 取自当前可见视图，与 Kanban 看到的列表一致）。 */
 function applyMove(all: Opportunity[], view: Opportunity[], e: KanbanMoveEvent): Opportunity[] {
   const moving = all.find((o) => o.id === e.id);
@@ -72,17 +73,16 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
         {/* 金额为主、赢率为辅——赢率只用带语义色的小标签表达一次，不再叠一条进度条重复画同一数据 */}
         <div className="flex items-center justify-between gap-2">
           <span className="text-base font-semibold tabular-nums">{yuan(o.amount)}</span>
-          <Tag tone={winRateTone(o)} size="sm">
-            赢率 {o.probability}%
+          <Tag tone={winRateTone(o)} size="sm">{copy("winRate")}{o.probability}%
           </Tag>
         </div>
 
         <div className="flex items-center justify-between text-xs text-muted">
           <span className="inline-flex items-center gap-1.5">
             <span className="grid size-5 place-items-center rounded-full bg-surface-hover text-[10px] font-medium text-foreground">
-              {o.owner.slice(0, 1)}
+              {customerOwnerLabel[o.owner].slice(0, 1)}
             </span>
-            {o.owner}
+            {customerOwnerLabel[o.owner]}
           </span>
           <span className="tabular-nums">{o.expectedCloseAt}</span>
         </div>
@@ -109,7 +109,7 @@ export default function OpportunitiesPage() {
   const handleMove = (e: KanbanMoveEvent) => {
     if (e.fromColumn !== e.toColumn) {
       const o = opps.find((x) => x.id === e.id);
-      if (o) toast({ title: "已移动商机", description: `${o.title} → ${e.toColumn}` });
+      if (o) toast({ title: copy("opportunityMoved"), description: `${o.title} → ${oppStageLabel[e.toColumn as OppStage]}` });
     }
     setOpps((prev) => applyMove(prev, view, e));
   };
@@ -118,25 +118,21 @@ export default function OpportunitiesPage() {
     <div className="flex h-full flex-col gap-5">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <Heading level={2} size="xl">
-            商机看板
-          </Heading>
-          <Text tone="muted" size="sm" className="mt-1">
-            共 {opps.length} 个商机 · 进行中金额 {yuan(activeTotal)} · 拖拽卡片跨列移动阶段（亦支持键盘：聚焦后空格抓起·方向键移动）
-          </Text>
+          <Heading level={2} size="xl">{copy("businessOpportunityBoard")}</Heading>
+          <Text tone="muted" size="sm" className="mt-1">{copy("boardSummary", opps.length, yuan(activeTotal))}</Text>
         </div>
         <div className="w-44">
           <Select
-            items={[{ value: "", label: "全部负责人" }, ...OWNERS.map((o) => ({ value: o, label: o }))]}
+            items={[{ value: "", label: copy("allPersonsInCharge") }, ...OWNERS.map((o) => ({ value: o, label: customerOwnerLabel[o] }))]}
             value={owner}
             onValueChange={(v) => setOwner((v as string) ?? "")}
           >
             <SelectTrigger size="sm" />
             <SelectContent>
-              <SelectItem value="">全部负责人</SelectItem>
+              <SelectItem value="">{copy("allPersonsInCharge2")}</SelectItem>
               {OWNERS.map((o) => (
                 <SelectItem key={o} value={o}>
-                  {o}
+                  {customerOwnerLabel[o]}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -145,7 +141,7 @@ export default function OpportunitiesPage() {
       </header>
 
       <div className="min-h-0 flex-1">
-        <Spin spinning={loading} tip="加载商机中…" className="h-full">
+        <Spin spinning={loading} tip={copy("loadingOpportunities")} className="h-full">
         <Kanban<Opportunity>
           columns={COLUMNS}
           items={view}

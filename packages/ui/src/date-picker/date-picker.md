@@ -54,6 +54,13 @@ import { DatePicker } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
 
+## 国际化
+
+未显式传 `placeholder` 时，日期、月份、年份占位文本以及清除按钮文案跟随最近的
+`ConfigProvider locale`；`enUS` 分别显示 “Select date / month / year”。显式
+`placeholder` 始终优先。为兼容旧自定义 Locale，`components.datePicker` 缺失，或只含旧版
+`clear` 字段时，缺少的占位文本仍回退到原有中文。
+
 ## 示例
 ```tsx
 // 基础：值是 ISO 日期串

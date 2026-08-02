@@ -5,6 +5,9 @@
 // AuroraText 本质是文字 → 归排版；ShimmerButton 本质是按钮 → 归表单；想"搞点炫的"用 animated 过滤。
 // 只有没有功能本体、纯装饰的（光束/背景/放大镜）才进 decoration。
 
+import { componentCategoryMetaEn, componentMetaEn } from "../i18n/component-meta.en";
+import { DOCS_LOCALE } from "./docs-locale";
+
 export type CategoryKey =
   | "layout"
   | "typography"
@@ -40,6 +43,15 @@ export interface ComponentMeta {
   group: string;
   tags?: ComponentTag[];
   status: "stable" | "new";
+}
+
+export interface LocalizedComponentDisplayMeta {
+  shortName: string;
+  description: string;
+  categoryLabel: string;
+  groupLabel: string;
+  tags: string[];
+  keywords: string[];
 }
 
 export const CATEGORIES: Category[] = [
@@ -533,3 +545,36 @@ export const manifest: ComponentMeta[] = [
   { slug: "side-rays", name: "SideRays", description: "侧光束 · 从屏幕一角发散的动态侧光束 WebGL 背景 · 双束角度正弦摆动+平方反比衰减+饱和度/混色调节(ogl·token 双色·reduced-motion 静态兜底)", category: "decoration", group: "backdrop", tags: ["animated", "webgl"], status: "new" },
   { slug: "soft-aurora", name: "SoftAurora", description: "柔和极光 · WebGL 柔和极光背景 · 3D Perlin 噪声 + cosine 渐变双层叠加 · 鼠标视差(ogl·token 着色·reduced-motion 降级)", category: "decoration", group: "backdrop", tags: ["animated", "webgl"], status: "new" },
 ];
+
+const componentShortNameZh = (description: string) => description.split(" · ")[0].trim();
+
+/** Localized display/search overlay. Stable component identifiers stay in {@link manifest}. */
+export function componentMeta(item: ComponentMeta): LocalizedComponentDisplayMeta {
+  const category = CATEGORIES.find((candidate) => candidate.key === item.category);
+  const group = category?.groups.find((candidate) => candidate.key === item.group);
+  if (DOCS_LOCALE === "en") {
+    const localized = componentMetaEn[item.slug];
+    const localizedCategory = componentCategoryMetaEn[item.category];
+    return {
+      ...localized,
+      categoryLabel: localizedCategory.label,
+      groupLabel: localizedCategory.groups[item.group].label,
+      tags: item.tags ?? [],
+      keywords: [
+        ...localized.keywords,
+        componentShortNameZh(item.description),
+        item.description,
+        category?.label ?? "",
+        group?.label ?? "",
+      ].filter(Boolean),
+    };
+  }
+  return {
+    shortName: componentShortNameZh(item.description),
+    description: item.description,
+    categoryLabel: category?.label ?? item.category,
+    groupLabel: group?.label ?? "",
+    tags: item.tags ?? [],
+    keywords: [],
+  };
+}

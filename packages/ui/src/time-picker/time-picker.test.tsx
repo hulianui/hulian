@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { TimePicker } from "./time-picker";
 
 const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择时间" }));
@@ -46,7 +47,12 @@ describe("TimePicker", () => {
   it("withSeconds 时值形状带秒", () => {
     const onValueChange = vi.fn();
     render(
-      <TimePicker withSeconds defaultValue="09:30:15" onValueChange={onValueChange} aria-label="选择时间" />,
+      <TimePicker
+        withSeconds
+        defaultValue="09:30:15"
+        onValueChange={onValueChange}
+        aria-label="选择时间"
+      />,
     );
     openPanel();
     fireEvent.click(screen.getByRole("option", { name: "秒 42" }));
@@ -61,11 +67,19 @@ describe("TimePicker", () => {
   });
 
   it("minTime/maxTime 逐列灰掉不可达值", () => {
-    render(<TimePicker minTime="09:30" maxTime="18:00" defaultValue="10:00" aria-label="选择时间" />);
+    render(
+      <TimePicker minTime="09:30" maxTime="18:00" defaultValue="10:00" aria-label="选择时间" />,
+    );
     openPanel();
-    expect((screen.getByRole("option", { name: "时 08" }) as HTMLButtonElement).disabled).toBe(true);
-    expect((screen.getByRole("option", { name: "时 09" }) as HTMLButtonElement).disabled).toBe(false);
-    expect((screen.getByRole("option", { name: "时 19" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("option", { name: "时 08" }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
+    expect((screen.getByRole("option", { name: "时 09" }) as HTMLButtonElement).disabled).toBe(
+      false,
+    );
+    expect((screen.getByRole("option", { name: "时 19" }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
   });
 
   it("未选过 + 有 minTime：基准落在夹紧后的时刻，分钟列立刻可用", () => {
@@ -73,7 +87,9 @@ describe("TimePicker", () => {
     render(<TimePicker minTime="09:30" onValueChange={onValueChange} aria-label="选择时间" />);
     openPanel();
     // 隐含基准 = clamp(00:00, min=09:30) = 09:30，所以「分 45」可点且落在 9 点
-    expect((screen.getByRole("option", { name: "分 45" }) as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByRole("option", { name: "分 45" }) as HTMLButtonElement).disabled).toBe(
+      false,
+    );
     fireEvent.click(screen.getByRole("option", { name: "分 45" }));
     expect(onValueChange).toHaveBeenCalledWith("09:45");
   });
@@ -81,7 +97,9 @@ describe("TimePicker", () => {
   it("未选过 + 有 minTime：仍禁掉基准小时内早于下界的分钟", () => {
     render(<TimePicker minTime="09:30" aria-label="选择时间" />);
     openPanel();
-    expect((screen.getByRole("option", { name: "分 29" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("option", { name: "分 29" }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
   });
 
   it("清除按钮回传 null", () => {
@@ -93,7 +111,14 @@ describe("TimePicker", () => {
 
   it("readOnly 选不动", () => {
     const onValueChange = vi.fn();
-    render(<TimePicker defaultValue="09:30" readOnly onValueChange={onValueChange} aria-label="选择时间" />);
+    render(
+      <TimePicker
+        defaultValue="09:30"
+        readOnly
+        onValueChange={onValueChange}
+        aria-label="选择时间"
+      />,
+    );
     openPanel();
     fireEvent.click(screen.getByRole("option", { name: "时 14" }));
     expect(onValueChange).not.toHaveBeenCalled();
@@ -108,7 +133,25 @@ describe("TimePicker", () => {
   it("当前值所在项标 aria-selected", () => {
     render(<TimePicker defaultValue="09:30" aria-label="选择时间" />);
     openPanel();
-    expect(screen.getByRole("option", { name: "时 09" }).getAttribute("aria-selected")).toBe("true");
-    expect(screen.getByRole("option", { name: "分 30" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByRole("option", { name: "时 09" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+    expect(screen.getByRole("option", { name: "分 30" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+  });
+
+  it("ConfigProvider locale=enUS localizes the full picker chrome", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <TimePicker defaultValue="09:30" />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "09:30" }));
+    expect(screen.getByRole("listbox", { name: "Hour" })).toBeTruthy();
+    expect(screen.getByRole("listbox", { name: "Minute" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Now" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Confirm" })).toBeTruthy();
   });
 });

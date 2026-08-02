@@ -1,6 +1,8 @@
 "use client";
 import { useMemo, useState, type MouseEvent } from "react";
 import { ChevronRight, Folder, File } from "../_icons";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { filterFileTree } from "./file-tree-core";
 import type { FileNode, FileStatus, FileTreeProps } from "./file-tree.types";
@@ -52,7 +54,17 @@ interface RowProps {
   visible: Set<string> | null;
 }
 
-function Row({ node, depth, path, selectedPath, expandedSet, toggle, onSelect, onContextMenu, visible }: RowProps) {
+function Row({
+  node,
+  depth,
+  path,
+  selectedPath,
+  expandedSet,
+  toggle,
+  onSelect,
+  onContextMenu,
+  visible,
+}: RowProps) {
   if (visible && !visible.has(path)) return null;
   const isFolder = node.type === "folder";
   const open = isFolder && expandedSet.has(path);
@@ -120,8 +132,10 @@ export function FileTree({
   defaultExpandedPaths,
   onExpandedChange,
   searchable,
-  searchPlaceholder = "搜索文件",
+  searchPlaceholder,
 }: FileTreeProps) {
+  const copy = useComponentLocale().fileTree ?? { search: "搜索文件" };
+  const resolvedSearchPlaceholder = searchPlaceholder ?? copy.search;
   const [query, setQuery] = useState("");
 
   // 向后兼容初值：各 folder defaultExpanded 收集的 path ∪ defaultExpandedPaths。
@@ -141,7 +155,10 @@ export function FileTree({
   );
 
   // 搜索激活：可见集 = 命中 path + 其所有祖先；展开集 = 用户展开 ∪ 自动展开。
-  const { visible, expandedSet } = useMemo<{ visible: Set<string> | null; expandedSet: Set<string> }>(() => {
+  const { visible, expandedSet } = useMemo<{
+    visible: Set<string> | null;
+    expandedSet: Set<string>;
+  }>(() => {
     if (!search || query.trim() === "") return { visible: null, expandedSet: userExpanded };
     const vis = new Set<string>();
     for (const p of search.matchedPaths) {
@@ -171,8 +188,8 @@ export function FileTree({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={searchPlaceholder}
-          aria-label={searchPlaceholder}
+          placeholder={resolvedSearchPlaceholder}
+          aria-label={resolvedSearchPlaceholder}
           className="w-full rounded-[var(--radius)] border border-border bg-surface px-2.5 py-1.5 text-sm outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         />
       )}

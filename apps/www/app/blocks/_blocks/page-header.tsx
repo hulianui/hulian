@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 // 中后台页头区块 —— 面包屑 + 大标题 + 副标题 + 右侧操作区（主按钮 + 次按钮 + 状态 Tag）。
 // 复制后改：breadcrumbs 路径、title/description 文案、操作按钮 onClick。
 // 可选 tag：传 null 则不显示过滤标签；leftActions 槽位可放搜索、筛选等扩展元素。

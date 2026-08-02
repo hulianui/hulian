@@ -1,11 +1,12 @@
+import { copy } from "./keys.content";
 import type { ApiKey } from "./types";
 
 export const apiKeys: ApiKey[] = [
   {
     id: "k1",
-    name: "生产环境 · 主服务",
+    name: copy("productionEnvironmentMainService"),
     secret: "sk-hanhub-7f3a9c2e1b8d4056af12cd34ef56ab78",
-    group: "生产",
+    group: copy("produce"),
     status: "active",
     usedUsd: 842.16,
     limitUsd: 2000,
@@ -16,9 +17,9 @@ export const apiKeys: ApiKey[] = [
   },
   {
     id: "k2",
-    name: "数据看板 · 只读分析",
+    name: copy("dataDashboardReadOnlyAnalysis"),
     secret: "sk-hanhub-a1b2c3d4e5f6708192a3b4c5d6e7f801",
-    group: "生产",
+    group: copy("produce2"),
     status: "active",
     usedUsd: 128.4,
     limitUsd: 500,
@@ -29,9 +30,9 @@ export const apiKeys: ApiKey[] = [
   },
   {
     id: "k3",
-    name: "移动端 App",
+    name: copy("mobileApp"),
     secret: "sk-hanhub-99887766554433221100ffeeddccbbaa",
-    group: "客户端",
+    group: copy("client"),
     status: "active",
     usedUsd: 356.92,
     limitUsd: 1000,
@@ -42,9 +43,9 @@ export const apiKeys: ApiKey[] = [
   },
   {
     id: "k4",
-    name: "实验 · Playground",
+    name: copy("experimentPlayground"),
     secret: "sk-hanhub-0a1b2c3d4e5f60718293a4b5c6d7e8f9",
-    group: "测试",
+    group: copy("test"),
     status: "active",
     usedUsd: 12.08,
     limitUsd: 50,
@@ -55,9 +56,9 @@ export const apiKeys: ApiKey[] = [
   },
   {
     id: "k5",
-    name: "旧版集成（已停用）",
+    name: copy("legacyIntegrationDiscontinued"),
     secret: "sk-hanhub-deadbeef0123456789abcdef00112233",
-    group: "归档",
+    group: copy("archive"),
     status: "disabled",
     usedUsd: 0,
     limitUsd: 100,
@@ -68,4 +69,4 @@ export const apiKeys: ApiKey[] = [
   },
 ];
 
-export const keyGroups = ["生产", "客户端", "测试", "归档"];
+export const keyGroups = [copy("produce3"), copy("client2"), copy("test2"), copy("archive2")];

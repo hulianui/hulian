@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./pricing-table.content";
 
 import { useState } from "react";
 import { Segmented, Tag, Stack } from "@hulianui/ui";
@@ -12,15 +13,17 @@ export function PricingTable() {
       <Stack direction="row" justify="center" className="mb-10">
         <Segmented
           items={[
-            { value: "monthly", label: "按月付费" },
+            { value: "monthly", label: copy("payMonthly") },
             {
               value: "yearly",
-              ariaLabel: "按年付费，立省 2 个月",
+              ariaLabel: copy("payAnnuallyAndSave2Months"),
               label: (
                 <>
-                  按年付费
+
+                  {copy("payAnnually")}
                   <Tag variant="soft" tone="success" size="sm">
-                    省 2 个月
+
+                    {copy("save2Months")}
                   </Tag>
                 </>
               ),

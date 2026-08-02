@@ -3,6 +3,8 @@ import { render } from "@testing-library/react";
 import { CountrySelect } from "./country-select";
 import { flagEmoji, filterCountries, getCountry, countrySearchText } from "./country-select.logic";
 import { countries } from "./countries.data";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("countries 数据完整性", () => {
   it("约 250 国，code 唯一", () => {
@@ -52,5 +54,20 @@ describe("CountrySelect 组件", () => {
     const { container } = render(<CountrySelect multiple defaultValue={["CN", "US"]} />);
     expect(container.textContent).toContain("中国");
     expect(container.textContent).toContain("美国");
+  });
+
+  it("enUS 下单选和多选回显英文国家名且无中文", () => {
+    const { container, getAllByLabelText, queryByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <CountrySelect defaultValue="CN" />
+        <CountrySelect multiple defaultValue={["CN", "US", "JP"]} />
+      </ConfigProvider>,
+    );
+    expect(container.textContent).toContain("China");
+    expect(container.textContent).toContain("United States");
+    expect(container.textContent).toContain("Japan");
+    expect(getAllByLabelText("Remove")).toHaveLength(3);
+    expect(queryByLabelText("移除")).toBeNull();
+    expect(container.textContent).not.toMatch(/[\u3400-\u9fff]/u);
   });
 });

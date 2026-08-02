@@ -1,6 +1,8 @@
 "use client";
 import { Avatar } from "../avatar/avatar";
 import { ChevronRight, Ellipsis } from "../_icons";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ServiceMessageField, ServiceMessageProps } from "./service-message.types";
 
@@ -25,16 +27,22 @@ export function ServiceMessage({
   onMore,
   title,
   fields,
-  footer = "进入小程序查看",
+  footer,
   action,
   onAction,
   className,
   children,
   ...props
 }: ServiceMessageProps) {
+  const locale = useComponentLocale().serviceMessage ?? {
+    footer: "进入小程序查看",
+    action: "小程序",
+    more: "更多",
+  };
+  const resolvedFooter = footer === undefined ? locale.footer : footer;
   const hasHeader = avatar != null || source != null || onMore != null;
-  const showFooter = footer !== null; // 默认字符串显示；显式传 null 才隐藏
-  const actionLabel = action?.label ?? "小程序";
+  const showFooter = resolvedFooter !== null; // 默认字符串显示；显式传 null 才隐藏
+  const actionLabel = action?.label ?? locale.action;
 
   // 底部右侧「小程序入口」：图标 + 文字 + chevron
   const cta = (
@@ -58,7 +66,11 @@ export function ServiceMessage({
         <>
           <div className="flex items-center gap-2 px-5 py-3.5">
             {avatar != null && (
-              <Avatar size="sm" {...avatar} className={cn("size-5 text-[10px]", avatar.className)} />
+              <Avatar
+                size="sm"
+                {...avatar}
+                className={cn("size-5 text-[10px]", avatar.className)}
+              />
             )}
             {source != null && (
               <span className="min-w-0 flex-1 truncate text-sm text-muted">{source}</span>
@@ -66,7 +78,7 @@ export function ServiceMessage({
             {onMore != null && (
               <button
                 type="button"
-                aria-label="更多"
+                aria-label={locale.more}
                 onClick={onMore}
                 className="-mr-1 shrink-0 rounded-sm p-1 text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
@@ -103,12 +115,12 @@ export function ServiceMessage({
               onClick={onAction}
               className="flex w-full items-center justify-between gap-3 px-5 py-3 text-left outline-none transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover"
             >
-              <span className="min-w-0 truncate text-sm text-foreground">{footer}</span>
+              <span className="min-w-0 truncate text-sm text-foreground">{resolvedFooter}</span>
               {cta}
             </button>
           ) : (
             <div className="flex items-center justify-between gap-3 px-5 py-3">
-              <span className="min-w-0 truncate text-sm text-foreground">{footer}</span>
+              <span className="min-w-0 truncate text-sm text-foreground">{resolvedFooter}</span>
               {cta}
             </div>
           )}

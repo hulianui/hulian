@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BarChart,
@@ -34,9 +36,9 @@ const tierTone: Record<ReviewModel["tier"], "neutral" | "brand" | "success" | "w
   frontier: "warning",
 };
 const tierLabel: Record<ReviewModel["tier"], string> = {
-  economy: "经济",
-  balanced: "均衡",
-  frontier: "旗舰",
+  economy: copy("economy"),
+  balanced: copy("balance"),
+  frontier: copy("flagship"),
 };
 
 // 模型本月调用占比（喂 Meter）。
@@ -59,14 +61,14 @@ interface NodeData {
 
 // 左列：文件类型；中：路由器；右：三个目标模型。
 const INITIAL_NODES: FlowNode<NodeData>[] = [
-  { id: "ft-test", position: { x: 24, y: 24 }, width: 168, data: { kind: "fileType", title: "测试 / 配置", subtitle: "isTestOrConfig" } },
-  { id: "ft-src", position: { x: 24, y: 120 }, width: 168, data: { kind: "fileType", title: "普通源码", subtitle: "默认业务代码" } },
-  { id: "ft-large", position: { x: 24, y: 216 }, width: 168, data: { kind: "fileType", title: "大文件", subtitle: "lines > 300" } },
-  { id: "ft-sec", position: { x: 24, y: 312 }, width: 168, data: { kind: "fileType", title: "安全敏感", subtitle: "鉴权 / 支付 / 密钥" } },
-  { id: "router", position: { x: 296, y: 156 }, width: 176, data: { kind: "router", title: "智能路由器", subtitle: "按特征命中规则" } },
-  { id: "m-haiku", position: { x: 576, y: 48 }, width: 184, data: { kind: "model", title: modelName("haiku"), subtitle: "经济兜底", tier: "economy" } },
-  { id: "m-sonnet", position: { x: 576, y: 156 }, width: 184, data: { kind: "model", title: modelName("sonnet"), subtitle: "均衡主力", tier: "balanced" } },
-  { id: "m-opus", position: { x: 576, y: 264 }, width: 184, data: { kind: "model", title: modelName("opus"), subtitle: "安全审计", tier: "frontier" } },
+  { id: "ft-test", position: { x: 24, y: 24 }, width: 168, data: { kind: "fileType", title: copy("testingConfiguration"), subtitle: "isTestOrConfig" } },
+  { id: "ft-src", position: { x: 24, y: 120 }, width: 168, data: { kind: "fileType", title: copy("standardSourceCode"), subtitle: copy("defaultBusinessCode") } },
+  { id: "ft-large", position: { x: 24, y: 216 }, width: 168, data: { kind: "fileType", title: copy("largeFiles"), subtitle: "lines > 300" } },
+  { id: "ft-sec", position: { x: 24, y: 312 }, width: 168, data: { kind: "fileType", title: copy("safetySensitivity"), subtitle: copy("authenticationPaymentKeys") } },
+  { id: "router", position: { x: 296, y: 156 }, width: 176, data: { kind: "router", title: copy("smartRouter"), subtitle: copy("accordingToTheCharacteristicHitRules") } },
+  { id: "m-haiku", position: { x: 576, y: 48 }, width: 184, data: { kind: "model", title: modelName("haiku"), subtitle: copy("economicBacking"), tier: "economy" } },
+  { id: "m-sonnet", position: { x: 576, y: 156 }, width: 184, data: { kind: "model", title: modelName("sonnet"), subtitle: copy("balanceTheMainForce"), tier: "balanced" } },
+  { id: "m-opus", position: { x: 576, y: 264 }, width: 184, data: { kind: "model", title: modelName("opus"), subtitle: copy("securityAudit"), tier: "frontier" } },
 ];
 
 const INITIAL_EDGES: FlowEdge[] = [
@@ -109,9 +111,7 @@ function FlowNodeCard({ node }: { node: FlowNode<NodeData> }) {
           </Tag>
         )}
         {kind === "router" && (
-          <Tag size="sm" tone="brand" variant="soft">
-            路由
-          </Tag>
+          <Tag size="sm" tone="brand" variant="soft">{copy("route")}</Tag>
         )}
       </div>
       {subtitle && <span className="truncate text-xs text-muted">{subtitle}</span>}
@@ -167,15 +167,15 @@ export default function RoutingPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">智能路由</h1>
-        <p className="text-sm text-muted">按文件特征自动选择最优审查模型，平衡质量与成本</p>
+        <h1 className="text-xl font-semibold text-foreground">{copy("intelligentRouting")}</h1>
+        <p className="text-sm text-muted">{copy("automaticallySelectsTheOptimalReviewModelBased")}</p>
       </div>
 
       {/* 1. 模型池 */}
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <span className="font-medium text-foreground">模型池</span>
-          <span className="text-xs text-muted">价格单位 $/1M token · 占比为本月调用量</span>
+          <span className="font-medium text-foreground">{copy("modelPool")}</span>
+          <span className="text-xs text-muted">{copy("priceUnitMTokenTheProportionIs")}</span>
         </CardHeader>
         <CardBody>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -205,18 +205,16 @@ export default function RoutingPage() {
                   </div>
 
                   <div className="flex items-center gap-4 text-xs text-muted">
-                    <span>
-                      输入 <span className="tabular-nums font-medium text-foreground">${m.inPrice}</span>
+                    <span>{copy("input")}<span className="tabular-nums font-medium text-foreground">${m.inPrice}</span>
                     </span>
-                    <span>
-                      输出 <span className="tabular-nums font-medium text-foreground">${m.outPrice}</span>
+                    <span>{copy("output")}<span className="tabular-nums font-medium text-foreground">${m.outPrice}</span>
                     </span>
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between text-xs text-muted">
-                      <span>本月调用占比</span>
-                      <span className="tabular-nums">{calls} 次</span>
+                      <span>{copy("thisMonthSCallProportion")}</span>
+                      <span className="tabular-nums">{calls}{copy("times")}</span>
                     </div>
                     <Meter value={calls} max={totalCalls} />
                   </div>
@@ -230,7 +228,7 @@ export default function RoutingPage() {
       <div className="grid gap-3 lg:grid-cols-3">
         {/* 2. 路由策略 */}
         <Card className="lg:col-span-1">
-          <CardHeader className="font-medium text-foreground">路由策略</CardHeader>
+          <CardHeader className="font-medium text-foreground">{copy("routingStrategy")}</CardHeader>
           <CardBody className="px-0">
             <List
               items={ROUTING_RULES}
@@ -257,8 +255,8 @@ export default function RoutingPage() {
         {/* 3. 分发流向可视化 */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
-            <span className="font-medium text-foreground">分发流向</span>
-            <span className="text-xs text-muted">文件类型 → 智能路由器 → 模型</span>
+            <span className="font-medium text-foreground">{copy("distributionAndFlowDirection")}</span>
+            <span className="text-xs text-muted">{copy("fileTypeSmartRouterModel")}</span>
           </CardHeader>
           <CardBody>
             <Flow<NodeData>
@@ -278,8 +276,8 @@ export default function RoutingPage() {
       {/* 4. 路由决策回放 */}
       <Card>
         <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-          <span className="font-medium text-foreground">路由决策回放</span>
-          <Segmented items={reviewItems} value={reviewId} onValueChange={setReviewId} size="sm" aria-label="选择审查" />
+          <span className="font-medium text-foreground">{copy("routingDecisionReview")}</span>
+          <Segmented items={reviewItems} value={reviewId} onValueChange={setReviewId} size="sm" aria-label={copy("selectionReview")} />
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
           {selectedReview && selectedReview.files.length > 0 ? (
@@ -288,11 +286,11 @@ export default function RoutingPage() {
                 <table className="w-full min-w-[640px] text-sm">
                   <thead>
                     <tr className="border-b border-border text-left text-xs text-muted">
-                      <th className="py-2 pr-3 font-medium">文件</th>
-                      <th className="py-2 pr-3 font-medium">规模</th>
-                      <th className="py-2 pr-3 font-medium">命中规则</th>
-                      <th className="py-2 pr-3 font-medium">派给模型</th>
-                      <th className="py-2 pr-3 text-right font-medium">成本 ¥</th>
+                      <th className="py-2 pr-3 font-medium">{copy("documents")}</th>
+                      <th className="py-2 pr-3 font-medium">{copy("scale")}</th>
+                      <th className="py-2 pr-3 font-medium">{copy("hitTheRules")}</th>
+                      <th className="py-2 pr-3 font-medium">{copy("assignTheModel")}</th>
+                      <th className="py-2 pr-3 text-right font-medium">{copy("cost")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -301,7 +299,7 @@ export default function RoutingPage() {
                         <td className="py-2 pr-3">
                           <span className="truncate font-mono text-xs text-foreground">{f.path}</span>
                         </td>
-                        <td className="py-2 pr-3 tabular-nums text-muted">{lines} 行</td>
+                        <td className="py-2 pr-3 tabular-nums text-muted">{lines}{copy("alright")}</td>
                         <td className="py-2 pr-3 text-muted">{f.routeReason}</td>
                         <td className="py-2 pr-3">
                           <Tag size="sm" tone="brand" variant="soft">
@@ -318,20 +316,20 @@ export default function RoutingPage() {
               </div>
 
               <div>
-                <div className="mb-2 text-xs text-muted">每文件成本 vs 规模</div>
+                <div className="mb-2 text-xs text-muted">{copy("costPerFileVsScale")}</div>
                 <BarChart
                   data={costChartData}
                   xKey="name"
                   series={[
-                    { key: "cost", label: "成本 ¥" },
-                    { key: "lines", label: "行数" },
+                    { key: "cost", label: copy("cost2") },
+                    { key: "lines", label: copy("numberOfLines") },
                   ]}
                   height={220}
                 />
               </div>
             </>
           ) : (
-            <p className="py-8 text-center text-sm text-muted">该审查暂无变更文件。</p>
+            <p className="py-8 text-center text-sm text-muted">{copy("thereAreNoChangeDocumentsAvailableFor")}</p>
           )}
         </CardBody>
       </Card>

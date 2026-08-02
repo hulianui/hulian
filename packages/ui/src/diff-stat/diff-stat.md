@@ -10,11 +10,11 @@ status: enriched
 
 # DiffStat
 
-> 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖·RSC · data-display/info
+> 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖 · data-display/info
 
 ## 何时用
 
-PR/提交列表里展示单文件改动量：`+N −M` 数字 + 绿红比例格子条 + 改动状态徽标。本组件是 git diff 统计的微件（零依赖、可 RSC）；要趋势折线用 [Sparkline](../sparkline/sparkline.md)，要文件改动状态角标的层级树用 [FileTree](../file-tree/file-tree.md)。
+PR/提交列表里展示单文件改动量：`+N −M` 数字 + 绿红比例格子条 + 改动状态徽标。本组件是 git diff 统计的微件；要趋势折线用 [Sparkline](../sparkline/sparkline.md)，要文件改动状态角标的层级树用 [FileTree](../file-tree/file-tree.md)。
 
 ## 导入
 ```ts
@@ -49,4 +49,6 @@ import { DiffStat, splitBlocks } from "@hulianui/ui"
 暂无已知坑。格子条按 `additions:deletions` 比例填充 `blocks` 格（纯函数 `splitBlocks`），二者全 0 时为空条。
 
 ## 相关
+
+状态徽标跟随 `ConfigProvider`；组件为 client 组件，服务端组件仍可导入并渲染它。
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md) · [Dot](../dot/dot.md)

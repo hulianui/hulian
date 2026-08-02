@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import { Printer } from "lucide-react";
 import {
@@ -29,7 +31,19 @@ import {
   type ColumnDef,
 } from "@hulianui/ui";
 import { dueAmount, invoices as seed, paidAmount } from "../../_data/invoices";
-import { invoiceStatusTone, paymentStatusTone, rmbUpper, wan, yuan } from "../../_data/status";
+import {
+  invoiceStatusLabel,
+  invoiceStatusTone,
+  invoiceTypeLabel,
+  invoiceTypeShortLabel,
+  currencyPrefix,
+  paymentStatusLabel,
+  paymentStatusTone,
+  payMethodLabel,
+  rmbUpper,
+  wan,
+  yuan,
+} from "../../_data/status";
 import type { Invoice, InvoiceStatus, PaymentStatus } from "../../_data/types";
 import { useMockData, usePending } from "../../../lib/async";
 
@@ -37,24 +51,24 @@ const STATUSES: InvoiceStatus[] = ["待开", "已开", "已寄送"];
 const PAY_STATUSES: PaymentStatus[] = ["未回款", "部分回款", "已结清"];
 const PAGE_SIZE = 8;
 
-const opt = (arr: readonly string[], allLabel = "全部") => [
+const opt = (arr: readonly string[], labels?: Readonly<Record<string, string>>, allLabel = copy("all")) => [
   { value: "", label: allLabel },
-  ...arr.map((v) => ({ value: v, label: v })),
+  ...arr.map((v) => ({ value: v, label: labels?.[v] ?? v })),
 ];
 
 const ISSUE_STEPS: StepsItem[] = [
-  { title: "申请开票", description: "项目提交" },
-  { title: "财务审核", description: "金额复核" },
-  { title: "开具发票", description: "税控开具" },
-  { title: "邮寄送达", description: "寄送甲方" },
+  { title: copy("applyForInvoicing"), description: copy("projectSubmission") },
+  { title: copy("financialReview"), description: copy("amountReview") },
+  { title: copy("issueAnInvoice"), description: copy("taxControlIssuance") },
+  { title: copy("deliveredByMail"), description: copy("sendToPartyA") },
 ];
 const statusToStep: Record<InvoiceStatus, number> = { 待开: 1, 已开: 2, 已寄送: 3 };
 
 const VENDOR = {
-  name: "瑚琏建工集团有限公司",
+  name: copy("hulianConstructionEngineeringGroupCoLtd"),
   taxNo: "91330100MA2XHL0001",
-  addr: "杭州市滨江区江南大道 1788 号 · 0571-8888 6666",
-  bank: "工商银行杭州滨江支行 1202 0000 1234 5678",
+  addr: copy("noJiangnanAvenueBinjiangDistrictHangzhou"),
+  bank: copy("industrialAndCommercialBankOfChinaHangzhou"),
 };
 
 export default function InvoicesPage() {
@@ -105,7 +119,7 @@ export default function InvoicesPage() {
         rs.map((r) => (r.id === iv.id ? { ...r, status: "已开" as InvoiceStatus, issuedAt: "2026-06-04" } : r)),
       );
       if (active?.id === iv.id) setActive((prev) => prev ? { ...prev, status: "已开", issuedAt: "2026-06-04" } : prev);
-      toast({ title: "已开票", description: `${iv.code} 开具成功`, tone: "success" });
+      toast({ title: copy("invoiced"), description: copy("valueIssuanceSuccessful", iv.code), tone: "success" });
     });
   }
 
@@ -113,14 +127,14 @@ export default function InvoicesPage() {
     void runVoid(() => {
       setRows((rs) => rs.map((r) => (r.id === iv.id ? { ...r, status: "待开" as InvoiceStatus, issuedAt: undefined } : r)));
       if (active?.id === iv.id) setActive((prev) => prev ? { ...prev, status: "待开", issuedAt: undefined } : prev);
-      toast({ title: "已作废", description: `${iv.code} 已作废，可重新开具`, tone: "info" });
+      toast({ title: copy("voided"), description: copy("valueHasBeenInvalidatedAndCanBe", iv.code), tone: "info" });
     });
   }
 
   const columns: ColumnDef<Invoice>[] = [
     {
       accessorKey: "code",
-      header: "发票",
+      header: copy("invoice"),
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="font-medium tabular-nums">{row.original.code}</div>
@@ -128,24 +142,24 @@ export default function InvoicesPage() {
         </div>
       ),
     },
-    { accessorKey: "client", header: "购方抬头" },
+    { accessorKey: "client", header: copy("buyerSHead") },
     {
       accessorKey: "type",
-      header: "类型",
+      header: copy("type"),
       cell: ({ row }) => (
         <Tag tone="neutral" size="sm" variant="soft">
-          {row.original.type === "增值税专用发票" ? "增专" : "增普"}
+          {invoiceTypeShortLabel[row.original.type]}
         </Tag>
       ),
     },
     {
       accessorKey: "amount",
-      header: "开票金额",
+      header: copy("invoiceAmount"),
       cell: ({ row }) => <span className="tabular-nums font-medium">{yuan(row.original.amount)}</span>,
     },
     {
       id: "due",
-      header: "应收余额",
+      header: copy("balanceReceivable"),
       cell: ({ row }) => {
         const d = dueAmount(row.original);
         return <span className={`tabular-nums ${d > 0 ? "text-danger" : "text-muted"}`}>{yuan(d)}</span>;
@@ -153,49 +167,45 @@ export default function InvoicesPage() {
     },
     {
       accessorKey: "status",
-      header: "开票状态",
+      header: copy("invoicingStatus"),
       cell: ({ row }) => (
         <Tag tone={invoiceStatusTone(row.original.status)} size="sm" dot>
-          {row.original.status}
+          {invoiceStatusLabel[row.original.status]}
         </Tag>
       ),
     },
     {
       accessorKey: "paymentStatus",
-      header: "回款",
+      header: copy("refund"),
       cell: ({ row }) => (
         <Tag tone={paymentStatusTone(row.original.paymentStatus)} size="sm">
-          {row.original.paymentStatus}
+          {paymentStatusLabel[row.original.paymentStatus]}
         </Tag>
       ),
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => {
         const iv = row.original;
         return (
           <div className="flex items-center gap-1">
-            <Button variant="link" size="sm" onClick={() => setActive(iv)}>
-              查看
-            </Button>
+            <Button variant="link" size="sm" onClick={() => setActive(iv)}>{copy("view")}</Button>
             {iv.status === "待开" && (
               <Button variant="link" size="sm" onClick={() => handleIssue(iv)} disabled={issuePending}>
-                {issuePending ? <Spinner size="sm" /> : "开票"}
+                {issuePending ? <Spinner size="sm" /> : copy("invoicing")}
               </Button>
             )}
             {iv.status === "已开" && (
               <Popconfirm
-                title="确认作废此发票？"
-                description="作废后状态将退回「待开」，不可恢复。"
+                title={copy("areYouSureYouWantToVoid")}
+                description={copy("afterBeingInvalidatedTheStatusWillReturn")}
                 danger
-                okText="确认作废"
+                okText={copy("confirmedToBeInvalid")}
                 onConfirm={() => handleVoid(iv)}
               >
-                <Button variant="link" size="sm" tone="danger">
-                  作废
-                </Button>
+                <Button variant="link" size="sm" tone="danger">{copy("void")}</Button>
               </Popconfirm>
             )}
           </div>
@@ -212,41 +222,39 @@ export default function InvoicesPage() {
     <div className="flex flex-col gap-4">
       {/* 逾期回款告警条 */}
       {overdueCount > 0 && (
-        <Alert tone="warning">
-          共 <strong>{overdueCount}</strong> 张已寄送发票存在逾期应收余额，请跟进回款。
-        </Alert>
+        <Alert tone="warning">{copy("total")}<strong>{overdueCount}</strong>{copy("zhangHasSentAnInvoiceWithAn")}</Alert>
       )}
 
       {/* 汇总条 */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card variant="outline">
           <CardBody className="p-5">
-            <Statistic title="已开票金额" value={sum.invoiced} prefix="￥" />
+            <Statistic title={copy("invoicedAmount")} value={sum.invoiced} prefix={currencyPrefix} />
           </CardBody>
         </Card>
         <Card variant="outline">
           <CardBody className="p-5">
-            <Statistic title="累计回款" value={sum.paid} prefix="￥" />
+            <Statistic title={copy("accumulatedRepayments")} value={sum.paid} prefix={currencyPrefix} />
           </CardBody>
         </Card>
         <Card variant="outline">
           <CardBody className="p-5">
-            <Statistic title="待回款余额" value={sum.due} prefix="￥" />
+            <Statistic title={copy("balanceToBeRepaid")} value={sum.due} prefix={currencyPrefix} />
           </CardBody>
         </Card>
       </div>
 
       <ProTable<Invoice>
-        title="开票与回款"
+        title={copy("invoicingAndPaymentCollection")}
         columns={columns}
         data={paged}
         loading={loading}
         getRowId={(r) => r.id}
         search={{
           fields: [
-            { name: "keyword", label: "关键词", placeholder: "发票号 / 项目 / 购方" },
-            { name: "status", label: "开票状态", type: "select", options: opt(STATUSES) },
-            { name: "paymentStatus", label: "回款状态", type: "select", options: opt(PAY_STATUSES) },
+            { name: "keyword", label: copy("keywords"), placeholder: copy("invoiceNumberItemPurchaser") },
+            { name: "status", label: copy("invoicingStatus2"), type: "select", options: opt(STATUSES, invoiceStatusLabel) },
+            { name: "paymentStatus", label: copy("paymentStatus"), type: "select", options: opt(PAY_STATUSES, paymentStatusLabel) },
           ],
           onSearch: (v) => {
             setFilters(v);
@@ -262,38 +270,36 @@ export default function InvoicesPage() {
 
       {/* 详情抽屉 */}
       <Drawer open={iv !== null} onOpenChange={(o) => !o && setActive(null)}>
-        <DrawerContent side="right" title={iv ? `${iv.code} · 发票详情` : ""} className="w-[min(680px,92vw)]">
+        <DrawerContent side="right" title={iv ? copy("valueInvoiceDetails", iv.code) : ""} className="w-[min(680px,92vw)]">
           {iv && (
             <div className="flex flex-col gap-5">
               {/* 回款汇总 */}
               <div className="grid grid-cols-3 gap-3">
                 <Card variant="outline">
                   <CardBody className="p-4">
-                    <Statistic title="开票金额" value={iv.amount} prefix="￥" />
+                    <Statistic title={copy("invoiceAmount2")} value={iv.amount} prefix={currencyPrefix} />
                   </CardBody>
                 </Card>
                 <Card variant="outline">
                   <CardBody className="p-4">
-                    <Statistic title="已回款" value={paidAmount(iv)} prefix="￥" />
+                    <Statistic title={copy("refunded")} value={paidAmount(iv)} prefix={currencyPrefix} />
                   </CardBody>
                 </Card>
                 <Card variant="outline">
                   <CardBody className="p-4">
-                    <Statistic title="应收余额" value={dueAmount(iv)} prefix="￥" />
+                    <Statistic title={copy("balanceReceivable2")} value={dueAmount(iv)} prefix={currencyPrefix} />
                   </CardBody>
                 </Card>
               </div>
 
               {/* 逾期告警（抽屉内） */}
               {iv.status === "已寄送" && dueAmount(iv) > 0 && (
-                <Alert tone="warning">
-                  该发票已寄送但存在 <strong>{yuan(dueAmount(iv))}</strong> 应收余额，请联系甲方跟进回款。
-                </Alert>
+                <Alert tone="warning">{copy("theInvoiceHasBeenSentButExists")}<strong>{yuan(dueAmount(iv))}</strong>{copy("forTheBalanceReceivablePleaseContactParty")}</Alert>
               )}
 
               {/* 开票流转 */}
               <div>
-                <div className="mb-3 text-sm font-medium text-foreground">开票流转</div>
+                <div className="mb-3 text-sm font-medium text-foreground">{copy("invoicingAndCirculation")}</div>
                 <Steps size="sm" items={ISSUE_STEPS} current={statusToStep[iv.status]} />
               </div>
 
@@ -301,62 +307,62 @@ export default function InvoicesPage() {
               <DocumentSheet size="auto" printable={iv.status !== "待开"}>
                 <DocumentSheetHeader>
                   <div>
-                    <div className="text-lg font-bold text-foreground">{iv.type}</div>
+                    <div className="text-lg font-bold text-foreground">{invoiceTypeLabel[iv.type]}</div>
                     <div className="mt-1 text-xs text-muted">{VENDOR.name}</div>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="text-right text-xs text-muted">
                       <div className="text-sm font-semibold tabular-nums text-foreground">{iv.code}</div>
-                      <div className="mt-1">{iv.issuedAt ? `开票日期：${iv.issuedAt}` : "尚未开具"}</div>
+                      <div className="mt-1">{iv.issuedAt ? copy("invoiceDateValue", iv.issuedAt) : copy("notYetIssued")}</div>
                     </div>
                     {iv.status !== "待开" && (
                       <Tooltip>
                         <TooltipTrigger render={
-                          <Button variant="ghost" size="iconSm" aria-label="打印">
+                          <Button variant="ghost" size="iconSm" aria-label={copy("print")}>
                             <Printer className="size-3.5" />
                           </Button>
                         } />
-                        <TooltipContent>打印发票</TooltipContent>
+                        <TooltipContent>{copy("printInvoice")}</TooltipContent>
                       </Tooltip>
                     )}
                   </div>
                 </DocumentSheetHeader>
-                <DocumentSheetSection title="购销信息">
+                <DocumentSheetSection title={copy("purchaseAndSaleInformation")}>
                   <div className="grid grid-cols-1 gap-1 text-sm">
                     <div>
-                      <span className="text-muted">购买方：</span>
-                      {iv.client}（税号 {iv.taxNo}）
+                      <span className="text-muted">{copy("purchaser")}</span>
+                      {iv.client}{copy("taxNumber")}{iv.taxNo}）
                     </div>
                     <div>
-                      <span className="text-muted">销售方：</span>
-                      {VENDOR.name}（税号 {VENDOR.taxNo}）
+                      <span className="text-muted">{copy("seller")}</span>
+                      {VENDOR.name}{copy("taxNumber2")}{VENDOR.taxNo}）
                     </div>
                     <div>
-                      <span className="text-muted">关联项目：</span>
+                      <span className="text-muted">{copy("relatedProjects")}</span>
                       {iv.projectName}
                     </div>
                   </div>
                 </DocumentSheetSection>
-                <DocumentSheetSection title="金额">
+                <DocumentSheetSection title={copy("amount")}>
                   <div className="flex justify-between border-y border-border py-2 text-sm">
-                    <span className="text-muted">金额（不含税）</span>
+                    <span className="text-muted">{copy("amountExcludingTax")}</span>
                     <span className="tabular-nums">{yuan(exTax)}</span>
                   </div>
                   <div className="flex justify-between py-2 text-sm">
-                    <span className="text-muted">税额（{(iv.taxRate * 100).toFixed(0)}%）</span>
+                    <span className="text-muted">{copy("taxAmount")}{(iv.taxRate * 100).toFixed(0)}%{copy("closingParenthesis")}</span>
                     <span className="tabular-nums">{yuan(tax)}</span>
                   </div>
                   <div className="flex justify-between border-t border-border py-2 text-sm font-semibold text-primary">
-                    <span>价税合计</span>
+                    <span>{copy("totalPriceAndTax")}</span>
                     <span className="tabular-nums">{yuan(iv.amount)}</span>
                   </div>
                   <div className="mt-1 text-right text-sm">
-                    <span className="text-muted">大写：</span>
+                    <span className="text-muted">{copy("uppercase")}</span>
                     <span className="font-medium">{rmbUpper(iv.amount)}</span>
                   </div>
                 </DocumentSheetSection>
                 <DocumentSheetFooter>
-                  <div className="text-xs">开户行：{VENDOR.bank} · 地址：{VENDOR.addr}</div>
+                  <div className="text-xs">{copy("accountOpeningBank")}{VENDOR.bank}{copy("address")}{VENDOR.addr}</div>
                 </DocumentSheetFooter>
               </DocumentSheet>
 
@@ -364,19 +370,19 @@ export default function InvoicesPage() {
               <div className="flex gap-2">
                 {iv.status === "待开" && (
                   <Button size="sm" onClick={() => handleIssue(iv)} disabled={issuePending}>
-                    {issuePending ? <Spinner size="sm" /> : "立即开票"}
+                    {issuePending ? <Spinner size="sm" /> : copy("invoiceNow")}
                   </Button>
                 )}
                 {iv.status === "已开" && (
                   <Popconfirm
-                    title="确认作废此发票？"
-                    description="作废后状态将退回「待开」，不可恢复。"
+                    title={copy("areYouSureYouWantToVoid2")}
+                    description={copy("afterBeingInvalidatedTheStatusWillReturn2")}
                     danger
-                    okText="确认作废"
+                    okText={copy("confirmedToBeInvalid2")}
                     onConfirm={() => handleVoid(iv)}
                   >
                     <Button size="sm" variant="outline" tone="danger" disabled={voidPending}>
-                      {voidPending ? <Spinner size="sm" /> : "作废发票"}
+                      {voidPending ? <Spinner size="sm" /> : copy("voidInvoice")}
                     </Button>
                   </Popconfirm>
                 )}
@@ -385,9 +391,8 @@ export default function InvoicesPage() {
               {/* 回款记录 */}
               <div>
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">回款记录</span>
-                  <Text size="sm" tone="muted">
-                    共 {wan(paidAmount(iv))} / {wan(iv.amount)}
+                  <span className="text-sm font-medium text-foreground">{copy("paymentRecord")}</span>
+                  <Text size="sm" tone="muted">{copy("total2")}{wan(paidAmount(iv))} / {wan(iv.amount)}
                   </Text>
                 </div>
                 {iv.payments.length > 0 ? (
@@ -399,14 +404,14 @@ export default function InvoicesPage() {
                         <Text size="sm">
                           <span className="font-medium tabular-nums">{yuan(p.amount)}</span>
                           <Tag tone="neutral" size="sm" variant="soft" className="ml-2 align-middle">
-                            {p.method}
+                            {payMethodLabel[p.method]}
                           </Tag>
                         </Text>
                       ),
                     }))}
                   />
                 ) : (
-                  <Empty size="sm" description="暂无回款记录" />
+                  <Empty size="sm" description={copy("noRecordOfPaymentYet")} />
                 )}
               </div>
             </div>

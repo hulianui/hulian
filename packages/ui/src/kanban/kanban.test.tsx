@@ -2,6 +2,8 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
 import { Kanban, resolveKanbanMove, isInteractiveDragTarget } from "./kanban";
 import type { KanbanColumn } from "./kanban.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -50,6 +52,11 @@ describe("Kanban 渲染", () => {
     const { container } = render(<Kanban {...baseProps} />);
     const done = container.querySelectorAll("section")[2];
     expect(done.textContent).toContain("拖拽卡片到此");
+  });
+
+  it("空列文案跟随 ConfigProvider", () => {
+    const { getByText } = render(<ConfigProvider locale={enUS}><Kanban {...baseProps} /></ConfigProvider>);
+    expect(getByText("Drop cards here")).toBeTruthy();
   });
 
   it("renderColumnHeader 拿到该列卡片做统计", () => {

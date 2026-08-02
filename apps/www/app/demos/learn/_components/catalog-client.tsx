@@ -1,17 +1,9 @@
 "use client";
+import { copy } from "./catalog-client.content";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import {
-  Segmented,
-  Skeleton,
-  Alert,
-  Empty,
-  Button,
-  Card,
-  CardBody,
-  Meter,
-} from "@hulianui/ui";
+import { Segmented, Skeleton, Alert, Empty, Button, Card, CardBody, Meter } from "@hulianui/ui";
 import { BookOpen, Compass } from "lucide-react";
 import { courses, CATEGORIES } from "../_data/courses";
 import { CourseCard } from "./course-card";
@@ -43,7 +35,7 @@ export function CatalogClient() {
   }, [data, mine, cat, sort, isEnrolled]);
 
   const catItems = [
-    { value: "all", label: "全部" },
+    { value: "all", label: copy("all") },
     ...CATEGORIES.map((c) => ({ value: c.key, label: c.name })),
   ];
 
@@ -59,8 +51,10 @@ export function CatalogClient() {
       {/* 头部 */}
       {mine ? (
         <header className="mb-6">
-          <h1 className="text-2xl font-bold text-foreground">我的学习</h1>
-          <p className="mt-1 text-sm text-muted">继续你已报名的 {enrolled.size} 门课程</p>
+          <h1 className="text-2xl font-bold text-foreground">{copy("myLearning")}</h1>
+          <p className="mt-1 text-sm text-muted">
+            {copy("continueWithYourEnrolled")} {enrolled.size} {copy("courses")}
+          </p>
           {myCourses.length > 0 && (
             <Card variant="outline" className="mt-4">
               <CardBody className="flex items-center gap-4 p-4">
@@ -69,7 +63,7 @@ export function CatalogClient() {
                 </div>
                 <div className="flex-1">
                   <div className="mb-1 flex items-center justify-between text-sm">
-                    <span className="text-muted">总体完成度</span>
+                    <span className="text-muted">{copy("overallCompletion")}</span>
                     <span className="font-semibold text-foreground">{overall}%</span>
                   </div>
                   <Meter value={overall} />
@@ -80,24 +74,33 @@ export function CatalogClient() {
         </header>
       ) : (
         <header className="mb-6">
-          <h1 className="text-2xl font-bold text-foreground">课程目录</h1>
-          <p className="mt-1 text-sm text-muted">和 {(courses.reduce((s, c) => s + c.students, 0)).toLocaleString("zh-CN")} 名学员一起，把学习变成可见的进步</p>
+          <h1 className="text-2xl font-bold text-foreground">{copy("courseCatalog")}</h1>
+          <p className="mt-1 text-sm text-muted">
+            {copy("and")} {courses.reduce((s, c) => s + c.students, 0).toLocaleString("zh-CN")}{" "}
+            {copy("learnersTogetherToTurnLearningIntoVisibleProgress")}
+          </p>
         </header>
       )}
 
       {/* 筛选区 */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <Segmented items={catItems} value={cat} onValueChange={setCat} size="sm" aria-label="分类筛选" />
+        <Segmented
+          items={catItems}
+          value={cat}
+          onValueChange={setCat}
+          size="sm"
+          aria-label={copy("filterByCategory")}
+        />
         <Segmented
           items={[
-            { value: "hot", label: "最热门" },
-            { value: "rating", label: "评分高" },
-            { value: "new", label: "最新" },
+            { value: "hot", label: copy("mostPopular") },
+            { value: "rating", label: copy("highlyRated") },
+            { value: "new", label: copy("latest") },
           ]}
           value={sort}
           onValueChange={(v) => setSort(v as Sort)}
           size="sm"
-          aria-label="排序"
+          aria-label={copy("sort")}
         />
       </div>
 
@@ -122,10 +125,10 @@ export function CatalogClient() {
       {!loading && error && (
         <Alert
           tone="danger"
-          title="课程加载失败"
+          title={copy("courseFailedToLoad")}
           action={
             <Button size="sm" variant="outline" tone="danger" onClick={reload}>
-              重试
+              {copy("retry")}
             </Button>
           }
         >
@@ -138,17 +141,21 @@ export function CatalogClient() {
         <>
           {list.length === 0 ? (
             <Empty
-              title={mine ? "还没有报名任何课程" : "没有符合条件的课程"}
-              description={mine ? "去课程目录挑一门感兴趣的开始吧" : "换个分类或排序看看"}
+              title={mine ? copy("youHavenTEnrolledInAnyCoursesYet") : copy("noEligibleCourses")}
+              description={
+                mine
+                  ? copy("goToTheCourseCatalogToPickAnInterestingStart")
+                  : copy("takeALookAtAnotherCategoryOrSort")
+              }
             >
               {mine ? (
                 <Button render={<Link href={LEARN_BASE} />}>
                   <Compass className="mr-1.5 size-4" aria-hidden />
-                  逛逛课程
+                  {copy("shoppingClasses")}
                 </Button>
               ) : (
                 <Button variant="outline" onClick={() => setCat("all")}>
-                  查看全部课程
+                  {copy("seeAllCourses")}
                 </Button>
               )}
             </Empty>

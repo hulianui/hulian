@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Marquee, Text } from "@hulianui/ui";
 
 // 信任墙 Block —— 自包含、可整段复制。

@@ -1,8 +1,45 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, waitFor, act } from "@testing-library/react";
 import { Popconfirm } from "./popconfirm";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS, zhCN } from "../config/locale";
 
 describe("Popconfirm", () => {
+  it("缺 Provider 时默认按钮文案逐字保持中文", () => {
+    const { getByText } = render(
+      <Popconfirm defaultOpen title="t"><button>触发</button></Popconfirm>,
+    );
+    expect(getByText("确认")).toBeTruthy();
+    expect(getByText("取消")).toBeTruthy();
+  });
+
+  it("enUS Provider 提供 Confirm / Cancel，显式 props 仍优先", () => {
+    const { getByText, rerender } = render(
+      <ConfigProvider locale={enUS}>
+        <Popconfirm defaultOpen title="t"><button>Open</button></Popconfirm>
+      </ConfigProvider>,
+    );
+    expect(getByText("Confirm")).toBeTruthy();
+    expect(getByText("Cancel")).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Popconfirm defaultOpen title="t" okText="Remove" cancelText="Keep"><button>Open</button></Popconfirm>
+      </ConfigProvider>,
+    );
+    expect(getByText("Remove")).toBeTruthy();
+    expect(getByText("Keep")).toBeTruthy();
+  });
+
+  it("legacy locale without components falls back to exact Chinese defaults", () => {
+    const legacy = { ...zhCN, components: undefined };
+    const { getByText } = render(
+      <ConfigProvider locale={legacy}>
+        <Popconfirm defaultOpen title="t"><button>触发</button></Popconfirm>
+      </ConfigProvider>,
+    );
+    expect(getByText("确认")).toBeTruthy();
+    expect(getByText("取消")).toBeTruthy();
+  });
   it("defaultOpen 渲染标题/描述/确认/取消", () => {
     const { getByText } = render(
       <Popconfirm defaultOpen title="确定删除？" description="不可恢复" okText="删除" cancelText="算了">

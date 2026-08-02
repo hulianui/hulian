@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import Link from "next/link";
 import { AuroraText, Button, Safari, Tag, Heading, Text } from "@hulianui/ui";
 import { ArrowRight, Sparkles } from "lucide-react";

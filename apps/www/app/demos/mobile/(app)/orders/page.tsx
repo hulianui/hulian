@@ -1,5 +1,7 @@
 "use client";
+import { copy } from "./page.content";
 import { useState } from "react";
+import Link from "next/link";
 import { MoreHorizontal } from "lucide-react";
 import {
   ActionSheet,
@@ -14,8 +16,9 @@ import {
 } from "@hulianui/ui";
 import { useMockData } from "../../../lib/async";
 import { useMobileFrame } from "../../_components/mobile-shell";
-import { ORDER_STATUS_TONE, SEED_ORDERS } from "../../_data/orders";
+import { ORDER_STATUS_LABELS, ORDER_STATUS_TONE, SEED_ORDERS } from "../../_data/orders";
 import type { Order } from "../../_data/types";
+import { demoHref } from "../../../_components/demo-locale";
 
 // 电话图标
 function PhoneIcon() {
@@ -45,15 +48,15 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
         left={[
           {
             key: "call",
-            label: "联系师傅",
+            label: copy("contactProfessional"),
             tone: "primary",
-            onClick: () => toast({ title: `正在拨打 ${order.workerName} 电话…`, tone: "info" }),
+            onClick: () => toast({ title: `${copy("calling")}${order.workerName}${copy("calling2")}`, tone: "info" }),
           },
         ]}
         right={[
           {
             key: "delete",
-            label: "删除",
+            label: copy("remove"),
             tone: "danger",
             onClick: () => onDelete(order.id),
           },
@@ -69,11 +72,12 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
                 size="sm"
                 variant="soft"
               >
-                {order.status}
+                {ORDER_STATUS_LABELS[order.status]}
               </Tag>
             </div>
             <div className="mt-0.5 text-xs text-muted">
-              师傅：{order.workerName} · {order.appointedAt}
+
+              {copy("professional")}{order.workerName} · {order.appointedAt}
             </div>
             <div className="mt-0.5 truncate text-xs text-muted">{order.address}</div>
             <div className="mt-1.5 flex items-center justify-between">
@@ -85,10 +89,11 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
                 {order.status === "待评价" && (
                   <button
                     type="button"
-                    onClick={() => toast({ title: "感谢您的评价！", tone: "neutral" })}
+                    onClick={() => toast({ title: copy("thankYouForYourReview"), tone: "neutral" })}
                     className="rounded-lg border border-primary px-2.5 py-1 text-xs text-primary hover:bg-primary/8"
                   >
-                    去评价
+
+                    {copy("writeAReview")}
                   </button>
                 )}
                 {/* ActionSheet 更多操作 */}
@@ -99,23 +104,23 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
                   <ActionSheetContent
                     container={frame}
                     title={order.serviceTitle}
-                    description={`预约时间：${order.appointedAt}`}
+                    description={`${copy("appointment")}${order.appointedAt}`}
                     actions={[
                       {
                         key: "call",
-                        label: "联系师傅",
-                        description: `拨打 ${order.workerName} 电话`,
-                        onClick: () => toast({ title: `正在拨打 ${order.workerName} 电话…`, tone: "info" }),
+                        label: copy("contactProfessional"),
+                        description: `${copy("call")}${order.workerName}${copy("phone")}`,
+                        onClick: () => toast({ title: `${copy("calling")}${order.workerName}${copy("calling2")}`, tone: "info" }),
                       },
                       {
                         key: "reschedule",
-                        label: "改约时间",
-                        onClick: () => toast({ title: "改约功能即将上线", tone: "neutral" }),
+                        label: copy("reschedule"),
+                        onClick: () => toast({ title: copy("reschedulingIsComingSoon"), tone: "neutral" }),
                         disabled: order.status === "已完成" || order.status === "已取消",
                       },
                       {
                         key: "cancel",
-                        label: "取消订单",
+                        label: copy("cancelBooking"),
                         danger: true,
                         onClick: () => {
                           setMoreOpen(false);
@@ -136,21 +141,21 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
       <ActionSheet open={cancelOpen} onOpenChange={setCancelOpen}>
         <ActionSheetContent
           container={frame}
-          title="取消订单"
-          description="取消后无法恢复，确定要取消吗？"
+          title={copy("cancelBooking")}
+          description={copy("thisBookingCannotBeRestoredAfterCancellationContinue")}
           actions={[
             {
               key: "confirm-cancel",
-              label: "确认取消",
+              label: copy("confirmCancellation"),
               danger: true,
-              description: "取消后费用将在 3 个工作日内退回",
+              description: copy("yourPaymentWillBeRefundedWithinThreeBusinessDaysAfterCancellation"),
               onClick: () => {
                 onDelete(order.id);
-                toast({ title: "订单已取消", tone: "neutral" });
+                toast({ title: copy("bookingCanceled"), tone: "neutral" });
               },
             },
           ]}
-          cancelText="不取消，继续保留"
+          cancelText={copy("keepBooking")}
         />
       </ActionSheet>
     </>
@@ -166,15 +171,15 @@ export default function OrdersPage() {
   const deleteOrder = (id: string) => {
     const base = orders ?? data ?? SEED_ORDERS;
     setOrders(base.filter((o) => o.id !== id));
-    toast({ title: "订单已删除", tone: "neutral" });
+    toast({ title: copy("bookingDeleted"), tone: "neutral" });
   };
 
   return (
     <div className="h-full overflow-y-auto">
       {/* 顶部标题 */}
       <div className="sticky top-0 z-10 bg-surface px-4 py-3 shadow-sm">
-        <h1 className="text-base font-semibold">我的订单</h1>
-        <p className="text-xs text-muted mt-0.5">← 左滑联系师傅 · 右滑删除</p>
+        <h1 className="text-base font-semibold">{copy("myOrders")}</h1>
+        <p className="text-xs text-muted mt-0.5">{copy("swipeLeftToContactTheProfessionalSwipeRightToDelete")}</p>
       </div>
 
       {loading ? (
@@ -184,10 +189,10 @@ export default function OrdersPage() {
       ) : list.length === 0 ? (
         <div className="flex h-64 items-center justify-center">
           <Empty
-            title="暂无订单"
-            description="您还没有预约任何服务，去首页看看吧"
+            title={copy("noBookingsYet")}
+            description={copy("youHaveNotBookedAnyServicesYetExploreServicesOnTheHomePage")}
           >
-            <a href="/demos/mobile" className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground hover:brightness-105">去下单</a>
+            <Link href={demoHref("/demos/mobile")} className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground hover:brightness-105">{copy("bookAService")}</Link>
           </Empty>
         </div>
       ) : (

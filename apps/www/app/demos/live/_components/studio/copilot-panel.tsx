@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./copilot-panel.content";
 import { Bot, Check, Sparkles, Wrench } from "lucide-react";
 import {
   AgentPlan,
@@ -12,17 +13,17 @@ import {
 import type { AiSuggestion } from "../../_data/types";
 
 const PLAN: AgentTask[] = [
-  { title: "暖场 + 福利预告", status: "done" },
-  { title: "讲解 1 号·羊羔绒外套", status: "running", detail: "停留 4:12 · 转化 6.8%" },
-  { title: "发券促单（3 折秒杀）", status: "pending" },
-  { title: "抽奖留人 + 过款 3 号耳机", status: "pending" },
+  { title: copy("welcomeViewersPreviewOffers"), status: "done" },
+  { title: copy("presentProduct1SherpaJacket"), status: "running", detail: copy("watchTime412Conversion68") },
+  { title: copy("sendA70OffFlashSaleCoupon"), status: "pending" },
+  { title: copy("runAGiveawayThenPresentProduct3"), status: "pending" },
 ];
 
 /** 弹幕情绪占比（由当前在线/互动派生的示意值）。 */
 function sentimentLine(comments: number): string {
   const pos = 60 + (comments % 18);
   const neu = Math.floor((100 - pos) * 0.7);
-  return `正向 ${pos}% · 中性 ${neu}% · 疑问 ${100 - pos - neu}%（疑问集中在「尺码 / 发货」）`;
+  return `${copy("positive")}${pos}${copy("neutral")}${neu}${copy("questions")}${100 - pos - neu}${copy("questionsFocusOnSizingAndDelivery")}`;
 }
 
 export function CopilotPanel({
@@ -44,29 +45,31 @@ export function CopilotPanel({
           <Bot className="size-4" />
         </span>
         <div className="leading-tight">
-          <div className="text-sm font-semibold text-foreground">AI 直播副驾</div>
-          <div className="text-[11px] text-muted">实时看弹幕 · 答疑 · 提词 · 控场</div>
+          <div className="text-sm font-semibold text-foreground">{copy("aiLiveCopilot")}</div>
+          <div className="text-[11px] text-muted">{copy("monitorChatAnswerQuestionsGetPromptsRunTheRoom")}</div>
         </div>
         <span className="ml-auto flex items-center gap-1 rounded-full bg-success/12 px-2 py-0.5 text-[11px] font-medium text-success">
           <span className="size-1.5 rounded-full bg-success" />
-          在岗
+
+          {copy("active")}
         </span>
       </div>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-3.5">
-        <AgentPlan title="本场直播策略" tasks={PLAN} />
+        <AgentPlan title={copy("streamStrategy")} tasks={PLAN} />
 
-        <ThinkingBlock title="实时分析弹幕情绪" duration="持续" defaultOpen>
+        <ThinkingBlock title={copy("analyzeChatSentimentInRealTime")} duration={copy("duration")} defaultOpen>
           <StreamingText text={sentimentLine(comments)} streaming />
         </ThinkingBlock>
 
         <div className="space-y-2">
           <div className="flex items-center gap-1.5 text-xs font-medium text-muted">
-            <Sparkles className="size-3.5" /> 副驾建议
+            <Sparkles className="size-3.5" />  {copy("copilotSuggestions")}
           </div>
           {recent.length === 0 && (
             <div className="rounded-[var(--radius)] border border-dashed border-border px-3 py-6 text-center text-xs text-muted">
-              副驾正在聆听弹幕，建议稍后浮现…
+
+              {copy("theCopilotIsListeningToChatSuggestionsWillAppearShortly")}
             </div>
           )}
           {recent.map((s) => (
@@ -76,7 +79,7 @@ export function CopilotPanel({
       </div>
 
       <div className="shrink-0 border-t border-border p-3">
-        <PromptInput placeholder="问问副驾，如「帮我想个促单话术」" onSubmit={(v) => v.trim() && onAsk(v.trim())} />
+        <PromptInput placeholder={copy("askTheCopilotForExampleSuggestAClosingPitch")} onSubmit={(v) => v.trim() && onAsk(v.trim())} />
       </div>
     </div>
   );
@@ -96,7 +99,8 @@ function SuggestionCard({ s, onAdopt }: { s: AiSuggestion; onAdopt: (id: string)
           <span className="text-xs text-muted">{s.text}</span>
           {!s.adopted && (
             <Button size="sm" onClick={() => onAdopt(s.id)}>
-              执行
+
+              {copy("run")}
             </Button>
           )}
         </div>
@@ -106,18 +110,19 @@ function SuggestionCard({ s, onAdopt }: { s: AiSuggestion; onAdopt: (id: string)
   if (s.kind === "reply") {
     return (
       <div className="rounded-[var(--radius)] border border-border bg-bg p-2.5">
-        {s.context && <div className="mb-1 text-[11px] text-muted">观众问：{s.context}</div>}
+        {s.context && <div className="mb-1 text-[11px] text-muted">{copy("viewerAsked")}{s.context}</div>}
         <div className="text-xs leading-relaxed text-foreground">
           <StreamingText text={s.text} streaming={!s.adopted} />
         </div>
         <div className="mt-2 flex items-center justify-end gap-1.5">
           {s.adopted ? (
             <span className="flex items-center gap-1 text-[11px] text-success">
-              <Check className="size-3.5" /> 已回复到公屏
+              <Check className="size-3.5" />  {copy("replyPostedToChat")}
             </span>
           ) : (
             <Button size="sm" variant="outline" onClick={() => onAdopt(s.id)}>
-              采用并回复
+
+              {copy("useAndReply")}
             </Button>
           )}
         </div>

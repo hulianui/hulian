@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./header-bar.content";
 import { useEffect, useState } from "react";
 import {
   AnimatedThemeToggler,
@@ -16,6 +17,11 @@ import {
 import { Maximize, Pause, Play, RefreshCw, Satellite } from "lucide-react";
 
 export type DataSource = "正常" | "异常";
+
+export const DATA_SOURCE_LABELS: Record<DataSource, string> = {
+  正常: copy("dataSourceNormal"),
+  异常: copy("dataSourceException"),
+};
 
 export interface HeaderBarProps {
   source: DataSource;
@@ -41,12 +47,26 @@ function useClock() {
   return now;
 }
 
-function IconAction({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
+function IconAction({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <Tooltip>
       <TooltipTrigger
         render={
-          <Button variant="ghost" size="iconSm" aria-label={label} onClick={onClick} className="text-muted hover:text-foreground">
+          <Button
+            variant="ghost"
+            size="iconSm"
+            aria-label={label}
+            onClick={onClick}
+            className="text-muted hover:text-foreground"
+          >
             {children}
           </Button>
         }
@@ -56,7 +76,14 @@ function IconAction({ label, onClick, children }: { label: string; onClick: () =
   );
 }
 
-export function HeaderBar({ source, onSourceChange, running, onToggleRunning, onRefresh, refreshing }: HeaderBarProps) {
+export function HeaderBar({
+  source,
+  onSourceChange,
+  running,
+  onToggleRunning,
+  onRefresh,
+  refreshing,
+}: HeaderBarProps) {
   const clock = useClock();
 
   const toggleFullscreen = () => {
@@ -72,14 +99,19 @@ export function HeaderBar({ source, onSourceChange, running, onToggleRunning, on
           <Satellite className="size-5" />
         </span>
         <div className="leading-tight">
-          <div className="text-lg font-semibold tracking-tight text-foreground">瀚云全球调度指挥中心</div>
+          <div className="text-lg font-semibold tracking-tight text-foreground">
+            {copy("hanyunGlobalDispatchCommandCenter")}
+          </div>
           <div className="text-xs text-muted">HanCloud Global CDN · Real-time Orchestration</div>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
         <div className="hidden items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1.5 font-mono text-sm tabular-nums text-foreground md:flex">
-          <Dot tone={source === "异常" ? "danger" : running ? "success" : "warning"} pulse={running && source !== "异常"} />
+          <Dot
+            tone={source === "异常" ? "danger" : running ? "success" : "warning"}
+            pulse={running && source !== "异常"}
+          />
           {clock}
         </div>
 
@@ -87,53 +119,57 @@ export function HeaderBar({ source, onSourceChange, running, onToggleRunning, on
           value={source}
           onValueChange={(v) => onSourceChange(v as DataSource)}
           items={[
-            { value: "正常", label: "数据源：正常" },
-            { value: "异常", label: "数据源：异常" },
+            { value: "正常", label: copy("dataSourceNormal") },
+            { value: "异常", label: copy("dataSourceException") },
           ]}
         >
-          <SelectTrigger className="w-36" aria-label="数据源" />
+          <SelectTrigger className="w-36" aria-label={copy("dataSource")} />
           <SelectContent>
-            <SelectItem value="正常">数据源：正常</SelectItem>
-            <SelectItem value="异常">数据源：异常</SelectItem>
+            <SelectItem value={"正常"}>{copy("dataSourceNormal")}</SelectItem>
+            <SelectItem value={"异常"}>{copy("dataSourceException")}</SelectItem>
           </SelectContent>
         </Select>
 
         <div className="flex items-center gap-0.5">
-          <IconAction label="手动刷新" onClick={onRefresh}>
+          <IconAction label={copy("manualRefresh")} onClick={onRefresh}>
             <RefreshCw className={refreshing ? "size-4 animate-spin" : "size-4"} />
           </IconAction>
 
           {running ? (
             <Popconfirm
-              title="停止实时刷新？"
-              description="停止后大屏将不再自动拉取实时指标，需手动刷新。"
-              okText="停止"
+              title={copy("stopLiveRefresh")}
+              description={copy("afterStoppingTheLargeScreenWillNoLongerAutomaticallyPull")}
+              okText={copy("stop")}
               danger
               onConfirm={() => onToggleRunning(false)}
             >
               <Button
                 variant="ghost"
                 size="iconSm"
-                aria-label="停止实时刷新"
-                title="停止实时刷新"
+                aria-label={copy("stopLiveRefreshAlternate")}
+                title={copy("stopLiveRefreshAlternate")}
                 className="text-muted hover:text-foreground"
               >
                 <Pause className="size-4" />
               </Button>
             </Popconfirm>
           ) : (
-            <IconAction label="恢复实时刷新" onClick={() => onToggleRunning(true)}>
+            <IconAction label={copy("resumeLiveRefresh")} onClick={() => onToggleRunning(true)}>
               <Play className="size-4" />
             </IconAction>
           )}
 
-          <IconAction label="全屏" onClick={toggleFullscreen}>
+          <IconAction label={copy("fullscreen")} onClick={toggleFullscreen}>
             <Maximize className="size-4" />
           </IconAction>
 
           <Tooltip>
-            <TooltipTrigger render={<AnimatedThemeToggler className="grid size-8 place-items-center rounded-md text-muted hover:text-foreground" />} />
-            <TooltipContent>切换明暗</TooltipContent>
+            <TooltipTrigger
+              render={
+                <AnimatedThemeToggler className="grid size-8 place-items-center rounded-md text-muted hover:text-foreground" />
+              }
+            />
+            <TooltipContent>{copy("toggleLightAndDark")}</TooltipContent>
           </Tooltip>
         </div>
       </div>

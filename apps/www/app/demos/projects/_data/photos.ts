@@ -1,4 +1,7 @@
 import type { Photo, PhotoTag, ProjectStage } from "./types";
+import { copy } from "./photos.content";
+import { projects } from "./projects";
+import { projectStageLabel } from "./status";
 
 // 工作照片 mock：覆盖多项目/阶段/标签，ratio 不等高喂瀑布流。
 // 占位图由 photoArt() 程序化生成（data-URI SVG，离线零素材），按 tag 配色 + 文案，语义贴合施工照片。
@@ -46,12 +49,50 @@ const seeds: Seed[] = [
 // 让占位图语义贴合施工照片，而非外链随机图（避免"电缆点验配城市夜景"的违和）。
 const TAG_HUE: Record<PhotoTag, number> = { 进度: 210, 材料: 35, 验收: 150, 隐患: 8 };
 
+const CAPTIONS = [
+  copy("chilledWaterMainInstallation"),
+  copy("cableTrayInstallationAccepted"),
+  copy("yjvCableDeliveryInspection"),
+  copy("switchgearPositioned"),
+  copy("hepaOutletCleanlinessTest"),
+  copy("cleanroomPanelCornerFinish"),
+  copy("epoxyFloorInstallation"),
+  copy("passThroughSealRemediation"),
+  copy("dcChargerFoundationPour"),
+  copy("distributionBoxGroundingRemediation"),
+  copy("substationPositioned"),
+  copy("vrvUnitsDelivered"),
+  copy("galvanizedDuctPrefabrication"),
+  copy("refrigerantPipeSupportInstallation"),
+  copy("refrigerationUnitCompletionPhoto"),
+  copy("coldRoomPullDownTest"),
+  copy("fanCoilReplacementCompleted"),
+  copy("coolingTowerFoundationReinforcement"),
+  copy("buswayHorizontalInstallation"),
+  copy("groundingResistanceTest"),
+  copy("cleanroomHvacCommissioning"),
+  copy("cableTrayBondingJumper"),
+  copy("serviceShaftFirestopRemediation"),
+  copy("coldRoomPanelsDelivered"),
+] as const;
+
+const UPLOADER_LABEL: Record<string, string> = {
+  鸿基机电班组: copy("hongjiMepCrew"),
+  陈工: copy("engineerChen"),
+  金顶装饰队: copy("jindingFitOutCrew"),
+  周磊: copy("zhouLei"),
+  恒通安装队: copy("hengtongInstallationCrew"),
+  高敏: copy("gaoMin"),
+  远大暖通队: copy("yuandaHvacCrew"),
+  苏建国: copy("suJianguo"),
+};
+
 const xmlEscape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-function photoArt(s: Seed, w: number, h: number): string {
+function photoArt(s: Seed, caption: string, projectName: string, w: number, h: number): string {
   const hue = TAG_HUE[s.tag];
-  const fontSize = Math.max(26, Math.min(40, Math.round(w / Math.max(7, s.caption.length))));
+  const fontSize = Math.max(26, Math.min(40, Math.round(w / Math.max(7, caption.length))));
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -67,8 +108,8 @@ function photoArt(s: Seed, w: number, h: number): string {
   <circle cx="${(w * 0.82).toFixed(0)}" cy="${(h * 0.2).toFixed(0)}" r="${(w * 0.26).toFixed(0)}" fill="rgba(255,255,255,0.06)"/>
   <rect x="${(w * 0.5 - 22).toFixed(0)}" y="${(h * 0.5 - 78).toFixed(0)}" width="44" height="32" rx="4" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="3"/>
   <circle cx="${(w * 0.5).toFixed(0)}" cy="${(h * 0.5 - 62).toFixed(0)}" r="9" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="3"/>
-  <text x="50%" y="52%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="${fontSize}" font-weight="600" fill="#fff">${xmlEscape(s.caption)}</text>
-  <text x="50%" y="58%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="20" fill="rgba(255,255,255,0.78)">${xmlEscape(s.projectName)} · ${s.stage}</text>
+  <text x="50%" y="52%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="${fontSize}" font-weight="600" fill="#fff">${xmlEscape(caption)}</text>
+  <text x="50%" y="58%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="20" fill="rgba(255,255,255,0.78)">${xmlEscape(projectName)} · ${projectStageLabel[s.stage]}</text>
 </svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
@@ -76,17 +117,19 @@ function photoArt(s: Seed, w: number, h: number): string {
 export const photos: Photo[] = seeds.map((s, i) => {
   const w = 800;
   const h = Math.round(w * s.ratio);
+  const caption = CAPTIONS[i];
+  const projectName = projects.find((project) => project.id === s.projectId)?.name ?? s.projectName;
   return {
     id: `ph${i + 1}`,
     projectId: s.projectId,
-    projectName: s.projectName,
+    projectName,
     stage: s.stage,
     tag: s.tag,
-    caption: s.caption,
-    uploader: s.uploader,
+    caption,
+    uploader: UPLOADER_LABEL[s.uploader] ?? s.uploader,
     takenAt: s.takenAt,
     ratio: s.ratio,
-    src: photoArt(s, w, h),
+    src: photoArt(s, caption, projectName, w, h),
   };
 });
 

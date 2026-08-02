@@ -8,10 +8,24 @@ import { RemoteSelect } from "../remote-select";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
 import { canCollapse, planLayout } from "./search-form.layout";
 import type { SearchField, SearchFormProps } from "./search-form.types";
+import { useComponentLocale } from "../config/locale-context";
 
 const ChevronDown = ({ className }: { className?: string }) => (
-  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" className={className}>
-    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 16 16"
+    fill="none"
+    aria-hidden="true"
+    className={className}
+  >
+    <path
+      d="M4 6l4 4 4-4"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -78,6 +92,7 @@ function renderControl(
   field: SearchField,
   value: unknown,
   setValue: (name: string, v: unknown) => void,
+  selectPlaceholder: string,
 ): ReactNode {
   const onChange = (v: unknown) => setValue(field.name, v);
 
@@ -88,7 +103,7 @@ function renderControl(
     return (
       <Select
         items={field.options}
-        placeholder={field.placeholder ?? "请选择"}
+        placeholder={field.placeholder ?? selectPlaceholder}
         value={v === "" ? null : v}
         onValueChange={(val: unknown) => onChange(val == null ? "" : String(val))}
       >
@@ -110,7 +125,7 @@ function renderControl(
       <Select
         items={field.options}
         multiple
-        placeholder={field.placeholder ?? "请选择"}
+        placeholder={field.placeholder ?? selectPlaceholder}
         value={arr}
         onValueChange={(val: unknown) => onChange(Array.isArray(val) ? val.map(String) : [])}
       >
@@ -136,7 +151,7 @@ function renderControl(
         multiple
         fetcher={field.fetcher}
         resolveValue={field.resolveValue}
-        placeholder={field.placeholder ?? "请选择"}
+        placeholder={field.placeholder ?? selectPlaceholder}
         value={Array.isArray(value) ? (value as string[]) : []}
         onChange={(v) => onChange(v ?? [])}
       />
@@ -144,7 +159,7 @@ function renderControl(
       <RemoteSelect
         fetcher={field.fetcher}
         resolveValue={field.resolveValue}
-        placeholder={field.placeholder ?? "请选择"}
+        placeholder={field.placeholder ?? selectPlaceholder}
         value={value == null || value === "" ? null : String(value)}
         onChange={(v) => onChange(v ?? "")}
       />
@@ -186,7 +201,11 @@ function renderControl(
 
   // 其余落到单个 Input：date / datetime 走原生控件类型，缺省是文本。
   const type =
-    field.type === "date" ? "date" : field.type === "datetime" ? "datetime-local" : (field.inputType ?? "text");
+    field.type === "date"
+      ? "date"
+      : field.type === "datetime"
+      ? "datetime-local"
+      : field.inputType ?? "text";
   return (
     <Input
       type={type}
@@ -207,11 +226,18 @@ export function SearchForm({
   gap = 4,
   collapsible = true,
   defaultCollapsed = true,
-  submitText = "查询",
-  resetText = "重置",
+  submitText,
+  resetText,
   loading = false,
   className,
 }: SearchFormProps) {
+  const labels = useComponentLocale().searchForm ?? {
+    selectPlaceholder: "请选择",
+    submit: "查询",
+    reset: "重置",
+    expand: "展开",
+    collapse: "收起",
+  };
   const isControlled = values !== undefined;
   const [internal, setInternal] = useState<Record<string, unknown>>(() => seedDefaults(fields));
   const current = isControlled ? values : internal;
@@ -247,22 +273,32 @@ export function SearchForm({
     >
       <div
         className="grid"
-        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`, gap: `${gap * 0.25}rem` }}
+        style={{
+          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+          gap: `${gap * 0.25}rem`,
+        }}
       >
         {visible.map((field) => (
           <div
             key={field.name}
-            style={field.colSpan ? { gridColumn: `span ${Math.min(field.colSpan, columns)}` } : undefined}
+            style={
+              field.colSpan ? { gridColumn: `span ${Math.min(field.colSpan, columns)}` } : undefined
+            }
           >
-            <Field label={field.label}>{renderControl(field, current[field.name], setValue)}</Field>
+            <Field label={field.label}>
+              {renderControl(field, current[field.name], setValue, labels.selectPlaceholder)}
+            </Field>
           </div>
         ))}
-        <div className="flex items-end justify-end gap-2" style={{ gridColumn: `${actionStart} / -1` }}>
+        <div
+          className="flex items-end justify-end gap-2"
+          style={{ gridColumn: `${actionStart} / -1` }}
+        >
           <Button type="submit" loading={loading}>
-            {submitText}
+            {submitText ?? labels.submit}
           </Button>
           <Button type="button" variant="ghost" onClick={handleReset}>
-            {resetText}
+            {resetText ?? labels.reset}
           </Button>
           {collapsibleActive && (
             <button
@@ -270,7 +306,7 @@ export function SearchForm({
               onClick={() => setCollapsed((c) => !c)}
               className="inline-flex h-10 shrink-0 items-center gap-1 text-sm text-primary hover:underline"
             >
-              {collapsed ? "展开" : "收起"}
+              {collapsed ? labels.expand : labels.collapse}
               <ChevronDown className={cn("transition-transform", !collapsed && "rotate-180")} />
             </button>
           )}

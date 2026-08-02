@@ -15,6 +15,8 @@ import {
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { cva } from "class-variance-authority";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import {
   Combobox,
@@ -129,16 +131,26 @@ export function Select({
   multiple,
   clearable,
   searchable,
-  searchPlaceholder = "搜索",
-  emptyMessage = "无匹配项",
+  searchPlaceholder,
+  emptyMessage,
   loading,
-  loadingText = "加载中",
+  loadingText,
   value: valueProp,
   defaultValue,
   onValueChange,
   children,
   ...props
 }: SelectProps) {
+  const copy = useComponentLocale().select ?? {
+    search: "搜索",
+    empty: "无匹配项",
+    loading: "加载中",
+    separator: "、",
+    clear: "清除",
+  };
+  const resolvedSearchPlaceholder = searchPlaceholder ?? copy.search;
+  const resolvedEmptyMessage = emptyMessage ?? copy.empty;
+  const resolvedLoadingText = loadingText ?? copy.loading;
   // 值镜像：clearable/searchable 需要「读当前值」与「程序化置空」，Base UI 的 store 不对外暴露。
   // 受控时以 valueProp 为准；非受控时镜像跟着 onValueChange 走（此时仍把 defaultValue 交给 Base UI，
   // 除非开了 clearable —— 清除必须能反写，那一档才由瑚琏接管为受控）。
@@ -168,7 +180,7 @@ export function Select({
   const loadingNode = (
     <div className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted">
       <Spinner size="sm" tone="current" />
-      {loadingText}
+      {resolvedLoadingText}
     </div>
   );
 
@@ -187,10 +199,10 @@ export function Select({
       multiple,
       clearable,
       searchable,
-      searchPlaceholder,
-      emptyMessage: loading ? loadingNode : emptyMessage,
+      searchPlaceholder: resolvedSearchPlaceholder,
+      emptyMessage: loading ? loadingNode : resolvedEmptyMessage,
       loading,
-      loadingText,
+      loadingText: resolvedLoadingText,
       searchItems,
       hasValue,
       onClear: handleClear,
@@ -203,10 +215,10 @@ export function Select({
       multiple,
       clearable,
       searchable,
-      searchPlaceholder,
-      emptyMessage,
+      resolvedSearchPlaceholder,
+      resolvedEmptyMessage,
       loading,
-      loadingText,
+      resolvedLoadingText,
       searchItems,
       hasValue,
       handleClear,
@@ -274,6 +286,7 @@ function renderMultipleValue(
   items: SelectProps["items"],
   placeholder: ReactNode,
   maxDisplay: number,
+  separator: string,
 ) {
   const values = Array.isArray(value) ? value : value == null ? [] : [value];
   if (values.length === 0) return placeholder ?? null;
@@ -289,7 +302,7 @@ function renderMultipleValue(
     <>
       {shown.map((label, i) => (
         <Fragment key={i}>
-          {i > 0 && "、"}
+          {i > 0 && separator}
           {label}
         </Fragment>
       ))}
@@ -315,6 +328,13 @@ export function SelectTrigger({
   ref: forwardedRef,
   ...triggerProps
 }: SelectTriggerProps) {
+  const copy = useComponentLocale().select ?? {
+    search: "搜索",
+    empty: "无匹配项",
+    loading: "加载中",
+    separator: "、",
+    clear: "清除",
+  };
   const { items, placeholder, multiple, searchable, clearable, loading, hasValue, onClear } =
     useContext(SelectMetaContext);
   const anchorRef = useContext(ComboboxAnchorContext);
@@ -347,7 +367,7 @@ export function SelectTrigger({
         {(value: unknown) =>
           multiple ? (
             <span className="truncate">
-              {renderMultipleValue(value, items, placeholder, maxDisplay)}
+              {renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)}
             </span>
           ) : (
             <span className={cn("truncate", value == null && "text-muted")}>
@@ -373,7 +393,8 @@ export function SelectTrigger({
           多选走函数式 children 平铺已选 label + 超出 +N。data-placeholder 态置 muted。 */}
       <BaseSelect.Value className="truncate data-[placeholder]:text-muted">
         {multiple
-          ? (value: unknown) => renderMultipleValue(value, items, placeholder, maxDisplay)
+          ? (value: unknown) =>
+              renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)
           : undefined}
       </BaseSelect.Value>
       {tail ?? (
@@ -394,7 +415,7 @@ export function SelectTrigger({
       {showClear && (
         <button
           type="button"
-          aria-label="清除"
+          aria-label={copy.clear}
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { useState } from "react";
 import {
   AnimatedThemeToggler,
@@ -67,7 +68,12 @@ import {
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
-import { CONVERSATIONS, CONVERSATION_GROUPS, type ConversationStub } from "./conversations";
+import {
+  CONVERSATIONS,
+  CONVERSATION_GROUP_LABELS,
+  CONVERSATION_GROUPS,
+  type ConversationStub,
+} from "./conversations";
 import { useChatStream } from "./use-chat-stream";
 import { useMockData } from "../lib/async";
 import type { AssistantMessage } from "./chat-types";
@@ -81,14 +87,14 @@ const MODELS: ComboboxItemData[] = [
   { value: "claude-haiku", label: "Claude Haiku" },
   { value: "gemini-pro", label: "Gemini 2.5 Pro" },
   { value: "gemini-flash", label: "Gemini 2.5 Flash" },
-  { value: "hulian", label: "瑚琏 1.0" },
+  { value: "hulian", label: copy("coralReef") },
 ];
 
 const SUGGESTIONS = [
-  "北京今天天气怎么样",
-  "帮我写一个快速排序",
-  "解释一下什么是闭包",
-  "你能做什么？",
+  copy("howSTheWeatherInBeijingToday"),
+  copy("writeAQuickSortForMe"),
+  copy("explainWhatAClosureIs"),
+  copy("whatCanYouDo"),
 ];
 
 let convoSeq = 0;
@@ -116,7 +122,7 @@ function Rail({
   const navItems: NavMenuNode[] = CONVERSATION_GROUPS.map((group) => ({
     type: "group" as const,
     key: group,
-    label: group,
+    label: CONVERSATION_GROUP_LABELS[group],
     children: convos
       .filter((c) => c.group === group)
       .map((c) => ({
@@ -126,19 +132,19 @@ function Rail({
         // 的非法嵌套 / hydration 报错。hover/聚焦才显，用 NavMenu 暴露的 group-hover/nav-row 行级钩子。
         actions: (
           <Popconfirm
-            title="删除对话？"
-            description="此操作不可撤销，对话记录将永久删除。"
+            title={copy("deleteConversation")}
+            description={copy("thisActionCannotBeUndoneAndTheConversationLogWill")}
             danger
-            okText="删除"
+            okText={copy("remove")}
             onConfirm={async () => {
               await new Promise<void>((r) => setTimeout(r, 400));
               onDelete(c.id);
-              toast({ title: "对话已删除", tone: "info" });
+              toast({ title: copy("conversationDeleted"), tone: "info" });
             }}
           >
             <button
               type="button"
-              aria-label={`删除对话：${c.title}`}
+              aria-label={copy("toDeleteAConversation", c.title)}
               onClick={(e) => e.stopPropagation()}
               className="invisible rounded p-0.5 text-muted opacity-0 transition-opacity hover:text-danger group-hover/nav-row:visible group-hover/nav-row:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
@@ -152,28 +158,28 @@ function Rail({
   return (
     <div className="flex h-full flex-col">
       {/* 顶部：品牌 + 搜索 + 折叠 */}
-      <Stack
-        direction="row"
-        align="center"
-        justify="between"
-        className="px-3 py-3"
-      >
+      <Stack direction="row" align="center" justify="between" className="px-3 py-3">
         <Stack direction="row" align="center" gap={2}>
           <Dot tone="brand" />
           <Text as="span" weight="semibold" className="tracking-tight">
-            瑚琏助手
+            {copy("coralAssistants")}
           </Text>
         </Stack>
         <Stack direction="row" align="center" gap={1}>
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button variant="ghost" size="iconSm" aria-label="搜索对话" className="text-muted hover:text-foreground">
+                <Button
+                  variant="ghost"
+                  size="iconSm"
+                  aria-label={copy("searchConversations")}
+                  className="text-muted hover:text-foreground"
+                >
                   <Search className="size-4" />
                 </Button>
               }
             />
-            <TooltipContent>搜索对话</TooltipContent>
+            <TooltipContent>{copy("searchConversations")}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger
@@ -182,22 +188,26 @@ function Rail({
                   variant="ghost"
                   size="iconSm"
                   onClick={onCollapse}
-                  aria-label="收起侧栏"
+                  aria-label={copy("collapseSidebar")}
                   className="text-muted hover:text-foreground"
                 >
                   <PanelLeft className="size-4" />
                 </Button>
               }
             />
-            <TooltipContent>收起侧栏</TooltipContent>
+            <TooltipContent>{copy("collapseSidebar")}</TooltipContent>
           </Tooltip>
         </Stack>
       </Stack>
 
       {/* 新建 + 会话导航（滚动区） */}
       <div className="flex-1 space-y-3 overflow-y-auto px-3 pb-2">
-        <Button variant="outline" onClick={onNew} className="w-full justify-center gap-2 rounded-full">
-          <Plus className="size-4" aria-hidden /> 新建对话
+        <Button
+          variant="outline"
+          onClick={onNew}
+          className="w-full justify-center gap-2 rounded-full"
+        >
+          <Plus className="size-4" aria-hidden /> {copy("newConversation")}
         </Button>
         {/* 加载态：useMockData 驱动骨架，模拟初始会话列表加载 */}
         {loadingConvos ? (
@@ -207,7 +217,9 @@ function Rail({
             className="w-full"
             items={navItems}
             selectedKeys={[activeId]}
-            onSelect={(key) => { void onSelect(key); }}
+            onSelect={(key) => {
+              void onSelect(key);
+            }}
           />
         )}
       </div>
@@ -216,10 +228,16 @@ function Rail({
       <div className="flex items-center gap-1 border-t border-border p-2">
         <button
           type="button"
-          onClick={() => toast({ title: "账户", description: "demo 演示，未接入真实账户体系" })}
+          onClick={() =>
+            toast({ title: copy("account"), description: copy("demoNoAccessToLiveAccountSystem") })
+          }
           className="flex flex-1 items-center rounded-lg px-1.5 py-1.5 text-left outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
         >
-          <User name="瑚琏用户" description="免费版" avatarProps={{ size: "sm", fallback: "瑚" }} />
+          <User
+            name={copy("coralReefUsers")}
+            description={copy("freeVersion")}
+            avatarProps={{ size: "sm", fallback: copy("coral") }}
+          />
         </button>
         <Menu>
           <MenuTrigger
@@ -227,7 +245,7 @@ function Rail({
               <Button
                 variant="ghost"
                 size="iconSm"
-                aria-label="账户菜单"
+                aria-label={copy("accountMenu")}
                 className="text-muted hover:text-foreground"
               >
                 <MoreHorizontal className="size-4" />
@@ -235,12 +253,21 @@ function Rail({
             }
           />
           <MenuContent side="top" align="end">
-            <MenuItem onClick={() => toast({ title: "个人设置", tone: "info" })}>个人设置</MenuItem>
-            <MenuItem onClick={() => toast({ title: "升级到 Pro", tone: "info" })}>升级到 Pro</MenuItem>
-            <MenuItem onClick={() => toast({ title: "帮助与反馈", tone: "info" })}>帮助与反馈</MenuItem>
+            <MenuItem onClick={() => toast({ title: copy("personalSettings"), tone: "info" })}>
+              {copy("personalSettings")}
+            </MenuItem>
+            <MenuItem onClick={() => toast({ title: copy("upgradeToPro"), tone: "info" })}>
+              {copy("upgradeToPro")}
+            </MenuItem>
+            <MenuItem onClick={() => toast({ title: copy("helpFeedback"), tone: "info" })}>
+              {copy("helpFeedback")}
+            </MenuItem>
             <MenuSeparator />
-            <MenuItem variant="danger" onClick={() => toast({ title: "已退出登录", tone: "info" })}>
-              退出登录
+            <MenuItem
+              variant="danger"
+              onClick={() => toast({ title: copy("loggedOut"), tone: "info" })}
+            >
+              {copy("logOut")}
             </MenuItem>
           </MenuContent>
         </Menu>
@@ -258,7 +285,7 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
       {m.thinking ? (
         <ThinkingBlock
           thinking={!m.thinkingDone}
-          duration={m.thinkingDone && m.duration ? `思考 ${m.duration}s` : undefined}
+          duration={m.thinkingDone && m.duration ? copy("thinkingDuration", m.duration) : undefined}
         >
           {m.thinking}
         </ThinkingBlock>
@@ -299,12 +326,13 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
                   </Text>
                   {c.source && (
                     <Text as="p" size="xs" className="text-muted">
-                      来源：{c.source}
+                      {copy("source")}
+                      {c.source}
                     </Text>
                   )}
                   <Text as="p" size="xs" className="line-clamp-4 text-muted leading-relaxed">
                     {/* demo 占位原文摘要——真实场景接引用正文 */}
-                    这是引用来源的原文摘要。悬停在引用标签上可预览文章摘要，帮助读者快速判断引用内容的相关性和可信度，无需跳转即可获得上下文。
+                    {copy("thisIsASummaryOfTheOriginalTextOfThe")}
                   </Text>
                   {c.href && (
                     <a
@@ -313,7 +341,7 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
                       rel="noopener noreferrer"
                       className="text-xs text-primary underline-offset-2 hover:underline"
                     >
-                      查看原文 →
+                      {copy("seeOriginalText")}
                     </a>
                   )}
                 </Stack>
@@ -328,10 +356,12 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
         // 以确保多个图标钮共享 delay 分组，改善快速扫过时的体验
         <MessageActions
           content={m.text}
-          onCopy={() => toast({ title: "已复制到剪贴板", tone: "info" })}
-          onRegenerate={() => toast({ title: "重新生成中…", tone: "info" })}
-          onLike={() => toast({ title: "感谢你的反馈 👍", tone: "info" })}
-          onDislike={() => toast({ title: "已记录，我们会继续改进", tone: "info" })}
+          onCopy={() => toast({ title: copy("copiedToClipboard"), tone: "info" })}
+          onRegenerate={() => toast({ title: copy("regenerating"), tone: "info" })}
+          onLike={() => toast({ title: copy("thankYouForYourFeedback"), tone: "info" })}
+          onDislike={() =>
+            toast({ title: copy("recordedAndWeWillContinueToImprove"), tone: "info" })
+          }
         />
       ) : null}
     </Stack>
@@ -368,7 +398,7 @@ export default function AiChatDemo() {
   };
   const newConvo = () => {
     const id = newConvoId();
-    setConvos((cs) => [{ id, title: "新对话", group: "今天" }, ...cs]);
+    setConvos((cs) => [{ id, title: copy("newConversationAlternate"), group: "今天" }, ...cs]);
     setActiveId(id);
     reset();
     setDrawerOpen(false);
@@ -390,7 +420,9 @@ export default function AiChatDemo() {
     send(text);
     setConvos((cs) =>
       cs.map((c) =>
-        c.id === activeId && c.title === "新对话" ? { ...c, title: text.slice(0, 18) } : c,
+        c.id === activeId && c.title === copy("newConversationAlternate")
+          ? { ...c, title: text.slice(0, 18) }
+          : c,
       ),
     );
   };
@@ -402,7 +434,7 @@ export default function AiChatDemo() {
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <DrawerTrigger
               render={
-                <Button variant="ghost" size="iconSm" aria-label="会话列表">
+                <Button variant="ghost" size="iconSm" aria-label={copy("sessionList")}>
                   <MenuIcon className="size-4" />
                 </Button>
               }
@@ -430,7 +462,7 @@ export default function AiChatDemo() {
               variant="ghost"
               size="iconSm"
               onClick={() => setRailCollapsed(false)}
-              aria-label="展开侧栏"
+              aria-label={copy("expandSidebar")}
               className="text-muted hover:text-foreground"
             >
               <PanelLeft className="size-4" />
@@ -438,7 +470,7 @@ export default function AiChatDemo() {
           </span>
         ) : null}
         <Heading as="span" size="base" weight="semibold">
-          AI 对话工具
+          {copy("aiConversationTool")}
         </Heading>
         <Tag variant="soft" size="sm">
           demo
@@ -446,23 +478,23 @@ export default function AiChatDemo() {
       </Stack>
       <Stack direction="row" align="center" className="gap-2">
         <Combobox
-        items={MODELS}
-        value={MODELS.find((m) => m.value === model) ?? undefined}
-        onValueChange={(item) => {
-          if (item) {
-            setModel(item.value);
-            toast({ title: `已切换到 ${String(item.label)}`, tone: "info" });
-          }
-        }}
-      >
-        <ComboboxTrigger size="sm" placeholder="选择模型" className="w-40" />
-        <ComboboxContent searchPlaceholder="搜索模型…">
-          {(item) => (
-            <ComboboxItem key={item.value} value={item}>
-              {item.label}
-            </ComboboxItem>
-          )}
-        </ComboboxContent>
+          items={MODELS}
+          value={MODELS.find((m) => m.value === model) ?? undefined}
+          onValueChange={(item) => {
+            if (item) {
+              setModel(item.value);
+              toast({ title: copy("switchedModel", String(item.label)), tone: "info" });
+            }
+          }}
+        >
+          <ComboboxTrigger size="sm" placeholder={copy("selectModel")} className="w-40" />
+          <ComboboxContent searchPlaceholder={copy("searchForAModel")}>
+            {(item) => (
+              <ComboboxItem key={item.value} value={item}>
+                {item.label}
+              </ComboboxItem>
+            )}
+          </ComboboxContent>
         </Combobox>
         <AnimatedThemeToggler />
       </Stack>
@@ -525,20 +557,20 @@ export default function AiChatDemo() {
               <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6">
                 <Empty
                   icon={<Bot className="size-10" aria-hidden />}
-                  title="开始一段对话"
-                  description="问我天气、让我写代码、或解释一个概念"
+                  title={copy("startAConversation")}
+                  description={copy("askMeAboutTheWeatherAskMeToCodeOr")}
                 />
                 <Segmented
                   size="sm"
                   value={mode}
                   onValueChange={setMode}
-                  aria-label="对话模式"
+                  aria-label={copy("conversationMode")}
                   items={[
                     {
                       value: "fast",
                       label: (
                         <span className="flex items-center gap-1.5">
-                          <Zap className="size-3.5" aria-hidden /> 快速模式
+                          <Zap className="size-3.5" aria-hidden /> {copy("quickMode")}
                         </span>
                       ),
                     },
@@ -546,7 +578,7 @@ export default function AiChatDemo() {
                       value: "expert",
                       label: (
                         <span className="flex items-center gap-1.5">
-                          <Gem className="size-3.5" aria-hidden /> 专家模式
+                          <Gem className="size-3.5" aria-hidden /> {copy("expertMode")}
                         </span>
                       ),
                     },
@@ -562,14 +594,18 @@ export default function AiChatDemo() {
               <Conversation className="flex-1 px-4 py-6 sm:px-6">
                 {messages.map((m) =>
                   m.role === "user" ? (
-                    <ChatMessage key={m.id} role="user" avatar={<Avatar size="sm" fallback="我" />}>
+                    <ChatMessage
+                      key={m.id}
+                      role="user"
+                      avatar={<Avatar size="sm" fallback={copy("me")} />}
+                    >
                       {m.text}
                     </ChatMessage>
                   ) : (
                     <ChatMessage
                       key={m.id}
                       role="assistant"
-                      name="瑚琏助手"
+                      name={copy("coralAssistants")}
                       avatar={<Avatar size="sm" fallback={<Bot className="size-4" />} />}
                     >
                       <AssistantBody m={m} />
@@ -584,7 +620,7 @@ export default function AiChatDemo() {
                   onSubmit={handleSend}
                   loading={loading}
                   onStop={stop}
-                  placeholder="给瑚琏助手发消息…"
+                  placeholder={copy("sendAMessageToHulianSAssistant")}
                   actions={
                     <>
                       <Toggle
@@ -592,20 +628,20 @@ export default function AiChatDemo() {
                         size="sm"
                         pressed={deepThink}
                         onPressedChange={setDeepThink}
-                        aria-label="深度思考"
+                        aria-label={copy("deepThinking")}
                       >
                         <Sparkles className="size-3.5" aria-hidden />
-                        深度思考
+                        {copy("deepThinking")}
                       </Toggle>
                       <Toggle
                         variant="pill"
                         size="sm"
                         pressed={webSearch}
                         onPressedChange={setWebSearch}
-                        aria-label="智能搜索"
+                        aria-label={copy("smartSearch")}
                       >
                         <Globe className="size-3.5" aria-hidden />
-                        智能搜索
+                        {copy("smartSearch")}
                       </Toggle>
                     </>
                   }
@@ -617,24 +653,23 @@ export default function AiChatDemo() {
                             variant="ghost"
                             size="iconSm"
                             className="shrink-0 text-muted hover:text-foreground"
-                            aria-label="添加附件"
+                            aria-label={copy("addAttachment")}
                           >
                             <Paperclip className="size-4" />
                           </Button>
                         }
                       />
-                      <TooltipContent>添加附件</TooltipContent>
+                      <TooltipContent>{copy("addAttachment")}</TooltipContent>
                     </Tooltip>
                   }
                 />
                 <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-xs text-muted">
-                  <span>瑚琏助手可能会出错 · 本 demo 为纯前端交互演示，未接入真实模型</span>
+                  <span>{copy("hualianAssistantMayMakeErrorsThisDemoIsAPure")}</span>
                   <span className="hidden items-center gap-1 sm:inline-flex">
-                    ·
-                    <Kbd>⌘</Kbd>
+                    ·<Kbd>⌘</Kbd>
                     <span>+</span>
                     <Kbd>↵</Kbd>
-                    <span>发送</span>
+                    <span>{copy("send")}</span>
                   </span>
                 </p>
               </div>

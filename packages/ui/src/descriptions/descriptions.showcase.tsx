@@ -60,7 +60,14 @@ export const descriptionsShowcase: ShowcaseSpec = {
     { label: "地址", children: "广东省广州市天河区某某路 88 号 A 座 1203", span: 3 },
   ]}
 />`,
-      render: () => <Descriptions bordered title="订单详情" extra={<a href="#edit">编辑</a>} items={items} />,
+      render: () => (
+        <Descriptions
+          bordered
+          title="订单详情"
+          extra={<a href="https://example.com/#edit">编辑</a>}
+          items={items}
+        />
+      ),
     },
     {
       title: "单列长详情",
@@ -119,7 +126,7 @@ export const descriptionsShowcase: ShowcaseSpec = {
         <Descriptions
           bordered
           title="订单详情"
-          extra={<a href="#edit">编辑</a>}
+          extra={<a href="https://example.com/#edit">编辑</a>}
           items={items}
         />
       ),

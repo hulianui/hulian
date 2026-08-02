@@ -25,5 +25,7 @@ export interface TabBarProps {
   safeArea?: boolean;
   /** fixed 贴底（默认 true）；false 则随文档流。 */
   fixed?: boolean;
+  /** 导航区无障碍标签；缺省跟随 ConfigProvider locale。 */
+  "aria-label"?: string;
   className?: string;
 }

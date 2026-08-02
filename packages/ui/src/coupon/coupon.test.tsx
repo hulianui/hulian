@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { Coupon } from "./coupon";
 
 describe("Coupon", () => {
@@ -11,8 +13,7 @@ describe("Coupon", () => {
 
   it("discount 券渲染折扣", () => {
     const { getByText } = render(<Coupon kind="discount" discount={8.5} title="折扣券" />);
-    expect(getByText("8.5")).toBeTruthy();
-    expect(getByText("折")).toBeTruthy();
+    expect(getByText("8.5折")).toBeTruthy();
   });
 
   it("shipping 券显示包邮 + 无门槛", () => {
@@ -81,6 +82,69 @@ describe("Coupon", () => {
       <Coupon amount={20} title="券" status="available" actionLabel="马上抢" onClaim={() => {}} />,
     );
     expect(getByText("马上抢")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes denomination, threshold, and status labels", () => {
+    const { getByText, rerender } = render(
+      <ConfigProvider locale={enUS}>
+        <Coupon kind="discount" discount={8.5} threshold={199} title="Offer" onClaim={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("15% off")).toBeTruthy();
+    expect(getByText("Spend ¥199 to use")).toBeTruthy();
+    expect(getByText("Claim now")).toBeTruthy();
+
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Coupon kind="shipping" title="Delivery" status="claimed" onUse={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Free shipping")).toBeTruthy();
+    expect(getByText("No minimum spend")).toBeTruthy();
+    expect(getByText("Use now")).toBeTruthy();
+  });
+
+  it("legacy coupon dictionaries without a value formatter keep the exact Chinese discount", () => {
+    const legacy = {
+      ...enUS,
+      components: {
+        ...enUS.components!,
+        coupon: {
+          available: "Claim",
+          claimed: "Use",
+          used: "Used",
+          expired: "Expired",
+          noMinimumSpend: "No minimum",
+          minimumSpend: (amount: number) => `Spend ${amount}`,
+          discountSuffix: "off",
+          freeShipping: "Shipping",
+        },
+      },
+    };
+    const { getByText } = render(
+      <ConfigProvider locale={legacy}>
+        <Coupon kind="discount" discount={8.5} title="Legacy offer" />
+      </ConfigProvider>,
+    );
+    expect(getByText("8.5折")).toBeTruthy();
+  });
+
+  it("legacy component dictionaries fall back to Chinese while actionLabel overrides enUS", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, coupon: undefined } };
+    const { getByText, rerender } = render(
+      <ConfigProvider locale={legacy}>
+        <Coupon amount={20} title="券" onClaim={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("无门槛")).toBeTruthy();
+    expect(getByText("立即领取")).toBeTruthy();
+
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Coupon amount={20} title="Offer" actionLabel="Redeem" onClaim={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Redeem")).toBeTruthy();
   });
 
   it("透传 className", () => {

@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { useState } from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { TimeField } from "./time-field";
 
 const hourSeg = () => screen.getByRole("spinbutton", { name: "小时" });
@@ -8,6 +10,33 @@ const minuteSeg = () => screen.getByRole("spinbutton", { name: "分钟" });
 const secondSeg = () => screen.getByRole("spinbutton", { name: "秒" });
 
 describe("TimeField", () => {
+  it("enUS localizes the group, segments, empty value, and clear action", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <TimeField defaultValue="09:05:07" withSeconds />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("group", { name: "Time" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "Hour" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "Minute" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "Second" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
+  });
+
+  it("a legacy custom locale without timeField keeps the Chinese controls", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, timeField: undefined } };
+    render(
+      <ConfigProvider locale={locale}>
+        <TimeField defaultValue="09:05:07" withSeconds />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("group", { name: "时间" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "小时" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "分钟" })).toBeTruthy();
+    expect(screen.getByRole("spinbutton", { name: "秒" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "清除" })).toBeTruthy();
+  });
+
   it("无值时各段显示 --", () => {
     render(<TimeField />);
     expect(hourSeg().textContent).toBe("--");

@@ -1,3 +1,4 @@
+import { copy } from "./nav-config.content";
 import { Workflow, LayoutTemplate, Images } from "lucide-react";
 import type { ComponentType } from "react";
 
@@ -10,9 +11,9 @@ export interface NavItem {
 }
 
 export const NAV: NavItem[] = [
-  { key: ROOT, label: "编排画布", icon: Workflow },
-  { key: `${ROOT}/templates`, label: "模板库", icon: LayoutTemplate },
-  { key: `${ROOT}/gallery`, label: "产物画廊", icon: Images },
+  { key: ROOT, label: copy("choreographyCanvas"), icon: Workflow },
+  { key: `${ROOT}/templates`, label: copy("templateLibrary"), icon: LayoutTemplate },
+  { key: `${ROOT}/gallery`, label: copy("productGallery"), icon: Images },
 ];
 
 /** 当前激活的导航 key。ROOT(画布)是 index 页须精确匹配；子页(模板/画廊)用前缀；

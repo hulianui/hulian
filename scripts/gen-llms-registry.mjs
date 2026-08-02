@@ -18,25 +18,49 @@ import { readFileSync, readdirSync, existsSync, statSync, writeFileSync, mkdirSy
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript-api";
+import { mapMarkdownCode } from "./check-component-doc-translations.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
 const MANIFEST = join(ROOT, "apps", "www", "lib", "manifest.ts");
+const COMPONENT_META_EN = join(ROOT, "apps", "www", "i18n", "component-meta.en.ts");
+const BLOCK_META_EN = join(ROOT, "apps", "www", "i18n", "block-meta.en.ts");
+const PAGE_META_EN = join(ROOT, "apps", "www", "i18n", "page-meta.en.ts");
 const PKG = JSON.parse(readFileSync(join(ROOT, "packages", "ui", "package.json"), "utf8"));
 // 产物目录。默认写进仓库的 apps/www/public；HULIAN_REGISTRY_OUT 可改写到别处 ——
 // 这是给「要一份带自定义 base 的 registry、但绝不能弄脏工作区」的场景用的
 // （registry-pages-smoke 就是），配合 HULIAN_REGISTRY_BASE 一起用。
 const OUT_DIR = process.env.HULIAN_REGISTRY_OUT || join(ROOT, "apps", "www", "public");
+const DOCS_LOCALE = process.env.DOCS_LOCALE === "en" ? "en" : "zh-CN";
+const ENGLISH = DOCS_LOCALE === "en";
+
+if (ENGLISH && !process.env.HULIAN_REGISTRY_OUT) {
+  throw new Error(
+    "English registry generation requires HULIAN_REGISTRY_OUT so tracked Chinese artifacts cannot be overwritten",
+  );
+}
 
 const REPO = "https://github.com/hulianui/hulian";
 const DOC_BASE = `${REPO}/blob/master`; // + /packages/ui/src/<slug>/<slug>.md
 const SITE = "https://hulianui.haloritual.com"; // 文档站；语料供站外 AI 消费，链接须绝对
-// 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳
-const absolutize = (s) =>
-  s
-    .replace(/\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g, `](${SITE}/components/$1)`)
-    .replace(/\]\((\/[^)]+)\)/g, `](${SITE}$1)`);
-const TAGLINE = "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）";
+const SITE_BASE = `${SITE}${ENGLISH ? "/en" : ""}`;
+// 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳。
+// 只处理 Markdown 正文：代码围栏和行内 code span 是示例数据，不是可导航链接；
+// `//host/path` 是协议相对外链，也绝不能被误拼成本站 URL。
+
+export const absolutize = (source) =>
+  mapMarkdownCode(source, {
+    outside: (text) =>
+      text
+        .replace(
+          /\]\(\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md\)/g,
+          `](${SITE_BASE}/components/$1)`,
+        )
+        .replace(/\]\((\/(?!\/)[^)\s]+)\)/g, `](${SITE_BASE}$1)`),
+  });
+const TAGLINE = ENGLISH
+  ? "A polished, practical React design system built with Base UI, Tailwind CSS v4, and Motion"
+  : "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）";
 
 const PKG_DEPS = new Set([
   ...Object.keys(PKG.dependencies || {}),
@@ -147,6 +171,15 @@ function parseDoc(src) {
   };
 }
 
+function normalizeEnglishDistribution(source) {
+  return source
+    .replaceAll("｜", "\\|")
+    .replace(
+      /[\u3400-\u9fff\uf900-\ufaff\u3000-\u303f\uff00-\uffef]/gu,
+      (character) => `\\u${character.codePointAt(0).toString(16).padStart(4, "0")}`,
+    );
+}
+
 /**
  * 组件真正的公开导出，直接读 `src/<slug>/index.ts` 的 barrel。
  *
@@ -210,26 +243,45 @@ export function barrelExports(dir) {
 }
 
 /** find every component .md and its src dir (for dep scan + doc url). */
-function collectDocs() {
+export function collectDocs(uiSrc = UI_SRC, locale = DOCS_LOCALE) {
   const out = [];
   const push = (mdPath, dir, urlRel) => {
-    const parsed = parseDoc(readFileSync(mdPath, "utf8"));
-    if (parsed && parsed.slug) out.push({ ...parsed, dir, docUrl: `${DOC_BASE}/${urlRel}` });
+    const source = readFileSync(mdPath, "utf8");
+    const parsed = parseDoc(locale === "en" ? normalizeEnglishDistribution(source) : source);
+    if (parsed && parsed.slug) {
+      out.push({
+        ...parsed,
+        dir,
+        docUrl: locale === "en" ? `${SITE}/en/components/${parsed.slug}` : `${DOC_BASE}/${urlRel}`,
+        docLocal: urlRel,
+      });
+    }
   };
-  for (const d of readdirSync(UI_SRC).sort()) {
-    const p = join(UI_SRC, d);
+  for (const d of readdirSync(uiSrc).sort()) {
+    const p = join(uiSrc, d);
     if (!statSync(p).isDirectory()) continue;
     if (d === "_mui") {
       for (const f of readdirSync(p)) {
-        if (f.endsWith(".md")) {
+        if (f.endsWith(".md") && !f.endsWith(".en.md")) {
           const slug = f.replace(/\.md$/, "");
-          push(join(p, f), p, `packages/ui/src/_mui/${f}`);
+          const localizedFile = locale === "en" ? `${slug}.en.md` : f;
+          const localizedPath = join(p, localizedFile);
+          if (!existsSync(localizedPath)) {
+            throw new Error(`Missing ${locale} component document: ${localizedPath}`);
+          }
+          push(localizedPath, p, `packages/ui/src/_mui/${localizedFile}`);
         }
       }
       continue;
     }
-    const md = join(p, `${d}.md`);
-    if (existsSync(md)) push(md, p, `packages/ui/src/${d}/${d}.md`);
+    const chinese = join(p, `${d}.md`);
+    if (!existsSync(chinese)) continue;
+    const localizedFile = locale === "en" ? `${d}.en.md` : `${d}.md`;
+    const localizedPath = join(p, localizedFile);
+    if (!existsSync(localizedPath)) {
+      throw new Error(`Missing ${locale} component document: ${localizedPath}`);
+    }
+    push(localizedPath, p, `packages/ui/src/${d}/${localizedFile}`);
   }
   return out;
 }
@@ -276,7 +328,7 @@ const TARGET_ROOT = "components/hulianui";
  * 单件安装端点的基址。可用 HULIAN_REGISTRY_BASE 覆盖，便于起本地 server 做端到端验证
  * （registryDependencies 内联的是绝对 URL，不覆盖就会指回线上域名）。
  */
-const REGISTRY_BASE = process.env.HULIAN_REGISTRY_BASE || `${SITE}/r`;
+const REGISTRY_BASE = process.env.HULIAN_REGISTRY_BASE || `${SITE_BASE}/r`;
 
 /** 组件目录里真正要发出去的文件（排掉测试 / showcase / 文档）。 */
 function payloadFiles(dir) {
@@ -365,6 +417,73 @@ function stringArray(node, context) {
   return node.elements.map((element, index) => stringValue(element, `${context}[${index}]`));
 }
 
+function propertyName(node, context) {
+  if (ts.isIdentifier(node) || ts.isStringLiteralLike(node)) return node.text;
+  throw new Error(`${context} must use an identifier or string key`);
+}
+
+function unwrapExpression(node) {
+  let current = node;
+  while (
+    ts.isSatisfiesExpression(current) ||
+    ts.isAsExpression(current) ||
+    ts.isTypeAssertionExpression(current) ||
+    ts.isParenthesizedExpression(current)
+  ) {
+    current = current.expression;
+  }
+  return current;
+}
+
+/** Read reviewed locale overlays without importing application/runtime modules into this generator. */
+function parseLocalizedRecords(file, variableName, fields) {
+  const source = readFileSync(file, "utf8");
+  const sourceFile = ts.createSourceFile(
+    file,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  let root;
+  sourceFile.forEachChild((node) => {
+    if (!ts.isVariableStatement(node)) return;
+    for (const declaration of node.declarationList.declarations) {
+      if (ts.isIdentifier(declaration.name) && declaration.name.text === variableName) {
+        root = declaration.initializer && unwrapExpression(declaration.initializer);
+      }
+    }
+  });
+  if (!root || !ts.isObjectLiteralExpression(root)) {
+    throw new Error(`${file} missing object literal ${variableName}`);
+  }
+
+  const records = new Map();
+  for (const property of root.properties) {
+    if (!ts.isPropertyAssignment(property)) continue;
+    const key = propertyName(property.name, variableName);
+    const value = unwrapExpression(property.initializer);
+    if (!ts.isObjectLiteralExpression(value)) {
+      throw new Error(`${variableName}.${key} must be an object literal`);
+    }
+    const record = {};
+    for (const [field, kind] of Object.entries(fields)) {
+      const candidate = value.properties.find(
+        (entry) =>
+          ts.isPropertyAssignment(entry) &&
+          propertyName(entry.name, `${variableName}.${key}`) === field,
+      );
+      if (!candidate) throw new Error(`${variableName}.${key} missing ${field}`);
+      record[field] =
+        kind === "array"
+          ? stringArray(candidate.initializer, `${variableName}.${key}.${field}`)
+          : stringValue(candidate.initializer, `${variableName}.${key}.${field}`);
+    }
+    records.set(key, record);
+  }
+  return records;
+}
+
 function installationValue(node, context) {
   if (!ts.isObjectLiteralExpression(node)) throw new Error(`${context} must be an object literal`);
   const providers = stringArray(objectProperty(node, "providers", context), `${context}.providers`);
@@ -429,6 +548,13 @@ export function rewritePageBlockImports(code) {
   );
 }
 
+/** 文档站编译期双语适配不属于可安装区块，registry 必须还原为公开包入口。 */
+export function removeDocsFixtureAdapters(code) {
+  return code
+    .replace(/^\/\*\* @jsxImportSource \.\.\/\.\.\/\.\.\/lib\/fixture-jsx \*\/\n/, "")
+    .replaceAll('from "../../../lib/fixture-ui"', 'from "@hulianui/ui"');
+}
+
 /** 从仓库内页面源码提取它安装时必须先注入的区块 registry item。 */
 export function scanPageBlockDeps(code) {
   const deps = new Set();
@@ -441,13 +567,25 @@ export function scanPageBlockDeps(code) {
 }
 
 /** 区块 / 页面 → registry item。 */
-export function buildCompositeItems(metaFile, srcDir, kind) {
+export function buildCompositeItems(metaFile, srcDir, kind, locale = DOCS_LOCALE) {
   const metas = parseMeta(metaFile);
+  const localized =
+    locale === "en"
+      ? parseLocalizedRecords(
+          kind === "block" ? BLOCK_META_EN : PAGE_META_EN,
+          kind === "block" ? "blockMetaEn" : "pageMetaEn",
+          { name: "string", description: "string", tags: "array" },
+        )
+      : null;
   const items = [];
   for (const meta of metas) {
+    const display = localized?.get(meta.slug) ?? meta;
+    if (locale === "en" && !localized?.has(meta.slug)) {
+      throw new Error(`Missing English ${kind} metadata for ${meta.slug}`);
+    }
     const abs = join(srcDir, meta.file);
     if (!existsSync(abs)) continue;
-    const source = readFileSync(abs, "utf8");
+    const source = removeDocsFixtureAdapters(readFileSync(abs, "utf8"));
     const pageBlockDeps = kind === "page" ? scanPageBlockDeps(source) : [];
     if (kind === "page") {
       const relativeImports = [
@@ -481,9 +619,10 @@ export function buildCompositeItems(metaFile, srcDir, kind) {
     items.push({
       name: `${kind}-${meta.slug}`,
       type: "registry:block",
-      title: meta.name,
-      description: meta.description,
+      title: display.name,
+      description: display.description,
       categories: [meta.category],
+      ...(locale === "en" ? { tags: display.tags } : {}),
       dependencies: [...deps].sort(),
       registryDependencies: pageBlockDeps.map((name) => `${REGISTRY_BASE}/${name}.json`),
       files: [
@@ -541,6 +680,20 @@ function blurb(doc) {
 function main() {
   const cats = parseCategories(readFileSync(MANIFEST, "utf8"));
   const catLabel = new Map(cats.map((c) => [c.key, c.label]));
+  const componentMetaEn = ENGLISH
+    ? parseLocalizedRecords(COMPONENT_META_EN, "componentMetaEn", {
+        shortName: "string",
+        description: "string",
+        keywords: "array",
+      })
+    : null;
+  if (ENGLISH) {
+    const categoryMetaEn = parseLocalizedRecords(COMPONENT_META_EN, "componentCategoryMetaEn", {
+      label: "string",
+    });
+    for (const [key, value] of categoryMetaEn) catLabel.set(key, value.label);
+    catLabel.set("uncatalogued", "Uncatalogued");
+  }
   const catOrder = new Map(cats.map((c, i) => [c.key, i]));
   catOrder.set("uncatalogued", 999);
 
@@ -564,38 +717,69 @@ function main() {
 
   // ---- llms.txt -----------------------------------------------------------
   const idx = [];
-  idx.push(`# 瑚琏 Hulian (\`${PKG.name}\`)`);
-  idx.push("");
-  idx.push(`> ${TAGLINE} · ${docs.length} 个组件 · v${PKG.version}`);
+  idx.push(ENGLISH ? `# Hulian UI (\`${PKG.name}\`)` : `# 瑚琏 Hulian (\`${PKG.name}\`)`);
   idx.push("");
   idx.push(
-    "AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。",
+    ENGLISH
+      ? `> ${TAGLINE} · ${docs.length} components · v${PKG.version}`
+      : `> ${TAGLINE} · ${docs.length} 个组件 · v${PKG.version}`,
   );
-  idx.push(
-    '安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；' +
-      '只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。',
-  );
-  idx.push("铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。");
+  idx.push("");
+  if (ENGLISH) {
+    idx.push(
+      "AI-oriented index. See [llms-full.txt](./llms-full.txt) for the self-contained corpus or follow a component link for its focused guide.",
+    );
+    idx.push(
+      'Install with `npm i @hulianui/ui`. Import from the root barrel with `import { X } from "@hulianui/ui"`, or use `@hulianui/ui/<slug>` for a small component set.',
+    );
+    idx.push(
+      "Use library components in product code, avoid local style overrides, and add missing capabilities upstream.",
+    );
+  } else {
+    idx.push(
+      "AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。",
+    );
+    idx.push(
+      '安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；' +
+        "只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。",
+    );
+    idx.push("铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。");
+  }
   idx.push("");
   for (const cat of orderedCats) {
     const list = byCat.get(cat);
-    idx.push(`## ${catLabel.get(cat) ?? cat} ${cat}（${list.length}）`);
-    for (const d of list) idx.push(`- [${d.name}](${d.docUrl}): ${blurb(d)}`);
+    idx.push(
+      ENGLISH
+        ? `## ${catLabel.get(cat) ?? cat} (${cat}, ${list.length})`
+        : `## ${catLabel.get(cat) ?? cat} ${cat}（${list.length}）`,
+    );
+    for (const d of list) {
+      const summary = componentMetaEn?.get(d.slug)?.description ?? blurb(d);
+      idx.push(`- [${d.name}](${d.docUrl}): ${summary}`);
+    }
     idx.push("");
   }
   writeFileSync(join(OUT_DIR, "llms.txt"), idx.join("\n"));
 
   // ---- llms-full.txt ------------------------------------------------------
   const full = [];
-  full.push(`# 瑚琏 Hulian (\`${PKG.name}\`) — 全量组件使用文档`);
-  full.push("");
   full.push(
-    `> ${TAGLINE} · v${PKG.version} · ${enriched.length} 个组件文档（自包含，供 AI 一次性消费）`,
+    ENGLISH
+      ? `# Hulian UI (\`${PKG.name}\`) - Complete Component Documentation`
+      : `# 瑚琏 Hulian (\`${PKG.name}\`) — 全量组件使用文档`,
   );
   full.push("");
   full.push(
-    '安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，' +
-      '每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。',
+    ENGLISH
+      ? `> ${TAGLINE} · v${PKG.version} · ${enriched.length} self-contained component guides`
+      : `> ${TAGLINE} · v${PKG.version} · ${enriched.length} 个组件文档（自包含，供 AI 一次性消费）`,
+  );
+  full.push("");
+  full.push(
+    ENGLISH
+      ? 'Install with `npm i @hulianui/ui @hulianui/tokens`; tokens supplies the required theme CSS. Import from the root barrel with `import { X } from "@hulianui/ui"`, or use the matching `@hulianui/ui/<slug>` subpath for a small component set.'
+      : '安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，' +
+          "每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。",
   );
   full.push("");
   for (const cat of orderedCats) {
@@ -619,7 +803,9 @@ function main() {
     name: m,
     type: "registry:lib",
     title: m,
-    description: `瑚琏内部共享模块 ${m}（组件注入后的依赖底座）`,
+    description: ENGLISH
+      ? `Internal Hulian UI shared module ${m}, required by installed component source.`
+      : `瑚琏内部共享模块 ${m}（组件注入后的依赖底座）`,
     dependencies: scanDeps(join(UI_SRC, m)),
     registryDependencies: scanInternalDeps(join(UI_SRC, m), m),
     files: buildFiles(join(UI_SRC, m), m, { type: "registry:lib" }),
@@ -642,7 +828,7 @@ function main() {
       name: d.slug,
       type: "registry:ui",
       title: d.name,
-      description: blurb(d),
+      description: componentMetaEn?.get(d.slug)?.description ?? blurb(d),
       categories: [d.category],
       dependencies: scanDeps(d.dir),
       registryDependencies: scanInternalDeps(d.dir, d.slug),
@@ -657,7 +843,7 @@ function main() {
         animated: d.tags.includes("animated"),
         webgl: d.tags.includes("webgl"),
         doc: d.docUrl,
-        docLocal: d.docUrl.replace(`${DOC_BASE}/`, ""),
+        docLocal: d.docLocal,
         status: d.status,
         // 推荐用法仍是 npm import；注入源码是「想改这个组件」时才走的路。
         preferred: "npm",

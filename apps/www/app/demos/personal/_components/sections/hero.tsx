@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./hero.content";
 
 import {
   Aurora,
@@ -22,7 +23,7 @@ import { SOCIAL_ICON } from "../site-shell";
 // 访客头像组：复用作品 hue 生成确定性渐变头像，营造「被 N 人 star / 关注」的社交气场。
 const visitorAvatars = works.map((w) => ({
   src: avatarArt(w.nameEn, w.hue, 72),
-  alt: `${w.name} 的关注者`,
+  alt: `${w.name}${copy("followers")}`,
 }));
 
 export function Hero() {
@@ -71,7 +72,7 @@ export function Hero() {
 
         {/* 角色轮播 */}
         <div className="mt-7 flex items-center gap-2 text-xl text-white/70 sm:text-2xl">
-          <span className="text-white/40">我是一名</span>
+          <span className="text-white/40">{copy("iAmA")}</span>
           <WordRotate
             words={profile.roles}
             className="font-semibold text-[var(--color-chart-1)]"
@@ -90,7 +91,8 @@ export function Hero() {
         {/* CTA：看作品 / 联系我（同页锚点平滑滚动，scroll-behavior 由 html smooth 提供） */}
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Button size="lg" render={<a href="#work" />}>
-            看看我的作品
+
+            {copy("exploreMyWork")}
             <ArrowDown className="size-4" aria-hidden />
           </Button>
           <Button
@@ -100,7 +102,8 @@ export function Hero() {
             render={<a href="#contact" />}
           >
             <MessageCircle className="size-4" aria-hidden />
-            联系我
+
+            {copy("contactMe")}
           </Button>
         </div>
 
@@ -131,7 +134,8 @@ export function Hero() {
           <div className="flex items-center gap-3">
             <AvatarCircles avatars={visitorAvatars} extraCount={42} size="md" />
             <span className="text-sm text-white/45">
-              已被 <span className="font-semibold text-white/70">12.4k+</span> 位开发者收藏
+
+              {copy("savedBy")} <span className="font-semibold text-white/70">12.4k+</span>  {copy("developerSaves")}
             </span>
           </div>
 
@@ -152,7 +156,7 @@ export function Hero() {
         {/* 向下滚动提示 */}
         <a
           href="#about"
-          aria-label="向下滚动"
+          aria-label={copy("scrollDown")}
           className={cn(
             "absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1.5 text-white/35",
             "transition-colors hover:text-white/70 md:flex",

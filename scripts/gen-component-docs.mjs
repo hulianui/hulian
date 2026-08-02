@@ -106,11 +106,15 @@ function parseDirectExports(src) {
 }
 
 /** Locate a component's files under src/<slug>/. */
+// Scaffolding owns the Chinese source only. The translated sibling is authored
+// and coverage-checked separately, so --force must never select `<slug>.en.md`.
+export const chineseDocOutputPath = (uiSrc, slug) => join(uiSrc, slug, `${slug}.md`);
+
 function resolveFiles(slug) {
   const dir = join(UI_SRC, slug);
   if (!existsSync(dir) || !statSync(dir).isDirectory()) return null;
   return {
-    mdOut: join(dir, `${slug}.md`),
+    mdOut: chineseDocOutputPath(UI_SRC, slug),
     indexSrc: readIf(join(dir, "index.ts")) || readIf(join(dir, "index.tsx")),
     typesSrc: readIf(join(dir, `${slug}.types.ts`)),
     showSrc: readIf(join(dir, `${slug}.showcase.tsx`)),

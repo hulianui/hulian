@@ -10,11 +10,11 @@ status: enriched
 
 # PageHeader
 
-> 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖·可 RSC) · navigation/inpage
+> 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖) · navigation/inpage
 
 ## 何时用
 
-详情页 / 管理页顶部的页头骨架：统一安放返回箭头、面包屑、主标题、状态标签、右侧操作区和底部 Tabs。各槽位直接 dogfood 传入瑚琏 [Breadcrumb](../breadcrumb/breadcrumb.md) / Chip / [Tabs](../tabs/tabs.md)；只需要面包屑导航本身用 Breadcrumb，PageHeader 是把整块页头排版好。不传 `onBack` 时可保持 RSC（无回调）。
+详情页 / 管理页顶部的页头骨架：统一安放返回箭头、面包屑、主标题、状态标签、右侧操作区和底部 Tabs。各槽位直接 dogfood 传入瑚琏 [Breadcrumb](../breadcrumb/breadcrumb.md) / Chip / [Tabs](../tabs/tabs.md)；只需要面包屑导航本身用 Breadcrumb，PageHeader 是把整块页头排版好。
 
 ## 导入
 ```ts
@@ -49,7 +49,7 @@ import { PageHeader } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-// 极简：仅标题 + 操作（可 RSC，无 onBack）
+// 极简：仅标题 + 操作
 <PageHeader title="用户管理" extra={<Button variant="solid" size="sm">新建用户</Button>} />
 
 // 完整页头
@@ -68,7 +68,7 @@ import { PageHeader } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - `title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——别再往 DOM 透传字符串 title。
-- 传 `onBack` 即引入回调，该消费组件必须是 client；纯展示页头不传 onBack 可保持 server 组件。
+- 默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。
 
 ## 相关
 [Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [BackTop](../back-top/back-top.md)

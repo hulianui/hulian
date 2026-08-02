@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { ConfigProvider, enUS } from "../config";
 import { MathText } from "./math-text";
 import { mathToPlain, parseMath } from "./math-text.parse";
 
@@ -58,6 +59,17 @@ describe("MathText 渲染", () => {
     const { container } = render(<MathText>{"可记作____万元"}</MathText>);
     expect(screen.getByLabelText("填空")).toBeTruthy();
     expect(container.textContent).not.toContain("____");
+  });
+
+  it("ConfigProvider locale=enUS localizes generated blanks and row separators", () => {
+    const { container } = render(
+      <ConfigProvider locale={enUS}>
+        <MathText>{"\\begin{array}{l}x=1\\\\y=2\\end{array}____"}</MathText>
+      </ConfigProvider>,
+    );
+    expect(screen.getByLabelText("Blank")).toBeTruthy();
+    expect(container.textContent).toContain("x=1;y=2");
+    expect(container.textContent).not.toContain("；");
   });
 });
 

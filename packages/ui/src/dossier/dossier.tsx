@@ -24,6 +24,8 @@ export function Dossier({
   sections,
   title = "案卷",
   progress,
+  archivedLabel = "已归档",
+  optionalLabel = "可选",
   bare = false,
   className,
 }: DossierProps) {
@@ -39,7 +41,7 @@ export function Dossier({
       <div className="mb-2.5 flex items-baseline justify-between gap-2">
         {title && <p className="text-xs font-medium text-muted">{title}</p>}
         <span className="text-xs tabular-nums text-muted">
-          {progress ?? `已归档 ${done}/${required.length}`}
+          {progress ?? <>{archivedLabel} {done}/{required.length}</>}
         </span>
       </div>
       <ol className="space-y-1">
@@ -66,7 +68,7 @@ export function Dossier({
                 >
                   {s.label}
                   {s.optional && status === "empty" && (
-                    <span className="text-[10px] text-muted/70">可选</span>
+                    <span className="text-[10px] text-muted/70">{optionalLabel}</span>
                   )}
                 </span>
                 {s.summary != null && (

@@ -16,6 +16,8 @@ status: enriched
 
 在结算确认、钱包、绑卡管理处展示一张银行卡卡面（品牌识别 + 卡号打码 + 正反面）。纯展示组件，不做表单录入；要采集卡号请用表单输入控件，本组件只负责把已有卡信息可视化成一张卡。
 
+持卡人、有效期与无障碍卡片说明跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。
+
 ## 导入
 ```ts
 import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from "@hulianui/ui"

@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useMemo, useState } from "react";
 import { Code2, RotateCcw } from "lucide-react";
 import {
@@ -39,7 +41,7 @@ export default function PlaygroundPage() {
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState<number | null>(1024);
   const [topP, setTopP] = useState(1);
-  const [systemPrompt, setSystemPrompt] = useState("你是瀚枢 HanHub 的 AI 助手，回答简洁、专业、口语化。");
+  const [systemPrompt, setSystemPrompt] = useState(copy("youAreHanhubHanhubSAiAssistant"));
   const [codeOpen, setCodeOpen] = useState(false);
 
   const model = modelOf(modelId);
@@ -55,7 +57,7 @@ export default function PlaygroundPage() {
       : [];
     for (const t of turns) msgs.push({ role: t.role, content: t.content });
     if (msgs.length === (systemPrompt.trim() ? 1 : 0)) {
-      msgs.push({ role: "user", content: "你好，介绍一下你自己。" });
+      msgs.push({ role: "user", content: copy("helloPleaseIntroduceYourself") });
     }
     return msgs;
   }, [systemPrompt, turns]);
@@ -65,15 +67,13 @@ export default function PlaygroundPage() {
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-xl font-semibold text-foreground">Playground</h1>
-          <p className="text-sm text-muted">在线调试模型与参数 · mock 流式回复 · 一键导出接入代码</p>
+          <p className="text-sm text-muted">{copy("onlineDebuggingOfModelsAndParametersMock")}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={reset} disabled={turns.length === 0}>
-            <RotateCcw className="size-4" /> 清空
-          </Button>
+            <RotateCcw className="size-4" />{copy("clear")}</Button>
           <Button size="sm" onClick={() => setCodeOpen(true)}>
-            <Code2 className="size-4" /> 查看为代码
-          </Button>
+            <Code2 className="size-4" />{copy("viewAsCode")}</Button>
         </div>
       </div>
 
@@ -81,7 +81,7 @@ export default function PlaygroundPage() {
         {/* 左：模型 + 参数 */}
         <Card className="flex flex-col gap-4 self-start p-4">
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted">模型</label>
+            <label className="mb-1.5 block text-xs font-medium text-muted">{copy("model")}</label>
             <Select items={selectItems} value={modelId} onValueChange={(v) => setModelId(v as string)}>
               <SelectTrigger className="w-full" />
               <SelectContent>
@@ -95,8 +95,7 @@ export default function PlaygroundPage() {
             {model && (
               <div className="mt-1.5 flex flex-wrap items-center gap-1 text-xs text-muted">
                 <Tag tone="neutral" size="sm" variant="soft">
-                  {formatPrice(model.inPrice)} / {formatPrice(model.outPrice)} 每 1M
-                </Tag>
+                  {formatPrice(model.inPrice)} / {formatPrice(model.outPrice)}{copy("everyM")}</Tag>
               </div>
             )}
           </div>
@@ -106,17 +105,17 @@ export default function PlaygroundPage() {
 
           <div>
             <label className="mb-1.5 block text-xs font-medium text-muted">Max Tokens</label>
-            <NumberField value={maxTokens} onValueChange={setMaxTokens} min={1} max={model?.maxOutput ?? 32000} step={256} aria-label="最大输出 tokens" />
+            <NumberField value={maxTokens} onValueChange={setMaxTokens} min={1} max={model?.maxOutput ?? 32000} step={256} aria-label={copy("maximumOutputTokens")} />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted">系统提示</label>
+            <label className="mb-1.5 block text-xs font-medium text-muted">{copy("systemPrompt")}</label>
             <Textarea
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               rows={4}
               autoResize
-              placeholder="设定模型的角色与行为…"
+              placeholder={copy("setTheRoleAndBehaviorOfThe")}
             />
           </div>
         </Card>
@@ -126,7 +125,7 @@ export default function PlaygroundPage() {
           <Conversation className="flex-1 p-4">
             {turns.length === 0 ? (
               <div className="flex h-full items-center justify-center">
-                <Empty description="发送第一条消息，开始调试对话" />
+                <Empty description={copy("sendTheFirstMessageToStartThe")} />
               </div>
             ) : (
               <div className="flex flex-col gap-4">
@@ -136,7 +135,7 @@ export default function PlaygroundPage() {
                     <ChatMessage
                       key={t.id}
                       role={t.role}
-                      name={t.role === "user" ? "我" : model?.name ?? "助手"}
+                      name={t.role === "user" ? copy("me") : model?.name ?? copy("assistant")}
                       avatar={
                         t.role === "assistant" && provider ? (
                           <Avatar
@@ -170,27 +169,25 @@ export default function PlaygroundPage() {
               onSubmit={send}
               loading={streaming}
               onStop={stop}
-              placeholder={`向 ${model?.name ?? "模型"} 发消息…`}
+              placeholder={copy("sendAMessageToValue", model?.name ?? copy("model2"))}
             />
           </div>
         </Card>
 
         {/* 右：实时计费 */}
         <Card className="self-start">
-          <CardHeader className="text-sm font-medium text-foreground">实时计费</CardHeader>
+          <CardHeader className="text-sm font-medium text-foreground">{copy("realTimeBilling")}</CardHeader>
           <CardBody className="flex flex-col gap-3">
             <Metric label="Prompt tokens" value={promptTokens.toLocaleString()} />
             <Metric label="Completion tokens" value={completionTokens.toLocaleString()} />
-            <Metric label="总 tokens" value={(promptTokens + completionTokens).toLocaleString()} />
+            <Metric label={copy("totalTokens")} value={(promptTokens + completionTokens).toLocaleString()} />
             <div className="border-t border-border pt-3">
-              <div className="text-xs text-muted">本次会话成本</div>
+              <div className="text-xs text-muted">{copy("costOfThisSession")}</div>
               <div className="mt-0.5 text-2xl font-semibold tabular-nums text-primary">
                 {formatUsd(sessionCost)}
               </div>
               {model && (
-                <div className="mt-1 text-xs text-muted">
-                  含网关倍率 ×{model.markup} · 按字符估算 token
-                </div>
+                <div className="mt-1 text-xs text-muted">{copy("includingGatewayMagnification")}{model.markup}{copy("estimateTokenByCharacter")}</div>
               )}
             </div>
           </CardBody>

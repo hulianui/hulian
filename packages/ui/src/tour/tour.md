@@ -54,10 +54,10 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| prevText | `ReactNode` | 「上一步」按钮文案覆盖 |
-| nextText | `ReactNode` | 「下一步」按钮文案覆盖 |
-| skipText | `ReactNode` | 「跳过」按钮文案覆盖 |
-| finishText | `ReactNode` | 「完成」按钮文案覆盖 |
+| prevText | `ReactNode` | 「上一步」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
+| nextText | `ReactNode` | 「下一步」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
+| skipText | `ReactNode` | 「跳过」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
+| finishText | `ReactNode` | 「完成」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
 
 > TourStep 内的 `title` / `description` 亦为 `ReactNode`，见上方 TourStep 表。
 
@@ -81,6 +81,7 @@ const [current, setCurrent] = useState(0);
 
 ## 禁忌 / 坑
 
+- 导航、关闭、对话框和进度标签跟随最近的 `ConfigProvider` locale；未提供 Provider 时默认中文，显式文案 props 优先。
 - 完全受控：`open` 与 `current` 必须由消费者 state 持有，上一步/下一步只触发 `onChange`，本组件不自管步索引——忘记在 `onChange` 里回写 `current` 会导致引导卡在第一步。
 - `target` 用函数（`() => ref.current`）比 CSS 选择器更稳，尤其目标 DOM 动态挂载/卸载时。
 - 全屏 overlay 经 Portal 挂到 body；截图/可视验证须「先点开始触发 open 再截」（同 Drawer/Popover/Toast）。

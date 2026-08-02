@@ -1,6 +1,9 @@
 "use client";
+import { copy } from "./customer-panel.content";
+
 import { Avatar, Descriptions, Heading, Tag, Timeline } from "@hulianui/ui";
 import type { Customer } from "../../_data/types";
+import { customerLevelLabel } from "../../_data/labels";
 
 const LEVEL_TONE: Record<Customer["level"], "neutral" | "brand" | "warning" | "success"> = {
   普通: "neutral",
@@ -14,9 +17,7 @@ const yuan = (n: number) => `¥${n.toLocaleString("zh-CN")}`;
 export function CustomerPanel({ customer }: { customer?: Customer }) {
   if (!customer) {
     return (
-      <div className="grid h-full place-items-center border-l border-border bg-surface text-sm text-muted">
-        无客户档案
-      </div>
+      <div className="grid h-full place-items-center border-l border-border bg-surface text-sm text-muted">{copy("noCustomerProfile")}</div>
     );
   }
 
@@ -28,7 +29,7 @@ export function CustomerPanel({ customer }: { customer?: Customer }) {
         <div className="flex items-center gap-2">
           <span className="text-base font-semibold">{customer.name}</span>
           <Tag tone={LEVEL_TONE[customer.level]} size="sm" variant="soft">
-            {customer.level}
+            {customerLevelLabel[customer.level]}
           </Tag>
         </div>
         <div className="flex flex-wrap justify-center gap-1">
@@ -45,20 +46,18 @@ export function CustomerPanel({ customer }: { customer?: Customer }) {
         <Descriptions
           column={1}
           items={[
-            { label: "手机", children: customer.phone },
-            { label: "地区", children: customer.region },
-            { label: "注册", children: customer.since },
-            { label: "累计消费", children: yuan(customer.totalSpend) },
-            { label: "累计订单", children: `${customer.orders} 笔` },
+            { label: copy("mobilePhone"), children: customer.phone },
+            { label: copy("area"), children: customer.region },
+            { label: copy("register"), children: customer.since },
+            { label: copy("accumulatedConsumption"), children: yuan(customer.totalSpend) },
+            { label: copy("cumulativeOrders"), children: copy("valuePen", customer.orders) },
           ]}
         />
       </div>
 
       {/* 历史互动 / 工单 */}
       <div className="px-4 py-4">
-        <Heading level={3} size="sm" className="mb-3">
-          历史互动
-        </Heading>
+        <Heading level={3} size="sm" className="mb-3">{copy("historicalInteraction")}</Heading>
         <Timeline
           items={customer.history.map((h) => ({
             label: h.at,

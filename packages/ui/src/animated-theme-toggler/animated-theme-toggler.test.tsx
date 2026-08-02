@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "../theme/theme-provider";
 import { AnimatedThemeToggler } from "./animated-theme-toggler";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 // defaultSetting="light" 避开 systemTheme 的 matchMedia（jsdom 无）；jsdom 无 startViewTransition → 走 toggle 降级路径。
 const renderToggler = () =>
@@ -23,6 +25,13 @@ describe("AnimatedThemeToggler", () => {
     const { getByRole } = renderToggler();
     fireEvent.click(getByRole("button"));
     expect(getByRole("button").getAttribute("aria-label")).toBe("切换到亮色");
+  });
+
+  it("默认标签跟随 ConfigProvider", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}><ThemeProvider defaultSetting="light"><AnimatedThemeToggler /></ThemeProvider></ConfigProvider>,
+    );
+    expect(getByRole("button").getAttribute("aria-label")).toBe("Switch to dark mode");
   });
 
   it("透传 className", () => {

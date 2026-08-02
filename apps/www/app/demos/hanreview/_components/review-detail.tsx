@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./review-detail.content";
 
 import { useMemo, useState, type ReactNode } from "react";
 import {
@@ -41,10 +42,10 @@ interface ReviewDetailProps {
 
 // severity → 圆点颜色 + 中文 + Tag tone（与库 ReviewSeverity 同集合）。
 const SEVERITY_META: Record<Severity, { label: string; dot: string; tone: TagTone }> = {
-  critical: { label: "严重", dot: "bg-danger", tone: "danger" },
-  major: { label: "重要", dot: "bg-warning", tone: "warning" },
-  minor: { label: "次要", dot: "bg-brand", tone: "brand" },
-  info: { label: "提示", dot: "bg-muted", tone: "neutral" },
+  critical: { label: copy("serious"), dot: "bg-danger", tone: "danger" },
+  major: { label: copy("important"), dot: "bg-warning", tone: "warning" },
+  minor: { label: copy("secondary"), dot: "bg-brand", tone: "brand" },
+  info: { label: copy("tip"), dot: "bg-muted", tone: "neutral" },
 };
 
 const SEVERITY_ORDER: Severity[] = ["critical", "major", "minor", "info"];
@@ -76,7 +77,15 @@ function toCodeDiffAnnotations(file: ChangedFile): CodeDiffAnnotation[] {
           },
         ]}
         onAdoptSuggestion={() =>
-          toast({ tone: "success", title: "已采纳建议", description: `${file.path}:${a.line} 的修改建议已写入工作区。` })
+          toast({
+            tone: "success",
+            title: copy("recommendationsHaveBeenAdopted"),
+            description: copy(
+              "valueValueModificationSuggestionsHaveBeenWritten",
+              file.path,
+              a.line,
+            ),
+          })
         }
         onStatusChange={() => {}}
       />
@@ -125,10 +134,14 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
               variant="outline"
               size="sm"
               onClick={() =>
-                toast({ tone: "info", title: "已重新提交审查", description: `${repoName} · ${review.branch}` })
+                toast({
+                  tone: "info",
+                  title: copy("resubmittedForReview"),
+                  description: `${repoName} · ${review.branch}`,
+                })
               }
             >
-              重新审查
+              {copy("reExamin")}
             </Button>
             <Button
               variant="solid"
@@ -137,18 +150,22 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
               onClick={() =>
                 toast({
                   tone: blocked ? "danger" : "neutral",
-                  title: blocked ? "已强制合并（绕过门禁）" : "已合并",
-                  description: blocked ? "本次合并跳过了门禁阻断，已记入审计日志。" : `${review.branch} 已合入。`,
+                  title: blocked ? copy("forcedMergeBypassAccessControl") : copy("merged"),
+                  description: blocked
+                    ? copy("thisMergerBypassedAccessControlBlockingAnd")
+                    : copy("valueAlreadyIn", review.branch),
                 })
               }
             >
-              {blocked ? "强制合并" : "合并"}
+              {blocked ? copy("forcedMerger") : copy("merged2")}
             </Button>
           </div>
         }
       >
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-semibold">{blocked ? "门禁阻断" : "门禁通过"}</span>
+          <span className="text-sm font-semibold">
+            {blocked ? copy("theGateWasBlockedAndBlocked") : copy("accessControlPassed")}
+          </span>
           {blocked && review.gateReasons.length > 0 ? (
             <ul className="list-disc space-y-0.5 pl-4 text-[13px]">
               {review.gateReasons.map((reason, i) => (
@@ -157,7 +174,11 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
             </ul>
           ) : (
             <span className="text-[13px]">
-              质量分 {review.score} · 覆盖率 {review.coverage}% · 严重问题 0，可安全合并。
+              {copy("qualityPoints")}
+              {review.score}
+              {copy("coverageRate")}
+              {review.coverage}
+              {copy("seriousIssueCanBeSafelyMerged")}
             </span>
           )}
         </div>
@@ -181,7 +202,8 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
         <Card>
           <CardHeader>
             <span className="text-sm font-semibold">
-              改动文件 <span className="text-muted">({review.files.length})</span>
+              {copy("editFiles")}
+              <span className="text-muted">({review.files.length})</span>
             </span>
           </CardHeader>
           <CardBody className="p-0">
@@ -202,7 +224,12 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
                     <span className="break-all font-mono text-[12.5px] leading-snug text-foreground">
                       {file.path}
                     </span>
-                    <DiffStat additions={file.additions} deletions={file.deletions} status={file.status} size="sm" />
+                    <DiffStat
+                      additions={file.additions}
+                      deletions={file.deletions}
+                      status={file.status}
+                      size="sm"
+                    />
                   </button>
                 );
               })}
@@ -222,7 +249,7 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
           ) : (
             <Card>
               <CardBody>
-                <p className="text-sm text-muted">本次审查无文件改动。</p>
+                <p className="text-sm text-muted">{copy("thereWereNoDocumentChangesDuringThis")}</p>
               </CardBody>
             </Card>
           )}
@@ -232,7 +259,7 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
         <div className="flex flex-col gap-4">
           <Card>
             <CardHeader>
-              <span className="text-sm font-semibold">AI 审查过程</span>
+              <span className="text-sm font-semibold">{copy("aiReviewProcess")}</span>
             </CardHeader>
             <CardBody className="flex flex-col gap-3">
               <ReviewSteps steps={review.steps} />
@@ -241,10 +268,10 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
 
           <Card>
             <CardBody className="flex flex-col items-center gap-4">
-              <ScoreRing value={review.score} max={100} size={120} label="质量分" />
+              <ScoreRing value={review.score} max={100} size={120} label={copy("qualityPoints2")} />
 
               <div className="w-full">
-                <SectionTitle>问题汇总</SectionTitle>
+                <SectionTitle>{copy("summaryOfIssues")}</SectionTitle>
                 <List split inset size="sm">
                   {SEVERITY_ORDER.map((sev) => (
                     <div key={sev} className="flex items-center justify-between py-1.5">
@@ -262,15 +289,15 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
 
               <div className="w-full space-y-1.5 border-t border-border pt-3 text-[13px]">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted">主审模型</span>
+                  <span className="text-muted">{copy("leadReviewerModel")}</span>
                   <span className="font-medium">{modelName}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted">代码覆盖率</span>
+                  <span className="text-muted">{copy("codeCoverage")}</span>
                   <span className="font-medium">{review.coverage}%</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted">本次成本</span>
+                  <span className="text-muted">{copy("thisTimeTheCost")}</span>
                   <span className="font-mono font-medium">¥{review.cost.toFixed(3)}</span>
                 </div>
               </div>
@@ -302,7 +329,15 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
               detail: step.detail,
             },
           ];
-          return <AgentPlan key={key} title="审查计划" tasks={tasks} bare strikeDone={false} />;
+          return (
+            <AgentPlan
+              key={key}
+              title={copy("reviewThePlan")}
+              tasks={tasks}
+              bare
+              strikeDone={false}
+            />
+          );
         }
         if (step.kind === "tool") {
           return (
@@ -311,7 +346,11 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
               name={step.tool ?? step.title}
               status={toolStatus[step.status ?? "done"] ?? "success"}
               defaultOpen
-              output={step.output ? <pre className="whitespace-pre-wrap text-[12px]">{step.output}</pre> : undefined}
+              output={
+                step.output ? (
+                  <pre className="whitespace-pre-wrap text-[12px]">{step.output}</pre>
+                ) : undefined
+              }
             />
           );
         }
@@ -329,7 +368,10 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
         }
         // summary
         return (
-          <div key={key} className="rounded-[var(--radius)] border border-border bg-surface-hover px-3 py-2.5">
+          <div
+            key={key}
+            className="rounded-[var(--radius)] border border-border bg-surface-hover px-3 py-2.5"
+          >
             <div className="mb-1 text-[13px] font-semibold">{step.title}</div>
             <StreamingText
               as="p"

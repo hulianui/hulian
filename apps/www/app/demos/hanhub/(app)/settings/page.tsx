@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useState } from "react";
 import { Copy, Send, Webhook } from "lucide-react";
 import {
@@ -29,51 +31,23 @@ const BASE_URL = "https://api.hanhub.cn/v1";
 const SNIPPETS: Record<string, { lang: string; code: string }> = {
   curl: {
     lang: "bash",
-    code: `curl ${BASE_URL}/chat/completions \\
-  -H "Authorization: Bearer $HANHUB_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "claude-opus-4-7",
-    "messages": [{"role": "user", "content": "你好"}]
-  }'`,
+    code: copy("curlValueChatCompletionsHAuthorizationBearer", BASE_URL),
   },
   python: {
     lang: "python",
-    code: `from openai import OpenAI
-
-client = OpenAI(
-    base_url="${BASE_URL}",
-    api_key="$HANHUB_KEY",
-)
-
-resp = client.chat.completions.create(
-    model="claude-opus-4-7",
-    messages=[{"role": "user", "content": "你好"}],
-)
-print(resp.choices[0].message.content)`,
+    code: copy("fromOpenaiImportOpenaiClientOpenaiBase", BASE_URL),
   },
   node: {
     lang: "javascript",
-    code: `import OpenAI from "openai";
-
-const client = new OpenAI({
-  baseURL: "${BASE_URL}",
-  apiKey: process.env.HANHUB_KEY,
-});
-
-const resp = await client.chat.completions.create({
-  model: "claude-opus-4-7",
-  messages: [{ role: "user", content: "你好" }],
-});
-console.log(resp.choices[0].message.content);`,
+    code: copy("importOpenaiFromOpenaiConstClientNew", BASE_URL),
   },
 };
 
 const MEMBERS = [
-  { name: "林屿", email: "lin@hanhub.cn", role: "拥有者", tone: "brand" as const, glyph: "林" },
-  { name: "周楠", email: "zhou@hanhub.cn", role: "管理员", tone: "success" as const, glyph: "周" },
-  { name: "陈曦", email: "chen@hanhub.cn", role: "开发者", tone: "neutral" as const, glyph: "陈" },
-  { name: "赵敏", email: "zhao@hanhub.cn", role: "只读", tone: "neutral" as const, glyph: "赵" },
+  { name: copy("linyu"), email: "lin@hanhub.cn", role: copy("owner"), tone: "brand" as const, glyph: copy("forest") },
+  { name: copy("zhouNan"), email: "zhou@hanhub.cn", role: copy("administrator"), tone: "success" as const, glyph: copy("week") },
+  { name: copy("chenXi"), email: "chen@hanhub.cn", role: copy("developer"), tone: "neutral" as const, glyph: copy("chen") },
+  { name: copy("zhaoMin"), email: "zhao@hanhub.cn", role: copy("readOnly"), tone: "neutral" as const, glyph: copy("zhao") },
 ];
 
 export default function SettingsPage() {
@@ -90,19 +64,19 @@ export default function SettingsPage() {
     } catch {
       /* 静默：演示环境复制不可用时仍给出反馈 */
     }
-    toast({ title: "已复制 base_url", tone: "info" });
+    toast({ title: copy("baseUrlCopied"), tone: "info" });
   }
 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">接入设置</h1>
-        <p className="text-sm text-muted">快速接入 · 团队成员 · Webhook 告警 · 默认配置</p>
+        <h1 className="text-xl font-semibold text-foreground">{copy("accessSettings")}</h1>
+        <p className="text-sm text-muted">{copy("quickAccessTeamMembersWebhookAlertsDefault")}</p>
       </div>
 
       {/* 快速接入 */}
       <Card>
-        <CardHeader className="font-medium text-foreground">快速接入</CardHeader>
+        <CardHeader className="font-medium text-foreground">{copy("quickAccess")}</CardHeader>
         <CardBody className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-muted">Base URL</span>
@@ -110,10 +84,8 @@ export default function SettingsPage() {
               {BASE_URL}
             </code>
             <Button variant="outline" size="sm" onClick={copyBaseUrl}>
-              <Copy className="size-4" />
-              复制
-            </Button>
-            <span className="text-xs text-muted">OpenAI 兼容协议 · 改 base_url + key 即可接入</span>
+              <Copy className="size-4" />{copy("copy")}</Button>
+            <span className="text-xs text-muted">{copy("openaiCompatibleProtocolChangeBaseUrlKey")}</span>
           </div>
 
           <Segmented
@@ -124,7 +96,7 @@ export default function SettingsPage() {
               { value: "python", label: "Python" },
               { value: "node", label: "Node.js" },
             ]}
-            aria-label="代码语言"
+            aria-label={copy("codeLanguage")}
           />
           <CodeBlock code={SNIPPETS[lang].code} lang={SNIPPETS[lang].lang} />
         </CardBody>
@@ -134,14 +106,12 @@ export default function SettingsPage() {
         {/* 团队成员 */}
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <span className="font-medium text-foreground">团队成员</span>
+            <span className="font-medium text-foreground">{copy("teamMember")}</span>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => toast({ title: "邀请链接已复制", tone: "info" })}
-            >
-              邀请成员
-            </Button>
+              onClick={() => toast({ title: copy("invitationLinkCopied"), tone: "info" })}
+            >{copy("inviteMembers")}</Button>
           </CardHeader>
           <CardBody className="p-0">
             <List
@@ -163,11 +133,9 @@ export default function SettingsPage() {
         {/* Webhook */}
         <Card>
           <CardHeader className="flex items-center gap-2 font-medium text-foreground">
-            <Webhook className="size-4 text-muted" />
-            Webhook 告警
-          </CardHeader>
+            <Webhook className="size-4 text-muted" />{copy("webhookAlert")}</CardHeader>
           <CardBody className="flex flex-col gap-4">
-            <Field label="回调 URL" description="用量超阈值 / 余额不足时 POST 到该地址">
+            <Field label={copy("callbackUrl")} description={copy("postToThisAddressWhenTheUsage")}>
               <Input
                 value={webhookUrl}
                 onChange={(e) => setWebhookUrl(e.target.value)}
@@ -175,53 +143,51 @@ export default function SettingsPage() {
               />
             </Field>
             <div className="flex flex-wrap items-center gap-2">
-              <Tag tone="neutral" size="sm">用量告警</Tag>
-              <Tag tone="neutral" size="sm">余额告警</Tag>
-              <Tag tone="neutral" size="sm">渠道熔断</Tag>
+              <Tag tone="neutral" size="sm">{copy("usageAlarm")}</Tag>
+              <Tag tone="neutral" size="sm">{copy("balanceAlarm")}</Tag>
+              <Tag tone="neutral" size="sm">{copy("channelCircuitBreaker")}</Tag>
             </div>
             <Button
               variant="outline"
               size="sm"
               className="self-start"
-              onClick={() => toast({ title: "测试事件已发送", description: webhookUrl, tone: "info" })}
+              onClick={() => toast({ title: copy("testEventSent"), description: webhookUrl, tone: "info" })}
             >
-              <Send className="size-4" />
-              测试发送
-            </Button>
+              <Send className="size-4" />{copy("testSending")}</Button>
           </CardBody>
         </Card>
       </div>
 
       {/* 默认配置 */}
       <Card>
-        <CardHeader className="font-medium text-foreground">默认配置</CardHeader>
+        <CardHeader className="font-medium text-foreground">{copy("defaultConfiguration")}</CardHeader>
         <CardBody className="flex flex-col gap-5">
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="默认限速（req/min）" description="新建密钥的初始限速">
+            <Field label={copy("defaultSpeedLimitReqMin")} description={copy("initialRateLimitForNewKeys")}>
               <NumberField
                 value={defaultRpm}
                 onValueChange={setDefaultRpm}
                 min={1}
                 max={10000}
                 step={100}
-                aria-label="默认限速"
+                aria-label={copy("defaultSpeedLimit")}
               />
             </Field>
-            <Field label="默认倍率分组" description="决定网关在上游价基础上的加价">
+            <Field label={copy("defaultMagnificationGrouping")} description={copy("determineTheGatewaySPriceIncreaseBased")}>
               <Select
                 value={markupGroup}
                 onValueChange={(v) => setMarkupGroup(v as string)}
                 items={[
-                  { value: "economy", label: "经济（1.0×）" },
-                  { value: "standard", label: "标准（1.05×）" },
-                  { value: "premium", label: "高优（1.1×）" },
+                  { value: "economy", label: copy("economy") },
+                  { value: "standard", label: copy("standard") },
+                  { value: "premium", label: copy("highQuality") },
                 ]}
               >
                 <SelectTrigger />
                 <SelectContent>
-                  <SelectItem value="economy">经济（1.0×）</SelectItem>
-                  <SelectItem value="standard">标准（1.05×）</SelectItem>
-                  <SelectItem value="premium">高优（1.1×）</SelectItem>
+                  <SelectItem value="economy">{copy("economy2")}</SelectItem>
+                  <SelectItem value="standard">{copy("standard2")}</SelectItem>
+                  <SelectItem value="premium">{copy("highQuality2")}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
@@ -232,19 +198,19 @@ export default function SettingsPage() {
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-sm font-medium text-foreground">失败自动重试</div>
-                <div className="text-xs text-muted">上游 5xx / 超时时切换渠道重试</div>
+                <div className="text-sm font-medium text-foreground">{copy("automaticallyRetryOnFailure")}</div>
+                <div className="text-xs text-muted">{copy("upstreamXxSwitchChannelAndTryAgain")}</div>
               </div>
-              <Switch checked={retry} onCheckedChange={setRetry} aria-label="失败自动重试" />
+              <Switch checked={retry} onCheckedChange={setRetry} aria-label={copy("automaticallyRetryOnFailure2")} />
             </div>
             {retry && (
-              <Field label="重试次数" className="w-40">
+              <Field label={copy("numberOfRetries")} className="w-40">
                 <NumberField
                   value={retryCount}
                   onValueChange={setRetryCount}
                   min={1}
                   max={5}
-                  aria-label="重试次数"
+                  aria-label={copy("numberOfRetries2")}
                 />
               </Field>
             )}
@@ -252,10 +218,8 @@ export default function SettingsPage() {
 
           <Button
             className="self-start"
-            onClick={() => toast({ title: "默认配置已保存", tone: "success" })}
-          >
-            保存设置
-          </Button>
+            onClick={() => toast({ title: copy("defaultConfigurationSaved"), tone: "success" })}
+          >{copy("saveSettings")}</Button>
         </CardBody>
       </Card>
     </div>

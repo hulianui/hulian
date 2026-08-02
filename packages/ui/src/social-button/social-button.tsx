@@ -1,5 +1,7 @@
 "use client";
 import { Loader2 } from "../_icons";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { pressableClass } from "../motion";
 import type { SocialButtonProps, SocialProvider } from "./social-button.types";
@@ -65,15 +67,32 @@ const BRANDS: Record<SocialProvider, BrandMeta> = {
   },
 };
 
-const SIZE: Record<NonNullable<SocialButtonProps["size"]>, { button: string; icon: string; glyph: string }> = {
+const SIZE: Record<
+  NonNullable<SocialButtonProps["size"]>,
+  { button: string; icon: string; glyph: string }
+> = {
   sm: { button: "h-8 gap-2 px-3 text-sm", icon: "size-8", glyph: "size-4" },
   md: { button: "h-10 gap-2 px-4 text-sm", icon: "size-10", glyph: "size-[18px]" },
   lg: { button: "h-12 gap-2.5 px-6 text-base", icon: "size-12", glyph: "size-5" },
 };
 
-function BrandGlyph({ path, className, style }: { path: string; className?: string; style?: React.CSSProperties }) {
+function BrandGlyph({
+  path,
+  className,
+  style,
+}: {
+  path: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={cn("shrink-0", className)} style={style} aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={cn("shrink-0", className)}
+      style={style}
+      aria-hidden
+    >
       <path d={path} />
     </svg>
   );
@@ -90,7 +109,21 @@ export function SocialButton({
   children,
   ...props
 }: SocialButtonProps) {
+  const locale = useComponentLocale().socialButton ?? {
+    providers: {
+      wechat: "微信",
+      alipay: "支付宝",
+      qq: "QQ",
+      weibo: "微博",
+      github: "GitHub",
+      google: "Google",
+      apple: "Apple",
+      x: "X",
+    },
+    signInWith: (provider) => `${provider}登录`,
+  };
   const brand = BRANDS[provider];
+  const brandLabel = locale.providers[provider];
   const sz = SIZE[size];
   const isDisabled = disabled || loading;
   const solidColored = variant === "solid" && !brand.mono;
@@ -100,14 +133,15 @@ export function SocialButton({
     <button
       type="button"
       disabled={isDisabled}
-      aria-label={shape === "icon" ? brand.label : undefined}
+      aria-label={shape === "icon" ? brandLabel : undefined}
       className={cn(
         // pressableClass 平替原 transition-[background-color,box-shadow,filter]：属性列表已覆盖这三者，另补按下缩放。
         `inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius)] font-medium ${pressableClass} outline-none`,
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         "disabled:opacity-50 disabled:pointer-events-none",
         shape === "icon" ? sz.icon : sz.button,
-        variant === "outline" && "border border-hairline bg-surface text-foreground shadow-sm hover:bg-surface-hover",
+        variant === "outline" &&
+          "border border-hairline bg-surface text-foreground shadow-sm hover:bg-surface-hover",
         solidColored && "text-white shadow-sm hover:brightness-95",
         solidMono && "bg-foreground text-bg shadow-sm hover:opacity-90",
         className,
@@ -125,7 +159,7 @@ export function SocialButton({
           style={variant === "outline" && !brand.mono ? { color: brand.hex } : undefined}
         />
       )}
-      {shape === "button" && <span>{children ?? `${brand.label}登录`}</span>}
+      {shape === "button" && <span>{children ?? locale.signInWith(brandLabel)}</span>}
     </button>
   );
 }

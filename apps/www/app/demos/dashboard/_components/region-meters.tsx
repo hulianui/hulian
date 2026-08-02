@@ -1,6 +1,7 @@
 "use client";
+import { copy } from "./region-meters.content";
 import { Meter, Skeleton } from "@hulianui/ui";
-import type { Snapshot } from "../_data/snapshot";
+import { REGION_LABELS, type Snapshot } from "../_data/snapshot";
 import { Panel } from "./panel";
 
 function loadColor(load: number) {
@@ -9,16 +10,24 @@ function loadColor(load: number) {
   return "var(--color-chart-2)";
 }
 
-export function RegionMeters({ snapshot, loading }: { snapshot: Snapshot | null; loading: boolean }) {
+export function RegionMeters({
+  snapshot,
+  loading,
+}: {
+  snapshot: Snapshot | null;
+  loading: boolean;
+}) {
   return (
-    <Panel title="区域负载" bodyClassName="p-3">
+    <Panel title={copy("zoneLoad")} bodyClassName="p-3">
       <div className="grid grid-cols-3 gap-x-6 gap-y-2.5 md:grid-cols-6">
         {loading || !snapshot
-          ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-9 w-full rounded" />)
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-9 w-full rounded" />
+            ))
           : snapshot.regionLoad.map((r) => (
               <div key={r.region} className="flex flex-col gap-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted">{r.region}</span>
+                  <span className="text-muted">{REGION_LABELS[r.region]}</span>
                   <span className="font-medium tabular-nums" style={{ color: loadColor(r.load) }}>
                     {r.load}%
                   </span>

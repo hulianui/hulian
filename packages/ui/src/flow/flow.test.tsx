@@ -1,7 +1,9 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
-import { Flow } from "./flow";
+import { Flow, FlowEdgeDeleteButton } from "./flow";
 import type { FlowEdge, FlowHandleSpec, FlowNode } from "./flow.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -61,5 +63,50 @@ describe("Flow 渲染", () => {
     const inHandle = container.querySelector('[data-flow-handle="in"]');
     expect(inHandle?.hasAttribute("data-connected")).toBe(false);
     expect(inHandle?.className).toContain("bg-muted");
+  });
+
+  it("enUS localizes conditional delete and auto-layout actions", () => {
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <Flow<D>
+          {...base}
+          selectedId="a"
+          onNodeDelete={() => {}}
+          onEdgesDelete={() => {}}
+          onNodesChange={() => {}}
+        />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("Delete node")).toBeTruthy();
+    expect(getByLabelText("Auto layout")).toBeTruthy();
+  });
+
+  it("enUS localizes the selected-edge delete action", () => {
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <svg>
+          <FlowEdgeDeleteButton onDelete={() => {}} />
+        </svg>
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("Delete edge", { selector: "button" })).toBeTruthy();
+  });
+
+  it("keeps an explicit handle title exact while localizing only its fallback aria label", () => {
+    const explicitHandles = (node: FlowNode<D>): FlowHandleSpec[] =>
+      node.id === "a"
+        ? [{ id: "out", type: "source", label: "用户出口" }]
+        : [{ id: "in", type: "target" }];
+    const { container } = render(
+      <ConfigProvider locale={enUS}>
+        <Flow<D> {...base} edges={[]} getHandles={explicitHandles} />
+      </ConfigProvider>,
+    );
+    const source = container.querySelector('[data-flow-handle="out"]');
+    const target = container.querySelector('[data-flow-handle="in"]');
+    expect(source?.getAttribute("title")).toBe("用户出口");
+    expect(source?.getAttribute("aria-label")).toBe("用户出口");
+    expect(target?.hasAttribute("title")).toBe(false);
+    expect(target?.getAttribute("aria-label")).toBe("Input");
   });
 });

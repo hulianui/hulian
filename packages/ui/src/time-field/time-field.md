@@ -50,6 +50,12 @@ import { TimeField } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | **只有整段输完才触发**；清空或退格清段回传 `null` |
 
+## 国际化
+
+输入组、时/分/秒段、空值播报和清除按钮的无障碍文案跟随最近的
+`ConfigProvider locale`。显式 `aria-label` 优先于 Locale。旧自定义 Locale 若没有
+`components.timeField`，仍使用原有中文兼容默认值。
+
 ## 键盘
 
 | 按键 | 作用 |

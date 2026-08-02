@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Heading, Text, Tag } from "@hulianui/ui";
 import { IntegrationsBlock } from "../../blocks/_blocks/integrations";
 import { FaqBlock } from "../../blocks/_blocks/faq";

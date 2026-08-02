@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { BentoGrid, BentoCard, BorderBeam, Heading, Tag, Text } from "@hulianui/ui";
 import { Rocket, Cpu, Globe, Activity, ShieldCheck, Users, type LucideIcon } from "lucide-react";
 

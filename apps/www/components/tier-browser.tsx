@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import { Segmented, Tag, Text } from "@hulianui/ui";
 import {
   ArrowRight,
@@ -16,10 +15,13 @@ import {
   AppWindow,
   type LucideIcon,
 } from "lucide-react";
-import { CATEGORIES, manifest, type CategoryKey } from "../lib/manifest";
+import { CATEGORIES, componentMeta, manifest, type CategoryKey } from "../lib/manifest";
+import { DOCS_LOCALE, withDocsBasePath } from "../lib/docs-locale";
 import { blocks } from "../app/blocks/_meta";
 import { pages } from "../app/pages/_meta";
 import { demos } from "../app/demos/lib/demos";
+import { ComponentQuickJump } from "./component-quick-jump";
+import { useIntlayer } from "next-intlayer";
 
 const CATEGORY_ICON: Record<CategoryKey, LucideIcon> = {
   layout: LayoutGrid,
@@ -44,12 +46,20 @@ interface Row {
   href: string;
 }
 
-const TIERS = [
-  { value: "components", label: "组件" },
-  { value: "blocks", label: "区块" },
-  { value: "pages", label: "页面" },
-  { value: "demos", label: "模版" },
-];
+const TIERS =
+  DOCS_LOCALE === "en"
+    ? [
+        { value: "components", label: "Components" },
+        { value: "blocks", label: "Blocks" },
+        { value: "pages", label: "Pages" },
+        { value: "demos", label: "Templates" },
+      ]
+    : [
+        { value: "components", label: "组件" },
+        { value: "blocks", label: "区块" },
+        { value: "pages", label: "页面" },
+        { value: "demos", label: "模版" },
+      ];
 
 // 各档的发丝线行数据。组件按分类聚合(数量多),区块/页面/示例按条目列出(数量少)。
 function rowsFor(tier: string): Row[] {
@@ -59,7 +69,7 @@ function rowsFor(tier: string): Row[] {
       label: b.name,
       blurb: b.description,
       trailing: b.tags[0],
-      href: `/blocks/${b.slug}`,
+      href: withDocsBasePath(`/blocks/${b.slug}`),
     }));
   }
   if (tier === "pages") {
@@ -68,7 +78,7 @@ function rowsFor(tier: string): Row[] {
       label: p.name,
       blurb: p.description,
       trailing: p.tags[0],
-      href: `/pages/${p.slug}`,
+      href: withDocsBasePath(`/pages/${p.slug}`),
     }));
   }
   if (tier === "demos") {
@@ -77,37 +87,58 @@ function rowsFor(tier: string): Row[] {
       label: d.title,
       blurb: d.description,
       trailing: d.category,
-      href: d.href,
+      href: withDocsBasePath(d.href),
     }));
   }
   // components：按分类聚合
-  return CATEGORIES.map((cat) => ({
-    key: cat.key,
-    icon: CATEGORY_ICON[cat.key],
-    label: cat.label,
-    blurb: cat.groups.map((g) => g.label).join(" · "),
-    trailing: String(manifest.filter((m) => m.category === cat.key).length),
-    href: `/components#${cat.key}`,
-  }));
+  return CATEGORIES.map((cat) => {
+    const categoryItems = manifest.filter((item) => item.category === cat.key);
+    const localized = componentMeta(categoryItems[0]);
+    const groupLabels = cat.groups.flatMap((group) => {
+      const item = categoryItems.find((candidate) => candidate.group === group.key);
+      return item ? [componentMeta(item).groupLabel] : [];
+    });
+    return {
+      key: cat.key,
+      icon: CATEGORY_ICON[cat.key],
+      label: localized.categoryLabel,
+      blurb: groupLabels.join(" · "),
+      trailing: String(categoryItems.length),
+      href: withDocsBasePath(`/components#${cat.key}`),
+    };
+  });
 }
 
 // 首页浏览区 —— 按「组件 / 区块 / 页面 / 示例」四档切换的发丝线列表(dogfood Segmented)。
 export function TierBrowser() {
+  const content = useIntlayer("shared-chrome");
   const [tier, setTier] = useState("components");
   const rows = rowsFor(tier);
 
   return (
     <div>
       <Segmented
-        aria-label="浏览分类"
+        aria-label={content.browseCategories}
         items={TIERS}
         value={tier}
         onValueChange={setTier}
         className="mb-2"
       />
-      <nav className="border-t border-border" aria-label="浏览列表">
+      {tier === "components" && (
+        <div className="mb-4 space-y-3">
+          <ComponentQuickJump placement="home" />
+          <a
+            href={withDocsBasePath("/components")}
+            className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {content.viewAllComponents}
+            <ArrowRight className="size-4" aria-hidden />
+          </a>
+        </div>
+      )}
+      <nav className="border-t border-border" aria-label={content.browseList}>
         {rows.map(({ key, icon: Icon, label, blurb, trailing, href }) => (
-          <Link
+          <a
             key={key}
             href={href}
             className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
@@ -146,7 +177,7 @@ export function TierBrowser() {
               className="size-4 shrink-0 text-muted/50 transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
               aria-hidden
             />
-          </Link>
+          </a>
         ))}
       </nav>
     </div>

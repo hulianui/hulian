@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Heading, Tag, Text } from "@hulianui/ui";
 
 type EntryKind = "新增" | "修复" | "优化";

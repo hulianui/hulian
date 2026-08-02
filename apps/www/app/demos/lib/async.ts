@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./async.content";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /** demo 用：模拟网络延迟，让 loading/skeleton 等真实态有戏。 */
@@ -22,7 +23,7 @@ export function useMockData<T>(seed: T, opts?: { delay?: number; failOnce?: bool
     await sleep(opts?.delay ?? jitter());
     if (opts?.failOnce && !failedRef.current) {
       failedRef.current = true;
-      setError("加载失败，请重试（这里报错是故意设计展示组件的）");
+      setError(copy("intentionalLoadError"));
       setLoading(false);
       return;
     }

@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Avatar, Heading, Prose, Tag, Text } from "@hulianui/ui";
 
 // 长文 + 侧边目录 Block —— 自包含、可整段复制。

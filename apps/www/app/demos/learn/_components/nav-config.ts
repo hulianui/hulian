@@ -1,12 +1,13 @@
+import { copy } from "./nav-config.content";
 export const LEARN_BASE = "/demos/learn";
 
 export const brand = {
-  name: "瀚学",
+  name: copy("hanxue"),
   nameEn: "HanLearn",
-  slogan: "把每一次学习，都变成可见的进步",
+  slogan: copy("turnEveryLearningIntoVisibleProgress"),
 };
 
 export const primaryNav = [
-  { label: "课程目录", href: LEARN_BASE },
-  { label: "我的学习", href: `${LEARN_BASE}?view=mine` },
+  { label: copy("courseCatalog"), href: LEARN_BASE },
+  { label: copy("myLearning"), href: `${LEARN_BASE}?view=mine` },
 ];

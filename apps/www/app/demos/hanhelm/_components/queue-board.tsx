@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./queue-board.content";
+
 import { useRouter } from "next/navigation";
 import { QueueLane, Tag } from "@hulianui/ui";
 import type { QueueLaneDef, QueueItem } from "@hulianui/ui";
@@ -10,10 +12,10 @@ import { QueueTaskCard } from "./queue-task-card";
 const PRIORITIES: Priority[] = ["P0", "P1", "P2", "P3"];
 
 const PRIORITY_LABEL: Record<Priority, string> = {
-  P0: "P0 紧急",
-  P1: "P1 高",
-  P2: "P2 普通",
-  P3: "P3 低",
+  P0: copy("p0Emergency"),
+  P1: copy("p1IsHigh"),
+  P2: copy("p2IsAverage"),
+  P3: copy("p3IsLow"),
 };
 
 /** QueueLane 的队列项：扁平复制 Task 关键字段 + laneId（=优先级）。 */
@@ -51,13 +53,12 @@ export function QueueBoard({ tasks }: { tasks: Task[] }) {
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-semibold text-foreground">{lane.label}</span>
-              <Tag tone="neutral" size="sm">
-                深度 {depth}
+              <Tag tone="neutral" size="sm">{copy("depth")}{depth}
               </Tag>
             </div>
             <div className="flex items-center gap-3 text-[11px] tabular-nums text-muted">
-              <span>均等 {depth === 0 ? "—" : fmtDuration(avgWait)}</span>
-              <span>在途 {running}</span>
+              <span>{copy("equal")}{depth === 0 ? "—" : fmtDuration(avgWait)}</span>
+              <span>{copy("onTheRoad")}{running}</span>
             </div>
           </div>
         );

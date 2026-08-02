@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./agents-executor-card.content";
+
 // 执行器池 · 单个执行器卡：能力 / 价位 / 延迟 / 并发 / 当前负载 ScoreRing / 健康 / 负载趋势 / 降级链 / 启停限流。
 import { useState } from "react";
 import { ArrowRight, Cpu, Bot } from "lucide-react";
@@ -23,28 +25,28 @@ const HEALTH_STATUS: Record<ExecutorHealth, "online" | "degraded" | "offline"> =
   offline: "offline",
 };
 const HEALTH_LABEL: Record<ExecutorHealth, string> = {
-  healthy: "健康",
-  degraded: "降级",
-  offline: "离线",
+  healthy: copy("health"),
+  degraded: copy("downgrade"),
+  offline: copy("offline"),
 };
 
 const CAP_LABEL: Record<Capability, string> = {
-  text: "文本",
-  code: "代码",
-  image: "图像",
-  translate: "翻译",
-  rag: "检索增强",
-  extract: "抽取",
-  moderate: "审核",
-  orchestrate: "编排",
+  text: copy("text"),
+  code: copy("code"),
+  image: copy("image"),
+  translate: copy("translation"),
+  rag: copy("retrievalEnhancement"),
+  extract: copy("extract"),
+  moderate: copy("review"),
+  orchestrate: copy("arrangement"),
 };
 
 // 负载等级带（高负载红）。
 const LOAD_GRADES = [
-  { min: 0, label: "富余", tone: "var(--color-success)" },
-  { min: 50, label: "适中", tone: "var(--color-chart-2)" },
-  { min: 75, label: "偏高", tone: "var(--color-warning)" },
-  { min: 90, label: "饱和", tone: "var(--color-danger)" },
+  { min: 0, label: copy("surplus"), tone: "var(--color-success)" },
+  { min: 50, label: copy("moderate"), tone: "var(--color-chart-2)" },
+  { min: 75, label: copy("relativelyHigh"), tone: "var(--color-warning)" },
+  { min: 90, label: copy("saturated"), tone: "var(--color-danger)" },
 ];
 
 function loadTrend(index: number): number[] {
@@ -70,7 +72,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
             <div className="flex items-center gap-1.5">
               <span className="truncate text-sm font-semibold text-foreground">{e.name}</span>
               <Tag size="sm" tone={e.kind === "agent" ? "brand" : "neutral"} variant="soft">
-                {e.kind === "agent" ? "Agent" : "模型"}
+                {e.kind === "agent" ? "Agent" : copy("model")}
               </Tag>
             </div>
             {e.vendor && <div className="truncate text-xs text-muted">{e.vendor}</div>}
@@ -87,13 +89,12 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
             grades={LOAD_GRADES}
             size={76}
             thickness={7}
-            label="当前负载"
+            label={copy("currentLoad")}
           />
           <div className="min-w-0 flex-1">
             <div className="mb-1 flex items-center justify-between text-xs text-muted">
-              <span>负载趋势</span>
-              <span className="tabular-nums">
-                并发 {Math.round(e.load * e.maxConcurrency)}/{e.maxConcurrency}
+              <span>{copy("loadTrends")}</span>
+              <span className="tabular-nums">{copy("andIssuedThemSimultaneously")}{Math.round(e.load * e.maxConcurrency)}/{e.maxConcurrency}
               </span>
             </div>
             <Sparkline
@@ -125,17 +126,17 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
         {/* 价位 / 延迟 / 并发 */}
         <div className="grid grid-cols-3 gap-2 text-center">
           <div className="rounded-[var(--radius)] border border-border bg-surface px-2 py-1.5">
-            <div className="text-[11px] text-muted">入/出价</div>
+            <div className="text-[11px] text-muted">{copy("bidBid")}</div>
             <div className="text-xs font-medium tabular-nums text-foreground">
               ¥{e.pricePer1kIn}/{e.pricePer1kOut}
             </div>
           </div>
           <div className="rounded-[var(--radius)] border border-border bg-surface px-2 py-1.5">
-            <div className="text-[11px] text-muted">典型延迟</div>
+            <div className="text-[11px] text-muted">{copy("typicalDelay")}</div>
             <div className="text-xs font-medium tabular-nums text-foreground">{e.latencyMs}ms</div>
           </div>
           <div className="rounded-[var(--radius)] border border-border bg-surface px-2 py-1.5">
-            <div className="text-[11px] text-muted">最大并发</div>
+            <div className="text-[11px] text-muted">{copy("maximumConcurrency")}</div>
             <div className="text-xs font-medium tabular-nums text-foreground">
               {e.maxConcurrency}
             </div>
@@ -144,9 +145,9 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
 
         {/* 降级链 */}
         <div className="rounded-[var(--radius)] border border-border bg-surface-hover px-3 py-2">
-          <div className="mb-1 text-[11px] text-muted">降级链</div>
+          <div className="mb-1 text-[11px] text-muted">{copy("downgradeChain")}</div>
           {e.fallbackChain.length === 0 ? (
-            <span className="text-xs text-muted">无（唯一能力执行器）</span>
+            <span className="text-xs text-muted">{copy("noneSoleAbilityActuator")}</span>
           ) : (
             <div className="flex flex-wrap items-center gap-1 text-xs text-foreground">
               <Tag size="sm" tone="brand" variant="soft">
@@ -171,20 +172,18 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
           <Switch
             checked={enabled}
             onCheckedChange={setEnabled}
-            aria-label={`启停 ${e.name}`}
+            aria-label={copy("startAndStopValue", e.name)}
           />
-          {enabled ? "已启用" : "已停用"}
+          {enabled ? copy("enabled") : copy("discontinued")}
         </label>
-        <label className="flex items-center gap-2 text-xs text-muted">
-          并发上限
-          <NumberField
+        <label className="flex items-center gap-2 text-xs text-muted">{copy("concurrentCap")}<NumberField
             value={concurrency}
             onValueChange={setConcurrency}
             min={1}
             max={200}
             step={1}
             disabled={!enabled}
-            aria-label={`${e.name} 并发上限`}
+            aria-label={copy("valueConcurrencyLimit", e.name)}
             className="w-32"
           />
         </label>

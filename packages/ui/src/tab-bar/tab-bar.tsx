@@ -2,6 +2,7 @@
 import { useState, type CSSProperties } from "react";
 import { cn } from "../lib/cn";
 import type { TabBarProps } from "./tab-bar.types";
+import { useComponentLocale } from "../config/locale-context";
 
 // 移动端底部导航栏（"use client"·零依赖）：items 驱动，受控/非受控；激活项 text-primary + aria-current=page，
 // 角标(badge)/红点(dot) 浮于图标右上；safeArea 吃 env(safe-area-inset-bottom)（自定义属性 + var 引用，桌面退化为 0）。
@@ -12,8 +13,10 @@ export function TabBar({
   onChange,
   safeArea = true,
   fixed = true,
+  "aria-label": ariaLabel,
   className,
 }: TabBarProps) {
+  const labels = useComponentLocale().tabBar ?? { navigation: "底部导航" };
   const [internal, setInternal] = useState(defaultValue ?? items[0]?.key);
   const active = value ?? internal;
 
@@ -31,7 +34,7 @@ export function TabBar({
 
   return (
     <nav
-      aria-label="底部导航"
+      aria-label={ariaLabel ?? labels.navigation}
       style={safeStyle}
       className={cn(
         "z-40 flex w-full items-stretch border-t border-border bg-surface",
@@ -55,7 +58,7 @@ export function TabBar({
           >
             {(it.icon || it.activeIcon) && (
               <span className="relative flex text-xl leading-none">
-                {on ? (it.activeIcon ?? it.icon) : it.icon}
+                {on ? it.activeIcon ?? it.icon : it.icon}
                 {it.badge != null ? (
                   <span className="absolute -right-2.5 -top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-medium leading-4 text-danger-foreground">
                     {it.badge}

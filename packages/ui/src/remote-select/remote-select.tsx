@@ -1,5 +1,13 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type UIEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  type UIEvent,
+} from "react";
 import {
   Combobox,
   ComboboxChip,
@@ -9,6 +17,8 @@ import {
   ComboboxItem,
 } from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
+
+import { useComponentLocale } from "../config/locale-context";
 import { Spinner } from "../spinner/spinner";
 import type {
   RemoteSelectOption,
@@ -23,7 +33,9 @@ const LOAD_MORE_THRESHOLD = 24;
 const EMPTY_VALUES: string[] = [];
 
 /** 对外 value（单选标量 / 多选数组 / number / null）归一为内部 string[]，顺序保持不变。 */
-function toValueArray(input: RemoteSelectRawValue | RemoteSelectRawValue[] | null | undefined): string[] {
+function toValueArray(
+  input: RemoteSelectRawValue | RemoteSelectRawValue[] | null | undefined,
+): string[] {
   if (input == null || input === "") return EMPTY_VALUES;
   if (Array.isArray(input)) {
     return input.filter((v) => v != null && v !== "").map((v) => String(v));
@@ -53,9 +65,9 @@ export function RemoteSelect(props: RemoteSelectProps) {
     valueKey = "id",
     debounce = 300,
     pageSize = 10,
-    placeholder = "请选择",
-    emptyMessage = "无匹配数据",
-    loadingMessage = "加载中…",
+    placeholder,
+    emptyMessage,
+    loadingMessage,
     size,
     disabled,
     invalid,
@@ -65,6 +77,18 @@ export function RemoteSelect(props: RemoteSelectProps) {
     className,
     popupClassName,
   } = props;
+  const copy = useComponentLocale().remoteSelect ?? {
+    placeholder: "请选择",
+    empty: "无匹配数据",
+    loading: "加载中…",
+    total: (count) => `共 ${count} 条`,
+    loaded: (count) => `已加载 ${count} 条`,
+    loadMore: "滚动加载更多",
+    noMore: "没有更多了",
+  };
+  const resolvedPlaceholder = placeholder ?? copy.placeholder;
+  const resolvedEmptyMessage = emptyMessage ?? copy.empty;
+  const resolvedLoadingMessage = loadingMessage ?? copy.loading;
   const multiple = props.multiple === true;
 
   // ── 值（受控 / 非受控）─────────────────────────────────────────────
@@ -241,7 +265,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
     () => values.map((v) => known.get(v) ?? { value: v, label: v, raw: {} }),
     [values, known],
   );
-  const selectedLabel = multiple ? "" : (selectedOptions[0]?.label ?? "");
+  const selectedLabel = multiple ? "" : selectedOptions[0]?.label ?? "";
 
   // 单选：受控 inputValue 不会被 Base UI 自动回填，已选 label（含 resolveValue 迟到解出的）
   // 需要自己同步进输入框；打开中不覆盖，否则会把用户正在输入的搜索词吞掉。
@@ -304,25 +328,25 @@ export function RemoteSelect(props: RemoteSelectProps) {
   const empty: ReactNode = loading ? (
     <span className="inline-flex items-center gap-2">
       <Spinner size="sm" tone="muted" />
-      {loadingMessage}
+      {resolvedLoadingMessage}
     </span>
   ) : (
-    emptyMessage
+    resolvedEmptyMessage
   );
 
   const footer: ReactNode =
     options.length === 0 ? null : (
       <div className="flex items-center justify-between gap-2 px-2 py-1 text-xs text-muted">
         <span className="tabular-nums">
-          {total != null ? `共 ${total} 条` : `已加载 ${options.length} 条`}
+          {total != null ? copy.total(total) : copy.loaded(options.length)}
         </span>
         {loading ? (
           <span className="inline-flex items-center gap-1.5">
             <Spinner size="sm" tone="muted" className="size-3" />
-            {loadingMessage}
+            {resolvedLoadingMessage}
           </span>
         ) : (
-          <span>{hasMore ? "滚动加载更多" : "没有更多了"}</span>
+          <span>{hasMore ? copy.loadMore : copy.noMore}</span>
         )}
       </div>
     );
@@ -363,7 +387,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
         <ComboboxChips
           size={size}
           invalid={invalid}
-          placeholder={selectedOptions.length ? "" : placeholder}
+          placeholder={selectedOptions.length ? "" : resolvedPlaceholder}
           className={className}
         >
           {/* 必须按 value 顺序：ChipRemove 按渲染序绑定 selectedValue[index]，乱序会删错项。 */}
@@ -393,7 +417,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
     >
       <ComboboxInput
         size={size}
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         invalid={invalid}
         clearable={clearable}
         className={className}

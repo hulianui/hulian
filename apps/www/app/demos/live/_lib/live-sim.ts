@@ -1,3 +1,4 @@
+import { copy } from "./live-sim.content";
 // 直播实时引擎：纯 reducer（可单测）。随机性由 action 携带的 seed + mulberry32 派生 → 确定性可复现。
 // 范式参照 customer-service：纯 reducer + 定时器 hook（见 use-live-sim.ts）。
 import type { DanmakuItem } from "@hulianui/ui";
@@ -54,7 +55,7 @@ export function createInitialState(): LiveState {
     comments: 3120,
     sales: 48650,
     danmaku: [],
-    chat: [{ id: "sys0", type: "system", text: "欢迎来到瀚选直播间，理性消费，文明发言~" }],
+    chat: [{ id: "sys0", type: "system", text: copy("welcomeToHanselectLiveShopResponsiblyAndKeepTheChatRespectful") }],
     gifts: [],
     suggestions: [],
     combo: null,
@@ -167,7 +168,7 @@ export function reducer(state: LiveState, action: LiveAction): LiveState {
 
     case "SEND_DANMAKU": {
       const dm: DanmakuItem = { id: action.id, text: action.text, mode: "scroll", color: "var(--color-chart-3)", bold: true };
-      const msg: LiveChatItem = { id: `self-${action.id}`, type: "message", user: { name: "我", level: 18 }, text: action.text };
+      const msg: LiveChatItem = { id: `self-${action.id}`, type: "message", user: { name: copy("me"), level: 18 }, text: action.text };
       return {
         ...state,
         danmaku: capTail([...state.danmaku, dm], DM_CAP),
@@ -177,11 +178,11 @@ export function reducer(state: LiveState, action: LiveAction): LiveState {
     }
 
     case "SEND_GIFT": {
-      const ev: GiftEvent = { id: action.id, user: { name: "我" }, gift: action.gift, combo: action.combo };
+      const ev: GiftEvent = { id: action.id, user: { name: copy("me") }, gift: action.gift, combo: action.combo };
       const giftMsg: LiveChatItem = {
         id: `selfg-${action.id}-${action.combo}`,
         type: "gift",
-        user: { name: "我" },
+        user: { name: copy("me") },
         gift: { name: action.gift.name, icon: action.gift.icon, combo: action.combo },
       };
       return {
@@ -206,7 +207,7 @@ export function reducer(state: LiveState, action: LiveAction): LiveState {
         const reply: LiveChatItem = {
           id: `host-${action.id}`,
           type: "message",
-          user: { name: "主播", level: 99, badge: "👑" },
+          user: { name: copy("host"), level: 99, badge: "👑" },
           text: s.text,
         };
         return { ...state, suggestions, chat: capTail([...state.chat, reply], CHAT_CAP) };

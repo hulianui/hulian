@@ -1,0 +1,98 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    "success": "成功",
+    "error": "错误",
+    "currentLimiting": "限流",
+    "timeout": "超时",
+    "inbound": "入站",
+    "receiveRequestValue": "接收请求 · {0}",
+    "authentication": "鉴权",
+    "keyValueVerificationPassed": "密钥「{0}」校验通过",
+    "chooseChannel": "选渠道",
+    "routeToValue": "路由至「{0}」",
+    "upstreamCall": "上游调用",
+    "upstreamReturnsValueTakesValueMs": "上游返回 {0} · 耗时 {1}ms",
+    "upstreamExceptionValueTookValueMs": "上游异常 {0} · 耗时 {1}ms",
+    "billing": "计费",
+    "outbound": "出站",
+    "responseBackToClient": "响应回传客户端",
+    "outbound2": "出站",
+    "returnErrorResponseNotBilled": "返回错误响应（不计费）",
+    "requestDetailsValue": "请求详情 · {0}",
+    "requestId": "请求 ID",
+    "time": "时间",
+    "status": "状态",
+    "model": "模型",
+    "channel": "渠道",
+    "key": "密钥",
+    "delay": "延迟",
+    "billingDetails": "计费明细",
+    "enterValueTokValueM": "输入 {0} tok × ${1}/1M",
+    "outputValueTokValueM": "输出 {0} tok × ${1}/1M",
+    "gatewayMultiplierValue": "网关倍率 ×{0}",
+    "alreadyIncluded": "已计入",
+    "total": "合计",
+    "thisRequestWasUnsuccessfulAndWillNot": "本次请求未成功，不计费（",
+    "requestBodyRequest": "请求体 request",
+    "copied": "已复制",
+    "responseBodyResponse": "响应体 response",
+    "copied2": "已复制",
+    "callLink": "调用链路",
+  },
+  en: {
+    "success": "success",
+    "error": "Error",
+    "currentLimiting": "Current limiting",
+    "timeout": "timeout",
+    "inbound": "Inbound",
+    "receiveRequestValue": "Receive request · {0}",
+    "authentication": "Authentication",
+    "keyValueVerificationPassed": "Key \"{0}\" verification passed",
+    "chooseChannel": "Choose channel",
+    "routeToValue": "Route to '{0}'",
+    "upstreamCall": "upstream call",
+    "upstreamReturnsValueTakesValueMs": "Upstream returns {0} · takes {1}ms",
+    "upstreamExceptionValueTookValueMs": "Upstream exception {0} · took {1}ms",
+    "billing": "billing",
+    "outbound": "outbound",
+    "responseBackToClient": "Response back to client",
+    "outbound2": "outbound",
+    "returnErrorResponseNotBilled": "Return error response (not billed)",
+    "requestDetailsValue": "Request details · {0}",
+    "requestId": "Request ID",
+    "time": "time",
+    "status": "Status",
+    "model": "model",
+    "channel": "channel",
+    "key": "key",
+    "delay": "delay",
+    "billingDetails": "Billing details",
+    "enterValueTokValueM": "Enter {0} tok × ${1}/1M",
+    "outputValueTokValueM": "Output {0} tok × ${1}/1M",
+    "gatewayMultiplierValue": "Gateway multiplier ×{0}",
+    "alreadyIncluded": "Already included",
+    "total": "total",
+    "thisRequestWasUnsuccessfulAndWillNot": "This request was unsuccessful and will not be billed (",
+    "requestBodyRequest": "request body request",
+    "copied": "Copied",
+    "responseBodyResponse": "response body response",
+    "copied2": "Copied",
+    "callLink": "call link",
+  },
+} as const;
+
+export type ContentKey = keyof typeof content["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = {
+  key: "demo-hanhub-app-logs-log-detail-drawer",
+  content: t(content),
+};
+
+export default dictionary;

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./guestbook.content";
 
 import { useState } from "react";
 import {
@@ -42,25 +43,25 @@ function GuestItem({
 }) {
   const deleteAction = entry.own ? (
     <Popconfirm
-      title="确定删除这条留言？"
+      title={copy("deleteThisMessage")}
       danger
       onConfirm={() => {
         onDelete(entry.id);
-        toast({ title: "留言已删除", tone: "info" });
+        toast({ title: copy("messageDeleted"), tone: "info" });
       }}
     >
       <Tooltip>
         <TooltipTrigger
           render={
             <button
-              aria-label="删除留言"
+              aria-label={copy("deleteMessage")}
               className="flex size-7 items-center justify-center rounded text-muted transition-colors hover:bg-danger/10 hover:text-danger"
             >
               <Trash2 className="size-3.5" aria-hidden />
             </button>
           }
         />
-        <TooltipContent>删除留言</TooltipContent>
+        <TooltipContent>{copy("deleteMessage")}</TooltipContent>
       </Tooltip>
     </Popconfirm>
   ) : null;
@@ -77,7 +78,8 @@ function GuestItem({
           {ratingNode}
           {entry.own && (
             <Tag tone="brand" size="sm">
-              我
+
+              {copy("me")}
             </Tag>
           )}
         </span>
@@ -100,7 +102,8 @@ function GuestItem({
               <span className="font-medium">{reply.author}</span>
               {reply.byOwner && (
                 <Tag tone="success" size="sm">
-                  作者
+
+                  {copy("author")}
                 </Tag>
               )}
             </span>
@@ -141,7 +144,7 @@ export function GuestbookClient() {
     const trimmedAuthor = authorName.trim();
     const trimmedContent = content.trim();
     if (!trimmedAuthor || !trimmedContent) {
-      toast({ title: "昵称和内容不能为空", tone: "danger" });
+      toast({ title: copy("nameAndMessageAreRequired"), tone: "danger" });
       return;
     }
     void run(async () => {
@@ -152,14 +155,14 @@ export function GuestbookClient() {
         hue,
         rating: rating ?? 5,
         content: trimmedContent,
-        createdAt: "刚刚",
+        createdAt: copy("justNow"),
         own: true,
       };
       setEntries((prev) => (prev ? [newEntry, ...prev] : [newEntry]));
       setAuthorName("");
       setRating(5);
       setContent("");
-      toast({ title: "留言已发布 🎉", tone: "success" });
+      toast({ title: copy("messagePublished"), tone: "success" });
     });
   }
 
@@ -179,36 +182,38 @@ export function GuestbookClient() {
       {/* 顶部标题区 */}
       <div className="space-y-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">留言板</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">{copy("guestbook")}</h1>
           <Text tone="muted" className="mt-2">
-            留下你的想法、建议或问候，我看到了都会回复。
+
+            {copy("shareAnIdeaSuggestionOrHelloIReplyToEveryMessageISee")}
           </Text>
         </div>
         <div className="flex items-center gap-3">
           <AvatarCircles avatars={avatarItems.slice(0, 6)} extraCount={recentVisitors.length - 6} />
           <Text size="sm" tone="muted">
-            {recentVisitors.length} 位访客到过这里
+            {recentVisitors.length}  {copy("visitorsHaveBeenHere")}
           </Text>
         </div>
       </div>
 
       {/* 写留言表单 */}
       <div className="space-y-4 rounded-[var(--radius)] border border-border bg-surface p-6 shadow-sm">
-        <h2 className="text-base font-semibold text-foreground">写留言</h2>
+        <h2 className="text-base font-semibold text-foreground">{copy("writeAMessage")}</h2>
         <div className="space-y-1.5">
           <label className="block text-sm font-medium text-foreground">
-            昵称 <span className="text-danger" aria-hidden>*</span>
+
+            {copy("nickname")} <span className="text-danger" aria-hidden>*</span>
           </label>
           <Input
             value={authorName}
             onChange={(e) => setAuthorName(e.target.value)}
-            placeholder="你的名字"
+            placeholder={copy("yourName")}
             disabled={pending}
             aria-required
           />
         </div>
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-foreground">评分</label>
+          <label className="block text-sm font-medium text-foreground">{copy("rating")}</label>
           <Rating
             value={rating ?? 0}
             onValueChange={(v) => setRating(v)}
@@ -217,11 +222,11 @@ export function GuestbookClient() {
           />
         </div>
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-foreground">内容</label>
+          <label className="block text-sm font-medium text-foreground">{copy("message")}</label>
           <MarkdownEditor
             value={content}
             onChange={(md) => setContent(md)}
-            placeholder="支持 Markdown…"
+            placeholder={copy("markdownSupported")}
             minRows={4}
             disabled={pending}
           />
@@ -234,12 +239,14 @@ export function GuestbookClient() {
           {pending ? (
             <>
               <Spinner size="sm" />
-              发布中…
+
+              {copy("publishing")}
             </>
           ) : (
             <>
               <Send className="size-4" aria-hidden />
-              发布留言
+
+              {copy("publishMessage")}
             </>
           )}
         </Button>
@@ -248,7 +255,8 @@ export function GuestbookClient() {
       {/* 留言列表区 */}
       <div className="space-y-2">
         <h2 className="text-base font-semibold text-foreground">
-          留言 {entries ? `（${entries.length}）` : ""}
+
+          {copy("leaveAMessage")} {entries ? `${copy("text")}${entries.length}${copy("text2")}` : ""}
         </h2>
 
         {/* 加载骨架 */}
@@ -259,11 +267,12 @@ export function GuestbookClient() {
           <Alert
             tone="danger"
             icon={<AlertCircle className="size-4" aria-hidden />}
-            title="加载失败"
+            title={copy("failedToLoad")}
             action={
               <Button size="sm" variant="outline" onClick={reload} className="gap-1.5">
                 <RotateCw className="size-3.5" aria-hidden />
-                重试
+
+                {copy("retry")}
               </Button>
             }
           >
@@ -273,7 +282,7 @@ export function GuestbookClient() {
 
         {/* 空态 */}
         {!loading && !error && entries !== null && entries.length === 0 && (
-          <Empty description="还没有留言，来抢沙发" />
+          <Empty description={copy("noMessagesYetBeTheFirst")} />
         )}
 
         {/* 留言列表 */}

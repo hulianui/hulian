@@ -1,5 +1,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { render, cleanup, fireEvent } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { LiveProductCard } from "./live-product-card";
 
 afterEach(cleanup);
@@ -31,6 +33,28 @@ describe("LiveProductCard", () => {
     const { getByText } = render(<LiveProductCard image="x" title="t" price={1} stock={86} sold={1240} />);
     expect(getByText(/已售 1240/)).toBeTruthy();
     expect(getByText(/仅剩 86/)).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes built-in commerce labels", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <LiveProductCard image="x" title="Jacket" price={1} explaining stock={86} sold={1240} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Presenting")).toBeTruthy();
+    expect(getByText(/Sold 1240/)).toBeTruthy();
+    expect(getByText(/86 left/)).toBeTruthy();
+  });
+
+  it("legacy component dictionaries fall back to Chinese", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, liveProductCard: undefined } };
+    const { getByText } = render(
+      <ConfigProvider locale={legacy}>
+        <LiveProductCard image="x" title="t" price={1} explaining stock={2} sold={3} />
+      </ConfigProvider>,
+    );
+    expect(getByText("讲解中")).toBeTruthy();
+    expect(getByText(/已售 3/)).toBeTruthy();
   });
 
   it("小数价格保留两位", () => {

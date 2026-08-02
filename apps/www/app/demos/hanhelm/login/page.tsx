@@ -1,12 +1,14 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useRouter } from "next/navigation";
 import { Share2, Boxes, ShieldCheck } from "lucide-react";
 import { Heading, Link, LoginForm, GridPattern, Text } from "@hulianui/ui";
 
 const FEATURES = [
-  { icon: Share2, title: "六维智能路由", desc: "按能力 + 成本 + 延迟 + 负载 + 优先级 + SLA 打分，把任务派给最优执行器" },
-  { icon: Boxes, title: "多 agent 编排 + 降级", desc: "复杂任务分解为子任务 DAG，执行器失败自动 failover 到降级链" },
-  { icon: ShieldCheck, title: "全链路 SLA 可观测", desc: "队列深度、负载、P50/P95 延迟、逐任务成本，每一次调度都算得清" },
+  { icon: Share2, title: copy("sixDimensionalIntelligentRouting"), desc: copy("scoreByCapabilityCostLatencyLoadPriority") },
+  { icon: Boxes, title: copy("multiAgentOrchestrationDeClassification"), desc: copy("complexTasksAreBrokenDownIntoSubtask") },
+  { icon: ShieldCheck, title: copy("fullLinkSlaIsObservable"), desc: copy("queueDepthLoadP50P95LatencyPer") },
 ];
 
 export default function HanHelmLoginPage() {
@@ -17,21 +19,13 @@ export default function HanHelmLoginPage() {
       <aside className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-neutral-950 p-12 text-white lg:flex">
         <GridPattern className="absolute inset-0 text-white/10" />
         <div className="relative z-10 flex items-center gap-2">
-          <span className="grid size-8 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-            舵
-          </span>
-          <span className="text-base font-semibold tracking-tight">瀚舵 HanHelm</span>
+          <span className="grid size-8 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("rudder")}</span>
+          <span className="text-base font-semibold tracking-tight">{copy("hanhelmHanhelm")}</span>
         </div>
 
         <div className="relative z-10 max-w-md">
-          <Heading level={1} size="3xl" balance className="text-white">
-            智能体
-            <br />
-            任务调度平台
-          </Heading>
-          <Text className="mt-4 text-white/70">
-            异构 AI 任务涌入任务总线，智能路由按六维打分派给 agent/模型池，多 agent 编排 + 降级 failover + 全链路可观测。
-          </Text>
+          <Heading level={1} size="3xl" balance className="text-white">{copy("agents")}<br />{copy("taskSchedulingPlatform")}</Heading>
+          <Text className="mt-4 text-white/70">{copy("heterogeneousAiTasksFloodTheTaskBus")}</Text>
 
           <ul className="mt-10 flex flex-col gap-5">
             {FEATURES.map((f) => (
@@ -50,9 +44,7 @@ export default function HanHelmLoginPage() {
           </ul>
         </div>
 
-        <Text size="sm" className="relative z-10 text-white/50">
-          © 2026 瀚舵 HanHelm · 内置示例
-        </Text>
+        <Text size="sm" className="relative z-10 text-white/50">{copy("hanhelmHanhelmBuiltInExamples")}</Text>
       </aside>
 
       <div className="flex flex-1 items-center justify-center p-6">
@@ -60,27 +52,23 @@ export default function HanHelmLoginPage() {
           <LoginForm
             logo={
               <span className="inline-flex items-center gap-2">
-                <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-                  舵
-                </span>
-                <span className="text-base font-semibold tracking-tight">瀚舵 HanHelm</span>
+                <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("rudder2")}</span>
+                <span className="text-base font-semibold tracking-tight">{copy("hanhelmHanhelm2")}</span>
               </span>
             }
-            subtitle="登录调度控制台"
+            subtitle={copy("logInToTheDispatchConsole")}
             onFinish={async () => {
               await new Promise((r) => setTimeout(r, 600));
               router.push("/demos/hanhelm");
             }}
             footer={
               <div className="flex justify-between text-sm">
-                <Link href="#">忘记密码</Link>
-                <Link href="#">申请接入</Link>
+                <Link href="#">{copy("forgotThePassword")}</Link>
+                <Link href="#">{copy("applyForAccess")}</Link>
               </div>
             }
           />
-          <Text size="xs" tone="muted" className="text-center">
-            演示环境：用户名 / 密码任意填写即可登录
-          </Text>
+          <Text size="xs" tone="muted" className="text-center">{copy("demoEnvironmentLogInByEnteringAny")}</Text>
         </div>
       </div>
     </main>

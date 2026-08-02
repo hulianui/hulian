@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./journey.content";
 
 import { Timeline, type TimelineItemProps } from "@hulianui/ui";
 import { Section } from "./section";
@@ -20,14 +21,14 @@ export function Journey() {
   return (
     <Section
       id="journey"
-      eyebrow="时间线"
-      title="从写下第一行代码到全职独立"
-      description="不是一条规划好的路，而是一连串「想自己用」的念头串起来的轨迹。"
+      eyebrow={copy("timeline")}
+      title={copy("fromTheFirstLineOfCodeToFullTimeIndependence")}
+      description={copy("notACarefullyPlannedPathButATrailOfIdeasIWantedToUseMyself")}
       width="4xl"
       className="bg-surface/30"
     >
       <div className="max-w-2xl">
-        <Timeline items={items} pending="还有更多正在路上 …" />
+        <Timeline items={items} pending={copy("moreIsOnTheWay")} />
       </div>
     </Section>
   );

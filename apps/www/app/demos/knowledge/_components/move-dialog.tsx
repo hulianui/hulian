@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./move-dialog.content";
 import { useMemo, useState } from "react";
 import { Button, Drawer, DrawerContent, TreeSelect, type TreeNode } from "@hulianui/ui";
 import { useKnowledge } from "./knowledge-shell";
@@ -41,7 +42,7 @@ export function MoveDialog({
         .filter((n) => n.kind === "folder" && n.parentId === parentId && !excluded.has(n.id))
         .sort((a, b) => a.name.localeCompare(b.name, "zh"))
         .map((n) => ({ key: n.id, label: n.name, children: build(n.id) }));
-    return [{ key: ROOT_KEY, label: "瀚库（根目录）", children: build(null) }];
+    return [{ key: ROOT_KEY, label: copy("hankuRootDirectory"), children: build(null) }];
   }, [v.list, excluded]);
 
   const count = ids?.length ?? 0;
@@ -51,33 +52,36 @@ export function MoveDialog({
     <Drawer open={open} onOpenChange={(o) => !o && onClose()}>
       <DrawerContent
         side="right"
-        title={`移动 ${count} 项`}
-        description="选择目标文件夹，被移动项将连同子内容一起迁移。"
+        title={copy("moveItemCountTitle", count)}
+        description={copy("selectTheDestinationFolderAndTheMovedItemsWillBe")}
         footer={
           <div className="flex justify-end gap-2">
             <Button variant="outline" size="sm" onClick={onClose}>
-              取消
+              {copy("cancel")}
             </Button>
-            <Button size="sm" onClick={() => onConfirm(ids ?? [], target === ROOT_KEY ? null : target)}>
-              移动到此处
+            <Button
+              size="sm"
+              onClick={() => onConfirm(ids ?? [], target === ROOT_KEY ? null : target)}
+            >
+              {copy("moveHere")}
             </Button>
           </div>
         }
       >
         <div className="space-y-4">
           <div className="rounded-[var(--radius)] border border-border bg-surface-hover/40 px-3 py-2 text-sm">
-            <p className="mb-1 text-xs text-muted">待移动</p>
-            <p className="line-clamp-3">{names.join("、")}</p>
+            <p className="mb-1 text-xs text-muted">{copy("toBeMoved")}</p>
+            <p className="line-clamp-3">{names.join(copy("itemNameSeparator"))}</p>
           </div>
           <div>
-            <p className="mb-1.5 text-sm font-medium">目标文件夹</p>
+            <p className="mb-1.5 text-sm font-medium">{copy("destinationFolder")}</p>
             <TreeSelect
               nodes={folderTree}
               value={target}
               onChange={(val) => setTarget(val as string)}
               searchable
               showLine
-              placeholder="选择目标文件夹"
+              placeholder={copy("selectDestinationFolder")}
             />
           </div>
         </div>

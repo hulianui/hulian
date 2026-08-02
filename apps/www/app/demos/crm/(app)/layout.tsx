@@ -1,3 +1,4 @@
+import { copy } from "./layout.content";
 import type { ReactNode } from "react";
 import { BackTop, ModalProvider, NotificationProvider, ToastProvider, Watermark } from "@hulianui/ui";
 import { CrmShell } from "../_components/crm-shell";
@@ -7,7 +8,7 @@ import { CrmShell } from "../_components/crm-shell";
 // Watermark 覆盖整个外壳区，pointer-events:none 不影响交互；BackTop 给长列表页提供回顶。
 export default function CrmAppLayout({ children }: { children: ReactNode }) {
   return (
-    <Watermark content="瑚琏 CRM · 演示" opacity={0.08} className="h-dvh">
+    <Watermark content={copy("hulianCrmDemo")} opacity={0.08} className="h-dvh">
       <CrmShell>{children}</CrmShell>
       <ToastProvider />
       <ModalProvider />

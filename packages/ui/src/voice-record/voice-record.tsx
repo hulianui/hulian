@@ -1,5 +1,7 @@
 "use client";
 import { useCallback, useRef, type CSSProperties, type PointerEvent } from "react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { VoiceRecordProps, VoiceRecordStatus } from "./voice-record.types";
 
@@ -24,9 +26,9 @@ const ringCenter = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
  */
 export function VoiceRecord({
   status = "idle",
-  labelIdle = "按住说话",
-  labelRecording = "松开结束",
-  labelProcessing = "处理中…",
+  labelIdle,
+  labelRecording,
+  labelProcessing,
   levels = [],
   size = "md",
   pressAndHold = true,
@@ -37,6 +39,17 @@ export function VoiceRecord({
   disabled,
   ...props
 }: VoiceRecordProps) {
+  const locale = useComponentLocale().voiceRecord ?? {
+    idle: "按住说话",
+    recording: "松开结束",
+    processing: "处理中…",
+    processingAria: "处理中",
+    stopRecording: "松开结束录音",
+    holdToTalk: "按住说话",
+  };
+  const resolvedLabelIdle = labelIdle ?? locale.idle;
+  const resolvedLabelRecording = labelRecording ?? locale.recording;
+  const resolvedLabelProcessing = labelProcessing ?? locale.processing;
   const s = sizeMap[size];
   const isRecording = status === "recording";
   const isProcessing = status === "processing";
@@ -108,15 +121,7 @@ export function VoiceRecord({
       {/* 按钮 + 光环容器 — 固定大小容纳光环 */}
       <div className={cn("relative flex items-center justify-center", s.ring)}>
         {/* idle 态：微弱常驻辉光 */}
-        {isIdle && (
-          <span
-            className={cn(
-              ringCenter,
-              "rounded-full bg-primary/5 blur-xl",
-              s.ring,
-            )}
-          />
-        )}
+        {isIdle && <span className={cn(ringCenter, "rounded-full bg-primary/5 blur-xl", s.ring)} />}
         {/* recording 态：脉动光环 */}
         {isRecording && (
           <>
@@ -136,25 +141,13 @@ export function VoiceRecord({
               )}
               style={{ "--tw-anim-duration": "2s" } as CSSProperties}
             />
-            <span
-              className={cn(
-                ringCenter,
-                "rounded-full bg-primary/10 blur-2xl",
-                s.ring,
-              )}
-            />
+            <span className={cn(ringCenter, "rounded-full bg-primary/10 blur-2xl", s.ring)} />
           </>
         )}
 
         {/* 波形条 */}
         {isRecording && levels.length > 0 && (
-          <div
-            className={cn(
-              ringCenter,
-              "flex items-center justify-center gap-[3px]",
-              s.ring,
-            )}
-          >
+          <div className={cn(ringCenter, "flex items-center justify-center gap-[3px]", s.ring)}>
             {levels.map((lv, i) => (
               <span
                 key={i}
@@ -181,7 +174,11 @@ export function VoiceRecord({
           onPointerLeave={handlePointerEnd}
           onClick={handleClick}
           aria-label={
-            isRecording ? "松开结束录音" : isProcessing ? "处理中" : "按住说话"
+            isRecording
+              ? locale.stopRecording
+              : isProcessing
+              ? locale.processingAria
+              : locale.holdToTalk
           }
           className={cn(
             "relative z-10 inline-flex items-center justify-center rounded-full",
@@ -242,7 +239,11 @@ export function VoiceRecord({
           isDisabled && "text-muted",
         )}
       >
-        {isRecording ? labelRecording : isProcessing ? labelProcessing : labelIdle}
+        {isRecording
+          ? resolvedLabelRecording
+          : isProcessing
+          ? resolvedLabelProcessing
+          : resolvedLabelIdle}
       </span>
     </div>
   );

@@ -1,5 +1,8 @@
+"use client";
 import { cn } from "../lib/cn";
 import { PoliceBadge } from "../_icons";
+
+import { useComponentLocale } from "../config/locale-context";
 import type { BeianFooterProps } from "./beian-footer.types";
 
 const MIIT = "https://beian.miit.gov.cn/";
@@ -15,10 +18,12 @@ const linkClass =
 export function BeianFooter({
   icp = [],
   police,
-  icpLabel = "ICP备案",
+  icpLabel,
   copyright,
   className,
 }: BeianFooterProps) {
+  const locale = useComponentLocale().beianFooter ?? { icp: "ICP备案" };
+  const resolvedIcpLabel = icpLabel === undefined ? locale.icp : icpLabel;
   return (
     <div
       className={cn(
@@ -28,9 +33,15 @@ export function BeianFooter({
     >
       {icp.length > 0 && (
         <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1">
-          <span>{icpLabel}</span>
+          <span>{resolvedIcpLabel}</span>
           {icp.map((r) => (
-            <a key={r.number} href={r.href ?? MIIT} target="_blank" rel="noreferrer" className={linkClass}>
+            <a
+              key={r.number}
+              href={r.href ?? MIIT}
+              target="_blank"
+              rel="noreferrer"
+              className={linkClass}
+            >
               {r.number}
             </a>
           ))}

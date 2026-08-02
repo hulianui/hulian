@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { splitBlocks } from "./diff-stat.split";
 import { DiffStat } from "./diff-stat";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("splitBlocks", () => {
   it("全增满绿", () => {
@@ -47,5 +49,9 @@ describe("DiffStat", () => {
   it("showCounts=false 不渲染数字", () => {
     const { container } = render(<DiffStat additions={3} deletions={2} showCounts={false} />);
     expect(container.textContent).not.toContain("+3");
+  });
+  it("状态标签跟随 ConfigProvider", () => {
+    const { getByText } = render(<ConfigProvider locale={enUS}><DiffStat additions={1} deletions={0} status="added" /></ConfigProvider>);
+    expect(getByText("Added")).toBeTruthy();
   });
 });

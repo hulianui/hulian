@@ -23,12 +23,7 @@ function hash(str: string): number {
   return (h >>> 0) / 0xffffffff;
 }
 
-export function coursePoster(
-  category: CourseCategoryKey,
-  title: string,
-  w = 640,
-  h = 360,
-): string {
+export function coursePoster(category: CourseCategoryKey, title: string, w = 640, h = 360): string {
   const hue = HUE[category];
   const r = hash(title);
   const cx = (w * (0.66 + r * 0.18)).toFixed(0);
@@ -47,9 +42,15 @@ export function coursePoster(
   <rect width="100%" height="100%" fill="url(#bg)"/>
   <rect width="100%" height="100%" fill="url(#dots)"/>
   <circle cx="${cx}" cy="${cy}" r="${(w * 0.22).toFixed(0)}" fill="rgba(255,255,255,0.07)"/>
-  <circle cx="${(w * 0.5).toFixed(0)}" cy="${(h * 0.42).toFixed(0)}" r="34" fill="rgba(255,255,255,0.16)"/>
-  <path d="M${(w * 0.5 - 9).toFixed(0)} ${(h * 0.42 - 15).toFixed(0)} l24 15 l-24 15 z" fill="#fff"/>
-  <text x="50%" y="76%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="${fontSize}" font-weight="700" fill="#fff">${xmlEscape(title)}</text>
+  <circle cx="${(w * 0.5).toFixed(0)}" cy="${(h * 0.42).toFixed(
+    0,
+  )}" r="34" fill="rgba(255,255,255,0.16)"/>
+  <path d="M${(w * 0.5 - 9).toFixed(0)} ${(h * 0.42 - 15).toFixed(
+    0,
+  )} l24 15 l-24 15 z" fill="#fff"/>
+  <text x="50%" y="76%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="${fontSize}" font-weight="700" fill="#fff">${xmlEscape(
+    title,
+  )}</text>
 </svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }

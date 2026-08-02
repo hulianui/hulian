@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { useState } from "react";
 import {
   Carousel,
@@ -31,42 +32,42 @@ import { HomeProductGrid } from "../_components/home/home-product-grid";
 const BANNERS = [
   {
     imgSrc: heroBg(212),
-    title: "618 大促 · 数码狂欢",
-    subtitle: "耳机·手表·笔记本，满 599 减 120",
-    ctaLabel: "立即抢购",
+    title: copy("text618SaleTechDeals"),
+    subtitle: copy("save120OnHeadphonesWatchesAndLaptopsOver599"),
+    ctaLabel: copy("shopDeals"),
     ctaHref: `${SHOP_BASE}/products?cat=digital`,
   },
   {
     imgSrc: heroBg(332),
-    title: "美妆个护 · 惊喜折扣",
-    subtitle: "精华·口红·护肤套装 8.5 折",
-    ctaLabel: "去看看",
+    title: copy("beautyCareSpecialOffers"),
+    subtitle: copy("text15OffSerumsLipstickAndSkinCareSets"),
+    ctaLabel: copy("exploreOffers"),
     ctaHref: `${SHOP_BASE}/products?cat=beauty`,
   },
   {
     imgSrc: heroBg(152),
-    title: "户外运动 · 夏日出发",
-    subtitle: "帐篷·越野鞋·保温壶全场特惠",
-    ctaLabel: "探索户外",
+    title: copy("outdoorAdventureSummerStartsHere"),
+    subtitle: copy("specialPricesOnTentsTrailShoesAndInsulatedBottles"),
+    ctaLabel: copy("exploreOutdoors"),
     ctaHref: `${SHOP_BASE}/products?cat=outdoor`,
   },
   {
     imgSrc: heroBg(28),
-    title: "家居生活 · 精选好物",
-    subtitle: "料理机·护眼灯·四季被限时优惠",
-    ctaLabel: "逛家居",
+    title: copy("homeLivingEditorSPicks"),
+    subtitle: copy("limitedTimeOffersOnCookersFloorLampsAndAllSeasonQuilts"),
+    ctaLabel: copy("shopHome"),
     ctaHref: `${SHOP_BASE}/products?cat=home`,
   },
 ];
 
 // 品牌滚动条文案
 const BRAND_MARQUEE = [
-  "瀚声 HanSound", "瀚本 HanBook", "瀚腕 HanWatch", "瀚拍 HanPhone",
-  "瀚庐 HanHome", "瀚研 HanLab", "瀚野 HanField", "瀚味 HanTaste", "瀚衣 HanWear",
+  copy("hansound"), copy("hanbook"), copy("hanwatch"), copy("hanphone"),
+  copy("hanhome"), copy("hanlab"), copy("hanfield"), copy("hantaste"), copy("hanwear"),
 ];
 
 // 轮换词（首屏 hero 副标题用）
-const ROTATE_WORDS = ["数码 3C", "家居好物", "美妆个护", "户外装备", "精品食材", "时尚服饰"];
+const ROTATE_WORDS = [copy("tech"), copy("homeEssentials"), copy("beautyCare"), copy("outdoorGear"), copy("fineFoods"), copy("fashion")];
 
 // 秒杀商品（flashSale=true）
 const flashProducts = products.filter((p) => p.flashSale);
@@ -85,7 +86,7 @@ export default function ShopHomePage() {
     <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-6 md:px-6">
 
       {/* ── 1. Hero Banner 轮播 ── */}
-      <section aria-label="营销横幅">
+      <section aria-label={copy("promotions")}>
         <div className="relative overflow-hidden rounded-[var(--radius-lg)]">
           <ShineBorder borderWidth={2} />
           {loading ? (
@@ -97,7 +98,7 @@ export default function ShopHomePage() {
               loop
               autoplay
               autoplayInterval={4000}
-              aria-label="营销横幅轮播"
+              aria-label={copy("promotionalCarousel")}
               slideClassName="rounded-[var(--radius-lg)] overflow-hidden"
             >
               {BANNERS.map((b) => (
@@ -112,13 +113,13 @@ export default function ShopHomePage() {
           <AnimatedGradientText>
             <span className="font-bold">{brand.name} {brand.nameEn}</span>
           </AnimatedGradientText>
-          <Text tone="muted" size="sm">精选</Text>
+          <Text tone="muted" size="sm">{copy("curated")}</Text>
           <WordRotate
             words={ROTATE_WORDS}
             className="font-semibold text-primary"
           />
-          <Text tone="muted" size="sm">等{" "}
-            <SparklesText sparklesCount={4}>好物</SparklesText>
+          <Text tone="muted" size="sm">{copy("andOther")}{" "}
+            <SparklesText sparklesCount={4}>{copy("greatFinds")}</SparklesText>
             {" "}—— {brand.slogan}
           </Text>
         </div>
@@ -127,7 +128,7 @@ export default function ShopHomePage() {
       <Divider />
 
       {/* ── 2. 品牌滚动条 ── */}
-      <section aria-label="入驻品牌">
+      <section aria-label={copy("featuredBrands")}>
         <Marquee pauseOnHover duration={30} gap="2rem" className="py-1">
           {BRAND_MARQUEE.map((b) => (
             <span
@@ -191,13 +192,13 @@ export default function ShopHomePage() {
 
       {/* ── 8. 底部信任背书 ── */}
       {!loading && (
-        <section aria-label="平台保障">
+        <section aria-label={copy("shoppingPromises")}>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { icon: "🛡️", title: "正品保证", desc: "100% 品牌直供" },
-              { icon: "🚚", title: "极速配送", desc: "次日达 · 全国包邮" },
-              { icon: "↩️", title: "无忧退换", desc: "15 天无理由退货" },
-              { icon: "🎁", title: "会员权益", desc: "积分兑换 · 专属折扣" },
+              { icon: "🛡️", title: copy("authenticityGuaranteed"), desc: copy("text100DirectFromBrands") },
+              { icon: "🚚", title: copy("fastDelivery"), desc: copy("nextDayDeliveryFreeNationwideShipping") },
+              { icon: "↩️", title: copy("easyReturns"), desc: copy("text15DayFreeReturns") },
+              { icon: "🎁", title: copy("memberBenefits"), desc: copy("redeemPointsMemberOnlyOffers") },
             ].map((item) => (
               <Card key={item.title} variant="outline">
                 <CardBody className="flex items-center gap-3 p-4">

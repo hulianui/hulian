@@ -1,11 +1,19 @@
 "use client";
+import { copy } from "./course-card.content";
 import { useState } from "react";
 import Link from "next/link";
 import { Card, CardBody, Button, Tag, Rating, Progress, Image, toast } from "@hulianui/ui";
 import { Users } from "lucide-react";
 import type { Course } from "../_data/types";
 import { coursePoster } from "../_data/poster";
-import { CATEGORY_NAME, priceLabel, lessonCount, totalMinutes, firstLessonId } from "../_data/courses";
+import {
+  CATEGORY_NAME,
+  COURSE_LEVEL_NAME,
+  priceLabel,
+  lessonCount,
+  totalMinutes,
+  firstLessonId,
+} from "../_data/courses";
 import { LEARN_BASE } from "./nav-config";
 import { useLearn } from "../_lib/learn-store";
 import { EnrollDialog } from "./enroll-dialog";
@@ -23,14 +31,17 @@ export function CourseCard({ course }: { course: Course }) {
       // 免费课直接加入「我的学习」，不走支付向导。
       enroll(course.id);
       setLastLesson(course.id, firstLessonId(course));
-      toast({ title: "已加入学习", description: course.title, tone: "success" });
+      toast({ title: copy("joinedLearning"), description: course.title, tone: "success" });
     } else {
       setEnrollOpen(true);
     }
   };
 
   return (
-    <Card variant="outline" className="group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md">
+    <Card
+      variant="outline"
+      className="group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md"
+    >
       <Link href={courseHref} className="block" aria-label={course.title}>
         <div className="relative aspect-video overflow-hidden">
           <Image
@@ -46,14 +57,17 @@ export function CourseCard({ course }: { course: Course }) {
               {CATEGORY_NAME[course.category]}
             </Tag>
             <Tag tone="brand" variant="solid" size="sm">
-              {course.level}
+              {COURSE_LEVEL_NAME[course.level]}
             </Tag>
           </div>
         </div>
       </Link>
 
       <CardBody className="flex flex-1 flex-col gap-2 p-4">
-        <Link href={courseHref} className="line-clamp-2 font-semibold text-foreground hover:text-primary">
+        <Link
+          href={courseHref}
+          className="line-clamp-2 font-semibold text-foreground hover:text-primary"
+        >
           {course.title}
         </Link>
         <p className="line-clamp-1 text-xs text-muted">
@@ -71,14 +85,17 @@ export function CourseCard({ course }: { course: Course }) {
             <Users className="size-3.5" aria-hidden />
             {course.students.toLocaleString("zh-CN")}
           </span>
-          <span>{lessonCount(course)} 节 · 约 {totalMinutes(course)} 分钟</span>
+          <span>
+            {lessonCount(course)} {copy("lessonDurationJoiner")} {totalMinutes(course)}{" "}
+            {copy("minutes")}
+          </span>
         </div>
 
         <div className="mt-auto pt-2">
           {enrolled ? (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted">学习进度</span>
+                <span className="text-muted">{copy("learningProgress")}</span>
                 <span className="font-medium text-foreground">{progress}%</span>
               </div>
               <Progress value={progress} />
@@ -88,21 +105,23 @@ export function CourseCard({ course }: { course: Course }) {
                 className="w-full"
                 render={<Link href={`${courseHref}?lesson=${resumeLesson}`} />}
               >
-                {progress > 0 ? "继续学习" : "开始学习"}
+                {progress > 0 ? copy("continueLearning") : copy("startLearning")}
               </Button>
             </div>
           ) : (
             <div className="flex items-center justify-between gap-2">
               <span className="text-lg font-bold text-foreground">{priceLabel(course.price)}</span>
               <Button variant="solid" size="sm" onClick={onPrimary}>
-                {course.price === 0 ? "免费学习" : "立即报名"}
+                {course.price === 0 ? copy("learnForFree") : copy("signUpNow")}
               </Button>
             </div>
           )}
         </div>
       </CardBody>
 
-      {course.price > 0 && <EnrollDialog course={course} open={enrollOpen} onOpenChange={setEnrollOpen} />}
+      {course.price > 0 && (
+        <EnrollDialog course={course} open={enrollOpen} onOpenChange={setEnrollOpen} />
+      )}
     </Card>
   );
 }

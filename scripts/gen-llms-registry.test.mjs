@@ -9,6 +9,7 @@ import {
   barrelExports,
   buildCompositeItems,
   parseFrontmatter,
+  removeDocsFixtureAdapters,
   rewritePageBlockImports,
   scanPageBlockDeps,
 } from "./gen-llms-registry.mjs";
@@ -106,6 +107,22 @@ test("页面源码注入后改用目标目录中的兄弟区块路径", () => {
   const source = 'import { HeroBlock } from "../../blocks/_blocks/hero";';
 
   assert.equal(rewritePageBlockImports(source), 'import { HeroBlock } from "../blocks/hero";');
+});
+
+test("registry 源码移除文档站专用的双语适配器", () => {
+  const source = [
+    "/** @jsxImportSource ../../../lib/fixture-jsx */",
+    'import { Button, toast } from "../../../lib/fixture-ui";',
+    "export function Example() { return <Button />; }",
+  ].join("\n");
+
+  assert.equal(
+    removeDocsFixtureAdapters(source),
+    [
+      'import { Button, toast } from "@hulianui/ui";',
+      "export function Example() { return <Button />; }",
+    ].join("\n"),
+  );
 });
 
 test("页面依赖扫描去重并稳定输出 registry 区块名", () => {

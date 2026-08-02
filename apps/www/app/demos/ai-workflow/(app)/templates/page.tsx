@@ -1,14 +1,18 @@
 "use client";
+import { copy } from "./page.content";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { Button, Card, CardBody, CardSkeleton, Heading, Tag, Text, cn, toast } from "@hulianui/ui";
 import { ACCENT, NODE_KIND_MAP } from "../../_data/node-kinds";
-import { TEMPLATES } from "../../_data/templates";
+import { TEMPLATE_CATEGORY_LABELS, TEMPLATES } from "../../_data/templates";
 import { topoOrder } from "../../_lib/use-flow-run";
 import { useMockData } from "../../../lib/async";
 import type { WorkflowTemplate } from "../../_data/types";
 
-const CATEGORY_TONE: Record<WorkflowTemplate["category"], "brand" | "success" | "warning" | "danger"> = {
+const CATEGORY_TONE: Record<
+  WorkflowTemplate["category"],
+  "brand" | "success" | "warning" | "danger"
+> = {
   文生图: "brand",
   图生图: "success",
   文生视频: "warning",
@@ -36,7 +40,12 @@ function PipelineStrip({ template }: { template: WorkflowTemplate }) {
         const Icon = m.icon;
         return (
           <span key={m.kind} className="flex items-center gap-1.5">
-            <span className={cn("flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium", accent.chip)}>
+            <span
+              className={cn(
+                "flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium",
+                accent.chip,
+              )}
+            >
               <Icon className="size-3" />
               {m.label}
             </span>
@@ -53,7 +62,7 @@ export default function TemplatesPage() {
   const { data: templates, loading } = useMockData(TEMPLATES, { delay: 500 });
 
   const handleUseTemplate = (t: WorkflowTemplate) => {
-    toast({ title: `正在载入「${t.name}」…`, tone: "info" });
+    toast({ title: copy("loading", t.name), tone: "info" });
     router.push(`/demos/ai-workflow?template=${t.id}`);
   };
 
@@ -62,10 +71,10 @@ export default function TemplatesPage() {
       <div className="mx-auto max-w-6xl px-6 py-8">
         <header className="mb-7">
           <Heading level={1} size="2xl">
-            模板库
+            {copy("templateLibrary")}
           </Heading>
           <Text tone="muted" className="mt-1.5">
-            从预置工作流开始，一键载入画布即可在其上微调与运行。
+            {copy("startWithAPresetWorkflowAndFineTuneAndRun")}
           </Text>
         </header>
 
@@ -78,10 +87,10 @@ export default function TemplatesPage() {
                 <CardBody className="flex h-full flex-col gap-3.5 p-5">
                   <div className="flex items-center gap-2">
                     <Tag tone={CATEGORY_TONE[t.category]} size="sm">
-                      {t.category}
+                      {TEMPLATE_CATEGORY_LABELS[t.category]}
                     </Tag>
                     <Text size="xs" tone="muted">
-                      {t.nodes.length} 节点
+                      {t.nodes.length} {copy("node")}
                     </Text>
                   </div>
 
@@ -111,7 +120,7 @@ export default function TemplatesPage() {
                       className="w-full"
                       onClick={() => handleUseTemplate(t)}
                     >
-                      使用模板
+                      {copy("useMacro")}
                       <ChevronRight className="size-4" />
                     </Button>
                   </div>

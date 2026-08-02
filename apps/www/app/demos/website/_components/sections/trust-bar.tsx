@@ -1,14 +1,15 @@
+import { copy } from "./trust-bar.content";
 import { Marquee, Text } from "@hulianui/ui";
 
 const companies = [
-  "极光科技",
-  "云图数据",
+  copy("auroraTechnology"),
+  copy("yuntuData"),
   "Northwind",
-  "远帆出海",
-  "稳信金融",
+  copy("farsailGlobal"),
+  copy("wenxinFinance"),
   "Lumen AI",
-  "星河传媒",
-  "万象零售",
+  copy("galaxyMedia"),
+  copy("wanxiangRetail"),
 ];
 
 // 信任墙：客户名横向无缝滚动（hover 暂停）。纯文字 logo 占位，灰度低调。
@@ -16,7 +17,8 @@ export function TrustBar() {
   return (
     <section className="border-b border-border bg-surface/40 py-10">
       <Text tone="muted" size="sm" className="mb-6 text-center">
-        已有 18,000+ 团队在瀚云上构建与交付
+
+        {copy("text18000TeamsHaveBuiltAndDeliveredOnHancloud")}
       </Text>
       <Marquee fade pauseOnHover duration={32} gap="3rem">
         {companies.map((name) => (

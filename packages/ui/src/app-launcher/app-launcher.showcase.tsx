@@ -5,10 +5,22 @@ import { AppLauncher } from "./app-launcher";
 import type { AppLauncherItem } from "./app-launcher.types";
 
 // 图标一律本地生成（渐变方块 + 字形）：文档站门禁禁远程资源，也免得示例依赖外网可用性。
-function Tile({ from, to, glyph, dark }: { from: string; to: string; glyph: string; dark?: boolean }) {
+function Tile({
+  from,
+  to,
+  glyph,
+  dark,
+}: {
+  from: string;
+  to: string;
+  glyph: string;
+  dark?: boolean;
+}) {
   return (
     <span
-      className={`grid size-full place-items-center text-2xl font-semibold ${dark ? "text-white" : "text-foreground"}`}
+      className={`grid size-full place-items-center text-2xl font-semibold ${
+        dark ? "text-white" : "text-foreground"
+      }`}
       style={{ background: `linear-gradient(145deg, ${from}, ${to})` }}
     >
       {glyph}
@@ -17,28 +29,145 @@ function Tile({ from, to, glyph, dark }: { from: string; to: string; glyph: stri
 }
 
 const apps: AppLauncherItem[] = [
-  { id: "ghostty", label: "Ghostty", category: "dev", section: "recent", keywords: ["terminal", "zhongduan"], icon: <Tile from="#4b5563" to="#111827" glyph="👻" dark /> },
-  { id: "chrome", label: "Google Chrome", category: "dev", section: "recent", keywords: ["browser"], icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🌐" /> },
-  { id: "vscode", label: "Visual Studio Code", category: "dev", section: "recent", keywords: ["vsc", "editor"], icon: <Tile from="#e0f2fe" to="#bae6fd" glyph="🧩" /> },
-  { id: "navicat", label: "Navicat for MySQL", category: "dev", section: "recent", keywords: ["db", "shujuku"], icon: <Tile from="#dcfce7" to="#86efac" glyph="🗄️" /> },
+  {
+    id: "ghostty",
+    label: "Ghostty",
+    category: "dev",
+    section: "recent",
+    keywords: ["terminal", "zhongduan"],
+    icon: <Tile from="#4b5563" to="#111827" glyph="👻" dark />,
+  },
+  {
+    id: "chrome",
+    label: "Google Chrome",
+    category: "dev",
+    section: "recent",
+    keywords: ["browser"],
+    icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🌐" />,
+  },
+  {
+    id: "vscode",
+    label: "Visual Studio Code",
+    category: "dev",
+    section: "recent",
+    keywords: ["vsc", "editor"],
+    icon: <Tile from="#e0f2fe" to="#bae6fd" glyph="🧩" />,
+  },
+  {
+    id: "navicat",
+    label: "Navicat for MySQL",
+    category: "dev",
+    section: "recent",
+    keywords: ["db", "shujuku"],
+    icon: <Tile from="#dcfce7" to="#86efac" glyph="🗄️" />,
+  },
 
-  { id: "wechat", label: "微信", category: "social", keywords: ["weixin", "wx"], icon: <Tile from="#22c55e" to="#15803d" glyph="💬" dark /> },
-  { id: "qq", label: "QQ", category: "social", keywords: ["penguin"], icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🐧" /> },
-  { id: "mail", label: "邮件", category: "social", keywords: ["mail", "youjian"], badge: <span className="grid size-4 place-items-center rounded-full bg-danger text-[10px] font-semibold text-danger-foreground">9</span>, icon: <Tile from="#60a5fa" to="#2563eb" glyph="✉️" dark /> },
+  {
+    id: "wechat",
+    label: "微信",
+    category: "social",
+    keywords: ["weixin", "wx"],
+    icon: <Tile from="#22c55e" to="#15803d" glyph="💬" dark />,
+  },
+  {
+    id: "qq",
+    label: "QQ",
+    category: "social",
+    keywords: ["penguin"],
+    icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🐧" />,
+  },
+  {
+    id: "mail",
+    label: "邮件",
+    category: "social",
+    keywords: ["mail", "youjian"],
+    badge: (
+      <span className="grid size-4 place-items-center rounded-full bg-danger text-[10px] font-semibold text-danger-foreground">
+        9
+      </span>
+    ),
+    icon: <Tile from="#60a5fa" to="#2563eb" glyph="✉️" dark />,
+  },
 
-  { id: "notes", label: "备忘录", category: "tool", keywords: ["notes", "beiwanglu"], icon: <Tile from="#fef9c3" to="#fde68a" glyph="📝" /> },
-  { id: "calc", label: "计算器", category: "tool", keywords: ["calculator", "jisuanqi"], icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🧮" /> },
-  { id: "clock", label: "时钟", category: "tool", keywords: ["clock", "shizhong"], icon: <Tile from="#ffffff" to="#d1d5db" glyph="🕘" /> },
-  { id: "maps", label: "地图", category: "tool", keywords: ["maps", "ditu"], icon: <Tile from="#bbf7d0" to="#4ade80" glyph="🗺️" /> },
-  { id: "netdisk", label: "百度网盘", category: "tool", keywords: ["baidu", "wangpan"], icon: <Tile from="#dbeafe" to="#93c5fd" glyph="☁️" /> },
+  {
+    id: "notes",
+    label: "备忘录",
+    category: "tool",
+    keywords: ["notes", "beiwanglu"],
+    icon: <Tile from="#fef9c3" to="#fde68a" glyph="📝" />,
+  },
+  {
+    id: "calc",
+    label: "计算器",
+    category: "tool",
+    keywords: ["calculator", "jisuanqi"],
+    icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🧮" />,
+  },
+  {
+    id: "clock",
+    label: "时钟",
+    category: "tool",
+    keywords: ["clock", "shizhong"],
+    icon: <Tile from="#ffffff" to="#d1d5db" glyph="🕘" />,
+  },
+  {
+    id: "maps",
+    label: "地图",
+    category: "tool",
+    keywords: ["maps", "ditu"],
+    icon: <Tile from="#bbf7d0" to="#4ade80" glyph="🗺️" />,
+  },
+  {
+    id: "netdisk",
+    label: "百度网盘",
+    category: "tool",
+    keywords: ["baidu", "wangpan"],
+    icon: <Tile from="#dbeafe" to="#93c5fd" glyph="☁️" />,
+  },
 
-  { id: "stocks", label: "股市", category: "finance", keywords: ["stocks", "gushi"], icon: <Tile from="#111827" to="#374151" glyph="📈" dark /> },
-  { id: "sheets", label: "表格", category: "finance", keywords: ["sheets", "biaoge"], icon: <Tile from="#34d399" to="#059669" glyph="📊" dark /> },
-  { id: "invoice", label: "发票助手", category: "finance", keywords: ["fapiao"], icon: <Tile from="#fed7aa" to="#fb923c" glyph="🧾" /> },
+  {
+    id: "stocks",
+    label: "股市",
+    category: "finance",
+    keywords: ["stocks", "gushi"],
+    icon: <Tile from="#111827" to="#374151" glyph="📈" dark />,
+  },
+  {
+    id: "sheets",
+    label: "表格",
+    category: "finance",
+    keywords: ["sheets", "biaoge"],
+    icon: <Tile from="#34d399" to="#059669" glyph="📊" dark />,
+  },
+  {
+    id: "invoice",
+    label: "发票助手",
+    category: "finance",
+    keywords: ["fapiao"],
+    icon: <Tile from="#fed7aa" to="#fb923c" glyph="🧾" />,
+  },
 
-  { id: "books", label: "图书", category: "read", keywords: ["books", "tushu"], icon: <Tile from="#fde68a" to="#f59e0b" glyph="📚" /> },
-  { id: "podcast", label: "播客", category: "read", keywords: ["podcast", "boke"], icon: <Tile from="#c084fc" to="#7c3aed" glyph="🎙️" dark /> },
-  { id: "news", label: "新闻", category: "read", keywords: ["news", "xinwen"], icon: <Tile from="#fecaca" to="#ef4444" glyph="📰" dark /> },
+  {
+    id: "books",
+    label: "图书",
+    category: "read",
+    keywords: ["books", "tushu"],
+    icon: <Tile from="#fde68a" to="#f59e0b" glyph="📚" />,
+  },
+  {
+    id: "podcast",
+    label: "播客",
+    category: "read",
+    keywords: ["podcast", "boke"],
+    icon: <Tile from="#c084fc" to="#7c3aed" glyph="🎙️" dark />,
+  },
+  {
+    id: "news",
+    label: "新闻",
+    category: "read",
+    keywords: ["news", "xinwen"],
+    icon: <Tile from="#fecaca" to="#ef4444" glyph="📰" dark />,
+  },
 ];
 
 const categories = [
@@ -86,7 +215,8 @@ export const appLauncherShowcase: ShowcaseSpec = {
   examples: [
     {
       title: "基础用法",
-      description: "毛玻璃面板 + 搜索（标题即 placeholder）+ 分类胶囊 + 图标网格；方向键可在网格里漫游。",
+      description:
+        "毛玻璃面板 + 搜索（标题即 placeholder）+ 分类胶囊 + 图标网格；方向键可在网格里漫游。",
       code: `<AppLauncher
   items={apps}                     // [{ id, label, icon, category, section }]
   categories={categories}
@@ -101,7 +231,11 @@ export const appLauncherShowcase: ShowcaseSpec = {
             items={apps}
             categories={categories}
             title="应用程序"
-            logo={<span className="grid size-7 place-items-center rounded-[var(--radius)] bg-foreground/10 text-sm">瑚</span>}
+            logo={
+              <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-foreground/10 text-sm">
+                瑚
+              </span>
+            }
             actions={<span className="px-2 text-lg leading-none text-muted">···</span>}
             className="h-[28rem]"
           />
@@ -110,7 +244,8 @@ export const appLauncherShowcase: ShowcaseSpec = {
     },
     {
       title: "分节 · 列数 · 实底皮肤",
-      description: "连续同 section 的项归一组、组间自动分隔线；columns 调列数；variant=\"solid\" 用在无底图处。",
+      description:
+        '连续同 section 的项归一组、组间自动分隔线；columns 调列数；variant="solid" 用在无底图处。',
       code: `<AppLauncher
   items={apps}          // 前 4 项 section="recent" → 自成一组
   columns={4}
@@ -156,8 +291,18 @@ export const appLauncherShowcase: ShowcaseSpec = {
           className="max-w-xs"
           items={[
             apps.find((a) => a.id === "mail")!,
-            { id: "docs", label: "文档", icon: <Tile from="#e0e7ff" to="#a5b4fc" glyph="📄" />, href: "#docs" },
-            { id: "old", label: "已下线", icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🚫" />, disabled: true },
+            {
+              id: "docs",
+              label: "文档",
+              icon: <Tile from="#e0e7ff" to="#a5b4fc" glyph="📄" />,
+              href: "https://example.com/#docs",
+            },
+            {
+              id: "old",
+              label: "已下线",
+              icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🚫" />,
+              disabled: true,
+            },
           ]}
         />
       ),
@@ -174,7 +319,12 @@ export const appLauncherShowcase: ShowcaseSpec = {
       name: "默认（毛玻璃 · 搜索 · 分类）",
       render: () => (
         <Desk>
-          <AppLauncher items={apps} categories={categories} title="应用程序" className="h-[28rem]" />
+          <AppLauncher
+            items={apps}
+            categories={categories}
+            title="应用程序"
+            className="h-[28rem]"
+          />
         </Desk>
       ),
     },
@@ -195,7 +345,13 @@ export const appLauncherShowcase: ShowcaseSpec = {
     {
       name: "空结果",
       render: () => (
-        <AppLauncher items={apps} search="不存在的应用" title="应用程序" variant="solid" className="max-w-md" />
+        <AppLauncher
+          items={apps}
+          search="不存在的应用"
+          title="应用程序"
+          variant="solid"
+          className="max-w-md"
+        />
       ),
     },
   ],
@@ -214,9 +370,9 @@ export const appLauncherShowcase: ShowcaseSpec = {
     </Desk>
   ),
   toCode: (p) =>
-    `<AppLauncher\n  items={apps}\n  categories={categories}\n  title="应用程序"\n  columns={${p.columns ?? 6}}${
-      p.variant === "solid" ? '\n  variant="solid"' : ""
-    }${p.iconSize && Number(p.iconSize) !== 64 ? `\n  iconSize={${p.iconSize}}` : ""}${
-      p.searchable === false ? "\n  searchable={false}" : ""
-    }\n/>`,
+    `<AppLauncher\n  items={apps}\n  categories={categories}\n  title="应用程序"\n  columns={${
+      p.columns ?? 6
+    }}${p.variant === "solid" ? '\n  variant="solid"' : ""}${
+      p.iconSize && Number(p.iconSize) !== 64 ? `\n  iconSize={${p.iconSize}}` : ""
+    }${p.searchable === false ? "\n  searchable={false}" : ""}\n/>`,
 };

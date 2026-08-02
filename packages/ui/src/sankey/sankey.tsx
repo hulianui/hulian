@@ -1,12 +1,7 @@
 "use client";
-import {
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
+import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import { computeSankeyLayout } from "./sankey-geometry";
 import type { SankeyLaidLink, SankeyLaidNode, SankeyProps } from "./sankey.types";
 
@@ -39,6 +34,7 @@ export function Sankey({
   onLinkClick,
   className,
 }: SankeyProps) {
+  const chartLabel = useComponentLocale().sankey?.chart ?? "桑基流向图";
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [hover, setHover] = useState<HoverTarget>(null);
@@ -83,18 +79,14 @@ export function Sankey({
   const anyHover = hover !== null;
 
   return (
-    <div
-      ref={containerRef}
-      className={cn("relative w-full", className)}
-      style={{ height }}
-    >
+    <div ref={containerRef} className={cn("relative w-full", className)} style={{ height }}>
       <svg
         width={effectiveWidth}
         height={height}
         viewBox={`0 0 ${effectiveWidth} ${height}`}
         className="block h-full w-full overflow-visible"
         role="img"
-        aria-label="桑基流向图"
+        aria-label={chartLabel}
       >
         {/* 连线层（ribbon 描边，先画 → 节点压在上层） */}
         <g fill="none" strokeLinecap="butt">
@@ -109,10 +101,7 @@ export function Sankey({
                 stroke={color}
                 strokeWidth={l.width}
                 strokeOpacity={hot ? 0.6 : dimmed ? linkOpacity * 0.4 : linkOpacity}
-                className={cn(
-                  "transition-[stroke-opacity]",
-                  onLinkClick && "cursor-pointer",
-                )}
+                className={cn("transition-[stroke-opacity]", onLinkClick && "cursor-pointer")}
                 onMouseEnter={(e) => {
                   setHover({ type: "link", link: l });
                   setTip(pointerIn(containerRef.current, e));

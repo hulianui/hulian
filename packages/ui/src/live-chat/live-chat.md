@@ -60,9 +60,12 @@ const item: LiveChatItem =
 
 ## 禁忌 / 坑
 
+- 消息作者后的分隔符跟随 `ConfigProvider locale`：默认中文精确使用 `：`，`enUS` 使用 `:`；旧自定义字典没有该字段时保持中文回退。
+
 - 自动贴底依赖「当前是否贴底」判定：用户上滚查看历史时 `autoScroll` 暂停，浮出「N 条新消息」钮，点它才恢复贴底——不要在外部强行 scrollTo 干扰。
 - `items` 须给容器固定高度（如 `className="h-full"` + 父容器定高），否则滚动区无法形成。
 - 高频追加时靠 `maxItems` 截断窗口；不要把全量历史塞进 `items`。
+- 内置“置顶 / 新消息 / 进入 / 关注 / 送出”文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供英文。
 
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

@@ -6,7 +6,7 @@ import { Comment, CommentAction } from "./comment";
 const actions = (
   <>
     <CommentAction>👍 赞 12</CommentAction>
-    <CommentAction href="#reply">回复</CommentAction>
+    <CommentAction href="https://example.com/#reply">回复</CommentAction>
   </>
 );
 
@@ -41,7 +41,7 @@ export const commentShowcase: ShowcaseSpec = {
   actions={
     <>
       <CommentAction>👍 赞 12</CommentAction>
-      <CommentAction href="#reply">回复</CommentAction>
+      <CommentAction href="https://example.com/#reply">回复</CommentAction>
     </>
   }
 />`,
@@ -91,7 +91,7 @@ export const commentShowcase: ShowcaseSpec = {
     },
     {
       title: "系统日志",
-      description: "type=\"log\" 弱化为点标记 + 单行内联（工单状态变更等）。",
+      description: 'type="log" 弱化为点标记 + 单行内联（工单状态变更等）。',
       code: `<>
   <Comment type="log" author="系统" content="将工单状态改为「处理中」" datetime="14:25" />
   <Comment type="log" author="张三" content="指派给 @李四" datetime="14:26" />
@@ -113,7 +113,9 @@ export const commentShowcase: ShowcaseSpec = {
 />`,
       render: () => (
         <Comment
-          author={<User name="瑚琏" description="@hulian" avatarProps={{ fallback: "瑚", size: "sm" }} />}
+          author={
+            <User name="瑚琏" description="@hulian" avatarProps={{ fallback: "瑚", size: "sm" }} />
+          }
           datetime="刚刚"
           content="作者区可直接传入瑚琏 User 组合件。"
         />
@@ -121,7 +123,13 @@ export const commentShowcase: ShowcaseSpec = {
     },
   ],
   controls: [
-    { prop: "type", type: "select", options: ["comment", "log"], defaultValue: "comment", label: "类型" },
+    {
+      prop: "type",
+      type: "select",
+      options: ["comment", "log"],
+      defaultValue: "comment",
+      label: "类型",
+    },
     { prop: "connector", type: "boolean", defaultValue: true, label: "连接线" },
   ],
   states: [
@@ -141,7 +149,7 @@ export const commentShowcase: ShowcaseSpec = {
             datetime="1 小时前"
             avatar={{ fallback: "李" }}
             content="收到 @瑚琏，正在排查根因，预计今天内给结论。"
-            actions={<CommentAction href="#reply">回复</CommentAction>}
+            actions={<CommentAction href="https://example.com/#reply">回复</CommentAction>}
           />
           <Comment
             author="王五"
@@ -163,9 +171,19 @@ export const commentShowcase: ShowcaseSpec = {
             content="客户反馈登录后白屏，已复现。"
             actions={<CommentAction>👍 赞</CommentAction>}
           />
-          <Comment type="log" author="系统" content="将工单状态改为「处理中」" datetime="昨天 14:25" />
+          <Comment
+            type="log"
+            author="系统"
+            content="将工单状态改为「处理中」"
+            datetime="昨天 14:25"
+          />
           <Comment type="log" author="张三" content="指派给 @李四" datetime="昨天 14:26" />
-          <Comment type="log" author="系统" content="将工单状态改为「已解决」" datetime="今天 09:10" />
+          <Comment
+            type="log"
+            author="系统"
+            content="将工单状态改为「已解决」"
+            datetime="今天 09:10"
+          />
         </div>
       ),
     },
@@ -173,7 +191,9 @@ export const commentShowcase: ShowcaseSpec = {
       name: "复用 User 作者卡",
       render: () => (
         <Comment
-          author={<User name="瑚琏" description="@hulian" avatarProps={{ fallback: "瑚", size: "sm" }} />}
+          author={
+            <User name="瑚琏" description="@hulian" avatarProps={{ fallback: "瑚", size: "sm" }} />
+          }
           datetime="刚刚"
           content="作者区可直接传入瑚琏 User 组合件（头像 + 名称/描述）。"
         />
@@ -194,7 +214,12 @@ export const commentShowcase: ShowcaseSpec = {
         connector={connector}
       >
         {type === "comment" && (
-          <Comment author="李四" avatar={{ fallback: "李" }} datetime="1 小时前" content="这是子回复。" />
+          <Comment
+            author="李四"
+            avatar={{ fallback: "李" }}
+            datetime="1 小时前"
+            content="这是子回复。"
+          />
         )}
       </Comment>
     );
@@ -203,6 +228,8 @@ export const commentShowcase: ShowcaseSpec = {
     const type = (props.type as string) ?? "comment";
     return `<Comment\n  author="瑚琏"\n  avatar={{ fallback: "瑚" }}\n  datetime="2 小时前"\n  content="这是一条评论内容"${
       type === "log" ? '\n  type="log"' : ""
-    }${props.connector ? "\n  connector" : ""}\n>\n  <Comment author="李四" content="这是子回复。" />\n</Comment>`;
+    }${
+      props.connector ? "\n  connector" : ""
+    }\n>\n  <Comment author="李四" content="这是子回复。" />\n</Comment>`;
   },
 };

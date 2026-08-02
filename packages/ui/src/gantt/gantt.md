@@ -55,4 +55,6 @@ const tasks: GanttTask[] = [
 - 时间轴可能比容器宽，组件靠横向滚动——外层给确定宽度（如 `w-[680px] max-w-full`）才有滚动条。
 
 ## 相关
+
+图表标签、空态、左列标题与月份刻度跟随 `ConfigProvider`。
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

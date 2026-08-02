@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { useState } from "react";
 import {
   Tabs, TabsList, TabsTab, TabsPanel,
@@ -19,10 +20,10 @@ import type { CouponData } from "../../_data/types";
 // colorDark 为各等级主色降约 15% 明度的预算十六进制；用作卡片渐变第二色标，
 // 避免 hsl(from … calc(l - 15%)) 相对色语法在部分环境不渲染 → 整条 gradient 失效 → 白字配浅底隐形。
 const LEVELS = [
-  { name: "铜牌会员", min: 0, max: 999, color: "#b45309", colorDark: "#7c3a06" },
-  { name: "银牌会员", min: 1000, max: 4999, color: "#6b7280", colorDark: "#4b5563" },
-  { name: "金牌会员", min: 5000, max: 19999, color: "#d97706", colorDark: "#92560a" },
-  { name: "钻石会员", min: 20000, max: Infinity, color: "#8b5cf6", colorDark: "#6d28d9" },
+  { name: copy("bronzeMember"), min: 0, max: 999, color: "#b45309", colorDark: "#7c3a06" },
+  { name: copy("silverMember"), min: 1000, max: 4999, color: "#6b7280", colorDark: "#4b5563" },
+  { name: copy("goldMember"), min: 5000, max: 19999, color: "#d97706", colorDark: "#92560a" },
+  { name: copy("diamondMember"), min: 20000, max: Infinity, color: "#8b5cf6", colorDark: "#6d28d9" },
 ];
 
 const MOCK_POINTS = 2680;
@@ -52,8 +53,8 @@ interface AddressItem {
 }
 
 const MOCK_ADDRESSES: AddressItem[] = [
-  { id: "a1", name: "张伟", phone: "138****8866", region: "浙江省杭州市余杭区", detail: "文一西路 969 号瀚云大厦", isDefault: true },
-  { id: "a2", name: "张伟（公司）", phone: "138****8866", region: "浙江省杭州市西湖区", detail: "古墩路 588 号", isDefault: false },
+  { id: "a1", name: copy("weiZhang"), phone: "138****8866", region: copy("yuhangDistrictHangzhouZhejiang"), detail: copy("hanyunTower969WestWenyiRoad"), isDefault: true },
+  { id: "a2", name: copy("weiZhangWork"), phone: "138****8866", region: copy("xihuDistrictHangzhouZhejiang"), detail: copy("text588GudunRoad"), isDefault: false },
 ];
 
 // ---- 优惠券分组 ----
@@ -64,7 +65,7 @@ function CouponTab({ claimedCoupons }: { claimedCoupons: string[] }) {
 
   const CouponGrid = ({ items }: { items: CouponData[] }) =>
     items.length === 0 ? (
-      <Empty title="暂无优惠券" size="sm" />
+      <Empty title={copy("noCouponsYet")} size="sm" />
     ) : (
       <div className="grid gap-3 sm:grid-cols-2">
         {items.map((c) => (
@@ -79,7 +80,7 @@ function CouponTab({ claimedCoupons }: { claimedCoupons: string[] }) {
             validUntil={c.validUntil}
             status={c.status === "available" && claimedCoupons.includes(c.id) ? "claimed" : c.status}
             tone={c.tone}
-            onUse={() => toast({ title: `正在跳转去使用「${c.title}」`, tone: "info" })}
+            onUse={() => toast({ title: `${copy("opening")}${c.title}${copy("closingQuote")}`, tone: "info" })}
           />
         ))}
       </div>
@@ -88,9 +89,9 @@ function CouponTab({ claimedCoupons }: { claimedCoupons: string[] }) {
   return (
     <Tabs defaultValue="available">
       <TabsList className="mb-4">
-        <TabsTab value="available">可用 ({availableCoupons.length})</TabsTab>
-        <TabsTab value="used">已用 ({usedCoupons.length})</TabsTab>
-        <TabsTab value="expired">过期 ({expiredCoupons.length})</TabsTab>
+        <TabsTab value="available">{copy("available")}{availableCoupons.length})</TabsTab>
+        <TabsTab value="used">{copy("used")}{usedCoupons.length})</TabsTab>
+        <TabsTab value="expired">{copy("expired")}{expiredCoupons.length})</TabsTab>
       </TabsList>
       <TabsPanel value="available"><CouponGrid items={availableCoupons} /></TabsPanel>
       <TabsPanel value="used"><CouponGrid items={usedCoupons} /></TabsPanel>
@@ -104,23 +105,23 @@ function ProfileForm() {
   return (
     <ProForm
       columns={2}
-      submitText="保存资料"
+      submitText={copy("saveProfile")}
       showReset
       onFinish={async () => {
         await new Promise((r) => setTimeout(r, 600));
-        toast({ title: "资料保存成功", tone: "success" });
+        toast({ title: copy("profileSaved"), tone: "success" });
       }}
     >
-      <Field label="昵称">
-        <Input defaultValue="瀚选用户" placeholder="请输入昵称" />
+      <Field label={copy("displayName")}>
+        <Input defaultValue={copy("hanshopCustomer")} placeholder={copy("enterADisplayName")} />
       </Field>
-      <Field label="手机号">
+      <Field label={copy("phoneNumber")}>
         <Input defaultValue="138****8866" disabled />
       </Field>
-      <Field label="邮箱">
-        <Input defaultValue="user@hulian.dev" placeholder="请输入邮箱" />
+      <Field label={copy("email")}>
+        <Input defaultValue="user@hulian.dev" placeholder={copy("enterAnEmailAddress")} />
       </Field>
-      <Field label="生日">
+      <Field label={copy("birthday")}>
         <Input defaultValue="1990-06-04" type="date" />
       </Field>
     </ProForm>
@@ -138,27 +139,27 @@ function AddressBook() {
     await new Promise((r) => setTimeout(r, 400));
     const newAddr: AddressItem = {
       id: `a${Date.now()}`,
-      name: "新收货人",
+      name: copy("newRecipient"),
       phone: "188****0000",
-      region: newRegionNames.join("") || "请选择地区",
-      detail: "详细地址",
+      region: newRegionNames.join("") || copy("selectARegion"),
+      detail: copy("streetAddress"),
       isDefault: false,
     };
     setAddresses((prev) => [...prev, newAddr]);
     setAdding(false);
     setNewRegion([]);
     setNewRegionNames([]);
-    toast({ title: "地址添加成功", tone: "success" });
+    toast({ title: copy("addressAdded"), tone: "success" });
   };
 
   const handleDelete = (id: string) => {
     setAddresses((prev) => prev.filter((a) => a.id !== id));
-    toast({ title: "地址已删除", tone: "info" });
+    toast({ title: copy("addressDeleted"), tone: "info" });
   };
 
   const handleSetDefault = (id: string) => {
     setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })));
-    toast({ title: "已设为默认地址", tone: "info" });
+    toast({ title: copy("defaultAddressUpdated"), tone: "info" });
   };
 
   return (
@@ -172,7 +173,8 @@ function AddressBook() {
                 <span className="text-sm text-muted">{addr.phone}</span>
                 {addr.isDefault && (
                   <span className="rounded-sm bg-primary/12 px-1.5 py-0.5 text-xs font-medium text-primary">
-                    默认
+
+                    {copy("default")}
                   </span>
                 )}
               </div>
@@ -183,7 +185,8 @@ function AddressBook() {
             <div className="flex shrink-0 gap-2">
               {!addr.isDefault && (
                 <Button variant="ghost" size="sm" onClick={() => handleSetDefault(addr.id)}>
-                  设为默认
+
+                  {copy("setAsDefault")}
                 </Button>
               )}
               <Button
@@ -192,7 +195,8 @@ function AddressBook() {
                 tone="danger"
                 onClick={() => handleDelete(addr.id)}
               >
-                删除
+
+                {copy("delete")}
               </Button>
             </div>
           </div>
@@ -202,29 +206,32 @@ function AddressBook() {
       {adding ? (
         <div className="rounded-[var(--radius)] border border-dashed border-border p-4">
           <div className="flex flex-col gap-3">
-            <Field label="所在地区">
+            <Field label={copy("region")}>
               <RegionCascader
                 value={newRegion}
                 onChange={(codes, names) => {
                   setNewRegion(codes);
                   setNewRegionNames(names);
                 }}
-                placeholder="选择省/市/区"
+                placeholder={copy("selectProvinceCityDistrict")}
               />
             </Field>
             <div className="flex gap-2">
               <Button tone="brand" size="sm" onClick={handleAdd}>
-                确认添加
+
+                {copy("addAddress")}
               </Button>
               <Button variant="outline" size="sm" onClick={() => setAdding(false)}>
-                取消
+
+                {copy("cancel")}
               </Button>
             </div>
           </div>
         </div>
       ) : (
         <Button variant="outline" className="w-full border-dashed" onClick={() => setAdding(true)}>
-          + 新增收货地址
+
+          {copy("addShippingAddress")}
         </Button>
       )}
     </div>
@@ -235,40 +242,43 @@ function AddressBook() {
 function SecurityTab() {
   return (
     <div className="flex flex-col gap-4">
-      <Descriptions bordered column={1} title="账户安全信息">
-        <DescriptionsItem label="登录手机">138****8866 · 已绑定</DescriptionsItem>
-        <DescriptionsItem label="登录邮箱">user@hulian.dev · 已绑定</DescriptionsItem>
-        <DescriptionsItem label="登录密码">已设置 · 上次修改 2026-01-15</DescriptionsItem>
-        <DescriptionsItem label="账户状态">正常</DescriptionsItem>
+      <Descriptions bordered column={1} title={copy("accountSecurityDetails")}>
+        <DescriptionsItem label={copy("signInPhone")}>{copy("text1388866Linked")}</DescriptionsItem>
+        <DescriptionsItem label={copy("signInEmail")}>{copy("userLinked")}</DescriptionsItem>
+        <DescriptionsItem label={copy("password")}>{copy("setLastChangedJan152026")}</DescriptionsItem>
+        <DescriptionsItem label={copy("accountStatus")}>{copy("active")}</DescriptionsItem>
       </Descriptions>
 
       <div className="flex flex-col gap-3 pt-2">
-        <Button variant="outline" size="sm" className="self-start" onClick={() => toast({ title: "跳转修改密码页面", tone: "info" })}>
-          修改登录密码
+        <Button variant="outline" size="sm" className="self-start" onClick={() => toast({ title: copy("openingPasswordSettings"), tone: "info" })}>
+
+          {copy("changePassword")}
         </Button>
 
         {/* 注销账户 AlertDialog */}
         <AlertDialog>
           <AlertDialogTrigger>
             <Button variant="outline" size="sm" tone="danger" className="self-start">
-              注销账户
+
+              {copy("deleteAccount")}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent
-            title="确认注销账户？"
-            description="注销后，您的账户数据（订单、积分、收藏）将被永久清除，此操作不可恢复。确认前请确保已处理完所有待退款订单。"
+            title={copy("deleteThisAccount")}
+            description={copy("yourOrdersPointsAndFavoritesWillBePermanentlyDeletedThisCannotBeUndoneMakeSureAllPendingRefundsA")}
           >
             <AlertDialogClose>
-              <Button variant="outline">取消</Button>
+              <Button variant="outline">{copy("cancel")}</Button>
             </AlertDialogClose>
             <AlertDialogClose>
               <Button
                 tone="danger"
                 onClick={() => {
-                  toast({ title: "账户注销申请已提交，将在 7 个工作日内处理", tone: "danger" });
+                  toast({ title: copy("accountDeletionRequestSubmittedProcessingMayTakeUpTo7BusinessDays"), tone: "danger" });
                 }}
               >
-                确认注销
+
+                {copy("deleteAccount2")}
               </Button>
             </AlertDialogClose>
           </AlertDialogContent>
@@ -293,28 +303,28 @@ export default function AccountPage() {
       >
         <div className="flex items-start gap-4">
           <Avatar
-            src={avatarArt("瀚选用户", 80)}
-            alt="用户头像"
+            src={avatarArt(copy("hanshopCustomer"), 80)}
+            alt={copy("customerAvatar")}
             size="lg"
-            fallback="用"
+            fallback={copy("use")}
           />
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-lg font-bold">瀚选用户</span>
+              <span className="text-lg font-bold">{copy("hanshopCustomer")}</span>
               <span className="rounded-sm bg-white/20 px-2 py-0.5 text-xs font-medium">
                 {level.name}
               </span>
             </div>
-            <p className="mt-1 text-sm text-white/80">UID：HS10086001</p>
+            <p className="mt-1 text-sm text-white/80">{copy("uidHs10086001")}</p>
 
             {/* 等级进度 */}
             <div className="mt-4">
               <div className="mb-1.5 flex justify-between text-xs text-white/80">
                 <span>{level.name}</span>
                 {next ? (
-                  <span>距 {next.name} 还差 {(next.min - MOCK_POINTS).toLocaleString()} 积分</span>
+                  <span>{copy("pointsToNextTier", (next.min - MOCK_POINTS).toLocaleString(), next.name)}</span>
                 ) : (
-                  <span>已达最高等级</span>
+                  <span>{copy("highestTierReached")}</span>
                 )}
               </div>
               <Progress value={progress} tone="primary" />
@@ -326,21 +336,21 @@ export default function AccountPage() {
         <div className="mt-6 grid grid-cols-3 divide-x divide-white/20 text-center">
           <Statistic
             value={MOCK_POINTS}
-            title={<span className="text-xs text-white/70">积分</span>}
+            title={<span className="text-xs text-white/70">{copy("points")}</span>}
             valueStyle={{ color: "white", fontSize: "1.5rem", fontWeight: 700 }}
             animate
           />
           <Statistic
             value={MOCK_BALANCE}
             prefix={<span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}>¥</span>}
-            title={<span className="text-xs text-white/70">余额</span>}
+            title={<span className="text-xs text-white/70">{copy("balance")}</span>}
             precision={2}
             valueStyle={{ color: "white", fontSize: "1.5rem", fontWeight: 700 }}
           />
           <Statistic
             value={claimedCount}
-            suffix={<span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.75rem" }}>张</span>}
-            title={<span className="text-xs text-white/70">优惠券</span>}
+            suffix={<span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.75rem" }}>{copy("coupons")}</span>}
+            title={<span className="text-xs text-white/70">{copy("coupons2")}</span>}
             valueStyle={{ color: "white", fontSize: "1.5rem", fontWeight: 700 }}
           />
         </div>
@@ -349,10 +359,10 @@ export default function AccountPage() {
       {/* 功能 Tabs */}
       <Tabs defaultValue="coupons">
         <TabsList className="mb-6 flex-wrap">
-          <TabsTab value="coupons">我的优惠券</TabsTab>
-          <TabsTab value="profile">账户资料</TabsTab>
-          <TabsTab value="address">收货地址</TabsTab>
-          <TabsTab value="security">账户安全</TabsTab>
+          <TabsTab value="coupons">{copy("myCoupons")}</TabsTab>
+          <TabsTab value="profile">{copy("profile")}</TabsTab>
+          <TabsTab value="address">{copy("shippingAddresses")}</TabsTab>
+          <TabsTab value="security">{copy("accountSecurity")}</TabsTab>
         </TabsList>
 
         <TabsPanel value="coupons">

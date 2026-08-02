@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, cleanup } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { ModelViewer } from "./model-viewer";
 
 // jsdom 无真实合成层 / RAF transform，这里只断言结构、token 类、prop 透传与 reduced-motion 路径。
@@ -35,9 +36,7 @@ describe("ModelViewer", () => {
     expect(root).not.toBeNull();
     expect(root.className).toContain("relative");
     // 模型层带 preserve-3d
-    const model = container.querySelector(
-      ".\\[transform-style\\:preserve-3d\\]",
-    );
+    const model = container.querySelector(".\\[transform-style\\:preserve-3d\\]");
     expect(model).not.toBeNull();
     expect(model?.textContent).toBe("M");
   });
@@ -77,16 +76,10 @@ describe("ModelViewer", () => {
 
   it("className 与 style 透传到根容器；默认角度写入模型静态 transform", () => {
     const { container } = render(
-      <ModelViewer
-        className="test-mv"
-        defaultRotationX={30}
-        defaultRotationY={45}
-      />,
+      <ModelViewer className="test-mv" defaultRotationX={30} defaultRotationY={45} />,
     );
     expect(rootOf(container).className).toContain("test-mv");
-    const model = container.querySelector(
-      ".\\[transform-style\\:preserve-3d\\]",
-    ) as HTMLElement;
+    const model = container.querySelector(".\\[transform-style\\:preserve-3d\\]") as HTMLElement;
     expect(model.style.transform).toContain("rotateX(30deg)");
     expect(model.style.transform).toContain("rotateY(45deg)");
   });
@@ -101,5 +94,14 @@ describe("ModelViewer", () => {
     expect(getByText("内容仍在")).not.toBeNull();
     expect(queryByRole("button", { name: /重置视角/ })).toBeNull();
     expect(rootOf(container).className).not.toContain("cursor-grab");
+  });
+
+  it("ConfigProvider locale=enUS localizes the reset action", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <ModelViewer />
+      </ConfigProvider>,
+    );
+    expect(getByRole("button", { name: "Reset view" })).toBeTruthy();
   });
 });

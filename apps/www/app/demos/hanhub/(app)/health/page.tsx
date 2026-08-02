@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useMemo, useState } from "react";
 import { Activity, RadioTower, ShieldAlert } from "lucide-react";
 import {
@@ -24,7 +26,7 @@ import { providerOf, modelOf } from "../../_data/providers";
 import type { Channel } from "../../_data/types";
 import { useProbe } from "./use-probe";
 
-const statusLabel = { online: "在线", degraded: "降级", offline: "离线", maintenance: "维护" } as const;
+const statusLabel = { online: copy("online"), degraded: copy("downgrade"), offline: copy("offline"), maintenance: copy("maintenance") } as const;
 
 /** 行内 sparkline：纯 token 着色的迷你条，呈现近 12 次成功率走势。 */
 function Sparkline({ data, tone }: { data: number[]; tone: "success" | "warning" | "danger" }) {
@@ -52,7 +54,7 @@ export default function HealthPage() {
     () => [
       {
         accessorKey: "name",
-        header: "渠道",
+        header: copy("channel"),
         cell: ({ row }) => {
           const c = row.original;
           const p = providerOf(c.provider);
@@ -74,7 +76,7 @@ export default function HealthPage() {
       },
       {
         accessorKey: "health",
-        header: "状态",
+        header: copy("status"),
         cell: ({ row }) => {
           const c = row.original;
           const online = c.health === "online" || c.health === "degraded";
@@ -89,7 +91,7 @@ export default function HealthPage() {
       },
       {
         accessorKey: "successRate",
-        header: "成功率",
+        header: copy("successRate"),
         cell: ({ row }) => {
           const c = row.original;
           const tone = c.successRate >= 0.98 ? "success" : c.successRate >= 0.9 ? "warning" : "danger";
@@ -105,12 +107,12 @@ export default function HealthPage() {
       },
       {
         accessorKey: "weight",
-        header: "权重",
+        header: copy("weight"),
         cell: ({ row }) => <span className="tabular-nums text-sm">{row.original.weight}</span>,
       },
       {
         accessorKey: "priority",
-        header: "优先级",
+        header: copy("priority"),
         cell: ({ row }) => (
           <Tag tone={row.original.priority === 1 ? "brand" : "neutral"} size="sm">
             P{row.original.priority}
@@ -119,7 +121,7 @@ export default function HealthPage() {
       },
       {
         accessorKey: "rpmHeadroom",
-        header: "限速余量",
+        header: copy("speedLimitMargin"),
         cell: ({ row }) => {
           const c = row.original;
           const pct = Math.round(c.rpmHeadroom * 100);
@@ -145,29 +147,27 @@ export default function HealthPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-foreground">健康探测中心</h1>
-          <p className="text-sm text-muted">上游渠道 ping / 测速 · 加权路由 · 被动失败转移 · 阈值熔断</p>
+          <h1 className="text-xl font-semibold text-foreground">{copy("healthDetectionCenter")}</h1>
+          <p className="text-sm text-muted">{copy("upstreamChannelPingSpeedMeasurementWeightedRouting")}</p>
         </div>
         <Button onClick={runProbe} loading={probing} disabled={probing}>
           <Activity className="size-4" />
-          {probing ? "测速中…" : "一键测速"}
+          {probing ? copy("speedMeasurementInProgress") : copy("oneClickSpeedMeasurement")}
         </Button>
       </div>
 
       {downCount > 0 && (
-        <Banner tone="warning" icon={<ShieldAlert className="size-4" />}>
-          当前有 {downCount} 个渠道不可用，流量已自动转移至健康渠道，请关注降级影响。
-        </Banner>
+        <Banner tone="warning" icon={<ShieldAlert className="size-4" />}>{copy("currentlyThereAre")}{downCount}{copy("channelIsUnavailableAndTrafficHasBeen")}</Banner>
       )}
 
       {/* 渠道列表 */}
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <span className="font-medium text-foreground">上游渠道</span>
-          <span className="text-xs text-muted">共 {channels.length} 条 · 按优先级 + 权重加权路由</span>
+          <span className="font-medium text-foreground">{copy("upstreamChannels")}</span>
+          <span className="text-xs text-muted">{copy("total")}{channels.length}{copy("articleWeightedRoutingByPriorityWeight")}</span>
         </CardHeader>
         <CardBody className="p-0">
-          <Spin spinning={probing} tip="正在探测各上游延迟与成功率…">
+          <Spin spinning={probing} tip={copy("detectingEachUpstreamDelayAndSuccessRate")}>
             <Table columns={columns} data={channels} enableSorting density="middle" getRowId={(r) => r.id} />
           </Spin>
         </CardBody>
@@ -176,7 +176,7 @@ export default function HealthPage() {
       <div className="grid gap-3 lg:grid-cols-3">
         {/* 渠道 → 模型映射 */}
         <Card className="lg:col-span-2">
-          <CardHeader className="font-medium text-foreground">渠道 → 模型映射</CardHeader>
+          <CardHeader className="font-medium text-foreground">{copy("channelModelMapping")}</CardHeader>
           <CardBody className="flex flex-col gap-3">
             {channels.map((c) => (
               <div key={c.id} className="flex flex-wrap items-center gap-2">
@@ -184,7 +184,7 @@ export default function HealthPage() {
                   <StatusDot status={c.health} size="sm" />
                   <span className="truncate text-sm font-medium text-foreground">{c.name}</span>
                 </span>
-                <span className="text-xs text-muted">权重 {c.weight} · P{c.priority}</span>
+                <span className="text-xs text-muted">{copy("weight2")}{c.weight} · P{c.priority}</span>
                 <span className="flex flex-wrap gap-1.5">
                   {c.models.map((m) => (
                     <Tag key={m} size="sm" tone="neutral" variant="outline">
@@ -200,39 +200,37 @@ export default function HealthPage() {
         {/* 熔断规则 */}
         <Card>
           <CardHeader className="flex items-center gap-2 font-medium text-foreground">
-            <RadioTower className="size-4 text-muted" />
-            熔断规则
-          </CardHeader>
+            <RadioTower className="size-4 text-muted" />{copy("circuitBreakerRules")}</CardHeader>
           <CardBody className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-sm font-medium text-foreground">连续失败阈值</div>
-                <div className="text-xs text-muted">达到次数后触发熔断转移</div>
+                <div className="text-sm font-medium text-foreground">{copy("continuousFailureThreshold")}</div>
+                <div className="text-xs text-muted">{copy("afterReachingTheNumberOfTimesThe")}</div>
               </div>
               <NumberField
                 value={failThreshold}
                 onValueChange={setFailThreshold}
                 min={1}
                 max={20}
-                aria-label="连续失败阈值"
+                aria-label={copy("continuousFailureThreshold2")}
                 className="w-28"
               />
             </div>
             <Divider />
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-sm font-medium text-foreground">自动禁用渠道</div>
-                <div className="text-xs text-muted">熔断后自动下线，恢复后自动接回</div>
+                <div className="text-sm font-medium text-foreground">{copy("automaticallyDisableChannels")}</div>
+                <div className="text-xs text-muted">{copy("automaticallyOfflineAfterTheFuseIsBroken")}</div>
               </div>
-              <Switch checked={autoDisable} onCheckedChange={setAutoDisable} aria-label="自动禁用渠道" />
+              <Switch checked={autoDisable} onCheckedChange={setAutoDisable} aria-label={copy("automaticallyDisableChannels2")} />
             </div>
             <Divider />
             <Descriptions
               column={1}
               items={[
-                { label: "降级转移", children: "命中阈值即从加权池摘除，按优先级转移到次级渠道" },
-                { label: "半开探测", children: "每 60s 放行 1 次试探请求，连续 3 次成功即恢复路由" },
-                { label: "兜底策略", children: autoDisable ? "全部不可用时返回 503 并触发告警" : "保持原渠道直至人工介入" },
+                { label: copy("downgradeTransfer"), children: copy("thoseThatHitTheThresholdAreRemoved") },
+                { label: copy("halfOpenDetection"), children: copy("oneTrialRequestIsReleasedEveryS") },
+                { label: copy("diggingStrategy"), children: autoDisable ? copy("whenAllAreUnavailableReturnAndTrigger") : copy("maintainTheOriginalChannelUntilManualIntervention") },
               ]}
             />
           </CardBody>
@@ -242,10 +240,8 @@ export default function HealthPage() {
       {/* 探测历史 */}
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <span className="font-medium text-foreground">探测历史</span>
-          <Button variant="ghost" size="sm" onClick={() => toast({ title: "已复制探测日志", tone: "info" })}>
-            导出日志
-          </Button>
+          <span className="font-medium text-foreground">{copy("detectionHistory")}</span>
+          <Button variant="ghost" size="sm" onClick={() => toast({ title: copy("probeLogCopied"), tone: "info" })}>{copy("exportLog")}</Button>
         </CardHeader>
         <CardBody>
           <Timeline

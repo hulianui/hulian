@@ -1,6 +1,8 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { DeployStatus } from "./deploy-status";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("DeployStatus", () => {
   it("默认 badge 渲染状态文案", () => {
@@ -42,5 +44,14 @@ describe("DeployStatus", () => {
   it("label 覆盖默认文案", () => {
     const { getByText } = render(<DeployStatus status="ready" label="生产已发布" />);
     expect(getByText("生产已发布")).toBeTruthy();
+  });
+
+  it("uses ConfigProvider locale for built-in status labels", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <DeployStatus status="ready" variant="icon" />
+      </ConfigProvider>,
+    );
+    expect(getByRole("img").getAttribute("aria-label")).toBe("Ready");
   });
 });

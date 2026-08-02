@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { PageHeaderBlock } from "../../blocks/_blocks/page-header";
 import { KpiRailBlock } from "../../blocks/_blocks/kpi-rail";
 import { ChartGridBlock } from "../../blocks/_blocks/chart-grid";

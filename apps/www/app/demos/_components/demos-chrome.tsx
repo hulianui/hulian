@@ -3,6 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Fab } from "@hulianui/ui";
 import { LayoutGrid } from "lucide-react";
 import { SiteNavbar } from "../../../components/site-navbar";
+import { copy } from "./demos-chrome.content";
 
 // /demos 路由的统一外壳 chrome（client，单挂在 demos/layout）：
 // - 画廊页 `/demos` 本身 → 站点统一顶栏 SiteNavbar（四档导航 + 主题切换），与区块/页面画廊一致；
@@ -22,11 +23,11 @@ export function DemosChrome() {
 
   return (
     <Fab
-      label="返回示例库"
+      label={copy("backToGallery")}
       icon={<LayoutGrid className="size-5" aria-hidden />}
       position="bottom-left"
       draggable
-      aria-label="返回示例库"
+      aria-label={copy("backToGallery")}
       onClick={() => router.push("/demos")}
     />
   );

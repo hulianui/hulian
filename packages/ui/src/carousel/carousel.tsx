@@ -11,6 +11,7 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { CarouselProps } from "./carousel.types";
+import { useComponentLocale } from "../config/locale-context";
 
 // 圆点宽度/颜色过渡复用 motion-token CSS 镜像（零散写 transition）。
 const DOT_TRANSITION = {
@@ -32,11 +33,19 @@ export function Carousel({
   loop = false,
   showArrows = true,
   showDots = true,
-  "aria-label": ariaLabel = "轮播",
+  "aria-label": ariaLabel,
   className,
   slideClassName,
   ...rest
 }: CarouselProps) {
+  const labels = useComponentLocale().carousel ?? {
+    label: "轮播",
+    slide: (index, count) => `第 ${index} / ${count} 张`,
+    previous: "上一张",
+    next: "下一张",
+    navigation: "幻灯片导航",
+    goTo: (index) => `转到第 ${index} 张`,
+  };
   const slides = Children.toArray(children);
   const count = slides.length;
 
@@ -162,7 +171,7 @@ export function Carousel({
     <div
       role="region"
       aria-roledescription="carousel"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? labels.label}
       className={cn("relative overflow-hidden rounded-[var(--radius)]", className)}
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
@@ -177,9 +186,7 @@ export function Carousel({
         className={cn(
           "flex w-full overflow-x-auto overscroll-x-contain",
           "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
-          dragging
-            ? "cursor-grabbing snap-none select-none"
-            : "snap-x snap-mandatory",
+          dragging ? "cursor-grabbing snap-none select-none" : "snap-x snap-mandatory",
           hasControls && "cursor-grab",
         )}
         onPointerDown={onPointerDown}
@@ -192,7 +199,7 @@ export function Carousel({
             key={i}
             role="group"
             aria-roledescription="slide"
-            aria-label={`第 ${i + 1} / ${count} 张`}
+            aria-label={labels.slide(i + 1, count)}
             className={cn("min-w-0 shrink-0 basis-full snap-start", slideClassName)}
           >
             {slide}
@@ -204,7 +211,7 @@ export function Carousel({
         <>
           <button
             type="button"
-            aria-label="上一张"
+            aria-label={labels.previous}
             disabled={!loop && active === 0}
             onClick={goPrev}
             className={cn(arrowBase, "left-2")}
@@ -213,7 +220,7 @@ export function Carousel({
           </button>
           <button
             type="button"
-            aria-label="下一张"
+            aria-label={labels.next}
             disabled={!loop && active === count - 1}
             onClick={goNext}
             className={cn(arrowBase, "right-2")}
@@ -226,7 +233,7 @@ export function Carousel({
       {showDots && hasControls && (
         <div
           role="group"
-          aria-label="幻灯片导航"
+          aria-label={labels.navigation}
           className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-2"
         >
           {slides.map((_, i) => {
@@ -235,7 +242,7 @@ export function Carousel({
               <button
                 key={i}
                 type="button"
-                aria-label={`转到第 ${i + 1} 张`}
+                aria-label={labels.goTo(i + 1)}
                 aria-current={on ? "true" : undefined}
                 data-active={on ? "" : undefined}
                 onClick={() => goTo(i)}

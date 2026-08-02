@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 // 空状态区块 —— 两种范式并排展示：Empty（暂无数据）和 Result（操作结果/无结果）。
 // Empty：图标 + 标题 + 描述 + CTA，适用于列表/表格无数据占位。
 // Result：status 驱动图标色（success/error/info/warning/404/403/500），适用于页面级结果反馈。

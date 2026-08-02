@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./code-dialog.content";
+
 import { useMemo, useState } from "react";
 import {
   CodeBlock,
@@ -46,8 +48,8 @@ export function CodeDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        title="查看为代码"
-        description="把当前模型、参数与会话消息一键转为可运行的接入片段"
+        title={copy("viewAsCode")}
+        description={copy("convertTheCurrentModelParametersAndSession")}
         className="w-[min(720px,94vw)]"
       >
         <Tabs value={lang} onValueChange={(v) => setLang(v as CodeLang)}>

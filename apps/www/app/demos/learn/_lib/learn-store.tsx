@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./learn-store.content";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { courses, allLessons } from "../_data/courses";
 
@@ -63,9 +64,9 @@ function seed(): LearnState {
       {
         id: "seed-note-1",
         lessonId: "l2",
-        lessonTitle: "02 组件、Props 与组合优于继承",
-        body: "**组合优于继承**：用 children / render props 传递，而不是层层 extends。",
-        createdAt: "2 天前",
+        lessonTitle: copy("componentsPropsAndCombinationsOutperformInheritance"),
+        body: copy("betterCombinationThanInheritancePassInChildrenRenderPropsInstead"),
+        createdAt: copy("daysAgo"),
       },
     ],
   };
@@ -125,7 +126,7 @@ export function LearnStoreProvider({ children }: { children: ReactNode }) {
     setState((s) => ({
       ...s,
       notes: [
-        { ...note, id: `note-${s.notes.length}-${note.lessonId}`, createdAt: "刚刚" },
+        { ...note, id: `note-${s.notes.length}-${note.lessonId}`, createdAt: copy("justNow") },
         ...s.notes,
       ],
     }));
@@ -148,7 +149,19 @@ export function LearnStoreProvider({ children }: { children: ReactNode }) {
       addNote,
       deleteNote,
     }),
-    [state, isEnrolled, enroll, isCompleted, toggleComplete, markComplete, saveResume, setLastLesson, progressOf, addNote, deleteNote],
+    [
+      state,
+      isEnrolled,
+      enroll,
+      isCompleted,
+      toggleComplete,
+      markComplete,
+      saveResume,
+      setLastLesson,
+      progressOf,
+      addNote,
+      deleteNote,
+    ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
@@ -156,6 +169,6 @@ export function LearnStoreProvider({ children }: { children: ReactNode }) {
 
 export function useLearn(): LearnStore {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useLearn 必须在 LearnStoreProvider 内使用");
+  if (!ctx) throw new Error(copy("uselearnMustBeUsedWithinLearnStoreProvider"));
   return ctx;
 }

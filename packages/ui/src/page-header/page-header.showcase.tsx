@@ -9,8 +9,8 @@ import { Tabs, TabsList, TabsTab } from "../tabs";
 const crumb = (
   <Breadcrumb
     items={[
-      { label: "首页", href: "/" },
-      { label: "订单", href: "/orders" },
+      { label: "首页", href: "https://example.com/" },
+      { label: "订单", href: "https://example.com/orders" },
       { label: "订单详情" },
     ]}
   />
@@ -83,7 +83,9 @@ export const pageHeaderShowcase: ShowcaseSpec = {
         <div className="w-full max-w-3xl">
           <PageHeader
             breadcrumb={
-              <Breadcrumb items={[{ label: "首页", href: "/" }, { label: "商品列表" }]} />
+              <Breadcrumb
+                items={[{ label: "首页", href: "https://example.com/" }, { label: "商品列表" }]}
+              />
             }
             title="商品列表"
             subTitle="管理在售与下架商品"
@@ -177,7 +179,7 @@ export const pageHeaderShowcase: ShowcaseSpec = {
           <PageHeader
             breadcrumb={
               <Breadcrumb
-                items={[{ label: "首页", href: "/" }, { label: "商品列表" }]}
+                items={[{ label: "首页", href: "https://example.com/" }, { label: "商品列表" }]}
               />
             }
             title="商品列表"
@@ -213,7 +215,7 @@ export const pageHeaderShowcase: ShowcaseSpec = {
       "  breadcrumb={<Breadcrumb items={items} />}",
       '  title="订单 #20260603-8821"',
       '  subTitle="共 6 件商品"',
-      "  tags={<Chip tone=\"brand\" variant=\"soft\">进行中</Chip>}",
+      '  tags={<Chip tone="brand" variant="soft">进行中</Chip>}',
       "  extra={<Button>编辑</Button>}",
       "  footer={<Tabs>…</Tabs>}",
       p.bordered ? "  bordered" : null,

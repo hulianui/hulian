@@ -1,6 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Sankey } from "./sankey";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 const nodes = [
   { id: "a", label: "源" },
@@ -49,5 +51,10 @@ describe("Sankey", () => {
       />,
     );
     expect(screen.getByText("节点-a")).toBeTruthy();
+  });
+
+  it("图表标签跟随 ConfigProvider", () => {
+    render(<ConfigProvider locale={enUS}><Sankey nodes={nodes} links={links} height={200} /></ConfigProvider>);
+    expect(screen.getByRole("img").getAttribute("aria-label")).toBe("Sankey diagram");
   });
 });

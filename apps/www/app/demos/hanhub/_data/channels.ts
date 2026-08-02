@@ -1,9 +1,10 @@
+import { copy } from "./channels.content";
 import type { Channel, ProbeRecord } from "./types";
 
 export const channels: Channel[] = [
   {
     id: "c-openai-1",
-    name: "OpenAI 官方 · 主",
+    name: copy("openaiOfficialMain"),
     provider: "openai",
     health: "online",
     latencyMs: 86,
@@ -13,11 +14,11 @@ export const channels: Channel[] = [
     priority: 1,
     rpmHeadroom: 0.62,
     models: ["gpt-5.5", "gpt-5.4", "gpt-5-mini"],
-    lastProbe: "30 秒前",
+    lastProbe: copy("secondsAgo"),
   },
   {
     id: "c-openai-2",
-    name: "OpenAI 代理 · 备",
+    name: copy("openaiAgentPrepared"),
     provider: "openai",
     health: "degraded",
     latencyMs: 412,
@@ -27,11 +28,11 @@ export const channels: Channel[] = [
     priority: 2,
     rpmHeadroom: 0.81,
     models: ["gpt-5.4", "gpt-5-mini"],
-    lastProbe: "28 秒前",
+    lastProbe: copy("secondsAgo2"),
   },
   {
     id: "c-anthropic-1",
-    name: "Anthropic 官方",
+    name: copy("anthropicOfficial"),
     provider: "anthropic",
     health: "online",
     latencyMs: 124,
@@ -41,7 +42,7 @@ export const channels: Channel[] = [
     priority: 1,
     rpmHeadroom: 0.74,
     models: ["claude-opus-4-7", "claude-sonnet-4-6", "claude-haiku-4-5"],
-    lastProbe: "31 秒前",
+    lastProbe: copy("secondsAgo3"),
   },
   {
     id: "c-google-1",
@@ -55,11 +56,11 @@ export const channels: Channel[] = [
     priority: 1,
     rpmHeadroom: 0.88,
     models: ["gemini-3-pro", "gemini-3-flash"],
-    lastProbe: "33 秒前",
+    lastProbe: copy("secondsAgo4"),
   },
   {
     id: "c-deepseek-1",
-    name: "DeepSeek 官方",
+    name: copy("deepseekOfficial"),
     provider: "deepseek",
     health: "online",
     latencyMs: 98,
@@ -69,11 +70,11 @@ export const channels: Channel[] = [
     priority: 1,
     rpmHeadroom: 0.91,
     models: ["deepseek-v4"],
-    lastProbe: "29 秒前",
+    lastProbe: copy("secondsAgo5"),
   },
   {
     id: "c-alibaba-1",
-    name: "阿里百炼",
+    name: copy("aliBailian"),
     provider: "alibaba",
     health: "maintenance",
     latencyMs: 0,
@@ -83,11 +84,11 @@ export const channels: Channel[] = [
     priority: 3,
     rpmHeadroom: 1,
     models: ["qwen3-max", "mimo-flash"],
-    lastProbe: "维护中",
+    lastProbe: copy("underMaintenance"),
   },
   {
     id: "c-moonshot-1",
-    name: "月之暗面",
+    name: copy("darkSideOfTheMoon"),
     provider: "moonshot",
     health: "offline",
     latencyMs: 0,
@@ -97,16 +98,16 @@ export const channels: Channel[] = [
     priority: 2,
     rpmHeadroom: 1,
     models: ["kimi-k2"],
-    lastProbe: "5 分钟前",
+    lastProbe: copy("minutesAgo"),
   },
 ];
 
 export const probeHistory: ProbeRecord[] = [
-  { time: "10:42:08", channel: "OpenAI 官方 · 主", ok: true, latencyMs: 86, note: "200 OK" },
-  { time: "10:42:05", channel: "Anthropic 官方", ok: true, latencyMs: 124, note: "200 OK" },
-  { time: "10:41:50", channel: "OpenAI 代理 · 备", ok: true, latencyMs: 412, note: "200 OK · 延迟偏高" },
-  { time: "10:40:12", channel: "月之暗面", ok: false, latencyMs: 0, note: "连接超时 · 已熔断转移" },
-  { time: "10:38:44", channel: "阿里百炼", ok: false, latencyMs: 0, note: "计划维护 · 暂停路由" },
-  { time: "10:37:01", channel: "DeepSeek 官方", ok: true, latencyMs: 98, note: "200 OK" },
+  { time: "10:42:08", channel: copy("openaiOfficialMain2"), ok: true, latencyMs: 86, note: "200 OK" },
+  { time: "10:42:05", channel: copy("anthropicOfficial2"), ok: true, latencyMs: 124, note: "200 OK" },
+  { time: "10:41:50", channel: copy("openaiAgentPrepared2"), ok: true, latencyMs: 412, note: copy("okDelayIsHigh") },
+  { time: "10:40:12", channel: copy("darkSideOfTheMoon2"), ok: false, latencyMs: 0, note: copy("connectionTimeoutMeltedTransfer") },
+  { time: "10:38:44", channel: copy("aliBailian2"), ok: false, latencyMs: 0, note: copy("plannedMaintenancePauseRouting") },
+  { time: "10:37:01", channel: copy("deepseekOfficial2"), ok: true, latencyMs: 98, note: "200 OK" },
   { time: "10:35:22", channel: "Google Vertex", ok: true, latencyMs: 152, note: "200 OK" },
 ];

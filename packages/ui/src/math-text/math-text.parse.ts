@@ -19,6 +19,11 @@ import {
 /** 2 个及以上连续下划线 = 填空槽；单个下划线才是下标标记。 */
 const BLANK_RE = /^_{2,}/;
 
+export interface MathParseOptions {
+  /** Text used when a matrix/array row break is flattened into one line. */
+  rowSeparator?: string;
+}
+
 /** 从 `src[start]`（必须是 `{`）起找到配对的 `}`，返回其下标；找不到返回 -1。 */
 function matchBrace(src: string, start: number): number {
   if (src[start] !== "{") return -1;
@@ -42,13 +47,17 @@ function skipSpaces(src: string, at: number): number {
 }
 
 /** 读一个「参数」：既支持 `{...}` 组，也支持紧跟的单个字符（x^2）。 */
-function readArg(src: string, start: number): { nodes: MathNode[]; next: number } | null {
+function readArg(
+  src: string,
+  start: number,
+  options: MathParseOptions,
+): { nodes: MathNode[]; next: number } | null {
   const at = skipSpaces(src, start);
   if (at >= src.length) return null;
   if (src[at] === "{") {
     const end = matchBrace(src, at);
     if (end === -1) return null;
-    return { nodes: parseMath(src.slice(at + 1, end)), next: end + 1 };
+    return { nodes: parseMath(src.slice(at + 1, end), options), next: end + 1 };
   }
   return { nodes: [{ kind: "text", text: src[at] }], next: at + 1 };
 }
@@ -62,13 +71,14 @@ function handleCommand(
   src: string,
   at: number,
   name: string | undefined,
+  options: MathParseOptions,
 ): { nodes: MathNode[]; next: number } | null {
   if (!name) return null;
   const after = at + 1 + name.length;
 
   if (name === "frac") {
-    const num = readArg(src, after);
-    const den = num ? readArg(src, num.next) : null;
+    const num = readArg(src, after, options);
+    const den = num ? readArg(src, num.next, options) : null;
     if (!num || !den) return null; // 残缺的 \frac 保持字面，不吞
     return { nodes: [{ kind: "frac", num: num.nodes, den: den.nodes }], next: den.next };
   }
@@ -79,24 +89,24 @@ function handleCommand(
     if (src[cursor] === "[") {
       const close = src.indexOf("]", cursor);
       if (close !== -1) {
-        index = parseMath(src.slice(cursor + 1, close));
+        index = parseMath(src.slice(cursor + 1, close), options);
         cursor = close + 1;
       }
     }
-    const radicand = readArg(src, cursor);
+    const radicand = readArg(src, cursor, options);
     if (!radicand) return null;
     return { nodes: [{ kind: "sqrt", radicand: radicand.nodes, index }], next: radicand.next };
   }
 
   if (UNWRAP_COMMANDS.has(name)) {
-    const arg = readArg(src, after);
+    const arg = readArg(src, after, options);
     if (!arg) return null;
     return { nodes: arg.nodes, next: arg.next };
   }
 
   const decorate = DECORATE_COMMANDS[name];
   if (decorate) {
-    const arg = readArg(src, after);
+    const arg = readArg(src, after, options);
     if (!arg) return null;
     return { nodes: [{ kind: "decorate", style: decorate, children: arg.nodes }], next: arg.next };
   }
@@ -126,7 +136,7 @@ function handleCommand(
   return null;
 }
 
-export function parseMath(src: string): MathNode[] {
+export function parseMath(src: string, options: MathParseOptions = {}): MathNode[] {
   const out: MathNode[] = [];
   let buf = "";
   let i = 0;
@@ -149,7 +159,7 @@ export function parseMath(src: string): MathNode[] {
 
     if (src[i] === "\\") {
       const name = rest.match(/^\\([a-zA-Z]+)/)?.[1];
-      const consumed = handleCommand(src, i, name);
+      const consumed = handleCommand(src, i, name, options);
       if (consumed) {
         flush();
         out.push(...consumed.nodes);
@@ -159,7 +169,7 @@ export function parseMath(src: string): MathNode[] {
     }
 
     if (src[i] === "^" || src[i] === "_") {
-      const arg = readArg(src, i + 1);
+      const arg = readArg(src, i + 1, options);
       if (arg) {
         flush();
         // 度数 30^{\circ}：\circ 已经是上标位的字符，再套一层 <sup> 会抬两次变成浮空小点
@@ -181,7 +191,7 @@ export function parseMath(src: string): MathNode[] {
     // 数学模式里 \\ 是换行、& 是对齐制表符，都不是字面内容
     if (rest.startsWith("\\\\")) {
       flush();
-      out.push({ kind: "text", text: "；" });
+      out.push({ kind: "text", text: options.rowSeparator ?? "；" });
       i += 2;
       continue;
     }

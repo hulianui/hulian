@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./center-pane.content";
 import { Breadcrumb, Segmented } from "@hulianui/ui";
 import type { BreadcrumbItem } from "@hulianui/ui";
 import { useKnowledge, NothingSelected } from "./knowledge-shell";
@@ -12,7 +13,7 @@ export function CenterPane() {
   if (!node) {
     return (
       <section className="min-h-0">
-        <NothingSelected hint="选择左侧文档查看 / 编辑，或选择文件夹浏览内容" />
+        <NothingSelected hint={copy("selectADocumentOnTheLeftToViewEditOr")} />
       </section>
     );
   }
@@ -20,7 +21,7 @@ export function CenterPane() {
   // 面包屑：瀚库根 + 从根到当前节点的链路（展示当前位置，最后一项为当前页）。
   const chain = v.breadcrumbOf(node.id);
   const crumbs: BreadcrumbItem[] = [
-    { label: "瀚库" },
+    { label: copy("hanku") },
     ...chain.map((n, i) => ({ label: n.name, current: i === chain.length - 1 })),
   ];
 
@@ -39,10 +40,10 @@ export function CenterPane() {
             value={viewMode}
             onValueChange={(val) => setViewMode(val as typeof viewMode)}
             items={[
-              { value: "file", label: "文件" },
-              { value: "doc", label: "说明文档" },
+              { value: "file", label: copy("file") },
+              { value: "doc", label: copy("documentation") },
             ]}
-            aria-label="中栏视图模式"
+            aria-label={copy("middleColumnViewMode")}
           />
         )}
       </div>

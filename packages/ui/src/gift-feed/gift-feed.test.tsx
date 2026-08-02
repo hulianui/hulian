@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
 import { GiftFeed } from "./gift-feed";
 import type { GiftEvent } from "./gift-feed.types";
+import { ConfigProvider, enUS } from "../config";
 
 afterEach(cleanup);
 
@@ -16,6 +17,7 @@ describe("GiftFeed", () => {
   it("渲染礼物横幅与连击数", () => {
     const { getByText } = render(<GiftFeed events={[mk("a", 3)]} />);
     expect(getByText("土豪哥")).toBeTruthy();
+    expect(getByText(/送出 火箭/)).toBeTruthy();
     expect(getByText("×3")).toBeTruthy();
   });
 
@@ -42,5 +44,22 @@ describe("GiftFeed", () => {
   it("pointer-events-none 不挡底层交互", () => {
     const { container } = render(<GiftFeed events={[]} />);
     expect(container.firstElementChild?.className).toContain("pointer-events-none");
+  });
+
+  it("ConfigProvider locale=enUS localizes the gift action", () => {
+    const event: GiftEvent = {
+      id: "english",
+      user: { name: "Alex" },
+      gift: { name: "Rocket", icon: "🚀" },
+      combo: 1,
+    };
+    const { getByText, queryByText } = render(
+      <ConfigProvider locale={enUS}>
+        <GiftFeed events={[event]} />
+      </ConfigProvider>,
+    );
+
+    expect(getByText(/sent Rocket/)).toBeTruthy();
+    expect(queryByText(/送出/)).toBeNull();
   });
 });

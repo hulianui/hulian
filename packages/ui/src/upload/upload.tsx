@@ -18,6 +18,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { UploadFile, UploadProps, UploadRejection } from "./upload.types";
 
@@ -42,7 +44,11 @@ export function matchesAccept(file: File, accept?: string): boolean {
 }
 
 /** 把 activeId 移到 overId 的位置，返回新数组（不改原数组）；id 不存在或原地则原样返回。 */
-export function moveUploadFile(files: UploadFile[], activeId: string, overId: string): UploadFile[] {
+export function moveUploadFile(
+  files: UploadFile[],
+  activeId: string,
+  overId: string,
+): UploadFile[] {
   const from = files.findIndex((f) => f.id === activeId);
   const to = files.findIndex((f) => f.id === overId);
   if (from < 0 || to < 0 || from === to) return files;
@@ -74,6 +80,14 @@ interface RowProps {
 
 /** 行内容（无 hook，静态行与可拖行共用）。 */
 function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
+  const locale = useComponentLocale().upload ?? {
+    dropLabel: "点击或拖拽文件到此处",
+    buttonLabel: "选择文件",
+    progress: (name) => `${name} 上传进度`,
+    remove: (name) => `移除 ${name}`,
+    reorder: (name) => `拖拽排序 ${name}`,
+    selected: (count, limit) => `已选 ${count}/${limit}`,
+  };
   const dot = STATUS_DOT[f.status ?? "ready"];
   const preview = renderPreview?.(f);
   const pct = f.progress == null ? 0 : Math.min(100, Math.max(0, f.progress));
@@ -85,7 +99,10 @@ function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
         <span className="relative size-10 shrink-0 overflow-hidden rounded-[min(var(--radius),0.375rem)] border border-hairline bg-surface-hover [&_img]:size-full [&_img]:object-cover">
           {preview}
           <span
-            className={cn("absolute bottom-0.5 right-0.5 size-2 rounded-full ring-2 ring-surface", dot)}
+            className={cn(
+              "absolute bottom-0.5 right-0.5 size-2 rounded-full ring-2 ring-surface",
+              dot,
+            )}
             aria-hidden
           />
         </span>
@@ -98,7 +115,7 @@ function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
           <span className="mt-1 flex items-center gap-2">
             <span
               role="progressbar"
-              aria-label={`${f.name} 上传进度`}
+              aria-label={locale.progress(f.name)}
               aria-valuenow={Math.round(pct)}
               aria-valuemin={0}
               aria-valuemax={100}
@@ -114,17 +131,26 @@ function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
         ) : f.status === "error" && f.error ? (
           <span className="mt-0.5 block text-xs text-danger">{f.error}</span>
         ) : (
-          f.size != null && <span className="mt-0.5 block text-xs text-muted">{formatBytes(f.size)}</span>
+          f.size != null && (
+            <span className="mt-0.5 block text-xs text-muted">{formatBytes(f.size)}</span>
+          )
         )}
       </span>
       {onRemove && (
         <button
           type="button"
           onClick={() => onRemove(f.id)}
-          aria-label={`移除 ${f.name}`}
+          aria-label={locale.remove(f.name)}
           className="shrink-0 rounded-[min(var(--radius),0.375rem)] p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+          <svg
+            viewBox="0 0 16 16"
+            className="size-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.6}
+            aria-hidden
+          >
             <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
           </svg>
         </button>
@@ -143,7 +169,23 @@ function StaticRow(props: RowProps) {
 
 /** 可拖调序的行：手柄式 activator（行内有移除按钮，整行可拖会吞掉点击）。 */
 function SortableRow(props: RowProps) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
+  const locale = useComponentLocale().upload ?? {
+    dropLabel: "点击或拖拽文件到此处",
+    buttonLabel: "选择文件",
+    progress: (name) => `${name} 上传进度`,
+    remove: (name) => `移除 ${name}`,
+    reorder: (name) => `拖拽排序 ${name}`,
+    selected: (count, limit) => `已选 ${count}/${limit}`,
+  };
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: props.file.id,
   });
 
@@ -151,14 +193,18 @@ function SortableRow(props: RowProps) {
     <li
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform), transition }}
-      className={cn(ROW_CLASS, "select-none", isDragging && "relative z-10 shadow-lg ring-1 ring-border")}
+      className={cn(
+        ROW_CLASS,
+        "select-none",
+        isDragging && "relative z-10 shadow-lg ring-1 ring-border",
+      )}
     >
       <button
         type="button"
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
-        aria-label={`拖拽排序 ${props.file.name}`}
+        aria-label={locale.reorder(props.file.name)}
         className="-ml-1 shrink-0 cursor-grab touch-none rounded text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
       >
         <GripVertical className="size-4" aria-hidden />
@@ -182,12 +228,22 @@ export function Upload({
   onSelect,
   onReject,
   onRemove,
-  label = "点击或拖拽文件到此处",
+  label,
   hint,
-  buttonLabel = "选择文件",
+  buttonLabel,
   children,
   className,
 }: UploadProps) {
+  const locale = useComponentLocale().upload ?? {
+    dropLabel: "点击或拖拽文件到此处",
+    buttonLabel: "选择文件",
+    progress: (name) => `${name} 上传进度`,
+    remove: (name) => `移除 ${name}`,
+    reorder: (name) => `拖拽排序 ${name}`,
+    selected: (count, limit) => `已选 ${count}/${limit}`,
+  };
+  const resolvedLabel = label ?? locale.dropLabel;
+  const resolvedButtonLabel = buttonLabel ?? locale.buttonLabel;
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const listId = useId();
@@ -272,9 +328,7 @@ export function Upload({
     );
 
   const counter = limit != null && (
-    <div className="mt-2 text-xs text-muted">
-      已选 {count}/{limit}
-    </div>
+    <div className="mt-2 text-xs text-muted">{locale.selected(count, limit)}</div>
   );
 
   if (variant === "button") {
@@ -287,10 +341,17 @@ export function Upload({
           onClick={openDialog}
           className="inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-4 text-sm font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50"
         >
-          <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+          <svg
+            viewBox="0 0 20 20"
+            className="size-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.6}
+            aria-hidden
+          >
             <path d="M10 13V4M6 8l4-4 4 4M4 15h12" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          {buttonLabel}
+          {resolvedButtonLabel}
         </button>
         {fileList}
         {counter}
@@ -327,16 +388,29 @@ export function Upload({
         className={cn(
           "flex flex-col items-center justify-center gap-2 rounded-[var(--radius)] border border-dashed px-6 py-8 text-center outline-none transition-colors",
           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-          dragging ? "border-primary bg-primary/5" : "border-border bg-surface hover:bg-surface-hover",
+          dragging
+            ? "border-primary bg-primary/5"
+            : "border-border bg-surface hover:bg-surface-hover",
           blocked && "pointer-events-none opacity-50",
         )}
       >
         {children ?? (
           <>
-            <svg viewBox="0 0 24 24" className="size-7 text-muted" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
-              <path d="M12 16V5M7 10l5-5 5 5M4 19h16" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              viewBox="0 0 24 24"
+              className="size-7 text-muted"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.6}
+              aria-hidden
+            >
+              <path
+                d="M12 16V5M7 10l5-5 5 5M4 19h16"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
-            <div className="text-sm font-medium text-foreground">{label}</div>
+            <div className="text-sm font-medium text-foreground">{resolvedLabel}</div>
             {hint && (
               <div id={`${listId}-hint`} className="text-xs text-muted">
                 {hint}

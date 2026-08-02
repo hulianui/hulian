@@ -7,8 +7,13 @@ import { Tag } from "../tag";
 import { Button } from "../button";
 import { Textarea } from "../textarea";
 import { CodeDiff } from "../code-diff";
+import { useComponentLocale } from "../config/locale-context";
 import { severityStyle } from "./code-review-thread.severity";
-import type { CodeReviewThreadProps, ReviewComment, ReviewThreadStatus } from "./code-review-thread.types";
+import type {
+  CodeReviewThreadProps,
+  ReviewComment,
+  ReviewThreadStatus,
+} from "./code-review-thread.types";
 
 // 代码审查评论线程：行锚定批注卡。可塞进 CodeDiff 的 annotations.content 槽，也可独立列用。
 // severity 左边色条 + AI/人类作者 + 内嵌建议修改 diff(可采纳) + 回复 + 标记已解决/误报 + 折叠。
@@ -17,14 +22,21 @@ import type { CodeReviewThreadProps, ReviewComment, ReviewThreadStatus } from ".
 function CommentRow({
   c,
   onAdoptSuggestion,
+  labels,
 }: {
   c: ReviewComment;
   onAdoptSuggestion?: (id: string) => void;
+  labels: NonNullable<ReturnType<typeof useComponentLocale>["codeReviewThread"]>;
 }) {
-  const sev = severityStyle(c.severity);
+  const sev = severityStyle(c.severity, labels.severities);
   return (
     <div className="flex gap-3">
-      <Avatar size="sm" src={c.author.avatar} alt={c.author.name} fallback={c.author.name.slice(0, 1)} />
+      <Avatar
+        size="sm"
+        src={c.author.avatar}
+        alt={c.author.name}
+        fallback={c.author.name.slice(0, 1)}
+      />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <span className="font-medium text-foreground">{c.author.name}</span>
@@ -43,14 +55,14 @@ function CommentRow({
         <div className="mt-1 text-sm text-foreground">{c.body}</div>
         {c.suggestion && (
           <div className="mt-2 space-y-1">
-            <div className="text-xs text-muted">建议修改</div>
+            <div className="text-xs text-muted">{labels.suggestedChange}</div>
             <CodeDiff oldText={c.suggestion.oldText ?? ""} newText={c.suggestion.newText} />
             <Button
               variant="outline"
               size="sm"
               onClick={onAdoptSuggestion ? () => onAdoptSuggestion(c.id) : undefined}
             >
-              <Check className="size-3.5" /> 采纳建议
+              <Check className="size-3.5" /> {labels.adoptSuggestion}
             </Button>
           </div>
         )}
@@ -71,6 +83,18 @@ export function CodeReviewThread({
   onCollapsedChange,
   className,
 }: CodeReviewThreadProps) {
+  const labels = useComponentLocale().codeReviewThread ?? {
+    suggestedChange: "建议修改",
+    adoptSuggestion: "采纳建议",
+    commentCount: (count: number) => `${count} 条批注`,
+    resolved: "已解决",
+    falsePositive: "误报",
+    markResolved: "标记已解决",
+    reopen: "重新打开",
+    replyPlaceholder: "回复这条批注…",
+    reply: "回复",
+    severities: { critical: "严重", major: "重要", minor: "次要", info: "提示" },
+  };
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
   const [internalStatus, setInternalStatus] = useState<ReviewThreadStatus>("open");
   const [reply, setReply] = useState("");
@@ -78,7 +102,7 @@ export function CodeReviewThread({
   const isCollapsed = collapsed ?? internalCollapsed;
   const curStatus = status ?? internalStatus;
   const first = comments[0];
-  const sev = severityStyle(first?.severity);
+  const sev = severityStyle(first?.severity, labels.severities);
 
   const setCollapsed = (v: boolean) => {
     setInternalCollapsed(v);
@@ -96,33 +120,52 @@ export function CodeReviewThread({
   };
 
   return (
-    <div className={cn("rounded-[var(--radius)] border border-l-4 border-border bg-surface", sev.border, className)}>
+    <div
+      className={cn(
+        "rounded-[var(--radius)] border border-l-4 border-border bg-surface",
+        sev.border,
+        className,
+      )}
+    >
       <div className="flex items-center justify-between gap-2 px-3 py-2">
         <button
           type="button"
           onClick={() => setCollapsed(!isCollapsed)}
           className="flex min-w-0 items-center gap-1 text-xs text-muted hover:text-foreground"
         >
-          {isCollapsed ? <ChevronRight className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+          {isCollapsed ? (
+            <ChevronRight className="size-3.5" />
+          ) : (
+            <ChevronDown className="size-3.5" />
+          )}
           <span className="truncate">
-            {comments.length} 条批注{first?.author ? ` · ${first.author.name}` : ""}
+            {labels.commentCount(comments.length)}
+            {first?.author ? ` · ${first.author.name}` : ""}
           </span>
         </button>
         <div className="flex shrink-0 items-center gap-1.5">
-          {curStatus === "resolved" && <Tag tone="success" size="sm" dot>已解决</Tag>}
-          {curStatus === "wontfix" && <Tag tone="neutral" size="sm">误报</Tag>}
+          {curStatus === "resolved" && (
+            <Tag tone="success" size="sm" dot>
+              {labels.resolved}
+            </Tag>
+          )}
+          {curStatus === "wontfix" && (
+            <Tag tone="neutral" size="sm">
+              {labels.falsePositive}
+            </Tag>
+          )}
           {curStatus === "open" ? (
             <>
               <Button variant="ghost" size="sm" onClick={() => changeStatus("resolved")}>
-                标记已解决
+                {labels.markResolved}
               </Button>
               <Button variant="ghost" size="sm" onClick={() => changeStatus("wontfix")}>
-                误报
+                {labels.falsePositive}
               </Button>
             </>
           ) : (
             <Button variant="ghost" size="sm" onClick={() => changeStatus("open")}>
-              重新打开
+              {labels.reopen}
             </Button>
           )}
         </div>
@@ -131,20 +174,20 @@ export function CodeReviewThread({
       {!isCollapsed && (
         <div className="space-y-4 border-t border-border px-3 py-3">
           {comments.map((c) => (
-            <CommentRow key={c.id} c={c} onAdoptSuggestion={onAdoptSuggestion} />
+            <CommentRow key={c.id} c={c} onAdoptSuggestion={onAdoptSuggestion} labels={labels} />
           ))}
           {replyable && (
             <div className="flex flex-col gap-2">
               <Textarea
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
-                placeholder="回复这条批注…"
+                placeholder={labels.replyPlaceholder}
                 rows={2}
                 autoResize
               />
               <div className="flex justify-end">
                 <Button size="sm" onClick={submitReply}>
-                  回复
+                  {labels.reply}
                 </Button>
               </div>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import type { LiveProductCardProps } from "./live-product-card.types";
 
 function fmt(n: number): string {
@@ -22,6 +23,11 @@ export function LiveProductCard({
   onClick,
   className,
 }: LiveProductCardProps) {
+  const labels = useComponentLocale().liveProductCard ?? {
+    presenting: "讲解中",
+    sold: (count: number) => `已售 ${count}`,
+    remaining: (count: number) => `仅剩 ${count}`,
+  };
   const isCard = layout === "card";
 
   const Price = (
@@ -40,7 +46,12 @@ export function LiveProductCard({
   );
 
   const Thumb = (
-    <div className={cn("relative shrink-0 overflow-hidden rounded-[var(--radius)]", isCard ? "aspect-square w-full" : "size-16")}>
+    <div
+      className={cn(
+        "relative shrink-0 overflow-hidden rounded-[var(--radius)]",
+        isCard ? "aspect-square w-full" : "size-16",
+      )}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={image} alt="" className="size-full object-cover" />
       {index != null && (
@@ -51,7 +62,7 @@ export function LiveProductCard({
       {explaining && (
         <span className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-1 bg-danger/90 py-0.5 text-[10px] font-medium text-danger-foreground">
           <span className="size-1 animate-pulse rounded-full bg-white" />
-          讲解中
+          {labels.presenting}
         </span>
       )}
     </div>
@@ -72,7 +83,9 @@ export function LiveProductCard({
       <div className={cn("min-w-0 flex-1", isCard && "w-full")}>
         <div className="flex items-start gap-1">
           {tag && (
-            <span className="shrink-0 rounded bg-danger/15 px-1 text-[10px] font-medium leading-4 text-danger">{tag}</span>
+            <span className="shrink-0 rounded bg-danger/15 px-1 text-[10px] font-medium leading-4 text-danger">
+              {tag}
+            </span>
           )}
           <div className="line-clamp-2 text-sm leading-snug">{title}</div>
         </div>
@@ -81,9 +94,9 @@ export function LiveProductCard({
             {Price}
             {(stock != null || sold != null) && (
               <div className="mt-0.5 text-[11px] text-muted">
-                {sold != null && <span>已售 {sold}</span>}
+                {sold != null && <span>{labels.sold(sold)}</span>}
                 {sold != null && stock != null && <span> · </span>}
-                {stock != null && <span>仅剩 {stock}</span>}
+                {stock != null && <span>{labels.remaining(stock)}</span>}
               </div>
             )}
           </div>

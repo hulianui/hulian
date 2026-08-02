@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Check, Layers, Plus, X } from "lucide-react";
@@ -26,7 +28,7 @@ const CAP_KEYS: Capability[] = ["chat", "reason", "vision", "function", "longCon
 
 // 价位段（按 input 单价 USD / 1M）。
 const PRICE_BANDS = [
-  { value: "all", label: "全部价位", test: () => true },
+  { value: "all", label: copy("allPriceRanges"), test: () => true },
   { value: "low", label: "≤ $1", test: (m: ModelMeta) => m.inPrice <= 1 },
   { value: "mid", label: "$1–3", test: (m: ModelMeta) => m.inPrice > 1 && m.inPrice <= 3 },
   { value: "high", label: "> $3", test: (m: ModelMeta) => m.inPrice > 3 },
@@ -58,7 +60,7 @@ function curlSnippet(modelId: string): string {
     `  -H "Content-Type: application/json" \\`,
     `  -d '{`,
     `    "model": "${modelId}",`,
-    `    "messages": [{ "role": "user", "content": "你好，瀚枢！" }]`,
+    copy("messagesRoleUserContentHelloHanhub"),
     `  }'`,
   ].join("\n");
 }
@@ -73,7 +75,7 @@ function pythonSnippet(modelId: string): string {
     `)`,
     `resp = client.chat.completions.create(`,
     `    model="${modelId}",`,
-    `    messages=[{"role": "user", "content": "你好，瀚枢！"}],`,
+    copy("messagesRoleUserContentHelloHanhub2"),
     `)`,
     `print(resp.choices[0].message.content)`,
   ].join("\n");
@@ -120,7 +122,7 @@ export default function ModelsPage() {
     key: m.id,
     title: m.name,
     highlight: m.id === bestId,
-    badge: m.id === bestId ? "推荐" : undefined,
+    badge: m.id === bestId ? copy("recommended") : undefined,
     header: (
       <div className="flex items-center gap-2">
         <ProviderLogo providerId={m.provider} size={28} />
@@ -136,15 +138,15 @@ export default function ModelsPage() {
     Object.fromEntries(compareModels.map((m) => [m.id, fn(m)]));
 
   const rows: PricingRow[] = [
-    { key: "in", label: "输入价 / 1M", values: cell((m) => <span className="tabular-nums">{formatPrice(m.inPrice)}</span>) },
-    { key: "out", label: "输出价 / 1M", values: cell((m) => <span className="tabular-nums">{formatPrice(m.outPrice)}</span>) },
-    { key: "ctx", label: "上下文窗口", values: cell((m) => <span className="tabular-nums">{fmtContext(m.context)}</span>) },
-    { key: "max", label: "最大输出", values: cell((m) => <span className="tabular-nums">{fmtContext(m.maxOutput)}</span>) },
-    { key: "rpm", label: "限速 RPM", values: cell((m) => <span className="tabular-nums">{m.rpm.toLocaleString()}</span>) },
-    { key: "bench", label: "基准分", values: cell((m) => <span className="tabular-nums">{m.benchmark}</span>) },
+    { key: "in", label: copy("inputPriceM"), values: cell((m) => <span className="tabular-nums">{formatPrice(m.inPrice)}</span>) },
+    { key: "out", label: copy("outputPriceM"), values: cell((m) => <span className="tabular-nums">{formatPrice(m.outPrice)}</span>) },
+    { key: "ctx", label: copy("contextWindow"), values: cell((m) => <span className="tabular-nums">{fmtContext(m.context)}</span>) },
+    { key: "max", label: copy("maximumOutput"), values: cell((m) => <span className="tabular-nums">{fmtContext(m.maxOutput)}</span>) },
+    { key: "rpm", label: copy("speedLimitRpm"), values: cell((m) => <span className="tabular-nums">{m.rpm.toLocaleString()}</span>) },
+    { key: "bench", label: copy("baseScore"), values: cell((m) => <span className="tabular-nums">{m.benchmark}</span>) },
     {
       key: "markup",
-      label: "网关倍率",
+      label: copy("gatewayMagnification"),
       values: cell((m) => <span className="tabular-nums">×{m.markup.toFixed(2)}</span>),
     },
     ...CAP_KEYS.map((c) => ({
@@ -152,9 +154,9 @@ export default function ModelsPage() {
       label: capabilityLabel[c],
       values: cell((m) =>
         m.capabilities.includes(c) ? (
-          <Check className="mx-auto size-4 text-success" aria-label="支持" />
+          <Check className="mx-auto size-4 text-success" aria-label={copy("support")} />
         ) : (
-          <X className="mx-auto size-4 text-muted/50" aria-label="不支持" />
+          <X className="mx-auto size-4 text-muted/50" aria-label={copy("notSupported")} />
         ),
       ),
     })),
@@ -163,38 +165,38 @@ export default function ModelsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">模型市场</h1>
-        <p className="text-sm text-muted">{models.length} 款上游模型 · 一个 base_url 全部路由 · OpenAI 兼容协议</p>
+        <h1 className="text-xl font-semibold text-foreground">{copy("modelMarket")}</h1>
+        <p className="text-sm text-muted">{models.length}{copy("upstreamModelOneBaseUrlForAll")}</p>
       </div>
 
       {/* 筛选条 */}
       <Card>
         <CardBody className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="w-16 shrink-0 text-sm text-muted">厂商</span>
+            <span className="w-16 shrink-0 text-sm text-muted">{copy("manufacturer")}</span>
             <Segmented
               size="sm"
               value={provider}
               onValueChange={setProvider}
               items={[
-                { value: "all", label: "全部" },
+                { value: "all", label: copy("all") },
                 ...providers.map((p) => ({ value: p.id, label: p.name })),
               ]}
-              aria-label="按厂商筛选"
+              aria-label={copy("filterByManufacturer")}
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="w-16 shrink-0 text-sm text-muted">价位</span>
+            <span className="w-16 shrink-0 text-sm text-muted">{copy("price")}</span>
             <Segmented
               size="sm"
               value={band}
               onValueChange={setBand}
               items={PRICE_BANDS.map((b) => ({ value: b.value, label: b.label }))}
-              aria-label="按价位筛选"
+              aria-label={copy("filterByPrice")}
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="w-16 shrink-0 text-sm text-muted">能力</span>
+            <span className="w-16 shrink-0 text-sm text-muted">{copy("ability")}</span>
             {CAP_KEYS.map((c) => {
               const on = caps.includes(c);
               return (
@@ -240,11 +242,11 @@ export default function ModelsPage() {
               <CardBody className="flex flex-col gap-2.5">
                 <div className="flex items-center gap-4 text-sm">
                   <div>
-                    <span className="text-muted">输入 </span>
+                    <span className="text-muted">{copy("input")}</span>
                     <span className="font-medium tabular-nums text-foreground">{formatPrice(m.inPrice)}</span>
                   </div>
                   <div>
-                    <span className="text-muted">输出 </span>
+                    <span className="text-muted">{copy("output")}</span>
                     <span className="font-medium tabular-nums text-foreground">{formatPrice(m.outPrice)}</span>
                   </div>
                   <span className="text-xs text-muted">/ 1M tokens</span>
@@ -256,8 +258,7 @@ export default function ModelsPage() {
                     </Tag>
                   ))}
                 </div>
-                <div className="text-xs text-muted">
-                  基准分 <span className="font-medium tabular-nums text-foreground">{m.benchmark}</span> · 限速{" "}
+                <div className="text-xs text-muted">{copy("baseScore2")}<span className="font-medium tabular-nums text-foreground">{m.benchmark}</span>{copy("speedLimit")}{" "}
                   <span className="tabular-nums">{m.rpm.toLocaleString()}</span> RPM
                 </div>
               </CardBody>
@@ -268,18 +269,16 @@ export default function ModelsPage() {
                   onClick={() => toggleSelect(m.id)}
                 >
                   {inCompare ? <Check className="size-4" /> : <Plus className="size-4" />}
-                  {inCompare ? "已加入对比" : "加入对比"}
+                  {inCompare ? copy("addedToComparison") : copy("addToComparison")}
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => setDetail(m)}>
-                  详情
-                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setDetail(m)}>{copy("details")}</Button>
               </CardFooter>
             </Card>
           );
         })}
         {filtered.length === 0 && (
           <Card className="sm:col-span-2 lg:col-span-3">
-            <CardBody className="py-10 text-center text-sm text-muted">没有符合当前筛选的模型，试试放宽条件。</CardBody>
+            <CardBody className="py-10 text-center text-sm text-muted">{copy("thereAreNoModelsThatMatchThe")}</CardBody>
           </Card>
         )}
       </div>
@@ -288,14 +287,12 @@ export default function ModelsPage() {
       <Card>
         <CardHeader className="flex items-center justify-between">
           <span className="flex items-center gap-2 font-medium text-foreground">
-            <Layers className="size-4" />
-            定价对比矩阵
-          </span>
-          <span className="text-xs text-muted">已选 {compareModels.length} 款 · 「推荐」= 当前对比中性价比最优</span>
+            <Layers className="size-4" />{copy("pricingComparisonMatrix")}</span>
+          <span className="text-xs text-muted">{copy("selected")}{compareModels.length}{copy("modelRecommendedTheBestValueForMoney")}</span>
         </CardHeader>
         <CardBody>
           {compareModels.length === 0 ? (
-            <div className="py-8 text-center text-sm text-muted">从上方模型卡点「加入对比」，在此横向对照定价与能力。</div>
+            <div className="py-8 text-center text-sm text-muted">{copy("clickAddToCompareFromTheModel")}</div>
           ) : (
             <PricingTable columns={columns} rows={rows} />
           )}
@@ -308,7 +305,7 @@ export default function ModelsPage() {
           <DrawerContent
             side="right"
             title={detail.name}
-            description={`${providerOf(detail.provider).name} · 接入 https://api.hanhub.cn/v1`}
+            description={copy("valueAccessHttpsApiHanhubCnV1", providerOf(detail.provider).name)}
             className="w-[clamp(360px,42vw,560px)]"
             footer={
               <div className="flex justify-end gap-2">
@@ -318,11 +315,9 @@ export default function ModelsPage() {
                     toggleSelect(detail.id);
                   }}
                 >
-                  {selected.includes(detail.id) ? "移出对比" : "加入对比"}
+                  {selected.includes(detail.id) ? copy("moveOutOfComparison") : copy("addToComparison2")}
                 </Button>
-                <Button variant="ghost" onClick={() => setDetail(null)}>
-                  关闭
-                </Button>
+                <Button variant="ghost" onClick={() => setDetail(null)}>{copy("close")}</Button>
               </div>
             }
           >
@@ -331,27 +326,26 @@ export default function ModelsPage() {
                 <ProviderLogo providerId={detail.provider} size={44} />
                 <div>
                   <div className="text-base font-semibold text-foreground">{detail.name}</div>
-                  <div className="text-xs text-muted">
-                    上下文 {fmtContext(detail.context)} · 最大输出 {fmtContext(detail.maxOutput)}
+                  <div className="text-xs text-muted">{copy("context")}{fmtContext(detail.context)}{copy("maximumOutput2")}{fmtContext(detail.maxOutput)}
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">输入价 / 1M</div>
+                  <div className="text-xs text-muted">{copy("inputPriceM2")}</div>
                   <div className="font-medium tabular-nums text-foreground">{formatPrice(detail.inPrice)}</div>
                 </div>
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">输出价 / 1M</div>
+                  <div className="text-xs text-muted">{copy("outputPriceM2")}</div>
                   <div className="font-medium tabular-nums text-foreground">{formatPrice(detail.outPrice)}</div>
                 </div>
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">限速</div>
+                  <div className="text-xs text-muted">{copy("speedLimit2")}</div>
                   <div className="font-medium tabular-nums text-foreground">{detail.rpm.toLocaleString()} RPM</div>
                 </div>
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">网关倍率 / 基准分</div>
+                  <div className="text-xs text-muted">{copy("gatewayMagnificationBaseScore")}</div>
                   <div className="font-medium tabular-nums text-foreground">
                     ×{detail.markup.toFixed(2)} · {detail.benchmark}
                   </div>
@@ -359,7 +353,7 @@ export default function ModelsPage() {
               </div>
 
               <div>
-                <div className="mb-1.5 text-sm font-medium text-foreground">能力</div>
+                <div className="mb-1.5 text-sm font-medium text-foreground">{copy("ability2")}</div>
                 <div className="flex flex-wrap gap-1.5">
                   {detail.capabilities.map((c) => (
                     <Tag key={c} size="sm" variant="soft" tone="brand">
@@ -369,17 +363,15 @@ export default function ModelsPage() {
                 </div>
               </div>
 
-              <div className="text-sm text-muted">
-                计费说明：按 token 用量计价，最终费用 =（输入 token × 输入价 + 输出 token × 输出价）÷ 1M ×{" "}
-                <span className="tabular-nums text-foreground">{detail.markup.toFixed(2)}</span> 网关倍率。
-              </div>
+              <div className="text-sm text-muted">{copy("billingInstructionsPricingIsBasedOnToken")}{" "}
+                <span className="tabular-nums text-foreground">{detail.markup.toFixed(2)}</span>{copy("gatewayMagnification2")}</div>
 
               <Divider />
 
               <div className="flex flex-col gap-2">
-                <div className="text-sm font-medium text-foreground">接入示例 · cURL</div>
+                <div className="text-sm font-medium text-foreground">{copy("accessExampleCurl")}</div>
                 <CodeBlock code={curlSnippet(detail.id)} lang="bash" />
-                <div className="mt-1 text-sm font-medium text-foreground">接入示例 · Python</div>
+                <div className="mt-1 text-sm font-medium text-foreground">{copy("accessExamplePython")}</div>
                 <CodeBlock code={pythonSnippet(detail.id)} lang="python" />
               </div>
             </div>

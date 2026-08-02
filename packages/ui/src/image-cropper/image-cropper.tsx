@@ -2,6 +2,8 @@
 import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { Button } from "../button";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { Slider } from "../slider";
 import type { CropArea, CropOutputOptions, ImageCropperProps } from "./image-cropper.types";
@@ -61,11 +63,18 @@ export function ImageCropper({
   onCropped,
   onCancel,
   onError,
-  confirmLabel = "确认",
-  cancelLabel = "取消",
+  confirmLabel,
+  cancelLabel,
   cropAreaClassName,
   className,
 }: ImageCropperProps) {
+  const locale = useComponentLocale().imageCropper ?? {
+    confirm: "确认",
+    cancel: "取消",
+    zoom: "缩放",
+  };
+  const resolvedConfirmLabel = confirmLabel ?? locale.confirm;
+  const resolvedCancelLabel = cancelLabel ?? locale.cancel;
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [areaPixels, setAreaPixels] = useState<CropArea | null>(null);
@@ -117,19 +126,33 @@ export function ImageCropper({
       </div>
       {/* 缩放滑杆（触屏双指捏合等价的桌面/单指降级） */}
       <div className="flex items-center gap-3">
-        <svg viewBox="0 0 20 20" className="size-4 shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+        <svg
+          viewBox="0 0 20 20"
+          className="size-4 shrink-0 text-muted"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.6}
+          aria-hidden
+        >
           <circle cx="9" cy="9" r="6" />
           <path d="M13.5 13.5 17 17M7 9h4" strokeLinecap="round" />
         </svg>
         <Slider
-          aria-label="缩放"
+          aria-label={locale.zoom}
           min={1}
           max={maxZoom}
           step={0.01}
           value={zoom}
           onValueChange={(v) => setZoom(Array.isArray(v) ? v[0] : v)}
         />
-        <svg viewBox="0 0 20 20" className="size-4 shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+        <svg
+          viewBox="0 0 20 20"
+          className="size-4 shrink-0 text-muted"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.6}
+          aria-hidden
+        >
           <circle cx="9" cy="9" r="6" />
           <path d="M13.5 13.5 17 17M7 9h4M9 7v4" strokeLinecap="round" />
         </svg>
@@ -137,11 +160,11 @@ export function ImageCropper({
       <div className="flex items-center justify-end gap-2">
         {onCancel && (
           <Button variant="ghost" onClick={onCancel} disabled={exporting}>
-            {cancelLabel}
+            {resolvedCancelLabel}
           </Button>
         )}
         <Button onClick={confirm} loading={exporting} disabled={!areaPixels}>
-          {confirmLabel}
+          {resolvedConfirmLabel}
         </Button>
       </div>
     </div>

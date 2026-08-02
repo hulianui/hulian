@@ -1,10 +1,12 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Card, CardBody, DateRangePicker, ProTable, Stat, Tag, type ColumnDef } from "@hulianui/ui";
 import type { DateRangeValue } from "@hulianui/ui";
 import { orders as seed } from "../../_data/orders";
-import { orderStatusTone, yuan } from "../../_data/status";
+import { orderStatusLabel, orderStatusTone, yuan } from "../../_data/status";
 import type { Order, OrderStatus } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
 
@@ -14,12 +16,12 @@ const PAGE_SIZE = 10;
 const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "orderNo",
-    header: "订单号",
+    header: copy("orderNumber"),
     cell: ({ row }) => <span className="font-mono text-sm tabular-nums">{row.original.orderNo}</span>,
   },
   {
     accessorKey: "customerName",
-    header: "客户",
+    header: copy("customer"),
     cell: ({ row }) => (
       <Link href={`/demos/crm/customers/${row.original.customerId}`} className="hover:text-primary">
         {row.original.customerName}
@@ -28,20 +30,20 @@ const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "amount",
-    header: "金额",
+    header: copy("amount"),
     cell: ({ row }) => <span className="font-medium tabular-nums">{yuan(row.original.amount)}</span>,
   },
-  { accessorKey: "items", header: "商品数", cell: ({ row }) => `${row.original.items} 件` },
+  { accessorKey: "items", header: copy("numberOfItems"), cell: ({ row }) => copy("valueItems", row.original.items) },
   {
     accessorKey: "status",
-    header: "状态",
+    header: copy("status"),
     cell: ({ row }) => (
       <Tag tone={orderStatusTone[row.original.status]} size="sm" dot>
-        {row.original.status}
+        {orderStatusLabel[row.original.status]}
       </Tag>
     ),
   },
-  { accessorKey: "createdAt", header: "下单时间" },
+  { accessorKey: "createdAt", header: copy("orderTime") },
 ];
 
 export default function OrdersPage() {
@@ -79,10 +81,10 @@ export default function OrdersPage() {
   const done = rows.filter((o) => o.status === "已完成").length;
 
   const stats = [
-    { label: "订单总数", value: rows.length },
-    { label: "成交金额", value: yuan(revenue) },
-    { label: "待付款", value: pendingCount },
-    { label: "已完成", value: done },
+    { label: copy("totalNumberOfOrders"), value: rows.length },
+    { label: copy("transactionAmount"), value: yuan(revenue) },
+    { label: copy("pendingPayment3"), value: pendingCount },
+    { label: copy("completed4"), value: done },
   ];
 
   return (
@@ -98,23 +100,23 @@ export default function OrdersPage() {
       </div>
 
       <ProTable<Order>
-        title="订单列表"
+        title={copy("orderList")}
         columns={columns}
         data={paged}
         loading={loading}
         getRowId={(r) => r.id}
         search={{
           fields: [
-            { name: "keyword", label: "关键词", placeholder: "订单号 / 客户" },
+            { name: "keyword", label: copy("keywords"), placeholder: copy("orderNumberCustomer") },
             {
               name: "status",
-              label: "状态",
+              label: copy("status2"),
               type: "select",
-              options: [{ value: "", label: "全部" }, ...ORDER_STATUSES.map((s) => ({ value: s, label: s }))],
+              options: [{ value: "", label: copy("all") }, ...ORDER_STATUSES.map((s) => ({ value: s, label: orderStatusLabel[s] }))],
             },
             {
               name: "dateRange",
-              label: "下单日期",
+              label: copy("orderDate"),
               render: ({ value, onChange }) => (
                 <DateRangePicker
                   value={(value as DateRangeValue | null) ?? null}
@@ -123,7 +125,7 @@ export default function OrdersPage() {
                     setDateRange(range);
                     setPage(1);
                   }}
-                  placeholder={["开始日期", "结束日期"]}
+                  placeholder={[copy("startDate"), copy("endDate")]}
                 />
               ),
             },

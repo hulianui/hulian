@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { UserProfileBlock } from "../../blocks/_blocks/user-profile";
 import { ActivityTimelineBlock } from "../../blocks/_blocks/activity-timeline";
 import { ProductGridBlock } from "../../blocks/_blocks/product-grid";

@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { AgentCardBlock } from "../../blocks/_blocks/agent-card";
 import { ChatPanelBlock } from "../../blocks/_blocks/chat-panel";
 

@@ -3,6 +3,8 @@ import { render, fireEvent } from "@testing-library/react";
 import { severityStyle } from "./code-review-thread.severity";
 import { CodeReviewThread } from "./code-review-thread";
 import type { ReviewComment } from "./code-review-thread.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 const comments: ReviewComment[] = [
   {
@@ -70,5 +72,12 @@ describe("CodeReviewThread", () => {
     const { getByText } = render(<CodeReviewThread comments={comments} status="resolved" />);
     expect(getByText("已解决")).toBeTruthy();
     expect(getByText("重新打开")).toBeTruthy();
+  });
+
+  it("线程动作与严重度跟随 ConfigProvider", () => {
+    const { getByText, getByPlaceholderText } = render(<ConfigProvider locale={enUS}><CodeReviewThread comments={comments} /></ConfigProvider>);
+    expect(getByText("Critical")).toBeTruthy();
+    expect(getByText("Mark resolved")).toBeTruthy();
+    expect(getByPlaceholderText("Reply to this comment…")).toBeTruthy();
   });
 });

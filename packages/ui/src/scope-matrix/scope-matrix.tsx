@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ScopeMatrixProps } from "./scope-matrix.types";
 
@@ -42,6 +44,28 @@ function Bucket({
   validate: ScopeMatrixProps["validate"];
   placeholder: string;
 }) {
+  const locale = useComponentLocale().scopeMatrix ?? {
+    duplicate: "已存在相同模式",
+    count: (count) => `${count} 条`,
+    emptyAllow: "未设置（不启用白名单）",
+    empty: "未设置",
+    remove: (value) => `移除 ${value}`,
+    add: "添加",
+    allow: "允许",
+    deny: "禁止",
+    placeholder: "输入模式后回车",
+    allowHint: "留空表示不启用白名单，此时只受「禁止」约束",
+    denyHint: "命中即拒绝，优先级高于「允许」",
+    unrestricted: "当前未设置任何范围限制。",
+    denyOnly: (denyLabel, count) =>
+      `未启用白名单：除命中「${String(denyLabel)}」的 ${count} 条模式外，其余全部允许。`,
+    allowOnly: (allowLabel, count) =>
+      `仅允许命中「${String(allowLabel)}」的 ${count} 条模式，其余全部拒绝。`,
+    combined: (denyLabel, denyCount, allowLabel, allowCount) =>
+      `先看「${String(denyLabel)}」（${denyCount} 条）：命中即拒绝；未命中的再看「${String(
+        allowLabel,
+      )}」（${allowCount} 条），命中才允许。`,
+  };
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -49,7 +73,7 @@ function Bucket({
     const v = draft.trim();
     if (v === "") return;
     if (values.includes(v)) {
-      setError("已存在相同模式");
+      setError(locale.duplicate);
       return;
     }
     const err = validate?.(v) ?? null;
@@ -64,8 +88,7 @@ function Bucket({
 
   // 语义色：允许=success / 禁止=danger。用 chart-N 会让"禁止"渲染成
   // 一个没有危险含义的分类色，削弱它的警示作用。
-  const tone =
-    kind === "allow" ? "var(--color-success)" : "var(--color-danger)";
+  const tone = kind === "allow" ? "var(--color-success)" : "var(--color-danger)";
 
   return (
     <section
@@ -80,7 +103,7 @@ function Bucket({
         />
         <div className="flex items-center justify-between gap-2 pl-2">
           <span className="text-sm font-semibold text-foreground">{label}</span>
-          <span className="tabular-nums text-xs text-muted">{values.length} 条</span>
+          <span className="tabular-nums text-xs text-muted">{locale.count(values.length)}</span>
         </div>
         <p className="mt-0.5 pl-2 text-xs leading-relaxed text-muted">{hint}</p>
       </header>
@@ -88,7 +111,7 @@ function Bucket({
       <ul className="flex flex-1 flex-col gap-1.5 p-3">
         {values.length === 0 ? (
           <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-5 text-xs text-muted">
-            {kind === "allow" ? "未设置（不启用白名单）" : "未设置"}
+            {kind === "allow" ? locale.emptyAllow : locale.empty}
           </li>
         ) : (
           values.map((v) => (
@@ -96,11 +119,13 @@ function Bucket({
               key={v}
               className="flex items-center gap-2 rounded-[var(--radius)] border border-border bg-bg px-2.5 py-1.5"
             >
-              <code className="min-w-0 flex-1 break-all font-mono text-xs text-foreground">{v}</code>
+              <code className="min-w-0 flex-1 break-all font-mono text-xs text-foreground">
+                {v}
+              </code>
               {editable && (
                 <button
                   type="button"
-                  aria-label={`移除 ${v}`}
+                  aria-label={locale.remove(v)}
                   onClick={() => onRemove(v)}
                   className="shrink-0 rounded-[var(--radius)] px-1 text-xs text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 >
@@ -135,7 +160,7 @@ function Bucket({
               onClick={commit}
               className="shrink-0 rounded-[var(--radius)] border border-border px-2.5 py-1.5 text-xs text-foreground outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring"
             >
-              添加
+              {locale.add}
             </button>
           </div>
 
@@ -171,13 +196,38 @@ export function ScopeMatrix({
   suggestions = [],
   readOnly = false,
   validate,
-  allowLabel = "允许",
-  denyLabel = "禁止",
+  allowLabel,
+  denyLabel,
   allowHint,
   denyHint,
-  placeholder = "输入模式后回车",
+  placeholder,
   className,
 }: ScopeMatrixProps) {
+  const locale = useComponentLocale().scopeMatrix ?? {
+    duplicate: "已存在相同模式",
+    count: (count) => `${count} 条`,
+    emptyAllow: "未设置（不启用白名单）",
+    empty: "未设置",
+    remove: (value) => `移除 ${value}`,
+    add: "添加",
+    allow: "允许",
+    deny: "禁止",
+    placeholder: "输入模式后回车",
+    allowHint: "留空表示不启用白名单，此时只受「禁止」约束",
+    denyHint: "命中即拒绝，优先级高于「允许」",
+    unrestricted: "当前未设置任何范围限制。",
+    denyOnly: (denyLabel, count) =>
+      `未启用白名单：除命中「${String(denyLabel)}」的 ${count} 条模式外，其余全部允许。`,
+    allowOnly: (allowLabel, count) =>
+      `仅允许命中「${String(allowLabel)}」的 ${count} 条模式，其余全部拒绝。`,
+    combined: (denyLabel, denyCount, allowLabel, allowCount) =>
+      `先看「${String(denyLabel)}」（${denyCount} 条）：命中即拒绝；未命中的再看「${String(
+        allowLabel,
+      )}」（${allowCount} 条），命中才允许。`,
+  };
+  const resolvedAllowLabel = allowLabel ?? locale.allow;
+  const resolvedDenyLabel = denyLabel ?? locale.deny;
+  const resolvedPlaceholder = placeholder ?? locale.placeholder;
   const editable = !readOnly && onChange != null;
 
   const emit = (next: { allow: string[]; deny: string[] }) => onChange?.(next);
@@ -187,39 +237,39 @@ export function ScopeMatrix({
       <div className="flex flex-col gap-2 sm:flex-row">
         <Bucket
           kind="allow"
-          label={allowLabel}
-          hint={allowHint ?? "留空表示不启用白名单，此时只受「禁止」约束"}
+          label={resolvedAllowLabel}
+          hint={allowHint ?? locale.allowHint}
           values={allow}
           onAdd={(v) => emit({ allow: [...allow, v], deny })}
           onRemove={(v) => emit({ allow: allow.filter((x) => x !== v), deny })}
           suggestions={suggestions}
           editable={editable}
           validate={validate}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
         />
         <Bucket
           kind="deny"
-          label={denyLabel}
-          hint={denyHint ?? "命中即拒绝，优先级高于「允许」"}
+          label={resolvedDenyLabel}
+          hint={denyHint ?? locale.denyHint}
           values={deny}
           onAdd={(v) => emit({ allow, deny: [...deny, v] })}
           onRemove={(v) => emit({ allow, deny: deny.filter((x) => x !== v) })}
           suggestions={suggestions}
           editable={editable}
           validate={validate}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
         />
       </div>
 
       {/* 有效范围小结：这类配置最容易想错的就是空白名单与优先级，直接写出来。 */}
       <p className="rounded-[var(--radius)] bg-muted/50 px-3 py-2 text-xs leading-relaxed text-muted">
         {allow.length === 0 && deny.length === 0
-          ? "当前未设置任何范围限制。"
+          ? locale.unrestricted
           : allow.length === 0
-            ? `未启用白名单：除命中「${denyLabel}」的 ${deny.length} 条模式外，其余全部允许。`
-            : deny.length === 0
-              ? `仅允许命中「${allowLabel}」的 ${allow.length} 条模式，其余全部拒绝。`
-              : `先看「${denyLabel}」（${deny.length} 条）：命中即拒绝；未命中的再看「${allowLabel}」（${allow.length} 条），命中才允许。`}
+          ? locale.denyOnly(resolvedDenyLabel, deny.length)
+          : deny.length === 0
+          ? locale.allowOnly(resolvedAllowLabel, allow.length)
+          : locale.combined(resolvedDenyLabel, deny.length, resolvedAllowLabel, allow.length)}
       </p>
     </div>
   );

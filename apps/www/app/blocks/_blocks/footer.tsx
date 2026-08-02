@@ -1,15 +1,9 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  SocialButton,
-  Input,
-  Button,
-  Heading,
-  Text,
-  Divider,
-} from "@hulianui/ui";
+import { SocialButton, Input, Button, Heading, Text, Divider } from "@hulianui/ui";
 import { Cloud, Globe, ArrowRight } from "lucide-react";
 
 // 营销页脚区块 —— 自包含、可整段复制。深色克制风。
@@ -55,10 +49,10 @@ export function FooterBlock() {
               从 git push 到全球上线，把部署、弹性算力与端到端可观测收进同一个平台。
             </Text>
             <div className="mt-5 flex items-center gap-2">
-              <SocialButton provider="github" shape="icon" variant="outline" />
-              <SocialButton provider="x" shape="icon" variant="outline" />
-              <SocialButton provider="weibo" shape="icon" variant="outline" />
-              <SocialButton provider="wechat" shape="icon" variant="outline" />
+              <SocialButton provider="github" shape="icon" variant="outline" aria-label="GitHub" />
+              <SocialButton provider="x" shape="icon" variant="outline" aria-label="X" />
+              <SocialButton provider="weibo" shape="icon" variant="outline" aria-label="微博" />
+              <SocialButton provider="wechat" shape="icon" variant="outline" aria-label="微信" />
             </div>
           </div>
 

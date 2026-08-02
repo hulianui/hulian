@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./site-shell.content";
 
 import { useState, useCallback, type ReactNode } from "react";
 import Link from "next/link";
@@ -21,46 +22,47 @@ import {
 } from "@hulianui/ui";
 import { Cloud, Search, Rocket, BookOpen, CreditCard, Phone, Globe, Cpu, Activity } from "lucide-react";
 import { brand, navLinks, footerColumns } from "../_data/site";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
 // ⌘K 站内搜索数据（分组：页面 + 功能）。
 const COMMAND_GROUPS: CommandGroupData[] = [
   {
-    heading: "页面",
+    heading: copy("pages"),
     items: [
-      { value: "home", label: "首页", icon: <Globe className="size-4" />, description: "产品介绍与概览", keywords: "首页 home" },
-      { value: "pricing", label: "定价", icon: <CreditCard className="size-4" />, description: "套餐与价格对比", keywords: "定价 价格 套餐" },
-      { value: "contact", label: "联系我们", icon: <Phone className="size-4" />, description: "预约演示 · 获取报价", keywords: "联系 演示 销售" },
+      { value: "home", label: copy("home"), icon: <Globe className="size-4" />, description: copy("productIntroductionAndOverview"), keywords: copy("homeOverview") },
+      { value: "pricing", label: copy("pricing"), icon: <CreditCard className="size-4" />, description: copy("comparePlansAndPricing"), keywords: copy("pricingCostPlans") },
+      { value: "contact", label: copy("contactUs"), icon: <Phone className="size-4" />, description: copy("bookADemoGetAQuote"), keywords: copy("contactDemoSales") },
     ],
   },
   {
-    heading: "平台能力",
+    heading: copy("platformCapabilities"),
     items: [
-      { value: "deploy", label: "一键部署", icon: <Rocket className="size-4" />, keywords: "部署 git push" },
-      { value: "compute", label: "弹性算力", icon: <Cpu className="size-4" />, keywords: "算力 弹性 计费" },
-      { value: "observe", label: "端到端可观测", icon: <Activity className="size-4" />, keywords: "可观测 监控 日志 链路" },
+      { value: "deploy", label: copy("oneClickDeployment"), icon: <Rocket className="size-4" />, keywords: copy("deployGitPush") },
+      { value: "compute", label: copy("elasticCompute"), icon: <Cpu className="size-4" />, keywords: copy("computeScalingBilling") },
+      { value: "observe", label: copy("endToEndObservability"), icon: <Activity className="size-4" />, keywords: copy("observabilityMonitoringLogsTraces") },
     ],
   },
   {
-    heading: "资源",
+    heading: copy("resources"),
     items: [
-      { value: "docs", label: "文档中心", icon: <BookOpen className="size-4" />, keywords: "文档 API 指南" },
+      { value: "docs", label: copy("documentation"), icon: <BookOpen className="size-4" />, keywords: copy("documentationApiGuides") },
     ],
   },
 ];
 
 const PAGE_HREFS: Record<string, string> = {
-  home: "/demos/website",
-  pricing: "/demos/website/pricing",
-  contact: "/demos/website/contact",
-  deploy: "/demos/website#features",
-  compute: "/demos/website#features",
-  observe: "/demos/website#features",
-  docs: "/demos/website",
+  home: demoLocationHref("/demos/website"),
+  pricing: demoLocationHref("/demos/website/pricing"),
+  contact: demoLocationHref("/demos/website/contact"),
+  deploy: demoLocationHref("/demos/website#features"),
+  compute: demoLocationHref("/demos/website#features"),
+  observe: demoLocationHref("/demos/website#features"),
+  docs: demoLocationHref("/demos/website"),
 };
 
 function Logo() {
   return (
-    <Link href="/demos/website" className="flex items-center gap-2">
+    <Link href={demoHref("/demos/website")} className="flex items-center gap-2">
       <span className="flex size-8 items-center justify-center rounded-[var(--radius)] bg-primary text-primary-foreground">
         <Cloud className="size-5" aria-hidden />
       </span>
@@ -114,10 +116,10 @@ function SiteNavbar() {
               type="button"
               onClick={() => setCmdOpen(true)}
               className="flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-2.5 text-sm text-muted transition-colors hover:border-border-hover hover:text-foreground"
-              aria-label="打开搜索（⌘K）"
+              aria-label={copy("openSearchK")}
             >
               <Search className="size-3.5" aria-hidden />
-              <span className="text-xs">搜索</span>
+              <span className="text-xs">{copy("search")}</span>
               <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted">⌘K</span>
             </button>
           </li>
@@ -128,14 +130,16 @@ function SiteNavbar() {
             <Button
               variant="ghost"
               size="sm"
-              render={<Link href="/demos/website/contact" />}
+              render={<Link href={demoHref("/demos/website/contact")} />}
             >
-              预约演示
+
+              {copy("bookADemo")}
             </Button>
           </li>
           <li className="hidden md:flex">
-            <Button size="sm" render={<Link href="/demos/website/contact" />}>
-              免费开始
+            <Button size="sm" render={<Link href={demoHref("/demos/website/contact")} />}>
+
+              {copy("startForFree")}
             </Button>
           </li>
           <li className="flex md:hidden">
@@ -149,10 +153,10 @@ function SiteNavbar() {
         open={cmdOpen}
         onOpenChange={setCmdOpen}
         groups={COMMAND_GROUPS}
-        placeholder="搜索页面或功能…"
+        placeholder={copy("searchPagesOrFeatures")}
         shortcut
         onSelectItem={handleSelectItem}
-        emptyMessage="未找到相关内容"
+        emptyMessage={copy("noMatchingResults")}
       />
 
       {open && (
@@ -172,9 +176,10 @@ function SiteNavbar() {
             <Button
               size="sm"
               className="w-full"
-              render={<Link href="/demos/website/contact" onClick={() => setOpen(false)} />}
+              render={<Link href={demoHref("/demos/website/contact")} onClick={() => setOpen(false)} />}
             >
-              免费开始
+
+              {copy("startForFree")}
             </Button>
           </Stack>
         </div>
@@ -225,17 +230,20 @@ function SiteFooter() {
           className="text-sm text-muted"
         >
           <Text size="sm" tone="muted">
-            © 2026 {brand.name} {brand.nameEn} · 本页为 @hulianui/ui 演示，公司与数据均为虚构。
+            © 2026 {brand.name} {brand.nameEn}  {copy("thisDemoUsesFictionalCompaniesAndData")}
           </Text>
           <Stack direction="row" gap={4}>
-            <Link href="/demos/website" className="hover:text-foreground">
-              服务条款
+            <Link href={demoHref("/demos/website")} className="hover:text-foreground">
+
+              {copy("termsOfService")}
             </Link>
-            <Link href="/demos/website" className="hover:text-foreground">
-              隐私政策
+            <Link href={demoHref("/demos/website")} className="hover:text-foreground">
+
+              {copy("privacyPolicy")}
             </Link>
             <Link href="/demos" className="hover:text-foreground">
-              返回画廊
+
+              {copy("backToGallery")}
             </Link>
           </Stack>
         </Stack>

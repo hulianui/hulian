@@ -1,13 +1,14 @@
 "use client";
+import { copy } from "./globe-panel.content";
 import { Skeleton, WorldMap } from "@hulianui/ui";
 import { MousePointerClick } from "lucide-react";
 import { type Snapshot, toMapNodes } from "../_data/snapshot";
 import { Panel } from "./panel";
 
 const LEGEND = [
-  { label: "正常", color: "var(--color-chart-2)" },
-  { label: "繁忙", color: "var(--color-chart-3)" },
-  { label: "告警", color: "var(--color-danger)" },
+  { label: copy("normal"), color: "var(--color-chart-2)" },
+  { label: copy("busy"), color: "var(--color-chart-3)" },
+  { label: copy("warning"), color: "var(--color-danger)" },
 ];
 
 export function GlobePanel({
@@ -29,13 +30,17 @@ export function GlobePanel({
       ))}
       <span className="hidden items-center gap-1 text-xs text-muted xl:flex">
         <MousePointerClick className="size-3.5" />
-        点击节点下钻
+        {copy("clickTheNodeToDrillDown")}
       </span>
     </div>
   );
 
   return (
-    <Panel title="全球节点分布 · 跨境调度链路" extra={extra} bodyClassName="grid place-items-center p-3">
+    <Panel
+      title={copy("globalNodeDistributionCrossBorderSchedulingLinks")}
+      extra={extra}
+      bodyClassName="grid place-items-center p-3"
+    >
       {loading || !snapshot ? (
         <div className="w-full">
           <Skeleton className="mx-auto aspect-[2/1] w-full max-w-4xl rounded-xl" />

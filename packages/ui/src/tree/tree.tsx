@@ -3,6 +3,7 @@ import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useReducedMotion } from "motion/react";
 import { Search } from "../_icons";
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { Checkbox } from "../checkbox";
@@ -45,10 +46,18 @@ export function Tree({
   virtual = false,
   showLine = false,
   searchable = false,
-  searchPlaceholder = "搜索",
+  searchPlaceholder: searchPlaceholderProp,
   className,
-  "aria-label": ariaLabel = "树",
+  "aria-label": ariaLabelProp,
 }: TreeProps) {
+  const labels = {
+    label: "树",
+    searchPlaceholder: "搜索",
+    noMatches: "无匹配项",
+    ...useComponentLocale().tree,
+  };
+  const searchPlaceholder = searchPlaceholderProp ?? labels.searchPlaceholder;
+  const ariaLabel = ariaLabelProp ?? labels.label;
   // "row"：有子节点的行点了只展开（历史默认）。"icon"：只有箭头管展开，行归 select/check，
   // 于是父节点也能被选中。
   const rowClickExpands = expandTrigger === "row";
@@ -82,7 +91,10 @@ export function Tree({
   // —— 勾选态（叶为真源；受控入参归一为叶集）——
   const [checkedState, setCheckedState] = useState<string[]>(defaultCheckedKeys);
   const checkedInput = checkedKeys ?? checkedState;
-  const leafSet = useMemo(() => normalizeCheckedToLeaves(checkedInput, index), [checkedInput, index]);
+  const leafSet = useMemo(
+    () => normalizeCheckedToLeaves(checkedInput, index),
+    [checkedInput, index],
+  );
   const applyCheck = (key: string, nextLeaf: Set<string>) => {
     const payload = computeChecked(nextLeaf, index);
     if (checkedKeys === undefined) setCheckedState(payload.checkedKeys);
@@ -114,7 +126,7 @@ export function Tree({
   const flatKeys = flat.map((r) => r.key);
   const firstSelected = flat.find((r) => selectedSet.has(r.key))?.key;
   const effectiveActive =
-    activeKey && flatKeys.includes(activeKey) ? activeKey : (firstSelected ?? flatKeys[0] ?? null);
+    activeKey && flatKeys.includes(activeKey) ? activeKey : firstSelected ?? flatKeys[0] ?? null;
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const focusKey = (key: string) => {
     setActiveKey(key);
@@ -241,7 +253,9 @@ export function Tree({
   };
 
   /** 拖拽相关的 DOM props；未开拖拽或该行不可拖时返回空对象（渲染结果与改造前一致）。 */
-  const dragProps = (node: TreeNode): React.HTMLAttributes<HTMLElement> & { draggable?: boolean } => {
+  const dragProps = (
+    node: TreeNode,
+  ): React.HTMLAttributes<HTMLElement> & { draggable?: boolean } => {
     if (!dragEnabled || node.disabled) return {};
     return {
       draggable: true,
@@ -286,8 +300,10 @@ export function Tree({
   /** 落点指示：上/下沿画主色线，inside 画一圈内描边。 */
   const dropClass = (key: string) => {
     if (dropHint?.key !== key) return undefined;
-    if (dropHint.position === "before") return "before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-primary before:content-['']";
-    if (dropHint.position === "after") return "after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary after:content-['']";
+    if (dropHint.position === "before")
+      return "before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-primary before:content-['']";
+    if (dropHint.position === "after")
+      return "after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary after:content-['']";
     return "ring-2 ring-inset ring-primary";
   };
 
@@ -328,7 +344,11 @@ export function Tree({
             aria-expanded={hasChildren ? isExpanded : undefined}
             aria-selected={!checkable && isSelected ? true : undefined}
             aria-checked={
-              checkable ? (checkState === "indeterminate" ? "mixed" : checkState === "checked") : undefined
+              checkable
+                ? checkState === "indeterminate"
+                  ? "mixed"
+                  : checkState === "checked"
+                : undefined
             }
             aria-disabled={node.disabled || undefined}
             tabIndex={isActive && !node.disabled ? 0 : -1}
@@ -349,7 +369,8 @@ export function Tree({
               "group/row relative flex items-center gap-1.5 rounded-md py-1.5 pr-2 text-sm outline-none transition-colors",
               "text-foreground",
               "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-              !checkable && "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
+              !checkable &&
+                "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
               // 禁用行不再 pointer-events-none：它会连箭头一起废掉，子树彻底不可达。
               // 拦截改由 activateRow 内部做，这里只表达视觉。
               node.disabled ? "cursor-default opacity-50" : "hover:bg-surface-hover",
@@ -426,7 +447,10 @@ export function Tree({
    * - **搜索态**（`flatSearch`）：展开由命中路径自动驱动，点击一律 select/check，不画箭头。
    * - **虚拟滚动**：展开照常，画箭头；但没有嵌套 DOM，也就没有 grid-rows 过渡。
    */
-  const renderFlatRow = (row: FlatRow, opts: { flatSearch: boolean; style?: React.CSSProperties }) => {
+  const renderFlatRow = (
+    row: FlatRow,
+    opts: { flatSearch: boolean; style?: React.CSSProperties },
+  ) => {
     const node = row.node;
     const hasChildren = row.hasChildren;
     const checkState = checkable ? getCheckState(node.key, leafSet, index) : "unchecked";
@@ -445,7 +469,11 @@ export function Tree({
           aria-expanded={hasChildren ? row.expanded : undefined}
           aria-selected={!checkable && isSelected ? true : undefined}
           aria-checked={
-            checkable ? (checkState === "indeterminate" ? "mixed" : checkState === "checked") : undefined
+            checkable
+              ? checkState === "indeterminate"
+                ? "mixed"
+                : checkState === "checked"
+              : undefined
           }
           aria-disabled={node.disabled || undefined}
           tabIndex={isActive && !node.disabled ? 0 : -1}
@@ -468,7 +496,8 @@ export function Tree({
             "relative flex items-center gap-1.5 rounded-md py-1.5 pr-2 text-sm outline-none transition-colors",
             "text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
             opts.flatSearch && matchedKeys.has(node.key) && "font-medium text-primary",
-            !checkable && "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
+            !checkable &&
+              "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
             node.disabled ? "cursor-default opacity-50" : "hover:bg-surface-hover",
             dragEnabled && !node.disabled && "cursor-grab active:cursor-grabbing",
             dragKey === node.key && "opacity-50",
@@ -478,7 +507,10 @@ export function Tree({
           <span
             className={cn(
               "flex size-4 shrink-0 items-center justify-center text-muted",
-              showCaret && hasChildren && !rowClickExpands && "cursor-pointer hover:text-foreground",
+              showCaret &&
+                hasChildren &&
+                !rowClickExpands &&
+                "cursor-pointer hover:text-foreground",
             )}
             onClick={
               showCaret && hasChildren && !rowClickExpands
@@ -571,7 +603,7 @@ export function Tree({
         </ul>
       )}
       {searching && flat.length === 0 ? (
-        <div className="px-2 py-6 text-center text-sm text-muted">无匹配项</div>
+        <div className="px-2 py-6 text-center text-sm text-muted">{labels.noMatches}</div>
       ) : null}
     </div>
   );

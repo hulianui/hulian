@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { CodeBlock } from "./code-block";
 import { tokenizeCode } from "./code-highlight";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 const writeText = vi.fn().mockResolvedValue(undefined);
 beforeEach(() => {
@@ -40,6 +42,17 @@ describe("CodeBlock", () => {
     const { getByLabelText } = render(<CodeBlock code="x" />);
     fireEvent.click(getByLabelText("复制"));
     expect(getByLabelText("已复制")).toBeTruthy();
+  });
+
+  it("enUS localizes copy states and the code region label", () => {
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <CodeBlock code="x" lang="tsx" />
+      </ConfigProvider>,
+    );
+    fireEvent.click(getByLabelText("Copy"));
+    expect(getByLabelText("Copied")).toBeTruthy();
+    expect(getByLabelText("tsx code")).toBeTruthy();
   });
 
   it("copyable={false} 不渲染复制按钮", () => {

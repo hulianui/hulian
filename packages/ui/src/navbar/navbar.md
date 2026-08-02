@@ -49,7 +49,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | isOpen | `boolean` | — | 受控展开态 |
-| aria-label | `string` | 按 isOpen 切换 | 无障碍标签 |
+| aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
 | className | `string` | — | 类名 |
 
 `NavbarBrand` 为纯容器，无专属 prop。
@@ -91,6 +91,7 @@ function Header() {
 ## 禁忌 / 坑
 
 - `NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。
+- 默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。
 - 暂无其他已知坑。
 
 ## 相关

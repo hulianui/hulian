@@ -1,5 +1,7 @@
 // 瑚琏 · AI 接入指南正文（单一真源）。/start 页面渲染它，同时供「复制全文」按钮拷给 AI 编程助手。
 import { manifest } from "./manifest";
+import { AI_GUIDE_EN_MD } from "./ai-guide.en";
+import type { DocsLocale } from "./docs-locale";
 
 const total = manifest.length;
 
@@ -139,3 +141,8 @@ npx -y @hulianui/guard src
 能复用就别从零写；安装后执行 MCP 返回的 hulian-check 命令并修完错误级违规。
 \`\`\`
 `;
+
+/** Build-time selector used by the copy button; English never falls back to Chinese. */
+export function aiGuide(locale: DocsLocale): string {
+  return locale === "en" ? AI_GUIDE_EN_MD : AI_GUIDE_MD;
+}

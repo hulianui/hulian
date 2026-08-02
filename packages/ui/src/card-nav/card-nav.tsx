@@ -3,6 +3,8 @@ import { useState } from "react";
 import type { CSSProperties } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
 import type { CardNavProps } from "./card-nav.types";
@@ -22,6 +24,10 @@ export function CardNav({
   style,
   ...props
 }: CardNavProps & React.HTMLAttributes<HTMLDivElement>) {
+  const locale = useComponentLocale().cardNav ?? {
+    expandMenu: "展开菜单",
+    collapseMenu: "收起菜单",
+  };
   const reduce = useReducedMotion();
   const [openState, setOpenState] = useState(false);
   const isControlled = openProp !== undefined;
@@ -37,11 +43,7 @@ export function CardNav({
   };
 
   return (
-    <div
-      {...props}
-      style={style}
-      className={cn("relative mx-auto w-full max-w-3xl", className)}
-    >
+    <div {...props} style={style} className={cn("relative mx-auto w-full max-w-3xl", className)}>
       <LazyMotionProvider>
         <m.nav
           data-state={open ? "open" : "closed"}
@@ -58,7 +60,7 @@ export function CardNav({
             <div
               role="button"
               tabIndex={0}
-              aria-label={open ? "收起菜单" : "展开菜单"}
+              aria-label={open ? locale.collapseMenu : locale.expandMenu}
               aria-expanded={open}
               onClick={toggle}
               onKeyDown={(e) => {
@@ -127,9 +129,7 @@ export function CardNav({
                       } as CSSProperties
                     }
                   >
-                    <div className="text-xl font-medium tracking-tight">
-                      {card.label}
-                    </div>
+                    <div className="text-xl font-medium tracking-tight">{card.label}</div>
                     <div className="mt-auto flex flex-col gap-0.5">
                       {card.links?.map((lnk, i) => (
                         <a

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { buildMatrix, bucketize } from "./heatmap.matrix";
 import { Heatmap } from "./heatmap";
 
@@ -69,7 +70,12 @@ describe("Heatmap", () => {
   });
   it("formatTooltip 自定义提示", () => {
     const { getByLabelText } = render(
-      <Heatmap data={data} showLabels={false} formatTooltip={(c) => `自定义${c.value}`} onCellClick={() => {}} />,
+      <Heatmap
+        data={data}
+        showLabels={false}
+        formatTooltip={(c) => `自定义${c.value}`}
+        onCellClick={() => {}}
+      />,
     );
     expect(getByLabelText("自定义8")).toBeTruthy();
   });
@@ -197,5 +203,29 @@ describe("Heatmap 无数据 vs 值为 0（issue #25）", () => {
     expect(getByText("无数据")).toBeTruthy();
     // 4 个数据格 + 6 个色阶块（colorScale 5 + 0 档）+ 1 个无数据块
     expect(container.querySelectorAll(".rounded-\\[2px\\]").length).toBe(11);
+  });
+});
+
+describe("Heatmap locale", () => {
+  it("ConfigProvider locale=enUS localizes generated tooltips and legend labels", () => {
+    const { container, getByLabelText, getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <Heatmap
+          data={[
+            { x: "Monday", y: "Login", value: 0 },
+            { x: "Tuesday", y: "Payment", value: 8 },
+          ]}
+          showLabels={false}
+          showLegend
+          emptyCellTone="#eeeeee"
+        />
+      </ConfigProvider>,
+    );
+
+    expect(getByLabelText("Payment · Tuesday: 8")).toBeTruthy();
+    expect(getByLabelText("Login · Tuesday: No data")).toBeTruthy();
+    expect(getByLabelText("Color scale: 0 to 8")).toBeTruthy();
+    expect(getByText("No data")).toBeTruthy();
+    expect(container.textContent).not.toMatch(/[\u3400-\u9fff：]/u);
   });
 });

@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./customer-detail.content";
+
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -32,7 +34,7 @@ import { customerById } from "../_data/customers";
 import { followsByCustomer } from "../_data/follows";
 import { opportunities } from "../_data/opportunities";
 import { orders } from "../_data/orders";
-import { customerLevelTone, customerStatusTone, oppStageTone, orderStatusTone, yuan } from "../_data/status";
+import { customerIndustryLabel, customerLevelLabel, customerLevelTone, customerOwnerLabel, customerStatusLabel, customerStatusTone, followTypeLabel, oppStageLabel, oppStageTone, orderStatusLabel, orderStatusTone, yuan } from "../_data/status";
 import type { Follow, FollowType } from "../_data/types";
 
 const FOLLOW_TYPES: FollowType[] = ["电话", "拜访", "微信", "邮件"];
@@ -51,7 +53,7 @@ export function CustomerDetail({ id }: { id: string }) {
   const [open, setOpen] = useState(false);
   const form = useForm<{ type: string; content: string }>({ initialValues: { type: "电话", content: "" } });
   const typeField = form.register("type");
-  const contentField = form.register("content", { rules: [{ required: true, message: "请填写跟进内容" }] });
+  const contentField = form.register("content", { rules: [{ required: true, message: copy("pleaseFillInTheFollowUpContent") }] });
 
   const opps = useMemo(() => opportunities.filter((o) => o.customerId === id), [id]);
   const ords = useMemo(() => orders.filter((o) => o.customerId === id), [id]);
@@ -59,8 +61,8 @@ export function CustomerDetail({ id }: { id: string }) {
   if (!customer) {
     return (
       <div className="grid min-h-[60vh] place-items-center">
-        <Empty title="客户不存在" description="可能已被删除（demo 内存态，刷新还原）。">
-          <Button onClick={() => router.push("/demos/crm/customers")}>返回客户列表</Button>
+        <Empty title={copy("customerDoesNotExist")} description={copy("itMayHaveBeenDeletedDemoMemory")}>
+          <Button onClick={() => router.push("/demos/crm/customers")}>{copy("returnToCustomerList")}</Button>
         </Empty>
       </div>
     );
@@ -75,24 +77,20 @@ export function CustomerDetail({ id }: { id: string }) {
         tags={
           <div className="flex items-center gap-2">
             <Tag tone={customerStatusTone[customer.status]} dot size="sm">
-              {customer.status}
+              {customerStatusLabel[customer.status]}
             </Tag>
             <Tag tone={customerLevelTone[customer.level]} size="sm">
-              {customer.level}
+              {customerLevelLabel[customer.level]}
             </Tag>
           </div>
         }
         extra={
           <>
-            <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-              新增跟进
-            </Button>
+            <Button variant="outline" size="sm" onClick={() => setOpen(true)}>{copy("addFollowUp")}</Button>
             <Button
               size="sm"
-              onClick={() => toast({ title: "编辑客户", description: "演示环境，编辑入口见客户列表", tone: "neutral" })}
-            >
-              编辑客户
-            </Button>
+              onClick={() => toast({ title: copy("editCustomer"), description: copy("demoEnvironmentEditTheEntranceAndSee"), tone: "neutral" })}
+            >{copy("editCustomer2")}</Button>
           </>
         }
       />
@@ -102,15 +100,15 @@ export function CustomerDetail({ id }: { id: string }) {
           <Descriptions
             column={3}
             items={[
-              { label: "负责人", children: customer.owner },
-              { label: "所属行业", children: customer.industry },
-              { label: "所在地区", children: customer.region },
-              { label: "联系人", children: customer.contactName },
-              { label: "联系电话", children: <span className="tabular-nums">{customer.phone}</span> },
-              { label: "邮箱", children: customer.email },
-              { label: "累计成交", children: <span className="font-medium tabular-nums">{yuan(customer.amount)}</span> },
-              { label: "最近跟进", children: customer.lastFollowAt },
-              { label: "创建时间", children: customer.createdAt },
+              { label: copy("personInCharge"), children: customerOwnerLabel[customer.owner] },
+              { label: copy("industry"), children: customerIndustryLabel[customer.industry] },
+              { label: copy("area"), children: customer.region },
+              { label: copy("contactPerson"), children: customer.contactName },
+              { label: copy("contactNumber"), children: <span className="tabular-nums">{customer.phone}</span> },
+              { label: copy("email"), children: customer.email },
+              { label: copy("accumulatedTransactions"), children: <span className="font-medium tabular-nums">{yuan(customer.amount)}</span> },
+              { label: copy("latestFollowUp"), children: customer.lastFollowAt },
+              { label: copy("creationTime"), children: customer.createdAt },
             ]}
           />
         </CardBody>
@@ -120,22 +118,22 @@ export function CustomerDetail({ id }: { id: string }) {
         <CardBody>
           <Tabs defaultValue="follows">
             <TabsList>
-              <TabsTab value="follows">跟进记录</TabsTab>
-              <TabsTab value="opps">商机 · {opps.length}</TabsTab>
-              <TabsTab value="orders">订单 · {ords.length}</TabsTab>
-              <TabsTab value="files">附件</TabsTab>
+              <TabsTab value="follows">{copy("followUpRecords")}</TabsTab>
+              <TabsTab value="opps">{copy("businessOpportunities")}{opps.length}</TabsTab>
+              <TabsTab value="orders">{copy("order")}{ords.length}</TabsTab>
+              <TabsTab value="files">{copy("accessories")}</TabsTab>
             </TabsList>
 
             <TabsPanel value="follows" className="pt-5">
               {followList.length ? (
                 <Timeline
                   items={followList.map((fw) => ({
-                    label: `${fw.createdAt} · ${fw.owner}`,
+                    label: `${fw.createdAt} · ${customerOwnerLabel[fw.owner]}`,
                     color: followDot[fw.type],
                     children: (
                       <div className="flex flex-col gap-1 pb-1">
                         <Tag size="sm" variant="outline" className="w-fit">
-                          {fw.type}
+                          {followTypeLabel[fw.type]}
                         </Tag>
                         <span className="text-sm text-foreground">{fw.content}</span>
                       </div>
@@ -143,7 +141,7 @@ export function CustomerDetail({ id }: { id: string }) {
                   }))}
                 />
               ) : (
-                <Empty title="暂无跟进记录" description="点击右上「新增跟进」记录第一条。" size="sm" />
+                <Empty title={copy("noFollowUpRecordYet")} description={copy("clickAddFollowUpOnTheUpper")} size="sm" />
               )}
             </TabsPanel>
 
@@ -155,19 +153,19 @@ export function CustomerDetail({ id }: { id: string }) {
                     <ListItem
                       actions={[
                         <Tag key="st" tone={oppStageTone[o.stage]} size="sm">
-                          {o.stage}
+                          {oppStageLabel[o.stage]}
                         </Tag>,
                         <span key="amt" className="text-sm font-medium tabular-nums">
                           {yuan(o.amount)}
                         </span>,
                       ]}
                     >
-                      <ListItemMeta title={o.title} description={`负责人 ${o.owner} · 赢率 ${o.probability}% · 预计 ${o.expectedCloseAt}`} />
+                      <ListItemMeta title={o.title} description={copy("personInChargeValueWinRateValue", customerOwnerLabel[o.owner], o.probability, o.expectedCloseAt)} />
                     </ListItem>
                   )}
                 />
               ) : (
-                <Empty title="暂无商机" size="sm" />
+                <Empty title={copy("noBusinessOpportunitiesYet")} size="sm" />
               )}
             </TabsPanel>
 
@@ -179,31 +177,31 @@ export function CustomerDetail({ id }: { id: string }) {
                     <ListItem
                       actions={[
                         <Tag key="st" tone={orderStatusTone[o.status]} size="sm">
-                          {o.status}
+                          {orderStatusLabel[o.status]}
                         </Tag>,
                         <span key="amt" className="text-sm font-medium tabular-nums">
                           {yuan(o.amount)}
                         </span>,
                       ]}
                     >
-                      <ListItemMeta title={<span className="tabular-nums">{o.orderNo}</span>} description={`${o.items} 件商品 · 下单于 ${o.createdAt}`} />
+                      <ListItemMeta title={<span className="tabular-nums">{o.orderNo}</span>} description={copy("valueItemsOrderedOnValue", o.items, o.createdAt)} />
                     </ListItem>
                   )}
                 />
               ) : (
-                <Empty title="暂无订单" size="sm" />
+                <Empty title={copy("noOrdersYet")} size="sm" />
               )}
             </TabsPanel>
 
             <TabsPanel value="files" className="pt-5">
-              <Empty title="暂无附件" description="合同 / 报价单等可在此归档。" size="sm" />
+              <Empty title={copy("noAttachmentsYet")} description={copy("contractsQuotesEtcCanBeFiledHere")} size="sm" />
             </TabsPanel>
           </Tabs>
         </CardBody>
       </Card>
 
       <DrawerForm
-        title="新增跟进"
+        title={copy("addFollowUp2")}
         form={form}
         open={open}
         onOpenChange={setOpen}
@@ -220,12 +218,12 @@ export function CustomerDetail({ id }: { id: string }) {
             ...prev,
           ]);
           form.resetFields();
-          toast({ title: "跟进已记录", description: `${customer.name} · ${v.type}`, tone: "success" });
+          toast({ title: copy("followUpRecorded"), description: `${customer.name} · ${followTypeLabel[v.type as FollowType]}`, tone: "success" });
         }}
       >
-        <Field label="跟进方式">
+        <Field label={copy("followUpMethod")}>
           <Select
-            items={FOLLOW_TYPES.map((t) => ({ value: t, label: t }))}
+            items={FOLLOW_TYPES.map((t) => ({ value: t, label: followTypeLabel[t] }))}
             value={typeField.value as string}
             onValueChange={(v) => typeField.onChange(v as string)}
           >
@@ -233,19 +231,19 @@ export function CustomerDetail({ id }: { id: string }) {
             <SelectContent>
               {FOLLOW_TYPES.map((t) => (
                 <SelectItem key={t} value={t}>
-                  {t}
+                  {followTypeLabel[t]}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </Field>
-        <Field label="跟进内容" error={contentField.error}>
+        <Field label={copy("followUpContent")} error={contentField.error}>
           <Textarea
             value={contentField.value as string}
             onChange={contentField.onChange}
             onBlur={contentField.onBlur}
             rows={4}
-            placeholder="记录本次沟通要点、客户反馈、下一步计划…"
+            placeholder={copy("recordTheKeyPointsOfThisCommunication")}
           />
         </Field>
       </DrawerForm>

@@ -3,6 +3,13 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button";
 import { QuestionCard } from "./question-card";
 
+const kindLabels = {
+  choice: "选择题",
+  fill: "填空题",
+  solution: "解答题",
+  judge: "判断题",
+} as const;
+
 export const questionCardShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -11,6 +18,7 @@ export const questionCardShowcase: ShowcaseSpec = {
       code: `<QuestionCard
   number="3"
   kind="choice"
+  kindLabel="选择题"
   difficulty="A 组"
   stem="如图,图形①②都由完全相同的小正方形拼成。若图形①的边长为 4,则图形②的面积用分数表示为( )。"
   options={[
@@ -28,6 +36,7 @@ export const questionCardShowcase: ShowcaseSpec = {
           <QuestionCard
             number="3"
             kind="choice"
+            kindLabel={kindLabels.choice}
             difficulty="A 组"
             stem="如图,图形①②都由完全相同的小正方形拼成。若图形①的边长为 4,则图形②的面积用分数表示为( )。"
             options={[
@@ -49,6 +58,7 @@ export const questionCardShowcase: ShowcaseSpec = {
       code: `<QuestionCard
   number="11"
   kind="fill"
+  kindLabel="填空题"
   stem="规定盈利为正,某公司去年亏损了 3 万元,可记作____万元。"
   parts={["(1)数轴上点 B 表示的数 b 为____。", "(2)点 P 表示的数为____。"]}
 />`,
@@ -57,6 +67,7 @@ export const questionCardShowcase: ShowcaseSpec = {
           <QuestionCard
             number="11"
             kind="fill"
+            kindLabel={kindLabels.fill}
             stem="规定盈利为正,某公司去年亏损了 3 万元,可记作____万元。"
             parts={["(1)数轴上点 B 表示的数 b 为____。", "(2)点 P 表示的数为____。"]}
             chapter="第1章 有理数"
@@ -70,6 +81,7 @@ export const questionCardShowcase: ShowcaseSpec = {
       code: `<QuestionCard
   number="7"
   kind="choice"
+  kindLabel="选择题"
   stem="下列各式中,正确的是( )。"
   issues={[{ label: "选项不足 4 个" }, { label: "题号不连续" }]}
   actions={<Button size="sm" variant="ghost">去校对</Button>}
@@ -79,6 +91,7 @@ export const questionCardShowcase: ShowcaseSpec = {
           <QuestionCard
             number="7"
             kind="choice"
+            kindLabel={kindLabels.choice}
             stem="下列各式中,正确的是( )。"
             options={[{ label: "A", text: "-|-16|>0" }]}
             issues={[{ label: "选项不足 4 个" }, { label: "题号不连续" }]}
@@ -112,6 +125,7 @@ export const questionCardShowcase: ShowcaseSpec = {
         <QuestionCard
           number="2"
           kind="choice"
+          kindLabel={kindLabels.choice}
           stem="将 \\frac{3}{8} 化成小数为( )。"
           options={[
             { label: "A", text: "0.125" },
@@ -124,7 +138,7 @@ export const questionCardShowcase: ShowcaseSpec = {
     },
     {
       name: "填空题",
-      render: () => <QuestionCard number="11" kind="fill" stem="去年亏损 3 万元,可记作____万元。" />,
+      render: () => <QuestionCard number="11" kind="fill" kindLabel={kindLabels.fill} stem="去年亏损 3 万元,可记作____万元。" />,
     },
     {
       name: "解答题",
@@ -132,6 +146,7 @@ export const questionCardShowcase: ShowcaseSpec = {
         <QuestionCard
           number="17"
           kind="solution"
+          kindLabel={kindLabels.solution}
           stem="把下列各数填入相应的集合圈内:"
           parts={["(1)正数集合", "(2)负整数集合"]}
         />
@@ -140,23 +155,24 @@ export const questionCardShowcase: ShowcaseSpec = {
     {
       name: "待复核",
       render: () => (
-        <QuestionCard number="7" kind="choice" stem="下列各式中,正确的是( )。" issues={[{ label: "选项不足 4 个" }]} />
+        <QuestionCard number="7" kind="choice" kindLabel={kindLabels.choice} stem="下列各式中,正确的是( )。" issues={[{ label: "选项不足 4 个" }]} />
       ),
     },
     {
       name: "紧凑",
-      render: () => <QuestionCard number="5" kind="fill" stem="当 m<0 时,|-3m|=____。" compact />,
+      render: () => <QuestionCard number="5" kind="fill" kindLabel={kindLabels.fill} stem="当 m<0 时,|-3m|=____。" compact />,
     },
   ],
   renderWithProps: (p) => (
     <QuestionCard
       number={String(p.number ?? "")}
       kind={p.kind as "choice" | "fill" | "solution" | "judge"}
+      kindLabel={kindLabels[(p.kind as keyof typeof kindLabels) ?? "choice"]}
       difficulty={String(p.difficulty ?? "")}
       stem={String(p.stem ?? "")}
       compact={Boolean(p.compact)}
     />
   ),
   toCode: (p) =>
-    `<QuestionCard number="${String(p.number ?? "")}" kind="${String(p.kind ?? "choice")}" stem={${JSON.stringify(String(p.stem ?? ""))}} />`,
+    `<QuestionCard number="${String(p.number ?? "")}" kind="${String(p.kind ?? "choice")}" kindLabel="${kindLabels[(p.kind as keyof typeof kindLabels) ?? "choice"]}" stem={${JSON.stringify(String(p.stem ?? ""))}} />`,
 };

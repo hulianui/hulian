@@ -1,7 +1,18 @@
 "use client";
+import { copy } from "./project-overview.content";
+import { DEMO_RELATIVE_TIME_LOCALE, demoLocationHref } from "../../_components/demo-locale";
+
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ExternalLink, RotateCcw, RefreshCw, Globe, Rocket, GitBranch } from "lucide-react";
+import {
+  ArrowLeft,
+  ExternalLink,
+  RotateCcw,
+  RefreshCw,
+  Globe,
+  Rocket,
+  GitBranch,
+} from "lucide-react";
 import {
   Breadcrumb,
   Button,
@@ -31,14 +42,17 @@ import { agoDate, formatDuration } from "../_lib/format";
 import { useMockData, usePending } from "../../lib/async";
 import { ROOT } from "./nav-config";
 
+const frameworkLabel = (framework: string) =>
+  framework === "静态站点" ? copy("staticSite") : framework;
+
 function EnvTag({ env }: { env: Deploy["env"] }) {
   return env === "production" ? (
     <Tag tone="success" size="sm">
-      生产
+      {copy("produce")}
     </Tag>
   ) : (
     <Tag tone="warning" size="sm">
-      预览
+      {copy("preview")}
     </Tag>
   );
 }
@@ -61,23 +75,38 @@ export function ProjectOverview({ id }: { id: string }) {
 
   if (!project) {
     return (
-      <Result status="404" title="项目不存在" subTitle="该项目可能已被删除或迁移。">
+      <Result
+        status="404"
+        title={copy("projectDoesNotExist")}
+        subTitle={copy("theItemMayHaveBeenDeletedOr")}
+      >
         <Button onClick={() => router.push(ROOT)}>
           <ArrowLeft className="size-4" />
-          返回项目列表
+          {copy("returnToProjectList")}
         </Button>
       </Result>
     );
   }
 
   const domains = domainsOf(id);
+  const localePath = demoLocationHref("/");
+  const productionHref = `https://${project.prodUrl}${
+    project.prodUrl === "hulianui.haloritual.com" && localePath !== "/" ? localePath : ""
+  }`;
 
   const rollback = (d: Deploy) =>
     run(() => {
-      setDeploys((prev) =>
-        (prev ?? list).map((x) => ({ ...x, current: x.id === d.id })),
-      );
-      toast({ tone: "success", title: "已回滚生产环境", description: `${project.name} 已指向 ${d.sha.slice(0, 8)}（${d.message.slice(0, 20)}…）` });
+      setDeploys((prev) => (prev ?? list).map((x) => ({ ...x, current: x.id === d.id })));
+      toast({
+        tone: "success",
+        title: copy("rolledBackToProductionEnvironment"),
+        description: copy(
+          "valueAlreadyPointsToValueValue",
+          project.name,
+          d.sha.slice(0, 8),
+          d.message.slice(0, 20),
+        ),
+      });
     });
 
   const redeploy = (d: Deploy) =>
@@ -91,13 +120,17 @@ export function ProjectOverview({ id }: { id: string }) {
         current: false,
       };
       setDeploys((prev) => [clone, ...(prev ?? list)]);
-      toast({ tone: "info", title: "已触发重新部署", description: `正在基于 ${d.sha.slice(0, 8)} 重新构建…` });
+      toast({
+        tone: "info",
+        title: copy("redeploymentTriggered"),
+        description: copy("rebuildingBasedOnValue", d.sha.slice(0, 8)),
+      });
     });
 
   const columns: ColumnDef<Deploy, unknown>[] = [
     {
       id: "env",
-      header: "环境",
+      header: copy("environment"),
       cell: ({ row }) => <EnvTag env={row.original.env} />,
     },
     {
@@ -105,12 +138,21 @@ export function ProjectOverview({ id }: { id: string }) {
       header: "Source",
       cell: ({ row }) => {
         const d = row.original;
-        return <GitCommit layout="stacked" sha={d.sha} branch={d.branch} message={d.message} author={d.author} size="sm" />;
+        return (
+          <GitCommit
+            layout="stacked"
+            sha={d.sha}
+            branch={d.branch}
+            message={d.message}
+            author={d.author}
+            size="sm"
+          />
+        );
       },
     },
     {
       id: "url",
-      header: "部署地址",
+      header: copy("deploymentAddress"),
       cell: ({ row }) => (
         <a
           href={`https://${row.original.url}`}
@@ -125,11 +167,15 @@ export function ProjectOverview({ id }: { id: string }) {
     },
     {
       id: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => (
         <div className="flex flex-col items-start gap-1">
           <DeployStatus status={row.original.status} size="sm" />
-          <RelativeTime value={agoDate(row.original.agoMin)} className="text-xs text-muted" />
+          <RelativeTime
+            value={agoDate(row.original.agoMin)}
+            locale={DEMO_RELATIVE_TIME_LOCALE}
+            className="text-xs text-muted"
+          />
         </div>
       ),
     },
@@ -141,32 +187,45 @@ export function ProjectOverview({ id }: { id: string }) {
         const d = row.original;
         return (
           <div className="flex items-center justify-end gap-1">
-            <Button size="sm" variant="ghost" onClick={() => router.push(`${ROOT}/deployments/${d.id}`)}>
-              查看
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => router.push(`${ROOT}/deployments/${d.id}`)}
+            >
+              {copy("view")}
             </Button>
             {d.status === "ready" && !d.current && (
               <Popconfirm
-                title="回滚到此部署？"
-                description={`生产环境将立即指向 ${d.sha.slice(0, 8)}，用户访问的内容随之改变。`}
-                okText="回滚"
-                cancelText="取消"
+                title={copy("rollBackToThisDeployment")}
+                description={copy(
+                  "theProductionEnvironmentWillImmediatelyPointTo",
+                  d.sha.slice(0, 8),
+                )}
+                okText={copy("rollback")}
+                cancelText={copy("cancel")}
                 onConfirm={() => rollback(d)}
               >
                 <Button size="sm" variant="ghost" tone="danger" disabled={pending}>
                   <RotateCcw className="size-4" />
-                  回滚
+                  {copy("rollback2")}
                 </Button>
               </Popconfirm>
             )}
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <Button size="sm" variant="ghost" disabled={pending} onClick={() => redeploy(d)} aria-label="重新部署">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={pending}
+                    onClick={() => redeploy(d)}
+                    aria-label={copy("redeploy")}
+                  >
                     <RefreshCw className="size-4" />
                   </Button>
                 }
               />
-              <TooltipContent>基于此提交重新部署</TooltipContent>
+              <TooltipContent>{copy("redeployBasedOnThisCommit")}</TooltipContent>
             </Tooltip>
           </div>
         );
@@ -176,7 +235,9 @@ export function ProjectOverview({ id }: { id: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Breadcrumb items={[{ label: "项目", href: ROOT }, { label: project.name }]} />
+      <Breadcrumb
+        items={[{ label: copy("project"), href: demoLocationHref(ROOT) }, { label: project.name }]}
+      />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -187,7 +248,7 @@ export function ProjectOverview({ id }: { id: string }) {
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-semibold text-foreground">{project.name}</h1>
               <Tag size="sm" tone="neutral">
-                {project.framework}
+                {frameworkLabel(project.framework)}
               </Tag>
             </div>
             <div className="mt-0.5 inline-flex items-center gap-1.5 text-sm text-muted">
@@ -199,14 +260,17 @@ export function ProjectOverview({ id }: { id: string }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => window.open(`https://${project.prodUrl}`, "_blank")}>
+          <Button
+            variant="outline"
+            onClick={() => window.open(`https://${project.prodUrl}`, "_blank")}
+          >
             <ExternalLink className="size-4" />
-            访问站点
+            {copy("visitSite")}
           </Button>
           {current && (
             <Button disabled={pending} onClick={() => redeploy(current)}>
               <RefreshCw className="size-4" />
-              重新部署
+              {copy("redeploy2")}
             </Button>
           )}
         </div>
@@ -215,26 +279,43 @@ export function ProjectOverview({ id }: { id: string }) {
       {/* 生产环境面板（复刻截图 Production 卡） */}
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <span className="font-medium text-foreground">生产环境</span>
+          <span className="font-medium text-foreground">{copy("productionEnvironment")}</span>
           <span className="inline-flex items-center gap-2 text-sm text-muted">
             <RefreshCw className="size-3.5" />
-            {autoDeploy ? "已开启自动部署" : "自动部署已关闭"}
-            <Switch checked={autoDeploy} onCheckedChange={setAutoDeploy} aria-label="自动部署" />
+            {autoDeploy
+              ? copy("automaticDeploymentIsTurnedOn")
+              : copy("automaticDeploymentIsTurnedOff")}
+            <Switch
+              checked={autoDeploy}
+              onCheckedChange={setAutoDeploy}
+              aria-label={copy("automaticDeployment")}
+            />
           </span>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
             <span className="inline-flex items-center gap-1.5 text-muted">
               <Globe className="size-4" />
-              域名:
+              {copy("domainName")}
             </span>
-            <a href={`https://${project.prodUrl}`} target="_blank" rel="noreferrer" className="text-primary hover:underline">
+            <a
+              href={productionHref}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary hover:underline"
+            >
               {project.prodUrl}
             </a>
             {domains
               .filter((dm) => dm.host !== project.prodUrl)
               .map((dm) => (
-                <a key={dm.id} href={`https://${dm.host}`} target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                <a
+                  key={dm.id}
+                  href={`https://${dm.host}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary hover:underline"
+                >
                   {dm.host}
                 </a>
               ))}
@@ -245,22 +326,41 @@ export function ProjectOverview({ id }: { id: string }) {
           ) : current ? (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius)] border-l-2 border-l-primary border-border bg-surface/60 p-3.5">
               <div className="min-w-0">
-                <GitCommit layout="stacked" sha={current.sha} branch={current.branch} message={current.message} author={current.author} />
+                <GitCommit
+                  layout="stacked"
+                  sha={current.sha}
+                  branch={current.branch}
+                  message={current.message}
+                  author={current.author}
+                />
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex flex-col items-end gap-0.5">
                   <DeployStatus status={current.status} />
                   <span className="text-xs text-muted">
-                    <RelativeTime value={agoDate(current.agoMin)} /> · 构建 {formatDuration(current.durationSec)}
+                    <RelativeTime
+                      value={agoDate(current.agoMin)}
+                      locale={DEMO_RELATIVE_TIME_LOCALE}
+                    />
+                    {copy("build")}
+                    {formatDuration(current.durationSec)}
                   </span>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => router.push(`${ROOT}/deployments/${current.id}`)}>
-                  详情
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => router.push(`${ROOT}/deployments/${current.id}`)}
+                >
+                  {copy("details")}
                 </Button>
               </div>
             </div>
           ) : (
-            <Empty size="sm" title="生产环境暂无部署" description="推送到生产分支或手动触发一次部署。" />
+            <Empty
+              size="sm"
+              title={copy("thereIsNoDeploymentInTheProduction")}
+              description={copy("pushToProductionBranchOrManuallyTrigger")}
+            />
           )}
         </CardBody>
       </Card>
@@ -268,17 +368,17 @@ export function ProjectOverview({ id }: { id: string }) {
       {/* 所有部署 */}
       <Card>
         <CardHeader className="flex flex-wrap items-center justify-between gap-2">
-          <span className="font-medium text-foreground">所有部署</span>
+          <span className="font-medium text-foreground">{copy("allDeployments")}</span>
           <Segmented
             size="sm"
             value={envFilter}
             onValueChange={setEnvFilter}
             items={[
-              { value: "all", label: "全部" },
-              { value: "production", label: "生产" },
-              { value: "preview", label: "预览" },
+              { value: "all", label: copy("all") },
+              { value: "production", label: copy("produce2") },
+              { value: "preview", label: copy("preview2") },
             ]}
-            aria-label="按环境筛选"
+            aria-label={copy("filterByEnvironment")}
           />
         </CardHeader>
         <CardBody>
@@ -293,7 +393,11 @@ export function ProjectOverview({ id }: { id: string }) {
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <Empty size="sm" title="没有符合筛选的部署" description="切换到「全部」查看所有环境的部署。" />
+            <Empty
+              size="sm"
+              title={copy("noDeploymentsMatchedTheFilter")}
+              description={copy("switchToAllToViewDeploymentsFor")}
+            />
           ) : (
             <Table columns={columns} data={filtered} enableSorting={false} getRowId={(d) => d.id} />
           )}

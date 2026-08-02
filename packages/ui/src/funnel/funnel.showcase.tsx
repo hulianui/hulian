@@ -20,7 +20,13 @@ const conversionStages: FunnelStage[] = [
 function VerticalDemo({ showConversion = true }: { showConversion?: boolean }) {
   return (
     <div className="w-full max-w-md">
-      <Funnel stages={taskStages} orientation="vertical" showConversion={showConversion} />
+      <Funnel
+        stages={taskStages}
+        orientation="vertical"
+        showConversion={showConversion}
+        ariaLabel="漏斗图"
+        conversionLabel="转化"
+      />
     </div>
   );
 }
@@ -28,7 +34,12 @@ function VerticalDemo({ showConversion = true }: { showConversion?: boolean }) {
 function HorizontalDemo() {
   return (
     <div className="w-full max-w-lg">
-      <Funnel stages={conversionStages} orientation="horizontal" />
+      <Funnel
+        stages={conversionStages}
+        orientation="horizontal"
+        ariaLabel="漏斗图"
+        conversionLabel="转化"
+      />
     </div>
   );
 }
@@ -46,6 +57,8 @@ export const funnelShowcase: ShowcaseSpec = {
     { id: "exec", label: "执行", value: 860, tone: "warning" },
     { id: "done", label: "完成", value: 720, tone: "success" },
   ]}
+  ariaLabel="漏斗图"
+  conversionLabel="转化"
 />`,
       render: () => <VerticalDemo />,
     },
@@ -60,13 +73,20 @@ export const funnelShowcase: ShowcaseSpec = {
     { id: "pay", label: "付费", value: 640, tone: "success" },
   ]}
   orientation="horizontal"
+  ariaLabel="漏斗图"
+  conversionLabel="转化"
 />`,
       render: () => <HorizontalDemo />,
     },
     {
       title: "隐藏转化率徽标",
       description: "showConversion={false} 关闭级间转化率，只看体量。",
-      code: `<Funnel stages={stages} showConversion={false} />`,
+      code: `<Funnel
+  stages={stages}
+  showConversion={false}
+  ariaLabel="漏斗图"
+  conversionLabel="转化"
+/>`,
       render: () => <VerticalDemo showConversion={false} />,
     },
     {
@@ -74,17 +94,30 @@ export const funnelShowcase: ShowcaseSpec = {
       description: "传 onStageClick 后条变为按钮，点击回吐该阶段用于下钻。",
       code: `<Funnel
   stages={stages}
+  ariaLabel="漏斗图"
+  conversionLabel="转化"
   onStageClick={(s) => console.log(s.id)}
 />`,
       render: () => (
         <div className="w-full max-w-md">
-          <Funnel stages={taskStages} onStageClick={() => {}} />
+          <Funnel
+            stages={taskStages}
+            ariaLabel="漏斗图"
+            conversionLabel="转化"
+            onStageClick={() => {}}
+          />
         </div>
       ),
     },
   ],
   controls: [
-    { prop: "orientation", type: "select", options: ["vertical", "horizontal"], defaultValue: "vertical", label: "方向" },
+    {
+      prop: "orientation",
+      type: "select",
+      options: ["vertical", "horizontal"],
+      defaultValue: "vertical",
+      label: "方向",
+    },
     { prop: "showConversion", type: "boolean", defaultValue: true, label: "级间转化率" },
   ],
   states: [
@@ -110,6 +143,8 @@ export const funnelShowcase: ShowcaseSpec = {
           stages={stages}
           orientation={orientation}
           showConversion={p.showConversion as boolean}
+          ariaLabel="漏斗图"
+          conversionLabel="转化"
         />
       </div>
     );
@@ -123,6 +158,8 @@ export const funnelShowcase: ShowcaseSpec = {
   ]}
   orientation="${(p.orientation as string) ?? "vertical"}"
   showConversion={${p.showConversion ?? true}}
+  ariaLabel="漏斗图"
+  conversionLabel="转化"
   onStageClick={(s) => console.log(s.id)}
 />`,
 };

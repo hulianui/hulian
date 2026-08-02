@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Heading, Text, Tag } from "@hulianui/ui";
 import { StatsBlock } from "../../blocks/_blocks/stats";
 import { MilestoneTimelineBlock } from "../../blocks/_blocks/milestone-timeline";

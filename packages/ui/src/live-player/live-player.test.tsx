@@ -1,6 +1,8 @@
 import { describe, it, expect, afterEach, beforeAll } from "vitest";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import { LivePlayer } from "./live-player";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 // jsdom 无 IntersectionObserver → NumberTicker(useInView) 需要桩；给永不触发的桩停在起始值。
 beforeAll(() => {
@@ -44,6 +46,31 @@ describe("LivePlayer", () => {
   it("followed 时显示已关注", () => {
     const { getByText } = render(<LivePlayer host={{ name: "主播", followed: true, onFollow: () => {} }} />);
     expect(getByText("已关注")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes follow labels", () => {
+    const { getByText, rerender } = render(
+      <ConfigProvider locale={enUS}>
+        <LivePlayer host={{ name: "Host", onFollow: () => {} }} />
+      </ConfigProvider>,
+    );
+    expect(getByText("+ Follow")).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <LivePlayer host={{ name: "Host", followed: true, onFollow: () => {} }} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Following")).toBeTruthy();
+  });
+
+  it("a legacy locale without livePlayer keeps the Chinese follow label", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, livePlayer: undefined } };
+    const { getByText } = render(
+      <ConfigProvider locale={legacy}>
+        <LivePlayer host={{ name: "Host", onFollow: () => {} }} />
+      </ConfigProvider>,
+    );
+    expect(getByText("+ 关注")).toBeTruthy();
   });
 
   it("清晰度菜单点击切换", () => {
