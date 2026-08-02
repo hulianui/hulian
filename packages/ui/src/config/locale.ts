@@ -343,6 +343,8 @@ export interface ComponentLocale {
     read: string;
   };
   navMenu?: { navigation: string };
+  /** Default formatter locale for RelativeTime when its locale prop is omitted. */
+  relativeTime?: { locale: "zh" | "en" };
   spinner?: { loading: string };
   animatedThemeToggler?: { switchToLight: string; switchToDark: string };
   backTop?: { backToTop: string };
@@ -620,6 +622,7 @@ const zhComponents: ComponentLocale = {
   },
   chatMessage: { me: "我", sending: "发送中", sent: "已送达", read: "已读" },
   navMenu: { navigation: "侧边导航" },
+  relativeTime: { locale: "zh" },
   spinner: { loading: "加载中" },
   animatedThemeToggler: { switchToLight: "切换到亮色", switchToDark: "切换到暗色" },
   backTop: { backToTop: "回到顶部" },
@@ -913,6 +916,7 @@ const enComponents: ComponentLocale = {
   },
   chatMessage: { me: "Me", sending: "Sending", sent: "Delivered", read: "Read" },
   navMenu: { navigation: "Sidebar navigation" },
+  relativeTime: { locale: "en" },
   spinner: { loading: "Loading" },
   animatedThemeToggler: {
     switchToLight: "Switch to light mode",

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useComponentLocale } from "../config/locale";
 import { cn } from "../lib/cn";
 import type { RelativeTimeLocale, RelativeTimeProps } from "./relative-time.types";
 
@@ -15,8 +16,32 @@ const MONTH = 2592000; // 30d
 const YEAR = 31536000; // 365d
 
 const UNIT = {
-  zh: { just: "刚刚", sec: "秒", min: "分钟", hour: "小时", day: "天", month: "个月", year: "年", ago: "前", later: "后", yesterday: "昨天", tomorrow: "明天" },
-  en: { just: "just now", sec: "s", min: "m", hour: "h", day: "d", month: "mo", year: "y", ago: " ago", later: "in ", yesterday: "yesterday", tomorrow: "tomorrow" },
+  zh: {
+    just: "刚刚",
+    sec: "秒",
+    min: "分钟",
+    hour: "小时",
+    day: "天",
+    month: "个月",
+    year: "年",
+    ago: "前",
+    later: "后",
+    yesterday: "昨天",
+    tomorrow: "明天",
+  },
+  en: {
+    just: "just now",
+    sec: "s",
+    min: "m",
+    hour: "h",
+    day: "d",
+    month: "mo",
+    year: "y",
+    ago: " ago",
+    later: "in ",
+    yesterday: "yesterday",
+    tomorrow: "tomorrow",
+  },
 } as const;
 
 /** 纯函数：target 相对 now 的本地化相对时间串（可单测）。 */
@@ -32,8 +57,8 @@ export function formatRelative(target: Date, now: Date, locale: RelativeTimeLoca
     locale === "zh"
       ? `${n}${unit}${future ? t.later : t.ago}`
       : future
-        ? `${t.later}${n}${unit}`
-        : `${n}${unit}${t.ago}`;
+      ? `${t.later}${n}${unit}`
+      : `${n}${unit}${t.ago}`;
 
   if (sec < MINUTE) return wrap(Math.floor(sec), t.sec);
   if (sec < HOUR) return wrap(Math.floor(sec / MINUTE), t.min);
@@ -50,17 +75,21 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 /** 纯函数：本地绝对时间 `YYYY-MM-DD HH:mm`（title 用）。 */
 export function formatAbsolute(target: Date): string {
-  return `${target.getFullYear()}-${pad(target.getMonth() + 1)}-${pad(target.getDate())} ${pad(target.getHours())}:${pad(target.getMinutes())}`;
+  return `${target.getFullYear()}-${pad(target.getMonth() + 1)}-${pad(target.getDate())} ${pad(
+    target.getHours(),
+  )}:${pad(target.getMinutes())}`;
 }
 
 export function RelativeTime({
   value,
   base,
   updateInterval = 60000,
-  locale = "zh",
+  locale,
   withTitle = true,
   className,
 }: RelativeTimeProps) {
+  const componentLocale = useComponentLocale();
+  const resolvedLocale = locale ?? componentLocale.relativeTime?.locale ?? "zh";
   const target = toDate(value);
   // 受控 base → 固定基准、不 tick；否则实时 now 并定时刷新。
   const [now, setNow] = useState<Date>(() => (base != null ? toDate(base) : new Date()));
@@ -85,7 +114,7 @@ export function RelativeTime({
       suppressHydrationWarning
       className={cn("tabular-nums", className)}
     >
-      {formatRelative(target, now, locale)}
+      {formatRelative(target, now, resolvedLocale)}
     </time>
   );
 }

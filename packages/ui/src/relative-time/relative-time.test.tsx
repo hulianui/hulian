@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { RelativeTime, formatRelative, formatAbsolute } from "./relative-time";
 
 const now = new Date("2026-06-05T12:00:00Z");
@@ -52,7 +54,20 @@ describe("RelativeTime 组件", () => {
   });
 
   it("接受 ISO 字符串与时间戳", () => {
-    const { getByText } = render(<RelativeTime value={ago(3600).toISOString()} base={now.getTime()} />);
+    const { getByText } = render(
+      <RelativeTime value={ago(3600).toISOString()} base={now.getTime()} />,
+    );
     expect(getByText("1小时前")).toBeTruthy();
+  });
+
+  it("locale 缺省时跟随 ConfigProvider，显式 prop 仍优先", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <RelativeTime value={ago(5 * 60)} base={now} />
+        <RelativeTime value={ago(5 * 60)} base={now} locale="zh" />
+      </ConfigProvider>,
+    );
+    expect(getByText("5m ago")).toBeTruthy();
+    expect(getByText("5分钟前")).toBeTruthy();
   });
 });
