@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "hulianui",
   "homepage": "https://github.com/hulianui/hulian",
-  "version": "0.16.0",
+  "version": "0.19.1",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "install": "npm i @hulianui/ui",
   "import": "import { /* components */ } from \"@hulianui/ui\"",
@@ -2465,6 +2465,55 @@
       ]
     },
     {
+      "name": "auth-panel",
+      "type": "registry:ui",
+      "title": "AuthPanel",
+      "description": "认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/heading.json",
+        "https://hulianui.haloritual.com/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { AuthPanel } from \"@hulianui/ui\"",
+        "exports": [
+          "AuthPanel"
+        ],
+        "types": [
+          "AuthPanelProps",
+          "AuthPanelGradient"
+        ],
+        "group": "framework",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md",
+        "docLocal": "packages/ui/src/auth-panel/auth-panel.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/auth-panel/auth-panel.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/auth-panel/auth-panel.tsx"
+        },
+        {
+          "path": "components/hulianui/auth-panel/auth-panel.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/auth-panel/auth-panel.types.ts"
+        },
+        {
+          "path": "components/hulianui/auth-panel/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/auth-panel/index.ts"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
@@ -3829,7 +3878,7 @@
       "name": "login-form",
       "type": "registry:ui",
       "title": "LoginForm",
-      "description": "登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Fiel…",
+      "description": "登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + field…",
       "categories": [
         "forms"
       ],
@@ -3850,7 +3899,10 @@
         ],
         "types": [
           "LoginFormProps",
-          "LoginValues"
+          "LoginValues",
+          "LoginFormRules",
+          "LoginFormFields",
+          "LoginFieldSlot"
         ],
         "group": "framework",
         "tags": [],
@@ -4516,6 +4568,68 @@
           "path": "components/hulianui/region-cascader/region-cascader.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/region-cascader/region-cascader.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "region-select",
+      "type": "registry:ui",
+      "title": "RegionSelect",
+      "description": "图上框选回坐标 · 拖框拿回**原图像素** [x1,y1,x2,y2](区别 ImageCropper 出 Blob) · 反向拖规范化 + minSide 滤误点 + aspect 固定比例(撞边界整体缩不破比例)…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { RegionSelect, toImagePoint, normalizeBox, applyAspect, boxMinSide, roundBox, strokeWidthFor } from \"@hulianui/ui\"",
+        "exports": [
+          "RegionSelect",
+          "toImagePoint",
+          "normalizeBox",
+          "applyAspect",
+          "boxMinSide",
+          "roundBox",
+          "strokeWidthFor"
+        ],
+        "types": [
+          "RegionBox",
+          "RegionRect",
+          "RegionRound",
+          "RegionSelectProps",
+          "RegionSelectBox"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-select/region-select.md",
+        "docLocal": "packages/ui/src/region-select/region-select.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/region-select/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/index.ts"
+        },
+        {
+          "path": "components/hulianui/region-select/region-box.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/region-box.ts"
+        },
+        {
+          "path": "components/hulianui/region-select/region-select.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/region-select.tsx"
+        },
+        {
+          "path": "components/hulianui/region-select/region-select.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/region-select/region-select.types.ts"
         }
       ]
     },
@@ -6246,6 +6360,7 @@
         "recharts"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/dot.json",
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
@@ -8892,7 +9007,7 @@
       "name": "qrcode",
       "type": "registry:ui",
       "title": "QRCode",
-      "description": "二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题 + UTF-8 中文 + 纠错级别 + 中心 logo(可 …",
+      "description": "二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题(区别 qrcode.react 写死黑白) + UTF-8 …",
       "categories": [
         "data-display"
       ],
@@ -8903,11 +9018,18 @@
         "https://hulianui.haloritual.com/r/lib.json"
       ],
       "meta": {
-        "import": "import { QRCode } from \"@hulianui/ui\"",
+        "import": "import { QRCode, buildQRCode, qrCodeSvgString, qrCodeToPngDataUrl } from \"@hulianui/ui\"",
         "exports": [
-          "QRCode"
+          "QRCode",
+          "buildQRCode",
+          "qrCodeSvgString",
+          "qrCodeToPngDataUrl"
         ],
         "types": [
+          "QRCodeBuildOptions",
+          "QRCodeMatrix",
+          "QRCodeSvgStringOptions",
+          "QRCodePngOptions",
           "QRCodeProps",
           "QRCodeLevel",
           "QRCodeLogo"
@@ -8926,6 +9048,16 @@
           "path": "components/hulianui/qrcode/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/qrcode/index.ts"
+        },
+        {
+          "path": "components/hulianui/qrcode/qrcode-core.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/qrcode/qrcode-core.ts"
+        },
+        {
+          "path": "components/hulianui/qrcode/qrcode-png.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/qrcode/qrcode-png.ts"
         },
         {
           "path": "components/hulianui/qrcode/qrcode.tsx",
@@ -10730,6 +10862,54 @@
       ]
     },
     {
+      "name": "brand",
+      "type": "registry:ui",
+      "title": "Brand",
+      "description": "品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底…",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { Brand } from \"@hulianui/ui\"",
+        "exports": [
+          "Brand"
+        ],
+        "types": [
+          "BrandProps",
+          "BrandSize"
+        ],
+        "group": "global",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/brand/brand.md",
+        "docLocal": "packages/ui/src/brand/brand.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/brand/brand.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/brand/brand.tsx"
+        },
+        {
+          "path": "components/hulianui/brand/brand.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/brand/brand.types.ts"
+        },
+        {
+          "path": "components/hulianui/brand/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/brand/index.ts"
+        }
+      ]
+    },
+    {
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
@@ -11499,7 +11679,7 @@
       "name": "nav-menu",
       "type": "registry:ui",
       "title": "NavMenu",
-      "description": "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游",
+      "description": "侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游 + sema…",
       "categories": [
         "navigation"
       ],
@@ -12306,6 +12486,8 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/r/_icons.json",
+        "https://hulianui.haloritual.com/r/config.json",
         "https://hulianui.haloritual.com/r/lib.json",
         "https://hulianui.haloritual.com/r/motion.json"
       ],
@@ -18593,6 +18775,70 @@
       ]
     },
     {
+      "name": "tilt",
+      "type": "registry:ui",
+      "title": "Tilt",
+      "description": "视差倾斜包裹器 · 裹住任意 children 做 3D 倾斜(区别 TiltedCard 的固定卡片结构) · 指针/陀螺仪/手动角度三种驱动 + 全窗跟踪 + 单轴限制 + 反向 + 静息角 + 悬停放大 · gl…",
+      "categories": [
+        "decoration"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/r/lib.json",
+        "https://hulianui.haloritual.com/r/motion.json"
+      ],
+      "meta": {
+        "import": "import { Tilt, tiltAngles, glareState, normalizePointer } from \"@hulianui/ui\"",
+        "exports": [
+          "Tilt",
+          "tiltAngles",
+          "glareState",
+          "normalizePointer"
+        ],
+        "types": [
+          "TiltAngles",
+          "TiltAngleOptions",
+          "GlareState",
+          "GlareOptions",
+          "TiltProps",
+          "TiltGlarePosition",
+          "TiltEventPayload"
+        ],
+        "group": "overlay-fx",
+        "tags": [
+          "\"animated\""
+        ],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilt/tilt.md",
+        "docLocal": "packages/ui/src/tilt/tilt.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/tilt/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/index.ts"
+        },
+        {
+          "path": "components/hulianui/tilt/tilt-geometry.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/tilt-geometry.ts"
+        },
+        {
+          "path": "components/hulianui/tilt/tilt.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/tilt.tsx"
+        },
+        {
+          "path": "components/hulianui/tilt/tilt.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/tilt/tilt.types.ts"
+        }
+      ]
+    },
+    {
       "name": "wavy-background",
       "type": "registry:ui",
       "title": "WavyBackground",
@@ -19530,6 +19776,11 @@
           "path": "components/hulianui/lib/is-dev.ts",
           "type": "registry:lib",
           "target": "components/hulianui/lib/is-dev.ts"
+        },
+        {
+          "path": "components/hulianui/lib/polymorphic.ts",
+          "type": "registry:lib",
+          "target": "components/hulianui/lib/polymorphic.ts"
         },
         {
           "path": "components/hulianui/lib/tone.ts",

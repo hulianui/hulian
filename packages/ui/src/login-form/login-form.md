@@ -10,7 +10,7 @@ status: enriched
 
 # LoginForm
 
-> 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Field/Input/Checkbox/Button·文案接 i18n) · forms/framework
+> 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + fields 字段外观槽(label/placeholder/prefix) + surface 卡面开关(分屏登录页免卡中卡)(复用 Field/Input/Checkbox/Button·文案接 i18n) · forms/framework
 
 ## 何时用
 
@@ -37,6 +37,8 @@ import { LoginForm } from "@hulianui/ui"
 | showRemember | `boolean` | `true` | 是否显示「记住我」 |
 | rules | `{ username?: FormRule[]; password?: FormRule[] }` | — | 字段级校验规则，追加在内置必填之后（`FormRule` 同 [Form](../form/form.md)：`pattern`/`min`/`max`/`validator`/`message`） |
 | values | `Partial<LoginValues>` | — | 受控值：传入即受控，需配合 `onValuesChange` 回写；不传维持内部自管 |
+| fields | `{ username?: LoginFieldSlot; password?: LoginFieldSlot }` | — | 两个主字段的**外观槽**：`label` / `placeholder` / `prefix` / `suffix` / `description` / `autoComplete`。取值与校验仍由模板托管 |
+| surface | `boolean` | `true` | 自带卡面（边框 + 底色 + 阴影 + 内距）。分屏登录页 / 已经有卡的容器里传 `false`，表面交给外层 |
 | className | `string` | — | 根节点类名 |
 
 ## Events
@@ -111,6 +113,37 @@ const ticket = useRef<string | null>(null);
 - `beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不需要自己再管 loading。
 - 若父层自己也在管提交态（如全局 loading），用 `loading` prop 覆盖内置 loading，别另写一份。
 - `onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。
+
+### 字段外观与卡面（分屏登录页）
+
+```tsx
+// 左品牌面板 + 右表单：右半边不该再套一张卡，surface={false} 把表面交给外层
+<div className="grid xl:grid-cols-2">
+  <AuthPanel title="欢迎回来" description="统一身份认证平台" />
+  <div className="grid place-items-center p-8">
+    <LoginForm
+      surface={false}
+      fields={{
+        username: { label: "管理员账号", placeholder: "请输入账号", prefix: <UserRound /> },
+        password: { placeholder: "请输入密码", prefix: <KeyRound /> },
+      }}
+    />
+  </div>
+</div>
+```
+
+`fields` 只覆盖**外观**——取值、校验、`autoComplete` 默认值仍由模板托管，
+所以换个 label 不会把浏览器的账号/密码自动填充弄丢（真要改传 `fields.username.autoComplete`）。
+
+`surface={false}` 关掉的是边框 / 底色 / 阴影 / **内距**四件一起。只关三件会逼消费方再写
+`xl:p-0` 补最后一刀，等于没关（hulianui/hulian#70）。
+
+### 「记住我」的文案与说明
+
+`rememberLabel` 覆盖文案、`rememberDescription` 在勾选项下方加一行说明。
+这个勾选并不总是「下次免登录」的体验糖——有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token），
+文案是刻意写的；锁死在 locale 就只能退回手写表单（hulianui/hulian#64）。
+说明行紧贴勾选项，而 `extra` 槽在密码框与记住我之间，位置不对。
 
 ## 相关
 [ClickCaptcha](../click-captcha/click-captcha.md) · [Form](../form/form.md) · [ModalForm / DrawerForm](../form-dialog/form-dialog.md) · [ProForm](../pro-form/pro-form.md) · [StepsForm](../steps-form/steps-form.md) · [Field](../field/field.md) · [SearchForm](../search-form/search-form.md)

@@ -548,7 +548,7 @@ export function MobileStore() {
     // 屏幕容器：relative 是让 Fab 用 absolute 定位约束在这里面
     <div
       ref={screenRef}
-      className="relative flex h-full flex-col overflow-hidden bg-background"
+      className="relative flex h-full flex-col overflow-hidden bg-bg"
     >
       {/* 顶部安全区 + 标题栏 */}
       <SafeArea edges={["top"]} mode="padding" min={0}>

@@ -51,3 +51,37 @@ describe("Stack", () => {
     expect(cls).toContain("sm:flex-row");
   });
 });
+
+// —— 类型回归（编译期断言，hulianui/hulian#62）——
+// 这些函数不需要被调用：`as` 一旦不再参与推导，tsc 就会在此处报错。
+// 早先 as="form" 后 onSubmit 的 currentTarget 退化成 HTMLElement，
+// event.currentTarget.elements 这类表单专有 API 全部拿不到。
+function _typeCheckAsForm() {
+  return (
+    <Stack
+      as="form"
+      onSubmit={(event) => {
+        const form: HTMLFormElement = event.currentTarget;
+        void form.elements;
+      }}
+    />
+  );
+}
+
+function _typeCheckAsAnchor() {
+  return <Stack as="a" href="#anchor" />;
+}
+
+describe("Stack 响应式断点", () => {
+  it("direction 支持 xl / 2xl 档", () => {
+    const { container } = render(<Stack direction={{ base: "column", xl: "row", "2xl": "column" }} />);
+    const cls = (container.firstElementChild as HTMLElement).className;
+    expect(cls).toContain("xl:flex-row");
+    expect(cls).toContain("2xl:flex-col");
+  });
+
+  it("as 渲染成对应标签", () => {
+    const { container } = render(<Stack as="form" />);
+    expect(container.firstElementChild?.tagName).toBe("FORM");
+  });
+});

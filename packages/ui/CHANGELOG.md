@@ -1,5 +1,155 @@
 # @hulianui/ui
 
+## 0.19.1
+
+### Patch Changes
+
+- 67038ed: `nav-menu.md`：消歧 `semantics` 那条坑位，并补一个站点主导航示例（closes #76）
+
+  0.19.0 加 `semantics` 时（#69），props 表写的是「**站点主导航选 `list`**」，而禁忌/坑那条写成了
+  「站点主导航留在默认 `tree` 档，读屏用户是真的找不到那些链接」—— 后者本意是**条件警告**（若留在
+  tree 就找不到），但中文里「留在」既可以是「保持」，也可以出现在省略了「如果」的条件小句里，
+  而这句前面正好是一句祈使（「别随便选」），读者的语感会顺着读成祈使句，于是变成「请留在 tree」，
+  与 props 表相反。
+
+  代价不对称：#69 整条 issue 就是围绕「主导航该是 list 还是 tree」，读错就把刚修好的可达性问题
+  原样留着，而且**两档皮肤一模一样、不会有任何报错**。所以：
+
+  - 把条件补全（「**如果**留在默认 `tree` 档 → 读屏按『列出页面所有链接』一条都找不到 → 那种场景请显式传 `semantics="list"`」），并点明「看不出选错」这个前提。
+  - 示例区此前**没有一个**带 `semantics`，照抄就会退回默认档。现在把「站点主导航」作为第一个示例（带 `semantics="list"` + `render` 接路由），并给原来的会话列表示例注明它为什么不需要（命令式选择、行是 `<button>`，不是链接导航；若会话项是真链接则同样要传）。
+
+  改的是随包发布的组件文档（`src/**/*.md` 在 npm 包内，MCP 的 `get_component_doc` 本地模式直接读它），
+  所以发 patch 让消费方的 agent 也拿到修正后的文案。组件实现未改动。
+
+## 0.19.0
+
+### Minor Changes
+
+- 126ace2: 新增 AuthPanel，六处逃生口清掉消费方缺口（closes #67 #69 #70 #71 #72 #73）
+
+  两个下游（hulian-admin 的分屏登录/注册页、cairn 的试卷标注）一次报来六条，共同点是**查完文档后仍绕不过去**：分屏认证页的渐变面板只能裸 `<div>` + inline style，后台登录页的字段外观只能 `className` 覆盖，主导航为了保住 link 语义只能手写 `<Link>` 行，图例色点只能裸 `<span>`，框选坐标只能在调用处包一层 floor/ceil——全是 conventions 明令禁止的「业务侧打补丁」。这批把它们收回库内。
+
+  **新组件**
+
+  - `AuthPanel`：分屏登录/注册/找回密码页左侧那块宣传面板（渐变底 + 品牌 + 标语 + 卖点 + 底部区）。它存在的理由不是省几行 flex，而是**渐变此前没有正经的表达方式**——Tailwind 工具类给不出 `radial-gradient(125% 125% at 0% 0%, color-mix(in oklab, …), …)` 这种带 token 混色的写法，而 guard 的 `no-style-override` 是 error 级，两条一撞只剩裸 `<div>` + inline style 一条路（官方 `signup` block 自己就是这么写的，本次已换掉）。四档配方 `radial` / `linear` / `mesh` / `none` 都以 `--color-bg` 打底做 `color-mix`，**暗色自动跟随，不必另写一套**；`color` 走 `resolveTone`，与 `Brand.color` / `Dot.color` / `ChartSeries.color` 同一条路径（#71）。
+
+    ```tsx
+    <div className="grid min-h-dvh xl:grid-cols-2">
+      <AuthPanel
+        brand={<Brand name="瀚云" />}
+        title="把想法送上全球边缘"
+        highlights={["免费开始", "从 git push 到全球边缘上线"]}
+        className="hidden xl:flex"
+      />
+      <div className="grid place-items-center p-8">
+        <LoginForm surface={false} /> {/* 左面板已承担视觉重量，右边再套卡就是卡中卡 */}
+      </div>
+    </div>
+    ```
+
+  **能力增强**
+
+  - `LoginForm` 补 `fields` 与 `surface`：前者是两个主字段的**外观槽**（`label` / `placeholder` / `prefix` / `suffix` / `description` / `autoComplete`），只覆盖外观，取值与校验仍由模板托管，所以换 label 不会把浏览器的账号/密码自动填充弄丢；后者关掉自带卡面时把边框 / 底色 / 阴影 / **内距**四件一起关——只关三件会逼消费方再写 `xl:p-0` 补最后一刀，等于没关（#70）。
+  - `NavMenu` 补 `semantics?: "tree" | "list"`（默认 `tree`，既有消费方零改动）。`#59` 的 `render` 逃生口虽然渲出了真 `<a>`，但行上的 `role="treeitem"` 会压过它的隐式 link role：中键新标签页 / 右键复制链接回来了，无障碍树里它仍是 treeitem，读屏最常用的「列出页面所有链接」一条主导航都列不出来。`list` 档不写 role（`<a>` 是 link、`<button>` 是 button），选中态改用 `aria-current="page"`，键盘退回「Tab 逐项 + 原生激活」——站点主导航在 ARIA APG 里本就是 list + link，`tree` 留给文件树 / 大纲树（#69）。
+  - `Dot` 补 `color?: string`：走 `resolveTone` 接任意色。五档 `tone` 接不住图表序列色（默认取值就是 `chart-1..6`），而图例色点要的正是「跟序列同色」。与 `tone` 同传时 `color` 优先（#73）。
+  - `AreaChart` / `BarChart` / `LineChart` 补 `legend?: boolean | "top" | "bottom"`：多序列图不给图例，读者无从知道哪条线是哪条序列。内部复用 `Dot` + `series.label`，色点与序列色同源。`height` 仍是**组件总高**——开图例时画布相应变矮，不会把总高撑高（#73）。
+  - `RegionSelect` 补 `errorPlaceholder` / `onError`：底图 404 / 403 / 跨域 / 网络失败时有出口，不再永久停在「载入图片…」。预读此前只挂 `onload` 不挂 `onerror`；现在预读与画布 `<image>` 共用同一失败态（中途鉴权过期只让 SVG 那次请求失败时同样有出口），缓存里的失败结果（`complete` 且 `naturalWidth` 为 0）也进失败态，`src` 变化会复位。后端按需渲染的底图（页图还没推到当前环境、签名 URL 过期、权限不足）这不是边缘情况，是常态（#67）。
+
+  **行为变更**
+
+  - `RegionSelect` 的 `onChange` 现在给**整数**坐标（新增 `round?: "expand" | "nearest" | "none"`，默认 `expand`；另导出纯函数 `roundBox`）。此前给的是浮点，而组件自称的坐标系是「原图像素」——落库（`list[int]` 之类的列约束）、服务端裁图（PIL / OpenCV / sharp 的 crop 都要整数，各自的隐式取整方向还不一致，裁出来差一两像素且没人解释得清）、`box === savedBox` 这种「有没有改过」的判断，三处都吃不下浮点。
+
+    默认选 `expand`（左上 `floor`、右下 `ceil`）而不是 `nearest`：**取整不缩小框**，否则一个刚好拖够 `minSide` 的框会被收成 `minSide - 1`，人明明拖够了却存不上，症状是「拖了没反应」。`minSide` 的判定也相应移到取整之后，与最终出口一致。拖拽预览（`onDrafting`）仍是浮点，视觉更跟手。要亚像素传 `round="none"` 即回到旧行为；已在调用处自己包 floor/ceil 的可以删掉了（#72）。
+
+  **文档**
+
+  两条会**静默失效**、光看代码看不出来的坑写进了对应的 `<slug>.md`：
+
+  - `<Dot style={{ color }} />` 改不动圆点颜色——圆点是背景色，`color` 管的是文字色。那样写编译通过、guard 只报 `no-style-override`、页面上一律灰点，写的人以为生效了。自定义颜色只走 `color` prop。
+  - `RegionSelect` 的取整缺陷在 1:1 或整数倍缩放下完全测不出来（坐标本就落在整数上）。自己写测试请用除不尽的比例，库内用的是 756→396。
+
+  `nav-menu.md` 里那句「`render` 让读屏按链接播报」按实现更正为**需配 `semantics="list"`**——消费方正是照着这句话选型的。
+
+## 0.18.0
+
+### Minor Changes
+
+- 新增 8 个组件，修 9 条消费方缺口。
+
+  **新组件**
+
+  - `ShieldBadge` / `ShieldBadgeGroup`：README 徽章（shields.io 风格的双段贴纸）。纯 CSS 渲染吃主题，不再靠 img.shields.io 远程图片；配纯函数 `compactCount`（1.5k / 3.4M）。
+  - `AwardBadge`：桂冠奖章（GitHub Trending / Product Hunt 那类荣誉牌）。桂冠由 `laurelLeaves` / `laurelStemPath` 纯函数算出，吃 currentColor、缩放不糊、零图片请求。
+  - `ContributionGraph`：贡献活动墙。calendar 周列 × 星期行 / strip 单行活动条，日期算术抽成 `buildContributionCalendar` 纯函数，色阶复用 Heatmap 的 bucketize。
+  - `Legend`：独立图例。recharts 的 Legend 出不了图外，自绘图形（Sparkline / Heatmap / 贡献墙 / 地图）此前只能各自手搓彩点；缺省色按序取 chart-1..6，与 Chart 同套 token。
+  - `AppLauncher`：应用启动台（macOS Launchpad 形态）。搜索与分类各自可受控，`keywords` 支持拼音别名，方向键在网格漫游焦点，筛选分节是纯函数。
+  - `RegionSelect`：在图上拖框选一块区域、拿回**原图像素坐标**（区别 ImageCropper 出 Blob）。坐标系零换算、自然尺寸自量、touch-none、描边按图宽（#54）。
+  - `Brand`：品牌标识（方角徽章 + 站点名）。Avatar 是圆的顶不了；`render` 可接框架路由件（#57）。
+  - `Tilt`：通用视差倾斜包裹器（对标 react-parallax-tilt）。指针/陀螺仪/手动角度三种驱动 + glare 反光，零依赖、吃瑚琏动效曲线、默认尊重 reduced-motion。
+
+  **能力增强**
+
+  - `QRCode`：补 `minVersion`（钉住版本下限让一组码密度一致）、`boostLevel`（不升版本白拿更高纠错）、`logo.excavate` / `logo.opacity`（水印式 logo），并新增 `qrCodeSvgString()` / `qrCodeToPngDataUrl()` 两个导出函数（服务端出 SVG / 浏览器出 PNG，按 DPR 放大、默认白底）。
+  - 布局原语 `Stack` / `Container` / `Grid` / `GridItem` / `Heading` / `Text` / `Prose` / `SafeArea` / `StreamingText` 改成**泛型多态**：`as="form"` 后 `onSubmit` 能拿到 `FormEvent<HTMLFormElement>`（#62）。
+  - `Grid` 的 `cols` 与 `Stack` 的 `direction` 响应式档位补 `xl` / `2xl`，与 Tailwind 断点表对齐（#61）。
+  - `Container` 的 `size` 补 `2xl`(max-w-6xl) / `3xl`(max-w-7xl)；居中与内距解耦成 `centered` 与 `padded`（#58）。
+  - `NavMenuItem` 补 `render` 逃生口：既保住 `<a>` 语义又能走客户端路由（#59）。
+  - `DrawerContent` 默认渲染右上角关闭按钮，配 `showClose` / `closeLabel`；locale 补 `drawer.close`（#63）。
+  - `LoginForm` 补 `rememberLabel` / `rememberDescription`：「记住我」并不总是体验糖，有时是刷新令牌开关（#64）。
+
+  **修复**
+
+  - `Image`：消费方传的 `onLoad` / `onError` 与内部的**合并**而不是被顶掉——此前一传 `onLoad` 图片就永久停在 `opacity-0`；同时补 `forwardRef` 到内层 `<img>`（#55）。
+  - `List`：`aria-label` / `aria-labelledby` / `aria-describedby` 透到 `role="list"` 的节点上，读屏不再听到无名列表（#60）。
+  - 清掉 55 处引用**未定义色 token** 的工具类（`text-muted-foreground` / `bg-background` / `bg-card` 等）——Tailwind 对未定义 token 不报错也不生成规则，元素静默继承父级颜色，「次要文字」渲染成正文同色。
+  - 三个源文件里的裸控制字节（用作 join 分隔符的 U+0000 / U+0001 被写成真字节），此前让 `file` 判定为 binary、grep 与 git diff 双双失灵。
+
+  **行为变更**
+
+  - `Container` 的 `padded={false}` 此前会连居中一起关掉，现在只关左右内距；要两者都关请同时传 `centered={false}`。
+
+## 0.17.0
+
+### Minor Changes
+
+- b02bc6f: LoginForm 补三个逃生口 + 新增 ClickCaptcha 点选人机验证（closes #50 #51）
+
+  一个 BuildAdmin 系后台的两个登录页**查完文档后仍绕开 `LoginForm` 各自手写表单**——不是没查，是它接不住：校验只有必填、外部拿不到字段实时值、没有验证码位。以它为核心的 `page-login` / `block-login` 推荐链因此整条断掉（装了也得拆）。这批补上缺口，模板不再是"只能做 demo"。
+
+  **LoginForm 三个口子**（都向后兼容，不传行为与之前完全一致）：
+
+  ```tsx
+  <LoginForm
+    // 1. 字段级校验：沿用 useForm 的 FormRule[] 形状，内置必填始终先跑
+    rules={{
+      username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: "账号格式不正确" }],
+      password: [{ min: 6, max: 32, message: "密码 6~32 位" }],
+    }}
+    // 2. 受控逃生口：外部持有实时值（受控回写不会二次触发 onValuesChange，不会循环）
+    values={values}
+    onValuesChange={(_changed, all) => setValues(all)}
+    // 3. 提交前异步拦截 + 表单内插槽：验证码链路终于能挂进来
+    extra={<ClickCaptcha backgroundSrc={captcha.background} onComplete={setPoints} />}
+    beforeSubmit={async () => {
+      if (points.length < 3) return false; // 返回 false / 抛错即中止提交
+      ticket.current = await api.verifyCaptcha(captcha.id, points);
+    }}
+    onFinish={({ username, password }) => api.login(username, password, ticket.current)}
+  />
+  ```
+
+  `beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不必自己再管 loading。
+
+  **新增 `ClickCaptcha`**：点选式人机验证的**纯 UI 层**——给定背景图与提示图，采集点击序列并回传**相对坐标（x/y ∈ [0,1]）**。
+
+  有意不做的事：不发请求、不认协议。`captchaId` 语义、`captchaInfo` 编码、接口路径各家后端不同（BuildAdmin / 极验 / 防水墙），进库就是 API 债。你在 `onComplete` 里编码成自家协议串再发请求，按结果把 `status` 置 `success` / `failed`。
+
+  组件吃掉的正是自建时最占篇幅、最容易做错的部分：坐标换算（相对值，容器缩放 / 响应式 / 高 DPI 都不错位）、序号标记与撤销、换一张、失败抖动并清空、加载遮罩、图片加载失败兜底，以及**键盘可达**（区域可聚焦，方向键移准星、Enter/Space 落点、Backspace 撤销）。抖动走 `motion-safe:`，`prefers-reduced-motion` 下不抖，失败仍有 `aria-live` 文案播报。
+
+  滑块拼图式（SliderCaptcha）本批不做——同一「纯 UI 层」原则，需要时单独提。
+
+  配套：`@hulianui/tokens` 新增关键帧 `hulian-captcha-shake`；`@hulianui/mcp` 搜索词表补「验证码 / 人机验证 / 点选」→ `click-captcha`（此前搜这些词只会命中 InputOTP / Slider，正是 #51 的起点）。
+
 ## 0.16.0
 
 ### Minor Changes

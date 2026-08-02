@@ -45,7 +45,7 @@ const SIZE: Record<ProseSize, string> = {
   base: "text-base",
 };
 
-export function Prose({ as, size = "base", className, ...props }: ProseProps) {
+export function Prose<E extends ElementType = "div">({ as, size = "base", className, ...props }: ProseProps<E>) {
   const Comp = (as ?? "article") as ElementType;
   return <Comp className={cn(proseBase, SIZE[size], className)} {...props} />;
 }

@@ -150,3 +150,19 @@ describe("ListItem.Meta", () => {
     expect(queryByTestId("av")).toBeNull();
   });
 });
+
+describe("List 无障碍名（hulianui/hulian#60）", () => {
+  it("aria-label 落在 role=list 的节点上，而不是外层容器", () => {
+    const { getByRole } = render(
+      <List aria-label="积分明细记录" items={["a", "b"]} renderItem={(x) => <span>{x}</span>} />,
+    );
+    expect(getByRole("list", { name: "积分明细记录" })).toBeTruthy();
+  });
+
+  it("grid 模式同样把无障碍名给到列表节点", () => {
+    const { getByRole } = render(
+      <List aria-label="卡片列表" grid={{ cols: 2 }} items={["a"]} renderItem={(x) => <span>{x}</span>} />,
+    );
+    expect(getByRole("list", { name: "卡片列表" })).toBeTruthy();
+  });
+});

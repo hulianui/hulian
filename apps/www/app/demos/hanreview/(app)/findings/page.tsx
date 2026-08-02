@@ -32,7 +32,10 @@ type Severity = Finding["severity"];
 type FindingType = Finding["type"];
 type FindingStatus = Finding["status"];
 
-const SEVERITY_META: Record<Severity, { label: string; tone: "danger" | "warning" | "brand" | "neutral" }> = {
+const SEVERITY_META: Record<
+  Severity,
+  { label: string; tone: "danger" | "warning" | "brand" | "neutral" }
+> = {
   critical: { label: copy("serious"), tone: "danger" },
   major: { label: copy("important"), tone: "warning" },
   minor: { label: copy("secondary"), tone: "brand" },
@@ -48,7 +51,10 @@ const TYPE_LABEL: Record<FindingType, string> = {
   test: copy("test"),
 };
 
-const STATUS_META: Record<FindingStatus, { label: string; tone: "neutral" | "success" | "warning" | "danger" }> = {
+const STATUS_META: Record<
+  FindingStatus,
+  { label: string; tone: "neutral" | "success" | "warning" | "danger" }
+> = {
   open: { label: copy("pending"), tone: "danger" },
   fixed: { label: copy("fixed"), tone: "success" },
   ignored: { label: copy("ignored"), tone: "neutral" },
@@ -148,7 +154,7 @@ export default function FindingsPage() {
       accessorKey: "file",
       header: copy("fileLine"),
       cell: ({ row }) => (
-        <span className="font-mono text-xs text-muted-foreground">
+        <span className="font-mono text-xs text-muted">
           {row.original.file}:{row.original.line}
         </span>
       ),
@@ -181,14 +187,16 @@ export default function FindingsPage() {
       accessorKey: "firstSeen",
       header: copy("firstAppearance"),
       cell: ({ row }) => (
-        <span className="tabular-nums text-xs text-muted-foreground">{row.original.firstSeen}</span>
+        <span className="tabular-nums text-xs text-muted">{row.original.firstSeen}</span>
       ),
     },
     {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <Button variant="link" size="sm" onClick={() => setActive(row.original)}>{copy("view")}</Button>
+        <Button variant="link" size="sm" onClick={() => setActive(row.original)}>
+          {copy("view")}
+        </Button>
       ),
     },
   ];
@@ -301,12 +309,25 @@ export default function FindingsPage() {
           footer={
             active ? (
               <div className="flex flex-wrap items-center justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => applyStatus(active, "fixed")}>{copy("markedAsModified")}</Button>
-                <Button variant="outline" size="sm" onClick={() => applyStatus(active, "ignored")}>{copy("ignore")}</Button>
-                <Button variant="outline" tone="danger" size="sm" onClick={() => applyStatus(active, "wontfix")}>{copy("falsePositives")}</Button>
+                <Button variant="outline" size="sm" onClick={() => applyStatus(active, "fixed")}>
+                  {copy("markedAsModified")}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => applyStatus(active, "ignored")}>
+                  {copy("ignore")}
+                </Button>
+                <Button
+                  variant="outline"
+                  tone="danger"
+                  size="sm"
+                  onClick={() => applyStatus(active, "wontfix")}
+                >
+                  {copy("falsePositives")}
+                </Button>
                 <DrawerClose
                   render={
-                    <Button variant="ghost" size="sm">{copy("close")}</Button>
+                    <Button variant="ghost" size="sm">
+                      {copy("close")}
+                    </Button>
                   }
                 />
               </div>
@@ -328,9 +349,11 @@ export default function FindingsPage() {
               </div>
 
               <section className="flex flex-col gap-1.5">
-                <h4 className="text-sm font-medium text-foreground">{copy("problemDescription")}</h4>
-                <p className="text-sm text-muted-foreground">{active.ruleDesc}</p>
-                <p className="font-mono text-xs text-muted-foreground">
+                <h4 className="text-sm font-medium text-foreground">
+                  {copy("problemDescription")}
+                </h4>
+                <p className="text-sm text-muted">{active.ruleDesc}</p>
+                <p className="font-mono text-xs text-muted">
                   {active.file}:{active.line} ·{" "}
                   <Link
                     href={`/demos/hanreview/reviews/${active.reviewId}`}

@@ -137,8 +137,14 @@ export function installedVersion(root, name, declared = null) {
  *
  * 两条独立判据，任一成立即算本地接入：
  *   · 声明的 specifier 是 `workspace:` / `link:` / `file:` —— 那是使用者写下的真实意图
- *   · 解析后的真实路径**逃出**了这一层 node_modules 树 —— pnpm store 的 realpath 仍在树内，
- *     指向兄弟仓或 workspace 包则在树外
+ *   · 解析后的真实路径**逃出了所有 node_modules 树** —— pnpm store 的 realpath 仍在某层树内，
+ *     指向兄弟仓或 workspace 包则哪层都不在
+ *
+ * 第二条的基准是**沿途每一层** node_modules，不是发现该包的那一层（#68）：
+ * pnpm workspace 子项目里 `apps/web/node_modules/@hulianui/ui` 指向的是**仓库根**的
+ * `node_modules/.pnpm/…`，天然「逃出」了 apps/web 那层 —— 只比对发现层会把每个 workspace
+ * 子项目里的普通 registry 包都判成 local-link，版本漂移门禁又一次静默失效。
+ * 单包项目下 `.pnpm` 恰好与发现层同级，所以 #45 的回归测试当时能过，缺陷藏了下来。
  *
  * workspace 与 link/file 语义不同（前者是 monorepo 内的一等公民，后者是临时联调），
  * 分开标注，调用方按需区分；两者都不该参与「声明 vs 实装」的漂移比对。
@@ -149,12 +155,23 @@ function linkKindOf(nodeModulesDir, entry, declared) {
   if (spec.startsWith("link:") || spec.startsWith("file:")) return "local-link";
   try {
     const real = realpathSync(entry);
-    const base = realpathSync(nodeModulesDir);
-    if (real !== base && !real.startsWith(base + sep)) return "local-link";
+    // 从该 node_modules 的宿主目录一路向上，任一层的 node_modules 收得住就不算本地接入。
+    let dir = dirname(nodeModulesDir);
+    for (;;) {
+      const candidate = join(dir, "node_modules");
+      if (existsSync(candidate)) {
+        const base = realpathSync(candidate);
+        if (real === base || real.startsWith(base + sep)) return null;
+      }
+      const parent = dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+    return "local-link";
   } catch {
     // 读不到就当不是：宁可漏报一次联调，也不能把 pnpm store 软链误判成联调
+    return null;
   }
-  return null;
 }
 
 /**
@@ -287,6 +304,35 @@ function probe(root, candidates, pattern) {
   return { status: scanned.length ? "not-found" : "unknown", file: null, scanned };
 }
 
+
+/**
+ * 解析 CSS 里的 `@source "<路径>"`，逐条把目标解析成绝对路径并检查是否存在。
+ *
+ * 只按文本匹配「有没有写 @source」是不够的（hulianui/hulian#66）：pnpm workspace 里
+ * 真实包入口可能在 `apps/web/node_modules`，而 CSS 写的是 `../../../node_modules/...`，
+ * 解析后根本不存在 —— 于是 setup 表面全绿、构建也成功，但库内 Tailwind 工具类一个都没生成，
+ * 页面退化成无样式文本，typecheck / 单测 / guard 全都发现不了。
+ *
+ * glob 只取静态前缀（第一个含 * 的段之前），足够判断「这条路径指对了没有」。
+ */
+export function resolveSourceTargets(cssAbsPath, cssText) {
+  const dir = dirname(cssAbsPath);
+  const out = [];
+  const re = /@source\s+(?:not\s+)?["']([^"']+)["']/g;
+  let m;
+  while ((m = re.exec(cssText))) {
+    const raw = m[1];
+    if (!raw.includes("@hulianui/ui")) continue;
+    const staticPrefix = raw.split("/").reduce((acc, seg) => {
+      if (acc.stop || seg.includes("*")) return { parts: acc.parts, stop: true };
+      return { parts: [...acc.parts, seg], stop: false };
+    }, { parts: [], stop: false }).parts.join("/");
+    const abs = isAbsolute(staticPrefix) ? staticPrefix : resolve(dir, staticPrefix);
+    out.push({ raw, resolved: abs, exists: existsSync(abs) });
+  }
+  return out;
+}
+
 export function inspectProject({ explicit, roots, cwd } = {}) {
   const { projectRoot, projectRootSource } = resolveProjectRoot({ explicit, roots, cwd });
   const warnings = [];
@@ -347,7 +393,24 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
   // 入口 import 推出来的样式表排在固定候选之前 —— 那是这个项目真正在用的那份
   const cssCandidates = [...new Set([...cssFromEntries(projectRoot), ...CSS_CANDIDATES])];
   const tokensCss = probe(projectRoot, cssCandidates, /@hulianui\/tokens\/tokens\.css/);
-  const tailwindSource = probe(projectRoot, cssCandidates, /@source[^\n]*@hulianui\/ui/);
+  const tailwindSourceProbe = probe(projectRoot, cssCandidates, /@source[^\n]*@hulianui\/ui/);
+  // 写了 @source ≠ 指对了：把路径解析出来看目标存不存在（hulianui/hulian#66）。
+  const sourceTargets = tailwindSourceProbe.file
+    ? resolveSourceTargets(
+        join(projectRoot, tailwindSourceProbe.file),
+        readTextIfExists(join(projectRoot, tailwindSourceProbe.file)) ?? "",
+      )
+    : [];
+  const tailwindSource = {
+    ...tailwindSourceProbe,
+    status:
+      tailwindSourceProbe.status === "detected" && sourceTargets.length > 0
+        ? sourceTargets.some((t) => t.exists)
+          ? "detected"
+          : "invalid"
+        : tailwindSourceProbe.status,
+    targets: sourceTargets,
+  };
 
   const setup = {
     themeProvider: themeProvider.status,
@@ -355,6 +418,8 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
     accessProvider: accessProvider.status,
     tokensCss: tokensCss.status,
     tailwindSource: tailwindSource.status,
+    // 解析后的候选路径：便于消费方定位 pnpm workspace 与单包安装的差异
+    tailwindSourceTargets: tailwindSource.targets,
     componentsJson: configs.components ?? null,
     transpilePackages: nextConfigText
       ? /transpilePackages[\s\S]{0,120}@hulianui\/ui/.test(nextConfigText)
@@ -423,6 +488,15 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
       "没找到任何全局样式表：常见路径都不存在，扫过的入口文件里也没有相对路径的 CSS import。" +
         "tokens.css / @source 两项因此是 unknown（**探测不到**，不是「你没接」）—— " +
         "样式表若在别处，带上它的路径自行确认，别据此断定缺接入",
+    );
+  }
+  if (usesHulian && tailwindSource.status === "invalid") {
+    warnings.push(
+      `${tailwindSourceProbe.file} 里写了 @source 指向 @hulianui/ui，但解析后的目标不存在：` +
+        `${tailwindSource.targets.map((t) => `${t.raw} → ${t.resolved}`).join("；")}。` +
+        "这条最阴：构建照样成功、DOM className 也正常，但库内 Tailwind 工具类一个都没生成，" +
+        "页面退化成无样式文本。pnpm workspace 里包常被提到 <app>/node_modules，" +
+        "路径层级要按样式表**自身所在目录**数",
     );
   }
   if (usesHulian && tailwindSource.status === "not-found") {

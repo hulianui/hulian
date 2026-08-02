@@ -221,6 +221,21 @@ export const navMenuShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "站点主导航语义（semantics=\"list\"）",
+      description:
+        "默认 tree 档给行加 role=treeitem，会压过 <a> 的隐式 link role——读屏「列出页面所有链接」一条主导航都列不出来。list 档不写 role：<a> 是 link、<button> 是 button，键盘退回 Tab 逐项 + 原生激活。皮肤完全一样，改的只是无障碍树。文件树 / 大纲树留在默认 tree 档。",
+      code: `<NavMenu
+  items={items}
+  semantics="list"
+  defaultSelectedKeys={["dashboard"]}
+/>`,
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-border bg-surface p-2">
+          <NavMenu items={ITEMS} semantics="list" defaultSelectedKeys={["dashboard"]} />
+        </div>
+      ),
+    },
+    {
       title: "默认展开子菜单",
       description: "defaultOpenKeys 指定初始展开的父项，配合子项选中定位当前页。",
       code: `<NavMenu

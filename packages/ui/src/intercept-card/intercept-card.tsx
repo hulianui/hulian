@@ -71,7 +71,7 @@ export function InterceptCard({
     <article
       data-severity={severity}
       className={cn(
-        "relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border bg-card",
+        "relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border bg-surface",
         className,
       )}
     >
@@ -126,7 +126,7 @@ export function InterceptCard({
                 onChange={(e) => setReason(e.target.value)}
                 placeholder={overridePlaceholder}
                 rows={2}
-                className="w-full resize-y rounded-[var(--radius)] border border-border bg-background px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full resize-y rounded-[var(--radius)] border border-border bg-bg px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring"
               />
               <div className="flex items-center gap-2">
                 <button

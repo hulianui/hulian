@@ -36,7 +36,7 @@ function WorkCard({ work, featured }: { work: Work; featured?: boolean }) {
       aria-label={`${copy("viewProject")}${work.name}`}
       className={cn(
         "group relative block rounded-[var(--radius)] outline-none",
-        "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         featured && "md:col-span-2 md:row-span-2",
       )}
     >

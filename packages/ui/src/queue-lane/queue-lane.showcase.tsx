@@ -51,7 +51,7 @@ const categoryJobs: Job[] = [
 
 function JobCard({ job, index }: { job: Job; index: number }) {
   return (
-    <div className="rounded-[var(--radius)] border border-border bg-background px-3 py-2 transition-colors hover:border-primary/40">
+    <div className="rounded-[var(--radius)] border border-border bg-bg px-3 py-2 transition-colors hover:border-primary/40">
       <div className="flex items-center justify-between gap-2">
         <span className="truncate text-[13px] font-medium text-foreground">{job.title}</span>
         {/* 队列位次徽标：0 = 队首（FIFO） */}

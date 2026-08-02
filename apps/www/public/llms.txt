@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 372 个组件 · v0.16.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 376 个组件 · v0.19.1
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -58,7 +58,8 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 …
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（57）
+## 表单 forms（59）
+- [AuthPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md): 认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind…
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 按钮 · CVA 变体 + press 动效
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体)
 - [Calendar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/calendar/calendar.md): 日历面板 · 自研零依赖(日/月/年三层下钻·常驻不带浮层) + min-max/disabledDate/今天快捷 · 定宽字符串受控
@@ -84,7 +85,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Input](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input/input.md): 输入框 · Base UI Field + 前后缀 + invalid
 - [InputOTP](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input-otp/input-otp.md): 验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)
 - [Listbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/listbox/listbox.md): 可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)
-- [LoginForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/login-form/login-form.md): 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Fiel…
+- [LoginForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/login-form/login-form.md): 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + field…
 - [MarkdownEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown-editor/markdown-editor.md): Markdown 编辑器 · WYSIWYG 罩 TipTap + 值进出 markdown 字符串 + 隐藏 input 桥 Field + 标准集工具栏
 - [Mentions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/mentions/mentions.md): @提及输入 · 复用 Textarea 皮肤 + 触发符唤起候选(镜像 div 测光标像素坐标) + aria-activedescendant 虚拟焦点(零依赖)
 - [ModalForm / DrawerForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form-dialog/form-dialog.md): 弹窗/抽屉表单 · 列表页新增/编辑编排件(复用 Dialog/Drawer + useForm + Button footer) · 提交前自动 validate · async onFinish 成功关闭/失败保持…
@@ -96,6 +97,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [RainbowButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rainbow-button/rainbow-button.md): 彩虹按钮 · chart 流光底 + 模糊光晕 + RSC · forms/button · #animated
 - [Rating](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rating/rating.md): 评分 · 零依赖受控星级(radio 语义) + 自定义图标 + hover 预览 + token 星色
 - [RegionCascader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-cascader/region-cascader.md): 中国省市区级联 · 内置全量行政区划(国家统计局口径·3级) + 浮层搜索直达 + onChange 同回码与名 · dogfood Cascader
+- [RegionSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-select/region-select.md): 图上框选回坐标 · 拖框拿回**原图像素** [x1,y1,x2,y2](区别 ImageCropper 出 Blob) · 反向拖规范化 + minSide 滤误点 + aspect 固定比例(撞边界整体缩不破比例)…
 - [RemoteSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/remote-select/remote-select.md): 远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips
 - [RippleButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ripple-button/ripple-button.md): 波纹按钮 · 点击落点扩散(Material) + reduced-motion · forms/button · #animated
 - [ScopeMatrix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scope-matrix/scope-matrix.md): 范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话
@@ -180,7 +182,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [PricingTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pricing-table/pricing-table.md): 定价对比矩阵 · 行列转置(列=被比项/模型·行=属性/价目) + 列高亮描边 + 角标(推荐/最佳性价比) + 表头吸顶 + 窄屏横滚(复用 ScrollArea·区别 Table 行=记录·模型市场定价对照刚需)
 - [ProfileCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/profile-card/profile-card.md): 全息名片卡 · 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-d…
 - [ProTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-table/pro-table.md): 高级表格 · 列表页编排层(复用 Table/SearchForm/Pagination) · 查询区 + 工具栏(密度/列设置/刷新/全屏) + 行选择 + 集成分页(企业中后台列表页旗舰)
-- [QRCode](https://github.com/hulianui/hulian/blob/master/packages/ui/src/qrcode/qrcode.md): 二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题 + UTF-8 中文 + 纠错级别 + 中心 logo(可 …
+- [QRCode](https://github.com/hulianui/hulian/blob/master/packages/ui/src/qrcode/qrcode.md): 二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题(区别 qrcode.react 写死黑白) + UTF-8 …
 - [QuestionCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-card/question-card.md): 题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 MathText 真数学版式 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chi…
 - [QueueLane](https://github.com/hulianui/hulian/blob/master/packages/ui/src/queue-lane/queue-lane.md): 优先级队列板 · 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」…
 - [ReflectiveCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/reflective-card/reflective-card.md): 金属反光证件卡 · 对角高光横扫 + 磨砂噪点 + 渐变发丝边框(纯 CSS 零依赖·token·RSC 安全·reduced-motion)，内容可插槽化 · data-display/collection · #a…
@@ -207,7 +209,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Watermark](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watermark/watermark.md): 水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)
 - [WorldMap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/world-map/world-map.md): 点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交…
 
-## 导航 navigation（31）
+## 导航 navigation（32）
 - [Accordion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/accordion/accordion.md): 手风琴 · Base UI 单/多开 + 高度过渡
 - [Affix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/affix/affix.md): 固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器
 - [Anchor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/anchor/anchor.md): 锚点导航 · 自研零依赖 scrollspy(IntersectionObserver) + 平滑滚动 + active CSS 变量滑动指示条 + offsetTop/二级项
@@ -215,6 +217,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [AppLauncher](https://github.com/hulianui/hulian/blob/master/packages/ui/src/app-launcher/app-launcher.md): 应用启动台 · 毛玻璃面板 + 搜索(标题即 placeholder) + 分类胶囊 + 图标网格(macOS Launchpad/工作台首页) · 搜索与分类各自可受控/非受控 · keywords 别名(拼音/英文…
 - [BackTop](https://github.com/hulianui/hulian/blob/master/packages/ui/src/back-top/back-top.md): 回顶 · 监听滚动容器超 visibilityHeight 淡入 + scrollTo smooth + prefers-reduced-motion 降级 auto(零依赖)
 - [BeianFooter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/beian-footer/beian-footer.md): 备案页脚 · ICP 备案号(可多个·默认链 miit) + 公网安备(警徽 icon·默认链 mps) + 版权行 · 中国大陆合规底栏(发丝边卡片·语义 token·外链新窗·RSC)
+- [Brand](https://github.com/hulianui/hulian/blob/master/packages/ui/src/brand/brand.md): 品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底…
 - [Breadcrumb](https://github.com/hulianui/hulian/blob/master/packages/ui/src/breadcrumb/breadcrumb.md): 面包屑 · 纯皮肤静态 + aria-current 当前页语义
 - [BubbleMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/bubble-menu/bubble-menu.md): 气泡导航菜单 · logo 气泡 + 汉堡切换钮，点开整屏铺一组错落旋转胶囊导航 · 胶囊弹性 scale 入场 + 标签上滑淡入按序错峰(motion·零 gsap·reduced-motion) · navigat…
 - [CardNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/card-nav/card-nav.md): 卡片导航 · ：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/glo…
@@ -229,7 +232,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Menubar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/menubar/menubar.md): 菜单条 · Base UI menubar 薄包(File/Edit/View 顶层项+下拉) + dogfood Menu 皮肤 + 键盘切换/方向键漫游
 - [Navbar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/navbar/navbar.md): 导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换
 - [NavigationMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/navigation-menu/navigation-menu.md): 导航菜单 · Base UI navigation-menu 薄包(mega 面板/共享 Viewport 尺寸形变) + 触发器/内容/链接 + chevron 旋转
-- [NavMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/nav-menu/nav-menu.md): 侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游
+- [NavMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/nav-menu/nav-menu.md): 侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游 + sema…
 - [PageHeader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/page-header/page-header.md): 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖)
 - [Pagination](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pagination/pagination.md): 分页器 · 纯皮肤受控 + 页码区间算法(省略号)
 - [PillNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pill-nav/pill-nav.md): 胶囊导航条 · 悬停底部圆涨满 + 文案翻转反相 + 激活指示圆点(纯 CSS·零依赖·RSC 安全·reduced-motion) · navigation/global · #animated
@@ -284,7 +287,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ToolCall](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tool-call/tool-call.md): 工具调用卡 · dogfood Collapsible + Dot状态色 + Spinner(运行中) · pending/running/success/error 四态 + 参数/结果折叠面板 + 工具图标
 - [TypingDots](https://github.com/hulianui/hulian/blob/master/packages/ui/src/typing-dots/typing-dots.md): 打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
 
-## 装饰 decoration（91）
+## 装饰 decoration（92）
 - [AnimatedBeam](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-beam/animated-beam.md): 动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver) · decoration/overlay-fx · #animated
 - [Antigravity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/antigravity/antigravity.md): 反重力粒子 · 吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点…
 - [Aurora](https://github.com/hulianui/hulian/blob/master/packages/ui/src/aurora/aurora.md): 极光渐变背景 · 双层 repeating-linear-gradient 横移干涉 + 径向 mask 聚焦 + chart token(纯 CSS·RSC) · decoration/backdrop · #ani…
@@ -375,6 +378,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [StripedPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/striped-pattern/striped-pattern.md): 斜条纹背景 · 纯 CSS 渐变 + currentColor
 - [TargetCursor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/target-cursor/target-cursor.md): 准星光标 · 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration…
 - [Threads](https://github.com/hulianui/hulian/blob/master/packages/ui/src/threads/threads.md): 流动丝线背景 · WebGL/ogl Perlin 波动线随鼠标摆动 + 透明底叠加 + chart token + 静态 fallback · decoration/backdrop · #animated #web…
+- [Tilt](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilt/tilt.md): 视差倾斜包裹器 · 裹住任意 children 做 3D 倾斜(区别 TiltedCard 的固定卡片结构) · 指针/陀螺仪/手动角度三种驱动 + 全窗跟踪 + 单轴限制 + 反向 + 静息角 + 悬停放大 · gl…
 - [WavyBackground](https://github.com/hulianui/hulian/blob/master/packages/ui/src/wavy-background/wavy-background.md): 噪声波浪 · canvas 多彩波浪带叠加 + 内联零依赖 value noise + chart token + reduced-motion 静态 · decoration/backdrop · #animated
 
 ## 设备外壳 mockups（7）

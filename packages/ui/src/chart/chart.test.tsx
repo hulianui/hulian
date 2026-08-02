@@ -122,3 +122,66 @@ describe("RadialChart", () => {
     expect(container.querySelector("svg")).toBeTruthy();
   });
 });
+
+// hulianui/hulian#73：多序列图不给图例，读者无从知道哪条线是哪条序列。
+describe("Chart legend", () => {
+  it("默认不出图例（兼容既有版式）", () => {
+    const { queryByText } = render(<AreaChart data={data} series={series} xKey="month" />);
+    expect(queryByText("营收")).toBeNull();
+  });
+
+  it("legend 开启后逐序列出 label", () => {
+    const { getByText } = render(<AreaChart data={data} series={series} xKey="month" legend />);
+    expect(getByText("营收")).toBeTruthy();
+    expect(getByText("订单")).toBeTruthy();
+  });
+
+  it("色点与序列色同源：缺省按 index 走 chart-N", () => {
+    const { container } = render(<LineChart data={data} series={series} xKey="month" legend />);
+    const dots = [...container.querySelectorAll("[aria-hidden].rounded-full")] as HTMLElement[];
+    expect(dots[0].style.backgroundColor).toBe(chartColor(0));
+    expect(dots[1].style.backgroundColor).toBe(chartColor(1));
+  });
+
+  it("序列显式 color 覆盖色点", () => {
+    const { container } = render(
+      <BarChart data={data} series={[{ key: "revenue", label: "营收", color: "success" }]} xKey="month" legend />,
+    );
+    const dot = container.querySelector("[aria-hidden].rounded-full") as HTMLElement;
+    expect(dot.style.backgroundColor).toBe("var(--color-success)");
+  });
+
+  it("无 label 的序列回落到 key", () => {
+    const { getByText } = render(
+      <LineChart data={data} series={[{ key: "revenue" }]} xKey="month" legend />,
+    );
+    expect(getByText("revenue")).toBeTruthy();
+  });
+
+  it("legend=\"top\" 排在画布之前，\"bottom\" 排在之后", () => {
+    const top = render(<AreaChart data={data} series={series} xKey="month" legend="top" />).container
+      .firstElementChild!;
+    expect(top.firstElementChild!.textContent).toContain("营收");
+    const bottom = render(<AreaChart data={data} series={series} xKey="month" legend="bottom" />)
+      .container.firstElementChild!;
+    expect(bottom.lastElementChild!.textContent).toContain("营收");
+  });
+
+  it("height 仍是组件总高：开图例时画布变矮，而不是把总高撑高", () => {
+    const withLegend = render(<AreaChart data={data} series={series} xKey="month" height={300} legend />)
+      .container.firstElementChild as HTMLElement;
+    expect(withLegend.style.height).toBe("300px");
+    const canvas = withLegend.querySelector("div[style*='height']") as HTMLElement;
+    expect(parseInt(canvas.style.height, 10)).toBeLessThan(300);
+  });
+
+  it("三个直角坐标图都吃 legend", () => {
+    for (const Chart of [AreaChart, BarChart, LineChart]) {
+      const { getByText, unmount } = render(
+        <Chart data={data} series={series} xKey="month" legend />,
+      );
+      expect(getByText("营收")).toBeTruthy();
+      unmount();
+    }
+  });
+});

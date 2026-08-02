@@ -24,7 +24,7 @@ function chips(n: number) {
   return Array.from({ length: n }, (_, i) => (
     <div
       key={i}
-      className="grid h-full w-full place-items-center rounded-full text-xs font-semibold text-background shadow-sm"
+      className="grid h-full w-full place-items-center rounded-full text-xs font-semibold text-bg shadow-sm"
       style={{ background: tones[i % tones.length] }}
     >
       {i + 1}

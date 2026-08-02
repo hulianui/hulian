@@ -413,3 +413,119 @@ describe("NavMenu · collapsed 态无限级飞出", () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 });
+
+describe("NavMenuItem render 逃生口（hulianui/hulian#59）", () => {
+  const items = [
+    { key: "/a", label: "余额明细", render: <a data-router href="/a" /> },
+    { key: "/b", label: "普通项" },
+  ];
+
+  it("render 的元素替代内建 <a>/<button>，皮肤与内容合并进去", () => {
+    const { container, getByText } = render(<NavMenu items={items} />);
+    const el = container.querySelector("[data-router]") as HTMLAnchorElement;
+    expect(el).toBeTruthy();
+    expect(el.tagName).toBe("A");
+    expect(el.getAttribute("href")).toBe("/a");
+    expect(el.className).not.toBe(""); // 皮肤 class 合并了
+    expect(getByText("余额明细")).toBeTruthy();
+  });
+
+  it("点击既跑消费方的 onClick 也跑内部选中", () => {
+    const onClick = vi.fn();
+    const onSelect = vi.fn();
+    const { container } = render(
+      <NavMenu
+        onSelect={onSelect}
+        items={[{ key: "/a", label: "余额", render: <a data-router href="/a" onClick={onClick} /> }]}
+      />,
+    );
+    fireEvent.click(container.querySelector("[data-router]")!);
+    expect(onClick).toHaveBeenCalled();
+    expect(onSelect).toHaveBeenCalledWith("/a", expect.objectContaining({ key: "/a" }));
+  });
+})
+
+// hulianui/hulian#69：站点主导航在 ARIA APG 里是 list + link，不是 tree widget。
+// tree 档下显式 role="treeitem" 会压过 <a> 的隐式 link role，读屏的「列出所有链接」一条都列不出来。
+describe("NavMenu semantics=\"list\"", () => {
+  it("link 语义拿得回来：getByRole(\"link\") 能找到叶子", () => {
+    render(<NavMenu items={ITEMS} semantics="list" />);
+    expect(screen.getByRole("link", { name: "首页" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "设置" })).toBeTruthy();
+  });
+
+  it("外层是 list 而不是 tree（显式 role=list，防 Safari 因 list-style:none 摘掉语义）", () => {
+    render(<NavMenu items={ITEMS} semantics="list" />);
+    expect(screen.getAllByRole("list").length).toBeGreaterThan(0);
+    expect(screen.queryByRole("tree")).toBeNull();
+    expect(screen.queryAllByRole("treeitem")).toHaveLength(0);
+  });
+
+  it("render 逃生口给的元素同样保住 link 语义（#59 与 #69 咬合）", () => {
+    const items: NavMenuNode[] = [
+      { key: "balance", label: "余额明细", render: <a href="/balance" /> },
+    ];
+    render(<NavMenu items={items} semantics="list" />);
+    const link = screen.getByRole("link", { name: "余额明细" });
+    expect(link.getAttribute("href")).toBe("/balance");
+    expect(link.getAttribute("role")).toBeNull();
+  });
+
+  it("有子项的父项仍是 button + aria-expanded（合法的 disclosure 语义）", () => {
+    render(<NavMenu items={ITEMS} semantics="list" defaultOpenKeys={["manage"]} />);
+    const parent = screen.getByRole("button", { name: /管理/ });
+    expect(parent.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("选中态用 aria-current=page（aria-selected 在 link 上无效）", () => {
+    render(<NavMenu items={ITEMS} semantics="list" defaultSelectedKeys={["home"]} />);
+    const home = screen.getByRole("link", { name: "首页" });
+    expect(home.getAttribute("aria-current")).toBe("page");
+    expect(home.getAttribute("aria-selected")).toBeNull();
+  });
+
+  it("不做 roving tabindex：每一项都能 Tab 到（无 tabIndex=-1）", () => {
+    render(<NavMenu items={ITEMS} semantics="list" />);
+    for (const link of screen.getAllByRole("link")) {
+      expect(link.getAttribute("tabindex")).toBeNull();
+    }
+  });
+
+  it("方向键不再被接管（交回浏览器）", () => {
+    render(<NavMenu items={ITEMS} semantics="list" />);
+    const home = screen.getByRole("link", { name: "首页" });
+    home.focus();
+    fireEvent.keyDown(home, { key: "ArrowDown" });
+    // tree 档会把焦点移到下一行；list 档不动它
+    expect(document.activeElement).toBe(home);
+  });
+
+  it("点击仍触发 onSelect（行为与 tree 档一致）", () => {
+    const onSelect = vi.fn();
+    render(<NavMenu items={ITEMS} semantics="list" onSelect={onSelect} />);
+    fireEvent.click(screen.getByRole("link", { name: "首页" }));
+    expect(onSelect).toHaveBeenCalledWith("home", expect.objectContaining({ key: "home" }));
+  });
+
+  it("父项点击照常展开/收起", () => {
+    render(<NavMenu items={ITEMS} semantics="list" />);
+    const parent = screen.getByRole("button", { name: /管理/ });
+    expect(parent.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(parent);
+    expect(screen.getByRole("button", { name: /管理/ }).getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("collapsed 模式同样吃 list 语义", () => {
+    render(<NavMenu items={ITEMS} mode="collapsed" semantics="list" />);
+    expect(screen.queryByRole("tree")).toBeNull();
+    expect(screen.queryAllByRole("treeitem")).toHaveLength(0);
+    // 飞出层里的叶子仍是真链接
+    expect(screen.getByRole("link", { name: "用户" })).toBeTruthy();
+  });
+
+  it("默认仍是 tree（向后兼容，不动既有消费方）", () => {
+    render(<NavMenu items={ITEMS} />);
+    expect(screen.getByRole("tree")).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "首页" })).toBeNull();
+  });
+});

@@ -205,7 +205,7 @@ export function PasswordGenerator({
       )}
 
       {/* 结果区：等宽字体 + 按模式选断行策略 */}
-      <div className="flex items-start gap-2 rounded-[min(var(--radius),0.5rem)] border border-hairline bg-background p-3">
+      <div className="flex items-start gap-2 rounded-[min(var(--radius),0.5rem)] border border-hairline bg-bg p-3">
         <output
           aria-label={t.result}
           aria-live="polite"

@@ -1,8 +1,35 @@
 "use client";
 import { useState } from "react";
+import { AuthPanel } from "../auth-panel/auth-panel";
 import { Link } from "../link";
 import type { ShowcaseSpec } from "../showcase/types";
 import { LoginForm } from "./login-form";
+
+// 前缀图标：_icons 里没有 user/key（那是业务图标，库只收组件自用的那批），
+// 示例里内联两枚，消费方通常直接用 lucide-react。
+const iconProps = {
+  "aria-hidden": true,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  className: "size-4",
+};
+const UserIcon = () => (
+  <svg {...iconProps}>
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+const KeyIcon = () => (
+  <svg {...iconProps}>
+    <path d="m15.5 7.5 3 3L22 7l-3-3" />
+    <path d="m21 2-9.6 9.6" />
+    <circle cx="7.5" cy="15.5" r="5.5" />
+  </svg>
+);
 
 function Demo() {
   const [user, setUser] = useState<string | null>(null);
@@ -176,6 +203,47 @@ export const loginFormShowcase: ShowcaseSpec = {
   onFinish={({ username }) => api.login(username)}
 />`,
       render: () => <EscapeHatchDemo />,
+    },
+    {
+      title: "字段外观槽（label / placeholder / prefix）",
+      description:
+        "fields 只覆盖外观——取值、校验、autoComplete 默认值仍由模板托管，所以换个 label 不会把浏览器的账号/密码自动填充弄丢。业务里字段叫「管理员账号」「工号」「手机号」，或要在框里放人形/钥匙图标时用它，不必为此拆掉整个模板。",
+      code: `<LoginForm
+  fields={{
+    username: { label: "管理员账号", placeholder: "请输入账号", prefix: <UserRound /> },
+    password: { placeholder: "请输入密码", prefix: <KeyRound /> },
+  }}
+/>`,
+      render: () => (
+        <div className="w-full max-w-md">
+          <LoginForm
+            fields={{
+              username: { label: "管理员账号", placeholder: "请输入账号", prefix: <UserIcon /> },
+              password: { placeholder: "请输入密码", prefix: <KeyIcon /> },
+            }}
+            onFinish={() => {}}
+          />
+        </div>
+      ),
+    },
+    {
+      title: "分屏登录页（surface={false}）",
+      description:
+        "左品牌面板 + 右表单时，视觉重量已由 AuthPanel 承担，右半边再套一张卡就是卡中卡。surface={false} 把边框/底色/阴影/内距一起关掉，表面交给外层——不必再用 className 一条条抵消库件自己的表面。",
+      code: `<div className="grid xl:grid-cols-2">
+  <AuthPanel title="欢迎回来" description="统一身份认证平台" />
+  <div className="grid place-items-center p-8">
+    <LoginForm surface={false} />
+  </div>
+</div>`,
+      render: () => (
+        <div className="grid overflow-hidden rounded-[var(--radius)] border border-border sm:grid-cols-2">
+          <AuthPanel title="欢迎回来" description="统一身份认证平台" className="hidden sm:flex" />
+          <div className="grid place-items-center p-6">
+            <LoginForm surface={false} showRemember={false} onFinish={() => {}} />
+          </div>
+        </div>
+      ),
     },
     {
       title: "隐藏记住我",

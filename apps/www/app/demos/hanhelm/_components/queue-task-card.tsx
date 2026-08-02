@@ -20,7 +20,7 @@ export function QueueTaskCard({ task, index }: { task: Task; index: number }) {
   const status = STATUS_META[task.status];
 
   return (
-    <div className="rounded-[var(--radius)] border border-border bg-background px-3 py-2.5 transition-colors hover:border-primary/40">
+    <div className="rounded-[var(--radius)] border border-border bg-bg px-3 py-2.5 transition-colors hover:border-primary/40">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-[13px] font-medium text-foreground">{task.title}</div>

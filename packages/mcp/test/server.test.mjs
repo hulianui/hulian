@@ -117,6 +117,9 @@ function makeProject(kind) {
     "node_modules/@hulianui/ui/package.json",
     JSON.stringify({ name: "@hulianui/ui", version: "0.15.1" }),
   );
+  // @source 指向的 src/ 必须真的存在：inspect_project 现在会解析路径而不只是文本匹配，
+  // fixture 也得忠实反映「装好了」这件事（hulianui/hulian#66）。
+  write(root, "node_modules/@hulianui/ui/src/button/button.tsx", "export const Button = () => null\n");
   if (kind === "next") {
     write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
     write(
@@ -535,6 +538,8 @@ function makePnpmProject({ declared = "^0.16.0", installed = "0.16.0" } = {}) {
   const root = mkdtempSync(join(tmpdir(), "hulian-pnpm-"));
   const store = join("node_modules", ".pnpm", `@hulianui+ui@${installed}`, "node_modules", "@hulianui", "ui");
   write(root, join(store, "package.json"), JSON.stringify({ name: "@hulianui/ui", version: installed }));
+  // 同上：@source 指向的 src/ 要真的存在（软链过去也能解析到）。
+  write(root, join(store, "src", "button", "button.tsx"), "export const Button = () => null\n");
   mkdirSync(join(root, "node_modules", "@hulianui"), { recursive: true });
   symlinkSync(join(root, store), join(root, "node_modules", "@hulianui", "ui"));
   write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
@@ -1065,6 +1070,164 @@ test("workspace 声明优先于目录名猜测", async () => {
       info.workspaceCandidates.map((entry) => entry.path).sort(),
       ["apps/dashboard", "packages/utils"],
     );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("@source 路径指不到实处 → invalid + warning，而不是误报 detected（#66）", async () => {
+  const root = makeProject("next");
+  try {
+    // pnpm workspace 的经典错法：包实际在 <app>/node_modules，CSS 却按仓库根数了层级。
+    write(
+      root,
+      "app/globals.css",
+      `@import "@hulianui/tokens/tokens.css";\n@source "../../../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";\n`,
+    );
+    const [res] = await rpc([call(91, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.setup.tailwindSource, "invalid");
+    // 解析后的候选路径要回报出去，便于消费方对比 workspace 与单包安装的差异
+    assert.ok(Array.isArray(info.setup.tailwindSourceTargets));
+    assert.equal(info.setup.tailwindSourceTargets.length, 1);
+    assert.equal(info.setup.tailwindSourceTargets[0].exists, false);
+    assert.ok(
+      info.warnings.some((w) => w.includes("解析后的目标不存在")),
+      `应给出 warning，实际：${JSON.stringify(info.warnings)}`,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("@source 指对了仍是 detected（不因新校验误伤）", async () => {
+  const root = makeProject("next");
+  try {
+    const [res] = await rpc([call(92, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.setup.tailwindSource, "detected");
+    assert.equal(info.setup.tailwindSourceTargets[0].exists, true);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+/**
+ * pnpm **workspace 子项目**的真实布局（#68）：前端在 `apps/web`，但它的
+ * `node_modules/@hulianui/ui` 指向的是**仓库根**的 `node_modules/.pnpm/…`。
+ * 只拿 `apps/web/node_modules` 当逃逸基准，普通 registry 包就会被判成 local-link ——
+ * #45 的单包 fixture 里 `.pnpm` 恰好同级，所以这个缺陷当时没被测出来。
+ */
+function makePnpmWorkspaceProject({ declared = "0.18.0", installed = "0.18.0" } = {}) {
+  const root = mkdtempSync(join(tmpdir(), "hulian-pnpm-ws-"));
+  const app = join(root, "apps", "web");
+  // store 在仓库根，不在 apps/web
+  const store = join(
+    "node_modules",
+    ".pnpm",
+    `@hulianui+ui@${installed}_react@19.0.0`,
+    "node_modules",
+    "@hulianui",
+    "ui",
+  );
+  write(root, join(store, "package.json"), JSON.stringify({ name: "@hulianui/ui", version: installed }));
+  write(root, join(store, "src", "button", "button.tsx"), "export const Button = () => null\n");
+  // apps/web/node_modules/@hulianui/ui → 仓库根 .pnpm store
+  mkdirSync(join(app, "node_modules", "@hulianui"), { recursive: true });
+  symlinkSync(join(root, store), join(app, "node_modules", "@hulianui", "ui"));
+
+  write(root, "pnpm-workspace.yaml", "packages:\n  - apps/*\n  - packages/*\n");
+  write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
+  write(root, "package.json", JSON.stringify({ name: "ws-root", private: true }));
+  write(
+    join(app),
+    "package.json",
+    JSON.stringify({
+      name: "web",
+      dependencies: {
+        next: "16.2.0",
+        react: "19.0.0",
+        "@base-ui/react": "1.0.0",
+        "@hulianui/ui": declared,
+      },
+    }),
+  );
+  return { root, app };
+}
+
+test("workspace 子项目里的 registry 包不算本地接入（#68）", async () => {
+  const { root, app } = makePnpmWorkspaceProject();
+  try {
+    const [res] = await rpc([call(63, "inspect_project", { projectRoot: app })]);
+    const ui = dataOf(res).packages["@hulianui/ui"];
+    assert.equal(ui.installed, "0.18.0");
+    assert.equal(ui.linked, false, "指向仓库根 .pnpm store 的普通安装不是本地源码接入");
+    assert.equal(ui.linkKind, null);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workspace 子项目下版本漂移门禁仍然照常跑（#68 的真正影响）", async () => {
+  // linked 恒 true 时这条门禁被静默跳过 —— 与 #45 同一个后果，只是换了个布局触发
+  const { root, app } = makePnpmWorkspaceProject({ declared: "^0.14.0", installed: "0.18.0" });
+  try {
+    const [res] = await rpc([call(64, "inspect_project", { projectRoot: app })]);
+    assert.match(dataOf(res).warnings.join("\n"), /声明 \^0\.14\.0 但实装 0\.18\.0/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workspace 子项目里显式 link: 仍如实标为本地接入（#68 不能把判据放宽过头）", async () => {
+  const { root, app } = makePnpmWorkspaceProject({ declared: "link:../../packages/ui" });
+  try {
+    const [res] = await rpc([call(65, "inspect_project", { projectRoot: app })]);
+    const ui = dataOf(res).packages["@hulianui/ui"];
+    assert.equal(ui.linked, true);
+    assert.equal(ui.linkKind, "local-link");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workspace: 声明照旧标为 workspace（#68）", async () => {
+  const { root, app } = makePnpmWorkspaceProject({ declared: "workspace:*" });
+  try {
+    const [res] = await rpc([call(66, "inspect_project", { projectRoot: app })]);
+    const ui = dataOf(res).packages["@hulianui/ui"];
+    assert.equal(ui.linkKind, "workspace");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+/** 真正的 workspace 内链接（软链指向 packages/ui 源码目录，不在任何 node_modules 里）仍要判本地接入。 */
+test("软链指向仓库内源码目录时仍是本地接入（#68 的负向边界）", async () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-ws-src-"));
+  try {
+    const app = join(root, "apps", "web");
+    const pkg = join(root, "packages", "ui");
+    write(root, join("packages", "ui", "package.json"), JSON.stringify({ name: "@hulianui/ui", version: "0.18.0" }));
+    write(root, join("packages", "ui", "src", "button", "button.tsx"), "export const Button = () => null\n");
+    mkdirSync(join(app, "node_modules", "@hulianui"), { recursive: true });
+    symlinkSync(pkg, join(app, "node_modules", "@hulianui", "ui"));
+    write(root, "pnpm-workspace.yaml", "packages:\n  - apps/*\n  - packages/*\n");
+    write(root, "pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
+    write(root, "package.json", JSON.stringify({ name: "ws-root", private: true }));
+    write(
+      app,
+      "package.json",
+      JSON.stringify({
+        name: "web",
+        // 声明写的是版本号，但实际链到了仓库内源码——只有路径判据能识别出来
+        dependencies: { next: "16.2.0", react: "19.0.0", "@base-ui/react": "1.0.0", "@hulianui/ui": "0.18.0" },
+      }),
+    );
+    const [res] = await rpc([call(67, "inspect_project", { projectRoot: app })]);
+    const ui = dataOf(res).packages["@hulianui/ui"];
+    assert.equal(ui.linked, true, "链到 packages/ui 源码目录（不在任何 node_modules 内）就是本地接入");
+    assert.equal(ui.linkKind, "local-link");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

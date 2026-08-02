@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|intercept-card|iphone|iridescence|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math-text|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|intercept-card|iphone|iridescence|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math-text|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -587,6 +587,48 @@
       "source": "packages/ui/src/aurora-text/aurora-text.md"
     },
     {
+      "id": "component/auth-panel/pitfall/1",
+      "scope": "auth-panel",
+      "title": "AuthPanel",
+      "rule": "**面板自己不定高度**（只写 `h-full`），高度交给外层栅格。分屏页通常是 `grid min-h-dvh xl:grid-cols-2`，面板自然铺满那一列。组件里写死 `h-dvh` 会在「嵌进已有卡片」的场景里炸掉，同 [AdminLayout 的 `fitViewport` 教训](../admin-layout/admin-layout.md)。",
+      "source": "packages/ui/src/auth-panel/auth-panel.md"
+    },
+    {
+      "id": "component/auth-panel/pitfall/2",
+      "scope": "auth-panel",
+      "title": "AuthPanel",
+      "rule": "**窄屏用 `className=\"hidden xl:flex\"` 藏掉，而不是不渲染**——面板是纯装饰，小屏只留表单；靠条件渲染会让 SSR/CSR 两边的树不一致。",
+      "source": "packages/ui/src/auth-panel/auth-panel.md"
+    },
+    {
+      "id": "component/auth-panel/pitfall/3",
+      "scope": "auth-panel",
+      "title": "AuthPanel",
+      "rule": "三档渐变都以 `--color-bg` 打底，所以**暗色不需要另写一套**。自己在外面套 `dark:` 覆盖背景等于把这个特性关掉。",
+      "source": "packages/ui/src/auth-panel/auth-panel.md"
+    },
+    {
+      "id": "component/auth-panel/pitfall/4",
+      "scope": "auth-panel",
+      "title": "AuthPanel",
+      "rule": "`gradient=\"none\"` 是给「自己叠图案」用的，不是给「不要背景」用的——它仍有 `bg-surface`，因为面板要和右侧表单区在明暗上分开。",
+      "source": "packages/ui/src/auth-panel/auth-panel.md"
+    },
+    {
+      "id": "component/auth-panel/pitfall/5",
+      "scope": "auth-panel",
+      "title": "AuthPanel",
+      "rule": "右半边表单记得传 `surface={false}`（[LoginForm](../login-form/login-form.md)）：视觉重量已由左侧面板承担，再套一张卡就是卡中卡。",
+      "source": "packages/ui/src/auth-panel/auth-panel.md"
+    },
+    {
+      "id": "component/auth-panel/pitfall/6",
+      "scope": "auth-panel",
+      "title": "AuthPanel",
+      "rule": "消费方 `style` 仍能覆盖背景（整块换底图的逃生口），但那属于绕开组件体系——先想想是不是该给 `gradient` 加一档。",
+      "source": "packages/ui/src/auth-panel/auth-panel.md"
+    },
+    {
       "id": "component/avatar/pitfall/1",
       "scope": "avatar",
       "title": "Avatar",
@@ -937,6 +979,27 @@
       "source": "packages/ui/src/bounce-cards/bounce-cards.md"
     },
     {
+      "id": "component/brand/pitfall/1",
+      "scope": "brand",
+      "title": "Brand",
+      "rule": "**有 `name` 时徽章是装饰**（`aria-hidden`），无障碍名由品牌名承载；只出徽章（收起态）时它自己就是内容，记得给 `mark` 一个有意义的节点或给根节点 `aria-label`。",
+      "source": "packages/ui/src/brand/brand.md"
+    },
+    {
+      "id": "component/brand/pitfall/2",
+      "scope": "brand",
+      "title": "Brand",
+      "rule": "徽章底色固定配 `--color-primary-foreground` 作前景（亮色白 / 暗色近黑）。给中等明度的自定义色时自行核对对比度。",
+      "source": "packages/ui/src/brand/brand.md"
+    },
+    {
+      "id": "component/brand/pitfall/3",
+      "scope": "brand",
+      "title": "Brand",
+      "rule": "品牌图片走 `mark={<img … />}`，组件已给 `size-full object-cover`，不要再在外面套尺寸类。",
+      "source": "packages/ui/src/brand/brand.md"
+    },
+    {
       "id": "component/bubble-menu/pitfall/1",
       "scope": "bubble-menu",
       "title": "BubbleMenu",
@@ -1193,6 +1256,20 @@
       "scope": "chart",
       "title": "Chart",
       "rule": "horizontal 类目轴宽自适应有 160px 上限（防超长标签吃掉图区）——类目 >12 个全角字仍会截断，此时消费侧截短标签或显式传 `yAxisWidth`。",
+      "source": "packages/ui/src/chart/chart.md"
+    },
+    {
+      "id": "component/chart/pitfall/5",
+      "scope": "chart",
+      "title": "Chart",
+      "rule": "`legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。图例序列多到换行时会挤压画布，那种情况把 `height` 调大或缩短 `label`。",
+      "source": "packages/ui/src/chart/chart.md"
+    },
+    {
+      "id": "component/chart/pitfall/6",
+      "scope": "chart",
+      "title": "Chart",
+      "rule": "自绘图例时色点用 `<Dot color={...} />`，**不要**写 `<Dot style={{ color }} />`——那是静默失效（圆点是背景色），见 [Dot 的坑](../dot/dot.md)。",
       "source": "packages/ui/src/chart/chart.md"
     },
     {
@@ -2141,6 +2218,27 @@
       "source": "packages/ui/src/dossier/dossier.md"
     },
     {
+      "id": "component/dot/pitfall/1",
+      "scope": "dot",
+      "title": "Dot",
+      "rule": "**`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted`），写的人以为生效了。自定义颜色只走 `color` prop。",
+      "source": "packages/ui/src/dot/dot.md"
+    },
+    {
+      "id": "component/dot/pitfall/2",
+      "scope": "dot",
+      "title": "Dot",
+      "rule": "`label` 决定无障碍语义：表意圆点（真在传达状态）务必传 `label`，否则它被 `aria-hidden` 当装饰，屏读用户读不到。",
+      "source": "packages/ui/src/dot/dot.md"
+    },
+    {
+      "id": "component/dot/pitfall/3",
+      "scope": "dot",
+      "title": "Dot",
+      "rule": "`tone` 只有五档语义色，接不住图表序列色（默认取值就是 `chart-1..6`）——那是 `color` 存在的原因，别为一个色点去拆 Tag 或裸写 `<span>`。",
+      "source": "packages/ui/src/dot/dot.md"
+    },
+    {
       "id": "component/dot-field/pitfall/1",
       "scope": "dot-field",
       "title": "DotField",
@@ -2193,7 +2291,7 @@
       "id": "component/drawer/pitfall/3",
       "scope": "drawer",
       "title": "Drawer",
-      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。",
+      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。 ### 关闭按钮 `DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。 纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc， 读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。",
       "source": "packages/ui/src/drawer/drawer.md"
     },
     {
@@ -3852,7 +3950,7 @@
       "id": "component/list/pitfall/3",
       "scope": "list",
       "title": "List",
-      "rule": "`ListLoadMore.hasMore=false` 时整个加载更多按钮不渲染，别等它消失才发现没传完。",
+      "rule": "`ListLoadMore.hasMore=false` 时整个加载更多按钮不渲染，别等它消失才发现没传完。 ### 无障碍名 `aria-label` / `aria-labelledby` / `aria-describedby` 会被透到 `role=\"list\"` 的节点上， 其余原生属性仍落在最外层容器。所以 `getByRole(\"list\", { name: \"…\" })` 找得到，读屏也不会听到一个无名列表 （hulianui/hulian#60）。",
       "source": "packages/ui/src/list/list.md"
     },
     {
@@ -4041,7 +4139,7 @@
       "id": "component/login-form/pitfall/7",
       "scope": "login-form",
       "title": "LoginForm",
-      "rule": "`onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。",
+      "rule": "`onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。 ### 字段外观与卡面（分屏登录页） ```tsx // 左品牌面板 + 右表单：右半边不该再套一张卡，surface={false} 把表面交给外层 <div className=\"grid xl:grid-cols-2\"> <AuthPanel title=\"欢迎回来\" description=\"统一身份认证平台\" /> <div className=\"grid place-items-center p-8\"> <LoginForm surface={false} fields={{ username: { label: \"管理员账号\", placeholder: \"请输入账号\", prefix: <UserRound /> }, password: { placeholder: \"请输入密码\", prefix: <KeyRound /> }, }} /> </div> </div> ``` `fields` 只覆盖**外观**——取值、校验、`autoComplete` 默认值仍由模板托管， 所以换个 label 不会把浏览器的账号/密码自动填充弄丢（真要改传 `fields.username.autoComplete`）。 `surface={false}` 关掉的是边框 / 底色 / 阴影 / **内距**四件一起。只关三件会逼消费方再写 `xl:p-0` 补最后一刀，等于没关（hulianui/hulian#70）。 ### 「记住我」的文案与说明 `rememberLabel` 覆盖文案、`rememberDescription` 在勾选项下方加一行说明。 这个勾选并不总是「下次免登录」的体验糖——有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token）， 文案是刻意写的；锁死在 locale 就只能退回手写表单（hulianui/hulian#64）。 说明行紧贴勾选项，而 `extra` 槽在密码框与记住我之间，位置不对。",
       "source": "packages/ui/src/login-form/login-form.md"
     },
     {
@@ -4419,25 +4517,32 @@
       "id": "component/nav-menu/pitfall/5",
       "scope": "nav-menu",
       "title": "NavMenu",
-      "rule": "collapsed 态飞出层是**无限级级联**（与 inline 能力对齐），整棵树 DOM 恒在、显隐纯 CSS 驱动： `:hover` / `:focus-within` 逐层点亮。键盘走「级联菜单」语义——`→` 进子层、`←`/`Esc` 回父层、 `↑↓` 只在**同层兄弟**间移动、`Home/End` 落本层首尾；roving tabindex 贯穿全树（整棵树只有一个 tab 落点，深层靠方向键进出，**不要指望 Tab 逐项走进飞出层**）。",
+      "rule": "collapsed 态飞出层是**无限级级联**（与 inline 能力对齐），整棵树 DOM 恒在、显隐纯 CSS 驱动： `:hover` / `:focus-within` 逐层点亮。键盘走「级联菜单」语义——`→` 进子层、`←`/`Esc` 回父层、 `↑↓` 只在**同层兄弟**间移动、`Home/End` 落本层首尾；roving tabindex 贯穿全树（整棵树只有一个 tab 落点，深层靠方向键进出，**不要指望 Tab 逐项走进飞出层**）。`semantics=\"list\"` 时这套键盘契约 整体让位给原生 Tab。",
       "source": "packages/ui/src/nav-menu/nav-menu.md"
     },
     {
       "id": "component/nav-menu/pitfall/6",
       "scope": "nav-menu",
       "title": "NavMenu",
-      "rule": "collapsed 的**第一层**飞出层用 `position: fixed` + JS 实测坐标，**刻意不是 `absolute`**：图标轨几乎 总被放进可滚动的侧栏容器（`AdminLayout` 用的就是 `ScrollArea`），`absolute` 面板会被那个祖先的 `overflow` 整块裁掉——面板在 DOM 里、有尺寸、`opacity:1`，但一个像素都画不出来， `elementFromPoint` 打到的是内容区。第二层起仍是 `absolute`（祖先已是不裁剪的面板）。 代价：坐标靠挂载时实测 + `scroll`（捕获阶段）/ `resize` 时重算；把轨道放进**自定义滚动实现** （不派发 scroll 事件的那种）时位置会失准。",
+      "rule": "**`semantics` 决定的是无障碍树，不是皮肤**：两档长得一模一样，选中高亮、缩进、飞出层行为都不变， 所以**看不出选错**，也不会有任何报错。站点主导航**如果**留在默认 `tree` 档，读屏用户按 「列出页面所有链接」就真的一条都找不到 —— 那种场景请显式传 `semantics=\"list\"`。",
       "source": "packages/ui/src/nav-menu/nav-menu.md"
     },
     {
       "id": "component/nav-menu/pitfall/7",
       "scope": "nav-menu",
       "title": "NavMenu",
-      "rule": "`openKeys` 只作用于 inline 态；collapsed 的层级显隐由 hover/焦点驱动，不进 `openKeys`，也不发 `onOpenChange`。",
+      "rule": "collapsed 的**第一层**飞出层用 `position: fixed` + JS 实测坐标，**刻意不是 `absolute`**：图标轨几乎 总被放进可滚动的侧栏容器（`AdminLayout` 用的就是 `ScrollArea`），`absolute` 面板会被那个祖先的 `overflow` 整块裁掉——面板在 DOM 里、有尺寸、`opacity:1`，但一个像素都画不出来， `elementFromPoint` 打到的是内容区。第二层起仍是 `absolute`（祖先已是不裁剪的面板）。 代价：坐标靠挂载时实测 + `scroll`（捕获阶段）/ `resize` 时重算；把轨道放进**自定义滚动实现** （不派发 scroll 事件的那种）时位置会失准。",
       "source": "packages/ui/src/nav-menu/nav-menu.md"
     },
     {
       "id": "component/nav-menu/pitfall/8",
+      "scope": "nav-menu",
+      "title": "NavMenu",
+      "rule": "`openKeys` 只作用于 inline 态；collapsed 的层级显隐由 hover/焦点驱动，不进 `openKeys`，也不发 `onOpenChange`。",
+      "source": "packages/ui/src/nav-menu/nav-menu.md"
+    },
+    {
+      "id": "component/nav-menu/pitfall/9",
       "scope": "nav-menu",
       "title": "NavMenu",
       "rule": "SCAFFOLD 列的 menubar/SwiftUI/Tauri 原生菜单类坑均不适用本组件（它是纯 React WAI-ARIA tree，非系统托盘菜单）。",
@@ -5196,18 +5301,39 @@
       "id": "component/qrcode/pitfall/1",
       "scope": "qrcode",
       "title": "QRCode",
-      "rule": "暗块默认 `currentColor`，靠外层文字色控制；要染色用 `className=\"text-primary\"` 或显式 `color`，背景默认透明需自备底色保证扫码对比度。",
+      "rule": "**导出 PNG 别用透明底**：PNG 没有「继承页面底色」这回事，透明底打印或贴进白底文档会糊成黑块。`qrCodeToPngDataUrl` 默认给白底就是为此。",
       "source": "packages/ui/src/qrcode/qrcode.md"
     },
     {
       "id": "component/qrcode/pitfall/2",
       "scope": "qrcode",
       "title": "QRCode",
-      "rule": "加 `logo` 必须同时 `level=\"H\"`，否则 logo 遮挡导致纠错冗余不足、扫不出。",
+      "rule": "**不抠空的 logo 必须半透明**：`excavate={false}` 配不透明 logo 会盖掉模块直接扫不出来；水印式用法记得配 `opacity`。",
       "source": "packages/ui/src/qrcode/qrcode.md"
     },
     {
       "id": "component/qrcode/pitfall/3",
+      "scope": "qrcode",
+      "title": "QRCode",
+      "rule": "为什么不引 qrcode.react：它把前景/背景写死成 `#000000`/`#FFFFFF`，暗色主题下要消费方自己传两个色；我们默认 `currentColor` + 透明底，跟着主题走。它的 Canvas 变体的价值（导出）我们用 `qrCodeToPngDataUrl` 覆盖，不必为此多一个组件与一份依赖。",
+      "source": "packages/ui/src/qrcode/qrcode.md"
+    },
+    {
+      "id": "component/qrcode/pitfall/4",
+      "scope": "qrcode",
+      "title": "QRCode",
+      "rule": "暗块默认 `currentColor`，靠外层文字色控制；要染色用 `className=\"text-primary\"` 或显式 `color`，背景默认透明需自备底色保证扫码对比度。",
+      "source": "packages/ui/src/qrcode/qrcode.md"
+    },
+    {
+      "id": "component/qrcode/pitfall/5",
+      "scope": "qrcode",
+      "title": "QRCode",
+      "rule": "加 `logo` 必须同时 `level=\"H\"`，否则 logo 遮挡导致纠错冗余不足、扫不出。",
+      "source": "packages/ui/src/qrcode/qrcode.md"
+    },
+    {
+      "id": "component/qrcode/pitfall/6",
       "scope": "qrcode",
       "title": "QRCode",
       "rule": "中文/长文本会抬高二维码版本（更密），扫描距离与 size 要相应放大。",
@@ -5352,6 +5478,69 @@
       "title": "RegionCascader",
       "rule": "`value` 必须是合法的 code 链路（每级 code 是上级的子项），否则浮层无法定位回显。",
       "source": "packages/ui/src/region-cascader/region-cascader.md"
+    },
+    {
+      "id": "component/region-select/pitfall/1",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "**坐标系只有原图像素**，不是容器像素也不是百分比——存进库的必须能直接喂给服务端裁图。内部用 `<svg viewBox=\"0 0 naturalW naturalH\">` 打底，画框零换算，只有「指针 → 图像素」一个方向按 `getBoundingClientRect()` 折算。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/2",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "**自然尺寸量到之前不画任何框**：拿上一张图的比例摆框，位置一定是错的。已知尺寸（库里存着）就传 `naturalSize`，省一次预读，也让 SSR/测试环境不必等图解码。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/3",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "**出口坐标是整数，内部预览是浮点**。像素是可数的格子：落库（`list[int]` 之类的列约束）、服务端裁图（PIL / OpenCV / sharp 的 crop 都要整数，各自的隐式取整方向还不一致，会差一两像素且没人解释得清）、`box === savedBox` 这种「有没有改过」的判断，三处都吃不下浮点。默认 `round=\"expand\"`（左上 floor、右下 ceil）而不是 `nearest`——**取整不缩小框**，否则一个刚好拖够 `minSide` 的框会被收成 `minSide - 1`，症状是「拖了没反应」。`minSide` 的判定也因此放在取整之后。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/4",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "这个缺陷**极容易漏测**：缩放恰好 1:1 或整数倍时坐标本就落在整数上。自己写测试请用除不尽的比例（库内用的是 756→396）。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/5",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "**`setPointerCapture` 放在拖拽状态落地之后并 try/catch**：合成 PointerEvent（Playwright / 单测 dispatch）下它会抛，先捕获就把整个 handler 中断，拖拽根本起不来。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/6",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "画布带 `touch-none`，否则触屏上「拖框」变成「滚页面」。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/7",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "描边宽度按图宽给（`max(2, naturalW/400)`）：3000px 宽的扫描页上 2px 的线细到看不见。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/8",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "**「正在载入」和「这张图根本取不到」必须长得不一样**：底图 404 / 403 / 签名过期 / 跨域失败时组件进失败态，渲染 `errorPlaceholder` 并触发 `onError`，而不是一直停在 `placeholder` 让人干等。后端按需渲染的底图（页图还没推到当前环境、签名 URL 过期、权限不足、资源被删）这不是边缘情况，是常态。预读与画布 `<image>` 共用同一个失败状态——中途鉴权过期只让 SVG 那次请求失败时同样有出口。`src` 变化会复位失败态。",
+      "source": "packages/ui/src/region-select/region-select.md"
+    },
+    {
+      "id": "component/region-select/pitfall/9",
+      "scope": "region-select",
+      "title": "RegionSelect",
+      "rule": "**键盘/读屏无法直接拖框**（这是画布类交互的共性）。要可达就在旁边配四个数字输入框读写同一个 `value`，组件是受控的，两边同源。",
+      "source": "packages/ui/src/region-select/region-select.md"
     },
     {
       "id": "component/relative-time/pitfall/1",
@@ -6999,6 +7188,41 @@
       "source": "packages/ui/src/threads/threads.md"
     },
     {
+      "id": "component/tilt/pitfall/1",
+      "scope": "tilt",
+      "title": "Tilt",
+      "rule": "**`glareBorderRadius` 要与被裹元素的圆角一致**，否则高光是个直角矩形、从圆角处溢出来。",
+      "source": "packages/ui/src/tilt/tilt.md"
+    },
+    {
+      "id": "component/tilt/pitfall/2",
+      "scope": "tilt",
+      "title": "Tilt",
+      "rule": "**陀螺仪在 iOS 上需要站点自行取得 `DeviceOrientationEvent` 权限**（用户手势里调 `requestPermission()`）。未授权时事件根本不触发，组件静默保持静息态——不会报错，但也不会动，别误判成组件坏了。",
+      "source": "packages/ui/src/tilt/tilt.md"
+    },
+    {
+      "id": "component/tilt/pitfall/3",
+      "scope": "tilt",
+      "title": "Tilt",
+      "rule": "`trackOnWindow` 让卡片在指针**没悬停**时也持续动：一屏多个会互相抢注意力，通常只给主视觉一个。",
+      "source": "packages/ui/src/tilt/tilt.md"
+    },
+    {
+      "id": "component/tilt/pitfall/4",
+      "scope": "tilt",
+      "title": "Tilt",
+      "rule": "**reduced-motion 下完全不倾斜**（这类效果对前庭敏感人群最不友好），children 照常渲染。要做「必须动」的演示别指望它。",
+      "source": "packages/ui/src/tilt/tilt.md"
+    },
+    {
+      "id": "component/tilt/pitfall/5",
+      "scope": "tilt",
+      "title": "Tilt",
+      "rule": "倾斜靠 CSS 3D，内部有 `transform-style: preserve-3d`：被裹元素若自己也开了 `overflow: hidden` + 大圆角，某些浏览器上圆角边缘会有锯齿——把圆角放到被裹元素上、`Tilt` 只做变换即可。",
+      "source": "packages/ui/src/tilt/tilt.md"
+    },
+    {
       "id": "component/tilted-card/pitfall/1",
       "scope": "tilted-card",
       "title": "TiltedCard",
@@ -7674,8 +7898,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 372,
-    "componentAdvisories": 1071,
-    "totalAdvisories": 1078
+    "componentDocs": 376,
+    "componentAdvisories": 1103,
+    "totalAdvisories": 1110
   }
 }

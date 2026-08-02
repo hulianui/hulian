@@ -35,7 +35,7 @@ export function PricingTable({ columns, rows, stickyHeader = true, className }: 
             <tr key={row.key}>
               <th
                 scope="row"
-                className="sticky left-0 z-[5] whitespace-nowrap border-b border-border bg-bg px-4 py-3 text-left font-medium text-muted-foreground"
+                className="sticky left-0 z-[5] whitespace-nowrap border-b border-border bg-bg px-4 py-3 text-left font-medium text-muted"
               >
                 {row.label}
               </th>

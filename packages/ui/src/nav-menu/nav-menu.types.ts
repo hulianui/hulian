@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 
 /** 普通菜单项（叶子或可展开父项）。 */
 export interface NavMenuItem {
@@ -9,6 +9,14 @@ export interface NavMenuItem {
   icon?: ReactNode;
   /** 叶子链接：提供则渲染 `<a>`（点击导航），否则渲染 `<button>`。父项忽略。 */
   href?: string;
+  /**
+   * 渲染成自定义元素（框架路由件：`<Link to=… />` / `<NextLink href=… />`）。
+   * 皮肤 class、ref、键盘漫游属性与点击回调都会合并进去 —— 于是「真链接语义
+   * （中键新标签页/右键复制/读屏播报为链接）」与「客户端路由」可以同时拿到。
+   * 与 Button / Link 的 `render` 约定一致。父项（有 children）忽略。
+   * @example { key: "/balance", label: "余额", render: <Link to="/balance" /> }
+   */
+  render?: ReactElement;
   disabled?: boolean;
   /**
    * 行尾操作区（如删除/更多按钮）。渲染在该行 treeitem 按钮/链接【之外】（绝对覆盖行右侧），
@@ -36,6 +44,19 @@ export interface NavMenuProps extends Omit<HTMLAttributes<HTMLElement>, "onSelec
   items: NavMenuNode[];
   /** inline=手风琴内联展开（主用）；collapsed=Sider 收起态图标 + 悬浮飞出子菜单。 */
   mode?: "inline" | "collapsed";
+  /**
+   * 无障碍语义模式。
+   *  · `"tree"`（默认，向后兼容）：`role=tree` + `treeitem` + roving tabindex（整棵树一个 Tab 落点，
+   *    方向键漫游）。适合**文件树 / 大纲树**这类真 tree widget。
+   *  · `"list"`：外层 `role=list`，行**不强加 role** —— `<a>` 保住 link 语义、`<button>` 保住 button
+   *    语义，键盘退回「Tab 逐项 + 原生激活」。适合**站点主导航**（ARIA APG 里的常规形态是
+   *    list + link，不是 tree widget）。
+   *
+   * 选 `"list"` 的判据：读屏用户要能用「列出页面所有链接」这个最常用的导航模式找到它，
+   * 或测试要写 `getByRole("link", { name: … })`。tree 模式下这两件都拿不到。
+   * @default "tree"
+   */
+  semantics?: "tree" | "list";
   /** 选中态（受控）。 */
   selectedKeys?: string[];
   /** 选中态（非受控初值）。 */

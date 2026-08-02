@@ -47,6 +47,25 @@ export const dotShowcase: ShowcaseSpec = {
       render: () => <Dot tone="success" pulse label="在线" />,
     },
     {
+      title: "任意色（图表图例）",
+      description:
+        "color 接语义色名 / 任意 CSS 色，与 ChartSeries.color、Brand.color 同一条 resolveTone 路径——五档 tone 接不住 chart-1..6。注意 style={{ color }} 改不动圆点（那是文字色，静默失效）。",
+      code: `<>
+  <Dot color="chart-1" />
+  <Dot color="chart-2" />
+  <Dot color="chart-3" />
+  <Dot color="#ff8800" />
+</>`,
+      render: () => (
+        <div className="flex items-center gap-3">
+          <Dot color="chart-1" />
+          <Dot color="chart-2" />
+          <Dot color="chart-3" />
+          <Dot color="#ff8800" />
+        </div>
+      ),
+    },
+    {
       title: "列表前导标记",
       description: "Dot 作为行内原语，常做列表项的状态前导点。",
       code: `<span className="inline-flex items-center gap-2">

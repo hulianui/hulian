@@ -56,7 +56,7 @@ export function CtaNewsletterBlock() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
-                prefix={<Mail className="size-4 text-muted-foreground" aria-hidden />}
+                prefix={<Mail className="size-4 text-muted" aria-hidden />}
                 className="flex-1"
                 disabled={status === "loading"}
                 aria-label="邮箱地址"

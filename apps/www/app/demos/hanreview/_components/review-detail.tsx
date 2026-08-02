@@ -45,7 +45,7 @@ const SEVERITY_META: Record<Severity, { label: string; dot: string; tone: TagTon
   critical: { label: copy("serious"), dot: "bg-danger", tone: "danger" },
   major: { label: copy("important"), dot: "bg-warning", tone: "warning" },
   minor: { label: copy("secondary"), dot: "bg-brand", tone: "brand" },
-  info: { label: copy("tip"), dot: "bg-muted-foreground", tone: "neutral" },
+  info: { label: copy("tip"), dot: "bg-muted", tone: "neutral" },
 };
 
 const SEVERITY_ORDER: Severity[] = ["critical", "major", "minor", "info"];
@@ -77,7 +77,15 @@ function toCodeDiffAnnotations(file: ChangedFile): CodeDiffAnnotation[] {
           },
         ]}
         onAdoptSuggestion={() =>
-          toast({ tone: "success", title: copy("recommendationsHaveBeenAdopted"), description: copy("valueValueModificationSuggestionsHaveBeenWritten", file.path, a.line) })
+          toast({
+            tone: "success",
+            title: copy("recommendationsHaveBeenAdopted"),
+            description: copy(
+              "valueValueModificationSuggestionsHaveBeenWritten",
+              file.path,
+              a.line,
+            ),
+          })
         }
         onStatusChange={() => {}}
       />
@@ -126,9 +134,15 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
               variant="outline"
               size="sm"
               onClick={() =>
-                toast({ tone: "info", title: copy("resubmittedForReview"), description: `${repoName} · ${review.branch}` })
+                toast({
+                  tone: "info",
+                  title: copy("resubmittedForReview"),
+                  description: `${repoName} · ${review.branch}`,
+                })
               }
-            >{copy("reExamin")}</Button>
+            >
+              {copy("reExamin")}
+            </Button>
             <Button
               variant="solid"
               size="sm"
@@ -137,7 +151,9 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
                 toast({
                   tone: blocked ? "danger" : "neutral",
                   title: blocked ? copy("forcedMergeBypassAccessControl") : copy("merged"),
-                  description: blocked ? copy("thisMergerBypassedAccessControlBlockingAnd") : copy("valueAlreadyIn", review.branch),
+                  description: blocked
+                    ? copy("thisMergerBypassedAccessControlBlockingAnd")
+                    : copy("valueAlreadyIn", review.branch),
                 })
               }
             >
@@ -147,7 +163,9 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
         }
       >
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-semibold">{blocked ? copy("theGateWasBlockedAndBlocked") : copy("accessControlPassed")}</span>
+          <span className="text-sm font-semibold">
+            {blocked ? copy("theGateWasBlockedAndBlocked") : copy("accessControlPassed")}
+          </span>
           {blocked && review.gateReasons.length > 0 ? (
             <ul className="list-disc space-y-0.5 pl-4 text-[13px]">
               {review.gateReasons.map((reason, i) => (
@@ -155,7 +173,13 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
               ))}
             </ul>
           ) : (
-            <span className="text-[13px]">{copy("qualityPoints")}{review.score}{copy("coverageRate")}{review.coverage}{copy("seriousIssueCanBeSafelyMerged")}</span>
+            <span className="text-[13px]">
+              {copy("qualityPoints")}
+              {review.score}
+              {copy("coverageRate")}
+              {review.coverage}
+              {copy("seriousIssueCanBeSafelyMerged")}
+            </span>
           )}
         </div>
       </Banner>
@@ -177,7 +201,9 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
         {/* 左栏：改动文件列表 */}
         <Card>
           <CardHeader>
-            <span className="text-sm font-semibold">{copy("editFiles")}<span className="text-muted">({review.files.length})</span>
+            <span className="text-sm font-semibold">
+              {copy("editFiles")}
+              <span className="text-muted">({review.files.length})</span>
             </span>
           </CardHeader>
           <CardBody className="p-0">
@@ -198,7 +224,12 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
                     <span className="break-all font-mono text-[12.5px] leading-snug text-foreground">
                       {file.path}
                     </span>
-                    <DiffStat additions={file.additions} deletions={file.deletions} status={file.status} size="sm" />
+                    <DiffStat
+                      additions={file.additions}
+                      deletions={file.deletions}
+                      status={file.status}
+                      size="sm"
+                    />
                   </button>
                 );
               })}
@@ -298,7 +329,15 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
               detail: step.detail,
             },
           ];
-          return <AgentPlan key={key} title={copy("reviewThePlan")} tasks={tasks} bare strikeDone={false} />;
+          return (
+            <AgentPlan
+              key={key}
+              title={copy("reviewThePlan")}
+              tasks={tasks}
+              bare
+              strikeDone={false}
+            />
+          );
         }
         if (step.kind === "tool") {
           return (
@@ -307,7 +346,11 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
               name={step.tool ?? step.title}
               status={toolStatus[step.status ?? "done"] ?? "success"}
               defaultOpen
-              output={step.output ? <pre className="whitespace-pre-wrap text-[12px]">{step.output}</pre> : undefined}
+              output={
+                step.output ? (
+                  <pre className="whitespace-pre-wrap text-[12px]">{step.output}</pre>
+                ) : undefined
+              }
             />
           );
         }
@@ -325,7 +368,10 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
         }
         // summary
         return (
-          <div key={key} className="rounded-[var(--radius)] border border-border bg-surface-hover px-3 py-2.5">
+          <div
+            key={key}
+            className="rounded-[var(--radius)] border border-border bg-surface-hover px-3 py-2.5"
+          >
             <div className="mb-1 text-[13px] font-semibold">{step.title}</div>
             <StreamingText
               as="p"

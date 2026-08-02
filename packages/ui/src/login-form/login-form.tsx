@@ -21,12 +21,16 @@ export function LoginForm({
   onFinish,
   loading: loadingProp,
   showRemember = true,
+  rememberLabel,
+  rememberDescription,
   footer,
   rules,
   values: valuesProp,
   onValuesChange,
   beforeSubmit,
   extra,
+  fields,
+  surface = true,
   className,
 }: LoginFormProps) {
   const loc = useLocale().loginForm;
@@ -96,9 +100,12 @@ export function LoginForm({
     <form
       onSubmit={handleSubmit}
       className={cn(
-        // 左对齐 + 放大圆角 + 阴影令牌(三层结构·明暗自适应) + 舒展留白
-        "flex w-full max-w-md flex-col rounded-[calc(var(--radius)+0.375rem)] border border-border bg-surface p-8 sm:p-10 text-foreground",
-        "shadow-xl",
+        "flex w-full max-w-md flex-col text-foreground",
+        // 卡面可整体关掉：分屏登录页的右半边不该再套一张卡（卡中卡）。
+        // 关掉时连内距一起让给外层——否则消费方还要写 xl:p-0 抵消，等于没关。
+        surface &&
+          // 左对齐 + 放大圆角 + 阴影令牌(三层结构·明暗自适应) + 舒展留白
+          "rounded-[calc(var(--radius)+0.375rem)] border border-border bg-surface p-8 sm:p-10 shadow-xl",
         className,
       )}
     >
@@ -111,26 +118,51 @@ export function LoginForm({
       </header>
 
       <div className="flex flex-col gap-4">
-        <Field label={loc.username} error={username.error}>
-          <Input value={username.value as string} onChange={username.onChange} onBlur={username.onBlur} autoComplete="username" />
+        <Field
+          label={fields?.username?.label ?? loc.username}
+          description={fields?.username?.description}
+          error={username.error}
+        >
+          <Input
+            value={username.value as string}
+            onChange={username.onChange}
+            onBlur={username.onBlur}
+            placeholder={fields?.username?.placeholder}
+            prefix={fields?.username?.prefix}
+            suffix={fields?.username?.suffix}
+            autoComplete={fields?.username?.autoComplete ?? "username"}
+          />
         </Field>
-        <Field label={loc.password} error={password.error}>
+        <Field
+          label={fields?.password?.label ?? loc.password}
+          description={fields?.password?.description}
+          error={password.error}
+        >
           <Input
             type="password"
             value={password.value as string}
             onChange={password.onChange}
             onBlur={password.onBlur}
-            autoComplete="current-password"
+            placeholder={fields?.password?.placeholder}
+            prefix={fields?.password?.prefix}
+            suffix={fields?.password?.suffix}
+            autoComplete={fields?.password?.autoComplete ?? "current-password"}
           />
         </Field>
         {extra}
         {showRemember && (
-          <div className="flex items-center justify-between pt-0.5">
-            <Checkbox
-              label={loc.remember}
-              checked={remember}
-              onCheckedChange={(v) => form.setFieldValue("remember", v)}
-            />
+          <div className="flex flex-col gap-1 pt-0.5">
+            <div className="flex items-center justify-between">
+              <Checkbox
+                label={rememberLabel ?? loc.remember}
+                checked={remember}
+                onCheckedChange={(v) => form.setFieldValue("remember", v)}
+              />
+            </div>
+            {rememberDescription != null && (
+              // 说明行紧贴勾选项（extra 槽在密码框与记住我之间，位置不对）。
+              <p className="pl-6 text-xs text-muted">{rememberDescription}</p>
+            )}
           </div>
         )}
         <Button type="submit" loading={loading} className="mt-2 w-full">

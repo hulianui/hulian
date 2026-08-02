@@ -1,15 +1,27 @@
+import type { ElementType } from "react";
 import { cn } from "../lib/cn";
 import type { ResponsiveDirection, StackAlign, StackDirection, StackJustify, StackProps } from "./stack.types";
 
 // 纯皮肤 flex 布局原语（可 RSC）。direction/align/justify 走静态类，gap 走 inline style（对齐 Tailwind spacing 刻度）。
+// 断点表铺满 Tailwind 的 sm/md/lg/xl/2xl —— 中后台宽屏（≥1280）恰恰最需要在 xl 档换方向/加列，
+// 档位止于 lg 会逼消费方一半走 prop 一半走 className（hulianui/hulian#61）。
 const DIR: Record<StackDirection, string> = { row: "flex-row", column: "flex-col" };
 const DIR_SM: Record<StackDirection, string> = { row: "sm:flex-row", column: "sm:flex-col" };
 const DIR_MD: Record<StackDirection, string> = { row: "md:flex-row", column: "md:flex-col" };
 const DIR_LG: Record<StackDirection, string> = { row: "lg:flex-row", column: "lg:flex-col" };
+const DIR_XL: Record<StackDirection, string> = { row: "xl:flex-row", column: "xl:flex-col" };
+const DIR_2XL: Record<StackDirection, string> = { row: "2xl:flex-row", column: "2xl:flex-col" };
 
 function directionClass(d: StackDirection | ResponsiveDirection): string {
   if (typeof d === "string") return DIR[d];
-  return cn(d.base && DIR[d.base], d.sm && DIR_SM[d.sm], d.md && DIR_MD[d.md], d.lg && DIR_LG[d.lg]);
+  return cn(
+    d.base && DIR[d.base],
+    d.sm && DIR_SM[d.sm],
+    d.md && DIR_MD[d.md],
+    d.lg && DIR_LG[d.lg],
+    d.xl && DIR_XL[d.xl],
+    d["2xl"] && DIR_2XL[d["2xl"]],
+  );
 }
 
 const ALIGN: Record<StackAlign, string> = {
@@ -29,7 +41,7 @@ const JUSTIFY: Record<StackJustify, string> = {
   evenly: "justify-evenly",
 };
 
-export function Stack({
+export function Stack<E extends ElementType = "div">({
   direction = "column",
   gap = 0,
   align,
@@ -40,8 +52,8 @@ export function Stack({
   className,
   style,
   ...props
-}: StackProps) {
-  const Comp = as ?? "div";
+}: StackProps<E>) {
+  const Comp = (as ?? "div") as ElementType;
   return (
     <Comp
       className={cn(
@@ -52,7 +64,7 @@ export function Stack({
         justify && JUSTIFY[justify],
         className,
       )}
-      style={{ gap: gap ? `${gap * 0.25}rem` : undefined, ...style }}
+      style={{ gap: gap ? `${gap * 0.25}rem` : undefined, ...(style as object) }}
       {...props}
     />
   );

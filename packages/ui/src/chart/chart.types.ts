@@ -18,6 +18,12 @@ export interface ChartProps<TDatum = Record<string, unknown>> {
   className?: string;
   /** 多序列堆叠（Area/Bar 生效） */
   stacked?: boolean;
+  /**
+   * 序列图例（色点 + `series.label`）。多序列图不给图例，读者无从知道哪条线是哪条序列。
+   * `true` 等价 `"bottom"`。色点走 Dot 的 `color`，与序列色同源。
+   * @default false
+   */
+  legend?: boolean | "top" | "bottom";
 }
 
 /** Bar 专属：横向柱状（layout=vertical） */

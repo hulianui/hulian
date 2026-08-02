@@ -95,6 +95,7 @@ export * from "./form";
 export * from "./form-dialog";
 export * from "./pro-form";
 export * from "./login-form";
+export * from "./auth-panel";
 export * from "./click-captcha";
 export * from "./steps-form";
 // effects: MagicUI 文字动画批
@@ -343,6 +344,9 @@ export * from "./award-badge";
 export * from "./contribution-graph";
 export * from "./legend";
 export * from "./app-launcher";
+export * from "./region-select";
+export * from "./tilt";
+export * from "./brand";
 
 // —— react-bits 移植批（自动接线）——
 export * from "./ascii-text";

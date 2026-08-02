@@ -46,7 +46,7 @@ import { DomeGallery } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-<div className="relative h-80 overflow-hidden rounded-xl bg-background">
+<div className="relative h-80 overflow-hidden rounded-xl bg-bg">
   <DomeGallery
     images={[
       { src: "/a.jpg", alt: "封面 A" },

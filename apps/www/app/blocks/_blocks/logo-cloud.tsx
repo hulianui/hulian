@@ -38,7 +38,7 @@ export function LogoCloudBlock() {
           level={2}
           size="lg"
           weight="medium"
-          className="text-center text-muted-foreground"
+          className="text-center text-muted"
         >
           受信于行业领先团队
         </Heading>
@@ -52,7 +52,7 @@ export function LogoCloudBlock() {
             return (
               <div
                 key={brand.name}
-                className="group flex items-center justify-center gap-2.5 bg-background px-4 py-8 text-muted-foreground grayscale transition-all duration-200 hover:bg-surface/60 hover:text-foreground hover:grayscale-0"
+                className="group flex items-center justify-center gap-2.5 bg-bg px-4 py-8 text-muted grayscale transition-all duration-200 hover:bg-surface/60 hover:text-foreground hover:grayscale-0"
               >
                 <Icon className="size-5 shrink-0" aria-hidden />
                 <span className="whitespace-nowrap text-sm font-semibold">
