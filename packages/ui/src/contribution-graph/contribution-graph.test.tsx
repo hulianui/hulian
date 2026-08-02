@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import { ConfigProvider, enUS } from "../config";
 import { ContributionGraph } from "./contribution-graph";
 import { buildContributionCalendar } from "./contribution-matrix";
 
@@ -123,7 +124,13 @@ describe("ContributionGraph", () => {
 
   it("tone 换色系（GitHub 绿走 success）", () => {
     const { container } = render(
-      <ContributionGraph layout="strip" days={1} endDate={END} tone="success" data={[{ date: END }]} />,
+      <ContributionGraph
+        layout="strip"
+        days={1}
+        endDate={END}
+        tone="success"
+        data={[{ date: END }]}
+      />,
     );
     const cell = container.querySelector("span[title]") as HTMLElement;
     expect(cell.style.backgroundColor).toContain("--color-success");
@@ -150,5 +157,28 @@ describe("ContributionGraph", () => {
     );
     expect(getByText("少")).toBeTruthy();
     expect(getByText("多")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes all generated labels", () => {
+    const { container, getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <ContributionGraph
+          data={[{ date: END, count: 2 }]}
+          days={7}
+          endDate={END}
+          showMonthLabels
+          showWeekdayLabels
+          showLegend
+        />
+      </ConfigProvider>,
+    );
+
+    expect(getByText("Jul")).toBeTruthy();
+    expect(getByText("Less")).toBeTruthy();
+    expect(getByText("More")).toBeTruthy();
+    expect(container.querySelector(`[title="${END} · 2 contributions"]`)).toBeTruthy();
+    expect(container.querySelector('[title="2026-07-31 · No contributions"]')).toBeTruthy();
+    expect(container.firstElementChild?.getAttribute("aria-label")).toBe("7 days, 2 contributions");
+    expect(container.textContent).not.toMatch(/[\u3400-\u9fff：]/u);
   });
 });
