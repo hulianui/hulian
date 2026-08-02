@@ -200,12 +200,12 @@ export default function Home() {
 
         {/* 技术底座（新区块）：dogfood Marquee 滚动展示吸取的上游 */}
         <section className="hl-rise mt-20 sm:mt-24" style={rise(9)}>
-          <Heading as="p" size="sm" weight="medium" className="mb-4 text-muted-foreground">
+          <Heading as="p" size="sm" weight="medium" className="mb-4 text-foreground">
             {content.foundations}
           </Heading>
           <Marquee
             pauseOnHover
-            className="w-full [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+            className="w-full"
           >
             {STACK_TAGS.map((tag) => (
               <Tag key={tag} variant="solid" className="mx-1 whitespace-nowrap">
