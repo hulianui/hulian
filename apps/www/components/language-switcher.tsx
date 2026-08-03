@@ -44,6 +44,18 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
     } catch {
       // A blocked storage API must not block the anchor's full navigation.
     }
+    // The Chinese mirror's nginx sends the root path to /zh — that is its whole reason to
+    // exist — but the English home page *is* the root path. Without a server-readable
+    // signal that the reader picked English on purpose, switching bounces straight back to
+    // Chinese. localStorage is invisible to nginx, hence a cookie; the value is the one the
+    // mirror's `map` matches (deploy/nginx/hulianui-zh.haloritual.com.conf).
+    try {
+      const secure = window.location.protocol === "https:" ? "; Secure" : "";
+      const value = locale === "en" ? "en" : "zh";
+      document.cookie = `hl_locale=${value}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+    } catch {
+      // Same as above — a blocked cookie jar must not block navigation.
+    }
   };
 
   const activateLocale = (event: MouseEvent<HTMLAnchorElement>, locale: DocsLocale) => {

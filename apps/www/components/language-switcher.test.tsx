@@ -17,6 +17,7 @@ describe("LanguageSwitcher", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     window.localStorage.clear();
+    document.cookie = "hl_locale=; path=/; max-age=0";
   });
 
   it("links both languages to the same page while preserving query and hash", () => {
@@ -107,6 +108,25 @@ describe("LanguageSwitcher", () => {
     expect(setItem).toHaveBeenLastCalledWith(LOCALE_STORAGE_KEY, "zh-CN");
   });
 
+  // The Chinese mirror's nginx reads this cookie to decide whether the root path still
+  // redirects to /zh (deploy/nginx/hulianui-zh.haloritual.com.conf). The values below are
+  // that config's `map` keys — changing either side alone silently re-breaks the switch to
+  // English on the mirror's home page, and no type checks the two files against each other.
+  it("writes the server-readable language cookie the mirror's nginx matches", () => {
+    render(<LanguageSwitcher />);
+
+    const english = screen.getByRole("link", { name: "Switch to English" });
+    const chinese = screen.getByRole("link", { name: "切换到中文" });
+    english.addEventListener("click", (event) => event.preventDefault());
+    chinese.addEventListener("click", (event) => event.preventDefault());
+
+    fireEvent.click(english);
+    expect(document.cookie).toContain("hl_locale=en");
+
+    fireEvent.click(chinese);
+    expect(document.cookie).toContain("hl_locale=zh");
+  });
+
   it("keeps navigation usable when preference storage throws", () => {
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("storage disabled");
@@ -117,5 +137,9 @@ describe("LanguageSwitcher", () => {
     english.addEventListener("click", (event) => event.preventDefault());
 
     expect(() => fireEvent.click(english)).not.toThrow();
+    // A dead localStorage must not take the cookie down with it: the cookie is what keeps
+    // the mirror from bouncing this reader back to Chinese, and the two are written in
+    // separate try blocks precisely so one failing cannot skip the other.
+    expect(document.cookie).toContain("hl_locale=en");
   });
 });
