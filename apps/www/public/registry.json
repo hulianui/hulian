@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "hulianui",
   "homepage": "https://github.com/hulianui/hulian",
-  "version": "0.19.1",
+  "version": "0.20.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "install": "npm i @hulianui/ui",
   "import": "import { /* components */ } from \"@hulianui/ui\"",

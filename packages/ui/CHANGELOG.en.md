@@ -1,5 +1,56 @@
 # @hulianui/ui
 
+## 0.20.0
+
+### Minor Changes
+
+- 0d9fb08: Runtime performance, round one: large-collection virtualization in Combobox plus 19 components that skip needless re-renders
+
+  A new internal scanner (`packages/hulian-scan`, private and unpublished) ran all 372 public component scenarios through the React Profiler using react-scan and Playwright. The first pass produced 125 hard findings (55 avoidable-render, 41 cascade-fanout, 16 long-task, 13 dropped-frames). This release fixes the subset that **still reproduced in a packed consumer environment**, each verified in both the workspace and an out-of-repo tarball install.
+
+  **Combobox / Select / RemoteSelect: automatic virtualization for large collections (default behavior change)**
+
+  Once `items` reaches 100 entries the list virtualizes automatically and renders only the visible options (via `@tanstack/react-virtual`, already a dependency — no new package weight). Opening a thousand-option list now mounts a couple of dozen rows instead of a thousand `<li>` elements. The `searchable` skin of `Select` and the candidate list of `RemoteSelect` take the same path, so they benefit automatically — RemoteSelect accumulates pages remotely, so it switches over once enough pages have loaded.
+
+  The trade-off must be stated plainly: **row height is estimated at a fixed 32px with no per-item measurement**. The default `ComboboxItem` / `SelectItem` is exactly 32px, so the vast majority of usage is unaffected. But if your options span two lines, carry an avatar, or change padding or font size through `className`, scrollbar length and item placement drift apart past 100 entries — **nothing throws, and short lists never reproduce it**; the jump only appears once you scroll into the later part of the list. All three components therefore gained a `virtualized` escape hatch; pass `virtualized={false}` for such options to return to full rendering:
+
+  ```tsx
+  {/* Single-line rows: change nothing, virtualization kicks in at 100 items */}
+  <Combobox items={CITIES}>…</Combobox>
+
+  {/* renderOption draws "name + email" on two lines: height ≠ 32px, so turn it off */}
+  <RemoteSelect fetcher={searchUsers} virtualized={false} renderOption={…} />
+  ```
+
+  The same applies to tests that assume every option is in the DOM: after virtualization `getAllByRole("option")` returns only the visible window. Assert totals against `data-hulian-virtual-count` on the list container, or pass `virtualized={false}` for that test.
+
+  **19 components skip re-renders when props are stable**
+
+  Button, Calendar, Cascader, Checkbox, CodeDiff, CodeReviewThread, ColorSwatchPicker, ContributionGraph, CountrySelect, DatePicker, DateTimePicker, Gantt, Glimpse, Markdown, PricingTable, QRCode, Scheduler, TimePicker, and TreeSelect now use `memo`. The criterion was scan evidence rather than intuition: `memo` was added only where a shallow comparison can safely skip work, components taking function, ReactNode, or mutable-object props were judged individually, and no custom deep comparisons were introduced. External behavior and DOM are unchanged.
+
+  **Other targeted optimizations**
+
+  - `Select`: under the `searchable` skin, resolving a candidate by value moved from a linear `find()` per item to a Map lookup, removing an O(n) pass from every trigger and list render when the option set is large.
+  - `CircularGallery`: removed geometry recomputation and texture encoding that repeated every frame.
+  - `GhostCursor`: reduced per-frame shader cost.
+  - React 18 compatibility: `SelectTriggerProps` now uses `ComponentPropsWithoutRef` plus an explicit `ref`, and `SwipeAction`'s ref handling was adjusted to match — both previously only type-checked under React 19.
+
+- Component built-in copy now reads from ConfigProvider locale throughout <!-- parity-id: ui-0.20.0-runtime-locale -->
+
+  `ConfigProvider`'s `locale` prop and the `enUS` dictionary already existed, but only some components actually read them; the rest had Chinese hard-coded. An English project wrapping its tree in `<ConfigProvider locale={enUS}>` therefore saw a mix of English and Chinese, with nothing reporting which components had not been converted.
+
+  This release connects the built-in copy of 130 components — button labels, empty states, placeholders, aria-labels, date and weekday formats, units and separators — to the locale dictionary, which itself grew by 1,688 lines. Beyond straight translation, the differences that are linguistic rather than string-level were handled too: Scheduler formats weekdays and date ranges per locale (an English build renders `Jun 1 – Jun 7` where the Chinese build renders its own date form), and CountrySelect decides from the locale whether country names and secondary labels appear in Chinese or English.
+
+  **Nothing changes for existing projects**: without a `locale` prop everything stays in the original Chinese, and each missing dictionary section falls back to the component's built-in Chinese individually (so an older partial dictionary will not break on missing keys). To switch to English:
+
+  ```tsx
+  import { ConfigProvider, enUS } from "@hulianui/ui";
+
+  <ConfigProvider locale={enUS}>{children}</ConfigProvider>;
+  ```
+
+  The documentation site ships in English as well: each of the 376 components has an `.en.md` companion (published with the package, so MCP's `get_component_doc` picks it up), and the block and page examples, changelog, and AI distribution artifacts such as llms.txt and registry.json all have English editions.
+
 ## 0.19.1
 
 ### Patch Changes
