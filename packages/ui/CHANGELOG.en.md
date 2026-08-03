@@ -1,5 +1,66 @@
 # @hulianui/ui
 
+## 0.21.0
+
+### Minor Changes
+
+- 61b47ea: Three cases of "following the docs still gets it wrong": Navbar's center section actually centers, polar chart legends can be turned off, TreeSelect can select intermediate levels
+
+  What the three issues have in common is that **nothing throws**: you write it the way the documentation says, the result is wrong, and it looks like your own mistake.
+
+  **Navbar: `NavbarBrand` now grows by default (default behavior change)** — [#81](https://github.com/hulianui/hulian/issues/81)
+
+  `NavbarContent justify="center"` was not actually at the center of the navbar. The cause was asymmetric flexibility across the three sections: `NavbarBrand` was `shrink-0` while the two `NavbarContent` sections each took `flex-1` and split the **remaining** space, so the center section was only centered within its own share and the whole thing drifted left as the brand name grew (measured 265px off-center at 1440 wide with a 100px brand). The longer the brand, the larger the drift — the same code lands differently on each tenant's site.
+
+  `NavbarBrand` now defaults to `flex-1 basis-0`, so all three sections are equal. Brand content still hugs the left via `justify-start`, and flex items default to `min-width: auto` so it will not be squeezed — **the brand and end sections look unchanged**; what changed is that the middle section now truly lands at the center.
+
+  One layout does change: **a brand followed by `justify="start"` content that hugs it** (with no center section). Equal thirds push that content to the 1/3 mark. Pass `grow={false}` for that layout to restore the previous behavior:
+
+  ```tsx
+  <Navbar>
+    <NavbarBrand grow={false}>Hulian</NavbarBrand>
+    <NavbarContent justify="start">…</NavbarContent> {/* still hugs the brand */}
+  </Navbar>
+  ```
+
+  Truncating the brand area on narrow screens still requires `min-w-0` alongside `truncate` (to release the flex item's `min-width: auto`); that has not changed.
+
+  **Chart: `RadarChart` / `PieChart` / `RadialChart` gain `legend`, and all six gain `legendScroll`** — [#80](https://github.com/hulianui/hulian/issues/80)
+
+  After 0.19.0 added `legend` to Area/Bar/Line, the three polar charts were left behind: their `<Legend>` was hard-coded inside the chart, so consumers could **neither turn it off nor move it**, and drawing your own produced two legends side by side (`legendStyle` is an internal constant and `className` only reaches the outer `div`). With 28 series the legend filled five rows and consumed more than half of `height={320}`, flattening the radar and covering the angular axis labels.
+
+  All three now accept `legend?: boolean | "top" | "bottom"`, matching the Cartesian trio. It **defaults to `true`** (these charts have always shipped a legend), so existing calls need no changes; pass `legend={false}` to remove it. Note this is the one prop in the library whose default varies by chart family: `false` for the Cartesian three, `true` for the polar three.
+
+  The trade-off, stated plainly: the legend in these three is no longer recharts' `<Legend>` but the same self-drawn legend as the other three (`Dot` swatches plus token font sizes), so **swatches change from squares to dots and spacing and font size differ slightly**. It also no longer participates in recharts' internal height allocation; instead `height` gives up exactly one row. Swatch colors resolve through the same path as the slices and series, so they cannot disagree.
+
+  Also added: `legendScroll` (all six charts, defaults to `false`), which keeps the legend on a single row with horizontal scrolling — the equivalent of echarts' `legend.type: "scroll"`. "Just increase `height`" does not work when series wrap: a 28-series legend is five rows, and restoring the radar to a readable size would require doubling the total height. With this on, the legend always occupies one row (yielding 32px for a persistent thin scrollbar) and the canvas takes everything else:
+
+  ```tsx
+  {
+    /* Turn off the built-in legend and draw your own */
+  }
+  <RadarChart legend={false} data={data} series={series} xKey="indicator" height={320} />;
+
+  {
+    /* 28 series: single-row scrolling legend that does not eat the canvas */
+  }
+  <RadarChart legendScroll data={data} series={series28} xKey="indicator" height={320} />;
+  ```
+
+  Entries beyond the first row require horizontal scrolling to reach — with dozens of series that is the trade-off, not a free win.
+
+  **TreeSelect: forwards `expandTrigger`, so single select can reach intermediate levels** — [#78](https://github.com/hulianui/hulian/issues/78)
+
+  Single-select `TreeSelect` could previously **only select leaf nodes**: the internal `Tree` defaults `expandTrigger` to `"row"`, so clicking a row with children only expanded it and returned early, never reaching `setSelected`. `onChange` never fired, the row could not be selected no matter how many times you clicked, and the capability was not exposed to consumers.
+
+  `TreeSelect` now forwards `expandTrigger?: "row" | "icon"`, still defaulting to `"row"` (existing behavior unchanged). To select an intermediate level — a department, a category, a specific volume — pass `"icon"`: the arrow handles expansion and the rest of the row handles selection, mirroring the multi-select model where the checkbox selects and the row expands.
+
+  ```tsx
+  <TreeSelect nodes={NODES} expandTrigger="icon" value={v} onChange={setV} placeholder="Select a chapter" />
+  ```
+
+  Multi-select (`checkable`) is unaffected, since the checkbox is its own hit area. The pitfalls section of all three components now documents the corresponding behavior — none of these three were discoverable from the documentation before.
+
 ## 0.20.0
 
 ### Minor Changes
