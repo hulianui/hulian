@@ -162,4 +162,80 @@ describe("evaluateBudget", () => {
       }).map((finding) => finding.rule),
     ).toEqual([]);
   });
+
+  // 基线是机器绑定的绝对耗时，只从 packed-consumer 采集。下面三条锁住它的可比性边界：
+  // 跨环境不判、跨机器（CI）不判、同环境同机器照常判 —— 最后一条防止把门禁关死。
+  it("同环境同机器：超出基线仍判时间回归", () => {
+    const run = makeRun("measurement");
+    const findings = evaluateBudget({
+      run: { ...run, environment: "packed-consumer" },
+      component: "Button",
+      budget: { relativeRegressionPct: 20, absoluteRegressionMs: 2 },
+      baseline: { commitDurationMs: 1 },
+    });
+    expect(findings.map((finding) => finding.rule)).toContain("regression:commitDurationMs");
+  });
+
+  it("跨环境：workspace 运行不拿 packed-consumer 基线判时间回归", () => {
+    const findings = evaluateBudget({
+      run: makeRun("measurement"),
+      component: "Button",
+      budget: { relativeRegressionPct: 20, absoluteRegressionMs: 2 },
+      baseline: { commitDurationMs: 1 },
+    });
+    expect(findings.map((finding) => finding.rule)).not.toContain("regression:commitDurationMs");
+  });
+
+  it("跨机器：trustTimingMetrics=false 时不判时间回归（CI runner 与基线机器不可比）", () => {
+    const run = makeRun("measurement");
+    const findings = evaluateBudget({
+      run: { ...run, environment: "packed-consumer" },
+      component: "Button",
+      budget: {
+        relativeRegressionPct: 20,
+        absoluteRegressionMs: 2,
+        trustTimingMetrics: false,
+      },
+      baseline: { commitDurationMs: 1 },
+    });
+    expect(findings.map((finding) => finding.rule)).not.toContain("regression:commitDurationMs");
+  });
+
+  it("跨机器：trustTimingMetrics=false 同样放行 long-task 这类机器绑定的绝对阈值", () => {
+    const run = makeRun("measurement");
+    const timed: typeof run = {
+      ...run,
+      samples: Array.from({ length: 5 }, () => ({ commitDurationMs: 3, longTaskMs: 400 })),
+    };
+    expect(
+      evaluateBudget({
+        run: timed,
+        component: "Button",
+        budget: { maxLongTaskMs: 100 },
+      }).map((finding) => finding.rule),
+    ).toContain("long-task");
+    expect(
+      evaluateBudget({
+        run: timed,
+        component: "Button",
+        budget: { maxLongTaskMs: 100, trustTimingMetrics: false },
+      }).map((finding) => finding.rule),
+    ).not.toContain("long-task");
+  });
+
+  it("跨机器不影响结构性门禁：cascade-fanout 照常触发", () => {
+    const run = makeRun("measurement");
+    const wide: typeof run = {
+      ...run,
+      samples: Array.from({ length: 5 }, () => ({ commitDurationMs: 3, cascadeFanout: 400 })),
+    };
+    expect(
+      evaluateBudget({
+        run: wide,
+        component: "Button",
+        budget: { maxCascadeFanout: 30, trustTimingMetrics: false },
+      }).map((finding) => finding.rule),
+    ).toContain("cascade-fanout");
+  });
+
 });

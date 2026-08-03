@@ -19,6 +19,16 @@ export interface ScenarioStep {
 export interface PerformanceBudget {
   relativeRegressionPct?: number;
   absoluteRegressionMs?: number;
+  /**
+   * 当前机器的时间读数是否可信。基线与 long-task / dropped-frames 这类阈值都是**机器绑定**的
+   * 绝对耗时（基线只从 packed-consumer 采集，见 report/baseline.ts），换机器就不可比：共享
+   * CI runner 实测比采集基线的开发机慢约 1.8 倍，20% 的回归线与 100ms 的 long-task 线
+   * （select/stress 基线已是 92ms）必然全线触发，门禁只剩噪声。
+   *
+   * 置 false 时跳过全部机器绑定的时间指标，与软件 GPU 下 `GPU_TIMING_METRICS` 的处理同源；
+   * 结构性指标（avoidable-render / cascade-fanout / fiber 数）不受影响，照常门禁。
+   */
+  trustTimingMetrics?: boolean;
   minSamples?: number;
   maxAvoidableRenderCount?: number;
   minAvoidableRenderMs?: number;

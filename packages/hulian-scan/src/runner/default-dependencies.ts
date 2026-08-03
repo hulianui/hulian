@@ -370,10 +370,22 @@ export async function createDefaultDependencies(
   if (configuration.schemaVersion !== 1) {
     throw new Error("performance budget schema mismatch");
   }
+  // 基线存的是**机器绑定**的绝对耗时。共享 CI runner 实测比采集基线的开发机慢约 1.8 倍
+  // （select/stress 36ms → 68ms），20% 的回归阈值下每个场景都会被判成回归，门禁只剩噪声。
+  // 所以在 CI 上关掉时间回归，结构性指标（avoidable-render / cascade-fanout）照常门禁 ——
+  // 它们数的是 React 提交与 Fiber 数量，跨机器稳定。专用性能机器上设
+  // HULIAN_SCAN_TRUST_TIMING=1 即可恢复。
+  const timingTrusted = process.env.HULIAN_SCAN_TRUST_TIMING === "1" || !process.env.CI;
+  const effective: BudgetConfiguration = timingTrusted
+    ? configuration
+    : {
+        ...configuration,
+        defaults: { ...configuration.defaults, trustTimingMetrics: false },
+      };
   return {
     runStage: runBrowserStage,
-    analyze: (runs) => analyzeRuns(runs, configuration, options.baseline),
-    attachDiagnosis: (findings, runs) => attachDiagnosis(findings, runs, configuration),
+    analyze: (runs) => analyzeRuns(runs, effective, options.baseline),
+    attachDiagnosis: (findings, runs) => attachDiagnosis(findings, runs, effective),
     write: async (report, outputDir) => {
       await writeReport(report, outputDir);
     },

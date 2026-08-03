@@ -78,7 +78,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   sankey: [2, 3],
   "scope-matrix": [0, 1],
   "score-ring": [0, 1],
-  select: [9, 10],
+  select: [10, 11],
   separator: [0, 1],
   "service-message": [3, 4],
   skeleton: [3, 4],
@@ -296,14 +296,14 @@ test("English conventions localize advice while preserving executable protocol",
       componentAdvisories: zh.stats.componentAdvisories,
       totalAdvisories: zh.stats.totalAdvisories,
     },
-    { componentAdvisories: 1103, totalAdvisories: 1110 },
+    { componentAdvisories: 1108, totalAdvisories: 1115 },
   );
   assert.deepEqual(
     {
       componentAdvisories: en.stats.componentAdvisories,
       totalAdvisories: en.stats.totalAdvisories,
     },
-    { componentAdvisories: 1189, totalAdvisories: 1196 },
+    { componentAdvisories: 1194, totalAdvisories: 1201 },
   );
   assert.equal(new Set(en.advisories.map((item) => item.id)).size, en.advisories.length);
 });

@@ -129,12 +129,25 @@ const GPU_TIMING_METRICS = new Set([
   "longestFrameMs",
 ]);
 
+// 机器绑定的时间读数：换一台机器就不可比。GPU 那批之外再加提交耗时与交互延迟。
+const MACHINE_BOUND_TIMING_METRICS = new Set([
+  ...GPU_TIMING_METRICS,
+  "commitDurationMs",
+  "interactionLatencyMs",
+]);
+
 function isUntrustedGpuMetric(run: ScenarioRun, metric: string): boolean {
   return (
     run.metadata.webgl === true &&
     run.metadata.gpuMetricsTrusted === false &&
     GPU_TIMING_METRICS.has(metric)
   );
+}
+
+/** 两种「时间读数不可信」来源：软件 GPU（既有），以及机器与基线不可比（CI runner）。 */
+function isUntrustedTimingMetric(input: BudgetEvaluationInput, metric: string): boolean {
+  if (isUntrustedGpuMetric(input.run, metric)) return true;
+  return input.budget.trustTimingMetrics === false && MACHINE_BOUND_TIMING_METRICS.has(metric);
 }
 
 function addThresholdFinding(
@@ -145,7 +158,7 @@ function addThresholdFinding(
   maximum: number | undefined,
 ): void {
   if (maximum === undefined) return;
-  if (isUntrustedGpuMetric(input.run, metric)) return;
+  if (isUntrustedTimingMetric(input, metric)) return;
   const values = metricValues(input.run, metric);
   if (values.length === 0 || values.some((value) => !Number.isFinite(value))) return;
   const current = summarize(values).p95;
@@ -278,8 +291,12 @@ export function evaluateBudget(input: BudgetEvaluationInput): Finding[] {
 
   const relativePct = input.budget.relativeRegressionPct ?? 20;
   const absoluteMs = input.budget.absoluteRegressionMs ?? 2;
-  for (const [metric, baseline] of Object.entries(input.baseline ?? {})) {
-    if (isUntrustedGpuMetric(input.run, metric)) continue;
+  // 基线只从 packed-consumer 采集，拿它去判 workspace 运行本就是跨环境比时间。
+  const sameEnvironmentAsBaseline = input.run.environment === "packed-consumer";
+  for (const [metric, baseline] of Object.entries(
+    sameEnvironmentAsBaseline ? (input.baseline ?? {}) : {},
+  )) {
+    if (isUntrustedTimingMetric(input, metric)) continue;
     const values = metricValues(input.run, metric);
     if (values.length === 0 || values.some((value) => !Number.isFinite(value))) {
       continue;
