@@ -75,6 +75,9 @@ export const scenarioLoaders = {
   "aurora-text": async () =>
     (await import("@hulianui/ui-internal/aurora-text/aurora-text.showcase"))
       .auroraTextShowcase,
+  "auth-panel": async () =>
+    (await import("@hulianui/ui-internal/auth-panel/auth-panel.showcase"))
+      .authPanelShowcase,
   avatar: async () =>
     (await import("@hulianui/ui-internal/avatar/avatar.showcase"))
       .avatarShowcase,
@@ -1479,6 +1482,17 @@ export const scenarioMetadata = {
     webgl: false,
     source: "packages/ui/src/aurora-text/index.ts",
   },
+  "auth-panel": {
+    id: "auth-panel",
+    scenarioId: "auth-panel/basic",
+    component: "AuthPanel",
+    entry: "@hulianui/ui/auth-panel",
+    category: "standard",
+    categories: ["forms", "framework"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/auth-panel/index.ts",
+  },
   avatar: {
     id: "avatar",
     scenarioId: "avatar/basic",
@@ -1738,7 +1752,7 @@ export const scenarioMetadata = {
     component: "Callout",
     entry: "@hulianui/ui/callout",
     category: "standard",
-    categories: ["feedback", "提示"],
+    categories: ["feedback", "message"],
     animated: false,
     webgl: false,
     source: "packages/ui/src/callout/index.ts",
@@ -5269,7 +5283,7 @@ export const scenarioMetadata = {
     component: "VoiceRecord",
     entry: "@hulianui/ui/voice-record",
     category: "standard",
-    categories: ["forms", "高级录入"],
+    categories: ["advanced", "forms"],
     animated: false,
     webgl: false,
     source: "packages/ui/src/voice-record/index.ts",

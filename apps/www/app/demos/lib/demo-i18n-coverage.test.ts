@@ -228,11 +228,13 @@ const TASK_12_DEMOS = new Set(["live", "mobile", "personal", "shop", "website"])
 const STRICT_DEMOS = new Set([...TASK_11_DEMOS, ...TASK_12_DEMOS]);
 
 function chineseLiteralNodes(file: string, source: string): string[] {
+  // setParentNodes=false：本文件只向下遍历（forEachChild），getText 也显式传了 sourceFile，
+  // 全程不读 node.parent。建 parent 指针要为 633 个文件多花 3 倍时间（458ms → 140ms）。
   const sourceFile = createSourceFile(
     file,
     source,
     ScriptTarget.Latest,
-    true,
+    false,
     file.endsWith("x") ? ScriptKind.TSX : ScriptKind.TS,
   );
   const values: string[] = [];
@@ -254,11 +256,13 @@ function chineseLiteralNodes(file: string, source: string): string[] {
 }
 
 function consumedContentKeys(file: string, source: string): Set<string> {
+  // setParentNodes=false：本文件只向下遍历（forEachChild），getText 也显式传了 sourceFile，
+  // 全程不读 node.parent。建 parent 指针要为 633 个文件多花 3 倍时间（458ms → 140ms）。
   const sourceFile = createSourceFile(
     file,
     source,
     ScriptTarget.Latest,
-    true,
+    false,
     file.endsWith("x") ? ScriptKind.TSX : ScriptKind.TS,
   );
   const keys = new Set<string>();
@@ -595,13 +599,25 @@ describe("admin and developer demo localization inventory", () => {
   }
 
   it("keeps adjacent dictionaries key-compatible and English consumers CJK-free", async () => {
-    for (const demo of Object.keys(inventory)) {
-      const root = join(DEMOS_ROOT, demo);
-      const contentFiles = walk(root).filter((path) => path.endsWith(".content.ts"));
+    const perDemo = Object.keys(inventory).map((demo) => ({
+      demo,
+      contentFiles: walk(join(DEMOS_ROOT, demo)).filter((path) => path.endsWith(".content.ts")),
+    }));
+    // 在循环里逐个 await 会把 276 份字典的 TS 转换排成一条队；先并发把模块图拉起来，
+    // 后面的断言全是内存比较。实测 1299ms → 529ms，CI 慢机器上正是这段把测试推过 timeout。
+    const dictionaries = new Map(
+      await Promise.all(
+        perDemo
+          .flatMap(({ contentFiles }) => contentFiles)
+          .map(async (file) => [file, await import(pathToFileURL(file).href)] as const),
+      ),
+    );
+
+    for (const { demo, contentFiles } of perDemo) {
       expect(contentFiles.length, `${demo} dictionary count`).toBeGreaterThan(0);
 
       for (const contentFile of contentFiles) {
-        const module = await import(pathToFileURL(contentFile).href);
+        const module = dictionaries.get(contentFile)!;
         const zhKeys = Object.keys(module.content["zh-CN"]);
         const enKeys = Object.keys(module.content.en);
         expect(enKeys, `${relative(DEMOS_ROOT, contentFile)} key parity`).toEqual(zhKeys);
@@ -651,7 +667,9 @@ describe("admin and developer demo localization inventory", () => {
         ).toEqual([...zhKeys].sort());
       }
     }
-  }, 15_000);
+    // 全仓扫描型断言：耗时随 demo 数线性增长（本次双语化后字典从 ~130 涨到 276 份）。
+    // 给足余量，别再让「新增一批 demo」变成 CI 随机红。
+  }, 60_000);
 
   it("catalogs every source file that still carries Chinese domain discriminators", () => {
     for (const demo of Object.keys(inventory)) {
@@ -692,7 +710,8 @@ describe("admin and developer demo localization inventory", () => {
         expect(source, `${relativeSource} consumes its catalog`).toContain("copy(");
       }
     }
-  });
+    // 同上：633 个源文件的 AST 扫描，默认 5s 在 CI 上会擦线。
+  }, 30_000);
 
   it("keeps CRM owner filter values stable while localizing their visible labels", () => {
     const source = readFileSync(join(DEMOS_ROOT, "crm/(app)/opportunities/page.tsx"), "utf8");
