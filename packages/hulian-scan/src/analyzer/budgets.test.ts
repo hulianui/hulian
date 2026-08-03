@@ -238,4 +238,51 @@ describe("evaluateBudget", () => {
     ).toContain("cascade-fanout");
   });
 
+
+  it("结构性计数按中位数判定：单次尾部抖动不误报", () => {
+    const run = makeRun("measurement");
+    const jittery: typeof run = {
+      ...run,
+      // 一次调度抖动把某个 commit 顶到 58，中位数仍是 30 —— 不该报。
+      samples: [30, 28, 58, 26, 31].map((cascadeFanout) => ({
+        commitDurationMs: 3,
+        cascadeFanout,
+      })),
+    };
+    expect(
+      evaluateBudget({ run: jittery, component: "Form", budget: { maxCascadeFanout: 50 } }).map(
+        (finding) => finding.rule,
+      ),
+    ).not.toContain("cascade-fanout");
+  });
+
+  it("结构性计数持续超标仍然报：中位数不是免死金牌", () => {
+    const run = makeRun("measurement");
+    const persistent: typeof run = {
+      ...run,
+      samples: [58, 61, 57, 60, 59].map((cascadeFanout) => ({
+        commitDurationMs: 3,
+        cascadeFanout,
+      })),
+    };
+    expect(
+      evaluateBudget({ run: persistent, component: "Form", budget: { maxCascadeFanout: 50 } }).map(
+        (finding) => finding.rule,
+      ),
+    ).toContain("cascade-fanout");
+  });
+
+  it("时间指标仍按 p95 判定，尾部延迟不被中位数掩盖", () => {
+    const run = makeRun("measurement");
+    const spiky: typeof run = {
+      ...run,
+      samples: [10, 12, 400, 11, 13].map((longTaskMs) => ({ commitDurationMs: 3, longTaskMs })),
+    };
+    expect(
+      evaluateBudget({ run: spiky, component: "Button", budget: { maxLongTaskMs: 100 } }).map(
+        (finding) => finding.rule,
+      ),
+    ).toContain("long-task");
+  });
+
 });

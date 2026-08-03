@@ -150,6 +150,13 @@ function isUntrustedTimingMetric(input: BudgetEvaluationInput, metric: string): 
   return input.budget.trustTimingMetrics === false && MACHINE_BOUND_TIMING_METRICS.has(metric);
 }
 
+// 结构性计数（一次更新波及多少 fiber）取中位数，时间指标才取 p95。
+// 两个原因：一是每轮只采 5 个样本，p95 实际等于最大值，对任何有抖动的指标都必然抓尾部；
+// 二是 concurrent React 会把一次逻辑更新切成多个 commit，而 fanout 是按单个 commit 计数的
+// —— 切了就小、没切就大，尾部值反映的是调度而不是组件。真有级联问题的组件是持续表现的，
+// 中位数照样抓得住；时间指标关心的正是最坏延迟，仍用 p95。
+const COUNT_METRIC_STATISTIC = new Set(["cascadeFanout", "mountFanout"]);
+
 function addThresholdFinding(
   findings: Finding[],
   input: BudgetEvaluationInput,
@@ -161,7 +168,8 @@ function addThresholdFinding(
   if (isUntrustedTimingMetric(input, metric)) return;
   const values = metricValues(input.run, metric);
   if (values.length === 0 || values.some((value) => !Number.isFinite(value))) return;
-  const current = summarize(values).p95;
+  const distribution = summarize(values);
+  const current = COUNT_METRIC_STATISTIC.has(metric) ? distribution.median : distribution.p95;
   if (current > maximum) {
     findings.push(
       makeFinding(input, rule, "error", current, [
