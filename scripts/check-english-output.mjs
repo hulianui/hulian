@@ -5,6 +5,13 @@ import { readdir } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as cheerio from "cheerio";
+import { NESTED_BASE_PATH, basePathForLocale } from "./docs-locale-layout.mjs";
+
+// 英文产物在成品树里的位置由 SSOT 决定：作根语言时前缀是空串，产物就落在 out 根。
+const EN_SEGMENT = basePathForLocale("en").replace(/^\//, "");
+// 英文作根语言时，嵌套语言（中文）的产物就落在英文根的**子目录**里。扫英文必须把它
+// 整棵剪掉，否则每一个中文页都会被记成 CJK 残留。
+const NESTED_SEGMENT = NESTED_BASE_PATH.replace(/^\//, "");
 
 const RESIDUE =
   /[\p{Script=Han}\u3000-\u303f\uff01-\uff0f\uff1a-\uff20\uff3b-\uff40\uff5b-\uff65]/u;
@@ -320,8 +327,20 @@ function scanHumanText(file, root, route) {
 
 export async function scanEnglishOutput(root) {
   const resolvedRoot = resolve(root);
-  const englishRoot = basename(resolvedRoot) === "en" ? resolvedRoot : join(resolvedRoot, "en");
-  const files = await physicalFiles(englishRoot);
+  // 三种情形：英文作根语言（无前缀段）→ 传入的 root 就是英文根；作嵌套语言时，
+  // 传入 out 则往下走一层，传入的已经是英文根则原样用。
+  const englishRoot =
+    EN_SEGMENT && basename(resolvedRoot) !== EN_SEGMENT
+      ? join(resolvedRoot, EN_SEGMENT)
+      : resolvedRoot;
+  const allFiles = await physicalFiles(englishRoot);
+  const files =
+    EN_SEGMENT || !NESTED_SEGMENT
+      ? allFiles
+      : allFiles.filter((file) => {
+          const rel = relative(englishRoot, file);
+          return rel !== NESTED_SEGMENT && !rel.startsWith(`${NESTED_SEGMENT}${sep}`);
+        });
   const htmlFiles = files.filter((file) => file.endsWith(".html"));
   const jsonFiles = files.filter((file) => isHumanJsonEndpoint(file, englishRoot));
   const textFiles = files.filter((file) => isHumanTextEndpoint(file, englishRoot));
