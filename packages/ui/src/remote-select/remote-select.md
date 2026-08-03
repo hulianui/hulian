@@ -45,6 +45,7 @@ import { RemoteSelect } from "@hulianui/ui"
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | defaultOpen | `boolean` | `false` | 非受控初始展开（调试 / 文档演示用） |
 | renderOption | `(option) => ReactNode` | — | 自定义选项行（`option.raw` 是后端原始行） |
+| virtualized | `boolean` | 已累积候选 ≥ 100 时为 `true` | 列表虚拟化。配 `renderOption` 渲染多行选项时要显式关掉，见「禁忌 / 坑」 |
 | className | `string` | — | 字段（输入框 / chips 外壳）类名 |
 | popupClassName | `string` | — | 浮层类名 |
 
@@ -101,6 +102,7 @@ import { RemoteSelect } from "@hulianui/ui"
 - **`resolveValue` 不是可选装饰，编辑表单必配**：打开编辑表单时 `value` 已有，但它常常不在首屏那一页里（在第 7 页、或被当前搜索词过滤掉）。只有 `resolveValue` 能把它的 label 解出来，缺了就只会显示裸 id。它与 `fetcher` 是**两个不同的后端语义**（一个按关键词分页搜，一个按主键批量取），别合并成一个函数。
 - **`fetcher` 必须把 `signal` 透传给 fetch/axios**：不传也能跑（组件用请求序号丢弃过期响应），但旧请求会一直占着连接，快速输入时可能连开十几条。
 - **多选 chip 只能按 `value` 顺序渲染**：底层 `ComboboxChipRemove` 按 chip 在容器内的渲染序绑定 `selectedValue[index]`，乱序渲染会**删错项**。组件内部已按 `value` 顺序渲染，自定义时别打乱。
+- **候选攒到 100 条后列表会自动虚拟化**（远程分页一页页累积，翻够页数就会切过去）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认单行 label 恰好 32px，无感。**如果**你用 `renderOption` 渲染了多行/带头像的选项（高度 ≠ 32px），那么翻到第 10 页往后滚动落位会开始偏——**不报错、前几页也复现不出来**，这种用法请显式传 `virtualized={false}`。
 - 本地不做二次过滤（底层 `filter={null}`）：搜索结果完全由服务端决定，`fetcher` 忽略 `query` 就等于没有搜索。
 - 关闭浮层即结束一次搜索会话：关键词清空、下次打开重新拉第一页（与 el-select 的 remote 行为一致），因此不要在 `fetcher` 里做「同参数缓存穿透」以外的副作用。
 - `total` 不给也能分页：此时按「本页返回条数 ≥ pageSize 即可能还有下一页」推断，最后会多打一次空请求；能给就给。

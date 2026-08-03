@@ -37,6 +37,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | searchable | `boolean` | `false` | 切到 Combobox 搜索皮肤：浮层顶部搜索框 + Base UI 过滤（依赖 `items`） |
 | searchPlaceholder | `string` | `"搜索"` | searchable 时搜索框占位 |
 | emptyMessage | `ReactNode` | `"无匹配项"` | searchable 时无命中的空态文案 |
+| virtualized | `boolean` | `items` ≥ 100 时为 `true` | searchable 皮肤下的列表虚拟化；标准皮肤不涉及。见「禁忌 / 坑」 |
 | loading | `boolean` | `false` | 加载态：Trigger 图标换 Spinner，浮层只出加载占位（不渲染选项） |
 | loadingText | `ReactNode` | `"加载中"` | 加载占位文案 |
 
@@ -162,6 +163,7 @@ const { data, isLoading } = useFonts();
 - `searchable` 依赖 `items`：该皮肤下列表由 `items` 过滤结果驱动渲染（消费者写的 `SelectItem` 按 value 建索引后复用，自定义内容不丢；`items` 有而 `SelectItem` 没写的项兜底用 label 渲染）。**不传 `items` 就没有候选，浮层恒为空态。**
 - `searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要"搜索 + 分组"直接用 [Combobox](../combobox/combobox.md)。
 - `searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](../combobox/combobox.md) 自带 `filter`。
+- `searchable` 下 `items` **给到 100 项及以上时列表自动虚拟化**（底层 Combobox 的策略）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认 `SelectItem` 恰好 32px，通常无感。**如果**你的 `SelectItem` 高度不是 32px（两行文案、带头像、自定义 padding/字号），那么在 ≥100 项时滚动落位会逐渐偏移——**不报错、短列表也复现不出来**，请显式传 `virtualized={false}`。同理，测试里 `getAllByRole("option")` 在虚拟化后只拿得到视口内那几条。
 - `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。
 
 ## 相关

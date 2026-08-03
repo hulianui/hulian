@@ -31,6 +31,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | value | `ComboboxItemData｜ComboboxItemData[]` | — | 受控选中（multiple 时为数组） |
 | defaultValue | 同上 | — | 非受控初始选中 |
 | multiple | `boolean` | `false` | true 时 value/onValueChange 自动变数组 |
+| virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
 | disabled | `boolean` | `false` | 禁用 |
 
 `ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）
@@ -146,12 +147,41 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 </Combobox>
 ```
 
+大集合：≥100 项自动虚拟化，不必配置；但项高度不是默认 32px 时要显式关掉：
+```tsx
+{/* 1000 个城市，单行项 → 自动虚拟化，写法与短列表完全一样 */}
+<Combobox items={CITIES}>
+  <ComboboxTrigger placeholder="选择城市" />
+  <ComboboxContent searchPlaceholder="搜索城市…">
+    {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
+  </ComboboxContent>
+</Combobox>
+
+{/* 项是「姓名 + 邮箱」两行，高度 ≠ 32px → 关掉虚拟化，否则滚动落位会偏 */}
+<Combobox items={USERS} virtualized={false}>
+  <ComboboxTrigger placeholder="选择成员" />
+  <ComboboxContent searchPlaceholder="搜索成员…">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        <span className="flex flex-col">
+          <span>{item.label}</span>
+          <span className="text-xs text-muted">{item.value}</span>
+        </span>
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
 ## 禁忌 / 坑
 
 - `ComboboxItem` 的 `value` 是整个 `{value,label}` 对象（非字符串）——render fn 里直接传 `value={item}`，Base UI 自动派生 label/value。
 - 浮层内搜索框由 `ComboboxContent` 的 `searchPlaceholder` 触发：配 `ComboboxTrigger` 用就给它（图4 范式），配 `ComboboxInput` 内联补全则不设（输入框本身即搜索）。
 - `multiple` 一开 value/onValueChange 即变数组，受控时 state 类型要跟着变。
 - `invalid` 仅用于「非 Field 内」独立使用时手动置无效皮肤；在 Field 内由 Field 接管，不用手传。
+- **`items` 给到 100 项及以上时列表会自动虚拟化**（无需传 `virtualized`）：只有视口内的项在 DOM 里，行高按 **32px 固定估算**，不做逐项测量。默认 `ComboboxItem` 恰好是 32px，所以通常无感。**如果**你的 render fn 返回的项高度不是 32px（两行文案、带头像/副标题、自定义 `className` 改了 padding 或字号），那么在 ≥100 项时滚动条长度与项的落位会逐渐偏移——**页面不会报任何错，短列表下也复现不出来**，只有滚到列表中后段才看得出跳动。这种项请显式传 `virtualized={false}` 关掉，或把项高度对齐到 32px。
+- 虚拟化同样影响**依赖「选项全在 DOM 里」的测试与脚本**：`getAllByRole("option")` 只会拿到视口内那几条，`document.querySelector` 找不到未滚动到的项。断言总数请改用列表容器上的 `data-hulian-virtual-count`，或对该用例传 `virtualized={false}`。
+- 走 Combobox 的上层组件同样吃这条：[Select](../select/select.md) 的 `searchable` 皮肤、[RemoteSelect](../remote-select/remote-select.md) 的候选列表，选项攒到 100 条后都会自动虚拟化。
 
 ## 相关
 [SecretField](../secret-field/secret-field.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md) · [Upload](../upload/upload.md)

@@ -263,4 +263,26 @@ describe("RemoteSelect", () => {
     await flush();
     expect(optionTexts()).toEqual(["门店甲"]);
   });
+
+  it("virtualized={false} 透传到底层 Combobox：候选超阈值也全量挂载", async () => {
+    const fetcher = vi.fn(async () => ({ options: rows(1, 150), total: 150 }));
+    // renderOption 渲染多行时行高 ≠ 32px，自动虚拟化会让滚动落位偏移 —— 这是它的逃生口。
+    render(
+      <RemoteSelect
+        defaultOpen
+        fetcher={fetcher}
+        pageSize={150}
+        virtualized={false}
+        renderOption={(option) => (
+          <span>
+            <span>{option.label}</span>
+            <span>{option.value}</span>
+          </span>
+        )}
+      />,
+    );
+    await flush();
+    expect(document.querySelector("[data-hulian-virtual-count]")).toBeNull();
+    expect(document.querySelectorAll('[role="option"]').length).toBe(150);
+  });
 });

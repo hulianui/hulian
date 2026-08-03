@@ -132,6 +132,7 @@ export function Select({
   searchable,
   searchPlaceholder = "搜索",
   emptyMessage = "无匹配项",
+  virtualized,
   loading,
   loadingText = "加载中",
   value: valueProp,
@@ -233,6 +234,8 @@ export function Select({
       ...props,
       items: searchItems,
       multiple,
+      // 不传时交给 Combobox 按候选数自动决定（≥100 开）；显式传 false 可关掉（自定义行高时用）。
+      ...(virtualized !== undefined && { virtualized }),
       value: searchValue,
       onValueChange: (next: unknown, eventDetails?: unknown) =>
         handleValueChange(

@@ -3496,6 +3496,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | value | `ComboboxItemData｜ComboboxItemData[]` | — | 受控选中（multiple 时为数组） |
 | defaultValue | 同上 | — | 非受控初始选中 |
 | multiple | `boolean` | `false` | true 时 value/onValueChange 自动变数组 |
+| virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
 | disabled | `boolean` | `false` | 禁用 |
 
 `ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）
@@ -3611,12 +3612,41 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 </Combobox>
 ```
 
+大集合：≥100 项自动虚拟化，不必配置；但项高度不是默认 32px 时要显式关掉：
+```tsx
+{/* 1000 个城市，单行项 → 自动虚拟化，写法与短列表完全一样 */}
+<Combobox items={CITIES}>
+  <ComboboxTrigger placeholder="选择城市" />
+  <ComboboxContent searchPlaceholder="搜索城市…">
+    {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
+  </ComboboxContent>
+</Combobox>
+
+{/* 项是「姓名 + 邮箱」两行，高度 ≠ 32px → 关掉虚拟化，否则滚动落位会偏 */}
+<Combobox items={USERS} virtualized={false}>
+  <ComboboxTrigger placeholder="选择成员" />
+  <ComboboxContent searchPlaceholder="搜索成员…">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        <span className="flex flex-col">
+          <span>{item.label}</span>
+          <span className="text-xs text-muted">{item.value}</span>
+        </span>
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
 ## 禁忌 / 坑
 
 - `ComboboxItem` 的 `value` 是整个 `{value,label}` 对象（非字符串）——render fn 里直接传 `value={item}`，Base UI 自动派生 label/value。
 - 浮层内搜索框由 `ComboboxContent` 的 `searchPlaceholder` 触发：配 `ComboboxTrigger` 用就给它（图4 范式），配 `ComboboxInput` 内联补全则不设（输入框本身即搜索）。
 - `multiple` 一开 value/onValueChange 即变数组，受控时 state 类型要跟着变。
 - `invalid` 仅用于「非 Field 内」独立使用时手动置无效皮肤；在 Field 内由 Field 接管，不用手传。
+- **`items` 给到 100 项及以上时列表会自动虚拟化**（无需传 `virtualized`）：只有视口内的项在 DOM 里，行高按 **32px 固定估算**，不做逐项测量。默认 `ComboboxItem` 恰好是 32px，所以通常无感。**如果**你的 render fn 返回的项高度不是 32px（两行文案、带头像/副标题、自定义 `className` 改了 padding 或字号），那么在 ≥100 项时滚动条长度与项的落位会逐渐偏移——**页面不会报任何错，短列表下也复现不出来**，只有滚到列表中后段才看得出跳动。这种项请显式传 `virtualized={false}` 关掉，或把项高度对齐到 32px。
+- 虚拟化同样影响**依赖「选项全在 DOM 里」的测试与脚本**：`getAllByRole("option")` 只会拿到视口内那几条，`document.querySelector` 找不到未滚动到的项。断言总数请改用列表容器上的 `data-hulian-virtual-count`，或对该用例传 `virtualized={false}`。
+- 走 Combobox 的上层组件同样吃这条：[Select](https://hulianui.haloritual.com/components/select) 的 `searchable` 皮肤、[RemoteSelect](https://hulianui.haloritual.com/components/remote-select) 的候选列表，选项攒到 100 条后都会自动虚拟化。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating) · [Upload](https://hulianui.haloritual.com/components/upload)
@@ -5519,6 +5549,7 @@ import { RemoteSelect } from "@hulianui/ui"
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | defaultOpen | `boolean` | `false` | 非受控初始展开（调试 / 文档演示用） |
 | renderOption | `(option) => ReactNode` | — | 自定义选项行（`option.raw` 是后端原始行） |
+| virtualized | `boolean` | 已累积候选 ≥ 100 时为 `true` | 列表虚拟化。配 `renderOption` 渲染多行选项时要显式关掉，见「禁忌 / 坑」 |
 | className | `string` | — | 字段（输入框 / chips 外壳）类名 |
 | popupClassName | `string` | — | 浮层类名 |
 
@@ -5575,6 +5606,7 @@ import { RemoteSelect } from "@hulianui/ui"
 - **`resolveValue` 不是可选装饰，编辑表单必配**：打开编辑表单时 `value` 已有，但它常常不在首屏那一页里（在第 7 页、或被当前搜索词过滤掉）。只有 `resolveValue` 能把它的 label 解出来，缺了就只会显示裸 id。它与 `fetcher` 是**两个不同的后端语义**（一个按关键词分页搜，一个按主键批量取），别合并成一个函数。
 - **`fetcher` 必须把 `signal` 透传给 fetch/axios**：不传也能跑（组件用请求序号丢弃过期响应），但旧请求会一直占着连接，快速输入时可能连开十几条。
 - **多选 chip 只能按 `value` 顺序渲染**：底层 `ComboboxChipRemove` 按 chip 在容器内的渲染序绑定 `selectedValue[index]`，乱序渲染会**删错项**。组件内部已按 `value` 顺序渲染，自定义时别打乱。
+- **候选攒到 100 条后列表会自动虚拟化**（远程分页一页页累积，翻够页数就会切过去）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认单行 label 恰好 32px，无感。**如果**你用 `renderOption` 渲染了多行/带头像的选项（高度 ≠ 32px），那么翻到第 10 页往后滚动落位会开始偏——**不报错、前几页也复现不出来**，这种用法请显式传 `virtualized={false}`。
 - 本地不做二次过滤（底层 `filter={null}`）：搜索结果完全由服务端决定，`fetcher` 忽略 `query` 就等于没有搜索。
 - 关闭浮层即结束一次搜索会话：关键词清空、下次打开重新拉第一页（与 el-select 的 remote 行为一致），因此不要在 `fetcher` 里做「同参数缓存穿透」以外的副作用。
 - `total` 不给也能分页：此时按「本页返回条数 ≥ pageSize 即可能还有下一页」推断，最后会多打一次空请求；能给就给。
@@ -5970,6 +6002,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | searchable | `boolean` | `false` | 切到 Combobox 搜索皮肤：浮层顶部搜索框 + Base UI 过滤（依赖 `items`） |
 | searchPlaceholder | `string` | `"搜索"` | searchable 时搜索框占位 |
 | emptyMessage | `ReactNode` | `"无匹配项"` | searchable 时无命中的空态文案 |
+| virtualized | `boolean` | `items` ≥ 100 时为 `true` | searchable 皮肤下的列表虚拟化；标准皮肤不涉及。见「禁忌 / 坑」 |
 | loading | `boolean` | `false` | 加载态：Trigger 图标换 Spinner，浮层只出加载占位（不渲染选项） |
 | loadingText | `ReactNode` | `"加载中"` | 加载占位文案 |
 
@@ -6095,6 +6128,7 @@ const { data, isLoading } = useFonts();
 - `searchable` 依赖 `items`：该皮肤下列表由 `items` 过滤结果驱动渲染（消费者写的 `SelectItem` 按 value 建索引后复用，自定义内容不丢；`items` 有而 `SelectItem` 没写的项兜底用 label 渲染）。**不传 `items` 就没有候选，浮层恒为空态。**
 - `searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要"搜索 + 分组"直接用 [Combobox](https://hulianui.haloritual.com/components/combobox)。
 - `searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](https://hulianui.haloritual.com/components/combobox) 自带 `filter`。
+- `searchable` 下 `items` **给到 100 项及以上时列表自动虚拟化**（底层 Combobox 的策略）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认 `SelectItem` 恰好 32px，通常无感。**如果**你的 `SelectItem` 高度不是 32px（两行文案、带头像、自定义 padding/字号），那么在 ≥100 项时滚动落位会逐渐偏移——**不报错、短列表也复现不出来**，请显式传 `virtualized={false}`。同理，测试里 `getAllByRole("option")` 在虚拟化后只拿得到视口内那几条。
 - `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。
 
 ## 相关

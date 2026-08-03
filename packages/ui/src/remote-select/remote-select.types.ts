@@ -80,6 +80,12 @@ export interface RemoteSelectBaseProps {
   defaultOpen?: boolean;
   /** 自定义选项行渲染（默认单行 label）。 */
   renderOption?: (option: RemoteSelectOption) => ReactNode;
+  /**
+   * 列表虚拟化开关，透传给底层 Combobox。不传时按已累积的候选数自动决定（≥100 项即开启）——
+   * 远程分页会一页页累积，所以翻够页数后会自动切换。
+   * 虚拟化按 32px 固定行高估算、不逐项测量，**用 `renderOption` 渲染多行/带头像的选项时请显式传 `false`**。
+   */
+  virtualized?: boolean;
   /** 字段（输入框 / chips 外壳）类名。 */
   className?: string;
   /** 浮层类名。 */

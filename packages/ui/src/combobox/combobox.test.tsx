@@ -147,4 +147,31 @@ describe("Combobox", () => {
 
     rect.mockRestore();
   });
+
+  it("virtualized={false} 关掉自动虚拟化：超阈值也全量挂载", async () => {
+    const many = Array.from({ length: 150 }, (_, index) => ({
+      value: `item-${index}`,
+      label: `选项 ${index}`,
+    }));
+
+    render(
+      <Combobox items={many} virtualized={false} defaultOpen>
+        <ComboboxInput placeholder="搜索" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+
+    // 逃生口：项高不是默认 32px 时必须能回到全量渲染，否则滚动落位会偏且无声。
+    await waitFor(() =>
+      expect(document.querySelectorAll("[role='option']").length).toBe(many.length),
+    );
+    expect(document.querySelector("[data-hulian-virtual-count]")).toBeNull();
+    expect(screen.getByText("选项 149")).toBeTruthy();
+  });
 });
