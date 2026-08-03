@@ -33,17 +33,26 @@ import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
 | `_{...}` or `_a` | Subscript. | `a_{1}`, `a_1` |
 | `____` | Answer blank formed by **2 or more** consecutive underscores. | `Answer: ____` |
 | `\overline{}` / `\widehat{}` | Overline/hat | `\overline{AB}` |
-| `\text{}` / `\mathrm{}` | Font wrappers; the wrapper is removed and content retained. | `\text{Group A}` |
+| `\vec{}` / `\overrightarrow{}` | Vector arrow whose width follows the content. | `\overrightarrow{AB}` |
+| `\underline{}` | Underline applied to existing content, unlike an answer blank. | `\underline{A}` |
+| `\overset{}{}` | Places a mark above the content. | `\overset{\frown}{AB}` |
+| `\mathbb{}` | Blackboard-bold number sets. | `\mathbb{R}` → ℝ |
+| `\text{}` / `\mathrm{}` / `\mathbf{}` | Font wrappers; the wrapper is removed and content retained. | `\text{Group A}` |
 | `\left` / `\right` | Delimiter-sizing commands; commands are removed and delimiters retained. | `\left(a\right)` |
+| `\{` `\}` `\%` `\$` `\&` `\#` `\_` | Escaped characters restored to their literal form. | `\{x\mid x>0\}` |
 | Symbol commands | Converted to Unicode; see below. | `\angle` → ∠ |
 
 ### Symbol table
 
 `\angle ∠` `\triangle △` `\parallel ∥` `\perp ⊥` `\cong ≌` `\sim ∽` `\odot ⊙` `\circ °`
 `\times ×` `\div ÷` `\cdot ·` `\pm ±` `\neq ≠` `\leq(slant) ≤` `\geq(slant) ≥` `\approx ≈`
+`\Rightarrow ⇒` `\Leftrightarrow ⇔` `\to →` `\mid ∣` `\forall ∀` `\langle ⟨` `\rangle ⟩` `\frown ⌢`
 See `math-text.symbols.ts` for Greek letters, set operators, `\therefore ∴`, `\because ∵`, `\ldots …`, and other symbols.
 
-The supported set was selected from command frequencies in 22,000 characters of real middle-school mathematics questions recognized with PaddleOCR-VL, rather than chosen arbitrarily. The most frequent commands were `\angle` 140 · `\frac` 99 · `\circ` 80 · `\triangle` 60 · `\sqrt` 55 · `\times` 51.
+The supported set was selected from command frequencies in real question text rather than chosen arbitrarily, and it covers the long tail:
+
+- First pass: 22,000 characters of middle-school mathematics recognized with PaddleOCR-VL. Most frequent commands: `\angle` 140 · `\frac` 99 · `\circ` 80 · `\triangle` 60 · `\sqrt` 55 · `\times` 51.
+- Second pass widened the sample to 1,324 questions spanning all grade levels, including their explanations. Vector, set, and logic notation dominate senior-high content and barely appear in middle-school samples: `\overrightarrow` 169 · `\vec` 113 · `\Rightarrow` 52 · `\mathbb` 16 · `\Leftrightarrow` 10.
 
 Unsupported content is emitted literally. **Unknown or incomplete notation is never silently discarded**: `\oiint` remains `\oiint`, and an incomplete `\frac{3}` is preserved as written.
 
@@ -78,6 +87,9 @@ Options side by side:
 ## Usage guidelines
 
 - **Do not infer fractions from `a/b`.** Slashes also appear in units such as `km/h` and `USD/kg`. Use `\frac{}{}` upstream to state explicitly that the content is a fraction.
+- **Do not strip `\mathbb{R}` down to `R` upstream.** The set of real numbers and a variable named `R` are different things, and collapsing them makes "the domain is ℝ" read as "the domain is R" with no visible sign that information was lost. Pass the command through and let MathText map it to blackboard bold.
+- **Write an arc as `\overset{\frown}{AB}`, not `\frown{AB}`.** The latter means "arc symbol followed by a group" in LaTeX, so MathText renders it literally as `⌢{AB}`. Looking wrong is the intent: guessing an unstated meaning is worse.
+- **`\vec` and `\overrightarrow` render at the same width here**, both following the content. TeX gives the former a fixed narrow arrow; that difference is flattened deliberately, because both mark a vector in question text and the width carries no information, while following the content lets `\vec{AB}` cover its letters.
 - **One `_` starts a subscript; two or more create an answer blank.** `a_1` is a subscript, so use at least `__` for a blank.
 - **Fractions are not built with `<sup>` and `<sub>`.** Their vertical `inline-flex` layout and `border-t` keep surrounding line height and fraction bars aligned; preserve this approach when changing styles.
 - **Whitespace after a command name terminates the command.** In `\angle ABC`, that space is consumed so notation such as `\angle` and `\triangle` does not introduce an extra visual gap.

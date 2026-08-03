@@ -4353,6 +4353,76 @@
       "source": "packages/ui/src/masonry/masonry.md"
     },
     {
+      "id": "component/math-text/pitfall/1",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**别用 `a/b` 表示分数**。上游数据若用斜杠，`千米/时`、`元/千克` 这类单位会被误渲染成分数。用 `\\frac{}{}` 把「这是分数」这个已知事实显式带过来，不要让渲染层再猜一遍。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/2",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**`\\mathbb{R}` 不要在上游剥壳成 `R`**。题面里实数集 ℝ 与变量 `R` 是两个东西，剥成同一个字母后「定义域为 ℝ」读起来就像「定义域为 R」，而且没人看得出信息已经丢了。原样交给本组件，它映射到黑板粗体。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/3",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**弧的规范写法是 `\\overset{\\frown}{AB}`**，不是 `\\frown{AB}`。后者在 LaTeX 里是「弧符号紧跟一个分组」，本组件按字面渲染成 `⌢{AB}` —— 看着不对正是设计意图，好过猜一个上游没表达的意思。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/4",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**`\\vec` 与 `\\overrightarrow` 在本组件里渲染宽度相同**（都跟随内容）。TeX 里前者是定宽短箭头，这个差异被有意抹平：题面场景下两个记号都指向量，宽度不携带信息，而自适应能让 `\\vec{AB}` 也盖得住。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/5",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**单个 `_` 是下标，`__` 起才是填空**。`a_1` 渲染成下标；想要填空至少写两个下划线。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/6",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**分数不是 `<sup>`/`<sub>` 拼的**。用 `inline-flex` 竖排 + `border-t` 画线，这样嵌在中文正文里行高不会被撑乱、分数线也对得齐。改样式时别退回 sup/sub。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/7",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**命令名后的空格是终止符不是内容**。`\\angle ABC` 里那个空格必须吃掉，否则题面里每个 `\\angle` / `\\triangle` 后都会多冒一个空格（本组件已处理，自行扩表时别忘）。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/8",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**`30^{\\circ}` 不套 `<sup>`**。`\\circ` 本身就是上标位的字符，再抬一次会变成浮空小点。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/9",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**矩阵/方程组是有损降级**。`\\begin{array}…\\end{array}` 会被拍平成一行、`\\\\` 变成分号。要真排版请接 KaTeX。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/10",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "组件返回 `<span>`，可安全嵌进 `<p>`；填空槽带 `aria-label=\"填空\"`，读屏不会读成一串下划线。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
       "id": "component/mentions/pitfall/1",
       "scope": "mentions",
       "title": "Mentions",
@@ -5380,6 +5450,34 @@
       "title": "QRCode",
       "rule": "中文/长文本会抬高二维码版本（更密），扫描距离与 size 要相应放大。",
       "source": "packages/ui/src/qrcode/qrcode.md"
+    },
+    {
+      "id": "component/question-card/pitfall/1",
+      "scope": "question-card",
+      "title": "QuestionCard",
+      "rule": "**`stem` 和 `options[].text` 必须是 MathText 记号串，不要预先转成纯文本**。传 `\"3/8\"` 只会显示斜杠；传 `\"\\\\frac{3}{8}\"` 才有真分数版式。",
+      "source": "packages/ui/src/question-card/question-card.md"
+    },
+    {
+      "id": "component/question-card/pitfall/2",
+      "scope": "question-card",
+      "title": "QuestionCard",
+      "rule": "**`issues` 不是装饰**。它存在的意义是让「机器拆出来但没把握」的题一眼可辨。把待复核的题和正常题渲染成一个样子，等于拿不可信的数据骗验收 —— 有 `issues` 就一定要传。",
+      "source": "packages/ui/src/question-card/question-card.md"
+    },
+    {
+      "id": "component/question-card/pitfall/3",
+      "scope": "question-card",
+      "title": "QuestionCard",
+      "rule": "警示用**左侧边条**而非整卡染色：整卡染色会压低题干对比度，题反而看不清。",
+      "source": "packages/ui/src/question-card/question-card.md"
+    },
+    {
+      "id": "component/question-card/pitfall/4",
+      "scope": "question-card",
+      "title": "QuestionCard",
+      "rule": "`compact` 只影响小问与页脚，题干和选项始终完整渲染 —— 题面截断会让人误判题目内容。",
+      "source": "packages/ui/src/question-card/question-card.md"
     },
     {
       "id": "component/queue-lane/pitfall/1",
@@ -7962,7 +8060,7 @@
   ],
   "stats": {
     "componentDocs": 376,
-    "componentAdvisories": 1112,
-    "totalAdvisories": 1119
+    "componentAdvisories": 1126,
+    "totalAdvisories": 1133
   }
 }

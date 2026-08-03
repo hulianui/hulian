@@ -48,6 +48,30 @@ export const mathTextShowcase: ShowcaseSpec = {
         </p>
       ),
     },
+    {
+      title: "向量",
+      description: "\\vec 与 \\overrightarrow 的箭头宽度跟随内容，单字母与多字母都盖得住。",
+      code: `<MathText>{"已知 \\\\overrightarrow{AB} 与 \\\\vec{a} 共线"}</MathText>`,
+      render: () => (
+        <p className="text-base leading-8">
+          <MathText>
+            {"已知 \\overrightarrow{AB} 与 \\vec{a} 共线,则 \\vec{a}\\cdot\\overrightarrow{AB}=0"}
+          </MathText>
+        </p>
+      ),
+    },
+    {
+      title: "集合与逻辑",
+      description: "高中题面的主力记号：黑板粗体数集、集合构建式、充要条件。",
+      code: `<MathText>{"A=\\\\{x\\\\mid x\\\\in\\\\mathbb{R}\\\\}"}</MathText>`,
+      render: () => (
+        <p className="text-base leading-8">
+          <MathText>
+            {"设 A=\\{x\\mid x>0,x\\in\\mathbb{R}\\},则 x\\in A\\Leftrightarrow x>0"}
+          </MathText>
+        </p>
+      ),
+    },
   ],
   controls: [
     {
@@ -65,6 +89,9 @@ export const mathTextShowcase: ShowcaseSpec = {
     { name: "下标", render: () => <MathText>{"a_1+a_2=S_n"}</MathText> },
     { name: "根号", render: () => <MathText>{"\\sqrt{a^{2}+b^{2}}"}</MathText> },
     { name: "填空槽", render: () => <MathText>{"可记作____万元"}</MathText> },
+    { name: "向量", render: () => <MathText>{"\\overrightarrow{AB}+\\vec{a}"}</MathText> },
+    { name: "数集", render: () => <MathText>{"\\mathbb{Q}\\subset\\mathbb{R}"}</MathText> },
+    { name: "弧", render: () => <MathText>{"\\overset{\\frown}{AB}"}</MathText> },
     { name: "未知记号原样保留", render: () => <MathText>{"\\alpha+1"}</MathText> },
   ],
   renderWithProps: (p) => (

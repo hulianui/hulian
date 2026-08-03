@@ -60,7 +60,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "live-player": [5, 4],
   "logo-loop": [4, 5],
   "magic-bento": [3, 4],
-  "math-text": [0, 7],
   "message-actions": [2, 3],
   meter: [0, 1],
   "nav-menu": [9, 8],
@@ -70,7 +69,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "profile-card": [2, 3],
   "prompt-input": [3, 4],
   "prompt-suggestions": [2, 3],
-  "question-card": [0, 1],
+  "question-card": [4, 1],
   "queue-lane": [3, 5],
   "relative-time": [3, 4],
   result: [2, 3],
@@ -296,14 +295,14 @@ test("English conventions localize advice while preserving executable protocol",
       componentAdvisories: zh.stats.componentAdvisories,
       totalAdvisories: zh.stats.totalAdvisories,
     },
-    { componentAdvisories: 1112, totalAdvisories: 1119 },
+    { componentAdvisories: 1126, totalAdvisories: 1133 },
   );
   assert.deepEqual(
     {
       componentAdvisories: en.stats.componentAdvisories,
       totalAdvisories: en.stats.totalAdvisories,
     },
-    { componentAdvisories: 1198, totalAdvisories: 1205 },
+    { componentAdvisories: 1201, totalAdvisories: 1208 },
   );
   assert.equal(new Set(en.advisories.map((item) => item.id)).size, en.advisories.length);
 });
@@ -372,7 +371,7 @@ test("English advisories keep complete natural rules without repeated entries in
   );
 });
 
-test("all 84 reviewed locale-specific convention count differences stay explicit", () => {
+test("all 83 reviewed locale-specific convention count differences stay explicit", () => {
   assert.equal(typeof conventionsGenerator.extractPitfalls, "function");
   const uiRoot = join(ROOT, "packages", "ui", "src");
   const actual = {};
@@ -388,7 +387,7 @@ test("all 84 reviewed locale-specific convention count differences stay explicit
     if (counts[0] !== counts[1]) actual[slug] = counts;
   }
 
-  assert.equal(Object.keys(actual).length, 84);
+  assert.equal(Object.keys(actual).length, 83);
   assert.deepEqual(actual, EXPECTED_CONVENTION_COUNT_MISMATCHES);
 });
 

@@ -1,5 +1,5 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, memo } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
@@ -55,10 +55,44 @@ function renderNode(
       );
 
     case "decorate":
-      // 上划线用 border-top（\overline{AB} 表示线段），帽子用组合字符叠加
-      return node.style === "overline" ? (
-        <span className="border-t border-current">{renderNodes(node.children, opts)}</span>
-      ) : (
+      // 上划线用 border-top（\overline{AB} 表示线段），下划线同理走 border-bottom
+      if (node.style === "overline" || node.style === "underline") {
+        return (
+          <span className={node.style === "overline" ? "border-t border-current" : "underline"}>
+            {renderNodes(node.children, opts)}
+          </span>
+        );
+      }
+      // 向量箭头：杆用 border 拉伸、箭头尖用不变形的 SVG。
+      // 不用 → 字符叠加 —— 字符宽度定死，盖不住 \overrightarrow{AB} 这种多字母内容。
+      if (node.style === "arrow") {
+        return (
+          // leading-none 让本盒高度等于字号而非行盒，箭头的 top 才有稳定含义：
+          // 不加的话偏移是从行盒顶算起，行高一变箭头就飘到上一行去
+          <span className="relative inline-block leading-none">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 -top-[0.28em] flex items-center"
+            >
+              <span className="h-0 flex-1 border-t border-current" />
+              <svg
+                viewBox="0 0 6 6"
+                className="h-[0.34em] w-[0.34em] shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M1.4 1.4 L4.4 3 L1.4 4.6" />
+              </svg>
+            </span>
+            {renderNodes(node.children, opts)}
+          </span>
+        );
+      }
+      // 帽子用组合字符叠加
+      return (
         <span className="relative inline-block">
           <span
             aria-hidden
@@ -66,6 +100,20 @@ function renderNode(
             style={{ fontSize: `${opts.scriptScale}em` }}
           >
             ⌢
+          </span>
+          {renderNodes(node.children, opts)}
+        </span>
+      );
+
+    case "overset":
+      // 上方记号不加 aria-hidden：它是有语义的内容（弧号等），不是纯装饰线
+      return (
+        <span className="relative inline-block leading-none">
+          <span
+            className="absolute inset-x-0 -top-[0.62em] text-center leading-none"
+            style={{ fontSize: `${opts.scriptScale}em` }}
+          >
+            {renderNodes(node.above, opts)}
           </span>
           {renderNodes(node.children, opts)}
         </span>
@@ -97,7 +145,7 @@ function renderNode(
   }
 }
 
-export function MathText({
+function MathTextImpl({
   children,
   blankWidth = 2.5,
   scriptScale = 0.75,
@@ -111,3 +159,9 @@ export function MathText({
     </span>
   );
 }
+
+// memo 不是可选的优化：每次渲染都要把整条题面重新 parseMath 一遍，而题库页面上
+// 一屏就有几十个实例，父级任何一次无关更新都会把它们全部重解析一遍。
+// props 全是原始值（children 是 string），浅比较就够；locale 走 context，仍会正常更新。
+export const MathText = memo(MathTextImpl);
+MathText.displayName = "MathText";
