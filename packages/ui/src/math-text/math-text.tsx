@@ -1,5 +1,5 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, memo } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
@@ -145,7 +145,7 @@ function renderNode(
   }
 }
 
-export function MathText({
+function MathTextImpl({
   children,
   blankWidth = 2.5,
   scriptScale = 0.75,
@@ -159,3 +159,9 @@ export function MathText({
     </span>
   );
 }
+
+// memo 不是可选的优化：每次渲染都要把整条题面重新 parseMath 一遍，而题库页面上
+// 一屏就有几十个实例，父级任何一次无关更新都会把它们全部重解析一遍。
+// props 全是原始值（children 是 string），浅比较就够；locale 走 context，仍会正常更新。
+export const MathText = memo(MathTextImpl);
+MathText.displayName = "MathText";
