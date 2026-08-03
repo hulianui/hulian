@@ -1,6 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
-import { LocaleContext, zhCN, type Locale } from "./locale";
+import { LocaleContext } from "./locale-context";
+import { zhCN, type Locale } from "./locale";
 
 export interface ConfigProviderProps {
   /** 全局 Locale（用导出的 zhCN/enUS 或 spread 自定义）。缺省 zhCN。 */

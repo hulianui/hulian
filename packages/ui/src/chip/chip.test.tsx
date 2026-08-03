@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Chip } from "./chip";
+import { ConfigProvider, enUS } from "../config";
 
 describe("Chip", () => {
   it("渲染内容", () => {
@@ -18,6 +19,27 @@ describe("Chip", () => {
     const { getByLabelText } = render(<Chip onClose={fn}>标签</Chip>);
     fireEvent.click(getByLabelText("移除"));
     expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it("enUS localizes the close button accessible label", () => {
+    const fn = vi.fn();
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <Chip onClose={fn}>Tag</Chip>
+      </ConfigProvider>,
+    );
+    fireEvent.click(getByLabelText("Remove"));
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it("a legacy custom locale without chip keeps the Chinese close label", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, chip: undefined } };
+    const { getByLabelText } = render(
+      <ConfigProvider locale={locale}>
+        <Chip onClose={() => {}}>Tag</Chip>
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("移除")).toBeTruthy();
   });
 
   it("variant=outline tone=danger 皮肤类", () => {

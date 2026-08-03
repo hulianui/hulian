@@ -27,6 +27,10 @@ export interface FunnelProps<S extends FunnelStage = FunnelStage> {
   orientation?: "vertical" | "horizontal";
   /** 是否显示级间转化率徽标，默认 true。 */
   showConversion?: boolean;
+  /** 图表无障碍名称，默认“漏斗图”。 */
+  ariaLabel?: string;
+  /** 级间转化率前缀，默认“转化”。 */
+  conversionLabel?: string;
   /** 自定义阶段内容（替换默认 label + value）。 */
   renderStage?: (stage: S, ctx: FunnelRenderCtx) => ReactNode;
   /** 点击某一级回调。 */

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "../button";
 import { Checkbox } from "../checkbox/checkbox";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { Field } from "../field";
 import type { FormRule } from "../form/rules";
 import { useForm } from "../form/use-form";
@@ -33,7 +33,15 @@ export function LoginForm({
   surface = true,
   className,
 }: LoginFormProps) {
-  const loc = useLocale().loginForm;
+  const loc = useLocaleValue("loginForm", {
+    title: "登录",
+    username: "账号",
+    password: "密码",
+    remember: "记住我",
+    submit: "登录",
+    usernameRequired: "请输入账号",
+    passwordRequired: "请输入密码",
+  });
   const controlled = valuesProp !== undefined;
   // 受控回写触发的内部变更不该再冒泡给外部（否则外部 setState → 再同步 → 回调重复）
   const syncing = useRef(false);
@@ -53,11 +61,19 @@ export function LoginForm({
 
   // 受控：外部值变化 → 同步进内部表单（只回写真正不同的字段，避免无谓渲染）
   const { setFieldsValue, getFieldValue } = form;
-  const ctrl = { username: valuesProp?.username, password: valuesProp?.password, remember: valuesProp?.remember };
+  const ctrl = {
+    username: valuesProp?.username,
+    password: valuesProp?.password,
+    remember: valuesProp?.remember,
+  };
   const { username: ctrlUsername, password: ctrlPassword, remember: ctrlRemember } = ctrl;
   useEffect(() => {
     if (!controlled) return;
-    const next: Partial<LoginValues> = { username: ctrlUsername, password: ctrlPassword, remember: ctrlRemember };
+    const next: Partial<LoginValues> = {
+      username: ctrlUsername,
+      password: ctrlPassword,
+      remember: ctrlRemember,
+    };
     const patch: Record<string, unknown> = {};
     for (const key of FIELD_KEYS) {
       const v = next[key];
@@ -69,8 +85,14 @@ export function LoginForm({
     syncing.current = false;
   }, [controlled, ctrlUsername, ctrlPassword, ctrlRemember, setFieldsValue, getFieldValue]);
 
-  const usernameRules: FormRule[] = [{ required: true, message: loc.usernameRequired }, ...(rules?.username ?? [])];
-  const passwordRules: FormRule[] = [{ required: true, message: loc.passwordRequired }, ...(rules?.password ?? [])];
+  const usernameRules: FormRule[] = [
+    { required: true, message: loc.usernameRequired },
+    ...(rules?.username ?? []),
+  ];
+  const passwordRules: FormRule[] = [
+    { required: true, message: loc.passwordRequired },
+    ...(rules?.password ?? []),
+  ];
   const username = form.register("username", { rules: usernameRules });
   const password = form.register("password", { rules: passwordRules });
   const remember = Boolean(form.getFieldValue("remember"));

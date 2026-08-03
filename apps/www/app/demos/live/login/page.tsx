@@ -1,12 +1,14 @@
 "use client";
+import { copy } from "./page.content";
 import { useRouter } from "next/navigation";
 import { Radio, Sparkles, ShoppingBag, Bot } from "lucide-react";
 import { Heading, Link, LoginForm, Meteors, Text } from "@hulianui/ui";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
 const FEATURES = [
-  { icon: Radio, title: "一键开播中控", desc: "实时弹幕 / 在线 / 带货数据尽在掌握" },
-  { icon: Bot, title: "AI 直播副驾", desc: "自动答弹幕、智能提词、情绪与转化分析" },
-  { icon: ShoppingBag, title: "小黄车直连", desc: "拖拽排序、一键讲解、同步观众端抢购" },
+  { icon: Radio, title: copy("oneClickLiveConsole"), desc: copy("trackLiveChatViewersAndCommerceMetricsInRealTime") },
+  { icon: Bot, title: copy("aiLiveCopilot"), desc: copy("automaticChatRepliesSmartPromptsSentimentAndConversionAnalysis") },
+  { icon: ShoppingBag, title: copy("integratedShoppingPanel"), desc: copy("dragToReorderFeatureInOneClickAndSyncWithAudienceShopping") },
 ];
 
 export default function LiveLoginPage() {
@@ -17,19 +19,23 @@ export default function LiveLoginPage() {
         <Meteors number={18} />
         <div className="relative z-10 flex items-center gap-2">
           <span className="grid size-8 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-            瀚
+
+            {copy("han")}
           </span>
-          <span className="text-base font-semibold tracking-tight">瀚播 HanLive</span>
+          <span className="text-base font-semibold tracking-tight">{copy("hanlive")}</span>
         </div>
 
         <div className="relative z-10 max-w-md">
           <Heading level={1} size="3xl" balance className="text-white">
-            AI 副驾
+
+            {copy("aiCopilot")}
             <br />
-            陪你播好每一场
+
+            {copy("makeEveryStreamCount")}
           </Heading>
           <Text className="mt-4 text-white/70">
-            主播中控台 + C 端观众直播间，一套实时引擎驱动。弹幕、礼物、飘心、小黄车、AI 答疑，开播即用。
+
+            {copy("oneRealTimeEnginePowersBothTheHostConsoleAndAudienceRoomIncludingChatGiftsReactionsProductLinksA")}
           </Text>
           <ul className="mt-10 flex flex-col gap-5">
             {FEATURES.map((f) => (
@@ -49,7 +55,8 @@ export default function LiveLoginPage() {
         </div>
 
         <Text size="sm" className="relative z-10 text-white/50">
-          © 2026 瑚琏 Hulian · 内置示例
+
+          {copy("text2026HulianBuiltInExamples")}
         </Text>
       </aside>
 
@@ -59,26 +66,28 @@ export default function LiveLoginPage() {
             logo={
               <span className="inline-flex items-center gap-2">
                 <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-                  瀚
+
+                  {copy("han")}
                 </span>
-                <span className="text-base font-semibold tracking-tight">瀚播 HanLive</span>
+                <span className="text-base font-semibold tracking-tight">{copy("hanlive")}</span>
               </span>
             }
-            subtitle="登录后进入主播中控台"
+            subtitle={copy("logInToOpenTheHostConsole")}
             onFinish={async () => {
               await new Promise((r) => setTimeout(r, 500));
-              router.push("/demos/live");
+              router.push(demoHref("/demos/live"));
             }}
             footer={
               <div className="flex justify-between text-sm">
-                <Link href="#">忘记密码</Link>
-                <Link href="/demos/live/room">先逛逛观众端</Link>
+                <Link href="#">{copy("forgotPassword")}</Link>
+                <Link href={demoLocationHref("/demos/live/room")}>{copy("exploreTheAudienceRoom")}</Link>
               </div>
             }
           />
           <Text size="sm" className="text-center text-muted">
             <Sparkles className="mr-1 inline size-3.5" />
-            演示账号已预填，直接「登录」即可
+
+            {copy("demoCredentialsArePrefilledSelectLogInToContinue")}
           </Text>
         </div>
       </div>

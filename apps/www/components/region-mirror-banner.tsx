@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Banner } from "@hulianui/ui";
+import { DOCS_LOCALE } from "../lib/docs-locale";
+import { sharedChromeContent } from "./shared-chrome.data";
 
 // 仅在 Cloudflare 主站对「中国大陆」访客提示切到阿里云镜像站（直连、绕开 Cloudflare 更快）。
 // 检测靠 Cloudflare 边缘内置端点 /cdn-cgi/trace（返回文本含 loc=CN），零后端、比时区/语言猜测可靠。
@@ -19,13 +21,19 @@ export function parseCfLoc(traceText: string): string | null {
     const eq = line.indexOf("=");
     if (eq === -1) continue;
     if (line.slice(0, eq).trim() === "loc") {
-      return line.slice(eq + 1).trim().toUpperCase() || null;
+      return (
+        line
+          .slice(eq + 1)
+          .trim()
+          .toUpperCase() || null
+      );
     }
   }
   return null;
 }
 
 export function RegionMirrorBanner() {
+  const content = sharedChromeContent[DOCS_LOCALE];
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -71,7 +79,7 @@ export function RegionMirrorBanner() {
       tone="info"
       align="center"
       onClose={dismiss}
-      closeLabel="不再提示"
+      closeLabel={content.mirrorClose}
       icon={
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
           <circle cx="12" cy="12" r="9" />
@@ -83,11 +91,11 @@ export function RegionMirrorBanner() {
           href={mirrorUrl}
           className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
-          切换到镜像 →
+          {content.mirrorAction}
         </a>
       }
     >
-      检测到你在中国大陆，访问镜像站点更快
+      {content.mirrorMessage}
     </Banner>
   );
 }

@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CreditCard } from "lucide-react";
@@ -27,16 +29,16 @@ import {
 } from "@hulianui/ui";
 import { checkouts as seed } from "../../_data/checkouts";
 import { dueAmount, invoiceById, invoices } from "../../_data/invoices";
-import { checkoutStatusTone, yuan } from "../../_data/status";
+import { checkoutPayMethodLabel, checkoutStatusLabel, checkoutStatusTone, currencyPrefix, yuan } from "../../_data/status";
 import type { Checkout, CheckoutStatus } from "../../_data/types";
 import { useMockData, usePending } from "../../../lib/async";
 
 const STATUSES: CheckoutStatus[] = ["待支付", "支付中", "已支付", "已关闭"];
 const PAGE_SIZE = 8;
 
-const opt = (arr: readonly string[], allLabel = "全部") => [
+const opt = (arr: readonly string[], labels?: Readonly<Record<string, string>>, allLabel = copy("all")) => [
   { value: "", label: allLabel },
-  ...arr.map((v) => ({ value: v, label: v })),
+  ...arr.map((v) => ({ value: v, label: labels?.[v] ?? v })),
 ];
 
 // 可发起收款的发票：已开/已寄送 且仍有应收余额。
@@ -107,12 +109,12 @@ export default function CheckoutPage() {
   function handleCreate(values: Record<string, unknown>) {
     const iv = invoiceById(String(values.invoiceId));
     if (!iv) {
-      toast({ title: "请选择发票", tone: "danger" });
+      toast({ title: copy("pleaseSelectAnInvoice"), tone: "danger" });
       return false;
     }
     const amount = Number(values.amount) || 0;
     if (amount <= 0) {
-      toast({ title: "收款金额需大于 0", tone: "danger" });
+      toast({ title: copy("thePaymentAmountMustBeGreaterThan"), tone: "danger" });
       return false;
     }
     void runCreate(() => {
@@ -128,7 +130,7 @@ export default function CheckoutPage() {
         expireAt: String(values.expireAt) || "2026-06-05 18:00",
       };
       setRows((r) => [next, ...r]);
-      toast({ title: "已生成收款单", description: next.code, tone: "success" });
+      toast({ title: copy("invoiceHasBeenGenerated"), description: next.code, tone: "success" });
       setOpen(false);
     });
     return true;
@@ -136,13 +138,13 @@ export default function CheckoutPage() {
 
   function handleCancel(row: Checkout) {
     setRows((rs) => rs.map((r) => r.id === row.id ? { ...r, status: "已关闭" as CheckoutStatus } : r));
-    toast({ title: "收款单已关闭", description: row.code, tone: "info" });
+    toast({ title: copy("invoiceHasBeenClosed"), description: row.code, tone: "info" });
   }
 
   const columns: ColumnDef<Checkout>[] = [
     {
       accessorKey: "code",
-      header: "收款单",
+      header: copy("collectionSlip"),
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="font-medium tabular-nums">{row.original.code}</div>
@@ -150,20 +152,20 @@ export default function CheckoutPage() {
         </div>
       ),
     },
-    { accessorKey: "client", header: "付款方" },
+    { accessorKey: "client", header: copy("payer") },
     {
       accessorKey: "amount",
-      header: "收款金额",
+      header: copy("paymentAmount"),
       cell: ({ row }) => <span className="tabular-nums font-medium">{yuan(row.original.amount)}</span>,
     },
     {
       accessorKey: "method",
-      header: "支付方式",
+      header: copy("paymentMethod"),
       enableSorting: false,
       cell: ({ row }) =>
         row.original.method ? (
           <Tag tone="neutral" size="sm" variant="soft">
-            {row.original.method}
+            {checkoutPayMethodLabel[row.original.method]}
           </Tag>
         ) : (
           <span className="text-muted">—</span>
@@ -171,21 +173,21 @@ export default function CheckoutPage() {
     },
     {
       accessorKey: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => (
         <Tag tone={checkoutStatusTone(row.original.status)} size="sm" dot>
-          {row.original.status}
+          {checkoutStatusLabel[row.original.status]}
         </Tag>
       ),
     },
     {
       accessorKey: "expireAt",
-      header: "有效期",
+      header: copy("validityPeriod"),
       cell: ({ row }) => <span className="text-xs tabular-nums text-muted">{row.original.expireAt}</span>,
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => {
         const closed = row.original.status === "已支付" || row.original.status === "已关闭";
@@ -198,32 +200,30 @@ export default function CheckoutPage() {
                   <Button
                     variant="ghost"
                     size="iconSm"
-                    aria-label="去收银台"
+                    aria-label={copy("goToTheCashier")}
                     onClick={() => router.push(`/demos/projects/checkout/${row.original.id}`)}
                   >
                     <CreditCard className="size-3.5" />
                   </Button>
                 } />
-                <TooltipContent>去收银台</TooltipContent>
+                <TooltipContent>{copy("goToTheCashier2")}</TooltipContent>
               </Tooltip>
             )}
             {closed && (
               <span className="text-xs text-muted">
-                {row.original.status === "已支付" ? "已完成" : "已关闭"}
+                {checkoutStatusLabel[row.original.status]}
               </span>
             )}
             {pending && (
               <Popconfirm
-                title="确认取消收款？"
-                description="关闭后该收款单将无法再支付。"
+                title={copy("confirmToCancelPayment")}
+                description={copy("afterClosingTheInvoiceWillNoLonger")}
                 danger
-                okText="确认取消"
+                okText={copy("confirmCancellation")}
                 side="left"
                 onConfirm={() => handleCancel(row.original)}
               >
-                <Button variant="ghost" size="sm" tone="danger">
-                  取消
-                </Button>
+                <Button variant="ghost" size="sm" tone="danger">{copy("cancel")}</Button>
               </Popconfirm>
             )}
           </div>
@@ -237,36 +237,36 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card variant="outline">
           <CardBody className="p-5">
-            <Statistic title="待收款金额" value={sum.pending} prefix="￥" />
+            <Statistic title={copy("amountToBeCollected")} value={sum.pending} prefix={currencyPrefix} />
           </CardBody>
         </Card>
         <Card variant="outline">
           <CardBody className="p-5">
-            <Statistic title="已收款金额" value={sum.paid} prefix="￥" />
+            <Statistic title={copy("amountReceived")} value={sum.paid} prefix={currencyPrefix} />
           </CardBody>
         </Card>
         <Card variant="outline">
           <CardBody className="p-5">
-            <Statistic title="收款单数" value={filtered.length} />
+            <Statistic title={copy("numberOfReceipts")} value={filtered.length} />
           </CardBody>
         </Card>
       </div>
 
       <ProTable<Checkout>
-        title="在线收款"
+        title={copy("collectMoneyOnline")}
         columns={columns}
         data={paged}
         loading={loading}
         getRowId={(r) => r.id}
         toolbarActions={
           <Button size="sm" onClick={openCreate} disabled={billable.length === 0}>
-            {createPending ? <Spinner size="sm" /> : "发起收款"}
+            {createPending ? <Spinner size="sm" /> : copy("initiatePayment")}
           </Button>
         }
         search={{
           fields: [
-            { name: "keyword", label: "关键词", placeholder: "收款单号 / 项目 / 付款方" },
-            { name: "status", label: "状态", type: "select", options: opt(STATUSES) },
+            { name: "keyword", label: copy("keywords"), placeholder: copy("invoiceNumberItemPayer") },
+            { name: "status", label: copy("status2"), type: "select", options: opt(STATUSES, checkoutStatusLabel) },
           ],
           onSearch: (v) => {
             setFilters(v);
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
       />
 
       <ModalForm
-        title="发起在线收款"
+        title={copy("initiateOnlinePaymentCollection")}
         form={form}
         open={open}
         onOpenChange={setOpen}
@@ -289,7 +289,7 @@ export default function CheckoutPage() {
         className="w-[520px]"
       >
         <div className="flex flex-col gap-1">
-          <Field label="关联发票">
+          <Field label={copy("associatedInvoice")}>
             <Select
               items={billable.map((iv) => ({ value: iv.id, label: `${iv.code} · ${iv.client}` }))}
               value={reg.invoiceId.value as string}
@@ -303,21 +303,21 @@ export default function CheckoutPage() {
               <SelectContent>
                 {billable.map((iv) => (
                   <SelectItem key={iv.id} value={iv.id}>
-                    {iv.code} · {iv.client}（应收 {yuan(dueAmount(iv))}）
+                    {iv.code} · {iv.client}{copy("receivable")}{yuan(dueAmount(iv))}）
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </Field>
-          <Field label="收款金额（元）">
+          <Field label={copy("amountOfPaymentYuan")}>
             <Input
               value={reg.amount.value as string}
               onChange={reg.amount.onChange}
               onBlur={reg.amount.onBlur}
-              placeholder="如 258000"
+              placeholder={copy("suchAs")}
             />
           </Field>
-          <Field label="有效期">
+          <Field label={copy("validityPeriod2")}>
             <Input
               value={reg.expireAt.value as string}
               onChange={reg.expireAt.onChange}

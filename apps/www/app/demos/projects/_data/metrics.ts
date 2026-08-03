@@ -1,7 +1,9 @@
+import { copy } from "./metrics.content";
 import { invoices, paidAmount, dueAmount } from "./invoices";
 import { projects } from "./projects";
 import { quotes, quoteTotals } from "./quotes";
 import { PROJECT_STAGES } from "./types";
+import { projectStageLabel } from "./status";
 
 // 工作台指标：全部由 mock 数据现算（单一口径，供 Stat/Chart/列表复用）。
 const MONTH_OPEN = "2026-05-01"; // 「本月」口径
@@ -36,9 +38,9 @@ export function monthlyTrend() {
       .filter((p) => p.at.startsWith(m))
       .reduce((s, p) => s + p.amount, 0);
     return {
-      month: `${Number(m.slice(5))}月`,
-      产值: Math.round(output / 10000),
-      回款: Math.round(collected / 10000),
+      month: copy("valueMonths", Number(m.slice(5))),
+      output: Math.round(output / 10000),
+      collected: Math.round(collected / 10000),
     };
   });
 }
@@ -46,7 +48,7 @@ export function monthlyTrend() {
 /** 项目阶段分布（各阶段项目数）。 */
 export function stageDistribution() {
   return PROJECT_STAGES.map((stage) => ({
-    name: stage,
+    name: projectStageLabel[stage],
     value: projects.filter((p) => p.stage === stage).length,
   })).filter((d) => d.value > 0);
 }

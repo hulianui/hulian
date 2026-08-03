@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Spinner } from "./spinner";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("Spinner", () => {
   it("role=status + 默认 aria-label=加载中", () => {
@@ -13,6 +15,15 @@ describe("Spinner", () => {
   it("自定义 label", () => {
     const { getByRole } = render(<Spinner label="提交中" />);
     expect(getByRole("status").getAttribute("aria-label")).toBe("提交中");
+  });
+
+  it("uses the provider locale when label is omitted", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <Spinner />
+      </ConfigProvider>,
+    );
+    expect(getByRole("status").getAttribute("aria-label")).toBe("Loading");
   });
 
   it("内含 animate-spin 的 svg", () => {

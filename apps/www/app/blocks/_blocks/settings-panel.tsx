@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 设置页区块 —— 垂直 Tabs 分区（个人资料/通知/外观/安全）+ 右侧表单内容区。
@@ -17,7 +18,7 @@ import {
   TabsPanel,
   Text,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 import { Bell, Lock, Palette, User } from "lucide-react";
 
 // 侧边导航项配置 —— 复制后按需增删

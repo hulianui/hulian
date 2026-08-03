@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./studio-shell.content";
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -17,9 +18,10 @@ function Brand() {
   return (
     <Link href={LIVE_ROOT} className="flex items-center gap-2">
       <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        瀚
+
+        {copy("han")}
       </span>
-      <span className="text-[15px] font-semibold tracking-tight">瀚播 HanLive</span>
+      <span className="text-[15px] font-semibold tracking-tight">{copy("hanlive")}</span>
     </Link>
   );
 }
@@ -27,7 +29,8 @@ function Brand() {
 function BrandMark() {
   return (
     <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-      瀚
+
+      {copy("han")}
     </span>
   );
 }
@@ -41,23 +44,24 @@ function HeaderExtra() {
           <span className="absolute inline-flex size-full animate-ping rounded-full bg-danger/70" />
           <span className="relative inline-flex size-1.5 rounded-full bg-danger" />
         </span>
-        直播中 · 02:14:08
+
+        {copy("live021408")}
       </span>
       <Button variant="outline" size="sm" render={<Link href={`${LIVE_ROOT}/room`} />} className="gap-1.5">
         <Smartphone className="size-4" />
-        <span className="hidden sm:inline">观众端</span>
+        <span className="hidden sm:inline">{copy("audienceRoom")}</span>
       </Button>
       <Button
         variant="ghost"
         size="sm"
         onClick={toggle}
-        aria-label={theme === "dark" ? "切换到亮色" : "切换到暗色"}
+        aria-label={theme === "dark" ? copy("switchToLightTheme") : copy("switchToDarkTheme")}
         className="size-9 px-0"
       >
         {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
       </Button>
       <div className="mx-0.5 h-6 w-px bg-border" aria-hidden />
-      <User name="阿楠" description="带货主播" avatarProps={{ fallback: "楠" }} />
+      <User name={copy("anan")} description={copy("commerceHost")} avatarProps={{ fallback: copy("a") }} />
     </div>
   );
 }

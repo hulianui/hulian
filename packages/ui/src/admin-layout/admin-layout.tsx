@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Menu } from "../_icons";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { resolveBreakpointPx } from "../layout/layout-sider";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
@@ -14,7 +14,10 @@ import type { NavMenuItem, NavMenuNode } from "../nav-menu/nav-menu.types";
 import type { AdminLayoutProps, AdminTab } from "./admin-layout.types";
 
 // 收集菜单叶子项（无 children），供「点击菜单 → 自动开页签」拿到 key+label。
-function collectLeaves(nodes: NavMenuNode[], out: Map<string, NavMenuItem>): Map<string, NavMenuItem> {
+function collectLeaves(
+  nodes: NavMenuNode[],
+  out: Map<string, NavMenuItem>,
+): Map<string, NavMenuItem> {
   for (const n of nodes) {
     if ("type" in n && n.type === "group") {
       collectLeaves(n.children, out);
@@ -58,7 +61,19 @@ export function AdminLayout({
   className,
   contentClassName,
 }: AdminLayoutProps) {
-  const t = useLocale().adminLayout;
+  const t = useLocaleValue("adminLayout", {
+    collapse: "收起侧栏",
+    expand: "展开侧栏",
+    closeTab: "关闭页签",
+    tabActions: "页签操作",
+    closeOthers: "关闭其他",
+    closeAll: "关闭全部",
+    closeLeft: "关闭左侧",
+    closeRight: "关闭右侧",
+    refreshTab: "刷新当前页",
+    scrollLeft: "向左滚动",
+    scrollRight: "向右滚动",
+  });
   const leaves = useMemo(() => collectLeaves(menuItems, new Map()), [menuItems]);
 
   const [collapsedI, setCollapsedI] = useState(defaultCollapsed);
@@ -87,7 +102,9 @@ export function AdminLayout({
     return () => mql.removeEventListener("change", handler);
   }, [breakpoint, collapseControlled]);
 
-  const [selectedI, setSelectedI] = useState<string | undefined>(defaultSelectedKey ?? defaultActiveKey);
+  const [selectedI, setSelectedI] = useState<string | undefined>(
+    defaultSelectedKey ?? defaultActiveKey,
+  );
   const selected = selectedKeyProp ?? selectedI;
 
   const tabsControlled = tabsProp !== undefined;
@@ -97,7 +114,9 @@ export function AdminLayout({
   });
   const tabs = tabsControlled ? tabsProp! : tabsI;
 
-  const [activeI, setActiveI] = useState<string | undefined>(defaultActiveKey ?? defaultSelectedKey);
+  const [activeI, setActiveI] = useState<string | undefined>(
+    defaultActiveKey ?? defaultSelectedKey,
+  );
   const active = activeKeyProp ?? activeI;
 
   const setActive = (key: string) => {
@@ -108,7 +127,9 @@ export function AdminLayout({
 
   const handleMenuSelect = (key: string, item: NavMenuItem) => {
     if (!tabsControlled) {
-      setTabsI((prev) => (prev.some((t) => t.key === key) ? prev : [...prev, { key, label: item.label }]));
+      setTabsI((prev) =>
+        prev.some((t) => t.key === key) ? prev : [...prev, { key, label: item.label }],
+      );
     }
     setActive(key);
     onMenuSelect?.(key, item);
@@ -172,9 +193,13 @@ export function AdminLayout({
         className,
       )}
     >
-      <aside data-collapsed={collapsed || undefined} style={siderStyle} className="flex flex-col border-r border-border bg-surface">
+      <aside
+        data-collapsed={collapsed || undefined}
+        style={siderStyle}
+        className="flex flex-col border-r border-border bg-surface"
+      >
         <div className="flex h-16 shrink-0 items-center gap-2 overflow-hidden border-b border-border px-4 font-semibold">
-          {collapsed ? (logoCollapsed ?? logo) : logo}
+          {collapsed ? logoCollapsed ?? logo : logo}
         </div>
         <ScrollArea className="min-h-0 flex-1 rounded-none">
           <NavMenu
@@ -202,7 +227,9 @@ export function AdminLayout({
             <Menu className="size-5" />
           </button>
           <div className="min-w-0 flex-1 truncate">{breadcrumb}</div>
-          {headerExtra != null && <div className="flex shrink-0 items-center gap-2">{headerExtra}</div>}
+          {headerExtra != null && (
+            <div className="flex shrink-0 items-center gap-2">{headerExtra}</div>
+          )}
         </header>
 
         {showTabs && tabs.length > 0 && (
@@ -215,7 +242,9 @@ export function AdminLayout({
           />
         )}
 
-        <main className={cn("min-h-0 min-w-0 flex-1 overflow-auto bg-bg p-4 sm:p-6", contentClassName)}>
+        <main
+          className={cn("min-h-0 min-w-0 flex-1 overflow-auto bg-bg p-4 sm:p-6", contentClassName)}
+        >
           {children}
         </main>
       </div>

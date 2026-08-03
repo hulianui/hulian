@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./use-dispatch-run.content";
+
 // 任务派发模拟执行 hook：给定任务的子任务 DAG，按拓扑序逐子任务 pending→running→done 推进，
 // 按 mulberry32(seed) 在某个子任务确定性触发 failover（failed→failover→done），
 // 流式吐过程帧 + 进度 + 当前节点。不接真实服务、无 Math.random/Date.now（基准时间由调用方传入）。
@@ -163,7 +165,7 @@ export function useDispatchRun(task: Task, options: UseDispatchRunOptions = {}):
         setTimeout(() => {
           setActiveId(id);
           setStatusById((m) => ({ ...m, [id]: "running" }));
-          pushFrame(setFrames, { kind: "tool", text: `调用 ${executorName(sub.executorId)} · ${sub.title}`, at: startSlot * stepMs });
+          pushFrame(setFrames, { kind: "tool", text: copy("callValueValue", executorName(sub.executorId), sub.title), at: startSlot * stepMs });
         }, startSlot * stepMs + 60),
       );
       slot += 1;
@@ -173,8 +175,8 @@ export function useDispatchRun(task: Task, options: UseDispatchRunOptions = {}):
         timers.current.push(
           setTimeout(() => {
             setStatusById((m) => ({ ...m, [id]: "failed" }));
-            pushFrame(setFrames, { kind: "event", text: `⚠ ${executorName(sub.executorId)} 执行失败，触发降级。`, at: failSlot * stepMs });
-            setFailovers((f) => [...f, { subtaskId: id, from: sub.executorId, to: fbTo, reason: `${executorName(sub.executorId)} 失败，降级至 ${executorName(fbTo)}` }]);
+            pushFrame(setFrames, { kind: "event", text: copy("valueExecutionFailsTriggeringDegradation", executorName(sub.executorId)), at: failSlot * stepMs });
+            setFailovers((f) => [...f, { subtaskId: id, from: sub.executorId, to: fbTo, reason: copy("valueFailureDowngradedToValue", executorName(sub.executorId), executorName(fbTo)) }]);
           }, failSlot * stepMs + 60),
         );
         slot += 1;
@@ -183,7 +185,7 @@ export function useDispatchRun(task: Task, options: UseDispatchRunOptions = {}):
         timers.current.push(
           setTimeout(() => {
             setStatusById((m) => ({ ...m, [id]: "failover" }));
-            pushFrame(setFrames, { kind: "thinking", text: `按降级链切换至 ${executorName(fbTo)} 重试…`, at: recSlot * stepMs });
+            pushFrame(setFrames, { kind: "thinking", text: copy("pressTheDowngradeChainToSwitchTo", executorName(fbTo)), at: recSlot * stepMs });
           }, recSlot * stepMs + 60),
         );
         slot += 1;
@@ -193,7 +195,7 @@ export function useDispatchRun(task: Task, options: UseDispatchRunOptions = {}):
       timers.current.push(
         setTimeout(() => {
           setStatusById((m) => ({ ...m, [id]: "done" }));
-          pushFrame(setFrames, { kind: "stream", text: `${sub.title} 完成（${(sub.durationMs / 1000).toFixed(1)}s · ¥${sub.costYuan.toFixed(2)}）`, at: doneSlot * stepMs });
+          pushFrame(setFrames, { kind: "stream", text: copy("valueCompletedValueSValue", sub.title, (sub.durationMs / 1000).toFixed(1), sub.costYuan.toFixed(2)), at: doneSlot * stepMs });
           setProgress(Math.round(((i + 1) / order.length) * 100));
         }, doneSlot * stepMs + 60),
       );
@@ -204,7 +206,7 @@ export function useDispatchRun(task: Task, options: UseDispatchRunOptions = {}):
       setTimeout(() => {
         setRunning(false);
         setActiveId(null);
-        pushFrame(setFrames, { kind: "event", text: "任务全部子节点执行完成，编排结束。", at: slot * stepMs });
+        pushFrame(setFrames, { kind: "event", text: copy("allTaskSubNodesHaveCompletedExecution"), at: slot * stepMs });
       }, slot * stepMs + 120),
     );
   }, [order, byId, seed, stepMs, clearTimers]);

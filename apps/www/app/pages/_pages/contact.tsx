@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { ContactFormBlock } from "../../blocks/_blocks/contact-form";
 import { FaqBlock } from "../../blocks/_blocks/faq";
 import { CtaBlock } from "../../blocks/_blocks/cta";

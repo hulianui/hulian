@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { InteractiveAwarePointerSensor, Sortable, shouldStartDragFrom } from "./sortable";
 
 afterEach(cleanup);
@@ -31,6 +33,26 @@ describe("Sortable 渲染", () => {
     expect(container.querySelectorAll("[data-sortable-handle]").length).toBe(3);
     expect(getByLabelText("拖拽排序（第 1 项）")).toBeTruthy();
     expect(getByLabelText("拖拽排序（第 3 项）")).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes handle labels", () => {
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <Sortable items={rows} handle onChange={() => {}} renderItem={(r) => <span>{r.label}</span>} />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("Reorder item 1")).toBeTruthy();
+    expect(getByLabelText("Reorder item 3")).toBeTruthy();
+  });
+
+  it("legacy component dictionaries fall back to Chinese handle labels", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, sortable: undefined } };
+    const { getByLabelText } = render(
+      <ConfigProvider locale={legacy}>
+        <Sortable items={rows} handle onChange={() => {}} renderItem={(r) => <span>{r.label}</span>} />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("拖拽排序（第 1 项）")).toBeTruthy();
   });
 
   it("整项可拖模式：activator 落在 li 上（aria-roledescription=sortable），无独立手柄", () => {

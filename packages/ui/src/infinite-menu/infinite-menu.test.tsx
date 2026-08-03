@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { InfiniteMenu } from "./infinite-menu";
 import type { InfiniteMenuItem } from "./infinite-menu.types";
 
@@ -46,11 +47,24 @@ describe("InfiniteMenu", () => {
   });
 
   it("className 透传到根容器", () => {
-    const { container } = render(
-      <InfiniteMenu items={ITEMS} className="test-im-class" />,
+    const { container } = render(<InfiniteMenu items={ITEMS} className="test-im-class" />);
+    expect(container.querySelector("[data-infinite-menu]")?.className).toContain("test-im-class");
+  });
+
+  it("ConfigProvider locale=enUS localizes actions and placeholder items", () => {
+    const { getByRole, unmount } = render(
+      <ConfigProvider locale={enUS}>
+        <InfiniteMenu items={[{ title: "Alpha" }]} />
+      </ConfigProvider>,
     );
-    expect(
-      container.querySelector("[data-infinite-menu]")?.className,
-    ).toContain("test-im-class");
+    expect(getByRole("button", { name: "Open Alpha" })).toBeTruthy();
+    unmount();
+    const second = render(
+      <ConfigProvider locale={enUS}>
+        <InfiniteMenu items={[]} />
+      </ConfigProvider>,
+    );
+    expect(second.container.textContent).toContain("Menu item 1");
+    expect(second.container.textContent).toContain("Placeholder item · Replace via items");
   });
 });

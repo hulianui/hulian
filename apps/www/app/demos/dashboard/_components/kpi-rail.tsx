@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./kpi-rail.content";
 import { Meter, NumberTicker, Skeleton } from "@hulianui/ui";
 import { Activity, Gauge, Globe2, Link2, Radio, Timer } from "lucide-react";
 import type { Snapshot } from "../_data/snapshot";
@@ -16,12 +17,56 @@ interface KpiDef {
 
 function kpiDefs(s: Snapshot): KpiDef[] {
   return [
-    { key: "nodes", label: "在线节点", value: s.kpis.onlineNodes, Icon: Globe2, color: "var(--color-chart-1)" },
-    { key: "bw", label: "实时带宽", value: Number((s.kpis.totalBandwidth / 1000).toFixed(2)), decimals: 2, suffix: "Tbps", Icon: Activity, color: "var(--color-chart-2)" },
-    { key: "qps", label: "全网请求", value: Number((s.kpis.totalQps / 10000).toFixed(1)), decimals: 1, suffix: "万/s", Icon: Radio, color: "var(--color-chart-3)" },
-    { key: "lat", label: "平均延迟", value: s.kpis.avgLatency, suffix: "ms", Icon: Timer, color: "var(--color-chart-4)" },
-    { key: "hit", label: "缓存命中率", value: s.kpis.hitRate, decimals: 1, suffix: "%", Icon: Gauge, color: "var(--color-chart-2)" },
-    { key: "link", label: "调度链路", value: s.kpis.linkCount, suffix: "条", Icon: Link2, color: "var(--color-chart-1)" },
+    {
+      key: "nodes",
+      label: copy("onlineNode"),
+      value: s.kpis.onlineNodes,
+      Icon: Globe2,
+      color: "var(--color-chart-1)",
+    },
+    {
+      key: "bw",
+      label: copy("realTimeBandwidth"),
+      value: Number((s.kpis.totalBandwidth / 1000).toFixed(2)),
+      decimals: 2,
+      suffix: "Tbps",
+      Icon: Activity,
+      color: "var(--color-chart-2)",
+    },
+    {
+      key: "qps",
+      label: copy("networkWideRequests"),
+      value: Number((s.kpis.totalQps / 10000).toFixed(1)),
+      decimals: 1,
+      suffix: copy("tenThousandS"),
+      Icon: Radio,
+      color: "var(--color-chart-3)",
+    },
+    {
+      key: "lat",
+      label: copy("averageDelay"),
+      value: s.kpis.avgLatency,
+      suffix: "ms",
+      Icon: Timer,
+      color: "var(--color-chart-4)",
+    },
+    {
+      key: "hit",
+      label: copy("cacheHitRate"),
+      value: s.kpis.hitRate,
+      decimals: 1,
+      suffix: "%",
+      Icon: Gauge,
+      color: "var(--color-chart-2)",
+    },
+    {
+      key: "link",
+      label: copy("schedulingLink"),
+      value: s.kpis.linkCount,
+      suffix: copy("strips"),
+      Icon: Link2,
+      color: "var(--color-chart-1)",
+    },
   ];
 }
 
@@ -48,7 +93,7 @@ function KpiTile({ def }: { def: KpiDef }) {
 export function KpiRail({ snapshot, loading }: { snapshot: Snapshot | null; loading: boolean }) {
   if (loading || !snapshot) {
     return (
-      <Panel title="核心指标">
+      <Panel title={copy("coreMetrics")}>
         <div className="grid h-full grid-cols-2 content-start gap-2.5">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-16 w-full rounded-lg" />
@@ -65,7 +110,10 @@ export function KpiRail({ snapshot, loading }: { snapshot: Snapshot | null; load
   );
 
   return (
-    <Panel title="核心指标" extra={<span className="text-xs text-muted">每 3s 刷新</span>}>
+    <Panel
+      title={copy("coreMetrics")}
+      extra={<span className="text-xs text-muted">{copy("refreshEvery3s")}</span>}
+    >
       <div className="flex h-full flex-col gap-2.5">
         <div className="grid grid-cols-2 gap-2.5">
           {defs.map((d) => (
@@ -77,11 +125,18 @@ export function KpiRail({ snapshot, loading }: { snapshot: Snapshot | null; load
           <div className="mb-2 flex items-center justify-between text-xs text-muted">
             <span className="flex items-center gap-1.5">
               <Gauge className="size-3.5" />
-              全局负载
+              {copy("globalLoad")}
             </span>
             <span
               className="font-semibold tabular-nums"
-              style={{ color: globalLoad >= 80 ? "var(--color-danger)" : globalLoad >= 65 ? "var(--color-chart-3)" : "var(--color-chart-2)" }}
+              style={{
+                color:
+                  globalLoad >= 80
+                    ? "var(--color-danger)"
+                    : globalLoad >= 65
+                    ? "var(--color-chart-3)"
+                    : "var(--color-chart-2)",
+              }}
             >
               {globalLoad}%
             </span>

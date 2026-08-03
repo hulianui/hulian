@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useMemo, useState } from "react";
 import {
   Button,
@@ -18,13 +20,13 @@ import { LogDetailDrawer } from "./log-detail-drawer";
 const PAGE_SIZE = 8;
 
 const statusMeta: Record<RequestLog["status"], { dot: ChannelStatus; label: string; tone: "success" | "danger" | "warning" }> = {
-  success: { dot: "online", label: "成功", tone: "success" },
-  error: { dot: "offline", label: "错误", tone: "danger" },
-  rate_limited: { dot: "degraded", label: "限流", tone: "warning" },
-  timeout: { dot: "offline", label: "超时", tone: "danger" },
+  success: { dot: "online", label: copy("success"), tone: "success" },
+  error: { dot: "offline", label: copy("error"), tone: "danger" },
+  rate_limited: { dot: "degraded", label: copy("currentLimiting"), tone: "warning" },
+  timeout: { dot: "offline", label: copy("timeout"), tone: "danger" },
 };
 
-const opt = (arr: { value: string; label: string }[], allLabel = "全部") => [
+const opt = (arr: { value: string; label: string }[], allLabel = copy("all")) => [
   { value: "", label: allLabel },
   ...arr,
 ];
@@ -49,7 +51,7 @@ export default function LogsPage() {
   const columns: ColumnDef<RequestLog>[] = [
     {
       accessorKey: "time",
-      header: "时间",
+      header: copy("time"),
       cell: ({ row }) => (
         <span className="whitespace-nowrap font-mono text-xs tabular-nums text-muted">
           {row.original.time.slice(5, 19).replace("T", " ")}
@@ -58,7 +60,7 @@ export default function LogsPage() {
     },
     {
       accessorKey: "model",
-      header: "模型",
+      header: copy("model"),
       cell: ({ row }) => {
         const m = modelOf(row.original.model);
         const p = m ? providerOf(m.provider) : undefined;
@@ -79,12 +81,12 @@ export default function LogsPage() {
     },
     {
       accessorKey: "channel",
-      header: "渠道",
+      header: copy("channel"),
       cell: ({ row }) => <span className="text-sm text-muted">{row.original.channel}</span>,
     },
     {
       accessorKey: "keyName",
-      header: "密钥",
+      header: copy("key"),
       cell: ({ row }) => (
         <Tag tone="neutral" size="sm" variant="soft">
           {row.original.keyName}
@@ -93,7 +95,7 @@ export default function LogsPage() {
     },
     {
       accessorKey: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => {
         const meta = statusMeta[row.original.status];
         return <StatusDot status={meta.dot} label={meta.label} extra={`HTTP ${row.original.httpStatus}`} />;
@@ -101,7 +103,7 @@ export default function LogsPage() {
     },
     {
       accessorKey: "latencyMs",
-      header: "延迟",
+      header: copy("delay"),
       cell: ({ row }) => {
         const ms = row.original.latencyMs;
         return (
@@ -124,19 +126,17 @@ export default function LogsPage() {
     },
     {
       accessorKey: "costUsd",
-      header: "花费",
+      header: copy("cost"),
       cell: ({ row }) => (
         <span className="tabular-nums font-medium">{formatUsd(row.original.costUsd)}</span>
       ),
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => (
-        <Button variant="link" size="sm" onClick={() => setActive(row.original)}>
-          详情
-        </Button>
+        <Button variant="link" size="sm" onClick={() => setActive(row.original)}>{copy("details")}</Button>
       ),
     },
   ];
@@ -144,12 +144,12 @@ export default function LogsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">用量日志</h1>
-        <p className="text-sm text-muted">逐请求调用记录 · 点「详情」查看完整 request / response 与计费链路</p>
+        <h1 className="text-xl font-semibold text-foreground">{copy("usageLog")}</h1>
+        <p className="text-sm text-muted">{copy("requestByRequestCallRecordClickDetails")}</p>
       </div>
 
       <ProTable<RequestLog>
-        title="请求日志"
+        title={copy("requestLog")}
         columns={columns}
         data={paged}
         getRowId={(r) => r.id}
@@ -157,24 +157,24 @@ export default function LogsPage() {
           fields: [
             {
               name: "model",
-              label: "模型",
+              label: copy("model2"),
               type: "select",
               options: opt(models.map((m) => ({ value: m.id, label: m.name }))),
             },
             {
               name: "status",
-              label: "状态",
+              label: copy("status2"),
               type: "select",
               options: opt([
-                { value: "success", label: "成功" },
-                { value: "error", label: "错误" },
-                { value: "rate_limited", label: "限流" },
-                { value: "timeout", label: "超时" },
+                { value: "success", label: copy("success2") },
+                { value: "error", label: copy("error2") },
+                { value: "rate_limited", label: copy("currentLimiting2") },
+                { value: "timeout", label: copy("timeout2") },
               ]),
             },
             {
               name: "keyName",
-              label: "密钥",
+              label: copy("key2"),
               type: "select",
               options: opt(apiKeys.map((k) => ({ value: k.name, label: k.name }))),
             },

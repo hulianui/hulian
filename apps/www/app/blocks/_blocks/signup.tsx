@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
@@ -16,7 +17,7 @@ import {
   AuroraText,
   Spinner,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 import { Rocket } from "lucide-react";
 
 // 注册 Block —— 自包含、可整段复制。
@@ -125,10 +126,7 @@ export function SignupBlock() {
         </Heading>
         <Text tone="muted" size="sm" className="mt-1">
           已有账号？{" "}
-          <Link
-            href="#"
-            className="font-medium text-primary underline-offset-4 hover:underline"
-          >
+          <Link href="#" className="font-medium text-primary underline-offset-4 hover:underline">
             直接登录
           </Link>
         </Text>
@@ -176,11 +174,7 @@ export function SignupBlock() {
                   <span
                     key={i}
                     className="h-1.5 flex-1 rounded-full bg-surface-hover"
-                    style={
-                      i < strength
-                        ? { background: strengthMeta[strength].tone }
-                        : undefined
-                    }
+                    style={i < strength ? { background: strengthMeta[strength].tone } : undefined}
                   />
                 ))}
               </div>

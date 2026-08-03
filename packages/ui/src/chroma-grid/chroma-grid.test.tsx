@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { ChromaGrid } from "./chroma-grid";
 import type { ChromaGridItem } from "./chroma-grid.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 const cardsOf = (c: HTMLElement) =>
   c.querySelectorAll("[data-chroma-card]");
@@ -17,6 +19,17 @@ describe("ChromaGrid", () => {
     expect(cardsOf(container).length).toBe(6);
     expect(overlayOf(container)).not.toBeNull();
     expect(fadeOf(container)).not.toBeNull();
+  });
+
+  it("enUS 下内置 demo 使用英文人物与职位", () => {
+    const { container, getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <ChromaGrid />
+      </ConfigProvider>,
+    );
+    expect(getByText("Lin Yu")).toBeTruthy();
+    expect(getByText("Full-stack Engineer")).toBeTruthy();
+    expect(container.textContent).not.toMatch(/[\u3400-\u9fff]/u);
   });
 
   it("items 渲染对应数量卡片 + 标题/描边色 token 注入", () => {

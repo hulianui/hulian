@@ -1,11 +1,63 @@
 "use client";
+import { copy } from "./use-chat-stream.content";
 import { useCallback, useReducer, useRef, useState } from "react";
 import { selectScript, scriptToEvents, chatEventDelayMs, type ChatEvent } from "@hulianui/mocks";
+import { DOCS_LOCALE } from "../../../lib/docs-locale";
 import { chatReducer, type ChatMsg } from "./chat-types";
 
 let seq = 0;
 const nextId = () => `m${++seq}`;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+type ChatScript = ReturnType<typeof selectScript>;
+
+export function selectEnglishScriptId(message: string): ChatScript["id"] {
+  const normalized = message.toLowerCase();
+  if (/weather|temperature|forecast/.test(normalized)) return "weather";
+  if (/quick\s*sort|quicksort|code|function|algorithm/.test(normalized)) return "code";
+  if (/closure|lexical scope/.test(normalized)) return "explain";
+  return "fallback";
+}
+
+function englishScript(id: ChatScript["id"]): ChatScript {
+  switch (id) {
+    case "weather":
+      return {
+        id,
+        thinking: copy("weatherThinking"),
+        tool: {
+          name: "get_weather",
+          input: copy("weatherInput"),
+          output: copy("weatherOutput"),
+        },
+        answer: copy("weatherAnswer"),
+        citations: [],
+      };
+    case "code":
+      return { id, thinking: copy("codeThinking"), answer: copy("codeAnswer"), citations: [] };
+    case "explain":
+      return {
+        id,
+        thinking: copy("closureThinking"),
+        answer: copy("closureAnswer"),
+        citations: [
+          {
+            index: 1,
+            title: "Closures - MDN Web Docs",
+            source: "developer.mozilla.org",
+            href: "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures",
+          },
+        ],
+      };
+    case "fallback":
+      return {
+        id,
+        thinking: copy("fallbackThinking"),
+        answer: copy("fallbackAnswer"),
+        citations: [],
+      };
+  }
+}
 
 export function useChatStream() {
   const [messages, dispatch] = useReducer(chatReducer, [] as ChatMsg[]);
@@ -34,8 +86,10 @@ export function useChatStream() {
         // 静态导出(prod)无后端 + 不启 MSW → 客户端内存生成同款事件流
         // （与 MSW handler 同口径：selectScript/scriptToEvents/chatEventDelayMs 单一真源）。
         // dev 仍走 fetch 经 MSW Service Worker 拦截，保留「真流式」语义。同 async-users 的 prod 回退模式。
-        if (process.env.NODE_ENV === "production") {
-          for (const event of scriptToEvents(selectScript(text))) {
+        if (process.env.NODE_ENV === "production" || DOCS_LOCALE === "en") {
+          const script =
+            DOCS_LOCALE === "en" ? englishScript(selectEnglishScriptId(text)) : selectScript(text);
+          for (const event of scriptToEvents(script)) {
             if (ac.signal.aborted) throw new DOMException("Aborted", "AbortError");
             dispatch({ kind: "event", id: assistantId, event });
             await sleep(chatEventDelayMs(event));

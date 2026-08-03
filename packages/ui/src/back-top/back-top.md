@@ -60,4 +60,6 @@ const ref = useRef<HTMLDivElement>(null);
 - 已内置 `prefers-reduced-motion` 降级（smooth → auto），无需消费侧处理。
 
 ## 相关
+
+默认回顶标签跟随 `ConfigProvider`；可继续用 `aria-label` 显式覆盖。
 [Tabs](../tabs/tabs.md) · [Breadcrumb](../breadcrumb/breadcrumb.md) · [Pagination](../pagination/pagination.md) · [Anchor](../anchor/anchor.md) · [Affix](../affix/affix.md) · [Stepper](../stepper/stepper.md)

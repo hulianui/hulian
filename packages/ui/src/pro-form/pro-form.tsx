@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { Button } from "../button";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import type { FormValues } from "../form/use-form";
 import { cn } from "../lib/cn";
 import type { ProFormProps } from "./pro-form.types";
@@ -27,7 +27,10 @@ export function ProForm({
   className,
   children,
 }: ProFormProps) {
-  const loc = useLocale().proForm;
+  const loc = useLocaleValue("proForm", {
+    submit: "提交",
+    reset: "重置",
+  });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -57,12 +60,19 @@ export function ProForm({
       {footer !== undefined ? (
         footer
       ) : (
-        <div className={cn("flex gap-2", footerAlign === "right" ? "justify-end" : "justify-start")}>
+        <div
+          className={cn("flex gap-2", footerAlign === "right" ? "justify-end" : "justify-start")}
+        >
           <Button type="submit" loading={loading}>
             {submitText ?? loc.submit}
           </Button>
           {showReset && form && (
-            <Button type="button" variant="ghost" onClick={() => form.resetFields()} disabled={loading}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => form.resetFields()}
+              disabled={loading}
+            >
               {resetText ?? loc.reset}
             </Button>
           )}

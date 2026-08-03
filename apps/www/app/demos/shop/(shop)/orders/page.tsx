@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { useState } from "react";
 import {
   Tabs, TabsList, TabsTab, TabsPanel,
@@ -10,15 +11,16 @@ import { orders, STATUS_LABEL, STATUS_TONE } from "../../_data/orders";
 import { productById, productImage, formatPrice } from "../../_data/products";
 import { useShop } from "../../_lib/shop-store";
 import type { Order } from "../../_data/types";
+import { SHOP_LOCATION_BASE } from "../../_components/nav-config";
 
 // 订单状态 Tabs
 const TAB_FILTERS = [
-  { value: "all", label: "全部" },
-  { value: "pending", label: "待付款" },
-  { value: "paid", label: "待发货" },
-  { value: "shipped", label: "待收货" },
-  { value: "completed", label: "已完成" },
-  { value: "refunding", label: "退款中" },
+  { value: "all", label: copy("all") },
+  { value: "pending", label: copy("awaitingPayment") },
+  { value: "paid", label: copy("preparingShipment") },
+  { value: "shipped", label: copy("inTransit") },
+  { value: "completed", label: copy("completed") },
+  { value: "refunding", label: copy("refundInProgress") },
 ] as const;
 
 function OrderSkeleton() {
@@ -57,12 +59,12 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
 
   const handlePay = () =>
     run(async () => {
-      toast({ title: `订单 ${order.id} 已跳转支付页`, tone: "info" });
+      toast({ title: `${copy("orderPrefix")}${order.id}${copy("openingPayment")}`, tone: "info" });
     });
 
   const handleConfirmReceipt = () =>
     run(async () => {
-      toast({ title: "已确认收货，感谢购买！", tone: "success" });
+      toast({ title: copy("deliveryConfirmedThanksForYourPurchase"), tone: "success" });
     });
 
   const handleBuyAgain = (item: Order["items"][0]) => {
@@ -74,7 +76,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
       qty: item.qty,
       price: item.price,
     });
-    toast({ title: `已将「${product?.name ?? item.name}」加入购物车`, tone: "info" });
+    toast({ title: `${copy("added")}${product?.name ?? item.name}${copy("toYourCart")}`, tone: "info" });
   };
 
   return (
@@ -82,7 +84,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
       {/* 订单头 */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-foreground">订单号：{order.id}</span>
+          <span className="text-sm font-medium text-foreground">{copy("order")}{order.id}</span>
           <span className="text-xs text-muted">{order.createdAt}</span>
         </div>
         <Tag tone={STATUS_TONE[order.status]} size="sm">
@@ -114,14 +116,14 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
               {/* 已完成订单可评价 */}
               {order.status === "completed" && (
                 <div className="flex shrink-0 flex-col items-end gap-1">
-                  <span className="text-xs text-muted">评价</span>
+                  <span className="text-xs text-muted">{copy("review")}</span>
                   <Rating
                     value={ratings[`${order.id}-${idx}`] ?? 0}
                     onValueChange={(v) =>
                       setRatings((prev) => {
                         const key = `${order.id}-${idx}`;
                         if (prev[key] === v) return prev;
-                        toast({ title: "感谢您的评价！", tone: "success" });
+                        toast({ title: copy("thankYouForYourReview"), tone: "success" });
                         return { ...prev, [key]: v ?? 0 };
                       })
                     }
@@ -137,7 +139,8 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
       {/* 合计 + 操作区 */}
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
         <span className="text-sm text-muted">
-          共 {order.items.reduce((s, i) => s + i.qty, 0)} 件 &nbsp;合计：
+
+          {copy("total")} {order.items.reduce((s, i) => s + i.qty, 0)}  {copy("itemsAndTotal")}
           <span className="font-semibold text-foreground">{formatPrice(order.total)}</span>
         </span>
 
@@ -146,20 +149,22 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
           {order.status === "pending" && (
             <>
               <Popconfirm
-                title="确认取消订单？"
-                description="取消后不可恢复，若已付款将原路退款。"
+                title={copy("cancelThisOrder")}
+                description={copy("thisCannotBeUndoneAnyPaymentWillBeRefundedToTheOriginalPaymentMethod")}
                 danger
                 onConfirm={async () => {
                   await new Promise((r) => setTimeout(r, 400));
-                  toast({ title: "订单已取消", tone: "info" });
+                  toast({ title: copy("orderCanceled"), tone: "info" });
                 }}
               >
                 <Button variant="outline" size="sm">
-                  取消订单
+
+                  {copy("cancelOrder")}
                 </Button>
               </Popconfirm>
               <Button size="sm" tone="brand" onClick={handlePay}>
-                去支付
+
+                {copy("payNow")}
               </Button>
             </>
           )}
@@ -168,15 +173,17 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
           {order.status === "shipped" && (
             <>
               <Button variant="outline" size="sm" onClick={() => onViewLogistics(order)}>
-                查看物流
+
+                {copy("trackShipment")}
               </Button>
               <Popconfirm
-                title="确认已收到货物？"
-                description="确认后订单将完成，无法申请退款。"
+                title={copy("confirmDelivery")}
+                description={copy("theOrderWillBeMarkedCompleteAndWillNoLongerBeEligibleForARefund")}
                 onConfirm={handleConfirmReceipt}
               >
                 <Button size="sm" tone="brand">
-                  确认收货
+
+                  {copy("confirmDelivery2")}
                 </Button>
               </Popconfirm>
             </>
@@ -187,7 +194,8 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
             <>
               {order.items.map((item, idx) => (
                 <Button key={idx} variant="outline" size="sm" onClick={() => handleBuyAgain(item)}>
-                  再次购买
+
+                  {copy("buyAgain")}
                 </Button>
               ))}
             </>
@@ -196,7 +204,8 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
           {/* 退款中 */}
           {order.status === "refunding" && (
             <Button variant="outline" size="sm" onClick={() => onViewLogistics(order)}>
-              退款进度
+
+              {copy("refundStatus")}
             </Button>
           )}
         </div>
@@ -215,7 +224,7 @@ export default function OrdersPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-foreground">我的订单</h1>
+      <h1 className="mb-6 text-2xl font-bold text-foreground">{copy("myOrders")}</h1>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-6 flex-wrap">
@@ -237,14 +246,15 @@ export default function OrdersPage() {
               <OrderSkeleton />
             ) : filtered.length === 0 ? (
               <Empty
-                title="暂无订单"
-                description={t.value === "all" ? "快去选购心仪的商品吧" : `暂无「${t.label}」订单`}
+                title={copy("noOrdersYet")}
+                description={t.value === "all" ? copy("findSomethingYouLoveInTheStore") : `${copy("no")}${t.label}${copy("orders")}`}
               >
                 <Button
                   tone="brand"
-                  onClick={() => (window.location.href = "/demos/shop/products")}
+                  onClick={() => (window.location.href = `${SHOP_LOCATION_BASE}/products`)}
                 >
-                  去逛逛
+
+                  {copy("browseProducts")}
                 </Button>
               </Empty>
             ) : (
@@ -262,8 +272,8 @@ export default function OrdersPage() {
       <Drawer open={!!logisticsOrder} onOpenChange={(o) => !o && setLogisticsOrder(null)}>
         <DrawerContent
           side="right"
-          title={logisticsOrder?.status === "refunding" ? "退款进度" : "物流详情"}
-          description={logisticsOrder ? `订单号：${logisticsOrder.id}` : undefined}
+          title={logisticsOrder?.status === "refunding" ? copy("refundStatus") : copy("shipmentTracking")}
+          description={logisticsOrder ? `${copy("order")}${logisticsOrder.id}` : undefined}
           className="w-[min(560px,92vw)]"
         >
           {logisticsOrder && (

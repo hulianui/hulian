@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { skeletonVariants } from "./skeleton";
 import { CardSkeleton, ListSkeleton, TableSkeleton } from "./skeleton-presets";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("skeletonVariants", () => {
   it("默认 text 形态", () => {
@@ -28,6 +30,21 @@ describe("组合骨架", () => {
   it("CardSkeleton 暴露 role=status 无障碍", () => {
     const { getByRole } = render(<CardSkeleton />);
     expect(getByRole("status")).toBeTruthy();
+  });
+
+  it("组合骨架使用 ConfigProvider 的加载文案", () => {
+    const { getAllByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <CardSkeleton />
+        <ListSkeleton />
+        <TableSkeleton />
+      </ConfigProvider>,
+    );
+    expect(getAllByRole("status").map((element) => element.getAttribute("aria-label"))).toEqual([
+      "Loading",
+      "Loading",
+      "Loading",
+    ]);
   });
 
   it("ListSkeleton 渲染 rows 行带圆形头像位", () => {

@@ -1,8 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "../_icons";
-import { useLocale } from "../config/locale";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../context-menu";
+import { useLocaleValue } from "../config/locale-context";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "../context-menu";
 import { cn } from "../lib/cn";
 import { affectedKeys, isClosable, orderTabs, reorderTabs } from "./route-tabs-core";
 import type { RouteTabsAction, RouteTabsProps } from "./route-tabs.types";
@@ -40,7 +45,19 @@ export function RouteTabs({
   disableAutoScroll = false,
   className,
 }: RouteTabsProps) {
-  const loc = useLocale().adminLayout;
+  const loc = useLocaleValue("adminLayout", {
+    collapse: "收起侧栏",
+    expand: "展开侧栏",
+    closeTab: "关闭页签",
+    tabActions: "页签操作",
+    closeOthers: "关闭其他",
+    closeAll: "关闭全部",
+    closeLeft: "关闭左侧",
+    closeRight: "关闭右侧",
+    refreshTab: "刷新当前页",
+    scrollLeft: "向左滚动",
+    scrollRight: "向右滚动",
+  });
   const ordered = orderTabs(items);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -67,7 +84,8 @@ export function RouteTabs({
     return () => ro.disconnect();
   }, [items.length]);
 
-  const scrollBy = (delta: number) => scrollRef.current?.scrollBy({ left: delta, behavior: "smooth" });
+  const scrollBy = (delta: number) =>
+    scrollRef.current?.scrollBy({ left: delta, behavior: "smooth" });
 
   const runAction = (action: RouteTabsAction, tabKey: string) => {
     if (action === "close") {
@@ -100,8 +118,12 @@ export function RouteTabs({
             e.preventDefault();
             const rect = e.currentTarget.getBoundingClientRect();
             // 横向页签按左右半区判前后（不是上下）
-            const before = Number.isFinite(e.clientX) ? e.clientX - rect.left < rect.width / 2 : true;
-            setDropHint((prev) => (prev?.key === key && prev.before === before ? prev : { key, before }));
+            const before = Number.isFinite(e.clientX)
+              ? e.clientX - rect.left < rect.width / 2
+              : true;
+            setDropHint((prev) =>
+              prev?.key === key && prev.before === before ? prev : { key, before },
+            );
           },
           onDrop: (e: React.DragEvent) => {
             e.preventDefault();
@@ -133,7 +155,12 @@ export function RouteTabs({
       )}
     >
       {overflowing && (
-        <button type="button" aria-label={loc.scrollLeft} onClick={() => scrollBy(-200)} className={scrollBtn}>
+        <button
+          type="button"
+          aria-label={loc.scrollLeft}
+          onClick={() => scrollBy(-200)}
+          className={scrollBtn}
+        >
           <ChevronLeft className="size-4" />
         </button>
       )}
@@ -209,7 +236,11 @@ export function RouteTabs({
               />
               <ContextMenuContent className="w-40">
                 {menuItems.map((a) => (
-                  <ContextMenuItem key={a} disabled={disabledOf(a)} onClick={() => runAction(a, t.key)}>
+                  <ContextMenuItem
+                    key={a}
+                    disabled={disabledOf(a)}
+                    onClick={() => runAction(a, t.key)}
+                  >
                     {actionLabel[a]}
                   </ContextMenuItem>
                 ))}
@@ -229,7 +260,12 @@ export function RouteTabs({
       </div>
 
       {overflowing && (
-        <button type="button" aria-label={loc.scrollRight} onClick={() => scrollBy(200)} className={scrollBtn}>
+        <button
+          type="button"
+          aria-label={loc.scrollRight}
+          onClick={() => scrollBy(200)}
+          className={scrollBtn}
+        >
           <ChevronRight className="size-4" />
         </button>
       )}

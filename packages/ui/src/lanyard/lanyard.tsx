@@ -1,6 +1,8 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { LanyardProps } from "./lanyard.types";
 
@@ -17,12 +19,15 @@ export function Lanyard({
   stiffness = 0.045,
   damping = 0.92,
   children,
-  title = "瑚琏 · HULIAN",
-  subtitle = "拖动摆一摆",
+  title,
+  subtitle,
   className,
   style,
   ...props
 }: LanyardProps & Omit<React.HTMLAttributes<HTMLDivElement>, keyof LanyardProps>) {
+  const locale = useComponentLocale().lanyard ?? { title: "瑚琏 · HULIAN", subtitle: "拖动摆一摆" };
+  const resolvedTitle = title === undefined ? locale.title : title;
+  const resolvedSubtitle = subtitle === undefined ? locale.subtitle : subtitle;
   const reduce = useReducedMotion();
 
   // 摆角（弧度，0 = 垂直向下）与角速度，存 ref 避免逐帧 setState；用 state 触发重绘。
@@ -182,8 +187,8 @@ export function Lanyard({
         ) : (
           <div className="w-40 rounded-xl border border-border bg-surface p-4 text-center shadow-lg">
             <div className="mx-auto mb-3 size-12 rounded-full bg-primary/15" />
-            <p className="text-sm font-semibold text-foreground">{title}</p>
-            <p className="mt-0.5 text-xs text-muted">{subtitle}</p>
+            <p className="text-sm font-semibold text-foreground">{resolvedTitle}</p>
+            <p className="mt-0.5 text-xs text-muted">{resolvedSubtitle}</p>
           </div>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { copy } from "./page.content";
 import type { Metadata } from "next";
 import { Hero } from "../_components/sections/hero";
 import { TrustBar } from "../_components/sections/trust-bar";
@@ -11,8 +12,8 @@ import { Faq } from "../_components/sections/faq";
 import { Cta } from "../_components/sections/cta";
 
 export const metadata: Metadata = {
-  title: "瀚云 HanCloud · 一体化云原生应用平台",
-  description: "从 git push 到全球上线，瀚云把部署、弹性算力与端到端可观测收进同一个平台。",
+  title: copy("hancloudTheIntegratedCloudNativeApplicationPlatform"),
+  description: copy("hancloudTakesYouFromGitPushToAGlobalReleaseWithDeploymentElasticComputeAndEndToEndObservabilityO"),
 };
 
 export default function WebsiteHome() {

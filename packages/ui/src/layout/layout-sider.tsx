@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "../lib/cn";
+import { useLocaleValue } from "../config/locale-context";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { ScrollArea } from "../scroll-area";
 import type { LayoutBreakpoint, LayoutCollapseType, LayoutSiderProps } from "./layout.types";
@@ -31,7 +32,10 @@ function DefaultTrigger({ collapsed }: { collapsed: boolean }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn("size-4 transition-transform", collapsed && "rotate-180")}
-      style={{ transitionDuration: motionDurationCss.base, transitionTimingFunction: motionEaseCss.out }}
+      style={{
+        transitionDuration: motionDurationCss.base,
+        transitionTimingFunction: motionEaseCss.out,
+      }}
     >
       <path d="m15 18-6-6 6-6" />
     </svg>
@@ -57,6 +61,19 @@ export function LayoutSider({
   children,
   ...props
 }: LayoutSiderProps) {
+  const locale = useLocaleValue("adminLayout", {
+    collapse: "收起侧栏",
+    expand: "展开侧栏",
+    closeTab: "关闭页签",
+    tabActions: "页签操作",
+    closeOthers: "关闭其他",
+    closeAll: "关闭全部",
+    closeLeft: "关闭左侧",
+    closeRight: "关闭右侧",
+    refreshTab: "刷新当前页",
+    scrollLeft: "向左滚动",
+    scrollRight: "向右滚动",
+  });
   const isControlled = collapsedProp !== undefined;
   const [internal, setInternal] = useState(defaultCollapsed);
   const collapsed = collapsedProp ?? internal;
@@ -115,7 +132,7 @@ export function LayoutSider({
           type="button"
           onClick={() => setCollapsed(!collapsed, "clickTrigger")}
           aria-expanded={!collapsed}
-          aria-label={collapsed ? "展开侧栏" : "收起侧栏"}
+          aria-label={collapsed ? locale.expand : locale.collapse}
           className={cn(
             "flex h-12 shrink-0 items-center justify-center border-t border-border text-muted outline-none transition-colors",
             "hover:bg-surface-hover hover:text-foreground",

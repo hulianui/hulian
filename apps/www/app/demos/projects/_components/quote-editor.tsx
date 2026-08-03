@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./quote-editor.content";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Eye, Pencil, Trash2 } from "lucide-react";
@@ -36,7 +38,7 @@ import {
 } from "@hulianui/ui";
 import { ROOT } from "./nav-config";
 import { lineTotal, quoteById, quoteTotals } from "../_data/quotes";
-import { quoteStatusTone, rmbUpper, yuan } from "../_data/status";
+import { quoteStatusLabel, quoteStatusTone, rmbUpper, yuan } from "../_data/status";
 import type { QuoteItem } from "../_data/types";
 import { usePending } from "../../lib/async";
 
@@ -44,16 +46,16 @@ const TAX_OPTIONS = [
   { value: "0.13", label: "13%" },
   { value: "0.09", label: "9%" },
   { value: "0.06", label: "6%" },
-  { value: "0", label: "免税" },
+  { value: "0", label: copy("taxFree") },
 ];
 
 // 我方主体（demo 固定）。
 const VENDOR = {
-  name: "瑚琏建工集团有限公司",
+  name: copy("hulianConstructionEngineeringGroupCoLtd"),
   taxNo: "91330100MA2XHL0001",
-  addr: "杭州市滨江区江南大道 1788 号",
-  bank: "工商银行杭州滨江支行 1202 0000 1234 5678",
-  contact: "陈工 · 0571-8888 6666",
+  addr: copy("noJiangnanAvenueBinjiangDistrictHangzhou"),
+  bank: copy("industrialAndCommercialBankOfChinaHangzhou"),
+  contact: copy("chenGong"),
 };
 
 let seq = 0;
@@ -77,43 +79,43 @@ export function QuoteEditor({ id }: { id: string }) {
     return (
       <Result
         status="error"
-        title="报价单不存在"
-        subTitle="该报价单可能已被删除（demo 内存态，刷新还原）。"
+        title={copy("theQuotationDoesNotExist")}
+        subTitle={copy("theQuotationMayHaveBeenDeletedDemo")}
       >
-        <Button render={<Link href={`${ROOT}/quotes`} />}>返回报价列表</Button>
+        <Button render={<Link href={`${ROOT}/quotes`} />}>{copy("returnToQuoteList")}</Button>
       </Result>
     );
   }
 
   const columns: EditableColumn<QuoteItem>[] = [
-    { key: "name", title: "项目名称", editable: true, width: 200 },
-    { key: "spec", title: "规格 / 型号", editable: true, width: 150 },
-    { key: "unit", title: "单位", editable: true, width: 70, align: "center" },
+    { key: "name", title: copy("projectName"), editable: true, width: 200 },
+    { key: "spec", title: copy("specificationsModels"), editable: true, width: 150 },
+    { key: "unit", title: copy("unit"), editable: true, width: 70, align: "center" },
     {
       key: "qty",
-      title: "数量",
+      title: copy("quantity"),
       editable: true,
       width: 120,
       align: "right",
       render: (v) => <span className="tabular-nums">{String(v)}</span>,
       editor: (v, onChange) => (
-        <NumberField aria-label="数量" value={(v as number) ?? 0} onValueChange={(n) => onChange(n ?? 0)} min={0} />
+        <NumberField aria-label={copy("quantity2")} value={(v as number) ?? 0} onValueChange={(n) => onChange(n ?? 0)} min={0} />
       ),
     },
     {
       key: "price",
-      title: "单价",
+      title: copy("unitPrice"),
       editable: true,
       width: 130,
       align: "right",
       render: (v) => <span className="tabular-nums">{yuan(v as number)}</span>,
       editor: (v, onChange) => (
-        <NumberField aria-label="单价" value={(v as number) ?? 0} onValueChange={(n) => onChange(n ?? 0)} min={0} step={10} />
+        <NumberField aria-label={copy("unitPrice2")} value={(v as number) ?? 0} onValueChange={(n) => onChange(n ?? 0)} min={0} step={10} />
       ),
     },
     {
       key: "id",
-      title: "小计",
+      title: copy("subtotal"),
       align: "right",
       render: (_v, row) => <span className="tabular-nums font-medium">{yuan(lineTotal(row))}</span>,
     },
@@ -127,23 +129,23 @@ export function QuoteEditor({ id }: { id: string }) {
     align: "center",
     render: (_v, row) => (
       <Popconfirm
-        title="删除此行？"
-        description="该明细行删除后无法还原。"
+        title={copy("deleteThisLine")}
+        description={copy("thisDetailRowCannotBeRestoredAfter")}
         danger
-        okText="删除"
+        okText={copy("delete")}
         side="left"
         onConfirm={() => {
           setItems((prev) => prev.filter((i) => i.id !== row.id));
-          toast({ title: "已删除明细行", tone: "info" });
+          toast({ title: copy("detailRowDeleted"), tone: "info" });
         }}
       >
         <Tooltip>
           <TooltipTrigger render={
-            <Button size="iconSm" variant="ghost" tone="danger" aria-label="删除">
+            <Button size="iconSm" variant="ghost" tone="danger" aria-label={copy("delete2")}>
               <Trash2 className="size-3.5" />
             </Button>
           } />
-          <TooltipContent>删除行</TooltipContent>
+          <TooltipContent>{copy("deleteRow")}</TooltipContent>
         </Tooltip>
       </Popconfirm>
     ),
@@ -153,13 +155,13 @@ export function QuoteEditor({ id }: { id: string }) {
 
   const handleSave = () => {
     void runSave(() => {
-      toast({ title: "草稿已保存", tone: "success" });
+      toast({ title: copy("draftSaved"), tone: "success" });
     });
   };
 
   const handleGenerate = () => {
     void runGen(() => {
-      toast({ title: "报价单已生成", description: `${quote.code} 已保存为正式版`, tone: "success" });
+      toast({ title: copy("quotationHasBeenGenerated"), description: copy("valueHasBeenSavedAsTheOfficial", quote.code), tone: "success" });
     });
   };
 
@@ -169,8 +171,8 @@ export function QuoteEditor({ id }: { id: string }) {
       value={view}
       onValueChange={setView}
       items={[
-        { value: "edit", label: <span className="inline-flex items-center gap-1.5"><Pencil className="size-4" />编辑</span> },
-        { value: "preview", label: <span className="inline-flex items-center gap-1.5"><Eye className="size-4" />预览 / 打印</span> },
+        { value: "edit", label: <span className="inline-flex items-center gap-1.5"><Pencil className="size-4" />{copy("edit")}</span> },
+        { value: "preview", label: <span className="inline-flex items-center gap-1.5"><Eye className="size-4" />{copy("previewPrint")}</span> },
       ]}
     />
   );
@@ -186,13 +188,13 @@ export function QuoteEditor({ id }: { id: string }) {
                 variant="ghost"
                 size="sm"
                 className="mt-0.5 size-8 px-0"
-                aria-label="返回"
+                aria-label={copy("return")}
                 render={<Link href={`${ROOT}/quotes`} />}
               >
                 <ArrowLeft className="size-4" />
               </Button>
             } />
-            <TooltipContent>返回报价列表</TooltipContent>
+            <TooltipContent>{copy("returnToQuoteList2")}</TooltipContent>
           </Tooltip>
           <div>
             <div className="flex items-center gap-2">
@@ -200,7 +202,7 @@ export function QuoteEditor({ id }: { id: string }) {
                 {quote.code}
               </Heading>
               <Tag tone={quoteStatusTone(quote.status)} size="sm" dot>
-                {quote.status}
+                {quoteStatusLabel[quote.status]}
               </Tag>
             </div>
             <Text tone="muted" size="sm" className="mt-1">
@@ -212,10 +214,10 @@ export function QuoteEditor({ id }: { id: string }) {
           {view === "edit" && (
             <>
               <Button size="sm" variant="outline" onClick={handleSave} disabled={savePending}>
-                {savePending ? <Spinner size="sm" /> : "保存草稿"}
+                {savePending ? <Spinner size="sm" /> : copy("saveDraft")}
               </Button>
               <Button size="sm" onClick={handleGenerate} disabled={genPending}>
-                {genPending ? <Spinner size="sm" /> : "生成单据"}
+                {genPending ? <Spinner size="sm" /> : copy("generateDocuments")}
               </Button>
             </>
           )}
@@ -228,16 +230,16 @@ export function QuoteEditor({ id }: { id: string }) {
           {/* 抬头字段 */}
           <Card variant="outline">
             <CardBody className="grid grid-cols-1 gap-x-4 gap-y-1 p-5 sm:grid-cols-2 lg:grid-cols-4">
-              <Field label="甲方抬头">
+              <Field label={copy("partyARaisesItsHead")}>
                 <Input value={quote.client} readOnly />
               </Field>
-              <Field label="关联项目">
+              <Field label={copy("relatedProjects")}>
                 <Input value={quote.projectName} readOnly />
               </Field>
-              <Field label="有效期至">
+              <Field label={copy("validUntil")}>
                 <Input value={validUntil} onChange={(e) => setValidUntil(e.target.value)} placeholder="YYYY-MM-DD" />
               </Field>
-              <Field label="税率">
+              <Field label={copy("taxRate")}>
                 <Select items={TAX_OPTIONS} value={taxRate} onValueChange={(v) => setTaxRate(v as string)}>
                   <SelectTrigger />
                   <SelectContent>
@@ -249,7 +251,7 @@ export function QuoteEditor({ id }: { id: string }) {
                   </SelectContent>
                 </Select>
               </Field>
-              <Field label="备注" className="sm:col-span-2 lg:col-span-4">
+              <Field label={copy("remarks")} className="sm:col-span-2 lg:col-span-4">
                 <Textarea value={remark} onChange={(e) => setRemark(e.target.value)} rows={2} />
               </Field>
             </CardBody>
@@ -264,36 +266,30 @@ export function QuoteEditor({ id }: { id: string }) {
                 rowKey={(r) => r.id}
                 onChange={setItems}
                 addable
-                newRow={() => ({ id: nextId(), name: "新分项", spec: "", unit: "项", qty: 1, price: 0 })}
+                newRow={() => ({ id: nextId(), name: copy("newItem"), spec: "", unit: copy("item"), qty: 1, price: 0 })}
                 summary={(rows) => {
                   const t = quoteTotals(rows, rate);
                   const cell = "px-3 py-2 text-right tabular-nums";
                   return (
                     <>
                       <tr>
-                        <td colSpan={6} className="px-3 py-2 text-right text-muted">
-                          合计（不含税）
-                        </td>
+                        <td colSpan={6} className="px-3 py-2 text-right text-muted">{copy("totalExcludingTax")}</td>
                         <td className={cell}>{yuan(t.subtotal)}</td>
                       </tr>
                       <tr>
-                        <td colSpan={6} className="px-3 py-2 text-right text-muted">
-                          税额（{(rate * 100).toFixed(0)}%）
+                        <td colSpan={6} className="px-3 py-2 text-right text-muted">{copy("taxAmount")}{(rate * 100).toFixed(0)}%{copy("closingParenthesis")}
                         </td>
                         <td className={cell}>{yuan(t.tax)}</td>
                       </tr>
                       <tr className="text-primary">
-                        <td colSpan={6} className="px-3 py-2 text-right font-semibold">
-                          价税合计
-                        </td>
+                        <td colSpan={6} className="px-3 py-2 text-right font-semibold">{copy("totalPriceAndTax")}</td>
                         <td className={cn(cell, "font-semibold")}>{yuan(t.total)}</td>
                       </tr>
                     </>
                   );
                 }}
               />
-              <Text size="sm" tone="muted" className="mt-3">
-                价税合计大写：{rmbUpper(totals.total)}
+              <Text size="sm" tone="muted" className="mt-3">{copy("totalPriceAndTaxInCapitalLetters")}{rmbUpper(totals.total)}
               </Text>
             </CardBody>
           </Card>
@@ -303,43 +299,43 @@ export function QuoteEditor({ id }: { id: string }) {
           <DocumentSheetHeader>
             <div>
               <div className="text-xl font-bold text-foreground">{VENDOR.name}</div>
-              <div className="mt-1 text-xs text-muted">工程报价单 · QUOTATION</div>
+              <div className="mt-1 text-xs text-muted">{copy("projectQuotationQuotation")}</div>
             </div>
             <div className="text-right text-xs text-muted">
               <div className="text-base font-semibold tabular-nums text-foreground">{quote.code}</div>
-              <div className="mt-1">制单日期：{quote.createdAt}</div>
-              <div>有效期至：{validUntil}</div>
+              <div className="mt-1">{copy("orderMakingDate")}{quote.createdAt}</div>
+              <div>{copy("validUntil2")}{validUntil}</div>
             </div>
           </DocumentSheetHeader>
 
-          <DocumentSheetSection title="客户信息">
+          <DocumentSheetSection title={copy("customerInformation")}>
             <div className="grid grid-cols-2 gap-y-1 text-sm">
               <div>
-                <span className="text-muted">甲方：</span>
+                <span className="text-muted">{copy("partyA")}</span>
                 {quote.client}
               </div>
               <div>
-                <span className="text-muted">项目：</span>
+                <span className="text-muted">{copy("project")}</span>
                 {quote.projectName}
               </div>
               <div>
-                <span className="text-muted">制单人：</span>
+                <span className="text-muted">{copy("orderMaker")}</span>
                 {quote.owner}
               </div>
             </div>
           </DocumentSheetSection>
 
-          <DocumentSheetSection title="报价明细">
+          <DocumentSheetSection title={copy("quotationDetails")}>
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="border-y border-border text-xs text-muted">
-                  <th className="py-2 pr-2 text-left font-medium">序号</th>
-                  <th className="py-2 pr-2 text-left font-medium">项目名称</th>
-                  <th className="py-2 pr-2 text-left font-medium">规格</th>
-                  <th className="py-2 pr-2 text-center font-medium">单位</th>
-                  <th className="py-2 pr-2 text-right font-medium">数量</th>
-                  <th className="py-2 pr-2 text-right font-medium">单价</th>
-                  <th className="py-2 text-right font-medium">小计</th>
+                  <th className="py-2 pr-2 text-left font-medium">{copy("serialNumber")}</th>
+                  <th className="py-2 pr-2 text-left font-medium">{copy("projectName2")}</th>
+                  <th className="py-2 pr-2 text-left font-medium">{copy("specifications")}</th>
+                  <th className="py-2 pr-2 text-center font-medium">{copy("unit2")}</th>
+                  <th className="py-2 pr-2 text-right font-medium">{copy("quantity3")}</th>
+                  <th className="py-2 pr-2 text-right font-medium">{copy("unitPrice3")}</th>
+                  <th className="py-2 text-right font-medium">{copy("subtotal2")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -357,33 +353,28 @@ export function QuoteEditor({ id }: { id: string }) {
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan={6} className="py-2 pr-2 text-right text-muted">
-                    合计（不含税）
-                  </td>
+                  <td colSpan={6} className="py-2 pr-2 text-right text-muted">{copy("totalExcludingTax2")}</td>
                   <td className="py-2 text-right tabular-nums">{yuan(totals.subtotal)}</td>
                 </tr>
                 <tr>
-                  <td colSpan={6} className="py-2 pr-2 text-right text-muted">
-                    税额（{(rate * 100).toFixed(0)}%）
+                  <td colSpan={6} className="py-2 pr-2 text-right text-muted">{copy("taxAmount2")}{(rate * 100).toFixed(0)}%{copy("closingParenthesis")}
                   </td>
                   <td className="py-2 text-right tabular-nums">{yuan(totals.tax)}</td>
                 </tr>
                 <tr>
-                  <td colSpan={6} className="py-2 pr-2 text-right font-semibold">
-                    价税合计
-                  </td>
+                  <td colSpan={6} className="py-2 pr-2 text-right font-semibold">{copy("totalPriceAndTax2")}</td>
                   <td className="py-2 text-right font-semibold tabular-nums">{yuan(totals.total)}</td>
                 </tr>
               </tfoot>
             </table>
             <div className="mt-2 text-right text-sm">
-              <span className="text-muted">大写：</span>
+              <span className="text-muted">{copy("uppercase")}</span>
               <span className="font-medium">{rmbUpper(totals.total)}</span>
             </div>
           </DocumentSheetSection>
 
           {remark && (
-            <DocumentSheetSection title="备注">
+            <DocumentSheetSection title={copy("remarks2")}>
               <Text size="sm">{remark}</Text>
             </DocumentSheetSection>
           )}
@@ -391,13 +382,13 @@ export function QuoteEditor({ id }: { id: string }) {
           <DocumentSheetFooter>
             <div className="grid grid-cols-2 gap-6 text-xs">
               <div className="space-y-1">
-                <div>开户行：{VENDOR.bank}</div>
-                <div>税号：{VENDOR.taxNo}</div>
-                <div>地址：{VENDOR.addr}</div>
+                <div>{copy("accountOpeningBank")}{VENDOR.bank}</div>
+                <div>{copy("taxIdNumber")}{VENDOR.taxNo}</div>
+                <div>{copy("address")}{VENDOR.addr}</div>
               </div>
               <div className="flex flex-col items-end gap-2">
-                <div>联系人：{VENDOR.contact}</div>
-                <DocumentSheetSignature label="销售方签章" />
+                <div>{copy("contactPerson")}{VENDOR.contact}</div>
+                <DocumentSheetSignature label={copy("sellerSSignature")} />
               </div>
             </div>
           </DocumentSheetFooter>

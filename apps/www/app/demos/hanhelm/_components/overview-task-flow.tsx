@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./overview-task-flow.content";
+
 // 调度总览 · 最近任务流：精简任务条，点击跳详情；失败/临期红色高亮。
 import { useRouter } from "next/navigation";
 import { StatusDot, Tag } from "@hulianui/ui";
@@ -17,11 +19,11 @@ const STATUS_META: Record<
   TaskStatus,
   { label: string; status: "online" | "degraded" | "offline" | "maintenance" }
 > = {
-  queued: { label: "排队中", status: "maintenance" },
-  running: { label: "执行中", status: "online" },
-  done: { label: "已完成", status: "online" },
-  failed: { label: "失败", status: "offline" },
-  "at-risk": { label: "临期", status: "degraded" },
+  queued: { label: copy("inLine"), status: "maintenance" },
+  running: { label: copy("inExecution"), status: "online" },
+  done: { label: copy("completed"), status: "online" },
+  failed: { label: copy("failure"), status: "offline" },
+  "at-risk": { label: copy("theAppointedTimeApproached"), status: "degraded" },
 };
 
 export function OverviewTaskFlow({ tasks }: { tasks: Task[] }) {
@@ -54,7 +56,7 @@ export function OverviewTaskFlow({ tasks }: { tasks: Task[] }) {
                   {t.title}
                 </div>
                 <div className="truncate text-xs text-muted">
-                  {t.type} · 派给 {executorName(t.assignedExecutorId)}
+                  {t.type}{copy("assignIt")}{executorName(t.assignedExecutorId)}
                 </div>
               </div>
               <StatusDot status={meta.status} label={meta.label} size="sm" />

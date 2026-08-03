@@ -1,0 +1,336 @@
+import { t, type Dictionary } from "intlayer";
+
+export const themeContent = {
+  "zh-CN": {
+    index: {
+      title: "主题与设计 Token",
+      eyebrow: "Theme",
+      lede: "瑚琏的一切视觉都由设计 token 驱动，分三层：原始、语义、预设。消费方只需全局引入两个 CSS 文件，组件、明暗、断点便全部就位。",
+      architecture: "三层 Token 架构",
+      architectureDescription: "改下层影响上层；组件永远只碰最上面的语义色和工具类。",
+      primitive: "原始层 Primitives",
+      primitiveDescription: "OKLCH 原始色板。明暗共用，不随主题变化，只是一张调色盘。",
+      semantic: "语义层 Semantic",
+      semanticDescription: "按用途命名原始色。明暗模式只换值、不换结构，组件只消费这一层。",
+      preset: "预设层 Preset",
+      presetDescription:
+        "Tailwind CSS v4 主题把语义 token 映射成工具类，并声明暗色变体、断点和圆角。",
+      consume: "如何消费",
+      consumeDescription: "任意 React 项目只需全局引入一次。",
+      primitiveComment: "原始色和语义色",
+      presetComment: "Tailwind CSS v4 和工具类",
+      explore: "逐项查看",
+    },
+    color: {
+      title: "颜色",
+      eyebrow: "Color",
+      lede: "组件只消费按用途命名的语义色。它们在亮暗主题下映射到不同原始色，因此切主题只换值、不换类名。",
+      light: "亮",
+      dark: "暗",
+      foregroundSample: "前景示意",
+      chart: "图表分类色",
+      chartDescription: "数据序列专用，SVG 直接通过 var() 消费；亮暗模式各自调整亮度以保持对比。",
+      gray: "原始灰阶",
+      grayDescription: "底层调色盘位于 primitives.css，明暗共用且不随主题变化；语义色由它派生。",
+    },
+    typography: {
+      title: "排版",
+      eyebrow: "Typography",
+      lede: "字体使用系统无衬线栈，字号沿用 Tailwind CSS v4 的 text-* 比例。下面是本站实际使用的阶梯。",
+      sizes: "字号阶梯",
+      sizesDescription: "每行使用真实尺寸渲染。",
+      sample: "颜值 + 好用 Aa",
+      weights: "字重",
+      weightSample: "颜值 + 好用 Aa 123",
+      stack: "字体栈",
+    },
+    spacing: {
+      title: "间距",
+      eyebrow: "Spacing",
+      lede: "间距基准为 0.25rem（4px）。所有 p-*、m-*、gap-* 和 space-* 工具类都是它的倍数，让纵向节奏可预测。",
+      scale: "阶梯",
+      scaleDescription: "数值等于基准倍数，条形按真实尺寸绘制。",
+      usage: "用法",
+      comment: "内边距 16px，纵向间隔 8px",
+    },
+    radius: {
+      title: "圆角",
+      eyebrow: "Radius",
+      lede: "瑚琏使用单一基准圆角 token。组件统一使用 rounded-[var(--radius)]，修改一处即可同步全站。",
+      base: "基准 token",
+      scale: "完整阶梯",
+      scaleDescription: "从细微到全圆，按真实曲率绘制。",
+    },
+    shadows: {
+      title: "阴影",
+      eyebrow: "Shadows",
+      lede: "阴影表达层级：元素离页面越远，投影越大。瑚琏沿用 Tailwind 的 shadow-* 比例。",
+      scale: "层级阶梯",
+      scaleDescription: "浅色背景更容易观察；暗色模式下投影会自然减弱。",
+      usage: "用法",
+      comment: "卡片用 sm，弹层用 lg，对话框用 xl",
+    },
+    darkMode: {
+      title: "暗色模式",
+      eyebrow: "Dark mode",
+      lede: "主题由根元素的 data-theme 属性决定。语义 token 在暗色作用域内替换值即可切换全站，无需遍历 dark: 类名。",
+      cardTitle: "卡片标题",
+      cardDescription: "次要描述文字使用 color-muted。",
+      primaryButton: "主按钮",
+      secondaryButton: "次按钮",
+      switchTitle: "实时切换",
+      switchDescription: "右上角同款切换器使用 View Transitions 圆形揭示明暗。",
+      switchAction: "点击切换整个文档站的主题",
+      toggleLabel: "切换颜色主题",
+      scopeTitle: "就地作用域",
+      scopeDescription:
+        "暗色 token 绑定在 data-theme 属性上，任意子树都可单独切换。下方两张卡片始终分别显示亮色和暗色。",
+      foucTitle: "0 闪烁（anti-FOUC）",
+      foucDescription:
+        "首屏脚本在 React 水合前设置 data-theme，并读取本地偏好或系统配色。同步 color-scheme 后，原生滚动条与回弹区也不会闪出错误底色。",
+      codeTitle: "代码切换",
+      codeDescription: "可在任何位置命令式读写主题。",
+      readComment: "读取",
+      writeComment: "写入，持久化由 useTheme 或切换器负责",
+    },
+    motion: {
+      title: "动效",
+      eyebrow: "Motion",
+      lede: "动效不是装饰，而是对操作的回应。瑚琏将缓动曲线与时长收敛成 token，让 CSS 工具类和 motion 动画保持同一种手感。",
+      frequencyTitle: "先问：该不该动",
+      frequencyDescription:
+        "按用户一天看到它多少次决定，而不是按好不好看决定。高频动作上的动画只会让软件显慢。",
+      frequency: "频率",
+      scenario: "典型场景",
+      verdict: "结论",
+      commandNote:
+        "Command 面板刻意不做缩放进场，只保留 150ms 淡入。键盘高频入口不应被位移动画拖慢。",
+      easingTitle: "缓动曲线",
+      easingDescription: "悬停轨道即可比较手感。默认 ease-out 被替换为更果断的统一曲线。",
+      easeInNote:
+        "不要使用 ease-in。它在用户最关注的开头阶段最慢，同样时长会比 ease-out 显得迟钝。",
+      durationTitle: "时长",
+      durationDescription: "交互动效控制在 300ms 内。180ms 的下拉比 400ms 的下拉感觉更快。",
+      duration: "时长",
+      utility: "工具类",
+      usedFor: "用于",
+      pressTitle: "按压反馈",
+      pressDescription: "任何可按下元素都应立即回应，否则界面像没有收到操作。",
+      pressBody: "普通控件按下缩到 0.97，大卡片使用 0.99，避免子元素一起缩放时产生跳动。",
+      motionComment: "已经使用 motion 的组件",
+      cssComment: "不引入 motion 运行时的纯 CSS 方案",
+      pressNote:
+        "pressableClass 自带完整的 transition-property。请把它放在 cn() 末尾并替换原有 transition-colors。",
+      originTitle: "浮层从触发器长出",
+      originDescription: "锚定触发器的浮层应从触发器方向展开，而不是从自身中心展开。",
+      originComment: "Base UI 已在 Positioner 上提供原点，直接接入即可",
+      originNote:
+        "Dialog、AlertDialog 与 Modal 不锚定触发器，应保持中心原点。进场也不要从 scale(0) 开始；scale(0.95) 配合透明度更自然。",
+      accessibilityTitle: "无障碍",
+      accessibilityDescription: "减少动效不等于移除所有反馈。",
+      accessibilityNote:
+        "在 prefers-reduced-motion 下保留帮助理解的透明度与颜色过渡，并去掉位移动画。",
+    },
+    breakpoints: {
+      title: "断点",
+      eyebrow: "Breakpoints",
+      lede: "响应式断点是一组 min-width 阈值。当视口达到某断点时，对应工具类生效。瑚琏沿用五档，真源位于 preset.css。",
+      live: "实时断点",
+      liveDescription: "调整浏览器窗口宽度，下方会高亮当前命中的最大断点。",
+      table: "断点表",
+      prefix: "前缀",
+      width: "≥ 宽度",
+      device: "典型设备",
+      usage: "响应式用法",
+      usageDescription:
+        "移动优先：最窄视口使用无前缀基础类，更宽视口用断点前缀覆盖。下方栅格会从一列变为两列再变为四列。",
+      card: "卡片",
+      source: "真源与定制",
+      sourceDescription:
+        "五档断点在 preset.css 的 @theme 中声明。修改这里会同时更新全站工具类断点和本页表格。",
+    },
+    cursors: {
+      title: "光标",
+      eyebrow: "Cursors",
+      lede: "指针形状是一种免费的可供性提示：悬停即可暗示能做什么。把鼠标移到每个方块上查看对应 cursor-*。",
+      semantics: "语义对照",
+      semanticsDescription: "悬停方块查看实际指针。",
+    },
+  },
+  en: {
+    index: {
+      title: "Theme and Design Tokens",
+      eyebrow: "Theme",
+      lede: "Every visual decision in Hulian UI is driven by design tokens in three layers: primitives, semantics, and preset utilities. Import two CSS files to enable components, themes, and breakpoints.",
+      architecture: "Three-layer token architecture",
+      architectureDescription:
+        "Changes flow upward; components consume only semantic tokens and utilities.",
+      primitive: "Primitives",
+      primitiveDescription:
+        "The shared OKLCH palette. It does not change between light and dark themes.",
+      semantic: "Semantic tokens",
+      semanticDescription:
+        "Primitive colors named by purpose. Themes replace values without changing structure, and components consume this layer.",
+      preset: "Preset utilities",
+      presetDescription:
+        "The Tailwind CSS v4 theme maps semantic tokens to utilities and declares the dark variant, breakpoints, and radii.",
+      consume: "How to consume the tokens",
+      consumeDescription: "Import them once in any React application.",
+      primitiveComment: "primitives and semantic tokens",
+      presetComment: "Tailwind CSS v4 and utilities",
+      explore: "Explore each token group",
+    },
+    color: {
+      title: "Color",
+      eyebrow: "Color",
+      lede: "Components consume semantic colors named by purpose. Those colors map to different primitives in light and dark themes, so switching themes changes values without changing class names.",
+      light: "Light",
+      dark: "Dark",
+      foregroundSample: "Foreground sample",
+      chart: "Chart colors",
+      chartDescription:
+        "Colors for data series, consumed directly through var(). Light and dark themes tune luminance independently for contrast.",
+      gray: "Primitive gray scale",
+      grayDescription:
+        "The shared palette in primitives.css does not change with the theme. Semantic colors are derived from it.",
+    },
+    typography: {
+      title: "Typography",
+      eyebrow: "Typography",
+      lede: "Hulian UI uses a system sans-serif stack and the Tailwind CSS v4 text scale. The steps below are rendered at their actual sizes.",
+      sizes: "Type scale",
+      sizesDescription: "Each row is rendered at its real size.",
+      sample: "Beautiful and useful Aa",
+      weights: "Font weights",
+      weightSample: "Beautiful and useful Aa 123",
+      stack: "Font stack",
+    },
+    spacing: {
+      title: "Spacing",
+      eyebrow: "Spacing",
+      lede: "The spacing unit is 0.25rem, or 4px. Every p-*, m-*, gap-*, and space-* utility is a multiple of that unit, keeping vertical rhythm predictable.",
+      scale: "Scale",
+      scaleDescription:
+        "Each value is a multiple of the base unit; bars use their actual dimensions.",
+      usage: "Usage",
+      comment: "16px padding and 8px vertical spacing",
+    },
+    radius: {
+      title: "Radius",
+      eyebrow: "Radius",
+      lede: "Hulian UI uses one base radius token. Components use rounded-[var(--radius)], so one change updates the entire interface.",
+      base: "Base token",
+      scale: "Complete scale",
+      scaleDescription: "From subtle rounding to pills, rendered at the actual curvature.",
+    },
+    shadows: {
+      title: "Shadows",
+      eyebrow: "Shadows",
+      lede: "Shadows communicate elevation: the farther an element sits from the page, the larger its shadow. Hulian UI follows the Tailwind shadow-* scale.",
+      scale: "Elevation scale",
+      scaleDescription:
+        "Shadows are easiest to inspect on a light surface and naturally recede in dark mode.",
+      usage: "Usage",
+      comment: "Use sm for cards, lg for popovers, and xl for dialogs",
+    },
+    darkMode: {
+      title: "Dark Mode",
+      eyebrow: "Dark mode",
+      lede: "The data-theme attribute on the root element selects the theme. Semantic tokens replace their values inside the dark scope, so components do not need duplicated dark: classes.",
+      cardTitle: "Card title",
+      cardDescription: "Secondary copy uses color-muted.",
+      primaryButton: "Primary action",
+      secondaryButton: "Secondary action",
+      switchTitle: "Switch themes live",
+      switchDescription:
+        "The same control used in the header reveals the next theme with View Transitions.",
+      switchAction: "Switch the theme for the entire documentation site",
+      toggleLabel: "Toggle color theme",
+      scopeTitle: "Scoped themes",
+      scopeDescription:
+        "Because dark tokens are bound to data-theme, any subtree can select its own theme. These cards always show light and dark side by side.",
+      foucTitle: "No flash of the wrong theme",
+      foucDescription:
+        "A first-paint script sets data-theme before React hydration from the saved preference or system setting. A matching color-scheme keeps native scrollbars and overscroll surfaces correct too.",
+      codeTitle: "Switch themes in code",
+      codeDescription: "Read or write the active theme imperatively from anywhere.",
+      readComment: "Read",
+      writeComment: "Write; useTheme or the toggler handles persistence",
+    },
+    motion: {
+      title: "Motion",
+      eyebrow: "Motion",
+      lede: "Motion is feedback, not decoration. Hulian UI defines easing and duration tokens so CSS utilities and motion-driven animation share the same feel.",
+      frequencyTitle: "First ask whether it should move",
+      frequencyDescription:
+        "Decide by how often users see the action, not by how attractive the animation looks. Motion on frequent actions makes software feel slow.",
+      frequency: "Frequency",
+      scenario: "Typical scenario",
+      verdict: "Guidance",
+      commandNote:
+        "The Command palette deliberately skips scale and uses only a 150ms fade. A frequent keyboard action should not wait for spatial motion.",
+      easingTitle: "Easing curves",
+      easingDescription:
+        "Hover a track to compare its feel. Hulian UI replaces the weak default ease-out with a more decisive shared curve.",
+      easeInNote:
+        "Avoid ease-in. It is slowest at the moment users pay the most attention, so it feels less responsive than ease-out at the same duration.",
+      durationTitle: "Duration",
+      durationDescription:
+        "Keep interactive motion within 300ms. A 180ms menu feels much faster than a 400ms one.",
+      duration: "Duration",
+      utility: "Utility",
+      usedFor: "Used for",
+      pressTitle: "Press feedback",
+      pressDescription:
+        "Every pressable element should respond immediately so the interface acknowledges the action.",
+      pressBody:
+        "Scale ordinary controls to 0.97 on press and large cards to 0.99 so their children do not appear to jump.",
+      motionComment: "Component already using motion",
+      cssComment: "Pure CSS alternative without the motion runtime",
+      pressNote:
+        "pressableClass includes a complete transition-property list. Put it last in cn() and replace any existing transition-colors utility.",
+      originTitle: "Overlays grow from their trigger",
+      originDescription:
+        "An anchored overlay should open from its trigger, not from its own center.",
+      originComment: "Base UI exposes the computed origin on the Positioner",
+      originNote:
+        "Dialog, AlertDialog, and Modal are not anchored to a trigger and should keep a centered origin. Do not enter from scale(0); scale(0.95) with opacity looks natural.",
+      accessibilityTitle: "Accessibility",
+      accessibilityDescription: "Reduced motion does not mean removing all feedback.",
+      accessibilityNote:
+        "Under prefers-reduced-motion, preserve helpful opacity and color transitions while removing spatial movement.",
+    },
+    breakpoints: {
+      title: "Breakpoints",
+      eyebrow: "Breakpoints",
+      lede: "Responsive breakpoints are min-width thresholds. Utilities become active when the viewport reaches a threshold. Hulian UI uses five breakpoints defined in preset.css.",
+      live: "Live breakpoint",
+      liveDescription: "Resize the browser window to highlight the largest matching breakpoint.",
+      table: "Breakpoint table",
+      prefix: "Prefix",
+      width: "Minimum width",
+      device: "Typical device",
+      usage: "Responsive usage",
+      usageDescription:
+        "Use unprefixed classes for the narrowest viewport, then override them at wider breakpoints. The grid below changes from one to two to four columns.",
+      card: "Card",
+      source: "Source and customization",
+      sourceDescription:
+        "The five breakpoints are declared in the preset.css @theme block. Editing them updates both utility behavior and this table from one source of truth.",
+    },
+    cursors: {
+      title: "Cursors",
+      eyebrow: "Cursors",
+      lede: "Pointer shape is a free affordance: hovering suggests what an element can do. Move the pointer over each tile to inspect its cursor-* behavior.",
+      semantics: "Semantic mapping",
+      semanticsDescription: "Hover each tile to see the real pointer.",
+    },
+  },
+} as const;
+
+const dictionary: Dictionary = {
+  key: "theme",
+  content: t(themeContent),
+};
+
+export default dictionary;

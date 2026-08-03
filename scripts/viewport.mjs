@@ -3,6 +3,9 @@
 import { pathToFileURL } from "node:url";
 
 import { gotoAndSettle, startStaticServer } from "./static-server.mjs";
+import { expandBilingualRoutes, formatRouteLabel } from "./a11y.mjs";
+
+export { expandBilingualRoutes } from "./a11y.mjs";
 
 // 响应式文档门禁 —— 拦 hulianui/hulian#39 那一类「正文只在桌面分支里」的回归。
 //
@@ -25,12 +28,15 @@ export const VIEWPORTS = [
 ];
 
 // 覆盖 #39 报告的两条链路（/components/** 与 /theme/**）各自的画廊页与详情页。
-export const DOCS_ROUTES = [
-  { route: "/components", heading: "组件" },
-  { route: "/components/button", heading: "Button" },
-  { route: "/theme", heading: "主题与设计 Token" },
-  { route: "/theme/color", heading: "颜色" },
-];
+export const DOCS_ROUTES = expandBilingualRoutes([
+  { route: "/components", headings: { "zh-CN": "组件", en: "Components" } },
+  { route: "/components/button", headings: { "zh-CN": "Button", en: "Button" } },
+  {
+    route: "/theme",
+    headings: { "zh-CN": "主题与设计 Token", en: "Theme and Design Tokens" },
+  },
+  { route: "/theme/color", headings: { "zh-CN": "颜色", en: "Color" } },
+]).map(({ headings, ...entry }) => ({ ...entry, heading: headings[entry.locale] }));
 
 export const isDesktop = (width) => width >= MD_BREAKPOINT;
 
@@ -38,7 +44,7 @@ export const isDesktop = (width) => width >= MD_BREAKPOINT;
  * 判据。probe 是浏览器侧取的一份快照，见 PROBE 源码。
  * 返回失败原因数组，空数组 = 通过。
  */
-export function checkProbe({ route, heading, width, probe }) {
+export function checkProbe({ route, locale, heading, width, probe }) {
   const failures = [];
   const desktop = isDesktop(width);
 
@@ -86,7 +92,8 @@ export function checkProbe({ route, heading, width, probe }) {
     }
   }
 
-  return failures;
+  const label = formatRouteLabel({ route, locale });
+  return failures.map((failure) => `${label}: ${failure}`);
 }
 
 // 浏览器侧快照。必须是**真函数**而不是函数源码字符串：page.evaluate 收到字符串时按
@@ -155,7 +162,7 @@ export async function runViewportGate() {
         viewport: { width: viewport.width, height: viewport.height },
       });
       try {
-        for (const { route, heading } of DOCS_ROUTES) {
+        for (const { route, locale, heading } of DOCS_ROUTES) {
           const page = await context.newPage();
           await gotoAndSettle(page, `${staticServer.baseUrl}${route}`);
           let probe = await page.evaluate(probeDocsLayout);
@@ -164,9 +171,10 @@ export async function runViewportGate() {
           }
           results.push({
             route,
+            locale,
             heading,
             width: viewport.width,
-            failures: checkProbe({ route, heading, width: viewport.width, probe }),
+            failures: checkProbe({ route, locale, heading, width: viewport.width, probe }),
           });
           await page.close();
         }
@@ -182,11 +190,11 @@ export async function runViewportGate() {
   let failed = 0;
   for (const result of results) {
     if (result.failures.length === 0) {
-      console.log(`[viewport] ${result.width}px ${result.route} · OK`);
+      console.log(`[viewport] ${result.width}px ${formatRouteLabel(result)} · OK`);
       continue;
     }
     failed += 1;
-    console.log(`[viewport] ${result.width}px ${result.route} · FAIL`);
+    console.log(`[viewport] ${result.width}px ${formatRouteLabel(result)} · FAIL`);
     for (const reason of result.failures) console.log(`    ${reason}`);
   }
   if (failed > 0) throw new Error(`视口门禁失败 ${failed}/${results.length} 组`);

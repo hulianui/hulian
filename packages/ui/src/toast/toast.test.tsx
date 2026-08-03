@@ -1,6 +1,8 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { toast, ToastProvider } from "./toast";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS, zhCN } from "../config/locale";
 
 // 全局单例 manager 跨测试持有 toast；RTL render 跨测试累积 DOM → 每个用例后清掉挂载。
 // 各用例用唯一 title 文案隔离（limit=3 会挤出旧条，最新条始终可查）。
@@ -13,6 +15,24 @@ function titleEl(text: string, mustContain: string) {
 }
 
 describe("Toast", () => {
+  it("关闭按钮随 enUS 本地化，缺 Provider 与 legacy locale 保持精确中文", () => {
+    const assertClose = (label: string, title: string) => {
+      act(() => { toast({ title, timeout: 0 }); });
+      const root = titleEl(title, "text-foreground")!.closest("[class*='bg-surface']")!;
+      expect(root.querySelector(`button[aria-label="${label}"]`)).toBeTruthy();
+    };
+
+    const first = render(<ToastProvider />);
+    assertClose("关闭", "默认关闭标签");
+    first.unmount();
+
+    const second = render(<ConfigProvider locale={enUS}><ToastProvider /></ConfigProvider>);
+    assertClose("Close", "English close label");
+    second.unmount();
+
+    render(<ConfigProvider locale={{ ...zhCN, components: undefined }}><ToastProvider /></ConfigProvider>);
+    assertClose("关闭", "旧 locale 关闭标签");
+  });
   it("toast() 触发后 Provider 渲出 title 与 description", () => {
     render(<ToastProvider />);
     act(() => {

@@ -1,6 +1,8 @@
+"use client";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import type { AlertProps } from "./alert.types";
+import { useComponentLocale } from "../config/locale-context";
 
 // 纯皮肤（照 badge.tsx）：base 设布局；tone/variant 留空由 compound 填「底色/边框 + accent 文字色」。
 // accent 作用于 icon + title；description 显式 text-muted 覆盖（正文恒中性可读，不被 tone 染色）。
@@ -31,7 +33,14 @@ export const alertVariants = cva("flex w-full items-start gap-3 rounded-[var(--r
 
 // 内联极简 X（关闭是组件结构性能力，非装饰图标 → 不绑图标库；与 showcase 内联 svg 同源）。
 const CloseIcon = (
-  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+  <svg
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    aria-hidden
+  >
     <path d="M5 5l10 10M15 5L5 15" />
   </svg>
 );
@@ -45,10 +54,12 @@ export function Alert({
   role,
   action,
   onClose,
-  closeLabel = "关闭",
+  closeLabel,
   children,
   ...props
 }: AlertProps) {
+  const alertLocale = useComponentLocale().alert ?? { close: "关闭" };
+  const resolvedCloseLabel = closeLabel ?? alertLocale.close;
   // role 由 tone 派生：danger=需打断的错误→assertive(alert)；其余→polite(status)。props.role 可覆盖。
   const resolvedRole = role ?? (tone === "danger" ? "alert" : "status");
 
@@ -66,7 +77,7 @@ export function Alert({
             <button
               type="button"
               onClick={onClose}
-              aria-label={closeLabel}
+              aria-label={resolvedCloseLabel}
               className="grid size-7 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ring)] [&>svg]:size-4"
             >
               {CloseIcon}

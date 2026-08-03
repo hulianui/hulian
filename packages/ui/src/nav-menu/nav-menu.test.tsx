@@ -2,6 +2,8 @@ import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, fireEvent, screen, cleanup } from "@testing-library/react";
 import { NavMenu } from "./nav-menu";
 import type { NavMenuNode } from "./nav-menu.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(cleanup);
 
@@ -24,6 +26,16 @@ const ITEMS: NavMenuNode[] = [
 ];
 
 describe("NavMenu", () => {
+  it("uses the provider locale for its default navigation label", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <NavMenu items={ITEMS} />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("navigation", { name: "Sidebar navigation" })).toBeTruthy();
+    expect(screen.getByRole("tree", { name: "Sidebar navigation" })).toBeTruthy();
+  });
+
   it("渲染 role=tree + 顶层项为 treeitem，分组标题为 presentation 不入树", () => {
     render(<NavMenu items={ITEMS} />);
     expect(screen.getByRole("tree")).toBeTruthy();

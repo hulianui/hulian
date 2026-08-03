@@ -1,3 +1,4 @@
+import { copy } from "./metrics.content";
 // 时序指标 + 桑基流向（mock）。供 Funnel / Sparkline / Chart / Sankey 消费。
 // 所有数值手工编排出真实波形（早高峰爬升、午间回落），无随机，SSR 稳定。
 
@@ -32,11 +33,11 @@ const COST = [
 ];
 
 export const METRICS: MetricSeries[] = [
-  series("qps", "吞吐 QPS", "QPS", QPS),
-  series("p50", "P50 延迟", "ms", P50),
-  series("p95", "P95 延迟", "ms", P95),
-  series("queue", "队列深度", "条", QUEUE),
-  series("cost", "成本", "¥/h", COST),
+  series("qps", copy("throughputQps"), "QPS", QPS),
+  series("p50", copy("p50Latency"), "ms", P50),
+  series("p95", copy("p95Latency"), "ms", P95),
+  series("queue", copy("queueDepth"), copy("article"), QUEUE),
+  series("cost", copy("cost"), "¥/h", COST),
 ];
 
 /** 按 key 取一条时序的纯数值数组（供 Sparkline）。 */
@@ -46,10 +47,10 @@ export function seriesValues(key: string): number[] {
 
 /** 任务处理漏斗（供 Funnel）：涌入 → 路由 → 执行 → 完成。 */
 export const FUNNEL_STAGES = [
-  { id: "ingress", label: "任务涌入", value: 1280 },
-  { id: "routed", label: "成功路由", value: 1196 },
-  { id: "executing", label: "进入执行", value: 1124 },
-  { id: "completed", label: "成功完成", value: 1043 },
+  { id: "ingress", label: copy("missionsPouringIn"), value: 1280 },
+  { id: "routed", label: copy("successfulRouting"), value: 1196 },
+  { id: "executing", label: copy("proceedToExecution"), value: 1124 },
+  { id: "completed", label: copy("successfullyCompleted"), value: 1043 },
 ];
 
 /**
@@ -58,21 +59,21 @@ export const FUNNEL_STAGES = [
  */
 export const SANKEY_NODES = [
   // 任务类型（layer 0）
-  { id: "src-translate", label: "翻译类", layer: 0 },
-  { id: "src-extract", label: "抽取类", layer: 0 },
-  { id: "src-rag", label: "检索问答", layer: 0 },
-  { id: "src-moderate", label: "审核类", layer: 0 },
-  { id: "src-image", label: "图像类", layer: 0 },
-  { id: "src-orchestrate", label: "编排类", layer: 0 },
+  { id: "src-translate", label: copy("translationCategory"), layer: 0 },
+  { id: "src-extract", label: copy("extractionCategory"), layer: 0 },
+  { id: "src-rag", label: copy("searchQA"), layer: 0 },
+  { id: "src-moderate", label: copy("reviewCategory"), layer: 0 },
+  { id: "src-image", label: copy("imageCategory"), layer: 0 },
+  { id: "src-orchestrate", label: copy("arrangementCategory"), layer: 0 },
   // 路由器（layer 1）
-  { id: "router", label: "六维智能路由器", layer: 1 },
+  { id: "router", label: copy("sixDimensionalSmartRouter"), layer: 1 },
   // 执行器（layer 2）
   { id: "exec-haiku", label: "Haiku 4.5", layer: 2 },
   { id: "exec-sonnet", label: "Sonnet 4.6", layer: 2 },
   { id: "exec-opus", label: "Opus 4.7", layer: 2 },
   { id: "exec-deepseek", label: "DeepSeek V4", layer: 2 },
-  { id: "exec-flux", label: "绘卷 Flux", layer: 2 },
-  { id: "exec-agents", label: "Agent 集群", layer: 2 },
+  { id: "exec-flux", label: copy("scrollFlux"), layer: 2 },
+  { id: "exec-agents", label: copy("agentCluster"), layer: 2 },
 ];
 
 export const SANKEY_LINKS: FlowLink[] = [

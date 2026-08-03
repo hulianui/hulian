@@ -1,5 +1,8 @@
 // 内置 demo 项目清单（SSoT）。
 // /demos 占位页与正式 gallery（另会话）共读这份；各 demo 自身也可引用其元数据。
+import { demoMetaEn } from "../../../i18n/demo-meta.en";
+import { DOCS_LOCALE } from "../../../lib/docs-locale";
+
 export interface DemoMeta {
   /** 唯一 slug，对应 /demos/<slug> 下的路由段。 */
   slug: string;
@@ -14,6 +17,14 @@ export interface DemoMeta {
   status: "wip" | "done";
   /** 标签（用到的核心能力，gallery 卡片展示）。 */
   tags: string[];
+}
+
+export interface LocalizedDemoDisplayMeta {
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  searchAliases: string[];
 }
 
 export const demos: DemoMeta[] = [
@@ -207,3 +218,20 @@ export const demos: DemoMeta[] = [
     tags: ["CodeReviewThread", "code-diff", "Heatmap", "ScoreRing", "代码审查", "质量门禁"],
   },
 ];
+
+/** Localized display/search overlay. Routes, status, and demo identifiers remain canonical. */
+export function demoMeta(item: DemoMeta): LocalizedDemoDisplayMeta {
+  if (DOCS_LOCALE === "en") {
+    return {
+      ...demoMetaEn[item.slug],
+      searchAliases: [item.title, item.description, item.category, ...item.tags],
+    };
+  }
+  return {
+    title: item.title,
+    description: item.description,
+    category: item.category,
+    tags: item.tags,
+    searchAliases: [],
+  };
+}

@@ -3,6 +3,8 @@ import { createContext, useContext, useRef, type ReactNode, type RefObject } fro
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cva } from "class-variance-authority";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type {
@@ -38,13 +40,25 @@ const VIRTUALIZE_THRESHOLD = 100;
 
 const ChevronDownIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M4 6l4 4 4-4"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 const CheckIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M3.5 8.5l3 3 6-7"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -102,7 +116,10 @@ export const comboboxTriggerVariants = cva(
   },
 );
 
-export function Combobox<Multiple extends boolean = false>({ children, ...props }: ComboboxProps<Multiple>) {
+export function Combobox<Multiple extends boolean = false>({
+  children,
+  ...props
+}: ComboboxProps<Multiple>) {
   const anchorRef = useRef<HTMLElement>(null);
   const candidateItems = props.items;
   const flatItemCount =
@@ -185,8 +202,15 @@ function VirtualizedComboboxList({
 }
 
 // 内联自动补全：输入框本身即可见字段，直接打字过滤。外壳 span 注册为浮层锚点。
-export function ComboboxInput({ size, placeholder, invalid, clearable, className }: ComboboxInputProps) {
+export function ComboboxInput({
+  size,
+  placeholder,
+  invalid,
+  clearable,
+  className,
+}: ComboboxInputProps) {
   const anchorRef = useContext(AnchorContext);
+  const copy = useComponentLocale().combobox ?? { clear: "清除", remove: "移除" };
   return (
     <span
       ref={anchorRef as RefObject<HTMLSpanElement> | null}
@@ -200,7 +224,7 @@ export function ComboboxInput({ size, placeholder, invalid, clearable, className
       {clearable && (
         <BaseCombobox.Clear
           className="flex shrink-0 cursor-pointer items-center text-muted transition-colors hover:text-foreground"
-          aria-label="清除"
+          aria-label={copy.clear}
         >
           <ClearIcon />
         </BaseCombobox.Clear>
@@ -224,7 +248,9 @@ export function ComboboxTrigger({ size, placeholder, invalid, className }: Combo
     >
       <BaseCombobox.Value>
         {(value: ComboboxItemData | null) => (
-          <span className={cn("truncate", value == null && "text-muted")}>{value?.label ?? placeholder}</span>
+          <span className={cn("truncate", value == null && "text-muted")}>
+            {value?.label ?? placeholder}
+          </span>
         )}
       </BaseCombobox.Value>
       <BaseCombobox.Icon className="flex shrink-0 items-center text-muted transition-transform data-[popup-open]:rotate-180">
@@ -324,13 +350,23 @@ export function ComboboxItem({ value, disabled, children, className }: ComboboxI
 
 // 多选可见字段：chips 容器（自身即外壳皮肤 + 浮层锚点），内放 ComboboxChip 列 + 输入框 + chevron。
 // 高度随 chips 换行自适应（h-auto + min-h 保持与单选 md 等高）。
-export function ComboboxChips({ size, invalid, placeholder, className, children }: ComboboxChipsProps) {
+export function ComboboxChips({
+  size,
+  invalid,
+  placeholder,
+  className,
+  children,
+}: ComboboxChipsProps) {
   const anchorRef = useContext(AnchorContext);
   return (
     <BaseCombobox.Chips
       ref={anchorRef as RefObject<HTMLDivElement> | null}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
-      className={cn(comboboxInputShellVariants({ size }), "h-auto min-h-10 flex-wrap gap-1.5 py-1.5", className)}
+      className={cn(
+        comboboxInputShellVariants({ size }),
+        "h-auto min-h-10 flex-wrap gap-1.5 py-1.5",
+        className,
+      )}
     >
       {children}
       <BaseCombobox.Input
@@ -347,6 +383,7 @@ export function ComboboxChips({ size, invalid, placeholder, className, children 
 // 单个已选 chip：pill + 删除 ×。删除由 Base UI 按 chip 在容器内的渲染序绑定 selectedValue[index]，
 // 故消费者须按 value 顺序渲染 chip（CountrySelect 即如此）。
 export function ComboboxChip({ children, className }: ComboboxChipProps) {
+  const copy = useComponentLocale().combobox ?? { clear: "清除", remove: "移除" };
   return (
     <BaseCombobox.Chip
       className={cn(
@@ -356,7 +393,7 @@ export function ComboboxChip({ children, className }: ComboboxChipProps) {
     >
       {children}
       <BaseCombobox.ChipRemove
-        aria-label="移除"
+        aria-label={copy.remove}
         className="flex size-4 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
       >
         <ClearIcon />

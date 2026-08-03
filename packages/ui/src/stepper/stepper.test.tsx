@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { Stepper } from "./stepper";
 
 const steps = [{ label: "下单" }, { label: "付款" }, { label: "发货" }];
@@ -29,4 +30,13 @@ describe("Stepper（零依赖）", () => {
     );
     expect(states).toEqual(["completed", "active", "pending"]);
   });
-})
+
+  it("ConfigProvider locale=enUS localizes the progress label", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <Stepper steps={[{ label: "Order" }]} activeStep={0} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("list", { name: "Step progress" })).toBeTruthy();
+  });
+});

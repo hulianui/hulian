@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { useState } from "react";
@@ -34,10 +35,10 @@ const products = [
 ];
 
 const navItems = [
-  { label: "方案", href: "#solutions" },
-  { label: "定价", href: "#pricing" },
-  { label: "文档", href: "#docs" },
-  { label: "博客", href: "#blog" },
+  { label: "方案", href: "https://example.com/#solutions" },
+  { label: "定价", href: "https://example.com/#pricing" },
+  { label: "文档", href: "https://example.com/#docs" },
+  { label: "博客", href: "https://example.com/#blog" },
 ];
 
 export function NavbarBlock() {
@@ -46,7 +47,11 @@ export function NavbarBlock() {
   return (
     <Navbar sticky bordered>
       {/* 移动端汉堡 */}
-      <NavbarMenuToggle isOpen={open} onToggle={() => setOpen((v) => !v)} />
+      <NavbarMenuToggle
+        isOpen={open}
+        onToggle={() => setOpen((v) => !v)}
+        aria-label={open ? "关闭菜单" : "打开菜单"}
+      />
 
       {/* 左：Logo */}
       <NavbarBrand>
@@ -67,15 +72,9 @@ export function NavbarBlock() {
               <NavigationMenuContent>
                 <div className="grid w-[30rem] grid-cols-2 gap-1">
                   {products.map((p) => (
-                    <NavigationMenuLink
-                      key={p.title}
-                      href="#"
-                      className="block px-3 py-2"
-                    >
+                    <NavigationMenuLink key={p.title} href="#" className="block px-3 py-2">
                       <div className="font-medium text-foreground">{p.title}</div>
-                      <div className="mt-0.5 text-xs text-muted">
-                        {p.desc}
-                      </div>
+                      <div className="mt-0.5 text-xs text-muted">{p.desc}</div>
                     </NavigationMenuLink>
                   ))}
                 </div>
@@ -93,12 +92,12 @@ export function NavbarBlock() {
       {/* 右：登录 + 免费开始 */}
       <NavbarContent justify="end" className="hidden md:flex">
         <NavbarItem className="px-0">
-          <Button variant="ghost" size="sm" render={<Link href="#login" />}>
+          <Button variant="ghost" size="sm" render={<Link href="https://example.com/#login" />}>
             登录
           </Button>
         </NavbarItem>
         <NavbarItem className="px-0">
-          <Button size="sm" render={<Link href="#signup" />}>
+          <Button size="sm" render={<Link href="https://example.com/#signup" />}>
             免费开始
           </Button>
         </NavbarItem>
@@ -126,10 +125,10 @@ export function NavbarBlock() {
               </Link>
             ))}
             <div className="mt-4 flex flex-col gap-2">
-              <Button variant="outline" render={<Link href="#login" />}>
+              <Button variant="outline" render={<Link href="https://example.com/#login" />}>
                 登录
               </Button>
-              <Button render={<Link href="#signup" />}>免费开始</Button>
+              <Button render={<Link href="https://example.com/#signup" />}>免费开始</Button>
             </div>
           </nav>
         </DrawerContent>

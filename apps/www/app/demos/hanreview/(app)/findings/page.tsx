@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -30,27 +32,33 @@ type Severity = Finding["severity"];
 type FindingType = Finding["type"];
 type FindingStatus = Finding["status"];
 
-const SEVERITY_META: Record<Severity, { label: string; tone: "danger" | "warning" | "brand" | "neutral" }> = {
-  critical: { label: "严重", tone: "danger" },
-  major: { label: "重要", tone: "warning" },
-  minor: { label: "次要", tone: "brand" },
-  info: { label: "提示", tone: "neutral" },
+const SEVERITY_META: Record<
+  Severity,
+  { label: string; tone: "danger" | "warning" | "brand" | "neutral" }
+> = {
+  critical: { label: copy("serious"), tone: "danger" },
+  major: { label: copy("important"), tone: "warning" },
+  minor: { label: copy("secondary"), tone: "brand" },
+  info: { label: copy("tips"), tone: "neutral" },
 };
 
 const TYPE_LABEL: Record<FindingType, string> = {
-  bug: "缺陷",
-  security: "安全",
-  perf: "性能",
-  style: "风格",
-  complexity: "复杂度",
-  test: "测试",
+  bug: copy("defects"),
+  security: copy("safe"),
+  perf: copy("performance"),
+  style: copy("style"),
+  complexity: copy("complexity"),
+  test: copy("test"),
 };
 
-const STATUS_META: Record<FindingStatus, { label: string; tone: "neutral" | "success" | "warning" | "danger" }> = {
-  open: { label: "待处理", tone: "danger" },
-  fixed: { label: "已修", tone: "success" },
-  ignored: { label: "已忽略", tone: "neutral" },
-  wontfix: { label: "误报", tone: "warning" },
+const STATUS_META: Record<
+  FindingStatus,
+  { label: string; tone: "neutral" | "success" | "warning" | "danger" }
+> = {
+  open: { label: copy("pending"), tone: "danger" },
+  fixed: { label: copy("fixed"), tone: "success" },
+  ignored: { label: copy("ignored"), tone: "neutral" },
+  wontfix: { label: copy("falsePositive"), tone: "warning" },
 };
 
 const SNIPPET_LANG: ReadonlyArray<[string, string]> = [
@@ -110,7 +118,7 @@ export default function FindingsPage() {
     setActive((cur) => (cur && cur.id === f.id ? { ...cur, status: next } : cur));
     toast({
       tone: next === "fixed" ? "info" : "neutral",
-      title: `已标记为「${STATUS_META[next].label}」`,
+      title: copy("markedValue", STATUS_META[next].label),
       description: f.rule,
     });
   }
@@ -118,7 +126,7 @@ export default function FindingsPage() {
   const columns: ColumnDef<Finding>[] = [
     {
       accessorKey: "severity",
-      header: "级别",
+      header: copy("level"),
       cell: ({ row }) => {
         const m = SEVERITY_META[row.original.severity];
         return (
@@ -130,7 +138,7 @@ export default function FindingsPage() {
     },
     {
       accessorKey: "type",
-      header: "类型",
+      header: copy("type"),
       cell: ({ row }) => (
         <Tag tone="neutral" size="sm">
           {TYPE_LABEL[row.original.type]}
@@ -139,12 +147,12 @@ export default function FindingsPage() {
     },
     {
       accessorKey: "rule",
-      header: "规则",
+      header: copy("rules"),
       cell: ({ row }) => <span className="font-mono text-sm">{row.original.rule}</span>,
     },
     {
       accessorKey: "file",
-      header: "文件:行",
+      header: copy("fileLine"),
       cell: ({ row }) => (
         <span className="font-mono text-xs text-muted">
           {row.original.file}:{row.original.line}
@@ -153,7 +161,7 @@ export default function FindingsPage() {
     },
     {
       accessorKey: "reviewId",
-      header: "所属审查",
+      header: copy("belongingReview"),
       cell: ({ row }) => (
         <Link
           href={`/demos/hanreview/reviews/${row.original.reviewId}`}
@@ -165,7 +173,7 @@ export default function FindingsPage() {
     },
     {
       accessorKey: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => {
         const m = STATUS_META[row.original.status];
         return (
@@ -177,7 +185,7 @@ export default function FindingsPage() {
     },
     {
       accessorKey: "firstSeen",
-      header: "首次出现",
+      header: copy("firstAppearance"),
       cell: ({ row }) => (
         <span className="tabular-nums text-xs text-muted">{row.original.firstSeen}</span>
       ),
@@ -187,7 +195,7 @@ export default function FindingsPage() {
       header: "",
       cell: ({ row }) => (
         <Button variant="link" size="sm" onClick={() => setActive(row.original)}>
-          查看
+          {copy("view")}
         </Button>
       ),
     },
@@ -207,7 +215,7 @@ export default function FindingsPage() {
       </div>
 
       <ProTable<Finding>
-        title="问题中心"
+        title={copy("problemCenter")}
         columns={columns}
         data={paged}
         getRowId={(r) => r.id}
@@ -223,7 +231,7 @@ export default function FindingsPage() {
               >
                 <SelectTrigger size="sm" />
                 <SelectContent>
-                  <SelectItem value="">全部级别</SelectItem>
+                  <SelectItem value="">{copy("allLevels")}</SelectItem>
                   {SEVERITIES.map((s) => (
                     <SelectItem key={s} value={s}>
                       {SEVERITY_META[s].label}
@@ -242,7 +250,7 @@ export default function FindingsPage() {
               >
                 <SelectTrigger size="sm" />
                 <SelectContent>
-                  <SelectItem value="">全部类型</SelectItem>
+                  <SelectItem value="">{copy("allTypes")}</SelectItem>
                   {TYPES.map((t) => (
                     <SelectItem key={t} value={t}>
                       {TYPE_LABEL[t]}
@@ -261,7 +269,7 @@ export default function FindingsPage() {
               >
                 <SelectTrigger size="sm" />
                 <SelectContent>
-                  <SelectItem value="">全部仓库</SelectItem>
+                  <SelectItem value="">{copy("allWarehouses")}</SelectItem>
                   {REPOS.map((r) => (
                     <SelectItem key={r.id} value={r.id}>
                       {r.name}
@@ -280,7 +288,7 @@ export default function FindingsPage() {
               >
                 <SelectTrigger size="sm" />
                 <SelectContent>
-                  <SelectItem value="">全部状态</SelectItem>
+                  <SelectItem value="">{copy("allStatus")}</SelectItem>
                   {STATUSES.map((s) => (
                     <SelectItem key={s} value={s}>
                       {STATUS_META[s].label}
@@ -302,18 +310,23 @@ export default function FindingsPage() {
             active ? (
               <div className="flex flex-wrap items-center justify-end gap-2">
                 <Button variant="outline" size="sm" onClick={() => applyStatus(active, "fixed")}>
-                  标记已修
+                  {copy("markedAsModified")}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => applyStatus(active, "ignored")}>
-                  忽略
+                  {copy("ignore")}
                 </Button>
-                <Button variant="outline" tone="danger" size="sm" onClick={() => applyStatus(active, "wontfix")}>
-                  标误报
+                <Button
+                  variant="outline"
+                  tone="danger"
+                  size="sm"
+                  onClick={() => applyStatus(active, "wontfix")}
+                >
+                  {copy("falsePositives")}
                 </Button>
                 <DrawerClose
                   render={
                     <Button variant="ghost" size="sm">
-                      关闭
+                      {copy("close")}
                     </Button>
                   }
                 />
@@ -336,7 +349,9 @@ export default function FindingsPage() {
               </div>
 
               <section className="flex flex-col gap-1.5">
-                <h4 className="text-sm font-medium text-foreground">问题描述</h4>
+                <h4 className="text-sm font-medium text-foreground">
+                  {copy("problemDescription")}
+                </h4>
                 <p className="text-sm text-muted">{active.ruleDesc}</p>
                 <p className="font-mono text-xs text-muted">
                   {active.file}:{active.line} ·{" "}
@@ -350,13 +365,13 @@ export default function FindingsPage() {
               </section>
 
               <section className="flex flex-col gap-1.5">
-                <h4 className="text-sm font-medium text-foreground">问题代码</h4>
+                <h4 className="text-sm font-medium text-foreground">{copy("problemCode")}</h4>
                 <CodeBlock code={active.snippet} lang={langOf(active.file)} />
               </section>
 
               {active.suggestion ? (
                 <section className="flex flex-col gap-1.5">
-                  <h4 className="text-sm font-medium text-foreground">建议修复</h4>
+                  <h4 className="text-sm font-medium text-foreground">{copy("suggestedFix")}</h4>
                   <CodeDiff
                     oldText={active.suggestion.oldText ?? ""}
                     newText={active.suggestion.newText}

@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 // 错误页区块 —— 404 页面级反馈。Result 组件呈现：大号 404 + 标题 + 说明 + 双按钮。
 // 点缀 DotPattern 特效背景（径向遮罩淡出，不抢主体内容）。
 // 复制后改：Result 的 status / title / subTitle、按钮 onClick、巨型数字文案。

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./doc-editor.content";
 import { useEffect, useRef, useState } from "react";
 import { Check, CloudUpload, FileText } from "lucide-react";
 import { MarkdownEditor, Tag } from "@hulianui/ui";
@@ -46,23 +47,35 @@ export function DocEditor({ nodeId }: { nodeId: string }) {
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <FileText className="size-5 shrink-0 text-muted" />
-          <h1 className="truncate text-lg font-semibold tracking-tight">{node.name.replace(/\.md$/, "")}</h1>
-          {node.status && <Tag size="sm" tone={node.status === "added" ? "success" : "warning"}>{node.status === "added" ? "新增" : "已改动"}</Tag>}
+          <h1 className="truncate text-lg font-semibold tracking-tight">
+            {node.name.replace(/\.md$/, "")}
+          </h1>
+          {node.status && (
+            <Tag size="sm" tone={node.status === "added" ? "success" : "warning"}>
+              {node.status === "added" ? copy("add") : copy("changed")}
+            </Tag>
+          )}
         </div>
         <div className="flex shrink-0 items-center gap-3 text-xs text-muted">
-          <span className="tabular-nums">{count} 字</span>
+          <span className="tabular-nums">
+            {count} {copy("words")}
+          </span>
           <span aria-live="polite" className="flex items-center gap-1">
             {saveState === "saving" && (
               <>
-                <CloudUpload className="size-3.5 animate-pulse" /> 保存中…
+                <CloudUpload className="size-3.5 animate-pulse" /> {copy("saving")}
               </>
             )}
             {saveState === "saved" && (
               <>
-                <Check className="size-3.5 text-success" /> 已保存
+                <Check className="size-3.5 text-success" /> {copy("saved")}
               </>
             )}
-            {saveState === "idle" && <span>最后编辑 · {node.author}</span>}
+            {saveState === "idle" && (
+              <span>
+                {copy("lastEdited")} {node.author}
+              </span>
+            )}
           </span>
         </div>
       </div>
@@ -72,9 +85,9 @@ export function DocEditor({ nodeId }: { nodeId: string }) {
         value={node.content ?? ""}
         onChange={onChange}
         minRows={16}
-        placeholder="开始编写文档内容……支持标题、列表、代码块、引用。"
+        placeholder={copy("startWritingTheContentOfTheDocumentSupportsTitlesLists")}
         className="flex-1"
-        aria-label={`编辑文档 ${node.name}`}
+        aria-label={copy("editDocumentLabel", node.name)}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -24,9 +25,9 @@ import { SHOP_BASE } from "../../_components/nav-config";
 import { usePending } from "../../../lib/async";
 
 const CHECKOUT_STEPS: StepsItem[] = [
-  { title: "确认订单" },
-  { title: "支付" },
-  { title: "完成" },
+  { title: copy("reviewOrder") },
+  { title: copy("payment") },
+  { title: copy("complete") },
 ];
 
 // 运费规则：满 199 包邮，默认 12 元
@@ -63,7 +64,7 @@ export default function CheckoutPage() {
 
   // 步骤一：确认订单
   const [region, setRegion] = useState("");
-  const [receiver, setReceiver] = useState("张三");
+  const [receiver, setReceiver] = useState(copy("sanZhang"));
   const [phone, setPhone] = useState("138****8888");
   const [delivery, setDelivery] = useState("standard");
   const [selectedCoupon, setSelectedCoupon] = useState<string | null>(null);
@@ -108,11 +109,11 @@ export default function CheckoutPage() {
   // 步骤一 → 步骤二
   function handleConfirmOrder() {
     if (!region) {
-      toast({ title: "请选择收货地址", tone: "danger" });
+      toast({ title: copy("selectAShippingAddress"), tone: "danger" });
       return;
     }
     if (!receiver.trim()) {
-      toast({ title: "请填写收货人姓名", tone: "danger" });
+      toast({ title: copy("enterTheRecipientSName"), tone: "danger" });
       return;
     }
     setStep(1);
@@ -121,7 +122,7 @@ export default function CheckoutPage() {
   // 步骤二 → 步骤三（模拟支付）
   function handlePay() {
     if (!payMethod) {
-      toast({ title: "请选择支付方式", tone: "danger" });
+      toast({ title: copy("selectAPaymentMethod"), tone: "danger" });
       return;
     }
     void runPending(async () => {
@@ -131,13 +132,13 @@ export default function CheckoutPage() {
       setOrderId(id);
       clearCart();
       setStep(2);
-      toast({ title: "支付成功", tone: "success" });
+      toast({ title: copy("paymentSuccessful"), tone: "success" });
     });
   }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <h1 className="mb-6 text-xl font-semibold text-foreground">结算</h1>
+      <h1 className="mb-6 text-xl font-semibold text-foreground">{copy("checkout")}</h1>
 
       {/* 步骤条 */}
       <div className="mb-8">
@@ -149,26 +150,26 @@ export default function CheckoutPage() {
         <div className="space-y-6">
           {/* 收货信息 */}
           <section className="rounded-xl border border-border bg-surface p-5">
-            <h2 className="mb-4 text-base font-semibold text-foreground">收货信息</h2>
+            <h2 className="mb-4 text-base font-semibold text-foreground">{copy("shippingInformation")}</h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="收货地址" className="col-span-full">
+              <Field label={copy("shippingAddresses")} className="col-span-full">
                 <RegionCascader
-                  placeholder="选择省 / 市 / 区"
+                  placeholder={copy("selectProvinceCityDistrict")}
                   onChange={(_codes, names) => setRegion(names.join(""))}
                 />
               </Field>
-              <Field label="收货人">
+              <Field label={copy("recipient")}>
                 <Input
                   value={receiver}
                   onChange={(e) => setReceiver(e.target.value)}
-                  placeholder="请输入姓名"
+                  placeholder={copy("enterAName")}
                 />
               </Field>
-              <Field label="联系电话">
+              <Field label={copy("phone")}>
                 <Input
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="请输入手机号"
+                  placeholder={copy("enterAPhoneNumber")}
                 />
               </Field>
             </div>
@@ -176,23 +177,26 @@ export default function CheckoutPage() {
 
           {/* 配送方式 */}
           <section className="rounded-xl border border-border bg-surface p-5">
-            <h2 className="mb-4 text-base font-semibold text-foreground">配送方式</h2>
-            <RadioGroup value={delivery} onValueChange={setDelivery} aria-label="配送方式">
-              <Radio value="standard" label="标准快递（3-5 天）— 免运费满 ¥199" />
-              <Radio value="express" label="顺丰特快（1-2 天）— 另付 ¥12" />
+            <h2 className="mb-4 text-base font-semibold text-foreground">{copy("deliveryMethod")}</h2>
+            <RadioGroup value={delivery} onValueChange={setDelivery} aria-label={copy("deliveryMethod")}>
+              <Radio value="standard" label={copy("standardDelivery35DaysFreeOnOrdersOver199")} />
+              <Radio value="express" label={copy("sfExpress12Days12Surcharge")} />
             </RadioGroup>
           </section>
 
           {/* 商品清单 */}
           <section className="rounded-xl border border-border bg-surface p-5">
             <h2 className="mb-4 text-base font-semibold text-foreground">
-              商品清单（{cartItems.length} 种）
+
+              {copy("items")}{cartItems.length}  {copy("products")}
             </h2>
             {cartItems.length === 0 ? (
               <p className="text-sm text-foreground-muted">
-                购物车为空，
+
+                {copy("yourCartIsEmpty")}
                 <Link href={`${SHOP_BASE}/cart`} className="text-brand hover:underline">
-                  返回购物车
+
+                  {copy("backToCart")}
                 </Link>
               </p>
             ) : (
@@ -232,7 +236,7 @@ export default function CheckoutPage() {
           {/* 优惠券选择 */}
           {availableCoupons.length > 0 && (
             <section className="rounded-xl border border-border bg-surface p-5">
-              <h2 className="mb-4 text-base font-semibold text-foreground">优惠券</h2>
+              <h2 className="mb-4 text-base font-semibold text-foreground">{copy("coupons")}</h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {availableCoupons.map((c) => {
                   const canUse = !c.threshold || subtotal >= c.threshold;
@@ -265,12 +269,12 @@ export default function CheckoutPage() {
 
           {/* 订单备注 */}
           <section className="rounded-xl border border-border bg-surface p-5">
-            <h2 className="mb-4 text-base font-semibold text-foreground">订单备注</h2>
-            <Field label="备注（选填）">
+            <h2 className="mb-4 text-base font-semibold text-foreground">{copy("orderNotes")}</h2>
+            <Field label={copy("notesOptional")}>
               <Textarea
                 value={remark}
                 onChange={(e) => setRemark(e.target.value)}
-                placeholder="如有特殊要求请在此注明（颜色、规格偏好等）"
+                placeholder={copy("addAnySpecialRequestsSuchAsColorOrSizePreferences")}
                 rows={3}
               />
             </Field>
@@ -278,26 +282,26 @@ export default function CheckoutPage() {
 
           {/* 金额明细 */}
           <section className="rounded-xl border border-border bg-surface p-5">
-            <h2 className="mb-4 text-base font-semibold text-foreground">金额明细</h2>
+            <h2 className="mb-4 text-base font-semibold text-foreground">{copy("orderSummary")}</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-foreground-muted">
-                <span>商品总额</span>
+                <span>{copy("subtotal")}</span>
                 <span className="text-foreground">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-foreground-muted">
-                <span>运费</span>
+                <span>{copy("shipping")}</span>
                 <span className="text-foreground">
-                  {shippingFee === 0 ? "免运费" : formatPrice(shippingFee)}
+                  {shippingFee === 0 ? copy("free") : formatPrice(shippingFee)}
                 </span>
               </div>
               {couponDiscount > 0 && (
                 <div className="flex justify-between text-success">
-                  <span>优惠券折扣</span>
+                  <span>{copy("couponDiscount")}</span>
                   <span>-{formatPrice(couponDiscount)}</span>
                 </div>
               )}
               <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-                <span className="font-semibold text-foreground">实付金额</span>
+                <span className="font-semibold text-foreground">{copy("totalDue")}</span>
                 <Statistic
                   value={actualPay}
                   precision={2}
@@ -310,13 +314,15 @@ export default function CheckoutPage() {
 
           <div className="flex justify-end gap-3">
             <Button variant="outline" render={<Link href={`${SHOP_BASE}/cart`} />}>
-              返回购物车
+
+              {copy("backToCart")}
             </Button>
             <Button
               disabled={cartItems.length === 0}
               onClick={handleConfirmOrder}
             >
-              确认订单，去支付
+
+              {copy("continueToPayment")}
             </Button>
           </div>
         </div>
@@ -326,11 +332,11 @@ export default function CheckoutPage() {
       {step === 1 && (
         <div className="space-y-6">
           <section className="rounded-xl border border-border bg-surface p-5">
-            <h2 className="mb-4 text-base font-semibold text-foreground">选择支付方式</h2>
-            <RadioGroup value={payMethod} onValueChange={setPayMethod} aria-label="支付方式">
-              <Radio value="wechat" label="微信支付" />
-              <Radio value="alipay" label="支付宝" />
-              <Radio value="card" label="银行卡" />
+            <h2 className="mb-4 text-base font-semibold text-foreground">{copy("chooseAPaymentMethod")}</h2>
+            <RadioGroup value={payMethod} onValueChange={setPayMethod} aria-label={copy("paymentMethods")}>
+              <Radio value="wechat" label={copy("wechatPay")} />
+              <Radio value="alipay" label={copy("alipay")} />
+              <Radio value="card" label={copy("bankCard")} />
             </RadioGroup>
           </section>
 
@@ -338,10 +344,12 @@ export default function CheckoutPage() {
           <section className="rounded-xl border border-border bg-surface p-5">
             <div className="flex items-center justify-between">
               <span className="text-sm text-foreground-muted">
-                共 {cartItems.reduce((s, c) => s + c.qty, 0)} 件商品
+
+                {copy("total")} {cartItems.reduce((s, c) => s + c.qty, 0)}  {copy("products2")}
               </span>
               <div className="flex items-center gap-1 text-sm text-foreground-muted">
-                实付：
+
+                {copy("totalDue2")}
                 <Statistic
                   value={actualPay}
                   precision={2}
@@ -354,16 +362,17 @@ export default function CheckoutPage() {
 
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setStep(0)}>
-              上一步
+
+              {copy("back")}
             </Button>
             <Button onClick={handlePay} disabled={pending}>
               {pending ? (
                 <>
                   <Spinner size="sm" tone="current" />
-                  <span className="ml-2">支付中...</span>
+                  <span className="ml-2">{copy("processingPayment")}</span>
                 </>
               ) : (
-                "立即支付"
+                copy("payNow")
               )}
             </Button>
           </div>
@@ -374,12 +383,13 @@ export default function CheckoutPage() {
       {step === 2 && (
         <Result
           status="success"
-          title="下单成功！"
-          subTitle={`订单号 ${orderId}，预计 3-5 个工作日内发货。`}
+          title={copy("orderPlaced")}
+          subTitle={`${copy("order")}${orderId}${copy("estimatedDispatchIn35BusinessDays")}`}
         >
-          <Button render={<Link href={`${SHOP_BASE}/products`} />}>继续购物</Button>
+          <Button render={<Link href={`${SHOP_BASE}/products`} />}>{copy("continueShopping")}</Button>
           <Button variant="outline" render={<Link href={SHOP_BASE} />}>
-            返回首页
+
+            {copy("backToHome")}
           </Button>
         </Result>
       )}

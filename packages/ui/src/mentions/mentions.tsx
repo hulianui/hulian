@@ -10,6 +10,7 @@ import {
   type MouseEvent,
 } from "react";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import { textareaVariants } from "../textarea/textarea";
 import {
   findTrigger,
@@ -54,6 +55,7 @@ export function Mentions({
   onKeyUp,
   ...rest
 }: MentionsProps) {
+  const labels = useComponentLocale().mentions ?? { suggestions: "提及候选" };
   const isControlled = value !== undefined;
   const [internal, setInternal] = useState(defaultValue ?? "");
   const text = isControlled ? value! : internal;
@@ -126,7 +128,13 @@ export function Mentions({
     if (!trigger || !opt || opt.disabled) return;
     const el = taRef.current;
     const caret = el?.selectionStart ?? text.length;
-    const { value: next, caret: nextCaret } = insertMention(text, trigger.start, caret, prefix, opt.label);
+    const { value: next, caret: nextCaret } = insertMention(
+      text,
+      trigger.start,
+      caret,
+      prefix,
+      opt.label,
+    );
     commit(next);
     close();
     pendingCaret.current = nextCaret;
@@ -203,10 +211,7 @@ export function Mentions({
         >
           {segments.map((seg, i) =>
             seg.mention ? (
-              <mark
-                key={i}
-                className="rounded-[0.25rem] bg-primary/12 text-primary"
-              >
+              <mark key={i} className="rounded-[0.25rem] bg-primary/12 text-primary">
                 {seg.text}
               </mark>
             ) : (
@@ -241,14 +246,17 @@ export function Mentions({
         }}
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
         // 文本透明、背景透明（露出背板），仅保留光标色；彩色字形交给背板渲染。
-        className={cn(textareaVariants({ size }), "relative resize-y bg-transparent text-transparent caret-foreground")}
+        className={cn(
+          textareaVariants({ size }),
+          "relative resize-y bg-transparent text-transparent caret-foreground",
+        )}
       />
 
       {open && (
         <div
           id={listId}
           role="listbox"
-          aria-label="提及候选"
+          aria-label={labels.suggestions}
           style={{ top: coords.top, left: coords.left }}
           className={cn(
             "absolute z-50 flex max-h-60 w-56 flex-col gap-0.5 overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 shadow-lg",
@@ -275,8 +283,8 @@ export function Mentions({
                   opt.disabled
                     ? "cursor-not-allowed text-muted opacity-50"
                     : isActive
-                      ? "bg-surface-hover text-foreground"
-                      : "text-foreground",
+                    ? "bg-surface-hover text-foreground"
+                    : "text-foreground",
                 )}
               >
                 {opt.startContent && <span className="shrink-0">{opt.startContent}</span>}

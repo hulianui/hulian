@@ -42,9 +42,9 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | 虚拟滚动（默认 height 320 / itemHeight 36 / overscan 8）。**开启后强制平铺渲染** |
 | showLine | `boolean` | `false` | 显示连接线（`virtual` 开启时失效） |
 | searchable | `boolean` | `false` | 树内搜索框 |
-| searchPlaceholder | `string` | — | 搜索框占位 |
+| searchPlaceholder | `string` | locale | 搜索框占位；显式传值优先于 locale。 |
 | className | `string` | — | — |
-| aria-label | `string` | — | 树的无障碍标签 |
+| aria-label | `string` | locale | 树的无障碍标签；显式传值优先于 locale。 |
 
 ## Events
 
@@ -80,6 +80,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
   `itemHeight` 必须与实际行高一致，否则滚动条长度会飘。
 - **`virtual` 下 `itemHeight` 是固定值**，不做动态测量。行高会因 `label` 换行而变化的场景先别开虚拟。
 - **`label` 传 `ReactNode`（带高亮片段、图标、徽标…）时必须同时给 `searchText`**，否则内置搜索与键盘首字母跳转会退化成拿 `key` 去匹配 —— 用户按看得见的文字搜，一条都搜不出来。`label` 是字符串/数字时不用管。
+- 默认树标签、搜索占位和空结果文案跟随 `ConfigProvider`（`zhCN` / `enUS`）。显式 `aria-label` 与 `searchPlaceholder` 优先；旧自定义 locale 缺少 `components.tree` 时回退中文。
 
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

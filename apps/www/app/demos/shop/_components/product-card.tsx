@@ -1,8 +1,9 @@
 "use client";
+import { copy } from "./product-card.content";
 import Link from "next/link";
 import { Card, CardBody, Rating, Tag, Chip, toast } from "@hulianui/ui";
 import { Heart, ShoppingCart } from "lucide-react";
-import { productImage, formatPrice } from "../_data/products";
+import { productImage, formatCompactCount, formatPrice } from "../_data/products";
 import type { Product } from "../_data/types";
 import { useShop } from "../_lib/shop-store";
 import { SHOP_BASE } from "./nav-config";
@@ -22,23 +23,23 @@ export function ProductCard({ product }: { product: Product }) {
   const onFav = (e: React.MouseEvent) => {
     e.preventDefault();
     const added = toggleFavorite(product.id);
-    toast({ title: added ? "已加入收藏" : "已取消收藏", tone: "info" });
+    toast({ title: added ? copy("addedToFavorites") : copy("removedFromFavorites"), tone: "info" });
   };
 
   const onQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     if (soldOut) {
-      toast({ title: "该商品已售罄", tone: "danger" });
+      toast({ title: copy("thisItemIsSoldOut"), tone: "danger" });
       return;
     }
     addToCart({
       productId: product.id,
-      color: product.colors[0]?.name ?? "默认",
-      size: product.sizes[0] ?? "默认",
+      color: product.colors[0]?.name ?? copy("default"),
+      size: product.sizes[0] ?? copy("default"),
       qty: 1,
       price: product.price,
     });
-    toast({ title: `已加入购物车：${product.name}`, tone: "info" });
+    toast({ title: `${copy("addedToCart")}${product.name}`, tone: "info" });
   };
 
   return (
@@ -56,14 +57,14 @@ export function ProductCard({ product }: { product: Product }) {
             className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
-            {product.flashSale && <Tag tone="danger" size="sm" variant="solid" className="shadow-sm">限时秒杀</Tag>}
-            {product.isNew && <Tag tone="brand" size="sm" variant="solid" className="shadow-sm">新品</Tag>}
-            {soldOut && <Tag tone="neutral" size="sm" variant="solid" className="shadow-sm">售罄</Tag>}
+            {product.flashSale && <Tag tone="danger" size="sm" variant="solid" className="shadow-sm">{copy("flashSale")}</Tag>}
+            {product.isNew && <Tag tone="brand" size="sm" variant="solid" className="shadow-sm">{copy("new")}</Tag>}
+            {soldOut && <Tag tone="neutral" size="sm" variant="solid" className="shadow-sm">{copy("soldOut")}</Tag>}
           </div>
           <button
             type="button"
             onClick={onFav}
-            aria-label={fav ? "取消收藏" : "加入收藏"}
+            aria-label={fav ? copy("removeFromFavorites") : copy("addToFavorites")}
             className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-surface/90 text-muted shadow-sm backdrop-blur transition-colors hover:text-danger"
           >
             <Heart className={`size-4 ${fav ? "fill-danger text-danger" : ""}`} aria-hidden />
@@ -77,7 +78,7 @@ export function ProductCard({ product }: { product: Product }) {
               <Rating value={product.rating} readOnly size="sm" />
             </span>
             <span className="truncate whitespace-nowrap">
-              {product.rating.toFixed(1)} · {product.sales > 9999 ? `${(product.sales / 10000).toFixed(1)}万` : product.sales}+ 销量
+              {product.rating.toFixed(1)} · {formatCompactCount(product.sales)}{copy("sold")}
             </span>
           </div>
           <div className="flex flex-wrap gap-1">
@@ -93,14 +94,14 @@ export function ProductCard({ product }: { product: Product }) {
               {pct != null && (
                 <>
                   <span className="text-xs text-muted line-through">{formatPrice(product.originalPrice)}</span>
-                  <span className="whitespace-nowrap text-[11px] font-medium text-danger">{pct}折</span>
+                  <span className="whitespace-nowrap text-[11px] font-medium text-danger">{pct}{copy("ofListPrice")}</span>
                 </>
               )}
             </div>
             <button
               type="button"
               onClick={onQuickAdd}
-              aria-label="加入购物车"
+              aria-label={copy("addToCart")}
               className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-50"
             >
               <ShoppingCart className="size-4" aria-hidden />

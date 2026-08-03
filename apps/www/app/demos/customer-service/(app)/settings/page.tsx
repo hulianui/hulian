@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useState } from "react";
 import {
   Button,
@@ -17,61 +19,55 @@ import {
 } from "@hulianui/ui";
 
 export default function SettingsPage() {
-  const [nickname, setNickname] = useState("小琏");
-  const [signature, setSignature] = useState("很高兴为您服务，有问题随时找我～");
+  const [nickname, setNickname] = useState(copy("xiaoLian"));
+  const [signature, setSignature] = useState(copy("iMHappyToServeYouIf"));
   const [autoAccept, setAutoAccept] = useState(true);
   const [maxConcurrent, setMaxConcurrent] = useState(5);
   const [autoTransfer, setAutoTransfer] = useState(true);
   const [autoReply, setAutoReply] = useState(true);
-  const [welcome, setWelcome] = useState("您好，我是您的专属客服小琏，请问有什么可以帮您？");
+  const [welcome, setWelcome] = useState(copy("helloIAmYourDedicatedCustomerService"));
   const [worktime, setWorktime] = useState("work");
 
   const save = () => {
-    toast({ title: "设置已保存", description: "客服偏好已更新（demo 内存态，刷新还原）", tone: "success" });
+    toast({ title: copy("settingsSaved"), description: copy("customerServicePreferencesHaveBeenUpdatedDemo"), tone: "success" });
   };
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-4">
       <div className="flex items-end justify-between gap-3">
         <div>
-          <Heading level={1} size="xl">
-            客服设置
-          </Heading>
-          <Text tone="muted" className="mt-1">
-            配置坐席接待偏好与自动化规则。
-          </Text>
+          <Heading level={1} size="xl">{copy("customerServiceSettings")}</Heading>
+          <Text tone="muted" className="mt-1">{copy("configureAgentReceptionPreferencesAndAutomationRules")}</Text>
         </div>
-        <Button onClick={save}>保存设置</Button>
+        <Button onClick={save}>{copy("saveSettings")}</Button>
       </div>
 
       {/* 坐席资料 */}
       <Card>
-        <CardHeader>坐席资料</CardHeader>
+        <CardHeader>{copy("agentInformation")}</CardHeader>
         <CardBody className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field label="坐席昵称">
-            <Input value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="对客展示的名称" />
+          <Field label={copy("agentNickname")}>
+            <Input value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder={copy("nameDisplayedToCustomers")} />
           </Field>
-          <Field label="个性签名" description="对话窗口副标题展示" className="sm:col-span-1">
-            <Input value={signature} onChange={(e) => setSignature(e.target.value)} placeholder="一句话签名" />
+          <Field label={copy("personalizedSignature")} description={copy("dialogWindowSubtitleDisplay")} className="sm:col-span-1">
+            <Input value={signature} onChange={(e) => setSignature(e.target.value)} placeholder={copy("oneSentenceSignature")} />
           </Field>
         </CardBody>
       </Card>
 
       {/* 接待设置 */}
       <Card>
-        <CardHeader>接待设置</CardHeader>
+        <CardHeader>{copy("receptionSettings")}</CardHeader>
         <CardBody className="flex flex-col gap-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-sm font-medium">自动接入新会话</div>
-              <Text size="sm" tone="muted">
-                在线时新会话自动分配给我
-              </Text>
+              <div className="text-sm font-medium">{copy("automaticallyConnectToNewSessions")}</div>
+              <Text size="sm" tone="muted">{copy("newSessionsAreAutomaticallyAssignedToMe")}</Text>
             </div>
-            <Switch checked={autoAccept} onCheckedChange={setAutoAccept} aria-label="自动接入新会话" />
+            <Switch checked={autoAccept} onCheckedChange={setAutoAccept} aria-label={copy("automaticallyConnectToNewSessions2")} />
           </div>
 
-          <Field label={`同时接待上限：${maxConcurrent} 个会话`} description="超过上限的会话进入排队">
+          <Field label={copy("maximumSimultaneousReceptionValueSessions", maxConcurrent)} description={copy("sessionsExceedingTheUpperLimitAreQueued")}>
             <Slider
               value={maxConcurrent}
               onValueChange={(v) => setMaxConcurrent(Array.isArray(v) ? v[0] : (v as number))}
@@ -84,36 +80,32 @@ export default function SettingsPage() {
 
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-sm font-medium">离开后自动转接</div>
-              <Text size="sm" tone="muted">
-                状态切到「小休」时把进行中会话转交他人
-              </Text>
+              <div className="text-sm font-medium">{copy("automaticallyTransferAfterLeaving")}</div>
+              <Text size="sm" tone="muted">{copy("transferTheOngoingConversationToAnotherPerson")}</Text>
             </div>
-            <Switch checked={autoTransfer} onCheckedChange={setAutoTransfer} aria-label="离开后自动转接" />
+            <Switch checked={autoTransfer} onCheckedChange={setAutoTransfer} aria-label={copy("automaticallyTransferAfterLeaving2")} />
           </div>
         </CardBody>
       </Card>
 
       {/* 自动回复 */}
       <Card>
-        <CardHeader>自动回复</CardHeader>
+        <CardHeader>{copy("automaticReply")}</CardHeader>
         <CardBody className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-sm font-medium">启用欢迎语</div>
-              <Text size="sm" tone="muted">
-                客户接入时自动发送一条欢迎语
-              </Text>
+              <div className="text-sm font-medium">{copy("enableWelcomeMessage")}</div>
+              <Text size="sm" tone="muted">{copy("automaticallySendAWelcomeMessageWhenThe")}</Text>
             </div>
-            <Switch checked={autoReply} onCheckedChange={setAutoReply} aria-label="启用欢迎语" />
+            <Switch checked={autoReply} onCheckedChange={setAutoReply} aria-label={copy("enableWelcomeMessage2")} />
           </div>
-          <Field label="欢迎语内容">
+          <Field label={copy("welcomeMessageContent")}>
             <Textarea
               value={welcome}
               onChange={(e) => setWelcome(e.target.value)}
               rows={3}
               disabled={!autoReply}
-              placeholder="客户接入时自动发送…"
+              placeholder={copy("automaticallySentWhenTheCustomerAccesses")}
             />
           </Field>
         </CardBody>
@@ -121,16 +113,16 @@ export default function SettingsPage() {
 
       {/* 工作时段 */}
       <Card>
-        <CardHeader>工作时段</CardHeader>
+        <CardHeader>{copy("workingHours")}</CardHeader>
         <CardBody>
-          <Field label="接待时段" description="非工作时段由智能助手值守">
+          <Field label={copy("receptionHours")} description={copy("intelligentAssistantsWillBeOnDutyDuring")}>
             <Segmented
               value={worktime}
               onValueChange={setWorktime}
               items={[
-                { value: "all", label: "全天 7×24" },
-                { value: "work", label: "工作时间 9:00-21:00" },
-                { value: "custom", label: "自定义" },
+                { value: "all", label: copy("localizedText") },
+                { value: "work", label: copy("workingHours2") },
+                { value: "custom", label: copy("customize") },
               ]}
             />
           </Field>

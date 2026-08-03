@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 // 执行器池：顶部统计条（池容量/平均利用率/健康数） + 执行器卡网格（能力/价位/负载/健康/降级链/启停限流）。
 import { Boxes, Gauge, HeartPulse } from "lucide-react";
 import { Card, CardBody, Stat } from "@hulianui/ui";
@@ -15,10 +17,8 @@ export default function AgentsPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">执行器池</h1>
-        <p className="text-sm text-muted">
-          模型 + Agent 舰队 · 能力画像 · 实时负载 · 健康态 · 降级链编排
-        </p>
+        <h1 className="text-xl font-semibold text-foreground">{copy("actuatorPool")}</h1>
+        <p className="text-sm text-muted">{copy("modelAgentFleetCapabilityProfileRealTime")}</p>
       </div>
 
       {/* 顶部统计条 */}
@@ -27,7 +27,7 @@ export default function AgentsPage() {
           <CardBody>
             <Stat
               icon={<Boxes className="size-4" />}
-              label="池容量（最大并发）"
+              label={copy("poolCapacityMaximumConcurrency")}
               value={
                 <span className="tabular-nums">
                   {usedCapacity} / {totalCapacity}
@@ -40,7 +40,7 @@ export default function AgentsPage() {
           <CardBody>
             <Stat
               icon={<Gauge className="size-4" />}
-              label="平均利用率"
+              label={copy("averageUtilization")}
               value={<span className="tabular-nums">{avgUtil.toFixed(1)}%</span>}
               delta={2.6}
             />
@@ -50,7 +50,7 @@ export default function AgentsPage() {
           <CardBody>
             <Stat
               icon={<HeartPulse className="size-4" />}
-              label="健康执行器"
+              label={copy("healthActuators")}
               value={
                 <span className="tabular-nums">
                   {healthyCount} / {EXECUTORS.length}

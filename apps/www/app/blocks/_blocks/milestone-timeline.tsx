@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Heading, Tag, Text, Timeline, type TimelineItemProps } from "@hulianui/ui";
 
 // 发展历程 Block —— 自包含、可整段复制。

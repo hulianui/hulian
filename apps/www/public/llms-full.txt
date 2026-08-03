@@ -2161,6 +2161,8 @@ import { Snippet } from "@hulianui/ui"
 | symbol | `string ｜ null` | `"$"` | 命令提示符；传 `null` 不显示，适合非命令片段 |
 | lang | `string` | — | 语法着色语言（如 `"tsx"`/`"bash"`），仅 children 为字符串时生效 |
 | highlight | `boolean` | `true` | 是否语法着色，仅 children 为字符串时生效 |
+| copyLabel | `string` | 跟随 locale | 复制按钮无障碍标签；显式传值优先 |
+| copiedLabel | `string` | 跟随 locale | 复制成功后的无障碍标签；显式传值优先 |
 | className | `string` | — | 容器类名 |
 
 ## Slots
@@ -2180,6 +2182,7 @@ import { Snippet } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - `text`/`lang`/`highlight` 的着色与复制兜底仅在 `children` 为**字符串**时生效；传入节点时只能手动给 `text` 指定复制内容。
+- 默认复制标签跟随 `ConfigProvider locale`；无 Provider 时保持“复制 / 已复制”，`enUS` 为 “Copy / Copied”。
 
 ## 相关
 [Code](https://hulianui.haloritual.com/components/code) · [CodeBlock](https://hulianui.haloritual.com/components/code-block) · [CodeDiff](https://hulianui.haloritual.com/components/code-diff) · [Kbd](https://hulianui.haloritual.com/components/kbd) · [Text](https://hulianui.haloritual.com/components/text) · [Heading](https://hulianui.haloritual.com/components/heading)
@@ -2876,10 +2879,10 @@ import { Calendar } from "@hulianui/ui"
 | minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
 | maxDate | `string` | — | 最晚可选日期 |
 | disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
-| showToday | `boolean` | `true` | 底部「今天 / 本月 / 今年」快捷 |
+| showToday | `boolean` | `true` | 底部跟随 locale 的「今天 / 本月 / 今年」快捷 |
 | disabled | `boolean` | `false` | 整块置灰，连翻页都停掉 |
 | readOnly | `boolean` | `false` | 可翻页浏览，但选不动 |
-| aria-label | `string` | `"日历"` | 面板无障碍名 |
+| aria-label | `string` | 来自 `ConfigProvider` | 面板无障碍名；显式值优先 |
 | className | `string` | — | 落在面板外层容器 |
 
 ## Events
@@ -2917,6 +2920,7 @@ const [date, setDate] = useState<string | null>(null);
 
 ## 禁忌 / 坑
 
+- 月份标题、星期与月份名称、翻页标签和快捷文案跟随最近的 `ConfigProvider` locale；未提供 Provider 时默认中文。ISO 值与选择规则不受 locale 影响。
 - **值是定宽文本，不是 `Date`**：`"YYYY-MM-DD"` 定宽 → 字典序即时间序，区间比较可以直接比字符串，
   也避开了 `new Date("2026-06-08").toISOString()` 在东八区少算 8 小时那类日界坑。要 `Date` 对象请自己转。
 - `onValueChange` 的参数类型是 `string` 而非 `string | null`：面板没有清空入口。
@@ -3467,6 +3471,7 @@ const [v, setV] = useState("#3b82f6");
 ## 禁忌 / 坑
 
 - 受控 `value` 必须与 `colors` 中某项**严格字符串相等**才会高亮；`"#FFF"` 与 `"#ffffff"`、`"#3b82f6"` 与 `"rgb(59,130,246)"` 视为不同值。统一大小写与写法。
+- 默认无障碍名称跟随 `ConfigProvider locale`；显式 `aria-label` 优先，未包 Provider 时保持中文。
 - 仅支持单选；多选场景不在本组件范围内。
 
 ## 相关
@@ -3753,6 +3758,13 @@ import { DatePicker } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
 
+## 国际化
+
+未显式传 `placeholder` 时，日期、月份、年份占位文本以及清除按钮文案跟随最近的
+`ConfigProvider locale`；`enUS` 分别显示 “Select date / month / year”。显式
+`placeholder` 始终优先。为兼容旧自定义 Locale，`components.datePicker` 缺失，或只含旧版
+`clear` 字段时，缺少的占位文本仍回退到原有中文。
+
 ## 示例
 ```tsx
 // 基础：值是 ISO 日期串
@@ -3909,6 +3921,12 @@ import { DateTimePicker } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
 
+## 国际化
+
+占位文本、清除按钮、时/分/秒列、此刻和确定文案跟随最近的 `ConfigProvider locale`。
+显式 `placeholder` 优先于 Locale。旧自定义 Locale 若没有
+`components.dateTimePicker`，仍使用原有中文兼容默认值。
+
 ## 示例
 ```tsx
 // 基础
@@ -4023,6 +4041,8 @@ import { ElasticSlider } from "@hulianui/ui"
 ## 何时用
 
 聊天/评论输入框旁需要插入表情时用，emoji 数据（7 分类 + 中英关键词）内置、零依赖、支持搜索。本身只是表情面板，浮层弹出/定位需自配 [Popover](https://hulianui.haloritual.com/components/popover) 等容器。
+
+搜索、空态、最近使用与分类标签跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。显式传入 `searchPlaceholder` 时仍以该 prop 为准。
 
 ## 导入
 ```ts
@@ -4697,7 +4717,7 @@ import { MarkdownEditor } from "@hulianui/ui"
 | value | `string` | — | 受控 markdown 字符串 |
 | defaultValue | `string` | — | 非受控初值 |
 | name | `string` | — | 桥给原生表单 / Field 的隐藏 input name |
-| placeholder | `string` | `"输入 markdown…"` | 空内容占位文案 |
+| placeholder | `string` | — | 空内容占位文案 |
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
 | disabled | `boolean` | `false` | 禁用 |
 | minRows | `number` | `6` | 内容区最小高度（行） |
@@ -4709,6 +4729,12 @@ import { MarkdownEditor } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onChange | `(markdown: string) => void` | 内容变化回调，参数为 markdown 字符串 |
+
+## 国际化
+
+编辑区与格式工具栏的无障碍名称、全部格式按钮，以及链接地址提示跟随最近的
+`ConfigProvider locale`。显式 `aria-label` 优先于 Locale。旧自定义 Locale 若没有
+`components.markdownEditor`，仍使用原有中文兼容默认值。
 
 ## 示例
 ```tsx
@@ -4792,6 +4818,7 @@ import { Mentions, MentionText, type MentionTextProps, findTrigger, insertMentio
 - 插入文本是 `prefix + label + " "`，`label` 即可见名也是写入正文的字面量；要展示和插入不一致请自行用 `onSelect` 接管。
 - 外部/异步过滤时设 `filter={false}` 并在 `onSearch` 里刷新 `options`，否则内置子串过滤会再过滤一遍父级已筛好的结果。
 - 暂无其它已知坑。
+- 候选浮层的无障碍名称读取 `ConfigProvider` 的 `locale.components.mentions.suggestions`。`zhCN` / `enUS` 已内置；旧版自定义 locale 未提供该可选字段时回退「提及候选」。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating) · [Upload](https://hulianui.haloritual.com/components/upload)
@@ -5052,7 +5079,7 @@ generatePassword({ length: 8 }, () => 0); // 固定序列 → 固定结果
 
 ## i18n
 
-文案走 [ConfigProvider](https://hulianui.haloritual.com/components/config) 的 `locale.passwordGenerator`（内置 zhCN / enUS）。单点覆盖用 `labels` prop，优先级高于 locale。
+文案走 `ConfigProvider` 的 `locale.passwordGenerator`（内置 zhCN / enUS）。单点覆盖用 `labels` prop，优先级高于 locale。
 
 ## 注意
 
@@ -5884,6 +5911,8 @@ const [revealed, setRevealed] = useState(false);
 - `copyable` 默认 true，敏感场景按需 `copyable={false}` 关掉复制。
 
 ## 相关
+
+显示、隐藏、复制与已复制标签跟随 `ConfigProvider`。
 [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating) · [Upload](https://hulianui.haloritual.com/components/upload)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -6517,6 +6546,12 @@ import { TimeField } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | **只有整段输完才触发**；清空或退格清段回传 `null` |
+
+## 国际化
+
+输入组、时/分/秒段、空值播报和清除按钮的无障碍文案跟随最近的
+`ConfigProvider locale`。显式 `aria-label` 优先于 Locale。旧自定义 Locale 若没有
+`components.timeField`，仍使用原有中文兼容默认值。
 
 ## 键盘
 
@@ -7900,6 +7935,8 @@ import { Chip, chipVariants } from "@hulianui/ui"
 
 暂无已知坑。前导内容互斥优先级为 `avatar > startContent > dot`——三者同传只渲染 avatar。要出现 × 关闭按钮必须传 `onClose`（即便回调为空函数）。`isDisabled` 会屏蔽整片指针事件，连 × 也点不动。
 
+关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。为兼容旧自定义 locale，缺少 `components.chip` 时仍回退中文。
+
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
 
@@ -8096,6 +8133,8 @@ const comments = [
 暂无已知坑。`status` 与 `collapsed` 均为「传则受控、不传则内部自管」：受控时必须配 `onStatusChange` / `onCollapsedChange` 回写，否则交互无效。`collapsed` 优先级高于 `defaultCollapsed`，两者勿同时当真值传。
 
 ## 相关
+
+严重度、状态、建议与回复等内置文案跟随 `ConfigProvider`；评论正文与作者仍由业务数据提供。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -8306,6 +8345,7 @@ import { Coupon } from "@hulianui/ui"
 - `status="used" | "expired"` 时操作区自动置灰、`shine` 扫光不播；不必额外手动禁用。
 - 撕票穿孔/中缝是纯 CSS 伪元素绘制，外层不要再裹会裁剪溢出的 `overflow-hidden` 容器，否则半圆穿孔被切。
 - `onClaim`/`onUse`/`onSelect` 三类回调对应不同 status 与点击区，互相独立——结算选券走 `onSelect`（整券），领取走 `onClaim`（右侧按钮）。
+- 操作文案、完整折扣值和使用门槛跟随 `ConfigProvider locale`；例如 `discount={8.5}` 默认显示 `8.5折`，`enUS` 显示 `15% off`。显式 `actionLabel` 优先；旧字典没有 `formatDiscount` 时安全回退中文完整值。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -8318,6 +8358,8 @@ import { Coupon } from "@hulianui/ui"
 ## 何时用
 
 在结算确认、钱包、绑卡管理处展示一张银行卡卡面（品牌识别 + 卡号打码 + 正反面）。纯展示组件，不做表单录入；要采集卡号请用表单输入控件，本组件只负责把已有卡信息可视化成一张卡。
+
+持卡人、有效期与无障碍卡片说明跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。
 
 ## 导入
 ```ts
@@ -8467,7 +8509,7 @@ import { DecayCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DeployStatus
 
-> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC) · data-display/info
+> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需 · data-display/info
 
 ## 何时用
 
@@ -8492,7 +8534,7 @@ import { DeployStatus } from "@hulianui/ui"
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| label | `ReactNode` | 覆盖默认中文文案 |
+| label | `ReactNode` | 覆盖 ConfigProvider 提供的本地化文案 |
 
 ## 示例
 ```tsx
@@ -8505,7 +8547,7 @@ import { DeployStatus } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
-暂无已知坑。注意语义边界：本组件是部署生命周期态，不要拿它当服务健康指示灯（那是 StatusDot）。
+注意语义边界：本组件是部署生命周期态，不要拿它当服务健康指示灯（那是 StatusDot）。默认文案跟随 `ConfigProvider`，仅在业务语义需要时传 `label` 覆盖。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -8576,11 +8618,11 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DiffStat
 
-> 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖·RSC · data-display/info
+> 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖 · data-display/info
 
 ## 何时用
 
-PR/提交列表里展示单文件改动量：`+N −M` 数字 + 绿红比例格子条 + 改动状态徽标。本组件是 git diff 统计的微件（零依赖、可 RSC）；要趋势折线用 [Sparkline](https://hulianui.haloritual.com/components/sparkline)，要文件改动状态角标的层级树用 [FileTree](https://hulianui.haloritual.com/components/file-tree)。
+PR/提交列表里展示单文件改动量：`+N −M` 数字 + 绿红比例格子条 + 改动状态徽标。本组件是 git diff 统计的微件；要趋势折线用 [Sparkline](https://hulianui.haloritual.com/components/sparkline)，要文件改动状态角标的层级树用 [FileTree](https://hulianui.haloritual.com/components/file-tree)。
 
 ## 导入
 ```ts
@@ -8615,6 +8657,8 @@ import { DiffStat, splitBlocks } from "@hulianui/ui"
 暂无已知坑。格子条按 `additions:deletions` 比例填充 `blocks` 格（纯函数 `splitBlocks`），二者全 0 时为空条。
 
 ## 相关
+
+状态徽标跟随 `ConfigProvider`；组件为 client 组件，服务端组件仍可导入并渲染它。
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge) · [Dot](https://hulianui.haloritual.com/components/dot)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -9296,6 +9340,8 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 | stages* | `FunnelStage[]` | — | 阶段数组。`{id, label, value, tone?}`；漏斗宽/高按 value 比例缩放 |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | vertical 每级一行按宽度比 / horizontal 每列按高度比 |
 | showConversion | `boolean` | `true` | 是否显示级间转化率徽标 |
+| ariaLabel | `string` | `"漏斗图"` | 图表无障碍名称；非中文界面应显式传入本地化文案 |
+| conversionLabel | `string` | `"转化"` | 转化率徽标前缀；非中文界面应显式传入本地化文案 |
 | className | `string` | — | 外层类名 |
 
 FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`，缺省 `brand`（同 Tag 的 tone 语义，吃 token）。
@@ -9331,8 +9377,10 @@ FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`�
 
 - tone 是固定语义枚举（neutral/brand/success/warning/danger），不接受任意 CSS 颜色——要自定义配色走 `renderStage`。
 - `computeFunnel` 纯函数对首级 `conversion` 返回 `null`（无上一级可比），且不除零；自定义渲染时务必判 `conversion == null`。
+- `Funnel` 不声明客户端边界，可在服务端组件中使用，也可接收服务端兼容的 `renderStage` 函数。需要其他语言时显式传 `ariaLabel` 与 `conversionLabel`。
 
 ## 相关
+
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -9383,6 +9431,8 @@ const tasks: GanttTask[] = [
 - 时间轴可能比容器宽，组件靠横向滚动——外层给确定宽度（如 `w-[680px] max-w-full`）才有滚动条。
 
 ## 相关
+
+图表标签、空态、左列标题与月份刻度跟随 `ConfigProvider`。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -9887,6 +9937,8 @@ const [cards, setCards] = useState(initial);
 - `getId` 须全局唯一且稳定（不仅列内唯一）；卡片含交互子元素时同样要防拖拽拦截点击（[[dnd-kit-draggable-container-guard-interactive-children]]）。
 
 ## 相关
+
+空列占位文案跟随 `ConfigProvider`。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -10082,9 +10134,12 @@ const item: LiveChatItem =
 
 ## 禁忌 / 坑
 
+- 消息作者后的分隔符跟随 `ConfigProvider locale`：默认中文精确使用 `：`，`enUS` 使用 `:`；旧自定义字典没有该字段时保持中文回退。
+
 - 自动贴底依赖「当前是否贴底」判定：用户上滚查看历史时 `autoScroll` 暂停，浮出「N 条新消息」钮，点它才恢复贴底——不要在外部强行 scrollTo 干扰。
 - `items` 须给容器固定高度（如 `className="h-full"` + 父容器定高），否则滚动区无法形成。
 - 高频追加时靠 `maxItems` 截断窗口；不要把全量历史塞进 `items`。
+- 内置“置顶 / 新消息 / 进入 / 关注 / 送出”文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供英文。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -10152,6 +10207,7 @@ import { LivePlayer } from "@hulianui/ui"
 
 - `quality` 是受控的：传了 `quality` 就必须配 `onQualityChange` 回写，否则菜单选了不变。
 - 关注钮以 `host.onFollow` 是否存在决定显隐——纯展示场景不传即可隐藏。
+- 关注态文案跟随 `ConfigProvider locale`；无 Provider 时保持“+ 关注 / 已关注”，`enUS` 为 “+ Follow / Following”。
 - `surface` 优先于 `src`：两者都传时只渲染 `surface`（用于程序化/Canvas 画面）。
 - 内置 `<video>` 固定 muted/autoPlay/loop/playsInline，不暴露播放控制；要进度条/音量等点播 chrome 请改用 Video。
 
@@ -10226,6 +10282,7 @@ import { LiveProductCard } from "@hulianui/ui"
 
 - `action` 是插槽，组件不内置按钮——抢购钮由调用方传入（Button 等），便于挂自己的下单逻辑。
 - 划线原价仅在 `originalPrice` 存在时渲染；`currency` 同时作用于现价与原价。
+- “讲解中”、销量和剩余库存文案跟随 `ConfigProvider locale`；`enUS` 分别提供 “Presenting”、“Sold N” 和 “N left”，未包 Provider 时保持中文。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge) · [Dot](https://hulianui.haloritual.com/components/dot)
@@ -11296,6 +11353,8 @@ const links: SankeyLink[] = [
 - nodes/links 受控：几何由纯函数 `computeSankeyLayout` 算出带坐标的 laid* 形态，`assignLayers` 负责拓扑分层；不要往里传环路 links（拓扑分层假设有向无环）。
 
 ## 相关
+
+图表无障碍标签跟随 `ConfigProvider`。
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -11378,6 +11437,7 @@ const [date, setDate] = useState("2026-06-15");
 - 外层须给确定高度（如 `h-[520px]` + `className="h-full"`），时间轴靠容器高度填满后才内部滚动；不给高度会塌缩。
 - tone 只接受 5 个语义枚举，刻意避开未定义色的静默回退；要任意配色走 `renderEvent`。
 - start/end 是含时分的 ISO datetime（本地时区解释），区别于 Gantt 的纯日期闭区间。
+- 内置工具条、星期、日期标题和「更多」文案读取 `ConfigProvider` 的 `locale.components.scheduler`。`zhCN` / `enUS` 已内置；旧版自定义 locale 未提供该可选字段时继续回退中文，不影响现有消费者。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -11593,7 +11653,7 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 |------|------|------|------|
 | shape | `"text" \| "circle" \| "rect"` | `"text"` | 占位形状 |
 
-预设组件 `ListSkeleton` / `CardSkeleton` 用各自的计数 prop（`rows` / `count`）控制数量，尺寸靠外层 `className` 约束。
+预设组件 `ListSkeleton` / `CardSkeleton` 用各自的计数 prop（`rows` / `count`）控制数量，尺寸靠外层 `className` 约束。三个预设都支持可选 `label` 覆盖无障碍加载文案；未传时跟随 `ConfigProvider`，默认中文。
 
 ## 示例
 ```tsx
@@ -11611,6 +11671,7 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 
 - 骨架本身是「无 chrome」的占位，预设（Card/List/Table）不自带边框/卡片容器；别再外层套一层 Card 造成双重边框。
 - shimmer 是纯 CSS 动画，与图表/canvas 那类 rAF 动画不同，headless 截图能正常显形，无需特殊处理。
+- 预设读取 `ConfigProvider` 的运行时语言，因此属于客户端组件；服务端组件可以正常导入并渲染它们。
 
 ## 相关
 [Empty](https://hulianui.haloritual.com/components/empty) · [Watermark](https://hulianui.haloritual.com/components/watermark) · [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table)
@@ -11700,6 +11761,7 @@ const [items, setItems] = useState(fields);
 - 受控组件：`onChange` 不会替你改 state，必须自己把新数组写回（`onChange={setItems}`）。
 - `getId` 返回的 id 必须稳定唯一；用数组下标当 id 会在重排后错乱。
 - 行内的 `input / textarea / select / button / label / a / [role=button] / [role=link] / [contenteditable]` 不会劫持拖拽——守卫内置在指针 sensor 里，**默认（`handle={false}`）就安全**，不必为此设 `handle`（参考 [[dnd-kit-draggable-container-guard-interactive-children]]）。自绘的可拖控件（色卡、滑块、画布）不在上述标签之列，给它加 `data-no-drag` 即可放行。
+- 拖拽手柄的无障碍名称跟随 `ConfigProvider locale`；`enUS` 提供 “Reorder item N”，未包 Provider 时保持中文。
 - 守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。
 - 展示序号别用 `items.findIndex(...)` 反查（O(n²)），直接取 `renderItem` 第二参的 `state.index`。
 
@@ -12156,6 +12218,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 - `pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。
 - `icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。
 - `onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。
+- 关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。旧自定义 locale 缺少 `components.tag` 时回退中文。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -12337,9 +12400,9 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | 虚拟滚动（默认 height 320 / itemHeight 36 / overscan 8）。**开启后强制平铺渲染** |
 | showLine | `boolean` | `false` | 显示连接线（`virtual` 开启时失效） |
 | searchable | `boolean` | `false` | 树内搜索框 |
-| searchPlaceholder | `string` | — | 搜索框占位 |
+| searchPlaceholder | `string` | locale | 搜索框占位；显式传值优先于 locale。 |
 | className | `string` | — | — |
-| aria-label | `string` | — | 树的无障碍标签 |
+| aria-label | `string` | locale | 树的无障碍标签；显式传值优先于 locale。 |
 
 ## Events
 
@@ -12375,6 +12438,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
   `itemHeight` 必须与实际行高一致，否则滚动条长度会飘。
 - **`virtual` 下 `itemHeight` 是固定值**，不做动态测量。行高会因 `label` 换行而变化的场景先别开虚拟。
 - **`label` 传 `ReactNode`（带高亮片段、图标、徽标…）时必须同时给 `searchText`**，否则内置搜索与键盘首字母跳转会退化成拿 `key` 去匹配 —— 用户按看得见的文字搜，一条都搜不出来。`label` 是字符串/数字时不用管。
+- 默认树标签、搜索占位和空结果文案跟随 `ConfigProvider`（`zhCN` / `enUS`）。显式 `aria-label` 与 `searchPlaceholder` 优先；旧自定义 locale 缺少 `components.tree` 时回退中文。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/components/table) · [Book3D](https://hulianui.haloritual.com/components/book-3d) · [ProTable](https://hulianui.haloritual.com/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/components/editable-table)
@@ -12478,6 +12542,12 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 | children | `ReactNode` | v1 预留扩展位，未实现 |
 
 > 导出的 `formatTime` / `chapterMarkers` / `normalizeSrc` / `DEFAULT_PLAYBACK_RATES` 为辅助纯函数/常量。
+
+## 国际化
+
+播放、暂停、静音、倍速、画中画、全屏和重播等内置控件文案跟随最近的
+`ConfigProvider locale`。`zhCN` 与 `enUS` 均已覆盖；旧自定义 Locale 若没有
+`components.video`，仍回退到原有中文文案，不会因升级变成空标签。
 
 ## 示例
 ```tsx
@@ -12916,6 +12986,8 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 - 应用代码里想要「缺 Provider 就报错」的硬约束，继续用 `useTheme`；库内组件与需要容错的场景用 `useThemeOptional`（缺上下文返回 `null`）。
 
 ## 相关
+
+默认切换标签跟随 `ConfigProvider`（`zhCN` / `enUS`）；显式 `aria-label` 始终优先。
 [Command](https://hulianui.haloritual.com/components/command) · [ContextMenu](https://hulianui.haloritual.com/components/context-menu) · [Toolbar](https://hulianui.haloritual.com/components/toolbar) · [Accordion](https://hulianui.haloritual.com/components/accordion) · [Collapsible](https://hulianui.haloritual.com/components/collapsible) · [Link](https://hulianui.haloritual.com/components/link)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -13050,6 +13122,8 @@ const ref = useRef<HTMLDivElement>(null);
 - 已内置 `prefers-reduced-motion` 降级（smooth → auto），无需消费侧处理。
 
 ## 相关
+
+默认回顶标签跟随 `ConfigProvider`；可继续用 `aria-label` 显式覆盖。
 [Tabs](https://hulianui.haloritual.com/components/tabs) · [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) · [Pagination](https://hulianui.haloritual.com/components/pagination) · [Anchor](https://hulianui.haloritual.com/components/anchor) · [Affix](https://hulianui.haloritual.com/components/affix) · [Stepper](https://hulianui.haloritual.com/components/stepper)
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -13963,7 +14037,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | isOpen | `boolean` | — | 受控展开态 |
-| aria-label | `string` | 按 isOpen 切换 | 无障碍标签 |
+| aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
 | className | `string` | — | 类名 |
 
 `NavbarBrand` 为纯容器，无专属 prop。
@@ -14005,6 +14079,7 @@ function Header() {
 ## 禁忌 / 坑
 
 - `NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。
+- 默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。
 - 暂无其他已知坑。
 
 ## 相关
@@ -14196,6 +14271,7 @@ function ConvoNav() {
 
 ## 禁忌 / 坑
 
+- 默认导航无障碍名称跟随 `ConfigProvider`（`zhCN` 为“侧边导航”，`enUS` 为 “Sidebar navigation”）；显式传入 `aria-label` 时以消费方值为准。
 - 行尾操作放 `actions` 槽，组件会渲在 treeitem 按钮/链接【之外】（绝对覆盖行右侧）。**别把 `<button>` 等交互元素直接塞进 `label`**——嵌进 treeitem 按钮是非法 HTML，会触发 hydration 报错。`actions` 仅 inline 态生效。
 - 高度过渡用纯 CSS `grid-template-rows` 0fr→1fr，不靠 JS 测高，嵌套展开也不抖。参见 [[nested-collapsible-height-via-css-grid-rows-not-js-measure]]。
 - 选中/展开态可受控（`selectedKeys`/`openKeys` + 回调）或非受控（`default*`），勿混用同一维度。
@@ -14223,11 +14299,11 @@ function ConvoNav() {
 <!-- ════════════════════════════════════════════════════════ -->
 # PageHeader
 
-> 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖·可 RSC) · navigation/inpage
+> 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖) · navigation/inpage
 
 ## 何时用
 
-详情页 / 管理页顶部的页头骨架：统一安放返回箭头、面包屑、主标题、状态标签、右侧操作区和底部 Tabs。各槽位直接 dogfood 传入瑚琏 [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) / Chip / [Tabs](https://hulianui.haloritual.com/components/tabs)；只需要面包屑导航本身用 Breadcrumb，PageHeader 是把整块页头排版好。不传 `onBack` 时可保持 RSC（无回调）。
+详情页 / 管理页顶部的页头骨架：统一安放返回箭头、面包屑、主标题、状态标签、右侧操作区和底部 Tabs。各槽位直接 dogfood 传入瑚琏 [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) / Chip / [Tabs](https://hulianui.haloritual.com/components/tabs)；只需要面包屑导航本身用 Breadcrumb，PageHeader 是把整块页头排版好。
 
 ## 导入
 ```ts
@@ -14262,7 +14338,7 @@ import { PageHeader } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-// 极简：仅标题 + 操作（可 RSC，无 onBack）
+// 极简：仅标题 + 操作
 <PageHeader title="用户管理" extra={<Button variant="solid" size="sm">新建用户</Button>} />
 
 // 完整页头
@@ -14281,7 +14357,7 @@ import { PageHeader } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - `title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——别再往 DOM 透传字符串 title。
-- 传 `onBack` 即引入回调，该消费组件必须是 client；纯展示页头不传 onBack 可保持 server 组件。
+- 默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。
 
 ## 相关
 [Tabs](https://hulianui.haloritual.com/components/tabs) · [Breadcrumb](https://hulianui.haloritual.com/components/breadcrumb) · [Pagination](https://hulianui.haloritual.com/components/pagination) · [Anchor](https://hulianui.haloritual.com/components/anchor) · [Affix](https://hulianui.haloritual.com/components/affix) · [BackTop](https://hulianui.haloritual.com/components/back-top)
@@ -16025,11 +16101,11 @@ import { Spin } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Spinner
 
-> 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + RSC · feedback/loading
+> 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + 本地化读屏文案 · feedback/loading
 
 ## 何时用
 
-需要一个裸的加载旋转图标时用（按钮内、行内、空状态占位）：纯 CSS `animate-spin` SVG 环，带 `role=status`，零交互、可作 RSC。需要遮罩/包裹内容区/整页加载用 [Spin](https://hulianui.haloritual.com/components/spin)；已知进度用 [Progress](https://hulianui.haloritual.com/components/progress)。
+需要一个裸的加载旋转图标时用（按钮内、行内、空状态占位）：纯 CSS `animate-spin` SVG 环，带 `role=status`，零交互。需要遮罩/包裹内容区/整页加载用 [Spin](https://hulianui.haloritual.com/components/spin)；已知进度用 [Progress](https://hulianui.haloritual.com/components/progress)。
 
 ## 导入
 ```ts
@@ -16042,7 +16118,7 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
 | tone | `"primary"｜"current"｜"muted"` | `"primary"` | 配色（`current`=继承 currentColor，适合放进彩色按钮内） |
-| label | `string` | `"加载中"` | a11y 文案（role=status 读屏播报） |
+| label | `string` | 跟随 `ConfigProvider` | a11y 文案（role=status 读屏播报）；显式传值优先 |
 | className | `string` | — | 容器类名 |
 
 ## 示例
@@ -16249,10 +16325,10 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| prevText | `ReactNode` | 「上一步」按钮文案覆盖 |
-| nextText | `ReactNode` | 「下一步」按钮文案覆盖 |
-| skipText | `ReactNode` | 「跳过」按钮文案覆盖 |
-| finishText | `ReactNode` | 「完成」按钮文案覆盖 |
+| prevText | `ReactNode` | 「上一步」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
+| nextText | `ReactNode` | 「下一步」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
+| skipText | `ReactNode` | 「跳过」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
+| finishText | `ReactNode` | 「完成」按钮文案覆盖；默认跟随 `ConfigProvider` locale |
 
 > TourStep 内的 `title` / `description` 亦为 `ReactNode`，见上方 TourStep 表。
 
@@ -16276,6 +16352,7 @@ const [current, setCurrent] = useState(0);
 
 ## 禁忌 / 坑
 
+- 导航、关闭、对话框和进度标签跟随最近的 `ConfigProvider` locale；未提供 Provider 时默认中文，显式文案 props 优先。
 - 完全受控：`open` 与 `current` 必须由消费者 state 持有，上一步/下一步只触发 `onChange`，本组件不自管步索引——忘记在 `onChange` 里回写 `current` 会导致引导卡在第一步。
 - `target` 用函数（`() => ref.current`）比 CSS 选择器更稳，尤其目标 DOM 动态挂载/卸载时。
 - 全屏 overlay 经 Portal 挂到 body；截图/可视验证须「先点开始触发 open 再截」（同 Drawer/Popover/Toast）。
@@ -16415,11 +16492,13 @@ import { Artifact } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ChatMessage
 
-> 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽·纯皮肤RSC · ai/conversation
+> 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽 · ai/conversation
 
 ## 何时用
 
 渲染单条对话气泡（用户/助手/系统通告）。多条气泡的滚动堆叠交给 [Conversation](https://hulianui.haloritual.com/components/conversation)；气泡下方的操作按钮用 MessageActions 放进 `actions` 槽。
+
+头像回退文案与发送回执的无障碍标签跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。
 
 ## 导入
 ```ts
@@ -17131,6 +17210,8 @@ import { ToolCall } from "@hulianui/ui"
 | input | `ReactNode` | 入参（建议传 `<CodeBlock/>` 或 JSON 文本） |
 | output | `ReactNode` | 结果（建议传 `<CodeBlock/>` / `<Prose/>` 或文本） |
 | children | `ReactNode` | 自定义面板内容（替代 input/output） |
+
+状态及“参数/结果”标题会随 `ConfigProvider` 的 `locale` 自动切换；未提供 Provider 时保持中文默认值。
 
 ## 示例
 ```tsx
@@ -23103,9 +23184,9 @@ import { PullToRefresh } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | `children` * | `ReactNode` | 可滚动内容 |
-| `pullingText` | `ReactNode` | 下拉中文案 |
-| `armedText` | `ReactNode` | 越过阈值待释放时的文案 |
-| `refreshingText` | `ReactNode` | 刷新中文案 |
+| `pullingText` | `ReactNode` | 下拉中文案；默认跟随 locale，显式传值优先 |
+| `armedText` | `ReactNode` | 越过阈值待释放时的文案；默认跟随 locale |
+| `refreshingText` | `ReactNode` | 刷新中文案；默认跟随 locale |
 
 ## 示例
 ```tsx
@@ -23117,6 +23198,7 @@ import { PullToRefresh } from "@hulianui/ui"
 ## 禁忌 / 坑
 - `onRefresh` 想让指示器在加载期间持续显示，必须**返回 Promise** 并在数据就绪后 resolve；返回 void 会立即回弹，看不到刷新态。
 - 只在内容滚到顶部时下拉才进入手势，中途滚动不会误触发。
+- 三个状态文案跟随 `ConfigProvider locale`；无 Provider 时保持中文，`enUS` 提供 “Pull / Release to refresh / Refreshing…”。
 
 ## 相关
 [SwipeAction](https://hulianui.haloritual.com/components/swipe-action) · [TabBar](https://hulianui.haloritual.com/components/tab-bar) · [Fab](https://hulianui.haloritual.com/components/fab) · [ActionSheet](https://hulianui.haloritual.com/components/action-sheet) · [Picker](https://hulianui.haloritual.com/components/picker) · [SafeArea](https://hulianui.haloritual.com/components/safe-area)
@@ -23237,6 +23319,7 @@ import { TabBar } from "@hulianui/ui"
 | `defaultValue` | `string` | 首项 key | 非受控初始 key |
 | `safeArea` | `boolean` | `true` | 吃底部安全区 inset |
 | `fixed` | `boolean` | `true` | fixed 贴底；false 则随文档流 |
+| `aria-label` | `string` | 跟随 locale | 导航区无障碍标签；显式传值优先 |
 | `className` | `string` | — | — |
 
 **TabBarItem**：`key: string` · `label: ReactNode` · `icon?: ReactNode`（默认态图标）· `activeIcon?: ReactNode`（激活态，缺省复用 icon）· `dot?: boolean`（红点）· `badge?: ReactNode`（角标，优先于 dot）· `disabled?: boolean`。
@@ -23264,6 +23347,7 @@ const [tab, setTab] = useState("home");
 ## 禁忌 / 坑
 - 默认 `fixed` 贴视口底 + 吃底部安全区。放进手机框/容器内演示时须 `fixed={false}` 收进文档流，否则会飘到整页底部；容器内不需要安全区时再加 `safeArea={false}`。
 - `badge` 与 `dot` 同时给时 `badge` 优先。
+- 导航区标签跟随 `ConfigProvider locale`：`zhCN` 为“底部导航”，`enUS` 为 “Bottom navigation”。
 
 ## 相关
 [Fab](https://hulianui.haloritual.com/components/fab) · [ActionSheet](https://hulianui.haloritual.com/components/action-sheet) · [Picker](https://hulianui.haloritual.com/components/picker) · [SwipeAction](https://hulianui.haloritual.com/components/swipe-action) · [PullToRefresh](https://hulianui.haloritual.com/components/pull-to-refresh) · [SafeArea](https://hulianui.haloritual.com/components/safe-area)

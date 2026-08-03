@@ -1,11 +1,20 @@
 // 瑚琏「Theme」文档区 IA + 设计 token 数据 SSOT —— 纯数据，零 @hulianui/ui import，server/client 皆可读。
 // 数值真源在 @hulianui/tokens（preset.css / semantic.css）；此处镜像用于文档可视化，改 token 时同步。
 
+import { themeMetaEn } from "../i18n/theme-meta.en";
+import { DOCS_LOCALE } from "./docs-locale";
+
 export interface ThemeNavItem {
   slug: string; // 空串 = Overview（/theme 根）
   label: string; // 中文
   en: string; // 英文副标
   blurb: string;
+}
+
+export interface LocalizedThemeDisplayMeta {
+  label: string;
+  description: string;
+  searchAliases: string[];
 }
 
 export const THEME_NAV: ThemeNavItem[] = [
@@ -21,6 +30,22 @@ export const THEME_NAV: ThemeNavItem[] = [
   { slug: "cursors", label: "光标", en: "Cursors", blurb: "交互态指针语义" },
 ];
 
+/** Localized display/search overlay. Theme slugs remain stable. */
+export function themeMeta(item: ThemeNavItem): LocalizedThemeDisplayMeta {
+  if (DOCS_LOCALE === "en") {
+    const localized = themeMetaEn[item.slug || "overview"];
+    return {
+      ...localized,
+      searchAliases: [item.label, item.en, item.blurb],
+    };
+  }
+  return {
+    label: item.label,
+    description: item.blurb,
+    searchAliases: [item.en],
+  };
+}
+
 // ===== 断点 SSOT 镜像（真源：@hulianui/tokens preset.css @theme --breakpoint-*）=====
 export interface Breakpoint {
   name: string; // sm/md/lg/xl/2xl
@@ -29,13 +54,23 @@ export interface Breakpoint {
   device: string;
   prefix: string; // tailwind 工具类前缀
 }
-export const BREAKPOINTS: Breakpoint[] = [
+const BREAKPOINTS_ZH: Breakpoint[] = [
   { name: "sm", px: 640, rem: "40rem", device: "横屏手机", prefix: "sm:" },
   { name: "md", px: 768, rem: "48rem", device: "竖屏平板", prefix: "md:" },
   { name: "lg", px: 1024, rem: "64rem", device: "横屏平板 / 小笔记本", prefix: "lg:" },
   { name: "xl", px: 1280, rem: "80rem", device: "桌面", prefix: "xl:" },
   { name: "2xl", px: 1536, rem: "96rem", device: "大桌面", prefix: "2xl:" },
 ];
+const BREAKPOINT_DEVICE_EN: Record<string, string> = {
+  sm: "Landscape phone",
+  md: "Portrait tablet",
+  lg: "Landscape tablet or small laptop",
+  xl: "Desktop",
+  "2xl": "Large desktop",
+};
+export const BREAKPOINTS: Breakpoint[] = BREAKPOINTS_ZH.map((item) =>
+  DOCS_LOCALE === "en" ? { ...item, device: BREAKPOINT_DEVICE_EN[item.name] } : item,
+);
 
 // ===== 语义色（真源：semantic.css）=====
 export interface SemanticColor {
@@ -48,7 +83,7 @@ export interface SemanticColor {
   /** 用途约束 / 误用警示（有值则在色卡下渲染一行提示） */
   note?: string;
 }
-export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] = [
+const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
   {
     title: "界面 / 表面",
     colors: [
@@ -75,7 +110,13 @@ export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] = [
   {
     title: "品牌 / 强调",
     colors: [
-      { token: "color-primary", label: "主色", light: "brand-700", dark: "brand-400", fg: "color-primary-foreground" },
+      {
+        token: "color-primary",
+        label: "主色",
+        light: "brand-700",
+        dark: "brand-400",
+        fg: "color-primary-foreground",
+      },
       { token: "color-primary-hover", label: "主色悬停", light: "brand-500", dark: "brand-500" },
       { token: "color-ring", label: "焦点环", light: "brand-500", dark: "brand-400" },
     ],
@@ -83,12 +124,60 @@ export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] = [
   {
     title: "状态",
     colors: [
-      { token: "color-danger", label: "危险", light: "danger-700", dark: "danger-400", fg: "color-danger-foreground" },
-      { token: "color-success", label: "成功", light: "success-600", dark: "success-500", fg: "color-success-foreground" },
-      { token: "color-warning", label: "警告", light: "warning-700", dark: "warning-500", fg: "color-warning-foreground" },
+      {
+        token: "color-danger",
+        label: "危险",
+        light: "danger-700",
+        dark: "danger-400",
+        fg: "color-danger-foreground",
+      },
+      {
+        token: "color-success",
+        label: "成功",
+        light: "success-600",
+        dark: "success-500",
+        fg: "color-success-foreground",
+      },
+      {
+        token: "color-warning",
+        label: "警告",
+        light: "warning-700",
+        dark: "warning-500",
+        fg: "color-warning-foreground",
+      },
     ],
   },
 ];
+const SEMANTIC_GROUP_EN = ["Interface and surfaces", "Text", "Brand and emphasis", "Status"];
+const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
+  "color-bg": { label: "Page background" },
+  "color-surface": { label: "Card surface" },
+  "color-surface-hover": { label: "Hovered surface" },
+  "color-border": { label: "Borders and dividers" },
+  "color-hairline": {
+    label: "Hairline border",
+    note: "Use only with border-* on elevated surfaces. It is transparent in light mode; text-, bg-, or fill- would become invisible, so use border or muted for fill and text.",
+  },
+  "color-foreground": { label: "Primary text" },
+  "color-muted": { label: "Secondary text" },
+  "color-primary": { label: "Primary" },
+  "color-primary-hover": { label: "Primary hover" },
+  "color-ring": { label: "Focus ring" },
+  "color-danger": { label: "Danger" },
+  "color-success": { label: "Success" },
+  "color-warning": { label: "Warning" },
+};
+export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] =
+  DOCS_LOCALE === "en"
+    ? SEMANTIC_GROUPS_ZH.map((group, index) => ({
+        title: SEMANTIC_GROUP_EN[index],
+        colors: group.colors.map((color) => ({
+          ...color,
+          ...(color.token === "color-hairline" ? { dark: "gray-800 (same as border)" } : {}),
+          ...SEMANTIC_COLOR_EN[color.token],
+        })),
+      }))
+    : SEMANTIC_GROUPS_ZH;
 
 // 图表分类色（数据序列）
 export const CHART_COLORS = ["color-chart-1", "color-chart-2", "color-chart-3", "color-chart-4"];
@@ -116,12 +205,16 @@ export const TYPE_SCALE: TypeStep[] = [
   { name: "text-4xl", size: "2.25rem", px: 36, lineHeight: "2.5rem" },
   { name: "text-5xl", size: "3rem", px: 48, lineHeight: "1" },
 ];
-export const FONT_WEIGHTS = [
+const FONT_WEIGHTS_ZH = [
   { name: "font-normal", value: 400, label: "正文" },
   { name: "font-medium", value: 500, label: "次强调 / 导航" },
   { name: "font-semibold", value: 600, label: "标题" },
   { name: "font-bold", value: 700, label: "重强调" },
 ];
+const FONT_WEIGHT_EN = ["Body", "Secondary emphasis and navigation", "Headings", "Strong emphasis"];
+export const FONT_WEIGHTS = FONT_WEIGHTS_ZH.map((weight, index) =>
+  DOCS_LOCALE === "en" ? { ...weight, label: FONT_WEIGHT_EN[index] } : weight,
+);
 
 // ===== 间距（Tailwind 4 = 0.25rem 基准）=====
 export const SPACING_STEPS = [0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24].map((n) => ({
@@ -143,7 +236,7 @@ export const RADIUS_SCALE = [
 ];
 
 // ===== 阴影（Tailwind v4 默认 shadow-* 比例）=====
-export const SHADOW_SCALE = [
+const SHADOW_SCALE_ZH = [
   { name: "shadow-xs", use: "细微浮起 · 输入/徽标" },
   { name: "shadow-sm", use: "卡片 / 主按钮" },
   { name: "shadow-md", use: "悬浮卡片 / 下拉" },
@@ -151,6 +244,17 @@ export const SHADOW_SCALE = [
   { name: "shadow-xl", use: "对话框 / 抽屉" },
   { name: "shadow-2xl", use: "命令面板 / 大模态" },
 ];
+const SHADOW_USE_EN = [
+  "Subtle lift: inputs and badges",
+  "Cards and primary buttons",
+  "Floating cards and menus",
+  "Popovers",
+  "Dialogs and drawers",
+  "Command palettes and large modals",
+];
+export const SHADOW_SCALE = SHADOW_SCALE_ZH.map((shadow, index) =>
+  DOCS_LOCALE === "en" ? { ...shadow, use: SHADOW_USE_EN[index] } : shadow,
+);
 
 // ===== 动效（真源：@hulianui/tokens preset.css @theme --ease-* + @hulianui/ui motion/tokens.ts）=====
 // 三处必须同值：preset.css 的 @theme（工具类）、motion/tokens.ts 的 JS/CSS 双镜像、此处文档镜像。
@@ -162,7 +266,7 @@ export interface EasingToken {
   label: string;
   use: string;
 }
-export const EASINGS: EasingToken[] = [
+const EASINGS_ZH: EasingToken[] = [
   {
     utility: "ease-out",
     cssVar: "--ease-out",
@@ -185,6 +289,23 @@ export const EASINGS: EasingToken[] = [
     use: "整屏尺度的滑入滑出：Drawer、ActionSheet。尾段比 ease-out 长得多，大面积位移才不会「冲到位再急停」。",
   },
 ];
+const EASINGS_EN = [
+  {
+    label: "Deceleration (default)",
+    use: "Entrance, exit, hover, and press feedback. It starts at full speed, so users see an immediate response. Use this curve when unsure.",
+  },
+  {
+    label: "Accelerate, then decelerate",
+    use: "Movement or transformation within the viewport. Both ends are gentle, like a physical object starting and stopping.",
+  },
+  {
+    label: "Drawer (iOS and Ionic)",
+    use: "Full-screen sliding surfaces such as Drawer and ActionSheet. Its longer tail prevents large surfaces from stopping abruptly.",
+  },
+];
+export const EASINGS: EasingToken[] = EASINGS_ZH.map((easing, index) =>
+  DOCS_LOCALE === "en" ? { ...easing, ...EASINGS_EN[index] } : easing,
+);
 
 export interface DurationToken {
   name: string; // motionDuration 的键
@@ -192,23 +313,83 @@ export interface DurationToken {
   utility: string;
   use: string;
 }
-export const DURATIONS: DurationToken[] = [
+const DURATIONS_ZH: DurationToken[] = [
   { name: "fast", ms: 150, utility: "duration-150", use: "按压反馈 / 贴身微交互（100–160ms）" },
-  { name: "base", ms: 200, utility: "duration-200", use: "浮层进出场：Tooltip、Popover、Select、Menu" },
-  { name: "slow", ms: 300, utility: "duration-300", use: "大块转场：Drawer / ActionSheet 面板滑动" },
-  { name: "entrance", ms: 600, utility: "duration-600", use: "首屏逐级揭示 / 滚动入场（非交互反馈，可从容）" },
+  {
+    name: "base",
+    ms: 200,
+    utility: "duration-200",
+    use: "浮层进出场：Tooltip、Popover、Select、Menu",
+  },
+  {
+    name: "slow",
+    ms: 300,
+    utility: "duration-300",
+    use: "大块转场：Drawer / ActionSheet 面板滑动",
+  },
+  {
+    name: "entrance",
+    ms: 600,
+    utility: "duration-600",
+    use: "首屏逐级揭示 / 滚动入场（非交互反馈，可从容）",
+  },
 ];
+const DURATION_USE_EN = [
+  "Press feedback and close micro-interactions (100-160ms)",
+  "Overlay entrances and exits: Tooltip, Popover, Select, and Menu",
+  "Large transitions: Drawer and ActionSheet panels",
+  "First-paint reveals and scroll entrances, not interaction feedback",
+];
+export const DURATIONS: DurationToken[] = DURATIONS_ZH.map((duration, index) =>
+  DOCS_LOCALE === "en" ? { ...duration, use: DURATION_USE_EN[index] } : duration,
+);
 
 /** 该不该动 —— 按用户一天看到它多少次决定，而不是按「好不好看」 */
-export const MOTION_FREQUENCY = [
-  { freq: "每天 100+ 次", example: "⌘K 命令面板、键盘快捷键", verdict: "不做动画", tone: "danger" as const },
-  { freq: "每天几十次", example: "hover 态、列表导航", verdict: "去掉或大幅削减", tone: "warning" as const },
+const MOTION_FREQUENCY_ZH = [
+  {
+    freq: "每天 100+ 次",
+    example: "⌘K 命令面板、键盘快捷键",
+    verdict: "不做动画",
+    tone: "danger" as const,
+  },
+  {
+    freq: "每天几十次",
+    example: "hover 态、列表导航",
+    verdict: "去掉或大幅削减",
+    tone: "warning" as const,
+  },
   { freq: "偶尔", example: "对话框、抽屉、Toast", verdict: "常规动效", tone: "neutral" as const },
-  { freq: "罕见 / 首次", example: "引导、成功庆祝", verdict: "可以有惊喜", tone: "success" as const },
+  {
+    freq: "罕见 / 首次",
+    example: "引导、成功庆祝",
+    verdict: "可以有惊喜",
+    tone: "success" as const,
+  },
 ];
+const MOTION_FREQUENCY_EN = [
+  {
+    freq: "100+ times a day",
+    example: "Command palette and keyboard shortcuts",
+    verdict: "No animation",
+  },
+  {
+    freq: "Dozens of times a day",
+    example: "Hover states and list navigation",
+    verdict: "Remove or greatly reduce",
+  },
+  { freq: "Occasionally", example: "Dialogs, drawers, and toasts", verdict: "Standard motion" },
+  {
+    freq: "Rarely or once",
+    example: "Onboarding and success celebrations",
+    verdict: "A moment of delight is appropriate",
+  },
+];
+export const MOTION_FREQUENCY = MOTION_FREQUENCY_ZH.map((row, index) =>
+  DOCS_LOCALE === "en" ? { ...row, ...MOTION_FREQUENCY_EN[index] } : row,
+);
 
 // ===== 光标（交互态指针语义）=====
-export const CURSORS = [
+const CURSORS_ZH = [
   { name: "cursor-default", use: "默认箭头" },
   { name: "cursor-pointer", use: "可点击 · 链接/按钮" },
   { name: "cursor-text", use: "文本可选/输入" },
@@ -220,3 +401,18 @@ export const CURSORS = [
   { name: "cursor-ns-resize", use: "纵向缩放" },
   { name: "cursor-help", use: "帮助提示" },
 ];
+const CURSOR_USE_EN = [
+  "Default arrow",
+  "Clickable link or button",
+  "Selectable or editable text",
+  "Draggable movement",
+  "Grabbable carousel or sortable item",
+  "Disabled state",
+  "Loading",
+  "Horizontal resizing",
+  "Vertical resizing",
+  "Help information",
+];
+export const CURSORS = CURSORS_ZH.map((cursor, index) =>
+  DOCS_LOCALE === "en" ? { ...cursor, use: CURSOR_USE_EN[index] } : cursor,
+);

@@ -60,6 +60,7 @@ describe("ProTable × ConfigProvider 文案切换（端到端）", () => {
       </ConfigProvider>,
     );
     expect(getByLabelText("Refresh")).toBeTruthy();
+    expect(getByLabelText("Density: default")).toBeTruthy();
     expect(getByText("3 items")).toBeTruthy();
   });
 });

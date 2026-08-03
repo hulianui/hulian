@@ -1,3 +1,4 @@
+import { copy } from "./routing.content";
 // 智能路由引擎（纯函数，无副作用、无 Date.now/Math.random）。
 // 对每个执行器做「能力 + 成本 + 延迟 + 负载 + 优先级 + SLA」六维归一化打分并加权，选综合分最高者。
 // 能力子集不满足直接淘汰（total=0、记 eliminated）。
@@ -80,7 +81,7 @@ export function scoreExecutors(
         executorId: e.id,
         scores: { capability: 0, cost: 0, latency: 0, load: 0, priority: 0, sla: 0 },
         total: 0,
-        eliminated: `能力不满足: ${missing.join("/")}`,
+        eliminated: copy("abilityNotMetValue", missing.join("/")),
       };
     }
     if (e.health === "offline") {
@@ -88,7 +89,7 @@ export function scoreExecutors(
         executorId: e.id,
         scores: { capability: 0, cost: 0, latency: 0, load: 0, priority: 0, sla: 0 },
         total: 0,
-        eliminated: "执行器离线",
+        eliminated: copy("actuatorsAreOffline"),
       };
     }
 
@@ -127,8 +128,8 @@ export function scoreExecutors(
 
   const chosen = executors.find((e) => e.id === chosenId);
   const reason = chosen
-    ? `综合六维最优：${chosen.name}（能力匹配，综合分 ${(best * 100).toFixed(0)}）`
-    : "无满足能力要求的在线执行器，任务进入等待重试。";
+    ? copy("optimalComprehensiveSixDimensionsValueAbilityMatching", chosen.name, (best * 100).toFixed(0))
+    : copy("noOnlineExecutorMeetingCapabilityRequirementsTasks");
 
   return { taskId: task.id, candidates, chosenId, reason, failovers: [] };
 }

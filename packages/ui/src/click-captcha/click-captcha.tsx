@@ -1,8 +1,16 @@
 "use client";
-import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
 import { RefreshCw, X } from "../_icons";
 import { Button } from "../button";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { Spinner } from "../spinner";
 import type { CaptchaPoint, ClickCaptchaProps } from "./click-captcha.types";
@@ -33,7 +41,18 @@ export function ClickCaptcha({
   keyboardStep = 0.02,
   className,
 }: ClickCaptchaProps) {
-  const loc = useLocale().clickCaptcha;
+  const loc = useLocaleValue("clickCaptcha", {
+    hint: "请依次点击图中的提示内容",
+    hintImageAlt: "点击提示",
+    areaLabel: "人机验证点选区：方向键移动准星，回车或空格落点，退格撤销",
+    selected: "已选点位",
+    undo: "撤销上一个点",
+    refresh: "换一张",
+    verifying: "校验中…",
+    failed: "验证失败，请重新点选",
+    success: "验证通过",
+    imageError: "验证码图片加载失败，请点「换一张」重试",
+  });
   const hintId = useId();
   const controlled = pointsProp !== undefined;
   const [innerPoints, setInnerPoints] = useState<CaptchaPoint[]>(defaultPoints ?? []);
@@ -128,10 +147,10 @@ export function ClickCaptcha({
     status === "verifying"
       ? loc.verifying
       : status === "failed"
-        ? loc.failed
-        : status === "success"
-          ? loc.success
-          : "";
+      ? loc.failed
+      : status === "success"
+      ? loc.success
+      : "";
 
   return (
     <div
@@ -163,7 +182,14 @@ export function ClickCaptcha({
           >
             <X className="size-4" />
           </Button>
-          <Button type="button" variant="ghost" size="iconSm" aria-label={loc.refresh} disabled={disabled} onClick={refresh}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="iconSm"
+            aria-label={loc.refresh}
+            disabled={disabled}
+            onClick={refresh}
+          >
             <RefreshCw className="size-4" />
           </Button>
         </div>

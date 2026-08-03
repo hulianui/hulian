@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./notification-bell.content";
+
 import { useState } from "react";
 import { Bell, MessageSquarePlus, Ticket, Star, CheckCheck } from "lucide-react";
 import { Badge, Button, Popover, PopoverContent, PopoverTrigger } from "@hulianui/ui";
@@ -18,27 +20,27 @@ const SEED: Notice[] = [
     id: "n1",
     icon: MessageSquarePlus,
     tone: "brand",
-    title: "新会话进线",
-    desc: "赵铁柱 通过网页发起咨询，等待接入",
-    time: "刚刚",
+    title: copy("newSessionIncoming"),
+    desc: copy("zhaoTiezhuInitiatedConsultationThroughTheWeb"),
+    time: copy("justNow"),
     read: false,
   },
   {
     id: "n2",
     icon: Ticket,
     tone: "warning",
-    title: "工单已分配",
-    desc: "#T-2093「App 下单后未发货」已指派给你",
-    time: "3 分钟前",
+    title: copy("workOrderAssigned"),
+    desc: copy("tAppWasNotShippedAfterOrdering"),
+    time: copy("minutesAgo"),
     read: false,
   },
   {
     id: "n3",
     icon: Star,
     tone: "success",
-    title: "收到客户好评",
-    desc: "林婉如 对本次服务给出 5 星评价 ⭐",
-    time: "12 分钟前",
+    title: copy("receivedPositiveReviewsFromCustomers"),
+    desc: copy("linWanruGaveThisServiceAStar"),
+    time: copy("minutesAgo2"),
     read: false,
   },
 ];
@@ -64,7 +66,7 @@ export function NotificationBell() {
           <Button
             variant="ghost"
             size="sm"
-            aria-label={`通知${unread > 0 ? `（${unread} 条未读）` : ""}`}
+            aria-label={copy("notificationValue", unread > 0 ? copy("valueUnreadItems", unread) : "")}
             className="size-9 px-0"
           >
             <Badge count={unread} size="sm" className="pointer-events-none">
@@ -75,8 +77,7 @@ export function NotificationBell() {
       />
       <PopoverContent side="bottom" align="end" className="w-80 p-0">
         <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-          <span className="text-sm font-semibold">
-            通知{unread > 0 && <span className="ml-1 text-xs font-normal text-muted">{unread} 条未读</span>}
+          <span className="text-sm font-semibold">{copy("notification")}{unread > 0 && <span className="ml-1 text-xs font-normal text-muted">{unread}{copy("unreadItems")}</span>}
           </span>
           <Button
             variant="ghost"
@@ -85,8 +86,7 @@ export function NotificationBell() {
             disabled={unread === 0}
             onClick={markAllRead}
           >
-            <CheckCheck className="size-3.5" /> 全部已读
-          </Button>
+            <CheckCheck className="size-3.5" />{copy("allRead")}</Button>
         </div>
 
         <ul className="max-h-80 overflow-y-auto py-1">
@@ -105,7 +105,7 @@ export function NotificationBell() {
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="flex items-center gap-2">
                       <span className="truncate text-sm font-medium">{n.title}</span>
-                      {!n.read && <span className="size-1.5 shrink-0 rounded-full bg-danger" aria-label="未读" />}
+                      {!n.read && <span className="size-1.5 shrink-0 rounded-full bg-danger" aria-label={copy("unread")} />}
                     </span>
                     <span className="line-clamp-2 text-xs text-muted">{n.desc}</span>
                     <span className="text-[11px] text-muted">{n.time}</span>
@@ -117,9 +117,7 @@ export function NotificationBell() {
         </ul>
 
         <div className="border-t border-border px-4 py-2 text-center">
-          <Button variant="ghost" size="sm" className="h-7 w-full text-xs text-muted">
-            查看全部通知
-          </Button>
+          <Button variant="ghost" size="sm" className="h-7 w-full text-xs text-muted">{copy("viewAllNotifications")}</Button>
         </div>
       </PopoverContent>
     </Popover>

@@ -2,6 +2,8 @@
 import { memo, useMemo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { Tree } from "../tree/tree";
@@ -22,7 +24,11 @@ const triggerVariants = cva(
   ],
   {
     variants: {
-      size: { sm: "min-h-8 px-2.5 text-sm", md: "min-h-10 px-3 text-sm", lg: "min-h-12 px-3.5 text-base" },
+      size: {
+        sm: "min-h-8 px-2.5 text-sm",
+        md: "min-h-10 px-3 text-sm",
+        lg: "min-h-12 px-3.5 text-base",
+      },
     },
     defaultVariants: { size: "md" },
   },
@@ -30,7 +36,13 @@ const triggerVariants = cva(
 
 const ChevronDownIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M4 6l4 4 4-4"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -47,7 +59,7 @@ function TreeSelectImpl({
   defaultValue,
   onChange,
   multiple = false,
-  placeholder = "请选择",
+  placeholder,
   disabled,
   invalid,
   size = "md",
@@ -56,6 +68,8 @@ function TreeSelectImpl({
   showLine = false,
   className,
 }: TreeSelectProps) {
+  const copy = useComponentLocale().treeSelect ?? { placeholder: "请选择", clear: "清除" };
+  const resolvedPlaceholder = placeholder ?? copy.placeholder;
   const index = useMemo(() => buildIndex(nodes), [nodes]);
   const [open, setOpen] = useState(false);
 
@@ -72,8 +86,8 @@ function TreeSelectImpl({
   const selectedArr = multiple
     ? Array.from(normalizeCheckedToLeaves(current as string[], index))
     : current
-      ? [current as string]
-      : [];
+    ? [current as string]
+    : [];
   const hasValue = selectedArr.length > 0;
   // 清除按钮只在「开了 clearable + 当前有值 + 未禁用」时进 DOM；可见性再由 hover/focus 控制（同 Select）。
   const showClear = Boolean(clearable && hasValue && !disabled);
@@ -94,7 +108,7 @@ function TreeSelectImpl({
         )}
       >
         {!hasValue ? (
-          placeholder
+          resolvedPlaceholder
         ) : multiple ? (
           selectedArr.map((k) => (
             <span
@@ -133,7 +147,7 @@ function TreeSelectImpl({
           {showClear && (
             <button
               type="button"
-              aria-label="清除"
+              aria-label={copy.clear}
               onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.stopPropagation();

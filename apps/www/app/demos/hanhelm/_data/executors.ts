@@ -1,3 +1,4 @@
+import { copy } from "./executors.content";
 // 执行器池（mock）：4 个底层大模型 + 5 个封装 agent。
 // 价位 grounded（美元官方价折人民币展示，汇率按 7.0 估算，¥/1k tokens）：
 //   Haiku 4.5  $1/$5   → ¥0.007 / ¥0.035
@@ -14,7 +15,7 @@ export const EXECUTORS: Executor[] = [
     id: "haiku-4-5",
     name: "Haiku 4.5",
     kind: "model",
-    vendor: "Anthropic · 极速轻量",
+    vendor: copy("anthropicExtremelyFastAndLightweight"),
     capabilities: ["text", "translate", "extract"],
     pricePer1kIn: 0.007,
     pricePer1kOut: 0.035,
@@ -28,7 +29,7 @@ export const EXECUTORS: Executor[] = [
     id: "sonnet-4-6",
     name: "Sonnet 4.6",
     kind: "model",
-    vendor: "Anthropic · 均衡主力",
+    vendor: copy("anthropicBalanceTheMainForce"),
     capabilities: ["text", "code", "translate", "rag", "extract", "moderate"],
     pricePer1kIn: 0.021,
     pricePer1kOut: 0.105,
@@ -42,7 +43,7 @@ export const EXECUTORS: Executor[] = [
     id: "opus-4-7",
     name: "Opus 4.7",
     kind: "model",
-    vendor: "Anthropic · 旗舰推理",
+    vendor: copy("anthropicFlagshipReasoning"),
     capabilities: ["text", "code", "rag", "extract", "moderate", "orchestrate"],
     pricePer1kIn: 0.035,
     pricePer1kOut: 0.175,
@@ -56,7 +57,7 @@ export const EXECUTORS: Executor[] = [
     id: "deepseek-v4",
     name: "DeepSeek V4",
     kind: "model",
-    vendor: "深度求索 · 超低成本",
+    vendor: copy("inDepthExplorationUltraLowCost"),
     capabilities: ["text", "code", "translate", "extract"],
     pricePer1kIn: 0.0039,
     pricePer1kOut: 0.0154,
@@ -69,9 +70,9 @@ export const EXECUTORS: Executor[] = [
   // ── 视觉模型 ────────────────────────────────────────────
   {
     id: "vision-flux",
-    name: "瑚琏绘卷 Flux",
+    name: copy("coralPictureScrollFlux"),
     kind: "model",
-    vendor: "图像生成 · 高保真",
+    vendor: copy("imageGenerationHighFidelity"),
     capabilities: ["image"],
     pricePer1kIn: 0.06,
     pricePer1kOut: 0.18,
@@ -84,9 +85,9 @@ export const EXECUTORS: Executor[] = [
   // ── 封装 agent ──────────────────────────────────────────
   {
     id: "rag-agent",
-    name: "检索增强 Agent",
+    name: copy("retrievalEnhancementAgent"),
     kind: "agent",
-    vendor: "RAG · 向量库 + 重排",
+    vendor: copy("ragVectorLibraryRearrangement"),
     capabilities: ["rag", "text", "extract"],
     pricePer1kIn: 0.028,
     pricePer1kOut: 0.12,
@@ -98,9 +99,9 @@ export const EXECUTORS: Executor[] = [
   },
   {
     id: "moderate-agent",
-    name: "内容审核 Agent",
+    name: copy("contentReviewAgent"),
     kind: "agent",
-    vendor: "合规审核 · 多策略并行",
+    vendor: copy("complianceReviewMultipleStrategiesRunInParallel"),
     capabilities: ["moderate", "text", "extract"],
     pricePer1kIn: 0.018,
     pricePer1kOut: 0.08,
@@ -112,9 +113,9 @@ export const EXECUTORS: Executor[] = [
   },
   {
     id: "orchestrate-agent",
-    name: "编排调度 Agent",
+    name: copy("orchestrationAndSchedulingAgents"),
     kind: "agent",
-    vendor: "多 agent 编排 · 计划-执行-汇总",
+    vendor: copy("multiAgentOrchestrationPlanExecuteSummarize"),
     capabilities: ["orchestrate", "text", "code", "rag"],
     pricePer1kIn: 0.04,
     pricePer1kOut: 0.2,
@@ -126,9 +127,9 @@ export const EXECUTORS: Executor[] = [
   },
   {
     id: "extract-agent",
-    name: "结构化抽取 Agent",
+    name: copy("structuredExtractionOfAgents"),
     kind: "agent",
-    vendor: "文档抽取 · 表格/字段解析",
+    vendor: copy("documentExtractionTableFieldParsing"),
     capabilities: ["extract", "text", "translate"],
     pricePer1kIn: 0.012,
     pricePer1kOut: 0.05,

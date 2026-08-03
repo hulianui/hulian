@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import {
@@ -48,6 +50,11 @@ export function RegionSelect({
   className,
   ...rest
 }: RegionSelectProps) {
+  const copy = useComponentLocale().regionSelect ?? {
+    error: "图片加载失败",
+    loading: "载入图片…",
+    canvas: "区域选择画布",
+  };
   const [natural, setNatural] = useState<Natural | null>(
     naturalSize ? { w: naturalSize.width, h: naturalSize.height } : null,
   );
@@ -80,7 +87,8 @@ export function RegionSelect({
     setNatural(null);
     const probe = new window.Image();
     const take = () => {
-      if (alive && probe.naturalWidth > 0) setNatural({ w: probe.naturalWidth, h: probe.naturalHeight });
+      if (alive && probe.naturalWidth > 0)
+        setNatural({ w: probe.naturalWidth, h: probe.naturalHeight });
     };
     probe.onload = take;
     // onerror 必须与 onload 对称：只挂 onload 时，src 404/403/网络失败会让 natural 恒为 null，
@@ -168,7 +176,7 @@ export function RegionSelect({
         )}
         {...rest}
       >
-        {errorPlaceholder ?? "图片加载失败"}
+        {errorPlaceholder ?? copy.error}
       </div>
     );
   }
@@ -182,7 +190,7 @@ export function RegionSelect({
         )}
         {...rest}
       >
-        {placeholder ?? "载入图片…"}
+        {placeholder ?? copy.loading}
       </div>
     );
   }
@@ -192,7 +200,10 @@ export function RegionSelect({
 
   return (
     <div
-      className={cn("overflow-auto rounded-[var(--radius)] border border-border bg-surface-hover", className)}
+      className={cn(
+        "overflow-auto rounded-[var(--radius)] border border-border bg-surface-hover",
+        className,
+      )}
       style={{ maxHeight }}
       {...rest}
     >
@@ -206,7 +217,7 @@ export function RegionSelect({
         onPointerUp={(e) => finish(e, true)}
         onPointerCancel={(e) => finish(e, false)}
         role="img"
-        aria-label={alt || "区域选择画布"}
+        aria-label={alt || copy.canvas}
       >
         <image href={src} x={0} y={0} width={natural.w} height={natural.h} onError={fail} />
 

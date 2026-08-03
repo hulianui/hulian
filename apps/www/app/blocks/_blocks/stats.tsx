@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { NumberTicker, Text } from "@hulianui/ui";
 
 // 核心数据 Block —— 自包含、可整段复制。

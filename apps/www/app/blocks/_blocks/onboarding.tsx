@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 新手引导区块 —— 横向 Steps 步骤条 + 当前步卡片内容 + 进度条 + 上一步/下一步。
@@ -63,7 +64,7 @@ export function OnboardingBlock() {
               {STEPS[current].title}
             </Heading>
             <Text tone="muted" size="sm">
-              第 {current + 1} 步 / 共 {total} 步
+              步骤 {current + 1} / {total}
             </Text>
           </div>
         </div>

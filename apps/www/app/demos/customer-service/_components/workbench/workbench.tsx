@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./workbench.content";
+
 import { useState } from "react";
 import { Alert, toast } from "@hulianui/ui";
 import { conversations as seed } from "../../_data/conversations";
@@ -20,11 +22,11 @@ export function Workbench() {
   const showPeakAlert = !peakAlertDismissed && liveStats.waiting >= 3;
 
   const handleTransfer = (convId: string) => {
-    toast({ title: "已转接", description: `会话 ${convId} 已转交其他坐席处理`, tone: "info" });
+    toast({ title: copy("transferred"), description: copy("conversationValueHasBeenTransferredToAnother", convId), tone: "info" });
   };
 
   const handleCloseConv = (convId: string) => {
-    toast({ title: "会话已关闭", description: `会话 ${convId} 已结束并归档`, tone: "info" });
+    toast({ title: copy("sessionClosed"), description: copy("sessionValueEndedAndArchived", convId), tone: "info" });
   };
 
   return (
@@ -33,12 +35,10 @@ export function Workbench() {
       {showPeakAlert && (
         <Alert
           tone="warning"
-          title={`当前排队 ${liveStats.waiting} 人`}
+          title={copy("valuePeopleCurrentlyQueued", liveStats.waiting)}
           className="shrink-0 rounded-none border-x-0 border-t-0"
           onClose={() => setPeakAlertDismissed(true)}
-        >
-          进线高峰，请加快处理速度或呼叫备班坐席上线。
-        </Alert>
+        >{copy("thereIsAPeakIncomingCallsPlease")}</Alert>
       )}
       <div className="grid min-h-0 flex-1 grid-cols-[clamp(240px,22vw,300px)_1fr_clamp(280px,24vw,340px)]">
         <ConversationList

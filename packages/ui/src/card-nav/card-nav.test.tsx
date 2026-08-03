@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { CardNav } from "./card-nav";
 
 const items = [
@@ -79,5 +80,16 @@ describe("CardNav", () => {
     const root = container.firstElementChild as HTMLElement;
     expect(root.getAttribute("class")).toContain("ring-1");
     expect(root.style.opacity).toBe("0.9");
+  });
+
+  it("ConfigProvider locale=enUS localizes the menu trigger", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <CardNav brand="Brand" items={[]} />
+      </ConfigProvider>,
+    );
+    const trigger = getByRole("button", { name: "Open menu" });
+    fireEvent.click(trigger);
+    expect(getByRole("button", { name: "Close menu" })).toBeTruthy();
   });
 });

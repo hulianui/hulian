@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./helm-shell.content";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Moon, Sun, LogOut, UserRound, BookText, Activity } from "lucide-react";
@@ -21,10 +23,8 @@ import { MENU, NAV_LABEL, ROOT, hrefFromKey, keyFromPath } from "./nav-config";
 function Logo({ collapsed }: { collapsed?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2">
-      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        舵
-      </span>
-      {!collapsed && <span className="text-[15px] font-semibold tracking-tight">瀚舵 HanHelm</span>}
+      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("rudder")}</span>
+      {!collapsed && <span className="text-[15px] font-semibold tracking-tight">{copy("hanhelmHanhelm")}</span>}
     </span>
   );
 }
@@ -32,7 +32,7 @@ function Logo({ collapsed }: { collapsed?: boolean }) {
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
   return (
-    <Button variant="ghost" size="sm" onClick={toggle} aria-label="切换主题" className="size-9 px-0">
+    <Button variant="ghost" size="sm" onClick={toggle} aria-label={copy("switchThemes")} className="size-9 px-0">
       {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
     </Button>
   );
@@ -42,8 +42,8 @@ function SchedulerPill() {
   return (
     <span className="hidden items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-sm sm:inline-flex">
       <Activity className="size-4 text-primary" />
-      <span className="text-muted">调度引擎</span>
-      <StatusDot status="online" label="运行中" />
+      <span className="text-muted">{copy("schedulingEngines")}</span>
+      <StatusDot status="online" label={copy("running")} />
     </span>
   );
 }
@@ -52,25 +52,22 @@ function UserMenu() {
   const router = useRouter();
   return (
     <Menu>
-      <MenuTrigger render={<Button variant="ghost" size="sm" aria-label="账户" className="size-9 px-0" />}>
-        <Avatar size="sm" fallback="舵" />
+      <MenuTrigger render={<Button variant="ghost" size="sm" aria-label={copy("account")} className="size-9 px-0" />}>
+        <Avatar size="sm" fallback={copy("rudder2")} />
       </MenuTrigger>
       <MenuContent align="end" className="w-48">
         <div className="px-2 py-1.5">
-          <div className="text-sm font-medium text-foreground">瀚舵运维团队</div>
+          <div className="text-sm font-medium text-foreground">{copy("hanhelmOperationsTeam")}</div>
           <div className="text-xs text-muted">ops@hanhelm.cn</div>
         </div>
         <MenuSeparator />
         <MenuItem onClick={() => router.push(hrefFromKey("settings"))}>
-          <UserRound className="size-4" /> 账户设置
-        </MenuItem>
+          <UserRound className="size-4" />{copy("accountSettings")}</MenuItem>
         <MenuItem onClick={() => router.push(hrefFromKey("settings"))}>
-          <BookText className="size-4" /> 接入文档
-        </MenuItem>
+          <BookText className="size-4" />{copy("importDocuments")}</MenuItem>
         <MenuSeparator />
         <MenuItem onClick={() => router.push(`${ROOT}/login`)}>
-          <LogOut className="size-4" /> 退出登录
-        </MenuItem>
+          <LogOut className="size-4" />{copy("loggedOut")}</MenuItem>
       </MenuContent>
     </Menu>
   );

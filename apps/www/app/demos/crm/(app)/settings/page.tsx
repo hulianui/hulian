@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useState } from "react";
 import { RotateCcw, UserPlus } from "lucide-react";
 import {
@@ -40,8 +42,8 @@ import {
   useForm,
 } from "@hulianui/ui";
 
-const INDUSTRIES = ["互联网", "制造", "金融", "医疗", "教育", "零售", "物流", "能源", "咨询"];
-const SIZES = ["1-50 人", "50-200 人", "200-500 人", "500-1000 人", "1000 人以上"];
+const INDUSTRIES = [copy("internet"), copy("manufacturing"), copy("finance"), copy("medical"), copy("education"), copy("retail"), copy("logistics"), copy("energy"), copy("consultation")];
+const SIZES = [copy("people"), copy("people2"), copy("people3"), copy("people4"), copy("moreThanPeople")];
 
 type Member = {
   name: string;
@@ -52,38 +54,44 @@ type Member = {
 };
 
 const INITIAL_MEMBERS: Member[] = [
-  { name: "林晚晴", role: "销售总监", email: "lin@hulian.com", status: "在职", roleTone: "brand" },
-  { name: "周明远", role: "高级销售", email: "zhou@hulian.com", status: "在职", roleTone: "neutral" },
-  { name: "高敏", role: "销售专员", email: "gao@hulian.com", status: "在职", roleTone: "neutral" },
-  { name: "陈策", role: "大客户经理", email: "chen@hulian.com", status: "在职", roleTone: "brand" },
-  { name: "苏晓", role: "销售助理", email: "su@hulian.com", status: "试用期", roleTone: "neutral" },
+  { name: copy("linWanqing"), role: copy("salesDirector"), email: "lin@hulian.com", status: "在职", roleTone: "brand" },
+  { name: copy("zhouMingyuan"), role: copy("advancedSales"), email: "zhou@hulian.com", status: "在职", roleTone: "neutral" },
+  { name: copy("highSensitivity"), role: copy("salesSpecialist"), email: "gao@hulian.com", status: "在职", roleTone: "neutral" },
+  { name: copy("chenCe"), role: copy("keyAccountManager"), email: "chen@hulian.com", status: "在职", roleTone: "brand" },
+  { name: copy("suXiao"), role: copy("salesAssistant"), email: "su@hulian.com", status: "试用期", roleTone: "neutral" },
 ];
 
-const ROLES = ["销售总监", "高级销售", "大客户经理", "销售专员", "销售助理"];
+const MEMBER_STATUS_LABEL: Record<Member["status"], string> = {
+  在职: copy("onTheJob"),
+  试用期: copy("trialPeriod"),
+  邀请中: copy("inviting"),
+};
+
+const ROLES = [copy("salesDirector2"), copy("advancedSales2"), copy("keyAccountManager2"), copy("salesSpecialist2"), copy("salesAssistant2")];
 
 const NOTIF_ITEMS = [
-  { key: "assign", title: "新商机分配提醒", desc: "有新商机分配给我时，站内 + 邮件通知" },
-  { key: "due", title: "客户跟进到期提醒", desc: "客户超过 7 天未跟进时提醒我" },
-  { key: "order", title: "订单状态变更通知", desc: "我负责的订单状态变化时通知" },
-  { key: "weekly", title: "每周业绩周报邮件", desc: "每周一上午推送上周业绩汇总" },
-  { key: "security", title: "账号安全告警", desc: "异地登录、密码变更等安全事件" },
+  { key: "assign", title: copy("alertsForNewOpportunityAssignments"), desc: copy("whenNewBusinessOpportunitiesAreAssignedTo") },
+  { key: "due", title: copy("customerFollowUpDueReminder"), desc: copy("alertMeWhenACustomerHasnT") },
+  { key: "order", title: copy("orderStatusChangeNotification"), desc: copy("notifiedWhenTheStatusOfTheOrder") },
+  { key: "weekly", title: copy("weeklyPerformanceReportEmail"), desc: copy("aSummaryOfLastWeekSPerformance") },
+  { key: "security", title: copy("accountSecurityAlert"), desc: copy("securityEventsSuchAsRemoteLoginAnd") },
 ] as const;
 
 export default function SettingsPage() {
   const form = useForm({
     initialValues: {
-      name: "瑚琏科技有限公司",
-      short: "瑚琏 CRM",
-      industry: "互联网",
-      size: "50-200 人",
+      name: copy("hulianTechnologyCoLtd"),
+      short: copy("hulianCrm"),
+      industry: copy("internet2"),
+      size: copy("people5"),
       site: "https://hulian.com",
       phone: "021-8888-6666",
-      address: "上海市浦东新区张江高科技园区",
-      intro: "专注中后台与销售管理的一站式 CRM 服务商。",
+      address: copy("zhangjiangHighTechParkPudongNewArea"),
+      intro: copy("aOneStopCrmServiceProviderFocusing"),
     },
   });
   const reg = {
-    name: form.register("name", { rules: [{ required: true, message: "请输入公司名称" }] }),
+    name: form.register("name", { rules: [{ required: true, message: copy("pleaseEnterCompanyName") }] }),
     short: form.register("short"),
     industry: form.register("industry"),
     size: form.register("size"),
@@ -109,13 +117,13 @@ export default function SettingsPage() {
   // 成员管理：改为 state，邀请表单提交后真加进列表
   const [members, setMembers] = useState<Member[]>(INITIAL_MEMBERS);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const inviteForm = useForm({ initialValues: { name: "", email: "", role: "销售专员" } });
+  const inviteForm = useForm({ initialValues: { name: "", email: "", role: copy("salesSpecialist3") } });
   const invReg = {
-    name: inviteForm.register("name", { rules: [{ required: true, message: "请输入成员姓名" }] }),
+    name: inviteForm.register("name", { rules: [{ required: true, message: copy("pleaseEnterMemberName") }] }),
     email: inviteForm.register("email", {
       rules: [
-        { required: true, message: "请输入邮箱" },
-        { pattern: /@/, message: "邮箱需含 @" },
+        { required: true, message: copy("pleaseEnterYourEmail") },
+        { pattern: /@/, message: copy("emailMustContain") },
       ],
     }),
     role: inviteForm.register("role"),
@@ -126,7 +134,7 @@ export default function SettingsPage() {
       ...ms,
       { name: val.name, role: val.role, email: val.email, status: "邀请中", roleTone: "neutral" },
     ]);
-    toast({ title: "邀请已发送", description: `已邀请 ${val.name}（${val.email}）加入团队`, tone: "success" });
+    toast({ title: copy("invitationSent"), description: copy("valueValueHasBeenInvitedToJoin", val.name, val.email), tone: "success" });
   };
 
   const bindInput = (f: typeof reg.name) => ({
@@ -143,17 +151,15 @@ export default function SettingsPage() {
   return (
     // 设置页内容限宽，卡片贴合内容宽度；企业资料用「表单 + 右信息栏」两栏把宽屏空间用起来
     <div className="flex max-w-5xl flex-col gap-5">
-      <Heading level={2} size="xl">
-        系统设置
-      </Heading>
+      <Heading level={2} size="xl">{copy("systemSettings")}</Heading>
 
       <Card variant="outline">
         <CardBody>
           <Tabs defaultValue="company">
             <TabsList>
-              <TabsTab value="company">企业资料</TabsTab>
-              <TabsTab value="members">成员管理</TabsTab>
-              <TabsTab value="notify">通知设置</TabsTab>
+              <TabsTab value="company">{copy("corporateInformation")}</TabsTab>
+              <TabsTab value="members">{copy("memberManagement")}</TabsTab>
+              <TabsTab value="notify">{copy("notificationSettings")}</TabsTab>
             </TabsList>
 
             {/* 企业资料 */}
@@ -163,19 +169,19 @@ export default function SettingsPage() {
                   form={form}
                   columns={2}
                   className="flex-1"
-                  submitText="保存修改"
-                  resetText="重置"
+                  submitText={copy("saveChanges")}
+                  resetText={copy("reset")}
                   onFinish={(v) => {
-                    toast({ title: "企业资料已保存", description: String(v.name), tone: "success" });
+                    toast({ title: copy("companyInformationHasBeenSaved"), description: String(v.name), tone: "success" });
                   }}
                 >
-                  <Field label="公司名称" error={reg.name.error}>
+                  <Field label={copy("companyName")} error={reg.name.error}>
                     <Input {...bindInput(reg.name)} />
                   </Field>
-                  <Field label="公司简称">
+                  <Field label={copy("companyAbbreviation")}>
                     <Input {...bindInput(reg.short)} />
                   </Field>
-                  <Field label="所属行业">
+                  <Field label={copy("industry")}>
                     <Select
                       items={INDUSTRIES.map((i) => ({ value: i, label: i }))}
                       value={reg.industry.value as string}
@@ -191,7 +197,7 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </Field>
-                  <Field label="公司规模">
+                  <Field label={copy("companySize")}>
                     <Select
                       items={SIZES.map((s) => ({ value: s, label: s }))}
                       value={reg.size.value as string}
@@ -207,47 +213,41 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </Field>
-                  <Field label="官网">
+                  <Field label={copy("officialWebsite")}>
                     <Input {...bindInput(reg.site)} />
                   </Field>
-                  <Field label="联系电话">
+                  <Field label={copy("contactNumber")}>
                     <Input {...bindInput(reg.phone)} />
                   </Field>
-                  <Field label="公司地址" colSpan="full">
+                  <Field label={copy("companyAddress")} colSpan="full">
                     <Input {...bindInput(reg.address)} />
                   </Field>
-                  <Field label="公司简介" colSpan="full">
+                  <Field label={copy("companyProfile")} colSpan="full">
                     <Textarea value={reg.intro.value as string} onChange={reg.intro.onChange} onBlur={reg.intro.onBlur} rows={3} />
                   </Field>
                 </ProForm>
 
                 <aside className="flex shrink-0 flex-col gap-6 lg:w-64">
                   <div>
-                    <div className="text-sm font-medium">公司 Logo</div>
+                    <div className="text-sm font-medium">{copy("companyLogo")}</div>
                     <div className="mt-2.5 flex items-center gap-3">
-                      <div className="grid size-14 shrink-0 place-items-center rounded-[var(--radius)] bg-primary/10 text-lg font-semibold text-primary">
-                        瑚
-                      </div>
+                      <div className="grid size-14 shrink-0 place-items-center rounded-[var(--radius)] bg-primary/10 text-lg font-semibold text-primary">{copy("coral")}</div>
                       <button
                         type="button"
-                        onClick={() => toast({ title: "上传 Logo", description: "demo 占位，未接真实上传", tone: "neutral" })}
+                        onClick={() => toast({ title: copy("uploadLogo"), description: copy("demoOccupancyNoRealUpload"), tone: "neutral" })}
                         className="flex-1 rounded-[var(--radius)] border border-dashed border-border px-3 py-2.5 text-center text-xs text-muted transition-colors hover:border-primary hover:text-primary"
-                      >
-                        点击上传
-                        <br />
+                      >{copy("clickToUpload")}<br />
                         PNG / JPG ≤ 2MB
                       </button>
                     </div>
                   </div>
                   <div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">资料完整度</span>
+                      <span className="text-sm font-medium">{copy("dataCompleteness")}</span>
                       <span className="text-sm tabular-nums text-muted">{completeness}%</span>
                     </div>
-                    <Progress value={completeness} size={6} tone="primary" className="mt-2.5" aria-label="资料完整度" />
-                    <Text size="xs" tone="muted" className="mt-2">
-                      完善企业资料有助于在客户侧建立信任。
-                    </Text>
+                    <Progress value={completeness} size={6} tone="primary" className="mt-2.5" aria-label={copy("dataCompleteness2")} />
+                    <Text size="xs" tone="muted" className="mt-2">{copy("perfectingYourBusinessProfileHelpsBuildTrust")}</Text>
                   </div>
                 </aside>
               </div>
@@ -256,9 +256,7 @@ export default function SettingsPage() {
             {/* 成员管理 */}
             <TabsPanel value="members" className="pt-6">
               <div className="mb-3 flex items-center justify-between">
-                <Text size="sm" tone="muted">
-                  团队共 {members.length} 名成员
-                </Text>
+                <Text size="sm" tone="muted">{copy("teamTotal")}{members.length}{copy("members")}</Text>
                 <Button
                   size="sm"
                   onClick={() => {
@@ -266,8 +264,7 @@ export default function SettingsPage() {
                     setInviteOpen(true);
                   }}
                 >
-                  <UserPlus className="size-4" /> 邀请成员
-                </Button>
+                  <UserPlus className="size-4" />{copy("inviteMembers")}</Button>
               </div>
               <List
                 items={members}
@@ -276,16 +273,14 @@ export default function SettingsPage() {
                   <ListItem
                     actions={[
                       <Tag key="st" tone={m.status === "在职" ? "success" : "warning"} size="sm">
-                        {m.status}
+                        {MEMBER_STATUS_LABEL[m.status]}
                       </Tag>,
                       <Button
                         key="edit"
                         variant="ghost"
                         size="sm"
-                        onClick={() => toast({ title: `编辑 ${m.name}`, description: "成员权限编辑（demo）", tone: "neutral" })}
-                      >
-                        编辑
-                      </Button>,
+                        onClick={() => toast({ title: copy("editValue", m.name), description: copy("memberPermissionsEditingDemo"), tone: "neutral" })}
+                      >{copy("edit")}</Button>,
                     ]}
                   >
                     <ListItemMeta
@@ -309,20 +304,18 @@ export default function SettingsPage() {
             <TabsPanel value="notify" className="pt-6">
               {/* 通知渠道多选 */}
               <div className="mb-5">
-                <div className="mb-2 text-sm font-medium">通知渠道</div>
-                <Text size="sm" tone="muted" className="mb-3">
-                  选择接收通知的渠道，可同时开启多个。
-                </Text>
+                <div className="mb-2 text-sm font-medium">{copy("notificationChannel")}</div>
+                <Text size="sm" tone="muted" className="mb-3">{copy("selectTheChannelToReceiveNotificationsAnd")}</Text>
                 <CheckboxGroup
                   value={notifChannels}
                   onValueChange={setNotifChannels}
                   orientation="horizontal"
-                  aria-label="通知渠道"
+                  aria-label={copy("notificationChannel2")}
                 >
-                  <Checkbox value="email" label="邮件" />
-                  <Checkbox value="sms" label="短信" />
-                  <Checkbox value="inapp" label="站内信" />
-                  <Checkbox value="dingtalk" label="钉钉" />
+                  <Checkbox value="email" label={copy("mail")} />
+                  <Checkbox value="sms" label={copy("sms")} />
+                  <Checkbox value="inapp" label={copy("siteMessage")} />
+                  <Checkbox value="dingtalk" label={copy("dingtalk")} />
                 </CheckboxGroup>
               </div>
 
@@ -330,19 +323,17 @@ export default function SettingsPage() {
 
               {/* 默认首页视图单选 */}
               <div className="mb-5">
-                <div className="mb-2 text-sm font-medium">默认首页视图</div>
-                <Text size="sm" tone="muted" className="mb-3">
-                  登录后默认跳转的页面。
-                </Text>
+                <div className="mb-2 text-sm font-medium">{copy("defaultHomePageView")}</div>
+                <Text size="sm" tone="muted" className="mb-3">{copy("thePageThatJumpsByDefaultAfter")}</Text>
                 <RadioGroup
                   value={defaultView}
                   onValueChange={setDefaultView}
                   orientation="horizontal"
-                  aria-label="默认首页视图"
+                  aria-label={copy("defaultHomePageView2")}
                 >
-                  <Radio value="workbench" label="工作台" />
-                  <Radio value="customers" label="客户列表" />
-                  <Radio value="opportunities" label="商机看板" />
+                  <Radio value="workbench" label={copy("workbench")} />
+                  <Radio value="customers" label={copy("customerList")} />
+                  <Radio value="opportunities" label={copy("businessOpportunityBoard")} />
                 </RadioGroup>
               </div>
 
@@ -374,18 +365,16 @@ export default function SettingsPage() {
                     setTimeout(() => {
                       setSavingNotif(false);
                       const on = Object.values(notif).filter(Boolean).length;
-                      const channelLabels: Record<string, string> = { email: "邮件", sms: "短信", inapp: "站内信", dingtalk: "钉钉" };
-                      const viewLabels: Record<string, string> = { workbench: "工作台", customers: "客户列表", opportunities: "商机看板" };
+                      const channelLabels: Record<string, string> = { email: copy("mail2"), sms: copy("sms2"), inapp: copy("siteMessage2"), dingtalk: copy("dingtalk2") };
+                      const viewLabels: Record<string, string> = { workbench: copy("workbench2"), customers: copy("customerList2"), opportunities: copy("businessOpportunityBoard2") };
                       toast({
-                        title: "通知设置已保存",
-                        description: `渠道：${notifChannels.map((c) => channelLabels[c]).join("/")} · 首页：${viewLabels[defaultView]} · 已开启 ${on}/${NOTIF_ITEMS.length} 项`,
+                        title: copy("notificationSettingsSaved"),
+                        description: copy("channelValueHomePageValueValueValue", notifChannels.map((c) => channelLabels[c]).join("/"), viewLabels[defaultView], on, NOTIF_ITEMS.length),
                         tone: "success",
                       });
                     }, 500);
                   }}
-                >
-                  保存设置
-                </Button>
+                >{copy("saveSettings")}</Button>
               </div>
             </TabsPanel>
           </Tabs>
@@ -397,30 +386,25 @@ export default function SettingsPage() {
         <CardBody>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-sm font-medium text-danger">危险操作</div>
-              <Text size="sm" tone="muted" className="mt-0.5">
-                重置演示数据将清空所有内存态变更（客户 / 商机 / 订单），刷新页面即可还原，本操作仅在 demo 中生效。
-              </Text>
+              <div className="text-sm font-medium text-danger">{copy("dangerousOperation")}</div>
+              <Text size="sm" tone="muted" className="mt-0.5">{copy("resettingTheDemoDataWillClearAll")}</Text>
             </div>
             <AlertDialog>
               <AlertDialogTrigger render={
                 <Button variant="outline" tone="danger" size="sm" className="shrink-0">
-                  <RotateCcw className="size-3.5" /> 重置演示数据
-                </Button>
+                  <RotateCcw className="size-3.5" />{copy("resetDemoData")}</Button>
               } />
               <AlertDialogContent
-                title="确认重置演示数据？"
-                description="此操作将清空所有内存态变更，刷新页面可还原。仅影响当前 demo 会话，不涉及真实数据。"
+                title={copy("confirmToResetDemoData")}
+                description={copy("thisOperationWillClearAllMemoryState")}
               >
-                <AlertDialogClose render={<Button variant="outline">取消</Button>} />
+                <AlertDialogClose render={<Button variant="outline">{copy("cancel")}</Button>} />
                 <AlertDialogClose
                   render={
                     <Button
                       tone="danger"
-                      onClick={() => toast({ title: "演示数据已重置", description: "刷新页面后完全还原", tone: "danger" })}
-                    >
-                      确认重置
-                    </Button>
+                      onClick={() => toast({ title: copy("demoDataReset"), description: copy("fullyRestoredAfterRefreshingThePage"), tone: "danger" })}
+                    >{copy("confirmReset")}</Button>
                   }
                 />
               </AlertDialogContent>
@@ -430,22 +414,22 @@ export default function SettingsPage() {
       </Card>
 
       <ModalForm
-        title="邀请成员"
+        title={copy("inviteMembers2")}
         form={inviteForm}
         open={inviteOpen}
         onOpenChange={setInviteOpen}
         onFinish={handleInvite}
-        submitText="发送邀请"
+        submitText={copy("sendInvitation")}
         className="w-[460px]"
       >
         <div className="flex flex-col gap-1">
-          <Field label="成员姓名" error={invReg.name.error}>
-            <Input {...bindInput(invReg.name)} placeholder="如：王磊" />
+          <Field label={copy("memberName")} error={invReg.name.error}>
+            <Input {...bindInput(invReg.name)} placeholder={copy("suchAsWangLei")} />
           </Field>
-          <Field label="邮箱" error={invReg.email.error}>
-            <Input {...bindInput(invReg.email)} placeholder="邀请链接将发送至此邮箱" />
+          <Field label={copy("email")} error={invReg.email.error}>
+            <Input {...bindInput(invReg.email)} placeholder={copy("anInvitationLinkWillBeSentTo")} />
           </Field>
-          <Field label="角色">
+          <Field label={copy("role")}>
             <Select
               items={ROLES.map((r) => ({ value: r, label: r }))}
               value={invReg.role.value as string}

@@ -2,10 +2,10 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { PillNav } from "./pill-nav";
 
 const items = [
-  { href: "#home", label: "Home" },
-  { href: "#features", label: "Features" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#docs", label: "Docs" },
+  { href: "https://example.com/#home", label: "Home" },
+  { href: "https://example.com/#features", label: "Features" },
+  { href: "https://example.com/#pricing", label: "Pricing" },
+  { href: "https://example.com/#docs", label: "Docs" },
 ];
 
 /** 展示用中性容器，给胶囊导航足够留白与对比 */
@@ -42,7 +42,7 @@ export const pillNavShowcase: ShowcaseSpec = {
 />`,
       render: () => (
         <Stage>
-          <PillNav items={items} activeHref="#home" />
+          <PillNav items={items} activeHref="https://example.com/#home" />
         </Stage>
       ),
     },
@@ -67,14 +67,25 @@ export const pillNavShowcase: ShowcaseSpec = {
 />`,
       render: () => (
         <Stage>
-          <PillNav items={items} activeHref="#pricing" logo={<Mark />} initialLoadAnimation={false} />
+          <PillNav
+            items={items}
+            activeHref="#pricing"
+            logo={<Mark />}
+            initialLoadAnimation={false}
+          />
         </Stage>
       ),
     },
   ],
 
   controls: [
-    { prop: "activeHref", type: "select", options: ["#home", "#features", "#pricing", "#docs"], defaultValue: "#home", label: "激活项" },
+    {
+      prop: "activeHref",
+      type: "select",
+      options: ["#home", "#features", "#pricing", "#docs"],
+      defaultValue: "#home",
+      label: "激活项",
+    },
     { prop: "withLogo", type: "boolean", defaultValue: true, label: "显示 logo" },
     { prop: "initialLoadAnimation", type: "boolean", defaultValue: true, label: "入场动画" },
   ],
@@ -100,7 +111,12 @@ export const pillNavShowcase: ShowcaseSpec = {
       name: "关闭入场动画",
       render: () => (
         <Stage>
-          <PillNav items={items} activeHref="#pricing" logo={<Mark />} initialLoadAnimation={false} />
+          <PillNav
+            items={items}
+            activeHref="#pricing"
+            logo={<Mark />}
+            initialLoadAnimation={false}
+          />
         </Stage>
       ),
     },

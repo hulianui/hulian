@@ -1,0 +1,96 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    "contactSales": "联系销售",
+    "free": "免费",
+    "valueSeatMonth": "{0} / 席 / 月",
+    "chooseTheRightPackage": "选择适合的套餐",
+    "youCanBeUpgradedOrDowngradedAt": "随时升降级，按比例多退少补，变更即时生效。",
+    "billingCycle": "计费周期",
+    "payMonthly": "按月付",
+    "payAnnually": "按年付",
+    "saveMonthsWithAnnualPayment": "年付省 2 个月",
+    "subscriptionPackage": "订阅套餐",
+    "recommended": "推荐",
+    "includesValueSeats": "含 {0} 席",
+    "includesOneSeat": "含 1 席",
+    "seatCustomization": "席位定制",
+    "featureCount": "{0} 项能力",
+    "teamSeats": "团队席位",
+    "seatPricingSummary": "{0} 含 {1} 席，超出 {2} 席按 {3}/席/月计费。",
+    "numberOfSeats": "席位数量",
+    "reduceSeats": "减少席位",
+    "addSeats": "增加席位",
+    "valueAddedItems": "增值项",
+    "stackOnDemandAndCanBeCanceled": "按需叠加，可随时取消。",
+    "valueAddedItems2": "增值项",
+    "month": "/ 月",
+    "billSummary": "账单摘要",
+    "valueSeats": "{0} 席",
+    "negotiable": "面议",
+    "monthlyTotal": "月度合计",
+    "oneTimeAnnualPayment": "年付一次性 {0}",
+    "saveMoneyComparedToMonthlyPaymentFor": "相比月付一年省 {0}",
+    "inquiryHasBeenSubmittedSalesWillContact": "已提交咨询，销售将联系您",
+    "annualPayment": "年付",
+    "monthlyPayment": "月付",
+    "switchedToValueValueValueMonth": "已切换到{0}（{1}），{2}/月",
+    "contactSales2": "联系销售",
+    "confirmChanges": "确认变更",
+    "demoEnvironmentNoRealDeductionsWillBe": "演示环境，不会真实扣款",
+  },
+  en: {
+    "contactSales": "Contact sales",
+    "free": "Free",
+    "valueSeatMonth": "{0}/seat/month",
+    "chooseTheRightPackage": "Choose a plan",
+    "youCanBeUpgradedOrDowngradedAt": "Upgrade or downgrade at any time. Proration is applied immediately.",
+    "billingCycle": "Billing cycle",
+    "payMonthly": "Pay monthly",
+    "payAnnually": "Pay annually",
+    "saveMonthsWithAnnualPayment": "Save two months with annual billing",
+    "subscriptionPackage": "Plans",
+    "recommended": "Recommended",
+    "includesValueSeats": "Includes {0} seats",
+    "includesOneSeat": "Includes 1 seat",
+    "seatCustomization": "Seat customization",
+    "featureCount": "{0} features",
+    "teamSeats": "Team seats",
+    "seatPricingSummary": "{0} includes {1} seats. {2} additional seats are billed at {3}/seat/month.",
+    "numberOfSeats": "Number of seats",
+    "reduceSeats": "Reduce seats",
+    "addSeats": "Add seats",
+    "valueAddedItems": "Add-ons",
+    "stackOnDemandAndCanBeCanceled": "Add what you need and cancel at any time.",
+    "valueAddedItems2": "Add-ons",
+    "month": "/month",
+    "billSummary": "Billing summary",
+    "valueSeats": "{0} seats",
+    "negotiable": "Negotiable",
+    "monthlyTotal": "Monthly total",
+    "oneTimeAnnualPayment": "Annual total: {0}",
+    "saveMoneyComparedToMonthlyPaymentFor": "Save {0} per year compared with monthly billing.",
+    "inquiryHasBeenSubmittedSalesWillContact": "Request sent. Our sales team will contact you.",
+    "annualPayment": "annual billing",
+    "monthlyPayment": "monthly billing",
+    "switchedToValueValueValueMonth": "Switched to {0} with {1} at {2}/month.",
+    "contactSales2": "Contact sales",
+    "confirmChanges": "Confirm changes",
+    "demoEnvironmentNoRealDeductionsWillBe": "Demo environment — no charges will be made.",
+  },
+} as const;
+
+export type ContentKey = keyof typeof content["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = {
+  key: "demo-billing-app-plans-page",
+  content: t(content),
+};
+
+export default dictionary;

@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { Tree } from "./tree";
 import type { TreeNode } from "./tree-core";
+import { ConfigProvider, enUS } from "../config";
 
 const NODES: TreeNode[] = [
   {
@@ -16,6 +17,42 @@ const NODES: TreeNode[] = [
 ];
 
 describe("Tree", () => {
+  it("enUS localizes the default tree and search labels plus empty result", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <Tree nodes={NODES} searchable />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("tree", { name: "Tree" })).toBeTruthy();
+    const search = screen.getByRole("textbox", { name: "Search" });
+    expect(search.getAttribute("placeholder")).toBe("Search");
+    fireEvent.change(search, { target: { value: "missing" } });
+    expect(screen.getByText("No matching items")).toBeTruthy();
+  });
+
+  it("explicit accessible and search labels override enUS defaults", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <Tree nodes={NODES} searchable aria-label="Knowledge folders" searchPlaceholder="Find folders" />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("tree", { name: "Knowledge folders" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Find folders" })).toBeTruthy();
+  });
+
+  it("a legacy custom locale without tree keeps the Chinese defaults", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, tree: undefined } };
+    render(
+      <ConfigProvider locale={locale}>
+        <Tree nodes={NODES} searchable />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole("tree", { name: "树" })).toBeTruthy();
+    const search = screen.getByRole("textbox", { name: "搜索" });
+    fireEvent.change(search, { target: { value: "missing" } });
+    expect(screen.getByText("无匹配项")).toBeTruthy();
+  });
+
   it("渲染 treeitem + aria-level", () => {
     render(<Tree nodes={NODES} defaultExpandedKeys={["a"]} aria-label="t" />);
     const items = screen.getAllByRole("treeitem");

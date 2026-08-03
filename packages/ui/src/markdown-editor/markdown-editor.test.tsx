@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import { MarkdownEditor } from "./markdown-editor";
+import { ConfigProvider, enUS } from "../config";
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = vi.fn();
@@ -60,6 +61,62 @@ describe("MarkdownEditor", () => {
     expect(screen.getByRole("button", { name: "标题 1" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "无序列表" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "链接" })).toBeTruthy();
+  });
+
+  it("enUS localizes the formatting toolbar accessible labels", async () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <MarkdownEditor defaultValue="abc" />
+      </ConfigProvider>,
+    );
+    await screen.findByRole("textbox", { name: "Markdown editor" });
+    expect(screen.getByRole("toolbar", { name: "Formatting toolbar" })).toBeTruthy();
+    for (const label of [
+      "Bold",
+      "Italic",
+      "Strikethrough",
+      "Inline code",
+      "Heading 1",
+      "Unordered list",
+      "Blockquote",
+      "Horizontal rule",
+    ]) {
+      expect(screen.getByRole("button", { name: label })).toBeTruthy();
+    }
+  });
+
+  it("can toggle an explicit editor label in both directions without changing hook order", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const view = (ariaLabel?: string) => (
+      <ConfigProvider locale={enUS}>
+        <MarkdownEditor defaultValue="abc" aria-label={ariaLabel} />
+      </ConfigProvider>
+    );
+    try {
+      const { rerender } = render(view());
+      await screen.findByRole("textbox", { name: "Markdown editor" });
+
+      rerender(view("Knowledge editor"));
+      await screen.findByRole("textbox", { name: "Knowledge editor" });
+
+      rerender(view());
+      await screen.findByRole("textbox", { name: "Markdown editor" });
+      expect(consoleError.mock.calls.flat().join(" ")).not.toContain("change in the order of Hooks");
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("a legacy custom locale without markdownEditor keeps the Chinese labels", async () => {
+    const locale = { ...enUS, components: { ...enUS.components!, markdownEditor: undefined } };
+    render(
+      <ConfigProvider locale={locale}>
+        <MarkdownEditor defaultValue="abc" />
+      </ConfigProvider>,
+    );
+    await screen.findByRole("textbox", { name: "Markdown 编辑器" });
+    expect(screen.getByRole("toolbar", { name: "格式工具栏" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "加粗" })).toBeTruthy();
   });
 
   it("disabled 时不渲染工具栏", async () => {

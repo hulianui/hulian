@@ -31,7 +31,9 @@ export function meshGradient(seed: number): string {
   const stops = positions.map(([x, y], i) => {
     const s = 70 + Math.floor(rnd() * 12); // 70-82：鲜亮不刺眼
     const l = 58 + Math.floor(rnd() * 10); // 58-68：通透明亮
-    return `radial-gradient(58% 58% at ${x.toFixed(1)}% ${y.toFixed(1)}%, hsl(${hues[i]} ${s}% ${l}%) 0%, transparent 72%)`;
+    return `radial-gradient(58% 58% at ${x.toFixed(1)}% ${y.toFixed(1)}%, hsl(${
+      hues[i]
+    } ${s}% ${l}%) 0%, transparent 72%)`;
   });
   const baseColor = `hsl(${base} 58% ${48 + Math.floor(rnd() * 8)}%)`; // 同系中明度，中心不发灰
   return `${stops.join(", ")}, ${baseColor}`;

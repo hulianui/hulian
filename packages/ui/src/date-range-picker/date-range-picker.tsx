@@ -10,24 +10,22 @@ import {
   monthMatrix,
   normISODate as normISO,
   toISODate as toISO,
-  WEEKDAY_LABELS as WEEKDAYS,
 } from "../lib/date";
 import { Calendar, ChevronLeft, ChevronRight, X } from "../_icons";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
-import type { DateRangePickerProps, DateRangePreset, DateRangeValue } from "./date-range-picker.types";
+import type {
+  DateRangePickerProps,
+  DateRangePreset,
+  DateRangeValue,
+} from "./date-range-picker.types";
 
 // 与 popover.tsx 同款：transition 简写避免与 Base UI 内联长写混用触发 React shorthand 警告。
 const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
-
-const DEFAULT_PRESETS: DateRangePreset[] = [
-  { label: "今天", getValue: () => { const t = toISO(dayjs()); return [t, t]; } },
-  { label: "最近 7 天", getValue: () => [toISO(dayjs().subtract(6, "day")), toISO(dayjs())] },
-  { label: "最近 30 天", getValue: () => [toISO(dayjs().subtract(29, "day")), toISO(dayjs())] },
-  { label: "本月", getValue: () => [toISO(dayjs().startOf("month")), toISO(dayjs().endOf("month"))] },
-];
 
 export function DateRangePicker({
   value: valueProp,
@@ -37,12 +35,71 @@ export function DateRangePicker({
   maxDate,
   disabledDate,
   presets,
-  placeholder = ["开始日期", "结束日期"],
+  placeholder,
   displayFormat = DATE_FORMAT,
   disabled,
   readOnly,
   className,
 }: DateRangePickerProps) {
+  const componentLocale = useComponentLocale();
+  const locale = componentLocale.dateRangePicker ?? {
+    today: "今天",
+    lastDays: (days) => `最近 ${days} 天`,
+    thisMonth: "本月",
+    startDate: "开始日期",
+    endDate: "结束日期",
+    month: (year, month) => `${year} 年 ${month} 月`,
+    clear: "清除",
+    previousMonth: "上个月",
+    nextMonth: "下个月",
+  };
+  const calendarLocale = componentLocale.calendar ?? {
+    label: "日历",
+    previousPage: "上一页",
+    nextPage: "下一页",
+    weekdays: ["日", "一", "二", "三", "四", "五", "六"],
+    months: [
+      "1 月",
+      "2 月",
+      "3 月",
+      "4 月",
+      "5 月",
+      "6 月",
+      "7 月",
+      "8 月",
+      "9 月",
+      "10 月",
+      "11 月",
+      "12 月",
+    ],
+    monthTitle: (year, month) => `${year} 年 ${month} 月`,
+    yearTitle: (year) => `${year} 年`,
+    today: "今天",
+    thisMonth: "本月",
+    thisYear: "今年",
+  };
+  const resolvedPlaceholder = placeholder ?? [locale.startDate, locale.endDate];
+  const defaultPresets: DateRangePreset[] = [
+    {
+      label: locale.today,
+      getValue: () => {
+        const t = toISO(dayjs());
+        return [t, t];
+      },
+    },
+    {
+      label: locale.lastDays(7),
+      getValue: () => [toISO(dayjs().subtract(6, "day")), toISO(dayjs())],
+    },
+    {
+      label: locale.lastDays(30),
+      getValue: () => [toISO(dayjs().subtract(29, "day")), toISO(dayjs())],
+    },
+    {
+      label: locale.thisMonth,
+      getValue: () => [toISO(dayjs().startOf("month")), toISO(dayjs().endOf("month"))],
+    },
+  ];
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<DateRangeValue | null>(defaultValue ?? null);
   const value = isControlled ? valueProp ?? null : internal;
@@ -52,13 +109,16 @@ export function DateRangePicker({
   const [anchor, setAnchor] = useState<string | null>(null);
   const [hoverDate, setHoverDate] = useState<string | null>(null);
   const [viewMonth, setViewMonth] = useState<Dayjs>(() =>
-    ((isControlled ? valueProp : defaultValue)?.[0] ? dayjs((isControlled ? valueProp : defaultValue)![0]) : dayjs()).startOf("month"),
+    ((isControlled ? valueProp : defaultValue)?.[0]
+      ? dayjs((isControlled ? valueProp : defaultValue)![0])
+      : dayjs()
+    ).startOf("month"),
   );
 
   const min = normISO(minDate);
   const max = normISO(maxDate);
   const presetList: DateRangePreset[] | null =
-    presets === false ? null : presets === true || presets === undefined ? DEFAULT_PRESETS : presets;
+    presets === false ? null : presets === true || presets === undefined ? defaultPresets : presets;
   const today = toISO(dayjs());
 
   function isDisabledDay(iso: string): boolean {
@@ -132,9 +192,11 @@ export function DateRangePicker({
   function renderMonth(month: Dayjs) {
     return (
       <div>
-        <div className="mb-2 text-center text-sm font-medium text-foreground">{month.format("YYYY 年 M 月")}</div>
+        <div className="mb-2 text-center text-sm font-medium text-foreground">
+          {locale.month(month.year(), month.month() + 1)}
+        </div>
         <div className="grid grid-cols-7">
-          {WEEKDAYS.map((w) => (
+          {calendarLocale.weekdays.map((w) => (
             <div key={w} className="flex h-8 items-center justify-center text-xs text-muted">
               {w}
             </div>
@@ -207,16 +269,20 @@ export function DateRangePicker({
               )}
             >
               <Calendar className="size-4 shrink-0 text-muted" aria-hidden />
-              <span className={cn(!startText && "text-muted")}>{startText || placeholder[0]}</span>
+              <span className={cn(!startText && "text-muted")}>
+                {startText || resolvedPlaceholder[0]}
+              </span>
               <span className="text-muted">~</span>
-              <span className={cn(!endText && "text-muted")}>{endText || placeholder[1]}</span>
+              <span className={cn(!endText && "text-muted")}>
+                {endText || resolvedPlaceholder[1]}
+              </span>
             </button>
           }
         />
         {showClear && (
           <button
             type="button"
-            aria-label="清除"
+            aria-label={locale.clear}
             onClick={clearValue}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >
@@ -246,7 +312,9 @@ export function DateRangePicker({
                       disabled={readOnly}
                       className={cn(
                         "rounded-md px-2 py-1.5 text-left text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-                        active ? "bg-primary/10 font-medium text-primary" : "text-foreground hover:bg-surface-hover",
+                        active
+                          ? "bg-primary/10 font-medium text-primary"
+                          : "text-foreground hover:bg-surface-hover",
                       )}
                     >
                       {p.label}
@@ -259,7 +327,7 @@ export function DateRangePicker({
               <div className="relative mb-1 flex items-center justify-between px-1">
                 <button
                   type="button"
-                  aria-label="上个月"
+                  aria-label={locale.previousMonth}
                   onClick={() => setViewMonth(viewMonth.subtract(1, "month"))}
                   className="rounded-md p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
@@ -267,7 +335,7 @@ export function DateRangePicker({
                 </button>
                 <button
                   type="button"
-                  aria-label="下个月"
+                  aria-label={locale.nextMonth}
                   onClick={() => setViewMonth(viewMonth.add(1, "month"))}
                   className="rounded-md p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >

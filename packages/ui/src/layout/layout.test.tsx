@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { Layout } from "./layout";
 
 describe("Layout 容器方向自动探测", () => {
@@ -36,7 +37,9 @@ describe("Layout 容器方向自动探测", () => {
         <Layout.Content>主</Layout.Content>
       </Layout>,
     );
-    expect(container.querySelector("[data-layout]")!.getAttribute("data-direction")).toBe("horizontal");
+    expect(container.querySelector("[data-layout]")!.getAttribute("data-direction")).toBe(
+      "horizontal",
+    );
   });
 });
 
@@ -127,5 +130,16 @@ describe("Layout.Sider 折叠", () => {
   it("不可折叠默认无 trigger", () => {
     const { container } = render(<Layout.Sider>菜单</Layout.Sider>);
     expect(container.querySelector("button[aria-label]")).toBeNull();
+  });
+
+  it("ConfigProvider locale=enUS localizes the collapse trigger", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <Layout.Sider collapsible>Menu</Layout.Sider>
+      </ConfigProvider>,
+    );
+    const trigger = getByRole("button", { name: "Collapse" });
+    fireEvent.click(trigger);
+    expect(getByRole("button", { name: "Expand" })).toBeTruthy();
   });
 });

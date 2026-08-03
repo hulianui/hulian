@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Upload } from "lucide-react";
 import {
@@ -22,12 +24,12 @@ import {
 } from "@hulianui/ui";
 import { photos as all, PHOTO_TAGS } from "../../_data/photos";
 import { projects } from "../../_data/projects";
-import { photoTagTone } from "../../_data/status";
+import { photoTagLabel, photoTagTone, projectStageLabel } from "../../_data/status";
 import type { Photo } from "../../_data/types";
 import { useMockData, usePending } from "../../../lib/async";
 
 const PROJECT_OPTIONS = [
-  { value: "", label: "全部项目" },
+  { value: "", label: copy("allProjects") },
   ...projects.map((p) => ({ value: p.id, label: p.name })),
 ];
 
@@ -56,7 +58,7 @@ export default function PhotosPage() {
   const images = filtered.map((p) => ({
     src: p.src,
     alt: p.caption,
-    caption: `${p.projectName} · ${p.stage} · ${p.takenAt} · ${p.uploader}`,
+    caption: `${p.projectName} · ${projectStageLabel[p.stage]} · ${p.takenAt} · ${p.uploader}`,
   }));
 
   const openAt = (i: number) => {
@@ -66,7 +68,7 @@ export default function PhotosPage() {
 
   const handleUpload = () => {
     void runUpload(() => {
-      toast({ title: "照片上传成功", description: "已加入工作照片库", tone: "success" });
+      toast({ title: copy("photoUploadedSuccessfully"), description: copy("addedToWorkPhotoGallery"), tone: "success" });
     });
   };
 
@@ -92,15 +94,13 @@ export default function PhotosPage() {
             value={tag}
             onValueChange={setTag}
             items={[
-              { value: "all", label: "全部" },
-              ...PHOTO_TAGS.map((t) => ({ value: t, label: t })),
+              { value: "all", label: copy("all") },
+              ...PHOTO_TAGS.map((t) => ({ value: t, label: photoTagLabel[t] })),
             ]}
           />
         </div>
         <div className="flex items-center gap-3">
-          <Text size="sm" tone="muted">
-            共 {filtered.length} 张
-          </Text>
+          <Text size="sm" tone="muted">{copy("total")}{filtered.length}{copy("zhang")}</Text>
           {/* 隐藏 input 仅 demo 用 */}
           <input ref={fileInputRef} type="file" accept="image/*" multiple className="sr-only" aria-hidden />
           <Tooltip>
@@ -108,14 +108,14 @@ export default function PhotosPage() {
               <Button
                 size="sm"
                 variant="outline"
-                aria-label="上传照片"
+                aria-label={copy("uploadPhotos")}
                 disabled={uploadPending}
                 onClick={handleUpload}
               >
                 {uploadPending ? <Spinner size="sm" /> : <Upload className="size-3.5" />}
               </Button>
             } />
-            <TooltipContent>上传工作照片</TooltipContent>
+            <TooltipContent>{copy("uploadWorkPhotos")}</TooltipContent>
           </Tooltip>
         </div>
       </div>
@@ -143,21 +143,21 @@ export default function PhotosPage() {
                 <Image src={p.src} alt={p.caption} radius="none" isZoomed className="block size-full" />
                 <span className="absolute left-2 top-2">
                   <Tag tone={photoTagTone(p.tag)} size="sm">
-                    {p.tag}
+                    {photoTagLabel[p.tag]}
                   </Tag>
                 </span>
               </div>
               <div className="p-2.5">
                 <div className="truncate text-sm font-medium text-foreground">{p.caption}</div>
                 <div className="mt-0.5 truncate text-xs text-muted">
-                  {p.projectName} · {p.stage}
+                  {p.projectName} · {projectStageLabel[p.stage]}
                 </div>
               </div>
             </button>
           )}
         />
       ) : (
-        <Empty description="该筛选下暂无照片" />
+        <Empty description={copy("thereAreNoPhotosUnderThisFilter")} />
       ))}
 
       <ImageViewer

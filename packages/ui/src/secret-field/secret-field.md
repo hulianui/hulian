@@ -72,4 +72,6 @@ const [revealed, setRevealed] = useState(false);
 - `copyable` 默认 true，敏感场景按需 `copyable={false}` 关掉复制。
 
 ## 相关
+
+显示、隐藏、复制与已复制标签跟随 `ConfigProvider`。
 [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md) · [Upload](../upload/upload.md)

@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Mentions } from "./mentions";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import {
   findTrigger,
   insertMention,
@@ -103,6 +105,27 @@ describe("defaultFilter（纯逻辑）", () => {
 });
 
 describe("Mentions（组件）", () => {
+  it("localizes the suggestions listbox accessible name", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <Mentions options={PEOPLE} />
+      </ConfigProvider>,
+    );
+    type(getByRole("combobox") as HTMLTextAreaElement, "@");
+    expect(getByRole("listbox", { name: "Mention suggestions" })).toBeTruthy();
+  });
+
+  it("keeps the Chinese accessible-name fallback for legacy component dictionaries", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, mentions: undefined } };
+    const { getByRole } = render(
+      <ConfigProvider locale={locale}>
+        <Mentions options={PEOPLE} />
+      </ConfigProvider>,
+    );
+    type(getByRole("combobox") as HTMLTextAreaElement, "@");
+    expect(getByRole("listbox", { name: "提及候选" })).toBeTruthy();
+  });
+
   it("渲染 role=combobox 文本域 + 默认收起", () => {
     const { getByRole, queryByRole } = render(<Mentions options={PEOPLE} />);
     const ta = getByRole("combobox") as HTMLTextAreaElement;

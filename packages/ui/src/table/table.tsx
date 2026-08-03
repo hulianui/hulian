@@ -40,7 +40,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight, GripVertical } from "../_icons";
 import { Checkbox } from "../checkbox/checkbox";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { Empty } from "../empty";
 import { cn } from "../lib/cn";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip/tooltip";
@@ -205,6 +205,17 @@ const RowDragContext = createContext<RowDragHandleCtx | null>(null);
 
 /** 手柄列单元格：只有它是 activator，行内其余区域照常点击/选择（dragHandle="cell"）。 */
 function RowDragHandle() {
+  const loc = useLocaleValue("table", {
+    empty: "暂无数据",
+    dragSort: "拖拽排序",
+    selectAll: "全选",
+    selectRow: "选择行",
+    collapse: "收起",
+    expand: "展开",
+    filterPlaceholder: "筛选…",
+    filter: (column) => `筛选 ${column}`,
+    resizeColumn: "调整列宽",
+  });
   const ctx = useContext(RowDragContext);
   // 无 context（理论不可达）→ 占位保持列宽，不渲染可交互元素
   if (!ctx) return <span className="inline-block size-5" />;
@@ -215,7 +226,7 @@ function RowDragHandle() {
       {...ctx.attributes}
       {...ctx.listeners}
       disabled={ctx.disabled}
-      aria-label="拖拽排序"
+      aria-label={loc.dragSort ?? "拖拽排序"}
       // touch-none：触屏上不让页面滚动劫持拖拽手势
       className={cn(
         "inline-grid size-5 place-items-center rounded text-muted outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
@@ -306,14 +317,21 @@ function DraggableRow({
   handleMode: "row" | "cell";
   render: (drag: RowDragRender) => React.ReactNode;
 }) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
-    useSortable({
-      id,
-      disabled,
-      // 整行拖时 <tr> 必须保住 row 语义（dnd-kit 默认把 activator 写成 role="button"）；
-      // 手柄模式 activator 本身就是 <button>，用默认即可。
-      attributes: handleMode === "row" ? { role: "row" } : undefined,
-    });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id,
+    disabled,
+    // 整行拖时 <tr> 必须保住 row 语义（dnd-kit 默认把 activator 写成 role="button"）；
+    // 手柄模式 activator 本身就是 <button>，用默认即可。
+    attributes: handleMode === "row" ? { role: "row" } : undefined,
+  });
 
   const ctx = useMemo<RowDragHandleCtx>(
     () => ({ attributes, listeners, setActivatorNodeRef, disabled }),
@@ -322,7 +340,10 @@ function DraggableRow({
 
   const activator = useMemo<React.HTMLAttributes<HTMLTableRowElement>>(() => {
     if (handleMode !== "row" || disabled) return {};
-    return { ...attributes, ...guardRowListeners(listeners) } as React.HTMLAttributes<HTMLTableRowElement>;
+    return {
+      ...attributes,
+      ...guardRowListeners(listeners),
+    } as React.HTMLAttributes<HTMLTableRowElement>;
   }, [handleMode, disabled, attributes, listeners]);
 
   return (
@@ -419,7 +440,17 @@ export function Table<TData>({
   emptyText,
   renderEmpty,
 }: TableProps<TData>) {
-  const loc = useLocale().table;
+  const loc = useLocaleValue("table", {
+    empty: "暂无数据",
+    dragSort: "拖拽排序",
+    selectAll: "全选",
+    selectRow: "选择行",
+    collapse: "收起",
+    expand: "展开",
+    filterPlaceholder: "筛选…",
+    filter: (column) => `筛选 ${column}`,
+    resizeColumn: "调整列宽",
+  });
   const selectionEnabled = Boolean(enableRowSelection);
   const treeMode = Boolean(getSubRows);
   const panelMode = Boolean(renderExpandedRow);
@@ -463,7 +494,7 @@ export function Table<TData>({
         enableSorting: false,
         header: ({ table }) => (
           <Checkbox
-            aria-label="全选"
+            aria-label={loc.selectAll ?? "全选"}
             checked={table.getIsAllRowsSelected()}
             indeterminate={table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()}
             onCheckedChange={(v) => table.toggleAllRowsSelected(v)}
@@ -471,7 +502,7 @@ export function Table<TData>({
         ),
         cell: ({ row }) => (
           <Checkbox
-            aria-label="选择行"
+            aria-label={loc.selectRow ?? "选择行"}
             checked={row.getIsSelected()}
             indeterminate={row.getIsSomeSelected() && !row.getIsSelected()}
             disabled={!row.getCanSelect()}
@@ -490,7 +521,7 @@ export function Table<TData>({
           row.getCanExpand() ? (
             <button
               type="button"
-              aria-label={row.getIsExpanded() ? "收起" : "展开"}
+              aria-label={row.getIsExpanded() ? loc.collapse ?? "收起" : loc.expand ?? "展开"}
               aria-expanded={row.getIsExpanded()}
               onClick={row.getToggleExpandedHandler()}
               style={{ marginLeft: row.depth * indent }}
@@ -507,7 +538,7 @@ export function Table<TData>({
       });
     }
     return [...lead, ...columns];
-  }, [columns, dragHandleCol, selectionEnabled, hasExpander, indent]);
+  }, [columns, dragHandleCol, selectionEnabled, hasExpander, indent, loc]);
 
   // 显式宽度声明表（含前插列）：宽度渲染的唯一口径，不读被 defaultColumn 污染过的 columnDef
   const declaredWidths = useMemo(() => collectDeclaredWidths(finalColumns), [finalColumns]);
@@ -548,7 +579,7 @@ export function Table<TData>({
     // onChange：拖拽过程中实时改宽，固定列 offset 跟着 getStart/getAfter 同帧重算
     columnResizeMode: "onChange",
     onColumnSizingChange: onColumnSizingChange ?? setInternalSizing,
-    getRowCanExpand: panelMode && !treeMode ? (getRowCanExpand ?? (() => true)) : getRowCanExpand,
+    getRowCanExpand: panelMode && !treeMode ? getRowCanExpand ?? (() => true) : getRowCanExpand,
     getSubRows,
     onSortingChange: onSortingChange ?? setInternalSorting,
     onRowSelectionChange: onRowSelectionChange ?? setInternalSelection,
@@ -804,144 +835,148 @@ export function Table<TData>({
       )}
     >
       <MaybeTooltipProvider enabled={hasEllipsis}>
-      <table
-        // fixed 布局：表宽 = 各列 getSize() 之和；窄于容器时 min-w-full 兜底撑满
-        // （撑满时列宽被浏览器按比例放大，但那种情况下没有横滚，固定列 offset 也就无从体现）
-        style={fixedLayout ? { tableLayout: "fixed", width: table.getTotalSize() } : undefined}
-        className={cn("border-collapse text-sm", fixedLayout ? "min-w-full" : "w-full")}
-      >
-        <thead
-          className={cn(
-            // 表头：foreground 黑/白 + semibold 加粗文字 + 行底分隔线（见下 tr），透明背景。
-            // 不加填充色——表格已是 surface 卡片（ProTable）或带框原语，灰底带反而割裂、压观感。
-            "text-foreground",
-            // 虚拟滚动时表头 sticky，需 opaque 背景遮住滚到下方的行；用 bg-surface 匹配卡片表面。
-            virtualEnabled && "sticky top-0 z-[2] bg-surface",
-          )}
+        <table
+          // fixed 布局：表宽 = 各列 getSize() 之和；窄于容器时 min-w-full 兜底撑满
+          // （撑满时列宽被浏览器按比例放大，但那种情况下没有横滚，固定列 offset 也就无从体现）
+          style={fixedLayout ? { tableLayout: "fixed", width: table.getTotalSize() } : undefined}
+          className={cn("border-collapse text-sm", fixedLayout ? "min-w-full" : "w-full")}
         >
-          {table.getHeaderGroups().map((hg) => (
-            <tr key={hg.id} className="border-b border-border">
-              {hg.headers.map((header) => {
-                const canSort = header.column.getCanSort();
-                const sorted = header.column.getIsSorted(); // false | "asc" | "desc"
-                const meta = header.column.columnDef.meta;
-                const canFilter = header.column.getCanFilter() && meta?.filterable;
-                // headerAlign 缺省跟随 align，两者都不写维持历史默认（左）
-                const headerAlign = (meta?.headerAlign ?? meta?.align ?? "left") as Align;
-                // 内建前插列（__select__ / __expander__ / __drag__）是固定几何的图标列，恒不可调宽
-                const canResize =
-                  resizable && header.column.getCanResize() && !BUILT_IN_COL.test(header.column.id);
-                const label = flexRender(header.column.columnDef.header, header.getContext());
-                const labelNode = meta?.ellipsis ? (
-                  <span className="block min-w-0 truncate">{label}</span>
-                ) : (
-                  label
-                );
-                return (
-                  <th
-                    key={header.id}
-                    style={{
-                      ...colWidthStyle(header.column, fixedLayout, declaredWidths),
-                      ...stickyStyle(header.column),
-                    }}
-                    aria-sort={
-                      !canSort
-                        ? undefined
-                        : sorted === "asc"
+          <thead
+            className={cn(
+              // 表头：foreground 黑/白 + semibold 加粗文字 + 行底分隔线（见下 tr），透明背景。
+              // 不加填充色——表格已是 surface 卡片（ProTable）或带框原语，灰底带反而割裂、压观感。
+              "text-foreground",
+              // 虚拟滚动时表头 sticky，需 opaque 背景遮住滚到下方的行；用 bg-surface 匹配卡片表面。
+              virtualEnabled && "sticky top-0 z-[2] bg-surface",
+            )}
+          >
+            {table.getHeaderGroups().map((hg) => (
+              <tr key={hg.id} className="border-b border-border">
+                {hg.headers.map((header) => {
+                  const canSort = header.column.getCanSort();
+                  const sorted = header.column.getIsSorted(); // false | "asc" | "desc"
+                  const meta = header.column.columnDef.meta;
+                  const canFilter = header.column.getCanFilter() && meta?.filterable;
+                  // headerAlign 缺省跟随 align，两者都不写维持历史默认（左）
+                  const headerAlign = (meta?.headerAlign ?? meta?.align ?? "left") as Align;
+                  // 内建前插列（__select__ / __expander__ / __drag__）是固定几何的图标列，恒不可调宽
+                  const canResize =
+                    resizable &&
+                    header.column.getCanResize() &&
+                    !BUILT_IN_COL.test(header.column.id);
+                  const label = flexRender(header.column.columnDef.header, header.getContext());
+                  const labelNode = meta?.ellipsis ? (
+                    <span className="block min-w-0 truncate">{label}</span>
+                  ) : (
+                    label
+                  );
+                  return (
+                    <th
+                      key={header.id}
+                      style={{
+                        ...colWidthStyle(header.column, fixedLayout, declaredWidths),
+                        ...stickyStyle(header.column),
+                      }}
+                      aria-sort={
+                        !canSort
+                          ? undefined
+                          : sorted === "asc"
                           ? "ascending"
                           : sorted === "desc"
-                            ? "descending"
-                            : "none"
-                    }
-                    className={cn(
-                      cellPad,
-                      ALIGN_TEXT[headerAlign],
-                      "font-semibold",
-                      // 表头恒不换行：auto 布局下列宽收缩到 min-content，中文表头会被挤成
-                      // 「拆／出／条／目」每行一个字（英文则按空格断开），列宽反而更窄。
-                      // 表头是短标签，nowrap 让它成为列的宽度下界，才是正确的度量基准。
-                      // 需要截断的列走 meta.ellipsis + maxWidth，不靠折行省地方。
-                      "whitespace-nowrap",
-                      // 拖拽手柄绝对定位在 th 右缘（sticky 列的 position:sticky 同样是包含块）
-                      canResize && "relative",
-                      meta?.ellipsis && "overflow-hidden",
-                      stickyClass(header.column),
-                      virtualEnabled && header.column.getIsPinned() && "bg-bg",
-                    )}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div
-                        className={cn(
-                          "flex flex-col gap-1",
-                          // 默认 stretch（历史行为）；显式对齐时才收成 items-*，让排序按钮真正居中/靠右
-                          headerAlign !== "left" && ALIGN_ITEMS[headerAlign],
-                        )}
-                      >
-                        {canSort ? (
-                          <button
-                            type="button"
-                            onClick={header.column.getToggleSortingHandler()}
-                            className="inline-flex min-w-0 max-w-full items-center gap-1 transition-colors hover:text-foreground"
-                          >
-                            {labelNode}
-                            {sorted === "asc" ? (
-                              <ChevronUp className="size-3.5 shrink-0" />
-                            ) : sorted === "desc" ? (
-                              <ChevronDown className="size-3.5 shrink-0" />
-                            ) : (
-                              <ChevronsUpDown className="size-3.5 shrink-0 opacity-50" />
-                            )}
-                          </button>
-                        ) : (
-                          labelNode
-                        )}
-                        {canFilter && (
-                          <input
-                            type="text"
-                            value={(header.column.getFilterValue() as string) ?? ""}
-                            onChange={(e) => header.column.setFilterValue(e.target.value)}
-                            placeholder="筛选…"
-                            aria-label={`筛选 ${header.column.id}`}
-                            className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs font-normal text-foreground outline-none transition-colors placeholder:text-muted focus:border-primary"
-                          />
-                        )}
-                      </div>
-                    )}
-                    {canResize && (
-                      // 拖拽手柄：TanStack 的 getResizeHandler 自己在 document 上挂 move/up，
-                      // 这里只负责起手 + 视觉。双击复位该列到 columnDef.size。
-                      <div
-                        role="separator"
-                        aria-orientation="vertical"
-                        aria-label="调整列宽"
-                        onMouseDown={header.getResizeHandler()}
-                        onTouchStart={header.getResizeHandler()}
-                        onDoubleClick={() => header.column.resetSize()}
-                        data-resizing={header.column.getIsResizing() || undefined}
-                        className={cn(
-                          "absolute inset-y-0 right-0 w-1.5 cursor-col-resize touch-none select-none",
-                          "after:absolute after:inset-y-1 after:right-0 after:w-px after:rounded-full after:bg-transparent after:transition-colors",
-                          "hover:after:bg-primary data-[resizing]:after:bg-primary data-[resizing]:after:w-0.5",
-                        )}
-                      />
-                    )}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {dragEnabled ? (
-            // SortableContext 只提供 context、不产出 DOM，可直接坐在 <tbody> 里包住行
-            <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
-              {body}
-            </SortableContext>
-          ) : (
-            body
-          )}
-        </tbody>
-      </table>
+                          ? "descending"
+                          : "none"
+                      }
+                      className={cn(
+                        cellPad,
+                        ALIGN_TEXT[headerAlign],
+                        "font-semibold",
+                        // 表头恒不换行：auto 布局下列宽收缩到 min-content，中文表头会被挤成
+                        // 「拆／出／条／目」每行一个字（英文则按空格断开），列宽反而更窄。
+                        // 表头是短标签，nowrap 让它成为列的宽度下界，才是正确的度量基准。
+                        // 需要截断的列走 meta.ellipsis + maxWidth，不靠折行省地方。
+                        "whitespace-nowrap",
+                        // 拖拽手柄绝对定位在 th 右缘（sticky 列的 position:sticky 同样是包含块）
+                        canResize && "relative",
+                        meta?.ellipsis && "overflow-hidden",
+                        stickyClass(header.column),
+                        virtualEnabled && header.column.getIsPinned() && "bg-bg",
+                      )}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <div
+                          className={cn(
+                            "flex flex-col gap-1",
+                            // 默认 stretch（历史行为）；显式对齐时才收成 items-*，让排序按钮真正居中/靠右
+                            headerAlign !== "left" && ALIGN_ITEMS[headerAlign],
+                          )}
+                        >
+                          {canSort ? (
+                            <button
+                              type="button"
+                              onClick={header.column.getToggleSortingHandler()}
+                              className="inline-flex min-w-0 max-w-full items-center gap-1 transition-colors hover:text-foreground"
+                            >
+                              {labelNode}
+                              {sorted === "asc" ? (
+                                <ChevronUp className="size-3.5 shrink-0" />
+                              ) : sorted === "desc" ? (
+                                <ChevronDown className="size-3.5 shrink-0" />
+                              ) : (
+                                <ChevronsUpDown className="size-3.5 shrink-0 opacity-50" />
+                              )}
+                            </button>
+                          ) : (
+                            labelNode
+                          )}
+                          {canFilter && (
+                            <input
+                              type="text"
+                              value={(header.column.getFilterValue() as string) ?? ""}
+                              onChange={(e) => header.column.setFilterValue(e.target.value)}
+                              placeholder={loc.filterPlaceholder ?? "筛选…"}
+                              aria-label={
+                                loc.filter?.(header.column.id) ?? `筛选 ${header.column.id}`
+                              }
+                              className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs font-normal text-foreground outline-none transition-colors placeholder:text-muted focus:border-primary"
+                            />
+                          )}
+                        </div>
+                      )}
+                      {canResize && (
+                        // 拖拽手柄：TanStack 的 getResizeHandler 自己在 document 上挂 move/up，
+                        // 这里只负责起手 + 视觉。双击复位该列到 columnDef.size。
+                        <div
+                          role="separator"
+                          aria-orientation="vertical"
+                          aria-label={loc.resizeColumn ?? "调整列宽"}
+                          onMouseDown={header.getResizeHandler()}
+                          onTouchStart={header.getResizeHandler()}
+                          onDoubleClick={() => header.column.resetSize()}
+                          data-resizing={header.column.getIsResizing() || undefined}
+                          className={cn(
+                            "absolute inset-y-0 right-0 w-1.5 cursor-col-resize touch-none select-none",
+                            "after:absolute after:inset-y-1 after:right-0 after:w-px after:rounded-full after:bg-transparent after:transition-colors",
+                            "hover:after:bg-primary data-[resizing]:after:bg-primary data-[resizing]:after:w-0.5",
+                          )}
+                        />
+                      )}
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {dragEnabled ? (
+              // SortableContext 只提供 context、不产出 DOM，可直接坐在 <tbody> 里包住行
+              <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
+                {body}
+              </SortableContext>
+            ) : (
+              body
+            )}
+          </tbody>
+        </table>
       </MaybeTooltipProvider>
     </div>
   );

@@ -1,3 +1,4 @@
+import { copy } from "./cover.content";
 import type { ServiceCategory } from "../_data/types";
 
 // 程序化封面 SVG data-URI 生成器（本地零素材，SSR/CSR 确定性，禁 Math.random/Date.now）
@@ -16,9 +17,9 @@ const xmlEscape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** 生成服务封面 data-URI（确定性，按品类配色） */
-export function serviceCover(category: ServiceCategory, title: string, w = 400, h = 220): string {
+export function serviceCover(category: ServiceCategory, title: string, categoryLabel: string, w = 400, h = 220): string {
   const p = CATEGORY_PALETTE[category];
-  const shortTitle = title.length > 8 ? title.slice(0, 7) + "…" : title;
+  const shortTitle = title.length > 8 ? title.slice(0, 7) + copy("text") : title;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -34,7 +35,7 @@ export function serviceCover(category: ServiceCategory, title: string, w = 400, 
   <circle cx="${(w * 0.85).toFixed(0)}" cy="${(h * 0.22).toFixed(0)}" r="${(w * 0.22).toFixed(0)}" fill="rgba(255,255,255,0.07)"/>
   <text x="50%" y="44%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif" font-size="48" fill="rgba(255,255,255,0.9)">${p.icon}</text>
   <text x="50%" y="68%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="22" font-weight="600" fill="#fff">${xmlEscape(shortTitle)}</text>
-  <text x="50%" y="82%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="rgba(255,255,255,0.75)">${xmlEscape(category)}</text>
+  <text x="50%" y="82%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="rgba(255,255,255,0.75)">${xmlEscape(categoryLabel)}</text>
 </svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }

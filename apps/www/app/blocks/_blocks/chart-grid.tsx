@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 // 仪表盘图表网格 —— 左大面积趋势图 + 右柱状图 + 下饼图，3 张图卡网格。
 // 复制后改：TREND_DATA / BAR_DATA / PIE_DATA 内联数据；CardHeader 标题与说明文案。
 // AreaChart/BarChart/PieChart 均走 recharts 引擎，数据格式：对象数组 + xKey + series[]{key,label}。

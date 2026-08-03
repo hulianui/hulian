@@ -16,6 +16,8 @@ status: enriched
 
 聊天/评论输入框旁需要插入表情时用，emoji 数据（7 分类 + 中英关键词）内置、零依赖、支持搜索。本身只是表情面板，浮层弹出/定位需自配 [Popover](../popover/popover.md) 等容器。
 
+搜索、空态、最近使用与分类标签跟随最近的 `ConfigProvider` locale；默认 `zhCN`，切换 `enUS` 后使用英文。显式传入 `searchPlaceholder` 时仍以该 prop 为准。
+
 ## 导入
 ```ts
 import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from "@hulianui/ui"

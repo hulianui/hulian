@@ -8,6 +8,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { cn } from "../lib/cn";
 import type { MarkdownEditorProps } from "./markdown-editor.types";
 import { MarkdownEditorToolbar } from "./markdown-editor-toolbar";
+import { useComponentLocale } from "../config/locale-context";
 
 // 内容区排版：从 prose.tsx proseBase 复制的后代选择器（去掉首尾子元素边距类）
 const editorProseClass = cn(
@@ -45,8 +46,10 @@ export function MarkdownEditor({
   disabled,
   minRows = 6,
   className,
-  "aria-label": ariaLabel = "Markdown 编辑器",
+  "aria-label": ariaLabelProp,
 }: MarkdownEditorProps) {
+  const componentLocale = useComponentLocale();
+  const ariaLabel = ariaLabelProp ?? componentLocale.markdownEditor?.editor ?? "Markdown 编辑器";
   const init = value ?? defaultValue ?? "";
   const lastEmitted = useRef<string>(init);
   const [mdValue, setMdValue] = useState(init);
@@ -79,7 +82,9 @@ export function MarkdownEditor({
       },
     },
     onUpdate: ({ editor }) => {
-      const md = (editor.storage as unknown as { markdown: { getMarkdown(): string } }).markdown.getMarkdown();
+      const md = (
+        editor.storage as unknown as { markdown: { getMarkdown(): string } }
+      ).markdown.getMarkdown();
       lastEmitted.current = md;
       setMdValue(md);
       onChange?.(md);
@@ -92,7 +97,9 @@ export function MarkdownEditor({
     lastEmitted.current = value;
     setMdValue(value);
     // TipTap v3 setContent 第二参数为 options 对象；{ emitUpdate: false } 防止触发 onUpdate 回环
-    editor.commands.setContent(value, { emitUpdate: false } as Parameters<typeof editor.commands.setContent>[1]);
+    editor.commands.setContent(value, { emitUpdate: false } as Parameters<
+      typeof editor.commands.setContent
+    >[1]);
   }, [editor, value]);
 
   // 响应 disabled 变化：动态切换编辑器可编辑状态（跳过 editor 首次挂载，已由 editable 初值处理）

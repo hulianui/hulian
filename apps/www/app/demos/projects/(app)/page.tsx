@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import Link from "next/link";
 import { Activity, CircleDollarSign, HardHat, ReceiptText, Wallet } from "lucide-react";
 import {
@@ -20,7 +22,7 @@ import {
 import { ROOT } from "../_components/nav-config";
 import { activeProgress, metrics, monthlyTrend, stageDistribution } from "../_data/metrics";
 import { projectEvents } from "../_data/projects";
-import { projectStatusTone, wan, yuan } from "../_data/status";
+import { projectEventTypeLabel, projectStageLabel, projectStatusTone, wan, yuan } from "../_data/status";
 
 const trend = monthlyTrend();
 const stage = stageDistribution();
@@ -56,7 +58,7 @@ function StatCard({
           label={label}
           value={value}
           delta={delta}
-          deltaLabel="较上月"
+          deltaLabel={copy("comparedWithLastMonth")}
           icon={<span className={`grid size-11 place-items-center rounded-[var(--radius)] ${iconClass}`}>{icon}</span>}
         />
       </CardBody>
@@ -68,39 +70,36 @@ export default function ProjectsDashboard() {
   return (
     <div className="flex flex-col gap-5">
       <header>
-        <Heading level={2} size="xl">
-          工作台
-        </Heading>
-        <Text tone="muted" size="sm" className="mt-1">
-          今天是 2026 年 6 月 4 日 · {metrics.activeProjects} 个项目在建 · 待回款 {wan(metrics.pendingPayment)}
+        <Heading level={2} size="xl">{copy("workbench")}</Heading>
+        <Text tone="muted" size="sm" className="mt-1">{copy("todayIsJune")}{metrics.activeProjects}{copy("projectsUnderConstructionPaymentAwaitingPayment")}{wan(metrics.pendingPayment)}
         </Text>
       </header>
 
       {/* 指标卡 */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="在建项目"
+          label={copy("projectsUnderConstruction")}
           value={metrics.activeProjects}
           delta={12.5}
           icon={<HardHat className="size-5" />}
           iconClass="bg-primary/12 text-primary"
         />
         <StatCard
-          label="本月报价额"
+          label={copy("quotationAmountThisMonth")}
           value={wan(metrics.quotedThisMonth)}
           delta={18.2}
           icon={<CircleDollarSign className="size-5" />}
           iconClass="bg-success/12 text-success"
         />
         <StatCard
-          label="待开票额"
+          label={copy("amountToBeInvoiced")}
           value={wan(metrics.pendingInvoice)}
           delta={-6.4}
           icon={<ReceiptText className="size-5" />}
           iconClass="bg-warning/15 text-warning"
         />
         <StatCard
-          label="待回款额"
+          label={copy("amountToBeRefunded")}
           value={wan(metrics.pendingPayment)}
           delta={-3.1}
           icon={<Wallet className="size-5" />}
@@ -112,19 +111,15 @@ export default function ProjectsDashboard() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card variant="outline" className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
-            <Heading level={3} size="base">
-              产值与回款
-            </Heading>
-            <Text size="sm" tone="muted">
-              近 6 个月 · 万元
-            </Text>
+            <Heading level={3} size="base">{copy("outputValueAndRepayment")}</Heading>
+            <Text size="sm" tone="muted">{copy("lastMonthsYuan")}</Text>
           </CardHeader>
           <CardBody className="pt-0">
             <BarChart
               data={trend}
               series={[
-                { key: "产值", label: "开票产值（万）" },
-                { key: "回款", label: "实际回款（万）" },
+                { key: "output", label: copy("invoicingOutputValue") },
+                { key: "collected", label: copy("actualRepayment") },
               ]}
               xKey="month"
               height={260}
@@ -134,9 +129,7 @@ export default function ProjectsDashboard() {
 
         <Card variant="outline">
           <CardHeader>
-            <Heading level={3} size="base">
-              项目阶段分布
-            </Heading>
+            <Heading level={3} size="base">{copy("projectStageDistribution")}</Heading>
           </CardHeader>
           <CardBody className="pt-0">
             <PieChart data={stage} donut height={260} />
@@ -148,12 +141,8 @@ export default function ProjectsDashboard() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card variant="outline" className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
-            <Heading level={3} size="base">
-              在建项目进度
-            </Heading>
-            <Link href={`${ROOT}/tracking`} className="text-sm text-primary hover:underline">
-              查看全部
-            </Link>
+            <Heading level={3} size="base">{copy("progressOfProjectsUnderConstruction")}</Heading>
+            <Link href={`${ROOT}/tracking`} className="text-sm text-primary hover:underline">{copy("viewAll")}</Link>
           </CardHeader>
           <CardBody className="pt-0">
             <List
@@ -163,7 +152,7 @@ export default function ProjectsDashboard() {
                 <ListItem
                   actions={[
                     <Tag key="st" tone={projectStatusTone(p.status)} size="sm">
-                      {p.stage}
+                      {projectStageLabel[p.stage]}
                     </Tag>,
                   ]}
                 >
@@ -179,7 +168,7 @@ export default function ProjectsDashboard() {
                     </div>
                     <Progress variant="linear" value={p.progress} className="w-full" />
                     <Text size="xs" tone="muted">
-                      {p.client} · {p.crew} · 合同额 {yuan(p.contractAmount)}
+                      {p.client} · {p.crew}{copy("contractAmount")}{yuan(p.contractAmount)}
                     </Text>
                   </div>
                 </ListItem>
@@ -191,9 +180,7 @@ export default function ProjectsDashboard() {
         <Card variant="outline">
           <CardHeader className="flex items-center gap-2">
             <Activity className="size-4 text-muted" />
-            <Heading level={3} size="base">
-              近期动态
-            </Heading>
+            <Heading level={3} size="base">{copy("recentNews")}</Heading>
           </CardHeader>
           <CardBody className="pt-0">
             <Timeline
@@ -203,7 +190,7 @@ export default function ProjectsDashboard() {
                 children: (
                   <Text size="sm">
                     <Tag tone="neutral" size="sm" variant="soft" className="mr-1.5 align-middle">
-                      {e.type}
+                      {projectEventTypeLabel[e.type]}
                     </Tag>
                     {e.text}
                   </Text>

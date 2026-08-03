@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
+import { getIntlayer } from "next-intlayer";
 import { RADIUS_TOKEN, RADIUS_SCALE } from "../../../lib/theme-manifest";
 import { DocHeader, Section, Code } from "../_components/doc-kit";
+import { DOCS_LOCALE } from "../../../lib/docs-locale";
 
-export const metadata: Metadata = { title: "圆角 Radius · 瑚琏 Hulian" };
+const content = getIntlayer("theme", DOCS_LOCALE).radius;
+export const metadata: Metadata = { title: `${content.title} · Hulian UI` };
 
 export default function RadiusPage() {
   return (
     <div>
       <DocHeader
-        title="圆角"
-        en="Radius"
-        lede={
-          <>
-            瑚琏的基准圆角是单一 token <Code>--radius = {RADIUS_TOKEN.rem}</Code>（
-            {RADIUS_TOKEN.px}px）。组件统一用 <Code>rounded-[var(--radius)]</Code>，改一处即全站同步。
-          </>
-        }
+        title={content.title}
+        en={content.eyebrow}
+        lede={content.lede}
       />
 
-      <Section title="基准 token">
+      <Section title={content.base}>
         <div className="flex items-center gap-5 rounded-[var(--radius)] border border-border bg-surface p-5">
           <span
             className="size-20 shrink-0 border border-border bg-surface-hover"
@@ -34,7 +32,7 @@ export default function RadiusPage() {
         </div>
       </Section>
 
-      <Section title="完整阶梯" desc="从细微到全圆，按真实曲率绘制。">
+      <Section title={content.scale} desc={content.scaleDescription}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {RADIUS_SCALE.map((r) => (
             <div key={r.name} className="text-center">

@@ -1,5 +1,14 @@
 // 同城到家服务 App — 类型定义
 export type ServiceCategory = "家政保洁" | "家电维修" | "上门美甲" | "管道疏通" | "搬家搬运" | "开锁换锁";
+export type ServiceTag =
+  | "bestseller"
+  | "topRated"
+  | "popular"
+  | "urgentRepair"
+  | "movingIncluded"
+  | "fastArrival"
+  | "warranty"
+  | "greatValue";
 
 export interface Service {
   id: string;
@@ -9,7 +18,7 @@ export interface Service {
   unit: string;
   rating: number; // 1-5
   reviewCount: number;
-  tag: string; // e.g. "爆款" "好评"
+  tag: ServiceTag;
   workerName: string;
   workerAvatar: string; // just initials
   description: string;

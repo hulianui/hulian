@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 // 瀚舵 HanHelm · SLA 告警
 //   1) 顶部 KPI：触发/已确认/已解决 告警数 + 当前 P95。
 //   2) SLA 达成监控：各任务类别 P50/P95 vs SLA 阈值（Sparkline 趋势 + evaluateSla 染色）。
@@ -33,14 +35,14 @@ const SEVERITY_TONE: Record<AlertSeverity, "danger" | "warning" | "brand"> = {
   info: "brand",
 };
 const SEVERITY_LABEL: Record<AlertSeverity, string> = {
-  critical: "严重",
-  warning: "警告",
-  info: "提示",
+  critical: copy("serious"),
+  warning: copy("warning"),
+  info: copy("tip"),
 };
 const STATUS_LABEL: Record<"firing" | "acked" | "resolved", string> = {
-  firing: "触发中",
-  acked: "已确认",
-  resolved: "已解决",
+  firing: copy("triggering"),
+  acked: copy("confirmed"),
+  resolved: copy("resolved"),
 };
 const STATUS_TONE: Record<"firing" | "acked" | "resolved", "danger" | "warning" | "success"> = {
   firing: "danger",
@@ -50,12 +52,12 @@ const STATUS_TONE: Record<"firing" | "acked" | "resolved", "danger" | "warning" 
 
 // 各任务类别的 P50/P95（ms）vs SLA 阈值（ms）—— 近 24 时刻聚合，供达成监控。
 const SLA_CATEGORIES = [
-  { label: "合同/文档翻译", p50: 820, p95: 1680, slaMs: 5000, trend: "p50" },
-  { label: "代码生成/审查", p50: 2100, p95: 4200, slaMs: 8000, trend: "p95" },
-  { label: "RAG 检索问答", p50: 1450, p95: 3100, slaMs: 4000, trend: "p95" },
-  { label: "实时内容审核", p50: 18000, p95: 27500, slaMs: 30000, trend: "p95" },
-  { label: "结构化抽取", p50: 950, p95: 2300, slaMs: 6000, trend: "p50" },
-  { label: "多 agent 编排", p50: 9800, p95: 22000, slaMs: 60000, trend: "p95" },
+  { label: copy("contractDocumentTranslation"), p50: 820, p95: 1680, slaMs: 5000, trend: "p50" },
+  { label: copy("codeGenerationReview"), p50: 2100, p95: 4200, slaMs: 8000, trend: "p95" },
+  { label: copy("ragSearchQA"), p50: 1450, p95: 3100, slaMs: 4000, trend: "p95" },
+  { label: copy("realTimeContentReview"), p50: 18000, p95: 27500, slaMs: 30000, trend: "p95" },
+  { label: copy("structuredExtraction"), p50: 950, p95: 2300, slaMs: 6000, trend: "p50" },
+  { label: copy("multiAgentOrchestration"), p50: 9800, p95: 22000, slaMs: 60000, trend: "p95" },
 ] as const;
 
 export default function AlertsPage() {
@@ -99,31 +101,31 @@ export default function AlertsPage() {
 
   return (
     <div className="space-y-5 p-6">
-      <PageHeader title="SLA 告警" subTitle="达成监控 · 模拟器 · 规则 · 事件流" />
+      <PageHeader title={copy("slaAlert")} subTitle={copy("achievementMonitoringSimulatorRulesEventFlow")} />
 
       {/* 1) KPI */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Card><CardBody><Stat label="触发中告警" value={firing} icon={<BellRing className="size-5" />} /></CardBody></Card>
-        <Card><CardBody><Stat label="已确认" value={acked} icon={<BellOff className="size-5" />} /></CardBody></Card>
-        <Card><CardBody><Stat label="已解决" value={resolved} icon={<CheckCircle2 className="size-5" />} /></CardBody></Card>
-        <Card><CardBody><Stat label="当前 P95 延迟" value={`${p95p95}ms`} icon={<Activity className="size-5" />} /></CardBody></Card>
+        <Card><CardBody><Stat label={copy("triggeringAnAlarm")} value={firing} icon={<BellRing className="size-5" />} /></CardBody></Card>
+        <Card><CardBody><Stat label={copy("confirmed2")} value={acked} icon={<BellOff className="size-5" />} /></CardBody></Card>
+        <Card><CardBody><Stat label={copy("resolved2")} value={resolved} icon={<CheckCircle2 className="size-5" />} /></CardBody></Card>
+        <Card><CardBody><Stat label={copy("currentlyP95IsLate")} value={`${p95p95}ms`} icon={<Activity className="size-5" />} /></CardBody></Card>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
         {/* 2) SLA 达成监控 */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <div className="text-sm font-semibold text-foreground">SLA 达成监控</div>
-            <div className="text-xs text-muted">各任务类别 P50 / P95 延迟 vs SLA 阈值（近 24 时刻）</div>
+            <div className="text-sm font-semibold text-foreground">{copy("slaAchievesMonitoring")}</div>
+            <div className="text-xs text-muted">{copy("p50P95LatencyVsSlaThresholdsFor")}</div>
           </CardHeader>
           <CardBody className="space-y-2">
             <div className="grid grid-cols-[1.6fr_repeat(3,0.8fr)_auto] items-center gap-2 border-b border-border pb-1.5 text-xs text-muted">
-              <span>任务类别</span><span className="text-right">P50</span><span className="text-right">P95</span><span className="text-right">SLA</span><span className="text-right">达成</span>
+              <span>{copy("taskCategories")}</span><span className="text-right">P50</span><span className="text-right">P95</span><span className="text-right">SLA</span><span className="text-right">{copy("achieved")}</span>
             </div>
             {SLA_CATEGORIES.map((c) => {
               const sla = evaluateSla(c.p95, c.slaMs);
               const tone = sla.status === "met" ? "success" : sla.status === "at-risk" ? "warning" : "danger";
-              const label = sla.status === "met" ? "达成" : sla.status === "at-risk" ? "临期" : "违约";
+              const label = sla.status === "met" ? copy("achieved2") : sla.status === "at-risk" ? copy("theAppointedTimeApproached") : copy("breachOfContract");
               return (
                 <div key={c.label} className="grid grid-cols-[1.6fr_repeat(3,0.8fr)_auto] items-center gap-2 text-sm">
                   <div className="flex items-center gap-2 min-w-0">
@@ -143,13 +145,13 @@ export default function AlertsPage() {
         {/* 3) 告警模拟器 */}
         <Card>
           <CardHeader>
-            <div className="text-sm font-semibold text-foreground">告警模拟器</div>
-            <div className="text-xs text-muted">拖动 P95 阈值，实时预演触发次数</div>
+            <div className="text-sm font-semibold text-foreground">{copy("alarmSimulator")}</div>
+            <div className="text-xs text-muted">{copy("dragTheP95ThresholdToPreviewThe")}</div>
           </CardHeader>
           <CardBody className="space-y-4">
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-xs text-muted">P95 延迟阈值</span>
+                <span className="text-xs text-muted">{copy("p95DelayThreshold")}</span>
                 <Tag size="sm" variant="soft" tone="neutral">{p95Threshold}ms</Tag>
               </div>
               <Slider
@@ -158,17 +160,12 @@ export default function AlertsPage() {
                 max={4000}
                 step={50}
                 onValueChange={(v) => setP95Threshold(Array.isArray(v) ? v[0] : v)}
-                aria-label="P95 延迟阈值"
+                aria-label={copy("p95DelayThreshold2")}
               />
             </div>
             <Sparkline data={p95Series} variant="bar" width={232} height={40} tone="var(--color-chart-3)" />
-            <div className="rounded-[var(--radius)] border border-border bg-surface p-3 text-sm">
-              按当前阈值 <span className="font-semibold tabular-nums text-foreground">{p95Threshold}ms</span>，
-              近 24 时刻将触发 <span className="font-semibold tabular-nums text-danger">{exceedCount}</span> 次告警。
-            </div>
-            <div className="text-xs text-muted">
-              峰值队列深度 {Math.max(...queueSeries)} 条 · 阈值越低越灵敏但噪声越多。
-            </div>
+            <div className="rounded-[var(--radius)] border border-border bg-surface p-3 text-sm">{copy("basedOnTheCurrentThreshold")}<span className="font-semibold tabular-nums text-foreground">{p95Threshold}ms</span>{copy("itWillBeTriggeredInTheNear")}<span className="font-semibold tabular-nums text-danger">{exceedCount}</span>{copy("nextTheAlarm")}</div>
+            <div className="text-xs text-muted">{copy("peakQueueDepth")}{Math.max(...queueSeries)}{copy("stripTheLowerTheThresholdTheMore")}</div>
           </CardBody>
         </Card>
       </div>
@@ -177,8 +174,8 @@ export default function AlertsPage() {
         {/* 4) 告警规则 */}
         <Card>
           <CardHeader>
-            <div className="text-sm font-semibold text-foreground">告警规则</div>
-            <div className="text-xs text-muted">阈值触发 → 通知渠道</div>
+            <div className="text-sm font-semibold text-foreground">{copy("alertRules")}</div>
+            <div className="text-xs text-muted">{copy("thresholdTriggersNotificationChannels")}</div>
           </CardHeader>
           <CardBody className="space-y-2.5">
             {ALERT_RULES.map((r) => (
@@ -188,25 +185,24 @@ export default function AlertsPage() {
                     <span className="text-sm font-medium text-foreground">{r.name}</span>
                     <Tag size="sm" variant="soft" tone={SEVERITY_TONE[r.severity]}>{SEVERITY_LABEL[r.severity]}</Tag>
                   </div>
-                  <div className="text-xs text-muted">
-                    当 <span className="text-foreground">{r.metric}</span> {r.op} {r.threshold}
+                  <div className="text-xs text-muted">{copy("right")}<span className="text-foreground">{r.metric}</span> {r.op} {r.threshold}
                     {r.unit} · {r.channel}
                   </div>
                 </div>
                 <Switch
                   checked={ruleEnabled[r.id]}
                   onCheckedChange={(c) => setRuleEnabled((p) => ({ ...p, [r.id]: c }))}
-                  aria-label={`${r.name} 启停`}
+                  aria-label={copy("valueStartAndStop", r.name)}
                 />
               </div>
             ))}
             <div className="pt-1">
-              <div className="mb-2 text-xs text-muted">默认通知渠道（多选）</div>
+              <div className="mb-2 text-xs text-muted">{copy("defaultNotificationChannelsMultipleChoices")}</div>
               <ChoiceboxGroup value={channels} onValueChange={(v) => setChannels(v as string[])} multiple columns={2}>
-                <Choicebox value="wecom" title="企业微信" description="值班群实时推送" />
-                <Choicebox value="sms" title="短信" description="严重级直达负责人" />
-                <Choicebox value="email" title="邮件" description="成本/提交人通知" />
-                <Choicebox value="phone" title="电话" description="P0 SLA 违约升级" />
+                <Choicebox value="wecom" title={copy("wechatWork")} description={copy("realTimePushNotificationsFromTheDuty")} />
+                <Choicebox value="sms" title={copy("sms")} description={copy("seriousDirectContactResponsiblePerson")} />
+                <Choicebox value="email" title={copy("email")} description={copy("costSubmitterNotice")} />
+                <Choicebox value="phone" title={copy("phone")} description={copy("p0SlaDefaultsAndEscalation")} />
               </ChoiceboxGroup>
             </div>
           </CardBody>
@@ -215,8 +211,8 @@ export default function AlertsPage() {
         {/* 5) 告警事件流 */}
         <Card>
           <CardHeader>
-            <div className="text-sm font-semibold text-foreground">告警事件流</div>
-            <div className="text-xs text-muted">最近触发的告警与处置</div>
+            <div className="text-sm font-semibold text-foreground">{copy("alertIncidentStream")}</div>
+            <div className="text-xs text-muted">{copy("recentlyTriggeredAlertsAndActions")}</div>
           </CardHeader>
           <CardBody>
             <Timeline items={timelineItems} />

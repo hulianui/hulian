@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { PageHeaderBlock } from "../../blocks/_blocks/page-header";
 import { SettingsPanelBlock } from "../../blocks/_blocks/settings-panel";
 

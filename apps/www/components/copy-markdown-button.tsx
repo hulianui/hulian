@@ -2,13 +2,14 @@
 import { useCallback, useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@hulianui/ui";
+import { useIntlayer } from "next-intlayer";
 
 // 「复制 MD」按钮 —— 把一段 markdown 文档一键拷进剪贴板，喂给 AI 编程助手。
 // 组件文档页头 + 入门页共用。dogfood @hulianui/ui Button，复制后短暂切「已复制」。
 export function CopyMarkdownButton({
   text,
-  label = "复制 MD",
-  copiedLabel = "已复制",
+  label,
+  copiedLabel,
   variant = "outline",
   size = "sm",
   className,
@@ -20,6 +21,9 @@ export function CopyMarkdownButton({
   size?: "sm" | "md";
   className?: string;
 }) {
+  const content = useIntlayer("shared-chrome");
+  const resolvedLabel = label ?? content.copyMarkdown;
+  const resolvedCopiedLabel = copiedLabel ?? content.copied;
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -51,7 +55,7 @@ export function CopyMarkdownButton({
       variant={variant}
       size={size}
       onClick={copy}
-      aria-label={copied ? copiedLabel : `${label}（复制本页文档给 AI 编程助手）`}
+      aria-label={copied ? resolvedCopiedLabel : content.copyAria.replace("{label}", resolvedLabel)}
       className={className}
     >
       {copied ? (
@@ -59,7 +63,7 @@ export function CopyMarkdownButton({
       ) : (
         <Copy className="size-4" aria-hidden />
       )}
-      {copied ? copiedLabel : label}
+      {copied ? resolvedCopiedLabel : resolvedLabel}
     </Button>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { EventStreamItem, EventStreamProps, EventStreamTone } from "./event-stream.types";
 
@@ -43,6 +45,7 @@ function Row({
   onItemClick,
   isNew,
   expandedAll,
+  overriddenPrefix,
 }: {
   item: EventStreamItem;
   side: "left" | "right";
@@ -50,6 +53,7 @@ function Row({
   onItemClick: EventStreamProps["onItemClick"];
   isNew: boolean;
   expandedAll: boolean;
+  overriddenPrefix: string;
 }) {
   const [open, setOpen] = useState(expandedAll);
   useEffect(() => setOpen(expandedAll), [expandedAll]);
@@ -74,13 +78,15 @@ function Row({
       )}
     >
       {/* 时间轴：色点 + 竖线。用 ::before 画线会被 overflow 裁掉，故用真实元素。 */}
-      <div className={cn("relative flex w-14 shrink-0 flex-col items-center", side === "right" && "items-center")}>
+      <div
+        className={cn(
+          "relative flex w-14 shrink-0 flex-col items-center",
+          side === "right" && "items-center",
+        )}
+      >
         <span
           aria-hidden
-          className={cn(
-            "mt-1.5 size-2 shrink-0 rounded-full ring-2 ring-bg",
-            TONE_DOT[tone],
-          )}
+          className={cn("mt-1.5 size-2 shrink-0 rounded-full ring-2 ring-bg", TONE_DOT[tone])}
         />
         <span aria-hidden className="mt-1 w-px flex-1 bg-border/70 group-last:hidden" />
       </div>
@@ -108,7 +114,9 @@ function Row({
           )}
         >
           <span className="shrink-0 font-mono text-xs tabular-nums text-muted">{item.ts}</span>
-          <span className={cn("min-w-0 flex-1 truncate text-sm", TONE_TEXT[tone])}>{item.title}</span>
+          <span className={cn("min-w-0 flex-1 truncate text-sm", TONE_TEXT[tone])}>
+            {item.title}
+          </span>
           {item.meta != null && (
             <span className="shrink-0 font-mono text-xs tabular-nums text-muted">{item.meta}</span>
           )}
@@ -121,11 +129,11 @@ function Row({
               side === "right" && "flex-row-reverse",
             )}
           >
-            <span
-              aria-hidden
-              className="inline-block size-1.5 shrink-0 rounded-full bg-warning"
-            />
-            <span className="min-w-0 truncate">已放行：{item.overridden}</span>
+            <span aria-hidden className="inline-block size-1.5 shrink-0 rounded-full bg-warning" />
+            <span className="min-w-0 truncate">
+              {overriddenPrefix}
+              {item.overridden}
+            </span>
           </div>
         )}
 
@@ -142,13 +150,18 @@ function Row({
 export function EventStream({
   items,
   maxHeight,
-  emptyText = "暂无事件",
+  emptyText,
   onItemClick,
   live = false,
   side = "left",
   defaultExpanded = false,
   className,
 }: EventStreamProps) {
+  const copy = useComponentLocale().eventStream ?? {
+    empty: "暂无事件",
+    overriddenPrefix: "已放行：",
+  };
+  const resolvedEmptyText = emptyText ?? copy.empty;
   // 记住上一轮见过的 id，用来判断本轮哪些是新的。
   // 用 ref 而非 state：它只影响渲染样式，不该自己触发一次额外渲染。
   const seen = useRef<Set<string | number> | null>(null);
@@ -174,7 +187,7 @@ export function EventStream({
           className,
         )}
       >
-        {emptyText}
+        {resolvedEmptyText}
       </div>
     );
   }
@@ -193,6 +206,7 @@ export function EventStream({
           onItemClick={onItemClick}
           isNew={fresh.has(item.id)}
           expandedAll={defaultExpanded}
+          overriddenPrefix={copy.overriddenPrefix}
         />
       ))}
     </ol>

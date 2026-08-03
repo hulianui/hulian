@@ -1,11 +1,14 @@
+"use client";
+
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import { splitBlocks } from "./diff-stat.split";
 import type { DiffStatProps, DiffStatStatus } from "./diff-stat.types";
 
 // 改动统计条：+N −M 数字 + 按增删比例填充的绿红格子条 + 可选 A/M/D/R 状态徽标。
 // 代码审查 / PR 列表刚需。纯函数 splitBlocks 抽出可测，零依赖只吃语义 token。
 // 注：库无 info 语义色，renamed 借用 primary（蓝）以区别 modified 的 warning。
-const STATUS_LABEL: Record<DiffStatStatus, string> = {
+const DEFAULT_STATUS_LABEL: Record<DiffStatStatus, string> = {
   added: "新增",
   modified: "修改",
   deleted: "删除",
@@ -27,13 +30,14 @@ export function DiffStat({
   size = "md",
   className,
 }: DiffStatProps) {
+  const labels = useComponentLocale().diffStat ?? DEFAULT_STATUS_LABEL;
   const { green, red, empty } = splitBlocks(additions, deletions, blocks);
   const box = size === "sm" ? "size-1.5" : "size-2";
   return (
     <span className={cn("inline-flex items-center gap-2 text-xs tabular-nums", className)}>
       {status && (
         <span className={cn("rounded px-1 py-0.5 text-[10px] font-medium", STATUS_TONE[status])}>
-          {STATUS_LABEL[status]}
+          {labels[status]}
         </span>
       )}
       {showCounts && (

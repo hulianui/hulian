@@ -1,6 +1,8 @@
 import { render, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { SecretField, maskSecret } from "./secret-field";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("maskSecret", () => {
   it("prefix-suffix 保留首尾", () => {
@@ -37,5 +39,10 @@ describe("SecretField", () => {
   it("copyable=false 不渲染复制钮", () => {
     const { queryByLabelText } = render(<SecretField value="sk-xyz" copyable={false} />);
     expect(queryByLabelText("复制")).toBeNull();
+  });
+  it("动作标签跟随 ConfigProvider", () => {
+    const { getByLabelText } = render(<ConfigProvider locale={enUS}><SecretField value="sk-xyz" /></ConfigProvider>);
+    expect(getByLabelText("Show")).toBeTruthy();
+    expect(getByLabelText("Copy")).toBeTruthy();
   });
 });

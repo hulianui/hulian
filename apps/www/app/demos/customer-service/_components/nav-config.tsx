@@ -1,5 +1,7 @@
+import { copy } from "./nav-config.content";
 import { MessagesSquare, Ticket, BookOpen, BarChart3, Settings } from "lucide-react";
 import type { NavMenuNode, BreadcrumbItem } from "@hulianui/ui";
+import { demoHref, demoLocationHref } from "../../_components/demo-locale";
 
 export const CS_ROOT = "/demos/customer-service";
 
@@ -8,29 +10,55 @@ export const menuItems: NavMenuNode[] = [
   {
     type: "group",
     key: "g-desk",
-    label: "工作台",
-    children: [{ key: CS_ROOT, label: "会话工作台", icon: <MessagesSquare className="size-4" /> }],
+    label: copy("workbench"),
+    children: [
+      {
+        key: CS_ROOT,
+        label: copy("sessionWorkbench"),
+        icon: <MessagesSquare className="size-4" />,
+      },
+    ],
   },
   {
     type: "group",
     key: "g-service",
-    label: "服务",
+    label: copy("service"),
     children: [
-      { key: `${CS_ROOT}/tickets`, label: "工单管理", icon: <Ticket className="size-4" /> },
-      { key: `${CS_ROOT}/knowledge`, label: "知识库", icon: <BookOpen className="size-4" /> },
+      {
+        key: `${CS_ROOT}/tickets`,
+        label: copy("workOrderManagement"),
+        icon: <Ticket className="size-4" />,
+      },
+      {
+        key: `${CS_ROOT}/knowledge`,
+        label: copy("knowledgeBase"),
+        icon: <BookOpen className="size-4" />,
+      },
     ],
   },
   {
     type: "group",
     key: "g-analytics",
-    label: "分析",
-    children: [{ key: `${CS_ROOT}/analytics`, label: "数据看板", icon: <BarChart3 className="size-4" /> }],
+    label: copy("analysis"),
+    children: [
+      {
+        key: `${CS_ROOT}/analytics`,
+        label: copy("dataDashboard"),
+        icon: <BarChart3 className="size-4" />,
+      },
+    ],
   },
   {
     type: "group",
     key: "g-system",
-    label: "系统",
-    children: [{ key: `${CS_ROOT}/settings`, label: "客服设置", icon: <Settings className="size-4" /> }],
+    label: copy("system"),
+    children: [
+      {
+        key: `${CS_ROOT}/settings`,
+        label: copy("customerServiceSettings"),
+        icon: <Settings className="size-4" />,
+      },
+    ],
   },
 ];
 
@@ -48,36 +76,42 @@ export function selectedKeyFor(pathname: string): string | undefined {
 }
 
 const META: Record<string, string> = {
-  [CS_ROOT]: "会话工作台",
-  [`${CS_ROOT}/tickets`]: "工单管理",
-  [`${CS_ROOT}/knowledge`]: "知识库",
-  [`${CS_ROOT}/analytics`]: "数据看板",
-  [`${CS_ROOT}/settings`]: "客服设置",
+  [CS_ROOT]: copy("sessionWorkbench2"),
+  [`${CS_ROOT}/tickets`]: copy("workOrderManagement2"),
+  [`${CS_ROOT}/knowledge`]: copy("knowledgeBase2"),
+  [`${CS_ROOT}/analytics`]: copy("dataDashboard2"),
+  [`${CS_ROOT}/settings`]: copy("customerServiceSettings2"),
 };
 
 /** 顶栏面包屑：工作台 → 当前页（工单详情页追加「工单详情」）。 */
 export function breadcrumbFor(pathname: string): BreadcrumbItem[] {
-  if (pathname === CS_ROOT) return [{ label: "会话工作台", current: true }];
-  const items: BreadcrumbItem[] = [{ label: "会话工作台", href: CS_ROOT }];
+  if (pathname === CS_ROOT) return [{ label: copy("sessionWorkbench3"), current: true }];
+  const items: BreadcrumbItem[] = [
+    { label: copy("sessionWorkbench4"), href: demoLocationHref(CS_ROOT) },
+  ];
   const selected = selectedKeyFor(pathname);
   if (selected && selected !== CS_ROOT) {
     const isLeaf = pathname === selected;
-    items.push({ label: META[selected] ?? "", href: isLeaf ? undefined : selected, current: isLeaf });
+    items.push({
+      label: META[selected] ?? "",
+      href: isLeaf ? undefined : demoLocationHref(selected),
+      current: isLeaf,
+    });
   }
   if (selected === `${CS_ROOT}/tickets` && pathname !== `${CS_ROOT}/tickets`) {
-    items.push({ label: "工单详情", current: true });
+    items.push({ label: copy("workOrderDetails"), current: true });
   }
   return items;
 }
 
 /** 菜单 key → 标签（页签 label 用）。 */
 export function labelOf(key: string): string {
-  return META[key] ?? "会话工作台";
+  return META[key] ?? copy("sessionWorkbench5");
 }
 
 /** 当前页标题。 */
 export function titleFor(pathname: string): string {
   const selected = selectedKeyFor(pathname);
-  if (selected === `${CS_ROOT}/tickets` && pathname !== selected) return "工单详情";
-  return (selected && META[selected]) || "会话工作台";
+  if (selected === `${CS_ROOT}/tickets` && pathname !== selected) return copy("workOrderDetails2");
+  return (selected && META[selected]) || copy("sessionWorkbench6");
 }

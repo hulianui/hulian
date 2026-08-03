@@ -26,17 +26,18 @@ import {
   RefreshCw,
 } from "../_icons";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import { chapterMarkers, type VideoChapter } from "./video.types";
 
 const btn =
   "inline-flex size-9 items-center justify-center rounded-[var(--radius-sm,0.375rem)] text-white/90 outline-none transition-colors hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-ring data-[focus]:ring-2 data-[focus]:ring-ring";
 
-function PlaybackRateMenu({ rates }: { rates: number[] }) {
+function PlaybackRateMenu({ rates, label }: { rates: number[]; label: string }) {
   const rate = useMediaState("playbackRate");
   const remote = useMediaRemote();
   return (
     <Menu.Root>
-      <Menu.Button className={cn(btn, "w-auto gap-1 px-2 text-xs tabular-nums")} aria-label="播放速度">
+      <Menu.Button className={cn(btn, "w-auto gap-1 px-2 text-xs tabular-nums")} aria-label={label}>
         <Gauge className="size-4" />
         {rate}×
       </Menu.Button>
@@ -71,6 +72,19 @@ export function VideoControls({
   chapters?: VideoChapter[];
   endScreen?: ReactNode;
 }) {
+  const labels = useComponentLocale().video ?? {
+    playVideo: "播放视频",
+    replay: "重新播放",
+    play: "播放",
+    pause: "暂停",
+    mute: "静音",
+    unmute: "取消静音",
+    playbackSpeed: "播放速度",
+    pictureInPicture: "画中画",
+    exitPictureInPicture: "退出画中画",
+    fullscreen: "全屏",
+    exitFullscreen: "退出全屏",
+  };
   const isPaused = useMediaState("paused");
   const isMuted = useMediaState("muted");
   const isFullscreen = useMediaState("fullscreen");
@@ -103,7 +117,7 @@ export function VideoControls({
             className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-medium text-white outline-none transition hover:bg-white/25 focus-visible:ring-2 focus-visible:ring-ring"
           >
             <RefreshCw className="size-4" />
-            重新播放
+            {labels.replay}
           </button>
         </div>
       ) : null}
@@ -113,7 +127,7 @@ export function VideoControls({
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <PlayButton
             className="pointer-events-auto flex size-16 items-center justify-center rounded-full bg-black/45 text-white shadow-lg backdrop-blur-sm outline-none transition hover:scale-105 hover:bg-black/65 focus-visible:ring-2 focus-visible:ring-ring data-[focus]:ring-2 data-[focus]:ring-ring"
-            aria-label="播放视频"
+            aria-label={labels.playVideo}
           >
             <Play className="size-7 translate-x-px fill-current" />
           </PlayButton>
@@ -146,11 +160,15 @@ export function VideoControls({
       </Controls.Group>
 
       <Controls.Group className="relative flex items-center gap-1 px-2 pb-2">
-        <PlayButton className={btn} aria-label={isPaused ? "播放" : "暂停"}>
-          {isPaused ? <Play className="size-5 fill-current" /> : <Pause className="size-5 fill-current" />}
+        <PlayButton className={btn} aria-label={isPaused ? labels.play : labels.pause}>
+          {isPaused ? (
+            <Play className="size-5 fill-current" />
+          ) : (
+            <Pause className="size-5 fill-current" />
+          )}
         </PlayButton>
 
-        <MuteButton className={btn} aria-label={isMuted ? "取消静音" : "静音"}>
+        <MuteButton className={btn} aria-label={isMuted ? labels.unmute : labels.mute}>
           {isMuted ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
         </MuteButton>
 
@@ -168,11 +186,17 @@ export function VideoControls({
         </div>
 
         <div className="ml-auto flex items-center gap-1">
-          <PlaybackRateMenu rates={playbackRates} />
-          <PIPButton className={btn} aria-label={isPip ? "退出画中画" : "画中画"}>
+          <PlaybackRateMenu rates={playbackRates} label={labels.playbackSpeed} />
+          <PIPButton
+            className={btn}
+            aria-label={isPip ? labels.exitPictureInPicture : labels.pictureInPicture}
+          >
             <PictureInPicture className="size-5" />
           </PIPButton>
-          <FullscreenButton className={btn} aria-label={isFullscreen ? "退出全屏" : "全屏"}>
+          <FullscreenButton
+            className={btn}
+            aria-label={isFullscreen ? labels.exitFullscreen : labels.fullscreen}
+          >
             {isFullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}
           </FullscreenButton>
         </div>

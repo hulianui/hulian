@@ -1,3 +1,4 @@
+import { copy } from "./checkouts.content";
 import { dueAmount, invoiceById } from "./invoices";
 import type { Checkout } from "./types";
 
@@ -8,8 +9,8 @@ export const checkouts: Checkout[] = [
     id: "co1",
     code: "PAY-2026-001",
     invoiceId: "iv2", // 部分回款的发票，仍有应收余额
-    projectName: "云栖数据中心机电安装工程",
-    client: "云栖科技股份有限公司",
+    projectName: copy("yunqiDataCenterMechanicalAndElectricalInstallation"),
+    client: copy("yunqiTechnologyCoLtd"),
     amount: 258000,
     status: "待支付",
     createdAt: "2026-06-03",
@@ -19,8 +20,8 @@ export const checkouts: Checkout[] = [
     id: "co2",
     code: "PAY-2026-002",
     invoiceId: "iv3",
-    projectName: "瑞康制药 GMP 洁净车间装饰工程",
-    client: "瑞康制药有限公司",
+    projectName: copy("ruikangPharmaceuticalGmpCleanWorkshopDecorationProject"),
+    client: copy("ruikangPharmaceuticalCoLtd"),
     amount: 318000,
     status: "待支付",
     createdAt: "2026-06-02",
@@ -30,8 +31,8 @@ export const checkouts: Checkout[] = [
     id: "co3",
     code: "PAY-2026-003",
     invoiceId: "iv1",
-    projectName: "云栖数据中心机电安装工程",
-    client: "云栖科技股份有限公司",
+    projectName: copy("yunqiDataCenterMechanicalAndElectricalInstallation2"),
+    client: copy("yunqiTechnologyCoLtd2"),
     amount: 858000,
     method: "微信支付",
     status: "已支付",
@@ -44,8 +45,8 @@ export const checkouts: Checkout[] = [
     id: "co4",
     code: "PAY-2026-004",
     invoiceId: "iv6",
-    projectName: "极光新能源充电站电气安装",
-    client: "极光新能源科技公司",
+    projectName: copy("auroraNewEnergyChargingStationElectricalInstallation"),
+    client: copy("auroraNewEnergyTechnologyCompany"),
     amount: 200000,
     status: "已关闭",
     createdAt: "2026-05-10",

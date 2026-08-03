@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
+import { getIntlayer } from "next-intlayer";
 import { SPACING_STEPS } from "../../../lib/theme-manifest";
 import { DocHeader, Section, Code } from "../_components/doc-kit";
+import { DOCS_LOCALE } from "../../../lib/docs-locale";
 
-export const metadata: Metadata = { title: "间距 Spacing · 瑚琏 Hulian" };
+const content = getIntlayer("theme", DOCS_LOCALE).spacing;
+export const metadata: Metadata = { title: `${content.title} · Hulian UI` };
 
 export default function SpacingPage() {
   return (
     <div>
       <DocHeader
-        title="间距"
-        en="Spacing"
-        lede={
-          <>
-            间距基准为 <Code>0.25rem（4px）</Code>，所有 <Code>p-*</Code> / <Code>m-*</Code> /{" "}
-            <Code>gap-*</Code> / <Code>space-*</Code> 工具类都是它的整数倍。统一基准让纵向节奏可预测。
-          </>
-        }
+        title={content.title}
+        en={content.eyebrow}
+        lede={content.lede}
       />
 
-      <Section title="阶梯" desc="数值 = 基准倍数；条形长度按真实尺寸绘制。">
+      <Section title={content.scale} desc={content.scaleDescription}>
         <div className="divide-y divide-border rounded-[var(--radius)] border border-border bg-surface">
           {SPACING_STEPS.map((s) => (
             <div key={s.step} className="flex items-center gap-4 px-5 py-2.5">
@@ -41,9 +39,9 @@ export default function SpacingPage() {
         </div>
       </Section>
 
-      <Section title="用法">
+      <Section title={content.usage}>
         <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          <span className="text-muted">{"// 内边距 16px / 纵向间隔 8px"}</span>
+          <span className="text-muted">{`// ${content.comment}`}</span>
           {"\n"}{'<div className="p-4 space-y-2">'}
           {"\n"}{"  …"}
           {"\n"}{"</div>"}

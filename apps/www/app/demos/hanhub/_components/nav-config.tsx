@@ -1,3 +1,4 @@
+import { copy } from "./nav-config.content";
 import {
   LayoutDashboard,
   Boxes,
@@ -15,46 +16,46 @@ export const ROOT = "/demos/hanhub";
 
 // key = 路由段（overview = index）。
 export const NAV_LABEL: Record<string, string> = {
-  overview: "概览",
-  models: "模型市场",
+  overview: copy("overview"),
+  models: copy("modelMarket"),
   playground: "Playground",
-  logs: "用量日志",
-  billing: "计费充值",
-  health: "健康探测",
-  keys: "API 密钥",
-  settings: "接入设置",
+  logs: copy("usageLog"),
+  billing: copy("billedRecharge"),
+  health: copy("healthDetection"),
+  keys: copy("apiKey"),
+  settings: copy("accessSettings"),
 };
 
 const icon = (Comp: typeof LayoutDashboard): ReactNode => <Comp className="size-4" />;
 
 export const MENU: NavMenuNode[] = [
-  { key: "overview", label: "概览", icon: icon(LayoutDashboard) },
+  { key: "overview", label: copy("overview2"), icon: icon(LayoutDashboard) },
   {
     type: "group",
     key: "g-model",
-    label: "模型与调试",
+    label: copy("modelingAndDebugging"),
     children: [
-      { key: "models", label: "模型市场", icon: icon(Boxes) },
+      { key: "models", label: copy("modelMarket2"), icon: icon(Boxes) },
       { key: "playground", label: "Playground", icon: icon(TerminalSquare) },
     ],
   },
   {
     type: "group",
     key: "g-usage",
-    label: "用量与计费",
+    label: copy("usageAndBilling"),
     children: [
-      { key: "logs", label: "用量日志", icon: icon(ScrollText) },
-      { key: "billing", label: "计费充值", icon: icon(Wallet) },
+      { key: "logs", label: copy("usageLog2"), icon: icon(ScrollText) },
+      { key: "billing", label: copy("billedRecharge2"), icon: icon(Wallet) },
     ],
   },
   {
     type: "group",
     key: "g-ops",
-    label: "网关运维",
+    label: copy("gatewayOperationAndMaintenance"),
     children: [
-      { key: "health", label: "健康探测", icon: icon(Activity) },
-      { key: "keys", label: "API 密钥", icon: icon(KeyRound) },
-      { key: "settings", label: "接入设置", icon: icon(Settings) },
+      { key: "health", label: copy("healthDetection2"), icon: icon(Activity) },
+      { key: "keys", label: copy("apiKey2"), icon: icon(KeyRound) },
+      { key: "settings", label: copy("accessSettings2"), icon: icon(Settings) },
     ],
   },
 ];

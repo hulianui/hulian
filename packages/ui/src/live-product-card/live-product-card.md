@@ -75,6 +75,7 @@ import { LiveProductCard } from "@hulianui/ui"
 
 - `action` 是插槽，组件不内置按钮——抢购钮由调用方传入（Button 等），便于挂自己的下单逻辑。
 - 划线原价仅在 `originalPrice` 存在时渲染；`currency` 同时作用于现价与原价。
+- “讲解中”、销量和剩余库存文案跟随 `ConfigProvider locale`；`enUS` 分别提供 “Presenting”、“Sold N” 和 “N left”，未包 Provider 时保持中文。
 
 ## 相关
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md) · [Dot](../dot/dot.md)

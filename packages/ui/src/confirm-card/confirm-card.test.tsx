@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { ConfirmCard } from "./confirm-card";
 
 const items = [
@@ -31,5 +32,23 @@ describe("ConfirmCard", () => {
     expect(buttons.length).toBeGreaterThan(0);
     buttons.forEach((b) => expect(b.disabled).toBe(true));
     expect(container.textContent).toContain("已确认");
+  });
+
+  it("ConfigProvider locale=enUS localizes defaults and action states", () => {
+    const englishItems = [{ label: "Name", value: "Ada" }];
+    const { getByText, rerender } = render(
+      <ConfigProvider locale={enUS}>
+        <ConfirmCard items={englishItems} onEdit={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByText("Please confirm the following information")).toBeTruthy();
+    expect(getByText("Confirm")).toBeTruthy();
+    expect(getByText("Edit")).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <ConfirmCard items={englishItems} onEdit={() => {}} acted="confirmed" />
+      </ConfigProvider>,
+    );
+    expect(getByText("Confirmed")).toBeTruthy();
   });
 });

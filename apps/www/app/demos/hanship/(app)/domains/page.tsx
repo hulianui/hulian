@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+import { DEMO_RELATIVE_TIME_LOCALE } from "../../../_components/demo-locale";
 
 import { useMemo, useState } from "react";
 import {
@@ -38,21 +40,21 @@ import { useMockData, usePending } from "../../../lib/async";
 type DomainType = Domain["type"];
 
 const typeMeta: Record<DomainType, { label: string; tone: "brand" | "neutral" }> = {
-  primary: { label: "主域", tone: "brand" },
-  redirect: { label: "重定向", tone: "neutral" },
-  preview: { label: "预览", tone: "neutral" },
+  primary: { label: copy("mainDomain"), tone: "brand" },
+  redirect: { label: copy("redirect"), tone: "neutral" },
+  preview: { label: copy("preview"), tone: "neutral" },
 };
 
 const sslMeta: Record<Domain["ssl"], { label: string; tone: "success" | "warning" | "danger" }> = {
-  active: { label: "已签发", tone: "success" },
-  pending: { label: "签发中", tone: "warning" },
-  error: { label: "失败", tone: "danger" },
+  active: { label: copy("issued"), tone: "success" },
+  pending: { label: copy("issuing"), tone: "warning" },
+  error: { label: copy("failed"), tone: "danger" },
 };
 
 const dnsMeta: Record<Domain["dns"], { label: string; tone: "success" | "warning" | "danger" }> = {
-  valid: { label: "已生效", tone: "success" },
-  pending: { label: "待生效", tone: "warning" },
-  misconfigured: { label: "配置错误", tone: "danger" },
+  valid: { label: copy("alreadyEffective"), tone: "success" },
+  pending: { label: copy("toBeEffective"), tone: "warning" },
+  misconfigured: { label: copy("configurationError"), tone: "danger" },
 };
 
 const typeOptions = (Object.keys(typeMeta) as DomainType[]).map((value) => ({
@@ -80,13 +82,13 @@ export default function DomainsPage() {
   });
   const reg = {
     host: form.register("host", {
-      rules: [{ required: true, message: "请输入域名" }],
+      rules: [{ required: true, message: copy("pleaseEnterDomainName") }],
     }),
     projectId: form.register("projectId", {
-      rules: [{ required: true, message: "请选择项目" }],
+      rules: [{ required: true, message: copy("pleaseSelectAnItem") }],
     }),
     type: form.register("type", {
-      rules: [{ required: true, message: "请选择类型" }],
+      rules: [{ required: true, message: copy("pleaseSelectType") }],
     }),
   };
 
@@ -99,19 +101,19 @@ export default function DomainsPage() {
 
   const handleVerify = (d: Domain) => {
     void run(() => {
-      toast({ tone: "info", title: "已发起验证", description: `正在重新检查 ${d.host} 的 DNS 记录` });
+      toast({ tone: "info", title: copy("verificationInitiated"), description: copy("recheckingDnsRecordsForValue", d.host) });
     });
   };
 
   const handleDelete = (d: Domain) => {
     setRemoved((prev) => [...prev, d.id]);
-    toast({ tone: "danger", title: "域名已删除", description: d.host });
+    toast({ tone: "danger", title: copy("domainNameHasBeenDeleted"), description: d.host });
   };
 
   const columns: ColumnDef<Domain, unknown>[] = [
     {
       id: "host",
-      header: "域名",
+      header: copy("domainName"),
       cell: ({ row }) => {
         const d = row.original;
         return (
@@ -126,14 +128,14 @@ export default function DomainsPage() {
     },
     {
       id: "project",
-      header: "项目",
+      header: copy("project"),
       cell: ({ row }) => (
         <span className="text-sm text-muted">{projectById(row.original.projectId)?.name ?? "—"}</span>
       ),
     },
     {
       id: "ssl",
-      header: "SSL 证书",
+      header: copy("sslCertificate"),
       cell: ({ row }) => {
         const m = sslMeta[row.original.ssl];
         return (
@@ -157,14 +159,14 @@ export default function DomainsPage() {
     },
     {
       id: "added",
-      header: "添加",
+      header: copy("add"),
       cell: ({ row }) => (
-        <RelativeTime value={agoDateDays(row.original.addedAgoDays)} className="text-xs text-muted" />
+        <RelativeTime value={agoDateDays(row.original.addedAgoDays)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
       ),
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       meta: { sticky: "right" },
       cell: ({ row }) => {
         const d = row.original;
@@ -178,26 +180,22 @@ export default function DomainsPage() {
                     size="sm"
                     disabled={pending}
                     onClick={() => handleVerify(d)}
-                    aria-label={`验证 ${d.host}`}
+                    aria-label={copy("verifyValue", d.host)}
                   >
-                    <ShieldCheck className="size-4" />
-                    验证
-                  </Button>
+                    <ShieldCheck className="size-4" />{copy("verify")}</Button>
                 }
               />
-              <TooltipContent>重新检查 DNS 与证书</TooltipContent>
+              <TooltipContent>{copy("recheckDnsAndCertificates")}</TooltipContent>
             </Tooltip>
             <Popconfirm
-              title="删除该域名？"
-              description={`${d.host} 将不再指向本项目。`}
-              okText="删除"
-              cancelText="取消"
+              title={copy("deleteThisDomainName")}
+              description={copy("valueWillNoLongerPointToThis", d.host)}
+              okText={copy("delete")}
+              cancelText={copy("cancel")}
               danger
               onConfirm={() => handleDelete(d)}
             >
-              <Button variant="ghost" size="sm" tone="danger">
-                删除
-              </Button>
+              <Button variant="ghost" size="sm" tone="danger">{copy("delete2")}</Button>
             </Popconfirm>
           </div>
         );
@@ -209,23 +207,19 @@ export default function DomainsPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">域名</h1>
-          <p className="text-sm text-muted">管理自定义域名、SSL 证书与 DNS 解析。</p>
+          <h1 className="text-lg font-semibold">{copy("domainName2")}</h1>
+          <p className="text-sm text-muted">{copy("manageCustomDomainNamesSslCertificatesAnd")}</p>
         </div>
         <Button onClick={() => setOpen(true)}>
-          <Plus className="size-4" />
-          添加域名
-        </Button>
+          <Plus className="size-4" />{copy("addDomainName")}</Button>
       </div>
 
       {!loading && misconfigured.length > 0 ? (
-        <Alert tone="warning" title={`${misconfigured.length} 个域名 DNS 未正确配置`}>
-          请按下方「待配置 DNS 记录」添加 CNAME 记录后点击「验证」。
-        </Alert>
+        <Alert tone="warning" title={copy("dnsForValueDomainsIsNotConfigured", misconfigured.length)}>{copy("pleaseClickDnsRecordsToBeConfigured")}</Alert>
       ) : null}
 
       <Card>
-        <CardHeader className="text-sm font-medium">全部域名</CardHeader>
+        <CardHeader className="text-sm font-medium">{copy("allDomainNames")}</CardHeader>
         <CardBody>
           {loading ? (
             <div className="flex flex-col gap-3">
@@ -234,11 +228,9 @@ export default function DomainsPage() {
               ))}
             </div>
           ) : rows.length === 0 ? (
-            <Empty title="还没有自定义域名" description="添加一个域名，自动签发 SSL 证书并接入边缘网络。">
+            <Empty title={copy("noCustomDomainNameYet")} description={copy("addADomainNameAutomaticallyIssueAn")}>
               <Button onClick={() => setOpen(true)}>
-                <Plus className="size-4" />
-                添加域名
-              </Button>
+                <Plus className="size-4" />{copy("addDomainName2")}</Button>
             </Empty>
           ) : (
             <Table<Domain>
@@ -253,7 +245,7 @@ export default function DomainsPage() {
 
       {!loading && misconfigured.length > 0 ? (
         <Card>
-          <CardHeader className="text-sm font-medium">待配置 DNS 记录</CardHeader>
+          <CardHeader className="text-sm font-medium">{copy("dnsRecordsToBeConfigured")}</CardHeader>
           <CardBody className="flex flex-col gap-4">
             {misconfigured.map((d) => {
               const slug = projectById(d.projectId)?.slug ?? "app";
@@ -265,10 +257,10 @@ export default function DomainsPage() {
                     bordered
                     layout="horizontal"
                     items={[
-                      { label: "类型", children: <span className="font-mono text-sm">CNAME</span> },
-                      { label: "名称", children: <span className="font-mono text-sm">{d.host}</span> },
+                      { label: copy("type"), children: <span className="font-mono text-sm">CNAME</span> },
+                      { label: copy("name"), children: <span className="font-mono text-sm">{d.host}</span> },
                       {
-                        label: "值",
+                        label: copy("value"),
                         children: <span className="font-mono text-sm">{`${slug}.hanship.dev`}</span>,
                       },
                     ]}
@@ -281,11 +273,11 @@ export default function DomainsPage() {
       ) : null}
 
       <ModalForm
-        title="添加域名"
+        title={copy("addDomainName3")}
         form={form}
         open={open}
         onOpenChange={setOpen}
-        submitText="添加"
+        submitText={copy("add2")}
         className="w-[520px]"
         onFinish={(values) => {
           const v = values as AddDomainValues;
@@ -300,10 +292,10 @@ export default function DomainsPage() {
           };
           setExtra((prev) => [fresh, ...prev]);
           form.resetFields();
-          toast({ tone: "success", title: "域名已添加，正在签发证书", description: fresh.host });
+          toast({ tone: "success", title: copy("theDomainNameHasBeenAddedAnd"), description: fresh.host });
         }}
       >
-        <Field label="域名" error={reg.host.error} description="例如 app.example.com">
+        <Field label={copy("domainName3")} error={reg.host.error} description={copy("forExampleAppExampleCom")}>
           <Input
             value={String(reg.host.value ?? "")}
             onChange={(e) => reg.host.onChange(e.target.value)}
@@ -311,7 +303,7 @@ export default function DomainsPage() {
             placeholder="app.example.com"
           />
         </Field>
-        <Field label="项目" error={reg.projectId.error}>
+        <Field label={copy("project2")} error={reg.projectId.error}>
           <Select
             items={projectOptions}
             value={String(reg.projectId.value ?? "")}
@@ -327,7 +319,7 @@ export default function DomainsPage() {
             </SelectContent>
           </Select>
         </Field>
-        <Field label="类型" error={reg.type.error}>
+        <Field label={copy("type2")} error={reg.type.error}>
           <Select
             items={typeOptions}
             value={String(reg.type.value ?? "primary")}

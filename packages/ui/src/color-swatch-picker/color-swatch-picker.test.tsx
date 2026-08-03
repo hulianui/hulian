@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import { ColorSwatchPicker } from "./color-swatch-picker";
 
 const COLORS = ["#ef4444", "#3b82f6", "#22c55e"];
@@ -46,5 +48,31 @@ describe("ColorSwatchPicker", () => {
     const { container, getByRole } = render(<ColorSwatchPicker colors={COLORS} className="my-swatches" />);
     expect(container.firstElementChild!.classList.contains("my-swatches")).toBe(true);
     expect(getByRole("radiogroup", { name: "颜色色板" })).toBeTruthy();
+  });
+
+  it("ConfigProvider locale=enUS localizes the default group label", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <ColorSwatchPicker colors={COLORS} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("radiogroup", { name: "Color swatches" })).toBeTruthy();
+  });
+
+  it("legacy dictionaries fall back to Chinese while aria-label overrides enUS", () => {
+    const legacy = { ...enUS, components: { ...enUS.components!, colorSwatchPicker: undefined } };
+    const { getByRole, rerender } = render(
+      <ConfigProvider locale={legacy}>
+        <ColorSwatchPicker colors={COLORS} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("radiogroup", { name: "颜色色板" })).toBeTruthy();
+
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <ColorSwatchPicker colors={COLORS} aria-label="Product color" />
+      </ConfigProvider>,
+    );
+    expect(getByRole("radiogroup", { name: "Product color" })).toBeTruthy();
   });
 });

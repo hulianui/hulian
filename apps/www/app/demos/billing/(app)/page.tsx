@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./page.content";
+import { DEMO_RELATIVE_TIME_LOCALE, demoLocationHref } from "../../_components/demo-locale";
+
 import Link from "next/link";
 import {
   Banner,
@@ -19,9 +22,23 @@ import { invoices, spendSeries, invoiceStatusMeta } from "../_data/invoices";
 import { BILLING_BASE } from "../_components/nav-config";
 import { useBilling } from "../_lib/billing-store";
 
-function Panel({ title, action, children, className }: { title?: string; action?: React.ReactNode; children: React.ReactNode; className?: string }) {
+function Panel({
+  title,
+  action,
+  children,
+  className,
+}: {
+  title?: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <section className={["rounded-[var(--radius-lg)] border border-border bg-surface p-5", className].filter(Boolean).join(" ")}>
+    <section
+      className={["rounded-[var(--radius-lg)] border border-border bg-surface p-5", className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       {(title || action) && (
         <div className="mb-4 flex items-center justify-between gap-3">
           {title && <h2 className="text-sm font-semibold text-foreground">{title}</h2>}
@@ -34,9 +51,21 @@ function Panel({ title, action, children, className }: { title?: string; action?
 }
 
 export default function OverviewPage() {
-  const { planId, cycle, seats, monthlyTotal, methods, defaultMethodId, promoDismissed, dismissPromo, setCycle } = useBilling();
+  const {
+    planId,
+    cycle,
+    seats,
+    monthlyTotal,
+    methods,
+    defaultMethodId,
+    promoDismissed,
+    dismissPromo,
+    setCycle,
+  } = useBilling();
   const plan = planById[planId];
-  const defaultCard = methods.find((m) => m.id === defaultMethodId && m.type === "card") ?? methods.find((m) => m.type === "card");
+  const defaultCard =
+    methods.find((m) => m.id === defaultMethodId && m.type === "card") ??
+    methods.find((m) => m.type === "card");
   const monthAmount = spendSeries[spendSeries.length - 1]?.amount ?? 0;
   const prevAmount = spendSeries[spendSeries.length - 2]?.amount ?? 0;
   const delta = prevAmount ? Math.round(((monthAmount - prevAmount) / prevAmount) * 100) : 0;
@@ -52,12 +81,18 @@ export default function OverviewPage() {
           icon={<Sparkles />}
           onClose={dismissPromo}
           action={
-            <button onClick={() => setCycle("yearly")} className="whitespace-nowrap rounded-[var(--radius)] bg-white/20 px-2.5 py-1 text-xs font-medium hover:bg-white/30">
-              切到年付
+            <button
+              onClick={() => setCycle("yearly")}
+              className="whitespace-nowrap rounded-[var(--radius)] bg-white/20 px-2.5 py-1 text-xs font-medium hover:bg-white/30"
+            >
+              {copy("switchToAnnualPayment")}
             </button>
           }
         >
-          切换为年付立省 2 个月 —— 同样的专业版，一年少付 {formatMoney((plan.monthly - plan.yearly) * seats * 12)}
+          {copy(
+            "switchToAnnualAndSaveMonthsSame",
+            formatMoney((plan.monthly - plan.yearly) * seats * 12),
+          )}
         </Banner>
       )}
 
@@ -65,50 +100,90 @@ export default function OverviewPage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
-            下午好，{account.name.slice(1)}
+            {copy("goodAfternoon", account.name)}
           </h1>
           <p className="mt-1 text-sm text-muted">
-            上次登录 <RelativeTime value={account.lastLogin} className="text-foreground" /> · 账户自{" "}
-            <RelativeTime value={account.memberSince} className="text-foreground" /> 起一路同行
+            {copy("lastLogin")}
+            <RelativeTime
+              value={account.lastLogin}
+              locale={DEMO_RELATIVE_TIME_LOCALE}
+              className="text-foreground"
+            />
+            {copy("accountSince")}{" "}
+            <RelativeTime
+              value={account.memberSince}
+              locale={DEMO_RELATIVE_TIME_LOCALE}
+              className="text-foreground"
+            />
+            {copy("letSGoTogether")}
           </p>
         </div>
-        <ButtonGroup aria-label="快捷操作">
-          <Button variant="outline" render={<Link href={`${BILLING_BASE}/plans`} />}>升级套餐</Button>
-          <Button variant="outline" render={<Link href={`${BILLING_BASE}/invoices`} />}>下载发票</Button>
+        <ButtonGroup aria-label={copy("quickOperation")}>
+          <Button variant="outline" render={<Link href={`${BILLING_BASE}/plans`} />}>
+            {copy("upgradePackage")}
+          </Button>
+          <Button variant="outline" render={<Link href={`${BILLING_BASE}/invoices`} />}>
+            {copy("downloadInvoice")}
+          </Button>
         </ButtonGroup>
       </div>
 
       {/* KPI */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat
-          label="本月消费"
+          label={copy("consumptionThisMonth")}
           value={formatMoney(monthAmount)}
           delta={delta}
-          deltaLabel="较上月"
+          deltaLabel={copy("comparedWithLastMonth")}
           icon={<TrendingUp className="size-4" />}
         />
-        <Stat label="当前月费" value={formatMoney(monthlyTotal)} icon={<Wallet className="size-4" />} />
-        <Stat label="团队席位" value={`${seats} 席`} icon={<Users className="size-4" />} />
         <Stat
-          label="下次续费"
-          value={<RelativeTime value="2026-07-01T00:00:00+08:00" />}
+          label={copy("currentMonthlyFee")}
+          value={formatMoney(monthlyTotal)}
+          icon={<Wallet className="size-4" />}
+        />
+        <Stat
+          label={copy("teamSeats")}
+          value={copy("valueSeats", seats)}
+          icon={<Users className="size-4" />}
+        />
+        <Stat
+          label={copy("nextRenewal")}
+          value={
+            <RelativeTime value="2026-07-01T00:00:00+08:00" locale={DEMO_RELATIVE_TIME_LOCALE} />
+          }
           icon={<CalendarClock className="size-4" />}
         />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* 消费走势 */}
-        <Panel title="近 8 个月消费" className="lg:col-span-2" action={<Tag tone="brand" size="sm">{plan.name} · {cycle === "yearly" ? "年付" : "月付"}</Tag>}>
+        <Panel
+          title={copy("consumptionInThePastMonths")}
+          className="lg:col-span-2"
+          action={
+            <Tag tone="brand" size="sm">
+              {plan.name} · {cycle === "yearly" ? copy("annualPayment") : copy("monthlyPayment")}
+            </Tag>
+          }
+        >
           <AreaChart
             data={spendSeries}
-            series={[{ key: "amount", label: "消费(元)" }]}
+            series={[{ key: "amount", label: copy("consumptionYuan") }]}
             xKey="month"
             height={240}
           />
         </Panel>
 
         {/* 默认支付方式 */}
-        <Panel title="默认支付方式" action={<Link href={`${BILLING_BASE}/payment`} className="text-xs text-primary hover:underline">管理</Link>}>
+        <Panel
+          title={copy("defaultPaymentMethod")}
+          action={
+            <Link href={`${BILLING_BASE}/payment`} className="text-xs text-primary hover:underline">
+              {copy("management")}
+            </Link>
+          }
+        >
           {defaultCard ? (
             <div className="flex flex-col items-center gap-3">
               <CreditCard
@@ -118,14 +193,21 @@ export default function OverviewPage() {
                 brand={defaultCard.brand}
                 className="w-full max-w-[19rem]"
               />
-              <p className="text-xs text-muted">将于续费日 <RelativeTime value="2026-07-01T00:00:00+08:00" /> 自动扣款</p>
+              <p className="text-xs text-muted">
+                {copy("willBeRenewedOnTheRenewalDate")}
+                <RelativeTime
+                  value="2026-07-01T00:00:00+08:00"
+                  locale={DEMO_RELATIVE_TIME_LOCALE}
+                />
+                {copy("automaticDeduction")}
+              </p>
             </div>
           ) : null}
         </Panel>
       </div>
 
       {/* 资源用量 */}
-      <Panel title="资源用量">
+      <Panel title={copy("resourceUsage")}>
         <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
           {usage.map((u) => {
             const pct = Math.round((u.used / u.quota) * 100);
@@ -136,7 +218,10 @@ export default function OverviewPage() {
                   <span className="text-muted">{u.label}</span>
                   <span className="tabular-nums text-foreground">
                     {u.used.toLocaleString("zh-CN")}
-                    <span className="text-muted"> / {u.quota.toLocaleString("zh-CN")} {u.unit}</span>
+                    <span className="text-muted">
+                      {" "}
+                      / {u.quota.toLocaleString("zh-CN")} {u.unit}
+                    </span>
                   </span>
                 </div>
                 <Progress value={pct} tone={near ? "warning" : "primary"} />
@@ -147,17 +232,36 @@ export default function OverviewPage() {
       </Panel>
 
       {/* 近期账单（Glimpse 悬停预览 + RelativeTime）*/}
-      <Panel title="近期账单" action={<Link href={`${BILLING_BASE}/invoices`} className="inline-flex items-center gap-0.5 text-xs text-primary hover:underline">全部 <ArrowRight className="size-3" /></Link>}>
+      <Panel
+        title={copy("recentBills")}
+        action={
+          <Link
+            href={`${BILLING_BASE}/invoices`}
+            className="inline-flex items-center gap-0.5 text-xs text-primary hover:underline"
+          >
+            {copy("all")}
+            <ArrowRight className="size-3" />
+          </Link>
+        }
+      >
         <ul className="divide-y divide-border">
           {recent.map((inv) => {
             const meta = invoiceStatusMeta[inv.status];
             return (
-              <li key={inv.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+              <li
+                key={inv.id}
+                className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
+              >
                 <div className="min-w-0">
                   <Glimpse
                     title={`${inv.id} · ${inv.plan}`}
-                    description={`计费周期 ${inv.period} · 共 ${inv.lines.length} 项明细，合计 ${formatMoney(inv.amount)}。悬停即可速览，点击进入发票中心下载 PDF。`}
-                    href={`${BILLING_BASE}/invoices`}
+                    description={copy(
+                      "billingPeriodValueTotalValueDetailsTotaling",
+                      inv.period,
+                      inv.lines.length,
+                      formatMoney(inv.amount),
+                    )}
+                    href={demoLocationHref(`${BILLING_BASE}/invoices`)}
                   >
                     {inv.id}
                   </Glimpse>
@@ -165,10 +269,14 @@ export default function OverviewPage() {
                 </div>
                 <div className="flex items-center gap-4 whitespace-nowrap">
                   <span className="hidden text-xs text-muted sm:inline">
-                    <RelativeTime value={inv.date} />
+                    <RelativeTime value={inv.date} locale={DEMO_RELATIVE_TIME_LOCALE} />
                   </span>
-                  <span className="w-20 text-right text-sm font-medium tabular-nums text-foreground">{formatMoney(inv.amount)}</span>
-                  <Tag tone={meta.tone} size="sm">{meta.label}</Tag>
+                  <span className="w-20 text-right text-sm font-medium tabular-nums text-foreground">
+                    {formatMoney(inv.amount)}
+                  </span>
+                  <Tag tone={meta.tone} size="sm">
+                    {meta.label}
+                  </Tag>
                 </div>
               </li>
             );

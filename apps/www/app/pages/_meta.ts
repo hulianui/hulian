@@ -1,6 +1,9 @@
 // Pages 纯数据 SSOT —— 零组件 import，server / client 皆可安全读（首页四档浏览器、画廊卡片用）。
 // 「页面」= 由多个区块拼成的完整整页，比区块大一级。_registry.tsx 在此基础上补 slug→页面组件映射。
 
+import { pageCategoryMetaEn, pageMetaEn } from "../../i18n/page-meta.en";
+import { DOCS_LOCALE } from "../../lib/docs-locale";
+
 export interface CompositeInstallation {
   providers: string[];
   replace: Array<"assets" | "copy" | "mock-data" | "navigation" | "event-handlers">;
@@ -17,6 +20,14 @@ export interface PageMeta {
   file: string;
   /** 安装后的显式接入清单；slots 必须与页面实际区块依赖一致。 */
   installation: CompositeInstallation;
+}
+
+export interface LocalizedPageDisplayMeta {
+  name: string;
+  description: string;
+  categoryLabel: string;
+  tags: string[];
+  searchAliases: string[];
 }
 
 export const CATEGORY_LABEL: Record<PageMeta["category"], string> = {
@@ -291,4 +302,23 @@ export const pages: PageMeta[] = [
 
 export function getPage(slug: string): PageMeta | undefined {
   return pages.find((p) => p.slug === slug);
+}
+
+/** Localized display/search overlay. Installation data and source filenames remain canonical. */
+export function pageMeta(item: PageMeta): LocalizedPageDisplayMeta {
+  if (DOCS_LOCALE === "en") {
+    const localized = pageMetaEn[item.slug];
+    return {
+      ...localized,
+      categoryLabel: pageCategoryMetaEn[item.category].label,
+      searchAliases: [item.name, item.description, CATEGORY_LABEL[item.category], ...item.tags],
+    };
+  }
+  return {
+    name: item.name,
+    description: item.description,
+    categoryLabel: CATEGORY_LABEL[item.category],
+    tags: item.tags,
+    searchAliases: [],
+  };
 }

@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { OrbitingCircles, Heading, Text, Tag, Stack } from "@hulianui/ui";
 import {
   Cloud,

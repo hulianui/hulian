@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./home-coupon-center.content";
 import { useState } from "react";
 import { Coupon, Heading, Text } from "@hulianui/ui";
 import { toast } from "@hulianui/ui";
@@ -21,7 +22,7 @@ export function HomeCouponCenter({ coupons }: Props) {
   const handleClaim = (coupon: CouponData) => {
     claimCoupon(coupon.id);
     setLocalClaimed((prev) => new Set([...prev, coupon.id]));
-    toast({ title: `「${coupon.title}」已领取，快去使用吧！`, tone: "success" });
+    toast({ title: `${copy("openingQuote")}${coupon.title}${copy("claimedUseItOnYourNextOrder")}`, tone: "success" });
   };
 
   const getCouponStatus = (coupon: CouponData): "available" | "claimed" | "used" | "expired" => {
@@ -34,10 +35,12 @@ export function HomeCouponCenter({ coupons }: Props) {
       <div className="mb-4 flex items-center justify-between">
         <div>
           <Heading level={2} size="lg" id="home-coupon-title">
-            领券中心
+
+            {copy("couponCenter")}
           </Heading>
           <Text size="sm" tone="muted" className="mt-0.5">
-            领券享折扣，下单省更多
+
+            {copy("claimACouponAndSaveOnYourNextOrder")}
           </Text>
         </div>
       </div>

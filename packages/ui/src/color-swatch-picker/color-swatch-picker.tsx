@@ -3,6 +3,7 @@ import { memo } from "react";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
 import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import type { ColorSwatchPickerProps, SwatchSize } from "./color-swatch-picker.types";
 
 // 离散预设色块单选网格：HeroUI ColorSwatchPicker 的零依赖对标。
@@ -21,15 +22,16 @@ function ColorSwatchPickerImpl({
   size = "md",
   disabled = false,
   className,
-  "aria-label": ariaLabel = "颜色色板",
+  "aria-label": ariaLabel,
 }: ColorSwatchPickerProps) {
+  const labels = useComponentLocale().colorSwatchPicker ?? { label: "颜色色板" };
   return (
     <BaseRadioGroup
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange ? (v) => onValueChange(v as string) : undefined}
       disabled={disabled}
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? labels.label}
       className={cn("flex flex-wrap gap-2", disabled && "opacity-50", className)}
     >
       {colors.map((color) => (

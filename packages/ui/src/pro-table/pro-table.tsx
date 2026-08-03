@@ -4,7 +4,7 @@ import type { ColumnDef, RowSelectionState, SortingState } from "@tanstack/react
 import { Columns3, Maximize, Minimize, RefreshCw, Rows3 } from "../_icons";
 import { Button } from "../button/button";
 import { Checkbox } from "../checkbox/checkbox";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { Pagination } from "../pagination/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
@@ -93,7 +93,21 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     ...tableProps
   } = props;
 
-  const t = useLocale().proTable;
+  const t = useLocaleValue("proTable", {
+    total: (n) => `共 ${n} 条`,
+    reload: "刷新",
+    density: "密度",
+    densityValue: (density) => `密度：${density}`,
+    columnSetting: "列设置",
+    fullscreen: "全屏",
+    exitFullscreen: "退出全屏",
+    columnsTitle: "列展示",
+    selected: (n) => `已选 ${n} 项`,
+    clearSelection: "清空",
+    pageSize: (n) => `${n} 条/页`,
+    prevPage: "上一页",
+    nextPage: "下一页",
+  });
   const managed = Boolean(request);
   const cursorMode = managed && paginationMode === "cursor";
 
@@ -249,7 +263,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   const showToolbar = features !== null || title != null || toolbarActions != null;
 
   // 解析最终数据 / 分页 / loading（托管 vs 展示）。
-  const tableData = managed ? fetched.data : (dataProp ?? []);
+  const tableData = managed ? fetched.data : dataProp ?? [];
   const loading = managed ? fetching : loadingProp;
   // cursor 模式不走数字分页（keyset 无 total/随机跳页），由专属 footer 渲染。
   const pagination = cursorMode
@@ -269,8 +283,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
   // 选中行 key 集合（批量条用）。
   const selectedRowKeys = useMemo(
-    () =>
-      Object.keys(rowSelection ?? {}).filter((k) => (rowSelection as RowSelectionState)[k]),
+    () => Object.keys(rowSelection ?? {}).filter((k) => (rowSelection as RowSelectionState)[k]),
     [rowSelection],
   );
   const showBatch = batchActions != null && selectedRowKeys.length > 0;
@@ -317,9 +330,10 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
           <div className="flex shrink-0 items-center gap-1.5">
             {toolbarActions}
             {toolbarActions != null &&
-              (features?.reload || features?.density || features?.columnSetting || features?.fullscreen) && (
-                <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
-              )}
+              (features?.reload ||
+                features?.density ||
+                features?.columnSetting ||
+                features?.fullscreen) && <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />}
             {reloadVisible && (
               <button type="button" aria-label={t.reload} onClick={doReload} className={iconBtn}>
                 <RefreshCw className={cn("size-4", loading && "animate-spin")} />
@@ -328,8 +342,8 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
             {features?.density && (
               <button
                 type="button"
-                aria-label={`${t.density}：${density}`}
-                title={`${t.density}：${density}`}
+                aria-label={t.densityValue(density)}
+                title={t.densityValue(density)}
                 onClick={cycleDensity}
                 className={iconBtn}
               >
@@ -347,7 +361,10 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
                       const id = colId(c);
                       return (
                         <label key={id} className="flex cursor-pointer items-center gap-2 text-sm">
-                          <Checkbox checked={!hidden.has(id)} onCheckedChange={() => toggleCol(id)} />
+                          <Checkbox
+                            checked={!hidden.has(id)}
+                            onCheckedChange={() => toggleCol(id)}
+                          />
                           <span className="truncate">{colLabel(c)}</span>
                         </label>
                       );
@@ -420,7 +437,11 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
                   value={String(pagination.pageSize)}
                   onValueChange={(v) => pagination.onPageSizeChange!(Number(v))}
                 >
-                  <SelectTrigger size="sm" aria-label={t.pageSize(pagination.pageSize)} className="w-28" />
+                  <SelectTrigger
+                    size="sm"
+                    aria-label={t.pageSize(pagination.pageSize)}
+                    className="w-28"
+                  />
                   <SelectContent>
                     {pageSizeOptions.map((n) => (
                       <SelectItem key={n} value={String(n)}>
@@ -478,9 +499,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
               size="sm"
               disabled={!fetched.hasMore || fetched.nextCursor == null || fetching}
               onClick={() =>
-                setCursorStack((s) =>
-                  fetched.nextCursor == null ? s : [...s, fetched.nextCursor],
-                )
+                setCursorStack((s) => (fetched.nextCursor == null ? s : [...s, fetched.nextCursor]))
               }
             >
               {t.nextPage}

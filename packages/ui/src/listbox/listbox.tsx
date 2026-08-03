@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { Check } from "../_icons";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ListboxProps, ListboxItemData } from "./listbox.types";
 
@@ -16,8 +18,10 @@ export function Listbox({
   onAction,
   className,
   style,
-  "aria-label": ariaLabel = "选项列表",
+  "aria-label": ariaLabel,
 }: ListboxProps) {
+  const locale = useComponentLocale().listbox ?? { label: "选项列表" };
+  const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
   const isControlled = selectedKeys !== undefined;
   const [internal, setInternal] = useState<string[]>(defaultSelectedKeys);
   const selected = isControlled ? selectedKeys! : internal;
@@ -42,7 +46,9 @@ export function Listbox({
     if (selectionMode === "single") {
       setSelection([it.key]);
     } else if (selectionMode === "multiple") {
-      setSelection(selected.includes(it.key) ? selected.filter((k) => k !== it.key) : [...selected, it.key]);
+      setSelection(
+        selected.includes(it.key) ? selected.filter((k) => k !== it.key) : [...selected, it.key],
+      );
     }
   };
 
@@ -68,7 +74,8 @@ export function Listbox({
 
   const typeahead = (char: string, from: number) => {
     const c = char.toLowerCase();
-    const text = (it: ListboxItemData) => (typeof it.label === "string" ? it.label : it.key).toLowerCase();
+    const text = (it: ListboxItemData) =>
+      (typeof it.label === "string" ? it.label : it.key).toLowerCase();
     for (let n = 1; n <= items.length; n++) {
       const i = (from + n) % items.length;
       if (!isDisabled(items[i]) && text(items[i]).startsWith(c)) return i;
@@ -110,7 +117,7 @@ export function Listbox({
   return (
     <div
       role="listbox"
-      aria-label={ariaLabel}
+      aria-label={resolvedAriaLabel}
       aria-multiselectable={selectionMode === "multiple" || undefined}
       onKeyDown={onKeyDown}
       className={cn(
@@ -143,8 +150,8 @@ export function Listbox({
               disabled
                 ? "cursor-not-allowed text-muted opacity-50"
                 : sel
-                  ? "bg-primary/12 text-primary"
-                  : "text-foreground",
+                ? "bg-primary/12 text-primary"
+                : "text-foreground",
               !disabled && i === active && !sel && "bg-surface-hover",
               !disabled && i === active && "ring-2 ring-ring",
             )}
@@ -152,7 +159,9 @@ export function Listbox({
             {it.startContent && <span className="shrink-0">{it.startContent}</span>}
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="truncate">{it.label}</span>
-              {it.description != null && <span className="truncate text-xs text-muted">{it.description}</span>}
+              {it.description != null && (
+                <span className="truncate text-xs text-muted">{it.description}</span>
+              )}
             </span>
             {it.endContent && <span className="shrink-0 text-muted">{it.endContent}</span>}
             {sel && <Check className="size-4 shrink-0 text-primary" aria-hidden />}

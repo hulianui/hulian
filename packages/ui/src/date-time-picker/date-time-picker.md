@@ -56,6 +56,12 @@ import { DateTimePicker } from "@hulianui/ui"
 |------|------|------|
 | onValueChange | `(value: string \| null) => void` | 选中/清空回调；清空回传 `null` |
 
+## 国际化
+
+占位文本、清除按钮、时/分/秒列、此刻和确定文案跟随最近的 `ConfigProvider locale`。
+显式 `placeholder` 优先于 Locale。旧自定义 Locale 若没有
+`components.dateTimePicker`，仍使用原有中文兼容默认值。
+
 ## 示例
 ```tsx
 // 基础

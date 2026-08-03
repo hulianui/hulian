@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { alertVariants, Alert } from "./alert";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS, zhCN } from "../config/locale";
 
 describe("alertVariants", () => {
   it("默认 soft + info（/12 alpha 底 + primary accent）", () => {
@@ -107,6 +109,31 @@ describe("Alert", () => {
   it("closeLabel 可自定义关闭按钮无障碍标签", () => {
     const { getByLabelText } = render(<Alert onClose={() => {}} closeLabel="dismiss" />);
     expect(getByLabelText("dismiss")).toBeTruthy();
+  });
+
+  it("closeLabel 在自定义值与本地化默认值之间切换时保持 Hook 顺序", () => {
+    const { getByLabelText, rerender } = render(<Alert onClose={() => {}} closeLabel="dismiss" />);
+    expect(getByLabelText("dismiss")).toBeTruthy();
+
+    expect(() => rerender(<Alert onClose={() => {}} />)).not.toThrow();
+    expect(getByLabelText("关闭")).toBeTruthy();
+  });
+
+  it("关闭标签随 enUS 本地化，缺 Provider 与 legacy locale 保持精确中文", () => {
+    const { getByLabelText, rerender } = render(<Alert onClose={() => {}} />);
+    expect(getByLabelText("关闭")).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Alert onClose={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("Close")).toBeTruthy();
+    rerender(
+      <ConfigProvider locale={{ ...zhCN, components: undefined }}>
+        <Alert onClose={() => {}} />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("关闭")).toBeTruthy();
   });
 
   it("不传 action / onClose 时不渲染右侧操作区", () => {

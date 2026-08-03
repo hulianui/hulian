@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import {
   TYPE_ORDER,
   categoriesOf,
@@ -80,9 +80,7 @@ describe("⌘K 面板：用户 管理 列表", () => {
     // 全局截断的老写法下，组件这一组会被前面的页面/区块/模版挤到只剩个位数名额。
     const components = panel.find((g) => g.type === "component");
     expect(components).toBeDefined();
-    expect(components!.hits.length).toBeGreaterThanOrEqual(
-      Math.min(10, components!.total),
-    );
+    expect(components!.hits.length).toBeGreaterThanOrEqual(Math.min(10, components!.total));
   });
 
   it("被配额截断的组会如实报出总数，不假装这就是全部", () => {
@@ -143,6 +141,19 @@ describe("中英双语与导出名", () => {
   it("slug 形式也能命中（data-table → 区块）", () => {
     expect(idsOf("data-table")).toContain("block:data-table");
   });
+
+  it("separates canonical secondary exports from generic search metadata", () => {
+    const formDialog = searchDocs.find((doc) => doc.id === "component:form-dialog");
+    const tour = searchDocs.find((doc) => doc.id === "component:tour");
+
+    expect(formDialog?.identityAliases).toEqual([
+      "弹窗/抽屉表单",
+      "ModalForm",
+      "DrawerForm",
+    ]);
+    expect(tour?.keywords).toContain("引导");
+    expect(tour?.identityAliases ?? []).not.toContain("引导");
+  });
 });
 
 describe("过滤与分组", () => {
@@ -178,5 +189,89 @@ describe("过滤与分组", () => {
 describe("无结果不再骗人", () => {
   it("确实无关的词返回空数组（而不是回落成全量）", () => {
     expect(searchAll("zzzz不存在的东西qqq")).toEqual([]);
+  });
+});
+
+describe("English catalog search", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("returns localized component and block results under /en", async () => {
+    vi.stubEnv("DOCS_LOCALE", "en");
+    vi.resetModules();
+    const englishSearch = await import("./search-index");
+
+    expect(englishSearch.TYPE_LABEL).toMatchObject({
+      component: "Component",
+      block: "Block",
+    });
+
+    const button = englishSearch.searchAll("button").find((hit) => hit.id === "component:button");
+    expect(button).toMatchObject({
+      title: "Button",
+      href: "/en/components/button",
+      categoryLabel: "Forms",
+    });
+    expect(button?.description).not.toMatch(/[\u3400-\u9fff]/u);
+
+    const dataTable = englishSearch
+      .searchAll("data table")
+      .find((hit) => hit.id === "block:data-table");
+    expect(dataTable).toMatchObject({
+      title: "Data Table",
+      href: "/en/blocks/data-table",
+      categoryLabel: "Application",
+    });
+  });
+
+  it("ranks English customer-management and workflow demos with localized copy", async () => {
+    vi.stubEnv("DOCS_LOCALE", "en");
+    vi.resetModules();
+    const englishSearch = await import("./search-index");
+
+    const customerHits = englishSearch.searchAll("customer management");
+    expect(customerHits[0]).toMatchObject({
+      id: "page:admin-list",
+      title: "Admin List Page",
+      href: "/en/pages/admin-list",
+    });
+    expect(customerHits.find((hit) => hit.id === "demo:crm")).toMatchObject({
+      id: "demo:crm",
+      title: "CRM Customer Management",
+      href: "/en/demos/crm",
+    });
+
+    const workflowHits = englishSearch.searchAll("workflow");
+    const workflow = workflowHits.find((hit) => hit.id === "demo:ai-workflow");
+    expect(workflow).toMatchObject({
+      title: "AI Image and Video Workflow",
+      href: "/en/demos/ai-workflow",
+      category: "AI Application",
+      categoryLabel: "AI Application",
+    });
+    expect(workflow?.description).not.toMatch(/[\u3400-\u9fff]/u);
+  });
+
+  it("keeps Chinese aliases searchable in the English index", async () => {
+    vi.stubEnv("DOCS_LOCALE", "en");
+    vi.resetModules();
+    const englishSearch = await import("./search-index");
+
+    expect(englishSearch.searchAll("按钮").map((hit) => hit.id)).toContain("component:button");
+    expect(englishSearch.searchAll("客户管理").map((hit) => hit.id)).toContain("demo:crm");
+  });
+
+  it("keeps only the canonical Chinese component short name as an English exact identity", async () => {
+    vi.stubEnv("DOCS_LOCALE", "en");
+    vi.resetModules();
+    const englishSearch = await import("./search-index");
+
+    const button = englishSearch.searchDocs.find((doc) => doc.id === "component:button");
+    const tour = englishSearch.searchDocs.find((doc) => doc.id === "component:tour");
+    expect(button?.identityAliases).toContain("按钮");
+    expect(tour?.identityAliases).toContain("漫游引导");
+    expect(tour?.identityAliases).not.toContain("引导");
   });
 });

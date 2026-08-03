@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./task-detail-dag.content";
+
 // 任务详情中栏：多 agent 编排 DAG（复用 @hulianui/ui Flow，只读快照）。
 // 把 task.subtasks 转成 Flow 节点（position 由分层算法计算），task.edges 转成 Flow 连线。
 // 节点实时状态由 useDispatchRun 的 statusById / activeId 驱动着色。
@@ -51,29 +53,29 @@ export function computeDagLayout(
 
 /** 状态 → 节点左侧色条 + 徽标文案/色。 */
 const STATUS_META: Record<SubTaskStatus, { bar: string; label: string; tone: string }> = {
-  pending: { bar: "before:bg-muted", label: "待执行", tone: "text-muted bg-surface-hover" },
-  running: { bar: "before:bg-primary", label: "执行中", tone: "text-primary bg-primary/10" },
-  failover: { bar: "before:bg-warning", label: "降级中", tone: "text-warning bg-warning/10" },
-  failed: { bar: "before:bg-danger", label: "失败", tone: "text-danger bg-danger/10" },
-  done: { bar: "before:bg-success", label: "完成", tone: "text-success bg-success/10" },
+  pending: { bar: "before:bg-muted", label: copy("pendingExecution"), tone: "text-muted bg-surface-hover" },
+  running: { bar: "before:bg-primary", label: copy("inExecution"), tone: "text-primary bg-primary/10" },
+  failover: { bar: "before:bg-warning", label: copy("downgrading"), tone: "text-warning bg-warning/10" },
+  failed: { bar: "before:bg-danger", label: copy("failure"), tone: "text-danger bg-danger/10" },
+  done: { bar: "before:bg-success", label: copy("done"), tone: "text-success bg-success/10" },
 };
 
 const CAP_LABEL: Record<string, string> = {
-  text: "文本",
-  code: "代码",
-  image: "图像",
-  translate: "翻译",
-  rag: "检索",
-  extract: "抽取",
-  moderate: "审核",
-  orchestrate: "编排",
+  text: copy("text"),
+  code: copy("code"),
+  image: copy("image"),
+  translate: copy("translation"),
+  rag: copy("search"),
+  extract: copy("extract"),
+  moderate: copy("review"),
+  orchestrate: copy("arrangement"),
 };
 
 function getHandles(node: FlowNode<NodeData>): FlowHandleSpec[] {
   const hs: FlowHandleSpec[] = [];
   // 有依赖 → 入桩；被依赖（有出边）由 edges 决定，这里统一两侧都给，简洁稳妥。
-  hs.push({ id: "in", type: "target", label: "输入" });
-  hs.push({ id: "out", type: "source", label: "输出" });
+  hs.push({ id: "in", type: "target", label: copy("input") });
+  hs.push({ id: "out", type: "source", label: copy("output") });
   return hs;
 }
 

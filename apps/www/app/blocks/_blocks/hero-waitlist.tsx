@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 import { useState } from "react";
 import { AvatarCircles, Button, Input, Tag, Heading, Text } from "@hulianui/ui";

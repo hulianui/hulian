@@ -10,7 +10,7 @@ status: enriched
 
 # DeployStatus
 
-> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需(纯CSS·RSC) · data-display/info
+> 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需 · data-display/info
 
 ## 何时用
 
@@ -35,7 +35,7 @@ import { DeployStatus } from "@hulianui/ui"
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| label | `ReactNode` | 覆盖默认中文文案 |
+| label | `ReactNode` | 覆盖 ConfigProvider 提供的本地化文案 |
 
 ## 示例
 ```tsx
@@ -48,7 +48,7 @@ import { DeployStatus } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
-暂无已知坑。注意语义边界：本组件是部署生命周期态，不要拿它当服务健康指示灯（那是 StatusDot）。
+注意语义边界：本组件是部署生命周期态，不要拿它当服务健康指示灯（那是 StatusDot）。默认文案跟随 `ConfigProvider`，仅在业务语义需要时传 `label` 覆盖。
 
 ## 相关
 [Sparkline](../sparkline/sparkline.md) · [ImageViewer](../image-viewer/image-viewer.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md)

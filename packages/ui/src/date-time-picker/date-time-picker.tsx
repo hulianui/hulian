@@ -4,6 +4,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import { dayjs } from "../lib/date";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { TimeColumn } from "../time-picker/time-column";
@@ -46,7 +47,7 @@ function DateTimePickerImpl({
   minDateTime,
   maxDateTime,
   disabledDate,
-  placeholder = "选择日期时间",
+  placeholder: placeholderProp,
   displayFormat,
   clearable = true,
   showNow = true,
@@ -55,9 +56,19 @@ function DateTimePickerImpl({
   "aria-label": ariaLabel,
   className,
 }: DateTimePickerProps) {
+  const labels = useComponentLocale().dateTimePicker ?? {
+    placeholder: "选择日期时间",
+    clear: "清除",
+    hour: "时",
+    minute: "分",
+    second: "秒",
+    now: "此刻",
+    confirm: "确定",
+  };
+  const placeholder = placeholderProp ?? labels.placeholder;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
-  const value = isControlled ? (valueProp ?? null) : internal;
+  const value = isControlled ? valueProp ?? null : internal;
   const { date, time } = splitDateTime(value);
 
   const [open, setOpen] = useState(false);
@@ -67,7 +78,8 @@ function DateTimePickerImpl({
   const parsedTime = parseTime(time);
   // 尚未选时间时的隐含基准，同 TimePicker：把 00:00:00 夹进 [min,max]，
   // 否则 minTime="09:30" 下基准小时恒为 0，分钟列会被整列判死，面板看着像坏了。
-  const base: TimeParts = parsedTime ?? clampTime({ h: 0, m: 0, s: 0 }, withSeconds, minTime, maxTime);
+  const base: TimeParts =
+    parsedTime ?? clampTime({ h: 0, m: 0, s: 0 }, withSeconds, minTime, maxTime);
 
   function commit(next: string | null) {
     if (!isControlled) setInternal(next);
@@ -89,7 +101,10 @@ function DateTimePickerImpl({
     // 换天会换掉时间边界，所以时间要按新那天的边界重夹一次
     const bounds = effectiveTimeBounds(nextDate, minDateTime, maxDateTime);
     const t = parsedTime ?? { h: 0, m: 0, s: 0 };
-    commitParts(nextDate, formatTimeParts(clampTime(t, withSeconds, bounds.minTime, bounds.maxTime), withSeconds));
+    commitParts(
+      nextDate,
+      formatTimeParts(clampTime(t, withSeconds, bounds.minTime, bounds.maxTime), withSeconds),
+    );
   }
 
   function pickTime(patch: Partial<TimeParts>) {
@@ -104,8 +119,15 @@ function DateTimePickerImpl({
     const d = new Date();
     const today = dayjs(d).format("YYYY-MM-DD");
     const bounds = effectiveTimeBounds(today, minDateTime, maxDateTime);
-    const snapped = snapToStep({ h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() }, minuteStep, secondStep);
-    commitParts(today, formatTimeParts(clampTime(snapped, withSeconds, bounds.minTime, bounds.maxTime), withSeconds));
+    const snapped = snapToStep(
+      { h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() },
+      minuteStep,
+      secondStep,
+    );
+    commitParts(
+      today,
+      formatTimeParts(clampTime(snapped, withSeconds, bounds.minTime, bounds.maxTime), withSeconds),
+    );
     setOpen(false);
   }
 
@@ -115,11 +137,7 @@ function DateTimePickerImpl({
   }
 
   const showClear = clearable && value != null && !disabled && !readOnly;
-  const text = value
-    ? displayFormat
-      ? dayjs(value).format(displayFormat)
-      : value
-    : "";
+  const text = value ? (displayFormat ? dayjs(value).format(displayFormat) : value) : "";
 
   return (
     <BasePopover.Root
@@ -144,14 +162,16 @@ function DateTimePickerImpl({
               )}
             >
               <CalendarIcon className="size-4 shrink-0 text-muted" aria-hidden />
-              <span className={cn("truncate tabular-nums", !text && "text-muted")}>{text || placeholder}</span>
+              <span className={cn("truncate tabular-nums", !text && "text-muted")}>
+                {text || placeholder}
+              </span>
             </button>
           }
         />
         {showClear && (
           <button
             type="button"
-            aria-label="清除"
+            aria-label={labels.clear}
             onClick={clearValue}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >
@@ -183,7 +203,7 @@ function DateTimePickerImpl({
               </div>
               <div className="flex divide-x divide-border">
                 <TimeColumn
-                  label="时"
+                  label={labels.hour}
                   values={buildOptions(23, 1)}
                   active={parsedTime?.h ?? null}
                   isDisabled={(h) => isHourDisabled(h, minTime, maxTime)}
@@ -191,7 +211,7 @@ function DateTimePickerImpl({
                   open={open}
                 />
                 <TimeColumn
-                  label="分"
+                  label={labels.minute}
                   values={buildOptions(59, minuteStep)}
                   active={parsedTime?.m ?? null}
                   isDisabled={(m) => isMinuteDisabled(base.h, m, minTime, maxTime)}
@@ -200,7 +220,7 @@ function DateTimePickerImpl({
                 />
                 {withSeconds && (
                   <TimeColumn
-                    label="秒"
+                    label={labels.second}
                     values={buildOptions(59, secondStep)}
                     active={parsedTime?.s ?? null}
                     isDisabled={(s) => isSecondDisabled(base.h, base.m, s, minTime, maxTime)}
@@ -218,7 +238,7 @@ function DateTimePickerImpl({
                   disabled={readOnly}
                   className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  此刻
+                  {labels.now}
                 </button>
               ) : (
                 <span />
@@ -228,7 +248,7 @@ function DateTimePickerImpl({
                 onClick={() => setOpen(false)}
                 className="rounded-md px-2 py-1 text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30"
               >
-                确定
+                {labels.confirm}
               </button>
             </div>
           </BasePopover.Popup>

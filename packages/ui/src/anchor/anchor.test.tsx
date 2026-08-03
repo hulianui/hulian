@@ -2,6 +2,8 @@ import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import { render, fireEvent, cleanup, act } from "@testing-library/react";
 import { Anchor, flattenAnchorItems } from "./anchor";
 import type { AnchorItem } from "./anchor.types";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 // 捕获最近一个 IntersectionObserver 实例的回调，供测试手动触发模拟「section 进入视口」。
 let observerCb: IntersectionObserverCallback | null = null;
@@ -73,6 +75,14 @@ describe("flattenAnchorItems", () => {
 });
 
 describe("Anchor 渲染", () => {
+  it("enUS localizes the default navigation label", () => {
+    const { getByLabelText } = render(
+      <ConfigProvider locale={enUS}>
+        <Anchor items={items} />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("On this page")).toBeTruthy();
+  });
   it("渲染 nav + 全部链接（含二级）正确 href/标题", () => {
     const { container } = render(<Anchor items={items} />);
     const nav = container.querySelector("nav")!;

@@ -24,11 +24,13 @@ import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { getPaginationRange } from "./pagination.range";
 import type { PaginationProps } from "./pagination.types";
+import { useComponentLocale } from "../config/locale-context";
 
 // 方块按钮：复用 buttonVariants 的 focus-ring/disabled，仅覆写尺寸为定高、多位数可横向生长。
 const SQUARE = "h-9 min-w-9 px-1.5";
 // press 与颜色统一过渡：transform 走合成层；覆盖 buttonVariants 自带的 transition-colors。
-const PRESS = "transition-[color,background-color,box-shadow,transform] duration-150 active:scale-[0.97]";
+const PRESS =
+  "transition-[color,background-color,box-shadow,transform] duration-150 active:scale-[0.97]";
 
 // SSR/jsdom 安全：浏览器用 layout effect 测量（避闪），服务端降级为普通 effect（不执行）。
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -91,12 +93,25 @@ export function Pagination({
   "aria-label": ariaLabel = "pagination",
   ...props
 }: PaginationProps) {
+  const labels = useComponentLocale().pagination ?? {
+    total: (count) => `共 ${count} 条`,
+    first: "跳到首页",
+    previous: "上一页",
+    page: (page) => `第 ${page} 页`,
+    more: "更多页面",
+    next: "下一页",
+    last: "跳到末页",
+    jump: "跳至第几页",
+    jumpPrefix: "跳至",
+    jumpSuffix: "页",
+  };
   // 页数真源：total（页数）优先，其次由 totalItems/pageSize 算。
   // 两条路并存是为了兼容既有调用方 —— `total` 一开始就被定义成「总页数」，而几乎所有后端回的
   // 是总条数，于是每个消费方都在调用处补一次 Math.ceil。语义修正留到 1.0 主版本一次性做。
   const totalPages = (() => {
     if (total != null) return Math.max(1, Math.trunc(total));
-    if (totalItems != null) return Math.max(1, Math.ceil(Math.max(0, totalItems) / Math.max(1, pageSize)));
+    if (totalItems != null)
+      return Math.max(1, Math.ceil(Math.max(0, totalItems) / Math.max(1, pageSize)));
     return 1;
   })();
   if (total != null && totalItems != null) {
@@ -152,7 +167,7 @@ export function Pagination({
     const from = totalItems === 0 ? 0 : (current - 1) * pageSize + 1;
     const to = Math.min(current * pageSize, totalItems);
     if (typeof showTotal === "function") return showTotal(totalItems, [from, to]);
-    return `共 ${totalItems} 条`;
+    return labels.total(totalItems);
   })();
 
   // 快捷跳转：受控草稿，回车/失焦才提交，不随敲键跳页。
@@ -185,14 +200,26 @@ export function Pagination({
         </span>
       )}
       {totalNode != null && (
-        <span className="relative z-10 mr-1 select-none whitespace-nowrap text-sm text-muted">{totalNode}</span>
+        <span className="relative z-10 mr-1 select-none whitespace-nowrap text-sm text-muted">
+          {totalNode}
+        </span>
       )}
       {showFirstLast && (
-        <PagerButton aria-label="跳到首页" hasPill={hasPill} disabled={disabled || atFirst} onClick={() => go(1)}>
+        <PagerButton
+          aria-label={labels.first}
+          hasPill={hasPill}
+          disabled={disabled || atFirst}
+          onClick={() => go(1)}
+        >
           <ChevronsLeft className="size-4" aria-hidden />
         </PagerButton>
       )}
-      <PagerButton aria-label="上一页" hasPill={hasPill} disabled={disabled || atFirst} onClick={() => go(current - 1)}>
+      <PagerButton
+        aria-label={labels.previous}
+        hasPill={hasPill}
+        disabled={disabled || atFirst}
+        onClick={() => go(current - 1)}
+      >
         <ChevronLeft className="size-4" aria-hidden />
       </PagerButton>
 
@@ -203,7 +230,7 @@ export function Pagination({
             className="relative z-10 inline-flex h-9 min-w-9 select-none items-center justify-center text-muted"
           >
             <span aria-hidden="true">…</span>
-            <span className="sr-only">更多页面</span>
+            <span className="sr-only">{labels.more}</span>
           </span>
         ) : (
           <PagerButton
@@ -217,7 +244,7 @@ export function Pagination({
                   }
                 : undefined
             }
-            aria-label={`第 ${item} 页`}
+            aria-label={labels.page(item)}
             ariaCurrent={item === current ? "page" : undefined}
             disabled={disabled}
             onClick={() => go(item)}
@@ -227,22 +254,32 @@ export function Pagination({
         ),
       )}
 
-      <PagerButton aria-label="下一页" hasPill={hasPill} disabled={disabled || atLast} onClick={() => go(current + 1)}>
+      <PagerButton
+        aria-label={labels.next}
+        hasPill={hasPill}
+        disabled={disabled || atLast}
+        onClick={() => go(current + 1)}
+      >
         <ChevronRight className="size-4" aria-hidden />
       </PagerButton>
       {showFirstLast && (
-        <PagerButton aria-label="跳到末页" hasPill={hasPill} disabled={disabled || atLast} onClick={() => go(totalPages)}>
+        <PagerButton
+          aria-label={labels.last}
+          hasPill={hasPill}
+          disabled={disabled || atLast}
+          onClick={() => go(totalPages)}
+        >
           <ChevronsRight className="size-4" aria-hidden />
         </PagerButton>
       )}
 
       {showQuickJumper && (
         <span className="relative z-10 ml-1 inline-flex items-center gap-1.5 whitespace-nowrap text-sm text-muted">
-          跳至
+          {labels.jumpPrefix}
           <input
             type="text"
             inputMode="numeric"
-            aria-label="跳至第几页"
+            aria-label={labels.jump}
             value={jump}
             disabled={disabled}
             onChange={(e) => setJump(e.target.value.replace(/\D/g, ""))}
@@ -254,7 +291,7 @@ export function Pagination({
             }}
             className="h-9 w-12 rounded-[var(--radius)] border border-border bg-surface px-2 text-center text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
           />
-          页
+          {labels.jumpSuffix}
         </span>
       )}
     </nav>

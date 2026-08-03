@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./page.content";
+import { DEMO_RELATIVE_TIME_LOCALE } from "../../_components/demo-locale";
+
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Search, GitBranch, ExternalLink, Globe, Boxes } from "lucide-react";
@@ -30,6 +33,7 @@ import { useMockData } from "../../lib/async";
 import { ROOT } from "../_components/nav-config";
 
 const FRAMEWORKS: Framework[] = ["Next.js", "Vite", "Astro", "Nuxt", "Remix", "静态站点"];
+const frameworkLabel = (framework: Framework) => framework === "静态站点" ? copy("staticSite") : framework;
 
 type ProjectForm = {
   name: string;
@@ -65,7 +69,7 @@ function ProjectCard({ p }: { p: Project }) {
             <div className="min-w-0">
               <div className="truncate font-semibold text-foreground">{p.name}</div>
               <Tag size="sm" tone="neutral">
-                {p.framework}
+                {frameworkLabel(p.framework)}
               </Tag>
             </div>
           </div>
@@ -91,11 +95,11 @@ function ProjectCard({ p }: { p: Project }) {
               <GitCommit layout="stacked" sha={cur.sha} branch={cur.branch} message={cur.message} size="sm" />
               <div className="flex items-center justify-between">
                 <DeployStatus status={cur.status} size="sm" />
-                <RelativeTime value={agoDate(cur.agoMin)} className="text-xs text-muted" />
+                <RelativeTime value={agoDate(cur.agoMin)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
               </div>
             </div>
           ) : (
-            <div className="text-sm text-muted">暂无部署</div>
+            <div className="text-sm text-muted">{copy("noDeploymentYet")}</div>
           )}
         </div>
 
@@ -104,7 +108,7 @@ function ProjectCard({ p }: { p: Project }) {
             <GitBranch className="size-3.5" />
             {p.repo}
           </span>
-          <span>{p.domainCount > 0 ? `${p.domainCount} 个域名` : "默认域名"}</span>
+          <span>{p.domainCount > 0 ? copy("valueDomains", p.domainCount) : copy("defaultDomainName")}</span>
         </div>
       </CardBody>
     </Card>
@@ -127,10 +131,10 @@ export default function ProjectsOverviewPage() {
   }, [list, q]);
 
   const reg = {
-    name: form.register("name", { rules: [{ required: true, message: "请输入项目名" }] }),
-    repo: form.register("repo", { rules: [{ required: true, message: "请输入仓库 org/repo" }] }),
+    name: form.register("name", { rules: [{ required: true, message: copy("pleaseEnterProjectName") }] }),
+    repo: form.register("repo", { rules: [{ required: true, message: copy("pleaseEnterTheRepositoryOrgRepo") }] }),
     framework: form.register("framework"),
-    branch: form.register("branch", { rules: [{ required: true, message: "请输入生产分支" }] }),
+    branch: form.register("branch", { rules: [{ required: true, message: copy("pleaseEnterTheProductionBranch") }] }),
     autoDeploy: form.register("autoDeploy"),
   };
 
@@ -150,15 +154,15 @@ export default function ProjectsOverviewPage() {
       createdAgoDays: 0,
     };
     setItems([np, ...list]);
-    toast({ tone: "success", title: "项目已创建", description: `${np.name} 已连接 ${np.repo}，推送到 ${np.productionBranch} 即自动部署。` });
+    toast({ tone: "success", title: copy("projectCreated"), description: copy("valueIsConnectedToValueAndWill", np.name, np.repo, np.productionBranch) });
   };
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-foreground">项目</h1>
-          <p className="text-sm text-muted">{list.length} 个项目 · 连 Git 自动部署到全球边缘网络</p>
+          <h1 className="text-xl font-semibold text-foreground">{copy("project")}</h1>
+          <p className="text-sm text-muted">{list.length}{copy("projectsGitConnectedAutomaticDeploymentToGlobal")}</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
@@ -166,9 +170,9 @@ export default function ProjectsOverviewPage() {
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="搜索项目 / 仓库"
+              placeholder={copy("searchItemsWarehouses")}
               className="w-48 pl-8 sm:w-60"
-              aria-label="搜索项目"
+              aria-label={copy("searchItems")}
             />
           </div>
           <Button
@@ -177,9 +181,7 @@ export default function ProjectsOverviewPage() {
               setOpen(true);
             }}
           >
-            <Plus className="size-4" />
-            新建项目
-          </Button>
+            <Plus className="size-4" />{copy("newProject")}</Button>
         </div>
       </div>
 
@@ -206,18 +208,14 @@ export default function ProjectsOverviewPage() {
         <Card>
           <CardBody>
             <Empty
-              title={q ? `没有匹配「${q}」的项目` : "还没有项目"}
-              description={q ? "换个关键词，或新建一个项目。" : "连接一个 Git 仓库开始你的第一次部署。"}
+              title={q ? copy("noItemsMatchingValue", q) : copy("noProjectsYet")}
+              description={q ? copy("changeTheKeywordOrCreateANew") : copy("connectToAGitRepositoryToStart")}
             >
               {q ? (
-                <Button variant="outline" onClick={() => setQ("")}>
-                  清除搜索
-                </Button>
+                <Button variant="outline" onClick={() => setQ("")}>{copy("clearSearch")}</Button>
               ) : (
                 <Button onClick={() => setOpen(true)}>
-                  <Plus className="size-4" />
-                  新建项目
-                </Button>
+                  <Plus className="size-4" />{copy("newProject2")}</Button>
               )}
             </Empty>
           </CardBody>
@@ -231,24 +229,24 @@ export default function ProjectsOverviewPage() {
       )}
 
       <ModalForm
-        title="新建项目"
+        title={copy("newProject3")}
         form={form}
         open={open}
         onOpenChange={setOpen}
         onFinish={(v) => handleFinish(v as ProjectForm)}
-        submitText="创建并部署"
+        submitText={copy("createAndDeploy")}
         className="w-[520px]"
       >
         <div className="grid grid-cols-2 gap-x-4">
-          <Field label="项目名" className="col-span-2" error={reg.name.error}>
-            <Input value={reg.name.value as string} onChange={reg.name.onChange} onBlur={reg.name.onBlur} placeholder="如：hanship-docs" />
+          <Field label={copy("projectName")} className="col-span-2" error={reg.name.error}>
+            <Input value={reg.name.value as string} onChange={reg.name.onChange} onBlur={reg.name.onBlur} placeholder={copy("suchAsHanshipDocs")} />
           </Field>
-          <Field label="Git 仓库" className="col-span-2" error={reg.repo.error}>
-            <Input value={reg.repo.value as string} onChange={reg.repo.onChange} onBlur={reg.repo.onBlur} placeholder="org/repo，如 hulianui/hulian" />
+          <Field label={copy("gitRepository")} className="col-span-2" error={reg.repo.error}>
+            <Input value={reg.repo.value as string} onChange={reg.repo.onChange} onBlur={reg.repo.onBlur} placeholder={copy("orgRepoSuchAsHulianuiHulian")} />
           </Field>
-          <Field label="框架预设">
+          <Field label={copy("framePresets")}>
             <Select
-              items={FRAMEWORKS.map((f) => ({ value: f, label: f }))}
+              items={FRAMEWORKS.map((f) => ({ value: f, label: frameworkLabel(f) }))}
               value={reg.framework.value as string}
               onValueChange={(v) => reg.framework.onChange(v as string)}
             >
@@ -262,14 +260,14 @@ export default function ProjectsOverviewPage() {
               </SelectContent>
             </Select>
           </Field>
-          <Field label="生产分支" error={reg.branch.error}>
+          <Field label={copy("productionBranch")} error={reg.branch.error}>
             <Input value={reg.branch.value as string} onChange={reg.branch.onChange} onBlur={reg.branch.onBlur} placeholder="main" />
           </Field>
-          <Field label="自动部署" className="col-span-2" description="推送到生产分支时自动触发部署">
+          <Field label={copy("automaticDeployment")} className="col-span-2" description={copy("automaticallyTriggerDeploymentWhenPushingToProduction")}>
             <Switch
               checked={reg.autoDeploy.value as boolean}
               onCheckedChange={(c) => reg.autoDeploy.onChange(c)}
-              aria-label="自动部署"
+              aria-label={copy("automaticDeployment2")}
             />
           </Field>
         </div>

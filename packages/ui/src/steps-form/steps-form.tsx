@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "../button";
-import { useLocale } from "../config/locale";
+import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { Steps } from "../steps/steps";
 import type { StepsFormProps } from "./steps-form.types";
@@ -18,7 +18,11 @@ export function StepsForm({
   direction = "horizontal",
   className,
 }: StepsFormProps) {
-  const loc = useLocale().stepsForm;
+  const loc = useLocaleValue("stepsForm", {
+    prev: "上一步",
+    next: "下一步",
+    submit: "提交",
+  });
   const [internal, setInternal] = useState(defaultCurrent);
   const current = currentProp ?? internal;
   const [loading, setLoading] = useState(false);

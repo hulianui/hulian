@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 import { useCallback, useState } from "react";
@@ -15,7 +16,7 @@ import {
   Spinner,
   Alert,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 import { Send, AlertCircle } from "lucide-react";
 
 // 联系表单 Block —— 自包含、可整段复制。

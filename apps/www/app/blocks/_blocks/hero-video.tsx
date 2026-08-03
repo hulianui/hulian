@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import Link from "next/link";
 import { Button, HeroVideoDialog, Tag, Heading, Text } from "@hulianui/ui";
 import { ArrowRight, PlayCircle } from "lucide-react";

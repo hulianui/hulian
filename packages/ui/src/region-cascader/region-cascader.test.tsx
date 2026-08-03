@@ -3,6 +3,8 @@ import { render } from "@testing-library/react";
 import { RegionCascader } from "./region-cascader";
 import { sliceLevel } from "./region-cascader.logic";
 import { cnDivisions } from "./cn-divisions.data";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 describe("cnDivisions 数据完整性", () => {
   it("省级非空且 code 唯一", () => {
@@ -39,5 +41,21 @@ describe("RegionCascader 组件", () => {
     const { container } = render(<RegionCascader defaultValue={["11", "1101", "110105"]} />);
     expect(container.textContent).toContain("北京市");
     expect(container.textContent).toContain("朝阳区");
+  });
+
+  it("enUS 下默认值回显英文行政区名称且无中文", () => {
+    const { container } = render(
+      <ConfigProvider locale={enUS}>
+        <RegionCascader defaultValue={["11", "1101", "110105"]} />
+        <RegionCascader level={2} defaultValue={["44", "4401"]} />
+        <RegionCascader defaultValue={["31", "3101", "310115"]} />
+      </ConfigProvider>,
+    );
+    expect(container.textContent).toContain("Beijing");
+    expect(container.textContent).toContain("Chaoyang District");
+    expect(container.textContent).toContain("Guangdong");
+    expect(container.textContent).toContain("Guangzhou");
+    expect(container.textContent).toContain("Pudong New Area");
+    expect(container.textContent).not.toMatch(/[\u3400-\u9fff]/u);
   });
 });

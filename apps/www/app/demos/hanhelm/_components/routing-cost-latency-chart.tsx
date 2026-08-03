@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./routing-cost-latency-chart.content";
+
 // 智能路由 · 成本/延迟分布：各执行器的「混合单价」与「典型延迟」对照。
 // 库的 Chart 家族（recharts 皮肤）无 XY 散点型，这里用 BarChart 双序列做成本×延迟对照，
 // 两序列各自归一到 0-100 同轴可比，便于一眼看出「贵且慢」「便宜且快」象限。
@@ -27,8 +29,8 @@ export function RoutingCostLatencyChart({ executors }: Props) {
     <BarChart
       data={data}
       series={[
-        { key: "成本指数", color: "var(--color-chart-2)" },
-        { key: "延迟指数", color: "var(--color-chart-3)" },
+        { key: copy("costIndex"), color: "var(--color-chart-2)" },
+        { key: copy("latencyIndex"), color: "var(--color-chart-3)" },
       ]}
       xKey="name"
       height={280}

@@ -1,6 +1,18 @@
 import Link from "next/link";
-import { Card, CodeBlock, Heading, Tag, Text } from "@hulianui/ui";
+import { Card, Heading, Tag, Text } from "@hulianui/ui";
+import { getIntlayer } from "next-intlayer";
 import { REPLACE_LABEL, type InstallModel } from "../lib/install-model";
+import { DOCS_LOCALE } from "../lib/docs-locale";
+import { DocsCodeBlock } from "./docs-code-block";
+
+const content = getIntlayer("install-panel", DOCS_LOCALE);
+const replaceLabelEn = {
+  copy: "Copy",
+  "mock-data": "Sample data",
+  assets: "Images and assets",
+  navigation: "Navigation and routing",
+  "event-handlers": "Event handlers",
+} as const;
 
 // 「安装与接入」面板 —— 区块/页面详情页的动作区。
 //
@@ -8,12 +20,22 @@ import { REPLACE_LABEL, type InstallModel } from "../lib/install-model";
 // 才知道怎么装；而 registry 里 providers / replace / slots / 递归依赖 / 目标文件早就齐了。
 // 这里把那份数据原样摆到同屏，把「看到 → 装上 → 验过」接成一条直线。
 
-function Row({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+function Row({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="grid gap-1 py-3 sm:grid-cols-[8.5rem_1fr] sm:gap-4">
       <dt className="text-sm font-medium">
         {label}
-        {hint && <span className="ml-1 block text-xs font-normal text-muted sm:inline">{hint}</span>}
+        {hint && (
+          <span className="ml-1 block text-xs font-normal text-muted sm:inline">{hint}</span>
+        )}
       </dt>
       <dd className="min-w-0 text-sm">{children}</dd>
     </div>
@@ -30,19 +52,24 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
     <Card variant="outline" className="overflow-hidden">
       <div className="border-b border-border bg-surface/40 px-5 py-3">
         <Heading level={2} size="base" weight="semibold">
-          安装与接入
+          {content.title}
         </Heading>
         <Text tone="muted" size="sm" className="mt-0.5">
-          数据来自本站 registry <Mono>v{model.version}</Mono>，与 shadcn CLI 实际拉取的是同一份。
+          {content.sourcePrefix}
+          <Mono>v{model.version}</Mono>
+          {content.sourceSuffix}
         </Text>
       </div>
 
       <div className="px-5 py-4">
-        <CodeBlock code={model.command} lang="bash" />
+        <DocsCodeBlock code={model.command} lang="bash" />
 
         <dl className="mt-2 divide-y divide-border">
           {model.registryDeps.length > 0 && (
-            <Row label="递归安装" hint={`${model.registryDeps.length} 个区块`}>
+            <Row
+              label={content.recursive}
+              hint={content.blocksCount.replace("{count}", String(model.registryDeps.length))}
+            >
               <ul className="flex flex-wrap gap-2">
                 {model.registryDeps.map((dep) => (
                   <li key={dep.name}>
@@ -61,12 +88,17 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
                 ))}
               </ul>
               <Text tone="muted" size="sm" className="mt-1.5">
-                CLI 会先把这些区块写进你的工程，再写入本{kind === "page" ? "页" : "区块"}源码。
+                {content.recursivePrefix}
+                {kind === "page" ? content.page : content.block}
+                {content.recursiveSuffix}
               </Text>
             </Row>
           )}
 
-          <Row label="写入文件" hint={`${model.targets.length} 个`}>
+          <Row
+            label={content.files}
+            hint={content.count.replace("{count}", String(model.targets.length))}
+          >
             <ul className="space-y-1">
               {model.targets.map((t) => (
                 <li key={t}>
@@ -76,7 +108,7 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
             </ul>
           </Row>
 
-          <Row label="需要 Provider">
+          <Row label={content.providers}>
             {model.providers.length > 0 ? (
               <span className="flex flex-wrap gap-1.5">
                 {model.providers.map((p) => (
@@ -85,29 +117,29 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
               </span>
             ) : (
               <Text tone="muted" size="sm">
-                无 —— 不依赖任何 Provider。
+                {content.noneProviders}
               </Text>
             )}
           </Row>
 
-          <Row label="必须替换" hint={hasReplace ? "接入前逐项处理" : undefined}>
+          <Row label={content.replace} hint={hasReplace ? content.replaceHint : undefined}>
             {hasReplace ? (
               <span className="flex flex-wrap gap-1.5">
                 {model.replace.map((r) => (
                   <Tag key={r} variant="soft" tone="warning" size="sm">
-                    {REPLACE_LABEL[r]}
+                    {DOCS_LOCALE === "en" ? replaceLabelEn[r] : REPLACE_LABEL[r]}
                   </Tag>
                 ))}
               </span>
             ) : (
               <Text tone="muted" size="sm">
-                无 —— 源码里没有需要替换的示例内容。
+                {content.noneReplace}
               </Text>
             )}
           </Row>
 
           {model.slots.length > 0 && (
-            <Row label="可替换插槽">
+            <Row label={content.slots}>
               <span className="flex flex-wrap gap-1.5">
                 {model.slots.map((s) => (
                   <Mono key={s}>{s}</Mono>
@@ -116,7 +148,7 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
             </Row>
           )}
 
-          <Row label="npm 依赖">
+          <Row label={content.npm}>
             {model.npmDeps.length > 0 ? (
               <span className="flex flex-wrap gap-1.5">
                 {model.npmDeps.map((d) => (
@@ -125,7 +157,7 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
               </span>
             ) : (
               <Text tone="muted" size="sm">
-                无额外依赖。
+                {content.noneNpm}
               </Text>
             )}
           </Row>
@@ -134,12 +166,12 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
         {model.guardCommand && (
           <div className="mt-4">
             <Text size="sm" weight="medium">
-              装完验一遍
+              {content.verify}
             </Text>
             <Text tone="muted" size="sm" className="mb-2 mt-0.5">
-              门禁按 conventions 的可执行规则扫上面这些目标文件；有错误级违规会非零退出。
+              {content.verifyDescription}
             </Text>
-            <CodeBlock code={model.guardCommand} lang="bash" />
+            <DocsCodeBlock code={model.guardCommand} lang="bash" />
           </div>
         )}
       </div>

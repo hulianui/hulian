@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 商品详情主体区块 —— 左侧 Carousel 多图（渐变占位）+ 右侧信息栏。
@@ -16,7 +17,7 @@ import {
   Rating,
   Tag,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 
 // ---- 内联 mock 数据 ----
 const SLIDES = [
@@ -107,8 +108,16 @@ export function ProductDetailBlock() {
         <div className="flex-1 min-w-0 space-y-5">
           {/* 标签行 */}
           <div className="flex flex-wrap gap-1.5">
-            {PRODUCT.flashSale && <Tag tone="danger" size="sm">限时秒杀</Tag>}
-            {PRODUCT.isNew && <Tag tone="brand" size="sm">新品</Tag>}
+            {PRODUCT.flashSale && (
+              <Tag tone="danger" size="sm">
+                限时秒杀
+              </Tag>
+            )}
+            {PRODUCT.isNew && (
+              <Tag tone="brand" size="sm">
+                新品
+              </Tag>
+            )}
           </div>
 
           {/* 名称 + 副标题 */}
@@ -131,8 +140,12 @@ export function ProductDetailBlock() {
           <div className="rounded-[var(--radius)] bg-surface-hover px-4 py-3">
             <div className="flex items-end gap-2">
               <span className="text-3xl font-bold text-danger">{formatPrice(PRODUCT.price)}</span>
-              <span className="text-sm text-muted line-through">{formatPrice(PRODUCT.originalPrice)}</span>
-              <Chip size="sm" tone="danger" variant="soft">{discount}折</Chip>
+              <span className="text-sm text-muted line-through">
+                {formatPrice(PRODUCT.originalPrice)}
+              </span>
+              <Chip size="sm" tone="danger" variant="soft">
+                {discount}折
+              </Chip>
             </div>
             <p className="mt-1 text-xs text-muted">含税 · 全国包邮（偏远地区除外）</p>
           </div>
@@ -140,7 +153,9 @@ export function ProductDetailBlock() {
           {/* 卖点 tags */}
           <div className="flex flex-wrap gap-2">
             {PRODUCT.tags.map((t) => (
-              <Chip key={t} size="sm" variant="outline" tone="brand">{t}</Chip>
+              <Chip key={t} size="sm" variant="outline" tone="brand">
+                {t}
+              </Chip>
             ))}
           </div>
 
@@ -155,6 +170,7 @@ export function ProductDetailBlock() {
               value={selectedColor}
               onValueChange={setSelectedColor}
               size="md"
+              aria-label="颜色色板"
             />
           </div>
 

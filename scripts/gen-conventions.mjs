@@ -20,8 +20,17 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
 const OUT_PKG = join(ROOT, "packages", "ui", "conventions.json");
-const OUT_WWW = join(ROOT, "apps", "www", "public", "conventions.json");
+const OVERRIDE_OUT = process.env.HULIAN_REGISTRY_OUT;
+const OUT_WWW = join(OVERRIDE_OUT || join(ROOT, "apps", "www", "public"), "conventions.json");
 const OUT_GUARD = join(ROOT, "packages", "guard", "conventions.json");
+const DOCS_LOCALE = process.env.DOCS_LOCALE === "en" ? "en" : "zh-CN";
+const ENGLISH = DOCS_LOCALE === "en";
+
+if (ENGLISH && !OVERRIDE_OUT) {
+  throw new Error(
+    "English conventions generation requires HULIAN_REGISTRY_OUT so tracked Chinese artifacts cannot be overwritten",
+  );
+}
 const SEMANTIC_COLOR_NAMES = [
   ...new Set([
     // 兼容文档中沿用过的常见语义名；其余名称从 token 真源自动得出，避免新增 chart/ring
@@ -85,6 +94,52 @@ const GLOBAL = [
   },
 ];
 
+const GLOBAL_EN = [
+  {
+    id: "no-style-override",
+    rule: "Do not override Hulian UI component styles with the style prop or local CSS in product code.",
+    why: "Overrides bypass semantic OKLCH tokens, break theme switching, and create upgrade conflicts.",
+    instead:
+      "Add the missing prop or variant to the library component and consume semantic tokens.",
+  },
+  {
+    id: "import-from-root-barrel",
+    rule: 'Import from the root barrel by default: import { X } from "@hulianui/ui". For a small component set, the matching @hulianui/ui/<slug> subpath is also public.',
+    why: "The library ships source. Root imports can expand a consumer's development module graph, while public subpaths and optimizePackageImports reduce that cost.",
+    instead:
+      "Use either documented public entry. Never import private _icons, src paths, or the removed date-pickers entry.",
+  },
+  {
+    id: "color-token-prefix",
+    rule: "CSS variables passed to SVG fill or stroke and inline styles must use the --color- prefix.",
+    wrong: 'fill="var(--primary)"',
+    right: 'fill="var(--color-primary)"',
+    why: "Tailwind CSS v4 theme variables use the --color- prefix. Bare semantic names do not resolve.",
+  },
+  {
+    id: "theme-provider",
+    rule: "Wrap the application root with ThemeProvider and inject the anti-flash inline script at the entry point.",
+    why: "Semantic tokens depend on data-theme. Without the provider theme switching fails, and without the script the first rendered frame can flash the wrong theme.",
+  },
+  {
+    id: "toast-signature",
+    rule: "toast accepts one object argument: toast({ title, description?, tone?, timeout? }). It has no toast.success() shortcuts.",
+    wrong: 'toast.success("Saved")',
+    right: 'toast({ title: "Saved", tone: "success" })',
+    why: 'tone accepts "neutral", "info", "success", "warning", or "danger" and defaults to "neutral".',
+  },
+  {
+    id: "admin-layout-fitviewport",
+    rule: "Keep AdminLayout fitViewport at its default true for a full page. Set it to false when embedding the layout in a fixed-height container.",
+    why: "The component already owns 100dvh. An additional viewport-height wrapper moves scrolling to the whole page instead of the content area.",
+  },
+  {
+    id: "fix-component-not-patch",
+    rule: "If a workflow needs a CSS override or behavior hack, treat it as a component gap and fix the library component.",
+    why: "Call-site patches duplicate the same gap across pages and make behavior inconsistent.",
+  },
+];
+
 /**
  * 公开子路径全集 —— 真源是 `packages/ui/package.json` 的 exports 加真实目录，不是人工清单。
  *
@@ -97,9 +152,7 @@ function publicSubpaths() {
   const explicit = Object.keys(pkg.exports)
     .filter((k) => k.startsWith("./") && k !== "./*")
     .map((k) => k.slice(2));
-  const wildcard = readdirSync(UI_SRC).filter((d) =>
-    existsSync(join(UI_SRC, d, "index.ts")),
-  );
+  const wildcard = readdirSync(UI_SRC).filter((d) => existsSync(join(UI_SRC, d, "index.ts")));
   return [...new Set([...explicit, ...wildcard])].sort();
 }
 
@@ -131,10 +184,13 @@ const EXECUTABLE_RULES = [
     severity: "error",
     matcher: {
       kind: "forbidden-import",
-      sourcePattern: `^@hulianui/ui/(?!(?:${PUBLIC_SUBPATHS.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})$)`,
+      sourcePattern: `^@hulianui/ui/(?!(?:${PUBLIC_SUBPATHS.map((s) =>
+        s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      ).join("|")})$)`,
     },
     message: "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
-    instead: "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。",
+    instead:
+      "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。",
   },
   {
     id: "toast-object-signature",
@@ -162,6 +218,25 @@ const EXECUTABLE_RULES = [
   },
 ];
 
+const EXECUTABLE_COPY_EN = {
+  "no-style-override": {
+    message: "Do not use style to override Hulian UI component styling in product code.",
+    instead: "Add a component prop or variant and use semantic tokens.",
+  },
+  "no-private-deep-import": {
+    message: "This subpath is not exported by @hulianui/ui and cannot be resolved.",
+    instead: "Use @hulianui/ui or a real public subpath such as @hulianui/ui/button.",
+  },
+  "toast-object-signature": {
+    message: "toast has no success, error, or other member-call shortcuts.",
+    instead: 'Use toast({ title: "Saved", tone: "success" }).',
+  },
+  "color-token-prefix": {
+    message: "Color variables in SVG attributes and inline styles must use the --color- prefix.",
+    instead: "For example, use var(--color-primary).",
+  },
+};
+
 // ------------------------------------------------------- 易混淆的兄弟件 --
 // 选错不会报错，只是不对 —— 这类恰恰是 AI 最容易栽的。取值均已核对源码。
 
@@ -170,7 +245,7 @@ const CONFUSABLES = [
     when: "单个日期选择（输入框 + 弹层日历）",
     pick: "DatePicker",
     notThis: "DateField",
-    why: "DateField 是 0.15.0 之前的名字，已改名为 DatePicker（picker=\"date|month|year\" 三粒度）；要不带浮层的常驻面板用 Calendar",
+    why: 'DateField 是 0.15.0 之前的名字，已改名为 DatePicker（picker="date|month|year" 三粒度）；要不带浮层的常驻面板用 Calendar',
   },
   {
     when: "需要带状态色的文字标签",
@@ -194,18 +269,57 @@ const CONFUSABLES = [
     when: "标题分级",
     pick: 'Heading size 用 "base"',
     notThis: 'size="md"',
-    why: 'HeadingSize 取值是 xs | sm | base | lg | xl | 2xl | 3xl | 4xl，没有 md 这一档',
+    why: "HeadingSize 取值是 xs | sm | base | lg | xl | 2xl | 3xl | 4xl，没有 md 这一档",
+  },
+];
+
+const CONFUSABLES_EN = [
+  {
+    when: "Selecting one date with an input and popup calendar",
+    pick: "DatePicker",
+    notThis: "DateField",
+    why: "DateField was renamed before version 0.15.0. DatePicker supports date, month, and year precision; use Calendar for an always-visible panel.",
+  },
+  {
+    when: "Showing a text label with semantic status color",
+    pick: "Tag",
+    notThis: "Badge",
+    why: "Badge is a count or dot indicator. Tag provides variant and tone for labeled status.",
+  },
+  {
+    when: "Separating content with a text label",
+    pick: "Divider",
+    notThis: "Separator",
+    why: "Separator is a geometric role=separator primitive. Divider supports text, alignment, and dashed styling.",
+  },
+  {
+    when: "Representing a deployment or build lifecycle",
+    pick: "DeployStatus",
+    notThis: "StatusDot",
+    why: "StatusDot represents health or availability. DeployStatus models six deployment states and animates the building state.",
+  },
+  {
+    when: "Choosing a Heading size",
+    pick: 'Heading size "base"',
+    notThis: 'size="md"',
+    why: "HeadingSize accepts xs, sm, base, lg, xl, 2xl, 3xl, or 4xl; md is not a valid value.",
   },
 ];
 
 // -------------------------------------------------- 组件级约束（自动提取）--
 
-/** 取 md 里 `## 禁忌 / 坑` 到下一个 `## ` 之间的正文。 */
-function extractPitfalls(md) {
-  const m = md.match(/^##\s*禁忌\s*\/\s*坑\s*$([\s\S]*?)(?=^##\s|\Z)/m);
-  if (!m) return [];
-  const body = m[1].trim();
-  if (!body || /^暂无/.test(body)) return [];
+/** 取当前语言的约束章节到下一个二级标题或真实 EOF 之间的正文。 */
+export function extractPitfalls(md, locale = DOCS_LOCALE) {
+  const heading =
+    locale === "en"
+      ? /^##\s*(?:Usage guidelines|Usage notes|Usage|Pitfalls)\s*$/im
+      : /^##\s*禁忌\s*\/\s*坑\s*$/m;
+  const headingMatch = heading.exec(md);
+  if (!headingMatch) return [];
+  const tail = md.slice(headingMatch.index + headingMatch[0].length);
+  const nextHeading = /^##\s/m.exec(tail);
+  const body = tail.slice(0, nextHeading?.index ?? tail.length).trim();
+  if (!body || (locale !== "en" && /^暂无/.test(body))) return [];
 
   // 按 markdown 列表项切分；条目可能跨多行
   const items = [];
@@ -224,13 +338,28 @@ function extractPitfalls(md) {
   if (!items.length) return [{ rule: body.replace(/\s+/g, " ").slice(0, 600) }];
 
   return items
-    .filter((s) => s && !/^暂无/.test(s))
+    .filter((s) => s && (locale === "en" || !/^暂无/.test(s)))
     .map((s) => ({ rule: s.replace(/\[\[([\w-]+)\]\]/g, "$1").replace(/\s+/g, " ") }));
 }
 
-export function buildConventions() {
+function normalizeEnglishDistribution(source) {
+  return source
+    .replaceAll("｜", "|")
+    .replace(
+      /[\u3400-\u9fff\uf900-\ufaff\u3000-\u303f\uff00-\uffef]/gu,
+      (character) => `\\u${character.codePointAt(0).toString(16).padStart(4, "0")}`,
+    );
+}
+
+export function buildConventions(locale = DOCS_LOCALE) {
   const slugs = readdirSync(UI_SRC).filter((d) => existsSync(join(UI_SRC, d, `${d}.md`)));
-  const advisories = GLOBAL.map((rule) => ({
+  const globalRules = locale === "en" ? GLOBAL_EN : GLOBAL;
+  const executableRules =
+    locale === "en"
+      ? EXECUTABLE_RULES.map((rule) => ({ ...rule, ...EXECUTABLE_COPY_EN[rule.id] }))
+      : EXECUTABLE_RULES;
+  const confusables = locale === "en" ? CONFUSABLES_EN : CONFUSABLES;
+  const advisories = globalRules.map((rule) => ({
     ...rule,
     id: `global/${rule.id}`,
     scope: "global",
@@ -239,8 +368,11 @@ export function buildConventions() {
   let ruleCount = 0;
 
   for (const slug of slugs.sort()) {
-    const md = readFileSync(join(UI_SRC, slug, `${slug}.md`), "utf8");
-    const rules = extractPitfalls(md);
+    const file = join(UI_SRC, slug, `${slug}${locale === "en" ? ".en" : ""}.md`);
+    if (!existsSync(file)) throw new Error(`Missing ${locale} conventions source: ${file}`);
+    const raw = readFileSync(file, "utf8");
+    const md = locale === "en" ? normalizeEnglishDistribution(raw) : raw;
+    const rules = extractPitfalls(md, locale);
     if (!rules.length) continue;
     const title = (md.match(/^name:\s*(.+)$/m) || [])[1]?.trim() || slug;
     rules.forEach((rule, index) => {
@@ -249,7 +381,7 @@ export function buildConventions() {
         scope: slug,
         title,
         rule: rule.rule,
-        source: `packages/ui/src/${slug}/${slug}.md`,
+        source: `packages/ui/src/${slug}/${slug}${locale === "en" ? ".en" : ""}.md`,
       });
     });
     ruleCount += rules.length;
@@ -258,11 +390,13 @@ export function buildConventions() {
   return {
     version: "2",
     description:
-      "瑚琏使用约束。executableRules 可由 @hulianui/guard 执行；advisories 是需结合业务判断的建议，不冒充硬门禁。",
+      locale === "en"
+        ? "Hulian UI usage constraints. @hulianui/guard can execute executableRules; advisories require product context and are not presented as hard gates."
+        : "瑚琏使用约束。executableRules 可由 @hulianui/guard 执行；advisories 是需结合业务判断的建议，不冒充硬门禁。",
     generatedBy: "scripts/gen-conventions.mjs",
-    executableRules: EXECUTABLE_RULES,
+    executableRules,
     advisories,
-    confusables: CONFUSABLES.map((item, index) => ({ id: `confusable/${index + 1}`, ...item })),
+    confusables: confusables.map((item, index) => ({ id: `confusable/${index + 1}`, ...item })),
     stats: {
       componentDocs: slugs.length,
       componentAdvisories: ruleCount,
@@ -276,6 +410,9 @@ function main() {
   const json = `${JSON.stringify(out, null, 2)}\n`;
 
   if (process.argv.includes("--check")) {
+    if (OVERRIDE_OUT || ENGLISH) {
+      throw new Error("conventions --check only validates canonical Chinese package artifacts");
+    }
     const current = existsSync(OUT_PKG) ? readFileSync(OUT_PKG, "utf8") : "";
     const guardCurrent = existsSync(OUT_GUARD) ? readFileSync(OUT_GUARD, "utf8") : "";
     if (current !== json || (existsSync(dirname(OUT_GUARD)) && guardCurrent !== json)) {
@@ -289,11 +426,13 @@ function main() {
     return;
   }
 
-  writeFileSync(OUT_PKG, json);
-  if (existsSync(dirname(OUT_GUARD))) writeFileSync(OUT_GUARD, json);
   const wwwDir = dirname(OUT_WWW);
   if (!existsSync(wwwDir)) mkdirSync(wwwDir, { recursive: true });
   writeFileSync(OUT_WWW, json);
+  if (!OVERRIDE_OUT) {
+    writeFileSync(OUT_PKG, json);
+    if (existsSync(dirname(OUT_GUARD))) writeFileSync(OUT_GUARD, json);
+  }
 
   console.log(
     `[conventions] executable(${out.executableRules.length}) · advisories(${out.advisories.length}) · ` +

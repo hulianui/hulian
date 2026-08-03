@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Marquee, Card, CardBody, Avatar, Heading, Tag, Text } from "@hulianui/ui";
 
 // 客户证言 Block —— 自包含、可整段复制。

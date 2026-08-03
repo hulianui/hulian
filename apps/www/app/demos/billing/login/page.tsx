@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useState } from "react";
 import {
   SocialButton,
@@ -15,8 +17,8 @@ import type { SocialProvider } from "@hulianui/ui";
 import { brand, BILLING_BASE } from "../_components/nav-config";
 
 const socials: { provider: SocialProvider; label: string }[] = [
-  { provider: "wechat", label: "微信" },
-  { provider: "alipay", label: "支付宝" },
+  { provider: "wechat", label: copy("wechat") },
+  { provider: "alipay", label: copy("alipay") },
 ];
 const moreSocials: SocialProvider[] = ["qq", "weibo", "github", "apple"];
 
@@ -37,9 +39,7 @@ export default function BillingLoginPage() {
 
       <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-7">
         <div className="flex flex-col items-center gap-2">
-          <div className="grid size-12 place-items-center rounded-[var(--radius-lg)] bg-primary text-xl font-bold text-primary-foreground shadow-md">
-            瀚
-          </div>
+          <div className="grid size-12 place-items-center rounded-[var(--radius-lg)] bg-primary text-xl font-bold text-primary-foreground shadow-md">{copy("han")}</div>
           <div className="text-center">
             <p className="text-lg font-bold tracking-tight text-foreground">
               {brand.name} <span className="text-muted">{brand.nameEn}</span>
@@ -53,22 +53,20 @@ export default function BillingLoginPage() {
           onSubmit={(e) => {
             e.preventDefault();
             setLoading(true);
-            setTimeout(() => enter("登录成功，正在进入控制台"), 600);
+            setTimeout(() => enter(copy("loginSuccessfulEnteringTheConsole")), 600);
           }}
         >
-          <Field label="邮箱">
+          <Field label={copy("email")}>
             <Input type="email" placeholder="you@company.com" prefix={<Mail className="size-4 text-muted" />} defaultValue="shen.yz@hanyun.io" />
           </Field>
-          <Field label="密码">
+          <Field label={copy("password")}>
             <Input type="password" placeholder="••••••••" prefix={<Lock className="size-4 text-muted" />} defaultValue="demo1234" />
           </Field>
-          <Button type="submit" loading={loading} className="w-full">
-            登录
-          </Button>
+          <Button type="submit" loading={loading} className="w-full">{copy("login")}</Button>
 
           <div className="flex items-center gap-3">
             <Divider className="flex-1" />
-            <span className="text-xs text-muted">或使用以下方式</span>
+            <span className="text-xs text-muted">{copy("orUseTheFollowing")}</span>
             <Divider className="flex-1" />
           </div>
 
@@ -81,23 +79,20 @@ export default function BillingLoginPage() {
                 loading={pending === s.provider}
                 onClick={() => {
                   setPending(s.provider);
-                  setTimeout(() => enter(`已通过${s.label}登录`), 600);
+                  setTimeout(() => enter(copy("alreadyLoggedInViaValue", s.label)), 600);
                 }}
               >
-                {s.label}登录
-              </SocialButton>
+                {copy("login2", s.label)}</SocialButton>
             ))}
           </div>
           <div className="flex justify-center gap-2">
             {moreSocials.map((p) => (
-              <SocialButton key={p} provider={p} shape="icon" aria-label={`使用 ${p} 登录`} onClick={() => enter(`已通过 ${p} 登录`)} />
+              <SocialButton key={p} provider={p} shape="icon" aria-label={copy("logInUsingValue", p)} onClick={() => enter(copy("alreadyLoggedInWithValue", p))} />
             ))}
           </div>
         </form>
 
-        <Text size="xs" tone="muted" className="text-center">
-          演示环境：任意填写或点任一方式即可进入控制台
-        </Text>
+        <Text size="xs" tone="muted" className="text-center">{copy("demonstrationEnvironmentFillInAnyFormOr")}</Text>
       </div>
     </main>
   );

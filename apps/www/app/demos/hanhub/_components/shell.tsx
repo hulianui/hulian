@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./shell.content";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Moon, Sun, Wallet, LogOut, UserRound, BookText } from "lucide-react";
@@ -22,10 +24,8 @@ import { formatUsd } from "../_lib/pricing";
 function Logo({ collapsed }: { collapsed?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2">
-      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        枢
-      </span>
-      {!collapsed && <span className="text-[15px] font-semibold tracking-tight">瀚枢 HanHub</span>}
+      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("pivot")}</span>
+      {!collapsed && <span className="text-[15px] font-semibold tracking-tight">{copy("hanhubHanhub")}</span>}
     </span>
   );
 }
@@ -33,7 +33,7 @@ function Logo({ collapsed }: { collapsed?: boolean }) {
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
   return (
-    <Button variant="ghost" size="sm" onClick={toggle} aria-label="切换主题" className="size-9 px-0">
+    <Button variant="ghost" size="sm" onClick={toggle} aria-label={copy("switchTheme")} className="size-9 px-0">
       {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
     </Button>
   );
@@ -43,7 +43,7 @@ function BalancePill() {
   return (
     <span className="hidden items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-sm sm:inline-flex">
       <Wallet className="size-4 text-primary" />
-      <span className="text-muted">余额</span>
+      <span className="text-muted">{copy("balance")}</span>
       <span className="font-semibold tabular-nums text-foreground">{formatUsd(account.balanceUsd)}</span>
     </span>
   );
@@ -54,26 +54,23 @@ function UserMenu() {
   return (
     <Menu>
       <MenuTrigger
-        render={<Button variant="ghost" size="sm" aria-label="账户" className="size-9 px-0" />}
+        render={<Button variant="ghost" size="sm" aria-label={copy("account")} className="size-9 px-0" />}
       >
-        <Avatar size="sm" fallback="瀚" />
+        <Avatar size="sm" fallback={copy("han")} />
       </MenuTrigger>
       <MenuContent align="end" className="w-48">
         <div className="px-2 py-1.5">
-          <div className="text-sm font-medium text-foreground">瀚枢团队</div>
+          <div className="text-sm font-medium text-foreground">{copy("hanhubTeam")}</div>
           <div className="text-xs text-muted">ops@hanhub.cn</div>
         </div>
         <MenuSeparator />
         <MenuItem onClick={() => router.push(hrefFromKey("settings"))}>
-          <UserRound className="size-4" /> 账户设置
-        </MenuItem>
+          <UserRound className="size-4" />{copy("accountSettings")}</MenuItem>
         <MenuItem onClick={() => router.push(hrefFromKey("settings"))}>
-          <BookText className="size-4" /> 接入文档
-        </MenuItem>
+          <BookText className="size-4" />{copy("accessDocument")}</MenuItem>
         <MenuSeparator />
         <MenuItem onClick={() => router.push(`${ROOT}/login`)}>
-          <LogOut className="size-4" /> 退出登录
-        </MenuItem>
+          <LogOut className="size-4" />{copy("logOut")}</MenuItem>
       </MenuContent>
     </Menu>
   );

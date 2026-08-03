@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./routing-weights-panel.content";
+
 // 智能路由 · 六维权重控制面板：6 个 Slider 调 capability/cost/latency/load/priority/sla，
 // 受控持 SixWeights，任一维变更回吐父级（父级据此重算决策回放）。
 import { Slider, Tag } from "@hulianui/ui";
@@ -11,12 +13,12 @@ export const WEIGHT_DIMS: {
   hint: string;
   tone: string;
 }[] = [
-  { key: "capability", label: "能力匹配", hint: "覆盖任务所需能力，越全越优", tone: "var(--color-chart-1)" },
-  { key: "cost", label: "成本", hint: "混合单价越低越优", tone: "var(--color-chart-2)" },
-  { key: "latency", label: "延迟", hint: "端到端延迟越低越优", tone: "var(--color-chart-3)" },
-  { key: "load", label: "负载", hint: "当前占用率越低越优", tone: "var(--color-chart-4)" },
-  { key: "priority", label: "优先级", hint: "高优任务偏好能力更全者", tone: "var(--color-chart-5)" },
-  { key: "sla", label: "SLA 余量", hint: "相对 SLA 阈值越宽裕越优", tone: "var(--color-primary)" },
+  { key: "capability", label: copy("abilityMatching"), hint: copy("coveringTheRequiredCapabilitiesForTasksThe"), tone: "var(--color-chart-1)" },
+  { key: "cost", label: copy("cost"), hint: copy("theLowerTheMixedUnitPriceThe"), tone: "var(--color-chart-2)" },
+  { key: "latency", label: copy("delay"), hint: copy("theLowerTheEndToEndLatency"), tone: "var(--color-chart-3)" },
+  { key: "load", label: copy("load"), hint: copy("theLowerTheCurrentOccupancyRateThe"), tone: "var(--color-chart-4)" },
+  { key: "priority", label: copy("priority"), hint: copy("preferredForHighQualityTasksThoseWith"), tone: "var(--color-chart-5)" },
+  { key: "sla", label: copy("slaMargin"), hint: copy("theWiderTheRelativeSlaThresholdThe"), tone: "var(--color-primary)" },
 ];
 
 interface Props {
@@ -31,17 +33,12 @@ export function RoutingWeightsPanel({ weights, onChange, onReset }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div className="text-xs text-muted">
-          权重和 <span className="font-medium tabular-nums text-foreground">{sum.toFixed(2)}</span>
-          （打分按各维加权求和，无需归一）
-        </div>
+        <div className="text-xs text-muted">{copy("andAuthorityWasWeightyAndHarmonious")}<span className="font-medium tabular-nums text-foreground">{sum.toFixed(2)}</span>{copy("scoringIsCalculatedByWeightingAndSumming")}</div>
         <button
           type="button"
           onClick={onReset}
           className="rounded-[var(--radius)] border border-border px-2.5 py-1 text-xs text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
-        >
-          重置为等权
-        </button>
+        >{copy("resetsToEqualWeight")}</button>
       </div>
 
       <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -71,7 +68,7 @@ export function RoutingWeightsPanel({ weights, onChange, onReset }: Props) {
                   const next = Array.isArray(value) ? value[0] : value;
                   onChange({ ...weights, [d.key]: next });
                 }}
-                aria-label={`${d.label}权重`}
+                aria-label={copy("valueHeldGreatPower", d.label)}
               />
               <div className="text-xs text-muted">{d.hint}</div>
             </div>

@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // AI 编排画布 Block —— 自包含、可整段复制。
@@ -111,10 +112,10 @@ const EDGES: FlowEdge[] = [
 function getHandles(node: FlowNode<NodeData>): FlowHandleSpec[] {
   const handles: FlowHandleSpec[] = [];
   if (node.data.kind !== "input") {
-    handles.push({ id: "in", type: "target", label: "输入" });
+    handles.push({ id: "in", type: "target" });
   }
   if (node.data.kind !== "output") {
-    handles.push({ id: "out", type: "source", label: "输出" });
+    handles.push({ id: "out", type: "source" });
   }
   return handles;
 }

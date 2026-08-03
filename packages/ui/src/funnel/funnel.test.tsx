@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { Funnel } from "./funnel";
 import type { FunnelStage } from "./funnel.types";
 
@@ -55,5 +57,17 @@ describe("Funnel 渲染", () => {
       <Funnel stages={stages} renderStage={(s) => <span>自定-{s.id}</span>} />,
     );
     expect(getByText("自定-in")).toBeTruthy();
+  });
+
+  it("supports explicit localized labels without introducing a client boundary", () => {
+    const source = readFileSync(resolve(process.cwd(), "src/funnel/funnel.tsx"), "utf8");
+    expect(source).not.toMatch(/^\s*["']use client["']/m);
+    expect(source).not.toContain("useComponentLocale");
+
+    const { getByRole, getByText } = render(
+      <Funnel stages={stages} ariaLabel="Funnel chart" conversionLabel="Conversion" />,
+    );
+    expect(getByRole("list").getAttribute("aria-label")).toBe("Funnel chart");
+    expect(getByText(/Conversion 80\.0%/)).toBeTruthy();
   });
 });

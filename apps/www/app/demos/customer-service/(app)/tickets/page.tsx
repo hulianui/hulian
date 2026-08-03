@@ -1,4 +1,7 @@
 "use client";
+import { copy } from "./page.content";
+import { channelLabel, ticketPriorityLabel, ticketStatusLabel } from "../../_data/labels";
+
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
@@ -36,9 +39,9 @@ const PRIORITIES: TicketPriority[] = ["低", "中", "高", "紧急"];
 const STATUSES: TicketStatus[] = ["待处理", "处理中", "待回复", "已解决"];
 const PAGE_SIZE = 8;
 
-const opt = (arr: readonly string[], allLabel = "全部") => [
+const opt = (arr: readonly string[], labels?: Readonly<Record<string, string>>, allLabel = copy("all")) => [
   { value: "", label: allLabel },
-  ...arr.map((v) => ({ value: v, label: v })),
+  ...arr.map((v) => ({ value: v, label: labels?.[v] ?? v })),
 ];
 
 export default function TicketsPage() {
@@ -66,13 +69,13 @@ export default function TicketsPage() {
 
   const closeTicket = (id: string) => {
     setRows((prev) => prev.map((t) => (t.id === id ? { ...t, status: "已解决" as TicketStatus } : t)));
-    toast({ title: "工单已关闭", description: `工单 #${id} 已标记为已解决`, tone: "info" });
+    toast({ title: copy("ticketHasBeenClosed"), description: copy("ticketValueHasBeenMarkedAsResolved", id), tone: "info" });
   };
 
   const columns: ColumnDef<Ticket>[] = [
     {
       accessorKey: "id",
-      header: "工单号",
+      header: copy("workOrderNumber"),
       cell: ({ row }) => (
         <Link
           href={`${CS_ROOT}/tickets/${row.original.id}`}
@@ -84,69 +87,67 @@ export default function TicketsPage() {
     },
     {
       accessorKey: "subject",
-      header: "主题",
+      header: copy("topic"),
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="truncate">{row.original.subject}</div>
           <div className="truncate text-xs text-muted">
-            {row.original.channel} · {row.original.customerName}
+            {channelLabel[row.original.channel]} · {row.original.customerName}
           </div>
         </div>
       ),
     },
     {
       accessorKey: "priority",
-      header: "优先级",
+      header: copy("priority"),
       cell: ({ row }) => (
         <Tag tone={PRIORITY_TONE[row.original.priority]} size="sm" dot pulse={row.original.priority === "紧急"}>
-          {row.original.priority}
+          {ticketPriorityLabel[row.original.priority]}
         </Tag>
       ),
     },
     {
       accessorKey: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => (
         <Tag tone={STATUS_TONE[row.original.status]} size="sm">
-          {row.original.status}
+          {ticketStatusLabel[row.original.status]}
         </Tag>
       ),
     },
-    { accessorKey: "assignee", header: "受理人" },
+    { accessorKey: "assignee", header: copy("assignee") },
     {
       accessorKey: "updatedAt",
-      header: "更新时间",
+      header: copy("updateTime"),
       cell: ({ row }) => <span className="tabular-nums text-muted">{row.original.updatedAt}</span>,
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => {
         const ticket = row.original;
         const isResolved = ticket.status === "已解决";
         return (
           <div className="flex items-center gap-1">
-            <Button variant="link" size="sm" render={<Link href={`${CS_ROOT}/tickets/${ticket.id}`} />}>
-              查看
-            </Button>
+            <Button variant="link" size="sm" render={<Link href={`${CS_ROOT}/tickets/${ticket.id}`} />}>{copy("view")}</Button>
             {!isResolved && (
               <Popconfirm
-                title="确认关闭工单？"
-                description="关闭后状态变为已解决，如需继续处理需重新开单。"
+                title={copy("confirmToCloseTheWorkOrder")}
+                description={copy("afterClosingTheStatusChangesToResolved")}
                 danger
-                okText="关闭"
+                okText={copy("close")}
                 onConfirm={() => closeTicket(ticket.id)}
               >
                 <Tooltip>
                   <TooltipTrigger
                     render={
-                      <Button variant="ghost" size="sm" className="size-7 px-0" aria-label="关闭工单">
+                      <Button variant="ghost" size="sm" className="size-7 px-0" aria-label={copy("closeTicket")}>
                         <CheckCircle2 className="size-4" />
                       </Button>
                     }
                   />
-                  <TooltipContent>关闭工单</TooltipContent>
+                  <TooltipContent>{copy("closeTicket2")}</TooltipContent>
                 </Tooltip>
               </Popconfirm>
             )}
@@ -161,22 +162,20 @@ export default function TicketsPage() {
       {error && (
         <Alert tone="danger" className="mb-1">
           {error}
-          <Button size="sm" variant="ghost" onClick={reload} className="ml-2">
-            重试
-          </Button>
+          <Button size="sm" variant="ghost" onClick={reload} className="ml-2">{copy("tryAgain")}</Button>
         </Alert>
       )}
       <ProTable<Ticket>
-        title="工单管理"
+        title={copy("workOrderManagement")}
         columns={columns}
         data={paged}
         loading={loading}
         getRowId={(r) => r.id}
         search={{
           fields: [
-            { name: "keyword", label: "关键词", placeholder: "工单号 / 主题 / 客户" },
-            { name: "status", label: "状态", type: "select", options: opt(STATUSES) },
-            { name: "priority", label: "优先级", type: "select", options: opt(PRIORITIES) },
+            { name: "keyword", label: copy("keywords"), placeholder: copy("ticketNumberSubjectCustomer") },
+            { name: "status", label: copy("status2"), type: "select", options: opt(STATUSES, ticketStatusLabel) },
+            { name: "priority", label: copy("priority2"), type: "select", options: opt(PRIORITIES, ticketPriorityLabel) },
           ],
           onSearch: (v) => {
             setFilters(v);

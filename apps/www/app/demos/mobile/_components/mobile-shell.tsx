@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./mobile-shell.content";
+import { demoHref } from "../../_components/demo-locale";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, type ReactNode, useContext, useState } from "react";
 import { SafeArea, TabBar } from "@hulianui/ui";
@@ -58,13 +60,13 @@ function UserIcon({ filled }: { filled?: boolean }) {
   );
 }
 
-const BASE = "/demos/mobile";
+const BASE = demoHref("/demos/mobile");
 
 const TABS = [
-  { key: `${BASE}`, label: "首页", icon: <HomeIcon />, activeIcon: <HomeIcon filled /> },
-  { key: `${BASE}/categories`, label: "分类", icon: <GridIcon />, activeIcon: <GridIcon filled /> },
-  { key: `${BASE}/orders`, label: "订单", icon: <ListOrderIcon />, activeIcon: <ListOrderIcon filled />, badge: 2 },
-  { key: `${BASE}/profile`, label: "我的", icon: <UserIcon />, activeIcon: <UserIcon filled /> },
+  { key: `${BASE}`, label: copy("home"), icon: <HomeIcon />, activeIcon: <HomeIcon filled /> },
+  { key: `${BASE}/categories`, label: copy("categories"), icon: <GridIcon />, activeIcon: <GridIcon filled /> },
+  { key: `${BASE}/orders`, label: copy("bookings"), icon: <ListOrderIcon />, activeIcon: <ListOrderIcon filled />, badge: 2 },
+  { key: `${BASE}/profile`, label: copy("profile"), icon: <UserIcon />, activeIcon: <UserIcon filled /> },
 ];
 
 /** 手机外壳：桌面居中 390px 列 + 圆角手机 chrome + 模拟状态栏。

@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./page.content";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Play, RotateCcw, Save, Trash2 } from "lucide-react";
 import {
@@ -44,20 +45,20 @@ function initialGraph(): { nodes: N[]; edges: FlowEdge[] } {
 const TOUR_STEPS = [
   {
     target: () => document.querySelector<Element>("[data-tour='palette']"),
-    title: "节点库",
-    description: "从左侧节点库拖入或点击添加各类 AI 节点，构建你的生成流水线。",
+    title: copy("nodeLibrary"),
+    description: copy("buildYourBuildPipelineByDraggingInOrClickingOn"),
     placement: "right" as const,
   },
   {
     target: () => document.querySelector<Element>("[data-tour='canvas']"),
-    title: "画布",
-    description: "在画布上连接节点：从节点右侧圆点拖向下一节点左侧圆点即可连线。滚轮平移，Ctrl+滚轮缩放。",
+    title: copy("canvas"),
+    description: copy("connectNodesOnCanvasDragFromTheDotOnThe"),
     placement: "top" as const,
   },
   {
     target: () => document.querySelector<Element>("[data-tour='run-btn']"),
-    title: "运行工作流",
-    description: "配置好节点后点击「运行」，AI 会按拓扑顺序逐节点执行并生成产物。",
+    title: copy("runWorkflow"),
+    description: copy("afterConfiguringTheNodesClickRunAndTheAIWill"),
     placement: "bottom" as const,
   },
 ];
@@ -69,7 +70,7 @@ export default function AiWorkflowCanvasPage() {
   const [nodes, setNodes] = useState<N[]>(first.nodes);
   const [edges, setEdges] = useState<FlowEdge[]>(first.edges);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [name, setName] = useState("未命名工作流");
+  const [name, setName] = useState(copy("unnamedWorkflow"));
   const [showRun, setShowRun] = useState(false);
   const [clearOpen, setClearOpen] = useState(false);
   const idSeq = useRef(0);
@@ -125,20 +126,31 @@ export default function AiWorkflowCanvasPage() {
   }, []);
 
   const updateNode = useCallback((id: string, patch: Partial<FlowNodeData>) => {
-    setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } as FlowNodeData } : n)));
+    setNodes((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } as FlowNodeData } : n)),
+    );
   }, []);
 
   const deleteNode = useCallback((id: string) => {
     setNodes((prev) => prev.filter((n) => n.id !== id));
     setEdges((prev) => prev.filter((e) => e.source !== id && e.target !== id));
     setSelectedId((cur) => (cur === id ? null : cur));
-    toast({ title: "节点已删除", tone: "neutral" });
+    toast({ title: copy("nodeDeleted"), tone: "neutral" });
   }, []);
 
   const connect = useCallback((c: FlowConnection) => {
     setEdges((prev) => {
       if (prev.some((e) => e.source === c.source && e.target === c.target)) return prev;
-      return [...prev, { id: `e-${c.source}-${c.target}-${prev.length}`, source: c.source, target: c.target, sourceHandle: c.sourceHandle, targetHandle: c.targetHandle }];
+      return [
+        ...prev,
+        {
+          id: `e-${c.source}-${c.target}-${prev.length}`,
+          source: c.source,
+          target: c.target,
+          sourceHandle: c.sourceHandle,
+          targetHandle: c.targetHandle,
+        },
+      ];
     });
   }, []);
 
@@ -148,7 +160,7 @@ export default function AiWorkflowCanvasPage() {
     setSelectedId(null);
     setShowRun(false);
     setClearOpen(false);
-    toast({ title: "画布已清空", tone: "neutral" });
+    toast({ title: copy("canvasCleared"), tone: "neutral" });
   }, []);
 
   const handleRun = () => {
@@ -158,13 +170,13 @@ export default function AiWorkflowCanvasPage() {
 
   const handleSave = () => {
     void runSave(() => {
-      toast({ title: `「${name}」已保存`, tone: "success" });
+      toast({ title: copy("saved", name), tone: "success" });
     });
   };
 
   const handleReset = () => {
     reset();
-    toast({ title: "已重置运行状态", tone: "neutral" });
+    toast({ title: copy("runningStatusReset"), tone: "neutral" });
   };
 
   // 运行中的链路连线走流光（端点连到当前活动节点）
@@ -188,11 +200,11 @@ export default function AiWorkflowCanvasPage() {
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              aria-label="工作流名称"
+              aria-label={copy("workflowName")}
               className="h-8 w-52 font-medium"
             />
             <Tag size="sm" tone="neutral" variant="outline">
-              {nodes.length} 节点
+              {nodes.length} {copy("node")}
             </Tag>
             <div className="ml-auto flex items-center gap-2">
               <Tooltip>
@@ -203,14 +215,14 @@ export default function AiWorkflowCanvasPage() {
                       size="sm"
                       onClick={handleSave}
                       disabled={savePending || running}
-                      aria-label="保存工作流"
+                      aria-label={copy("saveWorkflow")}
                     />
                   }
                 >
                   {savePending ? <Spinner size="sm" /> : <Save className="size-4" />}
-                  <span className="hidden sm:inline">保存</span>
+                  <span className="hidden sm:inline">{copy("save")}</span>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">保存当前工作流</TooltipContent>
+                <TooltipContent side="bottom">{copy("saveCurrentWorkflow")}</TooltipContent>
               </Tooltip>
 
               <Tooltip>
@@ -221,14 +233,14 @@ export default function AiWorkflowCanvasPage() {
                       size="sm"
                       onClick={handleReset}
                       disabled={running}
-                      aria-label="重置运行状态"
+                      aria-label={copy("resetRunningState")}
                     />
                   }
                 >
                   <RotateCcw className="size-4" />
-                  <span className="hidden sm:inline">重置</span>
+                  <span className="hidden sm:inline">{copy("reset")}</span>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">重置节点运行状态</TooltipContent>
+                <TooltipContent side="bottom">{copy("resetNodeRunningState")}</TooltipContent>
               </Tooltip>
 
               <Tooltip>
@@ -240,14 +252,14 @@ export default function AiWorkflowCanvasPage() {
                       size="sm"
                       onClick={() => setClearOpen(true)}
                       disabled={running || nodes.length === 0}
-                      aria-label="清空画布"
+                      aria-label={copy("emptyCanvas")}
                     />
                   }
                 >
                   <Trash2 className="size-4" />
-                  <span className="hidden sm:inline">清空</span>
+                  <span className="hidden sm:inline">{copy("clear")}</span>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">清空画布上所有节点</TooltipContent>
+                <TooltipContent side="bottom">{copy("emptyAllNodesOnCanvas")}</TooltipContent>
               </Tooltip>
 
               <div data-tour="run-btn">
@@ -255,10 +267,10 @@ export default function AiWorkflowCanvasPage() {
                   onClick={handleRun}
                   disabled={running || nodes.length === 0}
                   className="h-8 px-4 text-sm"
-                  aria-label="运行工作流"
+                  aria-label={copy("runWorkflow")}
                 >
                   {running ? <Spinner size="sm" /> : <Play className="size-4 fill-current" />}
-                  {running ? "生成中…" : "运行"}
+                  {running ? copy("generating") : copy("run")}
                 </ShimmerButton>
               </div>
             </div>
@@ -280,22 +292,37 @@ export default function AiWorkflowCanvasPage() {
               isEdgeAnimated={isEdgeAnimated}
               renderNode={(n) => <NodeCard node={n} />}
             />
-            {showRun && <RunPanel running={running} progress={progress} log={log} onClose={() => setShowRun(false)} />}
+            {showRun && (
+              <RunPanel
+                running={running}
+                progress={progress}
+                log={log}
+                onClose={() => setShowRun(false)}
+              />
+            )}
           </div>
         </div>
 
-        <Inspector node={selectedNode} nodes={nodes} edges={edges} onUpdate={updateNode} onDelete={deleteNode} />
+        <Inspector
+          node={selectedNode}
+          nodes={nodes}
+          edges={edges}
+          onUpdate={updateNode}
+          onDelete={deleteNode}
+        />
       </div>
 
       {/* 清空画布确认弹窗 */}
       <AlertDialog open={clearOpen} onOpenChange={setClearOpen}>
         <AlertDialogContent
-          title="清空画布"
-          description="此操作将删除画布上所有节点与连线，且无法撤销。确认继续吗？"
+          title={copy("emptyCanvas")}
+          description={copy("thisWillRemoveAllNodesAndConnectionsOnTheCanvas")}
         >
-          <AlertDialogClose render={<Button variant="outline" size="sm" />}>取消</AlertDialogClose>
+          <AlertDialogClose render={<Button variant="outline" size="sm" />}>
+            {copy("cancel")}
+          </AlertDialogClose>
           <Button tone="danger" size="sm" onClick={confirmClearAll}>
-            确认清空
+            {copy("confirmEmpty")}
           </Button>
         </AlertDialogContent>
       </AlertDialog>
@@ -313,7 +340,7 @@ export default function AiWorkflowCanvasPage() {
         onFinish={() => {
           setTourOpen(false);
           localStorage.setItem(TOUR_STORAGE_KEY, "1");
-          toast({ title: "引导完成，开始搭建你的 AI 工作流吧！", tone: "info" });
+          toast({ title: copy("onboardingCompleteStartBuildingYourAIWorkflow"), tone: "info" });
         }}
       />
     </TooltipProvider>

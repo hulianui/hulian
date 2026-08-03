@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 提示输入区 Block —— 自包含、可整段复制。
@@ -12,7 +13,7 @@ import {
   Tag,
   Text,
   toast,
-} from "@hulianui/ui";
+} from "../../../lib/fixture-ui";
 import { Sparkles, Globe, Paperclip } from "lucide-react";
 
 const SUGGESTIONS = [

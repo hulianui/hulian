@@ -12,16 +12,32 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 const demoItems = [
-  { link: "#discover", text: "Discover", image: "https://picsum.photos/seed/fm-a/240/120" },
-  { link: "#build", text: "Build", image: "https://picsum.photos/seed/fm-b/240/120" },
-  { link: "#ship", text: "Ship", image: "https://picsum.photos/seed/fm-c/240/120" },
-  { link: "#scale", text: "Scale", image: "https://picsum.photos/seed/fm-d/240/120" },
+  {
+    link: "https://example.com/#discover",
+    text: "Discover",
+    image: "https://picsum.photos/seed/fm-a/240/120",
+  },
+  {
+    link: "https://example.com/#build",
+    text: "Build",
+    image: "https://picsum.photos/seed/fm-b/240/120",
+  },
+  {
+    link: "https://example.com/#ship",
+    text: "Ship",
+    image: "https://picsum.photos/seed/fm-c/240/120",
+  },
+  {
+    link: "https://example.com/#scale",
+    text: "Scale",
+    image: "https://picsum.photos/seed/fm-d/240/120",
+  },
 ];
 
 const textOnly = [
-  { link: "#home", text: "首页" },
-  { link: "#products", text: "产品" },
-  { link: "#about", text: "关于" },
+  { link: "https://example.com/#home", text: "首页" },
+  { link: "https://example.com/#products", text: "产品" },
+  { link: "https://example.com/#about", text: "关于" },
 ];
 
 export const flowingMenuShowcase: ShowcaseSpec = {
@@ -63,7 +79,8 @@ export const flowingMenuShowcase: ShowcaseSpec = {
     },
     {
       title: "速度与份数",
-      description: "speed 越大跑马灯越慢；repeat 控制单项内重复份数，撑满并保证无缝循环（最小 2）。",
+      description:
+        "speed 越大跑马灯越慢；repeat 控制单项内重复份数，撑满并保证无缝循环（最小 2）。",
       code: `<FlowingMenu items={items} speed={30} repeat={6} />`,
       render: () => (
         <Stage>
@@ -107,11 +124,7 @@ export const flowingMenuShowcase: ShowcaseSpec = {
 
   renderWithProps: (p) => (
     <Stage>
-      <FlowingMenu
-        items={demoItems}
-        speed={p.speed as number}
-        repeat={p.repeat as number}
-      />
+      <FlowingMenu items={demoItems} speed={p.speed as number} repeat={p.repeat as number} />
     </Stage>
   ),
 

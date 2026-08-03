@@ -3,7 +3,7 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { cva } from "class-variance-authority";
 import type { ComponentProps } from "react";
 import { X } from "../_icons";
-import { useLocale } from "../config";
+import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DrawerContentProps } from "./drawer.types";
@@ -66,7 +66,9 @@ export function DrawerContent({
   closeLabel,
   className,
 }: DrawerContentProps) {
-  const loc = useLocale();
+  const loc = useLocaleValue("drawer", {
+    close: "关闭",
+  });
   // 提供 container（如手机框 ref）→ 抽屉就地 portal 进该元素并改用 absolute 定位，
   // 贴该容器的边而非视口（容器须 position:relative + overflow-hidden）。否则默认 fixed 贴视口。
   const contained = container != null;
@@ -89,7 +91,7 @@ export function DrawerContent({
             绝对定位不占布局，故对既有的 title/正文/footer 结构零影响；标题侧留出 pr-10 免得被压。 */}
         {showClose && (
           <BaseDialog.Close
-            aria-label={closeLabel ?? loc.drawer.close}
+            aria-label={closeLabel ?? loc.close}
             className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="size-4" aria-hidden />

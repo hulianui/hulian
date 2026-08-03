@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./use-probe.content";
+
 import { useCallback, useState } from "react";
 import { channels as seedChannels, probeHistory as seedHistory } from "../../_data/channels";
 import type { Channel, ProbeRecord } from "../../_data/types";
@@ -49,7 +51,7 @@ export function useProbe(): ProbeState {
           );
           const health: Channel["health"] = successRate < 0.95 || latencyMs > 350 ? "degraded" : "online";
           const trend = [...c.trend.slice(1), Number(successRate.toFixed(3))];
-          return { ...c, latencyMs, successRate, health, trend, lastProbe: "刚刚" };
+          return { ...c, latencyMs, successRate, health, trend, lastProbe: copy("justNow") };
         }),
       );
       // 追加探测历史（取在线渠道结果，最多前 3 条）。
@@ -63,7 +65,7 @@ export function useProbe(): ProbeState {
             channel: c.name,
             ok: c.successRate >= 0.95,
             latencyMs: c.latencyMs,
-            note: c.health === "degraded" ? `200 OK · 延迟偏高` : "200 OK",
+            note: c.health === "degraded" ? copy("okDelayIsHigh") : "200 OK",
           }));
         setHistory((h) => [...records, ...h].slice(0, 12));
         return latest;

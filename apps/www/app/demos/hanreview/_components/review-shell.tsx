@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./review-shell.content";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, Moon, Sun } from "lucide-react";
@@ -8,26 +10,22 @@ import { HR_ROOT, breadcrumbFor, labelOf, menuItems, selectedKeyFor } from "./na
 function Brand() {
   return (
     <div className="flex items-center gap-2">
-      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-        瑚
-      </span>
-      <span className="truncate text-[15px] font-semibold tracking-tight">瀚审 HanReview</span>
+      <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral")}</span>
+      <span className="truncate text-[15px] font-semibold tracking-tight">{copy("hanreviewHanreview")}</span>
     </div>
   );
 }
 
 function BrandMark() {
   return (
-    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-      瑚
-    </span>
+    <span className="grid size-7 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral2")}</span>
   );
 }
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label={theme === "dark" ? "切换到亮色" : "切换到暗色"}>
+    <Button variant="ghost" size="icon" onClick={toggle} aria-label={theme === "dark" ? copy("switchToBrightColors") : copy("switchToDark")}>
       {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
     </Button>
   );
@@ -40,13 +38,13 @@ function HeaderExtra() {
       <Button
         variant="ghost"
         size="icon"
-        aria-label="通知"
-        onClick={() => toast({ title: "暂无新通知", description: "门禁阻断、严重问题等提醒会在此汇总", tone: "neutral" })}
+        aria-label={copy("notification")}
+        onClick={() => toast({ title: copy("noNewNotificationsYet"), description: copy("alertsAboutAccessControlSeriousIssuesAnd"), tone: "neutral" })}
       >
         <Bell className="size-[18px]" />
       </Button>
       <div className="mx-1 h-6 w-px bg-border" aria-hidden />
-      <User name="周明轩" description="研发负责人" avatarProps={{ fallback: "周" }} />
+      <User name={copy("zhouMingxuan")} description={copy("headOfRD")} avatarProps={{ fallback: copy("zhou") }} />
     </div>
   );
 }

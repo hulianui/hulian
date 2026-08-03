@@ -3,6 +3,7 @@ import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
 import { Minus, Plus } from "../_icons";
 import { cn } from "../lib/cn";
 import type { NumberFieldProps } from "./number-field.types";
+import { useComponentLocale } from "../config/locale-context";
 
 // 外壳复刻 Input 家风（focus-within ring）；±按钮居两侧；Input 居中 tabular-nums。
 // 键盘 ↑↓/PageUp/Down/Home/End + 到达 min/max 时按钮自动禁用，全由 Base UI 兜底。
@@ -11,7 +12,13 @@ import type { NumberFieldProps } from "./number-field.types";
 const btnClass =
   "inline-flex size-9 shrink-0 select-none items-center justify-center text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
 
-export function NumberField({ className, "aria-label": ariaLabel, onValueChange, ...props }: NumberFieldProps) {
+export function NumberField({
+  className,
+  "aria-label": ariaLabel,
+  onValueChange,
+  ...props
+}: NumberFieldProps) {
+  const labels = useComponentLocale().numberField ?? { decrement: "减少", increment: "增加" };
   return (
     <BaseNumberField.Root
       {...props}
@@ -27,14 +34,20 @@ export function NumberField({ className, "aria-label": ariaLabel, onValueChange,
           "data-[disabled]:opacity-50",
         )}
       >
-        <BaseNumberField.Decrement className={cn(btnClass, "border-r border-border")} aria-label="减少">
+        <BaseNumberField.Decrement
+          className={cn(btnClass, "border-r border-border")}
+          aria-label={labels.decrement}
+        >
           <Minus className="size-4" />
         </BaseNumberField.Decrement>
         <BaseNumberField.Input
           aria-label={ariaLabel}
           className="h-9 w-16 min-w-0 flex-1 bg-transparent text-center text-sm tabular-nums text-foreground outline-none"
         />
-        <BaseNumberField.Increment className={cn(btnClass, "border-l border-border")} aria-label="增加">
+        <BaseNumberField.Increment
+          className={cn(btnClass, "border-l border-border")}
+          aria-label={labels.increment}
+        >
           <Plus className="size-4" />
         </BaseNumberField.Increment>
       </BaseNumberField.Group>

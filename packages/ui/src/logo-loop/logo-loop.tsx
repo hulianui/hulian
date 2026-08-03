@@ -1,13 +1,8 @@
 "use client";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useReducedMotion } from "motion/react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { LogoItem, LogoLoopProps } from "./logo-loop.types";
 
@@ -22,7 +17,7 @@ const MIN_COPIES = 2;
 const COPY_HEADROOM = 2;
 
 function toCssLength(value: number | string | undefined): string | undefined {
-  return typeof value === "number" ? `${value}px` : (value ?? undefined);
+  return typeof value === "number" ? `${value}px` : value ?? undefined;
 }
 
 export function LogoLoop({
@@ -38,10 +33,12 @@ export function LogoLoop({
   fadeOutColor,
   scaleOnHover = false,
   renderItem,
-  ariaLabel = "合作伙伴 logo",
+  ariaLabel,
   className,
   style,
 }: LogoLoopProps) {
+  const locale = useComponentLocale().logoLoop ?? { label: "合作伙伴 logo", link: "logo 链接" };
+  const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const seqRef = useRef<HTMLUListElement>(null);
@@ -71,8 +68,8 @@ export function LogoLoop({
         ? 1
         : -1
       : direction === "left"
-        ? 1
-        : -1;
+      ? 1
+      : -1;
     const speedMultiplier = speed < 0 ? -1 : 1;
     return magnitude * directionMultiplier * speedMultiplier;
   }, [speed, direction, isVertical, reduce]);
@@ -246,13 +243,12 @@ export function LogoLoop({
             )}
           />
         ) : null;
-      const itemAriaLabel =
-        "node" in item ? (item.ariaLabel ?? item.title) : (item.alt ?? item.title);
+      const itemAriaLabel = "node" in item ? item.ariaLabel ?? item.title : item.alt ?? item.title;
       const inner = item.href ? (
         <a
           className="inline-flex items-center rounded-sm no-underline opacity-100 outline-none transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           href={item.href}
-          aria-label={itemAriaLabel || "logo 链接"}
+          aria-label={itemAriaLabel || locale.link}
           target="_blank"
           rel="noreferrer noopener"
         >
@@ -304,12 +300,12 @@ export function LogoLoop({
           ? toCssLength(width) === "100%"
             ? undefined
             : toCssLength(width)
-          : (toCssLength(width) ?? "100%"),
+          : toCssLength(width) ?? "100%",
         "--hl-loop-gap": `${gap}px`,
         "--hl-loop-logo-h": `${logoHeight}px`,
         "--hl-loop-fade": fadeOutColor ?? "var(--color-surface)",
         ...style,
-      }) as CSSProperties,
+      } as CSSProperties),
     [width, gap, logoHeight, fadeOutColor, style, isVertical],
   );
 
@@ -342,7 +338,7 @@ export function LogoLoop({
       )}
       style={containerStyle}
       role="region"
-      aria-label={ariaLabel}
+      aria-label={resolvedAriaLabel}
     >
       <div
         ref={trackRef}

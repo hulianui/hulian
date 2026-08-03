@@ -9,6 +9,8 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useReducedMotion } from "motion/react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ProfileCardProps } from "./profile-card.types";
 
@@ -40,11 +42,11 @@ function initials(name: string): string {
 
 export function ProfileCard({
   avatarUrl,
-  name = "瑚琏",
-  title = "前端工程师",
+  name,
+  title,
   handle = "hulianui",
-  status = "在线",
-  contactText = "联系",
+  status,
+  contactText,
   showUserInfo = true,
   onContactClick,
   enableTilt = true,
@@ -56,6 +58,18 @@ export function ProfileCard({
   ...props
 }: ProfileCardProps &
   Omit<HTMLAttributes<HTMLDivElement>, "style" | "children" | "color" | "className">) {
+  const locale = useComponentLocale().profileCard ?? {
+    name: "瑚琏",
+    title: "前端工程师",
+    status: "在线",
+    contact: "联系",
+    avatar: (name) => `${name} 头像`,
+    contactName: (name) => `联系 ${name}`,
+  };
+  name ??= locale.name;
+  title ??= locale.title;
+  status ??= locale.status;
+  contactText ??= locale.contact;
   const prefersReduced = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
@@ -232,7 +246,7 @@ export function ProfileCard({
         "--glow": glowColor,
         "--card-aspect": `${aspectRatio}`,
         ...style,
-      }) as CSSProperties,
+      } as CSSProperties),
     [glowColor, aspectRatio, style],
   );
 
@@ -251,8 +265,7 @@ export function ProfileCard({
         aria-hidden
         className={cn(
           "pointer-events-none absolute inset-0 -z-10 rounded-[1.75rem] opacity-0 blur-2xl transition-opacity duration-200",
-          active &&
-            "group-hover:opacity-80 group-has-data-[active=true]:opacity-80",
+          active && "group-hover:opacity-80 group-has-data-[active=true]:opacity-80",
         )}
         style={{
           background:
@@ -314,7 +327,7 @@ export function ProfileCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={avatarUrl}
-                alt={`${name} 头像`}
+                alt={locale.avatar(name)}
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover mix-blend-luminosity"
                 onError={(e) => {
@@ -373,7 +386,7 @@ export function ProfileCard({
               <button
                 type="button"
                 onClick={onContactClick}
-                aria-label={`联系 ${name}`}
+                aria-label={locale.contactName(name)}
                 className="pointer-events-auto rounded-xl border border-border/60 bg-surface/60 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 {contactText}

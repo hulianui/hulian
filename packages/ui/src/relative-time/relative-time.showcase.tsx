@@ -66,7 +66,7 @@ export const relativeTimeShowcase: ShowcaseSpec = {
       ),
     },
   ],
-  controls: [{ prop: "locale", type: "select", options: ["zh", "en"], defaultValue: "zh" }],
+  controls: [{ prop: "locale", type: "select", options: ["auto", "zh", "en"], defaultValue: "auto" }],
   states: [
     {
       name: "过去（固定基准）",
@@ -112,6 +112,6 @@ export const relativeTimeShowcase: ShowcaseSpec = {
       ),
     },
   ],
-  renderWithProps: (p) => <RelativeTime value={ago(20 * 60)} base={BASE} locale={(p.locale as "zh" | "en") ?? "zh"} />,
-  toCode: (p) => `<RelativeTime value={publishedAt}${p.locale && p.locale !== "zh" ? ` locale="${p.locale}"` : ""} />`,
+  renderWithProps: (p) => <RelativeTime value={ago(20 * 60)} base={BASE} locale={(p.locale === "auto" ? undefined : p.locale) as "zh" | "en" | undefined} />,
+  toCode: (p) => `<RelativeTime value={publishedAt}${p.locale && p.locale !== "auto" ? ` locale="${p.locale}"` : ""} />`,
 };

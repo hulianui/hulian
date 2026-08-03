@@ -8,6 +8,8 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { RotateCcw } from "lucide-react";
+
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { ModelViewerProps } from "./model-viewer.types";
 
@@ -44,13 +46,12 @@ export function ModelViewer({
   style,
   ...props
 }: ModelViewerProps) {
+  const locale = useComponentLocale().modelViewer ?? { reset: "重置视角" };
   // SSR 安全的 reduced-motion 探测：初始 false，客户端首帧 effect 同步真实媒体查询。
   // 不用 motion 的 useReducedMotion——它在 jsdom/测试下不随 matchMedia mock 同步刷新。
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
-    setReduced(
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
-    );
+    setReduced(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false);
   }, []);
 
   const stageRef = useRef<HTMLDivElement>(null);
@@ -193,9 +194,7 @@ export function ModelViewer({
       className={cn(
         "relative overflow-hidden rounded-xl border border-border bg-surface",
         "select-none",
-        enableManualRotation && !reduced
-          ? "cursor-grab active:cursor-grabbing touch-pan-y"
-          : "",
+        enableManualRotation && !reduced ? "cursor-grab active:cursor-grabbing touch-pan-y" : "",
         className,
       )}
       style={{ width, height, ...style } as CSSProperties}
@@ -245,7 +244,7 @@ export function ModelViewer({
           )}
         >
           <RotateCcw className="size-3.5" aria-hidden />
-          重置视角
+          {locale.reset}
         </button>
       )}
     </div>

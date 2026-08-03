@@ -1,4 +1,5 @@
 "use client";
+import { copy } from "./work.content";
 
 import Link from "next/link";
 import {
@@ -15,9 +16,10 @@ import {
 } from "@hulianui/ui";
 import { ArrowUpRight } from "lucide-react";
 import { Section } from "./section";
-import { works, type Work } from "../../_data/works";
+import { WORK_STATUS_LABELS, works, type Work } from "../../_data/works";
+import { demoHref } from "../../../_components/demo-locale";
 
-const BASE = "/demos/personal";
+const BASE = demoHref("/demos/personal");
 
 // 作品状态 → Tag 语气。
 const STATUS_TONE: Record<Work["status"], TagTone> = {
@@ -31,7 +33,7 @@ function WorkCard({ work, featured }: { work: Work; featured?: boolean }) {
   return (
     <Link
       href={`${BASE}/work/${work.slug}`}
-      aria-label={`查看作品 ${work.name}`}
+      aria-label={`${copy("viewProject")}${work.name}`}
       className={cn(
         "group relative block rounded-[var(--radius)] outline-none",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
@@ -65,7 +67,7 @@ function WorkCard({ work, featured }: { work: Work; featured?: boolean }) {
               {work.category}
             </Tag>
             <Tag variant="soft" tone={STATUS_TONE[work.status]} size="md" dot pulse={work.status === "在线"}>
-              {work.status}
+              {WORK_STATUS_LABELS[work.status]}
             </Tag>
           </div>
           <span className="font-mono text-xs text-muted">{work.year}</span>
@@ -116,9 +118,9 @@ export function Work() {
   return (
     <Section
       id="work"
-      eyebrow="精选作品"
-      title="六个我每天都在用的东西"
-      description="每一个产品都源于一个我自己被折磨的真实问题。点开任意一个看完整故事、截图与关键实现。"
+      eyebrow={copy("featuredWork")}
+      title={copy("sixProductsIUseEveryDay")}
+      description={copy("everyProductBeganWithARealProblemThatBotheredMeOpenAnyProjectForTheFullStoryScreenshotsAndKeyImp")}
       width="6xl"
       backdrop={
         <Particles
@@ -140,7 +142,8 @@ export function Work() {
 
       <div className="mt-12 flex justify-center">
         <Button variant="outline" size="lg" render={<Link href="/demos" />}>
-          浏览更多示例
+
+          {copy("browseMoreDemos")}
           <ArrowUpRight className="size-4" aria-hidden />
         </Button>
       </div>

@@ -1,36 +1,37 @@
+import { copy } from "./rules.content";
 import type { RoutingRule, GateRule } from "./types";
 
 // 路由规则，对应 _lib/routing.ts 的分支逻辑（顺序即优先级）。
 export const ROUTING_RULES: RoutingRule[] = [
   {
     id: "rr-test-config",
-    when: "文件为测试 / 配置（isTestOrConfig）",
+    when: copy("fileForTestConfigurationIstestorconfig"),
     modelId: "haiku",
-    note: "测试与配置文件审查价值密度低，派经济模型 Haiku，单价最低。",
+    note: copy("testingAndProfileReviewHaveLowValue"),
   },
   {
     id: "rr-security",
-    when: "安全敏感路径（securitySensitive，如鉴权 / 支付 / 密钥）",
+    when: copy("securitySensitivePathsSuchAsAuthenticationPayment"),
     modelId: "opus",
-    note: "安全问题代价高，强制升级到最强模型 Opus 做深度审计。",
+    note: copy("securityIssuesAreCostlyForcingADeep"),
   },
   {
     id: "rr-large-file",
-    when: "大文件（lines > 300）",
+    when: copy("largeFilesLines"),
     modelId: "sonnet",
-    note: "长 diff 需要稳健的逻辑推理，派均衡模型 Sonnet。",
+    note: copy("longDiffsRequireRobustLogicalReasoningSo"),
   },
   {
     id: "rr-default",
-    when: "默认（普通业务代码）",
+    when: copy("defaultStandardBusinessCode"),
     modelId: "sonnet",
-    note: "绝大多数 PR 走 Sonnet，质量与成本平衡。",
+    note: copy("theVastMajorityOfPrGoesThrough"),
   },
   {
     id: "rr-cost-cap",
-    when: "预估成本超出 costCap 且非经济模型",
+    when: copy("estimatedCostsExceedCostcapAndAreNot"),
     modelId: "haiku",
-    note: "成本封顶兜底，超限自动降级到 Haiku 控制单次审查开销。",
+    note: copy("costCapGuaranteesTheBottomAndOver"),
   },
 ];
 

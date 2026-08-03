@@ -1,0 +1,98 @@
+import { t, type Dictionary } from "intlayer";
+import { DOCS_LOCALE } from "../../../../lib/docs-locale";
+
+export const content = {
+  "zh-CN": {
+    "linWanru": "林婉如",
+    "shanghaiPudong": "上海·浦东",
+    "highValue": "高价值",
+    "repurchase": "复购",
+    "clothing": "服饰",
+    "ticketTReturnCompleted": "工单 #T-2087 退货已完结",
+    "inquireAboutSizeAndHaveBeenGuided": "咨询尺码，已引导下单",
+    "goldMembershipUpgrade": "金卡会员升级",
+    "zhaoTiezhu": "赵铁柱",
+    "hebeiShijiazhuang": "河北·石家庄",
+    "digital": "数码",
+    "newCustomer": "新客",
+    "inquireAboutDeliveryTime": "咨询发货时效",
+    "firstOrderRegistration": "首单注册",
+    "sunYue": "孙悦",
+    "sichuanChengdu": "四川·成都",
+    "beauty": "美妆",
+    "active": "活跃",
+    "workOrderTLogisticsComplaintIsBeing": "工单 #T-2090 物流投诉处理中",
+    "participateInBigSale": "参与 38 大促",
+    "zhouJie": "周杰",
+    "guangdongShenzhen": "广东·深圳",
+    "highCustomerOrder": "高客单",
+    "homeAppliances": "家电",
+    "dedicatedOneToOneCustomerService": "专属客服一对一",
+    "renewalOfBlackCardRights": "黑卡权益续期",
+    "largeOrder": "大额订单 ¥12,800",
+    "wuMin": "吴敏",
+    "beijingChaoyang": "北京·朝阳",
+    "newCustomer2": "新客",
+    "motherAndBaby": "母婴",
+    "newUsersRegisterAndPlaceTheirFirst": "新用户注册并下首单",
+    "zhengKai": "郑凯",
+    "zhejiangHangzhou": "浙江·杭州",
+    "sports": "运动",
+    "manyReturnsAndExchanges": "退换多",
+    "consultAfterSalesPolicy": "咨询售后政策",
+    "workOrderTExchangeCompleted": "工单 #T-2061 换货完结",
+  },
+  en: {
+    "linWanru": "Lin Wanru",
+    "shanghaiPudong": "Shanghai Pudong",
+    "highValue": "High value",
+    "repurchase": "Repurchase",
+    "clothing": "Clothing",
+    "ticketTReturnCompleted": "Ticket #T-2087 · Return completed",
+    "inquireAboutSizeAndHaveBeenGuided": "Asked about sizing and received ordering guidance",
+    "goldMembershipUpgrade": "Gold membership upgrade",
+    "zhaoTiezhu": "Zhao Tiezhu",
+    "hebeiShijiazhuang": "Hebei · Shijiazhuang",
+    "digital": "Electronics",
+    "newCustomer": "New customer",
+    "inquireAboutDeliveryTime": "Asked about delivery timing",
+    "firstOrderRegistration": "First order registration",
+    "sunYue": "Sun Yue",
+    "sichuanChengdu": "Sichuan · Chengdu",
+    "beauty": "Beauty",
+    "active": "Active",
+    "workOrderTLogisticsComplaintIsBeing": "Ticket #T-2090 · Shipping complaint in progress",
+    "participateInBigSale": "Joined the spring promotion",
+    "zhouJie": "Zhou Jie",
+    "guangdongShenzhen": "Guangdong · Shenzhen",
+    "highCustomerOrder": "High-value customer",
+    "homeAppliances": "Home appliances",
+    "dedicatedOneToOneCustomerService": "Dedicated one-to-one support",
+    "renewalOfBlackCardRights": "Black membership renewed",
+    "largeOrder": "Large order ¥12,800",
+    "wuMin": "Wu Min",
+    "beijingChaoyang": "Beijing Chaoyang",
+    "newCustomer2": "New customer",
+    "motherAndBaby": "Baby products",
+    "newUsersRegisterAndPlaceTheirFirst": "Registered and placed a first order",
+    "zhengKai": "Zheng Kai",
+    "zhejiangHangzhou": "Zhejiang · Hangzhou",
+    "sports": "Sports",
+    "manyReturnsAndExchanges": "Returns and exchanges",
+    "consultAfterSalesPolicy": "Asked about the exchange policy",
+    "workOrderTExchangeCompleted": "Ticket #T-2061 · Exchange completed",
+  },
+} as const;
+
+export type ContentKey = keyof typeof content["zh-CN"];
+
+export function copy(key: ContentKey, ...values: readonly unknown[]): string {
+  return values.reduce<string>((text, value, index) => text.replaceAll(`{${index}}`, String(value)), content[DOCS_LOCALE][key]);
+}
+
+const dictionary: Dictionary = {
+  key: "demo-customer-service-data-customers",
+  content: t(content),
+};
+
+export default dictionary;

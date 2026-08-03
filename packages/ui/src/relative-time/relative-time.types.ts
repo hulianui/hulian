@@ -10,7 +10,7 @@ export interface RelativeTimeProps {
   base?: Date | string | number;
   /** 自动刷新间隔(ms)。@default 60000（每分钟）。设 0 关闭刷新。 */
   updateInterval?: number;
-  /** @default "zh" */
+  /** Defaults to the active ConfigProvider locale, falling back to "zh". */
   locale?: RelativeTimeLocale;
   /** 鼠标悬停 title 显示绝对时间。@default true */
   withTitle?: boolean;

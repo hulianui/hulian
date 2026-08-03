@@ -1,13 +1,15 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useRouter } from "next/navigation";
 import { MessagesSquare, Headphones, Gauge } from "lucide-react";
 import { Heading, Link, LoginForm, Text } from "@hulianui/ui";
 import { CS_ROOT } from "../_components/nav-config";
 
 const FEATURES = [
-  { icon: MessagesSquare, title: "多渠道统一接待", desc: "网页 / App / 微信 / 电话，一个工作台全收口" },
-  { icon: Headphones, title: "实时坐席协同", desc: "进线提醒、输入状态、已读回执一目了然" },
-  { icon: Gauge, title: "服务质量看板", desc: "首响时长、解决率、CSAT 满意度实时跟踪" },
+  { icon: MessagesSquare, title: copy("unifiedReceptionThroughMultipleChannels"), desc: copy("webPageAppWechatPhoneOneWorkbench") },
+  { icon: Headphones, title: copy("realTimeAgentCollaboration"), desc: copy("incomingCallRemindersInputStatusAndRead") },
+  { icon: Gauge, title: copy("serviceQualityDashboard"), desc: copy("realTimeTrackingOfFirstCallDuration") },
 ];
 
 export default function CsLoginPage() {
@@ -24,21 +26,13 @@ export default function CsLoginPage() {
         }}
       >
         <div className="flex items-center gap-2">
-          <span className="grid size-8 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-            瑚
-          </span>
-          <span className="text-base font-semibold tracking-tight">瑚琏客服</span>
+          <span className="grid size-8 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral")}</span>
+          <span className="text-base font-semibold tracking-tight">{copy("hulianCustomerService")}</span>
         </div>
 
         <div className="max-w-md">
-          <Heading level={1} size="3xl" balance>
-            让每一次对话
-            <br />
-            都被认真对待
-          </Heading>
-          <Text tone="muted" className="mt-4">
-            面向坐席的实时会话工作台，多渠道接待、工单流转、知识沉淀与服务度量一体化。
-          </Text>
+          <Heading level={1} size="3xl" balance>{copy("makeEveryConversation")}<br />{copy("areTakenSeriously")}</Heading>
+          <Text tone="muted" className="mt-4">{copy("aRealTimeConversationalWorkbenchForAgents")}</Text>
 
           <ul className="mt-10 flex flex-col gap-5">
             {FEATURES.map((f) => (
@@ -57,9 +51,7 @@ export default function CsLoginPage() {
           </ul>
         </div>
 
-        <Text size="sm" tone="muted">
-          © 2026 瑚琏 Hulian · 内置示例
-        </Text>
+        <Text size="sm" tone="muted">{copy("hulianBuiltInExamples")}</Text>
       </aside>
 
       {/* 右：登录表单 */}
@@ -68,27 +60,23 @@ export default function CsLoginPage() {
           <LoginForm
             logo={
               <span className="inline-flex items-center gap-2">
-                <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">
-                  瑚
-                </span>
-                <span className="text-base font-semibold tracking-tight">瑚琏客服</span>
+                <span className="grid size-7 place-items-center rounded-[var(--radius)] bg-primary text-sm font-bold text-primary-foreground">{copy("coral2")}</span>
+                <span className="text-base font-semibold tracking-tight">{copy("hulianCustomerService2")}</span>
               </span>
             }
-            subtitle="欢迎回来，登录你的客服工作台"
+            subtitle={copy("welcomeBackLogInToYourCustomer")}
             onFinish={async () => {
               await new Promise((r) => setTimeout(r, 600));
               router.push(CS_ROOT);
             }}
             footer={
               <div className="flex justify-between text-sm">
-                <Link href="#">忘记密码</Link>
-                <Link href="#">联系管理员</Link>
+                <Link href="#">{copy("forgotPassword")}</Link>
+                <Link href="#">{copy("contactAdministrator")}</Link>
               </div>
             }
           />
-          <Text size="xs" tone="muted" className="text-center">
-            演示环境：用户名 / 密码任意填写即可登录
-          </Text>
+          <Text size="xs" tone="muted" className="text-center">{copy("demoEnvironmentFillInAnyUsernamePassword")}</Text>
         </div>
       </div>
     </main>

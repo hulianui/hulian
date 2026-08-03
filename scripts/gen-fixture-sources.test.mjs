@@ -1,0 +1,125 @@
+import assert from "node:assert/strict";
+import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import test from "node:test";
+
+import {
+  generatedEnglishRegistry,
+  removeStaleEnglishModules,
+  translateFixtureModule,
+} from "./gen-fixture-sources.mjs";
+
+const copy = {
+  保存设置: "Save settings",
+  提交失败: "Submission failed",
+  去结算: "Check out",
+  "件商品，共": "items, totaling",
+};
+
+test("generation localizes source literals without a runtime translation adapter", () => {
+  const source = `/** @jsxImportSource ../../../lib/fixture-jsx */
+    import { Button, toast } from "../../../lib/fixture-ui";
+    import { translateFixtureText } from "../../../lib/fixture-copy";
+    export function Fixture() {
+      const [value, setValue] = useState("保存设置");
+      return <Button title="提交失败" onClick={() => toast({ title: value })}>{value}</Button>;
+    }`;
+
+  const english = translateFixtureModule(source, "fixture.tsx", copy, "block");
+  assert.match(english, /useState\("Save settings"\)/);
+  assert.match(english, /title="Submission failed"/);
+  assert.doesNotMatch(english, /fixture-(?:jsx|ui|copy)|translateFixture/);
+  assert.doesNotMatch(english, /[ \t]+$/m);
+  assert.match(english, /from "@hulianui\/ui"/);
+  assert.equal(english, translateFixtureModule(source, "fixture.tsx", copy, "block"));
+});
+
+test("generated English page modules import generated English block modules", () => {
+  const source = `import { HeroBlock } from "../../blocks/_blocks/hero";
+    export function LandingPage() { return <HeroBlock />; }`;
+  const english = translateFixtureModule(source, "landing.tsx", copy, "page");
+  assert.match(english, /from "\.\.\/\.\.\/blocks\/_blocks\/hero\.en"/);
+});
+
+test("generation preserves source whitespace around translated template fragments", () => {
+  const source = "const message = `去结算 ${count} 件商品，共 ${total}`;";
+  const english = translateFixtureModule(source, "cart.tsx", copy, "block");
+
+  assert.match(english, /`Check out \$\{count\} items, totaling \$\{total\}`/);
+});
+
+test("file context overrides global fragments for composed copy and proper names", () => {
+  const source = `const person = "高敏";
+    export function Hero() {
+      return <>把应用送上 <strong>全球边缘</strong><br /> 只需一次 git push</>;
+    }`;
+  const english = translateFixtureModule(
+    source,
+    "hero.tsx",
+    {
+      高敏: "High sensitivity",
+      把应用送上: "Send the application",
+      全球边缘: "Global edge",
+      "只需一次 git push": "Just one git push",
+    },
+    "block",
+    {
+      高敏: "Gao Min",
+      把应用送上: "Deploy your app to the",
+      全球边缘: "global edge",
+      "只需一次 git push": "with a single git push",
+    },
+  );
+
+  assert.match(english, /const person = "Gao Min"/);
+  assert.match(english, /Deploy your app to the <strong>global edge<\/strong>/);
+  assert.match(english, /with a single git push/);
+  assert.doesNotMatch(english, /High sensitivity|Send the application|Just one git push/);
+});
+
+test("generation rejects a contextual override that its declared module does not consume", () => {
+  assert.throws(
+    () =>
+      translateFixtureModule(
+        `export function Fixture() { return <p>健康</p>; }`,
+        "agent-card.tsx",
+        { 健康: "health" },
+        "block",
+        { "2-缺失": "Missing second", "1-缺失": "Missing first" },
+      ),
+    {
+      message:
+        '[fixture-source] unused contextual override(s) in agent-card.tsx: "1-缺失", "2-缺失"',
+    },
+  );
+});
+
+test("generation removes only stale direct English module siblings", () => {
+  const root = mkdtempSync(join(tmpdir(), "hulian-fixture-orphans-"));
+  writeFileSync(join(root, "hero.tsx"), "export const Hero = null;\n");
+  writeFileSync(join(root, "hero.en.tsx"), "export const Hero = null;\n");
+  writeFileSync(join(root, "removed.en.tsx"), "export const Removed = null;\n");
+
+  removeStaleEnglishModules(root, ["hero.tsx"]);
+
+  assert.equal(existsSync(join(root, "hero.en.tsx")), true);
+  assert.equal(existsSync(join(root, "removed.en.tsx")), false);
+  assert.equal(existsSync(join(root, "hero.tsx")), true);
+});
+
+test("generated English registries remove source-only Chinese comments", () => {
+  const source = `import { DOCS_LOCALE } from "../../lib/docs-locale";
+    import { blockPreviews as englishBlockPreviews } from "./_registry.en";
+    import { Hero } from "./_blocks/hero";
+    // 区块注册表
+    const chineseBlockPreviews = { hero: <Hero /> };
+    export const blockPreviews = DOCS_LOCALE === "en" ? englishBlockPreviews : chineseBlockPreviews;
+  `;
+
+  const english = generatedEnglishRegistry(source, "block");
+  assert.doesNotMatch(english, /[\p{Script=Han}]/u);
+  assert.doesNotMatch(english, /[ \t]+$/m);
+  assert.match(english, /[^\n]\n$/);
+  assert.match(english, /from "\.\/_blocks\/hero\.en"/);
+});

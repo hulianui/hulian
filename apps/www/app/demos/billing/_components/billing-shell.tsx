@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./billing-shell.content";
+
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,9 +26,7 @@ function isActive(pathname: string, href: string, exact?: boolean) {
 function BrandMark() {
   return (
     <Link href={BILLING_BASE} className="flex items-center gap-2.5">
-      <span className="grid size-9 place-items-center rounded-[var(--radius)] bg-primary font-semibold text-primary-foreground shadow-sm">
-        瀚
-      </span>
+      <span className="grid size-9 place-items-center rounded-[var(--radius)] bg-primary font-semibold text-primary-foreground shadow-sm">{copy("han")}</span>
       <span className="flex flex-col leading-none">
         <span className="text-[15px] font-semibold tracking-tight text-foreground">
           {brand.name}
@@ -48,17 +48,16 @@ function PlanBadge() {
       className="group block rounded-[var(--radius)] border border-border bg-surface p-3 transition-colors hover:border-primary/40"
     >
       <div className="flex items-center justify-between">
-        <span className="text-xs text-muted">当前订阅</span>
+        <span className="text-xs text-muted">{copy("currentSubscription")}</span>
         <Tag tone="brand" size="sm">
           {plan?.nameEn}
         </Tag>
       </div>
       <div className="mt-1.5 flex items-baseline gap-1">
         <span className="text-lg font-semibold tabular-nums text-foreground">{formatMoney(monthlyTotal)}</span>
-        <span className="text-xs text-muted">/ 月</span>
+        <span className="text-xs text-muted">{copy("month")}</span>
       </div>
-      <span className="mt-1 inline-flex items-center gap-0.5 text-xs text-primary opacity-0 transition-opacity group-hover:opacity-100">
-        管理套餐 <ArrowUpRight className="size-3" />
+      <span className="mt-1 inline-flex items-center gap-0.5 text-xs text-primary opacity-0 transition-opacity group-hover:opacity-100">{copy("managementPackage")}<ArrowUpRight className="size-3" />
       </span>
     </Link>
   );
@@ -106,8 +105,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           href="/demos"
           className="flex items-center gap-1.5 px-1 text-xs text-muted transition-colors hover:text-foreground"
         >
-          <ChevronLeft className="size-3.5" /> 返回 Demo 画廊
-        </Link>
+          <ChevronLeft className="size-3.5" />{copy("returnToDemoGallery")}</Link>
       </div>
     </div>
   );
@@ -122,13 +120,13 @@ function Topbar({ onMenu }: { onMenu: () => void }) {
         <button
           type="button"
           onClick={onMenu}
-          aria-label="打开导航"
+          aria-label={copy("openNavigation")}
           className="grid size-9 place-items-center rounded-[var(--radius)] text-muted hover:bg-surface-hover hover:text-foreground md:hidden"
         >
           <Menu className="size-5" />
         </button>
         <div>
-          <h1 className="text-base font-semibold tracking-tight text-foreground">{current?.label ?? "瀚付"}</h1>
+          <h1 className="text-base font-semibold tracking-tight text-foreground">{current?.label ?? copy("hanpay")}</h1>
         </div>
       </div>
       <div className="flex items-center gap-1">
@@ -140,7 +138,7 @@ function Topbar({ onMenu }: { onMenu: () => void }) {
               </span>
             }
           />
-          <TooltipContent>切换主题</TooltipContent>
+          <TooltipContent>{copy("switchTheme")}</TooltipContent>
         </Tooltip>
         <Badge dot tone="success" placement="top-right" offset={[-2, 4]}>
           <Avatar size="sm" fallback={account.avatar} />
@@ -177,7 +175,7 @@ export function BillingShell({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={() => setDrawer(false)}
-                aria-label="关闭导航"
+                aria-label={copy("closeNavigation")}
                 className="absolute right-3 top-3 grid size-8 place-items-center rounded-[var(--radius)] text-muted hover:bg-surface-hover"
               >
                 <X className="size-4" />

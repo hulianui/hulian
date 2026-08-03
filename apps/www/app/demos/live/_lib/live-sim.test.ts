@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { createInitialState, reducer, replyFor } from "./live-sim";
+import { DOCS_LOCALE } from "../../../../lib/docs-locale";
+
+const isEnglish = DOCS_LOCALE === "en";
 
 describe("live-sim reducer", () => {
   it("初始态字段齐全", () => {
@@ -59,7 +62,7 @@ describe("live-sim reducer", () => {
     const s = reducer(createInitialState(), { type: "ASK_AI", id: "q1", question: "有 XL 码吗" });
     const last = s.suggestions.at(-1)!;
     expect(last.kind).toBe("reply");
-    expect(last.text).toContain("码");
+    expect(last.text).toContain(isEnglish ? "sizes" : "码");
   });
 
   it("ADOPT_SUGGESTION 把答复推进公屏并标记 adopted", () => {
@@ -68,12 +71,13 @@ describe("live-sim reducer", () => {
     s = reducer(s, { type: "ADOPT_SUGGESTION", id: "q1" });
     expect(s.suggestions.find((x) => x.id === "q1")?.adopted).toBe(true);
     expect(s.chat.length).toBe(before + 1);
-    expect(s.chat.at(-1)?.user?.name).toBe("主播");
+    expect(s.chat.at(-1)?.user?.name).toBe(isEnglish ? "Host" : "主播");
   });
 
   it("replyFor 关键词命中与默认兜底", () => {
-    expect(replyFor("续航多久")).toContain("耳机"); // 命中 /续航|耳机|降噪/ → 3 号耳机话术
-    expect(replyFor("有大码吗")).toContain("码"); // 命中尺码
+    expect(replyFor(isEnglish ? "How long does the battery last?" : "续航多久")).toContain(isEnglish ? "Product 3" : "耳机");
+    expect(replyFor(isEnglish ? "Does this come in XL?" : "有大码吗")).toContain(isEnglish ? "sizes" : "码");
+    expect(replyFor(isEnglish ? "When will it ship?" : "什么时候发货")).toContain(isEnglish ? "48 hours" : "48 小时");
     expect(replyFor("zzz 随便问问")).toBeTruthy(); // 未命中走默认兜底
   });
 });

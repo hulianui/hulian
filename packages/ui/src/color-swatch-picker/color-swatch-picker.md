@@ -52,6 +52,7 @@ const [v, setV] = useState("#3b82f6");
 ## 禁忌 / 坑
 
 - 受控 `value` 必须与 `colors` 中某项**严格字符串相等**才会高亮；`"#FFF"` 与 `"#ffffff"`、`"#3b82f6"` 与 `"rgb(59,130,246)"` 视为不同值。统一大小写与写法。
+- 默认无障碍名称跟随 `ConfigProvider locale`；显式 `aria-label` 优先，未包 Provider 时保持中文。
 - 仅支持单选；多选场景不在本组件范围内。
 
 ## 相关

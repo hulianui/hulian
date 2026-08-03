@@ -1,4 +1,6 @@
 "use client";
+import { copy } from "./page.content";
+
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -9,16 +11,17 @@ import {
 } from "@hulianui/ui";
 import { ROOT } from "../../_components/nav-config";
 import { quotes as seed, quoteTotals } from "../../_data/quotes";
-import { quoteStatusTone, yuan } from "../../_data/status";
-import { OWNERS, type Quote, type QuoteStatus } from "../../_data/types";
+import { quoteStatusLabel, quoteStatusTone, yuan } from "../../_data/status";
+import { type Quote, type QuoteStatus } from "../../_data/types";
 import { useMockData } from "../../../lib/async";
 
 const STATUSES: QuoteStatus[] = ["草稿", "已发送", "已确认", "已失效"];
 const PAGE_SIZE = 8;
+const OWNER_OPTIONS = [...new Set(seed.map((quote) => quote.owner))];
 
-const opt = (arr: readonly string[], allLabel = "全部") => [
+const opt = (arr: readonly string[], labels?: Readonly<Record<string, string>>, allLabel = copy("all")) => [
   { value: "", label: allLabel },
-  ...arr.map((v) => ({ value: v, label: v })),
+  ...arr.map((v) => ({ value: v, label: labels?.[v] ?? v })),
 ];
 
 export default function QuotesPage() {
@@ -47,7 +50,7 @@ export default function QuotesPage() {
   const columns: ColumnDef<Quote>[] = [
     {
       accessorKey: "code",
-      header: "报价单",
+      header: copy("quotation"),
       cell: ({ row }) => {
         const q = row.original;
         return (
@@ -60,51 +63,49 @@ export default function QuotesPage() {
         );
       },
     },
-    { accessorKey: "client", header: "甲方抬头" },
-    { accessorKey: "owner", header: "制单人" },
+    { accessorKey: "client", header: copy("partyARaisesItsHead") },
+    { accessorKey: "owner", header: copy("maker") },
     {
       id: "amount",
-      header: "价税合计",
+      header: copy("totalPriceAndTax"),
       cell: ({ row }) => {
         const t = quoteTotals(row.original.items, row.original.taxRate);
         return <span className="tabular-nums font-medium">{yuan(t.total)}</span>;
       },
     },
-    { accessorKey: "createdAt", header: "制单日期" },
-    { accessorKey: "validUntil", header: "有效期至" },
+    { accessorKey: "createdAt", header: copy("orderMakingDate") },
+    { accessorKey: "validUntil", header: copy("validUntil") },
     {
       accessorKey: "status",
-      header: "状态",
+      header: copy("status"),
       cell: ({ row }) => (
         <Tag tone={quoteStatusTone(row.original.status)} size="sm" dot>
-          {row.original.status}
+          {quoteStatusLabel[row.original.status]}
         </Tag>
       ),
     },
     {
       id: "actions",
-      header: "操作",
+      header: copy("operation"),
       enableSorting: false,
       cell: ({ row }) => (
-        <Button variant="link" size="sm" render={<Link href={`${ROOT}/quotes/${row.original.id}`} />}>
-          查看 / 编辑
-        </Button>
+        <Button variant="link" size="sm" render={<Link href={`${ROOT}/quotes/${row.original.id}`} />}>{copy("viewEdit")}</Button>
       ),
     },
   ];
 
   return (
     <ProTable<Quote>
-      title="报价单"
+      title={copy("quotation2")}
       columns={columns}
       data={paged}
       loading={loading}
       getRowId={(r) => r.id}
       search={{
         fields: [
-          { name: "keyword", label: "关键词", placeholder: "单号 / 项目 / 甲方" },
-          { name: "status", label: "状态", type: "select", options: opt(STATUSES) },
-          { name: "owner", label: "制单人", type: "select", options: opt(OWNERS) },
+          { name: "keyword", label: copy("keywords"), placeholder: copy("orderNoProjectPartyA") },
+          { name: "status", label: copy("status2"), type: "select", options: opt(STATUSES, quoteStatusLabel) },
+          { name: "owner", label: copy("maker2"), type: "select", options: opt(OWNER_OPTIONS) },
         ],
         onSearch: (v) => {
           setFilters(v);

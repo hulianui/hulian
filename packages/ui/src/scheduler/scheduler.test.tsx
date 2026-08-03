@@ -2,6 +2,8 @@ import { Profiler } from "react";
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { act, render, cleanup, fireEvent } from "@testing-library/react";
 import { Scheduler } from "./scheduler";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 import type { SchedulerEvent, SchedulerResource } from "./scheduler.types";
 
 afterEach(cleanup);
@@ -41,6 +43,30 @@ describe("Scheduler 渲染", () => {
     const update = onRender.mock.calls.at(-1);
     expect(update?.[1]).toBe("update");
     expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+  });
+
+  it("uses English toolbar, weekday, and date formatting from ConfigProvider", () => {
+    const { getByLabelText, getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <Scheduler {...base} view="week" />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("Previous")).not.toBeNull();
+    expect(getByLabelText("Next")).not.toBeNull();
+    expect(getByLabelText("View switcher")).not.toBeNull();
+    expect(getByText("Mon")).not.toBeNull();
+    expect(getByText("Jun 1 – Jun 7")).not.toBeNull();
+  });
+
+  it("keeps Chinese fallback for legacy component dictionaries without scheduler labels", () => {
+    const locale = { ...enUS, components: { ...enUS.components!, scheduler: undefined } };
+    const { getByLabelText, getByText } = render(
+      <ConfigProvider locale={locale}>
+        <Scheduler {...base} view="week" />
+      </ConfigProvider>,
+    );
+    expect(getByLabelText("上一个")).not.toBeNull();
+    expect(getByText("周一")).not.toBeNull();
   });
 
   it("月视图渲染事件 chip", () => {

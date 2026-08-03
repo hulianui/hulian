@@ -1,3 +1,5 @@
+import { copy } from "./hero.content";
+import { demoHref } from "../../../_components/demo-locale";
 import Link from "next/link";
 import {
   AuroraText,
@@ -18,7 +20,8 @@ export function Hero() {
       <DotPattern className="text-border/60 [mask-image:radial-gradient(60%_55%_at_50%_30%,white,transparent)]" />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 py-24 text-center sm:py-32">
         <Tag variant="soft" tone="brand" size="md" icon={<Zap className="size-3.5" />}>
-          新版本 v3 · 弹性算力闲时归零
+
+          {copy("version3ElasticComputeScalesToZeroWhenIdle")}
         </Tag>
 
         <Heading
@@ -27,8 +30,9 @@ export function Hero() {
           balance
           className="text-4xl leading-tight text-foreground sm:text-5xl md:text-6xl"
         >
-          把应用送上 <AuroraText>全球边缘</AuroraText>
-          <br className="hidden sm:block" /> 只需一次 git push
+
+          {copy("sendTheApplication")} <AuroraText>{copy("globalEdge")}</AuroraText>
+          <br className="hidden sm:block" />  {copy("justOneGitPush")}
         </Heading>
 
         <Text tone="muted" size="lg" className="max-w-2xl">
@@ -36,17 +40,20 @@ export function Hero() {
         </Text>
 
         <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
-          <ShimmerButton render={<Link href="/demos/website/contact" />}>
-            免费开始
+          <ShimmerButton render={<Link href={demoHref("/demos/website/contact")} />}>
+
+            {copy("startForFree")}
             <ArrowRight className="ml-2 size-4" aria-hidden />
           </ShimmerButton>
-          <Button variant="outline" size="lg" render={<Link href="/demos/website/pricing" />}>
-            查看定价
+          <Button variant="outline" size="lg" render={<Link href={demoHref("/demos/website/pricing")} />}>
+
+            {copy("viewPricing")}
           </Button>
         </div>
 
         <Text tone="muted" size="sm">
-          无需信用卡 · 5 分钟上线第一个项目
+
+          {copy("noCreditCardRequiredLaunchYourFirstProjectIn5Minutes")}
         </Text>
       </div>
     </section>

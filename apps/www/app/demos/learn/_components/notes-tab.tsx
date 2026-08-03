@@ -1,14 +1,7 @@
 "use client";
+import { copy } from "./notes-tab.content";
 import { useState } from "react";
-import {
-  MarkdownEditor,
-  Markdown,
-  Button,
-  Popconfirm,
-  Empty,
-  Tag,
-  toast,
-} from "@hulianui/ui";
+import { MarkdownEditor, Markdown, Button, Popconfirm, Empty, Tag, toast } from "@hulianui/ui";
 import { Trash2, NotebookPen } from "lucide-react";
 import type { Course, Lesson } from "../_data/types";
 import { useLearn } from "../_lib/learn-store";
@@ -26,13 +19,13 @@ export function NotesTab({ course, currentLesson }: { course: Course; currentLes
 
   const save = () => {
     if (!draft.trim()) {
-      toast({ title: "笔记内容不能为空", tone: "danger" });
+      toast({ title: copy("noteContentCannotBeEmpty"), tone: "danger" });
       return;
     }
     void run(() => {
       addNote({ lessonId: currentLesson.id, lessonTitle: currentLesson.title, body: draft });
       setDraft("");
-      toast({ title: "笔记已保存", description: currentLesson.title, tone: "success" });
+      toast({ title: copy("notesSaved"), description: currentLesson.title, tone: "success" });
     });
   };
 
@@ -41,30 +34,40 @@ export function NotesTab({ course, currentLesson }: { course: Course; currentLes
       <div>
         <div className="mb-2 flex items-center gap-2 text-sm text-muted">
           <NotebookPen className="size-4" aria-hidden />
-          正在记录 · <span className="font-medium text-foreground">{currentLesson.title}</span>
+          {copy("recording")}{" "}
+          <span className="font-medium text-foreground">{currentLesson.title}</span>
         </div>
         <MarkdownEditor
           value={draft}
           onChange={setDraft}
-          placeholder="记录这一节的要点，支持 Markdown…"
+          placeholder={copy("documentTheMainPointsOfThisSectionToSupportMarkdown")}
           minRows={4}
-          aria-label="笔记编辑器"
+          aria-label={copy("notesEditor")}
         />
         <div className="mt-3 flex justify-end">
           <Button onClick={save} loading={pending}>
-            保存笔记
+            {copy("saveNotes")}
           </Button>
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-foreground">我的笔记（{courseNotes.length}）</h3>
+        <h3 className="mb-3 text-sm font-semibold text-foreground">
+          {copy("myNotesCount", courseNotes.length)}
+        </h3>
         {courseNotes.length === 0 ? (
-          <Empty size="sm" title="还没有笔记" description="边看边记，知识才留得住" />
+          <Empty
+            size="sm"
+            title={copy("noNotesYet")}
+            description={copy("knowledgeCanOnlyBeRetainedByLookingAtNotes")}
+          />
         ) : (
           <ul className="space-y-3">
             {courseNotes.map((n) => (
-              <li key={n.id} className="rounded-[var(--radius)] border border-border bg-surface p-4">
+              <li
+                key={n.id}
+                className="rounded-[var(--radius)] border border-border bg-surface p-4"
+              >
                 <div className="mb-2 flex items-center justify-between gap-2">
                   <Tag tone="neutral" variant="soft" size="sm">
                     {n.lessonTitle}
@@ -72,15 +75,20 @@ export function NotesTab({ course, currentLesson }: { course: Course; currentLes
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted">{n.createdAt}</span>
                     <Popconfirm
-                      title="删除这条笔记？"
-                      description="删除后无法恢复。"
+                      title={copy("deleteThisNote")}
+                      description={copy("deletionCannotBeUndone")}
                       danger
                       onConfirm={() => {
                         deleteNote(n.id);
-                        toast({ title: "笔记已删除", tone: "info" });
+                        toast({ title: copy("noteDeleted"), tone: "info" });
                       }}
                     >
-                      <Button variant="ghost" size="sm" tone="danger" aria-label="删除笔记">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        tone="danger"
+                        aria-label={copy("deleteNote")}
+                      >
                         <Trash2 className="size-4" />
                       </Button>
                     </Popconfirm>

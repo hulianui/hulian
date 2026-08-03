@@ -5,6 +5,7 @@ import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
 import { PICKER_FORMAT, PICKER_PLACEHOLDER, parseValue } from "../calendar/calendar-core";
 import { cn } from "../lib/cn";
+import { useComponentLocale } from "../config/locale-context";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DatePickerProps } from "./date-picker.types";
 
@@ -34,9 +35,14 @@ function DatePickerImpl({
   "aria-label": ariaLabel,
   className,
 }: DatePickerProps) {
+  const labels = {
+    clear: "清除",
+    ...PICKER_PLACEHOLDER,
+    ...useComponentLocale().datePicker,
+  };
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<string | null>(defaultValue ?? null);
-  const value = isControlled ? (valueProp ?? null) : internal;
+  const value = isControlled ? valueProp ?? null : internal;
   const selected = parseValue(value, picker);
 
   const [open, setOpen] = useState(false);
@@ -77,7 +83,7 @@ function DatePickerImpl({
             >
               <CalendarIcon className="size-4 shrink-0 text-muted" aria-hidden />
               <span className={cn("truncate", !text && "text-muted")}>
-                {text || placeholder || PICKER_PLACEHOLDER[picker]}
+                {text || placeholder || labels[picker]}
               </span>
             </button>
           }
@@ -85,7 +91,7 @@ function DatePickerImpl({
         {showClear && (
           <button
             type="button"
-            aria-label="清除"
+            aria-label={labels.clear}
             onClick={clearValue}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >

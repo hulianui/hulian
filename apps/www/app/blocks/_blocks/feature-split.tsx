@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 import { Heading, Tag, Text } from "@hulianui/ui";
 
 const FEATURES: Array<{

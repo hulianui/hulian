@@ -1,3 +1,4 @@
+/** @jsxImportSource ../../../lib/fixture-jsx */
 "use client";
 
 // 购物车汇总区块 —— 左侧商品行列表（Checkbox 选中 + 渐变缩略图 + 名称 + NumberField 数量 + Popconfirm 删除）。
@@ -5,7 +6,7 @@
 // 所有数据内联，复制即独立运行，无任何外部依赖。
 
 import { useState } from "react";
-import { Button, Checkbox, Empty, NumberField, Popconfirm, Separator, toast } from "@hulianui/ui";
+import { Button, Checkbox, Empty, NumberField, Popconfirm, Separator, toast } from "../../../lib/fixture-ui";
 import { ShoppingCart } from "lucide-react";
 
 interface CartItem {

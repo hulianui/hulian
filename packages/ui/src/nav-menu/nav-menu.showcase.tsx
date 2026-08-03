@@ -1,12 +1,25 @@
 "use client";
 import { useState } from "react";
-import { LayoutDashboard, Users, Settings, FileText, BarChart3, ShieldCheck, Trash2 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Settings,
+  FileText,
+  BarChart3,
+  ShieldCheck,
+  Trash2,
+} from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { NavMenu } from "./nav-menu";
 import type { NavMenuNode } from "./nav-menu.types";
 
 const ITEMS: NavMenuNode[] = [
-  { key: "dashboard", label: "仪表盘", icon: <LayoutDashboard />, href: "#dashboard" },
+  {
+    key: "dashboard",
+    label: "仪表盘",
+    icon: <LayoutDashboard />,
+    href: "https://example.com/#dashboard",
+  },
   {
     type: "group",
     key: "g-manage",
@@ -17,9 +30,9 @@ const ITEMS: NavMenuNode[] = [
         label: "用户",
         icon: <Users />,
         children: [
-          { key: "users-list", label: "用户列表", href: "#users-list" },
-          { key: "users-roles", label: "角色权限", href: "#users-roles" },
-          { key: "users-audit", label: "操作审计", href: "#users-audit" },
+          { key: "users-list", label: "用户列表", href: "https://example.com/#users-list" },
+          { key: "users-roles", label: "角色权限", href: "https://example.com/#users-roles" },
+          { key: "users-audit", label: "操作审计", href: "https://example.com/#users-audit" },
         ],
       },
       {
@@ -27,11 +40,21 @@ const ITEMS: NavMenuNode[] = [
         label: "内容",
         icon: <FileText />,
         children: [
-          { key: "content-posts", label: "文章", href: "#content-posts" },
-          { key: "content-comments", label: "评论", href: "#content-comments", disabled: true },
+          { key: "content-posts", label: "文章", href: "https://example.com/#content-posts" },
+          {
+            key: "content-comments",
+            label: "评论",
+            href: "https://example.com/#content-comments",
+            disabled: true,
+          },
         ],
       },
-      { key: "analytics", label: "数据分析", icon: <BarChart3 />, href: "#analytics" },
+      {
+        key: "analytics",
+        label: "数据分析",
+        icon: <BarChart3 />,
+        href: "https://example.com/#analytics",
+      },
     ],
   },
   {
@@ -39,15 +62,31 @@ const ITEMS: NavMenuNode[] = [
     key: "g-system",
     label: "系统",
     children: [
-      { key: "security", label: "安全中心", icon: <ShieldCheck />, href: "#security" },
-      { key: "settings", label: "设置", icon: <Settings />, href: "#settings", disabled: true },
+      {
+        key: "security",
+        label: "安全中心",
+        icon: <ShieldCheck />,
+        href: "https://example.com/#security",
+      },
+      {
+        key: "settings",
+        label: "设置",
+        icon: <Settings />,
+        href: "https://example.com/#settings",
+        disabled: true,
+      },
     ],
   },
 ];
 
 // 四级深树：验证 collapsed 态飞出层是无限级级联（一级图标 → 二级 → 三级 → 四级）。
 const DEEP_ITEMS: NavMenuNode[] = [
-  { key: "dashboard", label: "仪表盘", icon: <LayoutDashboard />, href: "#dashboard" },
+  {
+    key: "dashboard",
+    label: "仪表盘",
+    icon: <LayoutDashboard />,
+    href: "https://example.com/#dashboard",
+  },
   {
     key: "sys",
     label: "系统管理",
@@ -61,24 +100,37 @@ const DEEP_ITEMS: NavMenuNode[] = [
             key: "sys-user-role",
             label: "角色",
             children: [
-              { key: "sys-user-role-list", label: "角色列表", href: "#role-list" },
-              { key: "sys-user-role-perm", label: "权限分配", href: "#role-perm" },
+              {
+                key: "sys-user-role-list",
+                label: "角色列表",
+                href: "https://example.com/#role-list",
+              },
+              {
+                key: "sys-user-role-perm",
+                label: "权限分配",
+                href: "https://example.com/#role-perm",
+              },
             ],
           },
-          { key: "sys-user-list", label: "用户列表", href: "#user-list" },
+          { key: "sys-user-list", label: "用户列表", href: "https://example.com/#user-list" },
         ],
       },
       {
         key: "sys-log",
         label: "日志",
         children: [
-          { key: "sys-log-login", label: "登录日志", href: "#log-login" },
-          { key: "sys-log-error", label: "错误日志", href: "#log-error" },
+          { key: "sys-log-login", label: "登录日志", href: "https://example.com/#log-login" },
+          { key: "sys-log-error", label: "错误日志", href: "https://example.com/#log-error" },
         ],
       },
     ],
   },
-  { key: "security", label: "安全中心", icon: <ShieldCheck />, href: "#security" },
+  {
+    key: "security",
+    label: "安全中心",
+    icon: <ShieldCheck />,
+    href: "https://example.com/#security",
+  },
 ];
 
 // 行尾操作（actions 槽）演示用删除按钮：hover/聚焦才显，用 NavMenu 暴露的 group-hover/nav-row 钩子。
@@ -102,7 +154,11 @@ const CONVO_ITEMS: NavMenuNode[] = [
     key: "today",
     label: "今天",
     children: [
-      { key: "c1", label: "瑚琏组件库怎么接入", actions: <DeleteAction label="瑚琏组件库怎么接入" /> },
+      {
+        key: "c1",
+        label: "瑚琏组件库怎么接入",
+        actions: <DeleteAction label="瑚琏组件库怎么接入" />,
+      },
       { key: "c2", label: "帮我润色一封周报", actions: <DeleteAction label="帮我润色一封周报" /> },
     ],
   },
@@ -111,7 +167,11 @@ const CONVO_ITEMS: NavMenuNode[] = [
     key: "yesterday",
     label: "昨天",
     children: [
-      { key: "c3", label: "解释 React Server Components", actions: <DeleteAction label="解释 RSC" /> },
+      {
+        key: "c3",
+        label: "解释 React Server Components",
+        actions: <DeleteAction label="解释 RSC" />,
+      },
     ],
   },
 ];
@@ -197,7 +257,8 @@ export const navMenuShowcase: ShowcaseSpec = {
     },
     {
       title: "行尾操作",
-      description: "actions 槽渲染在行按钮之外（绝对覆盖右侧），可用 group-hover/nav-row 做 hover 才显。",
+      description:
+        "actions 槽渲染在行按钮之外（绝对覆盖右侧），可用 group-hover/nav-row 做 hover 才显。",
       code: `const items = [
   {
     type: "group",
@@ -314,5 +375,7 @@ export const navMenuShowcase: ShowcaseSpec = {
     />
   ),
   toCode: (p) =>
-    `<NavMenu\n  mode="${(p.mode as string) ?? "inline"}"\n  items={items}\n  defaultOpenKeys={["users"]}\n  selectedKeys={selected}\n  onSelect={(key) => setSelected([key])}\n/>`,
+    `<NavMenu\n  mode="${
+      (p.mode as string) ?? "inline"
+    }"\n  items={items}\n  defaultOpenKeys={["users"]}\n  selectedKeys={selected}\n  onSelect={(key) => setSelected([key])}\n/>`,
 };

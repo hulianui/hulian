@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { ConfigProvider, enUS } from "../config";
 import { InputOTP } from "./input-otp";
 
 const inputs = (c: HTMLElement) => Array.from(c.querySelectorAll("input"));
@@ -71,5 +72,14 @@ describe("InputOTP", () => {
     const first = inputs(container)[0];
     expect(first.getAttribute("aria-invalid")).toBe("true");
     expect(first.className).toContain("border-danger");
+  });
+
+  it("ConfigProvider locale=enUS localizes the default group label", () => {
+    const { getByRole } = render(
+      <ConfigProvider locale={enUS}>
+        <InputOTP length={4} />
+      </ConfigProvider>,
+    );
+    expect(getByRole("group", { name: "Verification code" })).toBeTruthy();
   });
 });
