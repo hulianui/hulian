@@ -5,6 +5,12 @@ import { dirname, join } from "node:path";
 import test from "node:test";
 
 import { scanEnglishHtml, scanEnglishOutput } from "./check-english-output.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
+
+// 英文产物在成品树里的相对目录：作根语言时是空串（文件直接落在扫描根），
+// 作嵌套语言时才是 "en/"。scanEnglishOutput 按 SSOT 推导英文根，构造与断言都得跟着走。
+const EN_SEGMENT = basePathForLocale("en").replace(/^\//, "");
+const EN_DIR = EN_SEGMENT ? `${EN_SEGMENT}/` : "";
 
 function temporaryTree(t) {
   const root = mkdtempSync(join(tmpdir(), "hulian-english-output-"));
@@ -155,16 +161,16 @@ test("English residue includes Han and CJK or fullwidth punctuation", (t) => {
 
 test("output scan enumerates physical HTML plus public human-readable JSON and text", async (t) => {
   const root = temporaryTree(t);
-  write(root, "en/index.html", html("<h1>English</h1>"));
-  write(root, "en/nested/page.html", html("<p>残留</p>"));
+  write(root, `${EN_DIR}index.html`, html("<h1>English</h1>"));
+  write(root, `${EN_DIR}nested/page.html`, html("<p>残留</p>"));
   write(
     root,
-    "en/registry.json",
+    `${EN_DIR}registry.json`,
     JSON.stringify({ items: [{ name: "button", title: "Button", description: "说明" }] }),
   );
   write(
     root,
-    "en/r/button.json",
+    `${EN_DIR}r/button.json`,
     JSON.stringify({
       title: "Button",
       description: "Action trigger",
@@ -174,7 +180,7 @@ test("output scan enumerates physical HTML plus public human-readable JSON and t
   );
   write(
     root,
-    "en/conventions.json",
+    `${EN_DIR}conventions.json`,
     JSON.stringify({
       executableRules: [
         {
@@ -192,10 +198,10 @@ test("output scan enumerates physical HTML plus public human-readable JSON and t
       ],
     }),
   );
-  write(root, "en/llms.txt", "# English index\n公开说明\n");
-  write(root, "en/d/button.md", "# Button\nEnglish only.\n");
-  write(root, "en/__next._full.txt", "内部序列化中文不属于公开文本端点");
-  write(root, "en/robots.txt", "User-agent: *\nDisallow:");
+  write(root, `${EN_DIR}llms.txt`, "# English index\n公开说明\n");
+  write(root, `${EN_DIR}d/button.md`, "# Button\nEnglish only.\n");
+  write(root, `${EN_DIR}__next._full.txt`, "内部序列化中文不属于公开文本端点");
+  write(root, `${EN_DIR}robots.txt`, "User-agent: *\nDisallow:");
 
   const result = await scanEnglishOutput(root);
 
@@ -206,33 +212,33 @@ test("output scan enumerates physical HTML plus public human-readable JSON and t
   assert.deepEqual(
     result.findings.map(({ file, location }) => [file, location]),
     [
-      ["en/conventions.json", "$.executableRules[0].arbitraryHumanField"],
-      ["en/conventions.json", "$.executableRules[0].message"],
-      ["en/conventions.json", "$.executableRules[0].notThis"],
-      ["en/conventions.json", "$.executableRules[0].right"],
-      ["en/conventions.json", "$.executableRules[0].rule"],
-      ["en/conventions.json", "$.executableRules[0].when"],
-      ["en/conventions.json", "$.executableRules[0].why"],
-      ["en/conventions.json", "$.executableRules[0].wrong"],
-      ["en/llms.txt", "line 2"],
-      ["en/nested/page.html", "html > body > p#text"],
-      ["en/registry.json", "$.items[0].description"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].arbitraryHumanField"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].message"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].notThis"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].right"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].rule"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].when"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].why"],
+      [`${EN_DIR}conventions.json`, "$.executableRules[0].wrong"],
+      [`${EN_DIR}llms.txt`, "line 2"],
+      [`${EN_DIR}nested/page.html`, "html > body > p#text"],
+      [`${EN_DIR}registry.json`, "$.items[0].description"],
     ],
   );
 });
 
 test("malformed JSON-LD and human-readable JSON fail closed with their exact path", async (t) => {
   const root = temporaryTree(t);
-  write(root, "en/index.html", html('<script type="application/ld+json">{"name":</script>'));
-  write(root, "en/registry.json", "{not-json");
+  write(root, `${EN_DIR}index.html`, html('<script type="application/ld+json">{"name":</script>'));
+  write(root, `${EN_DIR}registry.json`, "{not-json");
 
   const result = await scanEnglishOutput(root);
 
   assert.deepEqual(
     result.findings.map(({ kind, file, location }) => [kind, file, location]),
     [
-      ["invalid-json", "en/index.html", "script[application/ld+json]"],
-      ["invalid-json", "en/registry.json", "$"],
+      ["invalid-json", `${EN_DIR}index.html`, "script[application/ld+json]"],
+      ["invalid-json", `${EN_DIR}registry.json`, "$"],
     ],
   );
 });
