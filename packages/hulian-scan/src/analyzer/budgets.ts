@@ -169,11 +169,13 @@ function addThresholdFinding(
   const values = metricValues(input.run, metric);
   if (values.length === 0 || values.some((value) => !Number.isFinite(value))) return;
   const distribution = summarize(values);
-  const current = COUNT_METRIC_STATISTIC.has(metric) ? distribution.median : distribution.p95;
+  const useMedian = COUNT_METRIC_STATISTIC.has(metric);
+  const current = useMedian ? distribution.median : distribution.p95;
   if (current > maximum) {
     findings.push(
       makeFinding(input, rule, "error", current, [
-        `${metric} p95 ${current} exceeds ${maximum}`,
+        // 统计量必须写实：读的人要能据此判断「这是持续超标还是尾部抖动」。
+        `${metric} ${useMedian ? "median" : "p95"} ${current} exceeds ${maximum}`,
       ]),
     );
   }
