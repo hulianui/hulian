@@ -238,7 +238,11 @@ export function ComponentQuickJump({ placement }: { placement: ComponentQuickJum
 
   if (placement === "navbar") {
     return (
-      <div className="relative shrink-0">
+      // 窄屏隐藏：本入口与右侧的全站搜索都会收成一枚 lucide-search 图标，并排在一起
+      // 无从分辨（H5 上实测两枚图标相距 44px、完全同形）。全站搜索是功能超集 —— 它的
+      // 索引里本就含 component:*，组件照样搜得到；而本入口的价值在 ⌘K 直达，窄屏没有
+      // 键盘快捷键，收益本就低。故 sm 以下只留全站搜索那一枚。
+      <div className="relative hidden shrink-0 sm:block">
         <button
           type="button"
           aria-label={copy.label}
