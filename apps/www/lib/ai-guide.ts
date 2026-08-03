@@ -76,11 +76,27 @@ import { DatePicker, DateTimePicker, TimeField, Calendar } from "@hulianui/ui";
 
 若你手上的资料还写着「日期族要装 @mui/* 并挂 MuiBridgeProvider」，那是 0.15.0 之前的旧文档。
 
-## 推荐：装 MCP，让 AI 自己查（而不是你贴文档）
+## 装 MCP：让 AI 自己查，而不是你贴文档
 
-\`@hulianui/mcp\` 把「有什么 / 怎么用 / 不许怎么用」变成 AI 可按需调用的 tool。装上之后，AI 不必整吞全库语料，也不会再猜错 props 签名。
+\`@hulianui/mcp\` 把「你的项目长什么样 / 有什么 / 怎么用 / 不许怎么用 / 写完对不对 / 存量代码该从哪改起」变成 AI 可按需调用的 tool。装上之后，AI 不必整吞全库语料，也不会再猜错 props 签名。
 
-Claude Code / Cursor 的 MCP 配置：
+### 一行接入
+
+\`\`\`bash
+npx @hulianui/mcp init-agent
+\`\`\`
+
+它把使用契约写进各家客户端各自读取的文件：\`CLAUDE.md\`（Claude Code）、\`AGENTS.md\`（Codex / Copilot agents）、\`.cursor/rules/hulianui.mdc\`（Cursor）、\`.github/copilot-instructions.md\`（GitHub Copilot）。契约包在 marker 注释之间，**不动你已有的内容**，重复运行文件逐字节不变。
+
+\`\`\`bash
+npx @hulianui/mcp init-agent --check    # 只报告，有待办时非 0 退出，可进 CI
+npx @hulianui/mcp init-agent --doctor   # 体检：装在哪、是否最新、MCP 配没配
+npx @hulianui/mcp init-agent --all      # 四家客户端全覆盖
+\`\`\`
+
+### MCP server 配置
+
+Claude Code / Cursor：
 
 \`\`\`json
 {
@@ -90,14 +106,35 @@ Claude Code / Cursor 的 MCP 配置：
 }
 \`\`\`
 
-四个 tool：
+### 十个 tool（表格顺序就是推荐的调用顺序）
 
 | tool | AI 什么时候该调 |
 | --- | --- |
-| \`list_components\` | 写任何 UI **之前**。\`kind\` 可取 component / block / page / lib |
-| \`get_component_doc\` | 写下第一行使用某组件的代码**之前**（Props / Events / Slots / 示例 / 禁忌坑） |
-| \`install_block\` | 要把**区块或整页**积木放进项目时；同时取得递归区块、Provider、必须替换项、插槽和 guard 命令 |
+| \`inspect_project\` | **开工前**。认项目：框架、包管理器、瑚琏实装版本、ThemeProvider / token CSS / Vitest 接入状态 |
+| \`get_agent_profile\` | 认完项目、动手之前。按场景取「该用什么组件语言、受什么约束、按什么步骤走」；原型阶段务必传 \`workflow: "prototype"\` |
+| \`recommend_ui\` | 拿到一句业务需求时。返回排序后的**页面 → 区块 → 组件**组合，先看有没有现成整页可复用 |
+| \`list_components\` | 需要按关键词补齐候选时。\`kind\` 取 component / block / page / lib，\`limit\` + \`offset\` 翻页 |
+| \`get_component_doc\` | 写下第一行使用某组件的代码**之前**（Props / Events / Slots / 示例 / 禁忌坑），\`names\` 可一次取多个 |
 | \`get_conventions\` | 开始新页面 / 新功能**之前**；分别取得可执行门禁与仍需语境判断的建议 |
+| \`get_setup_guide\` | \`inspect_project\` 报了接入缺口时。\`target\` 取 install / tailwind / imports / next / vite / vitest |
+| \`install_block\` | 要把**区块或整页**积木放进项目时；同时取得递归区块、Provider、必须替换项、插槽和 guard 命令 |
+| \`validate_hulian_usage\` | **改完瑚琏相关代码必须调**；返回带 \`ruleId\` / \`file\` / \`line\` 的结构化诊断 |
+| \`audit_hulian_adoption\` | 接手**已经有代码**的项目时；给实际使用清单、该用没用上的机会点、疑似绕过的风险项与迁移计划 |
+
+三个「检查类」tool 各答一个问题，不得互相冒充：\`inspect_project\` 答**装没装对**（事实），\`validate_hulian_usage\` 答**有没有违反硬规则**（可静态证明的错误），\`audit_hulian_adoption\` 答**该用的有没有用上**（带置信度的建议，**不产生 error，别当门禁用**）。
+
+### 存量项目：先体检，再立基线
+
+\`\`\`bash
+npx @hulianui/mcp audit                       # 看现状
+npx @hulianui/mcp audit --workflow prototype  # 原型口径：不推高层企业件
+npx @hulianui/mcp audit --write-baseline      # 接受现有债务，立基线
+npx @hulianui/mcp audit --baseline --check    # 进 CI：只拦新增违规
+\`\`\`
+
+存量项目的正确用法是先 \`--write-baseline\` 把现有债务接受下来，之后 CI 用 \`--check\` 只拦新增。拿全量合规当门禁，唯一的结果是第一次几百条之后整个门禁被关掉。
+
+> **guard 通过 ≠ 页面对了**：\`validate_hulian_usage\` 只检查瑚琏专属约束（style 覆盖、\`toast.success\`、颜色 token 前缀、私有深导入等）。typecheck、单元测试、交互 / a11y、真实视觉验证都在别处。
 
 ## 让 AI 查具体组件的用法（没装 MCP 时）
 

@@ -160,18 +160,33 @@ export default function Home() {
           <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
         </div>
 
-        {/* AI 接入：一页 markdown，复制给 AI 编程助手即可上手 */}
-        <Link
-          href="/start"
-          className="hl-rise group mt-4 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
-          style={rise(7)}
-        >
-          用 AI 编程助手接入？看「快速开始」
-          <ArrowRight
-            className="size-3.5 transition-transform group-hover:translate-x-0.5"
-            aria-hidden
-          />
-        </Link>
+        {/* AI 接入：给出可复制的实体动作（装 MCP + 写使用契约），而不是一句「我们支持 AI」 */}
+        <div className="hl-rise mt-8 max-w-xl" style={rise(7)}>
+          <Text size="sm" tone="muted" className="mb-2 leading-relaxed">
+            让 AI 编程助手不再猜 props —— 一行装上 MCP 与使用契约：
+          </Text>
+          <div className="w-fit max-w-full">
+            <Snippet>npx @hulianui/mcp init-agent</Snippet>
+          </div>
+          <Stack direction="row" wrap align="center" gap={4} className="mt-3">
+            <Link
+              href="/start"
+              className="group inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+            >
+              AI 接入指南
+              <ArrowRight
+                className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                aria-hidden
+              />
+            </Link>
+            <a
+              href="/llms.txt"
+              className="text-sm text-muted underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              llms.txt
+            </a>
+          </Stack>
+        </div>
       </section>
 
       {/* 浏览区：按「组件 / 区块 / 页面 / 示例」四档切换的发丝线列表（dogfood Segmented） */}
