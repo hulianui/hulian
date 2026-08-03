@@ -59,8 +59,9 @@ export function SiteNavbar() {
         />
         {/* min-w-0 让品牌区可收缩：375px 下顶栏要塞下 汉堡+品牌+搜索+语言+开源+主题切换，
             品牌区不让步就会把最右的主题切换钮顶出视口（横向溢出 6px）。 */}
-        {/* `shrink` 覆盖 NavbarBrand 自带的 shrink-0（同组、后写者胜）——只加 min-w-0 是不够的。 */}
-        <NavbarBrand className="min-w-0 shrink">
+        {/* NavbarBrand 自 0.21.0 起默认 flex-1 basis-0（可收缩），只需再给 min-w-0 解开
+            flex 项的 min-width:auto，truncate 才生效。 */}
+        <NavbarBrand className="min-w-0">
           {/* 版本徽标点进更新日志。必须与品牌 Link 并列而非嵌套——<a> 套 <a> 会 hydration 报错。 */}
           <Link href="/" className="flex min-w-0 items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element -- 静态 logo,免 next/image 优化开销 */}

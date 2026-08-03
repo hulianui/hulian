@@ -35,6 +35,7 @@ import { TreeSelect } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size. |
 | clearable | `boolean` | `false` | Whether to reveal a clear button on trigger hover or focus when a value exists. Clearing emits `""` in single mode or `[]` in multiple mode, matching [Select](../select/select.md). |
 | searchable | `boolean` | `false` | Shows a search field in the popup and expands matching paths. |
+| expandTrigger | `"row" \| "icon"` | `"row"` | What toggles expand/collapse, forwarded to the inner [Tree](../tree/tree.md). **With the `"row"` default, single selection can only reach leaf nodes.** Pass `"icon"` to select an intermediate level (a department, a top-level category, one volume): the arrow expands, the rest of the row selects. |
 | showLine | `boolean` | `false` | Shows tree connection lines. |
 | className | `string` | — | Additional class name passed to the trigger. |
 
@@ -63,6 +64,7 @@ const [dept, setDept] = useState<string | string[]>("");
 
 - Single selection is not clearable by default. Enable `clearable` for optional filters; otherwise users can narrow the filter but cannot return it to “no restriction.”
 - Switching `multiple` changes controlled `value` and `onChange` between `string` and `string[]`. Branch state by the active mode rather than storing both shapes together.
+- **Single selection only reaches leaves by default.** `expandTrigger` defaults to `"row"`, so clicking a row that has children only expands it and never fires `onChange` — no number of clicks will select it. Pass `expandTrigger="icon"` to submit any level (arrow expands, row selects), or use [Cascader](../cascader/cascader.md) with `changeOnSelect`. Multiple mode is unaffected because the checkbox is its own hit area.
 - In multiple mode, pass selected leaf keys only. Half-checked parent state is derived from the tree; do not insert those parent keys manually.
 
 ## Related

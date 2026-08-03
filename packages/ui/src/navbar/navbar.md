@@ -32,11 +32,17 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | sticky | `boolean` | — | 是否 sticky 吸顶 |
 | bordered | `boolean` | — | 是否显示底部分隔边框 |
 
+**NavbarBrand**（`<div>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| grow | `boolean` | `true` | 是否与两侧 `NavbarContent` 等分空间（`flex-1 basis-0`）。三段等分是 `justify="center"` **真的落在导航栏中心**的前提；内容仍靠 `justify-start` 贴左，视觉不变。传 `false` 回到定宽（`shrink-0`），只有「品牌 + 一段紧贴品牌的 `justify="start"` 内容」这种两段式版式需要 |
+
 **NavbarContent**（`<ul>`）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| justify | `"start" \| "center" \| "end"` | — | 内容对齐方向 |
+| justify | `"start" \| "center" \| "end"` | `"start"` | 内容对齐方向。`"center"` 居中的参照是**整条导航栏**（前提是品牌段 `grow`，见上） |
 
 **NavbarItem**（`<li>`）
 
@@ -51,8 +57,6 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | isOpen | `boolean` | — | 受控展开态 |
 | aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
 | className | `string` | — | 类名 |
-
-`NavbarBrand` 为纯容器，无专属 prop。
 
 ## Events
 
@@ -92,7 +96,8 @@ function Header() {
 
 - `NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。
 - 默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。
-- 暂无其他已知坑。
+- 三段版式（品牌 + 居中主菜单 + 右侧操作区）是本件的默认形状：`NavbarBrand` 默认 `grow`，三段等分，居中段才真的在导航栏中心。**两段式版式（品牌 + 紧贴品牌的 `justify="start"` 内容）要显式传 `grow={false}`**，否则那段内容会被推到 1/3 处。
+- 品牌区要能截断（窄屏让位）时，除了 `truncate` 还得给 `NavbarBrand` 加 `min-w-0`——flex 项默认 `min-width:auto`，不解开就不会收缩。
 
 ## 相关
 [BeianFooter](../beian-footer/beian-footer.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menu](../menu/menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

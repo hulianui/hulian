@@ -5,7 +5,7 @@
 <h1 align="center">Hulian (瑚琏)</h1>
 
 <p align="center">
-  A beautiful, practical React design system — <b>349 components</b>, OKLCH theming · Tailwind v4 · zero-flash dark mode · runtime theming.
+  A beautiful, practical React design system — <b>376 components</b>, OKLCH theming · Tailwind v4 · zero-flash dark mode · runtime theming.
 </p>
 
 <p align="center">
@@ -28,14 +28,14 @@
 
 ## ✨ Features
 
-- 🧩 **349 components** — controls / forms / data display / feedback / navigation / overlay / charts / effect backgrounds / AI agent / live streaming / node canvas …
+- 🧩 **376 components** — controls / forms / data display / feedback / navigation / overlay / charts / effect backgrounds / AI agent / live streaming / node canvas …
 - 🎨 **OKLCH two-layer tokens** — primitive + semantic layers; toggle `[data-theme]` with zero flash, re-theme at runtime
 - ♿ **Accessibility first** — behavior layer built on [Base UI](https://base-ui.com); keyboard / focus / ARIA out of the box
 - 🌗 **Zero-flash dark mode** — `ThemeProvider` + an entry inline script keep SSR first paint clean
 - 📦 **Zero-token public install** — published to public npm; `pnpm add @hulianui/ui` just works
 - 🔧 **Source distribution** — ships TSX source so your Tailwind fully owns the styling; no black-box CSS
 - 📚 **AI-first docs** — every component has Props/Events/Slots + live examples + a playground, and emits `llms.txt`
-- 🏗️ **18 real demos** — CRM / shop / data dashboard / AI workflow / live streaming … all dogfooding the library
+- 🏗️ **19 real demos** — CRM / shop / data dashboard / AI workflow / live streaming … all dogfooding the library
 
 ## 📦 Quick start
 
@@ -84,7 +84,7 @@ Issues and PRs welcome. Local dev:
 ```bash
 pnpm install
 pnpm --filter www dev   # docs site at http://localhost:5512
-pnpm test               # full unit suite (vitest · 2705 tests / 367 files)
+pnpm test               # full suite (vitest, two projects: jsdom units + real chromium)
 pnpm typecheck
 ```
 

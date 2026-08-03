@@ -48,6 +48,7 @@ export default defineConfig({
       "@base-ui/react/context-menu",
       "@base-ui/react/checkbox",
       "@base-ui/react/menu",
+      "recharts",
       "class-variance-authority",
     ],
   },

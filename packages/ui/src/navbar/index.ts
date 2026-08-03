@@ -7,6 +7,7 @@ export {
 } from "./navbar";
 export type {
   NavbarProps,
+  NavbarBrandProps,
   NavbarContentProps,
   NavbarItemProps,
   NavbarMenuToggleProps,

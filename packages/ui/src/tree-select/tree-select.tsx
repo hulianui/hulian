@@ -65,6 +65,7 @@ function TreeSelectImpl({
   size = "md",
   clearable = false,
   searchable = false,
+  expandTrigger,
   showLine = false,
   className,
 }: TreeSelectProps) {
@@ -179,6 +180,7 @@ function TreeSelectImpl({
                 nodes={nodes}
                 checkable
                 searchable={searchable}
+                expandTrigger={expandTrigger}
                 showLine={showLine}
                 checkedKeys={current as string[]}
                 onCheck={(info) =>
@@ -191,6 +193,8 @@ function TreeSelectImpl({
               <Tree
                 nodes={nodes}
                 searchable={searchable}
+                // 单选下这个默认值决定了「分支节点能不能选中」——见 tree-select.types.ts 的说明。
+                expandTrigger={expandTrigger}
                 showLine={showLine}
                 selectedKeys={current ? [current as string] : []}
                 onSelect={(keys) => {

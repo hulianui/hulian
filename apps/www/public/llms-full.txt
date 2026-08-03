@@ -6873,6 +6873,7 @@ import { TreeSelect } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸 |
 | clearable | `boolean` | `false` | 可清除：有值且未禁用时触发器右侧 hover/聚焦浮出清除按钮，点击回到未选态（单选回传 `""`，多选回传 `[]`）。与 [Select](https://hulianui.haloritual.com/components/select) 的 `clearable` 语义一致 |
 | searchable | `boolean` | `false` | 浮层内树搜索框，多层命中跳转 |
+| expandTrigger | `"row" \| "icon"` | `"row"` | 什么东西触发展开/收起，透传给内部 [Tree](https://hulianui.haloritual.com/components/tree)。**默认 `"row"` 下单选只有叶子选得中**；要「选到中间层」（某个部门 / 某个大类 / 某一册）传 `"icon"`：箭头管展开、行管选中 |
 | showLine | `boolean` | — | 显示树连接线 |
 | className | `string` | — | 透传到触发器 |
 
@@ -6892,6 +6893,10 @@ const [v, setV] = useState<string | string[]>("");
 const [v, setV] = useState<string | string[]>(["fe-web", "fe-mini"]);
 <TreeSelect nodes={NODES} multiple value={v} onChange={setV} placeholder="勾选可见部门" />
 
+// 选到中间层：分类目录/组织架构里选一个大类，而不是只能选到最末级
+const [cat, setCat] = useState<string | string[]>("");
+<TreeSelect nodes={NODES} expandTrigger="icon" value={cat} onChange={setCat} placeholder="选择章节" />
+
 // 可清除：作为可留空的筛选维度（留空 = 不限）
 const [dept, setDept] = useState<string | string[]>("");
 <TreeSelect nodes={NODES} clearable value={dept} onChange={setDept} placeholder="全部部门" />
@@ -6902,6 +6907,7 @@ const [dept, setDept] = useState<string | string[]>("");
 - 单选默认**没有清除入口**，选中后无法在组件内回到未选态；凡是「可留空的筛选维度」都要开 `clearable`，否则筛选条件只能收窄不能放宽。
 - `value` 受控时 `multiple` 切换会改变值的类型（string ↔ string[]），onChange 回调的入参类型随 `multiple` 而变，消费侧需按当前模式分支处理，不要混存。
 - 多选下 `value` 只需传叶子/已选 key，父级半选态由组件依树结构派生，不要手动塞入半选父 key。
+- **单选默认只有叶子节点可选**：`expandTrigger` 缺省是 `"row"`，有子节点的行点了只展开、不回传 `onChange`，点几次都选不中。需要提交任意层级就传 `expandTrigger="icon"`（箭头管展开、行管选中），或改用 [Cascader](https://hulianui.haloritual.com/components/cascader) 的 `changeOnSelect`。多选不受影响——勾选框是独立命中区。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/components/secret-field) · [Combobox](https://hulianui.haloritual.com/components/combobox) · [Listbox](https://hulianui.haloritual.com/components/listbox) · [Mentions](https://hulianui.haloritual.com/components/mentions) · [InputOTP](https://hulianui.haloritual.com/components/input-otp) · [Rating](https://hulianui.haloritual.com/components/rating)
@@ -7836,7 +7842,8 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | xKey* | `string` | — | 横轴字段名 |
 | height | `number` | `280` | 高度（SSR 安全：宽走 ResponsiveContainer，高需显式值） |
 | stacked | `boolean` | `false` | 多序列堆叠（Area/Bar 生效） |
-| legend | `boolean \| "top" \| "bottom"` | `false` | 序列图例（色点 + `label`）。`true` 等价 `"bottom"`；**AreaChart / BarChart / LineChart 生效**（Pie/Radar/Radial 一直自带图例）。色点走 [Dot](https://hulianui.haloritual.com/components/dot) 的 `color`，与序列色同源 |
+| legend | `boolean \| "top" \| "bottom"` | `false`（Radar 为 `true`） | 序列图例（色点 + `label`）。`true` 等价 `"bottom"`，`false` 关掉。色点走 [Dot](https://hulianui.haloritual.com/components/dot) 的 `color`，与序列色同源。**默认值按图种分两档**：笛卡尔三件默认关，Radar 默认开（历来自带图例，保持零改动） |
+| legendScroll | `boolean` | `false` | 图例恒为单行 + 横向滚动（对齐 echarts `legend.type: "scroll"`）。缺省是换行居中，序列一多就堆成多行挤扁画布；序列 >8 条开这个 |
 | horizontal | `boolean` | `false` | **BarChart 专属**：横向柱状 |
 | yAxisWidth | `number` | 自适应 | **BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48–160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传 |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-[32rem]`） |
@@ -7848,6 +7855,8 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | data* | `ChartDatum[]` | — | 扁平数据点 `{ name, value, color? }` |
 | donut | `boolean` | `false` | **PieChart**：环形图（中心挖空） |
 | height | `number` | `280` | 高度 |
+| legend | `boolean \| "top" \| "bottom"` | `true` | 图例（色点 + `data[].name`），语义同上但**默认开**（这两件历来自带图例）。传 `false` 关掉——自绘图例时必须关，否则两份图例并排 |
+| legendScroll | `boolean` | `false` | 同上：图例恒为单行 + 横向滚动 |
 | className | `string` | — | 透传类名 |
 
 ## 示例
@@ -7858,6 +7867,10 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 
 // 环形图
 <PieChart donut data={[{ name: "搜索", value: 420 }, { name: "直接", value: 280 }]} className="w-[32rem]" />
+
+// 关掉自带图例（自绘时必须关），或让几十条序列的图例单行横滚而不吃画布
+<RadarChart legend={false} data={data} series={series} xKey="indicator" height={320} />
+<RadarChart legendScroll data={data} series={series28} xKey="indicator" height={320} />
 
 // 横向柱状：CJK 类目轴宽自适应（≥4 字不再截断）
 <BarChart
@@ -7873,7 +7886,8 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 - 在收缩的 flex 容器里 ResponsiveContainer 可能量不到宽，需给容器显式宽度，见 [[recharts-responsive-container-needs-explicit-width-in-shrink-flex]]。
 - headless 截图常出现「只剩坐标轴、数据区空白」——不是 bug，是入场动画的 clipPath 被 rAF 饿死，设 `prefers-reduced-motion: reduce` 再截即显，见 [[recharts-headless-screenshot-blank-clippath-animation-starved]]。
 - horizontal 类目轴宽自适应有 160px 上限（防超长标签吃掉图区）——类目 >12 个全角字仍会截断，此时消费侧截短标签或显式传 `yAxisWidth`。
-- `legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。图例序列多到换行时会挤压画布，那种情况把 `height` 调大或缩短 `label`。
+- `legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。序列多到换行时图例会堆成多行、继续挤压画布——**这时候不要靠调大 `height` 硬扛**（28 条序列的图例是 5 行，把雷达盘撑回可读尺寸得把总高翻倍），开 `legendScroll` 让图例恒为单行横滚。
+- 极坐标三件（Pie/Radar/Radial）的 `legend` **默认是 `true`**，与笛卡尔三件相反——它们历来自带图例，改默认会破坏存量版式。自绘图例前先 `legend={false}`，否则两份图例并排。
 - 自绘图例时色点用 `<Dot color={...} />`，**不要**写 `<Dot style={{ color }} />`——那是静默失效（圆点是背景色），见 [Dot 的坑](https://hulianui.haloritual.com/components/dot)。
 
 ## 相关
@@ -14020,11 +14034,17 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | sticky | `boolean` | — | 是否 sticky 吸顶 |
 | bordered | `boolean` | — | 是否显示底部分隔边框 |
 
+**NavbarBrand**（`<div>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| grow | `boolean` | `true` | 是否与两侧 `NavbarContent` 等分空间（`flex-1 basis-0`）。三段等分是 `justify="center"` **真的落在导航栏中心**的前提；内容仍靠 `justify-start` 贴左，视觉不变。传 `false` 回到定宽（`shrink-0`），只有「品牌 + 一段紧贴品牌的 `justify="start"` 内容」这种两段式版式需要 |
+
 **NavbarContent**（`<ul>`）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| justify | `"start" \| "center" \| "end"` | — | 内容对齐方向 |
+| justify | `"start" \| "center" \| "end"` | `"start"` | 内容对齐方向。`"center"` 居中的参照是**整条导航栏**（前提是品牌段 `grow`，见上） |
 
 **NavbarItem**（`<li>`）
 
@@ -14039,8 +14059,6 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | isOpen | `boolean` | — | 受控展开态 |
 | aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
 | className | `string` | — | 类名 |
-
-`NavbarBrand` 为纯容器，无专属 prop。
 
 ## Events
 
@@ -14080,7 +14098,8 @@ function Header() {
 
 - `NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。
 - 默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。
-- 暂无其他已知坑。
+- 三段版式（品牌 + 居中主菜单 + 右侧操作区）是本件的默认形状：`NavbarBrand` 默认 `grow`，三段等分，居中段才真的在导航栏中心。**两段式版式（品牌 + 紧贴品牌的 `justify="start"` 内容）要显式传 `grow={false}`**，否则那段内容会被推到 1/3 处。
+- 品牌区要能截断（窄屏让位）时，除了 `truncate` 还得给 `NavbarBrand` 加 `min-w-0`——flex 项默认 `min-width:auto`，不解开就不会收缩。
 
 ## 相关
 [BeianFooter](https://hulianui.haloritual.com/components/beian-footer) · [NavMenu](https://hulianui.haloritual.com/components/nav-menu) · [NavigationMenu](https://hulianui.haloritual.com/components/navigation-menu) · [Menu](https://hulianui.haloritual.com/components/menu) · [Menubar](https://hulianui.haloritual.com/components/menubar) · [Dock](https://hulianui.haloritual.com/components/dock)

@@ -185,3 +185,90 @@ describe("Chart legend", () => {
     }
   });
 });
+
+// hulianui/hulian#80：极坐标三件的 <Legend> 写死，消费方关不掉也挪不动 ——
+// 28 序列时图例铺满 5 行吃掉过半画布，签名还与笛卡尔三件不对称。
+describe("Chart legend · 极坐标三件", () => {
+  // 自绘图例的色点（Dot）是唯一标识：recharts 自带图例走 .recharts-default-legend，不长这样
+  const legendDots = (c: HTMLElement) =>
+    [...c.querySelectorAll("[aria-hidden].rounded-full")] as HTMLElement[];
+
+  it("默认带图例：既有调用零改动（Radar/Pie/Radial 三件）", () => {
+    const radar = render(<RadarChart data={data} series={series} xKey="month" />).container;
+    expect(radar.textContent).toContain("营收");
+    expect(legendDots(radar)).toHaveLength(2);
+
+    for (const Chart of [PieChart, RadialChart]) {
+      const { container, unmount } = render(<Chart data={flat} />);
+      expect(container.textContent).toContain("搜索");
+      expect(legendDots(container)).toHaveLength(2);
+      unmount();
+    }
+  });
+
+  it("legend={false} 关掉自带图例（三件都有出口）", () => {
+    const radar = render(
+      <RadarChart data={data} series={series} xKey="month" legend={false} />,
+    ).container;
+    expect(radar.textContent).not.toContain("营收");
+    expect(legendDots(radar)).toHaveLength(0);
+
+    for (const Chart of [PieChart, RadialChart]) {
+      const { container, unmount } = render(<Chart data={flat} legend={false} />);
+      expect(legendDots(container)).toHaveLength(0);
+      unmount();
+    }
+  });
+
+  it("legend={false} 时画布吃满 height（不再为图例让出一行）", () => {
+    const off = render(<RadarChart data={data} series={series} xKey="month" height={320} legend={false} />)
+      .container.firstElementChild as HTMLElement;
+    expect(off.style.height).toBe("320px");
+    expect(parseInt((off.querySelector("div[style*='height']") as HTMLElement).style.height, 10)).toBe(320);
+
+    const on = render(<RadarChart data={data} series={series} xKey="month" height={320} />).container
+      .firstElementChild as HTMLElement;
+    expect(parseInt((on.querySelector("div[style*='height']") as HTMLElement).style.height, 10)).toBeLessThan(320);
+  });
+
+  it('legend="top" 把图例排到画布之前（与笛卡尔三件同一套语义）', () => {
+    const top = render(<PieChart data={flat} legend="top" />).container.firstElementChild!;
+    expect(top.firstElementChild!.textContent).toContain("搜索");
+    const bottom = render(<PieChart data={flat} legend="bottom" />).container.firstElementChild!;
+    expect(bottom.lastElementChild!.textContent).toContain("搜索");
+  });
+
+  it("扁平数据类的图例色点与扇区同源：缺省按 index 走 chart-N，显式 color 覆盖", () => {
+    const { container } = render(
+      <PieChart data={[{ name: "搜索", value: 1 }, { name: "直接", value: 2, color: "success" }]} />,
+    );
+    const dots = legendDots(container);
+    expect(dots[0].style.backgroundColor).toBe(chartColor(0));
+    expect(dots[1].style.backgroundColor).toBe("var(--color-success)");
+  });
+
+  it("legendScroll：图例恒为单行 + 横向滚动，序列再多也不换行挤画布", () => {
+    const many = Array.from({ length: 28 }, (_, i) => ({ key: `s${i}`, label: `20${String(i).padStart(2, "0")}` }));
+    const { container } = render(
+      <RadarChart data={data} series={many} xKey="month" height={320} legendScroll />,
+    );
+    const row = container.querySelector("[class*='overflow-x-auto']") as HTMLElement;
+    expect(row).toBeTruthy();
+    expect(row.className).toContain("flex-nowrap");
+    expect(row.className).not.toContain("flex-wrap");
+    expect(legendDots(container)).toHaveLength(28);
+  });
+
+  it("legendScroll 对笛卡尔三件同样生效（签名对称）", () => {
+    const { container } = render(
+      <AreaChart data={data} series={series} xKey="month" legend legendScroll />,
+    );
+    expect(container.querySelector("[class*='overflow-x-auto']")).toBeTruthy();
+  });
+
+  it("不开 legendScroll 时保持换行居中（既有版式不变）", () => {
+    const { container } = render(<AreaChart data={data} series={series} xKey="month" legend />);
+    expect(container.querySelector("[class*='overflow-x-auto']")).toBeNull();
+    expect(container.innerHTML).toContain("flex-wrap");
+  });
+});
