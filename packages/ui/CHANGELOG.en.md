@@ -1,5 +1,51 @@
 # @hulianui/ui
 
+## 0.22.0
+
+### Minor Changes
+
+- a6249c8: MathText covers senior-high notation: vector arrows, blackboard-bold number sets, set and logic symbols, LaTeX escapes
+
+  The previous symbol table was built from command frequencies in 22,000 characters of **middle-school** question text. The method was sound; the sample was too narrow. A consumer redid the count over 1,324 questions (stems plus explanations, spanning primary through senior high), where vector, set, and logic notation dominate and barely appear in middle-school samples — so all of it fell outside the table and rendered as raw backslashes on the page.
+
+  **Vector arrows `\vec` and `\overrightarrow`** — [#83](https://github.com/hulianui/hulian/issues/83)
+
+  These two appear 282 times combined, third in the whole frequency table and 56 times more often than the already supported `\overline` (5). `DECORATE_COMMANDS` previously had only `overline` and `hat`; a miss fell through to literal output — correct in itself, and consistent with "never swallow unknown notation," except that these two should have been known.
+
+  A new `arrow` style handles both. **The arrow width follows the content**: the shaft is a stretchable border and the head is a non-distorting SVG, so `\vec{a}` is short while `\overrightarrow{AB}` covers both letters. TeX gives `\vec` a fixed narrow arrow and reserves full width for `\overrightarrow`; that difference is flattened deliberately, because both mark a vector in question text and the width carries no information, while following the content lets `\vec{AB}` cover its letters. The arrow is an absolutely positioned overlay and **does not increase line height**, so like fractions it leaves surrounding line spacing intact.
+
+  ```tsx
+  <MathText>{"Given \\overrightarrow{AB} is collinear with \\vec{a}"}</MathText>
+  ```
+
+  **`\mathbb{}` maps to blackboard bold rather than being unwrapped** — [#84](https://github.com/hulianui/hulian/issues/84)
+
+  `\mathbb{R}` becomes ℝ, with all 26 capitals covered (C/H/N/P/Q/R/Z use the BMP letterlike symbols; the rest fall in the SMP mathematical alphanumerics). Unwrapping to a bare letter was rejected on purpose: the set of real numbers and a variable named `R` are different things, and collapsing them makes "the domain is ℝ" read as "the domain is R" with no visible sign that information was lost. Characters outside the table are kept as written one by one, so `\mathbb{R+}` yields `ℝ+` instead of giving up over a single `+`.
+
+  **LaTeX escapes `\{` `\}` `\%` `\$` `\&` `\#` `\_`**
+
+  Set-builder notation such as `\{x \mid x>0\}` previously showed its braces with the backslashes attached; adding `\mid` alone would not have helped while both sides still leaked. Unlike the symbol table, escapes are a **finite closed set** rather than a long tail, so all of them are covered at once instead of being filtered by frequency.
+
+  **Other commands added by measured frequency**
+
+  `\Leftrightarrow ⇔` (biconditional, 10) · `\to →` (limits, 4) · `\mid ∣` (set-builder, 4) · `\backsim ∽` · `\varphi φ` · `\Gamma Γ` · `\langle ⟨` and `\rangle ⟩` (inner products) · `\forall ∀` · `\frown ⌢`.
+
+  Two commands that take arguments are new as well. `\underline{}` underlines existing content, which is a different thing from an answer blank (that one is an empty slot). `\overset{}{}` places a mark above the content, so `\overset{\frown}{AB}` is arc AB — the canonical way to write an arc. `\frown{AB}` means "arc symbol followed by a group" in LaTeX and still renders literally as `⌢{AB}`; looking wrong is the intent, and better than guessing a meaning the source never expressed.
+
+  The mark above `\overset` is **kept** by `mathToPlain` (`⌢AB`), unlike `\overline` and `\vec`. Those are pure decoration lines with no corresponding character, whereas an overset mark is meaningful content that search would otherwise lose.
+
+  **Three items in the report do not hold**
+
+  `\Rightarrow` (52), `\mathbf{}` (8), and `\quad` (8) **were already supported in 0.20.0**, verified one by one. The report also warns that unwrapping `\mathbf{}` must respect command boundaries, since `\cdot\mathbf{b}` would collapse into a nonexistent `\cdotb`. That hazard does not exist here: the parser consumes commands left to right rather than substituting strings, so `\cdot` has already become `·` before `\mathbf` is reached. It is a hazard for consumers doing string replacement in their own ingestion pipeline.
+
+  **A performance problem fixed along the way: `MathText` is now `memo`ised**
+
+  `MathText` re-parses the entire question string on every render, and it was not memoised — so any unrelated update in an ancestor (filtering, pagination, selection state on a question-bank page) re-parsed every one of the dozens of instances on screen. The performance scan measured 3 avoidable renders in the "parent updates, props unchanged" step; memoisation brings that to zero. All props are primitives (`children` is a string), so a shallow comparison suffices, and `locale` comes from context, so switching languages still updates. `Markdown` in this library has worked this way for a long time; this brings `MathText` in line.
+
+  **A documentation defect fixed along the way**
+
+  The Chinese docs for `MathText` and `QuestionCard` titled their pitfalls section with a shorter heading than the one the conventions generator recognizes. As a result the Chinese pitfalls for these two components **never reached `conventions.json`** — the English side was complete all along, while the Chinese side had zero entries, so Chinese users querying conventions through MCP could not see them. The heading is now consistent with the other 369 components.
+
 ## 0.21.0
 
 ### Minor Changes
