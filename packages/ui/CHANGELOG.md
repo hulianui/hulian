@@ -1,5 +1,57 @@
 # @hulianui/ui
 
+## 0.23.0
+
+### Minor Changes
+
+- RadarChart 半径轴可关；修 Banner 长文案撑破容器、SearchForm 窄屏挤成一团、MathText 关系符间距与 `^\circ` 不解析 <!-- parity-id: radar-radius-axis-and-mobile-fixes -->
+
+  **RadarChart 新增 `radiusAxis`** — [#86](https://github.com/hulianui/hulian/issues/86)
+
+  半径轴的刻度数字此前无条件渲染、`className` 够不到，消费方关不掉。它画在**数据区里而不是外面**：刻度锚点沿一条水平半径从雷达盘中心排到边缘，每个数字还被 recharts 旋转 90° 竖排。序列一多、数据填得满，前几个刻度就整个落进数据多边形内部，既压住图形又难读。
+
+  echarts 的 radar 里 `axisLabel.show` 默认就是 `false`，只画环线与角轴名 —— 这串数字是移植到 recharts 时被默认带出来的，消费方既没要它也关不掉。
+
+  ```tsx
+  // 只留环线与角轴名（= echarts radar 的默认形态）
+  <RadarChart radiusAxis={false} data={data} series={series} xKey="indicator" legendScroll />
+  ```
+
+  默认仍是 `true`，存量版式零改动。同时导出 `RadarChartProps` 类型。
+
+  **Banner 长文案撑破容器、把 action 挤出屏幕**
+
+  文案节点写的是 `<span className="truncate">`，而 `truncate` 里的 `overflow:hidden` 与 `text-overflow:ellipsis` **对 inline 元素不生效**，只剩 `white-space:nowrap` —— 文字既不换行又不被裁剪，于是横向撑破 flex 容器，把 `action` 按钮顶出可视区（窄屏尤其明显）。加 `block` 后省略号才真正生效。凡是 Banner 配长文案的地方都受此影响，不限于移动端。
+
+  **SearchForm 在窄屏挤成一团**
+
+  `gridTemplateColumns` 写死在 inline style 里且没有断点，390px 的手机上仍按 `columns`（默认 3）分列，每列约 120px，「标签 + 控件」压进去后字段与操作区互相叠在一起。inline style 优先级还压过工具类，消费方自己也覆盖不掉。
+
+  改为列数走 CSS 变量、`sm` 以下强制单列。子项的 `colSpan` 一并压成 `col-auto` —— 单列网格里 `span 2` 不会被夹到 1，而是创建隐式列，反而更溢出。桌面表现不变。
+
+  **MathText 关系符两侧留白不对称**
+
+  `A \Rightarrow B` 渲染成 `A ⇒B`：命令名后的空格作为终止符被吃掉，左侧文本空格却保留。修法不是保留原文空格（那样间距取决于作者打没打空格），而是按 TeX 的符号类别在渲染层给对称留白 —— 新增 op 节点，分 `relation`（= ≠ ≤ ⇒ ∈ ⊥ …）与 `binary`（× ÷ ± ∪ …）两档，前缀记号（∠ △ ⊙ ∴ …）仍紧贴其修饰对象，`∠ABC` 不会被拆开。类别按**字符**登记而非命令名，`\neq` 与上游 OCR 直接给的 `≠` 同等对待。`±`/`∓` 的一元用法（`±3`、`(±3)`）会降级成紧贴。
+
+  **MathText `^\circ` / `_\alpha` 整条路径不被解析**
+
+  `^` 与 `_` 的单 token 简写此前只认单个字符，不认命令：`90^\circ` 原样输出 `90^\circ`，而 `90^{\circ}` 正常。`90^\circ` 是 LaTeX 写度数最常见的形式（少打两个花括号），`\circ` 在初中题面频次统计里排第三 —— 题面上直接露出原始记号，正是本组件要消灭的东西。现在 `90^\circ` → `90°`、`x^\alpha b` 的上标只吃 `\alpha`（`b` 仍是正文），不认识的命令照旧原样保留不吞内容（`x^\oiint`）。
+
+  **⚠️ `mathToPlain` 的输出有变化**
+
+  关系符两侧的空格现在统一被归一化掉，与既有的紧凑口径对齐：
+
+  ```
+  mathToPlain("A = B")            // 旧 "A = B"    → 新 "A=B"
+  mathToPlain("3 \\times 4 = 12") // 旧 "3 ×4 = 12" → 新 "3×4=12"
+  ```
+
+  旧行为里 `\times` 左有空格右没有，本身就是不对称的；而 `mathToPlain("x\\neq 0")` → `"x≠0"` 这条紧凑口径一直如此。若下游拿 `mathToPlain` 的输出做全文检索或文本比对，需要同步。DOM 渲染的留白只发生在渲染层，不进朴素文本。
+
+  **ButtonGroup 文档补一条成员等高的坑**
+
+  连排靠 `-ml-px` 把相邻边框叠在一起，这个拼接假定成员等高。而 Button 的尺寸档里 `icon`（36px）**没有等高的文字档**（文字档是 `sm` 32 / `md` 40 / `lg` 48），所以 `size="icon"` 与任何带文字的按钮混排都会错位 —— 典型是 `−/数值/+` 步进器。要混排就用等高的一对：`iconSm`(32) 配 `sm`(32)。这一条看代码发现不了，三个按钮读起来很整齐，只有渲染出来才看得见中间那个高 4px。
+
 ## 0.22.0
 
 ### Minor Changes
