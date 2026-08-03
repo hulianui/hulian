@@ -97,6 +97,13 @@ describe("shop English fixtures", () => {
     const contentFiles = walk(SHOP_ROOT).filter((file) => file.endsWith(".content.ts"));
     expect(contentFiles).toHaveLength(26);
     const dictionaryKeys = new Set<string>();
+    // 在循环里逐个 await 会把 26 份字典的 TS 转换排成一条队；先并发把模块图拉起来，
+    // 后面的断言全是内存比较。CI 慢机器上正是这段把用例顶过了默认 5s。
+    const modules = new Map(
+      await Promise.all(
+        contentFiles.map(async (file) => [file, await import(pathToFileURL(file).href)] as const),
+      ),
+    );
 
     for (const contentFile of contentFiles) {
       const contentSource = readFileSync(contentFile, "utf8");
@@ -108,7 +115,7 @@ describe("shop English fixtures", () => {
         false,
       );
       dictionaryKeys.add(dictionaryKey!);
-      const module = await import(pathToFileURL(contentFile).href);
+      const module = modules.get(contentFile)!;
       const zhKeys = Object.keys(module.content["zh-CN"]);
       const enKeys = Object.keys(module.content.en);
       expect(enKeys, `${relative(SHOP_ROOT, contentFile)} parity`).toEqual(zhKeys);
@@ -149,7 +156,8 @@ describe("shop English fixtures", () => {
         relative(SHOP_ROOT, sourceFile),
       ).toEqual([]);
     }
-  });
+    // 全仓扫描型断言：耗时随 shop demo 的字典数增长，默认 5s 在 CI 上会擦线。
+  }, 30_000);
 
   englishIt("preserves product and category protocol identifiers while presenting reviewed English", () => {
     expect(formatCompactCount(12_000)).toBe("12K");

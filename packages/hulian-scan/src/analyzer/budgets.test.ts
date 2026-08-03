@@ -223,7 +223,7 @@ describe("evaluateBudget", () => {
     ).not.toContain("long-task");
   });
 
-  it("跨机器不影响结构性门禁：cascade-fanout 照常触发", () => {
+  it("跨机器：fanout 也按机器绑定跳过（同代码本地 33 / CI 82，留着只会训练人忽略红灯）", () => {
     const run = makeRun("measurement");
     const wide: typeof run = {
       ...run,
@@ -235,6 +235,12 @@ describe("evaluateBudget", () => {
         component: "Button",
         budget: { maxCascadeFanout: 30, trustTimingMetrics: false },
       }).map((finding) => finding.rule),
+    ).not.toContain("cascade-fanout");
+    // 同机器（默认可信）时照常门禁 —— 不是把这条规则删了。
+    expect(
+      evaluateBudget({ run: wide, component: "Button", budget: { maxCascadeFanout: 30 } }).map(
+        (finding) => finding.rule,
+      ),
     ).toContain("cascade-fanout");
   });
 

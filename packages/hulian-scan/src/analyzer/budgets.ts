@@ -129,11 +129,24 @@ const GPU_TIMING_METRICS = new Set([
   "longestFrameMs",
 ]);
 
-// 机器绑定的时间读数：换一台机器就不可比。GPU 那批之外再加提交耗时与交互延迟。
-const MACHINE_BOUND_TIMING_METRICS = new Set([
+// 机器绑定的读数：换一台机器就不可比，因此在声明「机器与基线不可比」时整批跳过。
+//
+// 时间类不必解释。fanout 类要解释一下为什么也在这里：它按**单个 commit** 计数 fiber，
+// 而 concurrent React 会把一次逻辑更新切成多个 commit，切与不切取决于机器快慢。
+// 实测同一份代码、同一个场景，form/validation 的 cascadeFanout 中位数在开发机是 33、
+// 在 CI runner 是 82（2.4 倍），阈值 50 卡在中间 —— 本地绿、CI 红，两个结论都不假。
+// 留着这种门禁只会训练人忽略红灯。
+//
+// 根治是把 fanout 从「单个 commit 的 fiber 数」改成「一个 step 内所有更新 commit 的
+// fiber 总数」——总数与切片无关，跨机器可比。那是指标定义改动，要重定全部阈值并重采
+// 基线，单独做。在此之前 CI 上保留 avoidable-render 门禁（它数的是可避免的重渲染次数，
+// 不受切片影响，也正是首轮 125 条 finding 里最大的一类）。
+const MACHINE_BOUND_METRICS = new Set([
   ...GPU_TIMING_METRICS,
   "commitDurationMs",
   "interactionLatencyMs",
+  "cascadeFanout",
+  "mountFanout",
 ]);
 
 function isUntrustedGpuMetric(run: ScenarioRun, metric: string): boolean {
@@ -144,10 +157,10 @@ function isUntrustedGpuMetric(run: ScenarioRun, metric: string): boolean {
   );
 }
 
-/** 两种「时间读数不可信」来源：软件 GPU（既有），以及机器与基线不可比（CI runner）。 */
+/** 两种「读数不可信」来源：软件 GPU（既有），以及机器与基线不可比（CI runner）。 */
 function isUntrustedTimingMetric(input: BudgetEvaluationInput, metric: string): boolean {
   if (isUntrustedGpuMetric(input.run, metric)) return true;
-  return input.budget.trustTimingMetrics === false && MACHINE_BOUND_TIMING_METRICS.has(metric);
+  return input.budget.trustTimingMetrics === false && MACHINE_BOUND_METRICS.has(metric);
 }
 
 // 结构性计数（一次更新波及多少 fiber）取中位数，时间指标才取 p95。
