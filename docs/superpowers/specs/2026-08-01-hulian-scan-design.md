@@ -193,12 +193,25 @@ Table、ProTable、Tree、Select、Dialog、表单、虚拟列表、图表、编
 - `componentSelfDurationMs`
 - `renderCount`
 - `avoidableRenderCount`
+- `mountFanout`
 - `cascadeFanout`
 - `interactionLatencyMs`
 - `longTaskCount`
 - `longestTaskMs`
 - `droppedFrameRatio`（仅适用场景）
 - `longestFrameMs`（仅适用场景）
+
+`mountFanout` 与 `cascadeFanout` 的口径：**按 step 聚合，取最差的那个 step 的 fiber 总数**
+（`cascadeFanout` 只数更新，`mountFanout` 只数首次出现的 fiber 与 mount step 的渲染，
+unmount step 一律不计）。
+
+不按单个 commit 计数：concurrent React 会把一次逻辑更新切成多个 commit，切几刀取决于机器
+快慢与调度时机 —— 按 commit 计数等于在量机器（同一份代码 form/validation 的 cascadeFanout
+中位数开发机 31~35、CI runner 82）。一个 step 内的总数与切片方式无关，跨机器才可比。
+
+代价必须写清楚：这是**总量**不是单次峰值。一个 step 重复 N 次交互，读数就是 N 倍
+（通用生成器的 stress step 跑 10 轮，因此它的读数比手写单动作 step 高一个量级）。
+阈值必须按场景的 step 设计来定，跨场景比大小没有意义。
 
 “无效重渲染”不能只按“父组件渲染了”判断。至少同时满足以下条件才进入确定性候选：
 

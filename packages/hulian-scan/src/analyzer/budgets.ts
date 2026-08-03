@@ -131,16 +131,29 @@ const GPU_TIMING_METRICS = new Set([
 
 // 机器绑定的读数：换一台机器就不可比，因此在声明「机器与基线不可比」时整批跳过。
 //
-// 时间类不必解释。fanout 类要解释一下为什么也在这里：它按**单个 commit** 计数 fiber，
-// 而 concurrent React 会把一次逻辑更新切成多个 commit，切与不切取决于机器快慢。
-// 实测同一份代码、同一个场景，form/validation 的 cascadeFanout 中位数在开发机是 33、
-// 在 CI runner 是 82（2.4 倍），阈值 50 卡在中间 —— 本地绿、CI 红，两个结论都不假。
-// 留着这种门禁只会训练人忽略红灯。
+// fanout 仍在名单里，但**理由已经变了**，这是分两步走的第一步。
 //
-// 根治是把 fanout 从「单个 commit 的 fiber 数」改成「一个 step 内所有更新 commit 的
-// fiber 总数」——总数与切片无关，跨机器可比。那是指标定义改动，要重定全部阈值并重采
-// 基线，单独做。在此之前 CI 上保留 avoidable-render 门禁（它数的是可避免的重渲染次数，
-// 不受切片影响，也正是首轮 125 条 finding 里最大的一类）。
+// 原来的理由：fanout 按**单个 commit** 计数 fiber，而 concurrent React 会把一次逻辑更新
+// 切成多个 commit，切与不切取决于机器快慢 —— 同一份代码 form/validation 的 cascadeFanout
+// 中位数开发机 31~35、CI runner 82，阈值 50 卡在中间，本地绿 CI 红。
+//
+// 现在：fanout 已改成「一个 step 内所有更新 commit 的 fiber 总数」（见 perf-lab 的
+// computeMetrics），**切片这一项已经消除** —— 同一个 step 切几刀，总数不变。
+// 但「跨机器可比」目前只是推论，没有实测背书：新定义在 CI runner 上是多少，谁都还没测过。
+// 而 fanout 的抖动并非只来自切片，「异步工作有没有落在 step 窗口内」同样受调度影响
+// （373 个场景实测，同一次运行的 5 个样本之间 (max-min)/median 中位数 0.55），
+// 跨机器的调度差异只会更大，不会更小。所以先**暂缓**，不拿推论当结论。
+//
+// 解除条件有两个，缺一不可：
+// 1. **跨机器实测对照**。这轮改动合并 push 后，CI 会用新定义产出并记录读数（跳过判定不
+//    影响记录）。拿 CI 侧真实读数与本机对照，确认量纲一致。
+// 2. **step 契约里要有显式 repeats**。`stress` step 硬编码跑 10 轮
+//    （perf-lab/scenarios/generic.tsx）、`sample-frames` 跑 N 帧，而这个乘数指标层看不见。
+//    在它显式化之前，按 step 求和量的是「组件成本 × 循环次数」，据此定的阈值是在量 harness
+//    的循环，不是在量组件 —— 新定义下最重的场景恰恰是动画类（旧定义只有 12），就是这个原因。
+// 两条都满足后，把这两项移出本名单即可恢复门禁，那时阈值判定与基线回归一起放开、
+// 两条对应测试同时反转。完整判据与建议的替代指标见
+// docs/perf-cascade-fanout-diagnosis-20260803.md §6.2。
 const MACHINE_BOUND_METRICS = new Set([
   ...GPU_TIMING_METRICS,
   "commitDurationMs",
@@ -163,11 +176,10 @@ function isUntrustedTimingMetric(input: BudgetEvaluationInput, metric: string): 
   return input.budget.trustTimingMetrics === false && MACHINE_BOUND_METRICS.has(metric);
 }
 
-// 结构性计数（一次更新波及多少 fiber）取中位数，时间指标才取 p95。
-// 两个原因：一是每轮只采 5 个样本，p95 实际等于最大值，对任何有抖动的指标都必然抓尾部；
-// 二是 concurrent React 会把一次逻辑更新切成多个 commit，而 fanout 是按单个 commit 计数的
-// —— 切了就小、没切就大，尾部值反映的是调度而不是组件。真有级联问题的组件是持续表现的，
-// 中位数照样抓得住；时间指标关心的正是最坏延迟，仍用 p95。
+// 结构性计数（一个 step 波及多少 fiber）取中位数，时间指标才取 p95。
+// 每轮只采 5 个样本，p95 实际等于最大值，对任何有抖动的指标都必然抓尾部；而 fanout 的
+// 抖动来自「异步工作有没有落在 step 窗口内」这类调度因素，尾部值反映的是调度而不是组件。
+// 真有级联问题的组件是持续表现的，中位数照样抓得住；时间指标关心的正是最坏延迟，仍用 p95。
 const COUNT_METRIC_STATISTIC = new Set(["cascadeFanout", "mountFanout"]);
 
 function addThresholdFinding(

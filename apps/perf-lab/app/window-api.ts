@@ -171,26 +171,43 @@ function isUnmountStep(stepId: string | undefined): boolean {
   return /^(?:unmount|unmount[-:])/.test(stepId ?? "");
 }
 
+// 归不到 step 的 commit（窗口重叠或落在所有窗口之外）不能并进同一个桶：
+// 那会把一批互不相干的 commit 累加成假的巨大 fanout。让它们各自成桶。
+function fanoutBucket(stepId: string | undefined, commitId: number): string {
+  return stepId === undefined ? `commit:${commitId}` : `step:${stepId}`;
+}
+
+// fanout 按 **step** 聚合，不按单个 commit —— 读数是「最差的那个 step 里的 fiber 总数」。
+//
+// concurrent React 会把一次逻辑更新切成多个 commit，切几刀取决于机器快慢与调度时机 ——
+// 按 commit 计数等于在量机器：同一份代码同一个场景，form/validation 的 cascadeFanout
+// 中位数在开发机是 31~35、在 CI runner 是 82，阈值 50 正好卡中间，本地绿 CI 红。
+// 一个 step 内的 fiber 总数与切片方式无关（切与不切，总量一样），跨机器才可比。
+//
+// 代价要写清楚：这是**总量**不是单次峰值。一个 step 重复 N 次交互，读数就是 N 倍
+// （generic 场景的 stress step 跑 10 轮，读数因此比手写单动作 step 高一个量级）。
+// 阈值必须按场景的 step 设计来定，不能沿用按 commit 计数时代的数字。
 export function computeMetrics(
   events: ScanEvent[],
   observation: ReturnType<BrowserObservation["finish"]>,
 ): Record<string, number> {
   const commits = events.filter((event) => event.type === "commit");
   const fibers = events.filter((event) => event.type === "fiber-render");
-  const fanout = new Map<number, number>();
-  const mountFanout = new Map<number, number>();
+  const fanout = new Map<string, number>();
+  const mountFanout = new Map<string, number>();
   const seenFiberIds = new Set<number>();
   for (const fiber of fibers) {
     const isNewFiber = fiber.fiberId !== undefined && !seenFiberIds.has(fiber.fiberId);
     if (fiber.fiberId !== undefined) seenFiberIds.add(fiber.fiberId);
+    const bucket = fanoutBucket(fiber.stepId, fiber.commitId);
 
     // A popup/list can mount during an interaction. Those fibers are mount work,
     // not an update cascade. react-scan/lite IDs are stable and alternate-aware,
     // so only fibers observed in an earlier commit count toward update fanout.
     if (isMountStep(fiber.stepId) || isNewFiber) {
-      mountFanout.set(fiber.commitId, (mountFanout.get(fiber.commitId) ?? 0) + 1);
+      mountFanout.set(bucket, (mountFanout.get(bucket) ?? 0) + 1);
     } else if (!isUnmountStep(fiber.stepId)) {
-      fanout.set(fiber.commitId, (fanout.get(fiber.commitId) ?? 0) + 1);
+      fanout.set(bucket, (fanout.get(bucket) ?? 0) + 1);
     }
   }
   const longestTaskMs = Math.max(0, ...observation.longTaskDurations);

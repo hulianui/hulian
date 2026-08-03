@@ -223,7 +223,10 @@ describe("evaluateBudget", () => {
     ).not.toContain("long-task");
   });
 
-  it("跨机器：fanout 也按机器绑定跳过（同代码本地 33 / CI 82，留着只会训练人忽略红灯）", () => {
+  // fanout 已改成 step 聚合、切片因素消除，但「跨机器可比」还没有 CI 侧实测背书，
+  // 所以跨机器时**暂缓**判定 —— 是暂缓，不是结论反转。等 CI 侧读数与本机对照完成后，
+  // 这条与下面那条基线回归的断言一起翻成 toContain。
+  it("跨机器：trustTimingMetrics=false 暂缓 fanout 判定（待 CI 侧实测新定义读数）", () => {
     const run = makeRun("measurement");
     const wide: typeof run = {
       ...run,
@@ -242,6 +245,33 @@ describe("evaluateBudget", () => {
         (finding) => finding.rule,
       ),
     ).toContain("cascade-fanout");
+  });
+
+  // 基线与读数是同一个定义，所以 fanout 的基线回归必须与它的阈值判定同进退：
+  // 同机器可信时判，暂缓期跟着一起跳过。两半会在恢复门禁那一步同时翻。
+  it("fanout 的基线回归与阈值判定同口径：可信时判，暂缓期一起跳过", () => {
+    const run = makeRun("measurement");
+    const wide: typeof run = {
+      ...run,
+      environment: "packed-consumer",
+      samples: Array.from({ length: 5 }, () => ({ commitDurationMs: 3, cascadeFanout: 400 })),
+    };
+    expect(
+      evaluateBudget({
+        run: wide,
+        component: "Button",
+        budget: {},
+        baseline: { cascadeFanout: 100 },
+      }).map((finding) => finding.rule),
+    ).toContain("regression:cascadeFanout");
+    expect(
+      evaluateBudget({
+        run: wide,
+        component: "Button",
+        budget: { trustTimingMetrics: false },
+        baseline: { cascadeFanout: 100 },
+      }).map((finding) => finding.rule),
+    ).not.toContain("regression:cascadeFanout");
   });
 
 
