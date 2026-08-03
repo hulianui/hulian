@@ -96,6 +96,7 @@ function rootKeyOf(rows: FlatRow[], key: string): string {
 export function NavMenu({
   items,
   mode = "inline",
+  semantics = "tree",
   selectedKeys,
   defaultSelectedKeys,
   onSelect,
@@ -108,6 +109,17 @@ export function NavMenu({
 }: NavMenuProps) {
   const collapsed = mode === "collapsed";
   const reduced = useReducedMotion();
+  // list 语义（hulianui/hulian#69）：站点主导航是 list + link，不是 tree widget。
+  // 显式 role 一律压过 <a> 的隐式 link role，所以这一档**不写 role**，让消费方给的元素自带语义。
+  // 连带三件事：roving tabindex 让位给原生 Tab（半吊子 tree 比没有 tree 更糟）、
+  // aria-selected 换成 aria-current="page"（前者在 link 上无效）、方向键不接管。
+  const asList = semantics === "list";
+  // Tailwind preflight 把 ul 的 list-style 清成 none，Safari/VoiceOver 会因此把 list 语义摘掉。
+  // 显式 role="list" 是把它钉回来的标准做法。
+  const listRole = asList ? "list" : "tree";
+  const groupRole = asList ? "list" : "group";
+  // list 档不给内层 ul 重复 aria-label：外层 <nav> 已经有了，两处同名读屏会念两遍。
+  const listLabel = asList ? undefined : ariaLabel;
 
   const [selectedState, setSelectedState] = useState<string[]>(defaultSelectedKeys ?? []);
   const selected = selectedKeys ?? selectedState;
@@ -352,20 +364,24 @@ export function NavMenu({
     // 递归渲染飞出层的一层子菜单：与 inline 态能力对齐（三级/四级/N 级都真实进 DOM 且可键盘抵达）。
     // 有子层的项自己再挂一层飞出面板，靠 :hover / :focus-within 逐层显形。
     const renderFlyoutList = (nodes: NavMenuItem[], depth: number) => (
-      <ul role="group" className="flex flex-col gap-0.5">
+      <ul role={groupRole} className="flex flex-col gap-0.5">
         {nodes.map((child) => {
           const childHasChildren = !!child.children?.length;
           const isSelected = selectedSet.has(child.key);
           const branchActive = isSelected || hasSelectedDescendant(child, selectedSet);
           const isActive = child.key === effectiveActive;
           const shared = {
-            role: "treeitem" as const,
-            "aria-selected": isSelected || undefined,
+            ...(asList
+              ? { "aria-current": isSelected ? ("page" as const) : undefined }
+              : {
+                  role: "treeitem" as const,
+                  "aria-selected": isSelected || undefined,
+                  // roving tabindex 贯穿飞出层：整棵树只有一个 tab 落点，深层靠 → / ← 进出。
+                  tabIndex: isActive ? 0 : -1,
+                }),
             "aria-disabled": child.disabled || undefined,
             "aria-haspopup": childHasChildren || undefined,
             "data-selected": branchActive ? "" : undefined,
-            // roving tabindex 贯穿飞出层：整棵树只有一个 tab 落点，深层靠 → / ← 进出。
-            tabIndex: isActive ? 0 : -1,
             className: FLYOUT_ROW,
             ref: (el: HTMLElement | null) => {
               if (el) itemRefs.current.set(child.key, el);
@@ -385,7 +401,7 @@ export function NavMenu({
             </>
           );
           return (
-            <li key={child.key} role="none" className="relative">
+            <li key={child.key} role={asList ? undefined : "none"} className="relative">
               {child.render && !childHasChildren ? (
                 cloneElement(
                   child.render,
@@ -452,10 +468,10 @@ export function NavMenu({
       <nav
         aria-label={ariaLabel}
         className={cn("w-14 shrink-0 select-none text-foreground", className)}
-        onKeyDown={onKeyDown}
+        onKeyDown={asList ? undefined : onKeyDown}
         {...props}
       >
-        <ul role="tree" aria-label={ariaLabel} className="flex flex-col gap-1">
+        <ul role={listRole} aria-label={listLabel} className="flex flex-col gap-1">
           {tops.map((item) => {
             const isSelected = selectedSet.has(item.key);
             const branchActive = isSelected || hasSelectedDescendant(item, selectedSet);
@@ -465,7 +481,7 @@ export function NavMenu({
             return (
               <li
                 key={item.key}
-                role="none"
+                role={asList ? undefined : "none"}
                 className="group/col relative"
                 // 悬浮与聚焦都要量：键盘用户是先 Tab 到轨道上的图标（本 li 内），
                 // 再按 → 进飞出层 —— 那时面板必须已定位好，否则 focus() 会落进一个
@@ -475,12 +491,16 @@ export function NavMenu({
               >
                 <button
                   type="button"
-                  role="treeitem"
-                  aria-selected={isSelected || undefined}
+                  {...(asList
+                    ? { "aria-current": isSelected ? ("page" as const) : undefined }
+                    : {
+                        role: "treeitem" as const,
+                        "aria-selected": isSelected || undefined,
+                        tabIndex: isActive ? 0 : -1,
+                      })}
                   aria-disabled={item.disabled || undefined}
                   aria-haspopup={hasChildren || undefined}
                   data-selected={branchActive ? "" : undefined}
-                  tabIndex={isActive ? 0 : -1}
                   ref={(el) => {
                     if (el) itemRefs.current.set(item.key, el);
                     else itemRefs.current.delete(item.key);
@@ -537,14 +557,14 @@ export function NavMenu({
     nodes.map((node) => {
       if (isGroup(node)) {
         return (
-          <li key={node.key} role="none">
+          <li key={node.key} role={asList ? undefined : "none"}>
             <div
               role="presentation"
               className="px-3 pb-1 pt-4 text-xs font-medium uppercase tracking-wide text-muted first:pt-1"
             >
               {node.label}
             </div>
-            <ul role="group" className="flex flex-col gap-0.5">
+            <ul role={groupRole} className="flex flex-col gap-0.5">
               {/* 分组子项比分组标签缩进一级，建立层级（同 Ant Menu ItemGroup） */}
               {renderNodes(node.children, depth + 1)}
             </ul>
@@ -598,12 +618,18 @@ export function NavMenu({
       );
 
       const shared = {
-        role: "treeitem" as const,
-        "aria-selected": isSelected || undefined,
+        ...(asList
+          ? // 不写 role / tabIndex：<a> 是 link、<button> 是 button，Tab 逐项即可。
+            { "aria-current": isSelected ? ("page" as const) : undefined }
+          : {
+              role: "treeitem" as const,
+              "aria-selected": isSelected || undefined,
+              tabIndex: isActive ? 0 : -1,
+            }),
+        // aria-expanded 两档都要：list 档下它是 button 上合法的 disclosure 语义。
         "aria-expanded": hasChildren ? expanded : undefined,
         "aria-disabled": node.disabled || undefined,
         "data-selected": branchActive ? "" : undefined,
-        tabIndex: isActive ? 0 : -1,
         style: indent,
         // 有行尾 actions 时多留右内边距，避免标题文字钻到操作按钮下方。
         className: cn(rowClass, node.actions != null && "pr-9"),
@@ -666,7 +692,7 @@ export function NavMenu({
         );
 
       return (
-        <li key={node.key} role="none">
+        <li key={node.key} role={asList ? undefined : "none"}>
           {/* 行尾操作槽：渲染在 treeitem 按钮【之外】（绝对覆盖行右侧），避免 <button> 内嵌交互元素。
               覆盖层 pointer-events-none → 空白区点击穿透回行按钮；其直接子（动作元素）恢复可点。
               消费者可用 group-hover/nav-row 做「hover 才显」。 */}
@@ -691,7 +717,7 @@ export function NavMenu({
               }}
             >
               <div className="min-h-0 overflow-hidden">
-                <ul role="group" className="flex flex-col gap-0.5 pt-0.5">
+                <ul role={groupRole} className="flex flex-col gap-0.5 pt-0.5">
                   {renderNodes(node.children!, depth + 1)}
                 </ul>
               </div>
@@ -705,10 +731,11 @@ export function NavMenu({
     <nav
       aria-label={ariaLabel}
       className={cn("w-60 shrink-0 select-none text-foreground", className)}
-      onKeyDown={onKeyDown}
+      // list 档不接管方向键：那是 tree widget 的键盘契约，这里交回浏览器（Tab 逐项 + 原生激活）。
+      onKeyDown={asList ? undefined : onKeyDown}
       {...props}
     >
-      <ul role="tree" aria-label={ariaLabel} className="flex flex-col gap-0.5">
+      <ul role={listRole} aria-label={listLabel} className="flex flex-col gap-0.5">
         {renderNodes(items, 0)}
       </ul>
     </nav>

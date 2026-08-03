@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.18.0 · 375 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.19.1 · 376 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -2646,6 +2646,96 @@ import { WordRotate } from "@hulianui/ui"
 # ━━━━━━━━ 表单 ━━━━━━━━
 
 <!-- ════════════════════════════════════════════════════════ -->
+# AuthPanel
+
+> 认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind 工具类给不出带 color-mix 的 radial-gradient，guard 又禁消费方传 style，两条一撞只剩裸 div + inline style · color 走 resolveTone 与 Brand/Dot 同路 · 配 LoginForm surface={false} 免卡中卡 · forms/framework
+
+## 何时用
+
+「左边一块渐变宣传面板 + 右边表单」是登录 / 注册 / 找回密码页的标准版式，这个件就是左边那块。
+
+它存在的理由不是省几行 flex，而是**渐变此前没有正经的表达方式**（hulianui/hulian#71）：
+
+- Tailwind 工具类给不出 `radial-gradient(125% 125% at 0% 0%, color-mix(in oklab, var(--color-primary) 12%, var(--color-bg)), …)` 这种带 token 混色的写法；
+- guard 的 `no-style-override` 是 error 级，`style` 挂到任何库件上直接报错。
+
+两条一撞，结论就是那块面板只能是**裸 `<div>` + inline style**——不是猜的，官方 `signup` block 自己就是这么写的。于是同一个版式里边框/圆角/表面都走 token，唯独最显眼的那块背景绕开了组件体系，换品牌色要满仓库找。
+
+配方收进组件后：换色只动 `color`，暗色自动跟随（三档都以 `--color-bg` 打底做 `color-mix`）。
+
+## 导入
+```ts
+import { AuthPanel } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| brand | `ReactNode` | — | 品牌位，通常直接放 [Brand](https://hulianui.haloritual.com/components/brand) |
+| title | `ReactNode` | — | 主标语 |
+| titleLevel | `1..6` | `2` | 标题语义级别（只换 `h1`–`h6` 标签，视觉尺寸不变） |
+| description | `ReactNode` | — | 标语下的补充说明 |
+| highlights | `ReactNode[]` | — | 卖点列表，每条自动带一枚勾选标记（跟随 `color`） |
+| children | `ReactNode` | — | 中部自由内容（插画、统计数字、客户 logo 墙） |
+| footer | `ReactNode` | — | 底部区（版权、备案号、次要链接） |
+| color | `string` | `"primary"` | 品牌色：语义色名 / 任意 CSS 色 / 变量，走 `resolveTone`（同 [Brand](https://hulianui.haloritual.com/components/brand) `.color`、[Dot](https://hulianui.haloritual.com/components/dot) `.color`、`ChartSeries.color`） |
+| gradient | `"radial" \| "linear" \| "mesh" \| "none"` | `"radial"` | 背景配方，见下 |
+| className | `string` | — | 根节点类名 |
+
+### 背景配方
+
+| 档 | 长相 | 用在 |
+|----|------|------|
+| `radial`（默认） | 左上角起的柔和光晕 | 最百搭，后台登录页 |
+| `linear` | 135° 斜向渐变，两端各带一点品牌色 | 想要方向感时 |
+| `mesh` | 三处光斑叠加 | 设计感最强，注册页 / 落地页 |
+| `none` | 纯 `surface` 底，不写 `background` | 想自己叠 [DotPattern](https://hulianui.haloritual.com/components/dot-pattern) / [GridPattern](https://hulianui.haloritual.com/components/grid-pattern) 之类图案时 |
+
+## 示例
+```tsx
+// 分屏登录页：右半边关掉卡面，避免卡中卡
+<div className="grid min-h-dvh xl:grid-cols-2">
+  <AuthPanel
+    brand={<Brand name="瀚云" description="全球边缘计算" />}
+    title="把想法送上全球边缘"
+    description="五分钟创建账号，开启第一个项目。无需信用卡。"
+    highlights={["免费开始，闲时算力自动归零", "从 git push 到全球边缘上线"]}
+    footer="© 2026 瀚云 · 京ICP备 000000 号"
+    className="hidden xl:flex"
+  />
+  <div className="grid place-items-center p-8">
+    <LoginForm
+      surface={false}
+      fields={{
+        username: { label: "管理员账号", placeholder: "请输入账号", prefix: <UserRound /> },
+        password: { placeholder: "请输入密码", prefix: <KeyRound /> },
+      }}
+    />
+  </div>
+</div>
+```
+
+```tsx
+// 注册页：mesh 配方 + 自定义中部内容
+<AuthPanel gradient="mesh" color="chart-2" title="开始使用">
+  <img src="/illustration.svg" alt="" className="max-w-xs" />
+</AuthPanel>
+```
+
+## 禁忌 / 坑
+
+- **面板自己不定高度**（只写 `h-full`），高度交给外层栅格。分屏页通常是 `grid min-h-dvh xl:grid-cols-2`，面板自然铺满那一列。组件里写死 `h-dvh` 会在「嵌进已有卡片」的场景里炸掉，同 [AdminLayout 的 `fitViewport` 教训](https://hulianui.haloritual.com/components/admin-layout)。
+- **窄屏用 `className="hidden xl:flex"` 藏掉，而不是不渲染**——面板是纯装饰，小屏只留表单；靠条件渲染会让 SSR/CSR 两边的树不一致。
+- 三档渐变都以 `--color-bg` 打底，所以**暗色不需要另写一套**。自己在外面套 `dark:` 覆盖背景等于把这个特性关掉。
+- `gradient="none"` 是给「自己叠图案」用的，不是给「不要背景」用的——它仍有 `bg-surface`，因为面板要和右侧表单区在明暗上分开。
+- 右半边表单记得传 `surface={false}`（[LoginForm](https://hulianui.haloritual.com/components/login-form)）：视觉重量已由左侧面板承担，再套一张卡就是卡中卡。
+- 消费方 `style` 仍能覆盖背景（整块换底图的逃生口），但那属于绕开组件体系——先想想是不是该给 `gradient` 加一档。
+
+## 相关
+[LoginForm](https://hulianui.haloritual.com/components/login-form) · [Brand](https://hulianui.haloritual.com/components/brand) · [Field](https://hulianui.haloritual.com/components/field) · [SocialButton](https://hulianui.haloritual.com/components/social-button) · [ClickCaptcha](https://hulianui.haloritual.com/components/click-captcha) · [DotPattern](https://hulianui.haloritual.com/components/dot-pattern)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # Button
 
 > 按钮 · CVA 变体 + press 动效 · forms/button
@@ -4418,7 +4508,7 @@ const [keys, setKeys] = useState<string[]>(["profile"]);
 <!-- ════════════════════════════════════════════════════════ -->
 # LoginForm
 
-> 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Field/Input/Checkbox/Button·文案接 i18n) · forms/framework
+> 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + fields 字段外观槽(label/placeholder/prefix) + surface 卡面开关(分屏登录页免卡中卡)(复用 Field/Input/Checkbox/Button·文案接 i18n) · forms/framework
 
 ## 何时用
 
@@ -4445,6 +4535,8 @@ import { LoginForm } from "@hulianui/ui"
 | showRemember | `boolean` | `true` | 是否显示「记住我」 |
 | rules | `{ username?: FormRule[]; password?: FormRule[] }` | — | 字段级校验规则，追加在内置必填之后（`FormRule` 同 [Form](https://hulianui.haloritual.com/components/form)：`pattern`/`min`/`max`/`validator`/`message`） |
 | values | `Partial<LoginValues>` | — | 受控值：传入即受控，需配合 `onValuesChange` 回写；不传维持内部自管 |
+| fields | `{ username?: LoginFieldSlot; password?: LoginFieldSlot }` | — | 两个主字段的**外观槽**：`label` / `placeholder` / `prefix` / `suffix` / `description` / `autoComplete`。取值与校验仍由模板托管 |
+| surface | `boolean` | `true` | 自带卡面（边框 + 底色 + 阴影 + 内距）。分屏登录页 / 已经有卡的容器里传 `false`，表面交给外层 |
 | className | `string` | — | 根节点类名 |
 
 ## Events
@@ -4519,6 +4611,30 @@ const ticket = useRef<string | null>(null);
 - `beforeSubmit` 执行期间提交按钮保持 loading，弹验证码这类异步步骤不需要自己再管 loading。
 - 若父层自己也在管提交态（如全局 loading），用 `loading` prop 覆盖内置 loading，别另写一份。
 - `onFinish` 返回 Promise 时提交按钮自动转 loading 并禁用，无需手动 disable。
+
+### 字段外观与卡面（分屏登录页）
+
+```tsx
+// 左品牌面板 + 右表单：右半边不该再套一张卡，surface={false} 把表面交给外层
+<div className="grid xl:grid-cols-2">
+  <AuthPanel title="欢迎回来" description="统一身份认证平台" />
+  <div className="grid place-items-center p-8">
+    <LoginForm
+      surface={false}
+      fields={{
+        username: { label: "管理员账号", placeholder: "请输入账号", prefix: <UserRound /> },
+        password: { placeholder: "请输入密码", prefix: <KeyRound /> },
+      }}
+    />
+  </div>
+</div>
+```
+
+`fields` 只覆盖**外观**——取值、校验、`autoComplete` 默认值仍由模板托管，
+所以换个 label 不会把浏览器的账号/密码自动填充弄丢（真要改传 `fields.username.autoComplete`）。
+
+`surface={false}` 关掉的是边框 / 底色 / 阴影 / **内距**四件一起。只关三件会逼消费方再写
+`xl:p-0` 补最后一刀，等于没关（hulianui/hulian#70）。
 
 ### 「记住我」的文案与说明
 
@@ -5315,9 +5431,10 @@ import { RegionSelect, type RegionBox } from "@hulianui/ui"
 |------|------|------|------|
 | src* | `string` | — | 底图地址 |
 | value | `RegionBox \| null` | — | 当前框（原图像素 `[x1,y1,x2,y2]`），受控 |
-| onChange | `(box: RegionBox) => void` | — | 拖完一次给一个**规范化**的框（反向拖也成立） |
-| onDrafting | `(box: RegionBox \| null) => void` | — | 拖拽过程中的实时框，结束回 `null` |
-| minSide | `number` | `8` | 误点阈值：框短边小于它（原图像素）不触发 onChange |
+| onChange | `(box: RegionBox) => void` | — | 拖完一次给一个**规范化**且**已取整**的框（反向拖也成立） |
+| onDrafting | `(box: RegionBox \| null) => void` | — | 拖拽过程中的实时框（**浮点**，不受 `round` 影响），结束回 `null` |
+| round | `"expand" \| "nearest" \| "none"` | `"expand"` | 出口取整方式：`expand` 左上 floor、右下 ceil（不缩小框）；`nearest` 四舍五入；`none` 保留浮点 |
+| minSide | `number` | `8` | 误点阈值：框短边小于它（原图像素）不触发 onChange。判定在取整**之后** |
 | boxes | `{ box, color?, label?, id? }[]` | — | 只读的其它框（虚线 + 标注），同页多图时一并显示 |
 | aspect | `number` | — | 固定宽高比（宽/高）；不传则自由框选 |
 | naturalSize | `{ width, height }` | — | 已知的原图尺寸；不传则组件用 `new Image()` 自己量 |
@@ -5325,11 +5442,13 @@ import { RegionSelect, type RegionBox } from "@hulianui/ui"
 | color | `string` | `"primary"` | 主框描边色（语义色名 / 任意 CSS 色） |
 | readOnly | `boolean` | `false` | 不响应拖拽，仍显示已有框 |
 | placeholder | `ReactNode` | `"载入图片…"` | 量到自然尺寸前的占位 |
+| errorPlaceholder | `ReactNode` | `"图片加载失败"` | 底图取不到（404/403/跨域/网络）时的占位 |
+| onError | `(event: unknown) => void` | — | 底图加载失败回调（预读与画布 `<image>` 共用同一出口） |
 | alt | `string` | `""` | 画布的无障碍名 |
 
 ### 纯函数（已导出）
 
-`toImagePoint(clientX, clientY, rect, w, h)` 指针→图像素（含钳位）· `normalizeBox(a, b)` 两点→规范化框 · `applyAspect(anchor, point, aspect, w, h)` 按比例修正 · `boxMinSide(box)` · `strokeWidthFor(w)`。自己画框但不想重写这套算术时直接用。
+`toImagePoint(clientX, clientY, rect, w, h)` 指针→图像素（含钳位）· `normalizeBox(a, b)` 两点→规范化框 · `applyAspect(anchor, point, aspect, w, h)` 按比例修正 · `boxMinSide(box)` · `roundBox(box, mode?)` 出口取整 · `strokeWidthFor(w)`。自己画框但不想重写这套算术时直接用。
 
 ## 示例
 ```tsx
@@ -5351,9 +5470,12 @@ const [box, setBox] = useState<RegionBox | null>(null)
 
 - **坐标系只有原图像素**，不是容器像素也不是百分比——存进库的必须能直接喂给服务端裁图。内部用 `<svg viewBox="0 0 naturalW naturalH">` 打底，画框零换算，只有「指针 → 图像素」一个方向按 `getBoundingClientRect()` 折算。
 - **自然尺寸量到之前不画任何框**：拿上一张图的比例摆框，位置一定是错的。已知尺寸（库里存着）就传 `naturalSize`，省一次预读，也让 SSR/测试环境不必等图解码。
+- **出口坐标是整数，内部预览是浮点**。像素是可数的格子：落库（`list[int]` 之类的列约束）、服务端裁图（PIL / OpenCV / sharp 的 crop 都要整数，各自的隐式取整方向还不一致，会差一两像素且没人解释得清）、`box === savedBox` 这种「有没有改过」的判断，三处都吃不下浮点。默认 `round="expand"`（左上 floor、右下 ceil）而不是 `nearest`——**取整不缩小框**，否则一个刚好拖够 `minSide` 的框会被收成 `minSide - 1`，症状是「拖了没反应」。`minSide` 的判定也因此放在取整之后。
+  - 这个缺陷**极容易漏测**：缩放恰好 1:1 或整数倍时坐标本就落在整数上。自己写测试请用除不尽的比例（库内用的是 756→396）。
 - **`setPointerCapture` 放在拖拽状态落地之后并 try/catch**：合成 PointerEvent（Playwright / 单测 dispatch）下它会抛，先捕获就把整个 handler 中断，拖拽根本起不来。
 - 画布带 `touch-none`，否则触屏上「拖框」变成「滚页面」。
 - 描边宽度按图宽给（`max(2, naturalW/400)`）：3000px 宽的扫描页上 2px 的线细到看不见。
+- **「正在载入」和「这张图根本取不到」必须长得不一样**：底图 404 / 403 / 签名过期 / 跨域失败时组件进失败态，渲染 `errorPlaceholder` 并触发 `onError`，而不是一直停在 `placeholder` 让人干等。后端按需渲染的底图（页图还没推到当前环境、签名 URL 过期、权限不足、资源被删）这不是边缘情况，是常态。预读与画布 `<image>` 共用同一个失败状态——中途鉴权过期只让 SVG 那次请求失败时同样有出口。`src` 变化会复位失败态。
 - **键盘/读屏无法直接拖框**（这是画布类交互的共性）。要可达就在旁边配四个数字输入框读写同一个 `value`，组件是受控的，两边同源。
 
 ## 相关
@@ -7645,6 +7767,7 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | xKey* | `string` | — | 横轴字段名 |
 | height | `number` | `280` | 高度（SSR 安全：宽走 ResponsiveContainer，高需显式值） |
 | stacked | `boolean` | `false` | 多序列堆叠（Area/Bar 生效） |
+| legend | `boolean \| "top" \| "bottom"` | `false` | 序列图例（色点 + `label`）。`true` 等价 `"bottom"`；**AreaChart / BarChart / LineChart 生效**（Pie/Radar/Radial 一直自带图例）。色点走 [Dot](https://hulianui.haloritual.com/components/dot) 的 `color`，与序列色同源 |
 | horizontal | `boolean` | `false` | **BarChart 专属**：横向柱状 |
 | yAxisWidth | `number` | 自适应 | **BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48–160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传 |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-[32rem]`） |
@@ -7660,9 +7783,9 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 
 ## 示例
 ```tsx
-// 多序列面积图（颜色自动取 chart token）
+// 多序列面积图（颜色自动取 chart token）——多序列务必开 legend，否则读者不知道哪条线是哪条
 const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", revenue: 55, orders: 142 }];
-<AreaChart data={data} series={[{ key: "revenue", label: "营收" }, { key: "orders", label: "订单" }]} xKey="month" className="w-[32rem]" />
+<AreaChart data={data} series={[{ key: "revenue", label: "营收" }, { key: "orders", label: "订单" }]} xKey="month" legend className="w-[32rem]" />
 
 // 环形图
 <PieChart donut data={[{ name: "搜索", value: 420 }, { name: "直接", value: 280 }]} className="w-[32rem]" />
@@ -7681,6 +7804,8 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 - 在收缩的 flex 容器里 ResponsiveContainer 可能量不到宽，需给容器显式宽度，见 [[recharts-responsive-container-needs-explicit-width-in-shrink-flex]]。
 - headless 截图常出现「只剩坐标轴、数据区空白」——不是 bug，是入场动画的 clipPath 被 rAF 饿死，设 `prefers-reduced-motion: reduce` 再截即显，见 [[recharts-headless-screenshot-blank-clippath-animation-starved]]。
 - horizontal 类目轴宽自适应有 160px 上限（防超长标签吃掉图区）——类目 >12 个全角字仍会截断，此时消费侧截短标签或显式传 `yAxisWidth`。
+- `legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。图例序列多到换行时会挤压画布，那种情况把 `height` 调大或缩短 `label`。
+- 自绘图例时色点用 `<Dot color={...} />`，**不要**写 `<Dot style={{ color }} />`——那是静默失效（圆点是背景色），见 [Dot 的坑](https://hulianui.haloritual.com/components/dot)。
 
 ## 相关
 [Stat](https://hulianui.haloritual.com/components/stat) · [Statistic](https://hulianui.haloritual.com/components/statistic) · [Meter](https://hulianui.haloritual.com/components/meter) · [Timeline](https://hulianui.haloritual.com/components/timeline) · [NumberTicker](https://hulianui.haloritual.com/components/number-ticker) · [WorldMap](https://hulianui.haloritual.com/components/world-map)
@@ -8611,6 +8736,7 @@ import { Dot } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | tone | `"neutral"｜"brand"｜"success"｜"warning"｜"danger"` | `neutral` | 语气色：neutral 默认 / brand 处理中 / success 在线/成功 / warning 警告 / danger 离线/错误。 |
+| color | `string` | — | 任意圆点色：语义色名（`chart-2`/`primary`…）、任意 CSS 色或变量，走 `resolveTone`。与 `tone` 同传时 **color 优先**。图例色点跟图表序列同色时用它。 |
 | size | `"sm"｜"md"｜"lg"` | `md` | 尺寸。 |
 | pulse | `boolean` | `false` | 呼吸扩散动画（在线/进行中等活跃态语义）。 |
 | label | `string` | — | 提供则 `role=status` + aria-label（表意圆点）；不提供则 aria-hidden（纯装饰）。 |
@@ -8622,11 +8748,21 @@ import { Dot } from "@hulianui/ui"
 
 // 在线点：呼吸 + 屏读播报
 <Dot tone="success" pulse label="在线" />
+
+// 自绘图表图例：色点吃序列色（Chart 的 legend 内部就是这么排的）
+{series.map((s, i) => (
+  <span key={s.key} className="inline-flex items-center gap-1.5">
+    <Dot size="sm" color={s.color ?? `chart-${i + 1}`} />
+    {s.label}
+  </span>
+))}
 ```
 
 ## 禁忌 / 坑
 
-暂无已知坑。`label` 决定无障碍语义：表意圆点（真在传达状态）务必传 `label`，否则它被 `aria-hidden` 当装饰，屏读用户读不到。候选坑 `tauri-2-event-name-no-dot-character-set-restriction`（Tauri 事件命名）与 `timeline-dot-aligns-to-content-via-order-flip-not-pixel-push`（时间线圆点对齐）均与本组件无关，不适用。
+- **`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted`），写的人以为生效了。自定义颜色只走 `color` prop。
+- `label` 决定无障碍语义：表意圆点（真在传达状态）务必传 `label`，否则它被 `aria-hidden` 当装饰，屏读用户读不到。
+- `tone` 只有五档语义色，接不住图表序列色（默认取值就是 `chart-1..6`）——那是 `color` 存在的原因，别为一个色点去拆 Tag 或裸写 `<span>`。
 
 ## 相关
 [Sparkline](https://hulianui.haloritual.com/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/components/score-ring) · [Badge](https://hulianui.haloritual.com/components/badge)
@@ -13903,7 +14039,7 @@ import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuT
 <!-- ════════════════════════════════════════════════════════ -->
 # NavMenu
 
-> 侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游 · navigation/global
+> 侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游 + semantics="list" 切 list/link 语义(站点主导航用) · navigation/global
 
 ## 何时用
 
@@ -13922,6 +14058,7 @@ import { NavMenu } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `NavMenuNode[]` | — | 树形菜单数据 |
 | mode | `"inline" \| "collapsed"` | `"inline"` | inline=手风琴内联展开；collapsed=Sider 收起态图标 + 悬浮飞出子菜单（**两态都支持无限级**） |
+| semantics | `"tree" \| "list"` | `"tree"` | 无障碍语义。`list` 时行不强加 role（保住 `<a>` 的 link 语义），键盘退回 Tab 逐项。**站点主导航选 `list`**，文件树/大纲树留 `tree`。见下文 |
 | selectedKeys | `string[]` | — | 选中态（受控） |
 | defaultSelectedKeys | `string[]` | — | 选中态（非受控初值） |
 | openKeys | `string[]` | — | 展开态（受控） |
@@ -13935,8 +14072,37 @@ import { NavMenu } from "@hulianui/ui"
 | onOpenChange | `(openKeys: string[]) => void` | 展开态变化回调 |
 
 ## 示例
+
+### 站点主导航（最常见 · 记得传 `semantics="list"`）
+
 ```tsx
-// 受控选中 + 行尾删除（actions 槽用 group-hover/nav-row 钩子做 hover 才显）
+// 一列导航链接 = list + link，不是 tree widget。不传 semantics 会退回默认 tree 档，
+// 皮肤一模一样但读屏按「列出页面所有链接」一条都找不到（见「语义模式」一节）。
+<NavMenu
+  semantics="list"
+  selectedKeys={[pathname]}
+  items={[
+    { key: "/", label: "工作台", icon: <Home />, render: <Link to="/" /> },
+    {
+      key: "settings",
+      label: "设置",
+      icon: <Settings />,
+      children: [
+        { key: "/settings/profile", label: "个人资料", render: <Link to="/settings/profile" /> },
+        { key: "/settings/security", label: "安全", render: <Link to="/settings/security" /> },
+      ],
+    },
+  ]}
+/>
+```
+
+### 会话列表（受控选中 + 行尾操作）
+
+```tsx
+// 这里是**命令式选择**（onSelect 切会话，行渲染成 <button>），没有链接导航，
+// 所以留在默认 tree 档即可。若你的会话项是真链接（<Link to={`/c/${id}`} />），
+// 照上面主导航那样传 semantics="list"。
+// actions 槽用 group-hover/nav-row 钩子做 hover 才显
 function ConvoNav() {
   const [sel, setSel] = useState<string[]>(["c1"]);
   return (
@@ -13966,9 +14132,33 @@ function ConvoNav() {
 ```
 
 `href` 渲染的是原生 `<a>`，在 SPA 里点一下**整页刷新**；只用 `onSelect` + `navigate()` 又会退化成 `<button>`，
-中键新标签页 / 右键复制链接 / 读屏按「链接」播报全没了。`render` 让两者同时成立：
+中键新标签页 / 右键复制链接全没了。`render` 让两者同时成立：
 皮肤 class、键盘漫游属性、选中回调都合并进你给的元素，点击时先跑你的 `onClick` 再跑内部选中
 （hulianui/hulian#59）。与 [Button](https://hulianui.haloritual.com/components/button) / [Link](https://hulianui.haloritual.com/components/link) 的 `render` 约定一致。
+
+> **要「读屏按链接播报」还得配 `semantics="list"`**（hulianui/hulian#69）。默认 `semantics="tree"`
+> 会给行加 `role="treeitem"`，而显式 role 一律压过 `<a>` 的隐式 link role —— 中键/右键这些浏览器行为
+> 回来了，无障碍树里它仍是 treeitem。见下节。
+
+### 语义模式（`semantics`）
+
+| 档 | 结构 | 键盘 | 用在 |
+|----|------|------|------|
+| `"tree"`（默认） | `role=tree` + `treeitem`，`aria-selected` | roving tabindex：整棵树一个 Tab 落点，方向键漫游 | 文件树 / 大纲树这类真 tree widget |
+| `"list"` | `role=list`，行**不带 role**（`<a>` 是 link、`<button>` 是 button），`aria-current="page"` | Tab 逐项 + 原生激活（组件不接管方向键） | **站点主导航**（ARIA APG 的常规形态） |
+
+```tsx
+// 会员中心侧栏：内链走 render 保客户端路由，semantics 保 link 语义
+<NavMenu
+  semantics="list"
+  items={[{ key: "/balance", label: "余额明细", render: <Link to="/balance" /> }]}
+/>
+// 于是 getByRole("link", { name: "余额明细" }) 找得到，读屏的「列出页面所有链接」也列得出
+```
+
+选 `"list"` 的判据只有一条：**这是一列导航链接，还是一棵可展开的树？** 主导航属前者——
+读屏用户最常用的导航模式就是「列出页面所有链接」，tree 档下一条主导航都列不出来，
+测试也只能退化成 `getAllByRole("treeitem")`。
 
 ## 禁忌 / 坑
 
@@ -13978,7 +14168,11 @@ function ConvoNav() {
 - collapsed 态飞出层是**无限级级联**（与 inline 能力对齐），整棵树 DOM 恒在、显隐纯 CSS 驱动：
   `:hover` / `:focus-within` 逐层点亮。键盘走「级联菜单」语义——`→` 进子层、`←`/`Esc` 回父层、
   `↑↓` 只在**同层兄弟**间移动、`Home/End` 落本层首尾；roving tabindex 贯穿全树（整棵树只有一个
-  tab 落点，深层靠方向键进出，**不要指望 Tab 逐项走进飞出层**）。
+  tab 落点，深层靠方向键进出，**不要指望 Tab 逐项走进飞出层**）。`semantics="list"` 时这套键盘契约
+  整体让位给原生 Tab。
+- **`semantics` 决定的是无障碍树，不是皮肤**：两档长得一模一样，选中高亮、缩进、飞出层行为都不变，
+  所以**看不出选错**，也不会有任何报错。站点主导航**如果**留在默认 `tree` 档，读屏用户按
+  「列出页面所有链接」就真的一条都找不到 —— 那种场景请显式传 `semantics="list"`。
 - collapsed 的**第一层**飞出层用 `position: fixed` + JS 实测坐标，**刻意不是 `absolute`**：图标轨几乎
   总被放进可滚动的侧栏容器（`AdminLayout` 用的就是 `ScrollArea`），`absolute` 面板会被那个祖先的
   `overflow` 整块裁掉——面板在 DOM 里、有尺寸、`opacity:1`，但一个像素都画不出来，

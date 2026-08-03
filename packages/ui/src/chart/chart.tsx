@@ -24,6 +24,7 @@ import {
   Legend,
   useChartWidth,
 } from "recharts";
+import { Dot } from "../dot/dot";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import {
@@ -35,9 +36,58 @@ import {
   polarAngleTick,
   legendStyle,
 } from "./chart-theme";
-import type { ChartProps, BarChartProps, PieChartProps, RadialChartProps } from "./chart.types";
+import type { ChartProps, BarChartProps, ChartSeries, PieChartProps, RadialChartProps } from "./chart.types";
 
 const MARGIN = { top: 8, right: 8, bottom: 0, left: -8 };
+
+// 序列图例：色点 + series.label。刻意不走 recharts <Legend>——它的色点是方块、间距与
+// 字号另有一套，且会参与 recharts 自己的高度分配；这里用 Dot + token 排一行，与库内其它
+// 图例（Sankey/Funnel 等）长一个样，色点颜色与序列色同源（同一个 resolveTone 路径）。
+const LEGEND_ROW_H = 24;
+
+function ChartLegend({ series }: { series: ChartSeries[] }) {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted">
+      {series.map((s, i) => (
+        <span key={s.key} className="inline-flex items-center gap-1.5">
+          <Dot size="sm" color={resolveTone(s.color) ?? chartColor(i)} />
+          {s.label ?? s.key}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * 图表外壳：统一「总高 = 图例行 + 画布」的分配。
+ * height 语义保持不变（组件总高），开图例时画布相应变矮，而不是把总高撑高。
+ * 画布高度仍是显式数值（不是 "100%"），首帧 ResponsiveContainer 才不会告警。
+ */
+function ChartFrame({
+  height,
+  className,
+  legend,
+  series,
+  children,
+}: {
+  height: number;
+  className?: string;
+  legend?: boolean | "top" | "bottom";
+  series: ChartSeries[];
+  children: (canvasHeight: number) => React.ReactNode;
+}) {
+  const place = legend === true ? "bottom" : legend || null;
+  const canvasHeight = place ? Math.max(1, height - LEGEND_ROW_H) : height;
+  return (
+    <div className={cn("flex w-full flex-col", className)} style={{ height }}>
+      {place === "top" && <ChartLegend series={series} />}
+      <div className="w-full" style={{ height: canvasHeight }}>
+        {children(canvasHeight)}
+      </div>
+      {place === "bottom" && <ChartLegend series={series} />}
+    </div>
+  );
+}
 
 // ResponsiveContainer 首帧用 initialDimension {-1,-1} 渲染，宽高全 -1 会触发
 // "width(-1) and height(-1) should be greater than 0" 的 dev warning。
@@ -122,10 +172,12 @@ export function AreaChart<TDatum>({
   height = 280,
   className,
   stacked,
+  legend,
 }: ChartProps<TDatum>) {
   return (
-    <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
+    <ChartFrame height={height} className={className} legend={legend} series={series}>
+      {(canvasHeight) => (
+      <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReAreaChart data={data} margin={MARGIN}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
@@ -149,7 +201,8 @@ export function AreaChart<TDatum>({
           })}
         </ReAreaChart>
       </ResponsiveContainer>
-    </div>
+      )}
+    </ChartFrame>
   );
 }
 
@@ -162,10 +215,12 @@ export function BarChart<TDatum>({
   stacked,
   horizontal,
   yAxisWidth,
+  legend,
 }: BarChartProps<TDatum>) {
   return (
-    <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
+    <ChartFrame height={height} className={className} legend={legend} series={series}>
+      {(canvasHeight) => (
+      <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReBarChart
           data={data}
           margin={MARGIN}
@@ -210,7 +265,8 @@ export function BarChart<TDatum>({
           ))}
         </ReBarChart>
       </ResponsiveContainer>
-    </div>
+      )}
+    </ChartFrame>
   );
 }
 
@@ -220,10 +276,12 @@ export function LineChart<TDatum>({
   xKey,
   height = 280,
   className,
+  legend,
 }: ChartProps<TDatum>) {
   return (
-    <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
+    <ChartFrame height={height} className={className} legend={legend} series={series}>
+      {(canvasHeight) => (
+      <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReLineChart data={data} margin={MARGIN}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
@@ -246,7 +304,8 @@ export function LineChart<TDatum>({
           })}
         </ReLineChart>
       </ResponsiveContainer>
-    </div>
+      )}
+    </ChartFrame>
   );
 }
 

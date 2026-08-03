@@ -207,3 +207,84 @@ describe("LoginForm 记住我文案（hulianui/hulian#64）", () => {
     expect(getByText("勾选后服务端下发刷新令牌")).toBeTruthy();
   });
 })
+
+// hulianui/hulian#70：分屏后台登录页此前只能靠 className 覆盖来绕（conventions 明令禁止的业务侧打补丁）。
+describe("LoginForm 字段槽与表面开关", () => {
+  it("fields 覆盖两个主字段的 label", () => {
+    const { getByText } = render(
+      <LoginForm
+        fields={{ username: { label: "管理员账号" }, password: { label: "登录口令" } }}
+      />,
+    );
+    expect(getByText("管理员账号")).toBeTruthy();
+    expect(getByText("登录口令")).toBeTruthy();
+  });
+
+  it("fields 给 placeholder（locale 里本来没有这两条）", () => {
+    const { container } = render(
+      <LoginForm
+        fields={{
+          username: { placeholder: "请输入账号" },
+          password: { placeholder: "请输入密码" },
+        }}
+      />,
+    );
+    const inputs = container.querySelectorAll("input");
+    expect(inputs[0].getAttribute("placeholder")).toBe("请输入账号");
+    expect(inputs[1].getAttribute("placeholder")).toBe("请输入密码");
+  });
+
+  it("fields 的 prefix 透传给内部 Input", () => {
+    const { getByTestId } = render(
+      <LoginForm fields={{ username: { prefix: <span data-testid="user-icon">U</span> } }} />,
+    );
+    expect(getByTestId("user-icon")).toBeTruthy();
+  });
+
+  it("不传 fields 时回落 locale 默认标签与 autoComplete（旧行为不变）", () => {
+    const { container } = render(<LoginForm />);
+    const inputs = container.querySelectorAll("input");
+    expect(inputs[0].getAttribute("autocomplete")).toBe("username");
+    expect(inputs[1].getAttribute("autocomplete")).toBe("current-password");
+    expect(inputs[0].getAttribute("placeholder")).toBeNull();
+  });
+
+  it("autoComplete 可被显式覆盖", () => {
+    const { container } = render(
+      <LoginForm fields={{ username: { autoComplete: "tel" } }} />,
+    );
+    expect(container.querySelector("input")!.getAttribute("autocomplete")).toBe("tel");
+  });
+
+  it("默认自带卡面（边框 + 底色 + 阴影 + 内距）", () => {
+    const { container } = render(<LoginForm />);
+    const form = container.querySelector("form")!;
+    expect(form.className).toContain("border-border");
+    expect(form.className).toContain("bg-surface");
+    expect(form.className).toContain("shadow-xl");
+    expect(form.className).toContain("p-8");
+  });
+
+  it("surface={false} 把边框/底色/阴影/内距一起关掉，只留栅格与间距", () => {
+    const { container } = render(<LoginForm surface={false} />);
+    const form = container.querySelector("form")!;
+    expect(form.className).not.toContain("border-border");
+    expect(form.className).not.toContain("bg-surface");
+    expect(form.className).not.toContain("shadow-xl");
+    expect(form.className).not.toContain("p-8");
+    // 栅格仍在
+    expect(form.className).toContain("flex");
+  });
+
+  it("surface={false} 下提交链路照常", async () => {
+    const onFinish = vi.fn();
+    const { container } = render(<LoginForm surface={false} onFinish={onFinish} />);
+    const inputs = container.querySelectorAll("input");
+    fireEvent.change(inputs[0], { target: { value: "admin" } });
+    fireEvent.change(inputs[1], { target: { value: "pw" } });
+    fireEvent.submit(container.querySelector("form")!);
+    await waitFor(() =>
+      expect(onFinish).toHaveBeenCalledWith({ username: "admin", password: "pw", remember: false }),
+    );
+  });
+});

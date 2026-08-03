@@ -76,6 +76,7 @@ export { formShowcase } from "./form/form.showcase";
 export { formDialogShowcase } from "./form-dialog/form-dialog.showcase";
 export { proFormShowcase } from "./pro-form/pro-form.showcase";
 export { loginFormShowcase } from "./login-form/login-form.showcase";
+export { authPanelShowcase } from "./auth-panel/auth-panel.showcase";
 export { clickCaptchaShowcase } from "./click-captcha/click-captcha.showcase";
 export { stepsFormShowcase } from "./steps-form/steps-form.showcase";
 export { glareHoverShowcase } from "./glare-hover/glare-hover.showcase";

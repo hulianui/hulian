@@ -4,7 +4,8 @@ export {
   normalizeBox,
   applyAspect,
   boxMinSide,
+  roundBox,
   strokeWidthFor,
 } from "./region-box";
-export type { RegionBox, RegionRect } from "./region-box";
+export type { RegionBox, RegionRect, RegionRound } from "./region-box";
 export type { RegionSelectProps, RegionSelectBox } from "./region-select.types";
