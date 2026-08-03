@@ -303,6 +303,9 @@ jobs:
           path: .hulian-scan/
           retention-days: 14
           if-no-files-found: warn
+          # .hulian-scan/ 是隐藏目录，upload-artifact 默认跳过隐藏文件 ——
+          # 不开这个开关，这一步会一直「成功」但零文件上传，红了只能靠本地复现定位。
+          include-hidden-files: true
 
   # 中国镜像站点：push 到 master 时把静态产物 rsync 到阿里云服务器
   # （hulianui-zh.haloritual.com · 直连阿里云绕开 Cloudflare）。
