@@ -201,3 +201,112 @@ describe("高中学段命令（issue #84：按 1324 题实测频次补表）", (
     expect(mathToPlain("\\begin{array}{l}x=1\\\\y=2\\end{array}")).toBe("x=1；y=2");
   });
 });
+
+describe("上下标的单 token 简写可以是一个完整命令", () => {
+  it("`90^\\circ` 与 `90^{\\circ}` 等价 —— 前者才是题面里写度数的常见形态", () => {
+    expect(mathToPlain("90^\\circ")).toBe("90°");
+    expect(parseMath("90^\\circ")).toEqual(parseMath("90^{\\circ}"));
+  });
+
+  it("上标与下标都认命令简写", () => {
+    expect(mathToPlain("x^\\alpha")).toBe("x^α");
+    expect(parseMath("x^\\alpha")).toEqual(parseMath("x^{\\alpha}"));
+    expect(mathToPlain("a_\\beta")).toBe("a_β");
+    expect(parseMath("a_\\beta")).toEqual(parseMath("a_{\\beta}"));
+  });
+
+  it("命令名的边界就是上标的边界：`x^\\alpha b` 里 b 是正文", () => {
+    expect(parseMath("x^\\alpha b")).toEqual([
+      { kind: "text", text: "x" },
+      { kind: "sup", children: [{ kind: "text", text: "α" }] },
+      { kind: "text", text: "b" },
+    ]);
+  });
+
+  it("既有的单字符与花括号写法不受影响", () => {
+    expect(parseMath("x^2")).toEqual([
+      { kind: "text", text: "x" },
+      { kind: "sup", children: [{ kind: "text", text: "2" }] },
+    ]);
+    expect(parseMath("x^{2}")).toEqual(parseMath("x^2"));
+  });
+
+  it("不认识的命令仍原样保留，不吞内容", () => {
+    expect(mathToPlain("x^\\oiint")).toBe("x^\\oiint");
+  });
+
+  it("渲染 `90^\\circ` 不把反斜杠露给读者", () => {
+    const { container } = render(<MathText>{"\\angle ABC=90^\\circ"}</MathText>);
+    expect(container.textContent).not.toContain("\\");
+    expect(container.textContent).toContain("90°");
+  });
+});
+
+describe("符号间距（关系符两侧对称留白，前缀记号紧贴）", () => {
+  const opNodes = (src: string) => parseMath(src).filter((n) => n.kind === "op");
+
+  it("二元关系符切成 op 节点，命令写法与裸 Unicode 一致", () => {
+    expect(parseMath("A\\Rightarrow B")).toEqual([
+      { kind: "text", text: "A" },
+      { kind: "op", text: "⇒", spacing: "relation" },
+      { kind: "text", text: "B" },
+    ]);
+    expect(parseMath("A⇒B")).toEqual(parseMath("A\\Rightarrow B"));
+    expect(parseMath("x=1")).toEqual([
+      { kind: "text", text: "x" },
+      { kind: "op", text: "=", spacing: "relation" },
+      { kind: "text", text: "1" },
+    ]);
+  });
+
+  it("留白与作者打没打空格无关：三种写法解析成同一棵树", () => {
+    const spaced = parseMath("A \\Rightarrow B");
+    expect(spaced).toEqual(parseMath("A\\Rightarrow B"));
+    expect(spaced).toEqual(parseMath("A ⇒ B"));
+  });
+
+  it("二元运算符是另一档间距，不与关系符混为一谈", () => {
+    expect(opNodes("a\\times b")).toEqual([{ kind: "op", text: "×", spacing: "binary" }]);
+    expect(opNodes("A\\cup B")).toEqual([{ kind: "op", text: "∪", spacing: "binary" }]);
+  });
+
+  it("前面没有操作数时二元运算符降级：`±3` 是正负号不是加减", () => {
+    expect(opNodes("\\pm 3")).toEqual([]);
+    expect(opNodes("(\\pm 3)")).toEqual([]);
+    expect(opNodes("a\\pm 3")).toEqual([{ kind: "op", text: "±", spacing: "binary" }]);
+  });
+
+  it("前缀记号不切 op，`∠ABC` 必须紧贴", () => {
+    expect(parseMath("\\angle ABC")).toEqual([
+      { kind: "text", text: "∠" },
+      { kind: "text", text: "ABC" },
+    ]);
+    expect(opNodes("\\triangle ABC")).toEqual([]);
+    expect(opNodes("\\therefore x")).toEqual([]);
+    // 弧号在本组件里只作为 \overset 的上方记号出现，留白会把它推歪
+    expect(parseMath("\\overset{\\frown}{AB}")[0]).toMatchObject({
+      above: [{ kind: "text", text: "⌢" }],
+    });
+  });
+
+  it("mathToPlain 保持紧凑：留白只属于 DOM", () => {
+    expect(mathToPlain("A \\Rightarrow B")).toBe("A⇒B");
+    expect(mathToPlain("x = 1")).toBe("x=1");
+    expect(mathToPlain("x\\neq 0,y\\leqslant 3,z\\geq 1")).toBe("x≠0,y≤3,z≥1");
+  });
+
+  it("渲染时关系符左右各有一层外边距，前缀记号没有", () => {
+    const { container } = render(<MathText>{"A \\Rightarrow B,\\angle ABC"}</MathText>);
+    const spans = [...container.querySelectorAll("span")];
+    const arrow = spans.find((el) => el.textContent === "⇒");
+    expect(arrow?.className).toContain("mx-[0.2em]");
+    // 前缀记号没有独立包裹层，跟后面的字母同在一个文本节点里
+    expect(spans.some((el) => el.textContent === "∠")).toBe(false);
+    expect(container.textContent).toContain("∠ABC");
+  });
+
+  it("留白是 margin 不是空格：textContent 仍可直接比对", () => {
+    const { container } = render(<MathText>{"A \\Rightarrow B"}</MathText>);
+    expect(container.textContent).toBe("A⇒B");
+  });
+});

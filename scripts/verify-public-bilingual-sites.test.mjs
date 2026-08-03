@@ -7,12 +7,22 @@ import {
   verifyPublicBilingualSites,
 } from "./verify-public-bilingual-sites.mjs";
 
+import {
+  ROOT_LOCALE,
+  localeCanonicalPath,
+  localeFromPathname,
+  stripLocalePrefix,
+} from "./docs-locale-layout.mjs";
+
 const MAIN = "https://hulianui.haloritual.com";
 const MIRROR = "https://hulianui-zh.haloritual.com";
 
+// 语言前缀一律从 SSOT 派生，fixture 不再假设哪个语种落在根。
+const p = (path, locale) => localeCanonicalPath(path, locale);
+const at = (path, locale) => `${MAIN}${p(path, locale)}`;
+
 function page(path, locale) {
-  const canonicalPath = locale === "en" ? `/en${path === "/" ? "" : path}` : path;
-  const canonical = `${MAIN}${canonicalPath}`;
+  const canonical = at(path, locale);
   return `<!doctype html>
     <html lang="${locale}">
       <head>
@@ -21,9 +31,9 @@ function page(path, locale) {
           locale === "en" ? "English component documentation" : "中文组件文档"
         }">
         <link rel="canonical" href="${canonical}">
-        <link rel="alternate" hreflang="zh-CN" href="${MAIN}${path}">
-        <link rel="alternate" hreflang="en" href="${MAIN}/en${path === "/" ? "" : path}">
-        <link rel="alternate" hreflang="x-default" href="${MAIN}/en${path === "/" ? "" : path}">
+        <link rel="alternate" hreflang="zh-CN" href="${at(path, "zh-CN")}">
+        <link rel="alternate" hreflang="en" href="${at(path, "en")}">
+        <link rel="alternate" hreflang="x-default" href="${at(path, ROOT_LOCALE)}">
       </head>
       <body><h1>${
         locale === "en" ? "Button component documentation" : "Button 按钮组件文档"
@@ -80,30 +90,31 @@ function fixtureFetch(
     const stale = url.origin === staleOrigin && url.pathname === stalePath;
     const headers = { "content-type": "text/html; charset=utf-8" };
 
-    if (url.pathname === "/" || url.pathname === "/en") {
-      const locale = url.pathname === "/en" ? "en" : "zh-CN";
+    // 按 SSOT 剥掉语言前缀后再分流，fixture 不关心哪个语种当前落在根。
+    const locale = localeFromPathname(url.pathname);
+    const bare = stripLocalePrefix(url.pathname);
+    const artifactKey = locale === "en" ? "en" : "zh";
+
+    if (bare === "/") {
       return new Response(page("/", locale), { status: 200, headers });
     }
-    if (url.pathname === "/components/button" || url.pathname === "/en/components/button") {
-      const locale = url.pathname.startsWith("/en/") ? "en" : "zh-CN";
+    if (bare === "/components/button") {
       return new Response(page("/components/button", locale), { status: 200, headers });
     }
-    if (url.pathname === "/registry.json" || url.pathname === "/en/registry.json") {
-      const locale = url.pathname.startsWith("/en/") ? "en" : "zh";
+    if (bare === "/registry.json") {
       const body =
         url.origin === invalidJsonOrigin && url.pathname === "/registry.json"
           ? "{broken"
           : stale
           ? JSON.stringify({ version: "0.15.0", description: "stale", items: [] })
-          : expected[locale].registry;
+          : expected[artifactKey].registry;
       return new Response(body, {
         status: 200,
         headers: { "content-type": "application/json" },
       });
     }
-    if (url.pathname === "/llms.txt" || url.pathname === "/en/llms.txt") {
-      const locale = url.pathname.startsWith("/en/") ? "en" : "zh";
-      return new Response(stale ? "stale llms" : expected[locale].llms, {
+    if (bare === "/llms.txt") {
+      return new Response(stale ? "stale llms" : expected[artifactKey].llms, {
         status: 200,
         headers: { "content-type": "text/plain" },
       });
@@ -130,23 +141,23 @@ test("verifies both domains and both locale trees against the same build artifac
   for (const origin of [MAIN, MIRROR]) {
     assert.ok(
       result.evidence.some(
-        (item) => item.origin === origin && item.path === "/" && item.lang === "zh-CN",
+        (item) => item.origin === origin && item.path === p("/", "zh-CN") && item.lang === "zh-CN",
       ),
     );
     assert.ok(
       result.evidence.some(
-        (item) => item.origin === origin && item.path === "/en" && item.lang === "en",
+        (item) => item.origin === origin && item.path === p("/", "en") && item.lang === "en",
       ),
     );
     assert.ok(
       result.evidence.some(
-        (item) => item.origin === origin && item.path === "/en/components/button",
+        (item) => item.origin === origin && item.path === p("/components/button", "en"),
       ),
     );
     assert.ok(
       result.evidence.some(
         (item) =>
-          item.origin === origin && item.path === "/en/registry.json" && item.registryCount === 1,
+          item.origin === origin && item.path === p("/registry.json", "en") && item.registryCount === 1,
       ),
     );
     assert.ok(result.evidence.some((item) => item.origin === origin && item.path === "/logo.svg"));
@@ -179,7 +190,7 @@ test("rejects a wrong canonical, hreflang, or exact component target", async () 
   const normalFetch = fixtureFetch(expected);
   const fetchImpl = async (input) => {
     const url = new URL(input);
-    if (url.origin === MIRROR && url.pathname === "/en/components/button") {
+    if (url.origin === MIRROR && url.pathname === p("/components/button", "en")) {
       return new Response(page("/components/input", "en"), {
         status: 200,
         headers: { "content-type": "text/html" },
@@ -193,7 +204,7 @@ test("rejects a wrong canonical, hreflang, or exact component target", async () 
     result.failures.some(
       (failure) =>
         failure.origin === MIRROR &&
-        failure.path === "/en/components/button" &&
+        failure.path === p("/components/button", "en") &&
         /canonical|hreflang/i.test(failure.message),
     ),
   );
@@ -204,7 +215,7 @@ test("rejects empty live title and description metadata", async () => {
   const normalFetch = fixtureFetch(expected);
   const fetchImpl = async (input) => {
     const url = new URL(input);
-    if (url.origin === MAIN && url.pathname === "/en") {
+    if (url.origin === MAIN && url.pathname === p("/", "en")) {
       return new Response(
         '<html lang="en"><head><title></title></head><body>Hulian</body></html>',
         {
@@ -221,7 +232,7 @@ test("rejects empty live title and description metadata", async () => {
     result.failures.some(
       (failure) =>
         failure.origin === MAIN &&
-        failure.path === "/en" &&
+        failure.path === p("/", "en") &&
         /title|description/i.test(failure.message),
     ),
   );
@@ -232,16 +243,16 @@ test("compares live page semantics to the merged build, not generic fallback chr
   const normalFetch = fixtureFetch(expected);
   const fetchImpl = async (input) => {
     const url = new URL(input);
-    if (url.origin === MIRROR && url.pathname === "/en/components/button") {
+    if (url.origin === MIRROR && url.pathname === p("/components/button", "en")) {
       return new Response(
         `
         <html lang="en"><head>
           <title>Generic · Hulian UI</title>
           <meta name="description" content="Generic fallback page">
-          <link rel="canonical" href="${MAIN}/en/components/button">
+          <link rel="canonical" href="${at("/components/button", "en")}">
           <link rel="alternate" hreflang="zh-CN" href="${MAIN}/components/button">
-          <link rel="alternate" hreflang="en" href="${MAIN}/en/components/button">
-          <link rel="alternate" hreflang="x-default" href="${MAIN}/en/components/button">
+          <link rel="alternate" hreflang="en" href="${at("/components/button", "en")}">
+          <link rel="alternate" hreflang="x-default" href="${at("/components/button", "en")}">
         </head><body><nav>Button</nav><h1>Not Found</h1></body></html>`,
         {
           status: 200,
@@ -257,7 +268,7 @@ test("compares live page semantics to the merged build, not generic fallback chr
     result.failures.some(
       (failure) =>
         failure.origin === MIRROR &&
-        failure.path === "/en/components/button" &&
+        failure.path === p("/components/button", "en") &&
         /title|description|heading/i.test(failure.message),
     ),
   );
@@ -265,7 +276,7 @@ test("compares live page semantics to the merged build, not generic fallback chr
 
 test("isolates stale llms/assets plus HTTP, network, and invalid registry JSON failures", async () => {
   const scenarios = [
-    { options: { staleOrigin: MAIN, stalePath: "/en/llms.txt" }, pattern: /stale|mismatch/i },
+    { options: { staleOrigin: MAIN, stalePath: p("/llms.txt", "en") }, pattern: /stale|mismatch/i },
     { options: { staleOrigin: MIRROR, stalePath: "/logo.svg" }, pattern: /stale|mismatch/i },
     { options: { httpOrigin: MAIN }, pattern: /HTTP 503/i },
     { options: { networkOrigin: MIRROR }, pattern: /network outage/i },
@@ -293,10 +304,9 @@ test("isolates stale llms/assets plus HTTP, network, and invalid registry JSON f
 
 test("validates fresh-browser host defaults and persisted manual choices separately", () => {
   for (const site of PUBLIC_SITES) {
-    const defaultPath =
-      site.defaultLocale === "en" ? "/en/components/button" : "/components/button";
+    const defaultPath = p("/components/button", site.defaultLocale);
     const choiceLocale = site.defaultLocale === "en" ? "zh-CN" : "en";
-    const choicePath = choiceLocale === "en" ? "/en/components/button" : "/components/button";
+    const choicePath = p("/components/button", choiceLocale);
     const failures = validateLanguageBehaviorSnapshot({
       ...site,
       barePath: "/components/button",

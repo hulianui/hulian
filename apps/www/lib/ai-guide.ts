@@ -1,9 +1,12 @@
 // 瑚琏 · AI 接入指南正文（单一真源）。/start 页面渲染它，同时供「复制全文」按钮拷给 AI 编程助手。
 import { manifest } from "./manifest";
 import { AI_GUIDE_EN_MD } from "./ai-guide.en";
-import type { DocsLocale } from "./docs-locale";
+import { basePathForLocale, type DocsLocale } from "./docs-locale";
+import { SITE_URL } from "./site";
 
 const total = manifest.length;
+// 中文文档站的根地址，前缀由语言布局 SSOT 决定。
+const ZH_BASE = `${SITE_URL}${basePathForLocale("zh-CN")}`;
 
 export const AI_GUIDE_MD = `# 瑚琏 Hulian（@hulianui/ui）· AI 接入指南
 
@@ -140,21 +143,21 @@ npx @hulianui/mcp audit --baseline --check    # 进 CI：只拦新增违规
 
 ## 让 AI 查具体组件的用法（没装 MCP 时）
 
-- **逐组件**：每个组件文档页右上角有「复制 MD」按钮（导入 + Props + 示例）；组件页 URL 形如 \`https://hulianui.haloritual.com/components/<组件名小写连字符>\`（如 button / pro-table），有抓取能力的 AI 可直接取。
+- **逐组件**：每个组件文档页右上角有「复制 MD」按钮（导入 + Props + 示例）；组件页 URL 形如 \`${ZH_BASE}/components/<组件名小写连字符>\`（如 button / pro-table），有抓取能力的 AI 可直接取。
 - **机读语料**（下列均为**绝对 URL**，可直接交给有联网/抓取能力的 AI）：
-  - https://hulianui.haloritual.com/d/<slug>.md —— **单个组件**的完整文档，按需取，最省 context
-  - https://hulianui.haloritual.com/llms.txt —— 组件清单与摘要
-  - https://hulianui.haloritual.com/llms-full.txt —— 全库完整文档（1MB+，优先用上面的单件端点）
-  - https://hulianui.haloritual.com/registry.json —— 结构化注册表（组件 / 区块 / 页面）
-  - https://hulianui.haloritual.com/conventions.json —— 机器可读的使用约束
+  - ${ZH_BASE}/d/<slug>.md —— **单个组件**的完整文档，按需取，最省 context
+  - ${ZH_BASE}/llms.txt —— 组件清单与摘要
+  - ${ZH_BASE}/llms-full.txt —— 全库完整文档（1MB+，优先用上面的单件端点）
+  - ${ZH_BASE}/registry.json —— 结构化注册表（组件 / 区块 / 页面）
+  - ${ZH_BASE}/conventions.json —— 机器可读的使用约束
 
 ## 直接安装积木（区块 / 整页）
 
 区块通常可直接落盘；页面可能由多个区块组成。registry 会通过 \`registryDependencies\` 递归安装页面所需区块，并把仓库内路径改写为消费项目可解析的同级路径：
 
 \`\`\`bash
-npx shadcn@latest add https://hulianui.haloritual.com/r/block-pricing-table.json
-npx shadcn@latest add https://hulianui.haloritual.com/r/page-dashboard.json
+npx shadcn@latest add ${ZH_BASE}/r/block-pricing-table.json
+npx shadcn@latest add ${ZH_BASE}/r/page-dashboard.json
 \`\`\`
 
 安装输出中的示例数据、文案、接口回调与 Provider 要按 item 的 \`replace\` / \`providers\` 清单处理；可组合区域见 \`slots\`。完成后运行：
@@ -173,7 +176,7 @@ npx -y @hulianui/guard src
 2) 不要覆盖库组件的内部样式，用组件自身的 props；
 3) 颜色一律走主题 token（如 var(--color-primary)），且必须带 --color- 前缀；
 4) 动手前先查文档，不要凭印象猜 props —— 装了 MCP 就调 get_component_doc，
-   否则取 https://hulianui.haloritual.com/d/<组件slug>.md。
+   否则取 ${ZH_BASE}/d/<组件slug>.md。
 需要整块界面（登录页、定价表、控制台骨架…）时，先看 registry 里的 block / page，
 能复用就别从零写；安装后执行 MCP 返回的 hulian-check 命令并修完错误级违规。
 \`\`\`

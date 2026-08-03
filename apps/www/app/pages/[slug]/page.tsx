@@ -13,7 +13,7 @@ import {
   readRegistryItem,
   readRegistryMeta,
 } from "../../../lib/registry-source";
-import { DOCS_LOCALE, withDocsBasePath } from "../../../lib/docs-locale";
+import { DOCS_LOCALE, ROOT_LOCALE, canonicalPathForLocale } from "../../../lib/docs-locale";
 import { blockMetaEn } from "../../../i18n/block-meta.en";
 import englishSources from "../page-fixture-sources.en.json";
 
@@ -35,14 +35,17 @@ export async function generateMetadata({
   const title = content.metadataTitle.replace("{name}", display.name);
   const description = content.metadataDescription.replace("{description}", display.description);
   const barePath = `/pages/${slug}`;
-  const path = withDocsBasePath(barePath);
-  const englishPath = withDocsBasePath(barePath, "en");
+  const path = canonicalPathForLocale(barePath, DOCS_LOCALE);
   return {
     title,
     description,
     alternates: {
       canonical: path,
-      languages: { "zh-CN": barePath, en: englishPath, "x-default": englishPath },
+      languages: {
+        "zh-CN": canonicalPathForLocale(barePath, "zh-CN"),
+        en: canonicalPathForLocale(barePath, "en"),
+        "x-default": canonicalPathForLocale(barePath, ROOT_LOCALE),
+      },
     },
     openGraph: { type: "article", title, description, url: path, images: ["/opengraph-image.png"] },
   };

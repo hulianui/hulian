@@ -3,17 +3,21 @@ import test from "node:test";
 
 import { GALLERY_BUDGETS, checkBudget } from "./gallery-budget.mjs";
 import * as gallery from "./gallery-budget.mjs";
+import { localeRoutePath } from "./docs-locale-layout.mjs";
 
-test("画廊路由矩阵补齐中英文并去重已带 /en 的路由", () => {
+const zh = (bare) => localeRoutePath(bare, "zh-CN");
+const en = (bare) => localeRoutePath(bare, "en");
+
+test("画廊路由矩阵补齐中英文并去重已带语言前缀的路由", () => {
   assert.equal(typeof gallery.expandBilingualRoutes, "function");
   assert.deepEqual(
     gallery.expandBilingualRoutes([
-      { route: "/pages", maxDomNodes: 4200 },
-      { route: "/en/pages", maxDomNodes: 4200 },
+      { route: zh("/pages"), maxDomNodes: 4200 },
+      { route: en("/pages"), maxDomNodes: 4200 },
     ]),
     [
-      { route: "/pages", maxDomNodes: 4200, locale: "zh-CN" },
-      { route: "/en/pages", maxDomNodes: 4200, locale: "en" },
+      { route: zh("/pages"), maxDomNodes: 4200, locale: "zh-CN" },
+      { route: en("/pages"), maxDomNodes: 4200, locale: "en" },
     ],
   );
 });
@@ -39,14 +43,14 @@ const check = (patch) => checkBudget(budget, { ...ok, ...patch });
 
 test("门禁覆盖 issue #40 点名的两个画廊", () => {
   const routes = GALLERY_BUDGETS.map((b) => b.route);
-  assert.deepEqual(routes, ["/pages", "/en/pages", "/blocks", "/en/blocks"]);
+  assert.deepEqual(routes, [zh("/pages"), en("/pages"), zh("/blocks"), en("/blocks")]);
   assert.deepEqual(
     GALLERY_BUDGETS.map(({ route, locale }) => ({ route, locale })),
     [
-      { route: "/pages", locale: "zh-CN" },
-      { route: "/en/pages", locale: "en" },
-      { route: "/blocks", locale: "zh-CN" },
-      { route: "/en/blocks", locale: "en" },
+      { route: zh("/pages"), locale: "zh-CN" },
+      { route: en("/pages"), locale: "en" },
+      { route: zh("/blocks"), locale: "zh-CN" },
+      { route: en("/blocks"), locale: "en" },
     ],
   );
 });

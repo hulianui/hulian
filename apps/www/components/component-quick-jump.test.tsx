@@ -6,6 +6,11 @@ import {
   ComponentQuickJump,
   findExactComponent,
 } from "./component-quick-jump";
+import { basePathForLocale, stripDocsBasePath } from "../lib/docs-locale";
+
+// 语言前缀取自 SSOT：根语言为空串，嵌套语言带前缀。不写字面量。
+const EN = basePathForLocale("en");
+const ZH = basePathForLocale("zh-CN");
 
 const push = vi.fn();
 
@@ -83,7 +88,10 @@ describe("ComponentQuickJump", () => {
 
     const href = highlighted?.getAttribute("href");
     fireEvent.keyDown(input, { key: "Enter" });
-    expect(push).toHaveBeenCalledWith(href);
+    // anchor 上是**本地化**的 href（SSR 与原生点击要能直接用），而 router.push 收到的是
+    // 剥掉语言前缀的裸路径 —— Next 的 router 会自己补当前构建的 basePath，不剥就成双前缀。
+    // 旧布局下中文前缀是空串，两者恰好相等，这条断言才一直是 toHaveBeenCalledWith(href)。
+    expect(push).toHaveBeenCalledWith(stripDocsBasePath(href!));
   });
 
   it("does not immediately navigate a unique generic group match on Enter", () => {
@@ -124,7 +132,8 @@ describe("ComponentQuickJump", () => {
     expect(
       screen
         .getAllByRole("option")
-        .some((option) => option.getAttribute("href") === "/components/input"),
+        // option 是原生 anchor，href 带该语种的前缀（默认构建是中文）。
+        .some((option) => option.getAttribute("href") === `${ZH}/components/input`),
     ).toBe(true);
   });
 
@@ -143,8 +152,9 @@ describe("ComponentQuickJump", () => {
   it("emits localized component hrefs in server-rendered markup", () => {
     const html = renderToStaticMarkup(<ComponentQuickJump placement="catalog" />);
 
-    expect(html).toContain('href="/components/button"');
-    expect(html).not.toContain('href="/en/en/');
+    expect(html).toContain(`href="${ZH}/components/button"`);
+    // 双前缀防回归；前缀为空串时该检查会退化成 href="/"（页面必有），故仅在非空时断言。
+    if (ZH) expect(html).not.toContain(`href="${ZH}${ZH}/`);
   });
 
   it("renders exactly one English base path from a fresh locale module graph", async () => {
@@ -154,8 +164,10 @@ describe("ComponentQuickJump", () => {
       const { ComponentQuickJump: EnglishQuickJump } = await import("./component-quick-jump");
       const html = renderToStaticMarkup(<EnglishQuickJump placement="catalog" />);
 
-      expect(html).toContain('href="/en/components/button"');
-      expect(html).not.toContain('href="/en/en/');
+      expect(html).toContain(`href="${EN}/components/button"`);
+      if (EN) expect(html).not.toContain(`href="${EN}${EN}/`);
+      // 英文产物里不该混进另一个语种的地址（与谁挂根路径无关，恒有效）。
+      expect(html).not.toContain(`href="${ZH}/`);
     } finally {
       vi.unstubAllEnvs();
       vi.resetModules();

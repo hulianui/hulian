@@ -14,6 +14,12 @@ import {
 import { dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { scanTask9EnglishOutput } from "./check-bilingual-docs-output.mjs";
+import {
+  NESTED_BASE_PATH,
+  NESTED_LOCALE,
+  ROOT_LOCALE,
+  localeAbsoluteUrl,
+} from "./docs-locale-layout.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(scriptRoot, "..");
@@ -27,6 +33,8 @@ const zhArtifactsRoot = join(buildRoot, "artifacts-zh");
 const enArtifactsRoot = join(buildRoot, "artifacts-en");
 const outputRoot = join(wwwRoot, "out");
 const canonicalSiteOrigin = "https://hulianui.haloritual.com";
+// 嵌套语言在导出产物里的目录名（"/zh" → "zh"）。根语言直接铺在产物根，没有目录。
+const nestedExportDirectory = NESTED_BASE_PATH.slice(1);
 const replacementMarkerName = "replacement-in-progress.json";
 const removableBuildDirectories = new Set(
   [zhRoot, enRoot, mergedRoot, zhArtifactsRoot, enArtifactsRoot].map((path) => resolve(path)),
@@ -82,7 +90,7 @@ async function routeDocuments(root) {
     if (
       !relativePath.endsWith(".html") ||
       relativePath.startsWith("_next/") ||
-      relativePath.startsWith("en/") ||
+      relativePath.startsWith(`${nestedExportDirectory}/`) ||
       publicAssets.has(relativePath) ||
       !/<html(?:\s|>)/i.test(await readFile(join(resolvedRoot, relativePath), "utf8"))
     ) {
@@ -96,6 +104,15 @@ async function routeDocuments(root) {
 
 export async function routeSet(root) {
   return new Set((await routeDocuments(root)).map((document) => document.route));
+}
+
+/**
+ * 按 SSOT 把两份 locale 产物分派成「铺在根」与「进子目录」两个角色。
+ * 调用方仍按语种传参，翻转语言布局时只需改 docs-locale-layout.mjs。
+ */
+function localeExportRoles(chineseExport, englishExport) {
+  const byLocale = { "zh-CN": chineseExport, en: englishExport };
+  return { rootExport: byLocale[ROOT_LOCALE], nestedExport: byLocale[NESTED_LOCALE] };
 }
 
 export async function assertRouteParity(chineseRoot, englishRoot) {
@@ -120,6 +137,19 @@ export async function assertRouteParity(chineseRoot, englishRoot) {
   return chineseRoutes;
 }
 
+/**
+ * 校验成品树：根语言铺在根、嵌套语言在子目录，两个语种路由一一对应。
+ * 成品树的目录角色由 SSOT 决定，这里再映射回语种交给 assertRouteParity 比对。
+ */
+export async function assertFinalRouteParity(finalRoot) {
+  const resolvedFinalRoot = resolve(finalRoot);
+  const byLocale = {
+    [ROOT_LOCALE]: resolvedFinalRoot,
+    [NESTED_LOCALE]: join(resolvedFinalRoot, nestedExportDirectory),
+  };
+  return assertRouteParity(byLocale["zh-CN"], byLocale.en);
+}
+
 export async function mergeExports(chineseRoot, englishRoot, finalRoot) {
   const resolvedChineseRoot = resolve(chineseRoot);
   const resolvedEnglishRoot = resolve(englishRoot);
@@ -130,12 +160,16 @@ export async function mergeExports(chineseRoot, englishRoot, finalRoot) {
     throw new Error(`Merge destination already exists: ${resolvedFinalRoot}`);
   }
 
-  await cp(resolvedChineseRoot, resolvedFinalRoot, {
+  const { rootExport, nestedExport } = localeExportRoles(
+    resolvedChineseRoot,
+    resolvedEnglishRoot,
+  );
+  await cp(rootExport, resolvedFinalRoot, {
     recursive: true,
     errorOnExist: true,
     force: false,
   });
-  await cp(resolvedEnglishRoot, join(resolvedFinalRoot, "en"), {
+  await cp(nestedExport, join(resolvedFinalRoot, nestedExportDirectory), {
     recursive: true,
     errorOnExist: true,
     force: false,
@@ -153,16 +187,20 @@ export async function assembleExportsByRename(chineseRoot, englishRoot, finalRoo
     throw new Error(`Merge destination already exists: ${resolvedFinalRoot}`);
   }
 
-  await rename(resolvedChineseRoot, resolvedFinalRoot);
+  const { rootExport, nestedExport } = localeExportRoles(
+    resolvedChineseRoot,
+    resolvedEnglishRoot,
+  );
+  await rename(rootExport, resolvedFinalRoot);
   try {
-    await rename(resolvedEnglishRoot, join(resolvedFinalRoot, "en"));
+    await rename(nestedExport, join(resolvedFinalRoot, nestedExportDirectory));
   } catch (error) {
     try {
-      await rename(resolvedFinalRoot, resolvedChineseRoot);
+      await rename(resolvedFinalRoot, rootExport);
     } catch (rollbackError) {
       throw new AggregateError(
         [error, rollbackError],
-        "Failed to assemble bilingual exports and restore the Chinese export",
+        "Failed to assemble bilingual exports and restore the root-locale export",
       );
     }
     throw error;
@@ -172,10 +210,9 @@ export async function assembleExportsByRename(chineseRoot, englishRoot, finalRoo
 }
 
 function absoluteLocaleUrl(route, locale) {
-  const localizedPath = locale === "en" ? `/en${route === "/" ? "" : route}` : route;
-  return localizedPath === "/"
-    ? canonicalSiteOrigin
-    : new URL(localizedPath, canonicalSiteOrigin).href;
+  // 前缀由 SSOT 决定；嵌套语言首页必须写成带尾斜杠的 "/zh/"，静态托管会把 "/zh" 308 到
+  // "/zh/"，而 canonical / hreflang 指向会跳转的地址是软错误，Google 需多跳一次才认。
+  return localeAbsoluteUrl(route, locale, canonicalSiteOrigin);
 }
 
 function htmlAttribute(tag, name) {
@@ -248,10 +285,11 @@ function repairRouteMetadata(html, route, locale) {
 
 export async function postprocessBilingualRouteMetadata(finalRoot) {
   const resolvedFinalRoot = resolve(finalRoot);
-  await assertRouteParity(resolvedFinalRoot, join(resolvedFinalRoot, "en"));
+  const nestedRoot = join(resolvedFinalRoot, nestedExportDirectory);
+  await assertFinalRouteParity(resolvedFinalRoot);
   const localeRoots = [
-    ["zh-CN", resolvedFinalRoot],
-    ["en", join(resolvedFinalRoot, "en")],
+    [ROOT_LOCALE, resolvedFinalRoot],
+    [NESTED_LOCALE, nestedRoot],
   ];
 
   for (const [locale, localeRoot] of localeRoots) {
@@ -500,7 +538,10 @@ async function buildBilingualDocs() {
     // Both locale exports already live below the same build root. Move them into
     // the final tree instead of copying ~400 MiB into a third temporary tree.
     await assembleExportsByRename(zhRoot, enRoot, mergedRoot);
-    const findings = scanTask9EnglishOutput(join(mergedRoot, "en"));
+    // 英文产物在成品树里的位置由 SSOT 决定（作根语言时就在成品根，不再是固定的 en/）。
+    const englishOutputRoot =
+      ROOT_LOCALE === "en" ? mergedRoot : join(mergedRoot, nestedExportDirectory);
+    const findings = scanTask9EnglishOutput(englishOutputRoot);
     if (findings.length > 0) {
       const details = findings
         .slice(0, 20)
@@ -527,7 +568,7 @@ async function buildBilingualDocs() {
 }
 
 async function checkFinalRouteParity() {
-  const routes = await assertRouteParity(outputRoot, join(outputRoot, "en"));
+  const routes = await assertFinalRouteParity(outputRoot);
   console.log(`Verified ${routes.size} bilingual routes in ${outputRoot}`);
 }
 

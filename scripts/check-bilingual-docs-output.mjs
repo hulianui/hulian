@@ -4,6 +4,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { NESTED_BASE_PATH, ROOT_LOCALE, basePathForLocale } from "./docs-locale-layout.mjs";
 
 const requireFromWww = createRequire(new URL("../apps/www/package.json", import.meta.url));
 const { JSDOM } = requireFromWww("jsdom");
@@ -56,8 +57,12 @@ export function scanEnglishDocument(file) {
   return findings;
 }
 
-const DOCS_ROUTE =
-  /^\/(?:start|changelog|search|theme(?:\/|$)|blocks(?:\/|$)|pages(?:\/|$)|components(?:\/|$))/;
+const DOCS_ROUTE_BODY =
+  "(?:start|changelog|search|theme(?:\\/|$)|blocks(?:\\/|$)|pages(?:\\/|$)|components(?:\\/|$))";
+// 英文是根语言，其产物里的文档链接本来就该是裸路由；带上嵌套语言前缀才是跨语种泄漏。
+const FOREIGN_DOCS_ROUTE = new RegExp(`^${NESTED_BASE_PATH}\\/${DOCS_ROUTE_BODY}`);
+// basePath 被重复拼接的痕迹。根语言 basePath 是空串不会重复，只有嵌套语言会出现 /zh/zh。
+const DUPLICATE_NESTED_PREFIX = `${NESTED_BASE_PATH}${NESTED_BASE_PATH}/`;
 
 export function scanEnglishLinks(file) {
   const dom = new JSDOM(readFileSync(file, "utf8"));
@@ -67,12 +72,12 @@ export function scanEnglishLinks(file) {
     for (const attribute of ["href", "src", "action"]) {
       const value = element.getAttribute(attribute);
       if (!value) continue;
-      if (value.includes("/en/en")) {
+      if (value.includes(DUPLICATE_NESTED_PREFIX)) {
         findings.push({ file, field: `duplicate-prefix:${attribute}`, value });
       }
       if (
         attribute === "href" &&
-        DOCS_ROUTE.test(value) &&
+        FOREIGN_DOCS_ROUTE.test(value) &&
         element.getAttribute("hreflang")?.toLowerCase() !== "zh-cn"
       ) {
         findings.push({ file, field: "cross-locale:href", value });
@@ -174,7 +179,8 @@ export function scanTask9EnglishOutput(root) {
 
 const invoked = resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url);
 if (invoked) {
-  const root = resolve(process.argv[2] ?? "apps/www/out/en");
+  // 英文产物在成品树里的位置由 SSOT 决定：作根语言时就是 out 根，作嵌套语言时才带前缀。
+  const root = resolve(process.argv[2] ?? `apps/www/out${basePathForLocale("en")}`);
   try {
     const files = task9EnglishRoutes(root);
     const findings = files.flatMap((file) => [
@@ -197,7 +203,7 @@ if (invoked) {
       console.log(
         `[docs-output] ${
           files.length - 1
-        } Task 9 routes + /en/404: no visible/metadata CJK, /en/en, or cross-locale docs links`,
+        } Task 9 routes + ${basePathForLocale("en")}/404: no visible/metadata CJK, ${DUPLICATE_NESTED_PREFIX}, or cross-locale docs links`,
       );
     }
   } catch (error) {

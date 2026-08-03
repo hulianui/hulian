@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { localeRoutePath } from "./docs-locale-layout.mjs";
+
 const gate = await import("./component-quick-jump-browser.mjs").catch(() => ({}));
+
+const EN_BUTTON = localeRoutePath("/components/button", "en");
+const ZH_BUTTON = localeRoutePath("/components/button", "zh-CN");
 
 test("真实浏览器矩阵覆盖 Button、按钮、button 与 375/桌面视口", () => {
   assert.equal(typeof gate.buildQuickJumpCases, "function");
@@ -19,13 +24,13 @@ test("真实浏览器矩阵覆盖 Button、按钮、button 与 375/桌面视口"
     [
       {
         locale: "zh-CN",
-        sourceRoute: "/components",
-        targetRoute: "/components/button",
+        sourceRoute: localeRoutePath("/components", "zh-CN"),
+        targetRoute: localeRoutePath("/components/button", "zh-CN"),
       },
       {
         locale: "en",
-        sourceRoute: "/en/components",
-        targetRoute: "/en/components/button",
+        sourceRoute: localeRoutePath("/components", "en"),
+        targetRoute: localeRoutePath("/components/button", "en"),
       },
     ],
   );
@@ -38,8 +43,8 @@ test("快速直达快照要求同语言详情、正确 lang 与可见焦点", ()
       locale: "en",
       query: "按钮",
       viewport: "mobile",
-      targetRoute: "/en/components/button",
-      pathname: "/en/components/button",
+      targetRoute: EN_BUTTON,
+      pathname: EN_BUTTON,
       documentLang: "en",
       heading: "Button",
       focusVisible: true,
@@ -51,8 +56,9 @@ test("快速直达快照要求同语言详情、正确 lang 与可见焦点", ()
     locale: "en",
     query: "button",
     viewport: "desktop",
-    targetRoute: "/en/components/button",
-    pathname: "/components/button",
+    targetRoute: EN_BUTTON,
+    // 落到另一语种的路径 → 应报 lost same-language route
+    pathname: ZH_BUTTON,
     documentLang: "zh-CN",
     heading: "Button",
     focusVisible: false,
@@ -68,8 +74,8 @@ test("语言切换快照必须保留路径、query、hash 并更新 lang", () =>
     gate.checkLanguageSwitchSnapshot({
       sourceLocale: "zh-CN",
       targetLocale: "en",
-      beforeUrl: "/components/button?from=quick-jump#api",
-      afterUrl: "/en/components/button?from=quick-jump#api",
+      beforeUrl: `${ZH_BUTTON}?from=quick-jump#api`,
+      afterUrl: `${EN_BUTTON}?from=quick-jump#api`,
       documentLang: "en",
     }),
     [],
@@ -78,8 +84,8 @@ test("语言切换快照必须保留路径、query、hash 并更新 lang", () =>
   const failures = gate.checkLanguageSwitchSnapshot({
     sourceLocale: "en",
     targetLocale: "zh-CN",
-    beforeUrl: "/en/components/button?from=quick-jump#api",
-    afterUrl: "/components/button",
+    beforeUrl: `${EN_BUTTON}?from=quick-jump#api`,
+    afterUrl: ZH_BUTTON,
     documentLang: "en",
   });
   assert.match(failures.join("\n"), /\[en→zh-CN\].*query/i);

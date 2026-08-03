@@ -3,6 +3,7 @@
 import { pathToFileURL } from "node:url";
 
 import { startStaticServer } from "./static-server.mjs";
+import { localeRoutePath } from "./docs-locale-layout.mjs";
 
 const BASE_ROUTES = [
   "/",
@@ -18,13 +19,9 @@ const BASE_ROUTES = [
 ];
 export const DOCS_LOCALES = ["zh-CN", "en"];
 
-function stripEnglishPrefix(route) {
-  return route === "/en" ? "/" : route.startsWith("/en/") ? route.slice(3) : route;
-}
-
+// 语言前缀由 SSOT 决定，这里不再自己拼。
 function routeForLocale(route, locale) {
-  const bare = stripEnglishPrefix(route);
-  return locale === "en" ? `/en${bare === "/" ? "" : bare}` : bare;
+  return localeRoutePath(route, locale);
 }
 
 export function expandBilingualRoutes(entries) {

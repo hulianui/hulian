@@ -3,6 +3,11 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { loadComponentDoc, loadComponentMarkdownForCopy, resolveMd } from "./load-component-doc";
+import { basePathForLocale } from "./docs-locale";
+
+// 语言前缀取自 SSOT（scripts/docs-locale-layout.mjs 的 TS 镜像）：英文挂根路径时是空串，
+// 所以这里不写 "/en" 字面量 —— 语言布局翻转时本文件无需改动。
+const EN = basePathForLocale("en");
 
 const fixtures: string[] = [];
 
@@ -48,7 +53,7 @@ describe("localized component Markdown resolution", () => {
     );
   });
 
-  it("adds /en to rendered links and absolute copied links", () => {
+  it("prefixes rendered links and absolutizes copied links with the English base path", () => {
     const root = fixture({
       "button/button.en.md": doc(
         "button",
@@ -69,14 +74,14 @@ describe("localized component Markdown resolution", () => {
       ),
     });
 
-    expect(loadComponentDoc("button", "en", [root])).toContain("[Input](/en/components/input)");
-    expect(loadComponentDoc("button", "en", [root])).toContain("[Start](/en/start)");
+    expect(loadComponentDoc("button", "en", [root])).toContain(`[Input](${EN}/components/input)`);
+    expect(loadComponentDoc("button", "en", [root])).toContain(`[Start](${EN}/start)`);
     expect(loadComponentDoc("button", "en", [root])).not.toContain("static example");
 
     const copied = loadComponentMarkdownForCopy("button", "en", [root])!;
-    expect(copied).toContain("[Input](https://hulianui.haloritual.com/en/components/input)");
-    expect(copied).toContain("[Start](https://hulianui.haloritual.com/en/start)");
-    expect(copied).toContain("[Docs](https://hulianui.haloritual.com/en/components/card)");
+    expect(copied).toContain(`[Input](https://hulianui.haloritual.com${EN}/components/input)`);
+    expect(copied).toContain(`[Start](https://hulianui.haloritual.com${EN}/start)`);
+    expect(copied).toContain(`[Docs](https://hulianui.haloritual.com${EN}/components/card)`);
     expect(copied).toContain("This is documentation for a single component");
   });
 
@@ -96,7 +101,7 @@ describe("localized component Markdown resolution", () => {
     const root = fixture({ "button/button.en.md": doc("button", markdown) });
 
     const rendered = loadComponentDoc("button", "en", [root])!;
-    expect(rendered).toContain("[Related](/en/components/input)");
+    expect(rendered).toContain(`[Related](${EN}/components/input)`);
     expect(rendered).toContain("[CDN](//cdn.example.com/asset)");
     expect(rendered).toContain("`[Inline](/components/inline)`");
     expect(rendered).toContain("[Fenced](/components/fenced)");
@@ -116,7 +121,7 @@ describe("localized component Markdown resolution", () => {
 
     const rendered = loadComponentDoc("button", "en", [root])!;
     expect(rendered).toContain("[Hidden](/components/hidden)");
-    expect(rendered).toContain("[Visible](/en/components/visible)");
+    expect(rendered).toContain(`[Visible](${EN}/components/visible)`);
   });
 
   it("does not let an unmatched inline delimiter consume the next fenced block", () => {
@@ -133,6 +138,6 @@ describe("localized component Markdown resolution", () => {
 
     const rendered = loadComponentDoc("button", "en", [root])!;
     expect(rendered).toContain("[Fenced](../fenced/fenced.md)");
-    expect(rendered).toContain("[Visible](/en/components/visible)");
+    expect(rendered).toContain(`[Visible](${EN}/components/visible)`);
   });
 });

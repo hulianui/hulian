@@ -5,6 +5,18 @@ import { readdir } from "node:fs/promises";
 import { join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as cheerio from "cheerio";
+import {
+  NESTED_BASE_PATH,
+  NESTED_LOCALE,
+  ROOT_LOCALE,
+  basePathForLocale,
+  localeFromPathname,
+  localeRoutePath,
+  stripLocalePrefix,
+} from "./docs-locale-layout.mjs";
+
+const nestedSegment = NESTED_BASE_PATH.slice(1);
+const duplicateNestedPrefix = new RegExp(`(?:^|/)${nestedSegment}/${nestedSegment}(?:/|$)`);
 
 const INTERNAL_HOSTS = new Set([
   "hulian.local",
@@ -50,7 +62,7 @@ function routeFromRelativeHtml(relativePath, locale) {
     bare = `/${path.slice(0, -".html".length)}`;
     documentPath = bare;
   }
-  const prefix = locale === "en" ? "/en" : "";
+  const prefix = basePathForLocale(locale);
   return {
     bare: normalizeRoutePath(bare),
     route: prefix + (bare === "/" ? "" : normalizeRoutePath(bare)) || "/",
@@ -91,12 +103,11 @@ function selectorFor($, element) {
 }
 
 function localeFromPath(pathname) {
-  return pathname === "/en" || pathname.startsWith("/en/") ? "en" : "zh-CN";
+  return localeFromPathname(pathname);
 }
 
 function barePath(pathname) {
-  if (pathname === "/en") return "/";
-  return pathname.startsWith("/en/") ? pathname.slice(3) || "/" : pathname;
+  return stripLocalePrefix(pathname) || "/";
 }
 
 function hrefLocale(hreflang) {
@@ -131,9 +142,12 @@ async function buildInventory(root) {
     const publicPath = `/${fileRelative}`;
     physicalPaths.add(publicPath);
     if (!isRouteHtml(file) || fileRelative.startsWith("_next/")) continue;
-    const locale = fileRelative.startsWith("en/") ? "en" : "zh-CN";
-    const localeRelative = locale === "en" ? fileRelative.slice(3) : fileRelative;
-    if (locale === "zh-CN" && localeRelative.startsWith("en/")) continue;
+    // 嵌套语言在产物里带目录前缀，根语言直接铺在根。目录角色由 SSOT 决定。
+    const nestedDirectory = `${NESTED_BASE_PATH.slice(1)}/`;
+    const locale = fileRelative.startsWith(nestedDirectory) ? NESTED_LOCALE : ROOT_LOCALE;
+    const localeRelative =
+      locale === NESTED_LOCALE ? fileRelative.slice(nestedDirectory.length) : fileRelative;
+    if (locale === ROOT_LOCALE && localeRelative.startsWith(nestedDirectory)) continue;
     const route = routeFromRelativeHtml(localeRelative, locale);
     documents.push({ file, fileRelative, locale, ...route });
   }
@@ -305,9 +319,9 @@ function checkSeoAlternates($, document, localizedRoutes, physicalPaths, finding
   }
 
   const expected = new Map([
-    ["zh-CN", document.bare],
-    ["en", `/en${document.bare === "/" ? "" : document.bare}`],
-    ["x-default", `/en${document.bare === "/" ? "" : document.bare}`],
+    ["zh-CN", localeRoutePath(document.bare, "zh-CN")],
+    ["en", localeRoutePath(document.bare, "en")],
+    ["x-default", localeRoutePath(document.bare, ROOT_LOCALE)],
   ]);
   const alternates = $("link[href]")
     .toArray()
@@ -413,7 +427,7 @@ export async function checkBilingualLinks(root) {
         "missing-language-pair",
         "document",
         "",
-        `/en${route === "/" ? "" : route}`,
+        localeRoutePath(route, "en"),
         "Chinese route has no English physical HTML pair",
       ),
     );
@@ -426,7 +440,7 @@ export async function checkBilingualLinks(root) {
         "missing-language-pair",
         "document",
         "",
-        route,
+        localeRoutePath(route, "zh-CN"),
         "English route has no Chinese physical HTML pair",
       ),
     );
@@ -479,15 +493,17 @@ export async function checkBilingualLinks(root) {
         );
         return;
       }
-      if (/(?:^|\/)en\/en(?:\/|$)/.test(target.pathname)) {
+      // basePath 被重复拼接的痕迹。根语言 basePath 是空串不可能重复，只有嵌套语言会出现
+      // 形如 /zh/zh 的路径，说明某处对已带前缀的路径又加了一次前缀。
+      if (duplicateNestedPrefix.test(target.pathname)) {
         findings.push(
           makeFinding(
             document,
-            "duplicate-english-prefix",
+            "duplicate-locale-prefix",
             selector,
             rawHref,
             targetDisplay(target),
-            "English path contains /en/en",
+            `Path repeats the ${NESTED_BASE_PATH} prefix`,
           ),
         );
         return;
@@ -546,7 +562,7 @@ export async function checkBilingualLinks(root) {
     ["missing-language-pair", 0],
     ["duplicate-route-output", 1],
     ["missing-target", 2],
-    ["duplicate-english-prefix", 3],
+    ["duplicate-locale-prefix", 3],
     ["unsafe-javascript-url", 4],
     ["malformed-url", 5],
     ["cross-language-link", 6],

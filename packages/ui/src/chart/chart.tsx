@@ -37,6 +37,7 @@ import {
 import type {
   ChartProps,
   BarChartProps,
+  RadarChartProps,
   ChartSeries,
   ChartDatum,
   PieChartProps,
@@ -402,7 +403,8 @@ export function RadarChart<TDatum>({
   className,
   legend = true,
   legendScroll,
-}: ChartProps<TDatum>) {
+  radiusAxis = true,
+}: RadarChartProps<TDatum>) {
   return (
     <ChartFrame
       height={height}
@@ -416,7 +418,9 @@ export function RadarChart<TDatum>({
         <ReRadarChart data={data} margin={{ top: 12, right: 12, bottom: 12, left: 12 }}>
           <PolarGrid stroke="var(--color-border)" />
           <PolarAngleAxis dataKey={xKey} tick={<PolarAngleWrapTick />} />
-          <PolarRadiusAxis tick={polarAngleTick} axisLine={false} />
+          {/* 半径轴刻度沿一条水平半径排列，正好穿过数据区 —— 序列一多就压在多边形上。
+              echarts radar 的 axisLabel.show 默认是 false，这里默认 true 只为不动存量版式。 */}
+          {radiusAxis ? <PolarRadiusAxis tick={polarAngleTick} axisLine={false} /> : null}
           {series.map((s, i) => {
             const color = resolveTone(s.color) ?? chartColor(i);
             return (

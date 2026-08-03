@@ -3,6 +3,7 @@
 import { pathToFileURL } from "node:url";
 
 import { expandBilingualRoutes } from "./a11y.mjs";
+import { localeRoutePath } from "./docs-locale-layout.mjs";
 import { gotoAndSettle, startStaticServer } from "./static-server.mjs";
 
 export const QUICK_JUMP_QUERIES = ["Button", "按钮", "button"];
@@ -34,7 +35,7 @@ export function buildQuickJumpCases() {
         locale,
         query,
         sourceRoute,
-        targetRoute: locale === "en" ? "/en/components/button" : "/components/button",
+        targetRoute: localeRoutePath("/components/button", locale),
       })),
     ),
   );
@@ -129,12 +130,12 @@ async function runQuickJumpCase(page, baseUrl, testCase, reportPhase) {
 
 async function runLanguageSwitchCase(page, baseUrl, viewport, sourceLocale) {
   const targetLocale = sourceLocale === "en" ? "zh-CN" : "en";
-  const sourceRoute = sourceLocale === "en" ? "/en/components/button" : "/components/button";
+  const sourceRoute = localeRoutePath("/components/button", sourceLocale);
   const beforeUrl = `${sourceRoute}?from=quick-jump#api`;
   await gotoAndSettle(page, `${baseUrl}${beforeUrl}`);
   const switcher = page.locator(`a[hreflang="${targetLocale}"]`).first();
   await switcher.click();
-  const expectedRoute = targetLocale === "en" ? "/en/components/button" : "/components/button";
+  const expectedRoute = localeRoutePath("/components/button", targetLocale);
   await page.waitForURL(
     (url) =>
       url.pathname === expectedRoute &&

@@ -36,7 +36,7 @@
     "docs:all": "pnpm skill-index && pnpm component-docs && pnpm showcase:generate && pnpm llms-registry && pnpm conventions && pnpm changelog",
     "docs:build": "node scripts/build-bilingual-docs.mjs",
     "docs:check:artifacts": "node --test scripts/gen-llms-registry-i18n.test.mjs",
-    "docs:check:output": "node scripts/check-bilingual-docs-output.mjs apps/www/out/en",
+    "docs:check:output": "node scripts/check-bilingual-docs-output.mjs",
     "docs:check:routes": "node scripts/build-bilingual-docs.mjs --check-routes",
     "docs:check:admin-demos": "node scripts/check-admin-demo-output.mjs apps/www/out",
     "docs:check:task11-demos": "node scripts/check-task11-demo-output.mjs apps/www/out",

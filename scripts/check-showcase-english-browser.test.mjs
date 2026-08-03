@@ -7,6 +7,10 @@ import {
   isIgnorableRequestFailure,
   validateShowcaseRouteResult,
 } from "./check-showcase-english-browser.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
+
+// 英文前缀取自 SSOT：作根语言时为空串。不写 "/en" 字面量。
+const EN = basePathForLocale("en");
 
 test("findCjkLeaks catches Han text in visible, hidden, code, and accessible fields", () => {
   const leaks = findCjkLeaks([
@@ -37,8 +41,8 @@ test("findCjkLeaks catches Han text in visible, hidden, code, and accessible fie
 });
 
 test("componentRouteFromHtmlPath maps exported component files to English routes", () => {
-  assert.equal(componentRouteFromHtmlPath("button.html"), "/en/components/button");
-  assert.equal(componentRouteFromHtmlPath("nested/item.html"), "/en/components/nested/item");
+  assert.equal(componentRouteFromHtmlPath("button.html"), `${EN}/components/button`);
+  assert.equal(componentRouteFromHtmlPath("nested/item.html"), `${EN}/components/nested/item`);
   assert.equal(componentRouteFromHtmlPath("index.html"), null);
 });
 

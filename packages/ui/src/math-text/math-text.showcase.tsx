@@ -92,6 +92,11 @@ export const mathTextShowcase: ShowcaseSpec = {
     { name: "向量", render: () => <MathText>{"\\overrightarrow{AB}+\\vec{a}"}</MathText> },
     { name: "数集", render: () => <MathText>{"\\mathbb{Q}\\subset\\mathbb{R}"}</MathText> },
     { name: "弧", render: () => <MathText>{"\\overset{\\frown}{AB}"}</MathText> },
+    // 关系符两侧留白由类别给，前缀记号紧贴 —— 三个式子并排最看得出差别
+    {
+      name: "符号间距",
+      render: () => <MathText>{"A\\Rightarrow B,x\\leq 3,\\angle ABC"}</MathText>,
+    },
     { name: "未知记号原样保留", render: () => <MathText>{"\\alpha+1"}</MathText> },
   ],
   renderWithProps: (p) => (

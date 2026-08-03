@@ -36,6 +36,19 @@ export interface ChartProps<TDatum = Record<string, unknown>> {
   legendScroll?: boolean;
 }
 
+/** Radar 专属 */
+export interface RadarChartProps<TDatum = Record<string, unknown>> extends ChartProps<TDatum> {
+  /**
+   * 半径轴的刻度数字（`0 100 200 …`）。关掉后只剩环线与角轴名，
+   * 即 echarts radar 的默认形态（它的 `axisLabel.show` 默认就是 `false`）。
+   *
+   * 什么时候该关：刻度沿一条水平半径排列，正好穿过数据区，序列一多就压在多边形上；
+   * 而雷达图读的是形状对比，精确取值有 tooltip。默认保持 `true` 只是为了不改动存量版式。
+   * @default true
+   */
+  radiusAxis?: boolean;
+}
+
 /** Bar 专属：横向柱状（layout=vertical） */
 export interface BarChartProps<TDatum = Record<string, unknown>> extends ChartProps<TDatum> {
   horizontal?: boolean;

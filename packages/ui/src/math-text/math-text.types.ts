@@ -1,5 +1,12 @@
 export type MathNode =
   | { kind: "text"; text: string }
+  /**
+   * 关系符 / 二元运算符。与 text 分开是因为它要在渲染层拿到左右对称的留白：
+   * `A \Rightarrow B` 里命令后的空格是命令终止符会被吃掉，留白若靠原文空格来给，
+   * 就变成左边有右边没有，而且间距取决于作者打没打空格。
+   * mathToPlain 仍按紧凑输出（`x≠0`），留白只发生在 DOM。
+   */
+  | { kind: "op"; text: string; spacing: "relation" | "binary" }
   /** 分数：分子分母上下叠放，中间一条分数线 */
   | { kind: "frac"; num: MathNode[]; den: MathNode[] }
   /** 根号，index 为根指数（三次根等） */

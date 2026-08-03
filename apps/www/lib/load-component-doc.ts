@@ -214,10 +214,10 @@ export function loadComponentMarkdownForCopy(
       ? "\n\n---\n" +
         "_This is documentation for a single component. Before first use: " +
         "1) install `pnpm add @hulianui/ui @hulianui/tokens`; " +
-        "2) follow [Quick Start](https://hulianui.haloritual.com/en/start) to configure the Tailwind preset and `ThemeProvider`._"
+        `2) follow [Quick Start](${localizedTarget("/start", "en", true)}) to configure the Tailwind preset and \`ThemeProvider\`._`
       : "\n\n---\n" +
         "_本文是**单个组件**的用法文档。首次接入瑚琏请先：" +
         "1) 安装 `pnpm add @hulianui/ui @hulianui/tokens`；" +
-        "2) 按 [快速开始 /start](https://hulianui.haloritual.com/start) 接入 Tailwind preset 与 `ThemeProvider`。_";
+        `2) 按 [快速开始 /start](${localizedTarget("/start", "zh-CN", true)}) 接入 Tailwind preset 与 \`ThemeProvider\`。_`;
   return md.trim() + setupFooter;
 }

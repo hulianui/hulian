@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, ChevronRight, Sparkles } from "lucide-react";
 import { Input } from "@hulianui/ui";
 import { manifest, CATEGORIES, componentMeta, type CategoryKey } from "../lib/manifest";
-import { DOCS_LOCALE, stripDocsBasePath, withDocsBasePath } from "../lib/docs-locale";
+import { DOCS_LOCALE, stripDocsBasePath } from "../lib/docs-locale";
 
 const copy =
   DOCS_LOCALE === "en"
@@ -115,12 +116,12 @@ export function ComponentTree() {
       {tree.length === 0 && (
         <div className="px-2 py-6 text-sm text-muted">
           <p>{copy.noResults}</p>
-          <a
-            href={withDocsBasePath(`/search?q=${encodeURIComponent(query.trim())}`)}
+          <Link
+            href={`/search?q=${encodeURIComponent(query.trim())}`}
             className="mt-2 inline-flex items-center rounded-full border border-border px-2.5 py-1 text-xs outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             {copy.searchAll}
-          </a>
+          </Link>
         </div>
       )}
 
@@ -154,11 +155,13 @@ export function ComponentTree() {
                     <ul className="space-y-0.5">
                       {g.items.map((m) => {
                         const localized = componentMeta(m);
-                        const href = withDocsBasePath(`/components/${m.slug}`);
+                        // 裸路径：Next <Link> 自己会补 basePath（/en），再手工 withDocsBasePath
+                        // 就成了 /en/en/...。静态资源（img src 之类）才需要手工补。
+                        const href = `/components/${m.slug}`;
                         const active = barePathname === `/components/${m.slug}`;
                         return (
                           <li key={m.slug}>
-                            <a
+                            <Link
                               href={href}
                               className={`flex min-h-11 items-center gap-2 rounded-[var(--radius)] py-1.5 pl-7 pr-2 text-sm transition-colors ${
                                 active
@@ -182,7 +185,7 @@ export function ComponentTree() {
                                   {m.name}
                                 </span>
                               )}
-                            </a>
+                            </Link>
                           </li>
                         );
                       })}

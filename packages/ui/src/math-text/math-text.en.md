@@ -29,8 +29,8 @@ import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
 |---|---|---|
 | `\frac{a}{b}` | Fraction with vertically stacked numerator and denominator. | `\frac{16}{9}` |
 | `\sqrt{a}` / `\sqrt[n]{a}` | Square or nth root with an overline above the radicand. | `\sqrt{a^{2}+b^{2}}` |
-| `^{...}` or `^a` | Superscript. | `x^{2}`, `x^2` |
-| `_{...}` or `_a` | Subscript. | `a_{1}`, `a_1` |
+| `^{...}` / `^a` / `^\command` | Superscript; a single command needs no braces. | `x^{2}`, `x^2`, `90^\circ` |
+| `_{...}` / `_a` / `_\command` | Subscript; a single command needs no braces. | `a_{1}`, `a_1`, `a_\beta` |
 | `____` | Answer blank formed by **2 or more** consecutive underscores. | `Answer: ____` |
 | `\overline{}` / `\widehat{}` | Overline/hat | `\overline{AB}` |
 | `\vec{}` / `\overrightarrow{}` | Vector arrow whose width follows the content. | `\overrightarrow{AB}` |
@@ -56,6 +56,21 @@ The supported set was selected from command frequencies in real question text ra
 
 Unsupported content is emitted literally. **Unknown or incomplete notation is never silently discarded**: `\oiint` remains `\oiint`, and an incomplete `\frac{3}` is preserved as written.
 
+### Symbol spacing
+
+Symbols receive horizontal spacing based on their typesetting class, **regardless of whether the source contains spaces**: `A \Rightarrow B`, `A\Rightarrow B`, and `A ⇒ B` all render identically. Whitespace after a command name terminates that command and is consumed, so spacing cannot come from the source text; deriving it from source spaces would put a gap on the left of the operator and none on the right.
+
+| Class | Spacing | Members | Criterion |
+|---|---|---|---|
+| Relation | Symmetric, wider | `= < > ≠ ≤ ≥ ≈ ≡ ∝ ≌ ∽ ∥ ⊥ ∣ ∈ ∉ ⊂ ⊆ → ⇒ ↔ ⇔` | Connects a left and a right operand |
+| Binary operator | Symmetric, narrower | `× ÷ · ± ∓ ∪ ∩` | Takes two operands and yields another value or set |
+| Prefix mark | None; sits against the following content | `∠ △ ⊙ □ ∀ ∴ ∵` | Qualifies only what follows, so `∠ABC` must not become `∠ ABC` |
+| Ordinary | None | Letters, `° ′ … ∞ ⟨ ⟩ ⌢`, Greek letters | — |
+
+The criterion is **whether the symbol takes operands on both sides**, not how it looks: `∠` introduces a single geometric object and is a prefix, while `⊥` relates two segments and is a relation. Bare Unicode and LaTeX commands are treated identically (`x≠0` matches `x\neq 0`), so OCR output containing Unicode needs no conversion to commands first.
+
+`+` and `-` are excluded because they also have unary uses such as the sign in `-3`, which the character alone cannot distinguish; leaving them untouched is safer. `±` and `∓` also have unary uses, but they degrade automatically when no operand precedes them: `±3` stays tight while `a±b` receives spacing.
+
 ## Examples
 
 ```tsx
@@ -79,7 +94,7 @@ Options side by side:
 
 ## Pure helpers
 
-- `parseMath(src)` → `MathNode[]` returns parsed nodes for custom rendering or structural validation.
+- `parseMath(src)` → `MathNode[]` returns parsed nodes for custom rendering or structural validation. Relations and binary operators are separate `{ kind: "op", text, spacing: "relation" | "binary" }` nodes; handle that branch in custom renderers.
 - `mathToPlain(src)` → `string` converts notation to plain text (`\frac{3}{8}` → `3/8`).
 
 **Always use `mathToPlain` for search indexing, exports, and plain-text comparisons.** Do not index the marked-up source directly; a user searching for "3/8" should find `\frac{3}{8}`.
@@ -93,6 +108,9 @@ Options side by side:
 - **One `_` starts a subscript; two or more create an answer blank.** `a_1` is a subscript, so use at least `__` for a blank.
 - **Fractions are not built with `<sup>` and `<sub>`.** Their vertical `inline-flex` layout and `border-t` keep surrounding line height and fraction bars aligned; preserve this approach when changing styles.
 - **Whitespace after a command name terminates the command.** In `\angle ABC`, that space is consumed so notation such as `\angle` and `\triangle` does not introduce an extra visual gap.
+- **Do not use spaces to tune spacing around relations.** `A \Rightarrow B` and `A\Rightarrow B` render identically because spacing comes from the symbol class, and source spaces adjacent to a relation are normalized away. If you need extra whitespace, use `\quad` or `\qquad`.
+- **Assign a class whenever you extend the symbol table.** If you add a symbol to `MATH_SYMBOLS` without registering it in `SYMBOL_CLASSES`, it is treated as `ordinary` and receives no spacing; if it is in fact a relation, the same line will show `x ≤ 3` spaced and `x ⊕ 3` tight. Classes live in `math-text.symbols.ts`.
+- **`parseMath` emits `op` nodes.** If you render the node tree yourself, handle `{ kind: "op", text, spacing }` in addition to `text`, or relations and binary operators will be missing from the expression. `mathToPlain` is unaffected and emits `op` nodes as compact text.
 - **Do not wrap `30^{\circ}` in another `<sup>`.** `\circ` already behaves as a superscript character and would be raised twice.
 - **Matrices and equation systems degrade lossily.** `\begin{array}…\end{array}` is flattened to one line and `\\` becomes a semicolon. Use KaTeX for faithful layout.
 - The component returns a `<span>` and is safe inside `<p>`. Answer blanks use `aria-label="Answer blank"`, so screen readers do not announce a sequence of underscores.

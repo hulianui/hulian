@@ -194,6 +194,10 @@ export const chartShowcase: ShowcaseSpec = {
             render: () => <RadarChart data={radarData} series={radarSeries} xKey="dim" className={W}/>,
         },
         {
+            name: "Radar chart (radius-axis ticks off)",
+            render: () => (<RadarChart data={radarData} series={radarSeries} xKey="dim" radiusAxis={false} className={W}/>),
+        },
+        {
             name: "Radial Progress",
             render: () => <RadialChart data={pieData} className={W}/>,
         },

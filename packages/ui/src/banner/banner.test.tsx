@@ -48,7 +48,12 @@ describe("Banner", () => {
 
   it("非 scrollable 居中默认截断", () => {
     const { container } = render(<Banner>x</Banner>);
-    expect(container.querySelector(".truncate")).toBeTruthy();
+    const clipped = container.querySelector(".truncate");
+    expect(clipped).toBeTruthy();
+    // truncate 的 overflow:hidden / text-overflow:ellipsis 对 inline 元素不生效，
+    // 只剩 white-space:nowrap —— 文字既不换行又不被裁剪，长文案会撑破 flex 容器
+    // 把 action 挤出屏幕。所以承载 truncate 的这个节点必须是块级。
+    expect(clipped?.classList.contains("block")).toBe(true);
   });
 
   it("透传 className", () => {

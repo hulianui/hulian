@@ -1,6 +1,10 @@
 import { manifest } from "./manifest";
+import { basePathForLocale } from "./docs-locale";
+import { SITE_URL } from "./site";
 
 const total = manifest.length;
+// 英文文档站的根地址：英文作根语言时就是站点根，将来若改作嵌套语言会自动带上前缀。
+const EN_BASE = `${SITE_URL}${basePathForLocale("en")}`;
 
 export const AI_GUIDE_EN_MD = `# Hulian UI (@hulianui/ui) · AI Integration Guide
 
@@ -98,21 +102,21 @@ Available tools:
 
 ## Look up a component without MCP
 
-- Each component page has a **Copy MD** button with its import, props, and examples. Component URLs use \`https://hulianui.haloritual.com/en/components/<slug>\`, such as \`button\` or \`pro-table\`.
+- Each component page has a **Copy MD** button with its import, props, and examples. Component URLs use \`${EN_BASE}/components/<slug>\`, such as \`button\` or \`pro-table\`.
 - Machine-readable resources:
-  - https://hulianui.haloritual.com/en/d/<slug>.md — complete documentation for one component
-  - https://hulianui.haloritual.com/en/llms.txt — component index and summaries
-  - https://hulianui.haloritual.com/en/llms-full.txt — complete library documentation; prefer the single-component endpoint to save context
-  - https://hulianui.haloritual.com/en/registry.json — structured component, block, and page registry
-  - https://hulianui.haloritual.com/en/conventions.json — machine-readable usage constraints
+  - ${EN_BASE}/d/<slug>.md — complete documentation for one component
+  - ${EN_BASE}/llms.txt — component index and summaries
+  - ${EN_BASE}/llms-full.txt — complete library documentation; prefer the single-component endpoint to save context
+  - ${EN_BASE}/registry.json — structured component, block, and page registry
+  - ${EN_BASE}/conventions.json — machine-readable usage constraints
 
 ## Install blocks and pages
 
 Blocks are usually self-contained. Pages can compose several blocks. Registry metadata installs recursive block dependencies and rewrites repository paths for the consuming project:
 
 \`\`\`bash
-npx shadcn@latest add https://hulianui.haloritual.com/en/r/block-pricing-table.json
-npx shadcn@latest add https://hulianui.haloritual.com/en/r/page-dashboard.json
+npx shadcn@latest add ${EN_BASE}/r/block-pricing-table.json
+npx shadcn@latest add ${EN_BASE}/r/page-dashboard.json
 \`\`\`
 
 After installation, replace sample data, copy, callbacks, and providers listed in the item's \`replace\` and \`providers\` fields. Composable regions appear in \`slots\`. Then run:
@@ -130,7 +134,7 @@ I am using the @hulianui/ui React design system. Follow these rules:
 1) Build UI with components exported from "@hulianui/ui"; do not recreate equivalent components.
 2) Do not override component internals. Use public component props.
 3) Use theme color tokens such as var(--color-primary), always with the --color- prefix.
-4) Read the documentation before coding. With MCP installed, call get_component_doc. Otherwise fetch https://hulianui.haloritual.com/en/d/<component-slug>.md.
+4) Read the documentation before coding. With MCP installed, call get_component_doc. Otherwise fetch ${EN_BASE}/d/<component-slug>.md.
 For complete interfaces such as login pages, pricing tables, and dashboards, inspect registry blocks and pages before starting from scratch. After installation, run the hulian-check command returned by MCP and resolve every error-level violation.
 \`\`\`
 `;

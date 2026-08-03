@@ -7523,6 +7523,8 @@
     "高中题面的主力记号：黑板粗体数集、集合构建式、充要条件。": "Senior-high staples: blackboard-bold number sets, set-builder notation, and biconditionals.",
     "设 A=\\{x\\mid x>0,x\\in\\mathbb{R}\\},则 x\\in A\\Leftrightarrow x>0": "Let A=\\{x\\mid x>0,x\\in\\mathbb{R}\\}, then x\\in A\\Leftrightarrow x>0",
     "数集": "Number sets",
-    "弧": "Arc"
+    "弧": "Arc",
+    "符号间距": "Symbol spacing",
+    "雷达图（关半径轴刻度）": "Radar chart (radius-axis ticks off)"
   }
 }

@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { withIntlayer } from "next-intlayer/server";
+import { basePathForLocale } from "../../scripts/docs-locale-layout.mjs";
 
 // 构建/启动期把 @hulianui/ui 真实版本写成 TS 常量（lib/ui-version.ts），供顶栏版本徽标 import。
 // 用生成常量而非 process.env：常量是模块字面量，SSG 服务端预渲染与客户端取值一致，无 hydration 不一致、无闪烁。
@@ -18,7 +19,8 @@ writeFileSync(
 );
 
 const docsLocale = process.env.DOCS_LOCALE === "en" ? "en" : "zh-CN";
-const basePath = docsLocale === "en" ? "/en" : "";
+// 哪个语言挂根路径由 scripts/docs-locale-layout.mjs 决定，勿在此写死前缀。
+const basePath = basePathForLocale(docsLocale);
 const localeBuildDir = docsLocale === "en" ? ".bilingual-build/en" : ".bilingual-build/zh";
 const showcaseSource =
   docsLocale === "en" ? "./generated/showcase-en/index.ts" : "../../packages/ui/src/showcase.ts";

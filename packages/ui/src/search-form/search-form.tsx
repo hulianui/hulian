@@ -1,5 +1,5 @@
 "use client";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Button } from "../button";
 import { Field } from "../field";
@@ -271,12 +271,19 @@ export function SearchForm({
       onSubmit={handleSubmit}
       className={cn("rounded-[var(--radius)] border border-border bg-surface p-4", className)}
     >
+      {/* 窄屏强制单列：columns 是给桌面查询区排版的，手机上按 3 列摊会把「标签 + 控件」
+          压进 ~120px，字段与操作区互相叠在一起。
+          列数走 CSS 变量而不是 inline style —— inline style 优先级压过工具类，写死就没法
+          在断点上覆盖。子项的 colSpan 也必须一起压掉：单列网格里 `span 2` 不会被夹到 1，
+          而是创建隐式列，反而更溢出，所以 max-sm 下强制 col-auto。 */}
       <div
-        className="grid"
-        style={{
-          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-          gap: `${gap * 0.25}rem`,
-        }}
+        className="grid grid-cols-1 max-sm:[&>*]:!col-auto sm:[grid-template-columns:repeat(var(--hl-sf-cols),minmax(0,1fr))]"
+        style={
+          {
+            "--hl-sf-cols": columns,
+            gap: `${gap * 0.25}rem`,
+          } as CSSProperties
+        }
       >
         {visible.map((field) => (
           <div

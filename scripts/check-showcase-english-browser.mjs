@@ -5,9 +5,13 @@ import { relative, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { gotoAndSettle, OUT_DIR, startStaticServer } from "./static-server.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
+
+// 英文站在产物树里的前缀由 SSOT 决定：作根语言时是空串，产物就直接落在 out 根。
+const EN = basePathForLocale("en");
 
 const CJK_RE = /[\p{Script=Han}\u3000-\u303f\uff00-\uffef]/u;
-const COMPONENT_OUT_DIR = `${OUT_DIR}/en/components`;
+const COMPONENT_OUT_DIR = `${OUT_DIR}${EN}/components`;
 const INTERACTION_ROUTES = ["dialog", "toast", "table", "form"];
 
 export function findCjkLeaks(entries) {
@@ -17,7 +21,7 @@ export function findCjkLeaks(entries) {
 export function componentRouteFromHtmlPath(file) {
   const normalized = file.split(sep).join("/");
   if (!normalized.endsWith(".html") || normalized === "index.html") return null;
-  return `/en/components/${normalized.slice(0, -".html".length)}`;
+  return `${EN}/components/${normalized.slice(0, -".html".length)}`;
 }
 
 export function isIgnorableRequestFailure({ errorText, resourceType, isNavigationRequest }) {
@@ -241,7 +245,7 @@ async function interactWithRepresentative(page, slug) {
 }
 
 async function scanInteraction(context, staticServer, slug) {
-  const route = `/en/components/${slug}`;
+  const route = `${EN}/components/${slug}`;
   const opened = await openRoute(context, staticServer, route);
   try {
     await waitForHydrationAndQuiet(opened.page);
@@ -289,7 +293,7 @@ export async function runShowcaseEnglishBrowser({
         results.push(await scanInteraction(context, staticServer, slug));
       } catch (error) {
         results.push({
-          route: `/en/components/${slug}`,
+          route: `${EN}/components/${slug}`,
           phase: "interaction",
           status: null,
           failed: [error instanceof Error ? error.message : String(error)],

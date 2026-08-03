@@ -9,24 +9,22 @@ import {
   validateRouteResult,
 } from "./a11y.mjs";
 import * as a11y from "./a11y.mjs";
+import { localeRoutePath } from "./docs-locale-layout.mjs";
 
-test("无障碍路由矩阵补齐中英文并去重已带 /en 的路由", () => {
+const zhButton = localeRoutePath("/components/button", "zh-CN");
+const enButton = localeRoutePath("/components/button", "en");
+
+test("无障碍路由矩阵补齐中英文并去重已带语言前缀的路由", () => {
   assert.equal(typeof a11y.expandBilingualRoutes, "function");
-  assert.deepEqual(
-    a11y.expandBilingualRoutes([
-      "/components/button",
-      "/en/components/button",
-    ]),
-    [
-      { route: "/components/button", locale: "zh-CN" },
-      { route: "/en/components/button", locale: "en" },
-    ],
-  );
+  assert.deepEqual(a11y.expandBilingualRoutes([zhButton, enButton]), [
+    { route: zhButton, locale: "zh-CN" },
+    { route: enButton, locale: "en" },
+  ]);
   assert.deepEqual(
     a11y.ROUTES.filter(({ route }) => route.endsWith("/components/button")),
     [
-      { route: "/components/button", locale: "zh-CN" },
-      { route: "/en/components/button", locale: "en" },
+      { route: zhButton, locale: "zh-CN" },
+      { route: enButton, locale: "en" },
     ],
   );
 });

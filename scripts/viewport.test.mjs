@@ -3,17 +3,21 @@ import test from "node:test";
 
 import { DOCS_ROUTES, MD_BREAKPOINT, VIEWPORTS, checkProbe, isDesktop } from "./viewport.mjs";
 import * as viewport from "./viewport.mjs";
+import { localeRoutePath } from "./docs-locale-layout.mjs";
 
-test("视口路由矩阵补齐中英文并去重已带 /en 的路由", () => {
+const zh = (bare) => localeRoutePath(bare, "zh-CN");
+const en = (bare) => localeRoutePath(bare, "en");
+
+test("视口路由矩阵补齐中英文并去重已带语言前缀的路由", () => {
   assert.equal(typeof viewport.expandBilingualRoutes, "function");
   assert.deepEqual(
     viewport.expandBilingualRoutes([
-      { route: "/components/button", heading: "Button" },
-      { route: "/en/components/button", heading: "Button" },
+      { route: zh("/components/button"), heading: "Button" },
+      { route: en("/components/button"), heading: "Button" },
     ]),
     [
-      { route: "/components/button", heading: "Button", locale: "zh-CN" },
-      { route: "/en/components/button", heading: "Button", locale: "en" },
+      { route: zh("/components/button"), heading: "Button", locale: "zh-CN" },
+      { route: en("/components/button"), heading: "Button", locale: "en" },
     ],
   );
 });
@@ -63,8 +67,8 @@ test("门禁覆盖 #39 报告的两条链路与 md 断点两侧", () => {
       ({ route, locale, heading }) => ({ route, locale, heading }),
     ),
     [
-      { route: "/theme/color", locale: "zh-CN", heading: "颜色" },
-      { route: "/en/theme/color", locale: "en", heading: "Color" },
+      { route: zh("/theme/color"), locale: "zh-CN", heading: "颜色" },
+      { route: en("/theme/color"), locale: "en", heading: "Color" },
     ],
   );
 });

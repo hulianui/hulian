@@ -19,6 +19,7 @@ import { join, dirname, basename } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript-api";
 import { mapMarkdownCode } from "./check-component-doc-translations.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
@@ -43,7 +44,8 @@ if (ENGLISH && !process.env.HULIAN_REGISTRY_OUT) {
 const REPO = "https://github.com/hulianui/hulian";
 const DOC_BASE = `${REPO}/blob/master`; // + /packages/ui/src/<slug>/<slug>.md
 const SITE = "https://hulianui.haloritual.com"; // 文档站；语料供站外 AI 消费，链接须绝对
-const SITE_BASE = `${SITE}${ENGLISH ? "/en" : ""}`;
+// 该语种文档站的根地址；前缀由语言布局 SSOT 决定，勿写死。
+const SITE_BASE = `${SITE}${basePathForLocale(ENGLISH ? "en" : "zh-CN")}`;
 // 把组件 md 里的相对链接转绝对，否则 AI 抓到 llms-full 后穿不透下一跳。
 // 只处理 Markdown 正文：代码围栏和行内 code span 是示例数据，不是可导航链接；
 // `//host/path` 是协议相对外链，也绝不能被误拼成本站 URL。
@@ -252,7 +254,10 @@ export function collectDocs(uiSrc = UI_SRC, locale = DOCS_LOCALE) {
       out.push({
         ...parsed,
         dir,
-        docUrl: locale === "en" ? `${SITE}/en/components/${parsed.slug}` : `${DOC_BASE}/${urlRel}`,
+        docUrl:
+          locale === "en"
+            ? `${SITE}${basePathForLocale("en")}/components/${parsed.slug}`
+            : `${DOC_BASE}/${urlRel}`,
         docLocal: urlRel,
       });
     }

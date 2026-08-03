@@ -96,6 +96,82 @@ export const MATH_SYMBOLS: Record<string, string> = {
   ln: "ln",
 };
 
+/**
+ * 符号的排版类别，决定渲染时左右留不留白（对齐 TeX 的 mathrel / mathbin / mathord）。
+ *
+ * - `relation` 二元关系符（= ≠ ≤ ⇒ ∈ ⊥ …）：两侧对称留白，宽一点
+ * - `binary` 二元运算符（× ÷ ± ∪ …）：两侧对称留白，比关系符窄
+ * - `prefix` 记号前缀（∠ △ ⊙ ∴ ∀ …）：紧贴后面的内容，`∠ABC` 不能拆成 `∠ ABC`
+ * - `ordinary` 其余（字母、°、′、…、⟨⟩、∞）：不干预
+ *
+ * 判据是**符号本身有没有左右两个操作数**，不是它长什么样：
+ * `∠` 后面只有一个几何对象，是前缀；`⊥` 连接两条线段，是关系。
+ */
+export type MathSymbolClass = "relation" | "binary" | "prefix" | "ordinary";
+
+/**
+ * 按**字符**登记而非按命令名：`\ne` 与 `\neq` 都产出 `≠`，只需登记一次；
+ * 而且 OCR 上游常常直接给 Unicode（`x≠0` 而不是 `x\neq 0`），
+ * 按字符登记能让两种写法拿到同样的排版，不必在解析层做两遍。
+ *
+ * 只登记非 `ordinary` 的；查不到即 `ordinary`。`prefix` 与 `ordinary` 目前渲染一致
+ * （都不留白），仍显式登记，是为了留下「这里有意不留白」的判据 —— 否则下次有人
+ * 看到 `∠ABC` 挤在一起，会以为是漏配。
+ *
+ * 不收 `+` 与 `-`：它们兼有一元用法（`-3` 的负号、`+3` 的正号），
+ * 光看字符判不出该不该留白，宁可一律不干预，也不要把 `-3` 排成 `- 3`。
+ * `±`/`∓` 同样兼有一元用法，但它们进了表 —— 解析层用「前面有没有操作数」把一元
+ * 那档降级掉（见 math-text.parse.ts 的 precededByOperand）。
+ */
+export const SYMBOL_CLASSES: Record<string, MathSymbolClass> = {
+  // 关系：连接左右两个操作数
+  "=": "relation",
+  "<": "relation",
+  ">": "relation",
+  "≠": "relation",
+  "≤": "relation",
+  "≥": "relation",
+  "≈": "relation",
+  "≡": "relation",
+  "∝": "relation",
+  "≌": "relation",
+  "∽": "relation",
+  "∥": "relation",
+  "⊥": "relation",
+  "∣": "relation",
+  "∈": "relation",
+  "∉": "relation",
+  "⊂": "relation",
+  "⊆": "relation",
+  "→": "relation",
+  "⇒": "relation",
+  "↔": "relation",
+  "⇔": "relation",
+  // 二元运算：结果仍是一个数/集合
+  "×": "binary",
+  "÷": "binary",
+  "·": "binary",
+  "±": "binary",
+  "∓": "binary",
+  "∪": "binary",
+  "∩": "binary",
+  // 前缀记号：紧跟它修饰的对象，中间不能有空隙
+  "∠": "prefix",
+  "△": "prefix",
+  "⊙": "prefix",
+  "□": "prefix",
+  "∀": "prefix",
+  "∴": "prefix",
+  "∵": "prefix",
+  // `⌢` 在 TeX 里是关系符，这里按 ordinary：本组件里它几乎只作为 \overset{\frown}{AB}
+  // 的上方记号出现，那个位置是叠放不是行内，留白只会把弧号推歪。
+};
+
+/** 查一个符号的排版类别；表外一律 `ordinary`。 */
+export function classifySymbol(symbol: string): MathSymbolClass {
+  return SYMBOL_CLASSES[symbol] ?? "ordinary";
+}
+
 /** 取一个参数、把参数当普通文本吐出的包装命令（\text{甲} → 甲）。 */
 export const UNWRAP_COMMANDS = new Set(["text", "mathrm", "mathbf", "operatorname", "mbox"]);
 

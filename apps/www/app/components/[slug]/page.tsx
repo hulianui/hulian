@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { componentMeta, manifest } from "../../../lib/manifest";
 import { SITE_URL, SITE_NAME } from "../../../lib/site";
-import { DOCS_LOCALE, withDocsBasePath } from "../../../lib/docs-locale";
+import {
+  DOCS_LOCALE,
+  ROOT_LOCALE,
+  canonicalPathForLocale,
+  withDocsBasePath,
+} from "../../../lib/docs-locale";
 import { loadComponentDoc, loadComponentMarkdownForCopy } from "../../../lib/load-component-doc";
 import { ComponentDoc } from "../../../components/showcase/component-doc";
 import { JsonLd } from "../../../components/json-ld";
@@ -26,15 +31,18 @@ export async function generateMetadata({
       ? `${display.description} — Hulian React component documentation with examples, props, and copyable source.`
       : `${meta.description} —— 瑚琏 Hulian React 组件库，含用法示例、Props 说明与可复制源码。`;
   const barePath = `/components/${slug}`;
-  const path = withDocsBasePath(barePath);
-  const englishPath = withDocsBasePath(barePath, "en");
+  const path = canonicalPathForLocale(barePath, DOCS_LOCALE);
   return {
     title,
     description,
     // canonical 回指主站权威域，收敛主站/镜像重复内容权重。
     alternates: {
       canonical: path,
-      languages: { "zh-CN": barePath, en: englishPath, "x-default": englishPath },
+      languages: {
+        "zh-CN": canonicalPathForLocale(barePath, "zh-CN"),
+        en: canonicalPathForLocale(barePath, "en"),
+        "x-default": canonicalPathForLocale(barePath, ROOT_LOCALE),
+      },
     },
     // images 显式带上文件约定的分享图，否则子页 openGraph 会覆盖掉继承的自动图。
     // 未设 twitter → 继承 layout 的 summary_large_image 卡片，标题/描述/图片回落到 og。

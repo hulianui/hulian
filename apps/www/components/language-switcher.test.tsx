@@ -1,7 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { LOCALE_STORAGE_KEY } from "../lib/docs-locale";
+import { LOCALE_STORAGE_KEY, basePathForLocale } from "../lib/docs-locale";
+
+// 语言前缀取自 SSOT：根语言为空串，嵌套语言带前缀。断言只写前缀变量，不写字面量 ——
+// 浏览器地址（history.replaceState 那几处）仍用裸路由，那是输入不是期望。
+const EN = basePathForLocale("en");
+const ZH = basePathForLocale("zh-CN");
 import { LanguageSwitcher } from "./language-switcher";
 
 describe("LanguageSwitcher", () => {
@@ -18,11 +23,11 @@ describe("LanguageSwitcher", () => {
     render(<LanguageSwitcher />);
 
     expect(screen.getByRole("link", { name: "切换到中文" }).getAttribute("href")).toBe(
-      "/components/button?q=x#api",
+      `${ZH}/components/button?q=x#api`,
     );
     expect(
       screen.getByRole("link", { name: "Switch to English" }).getAttribute("href"),
-    ).toBe("/en/components/button?q=x#api");
+    ).toBe(`${EN}/components/button?q=x#api`);
   });
 
   it("keeps the current pathname in the server-rendered raw anchors", () => {
@@ -30,8 +35,8 @@ describe("LanguageSwitcher", () => {
       <LanguageSwitcher pathname="/components/button" />,
     );
 
-    expect(html).toContain('href="/components/button"');
-    expect(html).toContain('href="/en/components/button"');
+    expect(html).toContain(`href="${ZH}/components/button"`);
+    expect(html).toContain(`href="${EN}/components/button"`);
   });
 
   it("refreshes both destinations when the hash changes after render", () => {
@@ -41,11 +46,11 @@ describe("LanguageSwitcher", () => {
     fireEvent(window, new Event("hashchange"));
 
     expect(screen.getByRole("link", { name: "切换到中文" }).getAttribute("href")).toBe(
-      "/components/button?q=x#examples",
+      `${ZH}/components/button?q=x#examples`,
     );
     expect(
       screen.getByRole("link", { name: "Switch to English" }).getAttribute("href"),
-    ).toBe("/en/components/button?q=x#examples");
+    ).toBe(`${EN}/components/button?q=x#examples`);
   });
 
   it("refreshes both destinations after query-only history navigation", () => {
@@ -55,11 +60,11 @@ describe("LanguageSwitcher", () => {
     fireEvent(window, new PopStateEvent("popstate"));
 
     expect(screen.getByRole("link", { name: "切换到中文" }).getAttribute("href")).toBe(
-      "/components/button?q=filters#api",
+      `${ZH}/components/button?q=filters#api`,
     );
     expect(
       screen.getByRole("link", { name: "Switch to English" }).getAttribute("href"),
-    ).toBe("/en/components/button?q=filters#api");
+    ).toBe(`${EN}/components/button?q=filters#api`);
   });
 
   it("derives a modified-click destination from the live URL even without a history event", () => {
@@ -71,7 +76,7 @@ describe("LanguageSwitcher", () => {
     fireEvent.click(english, { metaKey: true });
 
     expect(english.getAttribute("href")).toBe(
-      "/en/components/button?q=latest#usage",
+      `${EN}/components/button?q=latest#usage`,
     );
   });
 

@@ -1042,6 +1042,27 @@
       "source": "packages/ui/src/button/button.md"
     },
     {
+      "id": "component/button-group/pitfall/1",
+      "scope": "button-group",
+      "title": "ButtonGroup",
+      "rule": "**成员必须同高，连排态尤其**。连排是靠 `-ml-px` 把相邻按钮的边框叠在一起实现的，这个拼接假定所有成员等高；高度一旦不一致，矮的那些上下就会露出台阶。而 [Button](../button/button.md) 的尺寸档里 **`icon`（36px）没有等高的文字档**——文字档是 `sm` 32 / `md` 40 / `lg` 48。所以 `size=\"icon\"` 与任何带文字的按钮混排都会错位。要图标 + 文字混排，用**等高的一对**：`iconSm`(32) 配 `sm`(32)，或给 icon 按钮显式贴高度去对齐 `md`。",
+      "source": "packages/ui/src/button-group/button-group.md"
+    },
+    {
+      "id": "component/button-group/pitfall/2",
+      "scope": "button-group",
+      "title": "ButtonGroup",
+      "rule": "上一条**看代码是发现不了的**：三个按钮都写 `variant=\"outline\"`、都不传或只有一个传 `size`，读起来很整齐，只有渲染出来才看得见中间那个高出 4px。典型场景是 `−/数值/+` 步进器。",
+      "source": "packages/ui/src/button-group/button-group.md"
+    },
+    {
+      "id": "component/button-group/pitfall/3",
+      "scope": "button-group",
+      "title": "ButtonGroup",
+      "rule": "`gap` 仅在 `attached={false}` 时生效；连排态（`attached`）由组件自行抹圆角/合并边框，不要再给子按钮加外边距。",
+      "source": "packages/ui/src/button-group/button-group.md"
+    },
+    {
       "id": "component/calendar/pitfall/1",
       "scope": "calendar",
       "title": "Calendar",
@@ -1277,6 +1298,13 @@
       "scope": "chart",
       "title": "Chart",
       "rule": "自绘图例时色点用 `<Dot color={...} />`，**不要**写 `<Dot style={{ color }} />`——那是静默失效（圆点是背景色），见 [Dot 的坑](../dot/dot.md)。",
+      "source": "packages/ui/src/chart/chart.md"
+    },
+    {
+      "id": "component/chart/pitfall/8",
+      "scope": "chart",
+      "title": "Chart",
+      "rule": "RadarChart 的半径轴刻度（`radiusAxis`，默认开）**画在数据区里而不是外面**：刻度锚点沿一条水平半径均匀排开，正好从雷达盘中心穿到边缘，而且每个数字被 recharts 旋转 90° 竖排。序列一多、数据填得满，前几个刻度就整个落在数据多边形内部，既压住图形又难读。这一条**看版式是发现不了「选错了」的**——图能正常渲染，只是糊在一起。多序列雷达图建议直接 `radiusAxis={false}`：雷达图读的是形状对比，精确取值有 tooltip。",
       "source": "packages/ui/src/chart/chart.md"
     },
     {
@@ -4405,18 +4433,39 @@
       "id": "component/math-text/pitfall/8",
       "scope": "math-text",
       "title": "MathText",
-      "rule": "**`30^{\\circ}` 不套 `<sup>`**。`\\circ` 本身就是上标位的字符，再抬一次会变成浮空小点。",
+      "rule": "**别靠打空格来调关系符间距**。`A \\Rightarrow B` 与 `A\\Rightarrow B` 渲染完全相同，间距由符号类别给。如果你在上游用空格排版式子，那些空格在关系符两侧会被归一化掉 —— 想要额外空白请用 `\\quad` / `\\qquad`。",
       "source": "packages/ui/src/math-text/math-text.md"
     },
     {
       "id": "component/math-text/pitfall/9",
       "scope": "math-text",
       "title": "MathText",
-      "rule": "**矩阵/方程组是有损降级**。`\\begin{array}…\\end{array}` 会被拍平成一行、`\\\\` 变成分号。要真排版请接 KaTeX。",
+      "rule": "**扩符号表时要顺手定类别**。往 `MATH_SYMBOLS` 里加一个新符号而不在 `SYMBOL_CLASSES` 里登记，它会按 `ordinary`（不留白）走；如果它其实是关系符，同一行里就会出现 `x ≤ 3` 有留白、`x ⊕ 3` 没留白的不齐。类别在 `math-text.symbols.ts`。",
       "source": "packages/ui/src/math-text/math-text.md"
     },
     {
       "id": "component/math-text/pitfall/10",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**`parseMath` 会返回 `op` 节点**。自定义渲染时不要只处理 `text` —— 关系符和二元运算符走的是 `{ kind: \"op\", text, spacing }`，漏掉这个分支式子里会缺符号。`mathToPlain` 不受影响，它对 `op` 按紧凑文本输出。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/11",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**`30^{\\circ}` 不套 `<sup>`**。`\\circ` 本身就是上标位的字符，再抬一次会变成浮空小点。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/12",
+      "scope": "math-text",
+      "title": "MathText",
+      "rule": "**矩阵/方程组是有损降级**。`\\begin{array}…\\end{array}` 会被拍平成一行、`\\\\` 变成分号。要真排版请接 KaTeX。",
+      "source": "packages/ui/src/math-text/math-text.md"
+    },
+    {
+      "id": "component/math-text/pitfall/13",
       "scope": "math-text",
       "title": "MathText",
       "rule": "组件返回 `<span>`，可安全嵌进 `<p>`；填空槽带 `aria-label=\"填空\"`，读屏不会读成一串下划线。",
@@ -8060,7 +8109,7 @@
   ],
   "stats": {
     "componentDocs": 376,
-    "componentAdvisories": 1126,
-    "totalAdvisories": 1133
+    "componentAdvisories": 1133,
+    "totalAdvisories": 1140
   }
 }

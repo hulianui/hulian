@@ -36,6 +36,7 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | legendScroll | `boolean` | `false` | 图例恒为单行 + 横向滚动（对齐 echarts `legend.type: "scroll"`）。缺省是换行居中，序列一多就堆成多行挤扁画布；序列 >8 条开这个 |
 | horizontal | `boolean` | `false` | **BarChart 专属**：横向柱状 |
 | yAxisWidth | `number` | 自适应 | **BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48–160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传 |
+| radiusAxis | `boolean` | `true` | **RadarChart 专属**：半径轴的刻度数字（`0 15 30 …`）。传 `false` 只留环线与角轴名，即 echarts radar 的默认形态（它的 `axisLabel.show` 默认就是 `false`）。**如果**你的雷达图序列较多或数据填得满，建议关掉——见下方注意事项 |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-[32rem]`） |
 
 ### PieChart / RadialChart（扁平数据类）
@@ -62,6 +63,9 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 <RadarChart legend={false} data={data} series={series} xKey="indicator" height={320} />
 <RadarChart legendScroll data={data} series={series28} xKey="indicator" height={320} />
 
+// 多序列雷达图：图例单行横滚 + 关掉半径轴刻度（刻度会压在数据多边形上，见注意事项）
+<RadarChart legendScroll radiusAxis={false} data={data} series={series28} xKey="indicator" height={320} />
+
 // 横向柱状：CJK 类目轴宽自适应（≥4 字不再截断）
 <BarChart
   horizontal
@@ -79,6 +83,7 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 - `legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。序列多到换行时图例会堆成多行、继续挤压画布——**这时候不要靠调大 `height` 硬扛**（28 条序列的图例是 5 行，把雷达盘撑回可读尺寸得把总高翻倍），开 `legendScroll` 让图例恒为单行横滚。
 - 极坐标三件（Pie/Radar/Radial）的 `legend` **默认是 `true`**，与笛卡尔三件相反——它们历来自带图例，改默认会破坏存量版式。自绘图例前先 `legend={false}`，否则两份图例并排。
 - 自绘图例时色点用 `<Dot color={...} />`，**不要**写 `<Dot style={{ color }} />`——那是静默失效（圆点是背景色），见 [Dot 的坑](../dot/dot.md)。
+- RadarChart 的半径轴刻度（`radiusAxis`，默认开）**画在数据区里而不是外面**：刻度锚点沿一条水平半径均匀排开，正好从雷达盘中心穿到边缘，而且每个数字被 recharts 旋转 90° 竖排。序列一多、数据填得满，前几个刻度就整个落在数据多边形内部，既压住图形又难读。这一条**看版式是发现不了「选错了」的**——图能正常渲染，只是糊在一起。多序列雷达图建议直接 `radiusAxis={false}`：雷达图读的是形状对比，精确取值有 tooltip。
 
 ## 相关
 [Stat](../stat/stat.md) · [Statistic](../statistic/statistic.md) · [Meter](../meter/meter.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)

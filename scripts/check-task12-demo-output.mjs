@@ -1,5 +1,9 @@
 import { pathToFileURL } from "node:url";
 import { startStaticExportServer } from "./check-admin-demo-output.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
+
+// 英文站在产物里的前缀（英文作根语言时为空串）。
+const EN = basePathForLocale("en");
 
 const productIds = [
   "p-ha-bag", "p-ha-jacket", "p-hb-x9", "p-hl-lamp", "p-hl-pot", "p-hl-quilt",
@@ -112,22 +116,33 @@ export function collectUnexpectedFailureMarkers(text, allowedMarkers = []) {
 }
 
 async function assertEnglishPage(page, context) {
-  const { surfaces, invalidDemoLinks, svgDataUris } = await page.evaluate((attributes) => {
-    const values = [document.body.innerText];
-    for (const attribute of attributes) {
-      for (const element of document.querySelectorAll(`[${attribute}]`)) {
-        const value = element.getAttribute(attribute);
-        if (value) values.push(`${attribute}: ${value}`);
+  // 前缀必须**当参数传进浏览器上下文**：evaluate 的回调是序列化后在页面里执行的，
+  // Node 侧的闭包变量（这里是 EN）在那边不存在，直接引用会 ReferenceError。
+  const { surfaces, invalidDemoLinks, svgDataUris } = await page.evaluate(
+    ({ attributes, en }) => {
+      const values = [document.body.innerText];
+      for (const attribute of attributes) {
+        for (const element of document.querySelectorAll(`[${attribute}]`)) {
+          const value = element.getAttribute(attribute);
+          if (value) values.push(`${attribute}: ${value}`);
+        }
       }
-    }
-    const invalidDemoLinks = Array.from(document.querySelectorAll("a[href]"))
-      .map((element) => element.getAttribute("href"))
-      .filter((href) => href?.startsWith("/demos") || href?.startsWith("/en/en/"));
-    const svgDataUris = Array.from(document.querySelectorAll('img[src^="data:image/svg+xml"]'))
-      .map((element) => element.getAttribute("src"))
-      .filter(Boolean);
-    return { surfaces: values.join("\n"), invalidDemoLinks, svgDataUris };
-  }, TASK12_ACCESSIBLE_ATTRIBUTES);
+      // 英文产物里每条站内 demo 链接都该以英文前缀开头（英文挂根路径时该前缀是空串，
+      // 于是正确形态就是裸 /demos/...）。不合这个形状的一律抓出来：既覆盖「混进了另一
+      // 语种的地址」，也覆盖「前缀重复」。
+      const invalidDemoLinks = Array.from(document.querySelectorAll("a[href]"))
+        .map((element) => element.getAttribute("href"))
+        .filter(
+          (href) =>
+            href?.startsWith("/") && href.includes("/demos") && !href.startsWith(`${en}/demos`),
+        );
+      const svgDataUris = Array.from(document.querySelectorAll('img[src^="data:image/svg+xml"]'))
+        .map((element) => element.getAttribute("src"))
+        .filter(Boolean);
+      return { surfaces: values.join("\n"), invalidDemoLinks, svgDataUris };
+    },
+    { attributes: TASK12_ACCESSIBLE_ATTRIBUTES, en: EN },
+  );
   const decodedSvgText = svgDataUris.map(decodeTextBearingSvgDataUri).filter(Boolean).join("\n");
   const residue = collectCjkLines(`${surfaces}\n${decodedSvgText}`);
   if (residue.length) throw new Error(`${context} contains CJK or fullwidth text:\n${residue.join("\n")}`);
@@ -158,7 +173,7 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
   try {
     const routeErrors = [];
     for (const route of TASK12_DEMO_ROUTES) {
-      const pathname = `/en/demos/${route}`;
+      const pathname = `${EN}/demos/${route}`;
       const response = await page.goto(`${origin}${pathname}`, { waitUntil: "networkidle" });
       if (!response?.ok()) throw new Error(`${pathname} returned ${response?.status() ?? "no response"}`);
       if ((await page.locator("html").getAttribute("lang")) !== "en") {
@@ -188,7 +203,7 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     }
     if (routeErrors.length) throw new Error(`Task 12 route scan failed:\n${routeErrors.join("\n\n")}`);
 
-    await page.goto(`${origin}/en/demos/personal/guestbook`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/personal/guestbook`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Retry" }).click();
     await page.getByText("CodeFrame saved my technical posts", { exact: false }).waitFor({
       state: "visible",
@@ -196,7 +211,7 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     await assertEnglishPage(page, "personal guestbook after recovery");
     await assertNoUnexpectedFailure(page, "personal guestbook after recovery");
 
-    await page.goto(`${origin}/en/demos/live/room`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/live/room`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "AI support" }).click();
     const supportInput = page.getByPlaceholder("Ask support about sizing, offers, or delivery...");
     await supportInput.fill("When will it ship?");
@@ -204,32 +219,32 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     await page.getByText("Orders placed tonight ship within 48 hours", { exact: false }).waitFor();
     await assertEnglishPage(page, "live audience support response");
 
-    await page.goto(`${origin}/en/demos/mobile/services/s1`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/mobile/services/s1`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Book now" }).click();
     await page.getByText("Booked", { exact: false }).first().waitFor({ state: "visible" });
     await assertEnglishPage(page, "mobile service booking");
 
-    await page.goto(`${origin}/en/demos/shop`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/shop`, { waitUntil: "networkidle" });
     const shopRetry = page.getByRole("button", { name: "Reload" });
-    const productLink = page.locator('a[href^="/en/demos/shop/product/"]').first();
+    const productLink = page.locator(`a[href^="${EN}/demos/shop/product/"]`).first();
     await shopRetry.or(productLink).first().waitFor({ state: "visible" });
     if (await shopRetry.isVisible()) await shopRetry.click();
     await productLink.waitFor({ state: "visible" });
     await productLink.click();
-    await page.waitForURL((url) => url.pathname.startsWith("/en/demos/shop/product/"));
+    await page.waitForURL((url) => url.pathname.startsWith(`${EN}/demos/shop/product/`));
     await assertEnglishPage(page, "shop product after same-language navigation");
     await assertNoUnexpectedFailure(page, "shop product after recovery");
 
-    await page.goto(`${origin}/en/demos/website`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/website`, { waitUntil: "networkidle" });
     await page.getByRole("link", { name: "Pricing" }).first().click();
-    await assertEnglishLocation(page, "/en/demos/website/pricing");
+    await assertEnglishLocation(page, `${EN}/demos/website/pricing`);
     await page.getByText("Choose a plan", { exact: false }).first().waitFor();
     await assertEnglishPage(page, "website pricing navigation");
 
-    await page.goto(`${origin}/en/demos/website`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/website`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Open search (⌘K)" }).click();
     await page.getByRole("option", { name: /Pricing/ }).click();
-    await assertEnglishLocation(page, "/en/demos/website/pricing");
+    await assertEnglishLocation(page, `${EN}/demos/website/pricing`);
     await page.getByText("Choose a plan", { exact: false }).first().waitFor();
     await assertEnglishPage(page, "website command menu navigation");
 

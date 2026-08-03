@@ -3,6 +3,7 @@ export { chartColor } from "./chart-theme";
 export type {
   ChartProps,
   BarChartProps,
+  RadarChartProps,
   ChartSeries,
   ChartDatum,
   PieChartProps,

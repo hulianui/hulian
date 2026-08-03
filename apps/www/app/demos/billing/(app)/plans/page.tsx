@@ -95,12 +95,14 @@ export default function PlansPage() {
                     {copy("seatPricingSummary", plan.name, plan.seats, Math.max(0, seats - plan.seats), formatMoney(unitPrice(plan, cycle)))}
                   </p>
                 </div>
+                {/* 三个成员必须同高，否则 ButtonGroup 的 -ml-px 连体拼接会错位。
+                    iconSm(32) 与 sm(32) 是等高的一对；icon(36) 没有等高的文字档。 */}
                 <ButtonGroup aria-label={copy("numberOfSeats")}>
-                  <Button variant="outline" size="icon" aria-label={copy("reduceSeats")} disabled={seats <= 1} onClick={() => setSeats(seats - 1)}>
+                  <Button variant="outline" size="iconSm" aria-label={copy("reduceSeats")} disabled={seats <= 1} onClick={() => setSeats(seats - 1)}>
                     <Minus className="size-4" />
                   </Button>
-                  <Button variant="outline" className="pointer-events-none min-w-16 tabular-nums">{copy("valueSeats", seats)}</Button>
-                  <Button variant="outline" size="icon" aria-label={copy("addSeats")} onClick={() => setSeats(seats + 1)}>
+                  <Button variant="outline" size="sm" className="pointer-events-none min-w-16 tabular-nums">{copy("valueSeats", seats)}</Button>
+                  <Button variant="outline" size="iconSm" aria-label={copy("addSeats")} onClick={() => setSeats(seats + 1)}>
                     <Plus className="size-4" />
                   </Button>
                 </ButtonGroup>

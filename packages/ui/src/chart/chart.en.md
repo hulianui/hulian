@@ -36,6 +36,7 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | legendScroll | `boolean` | `false` | Keeps the legend on a single horizontally scrollable row (matching echarts' `legend.type: "scroll"`). The default wraps and centers, which stacks into several rows and squeezes the canvas once there are many series. Enable it beyond ~8 series. |
 | horizontal | `boolean` | `false` | BarChart-only horizontal orientation. |
 | yAxisWidth | `number` | Adaptive | BarChart-only category-axis width; horizontal mode estimates 48-160 px through `categoryAxisWidth`. |
+| radiusAxis | `boolean` | `true` | RadarChart-only radius-axis tick numbers (`0 15 30 …`). Pass `false` to keep only the grid rings and angle labels, which is what echarts' radar renders by default (its `axisLabel.show` defaults to `false`). **If** your radar has many series or densely filled data, turning it off is recommended — see the pitfalls below. |
 | className | `string` | — | Custom class, commonly used for width. |
 
 ### PieChart / RadialChart (flat data)
@@ -58,6 +59,10 @@ const data = [{ month: "Jan", revenue: 42, orders: 168 }, { month: "Feb", revenu
 // Donut chart
 <PieChart donut data={[{ name: "Search", value: 420 }, { name: "Direct", value: 280 }]} className="w-[32rem]" />
 
+// Multi-series radar: keep the legend on one scrollable row and drop the radius-axis
+// ticks, which otherwise sit on top of the data polygons (see Pitfalls).
+<RadarChart legendScroll radiusAxis={false} data={data} series={series28} xKey="indicator" height={320} />
+
 // Horizontal bars with adaptive category width
 <BarChart
   horizontal
@@ -75,6 +80,7 @@ const data = [{ month: "Jan", revenue: 42, orders: 168 }, { month: "Feb", revenu
 - `height` remains the component's total height when `legend` is enabled. The legend consumes a row and reduces the canvas height rather than increasing the total height. Once there are enough series to wrap, the legend stacks into several rows and keeps eating the canvas — **do not try to absorb that by raising `height`** (a 28-series legend is five rows; restoring a readable radar would mean doubling the total height). Enable `legendScroll` to keep the legend on one scrollable row.
 - For the polar three (Pie/Radar/Radial), `legend` **defaults to `true`**, the opposite of the Cartesian three, because they have always shipped a legend and flipping the default would break existing layouts. Set `legend={false}` before drawing your own, or two legends render side by side.
 - When drawing a custom legend, use `<Dot color={...} />`, not `<Dot style={{ color }} />`. Dot uses a background color, so the latter silently leaves it gray; see [Dot pitfalls](../dot/dot.md).
+- RadarChart's radius-axis ticks (`radiusAxis`, on by default) are drawn **inside the plot area, not outside it**: the tick anchors spread along a horizontal radius running from the center of the radar to its edge, and recharts rotates each number 90° so it reads vertically. With many series or densely filled data, the first few ticks land entirely inside the data polygons — covering the shape and hard to read at the same time. **You cannot tell you picked wrong by looking at the layout**: the chart renders fine, it is just muddled. For multi-series radars prefer `radiusAxis={false}`; a radar is read as a shape comparison, and exact values are available from the tooltip.
 
 ## Related
 [Stat](../stat/stat.md) · [Statistic](../statistic/statistic.md) · [Meter](../meter/meter.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)

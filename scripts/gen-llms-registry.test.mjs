@@ -13,8 +13,12 @@ import {
   rewritePageBlockImports,
   scanPageBlockDeps,
 } from "./gen-llms-registry.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+// 生成器默认按中文语种运行，其 registry 端点前缀由语言布局 SSOT 决定。
+const REGISTRY_BASE = `https://hulianui.haloritual.com${basePathForLocale("zh-CN")}`;
 
 function withCompositeFixture(metaEntry, run, options = {}) {
   const root = mkdtempSync(join(tmpdir(), "hulian-composite-meta-"));
@@ -151,7 +155,7 @@ test("20 个页面的源码路径与 registryDependencies 在安装后闭环", (
 
     const installedBlockImports = [
       ...content.matchAll(/(?:from|import)\s+["']\.\.\/blocks\/([\w-]+)["']/g),
-    ].map((match) => `https://hulianui.haloritual.com/r/block-${match[1]}.json`);
+    ].map((match) => `${REGISTRY_BASE}/r/block-${match[1]}.json`);
 
     assert.deepEqual(
       item.registryDependencies,

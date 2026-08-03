@@ -79,6 +79,10 @@ export const mathTextShowcase: ShowcaseSpec = {
         { name: "Vectors", render: () => <MathText>{"\\overrightarrow{AB}+\\vec{a}"}</MathText> },
         { name: "Number sets", render: () => <MathText>{"\\mathbb{Q}\\subset\\mathbb{R}"}</MathText> },
         { name: "Arc", render: () => <MathText>{"\\overset{\\frown}{AB}"}</MathText> },
+        {
+            name: "Symbol spacing",
+            render: () => <MathText>{"A\\Rightarrow B,x\\leq 3,\\angle ABC"}</MathText>,
+        },
         { name: "The unknown mark is left as is", render: () => <MathText>{"\\alpha+1"}</MathText> },
     ],
     renderWithProps: (p) => (<MathText blankWidth={Number(p.blankWidth ?? 2.5)} scriptScale={Number(p.scriptScale ?? 0.75)}>

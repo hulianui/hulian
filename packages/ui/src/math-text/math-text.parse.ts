@@ -10,6 +10,7 @@
 import type { MathNode } from "./math-text.types";
 import {
   BLACKBOARD_LETTERS,
+  classifySymbol,
   DECORATE_COMMANDS,
   ESCAPED_CHARS,
   MATH_SYMBOLS,
@@ -48,7 +49,14 @@ function skipSpaces(src: string, at: number): number {
   return i;
 }
 
-/** 读一个「参数」：既支持 `{...}` 组，也支持紧跟的单个字符（x^2）。 */
+/**
+ * 读一个「参数」：`{...}` 组、紧跟的单个字符（x^2），或**一条完整命令**（90^\circ）。
+ *
+ * 命令那一档不是锦上添花：`90^\circ` 比 `90^{\circ}` 更常见（少打两个花括号），
+ * 而 `\circ` 在初中题面频次里排第三。少了这一档，上标里只会落进一个反斜杠、
+ * 命令名漏成正文，题面上就露出 `90^\circ` —— 正是本组件要消灭的东西。
+ * 命令名自带边界，所以 `x^\alpha b` 的上标是 `\alpha`，`b` 仍是正文。
+ */
 function readArg(
   src: string,
   start: number,
@@ -60,6 +68,12 @@ function readArg(
     const end = matchBrace(src, at);
     if (end === -1) return null;
     return { nodes: parseMath(src.slice(at + 1, end), options), next: end + 1 };
+  }
+  if (src[at] === "\\") {
+    const name = src.slice(at).match(/^\\([a-zA-Z]+)/)?.[1];
+    const consumed = handleCommand(src, at, name, options);
+    // 不认识的命令返回 null，落回单字符那档，于是 `x^\oiint` 原样露出而不是被吞
+    if (consumed) return { nodes: consumed.nodes, next: consumed.next };
   }
   return { nodes: [{ kind: "text", text: src[at] }], next: at + 1 };
 }
@@ -172,9 +186,38 @@ function handleCommand(
   if (spacing !== undefined) return { nodes: [{ kind: "text", text: spacing }], next: after };
 
   const symbol = MATH_SYMBOLS[name];
-  if (symbol) return { nodes: [{ kind: "text", text: symbol }], next: skipSpaces(src, after) };
+  if (symbol) return { nodes: [toSymbolNode(symbol)], next: skipSpaces(src, after) };
 
   return null;
+}
+
+/** 按排版类别决定这个符号是普通文本还是要留白的 op 节点。 */
+function toSymbolNode(symbol: string): MathNode {
+  const cls = classifySymbol(symbol);
+  if (cls === "relation" || cls === "binary") return { kind: "op", text: symbol, spacing: cls };
+  return { kind: "text", text: symbol };
+}
+
+/** 左侧是开定界符时，紧跟的 `±` 是正负号而非「加减」，见 precededByOperand。 */
+const OPEN_DELIMITER_RE = /[([{⟨]$/;
+
+/**
+ * 前面有没有一个可运算的操作数。
+ * 二元运算符**只在两个操作数之间**才留白：`a±b` 是加减号要留白，`±3` 是正负号
+ * 要紧贴，`(±3)` 同理。关系符不走这条判据 —— 关系符没有一元用法。
+ */
+function precededByOperand(out: MathNode[], buf: string): boolean {
+  const pending = buf.replace(/[ \t]+$/, "");
+  if (pending) return !OPEN_DELIMITER_RE.test(pending);
+  const prev = out[out.length - 1];
+  if (!prev) return false;
+  if (prev.kind === "op") return false;
+  if (prev.kind === "text") {
+    const text = prev.text.replace(/[ \t]+$/, "");
+    return text !== "" && !OPEN_DELIMITER_RE.test(text);
+  }
+  // 分数 / 根号 / 上下标 / 装饰 / 填空槽本身就是完整的操作数
+  return true;
 }
 
 export function parseMath(src: string, options: MathParseOptions = {}): MathNode[] {
@@ -182,8 +225,14 @@ export function parseMath(src: string, options: MathParseOptions = {}): MathNode
   let buf = "";
   let i = 0;
 
-  const flush = () => {
-    if (buf) out.push({ kind: "text", text: buf });
+  /**
+   * `trimTrailingSpace` 用在 op 节点之前：关系符左右的留白由类别统一给，
+   * 作者写的 `A ⇒ B` 与 `A⇒B` 必须落到同一个视觉结果，
+   * 否则左边是文本空格 + 留白、右边只有留白，两侧仍然不对称。
+   */
+  const flush = (trimTrailingSpace = false) => {
+    const text = trimTrailingSpace ? buf.replace(/[ \t]+$/, "") : buf;
+    if (text) out.push({ kind: "text", text });
     buf = "";
   };
 
@@ -202,8 +251,14 @@ export function parseMath(src: string, options: MathParseOptions = {}): MathNode
       const name = rest.match(/^\\([a-zA-Z]+)/)?.[1];
       const consumed = handleCommand(src, i, name, options);
       if (consumed) {
-        flush();
-        out.push(...consumed.nodes);
+        let nodes = consumed.nodes;
+        const first = nodes[0];
+        // `\pm 3` 在行首是正负号，降级成普通文本，不留白
+        if (first?.kind === "op" && first.spacing === "binary" && !precededByOperand(out, buf)) {
+          nodes = [{ kind: "text", text: first.text }];
+        }
+        flush(nodes[0]?.kind === "op");
+        out.push(...nodes);
         i = consumed.next;
         continue;
       }
@@ -242,6 +297,17 @@ export function parseMath(src: string, options: MathParseOptions = {}): MathNode
       continue;
     }
 
+    // 裸 Unicode 关系符/运算符（`x=1`、OCR 直接给出的 `x≠0`）与命令写法同等对待，
+    // 否则同一行里 `\leq` 有留白、手打的 `=` 没有，看起来更乱。
+    const cls = classifySymbol(src[i]);
+    if (cls === "relation" || (cls === "binary" && precededByOperand(out, buf))) {
+      flush(true);
+      out.push({ kind: "op", text: src[i], spacing: cls });
+      // 右侧空格一并归一化：留白由类别给，不叠加作者打的空格
+      i = skipSpaces(src, i + 1);
+      continue;
+    }
+
     buf += src[i];
     i++;
   }
@@ -260,6 +326,9 @@ export function mathToPlain(src: string): string {
       .map((n) => {
         switch (n.kind) {
           case "text":
+            return n.text;
+          // 朴素文本保持紧凑：`x≠0` 才是检索/导出/比对要的形态，留白只属于 DOM
+          case "op":
             return n.text;
           case "frac":
             return `${render(n.num)}/${render(n.den)}`;

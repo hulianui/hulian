@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { load } from "cheerio";
+import { ROOT_LOCALE, localeCanonicalPath } from "./docs-locale-layout.mjs";
 
 const AUTHORITATIVE_ORIGIN = "https://hulianui.haloritual.com";
 const COMPONENT_SLUG = "button";
@@ -19,9 +20,9 @@ function digest(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 
+// 前缀与首页尾斜杠一律由 SSOT 决定，别在这里拼字面量。
 function localizedPath(barePath, locale) {
-  if (locale === "zh-CN") return barePath;
-  return barePath === "/" ? "/en" : `/en${barePath}`;
+  return localeCanonicalPath(barePath, locale);
 }
 
 function canonicalFor(barePath, locale) {
@@ -108,7 +109,7 @@ function inspectHtml({ html, expectedHtml, origin, path, locale, barePath, failu
   const expectedAlternates = new Map([
     ["zh-CN", canonicalFor(barePath, "zh-CN")],
     ["en", canonicalFor(barePath, "en")],
-    ["x-default", canonicalFor(barePath, "en")],
+    ["x-default", canonicalFor(barePath, ROOT_LOCALE)],
   ]);
   for (const [hreflang, expectedHref] of expectedAlternates) {
     if (alternates.get(hreflang) !== expectedHref) {
@@ -259,27 +260,47 @@ export async function verifyPublicBilingualSites({
 
   const evidence = [];
   const failures = [];
+  // 路径一律由 localizedPath 生成：哪个语种落在根、哪个带前缀由 SSOT 说了算。
+  const componentRoute = `/components/${COMPONENT_SLUG}`;
   const htmlSpecs = [
-    { path: "/", barePath: "/", locale: "zh-CN", expected: (value) => value.zh.home },
-    { path: "/en", barePath: "/", locale: "en", expected: (value) => value.en.home },
     {
-      path: `/components/${COMPONENT_SLUG}`,
-      barePath: `/components/${COMPONENT_SLUG}`,
+      path: localizedPath("/", "zh-CN"),
+      barePath: "/",
+      locale: "zh-CN",
+      expected: (value) => value.zh.home,
+    },
+    {
+      path: localizedPath("/", "en"),
+      barePath: "/",
+      locale: "en",
+      expected: (value) => value.en.home,
+    },
+    {
+      path: localizedPath(componentRoute, "zh-CN"),
+      barePath: componentRoute,
       locale: "zh-CN",
       expected: (value) => value.zh.component,
     },
     {
-      path: `/en/components/${COMPONENT_SLUG}`,
-      barePath: `/components/${COMPONENT_SLUG}`,
+      path: localizedPath(componentRoute, "en"),
+      barePath: componentRoute,
       locale: "en",
       expected: (value) => value.en.component,
     },
   ];
   const artifactSpecs = [
-    { path: "/registry.json", kind: "registry", expected: (value) => value.zh.registry },
-    { path: "/en/registry.json", kind: "registry", expected: (value) => value.en.registry },
-    { path: "/llms.txt", kind: "llms", expected: (value) => value.zh.llms },
-    { path: "/en/llms.txt", kind: "llms", expected: (value) => value.en.llms },
+    {
+      path: localizedPath("/registry.json", "zh-CN"),
+      kind: "registry",
+      expected: (value) => value.zh.registry,
+    },
+    {
+      path: localizedPath("/registry.json", "en"),
+      kind: "registry",
+      expected: (value) => value.en.registry,
+    },
+    { path: localizedPath("/llms.txt", "zh-CN"), kind: "llms", expected: (value) => value.zh.llms },
+    { path: localizedPath("/llms.txt", "en"), kind: "llms", expected: (value) => value.en.llms },
     { path: "/logo.svg", kind: "asset", expected: (value) => value.asset },
   ];
 

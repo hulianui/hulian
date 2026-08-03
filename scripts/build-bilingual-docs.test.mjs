@@ -15,6 +15,30 @@ import test from "node:test";
 import * as cheerio from "cheerio";
 
 import * as bilingualDocs from "./build-bilingual-docs.mjs";
+import { NESTED_BASE_PATH, ROOT_LOCALE, localeCanonicalPath } from "./docs-locale-layout.mjs";
+
+const ORIGIN = "https://hulianui.haloritual.com";
+const NESTED_DIR = NESTED_BASE_PATH.slice(1);
+
+/** 裸路由在某语种下的对外绝对 URL。全部从 SSOT 派生，翻转语言布局时本文件无需再改。 */
+function at(bare, locale) {
+  return `${ORIGIN}${localeCanonicalPath(bare, locale)}`;
+}
+
+/** 裸路由在成品树里的文件相对路径：根语言直接铺在根，另一语种进子目录。 */
+function fixtureFile(bare, locale) {
+  const name = bare === "/" ? "index.html" : `${bare.slice(1)}.html`;
+  return locale === ROOT_LOCALE ? name : `${NESTED_DIR}/${name}`;
+}
+
+/** 任一裸路由在两个语种下都该得到的同一组 hreflang。 */
+function expectedAlternates(bare) {
+  return {
+    "zh-CN": at(bare, "zh-CN"),
+    en: at(bare, "en"),
+    "x-default": at(bare, ROOT_LOCALE),
+  };
+}
 
 const {
   assembleExportsByRename,
@@ -78,15 +102,16 @@ test("routeSet includes route documents and ignores HTML fragments, framework, a
 
 test("postprocessBilingualRouteMetadata injects exact SEO links into every physical bilingual route only", async () => {
   await withFixture(async (fixtureRoot) => {
+    const bareRoutes = ["/", "/components/button", "/404", "/_not-found"];
     await writeFixture(fixtureRoot, {
-      "index.html": routeHtml("Chinese home", '<meta name="keep" content="zh">'),
-      "components/button.html": routeHtml("Chinese button"),
-      "404.html": routeHtml("Chinese not found"),
-      "_not-found.html": routeHtml("Chinese internal not found"),
-      "en/index.html": routeHtml("English home", '<meta name="keep" content="en">'),
-      "en/components/button.html": routeHtml("English button"),
-      "en/404.html": routeHtml("English not found"),
-      "en/_not-found.html": routeHtml("English internal not found"),
+      [fixtureFile("/", ROOT_LOCALE)]: routeHtml("Root home", '<meta name="keep" content="root">'),
+      [fixtureFile("/components/button", ROOT_LOCALE)]: routeHtml("Root button"),
+      [fixtureFile("/404", ROOT_LOCALE)]: routeHtml("Root not found"),
+      [fixtureFile("/_not-found", ROOT_LOCALE)]: routeHtml("Root internal not found"),
+      [fixtureFile("/", "zh-CN")]: routeHtml("Nested home", '<meta name="keep" content="nested">'),
+      [fixtureFile("/components/button", "zh-CN")]: routeHtml("Nested button"),
+      [fixtureFile("/404", "zh-CN")]: routeHtml("Nested not found"),
+      [fixtureFile("/_not-found", "zh-CN")]: routeHtml("Nested internal not found"),
       "embedded-fragment.html": "<article>keep fragment bytes</article>",
       "_next/debug.html": routeHtml("keep framework bytes"),
     });
@@ -94,37 +119,16 @@ test("postprocessBilingualRouteMetadata injects exact SEO links into every physi
     assert.equal(typeof postprocessBilingualRouteMetadata, "function");
     await postprocessBilingualRouteMetadata(fixtureRoot);
 
-    const expected = new Map([
-      ["index.html", ["https://hulianui.haloritual.com", "/", "zh"]],
-      [
-        "components/button.html",
-        ["https://hulianui.haloritual.com/components/button", "/components/button", "zh"],
-      ],
-      ["404.html", ["https://hulianui.haloritual.com/404", "/404", "zh"]],
-      ["_not-found.html", ["https://hulianui.haloritual.com/_not-found", "/_not-found", "zh"]],
-      ["en/index.html", ["https://hulianui.haloritual.com/en", "/", "en"]],
-      [
-        "en/components/button.html",
-        ["https://hulianui.haloritual.com/en/components/button", "/components/button", "en"],
-      ],
-      ["en/404.html", ["https://hulianui.haloritual.com/en/404", "/404", "en"]],
-      [
-        "en/_not-found.html",
-        ["https://hulianui.haloritual.com/en/_not-found", "/_not-found", "en"],
-      ],
-    ]);
-
-    for (const [relativePath, [canonical, bare]] of expected) {
-      const metadata = seoMetadata(await readFile(join(fixtureRoot, relativePath), "utf8"));
-      const englishPath = `/en${bare === "/" ? "" : bare}`;
-      assert.deepEqual(metadata, {
-        canonical: [canonical],
-        alternates: {
-          "zh-CN": `https://hulianui.haloritual.com${bare === "/" ? "" : bare}`,
-          en: `https://hulianui.haloritual.com${englishPath}`,
-          "x-default": `https://hulianui.haloritual.com${englishPath}`,
-        },
-      });
+    for (const bare of bareRoutes) {
+      for (const locale of [ROOT_LOCALE, "zh-CN"]) {
+        const metadata = seoMetadata(
+          await readFile(join(fixtureRoot, fixtureFile(bare, locale)), "utf8"),
+        );
+        assert.deepEqual(metadata, {
+          canonical: [at(bare, locale)],
+          alternates: expectedAlternates(bare),
+        });
+      }
     }
 
     assert.equal(
@@ -141,60 +145,62 @@ test("postprocessBilingualRouteMetadata injects exact SEO links into every physi
 
 test("postprocessBilingualRouteMetadata repairs only invalid SEO links and is byte-idempotent", async () => {
   await withFixture(async (fixtureRoot) => {
-    const chineseHead = [
-      '<meta name="keep" content="Chinese metadata">',
-      '<link data-preserve="canonical" rel="canonical" href="https://hulianui.haloritual.com/guide">',
-      '<link data-preserve="zh" rel="alternate" hreflang="zh-CN" href="https://hulianui.haloritual.com/guide">',
-      '<link rel="alternate" hreflang="en" href="https://hulianui.haloritual.com/wrong">',
-      '<link data-preserve="default" rel="alternate" hreflang="x-default" href="https://hulianui.haloritual.com/en/guide">',
+    // 根语言那份：链接本就正确，data-preserve 用来验证「对的原样保留、不重写字节」。
+    const rootHead = [
+      '<meta name="keep" content="Root metadata">',
+      `<link data-preserve="canonical" rel="canonical" href="${at("/guide", ROOT_LOCALE)}">`,
+      `<link data-preserve="zh" rel="alternate" hreflang="zh-CN" href="${at("/guide", "zh-CN")}">`,
+      `<link rel="alternate" hreflang="en" href="${ORIGIN}/wrong">`,
+      `<link data-preserve="default" rel="alternate" hreflang="x-default" href="${at(
+        "/guide",
+        ROOT_LOCALE,
+      )}">`,
       '<link data-preserve="fr" rel="alternate" hreflang="fr" href="https://example.com/fr/guide">',
     ].join("");
-    const englishHead = [
-      '<meta name="keep" content="English metadata">',
-      '<link rel="canonical" href="https://hulianui.haloritual.com/wrong">',
-      '<link rel="canonical" href="https://hulianui.haloritual.com/en/guide">',
-      '<link rel="alternate" hreflang="zh-CN" href="https://hulianui.haloritual.com/guide">',
-      '<link rel="alternate" hreflang="en" href="https://hulianui.haloritual.com/en/guide">',
-      '<link rel="alternate" hreflang="EN" href="https://hulianui.haloritual.com/en/guide">',
-      '<link rel="alternate" hreflang="x-default" href="https://hulianui.haloritual.com/en/guide">',
+    // 嵌套语言那份：重复 canonical 与大小写变体的 hreflang 应被规整掉。
+    const nestedHead = [
+      '<meta name="keep" content="Nested metadata">',
+      `<link rel="canonical" href="${ORIGIN}/wrong">`,
+      `<link rel="canonical" href="${at("/guide", "zh-CN")}">`,
+      `<link rel="alternate" hreflang="zh-CN" href="${at("/guide", "zh-CN")}">`,
+      `<link rel="alternate" hreflang="en" href="${at("/guide", "en")}">`,
+      `<link rel="alternate" hreflang="EN" href="${at("/guide", "en")}">`,
+      `<link rel="alternate" hreflang="x-default" href="${at("/guide", ROOT_LOCALE)}">`,
     ].join("");
     await writeFixture(fixtureRoot, {
-      "guide.html": routeHtml("Chinese guide", chineseHead),
-      "en/guide.html": routeHtml("English guide", englishHead),
+      [fixtureFile("/guide", ROOT_LOCALE)]: routeHtml("Root guide", rootHead),
+      [fixtureFile("/guide", "zh-CN")]: routeHtml("Nested guide", nestedHead),
     });
 
     await postprocessBilingualRouteMetadata(fixtureRoot);
-    const chineseOnce = await readFile(join(fixtureRoot, "guide.html"), "utf8");
-    const englishOnce = await readFile(join(fixtureRoot, "en/guide.html"), "utf8");
-
-    assert.deepEqual(seoMetadata(chineseOnce), {
-      canonical: ["https://hulianui.haloritual.com/guide"],
-      alternates: {
-        "zh-CN": "https://hulianui.haloritual.com/guide",
-        en: "https://hulianui.haloritual.com/en/guide",
-        "x-default": "https://hulianui.haloritual.com/en/guide",
-        fr: "https://example.com/fr/guide",
-      },
-    });
-    assert.match(chineseOnce, /data-preserve="canonical"/);
-    assert.match(chineseOnce, /data-preserve="zh"/);
-    assert.match(chineseOnce, /data-preserve="default"/);
-    assert.match(chineseOnce, /data-preserve="fr"/);
-    assert.match(chineseOnce, /name="keep" content="Chinese metadata"/);
+    const chineseOnce = await readFile(join(fixtureRoot, fixtureFile("/guide", "zh-CN")), "utf8");
+    const englishOnce = await readFile(join(fixtureRoot, fixtureFile("/guide", ROOT_LOCALE)), "utf8");
 
     assert.deepEqual(seoMetadata(englishOnce), {
-      canonical: ["https://hulianui.haloritual.com/en/guide"],
-      alternates: {
-        "zh-CN": "https://hulianui.haloritual.com/guide",
-        en: "https://hulianui.haloritual.com/en/guide",
-        "x-default": "https://hulianui.haloritual.com/en/guide",
-      },
+      canonical: [at("/guide", ROOT_LOCALE)],
+      alternates: { ...expectedAlternates("/guide"), fr: "https://example.com/fr/guide" },
     });
-    assert.match(englishOnce, /name="keep" content="English metadata"/);
+    assert.match(englishOnce, /data-preserve="canonical"/);
+    assert.match(englishOnce, /data-preserve="zh"/);
+    assert.match(englishOnce, /data-preserve="default"/);
+    assert.match(englishOnce, /data-preserve="fr"/);
+    assert.match(englishOnce, /name="keep" content="Root metadata"/);
+
+    assert.deepEqual(seoMetadata(chineseOnce), {
+      canonical: [at("/guide", "zh-CN")],
+      alternates: expectedAlternates("/guide"),
+    });
+    assert.match(chineseOnce, /name="keep" content="Nested metadata"/);
 
     await postprocessBilingualRouteMetadata(fixtureRoot);
-    assert.equal(await readFile(join(fixtureRoot, "guide.html"), "utf8"), chineseOnce);
-    assert.equal(await readFile(join(fixtureRoot, "en/guide.html"), "utf8"), englishOnce);
+    assert.equal(
+      await readFile(join(fixtureRoot, fixtureFile("/guide", "zh-CN")), "utf8"),
+      chineseOnce,
+    );
+    assert.equal(
+      await readFile(join(fixtureRoot, fixtureFile("/guide", ROOT_LOCALE)), "utf8"),
+      englishOnce,
+    );
   });
 });
 
@@ -219,7 +225,7 @@ test("assertRouteParity reports routes missing from either locale", async () => 
   });
 });
 
-test("mergeExports nests the complete English export below en", async () => {
+test("mergeExports puts the root-locale export at the tree root and nests the other", async () => {
   await withFixture(async (fixtureRoot) => {
     const zhRoot = join(fixtureRoot, "zh");
     const enRoot = join(fixtureRoot, "en");
@@ -241,16 +247,14 @@ test("mergeExports nests the complete English export below en", async () => {
 
     await mergeExports(zhRoot, enRoot, outRoot);
 
-    assert.match(await readFile(join(outRoot, "components/button.html"), "utf8"), /zh button/);
-    assert.match(await readFile(join(outRoot, "en/components/button.html"), "utf8"), /en button/);
-    assert.equal(await readFile(join(outRoot, "en/_next/a.js"), "utf8"), "en framework");
-    assert.deepEqual(seoMetadata(await readFile(join(outRoot, "components/button.html"), "utf8")), {
-      canonical: ["https://hulianui.haloritual.com/components/button"],
-      alternates: {
-        "zh-CN": "https://hulianui.haloritual.com/components/button",
-        en: "https://hulianui.haloritual.com/en/components/button",
-        "x-default": "https://hulianui.haloritual.com/en/components/button",
-      },
+    const rootButton = fixtureFile("/components/button", ROOT_LOCALE);
+    const nestedButton = fixtureFile("/components/button", "zh-CN");
+    assert.match(await readFile(join(outRoot, rootButton), "utf8"), /en button/);
+    assert.match(await readFile(join(outRoot, nestedButton), "utf8"), /zh button/);
+    assert.equal(await readFile(join(outRoot, `${NESTED_DIR}/_next/a.js`), "utf8"), "zh framework");
+    assert.deepEqual(seoMetadata(await readFile(join(outRoot, rootButton), "utf8")), {
+      canonical: [at("/components/button", ROOT_LOCALE)],
+      alternates: expectedAlternates("/components/button"),
     });
   });
 });
@@ -285,10 +289,13 @@ test("assembleExportsByRename consumes locale trees without copying their conten
 
     await assembleExportsByRename(zhRoot, enRoot, outRoot);
 
-    assert.match(await readFile(join(outRoot, "components/button.html"), "utf8"), /zh button/);
     assert.match(
-      await readFile(join(outRoot, "en/components/button.html"), "utf8"),
+      await readFile(join(outRoot, fixtureFile("/components/button", ROOT_LOCALE)), "utf8"),
       /en button/,
+    );
+    assert.match(
+      await readFile(join(outRoot, fixtureFile("/components/button", "zh-CN")), "utf8"),
+      /zh button/,
     );
     await assert.rejects(readFile(join(zhRoot, "index.html")), { code: "ENOENT" });
     await assert.rejects(readFile(join(enRoot, "index.html")), { code: "ENOENT" });

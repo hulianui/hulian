@@ -8,7 +8,7 @@ import { PreviewViewer } from "../../../components/preview-viewer";
 import { InstallPanel } from "../../../components/install-panel";
 import { buildInstallModel, depNameOf } from "../../../lib/install-model";
 import { readDepTitles, readRegistryItem, readRegistryMeta } from "../../../lib/registry-source";
-import { DOCS_LOCALE, withDocsBasePath } from "../../../lib/docs-locale";
+import { DOCS_LOCALE, ROOT_LOCALE, canonicalPathForLocale } from "../../../lib/docs-locale";
 import englishSources from "../block-fixture-sources.en.json";
 
 const content = getIntlayer("blocks", DOCS_LOCALE).detail;
@@ -29,14 +29,17 @@ export async function generateMetadata({
   const title = content.metadataTitle.replace("{name}", display.name);
   const description = content.metadataDescription.replace("{description}", display.description);
   const barePath = `/blocks/${slug}`;
-  const path = withDocsBasePath(barePath);
-  const englishPath = withDocsBasePath(barePath, "en");
+  const path = canonicalPathForLocale(barePath, DOCS_LOCALE);
   return {
     title,
     description,
     alternates: {
       canonical: path,
-      languages: { "zh-CN": barePath, en: englishPath, "x-default": englishPath },
+      languages: {
+        "zh-CN": canonicalPathForLocale(barePath, "zh-CN"),
+        en: canonicalPathForLocale(barePath, "en"),
+        "x-default": canonicalPathForLocale(barePath, ROOT_LOCALE),
+      },
     },
     openGraph: { type: "article", title, description, url: path, images: ["/opengraph-image.png"] },
   };

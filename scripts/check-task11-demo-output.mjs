@@ -1,5 +1,10 @@
 import { pathToFileURL } from "node:url";
 import { startStaticExportServer } from "./check-admin-demo-output.mjs";
+import { NESTED_BASE_PATH, basePathForLocale } from "./docs-locale-layout.mjs";
+
+// 英文站在产物里的前缀（英文作根语言时为空串），以及嵌套语言前缀（用于识别重复前缀）。
+const EN = basePathForLocale("en");
+const NESTED = NESTED_BASE_PATH;
 
 export const TASK11_DEMO_ROUTES = [
   "ai-chat",
@@ -121,7 +126,7 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
   try {
     const routeLanguageErrors = [];
     for (const route of TASK11_DEMO_ROUTES) {
-      const path = `/en/demos/${route}`;
+      const path = `${EN}/demos/${route}`;
       const response = await page.goto(`${origin}${path}`, { waitUntil: "networkidle" });
       if (!response?.ok())
         throw new Error(`${path} returned ${response?.status() ?? "no response"}`);
@@ -147,15 +152,15 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       throw new Error(`Task 11 route language scan failed:\n${routeLanguageErrors.join("\n\n")}`);
     }
 
-    await page.goto(`${origin}/en/demos/ai-chat`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/ai-chat`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Write a quick sort for me" }).click();
     await page.getByText("function quickSort(arr)", { exact: false }).waitFor({
       state: "visible",
       timeout: 15_000,
     });
-    await assertEnglishPage(page, "/en/demos/ai-chat after response");
+    await assertEnglishPage(page, `${EN}/demos/ai-chat after response`);
 
-    await page.goto(`${origin}/en/demos/ai-workflow`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/ai-workflow`, { waitUntil: "networkidle" });
     const skipTour = page.getByRole("button", { name: "Skip" });
     try {
       await skipTour.waitFor({ state: "visible", timeout: 2_000 });
@@ -167,22 +172,22 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
     await page.getByText("2 minutes ago", { exact: true }).waitFor({ state: "visible" });
     await page.getByText("1 hour ago", { exact: true }).waitFor({ state: "visible" });
     await page.getByText("Yesterday", { exact: true }).waitFor({ state: "visible" });
-    await assertEnglishPage(page, "/en/demos/ai-workflow notifications");
+    await assertEnglishPage(page, `${EN}/demos/ai-workflow notifications`);
     await page.keyboard.press("Escape");
 
     await page.getByRole("link", { name: "Template library" }).click();
-    await page.waitForURL((url) => url.pathname === "/en/demos/ai-workflow/templates");
+    await page.waitForURL((url) => url.pathname === `${EN}/demos/ai-workflow/templates`);
     if ((await page.locator("html").getAttribute("lang")) !== "en") {
       throw new Error("English workflow navigation lost the document language");
     }
     await page.getByText(TASK11_ROUTE_MARKERS["ai-workflow/templates"], { exact: false }).first().waitFor({
       state: "visible",
     });
-    await assertEnglishPage(page, "/en/demos/ai-workflow/templates after navigation");
+    await assertEnglishPage(page, `${EN}/demos/ai-workflow/templates after navigation`);
 
     await page.getByText("Text to image", { exact: true }).first().waitFor({ state: "visible" });
 
-    await page.goto(`${origin}/en/demos/knowledge`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/knowledge`, { waitUntil: "networkidle" });
     await page
       .getByRole("alert")
       .filter({ hasText: "Failed to load knowledge base" })
@@ -192,10 +197,10 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       state: "visible",
       timeout: 10_000,
     });
-    await assertEnglishPage(page, "/en/demos/knowledge after retry");
-    await assertNoUnexpectedApplicationFailure(page, "/en/demos/knowledge after retry");
+    await assertEnglishPage(page, `${EN}/demos/knowledge after retry`);
+    await assertNoUnexpectedApplicationFailure(page, `${EN}/demos/knowledge after retry`);
 
-    await page.goto(`${origin}/en/demos/learn`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/learn`, { waitUntil: "networkidle" });
     await page
       .getByRole("alert")
       .filter({ hasText: "Course failed to load" })
@@ -205,10 +210,10 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       state: "visible",
       timeout: 10_000,
     });
-    await assertEnglishPage(page, "/en/demos/learn after retry");
-    await assertNoUnexpectedApplicationFailure(page, "/en/demos/learn after retry");
+    await assertEnglishPage(page, `${EN}/demos/learn after retry`);
+    await assertNoUnexpectedApplicationFailure(page, `${EN}/demos/learn after retry`);
 
-    await page.goto(`${origin}/en/demos/learn/courses/react-foundations`, {
+    await page.goto(`${origin}${EN}/demos/learn/courses/react-foundations`, {
       waitUntil: "networkidle",
     });
     await page.getByRole("tab", { name: "Discussion" }).click();
@@ -216,19 +221,19 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
     await discussion.fill("@");
     await page.getByRole("listbox", { name: "Mention suggestions" }).waitFor({ state: "visible" });
     await page.getByRole("option", { name: /Course assistant/ }).first().waitFor({ state: "visible" });
-    await assertEnglishPage(page, "/en/demos/learn mention suggestions");
+    await assertEnglishPage(page, `${EN}/demos/learn mention suggestions`);
 
-    await page.goto(`${origin}/en/demos/scheduler`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/scheduler`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Retry" }).waitFor({ state: "visible" });
     await page.getByRole("button", { name: "Retry" }).click();
     const seededEvent = page.locator('[role="button"][title*="Follow-up · Chen Xiaoming"]').first();
     await seededEvent.waitFor({ state: "visible", timeout: 10_000 });
-    await assertEnglishPage(page, "/en/demos/scheduler after retry");
-    await assertNoUnexpectedApplicationFailure(page, "/en/demos/scheduler after retry");
+    await assertEnglishPage(page, `${EN}/demos/scheduler after retry`);
+    await assertNoUnexpectedApplicationFailure(page, `${EN}/demos/scheduler after retry`);
     await seededEvent.click();
     await page.getByText("Follow-up", { exact: true }).last().waitFor({ state: "visible" });
     await page.getByText("Type", { exact: true }).waitFor({ state: "visible" });
-    await assertEnglishPage(page, "/en/demos/scheduler appointment detail");
+    await assertEnglishPage(page, `${EN}/demos/scheduler appointment detail`);
     await page.keyboard.press("Escape");
 
     await page.getByRole("button", { name: "New appointment" }).click();
@@ -240,7 +245,7 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       .click();
     await page.getByPlaceholder("Search by patient name or phone...").fill("Chen Xiaoming");
     await page.getByRole("option", { name: /Chen Xiaoming/ }).click();
-    await assertEnglishPage(page, "/en/demos/scheduler appointment dialog");
+    await assertEnglishPage(page, `${EN}/demos/scheduler appointment dialog`);
     await page.getByRole("button", { name: "Create appointment" }).click();
     await page.getByText("Appointment created", { exact: true }).waitFor({
       state: "visible",
@@ -250,9 +255,9 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       state: "visible",
       timeout: 10_000,
     });
-    await assertEnglishPage(page, "/en/demos/scheduler after submit");
+    await assertEnglishPage(page, `${EN}/demos/scheduler after submit`);
 
-    await page.goto(`${origin}/en/demos/dashboard`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/dashboard`, { waitUntil: "networkidle" });
     await page.getByText("Global QPS", { exact: false }).waitFor({ state: "visible" });
     await assertDashboardCharts(page, "Dashboard healthy state");
     await page.getByRole("combobox", { name: "Data source" }).click();
@@ -267,7 +272,7 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
         state: "visible",
         timeout: 10_000,
       });
-    await assertEnglishPage(page, "/en/demos/dashboard error state");
+    await assertEnglishPage(page, `${EN}/demos/dashboard error state`);
 
     await page.getByRole("combobox", { name: "Data source" }).click();
     await page.getByRole("option", { name: "Data source: Healthy" }).click();
@@ -279,8 +284,8 @@ export async function scanTask11DemoOutput(outputRoot = "apps/www/out") {
       timeout: 10_000,
     });
     const chartPathCount = await assertDashboardCharts(page, "Dashboard recovered state");
-    await assertEnglishPage(page, "/en/demos/dashboard recovered state");
-    await assertNoUnexpectedApplicationFailure(page, "/en/demos/dashboard recovered state");
+    await assertEnglishPage(page, `${EN}/demos/dashboard recovered state`);
+    await assertNoUnexpectedApplicationFailure(page, `${EN}/demos/dashboard recovered state`);
 
     if (browserErrors.length) throw new Error(`Browser page errors:\n${browserErrors.join("\n")}`);
     return { routes: TASK11_DEMO_ROUTES.length, chartPaths: chartPathCount };

@@ -49,14 +49,18 @@ export function Banner({
     <div role="status" className={cn(bannerVariants({ variant, tone }), className)}>
       {icon != null && <span className="shrink-0 [&>svg]:size-4">{icon}</span>}
 
-      {/* 文案区：scrollable 走 Marquee 单行无缝滚动；否则按 align 排布(可截断) */}
+      {/* 文案区：scrollable 走 Marquee 单行无缝滚动；否则按 align 排布(可截断)。
+          截断那档的 span 必须是 block —— truncate 里的 overflow:hidden 与
+          text-overflow:ellipsis 对 inline 元素不生效，只剩 white-space:nowrap，
+          文字于是既不换行又不被裁剪，长文案会把 flex 容器撑破、把 action 挤出屏幕
+          （窄屏尤其明显）。 */}
       <div className={cn("min-w-0 flex-1", align === "center" && !scrollable && "text-center")}>
         {scrollable ? (
           <Marquee pauseOnHover repeat={3} duration={24}>
             <span className="px-4">{children}</span>
           </Marquee>
         ) : (
-          <span className="truncate">{children}</span>
+          <span className="block truncate">{children}</span>
         )}
       </div>
 

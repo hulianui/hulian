@@ -55,7 +55,9 @@ import { ButtonGroup } from "@hulianui/ui"
 
 ## Usage guidelines
 
-`gap` only applies when `attached={false}`. In attached mode, the component joins corners and borders without adding margins between child controls.
+- **Members must share the same height**, especially in attached mode. Attaching works by pulling each neighbor over with `-ml-px` so their borders overlap, and that seam assumes every member is the same height; once heights differ, the shorter ones leave a visible step above and below. In [Button](../button/button.md)'s size scale, **`icon` (36px) has no text size that matches it** — the text sizes are `sm` 32, `md` 40, and `lg` 48. So `size="icon"` misaligns against any button with a label. To mix icons and labels, pick a **matched pair**: `iconSm` (32) with `sm` (32), or give the icon button an explicit height that lines up with `md`.
+- **You cannot spot the above by reading the code**: all three buttons say `variant="outline"` and either omit `size` or set it on just one of them, which reads perfectly tidy — the middle one being 4px taller only shows up once rendered. The classic case is a `−/value/+` stepper.
+- `gap` only applies when `attached={false}`. In attached mode, the component joins corners and borders without adding margins between child controls.
 
 ## Related
 [Button](../button/button.md) · [ShimmerButton](../shimmer-button/shimmer-button.md) · [RainbowButton](../rainbow-button/rainbow-button.md) · [PulsatingButton](../pulsating-button/pulsating-button.md) · [RippleButton](../ripple-button/ripple-button.md) · [SocialButton](../social-button/social-button.md)

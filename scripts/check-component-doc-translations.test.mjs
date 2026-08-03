@@ -11,8 +11,16 @@ import {
   formatDiagnostics,
 } from "./check-component-doc-translations.mjs";
 import { absolutize, collectDocs } from "./gen-llms-registry.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+// absolutize 默认按中文语种运行，其站点根前缀由语言布局 SSOT 决定。
+const SITE_BASE = `https://hulianui.haloritual.com${basePathForLocale("zh-CN")}`;
+const absoluteLink = (label, path) =>
+  new RegExp(
+    `\\[${label}\\]\\(${SITE_BASE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${path}\\)`,
+  );
 
 function writeFixture(root, files) {
   for (const [relativePath, contents] of Object.entries(files)) {
@@ -301,7 +309,7 @@ test("registry link rewriting rejects protocol-relative URLs and protects Markdo
   ].join("\n");
 
   const rewritten = absolutize(markdown);
-  assert.match(rewritten, /\[Related\]\(https:\/\/hulianui\.haloritual\.com\/components\/input\)/);
+  assert.match(rewritten, absoluteLink("Related", "/components/input"));
   assert.match(rewritten, /\[CDN\]\(\/\/cdn\.example\.com\/asset\)/);
   assert.match(rewritten, /`\[Inline\]\(\/components\/inline\)`/);
   assert.match(rewritten, /\[Fenced\]\(\/components\/fenced\)/);
@@ -317,19 +325,13 @@ test("registry link rewriting preserves links in multiline code spans", () => {
 
   const rewritten = absolutize(markdown);
   assert.match(rewritten, /\[Hidden\]\(\/components\/hidden\)/);
-  assert.match(
-    rewritten,
-    /\[Visible\]\(https:\/\/hulianui\.haloritual\.com\/components\/visible\)/,
-  );
+  assert.match(rewritten, absoluteLink("Visible", "/components/visible"));
 });
 
 test("registry rewriting keeps fences authoritative over unmatched inline delimiters", () => {
   const rewritten = absolutize(fenceBoundaryMarkdown);
   assert.match(rewritten, /\[Fenced\]\(\.\.\/ghost-fenced\/ghost-fenced\.md\)/);
-  assert.match(
-    rewritten,
-    /\[Visible\]\(https:\/\/hulianui\.haloritual\.com\/components\/ghost-visible\)/,
-  );
+  assert.match(rewritten, absoluteLink("Visible", "/components/ghost-visible"));
 });
 
 test("package script passes complete docs and forwards pnpm category arguments", () => {

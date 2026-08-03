@@ -233,6 +233,13 @@ export const chartShowcase: ShowcaseSpec = {
       render: () => <RadarChart data={radarData} series={radarSeries} xKey="dim" className={W} />,
     },
     {
+      // 与上一档并排看：默认那档的刻度数字落在数据区里，序列一多就压住多边形。
+      name: "雷达图（关半径轴刻度）",
+      render: () => (
+        <RadarChart data={radarData} series={radarSeries} xKey="dim" radiusAxis={false} className={W} />
+      ),
+    },
+    {
       name: "径向进度",
       render: () => <RadialChart data={pieData} className={W} />,
     },

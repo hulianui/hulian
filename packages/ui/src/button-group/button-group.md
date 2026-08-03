@@ -55,7 +55,9 @@ import { ButtonGroup } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-暂无已知坑。注意 `gap` 仅在 `attached={false}` 时生效；连排态（`attached`）由组件自行抹圆角/合并边框，不要再给子按钮加外边距。
+- **成员必须同高，连排态尤其**。连排是靠 `-ml-px` 把相邻按钮的边框叠在一起实现的，这个拼接假定所有成员等高；高度一旦不一致，矮的那些上下就会露出台阶。而 [Button](../button/button.md) 的尺寸档里 **`icon`（36px）没有等高的文字档**——文字档是 `sm` 32 / `md` 40 / `lg` 48。所以 `size="icon"` 与任何带文字的按钮混排都会错位。要图标 + 文字混排，用**等高的一对**：`iconSm`(32) 配 `sm`(32)，或给 icon 按钮显式贴高度去对齐 `md`。
+- 上一条**看代码是发现不了的**：三个按钮都写 `variant="outline"`、都不传或只有一个传 `size`，读起来很整齐，只有渲染出来才看得见中间那个高出 4px。典型场景是 `−/数值/+` 步进器。
+- `gap` 仅在 `attached={false}` 时生效；连排态（`attached`）由组件自行抹圆角/合并边框，不要再给子按钮加外边距。
 
 ## 相关
 [Button](../button/button.md) · [ShimmerButton](../shimmer-button/shimmer-button.md) · [RainbowButton](../rainbow-button/rainbow-button.md) · [PulsatingButton](../pulsating-button/pulsating-button.md) · [RippleButton](../ripple-button/ripple-button.md) · [SocialButton](../social-button/social-button.md)

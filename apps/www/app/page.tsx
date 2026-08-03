@@ -18,13 +18,13 @@ import {
 import { manifest, CATEGORIES } from "../lib/manifest";
 import { TierBrowser } from "../components/tier-browser";
 import { SiteNavbar } from "../components/site-navbar";
-import { DOCS_LOCALE, withDocsBasePath } from "../lib/docs-locale";
+import { DOCS_LOCALE, ROOT_LOCALE, canonicalPathForLocale } from "../lib/docs-locale";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
 
 const english = DOCS_LOCALE === "en";
 const content = getIntlayer("home", DOCS_LOCALE);
-const homePath = withDocsBasePath("/", DOCS_LOCALE);
-const homeUrl = `${SITE_URL}${homePath === "/" ? "" : homePath}`;
+const homePath = canonicalPathForLocale("/", DOCS_LOCALE);
+const homeUrl = `${SITE_URL}${homePath}`;
 const homeName = english ? "Hulian UI" : SITE_NAME;
 const homeDescription = english
   ? "Hulian UI is a production-ready React component library and design system with 349+ components, OKLCH color, Tailwind CSS v4, dark mode, and source-first distribution."
@@ -33,7 +33,11 @@ const homeDescription = english
 export const metadata: Metadata = {
   alternates: {
     canonical: homePath,
-    languages: { "zh-CN": "/", en: "/en", "x-default": "/en" },
+    languages: {
+      "zh-CN": canonicalPathForLocale("/", "zh-CN"),
+      en: canonicalPathForLocale("/", "en"),
+      "x-default": canonicalPathForLocale("/", ROOT_LOCALE),
+    },
   },
 };
 

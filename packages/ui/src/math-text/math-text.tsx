@@ -26,6 +26,16 @@ function renderNode(
     case "text":
       return node.text;
 
+    // 关系符/运算符两侧的留白由类别给，不靠原文空格：命令后的空格是命令终止符会被
+    // 吃掉，靠空格就成了「左边有右边没有」，且间距取决于作者打没打空格。
+    // 宽度沿用 TeX 的比例 —— 关系符比二元运算符略宽。
+    case "op":
+      return (
+        <span className={node.spacing === "relation" ? "mx-[0.2em]" : "mx-[0.14em]"}>
+          {node.text}
+        </span>
+      );
+
     case "frac":
       return (
         <span className="inline-flex flex-col items-center align-middle leading-none mx-[0.15em] text-[0.92em]">

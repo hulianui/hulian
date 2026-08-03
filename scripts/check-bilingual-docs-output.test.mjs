@@ -10,6 +10,7 @@ import {
   task9EnglishRoutes,
   task9ExpectedRelativeRoutes,
 } from "./check-bilingual-docs-output.mjs";
+import { NESTED_BASE_PATH } from "./docs-locale-layout.mjs";
 
 function writeRouteInventory(root, excluded) {
   for (const route of task9ExpectedRelativeRoutes()) {
@@ -58,19 +59,22 @@ test("English output scan rejects duplicate prefixes and unintended Chinese docs
   writeFileSync(
     file,
     `<!doctype html><html><body>
-    <a href="/en/en/start">Duplicate</a>
-    <a href="/blocks/button">Wrong locale</a>
-    <a href="/start" hreflang="zh-CN">Chinese language switch</a>
+    <a href="${NESTED_BASE_PATH}${NESTED_BASE_PATH}/start">Duplicate</a>
+    <a href="${NESTED_BASE_PATH}/blocks/button">Wrong locale</a>
+    <a href="${NESTED_BASE_PATH}/start" hreflang="zh-CN">Chinese language switch</a>
+    <a href="/blocks/button">Own-locale docs route</a>
     <a href="/pricing">Fixture route</a>
-    <img src="/en/logo.svg" alt="Logo">
+    <img src="/logo.svg" alt="Logo">
   </body></html>`,
   );
 
+  // 英文是根语言：裸的文档路由是它自己的，带嵌套前缀的才算跨语种泄漏；
+  // 显式标了 hreflang="zh-CN" 的语言切换链接放行。
   assert.deepEqual(
     scanEnglishLinks(file).map(({ field, value }) => ({ field, value })),
     [
-      { field: "duplicate-prefix:href", value: "/en/en/start" },
-      { field: "cross-locale:href", value: "/blocks/button" },
+      { field: "duplicate-prefix:href", value: `${NESTED_BASE_PATH}${NESTED_BASE_PATH}/start` },
+      { field: "cross-locale:href", value: `${NESTED_BASE_PATH}/blocks/button` },
     ],
   );
 });

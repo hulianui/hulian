@@ -2,6 +2,10 @@ import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { extname, join, normalize, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { NESTED_BASE_PATH, basePathForLocale } from "./docs-locale-layout.mjs";
+
+// 语言前缀取自 SSOT：英文挂根路径时 EN 是空串。不写 "/en" 字面量。
+const EN = basePathForLocale("en");
 
 export const ADMIN_DEMO_ROUTES = [
   "billing", "billing/invoices", "billing/payment", "billing/plans", "billing/settings", "billing/login",
@@ -149,7 +153,7 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
 
   try {
     for (const route of ADMIN_DEMO_ROUTES) {
-      const path = `/en/demos/${route}`;
+      const path = `${EN}/demos/${route}`;
       const response = await page.goto(`${origin}${path}`, { waitUntil: "networkidle" });
       if (!response?.ok()) throw new Error(`${path} returned ${response?.status() ?? "no response"}`);
       await page.locator("main").first().waitFor({ state: "visible" });
@@ -171,14 +175,18 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
         await link.click();
         await page.waitForLoadState("networkidle");
         const clickedPath = new URL(page.url()).pathname;
-        if (!clickedPath.startsWith("/en/")) throw new Error(`${path} breadcrumb escaped English: ${clickedPath}`);
+        // 原本断言「路径以 /en/ 开头」。英文挂根路径后 `${EN}/` 退化成 `/`，对任何绝对
+        // 路径都成立，这个检查会静默失效 —— 改成「没掉进另一个语种的子树」，该判据与
+        // 谁挂根路径无关，恒有效。
+        if (clickedPath.startsWith(`${NESTED_BASE_PATH}/`))
+          throw new Error(`${path} breadcrumb escaped English: ${clickedPath}`);
         if ((await page.locator("html").getAttribute("lang")) !== "en") throw new Error(`${clickedPath} lost English document state`);
         assertEnglishText(await page.locator("body").innerText(), `${path} breadcrumb destination`);
         breadcrumbClicks += 1;
       }
     }
 
-    await page.goto(`${origin}/en/demos/customer-service/analytics`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/customer-service/analytics`, { waitUntil: "networkidle" });
     let graphPathCount = 0;
     for (const chartName of ["conversation-volume", "csat-trend"]) {
       const chart = page.locator(`[data-admin-demo-chart="${chartName}"]`);
@@ -194,7 +202,7 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
       graphPathCount += chartPathCount;
     }
 
-    await page.goto(`${origin}/en/demos/crm/customers`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/crm/customers`, { waitUntil: "networkidle" });
     const retry = page.getByRole("button", { name: "Try again" });
     await page.waitForFunction(() => (
       document.querySelectorAll("tbody tr").length === 8
@@ -217,7 +225,7 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
     }
     if (filteredCustomers.includes("M&G Stationery")) throw new Error("CRM owner filter retained a customer owned by Lin Wanqing");
 
-    await page.goto(`${origin}/en/demos/hanhelm`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${EN}/demos/hanhelm`, { waitUntil: "networkidle" });
     const funnelContract = page.locator('[data-rsc-contract="funnel-render-stage"]');
     if (await funnelContract.count() !== 1) throw new Error("HanHelm is missing the Funnel Server Component contract fixture");
     if (!(await funnelContract.textContent())?.includes("1. Submitted")) {

@@ -7,6 +7,7 @@ import test, { after, before } from "node:test";
 import { fileURLToPath } from "node:url";
 
 import * as conventionsGenerator from "./gen-conventions.mjs";
+import { basePathForLocale } from "./docs-locale-layout.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC_ROOT = join(ROOT, "apps", "www", "public");
@@ -21,7 +22,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "beian-footer": [1, 2],
   breadcrumb: [0, 1],
   "bubble-menu": [3, 4],
-  "button-group": [0, 1],
   carousel: [3, 4],
   chip: [0, 1],
   "chroma-grid": [3, 4],
@@ -147,10 +147,13 @@ function json(root, file) {
   return JSON.parse(read(root, file));
 }
 
+// 两个语种的端点只差语言前缀，比对协议一致性时先归一到中文那份。前缀取自 SSOT。
+const SITE_ORIGIN = "https://hulianui.haloritual.com";
+const EN_BASE = `${SITE_ORIGIN}${basePathForLocale("en")}`;
+const ZH_BASE = `${SITE_ORIGIN}${basePathForLocale("zh-CN")}`;
+
 function normalizeEndpoint(value) {
-  return typeof value === "string"
-    ? value.replace("https://hulianui.haloritual.com/en/r/", "https://hulianui.haloritual.com/r/")
-    : value;
+  return typeof value === "string" ? value.replace(`${EN_BASE}/r/`, `${ZH_BASE}/r/`) : value;
 }
 
 function stableItem(item) {
@@ -253,7 +256,7 @@ test("English AI artifacts preserve exact registry and endpoint contracts", () =
   }
 });
 
-test("English AI copy is natural, CJK-free, and links to public /en documentation", () => {
+test("English AI copy is natural, CJK-free, and links to the public English documentation", () => {
   for (const file of [
     "llms.txt",
     "llms-full.txt",
@@ -264,16 +267,16 @@ test("English AI copy is natural, CJK-free, and links to public /en documentatio
 
   const llms = read(roots.en, "llms.txt");
   assert.match(llms, /Hulian UI/);
-  assert.match(llms, /https:\/\/hulianui\.haloritual\.com\/en\/components\/button/);
+  assert.ok(llms.includes(`${EN_BASE}/components/button`));
   assert.doesNotMatch(llms, /github\.com\/hulianui\/hulian\/blob\/master\/packages\/ui/);
 
   const registry = json(roots.en, "registry.json");
-  assert.equal(registry.itemUrl, "https://hulianui.haloritual.com/en/r/{name}.json");
+  assert.equal(registry.itemUrl, `${EN_BASE}/r/{name}.json`);
   assert.equal(
     registry.items.find((item) => item.name === "button").meta.doc,
-    "https://hulianui.haloritual.com/en/components/button",
+    `${EN_BASE}/components/button`,
   );
-  assert.match(read(roots.en, "d/button.md"), /\/en\/components\//);
+  assert.ok(read(roots.en, "d/button.md").includes(`${EN_BASE}/components/`));
 });
 
 test("English conventions localize advice while preserving executable protocol", () => {
@@ -295,14 +298,14 @@ test("English conventions localize advice while preserving executable protocol",
       componentAdvisories: zh.stats.componentAdvisories,
       totalAdvisories: zh.stats.totalAdvisories,
     },
-    { componentAdvisories: 1126, totalAdvisories: 1133 },
+    { componentAdvisories: 1133, totalAdvisories: 1140 },
   );
   assert.deepEqual(
     {
       componentAdvisories: en.stats.componentAdvisories,
       totalAdvisories: en.stats.totalAdvisories,
     },
-    { componentAdvisories: 1201, totalAdvisories: 1208 },
+    { componentAdvisories: 1207, totalAdvisories: 1214 },
   );
   assert.equal(new Set(en.advisories.map((item) => item.id)).size, en.advisories.length);
 });
@@ -371,7 +374,7 @@ test("English advisories keep complete natural rules without repeated entries in
   );
 });
 
-test("all 83 reviewed locale-specific convention count differences stay explicit", () => {
+test("all 82 reviewed locale-specific convention count differences stay explicit", () => {
   assert.equal(typeof conventionsGenerator.extractPitfalls, "function");
   const uiRoot = join(ROOT, "packages", "ui", "src");
   const actual = {};
@@ -387,7 +390,7 @@ test("all 83 reviewed locale-specific convention count differences stay explicit
     if (counts[0] !== counts[1]) actual[slug] = counts;
   }
 
-  assert.equal(Object.keys(actual).length, 83);
+  assert.equal(Object.keys(actual).length, 82);
   assert.deepEqual(actual, EXPECTED_CONVENTION_COUNT_MISMATCHES);
 });
 

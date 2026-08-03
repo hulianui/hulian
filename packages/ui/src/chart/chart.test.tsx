@@ -114,6 +114,23 @@ describe("RadarChart", () => {
     const { container } = render(<RadarChart data={data} series={series} xKey="month" />);
     expect(container.querySelector("svg")).toBeTruthy();
   });
+
+  // hulianui/hulian#86：半径轴刻度沿一条水平半径排列，正好穿过数据区，序列一多就压在
+  // 多边形上；而它此前无条件渲染，className 够不到，消费方关不掉。
+  it("默认渲染半径轴刻度（不动存量版式）", () => {
+    const { container } = render(<RadarChart data={data} series={series} xKey="month" />);
+    expect(container.querySelector(".recharts-polar-radius-axis")).toBeTruthy();
+  });
+
+  it("radiusAxis={false} 关掉刻度，环线与角轴名照留", () => {
+    const { container } = render(
+      <RadarChart data={data} series={series} xKey="month" radiusAxis={false} />,
+    );
+    expect(container.querySelector(".recharts-polar-radius-axis")).toBeNull();
+    // 关的只是半径轴：网格环线与角轴（维度名）都还在，否则雷达盘就没了
+    expect(container.querySelector(".recharts-polar-grid")).toBeTruthy();
+    expect(container.querySelector(".recharts-polar-angle-axis")).toBeTruthy();
+  });
 });
 
 describe("RadialChart", () => {

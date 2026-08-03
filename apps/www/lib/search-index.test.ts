@@ -11,6 +11,11 @@ import {
   tokenize,
 } from "./search-index";
 
+import { basePathForLocale } from "./docs-locale";
+
+// 语言前缀取自 SSOT：英文挂根路径时为空串，故不写 "/en" 字面量。
+const EN = basePathForLocale("en");
+
 // 这些用例直接照抄 hulianui/hulian#40 的验收标准，逐条钉住。
 // 断言用「相对位置 / 是否命中」而非硬编码名次，避免每加一个组件就红一片。
 
@@ -198,7 +203,7 @@ describe("English catalog search", () => {
     vi.resetModules();
   });
 
-  it("returns localized component and block results under /en", async () => {
+  it("returns localized component and block results under the English base path", async () => {
     vi.stubEnv("DOCS_LOCALE", "en");
     vi.resetModules();
     const englishSearch = await import("./search-index");
@@ -211,7 +216,7 @@ describe("English catalog search", () => {
     const button = englishSearch.searchAll("button").find((hit) => hit.id === "component:button");
     expect(button).toMatchObject({
       title: "Button",
-      href: "/en/components/button",
+      href: `${EN}/components/button`,
       categoryLabel: "Forms",
     });
     expect(button?.description).not.toMatch(/[\u3400-\u9fff]/u);
@@ -221,7 +226,7 @@ describe("English catalog search", () => {
       .find((hit) => hit.id === "block:data-table");
     expect(dataTable).toMatchObject({
       title: "Data Table",
-      href: "/en/blocks/data-table",
+      href: `${EN}/blocks/data-table`,
       categoryLabel: "Application",
     });
   });
@@ -235,19 +240,19 @@ describe("English catalog search", () => {
     expect(customerHits[0]).toMatchObject({
       id: "page:admin-list",
       title: "Admin List Page",
-      href: "/en/pages/admin-list",
+      href: `${EN}/pages/admin-list`,
     });
     expect(customerHits.find((hit) => hit.id === "demo:crm")).toMatchObject({
       id: "demo:crm",
       title: "CRM Customer Management",
-      href: "/en/demos/crm",
+      href: `${EN}/demos/crm`,
     });
 
     const workflowHits = englishSearch.searchAll("workflow");
     const workflow = workflowHits.find((hit) => hit.id === "demo:ai-workflow");
     expect(workflow).toMatchObject({
       title: "AI Image and Video Workflow",
-      href: "/en/demos/ai-workflow",
+      href: `${EN}/demos/ai-workflow`,
       category: "AI Application",
       categoryLabel: "AI Application",
     });
