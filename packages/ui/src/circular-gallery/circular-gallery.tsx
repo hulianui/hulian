@@ -71,21 +71,23 @@ function createTextTexture(
   return { texture, width: canvas.width, height: canvas.height };
 }
 
-/** 程序化生成一张 token 化渐变占位图（用于未提供 image 的卡片，离线可用）。 */
-function makePlaceholderImage(seed: number, host: HTMLElement): string {
+/** 程序化生成一张 token 化渐变占位纹理（用于未提供 image 的卡片，离线可用）。 */
+export function makePlaceholderCanvas(seed: number, host: HTMLElement): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
-  canvas.width = 800;
-  canvas.height = 600;
+  // 纹理最终只承载平滑渐变，64x48 足够；直接交给 WebGL，避免把 800x600 canvas
+  // 同步编码为 PNG data URL，再通过 Image 解码回像素的主线程往返。
+  canvas.width = 64;
+  canvas.height = 48;
   const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
+  if (!ctx) return canvas;
   const a = resolveColor(`var(--color-chart-${(seed % 5) + 1})`, host);
   const b = resolveColor(`var(--color-chart-${((seed + 2) % 5) + 1})`, host);
-  const grad = ctx.createLinearGradient(0, 0, 800, 600);
+  const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
   grad.addColorStop(0, a || "#5b8def");
   grad.addColorStop(1, b || "#9b6dff");
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 800, 600);
-  return canvas.toDataURL();
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  return canvas;
 }
 
 const VERTEX = /* glsl */ `
@@ -174,6 +176,7 @@ const DEFAULT_ITEMS: CircularGalleryItem[] = [
 ];
 
 const DEFAULT_FONT = "bold 30px ui-sans-serif, system-ui, sans-serif";
+export const CIRCULAR_GALLERY_PLANE_SEGMENTS = { width: 32, height: 16 } as const;
 
 export function CircularGallery({
   items,
@@ -222,7 +225,13 @@ export function CircularGallery({
       camera.position.z = 20;
 
       const scene = new Transform();
-      const planeGeometry = new Plane(gl, { heightSegments: 50, widthSegments: 100 });
+      // 32x16 已能平滑承载顶点波动。原 100x50 每张卡片会创建约十倍顶点，
+      // 在 16 张无缝循环卡片初始化时容易把单任务推过 100ms。
+      const planeGeometry = new Plane(gl, {
+        heightSegments: CIRCULAR_GALLERY_PLANE_SEGMENTS.height,
+        widthSegments: CIRCULAR_GALLERY_PLANE_SEGMENTS.width,
+      });
+      const titleGeometry = new Plane(gl);
 
       const resolvedTextColor = resolveColor(textColorRef.current, host) || "#888888";
       const galleryItems =
@@ -267,13 +276,19 @@ export function CircularGallery({
           transparent: true,
         });
 
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => {
-          texture.image = img;
-          program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-        };
-        img.src = data.image || makePlaceholderImage(index, host);
+        if (data.image) {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            texture.image = img;
+            program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+          };
+          img.src = data.image;
+        } else {
+          const placeholder = makePlaceholderCanvas(index, host);
+          texture.image = placeholder;
+          program.uniforms.uImageSizes.value = [placeholder.width, placeholder.height];
+        }
 
         const plane = new Mesh(gl, { geometry: planeGeometry, program });
         plane.setParent(scene);
@@ -293,7 +308,7 @@ export function CircularGallery({
           transparent: true,
         });
         const titleMesh = new Mesh(gl, {
-          geometry: new Plane(gl),
+          geometry: titleGeometry,
           program: titleProgram,
         });
         titleMesh.setParent(plane);

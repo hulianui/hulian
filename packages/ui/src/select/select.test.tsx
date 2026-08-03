@@ -478,4 +478,26 @@ describe("Select group", () => {
     expect(groups[0]!.getAttribute("aria-labelledby")).toBeTruthy();
     expect(document.querySelectorAll("[role='option']").length).toBe(3);
   });
+
+  it("searchable: virtualized 透传给 Combobox —— 传 false 时超阈值也全量挂载", async () => {
+    const many = Array.from({ length: 150 }, (_, i) => ({
+      value: `f-${i}`,
+      label: `字体 ${i}`,
+    }));
+    render(
+      <Select items={many} placeholder="请选择字体" searchable virtualized={false} open>
+        <SelectTrigger />
+        <SelectContent>
+          {many.map((it) => (
+            <SelectItem key={it.value} value={it.value}>
+              {it.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>,
+    );
+    // 自定义 SelectItem 高度 ≠ 32px 时的逃生口；不透传的话消费方无从关闭自动虚拟化。
+    expect(document.querySelector("[data-hulian-virtual-count]")).toBeNull();
+    expect(document.querySelectorAll("[role='option']").length).toBe(many.length);
+  });
 });

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "../_icons";
 import { cn } from "../lib/cn";
 import {
@@ -33,7 +33,7 @@ const navBtn =
 
 const cellBase = "flex items-center justify-center rounded-md text-sm transition-colors";
 
-export function Calendar({
+function CalendarImpl({
   value: valueProp,
   defaultValue,
   onValueChange,
@@ -268,3 +268,6 @@ export function Calendar({
     </div>
   );
 }
+
+export const Calendar = memo(CalendarImpl);
+Calendar.displayName = "Calendar";

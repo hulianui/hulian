@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { Profiler } from "react";
+import { describe, it, expect, vi } from "vitest";
+import { act, render } from "@testing-library/react";
 import { CountrySelect } from "./country-select";
 import { flagEmoji, filterCountries, getCountry, countrySearchText } from "./country-select.logic";
 import { countries } from "./countries.data";
@@ -52,5 +53,28 @@ describe("CountrySelect 组件", () => {
     const { container } = render(<CountrySelect multiple defaultValue={["CN", "US"]} />);
     expect(container.textContent).toContain("中国");
     expect(container.textContent).toContain("美国");
+  });
+  it("稳定父组件更新时跳过 CountrySelect 子树", async () => {
+    const onRender = vi.fn();
+    const { rerender } = render(
+      <div data-parent-version="0">
+        <Profiler id="country-select" onRender={onRender}>
+          <CountrySelect placeholder="选国家" />
+        </Profiler>
+      </div>,
+    );
+    await act(async () => undefined);
+    onRender.mockClear();
+    rerender(
+      <div data-parent-version="1">
+        <Profiler id="country-select" onRender={onRender}>
+          <CountrySelect placeholder="选国家" />
+        </Profiler>
+      </div>,
+    );
+
+    const update = onRender.mock.calls.at(-1);
+    expect(update?.[1]).toBe("update");
+    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
   });
 });

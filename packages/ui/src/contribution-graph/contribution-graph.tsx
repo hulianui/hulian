@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import { WEEKDAY_LABELS } from "../lib/date";
@@ -19,7 +20,7 @@ function levelBackground(level: number, levels: number, tone: string): string {
   return `color-mix(in oklch, ${tone} ${Math.round(alpha * 100)}%, transparent)`;
 }
 
-export function ContributionGraph({
+function ContributionGraphImpl({
   data,
   days = 365,
   endDate,
@@ -171,3 +172,6 @@ export function ContributionGraph({
     </div>
   );
 }
+
+export const ContributionGraph = memo(ContributionGraphImpl);
+ContributionGraph.displayName = "ContributionGraph";

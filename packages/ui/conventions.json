@@ -1637,6 +1637,27 @@
       "source": "packages/ui/src/combobox/combobox.md"
     },
     {
+      "id": "component/combobox/pitfall/5",
+      "scope": "combobox",
+      "title": "Combobox",
+      "rule": "**`items` 给到 100 项及以上时列表会自动虚拟化**（无需传 `virtualized`）：只有视口内的项在 DOM 里，行高按 **32px 固定估算**，不做逐项测量。默认 `ComboboxItem` 恰好是 32px，所以通常无感。**如果**你的 render fn 返回的项高度不是 32px（两行文案、带头像/副标题、自定义 `className` 改了 padding 或字号），那么在 ≥100 项时滚动条长度与项的落位会逐渐偏移——**页面不会报任何错，短列表下也复现不出来**，只有滚到列表中后段才看得出跳动。这种项请显式传 `virtualized={false}` 关掉，或把项高度对齐到 32px。",
+      "source": "packages/ui/src/combobox/combobox.md"
+    },
+    {
+      "id": "component/combobox/pitfall/6",
+      "scope": "combobox",
+      "title": "Combobox",
+      "rule": "虚拟化同样影响**依赖「选项全在 DOM 里」的测试与脚本**：`getAllByRole(\"option\")` 只会拿到视口内那几条，`document.querySelector` 找不到未滚动到的项。断言总数请改用列表容器上的 `data-hulian-virtual-count`，或对该用例传 `virtualized={false}`。",
+      "source": "packages/ui/src/combobox/combobox.md"
+    },
+    {
+      "id": "component/combobox/pitfall/7",
+      "scope": "combobox",
+      "title": "Combobox",
+      "rule": "走 Combobox 的上层组件同样吃这条：[Select](../select/select.md) 的 `searchable` 皮肤、[RemoteSelect](../remote-select/remote-select.md) 的候选列表，选项攒到 100 条后都会自动虚拟化。",
+      "source": "packages/ui/src/combobox/combobox.md"
+    },
+    {
       "id": "component/command/pitfall/1",
       "scope": "command",
       "title": "Command",
@@ -5455,18 +5476,25 @@
       "id": "component/remote-select/pitfall/4",
       "scope": "remote-select",
       "title": "RemoteSelect",
-      "rule": "本地不做二次过滤（底层 `filter={null}`）：搜索结果完全由服务端决定，`fetcher` 忽略 `query` 就等于没有搜索。",
+      "rule": "**候选攒到 100 条后列表会自动虚拟化**（远程分页一页页累积，翻够页数就会切过去）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认单行 label 恰好 32px，无感。**如果**你用 `renderOption` 渲染了多行/带头像的选项（高度 ≠ 32px），那么翻到第 10 页往后滚动落位会开始偏——**不报错、前几页也复现不出来**，这种用法请显式传 `virtualized={false}`。",
       "source": "packages/ui/src/remote-select/remote-select.md"
     },
     {
       "id": "component/remote-select/pitfall/5",
       "scope": "remote-select",
       "title": "RemoteSelect",
-      "rule": "关闭浮层即结束一次搜索会话：关键词清空、下次打开重新拉第一页（与 el-select 的 remote 行为一致），因此不要在 `fetcher` 里做「同参数缓存穿透」以外的副作用。",
+      "rule": "本地不做二次过滤（底层 `filter={null}`）：搜索结果完全由服务端决定，`fetcher` 忽略 `query` 就等于没有搜索。",
       "source": "packages/ui/src/remote-select/remote-select.md"
     },
     {
       "id": "component/remote-select/pitfall/6",
+      "scope": "remote-select",
+      "title": "RemoteSelect",
+      "rule": "关闭浮层即结束一次搜索会话：关键词清空、下次打开重新拉第一页（与 el-select 的 remote 行为一致），因此不要在 `fetcher` 里做「同参数缓存穿透」以外的副作用。",
+      "source": "packages/ui/src/remote-select/remote-select.md"
+    },
+    {
+      "id": "component/remote-select/pitfall/7",
       "scope": "remote-select",
       "title": "RemoteSelect",
       "rule": "`total` 不给也能分页：此时按「本页返回条数 ≥ pageSize 即可能还有下一页」推断，最后会多打一次空请求；能给就给。",
@@ -5978,6 +6006,13 @@
     },
     {
       "id": "component/select/pitfall/9",
+      "scope": "select",
+      "title": "Select",
+      "rule": "`searchable` 下 `items` **给到 100 项及以上时列表自动虚拟化**（底层 Combobox 的策略）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认 `SelectItem` 恰好 32px，通常无感。**如果**你的 `SelectItem` 高度不是 32px（两行文案、带头像、自定义 padding/字号），那么在 ≥100 项时滚动落位会逐渐偏移——**不报错、短列表也复现不出来**，请显式传 `virtualized={false}`。同理，测试里 `getAllByRole(\"option\")` 在虚拟化后只拿得到视口内那几条。",
+      "source": "packages/ui/src/select/select.md"
+    },
+    {
+      "id": "component/select/pitfall/10",
       "scope": "select",
       "title": "Select",
       "rule": "`loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。",
@@ -7710,7 +7745,7 @@
   ],
   "stats": {
     "componentDocs": 376,
-    "componentAdvisories": 1076,
-    "totalAdvisories": 1083
+    "componentAdvisories": 1081,
+    "totalAdvisories": 1088
   }
 }

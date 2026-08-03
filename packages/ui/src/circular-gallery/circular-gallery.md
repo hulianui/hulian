@@ -3,7 +3,7 @@ slug: circular-gallery
 name: CircularGallery
 category: data-display
 group: collection
-tags: [animated]
+tags: [animated, webgl]
 exports: [CircularGallery]
 status: enriched
 ---

@@ -1,5 +1,5 @@
 "use client";
-import { cloneElement, forwardRef, type ReactNode } from "react";
+import { cloneElement, forwardRef, memo, type ReactNode } from "react";
 import { type HTMLMotionProps } from "motion/react";
 import { cva } from "class-variance-authority";
 import { Loader2 } from "../_icons";
@@ -41,7 +41,7 @@ export const buttonVariants = cva(
   },
 );
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, tone, size, loading, disabled, children, render, ...props }, ref) => {
     const isDisabled = disabled || loading;
     const content = (
@@ -92,4 +92,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     );
   },
 );
+ButtonImpl.displayName = "Button";
+
+export const Button = memo(ButtonImpl);
 Button.displayName = "Button";

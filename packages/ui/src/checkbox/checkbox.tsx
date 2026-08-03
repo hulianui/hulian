@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { cn } from "../lib/cn";
 import type { CheckboxProps } from "./checkbox.types";
@@ -30,7 +31,7 @@ function DashIcon() {
   );
 }
 
-export function Checkbox({ className, label, disabled, ...props }: CheckboxProps) {
+function CheckboxImpl({ className, label, disabled, ...props }: CheckboxProps) {
   const box = (
     <BaseCheckbox.Root disabled={disabled} {...props} className={cn(boxClass, className)}>
       <BaseCheckbox.Indicator
@@ -52,3 +53,6 @@ export function Checkbox({ className, label, disabled, ...props }: CheckboxProps
     </label>
   );
 }
+
+export const Checkbox = memo(CheckboxImpl);
+Checkbox.displayName = "Checkbox";

@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ComponentPropsWithoutRef, ReactNode, Ref } from "react";
 import type { Select as BaseSelect } from "@base-ui/react/select";
 
 export type SelectSize = "sm" | "md" | "lg";
@@ -48,6 +48,12 @@ export interface SelectProps
   searchPlaceholder?: string;
   /** searchable 时无匹配项的空态文案。@default "无匹配项" */
   emptyMessage?: ReactNode;
+  /**
+   * searchable 皮肤下的列表虚拟化开关，透传给底层 Combobox（标准皮肤不涉及虚拟化，传了也无效）。
+   * 不传时按候选数自动决定：`items` ≥ 100 项即开启。
+   * 虚拟化按 32px 固定行高估算、不逐项测量，所以自定义 `SelectItem` 高度不是 32px 时请显式传 `false`。
+   */
+  virtualized?: boolean;
   /** 加载态：Trigger 图标换 Spinner，浮层只渲染加载占位（不渲染选项）。 */
   loading?: boolean;
   /** 加载态占位文案。@default "加载中" */
@@ -55,7 +61,8 @@ export interface SelectProps
 }
 
 export interface SelectTriggerProps
-  extends Omit<ComponentProps<"button">, "className" | "size"> {
+  extends Omit<ComponentPropsWithoutRef<"button">, "className" | "size"> {
+  ref?: Ref<HTMLButtonElement>;
   size?: SelectSize;
   /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
   invalid?: boolean;

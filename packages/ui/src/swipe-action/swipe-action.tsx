@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { cn } from "../lib/cn";
 import type { SwipeActionButton, SwipeActionProps, SwipeActionTone } from "./swipe-action.types";
 
@@ -21,8 +21,8 @@ export function SwipeAction({
   onOpenChange,
   className,
 }: SwipeActionProps) {
-  const leftRef = useRef<HTMLDivElement>(null);
-  const rightRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement | null>(null);
+  const rightRef = useRef<HTMLDivElement | null>(null);
   const [offset, setOffset] = useState(0);
   const [dragging, setDragging] = useState(false);
   const start = useRef({ x: 0, y: 0, offset: 0, decided: null as null | boolean });
@@ -82,11 +82,16 @@ export function SwipeAction({
 
   const renderActions = (
     btns: SwipeActionButton[] | undefined,
-    ref: RefObject<HTMLDivElement | null>,
+    ref: { current: HTMLDivElement | null },
     side: "left" | "right",
   ) =>
     btns && btns.length > 0 ? (
-      <div ref={ref} className={cn("absolute inset-y-0 flex", side === "left" ? "left-0" : "right-0")}>
+      <div
+        ref={(node) => {
+          ref.current = node;
+        }}
+        className={cn("absolute inset-y-0 flex", side === "left" ? "left-0" : "right-0")}
+      >
         {btns.map((b) => (
           <button
             key={b.key}

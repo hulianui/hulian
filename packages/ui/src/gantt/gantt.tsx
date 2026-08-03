@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { cn } from "../lib/cn";
 import type { GanttProps, GanttTask, GanttUnit } from "./gantt.types";
 
@@ -106,7 +106,7 @@ function trackMinWidth(ticksCount: number, unit: GanttUnit): number {
   return 0;
 }
 
-export function Gantt({
+function GanttImpl({
   tasks,
   rangeStart,
   rangeEnd,
@@ -360,3 +360,6 @@ export function Gantt({
     </div>
   );
 }
+
+export const Gantt = memo(GanttImpl);
+Gantt.displayName = "Gantt";

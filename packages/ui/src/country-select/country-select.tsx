@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import {
   Combobox,
   ComboboxChip,
@@ -19,9 +19,17 @@ const toItem = (c: Country): ComboboxItemData => ({
   label: `${flagEmoji(c.code)} ${c.cn}`,
 });
 
+const COUNTRY_ITEMS = countries.map(toItem);
+const COUNTRY_ITEM_BY_CODE = new Map(COUNTRY_ITEMS.map((item) => [item.value, item]));
+
+function countryItemToStringLabel(item: ComboboxItemData) {
+  const country = getCountry(item.value);
+  return country ? countrySearchText(country) : String(item.label);
+}
+
 // 国家选择器：dogfood Combobox（含本次新增的多选 chips）。
 // label 走紧凑展示、itemToStringLabel 走「中文/英文/码/区号」富搜索串 → 显示紧凑、搜索全字段。
-export function CountrySelect({
+function CountrySelectImpl({
   value,
   defaultValue,
   onChange,
@@ -35,23 +43,14 @@ export function CountrySelect({
   invalid,
   className,
 }: CountrySelectProps) {
-  const items = useMemo(() => countries.map(toItem), []);
-  const itemByCode = useMemo(() => new Map(items.map((i) => [i.value, i])), [items]);
-
   // 公开 value 用 code(s)，内部 Combobox 用 ComboboxItemData(s)；这里管受控/非受控并双向映射。
   const [internal, setInternal] = useState<string | string[]>(
     defaultValue ?? (multiple ? [] : ""),
   );
   const codes = value ?? internal;
 
-  // 搜索按富文本匹配（中文/英文/码/区号），而非紧凑 label。
-  const itemToStringLabel = (item: ComboboxItemData) => {
-    const c = getCountry(item.value);
-    return c ? countrySearchText(c) : String(item.label);
-  };
-
   // 下拉行：旗 + 中文名（+ 英文名/区号按开关，muted 色）。
-  const renderRow = (item: ComboboxItemData) => {
+  const renderRow = useCallback((item: ComboboxItemData) => {
     const c = getCountry(item.value);
     if (!c) return item.label;
     return (
@@ -64,24 +63,52 @@ export function CountrySelect({
         )}
       </span>
     );
-  };
+  }, [showDialCode, showEnglish]);
+
+  const renderItem = useCallback(
+    (item: ComboboxItemData) => (
+      <ComboboxItem key={item.value} value={item}>
+        {renderRow(item)}
+      </ComboboxItem>
+    ),
+    [renderRow],
+  );
+
+  const selected = useMemo(
+    () =>
+      (multiple && Array.isArray(codes) ? codes : [])
+        .map((code) => COUNTRY_ITEM_BY_CODE.get(code))
+        .filter(Boolean) as ComboboxItemData[],
+    [codes, multiple],
+  );
+
+  const handleMultipleChange = useCallback(
+    (next: ComboboxItemData[]) => {
+      const nextCodes = next.map((item) => item.value);
+      if (value === undefined) setInternal(nextCodes);
+      onChange?.(nextCodes);
+    },
+    [onChange, value],
+  );
+
+  const handleSingleChange = useCallback(
+    (next: ComboboxItemData | null) => {
+      const code = next?.value ?? "";
+      if (value === undefined) setInternal(code);
+      onChange?.(code);
+    },
+    [onChange, value],
+  );
 
   if (multiple) {
-    const selected = (Array.isArray(codes) ? codes : [])
-      .map((code) => itemByCode.get(code))
-      .filter(Boolean) as ComboboxItemData[];
     return (
       <Combobox
         multiple
-        items={items}
+        items={COUNTRY_ITEMS}
         value={selected}
         disabled={disabled}
-        itemToStringLabel={itemToStringLabel}
-        onValueChange={(next: ComboboxItemData[]) => {
-          const nextCodes = next.map((i) => i.value);
-          if (value === undefined) setInternal(nextCodes);
-          onChange?.(nextCodes);
-        }}
+        itemToStringLabel={countryItemToStringLabel}
+        onValueChange={handleMultipleChange}
       >
         <ComboboxChips
           size={size}
@@ -97,37 +124,28 @@ export function CountrySelect({
           ))}
         </ComboboxChips>
         <ComboboxContent searchPlaceholder={searchPlaceholder}>
-          {(item) => (
-            <ComboboxItem key={item.value} value={item}>
-              {renderRow(item)}
-            </ComboboxItem>
-          )}
+          {renderItem}
         </ComboboxContent>
       </Combobox>
     );
   }
 
-  const single = typeof codes === "string" && codes ? itemByCode.get(codes) : undefined;
+  const single = typeof codes === "string" && codes ? COUNTRY_ITEM_BY_CODE.get(codes) : undefined;
   return (
     <Combobox
-      items={items}
+      items={COUNTRY_ITEMS}
       value={single}
       disabled={disabled}
-      itemToStringLabel={itemToStringLabel}
-      onValueChange={(next: ComboboxItemData | null) => {
-        const code = next?.value ?? "";
-        if (value === undefined) setInternal(code);
-        onChange?.(code);
-      }}
+      itemToStringLabel={countryItemToStringLabel}
+      onValueChange={handleSingleChange}
     >
       <ComboboxTrigger size={size} placeholder={placeholder} invalid={invalid} className={className} />
       <ComboboxContent searchPlaceholder={searchPlaceholder}>
-        {(item) => (
-          <ComboboxItem key={item.value} value={item}>
-            {renderRow(item)}
-          </ComboboxItem>
-        )}
+        {renderItem}
       </ComboboxContent>
     </Combobox>
   );
 }
+
+export const CountrySelect = memo(CountrySelectImpl);
+CountrySelect.displayName = "CountrySelect";

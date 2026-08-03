@@ -5,6 +5,8 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  schedule:
+    - cron: "17 19 * * 3"
 
 # 同一分支/PR 新推送时取消仍在跑的旧任务，省 CI 时间
 concurrency:
@@ -205,6 +207,74 @@ jobs:
         env:
           BUNDLE_SIZE_DIR: ${{ runner.temp }}/hulian-bundle-size
         run: bash scripts/bundle-size.sh
+
+  runtime-performance:
+    name: Runtime Performance (Hulian Scan)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 8.15.5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright chromium
+        run: pnpm --filter @hulianui/hulian-scan exec playwright install --with-deps chromium
+
+      - name: Generate distribution metadata and check performance inventory
+        run: |
+          pnpm llms-registry
+          pnpm conventions
+          pnpm --filter @hulianui/hulian-scan exec tsx src/inventory/generate.ts --check
+          pnpm scan -- --inventory-only --output .hulian-scan/reports/inventory
+
+      - name: Select affected and core/heavy scenarios
+        id: affected
+        if: github.event_name != 'schedule'
+        env:
+          PERFORMANCE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD^' }}
+        run: |
+          scenarios="$(node scripts/performance-affected.mjs --inventory .hulian-scan/reports/inventory/inventory.json --base "$PERFORMANCE_BASE_SHA")"
+          echo "scenarios=$scenarios" >> "$GITHUB_OUTPUT"
+
+      - name: Scan affected workspace scenarios
+        if: github.event_name != 'schedule'
+        run: node scripts/hulian-scan.mjs --ci --scenario "${{ steps.affected.outputs.scenarios }}" --environment workspace --output .hulian-scan/reports/workspace-affected
+
+      - name: Gate affected packed-consumer scenarios
+        if: github.event_name != 'schedule'
+        env:
+          PERFORMANCE_CONSUMER_DIR: ${{ runner.temp }}/hulian-scan-consumer
+        run: pnpm scan:ci -- --scenario "${{ steps.affected.outputs.scenarios }}" --output .hulian-scan/reports/packed-affected
+
+      - name: React 18 compatibility smoke
+        if: github.event_name == 'schedule'
+        env:
+          PERFORMANCE_CONSUMER_DIR: ${{ runner.temp }}/hulian-scan-consumer-react18
+          PERFORMANCE_REACT_VERSION: 18
+        run: pnpm scan:ci -- --react 18 --smoke --output .hulian-scan/reports/react18-smoke
+
+      - name: Upload runtime performance evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: hulian-scan-${{ github.run_id }}
+          path: .hulian-scan/
+          retention-days: 14
+          if-no-files-found: warn
 
   # 中国镜像站点：push 到 master 时把静态产物 rsync 到阿里云服务器
   # （hulianui-zh.haloritual.com · 直连阿里云绕开 Cloudflare）。

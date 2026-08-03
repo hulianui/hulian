@@ -1,0 +1,23 @@
+@import "tailwindcss";
+@import "@hulianui/tokens/tokens.css";
+@import "@hulianui/tokens/preset.css";
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-hulian-scan-fixture] {
+  display: grid;
+  gap: 1rem;
+  padding: 2rem;
+}

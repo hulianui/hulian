@@ -1,0 +1,30 @@
+{
+  "name": "@hulianui/hulian-scan",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/browser.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "scan:internal": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.62.1",
+    "react-scan": "0.5.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "prettier": "2.8.8",
+    "tsx": "^4.20.0",
+    "typescript": "^7.0.2",
+    "typescript-ast": "npm:typescript@5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

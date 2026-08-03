@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
@@ -36,7 +36,7 @@ const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
-export function DateTimePicker({
+function DateTimePickerImpl({
   value: valueProp,
   defaultValue,
   onValueChange,
@@ -237,3 +237,6 @@ export function DateTimePicker({
     </BasePopover.Root>
   );
 }
+
+export const DateTimePicker = memo(DateTimePickerImpl);
+DateTimePicker.displayName = "DateTimePicker";

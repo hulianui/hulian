@@ -106,6 +106,7 @@ interface SelectMeta {
   loadingText?: ReactNode;
   /** searchable 皮肤下喂给 Combobox 的候选（已剔除 null 占位项）。 */
   searchItems?: ReadonlyArray<ComboboxItemData>;
+  searchItemByValue?: ReadonlyMap<string, ComboboxItemData>;
   /** 当前是否有选中值（单选非空、多选数组非空）——决定清除按钮是否渲染。 */
   hasValue?: boolean;
   onClear?: () => void;
@@ -131,6 +132,7 @@ export function Select({
   searchable,
   searchPlaceholder = "搜索",
   emptyMessage = "无匹配项",
+  virtualized,
   loading,
   loadingText = "加载中",
   value: valueProp,
@@ -179,6 +181,10 @@ export function Select({
       .filter((it): it is { value: string; label: ReactNode } => it.value != null)
       .map((it) => ({ value: it.value, label: it.label }));
   }, [searchable, loading, items]);
+  const searchItemByValue = useMemo(
+    () => new Map(searchItems.map((item) => [item.value, item])),
+    [searchItems],
+  );
 
   const meta = useMemo<SelectMeta>(
     () => ({
@@ -192,6 +198,7 @@ export function Select({
       loading,
       loadingText,
       searchItems,
+      searchItemByValue,
       hasValue,
       onClear: handleClear,
     }),
@@ -208,6 +215,7 @@ export function Select({
       loading,
       loadingText,
       searchItems,
+      searchItemByValue,
       hasValue,
       handleClear,
     ],
@@ -216,7 +224,7 @@ export function Select({
   if (searchable) {
     // 搜索/过滤全部交给 Base UI Combobox：瑚琏只做 string ⇄ {value,label} 的值形状搬运。
     const toItemData = (v: string): ComboboxItemData =>
-      searchItems.find((it) => it.value === v) ?? { value: v, label: v };
+      searchItemByValue.get(v) ?? { value: v, label: v };
     const searchValue = multiple
       ? (Array.isArray(current) ? current : []).map(toItemData)
       : typeof current === "string" && current !== ""
@@ -226,6 +234,8 @@ export function Select({
       ...props,
       items: searchItems,
       multiple,
+      // 不传时交给 Combobox 按候选数自动决定（≥100 开）；显式传 false 可关掉（自定义行高时用）。
+      ...(virtualized !== undefined && { virtualized }),
       value: searchValue,
       onValueChange: (next: unknown, eventDetails?: unknown) =>
         handleValueChange(
@@ -300,7 +310,7 @@ function renderMultipleValue(
 
 function setRef<T>(ref: Ref<T> | undefined, value: T | null) {
   if (typeof ref === "function") ref(value);
-  else if (ref) ref.current = value;
+  else if (ref) (ref as { current: T | null }).current = value;
 }
 
 function mergeRefs<T>(...refs: Array<Ref<T> | undefined>): Ref<T> {
@@ -502,11 +512,11 @@ export function SelectContent({
 }
 
 export function SelectItem({ value, disabled, children, className }: SelectItemProps) {
-  const { searchable, searchItems } = useContext(SelectMetaContext);
+  const { searchable, searchItemByValue } = useContext(SelectMetaContext);
 
   if (searchable) {
     // Combobox 的 item 值是 {value,label} 对象；优先复用 items 里的同一条，命不中就现造。
-    const data = searchItems?.find((it) => it.value === value) ?? { value, label: children };
+    const data = searchItemByValue?.get(value) ?? { value, label: children };
     return (
       <ComboboxItem value={data} disabled={disabled} className={className}>
         <span className="truncate">{children}</span>

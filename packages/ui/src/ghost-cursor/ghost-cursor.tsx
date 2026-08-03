@@ -59,7 +59,7 @@ const FRAG = /* glsl */ `
     float v = 0.0;
     float a = 0.5;
     mat2 m = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 3; i++) {
       v += a * noise(p);
       p = m * p * 2.0;
       a *= 0.5;
@@ -70,20 +70,16 @@ const FRAG = /* glsl */ `
   vec3 tint1(vec3 base){ return mix(base, vec3(1.0), 0.15); }
   vec3 tint2(vec3 base){ return mix(base, vec3(0.8, 0.9, 1.0), 0.25); }
 
-  vec4 blob(vec2 p, vec2 mousePos, float intensity, float activity) {
+  float smokeField(vec2 p) {
     vec2 q = vec2(fbm(p * iScale + iTime * 0.1), fbm(p * iScale + vec2(5.2, 1.3) + iTime * 0.1));
     vec2 r = vec2(fbm(p * iScale + q * 1.5 + iTime * 0.15), fbm(p * iScale + q * 1.5 + vec2(8.3, 2.8) + iTime * 0.15));
+    return pow(fbm(p * iScale + r * 0.8), 2.5);
+  }
 
-    float smoke = fbm(p * iScale + r * 0.8);
+  float blobAlpha(vec2 p, vec2 mousePos, float intensity, float activity, float smoke) {
     float radius = 0.5 + 0.3 * (1.0 / iScale);
     float distFactor = 1.0 - smoothstep(0.0, radius * activity, length(p - mousePos));
-    float alpha = pow(smoke, 2.5) * distFactor;
-
-    vec3 c1 = tint1(iBaseColor);
-    vec3 c2 = tint2(iBaseColor);
-    vec3 col = mix(c1, c2, sin(iTime * 0.5) * 0.5 + 0.5);
-
-    return vec4(col * alpha * intensity, alpha * intensity);
+    return smoke * distFactor * intensity;
   }
 
   void main() {
@@ -91,26 +87,24 @@ const FRAG = /* glsl */ `
     vec2 uv = (vUv * 2.0 - 1.0) * vec2(aspect, 1.0);
     vec2 mouse = (iMouse * 2.0 - 1.0) * vec2(aspect, 1.0);
 
-    vec3 colorAcc = vec3(0.0);
-    float alphaAcc = 0.0;
-
-    vec4 b = blob(uv, mouse, 1.0, iOpacity);
-    colorAcc += b.rgb;
-    alphaAcc += b.a;
+    // 噪声场只依赖像素与时间，与每个拖尾位置无关。旧实现为每个位置重复
+    // 计算 3-octave fbm；先提取一次后，仅在循环内计算廉价的距离衰减。
+    float smoke = smokeField(uv);
+    float alphaAcc = blobAlpha(uv, mouse, 1.0, iOpacity, smoke);
 
     for (int i = 0; i < MAX_TRAIL_LENGTH; i++) {
       vec2 pm = (iPrevMouse[i] * 2.0 - 1.0) * vec2(aspect, 1.0);
       float t = 1.0 - float(i) / float(MAX_TRAIL_LENGTH);
       t = pow(t, 2.0);
       if (t > 0.01) {
-        vec4 bt = blob(uv, pm, t * 0.8, iOpacity);
-        colorAcc += bt.rgb;
-        alphaAcc += bt.a;
+        alphaAcc += blobAlpha(uv, pm, t * 0.8, iOpacity, smoke);
       }
     }
 
     // 亮度增益：近似补偿被移除的 UnrealBloom 辉光。
-    colorAcc *= iBrightness;
+    vec3 c1 = tint1(iBaseColor);
+    vec3 c2 = tint2(iBaseColor);
+    vec3 colorAcc = mix(c1, c2, sin(iTime * 0.5) * 0.5 + 0.5) * alphaAcc * iBrightness;
 
     // 胶片颗粒：近似原版 FilmGrainPass，片元内叠 hash 噪点。
     if (iGrain > 0.0) {
@@ -124,6 +118,19 @@ const FRAG = /* glsl */ `
 `;
 
 const DEFAULT_COLOR = "var(--color-chart-1)";
+const MAX_SHADER_TRAIL_SAMPLES = 4;
+const RENDER_SCALE = 0.4;
+
+export function shaderTrailSampleCount(trailLength: number): number {
+  return Math.min(MAX_SHADER_TRAIL_SAMPLES, Math.max(1, Math.floor(trailLength)));
+}
+
+export function ghostCursorRenderSize(width: number, height: number) {
+  return {
+    width: Math.max(1, Math.round(width * RENDER_SCALE)),
+    height: Math.max(1, Math.round(height * RENDER_SCALE)),
+  };
+}
 
 // ---------------------------------------------------------------------------
 // CSS 颜色 → [r, g, b]（0–1）：离屏 1×1 canvas2d 解析（hex/named/rgb/oklch 全格式）。
@@ -175,6 +182,7 @@ export function GhostCursor({
 
   // trailLength 决定 shader define（数组长度），变化须重建 → 进 deps。
   const maxTrail = Math.max(1, Math.floor(trailLength));
+  const shaderTrailSamples = shaderTrailSampleCount(maxTrail);
 
   const { ref, reduced } = useGlCanvas(
     ({ ogl, canvas }) => {
@@ -207,14 +215,14 @@ export function GhostCursor({
       const baseColor = parseColor(colorRef.current);
 
       // ogl 无 three 的 defines 选项 → 把 GLSL 循环上界常量直接字符串替换进片元源码。
-      const patchedFrag = FRAG.replace(/MAX_TRAIL_LENGTH/g, String(maxTrail));
+      const patchedFrag = FRAG.replace(/MAX_TRAIL_LENGTH/g, String(shaderTrailSamples));
 
       // 环形帧缓冲：记录历史指针 UV，render 每帧推进 head，按时间序填 iPrevMouse。
       const trail: Array<[number, number]> = Array.from({ length: maxTrail }, () => [0.5, 0.5]);
       let head = 0;
 
       const prevMouse: InstanceType<typeof Vec2>[] = Array.from(
-        { length: maxTrail },
+        { length: shaderTrailSamples },
         () => new Vec2(0.5, 0.5),
       );
 
@@ -241,11 +249,14 @@ export function GhostCursor({
 
       const resize = (w: number, h: number) => {
         const dpr = renderer.dpr;
-        renderer.setSize(w || 1, h || 1);
+        const size = ghostCursorRenderSize(w || 1, h || 1);
+        renderer.setSize(size.width, size.height);
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
         program.uniforms.iResolution.value.set(
-          (w || 1) * dpr,
-          (h || 1) * dpr,
-          ((w || 1) / (h || 1)) || 1,
+          size.width * dpr,
+          size.height * dpr,
+          size.width / size.height,
         );
       };
       resize(canvas.clientWidth, canvas.clientHeight);
@@ -278,10 +289,7 @@ export function GhostCursor({
           return;
         }
         target[0] = Math.min(1, Math.max(0, (e.clientX - rect.left) / Math.max(1, rect.width)));
-        target[1] = Math.min(
-          1,
-          Math.max(0, 1 - (e.clientY - rect.top) / Math.max(1, rect.height)),
-        );
+        target[1] = Math.min(1, Math.max(0, 1 - (e.clientY - rect.top) / Math.max(1, rect.height)));
         pointerActive = true;
         lastMove = performance.now();
       };
@@ -333,8 +341,10 @@ export function GhostCursor({
         head = (head + 1) % N;
         trail[head][0] = cur[0];
         trail[head][1] = cur[1];
-        for (let i = 0; i < N; i++) {
-          const srcIdx = (head - i + N) % N;
+        for (let i = 0; i < shaderTrailSamples; i++) {
+          const historyOffset =
+            shaderTrailSamples === 1 ? 0 : Math.round((i * (N - 1)) / (shaderTrailSamples - 1));
+          const srcIdx = (head - historyOffset + N) % N;
           prevMouse[i].set(trail[srcIdx][0], trail[srcIdx][1]);
         }
 

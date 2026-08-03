@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { ScrollArea } from "../scroll-area";
 import type { PricingTableProps } from "./pricing-table.types";
@@ -5,7 +6,7 @@ import type { PricingTableProps } from "./pricing-table.types";
 // PricingTable = 行列转置的对比矩阵：列=被比项(模型)，行=属性(输入价/输出价/上下文/能力)。
 // 区别于普通 Table(行=记录)。highlight 列描边 + 顶部角标(推荐/最佳性价比)，表头 sticky，窄屏横滚。
 // 模型市场定价对照刚需。纯皮肤，仅消费语义 token。
-export function PricingTable({ columns, rows, stickyHeader = true, className }: PricingTableProps) {
+function PricingTableImpl({ columns, rows, stickyHeader = true, className }: PricingTableProps) {
   return (
     <ScrollArea orientation="horizontal" className={cn("w-full", className)}>
       <table className="w-full border-collapse text-sm">
@@ -58,3 +59,6 @@ export function PricingTable({ columns, rows, stickyHeader = true, className }: 
     </ScrollArea>
   );
 }
+
+export const PricingTable = memo(PricingTableImpl);
+PricingTable.displayName = "PricingTable";

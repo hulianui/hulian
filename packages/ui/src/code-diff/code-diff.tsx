@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { diffLines, diffStat, type DiffRow } from "./code-diff.diff";
 import type { CodeDiffAnnotation, CodeDiffProps } from "./code-diff.types";
@@ -29,7 +30,7 @@ function findAnno(annos: CodeDiffAnnotation[] | undefined, r: DiffRow): CodeDiff
   return annos.find((a) => ((a.side ?? "new") === "new" ? r.newNo === a.line : r.oldNo === a.line));
 }
 
-export function CodeDiff({
+function CodeDiffImpl({
   oldText,
   newText,
   mode = "unified",
@@ -129,3 +130,6 @@ export function CodeDiff({
     </div>
   );
 }
+
+export const CodeDiff = memo(CodeDiffImpl);
+CodeDiff.displayName = "CodeDiff";

@@ -3097,6 +3097,7 @@
       ],
       "dependencies": [
         "@base-ui/react",
+        "@tanstack/react-virtual",
         "class-variance-authority"
       ],
       "registryDependencies": [
@@ -6523,10 +6524,11 @@
         ],
         "group": "collection",
         "tags": [
-          "animated"
+          "animated",
+          "webgl"
         ],
         "animated": true,
-        "webgl": false,
+        "webgl": true,
         "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/circular-gallery/circular-gallery.md",
         "docLocal": "packages/ui/src/circular-gallery/circular-gallery.md",
         "status": "enriched",

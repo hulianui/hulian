@@ -62,6 +62,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
     clearable = true,
     defaultOpen = false,
     renderOption,
+    virtualized,
     className,
     popupClassName,
   } = props;
@@ -351,6 +352,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
         multiple
         items={options}
         filter={null}
+        {...(virtualized !== undefined && { virtualized })}
         inputValue={query}
         onInputValueChange={handleInputValueChange}
         open={open}
@@ -380,6 +382,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
     <Combobox
       items={options}
       filter={null}
+      {...(virtualized !== undefined && { virtualized })}
       inputValue={query}
       onInputValueChange={handleInputValueChange}
       open={open}

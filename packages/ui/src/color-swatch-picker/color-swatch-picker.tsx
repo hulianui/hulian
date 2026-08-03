@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
 import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { cn } from "../lib/cn";
@@ -12,7 +13,7 @@ const SIZE: Record<SwatchSize, string> = {
   lg: "size-10",
 };
 
-export function ColorSwatchPicker({
+function ColorSwatchPickerImpl({
   colors,
   value,
   defaultValue,
@@ -67,3 +68,6 @@ export function ColorSwatchPicker({
     </BaseRadioGroup>
   );
 }
+
+export const ColorSwatchPicker = memo(ColorSwatchPickerImpl);
+ColorSwatchPicker.displayName = "ColorSwatchPicker";

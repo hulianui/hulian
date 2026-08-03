@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
-import { CircularGallery } from "./circular-gallery";
+import {
+  CIRCULAR_GALLERY_PLANE_SEGMENTS,
+  CircularGallery,
+  makePlaceholderCanvas,
+} from "./circular-gallery";
 
 // jsdom 不实现 WebGL：useGlCanvas 内 setup 的 new Renderer 会因 getContext 返回 null 静默失败，
 // 组件不抛错、root div 仍渲染。必须 stub：matchMedia / Resize+IntersectionObserver / RAF / dpr。
@@ -59,6 +63,22 @@ afterEach(() => {
 });
 
 describe("CircularGallery 正常渲染路径（WebGL canvas）", () => {
+  it("弯曲平面使用有上限的细分网格", () => {
+    expect(
+      CIRCULAR_GALLERY_PLANE_SEGMENTS.width * CIRCULAR_GALLERY_PLANE_SEGMENTS.height,
+    ).toBeLessThanOrEqual(512);
+  });
+
+  it("默认纹理直接使用小型 canvas，不做同步 PNG 编码", () => {
+    const toDataURL = vi.spyOn(HTMLCanvasElement.prototype, "toDataURL");
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
+    const host = document.createElement("div");
+    const canvas = makePlaceholderCanvas(0, host);
+
+    expect(canvas).toMatchObject({ width: 64, height: 48 });
+    expect(toDataURL).not.toHaveBeenCalled();
+  });
+
   it("渲染根容器 div，不抛错（jsdom 无 WebGL 也安全）", () => {
     expect(() => render(<CircularGallery />)).not.toThrow();
     const { container } = render(<CircularGallery />);
