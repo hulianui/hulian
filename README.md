@@ -5,7 +5,7 @@
 <h1 align="center">瑚琏 Hulian</h1>
 
 <p align="center">
-  颜值 + 好用的 React 设计系统 —— <b>349 个组件</b>，OKLCH 主题 · Tailwind v4 · 暗色零闪烁 · 运行时换肤。
+  颜值 + 好用的 React 设计系统 —— <b>376 个组件</b>，OKLCH 主题 · Tailwind v4 · 暗色零闪烁 · 运行时换肤。
 </p>
 
 <p align="center">
@@ -31,14 +31,14 @@
 
 ## ✨ 特性
 
-- 🧩 **349 个组件** —— 基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …
+- 🧩 **376 个组件** —— 基础控件 / 表单 / 数据展示 / 反馈 / 导航 / overlay / 图表 / 特效背景 / AI 智能体 / 直播 / 节点画布 …
 - 🎨 **OKLCH 双层 token** —— 原始层 + 语义层，切 `[data-theme]` 明暗 0 闪烁，运行时即可换肤
 - ♿ **无障碍优先** —— 行为层基于 [Base UI](https://base-ui.com)，键盘 / 焦点 / ARIA 开箱即用
 - 🌗 **暗色零闪烁** —— `ThemeProvider` + 入口 inline script，SSR 首屏不白闪
 - 📦 **零 token 公开安装** —— 发布在公共 npmjs，`pnpm add @hulianui/ui` 一行装上
 - 🔧 **源码分发** —— 发 TSX 源码，样式可被你的 Tailwind 完整接管，无黑盒 CSS
 - 📚 **AI-first 文档** —— 每个组件含 Props/Events/Slots + 活示例 + playground，并生成 `llms.txt`
-- 🏗️ **18 个真实 demo** —— CRM / 商城 / 数据大屏 / AI 工作流 / 直播 … 全部 dogfood 自家组件
+- 🏗️ **19 个真实 demo** —— CRM / 商城 / 数据大屏 / AI 工作流 / 直播 … 全部 dogfood 自家组件
 
 ## 📦 快速开始
 
@@ -87,9 +87,9 @@ export default function App() {
 
 ## 🧩 组件与示例
 
-- **组件库**：349 个组件，覆盖中后台、营销站、电商、AI 应用、移动端等场景 —— [浏览全部](https://hulianui.haloritual.com)
+- **组件库**：376 个组件，覆盖中后台、营销站、电商、AI 应用、移动端等场景 —— [浏览全部](https://hulianui.haloritual.com)
 - **区块 / 页面 / 示例**：从真实 demo 抽离的整段区块与整页模板，复制即用
-- **18 个内置 demo**：CRM · 商城 · 客服 · 数据大屏 · 知识库 · 直播 · AI 工作流 · API 网关 · 智能体调度 · 项目协同 · LMS · 个人站 · 官网 · 订阅结算 · 代码审查 · 排期 · 移动端 · AI 对话 —— [在线体验](https://hulianui.haloritual.com/demos)
+- **19 个内置 demo**：CRM · 商城 · 客服 · 数据大屏 · 知识库 · 直播 · AI 工作流 · API 网关 · 智能体调度 · 部署平台 · 项目协同 · LMS · 个人站 · 官网 · 订阅结算 · 代码审查 · 排期 · 移动端 · AI 对话 —— [在线体验](https://hulianui.haloritual.com/demos)
 
 ## 🛠️ 技术地基
 
@@ -114,7 +114,7 @@ apps/
 ```bash
 pnpm install
 pnpm --filter www dev   # 文档站 http://localhost:5512
-pnpm test               # 全量单测（vitest · 2705 用例 / 367 文件）
+pnpm test               # 全量测试（vitest 双 project：jsdom 单测 + 真实 chromium）
 pnpm typecheck
 ```
 

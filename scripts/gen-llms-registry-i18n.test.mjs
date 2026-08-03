@@ -296,14 +296,14 @@ test("English conventions localize advice while preserving executable protocol",
       componentAdvisories: zh.stats.componentAdvisories,
       totalAdvisories: zh.stats.totalAdvisories,
     },
-    { componentAdvisories: 1108, totalAdvisories: 1115 },
+    { componentAdvisories: 1112, totalAdvisories: 1119 },
   );
   assert.deepEqual(
     {
       componentAdvisories: en.stats.componentAdvisories,
       totalAdvisories: en.stats.totalAdvisories,
     },
-    { componentAdvisories: 1194, totalAdvisories: 1201 },
+    { componentAdvisories: 1198, totalAdvisories: 1205 },
   );
   assert.equal(new Set(en.advisories.map((item) => item.id)).size, en.advisories.length);
 });

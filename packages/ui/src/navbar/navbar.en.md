@@ -94,9 +94,8 @@ function Header() {
 
 ## Usage guidelines
 
-Without an explicit `aria-label`, the mobile toggle follows `ConfigProvider locale`: `enUS` provides “Open menu” and “Close menu”, while the no-provider fallback remains Chinese.
-
 - `NavbarMenuToggle` is controlled: maintain `isOpen` and `onToggle` in application state. The component does not render or manage a mobile menu panel, so conditionally render that panel from `open` yourself.
+- Without an explicit `aria-label`, the mobile toggle follows `ConfigProvider locale`: `enUS` provides “Open menu” and “Close menu”, while the no-provider fallback remains Chinese. An explicit `aria-label` always wins.
 - The three-section layout (brand + centered menu + trailing actions) is the default shape: `NavbarBrand` grows by default so all three sections are equal and the centered one truly sits at the navbar center. **A two-section layout (brand plus a `justify="start"` section next to it) must pass `grow={false}`**, otherwise that section is pushed to the one-third mark.
 - To let the brand truncate on narrow screens, add `min-w-0` to `NavbarBrand` alongside `truncate` — flex items default to `min-width: auto` and will not shrink without it.
 
