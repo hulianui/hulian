@@ -3,6 +3,7 @@ import { Menu, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type {
   NavbarProps,
+  NavbarBrandProps,
   NavbarContentProps,
   NavbarItemProps,
   NavbarMenuToggleProps,
@@ -33,10 +34,17 @@ export function Navbar({
   );
 }
 
-export function NavbarBrand({ className, children, ...props }: NavbarProps) {
+// 品牌段默认与两侧 NavbarContent 一样是 flex-1 basis-0：三段等分，justify="center"
+// 才真的落在 nav 中心（品牌段定宽时居中段只居中在自己那一格，整体随品牌名长度左偏）。
+// 内容仍靠 justify-start 贴左，flex 项默认 min-width:auto 不会被压小 → 视觉不变。
+export function NavbarBrand({ grow = true, className, children, ...props }: NavbarBrandProps) {
   return (
     <div
-      className={cn("flex shrink-0 items-center gap-2 font-semibold text-foreground", className)}
+      className={cn(
+        "flex items-center gap-2 font-semibold text-foreground",
+        grow ? "flex-1 basis-0 justify-start" : "shrink-0",
+        className,
+      )}
       {...props}
     >
       {children}

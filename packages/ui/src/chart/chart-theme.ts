@@ -40,6 +40,3 @@ export const tooltipLabelStyle: CSSProperties = { color: "var(--color-muted)" };
 
 /** 极坐标（雷达图）刻度 */
 export const polarAngleTick = { fill: "var(--color-muted)", fontSize: 12 };
-
-/** 图例文字 token 化 */
-export const legendStyle: CSSProperties = { fontSize: 12, color: "var(--color-muted)" };

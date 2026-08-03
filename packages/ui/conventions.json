@@ -1262,11 +1262,18 @@
       "id": "component/chart/pitfall/5",
       "scope": "chart",
       "title": "Chart",
-      "rule": "`legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。图例序列多到换行时会挤压画布，那种情况把 `height` 调大或缩短 `label`。",
+      "rule": "`legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。序列多到换行时图例会堆成多行、继续挤压画布——**这时候不要靠调大 `height` 硬扛**（28 条序列的图例是 5 行，把雷达盘撑回可读尺寸得把总高翻倍），开 `legendScroll` 让图例恒为单行横滚。",
       "source": "packages/ui/src/chart/chart.md"
     },
     {
       "id": "component/chart/pitfall/6",
+      "scope": "chart",
+      "title": "Chart",
+      "rule": "极坐标三件（Pie/Radar/Radial）的 `legend` **默认是 `true`**，与笛卡尔三件相反——它们历来自带图例，改默认会破坏存量版式。自绘图例前先 `legend={false}`，否则两份图例并排。",
+      "source": "packages/ui/src/chart/chart.md"
+    },
+    {
+      "id": "component/chart/pitfall/7",
       "scope": "chart",
       "title": "Chart",
       "rule": "自绘图例时色点用 `<Dot color={...} />`，**不要**写 `<Dot style={{ color }} />`——那是静默失效（圆点是背景色），见 [Dot 的坑](../dot/dot.md)。",
@@ -4584,6 +4591,20 @@
       "source": "packages/ui/src/navbar/navbar.md"
     },
     {
+      "id": "component/navbar/pitfall/3",
+      "scope": "navbar",
+      "title": "Navbar",
+      "rule": "三段版式（品牌 + 居中主菜单 + 右侧操作区）是本件的默认形状：`NavbarBrand` 默认 `grow`，三段等分，居中段才真的在导航栏中心。**两段式版式（品牌 + 紧贴品牌的 `justify=\"start\"` 内容）要显式传 `grow={false}`**，否则那段内容会被推到 1/3 处。",
+      "source": "packages/ui/src/navbar/navbar.md"
+    },
+    {
+      "id": "component/navbar/pitfall/4",
+      "scope": "navbar",
+      "title": "Navbar",
+      "rule": "品牌区要能截断（窄屏让位）时，除了 `truncate` 还得给 `NavbarBrand` 加 `min-w-0`——flex 项默认 `min-width:auto`，不解开就不会收缩。",
+      "source": "packages/ui/src/navbar/navbar.md"
+    },
+    {
       "id": "component/navigation-menu/pitfall/1",
       "scope": "navigation-menu",
       "title": "NavigationMenu",
@@ -7643,6 +7664,13 @@
       "source": "packages/ui/src/tree-select/tree-select.md"
     },
     {
+      "id": "component/tree-select/pitfall/4",
+      "scope": "tree-select",
+      "title": "TreeSelect",
+      "rule": "**单选默认只有叶子节点可选**：`expandTrigger` 缺省是 `\"row\"`，有子节点的行点了只展开、不回传 `onChange`，点几次都选不中。需要提交任意层级就传 `expandTrigger=\"icon\"`（箭头管展开、行管选中），或改用 [Cascader](../cascader/cascader.md) 的 `changeOnSelect`。多选不受影响——勾选框是独立命中区。",
+      "source": "packages/ui/src/tree-select/tree-select.md"
+    },
+    {
       "id": "component/true-focus/pitfall/1",
       "scope": "true-focus",
       "title": "TrueFocus",
@@ -7934,7 +7962,7 @@
   ],
   "stats": {
     "componentDocs": 376,
-    "componentAdvisories": 1108,
-    "totalAdvisories": 1115
+    "componentAdvisories": 1112,
+    "totalAdvisories": 1119
   }
 }

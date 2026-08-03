@@ -17,6 +17,13 @@ export interface TreeSelectProps {
    */
   clearable?: boolean;
   searchable?: boolean;
+  /**
+   * 什么东西触发展开/收起，透传给内部 [Tree](../tree/tree.md)，默认 `"row"`（点整行）。
+   * **单选下 `"row"` 意味着只有叶子选得中** —— 有子节点的行点了只展开，永远不回传 `onChange`。
+   * 需要「选到中间层」（选到某个部门 / 某个大类 / 某一册）就传 `"icon"`：箭头管展开、
+   * 行的其余部分管选中，与多选态「勾选框管选、行管展开」在心智上对称。
+   */
+  expandTrigger?: "row" | "icon";
   showLine?: boolean;
   className?: string;
 }

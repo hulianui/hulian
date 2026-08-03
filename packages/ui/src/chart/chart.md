@@ -32,7 +32,8 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | xKey* | `string` | — | 横轴字段名 |
 | height | `number` | `280` | 高度（SSR 安全：宽走 ResponsiveContainer，高需显式值） |
 | stacked | `boolean` | `false` | 多序列堆叠（Area/Bar 生效） |
-| legend | `boolean \| "top" \| "bottom"` | `false` | 序列图例（色点 + `label`）。`true` 等价 `"bottom"`；**AreaChart / BarChart / LineChart 生效**（Pie/Radar/Radial 一直自带图例）。色点走 [Dot](../dot/dot.md) 的 `color`，与序列色同源 |
+| legend | `boolean \| "top" \| "bottom"` | `false`（Radar 为 `true`） | 序列图例（色点 + `label`）。`true` 等价 `"bottom"`，`false` 关掉。色点走 [Dot](../dot/dot.md) 的 `color`，与序列色同源。**默认值按图种分两档**：笛卡尔三件默认关，Radar 默认开（历来自带图例，保持零改动） |
+| legendScroll | `boolean` | `false` | 图例恒为单行 + 横向滚动（对齐 echarts `legend.type: "scroll"`）。缺省是换行居中，序列一多就堆成多行挤扁画布；序列 >8 条开这个 |
 | horizontal | `boolean` | `false` | **BarChart 专属**：横向柱状 |
 | yAxisWidth | `number` | 自适应 | **BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48–160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传 |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-[32rem]`） |
@@ -44,6 +45,8 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | data* | `ChartDatum[]` | — | 扁平数据点 `{ name, value, color? }` |
 | donut | `boolean` | `false` | **PieChart**：环形图（中心挖空） |
 | height | `number` | `280` | 高度 |
+| legend | `boolean \| "top" \| "bottom"` | `true` | 图例（色点 + `data[].name`），语义同上但**默认开**（这两件历来自带图例）。传 `false` 关掉——自绘图例时必须关，否则两份图例并排 |
+| legendScroll | `boolean` | `false` | 同上：图例恒为单行 + 横向滚动 |
 | className | `string` | — | 透传类名 |
 
 ## 示例
@@ -54,6 +57,10 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 
 // 环形图
 <PieChart donut data={[{ name: "搜索", value: 420 }, { name: "直接", value: 280 }]} className="w-[32rem]" />
+
+// 关掉自带图例（自绘时必须关），或让几十条序列的图例单行横滚而不吃画布
+<RadarChart legend={false} data={data} series={series} xKey="indicator" height={320} />
+<RadarChart legendScroll data={data} series={series28} xKey="indicator" height={320} />
 
 // 横向柱状：CJK 类目轴宽自适应（≥4 字不再截断）
 <BarChart
@@ -69,7 +76,8 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 - 在收缩的 flex 容器里 ResponsiveContainer 可能量不到宽，需给容器显式宽度，见 [[recharts-responsive-container-needs-explicit-width-in-shrink-flex]]。
 - headless 截图常出现「只剩坐标轴、数据区空白」——不是 bug，是入场动画的 clipPath 被 rAF 饿死，设 `prefers-reduced-motion: reduce` 再截即显，见 [[recharts-headless-screenshot-blank-clippath-animation-starved]]。
 - horizontal 类目轴宽自适应有 160px 上限（防超长标签吃掉图区）——类目 >12 个全角字仍会截断，此时消费侧截短标签或显式传 `yAxisWidth`。
-- `legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。图例序列多到换行时会挤压画布，那种情况把 `height` 调大或缩短 `label`。
+- `legend` 开启后 `height` 仍是**组件总高**：图例占一行，画布相应变矮，不会把总高撑高。序列多到换行时图例会堆成多行、继续挤压画布——**这时候不要靠调大 `height` 硬扛**（28 条序列的图例是 5 行，把雷达盘撑回可读尺寸得把总高翻倍），开 `legendScroll` 让图例恒为单行横滚。
+- 极坐标三件（Pie/Radar/Radial）的 `legend` **默认是 `true`**，与笛卡尔三件相反——它们历来自带图例，改默认会破坏存量版式。自绘图例前先 `legend={false}`，否则两份图例并排。
 - 自绘图例时色点用 `<Dot color={...} />`，**不要**写 `<Dot style={{ color }} />`——那是静默失效（圆点是背景色），见 [Dot 的坑](../dot/dot.md)。
 
 ## 相关

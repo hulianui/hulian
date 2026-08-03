@@ -21,9 +21,19 @@ export interface ChartProps<TDatum = Record<string, unknown>> {
   /**
    * 序列图例（色点 + `series.label`）。多序列图不给图例，读者无从知道哪条线是哪条序列。
    * `true` 等价 `"bottom"`。色点走 Dot 的 `color`，与序列色同源。
+   *
+   * **默认值按图种分两档**：笛卡尔三件（Area/Bar/Line）默认 `false`；
+   * 极坐标三件（Radar/Pie/Radial）默认 `true`（它们历来自带图例，保持零改动不 breaking）。
    * @default false
    */
   legend?: boolean | "top" | "bottom";
+  /**
+   * 图例恒为单行 + 横向滚动（对齐 echarts 的 `legend.type: "scroll"`）。
+   * 缺省是换行居中：序列一多就堆成多行，把画布挤扁（`height` 是组件总高，图例吃掉的
+   * 就是画布的）。序列 >8 条基本都该开这个，否则每个消费方都得自绘一遍横向图例。
+   * @default false
+   */
+  legendScroll?: boolean;
 }
 
 /** Bar 专属：横向柱状（layout=vertical） */
@@ -51,6 +61,15 @@ export interface PieChartProps {
   /** 默认 280 */
   height?: number;
   className?: string;
+  /**
+   * 图例（色点 + `data[].name`），语义同 `ChartProps.legend`，但**默认 `true`** ——
+   * 饼/环/径向历来自带图例，保持既有调用零改动。传 `false` 关掉（自绘图例时必须关，
+   * 否则两份图例并排）。
+   * @default true
+   */
+  legend?: boolean | "top" | "bottom";
+  /** 图例恒为单行 + 横向滚动，语义同 `ChartProps.legendScroll`。 @default false */
+  legendScroll?: boolean;
 }
 
 export type RadialChartProps = PieChartProps;

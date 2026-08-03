@@ -31,6 +31,31 @@ describe("Navbar", () => {
     expect(container.firstElementChild!.className).toContain("justify-center");
   });
 
+  // hulianui/hulian#81：NavbarBrand 是 shrink-0、两个 NavbarContent 是 flex-1，
+  // 三段不对称 → justify="center" 只在「自己那一格」居中，实际偏左（实测 265px）。
+  // 真实的居中断言在 navbar.browser.test.tsx（jsdom 无布局引擎）。
+  describe("NavbarBrand 伸缩", () => {
+    const brandOf = (c: HTMLElement) => c.firstElementChild as HTMLElement;
+
+    it("默认可伸长（flex-1 basis-0），与 NavbarContent 同一份伸缩性", () => {
+      const { container } = render(<NavbarBrand>瑚琏</NavbarBrand>);
+      expect(brandOf(container).className).toContain("flex-1");
+      expect(brandOf(container).className).toContain("basis-0");
+      expect(brandOf(container).className).not.toContain("shrink-0");
+    });
+
+    it("grow={false} 回到定宽（shrink-0），给存量两段式版式留出口", () => {
+      const { container } = render(<NavbarBrand grow={false}>瑚琏</NavbarBrand>);
+      expect(brandOf(container).className).toContain("shrink-0");
+      expect(brandOf(container).className).not.toContain("flex-1");
+    });
+
+    it("grow 不落到 DOM 上（不是合法 div 属性）", () => {
+      const { container } = render(<NavbarBrand grow={false}>瑚琏</NavbarBrand>);
+      expect(brandOf(container).hasAttribute("grow")).toBe(false);
+    });
+  });
+
   it("NavbarItem isActive → aria-current=page + 高亮", () => {
     const { getByText } = render(<NavbarItem isActive>组件</NavbarItem>);
     const li = getByText("组件");

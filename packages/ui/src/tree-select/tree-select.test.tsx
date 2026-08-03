@@ -65,6 +65,55 @@ describe("TreeSelect", () => {
     expect(screen.queryByRole("button", { name: "清除" })).toBeNull();
   });
 
+  // hulianui/hulian#78：单选下只有叶子选得中 —— Tree 的 expandTrigger 默认 "row"，
+  // 分支行点击一律先展开就 return，走不到 setSelected，而 TreeSelect 没把这个能力开放出来。
+  describe("expandTrigger", () => {
+    const branchRow = () => screen.getByText("甲").closest('[role="treeitem"]')!;
+
+    it("默认（row）：单选点分支行只展开，不回传 —— 既有行为不变", () => {
+      const onChange = vi.fn();
+      render(<TreeSelect nodes={NODES} onChange={onChange} placeholder="请选择" />);
+      fireEvent.click(screen.getByRole("button"));
+      fireEvent.click(branchRow());
+      expect(onChange).not.toHaveBeenCalled();
+      expect(screen.getByText("甲一")).toBeTruthy(); // 展开了
+    });
+
+    it('icon：单选点分支行 → onChange(分支 key)，中间层可选', () => {
+      const onChange = vi.fn();
+      render(
+        <TreeSelect nodes={NODES} expandTrigger="icon" onChange={onChange} placeholder="请选择" />,
+      );
+      fireEvent.click(screen.getByRole("button"));
+      fireEvent.click(branchRow());
+      expect(onChange).toHaveBeenCalledWith("a");
+    });
+
+    it("icon：选中分支后触发器显示该分支 label", () => {
+      render(
+        <TreeSelect nodes={NODES} expandTrigger="icon" placeholder="请选择" defaultValue="a" />,
+      );
+      expect(screen.getByText("甲")).toBeTruthy();
+      expect(screen.queryByText("请选择")).toBeNull();
+    });
+
+    it("多选下同样透传（勾选框仍独立命中，行为不受影响）", () => {
+      const onChange = vi.fn();
+      render(
+        <TreeSelect
+          nodes={NODES}
+          multiple
+          expandTrigger="icon"
+          onChange={onChange}
+          placeholder="请选择"
+        />,
+      );
+      fireEvent.click(screen.getByRole("button"));
+      fireEvent.click(screen.getAllByRole("checkbox").at(-1)!);
+      expect(onChange).toHaveBeenCalledWith(expect.arrayContaining(["b"]));
+    });
+  });
+
   it("多选受控传父级 key → chip 与 Tree 勾选态同源（展示叶 chip 而非父 chip）", () => {
     // 父级 "a" 有叶子 "a1"。外部塞父 key，Tree 内部会级联勾到叶；
     // chip 也应归一为叶（显示 "甲一"），不能停留在父级 chip（"甲"）造成显示/勾选脱节。

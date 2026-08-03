@@ -11626,6 +11626,7 @@
         ],
         "types": [
           "NavbarProps",
+          "NavbarBrandProps",
           "NavbarContentProps",
           "NavbarItemProps",
           "NavbarMenuToggleProps"

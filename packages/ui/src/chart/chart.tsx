@@ -21,7 +21,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   useChartWidth,
 } from "recharts";
 import { Dot } from "../dot/dot";
@@ -34,9 +33,15 @@ import {
   tooltipContentStyle,
   tooltipLabelStyle,
   polarAngleTick,
-  legendStyle,
 } from "./chart-theme";
-import type { ChartProps, BarChartProps, ChartSeries, PieChartProps, RadialChartProps } from "./chart.types";
+import type {
+  ChartProps,
+  BarChartProps,
+  ChartSeries,
+  ChartDatum,
+  PieChartProps,
+  RadialChartProps,
+} from "./chart.types";
 
 const MARGIN = { top: 8, right: 8, bottom: 0, left: -8 };
 
@@ -44,18 +49,44 @@ const MARGIN = { top: 8, right: 8, bottom: 0, left: -8 };
 // 字号另有一套，且会参与 recharts 自己的高度分配；这里用 Dot + token 排一行，与库内其它
 // 图例（Sankey/Funnel 等）长一个样，色点颜色与序列色同源（同一个 resolveTone 路径）。
 const LEGEND_ROW_H = 24;
+// 横滚档多让 8px 给常显细滚动条（同 Gantt 的横滚写法），不然滚动条会压在图例文字上。
+const LEGEND_SCROLL_ROW_H = 32;
 
-function ChartLegend({ series }: { series: ChartSeries[] }) {
+function ChartLegend({ series, scroll }: { series: ChartSeries[]; scroll?: boolean }) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted">
+    <div
+      className={cn(
+        "flex items-center gap-x-4 gap-y-1 text-xs text-muted",
+        scroll
+          ? [
+              // 恒单行：不换行、超出横向滚动。序列多到几十条时唯一不吃画布的形态。
+              "shrink-0 flex-nowrap justify-start overflow-x-auto overscroll-x-contain whitespace-nowrap",
+              // 常显细滚动条，给「可横滑」明确的视觉与抓手（同 Gantt）
+              "[scrollbar-width:thin] [scrollbar-color:var(--color-muted)_transparent]",
+              "[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent",
+              "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted/50",
+              "hover:[&::-webkit-scrollbar-thumb]:bg-muted/80",
+            ]
+          : "flex-wrap justify-center",
+      )}
+    >
       {series.map((s, i) => (
-        <span key={s.key} className="inline-flex items-center gap-1.5">
+        <span
+          key={s.key}
+          // flex-nowrap 容器里的项默认可压缩，不钉 shrink-0 就会被挤成一团而不是滚动
+          className={cn("inline-flex items-center gap-1.5", scroll && "shrink-0")}
+        >
           <Dot size="sm" color={resolveTone(s.color) ?? chartColor(i)} />
           {s.label ?? s.key}
         </span>
       ))}
     </div>
   );
+}
+
+/** 扁平数据点（Pie/Radial）→ 图例条目：色与 `<Cell>` 走同一条解析路径（index → chart-N）。 */
+function datumSeries(data: ChartDatum[]): ChartSeries[] {
+  return data.map((d) => ({ key: d.name, label: d.name, color: d.color }));
 }
 
 /**
@@ -67,24 +98,28 @@ function ChartFrame({
   height,
   className,
   legend,
+  legendScroll,
   series,
   children,
 }: {
   height: number;
   className?: string;
   legend?: boolean | "top" | "bottom";
+  legendScroll?: boolean;
   series: ChartSeries[];
   children: (canvasHeight: number) => React.ReactNode;
 }) {
   const place = legend === true ? "bottom" : legend || null;
-  const canvasHeight = place ? Math.max(1, height - LEGEND_ROW_H) : height;
+  const rowH = legendScroll ? LEGEND_SCROLL_ROW_H : LEGEND_ROW_H;
+  const canvasHeight = place ? Math.max(1, height - rowH) : height;
+  const row = <ChartLegend series={series} scroll={legendScroll} />;
   return (
     <div className={cn("flex w-full flex-col", className)} style={{ height }}>
-      {place === "top" && <ChartLegend series={series} />}
+      {place === "top" && row}
       <div className="w-full" style={{ height: canvasHeight }}>
         {children(canvasHeight)}
       </div>
-      {place === "bottom" && <ChartLegend series={series} />}
+      {place === "bottom" && row}
     </div>
   );
 }
@@ -173,9 +208,10 @@ export function AreaChart<TDatum>({
   className,
   stacked,
   legend,
+  legendScroll,
 }: ChartProps<TDatum>) {
   return (
-    <ChartFrame height={height} className={className} legend={legend} series={series}>
+    <ChartFrame height={height} className={className} legend={legend} legendScroll={legendScroll} series={series}>
       {(canvasHeight) => (
       <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReAreaChart data={data} margin={MARGIN}>
@@ -216,9 +252,10 @@ export function BarChart<TDatum>({
   horizontal,
   yAxisWidth,
   legend,
+  legendScroll,
 }: BarChartProps<TDatum>) {
   return (
-    <ChartFrame height={height} className={className} legend={legend} series={series}>
+    <ChartFrame height={height} className={className} legend={legend} legendScroll={legendScroll} series={series}>
       {(canvasHeight) => (
       <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReBarChart
@@ -277,9 +314,10 @@ export function LineChart<TDatum>({
   height = 280,
   className,
   legend,
+  legendScroll,
 }: ChartProps<TDatum>) {
   return (
-    <ChartFrame height={height} className={className} legend={legend} series={series}>
+    <ChartFrame height={height} className={className} legend={legend} legendScroll={legendScroll} series={series}>
       {(canvasHeight) => (
       <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReLineChart data={data} margin={MARGIN}>
@@ -310,10 +348,26 @@ export function LineChart<TDatum>({
 }
 
 // 饼图 / 环形图：扁平 {name,value} 数据，每片走 chart token。
-export function PieChart({ data, donut, height = 280, className }: PieChartProps) {
+// 图例走 ChartFrame（与笛卡尔三件同一套 legend/legendScroll 语义），不是 recharts <Legend>——
+// 后者写死在图内，消费方既关不掉也挪不动，自绘就变成两份图例并排（hulianui/hulian#80）。
+export function PieChart({
+  data,
+  donut,
+  height = 280,
+  className,
+  legend = true,
+  legendScroll,
+}: PieChartProps) {
   return (
-    <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
+    <ChartFrame
+      height={height}
+      className={className}
+      legend={legend}
+      legendScroll={legendScroll}
+      series={datumSeries(data)}
+    >
+      {(canvasHeight) => (
+      <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <RePieChart>
           <Pie
             data={data}
@@ -332,24 +386,33 @@ export function PieChart({ data, donut, height = 280, className }: PieChartProps
             ))}
           </Pie>
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
-          <Legend wrapperStyle={legendStyle} />
         </RePieChart>
       </ResponsiveContainer>
-    </div>
+      )}
+    </ChartFrame>
   );
 }
 
-// 雷达图：series + xKey（角轴维度），多序列叠加。
+// 雷达图：series + xKey（角轴维度），多序列叠加。图例同 PieChart 走 ChartFrame。
 export function RadarChart<TDatum>({
   data,
   series,
   xKey,
   height = 280,
   className,
+  legend = true,
+  legendScroll,
 }: ChartProps<TDatum>) {
   return (
-    <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
+    <ChartFrame
+      height={height}
+      className={className}
+      legend={legend}
+      legendScroll={legendScroll}
+      series={series}
+    >
+      {(canvasHeight) => (
+      <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReRadarChart data={data} margin={{ top: 12, right: 12, bottom: 12, left: 12 }}>
           <PolarGrid stroke="var(--color-border)" />
           <PolarAngleAxis dataKey={xKey} tick={<PolarAngleWrapTick />} />
@@ -369,18 +432,31 @@ export function RadarChart<TDatum>({
             );
           })}
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
-          <Legend wrapperStyle={legendStyle} />
         </ReRadarChart>
       </ResponsiveContainer>
-    </div>
+      )}
+    </ChartFrame>
   );
 }
 
-// 径向条形图：扁平 {name,value} 当多环进度/仪表。
-export function RadialChart({ data, height = 280, className }: RadialChartProps) {
+// 径向条形图：扁平 {name,value} 当多环进度/仪表。图例同 PieChart 走 ChartFrame。
+export function RadialChart({
+  data,
+  height = 280,
+  className,
+  legend = true,
+  legendScroll,
+}: RadialChartProps) {
   return (
-    <div className={cn("w-full", className)} style={{ height }}>
-      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={0}>
+    <ChartFrame
+      height={height}
+      className={className}
+      legend={legend}
+      legendScroll={legendScroll}
+      series={datumSeries(data)}
+    >
+      {(canvasHeight) => (
+      <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
         <ReRadialBarChart
           data={data}
           cx="50%"
@@ -396,9 +472,9 @@ export function RadialChart({ data, height = 280, className }: RadialChartProps)
             ))}
           </RadialBar>
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
-          <Legend wrapperStyle={legendStyle} />
         </ReRadialBarChart>
       </ResponsiveContainer>
-    </div>
+      )}
+    </ChartFrame>
   );
 }
