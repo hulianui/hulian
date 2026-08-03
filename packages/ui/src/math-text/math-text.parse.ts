@@ -9,7 +9,9 @@
 // 不认识的命令一律按字面输出（界面上看得见 `\foo`），绝不静默吞掉。
 import type { MathNode } from "./math-text.types";
 import {
+  BLACKBOARD_LETTERS,
   DECORATE_COMMANDS,
+  ESCAPED_CHARS,
   MATH_SYMBOLS,
   SIZING_COMMANDS,
   SPACING_COMMANDS,
@@ -63,6 +65,21 @@ function readArg(
 }
 
 /**
+ * 读一个参数的**原始文本**（不解析）。
+ * \mathbb 要逐字符换字形，拿解析后的节点树反而做不了这件事。
+ */
+function readRawArg(src: string, start: number): { text: string; next: number } | null {
+  const at = skipSpaces(src, start);
+  if (at >= src.length) return null;
+  if (src[at] === "{") {
+    const end = matchBrace(src, at);
+    if (end === -1) return null;
+    return { text: src.slice(at + 1, end), next: end + 1 };
+  }
+  return { text: src[at], next: at + 1 };
+}
+
+/**
  * 处理一条反斜杠命令。返回 null 表示「不认识」——
  * 调用方会把它当普通字符走下去，于是 `\foo` 原样显示在界面上。
  * 这是刻意的：吞掉未知命令会让题面缺一块而没人察觉。
@@ -73,7 +90,13 @@ function handleCommand(
   name: string | undefined,
   options: MathParseOptions,
 ): { nodes: MathNode[]; next: number } | null {
-  if (!name) return null;
+  if (!name) {
+    // `\{` `\%` 之类的转义字符：正则取不到命令名（下一个字符不是字母），
+    // 但它们确实是命令，不还原就会在集合构建式里露出反斜杠。
+    const escaped = ESCAPED_CHARS[src[at + 1]];
+    if (escaped) return { nodes: [{ kind: "text", text: escaped }], next: at + 2 };
+    return null;
+  }
   const after = at + 1 + name.length;
 
   if (name === "frac") {
@@ -96,6 +119,24 @@ function handleCommand(
     const radicand = readArg(src, cursor, options);
     if (!radicand) return null;
     return { nodes: [{ kind: "sqrt", radicand: radicand.nodes, index }], next: radicand.next };
+  }
+
+  if (name === "mathbb") {
+    const arg = readRawArg(src, after);
+    if (!arg) return null;
+    // 表外字符逐个原样保留（\mathbb{R+} → ℝ+），不因为一个 + 就整体放弃
+    const text = [...arg.text].map((ch) => BLACKBOARD_LETTERS[ch] ?? ch).join("");
+    return { nodes: [{ kind: "text", text }], next: arg.next };
+  }
+
+  if (name === "overset") {
+    const above = readArg(src, after, options);
+    const base = above ? readArg(src, above.next, options) : null;
+    if (!above || !base) return null; // 残缺的 \overset 保持字面，不吞
+    return {
+      nodes: [{ kind: "overset", above: above.nodes, children: base.nodes }],
+      next: base.next,
+    };
   }
 
   if (UNWRAP_COMMANDS.has(name)) {
@@ -230,6 +271,9 @@ export function mathToPlain(src: string): string {
             return `_${render(n.children)}`;
           case "decorate":
             return render(n.children);
+          // 上方是有语义的记号（弧号等），不同于 decorate 的纯样式线，检索时要留住
+          case "overset":
+            return render(n.above) + render(n.children);
           case "blank":
             return "_".repeat(n.length);
         }

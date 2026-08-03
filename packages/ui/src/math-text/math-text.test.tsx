@@ -116,3 +116,88 @@ describe("LaTeX 符号表（按真实语料频次建表）", () => {
     expect(mathToPlain("\\oiint x")).toBe("\\oiint x");
   });
 });
+
+describe("向量箭头（issue #83：高中题面 \\overrightarrow 169 次 / \\vec 113 次）", () => {
+  it("\\vec 与 \\overrightarrow 都走 decorate 的 arrow 档", () => {
+    expect(parseMath("\\vec{a}")).toEqual([
+      { kind: "decorate", style: "arrow", children: [{ kind: "text", text: "a" }] },
+    ]);
+    expect(parseMath("\\overrightarrow{AB}")).toEqual([
+      { kind: "decorate", style: "arrow", children: [{ kind: "text", text: "AB" }] },
+    ]);
+  });
+
+  it("箭头不吞内容：朴素文本仍是被装饰的那几个字母", () => {
+    expect(mathToPlain("已知\\overrightarrow{AB}与\\vec{a}共线")).toBe("已知AB与a共线");
+  });
+
+  it("渲染出真箭头，而不是把 \\vec 原样露给读者", () => {
+    const { container } = render(<MathText>{"\\overrightarrow{AB}"}</MathText>);
+    expect(container.textContent).not.toContain("\\");
+    expect(container.textContent).toContain("AB");
+    // 箭头是覆盖层，宽度跟随内容，因此不能靠字符宽度撑开
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+});
+
+describe("高中学段命令（issue #84：按 1324 题实测频次补表）", () => {
+  it("逻辑与极限箭头", () => {
+    expect(mathToPlain("p\\Leftrightarrow q")).toBe("p⇔q");
+    expect(mathToPlain("x\\to 0")).toBe("x→0");
+  });
+
+  it("集合构建式：\\mid 与转义花括号一起才读得通", () => {
+    expect(mathToPlain("\\{x\\mid x>0\\}")).toBe("{x∣x>0}");
+  });
+
+  it("\\mathbb 映射黑板粗体，而不是剥壳成裸字母", () => {
+    // 剥壳会让「定义域为 ℝ」读起来像「定义域为 R」，与变量 R 混淆
+    expect(mathToPlain("x\\in\\mathbb{R}")).toBe("x∈ℝ");
+    expect(mathToPlain("\\mathbb{N}\\mathbb{Z}\\mathbb{Q}\\mathbb{C}")).toBe("ℕℤℚℂ");
+  });
+
+  it("\\mathbb 的参数不在字母表里时逐字符原样保留，不吞", () => {
+    expect(mathToPlain("\\mathbb{R+}")).toBe("ℝ+");
+  });
+
+  it("内积尖括号、希腊字母、全称量词", () => {
+    expect(mathToPlain("\\langle a,b\\rangle")).toBe("⟨a,b⟩");
+    expect(mathToPlain("\\varphi+\\Gamma")).toBe("φ+Γ");
+    expect(mathToPlain("\\forall x")).toBe("∀x");
+  });
+
+  it("\\underline 是给内容加下划线，与填空槽是两回事", () => {
+    expect(parseMath("\\underline{甲}")).toEqual([
+      { kind: "decorate", style: "underline", children: [{ kind: "text", text: "甲" }] },
+    ]);
+    expect(parseMath("____")).toEqual([{ kind: "blank", length: 4 }]);
+  });
+
+  it("\\overset 把上方记号叠在内容上（弧 AB 的规范写法）", () => {
+    expect(parseMath("\\overset{\\frown}{AB}")).toEqual([
+      {
+        kind: "overset",
+        above: [{ kind: "text", text: "⌢" }],
+        children: [{ kind: "text", text: "AB" }],
+      },
+    ]);
+    // 上方记号是有语义的内容（不同于 \overline 的纯样式线），检索时要留住
+    expect(mathToPlain("\\overset{\\frown}{AB}")).toBe("⌢AB");
+  });
+
+  it("残缺的 \\overset 保持字面，不吞后面的内容", () => {
+    expect(mathToPlain("\\overset{a}")).toBe("\\overset{a}");
+  });
+
+  it("LaTeX 转义字符还原成字面字符", () => {
+    expect(mathToPlain("\\{a\\}\\%\\$\\&\\#")).toBe("{a}%$&#");
+  });
+
+  it("\\_ 是字面下划线，不会被当成填空槽", () => {
+    expect(parseMath("\\_")).toEqual([{ kind: "text", text: "_" }]);
+  });
+
+  it("换行 \\\\ 不受转义字符处理影响", () => {
+    expect(mathToPlain("\\begin{array}{l}x=1\\\\y=2\\end{array}")).toBe("x=1；y=2");
+  });
+});

@@ -72,7 +72,7 @@ import { QuestionCard } from "@hulianui/ui"
 | `actions` | `ReactNode` | — | 右上角操作区 |
 | `compact` | `boolean` | `false` | 收起小问与页脚，用于长列表 |
 
-## 坑
+## 禁忌 / 坑
 
 - **`stem` 和 `options[].text` 必须是 MathText 记号串，不要预先转成纯文本**。传 `"3/8"` 只会显示斜杠；传 `"\\frac{3}{8}"` 才有真分数版式。
 - **`issues` 不是装饰**。它存在的意义是让「机器拆出来但没把握」的题一眼可辨。把待复核的题和正常题渲染成一个样子，等于拿不可信的数据骗验收 —— 有 `issues` 就一定要传。

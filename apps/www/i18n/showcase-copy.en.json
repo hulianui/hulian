@@ -7514,6 +7514,15 @@
     "y 在纵向布局里撑出上下间隔。": "y Providing upper and lower space in the vertical layout.",
     "yLabels={[\"一\", \"二\", \"三\", \"四\", \"五\", \"六\", \"日\"]}": "yLabels={[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]}",
     "YYYY 年 M 月 D 日": "MMM D, YYYY",
-    "zoom 控制放大镜下的缩放比例，倍数越大细节越突出。": "zoom Controls the zoom ratio under the magnifying glass. The larger the magnification, the more prominent the details."
+    "zoom 控制放大镜下的缩放比例，倍数越大细节越突出。": "zoom Controls the zoom ratio under the magnifying glass. The larger the magnification, the more prominent the details.",
+    "向量": "Vectors",
+    "\\vec 与 \\overrightarrow 的箭头宽度跟随内容，单字母与多字母都盖得住。": "Arrow width for \\vec and \\overrightarrow follows the content, so it covers single letters and multi-letter names alike.",
+    "<MathText>{\"已知 \\\\overrightarrow{AB} 与 \\\\vec{a} 共线\"}</MathText>": "<MathText>{\"Given \\\\overrightarrow{AB} is collinear with \\\\vec{a}\"}</MathText>",
+    "已知 \\overrightarrow{AB} 与 \\vec{a} 共线,则 \\vec{a}\\cdot\\overrightarrow{AB}=0": "Given \\overrightarrow{AB} is collinear with \\vec{a}, then \\vec{a}\\cdot\\overrightarrow{AB}=0",
+    "集合与逻辑": "Sets and logic",
+    "高中题面的主力记号：黑板粗体数集、集合构建式、充要条件。": "Senior-high staples: blackboard-bold number sets, set-builder notation, and biconditionals.",
+    "设 A=\\{x\\mid x>0,x\\in\\mathbb{R}\\},则 x\\in A\\Leftrightarrow x>0": "Let A=\\{x\\mid x>0,x\\in\\mathbb{R}\\}, then x\\in A\\Leftrightarrow x>0",
+    "数集": "Number sets",
+    "弧": "Arc"
   }
 }

@@ -39,6 +39,26 @@ export const mathTextShowcase: ShowcaseSpec = {
           <MathText>{"\\sqrt{a^{2}+b^{2}} and \\sqrt[3]{8}"}</MathText>
         </p>),
         },
+        {
+            title: "Vectors",
+            description: "Arrow width for \\vec and \\overrightarrow follows the content, so it covers single letters and multi-letter names alike.",
+            code: `<MathText>{"Given \\\\overrightarrow{AB} is collinear with \\\\vec{a}"}</MathText>`,
+            render: () => (<p className="text-base leading-8">
+          <MathText>
+            {"Given \\overrightarrow{AB} is collinear with \\vec{a}, then \\vec{a}\\cdot\\overrightarrow{AB}=0"}
+          </MathText>
+        </p>),
+        },
+        {
+            title: "Sets and logic",
+            description: "Senior-high staples: blackboard-bold number sets, set-builder notation, and biconditionals.",
+            code: `<MathText>{"A=\\\\{x\\\\mid x\\\\in\\\\mathbb{R}\\\\}"}</MathText>`,
+            render: () => (<p className="text-base leading-8">
+          <MathText>
+            {"Let A=\\{x\\mid x>0,x\\in\\mathbb{R}\\}, then x\\in A\\Leftrightarrow x>0"}
+          </MathText>
+        </p>),
+        },
     ],
     controls: [
         {
@@ -56,6 +76,9 @@ export const mathTextShowcase: ShowcaseSpec = {
         { name: "Subscript", render: () => <MathText>{"a_1+a_2=S_n"}</MathText> },
         { name: "Root number", render: () => <MathText>{"\\sqrt{a^{2}+b^{2}}"}</MathText> },
         { name: "Fill in the blanks", render: () => <MathText>{"Can be recorded as ____ million yuan"}</MathText> },
+        { name: "Vectors", render: () => <MathText>{"\\overrightarrow{AB}+\\vec{a}"}</MathText> },
+        { name: "Number sets", render: () => <MathText>{"\\mathbb{Q}\\subset\\mathbb{R}"}</MathText> },
+        { name: "Arc", render: () => <MathText>{"\\overset{\\frown}{AB}"}</MathText> },
         { name: "The unknown mark is left as is", render: () => <MathText>{"\\alpha+1"}</MathText> },
     ],
     renderWithProps: (p) => (<MathText blankWidth={Number(p.blankWidth ?? 2.5)} scriptScale={Number(p.scriptScale ?? 0.75)}>

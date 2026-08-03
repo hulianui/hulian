@@ -4,8 +4,13 @@ export type MathNode =
   | { kind: "frac"; num: MathNode[]; den: MathNode[] }
   /** 根号，index 为根指数（三次根等） */
   | { kind: "sqrt"; radicand: MathNode[]; index?: MathNode[] }
-  /** 装饰线：上划线（\overline）与帽子（\widehat，用于角/向量） */
-  | { kind: "decorate"; style: "overline" | "hat"; children: MathNode[] }
+  /** 装饰：上划线（\overline）/ 帽子（\widehat）/ 向量箭头（\vec、\overrightarrow）/ 下划线（\underline） */
+  | { kind: "decorate"; style: "overline" | "hat" | "arrow" | "underline"; children: MathNode[] }
+  /**
+   * 把任意记号叠在内容上方（\overset{\frown}{AB} 即弧 AB）。
+   * 与 decorate 的区别：上方是有语义的内容而非纯样式线，因此 mathToPlain 会留住它。
+   */
+  | { kind: "overset"; above: MathNode[]; children: MathNode[] }
   | { kind: "sup"; children: MathNode[] }
   | { kind: "sub"; children: MathNode[] }
   /** 填空槽，length 为原文里的下划线个数（决定空位宽度） */
