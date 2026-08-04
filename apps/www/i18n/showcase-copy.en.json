@@ -7560,7 +7560,8 @@
       "<Formula>{\"将 \\\\frac{3}{8} 化成小数为 ____\"}</Formula>": "<Formula>{\"Convert \\\\frac{3}{8} to a decimal: ____\"}</Formula>",
       "高中函数题的主力题型。拍平成一行、行分隔符变成分号的话题干就读不懂了 —— 这里是真正的二维排版。": "The workhorse of senior-high function questions. Flattened onto one line with row separators turned into semicolons, the stem stops being readable — this is real two-dimensional layout.",
       "括号高度跟着内容长，而不是一个定高的字符括号。": "Bracket height grows with the content instead of being a fixed-height character.",
-      "{/* 直接当文本：露馅 */}": "{/* plain text: the notation leaks */}"
+      "{/* 直接当文本：露馅 */}": "{/* plain text: the notation leaks */}",
+      "段内也认：$\\overrightarrow{AC}=___$ 与 $\\frac{___}{2}$": "Inside a segment too: $\\overrightarrow{AC}=___$ and $\\frac{___}{2}$"
     }
   }
 }

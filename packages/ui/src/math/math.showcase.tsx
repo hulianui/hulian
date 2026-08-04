@@ -68,6 +68,9 @@ export const mathShowcase: ShowcaseSpec = {
           <p>
             <Formula blankWidth={4}>{"$\\frac{3}{8}$ 化成小数为 ____ （blankWidth=4）"}</Formula>
           </p>
+          <p>
+            <Formula>{"段内也认：$\\overrightarrow{AC}=___$ 与 $\\frac{___}{2}$"}</Formula>
+          </p>
         </div>
       ),
     },

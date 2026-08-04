@@ -4440,11 +4440,18 @@
       "id": "component/math/pitfall/9",
       "scope": "math",
       "title": "Formula",
-      "rule": "**`strict` 关着**。KaTeX 默认会对数学模式里的裸中日韩字符 console.warn，一屏几十道题就是几百条警告，因此本组件设了 `strict: \"ignore\"`。渲染结果不受影响，但也意味着 KaTeX 不会再提醒你「这段中文应该包 `\\text{}`」。",
+      "rule": "**段内填空槽读屏读不出「填空」**。段外是真 DOM 空位（带 `aria-label`），段内是 KaTeX 排的 `\\rule` —— KaTeX 输出里挂不上 aria，读屏读的是 MathML。无障碍要求严格的题面，把填空槽写在 `$` 外面。",
       "source": "packages/ui/src/math/math.md"
     },
     {
       "id": "component/math/pitfall/10",
+      "scope": "math",
+      "title": "Formula",
+      "rule": "**`strict` 关着**。KaTeX 默认会对数学模式里的裸中日韩字符 console.warn，一屏几十道题就是几百条警告，因此本组件设了 `strict: \"ignore\"`。渲染结果不受影响，但也意味着 KaTeX 不会再提醒你「这段中文应该包 `\\text{}`」。",
+      "source": "packages/ui/src/math/math.md"
+    },
+    {
+      "id": "component/math/pitfall/11",
       "scope": "math",
       "title": "Formula",
       "rule": "组件返回 `<span>`；KaTeX 输出 HTML + MathML 双份，HTML 那半带 `aria-hidden`，读屏读的是 MathML，无需额外配 aria。",
@@ -8088,7 +8095,7 @@
   ],
   "stats": {
     "componentDocs": 376,
-    "componentAdvisories": 1130,
-    "totalAdvisories": 1137
+    "componentAdvisories": 1131,
+    "totalAdvisories": 1138
   }
 }

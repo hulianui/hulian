@@ -119,6 +119,42 @@ describe("填空槽", () => {
     expect(container.querySelector<HTMLElement>('[role="img"]')?.style.minWidth).toBe("5em");
   });
 
+  // issue #88：0.25.0 只做了段外，段内原样喂给 KaTeX 触发 ParseError 整段标红。
+  // 消费方 17 份试卷里有 21 处填空槽落在 $…$ 内，是常规内容不是脏数据。
+  it.each([
+    ["$a = __$", "两个下划线"],
+    ["$a = ___$", "三个"],
+    ["$a = ____$", "四个"],
+    ["$\\theta=_______$", "七个"],
+    ["$\\overrightarrow{AC}=___$", "公式 + 待填在同一段"],
+    ["$y_1___y_2$", "填空夹在中间"],
+  ])("段内填空槽不再标红：%s（%s）", (src) => {
+    const { container } = render(<Formula>{src}</Formula>);
+    expect(container.querySelector(".katex-error")).toBeNull();
+    expect(container.querySelector(".katex")).not.toBeNull();
+  });
+
+  it("填空在公式结构内部时不切坏公式", () => {
+    // 切段会劈成 `\frac{` 与 `}{2}` 两个非法残片，两边都标红 —— 所以走替换而不是切段
+    const { container } = render(<Formula>{"$\\frac{___}{2}$"}</Formula>);
+    expect(container.querySelector(".katex-error")).toBeNull();
+    expect(container.querySelector(".mfrac")).not.toBeNull();
+  });
+
+  it("段内填空槽的宽度同样跟随 blankWidth", () => {
+    const { container } = render(<Formula blankWidth={6}>{"$a=___$"}</Formula>);
+    // KaTeX 把 \hspace 排成一个定宽盒；6em 应当明显宽于默认 2.5em
+    const wide = container.innerHTML;
+    const narrow = render(<Formula blankWidth={2.5}>{"$a=___$"}</Formula>).container.innerHTML;
+    expect(wide).not.toBe(narrow);
+    expect(container.querySelector(".katex-error")).toBeNull();
+  });
+
+  it("段内 \\_ 是字面下划线，不当填空槽", () => {
+    const { container } = render(<Formula mode="math">{"a\\_\\_b"}</Formula>);
+    expect(container.querySelector(".katex-error")).toBeNull();
+  });
+
   it("单个下划线仍是下标，不是填空", () => {
     const { container } = render(<Formula>{"首项 a_1 已知"}</Formula>);
     expect(container.querySelector('[role="img"]')).toBeNull();

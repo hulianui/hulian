@@ -60,6 +60,28 @@ interface Segment {
 }
 
 /**
+ * 段**内**的填空槽（issue #88）—— 换成 KaTeX 排得出来的下划空位。
+ *
+ * KaTeX 不认连续下划线：`$a=___$` 会抛 `Expected group after '_'`，整段标红。而题面里
+ * 「公式 + 待填」本来就该包在同一段（`$\overrightarrow{AC}=___$` 待填的正是那个向量的值，
+ * 把 `$` 断在下划线前只会让边界更难写）。
+ *
+ * **替换而不是切段**：切段会把 `\frac{___}{2}` 劈成 `\frac{` 与 `}{2}` 两个非法残片，
+ * 两边都标红。替换保住公式结构，填空在任何位置都成立。
+ *
+ * 代价是段内空位由 KaTeX 排，**挂不上 `aria-label`** —— 与段外那个真 DOM 空位
+ * （读屏读「填空」）行为不同，这条差异写在 math.md 的「禁忌 / 坑」里。
+ *
+ * `(?<!\\)` 放过 `\_`：那是字面下划线，不是填空槽。
+ */
+function blanksToLatex(src: string, blankWidth: number): string {
+  // `\rule` 而不是 `\underline{\hspace{}}`：后者的线紧贴内容底部，填空落在分数分子上时
+  // （`\frac{___}{2}`）会与分数线叠在一起。`\rule` 的垂直位置可控，-0.2em 实测能拉开。
+  // 厚度用 em 而不是 pt —— 跟着字号缩放，才与段外那条 1px border 的观感一致。
+  return src.replace(/(?<!\\)_{2,}/gu, `\\rule[-0.2em]{${blankWidth}em}{0.05em}`);
+}
+
+/**
  * 把文本段里的填空槽（`____`）拆出来。
  *
  * 两种模式都要过这一遍：填空槽在 `$…$` **外面**（`$\frac{3}{8}$ 化成小数为 ____`），
@@ -104,13 +126,16 @@ function FormulaImpl({
     <span className={cn(className)}>
       {segments.map((seg, i) => {
         if (seg.type === "text") return <Fragment key={i}>{seg.content}</Fragment>;
-        // 填空槽不走 KaTeX：那边只能用 \rule / \hspace 之类凑，宽度还改不动
+        // 段**外**的填空槽走真 DOM —— 只有这样才挂得上 aria-label，读屏读到的是「填空」
+        // 而不是一串下划线。段内的走 blanksToLatex 交给 KaTeX（那里挂不上 aria）。
         if (seg.type === "blank") return <MathBlank key={i} width={blankWidth} />;
         return (
           <span
             key={i}
             // eslint-disable-next-line react/no-danger -- KaTeX 输出，安全依据见 renderMath 注释
-            dangerouslySetInnerHTML={{ __html: renderMath(seg.content, seg.display, macros) }}
+            dangerouslySetInnerHTML={{
+              __html: renderMath(blanksToLatex(seg.content, blankWidth), seg.display, macros),
+            }}
           />
         );
       })}

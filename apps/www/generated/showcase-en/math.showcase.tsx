@@ -62,6 +62,9 @@ export const mathShowcase: ShowcaseSpec = {
           <p>
             <Formula blankWidth={4}>{"$\\frac{3}{8}$ as a decimal is ____ (blankWidth=4)"}</Formula>
           </p>
+          <p>
+            <Formula>{"Inside a segment too: $\\overrightarrow{AC}=___$ and $\\frac{___}{2}$"}</Formula>
+          </p>
         </div>),
         },
         {

@@ -106,9 +106,23 @@ Use `splitBareMath(src)` when you need the segments yourself, and `hasBareMath(s
 
 ### Answer blanks
 
-`____` (two or more consecutive underscores) renders as a writable slot whose width is set by `blankWidth` (default 2.5em). **It is recognised inside and outside delimiters alike** — the four underscores in `$\frac{3}{8}$ as a decimal is ____` become a slot rather than four literal characters. A single `_` is still a subscript.
+`____` (two or more consecutive underscores) renders as a writable slot whose width is set by `blankWidth` (default 2.5em). A single `_` is still a subscript.
 
-It does not go through KaTeX: over there the only options are `\rule` / `\hspace` improvisations whose width you cannot control, and there is nowhere to hang an `aria-label`. The blank is real DOM, so a screen reader announces "Blank" instead of a run of underscores.
+**It is recognised inside and outside delimiters alike.** One example of each:
+
+| Written as | Blank sits |
+|---|---|
+| `$\frac{3}{8}$ as a decimal is ____` | **outside** the segment |
+| `$\overrightarrow{AC}=___$` | **inside** the segment |
+
+The second form is not optional: what needs filling in *is* the value of that vector expression, and breaking the `$` right before the underscores only makes the boundary harder to write.
+
+**The two are implemented differently, so their accessibility behaviour differs**:
+
+- **Outside** the segment it is real DOM carrying an `aria-label`, so a screen reader announces "Blank" rather than a run of underscores.
+- **Inside** the segment KaTeX draws it (`\rule`), which keeps the formula structure intact — a blank works in a numerator or under a radical (`\frac{___}{2}`, `\sqrt{___}`) — but **KaTeX output has nowhere to hang an `aria-label`**, so a screen reader reads the MathML instead. Move the blank outside the `$` when you need it announced.
+
+The inside rule scales with the font size while the outside one is 1px; at body size the two look the same, but **above roughly 1.5em the inside one reads slightly heavier**.
 
 ## Props
 
@@ -150,6 +164,7 @@ The position is that **a corrupted formula must be visible**. Quietly rendering 
 - **Do not drop a block formula into the middle of a `<p>`.** `$$…$$` produces a `display:block` box, which splits the line of prose around it into three pieces. Block formulas deserve their own paragraph.
 - **`display` only applies when `mode="math"`.** Passing it under `mixed` neither errors nor takes effect — each span's inline or block layout comes from its own delimiters, and **the layout will not reveal that you got it wrong** (the inline formula renders fine; the block you expected simply never appears). Write `$$…$$` when you want a block.
 - **Do not feed `formulaToPlain` output into an OMML export.** It runs on the dependency-free lightweight parser, which flattens `\begin{cases}` — and the row structure it flattens is exactly what the export pipeline needs. Use `splitMathSegments` on the original LaTeX instead.
+- **A blank inside a segment is not announced as "Blank."** Outside the segment it is real DOM with an `aria-label`; inside it is a KaTeX `\rule`, and KaTeX output has nowhere to hang aria — a screen reader reads the MathML. Put the blank outside the `$` when the stem has strict accessibility requirements.
 - **`strict` is off.** KaTeX otherwise emits a console warning for bare CJK characters in math mode, which becomes hundreds of warnings on a screen of questions, so this component sets `strict: "ignore"`. Rendering is unaffected, but KaTeX will no longer remind you that a run of prose belongs inside `\text{}`.
 - The component returns a `<span>`. KaTeX emits both HTML and MathML; the HTML half is `aria-hidden` and screen readers read the MathML, so no extra ARIA wiring is required.
 
