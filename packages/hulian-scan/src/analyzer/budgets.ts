@@ -72,6 +72,22 @@ function readChangeDescription(event: FiberRenderEvent): {
   };
 }
 
+/**
+ * 「这个输入没变」的判据 —— **只认引用相等，不认深比较相等**。
+ *
+ * 口径必须与 React 的 bailout 机制一致：`React.memo` 与 fiber 的提前退出走的都是
+ * `Object.is`。若把 `equal-by-value`（值相同但引用不同）也算作「没变」，报出来的
+ * 渲染 React 根本避免不了 —— 加 memo 也消不掉，finding 不可执行。这不是推论：
+ * 2026-08-03 给 34 个组件全加了 memo，实测一条没降，全部回滚
+ * （docs/perf-cascade-fanout-diagnosis-20260803.md）。
+ *
+ * 收紧后漏掉的是「调用方传了新引用但值相同」这类浪费 —— 那类的修复对象是调用方，
+ * 记在组件头上本来就错位；而 perf-lab 的 GenericFixture 每次父级渲染都重新调用
+ * `initialRender()` 产出新 element 树，等于规则一直在测 fixture 的写法。
+ *
+ * 防线没丢：`fixtures/known-bad.tsx` 用模块级常量 `stableConfig` 传给无 memo 的
+ * 子组件，同一引用，收紧后照样被抓 —— 那才是该报的那类（引用没变却重算）。
+ */
 function isStableReferenceChange(value: unknown): boolean {
   if (typeof value !== "object" || value === null) return false;
   const previous = Object.getOwnPropertyDescriptor(value, "previous");
@@ -88,10 +104,7 @@ function isStableReferenceChange(value: unknown): boolean {
     maxDepth: 6,
     maxEntries: 200,
   });
-  return (
-    comparison.kind === "same-reference" ||
-    comparison.kind === "equal-by-value"
-  );
+  return comparison.kind === "same-reference";
 }
 
 function changeListIsStable(changes: unknown[]): boolean {

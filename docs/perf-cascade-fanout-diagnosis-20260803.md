@@ -449,6 +449,37 @@ harness 恰好每次都造新引用：`GenericFixture` 的渲染体是
 或者改造 harness，让合成 step 复用同一棵 element 树（那会改变 `stable-parent-update`
 这个 step 的语义，需要单独评估它还测不测得到真实的父级重渲染场景）。
 
+### 7.6 落地（2026-08-04）：走了第三条路 —— 收紧判据
+
+上面两条出路都没走。真正做的是**把判据改成与 React 一致**：
+`isStableReferenceChange` 从「`same-reference` **或** `equal-by-value`」收紧为只认
+`same-reference`（`packages/hulian-scan/src/analyzer/budgets.ts`）。
+
+理由就是 §7.3 那条已经查清的机制：`React.memo` 与 fiber bailout 走的都是 `Object.is`，
+把「值同引用不同」也算作「没变」，报出来的渲染 React 根本避免不了 —— finding 不可执行，
+§7.1 的实测（34 个组件加 memo 一条没降）就是证据。
+
+**触发这次改动的是一条偶发红**：CI 报 `avoidable-render:Button current=2`，而上一次 CI
+扫了同一场景是绿的，rerun 又绿。判定「是不是回归」的方法记在这里 ——
+**看上一次成功 CI 的 `--scenario` 列表里有没有同一场景**（有且绿 → 新出现；没有 → 只是首次被扫到）。
+
+收紧后的双向验证：
+
+| 验证 | 结果 |
+|---|---|
+| 单测：值同引用不同 | 不再报（新增用例锁住） |
+| 单测：引用相同 | 仍报（新增用例锁住） |
+| `fixture/known-bad`（模块级常量传无 memo 子组件） | 仍报 `avoidable-render` 25 条 —— **防线没丢** |
+| `fixture/known-good` | 无 finding |
+| CI 那 14 个 packed-consumer 场景 | `avoidable-render` **归零** |
+
+**代价**：漏掉「调用方传新引用但值相同」这类浪费。但那类的修复对象是调用方而非组件，
+记在组件头上本来就错位（§7.4 已论证），而 `GenericFixture` 每次父级渲染都重新调用
+`initialRender()` 造新 element 树，等于规则一直在测 harness 的写法。
+
+**未做**：全量 373 场景的复验（只跑了 CI 的 14 个）。§7.1 那 34 条按机制应当同批归零，
+但没有实测数字，下次全量扫描时顺带确认。
+
 ---
 
 ## 附：本文用到的脚本

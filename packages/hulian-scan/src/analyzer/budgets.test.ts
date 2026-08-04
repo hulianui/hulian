@@ -90,7 +90,10 @@ describe("evaluateBudget", () => {
     ]);
   });
 
-  it("promotes reference changes that are safely equal by value", () => {
+  it("ignores reference changes that are merely equal by value", () => {
+    // 值相同但引用不同 —— React 的 bailout 走 Object.is，这次渲染它避免不了，
+    // 加 memo 也消不掉。报出来只会是不可执行的 finding（34 个组件实测已验证）。
+    // 该修的是传新引用的调用方，不是这个组件。
     const findings = evaluateBudget({
       run: makeRun("diagnosis", [
         parentRender(0.7, {
@@ -102,6 +105,29 @@ describe("evaluateBudget", () => {
               next: { id: 1, nested: ["stable"] },
             },
           ],
+          state: false,
+          context: false,
+          hooks: [],
+          parent: true,
+        }),
+      ]),
+      component: "Button",
+      budget: { maxAvoidableRenderCount: 0 },
+      minSamples: 5,
+    });
+
+    expect(findings.filter((finding) => finding.rule === "avoidable-render")).toEqual([]);
+  });
+
+  it("still promotes renders whose props kept the very same reference", () => {
+    // known-bad fixture 的形态：模块级常量传给无 memo 的子组件 —— 引用没变却重算，
+    // 这才是该报的那类。收紧判据后这条防线必须还在。
+    const stable = { id: 1, nested: ["stable"] };
+    const findings = evaluateBudget({
+      run: makeRun("diagnosis", [
+        parentRender(0.7, {
+          isFirstMount: false,
+          props: [{ name: "config", previous: stable, next: stable }],
           state: false,
           context: false,
           hooks: [],
