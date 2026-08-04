@@ -685,6 +685,8 @@ export const scenarioLoaders = {
   masonry: async () =>
     (await import("@hulianui/ui-internal/masonry/masonry.showcase"))
       .masonryShowcase,
+  math: async () =>
+    (await import("@hulianui/ui-internal/math/math.showcase")).mathShowcase,
   "math-text": async () =>
     (await import("@hulianui/ui-internal/math-text/math-text.showcase"))
       .mathTextShowcase,
@@ -3505,6 +3507,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/masonry/index.ts",
+  },
+  math: {
+    id: "math",
+    scenarioId: "math/basic",
+    component: "Formula",
+    entry: "@hulianui/ui/math",
+    category: "standard",
+    categories: ["text", "typography"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/math/index.ts",
   },
   "math-text": {
     id: "math-text",
