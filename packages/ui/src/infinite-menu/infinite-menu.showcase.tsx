@@ -1,4 +1,5 @@
 "use client";
+import { demoImage } from "../lib/demo-image";
 import type { ShowcaseSpec } from "../showcase/types";
 import { InfiniteMenu } from "./infinite-menu";
 import type { InfiniteMenuItem } from "./infinite-menu.types";
@@ -95,7 +96,7 @@ export const infiniteMenuShowcase: ShowcaseSpec = {
             items={Array.from({ length: 10 }, (_, i) => ({
               title: `画廊 ${i + 1}`,
               description: "可拖拽浏览",
-              image: `https://picsum.photos/seed/hulian-${i}/200/200`,
+              image: demoImage(`menu-${i}`, 200, 200),
               link: "https://example.com",
             }))}
           />

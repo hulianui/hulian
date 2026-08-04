@@ -1,5 +1,31 @@
 # @hulianui/ui
 
+## 0.25.1
+
+### Patch Changes
+
+- 6fdcfe1: 组件与 showcase 里的外链素材图全部换成程序化生成的 data-URI SVG，并补上门禁。
+
+  `DecayCard` 的 `image` **默认 prop** 曾是 `https://picsum.photos/...` —— 消费方 `<DecayCard />` 什么都不传就会打一次外网请求，断网 / 内网 / 被墙即碎图。同类外链还散落在 ImageViewer / InfiniteMenu / FlowingMenu / Upload / Table / Chip 的 showcase 里，共 13 处。demos 那边早有「资源全本地化，零外链」的铁律并由 `demos:coverage` 强制，但那条门禁管不到 `packages/ui`；CircularGallery 当初单独修过，没人扫同域。
+
+  新增 `lib/demo-image.ts` 的 `demoImage(seed, w, h)`：确定性哈希 → 渐变 SVG data-URI，零网络请求，SSR 与 hydration 取到同一张图。新增 `scripts/no-remote-assets.test.mjs` 守住，命中已知图床即失败 —— 它上线当场又逮出两处 `pravatar.cc` 头像。
+
+  另修 `ImageViewer` 的示例：此前 render 返回的是一个 `<span>` 假按钮加 `open={false}` 的查看器，**点不开、图一张也看不到**，而 code 展示的却是可交互写法（违反 `code` 与 `render` 一一对应）。现在接上文件里本来就写好、却从没被用上的 `Demo` 组件。
+
+- 6fdcfe1: `ScrollReveal` 落在内部滚动容器里不再失效。
+
+  `useScroll({ target })` 默认监听 window 滚动，组件一旦被放进内部滚动区（文档站的 `<main class="overflow-auto">`、画廊预览框、抽屉、弹层），容器滚动不触发 window scroll，进度**永远停在 0** —— 而 0 进度正是「`baseOpacity` + 模糊」的初始态，整段文字近乎隐形，比不动更糟。文档站本身就是这种布局，等于所有看文档的人看到的都是失效状态。
+
+  现在自动探测最近的可滚动祖先，也可用新增的 `scrollContainerRef` 显式指定；既无可滚祖先、页面也不可滚时降级为 in-view 入场，保证文字总能读到。这套逻辑 `ScrollFloat` 早已实现（注释里写着「修复画廊卡 0 进度坑」），这次抽成共享的 `useScrollContext` 两件共用，避免第三个组件再踩。
+
+- 6fdcfe1: 修 [#88](https://github.com/hulianui/hulian/issues/88)：`$…$` **段内**的填空槽不再让整段标红。
+
+  0.25.0 只处理了段外的 `____`，段内的原样喂给 KaTeX，触发 `Expected group after '_'` 后整条题面标红。而 `math.md` 写的是「分隔符内外都认」—— 文档举的例子恰好是段外那种，实现与承诺不符，测试也只覆盖了段外。消费方 17 份试卷制品里有 21 处填空槽落在段内（`$\overrightarrow{AC}=___$`、`$E(X)=___$`、`$\theta=_______$` …），是常规内容不是脏数据；0.24.0 的 MathText 对填空槽本来是有支持的，**这属于升级带来的回退**。
+
+  段内改用 `\rule` 替换而不是把段切开：切开会把 `\frac{___}{2}` 劈成 `\frac{` 与 `}{2}` 两个非法残片、两边都标红。替换保住公式结构，填空落在分数分子、根号里都成立。
+
+  **两处实现不同，无障碍行为有差异，已写进文档**：段外是真 DOM 空位（带 `aria-label`，读屏读「填空」），段内由 KaTeX 排（挂不上 aria，读屏读 MathML）。需要读屏念出「填空」就把填空槽写在 `$` 外面。
+
 ## 0.25.0
 
 ### Minor Changes

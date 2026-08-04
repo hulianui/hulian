@@ -1,5 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { demoImage } from "../../../../packages/ui/src/lib/demo-image";
 import { DecayCard } from "../../../../packages/ui/src/decay-card/decay-card";
 function Stage({ children }: {
     children: React.ReactNode;
@@ -8,7 +9,7 @@ function Stage({ children }: {
       {children}
     </div>);
 }
-const DEMO_IMG = "https://picsum.photos/seed/hulian-decay/300/400?grayscale";
+const DEMO_IMG = demoImage("hulian-decay", 300, 400, { grayscale: true });
 export const decayCardShowcase: ShowcaseSpec = {
     examples: [
         {

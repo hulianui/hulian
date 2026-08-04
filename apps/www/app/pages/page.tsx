@@ -76,7 +76,8 @@ export default function PagesGalleryPage() {
           type="page"
           items={pages.map((p) => ({ slug: p.slug, category: p.category }))}
           cards={cards}
-          placeholder={content.searchPlaceholder}
+          // 见 app/page.tsx 同处注释：intlayer 节点当字符串用必须显式转
+          placeholder={String(content.searchPlaceholder)}
         />
       </Suspense>
     </div>

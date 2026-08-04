@@ -1,5 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { demoImage } from "../../../../packages/ui/src/lib/demo-image";
 import { FlowingMenu } from "../../../../packages/ui/src/flowing-menu/flowing-menu";
 function Stage({ children }: {
     children: React.ReactNode;
@@ -12,22 +13,22 @@ const demoItems = [
     {
         link: "https://example.com/#discover",
         text: "Discover",
-        image: "https://picsum.photos/seed/fm-a/240/120",
+        image: demoImage("fm-a", 240, 120),
     },
     {
         link: "https://example.com/#build",
         text: "Build",
-        image: "https://picsum.photos/seed/fm-b/240/120",
+        image: demoImage("fm-b", 240, 120),
     },
     {
         link: "https://example.com/#ship",
         text: "Ship",
-        image: "https://picsum.photos/seed/fm-c/240/120",
+        image: demoImage("fm-c", 240, 120),
     },
     {
         link: "https://example.com/#scale",
         text: "Scale",
-        image: "https://picsum.photos/seed/fm-d/240/120",
+        image: demoImage("fm-d", 240, 120),
     },
 ];
 const textOnly = [

@@ -34,7 +34,7 @@ export default function DarkModePage() {
 
       <Section title={content.switchTitle} desc={content.switchDescription}>
         <div className="flex items-center gap-4 rounded-[var(--radius)] border border-border bg-surface px-5 py-4">
-          <AnimatedThemeToggler aria-label={content.toggleLabel} />
+          <AnimatedThemeToggler aria-label={String(content.toggleLabel)} />
           <span className="text-sm text-muted">{content.switchAction}</span>
         </div>
       </Section>

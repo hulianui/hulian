@@ -1,13 +1,17 @@
 "use client";
 import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { demoImage } from "../../../../packages/ui/src/lib/demo-image";
 import { ImageViewer } from "../../../../packages/ui/src/image-viewer/image-viewer";
 const IMAGES = [1, 2, 3, 4, 5, 6].map((i) => ({
-    src: `https://picsum.photos/seed/hulian-${i}/1200/800`,
+    src: demoImage(`hulian-${i}`, 1200, 800),
     alt: `Sample image ${i}`,
     caption: `Hulian ImageViewer \u00B7 Sample picture ${i}(Scroll wheel to zoom / double click / \u2190 \u2192 page turning)`,
 }));
-function Demo() {
+function Demo({ images = IMAGES, label = "Open viewer" }: {
+    images?: typeof IMAGES;
+    label?: string;
+}) {
     const [open, setOpen] = useState(false);
     const [index, setIndex] = useState(0);
     return (<>
@@ -15,9 +19,9 @@ function Demo() {
             setIndex(0);
             setOpen(true);
         }} className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground transition-colors hover:bg-foreground/5">
-        Open viewer
+        {label}
       </button>
-      <ImageViewer open={open} onOpenChange={setOpen} images={IMAGES} index={index} onIndexChange={setIndex}/>
+      <ImageViewer open={open} onOpenChange={setOpen} images={images} index={index} onIndexChange={setIndex}/>
     </>);
 }
 export const imageViewerShowcase: ShowcaseSpec = {
@@ -43,12 +47,7 @@ const [index, setIndex] = useState(0);
     onIndexChange={setIndex}
   />
 </>`,
-            render: () => (<>
-          <span className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground">
-            Open viewer
-          </span>
-          <ImageViewer open={false} onOpenChange={() => { }} images={IMAGES} index={0} onIndexChange={() => { }}/>
-        </>),
+            render: () => <Demo />,
         },
         {
             title: "Single picture (no page turning)",
@@ -60,12 +59,7 @@ const [index, setIndex] = useState(0);
   index={0}
   onIndexChange={() => {}}
 />`,
-            render: () => (<>
-          <span className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground">
-            View large image
-          </span>
-          <ImageViewer open={false} onOpenChange={() => { }} images={[IMAGES[0]]} index={0} onIndexChange={() => { }}/>
-        </>),
+            render: () => <Demo images={[IMAGES[0]]} label="View large image"/>,
         },
     ],
     controls: [],

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { demoImage } from "../../../../packages/ui/src/lib/demo-image";
 import { Table } from "../../../../packages/ui/src/table/table";
 import type { ColumnDef } from "../../../../packages/ui/src/table/table.types";
 export interface DemoUser {
@@ -19,7 +20,7 @@ function makeUsers(count: number): DemoUser[] {
         name: SURNAME[i % SURNAME.length] + GIVEN[(i * 7 + 3) % GIVEN.length],
         email: `user${i + 1}@hulian.dev`,
         role: ROLES[i % ROLES.length],
-        avatar: `https://i.pravatar.cc/64?img=${(i % 70) + 1}`,
+        avatar: demoImage(`user-${i}`, 64, 64),
     }));
 }
 const users = makeUsers(8);

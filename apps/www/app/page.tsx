@@ -214,7 +214,9 @@ export default function Home() {
         <section
           className="hl-rise mt-20 sm:mt-24"
           style={rise(8)}
-          aria-label={content.browseLabel}
+          // getIntlayer 拿到的是 intlayer 节点：放在 children 位置 React 会解析，
+          // 但属性值只会 stringify 成 [object Object]。字符串属性一律显式转。
+          aria-label={String(content.browseLabel)}
         >
           <TierBrowser />
         </section>

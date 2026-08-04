@@ -1,15 +1,16 @@
 "use client";
 import { useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
+import { demoImage } from "../lib/demo-image";
 import { ImageViewer } from "./image-viewer";
 
 const IMAGES = [1, 2, 3, 4, 5, 6].map((i) => ({
-  src: `https://picsum.photos/seed/hulian-${i}/1200/800`,
+  src: demoImage(`hulian-${i}`, 1200, 800),
   alt: `示例图片 ${i}`,
   caption: `瑚琏 ImageViewer · 示例图 ${i}（滚轮缩放 / 双击 / ← → 翻页）`,
 }));
 
-function Demo() {
+function Demo({ images = IMAGES, label = "打开查看器" }: { images?: typeof IMAGES; label?: string }) {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
 
@@ -23,12 +24,12 @@ function Demo() {
         }}
         className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground transition-colors hover:bg-foreground/5"
       >
-        打开查看器
+        {label}
       </button>
       <ImageViewer
         open={open}
         onOpenChange={setOpen}
-        images={IMAGES}
+        images={images}
         index={index}
         onIndexChange={setIndex}
       />
@@ -59,20 +60,9 @@ const [index, setIndex] = useState(0);
     onIndexChange={setIndex}
   />
 </>`,
-      render: () => (
-        <>
-          <span className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground">
-            打开查看器
-          </span>
-          <ImageViewer
-            open={false}
-            onOpenChange={() => {}}
-            images={IMAGES}
-            index={0}
-            onIndexChange={() => {}}
-          />
-        </>
-      ),
+      // 用真正带状态的 Demo：此前这里是个 <span> 假按钮 + open={false} 的查看器，
+      // 示例点不开、图一张也看不到，而 code 展示的却是可交互写法（违反 code/render 一一对应）。
+      render: () => <Demo />,
     },
     {
       title: "单图（无翻页）",
@@ -84,20 +74,7 @@ const [index, setIndex] = useState(0);
   index={0}
   onIndexChange={() => {}}
 />`,
-      render: () => (
-        <>
-          <span className="rounded-[var(--radius)] border border-border bg-surface px-4 py-2 text-sm text-foreground">
-            查看大图
-          </span>
-          <ImageViewer
-            open={false}
-            onOpenChange={() => {}}
-            images={[IMAGES[0]]}
-            index={0}
-            onIndexChange={() => {}}
-          />
-        </>
-      ),
+      render: () => <Demo images={[IMAGES[0]]} label="查看大图" />,
     },
   ],
   controls: [],

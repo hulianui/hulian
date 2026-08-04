@@ -10,7 +10,7 @@ const content = getIntlayer("shared-chrome", DOCS_LOCALE);
 export function GalleryTopBar({ label, href }: { label: string; href: string }) {
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-bg/80 px-6 py-3 backdrop-blur">
-      <nav className="flex items-center gap-2 text-sm" aria-label={content.breadcrumb}>
+      <nav className="flex items-center gap-2 text-sm" aria-label={String(content.breadcrumb)}>
         <Link href="/" className="font-semibold">
           {content.brand}
         </Link>
@@ -21,7 +21,7 @@ export function GalleryTopBar({ label, href }: { label: string; href: string }) 
           {label}
         </Link>
       </nav>
-      <AnimatedThemeToggler aria-label={content.toggleTheme} />
+      <AnimatedThemeToggler aria-label={String(content.toggleTheme)} />
     </header>
   );
 }

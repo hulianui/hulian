@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { MotionValue } from "motion/react";
 import {
   useInView,
@@ -10,6 +10,7 @@ import {
 } from "motion/react";
 import { cn } from "../lib/cn";
 import { LazyMotionProvider, m } from "../motion";
+import { useScrollContext } from "../motion/scroll-context";
 import type { ScrollFloatProps } from "./scroll-float.types";
 
 // 吸取自 React Bits ScrollFloat：标题逐字符随容器滚过视口从「下沉 + 纵向拉伸压扁 + 透明」拔起到正常。
@@ -24,19 +25,6 @@ import type { ScrollFloatProps } from "./scroll-float.types";
 // - 既无可滚祖先、页面也不可滚（无任何滚动上下文）→ 降级为 in-view 入场：进入视口后用 rAF
 //   缓动把同一套进度从 0 推到 1，文字完整浮现可读，不会永远隐形。
 const NBSP = "\u00A0";
-
-type ScrollCtx = "pending" | "container" | "viewport" | "none";
-
-function findScrollableAncestor(from: HTMLElement | null): HTMLElement | null {
-  let el = from?.parentElement ?? null;
-  while (el && el !== document.body && el !== document.documentElement) {
-    const { overflowY } = getComputedStyle(el);
-    const clips = overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
-    if (clips && el.scrollHeight > el.clientHeight + 1) return el;
-    el = el.parentElement;
-  }
-  return null;
-}
 
 interface CharProps {
   char: string;
@@ -78,35 +66,9 @@ export function ScrollFloat({
   const ref = useRef<HTMLHeadingElement>(null);
   const reduce = useReducedMotion();
 
-  const autoContainerRef = useRef<HTMLElement | null>(null);
-  const [ctx, setCtx] = useState<ScrollCtx>(() => (scrollContainerRef ? "container" : "pending"));
-
   // 必须声明在 useScroll 之前：两者同为 layout effect，按声明序先探测滚动上下文、useScroll 再订阅。
-  useLayoutEffect(() => {
-    if (scrollContainerRef) {
-      setCtx("container");
-      return;
-    }
-    const found = findScrollableAncestor(ref.current);
-    if (found) {
-      autoContainerRef.current = found;
-      // useScroll 要求容器非 static 定位才能算对 target 偏移（否则 dev 告警 + 进度可能错位）。
-      let restorePosition: (() => void) | undefined;
-      if (getComputedStyle(found).position === "static") {
-        const prev = found.style.position;
-        found.style.position = "relative";
-        restorePosition = () => {
-          found.style.position = prev;
-        };
-      }
-      setCtx("container");
-      return restorePosition;
-    }
-    const doc = document.documentElement;
-    setCtx(doc.scrollHeight > doc.clientHeight + 1 ? "viewport" : "none");
-  }, [scrollContainerRef]);
+  const { ctx, containerRef } = useScrollContext(ref, scrollContainerRef);
 
-  const containerRef = scrollContainerRef ?? autoContainerRef;
   const { scrollYProgress } = useScroll({
     target: ref,
     // 注意：useScroll 对「.current 为 null 的 ref」会一直等 hydrate 不订阅，

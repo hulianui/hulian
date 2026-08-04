@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import { cn } from "../lib/cn";
+import { demoImage } from "../lib/demo-image";
 import type { DecayCardProps } from "./decay-card.types";
 
 // 吸取自 React Bits DecayCard：SVG feTurbulence + feDisplacementMap 把主图做成「湍流溶解」——
@@ -17,10 +18,13 @@ import type { DecayCardProps } from "./decay-card.types";
 // 4. token 化：底色 bg-surface、边框 border-border、文字 text-foreground，圆角吃 rounded-xl；
 //    无品牌写死色。
 // 5. filter id 用 useId() 去前缀冒号，避免同页多实例 id 撞车。
+const DEFAULT_IMAGE = demoImage("decay-card", 300, 400, { grayscale: true });
+
 export function DecayCard({
   width = 300,
   height = 400,
-  image = "https://picsum.photos/300/400?grayscale",
+  // 默认图程序化生成：不传 image 时也不该打一次外网请求（断网/内网/被墙即碎图）
+  image = DEFAULT_IMAGE,
   alt = "",
   baseFrequency = 0.015,
   numOctaves = 5,

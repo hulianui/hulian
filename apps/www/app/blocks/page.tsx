@@ -79,7 +79,8 @@ export default function BlocksGalleryPage() {
           type="block"
           items={blocks.map((b) => ({ slug: b.slug, category: b.category }))}
           cards={cards}
-          placeholder={content.searchPlaceholder}
+          // 见 app/page.tsx 同处注释：intlayer 节点当字符串用必须显式转
+          placeholder={String(content.searchPlaceholder)}
         />
       </Suspense>
     </div>

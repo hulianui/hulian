@@ -1,5 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
+import { demoImage } from "../lib/demo-image";
 import { DecayCard } from "./decay-card";
 
 /** 深色底容器，让溶解卡片的边缘与文字对比清晰 */
@@ -14,7 +15,7 @@ function Stage({ children }: { children: React.ReactNode }) {
   );
 }
 
-const DEMO_IMG = "https://picsum.photos/seed/hulian-decay/300/400?grayscale";
+const DEMO_IMG = demoImage("hulian-decay", 300, 400, { grayscale: true });
 
 export const decayCardShowcase: ShowcaseSpec = {
   examples: [

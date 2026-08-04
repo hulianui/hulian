@@ -24,7 +24,7 @@ export default function StartPage() {
             <h1 className="text-[1.7rem] font-semibold tracking-tight">{content.title}</h1>
             <p className="mt-2 text-sm leading-relaxed text-muted">{content.description}</p>
           </div>
-          <CopyMarkdownButton text={guide} label={content.copy} className="shrink-0" />
+          <CopyMarkdownButton text={guide} label={String(content.copy)} className="shrink-0" />
         </header>
 
         <article className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-8">

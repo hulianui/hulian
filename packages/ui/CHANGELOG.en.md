@@ -1,5 +1,31 @@
 # @hulianui/ui
 
+## 0.25.1
+
+### Patch Changes
+
+- 6fdcfe1: Every remote placeholder image in the components and their showcases is now a procedurally generated data-URI SVG, with a gate to keep it that way.
+
+  `DecayCard`'s `image` **default prop** used to be `https://picsum.photos/...` — a consumer rendering `<DecayCard />` with no props fired an outbound request, and the image broke on an offline machine, an intranet, or behind a firewall. The same pattern was scattered across the ImageViewer / InfiniteMenu / FlowingMenu / Upload / Table / Chip showcases, 13 places in total. The demos have long had an "all assets local, zero external links" rule enforced by `demos:coverage`, but that gate does not reach `packages/ui`; CircularGallery was fixed once on its own and nobody swept the rest.
+
+  New `demoImage(seed, w, h)` in `lib/demo-image.ts`: a deterministic hash picks a gradient and returns an SVG data-URI — no network request, and SSR and hydration resolve to the same image. New `scripts/no-remote-assets.test.mjs` guards it by failing on known image hosts; it caught two more `pravatar.cc` avatars the moment it went in.
+
+  Also fixes the `ImageViewer` examples: `render` used to return a `<span>` masquerading as a button plus a viewer pinned at `open={false}`, so **the example could not be opened and no image ever appeared** — while the `code` next to it showed the interactive version (breaking the one-to-one contract between `code` and `render`). It now uses the `Demo` component that was already written in that file but never wired up.
+
+- 6fdcfe1: `ScrollReveal` no longer breaks inside a scrolling container.
+
+  `useScroll({ target })` listens to window scroll by default. Once the component sits inside an inner scroll area (the docs site's `<main class="overflow-auto">`, a gallery preview box, a drawer, a popover), scrolling that container never fires a window scroll and progress **stays at 0 forever** — and 0 progress is exactly the "`baseOpacity` + blur" initial state, leaving the whole paragraph nearly invisible. That is worse than no animation, and since the docs site itself is laid out this way, everyone reading the docs saw the broken state.
+
+  It now detects the nearest scrollable ancestor automatically, accepts an explicit `scrollContainerRef`, and falls back to an in-view entrance when there is no scroll context at all, so the text is always readable. `ScrollFloat` already had this logic (its comment reads "fixes the gallery stuck-at-0-progress trap"); it is now extracted into a shared `useScrollContext` so a third component cannot repeat the mistake.
+
+- 6fdcfe1: Fixes [#88](https://github.com/hulianui/hulian/issues/88): an answer blank **inside** `$…$` no longer paints the whole segment red.
+
+  0.25.0 only handled `____` outside a segment; inside, it went to KaTeX verbatim, raising `Expected group after '_'` and turning the entire stem red. Yet `math.md` claimed blanks were "recognised inside and outside delimiters alike" — the example it gave happened to be the outside case, so the promise never matched the implementation, and the tests only covered outside too. A consumer's 17 exam artefacts contain 21 blanks that sit inside a segment (`$\overrightarrow{AC}=___$`, `$E(X)=___$`, `$\theta=_______$` …); that is ordinary content, not dirty data. MathText did support blanks in 0.24.0, so **this was a regression introduced by upgrading**.
+
+  Inside a segment the blank is now substituted with `\rule` rather than splitting the segment apart: splitting would cut `\frac{___}{2}` into the two invalid fragments `\frac{` and `}{2}`, and both would render red. Substitution keeps the formula structure intact, so a blank works in a numerator or under a radical.
+
+  **The two paths are implemented differently and their accessibility behaviour differs, which is now documented**: outside a segment the blank is real DOM carrying an `aria-label` (a screen reader announces "Blank"); inside, KaTeX draws it and there is nowhere to hang aria, so a screen reader reads the MathML. Put the blank outside the `$` when you need it announced.
+
 ## 0.25.0
 
 ### Minor Changes

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { demoImage } from "../../../../packages/ui/src/lib/demo-image";
 import { Upload } from "../../../../packages/ui/src/upload/upload";
 import { useUpload } from "../../../../packages/ui/src/upload/use-upload";
 import type { UploadFile, UploadRequest } from "../../../../packages/ui/src/upload/upload.types";
@@ -80,9 +81,9 @@ const PROGRESS_FILES: UploadFile[] = [
     { id: "c", name: "huge-video.mov", status: "error", error: "Exceeds the upper limit of 5MB" },
 ];
 const REMOTE_FILES: UploadFile[] = [
-    { id: "p1", name: "banner-1.png", size: 240 * 1024, status: "success", url: "https://picsum.photos/seed/hu1/80" },
-    { id: "p2", name: "banner-2.png", size: 310 * 1024, status: "success", url: "https://picsum.photos/seed/hu2/80" },
-    { id: "p3", name: "banner-3.png", size: 180 * 1024, status: "success", url: "https://picsum.photos/seed/hu3/80" },
+    { id: "p1", name: "banner-1.png", size: 240 * 1024, status: "success", url: demoImage("hu1", 80, 80) },
+    { id: "p2", name: "banner-2.png", size: 310 * 1024, status: "success", url: demoImage("hu2", 80, 80) },
+    { id: "p3", name: "banner-3.png", size: 180 * 1024, status: "success", url: demoImage("hu3", 80, 80) },
 ];
 function RemoteSortDemo() {
     const [list, setList] = useState(REMOTE_FILES);

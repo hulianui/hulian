@@ -137,7 +137,7 @@ export const chipShowcase: ShowcaseSpec = {
           <Chip tone="brand" avatar={<Avatar fallback="安" />}>
             安娜
           </Chip>
-          <Chip variant="outline" tone="neutral" avatar={<Avatar fallback="B" src="https://i.pravatar.cc/40?img=5" />} onClose={() => {}}>
+          <Chip variant="outline" tone="neutral" avatar={<Avatar fallback="B" />} onClose={() => {}}>
             Bob
           </Chip>
         </div>

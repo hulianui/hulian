@@ -1,4 +1,5 @@
 "use client";
+import { demoImage } from "../../../../packages/ui/src/lib/demo-image";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { InfiniteMenu } from "../../../../packages/ui/src/infinite-menu/infinite-menu";
 import type { InfiniteMenuItem } from "../../../../packages/ui/src/infinite-menu/infinite-menu.types";
@@ -75,7 +76,7 @@ export const infiniteMenuShowcase: ShowcaseSpec = {
           <InfiniteMenu items={Array.from({ length: 10 }, (_, i) => ({
                     title: `Gallery ${i + 1}`,
                     description: "Drag and drop to browse",
-                    image: `https://picsum.photos/seed/hulian-${i}/200/200`,
+                    image: demoImage(`menu-${i}`, 200, 200),
                     link: "https://example.com",
                 }))}/>
         </Stage>),

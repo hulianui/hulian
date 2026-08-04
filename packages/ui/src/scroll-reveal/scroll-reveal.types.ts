@@ -12,6 +12,12 @@ export interface ScrollRevealProps
   /** 要随滚动逐词显影的整段文本（仅字符串，内部按空白拆词并保留分隔符） */
   children: string;
   /**
+   * 驱动动画的滚动容器。**默认自动探测最近的可滚动祖先**，落在内部滚动区
+   * （抽屉 / 弹层 / 画廊预览框）里也能正常走进度，通常不需要传。
+   * 只有当滚动源不是 DOM 祖先（例如自定义滚动实现）时才需要显式指定。
+   */
+  scrollContainerRef?: import("react").RefObject<HTMLElement | null>;
+  /**
    * 静息（尚未滚入解析区间）时每个词的基础透明度，取值 0~1。
    * 越小入场对比越强；默认 0.12。
    */
