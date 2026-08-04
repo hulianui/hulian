@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { cva } from "class-variance-authority";
 import { X } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
@@ -35,7 +36,7 @@ const dotByTone = { brand: "bg-primary", danger: "bg-danger", neutral: "bg-muted
 const avatarPadBySize = { sm: "pl-0.5", md: "pl-1" } as const;
 const avatarSizeBySize = { sm: "[&>*]:size-5", md: "[&>*]:size-6" } as const;
 
-export function Chip({
+function ChipImpl({
   variant,
   tone = "brand",
   size = "md",
@@ -84,3 +85,9 @@ export function Chip({
     </span>
   );
 }
+ChipImpl.displayName = "Chip";
+
+// 标签常成组渲染（筛选条、令牌列表），父级一动就整排重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox 同一处方。
+export const Chip = memo(ChipImpl);
+Chip.displayName = "Chip";

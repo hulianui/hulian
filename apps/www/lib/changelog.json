@@ -1,6 +1,20 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.25.2",
+    "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Chip` 在父级稳定更新时不再重算子树。\n\nChip 常成组出现（筛选条、标签列表、令牌输入），一个列表页十几个是常态。它此前是普通函数组件，父级每渲染一次，整排 Chip 就跟着重算一遍 cva 配方与 `cn` 合并 —— 而这类调用点传的几乎全是原语 props（`tone` / `variant` / 文本 children），引用从没变过，React 却无法自己 bailout。\n\n现在 `Chip` 与 `Button` / `Checkbox` 同处方，包一层 `memo`。运行时性能门禁（Hulian Scan）在 `chip/basic` 场景实测 `avoidable-render` 5 → 0；`chip.test.tsx` 新增一条 Profiler 回归测试锁住语义（去掉 memo 即红）。",
+        "parityId": "memo-chip"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.25.1",
     "date": "2026-08-04",
     "entries": [

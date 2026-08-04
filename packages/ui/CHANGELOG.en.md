@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.25.2
+
+### Patch Changes
+
+- `Chip` no longer re-renders its subtree on a stable parent update. <!-- parity-id: memo-chip -->
+
+  Chips travel in groups — filter bars, tag lists, token inputs — and a dozen of them on one list page is normal. `Chip` used to be a plain function component, so every parent render recomputed the whole row's cva recipe and `cn` merge, even though these call sites pass almost nothing but primitive props (`tone` / `variant` / text children) whose references never change and which React still cannot bail out of on its own.
+
+  `Chip` now takes the same prescription as `Button` / `Checkbox`: a `memo` wrapper. The runtime performance gate (Hulian Scan) measures `avoidable-render` in the `chip/basic` scenario dropping 5 → 0, and a new Profiler regression test in `chip.test.tsx` locks the behavior in (remove the `memo` and it goes red).
+
 ## 0.25.1
 
 ### Patch Changes

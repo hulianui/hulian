@@ -1,9 +1,34 @@
+import { Profiler } from "react";
 import { describe, it, expect, vi } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
+import { act, render, fireEvent } from "@testing-library/react";
 import { Chip } from "./chip";
 import { ConfigProvider, enUS } from "../config";
 
 describe("Chip", () => {
+  it("稳定父更新时跳过标签子树", async () => {
+    const onRender = vi.fn();
+    const { rerender } = render(
+      <div data-parent-version="0">
+        <Profiler id="chip" onRender={onRender}>
+          <Chip tone="brand">稳定标签</Chip>
+        </Profiler>
+      </div>,
+    );
+    await act(async () => undefined);
+    onRender.mockClear();
+    rerender(
+      <div data-parent-version="1">
+        <Profiler id="chip" onRender={onRender}>
+          <Chip tone="brand">稳定标签</Chip>
+        </Profiler>
+      </div>,
+    );
+
+    const update = onRender.mock.calls.at(-1);
+    expect(update?.[1]).toBe("update");
+    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+  });
+
   it("渲染内容", () => {
     const { getByText } = render(<Chip>标签</Chip>);
     expect(getByText("标签")).toBeTruthy();
