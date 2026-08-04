@@ -71,7 +71,7 @@ export const dividerShowcase: ShowcaseSpec = {
     ],
     states: [
         {
-            name: "Pure dividing line",
+            name: "Divider only",
             render: () => (<div className="w-full">
           <p className="text-sm text-muted">Previous paragraph</p>
           <Divider />

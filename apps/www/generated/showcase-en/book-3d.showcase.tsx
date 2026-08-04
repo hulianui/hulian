@@ -20,7 +20,7 @@ export const book3dShowcase: ShowcaseSpec = {
             render: () => (<Book3D title="CSS" subtitle="Conversion" coverColor={{ from: "#f7b733", to: "#e0992b" }}/>),
         },
         {
-            title: "Corner mark ribbon",
+            title: "Corner ribbon",
             description: "ribbon + ribbonTone Attach a ribbon (danger / brand / success) to the upper right corner of the cover.",
             code: `<Book3D
   title="HTML"

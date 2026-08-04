@@ -5,17 +5,17 @@ import type { HeadingLevel, HeadingWeight } from "../../../../packages/ui/src/he
 export const headingShowcase: ShowcaseSpec = {
     examples: [
         {
-            title: "Sixth level title",
+            title: "Heading level 6",
             description: "level determines both the semantic label h{level} and the default visual size.",
             code: `<Heading level={1}>First-level title</Heading>
 <Heading level={2}>Level 2 title</Heading>
 <Heading level={3}>Level 3 title</Heading>
 <Heading level={4}>Level 4 title</Heading>`,
             render: () => (<div className="flex flex-col gap-2">
-          <Heading level={1}>First level title</Heading>
-          <Heading level={2}>Second level title</Heading>
-          <Heading level={3}>Level 3 heading</Heading>
-          <Heading level={4}>Level 4 heading</Heading>
+          <Heading level={1}>Heading level 1</Heading>
+          <Heading level={2}>Heading level 2</Heading>
+          <Heading level={3}>Heading level 3</Heading>
+          <Heading level={4}>Heading level 4</Heading>
         </div>),
         },
         {

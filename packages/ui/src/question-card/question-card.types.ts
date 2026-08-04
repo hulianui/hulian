@@ -6,7 +6,7 @@ export type QuestionKind = "choice" | "fill" | "solution" | "judge";
 export interface QuestionOption {
   /** 选项标号 A/B/C/D */
   label: string;
-  /** 选项正文，支持 MathText 记号 */
+  /** 选项正文，支持 LaTeX 记号（由 Formula 排版） */
   text: string;
 }
 
@@ -24,7 +24,7 @@ export interface QuestionCardProps {
   kindLabel?: ReactNode;
   /** 难度/分层标签，如 A 组 / 基础 / 拔高。 */
   difficulty?: ReactNode;
-  /** 题干，支持 MathText 记号（\frac{}{} / ^{} / _{} / ____）。 */
+  /** 题干，支持 LaTeX 记号（`\frac{}{}` / `^{}` / `_{}` / 填空槽 `____`），由 Formula 排版。 */
   stem: string;
   /** 选择题选项；非选择题传空或省略。 */
   options?: QuestionOption[];

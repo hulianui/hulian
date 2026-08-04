@@ -45,8 +45,8 @@ export const diffStatShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "additions", type: "number", defaultValue: 24, label: "New row" },
-        { prop: "deletions", type: "number", defaultValue: 6, label: "Delete row" },
+        { prop: "additions", type: "number", defaultValue: 24, label: "Added lines" },
+        { prop: "deletions", type: "number", defaultValue: 6, label: "Removed lines" },
         {
             prop: "status",
             type: "select",

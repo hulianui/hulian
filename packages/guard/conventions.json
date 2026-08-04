@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|intercept-card|iphone|iridescence|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|math-text|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|intercept-card|iphone|iridescence|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -4391,7 +4391,7 @@
       "id": "component/math/pitfall/2",
       "scope": "math",
       "title": "Formula",
-      "rule": "**别用它排整屏行内分数**。一屏几十个实例时 KaTeX 排版是页面上最贵的一步，这种场景 MathText 的一次字符串解析就够了。",
+      "rule": "**一屏几十个实例时，KaTeX 排版是页面上最贵的一步**。组件已经是 memo 的，但父级传新对象（尤其 `macros`）照样会让它整屏重排。真到瓶颈时的出路是服务端预渲染（本件 RSC 安全，排版可以整段发生在服务端）或列表虚拟滚动，**不是**换一个「更轻的排版」—— 那条路走过了，省下的成本换来的是错的版式。",
       "source": "packages/ui/src/math/math.md"
     },
     {
@@ -4412,7 +4412,7 @@
       "id": "component/math/pitfall/5",
       "scope": "math",
       "title": "Formula",
-      "rule": "**公式比周围正文大约 1.21 倍**。这是 KaTeX（也是 TeX）的标准视觉尺寸，不是 bug；与 MathText 混排在同一段里能看出差别。要压平就自己覆盖 `.katex { font-size: 1em }`，代价是符号相对中文会偏小。",
+      "rule": "**公式比周围正文大约 1.21 倍**。这是 KaTeX（也是 TeX）的标准视觉尺寸，不是 bug。要压平就自己覆盖 `.katex { font-size: 1em }`，代价是符号相对中文会偏小。",
       "source": "packages/ui/src/math/math.md"
     },
     {
@@ -4433,7 +4433,7 @@
       "id": "component/math/pitfall/8",
       "scope": "math",
       "title": "Formula",
-      "rule": "**`formulaToPlain` 的输出别拿去做 OMML 导出的输入**。它底层走 MathText 的轻量解析器，`\\begin{cases}` 会被拍平 —— 而导出链路要的恰恰是被拍掉的行结构。导出请用 `splitMathSegments` 切段 + 原始 LaTeX。",
+      "rule": "**`formulaToPlain` 的输出别拿去做 OMML 导出的输入**。它底层走的是零依赖的轻量解析器，`\\begin{cases}` 会被拍平 —— 而导出链路要的恰恰是被拍掉的行结构。导出请用 `splitMathSegments` 切段 + 原始 LaTeX。",
       "source": "packages/ui/src/math/math.md"
     },
     {
@@ -4449,97 +4449,6 @@
       "title": "Formula",
       "rule": "组件返回 `<span>`；KaTeX 输出 HTML + MathML 双份，HTML 那半带 `aria-hidden`，读屏读的是 MathML，无需额外配 aria。",
       "source": "packages/ui/src/math/math.md"
-    },
-    {
-      "id": "component/math-text/pitfall/1",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**别用 `a/b` 表示分数**。上游数据若用斜杠，`千米/时`、`元/千克` 这类单位会被误渲染成分数。用 `\\frac{}{}` 把「这是分数」这个已知事实显式带过来，不要让渲染层再猜一遍。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/2",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**`\\mathbb{R}` 不要在上游剥壳成 `R`**。题面里实数集 ℝ 与变量 `R` 是两个东西，剥成同一个字母后「定义域为 ℝ」读起来就像「定义域为 R」，而且没人看得出信息已经丢了。原样交给本组件，它映射到黑板粗体。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/3",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**弧的规范写法是 `\\overset{\\frown}{AB}`**，不是 `\\frown{AB}`。后者在 LaTeX 里是「弧符号紧跟一个分组」，本组件按字面渲染成 `⌢{AB}` —— 看着不对正是设计意图，好过猜一个上游没表达的意思。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/4",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**`\\vec` 与 `\\overrightarrow` 在本组件里渲染宽度相同**（都跟随内容）。TeX 里前者是定宽短箭头，这个差异被有意抹平：题面场景下两个记号都指向量，宽度不携带信息，而自适应能让 `\\vec{AB}` 也盖得住。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/5",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**单个 `_` 是下标，`__` 起才是填空**。`a_1` 渲染成下标；想要填空至少写两个下划线。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/6",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**分数不是 `<sup>`/`<sub>` 拼的**。用 `inline-flex` 竖排 + `border-t` 画线，这样嵌在中文正文里行高不会被撑乱、分数线也对得齐。改样式时别退回 sup/sub。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/7",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**命令名后的空格是终止符不是内容**。`\\angle ABC` 里那个空格必须吃掉，否则题面里每个 `\\angle` / `\\triangle` 后都会多冒一个空格（本组件已处理，自行扩表时别忘）。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/8",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**别靠打空格来调关系符间距**。`A \\Rightarrow B` 与 `A\\Rightarrow B` 渲染完全相同，间距由符号类别给。如果你在上游用空格排版式子，那些空格在关系符两侧会被归一化掉 —— 想要额外空白请用 `\\quad` / `\\qquad`。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/9",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**扩符号表时要顺手定类别**。往 `MATH_SYMBOLS` 里加一个新符号而不在 `SYMBOL_CLASSES` 里登记，它会按 `ordinary`（不留白）走；如果它其实是关系符，同一行里就会出现 `x ≤ 3` 有留白、`x ⊕ 3` 没留白的不齐。类别在 `math-text.symbols.ts`。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/10",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**`parseMath` 会返回 `op` 节点**。自定义渲染时不要只处理 `text` —— 关系符和二元运算符走的是 `{ kind: \"op\", text, spacing }`，漏掉这个分支式子里会缺符号。`mathToPlain` 不受影响，它对 `op` 按紧凑文本输出。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/11",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**`30^{\\circ}` 不套 `<sup>`**。`\\circ` 本身就是上标位的字符，再抬一次会变成浮空小点。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/12",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "**矩阵/方程组是有损降级**。`\\begin{array}…\\end{array}` 会被拍平成一行、`\\\\` 变成分号。分段函数尤其吃亏 —— 拍平后 `f(x)=x, x<0；-x, x≥0` 已经读不出「这是分段定义」，而题目考的正是这个。要真排版用 [Formula](../math/math.md)。",
-      "source": "packages/ui/src/math-text/math-text.md"
-    },
-    {
-      "id": "component/math-text/pitfall/13",
-      "scope": "math-text",
-      "title": "MathText",
-      "rule": "组件返回 `<span>`，可安全嵌进 `<p>`；填空槽带 `aria-label=\"填空\"`，读屏不会读成一串下划线。",
-      "source": "packages/ui/src/math-text/math-text.md"
     },
     {
       "id": "component/mentions/pitfall/1",
@@ -5574,7 +5483,7 @@
       "id": "component/question-card/pitfall/1",
       "scope": "question-card",
       "title": "QuestionCard",
-      "rule": "**`stem` 和 `options[].text` 必须是 MathText 记号串，不要预先转成纯文本**。传 `\"3/8\"` 只会显示斜杠；传 `\"\\\\frac{3}{8}\"` 才有真分数版式。",
+      "rule": "**`stem` 和 `options[].text` 必须是 LaTeX 记号串，不要预先转成纯文本**。传 `\"3/8\"` 只会显示斜杠；传 `\"\\\\frac{3}{8}\"` 才排出真分数。上游包了 `$…$` 更好（边界由数据显式携带），没包也认 —— Formula 会退到裸记号切分。",
       "source": "packages/ui/src/question-card/question-card.md"
     },
     {
@@ -8178,8 +8087,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 377,
-    "componentAdvisories": 1143,
-    "totalAdvisories": 1150
+    "componentDocs": 376,
+    "componentAdvisories": 1130,
+    "totalAdvisories": 1137
   }
 }

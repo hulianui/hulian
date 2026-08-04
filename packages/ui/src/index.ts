@@ -169,8 +169,6 @@ export * from "./input-otp";
 export * from "./listbox";
 export * from "./markdown-editor";
 export * from "./markdown";
-export * from "./math-text";
-export * from "./question-card";
 export * from "./mentions";
 export * from "./command";
 export * from "./colorpicker";

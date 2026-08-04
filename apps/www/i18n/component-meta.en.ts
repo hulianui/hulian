@@ -200,12 +200,6 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "KaTeX-powered two-dimensional layout for piecewise functions, matrices, and large delimiters.",
     keywords: ["math", "formula", "katex", "latex", "typography"],
   },
-  "math-text": {
-    shortName: "MathText",
-    description:
-      "Parses a LaTeX subset into searchable inline fractions, roots, scripts, and answer blanks.",
-    keywords: ["math", "text", "typography"],
-  },
   "aurora-text": {
     shortName: "AuroraText",
     description: "Animates a multicolor aurora gradient across inline text.",

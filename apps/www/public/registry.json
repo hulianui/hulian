@@ -1337,7 +1337,7 @@
       "name": "math",
       "type": "registry:ui",
       "title": "Formula",
-      "description": "KaTeX 驱动的数学排版 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符让公式边界由数据显式携带 · RSC …",
+      "description": "KaTeX 驱动的数学排版，本库唯一的数学渲染路径 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符，上游没包 `…",
       "categories": [
         "typography"
       ],
@@ -1345,19 +1345,29 @@
         "katex"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
-        "https://hulianui.haloritual.com/zh/r/math-text.json"
+        "https://hulianui.haloritual.com/zh/r/question-card.json"
       ],
       "meta": {
-        "import": "import { Formula, formulaToPlain, splitMathSegments } from \"@hulianui/ui\"",
+        "import": "import { Formula, formulaToPlain, splitBareMath, hasBareMath, splitMathSegments, mathToPlain, QuestionCard } from \"@hulianui/ui\"",
         "exports": [
           "Formula",
           "formulaToPlain",
-          "splitMathSegments"
+          "splitBareMath",
+          "hasBareMath",
+          "splitMathSegments",
+          "mathToPlain",
+          "QuestionCard"
         ],
         "types": [
           "FormulaProps",
-          "MathSegment"
+          "BareSegment",
+          "MathSegment",
+          "QuestionCardProps",
+          "QuestionKind",
+          "QuestionOption",
+          "QuestionIssue"
         ],
         "group": "text",
         "tags": [],
@@ -1380,9 +1390,29 @@
           "target": "components/hulianui/math/katex-css.d.ts"
         },
         {
+          "path": "components/hulianui/math/math-blank.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/math-blank.tsx"
+        },
+        {
+          "path": "components/hulianui/math/math.bare.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/math.bare.ts"
+        },
+        {
+          "path": "components/hulianui/math/math.latex-parse.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/math.latex-parse.ts"
+        },
+        {
           "path": "components/hulianui/math/math.parse.ts",
           "type": "registry:ui",
           "target": "components/hulianui/math/math.parse.ts"
+        },
+        {
+          "path": "components/hulianui/math/math.symbols.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/math.symbols.ts"
         },
         {
           "path": "components/hulianui/math/math.tsx",
@@ -1647,71 +1677,6 @@
           "path": "components/hulianui/markdown/parse.ts",
           "type": "registry:ui",
           "target": "components/hulianui/markdown/parse.ts"
-        }
-      ]
-    },
-    {
-      "name": "math-text",
-      "type": "registry:ui",
-      "title": "MathText",
-      "description": "行内数学排版 · 零依赖解析 LaTeX 子集(分数/根号/上下标/填空槽)并渲染成真数学版式 · 分数用 inline-flex 竖排不撑乱中文行高 · 可检索朴素文本走 mathToPlain · RSC 安全",
-      "categories": [
-        "typography"
-      ],
-      "dependencies": [],
-      "registryDependencies": [
-        "https://hulianui.haloritual.com/zh/r/config.json",
-        "https://hulianui.haloritual.com/zh/r/lib.json"
-      ],
-      "meta": {
-        "import": "import { MathText, parseMath, parseMathDocument, mathToPlain, splitMathSegments } from \"@hulianui/ui\"",
-        "exports": [
-          "MathText",
-          "parseMath",
-          "parseMathDocument",
-          "mathToPlain",
-          "splitMathSegments"
-        ],
-        "types": [
-          "MathNode",
-          "MathTextProps",
-          "MathSegment",
-          "MathParseOptions"
-        ],
-        "group": "text",
-        "tags": [],
-        "animated": false,
-        "webgl": false,
-        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-text/math-text.md",
-        "docLocal": "packages/ui/src/math-text/math-text.md",
-        "status": "enriched",
-        "preferred": "npm"
-      },
-      "files": [
-        {
-          "path": "components/hulianui/math-text/index.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/math-text/index.ts"
-        },
-        {
-          "path": "components/hulianui/math-text/math-text.parse.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/math-text/math-text.parse.ts"
-        },
-        {
-          "path": "components/hulianui/math-text/math-text.symbols.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/math-text/math-text.symbols.ts"
-        },
-        {
-          "path": "components/hulianui/math-text/math-text.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/math-text/math-text.tsx"
-        },
-        {
-          "path": "components/hulianui/math-text/math-text.types.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/math-text/math-text.types.ts"
         }
       ]
     },
@@ -9180,7 +9145,7 @@
       "name": "question-card",
       "type": "registry:ui",
       "title": "QuestionCard",
-      "description": "题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 MathText 真数学版式 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chi…",
+      "description": "题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 Formula(KaTeX) 真排版 · 走 @hulianui/ui/math 独立 subpath 主包不付…",
       "categories": [
         "data-display"
       ],
@@ -9190,7 +9155,7 @@
         "https://hulianui.haloritual.com/zh/r/chip.json",
         "https://hulianui.haloritual.com/zh/r/image.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
-        "https://hulianui.haloritual.com/zh/r/math-text.json",
+        "https://hulianui.haloritual.com/zh/r/math.json",
         "https://hulianui.haloritual.com/zh/r/tag.json",
         "https://hulianui.haloritual.com/zh/r/text.json"
       ],

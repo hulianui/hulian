@@ -10,18 +10,20 @@ status: enriched
 
 # QuestionCard
 
-> Question card · textbook-style question presentation with number, type, level, prompt, choices, subparts, figure, chapter, and source; MathText formatting and a visible review-warning edge · data-display/collection
+> Question card · textbook-style question presentation with number, type, level, prompt, choices, subparts, figure, chapter, and source; Formula (KaTeX) typesetting, shipped on the `@hulianui/ui/math` subpath, and a visible review-warning edge · data-display/collection
 
 ## When to use
 
 Use QuestionCard anywhere one complete exercise must be reviewed: question banks, paper previews, error books, or grading history. It keeps nine kinds of context together and renders mathematical notation correctly.
 
-Use [Choicebox](../choicebox/choicebox.md) for selectable card options, or [MathText](../math-text/math-text.md) for standalone mathematical copy.
+Use [Choicebox](../choicebox/choicebox.md) for selectable card options, or [Formula](../math/math.md) for standalone mathematical copy.
 
 ## Import
 ```ts
-import { QuestionCard } from "@hulianui/ui"
+import { QuestionCard } from "@hulianui/ui/math"
 ```
+
+**The subpath changed in 0.25.0** (it used to be `@hulianui/ui`). This component's stem and options are [Formula](../math/math.md) internally, which brings KaTeX with it; keeping it in the main barrel would charge every `@hulianui/ui` consumer 86KB gzip even when they never typeset any mathematics. Styling needs no action — Formula imports KaTeX's CSS itself.
 
 ## Examples
 
@@ -58,12 +60,12 @@ An uncertain automatically extracted item:
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `stem` | `string` | — | Prompt using MathText notation. |
+| `stem` | `string` | — | Prompt using LaTeX notation and `____` answer blanks, typeset by Formula. |
 | `number` | `ReactNode` | — | Original book question number. |
 | `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | — | Question type controlling built-in label and tone. |
 | `kindLabel` | `ReactNode` | — | Overrides the built-in Chinese type label. |
 | `difficulty` | `ReactNode` | — | Level label, such as Group A, Foundation, or Advanced. |
-| `options` | `{ label, text }[]` | — | Choices whose text supports MathText notation. |
+| `options` | `{ label, text }[]` | — | Choices whose text supports LaTeX notation. |
 | `parts` | `string[]` | — | Subquestions such as (1), (2), and (3). |
 | `figure` | `{ src, alt? }` | — | Supporting image. |
 | `chapter` / `source` | `ReactNode` | — | Chapter and provenance shown in the footer. |
@@ -76,13 +78,13 @@ Built-in `kind` labels are `"\u9009\u62e9\u9898"` (“Multiple choice”), `"\u5
 
 ## Pitfalls
 
-- `stem` and `options[].text` must remain MathText notation. Use `"\\frac{3}{8}"`, not plain `"3/8"`, for a typeset fraction.
+- `stem` and `options[].text` must remain LaTeX notation. Use `"\\frac{3}{8}"`, not plain `"3/8"`, for a typeset fraction. Wrapping formulas in `$…$` upstream is better still (the boundary then lives in the data), but unwrapped notation works too — Formula falls back to bare-notation splitting.
 - `issues` communicates uncertain machine extraction and is not decoration. Always pass known issues so untrusted items remain visibly distinct.
 - The warning uses a left edge instead of tinting the whole card, preserving prompt contrast.
 - `compact` never truncates the prompt or choices; it only hides subparts and footer context.
 
 ## Related
 
-- [MathText](../math-text/math-text.md) — mathematical layout inside prompts and choices
+- [Formula](../math/math.md) — mathematical layout inside prompts and choices; this component ships alongside it on `@hulianui/ui/math`
 - [Card](../card/card.md) — outer shell
 - [Choicebox](../choicebox/choicebox.md) — selectable card options

@@ -12,7 +12,7 @@ export const questionCardShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Multiple choice questions",
-            description: "The question stem and the scores in the options are in MathText real format; the source and knowledge points are in the footer.",
+            description: "Fractions in the stem and the options are typeset by Formula (KaTeX); source and knowledge points sit in the footer.",
             code: `<QuestionCard
   number="3"
   kind="choice"
@@ -35,7 +35,7 @@ export const questionCardShowcase: ShowcaseSpec = {
                     { label: "B", text: "\\frac{5}{9}" },
                     { label: "C", text: "\\frac{16}{9}" },
                     { label: "D", text: "\\frac{80}{9}" },
-                ]} chapter="Chapter 1 Rational Numbers · 1.1.1 Natural Numbers, Fractions and Decimals" topics={["Rational numbers", "Score"]} source="Academic Ability Assessment Part 7 · Page 3 · Question 3"/>
+                ]} chapter="Chapter 1 Rational Numbers · 1.1.1 Natural Numbers, Fractions and Decimals" topics={["Rational numbers", "Fraction"]} source="Academic Ability Assessment Part 7 · Page 3 · Question 3"/>
         </div>),
         },
         {

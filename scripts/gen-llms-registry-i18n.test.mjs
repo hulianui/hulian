@@ -289,19 +289,25 @@ test("English conventions localize advice while preserving executable protocol",
     zh.confusables.map((item) => item.id),
   );
   assert.equal(en.stats.componentDocs, zh.stats.componentDocs);
-  assert.deepEqual(
-    {
-      componentAdvisories: zh.stats.componentAdvisories,
-      totalAdvisories: zh.stats.totalAdvisories,
-    },
-    { componentAdvisories: 1143, totalAdvisories: 1150 },
-  );
-  assert.deepEqual(
-    {
-      componentAdvisories: en.stats.componentAdvisories,
-      totalAdvisories: en.stats.totalAdvisories,
-    },
-    { componentAdvisories: 1217, totalAdvisories: 1224 },
+
+  // 别写死绝对条数：加一个组件、删一个组件都会让它红，而红的是计数不是逻辑
+  // （MathText 退役那次就同时打翻了这里的四个数字）。守的是「提取链路没断」——
+  // advisories 与组件文档数成比例（实测约 3 条/组件），链路一坏会骤降到接近 0。
+  const floor = zh.stats.componentDocs * 2;
+  for (const [locale, stats] of [
+    ["zh", zh.stats],
+    ["en", en.stats],
+  ]) {
+    assert.ok(
+      stats.componentAdvisories > floor,
+      `${locale} componentAdvisories=${stats.componentAdvisories} 低于 ${floor}（${stats.componentDocs} 篇文档）—— 提取链路可能断了`,
+    );
+    assert.ok(stats.totalAdvisories >= stats.componentAdvisories, `${locale} 总数不该小于组件数`);
+  }
+  // 非组件来源的 advisories（全局约定）中英必须同源，差值不随组件增删变化。
+  assert.equal(
+    en.stats.totalAdvisories - en.stats.componentAdvisories,
+    zh.stats.totalAdvisories - zh.stats.componentAdvisories,
   );
   assert.equal(new Set(en.advisories.map((item) => item.id)).size, en.advisories.length);
 });

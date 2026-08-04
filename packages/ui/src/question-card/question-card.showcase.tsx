@@ -14,7 +14,7 @@ export const questionCardShowcase: ShowcaseSpec = {
   examples: [
     {
       title: "选择题",
-      description: "题干与选项里的分数走 MathText 真版式；出处与知识点在页脚。",
+      description: "题干与选项里的分数走 Formula（KaTeX）真排版；出处与知识点在页脚。",
       code: `<QuestionCard
   number="3"
   kind="choice"

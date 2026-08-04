@@ -70,7 +70,7 @@ export const sparklineShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Table inline",
+            title: "Inline in table",
             description: "One trend per line, with renderTooltip (native <title>, zero JS, RSC safe) for point-by-point explanation.",
             code: `<Sparkline
   data={row.trend}

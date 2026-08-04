@@ -43,7 +43,7 @@ export const statShowcase: ShowcaseSpec = {
 </>`,
             render: () => (<div className="flex flex-wrap gap-4">
           <Stat label="Number of questions in the question basket" value="12" hint="Maximum of 200 questions" className="w-64"/>
-          <Stat label="Reference number" value="38" delta={6.4} deltaLabel="More advanced" hint="2 people have not submitted their papers" className="w-64"/>
+          <Stat label="Examinees" value="38" delta={6.4} deltaLabel="More advanced" hint="2 people have not submitted their papers" className="w-64"/>
         </div>),
         },
         {
@@ -79,7 +79,7 @@ export const statShowcase: ShowcaseSpec = {
         },
         {
             name: "Trend + Footnote",
-            render: () => (<Stat label="Reference number" value="38" delta={6.4} deltaLabel="More advanced" hint="2 people have not submitted their papers" icon={<Activity className="size-4"/>} className="w-64"/>),
+            render: () => (<Stat label="Examinees" value="38" delta={6.4} deltaLabel="More advanced" hint="2 people have not submitted their papers" icon={<Activity className="size-4"/>} className="w-64"/>),
         },
     ],
     renderWithProps: (p) => (<Stat label="This month GMV" value="¥128,400" delta={Number(p.delta)} deltaLabel="Compared with last month" className="w-64"/>),

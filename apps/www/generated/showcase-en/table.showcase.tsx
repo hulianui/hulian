@@ -257,7 +257,7 @@ export const tableShowcase: ShowcaseSpec = {
             render: () => <ExpandableDemo />,
         },
         {
-            title: "Line click",
+            title: "Row click",
             description: "onRowClick makes the entire row clickable (hover highlighted + cursor-pointer + keyboard accessible); buttons/links in the row are bubbled and isolated to prevent accidental touches. For full page jump, use rowHref instead.",
             code: `<Table
   columns={columns}

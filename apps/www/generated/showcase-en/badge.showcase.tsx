@@ -30,7 +30,7 @@ export const badgeShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Pure point",
+            title: "Dot only",
             description: "dot only displays small dots and does not display numbers (commonly used for \"unread\" prompts).",
             code: `<Badge dot tone="danger">
   <Icon />
@@ -79,7 +79,7 @@ export const badgeShowcase: ShowcaseSpec = {
     controls: [
         { prop: "count", type: "number", defaultValue: 5, label: "Count" },
         { prop: "max", type: "number", defaultValue: 99, label: "Upper limit" },
-        { prop: "dot", type: "boolean", defaultValue: false, label: "Pure point" },
+        { prop: "dot", type: "boolean", defaultValue: false, label: "Dot only" },
         { prop: "showZero", type: "boolean", defaultValue: false, label: "Showing 0" },
         {
             prop: "tone",
@@ -98,7 +98,7 @@ export const badgeShowcase: ShowcaseSpec = {
     states: [
         { name: "Independent counting", render: () => <Badge count={5}/> },
         { name: "Overflow 99+", render: () => <Badge count={1000} max={99}/> },
-        { name: "Pure point", render: () => <Badge dot/> },
+        { name: "Dot only", render: () => <Badge dot/> },
         {
             name: "Icon + Count",
             render: () => (<Badge count={1}>

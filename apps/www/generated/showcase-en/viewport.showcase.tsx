@@ -2,7 +2,7 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Viewport } from "../../../../packages/ui/src/viewport/viewport";
 function ResponsiveDemo() {
-    const cards = ["Visits", "Conversion rate", "Price per customer", "Retention rate", "Active number", "Revenue"];
+    const cards = ["Visits", "Conversion rate", "Price per customer", "Retention rate", "Active count", "Revenue"];
     return (<div className="flex min-h-[16rem] flex-col gap-4 p-4">
       <header className="flex flex-col gap-2 @md:flex-row @md:items-center @md:justify-between">
         <div>

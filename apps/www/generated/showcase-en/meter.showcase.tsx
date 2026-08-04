@@ -35,7 +35,7 @@ export const meterShowcase: ShowcaseSpec = {
   <Meter value={100} label="Completion" showValue />
 </>`,
             render: () => (<div className="flex w-64 flex-col gap-4">
-          <Meter value={18} label="Power" showValue/>
+          <Meter value={18} label="Battery" showValue/>
           <Meter value={100} label="Completion" showValue/>
         </div>),
         },
@@ -47,7 +47,7 @@ export const meterShowcase: ShowcaseSpec = {
     states: [
         { name: "default", render: () => <div className="w-64"><Meter value={64}/></div> },
         { name: "with-label", render: () => <div className="w-64"><Meter value={72} label="Disk usage" showValue/></div> },
-        { name: "low", render: () => <div className="w-64"><Meter value={18} label="Power" showValue/></div> },
+        { name: "low", render: () => <div className="w-64"><Meter value={18} label="Battery" showValue/></div> },
         { name: "full", render: () => <div className="w-64"><Meter value={100} label="Completion" showValue/></div> },
     ],
     renderWithProps: (p) => (<div className="w-64">

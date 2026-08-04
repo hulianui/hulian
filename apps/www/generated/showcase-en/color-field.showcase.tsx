@@ -31,13 +31,13 @@ export const colorFieldShowcase: ShowcaseSpec = {
         </span>),
         },
         {
-            title: "Colorless block/disabled/marked red",
+            title: "No swatch / disabled / invalid",
             description: "showSwatch=false Only text is left; when an unparsable value is entered, the component itself will be marked red, and there is no need to pass invalid externally.",
             code: `<ColorField showSwatch={false} defaultValue="#38e8ff" className="w-32" />
 <ColorField disabled defaultValue="#6b7d93" className="w-36" />
 <ColorField invalid defaultValue="#ff6b6b" className="w-36" />`,
             render: () => (<span className="inline-flex items-center gap-3">
-          <ColorField showSwatch={false} defaultValue="#38e8ff" className="w-32" aria-label="Colorless block"/>
+          <ColorField showSwatch={false} defaultValue="#38e8ff" className="w-32" aria-label="No swatch"/>
           <ColorField disabled defaultValue="#6b7d93" className="w-36" aria-label="Disabled"/>
           <ColorField invalid defaultValue="#ff6b6b" className="w-36" aria-label="Marked in red"/>
         </span>),
@@ -50,7 +50,7 @@ export const colorFieldShowcase: ShowcaseSpec = {
         { name: "lg", render: () => <ColorField size="lg" defaultValue="#34e8a4" className="w-40" aria-label="Large"/> },
         {
             name: "no-swatch",
-            render: () => <ColorField showSwatch={false} defaultValue="#38e8ff" className="w-32" aria-label="Colorless block"/>,
+            render: () => <ColorField showSwatch={false} defaultValue="#38e8ff" className="w-32" aria-label="No swatch"/>,
         },
         { name: "disabled", render: () => <ColorField disabled defaultValue="#6b7d93" className="w-36" aria-label="Disabled"/> },
         { name: "invalid", render: () => <ColorField invalid defaultValue="#ff6b6b" className="w-36" aria-label="Marked in red"/> },

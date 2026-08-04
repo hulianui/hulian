@@ -121,7 +121,7 @@ export type MathSymbolClass = "relation" | "binary" | "prefix" | "ordinary";
  * 不收 `+` 与 `-`：它们兼有一元用法（`-3` 的负号、`+3` 的正号），
  * 光看字符判不出该不该留白，宁可一律不干预，也不要把 `-3` 排成 `- 3`。
  * `±`/`∓` 同样兼有一元用法，但它们进了表 —— 解析层用「前面有没有操作数」把一元
- * 那档降级掉（见 math-text.parse.ts 的 precededByOperand）。
+ * 那档降级掉（见 math.latex-parse.ts 的 precededByOperand）。
  */
 export const SYMBOL_CLASSES: Record<string, MathSymbolClass> = {
   // 关系：连接左右两个操作数

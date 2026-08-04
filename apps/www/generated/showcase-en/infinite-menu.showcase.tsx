@@ -70,7 +70,7 @@ export const infiniteMenuShowcase: ShowcaseSpec = {
         </Stage>),
         },
         {
-            name: "Picture card surface",
+            name: "Card face image",
             render: () => (<Stage>
           <InfiniteMenu items={Array.from({ length: 10 }, (_, i) => ({
                     title: `Gallery ${i + 1}`,

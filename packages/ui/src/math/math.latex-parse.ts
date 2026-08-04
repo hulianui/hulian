@@ -1,13 +1,13 @@
-// 行内数学记号解析器 —— 纯函数、零依赖、可单测。
+// LaTeX 记号解析器 —— 纯函数、零依赖、可单测。
+//
+// 排版**不**走这里（那是 Formula/KaTeX 的活）。它现在只服务两件事：
+//   1. mathToPlain / formulaToPlain —— 检索、导出、纯文本比对要的朴素文本
+//   2. splitMathSegments —— 按 `$…$` 分隔符切段，供渲染层决定哪一段喂给 KaTeX
+// 这两件都必须零依赖、服务端可跑（入库脚本会单独引），所以不把它们并进 KaTeX 那条路径。
 //
 // 认一个刻意收窄的 LaTeX 子集：分数 / 根号 / 上下标 / 填空槽 / 装饰线 +
-// 一张按真实语料频次建的符号表（见 math-text.symbols.ts）。
-// 不引 KaTeX：教辅题面的需求就这些，为长尾的 1% 给每个消费方压上几百 KB
-// 与本库零依赖取向相悖；而中间格式是标准 LaTeX 子集，将来真要排矩阵/积分，
-// 换成 KaTeX 几乎零数据迁移成本 —— 这扇门是特意留着的。
-//
-// 不认识的命令一律按字面输出（界面上看得见 `\foo`），绝不静默吞掉。
-import type { MathNode } from "./math-text.types";
+// 一张按真实语料频次建的符号表（见 math.symbols.ts）。不认识的命令一律按字面输出，绝不静默吞掉。
+import type { MathNode } from "./math.types";
 import {
   BLACKBOARD_LETTERS,
   classifySymbol,
@@ -17,7 +17,7 @@ import {
   SIZING_COMMANDS,
   SPACING_COMMANDS,
   UNWRAP_COMMANDS,
-} from "./math-text.symbols";
+} from "./math.symbols";
 
 /** 2 个及以上连续下划线 = 填空槽；单个下划线才是下标标记。 */
 const BLANK_RE = /^_{2,}/;

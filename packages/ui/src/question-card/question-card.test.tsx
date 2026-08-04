@@ -3,14 +3,16 @@ import { describe, expect, it } from "vitest";
 import { QuestionCard } from "./question-card";
 
 describe("QuestionCard", () => {
-  it("题干里的数学记号渲染成版式而不是原始记号", () => {
+  it("题干里的数学记号交给 KaTeX 排版，填空槽渲染成空位", () => {
     const { container } = render(
       <QuestionCard stem={"将\\frac{3}{8}化成小数为____。"} kind="fill" />,
     );
-    expect(container.textContent).not.toContain("\\frac");
+    // 别断言 textContent 不含 `\frac`：KaTeX 的 htmlAndMathml 输出会把原始 LaTeX
+    // 塞进 MathML 的 <annotation>，那串永远在 textContent 里。要看排版有没有发生，
+    // 只能看有没有生成 .katex 子树。
+    expect(container.querySelector(".katex")).not.toBeNull();
+    expect(container.querySelector('[role="img"]')).not.toBeNull(); // 填空槽
     expect(container.textContent).not.toContain("____");
-    expect(screen.getByText("3")).toBeTruthy();
-    expect(screen.getByText("8")).toBeTruthy();
   });
 
   it("选项按标号逐条渲染", () => {

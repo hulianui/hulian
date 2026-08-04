@@ -20,6 +20,7 @@
     "size": "bash scripts/bundle-size.sh",
     "size:update": "bash scripts/bundle-size.sh --update",
     "compile-cost": "bash scripts/compile-cost.sh",
+    "readme:sync": "node scripts/readme-counts.mjs",
     "skill-index": "node scripts/gen-skill-index.mjs",
     "component-docs": "node scripts/gen-component-docs.mjs",
     "showcase:generate": "node scripts/gen-showcase-sources.mjs",

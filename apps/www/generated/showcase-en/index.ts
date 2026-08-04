@@ -204,7 +204,6 @@ export * from "./markdown-editor.showcase";
 export * from "./markdown.showcase";
 export * from "./marquee.showcase";
 export * from "./masonry.showcase";
-export * from "./math-text.showcase";
 export * from "./math.showcase";
 export * from "./mentions.showcase";
 export * from "./menu.showcase";

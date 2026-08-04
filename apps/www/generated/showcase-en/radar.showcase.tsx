@@ -59,7 +59,7 @@ export const radarShowcase: ShowcaseSpec = {
         { prop: "ringCount", type: "number", defaultValue: 10, label: "Ring number" },
         { prop: "spokeCount", type: "number", defaultValue: 10, label: "Number of spokes" },
         { prop: "sweepSpeed", type: "number", defaultValue: 1, label: "Scan speed" },
-        { prop: "sweepLobes", type: "number", defaultValue: 1, label: "Scan number of flaps" },
+        { prop: "sweepLobes", type: "number", defaultValue: 1, label: "Number of scan lobes" },
         { prop: "brightness", type: "number", defaultValue: 1, label: "Brightness" },
         {
             prop: "enableMouseInteraction",

@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.24.0 · 377 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.24.0 · 376 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -1480,38 +1480,37 @@ import { FallingText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Formula
 
-> KaTeX 驱动的数学排版 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符让公式边界由数据显式携带 · RSC 安全 · typography/text
+> KaTeX 驱动的数学排版，本库唯一的数学渲染路径 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符，上游没包 `$` 的题库数据退到裸记号切分 · 填空槽 `____` 渲染成空位 · RSC 安全 · typography/text
 
 ## 何时用
 
-要**二维排版结构**时用：分段函数 `\begin{cases}`、矩阵、对齐环境、跟着内容长高的 `\left…\right`、上下限落在符号正上下方的求和/积分。
+**判据：这段文本里有没有 `\frac{}{}` / `x^{2}` / `____` 这类记号。** 有就用它，没有就用普通 `<p>`。典型场景是题干、选项、解析、公式说明；数据多半来自 PDF/Word 抽取的题库，那种串直接当纯文本渲染，屏幕上就是字面的 `\frac{3}{8}` 而不是上下叠放的分数。
 
-正文里只是混几个分数、根号、上下标 —— 用 [MathText](https://hulianui.haloritual.com/zh/components/math-text)，它零依赖。
+**不要**用它渲染整段富文本（用 [Markdown](https://hulianui.haloritual.com/zh/components/markdown)）或代码（用 [Code](https://hulianui.haloritual.com/zh/components/code)）。
 
-### 跟 MathText 怎么选
+### 0.25.0 起这是本库唯一的数学渲染路径
 
-| | MathText | Formula |
-|---|---|---|
-| 包 | `@hulianui/ui` | `@hulianui/ui/math` |
-| 依赖 | 零 | KaTeX：JS 86KB gzip（`pnpm size` 实测），另加样式表与按需字体 |
-| 覆盖 | 教辅题面高频的一维记号（分数/根号/上下标/向量/符号表） | 完整 LaTeX |
-| `\begin{cases}` | 拍平成一行、`\\` 变分号 | 真排版 |
-| `\left…\right` | 丢命令留定高括号 | 高度跟随内容 |
-| 渲染成本 | 一次字符串解析 | KaTeX 排版，贵一个数量级 |
+此前还有个零依赖的 `MathText`，用 CSS 拼行内版式（`inline-flex` 叠分数、`border-t` 当根号横线）。它在 0.25.0 **退役并从主 barrel 移除**了。原因不是「能力不够」，是**排出来的东西不对**：
 
-**判据是有没有二维结构，不是「哪个更强」**：一屏几十道题的题面用 Formula 排纯行内分数，等于为用不上的能力付了排版成本和这 86KB。反过来，分段函数交给 MathText 会得到一行拍扁的 `x, x<0；-x, x≥0` —— 而这道题恰恰考的是分段，题干读不懂，题就废了。
+- `√` 是个定高字符，而横线是旁边兄弟盒的 `border-t`。被开方数一旦含上标（`\sqrt{a^{2}+b^{2}}`），内容盒变高变宽，横线就接不上根号顶点，末尾那个指数还顶到线外；
+- 弧与帽子（`\overset{\frown}{AB}`、`\widehat{ABC}`）不跟随内容宽度，中文教材里跨 AB 两个字母的弧被排成 A 头上一顶帽子；
+- 这类缺陷是 CSS 拼贴的固有极限 —— 分数线粗细、上下标基线、定界符高度，修完一处还有下一处。
 
-两件可以同页混用：题干用 MathText、遇到分段函数那道用 Formula。
+而它当初的卖点「零依赖换不撑乱中文行高」，实测在 KaTeX 下**同样成立**：行内公式不会撑开行距。那个差异一直是假的，代价却是全线错误的排版。
 
-## 导入
+**从 MathText 迁移**：
 
-```ts
-import { Formula, formulaToPlain, splitMathSegments } from "@hulianui/ui/math"
-```
+| 原来 | 现在 |
+|---|---|
+| `import { MathText } from "@hulianui/ui"` | `import { Formula } from "@hulianui/ui/math"` |
+| `import { QuestionCard } from "@hulianui/ui"` | `import { QuestionCard } from "@hulianui/ui/math"` |
+| `<MathText>{stem}</MathText>` | `<Formula>{stem}</Formula>` |
+| `mathToPlain(src)` | `mathToPlain(src)`（同名同义，改从 `@hulianui/ui/math` 引） |
+| `parseMath` / `parseMathDocument` | 不再导出 —— 它们是给 MathText 自定义渲染用的，排版已由 KaTeX 接管 |
+| `delimiters={true}` | 不需要了：`mixed` 模式默认就认 `$`，没有 `$` 时自动退到裸记号切分 |
+| `scriptScale` | 不再有 —— 上下标尺寸由 TeX 的排版规则决定，不该由调用方拨 |
 
-**subpath 是刻意的**：KaTeX 只有 import 了这条路径的页面才会打进包，`@hulianui/ui` 主入口的消费者一分体积都不付。别把它加进主 barrel。
-
-样式**不用你管** —— 组件自己 `import "katex/dist/katex.min.css"`，字体随之被打包器接管。不需要在应用入口引 CSS，也不需要往 CDN 挂 `<link>`。
+`blankWidth`（填空槽宽度）原样保留。视觉上会有两处变化，都是**改对了**而不是回归：变量按 TeX 规矩显示为斜体；公式比周围正文约大 1.21 倍（见「禁忌 / 坑」）。
 
 ## 用法
 
@@ -1553,7 +1552,21 @@ import { Formula, formulaToPlain, splitMathSegments } from "@hulianui/ui/math"
 
 边界是必须显式携带的信息，不该由渲染层猜、更不该逼上游把它删掉。**上游有 `$` 就别剥**。
 
-MathText 也补上了同一套分隔符，走它的 `delimiters` prop（默认关，因为它的存量消费者正文里可能有货币金额）。
+### 没有 `$` 的存量数据
+
+**整串一个成对分隔符都没有时，自动退到裸记号切分**：扫出 `\frac{3}{8}`、`x^{2}`、`\angle ABC` 这类片段交给 KaTeX，其余按文本原样输出。PDF/Word/OCR 直出的题面就是这样，上游还没来得及包 `$` 时不该整题露出字面记号。
+
+切分只认一条判据：**没有 `\` / `^` / `_` 这类触发字符就不是公式**。所以 `P(2,3)`、选项标号 `A.`、`(a+b)` 一律留作文本 —— 宁可少排也不误排，把中文正文喂给 KaTeX 会得到一串红色报错，比不排版糟糕得多。
+
+**它是兜底，不是推荐做法。** 只要有一处成对分隔符，整串就走精确路径、不再猜边界；同一串里半带半不带 `$`，没包的那半会原样露出 —— 这是有意的，数据不一致要看得见。规范做法始终是让上游把公式包成 `$…$`。
+
+需要自己处理切分结果时用 `splitBareMath(src)`，判断要不要走 KaTeX 这条贵路径用 `hasBareMath(src)`。
+
+### 填空槽
+
+`____`（2 个及以上连续下划线）渲染成可书写的空位，宽度由 `blankWidth` 控制（默认 2.5em）。**分隔符内外都认** —— `$\frac{3}{8}$ 化成小数为 ____` 里那四个下划线同样会变成空位，而不是四个字面字符。单个 `_` 仍是下标。
+
+它不走 KaTeX：那边只能用 `\rule` / `\hspace` 之类凑，宽度还改不动，也挂不上 `aria-label`。填空槽是真 DOM，读屏读到的是「填空」而不是一串下划线。
 
 ## Props
 
@@ -1562,13 +1575,17 @@ MathText 也补上了同一套分隔符，走它的 `delimiters` prop（默认�
 | `children` | `string` | — | LaTeX 源，或含 LaTeX 段落的正文 |
 | `mode` | `"mixed" \| "math"` | `"mixed"` | `mixed` 认分隔符、只排版分隔符内；`math` 整串都是 LaTeX |
 | `display` | `boolean` | `false` | 块级排版。**仅 `mode="math"` 生效** —— `mixed` 下由各段自己的分隔符决定 |
+| `blankWidth` | `number` | `2.5` | 填空槽（`____`）最小宽度，单位 em |
 | `macros` | `Record<string, string>` | — | 自定义宏，透传给 KaTeX |
 | `className` | `string` | — | — |
 
 ## 配套纯函数
 
 - `splitMathSegments(src)` → `MathSegment[]`，把正文切成 `{ type: "text" \| "math", content, display }`。**Word/OMML 导出链路要的就是它** —— 拿原始 LaTeX 切段，再逐段转换。
+- `splitBareMath(src)` → `BareSegment[]`，把**没有 `$`** 的正文切成 `{ type: "text" | "math" | "blank", content }`。
+- `hasBareMath(src)` → `boolean`，整串有没有可切出来的公式或填空槽。
 - `formulaToPlain(src)` → `string`，转成可检索的朴素文本（`$\frac{3}{8}$` → `3/8`），分隔符不进结果。
+- `mathToPlain(src, { delimiters })` → `string`，同一套降级的底层实现，`delimiters` 决定认不认 `$`。
 
 **检索、导出、纯文本比对一律用 `formulaToPlain`**，别把带记号的原串直接甩给搜索框 —— 用户搜「3/8」应该能命中。
 
@@ -1579,25 +1596,25 @@ KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都�
 - **认不出的控制序列** → 就地标红、原样露出（`\y` 显示成红色的 `\y`），其余部分照常排版；
 - **整体解析失败**（如花括号没闭合）→ 整条原文红色显示，带 `katex-error` 类。
 
-这跟 MathText「不认识的记号原样显示」是同一立场。安静地把损坏的 `\begin{cases}x=my\y^2=6x\end{cases}` 渲染成看起来正常的一行，比直接报错危险得多 —— 那种「最像真的」的产物没人会发现它错了。
+立场是**损坏的公式必须看得见**。安静地把损坏的 `\begin{cases}x=my\y^2=6x\end{cases}` 渲染成看起来正常的一行，比直接报错危险得多 —— 那种「最像真的」的产物没人会发现它错了。
 
 ## 禁忌 / 坑
 
 - **别把 Formula 加进 `@hulianui/ui` 主 barrel**。subpath 的全部意义就是让 KaTeX 只落在用得上它的页面。一旦进主 barrel，所有消费者都开始付这 86KB —— 体积门禁里 `math` 入口的基线就是拿来盯它的。
-- **别用它排整屏行内分数**。一屏几十个实例时 KaTeX 排版是页面上最贵的一步，这种场景 MathText 的一次字符串解析就够了。
+- **一屏几十个实例时，KaTeX 排版是页面上最贵的一步**。组件已经是 memo 的，但父级传新对象（尤其 `macros`）照样会让它整屏重排。真到瓶颈时的出路是服务端预渲染（本件 RSC 安全，排版可以整段发生在服务端）或列表虚拟滚动，**不是**换一个「更轻的排版」—— 那条路走过了，省下的成本换来的是错的版式。
 - **`macros` 要提到模块级常量**。组件是 memo 的，行内字面量每次渲染都是新对象，memo 每次失效 —— 而失效的代价正是最贵的那一步。（组件内部会浅拷贝 `macros` 再交给 KaTeX：KaTeX 把它当**可变**宏表用，`\def` 会写回去，不拷贝的话一道题里的 `\def` 就漏到后面所有公式上。）
 - **`textContent` 里带着原始 LaTeX**。KaTeX 会把源码原样塞进 MathML 的 `<annotation>`（读屏与复制用），所以 `container.textContent` 会同时包含排版结果与 `\begin{cases}…` 原文。写测试或做文本提取时对 `.katex-html` 取，别对整个容器取。
-- **公式比周围正文大约 1.21 倍**。这是 KaTeX（也是 TeX）的标准视觉尺寸，不是 bug；与 MathText 混排在同一段里能看出差别。要压平就自己覆盖 `.katex { font-size: 1em }`，代价是符号相对中文会偏小。
+- **公式比周围正文大约 1.21 倍**。这是 KaTeX（也是 TeX）的标准视觉尺寸，不是 bug。要压平就自己覆盖 `.katex { font-size: 1em }`，代价是符号相对中文会偏小。
 - **块级公式别塞进 `<p>` 的中间**。`$$…$$` 会渲染出 `display:block` 的盒子，夹在一行中文里会把这行劈成三段。块级公式应当独占一个段落。
 - **`mode="math"` 时 `display` 才有效**。`mixed` 下传 `display` 不报错也不生效 —— 混排里每段的行内/块级由它自己的分隔符决定，**看版式发现不了你传错了**（行内公式照常渲染，只是你以为的块级没出现）。要块级就写 `$$…$$`。
-- **`formulaToPlain` 的输出别拿去做 OMML 导出的输入**。它底层走 MathText 的轻量解析器，`\begin{cases}` 会被拍平 —— 而导出链路要的恰恰是被拍掉的行结构。导出请用 `splitMathSegments` 切段 + 原始 LaTeX。
+- **`formulaToPlain` 的输出别拿去做 OMML 导出的输入**。它底层走的是零依赖的轻量解析器，`\begin{cases}` 会被拍平 —— 而导出链路要的恰恰是被拍掉的行结构。导出请用 `splitMathSegments` 切段 + 原始 LaTeX。
 - **`strict` 关着**。KaTeX 默认会对数学模式里的裸中日韩字符 console.warn，一屏几十道题就是几百条警告，因此本组件设了 `strict: "ignore"`。渲染结果不受影响，但也意味着 KaTeX 不会再提醒你「这段中文应该包 `\text{}`」。
 - 组件返回 `<span>`；KaTeX 输出 HTML + MathML 双份，HTML 那半带 `aria-hidden`，读屏读的是 MathML，无需额外配 aria。
 
 ## 相关
 
-- [MathText](https://hulianui.haloritual.com/zh/components/math-text) —— 零依赖行内数学排版，正文混排的默认选择
-- [QuestionCard](https://hulianui.haloritual.com/zh/components/question-card) —— 题目卡片
+- [QuestionCard](https://hulianui.haloritual.com/zh/components/question-card) —— 题目卡片，题干/选项内部就是本组件；同住 `@hulianui/ui/math`
+- [Prose](https://hulianui.haloritual.com/zh/components/prose) —— 长文排版容器
 - [Markdown](https://hulianui.haloritual.com/zh/components/markdown) —— 整段富文本
 
 <!-- ════════════════════════════════════════════════════════ -->
@@ -1850,135 +1867,6 @@ function quickSort(arr) { /* ... */ }
 
 ## 相关
 [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading) · [Prose](https://hulianui.haloritual.com/zh/components/prose) · [AuroraText](https://hulianui.haloritual.com/zh/components/aurora-text) · [AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text) · [AnimatedGradientText](https://hulianui.haloritual.com/zh/components/animated-gradient-text)
-
-<!-- ════════════════════════════════════════════════════════ -->
-# MathText
-
-> 行内数学排版 · 零依赖解析 LaTeX 子集(分数/根号/上下标/填空槽)并渲染成真数学版式 · 分数用 inline-flex 竖排不撑乱中文行高 · 可检索朴素文本走 mathToPlain · RSC 安全 · typography/text
-
-## 何时用
-
-正文里要混排数学式子时用：题干、选项、解析、公式说明。典型来源是从 PDF/Word 抽取出来的题库数据 —— 那些数据里分数是 `\frac{3}{8}`、指数是 `x^{2}`、填空是 `____`，直接当纯文本渲染会得到 `\frac{3}{8}` 这种露馅的原始记号。
-
-**不要**用它渲染整段富文本（用 [Markdown](https://hulianui.haloritual.com/zh/components/markdown)）或代码（用 [Code](https://hulianui.haloritual.com/zh/components/code)）。需要**二维排版结构**（分段函数、矩阵、对齐环境、跟着内容长高的定界符）时本组件不够 —— 用 [Formula](https://hulianui.haloritual.com/zh/components/math)，它在 `@hulianui/ui/math` 这条独立 subpath 上由 KaTeX 驱动。本组件刻意只覆盖教辅题面高频的一维记号，以保持零依赖；两件可以同页混用。
-
-## 导入
-```ts
-import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
-```
-
-## 支持的记号
-
-| 记号 | 含义 | 例 |
-|---|---|---|
-| `\frac{a}{b}` | 分数，上下叠放并画分数线 | `\frac{16}{9}` |
-| `\sqrt{a}` / `\sqrt[n]{a}` | 根号，被开方数带上横线 | `\sqrt{a^{2}+b^{2}}` |
-| `^{...}` / `^a` / `^\命令` | 上标 | `x^{2}`、`x^2`、`90^\circ` |
-| `_{...}` / `_a` / `_\命令` | 下标 | `a_{1}`、`a_1`、`a_\beta` |
-| `____` | 填空槽（**2 个及以上**连续下划线） | `可记作____万元` |
-| `\overline{}` / `\widehat{}` | 上划线 / 帽子 | `\overline{AB}` |
-| `\vec{}` / `\overrightarrow{}` | 向量箭头，宽度跟随内容 | `\overrightarrow{AB}` |
-| `\underline{}` | 下划线（与填空槽不同，是给已有内容加线） | `\underline{甲}` |
-| `\overset{}{}` | 把上方记号叠在内容上 | `\overset{\frown}{AB}` |
-| `\mathbb{}` | 黑板粗体数集 | `\mathbb{R}` → ℝ |
-| `\text{}` / `\mathrm{}` / `\mathbf{}` | 字体包装，剥壳保留内容 | `\text{甲组}` |
-| `\left` / `\right` | 定界符尺寸，丢弃命令保留括号 | `\left(a\right)` |
-| `\{` `\}` `\%` `\$` `\&` `\#` `\_` | 转义字符，还原成字面字符 | `\{x\mid x>0\}` |
-| 符号命令 | 换成 Unicode，见下 | `\angle` → ∠ |
-
-### 符号表
-
-`\angle ∠`　`\triangle △`　`\parallel ∥`　`\perp ⊥`　`\cong ≌`　`\sim ∽`　`\odot ⊙`　`\circ °`
-`\times ×`　`\div ÷`　`\cdot ·`　`\pm ±`　`\neq ≠`　`\leq(slant) ≤`　`\geq(slant) ≥`　`\approx ≈`
-`\Rightarrow ⇒`　`\Leftrightarrow ⇔`　`\to →`　`\mid ∣`　`\forall ∀`　`\langle ⟨`　`\rangle ⟩`　`\frown ⌢`
-希腊字母、集合运算符、`\therefore ∴` / `\because ∵`、`\ldots …` 等见 `math-text.symbols.ts`。
-
-取值范围不是拍脑袋定的，是对真实题面统计命令频次后建的表，覆盖到长尾：
-
-- 第一轮 22k 字符初中题面（PaddleOCR-VL 识别产物）。频次前列：`\angle` 140 · `\frac` 99 · `\circ` 80 · `\triangle` 60 · `\sqrt` 55 · `\times` 51。
-- 第二轮把口径扩到全学段的 1324 道题（题干 + 解析）。向量与集合/逻辑记号是高中的主力，初中样本里几乎不出现：`\overrightarrow` 169 · `\vec` 113 · `\Rightarrow` 52 · `\mathbb` 16 · `\Leftrightarrow` 10。
-
-其余内容一律按字面文本输出。**不认识的记号不会被吞掉** —— `\oiint` 原样显示为 `\oiint`，残缺的 `\frac{3}` 也原样保留，绝不静默丢内容。
-
-### 符号间距
-
-符号按排版类别拿到左右留白，**与你在原文里打没打空格无关**：`A \Rightarrow B`、`A\Rightarrow B`、`A ⇒ B` 渲染出来完全一样。命令名后的空格是命令终止符会被吃掉，所以留白不能靠原文空格给 —— 那会变成左边有右边没有。
-
-| 类别 | 留白 | 成员 | 判据 |
-|---|---|---|---|
-| 关系符 | 两侧对称，较宽 | `= < > ≠ ≤ ≥ ≈ ≡ ∝ ≌ ∽ ∥ ⊥ ∣ ∈ ∉ ⊂ ⊆ → ⇒ ↔ ⇔` | 连接左右两个操作数 |
-| 二元运算符 | 两侧对称，较窄 | `× ÷ · ± ∓ ∪ ∩` | 吃两个操作数、结果仍是一个数/集合 |
-| 前缀记号 | 无（紧贴后面内容） | `∠ △ ⊙ □ ∀ ∴ ∵` | 只修饰后面一个对象，`∠ABC` 不能拆成 `∠ ABC` |
-| 其余 | 无 | 字母、`° ′ … ∞ ⟨ ⟩ ⌢`、希腊字母 | — |
-
-判据是**符号有没有左右两个操作数**，不是它长什么样：`∠` 后面只跟一个几何对象，是前缀；`⊥` 连接两条线段，是关系。裸 Unicode 与 LaTeX 命令同等对待（`x≠0` 与 `x\neq 0` 结果一致），OCR 上游直出 Unicode 时不必先转命令。
-
-`+` 与 `-` 不参与：它们兼有一元用法（`-3` 的负号），光看字符判不出该不该留白，宁可一律不干预。`±`/`∓` 也兼有一元用法，但前面没有操作数时会自动降级 —— `±3` 紧贴、`a±b` 留白。
-
-## 用法
-
-```tsx
-<MathText>{"将 \\frac{3}{8} 化成小数为 ____ 。"}</MathText>
-```
-
-选项并排：
-
-```tsx
-<MathText>{"A.\\frac{1}{9}　B.\\frac{5}{9}　C.\\frac{16}{9}　D.\\frac{80}{9}"}</MathText>
-```
-
-## Props
-
-| 名称 | 类型 | 默认 | 说明 |
-|---|---|---|---|
-| `children` | `string` | — | 含数学记号的文本 |
-| `blankWidth` | `number` | `2.5` | 填空槽最小宽度（em） |
-| `scriptScale` | `number` | `0.75` | 上下标相对字号 |
-| `delimiters` | `boolean` | `false` | 认 `$…$` 分隔符，只解析分隔符内 —— 见下节 |
-| `className` | `string` | — | — |
-
-## 分隔符（`delimiters`）
-
-默认关。开了之后认 `$…$` / `$$…$$` / `\(…\)` / `\[…\]`，**只有分隔符内的内容按数学解析，外面一律按纯文本原样输出** —— `$` 外的 `{a_n}` 就是三个字面字符，不再被猜成下标。
-
-上游数据带 `$` 时应当开它，而不是在入库处把 `$` 剥掉：剥 `$` 会丢掉公式边界（`$\{a_n\}$` 剥完成了 `{a_n}`，集合还是 LaTeX 分组再也分不出来），那是渲染层反向污染数据。
-
-- **默认关是因为货币金额**：`售价 $100 起，成本 $80` 里的两个 `$` 会被当成一对分隔符。正文里有金额就别开。
-- **整串没有成对分隔符时自动回退到存量行为**（全串扫裸记号），半迁移的题库不会整题露出 `\frac`。同一道题里半带半不带则会露出未包裹的那半 —— 这是有意的，数据不一致要看得见。
-- **只影响「哪一段按数学解析」，不影响排版**：`$$` 在本组件里仍是行内渲染。要块级居中、要 `\begin{cases}` 真排版，用 [Formula](https://hulianui.haloritual.com/zh/components/math)。
-- **`mathToPlain` 要传同一个值**：`mathToPlain(src, { delimiters: true })`。渲染按边界、检索不按，`$` 就会跟着落进索引，用户搜「3/8」反而搜不到 `$\frac{3}{8}$`。
-
-## 配套纯函数
-
-- `parseMath(src)` → `MathNode[]`，解析结果，可用于自定义渲染或做结构校验。关系符与二元运算符是独立的 `{ kind: "op", text, spacing: "relation" | "binary" }` 节点，自定义渲染时别漏掉这个分支。
-- `parseMathDocument(src, { delimiters })` → `MathNode[]`，组件实际用的入口，带上面那条分隔符语义与回退规则。
-- `splitMathSegments(src)` → `MathSegment[]`，只切段不解析，用于导出链路自己处理公式段。
-- `mathToPlain(src, { delimiters? })` → `string`，转成朴素文本（`\frac{3}{8}` → `3/8`）。
-
-**检索、导出、纯文本比对一律用 `mathToPlain`**，不要把带记号的原串直接甩给搜索框 —— 用户搜「3/8」应该能命中。
-
-## 禁忌 / 坑
-
-- **别用 `a/b` 表示分数**。上游数据若用斜杠，`千米/时`、`元/千克` 这类单位会被误渲染成分数。用 `\frac{}{}` 把「这是分数」这个已知事实显式带过来，不要让渲染层再猜一遍。
-- **`\mathbb{R}` 不要在上游剥壳成 `R`**。题面里实数集 ℝ 与变量 `R` 是两个东西，剥成同一个字母后「定义域为 ℝ」读起来就像「定义域为 R」，而且没人看得出信息已经丢了。原样交给本组件，它映射到黑板粗体。
-- **弧的规范写法是 `\overset{\frown}{AB}`**，不是 `\frown{AB}`。后者在 LaTeX 里是「弧符号紧跟一个分组」，本组件按字面渲染成 `⌢{AB}` —— 看着不对正是设计意图，好过猜一个上游没表达的意思。
-- **`\vec` 与 `\overrightarrow` 在本组件里渲染宽度相同**（都跟随内容）。TeX 里前者是定宽短箭头，这个差异被有意抹平：题面场景下两个记号都指向量，宽度不携带信息，而自适应能让 `\vec{AB}` 也盖得住。
-- **单个 `_` 是下标，`__` 起才是填空**。`a_1` 渲染成下标；想要填空至少写两个下划线。
-- **分数不是 `<sup>`/`<sub>` 拼的**。用 `inline-flex` 竖排 + `border-t` 画线，这样嵌在中文正文里行高不会被撑乱、分数线也对得齐。改样式时别退回 sup/sub。
-- **命令名后的空格是终止符不是内容**。`\angle ABC` 里那个空格必须吃掉，否则题面里每个 `\angle` / `\triangle` 后都会多冒一个空格（本组件已处理，自行扩表时别忘）。
-- **别靠打空格来调关系符间距**。`A \Rightarrow B` 与 `A\Rightarrow B` 渲染完全相同，间距由符号类别给。如果你在上游用空格排版式子，那些空格在关系符两侧会被归一化掉 —— 想要额外空白请用 `\quad` / `\qquad`。
-- **扩符号表时要顺手定类别**。往 `MATH_SYMBOLS` 里加一个新符号而不在 `SYMBOL_CLASSES` 里登记，它会按 `ordinary`（不留白）走；如果它其实是关系符，同一行里就会出现 `x ≤ 3` 有留白、`x ⊕ 3` 没留白的不齐。类别在 `math-text.symbols.ts`。
-- **`parseMath` 会返回 `op` 节点**。自定义渲染时不要只处理 `text` —— 关系符和二元运算符走的是 `{ kind: "op", text, spacing }`，漏掉这个分支式子里会缺符号。`mathToPlain` 不受影响，它对 `op` 按紧凑文本输出。
-- **`30^{\circ}` 不套 `<sup>`**。`\circ` 本身就是上标位的字符，再抬一次会变成浮空小点。
-- **矩阵/方程组是有损降级**。`\begin{array}…\end{array}` 会被拍平成一行、`\\` 变成分号。分段函数尤其吃亏 —— 拍平后 `f(x)=x, x<0；-x, x≥0` 已经读不出「这是分段定义」，而题目考的正是这个。要真排版用 [Formula](https://hulianui.haloritual.com/zh/components/math)。
-- 组件返回 `<span>`，可安全嵌进 `<p>`；填空槽带 `aria-label="填空"`，读屏不会读成一串下划线。
-
-## 相关
-
-- [Formula](https://hulianui.haloritual.com/zh/components/math) —— KaTeX 驱动的重型排版，分段函数/矩阵/大型定界符走它
-- [QuestionCard](https://hulianui.haloritual.com/zh/components/question-card) —— 题目卡片，题干/选项内部就是用本组件渲染的
-- [Markdown](https://hulianui.haloritual.com/zh/components/markdown) —— 整段富文本
-- [Prose](https://hulianui.haloritual.com/zh/components/prose) —— 长文排版容器
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Prose
@@ -11217,18 +11105,20 @@ import { QRCode } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # QuestionCard
 
-> 题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 MathText 真数学版式 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chip/Image · data-display/collection
+> 题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 Formula(KaTeX) 真排版 · 走 @hulianui/ui/math 独立 subpath 主包不付 KaTeX 体积 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chip/Image · data-display/collection
 
 ## 何时用
 
 题库列表、组卷预览、错题本、批改回看 —— 凡是要把「一道题」完整呈现给人看的地方。它把题号、题型、分层难度、题干、选项、小问、附图、章节归属、出处这九件事收在一张卡里，并保证数学记号被真正排版。
 
-要展示一组可勾选的卡片选项用 [Choicebox](https://hulianui.haloritual.com/zh/components/choicebox)；只要一段带公式的文字用 [MathText](https://hulianui.haloritual.com/zh/components/math-text)。
+要展示一组可勾选的卡片选项用 [Choicebox](https://hulianui.haloritual.com/zh/components/choicebox)；只要一段带公式的文字用 [Formula](https://hulianui.haloritual.com/zh/components/math)。
 
 ## 导入
 ```ts
-import { QuestionCard } from "@hulianui/ui"
+import { QuestionCard } from "@hulianui/ui/math"
 ```
+
+**0.25.0 起换了 subpath**（原来是 `@hulianui/ui`）。本件的题干与选项内部就是 [Formula](https://hulianui.haloritual.com/zh/components/math)，也就带着 KaTeX；留在主 barrel 会让每一个 `@hulianui/ui` 消费者都多付 86KB gzip，哪怕根本不排数学。样式不用管，Formula 自己引 KaTeX 的 CSS。
 
 ## 用法
 
@@ -11265,12 +11155,12 @@ import { QuestionCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `stem` | `string` | — | 题干，支持 MathText 记号 |
+| `stem` | `string` | — | 题干，支持 LaTeX 记号与填空槽 `____`，由 Formula 排版 |
 | `number` | `ReactNode` | — | 原书题号 |
 | `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | — | 题型，决定标签文案与语气色 |
 | `kindLabel` | `ReactNode` | — | 覆盖内置题型中文名 |
 | `difficulty` | `ReactNode` | — | 分层标签（A 组 / 基础 / 拔高） |
-| `options` | `{ label, text }[]` | — | 选择题选项，`text` 支持 MathText 记号 |
+| `options` | `{ label, text }[]` | — | 选择题选项，`text` 支持 LaTeX 记号 |
 | `parts` | `string[]` | — | 小问 (1)(2)(3) |
 | `figure` | `{ src, alt? }` | — | 附图 |
 | `chapter` / `source` | `ReactNode` | — | 章节归属 / 出处，落在页脚 |
@@ -11281,14 +11171,14 @@ import { QuestionCard } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- **`stem` 和 `options[].text` 必须是 MathText 记号串，不要预先转成纯文本**。传 `"3/8"` 只会显示斜杠；传 `"\\frac{3}{8}"` 才有真分数版式。
+- **`stem` 和 `options[].text` 必须是 LaTeX 记号串，不要预先转成纯文本**。传 `"3/8"` 只会显示斜杠；传 `"\\frac{3}{8}"` 才排出真分数。上游包了 `$…$` 更好（边界由数据显式携带），没包也认 —— Formula 会退到裸记号切分。
 - **`issues` 不是装饰**。它存在的意义是让「机器拆出来但没把握」的题一眼可辨。把待复核的题和正常题渲染成一个样子，等于拿不可信的数据骗验收 —— 有 `issues` 就一定要传。
 - 警示用**左侧边条**而非整卡染色：整卡染色会压低题干对比度，题反而看不清。
 - `compact` 只影响小问与页脚，题干和选项始终完整渲染 —— 题面截断会让人误判题目内容。
 
 ## 相关
 
-- [MathText](https://hulianui.haloritual.com/zh/components/math-text) —— 题干/选项内部的数学排版
+- [Formula](https://hulianui.haloritual.com/zh/components/math) —— 题干/选项内部的数学排版；本件与它同住 `@hulianui/ui/math`
 - [Card](https://hulianui.haloritual.com/zh/components/card) —— 外壳
 - [Choicebox](https://hulianui.haloritual.com/zh/components/choicebox) —— 可勾选卡片选项
 

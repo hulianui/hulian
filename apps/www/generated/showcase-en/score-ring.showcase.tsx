@@ -9,7 +9,7 @@ export const scoreRingShowcase: ShowcaseSpec = {
             render: () => <ScoreRing value={82} label="Quality points"/>,
         },
         {
-            title: "Level belt",
+            title: "Grade bands",
             description: "The default A-F grade is automatically selected according to the score: A excellent / B good / C passing / F failing.",
             code: `<>
   <ScoreRing value={95} label="Quality Points" />

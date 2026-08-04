@@ -2,13 +2,15 @@ import { Card, CardBody } from "../card";
 import { Chip } from "../chip";
 import { Image } from "../image";
 import { cn } from "../lib/cn";
-import { MathText } from "../math-text";
+import { Formula } from "../math/math";
 import { Tag } from "../tag";
 import { Text } from "../text";
 import type { QuestionCardProps, QuestionKind } from "./question-card.types";
 
 // 题目卡片：教辅/题库场景的标准展示件。
-// 题干、选项、小问一律走 MathText，因此分数与上下标是真版式而不是 "3/8" "x^2" 这种降级文本。
+// 题干、选项、小问一律走 Formula（KaTeX），因此分数、根号、上下标是真排版而不是
+// "3/8" "x^2" 这种降级文本，也不是 CSS 拼出来的近似版式。上游数据没包 $ 时 Formula
+// 会退到裸记号切分，题面照样排得出来 —— 也正因为吃 KaTeX，本件住在 @hulianui/ui/math。
 // 带 issues 的题左侧亮警示边条 —— 从文档自动拆出来的题必须让人一眼看出哪些没把握。
 
 const KIND_LABEL: Record<QuestionKind, string> = {
@@ -83,7 +85,7 @@ export function QuestionCard({
         <div className={cn("gap-4", figure && "sm:flex sm:items-start")}>
           <div className="min-w-0 flex-1 space-y-2">
             <Text as="p" className="leading-7">
-              <MathText>{stem}</MathText>
+              <Formula>{stem}</Formula>
             </Text>
 
             {options && options.length > 0 && (
@@ -94,7 +96,7 @@ export function QuestionCard({
                       {opt.label}.
                     </Text>
                     <Text as="span">
-                      <MathText>{opt.text}</MathText>
+                      <Formula>{opt.text}</Formula>
                     </Text>
                   </li>
                 ))}
@@ -106,7 +108,7 @@ export function QuestionCard({
                 {parts.map((part, i) => (
                   <li key={i}>
                     <Text as="span" tone="muted">
-                      <MathText>{part}</MathText>
+                      <Formula>{part}</Formula>
                     </Text>
                   </li>
                 ))}

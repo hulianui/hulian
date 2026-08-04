@@ -88,7 +88,14 @@ test("committed showcase copy covers repository AST literals with no duplicate k
   const raw = readFileSync(copyFile, "utf8");
   const copy = JSON.parse(raw);
   const expected = [...showcaseAstValues()];
-  const missing = expected.filter((key) => !Object.hasOwn(copy.exact, key));
+  // 译文有两个来源：全局 exact，以及 gen-showcase-sources 优先命中的 per-file copy.files。
+  // 只查 exact 会把「仅存在于某个组件 files 块里的词条」误判成缺译 —— 而那正是同一个词在
+  // 不同组件里必须分别翻译时的唯一出路（math-text 的「分数」是 Fraction，别处是 Score）。
+  // showcaseAstValues() 不带文件归属，按文件的严格校验由 `pnpm showcase:check` 负责。
+  const fileKeys = new Set(Object.values(copy.files ?? {}).flatMap((entries) => Object.keys(entries)));
+  const missing = expected.filter(
+    (key) => !Object.hasOwn(copy.exact, key) && !fileKeys.has(key),
+  );
   assert.deepEqual(
     missing,
     [],
@@ -99,7 +106,14 @@ test("committed showcase copy covers repository AST literals with no duplicate k
 
 test("every English value is non-empty, CJK-free, and retains protected tokens", () => {
   const copy = JSON.parse(readFileSync(copyFile, "utf8"));
-  for (const [source, english] of Object.entries(copy.exact)) {
+  // 必须连 copy.files 一起查。per-file 覆盖是「同一个中文在不同组件里要不同译法」的
+  // 唯一出路（math-text 的「分数」是 Fraction，评分组件里才是 Score），它们最终一样
+  // 会渲染进英文站 —— 只查 exact 等于把这批译文放在质检之外。
+  const entries = [
+    ...Object.entries(copy.exact),
+    ...Object.values(copy.files ?? {}).flatMap((block) => Object.entries(block)),
+  ];
+  for (const [source, english] of entries) {
     assert.equal(typeof english, "string", source);
     assert.notEqual(english.trim(), "", source);
     assert.equal(CJK.test(english), false, `${source} -> ${english}`);

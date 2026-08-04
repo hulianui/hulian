@@ -1,6 +1,6 @@
 // Formula 的配套纯函数 —— 与组件同一套分隔符语义，但不碰 DOM、不引 KaTeX，
 // 因此服务端脚本（检索入库、导出、比对）可以单独引它。
-import { mathToPlain } from "../math-text/math-text.parse";
+import { mathToPlain } from "./math.latex-parse";
 
 /**
  * 转成可搜索/可导出的朴素文本：`$\frac{3}{8}$` → `3/8`，分隔符本身不进结果。
@@ -18,3 +18,12 @@ import { mathToPlain } from "../math-text/math-text.parse";
 export function formulaToPlain(src: string): string {
   return mathToPlain(src, { delimiters: true });
 }
+
+// 解析层的公共出口都从这里再导一次，消费方不必知道文件是怎么拆的。
+export {
+  mathToPlain,
+  parseMath,
+  parseMathDocument,
+  splitMathSegments,
+} from "./math.latex-parse";
+export type { MathParseOptions, MathSegment } from "./math.latex-parse";

@@ -61,6 +61,11 @@ export default defineConfig({
           name: "unit",
           environment: "jsdom",
           setupFiles: ["./vitest.setup.ts"],
+          // 默认 5s 在**并发全量**下不够：单跑最慢的用例（DateTimePicker 一次要渲染
+          // 日历 42 格 + 时/分共 84 个 option）约 1.4s，turbo 同时跑 7 个包时 CPU 争用
+          // 让它涨到 5.4s 就偶发翻红 —— 红的是机器负载，不是组件。
+          // 放宽不会掩盖真 bug：死循环/未 resolve 的 promise 照样超时，只是反馈慢一点。
+          testTimeout: 15_000,
           include: ["src/**/*.test.{ts,tsx}"],
           // 显式列出默认 exclude —— 自定义 exclude 会整体替换默认值，漏写会把 node_modules 扫进来
           exclude: ["**/node_modules/**", "**/dist/**", BROWSER_TESTS],

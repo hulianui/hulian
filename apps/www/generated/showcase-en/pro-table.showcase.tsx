@@ -33,7 +33,7 @@ const ALL: Row[] = Array.from({ length: 47 }, (_, i) => ({
     salary: 8000 + (i % 10) * 1500,
 }));
 const columns: ColumnDef<Row, any>[] = [
-    { accessorKey: "id", header: "Job number", size: 60 },
+    { accessorKey: "id", header: "Employee ID", size: 60 },
     { accessorKey: "name", header: "Name", meta: { sticky: "left" } },
     { accessorKey: "dept", header: "Department" },
     {

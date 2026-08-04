@@ -78,6 +78,54 @@ describe("Formula", () => {
   });
 });
 
+describe("裸记号（上游还没包 $ 的存量题面）", () => {
+  it("整串没有分隔符时回退到裸记号切分，公式照样排版", () => {
+    const { container } = render(<Formula>{"将 \\frac{3}{8} 化成小数"}</Formula>);
+    expect(container.querySelectorAll(".katex").length).toBe(1);
+    // 中文原样留在文本里，没有被喂给 KaTeX
+    expect(container.textContent).toContain("将");
+    expect(container.textContent).toContain("化成小数");
+  });
+
+  it("只要有一处成对分隔符，整串就走精确路径，不再猜边界", () => {
+    const { container } = render(<Formula>{"$x^2$ 与裸的 \\frac{1}{2}"}</Formula>);
+    // 裸的那半原样显示 —— 数据不一致要看得见，而不是被悄悄补上
+    expect(container.querySelectorAll(".katex").length).toBe(1);
+    expect(container.textContent).toContain("\\frac{1}{2}");
+  });
+
+  it("不含 LaTeX 触发字符的括号不会被误当公式", () => {
+    const { container } = render(<Formula>{"经过点 P(2,3) 与 (a+b)"}</Formula>);
+    expect(container.querySelector(".katex")).toBeNull();
+    expect(container.textContent).toBe("经过点 P(2,3) 与 (a+b)");
+  });
+});
+
+describe("填空槽", () => {
+  it("分隔符外的 ____ 也渲染成空位，而不是四个字面下划线", () => {
+    const { container } = render(<Formula>{"$\\frac{3}{8}$ 化成小数为 ____ 。"}</Formula>);
+    const blank = container.querySelector('[role="img"]');
+    expect(blank).not.toBeNull();
+    expect(container.textContent).not.toContain("____");
+  });
+
+  it("读屏读到的是「填空」而不是一串下划线", () => {
+    const { container } = render(<Formula>{"可记作____万元"}</Formula>);
+    expect(container.querySelector('[role="img"]')?.getAttribute("aria-label")).toBe("填空");
+  });
+
+  it("blankWidth 控制最小宽度", () => {
+    const { container } = render(<Formula blankWidth={5}>{"可记作____万元"}</Formula>);
+    expect(container.querySelector<HTMLElement>('[role="img"]')?.style.minWidth).toBe("5em");
+  });
+
+  it("单个下划线仍是下标，不是填空", () => {
+    const { container } = render(<Formula>{"首项 a_1 已知"}</Formula>);
+    expect(container.querySelector('[role="img"]')).toBeNull();
+    expect(container.querySelectorAll(".katex").length).toBe(1);
+  });
+});
+
 describe("formulaToPlain", () => {
   it("分隔符不进结果，公式转成可检索的朴素文本", () => {
     expect(formulaToPlain("答案是 $\\frac{3}{8}$")).toBe("答案是 3/8");
