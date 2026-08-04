@@ -1,5 +1,50 @@
 # @hulianui/ui
 
+## 0.25.0
+
+### Minor Changes
+
+- 4b7c80f: **BREAKING: MathText is retired and QuestionCard moves to `@hulianui/ui/math`.**
+
+  MathText assembled inline mathematical layout out of CSS (`inline-flex` for stacked fractions, `border-t` as the radical's vinculum), and what it drew was wrong: `√` was a fixed-height character while the vinculum was a sibling box's border, so as soon as the radicand carried a superscript (`\sqrt{a^{2}+b^{2}}`) the rule no longer met the radical and the trailing exponent hung outside it; arcs and hats did not stretch to their content, so an arc that should span both letters of AB was drawn as a hat sitting on the A. These are inherent limits of CSS assembly — fix one and the next surfaces. And its original selling point, dependency-free layout that "does not disturb CJK line height", holds equally under KaTeX as measured. That difference was never real.
+
+  Mathematical rendering now goes through the KaTeX-powered `Formula` alone.
+
+  Migration:
+
+  | Before                                        | Now                                                                                 |
+  | --------------------------------------------- | ----------------------------------------------------------------------------------- |
+  | `import { MathText } from "@hulianui/ui"`     | `import { Formula } from "@hulianui/ui/math"`                                        |
+  | `import { QuestionCard } from "@hulianui/ui"` | `import { QuestionCard } from "@hulianui/ui/math"`                                   |
+  | `<MathText>{stem}</MathText>`                 | `<Formula>{stem}</Formula>`                                                          |
+  | `mathToPlain(src)`                            | Same name, same meaning, imported from `@hulianui/ui/math`                            |
+  | `parseMath` / `parseMathDocument`             | No longer exported (KaTeX owns layout now)                                            |
+  | `delimiters={true}`                           | Not needed: `mixed` reads `$` by default and falls back to bare-notation splitting     |
+  | `scriptScale`                                 | Removed (script sizing follows TeX's rules)                                           |
+
+  QuestionCard changes subpath because its stem and options are Formula internally; leaving it in the main barrel would drag KaTeX into every `@hulianui/ui` consumer's bundle. The main entry still pays nothing for KaTeX.
+
+  Formula gained two capabilities in order to take over the question-bank case:
+
+  - **Bare-notation fallback** — when the whole string contains no matched delimiter, it carves out `\frac{3}{8}`, `x^{2}`, `\angle ABC` and hands them to KaTeX, emitting everything else as text. Stems straight out of PDF/Word/OCR no longer have to be wrapped in `$` first. The test is "no `\`, `^`, or `_` means it is not a formula", so `P(2,3)` and the option label `A.` stay text. New pure functions: `splitBareMath` / `hasBareMath`.
+  - **Answer blanks** — `____` renders as a writable slot (new `blankWidth` prop, default 2.5em), recognised inside and outside delimiters alike, and announced as "Blank" by screen readers instead of a run of underscores.
+
+  Two things look different, and both are fixes rather than regressions: variables render in italic as TeX prescribes, and formulas are about 1.21× the size of surrounding prose.
+
+### Patch Changes
+
+- 4b7c80f: Fixes a batch of machine-translation errors on the English site and gives three gates a real criterion.
+
+  **English copy** (23 entries, each verified against the component that consumes it). The label for a mathematical *fraction* was translated as Score — yet its only two consumers are math and question-card, both mathematical contexts, where the right word is Fraction. The employee-number field was Job number (should be Employee ID); the examinee-count label was read as a "reference number" (should be Examinees); a battery-level label became Power (should be Battery); a grade-band label was literally rendered "Level belt" (should be Grade bands); diff-stat's added/removed **lines** of code were translated as table rows; badge's dot-only, divider's divider-only, and color-field's no-swatch labels were all literal transliterations; and heading's six levels mixed three different renderings (First level title / Level 3 heading / Sixth level title), now unified as Heading level N.
+
+  **Gates**:
+
+  - The `files` block of the English copy table was not covered by the "non-empty / CJK-free / preserves protected tokens" assertion, which only walked `exact` — yet per-file overrides are the only way to translate one Chinese term differently per component, so that batch sat outside quality control entirely. Widening the assertion immediately caught a translation that had dropped the `PDF/Word/OCR` identifier.
+  - The picker subtree-skip test asserted on **wall-clock** time (`< max(0.5ms, base * 0.1)`). With memo in effect the measured value is 0.004–0.008ms against a baseDuration of 1.3–10ms; even with a hundredfold margin it went red intermittently, because one scheduling delay under a parallel test run is measured in milliseconds. It now asserts structurally (the component really is wrapped in memo) plus a minimum across repeated samples, which is immune to load.
+  - The `advisories` count was pinned as an absolute number in a test, so any component added or removed knocked it over. It is now a proportional floor against the component-doc count, guarding "the extraction pipeline still works" rather than one particular number.
+
+  Separately, the unit-test timeout goes from the default 5s to 15s (the slowest case takes 1.4s alone and 5.4s under a parallel run, right at the limit), and `pnpm readme:sync` is added to sync the component and demo counts in the READMEs — previously there was a check but no way to fix it other than editing five places by hand.
+
 ## 0.24.0
 
 ### Minor Changes

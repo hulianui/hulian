@@ -1,6 +1,25 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.25.0",
+    "date": null,
+    "entries": [
+      {
+        "sha": "4b7c80f",
+        "bump": "minor",
+        "breaking": true,
+        "body": "**破坏性变更：MathText 退役，QuestionCard 迁到 `@hulianui/ui/math`。**\n\nMathText 用 CSS 拼行内数学版式（`inline-flex` 叠分数、`border-t` 当根号横线），排出来的东西是错的：`√` 是定高字符而横线是兄弟盒的 border，被开方数一含上标（`\\sqrt{a^{2}+b^{2}}`）横线就接不上根号、末尾指数顶到线外；弧与帽子不跟随内容宽度，中文教材里跨 AB 的弧被排成 A 头上一顶帽子。这是 CSS 拼贴的固有极限，修一处还有下一处。它当初的卖点「零依赖换不撑乱中文行高」实测在 KaTeX 下同样成立 —— 那个差异一直是假的。\n\n数学渲染统一走 KaTeX 驱动的 `Formula`。\n\n迁移：\n\n| 原来                                          | 现在                                                      |\n| --------------------------------------------- | --------------------------------------------------------- |\n| `import { MathText } from \"@hulianui/ui\"`     | `import { Formula } from \"@hulianui/ui/math\"`             |\n| `import { QuestionCard } from \"@hulianui/ui\"` | `import { QuestionCard } from \"@hulianui/ui/math\"`        |\n| `<MathText>{stem}</MathText>`                 | `<Formula>{stem}</Formula>`                               |\n| `mathToPlain(src)`                            | 同名同义，改从 `@hulianui/ui/math` 引                     |\n| `parseMath` / `parseMathDocument`             | 不再导出（排版已由 KaTeX 接管）                           |\n| `delimiters={true}`                           | 不需要：`mixed` 默认认 `$`，没有 `$` 时自动退到裸记号切分 |\n| `scriptScale`                                 | 移除（上下标尺寸由 TeX 排版规则决定）                     |\n\nQuestionCard 换 subpath 是因为它的题干/选项内部就是 Formula，留在主 barrel 会把 KaTeX 拖进每一个 `@hulianui/ui` 消费者的包。主入口仍然一分 KaTeX 体积都不付。\n\nFormula 为接管题库场景补了两项能力：\n\n- **裸记号回退** —— 整串没有成对分隔符时自动切分出 `\\frac{3}{8}`、`x^{2}`、`\\angle ABC` 交给 KaTeX，其余按文本输出。PDF/Word/OCR 直出的题面不必先包 `$` 才能排。判据是「没有 `\\` / `^` / `_` 就不是公式」，所以 `P(2,3)`、选项标号 `A.` 一律留作文本。新增纯函数 `splitBareMath` / `hasBareMath`。\n- **填空槽** —— `____` 渲染成可书写的空位（新 prop `blankWidth`，默认 2.5em），分隔符内外都认，读屏读到的是「填空」而不是一串下划线。\n\n视觉上有两处变化，都是改对了而非回归：变量按 TeX 规矩显示为斜体；公式比周围正文约大 1.21 倍。"
+      },
+      {
+        "sha": "4b7c80f",
+        "bump": "patch",
+        "breaking": false,
+        "body": "修正英文站上的一批机翻错译，并给三处门禁补上真正的判据。\n\n**英文文案**（23 条，逐条核实过消费它的组件语境）：`分数` 曾译成 Score —— 而用它的只有 math 与 question-card 两处数学语境，正确译法是 Fraction；`工号` 曾是 Job number（应为 Employee ID）；`参考人数` 被理解成「参考编号」译作 Reference number（应为 Examinees）；`电量` 译成功率 Power（应为 Battery）；`等级带` 直译成 Level belt（应为 Grade bands）；diff-stat 的 `新增行 / 删除行` 是代码行却译成表格 row；badge 的 `纯点`、divider 的 `纯分隔线`、color-field 的 `无色块` 都是字面直译；heading 的六个层级原本混用三种译法（First level title / Level 3 heading / Sixth level title），统一成 Heading level N。\n\n**门禁**：\n\n- 英文词表的 `files` 块此前不受「非空 / 无 CJK / 保留占位符」那条质量断言覆盖（它只遍历 `exact`），而 per-file 覆盖正是「同一个中文在不同组件里要不同译法」的唯一出路，等于把这批译文放在质检之外。扩大覆盖后立刻抓到一条丢失 `PDF/Word/OCR` 标识符的译文。\n- picker 的子树跳过测试用的是**挂钟时间**阈值（`< max(0.5ms, base * 0.1)`）。memo 命中时实测 0.004–0.008ms、baseDuration 1.3–10ms，余量上百倍仍偶发翻红 —— 并发跑测试时一次调度延迟就是毫秒级。改成结构断言（组件确实被 memo 包着）+ 多次采样取最小值，对负载免疫。\n- `advisories` 条数曾以绝对值写死在测试里，任何一次组件增删都会打翻它。改成按组件文档数的比例下限，守的是「提取链路没断」而不是某个具体数字。\n\n另外 unit 测试 timeout 从默认 5s 放宽到 15s（最慢的用例单跑 1.4s，并发下涨到 5.4s 就撞线），并新增 `pnpm readme:sync` 一键同步 README 里的组件数 / demo 数 —— 此前只有校验没有修复入口，增删组件要手改 5 处。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.24.0",
     "date": "2026-08-04",
     "entries": [
