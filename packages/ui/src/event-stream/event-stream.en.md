@@ -27,7 +27,7 @@ status: enriched
 | Milestone narrative | `Timeline` | Sparse, manually curated points carry individual weight. |
 | Priority-ordered work | `QueueLane` | The key information is backlog and waiting, not chronology. |
 
-## Usage
+## Examples
 
 ```tsx
 import { EventStream } from "@hulianui/ui";

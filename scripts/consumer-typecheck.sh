@@ -161,10 +161,13 @@ write_tsconfig "$APP_A"
 #
 # 另外挂几条 `./*` 子路径导出（hulianui/hulian#19）：这批入口只在真实 exports 解析下才成立，
 # 库内 tsc 走相对路径、workspace 链接走目录直读，两者都**测不到** exports 映射写错。
-# 取样刻意覆盖三类：普通组件目录、没有 index.ts 需专门补的基础设施目录（theme/lib）。
+# 取样刻意覆盖四类：普通组件目录、没有 index.ts 需专门补的基础设施目录（theme/lib），
+# 以及 ./math —— 它是唯一一条 import 了第三方 CSS 的子路径，少了 katex-css.d.ts 与
+# math.tsx 顶部那条三斜线引用，升到 TS≥6 的消费方在这里当场 TS2882。
 cat > "$APP_A/src/app.tsx" <<'TSX'
 import { Button, Calendar, DatePicker, DateTimePicker, TimeField } from "@hulianui/ui";
 import * as showcase from "@hulianui/ui/showcase";
+import { Formula } from "@hulianui/ui/math";
 import { Tag } from "@hulianui/ui/tag";
 import { ThemeProvider } from "@hulianui/ui/theme";
 import { cn } from "@hulianui/ui/lib";
@@ -175,6 +178,8 @@ export function App() {
       <Tag className={cn("mr-2")}>标签</Tag>
       {/* 日期族：0.15.0 起自研零依赖并回到根 barrel。列在这里是为了钉死回归 ——
           谁再把它们挪去子路径、或让它们依赖需要另外安装的包，这个工程当场编不过。 */}
+      {/* Formula 走 @hulianui/ui/math：主 barrel 刻意不导出它，KaTeX 只落在用得上的页面。 */}
+      <Formula mode="math">{"\\frac{3}{8}"}</Formula>
       <Calendar defaultValue="2026-06-08" />
       <DatePicker defaultValue="2026-06-08" aria-label="日期" />
       <DateTimePicker defaultValue="2026-06-08 09:30" aria-label="日期时间" />

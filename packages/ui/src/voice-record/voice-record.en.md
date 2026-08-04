@@ -35,7 +35,7 @@ Voice recording trigger whose `status` drives its visual feedback.
 | labelRecording | `string` | `"\u677e\u5f00\u7ed3\u675f"` | Recording-state label; the built-in Chinese copy means “Release to finish.” |
 | labelProcessing | `string` | `"\u5904\u7406\u4e2d\u2026"` | Processing-state label; the built-in Chinese copy means “Processing…”. |
 
-## Usage
+## Examples
 
 ```tsx
 <VoiceRecord

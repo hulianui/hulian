@@ -26,7 +26,7 @@ status: enriched
 | Full-page outcome | `Result` | The outcome is the page's primary content. |
 | Field-level validation | `Field` error state | Feedback belongs next to the field and does not need a card. |
 
-## Usage
+## Examples
 
 ```tsx
 import { InterceptCard } from "@hulianui/ui";

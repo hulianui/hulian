@@ -1334,6 +1334,69 @@
       ]
     },
     {
+      "name": "math",
+      "type": "registry:ui",
+      "title": "Formula",
+      "description": "KaTeX 驱动的数学排版 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符让公式边界由数据显式携带 · RSC …",
+      "categories": [
+        "typography"
+      ],
+      "dependencies": [
+        "katex"
+      ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/math-text.json"
+      ],
+      "meta": {
+        "import": "import { Formula, formulaToPlain, splitMathSegments } from \"@hulianui/ui\"",
+        "exports": [
+          "Formula",
+          "formulaToPlain",
+          "splitMathSegments"
+        ],
+        "types": [
+          "FormulaProps",
+          "MathSegment"
+        ],
+        "group": "text",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/math/math.md",
+        "docLocal": "packages/ui/src/math/math.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/math/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/index.ts"
+        },
+        {
+          "path": "components/hulianui/math/katex-css.d.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/katex-css.d.ts"
+        },
+        {
+          "path": "components/hulianui/math/math.parse.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/math.parse.ts"
+        },
+        {
+          "path": "components/hulianui/math/math.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/math.tsx"
+        },
+        {
+          "path": "components/hulianui/math/math.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math/math.types.ts"
+        }
+      ]
+    },
+    {
       "name": "fuzzy-text",
       "type": "registry:ui",
       "title": "FuzzyText",
@@ -1601,15 +1664,19 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { MathText, parseMath, mathToPlain } from \"@hulianui/ui\"",
+        "import": "import { MathText, parseMath, parseMathDocument, mathToPlain, splitMathSegments } from \"@hulianui/ui\"",
         "exports": [
           "MathText",
           "parseMath",
-          "mathToPlain"
+          "parseMathDocument",
+          "mathToPlain",
+          "splitMathSegments"
         ],
         "types": [
           "MathNode",
-          "MathTextProps"
+          "MathTextProps",
+          "MathSegment",
+          "MathParseOptions"
         ],
         "group": "text",
         "tags": [],

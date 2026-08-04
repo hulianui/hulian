@@ -4,7 +4,7 @@ name: MathText
 category: typography
 group: text
 tags: []
-exports: [MathText, parseMath, mathToPlain]
+exports: [MathText, parseMath, parseMathDocument, mathToPlain, splitMathSegments]
 status: enriched
 ---
 
@@ -16,7 +16,7 @@ status: enriched
 
 正文里要混排数学式子时用：题干、选项、解析、公式说明。典型来源是从 PDF/Word 抽取出来的题库数据 —— 那些数据里分数是 `\frac{3}{8}`、指数是 `x^{2}`、填空是 `____`，直接当纯文本渲染会得到 `\frac{3}{8}` 这种露馅的原始记号。
 
-**不要**用它渲染整段富文本（用 [Markdown](../markdown/markdown.md)）或代码（用 [Code](../code/code.md)）。需要完整 LaTeX（矩阵、积分、求和、对齐环境）时本组件不够，请自行接 KaTeX —— 本组件刻意只覆盖教辅题面高频的那几样，以保持零依赖。
+**不要**用它渲染整段富文本（用 [Markdown](../markdown/markdown.md)）或代码（用 [Code](../code/code.md)）。需要**二维排版结构**（分段函数、矩阵、对齐环境、跟着内容长高的定界符）时本组件不够 —— 用 [Formula](../math/math.md)，它在 `@hulianui/ui/math` 这条独立 subpath 上由 KaTeX 驱动。本组件刻意只覆盖教辅题面高频的一维记号，以保持零依赖；两件可以同页混用。
 
 ## 导入
 ```ts
@@ -90,12 +90,26 @@ import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
 | `children` | `string` | — | 含数学记号的文本 |
 | `blankWidth` | `number` | `2.5` | 填空槽最小宽度（em） |
 | `scriptScale` | `number` | `0.75` | 上下标相对字号 |
+| `delimiters` | `boolean` | `false` | 认 `$…$` 分隔符，只解析分隔符内 —— 见下节 |
 | `className` | `string` | — | — |
+
+## 分隔符（`delimiters`）
+
+默认关。开了之后认 `$…$` / `$$…$$` / `\(…\)` / `\[…\]`，**只有分隔符内的内容按数学解析，外面一律按纯文本原样输出** —— `$` 外的 `{a_n}` 就是三个字面字符，不再被猜成下标。
+
+上游数据带 `$` 时应当开它，而不是在入库处把 `$` 剥掉：剥 `$` 会丢掉公式边界（`$\{a_n\}$` 剥完成了 `{a_n}`，集合还是 LaTeX 分组再也分不出来），那是渲染层反向污染数据。
+
+- **默认关是因为货币金额**：`售价 $100 起，成本 $80` 里的两个 `$` 会被当成一对分隔符。正文里有金额就别开。
+- **整串没有成对分隔符时自动回退到存量行为**（全串扫裸记号），半迁移的题库不会整题露出 `\frac`。同一道题里半带半不带则会露出未包裹的那半 —— 这是有意的，数据不一致要看得见。
+- **只影响「哪一段按数学解析」，不影响排版**：`$$` 在本组件里仍是行内渲染。要块级居中、要 `\begin{cases}` 真排版，用 [Formula](../math/math.md)。
+- **`mathToPlain` 要传同一个值**：`mathToPlain(src, { delimiters: true })`。渲染按边界、检索不按，`$` 就会跟着落进索引，用户搜「3/8」反而搜不到 `$\frac{3}{8}$`。
 
 ## 配套纯函数
 
 - `parseMath(src)` → `MathNode[]`，解析结果，可用于自定义渲染或做结构校验。关系符与二元运算符是独立的 `{ kind: "op", text, spacing: "relation" | "binary" }` 节点，自定义渲染时别漏掉这个分支。
-- `mathToPlain(src)` → `string`，转成朴素文本（`\frac{3}{8}` → `3/8`）。
+- `parseMathDocument(src, { delimiters })` → `MathNode[]`，组件实际用的入口，带上面那条分隔符语义与回退规则。
+- `splitMathSegments(src)` → `MathSegment[]`，只切段不解析，用于导出链路自己处理公式段。
+- `mathToPlain(src, { delimiters? })` → `string`，转成朴素文本（`\frac{3}{8}` → `3/8`）。
 
 **检索、导出、纯文本比对一律用 `mathToPlain`**，不要把带记号的原串直接甩给搜索框 —— 用户搜「3/8」应该能命中。
 
@@ -112,11 +126,12 @@ import { MathText, parseMath, mathToPlain } from "@hulianui/ui"
 - **扩符号表时要顺手定类别**。往 `MATH_SYMBOLS` 里加一个新符号而不在 `SYMBOL_CLASSES` 里登记，它会按 `ordinary`（不留白）走；如果它其实是关系符，同一行里就会出现 `x ≤ 3` 有留白、`x ⊕ 3` 没留白的不齐。类别在 `math-text.symbols.ts`。
 - **`parseMath` 会返回 `op` 节点**。自定义渲染时不要只处理 `text` —— 关系符和二元运算符走的是 `{ kind: "op", text, spacing }`，漏掉这个分支式子里会缺符号。`mathToPlain` 不受影响，它对 `op` 按紧凑文本输出。
 - **`30^{\circ}` 不套 `<sup>`**。`\circ` 本身就是上标位的字符，再抬一次会变成浮空小点。
-- **矩阵/方程组是有损降级**。`\begin{array}…\end{array}` 会被拍平成一行、`\\` 变成分号。要真排版请接 KaTeX。
+- **矩阵/方程组是有损降级**。`\begin{array}…\end{array}` 会被拍平成一行、`\\` 变成分号。分段函数尤其吃亏 —— 拍平后 `f(x)=x, x<0；-x, x≥0` 已经读不出「这是分段定义」，而题目考的正是这个。要真排版用 [Formula](../math/math.md)。
 - 组件返回 `<span>`，可安全嵌进 `<p>`；填空槽带 `aria-label="填空"`，读屏不会读成一串下划线。
 
 ## 相关
 
+- [Formula](../math/math.md) —— KaTeX 驱动的重型排版，分段函数/矩阵/大型定界符走它
 - [QuestionCard](../question-card/question-card.md) —— 题目卡片，题干/选项内部就是用本组件渲染的
 - [Markdown](../markdown/markdown.md) —— 整段富文本
 - [Prose](../prose/prose.md) —— 长文排版容器

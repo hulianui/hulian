@@ -102,6 +102,9 @@ export { magicCardShowcase } from "./magic-card/magic-card.showcase";
 export { markdownEditorShowcase } from "./markdown-editor/markdown-editor.showcase";
 export { markdownShowcase } from "./markdown/markdown.showcase";
 export { mathTextShowcase } from "./math-text/math-text.showcase";
+// Formula 走 @hulianui/ui/math subpath，主 barrel（index.ts）刻意不导出它 —— 那会把 KaTeX
+// 塞进每个消费者的包。showcase.ts 只有文档站用，展示它本来就要付这份体积。
+export { mathShowcase } from "./math/math.showcase";
 export { questionCardShowcase } from "./question-card/question-card.showcase";
 export { marqueeShowcase } from "./marquee/marquee.showcase";
 export { mentionsShowcase } from "./mentions/mentions.showcase";

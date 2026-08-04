@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ConfigProvider, enUS } from "../config";
 import { MathText } from "./math-text";
-import { mathToPlain, parseMath } from "./math-text.parse";
+import { mathToPlain, parseMath, splitMathSegments } from "./math-text.parse";
 
 describe("parseMath", () => {
   it("解析分数", () => {
@@ -308,5 +308,80 @@ describe("符号间距（关系符两侧对称留白，前缀记号紧贴）", (
   it("留白是 margin 不是空格：textContent 仍可直接比对", () => {
     const { container } = render(<MathText>{"A \\Rightarrow B"}</MathText>);
     expect(container.textContent).toBe("A⇒B");
+  });
+});
+
+describe("splitMathSegments", () => {
+  const kinds = (src: string) => splitMathSegments(src).map((s) => `${s.type}${s.display ? ":block" : ""}`);
+
+  it("按四种分隔符切段，分隔符本身不进结果", () => {
+    expect(splitMathSegments("已知 $x>0$ 求解")).toEqual([
+      { type: "text", content: "已知 ", display: false },
+      { type: "math", content: "x>0", display: false },
+      { type: "text", content: " 求解", display: false },
+    ]);
+    expect(kinds("$$x$$")).toEqual(["math:block"]);
+    expect(kinds("\\[x\\]")).toEqual(["math:block"]);
+    expect(kinds("\\(x\\)")).toEqual(["math"]);
+  });
+
+  it("$$ 先于 $ 匹配，不会被拆成两个空的行内公式", () => {
+    expect(splitMathSegments("$$a+b$$")).toEqual([{ type: "math", content: "a+b", display: true }]);
+  });
+
+  it("落单的 $ 按字面文本走，不吞掉后半段", () => {
+    expect(splitMathSegments("定价 $100 元")).toEqual([
+      { type: "text", content: "定价 $100 元", display: false },
+    ]);
+  });
+
+  it("\\$ 是字面美元符号，不参与配对且在文本段里被还原", () => {
+    expect(splitMathSegments("\\$100 与 \\$200")).toEqual([
+      { type: "text", content: "$100 与 $200", display: false },
+    ]);
+    // 公式内部的 \$ 也不该把公式提前截断
+    expect(splitMathSegments("$a\\$b$")).toEqual([
+      { type: "math", content: "a\\$b", display: false },
+    ]);
+  });
+
+  it("行内分隔符不跨空行，块级不受此限", () => {
+    expect(kinds("售价 $100\n\n成本 $80")).toEqual(["text"]);
+    expect(kinds("$$\na+b\n\nc\n$$")).toEqual(["math:block"]);
+  });
+
+  it("闭分隔符以反斜杠开头时先匹配闭合，不被当成转义跳过", () => {
+    expect(splitMathSegments("\\(x\\)y")).toEqual([
+      { type: "math", content: "x", display: false },
+      { type: "text", content: "y", display: false },
+    ]);
+  });
+});
+
+describe("MathText delimiters", () => {
+  it("默认不认分隔符，存量行为不变：$ 原样输出、裸记号照常解析", () => {
+    const { container } = render(<MathText>{"定价 $100，\\frac{3}{8}"}</MathText>);
+    expect(container.textContent).toContain("$100");
+    expect(container.textContent).not.toContain("\\frac");
+  });
+
+  it("开了之后只解析 $ 内，$ 外的 {a_n} 是三个字面字符不再被猜成下标", () => {
+    const { container } = render(<MathText delimiters>{"数列 {a_n} 与 $\\{a_n\\}$"}</MathText>);
+    // 分隔符外：原样，下划线仍在
+    expect(container.textContent).toContain("{a_n}");
+    // 分隔符内：转义花括号还原、下标下沉
+    expect(container.querySelector("sub")?.textContent).toBe("n");
+  });
+
+  it("整串没有成对分隔符时回退到存量行为，半迁移的题库不会整题露出记号", () => {
+    const { container } = render(<MathText delimiters>{"将 \\frac{3}{8} 化成小数"}</MathText>);
+    expect(container.textContent).not.toContain("\\frac");
+    expect(container.textContent).toContain("3");
+  });
+
+  it("mathToPlain 跟随同一个 delimiters，检索口径与渲染一致", () => {
+    expect(mathToPlain("答案是 $\\frac{3}{8}$", { delimiters: true })).toBe("答案是 3/8");
+    // 不传时保持老口径：$ 是普通字符
+    expect(mathToPlain("答案是 $\\frac{3}{8}$")).toBe("答案是 $3/8$");
   });
 });

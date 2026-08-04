@@ -27,6 +27,104 @@ export interface MathParseOptions {
   rowSeparator?: string;
 }
 
+/** 一段正文：`math` 是分隔符里的公式源（已去掉分隔符本身），`text` 是分隔符外的普通文本。 */
+export interface MathSegment {
+  type: "text" | "math";
+  content: string;
+  /** 公式段是否块级（`$$` / `\[`）。文本段恒为 false。 */
+  display: boolean;
+}
+
+/**
+ * 分隔符表。`$$` 必须排在 `$` 前面，否则 `$$x$$` 会被当成一个空的行内公式。
+ * `allowBlankLine` 见 findClose 的注释。
+ */
+const DELIMITERS: { open: string; close: string; display: boolean; allowBlankLine: boolean }[] = [
+  { open: "$$", close: "$$", display: true, allowBlankLine: true },
+  { open: "\\[", close: "\\]", display: true, allowBlankLine: true },
+  { open: "\\(", close: "\\)", display: false, allowBlankLine: false },
+  { open: "$", close: "$", display: false, allowBlankLine: false },
+];
+
+const BLANK_LINE_RE = /\n[ \t]*\n/;
+
+/**
+ * 从 `from` 起找闭分隔符，返回其下标；找不到返回 -1。
+ *
+ * 先比 close 再跳转义：`\)` `\]` 这两个闭分隔符本身以反斜杠开头，
+ * 顺序反了它们会被当成「转义序列」跳过去，公式永远闭合不了。
+ * 反过来 `$` 的闭合要靠这条跳过 `\$`，否则 `$a\$b$` 会在中间断开。
+ */
+function findClose(src: string, from: number, close: string): number {
+  let j = from;
+  while (j < src.length) {
+    if (src.startsWith(close, j)) return j;
+    if (src[j] === "\\") {
+      j += 2;
+      continue;
+    }
+    j++;
+  }
+  return -1;
+}
+
+/**
+ * 按 `$…$` / `$$…$$` / `\(…\)` / `\[…\]` 把正文切成文本段与公式段。纯函数。
+ *
+ * 为什么渲染层必须认这些分隔符：中文与公式混排时，「哪一段是式子」是上游**已经知道**的信息。
+ * 渲染层不认，上游就只能在入库时把 `$` 剥掉迁就它 —— 而剥 `$` 是有损的：`$\{a_n\}$` 剥完
+ * 变成 `{a_n}`，`{}` 是集合还是 LaTeX 分组再也分不出来，喂给 LLM 时公式与中文粘成一片，
+ * 要做 Word 导出（LaTeX→MathML→OMML）时切不出公式段就无从转换。边界是必须显式携带的信息，
+ * 不该由渲染层猜、更不该逼上游删掉。
+ *
+ * 三条边界处理：
+ * - `\$` 是字面美元符号，不参与配对，且在文本段里被还原成 `$`；
+ * - 找不到闭分隔符时，开分隔符按**字面文本**处理（`定价 $100` 不会把后半段吞成公式）；
+ * - 行内分隔符不跨空行 —— 这是 TeX 自己的规则（`$` 内出现空行是 "Missing $ inserted"），
+ *   同时也把 `售价 $100\n\n成本 $80` 这类跨段误配对挡在外面。块级 `$$` / `\[` 不受此限。
+ */
+export function splitMathSegments(src: string): MathSegment[] {
+  const out: MathSegment[] = [];
+  let buf = "";
+  let i = 0;
+
+  const flush = () => {
+    if (buf) out.push({ type: "text", content: buf, display: false });
+    buf = "";
+  };
+
+  while (i < src.length) {
+    if (src[i] === "\\" && src[i + 1] === "$") {
+      buf += "$";
+      i += 2;
+      continue;
+    }
+
+    const delim = DELIMITERS.find((d) => src.startsWith(d.open, i));
+    if (delim) {
+      const from = i + delim.open.length;
+      const close = findClose(src, from, delim.close);
+      const body = close === -1 ? "" : src.slice(from, close);
+      if (close !== -1 && (delim.allowBlankLine || !BLANK_LINE_RE.test(body))) {
+        flush();
+        out.push({ type: "math", content: body, display: delim.display });
+        i = close + delim.close.length;
+        continue;
+      }
+      // 没闭合（或行内跨了空行）：开分隔符退化成字面文本，整体继续往下扫
+      buf += delim.open;
+      i += delim.open.length;
+      continue;
+    }
+
+    buf += src[i];
+    i++;
+  }
+
+  flush();
+  return out;
+}
+
 /** 从 `src[start]`（必须是 `{`）起找到配对的 `}`，返回其下标；找不到返回 -1。 */
 function matchBrace(src: string, start: number): number {
   if (src[start] !== "{") return -1;
@@ -317,10 +415,39 @@ export function parseMath(src: string, options: MathParseOptions = {}): MathNode
 }
 
 /**
+ * 整段正文的解析入口：`delimiters` 决定「哪一段是式子」这件事由谁说了算。
+ *
+ * - `delimiters: false`（默认）：全串都按数学扫，裸记号也认 —— 组件的存量行为。
+ * - `delimiters: true`：只有 `$…$` / `\[…\]` 里的内容按数学扫，**分隔符外一律按纯文本原样输出**。
+ *   这才是「认边界」的完整语义：`$` 外的 `{a_n}` 就是三个字面字符，不再被猜成下标。
+ *
+ * 一条兜底：开了 `delimiters` 但整串一个成对分隔符都没有时，回退到全串按数学扫。
+ * 题库往往是半迁移状态（有的题带 `$`、有的不带），没有这条，不带 `$` 的老题会整题不解析、
+ * 满屏露出 `\frac`。规则是确定的 —— **有边界信息就用边界，没有才用旧启发式**，不是按内容猜。
+ * 同一道题里半带半不带则会露出未包裹的那半，这是有意的：数据不一致要看得见，不该被兜底掩盖。
+ */
+export function parseMathDocument(
+  src: string,
+  options: MathParseOptions & { delimiters?: boolean } = {},
+): MathNode[] {
+  if (!options.delimiters) return parseMath(src, options);
+  const segments = splitMathSegments(src);
+  if (!segments.some((s) => s.type === "math")) return parseMath(src, options);
+  return segments.flatMap((s) =>
+    s.type === "math"
+      ? parseMath(s.content, options)
+      : ([{ kind: "text", text: s.content }] satisfies MathNode[]),
+  );
+}
+
+/**
  * 转成可搜索/可导出的朴素文本：分数写作 a/b，上下标写作 ^n / _n，填空写作下划线。
  * 检索、导出 Word、纯文本对比都该用它，而不是把带记号的原串直接甩出去。
+ *
+ * `delimiters` 与组件同名 prop 同义，且**必须跟组件传同一个值**：渲染时按边界解析、
+ * 检索时不按，`$` 就会跟着落进索引，用户搜「3/8」反而搜不到 `$\frac{3}{8}$`。
  */
-export function mathToPlain(src: string): string {
+export function mathToPlain(src: string, options: { delimiters?: boolean } = {}): string {
   const render = (nodes: MathNode[]): string =>
     nodes
       .map((n) => {
@@ -348,5 +475,5 @@ export function mathToPlain(src: string): string {
         }
       })
       .join("");
-  return render(parseMath(src));
+  return render(parseMathDocument(src, options));
 }

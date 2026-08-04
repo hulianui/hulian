@@ -23,7 +23,7 @@ Use [Choicebox](../choicebox/choicebox.md) for selectable card options, or [Math
 import { QuestionCard } from "@hulianui/ui"
 ```
 
-## Usage
+## Examples
 
 ```tsx
 <QuestionCard

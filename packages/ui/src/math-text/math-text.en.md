@@ -4,7 +4,7 @@ name: MathText
 category: typography
 group: text
 tags: []
-exports: [MathText, parseMath, mathToPlain]
+exports: [MathText, parseMath, parseMathDocument, mathToPlain, splitMathSegments]
 status: enriched
 ---
 
@@ -16,7 +16,7 @@ status: enriched
 
 Use MathText to embed mathematical notation in question stems, answer options, explanations, or prose. Question-bank content extracted from PDF or Word commonly contains fractions such as `\frac{3}{8}`, exponents such as `x^{2}`, and answer blanks such as `____`; rendering it as plain text would expose that source notation.
 
-Do not use MathText for complete rich-text passages—use [Markdown](../markdown/markdown.md)—or for source code—use [Code](../code/code.md). Use KaTeX when full LaTeX support is required, including matrices, integrals, summations, or alignment environments. MathText deliberately covers only common educational notation to remain dependency-free.
+Do not use MathText for complete rich-text passages—use [Markdown](../markdown/markdown.md)—or for source code—use [Code](../code/code.md). When the notation has **two-dimensional structure** — piecewise functions, matrices, alignment environments, delimiters that grow with their content — MathText is not enough: use [Formula](../math/math.md), which is KaTeX-powered and lives on the separate `@hulianui/ui/math` subpath. MathText deliberately covers only the high-frequency one-dimensional notation of educational content in order to stay dependency-free; the two components mix freely on one page.
 
 ## Import
 ```ts
@@ -90,12 +90,26 @@ Options side by side:
 | `children` | `string` | — | Text containing mathematical notation |
 | `blankWidth` | `number` | `2.5` | Minimum width of fill-in-the-blank slot (em) |
 | `scriptScale` | `number` | `0.75` | Relative font size for superscript and subscript |
+| `delimiters` | `boolean` | `false` | Read `$…$` delimiters and parse only what is inside them — see below |
 | `className` | `string` | — | — |
+
+## Delimiters (`delimiters`)
+
+Off by default. Once enabled, `$…$`, `$$…$$`, `\(…\)`, and `\[…\]` are recognised, and **only content inside the delimiters is parsed as mathematics** — everything outside is emitted verbatim, so `{a_n}` outside `$` stays three literal characters instead of being guessed into a subscript.
+
+Enable it when your source data carries `$`, rather than stripping `$` at ingest time: stripping loses the formula boundary (`$\{a_n\}$` becomes `{a_n}`, after which nothing distinguishes a set from a LaTeX group), which is the rendering layer polluting the data.
+
+- **It is off by default because of currency.** In `sells for $100, costs $80` the two dollar signs pair up as delimiters. Do not enable it when prose contains monetary amounts.
+- **A string with no matching pair falls back to the existing behaviour** (scan the whole string for bare notation), so a partially migrated question bank never renders a whole stem as raw `\frac`. A single question that is half wrapped will expose the unwrapped half — deliberately, because inconsistent data should be visible.
+- **It only decides which span is parsed as mathematics, not how it is laid out**: `$$` still renders inline here. For centred block layout and real `\begin{cases}` typesetting, use [Formula](../math/math.md).
+- **Pass the same value to `mathToPlain`**: `mathToPlain(src, { delimiters: true })`. Render by boundary while indexing without it and the `$` lands in your index, so a search for "3/8" fails to match `$\frac{3}{8}$`.
 
 ## Pure helpers
 
 - `parseMath(src)` → `MathNode[]` returns parsed nodes for custom rendering or structural validation. Relations and binary operators are separate `{ kind: "op", text, spacing: "relation" | "binary" }` nodes; handle that branch in custom renderers.
-- `mathToPlain(src)` → `string` converts notation to plain text (`\frac{3}{8}` → `3/8`).
+- `parseMathDocument(src, { delimiters })` → `MathNode[]` is the entry point the component actually uses, carrying the delimiter semantics and fallback rule described above.
+- `splitMathSegments(src)` → `MathSegment[]` splits without parsing, for export pipelines that handle formula spans themselves.
+- `mathToPlain(src, { delimiters? })` → `string` converts notation to plain text (`\frac{3}{8}` → `3/8`).
 
 **Always use `mathToPlain` for search indexing, exports, and plain-text comparisons.** Do not index the marked-up source directly; a user searching for "3/8" should find `\frac{3}{8}`.
 
@@ -112,11 +126,12 @@ Options side by side:
 - **Assign a class whenever you extend the symbol table.** If you add a symbol to `MATH_SYMBOLS` without registering it in `SYMBOL_CLASSES`, it is treated as `ordinary` and receives no spacing; if it is in fact a relation, the same line will show `x ≤ 3` spaced and `x ⊕ 3` tight. Classes live in `math-text.symbols.ts`.
 - **`parseMath` emits `op` nodes.** If you render the node tree yourself, handle `{ kind: "op", text, spacing }` in addition to `text`, or relations and binary operators will be missing from the expression. `mathToPlain` is unaffected and emits `op` nodes as compact text.
 - **Do not wrap `30^{\circ}` in another `<sup>`.** `\circ` already behaves as a superscript character and would be raised twice.
-- **Matrices and equation systems degrade lossily.** `\begin{array}…\end{array}` is flattened to one line and `\\` becomes a semicolon. Use KaTeX for faithful layout.
+- **Matrices and equation systems degrade lossily.** `\begin{array}…\end{array}` is flattened to one line and `\\` becomes a semicolon. Piecewise functions suffer most — once flattened, `f(x)=x, x<0; -x, x≥0` no longer reads as a piecewise definition, which is exactly what the question is testing. Use [Formula](../math/math.md) for faithful layout.
 - The component returns a `<span>` and is safe inside `<p>`. Answer blanks use `aria-label="Answer blank"`, so screen readers do not announce a sequence of underscores.
 
 ## Related
 
+- [Formula](../math/math.md) — KaTeX-powered heavyweight typesetting for piecewise functions, matrices, and large delimiters
 - [QuestionCard](../question-card/question-card.md) — question cards whose stems and options use MathText
 - [Markdown](../markdown/markdown.md) — complete rich-text passages
 - [Prose](../prose/prose.md) — long-form typography container

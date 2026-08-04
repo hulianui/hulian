@@ -330,3 +330,37 @@ test("fragment validation reads the normalized target HTML document", async (t) 
     [["missing-fragment", en("/source"), `${en("/target")}#missing`]],
   );
 });
+
+test("connection hints point at an origin and stay out of language pairing", async (t) => {
+  const root = temporaryTree(t);
+  writePair(root, "/");
+  writePair(root, "/guide", {
+    // Next 为 CSS 里的 @font-face 注入的正是这一条：href 是站点根，不是某条路由。
+    // 组件页引入 KaTeX 字体后全站每个组件页都带上了它。
+    zhHead: `${seoHead("/guide", "zh-CN")}<link rel="preconnect" href="/" crossorigin>
+      <link rel="dns-prefetch" href="/">`,
+    enHead: `${seoHead("/guide", "en")}<link rel="preconnect" href="/" crossorigin>`,
+  });
+
+  const result = await checkBilingualLinks(root);
+
+  assert.deepEqual(result.findings, []);
+});
+
+test("resource links that do name a route are still pinned to their own language", async (t) => {
+  const root = temporaryTree(t);
+  writePair(root, "/");
+  writePair(root, "/other");
+  writePair(root, "/guide", {
+    // preload 指向的是具体文件而非 origin，所以它照常受语言配对约束 ——
+    // 豁免只给 preconnect / dns-prefetch，别顺手把整类资源 link 放行。
+    zhHead: `${seoHead("/guide", "zh-CN")}<link rel="preload" as="document" href="${en("/other")}">`,
+  });
+
+  const result = await checkBilingualLinks(root);
+
+  assert.deepEqual(
+    result.findings.map(({ kind, route, target }) => [kind, route, target]),
+    [["cross-language-link", zh("/guide"), en("/other")]],
+  );
+});

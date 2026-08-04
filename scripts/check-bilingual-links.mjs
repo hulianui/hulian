@@ -199,6 +199,18 @@ function resolveInternalHref(rawHref, document, localizedRoutes, physicalPaths) 
   };
 }
 
+/**
+ * 这条 link 是不是「连接提示」而非导航链接。
+ *
+ * 只认 href 语义为 origin 的两种 rel。preload / stylesheet / icon 之类同样不是导航，
+ * 但它们指向具体文件、落在语言前缀下，照常校验反而能挡住真实的跨语言资源引用。
+ */
+export function isResourceHint($, element) {
+  if (element.name !== "link") return false;
+  const relations = new Set(($(element).attr("rel") ?? "").toLowerCase().split(/\s+/));
+  return relations.has("preconnect") || relations.has("dns-prefetch");
+}
+
 function isExactCrossLanguageException($, element, document, target) {
   if (!target.routeDocument || target.routeDocument.bare !== document.bare) return false;
   const tag = element.name;
@@ -455,6 +467,12 @@ export async function checkBilingualLinks(root) {
     $("a[href], area[href], link[href]").each((_, element) => {
       linkCount += 1;
       const rawHref = $(element).attr("href");
+      // 资源提示（preconnect / dns-prefetch）的 href 是一个 **origin**，不是文档路由。
+      // Next 为 CSS 里的 @font-face 注入 <link rel="preconnect" href="/" crossorigin>，
+      // 拿「必须落在同语言配对路由」去校验它是范畴错误 —— 它压根不是导航链接，
+      // 指向站点根正是它该有的样子。组件页引入 KaTeX 字体后才第一次触发：
+      // 在那之前全站的资源类 link 都指向带语言前缀的具体文件，从没有指向根的。
+      if (isResourceHint($, element)) return;
       const selector = `${selectorFor($, element)}@href`;
       const target = resolveInternalHref(rawHref, document, localized, physicalPaths);
       const record = {

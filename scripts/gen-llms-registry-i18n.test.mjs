@@ -36,7 +36,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "diff-stat": [0, 1],
   divider: [0, 1],
   "document-sheet": [2, 3],
-  "event-stream": [0, 1],
   "floating-reactions": [2, 3],
   flow: [4, 5],
   "flowing-menu": [2, 3],
@@ -50,7 +49,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "image-viewer": [3, 4],
   "infinite-menu": [3, 4],
   "infinite-scroll": [0, 1],
-  "intercept-card": [0, 1],
   "json-viewer": [2, 3],
   kanban: [3, 4],
   "laser-flow": [3, 5],
@@ -69,7 +67,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "profile-card": [2, 3],
   "prompt-input": [3, 4],
   "prompt-suggestions": [2, 3],
-  "question-card": [4, 1],
   "queue-lane": [3, 5],
   "relative-time": [3, 4],
   result: [2, 3],
@@ -98,7 +95,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   tree: [10, 9],
   video: [3, 4],
   "virtual-list": [0, 1],
-  "voice-record": [0, 1],
   watch: [0, 1],
 };
 
@@ -298,14 +294,14 @@ test("English conventions localize advice while preserving executable protocol",
       componentAdvisories: zh.stats.componentAdvisories,
       totalAdvisories: zh.stats.totalAdvisories,
     },
-    { componentAdvisories: 1133, totalAdvisories: 1140 },
+    { componentAdvisories: 1143, totalAdvisories: 1150 },
   );
   assert.deepEqual(
     {
       componentAdvisories: en.stats.componentAdvisories,
       totalAdvisories: en.stats.totalAdvisories,
     },
-    { componentAdvisories: 1207, totalAdvisories: 1214 },
+    { componentAdvisories: 1217, totalAdvisories: 1224 },
   );
   assert.equal(new Set(en.advisories.map((item) => item.id)).size, en.advisories.length);
 });
@@ -374,7 +370,7 @@ test("English advisories keep complete natural rules without repeated entries in
   );
 });
 
-test("all 82 reviewed locale-specific convention count differences stay explicit", () => {
+test("all 78 reviewed locale-specific convention count differences stay explicit", () => {
   assert.equal(typeof conventionsGenerator.extractPitfalls, "function");
   const uiRoot = join(ROOT, "packages", "ui", "src");
   const actual = {};
@@ -390,7 +386,7 @@ test("all 82 reviewed locale-specific convention count differences stay explicit
     if (counts[0] !== counts[1]) actual[slug] = counts;
   }
 
-  assert.equal(Object.keys(actual).length, 82);
+  assert.equal(Object.keys(actual).length, 78);
   assert.deepEqual(actual, EXPECTED_CONVENTION_COUNT_MISMATCHES);
 });
 

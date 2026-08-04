@@ -3,7 +3,7 @@ import { Fragment, memo } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
-import { parseMath } from "./math-text.parse";
+import { parseMathDocument } from "./math-text.parse";
 import type { MathNode, MathTextProps } from "./math-text.types";
 
 // 行内数学排版：把 \frac / \sqrt / 上下标 / 填空槽渲染成真正的数学版式。
@@ -159,10 +159,14 @@ function MathTextImpl({
   children,
   blankWidth = 2.5,
   scriptScale = 0.75,
+  delimiters = false,
   className,
 }: MathTextProps) {
   const locale = useComponentLocale().mathText ?? { blank: "填空", rowSeparator: "；" };
-  const nodes = parseMath(children ?? "", { rowSeparator: locale.rowSeparator });
+  const nodes = parseMathDocument(children ?? "", {
+    rowSeparator: locale.rowSeparator,
+    delimiters,
+  });
   return (
     <span className={cn("[&_sup]:align-super [&_sub]:align-sub", className)}>
       {renderNodes(nodes, { blankWidth, scriptScale, blankLabel: locale.blank })}

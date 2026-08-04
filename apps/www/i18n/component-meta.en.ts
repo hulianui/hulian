@@ -194,6 +194,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Displays textbook questions with type, stem, options, subquestions, media, source, and review status.",
     keywords: ["question", "card", "data-display", "collection"],
   },
+  math: {
+    shortName: "Formula",
+    description:
+      "KaTeX-powered two-dimensional layout for piecewise functions, matrices, and large delimiters.",
+    keywords: ["math", "formula", "katex", "latex", "typography"],
+  },
   "math-text": {
     shortName: "MathText",
     description:
