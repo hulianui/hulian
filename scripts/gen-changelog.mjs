@@ -55,6 +55,36 @@ function previousDates(outPath = OUT) {
 }
 
 /**
+ * `${pkg}@${version}` → 该版本条目所引 commit 的提交日期（取最晚的一条）。
+ *
+ * tag 是发布流水线**最后**才打的，而 changelog 产物在 `changeset version` 之后就生成了 ——
+ * 于是每次发版的当前版本都会短暂地 date=null，站点上那一版没有日期，要等下一次发版
+ * 重新生成才补上（0.24.0 就这样在产物里挂了一整版）。条目本身带着 sha（`- 4b7c80f: …`），
+ * 用它的提交日期兜底，误差只有发布与提交之间的那点时间。
+ */
+function shaDates(releases) {
+  const out = new Map();
+  for (const { key, shas } of releases) {
+    const dates = shas
+      .map((sha) => {
+        try {
+          return execFileSync("git", ["show", "-s", "--format=%cs", sha], {
+            cwd: ROOT,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "ignore"],
+          }).trim();
+        } catch {
+          return ""; // 浅克隆里取不到这个 commit，跳过
+        }
+      })
+      .filter(Boolean)
+      .sort();
+    if (dates.length) out.set(key, dates.at(-1));
+  }
+  return out;
+}
+
+/**
  * 破坏性变更的判据——**不是** semver 的 major bump。
  *
  * 只要还在 0.x，changesets 就不会产出 major：打一个 major changeset 等于直接发 1.0.0。
@@ -229,7 +259,12 @@ export function generateChangelogs() {
       const englishVersion = englishByVersion.get(chineseVersion.version);
       if (!englishVersion) throw new Error(`[changelog] missing English version ${chineseVersion.version}`);
       const key = `${packageName}@${chineseVersion.version}`;
-      const date = dates.get(key) ?? fallbackDates.get(key) ?? fallbackDatesEn.get(key) ?? null;
+      const date =
+        dates.get(key) ??
+        fallbackDates.get(key) ??
+        fallbackDatesEn.get(key) ??
+        shaDates([{ key, shas: chineseVersion.entries.map((e) => e.sha).filter(Boolean) }]).get(key) ??
+        null;
       releases.push({ pkg: packageName, version: chineseVersion.version, date, entries: chineseVersion.entries });
       releasesEn.push({ pkg: packageName, version: englishVersion.version, date, entries: englishVersion.entries });
     }
