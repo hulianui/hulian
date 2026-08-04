@@ -1,8 +1,22 @@
 [
   {
     "pkg": "@hulianui/ui",
-    "version": "0.23.0",
+    "version": "0.24.0",
     "date": null,
+    "entries": [
+      {
+        "sha": "2764188",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Adds Formula (`@hulianui/ui/math`), KaTeX-powered two-dimensional mathematical layout; MathText gains `delimiters` for `$…$` boundaries\n\n**A new component on its own subpath** — [#87](https://github.com/hulianui/hulian/issues/87)\n\nMathText deliberately drew a dependency-free boundary: `\\begin{cases}` is flattened onto one line, `\\\\` becomes a semicolon, `\\left…\\right` loses the command and keeps a fixed-height bracket, and the docs said \"bring your own KaTeX.\" The trouble is that this sentence means every downstream question-bank or courseware product wires KaTeX up again from scratch: its own delimiter splitting, its own copy of the KaTeX CSS, its own trip through the SSR pitfalls. A consumer measured 1324 ingested questions and found 23 `\\begin{...}` environments, 78% of them `cases` — piecewise functions are the workhorse of senior-high function questions, not a long tail, and the flattened `f(x)=x, x<0; -x, x≥0` no longer reads as a piecewise definition at all. An unreadable stem makes the question worthless.\n\n```tsx\nimport { Formula } from \"@hulianui/ui/math\";\n\n<Formula>\n  {\"$$f(x)=\\\\begin{cases} -x^{2}-2ax-a, & x<0 \\\\\\\\ e^{x}+\\\\ln(x+1), & x \\\\geq 0 \\\\end{cases}$$\"}\n</Formula>;\n```\n\nIt ships on a subpath rather than in the main barrel because KaTeX costs 86KB gzip of JavaScript (measured by the bundle-size gate) plus a stylesheet and fonts: **MathText's consumers should not pay for capability they never use**, while pages that need heavyweight layout were always willing to. The component imports its own styles, so there is no CSS to add in your app entry; it carries no `\"use client\"`, and `katex.renderToString` is a deterministic pure function, so it works directly inside RSC.\n\nAlongside it: `splitMathSegments` (splits prose into spans — this is what a Word/OMML export pipeline needs) and `formulaToPlain` (searchable plain text). Broken data renders in two tiers: an unrecognised control sequence is highlighted in place and shown verbatim without disturbing the layout around it, while a whole-expression parse failure renders the entire source in red.\n\n**MathText gains `delimiters`**\n\nIt recognises `$…$`, `$$…$$`, `\\(…\\)`, and `\\[…\\]`; once enabled, **only content inside the delimiters is parsed as mathematics, and everything outside is emitted verbatim as plain text**.\n\nThis fixes the rendering layer polluting the data SSOT: because the rendering layer did not understand `$`, upstreams had no choice but to strip it at ingest time — and stripping `$` is lossy. `$\\{a_n\\}$` becomes `{a_n}`, after which nothing distinguishes a set from a LaTeX group; fed to an LLM, formulas and prose fuse into one blob; and a Word export cannot convert a formula span it cannot cut out. Boundaries are information that must be carried explicitly, not guessed at by the rendering layer and certainly not deleted upstream.\n\nIt defaults to `false` so existing behaviour is untouched — once enabled, the two dollar signs in `sells for $100, costs $80` pair up as delimiters, so do not enable it when prose contains monetary amounts. A string with no matching pair falls back to the existing behaviour, so a partially migrated question bank never renders a whole stem as raw `\\frac`. `mathToPlain` accepts `{ delimiters }` too, and the indexing side must be given the same value the rendering side gets.",
+        "parityId": "katex-formula-subpath"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.23.0",
+    "date": "2026-08-03",
     "entries": [
       {
         "sha": null,
@@ -16,7 +30,7 @@
   {
     "pkg": "@hulianui/ui",
     "version": "0.22.0",
-    "date": null,
+    "date": "2026-08-03",
     "entries": [
       {
         "sha": "a6249c8",
