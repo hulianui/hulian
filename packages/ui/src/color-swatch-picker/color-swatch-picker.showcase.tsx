@@ -15,6 +15,24 @@ const PALETTE = [
   "#ec4899",
 ];
 
+// 主题 token 色板：色值是 var(--color-x)，读屏必须靠 label 才有意义
+const TOKENS = [
+  { color: "var(--color-primary)", label: "主色" },
+  { color: "var(--color-success)", label: "成功" },
+  { color: "var(--color-warning)", label: "警告" },
+  { color: "var(--color-danger)", label: "危险" },
+];
+
+function TokenDemo() {
+  const [v, setV] = useState("var(--color-primary)");
+  return (
+    <div className="flex flex-col gap-2">
+      <ColorSwatchPicker colors={TOKENS} value={v} onValueChange={setV} />
+      <code className="font-mono text-xs text-muted">{v}</code>
+    </div>
+  );
+}
+
 function Demo({ size = "md", disabled = false }: { size?: SwatchSize; disabled?: boolean }) {
   const [v, setV] = useState("#3b82f6");
   return (
@@ -48,6 +66,21 @@ export const colorSwatchPickerShowcase: ShowcaseSpec = {
           <ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" size="lg" />
         </div>
       ),
+    },
+    {
+      title: "主题 token 色板（带可读名）",
+      description:
+        "色块可以写成 { color, label }：label 作为无障碍名与 hover 提示，选中身份仍是 color。token 色必须给 label，否则读屏念的是 var(--color-primary) 这串变量名。",
+      code: `const TOKENS = [
+  { color: "var(--color-primary)", label: "主色" },
+  { color: "var(--color-success)", label: "成功" },
+  { color: "var(--color-warning)", label: "警告" },
+  { color: "var(--color-danger)", label: "危险" },
+];
+
+// 回吐的仍是 color 串，不是 label
+<ColorSwatchPicker colors={TOKENS} value={v} onValueChange={setV} />`,
+      render: () => <TokenDemo />,
     },
     {
       title: "禁用",

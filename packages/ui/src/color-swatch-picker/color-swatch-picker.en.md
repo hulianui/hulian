@@ -4,7 +4,7 @@ name: ColorSwatchPicker
 category: forms
 group: advanced
 tags: []
-exports: [ColorSwatchPicker]
+exports: [ColorSwatchPicker, normalizeSwatches]
 status: enriched
 ---
 
@@ -18,15 +18,15 @@ Use ColorSwatchPicker to choose one value from a fixed palette, such as brand or
 
 ## Import
 ```ts
-import { ColorSwatchPicker } from "@hulianui/ui"
+import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 ```
 
 ## Props
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| colors* | `string[]` | — | Default color block list, any CSS color string (hex / rgb / hsl / named color) |
-| value | `string` | — | Controlled selection value (must be strictly equal to an item in colors) |
+| colors* | `(string \| { color: string; label?: string })[]` | — | Preset swatch list. A string is any CSS color (hex / rgb / hsl / named color / `var(--color-x)`); an object may add a `label` used as the accessible name and hover hint. Both forms can be mixed |
+| value | `string` | — | Controlled selection value (must be strictly equal to a swatch `color`) |
 | defaultValue | `string` | — | Uncontrolled initial selection value |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Color block size |
 | disabled | `boolean` | `false` | Disable entire group |
@@ -37,7 +37,13 @@ import { ColorSwatchPicker } from "@hulianui/ui"
 
 | Event | Type | Description |
 |------|------|------|
-| onValueChange | `(color: string) => void` | Select change callback |
+| onValueChange | `(color: string) => void` | Select change callback; the argument is always the swatch `color`, never the `label` |
+
+## Utilities
+
+| Name | Signature | Description |
+|------|------|------|
+| normalizeSwatches | `(colors: (string \| ColorSwatchItem)[]) => { color: string; label: string }[]` | Normalizes the mixed array into labelled swatches; string entries and missing or blank labels fall back to the color value itself |
 
 ## Examples
 ```tsx
@@ -47,11 +53,23 @@ const [v, setV] = useState("#3b82f6");
 
 // Uncontrolled
 <ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" size="lg" />
+
+// Theme token palette: pass a label so screen readers do not announce "var(--color-primary)"
+<ColorSwatchPicker
+  colors={[
+    { color: "var(--color-primary)", label: "Primary" },
+    { color: "var(--color-danger)", label: "Danger" },
+    "#3b82f6",
+  ]}
+  defaultValue="var(--color-primary)"
+/>
 ```
 
 ## Usage guidelines
 
-- A controlled `value` must be **strictly equal** to an entry in `colors` to show as selected. `"#FFF"` differs from `"#ffffff"`, and `"#3b82f6"` differs from `"rgb(59,130,246)"`; normalize casing and format before passing values.
+- **Token colors need a `label`.** A bare string in `colors` becomes the swatch `aria-label` verbatim, so `var(--color-primary)` is announced as the variable name and means nothing to a screen reader user; `#3b82f6` and `oklch(...)` are read as character strings for the same reason. Only named colors such as `red` or `tomato` survive without a label.
+- Identity for `value` and `onValueChange` is always the `color` string, never the `label`. Do not pass a label back as the selected value.
+- A controlled `value` must be **strictly equal** to a swatch `color` to show as selected. `"#FFF"` differs from `"#ffffff"`, and `"#3b82f6"` differs from `"rgb(59,130,246)"`; normalize casing and format before passing values.
 - The component supports single selection only.
 - The default group label follows `ConfigProvider locale`; the no-provider fallback remains Chinese.
 

@@ -5,6 +5,7 @@ import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
 import type { ColorSwatchPickerProps, SwatchSize } from "./color-swatch-picker.types";
+import { normalizeSwatches } from "./swatch-items";
 
 // 离散预设色块单选网格：HeroUI ColorSwatchPicker 的零依赖对标。
 // 复用 base-ui RadioGroup 拿到 roving-tabindex + 键盘方向键 a11y，换皮成色块。
@@ -25,6 +26,8 @@ function ColorSwatchPickerImpl({
   "aria-label": ariaLabel,
 }: ColorSwatchPickerProps) {
   const labels = useComponentLocale().colorSwatchPicker ?? { label: "颜色色板" };
+  // 色值是身份、label 只是名字：归一化后 color 仍原样进 value/onValueChange。
+  const swatches = normalizeSwatches(colors);
   return (
     <BaseRadioGroup
       value={value}
@@ -34,11 +37,12 @@ function ColorSwatchPickerImpl({
       aria-label={ariaLabel ?? labels.label}
       className={cn("flex flex-wrap gap-2", disabled && "opacity-50", className)}
     >
-      {colors.map((color) => (
+      {swatches.map(({ color, label }) => (
         <BaseRadio.Root
           key={color}
           value={color}
-          aria-label={color}
+          aria-label={label}
+          title={label}
           style={{ backgroundColor: color }}
           className={cn(
             SIZE[size],

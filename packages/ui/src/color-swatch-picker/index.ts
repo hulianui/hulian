@@ -1,2 +1,9 @@
 export { ColorSwatchPicker } from "./color-swatch-picker";
-export type { ColorSwatchPickerProps, SwatchSize } from "./color-swatch-picker.types";
+export { normalizeSwatches } from "./swatch-items";
+export type {
+  ColorSwatchInput,
+  ColorSwatchItem,
+  ColorSwatchPickerProps,
+  NormalizedColorSwatch,
+  SwatchSize,
+} from "./color-swatch-picker.types";

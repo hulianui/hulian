@@ -100,3 +100,139 @@ describe("ColorPicker", () => {
     expect(getByLabelText("十六进制颜色值")).toBeTruthy();
   });
 });
+
+// 色板容器：外壳的第一个子节点（包住 react-colorful 的 200x200 div）
+const panelOf = (container: HTMLElement) =>
+  container.firstElementChild!.firstElementChild as HTMLElement;
+
+describe("ColorPicker onValueCommitted", () => {
+  it("色板松手（pointerup）触发一次 commit，值为当前格式串", () => {
+    const onValueCommitted = vi.fn();
+    const { container } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    fireEvent.pointerUp(panelOf(container));
+    expect(onValueCommitted).toHaveBeenCalledTimes(1);
+    expect(onValueCommitted).toHaveBeenCalledWith("#ff0000");
+  });
+
+  it("commit 的格式跟随当前 format，与 onValueChange 输出一致", () => {
+    const onValueCommitted = vi.fn();
+    const { container } = render(
+      <ColorPicker defaultValue="#ff0000" defaultFormat="rgb" onValueCommitted={onValueCommitted} />,
+    );
+    fireEvent.pointerUp(panelOf(container));
+    expect(onValueCommitted).toHaveBeenLastCalledWith("rgb(255, 0, 0)");
+  });
+
+  it("松手吐的是拖动后的最新值，不是初值", () => {
+    const onValueCommitted = vi.fn();
+    const { container, getByLabelText } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    // jsdom 里无法真的拖 react-colorful（没有布局），用文本输入推进内部 hex 来代表「拖动中的高频变更」
+    fireEvent.change(getByLabelText("十六进制颜色值"), { target: { value: "#00ff00" } });
+    fireEvent.pointerUp(panelOf(container));
+    expect(onValueCommitted).toHaveBeenCalledTimes(1);
+    expect(onValueCommitted).toHaveBeenCalledWith("#00ff00");
+  });
+
+  it("pointercancel 不触发 commit（被打断的手势不算一次提交）", () => {
+    const onValueCommitted = vi.fn();
+    const { container } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    fireEvent.pointerDown(panelOf(container));
+    fireEvent.pointerCancel(panelOf(container));
+    expect(onValueCommitted).not.toHaveBeenCalled();
+  });
+
+  it("点一下没拖（颜色没变）松手仍触发一次 —— 语义是「一次编辑结束」", () => {
+    const onValueCommitted = vi.fn();
+    const { container } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    fireEvent.pointerDown(panelOf(container));
+    fireEvent.pointerUp(panelOf(container));
+    expect(onValueCommitted).toHaveBeenCalledTimes(1);
+    expect(onValueCommitted).toHaveBeenCalledWith("#ff0000");
+  });
+
+  it("文本框失焦触发 commit", () => {
+    const onValueCommitted = vi.fn();
+    const { getByLabelText } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    const input = getByLabelText("十六进制颜色值");
+    fireEvent.change(input, { target: { value: "#0000ff" } });
+    expect(onValueCommitted).not.toHaveBeenCalled();
+    fireEvent.blur(input);
+    expect(onValueCommitted).toHaveBeenCalledTimes(1);
+    expect(onValueCommitted).toHaveBeenCalledWith("#0000ff");
+  });
+
+  it("文本框回车触发 commit", () => {
+    const onValueCommitted = vi.fn();
+    const { getByLabelText } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    const input = getByLabelText("十六进制颜色值");
+    fireEvent.change(input, { target: { value: "#0000ff" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onValueCommitted).toHaveBeenCalledWith("#0000ff");
+    // 其它按键不触发
+    fireEvent.keyDown(input, { key: "a" });
+    expect(onValueCommitted).toHaveBeenCalledTimes(1);
+  });
+
+  it("半成品输入（解析失败）失焦时吐的是当前规范值而不是草稿串", () => {
+    const onValueCommitted = vi.fn();
+    const { getByLabelText } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    const input = getByLabelText("十六进制颜色值");
+    fireEvent.change(input, { target: { value: "#ab" } });
+    fireEvent.blur(input);
+    expect(onValueCommitted).toHaveBeenCalledWith("#ff0000");
+  });
+
+  it("切换格式触发 commit，且用新格式吐值", () => {
+    const onValueCommitted = vi.fn();
+    const { getByText } = render(
+      <ColorPicker defaultValue="#ff0000" onValueCommitted={onValueCommitted} />,
+    );
+    fireEvent.click(getByText("rgb"));
+    expect(onValueCommitted).toHaveBeenCalledTimes(1);
+    expect(onValueCommitted).toHaveBeenCalledWith("rgb(255, 0, 0)");
+    // 点当前格式（无变化）不触发
+    fireEvent.click(getByText("rgb"));
+    expect(onValueCommitted).toHaveBeenCalledTimes(1);
+  });
+
+  it("onValueChange 与 onValueCommitted 可同时使用，互不吞噬", () => {
+    const onValueChange = vi.fn();
+    const onValueCommitted = vi.fn();
+    const { container, getByLabelText } = render(
+      <ColorPicker
+        defaultValue="#ff0000"
+        onValueChange={onValueChange}
+        onValueCommitted={onValueCommitted}
+      />,
+    );
+    fireEvent.change(getByLabelText("十六进制颜色值"), { target: { value: "#00ff00" } });
+    expect(onValueChange).toHaveBeenCalledWith("#00ff00");
+    expect(onValueCommitted).not.toHaveBeenCalled();
+    fireEvent.pointerUp(panelOf(container));
+    expect(onValueCommitted).toHaveBeenCalledWith("#00ff00");
+  });
+
+  it("不传 onValueCommitted 时各触发点均不抛", () => {
+    const { container, getByLabelText, getByText } = render(<ColorPicker defaultValue="#ff0000" />);
+    expect(() => {
+      fireEvent.pointerUp(panelOf(container));
+      fireEvent.blur(getByLabelText("十六进制颜色值"));
+      fireEvent.click(getByText("hsl"));
+    }).not.toThrow();
+  });
+});
+

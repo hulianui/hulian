@@ -15,6 +15,7 @@ export function ColorPicker({
   value,
   defaultValue = "#3b82f6",
   onValueChange,
+  onValueCommitted,
   format,
   defaultFormat = "hex",
   onFormatChange,
@@ -55,6 +56,10 @@ export function ColorPicker({
     onValueChange?.(formatColor(nextHex, fmt));
   };
 
+  // 一次编辑结束 = 吐一次当前规范值。与 onValueChange 同格式，但一次交互只吐一次。
+  // 值不做「和上次比没变就不吐」的去重：语义是「编辑结束了」而不是「值变了」。
+  const commitValue = (nextFmt: ColorFormat = fmt) => onValueCommitted?.(formatColor(hex, nextFmt));
+
   const handleInput = (raw: string) => {
     setDraft(raw);
     const rgb = parseColor(raw);
@@ -65,8 +70,9 @@ export function ColorPicker({
     if (next === fmt) return;
     if (!isFormatControlled) setInternalFormat(next);
     onFormatChange?.(next);
-    // 输出格式变了 → 用新格式重新吐当前颜色
+    // 输出格式变了 → 用新格式重新吐当前颜色。这是一次确定的值变更，故同时 commit。
     onValueChange?.(formatColor(hex, next));
+    commitValue(next);
   };
 
   return (
@@ -78,7 +84,10 @@ export function ColorPicker({
       )}
     >
       {/* 色板：包一层 div 固定 200x200（react-colorful 默认尺寸由内部 class 控制） */}
-      <div className="size-[200px]">
+      {/* pointerup 冒泡自取色面板与色相条两处（react-colorful 拖动中做了 setPointerCapture，
+          指针拖出组件再松手，事件仍回到被捕获的元素上冒泡到这里）。
+          刻意不接 onPointerCancel：被系统/其它手势打断的拖动不算一次确定的提交。 */}
+      <div className="size-[200px]" onPointerUp={() => commitValue()}>
         <HexColorPicker color={hex} onChange={commitColor} />
       </div>
 
@@ -124,6 +133,12 @@ export function ColorPicker({
             type="text"
             value={draft}
             onChange={(e) => handleInput(e.target.value)}
+            // 失焦 / 回车 = 一次输入编辑结束。草稿解析失败（半成品串）时 hex 未变，
+            // 吐的是当前规范值，消费方永远拿得到一个合法颜色。
+            onBlur={() => commitValue()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") commitValue();
+            }}
             spellCheck={false}
             aria-label={locale[fmt]}
             className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 font-mono text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"

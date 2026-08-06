@@ -32,6 +32,26 @@ function Demo({
   );
 }
 
+// 对照演示：左侧只数 onValueChange 被叫了几次，右侧只记 onValueCommitted 吐回来的值。
+// 拖一下取色面板即可看出量级差：计数一路涨，提交值只在松手那一刻变一次。
+function CommitDemo() {
+  const [changes, setChanges] = useState(0);
+  const [committed, setCommitted] = useState("#3b82f6");
+  return (
+    <div className="flex flex-col gap-2">
+      <ColorPicker
+        defaultValue="#3b82f6"
+        onValueChange={() => setChanges((n) => n + 1)}
+        onValueCommitted={setCommitted}
+      />
+      <div className="flex flex-col gap-0.5 font-mono text-xs">
+        <span className="text-muted">onValueChange · {changes}</span>
+        <span className="text-foreground">onValueCommitted · {committed}</span>
+      </div>
+    </div>
+  );
+}
+
 export const colorPickerShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -53,6 +73,21 @@ export const colorPickerShowcase: ShowcaseSpec = {
           <ColorPicker defaultValue="#8b5cf6" defaultFormat="hsl" />
         </div>
       ),
+    },
+    {
+      title: "逐帧变更 vs 一次提交",
+      description:
+        "onValueChange 在拖动中每帧触发，onValueCommitted 只在松手、输入框失焦回车、切换格式时各触发一次。写 undo 栈、发请求挂后者。",
+      code: `const [changes, setChanges] = useState(0);
+const [committed, setCommitted] = useState("#3b82f6");
+
+// 拖动取色面板：changes 一路上涨，committed 只在松手那一刻更新一次
+<ColorPicker
+  defaultValue="#3b82f6"
+  onValueChange={() => setChanges((n) => n + 1)}
+  onValueCommitted={setCommitted}
+/>`,
+      render: () => <CommitDemo />,
     },
     {
       title: "精简：隐藏切换器 / 输入框",
