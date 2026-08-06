@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { Slider as BaseSlider } from "@base-ui/react/slider";
 import { cn } from "../lib/cn";
 import type { SliderProps } from "./slider.types";
@@ -10,7 +11,7 @@ const thumbCls = cn(
   "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-bg",
 );
 
-export function Slider({ className, showValue, ...props }: SliderProps) {
+function SliderImpl({ className, showValue, ...props }: SliderProps) {
   const current = props.value ?? props.defaultValue;
   const isRange = Array.isArray(current);
 
@@ -43,3 +44,9 @@ export function Slider({ className, showValue, ...props }: SliderProps) {
     </BaseSlider.Root>
   );
 }
+SliderImpl.displayName = "Slider";
+
+// 滑块常成组落在筛选面板/设置页里，父级一动就整组重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Slider = memo(SliderImpl);
+Slider.displayName = "Slider";

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Timeline, TimelineItem } from "./timeline";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 // 无 jest-dom（同 carousel/toast）：用 getAttribute/classList/querySelector 断言，禁 toHaveClass。
 const sample = [
@@ -10,6 +11,12 @@ const sample = [
 ];
 
 describe("Timeline", () => {
+  // 回归护栏：Timeline 外层的 memo 一旦被拆掉，本例立刻红。
+  // items 用模块级常量 sample —— memo 只认引用相等，内联数组字面量会让测试假红。
+  it("稳定父更新时跳过 Timeline 子树", async () => {
+    await expectMemoSkipsSubtree(() => <Timeline items={sample} mode="left" />);
+  });
+
   it("items 数组驱动：渲染 ol + N 个 li", () => {
     const { container } = render(<Timeline items={sample} />);
     const ol = container.querySelector("ol");
@@ -119,9 +126,7 @@ describe("Timeline", () => {
   });
 
   it("透传 className 到根 ol，其它属性透传", () => {
-    const { container } = render(
-      <Timeline items={sample} className="my-tl" aria-label="审批流" />,
-    );
+    const { container } = render(<Timeline items={sample} className="my-tl" aria-label="审批流" />);
     const ol = container.querySelector("ol")!;
     expect(ol.classList.contains("my-tl")).toBe(true);
     expect(ol.getAttribute("aria-label")).toBe("审批流");

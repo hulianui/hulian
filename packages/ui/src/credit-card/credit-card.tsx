@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { cn } from "../lib/cn";
 
 import { useComponentLocale } from "../config/locale-context";
@@ -73,7 +74,7 @@ function BrandMark({ brand, label }: { brand: CardBrand; label: string }) {
   return <span className="text-lg font-bold italic tracking-wide">{label}</span>;
 }
 
-export function CreditCard({
+function CreditCardImpl({
   number,
   holder,
   expiry,
@@ -173,3 +174,10 @@ export function CreditCard({
     </div>
   );
 }
+CreditCardImpl.displayName = "CreditCard";
+
+// 卡面每次渲染都要跑一遍卡号识别 + 分组 + 打码（三个字符串扫描），还挂在结算页/钱包这种
+// 高频更新的表单上下文里；props 全是原语（number/holder/expiry/masked/flipped）。
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const CreditCard = memo(CreditCardImpl);
+CreditCard.displayName = "CreditCard";

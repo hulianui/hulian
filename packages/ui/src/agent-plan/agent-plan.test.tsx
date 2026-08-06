@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { AgentPlan } from "./agent-plan";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const tasks = [
   { title: "读取首页", status: "done" as const },
@@ -9,6 +10,13 @@ const tasks = [
 ];
 
 describe("AgentPlan", () => {
+  // 护栏套在整棵计划树上（3 行 × StatusIcon），只有整树跳过才过。
+  it("稳定父更新时跳过计划子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <AgentPlan tasks={tasks} title="执行计划" bare strikeDone />
+    ));
+  });
+
   it("渲染全部任务 + 标题", () => {
     const { getByText } = render(<AgentPlan tasks={tasks} />);
     expect(getByText("执行计划")).toBeTruthy();

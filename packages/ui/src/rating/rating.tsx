@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState } from "react";
+import { memo, useId, useState } from "react";
 import { Star } from "../_icons";
 import { cn } from "../lib/cn";
 import type { RatingProps } from "./rating.types";
@@ -14,7 +14,7 @@ import { useComponentLocale } from "../config/locale-context";
 
 const SIZE = { sm: "size-4", md: "size-5", lg: "size-6" } as const;
 
-export function Rating({
+function RatingImpl({
   value,
   defaultValue,
   onValueChange,
@@ -112,3 +112,9 @@ export function Rating({
     </span>
   );
 }
+RatingImpl.displayName = "Rating";
+
+// 评分常成列出现在评价列表/商品卡里，父级一动就整列重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Rating = memo(RatingImpl);
+Rating.displayName = "Rating";

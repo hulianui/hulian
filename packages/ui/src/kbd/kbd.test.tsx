@@ -1,8 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Kbd } from "./kbd";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Kbd", () => {
+  it("稳定父更新时跳过键帽子树", async () => {
+    await expectMemoSkipsSubtree(() => <Kbd className="w-8">Esc</Kbd>);
+  });
+
   it("渲染 kbd 标签 + 内容", () => {
     const { getByText } = render(<Kbd>K</Kbd>);
     expect(getByText("K").tagName).toBe("KBD");

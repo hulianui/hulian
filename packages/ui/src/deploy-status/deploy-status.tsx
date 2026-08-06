@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
 import { Clock, Loader2, CircleCheck, CircleX, Ban, Minus, type IconComponent } from "../_icons";
@@ -67,7 +68,7 @@ const META: Record<DeployState, Meta> = {
   },
 };
 
-export function DeployStatus({
+function DeployStatusImpl({
   status,
   variant = "badge",
   label,
@@ -139,3 +140,10 @@ export function DeployStatus({
     </span>
   );
 }
+DeployStatusImpl.displayName = "DeployStatus";
+
+// 部署列表一屏几十行，且页面常挂着轮询/计时器高频更新，props 却是稳定原语（status/variant/size）。
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+// 注：building 态的转圈/涟漪是 CSS 动画（animate-spin / animate-ping），不经 React 渲染，memo 不会冻住它。
+export const DeployStatus = memo(DeployStatusImpl);
+DeployStatus.displayName = "DeployStatus";

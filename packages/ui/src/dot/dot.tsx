@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
@@ -28,7 +29,7 @@ export const dotVariants = cva("relative inline-flex shrink-0 rounded-full", {
   defaultVariants: { size: "md" },
 });
 
-export function Dot({ tone = "neutral", color, size, pulse, label, className, style, ...props }: DotProps) {
+function DotImpl({ tone = "neutral", color, size, pulse, label, className, style, ...props }: DotProps) {
   // 有 label → 表意圆点（role=status 让读屏播报）；无 label → 装饰（aria-hidden）
   const a11y = label
     ? { role: "status" as const, "aria-label": label }
@@ -50,3 +51,9 @@ export function Dot({ tone = "neutral", color, size, pulse, label, className, st
     </span>
   );
 }
+DotImpl.displayName = "Dot";
+
+// 圆点是全库复用最密的原语之一（状态列、图例、列表前导标记成百上千地渲染），
+// props 全是稳定原语时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Dot = memo(DotImpl);
+Dot.displayName = "Dot";

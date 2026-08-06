@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
 import { HighlightedCode } from "./highlighted-code";
@@ -9,7 +9,7 @@ import { useComponentLocale } from "../config/locale-context";
 // 多行代码块（区别于行内 Code、单行命令 Snippet）：<pre> 容器 + 右上角复制按钮 + 可选语言标签。
 // 含剪贴板交互故 "use client"；复制成功反馈 1.5s 切回。皮肤走语义 token。
 // 语法着色由零依赖 tokenizeCode 产出 token 列表，逐段套 <span>（见 code-highlight.ts）。
-export function CodeBlock({
+function CodeBlockImpl({
   code,
   lang,
   copyable = true,
@@ -64,3 +64,9 @@ export function CodeBlock({
     </div>
   );
 }
+CodeBlockImpl.displayName = "CodeBlock";
+
+// 文档/日志页一屏就有十几个代码块，每个都要重新分词 + 逐 token 建 <span>，
+// 父级一动全体重算。props 全是原语时 React 无法自己 bailout，只能靠 memo。
+export const CodeBlock = memo(CodeBlockImpl);
+CodeBlock.displayName = "CodeBlock";

@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { Funnel } from "./funnel";
 import type { FunnelStage } from "./funnel.types";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
@@ -12,6 +13,15 @@ const stages: FunnelStage[] = [
   { id: "route", label: "路由", value: 800 },
   { id: "done", label: "完成", value: 600 },
 ];
+
+describe("Funnel 渲染跳过", () => {
+  // 回归护栏：Funnel 若被改回普通函数组件（去掉 memo），这条立刻红。
+  it("稳定父更新时跳过漏斗子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Funnel stages={stages} orientation="vertical" ariaLabel="漏斗图" />
+    ));
+  });
+});
 
 describe("Funnel 渲染", () => {
   it("渲染各级 label 与 value", () => {

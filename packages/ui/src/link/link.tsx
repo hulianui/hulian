@@ -1,5 +1,5 @@
 import { cva } from "class-variance-authority";
-import { cloneElement, type ReactNode } from "react";
+import { cloneElement, memo, type ReactNode } from "react";
 import { ExternalLink } from "../_icons";
 import { cn } from "../lib/cn";
 import type { LinkProps } from "./link.types";
@@ -24,7 +24,7 @@ export const linkVariants = cva(
   },
 );
 
-export function Link({ tone, underline, external, className, children, render, ...props }: LinkProps) {
+function LinkImpl({ tone, underline, external, className, children, render, ...props }: LinkProps) {
   const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
   const trailing = external ? <ExternalLink className="size-3.5" aria-hidden /> : null;
 
@@ -54,3 +54,10 @@ export function Link({ tone, underline, external, className, children, render, .
     </a>
   );
 }
+LinkImpl.displayName = "Link";
+
+// 正文/导航里链接是成串出现的原语，父级一动就整串重算。props 全是原语（href/tone/文本）时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+// 注：传了 render 的用法每次都是新元素，浅比较必失败，那条路径 memo 只是白付一次比较、不会更慢。
+export const Link = memo(LinkImpl);
+Link.displayName = "Link";

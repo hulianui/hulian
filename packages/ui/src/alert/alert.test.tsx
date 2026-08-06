@@ -3,6 +3,17 @@ import { render, fireEvent } from "@testing-library/react";
 import { alertVariants, Alert } from "./alert";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS, zhCN } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
+
+describe("Alert 渲染性能", () => {
+  it("稳定父更新时跳过提示条子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Alert tone="warning" title="磁盘将满">
+        剩余空间不足 10%
+      </Alert>
+    ));
+  });
+});
 
 describe("alertVariants", () => {
   it("默认 soft + info（/12 alpha 底 + primary accent）", () => {

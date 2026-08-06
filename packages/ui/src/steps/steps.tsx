@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { Check, X } from "../_icons";
 import { cn } from "../lib/cn";
 import type { StepsItem, StepStatus, StepsProps } from "./steps.types";
@@ -63,7 +64,7 @@ function Indicator({
   );
 }
 
-export function Steps({
+function StepsImpl({
   items,
   current = 0,
   status,
@@ -173,3 +174,10 @@ export function Steps({
     </ol>
   );
 }
+StepsImpl.displayName = "Steps";
+
+// evidence 链指向的是根（GenericFixture -> Steps）：items 引用不变时整条步骤条本可跳过。
+// 内部 Indicator 是同一次渲染里的子节点，根被 memo 挡住后它连带不跑，无需单独 memo。
+// props 全是原语 + 稳定 items 时 React 无法自己 bailout —— 与 Button/Checkbox/Chip 同一处方。
+export const Steps = memo(StepsImpl);
+Steps.displayName = "Steps";

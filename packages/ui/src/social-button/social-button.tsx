@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { Loader2 } from "../_icons";
 
 import { useComponentLocale } from "../config/locale-context";
@@ -98,7 +99,7 @@ function BrandGlyph({
   );
 }
 
-export function SocialButton({
+function SocialButtonImpl({
   provider,
   variant = "outline",
   shape = "button",
@@ -163,3 +164,10 @@ export function SocialButton({
     </button>
   );
 }
+SocialButtonImpl.displayName = "SocialButton";
+
+// 登录页第三方按钮永远成排（微信/支付宝/GitHub…），父级一动就整排重算。
+// 这里渲染的是原生 <button>（不是库内已 memo 的 Button），所以 memo 必须加在本组件这一层。
+// props 全是原语时 React 无法自己 bailout —— 与 Button/Checkbox/Chip 同一处方。
+export const SocialButton = memo(SocialButtonImpl);
+SocialButton.displayName = "SocialButton";

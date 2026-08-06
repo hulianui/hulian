@@ -1,6 +1,13 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { Dot, dotVariants } from "./dot";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
+
+describe("Dot 渲染跳过", () => {
+  it("稳定父更新时跳过圆点子树", async () => {
+    await expectMemoSkipsSubtree(() => <Dot tone="success" size="md" label="在线" />);
+  });
+});
 
 describe("dotVariants", () => {
   it("默认 = md（size-2）", () => {
@@ -19,8 +26,7 @@ describe("dotVariants", () => {
 
 // hulianui/hulian#73：五档 tone 接不住图表序列色（chart-1..6 / 任意 CSS 色）。
 describe("Dot color", () => {
-  const dot = (ui: React.ReactElement) =>
-    render(ui).container.firstElementChild as HTMLElement;
+  const dot = (ui: React.ReactElement) => render(ui).container.firstElementChild as HTMLElement;
 
   it("语义色名解析为 var(--color-*)（与 Brand.color / ChartSeries.color 同路）", () => {
     expect(dot(<Dot color="chart-2" />).style.backgroundColor).toBe("var(--color-chart-2)");

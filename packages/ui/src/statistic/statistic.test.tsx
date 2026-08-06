@@ -1,6 +1,7 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Statistic, formatCountdown, formatStatistic } from "./statistic";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
@@ -37,6 +38,17 @@ describe("formatCountdown（纯函数）", () => {
 });
 
 describe("Statistic 组件", () => {
+  // 回归护栏：Statistic 外层的 memo 一旦被拆掉，本例立刻红。
+  it("稳定父更新时跳过 Statistic 子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Statistic title="活跃用户" value={112893} precision={0} suffix="人" />
+    ));
+  });
+
+  it("复合导出面：Statistic.Countdown 仍在 memo 后的根组件上", () => {
+    expect(typeof Statistic.Countdown).toBe("function");
+  });
+
   it("渲标题 + 格式化数值", () => {
     const { container } = render(<Statistic title="活跃用户" value={112893} />);
     expect(container.textContent).toContain("活跃用户");

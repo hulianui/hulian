@@ -3,6 +3,7 @@ import { render, fireEvent } from "@testing-library/react";
 import { Snippet } from "./snippet";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const writeText = vi.fn().mockResolvedValue(undefined);
 beforeEach(() => {
@@ -11,6 +12,11 @@ beforeEach(() => {
 });
 
 describe("Snippet", () => {
+  // 护栏套在整棵片段树上（提示符 + HighlightedCode 着色 span + 复制钮），只有整树跳过才过。
+  it("稳定父更新时跳过片段子树", async () => {
+    await expectMemoSkipsSubtree(() => <Snippet symbol="$">pnpm add @hulianui/ui</Snippet>);
+  });
+
   it("渲染内容 + 默认提示符 $（命令名 shell 着色后文本仍完整）", () => {
     const { getByText, container } = render(<Snippet>pnpm install</Snippet>);
     // 着色把命令名拆成 span，故按 <code> 整体 textContent 校验文本无丢失。
@@ -72,7 +78,9 @@ describe("Snippet", () => {
     expect(getByLabelText("复制")).toBeTruthy();
     rerender(
       <ConfigProvider locale={enUS}>
-        <Snippet copyLabel="Duplicate" copiedLabel="Duplicated">x</Snippet>
+        <Snippet copyLabel="Duplicate" copiedLabel="Duplicated">
+          x
+        </Snippet>
       </ConfigProvider>,
     );
     fireEvent.click(getByLabelText("Duplicate"));

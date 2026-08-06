@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import { GitBranch, GitCommit as GitCommitIcon } from "../_icons";
@@ -13,7 +14,7 @@ export function shortSha(sha: string, length = 7): string {
   return sha.trim().slice(0, Math.max(1, length));
 }
 
-export function GitCommit({
+function GitCommitImpl({
   sha,
   message,
   branch,
@@ -115,3 +116,9 @@ export function GitCommit({
     </span>
   );
 }
+GitCommitImpl.displayName = "GitCommit";
+
+// 提交引用是列表页「Source」列的常客（部署列表 / PR 列表一屏几十行），props 全是稳定原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const GitCommit = memo(GitCommitImpl);
+GitCommit.displayName = "GitCommit";

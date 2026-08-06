@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
 import { HighlightedCode } from "../code-block/highlighted-code";
@@ -8,7 +8,7 @@ import { useComponentLocale } from "../config/locale-context";
 
 // 可复制命令/代码片段（含剪贴板交互故 "use client"）。复制成功反馈 1.5s 切回。
 // children 为字符串时默认语法着色（命令多为纯色，JS 片段会着色）；非字符串原样渲染。
-export function Snippet({
+function SnippetImpl({
   children,
   text,
   symbol = "$",
@@ -55,3 +55,10 @@ export function Snippet({
     </div>
   );
 }
+SnippetImpl.displayName = "Snippet";
+
+// 命令片段常成排出现在文档/安装引导里，且 children 多为字符串字面量（引用稳定）；
+// 不 memo 则父级一动就整排重跑 HighlightedCode 的着色。
+// props 全稳定时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Snippet = memo(SnippetImpl);
+Snippet.displayName = "Snippet";

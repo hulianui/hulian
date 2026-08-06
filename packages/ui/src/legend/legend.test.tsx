@@ -1,10 +1,15 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { Legend } from "./legend";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const items = [{ label: "Opened" }, { label: "Closed" }];
 
 describe("Legend", () => {
+  it("稳定父更新时跳过图例子树", async () => {
+    await expectMemoSkipsSubtree(() => <Legend items={items} />);
+  });
+
   it("逐条渲染标签", () => {
     const { getByText } = render(<Legend items={items} />);
     expect(getByText("Opened")).toBeTruthy();

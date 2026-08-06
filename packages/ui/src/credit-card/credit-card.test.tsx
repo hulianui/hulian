@@ -3,6 +3,15 @@ import { render } from "@testing-library/react";
 import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from "./credit-card";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
+
+describe("CreditCard 渲染性能", () => {
+  it("稳定父更新时跳过卡面子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <CreditCard number="4111111111111111" holder="ZHANG SAN" expiry="08/28" />
+    ));
+  });
+});
 
 describe("detectBrand", () => {
   it("visa ^4", () => expect(detectBrand("4111111111111111")).toBe("visa"));
@@ -20,7 +29,8 @@ describe("detectBrand", () => {
 });
 
 describe("formatCardNumber", () => {
-  it("普通卡 4-4-4-4", () => expect(formatCardNumber("4111111111111111")).toBe("4111 1111 1111 1111"));
+  it("普通卡 4-4-4-4", () =>
+    expect(formatCardNumber("4111111111111111")).toBe("4111 1111 1111 1111"));
   it("amex 4-6-5", () => expect(formatCardNumber("371449635398431")).toBe("3714 496353 98431"));
   it("不足分组照样输出余位", () => expect(formatCardNumber("411112")).toBe("4111 12"));
 });

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { ARROW_H, ARROW_W, ARROWS, annotationGeometry } from "./annotation.geometry";
 import type { AnnotationProps, AnnotationSide, AnnotationTone } from "./annotation.types";
@@ -37,7 +38,7 @@ const toneClass: Record<AnnotationTone, string> = {
  * （ScrollArea、卡片裁剪、表格单元格），标签会被裁掉 —— 给那个祖先留出内边距，
  * 或换一个 side。
  */
-export function Annotation({
+function AnnotationImpl({
   note,
   side = "ne",
   tone = "neutral",
@@ -121,3 +122,10 @@ export function Annotation({
     </Tag>
   );
 }
+AnnotationImpl.displayName = "Annotation";
+
+// 解剖图 / 讲解稿里一屏挂十几条标注，每条都要重跑一遍八方位几何（annotationGeometry）。
+// props 全是稳定原语时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+// 几何仍是每次渲染现算（纯函数、无缓存），memo 只是让「稳定 props 下压根不渲染」。
+export const Annotation = memo(AnnotationImpl);
+Annotation.displayName = "Annotation";

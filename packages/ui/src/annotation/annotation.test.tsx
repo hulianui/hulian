@@ -10,6 +10,7 @@ import {
   sideVector,
 } from "./annotation.geometry";
 import type { AnnotationSide } from "./annotation.types";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const SIDES: AnnotationSide[] = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
 
@@ -133,6 +134,14 @@ describe("annotationGeometry", () => {
 });
 
 describe("<Annotation />", () => {
+  it("稳定父更新时跳过标注子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Annotation note="稳定 ID" side="ne" tone="primary">
+        CLI-042
+      </Annotation>
+    ));
+  });
+
   it("渲染被标注的内容与标签文本", () => {
     render(<Annotation note="稳定 ID">CLI-042</Annotation>);
     expect(screen.getByText("CLI-042")).toBeTruthy();
@@ -140,9 +149,7 @@ describe("<Annotation />", () => {
   });
 
   it("标签是真实节点，可以放 ReactNode 而不只是字符串", () => {
-    render(
-      <Annotation note={<b data-testid="rich">自定义字段</b>}>@blocked_by</Annotation>,
-    );
+    render(<Annotation note={<b data-testid="rich">自定义字段</b>}>@blocked_by</Annotation>);
     expect(screen.getByTestId("rich")).toBeTruthy();
   });
 

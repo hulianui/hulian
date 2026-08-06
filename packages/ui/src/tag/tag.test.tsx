@@ -2,8 +2,13 @@ import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Tag } from "./tag";
 import { ConfigProvider, enUS } from "../config";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Tag", () => {
+  it("稳定父更新时跳过标签子树", async () => {
+    await expectMemoSkipsSubtree(() => <Tag tone="success">已通过</Tag>);
+  });
+
   it("渲染内容", () => {
     const { getByText } = render(<Tag>状态</Tag>);
     expect(getByText("状态")).toBeTruthy();

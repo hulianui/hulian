@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import type { KbdProps } from "./kbd.types";
 
 // 纯皮肤 <kbd>（可 RSC）。组合键(⌘+K)靠并排多个 Kbd；keys 符号自动映射 YAGNI。
-export function Kbd({ className, children, ...props }: KbdProps) {
+function KbdImpl({ className, children, ...props }: KbdProps) {
   return (
     <kbd
       className={cn(
@@ -15,3 +16,9 @@ export function Kbd({ className, children, ...props }: KbdProps) {
     </kbd>
   );
 }
+KbdImpl.displayName = "Kbd";
+
+// 快捷键提示常成排渲染（命令面板、菜单项尾巴、帮助页），父级一动就整排重算。
+// props 全是原语时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Kbd = memo(KbdImpl);
+Kbd.displayName = "Kbd";

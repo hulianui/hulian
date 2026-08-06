@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
 import { TypingDots } from "../typing-dots";
@@ -27,7 +28,7 @@ function Receipt({
   return <CheckCheck aria-label={labels.read} className="size-3.5 text-primary" />;
 }
 
-export function ChatMessage({
+function ChatMessageImpl({
   role,
   avatar,
   name,
@@ -90,3 +91,10 @@ export function ChatMessage({
     </div>
   );
 }
+ChatMessageImpl.displayName = "ChatMessage";
+
+// 会话流是「已定稿的历史消息 + 一条正在流式输出的尾消息」，尾消息每个 token 都让整列表重渲染；
+// 历史消息的 props 是稳定原语（role/name/timestamp/纯文本 children）时 React 无法自己 bailout，
+// 只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const ChatMessage = memo(ChatMessageImpl);
+ChatMessage.displayName = "ChatMessage";

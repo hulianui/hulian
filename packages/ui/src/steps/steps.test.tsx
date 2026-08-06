@@ -2,14 +2,18 @@ import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Steps } from "./steps";
 import type { StepsItem } from "./steps.types";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
-const ITEMS: StepsItem[] = [
-  { title: "一", description: "d1" },
-  { title: "二" },
-  { title: "三" },
-];
+const ITEMS: StepsItem[] = [{ title: "一", description: "d1" }, { title: "二" }, { title: "三" }];
 
 describe("Steps", () => {
+  // 回归护栏：Steps 若被改回普通函数组件（去掉 memo），这条立刻红。
+  it("稳定父更新时跳过步骤条子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Steps items={ITEMS} current={1} direction="horizontal" size="md" />
+    ));
+  });
+
   it("渲染全部步骤标题与描述", () => {
     const { getByText } = render(<Steps items={ITEMS} current={1} />);
     expect(getByText("一")).toBeTruthy();

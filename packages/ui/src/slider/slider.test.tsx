@@ -1,11 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Slider } from "./slider";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const ranges = (c: HTMLElement) =>
   Array.from(c.querySelectorAll<HTMLInputElement>('input[type="range"]'));
 
 describe("Slider", () => {
+  it("稳定父更新时跳过 Slider 子树", async () => {
+    await expectMemoSkipsSubtree(() => <Slider defaultValue={40} />);
+  });
+
   it("标量 value → 渲 1 个 range input(单 thumb)", () => {
     const { container } = render(<Slider defaultValue={40} />);
     expect(ranges(container)).toHaveLength(1);

@@ -1,8 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Empty } from "./empty";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Empty", () => {
+  it("稳定父更新时跳过空态子树", async () => {
+    await expectMemoSkipsSubtree(() => <Empty title="暂无数据" description="空空如也" />);
+  });
+
   it("渲染标题与描述", () => {
     const { getByText } = render(<Empty title="暂无数据" description="空空如也" />);
     expect(getByText("暂无数据")).toBeTruthy();

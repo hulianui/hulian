@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import { resolveGrade, DEFAULT_GRADES } from "./score-ring.grade";
@@ -6,7 +7,7 @@ import type { ScoreRingProps } from "./score-ring.types";
 // 评分环：带 A-F 等级带的半径仪表盘，区别于线性 Meter/Progress。
 // 圆环用 SVG stroke-dasharray + dashoffset 控进度（非 CSS transform，见库 svg-circular-progress-ring 约定）。
 // CSS var 颜色须走 style（SVG 属性不解析 var()）。
-export function ScoreRing({
+function ScoreRingImpl({
   value,
   max = 100,
   grades = DEFAULT_GRADES,
@@ -66,3 +67,10 @@ export function ScoreRing({
     </div>
   );
 }
+ScoreRingImpl.displayName = "ScoreRing";
+
+// 评分环成组出现（质检看板一排若干维度），父级一动就整排重算周长/等级/描边几何。
+// props 全是原语时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+// 环内几何是纯算术（一次三角 + 一次等级查表），memo 一挡就整块不跑，无需再叠 useMemo。
+export const ScoreRing = memo(ScoreRingImpl);
+ScoreRing.displayName = "ScoreRing";

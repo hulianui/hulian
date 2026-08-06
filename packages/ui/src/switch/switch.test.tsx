@@ -1,8 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Switch } from "./switch";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Switch", () => {
+  it("稳定父更新时跳过 Switch 子树", async () => {
+    await expectMemoSkipsSubtree(() => <Switch aria-label="接收通知" defaultChecked />);
+  });
+
   it("渲染 role=switch，aria-label 透传", () => {
     const { getByRole } = render(<Switch aria-label="接收通知" />);
     expect(getByRole("switch", { name: "接收通知" })).toBeTruthy();
@@ -18,7 +23,9 @@ describe("Switch", () => {
 
   it("disabled 不响应点击", () => {
     const onCheckedChange = vi.fn();
-    const { getByRole } = render(<Switch aria-label="s" disabled onCheckedChange={onCheckedChange} />);
+    const { getByRole } = render(
+      <Switch aria-label="s" disabled onCheckedChange={onCheckedChange} />,
+    );
     fireEvent.click(getByRole("switch"));
     expect(onCheckedChange).not.toHaveBeenCalled();
   });

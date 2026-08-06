@@ -1,15 +1,25 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { SocialButton } from "./social-button";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("SocialButton", () => {
+  // 回归护栏：SocialButton 若被改回普通函数组件（去掉 memo），这条立刻红。
+  it("稳定父更新时跳过第三方按钮子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <SocialButton provider="wechat" variant="outline" size="md" />
+    ));
+  });
+
   it("默认渲染品牌默认文案", () => {
     const { getByText } = render(<SocialButton provider="wechat" />);
     expect(getByText("微信登录")).toBeTruthy();
   });
 
   it("children 覆盖默认文案", () => {
-    const { getByText, queryByText } = render(<SocialButton provider="github">用 GitHub 继续</SocialButton>);
+    const { getByText, queryByText } = render(
+      <SocialButton provider="github">用 GitHub 继续</SocialButton>,
+    );
     expect(getByText("用 GitHub 继续")).toBeTruthy();
     expect(queryByText("GitHub登录")).toBeNull();
   });

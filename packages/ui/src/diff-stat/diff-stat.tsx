@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
 import { splitBlocks } from "./diff-stat.split";
@@ -21,7 +23,7 @@ const STATUS_TONE: Record<DiffStatStatus, string> = {
   renamed: "text-primary bg-primary/10",
 };
 
-export function DiffStat({
+function DiffStatImpl({
   additions,
   deletions,
   status,
@@ -60,3 +62,10 @@ export function DiffStat({
     </span>
   );
 }
+DiffStatImpl.displayName = "DiffStat";
+
+// PR/文件列表里成百上千行各挂一个 DiffStat，父级一动就整列重算。props 全是原语
+// （additions/deletions/status/blocks/...），React 无法自己 bailout，只能靠 memo
+// —— 与 Button/Checkbox/Chip 同一处方。memo 不拦 context，切语言仍会正常重渲染。
+export const DiffStat = memo(DiffStatImpl);
+DiffStat.displayName = "DiffStat";

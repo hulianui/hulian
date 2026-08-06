@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { memo, type CSSProperties } from "react";
 import { tokenizeCode, type CodeTokenType } from "./code-highlight";
 
 // 各 token 类型的着色（吃 --code-* 语义 token → 明暗主题自动跟随）。plain 不着色。
@@ -16,7 +16,7 @@ const TOKEN_STYLE: Partial<Record<CodeTokenType, CSSProperties>> = {
 
 // 把代码文本切分着色，逐段套 <span>（纯文本段直接返回，避免无谓节点）。
 // 无 hook / 无状态 → 既能被 client 组件用，也不阻碍 SSR。
-export function HighlightedCode({ code, lang }: { code: string; lang?: string }) {
+function HighlightedCodeImpl({ code, lang }: { code: string; lang?: string }) {
   return (
     <>
       {tokenizeCode(code, lang).map((t, i) =>
@@ -31,3 +31,10 @@ export function HighlightedCode({ code, lang }: { code: string; lang?: string })
     </>
   );
 }
+HighlightedCodeImpl.displayName = "HighlightedCode";
+
+// memo 是给 CodeBlock 自身状态变化兜底的：复制按钮每点一次就切两回 copied，
+// 而 code/lang 一个字没变，没 memo 就要整段重新分词 + 重建全部 <span>。
+// 外层 CodeBlock 的 memo 只挡得住父级更新，挡不住这条路径。
+export const HighlightedCode = memo(HighlightedCodeImpl);
+HighlightedCode.displayName = "HighlightedCode";

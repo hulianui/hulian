@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import { chartColor } from "../chart/chart-theme";
@@ -20,7 +21,7 @@ function markerClass(marker: LegendMarker, size: "sm" | "md"): string {
   return cn(markerSize[size], marker === "dot" ? "rounded-full" : "rounded-[2px]");
 }
 
-export function Legend({
+function LegendImpl({
   items,
   marker = "dot",
   layout = "row",
@@ -86,3 +87,9 @@ export function Legend({
     </ul>
   );
 }
+
+LegendImpl.displayName = "Legend";
+
+// #89：父级稳定更新时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Legend = memo(LegendImpl);
+Legend.displayName = "Legend";

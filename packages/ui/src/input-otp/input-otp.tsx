@@ -1,6 +1,7 @@
 "use client";
 import {
   Fragment,
+  memo,
   useRef,
   useState,
   type KeyboardEvent,
@@ -14,7 +15,7 @@ import type { InputOTPProps } from "./input-otp.types";
 
 // 分段验证码输入（自动跳格/退格回退/整段粘贴，含状态故 "use client"）。
 // 槽位用空格占位保留位置（中间清空不左移），对外 join 时 trim 尾部空格。
-export function InputOTP({
+function InputOTPImpl({
   length = 6,
   value,
   defaultValue = "",
@@ -133,3 +134,9 @@ export function InputOTP({
     </div>
   );
 }
+InputOTPImpl.displayName = "InputOTP";
+
+// 槽位是本组件直接渲染的原生 input（事件处理器每帧新建，单独 memo 槽位不会 bail），
+// 所以拦在根这一层：父级稳定更新时整组槽位一起跳过。与 Button/Checkbox/Chip 同一处方。
+export const InputOTP = memo(InputOTPImpl);
+InputOTP.displayName = "InputOTP";

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { ColorField, normalizeHex, isHexColor } from "./color-field";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("normalizeHex", () => {
   it("补齐短写并统一小写加 #", () => {
@@ -12,7 +13,17 @@ describe("normalizeHex", () => {
   });
 
   it("不可解析返回 null（而不是抛错或吐个默认色）", () => {
-    for (const bad of ["", "#", "#12", "#1234", "#12345", "#1234567", "zzz", "#gggggg", "rgb(1,2,3)"]) {
+    for (const bad of [
+      "",
+      "#",
+      "#12",
+      "#1234",
+      "#12345",
+      "#1234567",
+      "zzz",
+      "#gggggg",
+      "rgb(1,2,3)",
+    ]) {
       expect(normalizeHex(bad), bad).toBeNull();
     }
   });
@@ -31,10 +42,14 @@ describe("isHexColor", () => {
 });
 
 describe("ColorField", () => {
-  const hexInput = (c: HTMLElement) =>
-    c.querySelector('input[type="text"]') as HTMLInputElement;
-  const colorInput = (c: HTMLElement) =>
-    c.querySelector('input[type="color"]') as HTMLInputElement;
+  const hexInput = (c: HTMLElement) => c.querySelector('input[type="text"]') as HTMLInputElement;
+  const colorInput = (c: HTMLElement) => c.querySelector('input[type="color"]') as HTMLInputElement;
+
+  it("稳定父更新时跳过颜色输入框子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <ColorField defaultValue="#38e8ff" size="md" aria-label="主色" />
+    ));
+  });
 
   it("非受控：显示 defaultValue 的规范化结果", () => {
     const { container } = render(<ColorField defaultValue="#ABC" />);
@@ -84,7 +99,9 @@ describe("ColorField", () => {
 
   it("色块的原生取色器改值即抛规范化值", () => {
     const onValueChange = vi.fn();
-    const { container } = render(<ColorField defaultValue="#000000" onValueChange={onValueChange} />);
+    const { container } = render(
+      <ColorField defaultValue="#000000" onValueChange={onValueChange} />,
+    );
     fireEvent.change(colorInput(container), { target: { value: "#38E8FF" } });
     expect(onValueChange).toHaveBeenCalledWith("#38e8ff");
   });

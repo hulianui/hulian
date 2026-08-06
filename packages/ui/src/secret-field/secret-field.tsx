@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { cn } from "../lib/cn";
 import { Eye, EyeOff, Copy, Check } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
@@ -21,7 +21,7 @@ export function maskSecret(value: string, strategy: MaskStrategy = "prefix-suffi
 const iconBtn =
   "inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
 
-export function SecretField({
+function SecretFieldImpl({
   value,
   revealed: revealedProp,
   onRevealedChange,
@@ -92,3 +92,9 @@ export function SecretField({
     </span>
   );
 }
+SecretFieldImpl.displayName = "SecretField";
+
+// API key 管理页里密钥字段成排列出，父级一动就整排重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const SecretField = memo(SecretFieldImpl);
+SecretField.displayName = "SecretField";

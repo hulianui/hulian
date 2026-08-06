@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
@@ -42,7 +43,7 @@ const thumbVariants = cva(
   },
 );
 
-export function Switch({ className, size, touchTarget, ...props }: SwitchProps) {
+function SwitchImpl({ className, size, touchTarget, ...props }: SwitchProps) {
   return (
     <BaseSwitch.Root
       {...props}
@@ -52,3 +53,9 @@ export function Switch({ className, size, touchTarget, ...props }: SwitchProps) 
     </BaseSwitch.Root>
   );
 }
+SwitchImpl.displayName = "Switch";
+
+// 开关成排出现在设置页/权限表里，父级一动就整排重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Switch = memo(SwitchImpl);
+Switch.displayName = "Switch";

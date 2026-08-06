@@ -1,9 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
-import { skeletonVariants } from "./skeleton";
+import { Skeleton, skeletonVariants } from "./skeleton";
 import { CardSkeleton, ListSkeleton, TableSkeleton } from "./skeleton-presets";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
+
+describe("Skeleton", () => {
+  it("稳定父更新时跳过骨架子树", async () => {
+    await expectMemoSkipsSubtree(() => <Skeleton shape="text" className="h-4 w-full" />);
+  });
+});
 
 describe("skeletonVariants", () => {
   it("默认 text 形态", () => {

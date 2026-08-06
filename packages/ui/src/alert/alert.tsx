@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import type { AlertProps } from "./alert.types";
@@ -45,7 +46,7 @@ const CloseIcon = (
   </svg>
 );
 
-export function Alert({
+function AlertImpl({
   className,
   variant,
   tone,
@@ -88,3 +89,10 @@ export function Alert({
     </div>
   );
 }
+AlertImpl.displayName = "Alert";
+
+// 通知/校验提示常年挂在高频更新的表单页与看板里，props 却是稳定原语（tone/variant/title/文案）。
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+// 注：memo 不拦 context，所以切换语言时 useComponentLocale 仍会正常触发重渲染。
+export const Alert = memo(AlertImpl);
+Alert.displayName = "Alert";

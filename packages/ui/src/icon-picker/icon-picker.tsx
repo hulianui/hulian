@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, type ReactNode } from "react";
+import { memo, useMemo, useState, type ReactNode } from "react";
 import { Search, X } from "../_icons";
 
 import { useComponentLocale } from "../config/locale-context";
@@ -24,7 +24,7 @@ function matches(icon: { name: string; keywords?: string[] }, q: string): boolea
   return (icon.keywords ?? []).some((k) => k.toLowerCase().includes(q));
 }
 
-export function IconPicker({
+function IconPickerImpl({
   value: valueProp,
   defaultValue,
   onValueChange,
@@ -216,3 +216,9 @@ export function IconPicker({
     </div>
   );
 }
+IconPickerImpl.displayName = "IconPicker";
+
+// 选择器里是几百个格子，父级一动就整片重算（sources 通常是模块级常量，引用稳定）。
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const IconPicker = memo(IconPickerImpl);
+IconPicker.displayName = "IconPicker";

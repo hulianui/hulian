@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { Dot } from "../dot";
 import type { DotTone } from "../dot";
@@ -20,7 +21,7 @@ const labelTone: Record<ChannelStatus, string> = {
   maintenance: "text-muted",
 };
 
-export function StatusDot({
+function StatusDotImpl({
   status,
   pulse,
   label,
@@ -44,3 +45,9 @@ export function StatusDot({
     </span>
   );
 }
+StatusDotImpl.displayName = "StatusDot";
+
+// 健康状态点必然成排渲染（渠道健康墙、模型在线态列表），父级一动就整墙重算。
+// props 全是原语时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const StatusDot = memo(StatusDotImpl);
+StatusDot.displayName = "StatusDot";

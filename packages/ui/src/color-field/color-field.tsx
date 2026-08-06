@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
@@ -44,7 +44,7 @@ const SWATCH_SIZE = { sm: "size-4", md: "size-5", lg: "size-6" } as const;
  * 就会被规范化逻辑打回去，根本没法手输。所以键入期间以本地草稿为准，
  * 只在解析成功时向外抛值，失焦时丢掉草稿归一到规范值。
  */
-export function ColorField({
+function ColorFieldImpl({
   value,
   defaultValue = "#3b82f6",
   onValueChange,
@@ -128,3 +128,10 @@ export function ColorField({
     </span>
   );
 }
+ColorFieldImpl.displayName = "ColorField";
+
+// 典型场景是主题配置表 / token 编辑器——一屏几十行，父级（受控 hex 的持有者）一动就整表重算。
+// 受控用法下 value 是字符串、onValueChange 常是 setState，引用全稳定，
+// React 却无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const ColorField = memo(ColorFieldImpl);
+ColorField.displayName = "ColorField";

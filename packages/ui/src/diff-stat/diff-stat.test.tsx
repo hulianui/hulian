@@ -4,6 +4,7 @@ import { splitBlocks } from "./diff-stat.split";
 import { DiffStat } from "./diff-stat";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("splitBlocks", () => {
   it("全增满绿", () => {
@@ -33,6 +34,11 @@ describe("splitBlocks", () => {
 });
 
 describe("DiffStat", () => {
+  // 回归护栏：DiffStat 外层的 memo 一旦被拆掉（比如重构回普通函数组件），本例立刻红。
+  it("稳定父更新时跳过 DiffStat 子树", async () => {
+    await expectMemoSkipsSubtree(() => <DiffStat additions={24} deletions={6} status="modified" />);
+  });
+
   it("显示 +N −M", () => {
     const { container } = render(<DiffStat additions={12} deletions={3} />);
     expect(container.textContent).toContain("+12");
@@ -51,7 +57,11 @@ describe("DiffStat", () => {
     expect(container.textContent).not.toContain("+3");
   });
   it("状态标签跟随 ConfigProvider", () => {
-    const { getByText } = render(<ConfigProvider locale={enUS}><DiffStat additions={1} deletions={0} status="added" /></ConfigProvider>);
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <DiffStat additions={1} deletions={0} status="added" />
+      </ConfigProvider>,
+    );
     expect(getByText("Added")).toBeTruthy();
   });
 });

@@ -1,10 +1,11 @@
+import { memo } from "react";
 import { TrendingUp, TrendingDown } from "../_icons";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import type { StatProps } from "./stat.types";
 
 // KPI 指标卡：纯瑚琏皮肤（无图表库）。升=text-primary / 降=text-danger（无 success）。
-export function Stat({ label, value, delta, deltaLabel, hint, icon, chart, className, ...props }: StatProps) {
+function StatImpl({ label, value, delta, deltaLabel, hint, icon, chart, className, ...props }: StatProps) {
   const hasDelta = typeof delta === "number";
   const up = hasDelta && (delta as number) >= 0;
   // deltaLabel 是趋势行的附属文案，无 delta 时整块趋势不渲染 → 它会被静默吞掉。
@@ -47,3 +48,9 @@ export function Stat({ label, value, delta, deltaLabel, hint, icon, chart, class
     </div>
   );
 }
+StatImpl.displayName = "Stat";
+
+// KPI 卡永远成行铺（工作台一排 4 张），父级一动就整排重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Stat = memo(StatImpl);
+Stat.displayName = "Stat";

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { cn } from "../lib/cn";
 import { NumberTicker } from "../number-ticker/number-ticker";
 import type { CountdownProps, StatisticProps } from "./statistic.types";
@@ -52,7 +52,7 @@ const affix = "text-base font-normal";
 const alignJustify = { start: "justify-start", center: "justify-center", end: "justify-end" } as const;
 const alignText = { start: "text-left", center: "text-center", end: "text-right" } as const;
 
-export function Statistic({
+function StatisticImpl({
   title,
   value,
   precision,
@@ -82,6 +82,7 @@ export function Statistic({
     </div>
   );
 }
+StatisticImpl.displayName = "Statistic";
 
 function Countdown({
   title,
@@ -128,4 +129,13 @@ function Countdown({
   );
 }
 
-Statistic.Countdown = Countdown;
+// KPI 区常是一排 Statistic 挤在一个每秒都在动的看板壳里（旁边就有倒计时/轮询），
+// 父级一动就整排重算。props 全是原语（title/value/precision/prefix/suffix/...），
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+// 注：valueStyle 是对象 prop，调用方写成内联字面量时每次都是新引用，memo 会照常放行渲染。
+const StatisticRoot = memo(StatisticImpl);
+StatisticRoot.displayName = "Statistic";
+
+// 复合导出面保持不变：Statistic 可调用、Statistic.Countdown 仍在。
+// 只有根组件加 memo —— Countdown 自带每秒 setState，memo 对它没有意义。
+export const Statistic = Object.assign(StatisticRoot, { Countdown });

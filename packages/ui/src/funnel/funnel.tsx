@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { computeFunnel } from "./funnel-geometry";
 import type { FunnelProps, FunnelStage, FunnelTone } from "./funnel.types";
@@ -28,7 +29,7 @@ function conversionText(conversion: number): string {
   return `${(conversion * 100).toFixed(1)}%`;
 }
 
-export function Funnel<S extends FunnelStage>({
+function FunnelImpl<S extends FunnelStage>({
   stages,
   orientation = "vertical",
   showConversion = true,
@@ -151,3 +152,13 @@ export function Funnel<S extends FunnelStage>({
     </div>
   );
 }
+FunnelImpl.displayName = "Funnel";
+
+// stages 引用不变时整张漏斗（含 computeFunnel 几何）本可整块跳过，React 却无法自己 bailout ——
+// 只能靠 memo，与 Button/Checkbox/Chip 同一处方。几何是纯函数、只在真正重渲染时跑一次，
+// memo 已把「白跑」那条路堵死，不再叠 useMemo（stages 变了几何本来就必须重算）。
+//
+// 泛型组件被 memo 包一层后 React 的类型会把 S 擦成约束上界，这里断言回 FunnelImpl 的签名，
+// 保住 `<Funnel<MyStage> …>` 与 renderStage/onStageClick 回调里的 stage 精确类型。
+export const Funnel = memo(FunnelImpl) as unknown as typeof FunnelImpl;
+Funnel.displayName = "Funnel";

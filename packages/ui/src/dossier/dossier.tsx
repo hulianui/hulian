@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Check } from "../_icons";
 import { cn } from "../lib/cn";
 import type { DossierProps, DossierSectionStatus } from "./dossier.types";
@@ -20,7 +21,7 @@ function StatusIcon({ status }: { status: DossierSectionStatus }) {
   return <span aria-hidden className="size-3.5 rounded-full border-2 border-border" />;
 }
 
-export function Dossier({
+function DossierImpl({
   sections,
   title = "案卷",
   progress,
@@ -82,3 +83,10 @@ export function Dossier({
     </div>
   );
 }
+DossierImpl.displayName = "Dossier";
+
+// 案卷面板固定挂在访谈/表单页侧栏，父级每次输入都重渲，而 sections 常整段不变；
+// 不 memo 就要重跑 filter 统计并重算每个域行（含 StatusIcon）。
+// props 全稳定时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Dossier = memo(DossierImpl);
+Dossier.displayName = "Dossier";

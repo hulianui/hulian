@@ -3,6 +3,7 @@ import { render, cleanup, fireEvent } from "@testing-library/react";
 import { LivePlayer } from "./live-player";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 // jsdom 无 IntersectionObserver → NumberTicker(useInView) 需要桩；给永不触发的桩停在起始值。
 beforeAll(() => {
@@ -21,6 +22,13 @@ beforeAll(() => {
 afterEach(cleanup);
 
 describe("LivePlayer", () => {
+  // 护栏套在整棵播放器树上（画面层 + LIVE 徽标 + 在线数 NumberTicker），只有整树跳过才过。
+  it("稳定父更新时跳过播放器子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <LivePlayer src="/demo.mp4" viewers={12840} live orientation="landscape" />
+    ));
+  });
+
   it("默认显示 LIVE 徽标", () => {
     const { getByText } = render(<LivePlayer />);
     expect(getByText("LIVE")).toBeTruthy();
@@ -38,13 +46,17 @@ describe("LivePlayer", () => {
 
   it("未关注显示关注钮，点击触发 onFollow", () => {
     let called = false;
-    const { getByText } = render(<LivePlayer host={{ name: "主播", onFollow: () => (called = true) }} />);
+    const { getByText } = render(
+      <LivePlayer host={{ name: "主播", onFollow: () => (called = true) }} />,
+    );
     fireEvent.click(getByText("+ 关注"));
     expect(called).toBe(true);
   });
 
   it("followed 时显示已关注", () => {
-    const { getByText } = render(<LivePlayer host={{ name: "主播", followed: true, onFollow: () => {} }} />);
+    const { getByText } = render(
+      <LivePlayer host={{ name: "主播", followed: true, onFollow: () => {} }} />,
+    );
     expect(getByText("已关注")).toBeTruthy();
   });
 
@@ -89,7 +101,9 @@ describe("LivePlayer", () => {
   });
 
   it("overlay 与 footer 插槽渲染", () => {
-    const { getByText } = render(<LivePlayer overlay={<span>弹幕层</span>} footer={<span>互动栏</span>} />);
+    const { getByText } = render(
+      <LivePlayer overlay={<span>弹幕层</span>} footer={<span>互动栏</span>} />,
+    );
     expect(getByText("弹幕层")).toBeTruthy();
     expect(getByText("互动栏")).toBeTruthy();
   });

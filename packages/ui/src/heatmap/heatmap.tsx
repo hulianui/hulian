@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { buildMatrix, bucketize } from "./heatmap.matrix";
@@ -13,7 +15,7 @@ function bucketBackground(bucket: number, scale: number): string {
   return `color-mix(in oklch, var(--color-primary) ${Math.round(alpha * 100)}%, transparent)`;
 }
 
-export function Heatmap({
+function HeatmapImpl({
   data,
   xLabels,
   yLabels,
@@ -154,3 +156,11 @@ export function Heatmap({
     </div>
   );
 }
+HeatmapImpl.displayName = "Heatmap";
+
+// 一张热力图 = 行 × 列个格子，每格都要重跑 bucketize + 拼 tooltip 文案；父级（仪表盘）
+// 一动就整片重算。data/xLabels/yLabels 引用没变、其余 props 全是原语时 React 无法自己
+// bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。memo 不拦 context，
+// 切语言时 useComponentLocale 仍会正常触发重渲染，缺席格「无数据」文案照常跟着换。
+export const Heatmap = memo(HeatmapImpl);
+Heatmap.displayName = "Heatmap";

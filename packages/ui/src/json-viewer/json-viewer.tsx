@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
@@ -166,7 +166,7 @@ function JsonNode({
   );
 }
 
-export function JsonViewer({
+function JsonViewerImpl({
   data,
   rootName,
   defaultExpandedDepth = 1,
@@ -199,3 +199,10 @@ export function JsonViewer({
     </div>
   );
 }
+JsonViewerImpl.displayName = "JsonViewer";
+
+// 一份响应体展开就是几十上百个 JsonNode，父级（日志抽屉、请求详情页）一动就整棵树重算。
+// data 通常是取回后就不再变的对象引用，其余 props 全是原语 —— React 无法自己 bailout，
+// 只能靠 memo。与 Button/Checkbox/Chip 同一处方；memo 不拦 context，切语言照常重渲染。
+export const JsonViewer = memo(JsonViewerImpl);
+JsonViewer.displayName = "JsonViewer";

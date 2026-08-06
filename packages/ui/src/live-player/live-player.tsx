@@ -1,12 +1,12 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
 import { NumberTicker } from "../number-ticker";
 import type { LivePlayerProps } from "./live-player.types";
 import { useComponentLocale } from "../config/locale-context";
 
-export function LivePlayer({
+function LivePlayerImpl({
   src,
   poster,
   surface,
@@ -149,3 +149,10 @@ export function LivePlayer({
     </div>
   );
 }
+LivePlayerImpl.displayName = "LivePlayer";
+
+// 直播间父级被弹幕/礼物/在线数以帧级频率驱动重渲，播放器本体的 props 却常整场不变。
+// 不 memo 的话每帧都要重算画面层 + 主播条 + 清晰度菜单整棵树（且会连带重建 <video> 的 props）。
+// props 全稳定时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const LivePlayer = memo(LivePlayerImpl);
+LivePlayer.displayName = "LivePlayer";

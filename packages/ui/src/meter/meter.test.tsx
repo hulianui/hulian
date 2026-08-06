@@ -1,8 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Meter } from "./meter";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Meter", () => {
+  it("稳定父更新时跳过度量条子树", async () => {
+    await expectMemoSkipsSubtree(() => <Meter value={64} label="磁盘用量" showValue />);
+  });
+
   it("渲染 role=meter + aria-valuenow", () => {
     const { container } = render(<Meter value={40} />);
     const m = container.querySelector('[role="meter"]')!;

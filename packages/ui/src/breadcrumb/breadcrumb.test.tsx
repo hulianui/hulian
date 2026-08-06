@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Breadcrumb } from "./breadcrumb";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const items = [
   { label: "首页", href: "/" },
@@ -9,6 +10,11 @@ const items = [
 ];
 
 describe("Breadcrumb", () => {
+  // items 必须是模块级常量（引用稳定），传数组字面量时 memo 本来就不该 bail。
+  it("稳定父更新时跳过面包屑子树", async () => {
+    await expectMemoSkipsSubtree(() => <Breadcrumb items={items} separator="/" />);
+  });
+
   it("根元素是 nav，默认 aria-label=breadcrumb，内含 ol", () => {
     const { container } = render(<Breadcrumb items={items} />);
     const nav = container.querySelector("nav");

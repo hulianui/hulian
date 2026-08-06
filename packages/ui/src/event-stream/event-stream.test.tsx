@@ -2,16 +2,30 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import { EventStream } from "./event-stream";
 import type { EventStreamItem } from "./event-stream.types";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
 const items: EventStreamItem[] = [
   { id: 1, ts: "09:12:01", tone: "success", title: "构建通过", meta: "2.1s" },
-  { id: 2, ts: "09:12:44", tone: "danger", title: "越权写入被拦", detail: "目标超出允许范围", meta: "1.3ms" },
+  {
+    id: 2,
+    ts: "09:12:44",
+    tone: "danger",
+    title: "越权写入被拦",
+    detail: "目标超出允许范围",
+    meta: "1.3ms",
+  },
   { id: 3, ts: "09:13:02", tone: "warning", title: "需人工确认", overridden: "本次确有必要" },
 ];
 
 describe("EventStream", () => {
+  // 回归护栏：EventStream 外层的 memo 一旦被拆掉，本例立刻红。
+  // items 用模块级常量 —— memo 只认引用相等，内联数组字面量会让测试假红。
+  it("稳定父更新时跳过 EventStream 子树", async () => {
+    await expectMemoSkipsSubtree(() => <EventStream items={items} maxHeight={320} />);
+  });
+
   it("渲染全部条目与时间", () => {
     const { getByText } = render(<EventStream items={items} />);
     expect(getByText("构建通过")).toBeTruthy();

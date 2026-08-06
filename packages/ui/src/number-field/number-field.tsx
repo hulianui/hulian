@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
 import { Minus, Plus } from "../_icons";
 import { cn } from "../lib/cn";
@@ -12,7 +13,7 @@ import { useComponentLocale } from "../config/locale-context";
 const btnClass =
   "inline-flex size-9 shrink-0 select-none items-center justify-center text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
 
-export function NumberField({
+function NumberFieldImpl({
   className,
   "aria-label": ariaLabel,
   onValueChange,
@@ -54,3 +55,9 @@ export function NumberField({
     </BaseNumberField.Root>
   );
 }
+NumberFieldImpl.displayName = "NumberField";
+
+// 数量/价格字段常成排落在同一张表单里，父级一动就整排重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const NumberField = memo(NumberFieldImpl);
+NumberField.displayName = "NumberField";

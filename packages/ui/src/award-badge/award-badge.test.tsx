@@ -2,6 +2,15 @@ import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { AwardBadge } from "./award-badge";
 import { laurelDefaults, laurelLeaves, laurelStemPath } from "./laurel-geometry";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
+
+describe("AwardBadge 渲染性能", () => {
+  it("稳定父更新时跳过奖章子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <AwardBadge title="#1 Repository Of The Day" kicker="GITHUB TRENDING" rank="1" />
+    ));
+  });
+});
 
 describe("laurelLeaves", () => {
   it("按 count 出叶，坐标全为有限数", () => {

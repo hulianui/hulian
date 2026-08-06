@@ -1,4 +1,4 @@
-import { Children, cloneElement, isValidElement, type ReactElement } from "react";
+import { Children, cloneElement, isValidElement, memo, type ReactElement } from "react";
 import { cn } from "../lib/cn";
 import type {
   TimelineDotColor,
@@ -126,7 +126,7 @@ export function TimelineItem({
   return <li className={cn("flex gap-3", className)}>{row}</li>;
 }
 
-export function Timeline({ items, mode = "left", pending, className, children, ...props }: TimelineProps) {
+function TimelineImpl({ items, mode = "left", pending, className, children, ...props }: TimelineProps) {
   // 统一为 TimelineItem 元素数组：items 数组路径直接构造，复合路径过滤出 TimelineItem 子节点。
   let nodes: ReactElement<TimelineItemProps>[];
   if (items) {
@@ -167,3 +167,11 @@ export function Timeline({ items, mode = "left", pending, className, children, .
     </ol>
   );
 }
+TimelineImpl.displayName = "Timeline";
+
+// 每次渲染都要重建整份节点数组并对每项 cloneElement 注入布局元信息，成本随条目数线性涨；
+// 详情页/审批页的 Timeline 常年挂在会频繁更新的壳里。items（或 children）引用没变、
+// 其余 props 全是原语时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip
+// 同一处方。memo 在 RSC 下被 Flight 直接拆包渲染，故本体仍不需要 "use client"。
+export const Timeline = memo(TimelineImpl);
+Timeline.displayName = "Timeline";

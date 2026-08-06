@@ -1,8 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { Stat } from "./stat";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Stat", () => {
+  // 回归护栏：Stat 若被改回普通函数组件（去掉 memo），这条立刻红。
+  it("稳定父更新时跳过指标卡子树", async () => {
+    await expectMemoSkipsSubtree(() => <Stat label="月活" value="12,034" delta={12} />);
+  });
+
   it("渲染 label + value", () => {
     const { getByText } = render(<Stat label="月活" value="12,034" />);
     expect(getByText("月活")).toBeTruthy();
@@ -35,7 +41,9 @@ describe("Stat", () => {
   });
 
   it("hint 独立于 delta 渲染（无 delta 也出现）", () => {
-    const { getByText, container } = render(<Stat label="题篮题数" value="12" hint="上限 200 题" />);
+    const { getByText, container } = render(
+      <Stat label="题篮题数" value="12" hint="上限 200 题" />,
+    );
     expect(getByText("上限 200 题")).toBeTruthy();
     // 只有注脚、没有趋势：趋势图标不该被带出来
     expect(container.querySelector("svg")).toBeNull();

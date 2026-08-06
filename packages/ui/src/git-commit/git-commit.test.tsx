@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { GitCommit, shortSha } from "./git-commit";
 import { branchTone } from "./branch-tone";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("shortSha", () => {
   it("默认截 7 位", () => {
@@ -22,6 +23,12 @@ describe("shortSha", () => {
 });
 
 describe("GitCommit", () => {
+  it("稳定父更新时跳过提交引用子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <GitCommit sha="10577b9aaaa" branch="master" message="fix: 部署回退" author="瑚琏" />
+    ));
+  });
+
   it("渲染短哈希与提交信息", () => {
     const { getByText } = render(
       <GitCommit sha="10577b9aaaa" message="fix: 部署回退" branch="master" />,
@@ -53,9 +60,7 @@ describe("GitCommit", () => {
   });
 
   it("colorBranch 给分支着色（彩色文字 + soft 底）", () => {
-    const { getByText } = render(
-      <GitCommit sha="abc1234" branch="feat/sku-g" />,
-    );
+    const { getByText } = render(<GitCommit sha="abc1234" branch="feat/sku-g" />);
     const el = getByText("feat/sku-g").closest("span[style]") as HTMLElement;
     expect(el).toBeTruthy();
     expect(el.style.color).toContain("--color-");
@@ -63,9 +68,7 @@ describe("GitCommit", () => {
   });
 
   it("colorBranch=false 退回中性文本（无 style 着色）", () => {
-    const { getByText } = render(
-      <GitCommit sha="abc1234" branch="main" colorBranch={false} />,
-    );
+    const { getByText } = render(<GitCommit sha="abc1234" branch="main" colorBranch={false} />);
     const el = getByText("main").closest("span[style]");
     expect(el).toBeNull();
   });

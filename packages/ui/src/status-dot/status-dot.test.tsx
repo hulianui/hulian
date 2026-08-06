@@ -1,8 +1,14 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { StatusDot } from "./status-dot";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("StatusDot", () => {
+  // 回归护栏：StatusDot 若被改回普通函数组件（去掉 memo），这条立刻红。
+  it("稳定父更新时跳过状态点子树", async () => {
+    await expectMemoSkipsSubtree(() => <StatusDot status="online" label="在线" extra="128ms" />);
+  });
+
   it("渲染语义标签", () => {
     const { getByText } = render(<StatusDot status="online" label="在线" />);
     expect(getByText("在线")).toBeTruthy();

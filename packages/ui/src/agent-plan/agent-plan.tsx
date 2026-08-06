@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { Check, X } from "../_icons";
 
 import { useComponentLocale } from "../config/locale-context";
@@ -15,7 +16,7 @@ function StatusIcon({ status }: { status: AgentTaskStatus }) {
   return <span className="size-3.5 rounded-full border-2 border-border" aria-hidden />;
 }
 
-export function AgentPlan({
+function AgentPlanImpl({
   tasks,
   title,
   bare = false,
@@ -69,3 +70,10 @@ export function AgentPlan({
     </div>
   );
 }
+AgentPlanImpl.displayName = "AgentPlan";
+
+// 计划面板常挂在会随消息流/轮询高频重渲的父级下（Conversation、AgentPlan 侧栏），
+// tasks 通常是稳定引用的数组，父级一动却整条清单连同每行 StatusIcon 重算。
+// props 全稳定时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const AgentPlan = memo(AgentPlanImpl);
+AgentPlan.displayName = "AgentPlan";

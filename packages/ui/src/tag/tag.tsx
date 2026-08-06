@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { cva } from "class-variance-authority";
 import { X } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
@@ -47,7 +48,7 @@ const dotByTone: Record<TagTone, string> = {
   danger: "bg-danger",
 };
 
-export function Tag({
+function TagImpl({
   variant,
   tone = "neutral",
   size = "md",
@@ -105,3 +106,9 @@ export function Tag({
     </span>
   );
 }
+TagImpl.displayName = "Tag";
+
+// 状态标签是列表 / 表格单元格里成百上千地渲染的原语（ProTable 状态列一屏就是几十上百个）。
+// props 全是稳定原语时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Tag = memo(TagImpl);
+Tag.displayName = "Tag";

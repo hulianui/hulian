@@ -3,8 +3,17 @@ import { render } from "@testing-library/react";
 import { ChatMessage } from "./chat-message";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("ChatMessage", () => {
+  it("稳定父更新时跳过气泡子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <ChatMessage role="assistant" name="小助手" timestamp="10:24">
+        已经帮你查到了
+      </ChatMessage>
+    ));
+  });
+
   it("user 气泡用 primary 底 + 右对齐(flex-row-reverse)", () => {
     const { container, getByText } = render(<ChatMessage role="user">你好</ChatMessage>);
     expect(getByText("你好").className).toContain("bg-primary");
@@ -48,7 +57,9 @@ describe("ChatMessage", () => {
   it("ConfigProvider locale=enUS renders English receipt labels", () => {
     const { getByLabelText } = render(
       <ConfigProvider locale={enUS}>
-        <ChatMessage role="user" status="read">Ready</ChatMessage>
+        <ChatMessage role="user" status="read">
+          Ready
+        </ChatMessage>
       </ConfigProvider>,
     );
     expect(getByLabelText("Read")).toBeTruthy();

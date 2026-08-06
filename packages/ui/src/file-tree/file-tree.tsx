@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, type MouseEvent } from "react";
+import { memo, useMemo, useState, type MouseEvent } from "react";
 import { ChevronRight, Folder, File } from "../_icons";
 
 import { useComponentLocale } from "../config/locale-context";
@@ -122,7 +122,7 @@ function Row({
   );
 }
 
-export function FileTree({
+function FileTreeImpl({
   nodes,
   selectedPath,
   onSelect,
@@ -212,3 +212,10 @@ export function FileTree({
     </div>
   );
 }
+FileTreeImpl.displayName = "FileTree";
+
+// 树是递归渲染的：根组件重算一次，整棵 Row 子树跟着全部重建。侧栏文件树的父级
+// （编辑器壳、面板布局）更新频繁而 nodes 引用通常不变，memo 在根上一挡就是整棵树。
+// 注意别改成 memo(Row)：Row 收的 toggle / expandedSet 每轮都是新引用，浅比较必然失败。
+export const FileTree = memo(FileTreeImpl);
+FileTree.displayName = "FileTree";

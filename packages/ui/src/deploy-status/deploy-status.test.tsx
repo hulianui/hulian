@@ -3,8 +3,15 @@ import { describe, it, expect } from "vitest";
 import { DeployStatus } from "./deploy-status";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("DeployStatus", () => {
+  it("稳定父更新时跳过状态件子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <DeployStatus status="building" variant="badge" size="md" />
+    ));
+  });
+
   it("默认 badge 渲染状态文案", () => {
     const { getByText } = render(<DeployStatus status="ready" />);
     expect(getByText("已上线")).toBeTruthy();

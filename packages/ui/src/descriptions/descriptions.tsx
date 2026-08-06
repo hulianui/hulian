@@ -1,4 +1,11 @@
-import { Children, Fragment, isValidElement, type ReactElement, type ReactNode } from "react";
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  memo,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { cn } from "../lib/cn";
 import type {
   DescriptionsItemData,
@@ -32,7 +39,7 @@ export function DescriptionsItem({ children }: DescriptionsItemProps) {
   return <>{children}</>;
 }
 
-export function Descriptions({
+function DescriptionsImpl({
   title,
   extra,
   column = 3,
@@ -119,3 +126,11 @@ export function Descriptions({
     </div>
   );
 }
+DescriptionsImpl.displayName = "Descriptions";
+
+// children 路径每次渲染都要 collectItems 递归下钻一遍（含 Fragment 展开），详情页里
+// 又常和会频繁更新的操作区共存。items（或 children）引用没变、其余 props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+// memo 在 RSC 下被 Flight 直接拆包渲染，故本体仍不需要 "use client"。
+export const Descriptions = memo(DescriptionsImpl);
+Descriptions.displayName = "Descriptions";

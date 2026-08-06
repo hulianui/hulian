@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, within } from "@testing-library/react";
 import { FileTree, fileStatusMeta } from "./file-tree";
 import type { FileNode } from "./file-tree.types";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const nodes: FileNode[] = [
   {
@@ -31,6 +32,12 @@ describe("statusMeta", () => {
 });
 
 describe("FileTree", () => {
+  // 树是递归的：memo 挡在根上，整棵 Row 子树一起跳过。
+  // 护栏套整棵树，分母覆盖全部节点，只有真正整树跳过才过。
+  it("稳定父更新时跳过整棵文件树", async () => {
+    await expectMemoSkipsSubtree(() => <FileTree nodes={nodes} selectedPath="src/index.ts" />);
+  });
+
   it("默认展开的文件夹渲染子节点", () => {
     const { getByText } = render(<FileTree nodes={nodes} />);
     expect(getByText("index.ts")).toBeTruthy();
@@ -58,18 +65,26 @@ describe("FileTree", () => {
   });
   it("selectedPath 高亮当前行（精确 token，排除 hover: 前缀假阳性）", () => {
     const sel = render(<FileTree nodes={nodes} selectedPath="src/index.ts" />);
-    const selTokens = within(sel.container).getByText("index.ts").closest("button")!.className.split(/\s+/);
+    const selTokens = within(sel.container)
+      .getByText("index.ts")
+      .closest("button")!
+      .className.split(/\s+/);
     expect(selTokens).toContain("bg-surface-hover");
     // 未选中行不应带无前缀的高亮 token（只有 hover: 前缀）
     const unsel = render(<FileTree nodes={nodes} />);
-    const unselTokens = within(unsel.container).getByText("index.ts").closest("button")!.className.split(/\s+/);
+    const unselTokens = within(unsel.container)
+      .getByText("index.ts")
+      .closest("button")!
+      .className.split(/\s+/);
     expect(unselTokens).not.toContain("bg-surface-hover");
   });
 });
 
 describe("FileTree 受控 / 搜索 / 右键", () => {
   it("searchable 过滤出命中并自动展开祖先", () => {
-    const { getByPlaceholderText, getByText, queryByText } = render(<FileTree nodes={nodes} searchable />);
+    const { getByPlaceholderText, getByText, queryByText } = render(
+      <FileTree nodes={nodes} searchable />,
+    );
     fireEvent.change(getByPlaceholderText("搜索文件"), { target: { value: "old" } });
     expect(getByText("old.ts")).toBeTruthy(); // lib 自动展开
     expect(queryByText("index.ts")).toBeNull(); // 未命中隐藏

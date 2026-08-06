@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Dossier } from "./dossier";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const sections = [
   { key: "basic", label: "基本信息", status: "done" as const, summary: "林晚晴 · 138-xxxx" },
@@ -10,6 +11,13 @@ const sections = [
 ];
 
 describe("Dossier", () => {
+  // 护栏套在整棵案卷树上（4 个域行 × StatusIcon），只有整树跳过才过。
+  it("稳定父更新时跳过案卷子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Dossier sections={sections} title="案卷" archivedLabel="已归档" optionalLabel="可选" />
+    ));
+  });
+
   it("渲染全部域 label 与 summary", () => {
     const { container } = render(<Dossier sections={sections} />);
     expect(container.textContent).toContain("基本信息");

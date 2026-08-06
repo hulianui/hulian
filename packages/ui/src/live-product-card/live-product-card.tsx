@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
 import type { LiveProductCardProps } from "./live-product-card.types";
@@ -7,7 +8,7 @@ function fmt(n: number): string {
   return Number.isInteger(n) ? String(n) : n.toFixed(2);
 }
 
-export function LiveProductCard({
+function LiveProductCardImpl({
   index,
   image,
   title,
@@ -106,3 +107,9 @@ export function LiveProductCard({
     </div>
   );
 }
+LiveProductCardImpl.displayName = "LiveProductCard";
+
+// 直播商品卡永远是成列表出现的，而它所在的页面（弹幕、在线人数、倒计时）每秒都在更新——
+// 父级一动整列重算。props 全是原语时 React 无法自己 bailout，只能靠 memo。
+export const LiveProductCard = memo(LiveProductCardImpl);
+LiveProductCard.displayName = "LiveProductCard";

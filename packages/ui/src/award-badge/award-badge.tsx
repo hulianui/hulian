@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import { pressableClass } from "../motion";
@@ -65,7 +66,7 @@ const kickerSize: Record<AwardBadgeSize, string> = {
 };
 const titleSize: Record<AwardBadgeSize, string> = { sm: "text-xs", md: "text-base", lg: "text-lg" };
 
-export function AwardBadge({
+function AwardBadgeImpl({
   title,
   kicker,
   rank,
@@ -159,3 +160,10 @@ export function AwardBadge({
     </span>
   );
 }
+AwardBadgeImpl.displayName = "AwardBadge";
+
+// 桂冠是每次渲染都要重算 40+ 个 <ellipse> 的 SVG 子树，重渲染代价明显高于普通徽标；
+// props 又都是稳定原语（title/kicker/rank/tone/size）。React 无法自己 bailout，只能靠 memo
+// —— 与 Button/Checkbox/Chip 同一处方。
+export const AwardBadge = memo(AwardBadgeImpl);
+AwardBadge.displayName = "AwardBadge";

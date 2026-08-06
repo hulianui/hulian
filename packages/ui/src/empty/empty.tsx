@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/cn";
 import type { EmptyProps } from "./empty.types";
 
@@ -11,7 +12,7 @@ function DefaultIcon({ className }: { className?: string }) {
   );
 }
 
-export function Empty({ icon, title, description, size = "md", className, children, ...props }: EmptyProps) {
+function EmptyImpl({ icon, title, description, size = "md", className, children, ...props }: EmptyProps) {
   const sm = size === "sm";
   return (
     <div
@@ -33,3 +34,9 @@ export function Empty({ icon, title, description, size = "md", className, childr
     </div>
   );
 }
+
+EmptyImpl.displayName = "Empty";
+
+// #89：父级稳定更新时 React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const Empty = memo(EmptyImpl);
+Empty.displayName = "Empty";

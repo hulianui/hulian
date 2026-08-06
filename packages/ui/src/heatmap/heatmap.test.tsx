@@ -3,6 +3,7 @@ import { render, fireEvent } from "@testing-library/react";
 import { ConfigProvider, enUS } from "../config";
 import { buildMatrix, bucketize } from "./heatmap.matrix";
 import { Heatmap } from "./heatmap";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("buildMatrix", () => {
   it("命中已有点，缺席返回 undefined（不与真实 0 混同）", () => {
@@ -57,6 +58,12 @@ describe("Heatmap", () => {
     { x: "周二", y: "登录", value: 0 },
     { x: "周一", y: "支付", value: 8 },
   ];
+  // 回归护栏：Heatmap 外层的 memo 一旦被拆掉，本例立刻红。
+  // data 用 describe 作用域内的常量 —— memo 只认引用相等，内联数组字面量会让测试假红。
+  it("稳定父更新时跳过 Heatmap 子树", async () => {
+    await expectMemoSkipsSubtree(() => <Heatmap data={data} cellSize={18} colorScale={5} />);
+  });
+
   it("格子数 = xs × ys", () => {
     const { container } = render(<Heatmap data={data} showLabels={false} />);
     // xs=[周一,周二] ys=[登录,支付] → 4 格

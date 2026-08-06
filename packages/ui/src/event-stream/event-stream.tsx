@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
@@ -147,7 +147,7 @@ function Row({
   );
 }
 
-export function EventStream({
+function EventStreamImpl({
   items,
   maxHeight,
   emptyText,
@@ -212,3 +212,12 @@ export function EventStream({
     </ol>
   );
 }
+EventStreamImpl.displayName = "EventStream";
+
+// 事件流常年挂在控制台侧栏里，宿主页面每次刷新（轮询、tab 切换、无关 state）都会带着
+// 整条流重算 —— 而 items 不变时它本该一动不动。items 引用没变、其余 props 全是原语时
+// React 无法自己 bailout，只能靠 memo，与 Button/Checkbox/Chip 同一处方。
+// 注意：live 的新条目判定挂在 useRef 上，memo 只是跳过「引用全没变」的渲染，
+// items 一有新条目引用就变，仍会正常进入渲染并闪一次，淡入行为不受影响。
+export const EventStream = memo(EventStreamImpl);
+EventStream.displayName = "EventStream";

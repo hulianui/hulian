@@ -2,10 +2,15 @@ import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { ConfigProvider, enUS } from "../config";
 import { InputOTP } from "./input-otp";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const inputs = (c: HTMLElement) => Array.from(c.querySelectorAll("input"));
 
 describe("InputOTP", () => {
+  it("稳定父更新时跳过 InputOTP 子树", async () => {
+    await expectMemoSkipsSubtree(() => <InputOTP length={6} defaultValue="123" />);
+  });
+
   it("按 length 渲染对应数量的格子", () => {
     const { container } = render(<InputOTP length={4} />);
     expect(inputs(container)).toHaveLength(4);

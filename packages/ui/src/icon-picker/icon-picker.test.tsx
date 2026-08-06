@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { IconPicker } from "./icon-picker";
 import type { IconPickerSource } from "./icon-picker.types";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const renderIcon = (name: string) => <svg data-icon={name} />;
 
@@ -24,6 +25,11 @@ const SOURCES: IconPickerSource[] = [
 ];
 
 describe("IconPicker", () => {
+  it("稳定父更新时跳过 IconPicker 子树", async () => {
+    // sources 走模块级常量（消费方的常规写法），引用稳定才谈得上 bailout
+    await expectMemoSkipsSubtree(() => <IconPicker sources={SOURCES} defaultValue="home" />);
+  });
+
   it("默认渲染第一个分类的图标", () => {
     render(<IconPicker sources={SOURCES} />);
     expect(screen.getByRole("button", { name: "home" })).toBeTruthy();

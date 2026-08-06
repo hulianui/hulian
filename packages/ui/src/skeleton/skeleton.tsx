@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { type HTMLMotionProps } from "motion/react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
@@ -16,7 +17,7 @@ export const skeletonVariants = cva("bg-surface-hover", {
   defaultVariants: { shape: "text" },
 });
 
-export function Skeleton({ className, shape, ...props }: SkeletonProps) {
+function SkeletonImpl({ className, shape, ...props }: SkeletonProps) {
   return (
     // 减包：m + LazyMotionProvider(domAnimation) 取代全量 motion
     <LazyMotionProvider>
@@ -35,3 +36,9 @@ export function Skeleton({ className, shape, ...props }: SkeletonProps) {
     </LazyMotionProvider>
   );
 }
+SkeletonImpl.displayName = "Skeleton";
+
+// 骨架屏一屏几十块（表格行、卡片网格、列表），且加载期间父级往往在高频更新（计时器/请求状态），
+// props 全是原语时 React 无法自己 bailout —— 与 Button/Checkbox/Chip 同一处方。
+export const Skeleton = memo(SkeletonImpl);
+Skeleton.displayName = "Skeleton";

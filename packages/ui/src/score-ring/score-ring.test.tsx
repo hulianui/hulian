@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { resolveGrade, DEFAULT_GRADES } from "./score-ring.grade";
 import { ScoreRing } from "./score-ring";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("resolveGrade", () => {
   it("95 → A", () => expect(resolveGrade(95).label).toBe("A"));
@@ -20,6 +21,11 @@ describe("resolveGrade", () => {
 });
 
 describe("ScoreRing", () => {
+  // 回归护栏：ScoreRing 若被改回普通函数组件（去掉 memo），这条立刻红。
+  it("稳定父更新时跳过评分环子树", async () => {
+    await expectMemoSkipsSubtree(() => <ScoreRing value={88} max={100} size={96} thickness={8} />);
+  });
+
   it("渲染分值 + 等级", () => {
     const { container } = render(<ScoreRing value={88} />);
     expect(container.textContent).toContain("88");

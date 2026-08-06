@@ -3,24 +3,37 @@ import { render, cleanup, fireEvent } from "@testing-library/react";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
 import { LiveProductCard } from "./live-product-card";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
 describe("LiveProductCard", () => {
+  it("稳定父更新时跳过商品卡子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <LiveProductCard index={1} image="x" title="羊羔绒外套" price={129} sold={1240} />
+    ));
+  });
+
   it("渲染标题、现价、序号", () => {
-    const { getByText } = render(<LiveProductCard index={3} image="x" title="羊羔绒外套" price={129} />);
+    const { getByText } = render(
+      <LiveProductCard index={3} image="x" title="羊羔绒外套" price={129} />,
+    );
     expect(getByText("羊羔绒外套")).toBeTruthy();
     expect(getByText("129")).toBeTruthy();
     expect(getByText("3")).toBeTruthy();
   });
 
   it("originalPrice 高于现价时显示划线原价", () => {
-    const { getByText } = render(<LiveProductCard image="x" title="t" price={129} originalPrice={399} />);
+    const { getByText } = render(
+      <LiveProductCard image="x" title="t" price={129} originalPrice={399} />,
+    );
     expect(getByText("¥399")).toBeTruthy();
   });
 
   it("originalPrice 不高于现价时不显示", () => {
-    const { queryByText } = render(<LiveProductCard image="x" title="t" price={129} originalPrice={100} />);
+    const { queryByText } = render(
+      <LiveProductCard image="x" title="t" price={129} originalPrice={100} />,
+    );
     expect(queryByText("100")).toBeNull();
   });
 
@@ -30,7 +43,9 @@ describe("LiveProductCard", () => {
   });
 
   it("库存/已售文案", () => {
-    const { getByText } = render(<LiveProductCard image="x" title="t" price={1} stock={86} sold={1240} />);
+    const { getByText } = render(
+      <LiveProductCard image="x" title="t" price={1} stock={86} sold={1240} />,
+    );
     expect(getByText(/已售 1240/)).toBeTruthy();
     expect(getByText(/仅剩 86/)).toBeTruthy();
   });
@@ -64,13 +79,17 @@ describe("LiveProductCard", () => {
 
   it("onClick 触发", () => {
     let hit = false;
-    const { getByText } = render(<LiveProductCard image="x" title="点我" price={1} onClick={() => (hit = true)} />);
+    const { getByText } = render(
+      <LiveProductCard image="x" title="点我" price={1} onClick={() => (hit = true)} />,
+    );
     fireEvent.click(getByText("点我"));
     expect(hit).toBe(true);
   });
 
   it("action 插槽渲染", () => {
-    const { getByText } = render(<LiveProductCard image="x" title="t" price={1} action={<span>去抢购</span>} />);
+    const { getByText } = render(
+      <LiveProductCard image="x" title="t" price={1} action={<span>去抢购</span>} />,
+    );
     expect(getByText("去抢购")).toBeTruthy();
   });
 });

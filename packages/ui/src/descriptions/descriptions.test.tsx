@@ -1,8 +1,22 @@
 import { describe, it, expect } from "vitest";
 import { render, within } from "@testing-library/react";
 import { Descriptions, DescriptionsItem } from "./descriptions";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
+
+// 模块级常量：memo 只认引用相等，写成内联数组字面量每次都是新引用，测试会假红。
+const STABLE_ITEMS = [
+  { label: "用户名", children: "zhangsan" },
+  { label: "手机", children: "138 0000 0000" },
+];
 
 describe("Descriptions", () => {
+  // 回归护栏：Descriptions 外层的 memo 一旦被拆掉，本例立刻红。
+  it("稳定父更新时跳过 Descriptions 子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Descriptions title="用户信息" column={3} items={STABLE_ITEMS} />
+    ));
+  });
+
   it("根元素带 className 透传", () => {
     const { container } = render(
       <Descriptions className="my-desc">
@@ -133,9 +147,9 @@ describe("Descriptions", () => {
         <DescriptionsItem label="键">值</DescriptionsItem>
       </Descriptions>,
     );
-    const vCell = within(v.container).getByText("值").closest(
-      '[style*="grid-column"]',
-    ) as HTMLElement;
+    const vCell = within(v.container)
+      .getByText("值")
+      .closest('[style*="grid-column"]') as HTMLElement;
     expect(vCell.className).toContain("flex-col");
 
     const h = render(
@@ -143,9 +157,9 @@ describe("Descriptions", () => {
         <DescriptionsItem label="键">值</DescriptionsItem>
       </Descriptions>,
     );
-    const hCell = within(h.container).getByText("值").closest(
-      '[style*="grid-column"]',
-    ) as HTMLElement;
+    const hCell = within(h.container)
+      .getByText("值")
+      .closest('[style*="grid-column"]') as HTMLElement;
     expect(hCell.className).not.toContain("flex-col");
   });
 

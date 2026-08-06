@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { CodeBlock } from "./code-block";
+import { HighlightedCode } from "./highlighted-code";
 import { tokenizeCode } from "./code-highlight";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const writeText = vi.fn().mockResolvedValue(undefined);
 beforeEach(() => {
@@ -12,6 +14,10 @@ beforeEach(() => {
 });
 
 describe("CodeBlock", () => {
+  it("稳定父更新时跳过代码块子树", async () => {
+    await expectMemoSkipsSubtree(() => <CodeBlock code="const x = 1" lang="tsx" />);
+  });
+
   it("横向可滚动代码区可用键盘聚焦", () => {
     const { container } = render(<CodeBlock code="const x = 1" />);
     expect(container.querySelector("pre")?.getAttribute("tabindex")).toBe("0");
@@ -71,6 +77,14 @@ describe("CodeBlock", () => {
   });
 });
 
+describe("HighlightedCode", () => {
+  // CodeBlock 的 memo 只挡父级更新；复制按钮 1.5s 内切两回 copied，
+  // 这条路径靠 HighlightedCode 自己的 memo 才不会整段重新分词。
+  it("code/lang 不变时跳过重新分词", async () => {
+    await expectMemoSkipsSubtree(() => <HighlightedCode code="const x = 1" lang="tsx" />);
+  });
+});
+
 describe("tokenizeCode", () => {
   const typesOf = (code: string, lang?: string) =>
     Object.fromEntries(
@@ -81,7 +95,11 @@ describe("tokenizeCode", () => {
 
   it("拼接所有 token 还原原文（无丢字）", () => {
     const code = `import { x } from "y"; // 注释\nconst n = 1.8;`;
-    expect(tokenizeCode(code).map((t) => t.value).join("")).toBe(code);
+    expect(
+      tokenizeCode(code)
+        .map((t) => t.value)
+        .join(""),
+    ).toBe(code);
   });
 
   it("识别关键字 / 字符串 / 注释 / 数字 / JSX 标签 / 属性", () => {
@@ -124,6 +142,10 @@ describe("tokenizeCode", () => {
 
   it("Shell：拼接所有 token 还原原文（无丢字）", () => {
     const code = `# c\npnpm --filter x build\necho "hi" | grep h`;
-    expect(tokenizeCode(code, "bash").map((t) => t.value).join("")).toBe(code);
+    expect(
+      tokenizeCode(code, "bash")
+        .map((t) => t.value)
+        .join(""),
+    ).toBe(code);
   });
 });

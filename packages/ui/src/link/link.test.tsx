@@ -1,8 +1,18 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Link } from "./link";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Link", () => {
+  // 回归护栏：Link 若被改回普通函数组件（去掉 memo），这条立刻红。
+  it("稳定父更新时跳过链接子树", async () => {
+    await expectMemoSkipsSubtree(() => (
+      <Link href="/docs" tone="primary" underline="hover">
+        文档
+      </Link>
+    ));
+  });
+
   it("渲染 a 标签 + href", () => {
     const { getByText } = render(<Link href="/docs">文档</Link>);
     const a = getByText("文档") as HTMLAnchorElement;
