@@ -1,5 +1,23 @@
 # @hulianui/mcp
 
+## 0.5.0
+
+### Minor Changes
+
+- 899ff6d: `get_component_doc` gains `format: "json"`: structured props for constrained generation (#105)
+
+  Consumers who want an LLM to "only ever emit whitelisted components with legal props" had nothing but the markdown tables to parse, so every one of them walked into the same three potholes: the escaped `\|` union separator read as a column separator (#102), a type column naming an alias whose values live only in the source (#103), and a document title that is a display name rather than the real export (#104).
+
+  Now ask for the structured data directly:
+
+  ```jsonc
+  { "name": "IPhone", "format": "json" }   // a real export name resolves to its component
+  ```
+
+  Every prop, event and slot comes back with `kind` (enum / boolean / number / string / node / function / array / union), `values` (the enum whitelist), `valueType` (is it `level={1}` or `level="1"`), `default` and `required` — enough to generate Zod or JSON Schema directly. The payload travels both as `structuredContent` (the machine-readable channel in MCP) and as JSON text; `sections` still trims what you get.
+
+  The data source is a new artifact, `llms-props.json`: read from `apps/www/public/` in local mode and from the docs site in remote mode.
+
 ## 0.4.1
 
 ### Patch Changes

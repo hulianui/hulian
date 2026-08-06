@@ -1,5 +1,204 @@
 # @hulianui/ui
 
+## 0.26.0
+
+### Minor Changes
+
+- 65c034f: Fixes #97: Button's icon size no longer floats outside the size scale (**a visual breaking change**)
+
+  The `icon` size used to be `size-9` (36px) while the text sizes are `sm` 32 / `md` 40 / `lg` 48 — it matched the height of **no** text size, so a split button in ButtonGroup (`<Button>Save</Button>` next to `<Button size="icon">`) always showed a 4px step. `iconSm` had long been aligned with `sm`; `icon` was the lone exception, which says 36px was history rather than intent (`page-header.tsx` even hand-pasted that height with `size="sm"` plus `className="size-9 px-0"`).
+
+  - `icon` becomes `size-10` (40px), aligned with the default `md`
+  - New `iconLg` (`size-12`, 48px), aligned with `lg`
+  - The three scales now map one to one: `iconSm`/`sm` 32, `icon`/`md` 40, `iconLg`/`lg` 48
+
+  **Upgrade impact**: anywhere using `size="icon"` grows from 36px to 40px. No container broke in practice — every call site in the library and on the docs site sits in a height-adaptive container. There is no equivalent size for 36px; pick `iconSm` (32) or `icon` (40) by context rather than pasting `size-9` back through `className`, which is exactly the patch this removes.
+
+  Three 36px neighbours were aligned in the same pass:
+
+  - `AnimatedThemeToggler` goes 36 → 40 (it always sits beside icon buttons in a nav bar, and staying at 36 alone skews the whole row)
+  - `PageHeader` back button: the hand-pasted `size="sm" className="size-9 px-0"` is gone, replaced by `size="icon"`
+  - `Scheduler` toolbar: the previous/next buttons move from `icon` to `iconSm`, joining the `size="sm"` today button and the `Segmented size="sm"` in the 32px dense row
+
+  A new regression test locks the invariant "icon size edge == the same-named text size height", so bending the scale again turns red on the spot.
+
+- ff1f7a7: Fixes #99 and #100: two color components close gaps that InspectorPanel forced into the open
+
+  **#100 · ColorPicker gains `onValueCommitted`**
+
+  There was only `onValueChange`, which the internal color area fires on **every frame** while dragging. Consumers never got the "you let go" moment and could not reconstruct it — debouncing is guesswork, and `pointerup` is not reachable from outside the component.
+
+  New `onValueCommitted` (named after Base UI's NumberField and Slider) fires once when the color area drag ends, when the text field blurs or takes Enter, and when the format switches. `pointercancel` does **not** fire it — a gesture the system interrupted is not a deliberate commit — while a click without a drag still fires once, because what consumers want is "an edit finished". `onValueChange` keeps its meaning, both can be used together, and the TSDoc now says outright that it fires on every frame while dragging.
+
+  This also fixed a bug that only surfaces once a commit event exists: under `commitMode="commit"` the parent does not write props back mid-drag, and a controlled `value` then **pins the swatch in place so it cannot be dragged**. It now runs through `defaultValue` plus `key`, remounting only when the external value really changes.
+
+  **#99 · ColorSwatchPicker readable swatch labels**
+
+  `colors` used to be `string[]` used verbatim as the `aria-label`, so with theme tokens a screen reader announced `var(--color-primary)`. `colors` now accepts a mixed `string | { color, label }` array — purely additive, `string[]` is a subset, existing call sites need no change — and a `title` tooltip came along with it.
+
+- 34644a1: Fixes #98: five date and time components gain `size` (**a visual breaking change**)
+
+  The triggers of `DatePicker` / `TimePicker` / `DateTimePicker` / `DateRangePicker` / `TimeField` all hardcoded `h-9` (36px), and **none of the five had a `size` prop** — next to `Input` (40px) that is a misalignment by construction, and consumers had no opening to patch it other than stuffing `h-10` into `className`, which breaks the "a component that lacks a capability gets the capability upstream" rule.
+
+  All five now run through cva on exactly the `Input` scale (`sm` h-8 / `md` h-10 / `lg` h-12, default `md`), with the icons inside the trigger scaling along. **After upgrading, the default height of these five goes from 36px to 40px** — which is the misalignment being fixed. There is no equivalent size for 36px; use `size="sm"` (32) or stay on `md` (40) by context.
+
+  The `h-9` inside the `DateRangePicker` panel is the cell wrapping a day button in the month grid, unrelated to the trigger, and was deliberately left alone.
+
+  Same root as #97 (Button's `icon` size): the library had a batch of 36px values floating outside the 32/40/48 scale. With both cleared, that stray size is gone from the form layer.
+
+- 4e3547a: Seven new design-tooling components (#90–#96), completing the workbench that "AI generates UI" products need
+
+  A consumer building an AI design-generation product reported seven gaps at once. All seven are dependency-free and in-house; not one npm dependency was added for them.
+
+  - **DesignCanvas** (data-display/collection) a visual design canvas: infinite pan and zoom, a selection box, drag to move, eight-way resize. Controlled `items` own their geometry while `children` act as a free layer. The viewport math reuses `Flow`'s existing pure geometry functions rather than being rewritten. **The split with Flow is written into the docs**: Flow is a node-orchestration canvas, DesignCanvas is a free-arrangement design canvas.
+  - **ElementSelectionOverlay** (feedback/overlay) the infrastructure for point-and-edit: hover to highlight and click to select inside a container or a **same-origin** iframe, handing back a component-tree path. Paths have two layers (a `data-hulian-path` marker first, falling back to a structural selector you can look back up with `querySelector`), and how reliable the path is comes back as a field. Nothing is ever written into the target document. **A cross-origin iframe reports a `cross-origin` error instead of pretending it connected.**
+  - **InspectorPanel** (forms/advanced) a property inspector driven by a field schema: the control is derived from `kind`, and the panel itself knows no specific property; five preset schemas ship for layout / color / typography / border / effects. Four-side spacing with a link lock, theme token swatches, a `MIXED` placeholder for multi-selection, and a `commitMode` that decides when edits flow back.
+  - **CodeEditor** (forms/advanced) a code editor: a textarea over a highlight layer, reusing `CodeBlock`'s dependency-free colorizer (CSS gets a separate stateful scanner, so `a:hover` is not mistaken for a property name). Tab to indent, Shift+Tab to outdent, Enter to keep indentation, auto-closing and wrapping pairs, paired backspace, `Cmd+/` to toggle comments — **each of them writes through `execCommand`, so the native undo stack survives**. **CodeMirror and Monaco are deliberately not used**: this library ships source, and one dependency enters every consumer's module graph. Folding, completion, multiple cursors and a minimap are explicitly out of scope, with the boundary stated in the docs.
+  - **PreviewSandbox** (layout/container) a preview sandbox: iframe isolation and same-document React error boundaries share one shell and one error shape. Switching devices only resizes the box — **the iframe node and its document are never rebuilt** — so state inside the preview survives. The default is `sandbox="allow-scripts"` and **deliberately not `allow-same-origin`** (granting both is the same as having no sandbox), so errors come back over postMessage; pass the exported same-origin constant explicitly when you need to read the inner DOM. **It is not a code execution engine**: `code` means "an HTML document string already fit to hand to an iframe".
+  - **ComponentPicker** (data-display/collection) a component-library browser: category tree, fuzzy search, a result grid and a detail pane. The ranking is in-house (a slug hit outweighs a description hit by a wide margin) and **fuse.js is not used**. The catalog is fed in by the consumer, with `parseComponentCatalog` exported as a pure function that turns `llms-full.txt` into items — the component never makes a network request and never assumes a file exists.
+  - **IssueReporter** (forms/advanced) a GitHub issue draft builder: a form collects values, a template pure-function renders Markdown, and back come a structured draft plus a prefill link. **When the link grows too long it falls back to copying the Markdown** — the check measures the whole URL rather than just the body, because one CJK character is nine characters once percent-encoded, and measuring only the body misses long titles. It never calls the API and never holds a token.
+
+  All seven read their built-in copy through the `ConfigProvider` locale SSOT, while keeping their own `labels` / `text` prop as an override.
+
+### Patch Changes
+
+- 899ff6d: AI distribution artifacts gain a machine-readable source of truth for props, closing three potholes that forced every consumer to write their own parser (#102 #103 #104 #105)
+
+  Hulian treats AI consumption as a first-class audience, but the structure stopped at markdown: `registry.json` had name / description / categories / exports / types and **no props at all**. Anyone wanting constrained generation — letting a model emit only whitelisted components with legal props — had to parse the documentation tables, so the same potholes were walked into again and again.
+
+  **New artifact `llms-props.json`** (383 components / 3039 props):
+
+  ```jsonc
+  {
+    "version": "…",
+    "typeAliases": { "StackDirection": ["row", "column"], … },   // 143 literal-union aliases
+    "exportIndex": { "IPhone": "iphone", "BarChart": "chart", … }, // 796 export names to components
+    "components": [{ "slug": "button", "import": "…", "exports": [...],
+                     "props": [{ "name": "size", "kind": "enum",
+                                 "values": ["sm","md","lg","icon","iconSm","iconLg"],
+                                 "valueType": "string", "default": "\"md\"", … }] }]
+  }
+  ```
+
+  `kind` covers enum / union / boolean / number / string / node / function / array, `valueType` separates `level={1}` from `level="1"`, and a mixed union such as `StackDirection | ResponsiveDirection` still reports `"row"` / `"column"` — "other shapes are also accepted" should not make two known values disappear.
+
+  Fixed along with it:
+
+  - **#102 escaped pipes**: the union separator in the type column exists in three spellings across the docs (full-width, half-width, and the GFM-escaped form in 404 files). Splitting a row on a bare pipe shifts every column, leaving an enum with only its first value and garbage in the default and description columns. The Props / Events / Slots tables in the AI artifacts (`llms-full.txt` and `d/<slug>.md`) are now rewritten into one consistent GFM-escaped spelling. **The English artifacts cannot use the full-width form** — that gate forbids CJK — so "just standardize on one character" was never available; the real answer is the JSON above, and the markdown only guarantees that it is legal and consistent.
+  - **#103 aliases not expanded**: the type column said `StackDirection` while nothing in the docs gave its values, so an AI could only guess `direction="horizontal"` and then **silently get nothing** — no error, just the wrong layout, which is harder to find than a crash. Literal unions are now pulled out of `*.types.ts` with the compiler AST and expanded in place into `"row" | "column" | ResponsiveDirection`. Non-literal aliases (object-shaped ones like `ResponsiveDirection`) stay as they are.
+  - **#104 title is not the export name**: `# iPhone` (the real export is `IPhone`), `# Chart` (really `AreaChart` / `BarChart` / …), `# Resizable` (`ResizablePanelGroup` / …). Each component in the artifacts now carries an `Exports` line sourced from the barrel, so consumers no longer parse the import code block to work it out.
+
+  `llms.txt` now points consumers doing constrained generation straight at the JSON instead of the tables.
+
+- 4771326: Fixes #89: 45 components gain `memo`, clearing the avoidable-render blind spot in one pass
+
+  `avoidable-render` is the only absolute-threshold rule in the runtime performance gate (anything above 0 is an error), but CI only scans "scenarios this change touches", and the scheduled branch only ran 4 React 18 compatibility scenarios — so **a component nobody touches never has its violation found**, until someone edits it (even just swapping an image in its showcase) and CI suddenly goes red as if this change caused it.
+
+  The first full scan (373 runs) surfaced **45 components** at once, all fixed with the existing `Button` / `Checkbox` / `Chip` prescription (`XxxImpl` plus `memo(XxxImpl)` and two `displayName`s), each with a Profiler regression test — remove the `memo` and it goes red.
+
+  Components: AgentPlan, Alert, Annotation, Avatar, AwardBadge, Breadcrumb, ChatMessage, Citation, CodeBlock (with HighlightedCode), ColorField, CreditCard, DeployStatus, Descriptions, DiffStat, Dossier, Dot, EventStream, FileTree, Funnel, GitCommit, Heatmap, IconPicker, InputOTP, JsonViewer, Kbd, Link, LivePlayer, LiveProductCard, Meter, NumberField, Rating, ScoreRing, SecretField, Skeleton, Slider, SocialButton, Snippet, Stat, Statistic, StatusDot, Steps, Switch, Tag, TimeField, Timeline.
+
+  The public API is unchanged: export names, types, compound parts (`Statistic.Countdown`) and every named pure-function export stay as they were. `Funnel` is generic, so `memo(FunnelImpl) as unknown as typeof FunnelImpl` keeps its signature.
+
+  Three facts confirmed during the work, recorded so nobody has to rediscover them:
+
+  - **CodeBlock needed two layers.** The root `memo` only blocks parent updates; the copy button's `copied` state travels its own path, so every click re-tokenized the whole snippet and rebuilt every `<span>`. `HighlightedCode` is memoized too.
+  - **FileTree is memoized at the root, not per row.** A row receives a `toggle` arrow function built fresh each render, and `expandedSet` is a fresh Set whenever controlled or searching, so a shallow compare always fails — memoizing rows is pure loss, while memoizing the root skips the entire subtree.
+  - **Counts in a finding are not comparable across components.** The gate only counts fibers whose `event.name` equals the component name, so child components never enter the count; and only components with `controls: []` name their stress step `stress:stable-parent-update`, which is then collected as well. So "42" versus "2" is not a tenfold difference in severity, only a difference in whether the component has controllable props.
+
+  Verification cleared 5 more (the new IssueReporter / InspectorPanel / ComponentPicker, plus Empty / Legend which the first pass missed).
+
+  **Two more full re-runs each caught another batch**: first `Brand` / `ScopeMatrix` / `Stepper`, then `Heading` / `Text` / `GridPattern` — six components that never had `memo` at all, fixed with the same prescription and each given a guard. `Heading` and `Text` are generic and polymorphic, so they borrow `Funnel`'s `as unknown as typeof XxxImpl` assertion to keep `as` inference intact.
+
+  They escaped the first 45 because **the rule itself is unstable**. Three measured findings, written here so the next person does not doubt themselves:
+
+  - The same code, run four times on the same scenario, yields **3 / 1 / 0 / 1** findings. It counts renders that React reports as "this commit changed no props, state or hooks", and that judgement drifts with scheduling and load.
+  - Two full scans produced **almost disjoint** sets of components (first Brand/Kbd/ScopeMatrix/Stepper, then Dossier/GridPattern/Heading/Kbd/Text) — each run samples a few out of the pool.
+  - **It also fires on correctly memoized components**: `Kbd` and `Dossier` both have `memo` (proven by their guards and by the global negative sweep) and were still reported with 2–3.
+
+  The matching fact: **306 of the 380 components have no `memo` at all**, by design — only leaf-shaped components whose props are stable primitives earn one. So "zero findings on one full scan" is neither reachable nor a sensible release criterion; the meaningful criterion is **to look at each reported component and ask whether it has `memo`** — add one if not (six were added here), and treat the rest as false positives.
+
+  In CI the full sweep only runs on a schedule (pull requests and pushes scan affected scenarios), so it does not block a release; the scheduled branch will go red intermittently, which needs its own decision about the rule or the threshold.
+
+  The blind spot itself is closed too: the scheduled trigger gains a `Weekly structural sweep` that runs the full inventory instead of only the 4 compatibility scenarios.
+
+  Guard tests are unified behind `expectMemoSkipsSubtree` in `packages/ui/test/memo-guard.tsx`, whose criterion now has two layers (#106):
+
+  1. **A structural assertion** with no timing in it: the element's type must really be produced by `memo`, so deleting the `memo` fails deterministically.
+  2. **A behavioral assertion** whose denominator is no longer React's `baseDuration` — that is the **cold** mount estimate which stops updating once memo bails, making the ratio drift with where the test sits in the file. It is now measured live in the same test: give the element a `data-memo-probe` that changes every round, and the shallow compare is guaranteed to miss. With memo working the ratio measures 0.01–0.19; with memo gone it is about 1.0, so the two clusters sit a factor of five apart and a 0.5 threshold leaves better than 2× of headroom on both sides — no more per-component coefficients.
+
+  All 64 guard files (including the 6 that previously wrote their own inline criterion) now share this one. The global negative sweep — replacing `React.memo` with the identity function — turns **64 of 64 files and 77 of 77 assertions red with no false greens**, and every failure is a guard case with no collateral.
+
+- 899ff6d: Fixes the English gaps and the static-export blocker in four design-tooling components (finishing #91, #92 and #96)
+
+  All of these only surface when the full gate suite runs, and they came out together while catching up on the build and browser gates.
+
+  **InspectorPanel and IssueReporter did not localize their built-in presets**
+
+  - The five preset schemas returned by `inspectorSections()` hardcoded 51 Chinese field labels and enum options. Without a `sections` prop that is exactly what the panel renders, so an English consumer got a screen full of Chinese labels.
+  - The three templates in `BUILTIN_ISSUE_TEMPLATES` had the same problem: field labels and the section headings produced by `toMarkdown` were all Chinese, and those strings **end up in the issue body submitted to GitHub**.
+
+  The copy for both now lives in the locale SSOT in `config/locale.ts` (`inspectorPanel.presets` and `issueReporter.templates`), and the components read it from the active `ConfigProvider`. Two new pure functions, `buildInspectorSections(text)` and `buildIssueTemplates(text)`, are exported for direct use; the existing named exports (`layoutFields`, `colorFields`, `typographyFields`, `borderFields`, `effectsFields`, `BUILTIN_ISSUE_TEMPLATES`) stay as the Chinese defaults so existing code behaves the same. The second argument of `inspectorSections(categories, text?)` is optional and still defaults to Chinese.
+
+  Those two English pages rendered 195 pieces of Chinese residue between them (as counted by the `docs:i18n:output` gate); it is now zero.
+
+  **A PreviewSandbox example broke the static export**
+
+  To demonstrate the error boundary, the "same-document mode" example had a child `throw` during render. The docs site is `output: "export"`, so every page is prerendered at build time, and **an error boundary only catches on the client** — the whole `/components/preview-sandbox` page failed to export and the build stopped. Neither the unit tests nor a real browser could see it, because both of those have a boundary in place.
+
+  The throw now happens on a click (the iframe demo likewise): the page loads with the subtree rendering normally, and one click takes it into the error state. That solves a second problem too — when it threw automatically React still reported the error to `window`, and the English showcase browser gate counts a `pageerror` as a failure (a normal page load should not emit an uncaught error; Playwright also attributes errors inside an iframe to the host page).
+
+  A new guard, `src/showcase/ssr-safety.test.tsx`, pushes every example and state of all 380 showcases through `renderToStaticMarkup`, so anything that throws during server rendering fails immediately. It moves "find out ten minutes into a build that a page cannot be exported" down to seconds.
+
+  **Also**: the English catalog was missing all seven of these components in `apps/www/i18n/component-meta.en.ts`, so neither the English component index nor the in-site search could find them. With them added the English catalog returns from 371 entries to the same 378 as Chinese. And `stepper.tsx` opened with `"use client"` twice; one has been removed.
+
+- 899ff6d: Fixes #108: Meter's value text no longer treats the raw `value` as a percentage
+
+  The indicator width was always computed as `(value - min) / (max - min)` and was correct, but the text rendered by `showValue` and the `aria-valuetext` came from Base UI's default, which is **the raw value with a `%` appended**. So whenever `max` was not 100, the bar and the number in the same component contradicted each other:
+
+  ```tsx
+  <Meter value={1041} max={1324} label="Linked to textbook" showValue />
+  // bar at 78.6%, text on screen reads "1,041%", aria-valuetext="1041%"
+  ```
+
+  The whole point of `max` is a scale that is not out of 100, so `showValue` had only ever been right when `max === 100`. The `aria-valuetext` was the worse half: `MeterProps` does not spread native attributes, so the visible text could at least be worked around by computing it into `label`, while what a screen reader announced was **beyond any consumer's reach**.
+
+  - The text is now computed by the component: normalized to 0–100 and rendered on the same footing as the indicator, with at most one decimal (`1041/1324` reads `78.6%`, `50/200` reads `25%`)
+  - `getAriaValueText` makes `aria-valuetext` say the same sentence — what is seen and what is heard are not allowed to be two different things
+  - `aria-valuenow` / `aria-valuemin` / `aria-valuemax` still report the raw values
+  - An out-of-range value is clamped to 0–100% in the text only, while `aria-valuenow` reports it honestly (out-of-range data belongs to the data layer; the component does not paper over it)
+  - `max === min` no longer produces `NaN`
+
+  New `formatValue`:
+
+  ```tsx
+  <Meter value={1041} max={1324} label="Linked to textbook" showValue
+         formatValue={({ value, max }) => `${value} / ${max} questions`} />
+  ```
+
+  The returned string drives both the visible text and `aria-valuetext`, so they cannot structurally disagree. `percent`, already normalized and clamped to 0–100 and not rounded, comes along too.
+
+  The documentation gained three facts that previously required reading the source: `label` is the **only** way to give `role="meter"` an accessible name (a heading you render yourself is never associated through `aria-labelledby`); Base UI's Root always appends a visually hidden `<span role="presentation">x</span>`, which collides with assertions that read the whole tree's `textContent`; and how out-of-range values are handled. The showcase gained a `formatValue` example — and, for the record, the existing "custom range" example already described itself as "the value follows the ratio", which the component simply was not doing.
+
+- 899ff6d: Fixes #107: an optional prop set to `null` no longer throws a TypeError
+
+  A destructuring default only applies when the value is `undefined`; `null` lands in the function body untouched. So `<Stack direction={null}>` crashed inside `directionClass` (`typeof null === "object"`, so null fell into the responsive branch):
+
+  ```
+  TypeError: Cannot read properties of null (reading 'base')
+  ```
+
+  This is not something "callers should just not pass null" settles. Hulian treats AI consumption as a first-class audience, and **any consumer that renders structure produced by an LLM will meet a model writing "unset" as `"direction": null`** — the most natural spelling in JSON. The reporter's DSL generation platform had an entire subtree swallowed by an ErrorBoundary exactly this way.
+
+  The whole library was swept for the same defect class, and 22 props across 19 components now fall back:
+
+  - **Responsive and object shapes**: `Stack.direction`, `Grid.cols`, `Tree.virtual` — the three direct victims of a `typeof x === "object"` branch
+  - **Array shapes**: WorldMap (`dots`/`points`), BeianFooter (`icp`), FlyingPosters (`items`), ScrollVelocity (`texts`), BounceCards (`images`), Folder (`items`), Cascader (`defaultValue`), Listbox (`defaultSelectedKeys`/`disabledKeys`), Transfer (`defaultTargetKeys`), Scheduler (`resources`), InfiniteMenu (`items`), FallingText (`highlightWords`), VoiceRecord (`levels`), StaggeredMenu (`items`/`socialItems`), GridMotion (`items`), ScopeMatrix (`suggestions`), Tree (three `defaultXxxKeys`)
+
+  Each one carries a regression test: passing `null` does not throw, and the result matches not passing the prop at all. Run that batch against the code as it was and it reproduces the reported `Cannot read properties of null (reading 'base')` exactly.
+
+  **The boundary drawn for this pass**: only crashes are eliminated. Boolean and string defaults (`selectable = true`, `variant = "solid"`, more than 430 of them across the library) still degrade `null` into a falsy value rather than falling back to the default — that does not crash, it just behaves differently from omitting the prop. Normalizing all 430 is a decision of a different magnitude and was not smuggled in here. Consumers constructing props straight from LLM output should keep dropping keys whose value is `null` in their validation layer.
+
 ## 0.25.2
 
 ### Patch Changes

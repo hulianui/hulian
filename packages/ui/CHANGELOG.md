@@ -1,5 +1,213 @@
 # @hulianui/ui
 
+## 0.26.0
+
+### Minor Changes
+
+- 65c034f: 修 #97：Button 的图标档不再游离于尺寸刻度之外（**视觉 breaking**）
+
+  `icon` 档过去是 `size-9`（36px），而文字档是 `sm` 32 / `md` 40 / `lg` 48 —— 它与**任何**文字档都不等高，所以 ButtonGroup 拆分按钮（`<Button>保存</Button>` + `<Button size="icon">`）连排时必然露出 4px 台阶。`iconSm` 早已对齐 `sm`，只有 `icon` 是孤例，说明 36px 是历史遗留而非设计意图（`page-header.tsx` 甚至用 `size="sm"` + `className="size-9 px-0"` 手贴出这个高度）。
+
+  - `icon` 改为 `size-10`（40px），对齐默认档 `md`
+  - 新增 `iconLg`（`size-12`，48px），对齐 `lg`
+  - 至此三条刻度一一对应：`iconSm`/`sm` 32、`icon`/`md` 40、`iconLg`/`lg` 48
+
+  **升级影响**：用了 `size="icon"` 的地方会从 36px 变 40px。实测不存在被撑破的容器（库内与文档站的全部调用点都在自适应高度的容器里）。需要保持 36px 的没有等价档位——请按语境改用 `iconSm`(32) 或 `icon`(40)，不要用 `className` 贴回 `size-9`（那正是这次要消灭的补丁）。
+
+  同批对齐的三处 36px 邻居：
+
+  - `AnimatedThemeToggler` 边长 36 → 40（它总与图标按钮并排在导航栏里，独自停在 36 会让整排错位）
+  - `PageHeader` 返回按钮：删掉 `size="sm" className="size-9 px-0"` 的手贴补丁，改用 `size="icon"`
+  - `Scheduler` 工具栏：前后翻页按钮 `icon` → `iconSm`，与同排的 `size="sm"` 今天按钮和 `Segmented size="sm"` 一起收在 32px 密集档
+
+  新增一条回归测试锁住「图标档边长 == 同名文字档高度」这个不变量，档位再被改歪会当场红。
+
+- ff1f7a7: 修 #99 / #100：两个取色件补上被 InspectorPanel 逼出来的缺口
+
+  **#100 · ColorPicker 补 `onValueCommitted`**
+
+  过去只有 `onValueChange`，而内部取色面板拖动时**每帧**触发，消费方拿不到「松手了」这个时刻，也没法自己补 —— 防抖只能猜延迟，`pointerup` 在组件内部拿不到句柄。
+
+  新增 `onValueCommitted`（命名对齐 Base UI 的 NumberField / Slider），在取色面板拖动结束、文本框 blur 或回车、格式切换时各触发一次。`pointercancel` **不**触发（被系统打断的手势不算一次确定的提交）；点一下没拖仍触发一次（消费方要的是「一次编辑结束」信号）。`onValueChange` 语义不变，两者可同时用，TSDoc 补了「拖动中每帧触发」的说明。
+
+  顺带修了一个只有接上 commit 事件才会暴露的 bug：`commitMode="commit"` 下父级拖动中不回写 props，而受控 `value` 会把色板**钉死拖不动**。改走 `defaultValue` + `key`（外部值变了才重挂）。
+
+  **#99 · ColorSwatchPicker 色块可读标签**
+
+  `colors` 过去是 `string[]` 且原样当 `aria-label`，主题 token 场景下读屏念的是 `var(--color-primary)`。现在 `colors` 接受 `string | { color, label }` 混合数组（纯增量，`string[]` 是子集，现有调用点零改动），并补了 `title` 悬停提示。
+
+- 34644a1: 修 #98：日期时间族 5 个组件补 `size`（**视觉 breaking**）
+
+  `DatePicker` / `TimePicker` / `DateTimePicker` / `DateRangePicker` / `TimeField` 的触发器高度过去全部硬编码 `h-9`(36px)，且**五个都没有 `size` prop** —— 与 `Input`(40px) 并排就是既有错位，而消费方连打补丁的口子都没有，只能往 `className` 里塞 `h-10`（这又违反「组件缺能力回库补组件」的约定）。
+
+  现在五个统一走 cva，刻度与 `Input` 完全一致（`sm` h-8 / `md` h-10 / `lg` h-12，默认 `md`），触发器内的图标尺寸随档位走。**升级后这五个组件的默认高度从 36px 变成 40px** —— 这正是要修的错位，需要 36px 的没有等价档位，请按语境改用 `size="sm"`(32) 或保持 `md`(40)。
+
+  `DateRangePicker` 面板内那处 `h-9` 是月份网格里包住日按钮的格子，与触发器无关，刻意不动。
+
+  与 #97（Button 的 `icon` 档）同源：库里存在一批游离于 32/40/48 刻度之外的 36px。两条一起清完，36px 这个孤立档就从表单层面消失了。
+
+- 4e3547a: 新增 7 个设计工具族组件（#90–#96），补齐「AI 生成 UI」这类产品要的整条工作台
+
+  消费方在做 AI 设计生成产品时一次报了 7 个缺口。这批全部零依赖自研，没有为它们新增任何 npm 依赖。
+
+  - **DesignCanvas**（data-display/collection）视觉设计画布：无限平移缩放、元素选择框、拖拽移动与八向 resize。受控 `items` 托管几何，`children` 作自绘图层。视口数学复用 `Flow` 已有的几何纯函数，不重写。**与 Flow 的分工写进了文档**：Flow 是节点编排画布，DesignCanvas 是自由排列的设计画布。
+  - **ElementSelectionOverlay**（feedback/overlay）指向编辑的基础设施：在容器或**同源** iframe 里 hover 高亮 / 点击选中，回吐组件树路径。路径两层（`data-hulian-path` 标记优先，回退到可被 `querySelector` 反查的结构化选择器），并把可靠度作为字段暴露出去。不往目标文档写任何样式。**跨源 iframe 明确报 `cross-origin` 错误而不是假装接上了。**
+  - **InspectorPanel**（forms/advanced）属性检查器：字段 schema 驱动，按 `kind` 派生控件，面板本身不认识任何具体属性；内置 layout / color / typography / border / effects 五套预设 schema。spacing 四联链接锁定、主题 token 色板、`MIXED` 混合值占位、`commitMode` 控制回吐时机。
+  - **CodeEditor**（forms/advanced）代码编辑器：textarea + 高亮层叠加，复用 `CodeBlock` 的零依赖着色器（CSS 另带一个有状态的扫描器，所以 `a:hover` 不会被当成属性名）。Tab 缩进 / Shift+Tab 反缩进 / Enter 续缩进 / 成对符号自动闭合与包裹 / 退格删对 / `Cmd+/` 切注释，**每一条都经 `execCommand` 落笔，所以原生 undo 栈不断**。**刻意不引 CodeMirror / Monaco**：本库是源码分发，一个依赖会进所有消费方的模块图。折叠、补全、多光标、minimap 明确不做，边界写进文档。
+  - **PreviewSandbox**（layout/container）预览沙箱：iframe 隔离渲染与同文档 React 错误边界双模式共用一副壳，错误对象同形状。切设备只改容器盒子，**iframe 节点与文档都不重建**，预览内的状态不丢。默认 `sandbox="allow-scripts"` 且**刻意不给 `allow-same-origin`**（两个一起给等于没有沙箱），因此错误转发走 postMessage；需要读内部 DOM 时显式传导出的同源常量。**不做代码执行引擎**：`code` 的语义是「已经可直接送进 iframe 的 HTML 文档串」。
+  - **ComponentPicker**（data-display/collection）组件库浏览器：分类树 + 模糊搜索 + 结果网格 + 详情面板。自研打分器（slug 命中远重于描述命中），**不引 fuse.js**。目录由消费方喂进来，另导出 `parseComponentCatalog` 纯函数把 `llms-full.txt` 解析成条目 —— 组件自己不发网络请求、不假设文件存在。
+  - **IssueReporter**（forms/advanced）GitHub issue 草稿器：表单收集 → 模板纯函数拼 Markdown → 回吐结构化草稿 + 生成预填链接。**链接超长自动降级为复制 Markdown**（判据量整条 URL 而不只是 body —— 中文百分号编码后 1 字 = 9 字符，只量 body 会在长标题时判漏）。不调 API、不持 token。
+
+  七个组件的内置文案都接了 `ConfigProvider` 的 locale SSOT，同时保留各自的 `labels` / `text` prop 作为覆盖。
+
+### Patch Changes
+
+- 899ff6d: AI 分发产物补上机器可读的 props 真源，并修掉三处让消费方必须自己写解析器的坑（#102 #103 #104 #105）
+
+  瑚琏把 AI 消费当一等公民，但结构化程度此前停在 markdown：`registry.json` 有 name / description / categories / exports / types，**唯独没有 props**。想做「受约束生成」（让模型只能输出白名单组件与合法 props）的消费方只能去解析文档表格，于是同一批坑每家踩一遍。
+
+  **新产物 `llms-props.json`**（383 个组件 / 3038 条 props）：
+
+  ```jsonc
+  {
+    "version": "…",
+    "typeAliases": { "StackDirection": ["row", "column"], … },   // 143 条字面量联合别名
+    "exportIndex": { "IPhone": "iphone", "BarChart": "chart", … }, // 796 个导出名 → 组件
+    "components": [{ "slug": "button", "import": "…", "exports": [...],
+                     "props": [{ "name": "size", "kind": "enum",
+                                 "values": ["sm","md","lg","icon","iconSm","iconLg"],
+                                 "valueType": "string", "default": "\"md\"", … }] }]
+  }
+  ```
+
+  `kind` 覆盖 enum / union / boolean / number / string / node / function / array，`valueType` 区分 `level={1}` 与 `level="1"`，混合联合（`StackDirection | ResponsiveDirection`）也照样给出 `"row"` / `"column"` —— 「还有别的形态能传」不该让两个已知取值一起消失。
+
+  同时修掉的三条：
+
+  - **#102 转义竖线**：类型列的联合分隔符在文档里有三种写法（全角 `｜` 72 篇、半角、GFM 转义 `\|` 404 篇），按 `line.split("|")` 裸切会整行串列，枚举只剩第一个取值、默认值和说明全错。AI 产物（`llms-full.txt` / `d/<slug>.md`）的 Props / Events / Slots 表现在统一重写成 GFM 转义形。**英文产物无法改用全角**（那道门禁不许出现 CJK），所以「统一成 `｜`」这条路走不通 —— 真正的答案是上面那份 JSON，markdown 只保证自己合法且一致。
+  - **#103 别名不展开**：类型列写 `StackDirection` 而文档里没有任何地方给出它的取值，AI 只能猜 `direction="horizontal"` 然后**静默不生效**（不报错，只是版式不对，比报错更难查）。现在用编译器 AST 扫 `*.types.ts` 抽出字面量联合，在产物里就地展开成 `"row" | "column" | ResponsiveDirection`。非字面量别名（对象型的 `ResponsiveDirection`）保持原样。
+  - **#104 标题 ≠ 导出名**：`# iPhone`（真实导出 `IPhone`）、`# Chart`（真实导出 `AreaChart` / `BarChart` / …）、`# Resizable`（`ResizablePanelGroup` / …）。产物里每个组件标题下补一行以 barrel 为真源的 `**导出**`，消费方不必再去解析 `## 导入` 代码块反查。
+
+  `llms.txt` 里加了一句把受约束生成的消费方直接指向 JSON，别再解析表格。
+
+- 4771326: 修 #89：45 个组件补上 `memo`，avoidable-render 的盲区一次清干净
+
+  `avoidable-render` 是运行时性能门禁里唯一的绝对阈值规则（>0 即 error），但 CI 只扫「本次改动波及的场景」，定时那一支只跑 4 个 React 18 兼容场景 —— 所以**一个组件只要没人碰过，它的违规就永远不会被发现**，等某天顺手改到它（哪怕只是换 showcase 里一张图）CI 才突然红，看起来像是本次改动引入的。
+
+  首次全量扫描（373 runs）一次揪出 **45 个组件**，全部按 `Button` / `Checkbox` / `Chip` 的既有处方修复（`XxxImpl` + `memo(XxxImpl)`，两处 `displayName`），并各配一条 Profiler 回归测试 —— 去掉 `memo` 必须当场红。
+
+  涉及组件：AgentPlan、Alert、Annotation、Avatar、AwardBadge、Breadcrumb、ChatMessage、Citation、CodeBlock（连带 HighlightedCode）、ColorField、CreditCard、DeployStatus、Descriptions、DiffStat、Dossier、Dot、EventStream、FileTree、Funnel、GitCommit、Heatmap、IconPicker、InputOTP、JsonViewer、Kbd、Link、LivePlayer、LiveProductCard、Meter、NumberField、Rating、ScoreRing、SecretField、Skeleton、Slider、SocialButton、Snippet、Stat、Statistic、StatusDot、Steps、Switch、Tag、TimeField、Timeline。
+
+  对外 API 零变化：导出名、类型、compound 子件（`Statistic.Countdown`）与所有具名纯函数导出全部原样。`Funnel` 是泛型组件，用 `memo(FunnelImpl) as unknown as typeof FunnelImpl` 保住泛型签名。
+
+  三条实施中确认的事实，写在这里免得下次重新踩：
+
+  - **CodeBlock 修了两层**。根 `memo` 只挡父级更新；复制按钮的 `copied` state 走自身路径挡不住，每点一次就把整段代码重新分词并重建全部 `<span>`。所以 `HighlightedCode` 也 memo。
+  - **FileTree 是 memo 根而不是 memo 行**。行组件收的 `toggle` 是每轮新建的箭头函数、`expandedSet` 在受控/搜索态是每轮新建的 Set，浅比较必然失败 —— memo 行是纯亏；memo 根反而把整棵子树一起跳过。
+  - **finding 里的计数不可跨组件比较**。门禁只统计 `event.name === 组件名` 的 fiber，子组件永远不进这条计数；而只有 `controls: []` 的组件其 stress 步骤 id 才叫 `stress:stable-parent-update`，会被一并收进来。所以「42」和「2」不代表严重程度差十倍，只代表该组件有没有可控 prop。
+
+  复验时又清掉 5 条（本批新组件 IssueReporter / InspectorPanel / ComponentPicker，以及首轮未命中的 Empty / Legend）。
+
+  **又两轮全量复跑各逮到一批漏网的**：第一轮 `Brand` / `ScopeMatrix` / `Stepper`，第二轮 `Heading` / `Text` / `GridPattern` —— 六个都压根没上过 `memo`，按同一处方补齐并各配护栏。`Heading` / `Text` 是泛型多态件，沿用 `Funnel` 的 `as unknown as typeof XxxImpl` 断言保住 `as` 多态下的推导。
+
+  它们没在首轮 45 条里出现，是因为**这条规则本身有抖动**。三条实测结论，都写在这里免得下次重新怀疑自己：
+
+  - 同一份代码连跑四次拿到 **3 / 1 / 0 / 1** 条 finding。它统计的是 React 给出的「本次提交里 props/state/hooks 全无变化」的渲染，而这个判定会随调度与负载漂移。
+  - 两次全量扫描给出的是**两组几乎不重叠**的组件（第一次 Brand/Kbd/ScopeMatrix/Stepper，第二次 Dossier/GridPattern/Heading/Kbd/Text）—— 每轮只是从池子里随机抽中几个。
+  - **对已正确 memo 的组件也会误报**：`Kbd` 与 `Dossier` 都有 `memo`（且护栏测试与负向扫荡都证明它生效），仍被判出 2–3 条。
+
+  配套的事实是：全库 380 个组件里 **306 个本来就没有 `memo`**（只有叶子型、props 全稳定原语的那类才配）。所以「一次全量扫描 0 findings」既不可达也不该当作发版判据；有意义的判据是**逐条看被点名的组件有没有 memo** —— 没有就补（本轮补了 6 个），有就是误报。
+
+  CI 里这条只在定时触发跑全量（PR/push 只扫改动波及场景），所以它不阻断发版；但定时那一支会间歇性变红，需要单独决定是调规则还是调阈值。
+
+  其中 **IssueReporter 与 InspectorPanel 的根因不在组件上**：它们 showcase 的第一个示例往组件传了内联箭头函数（`onSubmit={(draft) => …}` / `onChange={(path, value) => …}`），每轮渲染都是新引用，`memo` 从原理上就 bail 不掉。把回调提到模块级 / 包 `useCallback` 后归零。**任何组件的 showcase 首例只要传内联箭头，这条规则就会报**——它量的是 fixture 的写法，不是组件的质量。
+
+  同时把盲区本身堵上：CI 的定时触发新增一条 `Weekly structural sweep`，跑全量 inventory 而不只是 4 个兼容场景。
+
+  护栏测试统一走 `packages/ui/test/memo-guard.tsx` 的 `expectMemoSkipsSubtree`，判据分两层（#106）：
+
+  1. **结构断言**（不依赖时间）：被测元素的类型必须真是 `memo` 包出来的 —— `memo` 被误删时确定性变红；
+  2. **行为断言**：分母不再用 React 的 `baseDuration`（那是 memo bail 之后就不再更新的**冷**挂载估算，比值会随「这条测试在文件里排第几」漂移），改成同一条测试现场测出来的「被迫重渲一次要多久」——给被测元素补一个每轮都变的 `data-memo-probe`，浅比较必然失配。于是 memo 生效时比值实测 0.01–0.19、memo 失效时 ≈1.0，两簇之间隔着约 5 倍，阈值 0.5 上下各留 2 倍以上，不必再为每个组件各自拍系数。
+
+  全库 64 个护栏文件（含原先 6 处各写各的内联判据）现已统一到这一套。全局负向扫荡（把 `React.memo` 换成恒等函数）**64/64 文件、77/77 条断言变红，零假绿**，且失败的全是护栏用例、无误伤。
+
+- 899ff6d: 修设计工具族四个组件的英文缺口与静态导出阻断（#91 #92 #96 的收尾）
+
+  这批问题都是「跑一遍完整门禁才会暴露」的类型，本轮补跑构建与浏览器门禁时一次浮出来：
+
+  **InspectorPanel / IssueReporter 的内置预设没接语言**
+
+  - `inspectorSections()` 返回的五类预设 schema 里，51 条字段标签与枚举选项是硬编码中文（`布局` / `内边距` / `起` / `中` / `末`…）。不传 `sections` 时面板渲染的就是这套预设 —— 英文消费方拿到的是一屏中文标签。
+  - `BUILTIN_ISSUE_TEMPLATES` 的三套模板同理：字段标签与 `toMarkdown` 产出的章节标题（`## 问题描述` / `## 环境`）全是中文，而这些字符串会**进到提交给 GitHub 的 issue 正文里**。
+
+  两者的文案都收进 `config/locale.ts` 的 locale SSOT（`inspectorPanel.presets` / `issueReporter.templates`），组件按当前 `ConfigProvider` 语言取用。新增 `buildInspectorSections(text)` 与 `buildIssueTemplates(text)` 两个纯函数供直接调用；`layoutFields` / `colorFields` / `typographyFields` / `borderFields` / `effectsFields` / `BUILTIN_ISSUE_TEMPLATES` 这些既有具名导出保留为中文默认形态，老代码行为不变。`inspectorSections(categories, text?)` 的第二参可选，不传仍是中文。
+
+  英文站上这两页此前一共渲染出 195 处中文残留（`docs:i18n:output` 门禁计数），现在归零。
+
+  **PreviewSandbox 的示例会打断静态导出**
+
+  「同文档模式」示例为了演示错误边界，子组件在渲染期直接 `throw`。文档站是 `output: "export"`，每页都要在构建期预渲染一次，而**错误边界只在客户端接得住** —— 于是整页 `/components/preview-sandbox` 导出失败，构建直接中断。单测与真实浏览器都看不出来，因为那两边都有边界兜着。
+
+  改成点按钮才抛（iframe 模式那条演示同理）：加载时先渲染正常子树，点一下才进错误态。顺带解决第二个问题 —— 自动抛错时 React 仍会把它上报给 window，英文 showcase 的浏览器门禁按 `pageerror` 判失败（一次正常的页面加载不该甩出未捕获错误；Playwright 还会把 iframe 内的错误算到宿主页头上）。
+
+  新增守卫 `src/showcase/ssr-safety.test.tsx`：把全部 380 个 showcase 的 examples/states 过一遍 `renderToStaticMarkup`，任何一处在服务端渲染时抛错都当场红。把「构建十分钟后才发现整页导不出来」提前到秒级。
+
+  **顺带**：`stepper.tsx` 开头重复了两行 `"use client"`，清掉一行。
+
+  **英文目录缺 7 条**：`apps/www/i18n/component-meta.en.ts` 里没有这批新组件（DesignCanvas / ElementSelectionOverlay / InspectorPanel / CodeEditor / PreviewSandbox / ComponentPicker / IssueReporter）的记录，英文站的组件目录与站内搜索都索引不到它们。补齐后英文目录从 371 条回到与中文一致的 378 条。
+
+- 899ff6d: 修 #108：Meter 的数值文案不再把原始 `value` 当百分比
+
+  指示条宽度一直是按 `(value - min) / (max - min)` 算的（对的），但 `showValue` 印出来的文字和 `aria-valuetext` 走的是 Base UI 的默认实现 —— 那是**原始 value 直接拼 `%`**。于是 `max ≠ 100` 时，同一个组件里的条和字互相矛盾：
+
+  ```tsx
+  <Meter value={1041} max={1324} label="已挂教材章节" showValue />
+  // 条形 78.6%，屏幕上却印着「1,041%」，aria-valuetext="1041%"
+  ```
+
+  `max` 存在的意义恰恰是「不是 100 分制」，所以 `showValue` 此前只在 `max === 100` 时是对的。`aria-valuetext` 尤其严重：`MeterProps` 不透传原生属性，可见文字还能靠自己算好塞进 `label` 规避，读屏念的那句消费方**没有任何办法修正**。
+
+  - 文案改由组件统一算：归一化到 0–100 后渲染，与指示条同口径，最多保留一位小数（`1041/1324` → `78.6%`，`50/200` → `25%`）
+  - 通过 `getAriaValueText` 让 `aria-valuetext` 用同一句 —— 可见与可听不允许有两套说法
+  - `aria-valuenow` / `aria-valuemin` / `aria-valuemax` 仍如实上报原始值，不受影响
+  - 越界值只在文案上夹到 0–100%，`aria-valuenow` 照实报（越界该在数据侧解决，组件不替你掩盖）
+  - `max === min` 不再产生 `NaN`
+
+  新增 `formatValue`：
+
+  ```tsx
+  <Meter
+    value={1041}
+    max={1324}
+    label="已挂教材章节"
+    showValue
+    formatValue={({ value, max }) => `${value} / ${max} 道题`}
+  />
+  ```
+
+  返回的字符串同时驱动可见文字与 `aria-valuetext`，两者结构上不可能不一致。`percent` 已归一并夹到 0–100（未取整）一并给到。
+
+  文档补了三条此前只能靠读源码才知道的事实：`label` 是给 `role="meter"` 挂无障碍名的**唯一**途径（自绘标题不会被 `aria-labelledby` 关联上）；Base UI 的 Root 末尾固定塞一个 `role="presentation"` 的视觉隐藏 `<span>x</span>`，按整树 `textContent` 断言时会撞上；越界值的处理口径。showcase 补了 `formatValue` 的例子 —— 顺带说明，原有那条「自定义量程」示例的描述写的就是「数值按区间换算占比」，只是组件当时并没有这么做。
+
+- 899ff6d: 修 #107：可选 prop 收到 `null` 不再抛 TypeError
+
+  JS 的解构默认值只在值为 `undefined` 时生效，`null` 会原样落进函数体。于是 `<Stack direction={null}>` 直接崩在 `directionClass`（`typeof null === "object"`，null 掉进了响应式分支）：
+
+  ```
+  TypeError: Cannot read properties of null (reading 'base')
+  ```
+
+  这不是「调用方别传 null」就能算了的事。瑚琏把 AI 消费当一等公民，**任何由 LLM 产出结构再动态渲染的消费方都会遇到模型把「不设这个 prop」写成 `"direction": null`** —— 那是 JSON 里最自然的写法。报告者的 DSL 生成平台就是这么整棵子树被 ErrorBoundary 吃掉的。
+
+  全库扫了同一个缺陷类，19 个组件的 22 个 prop 全部补上回落：
+
+  - **响应式 / 对象形态**：`Stack.direction`、`Grid.cols`、`Tree.virtual` —— 这三个是 `typeof x === "object"` 分支判断的直接受害者
+  - **数组形态**：WorldMap(`dots`/`points`)、BeianFooter(`icp`)、FlyingPosters(`items`)、ScrollVelocity(`texts`)、BounceCards(`images`)、Folder(`items`)、Cascader(`defaultValue`)、Listbox(`defaultSelectedKeys`/`disabledKeys`)、Transfer(`defaultTargetKeys`)、Scheduler(`resources`)、InfiniteMenu(`items`)、FallingText(`highlightWords`)、VoiceRecord(`levels`)、StaggeredMenu(`items`/`socialItems`)、GridMotion(`items`)、ScopeMatrix(`suggestions`)、Tree(三个 `defaultXxxKeys`)
+
+  每个都配了一条回归测试：传 `null` 不抛错，且与「完全不传这个 prop」表现一致。用改动前的代码跑这批测试，会精确复现 issue 里那条 `Cannot read properties of null (reading 'base')`。
+
+  **本轮的边界**：只消灭崩溃。布尔与字符串默认值（`selectable = true`、`variant = "solid"` 这类，全库 430+ 处）收到 `null` 时仍然退化成 falsy 值而不是回落默认值 —— 那不会崩，只是行为与「不传」不同。要不要连这批一起归一是另一个量级的决策，没有夹带在这次里。消费方若从 LLM 输出直接构造 props，稳妥做法仍是在校验层丢弃值为 `null` 的键。
+
 ## 0.25.2
 
 ### Patch Changes

@@ -1,5 +1,37 @@
 # @hulianui/tokens
 
+## 0.5.0
+
+### Minor Changes
+
+- 899ff6d: Fixes #101: scoped theme overrides now hold in both directions (a dark island on a light page, a light island on a dark page)
+
+  Light used to be only the default on `:root`, not a theme you could select. So overriding was one-way: `<div data-theme="dark">` inside a light page worked (the dark block matches a rule of its own), while `<div data-theme="light">` inside a dark page did **nothing** — with no matching rule, the subtree kept inheriting the ancestor's dark values. CodeEditor's `theme` escape hatch, PreviewSandbox previewing a fixed color scheme, and the docs site's side-by-side light/dark comparison cards were all stuck on this.
+
+  Two changes:
+
+  1. The light block in `semantic.css` now carries `:root, [data-theme="light"]`. Both selectors have the same specificity and `[data-theme="dark"]` comes later in the source, so a `data-theme="dark"` root still wins; a nested light island matches a rule of its own and overrides the inherited dark values.
+  2. The `dark` variant in `preset.css` now resolves against the **nearest theme ancestor**, so `dark:` utilities inside an island follow the island rather than the page.
+
+  Point 2 deliberately does **not** use the `:not([data-theme="light"] *)` exclusion the issue proposed — testing it in a real browser showed it breaks the "**explicit** light page with a dark island" combination that runs every day (`ThemeProvider` writes `light` explicitly onto `<html>`, so the inside of a dark island also matches `[data-theme="light"] *` and loses every `dark:` utility). Selectors cannot express "nearest", so the judgement moved to an inherited `--hl-theme`:
+
+  ```css
+  @custom-variant dark {
+    &:where([data-theme="dark"]) { @slot; }         /* the island root itself: @container queries the parent */
+    @container style(--hl-theme: dark) { @slot; }    /* everything else: nearest ancestor */
+  }
+  ```
+
+  Correct at any nesting depth, including dark → light → dark.
+
+  **Baseline**: style container queries (Chrome 111 / Safari 18 / Firefox 128). This library already depends on `:has()` and `@container`, so it is the same generation of capability.
+
+  **Size cost**: every `dark:` utility now emits two rules instead of one. Compiling against the whole library measures 276.7KB → 278.0KB (**+1.3KB / +0.5%**) — small because components barely write `dark:` at all; semantic tokens swap their own values, which is the entire point of the token layer.
+
+  Acceptance followed the issue's requirement of a real browser, comparing computed styles and screenshots across four combinations: default-light page with a dark island, explicit-light page with a dark island, dark page with a light island, and a three-level dark → light → dark nest. `dark:` utilities, `shadow-*` (`--hl-shadow-*`), `--color-hairline` (transparent in light, a visible hairline in dark) and `color-scheme` all follow the island; `[data-surface="inverse"]` layered inside a light island was confirmed unaffected (it only remaps neutrals).
+
+  This also closes a silent failure: the `cssVars` shipped with injected components are scraped out of `semantic.css` with a regular expression, and changing the selector quietly scraped light down to empty — injected components would still render, just entirely in default colors. Failing to parse either theme now throws.
+
 ## 0.4.0
 
 ### Minor Changes
