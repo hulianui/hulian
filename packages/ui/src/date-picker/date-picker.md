@@ -36,6 +36,7 @@ import { DatePicker } from "@hulianui/ui"
 | value | `string \| null` | — | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
 | defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
 | picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，同时决定值形状与面板起始层 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
 | maxDate | `string` | — | 最晚可选日期 |
 | disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |

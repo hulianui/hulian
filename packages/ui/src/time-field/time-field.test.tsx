@@ -4,12 +4,18 @@ import { render, fireEvent, screen } from "@testing-library/react";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
 import { TimeField } from "./time-field";
+import { inputShellVariants } from "../input/input";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const hourSeg = () => screen.getByRole("spinbutton", { name: "小时" });
 const minuteSeg = () => screen.getByRole("spinbutton", { name: "分钟" });
 const secondSeg = () => screen.getByRole("spinbutton", { name: "秒" });
 
 describe("TimeField", () => {
+  it("稳定父更新时跳过 TimeField 子树", async () => {
+    await expectMemoSkipsSubtree(() => <TimeField defaultValue="09:30" />);
+  });
+
   it("enUS localizes the group, segments, empty value, and clear action", () => {
     render(
       <ConfigProvider locale={enUS}>
@@ -166,7 +172,14 @@ describe("TimeField", () => {
   describe("min/max 钳制", () => {
     it("输完整段后越界钳到边界，显示同步跟上", () => {
       const onValueChange = vi.fn();
-      render(<TimeField defaultValue="12:00" minTime="09:30" maxTime="18:00" onValueChange={onValueChange} />);
+      render(
+        <TimeField
+          defaultValue="12:00"
+          minTime="09:30"
+          maxTime="18:00"
+          onValueChange={onValueChange}
+        />,
+      );
       hourSeg().focus();
       fireEvent.keyDown(hourSeg(), { key: "2" });
       fireEvent.keyDown(hourSeg(), { key: "3" });
@@ -282,5 +295,21 @@ describe("TimeField", () => {
     expect(hourSeg().getAttribute("aria-valuemax")).toBe("23");
     expect(minuteSeg().getAttribute("aria-valuemax")).toBe("59");
     expect(hourSeg().getAttribute("aria-valuetext")).toBe("09");
+  });
+
+  // #98：外壳此前硬编码 h-9(36px)，与 Input 的 32/40/48 刻度对不上，并排必错位。
+  it.each([
+    ["sm", "h-8"],
+    ["md", "h-10"],
+    ["lg", "h-12"],
+  ] as const)("size=%s 外壳高度 %s，与 Input 同刻度", (size, h) => {
+    expect(inputShellVariants({ size })).toContain(h);
+    const { container } = render(<TimeField size={size} />);
+    expect((container.firstElementChild as HTMLElement).className).toContain(h);
+  });
+
+  it("不传 size 时按 md（40px）渲染", () => {
+    const { container } = render(<TimeField />);
+    expect((container.firstElementChild as HTMLElement).className).toContain("h-10");
   });
 });

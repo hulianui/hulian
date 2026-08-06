@@ -10,6 +10,8 @@ export interface TimePickerProps {
   onValueChange?: (value: string | null) => void;
   /** 显示秒列，值形状随之变成 `"HH:mm:ss"`。@default false */
   withSeconds?: boolean;
+  /** 触发器尺寸档，刻度与 `Input` 一致（32 / 40 / 48px）。@default "md" */
+  size?: "sm" | "md" | "lg";
   /** 分钟列步进（如 5 / 15 / 30）。@default 1 */
   minuteStep?: number;
   /** 秒列步进。@default 1 */

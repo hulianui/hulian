@@ -33,6 +33,7 @@ import { TimeField } from "@hulianui/ui"
 | value | `string \| null` | — | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
 | defaultValue | `string \| null` | — | Initial value in uncontrolled mode, with the same shape as `value`. |
 | withSeconds | `boolean` | `false` | Whether to show the seconds segment and include seconds in the value. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Field size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px), so controls on one form row line up. |
 | minTime | `string` | — | Earliest allowed time, inclusive, with the same shape as `value`. |
 | maxTime | `string` | — | Latest allowed time, inclusive. |
 | clearable | `boolean` | `true` | Whether to show a clear button when the field has a value and is neither disabled nor read-only. |

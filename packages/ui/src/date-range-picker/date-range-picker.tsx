@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
+import { cva } from "class-variance-authority";
 // 内部一律用 YYYY-MM-DD 文本作日期标识（toISO/normISO 出自 lib/date）：
 // 定宽 → 字典序即时间序，区间判定可直接字符串比较，避开时区/UTC 偏移日界坑。
 import {
@@ -27,10 +28,33 @@ const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
+// 触发器刻度与 Input 外壳逐字一致（32/40/48）：区间选择器几乎总是和 Input/Select 并排落在
+// 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
+// 注意：面板里日期格的 h-9 / size-9 是网格几何（与 size-9 的日按钮成对），与触发器无关，不跟档。
+const triggerVariants = cva(
+  [
+    "inline-flex min-w-[16rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg text-foreground outline-none transition-colors",
+    "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+  ],
+  {
+    variants: {
+      size: { sm: "h-8 px-2.5 text-sm", md: "h-10 px-3 text-sm", lg: "h-12 px-3.5 text-base" },
+    },
+    defaultVariants: { size: "md" },
+  },
+);
+
+const triggerIconVariants = cva("shrink-0 text-muted", {
+  variants: { size: { sm: "size-3.5", md: "size-4", lg: "size-5" } },
+  defaultVariants: { size: "md" },
+});
+
 export function DateRangePicker({
   value: valueProp,
   defaultValue,
   onValueChange,
+  size = "md",
   minDate,
   maxDate,
   disabledDate,
@@ -261,14 +285,9 @@ export function DateRangePicker({
             <button
               type="button"
               disabled={disabled}
-              className={cn(
-                "inline-flex h-9 min-w-[16rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-foreground outline-none transition-colors",
-                "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30",
-                "disabled:cursor-not-allowed disabled:opacity-50",
-                showClear && "pr-8",
-              )}
+              className={cn(triggerVariants({ size }), showClear && "pr-8")}
             >
-              <Calendar className="size-4 shrink-0 text-muted" aria-hidden />
+              <Calendar className={triggerIconVariants({ size })} aria-hidden />
               <span className={cn(!startText && "text-muted")}>
                 {startText || resolvedPlaceholder[0]}
               </span>

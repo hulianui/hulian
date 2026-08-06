@@ -13,6 +13,8 @@ export interface DatePickerProps {
   onValueChange?: (value: string | null) => void;
   /** 选择粒度。@default "date" */
   picker?: CalendarPicker;
+  /** 触发器尺寸档，刻度与 `Input` 一致（32 / 40 / 48px）。@default "md" */
+  size?: "sm" | "md" | "lg";
   /** 可选最早日期（任意可解析日期串，内部规范化）。 */
   minDate?: string;
   /** 可选最晚日期。 */

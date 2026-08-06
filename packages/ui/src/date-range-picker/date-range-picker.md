@@ -27,6 +27,7 @@ import { DateRangePicker } from "@hulianui/ui"
 |------|------|------|------|
 | value | `[string, string] \| null` | — | 受控值 `[start, end]`（ISO `YYYY-MM-DD`）；`null` = 已清空；传入即受控 |
 | defaultValue | `[string, string] \| null` | — | 非受控初始值 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px）；面板里日期格的几何不随之变化 |
 | minDate | `string` | — | 最早可选日（ISO），早于此禁选 |
 | maxDate | `string` | — | 最晚可选日（ISO），晚于此禁选 |
 | disabledDate | `(isoDate: string) => boolean` | — | 自定义禁用某天，入参为 ISO `YYYY-MM-DD` |

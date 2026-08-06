@@ -13,6 +13,8 @@ export interface TimeFieldProps {
   onValueChange?: (value: string | null) => void;
   /** 显示秒段，值形状随之变成 `"HH:mm:ss"`。@default false */
   withSeconds?: boolean;
+  /** 输入框尺寸档，刻度与 `Input` 一致（32 / 40 / 48px）。@default "md" */
+  size?: "sm" | "md" | "lg";
   /** 最早可选时刻（含），形状同 `value`。整段输完后钳制，不做段级限制。 */
   minTime?: string;
   /** 最晚可选时刻（含），形状同 `value`。 */

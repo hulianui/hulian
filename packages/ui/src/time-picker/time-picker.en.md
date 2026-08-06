@@ -30,6 +30,7 @@ import { TimePicker } from "@hulianui/ui"
 | value | `string \| null` | — | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
 | defaultValue | `string \| null` | — | Initial value in uncontrolled mode, with the same shape as `value`. |
 | withSeconds | `boolean` | `false` | Whether to show the seconds column and include seconds in the value. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px), so controls on one form row line up. |
 | minuteStep | `number` | `1` | Increment between minute options; 5, 15, and 30 are common choices. |
 | secondStep | `number` | `1` | Increment between second options. |
 | minTime | `string` | — | Earliest selectable time, inclusive, with the same shape as `value`. |

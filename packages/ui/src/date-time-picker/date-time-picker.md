@@ -36,6 +36,7 @@ import { DateTimePicker } from "@hulianui/ui"
 | value | `string \| null` | — | 受控值，`"YYYY-MM-DD HH:mm"`（`withSeconds` 时带秒），中间一个空格 |
 | defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒列，值形状随之带秒 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minuteStep | `number` | `1` | 分钟列步进（常用 5 / 15 / 30） |
 | secondStep | `number` | `1` | 秒列步进 |
 | minDateTime | `string` | — | 最早可选时刻（含），形状同 `value`。日期部分限制日历，时间部分只在边界那天生效 |

@@ -6,11 +6,13 @@ import type { DateRangeValue } from "./date-range-picker.types";
 
 function Demo({
   presets = true,
+  size = "md",
   disabled,
   readOnly,
   initial = null,
 }: {
   presets?: boolean;
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
   readOnly?: boolean;
   initial?: DateRangeValue | null;
@@ -21,6 +23,7 @@ function Demo({
       value={v}
       onValueChange={setV}
       presets={presets}
+      size={size}
       disabled={disabled}
       readOnly={readOnly}
     />
@@ -74,6 +77,21 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "尺寸",
+      description:
+        "size 与 Input / Select 共用同一套刻度（sm 32px / md 40px / lg 48px），同一行表单里高度天然对齐。面板里日期格的几何不随之变化。",
+      code: `<DateRangePicker size="sm" defaultValue={["2026-06-08", "2026-06-20"]} />
+<DateRangePicker size="md" defaultValue={["2026-06-08", "2026-06-20"]} />
+<DateRangePicker size="lg" defaultValue={["2026-06-08", "2026-06-20"]} />`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-3">
+          <DateRangePicker size="sm" defaultValue={["2026-06-08", "2026-06-20"]} />
+          <DateRangePicker size="md" defaultValue={["2026-06-08", "2026-06-20"]} />
+          <DateRangePicker size="lg" defaultValue={["2026-06-08", "2026-06-20"]} />
+        </div>
+      ),
+    },
+    {
       title: "禁用",
       description: "整体置灰，触发器不可打开。",
       code: `<DateRangePicker defaultValue={["2026-06-01", "2026-06-15"]} disabled />`,
@@ -82,6 +100,13 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
   ],
   controls: [
     { prop: "presets", type: "boolean", defaultValue: true, label: "快捷预设" },
+    {
+      prop: "size",
+      type: "select",
+      options: ["sm", "md", "lg"],
+      defaultValue: "md",
+      label: "尺寸",
+    },
     { prop: "disabled", type: "boolean", defaultValue: false, label: "禁用" },
     { prop: "readOnly", type: "boolean", defaultValue: false, label: "只读" },
   ],
@@ -103,11 +128,18 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
       ),
     },
     { name: "无预设", render: () => <Demo presets={false} initial={["2026-06-03", "2026-06-09"]} /> },
+    { name: "小号", render: () => <Demo size="sm" initial={["2026-06-08", "2026-06-20"]} /> },
+    { name: "大号", render: () => <Demo size="lg" initial={["2026-06-08", "2026-06-20"]} /> },
     { name: "禁用", render: () => <Demo disabled initial={["2026-06-01", "2026-06-15"]} /> },
   ],
   renderWithProps: (p) => (
-    <Demo presets={p.presets !== false} disabled={p.disabled === true} readOnly={p.readOnly === true} />
+    <Demo
+      presets={p.presets !== false}
+      size={(p.size as "sm" | "md" | "lg") ?? "md"}
+      disabled={p.disabled === true}
+      readOnly={p.readOnly === true}
+    />
   ),
   toCode: (p) =>
-    `<DateRangePicker\n  value={range}\n  onValueChange={setRange}${p.presets === false ? "\n  presets={false}" : ""}${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}\n/>`,
+    `<DateRangePicker\n  value={range}\n  onValueChange={setRange}${p.presets === false ? "\n  presets={false}" : ""}${p.size && p.size !== "md" ? `\n  size="${p.size}"` : ""}${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}\n/>`,
 };

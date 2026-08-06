@@ -1,5 +1,6 @@
 "use client";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
+import { cva } from "class-variance-authority";
 import { Clock, X } from "../_icons";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
@@ -28,11 +29,32 @@ import type { TimeFieldProps } from "./time-field.types";
 const segClass =
   "rounded px-0.5 tabular-nums outline-none transition-colors focus:bg-primary focus:text-primary-foreground";
 
-export function TimeField({
+// 外壳刻度与 Input 外壳逐字一致（32/40/48）：分段时间输入几乎总是和 Input/Select 并排落在
+// 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
+const shellVariants = cva(
+  [
+    "relative inline-flex min-w-[7.5rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg text-foreground transition-colors",
+    "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
+  ],
+  {
+    variants: {
+      size: { sm: "h-8 px-2.5 text-sm", md: "h-10 px-3 text-sm", lg: "h-12 px-3.5 text-base" },
+    },
+    defaultVariants: { size: "md" },
+  },
+);
+
+const shellIconVariants = cva("shrink-0 text-muted", {
+  variants: { size: { sm: "size-3.5", md: "size-4", lg: "size-5" } },
+  defaultVariants: { size: "md" },
+});
+
+function TimeFieldImpl({
   value: valueProp,
   defaultValue,
   onValueChange,
   withSeconds = false,
+  size = "md",
   minTime,
   maxTime,
   clearable = true,
@@ -159,14 +181,13 @@ export function TimeField({
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}
       className={cn(
-        "relative inline-flex h-9 min-w-[7.5rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-foreground transition-colors",
-        "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
+        shellVariants({ size }),
         disabled && "cursor-not-allowed opacity-50",
         showClear && "pr-8",
         className,
       )}
     >
-      <Clock className="size-4 shrink-0 text-muted" aria-hidden />
+      <Clock className={shellIconVariants({ size })} aria-hidden />
       <span className="inline-flex items-center">
         {segments.map((seg, i) => (
           <span key={seg} className="inline-flex items-center">
@@ -205,3 +226,9 @@ export function TimeField({
     </div>
   );
 }
+TimeFieldImpl.displayName = "TimeField";
+
+// 时间字段常和一排 Input/Select 并列在同一张表单里，父级一动就整排重算。props 全是原语时
+// React 无法自己 bailout，只能靠 memo —— 与 Button/Checkbox/Chip 同一处方。
+export const TimeField = memo(TimeFieldImpl);
+TimeField.displayName = "TimeField";

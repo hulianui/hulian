@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { ConfigProvider, enUS } from "../config";
 import { TimePicker } from "./time-picker";
+import { inputShellVariants } from "../input/input";
 
 const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择时间" }));
 
@@ -153,5 +154,21 @@ describe("TimePicker", () => {
     expect(screen.getByRole("listbox", { name: "Minute" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Now" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Confirm" })).toBeTruthy();
+  });
+
+  // #98：触发器此前硬编码 h-9(36px)，与 Input 的 32/40/48 刻度对不上，并排必错位。
+  it.each([
+    ["sm", "h-8"],
+    ["md", "h-10"],
+    ["lg", "h-12"],
+  ] as const)("size=%s 触发器高度 %s，与 Input 同刻度", (size, h) => {
+    expect(inputShellVariants({ size })).toContain(h);
+    const { container } = render(<TimePicker size={size} aria-label="选择时间" />);
+    expect(container.querySelector("button")!.className).toContain(h);
+  });
+
+  it("不传 size 时按 md（40px）渲染", () => {
+    const { container } = render(<TimePicker aria-label="选择时间" />);
+    expect(container.querySelector("button")!.className).toContain("h-10");
   });
 });

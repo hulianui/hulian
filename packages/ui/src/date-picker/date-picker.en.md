@@ -32,6 +32,7 @@ import { DatePicker } from "@hulianui/ui"
 | value | `string \| null` | — | controlled value. Shape varies with `picker`: `"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
 | defaultValue | `string \| null` | — | Uncontrolled initial value, the shape is the same as above |
 | picker | `"date" \| "month" \| "year"` | `"date"` | Select the granularity and determine the value shape and panel starting layer |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px), so controls on one form row line up. |
 | minDate | `string` | — | Earliest selectable date as any parseable date string; normalized internally. |
 | maxDate | `string` | — | Latest selectable date. |
 | disabledDate | `(isoDate: string) => boolean` | — | Determines whether a date is disabled. The argument is always `"YYYY-MM-DD"`; month/year pickers pass the first day of that month/year. |

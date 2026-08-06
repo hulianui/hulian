@@ -5,6 +5,7 @@ import { DateTimePicker } from "./date-time-picker";
 
 function Demo({
   withSeconds,
+  size = "md",
   minuteStep,
   disabled,
   readOnly,
@@ -13,6 +14,7 @@ function Demo({
   initial = null,
 }: {
   withSeconds?: boolean;
+  size?: "sm" | "md" | "lg";
   minuteStep?: number;
   disabled?: boolean;
   readOnly?: boolean;
@@ -26,6 +28,7 @@ function Demo({
       value={v}
       onValueChange={setV}
       withSeconds={withSeconds}
+      size={size}
       minuteStep={minuteStep}
       disabled={disabled}
       readOnly={readOnly}
@@ -84,6 +87,21 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "尺寸",
+      description:
+        "size 与 Input / Select 共用同一套刻度（sm 32px / md 40px / lg 48px），同一行表单里高度天然对齐。",
+      code: `<DateTimePicker size="sm" defaultValue="2026-06-08 09:30" />
+<DateTimePicker size="md" defaultValue="2026-06-08 09:30" />
+<DateTimePicker size="lg" defaultValue="2026-06-08 09:30" />`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-3">
+          <DateTimePicker size="sm" defaultValue="2026-06-08 09:30" aria-label="小号" />
+          <DateTimePicker size="md" defaultValue="2026-06-08 09:30" aria-label="中号" />
+          <DateTimePicker size="lg" defaultValue="2026-06-08 09:30" aria-label="大号" />
+        </div>
+      ),
+    },
+    {
       title: "禁用 / 只读",
       description: "disabled 整体置灰且打不开；readOnly 能看面板但选不动。",
       code: `<DateTimePicker defaultValue="2026-06-08 09:30" disabled />
@@ -98,6 +116,13 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
   ],
   controls: [
     { prop: "withSeconds", type: "boolean", defaultValue: false, label: "显示秒" },
+    {
+      prop: "size",
+      type: "select",
+      options: ["sm", "md", "lg"],
+      defaultValue: "md",
+      label: "尺寸",
+    },
     {
       prop: "minuteStep",
       type: "select",
@@ -125,11 +150,14 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
         />
       ),
     },
+    { name: "小号", render: () => <Demo size="sm" initial="2026-06-08 09:30" /> },
+    { name: "大号", render: () => <Demo size="lg" initial="2026-06-08 09:30" /> },
     { name: "禁用", render: () => <Demo disabled initial="2026-06-08 09:30" /> },
   ],
   renderWithProps: (p) => (
     <Demo
       withSeconds={p.withSeconds === true}
+      size={(p.size as "sm" | "md" | "lg") ?? "md"}
       minuteStep={Number(p.minuteStep ?? 1) || 1}
       clearable={p.clearable !== false}
       showNow={p.showNow !== false}
@@ -139,6 +167,8 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
   ),
   toCode: (p) =>
     `<DateTimePicker\n  value={dateTime}\n  onValueChange={setDateTime}${p.withSeconds ? "\n  withSeconds" : ""}${
+      p.size && p.size !== "md" ? `\n  size="${p.size}"` : ""
+    }${
       p.minuteStep && p.minuteStep !== "1" ? `\n  minuteStep={${p.minuteStep}}` : ""
     }${p.clearable === false ? "\n  clearable={false}" : ""}${p.showNow === false ? "\n  showNow={false}" : ""}${
       p.disabled ? "\n  disabled" : ""

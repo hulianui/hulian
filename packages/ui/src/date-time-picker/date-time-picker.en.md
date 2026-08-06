@@ -33,6 +33,7 @@ import { DateTimePicker } from "@hulianui/ui"
 | value | `string \| null` | — | Controlled fixed-width value: `"YYYY-MM-DD HH:mm"`, or `"YYYY-MM-DD HH:mm:ss"` with seconds enabled. |
 | defaultValue | `string \| null` | — | Initial value when uncontrolled, using the same format as `value`. |
 | withSeconds | `boolean` | `false` | Shows the seconds column and changes the value shape to include seconds. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px), so controls on one form row line up. |
 | minuteStep | `number` | `1` | Increment between minute options; common values are 5, 15, and 30. |
 | secondStep | `number` | `1` | Increment between second options. |
 | minDateTime | `string` | — | Earliest selectable date and time, inclusive. Its date limits the calendar; its time applies only on that boundary date. |

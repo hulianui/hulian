@@ -6,6 +6,7 @@ import type { CalendarPicker } from "../calendar/calendar.types";
 
 function Demo({
   picker = "date",
+  size = "md",
   disabled,
   readOnly,
   clearable = true,
@@ -13,6 +14,7 @@ function Demo({
   initial = null,
 }: {
   picker?: CalendarPicker;
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
   readOnly?: boolean;
   clearable?: boolean;
@@ -25,6 +27,7 @@ function Demo({
       value={v}
       onValueChange={setV}
       picker={picker}
+      size={size}
       disabled={disabled}
       readOnly={readOnly}
       clearable={clearable}
@@ -89,6 +92,21 @@ export const datePickerShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "尺寸",
+      description:
+        "size 与 Input / Select 共用同一套刻度（sm 32px / md 40px / lg 48px），同一行表单里高度天然对齐。",
+      code: `<DatePicker size="sm" defaultValue="2026-06-08" />
+<DatePicker size="md" defaultValue="2026-06-08" />
+<DatePicker size="lg" defaultValue="2026-06-08" />`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-3">
+          <DatePicker size="sm" defaultValue="2026-06-08" aria-label="小号" />
+          <DatePicker size="md" defaultValue="2026-06-08" aria-label="中号" />
+          <DatePicker size="lg" defaultValue="2026-06-08" aria-label="大号" />
+        </div>
+      ),
+    },
+    {
       title: "禁用 / 只读",
       description: "disabled 整体置灰且打不开；readOnly 可以看面板但选不动。",
       code: `<DatePicker defaultValue="2026-06-08" disabled />
@@ -108,6 +126,13 @@ export const datePickerShowcase: ShowcaseSpec = {
       options: ["date", "month", "year"],
       defaultValue: "date",
       label: "粒度",
+    },
+    {
+      prop: "size",
+      type: "select",
+      options: ["sm", "md", "lg"],
+      defaultValue: "md",
+      label: "尺寸",
     },
     { prop: "clearable", type: "boolean", defaultValue: true, label: "可清除" },
     { prop: "showToday", type: "boolean", defaultValue: true, label: "今天快捷" },
@@ -134,11 +159,14 @@ export const datePickerShowcase: ShowcaseSpec = {
         />
       ),
     },
+    { name: "小号", render: () => <Demo size="sm" initial="2026-06-08" /> },
+    { name: "大号", render: () => <Demo size="lg" initial="2026-06-08" /> },
     { name: "禁用", render: () => <Demo disabled initial="2026-06-08" /> },
   ],
   renderWithProps: (p) => (
     <Demo
       picker={(p.picker as CalendarPicker) ?? "date"}
+      size={(p.size as "sm" | "md" | "lg") ?? "md"}
       clearable={p.clearable !== false}
       showToday={p.showToday !== false}
       disabled={p.disabled === true}
@@ -148,7 +176,7 @@ export const datePickerShowcase: ShowcaseSpec = {
   toCode: (p) =>
     `<DatePicker\n  value={date}\n  onValueChange={setDate}${
       p.picker && p.picker !== "date" ? `\n  picker="${p.picker}"` : ""
-    }${p.clearable === false ? "\n  clearable={false}" : ""}${
+    }${p.size && p.size !== "md" ? `\n  size="${p.size}"` : ""}${p.clearable === false ? "\n  clearable={false}" : ""}${
       p.showToday === false ? "\n  showToday={false}" : ""
     }${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}\n/>`,
 };

@@ -3,6 +3,7 @@ import { render, fireEvent, screen } from "@testing-library/react";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
 import { DateTimePicker } from "./date-time-picker";
+import { inputShellVariants } from "../input/input";
 
 const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择日期时间" }));
 
@@ -227,5 +228,21 @@ describe("DateTimePicker", () => {
       fireEvent.click(screen.getByRole("button", { name: "2026-06-15" }));
       expect(onValueChange).not.toHaveBeenCalled();
     });
+  });
+
+  // #98：触发器此前硬编码 h-9(36px)，与 Input 的 32/40/48 刻度对不上，并排必错位。
+  it.each([
+    ["sm", "h-8"],
+    ["md", "h-10"],
+    ["lg", "h-12"],
+  ] as const)("size=%s 触发器高度 %s，与 Input 同刻度", (size, h) => {
+    expect(inputShellVariants({ size })).toContain(h);
+    const { container } = render(<DateTimePicker size={size} aria-label="选择日期时间" />);
+    expect(container.querySelector("button")!.className).toContain(h);
+  });
+
+  it("不传 size 时按 md（40px）渲染", () => {
+    const { container } = render(<DateTimePicker aria-label="选择日期时间" />);
+    expect(container.querySelector("button")!.className).toContain("h-10");
   });
 });

@@ -36,6 +36,7 @@ import { TimeField } from "@hulianui/ui"
 | value | `string \| null` | — | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`）。24 小时制、定宽补零 |
 | defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒段，值形状随之带秒 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 输入框尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minTime | `string` | — | 最早可选时刻（含），形状同 `value` |
 | maxTime | `string` | — | 最晚可选时刻（含） |
 | clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |

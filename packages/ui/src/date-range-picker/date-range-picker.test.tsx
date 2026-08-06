@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { DateRangePicker } from "./date-range-picker";
+import { inputShellVariants } from "../input/input";
 
 afterEach(cleanup);
 
@@ -67,5 +68,22 @@ describe("DateRangePicker", () => {
     render(<DateRangePicker value={["2026-06-08", "2026-06-20"]} onValueChange={onChange} />);
     fireEvent.click(screen.getByLabelText("清除"));
     expect(onChange).toHaveBeenCalledWith(null);
+  });
+
+  // #98：触发器此前硬编码 h-9(36px)，与 Input 的 32/40/48 刻度对不上，并排必错位。
+  // 面板里日期格的 h-9 是网格几何（配 size-9 日按钮），不跟档位，故只断言触发器。
+  it.each([
+    ["sm", "h-8"],
+    ["md", "h-10"],
+    ["lg", "h-12"],
+  ] as const)("size=%s 触发器高度 %s，与 Input 同刻度", (size, h) => {
+    expect(inputShellVariants({ size })).toContain(h);
+    const { container } = render(<DateRangePicker size={size} />);
+    expect(container.querySelector("button")!.className).toContain(h);
+  });
+
+  it("不传 size 时按 md（40px）渲染", () => {
+    const { container } = render(<DateRangePicker />);
+    expect(container.querySelector("button")!.className).toContain("h-10");
   });
 });

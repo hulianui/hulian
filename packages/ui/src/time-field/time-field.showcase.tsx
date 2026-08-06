@@ -5,12 +5,14 @@ import { TimeField } from "./time-field";
 
 function Demo({
   withSeconds,
+  size = "md",
   disabled,
   readOnly,
   clearable = true,
   initial = null,
 }: {
   withSeconds?: boolean;
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
   readOnly?: boolean;
   clearable?: boolean;
@@ -22,6 +24,7 @@ function Demo({
       value={v}
       onValueChange={setV}
       withSeconds={withSeconds}
+      size={size}
       disabled={disabled}
       readOnly={readOnly}
       clearable={clearable}
@@ -52,6 +55,21 @@ export const timeFieldShowcase: ShowcaseSpec = {
       render: () => <TimeField defaultValue="12:00" minTime="09:30" maxTime="18:00" />,
     },
     {
+      title: "尺寸",
+      description:
+        "size 与 Input / Select 共用同一套刻度（sm 32px / md 40px / lg 48px），同一行表单里高度天然对齐。",
+      code: `<TimeField size="sm" defaultValue="09:30" />
+<TimeField size="md" defaultValue="09:30" />
+<TimeField size="lg" defaultValue="09:30" />`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-3">
+          <TimeField size="sm" defaultValue="09:30" />
+          <TimeField size="md" defaultValue="09:30" />
+          <TimeField size="lg" defaultValue="09:30" />
+        </div>
+      ),
+    },
+    {
       title: "禁用 / 只读",
       description: "disabled 整体置灰且不可聚焦；readOnly 改不动值但还能切段浏览。",
       code: `<TimeField defaultValue="09:30" disabled />
@@ -66,6 +84,13 @@ export const timeFieldShowcase: ShowcaseSpec = {
   ],
   controls: [
     { prop: "withSeconds", type: "boolean", defaultValue: false, label: "显示秒" },
+    {
+      prop: "size",
+      type: "select",
+      options: ["sm", "md", "lg"],
+      defaultValue: "md",
+      label: "尺寸",
+    },
     { prop: "clearable", type: "boolean", defaultValue: true, label: "可清除" },
     { prop: "disabled", type: "boolean", defaultValue: false, label: "禁用" },
     { prop: "readOnly", type: "boolean", defaultValue: false, label: "只读" },
@@ -75,11 +100,14 @@ export const timeFieldShowcase: ShowcaseSpec = {
     { name: "带默认值", render: () => <Demo initial="09:30" /> },
     { name: "带秒", render: () => <Demo withSeconds initial="09:30:15" /> },
     { name: "限定区间", render: () => <TimeField defaultValue="12:00" minTime="09:30" maxTime="18:00" /> },
+    { name: "小号", render: () => <Demo size="sm" initial="09:30" /> },
+    { name: "大号", render: () => <Demo size="lg" initial="09:30" /> },
     { name: "禁用", render: () => <Demo disabled initial="09:30" /> },
   ],
   renderWithProps: (p) => (
     <Demo
       withSeconds={p.withSeconds === true}
+      size={(p.size as "sm" | "md" | "lg") ?? "md"}
       clearable={p.clearable !== false}
       disabled={p.disabled === true}
       readOnly={p.readOnly === true}
@@ -87,6 +115,8 @@ export const timeFieldShowcase: ShowcaseSpec = {
   ),
   toCode: (p) =>
     `<TimeField\n  value={time}\n  onValueChange={setTime}${p.withSeconds ? "\n  withSeconds" : ""}${
+      p.size && p.size !== "md" ? `\n  size="${p.size}"` : ""
+    }${
       p.clearable === false ? "\n  clearable={false}" : ""
     }${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}\n/>`,
 };

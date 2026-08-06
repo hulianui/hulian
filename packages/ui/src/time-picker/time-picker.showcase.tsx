@@ -5,6 +5,7 @@ import { TimePicker } from "./time-picker";
 
 function Demo({
   withSeconds,
+  size = "md",
   minuteStep = 1,
   clearable = true,
   showNow = true,
@@ -13,6 +14,7 @@ function Demo({
   initial = null,
 }: {
   withSeconds?: boolean;
+  size?: "sm" | "md" | "lg";
   minuteStep?: number;
   clearable?: boolean;
   showNow?: boolean;
@@ -26,6 +28,7 @@ function Demo({
       value={v}
       onValueChange={setV}
       withSeconds={withSeconds}
+      size={size}
       minuteStep={minuteStep}
       clearable={clearable}
       showNow={showNow}
@@ -66,6 +69,21 @@ export const timePickerShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "尺寸",
+      description:
+        "size 与 Input / Select 共用同一套刻度（sm 32px / md 40px / lg 48px），同一行表单里高度天然对齐。",
+      code: `<TimePicker size="sm" defaultValue="09:30" />
+<TimePicker size="md" defaultValue="09:30" />
+<TimePicker size="lg" defaultValue="09:30" />`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-3">
+          <TimePicker size="sm" defaultValue="09:30" aria-label="小号" />
+          <TimePicker size="md" defaultValue="09:30" aria-label="中号" />
+          <TimePicker size="lg" defaultValue="09:30" aria-label="大号" />
+        </div>
+      ),
+    },
+    {
       title: "禁用 / 只读",
       description: "disabled 整体置灰且打不开；readOnly 面板可看但选不动。",
       code: `<TimePicker defaultValue="09:30" disabled />
@@ -80,6 +98,13 @@ export const timePickerShowcase: ShowcaseSpec = {
   ],
   controls: [
     { prop: "withSeconds", type: "boolean", defaultValue: false, label: "带秒" },
+    {
+      prop: "size",
+      type: "select",
+      options: ["sm", "md", "lg"],
+      defaultValue: "md",
+      label: "尺寸",
+    },
     { prop: "minuteStep", type: "select", options: ["1", "5", "15", "30"], defaultValue: "1", label: "分钟步进" },
     { prop: "clearable", type: "boolean", defaultValue: true, label: "可清除" },
     { prop: "showNow", type: "boolean", defaultValue: true, label: "此刻快捷" },
@@ -97,11 +122,14 @@ export const timePickerShowcase: ShowcaseSpec = {
         <TimePicker minTime="09:30" maxTime="18:00" defaultValue="10:00" aria-label="选择时间" />
       ),
     },
+    { name: "小号", render: () => <Demo size="sm" initial="09:30" /> },
+    { name: "大号", render: () => <Demo size="lg" initial="09:30" /> },
     { name: "禁用", render: () => <Demo disabled initial="09:30" /> },
   ],
   renderWithProps: (p) => (
     <Demo
       withSeconds={p.withSeconds === true}
+      size={(p.size as "sm" | "md" | "lg") ?? "md"}
       minuteStep={Number(p.minuteStep ?? 1) || 1}
       clearable={p.clearable !== false}
       showNow={p.showNow !== false}
@@ -111,6 +139,8 @@ export const timePickerShowcase: ShowcaseSpec = {
   ),
   toCode: (p) =>
     `<TimePicker\n  value={time}\n  onValueChange={setTime}${p.withSeconds ? "\n  withSeconds" : ""}${
+      p.size && p.size !== "md" ? `\n  size="${p.size}"` : ""
+    }${
       p.minuteStep && Number(p.minuteStep) !== 1 ? `\n  minuteStep={${p.minuteStep}}` : ""
     }${p.clearable === false ? "\n  clearable={false}" : ""}${p.showNow === false ? "\n  showNow={false}" : ""}${
       p.disabled ? "\n  disabled" : ""

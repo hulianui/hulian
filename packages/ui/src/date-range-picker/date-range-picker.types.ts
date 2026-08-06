@@ -17,6 +17,8 @@ export interface DateRangePickerProps {
   defaultValue?: DateRangeValue | null;
   /** 区间变化（含清空 → null）。 */
   onValueChange?: (range: DateRangeValue | null) => void;
+  /** 触发器尺寸档，刻度与 `Input` 一致（32 / 40 / 48px）；面板日期格几何不随之变化。@default "md" */
+  size?: "sm" | "md" | "lg";
   /** 最早可选日（ISO），早于此禁选。 */
   minDate?: string;
   /** 最晚可选日（ISO），晚于此禁选。 */

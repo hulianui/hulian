@@ -1,6 +1,7 @@
 "use client";
 import { memo, useState } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
+import { cva } from "class-variance-authority";
 import { Calendar as CalendarIcon, X } from "../_icons";
 import { Calendar } from "../calendar";
 import { cn } from "../lib/cn";
@@ -37,11 +38,33 @@ const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
+// 触发器刻度与 Input 外壳逐字一致（32/40/48）：日期时间选择器几乎总是和 Input/Select 并排落在
+// 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
+const triggerVariants = cva(
+  [
+    "inline-flex min-w-[13rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg text-foreground outline-none transition-colors",
+    "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+  ],
+  {
+    variants: {
+      size: { sm: "h-8 px-2.5 text-sm", md: "h-10 px-3 text-sm", lg: "h-12 px-3.5 text-base" },
+    },
+    defaultVariants: { size: "md" },
+  },
+);
+
+const triggerIconVariants = cva("shrink-0 text-muted", {
+  variants: { size: { sm: "size-3.5", md: "size-4", lg: "size-5" } },
+  defaultVariants: { size: "md" },
+});
+
 function DateTimePickerImpl({
   value: valueProp,
   defaultValue,
   onValueChange,
   withSeconds = false,
+  size = "md",
   minuteStep = 1,
   secondStep = 1,
   minDateTime,
@@ -154,14 +177,9 @@ function DateTimePickerImpl({
               type="button"
               disabled={disabled}
               aria-label={ariaLabel}
-              className={cn(
-                "inline-flex h-9 min-w-[13rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-foreground outline-none transition-colors",
-                "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30",
-                "disabled:cursor-not-allowed disabled:opacity-50",
-                showClear && "pr-8",
-              )}
+              className={cn(triggerVariants({ size }), showClear && "pr-8")}
             >
-              <CalendarIcon className="size-4 shrink-0 text-muted" aria-hidden />
+              <CalendarIcon className={triggerIconVariants({ size })} aria-hidden />
               <span className={cn("truncate tabular-nums", !text && "text-muted")}>
                 {text || placeholder}
               </span>

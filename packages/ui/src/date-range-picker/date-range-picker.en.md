@@ -27,6 +27,7 @@ import { DateRangePicker } from "@hulianui/ui"
 |------|------|------|------|
 | value | `[string, string] \| null` | — | Controlled value `[start, end]` (ISO `YYYY-MM-DD`); `null` = cleared; controlled when passed in |
 | defaultValue | `[string, string] \| null` | — | uncontrolled initial value |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px). Date-cell geometry inside the panel does not change with it. |
 | minDate | `string` | — | The earliest selectable date (ISO), any date earlier than this is prohibited. |
 | maxDate | `string` | — | The latest selectable date (ISO), no selection later than this date |
 | disabledDate | `(isoDate: string) => boolean` | — | Customize to disable a certain day, the input parameter is ISO `YYYY-MM-DD` |
