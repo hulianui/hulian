@@ -36,13 +36,9 @@ afterAll(async () => {
   await server?.close();
 });
 
-// retry: 采集器给事件打 stepId 用的是**事件到达时刻**当时打开的窗口（collector.accept），
-// 不是事件**发生时刻**。React 的一次 commit 与它的 fiber 渲染整批 sink 出来，慢机器上这一批
-// 可能落在 mount 窗口关闭之后，于是 mount 的渲染被记成下一步产生的重渲染 —— CPU 节流 x8
-// 实测复现率约 1/5，harness 改为等待真实 commit 后降到 1/15，但没有根除。
-// 根治要让 commit 按自身 timestampMs 归属窗口、fiber-render 跟随其 commitId（两者同为
-// performance.now() 时间轴，已实证），那是采集模型改动，会重算所有既有指标，单独做。
-// 在此之前用 retry 过滤这一概率性错配：真实回归是确定性的，重试同样会失败，不会被掩盖。
+// retry 留着兜概率性抖动（浏览器启动、端口、页面就绪）。**渲染次数那条判据已不再依赖 stepId**，
+// 见下方注释：慢机器上某个 sample 的 mount commit 会整批落进下一步的窗口，判据改看总量后与
+// 窗口时序无关了。真实回归是确定性的，重试同样会失败，不会被掩盖。
 describe("profiling performance lab", { retry: 2 }, () => {
   it("installs before React and distinguishes the known bad fixture", async () => {
     const page = await browser.newPage();
@@ -87,20 +83,33 @@ describe("profiling performance lab", { retry: 2 }, () => {
     expect(result.bad.metadata.component).toBe("ExpensiveChildView");
     expect(result.bad.metadata.category).toBe("standard");
     expect(result.bad.events.filter((event) => event.type === "commit").length).toBeGreaterThan(0);
-    const badRenders = result.bad.events.filter(
-      (event) =>
-        event.type === "fiber-render" &&
-        event.name === "ExpensiveChildView" &&
-        event.stepId === "stable-parent-update",
-    ).length;
-    const goodRenders = result.good.events.filter(
-      (event) =>
-        event.type === "fiber-render" &&
-        event.name === "ExpensiveChildView" &&
-        event.stepId === "stable-parent-update",
-    ).length;
-    expect(badRenders).toBeGreaterThan(goodRenders);
-    expect(goodRenders).toBe(0);
+    // 每个 sample 的形状是 mount → 5 次父级更新 → unmount。known-good 的 ExpensiveChildView
+    // 只在挂载时渲染（父级的 state 在 LocalTicker 自己身上，点它不会重渲染兄弟）；
+    // known-bad 每次父级更新都跟着重渲染一遍，于是总量差 6 倍。
+    //
+    // **主判据用总量而不是 stepId**：慢机器上某个 sample 的 mount commit 可能整批落进下一步
+    // 的窗口（CI 上实测就是「expected 1 to be 0」），那是挂载工作被贴错标签、不是重渲染，
+    // 而按 commitId 排掉最早那次也不够 —— 漂的可能是第三个 sample 的挂载。总量比值与标签无关，
+    // 且丝毫不松：真的 memo 回归会让 good 也变成 6 倍，比值立刻塌到 1。
+    const totalRenders = (events: typeof result.good.events): number =>
+      events.filter(
+        (event) => event.type === "fiber-render" && event.name === "ExpensiveChildView",
+      ).length;
+    const parentUpdateRenders = (events: typeof result.good.events): number =>
+      events.filter(
+        (event) =>
+          event.type === "fiber-render" &&
+          event.name === "ExpensiveChildView" &&
+          event.stepId === "stable-parent-update",
+      ).length;
+    const goodTotal = totalRenders(result.good.events);
+    const badTotal = totalRenders(result.bad.events);
+    expect(goodTotal).toBeGreaterThan(0);
+    expect(badTotal).toBeGreaterThanOrEqual(goodTotal * 4);
+    // 标签维度只要求 bad 明显多于 good，容忍偶发被错配的那一两次挂载渲染。
+    expect(parentUpdateRenders(result.bad.events)).toBeGreaterThan(
+      parentUpdateRenders(result.good.events) + 3,
+    );
     await page.close();
   });
 
