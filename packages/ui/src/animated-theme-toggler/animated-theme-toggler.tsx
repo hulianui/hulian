@@ -101,7 +101,9 @@ export function AnimatedThemeToggler({
           : locale?.switchToDark ?? "切换到暗色")
       }
       className={cn(
-        "inline-flex size-9 items-center justify-center rounded-[min(var(--radius),0.5rem)] border border-border bg-surface text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring",
+        // 边长跟随 Button 的 icon 档（40px）：它总是与图标按钮/搜索框并排在导航栏里，
+        // 独自停在 36px 会让整排上下缘错位（#97 同源）。
+        "inline-flex size-10 items-center justify-center rounded-[min(var(--radius),0.5rem)] border border-border bg-surface text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
     >

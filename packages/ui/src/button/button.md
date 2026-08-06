@@ -27,7 +27,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体 |
 | tone | `"brand" ｜ "danger"` | `"brand"` | 语义色调 |
-| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm"` | `"md"` | 尺寸；icon/iconSm 为正方形图标按钮 |
+| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
 
@@ -43,6 +43,23 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 按钮文案 |
 | render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），用于按钮样式的链接 CTA；样式与 `aria-disabled` 合并进该元素 |
+
+## 尺寸档
+
+三条刻度，图标档的边长等于同名文字档的高度——**图标按钮与文字按钮混排一定要取同名的一对**，否则连排（[ButtonGroup](../button-group/button-group.md)）会露出台阶。
+
+| 文字档 | 高度 | 配套图标档 | 边长 |
+|--------|------|-----------|------|
+| `sm` | 32px | `iconSm` | 32px |
+| `md`（默认） | 40px | `icon` | 40px |
+| `lg` | 48px | `iconLg` | 48px |
+
+```tsx
+{/* ✅ 同名一对，等高 */}
+<ButtonGroup><Button>保存</Button><Button size="icon"><ChevronDown className="size-4" /></Button></ButtonGroup>
+{/* ❌ 跨档混排，差 8px */}
+<ButtonGroup><Button>保存</Button><Button size="iconSm"><ChevronDown className="size-4" /></Button></ButtonGroup>
+```
 
 ## 示例
 ```tsx

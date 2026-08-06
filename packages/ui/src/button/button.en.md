@@ -27,7 +27,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. |
 | tone | `"brand" \| "danger"` | `"brand"` | Semantic color tone. |
-| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm"` | `"md"` | Control size; `icon` and `iconSm` create square icon buttons. |
+| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg"` | `"md"` | Control size; the three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled` and `type`. |
 
@@ -43,6 +43,23 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | Button content. |
 | render | `ReactElement` | Custom element such as `<a>` or Next.js `<Link>`. Button styles and `aria-disabled` are merged into this element. |
+
+## Size scale
+
+Three steps. Every icon size has the same side length as the text size of the same name, so **pair icon buttons with the matching text size** — otherwise an attached group ([ButtonGroup](../button-group/button-group.md)) shows a visible step at the seam.
+
+| Text size | Height | Matching icon size | Side |
+|-----------|--------|--------------------|------|
+| `sm` | 32px | `iconSm` | 32px |
+| `md` (default) | 40px | `icon` | 40px |
+| `lg` | 48px | `iconLg` | 48px |
+
+```tsx
+{/* Correct: matching pair, equal height */}
+<ButtonGroup><Button>Save</Button><Button size="icon"><ChevronDown className="size-4" /></Button></ButtonGroup>
+{/* Wrong: mismatched sizes, 8px apart */}
+<ButtonGroup><Button>Save</Button><Button size="iconSm"><ChevronDown className="size-4" /></Button></ButtonGroup>
+```
 
 ## Examples
 ```tsx

@@ -34,8 +34,8 @@ export function PageHeader({
             <Button
               type="button"
               variant="ghost"
-              size="sm"
-              className="size-9 shrink-0 px-0"
+              size="icon"
+              className="shrink-0"
               aria-label={resolvedBackLabel}
               onClick={onBack}
             >

@@ -106,7 +106,7 @@ function SchedulerImpl({
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
-              size="icon"
+              size="iconSm"
               aria-label={labels.previous}
               title={labels.previous}
               onClick={() => onDateChange?.(step(view, date, -1))}
@@ -118,7 +118,7 @@ function SchedulerImpl({
             </Button>
             <Button
               variant="ghost"
-              size="icon"
+              size="iconSm"
               aria-label={labels.next}
               title={labels.next}
               onClick={() => onDateChange?.(step(view, date, 1))}

@@ -23,10 +23,15 @@ export const buttonVariants = cva(
         sm: "h-8 px-3 text-sm",
         md: "h-10 px-4 text-sm",
         lg: "h-12 px-6 text-base",
-        // 纯图标方形按钮（无文字内边距）：免去消费方手贴 size-9 px-0 之类补丁。
-        icon: "size-9 p-0",
-        // 紧凑图标按钮（对齐 sm 档高度 32px，用于 AI 工具栏/输入区等密集场景）。
+        // 纯图标方形按钮（无文字内边距）：免去消费方手贴 size-10 px-0 之类补丁。
+        // 边长严格跟随同名文字档，三联 32/40/48 与 sm/md/lg 一一对应——这样图标按钮
+        // 与任意文字按钮混排（ButtonGroup 拆分按钮、工具栏）都等高。0.26.0 前 icon 是
+        // 孤立的 36px，与任何文字档都对不齐（见 #97）。
+        icon: "size-10 p-0",
+        // 紧凑图标按钮（对齐 sm 档 32px，用于 AI 工具栏/输入区等密集场景）。
         iconSm: "size-8 p-0",
+        // 大号图标按钮（对齐 lg 档 48px，用于移动端主操作/悬浮球等）。
+        iconLg: "size-12 p-0",
       },
     },
     compoundVariants: [

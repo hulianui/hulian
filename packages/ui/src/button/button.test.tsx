@@ -1,31 +1,11 @@
-import { Profiler } from "react";
-import { describe, it, expect, vi } from "vitest";
-import { act, render as rtlRender } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { render as rtlRender } from "@testing-library/react";
 import { Button, buttonVariants } from "./button";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("buttonVariants", () => {
   it("稳定父更新时跳过按钮子树", async () => {
-    const onRender = vi.fn();
-    const { rerender } = rtlRender(
-      <div data-parent-version="0">
-        <Profiler id="button" onRender={onRender}>
-          <Button>稳定按钮</Button>
-        </Profiler>
-      </div>,
-    );
-    await act(async () => undefined);
-    onRender.mockClear();
-    rerender(
-      <div data-parent-version="1">
-        <Profiler id="button" onRender={onRender}>
-          <Button>稳定按钮</Button>
-        </Profiler>
-      </div>,
-    );
-
-    const update = onRender.mock.calls.at(-1);
-    expect(update?.[1]).toBe("update");
-    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+    await expectMemoSkipsSubtree(() => <Button>稳定按钮</Button>);
   });
 
   it("default = solid brand md", () => {
@@ -86,5 +66,17 @@ describe("Button render（按钮样式的链接）", () => {
     const { container } = rtlRender(<Button>点我</Button>);
     expect(container.querySelector("button")).toBeTruthy();
     expect(container.querySelector("a")).toBeNull();
+  });
+
+  // #97：icon 档曾是孤立的 36px（size-9），与任何文字档都对不齐，ButtonGroup 连排露台阶。
+  // 这条锁住「图标档边长 == 同名文字档高度」的不变量：Tailwind 的 h-N 与 size-N 共用同一
+  // 刻度（h-8/size-8=32、h-10/size-10=40、h-12/size-12=48），所以比对数字后缀即可。
+  it.each([
+    ["sm", "iconSm", "8"],
+    ["md", "icon", "10"],
+    ["lg", "iconLg", "12"],
+  ])("尺寸档 %s 与图标档 %s 等高（刻度 %s）", (text, icon, step) => {
+    expect(buttonVariants({ size: text as "sm" })).toContain(`h-${step}`);
+    expect(buttonVariants({ size: icon as "icon" })).toContain(`size-${step}`);
   });
 });
