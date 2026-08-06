@@ -3,8 +3,9 @@ import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { DatePicker } from "../../../../packages/ui/src/date-picker/date-picker";
 import type { CalendarPicker } from "../../../../packages/ui/src/calendar/calendar.types";
-function Demo({ picker = "date", disabled, readOnly, clearable = true, showToday = true, initial = null, }: {
+function Demo({ picker = "date", size = "md", disabled, readOnly, clearable = true, showToday = true, initial = null, }: {
     picker?: CalendarPicker;
+    size?: "sm" | "md" | "lg";
     disabled?: boolean;
     readOnly?: boolean;
     clearable?: boolean;
@@ -12,7 +13,7 @@ function Demo({ picker = "date", disabled, readOnly, clearable = true, showToday
     initial?: string | null;
 }) {
     const [v, setV] = useState<string | null>(initial);
-    return (<DatePicker value={v} onValueChange={setV} picker={picker} disabled={disabled} readOnly={readOnly} clearable={clearable} showToday={showToday} aria-label="Select date"/>);
+    return (<DatePicker value={v} onValueChange={setV} picker={picker} size={size} disabled={disabled} readOnly={readOnly} clearable={clearable} showToday={showToday} aria-label="Select date"/>);
 }
 export const datePickerShowcase: ShowcaseSpec = {
     examples: [
@@ -56,6 +57,18 @@ export const datePickerShowcase: ShowcaseSpec = {
             render: () => (<DatePicker defaultValue="2026-06-08" displayFormat="MMM D, YYYY" aria-label="Select date"/>),
         },
         {
+            title: "Size",
+            description: "size uses the same scale as Input and Select (sm 32px / md 40px / lg 48px), so controls sitting on one form row line up.",
+            code: `<DatePicker size="sm" defaultValue="2026-06-08" />
+<DatePicker size="md" defaultValue="2026-06-08" />
+<DatePicker size="lg" defaultValue="2026-06-08" />`,
+            render: () => (<div className="flex flex-wrap items-center gap-3">
+          <DatePicker size="sm" defaultValue="2026-06-08" aria-label="Small"/>
+          <DatePicker size="md" defaultValue="2026-06-08" aria-label="Medium"/>
+          <DatePicker size="lg" defaultValue="2026-06-08" aria-label="Large size"/>
+        </div>),
+        },
+        {
             title: "Disabled / Read Only",
             description: "disabled is grayed out and cannot be opened; readOnly can see the panel but cannot select it.",
             code: `<DatePicker defaultValue="2026-06-08" disabled />
@@ -74,6 +87,13 @@ export const datePickerShowcase: ShowcaseSpec = {
             defaultValue: "date",
             label: "Granularity",
         },
+        {
+            prop: "size",
+            type: "select",
+            options: ["sm", "md", "lg"],
+            defaultValue: "md",
+            label: "Size",
+        },
         { prop: "clearable", type: "boolean", defaultValue: true, label: "Clearable" },
         { prop: "showToday", type: "boolean", defaultValue: true, label: "Fast today" },
         { prop: "disabled", type: "boolean", defaultValue: false, label: "Disabled" },
@@ -91,12 +111,15 @@ export const datePickerShowcase: ShowcaseSpec = {
                     return day === 0 || day === 6;
                 }}/>),
         },
+        { name: "Small", render: () => <Demo size="sm" initial="2026-06-08"/> },
+        { name: "Large size", render: () => <Demo size="lg" initial="2026-06-08"/> },
         { name: "Disabled", render: () => <Demo disabled initial="2026-06-08"/> },
     ],
-    renderWithProps: (p) => (<Demo picker={(p.picker as CalendarPicker) ?? "date"} clearable={p.clearable !== false} showToday={p.showToday !== false} disabled={p.disabled === true} readOnly={p.readOnly === true}/>),
+    renderWithProps: (p) => (<Demo picker={(p.picker as CalendarPicker) ?? "date"} size={(p.size as "sm" | "md" | "lg") ?? "md"} clearable={p.clearable !== false} showToday={p.showToday !== false} disabled={p.disabled === true} readOnly={p.readOnly === true}/>),
     toCode: (p) => `<DatePicker
   value={date}
   onValueChange={setDate}${p.picker && p.picker !== "date" ? `
-  picker="${p.picker}"` : ""}${p.clearable === false ? "\n  clearable={false}" : ""}${p.showToday === false ? "\n  showToday={false}" : ""}${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}
+  picker="${p.picker}"` : ""}${p.size && p.size !== "md" ? `
+  size="${p.size}"` : ""}${p.clearable === false ? "\n  clearable={false}" : ""}${p.showToday === false ? "\n  showToday={false}" : ""}${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}
 />`,
 };

@@ -69,7 +69,7 @@ export const spinShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "spinning", type: "boolean", defaultValue: true, label: "Loading" },
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Dimensions" },
+        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Size" },
         { prop: "tip", type: "text", defaultValue: "Loading...", label: "Prompt copy" },
         { prop: "delay", type: "number", defaultValue: 0, label: "Delayed display (ms)" },
     ],

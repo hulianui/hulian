@@ -22,7 +22,7 @@ export const dotShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size provides three gears sm / md / lg.",
             code: `<>
   <Dot size="sm" tone="brand" />

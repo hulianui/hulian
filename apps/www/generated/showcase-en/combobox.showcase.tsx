@@ -122,7 +122,7 @@ export const comboboxShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size controls the trigger height (sm / md / lg).",
             code: `<Combobox items={fruits}>
   <ComboboxTrigger size="sm" placeholder="Select Fruit" />

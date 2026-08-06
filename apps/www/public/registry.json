@@ -412,6 +412,89 @@
       ]
     },
     {
+      "name": "preview-sandbox",
+      "type": "registry:ui",
+      "title": "PreviewSandbox",
+      "description": "预览沙箱 · 把「隔离渲染容器 + 设备视口 + 缩放适配 + 错误捕获 + 就绪/重载生命周期」一次做对的外壳 · iframe 模式（`code` 传完整 HTML 文档串 → `srcDoc`，默认不透明源隔离，…",
+      "categories": [
+        "layout"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/alert.json",
+        "https://hulianui.haloritual.com/zh/r/android.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/iphone.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/tablet.json"
+      ],
+      "meta": {
+        "import": "import { PreviewSandbox, PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX, bootstrapScript, buildSrcDoc, normalizeIframeMessage, normalizeReactError, PREVIEW_SANDBOX_DEFAULT_SANDBOX, PREVIEW_SANDBOX_MESSAGE_KEY, computePreviewScale, PREVIEW_SANDBOX_DEVICES, resolveFrameKind, resolveViewport } from \"@hulianui/ui\"",
+        "exports": [
+          "PreviewSandbox",
+          "PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX",
+          "bootstrapScript",
+          "buildSrcDoc",
+          "normalizeIframeMessage",
+          "normalizeReactError",
+          "PREVIEW_SANDBOX_DEFAULT_SANDBOX",
+          "PREVIEW_SANDBOX_MESSAGE_KEY",
+          "computePreviewScale",
+          "PREVIEW_SANDBOX_DEVICES",
+          "resolveFrameKind",
+          "resolveViewport"
+        ],
+        "types": [
+          "BuildSrcDocOptions",
+          "PreviewScaleInput",
+          "PreviewSandboxDevice",
+          "PreviewSandboxDeviceProp",
+          "PreviewSandboxError",
+          "PreviewSandboxErrorKind",
+          "PreviewSandboxErrorSource",
+          "PreviewSandboxFrameKind",
+          "PreviewSandboxProps",
+          "PreviewSandboxViewport"
+        ],
+        "group": "container",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/preview-sandbox/preview-sandbox.md",
+        "docLocal": "packages/ui/src/preview-sandbox/preview-sandbox.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/preview-sandbox/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/preview-sandbox/index.ts"
+        },
+        {
+          "path": "components/hulianui/preview-sandbox/preview-sandbox-bridge.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/preview-sandbox/preview-sandbox-bridge.ts"
+        },
+        {
+          "path": "components/hulianui/preview-sandbox/preview-sandbox-geometry.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/preview-sandbox/preview-sandbox-geometry.ts"
+        },
+        {
+          "path": "components/hulianui/preview-sandbox/preview-sandbox.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/preview-sandbox/preview-sandbox.tsx"
+        },
+        {
+          "path": "components/hulianui/preview-sandbox/preview-sandbox.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/preview-sandbox/preview-sandbox.types.ts"
+        }
+      ]
+    },
+    {
       "name": "resizable",
       "type": "registry:ui",
       "title": "Resizable",
@@ -2967,6 +3050,84 @@
       ]
     },
     {
+      "name": "code-editor",
+      "type": "registry:ui",
+      "title": "CodeEditor",
+      "description": "代码编辑器 · 零依赖 textarea + 高亮层叠加（不引 CodeMirror/Monaco） · 受控 value/onChange + 行号槽 + 当前行高亮 + 语法着色(JS 家族/JSON/Shell …",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/code-block.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { CodeEditor, applyEdit, autoPairEdit, backspacePairEdit, getLanguageRules, indentEdit, lineEndAt, lineStartAt, newlineEdit, outdentEdit, selectedLineBlock, toggleCommentEdit, splitTokensByLine, tokenizeCss, tokenizeEditorCode } from \"@hulianui/ui\"",
+        "exports": [
+          "CodeEditor",
+          "applyEdit",
+          "autoPairEdit",
+          "backspacePairEdit",
+          "getLanguageRules",
+          "indentEdit",
+          "lineEndAt",
+          "lineStartAt",
+          "newlineEdit",
+          "outdentEdit",
+          "selectedLineBlock",
+          "toggleCommentEdit",
+          "splitTokensByLine",
+          "tokenizeCss",
+          "tokenizeEditorCode"
+        ],
+        "types": [
+          "EditorEdit",
+          "EditorLanguageRules",
+          "EditorState",
+          "CodeEditorLanguage",
+          "CodeEditorProps",
+          "CodeEditorTheme"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-editor/code-editor.md",
+        "docLocal": "packages/ui/src/code-editor/code-editor.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/code-editor/code-editor-edit.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/code-editor/code-editor-edit.ts"
+        },
+        {
+          "path": "components/hulianui/code-editor/code-editor-highlight.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/code-editor/code-editor-highlight.ts"
+        },
+        {
+          "path": "components/hulianui/code-editor/code-editor.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/code-editor/code-editor.tsx"
+        },
+        {
+          "path": "components/hulianui/code-editor/code-editor.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/code-editor/code-editor.types.ts"
+        },
+        {
+          "path": "components/hulianui/code-editor/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/code-editor/index.ts"
+        }
+      ]
+    },
+    {
       "name": "color-field",
       "type": "registry:ui",
       "title": "ColorField",
@@ -3094,12 +3255,16 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { ColorSwatchPicker } from \"@hulianui/ui\"",
+        "import": "import { ColorSwatchPicker, normalizeSwatches } from \"@hulianui/ui\"",
         "exports": [
-          "ColorSwatchPicker"
+          "ColorSwatchPicker",
+          "normalizeSwatches"
         ],
         "types": [
+          "ColorSwatchInput",
+          "ColorSwatchItem",
           "ColorSwatchPickerProps",
+          "NormalizedColorSwatch",
           "SwatchSize"
         ],
         "group": "advanced",
@@ -3126,6 +3291,11 @@
           "path": "components/hulianui/color-swatch-picker/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/color-swatch-picker/index.ts"
+        },
+        {
+          "path": "components/hulianui/color-swatch-picker/swatch-items.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/color-swatch-picker/swatch-items.ts"
         }
       ]
     },
@@ -3269,7 +3439,8 @@
         "forms"
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
@@ -3322,7 +3493,8 @@
         "forms"
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
@@ -3376,7 +3548,8 @@
         "forms"
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
@@ -3866,6 +4039,197 @@
           "path": "components/hulianui/input-otp/input-otp.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/input-otp/input-otp.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "inspector-panel",
+      "type": "registry:ui",
+      "title": "InspectorPanel",
+      "description": "设计工具属性检查器 · **字段 schema 驱动**（给一份 `{ key, label, kind }` 就派生控件，不是写死五个分类）· 七种控件 kind 全部换皮自既有表单件 · spacing 四联 + …",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/collapsible.json",
+        "https://hulianui.haloritual.com/zh/r/color-swatch-picker.json",
+        "https://hulianui.haloritual.com/zh/r/colorpicker.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/popover.json",
+        "https://hulianui.haloritual.com/zh/r/segmented.json",
+        "https://hulianui.haloritual.com/zh/r/select.json",
+        "https://hulianui.haloritual.com/zh/r/slider.json",
+        "https://hulianui.haloritual.com/zh/r/switch.json"
+      ],
+      "meta": {
+        "import": "import { InspectorPanel, MIXED, borderFields, colorFields, effectsFields, fieldTokens, formatLength, inspectorSections, isMixed, layoutFields, matchToken, parseLength, readInspectorValue, spacingSides, tokenColor, typographyFields } from \"@hulianui/ui\"",
+        "exports": [
+          "InspectorPanel",
+          "MIXED",
+          "borderFields",
+          "colorFields",
+          "effectsFields",
+          "fieldTokens",
+          "formatLength",
+          "inspectorSections",
+          "isMixed",
+          "layoutFields",
+          "matchToken",
+          "parseLength",
+          "readInspectorValue",
+          "spacingSides",
+          "tokenColor",
+          "typographyFields"
+        ],
+        "types": [
+          "InspectorChange",
+          "InspectorColorField",
+          "InspectorCommitMode",
+          "InspectorEnumField",
+          "InspectorField",
+          "InspectorFieldKind",
+          "InspectorLengthField",
+          "InspectorMixed",
+          "InspectorNumberField",
+          "InspectorOption",
+          "InspectorPanelLabels",
+          "InspectorPanelProps",
+          "InspectorSection",
+          "InspectorSpacingField",
+          "InspectorSpacingSides",
+          "InspectorTextField",
+          "InspectorToggleField",
+          "InspectorToken",
+          "InspectorValue"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/inspector-panel/inspector-panel.md",
+        "docLocal": "packages/ui/src/inspector-panel/inspector-panel.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/inspector-panel/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/inspector-panel/index.ts"
+        },
+        {
+          "path": "components/hulianui/inspector-panel/inspector-control.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/inspector-panel/inspector-control.tsx"
+        },
+        {
+          "path": "components/hulianui/inspector-panel/inspector-panel.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/inspector-panel/inspector-panel.tsx"
+        },
+        {
+          "path": "components/hulianui/inspector-panel/inspector-panel.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/inspector-panel/inspector-panel.types.ts"
+        },
+        {
+          "path": "components/hulianui/inspector-panel/inspector-schema.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/inspector-panel/inspector-schema.ts"
+        }
+      ]
+    },
+    {
+      "name": "issue-reporter",
+      "type": "registry:ui",
+      "title": "IssueReporter",
+      "description": "GitHub issue 草稿器 · 表单收集（类型 Select / 相关组件 Combobox / 标题 Input / 模板字段 Textarea 或 MarkdownEditor）→ 按模板 `toMarkdo…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/alert.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/code-block.json",
+        "https://hulianui.haloritual.com/zh/r/combobox.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/field.json",
+        "https://hulianui.haloritual.com/zh/r/form-dialog.json",
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/markdown.json",
+        "https://hulianui.haloritual.com/zh/r/markdown-editor.json",
+        "https://hulianui.haloritual.com/zh/r/select.json",
+        "https://hulianui.haloritual.com/zh/r/tag.json",
+        "https://hulianui.haloritual.com/zh/r/textarea.json"
+      ],
+      "meta": {
+        "import": "import { IssueReporter, IssueReporterModal, BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, buildIssueUrl, createIssueDraft, isUrlTooLong, issueSection, normalizeRepo, renderIssueMarkdown } from \"@hulianui/ui\"",
+        "exports": [
+          "IssueReporter",
+          "IssueReporterModal",
+          "BUILTIN_ISSUE_TEMPLATES",
+          "GITHUB_URL_MAX_LENGTH",
+          "buildIssueUrl",
+          "createIssueDraft",
+          "isUrlTooLong",
+          "issueSection",
+          "normalizeRepo",
+          "renderIssueMarkdown"
+        ],
+        "types": [
+          "IssueComponentOption",
+          "IssueDraft",
+          "IssueDraftInput",
+          "IssueFieldControl",
+          "IssueFieldValues",
+          "IssueReporterApi",
+          "IssueReporterModalProps",
+          "IssueReporterProps",
+          "IssueReporterText",
+          "IssueTemplate",
+          "IssueTemplateField"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/issue-reporter/issue-reporter.md",
+        "docLocal": "packages/ui/src/issue-reporter/issue-reporter.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/issue-reporter/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/issue-reporter/index.ts"
+        },
+        {
+          "path": "components/hulianui/issue-reporter/issue-reporter-modal.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/issue-reporter/issue-reporter-modal.tsx"
+        },
+        {
+          "path": "components/hulianui/issue-reporter/issue-reporter.core.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/issue-reporter/issue-reporter.core.ts"
+        },
+        {
+          "path": "components/hulianui/issue-reporter/issue-reporter.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/issue-reporter/issue-reporter.tsx"
+        },
+        {
+          "path": "components/hulianui/issue-reporter/issue-reporter.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/issue-reporter/issue-reporter.types.ts"
         }
       ]
     },
@@ -5377,7 +5741,9 @@
       "categories": [
         "forms"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "class-variance-authority"
+      ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
         "https://hulianui.haloritual.com/zh/r/config.json",
@@ -5432,7 +5798,8 @@
         "forms"
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
@@ -6751,6 +7118,96 @@
       ]
     },
     {
+      "name": "component-picker",
+      "type": "registry:ui",
+      "title": "ComponentPicker",
+      "description": "组件库浏览器 · 左分类树(复用 Tree) + 顶部模糊搜索 + 结果网格(Card) + 详情面板(预览/Props 表/示例代码三开关) · 自研零依赖打分器(slug 命中远重于描述命中·不引 fuse.js)…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/card.json",
+        "https://hulianui.haloritual.com/zh/r/code-block.json",
+        "https://hulianui.haloritual.com/zh/r/command.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/empty.json",
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/scroll-area.json",
+        "https://hulianui.haloritual.com/zh/r/table.json",
+        "https://hulianui.haloritual.com/zh/r/tag.json",
+        "https://hulianui.haloritual.com/zh/r/tree.json"
+      ],
+      "meta": {
+        "import": "import { ComponentPicker, ComponentPickerCommand, ALL_CATEGORY_KEY, buildCategoryTree, defaultPropsOf, matchesCategory, parseComponentCatalog, fuzzyMatch, rankComponents, scoreComponent } from \"@hulianui/ui\"",
+        "exports": [
+          "ComponentPicker",
+          "ComponentPickerCommand",
+          "ALL_CATEGORY_KEY",
+          "buildCategoryTree",
+          "defaultPropsOf",
+          "matchesCategory",
+          "parseComponentCatalog",
+          "fuzzyMatch",
+          "rankComponents",
+          "scoreComponent"
+        ],
+        "types": [
+          "BuildCategoryTreeOptions",
+          "ParseCatalogOptions",
+          "FuzzyMatch",
+          "RankOptions",
+          "RankedComponent",
+          "ComponentPickerCategoryNode",
+          "ComponentPickerCommandProps",
+          "ComponentPickerExample",
+          "ComponentPickerFilter",
+          "ComponentPickerItem",
+          "ComponentPickerLabels",
+          "ComponentPickerProp",
+          "ComponentPickerProps"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/component-picker/component-picker.md",
+        "docLocal": "packages/ui/src/component-picker/component-picker.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/component-picker/component-picker-catalog.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/component-picker/component-picker-catalog.ts"
+        },
+        {
+          "path": "components/hulianui/component-picker/component-picker-search.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/component-picker/component-picker-search.ts"
+        },
+        {
+          "path": "components/hulianui/component-picker/component-picker.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/component-picker/component-picker.tsx"
+        },
+        {
+          "path": "components/hulianui/component-picker/component-picker.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/component-picker/component-picker.types.ts"
+        },
+        {
+          "path": "components/hulianui/component-picker/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/component-picker/index.ts"
+        }
+      ]
+    },
+    {
       "name": "contribution-graph",
       "type": "registry:ui",
       "title": "ContributionGraph",
@@ -7126,6 +7583,77 @@
           "path": "components/hulianui/descriptions/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/descriptions/index.ts"
+        }
+      ]
+    },
+    {
+      "name": "design-canvas",
+      "type": "registry:ui",
+      "title": "DesignCanvas",
+      "description": "视觉设计画布 · 零依赖原生 Pointer Events · 无限平移缩放（滚轮以指针为锚点/空格·中键·右键拖拽）+ 元素选择框 + 拖拽移动 + 八向 resize（越过锚定边自动翻转）· 受控 items 托管…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/flow.json",
+        "https://hulianui.haloritual.com/zh/r/grid-pattern.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, resizeRect, snapTo } from \"@hulianui/ui\"",
+        "exports": [
+          "DesignCanvas",
+          "canvasToScreen",
+          "itemsBounds",
+          "moveRect",
+          "normalizeRect",
+          "resizeRect",
+          "snapTo"
+        ],
+        "types": [
+          "ResizeRectOptions",
+          "DesignCanvasApi",
+          "DesignCanvasBounds",
+          "DesignCanvasItem",
+          "DesignCanvasItemState",
+          "DesignCanvasLabels",
+          "DesignCanvasPoint",
+          "DesignCanvasProps",
+          "DesignCanvasRect",
+          "DesignCanvasResizeDirection",
+          "DesignCanvasViewport"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/design-canvas/design-canvas.md",
+        "docLocal": "packages/ui/src/design-canvas/design-canvas.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/design-canvas/design-canvas-geometry.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/design-canvas/design-canvas-geometry.ts"
+        },
+        {
+          "path": "components/hulianui/design-canvas/design-canvas.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/design-canvas/design-canvas.tsx"
+        },
+        {
+          "path": "components/hulianui/design-canvas/design-canvas.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/design-canvas/design-canvas.types.ts"
+        },
+        {
+          "path": "components/hulianui/design-canvas/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/design-canvas/index.ts"
         }
       ]
     },
@@ -12609,6 +13137,85 @@
           "path": "components/hulianui/drawer/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/drawer/index.ts"
+        }
+      ]
+    },
+    {
+      "name": "element-selection-overlay",
+      "type": "registry:ui",
+      "title": "ElementSelectionOverlay",
+      "description": "元素选择叠加层 · 在容器或**同源** iframe 里 hover 高亮 / 点击选中元素并回吐组件树路径 · 路径优先读 `data-hulian-path` 标记、读不到回退结构化选择器（两者皆为带单测的纯函数…",
+      "categories": [
+        "feedback"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { ElementSelectionOverlay, asElement, elementPath, escapeAttributeValue, findMarkedElement, pathLabel, resolveElementByPath, structuralPath, computeLabelPosition, isRectVisible, toHostRect } from \"@hulianui/ui\"",
+        "exports": [
+          "ElementSelectionOverlay",
+          "asElement",
+          "elementPath",
+          "escapeAttributeValue",
+          "findMarkedElement",
+          "pathLabel",
+          "resolveElementByPath",
+          "structuralPath",
+          "computeLabelPosition",
+          "isRectVisible",
+          "toHostRect"
+        ],
+        "types": [
+          "ElementPathOptions",
+          "ElementPathResult",
+          "ElementPathSource",
+          "LabelPlacement",
+          "LabelPosition",
+          "OverlayOffset",
+          "OverlayRect",
+          "OverlaySize",
+          "ElementSelectionDetail",
+          "ElementSelectionOverlayError",
+          "ElementSelectionOverlayErrorCode",
+          "ElementSelectionOverlayProps"
+        ],
+        "group": "overlay",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/element-selection-overlay/element-selection-overlay.md",
+        "docLocal": "packages/ui/src/element-selection-overlay/element-selection-overlay.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/element-selection-overlay/element-path.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/element-selection-overlay/element-path.ts"
+        },
+        {
+          "path": "components/hulianui/element-selection-overlay/element-selection-overlay.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/element-selection-overlay/element-selection-overlay.tsx"
+        },
+        {
+          "path": "components/hulianui/element-selection-overlay/element-selection-overlay.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/element-selection-overlay/element-selection-overlay.types.ts"
+        },
+        {
+          "path": "components/hulianui/element-selection-overlay/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/element-selection-overlay/index.ts"
+        },
+        {
+          "path": "components/hulianui/element-selection-overlay/overlay-geometry.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/element-selection-overlay/overlay-geometry.ts"
         }
       ]
     },

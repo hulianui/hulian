@@ -65,7 +65,7 @@ const [levels, setLevels] = useState<number[]>([]); // Microphone analyzer feeds
             render: () => <VoiceRecordDemo pressAndHold={false} labelIdle="Click to speak" labelRecording="Click to end"/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "sm / md / lg three levels, icons and labels scale with the level.",
             code: `<>
   <VoiceRecord size="sm" />
@@ -87,7 +87,7 @@ const [levels, setLevels] = useState<number[]>([]); // Microphone analyzer feeds
             defaultValue: "idle",
             label: "Status",
         },
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Dimensions" },
+        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Size" },
         { prop: "labelIdle", type: "text", defaultValue: "Press and hold to speak", label: "Free tag" },
     ],
     states: [

@@ -106,7 +106,7 @@ export const socialButtonShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            name: "Dimensions",
+            name: "Size",
             render: () => (<div className="flex items-center gap-3">
           <SocialButton provider="wechat" size="sm"/>
           <SocialButton provider="wechat" size="md"/>

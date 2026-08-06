@@ -10,7 +10,7 @@ export const textareaShowcase: ShowcaseSpec = {
             render: () => <Textarea placeholder="Write something..." className="w-64"/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size provides three levels of sm / md (default) / lg.",
             code: `<>
   <Textarea size="sm" placeholder="sm" className="w-64" />

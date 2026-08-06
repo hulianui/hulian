@@ -13,6 +13,19 @@ const PALETTE = [
     "#8b5cf6",
     "#ec4899",
 ];
+const TOKENS = [
+    { color: "var(--color-primary)", label: "Main color" },
+    { color: "var(--color-success)", label: "Success" },
+    { color: "var(--color-warning)", label: "Warning" },
+    { color: "var(--color-danger)", label: "Danger" },
+];
+function TokenDemo() {
+    const [v, setV] = useState("var(--color-primary)");
+    return (<div className="flex flex-col gap-2">
+      <ColorSwatchPicker colors={TOKENS} value={v} onValueChange={setV}/>
+      <code className="font-mono text-xs text-muted">{v}</code>
+    </div>);
+}
 function Demo({ size = "md", disabled = false }: {
     size?: SwatchSize;
     disabled?: boolean;
@@ -34,7 +47,7 @@ export const colorSwatchPickerShowcase: ShowcaseSpec = {
             render: () => <ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6"/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size supports sm / md / lg.",
             code: `<>
   <ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" size="sm" />
@@ -46,6 +59,20 @@ export const colorSwatchPickerShowcase: ShowcaseSpec = {
         </div>),
         },
         {
+            title: "Theme token palette with readable names",
+            description: "A swatch can be written as { color, label }: the label becomes the accessible name and hover hint, while selection identity stays the color. A token color must carry a label, otherwise a screen reader announces the raw var(--color-primary) string.",
+            code: `const TOKENS = [
+  { color: "var(--color-primary)", label: "Primary" },
+  { color: "var(--color-success)", label: "Success" },
+  { color: "var(--color-warning)", label: "Warning" },
+  { color: "var(--color-danger)", label: "Danger" },
+];
+
+// The emitted value is still the color string, not the label
+<ColorSwatchPicker colors={TOKENS} value={v} onValueChange={setV} />`,
+            render: () => <TokenDemo />,
+        },
+        {
             title: "Disabled",
             description: "disabled Reduces the transparency of the entire group and blocks interaction.",
             code: `<ColorSwatchPicker colors={PALETTE} defaultValue="#8b5cf6" disabled />`,
@@ -53,7 +80,7 @@ export const colorSwatchPickerShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Dimensions" },
+        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Size" },
         { prop: "disabled", type: "boolean", defaultValue: false, label: "Disabled" },
     ],
     states: [

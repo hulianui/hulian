@@ -46,7 +46,7 @@ export const countrySelectShowcase: ShowcaseSpec = {
             render: () => <CountrySelect multiple defaultValue={["CN", "US", "JP"]} className="w-80"/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size supports sm / md / lg.",
             code: `<>
   <CountrySelect size="sm" defaultValue="GB" className="w-72" />

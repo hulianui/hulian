@@ -144,7 +144,7 @@ export const selectShowcase: ShowcaseSpec = {
             render: () => <GroupDemo />,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size of SelectTrigger offers sm / md / lg.",
             code: `<Select items={fonts} defaultValue="mono">
   <SelectTrigger size="sm" />

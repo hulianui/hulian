@@ -15,6 +15,17 @@ function Demo({ showInput = true, showFormatSwitcher = true, defaultFormat = "he
       <code className="font-mono text-xs text-muted">{v}</code>
     </div>);
 }
+function CommitDemo() {
+    const [changes, setChanges] = useState(0);
+    const [committed, setCommitted] = useState("#3b82f6");
+    return (<div className="flex flex-col gap-2">
+      <ColorPicker defaultValue="#3b82f6" onValueChange={() => setChanges((n) => n + 1)} onValueCommitted={setCommitted}/>
+      <div className="flex flex-col gap-0.5 font-mono text-xs">
+        <span className="text-muted">onValueChange · {changes}</span>
+        <span className="text-foreground">onValueCommitted · {committed}</span>
+      </div>
+    </div>);
+}
 export const colorPickerShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -34,6 +45,20 @@ export const colorPickerShowcase: ShowcaseSpec = {
           <ColorPicker defaultValue="#22c55e" defaultFormat="rgb"/>
           <ColorPicker defaultValue="#8b5cf6" defaultFormat="hsl"/>
         </div>),
+        },
+        {
+            title: "Per-frame change vs one commit",
+            description: "onValueChange fires on every drag frame, while onValueCommitted fires once on pointer release, input blur or Enter, and format switching. Attach undo entries and network writes to the latter.",
+            code: `const [changes, setChanges] = useState(0);
+const [committed, setCommitted] = useState("#3b82f6");
+
+// Drag the saturation panel: changes keeps climbing, committed updates only on release
+<ColorPicker
+  defaultValue="#3b82f6"
+  onValueChange={() => setChanges((n) => n + 1)}
+  onValueCommitted={setCommitted}
+/>`,
+            render: () => <CommitDemo />,
         },
         {
             title: "Simplification: Hide switcher/input box",

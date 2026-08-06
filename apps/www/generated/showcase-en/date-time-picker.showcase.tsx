@@ -2,8 +2,9 @@
 import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { DateTimePicker } from "../../../../packages/ui/src/date-time-picker/date-time-picker";
-function Demo({ withSeconds, minuteStep, disabled, readOnly, clearable = true, showNow = true, initial = null, }: {
+function Demo({ withSeconds, size = "md", minuteStep, disabled, readOnly, clearable = true, showNow = true, initial = null, }: {
     withSeconds?: boolean;
+    size?: "sm" | "md" | "lg";
     minuteStep?: number;
     disabled?: boolean;
     readOnly?: boolean;
@@ -12,7 +13,7 @@ function Demo({ withSeconds, minuteStep, disabled, readOnly, clearable = true, s
     initial?: string | null;
 }) {
     const [v, setV] = useState<string | null>(initial);
-    return (<DateTimePicker value={v} onValueChange={setV} withSeconds={withSeconds} minuteStep={minuteStep} disabled={disabled} readOnly={readOnly} clearable={clearable} showNow={showNow} aria-label="Select date and time"/>);
+    return (<DateTimePicker value={v} onValueChange={setV} withSeconds={withSeconds} size={size} minuteStep={minuteStep} disabled={disabled} readOnly={readOnly} clearable={clearable} showNow={showNow} aria-label="Select date and time"/>);
 }
 export const dateTimePickerShowcase: ShowcaseSpec = {
     examples: [
@@ -45,6 +46,18 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
             render: () => (<DateTimePicker defaultValue="2026-06-08 09:30" displayFormat="MMM D, HH:mm" aria-label="Select date and time"/>),
         },
         {
+            title: "Size",
+            description: "size uses the same scale as Input and Select (sm 32px / md 40px / lg 48px), so controls sitting on one form row line up.",
+            code: `<DateTimePicker size="sm" defaultValue="2026-06-08 09:30" />
+<DateTimePicker size="md" defaultValue="2026-06-08 09:30" />
+<DateTimePicker size="lg" defaultValue="2026-06-08 09:30" />`,
+            render: () => (<div className="flex flex-wrap items-center gap-3">
+          <DateTimePicker size="sm" defaultValue="2026-06-08 09:30" aria-label="Small"/>
+          <DateTimePicker size="md" defaultValue="2026-06-08 09:30" aria-label="Medium"/>
+          <DateTimePicker size="lg" defaultValue="2026-06-08 09:30" aria-label="Large size"/>
+        </div>),
+        },
+        {
             title: "Disabled / Read Only",
             description: "disabled is grayed out and cannot be opened; readOnly can see the panel but cannot select it.",
             code: `<DateTimePicker defaultValue="2026-06-08 09:30" disabled />
@@ -57,6 +70,13 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "withSeconds", type: "boolean", defaultValue: false, label: "Display seconds" },
+        {
+            prop: "size",
+            type: "select",
+            options: ["sm", "md", "lg"],
+            defaultValue: "md",
+            label: "Size",
+        },
         {
             prop: "minuteStep",
             type: "select",
@@ -77,12 +97,15 @@ export const dateTimePickerShowcase: ShowcaseSpec = {
             name: "Limited range",
             render: () => (<DateTimePicker defaultValue="2026-06-10 12:00" minDateTime="2026-06-08 09:30" maxDateTime="2026-06-20 18:00" aria-label="Select date and time"/>),
         },
+        { name: "Small", render: () => <Demo size="sm" initial="2026-06-08 09:30"/> },
+        { name: "Large size", render: () => <Demo size="lg" initial="2026-06-08 09:30"/> },
         { name: "Disabled", render: () => <Demo disabled initial="2026-06-08 09:30"/> },
     ],
-    renderWithProps: (p) => (<Demo withSeconds={p.withSeconds === true} minuteStep={Number(p.minuteStep ?? 1) || 1} clearable={p.clearable !== false} showNow={p.showNow !== false} disabled={p.disabled === true} readOnly={p.readOnly === true}/>),
+    renderWithProps: (p) => (<Demo withSeconds={p.withSeconds === true} size={(p.size as "sm" | "md" | "lg") ?? "md"} minuteStep={Number(p.minuteStep ?? 1) || 1} clearable={p.clearable !== false} showNow={p.showNow !== false} disabled={p.disabled === true} readOnly={p.readOnly === true}/>),
     toCode: (p) => `<DateTimePicker
   value={dateTime}
-  onValueChange={setDateTime}${p.withSeconds ? "\n  withSeconds" : ""}${p.minuteStep && p.minuteStep !== "1" ? `
+  onValueChange={setDateTime}${p.withSeconds ? "\n  withSeconds" : ""}${p.size && p.size !== "md" ? `
+  size="${p.size}"` : ""}${p.minuteStep && p.minuteStep !== "1" ? `
   minuteStep={${p.minuteStep}}` : ""}${p.clearable === false ? "\n  clearable={false}" : ""}${p.showNow === false ? "\n  showNow={false}" : ""}${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}
 />`,
 };

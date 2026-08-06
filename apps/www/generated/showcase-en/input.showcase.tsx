@@ -16,7 +16,7 @@ export const inputShowcase: ShowcaseSpec = {
             render: () => <Input prefix="¥" suffix=".00" placeholder="0" className="w-64"/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size provides three levels of sm / md (default) / lg.",
             code: `<>
   <Input size="sm" placeholder="sm" className="w-64" />

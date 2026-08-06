@@ -29,7 +29,7 @@ export const ratingShowcase: ShowcaseSpec = {
             render: () => <Rating value={4} readOnly/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size controls the icon size (sm / md / lg).",
             code: `<>
   <Rating defaultValue={3} size="sm" />
@@ -60,7 +60,7 @@ export const ratingShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Dimensions" },
+        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Size" },
         {
             prop: "color",
             type: "select",

@@ -83,7 +83,7 @@ export const segmentedShowcase: ShowcaseSpec = {
                 ]} defaultValue="monthly" aria-label="Billing cycle"/>),
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size=\"sm\" is used for compact scenes such as toolbars.",
             code: `<>
   <Segmented size="sm" items={periodItems} defaultValue="day" aria-label="Period-Small" />

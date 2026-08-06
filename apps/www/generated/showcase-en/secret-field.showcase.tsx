@@ -39,7 +39,7 @@ export const secretFieldShowcase: ShowcaseSpec = {
             </button>}/>),
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size=\"sm\" fits within dense table rows.",
             code: `<SecretField value={apiKey} size="sm" />`,
             render: () => <SecretField value={SAMPLE} size="sm"/>,

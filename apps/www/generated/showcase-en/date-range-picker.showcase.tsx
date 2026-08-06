@@ -3,14 +3,15 @@ import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { DateRangePicker } from "../../../../packages/ui/src/date-range-picker/date-range-picker";
 import type { DateRangeValue } from "../../../../packages/ui/src/date-range-picker/date-range-picker.types";
-function Demo({ presets = true, disabled, readOnly, initial = null, }: {
+function Demo({ presets = true, size = "md", disabled, readOnly, initial = null, }: {
     presets?: boolean;
+    size?: "sm" | "md" | "lg";
     disabled?: boolean;
     readOnly?: boolean;
     initial?: DateRangeValue | null;
 }) {
     const [v, setV] = useState<DateRangeValue | null>(initial);
-    return (<DateRangePicker value={v} onValueChange={setV} presets={presets} disabled={disabled} readOnly={readOnly}/>);
+    return (<DateRangePicker value={v} onValueChange={setV} presets={presets} size={size} disabled={disabled} readOnly={readOnly}/>);
 }
 export const dateRangePickerShowcase: ShowcaseSpec = {
     examples: [
@@ -52,6 +53,18 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
                 }}/>),
         },
         {
+            title: "Size",
+            description: "size uses the same scale as Input and Select (sm 32px / md 40px / lg 48px), so controls sitting on one form row line up. Date-cell geometry inside the panel does not change with it.",
+            code: `<DateRangePicker size="sm" defaultValue={["2026-06-08", "2026-06-20"]} />
+<DateRangePicker size="md" defaultValue={["2026-06-08", "2026-06-20"]} />
+<DateRangePicker size="lg" defaultValue={["2026-06-08", "2026-06-20"]} />`,
+            render: () => (<div className="flex flex-wrap items-center gap-3">
+          <DateRangePicker size="sm" defaultValue={["2026-06-08", "2026-06-20"]}/>
+          <DateRangePicker size="md" defaultValue={["2026-06-08", "2026-06-20"]}/>
+          <DateRangePicker size="lg" defaultValue={["2026-06-08", "2026-06-20"]}/>
+        </div>),
+        },
+        {
             title: "Disabled",
             description: "The whole page is grayed out and the trigger cannot be opened.",
             code: `<DateRangePicker defaultValue={["2026-06-01", "2026-06-15"]} disabled />`,
@@ -60,6 +73,13 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "presets", type: "boolean", defaultValue: true, label: "Quick preset" },
+        {
+            prop: "size",
+            type: "select",
+            options: ["sm", "md", "lg"],
+            defaultValue: "md",
+            label: "Size",
+        },
         { prop: "disabled", type: "boolean", defaultValue: false, label: "Disabled" },
         { prop: "readOnly", type: "boolean", defaultValue: false, label: "Read only" },
     ],
@@ -74,11 +94,14 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
                 }}/>),
         },
         { name: "No preset", render: () => <Demo presets={false} initial={["2026-06-03", "2026-06-09"]}/> },
+        { name: "Small", render: () => <Demo size="sm" initial={["2026-06-08", "2026-06-20"]}/> },
+        { name: "Large size", render: () => <Demo size="lg" initial={["2026-06-08", "2026-06-20"]}/> },
         { name: "Disabled", render: () => <Demo disabled initial={["2026-06-01", "2026-06-15"]}/> },
     ],
-    renderWithProps: (p) => (<Demo presets={p.presets !== false} disabled={p.disabled === true} readOnly={p.readOnly === true}/>),
+    renderWithProps: (p) => (<Demo presets={p.presets !== false} size={(p.size as "sm" | "md" | "lg") ?? "md"} disabled={p.disabled === true} readOnly={p.readOnly === true}/>),
     toCode: (p) => `<DateRangePicker
   value={range}
-  onValueChange={setRange}${p.presets === false ? "\n  presets={false}" : ""}${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}
+  onValueChange={setRange}${p.presets === false ? "\n  presets={false}" : ""}${p.size && p.size !== "md" ? `
+  size="${p.size}"` : ""}${p.disabled ? "\n  disabled" : ""}${p.readOnly ? "\n  readOnly" : ""}
 />`,
 };

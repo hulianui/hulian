@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|intercept-card|iphone|iridescence|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -1045,7 +1045,7 @@
       "id": "component/button-group/pitfall/1",
       "scope": "button-group",
       "title": "ButtonGroup",
-      "rule": "**成员必须同高，连排态尤其**。连排是靠 `-ml-px` 把相邻按钮的边框叠在一起实现的，这个拼接假定所有成员等高；高度一旦不一致，矮的那些上下就会露出台阶。而 [Button](../button/button.md) 的尺寸档里 **`icon`（36px）没有等高的文字档**——文字档是 `sm` 32 / `md` 40 / `lg` 48。所以 `size=\"icon\"` 与任何带文字的按钮混排都会错位。要图标 + 文字混排，用**等高的一对**：`iconSm`(32) 配 `sm`(32)，或给 icon 按钮显式贴高度去对齐 `md`。",
+      "rule": "**成员必须同高，连排态尤其**。连排是靠 `-ml-px` 把相邻按钮的边框叠在一起实现的，这个拼接假定所有成员等高；高度一旦不一致，矮的那些上下就会露出台阶。[Button](../button/button.md) 的图标档与同名文字档等高（`iconSm`/`sm` 32、`icon`/`md` 40、`iconLg`/`lg` 48），所以**混排时取同名的一对**即可；跨档混（例如 `<Button>` 默认 md 配 `size=\"iconSm\"`）会差 8px，仍然会露台阶。0.26.0 之前 `icon` 是孤立的 36px，与任何文字档都对不齐（#97），升级后这类既有写法会自动变齐。",
       "source": "packages/ui/src/button-group/button-group.md"
     },
     {
@@ -1546,6 +1546,76 @@
       "source": "packages/ui/src/code-diff/code-diff.md"
     },
     {
+      "id": "component/code-editor/pitfall/1",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "**必须受控**：`onChange` 里不回写 `value`，编辑会被 React 立刻回滚（表现为「打不进字」）。这是设计如此，不是 bug。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/2",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "**不要绕开组件直接改 value 再指望 undo**：所有键盘增强都走 `document.execCommand(\"insertText\" | \"delete\")` 落笔，为的是把改动压进 textarea 的**原生 undo 栈**。如果你 fork 出去改成 `setState` 整篇覆盖，Cmd+Z 会当场失效——这是 textarea 方案最容易做错的一点。`execCommand` 不可用的环境（jsdom、极老浏览器）自动降级为整篇回吐，功能仍在，只是丢原生 undo。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/3",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "**不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60–80px。需要缩略图请外接 Monaco。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/4",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "**不做**：代码折叠、自动补全 / 智能提示、多光标 / 列选择、语义诊断与波浪线、查找替换面板、括号配对高亮。要这些请外接 CodeMirror 6 / Monaco。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/5",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "文本不换行（`wrap=\"off\"`，长行横向滚动）。这是刻意的：一旦软换行，行号槽就无法与视觉行对齐，`lineNumbers` 会立刻说谎。要换行请改用 [Textarea](../textarea/textarea.md)。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/6",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "**改样式必须三层同改**：透明 `<textarea>`、染色 `<pre>`、行号槽三层的字体族 / 字号 / 行高 / 内边距 / `white-space` / `tab-size` 逐项相等才不错位。只改其中一层的 padding 或字号，表现是「光标和字差半格」，且只在长行/深缩进时才看得出来。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/7",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "**`theme=\"light\"` 目前只在页面本身是亮色时成立**。令牌层只定义了 `[data-theme=\"dark\"]` 的覆盖块，没有对应的 `[data-theme=\"light\"]`，所以在暗色页面里局部钉亮色钉不住（`theme=\"dark\"` 在亮色页面里是好的）。默认不传 `theme`、跟随全局主题才是推荐用法。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/8",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "着色是**近似着色，不是解析器**：CSS 扫描器只跟踪「是否在 `{}` 内 / 是否越过 `:`」两个状态，JS 家族沿用 CodeBlock 的单条正则扫描。复杂泛型、正则字面量、嵌套模板串可能着色不准——着色错不影响编辑，`value` 永远是你的原文。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/9",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "`language=\"json\"` 时 Cmd+/ **故意不响应**：JSON 规范没有注释，写进去就是非法 JSON。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/10",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "选区底色用的是半透明 `bg-primary/25`：textarea 在高亮层之上，不透明的选区底色会把代码盖住。改这个类要连带确认深色主题下的对比度。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
       "id": "component/collapsible/pitfall/1",
       "scope": "collapsible",
       "title": "Collapsible",
@@ -1626,18 +1696,32 @@
       "id": "component/color-swatch-picker/pitfall/1",
       "scope": "color-swatch-picker",
       "title": "ColorSwatchPicker",
-      "rule": "受控 `value` 必须与 `colors` 中某项**严格字符串相等**才会高亮；`\"#FFF\"` 与 `\"#ffffff\"`、`\"#3b82f6\"` 与 `\"rgb(59,130,246)\"` 视为不同值。统一大小写与写法。",
+      "rule": "**token 色必须给 `label`**。`colors` 里的裸字符串会直接当色块的 `aria-label`，`var(--color-primary)` 会被读屏原样念成变量名，对屏幕阅读器用户毫无意义；`#3b82f6`、`oklch(...)` 同理只是一串字符。只有具名色（`red` / `tomato`）裸着还能读。",
       "source": "packages/ui/src/color-swatch-picker/color-swatch-picker.md"
     },
     {
       "id": "component/color-swatch-picker/pitfall/2",
       "scope": "color-swatch-picker",
       "title": "ColorSwatchPicker",
-      "rule": "默认无障碍名称跟随 `ConfigProvider locale`；显式 `aria-label` 优先，未包 Provider 时保持中文。",
+      "rule": "`value` / `onValueChange` 的身份始终是 `color` 字符串，不是 `label`。给了 `label` 也别拿它当选中值传回来。",
       "source": "packages/ui/src/color-swatch-picker/color-swatch-picker.md"
     },
     {
       "id": "component/color-swatch-picker/pitfall/3",
+      "scope": "color-swatch-picker",
+      "title": "ColorSwatchPicker",
+      "rule": "受控 `value` 必须与某个色块的 `color` **严格字符串相等**才会高亮；`\"#FFF\"` 与 `\"#ffffff\"`、`\"#3b82f6\"` 与 `\"rgb(59,130,246)\"` 视为不同值。统一大小写与写法。",
+      "source": "packages/ui/src/color-swatch-picker/color-swatch-picker.md"
+    },
+    {
+      "id": "component/color-swatch-picker/pitfall/4",
+      "scope": "color-swatch-picker",
+      "title": "ColorSwatchPicker",
+      "rule": "默认无障碍名称跟随 `ConfigProvider locale`；显式 `aria-label` 优先，未包 Provider 时保持中文。",
+      "source": "packages/ui/src/color-swatch-picker/color-swatch-picker.md"
+    },
+    {
+      "id": "component/color-swatch-picker/pitfall/5",
       "scope": "color-swatch-picker",
       "title": "ColorSwatchPicker",
       "rule": "仅支持单选；多选场景不在本组件范围内。",
@@ -1654,7 +1738,35 @@
       "id": "component/colorpicker/pitfall/2",
       "scope": "colorpicker",
       "title": "ColorPicker",
+      "rule": "`onValueChange` 在拖动取色面板 / 色相条时**每帧**触发，一次拖动几十上百次。写 undo 栈、发请求、触发重排这类操作请挂 `onValueCommitted`，别自己防抖——防抖猜不出「松手」这个准确时刻，还会让最终值晚于弹层关闭。",
+      "source": "packages/ui/src/colorpicker/colorpicker.md"
+    },
+    {
+      "id": "component/colorpicker/pitfall/3",
+      "scope": "colorpicker",
+      "title": "ColorPicker",
+      "rule": "`onValueCommitted` 的语义是「**一次编辑结束**」而不是「值变了」：在色板上点一下没拖动、颜色其实没变，松手时**仍会**触发一次。需要去重请自己比对上一次收到的值。",
+      "source": "packages/ui/src/colorpicker/colorpicker.md"
+    },
+    {
+      "id": "component/colorpicker/pitfall/4",
+      "scope": "colorpicker",
+      "title": "ColorPicker",
+      "rule": "`pointercancel`（拖动被系统或其它手势打断）**不触发** `onValueCommitted`。此时应保留上一次 committed 的值，别把中途的 `onValueChange` 值当最终值落库。",
+      "source": "packages/ui/src/colorpicker/colorpicker.md"
+    },
+    {
+      "id": "component/colorpicker/pitfall/5",
+      "scope": "colorpicker",
+      "title": "ColorPicker",
       "rule": "受控 `value` 可传任意 hex/rgb()/hsl() 串，组件内部归一为 hex 再渲染，回写时再转回所选格式。",
+      "source": "packages/ui/src/colorpicker/colorpicker.md"
+    },
+    {
+      "id": "component/colorpicker/pitfall/6",
+      "scope": "colorpicker",
+      "title": "ColorPicker",
+      "rule": "受控 `value` + 只监听 `onValueCommitted` 会把色板**钉死**：拖动中你不回写 `value`，组件就动不了。这种「松手才回吐」的用法请改用 `defaultValue`（非受控），需要跟随外部值时用 `key` 重挂。",
       "source": "packages/ui/src/colorpicker/colorpicker.md"
     },
     {
@@ -1747,6 +1859,62 @@
       "title": "Comment",
       "rule": "`CommentAction` 有无 `href` 决定渲染成 Link 还是 button，跳锚点回复传 href，纯交互（点赞）不传。",
       "source": "packages/ui/src/comment/comment.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/1",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**必须给确定高度**：`className` 不写高度时整块会塌成内容高度，各区的独立滚动全部失效（同 [Flow](../flow/flow.md) / [AdminLayout](../admin-layout/admin-layout.md) 的家风）。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/2",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**受控 `filter` 必须接 `onFilterChange`**：只想给初值请用 `defaultFilter`。传了 `filter` 又不接回调，搜索框输入不进去、分类树点不动，看着像组件坏了。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/3",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**`renderPreview` 不是可选的偷懒项，是唯一的预览路径**：库不会替你把 slug 变成组件实例。想省事就把 `showPreview` 保持 `false`（默认），别指望不传 `renderPreview` 也能看到东西。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/4",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**`onSelect` 的第二参可能是 `{}`**：`defaultPropsOf` 只认 `true` / `false` / 数字 / 带引号字符串这类字面量默认值。文档里写成 `() => void`、`{...}`、`—` 的一律不进结果——这是诚实的空，不是解析失败。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/5",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**`parseComponentCatalog` 的 slug 不是文档里写着的**：`llms-full.txt` 根本没有 slug 字段。函数先从全文的交叉引用链接里捞（`[Formula](…/components/math)` → `math`），捞不到再 kebab 化组件名。全库 376 条里靠这两步能全对，唯一的例外 `QRCode → qrcode` 由内置 override 兜住；你自己的文档有类似缩写就传 `slugOverrides`。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/6",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**`maxResults` 是渲染上限不是搜索上限**：打分对全量条目跑完再截断，所以第 61 条永远是「排名第 61」而不是「被漏掉的」。要看全量把它调大，但 376 张卡片一次性铺开会明显掉帧。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/7",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**界面文案默认跟随 locale**：不传 `labels` 时全部文案取 ConfigProvider 的 locale（未包 Provider 回落内置中文），`ComponentPickerCommand` 的 `placeholder` / `emptyMessage` 同理。优先级是 prop > locale > 内置兜底，所以只想改一两句时传 `labels` 的对应键即可，其余仍跟着整站语言走。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
+    },
+    {
+      "id": "component/component-picker/pitfall/8",
+      "scope": "component-picker",
+      "title": "ComponentPicker",
+      "rule": "**`ComponentPickerCommand` 不是主形态**：命令行放不下分类树和属性表。它内部用 `filter={() => true}` + `onQueryChange` 接管排序（Command 自己的过滤是子串匹配且不排序），所以它只解决「已经知道要哪个」那一半场景。",
+      "source": "packages/ui/src/component-picker/component-picker.md"
     },
     {
       "id": "component/config/pitfall/1",
@@ -2162,6 +2330,62 @@
       "source": "packages/ui/src/descriptions/descriptions.md"
     },
     {
+      "id": "component/design-canvas/pitfall/1",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "外层 `className` **必须有确定高度**（如 `h-[420px]` 或父级撑满），画布按外层尺寸填充——高度塌缩则画布不可见。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/2",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "全受控：`onItemsChange` 回吐的是**整组新 items**，不写回 state 画布就弹回原位。拖动 / resize 中途只改内部草稿，**不会**每帧回吐；要实时联动外部面板请读 `renderItem` 的 `dragging` / `resizing`。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/3",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "`children` 里的元素画布不托管几何：给它加 `data-canvas-item` 只买到「可被选中」，**买不到拖拽与 resize**，也不会出选择框。要托管就放进 `items`。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/4",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "元素内部放按钮 / 输入框请照常写——按在这类控件上只选中不起拖（与 Kanban / Sortable 同一口径）。要让某个自定义元素也免于拖拽，给它加 `data-no-drag`。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/5",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "右键在画布上是「拖拽平移」手势的一部分，因此**系统右键菜单被抑制**。需要自定义右键菜单请自行在 `renderItem` 内监听 `contextmenu` 并 `stopPropagation`。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/6",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "滚轮事件用 `{ passive: false }` 注册并 `preventDefault`，画布区域**不会**滚动祖先容器——这是有意为之，别把画布塞进需要靠滚轮滚动的窄栏里。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/7",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "`resize` 拖过锚定边会**翻转**（与 Figma 一致），不是卡死在 `minItemSize`。若你的业务不接受翻转，请在 `onItemsChange` 里自行拒绝。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/8",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "客户端组件（原生 Pointer Events），必须在 client 上下文用。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
       "id": "component/dialog/pitfall/1",
       "scope": "dialog",
       "title": "Dialog",
@@ -2398,6 +2622,62 @@
       "title": "ElectricBorder",
       "rule": "描边电弧需要深色底才显眼，浅色背景上辉光几乎不可见。",
       "source": "packages/ui/src/electric-border/electric-border.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/1",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "**跨源 iframe 不支持**，而且不会静默失效：读不到 `contentDocument` 时组件不渲染，并触发一次 `onError({ code: \"cross-origin\" })` + 开发期告警。要跨源就只有三条路：换成同源预览（`srcDoc` / 同源代理域名）、或在被预览页里自己挂一份叠加层把 path 通过 `postMessage` 回传宿主、或放弃指向编辑。本组件**不提供** postMessage 桥（那是另一套协议，不该藏在一个 UI 组件里）。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/2",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "**能打标记就打标记**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/3",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "**iframe 内的元素跨 realm**：它们不是宿主的 `Element` 实例，`node instanceof Element` 恒 false —— 自己处理目标事件时请用导出的 `asElement()`，别用 instanceof（这是同源 iframe 场景最容易踩的静默失效）。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/4",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "`interceptClicks` 默认 `true`，意味着**选择模式下预览是不可交互的**（点击被吞、mousedown 的默认行为被挡）。要让用户一边操作预览一边看高亮，传 `interceptClicks={false}`，或用 `enabled` 显式切换选择模式。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/5",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "**目标根自身不可选**：`target` 那个元素（iframe 场景是其 `body`）hover 与点击都视为空白，点它触发 `onClear`。根若也带标记属性，所有元素会退化成同一条路径，所以标记查找刻意跳过根。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/6",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "**jsdom 下 `getBoundingClientRect` 恒为 0**，零面积一律判不可见 → 单测里默认一个框都不会渲染。要断言框的存在，先给 `Element.prototype.getBoundingClientRect` 打桩；但别断言坐标数值（坐标来自你的桩，等于自证）。坐标逻辑请测 `toHostRect` / `computeLabelPosition` 这两个纯函数。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/7",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "目标是 `document.body` 时，本组件的 portal 层就落在目标内部；组件已过滤掉自身引起的 MutationObserver 记录（否则自触发死循环），你若另外挂了 observer 也要做同样的过滤。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/8",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "客户端组件（要读 DOM、要挂监听），必须在 client 上下文用；SSR 期不渲染任何东西。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
     },
     {
       "id": "component/emoji-picker/pitfall/1",
@@ -3569,6 +3849,62 @@
       "source": "packages/ui/src/input-otp/input-otp.md"
     },
     {
+      "id": "component/inspector-panel/pitfall/1",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "**`onChange` 会在同一 tick 连发多次**（链接锁定的 spacing 是 4 次）。消费方必须用函数式更新 `setState((prev) => …)`，写成 `setState({ ...style, [path]: value })` 会让后三次覆盖前三次，表现为「只有最后一边生效」。嫌麻烦就传 `onBatchChange` 一次拿全。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/2",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "`commitMode` 覆盖滑杆、输入框与色块弹出的 ColorPicker 三者。`commit` 模式下取色器松手 / 失焦 / 回车才回吐，拖动中的每帧值只留在面板内部（取色器此时是非受控的，外部 `props` 变了才会重新同步）。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/3",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "`tokenSource[].token` **必须带 `color-` 前缀**（`color-primary` 而不是 `primary`）。Tailwind v4 `@theme` 的真名带前缀，写成裸名色板会画不出颜色也不报错。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/4",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "混合值哨兵是 `Symbol.for(\"hulian.inspector.mixed\")`，**不能 JSON 序列化**。属性表要过一遍网络/存储时，在边界上把它转成自己的标记再转回来。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/5",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "数字框清空回吐 `null` 不是 `0`。消费方要区分「没设置」和「设成 0」，`null` 应当删除该属性而不是写 `0`。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/6",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "面板不持有业务值：`props` 不回写，控件就不会动（`commit` 模式的输入草稿与拖动中的滑块除外）。它是受控组件，不是自带状态的编辑器。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/7",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "面板自身的文案（`title` / 空态 / `mixed` / `linkSides` / 四边名 / 两个色值控件名）走 ConfigProvider 的 locale，外层包 `<ConfigProvider locale={enUS}>` 即变英文。优先级是 `labels` / `title` / `emptyText` prop > locale > 内置中文兜底。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/8",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "**内置预设的字段 `label` 仍是中文**，不在 locale 覆盖范围内——它们属于 `sections` 数据而不是面板本身。要整屏英文请自带 `sections`。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
       "id": "component/iphone/pitfall/1",
       "scope": "iphone",
       "title": "iPhone",
@@ -3602,6 +3938,62 @@
       "title": "Iridescence",
       "rule": "父容器需 `relative` + `overflow-hidden`。",
       "source": "packages/ui/src/iridescence/iridescence.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/1",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**它不会替你创建 issue，也不该拿到 token。** 组件只做两件事：`onSubmit(draft)` 回吐草稿、生成一条 GitHub 预填链接。那条链接打开的是 GitHub 自己的「新建 issue」表单，用户点了确认才算创建。想要「一键提交」，请拿 `draft` 去你自己的服务端调 GitHub API——**不要把 PAT 传进浏览器**。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/2",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**预填链接有长度上限。** 实务上整条 URL 超过约 8000 字符（`GITHUB_URL_MAX_LENGTH`）后会被浏览器/代理/邮件客户端截断，或被 GitHub 直接拒绝。此时组件**不渲染**「在 GitHub 上打开」按钮，改为提示 + 「复制 Markdown」。判据量的是**整条 URL 而不是 body**：中文按 UTF-8 百分号编码后一个字占 9 个字符，长标题一样能把额度吃满。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/3",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**相关组件候选必须外部喂。** 组件不会去 fetch `llms.txt` 或 registry —— 那是消费方的数据来源与缓存策略，同 ComponentPicker 的边界。不传 `components` 就不渲染该字段。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/4",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**`control: \"markdown\"` 会拉入 tiptap。** MarkdownEditor 依赖 `@tiptap/*`，体积不小。内置三套模板刻意全用 `textarea`，需要富文本时自己在模板里把某个字段改成 `markdown`。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/5",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**不要给它套 `<form>` 期待自动提交。** 组件本体刻意不渲染 `<form>`（它要能塞进 ModalForm 的表单里，嵌套 form 是非法 HTML）。弹层外的独立用法请用内置提交按钮或 `apiRef.submit()`。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/6",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**模板的 `labels` 与组件的 `text` 别搞混。** 前者是 GitHub 标签（进 `draft.labels` 与 URL 的 `labels` 参数），后者是界面文案覆盖。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/7",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**界面文案默认跟随 locale。** 不传 `text` 时全部文案取 ConfigProvider 的 locale（未包 Provider 回落内置中文），`IssueReporterModal` 的 `modalTitle` 同理。优先级是 `text` prop > locale > 内置兜底。注意**模板自带的字段 `label` / `placeholder` 不在 locale 覆盖范围内**——它们属于 `templates` 数据，要英文界面请连模板一起替换。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
+    },
+    {
+      "id": "component/issue-reporter/pitfall/8",
+      "scope": "issue-reporter",
+      "title": "IssueReporter",
+      "rule": "**切模板不会清空同名字段。** 值表跨模板共用，`bug` 与 `feature` 若都有 `summary`，切过去内容还在——这是有意的（避免误切模板丢内容），需要清空请调 `apiRef.reset()`。",
+      "source": "packages/ui/src/issue-reporter/issue-reporter.md"
     },
     {
       "id": "component/json-viewer/pitfall/1",
@@ -5170,6 +5562,97 @@
       "title": "Popover",
       "rule": "若手搓 hover 开 + focus 关叠加在这类 focus-managing popover 上会无限闪烁，见 hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false：popover 打开时把焦点移入浮层会触发 trigger 的 onBlur 关闭，关闭又把焦点还给 trigger 触发 onFocus 打开 → ping-pong。本组件默认 click 语义不踩，但若改造成 hover 触发需把 `initialFocus`/`finalFocus` 设 false。",
       "source": "packages/ui/src/popover/popover.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/1",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**`code` 不是 JSX，是 HTML 文档串。** 塞一段 `<Button/>` 或 TSX 进去只会被当纯文本渲染，不会报错也不会编译——这是本组件最容易踩的静默失效。要真正执行生成的组件代码，只有两条路：自己在消费方接编译器（esbuild-wasm / WebContainers 那一档，本库不会引入这类重依赖），或改用同文档模式把已经编译好的组件当 `children` 传进来。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/2",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**默认 sandbox 只给 `allow-scripts`，刻意不给 `allow-same-origin`，这是个真实的取舍：**",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/3",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "`srcdoc` 文档本就继承宿主的源。两个值一起给等于**没有沙箱**：预览里的脚本能读写宿主 DOM、`localStorage`、cookie，甚至自己把 `sandbox` 属性摘掉。所以内容只要不是你完全可信的（AI 生成的、用户贴的、第三方模板），就别放开。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/4",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "代价是宿主也读不到 `iframe.contentDocument`。所以错误转发走 `postMessage`（不透明源照样能发），而不是直接往 iframe 文档里挂监听。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/5",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "需要读 iframe 内部 DOM 时（典型是配 [ElementSelectionOverlay](../element-selection-overlay/element-selection-overlay.md) 做指向编辑）才放开，并且请显式写出来：`sandbox={PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX}`。这个常量存在的意义就是让「我知道我在关隔离」在代码里可读、可 grep、可 review。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/6",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**消息校验不看 `origin`。** 不透明源的 iframe 发出的 `event.origin` 恒为 `\"null\"`，拿它当条件等于永远不通过。组件校验的是「消息里的实例 id」+「`event.source === iframe.contentWindow`」；自己接 `postMessage` 时请照此办理。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/7",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**`instrument={false}` 之后 `onError` 就静音了**（iframe 模式）。不注入脚本就没有回传通路，这是设计如此，不是 bug；关它的正当理由通常是「预览文档有严格 CSP 或自己已经装了错误上报」。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/8",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**重载靠 `srcDoc` 字符串变化，不靠 `location.reload()`**（跨源调不到）。所以点重试时 `srcdoc` 会多出一行重载标记注释——这是刻意的，别当成脏数据去掉。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/9",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**切设备不会重载文档，换 `code` 会。** 前者只改容器盒子（预览内的滚动位置、表单输入、动画进度都保住），后者是新文档。想强制重来请用重试按钮或改 `code`。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/10",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**`fit` 永不放大**（上限 1），与 [FitScreen](../fit-screen/fit-screen.md) 的 `computeFit` 不同：把 390px 的手机预览拉到 800px 宽只会得到一个「巨人手机」，字号、点击区、断点全部失真。要放大请显式给 `scale={1.5}`。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/11",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**外层必须有确定高度。** 组件自身是 `h-full w-full`，父级高度塌缩就什么都看不见（和 [Flow](../flow/flow.md) 同款坑）。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/12",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**iframe 里的资源加载失败（图片 404）不算错误。** 引导脚本刻意不监听捕获阶段，只报真正的运行时异常，否则「图挂了」会被报成预览崩溃。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/13",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "jsdom 里 `srcDoc` 的脚本不会执行、也没有布局引擎，所以「注入位置」「缩放系数」「错误归一化」这些都做成了导出的纯函数（`buildSrcDoc` / `computePreviewScale` / `normalizeIframeMessage` / `normalizeReactError`），要断言行为请测它们，别去测 iframe 内部。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/pricing-table/pitfall/1",
@@ -8094,8 +8577,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 376,
-    "componentAdvisories": 1131,
-    "totalAdvisories": 1138
+    "componentDocs": 383,
+    "componentAdvisories": 1200,
+    "totalAdvisories": 1207
   }
 }

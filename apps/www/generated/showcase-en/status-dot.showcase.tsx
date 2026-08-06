@@ -53,7 +53,7 @@ export const statusDotShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Dimensions & Dots Only",
+            title: "Size & dot only",
             description: "size controls the dot size; only dots are rendered when label is omitted.",
             code: `<>
   <StatusDot status="online" size="sm" />

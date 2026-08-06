@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.25.2 · 376 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.25.2 · 383 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -568,6 +568,127 @@ import { Masonry } from "@hulianui/ui"
 
 ## 相关
 [Layout](https://hulianui.haloritual.com/zh/components/layout) · [AdminLayout](https://hulianui.haloritual.com/zh/components/admin-layout) · [ScrollArea](https://hulianui.haloritual.com/zh/components/scroll-area) · [Viewport](https://hulianui.haloritual.com/zh/components/viewport) · [Resizable](https://hulianui.haloritual.com/zh/components/resizable) · [AspectRatio](https://hulianui.haloritual.com/zh/components/aspect-ratio)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# PreviewSandbox
+
+> 预览沙箱 · 把「隔离渲染容器 + 设备视口 + 缩放适配 + 错误捕获 + 就绪/重载生命周期」一次做对的外壳 · iframe 模式（`code` 传完整 HTML 文档串 → `srcDoc`，默认不透明源隔离，错误经注入脚本 postMessage 回传）与同文档模式（`children` 走真正的 React 错误边界）共用一副壳，**错误对象形状统一** · 切设备只改容器盒子，iframe 节点与文档都不重建 · 尺寸表/缩放系数/错误归一化全是带单测的纯函数 · **不打包不转译不装包** · layout/container
+
+## 何时用
+
+要在自家页面里嵌一块「别人的界面」并且不想让它影响宿主时用它：AI 生成界面的实时预览、模板/主题商店的效果预览、可视化搭建的画布区、邮件或落地页 HTML 的所见即所得。
+
+它给的是外壳，不是执行引擎——**不打包、不转译、不装 npm 包**。`code` 的语义被钉死为「一份已经可以直接送进 iframe 的 HTML 文档串」，不是「一段待编译的 JSX」（原因见「禁忌 / 坑」第一条）。
+
+- 只要按设备宽度做**响应式排版**、内容仍属于本应用，用 [Viewport](https://hulianui.haloritual.com/zh/components/viewport)（容器查询，不隔离、无 iframe）。
+- 只要把固定设计尺寸**等比铺满**大屏，用 [FitScreen](https://hulianui.haloritual.com/zh/components/fit-screen)（它会放大，本组件的 `fit` 刻意不放大）。
+- 只要一张**静态截图**套机身，直接用 [IPhone](https://hulianui.haloritual.com/zh/components/iphone) / [Android](https://hulianui.haloritual.com/zh/components/android) / [Tablet](https://hulianui.haloritual.com/zh/components/tablet)（本组件在 `showDeviceFrame` 时正是复用它们）。
+- 要在预览里**点选元素**回吐路径（指向编辑），配 [ElementSelectionOverlay](https://hulianui.haloritual.com/zh/components/element-selection-overlay)，但它要求能读到 `contentDocument` —— 见「禁忌 / 坑」的 sandbox 取舍。
+
+## 导入
+```ts
+import {
+  PreviewSandbox,
+  PREVIEW_SANDBOX_DEFAULT_SANDBOX,
+  PREVIEW_SANDBOX_DEVICES,
+  PREVIEW_SANDBOX_MESSAGE_KEY,
+  PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX,
+  bootstrapScript,
+  buildSrcDoc,
+  computePreviewScale,
+  normalizeIframeMessage,
+  normalizeReactError,
+  resolveFrameKind,
+  resolveViewport,
+} from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| code | string | — | iframe 模式内容：**完整 HTML 文档串**，写进 `srcDoc`。传了就走 iframe 模式 |
+| children | ReactNode | — | 同文档模式内容：直接渲染的 React 子树。`code` 存在时被忽略 |
+| device | "desktop" ｜ "iphone" ｜ "android" ｜ "tablet" ｜ { width, height } | "desktop" | 预览视口（预览内 `window.innerWidth` 与媒体查询看到的就是它） |
+| showDeviceFrame | boolean | false | 是否套设备外框（仅三个机型档位有外框，desktop / 自由尺寸无效并开发期告警） |
+| frameWidth | number | — | 设备外框机身宽度 px；不传用对应外框组件的默认宽度 |
+| scale | "fit" ｜ number | "fit" | 内容缩放。`fit` 等比缩到装得下且**不放大**；给数字则原样使用 |
+| sandbox | string | "allow-scripts" | iframe 的 `sandbox` 属性（默认不给 `allow-same-origin`，取舍见「禁忌 / 坑」） |
+| instrument | boolean | true | 是否注入错误转发引导脚本。关掉后 iframe 内的运行时错误收不到 |
+| title | string | 取自 locale | iframe 的无障碍名称；不传则跟随 ConfigProvider（内置中文兜底「预览沙箱」） |
+| errorTitle | string | 取自 locale | 内置错误态标题；不传则跟随 ConfigProvider（内置中文兜底「预览渲染失败」） |
+| retryLabel | string | 取自 locale | 重试按钮文案；不传则跟随 ConfigProvider（内置中文兜底「重试」） |
+| renderError | (error: PreviewSandboxError, retry: () => void) => ReactNode | — | 自定义错误态；给了就完全接管（含重试入口） |
+
+`PreviewSandboxError` 两种模式同形状：`{ source: "iframe" ｜ "react", kind: "error" ｜ "unhandledrejection", message, stack, filename, lineno, colno, componentStack, error }`。`error`（原始 Error 实例）只有同文档模式拿得到，iframe 模式跨 realm 恒为 `null`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onError | (error: PreviewSandboxError) => void | 预览内出错。iframe 模式来自注入脚本回传的 `error` / `unhandledrejection`；同文档模式来自 React 错误边界 |
+| onReady | () => void | 预览就绪。iframe 模式为 `load` 之后，同文档模式为挂载之后；每次重载再触发一次 |
+| onLoadingChange | (loading: boolean) => void | 加载态变化（换 `code`、点重试都会先回到 `true`）。同文档模式恒为 `false` |
+
+## 示例
+```tsx
+const html = `<!doctype html>
+<html><head><style>body{margin:0;font-family:system-ui}</style></head>
+<body><h1>Generated page</h1></body></html>`;
+
+// 外层必须有确定高度：组件自身是 h-full w-full
+<div className="h-[420px] w-full overflow-hidden rounded-[var(--radius)] border border-border">
+  <PreviewSandbox
+    code={html}
+    device={device}          // 切换不重挂 iframe，预览内状态不丢
+    showDeviceFrame
+    onReady={() => setStatus("ready")}
+    onError={(e) => console.warn(e.source, e.message)}
+  />
+</div>
+```
+
+同文档模式（拿得到原始 Error，适合预览自家组件）：
+```tsx
+<PreviewSandbox device={{ width: 480, height: 320 }} onError={(e) => report(e.error)}>
+  <GeneratedComponent />
+</PreviewSandbox>
+```
+
+纯函数可单独使用（比如把预览内容先在别处组装好）：
+```ts
+resolveViewport("iphone");                       // { width: 390, height: 844 }
+computePreviewScale({ outerW: 640, outerH: 800, viewportW: 1280, viewportH: 800, scale: "fit" }); // 0.5
+buildSrcDoc(html, { frameId, instrument: true }); // 注入错误转发脚本后的文档串
+normalizeReactError(err, info);                   // 归一成 PreviewSandboxError
+```
+
+## 无障碍
+
+- iframe 一定有 `title`（默认「预览沙箱」）—— 无名 iframe 是屏幕阅读器最典型的死角，请按内容改成有信息量的名字（如「登录页预览」）。
+- 错误态用的是 [Alert](https://hulianui.haloritual.com/zh/components/alert) 的 danger 语气，本身即 `role="alert"`，出错会被打断式播报；外层刻意不再叠一层同角色，避免读两遍。
+- 重试是**真按钮**（可 Tab 可回车），不是只能点的图标；文案默认取 locale，`retryLabel` 可就地覆盖（优先级 prop > locale > 内置中文兜底）。
+- 预览内容的无障碍**归你自己负责**：iframe 里的文档是另一棵可访问性树，宿主的 landmark、语言、对比度都管不到它，`code` 里请自带 `<html lang>` 与语义标签。
+- 缩放走 `transform: scale`，不改字号也不改 DOM，屏幕阅读器读到的仍是原始结构；但缩小后的文字确实更难看清，重要操作不要只放在缩到很小的预览里。
+
+## 禁忌 / 坑
+
+- **`code` 不是 JSX，是 HTML 文档串。** 塞一段 `<Button/>` 或 TSX 进去只会被当纯文本渲染，不会报错也不会编译——这是本组件最容易踩的静默失效。要真正执行生成的组件代码，只有两条路：自己在消费方接编译器（esbuild-wasm / WebContainers 那一档，本库不会引入这类重依赖），或改用同文档模式把已经编译好的组件当 `children` 传进来。
+- **默认 sandbox 只给 `allow-scripts`，刻意不给 `allow-same-origin`，这是个真实的取舍：**
+  - `srcdoc` 文档本就继承宿主的源。两个值一起给等于**没有沙箱**：预览里的脚本能读写宿主 DOM、`localStorage`、cookie，甚至自己把 `sandbox` 属性摘掉。所以内容只要不是你完全可信的（AI 生成的、用户贴的、第三方模板），就别放开。
+  - 代价是宿主也读不到 `iframe.contentDocument`。所以错误转发走 `postMessage`（不透明源照样能发），而不是直接往 iframe 文档里挂监听。
+  - 需要读 iframe 内部 DOM 时（典型是配 [ElementSelectionOverlay](https://hulianui.haloritual.com/zh/components/element-selection-overlay) 做指向编辑）才放开，并且请显式写出来：`sandbox={PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX}`。这个常量存在的意义就是让「我知道我在关隔离」在代码里可读、可 grep、可 review。
+- **消息校验不看 `origin`。** 不透明源的 iframe 发出的 `event.origin` 恒为 `"null"`，拿它当条件等于永远不通过。组件校验的是「消息里的实例 id」+「`event.source === iframe.contentWindow`」；自己接 `postMessage` 时请照此办理。
+- **`instrument={false}` 之后 `onError` 就静音了**（iframe 模式）。不注入脚本就没有回传通路，这是设计如此，不是 bug；关它的正当理由通常是「预览文档有严格 CSP 或自己已经装了错误上报」。
+- **重载靠 `srcDoc` 字符串变化，不靠 `location.reload()`**（跨源调不到）。所以点重试时 `srcdoc` 会多出一行重载标记注释——这是刻意的，别当成脏数据去掉。
+- **切设备不会重载文档，换 `code` 会。** 前者只改容器盒子（预览内的滚动位置、表单输入、动画进度都保住），后者是新文档。想强制重来请用重试按钮或改 `code`。
+- **`fit` 永不放大**（上限 1），与 [FitScreen](https://hulianui.haloritual.com/zh/components/fit-screen) 的 `computeFit` 不同：把 390px 的手机预览拉到 800px 宽只会得到一个「巨人手机」，字号、点击区、断点全部失真。要放大请显式给 `scale={1.5}`。
+- **外层必须有确定高度。** 组件自身是 `h-full w-full`，父级高度塌缩就什么都看不见（和 [Flow](https://hulianui.haloritual.com/zh/components/flow) 同款坑）。
+- **iframe 里的资源加载失败（图片 404）不算错误。** 引导脚本刻意不监听捕获阶段，只报真正的运行时异常，否则「图挂了」会被报成预览崩溃。
+- jsdom 里 `srcDoc` 的脚本不会执行、也没有布局引擎，所以「注入位置」「缩放系数」「错误归一化」这些都做成了导出的纯函数（`buildSrcDoc` / `computePreviewScale` / `normalizeIframeMessage` / `normalizeReactError`），要断言行为请测它们，别去测 iframe 内部。
+
+## 相关
+[Viewport](https://hulianui.haloritual.com/zh/components/viewport) · [FitScreen](https://hulianui.haloritual.com/zh/components/fit-screen) · [IPhone](https://hulianui.haloritual.com/zh/components/iphone) · [Android](https://hulianui.haloritual.com/zh/components/android) · [Tablet](https://hulianui.haloritual.com/zh/components/tablet) · [ElementSelectionOverlay](https://hulianui.haloritual.com/zh/components/element-selection-overlay) · [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Resizable
@@ -2828,7 +2949,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体 |
 | tone | `"brand" ｜ "danger"` | `"brand"` | 语义色调 |
-| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm"` | `"md"` | 尺寸；icon/iconSm 为正方形图标按钮 |
+| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
 
@@ -2844,6 +2965,23 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 按钮文案 |
 | render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），用于按钮样式的链接 CTA；样式与 `aria-disabled` 合并进该元素 |
+
+## 尺寸档
+
+三条刻度，图标档的边长等于同名文字档的高度——**图标按钮与文字按钮混排一定要取同名的一对**，否则连排（[ButtonGroup](https://hulianui.haloritual.com/zh/components/button-group)）会露出台阶。
+
+| 文字档 | 高度 | 配套图标档 | 边长 |
+|--------|------|-----------|------|
+| `sm` | 32px | `iconSm` | 32px |
+| `md`（默认） | 40px | `icon` | 40px |
+| `lg` | 48px | `iconLg` | 48px |
+
+```tsx
+{/* ✅ 同名一对，等高 */}
+<ButtonGroup><Button>保存</Button><Button size="icon"><ChevronDown className="size-4" /></Button></ButtonGroup>
+{/* ❌ 跨档混排，差 8px */}
+<ButtonGroup><Button>保存</Button><Button size="iconSm"><ChevronDown className="size-4" /></Button></ButtonGroup>
+```
 
 ## 示例
 ```tsx
@@ -2910,7 +3048,7 @@ import { ButtonGroup } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- **成员必须同高，连排态尤其**。连排是靠 `-ml-px` 把相邻按钮的边框叠在一起实现的，这个拼接假定所有成员等高；高度一旦不一致，矮的那些上下就会露出台阶。而 [Button](https://hulianui.haloritual.com/zh/components/button) 的尺寸档里 **`icon`（36px）没有等高的文字档**——文字档是 `sm` 32 / `md` 40 / `lg` 48。所以 `size="icon"` 与任何带文字的按钮混排都会错位。要图标 + 文字混排，用**等高的一对**：`iconSm`(32) 配 `sm`(32)，或给 icon 按钮显式贴高度去对齐 `md`。
+- **成员必须同高，连排态尤其**。连排是靠 `-ml-px` 把相邻按钮的边框叠在一起实现的，这个拼接假定所有成员等高；高度一旦不一致，矮的那些上下就会露出台阶。[Button](https://hulianui.haloritual.com/zh/components/button) 的图标档与同名文字档等高（`iconSm`/`sm` 32、`icon`/`md` 40、`iconLg`/`lg` 48），所以**混排时取同名的一对**即可；跨档混（例如 `<Button>` 默认 md 配 `size="iconSm"`）会差 8px，仍然会露台阶。0.26.0 之前 `icon` 是孤立的 36px，与任何文字档都对不齐（#97），升级后这类既有写法会自动变齐。
 - 上一条**看代码是发现不了的**：三个按钮都写 `variant="outline"`、都不传或只有一个传 `size`，读起来很整齐，只有渲染出来才看得见中间那个高出 4px。典型场景是 `−/数值/+` 步进器。
 - `gap` 仅在 `attached={false}` 时生效；连排态（`attached`）由组件自行抹圆角/合并边框，不要再给子按钮加外边距。
 
@@ -3376,6 +3514,133 @@ const [captcha, setCaptcha] = useState(() => fetchCaptcha());
 [LoginForm](https://hulianui.haloritual.com/zh/components/login-form) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Field](https://hulianui.haloritual.com/zh/components/field) · [ImageCropper](https://hulianui.haloritual.com/zh/components/image-cropper)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# CodeEditor
+
+> 代码编辑器 · 零依赖 textarea + 高亮层叠加（不引 CodeMirror/Monaco） · 受控 value/onChange + 行号槽 + 当前行高亮 + 语法着色(JS 家族/JSON/Shell 复用 CodeBlock 着色器，CSS 自带扫描器) · 键盘增强全套(Tab 缩进/Shift+Tab 反缩进/Enter 续缩进/成对符号自动闭合与包裹/退格删对/Cmd 或 Ctrl 加斜杠切注释)且**一律经 execCommand 落笔保住原生 undo 栈** · 编辑意图抽成纯函数带单测 · AI 生成 DSL/JSON 的可编辑检查器 · forms/advanced
+
+## 何时用
+
+需要用户**改**代码时用它：AI 生成的 DSL / JSON AST 检查器、配置片段编辑、模板编辑。
+只展示不编辑用 [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block)（自带复制按钮）；单行命令用 [Snippet](https://hulianui.haloritual.com/zh/components/snippet)；行内片段用 [Code](https://hulianui.haloritual.com/zh/components/code)；两版对比用 [CodeDiff](https://hulianui.haloritual.com/zh/components/code-diff)。
+写 Markdown 正文（带工具栏与预览）用 [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor)。
+
+需要代码折叠、自动补全、语义诊断、多光标的**真 IDE 体验**，请外接 CodeMirror 6 / Monaco：本组件是受控 `value`/`onChange` 的轻量件，外接引擎时把它当皮肤参考（配色令牌、行号槽、边框与聚焦环）而不是引擎。
+
+## 导入
+```ts
+import { CodeEditor, applyEdit, autoPairEdit, backspacePairEdit, getLanguageRules, indentEdit, lineEndAt, lineStartAt, newlineEdit, outdentEdit, selectedLineBlock, splitTokensByLine, toggleCommentEdit, tokenizeCss, tokenizeEditorCode } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value * | string | — | 受控代码文本。**必须配合 onChange 回写**，否则每次编辑都会被 React 回滚 |
+| language | CodeEditorLanguage | "tsx" | 决定着色器、注释符与成对符号规则。`typescript` ｜ `tsx` ｜ `javascript` ｜ `jsx` ｜ `json` ｜ `css` ｜ `bash` ｜ 任意字符串（未知按 JS 家族处理） |
+| readOnly | boolean | false | 只读。仍可聚焦/选中/复制，只是不接受输入与键盘增强 |
+| lineNumbers | boolean | true | 是否显示行号槽（横向滚动时钉在左侧，纵向跟随） |
+| highlightActiveLine | boolean | true | 是否高亮光标所在行（仅聚焦时显示） |
+| lineHeight | number | 1.6 | 行高倍数（无单位），同时作用于行号槽与代码区 |
+| tabSize | number | 2 | 一级缩进宽度（空格数），同时作为 `tab-size` |
+| placeholder | string | — | 无内容时的占位文案 |
+| rows | number | 12 | 默认可见行数；外层 `className` 给了确定高度时以外层为准 |
+| theme | "light" ｜ "dark" | — | 强制主题（逃生口）。不传时跟随全局 `[data-theme]`，这是推荐用法 |
+| ariaLabel | string | 取自 locale | 无障碍名称；不传时取 ConfigProvider 的 locale（内置中文兜底为「代码编辑器（语言）」） |
+| className | string | — | 外层类名（给宽度/高度/最大高度） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | (value: string) => void | 文本变化。普通输入与全部键盘增强走同一条回调，回调里必须回写 `value` |
+| onFocus | () => void | 编辑区获得焦点 |
+| onBlur | () => void | 编辑区失去焦点 |
+
+## 键盘
+
+| 按键 | 行为 |
+|------|------|
+| Tab | 跨行选区逐行加一级缩进；否则在光标处插入缩进（焦点不会跳走） |
+| Shift + Tab | 选区覆盖的每一行反缩进（无选区时作用于当前行） |
+| Enter | 沿用上一行缩进；`{` `[` `(` 之后再多缩一级；光标正夹在成对符号中间时把闭合符推到下一行 |
+| `{` `[` `(` `"` `'` `` ` `` | 自动补闭合符；**有选区时是包裹而不是替换**，且包裹后内部文本仍被选中 |
+| 闭合符 / 引号 | 贴着同款闭合符时 type-over：只跨过去，不重复插入 |
+| Backspace | 光标夹在一对空括号/空引号中间时两个一起删 |
+| Cmd / Ctrl + / | 按 language 切换行注释（CSS 降级为逐行 `/* */` 包裹；JSON 无注释，不响应） |
+| Cmd / Ctrl + Z | 原生撤销，逐步回退上面每一次增强编辑 |
+
+## 导出的纯函数
+
+编辑意图与落笔手法是分开的：下列函数只算「把哪段换成什么、光标落哪」（`EditorEdit`），不碰 DOM，可单独单测，也可用来自搭编辑器。
+
+| 函数 | 说明 |
+|------|------|
+| getLanguageRules(lang, indentSize) | 按语言产出缩进单位 / 注释符 / 成对符号规则 |
+| indentEdit ｜ outdentEdit | Tab / Shift+Tab 的缩进与反缩进（含按行批处理） |
+| newlineEdit | Enter 的续缩进与成对符号展开 |
+| autoPairEdit(state, ch, rules) | 成对符号自动闭合、选区包裹、type-over；返回 null = 交给浏览器默认插入 |
+| backspacePairEdit | 成对空符号一起删 |
+| toggleCommentEdit | 行注释切换（含 CSS 块注释降级、JSON 不响应） |
+| applyEdit(state, edit) | 把一条 EditorEdit 套用到 `{ value, selectionStart, selectionEnd }` 上 |
+| lineStartAt ｜ lineEndAt ｜ selectedLineBlock | 行定位工具 |
+| tokenizeCss ｜ tokenizeEditorCode ｜ splitTokensByLine | 着色：CSS 扫描器、按语言分派、token 按行切分 |
+
+## 示例
+```tsx
+const [code, setCode] = useState(source);
+
+// 基础：编辑 AI 生成的 TSX
+<CodeEditor value={code} onChange={setCode} language="tsx" rows={12} />
+
+// 检查器里的 DSL：固定高度内滚 + 四空格缩进
+<CodeEditor
+  value={dsl}
+  onChange={setDsl}
+  language="json"
+  tabSize={4}
+  className="h-[320px] w-full"
+/>
+
+// 只读预览（仍可选中复制）
+<CodeEditor value={code} language="css" readOnly rows={8} />
+
+// 窄侧栏：关行号与当前行高亮，压紧行高
+<CodeEditor
+  value={code}
+  onChange={setCode}
+  lineNumbers={false}
+  highlightActiveLine={false}
+  lineHeight={1.4}
+  rows={6}
+/>
+```
+
+## 无障碍
+
+- 可编辑区就是原生 `<textarea>`：读屏、键盘、IME 组词、移动端长按选择菜单全部是浏览器原生行为，没有自制 `contenteditable` 的那些坑。
+- 高亮层与行号槽都是 `aria-hidden`，避免同一段代码被读屏念两遍。
+- 默认 `aria-label` 走 locale（内置中文兜底是「代码编辑器（语言）」），整站换语言时它跟着变。多个编辑器同屏时用 `ariaLabel` 区分（如「DSL 编辑区」），优先级是 `ariaLabel` prop > locale > 内置兜底。
+- `readOnly` 同时落在 `readonly` 与 `aria-readonly` 上。
+- Tab 被缩进占用后**焦点无法用 Tab 移出**——这是所有代码编辑器的共同取舍；同屏请提供别的移焦路径（Shift+Tab 也被反缩进占用），或对纯查看场景用 `readOnly`。
+- 聚焦环画在外层容器上（`focus-within`），不是画在 textarea 上，避免与 1px 边框叠成双线。
+
+## 禁忌 / 坑
+
+- **必须受控**：`onChange` 里不回写 `value`，编辑会被 React 立刻回滚（表现为「打不进字」）。这是设计如此，不是 bug。
+- **不要绕开组件直接改 value 再指望 undo**：所有键盘增强都走 `document.execCommand("insertText" | "delete")` 落笔，为的是把改动压进 textarea 的**原生 undo 栈**。如果你 fork 出去改成 `setState` 整篇覆盖，Cmd+Z 会当场失效——这是 textarea 方案最容易做错的一点。`execCommand` 不可用的环境（jsdom、极老浏览器）自动降级为整篇回吐，功能仍在，只是丢原生 undo。
+- **不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60–80px。需要缩略图请外接 Monaco。
+- **不做**：代码折叠、自动补全 / 智能提示、多光标 / 列选择、语义诊断与波浪线、查找替换面板、括号配对高亮。要这些请外接 CodeMirror 6 / Monaco。
+- 文本不换行（`wrap="off"`，长行横向滚动）。这是刻意的：一旦软换行，行号槽就无法与视觉行对齐，`lineNumbers` 会立刻说谎。要换行请改用 [Textarea](https://hulianui.haloritual.com/zh/components/textarea)。
+- **改样式必须三层同改**：透明 `<textarea>`、染色 `<pre>`、行号槽三层的字体族 / 字号 / 行高 / 内边距 / `white-space` / `tab-size` 逐项相等才不错位。只改其中一层的 padding 或字号，表现是「光标和字差半格」，且只在长行/深缩进时才看得出来。
+- **`theme="light"` 目前只在页面本身是亮色时成立**。令牌层只定义了 `[data-theme="dark"]` 的覆盖块，没有对应的 `[data-theme="light"]`，所以在暗色页面里局部钉亮色钉不住（`theme="dark"` 在亮色页面里是好的）。默认不传 `theme`、跟随全局主题才是推荐用法。
+- 着色是**近似着色，不是解析器**：CSS 扫描器只跟踪「是否在 `{}` 内 / 是否越过 `:`」两个状态，JS 家族沿用 CodeBlock 的单条正则扫描。复杂泛型、正则字面量、嵌套模板串可能着色不准——着色错不影响编辑，`value` 永远是你的原文。
+- `language="json"` 时 Cmd+/ **故意不响应**：JSON 规范没有注释，写进去就是非法 JSON。
+- 选区底色用的是半透明 `bg-primary/25`：textarea 在高亮层之上，不透明的选区底色会把代码盖住。改这个类要连带确认深色主题下的对比度。
+
+## 相关
+[CodeBlock](https://hulianui.haloritual.com/zh/components/code-block) · [CodeDiff](https://hulianui.haloritual.com/zh/components/code-diff) · [Code](https://hulianui.haloritual.com/zh/components/code) · [Snippet](https://hulianui.haloritual.com/zh/components/snippet) · [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [Textarea](https://hulianui.haloritual.com/zh/components/textarea)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # ColorField
 
 > 颜色输入框 · 紧凑单行：色块(调起系统取色器) + 十六进制文本输入 + 短写自动展开(#abc→#aabbcc) + 草稿态支持手输 · forms/advanced
@@ -3477,7 +3742,8 @@ import { ColorPicker, parseColor, rgbToHex, rgbToHsl, formatColor } from "@hulia
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(value: string) => void` | 变更回调，参数为**当前所选格式**的字符串；切换格式也会触发 |
+| onValueChange | `(value: string) => void` | 变更回调，参数为**当前所选格式**的字符串；切换格式也会触发。拖色板/色相条时**每帧**触发 |
+| onValueCommitted | `(value: string) => void` | 提交回调，一次编辑结束触发一次，格式与 `onValueChange` 一致。时机：色板松手、输入框失焦/回车、切换格式 |
 | onFormatChange | `(format: ColorFormat) => void` | 格式切换回调 |
 
 ## 示例
@@ -3488,12 +3754,23 @@ const [v, setV] = useState("#3b82f6");
 
 // 固定 RGB 输出、隐藏切换器
 <ColorPicker defaultValue="#3b82f6" defaultFormat="rgb" showFormatSwitcher={false} />
+
+// 实时预览用 change，落库 / 写 undo 栈用 committed
+<ColorPicker
+  defaultValue="#3b82f6"
+  onValueChange={setPreview}
+  onValueCommitted={(v) => pushUndo(v)}
+/>
 ```
 
 ## 禁忌 / 坑
 
 - `onValueChange` 回传的是**当前所选格式**的字符串（hex/rgb/hsl），且切换格式本身也会触发回调——别假设永远是 hex。内部以 hex 为真源，但回调按 format 输出。
+- `onValueChange` 在拖动取色面板 / 色相条时**每帧**触发，一次拖动几十上百次。写 undo 栈、发请求、触发重排这类操作请挂 `onValueCommitted`，别自己防抖——防抖猜不出「松手」这个准确时刻，还会让最终值晚于弹层关闭。
+- `onValueCommitted` 的语义是「**一次编辑结束**」而不是「值变了」：在色板上点一下没拖动、颜色其实没变，松手时**仍会**触发一次。需要去重请自己比对上一次收到的值。
+- `pointercancel`（拖动被系统或其它手势打断）**不触发** `onValueCommitted`。此时应保留上一次 committed 的值，别把中途的 `onValueChange` 值当最终值落库。
 - 受控 `value` 可传任意 hex/rgb()/hsl() 串，组件内部归一为 hex 再渲染，回写时再转回所选格式。
+- 受控 `value` + 只监听 `onValueCommitted` 会把色板**钉死**：拖动中你不回写 `value`，组件就动不了。这种「松手才回吐」的用法请改用 `defaultValue`（非受控），需要跟随外部值时用 `key` 重挂。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Rating](https://hulianui.haloritual.com/zh/components/rating)
@@ -3509,15 +3786,15 @@ const [v, setV] = useState("#3b82f6");
 
 ## 导入
 ```ts
-import { ColorSwatchPicker } from "@hulianui/ui"
+import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 ```
 
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| colors* | `string[]` | — | 预设色块列表，任意 CSS 颜色串（hex / rgb / hsl / 具名色） |
-| value | `string` | — | 受控选中值（须与 colors 中某项严格相等） |
+| colors* | `(string \| { color: string; label?: string })[]` | — | 预设色块列表。字符串 = 任意 CSS 颜色串（hex / rgb / hsl / 具名色 / `var(--color-x)`）；对象可另给 `label` 作无障碍名与 hover 提示。两种形态可混写 |
+| value | `string` | — | 受控选中值（须与某个色块的 `color` 严格相等） |
 | defaultValue | `string` | — | 非受控初始选中值 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 色块尺寸 |
 | disabled | `boolean` | `false` | 整组禁用 |
@@ -3528,7 +3805,13 @@ import { ColorSwatchPicker } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(color: string) => void` | 选中变更回调 |
+| onValueChange | `(color: string) => void` | 选中变更回调，参数始终是色块的 `color` 而不是 `label` |
+
+## 工具函数
+
+| 名称 | 签名 | 说明 |
+|------|------|------|
+| normalizeSwatches | `(colors: (string \| ColorSwatchItem)[]) => { color: string; label: string }[]` | 把混合数组归一成带可读名的色块；字符串项与缺省/空白 `label` 一律回退到色值本身 |
 
 ## 示例
 ```tsx
@@ -3538,11 +3821,23 @@ const [v, setV] = useState("#3b82f6");
 
 // 非受控
 <ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" size="lg" />
+
+// 主题 token 色板：给 label，读屏才不会念 "var(--color-primary)"
+<ColorSwatchPicker
+  colors={[
+    { color: "var(--color-primary)", label: "主色" },
+    { color: "var(--color-danger)", label: "危险色" },
+    "#3b82f6",
+  ]}
+  defaultValue="var(--color-primary)"
+/>
 ```
 
 ## 禁忌 / 坑
 
-- 受控 `value` 必须与 `colors` 中某项**严格字符串相等**才会高亮；`"#FFF"` 与 `"#ffffff"`、`"#3b82f6"` 与 `"rgb(59,130,246)"` 视为不同值。统一大小写与写法。
+- **token 色必须给 `label`**。`colors` 里的裸字符串会直接当色块的 `aria-label`，`var(--color-primary)` 会被读屏原样念成变量名，对屏幕阅读器用户毫无意义；`#3b82f6`、`oklch(...)` 同理只是一串字符。只有具名色（`red` / `tomato`）裸着还能读。
+- `value` / `onValueChange` 的身份始终是 `color` 字符串，不是 `label`。给了 `label` 也别拿它当选中值传回来。
+- 受控 `value` 必须与某个色块的 `color` **严格字符串相等**才会高亮；`"#FFF"` 与 `"#ffffff"`、`"#3b82f6"` 与 `"rgb(59,130,246)"` 视为不同值。统一大小写与写法。
 - 默认无障碍名称跟随 `ConfigProvider locale`；显式 `aria-label` 优先，未包 Provider 时保持中文。
 - 仅支持单选；多选场景不在本组件范围内。
 
@@ -3812,6 +4107,7 @@ import { DatePicker } from "@hulianui/ui"
 | value | `string \| null` | — | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
 | defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
 | picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，同时决定值形状与面板起始层 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](https://hulianui.haloritual.com/zh/components/input) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
 | maxDate | `string` | — | 最晚可选日期 |
 | disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
@@ -3898,6 +4194,7 @@ import { DateRangePicker } from "@hulianui/ui"
 |------|------|------|------|
 | value | `[string, string] \| null` | — | 受控值 `[start, end]`（ISO `YYYY-MM-DD`）；`null` = 已清空；传入即受控 |
 | defaultValue | `[string, string] \| null` | — | 非受控初始值 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](https://hulianui.haloritual.com/zh/components/input) 一致（32 / 40 / 48px）；面板里日期格的几何不随之变化 |
 | minDate | `string` | — | 最早可选日（ISO），早于此禁选 |
 | maxDate | `string` | — | 最晚可选日（ISO），晚于此禁选 |
 | disabledDate | `(isoDate: string) => boolean` | — | 自定义禁用某天，入参为 ISO `YYYY-MM-DD` |
@@ -3973,6 +4270,7 @@ import { DateTimePicker } from "@hulianui/ui"
 | value | `string \| null` | — | 受控值，`"YYYY-MM-DD HH:mm"`（`withSeconds` 时带秒），中间一个空格 |
 | defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒列，值形状随之带秒 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](https://hulianui.haloritual.com/zh/components/input) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minuteStep | `number` | `1` | 分钟列步进（常用 5 / 15 / 30） |
 | secondStep | `number` | `1` | 秒列步进 |
 | minDateTime | `string` | — | 最早可选时刻（含），形状同 `value`。日期部分限制日历，时间部分只在边界那天生效 |
@@ -4567,6 +4865,282 @@ const [otp, setOtp] = useState("");
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [Rating](https://hulianui.haloritual.com/zh/components/rating) · [Upload](https://hulianui.haloritual.com/zh/components/upload)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# InspectorPanel
+
+> 设计工具属性检查器 · **字段 schema 驱动**（给一份 `{ key, label, kind }` 就派生控件，不是写死五个分类）· 七种控件 kind 全部换皮自既有表单件 · spacing 四联 + 链接锁定同步四值 · 主题 token 色板绑定 · MIXED 混合值占位 · commitMode 决定拖动中还是松手才回吐 · forms/advanced
+
+## 何时用
+
+设计工具 / 低代码搭建器里与选中元素双向绑定的右侧属性面板：把一组属性描述成 schema，面板按 `kind` 派生控件、按 `key` 读值、按 `key` 回吐。
+
+不是「表单」：提交语义、校验、字段依赖请用 [Form](https://hulianui.haloritual.com/zh/components/form) / [ProForm](https://hulianui.haloritual.com/zh/components/pro-form)；单个属性的编辑控件直接用 [Slider](https://hulianui.haloritual.com/zh/components/slider) / [ColorPicker](https://hulianui.haloritual.com/zh/components/colorpicker) / [Segmented](https://hulianui.haloritual.com/zh/components/segmented)，不必套面板。内置的 5 类预设只是默认值，业务属性（权重、跳转方式、置顶）同样可以用它，见「自定义 schema」示例。
+
+## 导入
+```ts
+import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| onChange * | (path: string, value: InspectorValue) => void | — | 单 path 变更回吐，`path` 就是字段声明的 `key` |
+| props | Record\<string, unknown\> | — | 属性值表；先按扁平键命中，未命中再按 `a.b.c` 点号下钻 |
+| selectedElement | string ｜ null | — | 选中元素标识；显式传 `null` 进空态，不传则不判空 |
+| sections | InspectorSection[] | — | 完整分类 schema；传了它 `categories` 失效 |
+| categories | readonly string[] | — | 只取内置预设的这几类，且**按传入顺序**排列（`layout` / `color` / `typography` / `border` / `effects`） |
+| tokenSource | readonly InspectorToken[] | — | 色值控件可选的主题 token；形状与文档站 `SEMANTIC_GROUPS` 的色卡一致 |
+| commitMode | "change" ｜ "commit" | "change" | `change` 拖动/按键即回吐；`commit` 松手/失焦/回车才回吐 |
+| onBatchChange | (changes: InspectorChange[]) => void | — | 一次交互改多个 path 时的批量回吐（见下方 Events） |
+| title | ReactNode | 取自 locale | 面板标题；传 `null` 不渲染标题栏 |
+| emptyText | ReactNode | 取自 locale | 空态文案 |
+| labels | Partial\<InspectorPanelLabels\> | — | 覆盖取自 locale 的文案（`mixed` / `linkSides` / 四边名 等） |
+| className | string | — | 面板外层类名 |
+
+字段类型（`InspectorField` 判别联合，按 `kind` 收窄）：
+
+| kind | 派生控件 | 该 kind 特有字段 |
+|------|------|------|
+| spacing | 四个数字框 + 链接锁定钮 | `sides?`（覆盖派生 path）· `min` / `max` / `step` / `unit` |
+| color | 色块（弹出 ColorPicker）+ 文本框 + token 色板 | `tokenGroup?` |
+| length | 滑杆 + 数字框 | `min` / `max` / `step` / `unit` |
+| number | 数字框 | `min` / `max` / `step` / `unit` |
+| enum | ≤4 项 Segmented，更多 Select | `options` * · `display?: "segmented" ｜ "select"` |
+| toggle | Switch | — |
+| text | 文本框 | `placeholder?` |
+
+公共字段：`key` *（属性路径，同时是回吐的 path）· `label` *（可见标签 + 控件 `aria-label`）· `hint?` · `disabled?`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | (path: string, value: InspectorValue) => void | 每个被改动的 path 触发一次。链接锁定的 spacing 会在同一 tick 连发 4 次 |
+| onBatchChange | (changes: InspectorChange[]) => void | 传了它，**多 path** 变更只走它，不再逐条 `onChange`；单 path 变更始终走 `onChange` |
+
+回吐值形态由字段自己决定，不看输入形态：`unit` 有值回吐 `"12px"` 字符串，无 `unit` 回吐数字 `12`；数字框清空回吐 `null`（= 删除该属性，不是 `0`）；token 色块回吐该 token 的 `value`，没写 `value` 就回吐 `var(--token)`。
+
+## 示例
+```tsx
+const [style, setStyle] = useState<Record<string, unknown>>({ paddingTop: "24px" });
+
+<InspectorPanel
+  selectedElement="Card / Title"
+  props={style}
+  tokenSource={[
+    { token: "color-primary", label: "主色", group: "text" },
+    { token: "color-surface", label: "卡片表面", group: "surface" },
+  ]}
+  // 链接锁定会连发 4 次，必须函数式更新
+  onChange={(path, value) => setStyle((prev) => ({ ...prev, [path]: value }))}
+/>
+```
+
+自定义 schema（面板不认识任何具体属性，业务属性照样能用）：
+```tsx
+<InspectorPanel
+  title="卡片配置"
+  sections={[
+    {
+      id: "meta",
+      label: "内容",
+      fields: [
+        { key: "headline", label: "标题", kind: "text" },
+        { key: "featured", label: "置顶", kind: "toggle" },
+        { key: "weight", label: "权重", kind: "number", min: 0, max: 999, hint: "越大越靠前" },
+      ],
+    },
+  ]}
+  props={values}
+  onChange={(path, value) => setValues((prev) => ({ ...prev, [path]: value }))}
+/>
+```
+
+多选混合值：
+```tsx
+<InspectorPanel
+  selectedElement="3 个元素"
+  commitMode="commit"
+  props={{ fontSize: MIXED, opacity: MIXED, textAlign: "left" }}
+  onChange={apply}
+/>
+```
+
+纯函数单独用（拼 schema / 归一化值时不必挂组件）：
+```ts
+spacingSides("padding");                 // { top: "paddingTop", right: "paddingRight", … }
+spacingSides("margin", { top: "gapY" }); // 只覆盖一边，其余仍走派生
+parseLength("1.5rem");                   // 1.5
+formatLength(12, "px");                  // "12px"
+inspectorSections(["effects", "layout"]) // 按传入顺序取预设
+readInspectorValue({ style: { color: "red" } }, "style.color"); // "red"
+```
+
+## 无障碍
+
+- 每个控件都带 `aria-label`（取字段 `label`）；spacing 四个框各自是「内边距 上 / 右 / 下 / 左」，不会四个同名。
+- `length` 的滑杆与数字框是同一属性的两种输入方式，共用同一可访问名（滑杆经 `aria-labelledby` 指向可见标签），角色不同所以读屏可区分。
+- 链接锁定钮用 `aria-pressed` 表达开关态，不是靠颜色。
+- token 色块的无障碍名取 `tokenSource[].label`（缺省回退到 `token`），不是 `var(--color-x)` 变量串——读屏念的是「主色」而不是一串变量名。色板下方那行 token 名是给视觉用户的当前值读数，不是无障碍兜底。
+- 分类折叠走 [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible)，`aria-expanded` 由它维护；键盘可达。
+- 混合值不靠灰色暗示：文本/数字类走 `placeholder`，开关/枚举旁边有可读文字，读屏能听见。
+
+## 禁忌 / 坑
+
+- **`onChange` 会在同一 tick 连发多次**（链接锁定的 spacing 是 4 次）。消费方必须用函数式更新 `setState((prev) => …)`，写成 `setState({ ...style, [path]: value })` 会让后三次覆盖前三次，表现为「只有最后一边生效」。嫌麻烦就传 `onBatchChange` 一次拿全。
+- `commitMode` 覆盖滑杆、输入框与色块弹出的 ColorPicker 三者。`commit` 模式下取色器松手 / 失焦 / 回车才回吐，拖动中的每帧值只留在面板内部（取色器此时是非受控的，外部 `props` 变了才会重新同步）。
+- `tokenSource[].token` **必须带 `color-` 前缀**（`color-primary` 而不是 `primary`）。Tailwind v4 `@theme` 的真名带前缀，写成裸名色板会画不出颜色也不报错。
+- 混合值哨兵是 `Symbol.for("hulian.inspector.mixed")`，**不能 JSON 序列化**。属性表要过一遍网络/存储时，在边界上把它转成自己的标记再转回来。
+- 数字框清空回吐 `null` 不是 `0`。消费方要区分「没设置」和「设成 0」，`null` 应当删除该属性而不是写 `0`。
+- 面板不持有业务值：`props` 不回写，控件就不会动（`commit` 模式的输入草稿与拖动中的滑块除外）。它是受控组件，不是自带状态的编辑器。
+- 面板自身的文案（`title` / 空态 / `mixed` / `linkSides` / 四边名 / 两个色值控件名）走 ConfigProvider 的 locale，外层包 `<ConfigProvider locale={enUS}>` 即变英文。优先级是 `labels` / `title` / `emptyText` prop > locale > 内置中文兜底。
+- **内置预设的字段 `label` 仍是中文**，不在 locale 覆盖范围内——它们属于 `sections` 数据而不是面板本身。要整屏英文请自带 `sections`。
+
+## 相关
+[Form](https://hulianui.haloritual.com/zh/components/form) · [ProForm](https://hulianui.haloritual.com/zh/components/pro-form) · [ColorPicker](https://hulianui.haloritual.com/zh/components/colorpicker) · [ColorSwatchPicker](https://hulianui.haloritual.com/zh/components/color-swatch-picker) · [Slider](https://hulianui.haloritual.com/zh/components/slider) · [Segmented](https://hulianui.haloritual.com/zh/components/segmented) · [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) · [Flow](https://hulianui.haloritual.com/zh/components/flow)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# IssueReporter
+
+> GitHub issue 草稿器 · 表单收集（类型 Select / 相关组件 Combobox / 标题 Input / 模板字段 Textarea 或 MarkdownEditor）→ 按模板 `toMarkdown` 纯函数拼正文 → 实时 Markdown 预览 + `onSubmit(draft)` 回吐结构化草稿 + 生成 `issues/new?title=…&body=…&labels=…` 预填链接 · 链接超长自动降级为「复制 Markdown」 · 内置 bug / 新组件 / 优化建议三套模板，`templates` 可整套替换 · **不调 GitHub API、不持 token** · forms/advanced
+
+## 何时用
+
+把用户口头的「缺组件 / 出 bug / 想优化」收成一份字段齐全、可直接贴进 GitHub 的 issue 草稿——组件库自身的反馈入口、内部平台的「报障」按钮、文档站的「这页写错了」。
+
+不要拿它当通用表单：字段清单由 issue 模板决定，不是任意 schema，通用录入用 [ProForm](https://hulianui.haloritual.com/zh/components/pro-form)；要弹层里做增删改查用 [ModalForm](https://hulianui.haloritual.com/zh/components/form-dialog)；只想要一个 Markdown 输入框用 [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor)。
+
+## 导入
+```ts
+import { BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, IssueReporter, IssueReporterModal, buildIssueUrl, createIssueDraft, isUrlTooLong, issueSection, normalizeRepo, renderIssueMarkdown } from "@hulianui/ui"
+```
+
+## Props
+
+`IssueReporterProps`。`IssueReporterModalProps` 继承它，另加下表末尾的弹层专属项。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| repo | string | "hulianui/hulian" | 目标仓库 `owner/name`；也接受完整 GitHub URL / 带 `.git`，内部经 `normalizeRepo` 规范化 |
+| templates | IssueTemplate[] | BUILTIN_ISSUE_TEMPLATES | 模板集合（`{ type, label, labels?, tone?, fields, toMarkdown }`），整套替换 |
+| type | string | — | 受控当前模板 type |
+| defaultType | string | templates[0].type | 非受控初始模板 type |
+| components | IssueComponentOption[] | — | 相关组件候选（`{ slug, name? }`）；不传就不渲染该字段。**组件不会自己去取 llms.txt / registry**，候选由你喂 |
+| relatedComponent | string | — | 相关组件受控值（slug） |
+| defaultRelatedComponent | string | "" | 相关组件非受控初值 |
+| defaultTitle | string | "" | 标题初值（issue 里写的 `title` prop 落到这里，避免与 HTML `title` 撞名） |
+| defaultValues | IssueFieldValues | — | 模板字段初值，按字段 `name`（issue 里写的 `body` prop 落到这里） |
+| showSubmit | boolean | true | 是否渲染内置提交按钮；`IssueReporterModal` 内部固定置 false |
+| openInNewTab | boolean | true | 点「在 GitHub 上打开」时是否 `window.open` 新标签页 |
+| preview | "source" ｜ "rendered" ｜ false | "source" | 预览形态：CodeBlock 源码 / Markdown 渲染后 / 关闭 |
+| urlLimit | number | 8000 | 预填链接长度上限，超过即降级（见「禁忌 / 坑」） |
+| text | Partial\<IssueReporterText\> | — | 界面文案覆盖；不传则取 ConfigProvider 的 locale。注意与模板上的 `labels`（GitHub 标签）不是一回事 |
+| actions | ReactNode | — | 动作区追加的自定义按钮 |
+| apiRef | MutableRefObject\<IssueReporterApi ｜ null\> | — | 命令式句柄：`submit()` / `getDraft()` / `getUrl()` / `reset()` |
+| className | string | — | 表单本体外层类名 |
+| open / defaultOpen | boolean | — | 仅 Modal：受控 / 非受控开关 |
+| trigger | ReactElement | — | 仅 Modal：触发元素 |
+| modalTitle | string | 取自 locale | 仅 Modal：弹层标题；不传则跟随 ConfigProvider（内置中文兜底「反馈 issue」） |
+| submitText / cancelText | string | — | 仅 Modal：页脚按钮文案 |
+| modalClassName | string | — | 仅 Modal：弹层容器类名（宽度等） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSubmit | (draft: IssueDraft) => void | 校验通过后回吐结构化草稿（`{ type, title, relatedComponent?, labels, values, body }`）。**组件到此为止，提交与否由你决定** |
+| onDraftChange | (draft: IssueDraft) => void | 任一输入变化后回吐最新草稿（含已渲染的 body），用于外部实时预览 |
+| onTypeChange | (type: string) => void | 模板类型变化 |
+| onRelatedComponentChange | (slug: string) => void | 相关组件变化；选「不指定」回吐空串 |
+| onOpenUrl | (url: string) => void | 生成预填链接后触发，无论是否自动开新标签页 |
+| onCopy | (markdown: string) => void | 复制 Markdown 后触发（复制的是正文，不是 URL） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| actions | ReactNode | 动作区右侧追加的按钮 |
+| trigger | ReactElement | 仅 Modal：打开弹层的触发元素 |
+
+## 示例
+
+内联表单，把候选组件喂进来：
+
+```tsx
+<IssueReporter
+  repo="hulianui/hulian"
+  components={[
+    { slug: "select", name: "Select 选择器" },
+    { slug: "combobox", name: "Combobox 搜索选择" },
+  ]}
+  onSubmit={(draft) => console.log(draft.body)}
+/>
+```
+
+弹层版（提交按钮由 ModalForm 的页脚提供，校验不过保持打开）：
+
+```tsx
+<IssueReporterModal
+  trigger={<Button>反馈问题</Button>}
+  components={components}
+  onSubmit={(draft) => sendToMyBacklog(draft)}
+/>
+```
+
+换成自己仓库的模板：
+
+```tsx
+const docsTemplate: IssueTemplate = {
+  type: "docs",
+  label: "文档纠错",
+  labels: ["documentation"],
+  fields: [
+    { name: "page", label: "页面地址", control: "input", required: true },
+    { name: "problem", label: "哪里不对" },
+  ],
+  // 纯函数：字段值 → markdown。空字段用 issueSection 兜住，不产出空章节
+  toMarkdown: (values) =>
+    [issueSection("页面", values.page), issueSection("问题", values.problem)]
+      .filter(Boolean)
+      .join("\n\n"),
+};
+
+<IssueReporter templates={[docsTemplate]} />
+```
+
+不要 UI，只要纯函数（脚本 / 服务端同样能用）：
+
+```ts
+const draft = createIssueDraft(
+  { type: "bug", title: "Select clearable 失效", values: { summary: "点 × 没反应" } },
+  BUILTIN_ISSUE_TEMPLATES[0],
+);
+const url = buildIssueUrl(draft, "hulianui/hulian");
+if (isUrlTooLong(url)) {
+  // 太长了：让用户复制 draft.body 手动粘贴
+}
+```
+
+## 无障碍
+
+- 每个字段都包在 [Field](https://hulianui.haloritual.com/zh/components/field) 里，label 经 Base UI 自动 `htmlFor`/`id` 关联，错误文案自动串 `aria-describedby`，无效态自动置 `aria-invalid`。
+- 必填错误只在**尝试提交后**才展示（`aria-invalid` 同步），初次进入不会满屏红字。
+- 超长降级用 [Alert](https://hulianui.haloritual.com/zh/components/alert) 说明原因，而不是把按钮置灰不给理由。
+- 「复制 Markdown」按钮复制成功后按钮文字切换为「已复制」，1.5 秒后复原——文字变化对读屏可感知，不是只换图标。
+- 类型下拉、相关组件下拉的键盘操作分别由 [Select](https://hulianui.haloritual.com/zh/components/select) / [Combobox](https://hulianui.haloritual.com/zh/components/combobox) 保证。
+
+## 禁忌 / 坑
+
+- **它不会替你创建 issue，也不该拿到 token。** 组件只做两件事：`onSubmit(draft)` 回吐草稿、生成一条 GitHub 预填链接。那条链接打开的是 GitHub 自己的「新建 issue」表单，用户点了确认才算创建。想要「一键提交」，请拿 `draft` 去你自己的服务端调 GitHub API——**不要把 PAT 传进浏览器**。
+- **预填链接有长度上限。** 实务上整条 URL 超过约 8000 字符（`GITHUB_URL_MAX_LENGTH`）后会被浏览器/代理/邮件客户端截断，或被 GitHub 直接拒绝。此时组件**不渲染**「在 GitHub 上打开」按钮，改为提示 + 「复制 Markdown」。判据量的是**整条 URL 而不是 body**：中文按 UTF-8 百分号编码后一个字占 9 个字符，长标题一样能把额度吃满。
+- **相关组件候选必须外部喂。** 组件不会去 fetch `llms.txt` 或 registry —— 那是消费方的数据来源与缓存策略，同 ComponentPicker 的边界。不传 `components` 就不渲染该字段。
+- **`control: "markdown"` 会拉入 tiptap。** MarkdownEditor 依赖 `@tiptap/*`，体积不小。内置三套模板刻意全用 `textarea`，需要富文本时自己在模板里把某个字段改成 `markdown`。
+- **不要给它套 `<form>` 期待自动提交。** 组件本体刻意不渲染 `<form>`（它要能塞进 ModalForm 的表单里，嵌套 form 是非法 HTML）。弹层外的独立用法请用内置提交按钮或 `apiRef.submit()`。
+- **模板的 `labels` 与组件的 `text` 别搞混。** 前者是 GitHub 标签（进 `draft.labels` 与 URL 的 `labels` 参数），后者是界面文案覆盖。
+- **界面文案默认跟随 locale。** 不传 `text` 时全部文案取 ConfigProvider 的 locale（未包 Provider 回落内置中文），`IssueReporterModal` 的 `modalTitle` 同理。优先级是 `text` prop > locale > 内置兜底。注意**模板自带的字段 `label` / `placeholder` 不在 locale 覆盖范围内**——它们属于 `templates` 数据，要英文界面请连模板一起替换。
+- **切模板不会清空同名字段。** 值表跨模板共用，`bug` 与 `feature` 若都有 `summary`，切过去内容还在——这是有意的（避免误切模板丢内容），需要清空请调 `apiRef.reset()`。
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Listbox
@@ -6605,6 +7179,7 @@ import { TimeField } from "@hulianui/ui"
 | value | `string \| null` | — | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`）。24 小时制、定宽补零 |
 | defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒段，值形状随之带秒 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 输入框尺寸档，刻度与 [Input](https://hulianui.haloritual.com/zh/components/input) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minTime | `string` | — | 最早可选时刻（含），形状同 `value` |
 | maxTime | `string` | — | 最晚可选时刻（含） |
 | clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
@@ -6695,6 +7270,7 @@ import { TimePicker } from "@hulianui/ui"
 | value | `string \| null` | — | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`），24 小时制定宽补零 |
 | defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒列，值形状随之变成 `"HH:mm:ss"` |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](https://hulianui.haloritual.com/zh/components/input) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minuteStep | `number` | `1` | 分钟列步进（5 / 15 / 30 常用） |
 | secondStep | `number` | `1` | 秒列步进 |
 | minTime | `string` | — | 最早可选时刻（含），形状同 `value` |
@@ -8306,6 +8882,154 @@ const actions = (
 [Sparkline](https://hulianui.haloritual.com/zh/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/zh/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/zh/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/zh/components/diff-stat) · [ScoreRing](https://hulianui.haloritual.com/zh/components/score-ring) · [Badge](https://hulianui.haloritual.com/zh/components/badge)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# ComponentPicker
+
+> 组件库浏览器 · 左分类树(复用 Tree) + 顶部模糊搜索 + 结果网格(Card) + 详情面板(预览/Props 表/示例代码三开关) · 自研零依赖打分器(slug 命中远重于描述命中·不引 fuse.js) + `parseComponentCatalog` 把 llms-full.txt 解析成条目(纯函数·在消费方那层跑) + `renderPreview` 注入 live 预览(库不 eval 不 iframe) · 附 ComponentPickerCommand 薄封装走 ⌘K · data-display/collection
+
+## 何时用
+
+要在自己的产品里放一个「组件目录浏览器」——搜索组件、按分类筛、看 props 表和示例代码、选中后回吐 slug——用它。典型场景是 AI 建站工具的组件面板、内部设计系统门户、低代码编辑器的物料区。
+
+- 只要一个 ⌘K 快速跳转、不需要属性表与分类树 → 直接用 [Command](https://hulianui.haloritual.com/zh/components/command)，或用本文件导出的 `ComponentPickerCommand`（内部就是 Command + 同一个打分器）。
+- 要选的是图标而不是组件 → [IconPicker](https://hulianui.haloritual.com/zh/components/icon-picker)；选表情 → [EmojiPicker](https://hulianui.haloritual.com/zh/components/emoji-picker)。
+- 要的是通用「带查询区的列表页」而不是组件目录 → [ProTable](https://hulianui.haloritual.com/zh/components/pro-table)。
+
+**三条刻意的边界**（不是没做完）：
+
+1. **不取数**。`items` 由消费方传入。库组件不该假设运行环境有 `llms-full.txt`，更不该在渲染里发网络请求。要从那份文件来，在你自己那层调纯函数 `parseComponentCatalog(text)`。
+2. **不渲染任意组件**。库里没有 slug → 组件的映射，也不会 eval 字符串或塞 iframe。要 live 预览就用 `renderPreview` 注入；不传显示占位。
+3. **不引 fuse.js**。打分器是本目录的纯函数，判据是「slug / name 命中远重于 description 命中」——通用库做不到这一点，搜 `btn` 时描述里恰好散着 b/t/n 的组件会排到 Button 前面。
+
+## 导入
+```ts
+import {
+  ALL_CATEGORY_KEY,
+  ComponentPicker,
+  ComponentPickerCommand,
+  buildCategoryTree,
+  defaultPropsOf,
+  fuzzyMatch,
+  matchesCategory,
+  parseComponentCatalog,
+  rankComponents,
+  scoreComponent,
+} from "@hulianui/ui"
+```
+
+## Props
+
+`ComponentPickerProps`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| items * | ComponentPickerItem[] | — | 组件目录。空数组渲染「目录为空」空态（区别于「无匹配结果」） |
+| filter | ComponentPickerFilter | — | 受控筛选态 `{ category?, search? }`。传了必须接 `onFilterChange`，否则搜索框和分类树点了不动 |
+| defaultFilter | ComponentPickerFilter | `{}` | 非受控初始筛选态 |
+| showTree | boolean | `true` | 是否显示左侧分类树 |
+| showPreview | boolean | `false` | 详情面板是否显示预览区 |
+| showProps | boolean | `true` | 详情面板是否显示 Props 表（复用 Table） |
+| showExamples | boolean | `true` | 详情面板是否显示示例代码（复用 CodeBlock） |
+| activeSlug | string ｜ null | — | 受控高亮项（详情面板展示的那个） |
+| defaultActiveSlug | string ｜ null | `null` | 非受控初始高亮项 |
+| maxResults | number | `60` | 结果区最多渲染多少条 |
+| labels | Partial\<ComponentPickerLabels\> | — | 界面文案覆盖，可整体或逐条；不传则取 ConfigProvider 的 locale（内置兜底 zh-CN） |
+| className | string | — | 外层类名。**须给确定高度**（如 `h-[560px]`），组件内部按 flex 填满、各区独立滚动 |
+
+`ComponentPickerItem`：`{ slug, name, description, category, group, tags?, props?, examples? }`。
+`ComponentPickerProp`：`{ name, type?, default?, description?, required? }`。
+`ComponentPickerExample`：`{ title?, lang?, code }`。
+
+`ComponentPickerCommandProps`（薄封装）：`items` / `open` / `onOpenChange` / `onSelect` / `placeholder` / `emptyMessage` / `maxResults`（默认 30）/ `groupByCategory`（默认 `true`）/ `shortcut`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | (slug: string, props: Record\<string, unknown\>) => void | 确认选用。第二参由 `defaultPropsOf(item)` 派生——只收文档里写明的**字面量**默认值，函数/对象一律不猜 |
+| onFilterChange | (filter: ComponentPickerFilter) => void | 搜索词或分类变化。受控（传了 `filter`）时这是唯一出口 |
+| onActiveChange | (slug: string ｜ null) => void | 高亮项变化（点结果项 / 上下键 / Esc 清空） |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderPreview | (item: ComponentPickerItem) => ReactNode | 注入 live 预览。不传时预览区显示占位，不是空白 |
+
+## 纯函数
+
+| 函数 | 签名 | 说明 |
+|------|------|------|
+| parseComponentCatalog | (text: string, options?: ParseCatalogOptions) => ComponentPickerItem[] | 把 `llms-full.txt` 解析成条目。缺哪节少哪个字段，不抛异常 |
+| buildCategoryTree | (items, options?) => ComponentPickerCategoryNode[] | 派生「全部 → category → group」两级分类树（纯数据，含各级计数） |
+| matchesCategory | (item, key?) => boolean | 条目是否落在某个分类 key 下；`undefined` / `"*"` 恒真 |
+| defaultPropsOf | (item) => Record\<string, unknown\> | 由文档默认值派生初始 props |
+| rankComponents | (items, query, options?) => RankedComponent[] | 排序 + 过滤。空 query 保持原序 |
+| scoreComponent | (item, query) => number | 单条目打分；多词 AND 语义 |
+| fuzzyMatch | (query, text) => FuzzyMatch ｜ null | 单段文本的模糊匹配，回传分数与命中下标 |
+
+## 示例
+
+```tsx
+// 目录从 llms-full.txt 来 —— 解析在你这层跑，组件只管展示
+const text = await fetch("/llms-full.txt").then((r) => r.text());
+const items = parseComponentCatalog(text);
+
+<ComponentPicker
+  items={items}
+  className="h-[560px]"
+  showPreview
+  renderPreview={(item) => REGISTRY[item.slug]?.() ?? null}
+  onSelect={(slug, props) => insertIntoCanvas(slug, props)}
+/>
+```
+
+```tsx
+// 受控筛选：把搜索词同步进 URL query
+const [filter, setFilter] = useState<ComponentPickerFilter>({ category: ALL_CATEGORY_KEY });
+
+<ComponentPicker
+  items={items}
+  className="h-[560px]"
+  filter={filter}
+  onFilterChange={(next) => {
+    setFilter(next);
+    router.replace(`?q=${encodeURIComponent(next.search ?? "")}`);
+  }}
+/>
+```
+
+```tsx
+// ⌘K 形态：已经知道要哪个组件时
+const [open, setOpen] = useState(false);
+
+<ComponentPickerCommand
+  items={items}
+  open={open}
+  onOpenChange={setOpen}
+  shortcut
+  onSelect={(slug) => insertIntoCanvas(slug)}
+/>
+```
+
+## 无障碍
+
+- 搜索框是 `role="combobox"` + `aria-controls` / `aria-autocomplete="list"` / `aria-activedescendant`；结果网格是 `role="listbox"`，每张卡片是 `role="option"` + `aria-selected`。焦点始终留在搜索框，由 `aria-activedescendant` 指向当前高亮项——这是 WAI-ARIA 的 combobox 模式，不用把焦点在卡片间搬来搬去。
+- 键盘：`↓` / `↑` 在结果间移动高亮（循环，未高亮时向下从首条、向上从末条开始）；`Enter` 选中；`Esc` 逐级退出（先清搜索词，词已空再清高亮）。高亮项自动 `scrollIntoView({ block: "nearest" })`。
+- 分类树是 [Tree](https://hulianui.haloritual.com/zh/components/tree) 的 `expandTrigger="icon"` 模式——只有箭头管展开，行的其余部分照常选中，所以父级分类（如整个 `forms`）本身可选。
+- 详情面板是 `role="region"` + `aria-label`，读屏可直接跳入。
+
+## 禁忌 / 坑
+
+- **必须给确定高度**：`className` 不写高度时整块会塌成内容高度，各区的独立滚动全部失效（同 [Flow](https://hulianui.haloritual.com/zh/components/flow) / [AdminLayout](https://hulianui.haloritual.com/zh/components/admin-layout) 的家风）。
+- **受控 `filter` 必须接 `onFilterChange`**：只想给初值请用 `defaultFilter`。传了 `filter` 又不接回调，搜索框输入不进去、分类树点不动，看着像组件坏了。
+- **`renderPreview` 不是可选的偷懒项，是唯一的预览路径**：库不会替你把 slug 变成组件实例。想省事就把 `showPreview` 保持 `false`（默认），别指望不传 `renderPreview` 也能看到东西。
+- **`onSelect` 的第二参可能是 `{}`**：`defaultPropsOf` 只认 `true` / `false` / 数字 / 带引号字符串这类字面量默认值。文档里写成 `() => void`、`{...}`、`—` 的一律不进结果——这是诚实的空，不是解析失败。
+- **`parseComponentCatalog` 的 slug 不是文档里写着的**：`llms-full.txt` 根本没有 slug 字段。函数先从全文的交叉引用链接里捞（`[Formula](…/components/math)` → `math`），捞不到再 kebab 化组件名。全库 376 条里靠这两步能全对，唯一的例外 `QRCode → qrcode` 由内置 override 兜住；你自己的文档有类似缩写就传 `slugOverrides`。
+- **`maxResults` 是渲染上限不是搜索上限**：打分对全量条目跑完再截断，所以第 61 条永远是「排名第 61」而不是「被漏掉的」。要看全量把它调大，但 376 张卡片一次性铺开会明显掉帧。
+- **界面文案默认跟随 locale**：不传 `labels` 时全部文案取 ConfigProvider 的 locale（未包 Provider 回落内置中文），`ComponentPickerCommand` 的 `placeholder` / `emptyMessage` 同理。优先级是 prop > locale > 内置兜底，所以只想改一两句时传 `labels` 的对应键即可，其余仍跟着整站语言走。
+- **`ComponentPickerCommand` 不是主形态**：命令行放不下分类树和属性表。它内部用 `filter={() => true}` + `onQueryChange` 接管排序（Command 自己的过滤是子串匹配且不排序），所以它只解决「已经知道要哪个」那一半场景。
+
+<!-- ════════════════════════════════════════════════════════ -->
 # ContributionGraph
 
 > 贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星期标签只标奇数行 · 色阶复用 Heatmap 的 bucketize(同一口径) + tone 换色系 + 少→多图例 · 无点击时整块 role=img 播报总数·onDayClick 后格子成可聚焦按钮 · 日期算术是纯函数 buildContributionCalendar 可测(零新依赖·RSC) · data-display/collection
@@ -8705,6 +9429,133 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 
 ## 相关
 [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# DesignCanvas
+
+> 视觉设计画布 · 零依赖原生 Pointer Events · 无限平移缩放（滚轮以指针为锚点/空格·中键·右键拖拽）+ 元素选择框 + 拖拽移动 + 八向 resize（越过锚定边自动翻转）· 受控 items 托管几何、children 作自绘图层，`data-canvas-item` 事件委托识别子元素 · 键盘可达（Tab 走查 / 方向键微调 / Alt+方向键改尺寸 / Delete 删除）· 几何抽纯函数带单测 · data-display/collection
+
+## 何时用
+
+在一块无限画布上**自由摆放矩形元素**——页面草稿、看板画板、海报/幻灯排版、低代码可视化编辑器的画布区。元素的位置和尺寸就是数据本身，没有「谁连到谁」的拓扑。
+
+- 要编排的是**节点与连线的拓扑**（AI 工作流、DAG、流程图）用 [Flow](https://hulianui.haloritual.com/zh/components/flow)：它管连接桩、贝塞尔连线、按拓扑自动分层，本组件一根线都不画。
+- 只要把一个**固定设计尺寸**等比缩放铺满容器（大屏可视化）用 [FitScreen](https://hulianui.haloritual.com/zh/components/fit-screen)：它没有平移、没有选中、没有编辑。
+- 只要多列卡片在列间流转用 [Kanban](https://hulianui.haloritual.com/zh/components/kanban)；单列表排序用 [Sortable](https://hulianui.haloritual.com/zh/components/sortable)。
+
+DesignCanvas 与 Flow 共用同一套视口数学（`screenToCanvas` / `zoomAtPoint` / `clampZoom` 复用自 Flow 的几何模块），所以两者的滚轮手感、坐标约定完全一致，同一页面里混用不会有「一个跟手一个不跟手」的割裂。
+
+## 导入
+```ts
+import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, resizeRect, snapTo } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| items | DesignCanvasItem[] | [] | 受控元素数组（`{ id, x, y, width, height, locked?, label? }`）。画布**托管**这些元素的几何 |
+| zoom | number | — | 缩放受控。传了就以它为准，组件只回吐 `onZoomChange` |
+| defaultZoom | number | 1 | 非受控初始缩放 |
+| pan | { x, y } | — | 平移受控（画布原点在容器内的屏幕像素偏移） |
+| defaultPan | { x, y } | { x: 0, y: 0 } | 非受控初始平移 |
+| selectedElement | string ｜ null | — | 选中受控（元素 id / 路径） |
+| defaultSelectedElement | string ｜ null | null | 非受控初始选中 |
+| minZoom | number | 0.1 | 缩放下限 |
+| maxZoom | number | 4 | 缩放上限 |
+| grid | boolean ｜ number | true | 网格底纹：`true`=40 世界单位，数字=自定义边长，`false` 关闭 |
+| snap | number | 0 | 拖动 / resize / 方向键的吸附步长（世界单位），0 = 不吸附 |
+| minItemSize | number | 8 | 元素最小宽高（世界单位） |
+| wheelBehavior | "zoom" ｜ "pan" | "zoom" | 滚轮默认行为，按住 Ctrl/⌘ 反转 |
+| controls | boolean | true | 是否显示右下角缩放工具条 |
+| readOnly | boolean | false | 禁用拖动 / resize / 删除，仍可选中、平移、缩放 |
+| className | string | — | 画布外层类名（须有确定高度，组件填满） |
+| labels | Partial\<DesignCanvasLabels\> | — | 覆盖取自 locale 的文案（canvas / item / zoomIn / zoomOut / fitView / resetView）；不传则跟随 ConfigProvider |
+| apiRef | MutableRefObject\<DesignCanvasApi ｜ null\> | — | 命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas） |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onItemsChange | (items: DesignCanvasItem[]) => void | 几何变化后回吐**整组**新 items。拖动 / resize 在指针抬起时提交一次，方向键每次按下提交一次 |
+| onItemDelete | (id: string) => void | 选中元素后按 Delete / Backspace。不传则不响应删除键 |
+| onSelect | (elementPath: string ｜ null) => void | 选中变化（点元素 = 它的 id，点空白 = null） |
+| onZoomChange | (zoom: number) => void | 缩放变化 |
+| onPanChange | (pan: { x, y }) => void | 平移变化 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| renderItem | (item, state: { selected, dragging, resizing }) => ReactNode | 渲染元素内容（定位、选择框、手柄由组件负责）。不传则渲染占位空框 |
+| children | ReactNode | 自绘图层，直接挂进世界坐标层（跟随平移缩放）。几何由你自己摆 |
+
+## 示例
+```tsx
+const [items, setItems] = useState<DesignCanvasItem[]>([
+  { id: "hero", x: 40, y: 32, width: 260, height: 120, label: "首屏横幅" },
+  { id: "cta", x: 40, y: 176, width: 120, height: 96, label: "行动按钮" },
+]);
+const [selected, setSelected] = useState<string | null>(null);
+
+<div className="h-[420px] w-full overflow-hidden rounded border border-border">
+  <DesignCanvas
+    items={items}
+    onItemsChange={setItems}
+    selectedElement={selected}
+    onSelect={setSelected}
+    onItemDelete={(id) => setItems((p) => p.filter((i) => i.id !== id))}
+    grid={20}
+    snap={20}
+    renderItem={(item, s) => (
+      <div className={cn("grid h-full w-full place-items-center rounded-[var(--radius)] border bg-surface",
+        s.selected ? "border-primary" : "border-hairline")}>
+        {item.label}
+      </div>
+    )}
+  />
+</div>
+```
+
+`items` 与 `children` 不是两套互斥 API，区别只在**画布认不认识它的矩形**：
+
+```tsx
+<DesignCanvas items={items} onItemsChange={setItems}>
+  {/* 自绘图层：可以被点选（onSelect 回吐 "ruler"），但画布不知道它多大 → 拖不动、不出手柄 */}
+  <div data-canvas-item="ruler" className="absolute left-0 top-0 h-px w-[600px] bg-primary" />
+</DesignCanvas>
+```
+
+几何纯函数可单独用来做外部工具栏（对齐、等宽、批量位移）：
+
+```ts
+const bounds = itemsBounds(items);                       // 多元素包围盒 → 对齐参考线
+const next = moveRect(item, 0, 8, 8);                    // 按 8px 网格下移一格
+const bigger = resizeRect(item, "se", 20, 20, { snap: 8 }); // 右下角放大并吸附
+const screen = canvasToScreen({ x: item.x, y: item.y }, { x: pan.x, y: pan.y, zoom });
+```
+
+## 无障碍
+
+- 画布是 `role="application"` + `tabIndex=0`，聚焦时有可见焦点环；`aria-label` 走 `labels.canvas`。文案优先级是 `labels` prop > ConfigProvider 的 locale > 内置中文兜底，所以整站换语言时画布跟着变，不必逐处传 `labels`。
+- 每个 `items` 元素是可聚焦节点，**Tab 依次走过**；聚焦即选中（`onSelect` 会回吐），选中项带 `aria-current="true"` 与 `data-selected`，焦点环用 `focus-visible:ring`。
+- 元素的无障碍名取 `label`，缺省回落到 `id`——所以 `id` 请用人能读的串（`"hero"` 而不是 `"a1f3"`）。
+- 纯键盘通路完整：方向键移动 1 世界单位（开了 `snap` 则按网格步进），`Shift+方向键` 十倍粗调，`Alt+方向键` 改尺寸，`Delete`/`Backspace` 删除。八个 resize 手柄因此是 `aria-hidden` 的纯指针装饰，不占 Tab 序。
+- 焦点落在元素内部的 `input` / `textarea` / `contenteditable` 时，方向键与 Delete 交还给控件，不被画布劫持。
+
+## 禁忌 / 坑
+
+- 外层 `className` **必须有确定高度**（如 `h-[420px]` 或父级撑满），画布按外层尺寸填充——高度塌缩则画布不可见。
+- 全受控：`onItemsChange` 回吐的是**整组新 items**，不写回 state 画布就弹回原位。拖动 / resize 中途只改内部草稿，**不会**每帧回吐；要实时联动外部面板请读 `renderItem` 的 `dragging` / `resizing`。
+- `children` 里的元素画布不托管几何：给它加 `data-canvas-item` 只买到「可被选中」，**买不到拖拽与 resize**，也不会出选择框。要托管就放进 `items`。
+- 元素内部放按钮 / 输入框请照常写——按在这类控件上只选中不起拖（与 Kanban / Sortable 同一口径）。要让某个自定义元素也免于拖拽，给它加 `data-no-drag`。
+- 右键在画布上是「拖拽平移」手势的一部分，因此**系统右键菜单被抑制**。需要自定义右键菜单请自行在 `renderItem` 内监听 `contextmenu` 并 `stopPropagation`。
+- 滚轮事件用 `{ passive: false }` 注册并 `preventDefault`，画布区域**不会**滚动祖先容器——这是有意为之，别把画布塞进需要靠滚轮滚动的窄栏里。
+- `resize` 拖过锚定边会**翻转**（与 Figma 一致），不是卡死在 `minItemSize`。若你的业务不接受翻转，请在 `onItemsChange` 里自行拒绝。
+- 客户端组件（原生 Pointer Events），必须在 client 上下文用。
+
+## 相关
+[Flow](https://hulianui.haloritual.com/zh/components/flow) · [FitScreen](https://hulianui.haloritual.com/zh/components/fit-screen) · [Kanban](https://hulianui.haloritual.com/zh/components/kanban) · [Sortable](https://hulianui.haloritual.com/zh/components/sortable) · [GridPattern](https://hulianui.haloritual.com/zh/components/grid-pattern) · [ImageViewer](https://hulianui.haloritual.com/zh/components/image-viewer)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # DiffStat
@@ -15372,6 +16223,130 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 
 ## 相关
 [Dialog](https://hulianui.haloritual.com/zh/components/dialog) · [Modal](https://hulianui.haloritual.com/zh/components/modal) · [AlertDialog](https://hulianui.haloritual.com/zh/components/alert-dialog) · [Popover](https://hulianui.haloritual.com/zh/components/popover) · [Tooltip](https://hulianui.haloritual.com/zh/components/tooltip) · [HoverCard](https://hulianui.haloritual.com/zh/components/hover-card)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# ElementSelectionOverlay
+
+> 元素选择叠加层 · 在容器或**同源** iframe 里 hover 高亮 / 点击选中元素并回吐组件树路径 · 路径优先读 `data-hulian-path` 标记、读不到回退结构化选择器（两者皆为带单测的纯函数） · 框画在宿主 portal 层，绝不往目标文档写 class/style · 滚动 / resize / DOM 变化 / 进出视口全跟随（rAF 节流，卸载全断开） · 「指向编辑」基础设施 · feedback/overlay
+
+## 何时用
+
+要做「点预览里的元素 → 定位到源码 / 打开属性面板 / 喂给 prompt」这类指向编辑能力时用它。它只负责**选中并给出路径**，编辑面板由你自己搭。
+
+- 引导用户看某个已知元素，用 [Tour](https://hulianui.haloritual.com/zh/components/tour)（它是遮罩镂空 + 气泡卡，目标由你指定，不做拾取）。
+- 只想给元素加注解气泡，用 [Annotation](https://hulianui.haloritual.com/zh/components/annotation)。
+- 只想要一层不可交互的贴图覆盖，用 [Watermark](https://hulianui.haloritual.com/zh/components/watermark)。
+
+## 导入
+```ts
+import {
+  ElementSelectionOverlay,
+  asElement,
+  computeLabelPosition,
+  elementPath,
+  escapeAttributeValue,
+  findMarkedElement,
+  isRectVisible,
+  pathLabel,
+  resolveElementByPath,
+  structuralPath,
+  toHostRect,
+} from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| target * | HTMLElement ｜ HTMLIFrameElement ｜ null | — | 目标区域：普通容器（在其内部选择）或**同源** iframe（在其文档内选择）。null 时不渲染也不监听 |
+| enabled | boolean | true | 是否处于选择模式。false 停止拾取与点击拦截，**已选中的框仍然保留** |
+| highlightSelector | string | — | 可选中元素的选择器；落点会向上找最近的匹配祖先，匹配不到则不高亮（用来把粒度锁在组件级） |
+| ignoreSelector | string | — | 排除选择器；命中（含祖先命中）的元素不可 hover / 选中 |
+| showLabel | boolean | true | 是否显示标签。标签同一时刻只有一个，hover 优先于选中 |
+| pathAttribute | string | "data-hulian-path" | 标记路径的属性名 |
+| componentAttribute | string | "data-hulian-component" | 标记组件名的属性名（用于标签文案与 `detail.component`） |
+| anchorOnId | boolean | true | 结构化路径遇到带 id 的祖先就锚定，不再上溯到根 |
+| selectedPath | string ｜ null | — | 受控选中路径。传了（含 null）即视为受控，组件不再自管选中态 |
+| interceptClicks | boolean | true | 是否吞掉目标里的点击（阻止预览内的跳转 / 按钮触发） |
+| zIndex | number | 100 | 叠加层 z-index |
+| className | string | — | 叠加层容器类名 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onSelect | (path: string, detail: ElementSelectionDetail) => void | 选中：点击，或目标内按 Enter / 空格 |
+| onHover | (path: string ｜ null, detail: ElementSelectionDetail ｜ null) => void | hover 变化；移出或落在不可选区域时给 `(null, null)` |
+| onClear | () => void | 清除选中：点空白处 / 按 Esc |
+| onError | (error: ElementSelectionOverlayError) => void | 目标不可接管（跨源 iframe 等）。同一目标只报一次。`error.message` 取自 ConfigProvider 的 locale（未包 Provider 时是内置中文），`error.code` 与语言无关，要分支判断请用 `code` |
+
+`ElementSelectionDetail` = `{ path, source: "marked" ｜ "structural", component, tagName, element, rect }`。`source` 告诉你这条路径有多可靠：`marked` 读自标记属性（跨重排不失效），`structural` 是按 DOM 结构推的（DOM 一变可能失效）。
+
+## 示例
+
+受控选中 + 组件级粒度：
+```tsx
+const [root, setRoot] = useState<HTMLDivElement | null>(null);
+const [selected, setSelected] = useState<string | null>(null);
+
+<div ref={setRoot}>
+  <div data-hulian-component="Hero" data-hulian-path="App/Hero">…</div>
+  <div data-hulian-component="CtaBar" data-hulian-path="App/Cta">…</div>
+</div>
+
+<ElementSelectionOverlay
+  target={root}
+  highlightSelector="[data-hulian-component]"
+  selectedPath={selected}
+  onSelect={(path, detail) => {
+    setSelected(path);
+    openInspector(detail.component ?? detail.tagName);
+  }}
+  onClear={() => setSelected(null)}
+/>
+```
+
+同源 iframe 预览：
+```tsx
+const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
+
+<iframe ref={setFrame} srcDoc={html} title="预览" />
+<ElementSelectionOverlay
+  target={frame}
+  onSelect={(path) => setSelected(path)}
+  onError={(e) => toast({ title: e.message, tone: "danger" })}
+/>
+```
+
+路径工具是导出的纯函数，可脱离组件单独用（例如把已有选中态反查回元素、或在 worker/测试里算路径）：
+```ts
+structuralPath(el, root);                 // "div > section:nth-of-type(2) > button"
+elementPath(el, root);                    // { path, source, component, element }
+resolveElementByPath(root, selectedPath); // 路径 → 元素（标记路径与 CSS 选择器都吃）
+asElement(event.target);                  // 跨 realm 安全的元素判断（iframe 场景必用）
+```
+
+## 无障碍
+
+- 叠加层 `aria-hidden` + `pointer-events: none`：不进无障碍树、不抢焦点、不挡目标交互。
+- 不只靠颜色区分状态：hover 是**虚线细框**，选中是**实线粗框**，形态本身可分辨；标签再给出组件名/元素名。
+- 键盘可达：目标内 Tab 到元素后按 Enter / 空格即选中，Esc 清除选中，不必依赖指针。
+- 建议宿主再提供一条等价的键盘通路（如用 [Tree](https://hulianui.haloritual.com/zh/components/tree) 列出组件树），与 `selectedPath` 双向绑定 —— 对屏幕阅读器用户来说，「在画布上找元素」始终不如「在列表里选节点」。
+- 标签自动避让视口上边缘（贴顶时翻到框内侧），不会被裁掉。
+
+## 禁忌 / 坑
+
+- **跨源 iframe 不支持**，而且不会静默失效：读不到 `contentDocument` 时组件不渲染，并触发一次 `onError({ code: "cross-origin" })` + 开发期告警。要跨源就只有三条路：换成同源预览（`srcDoc` / 同源代理域名）、或在被预览页里自己挂一份叠加层把 path 通过 `postMessage` 回传宿主、或放弃指向编辑。本组件**不提供** postMessage 桥（那是另一套协议，不该藏在一个 UI 组件里）。
+- **能打标记就打标记**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。
+- **iframe 内的元素跨 realm**：它们不是宿主的 `Element` 实例，`node instanceof Element` 恒 false —— 自己处理目标事件时请用导出的 `asElement()`，别用 instanceof（这是同源 iframe 场景最容易踩的静默失效）。
+- `interceptClicks` 默认 `true`，意味着**选择模式下预览是不可交互的**（点击被吞、mousedown 的默认行为被挡）。要让用户一边操作预览一边看高亮，传 `interceptClicks={false}`，或用 `enabled` 显式切换选择模式。
+- **目标根自身不可选**：`target` 那个元素（iframe 场景是其 `body`）hover 与点击都视为空白，点它触发 `onClear`。根若也带标记属性，所有元素会退化成同一条路径，所以标记查找刻意跳过根。
+- **jsdom 下 `getBoundingClientRect` 恒为 0**，零面积一律判不可见 → 单测里默认一个框都不会渲染。要断言框的存在，先给 `Element.prototype.getBoundingClientRect` 打桩；但别断言坐标数值（坐标来自你的桩，等于自证）。坐标逻辑请测 `toHostRect` / `computeLabelPosition` 这两个纯函数。
+- 目标是 `document.body` 时，本组件的 portal 层就落在目标内部；组件已过滤掉自身引起的 MutationObserver 记录（否则自触发死循环），你若另外挂了 observer 也要做同样的过滤。
+- 客户端组件（要读 DOM、要挂监听），必须在 client 上下文用；SSR 期不渲染任何东西。
+
+## 相关
+[Tour](https://hulianui.haloritual.com/zh/components/tour) · [Annotation](https://hulianui.haloritual.com/zh/components/annotation) · [Watermark](https://hulianui.haloritual.com/zh/components/watermark) · [Flow](https://hulianui.haloritual.com/zh/components/flow) · [Tree](https://hulianui.haloritual.com/zh/components/tree)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # FloatingReactions

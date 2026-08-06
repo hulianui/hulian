@@ -29,7 +29,7 @@ export const avatarCirclesShowcase: ShowcaseSpec = {
             render: () => <AvatarCircles avatars={avatars} extraCount={9}/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size Control circle diameter and overlap spacing: sm / md / lg.",
             code: `<>
   <AvatarCircles avatars={avatars} extraCount={9} size="sm" />

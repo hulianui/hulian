@@ -17,7 +17,7 @@ export const avatarShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size provides sm / md / lg / xl / 2xl in five diameters.",
             code: `<>
   <Avatar size="sm" fallback="S" />

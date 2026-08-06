@@ -144,7 +144,7 @@ export const tagShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            name: "Dimensions",
+            name: "Size",
             render: () => (<div className="flex flex-wrap items-center gap-2">
           <Tag size="sm" tone="brand" dot>small</Tag>
           <Tag size="md" tone="brand" dot>medium</Tag>

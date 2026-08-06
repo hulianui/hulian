@@ -25,7 +25,7 @@ export const scoreRingShowcase: ShowcaseSpec = {
         </div>),
         },
         {
-            title: "Dimensions and Ring Width",
+            title: "Size and ring width",
             description: "size controls the diameter, thickness controls the ring width; for small sizes, showGrade={false} only leaves numbers.",
             code: `<>
   <ScoreRing value={88} size={48} thickness={5} showGrade={false} />

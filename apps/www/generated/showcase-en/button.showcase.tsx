@@ -1,5 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { ChevronDown } from "../../../../packages/ui/src/_icons";
 import { Button } from "../../../../packages/ui/src/button/button";
 export const buttonShowcase: ShowcaseSpec = {
     examples: [
@@ -18,7 +19,7 @@ export const buttonShowcase: ShowcaseSpec = {
         </>),
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "sm / md / lg Three levels of height.",
             code: `<Button size="sm">small</Button>
 <Button size="md">medium</Button>
@@ -27,6 +28,30 @@ export const buttonShowcase: ShowcaseSpec = {
           <Button size="sm">Small</Button>
           <Button size="md">Medium</Button>
           <Button size="lg">Large</Button>
+        </>),
+        },
+        {
+            title: "Icon sizes match text sizes",
+            description: "The side length of iconSm/icon/iconLg matches the height of sm/md/lg respectively (32/40/48). Pair an icon size with the text size of the same name so the seam stays flush.",
+            code: `<Button size="sm">small</Button>
+<Button size="iconSm" aria-label="More"><ChevronDown className="size-4" /></Button>
+<Button size="md">medium</Button>
+<Button size="icon" aria-label="More"><ChevronDown className="size-4" /></Button>
+<Button size="lg">Large</Button>
+<Button size="iconLg" aria-label="More"><ChevronDown className="size-5" /></Button>`,
+            render: () => (<>
+          <Button size="sm">Small</Button>
+          <Button size="iconSm" aria-label="More">
+            <ChevronDown className="size-4"/>
+          </Button>
+          <Button size="md">Medium</Button>
+          <Button size="icon" aria-label="More">
+            <ChevronDown className="size-4"/>
+          </Button>
+          <Button size="lg">Large</Button>
+          <Button size="iconLg" aria-label="More">
+            <ChevronDown className="size-5"/>
+          </Button>
         </>),
         },
         {
@@ -45,7 +70,12 @@ export const buttonShowcase: ShowcaseSpec = {
     controls: [
         { prop: "variant", type: "select", options: ["solid", "outline", "ghost", "link"], defaultValue: "solid" },
         { prop: "tone", type: "select", options: ["brand", "danger"], defaultValue: "brand" },
-        { prop: "size", type: "select", options: ["sm", "md", "lg", "icon", "iconSm"], defaultValue: "md" },
+        {
+            prop: "size",
+            type: "select",
+            options: ["sm", "md", "lg", "icon", "iconSm", "iconLg"],
+            defaultValue: "md",
+        },
         { prop: "loading", type: "boolean", defaultValue: false },
         { prop: "children", type: "text", defaultValue: "Hulian Button", label: "Copywriting" },
     ],
@@ -58,7 +88,7 @@ export const buttonShowcase: ShowcaseSpec = {
         { name: "disabled", render: () => <Button disabled>Disabled</Button> },
         { name: "loading", render: () => <Button loading>Loading</Button> },
     ],
-    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "danger"} size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm"} loading={p.loading as boolean}>
+    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "danger"} size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg"} loading={p.loading as boolean}>
       {p.children as string}
     </Button>),
     toCode: (p) => `<Button variant="${p.variant}" tone="${p.tone}" size="${p.size}"${p.loading ? " loading" : ""}>${p.children}</Button>`,

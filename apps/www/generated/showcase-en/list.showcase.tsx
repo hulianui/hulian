@@ -123,7 +123,7 @@ export const listShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Dimensions" },
+        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "Size" },
         { prop: "bordered", type: "boolean", defaultValue: true, label: "Border" },
         { prop: "split", type: "boolean", defaultValue: true, label: "Divider line" },
     ],

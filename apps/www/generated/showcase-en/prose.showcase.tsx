@@ -73,7 +73,7 @@ export const proseShowcase: ShowcaseSpec = {
             type: "select",
             options: ["sm", "base"],
             defaultValue: "base",
-            label: "Dimensions",
+            label: "Size",
         },
     ],
     states: [

@@ -32,7 +32,7 @@ export const diffStatShowcase: ShowcaseSpec = {
             render: () => <DiffStat additions={7} deletions={2} showCounts={false}/>,
         },
         {
-            title: "Dimensions",
+            title: "Size",
             description: "size=\"sm\" Reduce the grid and follow the text within the line.",
             code: `<>
   <DiffStat additions={10} deletions={4} size="sm" />
