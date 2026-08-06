@@ -637,6 +637,99 @@ export interface ComponentLocale {
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   colorSwatchPicker?: { label: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  designCanvas?: {
+    canvas: string;
+    item: string;
+    zoomIn: string;
+    zoomOut: string;
+    fitView: string;
+    resetView: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  elementSelectionOverlay?: {
+    /** Cross-origin iframe: contentDocument is unreadable, so the target cannot be taken over. */
+    crossOrigin: string;
+    /** Target is an iframe that has no usable document yet (not inserted / already unmounted). */
+    noFrameDocument: string;
+    /** Target element does not belong to any document. */
+    noDocument: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  inspectorPanel?: {
+    title: string;
+    empty: string;
+    mixed: string;
+    linkSides: string;
+    sideTop: string;
+    sideRight: string;
+    sideBottom: string;
+    sideLeft: string;
+    pickColor: string;
+    colorTokens: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  codeEditor?: {
+    /** Accessible name of the editing surface; the language tag is appended when known. */
+    editor: (language?: string) => string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  previewSandbox?: {
+    title: string;
+    errorTitle: string;
+    retry: string;
+    /** 沙箱抛错但没给出可读信息时的兜底正文（四种成因各一句）。 */
+    iframeError: string;
+    iframeRejection: string;
+    reactError: string;
+    reactEmpty: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  componentPicker?: {
+    searchPlaceholder: string;
+    categoryTree: string;
+    allCategories: string;
+    results: string;
+    resultCount: (count: number, total: number) => string;
+    noResultTitle: string;
+    noResultDescription: string;
+    emptyCatalogTitle: string;
+    emptyCatalogDescription: string;
+    detail: string;
+    previewTitle: string;
+    previewPlaceholder: string;
+    propsTitle: string;
+    noProps: string;
+    propName: string;
+    propType: string;
+    propDefault: string;
+    propDescription: string;
+    examplesTitle: string;
+    noExamples: string;
+    select: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  issueReporter?: {
+    typeLabel: string;
+    relatedComponentLabel: string;
+    relatedComponentPlaceholder: string;
+    relatedComponentSearch: string;
+    relatedComponentEmpty: string;
+    relatedComponentNone: string;
+    titleLabel: string;
+    titlePlaceholder: string;
+    previewLabel: string;
+    previewEmpty: string;
+    submit: string;
+    openOnGitHub: string;
+    copyMarkdown: string;
+    copied: string;
+    tooLongTitle: string;
+    tooLongDescription: string;
+    requiredError: (label: string) => string;
+    /** IssueReporterModal 的弹层标题（modalTitle prop 未传时使用）。 */
+    modalTitle: string;
+  };
 }
 
 const zhComponents: ComponentLocale = {
@@ -1150,6 +1243,88 @@ const zhComponents: ComponentLocale = {
     freeShipping: "包邮",
   },
   colorSwatchPicker: { label: "颜色色板" },
+  designCanvas: {
+    canvas: "设计画布",
+    item: "画布元素",
+    zoomIn: "放大",
+    zoomOut: "缩小",
+    fitView: "适配视图",
+    resetView: "复位视图",
+  },
+  elementSelectionOverlay: {
+    crossOrigin:
+      "读不到 iframe 的 contentDocument：跨源 iframe 无法被接管，请改用同源预览（srcdoc / 同源代理），或在被预览页内自行挂载叠加层并把 path 通过 postMessage 回传宿主。",
+    noFrameDocument: "iframe 尚未插入文档，没有可用的 contentDocument。",
+    noDocument: "目标元素不在任何文档中。",
+  },
+  inspectorPanel: {
+    title: "属性",
+    empty: "未选中元素",
+    mixed: "多个值",
+    linkSides: "链接四边",
+    sideTop: "上",
+    sideRight: "右",
+    sideBottom: "下",
+    sideLeft: "左",
+    pickColor: "取色器",
+    colorTokens: "主题色",
+  },
+  codeEditor: {
+    editor: (language) => `代码编辑器${language ? `（${language}）` : ""}`,
+  },
+  previewSandbox: {
+    title: "预览沙箱",
+    errorTitle: "预览渲染失败",
+    retry: "重试",
+    iframeError: "预览内发生未知运行时错误",
+    iframeRejection: "预览内有未处理的 Promise 拒绝",
+    reactError: "预览子树渲染失败",
+    reactEmpty: "预览子树抛出了空值",
+  },
+  componentPicker: {
+    searchPlaceholder: "搜索组件名、slug 或描述",
+    categoryTree: "组件分类",
+    allCategories: "全部",
+    results: "组件搜索结果",
+    resultCount: (count, total) => `${count} / ${total}`,
+    noResultTitle: "没有匹配的组件",
+    noResultDescription: "换个关键词，或在左侧切换分类。",
+    emptyCatalogTitle: "组件目录为空",
+    emptyCatalogDescription: "把解析好的组件目录传给 items。",
+    detail: "组件详情",
+    previewTitle: "预览",
+    previewPlaceholder: "未接入预览渲染",
+    propsTitle: "属性",
+    noProps: "该组件没有属性表",
+    propName: "名称",
+    propType: "类型",
+    propDefault: "默认",
+    propDescription: "说明",
+    examplesTitle: "示例",
+    noExamples: "该组件没有示例代码",
+    select: "选用该组件",
+  },
+  issueReporter: {
+    typeLabel: "类型",
+    relatedComponentLabel: "相关组件",
+    relatedComponentPlaceholder: "选择组件（可选）",
+    relatedComponentSearch: "搜索组件…",
+    relatedComponentEmpty: "无匹配组件",
+    relatedComponentNone: "不指定",
+    titleLabel: "标题",
+    titlePlaceholder: "一句话说清问题，别写「求助」",
+    previewLabel: "Markdown 预览",
+    previewEmpty: "填写字段后这里会实时显示 issue 正文。",
+    submit: "生成草稿",
+    openOnGitHub: "在 GitHub 上打开",
+    copyMarkdown: "复制 Markdown",
+    copied: "已复制",
+    tooLongTitle: "内容过长，不能用预填链接打开",
+    tooLongDescription:
+      "GitHub 的预填链接有长度上限，当前内容超出后会被截断。请复制 Markdown，到 GitHub 新建 issue 页手动粘贴。",
+    requiredError: (label) => `${label} 必填`,
+    modalTitle: "反馈 issue",
+  },
 };
 
 const enComponents: ComponentLocale = {
@@ -1792,6 +1967,88 @@ const enComponents: ComponentLocale = {
     freeShipping: "Free shipping",
   },
   colorSwatchPicker: { label: "Color swatches" },
+  designCanvas: {
+    canvas: "Design canvas",
+    item: "Canvas element",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    fitView: "Fit view",
+    resetView: "Reset view",
+  },
+  elementSelectionOverlay: {
+    crossOrigin:
+      "Cannot read the iframe contentDocument: a cross-origin iframe cannot be taken over. Use a same-origin preview (srcdoc / same-origin proxy), or mount the overlay inside the previewed page and post the path back to the host via postMessage.",
+    noFrameDocument: "The iframe is not in the document yet, so there is no usable contentDocument.",
+    noDocument: "The target element does not belong to any document.",
+  },
+  inspectorPanel: {
+    title: "Properties",
+    empty: "No element selected",
+    mixed: "Mixed",
+    linkSides: "Link all sides",
+    sideTop: "Top",
+    sideRight: "Right",
+    sideBottom: "Bottom",
+    sideLeft: "Left",
+    pickColor: "Color picker",
+    colorTokens: "Theme colors",
+  },
+  codeEditor: {
+    editor: (language) => (language ? `Code editor (${language})` : "Code editor"),
+  },
+  previewSandbox: {
+    title: "Preview sandbox",
+    errorTitle: "Preview failed",
+    retry: "Retry",
+    iframeError: "The preview threw an unknown runtime error",
+    iframeRejection: "The preview has an unhandled promise rejection",
+    reactError: "The preview subtree failed to render",
+    reactEmpty: "The preview subtree threw an empty value",
+  },
+  componentPicker: {
+    searchPlaceholder: "Search by name, slug or description",
+    categoryTree: "Component categories",
+    allCategories: "All",
+    results: "Component search results",
+    resultCount: (count, total) => `${count} / ${total}`,
+    noResultTitle: "No matching components",
+    noResultDescription: "Try another keyword, or switch category on the left.",
+    emptyCatalogTitle: "The catalog is empty",
+    emptyCatalogDescription: "Pass a parsed component catalog to items.",
+    detail: "Component detail",
+    previewTitle: "Preview",
+    previewPlaceholder: "No preview renderer connected",
+    propsTitle: "Props",
+    noProps: "This component has no props table",
+    propName: "Name",
+    propType: "Type",
+    propDefault: "Default",
+    propDescription: "Description",
+    examplesTitle: "Examples",
+    noExamples: "This component has no example code",
+    select: "Use this component",
+  },
+  issueReporter: {
+    typeLabel: "Type",
+    relatedComponentLabel: "Related component",
+    relatedComponentPlaceholder: "Select a component (optional)",
+    relatedComponentSearch: "Search components…",
+    relatedComponentEmpty: "No matching components",
+    relatedComponentNone: "Unspecified",
+    titleLabel: "Title",
+    titlePlaceholder: "State the problem in one sentence",
+    previewLabel: "Markdown preview",
+    previewEmpty: "Fill in the fields and the issue body shows up here.",
+    submit: "Generate draft",
+    openOnGitHub: "Open on GitHub",
+    copyMarkdown: "Copy Markdown",
+    copied: "Copied",
+    tooLongTitle: "Too long to open with a prefilled link",
+    tooLongDescription:
+      "GitHub caps the length of prefilled links, and the current content would be truncated. Copy the Markdown and paste it into the new issue page on GitHub.",
+    requiredError: (label) => `${label} is required`,
+    modalTitle: "Report an issue",
+  },
 };
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */

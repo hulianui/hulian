@@ -221,6 +221,9 @@ export const scenarioLoaders = {
   "code-diff": async () =>
     (await import("@hulianui/ui-internal/code-diff/code-diff.showcase"))
       .codeDiffShowcase,
+  "code-editor": async () =>
+    (await import("@hulianui/ui-internal/code-editor/code-editor.showcase"))
+      .codeEditorShowcase,
   "code-review-thread": async () =>
     (
       await import(
@@ -254,6 +257,12 @@ export const scenarioLoaders = {
   comment: async () =>
     (await import("@hulianui/ui-internal/comment/comment.showcase"))
       .commentShowcase,
+  "component-picker": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/component-picker/component-picker.showcase"
+      )
+    ).componentPickerShowcase,
   "confirm-card": async () =>
     (await import("@hulianui/ui-internal/confirm-card/confirm-card.showcase"))
       .confirmCardShowcase,
@@ -328,6 +337,9 @@ export const scenarioLoaders = {
   descriptions: async () =>
     (await import("@hulianui/ui-internal/descriptions/descriptions.showcase"))
       .descriptionsShowcase,
+  "design-canvas": async () =>
+    (await import("@hulianui/ui-internal/design-canvas/design-canvas.showcase"))
+      .designCanvasShowcase,
   dialog: async () =>
     (await import("@hulianui/ui-internal/dialog/dialog.showcase"))
       .dialogShowcase,
@@ -383,6 +395,12 @@ export const scenarioLoaders = {
         "@hulianui/ui-internal/electric-border/electric-border.showcase"
       )
     ).electricBorderShowcase,
+  "element-selection-overlay": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/element-selection-overlay/element-selection-overlay.showcase"
+      )
+    ).elementSelectionOverlayShowcase,
   "emoji-picker": async () =>
     (await import("@hulianui/ui-internal/emoji-picker/emoji-picker.showcase"))
       .emojiPickerShowcase,
@@ -569,6 +587,12 @@ export const scenarioLoaders = {
   "input-otp": async () =>
     (await import("@hulianui/ui-internal/input-otp/input-otp.showcase"))
       .inputOtpShowcase,
+  "inspector-panel": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/inspector-panel/inspector-panel.showcase"
+      )
+    ).inspectorPanelShowcase,
   "intercept-card": async () =>
     (
       await import(
@@ -581,6 +605,12 @@ export const scenarioLoaders = {
   iridescence: async () =>
     (await import("@hulianui/ui-internal/iridescence/iridescence.showcase"))
       .iridescenceShowcase,
+  "issue-reporter": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/issue-reporter/issue-reporter.showcase"
+      )
+    ).issueReporterShowcase,
   "json-viewer": async () =>
     (await import("@hulianui/ui-internal/json-viewer/json-viewer.showcase"))
       .jsonViewerShowcase,
@@ -803,6 +833,12 @@ export const scenarioLoaders = {
   popover: async () =>
     (await import("@hulianui/ui-internal/popover/popover.showcase"))
       .popoverShowcase,
+  "preview-sandbox": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/preview-sandbox/preview-sandbox.showcase"
+      )
+    ).previewSandboxShowcase,
   "pricing-table": async () =>
     (await import("@hulianui/ui-internal/pricing-table/pricing-table.showcase"))
       .pricingTableShowcase,
@@ -1998,6 +2034,17 @@ export const scenarioMetadata = {
     webgl: false,
     source: "packages/ui/src/code-diff/index.ts",
   },
+  "code-editor": {
+    id: "code-editor",
+    scenarioId: "code-editor/basic",
+    component: "CodeEditor",
+    entry: "@hulianui/ui/code-editor",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/code-editor/index.ts",
+  },
   "code-review-thread": {
     id: "code-review-thread",
     scenarioId: "code-review-thread/basic",
@@ -2096,6 +2143,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/comment/index.ts",
+  },
+  "component-picker": {
+    id: "component-picker",
+    scenarioId: "component-picker/basic",
+    component: "ComponentPicker",
+    entry: "@hulianui/ui/component-picker",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/component-picker/index.ts",
   },
   "confirm-card": {
     id: "confirm-card",
@@ -2317,6 +2375,17 @@ export const scenarioMetadata = {
     webgl: false,
     source: "packages/ui/src/descriptions/index.ts",
   },
+  "design-canvas": {
+    id: "design-canvas",
+    scenarioId: "design-canvas/basic",
+    component: "DesignCanvas",
+    entry: "@hulianui/ui/design-canvas",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/design-canvas/index.ts",
+  },
   dialog: {
     id: "dialog",
     scenarioId: "dialog/cycles",
@@ -2481,6 +2550,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: false,
     source: "packages/ui/src/electric-border/index.ts",
+  },
+  "element-selection-overlay": {
+    id: "element-selection-overlay",
+    scenarioId: "element-selection-overlay/basic",
+    component: "ElementSelectionOverlay",
+    entry: "@hulianui/ui/element-selection-overlay",
+    category: "standard",
+    categories: ["feedback", "overlay"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/element-selection-overlay/index.ts",
   },
   "emoji-picker": {
     id: "emoji-picker",
@@ -3098,6 +3178,17 @@ export const scenarioMetadata = {
     webgl: false,
     source: "packages/ui/src/input-otp/index.ts",
   },
+  "inspector-panel": {
+    id: "inspector-panel",
+    scenarioId: "inspector-panel/basic",
+    component: "InspectorPanel",
+    entry: "@hulianui/ui/inspector-panel",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/inspector-panel/index.ts",
+  },
   "intercept-card": {
     id: "intercept-card",
     scenarioId: "intercept-card/basic",
@@ -3130,6 +3221,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: true,
     source: "packages/ui/src/iridescence/index.ts",
+  },
+  "issue-reporter": {
+    id: "issue-reporter",
+    scenarioId: "issue-reporter/basic",
+    component: "IssueReporter",
+    entry: "@hulianui/ui/issue-reporter",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/issue-reporter/index.ts",
   },
   "json-viewer": {
     id: "json-viewer",
@@ -3889,6 +3991,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/popover/index.ts",
+  },
+  "preview-sandbox": {
+    id: "preview-sandbox",
+    scenarioId: "preview-sandbox/basic",
+    component: "PreviewSandbox",
+    entry: "@hulianui/ui/preview-sandbox",
+    category: "standard",
+    categories: ["container", "layout"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/preview-sandbox/index.ts",
   },
   "pricing-table": {
     id: "pricing-table",

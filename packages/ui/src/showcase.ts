@@ -6,6 +6,8 @@ export { accordionShowcase } from "./accordion/accordion.showcase";
 export { sortableShowcase } from "./sortable/sortable.showcase";
 export { kanbanShowcase } from "./kanban/kanban.showcase";
 export { flowShowcase } from "./flow/flow.showcase";
+export { designCanvasShowcase } from "./design-canvas/design-canvas.showcase";
+export { componentPickerShowcase } from "./component-picker/component-picker.showcase";
 export { affixShowcase } from "./affix/affix.showcase";
 export { alertDialogShowcase } from "./alert-dialog/alert-dialog.showcase";
 export { alertShowcase } from "./alert/alert.showcase";
@@ -18,6 +20,7 @@ export { animatedShinyTextShowcase } from "./animated-shiny-text/animated-shiny-
 export { animatedThemeTogglerShowcase } from "./animated-theme-toggler/animated-theme-toggler.showcase";
 export { aspectRatioShowcase } from "./aspect-ratio/aspect-ratio.showcase";
 export { fitScreenShowcase } from "./fit-screen/fit-screen.showcase";
+export { previewSandboxShowcase } from "./preview-sandbox/preview-sandbox.showcase";
 export { auroraTextShowcase } from "./aurora-text/aurora-text.showcase";
 export { avatarCirclesShowcase } from "./avatar-circles/avatar-circles.showcase";
 export { avatarShowcase } from "./avatar/avatar.showcase";
@@ -75,6 +78,7 @@ export { passwordGeneratorShowcase } from "./password-generator/password-generat
 export { formShowcase } from "./form/form.showcase";
 export { formDialogShowcase } from "./form-dialog/form-dialog.showcase";
 export { proFormShowcase } from "./pro-form/pro-form.showcase";
+export { inspectorPanelShowcase } from "./inspector-panel/inspector-panel.showcase";
 export { loginFormShowcase } from "./login-form/login-form.showcase";
 export { authPanelShowcase } from "./auth-panel/auth-panel.showcase";
 export { clickCaptchaShowcase } from "./click-captcha/click-captcha.showcase";
@@ -100,6 +104,8 @@ export { listboxShowcase } from "./listbox/listbox.showcase";
 export { listShowcase } from "./list/list.showcase";
 export { magicCardShowcase } from "./magic-card/magic-card.showcase";
 export { markdownEditorShowcase } from "./markdown-editor/markdown-editor.showcase";
+export { codeEditorShowcase } from "./code-editor/code-editor.showcase";
+export { issueReporterShowcase } from "./issue-reporter/issue-reporter.showcase";
 export { markdownShowcase } from "./markdown/markdown.showcase";
 // Formula 走 @hulianui/ui/math subpath，主 barrel（index.ts）刻意不导出它 —— 那会把 KaTeX
 // 塞进每个消费者的包。showcase.ts 只有文档站用，展示它本来就要付这份体积。
@@ -179,6 +185,7 @@ export { toggleShowcase } from "./toggle/toggle.showcase";
 export { toolbarShowcase } from "./toolbar/toolbar.showcase";
 export { tooltipShowcase } from "./tooltip/tooltip.showcase";
 export { tourShowcase } from "./tour/tour.showcase";
+export { elementSelectionOverlayShowcase } from "./element-selection-overlay/element-selection-overlay.showcase";
 export { transferShowcase } from "./transfer/transfer.showcase";
 export { treeSelectShowcase } from "./tree-select/tree-select.showcase";
 export { treeShowcase } from "./tree/tree.showcase";
