@@ -1,6 +1,6 @@
 "use client";
-"use client";
 
+import { memo } from "react";
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { StepperProps } from "./stepper.types";
@@ -48,7 +48,7 @@ function StepIcon({ index, done, active }: { index: number; done: boolean; activ
   );
 }
 
-export function Stepper({ steps, activeStep, className }: StepperProps) {
+function StepperImpl({ steps, activeStep, className }: StepperProps) {
   const locale = useComponentLocale().stepper ?? { progress: "步骤进度" };
   return (
     <ol className={cn("flex w-full items-start", className)} aria-label={locale.progress}>
@@ -94,3 +94,10 @@ export function Stepper({ steps, activeStep, className }: StepperProps) {
     </ol>
   );
 }
+
+StepperImpl.displayName = "Stepper";
+
+// Stepper 挂在向导/审批流外壳里，父级状态一变就重渲；props 稳定时应整棵跳过
+// —— 与 Button/Checkbox/Chip 同一处方（hulianui/hulian#89）。
+export const Stepper = memo(StepperImpl);
+Stepper.displayName = "Stepper";

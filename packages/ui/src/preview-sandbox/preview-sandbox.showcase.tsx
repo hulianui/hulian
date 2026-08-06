@@ -25,12 +25,19 @@ const PAGE = `<!doctype html>
 </body>
 </html>`;
 
+// 同样只在点击后才抛：一次正常的页面加载不该甩出未捕获错误，英文 showcase 的浏览器门禁
+// 会把 iframe 内的 pageerror 一并算到宿主页头上（Playwright 聚合所有 frame）。
 const CRASHING = `<!doctype html>
 <html>
-<head><style>body { margin: 0; font-family: system-ui; padding: 24px; }</style></head>
+<head><style>
+  body { margin: 0; font-family: system-ui; padding: 24px; }
+  button { padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; }
+</style></head>
 <body>
-  <p>Rendered, then the script throws.</p>
-  <script>setTimeout(function () { throw new Error("undefined is not a function"); }, 0);</script>
+  <p>Rendered fine. Click to make the script throw.</p>
+  <button onclick="setTimeout(function () { throw new Error('undefined is not a function'); }, 0)">
+    Trigger a runtime error
+  </button>
 </body>
 </html>`;
 
@@ -65,17 +72,36 @@ const DeviceDemo = () => {
   );
 };
 
-const Boom = () => {
-  throw new Error("Cannot read properties of undefined (reading 'map')");
+// 这个示例要演示「同文档模式下子树抛错被错误边界接住」，所以它得真的抛 —— 但只能**点了才抛**。
+// 自动抛有两处代价，都实测踩过：
+//   ① 服务端渲染时抛 → 静态导出没有错误边界兜底，整页 /components/preview-sandbox 预渲染失败；
+//   ② 挂载后自动抛 → 边界虽然接住了，React 仍会把它上报给 window，英文 showcase 的浏览器门禁
+//      按 pageerror 判失败（一次正常的页面加载不该甩出未捕获错误）。
+// 交互触发同时解决两条，演示效果也更清楚：先看到正常子树，点一下才看到错误态。
+const Boom = ({ armed }: { armed: boolean }) => {
+  if (armed) throw new Error("Cannot read properties of undefined (reading 'map')");
+  return (
+    <div className="grid h-full place-items-center p-6 text-sm text-muted">
+      正常渲染的子树
+    </div>
+  );
 };
 
-const ReactModeDemo = () => (
-  <Frame>
-    <PreviewSandbox device={{ width: 480, height: 320 }}>
-      <Boom />
-    </PreviewSandbox>
-  </Frame>
-);
+const ReactModeDemo = () => {
+  const [armed, setArmed] = useState(false);
+  return (
+    <div className="w-full space-y-3">
+      <Button size="sm" variant="outline" onClick={() => setArmed(true)} disabled={armed}>
+        触发子树错误
+      </Button>
+      <Frame>
+        <PreviewSandbox device={{ width: 480, height: 320 }}>
+          <Boom armed={armed} />
+        </PreviewSandbox>
+      </Frame>
+    </div>
+  );
+};
 
 const Basic = () => (
   <Frame>
@@ -106,7 +132,7 @@ export const previewSandboxShowcase: ShowcaseSpec = {
     {
       title: "运行时错误与重试",
       description:
-        "预览内的脚本抛错 → 注入的引导脚本回传给宿主 → 错误态盖在预览上，点重试重新载入文档。",
+        "点预览里的按钮让脚本抛错 → 注入的引导脚本把错误回传给宿主 → 错误态盖在预览上，点重试重新载入文档。",
       code: `<PreviewSandbox
   code={crashingHtml}
   onError={(e) => console.warn(e.source, e.message)}
@@ -120,7 +146,7 @@ export const previewSandboxShowcase: ShowcaseSpec = {
     {
       title: "同文档模式",
       description:
-        "传 children 而不是 code：子树直接渲染在当前文档里，走真正的 React 错误边界，错误对象形状与 iframe 模式一致。",
+        "传 children 而不是 code：子树直接渲染在当前文档里，走真正的 React 错误边界，错误对象形状与 iframe 模式一致。点按钮让子树抛错即可看到错误态。",
       code: `<PreviewSandbox device={{ width: 480, height: 320 }}>
   <YourComponent />
 </PreviewSandbox>`,
@@ -140,7 +166,7 @@ export const previewSandboxShowcase: ShowcaseSpec = {
     { name: "桌面视口", render: () => <Basic /> },
     { name: "设备切换", render: () => <DeviceDemo /> },
     {
-      name: "错误态",
+      name: "运行时错误（点按钮触发）",
       render: () => (
         <Frame>
           <PreviewSandbox code={CRASHING} />

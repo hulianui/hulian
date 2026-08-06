@@ -5,6 +5,7 @@ import { Scheduler } from "./scheduler";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
 import type { SchedulerEvent, SchedulerResource } from "./scheduler.types";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
@@ -22,27 +23,7 @@ const base = { events, date: DATE, resources, onViewChange: () => {}, onDateChan
 
 describe("Scheduler 渲染", () => {
   it("稳定父组件更新时跳过排班子树", async () => {
-    const onRender = vi.fn();
-    const { rerender } = render(
-      <div data-parent-version="0">
-        <Profiler id="scheduler" onRender={onRender}>
-          <Scheduler {...base} view="week" />
-        </Profiler>
-      </div>,
-    );
-    await act(async () => undefined);
-    onRender.mockClear();
-    rerender(
-      <div data-parent-version="1">
-        <Profiler id="scheduler" onRender={onRender}>
-          <Scheduler {...base} view="week" />
-        </Profiler>
-      </div>,
-    );
-
-    const update = onRender.mock.calls.at(-1);
-    expect(update?.[1]).toBe("update");
-    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+    await expectMemoSkipsSubtree(() => <Scheduler {...base} view="week" />);
   });
 
   it("uses English toolbar, weekday, and date formatting from ConfigProvider", () => {
@@ -113,5 +94,12 @@ describe("Scheduler 渲染", () => {
     const { getByTitle } = render(<Scheduler {...base} view="month" onEventClick={onEventClick} />);
     fireEvent.click(getByTitle("复诊"));
     expect(onEventClick).toHaveBeenCalledWith(expect.objectContaining({ id: "a" }));
+  });
+});
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("Scheduler · null 回落", () => {
+  it("resources 传 null 不抛错", () => {
+    const { container } = render(<Scheduler {...base} resources={null as never} view="month" />);
+    expect(container.firstElementChild).not.toBeNull();
   });
 });

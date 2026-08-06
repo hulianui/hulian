@@ -105,3 +105,10 @@ describe("VoiceRecord", () => {
     expect(onToggle).toHaveBeenCalledWith("idle");
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("VoiceRecord · null 回落", () => {
+  it("levels 传 null 不抛错，不渲染波形", () => {
+    const { container } = render(<VoiceRecord status="recording" levels={null as never} />);
+    expect(container.firstElementChild).not.toBeNull();
+  });
+});

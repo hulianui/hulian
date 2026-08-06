@@ -13,7 +13,7 @@ const MAX_ITEMS = 3;
 export function Folder({
   color = "var(--color-primary)",
   size = 1,
-  items = [],
+  items: itemsProp,
   open: openProp,
   defaultOpen = false,
   onOpenChange,
@@ -23,6 +23,7 @@ export function Folder({
   onClick,
   ...props
 }: FolderProps) {
+  const items = itemsProp ?? [];
   const [openState, setOpenState] = useState(defaultOpen);
   const isControlled = openProp !== undefined;
   const open = isControlled ? openProp : openState;

@@ -61,3 +61,15 @@ describe("Grid 响应式断点（hulianui/hulian#61）", () => {
     expect(cls).toContain("2xl:grid-cols-6");
   });
 });
+
+// 可选 prop 收到 null 时须回落默认值：typeof null === "object" 会把 null 误送进响应式分支
+// （hulianui/hulian#107）。
+describe("Grid · null 回落", () => {
+  it("cols 传 null 不抛错，与不传该 prop 完全一致", () => {
+    const { container: withNull } = render(<Grid cols={null as never}>x</Grid>);
+    const { container: withoutProp } = render(<Grid>x</Grid>);
+    const el = withNull.firstElementChild as HTMLElement;
+    expect(el.style.gridTemplateColumns).toBe("repeat(1, minmax(0, 1fr))");
+    expect(el.className).toBe((withoutProp.firstElementChild as HTMLElement).className);
+  });
+});

@@ -147,22 +147,11 @@ describe("inspectorSections", () => {
   });
   it("预设字段覆盖 6 种 kind（number 留给自定义 schema）", () => {
     const kinds = new Set(
-      [
-        ...layoutFields,
-        ...colorFields,
-        ...typographyFields,
-        ...borderFields,
-        ...effectsFields,
-      ].map((f) => f.kind),
+      [...layoutFields, ...colorFields, ...typographyFields, ...borderFields, ...effectsFields].map(
+        (f) => f.kind,
+      ),
     );
-    expect([...kinds].sort()).toEqual([
-      "color",
-      "enum",
-      "length",
-      "spacing",
-      "text",
-      "toggle",
-    ]);
+    expect([...kinds].sort()).toEqual(["color", "enum", "length", "spacing", "text", "toggle"]);
   });
   it("预设内不出现同 path 的重复字段（避免两处控件抢同一属性）", () => {
     const keys = [

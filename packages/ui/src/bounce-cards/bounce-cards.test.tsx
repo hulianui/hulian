@@ -51,3 +51,11 @@ describe("BounceCards", () => {
     expect(card.getAttribute("class")).not.toContain("cursor-pointer");
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("BounceCards · null 回落", () => {
+  it("images 传 null 不抛错，无卡片", () => {
+    const { container } = render(<BounceCards images={null as never} />);
+    expect(container.firstElementChild).not.toBeNull();
+    expect(container.querySelectorAll("[data-bounce-card]").length).toBe(0);
+  });
+});

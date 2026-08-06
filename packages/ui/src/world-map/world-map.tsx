@@ -70,9 +70,9 @@ function MarkerShape({ shape, color }: { shape: WorldMapMarker; color: string })
 }
 
 export function WorldMap({
-  dots = [],
+  dots: dotsProp,
   flyingMarker,
-  points = [],
+  points: pointsProp,
   showLabels = false,
   onPointClick,
   lineColor = "var(--color-chart-1)",
@@ -80,6 +80,8 @@ export function WorldMap({
   duration = 1,
   className,
 }: WorldMapProps) {
+  const points = pointsProp ?? [];
+  const dots = dotsProp ?? [];
   const gradId = useId();
   const reduced = useReducedMotion();
   const interactive = typeof onPointClick === "function";

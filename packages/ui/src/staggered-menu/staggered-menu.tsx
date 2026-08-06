@@ -19,8 +19,8 @@ const SPRING = { type: "spring" as const, stiffness: 260, damping: 30 };
 export function StaggeredMenu({
   position = "right",
   colors,
-  items = [],
-  socialItems = [],
+  items: itemsProp,
+  socialItems: socialItemsProp,
   displaySocials = true,
   displayItemNumbering = true,
   brand,
@@ -33,6 +33,8 @@ export function StaggeredMenu({
   style,
   ...props
 }: StaggeredMenuProps) {
+  const socialItems = socialItemsProp ?? [];
+  const items = itemsProp ?? [];
   const locale = useComponentLocale().staggeredMenu ?? {
     brand: "瑚琏",
     menu: "菜单",

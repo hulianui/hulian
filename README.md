@@ -38,6 +38,7 @@
 - 📦 **零 token 公开安装** —— 发布在公共 npmjs，`pnpm add @hulianui/ui` 一行装上
 - 🔧 **源码分发** —— 发 TSX 源码，样式可被你的 Tailwind 完整接管，无黑盒 CSS
 - 📚 **AI-first 文档** —— 每个组件含 Props/Events/Slots + 活示例 + playground，并生成 `llms.txt`
+- 🤖 **受约束生成可用** —— `llms-props.json` 逐 prop 给出 kind / 枚举取值 / 默认值 + 导出名反查表，消费方不必解析 markdown
 - 🏗️ **19 个真实 demo** —— CRM / 商城 / 数据大屏 / AI 工作流 / 直播 … 全部 dogfood 自家组件
 
 ## 📦 快速开始

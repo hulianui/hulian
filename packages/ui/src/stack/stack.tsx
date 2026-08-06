@@ -12,7 +12,10 @@ const DIR_LG: Record<StackDirection, string> = { row: "lg:flex-row", column: "lg
 const DIR_XL: Record<StackDirection, string> = { row: "xl:flex-row", column: "xl:flex-col" };
 const DIR_2XL: Record<StackDirection, string> = { row: "2xl:flex-row", column: "2xl:flex-col" };
 
-function directionClass(d: StackDirection | ResponsiveDirection): string {
+// 默认方向的唯一真源：解构默认只在 undefined 时生效，而由 LLM 产出结构再动态渲染的消费方
+// 常把「不设这个 prop」写成 null（JSON 里最自然的写法），故默认值统一在这里兜（hulianui/hulian#107）。
+function directionClass(d: StackDirection | ResponsiveDirection | null | undefined): string {
+  if (d == null) return DIR.column;
   if (typeof d === "string") return DIR[d];
   return cn(
     d.base && DIR[d.base],
@@ -42,7 +45,7 @@ const JUSTIFY: Record<StackJustify, string> = {
 };
 
 export function Stack<E extends ElementType = "div">({
-  direction = "column",
+  direction,
   gap = 0,
   align,
   justify,

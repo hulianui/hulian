@@ -1,3 +1,4 @@
+import { zhCN, type ComponentLocale } from "../config/locale";
 import type {
   IssueDraft,
   IssueDraftInput,
@@ -58,84 +59,135 @@ function fenced(lang: string, body: string | undefined | null): string {
   return `\`\`\`${lang}\n${text}\n\`\`\``;
 }
 
+/**
+ * 内置模板的文案。三套模板的字段标签与产出的 markdown 章节标题都由它决定 ——
+ * 这些字符串会出现在提交给 GitHub 的正文里，所以必须跟着语言走（hulianui/hulian#96）。
+ * 形状与 `config/locale.ts` 的 `issueReporter.templates` 一致，组件把当前语言的字典传进来。
+ */
+export type IssueTemplateText = NonNullable<
+  NonNullable<ComponentLocale["issueReporter"]>["templates"]
+>;
+
 /** 相关组件行：空则整节不出。 */
-function relatedComponentSection(values: IssueFieldValues): string {
+function relatedComponentSection(values: IssueFieldValues, heading: string): string {
   const slug = (values.relatedComponent ?? "").trim();
-  return slug ? issueSection("相关组件", `\`${slug}\``) : "";
+  return slug ? issueSection(heading, `\`${slug}\``) : "";
 }
 
-/** 内置模板：bug 报障。 */
-const bugTemplate: IssueTemplate = {
-  type: "bug",
-  label: "Bug 报障",
-  labels: ["bug"],
-  tone: "danger",
-  fields: [
-    { name: "summary", label: "问题描述", required: true, placeholder: "发生了什么？", rows: 4 },
-    { name: "steps", label: "复现步骤", placeholder: "1. …\n2. …\n3. …", rows: 4 },
-    { name: "expected", label: "期望结果", rows: 3 },
-    { name: "actual", label: "实际结果", rows: 3 },
-    { name: "env", label: "环境", control: "input", placeholder: "@hulianui/ui 0.25.2 · Chrome 120 · macOS" },
-  ],
-  toMarkdown: (values) =>
-    joinSections([
-      relatedComponentSection(values),
-      issueSection("问题描述", values.summary),
-      issueSection("复现步骤", values.steps),
-      issueSection("期望结果", values.expected),
-      issueSection("实际结果", values.actual),
-      issueSection("环境", values.env),
-    ]),
-};
+/**
+ * 按给定文案造出内置三套模板：bug 报障 / 新组件 / 优化建议。
+ *
+ * 之所以是函数而不是常量：模板文案要跟着 ConfigProvider 的语言走。
+ * 直接引用常量的老代码仍可用 `BUILTIN_ISSUE_TEMPLATES`（中文），行为不变。
+ */
+export function buildIssueTemplates(text: IssueTemplateText): IssueTemplate[] {
+  const { bug, feature, enhancement, relatedComponent } = text;
+  return [
+    {
+      type: "bug",
+      label: bug.label,
+      labels: ["bug"],
+      tone: "danger",
+      fields: [
+        {
+          name: "summary",
+          label: bug.summary,
+          required: true,
+          placeholder: bug.summaryPlaceholder,
+          rows: 4,
+        },
+        { name: "steps", label: bug.steps, placeholder: bug.stepsPlaceholder, rows: 4 },
+        { name: "expected", label: bug.expected, rows: 3 },
+        { name: "actual", label: bug.actual, rows: 3 },
+        { name: "env", label: bug.env, control: "input", placeholder: bug.envPlaceholder },
+      ],
+      toMarkdown: (values) =>
+        joinSections([
+          relatedComponentSection(values, relatedComponent),
+          issueSection(bug.summary, values.summary),
+          issueSection(bug.steps, values.steps),
+          issueSection(bug.expected, values.expected),
+          issueSection(bug.actual, values.actual),
+          issueSection(bug.env, values.env),
+        ]),
+    },
+    {
+      type: "feature",
+      label: feature.label,
+      labels: ["enhancement"],
+      tone: "brand",
+      fields: [
+        {
+          name: "problem",
+          label: feature.problem,
+          required: true,
+          placeholder: feature.problemPlaceholder,
+          rows: 4,
+        },
+        {
+          name: "api",
+          label: feature.api,
+          placeholder: '<IssueReporter repo="hulianui/hulian" />',
+          rows: 5,
+        },
+        {
+          name: "alternatives",
+          label: feature.alternatives,
+          placeholder: feature.alternativesPlaceholder,
+          rows: 3,
+        },
+        {
+          name: "reference",
+          label: feature.reference,
+          control: "input",
+          placeholder: feature.referencePlaceholder,
+        },
+      ],
+      toMarkdown: (values) =>
+        joinSections([
+          relatedComponentSection(values, relatedComponent),
+          issueSection(feature.problem, values.problem),
+          issueSection(feature.api, fenced("tsx", values.api)),
+          issueSection(feature.alternatives, values.alternatives),
+          issueSection(feature.reference, values.reference),
+        ]),
+    },
+    {
+      type: "enhancement",
+      label: enhancement.label,
+      labels: ["enhancement"],
+      tone: "warning",
+      fields: [
+        {
+          name: "current",
+          label: enhancement.current,
+          required: true,
+          placeholder: enhancement.currentPlaceholder,
+          rows: 3,
+        },
+        { name: "improvement", label: enhancement.improvement, rows: 4 },
+        {
+          name: "impact",
+          label: enhancement.impact,
+          placeholder: enhancement.impactPlaceholder,
+          rows: 3,
+        },
+      ],
+      toMarkdown: (values) =>
+        joinSections([
+          relatedComponentSection(values, relatedComponent),
+          issueSection(enhancement.current, values.current),
+          issueSection(enhancement.improvement, values.improvement),
+          issueSection(enhancement.impact, values.impact),
+        ]),
+    },
+  ];
+}
 
-/** 内置模板：新组件 / 新能力。 */
-const featureTemplate: IssueTemplate = {
-  type: "feature",
-  label: "新组件 / 新能力",
-  labels: ["enhancement"],
-  tone: "brand",
-  fields: [
-    { name: "problem", label: "需求描述", required: true, placeholder: "要解决的问题，而不是你想到的方案", rows: 4 },
-    { name: "api", label: "期望 API", placeholder: "<IssueReporter repo=\"hulianui/hulian\" />", rows: 5 },
-    { name: "alternatives", label: "现有替代方案", placeholder: "现在你是怎么绕过去的？", rows: 3 },
-    { name: "reference", label: "竞品参照", control: "input", placeholder: "链接或组件名" },
-  ],
-  toMarkdown: (values) =>
-    joinSections([
-      relatedComponentSection(values),
-      issueSection("需求描述", values.problem),
-      issueSection("期望 API", fenced("tsx", values.api)),
-      issueSection("现有替代方案", values.alternatives),
-      issueSection("竞品参照", values.reference),
-    ]),
-};
-
-/** 内置模板：既有组件的优化建议。 */
-const enhancementTemplate: IssueTemplate = {
-  type: "enhancement",
-  label: "优化建议",
-  labels: ["enhancement"],
-  tone: "warning",
-  fields: [
-    { name: "current", label: "现状", required: true, placeholder: "现在的行为/体验是什么样", rows: 3 },
-    { name: "improvement", label: "期望改进", rows: 4 },
-    { name: "impact", label: "影响面与兼容性", placeholder: "会不会破坏现有用法？", rows: 3 },
-  ],
-  toMarkdown: (values) =>
-    joinSections([
-      relatedComponentSection(values),
-      issueSection("现状", values.current),
-      issueSection("期望改进", values.improvement),
-      issueSection("影响面与兼容性", values.impact),
-    ]),
-};
-
-/** 内置三套模板：bug 报障 / 新组件 / 优化建议。 */
-export const BUILTIN_ISSUE_TEMPLATES: IssueTemplate[] = [
-  bugTemplate,
-  featureTemplate,
-  enhancementTemplate,
-];
+/** 内置三套模板的中文默认形态（没包 ConfigProvider 时用它兜底）。 */
+export const BUILTIN_ISSUE_TEMPLATES: IssueTemplate[] = buildIssueTemplates(
+  zhCN.components!.issueReporter!.templates,
+);
 
 /**
  * 按模板把字段值渲染成 markdown 正文（纯函数）。
@@ -166,7 +218,10 @@ export function createIssueDraft(input: IssueDraftInput, template: IssueTemplate
  * 这条链接只是**打开一个填好的表单**，不提交任何东西——真正的创建仍由用户在 GitHub 上点确认。
  */
 export function buildIssueUrl(draft: IssueDraft, repo: string): string {
-  const query = [`title=${encodeURIComponent(draft.title)}`, `body=${encodeURIComponent(draft.body)}`];
+  const query = [
+    `title=${encodeURIComponent(draft.title)}`,
+    `body=${encodeURIComponent(draft.body)}`,
+  ];
   if (draft.labels.length > 0) {
     query.push(`labels=${encodeURIComponent(draft.labels.join(","))}`);
   }

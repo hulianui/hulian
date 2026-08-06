@@ -12,14 +12,16 @@ export function Listbox({
   items,
   selectionMode = "single",
   selectedKeys,
-  defaultSelectedKeys = [],
+  defaultSelectedKeys: defaultSelectedKeysProp,
   onSelectionChange,
-  disabledKeys = [],
+  disabledKeys: disabledKeysProp,
   onAction,
   className,
   style,
   "aria-label": ariaLabel,
 }: ListboxProps) {
+  const disabledKeys = disabledKeysProp ?? [];
+  const defaultSelectedKeys = defaultSelectedKeysProp ?? [];
   const locale = useComponentLocale().listbox ?? { label: "选项列表" };
   const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
   const isControlled = selectedKeys !== undefined;

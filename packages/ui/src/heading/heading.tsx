@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { ElementType } from "react";
 import { cn } from "../lib/cn";
 import type { HeadingLevel, HeadingProps, HeadingSize, HeadingWeight } from "./heading.types";
@@ -32,7 +33,7 @@ const SIZE_BY_LEVEL: Record<HeadingLevel, HeadingSize> = {
   6: "base",
 };
 
-export function Heading<E extends ElementType = "div">({
+function HeadingImpl<E extends ElementType = "div">({
   level = 2,
   as,
   size,
@@ -56,3 +57,12 @@ export function Heading<E extends ElementType = "div">({
     />
   );
 }
+
+HeadingImpl.displayName = "Heading";
+
+// Heading 是每页几十处的排版原语，props 全是稳定原语时 React 无法自己 bailout ——
+// 与 Button/Checkbox/Chip 同一处方（hulianui/hulian#89）。
+// 泛型组件被 memo 包一层后 React 会把 E 擦成约束上界，这里断言回 HeadingImpl 的签名，
+// 保住 `as` 多态下事件与属性跟着目标元素走的推导。
+export const Heading = memo(HeadingImpl) as unknown as typeof HeadingImpl;
+Heading.displayName = "Heading";

@@ -10,6 +10,8 @@
 <!-- ════════════════════════════════════════════════════════ -->
 # AdminLayout
 
+**导出**：`AdminLayout`
+
 > 中后台骨架 · 侧栏(品牌+NavMenu可折叠) + 顶栏(折叠/面包屑/扩展区) + 多页签导航(开/切/关·关闭其他/全部·受控接路由或菜单点击自动维护) + 内容区(复用 NavMenu/ScrollArea/Popover·企业应用外壳) · layout/container
 
 ## 何时用
@@ -32,7 +34,7 @@ import { AdminLayout } from "@hulianui/ui"
 | defaultOpenKeys | `string[]` | — | 非受控初始展开。 |
 | collapsed | `boolean` | — | 受控侧栏折叠态。 |
 | defaultCollapsed | `boolean` | — | 非受控初始折叠态。 |
-| breakpoint | `"sm"｜"md"｜"lg"｜"xl"｜"2xl"｜number` | — | 响应式断点（与 LayoutSider 同语义）：视口 ≤ 该宽度自动收起侧栏、> 时展开。非受控直接改内部态；受控（传了 `collapsed`）时只触发 `onCollapsedChange` 由上层决定是否跟随。不设则不自动收起。 |
+| breakpoint | `"sm"\|"md"\|"lg"\|"xl"\|"2xl"\|number` | — | 响应式断点（与 LayoutSider 同语义）：视口 ≤ 该宽度自动收起侧栏、> 时展开。非受控直接改内部态；受控（传了 `collapsed`）时只触发 `onCollapsedChange` 由上层决定是否跟随。不设则不自动收起。 |
 | showTabs | `boolean` | `true` | 是否显示多页签条。 |
 | tabs | `AdminTab[]` | — | 受控页签列表；不传则由菜单点击自动维护（非受控）。 |
 | activeKey | `string` | — | 受控当前激活页签 key。 |
@@ -102,6 +104,8 @@ const [active, setActive] = useState("dashboard");
 <!-- ════════════════════════════════════════════════════════ -->
 # AspectRatio
 
+**导出**：`AspectRatio`
+
 > 比例容器 · CSS aspect-ratio 锁宽高比 + 图片/视频自动铺满(零依赖·RSC) · layout/container
 
 ## 何时用
@@ -156,6 +160,8 @@ import { AspectRatio } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Container
+
+**导出**：`Container`
 
 > 内容容器 · 限制最大宽度(sm/md/lg/xl/full) + 居中 + 左右安全内距 + as 多态(收口全站 mx-auto max-w-Nxl px-6 样板·零依赖·RSC) · layout/container
 
@@ -229,6 +235,8 @@ import { Container } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Divider
 
+**导出**：`Divider`
+
 > 带文字分隔 · orientation 左/中/右 + dashed/plain + 行内垂直(纯皮肤·零依赖·RSC·与 Separator 互补) · layout/arrange
 
 ## 何时用
@@ -284,6 +292,8 @@ import { Divider } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FitScreen
 
+**导出**：`FitScreen` · `computeFit`
+
 > 大屏适配 · 固定设计尺寸(默认 1920×1080)等比缩放铺满父容器并居中 + fit/cover/stretch 三模式(纯函数 computeFit 可测·ResizeObserver 监听·SSR 安全·数据可视化大屏刚需) · layout/container
 
 ## 何时用
@@ -338,6 +348,8 @@ import { FitScreen, computeFit } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Grid
+
+**导出**：`Grid` · `GridItem`
 
 > 栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC) · layout/arrange
 
@@ -419,6 +431,8 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Layout
+
+**导出**：`Layout` · `LayoutHeader` · `LayoutSider` · `LayoutContent` · `LayoutFooter`
 
 > 整页布局 · 复合 Header/Sider/Content/Footer + Sider 可折叠(受控/断点/trigger) + 宽度过渡(零依赖·尽量 RSC·复用 ScrollArea) · layout/container
 
@@ -516,6 +530,8 @@ function Shell() {
 <!-- ════════════════════════════════════════════════════════ -->
 # Masonry
 
+**导出**：`Masonry`
+
 > 瀑布流布局 · 确定性 round-robin 分列(item[i]→第 i%列·SSR 安全·顺序稳定·非 CSS columns 抖动) + 响应式列数(base/sm/md/lg·首帧 base 防 hydration mismatch·挂载后 matchMedia 调整) + 列内外统一 gap(泛型·token 主题) · layout/container
 
 ## 何时用
@@ -572,6 +588,8 @@ import { Masonry } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PreviewSandbox
 
+**导出**：`PreviewSandbox` · `PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX` · `bootstrapScript` · `buildSrcDoc` · `normalizeIframeMessage` · `normalizeReactError` · `PREVIEW_SANDBOX_DEFAULT_SANDBOX` · `PREVIEW_SANDBOX_MESSAGE_KEY` · `computePreviewScale` · `PREVIEW_SANDBOX_DEVICES` · `resolveFrameKind` · `resolveViewport`
+
 > 预览沙箱 · 把「隔离渲染容器 + 设备视口 + 缩放适配 + 错误捕获 + 就绪/重载生命周期」一次做对的外壳 · iframe 模式（`code` 传完整 HTML 文档串 → `srcDoc`，默认不透明源隔离，错误经注入脚本 postMessage 回传）与同文档模式（`children` 走真正的 React 错误边界）共用一副壳，**错误对象形状统一** · 切设备只改容器盒子，iframe 节点与文档都不重建 · 尺寸表/缩放系数/错误归一化全是带单测的纯函数 · **不打包不转译不装包** · layout/container
 
 ## 何时用
@@ -609,10 +627,10 @@ import {
 |------|------|------|------|
 | code | string | — | iframe 模式内容：**完整 HTML 文档串**，写进 `srcDoc`。传了就走 iframe 模式 |
 | children | ReactNode | — | 同文档模式内容：直接渲染的 React 子树。`code` 存在时被忽略 |
-| device | "desktop" ｜ "iphone" ｜ "android" ｜ "tablet" ｜ { width, height } | "desktop" | 预览视口（预览内 `window.innerWidth` 与媒体查询看到的就是它） |
+| device | "desktop" \| "iphone" \| "android" \| "tablet" \| { width, height } | "desktop" | 预览视口（预览内 `window.innerWidth` 与媒体查询看到的就是它） |
 | showDeviceFrame | boolean | false | 是否套设备外框（仅三个机型档位有外框，desktop / 自由尺寸无效并开发期告警） |
 | frameWidth | number | — | 设备外框机身宽度 px；不传用对应外框组件的默认宽度 |
-| scale | "fit" ｜ number | "fit" | 内容缩放。`fit` 等比缩到装得下且**不放大**；给数字则原样使用 |
+| scale | "fit" \| number | "fit" | 内容缩放。`fit` 等比缩到装得下且**不放大**；给数字则原样使用 |
 | sandbox | string | "allow-scripts" | iframe 的 `sandbox` 属性（默认不给 `allow-same-origin`，取舍见「禁忌 / 坑」） |
 | instrument | boolean | true | 是否注入错误转发引导脚本。关掉后 iframe 内的运行时错误收不到 |
 | title | string | 取自 locale | iframe 的无障碍名称；不传则跟随 ConfigProvider（内置中文兜底「预览沙箱」） |
@@ -692,6 +710,8 @@ normalizeReactError(err, info);                   // 归一成 PreviewSandboxErr
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Resizable
+
+**导出**：`ResizablePanelGroup` · `ResizablePanel` · `ResizableHandle` · `applyResize` · `splitEqually`
 
 > 拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator) · layout/container
 
@@ -781,6 +801,8 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle, applyResize, spli
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollArea
 
+**导出**：`ScrollArea`
+
 > 滚动区 · Base UI 自定义细滚动条 + 竖/横/双向 · layout/container
 
 ## 何时用
@@ -830,6 +852,8 @@ import { ScrollArea } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Separator
 
+**导出**：`Separator`
+
 > 分隔线 · Base UI role=separator + 横/竖几何 · layout/arrange
 
 ## 何时用
@@ -872,6 +896,8 @@ import { Separator } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Spacer
+
+**导出**：`Spacer`
 
 > 间距 · x/y × 0.25rem 布局留白 + aria-hidden + RSC · layout/arrange
 
@@ -919,6 +945,8 @@ import { Spacer } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Stack
 
+**导出**：`Stack`
+
 > 弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC) · layout/arrange
 
 ## 何时用
@@ -934,7 +962,7 @@ import { Stack } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| direction | `StackDirection \| ResponsiveDirection` | `"column"` | 主轴方向。传字符串=固定；传 `{base,sm,md,lg,xl,2xl}`=按断点响应式 |
+| direction | `"row" \| "column" \| ResponsiveDirection` | `"column"` | 主轴方向。传字符串=固定；传 `{base,sm,md,lg,xl,2xl}`=按断点响应式 |
 | gap | `number` | `0` | 子项间距（× 0.25rem，同 Tailwind spacing 刻度） |
 | align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | — | 交叉轴对齐 |
 | justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | — | 主轴对齐 |
@@ -983,6 +1011,8 @@ import { Stack } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Viewport
+
+**导出**：`Viewport`
 
 > 响应式容器 · container-type 容器查询上下文 + web/平板/手机 预设宽度(可 width 覆盖) + 可选设备切换器(dogfood Segmented) · 内部组件用 @md/@5xl 等容器变体按【容器宽度】自适应而非页面视口(跨设备同套布局自动重排) · layout/container
 
@@ -1050,6 +1080,8 @@ import { Viewport } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # AnimatedGradientText
 
+**导出**：`AnimatedGradientText`
+
 > 渐变文字 · 行内 chart 渐变流动 + RSC · typography/text · #animated
 
 ## 何时用
@@ -1092,6 +1124,8 @@ import { AnimatedGradientText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # AnimatedShinyText
 
+**导出**：`AnimatedShinyText`
+
 > 高光文字 · 横扫高光 + 徽标气质 + RSC · typography/text · #animated
 
 ## 何时用
@@ -1128,6 +1162,8 @@ import { AnimatedShinyText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ASCIIText
+
+**导出**：`ASCIIText`
 
 > ASCII 字符画 · 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced-motion） · typography/text · #animated
 
@@ -1178,6 +1214,8 @@ import { ASCIIText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # AuroraText
 
+**导出**：`AuroraText`
+
 > 极光文字 · bg-clip 流动渐变 + chart token + RSC · typography/text · #animated
 
 ## 何时用
@@ -1224,6 +1262,8 @@ import { AuroraText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # BlurText
+
+**导出**：`BlurText`
 
 > 模糊解析 · 各词从模糊+位移解析到清晰 + 滚入视口触发(motion · top/bottom 方向 · aria-label 整段 · reduced-motion 直呈清晰) · typography/text · #animated
 
@@ -1281,6 +1321,8 @@ import { BlurText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CircularText
 
+**导出**：`CircularText`
+
 > 环形文字 · 每字按等分角排到圆周 + 整体匀速自转 + 悬停调速(加速/减速/暂停/抓狂 · 颜色继承 currentColor · reduced-motion 静态) · typography/text · #animated
 
 ## 何时用
@@ -1331,6 +1373,8 @@ import { CircularText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Code
 
+**导出**：`Code` · `codeVariants`
+
 > 行内代码 · <code> 等宽皮肤 + tone(default/primary/danger) + RSC · typography/code
 
 ## 何时用
@@ -1373,6 +1417,8 @@ import { Code, codeVariants } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CodeBlock
 
+**导出**：`CodeBlock` · `HighlightedCode` · `tokenizeCode`
+
 > 代码块 · 多行 <pre> + 一键复制(剪贴板+反馈) + 可选语言标签 · typography/code
 
 ## 何时用
@@ -1412,6 +1458,8 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 <!-- ════════════════════════════════════════════════════════ -->
 # CodeDiff
 
+**导出**：`CodeDiff` · `diffLines` · `diffStat`
+
 > 代码对比 · 零依赖行级 LCS diff(纯函数 diffLines 可测) + unified 单栏/split 双栏 + 增绿删红行底色 + 双行号槽 + filename 头条与 +/− 摘要 · agent 改动/PR 评审 · typography/code
 
 ## 何时用
@@ -1429,7 +1477,7 @@ import { CodeDiff, diffLines, diffStat } from "@hulianui/ui"
 |------|------|------|------|
 | oldText* | `string` | — | 旧文本 |
 | newText* | `string` | — | 新文本 |
-| mode | `"unified" ｜ "split"` | `"unified"` | unified 单栏 / split 双栏对照 |
+| mode | `"unified" \| "split"` | `"unified"` | unified 单栏 / split 双栏对照 |
 | filename | `string` | — | 头部文件名条；省略则不渲染头部 |
 | showLineNumbers | `boolean` | `true` | 显示行号槽 |
 | annotations | `CodeDiffAnnotation[]` | — | 行锚定批注：在匹配行渲染 gutter 标记 + 行下方插入整宽 content 槽（仅 unified 模式插 content） |
@@ -1455,6 +1503,8 @@ import { CodeDiff, diffLines, diffStat } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # CurvedLoop
+
+**导出**：`CurvedLoop`
 
 > 弧形跑马灯 · 沿二次贝塞尔曲线无缝循环滚动的弧形跑马灯文字 · SVG textPath + rAF 续滚 + 可拖拽拨动(零依赖·token/currentColor·reduced-motion) · typography/text · #animated
 
@@ -1504,6 +1554,8 @@ import { CurvedLoop } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DecryptedText
 
+**导出**：`DecryptedText`
+
 > 乱码解码 · 字符翻滚后逐位解码到明文 + view/hover 触发(随机仅客户端 effect 避 hydration mismatch · 等宽 tabular-nums 防抖 · aria-label 明文) · typography/text · #animated
 
 ## 何时用
@@ -1548,6 +1600,8 @@ import { DecryptedText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # FallingText
+
+**导出**：`FallingText`
 
 > 文字散落 · 文字按词散落物理特效 · 触发后逐词受重力下落/撞墙反弹堆叠 + 指针拖拽抛掷(零依赖 RAF 自写二维刚体·token·reduced-motion) · typography/text · #animated
 
@@ -1600,6 +1654,8 @@ import { FallingText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Formula
+
+**导出**：`Formula` · `formulaToPlain` · `splitBareMath` · `hasBareMath` · `splitMathSegments` · `mathToPlain` · `QuestionCard`
 
 > KaTeX 驱动的数学排版，本库唯一的数学渲染路径 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符，上游没包 `$` 的题库数据退到裸记号切分 · 填空槽 `____` 渲染成空位 · RSC 安全 · typography/text
 
@@ -1756,6 +1812,8 @@ KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都�
 <!-- ════════════════════════════════════════════════════════ -->
 # FuzzyText
 
+**导出**：`FuzzyText`
+
 > 噪点模糊标题 · 信号噪点模糊标题 · canvas2d 逐行/逐列随机错位扫描 + 悬停增强抖动(零依赖·token·reduced-motion 退静态帧) · typography/text · #animated
 
 ## 何时用
@@ -1814,6 +1872,8 @@ import { FuzzyText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GlitchText
 
+**导出**：`GlitchText`
+
 > 故障撕裂 · 双伪元素 RGB 错位 + clip-path 切片抖动(纯 CSS 零依赖 RSC · 撕裂色吃 chart token · enableOnHover 门控 · motion-reduce 退普通文本) · typography/text · #animated
 
 ## 何时用
@@ -1860,6 +1920,8 @@ import { GlitchText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Heading
+
+**导出**：`Heading`
 
 > 标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC) · typography/text
 
@@ -1912,6 +1974,8 @@ import { Heading } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Kbd
 
+**导出**：`Kbd`
+
 > 按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC · typography/code
 
 ## 何时用
@@ -1956,6 +2020,8 @@ import { Kbd } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Markdown
+
+**导出**：`Markdown` · `parseBlocks`
 
 > Markdown 渲染 · 只读，零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC 安全 · typography/text
 
@@ -2007,6 +2073,8 @@ function quickSort(arr) { /* ... */ }
 <!-- ════════════════════════════════════════════════════════ -->
 # Prose
 
+**导出**：`Prose`
+
 > 排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC) · typography/text
 
 ## 何时用
@@ -2056,6 +2124,8 @@ import { Prose } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrambledText
+
+**导出**：`ScrambledText`
 
 > 乱码悬停文字 · 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
 
@@ -2107,6 +2177,8 @@ import { ScrambledText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollFloat
+
+**导出**：`ScrollFloat`
 
 > 滚动浮现标题 · ：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（去 gsap·吃 text-foreground token·reduced-motion 直出清晰标题） · typography/text · #animated
 
@@ -2165,6 +2237,8 @@ import { ScrollFloat } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollReveal
 
+**导出**：`ScrollReveal`
+
 > 滚动显影 · 整段随容器滚过视口逐词 opacity+blur 解析(motion useScroll/useTransform · 每词独立进度区间 · reduced-motion 直呈可读) · typography/text · #animated
 
 ## 何时用
@@ -2216,6 +2290,8 @@ import { ScrollReveal } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollVelocity
 
+**导出**：`ScrollVelocity`
+
 > 滚动跑马灯 · 滚动速度跑马灯文字 · 多行交替方向视差 + 随页面滚动加速/变向、静止匀速漂移(motion 速度值驱动·零额外依赖·reduced-motion 冻结自走帧保留 DOM) · typography/text · #animated
 
 ## 何时用
@@ -2264,6 +2340,8 @@ import { ScrollVelocity } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Shuffle
+
+**导出**：`Shuffle`
 
 > 洗牌解密文字 · 逐字「洗牌解密」文本动画 · 字位先滚乱码再按方向顺序锁定真字 + 视口/悬停/循环触发(零依赖 rAF·reduced-motion 直落终态·token 着色) · typography/text · #animated
 
@@ -2333,6 +2411,8 @@ import { Shuffle } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Snippet
 
+**导出**：`Snippet`
+
 > 代码片段 · 命令提示符 + 一键复制(剪贴板+反馈) · typography/code
 
 ## 何时用
@@ -2349,7 +2429,7 @@ import { Snippet } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | text | `string` | — | 复制到剪贴板的文本；缺省时取 children（仅当为字符串时） |
-| symbol | `string ｜ null` | `"$"` | 命令提示符；传 `null` 不显示，适合非命令片段 |
+| symbol | `string \| null` | `"$"` | 命令提示符；传 `null` 不显示，适合非命令片段 |
 | lang | `string` | — | 语法着色语言（如 `"tsx"`/`"bash"`），仅 children 为字符串时生效 |
 | highlight | `boolean` | `true` | 是否语法着色，仅 children 为字符串时生效 |
 | copyLabel | `string` | 跟随 locale | 复制按钮无障碍标签；显式传值优先 |
@@ -2380,6 +2460,8 @@ import { Snippet } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # SparklesText
+
+**导出**：`SparklesText`
 
 > 星闪文字 · 随机小星脉冲(客户端生成) + token · typography/text · #animated
 
@@ -2423,6 +2505,8 @@ import { SparklesText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # SplitText
+
+**导出**：`SplitText`
 
 > 切字进场 · 文本切字/词 + 滚入视口逐段错峰位移淡入(motion · useInView 触发一次 · aria-label 整段读屏友好 · reduced-motion 直呈终态) · typography/text · #animated
 
@@ -2470,6 +2554,8 @@ import { SplitText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Text
+
+**导出**：`Text`
 
 > 文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC) · typography/text
 
@@ -2524,6 +2610,8 @@ import { Text } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TextCursor
+
+**导出**：`TextCursor`
 
 > 光标拖尾文字 · 特效组件 · 在容器内移动光标时沿轨迹按间距落下一串字形并随机微浮动淡出回收（沿方向旋转 / emoji / 自定义间距上限）(零依赖·motion 运行时·reduced-motion 去浮动) · typography/text · #animated
 
@@ -2582,6 +2670,8 @@ import { TextCursor } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TextPressure
 
+**导出**：`TextPressure`
+
 > 逐字符"压感"标题 · 字形随鼠标距离实时插值字重/宽度/倾斜 + 透明度(零依赖 RAF·token 配色·reduced-motion·系统字体兜底) · typography/text · #animated
 
 ## 何时用
@@ -2639,6 +2729,8 @@ import { TextPressure } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TrueFocus
 
+**导出**：`TrueFocus`
+
 > 真实焦点 · 句中一词清晰余词模糊 + 焦点循环移动 + 四角框跟随(测量 rect 定位 · 角框吃 chart token · manualMode 悬停聚焦 · reduced-motion 全清晰) · typography/text · #animated
 
 ## 何时用
@@ -2688,6 +2780,8 @@ import { TrueFocus } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TypingAnimation
 
+**导出**：`TypingAnimation`
+
 > 打字机 · 逐字 + 闪烁光标 + 进入视口触发 · typography/text · #animated
 
 ## 何时用
@@ -2734,6 +2828,8 @@ import { TypingAnimation } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # VariableProximity
+
+**导出**：`VariableProximity`
 
 > 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 RAF · reduced-motion 定格 from · sr-only 完整朗读） · typography/text · #animated
 
@@ -2800,6 +2896,8 @@ function Demo() {
 <!-- ════════════════════════════════════════════════════════ -->
 # WordRotate
 
+**导出**：`WordRotate`
+
 > 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
 ## 何时用
@@ -2841,6 +2939,8 @@ import { WordRotate } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AuthPanel
+
+**导出**：`AuthPanel`
 
 > 认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind 工具类给不出带 color-mix 的 radial-gradient，guard 又禁消费方传 style，两条一撞只剩裸 div + inline style · color 走 resolveTone 与 Brand/Dot 同路 · 配 LoginForm surface={false} 免卡中卡 · forms/framework
 
@@ -2932,6 +3032,8 @@ import { AuthPanel } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Button
 
+**导出**：`Button` · `buttonVariants`
+
 > 按钮 · CVA 变体 + press 动效 · forms/button
 
 ## 何时用
@@ -2947,9 +3049,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"solid" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体 |
-| tone | `"brand" ｜ "danger"` | `"brand"` | 语义色调 |
-| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
+| variant | `"solid" \| "outline" \| "ghost" \| "link"` | `"solid"` | 视觉变体 |
+| tone | `"brand" \| "danger"` | `"brand"` | 语义色调 |
+| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
 
@@ -3003,6 +3105,8 @@ import { Button, buttonVariants } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ButtonGroup
 
+**导出**：`ButtonGroup`
+
 > 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体) · forms/button
 
 ## 何时用
@@ -3018,9 +3122,9 @@ import { ButtonGroup } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| orientation | `"horizontal" ｜ "vertical"` | `"horizontal"` | 主轴方向 |
+| orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 主轴方向 |
 | attached | `boolean` | `true` | true=子按钮贴合成一体（抹内侧圆角/合并边框/hover 抬层）；false=留 gap 仅作语义分组 |
-| gap | `"sm" ｜ "md"` | `"sm"` | 子项间距档（仅 `attached={false}` 生效） |
+| gap | `"sm" \| "md"` | `"sm"` | 子项间距档（仅 `attached={false}` 生效） |
 | className | `string` | — | 透传根节点类名 |
 | aria-label | `string` | — | 组的无障碍标签 |
 
@@ -3057,6 +3161,8 @@ import { ButtonGroup } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Calendar
+
+**导出**：`Calendar`
 
 > 日历面板 · 自研零依赖(日/月/年三层下钻·常驻不带浮层) + min-max/disabledDate/今天快捷 · 定宽字符串受控 · forms/datetime
 
@@ -3149,6 +3255,8 @@ const [date, setDate] = useState<string | null>(null);
 <!-- ════════════════════════════════════════════════════════ -->
 # Cascader
 
+**导出**：`Cascader` · `flattenLeafPaths` · `filterLeafPaths`
+
 > 级联选择 · 触发器 + Popover 横向逐级面板列 + 路径数组受控 + click/hover 展开 + changeOnSelect · 复用树引擎核 · forms/advanced
 
 ## 何时用
@@ -3211,6 +3319,8 @@ const [value, setValue] = useState<string[]>([]);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Checkbox
+
+**导出**：`Checkbox`
 
 > 复选框 · 三态(含半选) + Base UI · forms/basic
 
@@ -3275,6 +3385,8 @@ import { Checkbox } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CheckboxGroup
 
+**导出**：`CheckboxGroup`
+
 > 复选组 · Base UI 值数组协调 + 复用瑚琏 Checkbox · forms/basic
 
 ## 何时用
@@ -3293,7 +3405,7 @@ import { CheckboxGroup } from "@hulianui/ui"
 | value | `string[]` | — | 受控：已勾选项的 value 数组 |
 | defaultValue | `string[]` | — | 非受控初始勾选项 |
 | disabled | `boolean` | `false` | 下发禁用到组内全部 Checkbox |
-| orientation | `"vertical" ｜ "horizontal"` | `"vertical"` | 排列方向 |
+| orientation | `"vertical" \| "horizontal"` | `"vertical"` | 排列方向 |
 | className | `string` | — | 透传根节点类名 |
 | aria-label | `string` | — | 组的无障碍标签 |
 
@@ -3335,6 +3447,8 @@ const [v, setV] = useState<string[]>(["apple"]);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Choicebox
+
+**导出**：`ChoiceboxGroup` · `Choicebox`
 
 > 卡片选择 · 复合 ChoiceboxGroup/Choicebox(标题/描述/图标卡片) · 单选(radio)/多选(checkbox)对称 + 受控非受控 + 网格列数 · 隐藏原生 input 承载键盘与 a11y(单选方向键漫游/多选空格切换) · 套餐/支付方式/订阅档位 · forms/advanced
 
@@ -3423,6 +3537,8 @@ const [v, setV] = useState<string | string[]>("pro");
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ClickCaptcha
+
+**导出**：`ClickCaptcha`
 
 > 点选式人机验证 UI · 采集点击序列回传相对坐标(0~1) + 序号标记/撤销/换一张 + 键盘准星可达 + 失败抖动清空(零协议·不碰网络) · forms/framework
 
@@ -3516,6 +3632,8 @@ const [captcha, setCaptcha] = useState(() => fetchCaptcha());
 <!-- ════════════════════════════════════════════════════════ -->
 # CodeEditor
 
+**导出**：`CodeEditor` · `applyEdit` · `autoPairEdit` · `backspacePairEdit` · `getLanguageRules` · `indentEdit` · `lineEndAt` · `lineStartAt` · `newlineEdit` · `outdentEdit` · `selectedLineBlock` · `toggleCommentEdit` · `splitTokensByLine` · `tokenizeCss` · `tokenizeEditorCode`
+
 > 代码编辑器 · 零依赖 textarea + 高亮层叠加（不引 CodeMirror/Monaco） · 受控 value/onChange + 行号槽 + 当前行高亮 + 语法着色(JS 家族/JSON/Shell 复用 CodeBlock 着色器，CSS 自带扫描器) · 键盘增强全套(Tab 缩进/Shift+Tab 反缩进/Enter 续缩进/成对符号自动闭合与包裹/退格删对/Cmd 或 Ctrl 加斜杠切注释)且**一律经 execCommand 落笔保住原生 undo 栈** · 编辑意图抽成纯函数带单测 · AI 生成 DSL/JSON 的可编辑检查器 · forms/advanced
 
 ## 何时用
@@ -3536,7 +3654,7 @@ import { CodeEditor, applyEdit, autoPairEdit, backspacePairEdit, getLanguageRule
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | value * | string | — | 受控代码文本。**必须配合 onChange 回写**，否则每次编辑都会被 React 回滚 |
-| language | CodeEditorLanguage | "tsx" | 决定着色器、注释符与成对符号规则。`typescript` ｜ `tsx` ｜ `javascript` ｜ `jsx` ｜ `json` ｜ `css` ｜ `bash` ｜ 任意字符串（未知按 JS 家族处理） |
+| language | CodeEditorLanguage | "tsx" | 决定着色器、注释符与成对符号规则。`typescript` \| `tsx` \| `javascript` \| `jsx` \| `json` \| `css` \| `bash` \| 任意字符串（未知按 JS 家族处理） |
 | readOnly | boolean | false | 只读。仍可聚焦/选中/复制，只是不接受输入与键盘增强 |
 | lineNumbers | boolean | true | 是否显示行号槽（横向滚动时钉在左侧，纵向跟随） |
 | highlightActiveLine | boolean | true | 是否高亮光标所在行（仅聚焦时显示） |
@@ -3544,7 +3662,7 @@ import { CodeEditor, applyEdit, autoPairEdit, backspacePairEdit, getLanguageRule
 | tabSize | number | 2 | 一级缩进宽度（空格数），同时作为 `tab-size` |
 | placeholder | string | — | 无内容时的占位文案 |
 | rows | number | 12 | 默认可见行数；外层 `className` 给了确定高度时以外层为准 |
-| theme | "light" ｜ "dark" | — | 强制主题（逃生口）。不传时跟随全局 `[data-theme]`，这是推荐用法 |
+| theme | "light" \| "dark" | — | 强制主题（逃生口）。不传时跟随全局 `[data-theme]`，这是推荐用法 |
 | ariaLabel | string | 取自 locale | 无障碍名称；不传时取 ConfigProvider 的 locale（内置中文兜底为「代码编辑器（语言）」） |
 | className | string | — | 外层类名（给宽度/高度/最大高度） |
 
@@ -3632,7 +3750,7 @@ const [code, setCode] = useState(source);
 - **不做**：代码折叠、自动补全 / 智能提示、多光标 / 列选择、语义诊断与波浪线、查找替换面板、括号配对高亮。要这些请外接 CodeMirror 6 / Monaco。
 - 文本不换行（`wrap="off"`，长行横向滚动）。这是刻意的：一旦软换行，行号槽就无法与视觉行对齐，`lineNumbers` 会立刻说谎。要换行请改用 [Textarea](https://hulianui.haloritual.com/zh/components/textarea)。
 - **改样式必须三层同改**：透明 `<textarea>`、染色 `<pre>`、行号槽三层的字体族 / 字号 / 行高 / 内边距 / `white-space` / `tab-size` 逐项相等才不错位。只改其中一层的 padding 或字号，表现是「光标和字差半格」，且只在长行/深缩进时才看得出来。
-- **`theme="light"` 目前只在页面本身是亮色时成立**。令牌层只定义了 `[data-theme="dark"]` 的覆盖块，没有对应的 `[data-theme="light"]`，所以在暗色页面里局部钉亮色钉不住（`theme="dark"` 在亮色页面里是好的）。默认不传 `theme`、跟随全局主题才是推荐用法。
+- **`theme` 两个方向都成立**（@hulianui/tokens 0.3.0 起）：暗色页面里钉亮色、亮色页面里钉暗色都跟得住，岛内的 `dark:` 工具类、阴影与发丝边也一并跟着岛走。旧版本只有「亮页里嵌暗块」单向可用（hulianui/hulian#101）。仍建议默认不传 `theme`、跟随全局主题 —— 强制主题是逃生口，不是常规用法。
 - 着色是**近似着色，不是解析器**：CSS 扫描器只跟踪「是否在 `{}` 内 / 是否越过 `:`」两个状态，JS 家族沿用 CodeBlock 的单条正则扫描。复杂泛型、正则字面量、嵌套模板串可能着色不准——着色错不影响编辑，`value` 永远是你的原文。
 - `language="json"` 时 Cmd+/ **故意不响应**：JSON 规范没有注释，写进去就是非法 JSON。
 - 选区底色用的是半透明 `bg-primary/25`：textarea 在高亮层之上，不透明的选区底色会把代码盖住。改这个类要连带确认深色主题下的对比度。
@@ -3642,6 +3760,8 @@ const [code, setCode] = useState(source);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ColorField
+
+**导出**：`ColorField` · `normalizeHex` · `isHexColor`
 
 > 颜色输入框 · 紧凑单行：色块(调起系统取色器) + 十六进制文本输入 + 短写自动展开(#abc→#aabbcc) + 草稿态支持手输 · forms/advanced
 
@@ -3714,6 +3834,8 @@ const [hex, setHex] = useState("#38e8ff");
 <!-- ════════════════════════════════════════════════════════ -->
 # ColorPicker
 
+**导出**：`ColorPicker` · `parseColor` · `rgbToHex` · `rgbToHsl` · `formatColor`
+
 > 颜色选择 · react-colorful 内核 + HEX/RGB/HSL 多格式输出与切换器(零依赖派生) + 瑚琏 token 皮肤 · forms/advanced
 
 ## 何时用
@@ -3744,7 +3866,7 @@ import { ColorPicker, parseColor, rgbToHex, rgbToHsl, formatColor } from "@hulia
 |------|------|------|
 | onValueChange | `(value: string) => void` | 变更回调，参数为**当前所选格式**的字符串；切换格式也会触发。拖色板/色相条时**每帧**触发 |
 | onValueCommitted | `(value: string) => void` | 提交回调，一次编辑结束触发一次，格式与 `onValueChange` 一致。时机：色板松手、输入框失焦/回车、切换格式 |
-| onFormatChange | `(format: ColorFormat) => void` | 格式切换回调 |
+| onFormatChange | `(format: "hex" \| "rgb" \| "hsl") => void` | 格式切换回调 |
 
 ## 示例
 ```tsx
@@ -3777,6 +3899,8 @@ const [v, setV] = useState("#3b82f6");
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ColorSwatchPicker
+
+**导出**：`ColorSwatchPicker` · `normalizeSwatches`
 
 > 预设色块单选 · base-ui RadioGroup 换皮(方向键 a11y) + 选中 ring + mix-blend 勾(零依赖) · forms/advanced
 
@@ -3847,6 +3971,8 @@ const [v, setV] = useState("#3b82f6");
 <!-- ════════════════════════════════════════════════════════ -->
 # Combobox
 
+**导出**：`Combobox` · `ComboboxInput` · `ComboboxTrigger` · `ComboboxContent` · `ComboboxItem` · `ComboboxChips` · `ComboboxChip`
+
 > 自动补全 · 触发按钮 + 弹层内搜索(图4 范式)，亦支持内联输入；浮层锚到字段等宽 · forms/advanced
 
 ## 何时用
@@ -3865,7 +3991,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items | `ComboboxItemData[]` | — | 选项数据 `{value,label}`，自动以 label 显示、value 提交 |
-| value | `ComboboxItemData｜ComboboxItemData[]` | — | 受控选中（multiple 时为数组） |
+| value | `ComboboxItemData\|ComboboxItemData[]` | — | 受控选中（multiple 时为数组） |
 | defaultValue | 同上 | — | 非受控初始选中 |
 | multiple | `boolean` | `false` | true 时 value/onValueChange 自动变数组 |
 | virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
@@ -3875,7 +4001,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸 |
 | placeholder | `string` | — | 未选中时占位文案 |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | className | `string` | — | — |
@@ -3884,7 +4010,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸 |
 | placeholder | `string` | — | 占位 |
 | invalid | `boolean` | `false` | 手动置无效态皮肤 |
 | clearable | `boolean` | `false` | 有值时渲染清除按钮 |
@@ -3895,8 +4021,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | searchPlaceholder | `string` | — | 设置后在浮层顶部渲染搜索框（图4 范式，配合 Trigger）；不设则为内联补全态 |
-| side | `"top"｜"bottom"` | — | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | — | 浮层对齐 |
+| side | `"top"\|"bottom"` | — | 浮层方位 |
+| align | `"start"\|"center"\|"end"` | — | 浮层对齐 |
 | sideOffset | `number` | — | 偏移 |
 | onListScroll | `UIEventHandler<HTMLDivElement>` | — | 列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](https://hulianui.haloritual.com/zh/components/remote-select)） |
 | footer | `ReactNode` | — | 列表下方常驻页脚（加载中 / 计数 / 到底提示），不随列表滚动 |
@@ -4026,6 +4152,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 <!-- ════════════════════════════════════════════════════════ -->
 # CountrySelect
 
+**导出**：`CountrySelect` · `getCountry` · `flagEmoji` · `countrySearchText` · `filterCountries` · `countries`
+
 > 国家/地区选择 · 内置 250 国(旗+中英文名+区号) + 单/多选 chips + 中英文/码/区号搜索 · dogfood Combobox(新增多选) · forms/advanced
 
 ## 何时用
@@ -4080,6 +4208,8 @@ const [codes, setCodes] = useState<string[]>([]);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # DatePicker
+
+**导出**：`DatePicker`
 
 > 单日期选择 · 自研零依赖(触发器 + Popover 罩 Calendar 面板·日/月/年三粒度) + min-max/disabledDate/清除 · forms/datetime
 
@@ -4177,6 +4307,8 @@ const [date, setDate] = useState<string | null>(null);
 <!-- ════════════════════════════════════════════════════════ -->
 # DateRangePicker
 
+**导出**：`DateRangePicker`
+
 > 日期区间 · 自研零依赖双月范围日历 + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控 · forms/datetime
 
 ## 何时用
@@ -4243,6 +4375,8 @@ function Demo() {
 
 <!-- ════════════════════════════════════════════════════════ -->
 # DateTimePicker
+
+**导出**：`DateTimePicker`
 
 > 日期时间选择 · 自研零依赖(左日历 + 右时/分/秒列一体弹层) + 步进/秒/此刻 · 边界只在压着 min-max 那天生效 · 定宽 YYYY-MM-DD HH:mm 受控 · forms/datetime
 
@@ -4339,6 +4473,8 @@ const [dt, setDt] = useState<string | null>(null);
 <!-- ════════════════════════════════════════════════════════ -->
 # ElasticSlider
 
+**导出**：`ElasticSlider`
+
 > 橡皮筋音量滑块 · 拖到两端轨道横拉纵压 + 图标回弹位移 + hover 整体放大、松手 spring 弹回(motion·零新依赖·reduced-motion) · forms/basic · #animated
 
 ## 何时用
@@ -4406,6 +4542,8 @@ import { ElasticSlider } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # EmojiPicker
 
+**导出**：`EmojiPicker` · `EMOJI_CATEGORIES` · `ALL_EMOJI`
+
 > 表情选择器 · 内联 emoji 数据集(7 分类·中英关键词) + 关键词搜索 + 分类页签 + 最近使用(受控/内部) · 搜索框 dogfood Input · onSelect 回传 emoji(零依赖·聊天/评论) · forms/advanced
 
 ## 何时用
@@ -4456,6 +4594,8 @@ const [text, setText] = useState("");
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Field
+
+**导出**：`Field`
 
 > 字段包装 · label/help/error a11y 串联 · forms/framework
 
@@ -4511,6 +4651,8 @@ import { Field } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Form
+
+**导出**：`Form` · `useForm` · `validateValue` · `FormList`
 
 > 表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同 · forms/framework
 
@@ -4585,6 +4727,8 @@ const confirm = form.register("confirm", {
 
 <!-- ════════════════════════════════════════════════════════ -->
 # IconPicker
+
+**导出**：`IconPicker`
 
 > 图标选择 · 分类页签 + 跨类搜索(名字/别名) + 网格 + 最近使用 · 图标集由消费方经 renderIcon 注入 · forms/advanced
 
@@ -4685,6 +4829,8 @@ const SOURCES = [
 <!-- ════════════════════════════════════════════════════════ -->
 # ImageCropper
 
+**导出**：`ImageCropper` · `cropImageToBlob`
+
 > 图片裁剪 · 固定比例框(默认证件照 5:7) + 触屏双指捏合/拖拽对位 + 缩放滑杆 + canvas 出 Blob(尺寸/质量/字节上限可配·react-easy-crop MIT) · forms/advanced
 
 ## 何时用
@@ -4754,6 +4900,8 @@ import { ImageCropper, cropImageToBlob } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Input
 
+**导出**：`Input` · `inputShellVariants`
+
 > 输入框 · Base UI Field + 前后缀 + invalid · forms/basic
 
 ## 何时用
@@ -4771,7 +4919,7 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
 | disabled | `boolean` | `false` | 禁用 |
 | ref | `Ref<HTMLInputElement>` | — | 转发到**内层原生 `<input>`**（不是外壳 span）。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它 |
@@ -4807,6 +4955,8 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # InputOTP
+
+**导出**：`InputOTP`
 
 > 验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖) · forms/advanced
 
@@ -4869,6 +5019,8 @@ const [otp, setOtp] = useState("");
 <!-- ════════════════════════════════════════════════════════ -->
 # InspectorPanel
 
+**导出**：`InspectorPanel` · `MIXED` · `borderFields` · `colorFields` · `effectsFields` · `fieldTokens` · `formatLength` · `inspectorSections` · `isMixed` · `layoutFields` · `matchToken` · `parseLength` · `readInspectorValue` · `spacingSides` · `tokenColor` · `typographyFields`
+
 > 设计工具属性检查器 · **字段 schema 驱动**（给一份 `{ key, label, kind }` 就派生控件，不是写死五个分类）· 七种控件 kind 全部换皮自既有表单件 · spacing 四联 + 链接锁定同步四值 · 主题 token 色板绑定 · MIXED 混合值占位 · commitMode 决定拖动中还是松手才回吐 · forms/advanced
 
 ## 何时用
@@ -4887,16 +5039,16 @@ import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | onChange * | (path: string, value: InspectorValue) => void | — | 单 path 变更回吐，`path` 就是字段声明的 `key` |
-| props | Record\<string, unknown\> | — | 属性值表；先按扁平键命中，未命中再按 `a.b.c` 点号下钻 |
-| selectedElement | string ｜ null | — | 选中元素标识；显式传 `null` 进空态，不传则不判空 |
+| props | Record<string, unknown> | — | 属性值表；先按扁平键命中，未命中再按 `a.b.c` 点号下钻 |
+| selectedElement | string \| null | — | 选中元素标识；显式传 `null` 进空态，不传则不判空 |
 | sections | InspectorSection[] | — | 完整分类 schema；传了它 `categories` 失效 |
 | categories | readonly string[] | — | 只取内置预设的这几类，且**按传入顺序**排列（`layout` / `color` / `typography` / `border` / `effects`） |
 | tokenSource | readonly InspectorToken[] | — | 色值控件可选的主题 token；形状与文档站 `SEMANTIC_GROUPS` 的色卡一致 |
-| commitMode | "change" ｜ "commit" | "change" | `change` 拖动/按键即回吐；`commit` 松手/失焦/回车才回吐 |
+| commitMode | "change" \| "commit" | "change" | `change` 拖动/按键即回吐；`commit` 松手/失焦/回车才回吐 |
 | onBatchChange | (changes: InspectorChange[]) => void | — | 一次交互改多个 path 时的批量回吐（见下方 Events） |
 | title | ReactNode | 取自 locale | 面板标题；传 `null` 不渲染标题栏 |
 | emptyText | ReactNode | 取自 locale | 空态文案 |
-| labels | Partial\<InspectorPanelLabels\> | — | 覆盖取自 locale 的文案（`mixed` / `linkSides` / 四边名 等） |
+| labels | Partial<InspectorPanelLabels> | — | 覆盖取自 locale 的文案（`mixed` / `linkSides` / 四边名 等） |
 | className | string | — | 面板外层类名 |
 
 字段类型（`InspectorField` 判别联合，按 `kind` 收窄）：
@@ -4907,7 +5059,7 @@ import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } 
 | color | 色块（弹出 ColorPicker）+ 文本框 + token 色板 | `tokenGroup?` |
 | length | 滑杆 + 数字框 | `min` / `max` / `step` / `unit` |
 | number | 数字框 | `min` / `max` / `step` / `unit` |
-| enum | ≤4 项 Segmented，更多 Select | `options` * · `display?: "segmented" ｜ "select"` |
+| enum | ≤4 项 Segmented，更多 Select | `options` * · `display?: "segmented" \| "select"` |
 | toggle | Switch | — |
 | text | 文本框 | `placeholder?` |
 
@@ -5004,6 +5156,8 @@ readInspectorValue({ style: { color: "red" } }, "style.color"); // "red"
 <!-- ════════════════════════════════════════════════════════ -->
 # IssueReporter
 
+**导出**：`IssueReporter` · `IssueReporterModal` · `BUILTIN_ISSUE_TEMPLATES` · `GITHUB_URL_MAX_LENGTH` · `buildIssueUrl` · `createIssueDraft` · `isUrlTooLong` · `issueSection` · `normalizeRepo` · `renderIssueMarkdown`
+
 > GitHub issue 草稿器 · 表单收集（类型 Select / 相关组件 Combobox / 标题 Input / 模板字段 Textarea 或 MarkdownEditor）→ 按模板 `toMarkdown` 纯函数拼正文 → 实时 Markdown 预览 + `onSubmit(draft)` 回吐结构化草稿 + 生成 `issues/new?title=…&body=…&labels=…` 预填链接 · 链接超长自动降级为「复制 Markdown」 · 内置 bug / 新组件 / 优化建议三套模板，`templates` 可整套替换 · **不调 GitHub API、不持 token** · forms/advanced
 
 ## 何时用
@@ -5034,11 +5188,11 @@ import { BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, IssueReporter, IssueRep
 | defaultValues | IssueFieldValues | — | 模板字段初值，按字段 `name`（issue 里写的 `body` prop 落到这里） |
 | showSubmit | boolean | true | 是否渲染内置提交按钮；`IssueReporterModal` 内部固定置 false |
 | openInNewTab | boolean | true | 点「在 GitHub 上打开」时是否 `window.open` 新标签页 |
-| preview | "source" ｜ "rendered" ｜ false | "source" | 预览形态：CodeBlock 源码 / Markdown 渲染后 / 关闭 |
+| preview | "source" \| "rendered" \| false | "source" | 预览形态：CodeBlock 源码 / Markdown 渲染后 / 关闭 |
 | urlLimit | number | 8000 | 预填链接长度上限，超过即降级（见「禁忌 / 坑」） |
-| text | Partial\<IssueReporterText\> | — | 界面文案覆盖；不传则取 ConfigProvider 的 locale。注意与模板上的 `labels`（GitHub 标签）不是一回事 |
+| text | Partial<IssueReporterText> | — | 界面文案覆盖；不传则取 ConfigProvider 的 locale。注意与模板上的 `labels`（GitHub 标签）不是一回事 |
 | actions | ReactNode | — | 动作区追加的自定义按钮 |
-| apiRef | MutableRefObject\<IssueReporterApi ｜ null\> | — | 命令式句柄：`submit()` / `getDraft()` / `getUrl()` / `reset()` |
+| apiRef | MutableRefObject<IssueReporterApi \| null> | — | 命令式句柄：`submit()` / `getDraft()` / `getUrl()` / `reset()` |
 | className | string | — | 表单本体外层类名 |
 | open / defaultOpen | boolean | — | 仅 Modal：受控 / 非受控开关 |
 | trigger | ReactElement | — | 仅 Modal：触发元素 |
@@ -5145,6 +5299,8 @@ if (isUrlTooLong(url)) {
 <!-- ════════════════════════════════════════════════════════ -->
 # Listbox
 
+**导出**：`Listbox`
+
 > 可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖) · forms/advanced
 
 ## 何时用
@@ -5203,6 +5359,8 @@ const [keys, setKeys] = useState<string[]>(["profile"]);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LoginForm
+
+**导出**：`LoginForm`
 
 > 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + fields 字段外观槽(label/placeholder/prefix) + surface 卡面开关(分屏登录页免卡中卡)(复用 Field/Input/Checkbox/Button·文案接 i18n) · forms/framework
 
@@ -5345,6 +5503,8 @@ const ticket = useRef<string | null>(null);
 <!-- ════════════════════════════════════════════════════════ -->
 # MarkdownEditor
 
+**导出**：`MarkdownEditor`
+
 > Markdown 编辑器 · WYSIWYG 罩 TipTap + 值进出 markdown 字符串 + 隐藏 input 桥 Field + 标准集工具栏 · forms/advanced
 
 ## 何时用
@@ -5404,6 +5564,8 @@ const [md, setMd] = useState("# 标题");
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Mentions
+
+**导出**：`Mentions` · `MentionText` · `findTrigger` · `insertMention` · `defaultFilter` · `segmentMentions`
 
 > @提及输入 · 复用 Textarea 皮肤 + 触发符唤起候选(镜像 div 测光标像素坐标) + aria-activedescendant 虚拟焦点(零依赖) · forms/advanced
 
@@ -5472,6 +5634,8 @@ import { Mentions, MentionText, type MentionTextProps, findTrigger, insertMentio
 <!-- ════════════════════════════════════════════════════════ -->
 # ModalForm / DrawerForm
 
+**导出**：`ModalForm` · `DrawerForm`
+
 > 弹窗/抽屉表单 · 列表页新增/编辑编排件(复用 Dialog/Drawer + useForm + Button footer) · 提交前自动 validate · async onFinish 成功关闭/失败保持 · 文案接 i18n · forms/framework
 
 ## 何时用
@@ -5496,7 +5660,7 @@ import { ModalForm, DrawerForm } from "@hulianui/ui"
 | submitText | `string` | `locale.modalForm.submit` | 提交按钮文案 |
 | cancelText | `string` | `locale.modalForm.cancel` | 取消按钮文案 |
 | className | `string` | — | 容器类名（控宽度等） |
-| side | `DrawerSide` | `"right"` | 仅 `DrawerForm`：抽屉贴边方向 |
+| side | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | 仅 `DrawerForm`：抽屉贴边方向 |
 
 ## Events
 
@@ -5541,6 +5705,8 @@ const name = form.register("name", { rules: [{ required: true, message: "请输�
 <!-- ════════════════════════════════════════════════════════ -->
 # NumberField
 
+**导出**：`NumberField`
+
 > 数字步进 · Base UI ±按钮 + 键盘步进 + min/max · forms/basic
 
 ## 何时用
@@ -5556,7 +5722,7 @@ import { NumberField } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `number｜null` | — | 受控值（null=空） |
+| value | `number\|null` | — | 受控值（null=空） |
 | defaultValue | `number` | — | 非受控初始值 |
 | min | `number` | — | 最小值 |
 | max | `number` | — | 最大值 |
@@ -5573,7 +5739,7 @@ import { NumberField } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(value: number｜null) => void` | 变化回调（瑚琏收敛签名，丢 Base UI eventDetails） |
+| onValueChange | `(value: number\|null) => void` | 变化回调（瑚琏收敛签名，丢 Base UI eventDetails） |
 
 ## 示例
 ```tsx
@@ -5597,6 +5763,8 @@ const [v, setV] = useState<number | null>(2);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PasswordGenerator
+
+**导出**：`PasswordGenerator` · `AMBIGUOUS` · `CHARSET` · `LENGTH_RANGE` · `MIN_COUNT_RANGE` · `STRENGTH_THRESHOLDS` · `WORDS_RANGE` · `buildPools` · `generatePassphrase` · `generatePassword` · `generateSecret` · `passphraseEntropy` · `passwordEntropy` · `randomInt` · `resolvePassphraseOptions` · `resolvePasswordOptions` · `shuffle` · `strengthOf` · `PASSPHRASE_WORDLIST`
 
 > 密码生成器 · Bitwarden 式双模面板（字符密码 + 密码短语·内置 1747 词表）+ 熵值实时评级四档强度条 + 参数即改即重算 + 逐字符着色（数字蓝符号红·手抄可辨）+ 复制/重生成 + i18n · 随机源 crypto.getRandomValues 拒绝采样消模偏（拒绝 Math.random）+ 生成算法作纯函数导出可服务端复用 + SSR 首帧占位不水合失配 · forms/advanced
 
@@ -5630,9 +5798,9 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| mode | `"password"｜"passphrase"` | — | 受控模式；不传则组件自管 |
-| defaultMode | `"password"｜"passphrase"` | `"password"` | 非受控初始模式 |
-| modes | `GeneratorMode[]` | 两种全开 | 允许的模式。只给一种时隐藏顶部切换器 |
+| mode | `"password"\|"passphrase"` | — | 受控模式；不传则组件自管 |
+| defaultMode | `"password"\|"passphrase"` | `"password"` | 非受控初始模式 |
+| modes | `"password" \| "passphrase"[]` | 两种全开 | 允许的模式。只给一种时隐藏顶部切换器 |
 | defaultPasswordOptions | `PasswordOptions` | 见下 | 密码模式初始参数 |
 | defaultPassphraseOptions | `PassphraseOptions` | 见下 | 短语模式初始参数 |
 | copyable | `boolean` | `true` | 显示复制按钮 |
@@ -5650,7 +5818,7 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onGenerate | `(result: GeneratedSecret) => void` | 每次产出新值（含首次挂载）。`{ value, mode, entropy, strength }` |
-| onModeChange | `(mode: GeneratorMode) => void` | 模式切换（受控时用） |
+| onModeChange | `(mode: "password" \| "passphrase") => void` | 模式切换（受控时用） |
 | onOptionsChange | `(state) => void` | 参数变更，用于把用户偏好持久化 |
 | onCopy | `(value: string) => void` | 复制回调。组件已写入剪贴板，这里只做提示/埋点 |
 
@@ -5736,6 +5904,8 @@ generatePassword({ length: 8 }, () => 0); // 固定序列 → 固定结果
 <!-- ════════════════════════════════════════════════════════ -->
 # ProForm
 
+**导出**：`ProForm`
+
 > 内联表单编排 · useForm + 自动 footer(提交/重置) + async onFinish loading + 自定义 footer(ModalForm 的内联姊妹件·文案接 i18n) · forms/framework
 
 ## 何时用
@@ -5808,6 +5978,8 @@ const email = form.register("email", { rules: [{ pattern: /@/, message: "邮箱�
 <!-- ════════════════════════════════════════════════════════ -->
 # PulsatingButton
 
+**导出**：`PulsatingButton`
+
 > 脉冲按钮 · 外扩光环(box-shadow) + RSC · forms/button · #animated
 
 ## 何时用
@@ -5857,6 +6029,8 @@ import { PulsatingButton } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Radio
 
+**导出**：`RadioGroup` · `Radio`
+
 > 单选 · RadioGroup 单选组 + 键盘方向键 · forms/basic
 
 ## 何时用
@@ -5879,7 +6053,7 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 整组禁用 |
 | required | `boolean` | — | 表单必选 |
 | name | `string` | — | 原生表单 name |
-| orientation | `"vertical"｜"horizontal"` | `"vertical"` | 仅控布局 |
+| orientation | `"vertical"\|"horizontal"` | `"vertical"` | 仅控布局 |
 | className | `string` | — | — |
 | aria-label | `string` | — | 无可见标题时提供 |
 
@@ -5948,6 +6122,8 @@ const [value, setValue] = useState("standard");
 <!-- ════════════════════════════════════════════════════════ -->
 # RainbowButton
 
+**导出**：`RainbowButton`
+
 > 彩虹按钮 · chart 流光底 + 模糊光晕 + RSC · forms/button · #animated
 
 ## 何时用
@@ -5995,6 +6171,8 @@ import { RainbowButton } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Rating
+
+**导出**：`Rating`
 
 > 评分 · 零依赖受控星级(radio 语义) + 自定义图标 + hover 预览 + token 星色 · forms/advanced
 
@@ -6058,6 +6236,8 @@ const [v, setV] = useState<number | null>(3);
 <!-- ════════════════════════════════════════════════════════ -->
 # RegionCascader
 
+**导出**：`RegionCascader` · `sliceLevel` · `cnDivisions`
+
 > 中国省市区级联 · 内置全量行政区划(国家统计局口径·3级) + 浮层搜索直达 + onChange 同回码与名 · dogfood Cascader · forms/advanced
 
 ## 何时用
@@ -6114,6 +6294,8 @@ const [names, setNames] = useState<string[]>([]);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # RegionSelect
+
+**导出**：`RegionSelect` · `toImagePoint` · `normalizeBox` · `applyAspect` · `boxMinSide` · `roundBox` · `strokeWidthFor`
 
 > 图上框选回坐标 · 拖框拿回**原图像素** [x1,y1,x2,y2](区别 ImageCropper 出 Blob) · 反向拖规范化 + minSide 滤误点 + aspect 固定比例(撞边界整体缩不破比例) + boxes 只读其它框带标注 + maxHeight 内滚 · SVG viewBox 打底画框零换算，只有指针→图像素一个方向折算(纯函数可测) · 自然尺寸自量、量到前不画框 · touch-none 防触屏滚页 + setPointerCapture 后置 try/catch + 描边按图宽 · 题库配图/文档标注/OCR 纠错/热区/打码 · forms/advanced
 
@@ -6187,6 +6369,8 @@ const [box, setBox] = useState<RegionBox | null>(null)
 <!-- ════════════════════════════════════════════════════════ -->
 # RemoteSelect
 
+**导出**：`RemoteSelect`
+
 > 远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips · forms/advanced
 
 ## 何时用
@@ -6211,12 +6395,12 @@ import { RemoteSelect } from "@hulianui/ui"
 | debounce | `number` | `300` | 输入防抖毫秒数 |
 | pageSize | `number` | `10` | 每页条数，透传给 `fetcher` |
 | multiple | `boolean` | `false` | 多选（chips 形态）。开启后 `value`/`onChange` 变数组 |
-| value | `string｜number｜null`（多选为数组） | — | 受控值。数组顺序即 chip 渲染顺序 |
+| value | `string\|number\|null`（多选为数组） | — | 受控值。数组顺序即 chip 渲染顺序 |
 | defaultValue | 同上 | — | 非受控初值 |
 | placeholder | `string` | `"请选择"` | 字段占位 |
 | emptyMessage | `ReactNode` | `"无匹配数据"` | 空态文案 |
 | loadingMessage | `ReactNode` | `"加载中…"` | 加载态文案 |
-| size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸 |
 | clearable | `boolean` | `true` | 单选时渲染清除按钮（多选靠 chip 上的 × 逐个删） |
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
@@ -6230,7 +6414,7 @@ import { RemoteSelect } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onChange | 单选 `(value: string｜null, option: Option｜null) => void`<br>多选 `(value: string[], options: Option[]) => void` | 选中变化。第二参给出完整选项（含 `raw` 原始行），与 value 同序 |
+| onChange | 单选 `(value: string\|null, option: Option\|null) => void`<br>多选 `(value: string[], options: Option[]) => void` | 选中变化。第二参给出完整选项（含 `raw` 原始行），与 value 同序 |
 
 ## 示例
 
@@ -6290,6 +6474,8 @@ import { RemoteSelect } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # RippleButton
 
+**导出**：`RippleButton`
+
 > 波纹按钮 · 点击落点扩散(Material) + reduced-motion · forms/button · #animated
 
 ## 何时用
@@ -6339,6 +6525,8 @@ import { RippleButton } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ScopeMatrix 范围矩阵
+
+**导出**：`ScopeMatrix`
 
 > 范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话 · forms/advanced
 
@@ -6399,6 +6587,8 @@ const [scope, setScope] = useState({ allow: ["src/**"], deny: ["**/dist/**"] });
 
 <!-- ════════════════════════════════════════════════════════ -->
 # SearchForm
+
+**导出**：`SearchForm` · `planLayout` · `canCollapse` · `totalSpan`
 
 > 查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖) · forms/framework
 
@@ -6495,6 +6685,8 @@ const fields: SearchField[] = [
 <!-- ════════════════════════════════════════════════════════ -->
 # SecretField
 
+**导出**：`SecretField` · `maskSecret`
+
 > 密钥掩码字段 · sk-abc…wxyz 掩码(full/prefix-suffix) + 眼睛 toggle 显形 + 一键复制原值(同 Snippet idiom·1.5s 反馈) + 尾部动作槽(重置/吊销) + 受控 revealed(API key 管理刚需·复用 _icons Eye/Copy) · forms/advanced
 
 ## 何时用
@@ -6512,10 +6704,10 @@ import { SecretField, maskSecret } from "@hulianui/ui"
 |------|------|------|------|
 | value * | `string` | — | 密钥原值 |
 | revealed | `boolean` | — | 受控显形态；不传则组件自管 |
-| maskStrategy | `"full"｜"prefix-suffix"` | `"prefix-suffix"` | full 全掩 / prefix-suffix 保留首尾 |
+| maskStrategy | `"full"\|"prefix-suffix"` | `"prefix-suffix"` | full 全掩 / prefix-suffix 保留首尾 |
 | copyable | `boolean` | `true` | 是否显示复制按钮 |
 | readOnly | `boolean` | `false` | 只读外观（去掉交互态描边） |
-| size | `"sm"｜"md"` | `"md"` | — |
+| size | `"sm"\|"md"` | `"md"` | — |
 | className | `string` | — | — |
 
 ## Events
@@ -6564,6 +6756,8 @@ const [revealed, setRevealed] = useState(false);
 <!-- ════════════════════════════════════════════════════════ -->
 # Segmented
 
+**导出**：`Segmented`
+
 > 分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖) · forms/basic
 
 ## 何时用
@@ -6585,7 +6779,7 @@ import { Segmented } from "@hulianui/ui"
 | value | `string` | — | 受控选中值 |
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整体禁用 |
-| size | `"sm"｜"md"` | `"md"` | — |
+| size | `"sm"\|"md"` | `"md"` | — |
 | className | `string` | — | — |
 | aria-label | `string` | — | 无可见标题时提供 |
 
@@ -6650,6 +6844,8 @@ import { Segmented } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Select
 
+**导出**：`Select` · `SelectTrigger` · `SelectContent` · `SelectItem` · `SelectGroup` · `SelectGroupLabel`
+
 > 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label + clearable / searchable / loading / 分组 · forms/basic
 
 ## 何时用
@@ -6670,7 +6866,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### Select
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
+| items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
 | placeholder | `ReactNode` | — | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
 | multiple | `boolean` | `false` | 多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开 |
 | clearable | `boolean` | `false` | 有值时 Trigger 右侧 hover/focus 浮出清除按钮，点击置空（单选回传 `null`，多选回传 `[]`） |
@@ -6690,7 +6886,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectTrigger
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | maxDisplay | `number` | `2` | 多选模式下最多平铺几个已选 label，超出折叠为 +N 计数 |
 | className | `string` | — | 透传类名 |
@@ -6698,8 +6894,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectContent
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| side | `"top" ｜ "bottom"` | `"bottom"` | 弹出方向 |
-| align | `"start" ｜ "center" ｜ "end"` | — | 对齐 |
+| side | `"top" \| "bottom"` | `"bottom"` | 弹出方向 |
+| align | `"start" \| "center" \| "end"` | — | 对齐 |
 | sideOffset | `number` | — | 偏移量 |
 
 ### SelectItem
@@ -6714,7 +6910,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(value: string ｜ null, eventDetails) => void`（多选时 `(value: string[], …)`） | 选中值变化回调（透传 Base UI `Select.Root`） |
+| onValueChange | `(value: string \| null, eventDetails) => void`（多选时 `(value: string[], …)`） | 选中值变化回调（透传 Base UI `Select.Root`） |
 | onOpenChange | `(open: boolean, eventDetails) => void` | 下拉开合变化回调（透传 Base UI `Select.Root`） |
 
 ## Slots
@@ -6812,6 +7008,8 @@ const { data, isLoading } = useFonts();
 <!-- ════════════════════════════════════════════════════════ -->
 # ShimmerButton
 
+**导出**：`ShimmerButton`
+
 > 微光按钮 · 边缘游走火花(conic) + token + RSC · forms/button · #animated
 
 ## 何时用
@@ -6866,6 +7064,8 @@ import { ShimmerButton } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Slider
 
+**导出**：`Slider`
+
 > 滑块 · Base UI 单值/range + 键盘步进 · forms/basic
 
 ## 何时用
@@ -6883,8 +7083,8 @@ import { Slider } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `number｜readonly number[]` | — | 受控值（数组=range） |
-| defaultValue | `number｜readonly number[]` | — | 非受控初始值 |
+| value | `number\|readonly number[]` | — | 受控值（数组=range） |
+| defaultValue | `number\|readonly number[]` | — | 非受控初始值 |
 | min | `number` | `0` | 最小值 |
 | max | `number` | `100` | 最大值 |
 | step | `number` | `1` | 步进量 |
@@ -6900,8 +7100,8 @@ import { Slider } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onValueChange | `(value: number｜number[], eventDetails) => void` | 值变化回调（单值传 number、range 传 number[]） |
-| onValueCommitted | `(value: number｜number[], eventDetails) => void` | 拖动结束/提交时回调 |
+| onValueChange | `(value: number\|number[], eventDetails) => void` | 值变化回调（单值传 number、range 传 number[]） |
+| onValueCommitted | `(value: number\|number[], eventDetails) => void` | 拖动结束/提交时回调 |
 
 ## 示例
 ```tsx
@@ -6925,6 +7125,8 @@ import { Slider } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # SocialButton
 
+**导出**：`SocialButton`
+
 > 第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X 品牌 logo(内联 simple-icons·零依赖) + outline/solid 变体 + 纯 logo 方钮 + loading · 黑白系品牌 solid 随主题前景避暗色不可见 · forms/button
 
 ## 何时用
@@ -6942,10 +7144,10 @@ import { SocialButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| provider* | `"wechat" ｜ "alipay" ｜ "qq" ｜ "weibo" ｜ "github" ｜ "google" ｜ "apple" ｜ "x"` | — | 第三方平台，决定 logo、默认文案与品牌色 |
-| variant | `"solid" ｜ "outline"` | `"outline"` | solid=品牌色填充（黑白品牌随主题前景）；outline=描边中性底 + 品牌色 logo（推荐） |
-| shape | `"button" ｜ "icon"` | `"button"` | button=带文案；icon=纯 logo 方钮 |
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸 |
+| provider* | `"wechat" \| "alipay" \| "qq" \| "weibo" \| "github" \| "google" \| "apple" \| "x"` | — | 第三方平台，决定 logo、默认文案与品牌色 |
+| variant | `"solid" \| "outline"` | `"outline"` | solid=品牌色填充（黑白品牌随主题前景）；outline=描边中性底 + 品牌色 logo（推荐） |
+| shape | `"button" \| "icon"` | `"button"` | button=带文案；icon=纯 logo 方钮 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
 | loading | `boolean` | `false` | 提交中：logo 替换为转圈并禁用 |
 | className | `string` | — | 透传根节点类名 |
 
@@ -6981,6 +7183,8 @@ import { SocialButton } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # StepsForm
+
+**导出**：`StepsForm`
 
 > 分步表单 · 复用 Steps 指示器 + 上一步/下一步/提交导航 + onStepValidate 逐步校验 + 跨步保值(消费者 useForm 持有·文案接 i18n) · forms/framework
 
@@ -7050,6 +7254,8 @@ const name = form.register("name", { rules: [{ required: true, message: "请输�
 <!-- ════════════════════════════════════════════════════════ -->
 # Switch
 
+**导出**：`Switch`
+
 > 开关 · Base UI 受控 + ARIA · forms/basic
 
 ## 何时用
@@ -7071,7 +7277,7 @@ import { Switch } from "@hulianui/ui"
 | id | `string` | — | — |
 | className | `string` | — | — |
 | aria-label | `string` | — | 无可见标题时提供 |
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 视觉尺寸（轨道 36×20 / 40×24 / 48×28）。`md` 与加这个 prop 之前逐像素一致 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 视觉尺寸（轨道 36×20 / 40×24 / 48×28）。`md` 与加这个 prop 之前逐像素一致 |
 | touchTarget | `boolean` | `false` | 扩出一块不可见的 ≥44px 命中区（只影响命中，不占布局、不改视觉）。移动端建议开 |
 
 ## Events
@@ -7104,6 +7310,8 @@ const [on, setOn] = useState(false);
 <!-- ════════════════════════════════════════════════════════ -->
 # Textarea
 
+**导出**：`Textarea` · `textareaVariants`
+
 > 多行输入 · 自适应高度 · forms/basic
 
 ## 何时用
@@ -7121,7 +7329,7 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动 |
 | autoResize | `boolean` | `false` | 随内容自适应高度（JS scrollHeight，`rows` 为下限） |
 | rows | `number` | `3` | 初始/最小行高 |
@@ -7152,6 +7360,8 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TimeField
+
+**导出**：`TimeField`
 
 > 时间分段输入 · 自研零依赖(时/分/秒各一段 spinbutton·↑↓ 调值/←→ 切段/数字键两位覆写) + min-max 钳制 · 定宽 HH:mm[:ss] 受控 · forms/datetime
 
@@ -7247,6 +7457,8 @@ const [time, setTime] = useState<string | null>(null);
 <!-- ════════════════════════════════════════════════════════ -->
 # TimePicker
 
+**导出**：`TimePicker` · `buildOptions` · `clampTime` · `formatTimeParts` · `isHourDisabled` · `isMinuteDisabled` · `isSecondDisabled` · `parseTime` · `snapToStep`
+
 > 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · forms/datetime
 
 ## 何时用
@@ -7337,6 +7549,8 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 <!-- ════════════════════════════════════════════════════════ -->
 # Toggle
 
+**导出**：`Toggle` · `ToggleGroup` · `toggleVariants`
+
 > 切换按钮 · Base UI pressed 态 + ToggleGroup 单/多选 · forms/basic
 
 ## 何时用
@@ -7358,8 +7572,8 @@ import { Toggle, ToggleGroup, toggleVariants } from "@hulianui/ui"
 | defaultPressed | `boolean` | `false` | 非受控初始按下态 |
 | disabled | `boolean` | `false` | 禁用 |
 | value | `string` | — | 在 ToggleGroup 内标识该项 |
-| variant | `"default"｜"outline"｜"pill"` | `"default"` | default=灰底软选中 / outline=主色实心 / pill=圆角描边 + soft 主色选中（AI 工具栏开关风） |
-| size | `"sm"｜"md"` | `"md"` | — |
+| variant | `"default"\|"outline"\|"pill"` | `"default"` | default=灰底软选中 / outline=主色实心 / pill=圆角描边 + soft 主色选中（AI 工具栏开关风） |
+| size | `"sm"\|"md"` | `"md"` | — |
 | className | `string` | — | — |
 | aria-label | `string` | — | 仅图标时必填 |
 
@@ -7371,7 +7585,7 @@ import { Toggle, ToggleGroup, toggleVariants } from "@hulianui/ui"
 | defaultValue | `string[]` | — | 非受控初始按下项数组 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | multiple | `boolean` | `false` | true=多选共存；false=单选互斥 |
-| orientation | `"horizontal"｜"vertical"` | `"horizontal"` | — |
+| orientation | `"horizontal"\|"vertical"` | `"horizontal"` | — |
 | className | `string` | — | — |
 
 ## Events
@@ -7432,6 +7646,8 @@ const [on, setOn] = useState(false);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Transfer
+
+**导出**：`Transfer`
 
 > 穿梭框 · 左右双 listbox 面板 + 移动按钮(选中/全部) + 可选搜索 + 空态(零依赖·复用 Listbox/Empty) · forms/advanced
 
@@ -7495,6 +7711,8 @@ const [target, setTarget] = useState<string[]>(["dashboard", "orders"]);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TreeSelect
+
+**导出**：`TreeSelect`
 
 > 树选择器 · 触发器 + Popover 浮层内嵌 Tree + 单选/多选(checkable)对称 + 树内搜索 · 复用树引擎核 · forms/advanced
 
@@ -7562,6 +7780,8 @@ const [dept, setDept] = useState<string | string[]>("");
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Upload
+
+**导出**：`Upload` · `matchesAccept` · `moveUploadFile` · `useUpload`
 
 > 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload · forms/advanced
 
@@ -7714,6 +7934,8 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
 
 # VoiceRecord
 
+**导出**：`VoiceRecord`
+
 语音录制触发器，通过 `status` 驱动视觉反馈。
 
 ## 状态
@@ -7752,6 +7974,8 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AnimatedList
+
+**导出**：`AnimatedList`
 
 > 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 
@@ -7797,6 +8021,8 @@ import { AnimatedList } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Annotation
 
+**导出**：`Annotation` · `ARROWS` · `ARROW_H` · `ARROW_W` · `annotationGeometry` · `isDiagonal` · `sideVector`
+
 > 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注 · data-display/info
 
 ## 何时用
@@ -7815,8 +8041,8 @@ import { Annotation } from "@hulianui/ui/annotation"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | note | `ReactNode` | — | 手写旁注的内容。省略或传空时只留荧光笔底色，不画箭头也不画标签。 |
-| side | `"n"｜"ne"｜"e"｜"se"｜"s"｜"sw"｜"w"｜"nw"` | `ne` | **标签所在的方位**（与 Tooltip/Popover 的 side 同义），箭头自动从标签指回目标。 |
-| tone | `"neutral"｜"primary"｜"success"｜"warning"｜"danger"｜"rainbow"` | `neutral` | 语气色。只染标注自身，被标注的正文保持原色。rainbow 为循环色相，纯装饰。 |
+| side | `"n"\|"ne"\|"e"\|"se"\|"s"\|"sw"\|"w"\|"nw"` | `ne` | **标签所在的方位**（与 Tooltip/Popover 的 side 同义），箭头自动从标签指回目标。 |
+| tone | `"neutral"\|"primary"\|"success"\|"warning"\|"danger"\|"rainbow"` | `neutral` | 语气色。只染标注自身，被标注的正文保持原色。rainbow 为循环色相，纯装饰。 |
 | mark | `boolean` | `true` | 荧光笔底色。外扩量见下方 `--hl-ann-spread`。 |
 | rotate | `number` | `-4` | 标签倾斜角（deg）。传 `0` 摆正。 |
 | labelWidth | `number` | `150` | 标签折行前的最大宽度（px）。 |
@@ -7877,6 +8103,8 @@ import { Annotation } from "@hulianui/ui/annotation"
 <!-- ════════════════════════════════════════════════════════ -->
 # Avatar
 
+**导出**：`Avatar`
+
 > 头像 · Base UI 图片+fallback · data-display/info
 
 ## 何时用
@@ -7923,6 +8151,8 @@ import { Avatar } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # AvatarCircles
 
+**导出**：`AvatarCircles` · `avatarCirclesItemVariants`
+
 > 堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC) · data-display/info
 
 ## 何时用
@@ -7966,6 +8196,8 @@ const avatars = [
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AwardBadge
+
+**导出**：`AwardBadge` · `laurelLeaves` · `laurelStemPath` · `laurelDefaults`
 
 > 桂冠奖章 · 左桂冠圈名次 + 右「前缀小字 + 粗体主标题」两行 · 对标 GitHub Trending「#1 Repository Of The Day」/ Product Hunt 荣誉牌 · outline/solid/soft 三皮肤 × 5 语气 + color 逃生舱 × sm/md/lg · emblem 槽换徽记(奖杯/平台 logo)·wreath 可关 · href 整枚可点 · 桂冠由纯函数 laurelLeaves/laurelStemPath 算出(吃 currentColor·缩放不糊·零图片) · data-display/info
 
@@ -8030,6 +8262,8 @@ import { AwardBadge, laurelLeaves, laurelStemPath } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Badge
 
+**导出**：`Badge`
+
 > 计数角标 · count/max 溢出 + dot + 自定义内容 + 包裹叠加(四角/offset) · data-display/info
 
 ## 何时用
@@ -8050,9 +8284,9 @@ import { Badge } from "@hulianui/ui"
 | dot | `boolean` | `false` | 仅显示小圆点不显示数字（优先级高于 count）。 |
 | showZero | `boolean` | `false` | count=0 仍显示。 |
 | invisible | `boolean` | — | 强制隐藏角标，保留被包裹子元素。 |
-| tone | `"neutral"｜"brand"｜"success"｜"warning"｜"danger"` | `danger` | 语气色（默认通知红）。 |
-| size | `"sm"｜"md"` | `md` | 尺寸。 |
-| placement | `"top-right"｜"top-left"｜"bottom-right"｜"bottom-left"` | `top-right` | 有 children 时角标叠加的角位。 |
+| tone | `"neutral"\|"brand"\|"success"\|"warning"\|"danger"` | `danger` | 语气色（默认通知红）。 |
+| size | `"sm"\|"md"` | `md` | 尺寸。 |
+| placement | `"top-right"\|"top-left"\|"bottom-right"\|"bottom-left"` | `top-right` | 有 children 时角标叠加的角位。 |
 | offset | `[number, number]` | — | 角标位置微调 [x, y] px（正值=右/下），圆形宿主常用来外推贴边。 |
 
 ## Slots
@@ -8083,6 +8317,8 @@ import { Badge } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # BentoGrid
 
+**导出**：`BentoGrid` · `BentoCard`
+
 > 错落栅格 · BentoGrid/BentoCard 复合 + 跨列跨行 + hover CTA(纯 CSS·RSC) · data-display/collection
 
 ## 何时用
@@ -8101,14 +8337,14 @@ import { BentoGrid, BentoCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| ...div | HTMLAttributes\<HTMLDivElement\> | — | 透传（`className` 控列数等） |
+| ...div | HTMLAttributes<HTMLDivElement> | — | 透传（`className` 控列数等） |
 
 ### BentoCard
 继承 `Omit<HTMLAttributes<HTMLDivElement>, "title">`。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| ...div | Omit\<HTMLAttributes\<HTMLDivElement\>, "title"\> | — | 透传（用 `className="sm:col-span-2"` 跨列） |
+| ...div | Omit<HTMLAttributes<HTMLDivElement>, "title"> | — | 透传（用 `className="sm:col-span-2"` 跨列） |
 
 ## Slots
 
@@ -8154,6 +8390,8 @@ import { Zap, Shield } from "lucide-react";
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Book3D
+
+**导出**：`Book3D`
 
 > 3D 立体书 · CSS 3D transform 透视书体(前封/书脊/页块/后封) + 渐变或图封面 + 封面标题副标 + 角标缎带 + hover 翻正(纯 transform·GPU 合成·reduced-motion 降级) · 作品集书架/封面墙 · data-display/collection · #animated
 
@@ -8219,6 +8457,8 @@ import { Book3D } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # BounceCards
+
+**导出**：`BounceCards`
 
 > 扇形弹跳卡 · 一叠卡片扇形铺开的入场弹跳组件 · 逐张 scale 0 弹性弹入 + hover 推挤让位（零依赖去 gsap·motion 弹簧·reduced-motion） · data-display/collection · #animated
 
@@ -8290,6 +8530,8 @@ import { BounceCards } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Card
 
+**导出**：`Card` · `CardHeader` · `CardBody` · `CardFooter`
+
 > 卡片 · Header/Body/Footer 插槽 · data-display/collection
 
 ## 何时用
@@ -8330,6 +8572,8 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # CardSwap
+
+**导出**：`CardSwap`
 
 > 卡片洗牌 · 3D 透视卡片自动洗牌组件 · 最前卡下坠 → 其余递进 → 绕回队尾循环 + 复合 CardSwap.Card 默认皮肤（去 gsap·motion useAnimate·reduced-motion） · data-display/collection · #animated
 
@@ -8404,6 +8648,8 @@ import { CardSwap } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Carousel
 
+**导出**：`Carousel`
+
 > 轮播 · 自研零依赖 scroll-snap + 箭头/圆点/autoplay/loop + 拖拽/键盘(reduced-motion) · data-display/collection
 
 ## 何时用
@@ -8467,6 +8713,8 @@ import { Carousel } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Chart
+
+**导出**：`AreaChart` · `BarChart` · `LineChart` · `PieChart` · `RadarChart` · `RadialChart` · `categoryAxisWidth` · `chartColor`
 
 > 图表 · recharts 直裹 + chart token 皮肤(Area/Bar) · data-display/stat
 
@@ -8549,6 +8797,8 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 <!-- ════════════════════════════════════════════════════════ -->
 # Chip
 
+**导出**：`Chip` · `chipVariants`
+
 > 标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数) · data-display/info
 
 ## 何时用
@@ -8564,9 +8814,9 @@ import { Chip, chipVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"solid"｜"soft"｜"outline"` | `soft` | 视觉风格。 |
-| tone | `"brand"｜"danger"｜"neutral"` | `brand` | 语气色。 |
-| size | `"sm"｜"md"` | `md` | 尺寸。 |
+| variant | `"solid"\|"soft"\|"outline"` | `soft` | 视觉风格。 |
+| tone | `"brand"\|"danger"\|"neutral"` | `brand` | 语气色。 |
+| size | `"sm"\|"md"` | `md` | 尺寸。 |
 | dot | `boolean` | — | 前导小圆点（状态指示）。 |
 | isDisabled | `boolean` | — | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
 | className | `string` | — | — |
@@ -8609,6 +8859,8 @@ import { Chip, chipVariants } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ChromaGrid
+
+**导出**：`ChromaGrid`
 
 > 聚光卡片墙 · 光标聚光揭示的卡片墙 · 整片灰度暗化、光标圈内透出全彩 + 单卡 hover 径向高光（弹性跟随·reduced-motion） · data-display/collection · #animated
 
@@ -8676,6 +8928,8 @@ import { ChromaGrid } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CircularGallery
 
+**导出**：`CircularGallery`
+
 > 弧形图片画廊 · ogl 弧形图片画廊 · 卡片沿圆弧弯曲倾斜排开 + 滚轮/拖拽惯性平移首尾无缝循环(ogl·圆角SDF·token化标题·reduced-motion 降级静态轨道) · data-display/collection · #animated
 
 ## 何时用
@@ -8740,6 +8994,8 @@ import { CircularGallery } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CodeReviewThread
 
+**导出**：`CodeReviewThread` · `severityStyle` · `SEVERITY`
+
 > 代码评审线程 · 代码审查评论线程 · severity 左边色条(四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠 · 嵌 code-diff annotations 槽或独立用·复用 Avatar/Tag/CodeDiff · data-display/collection
 
 ## 何时用
@@ -8756,7 +9012,7 @@ import { CodeReviewThread, severityStyle, SEVERITY } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | comments* | `ReviewComment[]` | — | 线程内评论数组（含作者 kind、severity、body、可选 suggestion）。 |
-| status | `"open"｜"resolved"｜"wontfix"` | `open`（内部自管） | 线程状态；受控，传则由外部托管。 |
+| status | `"open"\|"resolved"\|"wontfix"` | `open`（内部自管） | 线程状态；受控，传则由外部托管。 |
 | replyable | `boolean` | `true` | 是否显示回复框。 |
 | defaultCollapsed | `boolean` | `false` | 非受控初始折叠态。 |
 | collapsed | `boolean` | — | 受控折叠（优先于 defaultCollapsed）。 |
@@ -8766,7 +9022,7 @@ import { CodeReviewThread, severityStyle, SEVERITY } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onStatusChange | `(s: ReviewThreadStatus) => void` | 状态变更回调（status 受控时回写）。 |
+| onStatusChange | `(s: "open" \| "resolved" \| "wontfix") => void` | 状态变更回调（status 受控时回写）。 |
 | onReply | `(text: string) => void` | 提交回复回调。 |
 | onAdoptSuggestion | `(commentId: string) => void` | 采纳某条建议修改回调。 |
 | onCollapsedChange | `(v: boolean) => void` | 折叠态变更回调（collapsed 受控时回写）。 |
@@ -8806,6 +9062,8 @@ const comments = [
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Comment
+
+**导出**：`Comment` · `CommentActions` · `CommentAction` · `commentActionVariants`
 
 > 评论 · 嵌套回复缩进 + 可选连接线 + 操作区 + comment/log 类型(复用 Avatar/Link·RSC) · data-display/info
 
@@ -8884,6 +9142,8 @@ const actions = (
 <!-- ════════════════════════════════════════════════════════ -->
 # ComponentPicker
 
+**导出**：`ComponentPicker` · `ComponentPickerCommand` · `ALL_CATEGORY_KEY` · `buildCategoryTree` · `defaultPropsOf` · `matchesCategory` · `parseComponentCatalog` · `fuzzyMatch` · `rankComponents` · `scoreComponent`
+
 > 组件库浏览器 · 左分类树(复用 Tree) + 顶部模糊搜索 + 结果网格(Card) + 详情面板(预览/Props 表/示例代码三开关) · 自研零依赖打分器(slug 命中远重于描述命中·不引 fuse.js) + `parseComponentCatalog` 把 llms-full.txt 解析成条目(纯函数·在消费方那层跑) + `renderPreview` 注入 live 预览(库不 eval 不 iframe) · 附 ComponentPickerCommand 薄封装走 ⌘K · data-display/collection
 
 ## 何时用
@@ -8929,10 +9189,10 @@ import {
 | showPreview | boolean | `false` | 详情面板是否显示预览区 |
 | showProps | boolean | `true` | 详情面板是否显示 Props 表（复用 Table） |
 | showExamples | boolean | `true` | 详情面板是否显示示例代码（复用 CodeBlock） |
-| activeSlug | string ｜ null | — | 受控高亮项（详情面板展示的那个） |
-| defaultActiveSlug | string ｜ null | `null` | 非受控初始高亮项 |
+| activeSlug | string \| null | — | 受控高亮项（详情面板展示的那个） |
+| defaultActiveSlug | string \| null | `null` | 非受控初始高亮项 |
 | maxResults | number | `60` | 结果区最多渲染多少条 |
-| labels | Partial\<ComponentPickerLabels\> | — | 界面文案覆盖，可整体或逐条；不传则取 ConfigProvider 的 locale（内置兜底 zh-CN） |
+| labels | Partial<ComponentPickerLabels> | — | 界面文案覆盖，可整体或逐条；不传则取 ConfigProvider 的 locale（内置兜底 zh-CN） |
 | className | string | — | 外层类名。**须给确定高度**（如 `h-[560px]`），组件内部按 flex 填满、各区独立滚动 |
 
 `ComponentPickerItem`：`{ slug, name, description, category, group, tags?, props?, examples? }`。
@@ -8945,9 +9205,9 @@ import {
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onSelect | (slug: string, props: Record\<string, unknown\>) => void | 确认选用。第二参由 `defaultPropsOf(item)` 派生——只收文档里写明的**字面量**默认值，函数/对象一律不猜 |
+| onSelect | (slug: string, props: Record<string, unknown>) => void | 确认选用。第二参由 `defaultPropsOf(item)` 派生——只收文档里写明的**字面量**默认值，函数/对象一律不猜 |
 | onFilterChange | (filter: ComponentPickerFilter) => void | 搜索词或分类变化。受控（传了 `filter`）时这是唯一出口 |
-| onActiveChange | (slug: string ｜ null) => void | 高亮项变化（点结果项 / 上下键 / Esc 清空） |
+| onActiveChange | (slug: string \| null) => void | 高亮项变化（点结果项 / 上下键 / Esc 清空） |
 
 ## Slots
 
@@ -9032,6 +9292,8 @@ const [open, setOpen] = useState(false);
 <!-- ════════════════════════════════════════════════════════ -->
 # ContributionGraph
 
+**导出**：`ContributionGraph` · `buildContributionCalendar`
+
 > 贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星期标签只标奇数行 · 色阶复用 Heatmap 的 bucketize(同一口径) + tone 换色系 + 少→多图例 · 无点击时整块 role=img 播报总数·onDayClick 后格子成可聚焦按钮 · 日期算术是纯函数 buildContributionCalendar 可测(零新依赖·RSC) · data-display/collection
 
 ## 何时用
@@ -9099,6 +9361,8 @@ import { ContributionGraph, buildContributionCalendar } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Coupon
+
+**导出**：`Coupon`
 
 > 优惠券 · 撕票造型(中缝虚线+上下半圆穿孔·纯CSS) + 满减/折扣/包邮三类 + 可领/已领/已用/过期四态 + 选券高亮(电商标配·只消费 token) · data-display/info
 
@@ -9168,6 +9432,8 @@ import { Coupon } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CreditCard
 
+**导出**：`CreditCard` · `detectBrand` · `formatCardNumber` · `maskCardNumber`
+
 > 银行卡展示 · 卡号前缀识别品牌(visa/mastercard/amex/银联/jcb/discover) + 分组格式化/打码(纯函数可测) + token 渐变卡面 + 芯片/品牌字标 + 正反面(磁条/CVC) · 结算确认/钱包(纯展示·RSC) · data-display/info
 
 ## 何时用
@@ -9212,6 +9478,8 @@ const [flipped, setFlipped] = useState(false);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Danmaku
+
+**导出**：`Danmaku` · `allocateTrack` · `densityGap` · `estimateWidth` · `leastBusyTrack` · `scrollDuration` · `trackFreeTime`
 
 > 弹幕引擎 · 轨道分配防重叠(等速模型·第二条入场后发车永不追尾) · scroll 滚动/top 顶部/bottom 底部三模式 + 轨道数/速度/密度(low/normal/high)/占屏比/透明度/暂停 + pointer-events none 穿透到底层视频 · 几何抽纯函数(allocateTrack/scrollDuration/estimateWidth)带单测 · 直播旗舰 · data-display/collection · #animated
 
@@ -9263,6 +9531,8 @@ setItems((p) => [...p.slice(-60), { id: `d${i}`, text: "前排围观", mode: "sc
 
 <!-- ════════════════════════════════════════════════════════ -->
 # DecayCard
+
+**导出**：`DecayCard`
 
 > 湍流溶解卡 · 鼠标驱动的「湍流溶解」图片卡 · SVG feTurbulence+feDisplacementMap 随鼠标速度融化图像 + 带阻尼的视差倾斜平移（零依赖去 gsap·RAF 缓动·reduced-motion） · data-display/collection · #animated
 
@@ -9324,6 +9594,8 @@ import { DecayCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DeployStatus
 
+**导出**：`DeployStatus`
+
 > 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(building 脉冲)/icon 紧凑三形态 · 区别健康态 StatusDot 语义 · CI/CD/Pages/流水线刚需 · data-display/info
 
 ## 何时用
@@ -9369,6 +9641,8 @@ import { DeployStatus } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Descriptions
+
+**导出**：`Descriptions` · `DescriptionsItem`
 
 > 描述列表 · 详情页键值对 + horizontal/vertical + bordered + span 跨列(纯皮肤·RSC) · data-display/collection
 
@@ -9433,6 +9707,8 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DesignCanvas
 
+**导出**：`DesignCanvas` · `canvasToScreen` · `itemsBounds` · `moveRect` · `normalizeRect` · `resizeRect` · `snapTo`
+
 > 视觉设计画布 · 零依赖原生 Pointer Events · 无限平移缩放（滚轮以指针为锚点/空格·中键·右键拖拽）+ 元素选择框 + 拖拽移动 + 八向 resize（越过锚定边自动翻转）· 受控 items 托管几何、children 作自绘图层，`data-canvas-item` 事件委托识别子元素 · 键盘可达（Tab 走查 / 方向键微调 / Alt+方向键改尺寸 / Delete 删除）· 几何抽纯函数带单测 · data-display/collection
 
 ## 何时用
@@ -9459,19 +9735,19 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | defaultZoom | number | 1 | 非受控初始缩放 |
 | pan | { x, y } | — | 平移受控（画布原点在容器内的屏幕像素偏移） |
 | defaultPan | { x, y } | { x: 0, y: 0 } | 非受控初始平移 |
-| selectedElement | string ｜ null | — | 选中受控（元素 id / 路径） |
-| defaultSelectedElement | string ｜ null | null | 非受控初始选中 |
+| selectedElement | string \| null | — | 选中受控（元素 id / 路径） |
+| defaultSelectedElement | string \| null | null | 非受控初始选中 |
 | minZoom | number | 0.1 | 缩放下限 |
 | maxZoom | number | 4 | 缩放上限 |
-| grid | boolean ｜ number | true | 网格底纹：`true`=40 世界单位，数字=自定义边长，`false` 关闭 |
+| grid | boolean \| number | true | 网格底纹：`true`=40 世界单位，数字=自定义边长，`false` 关闭 |
 | snap | number | 0 | 拖动 / resize / 方向键的吸附步长（世界单位），0 = 不吸附 |
 | minItemSize | number | 8 | 元素最小宽高（世界单位） |
-| wheelBehavior | "zoom" ｜ "pan" | "zoom" | 滚轮默认行为，按住 Ctrl/⌘ 反转 |
+| wheelBehavior | "zoom" \| "pan" | "zoom" | 滚轮默认行为，按住 Ctrl/⌘ 反转 |
 | controls | boolean | true | 是否显示右下角缩放工具条 |
 | readOnly | boolean | false | 禁用拖动 / resize / 删除，仍可选中、平移、缩放 |
 | className | string | — | 画布外层类名（须有确定高度，组件填满） |
-| labels | Partial\<DesignCanvasLabels\> | — | 覆盖取自 locale 的文案（canvas / item / zoomIn / zoomOut / fitView / resetView）；不传则跟随 ConfigProvider |
-| apiRef | MutableRefObject\<DesignCanvasApi ｜ null\> | — | 命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas） |
+| labels | Partial<DesignCanvasLabels> | — | 覆盖取自 locale 的文案（canvas / item / zoomIn / zoomOut / fitView / resetView）；不传则跟随 ConfigProvider |
+| apiRef | MutableRefObject<DesignCanvasApi \| null> | — | 命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas） |
 
 ## Events
 
@@ -9479,7 +9755,7 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 |------|------|------|
 | onItemsChange | (items: DesignCanvasItem[]) => void | 几何变化后回吐**整组**新 items。拖动 / resize 在指针抬起时提交一次，方向键每次按下提交一次 |
 | onItemDelete | (id: string) => void | 选中元素后按 Delete / Backspace。不传则不响应删除键 |
-| onSelect | (elementPath: string ｜ null) => void | 选中变化（点元素 = 它的 id，点空白 = null） |
+| onSelect | (elementPath: string \| null) => void | 选中变化（点元素 = 它的 id，点空白 = null） |
 | onZoomChange | (zoom: number) => void | 缩放变化 |
 | onPanChange | (pan: { x, y }) => void | 平移变化 |
 
@@ -9560,6 +9836,8 @@ const screen = canvasToScreen({ x: item.x, y: item.y }, { x: pan.x, y: pan.y, zo
 <!-- ════════════════════════════════════════════════════════ -->
 # DiffStat
 
+**导出**：`DiffStat` · `splitBlocks`
+
 > 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖 · data-display/info
 
 ## 何时用
@@ -9605,6 +9883,8 @@ import { DiffStat, splitBlocks } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # DocumentSheet
+
+**导出**：`DocumentSheet` · `DocumentSheetHeader` · `DocumentSheetSection` · `DocumentSheetFooter` · `DocumentSheetSignature`
 
 > 单据纸张 · A4 居中纸面(白底/暗色近黑纸·shadow·210mm 宽) + 打印态隔离(工具栏/阴影/外边距 print:hidden·data-document-sheet 钩子) + 内置打印按钮(onPrint ?? window.print) + 子件 Header(左右抬头)/Section(带小标题段)/Footer(签章位) · 报价单/发票等单据容器 · data-display/collection
 
@@ -9676,6 +9956,8 @@ DocumentSheetHeader / DocumentSheetFooter：仅排版容器，透传 div 属性�
 <!-- ════════════════════════════════════════════════════════ -->
 # DomeGallery
 
+**导出**：`DomeGallery`
+
 > 球面图库 · ：图片瓦片贴在 CSS 3D 半球内壁，拖拽旋转浏览、点击放大查看 · 原生 PointerEvents 自搓拖拽+RAF 惯性 + motion 灯箱(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
@@ -9740,6 +10022,8 @@ import { DomeGallery } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Dot
 
+**导出**：`Dot`
+
 > 状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC) · data-display/info
 
 ## 何时用
@@ -9755,9 +10039,9 @@ import { Dot } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"｜"brand"｜"success"｜"warning"｜"danger"` | `neutral` | 语气色：neutral 默认 / brand 处理中 / success 在线/成功 / warning 警告 / danger 离线/错误。 |
+| tone | `"neutral"\|"brand"\|"success"\|"warning"\|"danger"` | `neutral` | 语气色：neutral 默认 / brand 处理中 / success 在线/成功 / warning 警告 / danger 离线/错误。 |
 | color | `string` | — | 任意圆点色：语义色名（`chart-2`/`primary`…）、任意 CSS 色或变量，走 `resolveTone`。与 `tone` 同传时 **color 优先**。图例色点跟图表序列同色时用它。 |
-| size | `"sm"｜"md"｜"lg"` | `md` | 尺寸。 |
+| size | `"sm"\|"md"\|"lg"` | `md` | 尺寸。 |
 | pulse | `boolean` | `false` | 呼吸扩散动画（在线/进行中等活跃态语义）。 |
 | label | `string` | — | 提供则 `role=status` + aria-label（表意圆点）；不提供则 aria-hidden（纯装饰）。 |
 
@@ -9789,6 +10073,8 @@ import { Dot } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # EditableTable
+
+**导出**：`EditableTable`
 
 > 行内编辑表格 · 行级编辑(草稿副本/保存校验/取消还原) + 自定义编辑器(editor 逃生舱) + 增删行 + 列对齐/宽度(企业录入场景·文案接 i18n) · data-display/collection
 
@@ -9876,6 +10162,8 @@ const columns: EditableColumn<Row>[] = [
 <!-- ════════════════════════════════════════════════════════ -->
 # Empty
 
+**导出**：`Empty`
+
 > 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC) · data-display/placeholder
 
 ## 何时用
@@ -9924,6 +10212,8 @@ import { Empty } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # EventStream 事件流
+
+**导出**：`EventStream`
 
 > 事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」 · data-display/collection
 
@@ -9995,6 +10285,8 @@ import { EventStream } from "@hulianui/ui";
 <!-- ════════════════════════════════════════════════════════ -->
 # FileTree
 
+**导出**：`FileTree` · `fileStatusMeta` · `filterFileTree`
+
 > 文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义) + selectedPath 受控高亮 + onSelect 回传 node+path · 复用 _icons Folder/File(新补)·devtools 左栏 · data-display/collection
 
 ## 何时用
@@ -10057,6 +10349,8 @@ const [sel, setSel] = useState("src/index.ts");
 <!-- ════════════════════════════════════════════════════════ -->
 # Flow
 
+**导出**：`Flow` · `bezierPath` · `clampZoom` · `fitViewport` · `handleOffsetRatio` · `handlePoint` · `nodesBounds` · `screenToCanvas` · `zoomAtPoint`
+
 > 节点画布编排器 · 零依赖原生 Pointer Events + SVG 贝塞尔连线 · 拖节点/拖桩连线/平移缩放/适配视图 + 受控 nodes/edges(onNodesChange/onConnect/删点删线) + renderNode 自定义节点内容 · 几何抽纯函数带单测 · AI 工作流/流程编排旗舰 · data-display/collection
 
 ## 何时用
@@ -10074,34 +10368,34 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes * | FlowNode\<T\>[] | — | 受控节点数组（`{ id, position, data, width? }`） |
+| nodes * | FlowNode<T>[] | — | 受控节点数组（`{ id, position, data, width? }`） |
 | edges * | FlowEdge[] | — | 受控连线数组（`{ id, source, target, sourceHandle?, targetHandle? }`） |
-| getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | — | 声明每节点连接桩（左 target/右 source，按返回顺序在该侧均分纵向位置） |
-| selectedId | string ｜ null | — | 单选受控：当前选中节点 id |
+| getHandles * | (node: FlowNode<T>) => FlowHandleSpec[] | — | 声明每节点连接桩（左 target/右 source，按返回顺序在该侧均分纵向位置） |
+| selectedId | string \| null | — | 单选受控：当前选中节点 id |
 | defaultNodeWidth | number | 240 | 默认节点宽度（px，画布坐标） |
 | minZoom | number | 0.35 | 缩放下限 |
 | maxZoom | number | 2 | 缩放上限 |
 | controls | boolean | true | 是否显示右下角缩放/适配工具条 |
 | isEdgeAnimated | (edge: FlowEdge) => boolean | — | 某条连线是否走流光动画（如运行中链路） |
 | className | string | — | 画布外层类名（须有确定高度，组件填满） |
-| apiRef | MutableRefObject\<FlowApi ｜ null\> | — | 命令式句柄（fitView / zoomIn / zoomOut / reset / autoLayout） |
+| apiRef | MutableRefObject<FlowApi \| null> | — | 命令式句柄（fitView / zoomIn / zoomOut / reset / autoLayout） |
 
 ## Events
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onNodesChange | (nodes: FlowNode\<T\>[]) => void | 节点拖动后回吐整组新位置（组件不直接改 data） |
+| onNodesChange | (nodes: FlowNode<T>[]) => void | 节点拖动后回吐整组新位置（组件不直接改 data） |
 | onConnect | (connection: FlowConnection) => void | 从输出桩拖到合法输入桩成功 → 新连接（无 id，你补 id 并去重） |
 | onEdgesDelete | (ids: string[]) => void | 删除连线（选中后点 × 或按 Delete） |
 | onNodeDelete | (id: string) => void | 删除节点（选中后点 × 或按 Delete） |
-| onSelectNode | (id: string ｜ null) => void | 选中变化（点节点=id，点空白=null） |
+| onSelectNode | (id: string \| null) => void | 选中变化（点节点=id，点空白=null） |
 
 ## Slots
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| renderNode * | (node: FlowNode\<T\>, state: { selected: boolean }) => ReactNode | 渲染节点内容的渲染函数（外框/桩/选中态由组件负责） |
-| background | ReactNode ｜ false | 画布底纹（false 关闭）；默认内置点阵 |
+| renderNode * | (node: FlowNode<T>, state: { selected: boolean }) => ReactNode | 渲染节点内容的渲染函数（外框/桩/选中态由组件负责） |
+| background | ReactNode \| false | 画布底纹（false 关闭）；默认内置点阵 |
 
 ## 示例
 ```tsx
@@ -10140,6 +10434,8 @@ const [selected, setSelected] = useState<string | null>(null);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # FlyingPosters
+
+**导出**：`FlyingPosters`
 
 > WebGL 海报飞行长廊 · 一列海报随滚轮/拖拽无限循环上下飞过，顶点着色器按 distortion 翻折"飞起"·离屏循环复用 + 透视相机景深(ogl·懒加载·StrictMode 安全·reduced-motion 静态海报网格 fallback·去 gsap 改 RAF lerp) · data-display/collection · #animated
 
@@ -10197,6 +10493,8 @@ import { FlyingPosters } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Folder
+
+**导出**：`Folder`
 
 > 3D 文件夹 · 点击展开的 3D 文件夹 · 三层纸张扇形铺开 + 展开后磁吸跟随鼠标(零依赖纯 CSS transform·token 派生·reduced-motion) · data-display/collection · #animated
 
@@ -10264,6 +10562,8 @@ import { Folder } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Funnel
 
+**导出**：`Funnel` · `computeFunnel`
+
 > 漏斗图 · 阶段宽度按 value 比例 + 级间转化率徽标(本级/上一级) · 纵/横双向 + per-stage tone + renderStage 自定义 · computeFunnel 纯函数(不除零)带单测 · 任务漏斗/转化漏斗/留存(零依赖) · data-display/collection
 
 ## 何时用
@@ -10328,6 +10628,8 @@ FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`�
 <!-- ════════════════════════════════════════════════════════ -->
 # Gantt
 
+**导出**：`Gantt`
+
 > 甘特图(只读) · 项目排期可视化 · 左固定列(按 group 分组小标题) + 右时间轴(day/week/month 刻度) · CSS grid + 百分比定位条形 + progress 深色填充层 + today 竖线 · 自带 UTC 日期数学(零依赖) · 横向滚动 · data-display/collection
 
 ## 何时用
@@ -10379,6 +10681,8 @@ const tasks: GanttTask[] = [
 
 <!-- ════════════════════════════════════════════════════════ -->
 # GitCommit
+
+**导出**：`GitCommit` · `shortSha` · `branchTone`
 
 > git 提交引用 · 分支 chip(GitBranch) + 短哈希等宽(纯函数 shortSha 可测·可定制位数/href 跳链) + 提交信息单行截断 + 作者头像槽 · inline 单行/stacked 两行(表格单元格) · 部署列表/PR 列表/活动流「Source」列刚需(零依赖·RSC) · data-display/info
 
@@ -10438,6 +10742,8 @@ import { GitCommit, shortSha, branchTone, type BranchTone } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Heatmap
 
+**导出**：`Heatmap` · `buildMatrix` · `bucketize`
+
 > 热力图 · 网格色阶映射(value→bucket→primary 透明度档·纯函数 buildMatrix/bucketize 可测) + 小数值域 domain/百分比 valueFormat + 色阶图例 + 无数据/值为 0 可分(emptyCellTone) + 行列标签 + 原生 hover 提示 + 点击下钻 · 代码热点/贡献活动/覆盖率/掌握率·库内首个热力图 · data-display/collection
 
 ## 何时用
@@ -10454,12 +10760,12 @@ import { Heatmap, buildMatrix, bucketize } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | data* | `HeatCell[]` | — | 稀疏点集 `{x, y, value}`。 |
-| xLabels | `(string｜number)[]` | 从 data 推导 | 显式列标签。 |
-| yLabels | `(string｜number)[]` | 从 data 推导 | 显式行标签。 |
+| xLabels | `(string\|number)[]` | 从 data 推导 | 显式列标签。 |
+| yLabels | `(string\|number)[]` | 从 data 推导 | 显式行标签。 |
 | colorScale | `number` | `5` | 色阶档数。 |
 | max | `number` | 数据最大值 | 满值（决定色阶顶档）；`domain` 同传时以 domain 为准。 |
 | domain | `[number, number]` | `[0, max]` | 显式值域，按 `(value-min)/(max-min)` 比例分档；小数/比率数据传 `[0, 1]` 或收紧到实际区间（如掌握率 `[0.5, 0.9]`）铺满色阶。value ≤ min 落 0 档。 |
-| valueFormat | `(value: number) => string` | `String` | 数值显示格式化，tooltip 默认文案与图例共用（比率转百分比：`(v) => \`${Math.round(v*100)}%\``）。优先于 unit。 |
+| valueFormat | `(value: number) => string` | `String` | 数值显示格式化，tooltip 默认文案与图例共用（比率转百分比：`(v) => `${Math.round(v*100)}%``）。优先于 unit。 |
 | unit | `string` | — | 数值后缀（`"%"`、`" 次"`），拼在原始值后；要换算用 valueFormat。 |
 | emptyCellTone | `string` | — | 缺席格（`data` 里没有这个点）的背景，任意 CSS 颜色/渐变。不传则缺席格与 0 档同色（保持既有视觉）。传了之后色阶图例会多一块「无数据」样例。 |
 | showLegend | `boolean` | `false` | 色阶图例（值域下限 → colorScale+1 个色块 → 上限，标签走 valueFormat/unit；`emptyCellTone` 已传时末尾追加「无数据」块）。 |
@@ -10473,7 +10779,7 @@ import { Heatmap, buildMatrix, bucketize } from "@hulianui/ui"
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
-| x / y | `string｜number` | 列 / 行标签。 |
+| x / y | `string\|number` | 列 / 行标签。 |
 | value | `number` | 该格的值；缺席格恒为 `0`，别拿它判断「有没有数据」。 |
 | empty | `boolean` | 该格在 `data` 里是否缺席。组件始终传；类型上可选只为不破坏旧标注。 |
 
@@ -10537,6 +10843,8 @@ const data = MODULES.flatMap((m, mi) =>
 <!-- ════════════════════════════════════════════════════════ -->
 # Image
 
+**导出**：`Image` · `imageVariants`
+
 > 图片 · 加载淡入 + 失败回退/占位 + isZoomed hover 放大 + radius · data-display/collection
 
 ## 何时用
@@ -10556,14 +10864,14 @@ import { Image, imageVariants } from "@hulianui/ui"
 |------|------|------|------|
 | src * | string | — | 图片地址 |
 | alt | string | — | 替代文本 |
-| width | number ｜ string | — | 宽（数字或 CSS 长度） |
-| height | number ｜ string | — | 高（数字或 CSS 长度） |
-| radius | `"none"｜"sm"｜"md"｜"lg"｜"full"` | `"md"` | 圆角刻度 |
+| width | number \| string | — | 宽（数字或 CSS 长度） |
+| height | number \| string | — | 高（数字或 CSS 长度） |
+| radius | `"none"\|"sm"\|"md"\|"lg"\|"full"` | `"md"` | 圆角刻度 |
 | isZoomed | boolean | false | hover 放大（外壳裁切溢出） |
 | fallbackSrc | string | — | 加载失败时回退图；缺省则显示占位底 |
 | className | string | — | 外壳 className（控制尺寸/圆角区域） |
 | imgClassName | string | — | `<img>` 自身 className |
-| ...img | Omit\<ImgHTMLAttributes, "width"｜"height"\> | — | 透传其余原生 img 属性 |
+| ...img | Omit<ImgHTMLAttributes, "width"\|"height"> | — | 透传其余原生 img 属性 |
 
 ## 示例
 ```tsx
@@ -10589,6 +10897,8 @@ import { Image, imageVariants } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ImageViewer
+
+**导出**：`ImageViewer`
 
 > 图片查看器 · 全屏 Lightbox(portal+锁滚复用 dialog) · 受控 index 翻页(箭头/← →/序号) + 滚轮指针锚定缩放/双击 1x↔2x/拖拽平移(切图重置) + 底部缩略图条 + role=dialog aria-modal/Esc 关闭(仅渲当前图·零依赖) · data-display/info
 
@@ -10645,6 +10955,8 @@ const [index, setIndex] = useState(0);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # InfiniteMenu
+
+**导出**：`InfiniteMenu`
 
 > 球面菜单 · 可拖拽旋转的菜单球，菜单项围绕球面分布、正对镜头者贴靠为激活项并显覆盖层标题/描述+动作箭头 · 松手惯性衰减 + 自动自旋（零依赖 CSS-3D/RAF·reduced-motion） · data-display/collection · #animated
 
@@ -10706,6 +11018,8 @@ const items = [
 <!-- ════════════════════════════════════════════════════════ -->
 # InfiniteScroll
 
+**导出**：`InfiniteScroll`
+
 > 无限滚动 · IntersectionObserver 底部哨兵 + 自动定位可滚祖先作 root + 加载锁防重入 + hasMore 完结态(零依赖·分页加载) · data-display/collection
 
 ## 何时用
@@ -10729,7 +11043,7 @@ import { InfiniteScroll } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onLoadMore* | `() => Promise<void>｜void` | 触底加载回调；返回 Promise 期间不重复触发。 |
+| onLoadMore* | `() => Promise<void>\|void` | 触底加载回调；返回 Promise 期间不重复触发。 |
 
 ## Slots
 
@@ -10766,6 +11080,8 @@ function Feed() {
 
 <!-- ════════════════════════════════════════════════════════ -->
 # JsonViewer
+
+**导出**：`JsonViewer` · `valueType` · `jsonPath`
 
 > 只读 JSON 树 · 折叠 JSON 树(只读) · 递归零依赖 + 语法着色(key/string/number/bool/null) + 行级展开折叠 + 折叠态 {…} N keys/[…] N items + depth<阈值初始展开/大对象懒展开 + hover 复制节点值与 JSON path(网关请求/响应日志检查器刚需·导出 valueType/jsonPath 纯函数) · data-display/collection
 
@@ -10812,6 +11128,8 @@ import { JsonViewer, valueType, jsonPath } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Kanban
+
+**导出**：`Kanban` · `resolveKanbanMove`
 
 > 看板 · @dnd-kit headless 多容器 + 跨列/列内拖拽 + 键盘可拖 + 列头统计槽 + 空列占位 · 受控 onMove(消费者改业务字段) · 商机看板/任务流转旗舰 · data-display/collection
 
@@ -10886,6 +11204,8 @@ const [cards, setCards] = useState(initial);
 <!-- ════════════════════════════════════════════════════════ -->
 # Legend
 
+**导出**：`Legend`
+
 > 独立图例 · 彩标记 + 系列名 + 可选数值 · dot/square/line 三标记 × row 横排自动换行/column 竖排(value 右对齐) × sm/md · 缺省色按序取 chart-1..6(与 Chart 同一套 token)·color 可覆盖 · onItemClick 后条目成按钮(aria-pressed 表开关)·显隐受控由调用方持有 · 给自绘图形(Sparkline/Heatmap/贡献墙/地图/卡片右上角)配图例(零依赖·RSC) · data-display/stat
 
 ## 何时用
@@ -10947,6 +11267,8 @@ const [hidden, setHidden] = useState<Record<string, boolean>>({})
 
 <!-- ════════════════════════════════════════════════════════ -->
 # List
+
+**导出**：`List` · `ListItem` · `ListItemMeta`
 
 > 数据列表 · 复合 List/ListItem/ListItem.Meta + actions/size/bordered/split/grid + 空态/分页/加载更多(零依赖·复用 Empty/Pagination/Avatar/User) · data-display/collection
 
@@ -11026,6 +11348,8 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LiveChat
 
+**导出**：`LiveChat`
+
 > 直播公屏 · 高频自动滚消息流 + message/enter(进场)/gift(送礼)/follow(关注)/system(系统)五类型默认皮肤 + 等级牌/身份徽标 + 置顶区 + 上滚查看历史时浮出「N 条新消息」恢复钮(贴底判定) + maxItems 窗口限流 + renderItem 逃生舱 + overlay 浅色态(叠加深色视频上白字) · 区别 AI 轮次制 Conversation · data-display/collection
 
 ## 何时用
@@ -11088,6 +11412,8 @@ const item: LiveChatItem =
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LivePlayer
+
+**导出**：`LivePlayer`
 
 > 直播播放器壳 · 自带极简 muted/loop/autoPlay video(非 VOD scrubber chrome·与 Video 互补) 或 surface 自定义画面 + LIVE 呼吸徽标(ping 红点) + 在线人数(dogfood NumberTicker 跳数) + 清晰度切换菜单 + 主播条(头像/名/关注钮) + overlay 弹幕飘心层与 footer 互动栏插槽 + 竖/横屏(9:16 / 16:9) · data-display/collection
 
@@ -11158,6 +11484,8 @@ import { LivePlayer } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LiveProductCard
+
+**导出**：`LiveProductCard`
 
 > 小黄车讲解卡 · 序号链接角标 + 现价/划线原价 + 讲解中脉冲徽标 + 库存/已售 + 秒杀限量角标 + 抢购按钮插槽 + row 列表行/card 网格卡两布局(直播带货标配·只消费 token·区别通用 Card) · data-display/info
 
@@ -11232,6 +11560,8 @@ import { LiveProductCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LogoLoop
 
+**导出**：`LogoLoop`
+
 > logo 跑马灯 · 无缝无限滚动的 logo 跑马灯 · RAF 速度低通平滑 + 序列复制无缝回卷 · 横纵四向/悬停变速暂停/单项放大/两端渐隐(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
@@ -11297,6 +11627,8 @@ const logos = [
 <!-- ════════════════════════════════════════════════════════ -->
 # LogViewer
 
+**导出**：`LogViewer` · `levelClass`
+
 > 日志查看器 · 数据驱动行 lines(level/message/timestamp/source) + info/warn/error/debug/success 级别着色(纯函数 levelClass 可测) + autoScroll 新行贴底(复用 Conversation 法) + showTimestamp + wrap 折行/横滚 · 区别 Terminal mockup·真·流式输出 · data-display/collection
 
 ## 何时用
@@ -11356,6 +11688,8 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MagicBento
 
+**导出**：`MagicBento`
+
 > 便当卡片网格 · 魔法便当卡片网格 · 光标跟随径向聚光 + 描边光呼吸 + 可选 3D 倾斜(零依赖·token·reduced-motion) · data-display/collection · #animated
 
 ## 何时用
@@ -11410,6 +11744,8 @@ const items = [
 <!-- ════════════════════════════════════════════════════════ -->
 # MagicCard
 
+**导出**：`MagicCard`
+
 > 魔法卡片 · 鼠标跟随径向高光(motion) + surface token · data-display/collection · #animated
 
 ## 何时用
@@ -11430,7 +11766,7 @@ import { MagicCard } from "@hulianui/ui"
 | gradientSize | number | 200 | 高光半径（px） |
 | gradientColor | string | `var(--color-primary)` | 高光色 |
 | gradientOpacity | number | 0.15 | 高光不透明度 |
-| ...div | ComponentPropsWithoutRef\<"div"\> | — | 透传（`className` 控尺寸） |
+| ...div | ComponentPropsWithoutRef<"div"> | — | 透传（`className` 控尺寸） |
 
 ## Slots
 
@@ -11459,6 +11795,8 @@ import { MagicCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Marquee
 
+**导出**：`Marquee`
+
 > 跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向 · data-display/collection · #animated
 
 ## 何时用
@@ -11476,7 +11814,7 @@ import { Marquee } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| direction | `"left"｜"right"` | `"left"` | 滚动方向；`"right"` 经 `animation-direction: reverse` |
+| direction | `"left"\|"right"` | `"left"` | 滚动方向；`"right"` 经 `animation-direction: reverse` |
 | duration | number | 40 | 单轮时长（秒），越大越慢 |
 | gap | string | `"1rem"` | 子项间距（CSS 长度） |
 | pauseOnHover | boolean | false | 鼠标悬停暂停 |
@@ -11484,7 +11822,7 @@ import { Marquee } from "@hulianui/ui"
 | vertical | boolean | false | 竖向滚动；竖向时 `direction="left"` 视为向上、`"right"` 向下 |
 | fade | boolean | false | 两端渐隐遮罩（mask-image），适合 logo/图标墙 |
 | fadeWidth | string | `"15%"` | 渐隐区宽度（CSS 长度），仅 `fade` 为真时生效 |
-| ...div | ComponentPropsWithoutRef\<"div"\> | — | 透传（`className` 控宽/高） |
+| ...div | ComponentPropsWithoutRef<"div"> | — | 透传（`className` 控宽/高） |
 
 ## Slots
 
@@ -11524,6 +11862,8 @@ import { Marquee } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Meter
 
+**导出**：`Meter`
+
 > 度量条 · Base UI role=meter(静态量占比，区别 Progress) · data-display/stat
 
 ## 何时用
@@ -11542,32 +11882,54 @@ import { Meter } from "@hulianui/ui"
 | value* | `number` | — | 当前值 |
 | min | `number` | `0` | 下限 |
 | max | `number` | `100` | 上限 |
-| showValue | `boolean` | `false` | 是否显示格式化数值 |
+| showValue | `boolean` | `false` | 是否显示数值文案。默认按 `(value - min) / (max - min)` 渲染成百分比，与指示条同口径（最多一位小数） |
+| formatValue | `(info: { value, min, max, percent }) => string` | — | 自定义数值文案。返回值同时用于可见文字与 `aria-valuetext`，两者不会不一致。`percent` 已归一并夹到 0–100（未取整）。用于绝对数表述：`({ value, max }) => `${value} / ${max} 道题`` |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-64`） |
 
 ## Slots
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| label | `ReactNode` | 可选标签（如「磁盘用量」） |
+| label | `ReactNode` | 标签（如「磁盘用量」）。**这是给 `role="meter"` 挂无障碍名的唯一途径**（内部走 `aria-labelledby` 关联），不传就是一条读屏无名的度量条 —— 自绘一行标题不算 |
 
 ## 示例
 ```tsx
 // 带标签 + 数值
 <div className="w-64"><Meter value={72} label="磁盘用量" showValue /></div>
 
+// max ≠ 100：数值文案按占比渲染（1041/1324 → 78.6%），与指示条同口径
+<div className="w-64"><Meter value={1041} max={1324} label="已挂教材章节" showValue /></div>
+
+// 绝对数表述：可见文字与读屏念的都是这一句
+<div className="w-64">
+  <Meter
+    value={1041}
+    max={1324}
+    label="已挂教材章节"
+    showValue
+    formatValue={({ value, max }) => `${value} / ${max} 道题`}
+  />
+</div>
+
 // 仅条
 <div className="w-64"><Meter value={64} /></div>
 ```
 
 ## 禁忌 / 坑
-暂无已知坑。表达「会推进的任务进度」请用 Progress 而非 Meter；条宽由父容器决定，记得给宽度。
+
+表达「会推进的任务进度」请用 Progress 而非 Meter；条宽由父容器决定，记得给宽度。
+
+- **无障碍名只能由 `label` 给**。`role="meter"` 内部靠 `aria-labelledby` 关联到 `label`，自己在组件外面写一行标题不会被关联上。
+- **按 `textContent` 断言时会多出一个 `x`**。Base UI 的 Meter.Root 末尾固定塞了一个 `role="presentation"` 的视觉隐藏 `<span>x</span>`（读屏不会念，也不进无障碍名）。要精确断言可见文案请查具体节点，别整树取 `textContent`。
+- **`value` 超出 `[min, max]` 时文案会夹到 0–100%**，但 `aria-valuenow` 仍如实上报原始值 —— 越界应当在数据侧解决，组件不替你掩盖。
 
 ## 相关
 [Stat](https://hulianui.haloritual.com/zh/components/stat) · [Statistic](https://hulianui.haloritual.com/zh/components/statistic) · [Chart](https://hulianui.haloritual.com/zh/components/chart) · [Timeline](https://hulianui.haloritual.com/zh/components/timeline) · [NumberTicker](https://hulianui.haloritual.com/zh/components/number-ticker) · [WorldMap](https://hulianui.haloritual.com/zh/components/world-map)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # NumberTicker
+
+**导出**：`NumberTicker` · `formatTicker`
 
 > 数字滚动 · 进入视口 tween 到目标值 + reduced-motion · data-display/stat · #animated
 
@@ -11614,6 +11976,8 @@ import { NumberTicker, formatTicker } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelCard
+
+**导出**：`PixelCard`
 
 > 像素卡片 · canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion 静止) · data-display/collection · #animated
 
@@ -11671,6 +12035,8 @@ import { PixelCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PricingTable
 
+**导出**：`PricingTable`
+
 > 定价对比矩阵 · 行列转置(列=被比项/模型·行=属性/价目) + 列高亮描边 + 角标(推荐/最佳性价比) + 表头吸顶 + 窄屏横滚(复用 ScrollArea·区别 Table 行=记录·模型市场定价对照刚需) · data-display/collection
 
 ## 何时用
@@ -11721,6 +12087,8 @@ const rows: PricingRow[] = [
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ProfileCard
+
+**导出**：`ProfileCard`
 
 > 全息名片卡 · 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-display/collection · #animated
 
@@ -11788,6 +12156,8 @@ import { ProfileCard } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ProTable
+
+**导出**：`ProTable`
 
 > 高级表格 · 列表页编排层(复用 Table/SearchForm/Pagination) · 查询区 + 工具栏(密度/列设置/刷新/全屏) + 行选择 + 集成分页(企业中后台列表页旗舰) · data-display/collection
 
@@ -11906,6 +12276,8 @@ import { ProTable } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # QRCode
 
+**导出**：`QRCode` · `buildQRCode` · `qrCodeSvgString` · `qrCodeToPngDataUrl`
+
 > 二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题(区别 qrcode.react 写死黑白) + UTF-8 中文 + 纠错级别 + minVersion 钉密度 + boostLevel 不升版本白拿纠错 + 中心 logo(excavate 抠空开关/opacity 水印) + qrCodeSvgString 出独立 SVG 串/qrCodeToPngDataUrl 出 PNG(按 DPR 放大·默认白底)(可 RSC) · data-display/info
 
 ## 何时用
@@ -11970,6 +12342,8 @@ import { QRCode } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # QuestionCard
+
+**导出**：`QuestionCard`
 
 > 题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 Formula(KaTeX) 真排版 · 走 @hulianui/ui/math 独立 subpath 主包不付 KaTeX 体积 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chip/Image · data-display/collection
 
@@ -12051,6 +12425,8 @@ import { QuestionCard } from "@hulianui/ui/math"
 <!-- ════════════════════════════════════════════════════════ -->
 # QueueLane
 
+**导出**：`QueueLane` · `groupByLane`
+
 > 优先级队列板 · 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItemClick · groupByLane 保序分组纯函数带单测 · 任务总线/优先级队列(零依赖) · data-display/collection
 
 ## 何时用
@@ -12121,6 +12497,8 @@ const jobs: Job[] = [
 <!-- ════════════════════════════════════════════════════════ -->
 # ReflectiveCard
 
+**导出**：`ReflectiveCard`
+
 > 金属反光证件卡 · 对角高光横扫 + 磨砂噪点 + 渐变发丝边框(纯 CSS 零依赖·token·RSC 安全·reduced-motion)，内容可插槽化 · data-display/collection · #animated
 
 ## 何时用
@@ -12184,6 +12562,8 @@ import { ReflectiveCard } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # RelativeTime
 
+**导出**：`RelativeTime` · `formatRelative` · `formatAbsolute`
+
 > 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> 语义 + title 绝对时间 + SSR 安全(suppressHydrationWarning) · data-display/info
 
 ## 何时用
@@ -12227,6 +12607,8 @@ import { RelativeTime, formatRelative, formatAbsolute } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Sankey
+
+**导出**：`Sankey` · `assignLayers` · `computeSankeyLayout`
 
 > 桑基图 · (库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · hover 高亮关联链路 tooltip + 点击节点/连线下钻 · 调度流向/流量来源/预算分配/转化路径旗舰 · data-display/collection
 
@@ -12304,6 +12686,8 @@ const links: SankeyLink[] = [
 <!-- ════════════════════════════════════════════════════════ -->
 # Scheduler
 
+**导出**：`Scheduler` · `dateOf` · `dayColumns` · `eventRect` · `hourLines` · `layoutColumns` · `minutesOfDay` · `minutesToISO` · `monthMatrix` · `resourceColumns` · `snap` · `startOfWeekISO` · `weekColumns` · `yToMinutes`
+
 > 事件日历/排班 · 库首个事件日历件 · 月/周/日/资源四视图(横轴资源·纵轴时间) + 时间轴网格事件块 + 重叠并排 + 当前时间红线 · 零依赖原生 PointerEvents 拖空白建预约/拖事件改期/拖下缘改时长(全 snap 到 slot) · 受控 events/view/date(onEventsChange/onSlotDragCreate/onEventClick) + 内置 toolbar(前/今/后 + Segmented 视图) + renderEvent 自定义事件块 · 几何抽纯函数带单测 · 预约/排班旗舰 · data-display/collection
 
 ## 何时用
@@ -12336,7 +12720,7 @@ SchedulerEvent.tone：`"primary" \| "success" \| "warning" \| "danger" \| "neutr
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onViewChange | `(v: SchedulerView) => void` | 视图切换（内置 toolbar Segmented） |
+| onViewChange | `(v: "month" \| "week" \| "day" \| "resource") => void` | 视图切换（内置 toolbar Segmented） |
 | onDateChange | `(iso: string) => void` | 焦点日切换（前/今/后、点月视图某天） |
 | onEventsChange | `(events: SchedulerEvent[]) => void` | 拖移/拖改时长提交：回吐整组新 events（照 Kanban 受控范式） |
 | onSlotDragCreate | `(slot: SchedulerSlot) => void` | 空白竖拖创建（拖出一段时间） |
@@ -12389,6 +12773,8 @@ const [date, setDate] = useState("2026-06-15");
 <!-- ════════════════════════════════════════════════════════ -->
 # ScoreRing
 
+**导出**：`ScoreRing` · `resolveGrade` · `DEFAULT_GRADES`
+
 > 评分环 · 半径仪表盘 + A-F 等级带(value→grade tone 映射·纯函数 resolveGrade 可测) + 环心分值/等级 · 区别线性 Meter/Progress·SVG dasharray 非 transform·RSC · data-display/info
 
 ## 何时用
@@ -12438,6 +12824,8 @@ import { ScoreRing, resolveGrade, DEFAULT_GRADES } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ScrollStack
+
+**导出**：`ScrollStack` · `ScrollStackItem`
 
 > 滚动堆叠卡 · 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collection · #animated
 
@@ -12507,6 +12895,8 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ShieldBadge
+
+**导出**：`ShieldBadge` · `ShieldBadgeGroup` · `compactCount`
 
 > README 徽章 · shields.io 风格「左灰标签 + 右彩数值」双段贴纸(版本/许可证/下载量/CI/星标) · 5 语气 + color 逃生舱 · solid/soft/outline 三皮肤 × rounded/square/pill 三外形 · icon 品牌 mark 槽 + href 整枚可点(按压/焦点环) · 配 ShieldBadgeGroup 排一行自动换行 + 纯函数 compactCount(1.5k/3.4M) · 纯 CSS 吃主题不联网(零依赖·RSC) · data-display/info
 
@@ -12578,6 +12968,8 @@ import { ShieldBadge, ShieldBadgeGroup, compactCount } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Skeleton
 
+**导出**：`Skeleton` · `TableSkeleton` · `CardSkeleton` · `ListSkeleton`
+
 > 骨架屏 · shimmer 高光占位(text/circle/rect) + 无边框组合预设 CardSkeleton/ListSkeleton/TableSkeleton · data-display/placeholder
 
 ## 何时用
@@ -12623,6 +13015,8 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 <!-- ════════════════════════════════════════════════════════ -->
 # Sortable
 
+**导出**：`Sortable`
+
 > 拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove) · data-display/collection
 
 ## 何时用
@@ -12642,7 +13036,7 @@ import { Sortable } from "@hulianui/ui"
 |------|------|------|------|
 | items * | T[] | — | 受控数据数组；拖拽后由你据 onChange 写回 state |
 | getId | (item: T) => UniqueIdentifier | 读 `item.id` | 取每项稳定 id，须列表内唯一且稳定 |
-| orientation | `"vertical"｜"horizontal"` | `"vertical"` | 排列方向 |
+| orientation | `"vertical"\|"horizontal"` | `"vertical"` | 排列方向 |
 | handle | boolean | false | true=仅左侧手柄可拖（触屏体验更稳、抓手更明确）；false=整项可拖。行内交互元素已由组件守卫，两种模式都不会劫持 |
 | className | string | — | 容器类名 |
 
@@ -12715,6 +13109,8 @@ const [items, setItems] = useState(fields);
 <!-- ════════════════════════════════════════════════════════ -->
 # Sparkline
 
+**导出**：`Sparkline` · `normalize` · `linePath` · `areaPath` · `barRects`
+
 > 内联趋势迷你图 · 无轴无网格的极简趋势 · line/area/bar 三态 + highlightLast 末点圆点 + 原生 SVG <title> tooltip(RSC 安全零 JS) · 几何抽纯函数(归一化/path/柱矩形)带单测 · 表格内联/KPI 卡/负载趋势(零依赖) · data-display/info
 
 ## 何时用
@@ -12776,6 +13172,8 @@ import { Sparkline, normalize, linePath, areaPath, barRects } from "@hulianui/ui
 <!-- ════════════════════════════════════════════════════════ -->
 # Stat
 
+**导出**：`Stat`
+
 > 指标卡 · KPI 数值/标签/升降趋势(无图表库) · data-display/stat
 
 ## 何时用
@@ -12830,6 +13228,8 @@ import { Stat } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Statistic
+
+**导出**：`Statistic` · `formatStatistic` · `formatCountdown`
 
 > 统计数值 · 千分位/precision/前后缀/valueStyle + 可选 NumberTicker 入场滚动 + Statistic.Countdown 倒计时(SSR 安全·零依赖·与 Stat 互补) · data-display/stat
 
@@ -12912,6 +13312,8 @@ const [deadline] = useState(() => Date.now() + 1000 * 60 * 60);
 <!-- ════════════════════════════════════════════════════════ -->
 # StatusDot
 
+**导出**：`StatusDot`
+
 > 健康状态点 · 在线/降级/离线/维护四语义态(→success/warning/danger/neutral 映射) + 默认仅在线脉冲 + 状态文字 + 尾部数值槽(延迟/成功率)(封装 Dot·网关渠道健康墙刚需·纯CSS·RSC) · data-display/info
 
 ## 何时用
@@ -12927,9 +13329,9 @@ import { StatusDot } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| status* | `"online"｜"degraded"｜"offline"｜"maintenance"` | — | 健康态：在线/降级/离线/维护（内部映射 success/warning/danger/neutral）。 |
+| status* | `"online"\|"degraded"\|"offline"\|"maintenance"` | — | 健康态：在线/降级/离线/维护（内部映射 success/warning/danger/neutral）。 |
 | pulse | `boolean` | 仅 online 自动脉冲 | 呼吸脉冲；可显式覆盖默认。 |
-| size | `"sm"｜"md"｜"lg"` | `md` | 尺寸。 |
+| size | `"sm"\|"md"\|"lg"` | `md` | 尺寸。 |
 
 ## Slots
 
@@ -12956,6 +13358,8 @@ import { StatusDot } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Table
+
+**导出**：`Table`
 
 > 表格 · TanStack headless + 列排序 + 列几何(size/align/ellipsis/resizable·固定列 offset 自动重算) + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 行拖拽排序(rowDraggable·回传相对位置语义) + 空态 · data-display/collection
 
@@ -13108,6 +13512,8 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 <!-- ════════════════════════════════════════════════════════ -->
 # Tag
 
+**导出**：`Tag` · `tagVariants`
+
 > 状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌) · data-display/info
 
 ## 何时用
@@ -13169,6 +13575,8 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TiltedCard
+
+**导出**：`TiltedCard`
 
 > 倾斜卡片 · 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · data-display/collection · #animated
 
@@ -13238,6 +13646,8 @@ import { TiltedCard } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Timeline
+
+**导出**：`Timeline` · `TimelineItem`
 
 > 时间线 · 复合 Timeline/Item + items 数组 + 彩色节点/自定义 dot + left/right/alternate + pending 加载态(纯皮肤·零依赖·RSC) · data-display/stat
 
@@ -13312,6 +13722,8 @@ const approval = [
 <!-- ════════════════════════════════════════════════════════ -->
 # Tree
 
+**导出**：`Tree` · `buildIndex` · `flattenVisible` · `getNodePath` · `toggleChecked` · `getCheckState` · `normalizeCheckedToLeaves` · `computeChecked` · `filterTree` · `nodeSearchText` · `canDropOn` · `isDescendant` · `resolveDropPosition`
+
 > 递归树 · 自研零依赖引擎 + WAI-ARIA tree(roving/方向键/typeahead) + checkable 父子级联半选 + 连接线 + 树内搜索 + grid-rows 高度过渡 · data-display/collection
 
 ## 何时用
@@ -13338,7 +13750,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | checkable | `boolean` | `false` | 复选模式(行前 checkbox) |
 | checkedKeys | `string[]` | — | 受控勾选集 |
 | defaultCheckedKeys | `string[]` | — | 非受控初始勾选集 |
-| expandTrigger | `"row" ｜ "icon"` | `"row"` | 什么东西触发展开。`"row"` 点整行展开（父节点因此**选不中**）；`"icon"` 只有左侧箭头管展开，行归 select/check，父节点可选 |
+| expandTrigger | `"row" \| "icon"` | `"row"` | 什么东西触发展开。`"row"` 点整行展开（父节点因此**选不中**）；`"icon"` 只有左侧箭头管展开，行归 select/check，父节点可选 |
 | draggable | `boolean` | `false` | 开启拖拽排序（原生 HTML5 拖放，不引 dnd-kit）。须同时传 `onDrop`，否则不生效 |
 | allowDropInside | `(target: TreeNode) => boolean` | 一律允许 | 该目标是否接受「放进内部」（改父级）。返回 false 时只接受 before/after |
 | virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | 虚拟滚动（默认 height 320 / itemHeight 36 / overscan 8）。**开启后强制平铺渲染** |
@@ -13390,6 +13802,8 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 <!-- ════════════════════════════════════════════════════════ -->
 # User
 
+**导出**：`User`
+
 > 用户卡 · Avatar + 名称/描述组合(复用瑚琏 Avatar) + RSC · data-display/info
 
 ## 何时用
@@ -13438,6 +13852,8 @@ import { User } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Video
+
+**导出**：`Video` · `formatTime` · `normalizeSrc` · `chapterMarkers` · `DEFAULT_PLAYBACK_RATES`
 
 > 视频播放器 · Vidstack 引擎 + 瑚琏 token 自搓皮肤(播放/进度/音量/倍速/PiP/全屏) + 文件/HLS + 章节标记/续播/结束屏 · data-display/collection
 
@@ -13522,6 +13938,8 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 <!-- ════════════════════════════════════════════════════════ -->
 # VirtualList
 
+**导出**：`VirtualList`
+
 > 虚拟滚动 · 包 @tanstack/react-virtual 仅渲染可见区 + 定高/变高(measureElement)双模 + initialRect 首帧可算 + 末行触发 onReachEnd(万行列表/长列表刚需) · data-display/collection
 
 ## 何时用
@@ -13538,10 +13956,10 @@ import { VirtualList } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items* | `T[]` | — | 数据数组（泛型）。 |
-| itemHeight* | `number｜((index: number) => number)` | — | 定高 px，或返回估算高度的函数（变高，按实测校正）。 |
-| height | `number｜string` | `360` | 视口高度，px 或 CSS 长度。 |
+| itemHeight* | `number\|((index: number) => number)` | — | 定高 px，或返回估算高度的函数（变高，按实测校正）。 |
+| height | `number\|string` | `360` | 视口高度，px 或 CSS 长度。 |
 | overscan | `number` | `5` | 预渲染屏外条数。 |
-| getKey | `(item: T, index: number) => string｜number` | 用下标 | 行 key 提取。 |
+| getKey | `(item: T, index: number) => string\|number` | 用下标 | 行 key 提取。 |
 | className | `string` | — | — |
 
 ## Events
@@ -13578,6 +13996,8 @@ const rows = Array.from({ length: 10000 }, (_, i) => ({ id: i, name: `数据行 
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Watermark
+
+**导出**：`Watermark`
 
 > 水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密) · data-display/placeholder
 
@@ -13645,6 +14065,8 @@ import { Watermark } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # WorldMap
 
+**导出**：`WorldMap`
+
 > 点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交互态放开 aria-hidden) + flyingMarker 沿飞线移动标记(✈️飞机/光点彗尾/箭头·offset-path 动效自动转向) · data-display/stat · #animated
 
 ## 何时用
@@ -13710,6 +14132,8 @@ import { WorldMap } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Accordion
+
+**导出**：`Accordion` · `AccordionItem` · `AccordionTrigger` · `AccordionPanel`
 
 > 手风琴 · Base UI 单/多开 + 高度过渡 · navigation/action
 
@@ -13779,6 +14203,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 <!-- ════════════════════════════════════════════════════════ -->
 # Affix
 
+**导出**：`Affix`
+
 > 固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器 · navigation/inpage
 
 ## 何时用
@@ -13835,6 +14261,8 @@ const ref = useRef<HTMLDivElement>(null);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Anchor
+
+**导出**：`Anchor` · `flattenAnchorItems`
 
 > 锚点导航 · 自研零依赖 scrollspy(IntersectionObserver) + 平滑滚动 + active CSS 变量滑动指示条 + offsetTop/二级项 · navigation/inpage
 
@@ -13898,6 +14326,8 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # AnimatedThemeToggler
 
+**导出**：`AnimatedThemeToggler`
+
 > 主题切换 · View Transitions 圆形揭示明暗(复用瑚琏 useTheme + 降级) · navigation/action · #animated
 
 ## 何时用
@@ -13936,6 +14366,8 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AppLauncher
+
+**导出**：`AppLauncher` · `matchApp` · `filterApps` · `groupSections`
 
 > 应用启动台 · 毛玻璃面板 + 搜索(标题即 placeholder) + 分类胶囊 + 图标网格(macOS Launchpad/工作台首页) · 搜索与分类各自可受控/非受控 · keywords 别名(拼音/英文名)参与匹配·中文按子串命中 · 连续同 section 归组自动分隔线 · 方向键在网格漫游焦点(Home/End·越界不回绕) · badge 角标/href 链接项/disabled/右上操作槽 · glass 毛玻璃 vs solid 实底 · 筛选分节是纯函数 matchApp/filterApps/groupSections 可测(零依赖) · navigation/global
 
@@ -14016,6 +14448,8 @@ import { AppLauncher, type AppLauncherItem } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # BackTop
 
+**导出**：`BackTop`
+
 > 回顶 · 监听滚动容器超 visibilityHeight 淡入 + scrollTo smooth + prefers-reduced-motion 降级 auto(零依赖) · navigation/inpage
 
 ## 何时用
@@ -14073,6 +14507,8 @@ const ref = useRef<HTMLDivElement>(null);
 <!-- ════════════════════════════════════════════════════════ -->
 # BeianFooter
 
+**导出**：`BeianFooter`
+
 > 备案页脚 · ICP 备案号(可多个·默认链 miit) + 公网安备(警徽 icon·默认链 mps) + 版权行 · 中国大陆合规底栏(发丝边卡片·语义 token·外链新窗·RSC) · navigation/global
 
 ## 何时用
@@ -14125,6 +14561,8 @@ import { BeianFooter } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Brand
 
+**导出**：`Brand`
+
 > 品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底色 · 省略 name 即收起态只出徽章 · href 普通链接 / render 接框架路由件回首页 · 区别 Avatar(圆的·套它得用 className 改形状=业务侧打补丁) · navigation/global
 
 ## 何时用
@@ -14174,6 +14612,8 @@ import { Brand } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Breadcrumb
+
+**导出**：`Breadcrumb`
 
 > 面包屑 · 纯皮肤静态 + aria-current 当前页语义 · navigation/inpage
 
@@ -14225,6 +14665,8 @@ import { Breadcrumb } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # BubbleMenu
+
+**导出**：`BubbleMenu`
 
 > 气泡导航菜单 · logo 气泡 + 汉堡切换钮，点开整屏铺一组错落旋转胶囊导航 · 胶囊弹性 scale 入场 + 标签上滑淡入按序错峰(motion·零 gsap·reduced-motion) · navigation/global · #animated
 
@@ -14289,6 +14731,8 @@ const items = [
 
 <!-- ════════════════════════════════════════════════════════ -->
 # CardNav
+
+**导出**：`CardNav`
 
 > 卡片导航 · ：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/global · #animated
 
@@ -14357,6 +14801,8 @@ const [open, setOpen] = useState(false);
 <!-- ════════════════════════════════════════════════════════ -->
 # Collapsible
 
+**导出**：`Collapsible` · `CollapsibleTrigger` · `CollapsiblePanel`
+
 > 折叠区 · Base UI collapsible 薄包 + 高度过渡(复用 Accordion --collapsible-panel-height) · navigation/action
 
 ## 何时用
@@ -14419,6 +14865,8 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Command
+
+**导出**：`Command` · `useCommandShortcut`
 
 > 命令面板 · ⌘K 模态(复用 Dialog 引擎) + 实时过滤 + 分组 + 键盘漫游(零依赖) · navigation/action
 
@@ -14501,6 +14949,8 @@ const [open, setOpen] = useState(false);
 <!-- ════════════════════════════════════════════════════════ -->
 # ContextMenu
 
+**导出**：`ContextMenu` · `ContextMenuTrigger` · `ContextMenuContent` · `ContextMenuItem` · `ContextMenuSeparator` · `ContextMenuGroup` · `ContextMenuGroupLabel` · `ContextMenuSub` · `ContextMenuSubTrigger` · `ContextMenuSubContent`
+
 > 右键菜单 · Base UI context-menu 原语薄包(锚到光标) + 复用 Menu 皮肤/data-highlighted + danger · navigation/action
 
 ## 何时用
@@ -14573,6 +15023,8 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 <!-- ════════════════════════════════════════════════════════ -->
 # Dock
 
+**导出**：`Dock` · `DockIcon`
+
 > 放大坞 · macOS 式按鼠标距离放大图标(motion 弹簧 + context 下发 mouseX) · navigation/global
 
 ## 何时用
@@ -14631,6 +15083,8 @@ import { Dock, DockIcon } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FlowingMenu
 
+**导出**：`FlowingMenu`
+
 > 竖排流动菜单 · 指针近边缘判进/离向揭幕 + 循环跑马灯(文字/图片)(零依赖去 gsap·CSS keyframes + transition·token·reduced-motion) · navigation/global · #animated
 
 ## 何时用
@@ -14680,6 +15134,8 @@ import { FlowingMenu } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # GooeyNav
+
+**导出**：`GooeyNav`
 
 > 胶质导航条 · 切换时白色药丸 motion 弹簧滑到目标 + 迸射一圈彩色粒子经 blur/contrast 熔成黏稠液滴(零依赖 CSS 关键帧·token 取色·受控/非受控·reduced-motion) · navigation/global · #animated
 
@@ -14741,6 +15197,8 @@ import { GooeyNav } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Link
 
+**导出**：`Link` · `linkVariants`
+
 > 链接 · tone×underline + external 自动 target/rel/图标 + RSC · navigation/action
 
 ## 何时用
@@ -14798,6 +15256,8 @@ import NextLink from "next/link"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Menu
+
+**导出**：`Menu` · `MenuTrigger` · `MenuContent` · `MenuItem` · `MenuSeparator` · `MenuGroup` · `MenuGroupLabel` · `menuItemVariants`
 
 > 下拉菜单 · Base UI 命令式 + Item/分隔/分组 + danger · navigation/global
 
@@ -14884,6 +15344,8 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 <!-- ════════════════════════════════════════════════════════ -->
 # Menubar
 
+**导出**：`Menubar` · `MenubarMenu` · `MenubarTrigger` · `MenubarContent` · `MenubarItem` · `MenubarSeparator` · `MenubarGroup` · `MenubarGroupLabel`
+
 > 菜单条 · Base UI menubar 薄包(File/Edit/View 顶层项+下拉) + dogfood Menu 皮肤 + 键盘切换/方向键漫游 · navigation/global
 
 ## 何时用
@@ -14941,6 +15403,8 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Navbar
+
+**导出**：`Navbar` · `NavbarBrand` · `NavbarContent` · `NavbarItem` · `NavbarMenuToggle`
 
 > 导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换 · navigation/global
 
@@ -15037,6 +15501,8 @@ function Header() {
 <!-- ════════════════════════════════════════════════════════ -->
 # NavigationMenu
 
+**导出**：`NavigationMenu` · `NavigationMenuList` · `NavigationMenuItem` · `NavigationMenuTrigger` · `NavigationMenuContent` · `NavigationMenuLink`
+
 > 导航菜单 · Base UI navigation-menu 薄包(mega 面板/共享 Viewport 尺寸形变) + 触发器/内容/链接 + chevron 旋转 · navigation/global
 
 ## 何时用
@@ -15096,6 +15562,8 @@ import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuT
 
 <!-- ════════════════════════════════════════════════════════ -->
 # NavMenu
+
+**导出**：`NavMenu`
 
 > 侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游 + semantics="list" 切 list/link 语义(站点主导航用) · navigation/global
 
@@ -15248,6 +15716,8 @@ function ConvoNav() {
 <!-- ════════════════════════════════════════════════════════ -->
 # PageHeader
 
+**导出**：`PageHeader`
+
 > 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖) · navigation/inpage
 
 ## 何时用
@@ -15314,6 +15784,8 @@ import { PageHeader } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Pagination
 
+**导出**：`Pagination` · `getPaginationRange`
+
 > 分页器 · 纯皮肤受控 + 页码区间算法(省略号) · navigation/inpage
 
 ## 何时用
@@ -15337,7 +15809,7 @@ import { Pagination, getPaginationRange } from "@hulianui/ui"
 | pageSize | `number` | `10` | 每页条数，仅在给了 `totalItems` 时参与算页数 |
 | siblingCount | `number` | `1` | 当前页左右各显示的页码数 |
 | showFirstLast | `boolean` | `false` | 是否显示「跳首页/末页」按钮 |
-| showTotal | `boolean ｜ (totalItems, [from, to]) => ReactNode` | `false` | 左侧总数文案（默认「共 N 条」）。**依赖 `totalItems`**，只给 `total` 时静默不渲染 |
+| showTotal | `boolean \| (totalItems, [from, to]) => ReactNode` | `false` | 左侧总数文案（默认「共 N 条」）。**依赖 `totalItems`**，只给 `total` 时静默不渲染 |
 | showQuickJumper | `boolean` | `false` | 右侧「跳至 __ 页」输入框（回车/失焦提交，自动夹紧到合法范围） |
 | disabled | `boolean` | `false` | 禁用整个分页器 |
 
@@ -15386,6 +15858,8 @@ function Demo() {
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PillNav
+
+**导出**：`PillNav`
 
 > 胶囊导航条 · 悬停底部圆涨满 + 文案翻转反相 + 激活指示圆点(纯 CSS·零依赖·RSC 安全·reduced-motion) · navigation/global · #animated
 
@@ -15450,6 +15924,8 @@ import { PillNav } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # RouteTabs
 
+**导出**：`RouteTabs` · `affectedKeys` · `isClosable` · `nextActiveKey` · `orderTabs` · `reorderTabs`
+
 > 路由页签条 · 中后台多标签工作区(右键关闭其他/左侧/右侧/全部/刷新 + 固定页签 + 拖拽调序 + 激活项滚入视口 + 溢出滚动) · 完全受控 · navigation/inpage
 
 ## 何时用
@@ -15471,7 +15947,7 @@ import { RouteTabs } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `RouteTabItem[]` | — | 页签列表。**组件不持有它**，增删由你在回调里做 |
 | activeKey | `string` | — | 当前激活页签 |
-| actions | `RouteTabsAction[]` | 全部 | 右键菜单开放哪些动作 |
+| actions | `"close" \| "closeOthers" \| "closeLeft" \| "closeRight" \| "closeAll" \| "refresh"[]` | 全部 | 右键菜单开放哪些动作 |
 | extraMenuItems | `{ key, label, disabled? }[]` | — | 追加的自定义菜单项（排在内置动作之后） |
 | sortable | `boolean` | `false` | 允许拖拽调序，须配 `onReorder` |
 | disableAutoScroll | `boolean` | `false` | 关掉「激活页签自动滚入视口」 |
@@ -15541,6 +16017,8 @@ const closeKeys = (keys: string[]) => {
 
 <!-- ════════════════════════════════════════════════════════ -->
 # StaggeredMenu
+
+**导出**：`StaggeredMenu`
 
 > 侧滑分层菜单 · 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 gsap·token·reduced-motion） · navigation/global · #animated
 
@@ -15619,6 +16097,8 @@ import { StaggeredMenu } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Stepper
 
+**导出**：`Stepper`
+
 > 步骤条 · 零依赖 flex 布局 + 自绘完成对勾 + 连接线随进度点亮 + aria-current · navigation/inpage
 
 ## 何时用
@@ -15656,6 +16136,8 @@ const steps = [{ label: "下单" }, { label: "付款" }, { label: "发货" }, { 
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Steps
+
+**导出**：`Steps`
 
 > 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(分步表单/审批流) · navigation/inpage
 
@@ -15723,6 +16205,8 @@ const [current, setCurrent] = useState(1);
 <!-- ════════════════════════════════════════════════════════ -->
 # Tabs
 
+**导出**：`Tabs` · `TabsList` · `TabsTab` · `TabsPanel` · `tabsListVariants`
+
 > 选项卡 · Base UI 无浮层 + underline/solid 滑块 · navigation/inpage
 
 ## 何时用
@@ -15783,6 +16267,8 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Toolbar
+
+**导出**：`Toolbar` · `ToolbarButton` · `ToolbarToggle` · `ToolbarGroup` · `ToolbarSeparator`
 
 > 工具栏 · Base UI role=toolbar + 键盘漫游 + Button/Group/Separator · navigation/action
 
@@ -15867,6 +16353,8 @@ import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarGroup, ToolbarSeparator }
 <!-- ════════════════════════════════════════════════════════ -->
 # Alert
 
+**导出**：`Alert` · `alertVariants`
+
 > 提示条 · tone×variant 皮肤 + a11y role · feedback/message
 
 ## 何时用
@@ -15884,8 +16372,8 @@ import { Alert, alertVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"｜"brand"｜"info"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色。`info` 是 `brand` 的历史别名，两者同配方、可互换 |
-| variant | `"soft"｜"outline"` | `"soft"` | soft=浅底 / outline=描边 |
+| tone | `"neutral"\|"brand"\|"info"\|"success"\|"warning"\|"danger"` | `"info"` | 语气色。`info` 是 `brand` 的历史别名，两者同配方、可互换 |
+| variant | `"soft"\|"outline"` | `"soft"` | soft=浅底 / outline=描边 |
 | closeLabel | `string` | `"关闭"` | 关闭按钮的无障碍标签 |
 
 ## Events
@@ -15925,6 +16413,8 @@ import { Alert, alertVariants } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AlertDialog
+
+**导出**：`AlertDialog` · `AlertDialogTrigger` · `AlertDialogClose` · `AlertDialogContent`
 
 > 确认对话框 · Base UI 强制决策(不点遮罩/Esc 关) + Dialog 引擎 · feedback/overlay
 
@@ -15981,6 +16471,8 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogClose, AlertDialogContent }
 <!-- ════════════════════════════════════════════════════════ -->
 # Banner
 
+**导出**：`Banner`
+
 > 公告条 · 横贯容器顶部全宽 bar(站点维护/促销/版本更新) · 6 语气×soft/solid + 前导图标/操作区/可关闭 + 居中或左对齐 + 长文案 dogfood Marquee 单行无缝滚动 · 区别 Alert(局部卡片)/Notification(命令式四角) · feedback/message
 
 ## 何时用
@@ -15996,9 +16488,9 @@ import { Banner } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"｜"info"｜"brand"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色 |
-| variant | `"soft"｜"solid"` | `"soft"` | soft=浅底 / solid=实色填充（更醒目，适合促销/重大公告） |
-| align | `"start"｜"center"` | `"center"` | 内容对齐 |
+| tone | `"neutral"\|"info"\|"brand"\|"success"\|"warning"\|"danger"` | `"info"` | 语气色 |
+| variant | `"soft"\|"solid"` | `"soft"` | soft=浅底 / solid=实色填充（更醒目，适合促销/重大公告） |
+| align | `"start"\|"center"` | `"center"` | 内容对齐 |
 | scrollable | `boolean` | `false` | 文案过长时单行无缝滚动（纯 CSS marquee·hover 暂停） |
 | closeLabel | `string` | — | 关闭按钮无障碍标签 |
 | className | `string` | — | 额外类名 |
@@ -16044,6 +16536,8 @@ import { Banner } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Callout
 
+**导出**：`Callout`
+
 > 文章 / 文档用提示框（admonition）。 · 反馈/提示
 
 ## 何时用
@@ -16059,7 +16553,7 @@ import { Callout } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"tip"｜"info"｜"warning"｜"success"｜"danger"` | `"tip"` | 语气：tip/info 主色、warning 警告、success 正解、danger 坑/危险 |
+| tone | `"tip"\|"info"\|"warning"\|"success"\|"danger"` | `"tip"` | 语气：tip/info 主色、warning 警告、success 正解、danger 坑/危险 |
 | className | `string` | — | 透传到根容器 |
 
 ## Slots
@@ -16091,6 +16585,8 @@ import { Callout } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Dialog
+
+**导出**：`Dialog` · `DialogTrigger` · `DialogClose` · `DialogContent`
 
 > 对话框 · Base UI Portal + focus trap · feedback/overlay
 
@@ -16152,6 +16648,8 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Drawer
+
+**导出**：`Drawer` · `DrawerTrigger` · `DrawerClose` · `DrawerContent` · `drawerVariants`
 
 > 抽屉 · Base UI Dialog 引擎 + 四向侧滑 · feedback/overlay
 
@@ -16227,6 +16725,8 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 <!-- ════════════════════════════════════════════════════════ -->
 # ElementSelectionOverlay
 
+**导出**：`ElementSelectionOverlay` · `asElement` · `elementPath` · `escapeAttributeValue` · `findMarkedElement` · `pathLabel` · `resolveElementByPath` · `structuralPath` · `computeLabelPosition` · `isRectVisible` · `toHostRect`
+
 > 元素选择叠加层 · 在容器或**同源** iframe 里 hover 高亮 / 点击选中元素并回吐组件树路径 · 路径优先读 `data-hulian-path` 标记、读不到回退结构化选择器（两者皆为带单测的纯函数） · 框画在宿主 portal 层，绝不往目标文档写 class/style · 滚动 / resize / DOM 变化 / 进出视口全跟随（rAF 节流，卸载全断开） · 「指向编辑」基础设施 · feedback/overlay
 
 ## 何时用
@@ -16258,7 +16758,7 @@ import {
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| target * | HTMLElement ｜ HTMLIFrameElement ｜ null | — | 目标区域：普通容器（在其内部选择）或**同源** iframe（在其文档内选择）。null 时不渲染也不监听 |
+| target * | HTMLElement \| HTMLIFrameElement \| null | — | 目标区域：普通容器（在其内部选择）或**同源** iframe（在其文档内选择）。null 时不渲染也不监听 |
 | enabled | boolean | true | 是否处于选择模式。false 停止拾取与点击拦截，**已选中的框仍然保留** |
 | highlightSelector | string | — | 可选中元素的选择器；落点会向上找最近的匹配祖先，匹配不到则不高亮（用来把粒度锁在组件级） |
 | ignoreSelector | string | — | 排除选择器；命中（含祖先命中）的元素不可 hover / 选中 |
@@ -16266,7 +16766,7 @@ import {
 | pathAttribute | string | "data-hulian-path" | 标记路径的属性名 |
 | componentAttribute | string | "data-hulian-component" | 标记组件名的属性名（用于标签文案与 `detail.component`） |
 | anchorOnId | boolean | true | 结构化路径遇到带 id 的祖先就锚定，不再上溯到根 |
-| selectedPath | string ｜ null | — | 受控选中路径。传了（含 null）即视为受控，组件不再自管选中态 |
+| selectedPath | string \| null | — | 受控选中路径。传了（含 null）即视为受控，组件不再自管选中态 |
 | interceptClicks | boolean | true | 是否吞掉目标里的点击（阻止预览内的跳转 / 按钮触发） |
 | zIndex | number | 100 | 叠加层 z-index |
 | className | string | — | 叠加层容器类名 |
@@ -16276,7 +16776,7 @@ import {
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onSelect | (path: string, detail: ElementSelectionDetail) => void | 选中：点击，或目标内按 Enter / 空格 |
-| onHover | (path: string ｜ null, detail: ElementSelectionDetail ｜ null) => void | hover 变化；移出或落在不可选区域时给 `(null, null)` |
+| onHover | (path: string \| null, detail: ElementSelectionDetail \| null) => void | hover 变化；移出或落在不可选区域时给 `(null, null)` |
 | onClear | () => void | 清除选中：点空白处 / 按 Esc |
 | onError | (error: ElementSelectionOverlayError) => void | 目标不可接管（跨源 iframe 等）。同一目标只报一次。`error.message` 取自 ConfigProvider 的 locale（未包 Provider 时是内置中文），`error.code` 与语言无关，要分支判断请用 `code` |
 
@@ -16351,6 +16851,8 @@ asElement(event.target);                  // 跨 realm 安全的元素判断（i
 <!-- ════════════════════════════════════════════════════════ -->
 # FloatingReactions
 
+**导出**：`FloatingReactions`
+
 > 飘心点赞 · 命令式 ref.emit(content,{count}) 从底部喷射上浮表情 + 随机起点/横向漂移/缩放/时长扰动 + 上浮渐隐(keyframe)动画结束自移除 + palette 随机池 + rise/drift/duration 可调(forwardRef+useImperativeHandle·pointer-events none·可复用于任意点赞钮) · feedback/message · #animated
 
 ## 何时用
@@ -16396,6 +16898,8 @@ const ref = useRef<FloatingReactionsHandle>(null);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # GiftFeed
+
+**导出**：`GiftFeed` · `applyGiftEvent`
 
 > 礼物连击 · 受控礼物事件流 + 同 id 连击合并 combo ×N 滚动弹跳计数(纯函数 applyGiftEvent 可测) + 横幅左滑入/自动消散计时(每连击重置) + max 同屏上限挤旧 + dogfood Avatar · 直播打赏特效(pointer-events none) · feedback/message · #animated
 
@@ -16446,6 +16950,8 @@ function onGift(g: GiftEvent) {
 <!-- ════════════════════════════════════════════════════════ -->
 # Glimpse
 
+**导出**：`Glimpse`
+
 > 链接预览 · dogfood HoverCard 引擎换皮成「封面图+标题+描述+域名」预览卡(维基式 hover preview) · 触发器随 href 渲染外链 a 或纯 span 保持行内排版 · 描述多行截断 · feedback/overlay
 
 ## 何时用
@@ -16463,8 +16969,8 @@ import { Glimpse } from "@hulianui/ui"
 |------|------|------|------|
 | image | `string` | — | 预览图 URL（顶部封面） |
 | href | `string` | — | 链接地址；传入则触发器渲染为新标签页外链，卡底显示域名 |
-| side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | — | 对齐 |
+| side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | 浮层方位 |
+| align | `"start"\|"center"\|"end"` | — | 对齐 |
 | openDelay | `number` | `300` | 悬停打开延迟(ms) |
 | closeDelay | `number` | `150` | 移出关闭延迟(ms) |
 | className | `string` | — | 触发器额外类名 |
@@ -16505,6 +17011,8 @@ import { Glimpse } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # HeroVideoDialog
+
+**导出**：`HeroVideoDialog`
 
 > 视频弹层 · 缩略图+播放钮→Portal 模态(Esc/遮罩关 + 锁滚) · feedback/overlay
 
@@ -16547,6 +17055,8 @@ import { HeroVideoDialog } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # HoverCard
 
+**导出**：`HoverCard` · `HoverCardTrigger` · `HoverCardContent`
+
 > 悬停卡片 · Popover 引擎自研 hover 开/移出延迟关(复刻 Tooltip delay 范式) + 富内容 · feedback/overlay
 
 ## 何时用
@@ -16571,8 +17081,8 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
+| side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | 浮层方位 |
+| align | `"start"\|"center"\|"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | — | 与触发器的间距 |
 | className | `string` | — | 额外类名 |
 
@@ -16613,6 +17123,8 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # InterceptCard 拦截卡
+
+**导出**：`InterceptCard`
 
 > 拦截卡 · 「某个动作被规则挡下了」的完整交代：规则是什么、出处在哪、违反点在哪、该怎么改、我要不要放行 · feedback/message
 
@@ -16673,6 +17185,8 @@ import { InterceptCard } from "@hulianui/ui";
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Modal
+
+**导出**：`modal` · `ModalProvider` · `hulianModalManager`
 
 > 命令式对话框 · confirm/info/success/error/warning 函数式 API + Dialog 引擎 · feedback/overlay
 
@@ -16744,6 +17258,8 @@ modal.confirm({
 <!-- ════════════════════════════════════════════════════════ -->
 # Notification
 
+**导出**：`notification` · `NotificationProvider` · `hulianNotificationManager`
+
 > 通知 · 四角堆叠卡片 + 图标/操作区/位置 + 命令式 API(比 Toast 重) · feedback/message
 
 ## 何时用
@@ -16761,9 +17277,9 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| type | `"open"｜"success"｜"error"｜"info"｜"warning"` | — | 经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 同 Alert（info→primary） |
+| type | `"open"\|"success"\|"error"\|"info"\|"warning"` | — | 经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 同 Alert（info→primary） |
 | duration | `number` | `4500` | 自动关闭毫秒数；`0` = 不自动关（常驻） |
-| placement | `"topRight"｜"topLeft"｜"bottomRight"｜"bottomLeft"` | `"topRight"` | 弹出位置（四角） |
+| placement | `"topRight"\|"topLeft"\|"bottomRight"\|"bottomLeft"` | `"topRight"` | 弹出位置（四角） |
 
 调用返回 `NotificationInstance`，含 `destroy(): void` 立即关闭该通知。
 
@@ -16808,6 +17324,8 @@ notification.open({
 <!-- ════════════════════════════════════════════════════════ -->
 # Popconfirm
 
+**导出**：`Popconfirm`
+
 > 气泡确认 · dogfood Popover 引擎 + 危险操作就地确认(标题/图标/确认取消) + async onConfirm loading + 受控开合 · feedback/message
 
 ## 何时用
@@ -16826,8 +17344,8 @@ import { Popconfirm } from "@hulianui/ui"
 | danger | `boolean` | `false` | 危险操作：确认按钮 tone=danger + 默认图标转 text-danger |
 | open | `boolean` | — | 受控打开态，须配合 onOpenChange |
 | defaultOpen | `boolean` | `false` | 非受控初始打开态 |
-| side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | `"center"` | 浮层对齐 |
+| side | `"top"\|"right"\|"bottom"\|"left"` | `"top"` | 浮层方位 |
+| align | `"start"\|"center"\|"end"` | `"center"` | 浮层对齐 |
 | sideOffset | `number` | `8` | 浮层与触发器间距 |
 | disabled | `boolean` | `false` | 禁用：触发器照常渲染但不唤起浮层 |
 | className | `string` | — | 透传到浮层 Popup 的类名 |
@@ -16881,6 +17399,8 @@ import { Popconfirm } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Popover
 
+**导出**：`Popover` · `PopoverTrigger` · `PopoverClose` · `PopoverContent`
+
 > 气泡卡片 · click 触发 + 标题/描述/Close · feedback/overlay
 
 ## 何时用
@@ -16898,8 +17418,8 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
+| side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | 浮层方位 |
+| align | `"start"\|"center"\|"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | — | 与触发器的间距 |
 | className | `string` | — | 额外类名 |
 
@@ -16938,6 +17458,8 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Progress
+
+**导出**：`Progress` · `progressPercent` · `dashOffset`
 
 > 进度条 · linear/circular + 不定态 · 几何自有(reduced-motion) · feedback/loading
 
@@ -16982,6 +17504,8 @@ import { Progress, progressPercent, dashOffset } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Result
 
+**导出**：`Result`
+
 > 结果页 · 7 状态(success/error/info/warning/403/404/500)内置图标+语义色 + 标题/副标题/详情/操作槽(零依赖·RSC) · feedback/message
 
 ## 何时用
@@ -16999,7 +17523,7 @@ import { Result } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| status | `"success"｜"error"｜"info"｜"warning"｜"403"｜"404"｜"500"` | `"info"` | 状态，决定内置图标与语义色 |
+| status | `"success"\|"error"\|"info"\|"warning"\|"403"\|"404"\|"500"` | `"info"` | 状态，决定内置图标与语义色 |
 
 ## Slots
 
@@ -17041,6 +17565,8 @@ import { Result } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ServiceMessage
+
+**导出**：`ServiceMessage`
 
 > 服务通知卡片 · 复刻微信「服务通知」会话内消息卡(模板/订阅消息) · 头部(头像+来源+⋯)/正文(标题+键值字段或自定义 children)/底部(引导文字+小程序入口) · 数据驱动 fields + onMore/onAction 交互 + footer/action 可定制 · 区别 Notification(命令式四角 toast) · 复用 Avatar/_icons·全吃 token 明暗自适配 · feedback/message
 
@@ -17122,6 +17648,8 @@ import { ServiceMessage } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Spin
 
+**导出**：`Spin`
+
 > 加载遮罩 · 覆盖内容区 + tip + delay 防闪 + fullscreen · feedback/loading
 
 ## 何时用
@@ -17139,7 +17667,7 @@ import { Spin } from "@hulianui/ui"
 |------|------|------|------|
 | spinning | `boolean` | `true` | 是否处于加载态 |
 | delay | `number` | `0` | 延迟显示 ms：spinning 持续超过 delay 才显遮罩（防快速完成时闪烁） |
-| size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸，透传内部 Spinner |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸，透传内部 Spinner |
 | fullscreen | `boolean` | `false` | 整页遮罩（fixed 覆盖视口），忽略 children |
 | className | `string` | — | 容器类名 |
 
@@ -17174,6 +17702,8 @@ import { Spin } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Spinner
 
+**导出**：`Spinner` · `spinnerVariants`
+
 > 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + 本地化读屏文案 · feedback/loading
 
 ## 何时用
@@ -17189,8 +17719,8 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
-| tone | `"primary"｜"current"｜"muted"` | `"primary"` | 配色（`current`=继承 currentColor，适合放进彩色按钮内） |
+| size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸 |
+| tone | `"primary"\|"current"\|"muted"` | `"primary"` | 配色（`current`=继承 currentColor，适合放进彩色按钮内） |
 | label | `string` | 跟随 `ConfigProvider` | a11y 文案（role=status 读屏播报）；显式传值优先 |
 | className | `string` | — | 容器类名 |
 
@@ -17218,6 +17748,8 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Toast
 
+**导出**：`toast` · `ToastProvider`
+
 > 命令式轻提示 · 自动消失 + 队列堆叠 + 手动关闭 · feedback/message
 
 ## 何时用
@@ -17235,7 +17767,7 @@ import { toast, ToastProvider } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"｜"info"｜"success"｜"warning"｜"danger"` | `"neutral"` | 语调，驱动左边条 + 标题着色（五档与 [Alert](https://hulianui.haloritual.com/zh/components/alert) / [Tag](https://hulianui.haloritual.com/zh/components/tag) 对齐，复用同一组语义 token） |
+| tone | `"neutral"\|"info"\|"success"\|"warning"\|"danger"` | `"neutral"` | 语调，驱动左边条 + 标题着色（五档与 [Alert](https://hulianui.haloritual.com/zh/components/alert) / [Tag](https://hulianui.haloritual.com/zh/components/tag) 对齐，复用同一组语义 token） |
 | timeout | `number` | `5000` | 自动消失毫秒数；`0` = 不自动消失（手动关闭）；缺省取 Provider 默认 |
 
 ## Slots
@@ -17281,6 +17813,8 @@ toast({ title: "需手动关闭", timeout: 0 }) // 0 = 常驻，点 × 才消失
 <!-- ════════════════════════════════════════════════════════ -->
 # Tooltip
 
+**导出**：`Tooltip` · `TooltipTrigger` · `TooltipProvider` · `TooltipContent`
+
 > 提示浮层 · Base UI Positioner + 箭头 + hover 触发 · feedback/overlay
 
 ## 何时用
@@ -17298,8 +17832,8 @@ import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@hulia
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
+| side | `"top"\|"right"\|"bottom"\|"left"` | `"top"` | 浮层方位 |
+| align | `"start"\|"center"\|"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | — | 与触发器的间距 |
 | className | `string` | — | 额外类名 |
 
@@ -17353,6 +17887,8 @@ import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@hulia
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Tour
+
+**导出**：`Tour` · `resolveTarget` · `computeSpotlight` · `computeCardPosition`
 
 > 漫游引导 · 自研零依赖 SVG mask 镂空高亮 + 自定位气泡卡(标题/描述/上一步/下一步/跳过/进度) + resize/scroll 重算 · feedback/guide
 
@@ -17439,6 +17975,8 @@ const [current, setCurrent] = useState(0);
 <!-- ════════════════════════════════════════════════════════ -->
 # AgentPlan
 
+**导出**：`AgentPlan`
+
 > 执行计划 · 数据驱动任务清单 + 状态图标(空心环待办/Spinner进行·行高亮/Check完成删除线/X失败) + 每步右侧 meta 槽(耗时) + bare 内嵌 · 复用 Spinner·纯皮肤RSC · ai/agent
 
 ## 何时用
@@ -17472,7 +18010,7 @@ import { AgentPlan } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | title | `ReactNode` | — | 任务标题 |
-| status | `"pending" ｜ "running" ｜ "done" ｜ "error"` | `"pending"` | pending 待办(空心环) / running 进行中(转圈·行高亮) / done 完成(勾·删除线) / error 失败(叉) |
+| status | `"pending" \| "running" \| "done" \| "error"` | `"pending"` | pending 待办(空心环) / running 进行中(转圈·行高亮) / done 完成(勾·删除线) / error 失败(叉) |
 | detail | `ReactNode` | — | 次要描述（标题下方弱化） |
 | meta | `ReactNode` | — | 行右侧 trailing 槽（右对齐弱化）：放耗时(如 180ms)/小标记 |
 
@@ -17497,6 +18035,8 @@ import { AgentPlan } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Artifact
+
+**导出**：`Artifact`
 
 > 工件卡 · 智能体产出物(文档/简历/代码)对话内承载：头部(图标+标题+版本Chip+操作槽) + 折叠限高+底部渐隐遮罩 + 展开/收起(受控/非受控) · dogfood Chip · ai/agent
 
@@ -17565,6 +18105,8 @@ import { Artifact } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ChatMessage
 
+**导出**：`ChatMessage`
+
 > 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽 · ai/conversation
 
 ## 何时用
@@ -17584,9 +18126,9 @@ import { ChatMessage } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| role * | `"user" ｜ "assistant" ｜ "system"` | `"assistant"`(showcase) | user 右对齐(primary 底) / assistant 左对齐(surface 底) / system 居中弱化通告 |
+| role * | `"user" \| "assistant" \| "system"` | `"assistant"`(showcase) | user 右对齐(primary 底) / assistant 左对齐(surface 底) / system 居中弱化通告 |
 | loading | `boolean` | `false` | 加载态：正文位置显示 TypingDots（agent 生成中） |
-| status | `"sending" ｜ "sent" ｜ "read"` | — | 已读回执：仅 role=user 渲染。sending 转圈 / sent 单勾 / read 双蓝勾 |
+| status | `"sending" \| "sent" \| "read"` | — | 已读回执：仅 role=user 渲染。sending 转圈 / sent 单勾 / read 双蓝勾 |
 
 ## Slots
 
@@ -17617,6 +18159,8 @@ import { ChatMessage } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Citation
+
+**导出**：`Citation`
 
 > 引用来源 · 序号角标 + 标题/来源 + href 新标签页外链 · 内联标注 agent 回答信息出处 · 纯皮肤RSC · ai/assist
 
@@ -17673,6 +18217,8 @@ import { Citation } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ConfirmCard
+
+**导出**：`ConfirmCard`
 
 > 确认卡 · human-in-the-loop 标准件：结构化字段摘要(dl) + 确认/修正双动作 + acted 锁定态(已确认/修改中) · dogfood Button · ai/agent
 
@@ -17737,6 +18283,8 @@ const [acted, setActed] = useState<"confirmed" | "edited" | null>(null);
 <!-- ════════════════════════════════════════════════════════ -->
 # Conversation
 
+**导出**：`Conversation`
+
 > 消息流容器 · 纵向堆叠 ChatMessage + 内容增长自动贴底(新消息/流式 token)·消费侧给高度获独立滚动区 · ai/conversation
 
 ## 何时用
@@ -17775,6 +18323,8 @@ import { Conversation } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Dossier
 
+**导出**：`Dossier`
+
 > 案卷面板 · 智能体槽位填充进度可视化：分域清单 + 三态(空心环/半填充/Check) + 当前采集域高亮 + 域内容摘要 + 自动进度(已归档 n/m·可选域不计分母) + bare 内嵌 · 纯皮肤RSC · ai/agent
 
 ## 何时用
@@ -17809,7 +18359,7 @@ import { Dossier } from "@hulianui/ui"
 |------|------|------|------|
 | key * | `string` | — | 域唯一标识 |
 | label * | `ReactNode` | — | 域名称 |
-| status | `"empty" ｜ "partial" ｜ "done"` | `"empty"` | 空(空心环) / 半填充 / 完成(勾) |
+| status | `"empty" \| "partial" \| "done"` | `"empty"` | 空(空心环) / 半填充 / 完成(勾) |
 | optional | `boolean` | `false` | 可选域：不计入进度分母，empty 时弱化并标注「可选」 |
 | summary | `ReactNode` | — | 已归档内容摘要（一两行） |
 | active | `boolean` | `false` | 当前正在采集的域，高亮 |
@@ -17836,6 +18386,8 @@ import { Dossier } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # MessageActions
+
+**导出**：`MessageActions`
 
 > 消息操作条 · 复制(剪贴板+Check反馈)/重新生成/赞/踩 · 各键按需渲染 · 复用内联图标 · 挂 ChatMessage actions 槽 · ai/assist
 
@@ -17902,6 +18454,8 @@ import { MessageActions } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PromptInput
 
+**导出**：`PromptInput`
+
 > 提示输入 · 自增高Textarea + 发送/停止键 + Enter提交/Shift+Enter换行/IME合成保护 + 受控非受控两用 + 左侧操作槽 · ai/conversation
 
 ## 何时用
@@ -17960,6 +18514,8 @@ import { PromptInput } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PromptSuggestions
 
+**导出**：`PromptSuggestions`
+
 > 建议提示 · 可点击 pill 列表 + string/{label,value} 两式 + onSelect 回传 value 填充输入或发起对话 · ai/assist
 
 ## 何时用
@@ -18014,6 +18570,8 @@ import { PromptSuggestions } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # StreamingText
 
+**导出**：`StreamingText`
+
 > 流式文本 · 渲染父级累积 text(随token增长) + 流式中尾随闪烁光标(hulian-blink) · 区别 TypingAnimation 自驱定时 · 纯皮肤RSC · ai/assist · #animated
 
 ## 何时用
@@ -18061,6 +18619,8 @@ import { StreamingText } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TaskRunner
+
+**导出**：`TaskRunner` · `resolveProgress` · `statusMeta`
 
 > 任务运行卡 · dogfood AgentPlan(bare)步骤列表 + Progress顶部进度 + Tag标签 + Dot状态徽标 · idle/running/success/error四态派生 + 每步耗时(meta)/running行高亮/pending空心环 + progress省略按完成比派生 + 累计耗时footer + headerExtra/footerExtra送掣 · 纯展示RSC(计时驱动留消费侧) · ai/agent
 
@@ -18129,6 +18689,8 @@ const SANDBOX_STEPS: AgentTask[] = [
 <!-- ════════════════════════════════════════════════════════ -->
 # ThinkingBlock
 
+**导出**：`ThinkingBlock`
+
 > 思考折叠块 · dogfood Collapsible(自带chevron+平滑高度) + thinking态(转圈+AnimatedShinyText高光+默认展开) + 耗时标记·收起隐藏 chain-of-thought · ai/agent · #animated
 
 ## 何时用
@@ -18181,6 +18743,8 @@ import { ThinkingBlock } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ThreadList
+
+**导出**：`ThreadList`
 
 > 会话历史列表 · ChatGPT 式智能体侧栏：标题+meta 双行条目 + active 高亮 + 删除按钮(stopPropagation 不触发选中) + 头部动作槽(新对话) + 空态占位 + bare 内嵌 · ai/agent
 
@@ -18248,6 +18812,8 @@ const [activeId, setActiveId] = useState("a");
 <!-- ════════════════════════════════════════════════════════ -->
 # ToolCall
 
+**导出**：`ToolCall`
+
 > 工具调用卡 · dogfood Collapsible + Dot状态色 + Spinner(运行中) · pending/running/success/error 四态 + 参数/结果折叠面板 + 工具图标 · ai/agent
 
 ## 何时用
@@ -18263,7 +18829,7 @@ import { ToolCall } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| status | `"pending" ｜ "running" ｜ "success" ｜ "error"` | `"success"` | pending 等待 / running 运行中(转圈) / success 完成 / error 失败 |
+| status | `"pending" \| "running" \| "success" \| "error"` | `"success"` | pending 等待 / running 运行中(转圈) / success 完成 / error 失败 |
 | defaultOpen | `boolean` | — | 非受控初始展开态 |
 | open | `boolean` | — | 受控展开态 |
 | className | `string` | — | 容器类名 |
@@ -18310,6 +18876,8 @@ import { ToolCall } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # TypingDots
 
+**导出**：`TypingDots`
+
 > 打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
 
 ## 何时用
@@ -18351,6 +18919,8 @@ import { TypingDots } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AnimatedBeam
+
+**导出**：`AnimatedBeam`
 
 > 动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver) · decoration/overlay-fx · #animated
 
@@ -18414,6 +18984,8 @@ function Demo() {
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Antigravity
+
+**导出**：`Antigravity`
 
 > 反重力粒子 · 吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点阵) · decoration/overlay-fx · #animated
 
@@ -18480,6 +19052,8 @@ import { Antigravity } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Aurora
 
+**导出**：`Aurora`
+
 > 极光渐变背景 · 双层 repeating-linear-gradient 横移干涉 + 径向 mask 聚焦 + chart token(纯 CSS·RSC) · decoration/backdrop · #animated
 
 ## 何时用
@@ -18537,6 +19111,8 @@ import { Aurora } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Balatro
+
+**导出**：`Balatro`
 
 > 螺旋油彩 · WebGL 背景 · 像素旋涡 + 5 次正弦迭代油画混色 + 可选鼠标交互/自转(ogl·三色吃 chart token·reduced-motion conic 兜底) · decoration/backdrop · #animated #webgl
 
@@ -18609,6 +19185,8 @@ import { Balatro } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Ballpit
 
+**导出**：`Ballpit`
+
 > 彩球球池 · 一坑彩色小球的可交互物理球池 · 重力下落+墙壁回弹+球球弹性碰撞+光标排斥(零依赖 canvas2d·chart token·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -18664,6 +19242,8 @@ import { Ballpit } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Beams
+
+**导出**：`Beams`
 
 > 流动光柱 · 流动体积光柱 WebGL 背景 · perlin 噪声扰动起伏 + 方向光受光梯度 + 倾斜光幕 + 胶片颗粒(ogl·token·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
@@ -18726,6 +19306,8 @@ import { Beams } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # BlobCursor
+
+**导出**：`BlobCursor`
 
 > 果冻光标 · 拖尾组件 · 领头跟手 + 多滴弹性拖尾经 SVG gooey 滤镜融成液态水银(去 gsap·motion useSpring·token·reduced-motion) · decoration/overlay-fx · #animated
 
@@ -18791,6 +19373,8 @@ import { BlobCursor } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # BorderBeam
 
+**导出**：`BorderBeam`
+
 > 边框光束 · motion offsetPath 绕边 + mask 只露边框 · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -18845,6 +19429,8 @@ import { BorderBeam } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # BorderGlow
+
+**导出**：`BorderGlow`
 
 > 发光边框卡 · 指针感应发光边框卡片 · 沿光锥点亮彩色网格边框 + 外层霓虹光晕(随边缘贴近度渐变) + 可选挂载自动扫光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 
@@ -18916,6 +19502,8 @@ import { BorderGlow } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # CardSpotlight
 
+**导出**：`CardSpotlight`
+
 > 聚光卡片 · 鼠标跟随径向高光(纯 CSS 变量 + radial-gradient) + color-mix 高光色 + surface token(零依赖) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -18961,6 +19549,8 @@ import { CardSpotlight } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ClickSpark
+
+**导出**：`ClickSpark`
 
 > 点击火花 · 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·RSC 安全·jsdom 安全） · decoration/overlay-fx · #animated
 
@@ -19019,6 +19609,8 @@ import { ClickSpark } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ColorBends
+
+**导出**：`ColorBends`
 
 > 多色流场 · WebGL 背景组件 · 正弦折叠噪声场按软阈值带宽采样叠加生成相互弯折的有机色带 + 指针视差/牵引/自动旋转(ogl·主题感知·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
@@ -19089,6 +19681,8 @@ import { ColorBends } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Crosshair
 
+**导出**：`Crosshair`
+
 > 准星十字线 · 鼠标跟随的容器内准星十字线 · lerp 平滑拖尾 + 进入抖动脉冲 + token 配色(零依赖·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -19133,6 +19727,8 @@ import { Crosshair } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Cubes
+
+**导出**：`Cubes`
 
 > 立方体阵列 · 3D 立方体阵列交互背景 · 指针靠近按距离衰减倾斜 + 空闲自动游走 + 点击环形涟漪高亮（零依赖去 gsap·token 配色·reduced-motion） · decoration/overlay-fx · #animated
 
@@ -19192,6 +19788,8 @@ import { Cubes } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # DarkVeil
+
+**导出**：`DarkVeil`
 
 > 暗色帷幕 · CPPN 神经场暗色流动帷幕 WebGL 背景 · 色相旋转/扫描线/颗粒/空间扭曲(ogl·懒加载·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
@@ -19255,6 +19853,8 @@ import { DarkVeil } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Dither
 
+**导出**：`Dither`
+
 > 抖动波纹 · 复古有序抖动波纹 WebGL 背景 · Perlin/fbm 波纹场 + 8×8 Bayer 抖动 + 色阶量化/像素马赛克(ogl 单遍 shader·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -19316,6 +19916,8 @@ import { Dither } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DotField
 
+**导出**：`DotField`
+
 > 交互式点阵背景 · 光标推挤点阵鼓胀 + 移动泛起径向辉光，可选波浪起伏/星点闪烁（canvas2d 零依赖·token 配色·reduced-motion 静态降级） · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -19374,6 +19976,8 @@ import { DotField } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # DotPattern
 
+**导出**：`DotPattern`
+
 > 点阵背景 · 纯 SVG pattern + currentColor token + RSC · decoration/backdrop
 
 ## 何时用
@@ -19418,6 +20022,8 @@ import { DotPattern } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ElectricBorder
+
+**导出**：`ElectricBorder`
 
 > 通电边框 · 通电跳动的边框装饰 · SVG 湍流位移描边 + 多层模糊光晕模拟放电辉光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 
@@ -19477,6 +20083,8 @@ import { ElectricBorder } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # EvilEye
 
+**导出**：`EvilEye`
+
 > 火焰邪眼 · WebGL 背景 · 极坐标多层程序化噪声画出翻腾火焰瞳孔 + 瞳孔惯性跟随光标 + 外圈弥散辉光（ogl·token 自适应·reduced-motion 静态降级） · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -19535,6 +20143,8 @@ import { EvilEye } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # FaultyTerminal
+
+**导出**：`FaultyTerminal`
 
 > 故障终端雨 · 出故障的 CRT 终端字符雨 WebGL 背景 · fbm 噪声点阵 + 横向撕裂/扫描线/闪烁/桶形畸变/色散 + 鼠标涟漪(ogl·token 着色·reduced-motion 兜底) · decoration/backdrop · #animated #webgl
 
@@ -19603,6 +20213,8 @@ import { FaultyTerminal } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Ferrofluid
 
+**导出**：`Ferrofluid`
+
 > 铁磁流体 · 液态金属铁磁流体 WebGL 背景组件 · value-noise 峰脊 + smin 软融合 + rim 亮带流动 + 鼠标下凹交互(ogl·主题 chart token·reduced-motion 径向渐变兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -19668,6 +20280,8 @@ import { Ferrofluid } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FlickeringGrid
 
+**导出**：`FlickeringGrid`
+
 > 闪烁网格 · canvas 像素方格随机明灭 + ResizeObserver 自适应 + 颜色吃主题 token(逐帧现取) · decoration/backdrop · #animated
 
 ## 何时用
@@ -19723,6 +20337,8 @@ import { FlickeringGrid } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # FloatingLines
+
+**导出**：`FloatingLines`
 
 > 漂浮线束 · WebGL 背景 · 三组正弦波线束随时间漂浮 + log 半径扭曲旋转 + 渐变色带插值 + 可选指针径向弯曲(ogl 零新依赖·token 吃 chart·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
@@ -19783,6 +20399,8 @@ import { FloatingLines } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # FluidGlass
 
+**导出**：`FluidGlass`
+
 > 流体玻璃 · 跟随指针的流体玻璃折射背景 · 程序化流动渐变底图 + 圆形玻璃透镜实时折射/放大/边缘色散/菲涅尔高光(ogl 单 shader·零 3D 依赖·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -19841,6 +20459,8 @@ import { FluidGlass } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Galaxy
+
+**导出**：`Galaxy`
 
 > 视差星河 · 程序化生成的多层视差星河 WebGL 背景 · Hash 铺点+十字辉光+HSV 调色+三角波闪烁+自转/鼠标斥力，4 层尺度叠加深空纵深(ogl·懒加载·StrictMode 安全·reduced-motion 降级 chart token 径向渐变) · decoration/backdrop · #animated #webgl
 
@@ -19906,6 +20526,8 @@ import { Galaxy } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GhostCursor
 
+**导出**：`GhostCursor`
+
 > 幽灵拖尾光标 · 跟随指针的幽灵烟雾拖尾 · fbm 噪声烟团 + 环形帧缓冲历史尾迹 + 惯性滑行渐隐（ogl WebGL·去 three.js·reduced-motion 降级） · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -19958,6 +20580,8 @@ import { GhostCursor } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GlareHover
 
+**导出**：`GlareHover`
+
 > 反光悬停 · hover 斜向扫光 + reduced-motion + RSC · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -20009,6 +20633,8 @@ import { GlareHover } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GlassIcons
 
+**导出**：`GlassIcons`
+
 > 玻璃图标网格 · 玻璃拟态图标按钮网格 · 背面 3D 旋转彩色发光板 + 前面磨砂玻璃片（backdrop-blur·inset 高光边），hover/focus 彩板抬升旋转、玻璃前推、标签滑出（纯 CSS 零依赖·token 配色·RSC 安全·reduced-motion） · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -20036,7 +20662,7 @@ import { GlassIcons } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | label* | `string` | — | hover/focus 滑出的文字，同时作按钮 `aria-label` |
-| color | `string` | `"primary"` | 背面发光配色，预设名 `primary｜blue｜purple｜red｜indigo｜orange｜green`，或任意 CSS 颜色/渐变 |
+| color | `string` | `"primary"` | 背面发光配色，预设名 `primary\|blue\|purple\|red\|indigo\|orange\|green`，或任意 CSS 颜色/渐变 |
 | className | `string` | — | 透传该按钮 className |
 
 ### GlassIconItem · Events
@@ -20086,6 +20712,8 @@ import { Heart, Star, Bell } from "lucide-react";
 <!-- ════════════════════════════════════════════════════════ -->
 # GlassSurface
 
+**导出**：`GlassSurface`
+
 > 液态玻璃折射面 · SVG feDisplacementMap 三通道色散 + RGB 色差边缘(零依赖·token 磨砂底/发丝边/焦点环·RSC client·非 SVG 浏览器回落 backdrop-blur·reduced-motion 关过渡) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -20101,8 +20729,8 @@ import { GlassSurface } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| width | `number ｜ string` | `200` | 宽度，number 视作 px，string 原样透传 |
-| height | `number ｜ string` | `80` | 高度，number 视作 px，string 原样透传 |
+| width | `number \| string` | `200` | 宽度，number 视作 px，string 原样透传 |
+| height | `number \| string` | `80` | 高度，number 视作 px，string 原样透传 |
 | borderRadius | `number` | `20` | 圆角半径 px，同时作用于容器与位移图内部矩形 |
 | borderWidth | `number` | `0.07` | 边缘高光带宽度系数 0~1（相对短边），越大折射越宽 |
 | brightness | `number` | `50` | 位移图内部矩形亮度（HSL 的 L，0~100），控制玻璃厚度质感 |
@@ -20115,8 +20743,8 @@ import { GlassSurface } from "@hulianui/ui"
 | redOffset | `number` | `0` | 红通道相对 distortionScale 的额外位移（色差） |
 | greenOffset | `number` | `10` | 绿通道额外位移（色差） |
 | blueOffset | `number` | `20` | 蓝通道额外位移（色差） |
-| xChannel | `GlassChannel` | `"R"` | X 方向偏移取用通道（`"R"｜"G"｜"B"｜"A"`） |
-| yChannel | `GlassChannel` | `"G"` | Y 方向偏移取用通道 |
+| xChannel | `"R" \| "G" \| "B" \| "A"` | `"R"` | X 方向偏移取用通道（`"R"\|"G"\|"B"\|"A"`） |
+| yChannel | `"R" \| "G" \| "B" \| "A"` | `"G"` | Y 方向偏移取用通道 |
 | mixBlendMode | `CSSProperties["mixBlendMode"]` | `"difference"` | 位移图内红/蓝渐变叠加混合模式（决定折射纹理形态） |
 | className | `string` | — | 透传根容器 className |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
@@ -20160,6 +20788,8 @@ import { GlassSurface } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # GradientBlinds
+
+**导出**：`GradientBlinds`
 
 > 渐变百叶窗 · WebGL 背景 · 多色站水平渐变 + 竖条百叶明暗调制 + 跟随鼠标聚光灯 + 颗粒噪声(可旋转/镜像/扭曲) · 默认吃 chart token(ogl·reduced-motion 静态百叶降级) · decoration/backdrop · #animated #webgl
 
@@ -20228,6 +20858,8 @@ import { GradientBlinds } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GradualBlur
 
+**导出**：`GradualBlur`
+
 > 渐进贴边模糊 · 沿容器某一边叠加多层 backdrop-filter 的渐进式模糊贴边 · 八方向/曲线/指数递增 + 悬停增强 + 进场淡入(零依赖·tokens·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -20243,13 +20875,13 @@ import { GradualBlur } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| position | `"top"｜"bottom"｜"left"｜"right"` | `"bottom"` | 模糊条贴靠的边；top/bottom 为横条，left/right 为竖条 |
+| position | `"top"\|"bottom"\|"left"\|"right"` | `"bottom"` | 模糊条贴靠的边；top/bottom 为横条，left/right 为竖条 |
 | strength | `number` | `2` | 模糊强度基数，每层按曲线递增，建议 1–6 |
 | height | `string` | `"6rem"` | 横条厚度；竖条模式下若没传 width 则复用此值作竖条宽度 |
 | width | `string` | — | 竖条（left/right）宽度，缺省回落到 `height` |
 | divCount | `number` | `5` | 叠加模糊层数，越多过渡越细腻、越费性能，建议 3–10 |
 | exponential | `boolean` | `false` | 指数级递增模糊量（近边缘急剧变糊），false=线性 |
-| curve | `"linear"｜"bezier"｜"ease-in"｜"ease-out"｜"ease-in-out"` | `"linear"` | 每层模糊量沿进度的爬升曲线 |
+| curve | `"linear"\|"bezier"\|"ease-in"\|"ease-out"\|"ease-in-out"` | `"linear"` | 每层模糊量沿进度的爬升曲线 |
 | opacity | `number` | `1` | 整体不透明度 |
 | hoverIntensity | `number` | — | 悬停时模糊放大倍数；传入即启用并接管指针事件（pointer-events:auto），不传则容器穿透不挡交互 |
 | revealOnScroll | `boolean` | `false` | 进入视口时淡入（IntersectionObserver 驱动），开启后默认不可见 |
@@ -20288,6 +20920,8 @@ import { GradualBlur } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Grainient
+
+**导出**：`Grainient`
 
 > 颗粒渐变 · 三色域扭曲 + 胶片颗粒的 WebGL 渐变背景 · 噪声驱动旋转 + 实时 grain/对比度后期(ogl·reduced-motion 降级静态渐变) · decoration/backdrop · #animated #webgl
 
@@ -20362,6 +20996,8 @@ import { Grainient } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GridDistortion
 
+**导出**：`GridDistortion`
+
 > 网格扭曲 · 鼠标拖拽的液态网格扭曲 WebGL 背景 · 数据纹理位移场 + 鼠标速度涟漪/弛豫回弹(ogl·零外部资源默认程序化网格底纹·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -20417,6 +21053,8 @@ import { GridDistortion } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GridMotion
 
+**导出**：`GridMotion`
+
 > 倾斜网格视差 · 背景 · 鼠标横移每行奇偶反向弹性追随 + 中心径向光晕(零依赖 motion useSpring·token·reduced-motion) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -20469,6 +21107,8 @@ import { GridMotion } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # GridPattern
 
+**导出**：`GridPattern`
+
 > 网格背景 · 纯 SVG 线 + 虚线可配 + currentColor · decoration/backdrop
 
 ## 何时用
@@ -20511,6 +21151,8 @@ import { GridPattern } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # GridScan
+
+**导出**：`GridScan`
 
 > 扫描网格 · 透视扫描网格 WebGL 背景 · 射线投射无限网格(实线/虚线/点线)+纵深推进的发光扫描脉冲+鼠标视差偏摆(ogl·token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
 
@@ -20575,6 +21217,8 @@ import { GridScan } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Hyperspeed
 
+**导出**：`Hyperspeed`
+
 > 跃迁隧道 · 超空间跃迁 warp 隧道背景 · 从消失点放射的双色车灯光带向观察者冲来 + 湍流扭曲 + 程序化辉光(ogl 单 shader·零新依赖·token·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -20629,6 +21273,8 @@ import { Hyperspeed } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ImageTrail
+
+**导出**：`ImageTrail`
 
 > 光标图片拖尾 · 光标拖尾图片组件 · 移动光标沿轨迹依次甩出图片淡入跟随、缩小淡出(零依赖 RAF+lerp·token·reduced-motion) · decoration/overlay-fx · #animated
 
@@ -20686,6 +21332,8 @@ import { ImageTrail } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Iridescence
 
+**导出**：`Iridescence`
+
 > 虹彩光泽背景 · WebGL/ogl shader 连续光谱干涉 + 鼠标光流扰动 + chart token + 静态 fallback · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -20736,6 +21384,8 @@ import { Iridescence } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Lanyard
+
+**导出**：`Lanyard`
 
 > 挂绳工牌 · 可拖拽的挂绳工牌 · 单摆+阻尼弹簧物理回弹(原生 PointerEvents+RAF·零三方依赖) + SVG 二次贝塞尔挂绳随摆角实时弯折 + token 配色(挂绳 primary·工牌 surface/border)·reduced-motion 松手即静止归位 · decoration/overlay-fx · #animated
 
@@ -20797,6 +21447,8 @@ import { Lanyard } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LaserFlow
+
+**导出**：`LaserFlow`
 
 > 激光束 · 自顶向下倾泻的体积激光束 WebGL 背景 · 极坐标光束几何 + fbm 噪声雾 + 行进微流光 + 指针牵引倾斜(ogl 去 three·主题感知·reduced-motion 降级) · decoration/overlay-fx · #animated
 
@@ -20867,6 +21519,8 @@ import { LaserFlow } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Lens
 
+**导出**：`Lens`
+
 > 放大镜 · 悬停光标处圆形放大任意 children(零依赖 mask+scale) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -20910,6 +21564,8 @@ import { Lens } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LetterGlitch
+
+**导出**：`LetterGlitch`
 
 > 字符故障雨 · 终端字符故障雨背景 · canvas 等宽字符矩阵按节拍随机翻字翻色 + 颜色逐帧插值平滑 + 内/外缘暗角(零依赖 canvas2d·token 调色板·reduced-motion) · decoration/backdrop · #animated #webgl
 
@@ -20965,6 +21621,8 @@ import { LetterGlitch } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Lightfall
+
+**导出**：`Lightfall`
 
 > 光束坠落 · 隧道光束坠落 WebGL 背景 · 多色光束按高度循环取色 + 中心辉光 + 闪烁/拖尾 + 鼠标牵引(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
@@ -21032,6 +21690,8 @@ import { Lightfall } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Lightning
 
+**导出**：`Lightning`
+
 > 电弧极光 · fbm 噪声电弧/极光柱 WebGL 背景 · 距离场反比辉光 + hash 随机闪烁(ogl·token 取色·reduced-motion 静态降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -21085,6 +21745,8 @@ import { Lightning } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LightPillar
+
+**导出**：`LightPillar`
 
 > 体积光柱 · WebGL 背景 · 沿 y 轴 raymarch 累积辉光 + 多层波动噪声 + 顶底双色纵向渐变(ogl·token 自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
@@ -21145,6 +21807,8 @@ import { LightPillar } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LightRays
+
+**导出**：`LightRays`
 
 > 光束放射 · 体积光束放射 WebGL 背景 · 八向原点 + 双层正弦扰动/扩散衰减/脉动/噪点/扭曲 + 鼠标方向跟随(ogl·token 着色·reduced-motion 静态渐变兜底) · decoration/backdrop · #animated #webgl
 
@@ -21212,6 +21876,8 @@ import { LightRays } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LineWaves
 
+**导出**：`LineWaves`
+
 > 波纹线阵 · 流动波纹线阵 WebGL 背景 · 双正弦位移场 + 噪声脊线 + 三通道色相循环 + 鼠标局部隆起(ogl·chart token 配色·reduced-motion 静态线纹降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -21278,6 +21944,8 @@ import { LineWaves } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # LiquidChrome
 
+**导出**：`LiquidChrome`
+
 > 液态铬背景 · WebGL/ogl 金属流动反光 + 鼠标涟漪 + chart token 基色 + 静态金属渐变 fallback · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -21338,6 +22006,8 @@ import { LiquidChrome } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # LiquidEther
+
+**导出**：`LiquidEther`
 
 > 液态色域 · 鼠标驱动的液态色域 WebGL 背景 · 域扭曲+metaball 翻涌 + 指针搅动/自动巡游(ogl·token·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
@@ -21400,6 +22070,8 @@ import { LiquidEther } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # MagicRings
+
+**导出**：`MagicRings`
 
 > 魔法光环 · 同心魔法光环装饰背景 · GLSL 循环扩张/淡入淡出双色波纹 + 噪点颗粒 + 鼠标视差/悬停缩放/点击爆发（ogl·token 双色·reduced-motion 静态同心环降级） · decoration/overlay-fx · #animated
 
@@ -21466,6 +22138,8 @@ import { MagicRings } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Magnet
 
+**导出**：`Magnet`
+
 > 指针磁吸 · 交互组件 · 内容按「到中心距离/强度」牵引跟随指针、离开平滑归位(零依赖·reduced-motion 钳位) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -21525,6 +22199,8 @@ import { Magnet } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MagnetLines
 
+**导出**：`MagnetLines`
+
 > 磁力线网格 · 指针驱动的磁力线网格 · rows×columns 细线段实时朝向鼠标(acos 反三角求角) + token 线色(零依赖·reduced-motion 静止) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -21577,6 +22253,8 @@ import { MagnetLines } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # MetaBalls
+
+**导出**：`MetaBalls`
 
 > 黏液融球 · 一组黏液球（metaball）公转游走、距离平方反比势场叠加 smoothstep 等值面产生融合/分裂的有机黏连背景 · 主体球与跟随鼠标的光标球交界处混色 + 自动巡游兜底(ogl·token 配色·reduced-motion 静态渐变球团 fallback) · decoration/overlay-fx · #animated
 
@@ -21642,6 +22320,8 @@ import { MetaBalls } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # MetallicPaint
 
+**导出**：`MetallicPaint`
+
 > 液态金属漆面 · WebGL 装饰背景 · fbm 液态扰动 + RGB 折射色散 + 多段金属条纹梯度(ogl·token·reduced-motion 降级) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -21701,6 +22381,8 @@ import { MetallicPaint } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Meteors
 
+**导出**：`Meteors`
+
 > 流星雨 · 随机斜落拖尾(客户端生成) + currentColor · decoration/backdrop · #animated
 
 ## 何时用
@@ -21745,6 +22427,8 @@ import { Meteors } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ModelViewer
 
+**导出**：`ModelViewer`
+
 > 3D 模型舞台 · 交互式 3D 模型查看舞台 · 拖拽旋转(惯性) + 鼠标视差 + 悬停倾斜 + 自动旋转 + 接触阴影(零依赖 CSS 3D · RAF · reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -21760,8 +22444,8 @@ import { ModelViewer } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| width | `number ｜ string` | `"100%"` | 舞台宽度，由外层容器约束 |
-| height | `number ｜ string` | `360` | 舞台高度 |
+| width | `number \| string` | `"100%"` | 舞台宽度，由外层容器约束 |
+| height | `number \| string` | `360` | 舞台高度 |
 | defaultRotationY | `number` | `-20` | 初始偏航角（绕 Y，°），拖拽时累加 |
 | defaultRotationX | `number` | `12` | 初始俯仰角（绕 X，°），拖拽时累加 |
 | perspective | `number` | `1000` | 透视景深 px，越小透视越夸张 |
@@ -21806,6 +22490,8 @@ import { ModelViewer } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Orb
+
+**导出**：`Orb`
 
 > 指针交互光球 · WebGL/ogl 发光能量球 + hover 增亮/旋转 + hue 色相 + reduced-motion 径向渐变球 · decoration/backdrop · #animated #webgl
 
@@ -21862,6 +22548,8 @@ import { Orb } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # OrbitImages
 
+**导出**：`OrbitImages`
+
 > 轨道环绕 · 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·RSC 安全·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -21877,7 +22565,7 @@ import { OrbitImages } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| shape | `"ellipse"｜"circle"｜"square"｜"rectangle"｜"triangle"｜"star"｜"heart"｜"infinity"｜"wave"｜"custom"` | `"ellipse"` | 轨道形状预设，custom 走 customPath |
+| shape | `"ellipse"\|"circle"\|"square"\|"rectangle"\|"triangle"\|"star"\|"heart"\|"infinity"\|"wave"\|"custom"` | `"ellipse"` | 轨道形状预设，custom 走 customPath |
 | customPath | `string` | — | shape="custom" 时的 SVG path d（坐标基于 baseWidth 方形画布） |
 | baseWidth | `number` | `1400` | 设计画布边长（px·方形 viewBox），只影响路径几何比例 |
 | radiusX | `number` | `700` | 椭圆/矩形/无穷/波浪 的横向半径（px·基于 baseWidth） |
@@ -21888,7 +22576,7 @@ import { OrbitImages } from "@hulianui/ui"
 | rotation | `number` | `-8` | 轨道倾斜角（deg），子项反向自转保持正立 |
 | duration | `number` | `40` | 跑完一圈时长（秒），越大越慢 |
 | itemSize | `number` | `64` | 单个子项边长（px·CSS 像素） |
-| direction | `"normal"｜"reverse"` | `"normal"` | 流转方向 |
+| direction | `"normal"\|"reverse"` | `"normal"` | 流转方向 |
 | fill | `boolean` | `true` | true 等距铺满轨道，false 从同点鱼贯出发 |
 | showPath | `boolean` | `false` | 描出轨道路径（调试/装饰） |
 | pathColor | `string` | `"var(--color-border)"` | 轨道描边颜色 |
@@ -21931,6 +22619,8 @@ import { OrbitImages } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # OrbitingCircles
+
+**导出**：`OrbitingCircles`
 
 > 轨道环绕 · 子元素沿圆周匀速公转 + 自身反旋正立(纯 CSS·RSC) · decoration/overlay-fx · #animated
 
@@ -21987,6 +22677,8 @@ import { OrbitingCircles } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Particles
 
+**导出**：`Particles`
+
 > 交互粒子场 · canvas 星尘漂浮 + 鼠标排斥位移 + DPR 自适应 + 颜色吃主题前景 token(明暗跟随) · decoration/backdrop · #animated
 
 ## 何时用
@@ -22035,6 +22727,8 @@ import { Particles } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelBlast
+
+**导出**：`PixelBlast` · `pixelBlastShowcase`
 
 > 点阵翻涌 · 抖动点阵翻涌的 WebGL 背景 · FBM 噪声 + 8×8 Bayer 有序抖动量化成方块/圆/三角/菱形像素 + 四周渐隐（ogl·token·reduced-motion 降级静态点阵） · decoration/backdrop · #animated #webgl
 
@@ -22097,6 +22791,8 @@ import { PixelBlast, pixelBlastShowcase } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelSnow
+
+**导出**：`PixelSnow`
 
 > 像素雪场 · 像素化体素雪场 WebGL 背景 · 光线步进逐格哈希生雪 + 景深淡出 · 方块/圆点/六臂雪花三变体（ogl 去 three.js·token 着色·reduced-motion 静态点阵降级） · decoration/backdrop · #animated #webgl
 
@@ -22163,6 +22859,8 @@ import { PixelSnow } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelTrail
 
+**导出**：`PixelTrail`
+
 > 像素余晖拖尾 · 鼠标划过点亮背后的像素网格、拖尾随时间淡灭的颗粒余晖背景 · 自维护 CPU 拖尾缓冲 + ogl data texture 着色 + 可选 gooey 液态融合(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -22212,6 +22910,8 @@ import { PixelTrail } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelTransition
+
+**导出**：`PixelTransition`
 
 > 像素转场卡 · 像素马赛克转场卡片：双层内容叠放，悬停/聚焦/点击触发一幕随机散入再散出的像素幕布完成切换 · 自定网格密度/过场时长/只进不退 + token 像素色（去 gsap·motion 减包驱动·reduced-motion 直切） · decoration/overlay-fx · #animated
 
@@ -22273,6 +22973,8 @@ import { PixelTransition } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Plasma
 
+**导出**：`Plasma`
+
 > 等离子流动 · WebGL 背景 · 60 步光线步进 shader + 鼠标扰动 + forward/reverse/pingpong 三向(ogl·token 染色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -22331,6 +23033,8 @@ import { Plasma } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PlasmaWave
+
+**导出**：`PlasmaWave`
 
 > 等离子波 · WebGL 背景 · raymarch 双丝带交织流动 + 双色权重混合(ogl·主题感知 chart token·reduced-motion 静态渐变降级) · decoration/backdrop · #animated #webgl
 
@@ -22398,6 +23102,8 @@ import { PlasmaWave } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Prism
+
+**导出**：`Prism`
 
 > 棱镜分光 · WebGL 背景 · ray-march 八面体 SDF 折射出彩虹体积光 + rotate/3drotate/hover 三姿态(ogl·主题色相自适应·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
@@ -22467,6 +23173,8 @@ import { Prism } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # PrismaticBurst
 
+**导出**：`PrismaticBurst`
+
 > 棱镜光爆 · WebGL 背景 · 从中心放射的体积步进光谱射线(可弯曲扭曲/N 瓣梳理/三维翻滚/hover 跟随) · 默认色带吃 --color-chart-1..5 token(明暗自适应) + 懒加载 ogl 复用 useGlCanvas(StrictMode 安全·reduced-motion 降级静态径向光爆) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -22527,6 +23235,8 @@ import { PrismaticBurst } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ProgressiveBlur
 
+**导出**：`ProgressiveBlur`
+
 > 渐进模糊 · 分层 backdrop-blur + mask 渐变(纯 CSS·RSC) · decoration/overlay-fx
 
 ## 何时用
@@ -22565,6 +23275,8 @@ import { ProgressiveBlur } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Radar
+
+**导出**：`Radar`
 
 > 雷达扫描 · WebGL 背景 · 同心环波纹 + 径向辐条 + 旋转扫描臂 + 边缘衰减 + 鼠标视差(ogl·主色吃 chart token·reduced-motion 降级静态盘) · decoration/backdrop · #animated #webgl
 
@@ -22627,6 +23339,8 @@ import { Radar } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # RetroGrid
 
+**导出**：`RetroGrid`
+
 > 复古透视网格 · CSS 滚动 + reduced-motion · decoration/backdrop · #animated
 
 ## 何时用
@@ -22668,6 +23382,8 @@ import { RetroGrid } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Reveal
+
+**导出**：`Reveal` · `Stagger` · `StaggerItem`
 
 > 逐级揭示 · 通用「逐级揭示」块级动效原语 · Reveal 包裹元素进入视口时从位移/透明/缩放过渡到正常 + Stagger/StaggerItem 让子项按序错峰入场（非文字动画 · 作用于任意块级内容 · motion 运行时 · 吃 token · reduced-motion 直出终态） · decoration/overlay-fx · #animated
 
@@ -22742,6 +23458,8 @@ import { Reveal, Stagger, StaggerItem } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Ribbons
 
+**导出**：`Ribbons`
+
 > 飘带跟随 · 弹簧追随鼠标的飘带 WebGL 效果 · ogl Polyline 多条折线弹性拖尾 + 可选沿带渐隐/正弦波动(ogl·token·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -22801,6 +23519,8 @@ import { Ribbons } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Ripple
 
+**导出**：`Ripple`
+
 > 同心脉冲圆环 · CSS 逐圈延迟 + reduced-motion · decoration/backdrop · #animated
 
 ## 何时用
@@ -22841,6 +23561,8 @@ import { Ripple } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # RippleGrid
+
+**导出**：`RippleGrid`
 
 > 涟漪网格 · WebGL 背景 · 同心 sin 波推挤网格 + 暗角/辉光/彩虹配色 + 指针局部涟漪(ogl·chart token·reduced-motion 降级静态网格) · decoration/backdrop · #animated #webgl
 
@@ -22901,6 +23623,8 @@ import { RippleGrid } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ShapeBlur
 
+**导出**：`ShapeBlur`
+
 > 模糊形状高光 · 鼠标揭示的模糊形状高光 WebGL 件 · 圆角矩形/圆/圆环/三角四形态 + 阻尼跟随柔光圆擦亮边缘(ogl·token·reduced-motion 降级静态光晕) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -22916,7 +23640,7 @@ import { ShapeBlur } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variation | `"round-rect"｜"circle-fill"｜"circle-stroke"｜"triangle"` | `"round-rect"` | 形状预设（圆角矩形描边/实心圆/圆环描边/三角填充） |
+| variation | `"round-rect"\|"circle-fill"\|"circle-stroke"\|"triangle"` | `"round-rect"` | 形状预设（圆角矩形描边/实心圆/圆环描边/三角填充） |
 | shapeSize | `number` | `1.2` | 形状整体尺寸（GLSL u_shapeSize），越大越大 |
 | roundness | `number` | `0.4` | 圆角程度，仅 round-rect 生效，0=直角 |
 | borderSize | `number` | `0.05` | 描边宽度，仅描边类（round-rect/circle-stroke）生效 |
@@ -22957,6 +23681,8 @@ import { ShapeBlur } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # ShapeGrid
 
+**导出**：`ShapeGrid`
+
 > 几何网格 · 无限滚动几何网格背景 · canvas2d 绘制方/圆/三角/六边形四形，沿任意方向匀速平移环绕 + 鼠标悬停缓动填充与渐隐拖尾（零依赖·token 配色·reduced-motion 静止·jsdom 安全） · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -22972,12 +23698,12 @@ import { ShapeGrid } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| direction | `"right"｜"left"｜"up"｜"down"｜"diagonal"` | `"right"` | 网格滚动方向 |
+| direction | `"right"\|"left"\|"up"\|"down"\|"diagonal"` | `"right"` | 网格滚动方向 |
 | speed | `number` | `1` | 滚动速度（像素/帧，内部 clamp 下限 0.1）；reduced-motion 下强制静止 |
 | borderColor | `string` | `var(--color-border)` | 单元边线颜色，任意 CSS 颜色串 |
 | squareSize | `number` | `40` | 单元边长（px），同时决定网格密度 |
 | hoverFillColor | `string` | `var(--color-primary)` | 悬停时单元填充色，淡入/淡出缓动 |
-| shape | `"square"｜"circle"｜"triangle"｜"hexagon"` | `"square"` | 单元形状 |
+| shape | `"square"\|"circle"\|"triangle"\|"hexagon"` | `"square"` | 单元形状 |
 | hoverTrailAmount | `number` | `0` | 悬停拖尾长度（保留多少历史单元渐隐），0 = 无拖尾 |
 | className | `string` | — | 透传到根 canvas |
 | style | `CSSProperties` | — | 透传到根 canvas 的内联样式 |
@@ -23010,6 +23736,8 @@ import { ShapeGrid } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ShineBorder
+
+**导出**：`ShineBorder`
 
 > 流光边框 · 渐变 mask 只留边框区 + chart token + RSC · decoration/overlay-fx · #animated
 
@@ -23061,6 +23789,8 @@ import { ShineBorder } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # SideRays
 
+**导出**：`SideRays`
+
 > 侧光束 · 从屏幕一角发散的动态侧光束 WebGL 背景 · 双束角度正弦摆动+平方反比衰减+饱和度/混色调节(ogl·token 双色·reduced-motion 静态兜底) · decoration/backdrop · #animated #webgl
 
 ## 何时用
@@ -23081,7 +23811,7 @@ import { SideRays } from "@hulianui/ui"
 | rayColor2 | `string` | `var(--color-chart-2)` | 辅光束颜色，与主色叠加产生混色 |
 | intensity | `number` | `2` | 整体亮度强度，过大易过曝 |
 | spread | `number` | `2` | 光束张开角度（扇面宽度），越小越聚拢成一道 |
-| origin | `"top-left"｜"top-right"｜"bottom-left"｜"bottom-right"` | `"top-right"` | 光束发散的角落起点 |
+| origin | `"top-left"\|"top-right"\|"bottom-left"\|"bottom-right"` | `"top-right"` | 光束发散的角落起点 |
 | tilt | `number` | `0` | 光束整体倾斜角度（度），绕光源点旋转扇面 |
 | saturation | `number` | `1.5` | 饱和度，1=原色 / >1 增艳 / 0=去色 |
 | blend | `number` | `0.75` | 两束混色比例（0–1），0=仅主色 / 1=仅辅色 |
@@ -23124,6 +23854,8 @@ import { SideRays } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Silk
+
+**导出**：`Silk` · `silkShowcase`
 
 > 丝绸流动背景 · WebGL/ogl 懒加载 shader(复刻 react-bits) + chart token 主色 + reduced-motion 渐变兜底 · decoration/backdrop · #animated #webgl
 
@@ -23179,6 +23911,8 @@ import { Silk, silkShowcase } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # SoftAurora
+
+**导出**：`SoftAurora`
 
 > 柔和极光 · WebGL 柔和极光背景 · 3D Perlin 噪声 + cosine 渐变双层叠加 · 鼠标视差(ogl·token 着色·reduced-motion 降级) · decoration/backdrop · #animated #webgl
 
@@ -23248,6 +23982,8 @@ import { SoftAurora } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # SplashCursor
 
+**导出**：`SplashCursor`
+
 > 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decoration/overlay-fx · #animated
 
 ## 何时用
@@ -23297,6 +24033,8 @@ import { SplashCursor } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Spotlight
 
+**导出**：`Spotlight`
+
 > 径向辉光背景 · token 驱动 radial-gradient + 明暗自适应 + RSC · decoration/backdrop
 
 ## 何时用
@@ -23341,6 +24079,8 @@ import { Spotlight } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # StarBorder
+
+**导出**：`StarBorder`
 
 > 流星描边按钮 · 上下两道 radial-gradient 光带沿边沿来回扫过(纯 CSS·零依赖·RSC 安全)，光带色走 token、内壳 bg-surface/border-border，多态 as + reduced-motion 自动停。 · decoration/overlay-fx · #animated
 
@@ -23391,6 +24131,8 @@ import { StarBorder } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # StickerPeel
+
+**导出**：`StickerPeel`
 
 > 可拖拽贴纸 · hover/按住顶部卷边揭起 + 落地投影 + 鼠标跟随高光（零依赖·PointerEvents 拖拽·reduced-motion） · decoration/overlay-fx · #animated
 
@@ -23449,6 +24191,8 @@ import { StickerPeel } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # StripedPattern
 
+**导出**：`StripedPattern`
+
 > 斜条纹背景 · 纯 CSS 渐变 + currentColor · decoration/backdrop
 
 ## 何时用
@@ -23488,6 +24232,8 @@ import { StripedPattern } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TargetCursor
+
+**导出**：`TargetCursor`
 
 > 准星光标 · 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration/overlay-fx · #animated
 
@@ -23537,6 +24283,8 @@ import { TargetCursor } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Threads
+
+**导出**：`Threads`
 
 > 流动丝线背景 · WebGL/ogl Perlin 波动线随鼠标摆动 + 透明底叠加 + chart token + 静态 fallback · decoration/backdrop · #animated #webgl
 
@@ -23588,6 +24336,8 @@ import { Threads } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Tilt
+
+**导出**：`Tilt` · `tiltAngles` · `glareState` · `normalizePointer`
 
 > 视差倾斜包裹器 · 裹住任意 children 做 3D 倾斜(区别 TiltedCard 的固定卡片结构) · 指针/陀螺仪/手动角度三种驱动 + 全窗跟踪 + 单轴限制 + 反向 + 静息角 + 悬停放大 · glare 跟随指针的反光高光(角度与强度按几何算) · onTiltMove 每帧回传角度与反光可驱动多层视差 · 角度/反光是纯函数可测 · 吃瑚琏动效曲线·默认尊重 reduced-motion(零依赖) · decoration/overlay-fx
 
@@ -23660,6 +24410,8 @@ import { Tilt } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # WavyBackground
 
+**导出**：`WavyBackground` · `valueNoise2D`
+
 > 噪声波浪 · canvas 多彩波浪带叠加 + 内联零依赖 value noise + chart token + reduced-motion 静态 · decoration/backdrop · #animated
 
 ## 何时用
@@ -23683,7 +24435,7 @@ import { WavyBackground, valueNoise2D } from "@hulianui/ui"
 | waveOpacity | number | 0.5 | 每条波浪整体透明度（0–1） |
 | className | string | — | 内容容器类（覆盖在波浪上的 wrapper div） |
 | containerClassName | string | — | 外层根容器类 |
-| containerProps | `Omit<HTMLAttributes<HTMLDivElement>, "className"> & Record<\`data-${string}\`, …>` | — | 透传至外层根 div（含 data-* 自定义属性） |
+| containerProps | `Omit<HTMLAttributes<HTMLDivElement>, "className"> & Record<`data-${string}`, …>` | — | 透传至外层根 div（含 data-* 自定义属性） |
 
 ## Slots
 
@@ -23724,6 +24476,8 @@ import { WavyBackground, valueNoise2D } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Android
+
+**导出**：`Android` · `ANDROID_MODELS`
 
 > 安卓外壳 · 打孔摄像头机身包裹屏幕 + RSC · mockups/device
 
@@ -23770,6 +24524,8 @@ import { Android, ANDROID_MODELS } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Chrome
 
+**导出**：`Chrome`
+
 > 浏览器外壳 · 标签页+工具栏(前进/后退/刷新+地址栏)包裹截图 + RSC · mockups/window
 
 ## 何时用
@@ -23814,6 +24570,8 @@ import { Chrome } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # iPhone
+
+**导出**：`IPhone` · `IPHONE_MODELS`
 
 > 手机外壳 · 灵动岛机身包裹屏幕(token themeable) + RSC · mockups/device
 
@@ -23860,6 +24618,8 @@ import { IPhone, IPHONE_MODELS } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Safari
 
+**导出**：`Safari`
+
 > 浏览器外壳 · 顶栏红绿灯+地址栏包裹截图 + RSC · mockups/window
 
 ## 何时用
@@ -23903,6 +24663,8 @@ import { Safari } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Tablet
+
+**导出**：`Tablet` · `TABLET_MODELS`
 
 > 平板外壳 · iPad 系机身(model 预设尺寸/比例·token themeable) + RSC · mockups/device
 
@@ -23948,6 +24710,8 @@ import { Tablet, TABLET_MODELS } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Terminal
+
+**导出**：`Terminal`
 
 > 终端框 · mac 窗口外壳 + 命令行逐行揭示(motion + tone) + 语法着色(命令名/flag/URL/数字) · mockups/window · #animated
 
@@ -24000,6 +24764,8 @@ import { Terminal } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Watch
 
+**导出**：`Watch` · `WATCH_MODELS`
+
 > 手表外壳 · Apple Watch 系 squircle 表壳+数码表冠(model 预设尺寸) + RSC · mockups/device
 
 ## 何时用
@@ -24045,6 +24811,8 @@ import { Watch, WATCH_MODELS } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # ActionSheet
+
+**导出**：`ActionSheet` · `ActionSheetTrigger` · `ActionSheetClose` · `ActionSheetContent`
 
 > 动作面板 · 建在 Base UI Dialog 底滑(同 Drawer 范式·motion token CSS 镜像) + 动作即 Close + 危险态 + 独立取消块 + 安全区 · mobile/overlay
 
@@ -24110,6 +24878,8 @@ import { ActionSheet, ActionSheetTrigger, ActionSheetClose, ActionSheetContent }
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Fab
+
+**导出**：`Fab`
 
 > 悬浮操作钮 · fixed 贴边 + speed-dial 子动作错峰展开/主钮旋 45°(零依赖·reduced-motion) · mobile/nav
 
@@ -24179,6 +24949,8 @@ import { Fab } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Picker
 
+**导出**：`Picker`
+
 > 滚轮选择器 · 多列 CSS scroll-snap 吸附 + 即时高亮居中项 + 停稳防抖 emit + 受控滚定位(零依赖·H5 选时间/地区) · mobile/input
 
 ## 何时用
@@ -24226,6 +24998,8 @@ const [val, setVal] = useState(["9", "30"]);
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PullToRefresh
+
+**导出**：`PullToRefresh`
 
 > 下拉刷新 · 置顶下拉带阻尼 + 过阈进 armed + 松手触发并保持刷新态至 Promise 结束回弹(零依赖·Pointer Events) · mobile/gesture
 
@@ -24279,6 +25053,8 @@ import { PullToRefresh } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # SafeArea
 
+**导出**：`SafeArea`
+
 > 安全区适配 · env(safe-area-inset-*) 作 padding/margin 应用到指定边 + min 兜底 + as 多态(零依赖·RSC·刘海/底部横条) · mobile/layout
 
 ## 何时用
@@ -24294,7 +25070,7 @@ import { SafeArea } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `edges` | `SafeAreaEdge[] \| "all" \| "vertical" \| "horizontal"` | `"all"` | 应用哪几条安全区 inset；`SafeAreaEdge = "top"\|"right"\|"bottom"\|"left"` |
+| `edges` | `"top" \| "right" \| "bottom" \| "left"[] \| "all" \| "vertical" \| "horizontal"` | `"all"` | 应用哪几条安全区 inset；`SafeAreaEdge = "top"\|"right"\|"bottom"\|"left"` |
 | `mode` | `"padding" \| "margin"` | `"padding"` | padding=撑开自身，margin=外推 |
 | `min` | `number \| string` | `0` | 每条 inset 的最小值（数字=px 或任意 CSS 长度），env 取不到时兜底 |
 | `as` | `ElementType` | `"div"` | 多态根元素 |
@@ -24317,6 +25093,8 @@ import { SafeArea } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # SwipeAction
+
+**导出**：`SwipeAction`
 
 > 列表项滑动操作 · 内容层 translateX 跟手 + 左/右动作面板 + 过半吸附全开/回弹 + 主轴判定放行纵向滚动(零依赖·Pointer Events) · mobile/gesture
 
@@ -24371,6 +25149,8 @@ import { SwipeAction } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TabBar
+
+**导出**：`TabBar`
 
 > 底部导航栏 · items 驱动受控/非受控 + 激活 text-primary/aria-current + 角标/红点 + 吃底部安全区(零依赖·H5 主导航) · mobile/nav
 
@@ -24431,6 +25211,8 @@ const [tab, setTab] = useState("home");
 <!-- ════════════════════════════════════════════════════════ -->
 # Access
 
+**导出**：`AccessProvider` · `Access` · `useAccess`
+
 > 声明式权限门禁：有权限渲染 children，否则渲染 fallback（默认隐藏）。 · uncatalogued
 
 ## 何时用
@@ -24446,9 +25228,9 @@ import { Access } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| permission | `string ｜ string[]` | — | 需要的权限；与 accessible 二选一，accessible 优先 |
-| mode | `"all" ｜ "any"` | `"all"` | 数组权限匹配模式：all=全部具备 / any=任一具备（单字符串无效） |
-| accessible | `boolean ｜ ((access: AccessContextValue) => boolean)` | — | 自定义判定（优先于 permission） |
+| permission | `string \| string[]` | — | 需要的权限；与 accessible 二选一，accessible 优先 |
+| mode | `"all" \| "any"` | `"all"` | 数组权限匹配模式：all=全部具备 / any=任一具备（单字符串无效） |
+| accessible | `boolean \| ((access: AccessContextValue) => boolean)` | — | 自定义判定（优先于 permission） |
 
 ## Slots
 
@@ -24488,6 +25270,8 @@ import { Access } from "@hulianui/ui"
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Config
+
+**导出**：`ConfigProvider` · `useLocale` · `zhCN` · `enUS`
 
 > 全局配置根：当前承载 i18n（locale），后续渐进扩展默认尺寸/主题等全局项。 · uncatalogued
 
@@ -24538,6 +25322,8 @@ import { ConfigProvider } from "@hulianui/ui";
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Theme
+
+**导出**：`ThemeProvider` · `useTheme` · `useThemeOptional` · `THEME_STORAGE_KEY`
 
 >  · uncatalogued
 

@@ -122,11 +122,17 @@ function MixedDemo() {
           commitMode="commit"
           categories={["typography", "effects"]}
           props={{ fontSize: MIXED, fontWeight: MIXED, textAlign: "left", opacity: MIXED }}
-          onChange={(path, value) => setLog((previous) => [`${path} = ${String(value)}`, ...previous].slice(0, 4))}
+          onChange={(path, value) =>
+            setLog((previous) => [`${path} = ${String(value)}`, ...previous].slice(0, 4))
+          }
         />
       </div>
       <ul className="space-y-1 font-mono text-xs text-muted">
-        {log.length === 0 ? <li>松手 / 失焦后才会看到回吐</li> : log.map((line, index) => <li key={index}>{line}</li>)}
+        {log.length === 0 ? (
+          <li>松手 / 失焦后才会看到回吐</li>
+        ) : (
+          log.map((line, index) => <li key={index}>{line}</li>)
+        )}
       </ul>
     </div>
   );
@@ -169,7 +175,8 @@ export const inspectorPanelShowcase: ShowcaseSpec = {
     },
     {
       title: "多选混合值 + 松手才回吐",
-      description: "取值不一致的属性传 MIXED 显示「多个值」；commitMode=\"commit\" 让拖动/输入过程不回吐。",
+      description:
+        '取值不一致的属性传 MIXED 显示「多个值」；commitMode="commit" 让拖动/输入过程不回吐。',
       code: `<InspectorPanel
   selectedElement="3 个元素"
   commitMode="commit"

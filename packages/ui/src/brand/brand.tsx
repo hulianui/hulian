@@ -1,4 +1,4 @@
-import { cloneElement, type ReactNode } from "react";
+import { cloneElement, type ReactNode, memo } from "react";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
 import type { BrandProps, BrandSize } from "./brand.types";
@@ -10,7 +10,11 @@ import type { BrandProps, BrandSize } from "./brand.types";
 // 套 Avatar 就得用 className 改形状，那正是 guard 与 conventions 里说的「在业务侧打补丁」
 // （hulianui/hulian#57）。纯展示零 hook（可 RSC）。
 
-const MARK: Record<BrandSize, string> = { sm: "size-7 text-xs", md: "size-9 text-sm", lg: "size-11 text-base" };
+const MARK: Record<BrandSize, string> = {
+  sm: "size-7 text-xs",
+  md: "size-9 text-sm",
+  lg: "size-11 text-base",
+};
 const NAME: Record<BrandSize, string> = { sm: "text-sm", md: "text-base", lg: "text-lg" };
 const GAP: Record<BrandSize, string> = { sm: "gap-2", md: "gap-2.5", lg: "gap-3" };
 
@@ -21,7 +25,7 @@ function initial(name: ReactNode): string {
   return first ? first.toUpperCase() : "";
 }
 
-export function Brand({
+function BrandImpl({
   mark,
   name,
   description,
@@ -82,3 +86,10 @@ export function Brand({
     </span>
   );
 }
+
+BrandImpl.displayName = "Brand";
+
+// Brand 出现在导航栏/侧栏/页脚这类**每次路由或状态变化都会重渲的外壳**里，props 全是稳定原语时
+// React 无法自己 bailout —— 与 Button/Checkbox/Chip 同一处方（hulianui/hulian#89）。
+export const Brand = memo(BrandImpl);
+Brand.displayName = "Brand";

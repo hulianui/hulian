@@ -68,3 +68,10 @@ describe("cascader.logic（纯逻辑）", () => {
     expect(filterLeafPaths(paths, "")).toEqual([]);
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("Cascader · null 回落", () => {
+  it("defaultValue 传 null 不抛错，按未选渲染", () => {
+    render(<Cascader nodes={NODES} defaultValue={null as never} placeholder="选择" />);
+    expect(screen.getByRole("button").textContent).toContain("选择");
+  });
+});

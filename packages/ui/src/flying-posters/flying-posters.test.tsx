@@ -114,3 +114,11 @@ describe("FlyingPosters · reduced-motion / 无 WebGL fallback", () => {
     expect(imgs[0]?.className).toContain("border-border");
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("FlyingPosters · null 回落", () => {
+  it("items 传 null 不抛错", async () => {
+    const { container } = render(<FlyingPosters items={null as never} />);
+    await act(async () => {});
+    expect(container.firstElementChild).not.toBeNull();
+  });
+});

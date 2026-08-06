@@ -60,3 +60,10 @@ describe("FallingText", () => {
     expect(container.querySelectorAll("[data-word]").length).toBe(0);
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("FallingText · null 回落", () => {
+  it("highlightWords 传 null 不抛错", () => {
+    const { container } = render(<FallingText text="瑚琏 组件" highlightWords={null as never} />);
+    expect(container.querySelectorAll("[data-word]").length).toBe(2);
+  });
+});

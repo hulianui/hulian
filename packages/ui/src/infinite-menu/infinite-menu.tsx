@@ -62,7 +62,7 @@ function rotate(p: Vec3, ry: number, rx: number): Vec3 {
 const TAU = Math.PI * 2;
 
 export function InfiniteMenu({
-  items = [],
+  items: itemsProp,
   scale = 1,
   itemSize = 88,
   autoRotate = 6,
@@ -71,6 +71,7 @@ export function InfiniteMenu({
   className,
   style,
 }: InfiniteMenuProps) {
+  const items = itemsProp ?? [];
   const locale = useComponentLocale().infiniteMenu ?? {
     openItem: (title) => `打开 ${title}`,
     openActive: "打开激活项",

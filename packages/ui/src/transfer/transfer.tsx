@@ -182,7 +182,7 @@ function TransferPanel({
 export function Transfer({
   dataSource,
   targetKeys,
-  defaultTargetKeys = [],
+  defaultTargetKeys: defaultTargetKeysProp,
   onChange,
   titles,
   searchable = false,
@@ -193,6 +193,7 @@ export function Transfer({
   disabled = false,
   className,
 }: TransferProps) {
+  const defaultTargetKeys = defaultTargetKeysProp ?? [];
   const locale = useComponentLocale().transfer ?? {
     allRight: "全部移入",
     right: "移入选中",

@@ -35,6 +35,7 @@
 - 📦 **Zero-token public install** — published to public npm; `pnpm add @hulianui/ui` just works
 - 🔧 **Source distribution** — ships TSX source so your Tailwind fully owns the styling; no black-box CSS
 - 📚 **AI-first docs** — every component has Props/Events/Slots + live examples + a playground, and emits `llms.txt`
+- 🤖 **Constrained generation ready** — `llms-props.json` gives every prop its kind, enum values and default, plus an export-name index, so consumers never parse markdown
 - 🏗️ **19 real demos** — CRM / shop / data dashboard / AI workflow / live streaming … all dogfooding the library
 
 ## 📦 Quick start

@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Text } from "./text";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Text", () => {
   it("默认渲染 <p>", () => {
@@ -81,5 +82,12 @@ describe("Text", () => {
     const src = readFileSync(`${process.cwd()}/src/text/text.tsx`, "utf8");
     // 只看「指令行」（行首引号包裹），注释里出现的字面量不算
     expect(/^\s*["']use client["']/m.test(src)).toBe(false);
+  });
+});
+
+// 见 hulianui/hulian#89：稳定父更新时整棵子树必须 bail out。
+describe("Text · memo", () => {
+  it("稳定父更新时跳过文本子树", async () => {
+    await expectMemoSkipsSubtree(() => <Text>稳定文本</Text>);
   });
 });

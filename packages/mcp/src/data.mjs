@@ -172,6 +172,23 @@ export async function loadDoc(slug) {
   }
 }
 
+/**
+ * 机器可读的 props 目录（llms-props.json）。
+ *
+ * 与 loadDoc 的分工：loadDoc 给人和 LLM 读的 markdown，这份给**受约束生成**用 ——
+ * 逐 prop 的 kind / 枚举取值 / 默认值，外加一张 exportIndex（导出名 → 组件）。
+ * 消费方不必再去解析 markdown 表格，也就不会再撞上转义竖线与别名不展开那两个坑
+ * （hulianui/hulian#102 #103 #105）。
+ */
+export async function loadPropsCatalog() {
+  if (LOCAL_ROOT) {
+    const local = readLocalJson("llms-props.json");
+    if (local) return local.value;
+    missingLocal("llms-props.json", "先在仓库根跑 `pnpm llms-registry`（或 `pnpm docs:all`）生成");
+  }
+  return (await fetchRemote(`${REMOTE_BASE}/llms-props.json`)).value;
+}
+
 /** 使用约束（固化的「主见」）。本地读 packages/ui/conventions.json，远程读文档站同名文件。 */
 export async function loadConventions() {
   if (LOCAL_ROOT) {

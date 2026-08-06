@@ -29,15 +29,15 @@ import type { TreeProps } from "./tree.types";
 export function Tree({
   nodes,
   expandedKeys,
-  defaultExpandedKeys = [],
+  defaultExpandedKeys,
   onExpandedChange,
   selectable = true,
   selectedKeys,
-  defaultSelectedKeys = [],
+  defaultSelectedKeys,
   onSelect,
   checkable = false,
   checkedKeys,
-  defaultCheckedKeys = [],
+  defaultCheckedKeys,
   onCheck,
   expandTrigger = "row",
   draggable = false,
@@ -65,7 +65,7 @@ export function Tree({
   const index = useMemo(() => buildIndex(nodes), [nodes]);
 
   // —— 展开态（受控/非受控）——
-  const [expandedState, setExpandedState] = useState<string[]>(defaultExpandedKeys);
+  const [expandedState, setExpandedState] = useState<string[]>(defaultExpandedKeys ?? []);
   const expanded = expandedKeys ?? expandedState;
   const setExpanded = (next: string[]) => {
     if (expandedKeys === undefined) setExpandedState(next);
@@ -79,7 +79,7 @@ export function Tree({
   };
 
   // —— 选中态（受控/非受控）——
-  const [selectedState, setSelectedState] = useState<string[]>(defaultSelectedKeys);
+  const [selectedState, setSelectedState] = useState<string[]>(defaultSelectedKeys ?? []);
   const selected = selectedKeys ?? selectedState;
   const selectedSet = useMemo(() => new Set(selected), [selected]);
   const setSelected = (key: string) => {
@@ -89,7 +89,7 @@ export function Tree({
   };
 
   // —— 勾选态（叶为真源；受控入参归一为叶集）——
-  const [checkedState, setCheckedState] = useState<string[]>(defaultCheckedKeys);
+  const [checkedState, setCheckedState] = useState<string[]>(defaultCheckedKeys ?? []);
   const checkedInput = checkedKeys ?? checkedState;
   const leafSet = useMemo(
     () => normalizeCheckedToLeaves(checkedInput, index),
@@ -228,7 +228,7 @@ export function Tree({
 
   // —— 虚拟滚动 ——
   // hook 不可条件调用，故 virtualizer 恒声明；virtualOn=false 时它拿到 count=0、整段闲置。
-  const virtualOpts = typeof virtual === "object" ? virtual : {};
+  const virtualOpts = virtual && typeof virtual === "object" ? virtual : {};
   const virtualOn = virtual !== false && virtual != null;
   const virtualHeight = virtualOpts.height ?? 320;
   const itemHeight = virtualOpts.itemHeight ?? 36;

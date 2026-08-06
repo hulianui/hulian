@@ -2112,4 +2112,44 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Layers two noise-driven gradients into a soft pointer-responsive aurora backdrop.",
     keywords: ["soft", "aurora", "decoration", "backdrop"],
   },
+  "design-canvas": {
+    shortName: "DesignCanvas",
+    description:
+      "Infinite pan-and-zoom canvas with a selection box, drag to move, and eight-way resize.",
+    keywords: ["design", "canvas", "zoom", "pan", "resize", "data-display", "collection"],
+  },
+  "element-selection-overlay": {
+    shortName: "ElementSelectionOverlay",
+    description:
+      "Hover and click elements in a container or same-origin iframe to get a component path back.",
+    keywords: ["element", "selection", "overlay", "inspect", "picker", "feedback", "overlay"],
+  },
+  "inspector-panel": {
+    shortName: "InspectorPanel",
+    description:
+      "Schema-driven property inspector that derives its controls from a field description.",
+    keywords: ["inspector", "panel", "property", "schema", "forms", "advanced"],
+  },
+  "code-editor": {
+    shortName: "CodeEditor",
+    description:
+      "Dependency-free code editor with syntax colors, a gutter, and full keyboard editing.",
+    keywords: ["code", "editor", "syntax", "textarea", "forms", "advanced"],
+  },
+  "preview-sandbox": {
+    shortName: "PreviewSandbox",
+    description: "Isolated preview shell with device viewports, scale-to-fit, and error capture.",
+    keywords: ["preview", "sandbox", "iframe", "device", "layout", "container"],
+  },
+  "component-picker": {
+    shortName: "ComponentPicker",
+    description: "Component-library browser with a category tree, fuzzy search, and a detail pane.",
+    keywords: ["component", "picker", "browser", "catalog", "search", "data-display", "collection"],
+  },
+  "issue-reporter": {
+    shortName: "IssueReporter",
+    description:
+      "GitHub issue draft builder that renders a template to Markdown and builds a prefill link.",
+    keywords: ["issue", "reporter", "github", "template", "markdown", "forms", "advanced"],
+  },
 };

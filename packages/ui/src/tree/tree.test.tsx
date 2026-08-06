@@ -279,3 +279,19 @@ describe("Tree", () => {
     expect(screen.queryByText("市场部")).toBeNull();
   });
 });
+
+// 可选 prop 收到 null 时须回落默认值（解构默认只认 undefined）——见 hulianui/hulian#107。
+describe("Tree · null 回落", () => {
+  it("defaultExpandedKeys/virtual 传 null 不抛错", () => {
+    const { container } = render(
+      <Tree
+        nodes={NODES}
+        defaultExpandedKeys={null as never}
+        defaultSelectedKeys={null as never}
+        defaultCheckedKeys={null as never}
+        virtual={null as never}
+      />,
+    );
+    expect(container.querySelector('[role="tree"]')).not.toBeNull();
+  });
+});

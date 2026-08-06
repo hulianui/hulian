@@ -134,3 +134,13 @@ describe("Transfer", () => {
     });
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("Transfer · null 回落", () => {
+  it("defaultTargetKeys 传 null 不抛错，与传 [] 一致（右栏空态）", () => {
+    const { getAllByRole, getByText } = render(
+      <Transfer dataSource={items} defaultTargetKeys={null as never} />,
+    );
+    expect(getAllByRole("listbox")).toHaveLength(1);
+    expect(getByText("暂无数据")).toBeTruthy();
+  });
+});

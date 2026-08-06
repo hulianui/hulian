@@ -51,3 +51,11 @@ describe("ScrollVelocity", () => {
     expect(section.querySelectorAll("span").length).toBe(0);
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("ScrollVelocity · null 回落", () => {
+  it("texts 传 null 不抛错，无滚动行", () => {
+    const { container } = render(<ScrollVelocity texts={null as never} />);
+    expect(container.querySelector("section")).toBeTruthy();
+    expect(container.querySelectorAll("span").length).toBe(0);
+  });
+});

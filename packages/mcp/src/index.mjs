@@ -37,6 +37,7 @@ import {
   loadConventions,
   loadDoc,
   loadItem,
+  loadPropsCatalog,
   loadRegistry,
   localSlugs,
   source,
@@ -359,6 +360,14 @@ async function buildTools() {
             type: "array",
             items: { type: "string", enum: DOC_SECTIONS },
             description: "只取指定章节，默认全文。props/pitfalls 通常就够写对代码",
+          },
+          format: {
+            type: "string",
+            enum: ["markdown", "json"],
+            description:
+              'markdown（默认）= 人和 LLM 都能读的文档；json = 机器可读的 props/events/slots，' +
+              "逐条带 kind / 枚举取值 / 默认值。要做受约束生成（校验白名单、生成 Zod、" +
+              "按 props 自动生成属性面板）时用 json，别去解析 markdown 表格。",
           },
         },
       },
@@ -788,10 +797,66 @@ function sliceSections(doc, sections) {
   return out.length ? [...head, "", ...out].join("\n") : doc;
 }
 
-async function getComponentDoc({ name, names, sections } = {}) {
+const JSON_SECTIONS = ["props", "events", "slots"];
+
+/**
+ * get_component_doc 的 `format: "json"` 分支：直接给结构化的 props/events/slots。
+ *
+ * 为什么值得单开一条路：markdown 表格是给人看的，机器解析它要先趟三个坑 —— 转义竖线被当列
+ * 分隔符、类型列写的是别名而取值只在源码里、文档标题是展示名而非导出名（#102/#103/#104）。
+ * 这里读的 llms-props.json 已经把这三件事做完了，`exportIndex` 还能让 `IPhone`、`BarChart`
+ * 这类真实导出名直接反查到组件。
+ */
+async function getComponentProps(wanted, sections) {
+  const catalog = await loadPropsCatalog();
+  const bySlug = new Map(catalog.components.map((c) => [c.slug, c]));
+  const byName = new Map(catalog.components.map((c) => [c.name.toLowerCase(), c]));
+  const keys = sections?.length ? sections.filter((s) => JSON_SECTIONS.includes(s)) : JSON_SECTIONS;
+  const components = [];
+  const missing = [];
+  for (const query of wanted) {
+    const q = String(query);
+    const kebab = q.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+    const hit =
+      bySlug.get(q) ||
+      byName.get(q.toLowerCase()) ||
+      bySlug.get(kebab) ||
+      bySlug.get(catalog.exportIndex?.[q]);
+    if (!hit) {
+      missing.push(q);
+      continue;
+    }
+    components.push({
+      slug: hit.slug,
+      name: hit.name,
+      category: hit.category,
+      import: hit.import,
+      exports: hit.exports,
+      doc: hit.doc,
+      ...Object.fromEntries((keys.length ? keys : JSON_SECTIONS).map((k) => [k, hit[k] ?? []])),
+    });
+  }
+  if (!components.length) {
+    const cands = suggest(wanted[0], [...bySlug.keys()]);
+    return fail(
+      `没有名为 "${wanted.join(" / ")}" 的组件。` +
+        (cands.length ? `是不是想找：${cands.join(" / ")}？` : "用 list_components 看有哪些。"),
+    );
+  }
+  const payload = { version: catalog.version, components, ...(missing.length ? { missing } : {}) };
+  // 同时给两条通道：structuredContent 是 MCP 里机器读的正路，text 里那份 JSON 是给
+  // 只认文本内容的客户端兜底（尾部那行数据源脚注是全部 tool 的统一约定）。
+  return text(JSON.stringify(payload, null, 2), payload);
+}
+
+async function getComponentDoc({ name, names, sections, format } = {}) {
   const wanted = (Array.isArray(names) && names.length ? names : name ? [name] : []).slice(0, 6);
   if (!wanted.length) return fail("get_component_doc 需要 name（或 names 数组）。");
   if (sections && !Array.isArray(sections)) return fail("sections 必须是数组。");
+  if (format && !["markdown", "json"].includes(format)) {
+    return fail('format 只能是 "markdown" 或 "json"。');
+  }
+  if (format === "json") return getComponentProps(wanted, sections);
 
   const reg = await loadRegistry();
   const all = reg.items.filter((item) => item.type === "registry:ui");
@@ -1182,6 +1247,8 @@ const WORKFLOW = `瑚琏 @hulianui/ui 工作流（按顺序，不要跳步）：
 4. list_components —— 需要按关键词补齐候选时用；结果多就 limit + offset 翻页，别整吞。
 5. get_component_doc —— **用到的每个组件在写第一行代码前必须查**，props 不许猜。
    一次可传多个 names；只要 props / pitfalls 时传 sections 省 context。
+   要按 props 做校验 / 生成 Zod / 自动生成属性面板，传 format="json" 拿结构化 props，
+   别去解析 markdown 表格。
 6. get_conventions —— 新页面 / 新功能开工前取一次硬约束。
 7. get_setup_guide —— inspect_project 报了接入缺口时按 target 取对应片段。
 8. install_block —— 落盘区块 / 页面源码。

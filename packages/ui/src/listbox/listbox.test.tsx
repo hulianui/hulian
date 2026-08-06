@@ -121,3 +121,12 @@ describe("Listbox", () => {
     expect(getByRole("listbox", { name: "Options" })).toBeTruthy();
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("Listbox · null 回落", () => {
+  it("defaultSelectedKeys/disabledKeys 传 null 不抛错", () => {
+    const { getAllByRole } = render(
+      <Listbox items={items} defaultSelectedKeys={null as never} disabledKeys={null as never} />,
+    );
+    expect(getAllByRole("option")).toHaveLength(3);
+  });
+});

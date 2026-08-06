@@ -16,12 +16,13 @@ const linkClass =
  * 中国大陆站点底部合规条；外链统一新窗 + noreferrer，配色走语义 token，暗色自适应。
  */
 export function BeianFooter({
-  icp = [],
+  icp: icpProp,
   police,
   icpLabel,
   copyright,
   className,
 }: BeianFooterProps) {
+  const icp = icpProp ?? [];
   const locale = useComponentLocale().beianFooter ?? { icp: "ICP备案" };
   const resolvedIcpLabel = icpLabel === undefined ? locale.icp : icpLabel;
   return (

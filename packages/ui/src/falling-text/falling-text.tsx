@@ -36,7 +36,7 @@ const DEFAULT_HIGHLIGHT_CLASS = "text-primary font-semibold";
 
 export function FallingText({
   text = "",
-  highlightWords = [],
+  highlightWords: highlightWordsProp,
   highlightClass = DEFAULT_HIGHLIGHT_CLASS,
   trigger = "auto",
   gravity = 1,
@@ -45,6 +45,7 @@ export function FallingText({
   className,
   style,
 }: FallingTextProps) {
+  const highlightWords = highlightWordsProp ?? [];
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();

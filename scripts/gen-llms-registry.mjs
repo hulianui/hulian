@@ -20,6 +20,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript-api";
 import { mapMarkdownCode } from "./check-component-doc-translations.mjs";
 import { basePathForLocale } from "./docs-locale-layout.mjs";
+import { collectTypeAliases, parseComponentDoc, rewriteDocForAi } from "./props-catalog.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UI_SRC = join(ROOT, "packages", "ui", "src");
@@ -289,6 +290,22 @@ export function collectDocs(uiSrc = UI_SRC, locale = DOCS_LOCALE) {
     push(localizedPath, p, `packages/ui/src/${d}/${localizedFile}`);
   }
   return out;
+}
+
+/**
+ * 组件的导出名（barrel 优先、frontmatter 兜底）。
+ *
+ * 文档标题是**展示名**——`# iPhone`、`# Chart`（一篇文档带 6 个图表导出）、`# Resizable`——
+ * 与真实导出名并不一致，消费方按标题拼 import 会直接解析失败（hulianui/hulian#104）。
+ * 所以导出名要以这里为准，并随产物一起发出去。
+ */
+function docExports(d) {
+  return (
+    barrelExports(d.dir) ?? {
+      values: d.exports.filter((name) => !name.startsWith("type ")),
+      types: d.exports.filter((name) => name.startsWith("type ")).map((name) => name.slice(5)),
+    }
+  );
 }
 
 /** per-component external npm deps, scanned from real imports in its source. */
@@ -655,8 +672,13 @@ function buildCssVars() {
     const p = join(ROOT, "packages", "tokens", "src", f);
     return existsSync(p) ? readFileSync(p, "utf8") : "";
   };
+  // `[^{]*` 是必须的：亮色块的选择器是一个**列表**（`:root, [data-theme="light"] {`），
+  // 亮色要能被当成一个可选择的主题、而不只是根默认值（hulianui/hulian#101）。
+  // 早先这里写死 `:root\s*\{`，加上那条选择器后一声不响地匹配失败，注入组件的 cssVars.light 归零。
+  // `^` 与 m 标志同样不可省：选择器必须自成一行才算数，否则注释里提到的 `[data-theme="dark"]`
+  // 也会被当成块首，`[^{]*` 一路吃到下一个 `{`，把亮色块的变量当成暗色发出去。
   const pick = (css, block) => {
-    const re = new RegExp(`${block}\\s*\\{([\\s\\S]*?)\\n\\}`);
+    const re = new RegExp(`^${block}[^{]*\\{([\\s\\S]*?)\\n\\}`, "m");
     const m = css.match(re);
     if (!m) return {};
     const out = {};
@@ -664,10 +686,19 @@ function buildCssVars() {
     return out;
   };
   const semantic = read("semantic.css");
-  return {
+  const vars = {
     light: pick(semantic, ":root"),
     dark: pick(semantic, '\\[data-theme="dark"\\]'),
   };
+  // 注入组件却没有颜色，是最难自查的一种坏 —— 页面能跑、只是全是默认色。宁可在这里炸。
+  for (const [theme, values] of Object.entries(vars)) {
+    if (!Object.keys(values).length) {
+      throw new Error(
+        `semantic.css 没解析出 ${theme} 主题的任何 CSS 变量：选择器结构变了就要同步这里的 pick()。`,
+      );
+    }
+  }
+  return vars;
 }
 
 // ----------------------------------------------------------------- render --
@@ -703,6 +734,21 @@ function main() {
   catOrder.set("uncatalogued", 999);
 
   const docs = collectDocs();
+  // 字面量联合别名的真实取值（StackDirection → "row" | "column"）。文档里写的是别名，
+  // 而别名的取值只存在于源码，AI 只能猜（hulianui/hulian#103）。
+  const aliases = collectTypeAliases(UI_SRC);
+  const barrels = new Map(docs.map((d) => [d.slug, docExports(d)]));
+  // AI 产物里的正文：别名就地展开 + 表格分隔符归一 + 标题下补真实导出名。
+  const aiBody = new Map(
+    docs.map((d) => [
+      d.slug,
+      rewriteDocForAi(d.body, {
+        aliases,
+        exports: barrels.get(d.slug)?.values ?? [],
+        locale: ENGLISH ? "en" : "zh-CN",
+      }),
+    ]),
+  );
   docs.sort(
     (a, b) =>
       (catOrder.get(a.category) ?? 998) - (catOrder.get(b.category) ?? 998) ||
@@ -740,6 +786,9 @@ function main() {
     idx.push(
       "Use library components in product code, avoid local style overrides, and add missing capabilities upstream.",
     );
+    idx.push(
+      "Doing constrained generation? Read [llms-props.json](./llms-props.json) instead of parsing these tables: every prop with its kind, enum values, default, plus an `exportIndex` mapping export name to component.",
+    );
   } else {
     idx.push(
       "AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。",
@@ -749,6 +798,11 @@ function main() {
         "只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。",
     );
     idx.push("铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。");
+    idx.push(
+      "要做受约束生成（只许输出白名单组件与合法 props）请直接读 [llms-props.json](./llms-props.json)，" +
+        "不要去解析下面这些 markdown 表格：那份 JSON 逐 prop 给出 kind / 枚举取值 / 默认值，" +
+        "并带一张 `exportIndex`（导出名 → 组件）。",
+    );
   }
   idx.push("");
   for (const cat of orderedCats) {
@@ -793,7 +847,7 @@ function main() {
     full.push(`\n# ━━━━━━━━ ${catLabel.get(cat) ?? cat} ━━━━━━━━\n`);
     for (const d of list) {
       full.push("<!-- ════════════════════════════════════════════════════════ -->");
-      full.push(absolutize(d.body));
+      full.push(absolutize(aiBody.get(d.slug)));
       full.push("");
     }
   }
@@ -821,10 +875,7 @@ function main() {
     // 拼成根 barrel 就是给 AI 和人一条导不进来的 import。
     const entry = SUBPATH_ENTRY.get(basename(d.dir)) || PKG.name;
     // barrel 优先、frontmatter 兜底：前者是编译器认的真源，后者只在没有 index.ts 时才用得上。
-    const barrel = barrelExports(d.dir) ?? {
-      values: d.exports.filter((name) => !name.startsWith("type ")),
-      types: d.exports.filter((name) => name.startsWith("type ")).map((name) => name.slice(5)),
-    };
+    const barrel = barrels.get(d.slug);
     const exported = barrel.values;
     const imp = exported.length
       ? `import { ${exported.join(", ")} } from "${entry}"`
@@ -901,11 +952,62 @@ function main() {
   };
   writeFileSync(join(OUT_DIR, "registry.json"), JSON.stringify(registry, null, 2));
 
+  // ---- llms-props.json -----------------------------------------------------
+  // 机器可读的 props 真源（hulianui/hulian#105）。
+  // 想做「受约束生成」（让 LLM 只能输出白名单组件与合法 props）的消费方，此前只能去解析
+  // markdown 表格，于是每家都要自己趟一遍 #102（转义竖线劈错列）/ #103（别名不展开）/
+  // #104（标题≠导出名）。这份 JSON 把那三件事一次性做完：类型列已展开别名、
+  // exportIndex 直接给「导出名 → 组件」的反查、props 带 kind/values/valueType 可直接生成 Zod。
+  const propsComponents = docs.map((d) => {
+    const parsed = parseComponentDoc(d.body, aliases);
+    const barrel = barrels.get(d.slug);
+    const entry = SUBPATH_ENTRY.get(basename(d.dir)) || PKG.name;
+    return {
+      slug: d.slug,
+      name: d.name,
+      category: d.category,
+      group: d.group || undefined,
+      status: d.status,
+      import: `import { ${barrel.values.join(", ")} } from "${entry}"`,
+      exports: barrel.values,
+      types: barrel.types,
+      doc: d.docUrl,
+      props: parsed.props,
+      events: parsed.events,
+      slots: parsed.slots,
+    };
+  });
+  const exportIndex = {};
+  for (const c of propsComponents) {
+    for (const name of c.exports) exportIndex[name] = c.slug;
+  }
+  writeFileSync(
+    join(OUT_DIR, "llms-props.json"),
+    JSON.stringify(
+      {
+        name: "hulianui",
+        version: PKG.version,
+        description: TAGLINE,
+        // 别名 → 真实取值。文档类型列已就地展开，这张表是给要自行解析源码的消费方留的后路。
+        typeAliases: Object.fromEntries(
+          [...aliases].map(([name, values]) => [
+            name,
+            values.map((v) => v.replace(/^"(.*)"$/, "$1")),
+          ]),
+        ),
+        exportIndex,
+        components: propsComponents,
+      },
+      null,
+      2,
+    ),
+  );
+
   // 逐件文档端点 /d/<slug>.md —— MCP server 与任何 AI 都能按需取单个组件的用法，
   // 不必整吞 1.1M 的 llms-full.txt（那正是「猜签名」的根源：读不起就只能猜）。
   const D_DIR = join(OUT_DIR, "d");
   if (!existsSync(D_DIR)) mkdirSync(D_DIR, { recursive: true });
-  for (const d of docs) writeFileSync(join(D_DIR, `${d.slug}.md`), absolutize(d.body));
+  for (const d of docs) writeFileSync(join(D_DIR, `${d.slug}.md`), absolutize(aiBody.get(d.slug)));
 
   // 每个 item 一个可直接 `npx shadcn add <url>` 的端点
   const R_DIR = join(OUT_DIR, "r");
@@ -921,6 +1023,7 @@ function main() {
 
   console.log(
     `[llms-registry] llms.txt(${docs.length}) · llms-full.txt(${enriched.length} enriched) · ` +
+      `llms-props.json(${propsComponents.length} 组件 / ${propsComponents.reduce((n, c) => n + c.props.length, 0)} props) · ` +
       `registry.json(${items.length} = ui ${uiItems.length} + lib ${libItems.length} + block ${blockItems.length} + page ${pageItems.length}) · ` +
       `r/*.json(${items.length})` +
       (scaffold.length

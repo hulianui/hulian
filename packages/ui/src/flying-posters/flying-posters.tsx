@@ -107,7 +107,7 @@ function mapRange(num: number, min1: number, max1: number, min2: number, max2: n
 }
 
 export function FlyingPosters({
-  items = [],
+  items: itemsProp,
   planeWidth = 320,
   planeHeight = 320,
   distortion = 3,
@@ -120,6 +120,7 @@ export function FlyingPosters({
   style,
   fallback,
 }: FlyingPostersProps) {
+  const items = itemsProp ?? [];
   // 运行时可变 prop 挂 ref，render 回调直接读最新值，不靠闭包捕获、不重建 GL。
   const distortionRef = useRef(distortion);
   const scrollEaseRef = useRef(scrollEase);

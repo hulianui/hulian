@@ -447,8 +447,8 @@ function ColorControl({
               {...(pickerValue === undefined
                 ? {}
                 : commitMode === "commit"
-                  ? { defaultValue: pickerValue }
-                  : { value: pickerValue })}
+                ? { defaultValue: pickerValue }
+                : { value: pickerValue })}
               onValueChange={commitMode === "change" ? commit : undefined}
               onValueCommitted={commitMode === "commit" ? commit : undefined}
             />

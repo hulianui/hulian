@@ -68,3 +68,10 @@ describe("InfiniteMenu", () => {
     expect(second.container.textContent).toContain("Placeholder item · Replace via items");
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("InfiniteMenu · null 回落", () => {
+  it("items 传 null 不抛错，回落占位项", () => {
+    const { container } = render(<InfiniteMenu items={null as never} />);
+    expect(container.querySelector("[data-infinite-menu]")).not.toBeNull();
+  });
+});

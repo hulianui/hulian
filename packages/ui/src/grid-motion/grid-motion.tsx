@@ -76,7 +76,7 @@ function Cell({ content }: { content: ReactNode }) {
 }
 
 export function GridMotion({
-  items = [],
+  items: itemsProp,
   rows: rowsProp = 4,
   columns = 7,
   gradientColor = "var(--color-primary)",
@@ -85,6 +85,7 @@ export function GridMotion({
   className,
   style,
 }: GridMotionProps) {
+  const items = itemsProp ?? [];
   const rows = Math.max(1, Math.min(MAX_ROWS, rowsProp));
   const reduce = useReducedMotion() ?? false;
   const sectionRef = useRef<HTMLDivElement>(null);

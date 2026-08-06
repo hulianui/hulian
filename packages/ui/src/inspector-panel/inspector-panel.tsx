@@ -3,6 +3,7 @@ import { memo, useCallback, useId, useMemo } from "react";
 import type { ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "../collapsible";
+import { zhCN } from "../config/locale";
 import { useComponentLocale } from "../config/locale-context";
 import { InspectorControl } from "./inspector-control";
 import type { ControlContext } from "./inspector-control";
@@ -26,6 +27,7 @@ import type {
 
 // 内置兜底：没包 ConfigProvider 时 useComponentLocale() 取不到字典，仍要有可用的中文文案。
 const FALLBACK_LABELS: InspectorPanelLabels = {
+  presets: zhCN.components!.inspectorPanel!.presets,
   title: "属性",
   empty: "未选中元素",
   mixed: "多个值",
@@ -58,7 +60,9 @@ function FieldRow({
         <span id={labelId} className="block truncate text-xs text-foreground">
           {field.label}
         </span>
-        {field.hint && <span className="block truncate text-[0.6875rem] text-muted">{field.hint}</span>}
+        {field.hint && (
+          <span className="block truncate text-[0.6875rem] text-muted">{field.hint}</span>
+        )}
       </div>
       <div className="min-w-0 flex-1">{children}</div>
     </div>
@@ -76,7 +80,10 @@ function SectionBlock({
 }) {
   const idPrefix = useId();
   return (
-    <Collapsible defaultOpen={section.defaultOpen ?? true} className="border-b border-border last:border-b-0">
+    <Collapsible
+      defaultOpen={section.defaultOpen ?? true}
+      className="border-b border-border last:border-b-0"
+    >
       <CollapsibleTrigger className="rounded-none">{section.label}</CollapsibleTrigger>
       <CollapsiblePanel>
         <div className="flex flex-col gap-3">
@@ -121,8 +128,9 @@ function InspectorPanelImpl({
     [localeLabels, labels],
   );
   const resolved = useMemo(
-    () => sections ?? inspectorSections(categories),
-    [sections, categories],
+    () =>
+      sections ?? inspectorSections(categories, localeLabels.presets ?? FALLBACK_LABELS.presets),
+    [sections, categories, localeLabels],
   );
   const read = useCallback((path: string) => readInspectorValue(values, path), [values]);
 

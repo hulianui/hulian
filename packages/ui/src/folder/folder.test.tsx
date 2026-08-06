@@ -70,3 +70,10 @@ describe("Folder", () => {
     expect(btn.getAttribute("class")).toContain("motion-reduce:transition-none");
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("Folder · null 回落", () => {
+  it("items 传 null 不抛错，按空槽渲染", () => {
+    const { container } = render(<Folder items={null as never} />);
+    expect(container.firstElementChild).not.toBeNull();
+  });
+});

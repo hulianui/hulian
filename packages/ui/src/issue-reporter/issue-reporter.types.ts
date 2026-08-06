@@ -1,3 +1,4 @@
+import type { IssueTemplateText } from "./issue-reporter.core";
 import type { MutableRefObject, ReactElement, ReactNode } from "react";
 import type { TagTone } from "../tag/tag.types";
 
@@ -88,6 +89,11 @@ export interface IssueReporterApi {
 
 /** 可覆盖的界面文案。 */
 export interface IssueReporterText {
+  /**
+   * 内置三套模板的文案（字段标签 + 产出的 markdown 章节标题）。
+   * 传了 `templates` prop 时它不生效 —— 那种情况模板文案由你自己的模板决定。
+   */
+  templates: IssueTemplateText;
   typeLabel: string;
   relatedComponentLabel: string;
   relatedComponentPlaceholder: string;

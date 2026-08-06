@@ -16,7 +16,13 @@ const docsTemplate: IssueTemplate = {
     labels: ["documentation"],
     tone: "brand",
     fields: [
-        { name: "page", label: "Page URL", control: "input", required: true, placeholder: "/components/select" },
+        {
+            name: "page",
+            label: "Page URL",
+            control: "input",
+            required: true,
+            placeholder: "/components/select",
+        },
         { name: "problem", label: "What is wrong", rows: 3 },
     ],
     toMarkdown: (values) => [`Page: ${values.page ?? ""}`, values.problem ? `

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import { ScopeMatrix } from "./scope-matrix";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
@@ -131,5 +132,23 @@ describe("ScopeMatrix", () => {
   it("小结：两者都有时说明禁止优先", () => {
     const { container } = render(<ScopeMatrix allow={["a"]} deny={["b"]} />);
     expect(container.textContent).toContain("命中即拒绝");
+  });
+});
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("ScopeMatrix · null 回落", () => {
+  it("suggestions 传 null 不抛错", () => {
+    const { getByText } = render(<ScopeMatrix allow={["a/**"]} deny={[]} suggestions={null as never} />);
+    expect(getByText("允许")).toBeTruthy();
+  });
+});
+
+// 见 hulianui/hulian#89：稳定父更新时整棵子树必须 bail out。
+// 数组必须提到模块级：每轮现造新数组时浅比较必然失配，memo 从原理上就 bail 不掉。
+const GUARD_ALLOW = ["a/**"];
+const GUARD_DENY = ["b/**"];
+
+describe("ScopeMatrix · memo", () => {
+  it("稳定父更新时跳过矩阵子树", async () => {
+    await expectMemoSkipsSubtree(() => <ScopeMatrix allow={GUARD_ALLOW} deny={GUARD_DENY} />);
   });
 });

@@ -85,3 +85,15 @@ describe("Stack 响应式断点", () => {
     expect(container.firstElementChild?.tagName).toBe("FORM");
   });
 });
+
+// 可选 prop 收到 null 时须回落默认值（解构默认只认 undefined）——由 LLM 产出结构再动态渲染的
+// 消费方常把「不设这个 prop」写成 null（hulianui/hulian#107）。
+describe("Stack · null 回落", () => {
+  it("direction 传 null 不抛错，与不传该 prop 完全一致", () => {
+    const { container: withNull } = render(<Stack direction={null as never}>x</Stack>);
+    const { container: withoutProp } = render(<Stack>x</Stack>);
+    const el = withNull.firstElementChild as HTMLElement;
+    expect(el.className).toContain("flex-col");
+    expect(el.className).toBe((withoutProp.firstElementChild as HTMLElement).className);
+  });
+});

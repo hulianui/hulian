@@ -94,7 +94,7 @@ function MixedDemo() {
         <InspectorPanel selectedElement="3 elements" commitMode="commit" categories={["typography", "effects"]} props={{ fontSize: MIXED, fontWeight: MIXED, textAlign: "left", opacity: MIXED }} onChange={(path, value) => setLog((previous) => [`${path} = ${String(value)}`, ...previous].slice(0, 4))}/>
       </div>
       <ul className="space-y-1 font-mono text-xs text-muted">
-        {log.length === 0 ? <li>Emission happens only after release or blur</li> : log.map((line, index) => <li key={index}>{line}</li>)}
+        {log.length === 0 ? (<li>Emission happens only after release or blur</li>) : (log.map((line, index) => <li key={index}>{line}</li>))}
       </ul>
     </div>);
 }

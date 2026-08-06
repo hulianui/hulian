@@ -1,3 +1,4 @@
+import type { InspectorPresetText } from "./inspector-schema";
 import type { ReactNode } from "react";
 import type { MIXED } from "./inspector-schema";
 
@@ -146,6 +147,11 @@ export type InspectorCommitMode = "change" | "commit";
 
 /** 内置文案，全部可覆盖（本组件不接 ConfigProvider locale，见文档 i18n 一节）。 */
 export interface InspectorPanelLabels {
+  /**
+   * 内置预设 schema 的字段标签与枚举选项文案。传了 `sections` prop 时它不生效 ——
+   * 那种情况标签由你自己的 schema 决定。
+   */
+  presets: InspectorPresetText;
   title: string;
   empty: string;
   mixed: string;

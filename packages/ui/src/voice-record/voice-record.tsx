@@ -29,7 +29,7 @@ export function VoiceRecord({
   labelIdle,
   labelRecording,
   labelProcessing,
-  levels = [],
+  levels: levelsProp,
   size = "md",
   pressAndHold = true,
   onToggle,
@@ -39,6 +39,7 @@ export function VoiceRecord({
   disabled,
   ...props
 }: VoiceRecordProps) {
+  const levels = levelsProp ?? [];
   const locale = useComponentLocale().voiceRecord ?? {
     idle: "按住说话",
     recording: "松开结束",

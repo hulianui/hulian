@@ -1,7 +1,27 @@
 /* 瑚琏 Tailwind v4 preset — 把语义 token 映射成工具类，并把 dark variant 绑到 [data-theme] */
 @import "tailwindcss";
 
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+/* dark variant 必须认「岛边界」：主题可以局部覆盖（暗页里嵌亮色岛、亮页里嵌暗色岛），
+   岛内的 dark: 工具类要跟着**岛**走而不是跟着页面走，否则岛内会出现
+   「变量是亮的、dark: 工具类是暗的」的撕裂（hulianui/hulian#101）。
+
+   判据是「离我最近的那个主题祖先」，而选择器表达不了「最近」：
+   `[data-theme="dark"] *` 会漏进亮色岛内部；补一个 `:not([data-theme="light"] *)` 又会反过来
+   杀掉「显式亮页 → 暗岛」这个每天都在跑的组合（ThemeProvider 会把 light 显式写在 <html> 上）。
+   所以改判 `--hl-theme` —— 自定义属性靠继承传播，读到的天然就是最近那个主题块的值，
+   任意嵌套深度都正确。两条规则分工：
+     ① 元素自己就是岛根（data-theme 写在它身上）——@container 查的是父容器，覆盖不到自己；
+     ② 其余元素看最近祖先的 --hl-theme。
+   基线：style container query（Chrome 111 / Safari 18 / Firefox 128）。本库已依赖 :has() 与
+   @container，属同代能力。 */
+@custom-variant dark {
+  &:where([data-theme="dark"]) {
+    @slot;
+  }
+  @container style(--hl-theme: dark) {
+    @slot;
+  }
+}
 
 @theme inline {
   --color-bg: var(--color-bg);

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
@@ -189,11 +189,11 @@ function Bucket({
   );
 }
 
-export function ScopeMatrix({
+function ScopeMatrixImpl({
   allow,
   deny,
   onChange,
-  suggestions = [],
+  suggestions: suggestionsProp,
   readOnly = false,
   validate,
   allowLabel,
@@ -203,6 +203,7 @@ export function ScopeMatrix({
   placeholder,
   className,
 }: ScopeMatrixProps) {
+  const suggestions = suggestionsProp ?? [];
   const locale = useComponentLocale().scopeMatrix ?? {
     duplicate: "已存在相同模式",
     count: (count) => `${count} 条`,
@@ -274,3 +275,10 @@ export function ScopeMatrix({
     </div>
   );
 }
+
+ScopeMatrixImpl.displayName = "ScopeMatrix";
+
+// ScopeMatrix 常挂在设置页表单里，父级每敲一个字都重渲；props 稳定时应整棵跳过
+// —— 与 Button/Checkbox/Chip 同一处方（hulianui/hulian#89）。
+export const ScopeMatrix = memo(ScopeMatrixImpl);
+ScopeMatrix.displayName = "ScopeMatrix";

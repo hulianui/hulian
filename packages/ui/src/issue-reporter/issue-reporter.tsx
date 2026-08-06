@@ -4,16 +4,12 @@ import { Check, Copy, ExternalLink } from "../_icons";
 import { Alert } from "../alert/alert";
 import { Button } from "../button/button";
 import { CodeBlock } from "../code-block/code-block";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxItem,
-  ComboboxTrigger,
-} from "../combobox/combobox";
+import { Combobox, ComboboxContent, ComboboxItem, ComboboxTrigger } from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
 import { Field } from "../field/field";
 import { Input } from "../input/input";
 import { cn } from "../lib/cn";
+import { zhCN } from "../config/locale";
 import { useComponentLocale } from "../config/locale-context";
 import { Markdown } from "../markdown/markdown";
 import { MarkdownEditor } from "../markdown-editor/markdown-editor";
@@ -21,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "../select/sele
 import { Tag } from "../tag/tag";
 import { Textarea } from "../textarea/textarea";
 import {
-  BUILTIN_ISSUE_TEMPLATES,
+  buildIssueTemplates,
   GITHUB_URL_MAX_LENGTH,
   buildIssueUrl,
   createIssueDraft,
@@ -50,6 +46,7 @@ import type {
 
 // 内置兜底：没包 ConfigProvider 时 useComponentLocale() 取不到字典，仍要有可用的中文文案。
 const FALLBACK_TEXT: IssueReporterText = {
+  templates: zhCN.components!.issueReporter!.templates,
   typeLabel: "类型",
   relatedComponentLabel: "相关组件",
   relatedComponentPlaceholder: "选择组件（可选）",
@@ -79,7 +76,7 @@ function fieldRows(field: IssueTemplateField): number {
 
 function IssueReporterImpl({
   repo = "hulianui/hulian",
-  templates = BUILTIN_ISSUE_TEMPLATES,
+  templates: templatesProp,
   type,
   defaultType,
   onTypeChange,
@@ -105,6 +102,13 @@ function IssueReporterImpl({
   // 优先级：text prop > ConfigProvider 的 locale > 内置中文兜底。
   const localeText = useComponentLocale().issueReporter ?? FALLBACK_TEXT;
   const t = useMemo<IssueReporterText>(() => ({ ...localeText, ...text }), [localeText, text]);
+
+  // 内置模板的字段标签与产出的章节标题也跟着语言走 —— 它们会进提交给 GitHub 的正文，
+  // 硬编码会让英文消费方拿到一份中文 issue（hulianui/hulian#96）。
+  const templates = useMemo(
+    () => templatesProp ?? buildIssueTemplates(localeText.templates ?? FALLBACK_TEXT.templates),
+    [templatesProp, localeText],
+  );
 
   const fallbackType = templates[0]?.type ?? "";
   const [internalType, setInternalType] = useState(defaultType ?? fallbackType);
@@ -256,7 +260,9 @@ function IssueReporterImpl({
             <Combobox
               items={componentItems}
               value={relatedValue}
-              onValueChange={(next: ComboboxItemData | null) => changeRelated(next?.value ?? NONE_SLUG)}
+              onValueChange={(next: ComboboxItemData | null) =>
+                changeRelated(next?.value ?? NONE_SLUG)
+              }
             >
               <ComboboxTrigger placeholder={t.relatedComponentPlaceholder} />
               <ComboboxContent

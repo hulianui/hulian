@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { ConfigProvider, enUS } from "../config";
 import { Stepper } from "./stepper";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 const steps = [{ label: "下单" }, { label: "付款" }, { label: "发货" }];
 
@@ -38,5 +39,12 @@ describe("Stepper（零依赖）", () => {
       </ConfigProvider>,
     );
     expect(getByRole("list", { name: "Step progress" })).toBeTruthy();
+  });
+});
+
+// 见 hulianui/hulian#89：稳定父更新时整棵子树必须 bail out。
+describe("Stepper · memo", () => {
+  it("稳定父更新时跳过步骤条子树", async () => {
+    await expectMemoSkipsSubtree(() => <Stepper steps={steps} activeStep={1} />);
   });
 });

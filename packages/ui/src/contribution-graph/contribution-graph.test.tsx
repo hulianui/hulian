@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 import { ConfigProvider, enUS } from "../config";
 import { ContributionGraph } from "./contribution-graph";
 import { buildContributionCalendar } from "./contribution-matrix";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 // 固定结束日，免得测试跟着「今天」漂。2026-08-01 是周六（weekday 6）。
 const END = "2026-08-01";
@@ -70,27 +71,7 @@ describe("buildContributionCalendar", () => {
 
 describe("ContributionGraph", () => {
   it("稳定父组件更新时跳过 365 格日历重建", async () => {
-    const onRender = vi.fn();
-    const { rerender } = render(
-      <div data-parent-version="0">
-        <Profiler id="contribution-graph" onRender={onRender}>
-          <ContributionGraph data={STABLE_DATA} days={365} endDate={END} />
-        </Profiler>
-      </div>,
-    );
-    await act(async () => undefined);
-    onRender.mockClear();
-    rerender(
-      <div data-parent-version="1">
-        <Profiler id="contribution-graph" onRender={onRender}>
-          <ContributionGraph data={STABLE_DATA} days={365} endDate={END} />
-        </Profiler>
-      </div>,
-    );
-
-    const update = onRender.mock.calls.at(-1);
-    expect(update?.[1]).toBe("update");
-    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+    await expectMemoSkipsSubtree(() => <ContributionGraph data={STABLE_DATA} days={365} endDate={END} />);
   });
 
   it("calendar 布局渲染整区间格子 + 月份标签", () => {

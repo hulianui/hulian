@@ -65,3 +65,10 @@ describe("GridMotion", () => {
     expect(gridOf(container).style.transform).toContain("rotate(-22deg)");
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("GridMotion · null 回落", () => {
+  it("items 传 null 不抛错，回落内置占位", () => {
+    const { container } = render(<GridMotion items={null as never} />);
+    expect(container.firstElementChild).not.toBeNull();
+  });
+});

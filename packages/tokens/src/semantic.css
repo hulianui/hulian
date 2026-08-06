@@ -1,5 +1,16 @@
 /* 瑚琏 语义层 — 组件只消费这一层；明暗在此切，只换值不换结构 */
-:root {
+
+/* 亮色既是根默认值，也必须是一个**可选择的**主题：只挂 :root 的话，
+   「亮页里嵌暗块」能做（暗块自己匹配到 [data-theme="dark"]），
+   「暗页里嵌亮块」做不到（没有规则可匹配，子树继续继承祖先的暗色值）——
+   局部主题覆盖只有单向（hulianui/hulian#101）。
+   两条选择器特异性相同，而 [data-theme="dark"] 在源码里靠后，所以根节点标 dark 时仍然是暗色赢；
+   嵌套的亮色岛因为自己匹配上了规则，能覆盖继承来的暗色值。 */
+:root,
+[data-theme="light"] {
+  /* 当前生效的主题。它靠继承传播，所以任意元素读到的永远是**最近**那个主题块的值 ——
+     preset.css 的 dark variant 就是查询它来判定「我属于哪个主题」的，见那里的注释。 */
+  --hl-theme: light;
   /* 把当前主题告知浏览器：否则 OS 为暗色而页面切亮色时，UA 会用系统暗色画
      overscroll 回弹区/原生滚动条/表单控件 → 下拉回弹露出黑底。随 data-theme 同步。 */
   color-scheme: light;
@@ -78,6 +89,7 @@
 }
 
 [data-theme="dark"] {
+  --hl-theme: dark;
   color-scheme: dark;
   --color-bg: var(--gray-950);
   --color-surface: var(--gray-900);

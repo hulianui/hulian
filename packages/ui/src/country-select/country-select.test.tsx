@@ -6,6 +6,7 @@ import { flagEmoji, filterCountries, getCountry, countrySearchText } from "./cou
 import { countries } from "./countries.data";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("countries 数据完整性", () => {
   it("约 250 国，code 唯一", () => {
@@ -57,27 +58,7 @@ describe("CountrySelect 组件", () => {
     expect(container.textContent).toContain("美国");
   });
   it("稳定父组件更新时跳过 CountrySelect 子树", async () => {
-    const onRender = vi.fn();
-    const { rerender } = render(
-      <div data-parent-version="0">
-        <Profiler id="country-select" onRender={onRender}>
-          <CountrySelect placeholder="选国家" />
-        </Profiler>
-      </div>,
-    );
-    await act(async () => undefined);
-    onRender.mockClear();
-    rerender(
-      <div data-parent-version="1">
-        <Profiler id="country-select" onRender={onRender}>
-          <CountrySelect placeholder="选国家" />
-        </Profiler>
-      </div>,
-    );
-
-    const update = onRender.mock.calls.at(-1);
-    expect(update?.[1]).toBe("update");
-    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+    await expectMemoSkipsSubtree(() => <CountrySelect placeholder="选国家" />);
   });
 
 

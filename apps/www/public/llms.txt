@@ -5,6 +5,7 @@
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
 铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。
+要做受约束生成（只许输出白名单组件与合法 props）请直接读 [llms-props.json](./llms-props.json)，不要去解析下面这些 markdown 表格：那份 JSON 逐 prop 给出 kind / 枚举取值 / 默认值，并带一张 `exportIndex`（导出名 → 组件）。
 
 ## 布局 layout（15）
 - [AdminLayout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/admin-layout/admin-layout.md): 中后台骨架 · 侧栏(品牌+NavMenu可折叠) + 顶栏(折叠/面包屑/扩展区) + 多页签导航(开/切/关·关闭其他/全部·受控接路由或菜单点击自动维护) + 内容区(复用 NavMenu/ScrollArea/…

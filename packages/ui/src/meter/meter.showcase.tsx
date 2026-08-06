@@ -35,6 +35,29 @@ export const meterShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "绝对数表述",
+      description:
+        "formatValue 接管数值文案，可见文字与读屏念到的 aria-valuetext 是同一句，不会各说各的。",
+      code: `<Meter
+  value={1041}
+  max={1324}
+  label="已挂教材章节"
+  showValue
+  formatValue={({ value, max }) => \`\${value} / \${max} 道题\`}
+/>`,
+      render: () => (
+        <div className="w-64">
+          <Meter
+            value={1041}
+            max={1324}
+            label="已挂教材章节"
+            showValue
+            formatValue={({ value, max }) => `${value} / ${max} 道题`}
+          />
+        </div>
+      ),
+    },
+    {
       title: "不同占比",
       description: "占比由 value 决定，宽度由 Base UI 内部自算。",
       code: `<>

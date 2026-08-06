@@ -18,7 +18,13 @@ const docsTemplate: IssueTemplate = {
   labels: ["documentation"],
   tone: "brand",
   fields: [
-    { name: "page", label: "页面地址", control: "input", required: true, placeholder: "/components/select" },
+    {
+      name: "page",
+      label: "页面地址",
+      control: "input",
+      required: true,
+      placeholder: "/components/select",
+    },
     { name: "problem", label: "哪里不对", rows: 3 },
   ],
   toMarkdown: (values) =>
@@ -73,7 +79,7 @@ export const issueReporterShowcase: ShowcaseSpec = {
     },
     {
       title: "渲染态预览",
-      description: "preview=\"rendered\" 显示渲染后的 Markdown，而非源码。",
+      description: 'preview="rendered" 显示渲染后的 Markdown，而非源码。',
       code: `<IssueReporter preview="rendered" defaultType="feature" />`,
       render: () => (
         <div className="w-full max-w-2xl">

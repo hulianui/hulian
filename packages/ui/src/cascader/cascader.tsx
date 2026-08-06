@@ -58,7 +58,7 @@ function columnsOf(nodes: TreeNode[], activePath: string[]): TreeNode[][] {
 function CascaderImpl({
   nodes,
   value,
-  defaultValue = [],
+  defaultValue: defaultValueProp,
   onChange,
   expandTrigger = "click",
   changeOnSelect = false,
@@ -70,6 +70,7 @@ function CascaderImpl({
   size = "md",
   className,
 }: CascaderProps) {
+  const defaultValue = defaultValueProp ?? [];
   const [open, setOpen] = useState(false);
   const [internal, setInternal] = useState<string[]>(defaultValue);
   const current = value ?? internal;

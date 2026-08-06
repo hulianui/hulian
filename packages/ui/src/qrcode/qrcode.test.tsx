@@ -3,32 +3,13 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { QRCode } from "./qrcode";
 import { buildQRCode, qrCodeSvgString } from "./qrcode-core";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
 describe("QRCode", () => {
   it("稳定父组件更新时跳过重复编码与渲染", async () => {
-    const onRender = vi.fn();
-    const { rerender } = render(
-      <div data-parent-version="0">
-        <Profiler id="qrcode" onRender={onRender}>
-          <QRCode value="https://hulian.dev" />
-        </Profiler>
-      </div>,
-    );
-    await act(async () => undefined);
-    onRender.mockClear();
-    rerender(
-      <div data-parent-version="1">
-        <Profiler id="qrcode" onRender={onRender}>
-          <QRCode value="https://hulian.dev" />
-        </Profiler>
-      </div>,
-    );
-
-    const update = onRender.mock.calls.at(-1);
-    expect(update?.[1]).toBe("update");
-    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+    await expectMemoSkipsSubtree(() => <QRCode value="https://hulian.dev" />);
   });
 
   it("渲染 svg[role=img]，aria-label 默认取 value", () => {

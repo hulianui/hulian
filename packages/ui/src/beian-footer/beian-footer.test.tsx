@@ -45,3 +45,11 @@ describe("BeianFooter", () => {
     expect(getByText("ICP filing")).toBeTruthy();
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("BeianFooter · null 回落", () => {
+  it("icp 传 null 不抛错，备案区不渲染", () => {
+    const { getByText, queryByText } = render(<BeianFooter icp={null as never} copyright="© 2026 瑚琏" />);
+    expect(getByText("© 2026 瑚琏")).toBeTruthy();
+    expect(queryByText("ICP备案")).toBeNull();
+  });
+});

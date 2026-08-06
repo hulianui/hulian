@@ -28,6 +28,20 @@ export const meterShowcase: ShowcaseSpec = {
         </div>),
         },
         {
+            title: "Absolute wording",
+            description: "formatValue takes over the value text, so the visible string and the aria-valuetext a screen reader announces are one and the same sentence.",
+            code: `<Meter
+  value={1041}
+  max={1324}
+  label="Linked to textbook"
+  showValue
+  formatValue={({ value, max }) => \`\${value} / \${max} questions\`}
+/>`,
+            render: () => (<div className="w-64">
+          <Meter value={1041} max={1324} label="Linked to textbook" showValue formatValue={({ value, max }) => `${value} / ${max} questions`}/>
+        </div>),
+        },
+        {
             title: "Different proportions",
             description: "The proportion is determined by value, and the width is calculated internally by Base UI.",
             code: `<>

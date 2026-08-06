@@ -1,6 +1,6 @@
-import { Profiler, type ReactElement } from "react";
-import { act, render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import type { ReactElement } from "react";
+import { describe, it } from "vitest";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 import { Cascader } from "../cascader/cascader";
 import { Calendar } from "../calendar/calendar";
 import { Checkbox } from "../checkbox/checkbox";
@@ -58,28 +58,7 @@ const cases: Array<[string, () => ReactElement]> = [
 ];
 
 describe("高开销组件的稳定父更新", () => {
-  it.each(cases)("%s 跳过内部子树", async (name, renderComponent) => {
-    const onRender = vi.fn();
-    const { rerender } = render(
-      <div data-parent-version="0">
-        <Profiler id={name} onRender={onRender}>
-          {renderComponent()}
-        </Profiler>
-      </div>,
-    );
-    await act(async () => undefined);
-    onRender.mockClear();
-
-    rerender(
-      <div data-parent-version="1">
-        <Profiler id={name} onRender={onRender}>
-          {renderComponent()}
-        </Profiler>
-      </div>,
-    );
-
-    const update = onRender.mock.calls.at(-1);
-    expect(update?.[1]).toBe("update");
-    expect(update?.[2]).toBeLessThan(update?.[3] * 0.1);
+  it.each(cases)("%s 跳过内部子树", async (_name, renderComponent) => {
+    await expectMemoSkipsSubtree(renderComponent);
   });
 });

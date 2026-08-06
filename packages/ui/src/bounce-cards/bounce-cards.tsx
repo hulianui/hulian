@@ -43,7 +43,7 @@ function getPushedTransform(baseTransform: string, offsetX: number): string {
 }
 
 export function BounceCards({
-  images = [],
+  images: imagesProp,
   children,
   containerWidth = 400,
   containerHeight = 400,
@@ -55,6 +55,7 @@ export function BounceCards({
   className,
   style,
 }: BounceCardsProps) {
+  const images = imagesProp ?? [];
   const reduce = useReducedMotion();
   const [hovered, setHovered] = useState<number | null>(null);
 

@@ -27,7 +27,7 @@ function responsiveColsClass(c: ResponsiveCols): string {
 }
 
 export function Grid<E extends ElementType = "div">({
-  cols = 1,
+  cols: colsProp,
   rows,
   gap = 0,
   colGap,
@@ -39,6 +39,9 @@ export function Grid<E extends ElementType = "div">({
   ...props
 }: GridProps<E>) {
   const Comp = (as ?? "div") as ElementType;
+  // 解构默认只在 undefined 时生效，而 typeof null === "object" 会把 null 送进响应式分支；
+  // 由 LLM 产出结构的消费方常把「不设这个 prop」写成 null（hulianui/hulian#107）。
+  const cols = colsProp ?? 1;
   const responsive = typeof cols === "object";
   return (
     <Comp

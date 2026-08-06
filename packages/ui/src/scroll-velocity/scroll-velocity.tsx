@@ -130,7 +130,7 @@ function VelocityRow({
 }
 
 export function ScrollVelocity({
-  texts = [],
+  texts: textsProp,
   velocity = 100,
   damping = 50,
   stiffness = 400,
@@ -142,6 +142,7 @@ export function ScrollVelocity({
   parallaxStyle,
   scrollerStyle,
 }: ScrollVelocityProps) {
+  const texts = textsProp ?? [];
   const reduce = useReducedMotion() ?? false;
 
   return (

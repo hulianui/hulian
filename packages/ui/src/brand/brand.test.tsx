@@ -1,6 +1,7 @@
 import { render, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { Brand } from "./brand";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("Brand", () => {
   it("渲染徽章与品牌名", () => {
@@ -73,5 +74,12 @@ describe("Brand", () => {
     expect(size("sm")).toContain("size-7");
     expect(size("md")).toContain("size-9");
     expect(size("lg")).toContain("size-11");
+  });
+});
+
+// 见 hulianui/hulian#89：稳定父更新时整棵子树必须 bail out。
+describe("Brand · memo", () => {
+  it("稳定父更新时跳过品牌标识子树", async () => {
+    await expectMemoSkipsSubtree(() => <Brand name="瑚琏" />);
   });
 });

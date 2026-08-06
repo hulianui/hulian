@@ -105,7 +105,9 @@ describe("renderIssueMarkdown · enhancement 模板", () => {
   });
 
   it("全空 → 空串（不留一行空白骨架）", () => {
-    expect(renderIssueMarkdown({ type: "enhancement", title: "t", values: {} }, enhancement)).toBe("");
+    expect(renderIssueMarkdown({ type: "enhancement", title: "t", values: {} }, enhancement)).toBe(
+      "",
+    );
   });
 });
 
@@ -118,9 +120,9 @@ describe("自定义模板", () => {
     toMarkdown: (values) => `页面：${values.page ?? ""}`,
   };
   it("toMarkdown 完全由模板说了算", () => {
-    expect(renderIssueMarkdown({ type: "docs", title: "t", values: { page: "/select" } }, custom)).toBe(
-      "页面：/select",
-    );
+    expect(
+      renderIssueMarkdown({ type: "docs", title: "t", values: { page: "/select" } }, custom),
+    ).toBe("页面：/select");
   });
   it("createIssueDraft 缺省 labels 取模板的", () => {
     const draft = createIssueDraft({ type: "docs", title: " 标题 ", values: {} }, custom);
@@ -130,10 +132,7 @@ describe("自定义模板", () => {
 });
 
 describe("buildIssueUrl", () => {
-  const draft = createIssueDraft(
-    { type: "bug", title: "标题", values: { summary: "正文" } },
-    bug,
-  );
+  const draft = createIssueDraft({ type: "bug", title: "标题", values: { summary: "正文" } }, bug);
 
   it("中文标题按 UTF-8 百分号编码", () => {
     const url = buildIssueUrl(draft, "hulianui/hulian");

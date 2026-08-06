@@ -23,7 +23,10 @@ const allKinds: InspectorSection[] = [
         key: "textAlign",
         label: "对齐",
         kind: "enum",
-        options: [{ value: "left", label: "左" }, { value: "center", label: "中" }],
+        options: [
+          { value: "left", label: "左" },
+          { value: "center", label: "中" },
+        ],
       },
       { key: "hidden", label: "隐藏", kind: "toggle" },
     ],

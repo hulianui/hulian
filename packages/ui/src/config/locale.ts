@@ -667,6 +667,69 @@ export interface ComponentLocale {
     sideLeft: string;
     pickColor: string;
     colorTokens: string;
+    /**
+     * 内置预设 schema（`inspectorSections()`）的字段标签与枚举选项文案。
+     * 不传 `sections` 时面板就渲染这套预设，硬编码会让英文消费方拿到一屏中文标签
+     * （英文站曾整页渲染出中文，hulianui/hulian#92）。
+     */
+    presets: {
+      sectionLayout: string;
+      sectionColor: string;
+      sectionTypography: string;
+      sectionBorder: string;
+      sectionEffects: string;
+      display: string;
+      flexDirection: string;
+      directionRow: string;
+      directionColumn: string;
+      justifyContent: string;
+      alignItems: string;
+      alignStart: string;
+      alignCenter: string;
+      alignEnd: string;
+      alignBetween: string;
+      alignStretch: string;
+      gap: string;
+      padding: string;
+      margin: string;
+      width: string;
+      height: string;
+      textColor: string;
+      backgroundColor: string;
+      borderColor: string;
+      fontSize: string;
+      fontWeight: string;
+      weightRegular: string;
+      weightMedium: string;
+      weightSemibold: string;
+      weightBold: string;
+      lineHeight: string;
+      letterSpacing: string;
+      textAlign: string;
+      textAlignLeft: string;
+      textAlignCenter: string;
+      textAlignRight: string;
+      textAlignJustify: string;
+      borderWidth: string;
+      borderStyle: string;
+      strokeSolid: string;
+      strokeDashed: string;
+      strokeDotted: string;
+      strokeNone: string;
+      borderRadius: string;
+      opacity: string;
+      boxShadow: string;
+      shadowNone: string;
+      shadowSm: string;
+      shadowMd: string;
+      shadowLg: string;
+      shadowXl: string;
+      overflow: string;
+      overflowVisible: string;
+      overflowHidden: string;
+      overflowAuto: string;
+      hiddenElement: string;
+    };
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   codeEditor?: {
@@ -729,6 +792,43 @@ export interface ComponentLocale {
     requiredError: (label: string) => string;
     /** IssueReporterModal 的弹层标题（modalTitle prop 未传时使用）。 */
     modalTitle: string;
+    /**
+     * 内置三套模板的文案。模板的字段标签与产出的 markdown 章节标题都从这里取 ——
+     * 它们会出现在提交给 GitHub 的正文里，所以必须跟着语言走，不能硬编码
+     * （英文站上曾整页渲染出中文标签，hulianui/hulian#96）。
+     */
+    templates: {
+      relatedComponent: string;
+      bug: {
+        label: string;
+        summary: string;
+        summaryPlaceholder: string;
+        steps: string;
+        stepsPlaceholder: string;
+        expected: string;
+        actual: string;
+        env: string;
+        envPlaceholder: string;
+      };
+      feature: {
+        label: string;
+        problem: string;
+        problemPlaceholder: string;
+        api: string;
+        alternatives: string;
+        alternativesPlaceholder: string;
+        reference: string;
+        referencePlaceholder: string;
+      };
+      enhancement: {
+        label: string;
+        current: string;
+        currentPlaceholder: string;
+        improvement: string;
+        impact: string;
+        impactPlaceholder: string;
+      };
+    };
   };
 }
 
@@ -1268,6 +1368,64 @@ const zhComponents: ComponentLocale = {
     sideLeft: "左",
     pickColor: "取色器",
     colorTokens: "主题色",
+    presets: {
+      sectionLayout: "布局",
+      sectionColor: "颜色",
+      sectionTypography: "排版",
+      sectionBorder: "边框",
+      sectionEffects: "效果",
+      display: "显示",
+      flexDirection: "主轴",
+      directionRow: "横向",
+      directionColumn: "纵向",
+      justifyContent: "主轴对齐",
+      alignItems: "交叉轴对齐",
+      alignStart: "起",
+      alignCenter: "中",
+      alignEnd: "末",
+      alignBetween: "分",
+      alignStretch: "拉",
+      gap: "间隙",
+      padding: "内边距",
+      margin: "外边距",
+      width: "宽度",
+      height: "高度",
+      textColor: "文字色",
+      backgroundColor: "背景色",
+      borderColor: "边框色",
+      fontSize: "字号",
+      fontWeight: "字重",
+      weightRegular: "常规",
+      weightMedium: "中",
+      weightSemibold: "半粗",
+      weightBold: "粗",
+      lineHeight: "行高",
+      letterSpacing: "字距",
+      textAlign: "对齐",
+      textAlignLeft: "左",
+      textAlignCenter: "中",
+      textAlignRight: "右",
+      textAlignJustify: "两端",
+      borderWidth: "边框宽",
+      borderStyle: "线型",
+      strokeSolid: "实线",
+      strokeDashed: "虚线",
+      strokeDotted: "点线",
+      strokeNone: "无",
+      borderRadius: "圆角",
+      opacity: "不透明度",
+      boxShadow: "阴影",
+      shadowNone: "无",
+      shadowSm: "近",
+      shadowMd: "中",
+      shadowLg: "远",
+      shadowXl: "极远",
+      overflow: "溢出",
+      overflowVisible: "显示",
+      overflowHidden: "裁剪",
+      overflowAuto: "滚动",
+      hiddenElement: "隐藏元素",
+    },
   },
   codeEditor: {
     editor: (language) => `代码编辑器${language ? `（${language}）` : ""}`,
@@ -1324,6 +1482,38 @@ const zhComponents: ComponentLocale = {
       "GitHub 的预填链接有长度上限，当前内容超出后会被截断。请复制 Markdown，到 GitHub 新建 issue 页手动粘贴。",
     requiredError: (label) => `${label} 必填`,
     modalTitle: "反馈 issue",
+    templates: {
+      relatedComponent: "相关组件",
+      bug: {
+        label: "Bug 报障",
+        summary: "问题描述",
+        summaryPlaceholder: "发生了什么？",
+        steps: "复现步骤",
+        stepsPlaceholder: "1. …\n2. …\n3. …",
+        expected: "期望结果",
+        actual: "实际结果",
+        env: "环境",
+        envPlaceholder: "@hulianui/ui 0.25.2 · Chrome 120 · macOS",
+      },
+      feature: {
+        label: "新组件 / 新能力",
+        problem: "需求描述",
+        problemPlaceholder: "要解决的问题，而不是你想到的方案",
+        api: "期望 API",
+        alternatives: "现有替代方案",
+        alternativesPlaceholder: "现在你是怎么绕过去的？",
+        reference: "竞品参照",
+        referencePlaceholder: "链接或组件名",
+      },
+      enhancement: {
+        label: "优化建议",
+        current: "现状",
+        currentPlaceholder: "现在的行为/体验是什么样",
+        improvement: "期望改进",
+        impact: "影响面与兼容性",
+        impactPlaceholder: "会不会破坏现有用法？",
+      },
+    },
   },
 };
 
@@ -1806,7 +1996,7 @@ const enComponents: ComponentLocale = {
         "3101": "Shanghai Municipality",
         "310115": "Pudong New Area",
         "4401": "Guangzhou",
-      })[code] ?? `Region ${code}`,
+      }[code] ?? `Region ${code}`),
   },
   voiceRecord: {
     idle: "Hold to talk",
@@ -1841,7 +2031,22 @@ const enComponents: ComponentLocale = {
     startDate: "Start date",
     endDate: "End date",
     month: (year, month) =>
-      `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month - 1]} ${year}`,
+      `${
+        [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ][month - 1]
+      } ${year}`,
     clear: "Clear",
     previousMonth: "Previous month",
     nextMonth: "Next month",
@@ -1978,7 +2183,8 @@ const enComponents: ComponentLocale = {
   elementSelectionOverlay: {
     crossOrigin:
       "Cannot read the iframe contentDocument: a cross-origin iframe cannot be taken over. Use a same-origin preview (srcdoc / same-origin proxy), or mount the overlay inside the previewed page and post the path back to the host via postMessage.",
-    noFrameDocument: "The iframe is not in the document yet, so there is no usable contentDocument.",
+    noFrameDocument:
+      "The iframe is not in the document yet, so there is no usable contentDocument.",
     noDocument: "The target element does not belong to any document.",
   },
   inspectorPanel: {
@@ -1992,6 +2198,64 @@ const enComponents: ComponentLocale = {
     sideLeft: "Left",
     pickColor: "Color picker",
     colorTokens: "Theme colors",
+    presets: {
+      sectionLayout: "Layout",
+      sectionColor: "Color",
+      sectionTypography: "Typography",
+      sectionBorder: "Border",
+      sectionEffects: "Effects",
+      display: "Display",
+      flexDirection: "Direction",
+      directionRow: "Row",
+      directionColumn: "Column",
+      justifyContent: "Justify",
+      alignItems: "Align",
+      alignStart: "Start",
+      alignCenter: "Center",
+      alignEnd: "End",
+      alignBetween: "Between",
+      alignStretch: "Stretch",
+      gap: "Gap",
+      padding: "Padding",
+      margin: "Margin",
+      width: "Width",
+      height: "Height",
+      textColor: "Text",
+      backgroundColor: "Background",
+      borderColor: "Border",
+      fontSize: "Size",
+      fontWeight: "Weight",
+      weightRegular: "Regular",
+      weightMedium: "Medium",
+      weightSemibold: "Semibold",
+      weightBold: "Bold",
+      lineHeight: "Line height",
+      letterSpacing: "Tracking",
+      textAlign: "Align",
+      textAlignLeft: "Left",
+      textAlignCenter: "Center",
+      textAlignRight: "Right",
+      textAlignJustify: "Justify",
+      borderWidth: "Width",
+      borderStyle: "Style",
+      strokeSolid: "Solid",
+      strokeDashed: "Dashed",
+      strokeDotted: "Dotted",
+      strokeNone: "None",
+      borderRadius: "Radius",
+      opacity: "Opacity",
+      boxShadow: "Shadow",
+      shadowNone: "None",
+      shadowSm: "Small",
+      shadowMd: "Medium",
+      shadowLg: "Large",
+      shadowXl: "Huge",
+      overflow: "Overflow",
+      overflowVisible: "Visible",
+      overflowHidden: "Clip",
+      overflowAuto: "Scroll",
+      hiddenElement: "Hide element",
+    },
   },
   codeEditor: {
     editor: (language) => (language ? `Code editor (${language})` : "Code editor"),
@@ -2048,6 +2312,38 @@ const enComponents: ComponentLocale = {
       "GitHub caps the length of prefilled links, and the current content would be truncated. Copy the Markdown and paste it into the new issue page on GitHub.",
     requiredError: (label) => `${label} is required`,
     modalTitle: "Report an issue",
+    templates: {
+      relatedComponent: "Related component",
+      bug: {
+        label: "Bug report",
+        summary: "What went wrong",
+        summaryPlaceholder: "What happened?",
+        steps: "Steps to reproduce",
+        stepsPlaceholder: "1. …\n2. …\n3. …",
+        expected: "Expected result",
+        actual: "Actual result",
+        env: "Environment",
+        envPlaceholder: "@hulianui/ui 0.25.2 · Chrome 120 · macOS",
+      },
+      feature: {
+        label: "New component or capability",
+        problem: "What you need",
+        problemPlaceholder: "The problem to solve, not the solution you have in mind",
+        api: "Desired API",
+        alternatives: "Current workaround",
+        alternativesPlaceholder: "How are you getting around it today?",
+        reference: "Prior art",
+        referencePlaceholder: "A link or a component name",
+      },
+      enhancement: {
+        label: "Improvement",
+        current: "Today",
+        currentPlaceholder: "How does it behave right now",
+        improvement: "What to improve",
+        impact: "Impact and compatibility",
+        impactPlaceholder: "Would it break existing usage?",
+      },
+    },
   },
 };
 

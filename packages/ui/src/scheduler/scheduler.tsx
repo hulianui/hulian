@@ -54,7 +54,7 @@ function SchedulerImpl({
   events,
   view,
   date,
-  resources = [],
+  resources: resourcesProp,
   onViewChange,
   onDateChange,
   onEventsChange,
@@ -69,6 +69,7 @@ function SchedulerImpl({
   renderEvent,
   className,
 }: SchedulerProps) {
+  const resources = resourcesProp ?? [];
   const labels = useComponentLocale().scheduler ?? DEFAULT_LABELS;
   const viewItems = (Object.keys(labels.views) as SchedulerView[]).map((value) => ({
     value,

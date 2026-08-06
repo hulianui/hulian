@@ -25,10 +25,15 @@ const PAGE = `<!doctype html>
 </html>`;
 const CRASHING = `<!doctype html>
 <html>
-<head><style>body { margin: 0; font-family: system-ui; padding: 24px; }</style></head>
+<head><style>
+  body { margin: 0; font-family: system-ui; padding: 24px; }
+  button { padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; }
+</style></head>
 <body>
-  <p>Rendered, then the script throws.</p>
-  <script>setTimeout(function () { throw new Error("undefined is not a function"); }, 0);</script>
+  <p>Rendered fine. Click to make the script throw.</p>
+  <button onclick="setTimeout(function () { throw new Error('undefined is not a function'); }, 0)">
+    Trigger a runtime error
+  </button>
 </body>
 </html>`;
 const Frame = ({ children }: {
@@ -50,14 +55,28 @@ const DeviceDemo = () => {
       </Frame>
     </div>);
 };
-const Boom = () => {
-    throw new Error("Cannot read properties of undefined (reading 'map')");
+const Boom = ({ armed }: {
+    armed: boolean;
+}) => {
+    if (armed)
+        throw new Error("Cannot read properties of undefined (reading 'map')");
+    return (<div className="grid h-full place-items-center p-6 text-sm text-muted">
+      Subtree rendering normally
+    </div>);
 };
-const ReactModeDemo = () => (<Frame>
-    <PreviewSandbox device={{ width: 480, height: 320 }}>
-      <Boom />
-    </PreviewSandbox>
-  </Frame>);
+const ReactModeDemo = () => {
+    const [armed, setArmed] = useState(false);
+    return (<div className="w-full space-y-3">
+      <Button size="sm" variant="outline" onClick={() => setArmed(true)} disabled={armed}>
+        Throw inside the subtree
+      </Button>
+      <Frame>
+        <PreviewSandbox device={{ width: 480, height: 320 }}>
+          <Boom armed={armed}/>
+        </PreviewSandbox>
+      </Frame>
+    </div>);
+};
 const Basic = () => (<Frame>
     <PreviewSandbox code={PAGE}/>
   </Frame>);
@@ -81,7 +100,7 @@ export const previewSandboxShowcase: ShowcaseSpec = {
         },
         {
             title: "Runtime errors and retry",
-            description: "A script inside the preview throws, the injected bootstrap posts it back to the host, and the error state covers the preview. Retry reloads the document.",
+            description: "Click the button in the preview to make the script throw: the injected bootstrap posts the error back to the host, the error state covers the preview, and Retry reloads the document.",
             code: `<PreviewSandbox
   code={crashingHtml}
   onError={(e) => console.warn(e.source, e.message)}
@@ -92,7 +111,7 @@ export const previewSandboxShowcase: ShowcaseSpec = {
         },
         {
             title: "Same-document mode",
-            description: "Pass children instead of code: the subtree renders in the current document behind a real React error boundary, and the error object keeps the same shape as in iframe mode.",
+            description: "Pass children instead of code: the subtree renders in the current document behind a real React error boundary, and the error object has the same shape as in iframe mode. Click the button to make the subtree throw and see the error state.",
             code: `<PreviewSandbox device={{ width: 480, height: 320 }}>
   <YourComponent />
 </PreviewSandbox>`,
@@ -112,7 +131,7 @@ export const previewSandboxShowcase: ShowcaseSpec = {
         { name: "Desktop viewport", render: () => <Basic /> },
         { name: "Device switch", render: () => <DeviceDemo /> },
         {
-            name: "Error status",
+            name: "Runtime error (click to trigger)",
             render: () => (<Frame>
           <PreviewSandbox code={CRASHING}/>
         </Frame>),

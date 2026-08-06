@@ -53,3 +53,10 @@ describe("StaggeredMenu", () => {
     expect(root.getAttribute("data-position")).toBe("left");
   });
 });
+// 见 hulianui/hulian#107：解构默认只认 undefined，null 须显式回落。
+describe("StaggeredMenu · null 回落", () => {
+  it("items/socialItems 传 null 不抛错", () => {
+    const { container } = render(<StaggeredMenu items={null as never} socialItems={null as never} />);
+    expect(container.firstElementChild).not.toBeNull();
+  });
+});

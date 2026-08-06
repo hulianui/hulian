@@ -1232,3 +1232,38 @@ test("软链指向仓库内源码目录时仍是本地接入（#68 的负向边�
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+// format: "json" —— 受约束生成要的是结构化 props，而不是让每家消费方去解析 markdown 表格
+// （hulianui/hulian#102 #103 #104 #105）。
+test("get_component_doc format=json 返回结构化 props（带枚举取值与默认值）", async () => {
+  const [res] = await rpc([call(60, "get_component_doc", { name: "button", format: "json" })]);
+  const payload = dataOf(res);
+  const button = payload.components[0];
+  assert.equal(button.slug, "button");
+  assert.match(button.import, /@hulianui\/ui/);
+  const variant = button.props.find((p) => p.name === "variant");
+  assert.equal(variant.kind, "enum");
+  assert.ok(variant.values.includes("solid"), `枚举取值缺失：${JSON.stringify(variant)}`);
+  assert.equal(variant.valueType, "string");
+});
+
+test("get_component_doc format=json 用真实导出名也能反查到组件（IPhone → iphone）", async () => {
+  const [res] = await rpc([call(61, "get_component_doc", { name: "IPhone", format: "json" })]);
+  const payload = dataOf(res);
+  assert.equal(payload.components[0].slug, "iphone");
+  assert.ok(payload.components[0].exports.includes("IPhone"));
+});
+
+test("get_component_doc format=json 支持按 sections 裁剪", async () => {
+  const [res] = await rpc([
+    call(62, "get_component_doc", { name: "button", format: "json", sections: ["props"] }),
+  ]);
+  const component = dataOf(res).components[0];
+  assert.ok(Array.isArray(component.props));
+  assert.equal(component.slots, undefined, "没要的章节不该出现");
+});
+
+test("get_component_doc 拒绝未知 format", async () => {
+  const [res] = await rpc([call(63, "get_component_doc", { name: "button", format: "yaml" })]);
+  assert.match(bodyOf(res), /format/);
+});
