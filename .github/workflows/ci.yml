@@ -295,12 +295,15 @@ jobs:
           PERFORMANCE_REACT_VERSION: 18
         run: pnpm scan:ci -- --react 18 --smoke --output .hulian-scan/reports/react18-smoke
 
-      # 补 #89 的盲区：avoidable-render 是本门禁里唯一的绝对阈值规则（>0 即 error），
-      # 但 PR 那一支只扫「本次改动波及的场景」，定时这一支此前只有 4 个 React 18 兼容
-      # 场景 —— 结果是**一个组件只要没人碰过，它的违规就永远不会被发现**，等某天顺手
-      # 改到它（哪怕只是换 showcase 里一张图）CI 才突然红，看起来像是本次改动引入的。
+      # 补 #89 的盲区：PR 那一支只扫「本次改动波及的场景」，定时这一支此前只有 4 个
+      # React 18 兼容场景 —— 结果是**一个组件只要没人碰过，它的问题就永远不会被发现**。
       # 2026-08-06 首次全量扫描（373 runs）一次揪出 45 个组件，证实这不是理论风险。
       # 全量约 45 分钟，只在定时触发跑，不拖慢 PR。
+      #
+      # 注意 avoidable-render 已于 2026-08-06 降为 warning（不再判失败），判据见
+      # packages/hulian-scan/src/analyzer/budgets.ts 里那段注释：没有 memo 的组件恒满足它
+      # （全库 306/380 本来就没有 memo），且检测本身被挂载期异步工作污染、对已 memo 的组件
+      # 也会误报。这一支现在的作用是**把候选列出来**，人工过目后决定要不要补 memo。
       - name: Weekly structural sweep (full inventory)
         if: github.event_name == 'schedule'
         run: node scripts/hulian-scan.mjs --ci --full --environment workspace --output .hulian-scan/reports/weekly-full

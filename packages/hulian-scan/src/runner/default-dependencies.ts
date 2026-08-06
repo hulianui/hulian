@@ -60,7 +60,7 @@ function analyzeRuns(
   });
 }
 
-function attachDiagnosis(
+export function attachDiagnosis(
   findings: Finding[],
   diagnosisRuns: ScenarioRun[],
   configuration: BudgetConfiguration,
@@ -81,7 +81,9 @@ function attachDiagnosis(
         ...finding,
         id: confirmed.id,
         rule: confirmed.rule,
-        severity: "error" as const,
+        // severity 沿用规则自己给的，别在这里再写死一次 —— 早先这里硬编码 "error"，
+        // 于是 budgets.ts 把 avoidable-render 降级成 warning 后这条路径照旧判失败。
+        severity: confirmed.severity,
         evidence: confirmed.evidence,
       },
     ];

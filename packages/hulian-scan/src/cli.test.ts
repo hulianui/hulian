@@ -73,4 +73,28 @@ describe("runCli", () => {
       runCli(["--scenario", "button/basic", "--ci", "--report-only"], { execute }),
     ).resolves.toBe(0);
   });
+
+  // 只有 error 级才判失败。此前是「有任何 finding 就退 1」，于是 severity 字段形同虚设 ——
+  // 一条会让构建变红的 warning 不是 warning。发现类信号（avoidable-render 等）照常进报告。
+  it("only fails CI on error-severity findings", async () => {
+    const warning = {
+      id: "kbd/basic:avoidable-render:Kbd",
+      scenarioId: "kbd/basic",
+      component: "Kbd",
+      rule: "avoidable-render",
+      severity: "warning" as const,
+      current: 3,
+      evidence: ["GenericFixture -> Kbd in stress:stable-parent-update"],
+    };
+    const error = { ...warning, id: "kbd/basic:leak:Kbd", rule: "leak", severity: "error" as const };
+
+    await expect(
+      runCli(["--scenario", "kbd/basic", "--ci"], { execute: async () => report([warning]) }),
+    ).resolves.toBe(0);
+    await expect(
+      runCli(["--scenario", "kbd/basic", "--ci"], {
+        execute: async () => report([warning, error]),
+      }),
+    ).resolves.toBe(1);
+  });
 });

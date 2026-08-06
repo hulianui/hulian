@@ -99,8 +99,13 @@ function safeScenarioFileName(scenarioId: string): string {
 
 export function formatTerminalSummary(report: ScanReport): string {
   const ranking = rankedRuns(report).slice(0, 20);
+  // error 与 warning 分开印：只有前者会让 --ci 退非零，混在一个数里读的人分不清
+  // 「要修」还是「看看」。
+  const errors = report.findings.filter((finding) => finding.severity === "error").length;
+  const warnings = report.findings.length - errors;
   const lines = [
-    `Hulian Scan: ${report.findings.length} findings across ${report.runs.length} runs`,
+    `Hulian Scan: ${report.findings.length} findings across ${report.runs.length} runs` +
+      (report.findings.length > 0 ? ` (${errors} error, ${warnings} warning)` : ""),
   ];
   if (ranking.length > 0) {
     lines.push("Slowest median commit durations:");

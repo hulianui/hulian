@@ -267,7 +267,11 @@ export async function runCli(
   }
   const report = await (dependencies.execute ?? executeDefaultScan)(options);
   console.log(formatTerminalSummary(report));
-  return options.ci && !options.reportOnly && report.findings.length > 0 ? 1 : 0;
+  // 只有 error 级 finding 才判失败。此前是「有任何 finding 就退 1」，于是 severity 字段
+  // 形同虚设 —— 一条会让构建变红的 warning 不是 warning。发现类信号（avoidable-render、
+  // avoidable-render-candidate）照常进报告与产物，供 weekly sweep 人工过目。
+  const blocking = report.findings.filter((finding) => finding.severity === "error");
+  return options.ci && !options.reportOnly && blocking.length > 0 ? 1 : 0;
 }
 
 const entry = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : undefined;

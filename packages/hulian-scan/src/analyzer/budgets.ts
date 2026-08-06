@@ -289,12 +289,33 @@ export function evaluateBudget(input: BudgetEvaluationInput): Finding[] {
       );
     }
   }
+  // 这条是**发现信号，不是门禁**（2026-08-06 降级，evidence 如下）。
+  //
+  // 它判的是「父级重渲染了，而 React 报告本次提交里 props/state/hooks/context 全无变化」——
+  // 对**没有 memo 的组件这恒为真**，那是定义而不是缺陷；全库 380 个组件里 306 个本来就没有
+  // memo（只有叶子型 + props 全稳定原语的那类才配）。所以阈值 0 在语义上就不可能被满足。
+  //
+  // 而它之所以看起来「偶尔才报」，是因为**检测本身被挂载期的异步工作污染**：
+  // LazyMotionProvider 这类 `import()` 到货后会触发一次 context 更新，它绕过 memo，
+  // 而 stable-parent-update 步骤紧跟 mount、只等一个 nextPaint()，那次渲染落在测量窗口内外
+  // 全凭运气。三条实测：
+  //   ① 同一份代码连跑四次同一场景 → 3 / 1 / 0 / 1 条；
+  //   ② 两轮 380 runs 的全量给出几乎不重叠的两组组件；
+  //   ③ 对**已正确 memo** 的组件也报（Kbd / Dossier 都有 memo，护栏测试与负向扫荡都证明生效）。
+  //
+  // 把窗口修干净（挂载副作用落定后再测）能消掉抖动，但那样会确定性地点名那 306 个组件 ——
+  // 更红、更没用。真正该被门禁拦的是「**有** memo 却仍然重渲染」，那是 memo 被不稳定 props
+  // 打败；这一条已由 packages/ui/test/memo-guard.tsx 的 64 个护栏确定性覆盖
+  // （负向扫荡：把 React.memo 换成恒等函数，64/64 文件、77/77 条断言变红）。
+  //
+  // 所以这里保留为 warning：weekly sweep 仍会把候选列出来（#89 与本轮共靠它找出 51 个真缺口），
+  // 但不再让 CI 因为一次抖动而红。要恢复成门禁，先让 harness 能分辨组件是否被 memo 包着。
   if (input.run.stage === "diagnosis") {
     const avoidable = componentRenders.filter(isAvoidable);
     const maximum = input.budget.maxAvoidableRenderCount ?? 0;
     if (avoidable.length > maximum) {
       findings.push(
-        makeFinding(input, "avoidable-render", "error", avoidable.length, [
+        makeFinding(input, "avoidable-render", "warning", avoidable.length, [
           ...new Set(
             avoidable.map(
               (event) =>

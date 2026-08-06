@@ -84,7 +84,10 @@ describe("evaluateBudget", () => {
     expect(findings).toEqual([
       expect.objectContaining({
         rule: "avoidable-render",
-        severity: "error",
+        // warning 而不是 error：这条只是发现信号。判据见 budgets.ts 里那段长注释 ——
+        // 没有 memo 的组件（全库 306/380）恒满足它，且检测本身被挂载期异步工作污染，
+        // 对已 memo 的组件也会误报。真正的门禁在 packages/ui/test/memo-guard.tsx。
+        severity: "warning",
         current: 1,
       }),
     ]);
