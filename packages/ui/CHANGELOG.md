@@ -1,5 +1,42 @@
 # @hulianui/ui
 
+## 0.27.0
+
+### Minor Changes
+
+- 清空 issue #109–#139：24 条缺陷修复 + 7 项能力补齐。 <!-- parity-id: issues-109-140-sweep -->
+
+  **破坏性行为变更（各一条，均在同一方向上「改回符合直觉的那个」）**
+
+  - `DesignCanvas` 的滚轮语义与系统惯例、与同库 `Flow` 对齐：**两指滑动平移、捏合缩放**。`wheelBehavior` 默认值从 `"zoom"` 改为 `"pan"`，且 `ctrlKey`（浏览器把触控板捏合合成为 Ctrl+wheel）不再参与「反转」——此前捏合会被反转成平移，是语义倒挂而非取舍。`⌘+滚轮` 不再缩放（macOS 上它没有这个语义）。
+  - 四个特效按钮（`ShimmerButton` / `RainbowButton` / `PulsatingButton` / `RippleButton`）从「按内容撑高」改为与 `Button` 同刻度的 `size` 三档（32/40/48px），默认 `md`。此前它们在工具栏里与普通 Button 混排会参差。
+  - `IPhone` / `Android` / `Tablet` / `Watch` 的机身高度改为由内屏比例 + 边框反推，不再写死 `aspectRatio`（`Tablet` 显式传 `model` 时仍按机型比例）。渲染尺寸会有小幅变化，换来的是内屏比例恒等于视口比例。
+
+  **新增**
+
+  - `Button`：`tone` 补齐 `success` / `warning` / `neutral`（原本只有 `brand` / `danger`），并给 `solid` 补上独立的 hover 档——此前 `danger` 的 hover 写回自身，等于危险按钮没有悬停反馈。新增 `block` 块级铺满。
+  - `Dock`：`activeKey` / `onSelect` 受控选中（与 `NavMenu` / `RouteTabs` 同范式），`DockIcon` 新增 `itemKey` / `active` / `label`。选中项落 `aria-current="page"` 与图标下方指示点；接了 `onSelect` 后 `DockIcon` 渲染为真正的 `<button>`，底座升级为 `nav` 地标。
+  - `InspectorPanel`：`density="compact"` 紧凑档；分组 `columns` 多列网格（数值字段标签内联进输入框，并成为**拖拽调值**的抓手）；`InspectorNumberField.inlineLabel` 可单列启用。窄栏（<260px）下枚举字段自动从分段控件降级为下拉。
+  - `IssueReporter` 的「在 GitHub 上打开」改用 GitHub mark（`_icons` 新增品牌图标组）——平台图标在这类按钮上承载的是目的地识别，不是装饰。
+  - 新增内部真源 `lib/device-metrics`：设备内屏分辨率与边框宽度只声明一次，`PreviewSandbox` 的档位清单从中派生，`watch` 随之获得支持。
+
+  **修复**
+
+  - `ElementSelectionOverlay`：`target` 传普通容器时，点击拦截不再扩散到整个宿主页面。此前宿主上任何位置的点击都被吞掉（按钮点不动、tab 切不了），且 `onClear` 会在用户点属性面板时误触发。
+  - 全库 `bg-muted` 误用：`--color-muted` 是次要**文字**色，当背景用时亮色发脏、暗色发白。区域底改用新增的 `--color-subtle`，悬停态改 `--color-surface-hover`。涉及 Kanban 列、ScopeMatrix 桶、QueueLane 泳道、InterceptCard 违反点块、Markdown 表格、CodeDiff、Gantt、Scheduler、Combobox / Select 高亮项等。
+  - 深色画布上的文字色：`GooeyNav` 非激活项、`ChromaGrid` 卡面文案此前用跟随页面主题的 token，亮色主题下变成「深字压深底」。这两件现在声明为暗色上下文，用固定白色阶；`ChromaGrid` 另加暗色基底与 `@media (hover: none)` 兜底（无指针设备不再永久停在灰度降级态）。
+  - `Segmented` 段补 `min-w-0` + `truncate`：此前段不可压缩，装不下时被上游裁掉，**选项存在但不可见也不可点**。
+  - `CodeEditor` 根节点补 `w-full`：作为 flex/grid item 时会塌成约 20 字符宽的窄条。
+  - `CardNav` 展开后卡片挤在 60px 条里：顶栏与内容区都是 `absolute`，`height:auto` 算出来恒为 0。
+  - `StaggeredMenu` 序号压在菜单名上：两个 `em` 偏移基准不同（48px vs 18px），预留 16.8px 装不下 19.8px。改为兄弟节点 + `gap`。
+  - `Notification`：操作按钮改左对齐（这是信息卡不是对话框），关闭按钮 `self-start` 不再随卡片高度飘，`aria-label` 接 locale。
+  - `AdminLayout` 折叠后 logo 居中，与下方图标轨共用中轴；缺 `logoCollapsed` 时开发期告警。
+  - `Button` base 补 `select-none`（全库按钮受益），`GiftFeed` / `Danmaku` 飘动层同理——连点场景下文字会被浏览器识别成双击选词。
+  - `DesignCanvas` 抑制文本选择，`input` / `textarea` / `contenteditable` 留逃生口。
+  - `ComponentPicker` 网格内边距不足致覆盖式滚动条压在卡片上；卡片标题与 slug 不再平分宽度。
+  - `PreviewSandbox` 设备外框内的白边（内屏比例与视口比例对不上）；设备档位文案接 locale。
+  - 新增布局高度 token `--hl-layout-header-h`，`Layout.Header` 与 `AdminLayout` 共用。
+
 ## 0.26.0
 
 ### Minor Changes

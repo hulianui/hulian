@@ -1,5 +1,15 @@
 # @hulianui/tokens
 
+## 0.6.0
+
+### Minor Changes
+
+- 新增三类语义 token，均为「补齐缺席的档位」而不是改现有取值： <!-- parity-id: tokens-subtle-and-semantic-hover -->
+
+  - `--color-subtle`：**静态**区域底（分组容器、看板列、泳道、说明条）。与 `--color-surface-hover` 当前同值，但语义不同——后者表达的是「surface 的悬停态」，给一块常驻底色写 `hover:` 是语义错位，也让「静态弱底」以后没有单独调整的抓手。此前这类场景大量误用了 `--color-muted`，而它是次要**文字**色：亮色下叠出一块脏灰、暗色下发白，两个主题都错且错法相反。
+  - `--color-danger-hover` / `--color-success-hover` / `--color-warning-hover`：语义色的悬停档。取值规则是「亮暗两端之间的那一档」——亮色下变亮、暗色下变暗，两个主题都朝对比更弱的方向走一步，与既有的 `--color-primary-hover` 同构。缺这一档时 solid 语义按钮的 hover 只能写回自身，等于**没有悬停反馈**。
+  - `--hl-layout-header-h`：整页骨架的顶栏高度（4rem）。此前这个数硬编码在 `Layout.Header` 与 `AdminLayout` 三处，消费方想让「侧栏顶部 logo 区与 Header 齐平」只能去源码里翻。
+
 ## 0.5.0
 
 ### Minor Changes

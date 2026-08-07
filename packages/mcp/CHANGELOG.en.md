@@ -1,5 +1,19 @@
 # @hulianui/mcp
 
+## 0.6.0
+
+### Minor Changes
+
+- Adds a **discovery channel** for effect components, so suppression and discovery are finally symmetric (#140). <!-- parity-id: mcp-visual-discovery-channel -->
+
+  Of the 380 components in the library, 92 are decoration and 151 carry the `animated` tag. Until now the MCP side suppressed them mechanically (one category rule blacklisted 92 components) while discovery consisted of roughly 8 hand-written entries. Agents therefore used only the "safe" functional components, and the pages they produced were correct but had no visual identity at all — even though the deliverable is ultimately looked at by a human.
+
+  - **Suppression precision moves from category to group.** Inside `decoration`, `backdrop` (52 full-screen backgrounds and WebGL) and `overlay-fx` (40 local accents) are two entirely different things; blacklisting the whole category also banned entrance transitions and card borders from admin consoles. Profiles now use `avoidGroups` plus an `allowEffects` whitelist. **The non-goal from #41 still holds**: `visualBudget.heavy` is 0 for every internal surface, so no full-screen background or WebGL component can get in.
+  - **An atmosphere vocabulary for search.** Effect requests are naturally phrased as adjectives ("the hero needs to feel more technical", "this section is flat", "give it some breathing room"), and such queries used to score 0 against all 92 decoration components. `query: "tags:animated"` also works now — motion is a cross-cutting tag rather than a category, an entry point the docs site always had and MCP never did.
+  - **Every result carries a visual anchor**: `docsUrl` (a link you can hand to a human), `motion` (`none` / `subtle` / `moderate` / `heavy`), and `look` (one plain sentence: what moves, how strongly, where it belongs and where it does not). `look` is only provided for components that were actually reviewed; everything else returns `null` rather than an invented description.
+  - **Proactive nudges**: `recommend_ui` and `audit_hulian_adoption` surface a slot, a candidate, its strength, and a degradation note when a project uses no motion or accent component at all. They are always advisory, never gates, never counted in any metric, and capped at one entry for admin consoles.
+  - Profiles gained `visualBudget` and `preferEffects`; metrics gained the non-gating `visualExpressiveness`, so "correct but flat" is finally visible in a report.
+
 ## 0.5.0
 
 ### Minor Changes

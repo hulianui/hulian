@@ -1,5 +1,42 @@
 # @hulianui/ui
 
+## 0.27.0
+
+### Minor Changes
+
+- Clears issues #109–#139: 24 defect fixes and 7 capability gaps. <!-- parity-id: issues-109-140-sweep -->
+
+  **BREAKING behaviour changes** (three, all in the same direction — restoring the intuitive behaviour)
+
+  - `DesignCanvas` wheel semantics now match the platform convention and the sibling `Flow` component: **two-finger scroll pans, pinch zooms**. The `wheelBehavior` default moved from `"zoom"` to `"pan"`, and `ctrlKey` (which browsers synthesise for a trackpad pinch) no longer takes part in the "invert" branch — pinching used to be inverted into panning, which is an inverted meaning rather than a trade-off. Cmd+wheel no longer zooms, because macOS gives it no such meaning.
+  - The four effect buttons (`ShimmerButton`, `RainbowButton`, `PulsatingButton`, `RippleButton`) moved from content-driven height to the same `size` scale as `Button` (32/40/48px), defaulting to `md`. They used to come out uneven when mixed with regular Buttons in a toolbar.
+  - `IPhone`, `Android`, `Tablet`, and `Watch` derive body height from the screen ratio and the border instead of a hard-coded `aspectRatio` (`Tablet` still follows the model ratio when `model` is passed explicitly). Rendered sizes shift slightly, and in exchange the inner screen ratio is now always identical to the viewport ratio.
+
+  **Added**
+
+  - `Button`: `tone` gains `success`, `warning`, and `neutral` (it only had `brand` and `danger`), and `solid` now has real hover steps — `danger` used to hover back onto itself, which meant destructive buttons had **no hover feedback at all**. New `block` prop for full-width buttons.
+  - `Dock`: controlled selection through `activeKey` and `onSelect` (the same pattern as `NavMenu` and `RouteTabs`), with `itemKey`, `active`, and `label` on `DockIcon`. The current item gets `aria-current="page"` plus an indicator dot under the icon; once `onSelect` is provided, `DockIcon` renders as a real `<button>` and the container becomes a `nav` landmark.
+  - `InspectorPanel`: a `density="compact"` step; `columns` for multi-column groups (number fields inline their label into the input, and that label doubles as a **scrub handle**); `InspectorNumberField.inlineLabel` to opt in from a single column. Below 260px, enum fields degrade from a segmented control to a select automatically.
+  - `IssueReporter`'s "Open on GitHub" now uses the GitHub mark (a brand-icon group was added to `_icons`) — on this kind of button the platform icon carries destination identity, not decoration.
+  - New internal source of truth `lib/device-metrics`: device screen resolution and border width are declared once, `PreviewSandbox` derives its device list from it, and `watch` gains support as a result.
+
+  **Fixed**
+
+  - `ElementSelectionOverlay`: with a plain container as `target`, click interception no longer spreads across the whole host page. Every click anywhere on the host used to be swallowed (buttons dead, tabs unswitchable), and `onClear` fired when the user clicked their own inspector panel.
+  - Library-wide `bg-muted` misuse: `--color-muted` is the secondary **text** colour, so as a background it reads dirty in light mode and washed out in dark mode. Area backgrounds now use the new `--color-subtle` and hover states use `--color-surface-hover`. Affects Kanban columns, ScopeMatrix buckets, QueueLane swim lanes, the InterceptCard violation block, Markdown tables, CodeDiff, Gantt, Scheduler, and Combobox / Select highlighted items.
+  - Text colour on dark canvases: inactive `GooeyNav` items and `ChromaGrid` card copy followed the page theme, which meant dark text on a dark surface in light mode. Both are now declared dark contexts with fixed white steps; `ChromaGrid` also gained a dark base layer and an `@media (hover: none)` fallback, so pointerless devices no longer sit permanently in the greyscale degraded state.
+  - `Segmented` items gained `min-w-0` and `truncate`: they used to be incompressible, so overflow was clipped by the parent and **options existed but were neither visible nor clickable**.
+  - `CodeEditor` root gained `w-full`: as a flex or grid item it collapsed to roughly 20 characters wide.
+  - `CardNav` cards were crushed into the 60px bar when expanded, because both the top bar and the content were `absolute` and `height:auto` therefore computed to 0.
+  - `StaggeredMenu` item numbers overlapped the labels: two `em` offsets used different bases (48px vs 18px), so the 16.8px reserved could not hold 19.8px. They are siblings with `gap` now.
+  - `Notification`: action buttons are left-aligned (this is an information card, not a dialog), the close button is `self-start` so it no longer drifts with card height, and its `aria-label` comes from the locale.
+  - `AdminLayout` centres the collapsed logo on the same axis as the icon rail below it, and warns in development when `logoCollapsed` is missing.
+  - `Button` base gained `select-none` (every button in the library benefits), as did the floating layers of `GiftFeed` and `Danmaku` — rapid clicking otherwise makes the browser select the label as a word.
+  - `DesignCanvas` suppresses text selection, with an escape hatch for `input`, `textarea`, and `contenteditable`.
+  - `ComponentPicker`: the grid gutter was too small, so the overlay scrollbar sat on top of the cards; the card title and slug no longer split the width evenly.
+  - `PreviewSandbox`: the white band inside device frames (the inner screen ratio did not match the viewport ratio); device tier labels now come from the locale.
+  - New layout height token `--hl-layout-header-h`, shared by `Layout.Header` and `AdminLayout`.
+
 ## 0.26.0
 
 ### Minor Changes

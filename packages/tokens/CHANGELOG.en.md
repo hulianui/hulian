@@ -1,5 +1,15 @@
 # @hulianui/tokens
 
+## 0.6.0
+
+### Minor Changes
+
+- Three new semantic tokens, all filling in missing steps rather than changing existing values: <!-- parity-id: tokens-subtle-and-semantic-hover -->
+
+  - `--color-subtle`: the **static** area background (grouping containers, board columns, swim lanes, note strips). It currently resolves to the same value as `--color-surface-hover`, but it means something different — the latter expresses "the hovered state of a surface", and writing `hover:` for a permanent background is a semantic mismatch that also leaves no handle for tuning the static weak background later. This role was widely filled by `--color-muted`, which is the secondary **text** colour: as a background it mixes into dirty grey in light mode and washed-out grey in dark mode, wrong in both themes and wrong in opposite directions.
+  - `--color-danger-hover`, `--color-success-hover`, `--color-warning-hover`: hover steps for the semantic colours. Each one picks the step between the light and dark values, so it moves one step towards lower contrast in both themes, matching the existing `--color-primary-hover`. Without this step a solid semantic button could only hover back onto itself, which means **no hover feedback at all**.
+  - `--hl-layout-header-h`: the header height of a full-page shell (4rem). This number used to be hard-coded in three places across `Layout.Header` and `AdminLayout`, so aligning a sidebar logo block with the header meant digging it out of the source.
+
 ## 0.5.0
 
 ### Minor Changes

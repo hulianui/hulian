@@ -1,5 +1,24 @@
 # @hulianui/mcp
 
+## 0.6.0
+
+### Minor Changes
+
+- 补上特效件的**发掘通道**，让抑制与发掘对称（#140）。 <!-- parity-id: mcp-visual-discovery-channel -->
+
+  库里 380 件组件中 92 件是装饰件、151 件带 `animated` 标签，但此前 MCP 侧抑制是机器可判定的（按分类一次拉黑 92 件），发掘只有手写的约 8 件。于是 agent 系统性地只用「安全」的功能件，做出来的页面对，但没有任何视觉记忆点——而交付物最终是给人看的。
+
+  - **抑制精度从分类提到组**：`decoration` 内部 `backdrop`（52 件全屏背景 / WebGL）与 `overlay-fx`（40 件局部强调）是两种完全不同的东西，按整类拉黑等于中后台连入场过渡和卡片描边都被禁。profile 改用 `avoidGroups` + `allowEffects` 白名单。**#41 的非目标仍然守死**：中后台的 `visualBudget.heavy` 恒为 0，全屏背景与 WebGL 一件都进不去。
+  - **氛围词轴**：特效需求的自然表述是形容词（「首屏想有点科技感」「这块太平了」「要有呼吸感」），此前这类 query 对 92 件装饰件全部打 0 分。`query: "tags:animated"` 还能按横切标签直查——动效是标签不是分类，文档站侧栏一直有这个入口，MCP 侧此前完全没有。
+  - **每条返回都带视觉锚点**：`docsUrl`（能甩给人看的链接）、`motion`（`none` / `subtle` / `moderate` / `heavy`）、`look`（一句人话的观感：动了什么 / 多强 / 该放哪 / 不该放哪）。`look` 只给实测过的那批，其余返回 `null`——不给一句凭空想象的描述。
+  - **主动提醒**：`recommend_ui` 与 `audit_hulian_adoption` 在「一件动效 / 强调件都没用到」时给出位置 + 候选 + 强度 + 降级说明。永远是建议、不进门禁、不计入任何指标，admin-console 下最多 1 条。
+  - profile 新增 `visualBudget` / `preferEffects`，metrics 新增非门禁的 `visualExpressiveness`——让「对但平」这件事在报告里可见。
+
+### Patch Changes
+
+- Updated dependencies
+  - @hulianui/guard@0.4.0
+
 ## 0.5.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @hulianui/guard
 
+## 0.4.0
+
+### Minor Changes
+
+- 新增两条 `bg-muted` 误用规则，并让 CLI 的措辞与退出码一致。
+
+  - `muted-as-background-with-muted-text`（**error**）：同一段 `className` 里 `bg-muted` 与 `text-muted` 同时出现 = 前景背景同色，两个主题下都不可读。两侧都排除带变体前缀的写法（`hover:` / `[&::-webkit-scrollbar-thumb]:`）——变体意味着另一个状态或另一个伪元素，与静息态的文字色不在同一个盒子上；不排的话 Chart 图例那种「文字 muted + 滚动条拇指 muted」的正确写法会被误判。
+  - `muted-is-a-text-color`（**warning**）：`bg-muted` 一律提醒。单看无法断定对错——小面积指示性填充（状态点、滚动条拇指、徽章反色底）借用文字色是可接受的，大面积区域底则一定错，所以是 warning 不是 error。
+  - 新增 `class-name-tokens` matcher：按**整个 className 属性**取静态文本再判，而不是按单个字符串字面量——`cn("a", cond && "b", "c")` 才是 className 的常态，按字面量判会让「同一段里前景背景同色」这类判据永远命中不了。
+  - CLI 只有 warning 时打印 `WARN` 而不是 `FAIL`。退出码本来就是 0，日志里写 FAIL 会让人要么去关规则，要么把真正的 error 也当成噪音。
+
 ## 0.3.0
 
 ### Minor Changes
