@@ -16,7 +16,7 @@ export const glimpseShowcase: ShowcaseSpec = {
       code: `<p>
   我们的设计系统基于{" "}
   <Glimpse
-    href="https://hulian.example.com/tokens"
+    href="#"
     image={coverUrl}
     title="瑚琏设计 Token"
     description="一套语义化的颜色 / 间距 / 圆角变量，明暗模式开箱即用。"
@@ -29,7 +29,7 @@ export const glimpseShowcase: ShowcaseSpec = {
         <p className="max-w-md leading-7 text-foreground">
           我们的设计系统基于{" "}
           <Glimpse
-            href="https://hulian.example.com/tokens"
+            href="#"
             image={cover(210)}
             title="瑚琏设计 Token"
             description="一套语义化的颜色 / 间距 / 圆角变量，明暗模式开箱即用，是全部组件的单一真源。"
@@ -65,11 +65,11 @@ export const glimpseShowcase: ShowcaseSpec = {
       description: "同段落多处行内链接各自独立预览，互不干扰。",
       code: `<p>
   推荐阅读{" "}
-  <Glimpse href="https://example.com/a" image={coverA} title="组件总览" description="160+ 组件分类索引。">
+  <Glimpse href="#" image={coverA} title="组件总览" description="160+ 组件分类索引。">
     组件总览
   </Glimpse>
   、
-  <Glimpse href="https://example.com/b" image={coverB} title="主题定制" description="改一处 token 全站换肤。">
+  <Glimpse href="#" image={coverB} title="主题定制" description="改一处 token 全站换肤。">
     主题定制
   </Glimpse>{" "}
   两篇。
@@ -77,11 +77,11 @@ export const glimpseShowcase: ShowcaseSpec = {
       render: () => (
         <p className="max-w-lg leading-7 text-foreground">
           推荐阅读{" "}
-          <Glimpse href="https://example.com/a" image={cover(140)} title="组件总览" description="160+ 组件分类索引。">
+          <Glimpse href="#" image={cover(140)} title="组件总览" description="160+ 组件分类索引。">
             组件总览
           </Glimpse>
           、
-          <Glimpse href="https://example.com/b" image={cover(280)} title="主题定制" description="改一处 token 全站换肤。">
+          <Glimpse href="#" image={cover(280)} title="主题定制" description="改一处 token 全站换肤。">
             主题定制
           </Glimpse>{" "}
           两篇。
@@ -99,7 +99,7 @@ export const glimpseShowcase: ShowcaseSpec = {
         <p className="max-w-md leading-7 text-foreground">
           我们的设计系统基于{" "}
           <Glimpse
-            href="https://hulian.example.com/tokens"
+            href="#"
             image={cover(210)}
             title="瑚琏设计 Token"
             description="一套语义化的颜色 / 间距 / 圆角变量，明暗模式开箱即用，是全部组件的单一真源。"
@@ -127,11 +127,11 @@ export const glimpseShowcase: ShowcaseSpec = {
       render: () => (
         <p className="max-w-lg leading-7 text-foreground">
           推荐阅读{" "}
-          <Glimpse href="https://example.com/a" image={cover(140)} title="组件总览" description="160+ 组件分类索引。">
+          <Glimpse href="#" image={cover(140)} title="组件总览" description="160+ 组件分类索引。">
             组件总览
           </Glimpse>
           、
-          <Glimpse href="https://example.com/b" image={cover(280)} title="主题定制" description="改一处 token 全站换肤。">
+          <Glimpse href="#" image={cover(280)} title="主题定制" description="改一处 token 全站换肤。">
             主题定制
           </Glimpse>{" "}
           两篇。
@@ -144,7 +144,7 @@ export const glimpseShowcase: ShowcaseSpec = {
       悬停查看{" "}
       <Glimpse
         side={(p.side as "top" | "bottom" | "left" | "right") ?? "bottom"}
-        href="https://example.com"
+        href="#"
         image={cover(210)}
         title="预览标题"
         description="这是链接预览卡片的描述文本。"
@@ -154,5 +154,5 @@ export const glimpseShowcase: ShowcaseSpec = {
     </p>
   ),
   toCode: (p) =>
-    `<Glimpse${p.side && p.side !== "bottom" ? ` side="${p.side}"` : ""} href="https://example.com" image={cover} title="标题" description="描述">\n  链接文字\n</Glimpse>`,
+    `<Glimpse${p.side && p.side !== "bottom" ? ` side="${p.side}"` : ""} href="#" image={cover} title="标题" description="描述">\n  链接文字\n</Glimpse>`,
 };

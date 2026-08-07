@@ -51,6 +51,16 @@ const DEFAULT_DEMO_STYLE: Array<Omit<ChromaGridItem, "title" | "subtitle">> = [
   },
 ];
 
+// 卡面基底。恒垫在消费方 gradient **下面**（CSS 多重背景里靠后 = 更底层），不是「不传时才用」：
+// 卡片是暗色上下文（文字走固定白色阶），而渐变里的 transparent 端会把页面底色露出来 ——
+// 亮色主题下那就是白字压浅底。垫一层中性深色，消费方传什么渐变都不会破掉这个前提（#129）。
+const CARD_DARK_BASE = "linear-gradient(145deg,oklch(0.3 0.02 265),oklch(0.18 0.02 265))";
+
+// 揭示遮罩在无指针设备上整层关掉：没有光标就永远没有「亮起来的那张卡」，
+// 触屏 / 纯键盘 / 截图 / 打印下所有卡片会永久停在 grayscale+brightness(0.78) 的降级态，
+// 而卡片上的姓名职位是**内容**不是装饰。组件已处理 reduced-motion，hover:none 是同一类兜底（#129）。
+const NO_POINTER_HIDE = "[@media(hover:none)]:hidden";
+
 // 常驻揭示 mask：中心透明（露出全彩）→ 外环渐黑（始终盖住光标圈外区域）。
 const OVERLAY_MASK =
   "radial-gradient(circle var(--hl-chroma-r) at var(--x) var(--y)," +
@@ -181,7 +191,7 @@ export function ChromaGrid({
             )}
             style={
               {
-                background: c.gradient ?? "var(--color-surface)",
+                background: c.gradient ? `${c.gradient}, ${CARD_DARK_BASE}` : CARD_DARK_BASE,
                 "--card-border": c.borderColor ?? "transparent",
                 animationDelay: `${i * 60}ms`,
               } as CSSProperties
@@ -209,18 +219,23 @@ export function ChromaGrid({
                     />
                   </div>
                 )}
-                <footer className="relative z-[1] grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-4 py-3 text-foreground">
+                {/* 卡面颜色由消费方的 gradient 决定，文字色若跟随页面主题，组件就无法对任何
+                    对比度做出保证（换一组渐变就是另一种可读性）。卡片声明为暗色上下文后，
+                    文字走固定白色阶，与卡面绑定在一起 —— 这是能给出保证的唯一形态（#129）。 */}
+                <footer className="relative z-[1] grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-4 py-3 text-white">
                   {(c.title != null || c.handle != null) && (
                     <>
                       <h3 className="text-sm font-semibold leading-tight">{c.title}</h3>
-                      {c.handle != null && <span className="text-xs text-muted">{c.handle}</span>}
+                      {c.handle != null && (
+                        <span className="text-xs text-white/75">{c.handle}</span>
+                      )}
                     </>
                   )}
                   {(c.subtitle != null || c.location != null) && (
                     <>
-                      <p className="text-xs text-muted">{c.subtitle}</p>
+                      <p className="text-xs text-white/75">{c.subtitle}</p>
                       {c.location != null && (
-                        <span className="text-xs text-muted">{c.location}</span>
+                        <span className="text-xs text-white/75">{c.location}</span>
                       )}
                     </>
                   )}
@@ -238,6 +253,7 @@ export function ChromaGrid({
         className={cn(
           "pointer-events-none absolute inset-0 z-[3] rounded-2xl",
           "[backdrop-filter:grayscale(1)_brightness(0.78)] [-webkit-backdrop-filter:grayscale(1)_brightness(0.78)]",
+          NO_POINTER_HIDE,
         )}
         style={{ maskImage: OVERLAY_MASK, WebkitMaskImage: OVERLAY_MASK }}
       />
@@ -248,6 +264,7 @@ export function ChromaGrid({
         className={cn(
           "pointer-events-none absolute inset-0 z-[4] rounded-2xl",
           "[backdrop-filter:grayscale(1)_brightness(0.78)] [-webkit-backdrop-filter:grayscale(1)_brightness(0.78)]",
+          NO_POINTER_HIDE,
         )}
         style={{
           maskImage: FADE_MASK,

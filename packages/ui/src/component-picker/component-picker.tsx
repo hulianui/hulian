@@ -308,7 +308,9 @@ function ComponentPickerImpl({
               id={listId}
               role="listbox"
               aria-label={labels.results}
-              className="grid auto-rows-min grid-cols-1 gap-3 pr-1 md:grid-cols-2 2xl:grid-cols-3"
+              // pr-2.5：ScrollArea 的竖向滚动条是覆盖式的（absolute，不占布局宽度），宽 w-2=8px。
+              // 内容必须自留 ≥ 滚动条宽度的内边距，否则滚动条稳定地压在最右一列卡片上（#118）。
+              className="grid auto-rows-min grid-cols-1 gap-3 pr-2.5 md:grid-cols-2 2xl:grid-cols-3"
             >
               {results.map((item) => {
                 const isActive = item.slug === active;
@@ -327,9 +329,16 @@ function ComponentPickerImpl({
                     )}
                   >
                     <CardBody className="flex flex-col gap-1.5 px-4 py-3">
+                      {/* 组件名与 slug 都 truncate 时，flex 会让两者按内容平分宽度，
+                          于是名称还没到边就先省略成「But… Emp… Com…」。把宽度优先让给名称：
+                          名称 min-w-0 flex-1 可压缩，slug shrink-0 保持完整（#118）。 */}
                       <div className="flex min-w-0 items-baseline gap-2">
-                        <span className="truncate font-medium text-foreground">{item.name}</span>
-                        <span className="truncate font-mono text-[11px] text-muted">{item.slug}</span>
+                        <span className="min-w-0 flex-1 truncate font-medium text-foreground">
+                          {item.name}
+                        </span>
+                        <span className="shrink-0 font-mono text-[11px] text-muted">
+                          {item.slug}
+                        </span>
                       </div>
                       <p className="line-clamp-2 text-xs text-muted">{item.description}</p>
                       <div className="flex flex-wrap items-center gap-1">

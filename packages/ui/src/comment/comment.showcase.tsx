@@ -6,7 +6,7 @@ import { Comment, CommentAction } from "./comment";
 const actions = (
   <>
     <CommentAction>👍 赞 12</CommentAction>
-    <CommentAction href="https://example.com/#reply">回复</CommentAction>
+    <CommentAction href="#">回复</CommentAction>
   </>
 );
 
@@ -41,7 +41,7 @@ export const commentShowcase: ShowcaseSpec = {
   actions={
     <>
       <CommentAction>👍 赞 12</CommentAction>
-      <CommentAction href="https://example.com/#reply">回复</CommentAction>
+      <CommentAction href="#">回复</CommentAction>
     </>
   }
 />`,
@@ -149,7 +149,7 @@ export const commentShowcase: ShowcaseSpec = {
             datetime="1 小时前"
             avatar={{ fallback: "李" }}
             content="收到 @瑚琏，正在排查根因，预计今天内给结论。"
-            actions={<CommentAction href="https://example.com/#reply">回复</CommentAction>}
+            actions={<CommentAction href="#">回复</CommentAction>}
           />
           <Comment
             author="王五"

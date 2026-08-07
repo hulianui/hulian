@@ -128,7 +128,7 @@ export function PreviewViewer({
         </div>
 
         <TabsPanel value="preview" className="mt-0 rounded-none">
-          <div className="flex justify-center bg-muted/[0.06] p-0 md:p-4">
+          <div className="flex justify-center bg-subtle/60 p-0 md:p-4">
             <div
               className="overflow-hidden bg-bg transition-[width] md:rounded-[var(--radius)] md:border md:border-border"
               style={{ width: DEVICE_WIDTH[device], maxWidth: "100%" }}

@@ -6,6 +6,28 @@ import { ElementSelectionOverlay } from "./element-selection-overlay";
 // 预览区刻意用「裸 DOM + 标记属性」而不是瑚琏组件：本件要展示的就是「在别人的树上选元素」，
 // 标记属性怎么打、打了和没打分别是什么路径，才是消费方要看的东西。
 
+/**
+ * 「宿主页面上的按钮」对照组：它在 target 之外，选择模式开着时也必须照常可点。
+ * 拦截范围一旦再次越界（#109/#113），这里的计数就停住 —— 肉眼可见的回归哨兵。
+ */
+function HostControl() {
+  const [n, setN] = useState(0);
+  return (
+    <div className="flex items-center gap-2 text-xs text-muted">
+      <button
+        type="button"
+        onClick={() => setN((v) => v + 1)}
+        className="rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2.5 py-1 text-foreground transition-colors hover:bg-surface-hover"
+      >
+        宿主页面上的按钮
+      </button>
+      <span>
+        被点击 <span className="tabular-nums text-foreground">{n}</span> 次（选择模式开着时也应该能加）
+      </span>
+    </div>
+  );
+}
+
 function PathBar({ selected, hovered }: { selected: string | null; hovered: string | null }) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
@@ -92,6 +114,7 @@ function MarkedDemo({
         onHover={(path) => setHovered(path)}
       />
       <PathBar selected={selected} hovered={hovered} />
+      <HostControl />
     </div>
   );
 }

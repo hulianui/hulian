@@ -111,6 +111,8 @@ normalizeReactError(err, info);                   // normalized into PreviewSand
 
 ## Pitfalls
 
+- **The device list is derived from a single source, so a new device is added in one place.** `desktop` is the "no frame" tier and the only explicit exception in the list; every other tier — including `watch` — comes from `lib/device-metrics` and maps one-to-one onto a component in the mockups category. This file used to carry a second hand-written list, which is why `watch` was missing and why nothing guaranteed that the inner screen ratio matched the viewport ratio — the cause of the white band inside device frames (#117, #139).
+
 - **`code` is an HTML document string, not JSX.** Dropping a `<Button/>` or a TSX snippet in there renders it as plain text; nothing errors and nothing compiles, which makes it the easiest silent failure here. To really execute generated component code there are two roads: wire a compiler on the consumer side (esbuild-wasm or WebContainers class dependencies, which this library will not take on), or switch to same-document mode and pass the already compiled component as `children`.
 - **The default sandbox is `allow-scripts` only, with `allow-same-origin` deliberately left out. This is a real trade-off:**
   - A `srcdoc` document already inherits the host origin. Granting both values means **no sandbox at all**: scripts in the preview can read and write host DOM, `localStorage`, and cookies, and can even remove the `sandbox` attribute themselves. Never open it up for content you do not fully trust, meaning AI output, user-pasted markup, or third-party templates.

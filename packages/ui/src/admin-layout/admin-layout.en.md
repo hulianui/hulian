@@ -88,6 +88,9 @@ const [active, setActive] = useState("dashboard");
 
 ## Usage guidelines
 
+- **Treat `logoCollapsed` as required whenever `collapsible` is on.** A collapsed sider is only 64px wide, so without a narrow mark the full logo gets clipped in half by `overflow-hidden`. Nothing throws, it just looks broken, so a development warning fires once (#121). A first glyph, a monochrome icon, or a square mark all work.
+- The header and the sidebar brand block share `--hl-layout-header-h`, and the brand block switches to `justify-center` when collapsed so it shares a centre line with the collapsed `NavMenu` icon rail. When editing this area, switch the alignment as well as the content.
+
 - **Handle `onTabsAction` when `tabs` is controlled.** AdminLayout does not own the `tabs` array in controlled mode. Context-menu actions can only report the keys that should change; the consumer must apply the update.
 - **Close All closes every closeable tab, including the active tab.** It is distinct from Close Others.
 - **Choose the height strategy with `fitViewport`.** Keep the default `true` for a full-page shell and do not add another `h-dvh` wrapper. Pass `false` when embedding AdminLayout in a fixed-height container such as a documentation preview, or the page will scroll instead of the content area. See [[hulian-adminlayout-fitviewport]].

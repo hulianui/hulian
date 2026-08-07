@@ -1,17 +1,11 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
+import { GithubMark } from "../_icons";
 import { ShieldBadge, ShieldBadgeGroup, compactCount } from "./shield-badge";
 
-// 品牌 logo 不进库（lucide v1 起已移除品牌图标，且品牌 mark 属调用方资产），
-// 这里在 showcase 内联两枚 mark 演示 icon 槽的用法。
-function GithubMark() {
-  return (
-    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden>
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
-    </svg>
-  );
-}
-
+// GitHub mark 现在是库内的品牌图标（_icons 的品牌组，IssueReporter 运行时也在用），直接引；
+// npm mark 只在这个示例里出现，仍留在 showcase 内联 —— 品牌图标进库的门槛是「组件运行时需要
+// 它来标识目的地」，纯演示用的不搬（#119）。
 function NpmMark() {
   return (
     <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden>
@@ -96,7 +90,7 @@ export const shieldBadgeShowcase: ShowcaseSpec = {
       description: "href 让整枚成链接（带按压/焦点环）；省略 label 退化为单段贴纸。",
       code: `<>
   <ShieldBadge label="stars" value="1.5k" icon={<GithubMark />} href="https://github.com/hulianui/hulian" target="_blank" />
-  <ShieldBadge value="sponsor" color="chart-5" href="#sponsor" />
+  <ShieldBadge value="sponsor" color="chart-5" href="#" />
   <ShieldBadge label="node" value=">=22" size="sm" tone="neutral" />
 </>`,
       render: () => (
@@ -105,9 +99,9 @@ export const shieldBadgeShowcase: ShowcaseSpec = {
             label="stars"
             value={compactCount(1500)}
             icon={<GithubMark />}
-            href="https://example.com/#stars"
+            href="#"
           />
-          <ShieldBadge value="sponsor" color="chart-5" href="https://example.com/#sponsor" />
+          <ShieldBadge value="sponsor" color="chart-5" href="#" />
           <ShieldBadge label="node" value=">=22" size="sm" tone="neutral" />
         </ShieldBadgeGroup>
       ),
@@ -176,9 +170,9 @@ export const shieldBadgeShowcase: ShowcaseSpec = {
             label="stars"
             value={compactCount(1500)}
             icon={<GithubMark />}
-            href="https://example.com/#stars"
+            href="#"
           />
-          <ShieldBadge value="sponsor" color="chart-5" href="https://example.com/#sponsor" />
+          <ShieldBadge value="sponsor" color="chart-5" href="#" />
           <ShieldBadge label="node" value=">=22" size="sm" tone="neutral" />
         </ShieldBadgeGroup>
       ),

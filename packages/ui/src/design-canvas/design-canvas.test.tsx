@@ -482,3 +482,79 @@ describe("DesignCanvas 视口控制", () => {
     expect(world.style.transform).toContain("scale(1.2)");
   });
 });
+
+describe("DesignCanvas 滚轮语义", () => {
+  const wheel = (c: HTMLElement, init: WheelEventInit) =>
+    fireEvent.wheel(canvasOf(c), { deltaX: 0, deltaY: 0, deltaMode: 0, ...init });
+
+  it("无修饰键的滚轮默认平移（与系统惯例、与 Flow 一致）", () => {
+    const onPanChange = vi.fn();
+    const onZoomChange = vi.fn();
+    const { container } = render(
+      <DesignCanvas
+        items={items}
+        pan={{ x: 0, y: 0 }}
+        zoom={1}
+        onPanChange={onPanChange}
+        onZoomChange={onZoomChange}
+      />,
+    );
+    wheel(container, { deltaY: 100 });
+    expect(onPanChange).toHaveBeenCalledWith({ x: 0, y: -100 });
+    expect(onZoomChange).not.toHaveBeenCalled();
+  });
+
+  it("ctrlKey（触控板捏合）恒为缩放，不被 wheelBehavior 反转", () => {
+    for (const behavior of ["pan", "zoom"] as const) {
+      const onZoomChange = vi.fn();
+      const { container, unmount } = render(
+        <DesignCanvas
+          items={items}
+          pan={{ x: 0, y: 0 }}
+          zoom={1}
+          wheelBehavior={behavior}
+          onZoomChange={onZoomChange}
+        />,
+      );
+      wheel(container, { deltaY: -100, ctrlKey: true });
+      expect(onZoomChange).toHaveBeenCalledTimes(1);
+      expect(onZoomChange.mock.calls[0][0]).toBeGreaterThan(1);
+      unmount();
+    }
+  });
+
+  it("⌘+滚轮不缩放（macOS 上 ⌘ 没有缩放语义）", () => {
+    const onZoomChange = vi.fn();
+    const onPanChange = vi.fn();
+    const { container } = render(
+      <DesignCanvas
+        items={items}
+        pan={{ x: 0, y: 0 }}
+        zoom={1}
+        onZoomChange={onZoomChange}
+        onPanChange={onPanChange}
+      />,
+    );
+    wheel(container, { deltaY: 100, metaKey: true });
+    expect(onZoomChange).not.toHaveBeenCalled();
+    expect(onPanChange).toHaveBeenCalledWith({ x: 0, y: -100 });
+  });
+
+  it("wheelBehavior='zoom' 时无修饰键才缩放", () => {
+    const onZoomChange = vi.fn();
+    const { container } = render(
+      <DesignCanvas items={items} zoom={1} wheelBehavior="zoom" onZoomChange={onZoomChange} />,
+    );
+    wheel(container, { deltaY: -100 });
+    expect(onZoomChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("画布抑制文本选择，但可编辑内容留逃生口", () => {
+    const { container } = render(<DesignCanvas items={items} />);
+    const cls = canvasOf(container).className;
+    expect(cls).toContain("select-none");
+    expect(cls).toContain("[&_[contenteditable]]:select-text");
+    expect(cls).toContain("[&_input]:select-text");
+    expect(cls).toContain("[&_textarea]:select-text");
+  });
+});

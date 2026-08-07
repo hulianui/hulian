@@ -133,7 +133,8 @@ export function Danmaku({
   return (
     <div
       ref={ref}
-      className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
+      // select-none：弹幕是横向飘动的内容，天然会被误拖选（#138）。要复制的正文在 LiveChat 里。
+      className={cn("pointer-events-none absolute inset-0 select-none overflow-hidden", className)}
       style={{ opacity }}
       aria-hidden
     >

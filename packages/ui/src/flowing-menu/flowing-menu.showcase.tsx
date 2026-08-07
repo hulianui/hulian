@@ -14,31 +14,31 @@ function Stage({ children }: { children: React.ReactNode }) {
 
 const demoItems = [
   {
-    link: "https://example.com/#discover",
+    link: "#",
     text: "Discover",
     image: demoImage("fm-a", 240, 120),
   },
   {
-    link: "https://example.com/#build",
+    link: "#",
     text: "Build",
     image: demoImage("fm-b", 240, 120),
   },
   {
-    link: "https://example.com/#ship",
+    link: "#",
     text: "Ship",
     image: demoImage("fm-c", 240, 120),
   },
   {
-    link: "https://example.com/#scale",
+    link: "#",
     text: "Scale",
     image: demoImage("fm-d", 240, 120),
   },
 ];
 
 const textOnly = [
-  { link: "https://example.com/#home", text: "首页" },
-  { link: "https://example.com/#products", text: "产品" },
-  { link: "https://example.com/#about", text: "关于" },
+  { link: "#", text: "首页" },
+  { link: "#", text: "产品" },
+  { link: "#", text: "关于" },
 ];
 
 export const flowingMenuShowcase: ShowcaseSpec = {
@@ -50,9 +50,9 @@ export const flowingMenuShowcase: ShowcaseSpec = {
       code: `<div className="h-80 overflow-hidden rounded-xl border">
   <FlowingMenu
     items={[
-      { link: "#discover", text: "Discover", image: "/a.jpg" },
-      { link: "#build", text: "Build", image: "/b.jpg" },
-      { link: "#ship", text: "Ship", image: "/c.jpg" },
+      { link: "#", text: "Discover", image: "/a.jpg" },
+      { link: "#", text: "Build", image: "/b.jpg" },
+      { link: "#", text: "Ship", image: "/c.jpg" },
     ]}
   />
 </div>`,
@@ -67,9 +67,9 @@ export const flowingMenuShowcase: ShowcaseSpec = {
       description: "item 不传 image 时跑马灯只跑文字，用一截小横杠分隔，不渲染图片块。",
       code: `<FlowingMenu
   items={[
-    { link: "#home", text: "首页" },
-    { link: "#products", text: "产品" },
-    { link: "#about", text: "关于" },
+    { link: "#", text: "首页" },
+    { link: "#", text: "产品" },
+    { link: "#", text: "关于" },
   ]}
 />`,
       render: () => (
@@ -134,8 +134,8 @@ export const flowingMenuShowcase: ShowcaseSpec = {
       `<div className="h-80 overflow-hidden rounded-xl border border-border">`,
       `  <FlowingMenu`,
       `    items={[`,
-      `      { link: "#discover", text: "Discover", image: "/a.jpg" },`,
-      `      { link: "#build", text: "Build", image: "/b.jpg" },`,
+      `      { link: "#", text: "Discover", image: "/a.jpg" },`,
+      `      { link: "#", text: "Build", image: "/b.jpg" },`,
       `    ]}`,
       `    speed={${p.speed}}`,
       `    repeat={${p.repeat}}`,

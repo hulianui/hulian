@@ -23,6 +23,7 @@ const NAMED = new Set([
   "ring",
   "surface",
   "surface-hover",
+  "subtle",
   "background",
   "chart-1",
   "chart-2",

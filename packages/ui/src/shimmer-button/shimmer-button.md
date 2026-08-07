@@ -25,6 +25,7 @@ import { ShimmerButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
 | shimmerColor | `string` | `var(--color-primary-foreground)` | 火花高光色 |
 | shimmerSize | `string` | `0.05em` | 火花宽度 |
 | borderRadius | `string` | `var(--radius)` | 圆角 |
@@ -54,6 +55,8 @@ import { ShimmerButton } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **与 [Button](../button/button.md) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。
 
 - 颜色类 prop 应传 token CSS 变量（如 `var(--color-danger)`）以随主题切换，别硬编码裸色值。
 - 自定义往按钮塞图标+文字若图标掉行，是 Tailwind Preflight `svg{display:block}` 所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——确保文案容器是 `inline-flex`。

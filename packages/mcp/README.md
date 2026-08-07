@@ -137,6 +137,18 @@ npx @hulianui/mcp audit --baseline --check   # 进 CI：只拦新增违规
 
 `query: "用户 管理 列表"` 会切成三个词，中文还会经一层中英桥（「弹窗」→ `dialog`、「表格」→ `table`），再按覆盖度 + 得分排序。旧实现只对整句做一次 `includes`，于是这条 query 返回 0 —— 而 `page-admin-list` 一直躺在 registry 里（hulianui/hulian#36）。
 
+### agent 没有眼睛：视觉锚点与发掘通道
+
+库里 380 件组件中 92 件是装饰件、151 件带 `animated` 标签，但这批件此前在 MCP 侧几乎不可达 —— **通道是不对称的**：抑制侧按分类一次拉黑 92 件（机器可判定），发掘侧只有 profile 里手写的约 8 件。于是 agent 系统性地只用「安全」的功能件，做出来的页面对，但没有任何视觉记忆点。而交付物最终是给人看的，人是视觉动物。
+
+0.27.0 把三件事补上（#140）：
+
+1. **抑制精度从分类提到组**。`decoration` 内部 `backdrop`（52 件全屏背景 / WebGL）与 `overlay-fx`（40 件局部强调）是两种完全不同的东西 —— 按整类拉黑，等于中后台连入场过渡和卡片描边都被禁。profile 现在写 `avoidGroups: ["decoration/backdrop"]` + `allowEffects` 白名单。**#41 的非目标仍然守死**：中后台的 `visualBudget.heavy` 恒为 0。
+2. **氛围词能搜到东西**。特效需求的自然表述是形容词（「首屏想有点科技感」「这块太平了」「要有呼吸感」），此前这类 query 对 92 件装饰件全部打 0 分。现在有一条氛围词轴；`query: "tags:animated"` 还能按横切标签直查。
+3. **每条返回都带视觉锚点**：`docsUrl`（能甩给人看的链接）、`motion`（`none` / `subtle` / `moderate` / `heavy`，用来按 `visualBudget` 做预算）、`look`（一句人话的观感：动了什么 / 多强 / 该放哪 / 不该放哪）。`look` **只给实测过的那批**，没有条目时返回 `null` —— 不给一句凭空想象的描述。
+
+`recommend_ui` 与 `audit_hulian_adoption` 在「一件动效 / 强调件都没用到」时会各给一条视觉建议（位置 + 候选 + 强度 + 降级说明）。**它永远是建议、不进门禁、不计入任何指标**，且 admin-console 下最多 1 条。
+
 ### guard 通过 ≠ 页面对了
 
 `validate_hulian_usage` 只检查瑚琏专属约束（style 覆盖、`toast.success`、颜色 token 前缀、私有深导入等）。typecheck、单元测试、交互 / a11y、真实视觉验证都在别处，本 server 不冒充它们。

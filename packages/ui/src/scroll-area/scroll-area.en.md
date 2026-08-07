@@ -52,6 +52,7 @@ import { ScrollArea } from "@hulianui/ui"
 ## Usage guidelines
 
 - **Scrolling requires a size constraint.** ScrollArea has no intrinsic size. Apply `h-*` for vertical scrolling and `w-*` for horizontal scrolling through `className`; otherwise content expands the container and no scrollbar appears.
+- **The scrollbar is an overlay, so the content must reserve its own gutter.** The bar is absolutely positioned, takes no layout width, and is `w-2` (8px) wide; a horizontal bar is the same height. Give the content at least **`pr-2.5` (10px: an 8px bar plus 2px of breathing room)**, or `pb-2.5` when scrolling horizontally. A smaller gutter such as the common `pr-1` (4px) leaves the bar sitting on top of the rightmost column (#118). This is an explicit convention rather than component behaviour, because only the consumer knows whether the gutter belongs on the content wrapper or on individual columns.
 
 ## Related
 [Layout](../layout/layout.md) · [AdminLayout](../admin-layout/admin-layout.md) · [Viewport](../viewport/viewport.md) · [Resizable](../resizable/resizable.md) · [AspectRatio](../aspect-ratio/aspect-ratio.md) · [FitScreen](../fit-screen/fit-screen.md)

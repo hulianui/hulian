@@ -1,6 +1,7 @@
 "use client";
-import { useRef, useState, type CSSProperties, type MouseEvent } from "react";
+import { forwardRef, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import { cn } from "../lib/cn";
+import { BUTTON_SIZE_CLASS, EFFECT_BUTTON_BASE_CLASS } from "../button/button-base";
 import type { RippleButtonProps } from "./ripple-button.types";
 
 // 吸取自 magicui.design Ripple Button：点击落点扩散水波纹（Material 风），动画结束自移除。
@@ -16,16 +17,21 @@ interface Ripple {
   size: number;
 }
 
-export function RippleButton({
-  rippleColor = "var(--color-primary-foreground)",
-  duration = "600ms",
-  className,
-  children,
-  onClick,
-  style,
-  ...props
-}: RippleButtonProps) {
-  const [ripples, setRipples] = useState<Ripple[]>([]);
+export const RippleButton = forwardRef<HTMLButtonElement, RippleButtonProps>(
+  function RippleButton(
+    {
+      rippleColor = "var(--color-primary-foreground)",
+      duration = "600ms",
+      size = "md",
+      className,
+      children,
+      onClick,
+      style,
+      ...props
+    },
+    ref,
+  ) {
+    const [ripples, setRipples] = useState<Ripple[]>([]);
   const seq = useRef(0);
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -40,11 +46,15 @@ export function RippleButton({
 
   return (
     <button
+      ref={ref}
       {...props}
       onClick={handleClick}
       style={{ "--hulian-ripple-duration": duration, ...style } as CSSProperties}
+      // 共享 Button 的排布 / 尺寸 / 焦点环 / 禁用态；波纹层是自己的（#126）。
       className={cn(
-        "relative inline-flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap rounded-[var(--radius)] bg-primary px-6 py-3 font-medium text-primary-foreground",
+        EFFECT_BUTTON_BASE_CLASS,
+        BUTTON_SIZE_CLASS[size],
+        "relative cursor-pointer overflow-hidden rounded-[var(--radius)] bg-primary text-primary-foreground",
         "transition-transform duration-200 active:translate-y-px",
         className,
       )}
@@ -62,4 +72,5 @@ export function RippleButton({
       </span>
     </button>
   );
-}
+  },
+);

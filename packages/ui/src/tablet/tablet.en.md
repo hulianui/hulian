@@ -46,7 +46,9 @@ Inherited from `ComponentPropsWithoutRef<"div">`. `TABLET_MODELS` export modelâ†
 
 ## Usage Guidelines
 
-- Unlike iPhone and Android frames, tablet models use different aspect ratios selected by `model`. An explicit `width` changes only the width; the aspect ratio still follows the model. Without `model`, the width falls back to 320 and no model-specific ratio is applied.
+- **Body height is derived from the screen ratio and the border, never a hard-coded `aspectRatio`.** The border is a fixed pixel value while the screen scales with the width, so the body ratio is not a constant: the same device drawn at 280px and at 360px has two different body ratios. A hard-coded ratio therefore skews the inner screen at some widths, and [PreviewSandbox](../preview-sandbox/preview-sandbox.md) `fit` scaling leaves a white band on the short edge (#117). The logical screen resolution and border width live in `lib/device-metrics`, and a unit test locks the invariant that the inner screen ratio always equals the declared `screen` ratio.
+
+- Unlike iPhone and Android frames, iPad generations really do differ in aspect ratio, so **when `model` is set explicitly** the body ratio comes from that model's `aspectRatio` and `width` only overrides the width. Without `model`, the default tier derives its height from the screen ratio and the border â€” and [PreviewSandbox](../preview-sandbox/preview-sandbox.md) never passes `model`, so that is the path it takes.
 - When both `imageSrc` and `children` are provided, `imageSrc` takes priority.
 
 ## Related

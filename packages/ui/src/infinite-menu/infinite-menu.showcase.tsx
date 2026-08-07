@@ -17,7 +17,7 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 const DEMO_ITEMS: InfiniteMenuItem[] = [
-  { title: "概览", description: "项目全局视图", link: "https://example.com" },
+  { title: "概览", description: "项目全局视图", link: "#" },
   { title: "任务", description: "进行中的工作流" },
   { title: "成员", description: "团队与权限" },
   { title: "文档", description: "知识库与规范" },
@@ -97,7 +97,7 @@ export const infiniteMenuShowcase: ShowcaseSpec = {
               title: `画廊 ${i + 1}`,
               description: "可拖拽浏览",
               image: demoImage(`menu-${i}`, 200, 200),
-              link: "https://example.com",
+              link: "#",
             }))}
           />
         </Stage>

@@ -79,4 +79,43 @@ describe("Button render（按钮样式的链接）", () => {
     expect(buttonVariants({ size: text as "sm" })).toContain(`h-${step}`);
     expect(buttonVariants({ size: icon as "icon" })).toContain(`size-${step}`);
   });
+
+  // #138：按钮文字是控件标签不是内容，连点会被浏览器识别成双击选词。
+  it("base 带 select-none（全库按钮一起受益）", () => {
+    const { container } = rtlRender(<Button>点我</Button>);
+    expect(container.querySelector("button")!.className).toContain("select-none");
+  });
+
+  // #122：语义色 token 早就齐了，缺的只是接线；danger 的 hover 此前写回自身 = 没有悬停反馈。
+  it.each(["success", "warning", "danger"] as const)("solid + %s 有独立的 hover 档", (tone) => {
+    const cls = buttonVariants({ variant: "solid", tone });
+    expect(cls).toContain(`bg-${tone}`);
+    expect(cls).toContain(`text-${tone}-foreground`);
+    expect(cls).toContain(`hover:bg-${tone}-hover`);
+  });
+
+  it.each(["success", "warning", "danger"] as const)("outline / ghost + %s 只换文字色", (tone) => {
+    expect(buttonVariants({ variant: "outline", tone })).toContain(`border-${tone}`);
+    expect(buttonVariants({ variant: "ghost", tone })).toContain(`text-${tone}`);
+  });
+
+  // 断言渲染后的 className：cva 只做拼接，冲突类由 cn(tailwind-merge) 在渲染时消解，
+  // 所以「brand 的底色没留下」这件事只能在渲染产物上验，直接读 buttonVariants() 会假红。
+  it("neutral 的 solid 是反色而不是灰底（灰底与 outline 不可分辨）", () => {
+    const { container } = rtlRender(
+      <Button variant="solid" tone="neutral">
+        跳过
+      </Button>,
+    );
+    const cls = container.querySelector("button")!.className;
+    expect(cls).toContain("bg-foreground");
+    expect(cls).toContain("text-bg");
+    expect(cls).not.toContain("bg-primary");
+  });
+
+  it("block 铺满容器宽度", () => {
+    const { container } = rtlRender(<Button block>登录</Button>);
+    expect(container.querySelector("button")!.className).toContain("w-full");
+    expect(buttonVariants({})).not.toContain("w-full");
+  });
 });

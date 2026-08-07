@@ -86,6 +86,9 @@ Icon-only segments, each with its own `ariaLabel`:
 
 ## Usage guidelines
 
+- **When space runs out, segments shrink and truncate; they never disappear.** Each segment is `min-w-0 flex-1 truncate`, so every option stays visible and clickable at any width. Before 0.27.0 the missing `min-w-0` combined with `whitespace-nowrap` made segments incompressible, the root grew to the sum of all segment labels, and the overflow was clipped by the parent — leaving **options that exist but cannot be reached** (#114).
+- Compressible is not the same as usable: four CJK segments in 150px are all ellipsis. In narrow containers use [Select](../select/select.md), or degrade by container width the way [InspectorPanel](../inspector-panel/inspector-panel.md) does.
+
 - When `label` is an icon, logo, or other non-text node, provide `ariaLabel`; otherwise screen readers fall back to the raw `value`.
 - Controlled usage requires `value` and `onValueChange`. For uncontrolled state, provide only `defaultValue`.
 - Segmented is single-select only. Use [ToggleGroup](../toggle/toggle.md) when several items may remain active.

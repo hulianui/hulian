@@ -11,30 +11,30 @@ function Stage({ children }: {
 }
 const demoItems = [
     {
-        link: "https://example.com/#discover",
+        link: "#",
         text: "Discover",
         image: demoImage("fm-a", 240, 120),
     },
     {
-        link: "https://example.com/#build",
+        link: "#",
         text: "Build",
         image: demoImage("fm-b", 240, 120),
     },
     {
-        link: "https://example.com/#ship",
+        link: "#",
         text: "Ship",
         image: demoImage("fm-c", 240, 120),
     },
     {
-        link: "https://example.com/#scale",
+        link: "#",
         text: "Scale",
         image: demoImage("fm-d", 240, 120),
     },
 ];
 const textOnly = [
-    { link: "https://example.com/#home", text: "Home" },
-    { link: "https://example.com/#products", text: "Products" },
-    { link: "https://example.com/#about", text: "About" },
+    { link: "#", text: "Home" },
+    { link: "#", text: "Products" },
+    { link: "#", text: "About" },
 ];
 export const flowingMenuShowcase: ShowcaseSpec = {
     examples: [
@@ -44,9 +44,9 @@ export const flowingMenuShowcase: ShowcaseSpec = {
             code: `<div className="h-80 overflow-hidden rounded-xl border">
   <FlowingMenu
     items={[
-      { link: "#discover", text: "Discover", image: "/a.jpg" },
-      { link: "#build", text: "Build", image: "/b.jpg" },
-      { link: "#ship", text: "Ship", image: "/c.jpg" },
+      { link: "#", text: "Discover", image: "/a.jpg" },
+      { link: "#", text: "Build", image: "/b.jpg" },
+      { link: "#", text: "Ship", image: "/c.jpg" },
     ]}
   />
 </div>`,
@@ -59,9 +59,9 @@ export const flowingMenuShowcase: ShowcaseSpec = {
             description: "item When image is not passed, the ticker only runs text, separated by a small horizontal bar, and does not render image blocks.",
             code: `<FlowingMenu
   items={[
-    { link: "#home", text: "Home" },
-    { link: "#products", text: "Product" },
-    { link: "#about", text: "About" },
+    { link: "#", text: "Home" },
+    { link: "#", text: "Product" },
+    { link: "#", text: "About" },
   ]}
 />`,
             render: () => (<Stage>
@@ -108,8 +108,8 @@ export const flowingMenuShowcase: ShowcaseSpec = {
         `<div className="h-80 overflow-hidden rounded-xl border border-border">`,
         `  <FlowingMenu`,
         `    items={[`,
-        `      { link: "#discover", text: "Discover", image: "/a.jpg" },`,
-        `      { link: "#build", text: "Build", image: "/b.jpg" },`,
+        `      { link: "#", text: "Discover", image: "/a.jpg" },`,
+        `      { link: "#", text: "Build", image: "/b.jpg" },`,
         `    ]}`,
         `    speed={${p.speed}}`,
         `    repeat={${p.repeat}}`,

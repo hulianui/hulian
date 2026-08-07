@@ -20,6 +20,10 @@ export interface ChromaGridItem {
   /**
    * 卡片背景渐变。建议形如
    * `linear-gradient(145deg, var(--color-chart-1), transparent)`。
+   *
+   * ⚠️ 卡面是**暗色上下文**：卡片上的文字用固定的白色阶（见组件文档）。
+   * 组件会在这层渐变**下面**恒垫一层中性深色基底，所以渐变里的 `transparent`
+   * 端露出的是深色而不是页面底色，亮色主题下也不会出现「白字压浅底」（#129）。
    */
   gradient?: string;
   /** 点击跳转地址。提供时卡片可点击（新标签打开），否则光标为默认态。 */

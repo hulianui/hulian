@@ -46,7 +46,9 @@ Extends `ComponentPropsWithoutRef<"div">`. `ANDROID_MODELS` exports the model-to
 
 ## Usage Guidelines
 
-- The component fixes the device proportions with `aspectRatio`. `model` and `width` affect only the width, not the aspect ratio.
+- **Body height is derived from the screen ratio and the border, never a hard-coded `aspectRatio`.** The border is a fixed pixel value while the screen scales with the width, so the body ratio is not a constant: the same device drawn at 280px and at 360px has two different body ratios. A hard-coded ratio therefore skews the inner screen at some widths, and [PreviewSandbox](../preview-sandbox/preview-sandbox.md) `fit` scaling leaves a white band on the short edge (#117). The logical screen resolution and border width live in `lib/device-metrics`, and a unit test locks the invariant that the inner screen ratio always equals the declared `screen` ratio.
+
+- `model` and `width` change only the body width; the height follows from the screen ratio, so the body aspect ratio shifts slightly with width. That is correct behaviour, because the border does not scale.
 - When both `imageSrc` and `children` are provided, `imageSrc` wins.
 
 ## Related

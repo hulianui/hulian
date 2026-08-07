@@ -43,7 +43,7 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | grid | boolean ｜ number | true | 网格底纹：`true`=40 世界单位，数字=自定义边长，`false` 关闭 |
 | snap | number | 0 | 拖动 / resize / 方向键的吸附步长（世界单位），0 = 不吸附 |
 | minItemSize | number | 8 | 元素最小宽高（世界单位） |
-| wheelBehavior | "zoom" ｜ "pan" | "zoom" | 滚轮默认行为，按住 Ctrl/⌘ 反转 |
+| wheelBehavior | "zoom" ｜ "pan" | "pan" | 无修饰键时的滚轮行为。Ctrl（含触控板捏合）恒为缩放，不受此项影响 |
 | controls | boolean | true | 是否显示右下角缩放工具条 |
 | readOnly | boolean | false | 禁用拖动 / resize / 删除，仍可选中、平移、缩放 |
 | className | string | — | 画布外层类名（须有确定高度，组件填满） |
@@ -128,6 +128,8 @@ const screen = canvasToScreen({ x: item.x, y: item.y }, { x: pan.x, y: pan.y, zo
 - 元素内部放按钮 / 输入框请照常写——按在这类控件上只选中不起拖（与 Kanban / Sortable 同一口径）。要让某个自定义元素也免于拖拽，给它加 `data-no-drag`。
 - 右键在画布上是「拖拽平移」手势的一部分，因此**系统右键菜单被抑制**。需要自定义右键菜单请自行在 `renderItem` 内监听 `contextmenu` 并 `stopPropagation`。
 - 滚轮事件用 `{ passive: false }` 注册并 `preventDefault`，画布区域**不会**滚动祖先容器——这是有意为之，别把画布塞进需要靠滚轮滚动的窄栏里。
+- 滚轮语义与系统惯例、与同库 [Flow](../flow/flow.md) 一致：**两指滑动平移、捏合（= Ctrl+滚轮）缩放**。`wheelBehavior="zoom"` 只改「无修饰键」那一档，捏合永远缩放。⌘+滚轮不做缩放（macOS 上它没有这个语义）。
+- 画布整体 `select-none`：点选 / 拖动不该把元素文字刷成选区。`renderItem` 里塞进来的 `input` / `textarea` / `contenteditable` 已开逃生口照常可选；其它需要复制的自定义内容请自行加 `select-text`。
 - `resize` 拖过锚定边会**翻转**（与 Figma 一致），不是卡死在 `minItemSize`。若你的业务不接受翻转，请在 `onItemsChange` 里自行拒绝。
 - 客户端组件（原生 Pointer Events），必须在 client 上下文用。
 

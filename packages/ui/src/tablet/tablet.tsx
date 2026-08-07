@@ -1,17 +1,23 @@
 import type { CSSProperties } from "react";
 import { cn } from "../lib/cn";
+import { DEVICE_METRICS, bodyHeightPx } from "../lib/device-metrics";
 import { TABLET_MODELS, type TabletProps } from "./tablet.types";
 
 // 瑚琏 Tablet（iPad 系平板外壳）：纯 CSS（RSC 安全）；机身边框用 foreground token（themeable）；屏幕区 bg token。
 // 区别手机——更薄相对边框、更小圆角、4:3 系机身比例、前置摄像头落在顶部边框居中（非屏内打孔）。
 export function Tablet({ imageSrc, children, width, model, className, style, ...props }: TabletProps) {
   const preset = model ? TABLET_MODELS[model] : undefined;
-  const resolvedWidth = width ?? preset?.width ?? 320;
-  const aspectRatio = preset?.aspectRatio ?? "3 / 4.2";
+  const resolvedWidth = width ?? preset?.width ?? DEVICE_METRICS.tablet.defaultWidth;
+  // 显式选了机型就尊重该机型自己的机身比例（各代 iPad 纵横比确实不同）；
+  // 缺省档则由内屏比例 + 边框反推高度，保证内屏比例与 PreviewSandbox 的视口严格一致
+  // ——PreviewSandbox 从不传 model，走的正是这条（#117 / #139）。
+  const sizing: CSSProperties = preset
+    ? { aspectRatio: preset.aspectRatio }
+    : { height: bodyHeightPx(DEVICE_METRICS.tablet, resolvedWidth) };
   return (
     <div
       {...props}
-      style={{ width: resolvedWidth, aspectRatio, ...style } as CSSProperties}
+      style={{ width: resolvedWidth, ...sizing, ...style } as CSSProperties}
       className={cn(
         "relative rounded-[1.8rem] border-[14px] border-foreground bg-foreground shadow-2xl",
         className,

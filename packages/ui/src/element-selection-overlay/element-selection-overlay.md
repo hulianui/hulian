@@ -120,9 +120,10 @@ asElement(event.target);                  // 跨 realm 安全的元素判断（i
 ## 禁忌 / 坑
 
 - **跨源 iframe 不支持**，而且不会静默失效：读不到 `contentDocument` 时组件不渲染，并触发一次 `onError({ code: "cross-origin" })` + 开发期告警。要跨源就只有三条路：换成同源预览（`srcDoc` / 同源代理域名）、或在被预览页里自己挂一份叠加层把 path 通过 `postMessage` 回传宿主、或放弃指向编辑。本组件**不提供** postMessage 桥（那是另一套协议，不该藏在一个 UI 组件里）。
-- **能打标记就打标记**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。
+- **能打标记就打标记，且标记元素必须真实占位**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。注意别把标记打在 `display: contents` 的包裹层上——这类元素不生成盒子，`getBoundingClientRect()` 恒为 0，正好落进「零面积判不可见」，一个框都画不出来。
 - **iframe 内的元素跨 realm**：它们不是宿主的 `Element` 实例，`node instanceof Element` 恒 false —— 自己处理目标事件时请用导出的 `asElement()`，别用 instanceof（这是同源 iframe 场景最容易踩的静默失效）。
 - `interceptClicks` 默认 `true`，意味着**选择模式下预览是不可交互的**（点击被吞、mousedown 的默认行为被挡）。要让用户一边操作预览一边看高亮，传 `interceptClicks={false}`，或用 `enabled` 显式切换选择模式。
+- **拦截与清空都只发生在目标内**。`target` 传普通容器时监听虽然挂在宿主 document 上（要覆盖 iframe 场景），但组件会先判事件是否落在 `target` 内：外面的点击既不被 `preventDefault` / `stopPropagation`，也不触发 `onClear`。所以宿主页面的导航、属性面板照常可用，`onClear` 只由「点预览内的空白」触发。
 - **目标根自身不可选**：`target` 那个元素（iframe 场景是其 `body`）hover 与点击都视为空白，点它触发 `onClear`。根若也带标记属性，所有元素会退化成同一条路径，所以标记查找刻意跳过根。
 - **jsdom 下 `getBoundingClientRect` 恒为 0**，零面积一律判不可见 → 单测里默认一个框都不会渲染。要断言框的存在，先给 `Element.prototype.getBoundingClientRect` 打桩；但别断言坐标数值（坐标来自你的桩，等于自证）。坐标逻辑请测 `toHostRect` / `computeLabelPosition` 这两个纯函数。
 - 目标是 `document.body` 时，本组件的 portal 层就落在目标内部；组件已过滤掉自身引起的 MutationObserver 记录（否则自触发死循环），你若另外挂了 observer 也要做同样的过滤。

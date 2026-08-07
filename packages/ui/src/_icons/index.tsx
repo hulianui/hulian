@@ -497,3 +497,51 @@ export const PoliceBadge = /* @__PURE__ */ createIcon("police-badge", [
   ["path", { d: "M12 8v6", key: "v" }],
   ["path", { d: "M9 11h6", key: "h" }],
 ]);
+
+// ───────────────────────────── 品牌图标 ─────────────────────────────
+//
+// 边界（#119 立）：品牌 mark **单独成组**，不混进上面那批通用 UI 图标，也不进 `IconProps`
+// 的 stroke 体系 —— 它们是实心路径（`fill="currentColor"`、无描边），形状受各家商标条款约束，
+// 不许为了统一风格改形、改比例。
+//
+// 什么才进这里：**组件运行时**需要用来标识目的地的平台 mark。判据是「这个图标承载的是
+// 信息（点了会去哪），不是装饰」—— 用通用外链图标代替就等于把那条信息丢了。
+// 装饰性 / 演示用的品牌 logo 仍然留在各自的 showcase 里，别往这儿搬。
+//
+// lucide 从 v1 起移除了全部 brand icons，所以这些只能手写内联；新增时请从官方 logo 资源复制
+// 单路径 SVG，保持原始 viewBox 与路径不变。
+
+const createBrandIcon = (name: string, viewBox: string, d: string): IconComponent => {
+  const Comp = React.forwardRef<SVGSVGElement, IconProps>(function BrandIcon(
+    { size = 24, strokeWidth: _strokeWidth, className, children, ...rest },
+    ref,
+  ) {
+    const a11y =
+      "aria-label" in rest || "aria-labelledby" in rest ? {} : { "aria-hidden": true as const };
+    return React.createElement(
+      "svg",
+      {
+        ref,
+        xmlns: "http://www.w3.org/2000/svg",
+        width: size,
+        height: size,
+        viewBox,
+        fill: "currentColor",
+        className: ["hulian-brand", `hulian-brand-${name}`, className].filter(Boolean).join(" "),
+        ...a11y,
+        ...rest,
+      },
+      React.createElement("path", { d }),
+      children,
+    );
+  });
+  Comp.displayName = name;
+  return Comp;
+};
+
+/** GitHub Octocat mark（官方单路径 mark，按 github.com/logos 使用条款内联，未改形）。 */
+export const GithubMark = /* @__PURE__ */ createBrandIcon(
+  "github",
+  "0 0 16 16",
+  "M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z",
+);

@@ -9,6 +9,8 @@ const items = [
   { label: "关于", link: "#about", ariaLabel: "关于我们" },
 ];
 
+// offsite-ok: socialItems 是真实的站外社交账号，组件对这一族恒用 target="_blank"
+// （staggered-menu.tsx:308），点击不会顶掉当前页。菜单主项仍必须是相对锚点。
 const socialItems = [
   { label: "微博", link: "https://weibo.com" },
   { label: "GitHub", link: "https://github.com" },
@@ -29,6 +31,7 @@ export const staggeredMenuShowcase: ShowcaseSpec = {
     {
       title: "基础用法",
       description: "放进 relative + 固定高度 + overflow-hidden 的容器，点右上角按钮唤起右侧滑入面板。",
+      // offsite-ok: 示例代码里的 socialItems 是站外社交账号，组件对这一族恒用 target="_blank"
       code: `<div className="relative h-96 overflow-hidden rounded-xl border border-border">
   <StaggeredMenu
     items={[
@@ -172,6 +175,7 @@ export const staggeredMenuShowcase: ShowcaseSpec = {
       `    displayItemNumbering={${p.displayItemNumbering}}`,
       `    displaySocials={${p.displaySocials}}`,
       `    items={[{ label: "首页", link: "#home" }, { label: "产品", link: "#product" }]}`,
+      // offsite-ok: 社交外链由组件恒以新标签打开
       `    socialItems={[{ label: "GitHub", link: "https://github.com" }]}`,
       `  />`,
       `</div>`,

@@ -1,19 +1,53 @@
+"use client";
+import { useId } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { PillNav } from "./pill-nav";
 
-const items = [
-  { href: "https://example.com/#home", label: "Home" },
-  { href: "https://example.com/#features", label: "Features" },
-  { href: "https://example.com/#pricing", label: "Pricing" },
-  { href: "https://example.com/#docs", label: "Docs" },
-];
+const KEYS = ["home", "features", "pricing", "docs"] as const;
+const LABEL: Record<(typeof KEYS)[number], string> = {
+  home: "Home",
+  features: "Features",
+  pricing: "Pricing",
+  docs: "Docs",
+};
 
 /** 展示用中性容器，给胶囊导航足够留白与对比 */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-32 w-full max-w-xl items-center justify-center rounded-xl border border-border bg-muted/30 p-8">
+    <div className="relative flex min-h-32 w-full max-w-xl items-center justify-center rounded-xl border border-border bg-subtle p-8">
       {children}
     </div>
+  );
+}
+
+/**
+ * 活预览里的 href 必须指向**页内真实存在**的锚点。
+ *
+ * PillNav 靠 `activeHref === item.href` 判选中，所以四项不能都写 `href="#"`（那样四项全亮）；
+ * 而写 `#home` 这类占位又会在文档站留下悬空锚点（链接门禁会逐条报 missing-fragment）。
+ * 解法是让示例自己渲染出这些锚点，`useId` 保证同一页多处渲染（示例 / 状态 / playground）
+ * 时 ID 不重复。示例代码块里仍然展示 `#home` 这种消费方真实会写的形态。
+ */
+function PillNavDemo({
+  active = "home",
+  ...props
+}: { active?: (typeof KEYS)[number] } & Omit<
+  Parameters<typeof PillNav>[0],
+  "items" | "activeHref"
+>) {
+  const id = useId().replace(/:/g, "");
+  const anchor = (key: string) => `#${id}-${key}`;
+  return (
+    <Stage>
+      {KEYS.map((key) => (
+        <span key={key} id={`${id}-${key}`} className="absolute size-0" aria-hidden />
+      ))}
+      <PillNav
+        items={KEYS.map((key) => ({ href: anchor(key), label: LABEL[key] }))}
+        activeHref={anchor(active)}
+        {...props}
+      />
+    </Stage>
   );
 }
 
@@ -41,9 +75,7 @@ export const pillNavShowcase: ShowcaseSpec = {
   activeHref="#home"
 />`,
       render: () => (
-        <Stage>
-          <PillNav items={items} activeHref="https://example.com/#home" />
-        </Stage>
+        <PillNavDemo active="home" />
       ),
     },
     {
@@ -51,9 +83,7 @@ export const pillNavShowcase: ShowcaseSpec = {
       description: "传 logo 槽渲染左侧圆形标识，悬停时整枚 logo 旋转一圈。",
       code: `<PillNav items={items} activeHref="#features" logo={<Mark />} />`,
       render: () => (
-        <Stage>
-          <PillNav items={items} activeHref="#features" logo={<Mark />} />
-        </Stage>
+        <PillNavDemo active="features" logo={<Mark />} />
       ),
     },
     {
@@ -66,14 +96,7 @@ export const pillNavShowcase: ShowcaseSpec = {
   initialLoadAnimation={false}
 />`,
       render: () => (
-        <Stage>
-          <PillNav
-            items={items}
-            activeHref="#pricing"
-            logo={<Mark />}
-            initialLoadAnimation={false}
-          />
-        </Stage>
+        <PillNavDemo active="pricing" logo={<Mark />} initialLoadAnimation={false} />
       ),
     },
   ],
@@ -94,43 +117,29 @@ export const pillNavShowcase: ShowcaseSpec = {
     {
       name: "default（带 logo · 首项激活）",
       render: () => (
-        <Stage>
-          <PillNav items={items} activeHref="#home" logo={<Mark />} />
-        </Stage>
+        <PillNavDemo active="home" logo={<Mark />} />
       ),
     },
     {
       name: "无 logo（纯导航）",
       render: () => (
-        <Stage>
-          <PillNav items={items} activeHref="#features" />
-        </Stage>
+        <PillNavDemo active="features" />
       ),
     },
     {
       name: "关闭入场动画",
       render: () => (
-        <Stage>
-          <PillNav
-            items={items}
-            activeHref="#pricing"
-            logo={<Mark />}
-            initialLoadAnimation={false}
-          />
-        </Stage>
+        <PillNavDemo active="pricing" logo={<Mark />} initialLoadAnimation={false} />
       ),
     },
   ],
 
   renderWithProps: (p) => (
-    <Stage>
-      <PillNav
-        items={items}
-        activeHref={p.activeHref as string}
-        logo={p.withLogo ? <Mark /> : undefined}
-        initialLoadAnimation={p.initialLoadAnimation as boolean}
-      />
-    </Stage>
+    <PillNavDemo
+      active={(p.activeHref as string).replace("#", "") as "home"}
+      logo={p.withLogo ? <Mark /> : undefined}
+      initialLoadAnimation={p.initialLoadAnimation as boolean}
+    />
   ),
 
   toCode: (p) =>

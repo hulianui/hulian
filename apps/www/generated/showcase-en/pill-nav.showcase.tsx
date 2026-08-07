@@ -1,17 +1,30 @@
+"use client";
+import { useId } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { PillNav } from "../../../../packages/ui/src/pill-nav/pill-nav";
-const items = [
-    { href: "https://example.com/#home", label: "Home" },
-    { href: "https://example.com/#features", label: "Features" },
-    { href: "https://example.com/#pricing", label: "Pricing" },
-    { href: "https://example.com/#docs", label: "Docs" },
-];
+const KEYS = ["home", "features", "pricing", "docs"] as const;
+const LABEL: Record<(typeof KEYS)[number], string> = {
+    home: "Home",
+    features: "Features",
+    pricing: "Pricing",
+    docs: "Docs",
+};
 function Stage({ children }: {
     children: React.ReactNode;
 }) {
-    return (<div className="flex min-h-32 w-full max-w-xl items-center justify-center rounded-xl border border-border bg-muted/30 p-8">
+    return (<div className="relative flex min-h-32 w-full max-w-xl items-center justify-center rounded-xl border border-border bg-subtle p-8">
       {children}
     </div>);
+}
+function PillNavDemo({ active = "home", ...props }: {
+    active?: (typeof KEYS)[number];
+} & Omit<Parameters<typeof PillNav>[0], "items" | "activeHref">) {
+    const id = useId().replace(/:/g, "");
+    const anchor = (key: string) => `#${id}-${key}`;
+    return (<Stage>
+      {KEYS.map((key) => (<span key={key} id={`${id}-${key}`} className="absolute size-0" aria-hidden/>))}
+      <PillNav items={KEYS.map((key) => ({ href: anchor(key), label: LABEL[key] }))} activeHref={anchor(active)} {...props}/>
+    </Stage>);
 }
 function Mark() {
     return (<span className="grid size-full place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
@@ -32,17 +45,13 @@ export const pillNavShowcase: ShowcaseSpec = {
   ]}
   activeHref="#home"
 />`,
-            render: () => (<Stage>
-          <PillNav items={items} activeHref="https://example.com/#home"/>
-        </Stage>),
+            render: () => (<PillNavDemo active="home"/>),
         },
         {
             title: "With brand logo",
             description: "The logo slot renders the circular logo on the left side. When hovering, the entire logo rotates in one circle.",
             code: `<PillNav items={items} activeHref="#features" logo={<Mark />} />`,
-            render: () => (<Stage>
-          <PillNav items={items} activeHref="#features" logo={<Mark />}/>
-        </Stage>),
+            render: () => (<PillNavDemo active="features" logo={<Mark />}/>),
         },
         {
             title: "Close entrance animation",
@@ -53,9 +62,7 @@ export const pillNavShowcase: ShowcaseSpec = {
   logo={<Mark />}
   initialLoadAnimation={false}
 />`,
-            render: () => (<Stage>
-          <PillNav items={items} activeHref="#pricing" logo={<Mark />} initialLoadAnimation={false}/>
-        </Stage>),
+            render: () => (<PillNavDemo active="pricing" logo={<Mark />} initialLoadAnimation={false}/>),
         },
     ],
     controls: [
@@ -72,26 +79,18 @@ export const pillNavShowcase: ShowcaseSpec = {
     states: [
         {
             name: "default (with logo \u00B7 First activation)",
-            render: () => (<Stage>
-          <PillNav items={items} activeHref="#home" logo={<Mark />}/>
-        </Stage>),
+            render: () => (<PillNavDemo active="home" logo={<Mark />}/>),
         },
         {
             name: "None logo (Pure navigation)",
-            render: () => (<Stage>
-          <PillNav items={items} activeHref="#features"/>
-        </Stage>),
+            render: () => (<PillNavDemo active="features"/>),
         },
         {
             name: "Close entrance animation",
-            render: () => (<Stage>
-          <PillNav items={items} activeHref="#pricing" logo={<Mark />} initialLoadAnimation={false}/>
-        </Stage>),
+            render: () => (<PillNavDemo active="pricing" logo={<Mark />} initialLoadAnimation={false}/>),
         },
     ],
-    renderWithProps: (p) => (<Stage>
-      <PillNav items={items} activeHref={p.activeHref as string} logo={p.withLogo ? <Mark /> : undefined} initialLoadAnimation={p.initialLoadAnimation as boolean}/>
-    </Stage>),
+    renderWithProps: (p) => (<PillNavDemo active={(p.activeHref as string).replace("#", "") as "home"} logo={p.withLogo ? <Mark /> : undefined} initialLoadAnimation={p.initialLoadAnimation as boolean}/>),
     toCode: (p) => [
         `<PillNav`,
         `  items={[`,

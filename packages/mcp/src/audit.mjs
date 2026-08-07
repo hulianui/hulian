@@ -34,6 +34,7 @@ import {
 } from "./adoption-signals.mjs";
 import { getModifier, getSurface, listModifiers, listSurfaces, loadProfiles } from "./profiles.mjs";
 import { inspectProject } from "./project.mjs";
+import { isVisualItem, visualOpportunities } from "./visual.mjs";
 
 /** 扫描上限。真实消费项目实测 300–3000 个代码文件，5000 给足余量又不至于扫穿 monorepo。 */
 const MAX_FILES = 5000;
@@ -246,11 +247,25 @@ function findOpportunities({ surface, modifiers, usedSlugs, slugMeta }) {
    * modifier 因此成立，于是它的 consider 列表把 border-beam / shine-border 一路推了进来。
    * 但 admin-console 的 avoid 第一条就是「为了覆盖率加入营销背景或 WebGL 特效」。
    * 这正是基线文档警告的「把库存结构问题算成采用失败，导出往中后台塞特效的结论」。
-   * avoidCategories 是那条自由文本 avoid 的机器可判定伴生字段。
+   * avoidGroups 是那条自由文本 avoid 的机器可判定伴生字段。
+   *
+   * 0.27.0 起精确到 **group** 而不是 category（#140）：decoration 内部 backdrop（52 件全屏
+   * 背景 / WebGL）与 overlay-fx（40 件局部强调）是两种完全不同的东西，按 category 整类拉黑，
+   * 等于中后台连入场过渡（reveal）和卡片描边（border-beam）都被禁 —— 而同一份 profile 的
+   * avoid 里却写着「关键数字裸写而不用 NumberTicker」，规则自己跟自己打架。
+   * allowEffects 是被拦下来之后的例外白名单。
    */
-  const blocked = new Set(surface?.avoidCategories ?? []);
-  const offLanguage = (slug) =>
-    (slugMeta.get(slug)?.categories ?? []).some((cat) => blocked.has(cat));
+  const blocked = new Set(surface?.avoidGroups ?? []);
+  const allowed = new Set(surface?.allowEffects ?? []);
+  const offLanguage = (slug) => {
+    if (allowed.has(slug)) return false;
+    const item = slugMeta.get(slug);
+    if (!item) return false;
+    const group = item.meta?.group ? String(item.meta.group) : "";
+    return (item.categories ?? []).some(
+      (cat) => blocked.has(String(cat)) || (group && blocked.has(`${cat}/${group}`)),
+    );
+  };
 
   const push = (entry) => {
     if (seen.has(entry.slug)) return;
@@ -539,6 +554,28 @@ export function auditAdoption({
 
   const plan = buildPlan({ risks, opportunities, highLevel, context, workflow });
 
+  // 视觉信号（#140）：**非门禁**。它回答的不是「功能上缺什么」，而是「这个项目有没有在
+  // visualBudget 允许的位置用到哪怕一件动效 / 强调件」——「对但平」此前在报告里完全不可见：
+  // 页面功能全对、指标全绿、却毫无记忆点。
+  // 措辞必须是建议，且 admin-console 下最多 1 条 —— 越线就撞回 #41 的非目标
+  //（把库存结构问题算成采用失败，导出「往中后台塞特效」的结论）。
+  const visualSignals = surfaceDef
+    ? visualOpportunities({
+        surface: surfaceDef,
+        usedSlugs,
+        slugMeta,
+        limit: surfaceDef.id === "admin-console" ? 1 : 3,
+      })
+    : [];
+  const visualExpressiveness = {
+    used: [...usedSlugs].filter((slug) => {
+      const item = slugMeta.get(slug);
+      return item ? isVisualItem(item) : false;
+    }),
+    budget: surfaceDef?.visualBudget ?? null,
+    gate: false,
+  };
+
   // ----------------------------------------------------------- 基线 --
   const snapshot = {
     version: 1,
@@ -557,6 +594,9 @@ export function auditAdoption({
     projectRootSource: project.projectRootSource,
     scanned: { files: files.length, usingHulian: filesUsingHulian, truncated, limit: MAX_FILES },
     context,
+    // 非门禁，刻意与 opportunities 分开放：混进去会被消费方当成缺陷计数。
+    visualSignals,
+    visualExpressiveness,
     usage: {
       components: [...slugUses.entries()]
         .sort((a, b) => b[1] - a[1])
@@ -683,6 +723,25 @@ export function renderAudit(a) {
     if (a.opportunities.length > 12) lines.push(`- …另有 ${a.opportunities.length - 12} 条，见结构化输出`);
   } else {
     lines.push("", "## 机会点", "- 无。当前形态下该用的件都用上了（判据是同项目内的邻近信号，不是清单比对）");
+  }
+
+  // 视觉信号排在机会点之后、风险项之前，且标题里直说「建议」——
+  // 位置与措辞都要让人一眼看出它不是缺陷计数（#140）。
+  if (a.visualSignals?.length) {
+    const b = a.visualExpressiveness?.budget;
+    lines.push(
+      "",
+      "## 视觉表达（建议，不进门禁）",
+      `- 本项目一件动效 / 强调件都没用到。功能可能全对，但页面不会有任何记忆点。` +
+        (b ? `本形态的视觉预算是 ${b.heavy} 处重物 + ${b.accent} 处强调。` : ""),
+    );
+    for (const v of a.visualSignals) {
+      lines.push(
+        `- **${v.slot}** → ${v.slug}（动效 ${v.motion}）${v.look ? `：${v.look}` : ""}` +
+          `\n  - 降级：${v.fallback}\n  - ${v.docsUrl}`,
+      );
+    }
+    lines.push("- 这是建议不是缺陷：不采纳不影响任何指标，也不该为了它往中后台铺装饰件。");
   }
 
   if (a.risks.length) {

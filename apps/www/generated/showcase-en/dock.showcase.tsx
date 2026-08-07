@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Home, Search, Bell, Settings, User } from "lucide-react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Dock, DockIcon } from "../../../../packages/ui/src/dock/dock";
@@ -11,8 +12,40 @@ function Demo() {
       <DockIcon><User className="size-5"/></DockIcon>
     </Dock>);
 }
+const NAV = [
+    { key: "home", label: "Home", icon: <Home className="size-5"/> },
+    { key: "search", label: "Search", icon: <Search className="size-5"/> },
+    { key: "alerts", label: "Notice", icon: <Bell className="size-5"/> },
+    { key: "settings", label: "Settings", icon: <Settings className="size-5"/> },
+];
+function NavDemo() {
+    const [active, setActive] = useState("home");
+    return (<div className="flex w-full flex-col items-center gap-3">
+      <p className="text-xs text-muted">
+        Current: <span className="text-foreground">{NAV.find((i) => i.key === active)?.label}</span>
+      </p>
+      <Dock aria-label="Main navigation" activeKey={active} onSelect={setActive}>
+        {NAV.map((item) => (<DockIcon key={item.key} itemKey={item.key} label={item.label}>
+            {item.icon}
+          </DockIcon>))}
+      </Dock>
+    </div>);
+}
 export const dockShowcase: ShowcaseSpec = {
     examples: [
+        {
+            title: "Persistent bottom navigation (with a current item)",
+            description: "activeKey plus onSelect is the same controlled pattern as NavMenu and RouteTabs. The current item gets aria-current=\"page\" and an indicator dot under the icon \u2014 a shape cue, not colour alone. Once onSelect is provided, DockIcon renders as a real <button> (focusable, activated by Enter) and the container becomes a nav landmark.",
+            code: `const [active, setActive] = useState("home")
+
+<Dock aria-label="Main navigation" activeKey={active} onSelect={setActive}>
+  <DockIcon itemKey="home" label="Home"><Home className="size-5" /></DockIcon>
+  <DockIcon itemKey="search" label="Search"><Search className="size-5" /></DockIcon>
+  <DockIcon itemKey="alerts" label="Notifications"><Bell className="size-5" /></DockIcon>
+  <DockIcon itemKey="settings" label="Settings"><Settings className="size-5" /></DockIcon>
+</Dock>`,
+            render: () => <NavDemo />,
+        },
         {
             title: "Basic usage",
             description: "DockIcon package icon, when the mouse is close to it, the icon will be enlarged according to the horizontal distance (macOS magnification dock effect).",

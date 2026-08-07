@@ -16,6 +16,7 @@ import { Android } from "../android";
 import { Button } from "../button";
 import { IPhone } from "../iphone";
 import { Tablet } from "../tablet";
+import { Watch } from "../watch";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { useComponentLocale } from "../config/locale-context";
@@ -84,12 +85,17 @@ class PreviewErrorBoundary extends Component<BoundaryProps, { failed: boolean }>
   }
 }
 
-/** 设备档位 → 既有外框组件。三者的 props 形状一致（width + children），直接复用不再造壳。 */
+/**
+ * 设备档位 → 既有外框组件。四者的 props 形状一致（width + children），直接复用不再造壳。
+ * 键集由 PreviewSandboxFrameKind 约束，而它来自设备真源 —— 真源里加一个机型，
+ * 这里漏接就是编译错误，不会再出现「清单里有、这里没有」的静默不同步（#139）。
+ */
 const FRAMES: Record<PreviewSandboxFrameKind, ComponentType<{ width?: number; children: ReactNode }>> =
   {
     iphone: IPhone,
     android: Android,
     tablet: Tablet,
+    watch: Watch,
   };
 
 export function PreviewSandbox({

@@ -64,7 +64,7 @@ export function CheckoutCashier({ id }: { id: string }) {
               title={copy("paymentSuccessful2")}
               subTitle={`${co.code} · ${co.client}`}
               content={
-                <div className="mx-auto mt-2 w-full max-w-[360px] rounded-[var(--radius)] bg-muted/40 p-4 text-sm">
+                <div className="mx-auto mt-2 w-full max-w-[360px] rounded-[var(--radius)] bg-subtle p-4 text-sm">
                   <div className="flex justify-between py-1">
                     <span className="text-muted">{copy("paymentAmount")}</span>
                     <span className="font-semibold tabular-nums">{yuan(co.amount)}</span>

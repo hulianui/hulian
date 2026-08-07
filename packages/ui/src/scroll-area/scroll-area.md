@@ -52,6 +52,7 @@ import { ScrollArea } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - **不给限高/限宽就不滚**：组件不自带尺寸，必须经 `className` 给 Root 限定 `h-*` / `w-*`（横向则限 `w-*`），否则内容撑开容器、滚动条永不出现。
+- **滚动条是覆盖式的，内容要自己留出让位内边距**。滚动条 `absolute` 定位、不占布局宽度，宽 `w-2`（8px），横向条高同理。所以内容区请自留 **≥ `pr-2.5`（10px = 8px 条 + 2px 呼吸）**，横向滚动则是 `pb-2.5`；留不够（比如常见的 `pr-1`=4px）滚动条就会稳定地压在最右一列内容上（#118）。这条是隐式约定，组件不代劳——因为「让位」该加在内容层还是各列上，只有消费方知道。
 
 ## 相关
 [Layout](../layout/layout.md) · [AdminLayout](../admin-layout/admin-layout.md) · [Viewport](../viewport/viewport.md) · [Resizable](../resizable/resizable.md) · [AspectRatio](../aspect-ratio/aspect-ratio.md) · [FitScreen](../fit-screen/fit-screen.md)

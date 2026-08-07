@@ -30,7 +30,7 @@ export const ACCENT: Record<NodeAccent, { bar: string; chip: string; icon: strin
   amber: { bar: "bg-chart-3", chip: "bg-chart-3/15 text-chart-3", icon: "text-chart-3" },
   cyan: { bar: "bg-chart-2", chip: "bg-chart-2/15 text-chart-2", icon: "text-chart-2" },
   rose: { bar: "bg-chart-5", chip: "bg-chart-5/15 text-chart-5", icon: "text-chart-5" },
-  neutral: { bar: "bg-muted", chip: "bg-muted/15 text-muted", icon: "text-muted" },
+  neutral: { bar: "bg-muted", chip: "bg-subtle text-muted", icon: "text-muted" },
 };
 
 export const NODE_KINDS: NodeKindMeta[] = [

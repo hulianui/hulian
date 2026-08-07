@@ -100,8 +100,11 @@ export function InterceptCard({
         <p className="text-sm leading-relaxed text-foreground">{message}</p>
 
         {violation != null && (
-          <div className="rounded-[var(--radius)] bg-muted/60 px-3 py-2">
-            <div className="mb-1 text-xs font-medium text-muted">{locale.violation}</div>
+          // 违反点是整张卡最需要被看见的信息（组件就是为了交代它），此前却是全卡最难读的一块：
+          // bg-muted 是次要**文字**色，块标题又用 text-muted，前景背景同一个 token。
+          // 改用 danger 的极淡底 + danger 标题，与左侧红锚点呼应，让它自己形成焦点（#136）。
+          <div className="rounded-[var(--radius)] bg-danger/10 px-3 py-2">
+            <div className="mb-1 text-xs font-medium text-danger">{locale.violation}</div>
             <div className="break-all font-mono text-xs leading-relaxed text-foreground">
               {violation}
             </div>
@@ -122,7 +125,7 @@ export function InterceptCard({
         )}
 
         {overridden != null ? (
-          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-[var(--radius)] bg-muted/50 px-3 py-2 text-xs">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-[var(--radius)] bg-subtle px-3 py-2 text-xs">
             <span className="font-medium text-foreground">{locale.overridden}</span>
             <span className="min-w-0 flex-1 text-muted">{overridden.reason}</span>
             {overridden.at != null && <span className="text-muted">{overridden.at}</span>}
@@ -163,7 +166,7 @@ export function InterceptCard({
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="rounded-[var(--radius)] border border-border px-3 py-1.5 text-xs text-foreground outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring"
+                className="rounded-[var(--radius)] border border-border px-3 py-1.5 text-xs text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {resolvedOverrideLabel}
               </button>

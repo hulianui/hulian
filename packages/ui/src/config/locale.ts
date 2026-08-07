@@ -146,6 +146,7 @@ export interface ComponentLocale {
   popconfirm: { confirm: string; cancel: string };
   toast: { close: string };
   alert: { close: string };
+  notification: { close: string };
   promptInput: { placeholder: string; stop: string; send: string };
   codeBlock: {
     copy: string;
@@ -746,6 +747,8 @@ export interface ComponentLocale {
     iframeRejection: string;
     reactError: string;
     reactEmpty: string;
+    /** 设备档位的展示名。品牌名（iPhone / Android）两种语言都保留原写法。 */
+    devices: Record<"desktop" | "iphone" | "android" | "tablet" | "watch", string>;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   componentPicker?: {
@@ -836,6 +839,7 @@ const zhComponents: ComponentLocale = {
   popconfirm: { confirm: "确认", cancel: "取消" },
   toast: { close: "关闭" },
   alert: { close: "关闭" },
+  notification: { close: "关闭" },
   promptInput: { placeholder: "发消息…", stop: "停止生成", send: "发送" },
   codeBlock: {
     copy: "复制",
@@ -1438,6 +1442,13 @@ const zhComponents: ComponentLocale = {
     iframeRejection: "预览内有未处理的 Promise 拒绝",
     reactError: "预览子树渲染失败",
     reactEmpty: "预览子树抛出了空值",
+    devices: {
+      desktop: "桌面",
+      iphone: "iPhone",
+      android: "Android",
+      tablet: "平板",
+      watch: "手表",
+    },
   },
   componentPicker: {
     searchPlaceholder: "搜索组件名、slug 或描述",
@@ -1521,6 +1532,7 @@ const enComponents: ComponentLocale = {
   popconfirm: { confirm: "Confirm", cancel: "Cancel" },
   toast: { close: "Close" },
   alert: { close: "Close" },
+  notification: { close: "Close" },
   promptInput: { placeholder: "Message…", stop: "Stop generating", send: "Send" },
   codeBlock: {
     copy: "Copy",
@@ -2268,6 +2280,13 @@ const enComponents: ComponentLocale = {
     iframeRejection: "The preview has an unhandled promise rejection",
     reactError: "The preview subtree failed to render",
     reactEmpty: "The preview subtree threw an empty value",
+    devices: {
+      desktop: "Desktop",
+      iphone: "iPhone",
+      android: "Android",
+      tablet: "Tablet",
+      watch: "Watch",
+    },
   },
   componentPicker: {
     searchPlaceholder: "Search by name, slug or description",

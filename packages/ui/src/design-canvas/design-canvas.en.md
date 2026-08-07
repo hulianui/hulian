@@ -43,7 +43,7 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | grid | boolean \| number | true | Grid backdrop: `true` means 40 canvas units, a number sets the cell size, `false` disables it. |
 | snap | number | 0 | Snap step in canvas units for dragging, resizing, and arrow nudges. 0 disables snapping. |
 | minItemSize | number | 8 | Minimum element width and height in canvas units. |
-| wheelBehavior | "zoom" \| "pan" | "zoom" | Default wheel action; holding Ctrl or Cmd inverts it. |
+| wheelBehavior | "zoom" \| "pan" | "pan" | Wheel action when no modifier is held. Ctrl (including trackpad pinch) always zooms and ignores this prop. |
 | controls | boolean | true | Show the zoom toolbar in the bottom-right corner. |
 | readOnly | boolean | false | Disable dragging, resizing, and deletion while keeping selection, panning, and zooming. |
 | className | string | — | Outer class name. It must have a definite height; the canvas fills it. |
@@ -129,6 +129,8 @@ const screen = canvasToScreen({ x: item.x, y: item.y }, { x: pan.x, y: pan.y, zo
 - Buttons and inputs inside an element work normally: pressing one selects without starting a drag, matching Kanban and Sortable. Add `data-no-drag` to exempt any other custom element.
 - Right-drag is part of the pan gesture, so the native context menu is suppressed. Listen for `contextmenu` inside `renderItem` and call `stopPropagation` to provide your own.
 - Wheel events are registered with `{ passive: false }` and prevented, so the canvas never scrolls an ancestor. That is deliberate: do not place the canvas inside a narrow column that relies on wheel scrolling.
+- Wheel semantics match the platform convention and [Flow](../flow/flow.md): **two-finger scroll pans, pinch (which the browser reports as Ctrl+wheel) zooms**. `wheelBehavior="zoom"` only changes the unmodified case; pinch always zooms. Cmd+wheel does not zoom, because macOS gives it no such meaning.
+- The canvas is `select-none` as a whole, since clicking and dragging should not paint element text into a selection. `input`, `textarea`, and `contenteditable` inside `renderItem` keep their normal text selection through a built-in escape hatch; add `select-text` yourself to any other content that must stay copyable.
 - Resizing past the anchored edge flips the rectangle, as in Figma, rather than clamping at `minItemSize`. Reject the change inside `onItemsChange` if your domain forbids flipping.
 - Pointer Events make the component client-only.
 

@@ -7,12 +7,15 @@ import {
 } from "./preview-sandbox-geometry";
 
 describe("resolveViewport", () => {
-  it("内置四档各有尺寸", () => {
+  // 档位清单不再手写，而是「desktop（无外框例外）+ 设备真源里的全部机型」。
+  // watch 此前缺席纯粹是两份清单没同步（#139）。
+  it("内置档位 = desktop + 真源里的全部机型", () => {
     expect(Object.keys(PREVIEW_SANDBOX_DEVICES).sort()).toEqual([
       "android",
       "desktop",
       "iphone",
       "tablet",
+      "watch",
     ]);
   });
   it("档位名 → 预设尺寸", () => {

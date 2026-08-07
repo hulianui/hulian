@@ -24,7 +24,7 @@ function DemoSider({ collapsed: collapsedProp, collapsible = true, defaultCollap
     const [internal, setInternal] = useState(defaultCollapsed ?? false);
     const collapsed = collapsedProp ?? internal;
     return (<Layout.Sider collapsible={collapsible} collapsed={collapsed} collapsedWidth={collapsedWidth} width={width} breakpoint={breakpoint} onCollapse={(c) => setInternal(c)}>
-      <div className={cn("flex h-12 shrink-0 items-center font-semibold text-primary", collapsed ? "justify-center" : "px-4")}>
+      <div className={cn("flex h-[var(--hl-layout-header-h)] shrink-0 items-center font-semibold text-primary", collapsed ? "justify-center" : "px-4")}>
         {collapsed ? "Hu" : "Hulian Console"}
       </div>
       <NavMenu items={menu} mode={collapsed ? "collapsed" : "inline"} selectedKeys={["dashboard"]} className={collapsed ? "mx-auto py-2" : "w-full p-2"}/>
@@ -66,24 +66,22 @@ function ClassicShell({ collapsed, collapsible = true, defaultCollapsed, collaps
       </Layout>
     </Layout>);
 }
-function StaticSider({ collapsed = false }: {
-    collapsed?: boolean;
-}) {
-    return (<Layout.Sider collapsible defaultCollapsed={collapsed}>
-      <div className={cn("flex h-12 shrink-0 items-center font-semibold text-primary", collapsed ? "justify-center" : "px-4")}>
-        {collapsed ? "Hu" : "Hulian Console"}
-      </div>
-      <NavMenu items={menu} mode={collapsed ? "collapsed" : "inline"} selectedKeys={["dashboard"]} className={collapsed ? "mx-auto py-2" : "w-full p-2"}/>
-    </Layout.Sider>);
-}
 export const layoutShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Classic middle and backend shell",
             description: "Left Sider + Right Header / Content / Footer, automatic horizontal layout when including sidebar.",
-            code: `<Layout className="h-full">
-  <Layout.Sider collapsible>
-    <NavMenu items={items} selectedKeys={["dashboard"]} />
+            code: `const [collapsed, setCollapsed] = useState(false)
+
+<Layout className="h-full" hasSider>
+  <Layout.Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+    <div className={cn(
+      "flex h-[var(--hl-layout-header-h)] items-center font-semibold",
+      collapsed ? "justify-center" : "px-4",
+    )}>
+      {collapsed ? "H" : "Hulian Console"}
+    </div>
+    <NavMenu items={items} mode={collapsed ? "collapsed" : "inline"} selectedKeys={["dashboard"]} />
   </Layout.Sider>
   <Layout>
     <Layout.Header sticky>
@@ -96,7 +94,7 @@ export const layoutShowcase: ShowcaseSpec = {
 </Layout>`,
             render: () => (<Frame>
           <Layout className="h-full" hasSider>
-            <StaticSider />
+            <DemoSider />
             <Layout>
               <Layout.Header sticky>
                 <span className="font-medium text-foreground">Middle and backend shell</span>
@@ -131,7 +129,7 @@ export const layoutShowcase: ShowcaseSpec = {
               <span className="font-medium text-foreground">Header of banner</span>
             </Layout.Header>
             <Layout hasSider>
-              <StaticSider />
+              <DemoSider />
               <Layout.Content>
                 <FillerContent />
               </Layout.Content>
@@ -148,7 +146,7 @@ export const layoutShowcase: ShowcaseSpec = {
 </Layout.Sider>`,
             render: () => (<Frame>
           <Layout className="h-full" hasSider>
-            <StaticSider collapsed/>
+            <DemoSider defaultCollapsed/>
             <Layout>
               <Layout.Header sticky>
                 <span className="font-medium text-foreground">Collapse</span>

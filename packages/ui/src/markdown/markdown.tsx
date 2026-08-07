@@ -87,7 +87,7 @@ function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
           <div className="overflow-x-auto" tabIndex={0} aria-label={dataTableLabel}>
             <table className="w-full border-collapse text-[0.92em] [&_tr:last-child>td]:border-b-0">
               <thead>
-                <tr className="bg-muted/[0.06]">
+                <tr className="bg-subtle">
                   {b.header.map((h, j) => (
                     <th
                       key={j}
@@ -100,7 +100,7 @@ function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
               </thead>
               <tbody>
                 {b.rows.map((row, r) => (
-                  <tr key={r} className="even:bg-muted/[0.03]">
+                  <tr key={r} className="even:bg-subtle/60">
                     {row.map((cell, c) => (
                       <td key={c} className="border-b border-border/60 px-3.5 py-2 align-top">
                         {renderInline(cell)}

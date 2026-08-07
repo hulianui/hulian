@@ -54,7 +54,7 @@ export const descriptionsShowcase: ShowcaseSpec = {
       code: `<Descriptions
   bordered
   title="订单详情"
-  extra={<a href="#edit">编辑</a>}
+  extra={<a href="#">编辑</a>}
   items={[
     { label: "用户名", children: "zhangsan" },
     { label: "地址", children: "广东省广州市天河区某某路 88 号 A 座 1203", span: 3 },
@@ -64,7 +64,7 @@ export const descriptionsShowcase: ShowcaseSpec = {
         <Descriptions
           bordered
           title="订单详情"
-          extra={<a href="https://example.com/#edit">编辑</a>}
+          extra={<a href="#">编辑</a>}
           items={items}
         />
       ),
@@ -126,7 +126,7 @@ export const descriptionsShowcase: ShowcaseSpec = {
         <Descriptions
           bordered
           title="订单详情"
-          extra={<a href="https://example.com/#edit">编辑</a>}
+          extra={<a href="#">编辑</a>}
           items={items}
         />
       ),

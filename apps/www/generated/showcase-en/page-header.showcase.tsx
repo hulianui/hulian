@@ -6,8 +6,8 @@ import { Button } from "../../../../packages/ui/src/button";
 import { Chip } from "../../../../packages/ui/src/chip";
 import { Tabs, TabsList, TabsTab } from "../../../../packages/ui/src/tabs";
 const crumb = (<Breadcrumb items={[
-        { label: "Home", href: "https://example.com/" },
-        { label: "Order", href: "https://example.com/orders" },
+        { label: "Home", href: "#" },
+        { label: "Order", href: "#" },
         { label: "Order details" },
     ]}/>);
 const tags = (<>
@@ -58,7 +58,7 @@ export const pageHeaderShowcase: ShowcaseSpec = {
   tags={<Chip tone="brand" variant="soft" size="sm">128 For sale</Chip>}
 />`,
             render: () => (<div className="w-full max-w-3xl">
-          <PageHeader breadcrumb={<Breadcrumb items={[{ label: "Home", href: "https://example.com/" }, { label: "Product List" }]}/>} title="Product List" subTitle="Manage on-sale and off-the-shelf products" tags={<Chip tone="brand" variant="soft" size="sm">
+          <PageHeader breadcrumb={<Breadcrumb items={[{ label: "Home", href: "#" }, { label: "Product List" }]}/>} title="Product List" subTitle="Manage on-sale and off-the-shelf products" tags={<Chip tone="brand" variant="soft" size="sm">
                 128 for sale
               </Chip>}/>
         </div>),
@@ -111,7 +111,7 @@ export const pageHeaderShowcase: ShowcaseSpec = {
         {
             name: "List page (breadcrumbs + title + tags, no return)",
             render: () => (<div className="w-full max-w-3xl">
-          <PageHeader breadcrumb={<Breadcrumb items={[{ label: "Home", href: "https://example.com/" }, { label: "Product List" }]}/>} title="Product List" subTitle="Manage on-sale and off-the-shelf products" tags={<Chip tone="brand" variant="soft" size="sm">
+          <PageHeader breadcrumb={<Breadcrumb items={[{ label: "Home", href: "#" }, { label: "Product List" }]}/>} title="Product List" subTitle="Manage on-sale and off-the-shelf products" tags={<Chip tone="brand" variant="soft" size="sm">
                 128 for sale
               </Chip>}/>
         </div>),

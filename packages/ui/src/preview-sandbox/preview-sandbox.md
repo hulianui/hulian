@@ -111,6 +111,8 @@ normalizeReactError(err, info);                   // 归一成 PreviewSandboxErr
 
 ## 禁忌 / 坑
 
+- **档位清单从设备真源派生，加机型只改一处**。`desktop` 是「无外框」档，是清单里唯一显式的例外；其余档位（含 `watch`）来自 `lib/device-metrics`，与 mockups 分类的外框件一一对应。此前这里手写了第二份清单，结果是 `watch` 被漏掉，且没有任何东西保证「内屏比例 == 视口比例」——那正是外框内一圈白边的来源（#117 / #139）。
+
 - **`code` 不是 JSX，是 HTML 文档串。** 塞一段 `<Button/>` 或 TSX 进去只会被当纯文本渲染，不会报错也不会编译——这是本组件最容易踩的静默失效。要真正执行生成的组件代码，只有两条路：自己在消费方接编译器（esbuild-wasm / WebContainers 那一档，本库不会引入这类重依赖），或改用同文档模式把已经编译好的组件当 `children` 传进来。
 - **默认 sandbox 只给 `allow-scripts`，刻意不给 `allow-same-origin`，这是个真实的取舍：**
   - `srcdoc` 文档本就继承宿主的源。两个值一起给等于**没有沙箱**：预览里的脚本能读写宿主 DOM、`localStorage`、cookie，甚至自己把 `sandbox` 属性摘掉。所以内容只要不是你完全可信的（AI 生成的、用户贴的、第三方模板），就别放开。

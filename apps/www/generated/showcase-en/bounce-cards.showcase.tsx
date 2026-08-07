@@ -4,7 +4,7 @@ import { BounceCards } from "../../../../packages/ui/src/bounce-cards/bounce-car
 function Stage({ children }: {
     children: React.ReactNode;
 }) {
-    return (<div className="flex h-72 w-full max-w-2xl items-center justify-center overflow-hidden rounded-xl border border-border bg-muted/30">
+    return (<div className="flex h-72 w-full max-w-2xl items-center justify-center overflow-hidden rounded-xl border border-border bg-subtle">
       {children}
     </div>);
 }

@@ -26,8 +26,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"solid" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体 |
-| tone | `"brand" ｜ "danger"` | `"brand"` | 语义色调 |
+| tone | `"brand" ｜ "success" ｜ "warning" ｜ "danger" ｜ "neutral"` | `"brand"` | 语义色调（见下表） |
 | size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
+| block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
 
@@ -43,6 +44,27 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 按钮文案 |
 | render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），用于按钮样式的链接 CTA；样式与 `aria-disabled` 合并进该元素 |
+
+## 语义档（tone）
+
+按钮是 **`variant`（形态）× `tone`（语义）** 的二维模型，不是一维的 `type` 平铺 —— 「实心的成功按钮」和「描边的成功按钮」是两个正交选择，不必各开一个枚举值。
+
+| tone | 用在什么操作上 | solid 形态 |
+|------|---------------|-----------|
+| `brand`（默认） | 页面主操作：提交、保存、下一步 | 品牌底 + 白字 |
+| `success` | 确认类正向操作：通过、发布、启用 | 成功底 + 对应前景 |
+| `warning` | 有代价但不销毁数据：驳回、下架、强制同步 | 警告底 + 对应前景 |
+| `danger` | 不可逆的销毁操作：删除、注销、清空 | 危险底 + 对应前景 |
+| `neutral` | 与主操作等重的次操作：取消并返回、跳过 | 反色底（前景色作底） |
+
+```tsx
+<Button tone="success">通过</Button>
+<Button tone="warning" variant="outline">驳回</Button>
+<Button tone="danger">删除</Button>
+<Button tone="neutral">跳过</Button>
+```
+
+从一维 `type` 模型（Vant / Element 那套）迁过来时的对照：`type="primary"` → 默认 `<Button>`；`type="success"` → `tone="success"`；`type="default"` / `plain` → `variant="outline"`；`hairline` 已是全库默认，不必显式写。
 
 ## 尺寸档
 
@@ -66,6 +88,8 @@ import { Button, buttonVariants } from "@hulianui/ui"
 <Button>默认</Button>
 <Button variant="outline">描边</Button>
 <Button tone="danger">危险</Button>
+<Button tone="success" variant="outline">通过</Button>
+<Button block>块级主操作</Button>
 <Button loading>加载中</Button>
 ```
 
@@ -73,6 +97,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 - `render` 模式为降低风险**不套 motion**，故无 press 缩放动效（颜色/hover 过渡仍在）；文案优先取 Button 的 children。
 - `loading` 会自动禁用按钮，无需再手动加 `disabled`。
+- 按钮文字**不可被选中**（base 带 `select-none`）。按钮文案是控件标签不是内容，连点场景下浏览器会把连续点击识别成双击选词把文字刷成蓝底。要让用户复制的文本请别做成按钮。
+- `tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone="success" variant="outline"`，别去 `className` 里覆盖背景色。
+- `tone="neutral"` 的 `solid` 是**反色**（亮色下深底白字、暗色下浅底深字），不是灰底。灰底实心与 `variant="outline"` 几乎不可分辨，等于白开一档。
 - 自定义往按钮里塞图标+文字（尤其在特效按钮里）若图标掉到下一行，是 Tailwind Preflight 把 `svg{display:block}` 撑成块级所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——容器要 `inline-flex`，本 Button 已处理，自搓 wrapper 时注意。
 
 ## 相关

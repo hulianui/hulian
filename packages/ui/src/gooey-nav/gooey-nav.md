@@ -61,7 +61,8 @@ import { GooeyNav } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 受控/非受控二选一：传了 `activeIndex` 即进入受控，组件内部不再自行改高亮，必须配合 `onChange` 回写父级 state，否则点击无反应。
-- 容器需要深色底 + `overflow-hidden`：药丸与粒子靠 blur/contrast 熔色，浅底或裁切不当观感会差（showcase 用 `oklch(0.16 0.02 265)` 深底承托）。
+- **容器必须是深色底** + `overflow-hidden`：药丸与粒子靠 blur/contrast 熔色，浅底或裁切不当观感会差（showcase 用 `oklch(0.16 0.02 265)` 深底承托）。
+- 正因为容器恒为深色，本件的文字与药丸用**固定的黑白阶**（`text-white/80`、`bg-white`），不跟随页面主题。这不是漏接 token：跟随主题的话，亮色主题下 `--color-foreground` 是 `gray-900`，非激活项就成了「深字压深底」，直接看不见（#133）。放到浅色区域用会反过来失效——那时该换 [PillNav](../pill-nav/pill-nav.md) 或 [NavMenu](../nav-menu/nav-menu.md)。
 - reduced-motion 下粒子与弹簧动画自动跳过，仅保留瞬时切换，属预期降级。
 
 ## 相关

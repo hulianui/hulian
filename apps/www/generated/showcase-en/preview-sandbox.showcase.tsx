@@ -1,6 +1,7 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { useComponentLocale } from "../../../../packages/ui/src/config/locale-context";
 import { Button } from "../../../../packages/ui/src/button";
 import { PreviewSandbox } from "../../../../packages/ui/src/preview-sandbox/preview-sandbox";
 import type { PreviewSandboxDevice } from "../../../../packages/ui/src/preview-sandbox/preview-sandbox.types";
@@ -41,13 +42,14 @@ const Frame = ({ children }: {
 }) => (<div className="h-[420px] w-full overflow-hidden rounded-[var(--radius)] border border-border">
     {children}
   </div>);
-const DEVICES: PreviewSandboxDevice[] = ["desktop", "iphone", "android", "tablet"];
+const DEVICES: PreviewSandboxDevice[] = ["desktop", "iphone", "android", "tablet", "watch"];
 const DeviceDemo = () => {
     const [device, setDevice] = useState<PreviewSandboxDevice>("iphone");
+    const deviceNames = useComponentLocale().previewSandbox?.devices;
     return (<div className="w-full space-y-3">
       <div className="flex flex-wrap gap-2">
         {DEVICES.map((item) => (<Button key={item} size="sm" variant={item === device ? "solid" : "outline"} onClick={() => setDevice(item)}>
-            {item}
+            {deviceNames?.[item] ?? item}
           </Button>))}
       </div>
       <Frame>

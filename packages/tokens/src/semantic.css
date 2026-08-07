@@ -17,6 +17,13 @@
   --color-bg: var(--gray-50);
   --color-surface: var(--white);
   --color-surface-hover: var(--gray-100);
+  /* 弱背景：**静态**区域底（分组容器、看板列、泳道、说明条、代码内联块）。
+     与 --color-surface-hover 当前同值，但语义不同：surface-hover 表达的是「surface 的悬停态」，
+     只该出现在 hover:/data-[state] 这类交互档上；一块常驻的底色写 hover 是语义错位，
+     以后想单独调整「静态弱底」也没有抓手。
+     ⚠️ 别再拿 --color-muted 当背景用：它是次要**文字**色（亮 gray-600 / 暗 gray-400），
+     当底色时亮色下是一块脏灰、暗色下是一块发白的浅灰，两个主题都错且错法相反（#124）。 */
+  --color-subtle: var(--gray-100);
   --color-foreground: var(--gray-900);
   --color-muted: var(--gray-600);
   --color-border: var(--gray-200);
@@ -33,12 +40,18 @@
   --color-primary: var(--brand-700);
   --color-primary-foreground: var(--white);
   --color-primary-hover: var(--brand-500);
+  /* 语义色的 hover 档一律取「亮暗两端之间的那一档」——亮色下变亮、暗色下变暗，
+     同一个变量名在两个主题里都朝对比更弱的方向走一步，与 --color-primary-hover 同构。
+     缺这一档时 solid 语义按钮的 hover 只能写回自身，等于**没有悬停反馈**（#122）。 */
   --color-danger: var(--danger-700);
   --color-danger-foreground: var(--white);
+  --color-danger-hover: var(--danger-500);
   --color-success: var(--success-700);
   --color-success-foreground: var(--white);
+  --color-success-hover: var(--success-600);
   --color-warning: var(--warning-700);
   --color-warning-foreground: var(--white);
+  --color-warning-hover: var(--warning-600);
   /* 图表分类色板（数据序列用，SVG 经 var() 直接消费 → 明暗自适应） */
   --color-chart-1: oklch(0.62 0.19 255);
   --color-chart-2: oklch(0.7 0.16 155);
@@ -54,6 +67,11 @@
   --code-tag: var(--danger-700);
   --code-attr: oklch(0.55 0.2 300);
   --radius: 0.625rem;
+  /* 整页骨架的顶栏高度。Layout.Header / AdminLayout 的顶栏与侧栏品牌区都读它。
+     此前这个 4rem 硬编码在三个组件里，消费方想让「侧栏顶部 logo 区与 Header 齐平」
+     （几乎必做的一件事）只能去源码里翻那个数，翻错一次就是一条永远对不齐的分隔线（#120）。
+     用法：h-[var(--hl-layout-header-h)]。 */
+  --hl-layout-header-h: 4rem;
 
   /* ===== 阴影体系 · 折中·结构升级（当前启用 · 亮色）=====
      三层：① 环境光晕(0 0 · 无偏移纯模糊·极淡) ② 柔主投影(blur 收紧·负 spread 防外溢)
@@ -94,6 +112,7 @@
   --color-bg: var(--gray-950);
   --color-surface: var(--gray-900);
   --color-surface-hover: var(--gray-800);
+  --color-subtle: var(--gray-800);
   --color-foreground: var(--gray-50);
   --color-muted: var(--gray-400);
   --color-border: var(--gray-800);
@@ -105,10 +124,13 @@
   --color-primary-hover: var(--brand-500);
   --color-danger: var(--danger-400);
   --color-danger-foreground: var(--gray-950);
+  --color-danger-hover: var(--danger-500);
   --color-success: var(--success-500);
   --color-success-foreground: var(--gray-950);
+  --color-success-hover: var(--success-600);
   --color-warning: var(--warning-500);
   --color-warning-foreground: var(--gray-950);
+  --color-warning-hover: var(--warning-600);
   /* 暗态图表色提亮以保对比 */
   --color-chart-1: oklch(0.7 0.17 255);
   --color-chart-2: oklch(0.76 0.16 155);

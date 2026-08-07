@@ -46,4 +46,18 @@ test("CLI 对干净文件以 0 退出", () => {
   });
   assert.equal(result.status, 0);
   assert.match(result.stdout, /PASS/);
+
 });
+
+test("只有 warning 时退出 0，措辞也不能写 FAIL", () => {
+  // 退出码与措辞必须一致：日志写 FAIL 而退出码是 0，读日志的人要么去关规则，
+  // 要么把真正的 error 也当成噪音。
+  const result = spawnSync(process.execPath, [CLI, "--", "test/fixtures/warn-only.tsx"], {
+    cwd: ROOT,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, "只有 warning 时应退出 0");
+  assert.match(result.stdout, /WARN/);
+  assert.doesNotMatch(result.stdout, /FAIL/);
+});
+

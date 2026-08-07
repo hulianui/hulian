@@ -45,6 +45,8 @@ import { Watch, WATCH_MODELS } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。
 暂无已知坑。设备外壳为纯展示组件（RSC 可用），imageSrc 与 children 同时存在时 imageSrc 胜出。
 
 ## 相关

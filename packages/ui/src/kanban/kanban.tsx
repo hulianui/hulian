@@ -149,7 +149,10 @@ function KanbanColumnView<T>({
     <section
       className={cn(
         // 列只用极淡底色圈出泳道，不描边——描边叠白卡边框会形成「框中框」的脏感。
-        "flex w-72 shrink-0 flex-col rounded-[calc(var(--radius)+0.25rem)] bg-muted/40",
+        // 底色必须走 subtle（弱背景）而不是 muted：muted 是次要**文字**色，亮色下 gray-600
+        // 半透明叠白 ≈ 中灰，比 Trello 那类列底重了三四档，白卡压上去对比过冲（#127）。
+        // 配套：卡片请用 border-hairline（亮色透明靠阴影分隔、暗色显边），别用实线 border。
+        "flex w-72 shrink-0 flex-col rounded-[calc(var(--radius)+0.25rem)] bg-subtle",
         columnClassName,
       )}
     >

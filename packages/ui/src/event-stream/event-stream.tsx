@@ -138,7 +138,7 @@ function Row({
         )}
 
         {hasDetail && open && (
-          <div className="mt-1.5 rounded-[var(--radius)] bg-muted/50 px-2.5 py-2 text-xs leading-relaxed text-muted">
+          <div className="mt-1.5 rounded-[var(--radius)] bg-subtle px-2.5 py-2 text-xs leading-relaxed text-muted">
             {item.detail}
           </div>
         )}

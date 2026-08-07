@@ -54,7 +54,8 @@ Pill only:
 ## Usage guidelines
 
 - With activeIndex, update parent state from onChange. Controlled state does not update internally.
-- A dark overflow-hidden container best supports the blur/contrast fusion; light backgrounds and poor clipping reduce the effect.
+- **The container must be dark** and `overflow-hidden`: the pill and particles fuse through blur and contrast, so light backgrounds and poor clipping ruin the effect.
+- Because the container is always dark, this component uses **fixed black and white steps** (`text-white/80`, `bg-white`) instead of theme tokens. That is deliberate, not a missing token: following the page theme would make `--color-foreground` resolve to `gray-900` in light mode, turning inactive items into dark text on a dark bar. On light surfaces the reverse happens, so reach for [PillNav](../pill-nav/pill-nav.md) or [NavMenu](../nav-menu/nav-menu.md) instead.
 - Reduced motion skips particles and spring travel while preserving selection.
 
 ## Related

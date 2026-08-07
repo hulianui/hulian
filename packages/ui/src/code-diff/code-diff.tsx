@@ -51,7 +51,7 @@ function CodeDiffImpl({
       )}
     >
       {(filename != null || added > 0 || removed > 0) && (
-        <div className="flex items-center justify-between gap-3 border-b border-border bg-muted/5 px-3 py-2">
+        <div className="flex items-center justify-between gap-3 border-b border-border bg-subtle px-3 py-2">
           {filename != null && <span className="truncate text-foreground">{filename}</span>}
           <span className="shrink-0 space-x-2 tabular-nums">
             <span className="text-success">+{added}</span>
@@ -87,7 +87,7 @@ function CodeDiffImpl({
                   {anno?.content && (
                     <div
                       data-cd-annotation
-                      className="whitespace-normal border-y border-border bg-muted/5 px-2 py-2 font-sans"
+                      className="whitespace-normal border-y border-border bg-subtle px-2 py-2 font-sans"
                     >
                       {anno.content}
                     </div>

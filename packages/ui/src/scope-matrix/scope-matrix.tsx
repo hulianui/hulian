@@ -93,7 +93,7 @@ function Bucket({
   return (
     <section
       data-bucket={kind}
-      className="flex min-w-0 flex-1 flex-col rounded-[calc(var(--radius)+0.25rem)] bg-muted/40"
+      className="flex min-w-0 flex-1 flex-col rounded-[calc(var(--radius)+0.25rem)] bg-subtle"
     >
       <header className="relative px-3 pt-3">
         <span
@@ -158,7 +158,7 @@ function Bucket({
             <button
               type="button"
               onClick={commit}
-              className="shrink-0 rounded-[var(--radius)] border border-border px-2.5 py-1.5 text-xs text-foreground outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring"
+              className="shrink-0 rounded-[var(--radius)] border border-border px-2.5 py-1.5 text-xs text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
             >
               {locale.add}
             </button>
@@ -263,7 +263,7 @@ function ScopeMatrixImpl({
       </div>
 
       {/* 有效范围小结：这类配置最容易想错的就是空白名单与优先级，直接写出来。 */}
-      <p className="rounded-[var(--radius)] bg-muted/50 px-3 py-2 text-xs leading-relaxed text-muted">
+      <p className="rounded-[var(--radius)] bg-subtle px-3 py-2 text-xs leading-relaxed text-muted">
         {allow.length === 0 && deny.length === 0
           ? locale.unrestricted
           : allow.length === 0

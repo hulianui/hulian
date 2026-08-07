@@ -8,7 +8,7 @@ export default function ComponentsLayout({ children }: { children: ReactNode }) 
     <DocsShell
       navLabel={DOCS_LOCALE === "en" ? "Component navigation" : "组件导航"}
       nav={<ComponentTree />}
-      contentClassName="bg-muted/[0.045]"
+      contentClassName="bg-subtle/50"
     >
       {children}
     </DocsShell>

@@ -88,8 +88,77 @@ const SYNONYMS = new Map(
     移动端: ["tab-bar", "swipe-action", "pull-to-refresh", "action-sheet"],
     营销: ["marketing", "landing"],
     落地页: ["landing", "hero"],
+
+    // ── 氛围词轴（#140）──
+    // 上面全是**功能名词**，而特效需求的自然表述是**形容词**：「首屏想有点科技感」
+    // 「这块太平了」「要有呼吸感」。这类 query 此前对 92 件装饰件全部打 0 分 ——
+    // 与 #36 修掉的那类假阴性同源：模型一次 0 命中就断言「库里没有」。
+    // 取值只映射到本库真实存在的件，不做泛化联想。
+    科技感: ["aurora", "grid-pattern", "dot-pattern", "animated-beam", "border-beam", "particles"],
+    高级感: ["aurora-text", "shine-border", "magic-card", "glass-surface", "bento-grid"],
+    质感: ["glass-surface", "magic-card", "dot-pattern", "shine-border"],
+    氛围: ["aurora", "particles", "grid-pattern", "dot-pattern"],
+    炫: ["aurora", "rainbow-button", "shimmer-button", "sparkles-text", "particles"],
+    酷炫: ["aurora", "rainbow-button", "particles", "meta-balls"],
+    光效: ["border-beam", "shine-border", "border-glow", "card-spotlight", "shimmer-button"],
+    流光: ["shine-border", "border-beam", "animated-shiny-text", "shimmer-button"],
+    发光: ["border-glow", "shine-border", "card-spotlight"],
+    描边: ["border-beam", "shine-border", "star-border", "border-glow"],
+    呼吸: ["pulsating-button", "border-glow"],
+    脉冲: ["pulsating-button", "ripple"],
+    入场: ["reveal", "blur-text", "split-text", "animated-list"],
+    转场: ["reveal", "pixel-transition", "gradual-blur"],
+    首屏: ["hero", "aurora", "aurora-text", "typing-animation", "bento-grid"],
+    冲击: ["aurora", "particles", "typing-animation"],
+    毛玻璃: ["glass-surface", "fluid-glass", "glass-icons"],
+    立体: ["tilt", "book-3d", "card-swap"],
+    悬浮: ["tilt", "card-spotlight", "magnet"],
+    粒子: ["particles", "splash-cursor", "click-spark"],
+    极光: ["aurora", "aurora-text"],
+    渐变: ["aurora-text", "animated-gradient-text", "shine-border"],
+    背景: ["aurora", "particles", "dot-pattern", "grid-pattern", "retro-grid"],
+    动效: ["reveal", "number-ticker", "animated-list", "marquee"],
+    特效: ["aurora", "particles", "border-beam", "shimmer-button", "sparkles-text"],
+    记忆点: ["aurora-text", "bento-grid", "marquee", "shimmer-button"],
+    // 「这块太平了」「页面很平」是最常见的原话，而分词只会切出二元组「太平」「很平」——
+    // 这里收录的是**实际会被切出来的形态**，不是词典词。
+    平淡: ["reveal", "number-ticker", "border-beam", "bento-grid"],
+    太平: ["reveal", "number-ticker", "border-beam", "bento-grid"],
+    很平: ["reveal", "number-ticker", "border-beam", "bento-grid"],
+    单调: ["reveal", "bento-grid", "dot-pattern", "number-ticker"],
+    朴素: ["reveal", "bento-grid", "dot-pattern"],
+    呆板: ["reveal", "tilt", "magic-card"],
+    滚动: ["marquee", "scroll-stack", "reveal"],
+    跑马灯: ["marquee"],
+    打字: ["typing-animation", "text-cursor"],
+    数字滚动: ["number-ticker"],
   }),
 );
+
+/**
+ * `tags:animated` / `tags:webgl` 直查。
+ *
+ * 文档站侧栏一直有「按 animated 标签过滤」这个入口（manifest 的分类原则注释写明动效是
+ * 横切标签），但 MCP 侧完全没有 —— agent 想「给我看看所有带动效的件」时无路可走（#140）。
+ * 返回 null 表示这不是一条标签查询，调用方走正常打分。
+ */
+export function parseTagQuery(query) {
+  const match = String(query ?? "").match(/\btags?\s*[:=]\s*([a-z0-9,\s-]+)/i);
+  if (!match) return null;
+  const tags = match[1]
+    .split(/[,\s]+/)
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
+  return tags.length ? tags : null;
+}
+
+/** 按标签过滤（全部命中才算）。 */
+export function filterByTags(items, tags) {
+  return items.filter((item) => {
+    const own = (item.meta?.tags ?? []).map((t) => String(t).toLowerCase());
+    return tags.every((tag) => own.includes(tag));
+  });
+}
 
 const CJK = /[㐀-鿿぀-ヿ가-힯]/;
 const isCjk = (value) => CJK.test(value);

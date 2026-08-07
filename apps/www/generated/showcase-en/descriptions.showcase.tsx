@@ -46,13 +46,13 @@ export const descriptionsShowcase: ShowcaseSpec = {
             code: `<Descriptions
   bordered
   title="Order Details"
-  extra={<a href="#edit">Edit</a>}
+  extra={<a href="#">Edit</a>}
   items={[
     { label: "Username", children: "zhangsan" },
     { label: "Address", children: "A Block 1203, No. 88, XX Road, Tianhe District, Guangzhou City, Guangdong Province", span: 3 },
   ]}
 />`,
-            render: () => (<Descriptions bordered title="Order details" extra={<a href="https://example.com/#edit">Edit</a>} items={items}/>),
+            render: () => (<Descriptions bordered title="Order details" extra={<a href="#">Edit</a>} items={items}/>),
         },
         {
             title: "Single column length details",
@@ -99,7 +99,7 @@ export const descriptionsShowcase: ShowcaseSpec = {
         },
         {
             name: "bordered table status (horizontal)",
-            render: () => (<Descriptions bordered title="Order details" extra={<a href="https://example.com/#edit">Edit</a>} items={items}/>),
+            render: () => (<Descriptions bordered title="Order details" extra={<a href="#">Edit</a>} items={items}/>),
         },
         {
             name: "bordered + vertical",

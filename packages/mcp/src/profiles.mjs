@@ -118,10 +118,18 @@ export function validateProfiles(registry) {
       if (!ui.has(slug)) errors.push(`${where}: 组件 "${slug}" 不在 registry 中`);
   };
 
-  // detect / avoidCategories 是 audit 自动判场景的判据（#43）。写错的 slug 或分类不会报错，
+  // detect / avoidGroups 是 audit 自动判场景的判据（#43）。写错的 slug 或分类不会报错，
   // 只会让判定**永远落空** —— 静默失效比报错更难发现，所以必须在这里挡住。
   const allCategories = new Set(
     registry.items.filter((i) => i.type === "registry:ui").flatMap((i) => i.categories ?? []),
+  );
+  // avoidGroups 允许两种写法：整类 "mockups"，或类下的一组 "decoration/backdrop"。
+  // 后者必须是 registry 里真实存在的 category/group 组合，写错同样静默落空。
+  const allGroupPaths = new Set(
+    registry.items
+      .filter((i) => i.type === "registry:ui")
+      .flatMap((i) => (i.categories ?? []).map((c) => (i.meta?.group ? `${c}/${i.meta.group}` : null)))
+      .filter(Boolean),
   );
   const checkDetect = (detect, where) => {
     checkComponents(detect?.components, `${where}/detect.components`);
@@ -136,9 +144,16 @@ export function validateProfiles(registry) {
     seenSurface.add(s.id);
     if (!s.intent) errors.push(`surface ${s.id}: 缺 intent`);
     checkDetect(s.detect, `surface ${s.id}`);
-    for (const cat of s.avoidCategories ?? [])
-      if (!allCategories.has(cat))
-        errors.push(`surface ${s.id}: avoidCategories 里的 "${cat}" 不是 registry 中的分类`);
+    for (const entry of s.avoidGroups ?? [])
+      if (!allCategories.has(entry) && !allGroupPaths.has(entry))
+        errors.push(
+          `surface ${s.id}: avoidGroups 里的 "${entry}" 既不是 registry 中的分类，也不是真实的 <分类>/<组>`,
+        );
+    // allowEffects / preferEffects 里的 slug 写错 = 发掘面静默少一件，同样要挡（#140）。
+    checkComponents(s.allowEffects, `surface ${s.id}/allowEffects`);
+    checkComponents(s.preferEffects, `surface ${s.id}/preferEffects`);
+    if (s.visualBudget && !Array.isArray(s.visualBudget.slots))
+      errors.push(`surface ${s.id}: visualBudget 缺 slots（说明允许放在哪些位置）`);
     if (!s.componentRoles || !Object.keys(s.componentRoles).length)
       errors.push(`surface ${s.id}: 缺 componentRoles`);
     for (const [role, list] of Object.entries(s.componentRoles ?? {}))

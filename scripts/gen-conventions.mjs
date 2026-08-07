@@ -92,6 +92,22 @@ const GLOBAL = [
     rule: "写业务时发现需要 CSS override 或行为 hack 才好用 —— 那是组件的缺口，回库补组件",
     why: "在调用处打补丁会让同一个缺口在每个页面各修一遍，且都修得不一样",
   },
+  {
+    id: "muted-is-text-only",
+    rule: "--color-muted 只能用于文字。区域底用 bg-subtle，悬停态用 bg-surface-hover",
+    wrong: 'className="bg-muted/40 p-4"',
+    right: 'className="bg-subtle p-4"',
+    why: "muted 是次要文字色（亮 gray-600 / 暗 gray-400）。当背景用时亮色下是一块脏灰、暗色下是发白的浅灰 —— 两个主题都错且错法相反。shadcn 的 --muted 是背景、--muted-foreground 才是文字，从那边迁过来的 bg-muted 语义正好是反的，而 Tailwind 不会报错（类名合法、颜色也生成，只是意思变了）",
+    instead:
+      "小面积指示性填充（状态点、滚动条拇指、徽章反色底）可以留；判据是「这块颜色是一片区域的底，还是一个小物件的填充」",
+  },
+  {
+    id: "select-none-for-non-copyable",
+    rule: "设计上会被连点、会自动移动、或可拖拽的元素，其文本一律 select-none",
+    why: "浏览器把连续点击识别成双击选词 / 三击选段；自动滚动与拖拽中的元素还会让选区跨元素蔓延。这三类的文字都是控件标签或装饰，不是给用户复制的",
+    instead:
+      "Button / Kanban 卡片 / DesignCanvas / 弹幕 / 礼物飘条已内置；自搓触发器与飘动层记得补。真正需要复制的内容（聊天正文、代码块）保持可选",
+  },
 ];
 
 const GLOBAL_EN = [
@@ -137,6 +153,22 @@ const GLOBAL_EN = [
     id: "fix-component-not-patch",
     rule: "If a workflow needs a CSS override or behavior hack, treat it as a component gap and fix the library component.",
     why: "Call-site patches duplicate the same gap across pages and make behavior inconsistent.",
+  },
+  {
+    id: "muted-is-text-only",
+    rule: "--color-muted is for text only. Use bg-subtle for area backgrounds and bg-surface-hover for hover states.",
+    wrong: 'className="bg-muted/40 p-4"',
+    right: 'className="bg-subtle p-4"',
+    why: "muted is the secondary text colour (gray-600 in light, gray-400 in dark). As a background it reads as dirty grey in light mode and washed-out grey in dark mode, so both themes are wrong in opposite directions. In shadcn/ui --muted is a background and --muted-foreground is the text colour, so bg-muted carried over from that vocabulary means the opposite here, and Tailwind reports nothing because the class is valid.",
+    instead:
+      "Small indicator fills such as status dots, scrollbar thumbs, and inverted badge backgrounds may keep it. The test is whether the colour backs an area or fills a small object.",
+  },
+  {
+    id: "select-none-for-non-copyable",
+    rule: "Any element designed to be clicked repeatedly, to move on its own, or to be dragged must have select-none on its text.",
+    why: "Browsers turn rapid clicks into word or line selection, and selections spread across elements while something is being dragged. Text in all three cases is a control label or decoration, not content to copy.",
+    instead:
+      "Button, Kanban cards, DesignCanvas, Danmaku, and GiftFeed already handle this. Add it to hand-rolled triggers and floating layers. Keep genuinely copyable content such as chat messages and code blocks selectable.",
   },
 ];
 
@@ -205,6 +237,41 @@ const EXECUTABLE_RULES = [
     instead: '使用 toast({ title: "已保存", tone: "success" })。',
   },
   {
+    // 同一段 className 里 bg-muted 与 text-muted 同时出现 = 前景背景同色：亮色下 gray-600 字
+    // 压 gray-600 底、暗色下 gray-400 字压 gray-400 底，两个主题都不可读，而 typecheck /
+    // 单测 / 现有 guard 全都看不见（类名合法、颜色也生成）。见 #128。
+    //
+    // 两侧都用 (?<![\w:-]) 排掉带变体前缀的写法（hover:bg-muted、
+    // [&::-webkit-scrollbar-thumb]:bg-muted）—— 变体意味着「另一个状态或另一个伪元素」，
+    // 与静息态的文字色不在同一个盒子上。不排的话 Chart 图例（文字 text-muted + 滚动条拇指
+    // bg-muted/50）会被误判，而它是对的。只判静息态才是真正零误报的那条线。
+    id: "muted-as-background-with-muted-text",
+    severity: "error",
+    matcher: {
+      kind: "class-name-tokens",
+      attributes: ["className"],
+      pattern: "(?<![\\w:-])bg-muted(?:/[\\d.[\\]]+)?\\b",
+      coOccurs: "(?<![\\w:-])text-muted(?:/[\\d.[\\]]+)?\\b",
+    },
+    message: "bg-muted 与 text-muted 同时出现：--color-muted 是次要文字色，前景背景同色不可读。",
+    instead: "背景改用 bg-subtle（静态弱背景）或 bg-surface-hover（悬停态），文字保持 text-muted。",
+  },
+  {
+    // 与上一条不同，这条单看无法断定对错，所以是 warning 不是 error：小面积指示性填充
+    // （状态点、滚动条拇指、徽章反色底）借用文字色是可接受的，大面积区域底则一定错。
+    id: "muted-is-a-text-color",
+    severity: "warning",
+    matcher: {
+      kind: "class-name-tokens",
+      attributes: ["className"],
+      pattern: "\\bbg-muted(?:/[\\d.[\\]]+)?\\b",
+    },
+    message:
+      "--color-muted 是次要文字色（亮 gray-600 / 暗 gray-400），当背景用时亮色发脏、暗色发白。",
+    instead:
+      "区域底用 bg-subtle，悬停态用 bg-surface-hover；只有小面积指示性填充（状态点、滚动条拇指）才可以留。",
+  },
+  {
     id: "color-token-prefix",
     severity: "error",
     matcher: {
@@ -230,6 +297,18 @@ const EXECUTABLE_COPY_EN = {
   "toast-object-signature": {
     message: "toast has no success, error, or other member-call shortcuts.",
     instead: 'Use toast({ title: "Saved", tone: "success" }).',
+  },
+  "muted-as-background-with-muted-text": {
+    message:
+      "bg-muted and text-muted appear together: --color-muted is the secondary text colour, so foreground and background end up identical and unreadable.",
+    instead:
+      "Use bg-subtle for a static background or bg-surface-hover for a hover state, and keep text-muted for the text.",
+  },
+  "muted-is-a-text-color": {
+    message:
+      "--color-muted is the secondary text colour (gray-600 in light, gray-400 in dark); as a background it reads dirty in light mode and washed out in dark mode.",
+    instead:
+      "Use bg-subtle for area backgrounds and bg-surface-hover for hover states. Only small indicator fills such as status dots and scrollbar thumbs may keep it.",
   },
   "color-token-prefix": {
     message: "Color variables in SVG attributes and inline styles must use the --color- prefix.",

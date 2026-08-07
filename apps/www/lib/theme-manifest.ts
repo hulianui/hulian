@@ -90,6 +90,13 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
       { token: "color-bg", label: "页面底", light: "gray-50", dark: "gray-950" },
       { token: "color-surface", label: "卡片表面", light: "white", dark: "gray-900" },
       { token: "color-surface-hover", label: "表面悬停", light: "gray-100", dark: "gray-800" },
+      {
+        token: "color-subtle",
+        label: "弱背景",
+        light: "gray-100",
+        dark: "gray-800",
+        note: "静态区域底：分组容器、看板列、泳道、说明条。与「表面悬停」当前同值但语义不同——常驻底色写 hover: 是语义错位。⚠️ 别拿「次要文字」muted 当背景用：亮色下是一块脏灰、暗色下是发白的浅灰，两个主题都错。",
+      },
       { token: "color-border", label: "边框 / 分隔线", light: "gray-200", dark: "gray-800" },
       {
         token: "color-hairline",
@@ -117,7 +124,13 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         dark: "brand-400",
         fg: "color-primary-foreground",
       },
-      { token: "color-primary-hover", label: "主色悬停", light: "brand-500", dark: "brand-500" },
+      {
+        token: "color-primary-hover",
+        label: "主色悬停",
+        light: "brand-500",
+        dark: "brand-500",
+        note: "语义色的悬停档一律取「亮暗两端之间的那一档」：亮色下变亮、暗色下变暗，两个主题都朝对比更弱的方向走一步。",
+      },
       { token: "color-ring", label: "焦点环", light: "brand-500", dark: "brand-400" },
     ],
   },
@@ -131,13 +144,15 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         dark: "danger-400",
         fg: "color-danger-foreground",
       },
+      { token: "color-danger-hover", label: "危险悬停", light: "danger-500", dark: "danger-500" },
       {
         token: "color-success",
         label: "成功",
-        light: "success-600",
+        light: "success-700",
         dark: "success-500",
         fg: "color-success-foreground",
       },
+      { token: "color-success-hover", label: "成功悬停", light: "success-600", dark: "success-600" },
       {
         token: "color-warning",
         label: "警告",
@@ -145,6 +160,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         dark: "warning-500",
         fg: "color-warning-foreground",
       },
+      { token: "color-warning-hover", label: "警告悬停", light: "warning-600", dark: "warning-600" },
     ],
   },
 ];
@@ -153,6 +169,10 @@ const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
   "color-bg": { label: "Page background" },
   "color-surface": { label: "Card surface" },
   "color-surface-hover": { label: "Hovered surface" },
+  "color-subtle": {
+    label: "Subtle background",
+    note: "Static area backgrounds: grouping containers, board columns, swim lanes, note strips. It currently resolves to the same value as the hovered surface but means something different — writing hover: for a permanent background is a semantic mismatch. Never use the secondary text colour (muted) as a background: it reads as dirty grey in light mode and washed-out grey in dark mode.",
+  },
   "color-border": { label: "Borders and dividers" },
   "color-hairline": {
     label: "Hairline border",
@@ -161,11 +181,17 @@ const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
   "color-foreground": { label: "Primary text" },
   "color-muted": { label: "Secondary text" },
   "color-primary": { label: "Primary" },
-  "color-primary-hover": { label: "Primary hover" },
+  "color-primary-hover": {
+    label: "Primary hover",
+    note: "Every semantic hover token picks the step between the light and dark values, so it moves one step towards lower contrast in both themes.",
+  },
   "color-ring": { label: "Focus ring" },
   "color-danger": { label: "Danger" },
+  "color-danger-hover": { label: "Danger hover" },
   "color-success": { label: "Success" },
+  "color-success-hover": { label: "Success hover" },
   "color-warning": { label: "Warning" },
+  "color-warning-hover": { label: "Warning hover" },
 };
 export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] =
   DOCS_LOCALE === "en"

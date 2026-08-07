@@ -27,6 +27,7 @@ Accepts all native `<button>` props, including `disabled` and `type`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Size step, on the same 32/40/48px scale as Button. |
 | rippleColor | `string` | `var(--color-primary-foreground)` | Ripple color. |
 | duration | `string` | `"600ms"` | Duration of one ripple animation. |
 
@@ -51,6 +52,8 @@ Accepts all native `<button>` props, including `disabled` and `type`.
 ```
 
 ## Usage guidelines
+
+- **Shares its base with [Button](../button/button.md).** Layout, the three `size` steps (32/40/48px tall), the focus ring, the disabled treatment, and `forwardRef` all come from the same `EFFECT_BUTTON_BASE_CLASS` and `BUTTON_SIZE_CLASS`. **Colour and corner radius are deliberately not shared**, since the background is this component's own effect layer. As a result it lines up with regular Buttons and matches the library-wide focus style; before 0.27.0 each effect button rolled its own markup, lacked all of the above, and sized itself with `px-6 py-3`, so a toolbar row came out uneven (#126).
 
 The ripple animation is automatically suppressed under `prefers-reduced-motion: reduce`; consumers do not need to add a separate motion check.
 

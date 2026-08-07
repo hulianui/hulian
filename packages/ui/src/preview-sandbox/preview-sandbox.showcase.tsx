@@ -1,6 +1,7 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
+import { useComponentLocale } from "../config/locale-context";
 import { Button } from "../button";
 import { PreviewSandbox } from "./preview-sandbox";
 import type { PreviewSandboxDevice } from "./preview-sandbox.types";
@@ -47,10 +48,13 @@ const Frame = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-const DEVICES: PreviewSandboxDevice[] = ["desktop", "iphone", "android", "tablet"];
+const DEVICES: PreviewSandboxDevice[] = ["desktop", "iphone", "android", "tablet", "watch"];
 
 const DeviceDemo = () => {
   const [device, setDevice] = useState<PreviewSandboxDevice>("iphone");
+  // 档位名走 locale，不把枚举值当文案渲染：中文站上 `tablet` 对读者没有任何意义（得先猜它是什么），
+  // 英文站上一串小写单词也不符合站点其它按钮的大小写规范（#117）。
+  const deviceNames = useComponentLocale().previewSandbox?.devices;
   return (
     <div className="w-full space-y-3">
       <div className="flex flex-wrap gap-2">
@@ -61,7 +65,7 @@ const DeviceDemo = () => {
             variant={item === device ? "solid" : "outline"}
             onClick={() => setDevice(item)}
           >
-            {item}
+            {deviceNames?.[item] ?? item}
           </Button>
         ))}
       </div>

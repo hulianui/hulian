@@ -55,8 +55,12 @@ export function CardNav({
           transition={{ duration: dur, ease: [0.16, 1, 0.3, 1] }}
           style={{ minHeight: 60 }}
         >
-          {/* 顶栏：汉堡 / 品牌 / CTA */}
-          <div className="absolute inset-x-0 top-0 z-[2] flex h-[60px] items-center justify-between pl-4 pr-2">
+          {/* 顶栏：汉堡 / 品牌 / CTA。
+              顶栏与下面的内容区都必须**留在文档流里**：外壳靠 height:"auto" 展开，而 auto 是按
+              文档流子元素算的。两块都 absolute 时算出来恒为 0 —— 展开后高度不增加，内容被压进
+              60px 的条里、溢出到顶栏上糊成一团（#131）。收起态由外壳 height:60 + overflow-hidden
+              裁掉内容，行为与此前一致。 */}
+          <div className="relative z-[2] flex h-[60px] items-center justify-between pl-4 pr-2">
             <div
               role="button"
               tabIndex={0}
@@ -104,7 +108,7 @@ export function CardNav({
           <div
             aria-hidden={!open}
             className={cn(
-              "absolute inset-x-0 bottom-0 top-[60px] z-[1] flex flex-col items-stretch gap-2 p-2 sm:flex-row sm:items-end",
+              "relative z-[1] flex flex-col items-stretch gap-2 p-2 sm:flex-row sm:items-end",
               open ? "pointer-events-auto" : "pointer-events-none",
             )}
           >
@@ -121,7 +125,7 @@ export function CardNav({
                       ease: [0.16, 1, 0.3, 1],
                       delay: reduce ? 0 : 0.08 * idx,
                     }}
-                    className="flex min-h-[60px] min-w-0 flex-1 select-none flex-col gap-2 rounded-lg bg-muted/30 p-4 text-foreground"
+                    className="flex min-h-[60px] min-w-0 flex-1 select-none flex-col gap-2 rounded-lg bg-subtle p-4 text-foreground"
                     style={
                       {
                         ...(card.bgColor ? { backgroundColor: card.bgColor } : {}),

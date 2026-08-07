@@ -86,6 +86,9 @@ import { Segmented } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- **装不下时段会压缩并省略，不会消失**。段是 `min-w-0 flex-1 truncate`：任何宽度下每一段都仍然可见、可点。0.27.0 前缺 `min-w-0`，flex item 的 `min-width:auto` 配上 `whitespace-nowrap` 完全不可压缩，root 宽度被撑到「所有段文字之和」，超出部分被上游容器裁掉——**选项存在但不可达**（#114）。
+- 但「能压缩」不等于「好用」：4 段中文塞进 150px 只会全变省略号。窄容器请改用 [Select](../select/select.md)，或像 [InspectorPanel](../inspector-panel/inspector-panel.md) 那样按容器宽度自动降级。
+
 - 段 `label` 是图标/徽标等富节点时必须给该段 `ariaLabel`，否则读屏会读英文 `value`（念读不友好）。
 - 用 `value`/`onValueChange` 即受控，须自管 state；非受控只给 `defaultValue`。
 - 选中是单值互斥，没有多选——多选共存改用 [ToggleGroup](../toggle/toggle.md)。

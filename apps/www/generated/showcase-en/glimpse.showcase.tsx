@@ -10,7 +10,7 @@ export const glimpseShowcase: ShowcaseSpec = {
             code: `<p>
   Our design system is based on {" "}
   <Glimpse
-    href="https://hulian.example.com/tokens"
+    href="#"
     image={coverUrl}
     title="Hulian Design Token"
     description="A set of semantic color/spacing/rounding variables, with light and dark modes available out of the box."
@@ -21,7 +21,7 @@ export const glimpseShowcase: ShowcaseSpec = {
 </p>`,
             render: () => (<p className="max-w-md leading-7 text-foreground">
           Our design system is based on{" "}
-          <Glimpse href="https://hulian.example.com/tokens" image={cover(210)} title="Hulian Design Token" description="A set of semantic color/spacing/rounding variables, light and dark modes available out of the box, and a single source of truth for all components.">
+          <Glimpse href="#" image={cover(210)} title="Hulian Design Token" description="A set of semantic color/spacing/rounding variables, light and dark modes available out of the box, and a single source of truth for all components.">
             Semantics token
           </Glimpse>{" "}
           Build, hover the link to preview.
@@ -52,22 +52,22 @@ Details of
             description: "Multiple inline links in the same paragraph are previewed independently without interfering with each other.",
             code: `<p>
   Recommended reading{" "}
-  <Glimpse href="https://example.com/a" image={coverA} title="Component Overview" description="160+ component classification index.">
+  <Glimpse href="#" image={coverA} title="Component Overview" description="160+ component classification index.">
     Component Overview
   </Glimpse>
   ,
-  <Glimpse href="https://example.com/b" image={coverB} title="Theme customization" description="Change one thing token Site-wide reskin ">
+  <Glimpse href="#" image={coverB} title="Theme customization" description="Change one thing token Site-wide reskin ">
     Theme customization
   </Glimpse>{" "}
   Two articles.
 </p>`,
             render: () => (<p className="max-w-lg leading-7 text-foreground">
           Recommended reading{" "}
-          <Glimpse href="https://example.com/a" image={cover(140)} title="Component Overview" description="160+ component classification index.">
+          <Glimpse href="#" image={cover(140)} title="Component Overview" description="160+ component classification index.">
             Component Overview
           </Glimpse>
           ,
-          <Glimpse href="https://example.com/b" image={cover(280)} title="Theme customization" description="Change one place token and reskin the entire site.">
+          <Glimpse href="#" image={cover(280)} title="Theme customization" description="Change one place token and reskin the entire site.">
             Theme customization
           </Glimpse>{" "}
           Two articles.
@@ -82,7 +82,7 @@ Details of
             name: "Link preview (image + title + description + domain name)",
             render: () => (<p className="max-w-md leading-7 text-foreground">
           Our design system is based on{" "}
-          <Glimpse href="https://hulian.example.com/tokens" image={cover(210)} title="Hulian Design Token" description="A set of semantic color/spacing/rounding variables, light and dark modes available out of the box, and a single source of truth for all components.">
+          <Glimpse href="#" image={cover(210)} title="Hulian Design Token" description="A set of semantic color/spacing/rounding variables, light and dark modes available out of the box, and a single source of truth for all components.">
             Semantics token
           </Glimpse>{" "}
           Build, hover the link to preview.
@@ -103,11 +103,11 @@ Details of
             name: "Multiple side by side",
             render: () => (<p className="max-w-lg leading-7 text-foreground">
           Recommended reading{" "}
-          <Glimpse href="https://example.com/a" image={cover(140)} title="Component Overview" description="160+ component classification index.">
+          <Glimpse href="#" image={cover(140)} title="Component Overview" description="160+ component classification index.">
             Component Overview
           </Glimpse>
           ,
-          <Glimpse href="https://example.com/b" image={cover(280)} title="Theme customization" description="Change one place token and reskin the entire site.">
+          <Glimpse href="#" image={cover(280)} title="Theme customization" description="Change one place token and reskin the entire site.">
             Theme customization
           </Glimpse>{" "}
           Two articles.
@@ -116,11 +116,11 @@ Details of
     ],
     renderWithProps: (p) => (<p className="leading-7 text-foreground">
       Hover to view{" "}
-      <Glimpse side={(p.side as "top" | "bottom" | "left" | "right") ?? "bottom"} href="https://example.com" image={cover(210)} title="Preview title" description="This is the description text for the link preview card.">
+      <Glimpse side={(p.side as "top" | "bottom" | "left" | "right") ?? "bottom"} href="#" image={cover(210)} title="Preview title" description="This is the description text for the link preview card.">
         This link
       </Glimpse>
     </p>),
-    toCode: (p) => `<Glimpse${p.side && p.side !== "bottom" ? ` side="${p.side}"` : ""} href="https://example.com" image={cover} title="Title" description="Description">
+    toCode: (p) => `<Glimpse${p.side && p.side !== "bottom" ? ` side="${p.side}"` : ""} href="#" image={cover} title="Title" description="Description">
   Link text
 </Glimpse>`,
 };

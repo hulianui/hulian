@@ -1,3 +1,4 @@
+import { DEVICE_KINDS, DEVICE_METRICS, type DeviceKind } from "../lib/device-metrics";
 import type {
   PreviewSandboxDevice,
   PreviewSandboxDeviceProp,
@@ -15,18 +16,20 @@ import type {
  * 用物理像素会让 `max-width: 430px` 之类断点全部失效。
  */
 export const PREVIEW_SANDBOX_DEVICES: Record<PreviewSandboxDevice, PreviewSandboxViewport> = {
+  // desktop 是「无外框」档，是这份清单里唯一合理的例外，所以显式写在这里。
   desktop: { width: 1280, height: 800 },
-  iphone: { width: 390, height: 844 },
-  android: { width: 412, height: 915 },
-  tablet: { width: 834, height: 1112 },
+  // 其余档位一律从设备真源派生，不再手写第二份 —— 手写两份的结果就是 watch 被漏掉、
+  // 且没有任何东西保证「内屏比例 == 视口比例」（#139）。加机型只需改 DEVICE_METRICS。
+  ...(Object.fromEntries(
+    DEVICE_KINDS.map((kind) => [kind, DEVICE_METRICS[kind].screen]),
+  ) as Record<DeviceKind, PreviewSandboxViewport>),
 };
 
-/** 有设备外框可用的档位。 */
-const FRAME_KINDS: Record<PreviewSandboxFrameKind, true> = {
-  iphone: true,
-  android: true,
-  tablet: true,
-};
+/** 有设备外框可用的档位 —— 与 mockups 分类的外框件一一对应，同样从真源派生。 */
+const FRAME_KINDS = Object.fromEntries(DEVICE_KINDS.map((kind) => [kind, true])) as Record<
+  PreviewSandboxFrameKind,
+  true
+>;
 
 function positiveInt(value: number, fallback: number): number {
   if (!Number.isFinite(value)) return fallback;

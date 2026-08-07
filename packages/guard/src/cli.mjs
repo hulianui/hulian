@@ -39,9 +39,15 @@ try {
       );
       if (diagnostic.instead) console.log(`  建议: ${diagnostic.instead}`);
     }
-    console.log(
-      `[hulian-check] FAIL · ${result.diagnostics.length} diagnostics / ${result.filesChecked} files`,
-    );
+    // 只有 warning 时不打 FAIL —— 退出码是 0，日志里却写着 FAIL 会让人以为门禁红了，
+    // 进而要么去关规则，要么把真正的 error 也当成噪音。措辞必须与退出码一致。
+    const errors = result.diagnostics.filter((d) => d.severity === "error").length;
+    const warnings = result.diagnostics.length - errors;
+    const verdict = errors ? "FAIL" : "WARN";
+    const counts = [errors ? `${errors} error` : "", warnings ? `${warnings} warning` : ""]
+      .filter(Boolean)
+      .join(" + ");
+    console.log(`[hulian-check] ${verdict} · ${counts} / ${result.filesChecked} files`);
   }
   if (result.diagnostics.some((diagnostic) => diagnostic.ruleId === "syntax-error")) {
     process.exitCode = 2;

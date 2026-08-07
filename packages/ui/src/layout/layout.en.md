@@ -96,6 +96,9 @@ function Shell() {
 
 ## Usage guidelines
 
+- **`Layout.Sider` owns the width, not the content.** Whether the brand block shows a full name or a single glyph, and whether `NavMenu` runs in `inline` or `collapsed` mode, is up to you. So keep `collapsed` in your own state (controlled prop plus an `onCollapse` write-back) rather than passing a one-shot `defaultCollapsed`. With only an initial value, clicking the trigger still narrows the sider to 64px while its content stays expanded, and a multi-character label shrinks to min-content, stacking one glyph per line and inflating the header (#120). You can also read `data-collapsed` on the Sider root and drive it from CSS.
+- **Header height comes from `--hl-layout-header-h` (4rem).** To line up a sidebar logo block with the header — which nearly every app needs — use `h-[var(--hl-layout-header-h)]` on both instead of copying the number out of the source; getting it wrong leaves a divider that never lines up.
+
 - **Choose controlled or uncontrolled state.** Passing `collapsed` makes `Layout.Sider` controlled, so `onCollapse` must write changes back or the trigger and breakpoint cannot update it. Use `defaultCollapsed` only for uncontrolled state.
 - **Layout direction is inferred from direct children.** A direct `Layout.Sider` makes the parent horizontal. Detection cannot see a Sider rendered asynchronously, conditionally, or inside a wrapper such as `<AppSider />`; set `hasSider` explicitly in those cases.
 - In the collapsed state, pass `mode="collapsed"` to NavMenu for its built-in icon-only track. Do not hand-build truncated menu labels.

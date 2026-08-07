@@ -46,11 +46,11 @@ export const gitCommitShowcase: ShowcaseSpec = {
             title: "Clickable short hash",
             description: "Pass href to make the short hash jump to commit details, shaLength controls the number of bits.",
             code: `<>
-  <GitCommit branch="release" sha="cb2ae42ddd0099" href="#cb2ae42" message="chore(release): @hulianui/ui@0.1.2" />
+  <GitCommit branch="release" sha="cb2ae42ddd0099" href="#" message="chore(release): @hulianui/ui@0.1.2" />
   <GitCommit branch="hotfix" sha="f79cbb812345" shaLength={12} message="Hair Border token" />
 </>`,
             render: () => (<div className="flex flex-col gap-2.5">
-          <GitCommit sha="cb2ae42ddd0099" branch="release" href="https://example.com/#cb2ae42" message="chore(release): @hulianui/ui@0.1.2"/>
+          <GitCommit sha="cb2ae42ddd0099" branch="release" href="#" message="chore(release): @hulianui/ui@0.1.2"/>
           <GitCommit sha="f79cbb812345" shaLength={12} branch="hotfix" message="Hair border token"/>
         </div>),
         },
@@ -97,7 +97,7 @@ export const gitCommitShowcase: ShowcaseSpec = {
         {
             name: "Clickable short hash + custom number of digits",
             render: () => (<div className="flex flex-col gap-2.5">
-          <GitCommit sha="cb2ae42ddd0099" branch="release" href="https://example.com/#cb2ae42" message="chore(release): @hulianui/ui@0.1.2"/>
+          <GitCommit sha="cb2ae42ddd0099" branch="release" href="#" message="chore(release): @hulianui/ui@0.1.2"/>
           <GitCommit sha="f79cbb812345" shaLength={12} branch="hotfix" message="Hair border token"/>
         </div>),
         },

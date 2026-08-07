@@ -48,7 +48,7 @@ function Demo({ delay = 100 }: { delay?: number }) {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem value="pricing">
-          <NavigationMenuLink href="https://example.com/#pricing">价格</NavigationMenuLink>
+          <NavigationMenuLink href="#">价格</NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
@@ -72,7 +72,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
       </NavigationMenuContent>
     </NavigationMenuItem>
     <NavigationMenuItem value="pricing">
-      <NavigationMenuLink href="https://example.com/#pricing">价格</NavigationMenuLink>
+      <NavigationMenuLink href="#">价格</NavigationMenuLink>
     </NavigationMenuItem>
   </NavigationMenuList>
 </NavigationMenu>`,
@@ -94,7 +94,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem value="pricing">
-              <NavigationMenuLink href="https://example.com/#pricing">价格</NavigationMenuLink>
+              <NavigationMenuLink href="#">价格</NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

@@ -9,8 +9,8 @@ import { Tabs, TabsList, TabsTab } from "../tabs";
 const crumb = (
   <Breadcrumb
     items={[
-      { label: "首页", href: "https://example.com/" },
-      { label: "订单", href: "https://example.com/orders" },
+      { label: "首页", href: "#" },
+      { label: "订单", href: "#" },
       { label: "订单详情" },
     ]}
   />
@@ -84,7 +84,7 @@ export const pageHeaderShowcase: ShowcaseSpec = {
           <PageHeader
             breadcrumb={
               <Breadcrumb
-                items={[{ label: "首页", href: "https://example.com/" }, { label: "商品列表" }]}
+                items={[{ label: "首页", href: "#" }, { label: "商品列表" }]}
               />
             }
             title="商品列表"
@@ -179,7 +179,7 @@ export const pageHeaderShowcase: ShowcaseSpec = {
           <PageHeader
             breadcrumb={
               <Breadcrumb
-                items={[{ label: "首页", href: "https://example.com/" }, { label: "商品列表" }]}
+                items={[{ label: "首页", href: "#" }, { label: "商品列表" }]}
               />
             }
             title="商品列表"

@@ -78,6 +78,13 @@ export interface InspectorNumberField extends InspectorFieldBase {
   max?: number;
   step?: number;
   unit?: string;
+  /**
+   * 标签内联进输入框（Sketch 的 `X` / `Y` / `W` / `H` 那种排布），而不是占左侧那一列 80px。
+   * 内联后标签同时成为**拖拽调值**的抓手：横向拖动每 1px 走一个 `step`，按住 Shift 走 10 倍。
+   *
+   * 处于 `columns > 1` 的分组里时自动开启，不必逐个字段写（#115）。
+   */
+  inlineLabel?: boolean;
 }
 
 /** 互斥枚举：≤4 项默认 Segmented，更多默认 Select。 */
@@ -114,6 +121,15 @@ export interface InspectorSection {
   fields: InspectorField[];
   /** 缺省展开（未指定时按 true 处理）。 */
   defaultOpen?: boolean;
+  /**
+   * 本组字段按几列网格排布，默认 1（一行一个字段）。
+   *
+   * 设计工具语境下 `X / Y / 旋转`、`W / H / 翻转` 是一行三格，而不是一行一个字段配 80px 的
+   * 标签列——同样的内容，一行一个要占三倍高度。多列模式下数值字段的标签自动内联进输入框（#115）。
+   *
+   * 只影响能内联标签的字段（number）；spacing / color 这类本来就独占一行的仍占满整行。
+   */
+  columns?: 1 | 2 | 3;
 }
 
 /**
@@ -172,6 +188,11 @@ export interface InspectorPanelProps {
   selectedElement?: string | null;
   /** 属性值表：键为字段 path。支持扁平键与点号嵌套两种写法。 */
   props?: Record<string, unknown>;
+  /**
+   * 行高与内边距的密度档。`compact` 整体收紧到接近 Sketch 检查器的量级，
+   * 用于真实的设计工具侧栏（一屏要放下十几组属性）；`comfortable` 是通用中后台表单的手感。
+   */
+  density?: "comfortable" | "compact";
   /** 单 path 变更回吐。 */
   onChange: (path: string, value: InspectorValue) => void;
   /**

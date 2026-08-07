@@ -52,9 +52,10 @@ import {
   listWorkflows,
 } from "./profiles.mjs";
 import { inspectProject, installedVersion, renderProject } from "./project.mjs";
-import { rank } from "./search.mjs";
+import { filterByTags, parseTagQuery, rank } from "./search.mjs";
 import { SETUP_TARGETS, setupGuide } from "./setup.mjs";
 import { guardVersion, renderValidation, validateUsage } from "./validate.mjs";
+import { visualMeta, visualOpportunities, visualSuffix } from "./visual.mjs";
 
 const PKG = "@hulianui/ui";
 const VERSION = createRequire(import.meta.url)("../package.json").version;
@@ -129,8 +130,11 @@ function importLine(item) {
 const briefLine = (item) =>
   `- ${item.name}${item.title && item.title !== item.name ? ` (${item.title})` : ""}: ${
     item.description ?? ""
-  }${importLine(item) ? ` | ${importLine(item)}` : ""}`;
+  }${importLine(item) ? ` | ${importLine(item)}` : ""}${visualSuffix(item)}`;
 
+// agent 没有眼睛：`docsUrl` 让它能把选择甩给人确认，`motion` 让它能按 visualBudget 做预算，
+// `look` 给出「动了什么 / 多强 / 该放哪」。三者缺席时 agent 只能从「bg-clip 流动渐变」这类
+// 实现描述里猜这在首屏是加分还是灾难（#140）。
 const compact = (item, extra = {}) => ({
   name: item.name,
   kind: KIND_OF(item),
@@ -139,6 +143,7 @@ const compact = (item, extra = {}) => ({
   categories: item.categories ?? [],
   import: item.meta?.import ?? null,
   exports: item.meta?.exports ?? [],
+  ...visualMeta(item),
   ...extra,
 });
 
@@ -270,7 +275,10 @@ async function buildTools() {
         "排好序的**页面 → 区块 → 组件**组合。选型从这里开始：先看有没有现成整页/区块可用，" +
         "再决定要不要自己拼组件。" +
         "带上 surface/modifiers/workflow 时按场景加权：该场景常用的整页与组件**即使关键词没命中也会补进来**，" +
-        "并附带这个场景的约束与验证清单。",
+        "并附带这个场景的约束与验证清单。" +
+        "任务描述里可以直接写观感诉求（「首屏想有点科技感」「这块太平了」），会命中对应的动效件。" +
+        "候选里一件动效/强调件都没有时，还会按该场景的视觉预算给出 visualOpportunities" +
+        "（位置 + 候选 + 强度 + 降级说明，**建议不是要求**）。",
       inputSchema: {
         type: "object",
         properties: {
@@ -298,6 +306,7 @@ async function buildTools() {
         type: "object",
         properties: {
           task: { type: "string" },
+          visualOpportunities: { type: "array", items: { type: "object" } },
           pages: { type: "array", items: { type: "object" } },
           blocks: { type: "array", items: { type: "object" } },
           components: { type: "array", items: { type: "object" } },
@@ -312,7 +321,10 @@ async function buildTools() {
       description:
         "列出或搜索瑚琏 @hulianui/ui 里的积木。kind 可选 component / block（可直接落盘的区块）/ " +
         "page（整页模板）/ lib / all，不传只列组件。query 会分词后按 name/title/description/" +
-        "category/group/tags/exports 打分排序；结果多时用 limit + offset 翻页，不要一次拉全库。",
+        "category/group/tags/exports 打分排序；结果多时用 limit + offset 翻页，不要一次拉全库。" +
+        "query 传 `tags:animated` / `tags:webgl` 可直接按横切标签过滤（动效是标签不是分类，"+
+        "想看「所有带动效的件」走这条）。每条返回都带 docsUrl（可以甩给人看）、" +
+        "动效件另带 motion 强度与 look 观感说明。",
       inputSchema: {
         type: "object",
         properties: {
@@ -528,6 +540,39 @@ async function listComponents({ kind = "component", query, category, limit, offs
     (item) => inKind(item) && (!category || (item.categories ?? []).includes(category)),
   );
 
+  // `tags:animated` / `tags:webgl` 直查。文档站侧栏一直有这个入口（动效是横切标签，
+  // 不是分类），MCP 侧此前完全没有 —— agent 想「看看所有带动效的件」时无路可走（#140）。
+  const tags = query ? parseTagQuery(query) : null;
+  if (tags) {
+    const tagged = filterByTags(base, tags);
+    const shown = tagged.slice(skip, skip + take);
+    if (!tagged.length) {
+      return text(`没有同时带 ${tags.join(" + ")} 标签的 ${kind}。已知标签：animated / webgl。`, {
+        total: 0,
+        offset: skip,
+        limit: take,
+        degraded: false,
+        items: [],
+      });
+    }
+    return text(
+      renderList({
+        header: `带 ${tags.join(" + ")} 标签的 ${kind} 共 ${tagged.length} 个`,
+        total: tagged.length,
+        skip,
+        take,
+        shown,
+      }),
+      {
+        total: tagged.length,
+        offset: skip,
+        limit: take,
+        degraded: false,
+        items: shown.map((i) => compact(i)),
+      },
+    );
+  }
+
   if (!query) {
     const shown = base.slice(skip, skip + take);
     return text(
@@ -705,7 +750,36 @@ async function recommendUi({ task, limit, surface, modifiers, workflow } = {}) {
     if (profile.unknown.length) head.push(`⚠️ 无法识别：${profile.unknown.join("、")}（已忽略）`);
   }
 
+  // 视觉机会点：这份候选里一件带动效/强调的都没有时，按本 surface 的 visualBudget 主动提一次。
+  // 与上面的选型建议是**两回事**：那边答「功能上还缺什么」，这边答「该有记忆点却一处都没有」。
+  // 永远是建议、永远带降级说明，且中后台最多 1 条 —— 越过这条线就撞回 #41 的非目标（#140）。
+  const pickedSlugs = new Set([...pages, ...blocks, ...components].map((entry) => entry.item.name));
+  const visual = profile?.surface
+    ? visualOpportunities({
+        surface: profile.surface,
+        usedSlugs: pickedSlugs,
+        slugMeta: byName,
+        limit: profile.surface.id === "admin-console" ? 1 : 3,
+      })
+    : [];
+
   const tail = [];
+  if (visual.length)
+    tail.push(
+      "## 视觉表达（建议，不是要求）",
+      "",
+      `本场景的视觉预算：${profile.surface.visualBudget.heavy} 处重物 + ${profile.surface.visualBudget.accent} 处强调。` +
+        "上面的候选里一件动效 / 强调件都没有 —— 页面会是「对的，但没有任何记忆点」。",
+      "",
+      ...visual.map(
+        (v) =>
+          `- **${v.slot}** → ${v.slug}（动效 ${v.motion}）${v.look ? `：${v.look}` : ""}\n` +
+          `  降级：${v.fallback}\n  ${v.docsUrl}`,
+      ),
+      "",
+      "拿不准就把上面的链接给人看一眼再定 —— 这是视觉判断，不该由 agent 独自拍板。",
+      "",
+    );
   if (profile?.constraints.length)
     tail.push("## 本场景的约束", "", ...profile.constraints.map((c) => `- ${c}`), "");
   if (profile?.verification.length)
@@ -746,6 +820,7 @@ async function recommendUi({ task, limit, surface, modifiers, workflow } = {}) {
 
   return text(body.join("\n"), {
     task,
+    visualOpportunities: visual,
     profile: profile
       ? {
           surface: profile.surface?.id ?? null,

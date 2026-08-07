@@ -45,6 +45,8 @@ import { Watch, WATCH_MODELS } from "@hulianui/ui"
 ```
 
 ## Usage Guidelines
+
+- **Body height is derived from the screen ratio and the border, never a hard-coded `aspectRatio`.** The border is a fixed pixel value while the screen scales with the width, so the body ratio is not a constant: the same device drawn at 280px and at 360px has two different body ratios. A hard-coded ratio therefore skews the inner screen at some widths, and [PreviewSandbox](../preview-sandbox/preview-sandbox.md) `fit` scaling leaves a white band on the short edge (#117). The logical screen resolution and border width live in `lib/device-metrics`, and a unit test locks the invariant that the inner screen ratio always equals the declared `screen` ratio.
 This is a presentational RSC with no interaction state. When both `imageSrc` and `children` are provided, `imageSrc` wins.
 
 ## Related

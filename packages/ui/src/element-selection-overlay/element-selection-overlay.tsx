@@ -418,8 +418,15 @@ export function ElementSelectionOverlay({
       lastHoverTargetRef.current = null;
       applyHover(null);
     };
+    // 目标是普通容器时 doc 就是宿主 document，监听必须自己判边界，否则整页被接管。
+    // iframe 分支下 root 是 iframe 的 body，这条判断天然恒真，两种场景共用一套代码。
+    const inTarget = (node: unknown) => {
+      const el = asElement(node);
+      return !!el && (el === root || root.contains(el));
+    };
     const onMouseDown = (e: Event) => {
       // 只挡默认行为（聚焦 / 选中文本 / 拖拽），不动 hover 与选中态。
+      if (!inTarget(e.target)) return;
       e.preventDefault();
     };
     const select = (found: NonNullable<ReturnType<typeof describeEventTarget>>) => {
@@ -431,6 +438,8 @@ export function ElementSelectionOverlay({
       latest.current.onClear?.();
     };
     const onClick = (e: Event) => {
+      // 目标外的点击一概不管：既不拦截，也不清空选中（否则消费方的属性面板一点就空）。
+      if (!inTarget(e.target)) return;
       if (interceptClicks) {
         e.preventDefault();
         e.stopPropagation();

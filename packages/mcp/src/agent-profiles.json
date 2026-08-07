@@ -1,6 +1,7 @@
 {
   "version": 1,
   "note": "场景 profile 真源。三维正交：surface 决定组件语言，modifiers 决定约束与预算（可组合），workflow 决定任务步骤。componentRoles 与 signals 取自 docs/agent-adoption-baseline-2026-08-01.md 对 12 个真实消费项目的扫描，不是凭印象列的。",
+  "visualNote": "抑制与发掘必须对称（#140）。avoidGroups 精确到 group 而不是 category —— decoration 内部 backdrop（52 件全屏背景 / WebGL）与 overlay-fx（40 件局部强调）是两种完全不同的东西，按 category 整类拉黑等于中后台连入场过渡和卡片描边都被禁。allowEffects 是 avoidGroups 的例外白名单；visualBudget 说明「允许几处视觉重物、允许放在哪些位置」；preferEffects 是与 componentRoles 同级的机器可读发掘面。这三个字段都不改变 #41 的非目标 —— 不许为了覆盖率往中后台塞特效，所以中后台的 heavy 预算一律是 0。",
   "detectNote": "signals 是给人读的自然语言，无法执行；detect 是它的机器可判定伴生字段，供 audit_hulian_adoption 自动判场景（#43）。三类判据权重不同：components（项目真的 import 了这些件）最强，deps 次之，paths 最弱 —— 路径名是约定俗成而非事实。两者必须同步维护：改了 signals 就该想想 detect 要不要跟。",
   "surfaces": [
     {
@@ -32,7 +33,10 @@
         "用 Card + Stack 手搭已有的 ProTable / FormDialog / PageHeader",
         "关键数字裸写而不用 Statistic / NumberTicker"
       ],
-      "avoidCategories": ["decoration", "mockups"],
+      "avoidGroups": ["decoration/backdrop", "mockups"],
+      "allowEffects": ["reveal", "border-beam", "shine-border", "card-spotlight", "tilt", "glass-surface"],
+      "visualBudget": { "heavy": 0, "accent": 2, "slots": ["登录页", "空态", "关键数字", "成功反馈"] },
+      "preferEffects": ["reveal", "number-ticker", "border-beam", "card-spotlight", "shine-border"],
       "verification": ["窄屏（1280 与 1024）布局不塌", "键盘可完成主流程", "空态 / 加载态 / 错误态各验一次", "批量操作的选中态与反馈"]
     },
     {
@@ -63,7 +67,10 @@
         "明文渲染密钥而不用 SecretField",
         "因为登录页用了一个文字特效，就把整套装饰件铺进工具界面"
       ],
-      "avoidCategories": ["decoration", "mockups"],
+      "avoidGroups": ["decoration/backdrop", "mockups"],
+      "allowEffects": ["reveal", "border-beam", "shine-border", "card-spotlight", "tilt", "glass-surface"],
+      "visualBudget": { "heavy": 0, "accent": 1, "slots": ["空态", "生成成功反馈"] },
+      "preferEffects": ["reveal", "border-beam", "animated-shiny-text"],
       "verification": ["空参数与极端值的结果区表现", "复制与导出真的产出可用内容", "长结果的滚动归属正确"]
     },
     {
@@ -95,6 +102,8 @@
         "工具调用只打日志不进 ToolCall，用户看不见发生了什么",
         "缺失失败态与重试入口"
       ],
+      "visualBudget": { "heavy": 0, "accent": 2, "slots": ["空会话", "流式输出", "工具调用进行中"] },
+      "preferEffects": ["reveal", "animated-shiny-text", "animated-list", "border-beam", "orbiting-circles"],
       "verification": ["流式中途中断与重试", "超长内容的滚动与截断", "工具调用的进行中 / 成功 / 失败三态", "空会话与首次进入"]
     },
     {
@@ -124,6 +133,8 @@
         "每屏都放一个主焦点以上的视觉重物",
         "移动端仍加载重型 WebGL 背景"
       ],
+      "visualBudget": { "heavy": 1, "accent": 4, "slots": ["首屏", "分节转场", "CTA", "页脚"] },
+      "preferEffects": ["reveal", "aurora-text", "sparkles-text", "typing-animation", "word-rotate", "shimmer-button", "border-beam", "shine-border", "magic-card", "bento-grid", "marquee", "number-ticker", "tilt", "dot-pattern", "grid-pattern", "aurora"],
       "verification": ["正文在 reduced-motion 下完全可读", "深浅色下的正文对比度", "移动端字号与行宽", "目录锚点跳转"]
     },
     {
@@ -146,7 +157,10 @@
         "状态": ["status-dot", "tag", "relative-time"]
       },
       "avoid": ["照搬 Web 的行高与间距导致信息密度过低", "用浏览器风格的整页跳转替代面板切换"],
-      "avoidCategories": ["decoration", "mockups"],
+      "avoidGroups": ["decoration/backdrop", "mockups"],
+      "allowEffects": ["reveal", "border-beam", "shine-border", "card-spotlight", "tilt", "glass-surface"],
+      "visualBudget": { "heavy": 0, "accent": 1, "slots": ["空面板", "命令面板"] },
+      "preferEffects": ["reveal", "border-beam", "animated-shiny-text"],
       "verification": ["窗口缩放到最小尺寸不塌", "键盘可达主要动作", "长列表滚动性能"]
     }
   ],
@@ -240,6 +254,11 @@
     "primary": "高层业务组件采用度",
     "note": "对项目规模不敏感，直接对应「有没有绕过现成能力」，优于裸组件覆盖率。基准 12 件见 highLevelComponents。",
     "highLevelComponents": ["page-header", "pro-table", "access", "form-dialog", "admin-layout", "pro-form", "search-form", "steps-form", "login-form", "result", "descriptions", "editable-table"],
+    "visualExpressiveness": {
+      "note": "非 primary、非门禁。只回答一个问题：项目有没有在 visualBudget 允许的位置用到至少 1 件动效 / 强调件。目的是让「对但平」这件事在报告里可见 —— 功能全对、指标全绿、却毫无记忆点，此前完全测不出来。",
+      "measure": "使用到的 slug 中带 animated / webgl 标签或落在 decoration 分类的件数 ≥ 1",
+      "nonGoal": "不追求数量。中后台 accent 预算是 2，达到即满分；把 92 件装饰件铺进中后台是 #41 明确否掉的方向。"
+    },
     "baseline": {
       "date": "2026-08-01",
       "source": "docs/agent-adoption-baseline-2026-08-01.md",

@@ -189,6 +189,31 @@ describe("ElementSelectionOverlay · 选中", () => {
     expect(onSelect).toHaveBeenCalledWith("button", expect.anything());
   });
 
+  it("目标外的点击既不被拦截，也不触发 onClear（普通容器下不接管宿主页面）", () => {
+    const root = makeTarget("<button>a</button>");
+    const outside = document.createElement("button");
+    outside.textContent = "宿主页面上的按钮";
+    document.body.appendChild(outside);
+    const outsideClick = vi.fn();
+    outside.addEventListener("click", outsideClick);
+    const onClear = vi.fn();
+    render(<ElementSelectionOverlay target={root} onClear={onClear} />);
+    const prevented = !fireEvent.click(outside);
+    expect(outsideClick).toHaveBeenCalledTimes(1);
+    expect(prevented).toBe(false);
+    expect(onClear).not.toHaveBeenCalled();
+  });
+
+  it("目标外的 mousedown 默认行为不被挡（宿主输入框还能聚焦）", () => {
+    const root = makeTarget("<button>a</button>");
+    const outside = document.createElement("input");
+    document.body.appendChild(outside);
+    render(<ElementSelectionOverlay target={root} />);
+    expect(!fireEvent.mouseDown(outside)).toBe(false);
+    // 对照：目标内的 mousedown 仍然被挡
+    expect(!fireEvent.mouseDown(root.querySelector("button")!)).toBe(true);
+  });
+
   it("受控 selectedPath={null} 时点击只回吐、不自己记选中", () => {
     const root = makeTarget("<button>a</button>");
     const onSelect = vi.fn();

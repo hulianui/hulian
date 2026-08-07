@@ -551,7 +551,7 @@ export function SelectItem({ value, disabled, children, className }: SelectItemP
       disabled={disabled}
       className={cn(
         "relative flex cursor-default select-none items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] py-1.5 pl-2 pr-8 text-sm outline-none",
-        "data-[highlighted]:bg-muted/15 data-[highlighted]:text-foreground",
+        "data-[highlighted]:bg-surface-hover data-[highlighted]:text-foreground",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}

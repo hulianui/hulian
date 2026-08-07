@@ -51,7 +51,7 @@ function PlaybackRateMenu({ rates, label }: { rates: number[]; label: string }) 
               key={r}
               value={String(r)}
               onSelect={() => remote.changePlaybackRate(r)}
-              className="group flex cursor-pointer items-center justify-between gap-3 rounded-[var(--radius-sm,0.375rem)] px-2.5 py-1.5 text-sm text-foreground outline-none data-[hocus]:bg-muted data-[focus]:bg-muted"
+              className="group flex cursor-pointer items-center justify-between gap-3 rounded-[var(--radius-sm,0.375rem)] px-2.5 py-1.5 text-sm text-foreground outline-none data-[hocus]:bg-surface-hover data-[focus]:bg-surface-hover"
             >
               <span className="tabular-nums">{r}×</span>
               <Check className="size-4 opacity-0 group-data-[checked]:opacity-100" />

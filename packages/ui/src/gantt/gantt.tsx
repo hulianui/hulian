@@ -277,7 +277,7 @@ function GanttImpl({
                 return (
                   <div
                     key={row.key}
-                    className="grid border-b border-border bg-muted/5"
+                    className="grid border-b border-border bg-subtle"
                     style={{ gridTemplateColumns: gridCols }}
                     role="row"
                   >
@@ -303,7 +303,7 @@ function GanttImpl({
               return (
                 <div
                   key={row.key}
-                  className="grid border-b border-border last:border-b-0 hover:bg-muted/5"
+                  className="grid border-b border-border last:border-b-0 hover:bg-subtle"
                   style={{ gridTemplateColumns: gridCols }}
                   role="row"
                 >

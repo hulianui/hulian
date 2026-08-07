@@ -46,7 +46,9 @@ import { Tablet, TABLET_MODELS } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 与 iPhone/Android 不同：平板机型纵横比各异，`aspectRatio` 由 `model` 决定；`width` 显式传入只覆盖宽度，比例仍随 model。不传 model 时回退默认宽 320 但无机型专属比例。
+- **机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。
+
+- 与 iPhone/Android 不同：各代 iPad 纵横比确实不同，所以**显式传了 `model` 时**机身比例由该机型的 `aspectRatio` 决定，`width` 只覆盖宽度。不传 `model` 的缺省档才走「内屏比例 + 边框反推」——[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 从不传 model，走的正是这条。
 - `imageSrc` 与 `children` 同传时 `imageSrc` 优先。
 
 ## 相关

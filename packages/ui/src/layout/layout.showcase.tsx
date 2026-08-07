@@ -47,7 +47,7 @@ function DemoSider({
     >
       <div
         className={cn(
-          "flex h-12 shrink-0 items-center font-semibold text-primary",
+          "flex h-[var(--hl-layout-header-h)] shrink-0 items-center font-semibold text-primary",
           collapsed ? "justify-center" : "px-4",
         )}
       >
@@ -121,36 +121,26 @@ function ClassicShell({
   );
 }
 
-// 纯静态侧栏（不含 useState，供 examples 活预览用）：非受控初始展开。
-function StaticSider({ collapsed = false }: { collapsed?: boolean }) {
-  return (
-    <Layout.Sider collapsible defaultCollapsed={collapsed}>
-      <div
-        className={cn(
-          "flex h-12 shrink-0 items-center font-semibold text-primary",
-          collapsed ? "justify-center" : "px-4",
-        )}
-      >
-        {collapsed ? "瑚" : "瑚琏控制台"}
-      </div>
-      <NavMenu
-        items={menu}
-        mode={collapsed ? "collapsed" : "inline"}
-        selectedKeys={["dashboard"]}
-        className={collapsed ? "mx-auto py-2" : "w-full p-2"}
-      />
-    </Layout.Sider>
-  );
-}
-
 export const layoutShowcase: ShowcaseSpec = {
   examples: [
     {
       title: "经典中后台外壳",
       description: "左侧 Sider + 右侧 Header / Content / Footer，含侧栏时自动横向布局。",
-      code: `<Layout className="h-full">
-  <Layout.Sider collapsible>
-    <NavMenu items={items} selectedKeys={["dashboard"]} />
+      // 侧栏的**内容**不会自己跟着折叠：Sider 只负责宽度，品牌区显示全称还是单字、
+      // NavMenu 走 inline 还是 collapsed，都得消费方自己按折叠态切。所以示例代码必须把
+      // 「自管 state + onCollapse 回写」这一步写出来，照抄的人才不会踩（#120）。
+      // 品牌区高度用 --hl-layout-header-h，与右侧 Layout.Header 共用同一个数才齐平。
+      code: `const [collapsed, setCollapsed] = useState(false)
+
+<Layout className="h-full" hasSider>
+  <Layout.Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+    <div className={cn(
+      "flex h-[var(--hl-layout-header-h)] items-center font-semibold",
+      collapsed ? "justify-center" : "px-4",
+    )}>
+      {collapsed ? "瑚" : "瑚琏控制台"}
+    </div>
+    <NavMenu items={items} mode={collapsed ? "collapsed" : "inline"} selectedKeys={["dashboard"]} />
   </Layout.Sider>
   <Layout>
     <Layout.Header sticky>
@@ -164,7 +154,7 @@ export const layoutShowcase: ShowcaseSpec = {
       render: () => (
         <Frame>
           <Layout className="h-full" hasSider>
-            <StaticSider />
+            <DemoSider />
             <Layout>
               <Layout.Header sticky>
                 <span className="font-medium text-foreground">中后台外壳</span>
@@ -201,7 +191,7 @@ export const layoutShowcase: ShowcaseSpec = {
               <span className="font-medium text-foreground">通栏头部</span>
             </Layout.Header>
             <Layout hasSider>
-              <StaticSider />
+              <DemoSider />
               <Layout.Content>
                 <FillerContent />
               </Layout.Content>
@@ -220,7 +210,7 @@ export const layoutShowcase: ShowcaseSpec = {
       render: () => (
         <Frame>
           <Layout className="h-full" hasSider>
-            <StaticSider collapsed />
+            <DemoSider defaultCollapsed />
             <Layout>
               <Layout.Header sticky>
                 <span className="font-medium text-foreground">收起态</span>

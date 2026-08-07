@@ -369,3 +369,157 @@ describe("InspectorPanel 分类折叠", () => {
     expect(queryByLabelText("标题")).toBeTruthy();
   });
 });
+
+describe("InspectorPanel · 窄栏降级（#114）", () => {
+  // jsdom 无布局引擎，ResizeObserver 也不存在 —— 用一个可手动触发的桩替代，
+  // 只验「拿到窄宽度后枚举字段换了形态」，不验像素。
+  function stubResizeObserver(width: number) {
+    const original = globalThis.ResizeObserver;
+    class Stub {
+      constructor(private cb: ResizeObserverCallback) {}
+      observe(target: Element) {
+        this.cb(
+          [{ target, contentRect: { width } } as unknown as ResizeObserverEntry],
+          this as unknown as ResizeObserver,
+        );
+      }
+      unobserve() {}
+      disconnect() {}
+    }
+    globalThis.ResizeObserver = Stub as unknown as typeof ResizeObserver;
+    return () => {
+      globalThis.ResizeObserver = original;
+    };
+  }
+
+  const enumField = {
+    key: "weight",
+    label: "字重",
+    kind: "enum" as const,
+    options: [
+      { value: "regular", label: "常规" },
+      { value: "medium", label: "中" },
+      { value: "semibold", label: "半粗" },
+      { value: "bold", label: "粗" },
+    ],
+  };
+
+  const renderWith = (width: number) =>
+    render(
+      <InspectorPanel
+        selectedElement="Text"
+        sections={[{ id: "typo", label: "文字", fields: [enumField] }]}
+        props={{ weight: "regular" }}
+        onChange={() => {}}
+      />,
+    );
+
+  it("宽栏下 4 个选项走分段控件", () => {
+    const restore = stubResizeObserver(400);
+    try {
+      const { container } = renderWith(400);
+      expect(container.querySelectorAll('[role="radio"]').length).toBe(4);
+    } finally {
+      restore();
+    }
+  });
+
+  it("窄栏下自动降级为下拉，选项不会变成「存在但不可达」", () => {
+    const restore = stubResizeObserver(200);
+    try {
+      const { container } = renderWith(200);
+      expect(container.querySelectorAll('[role="radio"]').length).toBe(0);
+      expect(container.querySelector('[role="combobox"], select, [data-slot="select-trigger"]')).not.toBeNull();
+    } finally {
+      restore();
+    }
+  });
+
+  it("显式传 display 时尊重消费方，不因窄栏改形态", () => {
+    const restore = stubResizeObserver(200);
+    try {
+      const { container } = render(
+        <InspectorPanel
+          selectedElement="Text"
+          sections={[
+            { id: "typo", label: "文字", fields: [{ ...enumField, display: "segmented" as const }] },
+          ]}
+          props={{ weight: "regular" }}
+          onChange={() => {}}
+        />,
+      );
+      expect(container.querySelectorAll('[role="radio"]').length).toBe(4);
+    } finally {
+      restore();
+    }
+  });
+});
+
+describe("InspectorPanel · 设计工具向排布（#115）", () => {
+  const numbers = [
+    { key: "x", label: "X", kind: "number" as const },
+    { key: "y", label: "Y", kind: "number" as const },
+    { key: "rotate", label: "旋转", kind: "number" as const },
+  ];
+
+  it("columns=3 时数值字段走网格，标签内联进输入框而不是独占标签列", () => {
+    const { container } = render(
+      <InspectorPanel
+        selectedElement="Rect"
+        sections={[{ id: "geo", label: "位置", fields: numbers, columns: 3 }]}
+        props={{ x: 12, y: 24, rotate: 0 }}
+        onChange={() => {}}
+      />,
+    );
+    expect(container.querySelector(".grid-cols-3")).not.toBeNull();
+    // 标签内联后不再有左侧那列，同一个名字也不会渲染两遍
+    expect(container.querySelectorAll(".w-20").length).toBe(0);
+    expect(container.querySelectorAll('input[aria-label="X"]').length).toBe(1);
+  });
+
+  it("单列时仍是「左标签 + 右控件」，不擅自改排布", () => {
+    const { container } = render(
+      <InspectorPanel
+        selectedElement="Rect"
+        sections={[{ id: "geo", label: "位置", fields: numbers }]}
+        props={{ x: 12 }}
+        onChange={() => {}}
+      />,
+    );
+    expect(container.querySelector(".grid-cols-3")).toBeNull();
+    expect(container.querySelectorAll(".w-20").length).toBeGreaterThan(0);
+  });
+
+  it("inlineLabel 可在单列时单独开启", () => {
+    const { container } = render(
+      <InspectorPanel
+        selectedElement="Rect"
+        sections={[
+          {
+            id: "geo",
+            label: "位置",
+            fields: [{ key: "x", label: "X", kind: "number" as const, inlineLabel: true }],
+          },
+        ]}
+        props={{ x: 12 }}
+        onChange={() => {}}
+      />,
+    );
+    expect(container.querySelectorAll(".w-20").length).toBe(0);
+  });
+
+  it("density=compact 收紧行距与标签列宽", () => {
+    const { container } = render(
+      <InspectorPanel
+        selectedElement="Rect"
+        density="compact"
+        sections={[{ id: "geo", label: "位置", fields: numbers }]}
+        props={{ x: 12 }}
+        onChange={() => {}}
+      />,
+    );
+    expect(container.querySelectorAll(".w-16").length).toBeGreaterThan(0);
+    expect(container.querySelectorAll(".w-20").length).toBe(0);
+  });
+});
+

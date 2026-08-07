@@ -50,7 +50,7 @@ function QueueLaneColumn<T extends QueueItem>({
     <section
       className={cn(
         // 泳道用极淡底色圈出，不描边——避免与内部卡片边框叠成「框中框」脏感。
-        "flex flex-col rounded-[calc(var(--radius)+0.25rem)] bg-muted/40",
+        "flex flex-col rounded-[calc(var(--radius)+0.25rem)] bg-subtle",
         orientation === "horizontal" ? "w-72 shrink-0" : "w-full",
       )}
       data-lane={lane.id}

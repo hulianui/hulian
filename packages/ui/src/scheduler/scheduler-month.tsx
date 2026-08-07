@@ -77,7 +77,7 @@ export function MonthView({
                   key={dISO}
                   className={cn(
                     "group flex min-h-0 flex-col gap-0.5 border-b border-l border-border p-1 text-left",
-                    !inMonth && "bg-muted/[0.03]",
+                    !inMonth && "bg-subtle/60",
                   )}
                   onClick={() =>
                     onSlotClick?.({

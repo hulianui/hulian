@@ -24,7 +24,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "bubble-menu": [3, 4],
   carousel: [3, 4],
   chip: [0, 1],
-  "chroma-grid": [3, 4],
+  "chroma-grid": [5, 6],
   citation: [2, 3],
   code: [0, 1],
   "code-block": [0, 1],
@@ -69,7 +69,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "queue-lane": [3, 5],
   "relative-time": [3, 4],
   result: [2, 3],
-  "ripple-button": [0, 1],
   sankey: [2, 3],
   "scope-matrix": [0, 1],
   "score-ring": [0, 1],
@@ -94,7 +93,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   tree: [10, 9],
   video: [3, 4],
   "virtual-list": [0, 1],
-  watch: [0, 1],
 };
 
 const canonicalFiles = [
@@ -375,7 +373,7 @@ test("English advisories keep complete natural rules without repeated entries in
   );
 });
 
-test("all 77 reviewed locale-specific convention count differences stay explicit", () => {
+test("all 75 reviewed locale-specific convention count differences stay explicit", () => {
   assert.equal(typeof conventionsGenerator.extractPitfalls, "function");
   const uiRoot = join(ROOT, "packages", "ui", "src");
   const actual = {};
@@ -391,7 +389,7 @@ test("all 77 reviewed locale-specific convention count differences stay explicit
     if (counts[0] !== counts[1]) actual[slug] = counts;
   }
 
-  assert.equal(Object.keys(actual).length, 77);
+  assert.equal(Object.keys(actual).length, 75);
   assert.deepEqual(actual, EXPECTED_CONVENTION_COUNT_MISMATCHES);
 });
 

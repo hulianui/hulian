@@ -41,7 +41,12 @@ export function GiftFeed({ events, max = 3, duration = 4000, className }: GiftFe
   }, []);
 
   return (
-    <div className={cn("pointer-events-none flex flex-col gap-2", className)} aria-hidden>
+    // select-none：飘条是自动滚动 + 连击时高频重绘的内容，用户名/礼物名被误拖选后会留在原地
+    // 盖住后续飘条。这类「会动、不是给用户复制的」文本一律不可选（#138）。
+    <div
+      className={cn("pointer-events-none flex select-none flex-col gap-2", className)}
+      aria-hidden
+    >
       {banners.map((b) => (
         <div
           key={b.id}

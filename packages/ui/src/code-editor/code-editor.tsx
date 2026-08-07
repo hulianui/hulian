@@ -181,7 +181,11 @@ export function CodeEditor({
       data-theme={theme}
       data-slot="code-editor"
       className={cn(
-        "relative flex overflow-hidden rounded-[var(--radius)] border border-border bg-surface text-foreground",
+        // w-full 不可省：textarea 的 intrinsic 宽度由 HTML 默认 cols(20) 决定，于是整个编辑器的
+        // max-content 宽度被锚在 ~20 字符。普通块级上下文里 block-flex 会自然铺满，看不出问题；
+        // 一旦作为 flex/grid item（「左树右编辑器」正是它最典型的用法），就会按内容宽塌成一条
+        // 窄框，overflow-hidden 还让它可以被压得更窄（#116）。
+        "relative flex w-full overflow-hidden rounded-[var(--radius)] border border-border bg-surface text-foreground",
         "focus-within:ring-2 focus-within:ring-ring",
         className,
       )}

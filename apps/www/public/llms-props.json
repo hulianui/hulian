@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -509,17 +509,6 @@
       "forward",
       "reverse",
       "pingpong"
-    ],
-    "PreviewSandboxDevice": [
-      "desktop",
-      "iphone",
-      "android",
-      "tablet"
-    ],
-    "PreviewSandboxFrameKind": [
-      "iphone",
-      "android",
-      "tablet"
     ],
     "PreviewSandboxErrorSource": [
       "iframe",
@@ -5747,14 +5736,17 @@
           "name": "tone",
           "required": false,
           "kind": "enum",
-          "type": "\"brand\" | \"danger\"",
+          "type": "\"brand\" | \"success\" | \"warning\" | \"danger\" | \"neutral\"",
           "values": [
             "brand",
-            "danger"
+            "success",
+            "warning",
+            "danger",
+            "neutral"
           ],
           "valueType": "string",
           "default": "\"brand\"",
-          "description": "语义色调"
+          "description": "语义色调（见下表）"
         },
         {
           "name": "size",
@@ -5772,6 +5764,14 @@
           "valueType": "string",
           "default": "\"md\"",
           "description": "尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）"
+        },
+        {
+          "name": "block",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "块级铺满容器宽度（移动端主操作、表单底部提交）"
         },
         {
           "name": "loading",
@@ -8973,6 +8973,19 @@
           "description": "`change` 拖动/按键即回吐；`commit` 松手/失焦/回车才回吐"
         },
         {
+          "name": "density",
+          "required": false,
+          "kind": "enum",
+          "type": "\"comfortable\" | \"compact\"",
+          "values": [
+            "comfortable",
+            "compact"
+          ],
+          "valueType": "string",
+          "default": "\"comfortable\"",
+          "description": "行高与内边距密度；`compact` 收紧到接近 Sketch 检查器的量级"
+        },
+        {
           "name": "onBatchChange",
           "required": false,
           "kind": "function",
@@ -10408,6 +10421,20 @@
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/pulsating-button/pulsating-button.md",
       "props": [
         {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档，与 Button 同刻度（32/40/48px 高）"
+        },
+        {
           "name": "pulseColor",
           "required": false,
           "kind": "string",
@@ -10632,6 +10659,20 @@
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/rainbow-button/rainbow-button.md",
       "props": [
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档，与 Button 同刻度（32/40/48px 高）"
+        },
         {
           "name": "speed",
           "required": false,
@@ -11289,6 +11330,20 @@
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/ripple-button/ripple-button.md",
       "props": [
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档，与 Button 同刻度（32/40/48px 高）"
+        },
         {
           "name": "rippleColor",
           "required": false,
@@ -12059,6 +12114,20 @@
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/shimmer-button/shimmer-button.md",
       "props": [
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档，与 Button 同刻度（32/40/48px 高）"
+        },
         {
           "name": "shimmerColor",
           "required": false,
@@ -16596,8 +16665,8 @@
             "pan"
           ],
           "valueType": "string",
-          "default": "\"zoom\"",
-          "description": "滚轮默认行为，按住 Ctrl/⌘ 反转"
+          "default": "\"pan\"",
+          "description": "无修饰键时的滚轮行为。Ctrl（含触控板捏合）恒为缩放，不受此项影响"
         },
         {
           "name": "controls",
@@ -25011,6 +25080,33 @@
           "description": "静息图标尺寸(px)"
         },
         {
+          "name": "activeKey",
+          "owner": "Dock",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "当前项 key，与 DockIcon 的 `itemKey` 比对"
+        },
+        {
+          "name": "onSelect",
+          "owner": "Dock",
+          "required": false,
+          "kind": "function",
+          "type": "(key: string) => void",
+          "default": null,
+          "description": "点击某项。**提供它才把 DockIcon 渲染成真正的 `<button>`**，底座同时升级为 `nav` 地标"
+        },
+        {
+          "name": "aria-label",
+          "owner": "Dock",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "渲染为 `<nav>` 时的地标名称"
+        },
+        {
           "name": "className",
           "owner": "Dock",
           "required": false,
@@ -25018,6 +25114,33 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "itemKey",
+          "owner": "DockIcon",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "本项 key，配合 Dock 的 `activeKey` / `onSelect`"
+        },
+        {
+          "name": "active",
+          "owner": "DockIcon",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "直接指定选中态，优先于 `activeKey` 比对结果"
+        },
+        {
+          "name": "label",
+          "owner": "DockIcon",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "可点击时的无障碍名（图标本身通常没有文字）"
         },
         {
           "name": "className",

@@ -1,7 +1,11 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import type { DeviceKind } from "../lib/device-metrics";
 
-/** 内置设备档位。自由尺寸直接传 `{ width, height }`。 */
-export type PreviewSandboxDevice = "desktop" | "iphone" | "android" | "tablet";
+/**
+ * 内置设备档位。自由尺寸直接传 `{ width, height }`。
+ * `desktop` 是无外框档；其余与 mockups 分类的外框件一一对应（真源 lib/device-metrics）。
+ */
+export type PreviewSandboxDevice = "desktop" | DeviceKind;
 
 /** 预览视口的 CSS 像素尺寸——这就是预览内容里 `window.innerWidth` / 媒体查询看到的值。 */
 export interface PreviewSandboxViewport {
@@ -12,7 +16,8 @@ export interface PreviewSandboxViewport {
 export type PreviewSandboxDeviceProp = PreviewSandboxDevice | PreviewSandboxViewport;
 
 /** 有设备外框可用的档位（desktop 与自由尺寸没有对应机型外框）。 */
-export type PreviewSandboxFrameKind = "iphone" | "android" | "tablet";
+/** 有设备外框可用的档位 = 真源里登记的全部机型。 */
+export type PreviewSandboxFrameKind = DeviceKind;
 
 export type PreviewSandboxErrorSource = "iframe" | "react";
 

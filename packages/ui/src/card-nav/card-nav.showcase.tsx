@@ -6,7 +6,7 @@ import { CardNav } from "./card-nav";
 /** 展示用容器：给胶囊导航留出展开的纵向空间 + 中性底 */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative h-72 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-muted/20 p-6">
+    <div className="relative h-72 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-subtle p-6">
       {children}
     </div>
   );
@@ -18,9 +18,9 @@ const items = [
     bgColor: "var(--color-chart-1)",
     textColor: "var(--color-primary-foreground)",
     links: [
-      { label: "概览", href: "https://example.com/#overview" },
-      { label: "定价", href: "https://example.com/#pricing" },
-      { label: "更新日志", href: "https://example.com/#changelog" },
+      { label: "概览", href: "#" },
+      { label: "定价", href: "#" },
+      { label: "更新日志", href: "#" },
     ],
   },
   {
@@ -28,8 +28,8 @@ const items = [
     bgColor: "var(--color-chart-2)",
     textColor: "var(--color-primary-foreground)",
     links: [
-      { label: "关于我们", href: "https://example.com/#about" },
-      { label: "招聘", href: "https://example.com/#careers" },
+      { label: "关于我们", href: "#" },
+      { label: "招聘", href: "#" },
     ],
   },
   {
@@ -37,8 +37,8 @@ const items = [
     bgColor: "var(--color-chart-4)",
     textColor: "var(--color-primary-foreground)",
     links: [
-      { label: "文档", href: "https://example.com/#docs" },
-      { label: "社区", href: "https://example.com/#community" },
+      { label: "文档", href: "#" },
+      { label: "社区", href: "#" },
     ],
   },
 ];

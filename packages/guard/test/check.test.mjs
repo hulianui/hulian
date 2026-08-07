@@ -88,6 +88,40 @@ test("校验 SVG 与颜色 style 的 CSS 变量前缀", () => {
   assert.deepEqual(good.diagnostics, []);
 });
 
+test("bg-muted 与 text-muted 同处一个 className 判 error（前景背景同色）", () => {
+  const bad = checkSource(
+    'export const X = () => <span className="rounded-full bg-muted px-1.5 text-muted">3</span>;',
+  );
+  assert.deepEqual(ruleIds(bad).filter((id) => id.startsWith("muted-as")), [
+    "muted-as-background-with-muted-text",
+  ]);
+});
+
+test("className 拆在 cn() 多个实参里也能命中（按属性整体取静态文本）", () => {
+  const bad = checkSource(
+    'export const X = () => <div className={cn("flex", ok && "bg-muted/60", "text-muted")} />;',
+  );
+  assert.ok(ruleIds(bad).includes("muted-as-background-with-muted-text"));
+});
+
+test("带变体前缀的 bg-muted 不判 error（另一个状态 / 另一个伪元素，不同盒子）", () => {
+  // Chart 图例的真实写法：文字是 text-muted，滚动条拇指才是 bg-muted/50 —— 这是对的。
+  const ok = checkSource(
+    'export const X = () => <div className="text-xs text-muted [&::-webkit-scrollbar-thumb]:bg-muted/50 hover:[&::-webkit-scrollbar-thumb]:bg-muted/80" />;',
+  );
+  assert.deepEqual(
+    ruleIds(ok).filter((id) => id === "muted-as-background-with-muted-text"),
+    [],
+  );
+  // 但仍然给一条 warning 提醒 muted 是文字色
+  assert.ok(ruleIds(ok).includes("muted-is-a-text-color"));
+});
+
+test("bg-subtle 是正解，不触发任何 muted 规则", () => {
+  const good = checkSource('export const X = () => <div className="bg-subtle p-4 text-muted" />;');
+  assert.deepEqual(good.diagnostics, []);
+});
+
 test("自定义 config 不能关闭内置 error 规则", () => {
   const root = mkdtempSync(join(tmpdir(), "hulian-guard-config-"));
   const configPath = join(root, "conventions.json");

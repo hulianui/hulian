@@ -12,17 +12,17 @@ const Chevron = (
 );
 
 const sample: BreadcrumbItem[] = [
-  { label: "首页", href: "https://example.com/" },
-  { label: "组件", href: "https://example.com/components" },
+  { label: "首页", href: "#" },
+  { label: "组件", href: "#" },
   { label: "面包屑" },
 ];
 
 const longPath: BreadcrumbItem[] = [
-  { label: "首页", href: "https://example.com/" },
-  { label: "文档", href: "https://example.com/docs" },
-  { label: "设计系统", href: "https://example.com/docs/design-system" },
-  { label: "导航族", href: "https://example.com/docs/design-system/navigation" },
-  { label: "面包屑组件", href: "https://example.com/docs/design-system/navigation/breadcrumb" },
+  { label: "首页", href: "#" },
+  { label: "文档", href: "#" },
+  { label: "设计系统", href: "#" },
+  { label: "导航族", href: "#" },
+  { label: "面包屑组件", href: "#" },
   { label: "无障碍语义" },
 ];
 
@@ -66,7 +66,7 @@ export const breadcrumbShowcase: ShowcaseSpec = {
       render: () => (
         <Breadcrumb
           items={[
-            { label: "首页", href: "https://example.com/" },
+            { label: "首页", href: "#" },
             { label: "归档" },
             { label: "2026 年报" },
           ]}
@@ -109,7 +109,7 @@ export const breadcrumbShowcase: ShowcaseSpec = {
       render: () => (
         <Breadcrumb
           items={[
-            { label: "首页", href: "https://example.com/" },
+            { label: "首页", href: "#" },
             { label: "归档" },
             { label: "2026 年报" },
           ]}

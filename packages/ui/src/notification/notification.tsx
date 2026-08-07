@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { CircleCheck, CircleX, Info, TriangleAlert } from "../_icons";
+import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDuration, motionDurationCss, motionEaseCss } from "../motion";
 import type {
@@ -109,6 +110,7 @@ function NotificationCard({ record }: { record: NotificationRecord }) {
   const { id, type, options, open: isOpen } = record;
   const { title, description, icon, btn, duration = 4500, placement = "topRight" } = options;
   const [entered, setEntered] = useState(false);
+  const locale = useComponentLocale().notification ?? { close: "关闭" };
 
   // 入场：挂载下一帧翻 entered，触发 transform/opacity 过渡
   useEffect(() => {
@@ -153,16 +155,21 @@ function NotificationCard({ record }: { record: NotificationRecord }) {
       style={cardTransition}
       role={type === "error" ? "alert" : "status"}
     >
-      <div className="flex gap-3">
+      {/* items-start：关闭按钮是外层 flex 的第三个子项，外层不设 items-* 时默认 stretch，
+          它的高度跟着卡片走 —— 卡片越高 X 看起来越往下飘。锚到顶端与标题同一水平线（#137）。 */}
+      <div className="flex items-start gap-3">
         {iconNode && <span className={cn("mt-0.5 shrink-0", typeColor[type])}>{iconNode}</span>}
         <div className="min-w-0 flex-1">
           {title && <div className="text-sm font-medium text-foreground">{title}</div>}
           {description && <div className="mt-1 text-sm text-muted">{description}</div>}
-          {btn && <div className="mt-3 flex justify-end gap-2">{btn}</div>}
+          {/* 按钮跟着内容左边缘走，不右对齐。右对齐是**对话框**的惯例（那里用户必须做选择，
+              按钮在右下角是操作流的终点）；通知是被动出现的信息卡，用户大概率不操作，按钮是
+              「顺带提供的入口」，应与标题、描述形成一条视觉列（#137）。 */}
+          {btn && <div className="mt-3 flex gap-2">{btn}</div>}
         </div>
         <button
           type="button"
-          aria-label="关闭"
+          aria-label={locale.close}
           onClick={() => hulianNotificationManager.close(id)}
           className="shrink-0 rounded-[var(--radius)] p-0.5 text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >

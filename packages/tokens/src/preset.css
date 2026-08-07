@@ -27,6 +27,7 @@
   --color-bg: var(--color-bg);
   --color-surface: var(--color-surface);
   --color-surface-hover: var(--color-surface-hover);
+  --color-subtle: var(--color-subtle);
   --color-foreground: var(--color-foreground);
   --color-muted: var(--color-muted);
   --color-border: var(--color-border);
@@ -37,10 +38,13 @@
   --color-primary-hover: var(--color-primary-hover);
   --color-danger: var(--color-danger);
   --color-danger-foreground: var(--color-danger-foreground);
+  --color-danger-hover: var(--color-danger-hover);
   --color-success: var(--color-success);
   --color-success-foreground: var(--color-success-foreground);
+  --color-success-hover: var(--color-success-hover);
   --color-warning: var(--color-warning);
   --color-warning-foreground: var(--color-warning-foreground);
+  --color-warning-hover: var(--color-warning-hover);
   --color-chart-1: var(--color-chart-1);
   --color-chart-2: var(--color-chart-2);
   --color-chart-3: var(--color-chart-3);

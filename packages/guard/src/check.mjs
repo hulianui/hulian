@@ -91,6 +91,31 @@ function invalidCssVars(text, matcher) {
     );
 }
 
+/**
+ * 收集一个 JSX 属性里所有**静态**字符串片段，拼成一段可按 Tailwind 类名扫描的文本。
+ * className 极少是单个字面量：`cn("a", cond && "b", `c-${n}`)` 才是常态，
+ * 所以按属性整体取，而不是按单个字面量 —— 否则「同一个 className 里前景背景同色」
+ * 这类判据会被 cn() 的多个实参拆开而永远命中不了。模板里的插值表达式跳过（不可静态判定）。
+ */
+function staticClassText(node) {
+  const parts = [];
+  const walk = (current) => {
+    if (!current) return;
+    if (ts.isStringLiteral(current) || ts.isNoSubstitutionTemplateLiteral(current)) {
+      parts.push(current.text);
+      return;
+    }
+    if (ts.isTemplateExpression(current)) {
+      parts.push(current.head.text);
+      for (const span of current.templateSpans) parts.push(span.literal.text);
+      return;
+    }
+    current.forEachChild(walk);
+  };
+  walk(node);
+  return parts.join(" ");
+}
+
 function resolvedBinding(identifier, bindings, checker) {
   const binding = bindings.get(identifier.text);
   if (!binding?.symbol || checker.getSymbolAtLocation(identifier) !== binding.symbol) return null;
@@ -204,6 +229,23 @@ export function checkSource(source, options = {}) {
             ts.isJsxAttribute(property) && property.name.getText(sourceFile) === rule.matcher.prop,
         );
         if (attribute) report(rule, attribute);
+      }
+
+      for (const rule of rules.filter(
+        (candidate) => candidate.matcher.kind === "class-name-tokens",
+      )) {
+        const matcher = rule.matcher;
+        for (const property of node.attributes.properties) {
+          if (!ts.isJsxAttribute(property)) continue;
+          if (!matcher.attributes.includes(property.name.getText(sourceFile))) continue;
+          const text = staticClassText(property.initializer);
+          if (!text || !new RegExp(matcher.pattern).test(text)) continue;
+          // coOccurs：只有同一段 className 里还出现了这个类才判违规。用于「前景背景同色」
+          // 这类零误报判据 —— 单看 bg-muted 无法断定对错，但它和 text-muted 同时出现
+          // 一定是错的（同一个变量既当底又当字，不可能是有意的）。
+          if (matcher.coOccurs && !new RegExp(matcher.coOccurs).test(text)) continue;
+          report(rule, property.initializer ?? property);
+        }
       }
 
       for (const rule of rules.filter((candidate) => candidate.matcher.kind === "css-var-prefix")) {

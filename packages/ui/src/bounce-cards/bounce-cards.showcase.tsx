@@ -5,7 +5,7 @@ import { BounceCards } from "./bounce-cards";
 /** 展示用浅灰底容器，凸显卡片层叠与阴影 */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-72 w-full max-w-2xl items-center justify-center overflow-hidden rounded-xl border border-border bg-muted/30">
+    <div className="flex h-72 w-full max-w-2xl items-center justify-center overflow-hidden rounded-xl border border-border bg-subtle">
       {children}
     </div>
   );

@@ -4,7 +4,7 @@ import { ScrollStack, ScrollStackItem } from "../../../../packages/ui/src/scroll
 function Stage({ children }: {
     children: React.ReactNode;
 }) {
-    return (<div className="h-[28rem] w-full max-w-xl overflow-hidden rounded-xl border border-border bg-muted/10">
+    return (<div className="h-[28rem] w-full max-w-xl overflow-hidden rounded-xl border border-border bg-subtle">
       {children}
     </div>);
 }

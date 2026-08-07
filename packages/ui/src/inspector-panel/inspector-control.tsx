@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type PointerEvent as ReactPointerEvent } from "react";
 import { cn } from "../lib/cn";
 import { Input } from "../input";
 import { Segmented } from "../segmented";
@@ -47,6 +47,8 @@ export interface ControlContext {
   tokens: readonly InspectorToken[];
   /** 可见标签的 DOM id，供 Slider 这类把名字下发给内部 input 的控件用。 */
   labelId: string;
+  /** 面板自身宽度低于阈值。窄栏下枚举字段自动从分段控件降级为下拉（#114）。 */
+  narrow: boolean;
   emit: (changes: InspectorChange[]) => void;
 }
 
@@ -74,6 +76,11 @@ interface NumericInputProps {
   override?: number | null;
   className?: string;
   prefix?: string;
+  /**
+   * 前缀标签变成「拖拽调值」的抓手（Sketch / Figma 的 scrubbing）。
+   * 只在有 prefix 时可用——没有可见抓手的拖拽是不可发现的，也没法给它无障碍语义。
+   */
+  scrub?: boolean;
   onCommit: (value: InspectorValue) => void;
 }
 
@@ -90,6 +97,7 @@ function NumericInput({
   override,
   className,
   prefix,
+  scrub,
   onCommit,
 }: NumericInputProps) {
   const mixed = isMixed(value);
@@ -108,6 +116,54 @@ function NumericInput({
     onCommit(formatLength(next, unit));
   };
 
+  const clamp = (n: number) => {
+    let next = n;
+    if (min != null) next = Math.max(min, next);
+    if (max != null) next = Math.min(max, next);
+    return next;
+  };
+
+  // 拖拽调值：横向每 1px 走一个 step（按住 Shift 走 10 倍，与设计工具惯例一致）。
+  // 用 setPointerCapture 而不是挂 window 监听：指针移出抓手后事件仍回到这里，
+  // 松手时浏览器自动释放，不必自己清理（拖到一半切标签页也不会漏解绑）。
+  const onScrubStart = (event: ReactPointerEvent<HTMLSpanElement>) => {
+    if (!scrub || disabled || mixed) return;
+    const unitStep = step ?? 1;
+    const startX = event.clientX;
+    const startValue = parsed ?? 0;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.preventDefault();
+    const onMove = (move: PointerEvent) => {
+      const delta = (move.clientX - startX) * unitStep * (move.shiftKey ? 10 : 1);
+      onCommit(formatLength(clamp(startValue + Math.round(delta / unitStep) * unitStep), unit));
+    };
+    const target = event.currentTarget;
+    const onUp = () => {
+      target.removeEventListener("pointermove", onMove);
+      target.removeEventListener("pointerup", onUp);
+      target.removeEventListener("pointercancel", onUp);
+    };
+    target.addEventListener("pointermove", onMove);
+    // pointercancel 必须一起解绑：系统手势 / 触控笔离开会只发 cancel 不发 up，漏掉就永久跟手。
+    target.addEventListener("pointerup", onUp);
+    target.addEventListener("pointercancel", onUp);
+  };
+
+  const prefixNode =
+    prefix == null ? undefined : scrub ? (
+      <span
+        // 抓手本身不进无障碍树也不进 tab 顺序：调值的可达通路是输入框自己（方向键 / 直接输入），
+        // 拖拽只是给鼠标用户的加速方式，不该多出一个屏幕阅读器要念的控件。
+        aria-hidden
+        onPointerDown={onScrubStart}
+        className="-mx-1 cursor-ew-resize select-none px-1 touch-none"
+      >
+        {prefix}
+      </span>
+    ) : (
+      prefix
+    );
+
   return (
     <Input
       size="sm"
@@ -118,7 +174,7 @@ function NumericInput({
       min={min}
       max={max}
       step={step}
-      prefix={prefix}
+      prefix={prefixNode}
       placeholder={mixed ? mixedText : undefined}
       className={className}
       value={shown}
@@ -179,6 +235,7 @@ function SpacingControl({
             disabled={field.disabled}
             mixedText={labels.mixed}
             commitMode={commitMode}
+            scrub
             className="px-1.5"
             onCommit={(next) => {
               if (!linked) {
@@ -285,7 +342,12 @@ function EnumControl({
   const mixed = isMixed(value);
   const current = mixed || value == null ? "" : String(value);
   const commit = (next: string) => emit([{ path: field.key, value: next }]);
-  const display = field.display ?? (field.options.length <= 4 ? "segmented" : "select");
+  // 显式传了 display 就尊重消费方；只有「未指定」时才由组件自适应。
+  // 窄栏下四段中文一定超宽，分段控件末段会被裁掉且不可点 —— 那是「存在但不可达的选项」，
+  // 比换个形态严重得多，所以自动降级为下拉（#114）。
+  const display =
+    field.display ??
+    (context.narrow ? "select" : field.options.length <= 4 ? "segmented" : "select");
 
   if (display === "segmented") {
     return (
@@ -492,11 +554,14 @@ export function InspectorControl({
   field,
   value,
   read,
+  columns = 1,
   context,
 }: {
   field: InspectorField;
   value: InspectorValue;
   read: (path: string) => InspectorValue;
+  /** 所在分组的列数。多列网格里数值字段的标签自动内联（#115）。 */
+  columns?: number;
   context: ControlContext;
 }) {
   switch (field.kind) {
@@ -507,7 +572,7 @@ export function InspectorControl({
     case "length":
       return <LengthControl field={field} value={value} context={context} />;
     case "number":
-      return <NumberControl field={field} value={value} context={context} />;
+      return <NumberControl field={field} value={value} columns={columns} context={context} />;
     case "enum":
       return <EnumControl field={field} value={value} context={context} />;
     case "toggle":
@@ -520,17 +585,23 @@ export function InspectorControl({
 function NumberControl({
   field,
   value,
+  columns,
   context,
 }: {
   field: InspectorNumberField;
   value: InspectorValue;
+  columns?: number;
   context: ControlContext;
 }) {
   const { labels, commitMode, emit } = context;
+  // 多列网格里标签一律内联（那正是「一行三格」排布的意义）；单列时由字段自己声明。
+  const inline = field.inlineLabel ?? (columns ?? 1) > 1;
   return (
     <NumericInput
       ariaLabel={field.label}
       value={value}
+      prefix={inline ? field.label : undefined}
+      scrub={inline}
       unit={field.unit}
       min={field.min}
       max={field.max}
@@ -538,6 +609,7 @@ function NumberControl({
       disabled={field.disabled}
       mixedText={labels.mixed}
       commitMode={commitMode}
+      className={inline ? "px-1.5" : undefined}
       onCommit={(next) => emit([{ path: field.key, value: next }])}
     />
   );

@@ -1,5 +1,5 @@
 "use client";
-import { memo, useCallback, useId, useMemo } from "react";
+import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "../collapsible";
@@ -15,6 +15,8 @@ import type {
   InspectorPanelProps,
   InspectorSection,
 } from "./inspector-panel.types";
+
+const NARROW_PANEL_PX = 260;
 
 // 设计工具属性检查器。核心不是「五个写死的分类」，而是**字段 schema 驱动**：
 // 消费方给一份 `{ key, label, kind }` 描述，面板按 kind 派生控件、按 path 读值、按 path 回吐。
@@ -40,23 +42,49 @@ const FALLBACK_LABELS: InspectorPanelLabels = {
   colorTokens: "主题色",
 };
 
+/** 标签内联进控件里的字段：外层不再画标签列，整格让给控件（Sketch 的 X/Y/W/H 排布）。 */
+function isInlineLabelled(field: InspectorField, columns: number): boolean {
+  return field.kind === "number" && (field.inlineLabel ?? columns > 1);
+}
+
+/** 多列网格里仍然独占整行的字段（放不进一格）。 */
+function spansFullRow(field: InspectorField): boolean {
+  return field.kind === "spacing" || field.kind === "color";
+}
+
 function FieldRow({
   field,
   labelId,
+  columns,
+  compact,
   children,
 }: {
   field: InspectorField;
   labelId: string;
+  columns: number;
+  compact: boolean;
   children: ReactNode;
 }) {
+  // 标签已经内联进输入框里，外层就不该再画一遍——否则同一个名字出现两次。
+  if (isInlineLabelled(field, columns)) {
+    return (
+      <div data-inspector-field={field.key} className={cn("min-w-0", spansFullRow(field) && "col-span-full")}>
+        {children}
+      </div>
+    );
+  }
   // spacing 独占一行：四个数字框 + 链接钮塞不进右半列。
   const stacked = field.kind === "spacing" || field.kind === "color";
   return (
     <div
       data-inspector-field={field.key}
-      className={cn("gap-2", stacked ? "flex flex-col" : "flex items-center")}
+      className={cn(
+        compact ? "gap-1.5" : "gap-2",
+        stacked ? "flex flex-col" : "flex items-center",
+        columns > 1 && "col-span-full",
+      )}
     >
-      <div className={cn("min-w-0", stacked ? "" : "w-20 shrink-0")}>
+      <div className={cn("min-w-0", stacked ? "" : compact ? "w-16 shrink-0" : "w-20 shrink-0")}>
         <span id={labelId} className="block truncate text-xs text-foreground">
           {field.label}
         </span>
@@ -69,16 +97,22 @@ function FieldRow({
   );
 }
 
+const GRID_COLS = { 1: "", 2: "grid grid-cols-2", 3: "grid grid-cols-3" } as const;
+
 function SectionBlock({
   section,
   read,
   context,
+  compact,
 }: {
   section: InspectorSection;
   read: (path: string) => ReturnType<typeof readInspectorValue>;
   context: Omit<ControlContext, "labelId">;
+  compact: boolean;
 }) {
   const idPrefix = useId();
+  // 窄栏下网格再分列就没有可用宽度了（每格不足 70px），统一退回单列。
+  const columns = context.narrow ? 1 : (section.columns ?? 1);
   return (
     <Collapsible
       defaultOpen={section.defaultOpen ?? true}
@@ -86,15 +120,27 @@ function SectionBlock({
     >
       <CollapsibleTrigger className="rounded-none">{section.label}</CollapsibleTrigger>
       <CollapsiblePanel>
-        <div className="flex flex-col gap-3">
+        <div
+          className={cn(
+            columns > 1 ? GRID_COLS[columns] : "flex flex-col",
+            compact ? "gap-1.5" : "gap-3",
+          )}
+        >
           {section.fields.map((field) => {
             const labelId = `${idPrefix}${field.key}`;
             return (
-              <FieldRow key={field.key} field={field} labelId={labelId}>
+              <FieldRow
+                key={field.key}
+                field={field}
+                labelId={labelId}
+                columns={columns}
+                compact={compact}
+              >
                 <InspectorControl
                   field={field}
                   value={read(field.key)}
                   read={read}
+                  columns={columns}
                   context={{ ...context, labelId }}
                 />
               </FieldRow>
@@ -115,6 +161,7 @@ function InspectorPanelImpl({
   categories,
   tokenSource,
   commitMode = "change",
+  density = "comfortable",
   title,
   emptyText,
   labels,
@@ -147,9 +194,25 @@ function InspectorPanelImpl({
     [onChange, onBatchChange],
   );
 
+  // 窄栏判定：面板经常被塞进 240px 上下的侧栏，而中文的四段分段控件在那个宽度下必然超宽。
+  // 观察面板自身的宽度而不是视口宽度 —— 决定控件形态的是「它有多宽」，不是「屏幕有多宽」。
+  const rootRef = useRef<HTMLElement | null>(null);
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([entry]) => {
+      // 阈值取 260px：label 列 w-20(80px) + 两侧内距后，控件可用宽约 150px，
+      // 再窄就装不下四段中文（每段最少约 44px）。
+      setNarrow(entry.contentRect.width < NARROW_PANEL_PX);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const context = useMemo<Omit<ControlContext, "labelId">>(
-    () => ({ commitMode, labels: text, tokens: tokenSource ?? [], emit }),
-    [commitMode, text, tokenSource, emit],
+    () => ({ commitMode, labels: text, tokens: tokenSource ?? [], emit, narrow }),
+    [commitMode, text, tokenSource, emit, narrow],
   );
 
   const heading = title === undefined ? text.title : title;
@@ -157,6 +220,7 @@ function InspectorPanelImpl({
 
   return (
     <section
+      ref={rootRef}
       aria-label={typeof heading === "string" ? heading : text.title}
       className={cn(
         "flex w-full flex-col overflow-hidden rounded-[var(--radius)] border border-border bg-surface text-foreground",
@@ -177,7 +241,13 @@ function InspectorPanelImpl({
         <p className="px-3 py-8 text-center text-sm text-muted">{emptyText ?? text.empty}</p>
       ) : (
         resolved.map((section) => (
-          <SectionBlock key={section.id} section={section} read={read} context={context} />
+          <SectionBlock
+            key={section.id}
+            section={section}
+            read={read}
+            context={context}
+            compact={density === "compact"}
+          />
         ))
       )}
     </section>

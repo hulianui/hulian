@@ -120,6 +120,8 @@ const [code, setCode] = useState(source);
 
 ## 禁忌 / 坑
 
+- **根节点自带 `w-full`，别再靠外层给宽度**。`textarea` 的固有宽度由 HTML 默认 `cols`（20）决定，所以编辑器的 max-content 宽度锚在约 20 字符：普通块级上下文里 block-flex 会自然铺满看不出问题，一旦作为 flex/grid item（「左树右编辑器」正是最典型的用法）就会按内容宽塌成一条窄框（#116）。要限制宽度请显式给 `max-w-*`，不要指望它自己收窄。
+
 - **必须受控**：`onChange` 里不回写 `value`，编辑会被 React 立刻回滚（表现为「打不进字」）。这是设计如此，不是 bug。
 - **不要绕开组件直接改 value 再指望 undo**：所有键盘增强都走 `document.execCommand("insertText" | "delete")` 落笔，为的是把改动压进 textarea 的**原生 undo 栈**。如果你 fork 出去改成 `setState` 整篇覆盖，Cmd+Z 会当场失效——这是 textarea 方案最容易做错的一点。`execCommand` 不可用的环境（jsdom、极老浏览器）自动降级为整篇回吐，功能仍在，只是丢原生 undo。
 - **不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60–80px。需要缩略图请外接 Monaco。

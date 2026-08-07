@@ -88,6 +88,9 @@ const [active, setActive] = useState("dashboard");
 
 ## 禁忌 / 坑
 
+- **`collapsible` 可用时 `logoCollapsed` 应当必填**。折叠后侧栏只有 64px，没给窄版标识就只能拿宽 logo 顶上，`overflow-hidden` 会把它裁掉半截——不报错，只是难看，所以开发期会打一次告警（#121）。传首字、单色图标、方形 mark 都行。
+- 顶栏与侧栏品牌区共用 `--hl-layout-header-h`，折叠态下品牌区自动切 `justify-center`，与下方 `NavMenu mode="collapsed"` 的图标轨共用同一条中轴。改这块时别只切内容不切对齐。
+
 
 - **受控页签下必须接 `onTabsAction`**：组件不持有 `tabs`，右键菜单里的「关闭其他/左侧/右侧/全部」只能把「该关哪些」算给你，改不了。此前这里连回调都没有，受控消费方点了完全没反应。
 - 「关闭全部」关的是**全部可关页签（含当前页）**，不是「关闭其他」。此前二者行为相同、与菜单文案对不上。

@@ -49,7 +49,7 @@ function JobCard({ job, index }: {
       <div className="flex items-center justify-between gap-2">
         <span className="truncate text-[13px] font-medium text-foreground">{job.title}</span>
 
-        <span className="shrink-0 rounded-full bg-muted px-1.5 text-[11px] tabular-nums text-muted">
+        <span className="shrink-0 rounded-full bg-subtle px-1.5 text-[11px] tabular-nums text-muted">
           #{index + 1}
         </span>
       </div>

@@ -4,7 +4,7 @@ import { User } from "../../../../packages/ui/src/user/user";
 import { Comment, CommentAction } from "../../../../packages/ui/src/comment/comment";
 const actions = (<>
     <CommentAction>👍 Like 12</CommentAction>
-    <CommentAction href="https://example.com/#reply">Reply</CommentAction>
+    <CommentAction href="#">Reply</CommentAction>
   </>);
 export const commentShowcase: ShowcaseSpec = {
     examples: [
@@ -30,7 +30,7 @@ export const commentShowcase: ShowcaseSpec = {
   actions={
     <>
       <CommentAction>\uD83D\uDC4D Like 12</CommentAction>
-      <CommentAction href="https://example.com/#reply">Reply</CommentAction>
+      <CommentAction href="#">Reply</CommentAction>
     </>
   }
 />`,
@@ -94,7 +94,7 @@ export const commentShowcase: ShowcaseSpec = {
         {
             name: "Nested threads",
             render: () => (<Comment author="Hulian" datetime="2 hours ago" avatar={{ fallback: "Hu" }} content="The work order has been assigned, please @Li Si @Wang Wu to follow up." actions={actions} connector>
-          <Comment author="Li Si" datetime="1 hour ago" avatar={{ fallback: "Li" }} content="Received @Hulian, we are investigating the root cause, and we expect to give a conclusion today." actions={<CommentAction href="https://example.com/#reply">Reply</CommentAction>}/>
+          <Comment author="Li Si" datetime="1 hour ago" avatar={{ fallback: "Li" }} content="Received @Hulian, we are investigating the root cause, and we expect to give a conclusion today." actions={<CommentAction href="#">Reply</CommentAction>}/>
           <Comment author="Wang Wu" datetime="40 minutes ago" avatar={{ fallback: "Wang" }} content="Supplement: The relevant logs are attached and can be referenced together."/>
         </Comment>),
         },

@@ -17,9 +17,9 @@ export const awardBadgeShowcase: ShowcaseSpec = {
   rank={1}
   kicker="GitHub Trending"
   title="#1 Repository Of The Day"
-  href="https://github.com/trending"
+  href="#"
 />`,
-            render: () => (<AwardBadge rank={1} kicker="GitHub Trending" title="#1 Repository Of The Day" href="https://example.com/#trending"/>),
+            render: () => (<AwardBadge rank={1} kicker="GitHub Trending" title="#1 Repository Of The Day" href="#"/>),
         },
         {
             title: "Skin",
@@ -106,7 +106,7 @@ export const awardBadgeShowcase: ShowcaseSpec = {
             render: () => (<div className="flex flex-col items-start gap-3">
           <AwardBadge emblem={<TrophyMark />} kicker="2026" title="Best Developer Tools" tone="warning"/>
           <AwardBadge wreath={false} rank="03" kicker="Awwwards" title="Site of the Day" variant="soft"/>
-          <AwardBadge rank={1} kicker="GitHub Trending" title="#1 Repository Of The Day" href="https://example.com/#trending"/>
+          <AwardBadge rank={1} kicker="GitHub Trending" title="#1 Repository Of The Day" href="#"/>
         </div>),
         },
     ],

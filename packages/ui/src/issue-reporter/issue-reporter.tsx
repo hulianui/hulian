@@ -1,6 +1,6 @@
 "use client";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Check, Copy, ExternalLink } from "../_icons";
+import { Check, Copy, GithubMark } from "../_icons";
 import { Alert } from "../alert/alert";
 import { Button } from "../button/button";
 import { CodeBlock } from "../code-block/code-block";
@@ -360,7 +360,10 @@ function IssueReporterImpl({
         )}
         {!tooLong && (
           <Button type="button" variant="outline" onClick={openOnGitHub}>
-            <ExternalLink className="size-4" />
+            {/* 平台 mark 而不是通用外链图标：这颗按钮的去向是一个第三方平台，图标在这里承载的是
+                **目的地识别**（扫一眼就知道会跳到哪），不是装饰。换成通用外链图标等于把那条信息
+                丢了（#119）。 */}
+            <GithubMark className="size-4" />
             {t.openOnGitHub}
           </Button>
         )}

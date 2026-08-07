@@ -172,7 +172,9 @@ export function GooeyNav({
           {pill ? (
             <m.span
               data-slot="gooey-nav-pill"
-              className="absolute rounded-full bg-foreground"
+              // 药丸同理走固定白色：一是深色条上药丸必须是浅色才看得见，二是外层 mix-blend-screen
+              // 下深色几乎不显形（亮色主题的 gray-900 药丸会被 screen 吃掉大半）。
+              className="absolute rounded-full bg-white"
               animate={{ left: pill.left, top: pill.top, width: pill.width, height: pill.height }}
               initial={false}
               transition={
@@ -227,7 +229,10 @@ export function GooeyNav({
                     className={cn(
                       "inline-block rounded-full px-4 py-2 transition-colors duration-300",
                       "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                      isActive ? "text-bg" : "text-foreground/70 hover:text-foreground",
+                      // 本件自带深色画布（容器必须深底，见文档要点），所以文字色**不能**跟随
+                      // 页面主题：亮色主题下 --color-foreground 是 gray-900，深字压深底直接糊掉。
+                      // 与 Video 控件条、GiftFeed 飘条同一口径，暗色上下文一律用固定的白色阶。
+                      isActive ? "text-black" : "text-white/80 hover:text-white",
                     )}
                   >
                     {item.label}

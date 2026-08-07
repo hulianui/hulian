@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
+import { DEVICE_METRICS, bodyHeightPx } from "../lib/device-metrics";
 import { Tablet } from "./tablet";
 
 describe("Tablet", () => {
@@ -11,11 +12,17 @@ describe("Tablet", () => {
     // 摄像头圆点
     expect(root.querySelector(".rounded-full")).not.toBeNull();
   });
-  it("width 落 style；默认机身比例 3/4.2", () => {
+  // 机身高度由内屏比例 + 边框反推（真源 lib/device-metrics），不再写死 aspectRatio ——
+  // 写死会让内屏比例随宽度漂移，PreviewSandbox 的 fit 缩放就在短边留白（#117 / #139）。
+  it("width 落 style；机身高度由内屏比例 + 边框推导", () => {
     const { container } = render(<Tablet width={400} />);
     const root = container.firstElementChild as HTMLElement;
     expect(root.style.width).toBe("400px");
-    expect(root.style.aspectRatio).toBe("3 / 4.2");
+    expect(root.style.aspectRatio).toBe("");
+    expect(Number.parseFloat(root.style.height)).toBeCloseTo(
+      bodyHeightPx(DEVICE_METRICS.tablet, 400),
+      6,
+    );
   });
   it("model 预设决定宽度与比例；width 显式传入时优先覆盖宽度", () => {
     const preset = render(<Tablet model="ipad-mini" />);

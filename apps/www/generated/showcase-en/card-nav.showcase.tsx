@@ -5,7 +5,7 @@ import { CardNav } from "../../../../packages/ui/src/card-nav/card-nav";
 function Stage({ children }: {
     children: React.ReactNode;
 }) {
-    return (<div className="relative h-72 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-muted/20 p-6">
+    return (<div className="relative h-72 w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-subtle p-6">
       {children}
     </div>);
 }
@@ -15,9 +15,9 @@ const items = [
         bgColor: "var(--color-chart-1)",
         textColor: "var(--color-primary-foreground)",
         links: [
-            { label: "Overview", href: "https://example.com/#overview" },
-            { label: "Pricing", href: "https://example.com/#pricing" },
-            { label: "Update log", href: "https://example.com/#changelog" },
+            { label: "Overview", href: "#" },
+            { label: "Pricing", href: "#" },
+            { label: "Update log", href: "#" },
         ],
     },
     {
@@ -25,8 +25,8 @@ const items = [
         bgColor: "var(--color-chart-2)",
         textColor: "var(--color-primary-foreground)",
         links: [
-            { label: "About Us", href: "https://example.com/#about" },
-            { label: "Recruitment", href: "https://example.com/#careers" },
+            { label: "About Us", href: "#" },
+            { label: "Recruitment", href: "#" },
         ],
     },
     {
@@ -34,8 +34,8 @@ const items = [
         bgColor: "var(--color-chart-4)",
         textColor: "var(--color-primary-foreground)",
         links: [
-            { label: "Documentation", href: "https://example.com/#docs" },
-            { label: "Community", href: "https://example.com/#community" },
+            { label: "Documentation", href: "#" },
+            { label: "Community", href: "#" },
         ],
     },
 ];

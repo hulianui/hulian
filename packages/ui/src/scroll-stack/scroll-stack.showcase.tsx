@@ -5,7 +5,7 @@ import { ScrollStack, ScrollStackItem } from "./scroll-stack";
 /** 固定高度的舞台，制造一个内部可滚动的窗口，让堆叠效果在卡片随滚动钉住时可见 */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-[28rem] w-full max-w-xl overflow-hidden rounded-xl border border-border bg-muted/10">
+    <div className="h-[28rem] w-full max-w-xl overflow-hidden rounded-xl border border-border bg-subtle">
       {children}
     </div>
   );

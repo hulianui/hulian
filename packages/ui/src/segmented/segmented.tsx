@@ -164,7 +164,11 @@ export function Segmented({
             className={cn(
               // pressableClass 平替 transition-colors 并补按下缩放：滑块（下方 absolute 层）不受影响，
               // 只有当前项的文字/图标轻微内缩，形成"按到了"的即时反馈。
-              `relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] font-medium outline-none ${pressableClass}`,
+              // min-w-0 + truncate 缺一不可：flex item 默认 min-width:auto，配上 whitespace-nowrap
+              // 后完全不可压缩，于是 root 的实际宽度被撑到「所有段文字之和」，flex-1 形同虚设，
+              // 装不下的部分被上游容器裁掉——**选项存在但不可见也不可点**（#114）。
+              // 补上之后段会等分压缩、文字变省略号，任何宽度下每一段都仍然可达。
+              `relative z-10 inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 truncate whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] font-medium outline-none ${pressableClass}`,
               sizeClasses[size].item,
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
               isSelected ? "text-foreground" : "hover:text-foreground",

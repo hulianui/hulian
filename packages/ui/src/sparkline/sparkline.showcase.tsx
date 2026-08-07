@@ -25,7 +25,7 @@ function InlineTable() {
     <div className="overflow-hidden rounded-[var(--radius)] border border-border">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-border bg-muted/40 text-left text-muted">
+          <tr className="border-b border-border bg-subtle text-left text-muted">
             <th className="px-4 py-2 font-medium">指标</th>
             <th className="px-4 py-2 font-medium">当前</th>
             <th className="px-4 py-2 font-medium">近 8 周期趋势</th>

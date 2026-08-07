@@ -55,7 +55,7 @@ export function ComponentDoc({
             <div className="min-w-0">
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h1 className="text-[1.7rem] font-semibold tracking-tight">{meta.name}</h1>
-                <span className="rounded-md bg-muted/10 px-2 py-0.5 font-mono text-xs text-muted">
+                <span className="rounded-md bg-subtle px-2 py-0.5 font-mono text-xs text-muted">
                   {slug}
                 </span>
               </div>

@@ -16,6 +16,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REGISTRY = JSON.parse(
   readFileSync(join(HERE, "..", "..", "..", "apps", "www", "public", "registry.json"), "utf8"),
 );
+const PROFILES = JSON.parse(readFileSync(join(HERE, "..", "src", "agent-profiles.json"), "utf8"));
 
 const write = (root, rel, content) => {
   const path = join(root, rel);
@@ -126,10 +127,15 @@ export default () => <AdminLayout><PageHeader /><Table /><Pagination /></AdminLa
   });
 });
 
-test("中后台不会被推装饰件 —— 即使它真的用了文字特效", () => {
+test("中后台不会被推全屏背景 / WebGL —— 但局部强调放行", () => {
   // 实证：ins-admin 在登录页用了 aurora-text / shimmer-button，marketing modifier 因此
-  // 成立，consider 列表把 border-beam 一路推进了运维后台。但 surface 决定组件语言，
-  // 而 admin-console 的 avoid 第一条就是「为了覆盖率加入营销背景或 WebGL 特效」。
+  // 成立，consider 列表把一批装饰件推进了运维后台。surface 决定组件语言，所以要拦。
+  //
+  // 但 0.27.0 起拦截精度从 category 提到 group（#140）：decoration 内部 backdrop
+  //（52 件全屏背景 / WebGL）与 overlay-fx（40 件局部强调）是两种完全不同的东西。
+  // 按整类拦，中后台连入场过渡（reveal）和卡片描边（border-beam）都被禁 —— 而同一份
+  // profile 的 avoid 里却写着「关键数字裸写而不用 NumberTicker」，规则自己跟自己打架。
+  // 真正要守住的 #41 非目标是「往中后台塞营销背景与 WebGL 特效」，那一条这里仍然守死。
   const root = makeConsumer({
     files: {
       "app/admin/login/page.tsx": `import { AdminLayout, PageHeader, ProTable, AuroraText, ShimmerButton } from "@hulianui/ui"
@@ -143,10 +149,26 @@ export default () => <AdminLayout><PageHeader /><ProTable /><AuroraText /><Shimm
       r.scene.modifiers.some((m) => m.id === "marketing"),
       "marketing 确实成立 —— 不是靠压掉判定来解决",
     );
-    const decoration = r.opportunities.filter((o) =>
-      (REGISTRY.items.find((i) => i.name === o.slug)?.categories ?? []).includes("decoration"),
+    const metaOf = (slug) => REGISTRY.items.find((i) => i.name === slug);
+    const backdrop = r.opportunities.filter((o) => {
+      const item = metaOf(o.slug);
+      return (
+        (item?.categories ?? []).includes("decoration") && item?.meta?.group === "backdrop"
+      );
+    });
+    assert.deepEqual(backdrop, [], "全屏背景 / WebGL 不该越过 surface 边界进入中后台");
+
+    const allowed = new Set(
+      (PROFILES.surfaces.find((s) => s.id === "admin-console")?.allowEffects ?? []),
     );
-    assert.deepEqual(decoration, [], "装饰件不该越过 surface 边界进入中后台");
+    for (const o of r.opportunities) {
+      const item = metaOf(o.slug);
+      if (!(item?.categories ?? []).includes("decoration")) continue;
+      assert.ok(
+        allowed.has(o.slug),
+        `装饰件 ${o.slug} 进了中后台建议，但它不在 allowEffects 白名单里`,
+      );
+    }
   });
 });
 

@@ -31,14 +31,14 @@ export const awardBadgeShowcase: ShowcaseSpec = {
   rank={1}
   kicker="GitHub Trending"
   title="#1 Repository Of The Day"
-  href="https://github.com/trending"
+  href="#"
 />`,
       render: () => (
         <AwardBadge
           rank={1}
           kicker="GitHub Trending"
           title="#1 Repository Of The Day"
-          href="https://example.com/#trending"
+          href="#"
         />
       ),
     },
@@ -188,7 +188,7 @@ export const awardBadgeShowcase: ShowcaseSpec = {
             rank={1}
             kicker="GitHub Trending"
             title="#1 Repository Of The Day"
-            href="https://example.com/#trending"
+            href="#"
           />
         </div>
       ),

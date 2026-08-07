@@ -4,6 +4,7 @@ import { Menu } from "../_icons";
 import { useLocaleValue } from "../config/locale-context";
 import { resolveBreakpointPx } from "../layout/layout-sider";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { NavMenu } from "../nav-menu/nav-menu";
 import { RouteTabs } from "../route-tabs";
@@ -78,6 +79,14 @@ export function AdminLayout({
 
   const [collapsedI, setCollapsedI] = useState(defaultCollapsed);
   const collapsed = collapsedProp ?? collapsedI;
+  // 折叠态下侧栏只有 64px。没给窄版 logo 就只能拿宽 logo 顶上，overflow-hidden 会把它裁掉半截
+  // ——不报错、只是难看，所以开发期明说一次（#121）。key 里不拼可变值，同一误用整个进程一条。
+  if (collapsed && logoCollapsed == null && logo != null) {
+    warnOnce(
+      "admin-layout:logo-collapsed",
+      "[瑚琏] AdminLayout：侧栏已折叠但没有传 logoCollapsed，宽版 logo 会在 64px 里被裁掉半截。请传一个窄版标识（首字 / 单色图标皆可）。",
+    );
+  }
   const setCollapsed = (v: boolean) => {
     if (collapsedProp === undefined) setCollapsedI(v);
     onCollapsedChange?.(v);
@@ -198,7 +207,16 @@ export function AdminLayout({
         style={siderStyle}
         className="flex flex-col border-r border-border bg-surface"
       >
-        <div className="flex h-16 shrink-0 items-center gap-2 overflow-hidden border-b border-border px-4 font-semibold">
+        {/* 折叠态下容器的**对齐方式**也要跟着切：内容换成窄版 logo 了，但 px-4 + 默认
+            justify-start 仍把它顶在左边，而紧下方 NavMenu mode="collapsed" 是居中的图标轨
+            —— 同一列里上下两块用两套水平对齐，整个左上角看起来是歪的（#121）。
+            高度读 --hl-layout-header-h，与右侧 header 共用同一个数，天然齐平（#120）。 */}
+        <div
+          className={cn(
+            "flex h-[var(--hl-layout-header-h)] shrink-0 items-center gap-2 overflow-hidden border-b border-border font-semibold",
+            collapsed ? "justify-center px-2" : "px-4",
+          )}
+        >
           {collapsed ? logoCollapsed ?? logo : logo}
         </div>
         <ScrollArea className="min-h-0 flex-1 rounded-none">
@@ -216,7 +234,7 @@ export function AdminLayout({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-surface px-4">
+        <header className="flex h-[var(--hl-layout-header-h)] shrink-0 items-center gap-3 border-b border-border bg-surface px-4">
           <button
             type="button"
             aria-label={collapsed ? t.expand : t.collapse}

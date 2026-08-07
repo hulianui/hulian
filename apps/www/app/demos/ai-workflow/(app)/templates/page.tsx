@@ -34,7 +34,7 @@ function PipelineStrip({ template }: { template: WorkflowTemplate }) {
     });
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 rounded-[var(--radius)] bg-muted/[0.06] p-2.5">
+    <div className="flex flex-wrap items-center gap-1.5 rounded-[var(--radius)] bg-subtle/60 p-2.5">
       {chips.map((m, i) => {
         const accent = ACCENT[m.accent];
         const Icon = m.icon;

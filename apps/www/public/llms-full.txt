@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.26.0 · 383 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.27.0 · 383 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -89,6 +89,9 @@ const [active, setActive] = useState("dashboard");
 ```
 
 ## 禁忌 / 坑
+
+- **`collapsible` 可用时 `logoCollapsed` 应当必填**。折叠后侧栏只有 64px，没给窄版标识就只能拿宽 logo 顶上，`overflow-hidden` 会把它裁掉半截——不报错，只是难看，所以开发期会打一次告警（#121）。传首字、单色图标、方形 mark 都行。
+- 顶栏与侧栏品牌区共用 `--hl-layout-header-h`，折叠态下品牌区自动切 `justify-center`，与下方 `NavMenu mode="collapsed"` 的图标轨共用同一条中轴。改这块时别只切内容不切对齐。
 
 
 - **受控页签下必须接 `onTabsAction`**：组件不持有 `tabs`，右键菜单里的「关闭其他/左侧/右侧/全部」只能把「该关哪些」算给你，改不了。此前这里连回调都没有，受控消费方点了完全没反应。
@@ -520,6 +523,9 @@ function Shell() {
 
 ## 禁忌 / 坑
 
+- **`Layout.Sider` 只负责宽度，不负责内容**。折叠时品牌区显示全称还是单字、`NavMenu` 走 `inline` 还是 `collapsed`，都得消费方按折叠态自己切——所以 `collapsed` 要自管 state（受控传给 Sider + `onCollapse` 回写），不能只喂一个 `defaultCollapsed` 初始值就完事。只喂初始值的话，用户点折叠后侧栏宽度确实收到 64px，内容却停在展开态，5 个中文字缩到 min-content 会一字一行竖排并把顶部撑高（#120）。折叠态也可以直接读 Sider 根节点上的 `data-collapsed` 写 CSS。
+- **顶栏高度读 `--hl-layout-header-h`（4rem）**。要做「侧栏顶部 logo 区与 Header 齐平」这件几乎必做的事，两边用 `h-[var(--hl-layout-header-h)]` 即可，别去源码里翻那个数——翻错一次就是一条永远对不齐的分隔线。
+
 - **受控/非受控二选一**：`Layout.Sider` 传了 `collapsed` 即进入受控，必须配 `onCollapse` 回写，否则 trigger/断点点了不动；只想非受控用 `defaultCollapsed`。
 - **横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染、或被包装进自定义组件（如 `<AppSider/>` 内部才渲染 `Layout.Sider`）时探测会落空，须显式给 `hasSider`。
 - 收起态切窄宽用菜单的 `mode="collapsed"`（dogfood NavMenu 自带 icon-only 轨），不要手搓「窄宽裁切 label」。
@@ -691,6 +697,8 @@ normalizeReactError(err, info);                   // 归一成 PreviewSandboxErr
 
 ## 禁忌 / 坑
 
+- **档位清单从设备真源派生，加机型只改一处**。`desktop` 是「无外框」档，是清单里唯一显式的例外；其余档位（含 `watch`）来自 `lib/device-metrics`，与 mockups 分类的外框件一一对应。此前这里手写了第二份清单，结果是 `watch` 被漏掉，且没有任何东西保证「内屏比例 == 视口比例」——那正是外框内一圈白边的来源（#117 / #139）。
+
 - **`code` 不是 JSX，是 HTML 文档串。** 塞一段 `<Button/>` 或 TSX 进去只会被当纯文本渲染，不会报错也不会编译——这是本组件最容易踩的静默失效。要真正执行生成的组件代码，只有两条路：自己在消费方接编译器（esbuild-wasm / WebContainers 那一档，本库不会引入这类重依赖），或改用同文档模式把已经编译好的组件当 `children` 传进来。
 - **默认 sandbox 只给 `allow-scripts`，刻意不给 `allow-same-origin`，这是个真实的取舍：**
   - `srcdoc` 文档本就继承宿主的源。两个值一起给等于**没有沙箱**：预览里的脚本能读写宿主 DOM、`localStorage`、cookie，甚至自己把 `sandbox` 属性摘掉。所以内容只要不是你完全可信的（AI 生成的、用户贴的、第三方模板），就别放开。
@@ -845,6 +853,7 @@ import { ScrollArea } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - **不给限高/限宽就不滚**：组件不自带尺寸，必须经 `className` 给 Root 限定 `h-*` / `w-*`（横向则限 `w-*`），否则内容撑开容器、滚动条永不出现。
+- **滚动条是覆盖式的，内容要自己留出让位内边距**。滚动条 `absolute` 定位、不占布局宽度，宽 `w-2`（8px），横向条高同理。所以内容区请自留 **≥ `pr-2.5`（10px = 8px 条 + 2px 呼吸）**，横向滚动则是 `pb-2.5`；留不够（比如常见的 `pr-1`=4px）滚动条就会稳定地压在最右一列内容上（#118）。这条是隐式约定，组件不代劳——因为「让位」该加在内容层还是各列上，只有消费方知道。
 
 ## 相关
 [Layout](https://hulianui.haloritual.com/zh/components/layout) · [AdminLayout](https://hulianui.haloritual.com/zh/components/admin-layout) · [Viewport](https://hulianui.haloritual.com/zh/components/viewport) · [Resizable](https://hulianui.haloritual.com/zh/components/resizable) · [AspectRatio](https://hulianui.haloritual.com/zh/components/aspect-ratio) · [FitScreen](https://hulianui.haloritual.com/zh/components/fit-screen)
@@ -3050,8 +3059,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"solid" \| "outline" \| "ghost" \| "link"` | `"solid"` | 视觉变体 |
-| tone | `"brand" \| "danger"` | `"brand"` | 语义色调 |
+| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | 语义色调（见下表） |
 | size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
+| block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
 
@@ -3067,6 +3077,27 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 按钮文案 |
 | render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），用于按钮样式的链接 CTA；样式与 `aria-disabled` 合并进该元素 |
+
+## 语义档（tone）
+
+按钮是 **`variant`（形态）× `tone`（语义）** 的二维模型，不是一维的 `type` 平铺 —— 「实心的成功按钮」和「描边的成功按钮」是两个正交选择，不必各开一个枚举值。
+
+| tone | 用在什么操作上 | solid 形态 |
+|------|---------------|-----------|
+| `brand`（默认） | 页面主操作：提交、保存、下一步 | 品牌底 + 白字 |
+| `success` | 确认类正向操作：通过、发布、启用 | 成功底 + 对应前景 |
+| `warning` | 有代价但不销毁数据：驳回、下架、强制同步 | 警告底 + 对应前景 |
+| `danger` | 不可逆的销毁操作：删除、注销、清空 | 危险底 + 对应前景 |
+| `neutral` | 与主操作等重的次操作：取消并返回、跳过 | 反色底（前景色作底） |
+
+```tsx
+<Button tone="success">通过</Button>
+<Button tone="warning" variant="outline">驳回</Button>
+<Button tone="danger">删除</Button>
+<Button tone="neutral">跳过</Button>
+```
+
+从一维 `type` 模型（Vant / Element 那套）迁过来时的对照：`type="primary"` → 默认 `<Button>`；`type="success"` → `tone="success"`；`type="default"` / `plain` → `variant="outline"`；`hairline` 已是全库默认，不必显式写。
 
 ## 尺寸档
 
@@ -3090,6 +3121,8 @@ import { Button, buttonVariants } from "@hulianui/ui"
 <Button>默认</Button>
 <Button variant="outline">描边</Button>
 <Button tone="danger">危险</Button>
+<Button tone="success" variant="outline">通过</Button>
+<Button block>块级主操作</Button>
 <Button loading>加载中</Button>
 ```
 
@@ -3097,6 +3130,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 - `render` 模式为降低风险**不套 motion**，故无 press 缩放动效（颜色/hover 过渡仍在）；文案优先取 Button 的 children。
 - `loading` 会自动禁用按钮，无需再手动加 `disabled`。
+- 按钮文字**不可被选中**（base 带 `select-none`）。按钮文案是控件标签不是内容，连点场景下浏览器会把连续点击识别成双击选词把文字刷成蓝底。要让用户复制的文本请别做成按钮。
+- `tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone="success" variant="outline"`，别去 `className` 里覆盖背景色。
+- `tone="neutral"` 的 `solid` 是**反色**（亮色下深底白字、暗色下浅底深字），不是灰底。灰底实心与 `variant="outline"` 几乎不可分辨，等于白开一档。
 - 自定义往按钮里塞图标+文字（尤其在特效按钮里）若图标掉到下一行，是 Tailwind Preflight 把 `svg{display:block}` 撑成块级所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——容器要 `inline-flex`，本 Button 已处理，自搓 wrapper 时注意。
 
 ## 相关
@@ -3743,6 +3779,8 @@ const [code, setCode] = useState(source);
 - 聚焦环画在外层容器上（`focus-within`），不是画在 textarea 上，避免与 1px 边框叠成双线。
 
 ## 禁忌 / 坑
+
+- **根节点自带 `w-full`，别再靠外层给宽度**。`textarea` 的固有宽度由 HTML 默认 `cols`（20）决定，所以编辑器的 max-content 宽度锚在约 20 字符：普通块级上下文里 block-flex 会自然铺满看不出问题，一旦作为 flex/grid item（「左树右编辑器」正是最典型的用法）就会按内容宽塌成一条窄框（#116）。要限制宽度请显式给 `max-w-*`，不要指望它自己收窄。
 
 - **必须受控**：`onChange` 里不回写 `value`，编辑会被 React 立刻回滚（表现为「打不进字」）。这是设计如此，不是 bug。
 - **不要绕开组件直接改 value 再指望 undo**：所有键盘增强都走 `document.execCommand("insertText" | "delete")` 落笔，为的是把改动压进 textarea 的**原生 undo 栈**。如果你 fork 出去改成 `setState` 整篇覆盖，Cmd+Z 会当场失效——这是 textarea 方案最容易做错的一点。`execCommand` 不可用的环境（jsdom、极老浏览器）自动降级为整篇回吐，功能仍在，只是丢原生 undo。
@@ -5045,6 +5083,7 @@ import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } 
 | categories | readonly string[] | — | 只取内置预设的这几类，且**按传入顺序**排列（`layout` / `color` / `typography` / `border` / `effects`） |
 | tokenSource | readonly InspectorToken[] | — | 色值控件可选的主题 token；形状与文档站 `SEMANTIC_GROUPS` 的色卡一致 |
 | commitMode | "change" \| "commit" | "change" | `change` 拖动/按键即回吐；`commit` 松手/失焦/回车才回吐 |
+| density | "comfortable" \| "compact" | "comfortable" | 行高与内边距密度；`compact` 收紧到接近 Sketch 检查器的量级 |
 | onBatchChange | (changes: InspectorChange[]) => void | — | 一次交互改多个 path 时的批量回吐（见下方 Events） |
 | title | ReactNode | 取自 locale | 面板标题；传 `null` 不渲染标题栏 |
 | emptyText | ReactNode | 取自 locale | 空态文案 |
@@ -5140,6 +5179,13 @@ readInspectorValue({ style: { color: "red" } }, "style.color"); // "red"
 - 混合值不靠灰色暗示：文本/数字类走 `placeholder`，开关/枚举旁边有可读文字，读屏能听见。
 
 ## 禁忌 / 坑
+
+- **设计工具语境请开 `columns` + `density="compact"`**。`X / Y / 旋转` 这类数值本该一行三格、标签内联进输入框；一行一个字段配 80px 标签列，同样内容要占三倍高度。多列模式下数值字段自动内联标签，并且标签本身成为**拖拽调值**的抓手（横向每 1px 一个 `step`，按住 Shift 走 10 倍）。窄栏（<260px）下网格自动退回单列——每格不足 70px 时分列没有意义。
+- 拖拽抓手 `aria-hidden` 且不进 tab 顺序：调值的可达通路是输入框自己（方向键 / 直接输入），拖拽只是给鼠标用户的加速方式，不该多出一个屏幕阅读器要念的控件。
+- **「一组里可增删多条」（填充 / 边框 / 阴影各挂若干条）尚未支持**。当前 schema 是「一个 key 对应一个值」，多条同类样式需要值模型从 `Record<string, unknown>` 变成带数组的结构，属于独立的一次设计，不在本版范围内。现在的替代做法是消费方自己按条展开成 `fill1Color` / `fill2Color` 这样的扁平 key。
+
+- **窄栏下枚举字段自动从分段控件降级为下拉**。面板宽度低于 260px 时（侧栏检查器的常见宽度），`kind: "enum"` 且**未显式指定 `display`** 的字段会切成 `select`——四段中文在那个宽度下装不下，硬撑就会出现「存在但不可达的选项」（#114）。显式传了 `display` 就尊重消费方，不再自适应。
+- 判定看的是**面板自身的宽度**（ResizeObserver），不是视口宽度：决定控件形态的是「它有多宽」。jsdom 下没有 ResizeObserver，单测里不会触发降级。
 
 - **`onChange` 会在同一 tick 连发多次**（链接锁定的 spacing 是 4 次）。消费方必须用函数式更新 `setState((prev) => …)`，写成 `setState({ ...style, [path]: value })` 会让后三次覆盖前三次，表现为「只有最后一边生效」。嫌麻烦就传 `onBatchChange` 一次拿全。
 - `commitMode` 覆盖滑杆、输入框与色块弹出的 ColorPicker 三者。`commit` 模式下取色器松手 / 失焦 / 回车才回吐，拖动中的每帧值只留在面板内部（取色器此时是非受控的，外部 `props` 变了才会重新同步）。
@@ -5995,6 +6041,7 @@ import { PulsatingButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
 | pulseColor | `string` | `var(--color-primary)` 的 70% | 脉冲光环色 |
 | duration | `string` | `1.5s` | 一轮脉冲秒数 |
 | ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
@@ -6020,6 +6067,8 @@ import { PulsatingButton } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **与 [Button](https://hulianui.haloritual.com/zh/components/button) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。
 
 - 自定义往按钮塞图标+文字若图标掉行，是 Tailwind Preflight `svg{display:block}` 所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——确保文案容器是 `inline-flex`。
 
@@ -6139,6 +6188,7 @@ import { RainbowButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
 | speed | `string` | `3s` | 彩虹流动一轮秒数 |
 | ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
 
@@ -6163,6 +6213,8 @@ import { RainbowButton } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **与 [Button](https://hulianui.haloritual.com/zh/components/button) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。
 
 - 自定义往按钮塞图标+文字若图标掉行，是 Tailwind Preflight `svg{display:block}` 所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——确保文案容器是 `inline-flex`。
 
@@ -6493,6 +6545,7 @@ import { RippleButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
 | rippleColor | `string` | `var(--color-primary-foreground)` | 波纹颜色 |
 | duration | `string` | `"600ms"` | 单次波纹动画时长 |
 
@@ -6517,6 +6570,8 @@ import { RippleButton } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **与 [Button](https://hulianui.haloritual.com/zh/components/button) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。
 
 暂无已知坑。波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。
 
@@ -6834,6 +6889,9 @@ import { Segmented } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- **装不下时段会压缩并省略，不会消失**。段是 `min-w-0 flex-1 truncate`：任何宽度下每一段都仍然可见、可点。0.27.0 前缺 `min-w-0`，flex item 的 `min-width:auto` 配上 `whitespace-nowrap` 完全不可压缩，root 宽度被撑到「所有段文字之和」，超出部分被上游容器裁掉——**选项存在但不可达**（#114）。
+- 但「能压缩」不等于「好用」：4 段中文塞进 150px 只会全变省略号。窄容器请改用 [Select](https://hulianui.haloritual.com/zh/components/select)，或像 [InspectorPanel](https://hulianui.haloritual.com/zh/components/inspector-panel) 那样按容器宽度自动降级。
+
 - 段 `label` 是图标/徽标等富节点时必须给该段 `ariaLabel`，否则读屏会读英文 `value`（念读不友好）。
 - 用 `value`/`onValueChange` 即受控，须自管 state；非受控只给 `defaultValue`。
 - 选中是单值互斥，没有多选——多选共存改用 [ToggleGroup](https://hulianui.haloritual.com/zh/components/toggle)。
@@ -7025,6 +7083,7 @@ import { ShimmerButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
 | shimmerColor | `string` | `var(--color-primary-foreground)` | 火花高光色 |
 | shimmerSize | `string` | `0.05em` | 火花宽度 |
 | borderRadius | `string` | `var(--radius)` | 圆角 |
@@ -7054,6 +7113,8 @@ import { ShimmerButton } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **与 [Button](https://hulianui.haloritual.com/zh/components/button) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。
 
 - 颜色类 prop 应传 token CSS 变量（如 `var(--color-danger)`）以随主题切换，别硬编码裸色值。
 - 自定义往按钮塞图标+文字若图标掉行，是 Tailwind Preflight `svg{display:block}` 所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——确保文案容器是 `inline-flex`。
@@ -8920,6 +8981,8 @@ import { ChromaGrid } from "@hulianui/ui"
 
 - 卡片色彩 token 必须带 `--color-` 前缀（如 `var(--color-chart-1)`）；裸 `var(--chart-1)` 在渐变/描边里不解析。
 - 揭示效果靠灰度对比，深色底容器观感最佳（showcase 用 `oklch(0.16 0.02 255)`）。
+- **卡片是暗色上下文**：卡面颜色由消费方的 `gradient` 决定，而文字色如果跟随页面主题，组件就无法对任何对比度做出保证（换一组渐变就是另一种可读性）。所以卡上的标题 / handle / 副标题用固定的白色阶，且组件在你的渐变**下面**恒垫一层中性深色基底——渐变里的 `transparent` 端露出的是那层深色，不是页面底色。想要浅色卡面就不该用本件（换 [Masonry](https://hulianui.haloritual.com/zh/components/masonry) 或普通卡片墙）。
+- **无指针设备上不做灰度暗化**：`@media (hover: none)` 下两层揭示遮罩整层关闭。没有光标就永远没有「亮起来的那张卡」，触屏 / 纯键盘 / 截图 / 打印下所有卡片会永久停在降级态——而卡上的姓名职位是内容，不该依赖鼠标位置才可读。
 - reduced-motion 下光标弹性跟随退化为直接吸附，属预期。
 
 ## 相关
@@ -9742,7 +9805,7 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | grid | boolean \| number | true | 网格底纹：`true`=40 世界单位，数字=自定义边长，`false` 关闭 |
 | snap | number | 0 | 拖动 / resize / 方向键的吸附步长（世界单位），0 = 不吸附 |
 | minItemSize | number | 8 | 元素最小宽高（世界单位） |
-| wheelBehavior | "zoom" \| "pan" | "zoom" | 滚轮默认行为，按住 Ctrl/⌘ 反转 |
+| wheelBehavior | "zoom" \| "pan" | "pan" | 无修饰键时的滚轮行为。Ctrl（含触控板捏合）恒为缩放，不受此项影响 |
 | controls | boolean | true | 是否显示右下角缩放工具条 |
 | readOnly | boolean | false | 禁用拖动 / resize / 删除，仍可选中、平移、缩放 |
 | className | string | — | 画布外层类名（须有确定高度，组件填满） |
@@ -9827,6 +9890,8 @@ const screen = canvasToScreen({ x: item.x, y: item.y }, { x: pan.x, y: pan.y, zo
 - 元素内部放按钮 / 输入框请照常写——按在这类控件上只选中不起拖（与 Kanban / Sortable 同一口径）。要让某个自定义元素也免于拖拽，给它加 `data-no-drag`。
 - 右键在画布上是「拖拽平移」手势的一部分，因此**系统右键菜单被抑制**。需要自定义右键菜单请自行在 `renderItem` 内监听 `contextmenu` 并 `stopPropagation`。
 - 滚轮事件用 `{ passive: false }` 注册并 `preventDefault`，画布区域**不会**滚动祖先容器——这是有意为之，别把画布塞进需要靠滚轮滚动的窄栏里。
+- 滚轮语义与系统惯例、与同库 [Flow](https://hulianui.haloritual.com/zh/components/flow) 一致：**两指滑动平移、捏合（= Ctrl+滚轮）缩放**。`wheelBehavior="zoom"` 只改「无修饰键」那一档，捏合永远缩放。⌘+滚轮不做缩放（macOS 上它没有这个语义）。
+- 画布整体 `select-none`：点选 / 拖动不该把元素文字刷成选区。`renderItem` 里塞进来的 `input` / `textarea` / `contenteditable` 已开逃生口照常可选；其它需要复制的自定义内容请自行加 `select-text`。
 - `resize` 拖过锚定边会**翻转**（与 Figma 一致），不是卡死在 `minItemSize`。若你的业务不接受翻转，请在 `onItemsChange` 里自行拒绝。
 - 客户端组件（原生 Pointer Events），必须在 client 上下文用。
 
@@ -15044,11 +15109,17 @@ import { Dock, DockIcon } from "@hulianui/ui"
 | magnification | `number` | — | 鼠标靠近时图标放大到的峰值尺寸(px) |
 | distance | `number` | — | 放大影响范围半径(px) |
 | iconSize | `number` | — | 静息图标尺寸(px) |
+| activeKey | `string` | — | 当前项 key，与 DockIcon 的 `itemKey` 比对 |
+| onSelect | `(key: string) => void` | — | 点击某项。**提供它才把 DockIcon 渲染成真正的 `<button>`**，底座同时升级为 `nav` 地标 |
+| aria-label | `string` | — | 渲染为 `<nav>` 时的地标名称 |
 | className | `string` | — | — |
 
 ### DockIcon
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| itemKey | `string` | — | 本项 key，配合 Dock 的 `activeKey` / `onSelect` |
+| active | `boolean` | — | 直接指定选中态，优先于 `activeKey` 比对结果 |
+| label | `string` | — | 可点击时的无障碍名（图标本身通常没有文字） |
 | className | `string` | — | — |
 
 ## Slots
@@ -15073,6 +15144,9 @@ import { Dock, DockIcon } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **选中态是 Dock 的核心信息，不是装饰**。macOS Dock 本身就有「当前应用高亮」与「运行中指示点」；Web 上 Dock 的典型用法是常驻底部导航，同样要回答「我现在在哪」。用 `activeKey` + `DockIcon` 的 `itemKey` 表达，组件会给出 `aria-current="page"` 与图标下方的指示点（形状线索，不只靠颜色）。
+- **接了 `onSelect` 才会渲染成真正的 `<button>`**（可聚焦、可回车激活），底座同时升级为 `nav` 地标。不接时 `DockIcon` 保持无语义容器 —— 因为很多消费方是往 children 里放自己的 `<a>` 的，自动包一层 button 会造成嵌套交互元素。
 
 - 候选坑 skill（macos-dock-icon-needs-baked-squircle-margin、tauri-macos-hide-to-tray）均针对原生 macOS / Tauri 的系统 Dock，与本 React 组件无关，不适用。
 - 放大依赖随鼠标移动下发的 `mouseX`（context + motion 弹簧），是纯客户端交互；图标统一用固定尺寸（如 `size-5`）以便放大动画一致。
@@ -15188,7 +15262,8 @@ import { GooeyNav } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 受控/非受控二选一：传了 `activeIndex` 即进入受控，组件内部不再自行改高亮，必须配合 `onChange` 回写父级 state，否则点击无反应。
-- 容器需要深色底 + `overflow-hidden`：药丸与粒子靠 blur/contrast 熔色，浅底或裁切不当观感会差（showcase 用 `oklch(0.16 0.02 265)` 深底承托）。
+- **容器必须是深色底** + `overflow-hidden`：药丸与粒子靠 blur/contrast 熔色，浅底或裁切不当观感会差（showcase 用 `oklch(0.16 0.02 265)` 深底承托）。
+- 正因为容器恒为深色，本件的文字与药丸用**固定的黑白阶**（`text-white/80`、`bg-white`），不跟随页面主题。这不是漏接 token：跟随主题的话，亮色主题下 `--color-foreground` 是 `gray-900`，非激活项就成了「深字压深底」，直接看不见（#133）。放到浅色区域用会反过来失效——那时该换 [PillNav](https://hulianui.haloritual.com/zh/components/pill-nav) 或 [NavMenu](https://hulianui.haloritual.com/zh/components/nav-menu)。
 - reduced-motion 下粒子与弹簧动画自动跳过，仅保留瞬时切换，属预期降级。
 
 ## 相关
@@ -16837,9 +16912,10 @@ asElement(event.target);                  // 跨 realm 安全的元素判断（i
 ## 禁忌 / 坑
 
 - **跨源 iframe 不支持**，而且不会静默失效：读不到 `contentDocument` 时组件不渲染，并触发一次 `onError({ code: "cross-origin" })` + 开发期告警。要跨源就只有三条路：换成同源预览（`srcDoc` / 同源代理域名）、或在被预览页里自己挂一份叠加层把 path 通过 `postMessage` 回传宿主、或放弃指向编辑。本组件**不提供** postMessage 桥（那是另一套协议，不该藏在一个 UI 组件里）。
-- **能打标记就打标记**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。
+- **能打标记就打标记，且标记元素必须真实占位**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。注意别把标记打在 `display: contents` 的包裹层上——这类元素不生成盒子，`getBoundingClientRect()` 恒为 0，正好落进「零面积判不可见」，一个框都画不出来。
 - **iframe 内的元素跨 realm**：它们不是宿主的 `Element` 实例，`node instanceof Element` 恒 false —— 自己处理目标事件时请用导出的 `asElement()`，别用 instanceof（这是同源 iframe 场景最容易踩的静默失效）。
 - `interceptClicks` 默认 `true`，意味着**选择模式下预览是不可交互的**（点击被吞、mousedown 的默认行为被挡）。要让用户一边操作预览一边看高亮，传 `interceptClicks={false}`，或用 `enabled` 显式切换选择模式。
+- **拦截与清空都只发生在目标内**。`target` 传普通容器时监听虽然挂在宿主 document 上（要覆盖 iframe 场景），但组件会先判事件是否落在 `target` 内：外面的点击既不被 `preventDefault` / `stopPropagation`，也不触发 `onClear`。所以宿主页面的导航、属性面板照常可用，`onClear` 只由「点预览内的空白」触发。
 - **目标根自身不可选**：`target` 那个元素（iframe 场景是其 `body`）hover 与点击都视为空白，点它触发 `onClear`。根若也带标记属性，所有元素会退化成同一条路径，所以标记查找刻意跳过根。
 - **jsdom 下 `getBoundingClientRect` 恒为 0**，零面积一律判不可见 → 单测里默认一个框都不会渲染。要断言框的存在，先给 `Element.prototype.getBoundingClientRect` 打桩；但别断言坐标数值（坐标来自你的桩，等于自证）。坐标逻辑请测 `toHostRect` / `computeLabelPosition` 这两个纯函数。
 - 目标是 `document.body` 时，本组件的 portal 层就落在目标内部；组件已过滤掉自身引起的 MutationObserver 记录（否则自触发死循环），你若另外挂了 observer 也要做同样的过滤。
@@ -24515,7 +24591,9 @@ import { Android, ANDROID_MODELS } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 机身比例由组件内 `aspectRatio` 统一固定，`model`/`width` 只改宽度不改纵横比。
+- **机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](https://hulianui.haloritual.com/zh/components/preview-sandbox) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。
+
+- `model` / `width` 只改机身宽度；高度随之按内屏比例推导，所以纵横比会随宽度略有变化（这是正确的——边框不缩放）。
 - `imageSrc` 与 `children` 同传时 `imageSrc` 优先。
 
 ## 相关
@@ -24609,7 +24687,9 @@ import { IPhone, IPHONE_MODELS } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 机身比例由组件内 `aspectRatio` 统一固定，`model`/`width` 只改宽度不改纵横比；想要别的比例需自行外层裁切。
+- **机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](https://hulianui.haloritual.com/zh/components/preview-sandbox) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。
+
+- `model` / `width` 只改机身宽度；高度随之按内屏比例推导，所以纵横比会随宽度略有变化（这是正确的——边框不缩放）。想要别的比例需自行外层裁切。
 - `imageSrc` 与 `children` 同传时 `imageSrc` 优先。
 
 ## 相关
@@ -24702,7 +24782,9 @@ import { Tablet, TABLET_MODELS } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 与 iPhone/Android 不同：平板机型纵横比各异，`aspectRatio` 由 `model` 决定；`width` 显式传入只覆盖宽度，比例仍随 model。不传 model 时回退默认宽 320 但无机型专属比例。
+- **机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](https://hulianui.haloritual.com/zh/components/preview-sandbox) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。
+
+- 与 iPhone/Android 不同：各代 iPad 纵横比确实不同，所以**显式传了 `model` 时**机身比例由该机型的 `aspectRatio` 决定，`width` 只覆盖宽度。不传 `model` 的缺省档才走「内屏比例 + 边框反推」——[PreviewSandbox](https://hulianui.haloritual.com/zh/components/preview-sandbox) 从不传 model，走的正是这条。
 - `imageSrc` 与 `children` 同传时 `imageSrc` 优先。
 
 ## 相关
@@ -24801,6 +24883,8 @@ import { Watch, WATCH_MODELS } from "@hulianui/ui"
 ```
 
 ## 禁忌 / 坑
+
+- **机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](https://hulianui.haloritual.com/zh/components/preview-sandbox) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。
 暂无已知坑。设备外壳为纯展示组件（RSC 可用），imageSrc 与 children 同时存在时 imageSrc 胜出。
 
 ## 相关

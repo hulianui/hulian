@@ -135,21 +135,31 @@ export function ComponentTree() {
               type="button"
               onClick={() => toggle(cat.key)}
               aria-expanded={open}
-              className="flex w-full items-center gap-1.5 rounded-[var(--radius)] px-2 py-1.5 text-xs font-medium uppercase tracking-wide text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+              // 层级靠**字重 + 色阶**建立，不靠缩小字号：条目是可点击目标，14px 已是合理下限，
+              // 缩了更难点也更难读。此前一级分类 12px、二级分组 11px、条目 14px —— 层级越高
+              // 字越小，正好反过来（#125）。
+              //
+              // uppercase + tracking-wide 是 shadcn / 英文文档站的分类标题写法，在英文里靠全大写
+              // 加字距形成「标签感」，小字号也压得住；中文里 uppercase 完全无效、tracking-wide
+              // 只是把字散开，于是退化成「一个比正文更小的灰字」，压不住下面的条目。故只在英文站保留。
+              className={`flex w-full items-center gap-1.5 rounded-[var(--radius)] px-2 py-1.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-hover ${
+                DOCS_LOCALE === "en" ? "uppercase tracking-wide" : ""
+              }`}
             >
               <ChevronRight
                 className={`size-3.5 shrink-0 transition-transform ${open ? "rotate-90" : ""}`}
                 aria-hidden
               />
               <span>{categoryLabel}</span>
-              <span className="ml-auto tabular-nums text-muted">{count}</span>
+              {/* 计数是次级信息，随分类标题一起变重会喧宾夺主 —— 保持常规字重 + 弱色阶。 */}
+              <span className="ml-auto text-xs font-normal tabular-nums text-muted">{count}</span>
             </button>
 
             {open && (
               <div className="mt-1 space-y-2">
                 {groups.map((g) => (
                   <div key={g.key}>
-                    <h4 className="px-2 pb-0.5 pl-7 text-[11px] font-medium text-muted">
+                    <h4 className="px-2 pb-0.5 pl-7 text-xs font-medium text-muted">
                       {componentMeta(g.items[0]).groupLabel}
                     </h4>
                     <ul className="space-y-0.5">

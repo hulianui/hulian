@@ -58,7 +58,7 @@ export const gitCommitShowcase: ShowcaseSpec = {
       title: "可点击短哈希",
       description: "传 href 让短哈希可跳转到 commit 详情，shaLength 控制位数。",
       code: `<>
-  <GitCommit branch="release" sha="cb2ae42ddd0099" href="#cb2ae42" message="chore(release): @hulianui/ui@0.1.2" />
+  <GitCommit branch="release" sha="cb2ae42ddd0099" href="#" message="chore(release): @hulianui/ui@0.1.2" />
   <GitCommit branch="hotfix" sha="f79cbb812345" shaLength={12} message="发丝边框 token" />
 </>`,
       render: () => (
@@ -66,7 +66,7 @@ export const gitCommitShowcase: ShowcaseSpec = {
           <GitCommit
             sha="cb2ae42ddd0099"
             branch="release"
-            href="https://example.com/#cb2ae42"
+            href="#"
             message="chore(release): @hulianui/ui@0.1.2"
           />
           <GitCommit sha="f79cbb812345" shaLength={12} branch="hotfix" message="发丝边框 token" />
@@ -154,7 +154,7 @@ export const gitCommitShowcase: ShowcaseSpec = {
           <GitCommit
             sha="cb2ae42ddd0099"
             branch="release"
-            href="https://example.com/#cb2ae42"
+            href="#"
             message="chore(release): @hulianui/ui@0.1.2"
           />
           <GitCommit sha="f79cbb812345" shaLength={12} branch="hotfix" message="发丝边框 token" />

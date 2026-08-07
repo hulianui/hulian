@@ -40,7 +40,7 @@ function LayoutHeader({ sticky = false, className, children, ...props }: LayoutH
     <header
       data-layout-header=""
       className={cn(
-        "flex h-16 shrink-0 items-center gap-4 border-b border-border bg-surface px-4 text-foreground sm:px-6",
+        "flex h-[var(--hl-layout-header-h)] shrink-0 items-center gap-4 border-b border-border bg-surface px-4 text-foreground sm:px-6",
         sticky && "sticky top-0 z-30",
         className,
       )}

@@ -105,7 +105,7 @@ export function DesignCanvas({
   grid = true,
   snap = 0,
   minItemSize = 8,
-  wheelBehavior = "zoom",
+  wheelBehavior = "pan",
   controls = true,
   readOnly = false,
   className,
@@ -347,8 +347,9 @@ export function DesignCanvas({
       e.preventDefault();
       const l = latest.current;
       const rect = el.getBoundingClientRect();
-      // Ctrl/⌘ 反转默认行为：默认缩放时按住即平移，默认平移时按住即缩放（触控板捏合也走 ctrlKey）。
-      const wantZoom = (l.wheelBehavior === "zoom") !== (e.ctrlKey || e.metaKey);
+      // 触控板捏合被浏览器合成为 ctrlKey + wheel，捏合永远是缩放意图 —— 所以 ctrlKey 直接判缩放，
+      // 不参与「反转」（参与就会把捏合反转成平移）。⌘ 在 macOS 不是缩放修饰键，不纳入判断。
+      const wantZoom = e.ctrlKey || l.wheelBehavior === "zoom";
       if (wantZoom) {
         // 归一 deltaMode：行模式(×~16)/页模式(×容器高)折算成像素，跨鼠标/触控板手感一致。
         const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? rect.height : 1;
@@ -488,7 +489,11 @@ export function DesignCanvas({
       onKeyUp={onCanvasKeyUp}
       onBlur={() => setSpaceDown(false)}
       className={cn(
-        "relative h-full w-full overflow-hidden bg-bg outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        // select-none：画布上的点选/拖动本不该建立文本选区（指针被 setPointerCapture 捕获后，
+        // 浏览器「新 mousedown 重置选区」的兜底也失效，选区会从上一个元素一路蔓延过来）。
+        // 后面三条是逃生口：消费方经 renderItem 塞进来的真实可编辑内容仍然可选可编辑。
+        "relative h-full w-full select-none overflow-hidden bg-bg outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "[&_[contenteditable]]:select-text [&_input]:select-text [&_textarea]:select-text",
         activeGesture === "pan" ? "cursor-grabbing" : spaceDown && "cursor-grab",
         className,
       )}

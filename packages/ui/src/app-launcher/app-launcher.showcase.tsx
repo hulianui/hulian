@@ -1,181 +1,206 @@
 "use client";
 import { useState } from "react";
+import {
+  Activity,
+  BarChart3,
+  Ban,
+  Braces,
+  CalendarDays,
+  ClipboardCheck,
+  Database,
+  FileSearch,
+  GitBranch,
+  Inbox,
+  KanbanSquare,
+  KeyRound,
+  Rocket,
+  ScrollText,
+  Settings,
+  ShieldCheck,
+  SlidersHorizontal,
+  TerminalSquare,
+  Users,
+} from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { AppLauncher } from "./app-launcher";
 import type { AppLauncherItem } from "./app-launcher.types";
 
-// 图标一律本地生成（渐变方块 + 字形）：文档站门禁禁远程资源，也免得示例依赖外网可用性。
-function Tile({
-  from,
-  to,
-  glyph,
-  dark,
-}: {
-  from: string;
-  to: string;
-  glyph: string;
-  dark?: boolean;
-}) {
+// 图标一律本地生成（token 渐变方块 + lucide 线性图标）：文档站门禁禁远程资源，也免得示例依赖外网。
+//
+// 这里刻意演示的是**中后台系统的应用中心**，不是 macOS 启动台里的第三方 App。
+// 后者的题材天然需要品牌位图（微信 / Chrome / VSCode），示例只能拿 emoji 凑 —— 而 emoji 的
+// 渲染不由我们控制（macOS 立体拟物 / Windows 扁平 / Linux 各不相同）、颜色是字体内嵌的、
+// 完全不吃主题；底色也只能写裸十六进制，绕开整套 token 体系。showcase 是消费方照抄的地方，
+// 这两样都会被一路复制出去（#130）。
+//
+// 换成工单 / 报表 / 审批 / 日志这类语义，正好能用库内线性图标表达，也才是 AppLauncher
+// 真正的使用场景。真要放第三方 App 的品牌位图，见最后一个示例：icon 接受任意 ReactNode。
+function Tile({ tone, icon }: { tone: string; icon: React.ReactNode }) {
   return (
     <span
-      className={`grid size-full place-items-center text-2xl font-semibold ${
-        dark ? "text-white" : "text-foreground"
-      }`}
-      style={{ background: `linear-gradient(145deg, ${from}, ${to})` }}
+      className="grid size-full place-items-center text-white [&_svg]:size-7"
+      style={{
+        background: `linear-gradient(145deg, ${tone}, color-mix(in oklab, ${tone} 55%, black))`,
+      }}
     >
-      {glyph}
+      {icon}
     </span>
   );
 }
 
+const C1 = "var(--color-chart-1)";
+const C2 = "var(--color-chart-2)";
+const C3 = "var(--color-chart-3)";
+const C4 = "var(--color-chart-4)";
+const C5 = "var(--color-chart-5)";
+const C6 = "var(--color-chart-6)";
+
 const apps: AppLauncherItem[] = [
   {
-    id: "ghostty",
-    label: "Ghostty",
-    category: "dev",
+    id: "tickets",
+    label: "工单中心",
+    category: "work",
     section: "recent",
-    keywords: ["terminal", "zhongduan"],
-    icon: <Tile from="#4b5563" to="#111827" glyph="👻" dark />,
-  },
-  {
-    id: "chrome",
-    label: "Google Chrome",
-    category: "dev",
-    section: "recent",
-    keywords: ["browser"],
-    icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🌐" />,
-  },
-  {
-    id: "vscode",
-    label: "Visual Studio Code",
-    category: "dev",
-    section: "recent",
-    keywords: ["vsc", "editor"],
-    icon: <Tile from="#e0f2fe" to="#bae6fd" glyph="🧩" />,
-  },
-  {
-    id: "navicat",
-    label: "Navicat for MySQL",
-    category: "dev",
-    section: "recent",
-    keywords: ["db", "shujuku"],
-    icon: <Tile from="#dcfce7" to="#86efac" glyph="🗄️" />,
-  },
-
-  {
-    id: "wechat",
-    label: "微信",
-    category: "social",
-    keywords: ["weixin", "wx"],
-    icon: <Tile from="#22c55e" to="#15803d" glyph="💬" dark />,
-  },
-  {
-    id: "qq",
-    label: "QQ",
-    category: "social",
-    keywords: ["penguin"],
-    icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🐧" />,
-  },
-  {
-    id: "mail",
-    label: "邮件",
-    category: "social",
-    keywords: ["mail", "youjian"],
+    keywords: ["gongdan", "ticket", "工单"],
     badge: (
       <span className="grid size-4 place-items-center rounded-full bg-danger text-[10px] font-semibold text-danger-foreground">
         9
       </span>
     ),
-    icon: <Tile from="#60a5fa" to="#2563eb" glyph="✉️" dark />,
+    icon: <Tile tone={C1} icon={<Inbox />} />,
+  },
+  {
+    id: "approvals",
+    label: "审批待办",
+    category: "work",
+    section: "recent",
+    keywords: ["shenpi", "approval", "审批"],
+    icon: <Tile tone={C2} icon={<ClipboardCheck />} />,
+  },
+  {
+    id: "board",
+    label: "任务看板",
+    category: "work",
+    section: "recent",
+    keywords: ["renwu", "kanban", "任务"],
+    icon: <Tile tone={C4} icon={<KanbanSquare />} />,
+  },
+  {
+    id: "schedule",
+    label: "排班日程",
+    category: "work",
+    section: "recent",
+    keywords: ["paiban", "schedule", "日程"],
+    icon: <Tile tone={C3} icon={<CalendarDays />} />,
   },
 
   {
-    id: "notes",
-    label: "备忘录",
-    category: "tool",
-    keywords: ["notes", "beiwanglu"],
-    icon: <Tile from="#fef9c3" to="#fde68a" glyph="📝" />,
+    id: "reports",
+    label: "报表中心",
+    category: "data",
+    keywords: ["baobiao", "report", "报表"],
+    icon: <Tile tone={C1} icon={<BarChart3 />} />,
   },
   {
-    id: "calc",
-    label: "计算器",
-    category: "tool",
-    keywords: ["calculator", "jisuanqi"],
-    icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🧮" />,
+    id: "dashboards",
+    label: "监控大盘",
+    category: "data",
+    keywords: ["jiankong", "monitor", "监控"],
+    icon: <Tile tone={C5} icon={<Activity />} />,
   },
   {
-    id: "clock",
-    label: "时钟",
-    category: "tool",
-    keywords: ["clock", "shizhong"],
-    icon: <Tile from="#ffffff" to="#d1d5db" glyph="🕘" />,
+    id: "datasource",
+    label: "数据源",
+    category: "data",
+    keywords: ["shujuyuan", "database", "数据源"],
+    icon: <Tile tone={C2} icon={<Database />} />,
   },
   {
-    id: "maps",
-    label: "地图",
-    category: "tool",
-    keywords: ["maps", "ditu"],
-    icon: <Tile from="#bbf7d0" to="#4ade80" glyph="🗺️" />,
-  },
-  {
-    id: "netdisk",
-    label: "百度网盘",
-    category: "tool",
-    keywords: ["baidu", "wangpan"],
-    icon: <Tile from="#dbeafe" to="#93c5fd" glyph="☁️" />,
+    id: "logs",
+    label: "日志检索",
+    category: "data",
+    keywords: ["rizhi", "log", "日志"],
+    icon: <Tile tone={C6} icon={<ScrollText />} />,
   },
 
   {
-    id: "stocks",
-    label: "股市",
-    category: "finance",
-    keywords: ["stocks", "gushi"],
-    icon: <Tile from="#111827" to="#374151" glyph="📈" dark />,
+    id: "members",
+    label: "成员与角色",
+    category: "system",
+    keywords: ["chengyuan", "member", "成员"],
+    icon: <Tile tone={C4} icon={<Users />} />,
   },
   {
-    id: "sheets",
-    label: "表格",
-    category: "finance",
-    keywords: ["sheets", "biaoge"],
-    icon: <Tile from="#34d399" to="#059669" glyph="📊" dark />,
+    id: "permissions",
+    label: "权限策略",
+    category: "system",
+    keywords: ["quanxian", "permission", "权限"],
+    icon: <Tile tone={C1} icon={<ShieldCheck />} />,
   },
   {
-    id: "invoice",
-    label: "发票助手",
-    category: "finance",
-    keywords: ["fapiao"],
-    icon: <Tile from="#fed7aa" to="#fb923c" glyph="🧾" />,
+    id: "keys",
+    label: "密钥管理",
+    category: "system",
+    keywords: ["miyao", "key", "密钥"],
+    icon: <Tile tone={C3} icon={<KeyRound />} />,
+  },
+  {
+    id: "audit",
+    label: "操作审计",
+    category: "system",
+    keywords: ["shenji", "audit", "审计"],
+    icon: <Tile tone={C5} icon={<FileSearch />} />,
+  },
+  {
+    id: "settings",
+    label: "系统设置",
+    category: "system",
+    keywords: ["shezhi", "setting", "设置"],
+    icon: <Tile tone={C6} icon={<Settings />} />,
   },
 
   {
-    id: "books",
-    label: "图书",
-    category: "read",
-    keywords: ["books", "tushu"],
-    icon: <Tile from="#fde68a" to="#f59e0b" glyph="📚" />,
+    id: "repo",
+    label: "代码仓库",
+    category: "dev",
+    keywords: ["cangku", "repo", "仓库"],
+    icon: <Tile tone={C2} icon={<GitBranch />} />,
   },
   {
-    id: "podcast",
-    label: "播客",
-    category: "read",
-    keywords: ["podcast", "boke"],
-    icon: <Tile from="#c084fc" to="#7c3aed" glyph="🎙️" dark />,
+    id: "pipeline",
+    label: "流水线",
+    category: "dev",
+    keywords: ["liushuixian", "pipeline", "ci"],
+    icon: <Tile tone={C4} icon={<Rocket />} />,
   },
   {
-    id: "news",
-    label: "新闻",
-    category: "read",
-    keywords: ["news", "xinwen"],
-    icon: <Tile from="#fecaca" to="#ef4444" glyph="📰" dark />,
+    id: "api",
+    label: "接口文档",
+    category: "dev",
+    keywords: ["jiekou", "api", "接口"],
+    icon: <Tile tone={C1} icon={<Braces />} />,
+  },
+  {
+    id: "env",
+    label: "环境变量",
+    category: "dev",
+    keywords: ["huanjing", "env", "环境"],
+    icon: <Tile tone={C3} icon={<SlidersHorizontal />} />,
+  },
+  {
+    id: "terminal",
+    label: "在线终端",
+    category: "dev",
+    keywords: ["zhongduan", "terminal", "终端"],
+    icon: <Tile tone={C6} icon={<TerminalSquare />} />,
   },
 ];
 
 const categories = [
-  { key: "dev", label: "开发者工具" },
-  { key: "tool", label: "工具" },
-  { key: "social", label: "社交" },
-  { key: "finance", label: "效率与财务" },
-  { key: "read", label: "信息与阅读" },
+  { key: "work", label: "日常工作" },
+  { key: "data", label: "数据与分析" },
+  { key: "system", label: "系统管理" },
+  { key: "dev", label: "研发工具" },
 ];
 
 /** 演示毛玻璃需要身后有底图，否则看不出「玻璃」。 */
@@ -277,9 +302,9 @@ export const appLauncherShowcase: ShowcaseSpec = {
       description: "badge 挂图标角上；href 让条目成 <a>；disabled 不可点也不进 tab 顺序。",
       code: `<AppLauncher
   items={[
-    { id: "mail", label: "邮件", icon: <MailIcon />, badge: <Dot>9</Dot> },
-    { id: "docs", label: "文档", icon: <DocIcon />, href: "/docs" },
-    { id: "old", label: "已下线", icon: <OldIcon />, disabled: true },
+    { id: "tickets", label: "工单中心", icon: <Tile icon={<Inbox />} />, badge: <Dot>9</Dot> },
+    { id: "docs", label: "接口文档", icon: <Tile icon={<Braces />} />, href: "#" },
+    { id: "old", label: "已下线", icon: <Tile icon={<Ban />} />, disabled: true },
   ]}
   searchable={false}
   columns={3}
@@ -290,18 +315,71 @@ export const appLauncherShowcase: ShowcaseSpec = {
           columns={3}
           className="max-w-xs"
           items={[
-            apps.find((a) => a.id === "mail")!,
+            apps.find((a) => a.id === "tickets")!,
             {
               id: "docs",
-              label: "文档",
-              icon: <Tile from="#e0e7ff" to="#a5b4fc" glyph="📄" />,
-              href: "https://example.com/#docs",
+              label: "接口文档",
+              icon: <Tile tone={C1} icon={<Braces />} />,
+              href: "#",
             },
             {
               id: "old",
               label: "已下线",
-              icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🚫" />,
+              icon: <Tile tone={C6} icon={<Ban />} />,
               disabled: true,
+            },
+          ]}
+        />
+      ),
+    },
+    {
+      title: "自定义图标：icon 接受任意 ReactNode",
+      description:
+        "上面几个示例用线性图标是因为「中后台应用中心」的语义能被它表达；真要做第三方 App 启动台，icon 里塞品牌位图 / 自定义 SVG 即可——那类图标本就不该进通用图标库。",
+      code: `<AppLauncher
+  items={[
+    { id: "brand", label: "自建应用", icon: <img src="/logo.png" alt="" className="size-full object-cover" /> },
+    { id: "svg", label: "自定义 SVG", icon: <MyBrandMark className="size-full" /> },
+  ]}
+  searchable={false}
+  columns={3}
+/>`,
+      render: () => (
+        <AppLauncher
+          searchable={false}
+          columns={3}
+          className="max-w-xs"
+          items={[
+            {
+              id: "brand",
+              label: "自建应用",
+              // 位图占位用内联 SVG 生成，文档站门禁禁远程资源；真实项目这里就是 <img src="/logo.png" />
+              icon: (
+                <svg viewBox="0 0 64 64" className="size-full" aria-hidden>
+                  <rect width="64" height="64" fill="var(--color-chart-4)" />
+                  <circle cx="32" cy="26" r="12" fill="var(--color-chart-3)" />
+                  <rect x="12" y="42" width="40" height="10" rx="5" fill="var(--color-bg)" />
+                </svg>
+              ),
+            },
+            {
+              id: "svg",
+              label: "自定义 SVG",
+              icon: (
+                <svg viewBox="0 0 64 64" className="size-full" aria-hidden>
+                  <rect width="64" height="64" fill="var(--color-chart-1)" />
+                  <path d="M18 40 L32 18 L46 40 Z" fill="var(--color-bg)" />
+                </svg>
+              ),
+            },
+            {
+              id: "mono",
+              label: "字形图标",
+              icon: (
+                <span className="grid size-full place-items-center bg-foreground text-2xl font-semibold text-bg">
+                  瑚
+                </span>
+              ),
             },
           ]}
         />

@@ -34,6 +34,7 @@ import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } 
 | categories | `readonly string[]` | — | Picks built-in presets and orders them **as given** (`layout`, `color`, `typography`, `border`, `effects`). |
 | tokenSource | `readonly InspectorToken[]` | — | Theme tokens offered by color controls; shaped like the docs site `SEMANTIC_GROUPS` swatches. |
 | commitMode | `"change" \| "commit"` | `"change"` | `change` emits on every drag frame and keystroke; `commit` emits on release, blur, or Enter. |
+| density | `"comfortable" \| "compact"` | `"comfortable"` | Row height and padding density; `compact` tightens to roughly the Sketch inspector scale. |
 | onBatchChange | `(changes: InspectorChange[]) => void` | — | Batch emit when one interaction changes several paths; see Events. |
 | title | `ReactNode` | From locale | Panel heading. Pass `null` to drop the header. |
 | emptyText | `ReactNode` | From locale | Empty state copy. |
@@ -129,6 +130,13 @@ readInspectorValue({ style: { color: "red" } }, "style.color"); // "red"
 - Mixed values are never conveyed by gray text alone: text and numeric kinds use a `placeholder`, while toggle and enum kinds put readable text beside the control.
 
 ## Pitfalls
+
+- **In a design-tool context, turn on `columns` and `density="compact"`.** Values such as `X / Y / rotation` belong in one row of three cells with the label inlined into the input; one field per row with an 80px label column costs three times the height. In multi-column mode number fields inline their labels automatically, and the label doubles as a **scrub handle** (one `step` per horizontal pixel, ten times faster with Shift). Below 260px the grid falls back to a single column, since cells narrower than about 70px make columns pointless.
+- The scrub handle is `aria-hidden` and out of the tab order: the accessible path for changing a value is the input itself (arrow keys or typing). Dragging is a mouse accelerator and should not add another control for a screen reader to announce.
+- **Repeatable groups — several fills, borders, or shadows on one element — are not supported yet.** The current schema maps one key to one value; multiple entries of the same kind would require the value model to grow from `Record<string, unknown>` into a nested array shape, which is a separate design and out of scope for this release. For now, flatten them yourself into keys such as `fill1Color` and `fill2Color`.
+
+- **Enum fields degrade from a segmented control to a select in narrow panels.** Below 260px — a common inspector sidebar width — any `kind: "enum"` field that does **not** set `display` explicitly switches to `select`, because four CJK segments cannot fit and forcing them would leave options that exist but cannot be reached (#114). An explicit `display` is always honoured.
+- The decision is based on **the panel's own width** through a ResizeObserver, not the viewport: what matters is how wide the control is. jsdom has no ResizeObserver, so the degrade never triggers in unit tests.
 
 - **`onChange` can fire several times in one tick** (four times for a linked spacing edit). Consumers must use a functional update, `setState((prev) => …)`. Writing `setState({ ...style, [path]: value })` lets the last three calls overwrite the first three, which looks like "only one side applied". Pass `onBatchChange` to receive them as one call instead.
 - `commitMode` covers sliders, inputs, and the ColorPicker inside the swatch popover alike. Under `commit` the picker emits on pointer release, blur, or Enter, and every mid-drag frame stays inside the panel; the picker runs uncontrolled during that drag and resyncs only when the external `props` value changes.

@@ -7,16 +7,16 @@ const Chevron = (<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stro
     <path d="M7.5 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>);
 const sample: BreadcrumbItem[] = [
-    { label: "Home", href: "https://example.com/" },
-    { label: "Components", href: "https://example.com/components" },
+    { label: "Home", href: "#" },
+    { label: "Components", href: "#" },
     { label: "Breadcrumbs" },
 ];
 const longPath: BreadcrumbItem[] = [
-    { label: "Home", href: "https://example.com/" },
-    { label: "Documentation", href: "https://example.com/docs" },
-    { label: "Design System", href: "https://example.com/docs/design-system" },
-    { label: "Navigation Family", href: "https://example.com/docs/design-system/navigation" },
-    { label: "Breadcrumb component", href: "https://example.com/docs/design-system/navigation/breadcrumb" },
+    { label: "Home", href: "#" },
+    { label: "Documentation", href: "#" },
+    { label: "Design System", href: "#" },
+    { label: "Navigation Family", href: "#" },
+    { label: "Breadcrumb component", href: "#" },
     { label: "Accessibility Semantics" },
 ];
 const separatorByKey: Record<string, ReactNode> = {
@@ -55,7 +55,7 @@ export const breadcrumbShowcase: ShowcaseSpec = {
   ]}
 />`,
             render: () => (<Breadcrumb items={[
-                    { label: "Home", href: "https://example.com/" },
+                    { label: "Home", href: "#" },
                     { label: "Archive" },
                     { label: "2026 Annual Report" },
                 ]}/>),
@@ -92,7 +92,7 @@ export const breadcrumbShowcase: ShowcaseSpec = {
         {
             name: "Contains unclickable intermediate items (no href)",
             render: () => (<Breadcrumb items={[
-                    { label: "Home", href: "https://example.com/" },
+                    { label: "Home", href: "#" },
                     { label: "Archive" },
                     { label: "2026 Annual Report" },
                 ]}/>),

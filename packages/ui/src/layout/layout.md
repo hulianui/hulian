@@ -96,6 +96,9 @@ function Shell() {
 
 ## 禁忌 / 坑
 
+- **`Layout.Sider` 只负责宽度，不负责内容**。折叠时品牌区显示全称还是单字、`NavMenu` 走 `inline` 还是 `collapsed`，都得消费方按折叠态自己切——所以 `collapsed` 要自管 state（受控传给 Sider + `onCollapse` 回写），不能只喂一个 `defaultCollapsed` 初始值就完事。只喂初始值的话，用户点折叠后侧栏宽度确实收到 64px，内容却停在展开态，5 个中文字缩到 min-content 会一字一行竖排并把顶部撑高（#120）。折叠态也可以直接读 Sider 根节点上的 `data-collapsed` 写 CSS。
+- **顶栏高度读 `--hl-layout-header-h`（4rem）**。要做「侧栏顶部 logo 区与 Header 齐平」这件几乎必做的事，两边用 `h-[var(--hl-layout-header-h)]` 即可，别去源码里翻那个数——翻错一次就是一条永远对不齐的分隔线。
+
 - **受控/非受控二选一**：`Layout.Sider` 传了 `collapsed` 即进入受控，必须配 `onCollapse` 回写，否则 trigger/断点点了不动；只想非受控用 `defaultCollapsed`。
 - **横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染、或被包装进自定义组件（如 `<AppSider/>` 内部才渲染 `Layout.Sider`）时探测会落空，须显式给 `hasSider`。
 - 收起态切窄宽用菜单的 `mode="collapsed"`（dogfood NavMenu 自带 icon-only 轨），不要手搓「窄宽裁切 label」。

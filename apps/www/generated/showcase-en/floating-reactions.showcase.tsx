@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { Button } from "../../../../packages/ui/src/button";
 import { FloatingReactions } from "../../../../packages/ui/src/floating-reactions/floating-reactions";
 import type { FloatingReactionsHandle } from "../../../../packages/ui/src/floating-reactions/floating-reactions.types";
 function FloatingDemo({ auto = false, emoji = "\u2764\uFE0F", palette, size, }: {
@@ -17,9 +18,10 @@ function FloatingDemo({ auto = false, emoji = "\u2764\uFE0F", palette, size, }: 
         return () => clearInterval(id);
     }, [auto]);
     return (<div className="relative grid h-72 w-64 place-items-center overflow-hidden rounded-[var(--radius)] bg-gradient-to-br from-slate-700 to-slate-900">
-      <button type="button" onClick={() => ref.current?.emit(palette ? undefined : emoji, { count: 3 })} className="z-10 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary-hover">
+
+      <Button className="z-10 rounded-full" onClick={() => ref.current?.emit(palette ? undefined : emoji, { count: 3 })}>
         Like {emoji}
-      </button>
+      </Button>
       <FloatingReactions ref={ref} palette={palette} size={size}/>
     </div>);
 }
@@ -30,14 +32,14 @@ export const floatingReactionsShowcase: ShowcaseSpec = {
             description: "By ref.emit spraying floating emoticons, count fires multiple at once. Click the button to try it.",
             code: `const ref = useRef<FloatingReactionsHandle>(null);
 
-<button onClick={() => ref.current?.emit("\u2764\uFE0F", { count: 3 })}> Like \u2764\uFE0F</button>
+<Button onClick={() => ref.current?.emit("\u2764\uFE0F", { count: 3 })}>Like \u2764\uFE0F</Button>
 <FloatingReactions ref={ref} />`,
             render: () => <FloatingDemo />,
         },
         {
             title: "Random emoticon pool",
             description: "When content is not transmitted, an emoticon is randomly selected from palette, which is suitable for mixed floating characters on the \"like wall\".",
-            code: `<button onClick={() => ref.current?.emit(undefined, { count: 3 })}>Send flowers \uD83C\uDF38</button>
+            code: `<Button onClick={() => ref.current?.emit(undefined, { count: 3 })}>Send flowers \uD83C\uDF38</Button>
 <FloatingReactions ref={ref} palette={["\uD83C\uDF38", "\uD83C\uDF3A", "\uD83C\uDF37", "\uD83D\uDC90"]} />`,
             render: () => <FloatingDemo emoji="🌸" palette={["\uD83C\uDF38", "\uD83C\uDF3A", "\uD83C\uDF37", "\uD83D\uDC90"]}/>,
         },

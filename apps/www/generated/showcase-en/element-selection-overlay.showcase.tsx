@@ -2,6 +2,17 @@
 import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { ElementSelectionOverlay } from "../../../../packages/ui/src/element-selection-overlay/element-selection-overlay";
+function HostControl() {
+    const [n, setN] = useState(0);
+    return (<div className="flex items-center gap-2 text-xs text-muted">
+      <button type="button" onClick={() => setN((v) => v + 1)} className="rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2.5 py-1 text-foreground transition-colors hover:bg-surface-hover">
+        A button on the host page
+      </button>
+      <span>
+        Clicked <span className="tabular-nums text-foreground">{n}</span> times (this must keep counting while selection mode is on)
+      </span>
+    </div>);
+}
 function PathBar({ selected, hovered }: {
     selected: string | null;
     hovered: string | null;
@@ -54,6 +65,7 @@ function MarkedDemo({ showLabel = true, enabled = true, highlightSelector = "[da
       </div>
       <ElementSelectionOverlay target={root} enabled={enabled} showLabel={showLabel} highlightSelector={highlightSelector || undefined} selectedPath={selected} onSelect={(path) => setSelected(path)} onClear={() => setSelected(null)} onHover={(path) => setHovered(path)}/>
       <PathBar selected={selected} hovered={hovered}/>
+      <HostControl />
     </div>);
 }
 function StructuralDemo() {

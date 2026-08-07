@@ -242,29 +242,41 @@ export function StaggeredMenu({
                             href={it.link}
                             aria-label={it.ariaLabel}
                             data-index={idx + 1}
-                            className="group relative inline-block pr-[1.4em] text-5xl font-semibold uppercase leading-none tracking-tight text-foreground no-underline transition-colors hover:text-[var(--sm-accent)]"
+                            className="group relative inline-flex items-start gap-3 text-5xl font-semibold uppercase leading-none tracking-tight text-foreground no-underline transition-colors hover:text-[var(--sm-accent)]"
                           >
+                            {inner}
+                            {/* 序号是**兄弟节点**，间距交给 gap、宽度由内容自己决定。
+                                原写法用两个 em 偏移对齐（父 pr-[1.4em] 基准 48px = 67.2px，
+                                序号 right-[2.8em] 基准 18px = 50.4px），预留 16.8px 装不下
+                                「01」的约 19.8px，序号直接压到菜单名上。英文原版靠字母间的空隙
+                                吃掉了这 3px 看不出来，换成中文（每字满 1em + 负字距）就显形（#135）。
+                                两位变三位、中英切换都不会再撞。 */}
                             {displayItemNumbering && (
                               <span
                                 aria-hidden
-                                className="absolute top-1 right-[2.8em] text-lg font-normal tracking-normal text-[var(--sm-accent)]"
+                                className="mt-1 shrink-0 text-lg font-normal leading-none tracking-normal text-[var(--sm-accent)]"
                               >
                                 {String(idx + 1).padStart(2, "0")}
                               </span>
                             )}
-                            {inner}
                           </a>
                         ) : (
-                          <span className="relative inline-block pr-[1.4em] text-5xl font-semibold uppercase leading-none tracking-tight text-foreground">
+                          <span className="relative inline-flex items-start gap-3 text-5xl font-semibold uppercase leading-none tracking-tight text-foreground">
+                            {inner}
+                            {/* 序号是**兄弟节点**，间距交给 gap、宽度由内容自己决定。
+                                原写法用两个 em 偏移对齐（父 pr-[1.4em] 基准 48px = 67.2px，
+                                序号 right-[2.8em] 基准 18px = 50.4px），预留 16.8px 装不下
+                                「01」的约 19.8px，序号直接压到菜单名上。英文原版靠字母间的空隙
+                                吃掉了这 3px 看不出来，换成中文（每字满 1em + 负字距）就显形（#135）。
+                                两位变三位、中英切换都不会再撞。 */}
                             {displayItemNumbering && (
                               <span
                                 aria-hidden
-                                className="absolute top-1 right-[2.8em] text-lg font-normal tracking-normal text-[var(--sm-accent)]"
+                                className="mt-1 shrink-0 text-lg font-normal leading-none tracking-normal text-[var(--sm-accent)]"
                               >
                                 {String(idx + 1).padStart(2, "0")}
                               </span>
                             )}
-                            {inner}
                           </span>
                         )}
                       </li>

@@ -46,7 +46,9 @@ import { Android, ANDROID_MODELS } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 机身比例由组件内 `aspectRatio` 统一固定，`model`/`width` 只改宽度不改纵横比。
+- **机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。
+
+- `model` / `width` 只改机身宽度；高度随之按内屏比例推导，所以纵横比会随宽度略有变化（这是正确的——边框不缩放）。
 - `imageSrc` 与 `children` 同传时 `imageSrc` 优先。
 
 ## 相关

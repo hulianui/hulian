@@ -1,6 +1,13 @@
 import type { ComponentPropsWithoutRef } from "react";
+import type { EffectButtonSize } from "../button/button-base";
 
 export interface PulsatingButtonProps extends ComponentPropsWithoutRef<"button"> {
+  /**
+   * 尺寸档，与 [Button](../button/button.md) 的 sm/md/lg 一一对应（32/40/48px 高）。
+   * 此前是写死的 `px-6 py-3`（按内容撑高），与普通 Button 混排会参差（#126）。
+   */
+  size?: EffectButtonSize;
+
   /** 脉冲光环色，默认 var(--color-primary) 的 70% */
   pulseColor?: string;
   /** 一轮脉冲秒数，默认 1.5s */

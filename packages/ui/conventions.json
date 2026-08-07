@@ -39,6 +39,33 @@
       "instead": "使用 toast({ title: \"已保存\", tone: \"success\" })。"
     },
     {
+      "id": "muted-as-background-with-muted-text",
+      "severity": "error",
+      "matcher": {
+        "kind": "class-name-tokens",
+        "attributes": [
+          "className"
+        ],
+        "pattern": "(?<![\\w:-])bg-muted(?:/[\\d.[\\]]+)?\\b",
+        "coOccurs": "(?<![\\w:-])text-muted(?:/[\\d.[\\]]+)?\\b"
+      },
+      "message": "bg-muted 与 text-muted 同时出现：--color-muted 是次要文字色，前景背景同色不可读。",
+      "instead": "背景改用 bg-subtle（静态弱背景）或 bg-surface-hover（悬停态），文字保持 text-muted。"
+    },
+    {
+      "id": "muted-is-a-text-color",
+      "severity": "warning",
+      "matcher": {
+        "kind": "class-name-tokens",
+        "attributes": [
+          "className"
+        ],
+        "pattern": "\\bbg-muted(?:/[\\d.[\\]]+)?\\b"
+      },
+      "message": "--color-muted 是次要文字色（亮 gray-600 / 暗 gray-400），当背景用时亮色发脏、暗色发白。",
+      "instead": "区域底用 bg-subtle，悬停态用 bg-surface-hover；只有小面积指示性填充（状态点、滚动条拇指）才可以留。"
+    },
+    {
       "id": "color-token-prefix",
       "severity": "error",
       "matcher": {
@@ -61,6 +88,7 @@
           "--chart-6",
           "--danger",
           "--danger-foreground",
+          "--danger-hover",
           "--foreground",
           "--hairline",
           "--info",
@@ -70,12 +98,15 @@
           "--primary-hover",
           "--ring",
           "--secondary",
+          "--subtle",
           "--success",
           "--success-foreground",
+          "--success-hover",
           "--surface",
           "--surface-hover",
           "--warning",
-          "--warning-foreground"
+          "--warning-foreground",
+          "--warning-hover"
         ]
       },
       "message": "SVG 或内联 style 中的颜色变量必须使用 --color- 前缀。",
@@ -139,6 +170,24 @@
       "source": "scripts/gen-conventions.mjs"
     },
     {
+      "id": "global/muted-is-text-only",
+      "rule": "--color-muted 只能用于文字。区域底用 bg-subtle，悬停态用 bg-surface-hover",
+      "wrong": "className=\"bg-muted/40 p-4\"",
+      "right": "className=\"bg-subtle p-4\"",
+      "why": "muted 是次要文字色（亮 gray-600 / 暗 gray-400）。当背景用时亮色下是一块脏灰、暗色下是发白的浅灰 —— 两个主题都错且错法相反。shadcn 的 --muted 是背景、--muted-foreground 才是文字，从那边迁过来的 bg-muted 语义正好是反的，而 Tailwind 不会报错（类名合法、颜色也生成，只是意思变了）",
+      "instead": "小面积指示性填充（状态点、滚动条拇指、徽章反色底）可以留；判据是「这块颜色是一片区域的底，还是一个小物件的填充」",
+      "scope": "global",
+      "source": "scripts/gen-conventions.mjs"
+    },
+    {
+      "id": "global/select-none-for-non-copyable",
+      "rule": "设计上会被连点、会自动移动、或可拖拽的元素，其文本一律 select-none",
+      "why": "浏览器把连续点击识别成双击选词 / 三击选段；自动滚动与拖拽中的元素还会让选区跨元素蔓延。这三类的文字都是控件标签或装饰，不是给用户复制的",
+      "instead": "Button / Kanban 卡片 / DesignCanvas / 弹幕 / 礼物飘条已内置；自搓触发器与飘动层记得补。真正需要复制的内容（聊天正文、代码块）保持可选",
+      "scope": "global",
+      "source": "scripts/gen-conventions.mjs"
+    },
+    {
       "id": "component/access/pitfall/1",
       "scope": "access",
       "title": "Access",
@@ -191,39 +240,53 @@
       "id": "component/admin-layout/pitfall/1",
       "scope": "admin-layout",
       "title": "AdminLayout",
-      "rule": "**受控页签下必须接 `onTabsAction`**：组件不持有 `tabs`，右键菜单里的「关闭其他/左侧/右侧/全部」只能把「该关哪些」算给你，改不了。此前这里连回调都没有，受控消费方点了完全没反应。",
+      "rule": "**`collapsible` 可用时 `logoCollapsed` 应当必填**。折叠后侧栏只有 64px，没给窄版标识就只能拿宽 logo 顶上，`overflow-hidden` 会把它裁掉半截——不报错，只是难看，所以开发期会打一次告警（#121）。传首字、单色图标、方形 mark 都行。",
       "source": "packages/ui/src/admin-layout/admin-layout.md"
     },
     {
       "id": "component/admin-layout/pitfall/2",
       "scope": "admin-layout",
       "title": "AdminLayout",
-      "rule": "「关闭全部」关的是**全部可关页签（含当前页）**，不是「关闭其他」。此前二者行为相同、与菜单文案对不上。",
+      "rule": "顶栏与侧栏品牌区共用 `--hl-layout-header-h`，折叠态下品牌区自动切 `justify-center`，与下方 `NavMenu mode=\"collapsed\"` 的图标轨共用同一条中轴。改这块时别只切内容不切对齐。",
       "source": "packages/ui/src/admin-layout/admin-layout.md"
     },
     {
       "id": "component/admin-layout/pitfall/3",
       "scope": "admin-layout",
       "title": "AdminLayout",
-      "rule": "**`fitViewport` 决定撑高方式**：整页用默认 `true`（自钉 100dvh），别再外面套 `h-dvh` wrapper；嵌入文档示例卡等固定高度容器时务必传 `false`，否则整页滚动而非内容区滚动。详见 hulian-adminlayout-fitviewport。",
+      "rule": "**受控页签下必须接 `onTabsAction`**：组件不持有 `tabs`，右键菜单里的「关闭其他/左侧/右侧/全部」只能把「该关哪些」算给你，改不了。此前这里连回调都没有，受控消费方点了完全没反应。",
       "source": "packages/ui/src/admin-layout/admin-layout.md"
     },
     {
       "id": "component/admin-layout/pitfall/4",
       "scope": "admin-layout",
       "title": "AdminLayout",
-      "rule": "**页签受控/非受控二选一**：不传 `tabs` 时页签由菜单点击自动维护（非受控）；一旦传 `tabs` 即受控，须自行配 `onTabChange`/`onTabClose` 维护数组与 `activeKey`。",
+      "rule": "「关闭全部」关的是**全部可关页签（含当前页）**，不是「关闭其他」。此前二者行为相同、与菜单文案对不上。",
       "source": "packages/ui/src/admin-layout/admin-layout.md"
     },
     {
       "id": "component/admin-layout/pitfall/5",
       "scope": "admin-layout",
       "title": "AdminLayout",
-      "rule": "`children` 只渲染「当前激活页」，keep-alive 的多页内容缓存需上层按 `activeKey` 自行管理，组件不替你缓存各页 DOM。",
+      "rule": "**`fitViewport` 决定撑高方式**：整页用默认 `true`（自钉 100dvh），别再外面套 `h-dvh` wrapper；嵌入文档示例卡等固定高度容器时务必传 `false`，否则整页滚动而非内容区滚动。详见 hulian-adminlayout-fitviewport。",
       "source": "packages/ui/src/admin-layout/admin-layout.md"
     },
     {
       "id": "component/admin-layout/pitfall/6",
+      "scope": "admin-layout",
+      "title": "AdminLayout",
+      "rule": "**页签受控/非受控二选一**：不传 `tabs` 时页签由菜单点击自动维护（非受控）；一旦传 `tabs` 即受控，须自行配 `onTabChange`/`onTabClose` 维护数组与 `activeKey`。",
+      "source": "packages/ui/src/admin-layout/admin-layout.md"
+    },
+    {
+      "id": "component/admin-layout/pitfall/7",
+      "scope": "admin-layout",
+      "title": "AdminLayout",
+      "rule": "`children` 只渲染「当前激活页」，keep-alive 的多页内容缓存需上层按 `activeKey` 自行管理，组件不替你缓存各页 DOM。",
+      "source": "packages/ui/src/admin-layout/admin-layout.md"
+    },
+    {
+      "id": "component/admin-layout/pitfall/8",
       "scope": "admin-layout",
       "title": "AdminLayout",
       "rule": "**移动端务必设 `breakpoint`**（推荐 `\"md\"`）：不设时窄屏侧栏保持展开，390px 视口下会挤占过半屏宽。为不破坏既有行为该项无默认值，需显式开启。",
@@ -324,11 +387,18 @@
       "id": "component/android/pitfall/1",
       "scope": "android",
       "title": "Android",
-      "rule": "机身比例由组件内 `aspectRatio` 统一固定，`model`/`width` 只改宽度不改纵横比。",
+      "rule": "**机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。",
       "source": "packages/ui/src/android/android.md"
     },
     {
       "id": "component/android/pitfall/2",
+      "scope": "android",
+      "title": "Android",
+      "rule": "`model` / `width` 只改机身宽度；高度随之按内屏比例推导，所以纵横比会随宽度略有变化（这是正确的——边框不缩放）。",
+      "source": "packages/ui/src/android/android.md"
+    },
+    {
+      "id": "component/android/pitfall/3",
       "scope": "android",
       "title": "Android",
       "rule": "`imageSrc` 与 `children` 同传时 `imageSrc` 优先。",
@@ -1038,6 +1108,27 @@
       "id": "component/button/pitfall/3",
       "scope": "button",
       "title": "Button",
+      "rule": "按钮文字**不可被选中**（base 带 `select-none`）。按钮文案是控件标签不是内容，连点场景下浏览器会把连续点击识别成双击选词把文字刷成蓝底。要让用户复制的文本请别做成按钮。",
+      "source": "packages/ui/src/button/button.md"
+    },
+    {
+      "id": "component/button/pitfall/4",
+      "scope": "button",
+      "title": "Button",
+      "rule": "`tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone=\"success\" variant=\"outline\"`，别去 `className` 里覆盖背景色。",
+      "source": "packages/ui/src/button/button.md"
+    },
+    {
+      "id": "component/button/pitfall/5",
+      "scope": "button",
+      "title": "Button",
+      "rule": "`tone=\"neutral\"` 的 `solid` 是**反色**（亮色下深底白字、暗色下浅底深字），不是灰底。灰底实心与 `variant=\"outline\"` 几乎不可分辨，等于白开一档。",
+      "source": "packages/ui/src/button/button.md"
+    },
+    {
+      "id": "component/button/pitfall/6",
+      "scope": "button",
+      "title": "Button",
       "rule": "自定义往按钮里塞图标+文字（尤其在特效按钮里）若图标掉到下一行，是 Tailwind Preflight 把 `svg{display:block}` 撑成块级所致，见 tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button——容器要 `inline-flex`，本 Button 已处理，自搓 wrapper 时注意。",
       "source": "packages/ui/src/button/button.md"
     },
@@ -1374,6 +1465,20 @@
       "id": "component/chroma-grid/pitfall/3",
       "scope": "chroma-grid",
       "title": "ChromaGrid",
+      "rule": "**卡片是暗色上下文**：卡面颜色由消费方的 `gradient` 决定，而文字色如果跟随页面主题，组件就无法对任何对比度做出保证（换一组渐变就是另一种可读性）。所以卡上的标题 / handle / 副标题用固定的白色阶，且组件在你的渐变**下面**恒垫一层中性深色基底——渐变里的 `transparent` 端露出的是那层深色，不是页面底色。想要浅色卡面就不该用本件（换 [Masonry](../masonry/masonry.md) 或普通卡片墙）。",
+      "source": "packages/ui/src/chroma-grid/chroma-grid.md"
+    },
+    {
+      "id": "component/chroma-grid/pitfall/4",
+      "scope": "chroma-grid",
+      "title": "ChromaGrid",
+      "rule": "**无指针设备上不做灰度暗化**：`@media (hover: none)` 下两层揭示遮罩整层关闭。没有光标就永远没有「亮起来的那张卡」，触屏 / 纯键盘 / 截图 / 打印下所有卡片会永久停在降级态——而卡上的姓名职位是内容，不该依赖鼠标位置才可读。",
+      "source": "packages/ui/src/chroma-grid/chroma-grid.md"
+    },
+    {
+      "id": "component/chroma-grid/pitfall/5",
+      "scope": "chroma-grid",
+      "title": "ChromaGrid",
       "rule": "reduced-motion 下光标弹性跟随退化为直接吸附，属预期。",
       "source": "packages/ui/src/chroma-grid/chroma-grid.md"
     },
@@ -1549,67 +1654,74 @@
       "id": "component/code-editor/pitfall/1",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "**必须受控**：`onChange` 里不回写 `value`，编辑会被 React 立刻回滚（表现为「打不进字」）。这是设计如此，不是 bug。",
+      "rule": "**根节点自带 `w-full`，别再靠外层给宽度**。`textarea` 的固有宽度由 HTML 默认 `cols`（20）决定，所以编辑器的 max-content 宽度锚在约 20 字符：普通块级上下文里 block-flex 会自然铺满看不出问题，一旦作为 flex/grid item（「左树右编辑器」正是最典型的用法）就会按内容宽塌成一条窄框（#116）。要限制宽度请显式给 `max-w-*`，不要指望它自己收窄。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/2",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "**不要绕开组件直接改 value 再指望 undo**：所有键盘增强都走 `document.execCommand(\"insertText\" | \"delete\")` 落笔，为的是把改动压进 textarea 的**原生 undo 栈**。如果你 fork 出去改成 `setState` 整篇覆盖，Cmd+Z 会当场失效——这是 textarea 方案最容易做错的一点。`execCommand` 不可用的环境（jsdom、极老浏览器）自动降级为整篇回吐，功能仍在，只是丢原生 undo。",
+      "rule": "**必须受控**：`onChange` 里不回写 `value`，编辑会被 React 立刻回滚（表现为「打不进字」）。这是设计如此，不是 bug。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/3",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "**不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60–80px。需要缩略图请外接 Monaco。",
+      "rule": "**不要绕开组件直接改 value 再指望 undo**：所有键盘增强都走 `document.execCommand(\"insertText\" | \"delete\")` 落笔，为的是把改动压进 textarea 的**原生 undo 栈**。如果你 fork 出去改成 `setState` 整篇覆盖，Cmd+Z 会当场失效——这是 textarea 方案最容易做错的一点。`execCommand` 不可用的环境（jsdom、极老浏览器）自动降级为整篇回吐，功能仍在，只是丢原生 undo。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/4",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "**不做**：代码折叠、自动补全 / 智能提示、多光标 / 列选择、语义诊断与波浪线、查找替换面板、括号配对高亮。要这些请外接 CodeMirror 6 / Monaco。",
+      "rule": "**不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60–80px。需要缩略图请外接 Monaco。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/5",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "文本不换行（`wrap=\"off\"`，长行横向滚动）。这是刻意的：一旦软换行，行号槽就无法与视觉行对齐，`lineNumbers` 会立刻说谎。要换行请改用 [Textarea](../textarea/textarea.md)。",
+      "rule": "**不做**：代码折叠、自动补全 / 智能提示、多光标 / 列选择、语义诊断与波浪线、查找替换面板、括号配对高亮。要这些请外接 CodeMirror 6 / Monaco。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/6",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "**改样式必须三层同改**：透明 `<textarea>`、染色 `<pre>`、行号槽三层的字体族 / 字号 / 行高 / 内边距 / `white-space` / `tab-size` 逐项相等才不错位。只改其中一层的 padding 或字号，表现是「光标和字差半格」，且只在长行/深缩进时才看得出来。",
+      "rule": "文本不换行（`wrap=\"off\"`，长行横向滚动）。这是刻意的：一旦软换行，行号槽就无法与视觉行对齐，`lineNumbers` 会立刻说谎。要换行请改用 [Textarea](../textarea/textarea.md)。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/7",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "**`theme` 两个方向都成立**（@hulianui/tokens 0.3.0 起）：暗色页面里钉亮色、亮色页面里钉暗色都跟得住，岛内的 `dark:` 工具类、阴影与发丝边也一并跟着岛走。旧版本只有「亮页里嵌暗块」单向可用（hulianui/hulian#101）。仍建议默认不传 `theme`、跟随全局主题 —— 强制主题是逃生口，不是常规用法。",
+      "rule": "**改样式必须三层同改**：透明 `<textarea>`、染色 `<pre>`、行号槽三层的字体族 / 字号 / 行高 / 内边距 / `white-space` / `tab-size` 逐项相等才不错位。只改其中一层的 padding 或字号，表现是「光标和字差半格」，且只在长行/深缩进时才看得出来。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/8",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "着色是**近似着色，不是解析器**：CSS 扫描器只跟踪「是否在 `{}` 内 / 是否越过 `:`」两个状态，JS 家族沿用 CodeBlock 的单条正则扫描。复杂泛型、正则字面量、嵌套模板串可能着色不准——着色错不影响编辑，`value` 永远是你的原文。",
+      "rule": "**`theme` 两个方向都成立**（@hulianui/tokens 0.3.0 起）：暗色页面里钉亮色、亮色页面里钉暗色都跟得住，岛内的 `dark:` 工具类、阴影与发丝边也一并跟着岛走。旧版本只有「亮页里嵌暗块」单向可用（hulianui/hulian#101）。仍建议默认不传 `theme`、跟随全局主题 —— 强制主题是逃生口，不是常规用法。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/9",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "`language=\"json\"` 时 Cmd+/ **故意不响应**：JSON 规范没有注释，写进去就是非法 JSON。",
+      "rule": "着色是**近似着色，不是解析器**：CSS 扫描器只跟踪「是否在 `{}` 内 / 是否越过 `:`」两个状态，JS 家族沿用 CodeBlock 的单条正则扫描。复杂泛型、正则字面量、嵌套模板串可能着色不准——着色错不影响编辑，`value` 永远是你的原文。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
       "id": "component/code-editor/pitfall/10",
+      "scope": "code-editor",
+      "title": "CodeEditor",
+      "rule": "`language=\"json\"` 时 Cmd+/ **故意不响应**：JSON 规范没有注释，写进去就是非法 JSON。",
+      "source": "packages/ui/src/code-editor/code-editor.md"
+    },
+    {
+      "id": "component/code-editor/pitfall/11",
       "scope": "code-editor",
       "title": "CodeEditor",
       "rule": "选区底色用的是半透明 `bg-primary/25`：textarea 在高亮层之上，不透明的选区底色会把代码盖住。改这个类要连带确认深色主题下的对比度。",
@@ -2375,11 +2487,25 @@
       "id": "component/design-canvas/pitfall/7",
       "scope": "design-canvas",
       "title": "DesignCanvas",
-      "rule": "`resize` 拖过锚定边会**翻转**（与 Figma 一致），不是卡死在 `minItemSize`。若你的业务不接受翻转，请在 `onItemsChange` 里自行拒绝。",
+      "rule": "滚轮语义与系统惯例、与同库 [Flow](../flow/flow.md) 一致：**两指滑动平移、捏合（= Ctrl+滚轮）缩放**。`wheelBehavior=\"zoom\"` 只改「无修饰键」那一档，捏合永远缩放。⌘+滚轮不做缩放（macOS 上它没有这个语义）。",
       "source": "packages/ui/src/design-canvas/design-canvas.md"
     },
     {
       "id": "component/design-canvas/pitfall/8",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "画布整体 `select-none`：点选 / 拖动不该把元素文字刷成选区。`renderItem` 里塞进来的 `input` / `textarea` / `contenteditable` 已开逃生口照常可选；其它需要复制的自定义内容请自行加 `select-text`。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/9",
+      "scope": "design-canvas",
+      "title": "DesignCanvas",
+      "rule": "`resize` 拖过锚定边会**翻转**（与 Figma 一致），不是卡死在 `minItemSize`。若你的业务不接受翻转，请在 `onItemsChange` 里自行拒绝。",
+      "source": "packages/ui/src/design-canvas/design-canvas.md"
+    },
+    {
+      "id": "component/design-canvas/pitfall/10",
       "scope": "design-canvas",
       "title": "DesignCanvas",
       "rule": "客户端组件（原生 Pointer Events），必须在 client 上下文用。",
@@ -2431,11 +2557,25 @@
       "id": "component/dock/pitfall/1",
       "scope": "dock",
       "title": "Dock",
-      "rule": "候选坑 skill（macos-dock-icon-needs-baked-squircle-margin、tauri-macos-hide-to-tray）均针对原生 macOS / Tauri 的系统 Dock，与本 React 组件无关，不适用。",
+      "rule": "**选中态是 Dock 的核心信息，不是装饰**。macOS Dock 本身就有「当前应用高亮」与「运行中指示点」；Web 上 Dock 的典型用法是常驻底部导航，同样要回答「我现在在哪」。用 `activeKey` + `DockIcon` 的 `itemKey` 表达，组件会给出 `aria-current=\"page\"` 与图标下方的指示点（形状线索，不只靠颜色）。",
       "source": "packages/ui/src/dock/dock.md"
     },
     {
       "id": "component/dock/pitfall/2",
+      "scope": "dock",
+      "title": "Dock",
+      "rule": "**接了 `onSelect` 才会渲染成真正的 `<button>`**（可聚焦、可回车激活），底座同时升级为 `nav` 地标。不接时 `DockIcon` 保持无语义容器 —— 因为很多消费方是往 children 里放自己的 `<a>` 的，自动包一层 button 会造成嵌套交互元素。",
+      "source": "packages/ui/src/dock/dock.md"
+    },
+    {
+      "id": "component/dock/pitfall/3",
+      "scope": "dock",
+      "title": "Dock",
+      "rule": "候选坑 skill（macos-dock-icon-needs-baked-squircle-margin、tauri-macos-hide-to-tray）均针对原生 macOS / Tauri 的系统 Dock，与本 React 组件无关，不适用。",
+      "source": "packages/ui/src/dock/dock.md"
+    },
+    {
+      "id": "component/dock/pitfall/4",
       "scope": "dock",
       "title": "Dock",
       "rule": "放大依赖随鼠标移动下发的 `mouseX`（context + motion 弹簧），是纯客户端交互；图标统一用固定尺寸（如 `size-5`）以便放大动画一致。",
@@ -2634,7 +2774,7 @@
       "id": "component/element-selection-overlay/pitfall/2",
       "scope": "element-selection-overlay",
       "title": "ElementSelectionOverlay",
-      "rule": "**能打标记就打标记**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。",
+      "rule": "**能打标记就打标记，且标记元素必须真实占位**。`structural` 路径是按 DOM 结构推的，插一个兄弟节点、条件渲染一变就可能指到别处。把 `data-hulian-path` 打在组件根节点上，路径才跨重排稳定。注意别把标记打在 `display: contents` 的包裹层上——这类元素不生成盒子，`getBoundingClientRect()` 恒为 0，正好落进「零面积判不可见」，一个框都画不出来。",
       "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
     },
     {
@@ -2655,25 +2795,32 @@
       "id": "component/element-selection-overlay/pitfall/5",
       "scope": "element-selection-overlay",
       "title": "ElementSelectionOverlay",
-      "rule": "**目标根自身不可选**：`target` 那个元素（iframe 场景是其 `body`）hover 与点击都视为空白，点它触发 `onClear`。根若也带标记属性，所有元素会退化成同一条路径，所以标记查找刻意跳过根。",
+      "rule": "**拦截与清空都只发生在目标内**。`target` 传普通容器时监听虽然挂在宿主 document 上（要覆盖 iframe 场景），但组件会先判事件是否落在 `target` 内：外面的点击既不被 `preventDefault` / `stopPropagation`，也不触发 `onClear`。所以宿主页面的导航、属性面板照常可用，`onClear` 只由「点预览内的空白」触发。",
       "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
     },
     {
       "id": "component/element-selection-overlay/pitfall/6",
       "scope": "element-selection-overlay",
       "title": "ElementSelectionOverlay",
-      "rule": "**jsdom 下 `getBoundingClientRect` 恒为 0**，零面积一律判不可见 → 单测里默认一个框都不会渲染。要断言框的存在，先给 `Element.prototype.getBoundingClientRect` 打桩；但别断言坐标数值（坐标来自你的桩，等于自证）。坐标逻辑请测 `toHostRect` / `computeLabelPosition` 这两个纯函数。",
+      "rule": "**目标根自身不可选**：`target` 那个元素（iframe 场景是其 `body`）hover 与点击都视为空白，点它触发 `onClear`。根若也带标记属性，所有元素会退化成同一条路径，所以标记查找刻意跳过根。",
       "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
     },
     {
       "id": "component/element-selection-overlay/pitfall/7",
       "scope": "element-selection-overlay",
       "title": "ElementSelectionOverlay",
-      "rule": "目标是 `document.body` 时，本组件的 portal 层就落在目标内部；组件已过滤掉自身引起的 MutationObserver 记录（否则自触发死循环），你若另外挂了 observer 也要做同样的过滤。",
+      "rule": "**jsdom 下 `getBoundingClientRect` 恒为 0**，零面积一律判不可见 → 单测里默认一个框都不会渲染。要断言框的存在，先给 `Element.prototype.getBoundingClientRect` 打桩；但别断言坐标数值（坐标来自你的桩，等于自证）。坐标逻辑请测 `toHostRect` / `computeLabelPosition` 这两个纯函数。",
       "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
     },
     {
       "id": "component/element-selection-overlay/pitfall/8",
+      "scope": "element-selection-overlay",
+      "title": "ElementSelectionOverlay",
+      "rule": "目标是 `document.body` 时，本组件的 portal 层就落在目标内部；组件已过滤掉自身引起的 MutationObserver 记录（否则自触发死循环），你若另外挂了 observer 也要做同样的过滤。",
+      "source": "packages/ui/src/element-selection-overlay/element-selection-overlay.md"
+    },
+    {
+      "id": "component/element-selection-overlay/pitfall/9",
       "scope": "element-selection-overlay",
       "title": "ElementSelectionOverlay",
       "rule": "客户端组件（要读 DOM、要挂监听），必须在 client 上下文用；SSR 期不渲染任何东西。",
@@ -3404,11 +3551,18 @@
       "id": "component/gooey-nav/pitfall/2",
       "scope": "gooey-nav",
       "title": "GooeyNav",
-      "rule": "容器需要深色底 + `overflow-hidden`：药丸与粒子靠 blur/contrast 熔色，浅底或裁切不当观感会差（showcase 用 `oklch(0.16 0.02 265)` 深底承托）。",
+      "rule": "**容器必须是深色底** + `overflow-hidden`：药丸与粒子靠 blur/contrast 熔色，浅底或裁切不当观感会差（showcase 用 `oklch(0.16 0.02 265)` 深底承托）。",
       "source": "packages/ui/src/gooey-nav/gooey-nav.md"
     },
     {
       "id": "component/gooey-nav/pitfall/3",
+      "scope": "gooey-nav",
+      "title": "GooeyNav",
+      "rule": "正因为容器恒为深色，本件的文字与药丸用**固定的黑白阶**（`text-white/80`、`bg-white`），不跟随页面主题。这不是漏接 token：跟随主题的话，亮色主题下 `--color-foreground` 是 `gray-900`，非激活项就成了「深字压深底」，直接看不见（#133）。放到浅色区域用会反过来失效——那时该换 [PillNav](../pill-nav/pill-nav.md) 或 [NavMenu](../nav-menu/nav-menu.md)。",
+      "source": "packages/ui/src/gooey-nav/gooey-nav.md"
+    },
+    {
+      "id": "component/gooey-nav/pitfall/4",
       "scope": "gooey-nav",
       "title": "GooeyNav",
       "rule": "reduced-motion 下粒子与弹簧动画自动跳过，仅保留瞬时切换，属预期降级。",
@@ -3852,53 +4006,88 @@
       "id": "component/inspector-panel/pitfall/1",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
-      "rule": "**`onChange` 会在同一 tick 连发多次**（链接锁定的 spacing 是 4 次）。消费方必须用函数式更新 `setState((prev) => …)`，写成 `setState({ ...style, [path]: value })` 会让后三次覆盖前三次，表现为「只有最后一边生效」。嫌麻烦就传 `onBatchChange` 一次拿全。",
+      "rule": "**设计工具语境请开 `columns` + `density=\"compact\"`**。`X / Y / 旋转` 这类数值本该一行三格、标签内联进输入框；一行一个字段配 80px 标签列，同样内容要占三倍高度。多列模式下数值字段自动内联标签，并且标签本身成为**拖拽调值**的抓手（横向每 1px 一个 `step`，按住 Shift 走 10 倍）。窄栏（<260px）下网格自动退回单列——每格不足 70px 时分列没有意义。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
     },
     {
       "id": "component/inspector-panel/pitfall/2",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
-      "rule": "`commitMode` 覆盖滑杆、输入框与色块弹出的 ColorPicker 三者。`commit` 模式下取色器松手 / 失焦 / 回车才回吐，拖动中的每帧值只留在面板内部（取色器此时是非受控的，外部 `props` 变了才会重新同步）。",
+      "rule": "拖拽抓手 `aria-hidden` 且不进 tab 顺序：调值的可达通路是输入框自己（方向键 / 直接输入），拖拽只是给鼠标用户的加速方式，不该多出一个屏幕阅读器要念的控件。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
     },
     {
       "id": "component/inspector-panel/pitfall/3",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
-      "rule": "`tokenSource[].token` **必须带 `color-` 前缀**（`color-primary` 而不是 `primary`）。Tailwind v4 `@theme` 的真名带前缀，写成裸名色板会画不出颜色也不报错。",
+      "rule": "**「一组里可增删多条」（填充 / 边框 / 阴影各挂若干条）尚未支持**。当前 schema 是「一个 key 对应一个值」，多条同类样式需要值模型从 `Record<string, unknown>` 变成带数组的结构，属于独立的一次设计，不在本版范围内。现在的替代做法是消费方自己按条展开成 `fill1Color` / `fill2Color` 这样的扁平 key。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
     },
     {
       "id": "component/inspector-panel/pitfall/4",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
-      "rule": "混合值哨兵是 `Symbol.for(\"hulian.inspector.mixed\")`，**不能 JSON 序列化**。属性表要过一遍网络/存储时，在边界上把它转成自己的标记再转回来。",
+      "rule": "**窄栏下枚举字段自动从分段控件降级为下拉**。面板宽度低于 260px 时（侧栏检查器的常见宽度），`kind: \"enum\"` 且**未显式指定 `display`** 的字段会切成 `select`——四段中文在那个宽度下装不下，硬撑就会出现「存在但不可达的选项」（#114）。显式传了 `display` 就尊重消费方，不再自适应。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
     },
     {
       "id": "component/inspector-panel/pitfall/5",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
-      "rule": "数字框清空回吐 `null` 不是 `0`。消费方要区分「没设置」和「设成 0」，`null` 应当删除该属性而不是写 `0`。",
+      "rule": "判定看的是**面板自身的宽度**（ResizeObserver），不是视口宽度：决定控件形态的是「它有多宽」。jsdom 下没有 ResizeObserver，单测里不会触发降级。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
     },
     {
       "id": "component/inspector-panel/pitfall/6",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
-      "rule": "面板不持有业务值：`props` 不回写，控件就不会动（`commit` 模式的输入草稿与拖动中的滑块除外）。它是受控组件，不是自带状态的编辑器。",
+      "rule": "**`onChange` 会在同一 tick 连发多次**（链接锁定的 spacing 是 4 次）。消费方必须用函数式更新 `setState((prev) => …)`，写成 `setState({ ...style, [path]: value })` 会让后三次覆盖前三次，表现为「只有最后一边生效」。嫌麻烦就传 `onBatchChange` 一次拿全。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
     },
     {
       "id": "component/inspector-panel/pitfall/7",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
-      "rule": "面板自身的文案（`title` / 空态 / `mixed` / `linkSides` / 四边名 / 两个色值控件名）走 ConfigProvider 的 locale，外层包 `<ConfigProvider locale={enUS}>` 即变英文。优先级是 `labels` / `title` / `emptyText` prop > locale > 内置中文兜底。",
+      "rule": "`commitMode` 覆盖滑杆、输入框与色块弹出的 ColorPicker 三者。`commit` 模式下取色器松手 / 失焦 / 回车才回吐，拖动中的每帧值只留在面板内部（取色器此时是非受控的，外部 `props` 变了才会重新同步）。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
     },
     {
       "id": "component/inspector-panel/pitfall/8",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "`tokenSource[].token` **必须带 `color-` 前缀**（`color-primary` 而不是 `primary`）。Tailwind v4 `@theme` 的真名带前缀，写成裸名色板会画不出颜色也不报错。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/9",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "混合值哨兵是 `Symbol.for(\"hulian.inspector.mixed\")`，**不能 JSON 序列化**。属性表要过一遍网络/存储时，在边界上把它转成自己的标记再转回来。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/10",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "数字框清空回吐 `null` 不是 `0`。消费方要区分「没设置」和「设成 0」，`null` 应当删除该属性而不是写 `0`。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/11",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "面板不持有业务值：`props` 不回写，控件就不会动（`commit` 模式的输入草稿与拖动中的滑块除外）。它是受控组件，不是自带状态的编辑器。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/12",
+      "scope": "inspector-panel",
+      "title": "InspectorPanel",
+      "rule": "面板自身的文案（`title` / 空态 / `mixed` / `linkSides` / 四边名 / 两个色值控件名）走 ConfigProvider 的 locale，外层包 `<ConfigProvider locale={enUS}>` 即变英文。优先级是 `labels` / `title` / `emptyText` prop > locale > 内置中文兜底。",
+      "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/inspector-panel/pitfall/13",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
       "rule": "**内置预设的字段 `label` 仍是中文**，不在 locale 覆盖范围内——它们属于 `sections` 数据而不是面板本身。要整屏英文请自带 `sections`。",
@@ -3908,11 +4097,18 @@
       "id": "component/iphone/pitfall/1",
       "scope": "iphone",
       "title": "iPhone",
-      "rule": "机身比例由组件内 `aspectRatio` 统一固定，`model`/`width` 只改宽度不改纵横比；想要别的比例需自行外层裁切。",
+      "rule": "**机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。",
       "source": "packages/ui/src/iphone/iphone.md"
     },
     {
       "id": "component/iphone/pitfall/2",
+      "scope": "iphone",
+      "title": "iPhone",
+      "rule": "`model` / `width` 只改机身宽度；高度随之按内屏比例推导，所以纵横比会随宽度略有变化（这是正确的——边框不缩放）。想要别的比例需自行外层裁切。",
+      "source": "packages/ui/src/iphone/iphone.md"
+    },
+    {
+      "id": "component/iphone/pitfall/3",
       "scope": "iphone",
       "title": "iPhone",
       "rule": "`imageSrc` 与 `children` 同传时 `imageSrc` 优先。",
@@ -4083,18 +4279,32 @@
       "id": "component/layout/pitfall/1",
       "scope": "layout",
       "title": "Layout",
-      "rule": "**受控/非受控二选一**：`Layout.Sider` 传了 `collapsed` 即进入受控，必须配 `onCollapse` 回写，否则 trigger/断点点了不动；只想非受控用 `defaultCollapsed`。",
+      "rule": "**`Layout.Sider` 只负责宽度，不负责内容**。折叠时品牌区显示全称还是单字、`NavMenu` 走 `inline` 还是 `collapsed`，都得消费方按折叠态自己切——所以 `collapsed` 要自管 state（受控传给 Sider + `onCollapse` 回写），不能只喂一个 `defaultCollapsed` 初始值就完事。只喂初始值的话，用户点折叠后侧栏宽度确实收到 64px，内容却停在展开态，5 个中文字缩到 min-content 会一字一行竖排并把顶部撑高（#120）。折叠态也可以直接读 Sider 根节点上的 `data-collapsed` 写 CSS。",
       "source": "packages/ui/src/layout/layout.md"
     },
     {
       "id": "component/layout/pitfall/2",
       "scope": "layout",
       "title": "Layout",
-      "rule": "**横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染、或被包装进自定义组件（如 `<AppSider/>` 内部才渲染 `Layout.Sider`）时探测会落空，须显式给 `hasSider`。",
+      "rule": "**顶栏高度读 `--hl-layout-header-h`（4rem）**。要做「侧栏顶部 logo 区与 Header 齐平」这件几乎必做的事，两边用 `h-[var(--hl-layout-header-h)]` 即可，别去源码里翻那个数——翻错一次就是一条永远对不齐的分隔线。",
       "source": "packages/ui/src/layout/layout.md"
     },
     {
       "id": "component/layout/pitfall/3",
+      "scope": "layout",
+      "title": "Layout",
+      "rule": "**受控/非受控二选一**：`Layout.Sider` 传了 `collapsed` 即进入受控，必须配 `onCollapse` 回写，否则 trigger/断点点了不动；只想非受控用 `defaultCollapsed`。",
+      "source": "packages/ui/src/layout/layout.md"
+    },
+    {
+      "id": "component/layout/pitfall/4",
+      "scope": "layout",
+      "title": "Layout",
+      "rule": "**横/纵布局靠子元素探测**：嵌套子 `Layout` 是否横排取决于其直接子是否含 `Layout.Sider`。Sider 异步/条件渲染、或被包装进自定义组件（如 `<AppSider/>` 内部才渲染 `Layout.Sider`）时探测会落空，须显式给 `hasSider`。",
+      "source": "packages/ui/src/layout/layout.md"
+    },
+    {
+      "id": "component/layout/pitfall/5",
       "scope": "layout",
       "title": "Layout",
       "rule": "收起态切窄宽用菜单的 `mode=\"collapsed\"`（dogfood NavMenu 自带 icon-only 轨），不要手搓「窄宽裁切 label」。",
@@ -5588,88 +5798,95 @@
       "id": "component/preview-sandbox/pitfall/1",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**`code` 不是 JSX，是 HTML 文档串。** 塞一段 `<Button/>` 或 TSX 进去只会被当纯文本渲染，不会报错也不会编译——这是本组件最容易踩的静默失效。要真正执行生成的组件代码，只有两条路：自己在消费方接编译器（esbuild-wasm / WebContainers 那一档，本库不会引入这类重依赖），或改用同文档模式把已经编译好的组件当 `children` 传进来。",
+      "rule": "**档位清单从设备真源派生，加机型只改一处**。`desktop` 是「无外框」档，是清单里唯一显式的例外；其余档位（含 `watch`）来自 `lib/device-metrics`，与 mockups 分类的外框件一一对应。此前这里手写了第二份清单，结果是 `watch` 被漏掉，且没有任何东西保证「内屏比例 == 视口比例」——那正是外框内一圈白边的来源（#117 / #139）。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/2",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**默认 sandbox 只给 `allow-scripts`，刻意不给 `allow-same-origin`，这是个真实的取舍：**",
+      "rule": "**`code` 不是 JSX，是 HTML 文档串。** 塞一段 `<Button/>` 或 TSX 进去只会被当纯文本渲染，不会报错也不会编译——这是本组件最容易踩的静默失效。要真正执行生成的组件代码，只有两条路：自己在消费方接编译器（esbuild-wasm / WebContainers 那一档，本库不会引入这类重依赖），或改用同文档模式把已经编译好的组件当 `children` 传进来。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/3",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "`srcdoc` 文档本就继承宿主的源。两个值一起给等于**没有沙箱**：预览里的脚本能读写宿主 DOM、`localStorage`、cookie，甚至自己把 `sandbox` 属性摘掉。所以内容只要不是你完全可信的（AI 生成的、用户贴的、第三方模板），就别放开。",
+      "rule": "**默认 sandbox 只给 `allow-scripts`，刻意不给 `allow-same-origin`，这是个真实的取舍：**",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/4",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "代价是宿主也读不到 `iframe.contentDocument`。所以错误转发走 `postMessage`（不透明源照样能发），而不是直接往 iframe 文档里挂监听。",
+      "rule": "`srcdoc` 文档本就继承宿主的源。两个值一起给等于**没有沙箱**：预览里的脚本能读写宿主 DOM、`localStorage`、cookie，甚至自己把 `sandbox` 属性摘掉。所以内容只要不是你完全可信的（AI 生成的、用户贴的、第三方模板），就别放开。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/5",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "需要读 iframe 内部 DOM 时（典型是配 [ElementSelectionOverlay](../element-selection-overlay/element-selection-overlay.md) 做指向编辑）才放开，并且请显式写出来：`sandbox={PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX}`。这个常量存在的意义就是让「我知道我在关隔离」在代码里可读、可 grep、可 review。",
+      "rule": "代价是宿主也读不到 `iframe.contentDocument`。所以错误转发走 `postMessage`（不透明源照样能发），而不是直接往 iframe 文档里挂监听。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/6",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**消息校验不看 `origin`。** 不透明源的 iframe 发出的 `event.origin` 恒为 `\"null\"`，拿它当条件等于永远不通过。组件校验的是「消息里的实例 id」+「`event.source === iframe.contentWindow`」；自己接 `postMessage` 时请照此办理。",
+      "rule": "需要读 iframe 内部 DOM 时（典型是配 [ElementSelectionOverlay](../element-selection-overlay/element-selection-overlay.md) 做指向编辑）才放开，并且请显式写出来：`sandbox={PREVIEW_SANDBOX_SAME_ORIGIN_SANDBOX}`。这个常量存在的意义就是让「我知道我在关隔离」在代码里可读、可 grep、可 review。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/7",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**`instrument={false}` 之后 `onError` 就静音了**（iframe 模式）。不注入脚本就没有回传通路，这是设计如此，不是 bug；关它的正当理由通常是「预览文档有严格 CSP 或自己已经装了错误上报」。",
+      "rule": "**消息校验不看 `origin`。** 不透明源的 iframe 发出的 `event.origin` 恒为 `\"null\"`，拿它当条件等于永远不通过。组件校验的是「消息里的实例 id」+「`event.source === iframe.contentWindow`」；自己接 `postMessage` 时请照此办理。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/8",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**重载靠 `srcDoc` 字符串变化，不靠 `location.reload()`**（跨源调不到）。所以点重试时 `srcdoc` 会多出一行重载标记注释——这是刻意的，别当成脏数据去掉。",
+      "rule": "**`instrument={false}` 之后 `onError` 就静音了**（iframe 模式）。不注入脚本就没有回传通路，这是设计如此，不是 bug；关它的正当理由通常是「预览文档有严格 CSP 或自己已经装了错误上报」。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/9",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**切设备不会重载文档，换 `code` 会。** 前者只改容器盒子（预览内的滚动位置、表单输入、动画进度都保住），后者是新文档。想强制重来请用重试按钮或改 `code`。",
+      "rule": "**重载靠 `srcDoc` 字符串变化，不靠 `location.reload()`**（跨源调不到）。所以点重试时 `srcdoc` 会多出一行重载标记注释——这是刻意的，别当成脏数据去掉。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/10",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**`fit` 永不放大**（上限 1），与 [FitScreen](../fit-screen/fit-screen.md) 的 `computeFit` 不同：把 390px 的手机预览拉到 800px 宽只会得到一个「巨人手机」，字号、点击区、断点全部失真。要放大请显式给 `scale={1.5}`。",
+      "rule": "**切设备不会重载文档，换 `code` 会。** 前者只改容器盒子（预览内的滚动位置、表单输入、动画进度都保住），后者是新文档。想强制重来请用重试按钮或改 `code`。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/11",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**外层必须有确定高度。** 组件自身是 `h-full w-full`，父级高度塌缩就什么都看不见（和 [Flow](../flow/flow.md) 同款坑）。",
+      "rule": "**`fit` 永不放大**（上限 1），与 [FitScreen](../fit-screen/fit-screen.md) 的 `computeFit` 不同：把 390px 的手机预览拉到 800px 宽只会得到一个「巨人手机」，字号、点击区、断点全部失真。要放大请显式给 `scale={1.5}`。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/12",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
-      "rule": "**iframe 里的资源加载失败（图片 404）不算错误。** 引导脚本刻意不监听捕获阶段，只报真正的运行时异常，否则「图挂了」会被报成预览崩溃。",
+      "rule": "**外层必须有确定高度。** 组件自身是 `h-full w-full`，父级高度塌缩就什么都看不见（和 [Flow](../flow/flow.md) 同款坑）。",
       "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
     },
     {
       "id": "component/preview-sandbox/pitfall/13",
+      "scope": "preview-sandbox",
+      "title": "PreviewSandbox",
+      "rule": "**iframe 里的资源加载失败（图片 404）不算错误。** 引导脚本刻意不监听捕获阶段，只报真正的运行时异常，否则「图挂了」会被报成预览崩溃。",
+      "source": "packages/ui/src/preview-sandbox/preview-sandbox.md"
+    },
+    {
+      "id": "component/preview-sandbox/pitfall/14",
       "scope": "preview-sandbox",
       "title": "PreviewSandbox",
       "rule": "jsdom 里 `srcDoc` 的脚本不会执行、也没有布局引擎，所以「注入位置」「缩放系数」「错误归一化」这些都做成了导出的纯函数（`buildSrcDoc` / `computePreviewScale` / `normalizeIframeMessage` / `normalizeReactError`），要断言行为请测它们，别去测 iframe 内部。",
@@ -5945,6 +6162,13 @@
       "id": "component/pulsating-button/pitfall/1",
       "scope": "pulsating-button",
       "title": "PulsatingButton",
+      "rule": "**与 [Button](../button/button.md) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。",
+      "source": "packages/ui/src/pulsating-button/pulsating-button.md"
+    },
+    {
+      "id": "component/pulsating-button/pitfall/2",
+      "scope": "pulsating-button",
+      "title": "PulsatingButton",
       "rule": "自定义往按钮塞图标+文字若图标掉行，是 Tailwind Preflight `svg{display:block}` 所致，见 tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button——确保文案容器是 `inline-flex`。",
       "source": "packages/ui/src/pulsating-button/pulsating-button.md"
     },
@@ -6090,6 +6314,13 @@
     },
     {
       "id": "component/rainbow-button/pitfall/1",
+      "scope": "rainbow-button",
+      "title": "RainbowButton",
+      "rule": "**与 [Button](../button/button.md) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。",
+      "source": "packages/ui/src/rainbow-button/rainbow-button.md"
+    },
+    {
+      "id": "component/rainbow-button/pitfall/2",
       "scope": "rainbow-button",
       "title": "RainbowButton",
       "rule": "自定义往按钮塞图标+文字若图标掉行，是 Tailwind Preflight `svg{display:block}` 所致，见 tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button——确保文案容器是 `inline-flex`。",
@@ -6397,6 +6628,13 @@
       "source": "packages/ui/src/ripple/ripple.md"
     },
     {
+      "id": "component/ripple-button/pitfall/1",
+      "scope": "ripple-button",
+      "title": "RippleButton",
+      "rule": "**与 [Button](../button/button.md) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。 暂无已知坑。波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。",
+      "source": "packages/ui/src/ripple-button/ripple-button.md"
+    },
+    {
       "id": "component/ripple-grid/pitfall/1",
       "scope": "ripple-grid",
       "title": "RippleGrid",
@@ -6572,6 +6810,13 @@
       "source": "packages/ui/src/scroll-area/scroll-area.md"
     },
     {
+      "id": "component/scroll-area/pitfall/2",
+      "scope": "scroll-area",
+      "title": "ScrollArea",
+      "rule": "**滚动条是覆盖式的，内容要自己留出让位内边距**。滚动条 `absolute` 定位、不占布局宽度，宽 `w-2`（8px），横向条高同理。所以内容区请自留 **≥ `pr-2.5`（10px = 8px 条 + 2px 呼吸）**，横向滚动则是 `pb-2.5`；留不够（比如常见的 `pr-1`=4px）滚动条就会稳定地压在最右一列内容上（#118）。这条是隐式约定，组件不代劳——因为「让位」该加在内容层还是各列上，只有消费方知道。",
+      "source": "packages/ui/src/scroll-area/scroll-area.md"
+    },
+    {
       "id": "component/scroll-float/pitfall/1",
       "scope": "scroll-float",
       "title": "ScrollFloat",
@@ -6729,18 +6974,32 @@
       "id": "component/segmented/pitfall/1",
       "scope": "segmented",
       "title": "Segmented",
-      "rule": "段 `label` 是图标/徽标等富节点时必须给该段 `ariaLabel`，否则读屏会读英文 `value`（念读不友好）。",
+      "rule": "**装不下时段会压缩并省略，不会消失**。段是 `min-w-0 flex-1 truncate`：任何宽度下每一段都仍然可见、可点。0.27.0 前缺 `min-w-0`，flex item 的 `min-width:auto` 配上 `whitespace-nowrap` 完全不可压缩，root 宽度被撑到「所有段文字之和」，超出部分被上游容器裁掉——**选项存在但不可达**（#114）。",
       "source": "packages/ui/src/segmented/segmented.md"
     },
     {
       "id": "component/segmented/pitfall/2",
       "scope": "segmented",
       "title": "Segmented",
-      "rule": "用 `value`/`onValueChange` 即受控，须自管 state；非受控只给 `defaultValue`。",
+      "rule": "但「能压缩」不等于「好用」：4 段中文塞进 150px 只会全变省略号。窄容器请改用 [Select](../select/select.md)，或像 [InspectorPanel](../inspector-panel/inspector-panel.md) 那样按容器宽度自动降级。",
       "source": "packages/ui/src/segmented/segmented.md"
     },
     {
       "id": "component/segmented/pitfall/3",
+      "scope": "segmented",
+      "title": "Segmented",
+      "rule": "段 `label` 是图标/徽标等富节点时必须给该段 `ariaLabel`，否则读屏会读英文 `value`（念读不友好）。",
+      "source": "packages/ui/src/segmented/segmented.md"
+    },
+    {
+      "id": "component/segmented/pitfall/4",
+      "scope": "segmented",
+      "title": "Segmented",
+      "rule": "用 `value`/`onValueChange` 即受控，须自管 state；非受控只给 `defaultValue`。",
+      "source": "packages/ui/src/segmented/segmented.md"
+    },
+    {
+      "id": "component/segmented/pitfall/5",
       "scope": "segmented",
       "title": "Segmented",
       "rule": "选中是单值互斥，没有多选——多选共存改用 [ToggleGroup](../toggle/toggle.md)。",
@@ -6904,11 +7163,18 @@
       "id": "component/shimmer-button/pitfall/1",
       "scope": "shimmer-button",
       "title": "ShimmerButton",
-      "rule": "颜色类 prop 应传 token CSS 变量（如 `var(--color-danger)`）以随主题切换，别硬编码裸色值。",
+      "rule": "**与 [Button](../button/button.md) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。",
       "source": "packages/ui/src/shimmer-button/shimmer-button.md"
     },
     {
       "id": "component/shimmer-button/pitfall/2",
+      "scope": "shimmer-button",
+      "title": "ShimmerButton",
+      "rule": "颜色类 prop 应传 token CSS 变量（如 `var(--color-danger)`）以随主题切换，别硬编码裸色值。",
+      "source": "packages/ui/src/shimmer-button/shimmer-button.md"
+    },
+    {
+      "id": "component/shimmer-button/pitfall/3",
       "scope": "shimmer-button",
       "title": "ShimmerButton",
       "rule": "自定义往按钮塞图标+文字若图标掉行，是 Tailwind Preflight `svg{display:block}` 所致，见 tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button——确保文案容器是 `inline-flex`。",
@@ -7625,11 +7891,18 @@
       "id": "component/tablet/pitfall/1",
       "scope": "tablet",
       "title": "Tablet",
-      "rule": "与 iPhone/Android 不同：平板机型纵横比各异，`aspectRatio` 由 `model` 决定；`width` 显式传入只覆盖宽度，比例仍随 model。不传 model 时回退默认宽 320 但无机型专属比例。",
+      "rule": "**机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。",
       "source": "packages/ui/src/tablet/tablet.md"
     },
     {
       "id": "component/tablet/pitfall/2",
+      "scope": "tablet",
+      "title": "Tablet",
+      "rule": "与 iPhone/Android 不同：各代 iPad 纵横比确实不同，所以**显式传了 `model` 时**机身比例由该机型的 `aspectRatio` 决定，`width` 只覆盖宽度。不传 `model` 的缺省档才走「内屏比例 + 边框反推」——[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 从不传 model，走的正是这条。",
+      "source": "packages/ui/src/tablet/tablet.md"
+    },
+    {
+      "id": "component/tablet/pitfall/3",
       "scope": "tablet",
       "title": "Tablet",
       "rule": "`imageSrc` 与 `children` 同传时 `imageSrc` 优先。",
@@ -8476,6 +8749,13 @@
       "source": "packages/ui/src/viewport/viewport.md"
     },
     {
+      "id": "component/watch/pitfall/1",
+      "scope": "watch",
+      "title": "Watch",
+      "rule": "**机身高度由内屏比例 + 边框反推，不写死 `aspectRatio`**。边框是固定 px 而内屏随宽度缩放，所以机身比例并不是常数——同一台设备画成 280px 宽和 360px 宽，机身比例不一样。写死一个比例必然在某些宽度下让内屏比例偏掉，[PreviewSandbox](../preview-sandbox/preview-sandbox.md) 的 `fit` 缩放就会在短边留一圈白（#117）。内屏逻辑分辨率与边框宽度的真源是 `lib/device-metrics`，单测锁住「内屏比例恒等于 `screen` 比例」这层关系。 暂无已知坑。设备外壳为纯展示组件（RSC 可用），imageSrc 与 children 同时存在时 imageSrc 胜出。",
+      "source": "packages/ui/src/watch/watch.md"
+    },
+    {
       "id": "component/watermark/pitfall/1",
       "scope": "watermark",
       "title": "Watermark",
@@ -8599,7 +8879,7 @@
   ],
   "stats": {
     "componentDocs": 383,
-    "componentAdvisories": 1203,
-    "totalAdvisories": 1210
+    "componentAdvisories": 1236,
+    "totalAdvisories": 1245
   }
 }

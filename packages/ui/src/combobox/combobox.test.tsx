@@ -53,7 +53,7 @@ describe("Combobox", () => {
     const cherry = screen.getByText("樱桃 Cherry").closest("[role='option']") as HTMLElement;
     expect(cherry).toBeTruthy();
     expect(cherry.getAttribute("data-disabled")).not.toBeNull();
-    expect(cherry.className).toContain("data-[highlighted]:bg-muted/15");
+    expect(cherry.className).toContain("data-[highlighted]:bg-surface-hover");
   });
 
   it("invalid → input 落 data-invalid/aria-invalid，外壳 has-[[data-invalid]] 钩子", () => {

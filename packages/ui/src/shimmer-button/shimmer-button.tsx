@@ -1,43 +1,57 @@
-import { cloneElement } from "react";
+import { forwardRef } from "react";
 import type { CSSProperties } from "react";
 import { cn } from "../lib/cn";
+import {
+  BUTTON_SIZE_CLASS,
+  EFFECT_BUTTON_BASE_CLASS,
+  renderAsElement,
+} from "../button/button-base";
 import type { ShimmerButtonProps } from "./shimmer-button.types";
 
 // 吸取自 magicui.design Shimmer Button：周边游走的高光火花（conic-gradient + container 查询 + 双关键帧）。
 // 瑚琏化：纯 CSS（RSC 安全）；底色默认 var(--color-primary)、文字 primary-foreground、火花默认 primary-foreground；
 // CSS 变量全 hulian- 前缀避与全局 --radius 冲突；关键帧 hulian-shimmer-slide/spin-around 落 preset.css；
 // container-type 用内联 [container-type:size] 兜底（不依赖 TW v4 @container 工具类）。
-export function ShimmerButton({
-  shimmerColor = "var(--color-primary-foreground)",
-  shimmerSize = "0.05em",
-  shimmerDuration = "3s",
-  borderRadius = "var(--radius)",
-  background = "var(--color-primary)",
-  className,
-  children,
-  style,
-  render,
-  ...props
-}: ShimmerButtonProps) {
-  const mergedStyle = {
-    "--hulian-shimmer-spread": "90deg",
-    "--hulian-shimmer-color": shimmerColor,
-    "--hulian-shimmer-radius": borderRadius,
-    "--hulian-shimmer-speed": shimmerDuration,
-    "--hulian-shimmer-cut": shimmerSize,
-    "--hulian-shimmer-bg": background,
-    ...style,
-  } as CSSProperties;
+export const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
+  function ShimmerButton(
+    {
+      shimmerColor = "var(--color-primary-foreground)",
+      shimmerSize = "0.05em",
+      shimmerDuration = "3s",
+      borderRadius = "var(--radius)",
+      background = "var(--color-primary)",
+      size = "md",
+      className,
+      children,
+      style,
+      render,
+      ...props
+    },
+    ref,
+  ) {
+    const mergedStyle = {
+      "--hulian-shimmer-spread": "90deg",
+      "--hulian-shimmer-color": shimmerColor,
+      "--hulian-shimmer-radius": borderRadius,
+      "--hulian-shimmer-speed": shimmerDuration,
+      "--hulian-shimmer-cut": shimmerSize,
+      "--hulian-shimmer-bg": background,
+      ...style,
+    } as CSSProperties;
 
-  const mergedClassName = cn(
-    "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-border px-6 py-3 font-medium text-primary-foreground",
-    "[border-radius:var(--hulian-shimmer-radius)] [background:var(--hulian-shimmer-bg)]",
-    "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
-    className,
-  );
+    // 共享 Button 的排布 / 尺寸 / 焦点环 / 禁用态，但**不共享配色与圆角**：
+    // 底色是自己的 conic-gradient 火花，圆角走 --hulian-shimmer-radius（#126）。
+    const mergedClassName = cn(
+      EFFECT_BUTTON_BASE_CLASS,
+      BUTTON_SIZE_CLASS[size],
+      "group relative z-0 cursor-pointer overflow-hidden border border-border text-primary-foreground",
+      "[border-radius:var(--hulian-shimmer-radius)] [background:var(--hulian-shimmer-bg)]",
+      "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
+      className,
+    );
 
-  const inner = (
-    <>
+    const inner = (
+      <>
       {/* 火花容器 */}
       <div className="absolute inset-0 -z-30 overflow-visible blur-[2px] [container-type:size]">
         <div className="absolute inset-0 aspect-square h-[100cqh] [animation:hulian-shimmer-slide_var(--hulian-shimmer-speed)_ease-in-out_infinite] motion-reduce:[animation:none]">
@@ -51,26 +65,16 @@ export function ShimmerButton({
       <div className="absolute inset-0 size-full rounded-[inherit] shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-[box-shadow] duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
       {/* backdrop 盖回底色只露边缘火花 */}
       <div className="absolute inset-[var(--hulian-shimmer-cut)] -z-20 [border-radius:var(--hulian-shimmer-radius)] [background:var(--hulian-shimmer-bg)]" />
-    </>
-  );
-
-  // render：渲染为自定义元素（<a>/<Link>）而非 button，用于「闪光样式的链接」CTA。
-  if (render) {
-    const renderProps = render.props as Record<string, unknown>;
-    return cloneElement(
-      render,
-      {
-        ...props,
-        style: { ...mergedStyle, ...((renderProps.style as CSSProperties) ?? {}) },
-        className: cn(mergedClassName, renderProps.className as string | undefined),
-      } as Record<string, unknown>,
-      inner,
+      </>
     );
-  }
 
-  return (
-    <button style={mergedStyle} className={mergedClassName} {...props}>
-      {inner}
-    </button>
-  );
-}
+    // render：渲染为自定义元素（<a>/<Link>）而非 button，用于「闪光样式的链接」CTA。
+    if (render) return renderAsElement(render, { ...props, ref }, mergedClassName, mergedStyle, inner);
+
+    return (
+      <button ref={ref} style={mergedStyle} className={mergedClassName} {...props}>
+        {inner}
+      </button>
+    );
+  },
+);

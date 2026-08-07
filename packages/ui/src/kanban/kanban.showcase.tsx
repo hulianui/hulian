@@ -58,7 +58,7 @@ function BoardDemo() {
         </div>
       )}
       renderItem={(c) => (
-        <div className="rounded-[var(--radius)] border border-border bg-surface p-3 shadow-sm">
+        <div className="rounded-[var(--radius)] border border-hairline bg-surface p-3 shadow-sm">
           <p className="text-sm font-medium text-foreground">{c.title}</p>
           <p className="mt-1 text-xs text-muted">{c.owner}</p>
         </div>
@@ -77,7 +77,7 @@ function ReadOnlyBoard() {
       getColumnId={(c) => c.status}
       onMove={() => {}}
       renderItem={(c) => (
-        <div className="rounded-[var(--radius)] border border-border bg-surface p-3 shadow-sm">
+        <div className="rounded-[var(--radius)] border border-hairline bg-surface p-3 shadow-sm">
           <p className="text-sm font-medium text-foreground">{c.title}</p>
           <p className="mt-1 text-xs text-muted">{c.owner}</p>
         </div>
@@ -104,7 +104,7 @@ export const kanbanShowcase: ShowcaseSpec = {
   getColumnId={(c) => c.status}
   onMove={() => {}}
   renderItem={(c) => (
-    <div className="rounded-[var(--radius)] border border-border bg-surface p-3 shadow-sm">
+    <div className="rounded-[var(--radius)] border border-hairline bg-surface p-3 shadow-sm">
       <p className="text-sm font-medium text-foreground">{c.title}</p>
       <p className="mt-1 text-xs text-muted">{c.owner}</p>
     </div>

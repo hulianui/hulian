@@ -320,7 +320,7 @@ export function DomeGallery({
                 onClick={() => openTile(tile)}
                 className={cn(
                   "group absolute left-1/2 top-1/2 block cursor-pointer overflow-hidden",
-                  "border border-border/40 bg-muted",
+                  "border border-border/40 bg-subtle",
                   "outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 )}
                 style={{

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
+import { Button } from "../button";
 import { FloatingReactions } from "./floating-reactions";
 import type { FloatingReactionsHandle } from "./floating-reactions.types";
 
@@ -24,13 +25,14 @@ function FloatingDemo({
 
   return (
     <div className="relative grid h-72 w-64 place-items-center overflow-hidden rounded-[var(--radius)] bg-gradient-to-br from-slate-700 to-slate-900">
-      <button
-        type="button"
+      {/* 触发器 dogfood Button 而不是裸 <button>：showcase 是消费方照抄的地方，
+          手搓一颗按钮就等于把「没有焦点环 / 没有禁用态 / 文字可被连点选中」一路复制出去。 */}
+      <Button
+        className="z-10 rounded-full"
         onClick={() => ref.current?.emit(palette ? undefined : emoji, { count: 3 })}
-        className="z-10 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary-hover"
       >
         点赞 {emoji}
-      </button>
+      </Button>
       <FloatingReactions ref={ref} palette={palette} size={size} />
     </div>
   );
@@ -43,14 +45,14 @@ export const floatingReactionsShowcase: ShowcaseSpec = {
       description: "通过 ref.emit 喷射上浮表情，count 一次发射多个。点击按钮试试。",
       code: `const ref = useRef<FloatingReactionsHandle>(null);
 
-<button onClick={() => ref.current?.emit("❤️", { count: 3 })}>点赞 ❤️</button>
+<Button onClick={() => ref.current?.emit("❤️", { count: 3 })}>点赞 ❤️</Button>
 <FloatingReactions ref={ref} />`,
       render: () => <FloatingDemo />,
     },
     {
       title: "随机表情池",
       description: "不传 content 时从 palette 随机取一个表情，适合「点赞墙」混合飘字。",
-      code: `<button onClick={() => ref.current?.emit(undefined, { count: 3 })}>送花 🌸</button>
+      code: `<Button onClick={() => ref.current?.emit(undefined, { count: 3 })}>送花 🌸</Button>
 <FloatingReactions ref={ref} palette={["🌸", "🌺", "🌷", "💐"]} />`,
       render: () => <FloatingDemo emoji="🌸" palette={["🌸", "🌺", "🌷", "💐"]} />,
     },

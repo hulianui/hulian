@@ -34,6 +34,7 @@ import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } 
 | categories | readonly string[] | — | 只取内置预设的这几类，且**按传入顺序**排列（`layout` / `color` / `typography` / `border` / `effects`） |
 | tokenSource | readonly InspectorToken[] | — | 色值控件可选的主题 token；形状与文档站 `SEMANTIC_GROUPS` 的色卡一致 |
 | commitMode | "change" ｜ "commit" | "change" | `change` 拖动/按键即回吐；`commit` 松手/失焦/回车才回吐 |
+| density | "comfortable" ｜ "compact" | "comfortable" | 行高与内边距密度；`compact` 收紧到接近 Sketch 检查器的量级 |
 | onBatchChange | (changes: InspectorChange[]) => void | — | 一次交互改多个 path 时的批量回吐（见下方 Events） |
 | title | ReactNode | 取自 locale | 面板标题；传 `null` 不渲染标题栏 |
 | emptyText | ReactNode | 取自 locale | 空态文案 |
@@ -129,6 +130,13 @@ readInspectorValue({ style: { color: "red" } }, "style.color"); // "red"
 - 混合值不靠灰色暗示：文本/数字类走 `placeholder`，开关/枚举旁边有可读文字，读屏能听见。
 
 ## 禁忌 / 坑
+
+- **设计工具语境请开 `columns` + `density="compact"`**。`X / Y / 旋转` 这类数值本该一行三格、标签内联进输入框；一行一个字段配 80px 标签列，同样内容要占三倍高度。多列模式下数值字段自动内联标签，并且标签本身成为**拖拽调值**的抓手（横向每 1px 一个 `step`，按住 Shift 走 10 倍）。窄栏（<260px）下网格自动退回单列——每格不足 70px 时分列没有意义。
+- 拖拽抓手 `aria-hidden` 且不进 tab 顺序：调值的可达通路是输入框自己（方向键 / 直接输入），拖拽只是给鼠标用户的加速方式，不该多出一个屏幕阅读器要念的控件。
+- **「一组里可增删多条」（填充 / 边框 / 阴影各挂若干条）尚未支持**。当前 schema 是「一个 key 对应一个值」，多条同类样式需要值模型从 `Record<string, unknown>` 变成带数组的结构，属于独立的一次设计，不在本版范围内。现在的替代做法是消费方自己按条展开成 `fill1Color` / `fill2Color` 这样的扁平 key。
+
+- **窄栏下枚举字段自动从分段控件降级为下拉**。面板宽度低于 260px 时（侧栏检查器的常见宽度），`kind: "enum"` 且**未显式指定 `display`** 的字段会切成 `select`——四段中文在那个宽度下装不下，硬撑就会出现「存在但不可达的选项」（#114）。显式传了 `display` 就尊重消费方，不再自适应。
+- 判定看的是**面板自身的宽度**（ResizeObserver），不是视口宽度：决定控件形态的是「它有多宽」。jsdom 下没有 ResizeObserver，单测里不会触发降级。
 
 - **`onChange` 会在同一 tick 连发多次**（链接锁定的 spacing 是 4 次）。消费方必须用函数式更新 `setState((prev) => …)`，写成 `setState({ ...style, [path]: value })` 会让后三次覆盖前三次，表现为「只有最后一边生效」。嫌麻烦就传 `onBatchChange` 一次拿全。
 - `commitMode` 覆盖滑杆、输入框与色块弹出的 ColorPicker 三者。`commit` 模式下取色器松手 / 失焦 / 回车才回吐，拖动中的每帧值只留在面板内部（取色器此时是非受控的，外部 `props` 变了才会重新同步）。

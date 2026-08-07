@@ -223,10 +223,11 @@ describe("PreviewSandbox · 同文档模式", () => {
 });
 
 describe("PreviewSandbox · 设备外框", () => {
-  it("showDeviceFrame + 机型档位 → 套外框（机身有固定比例）", async () => {
+  // 机身尺寸从 aspectRatio 改为「宽 + 推导出的高」（#117 / #139），所以按 height 找机身。
+  it("showDeviceFrame + 机型档位 → 套外框（机身尺寸由内屏推导）", async () => {
     const { container } = render(<PreviewSandbox code={HTML} device="iphone" showDeviceFrame />);
     await settle();
-    const body = container.querySelector('div[style*="aspect-ratio"]');
+    const body = container.querySelector('div[style*="height"][style*="width"]');
     expect(body).toBeTruthy();
     expect(body!.contains(frameOf(container))).toBe(true);
   });

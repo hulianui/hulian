@@ -25,6 +25,7 @@ import { PulsatingButton } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Size step, on the same 32/40/48px scale as Button. |
 | pulseColor | `string` | 70% of `var(--color-primary)` | Halo color. |
 | duration | `string` | `1.5s` | Duration of one pulse cycle. |
 | ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | Native button props. |
@@ -50,6 +51,8 @@ import { PulsatingButton } from "@hulianui/ui"
 ```
 
 ## Usage guidelines
+
+- **Shares its base with [Button](../button/button.md).** Layout, the three `size` steps (32/40/48px tall), the focus ring, the disabled treatment, and `forwardRef` all come from the same `EFFECT_BUTTON_BASE_CLASS` and `BUTTON_SIZE_CLASS`. **Colour and corner radius are deliberately not shared**, since the background is this component's own effect layer. As a result it lines up with regular Buttons and matches the library-wide focus style; before 0.27.0 each effect button rolled its own markup, lacked all of the above, and sized itself with `px-6 py-3`, so a toolbar row came out uneven (#126).
 
 - Tailwind Preflight applies `svg { display: block }`, which can split a custom icon and label. See [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]] and make the content wrapper `inline-flex`.
 

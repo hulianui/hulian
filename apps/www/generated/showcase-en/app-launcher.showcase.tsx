@@ -1,159 +1,165 @@
 "use client";
 import { useState } from "react";
+import { Activity, BarChart3, Ban, Braces, CalendarDays, ClipboardCheck, Database, FileSearch, GitBranch, Inbox, KanbanSquare, KeyRound, Rocket, ScrollText, Settings, ShieldCheck, SlidersHorizontal, TerminalSquare, Users, } from "lucide-react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { AppLauncher } from "../../../../packages/ui/src/app-launcher/app-launcher";
 import type { AppLauncherItem } from "../../../../packages/ui/src/app-launcher/app-launcher.types";
-function Tile({ from, to, glyph, dark, }: {
-    from: string;
-    to: string;
-    glyph: string;
-    dark?: boolean;
+function Tile({ tone, icon }: {
+    tone: string;
+    icon: React.ReactNode;
 }) {
-    return (<span className={`grid size-full place-items-center text-2xl font-semibold ${dark ? "text-white" : "text-foreground"}`} style={{ background: `linear-gradient(145deg, ${from}, ${to})` }}>
-      {glyph}
+    return (<span className="grid size-full place-items-center text-white [&_svg]:size-7" style={{
+            background: `linear-gradient(145deg, ${tone}, color-mix(in oklab, ${tone} 55%, black))`,
+        }}>
+      {icon}
     </span>);
 }
+const C1 = "var(--color-chart-1)";
+const C2 = "var(--color-chart-2)";
+const C3 = "var(--color-chart-3)";
+const C4 = "var(--color-chart-4)";
+const C5 = "var(--color-chart-5)";
+const C6 = "var(--color-chart-6)";
 const apps: AppLauncherItem[] = [
     {
-        id: "ghostty",
-        label: "Ghostty",
-        category: "dev",
+        id: "tickets",
+        label: "Tickets",
+        category: "work",
         section: "recent",
-        keywords: ["terminal", "zhongduan"],
-        icon: <Tile from="#4b5563" to="#111827" glyph="👻" dark/>,
-    },
-    {
-        id: "chrome",
-        label: "Google Chrome",
-        category: "dev",
-        section: "recent",
-        keywords: ["browser"],
-        icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🌐"/>,
-    },
-    {
-        id: "vscode",
-        label: "Visual Studio Code",
-        category: "dev",
-        section: "recent",
-        keywords: ["vsc", "editor"],
-        icon: <Tile from="#e0f2fe" to="#bae6fd" glyph="🧩"/>,
-    },
-    {
-        id: "navicat",
-        label: "Navicat for MySQL",
-        category: "dev",
-        section: "recent",
-        keywords: ["db", "shujuku"],
-        icon: <Tile from="#dcfce7" to="#86efac" glyph="🗄️"/>,
-    },
-    {
-        id: "wechat",
-        label: "WeChat",
-        category: "social",
-        keywords: ["weixin", "wx"],
-        icon: <Tile from="#22c55e" to="#15803d" glyph="💬" dark/>,
-    },
-    {
-        id: "qq",
-        label: "QQ",
-        category: "social",
-        keywords: ["penguin"],
-        icon: <Tile from="#ffffff" to="#e5e7eb" glyph="🐧"/>,
-    },
-    {
-        id: "mail",
-        label: "Email",
-        category: "social",
-        keywords: ["mail", "youjian"],
+        keywords: ["gongdan", "ticket", "ticket"],
         badge: (<span className="grid size-4 place-items-center rounded-full bg-danger text-[10px] font-semibold text-danger-foreground">
         9
       </span>),
-        icon: <Tile from="#60a5fa" to="#2563eb" glyph="✉️" dark/>,
+        icon: <Tile tone={C1} icon={<Inbox />}/>,
     },
     {
-        id: "notes",
-        label: "Memo",
-        category: "tool",
-        keywords: ["notes", "beiwanglu"],
-        icon: <Tile from="#fef9c3" to="#fde68a" glyph="📝"/>,
+        id: "approvals",
+        label: "Approvals",
+        category: "work",
+        section: "recent",
+        keywords: ["shenpi", "approval", "approval"],
+        icon: <Tile tone={C2} icon={<ClipboardCheck />}/>,
     },
     {
-        id: "calc",
-        label: "Calculator",
-        category: "tool",
-        keywords: ["calculator", "jisuanqi"],
-        icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🧮"/>,
+        id: "board",
+        label: "Task board",
+        category: "work",
+        section: "recent",
+        keywords: ["renwu", "kanban", "Task"],
+        icon: <Tile tone={C4} icon={<KanbanSquare />}/>,
     },
     {
-        id: "clock",
-        label: "Clock",
-        category: "tool",
-        keywords: ["clock", "shizhong"],
-        icon: <Tile from="#ffffff" to="#d1d5db" glyph="🕘"/>,
+        id: "schedule",
+        label: "Schedule",
+        category: "work",
+        section: "recent",
+        keywords: ["paiban", "schedule", "Schedule"],
+        icon: <Tile tone={C3} icon={<CalendarDays />}/>,
     },
     {
-        id: "maps",
-        label: "Map",
-        category: "tool",
-        keywords: ["maps", "ditu"],
-        icon: <Tile from="#bbf7d0" to="#4ade80" glyph="🗺️"/>,
+        id: "reports",
+        label: "Reports",
+        category: "data",
+        keywords: ["baobiao", "report", "report"],
+        icon: <Tile tone={C1} icon={<BarChart3 />}/>,
     },
     {
-        id: "netdisk",
-        label: "Baidu Netdisk",
-        category: "tool",
-        keywords: ["baidu", "wangpan"],
-        icon: <Tile from="#dbeafe" to="#93c5fd" glyph="☁️"/>,
+        id: "dashboards",
+        label: "Dashboards",
+        category: "data",
+        keywords: ["jiankong", "monitor", "monitor"],
+        icon: <Tile tone={C5} icon={<Activity />}/>,
     },
     {
-        id: "stocks",
-        label: "Stock Market",
-        category: "finance",
-        keywords: ["stocks", "gushi"],
-        icon: <Tile from="#111827" to="#374151" glyph="📈" dark/>,
+        id: "datasource",
+        label: "Data sources",
+        category: "data",
+        keywords: ["shujuyuan", "database", "Data sources"],
+        icon: <Tile tone={C2} icon={<Database />}/>,
     },
     {
-        id: "sheets",
-        label: "Form",
-        category: "finance",
-        keywords: ["sheets", "biaoge"],
-        icon: <Tile from="#34d399" to="#059669" glyph="📊" dark/>,
+        id: "logs",
+        label: "Log search",
+        category: "data",
+        keywords: ["rizhi", "log", "Log"],
+        icon: <Tile tone={C6} icon={<ScrollText />}/>,
     },
     {
-        id: "invoice",
-        label: "Invoice Assistant",
-        category: "finance",
-        keywords: ["fapiao"],
-        icon: <Tile from="#fed7aa" to="#fb923c" glyph="🧾"/>,
+        id: "members",
+        label: "Members and roles",
+        category: "system",
+        keywords: ["chengyuan", "member", "Member"],
+        icon: <Tile tone={C4} icon={<Users />}/>,
     },
     {
-        id: "books",
-        label: "Books",
-        category: "read",
-        keywords: ["books", "tushu"],
-        icon: <Tile from="#fde68a" to="#f59e0b" glyph="📚"/>,
+        id: "permissions",
+        label: "Permissions",
+        category: "system",
+        keywords: ["quanxian", "permission", "permission"],
+        icon: <Tile tone={C1} icon={<ShieldCheck />}/>,
     },
     {
-        id: "podcast",
-        label: "Podcast",
-        category: "read",
-        keywords: ["podcast", "boke"],
-        icon: <Tile from="#c084fc" to="#7c3aed" glyph="🎙️" dark/>,
+        id: "keys",
+        label: "API keys",
+        category: "system",
+        keywords: ["miyao", "key", "key"],
+        icon: <Tile tone={C3} icon={<KeyRound />}/>,
     },
     {
-        id: "news",
-        label: "News",
-        category: "read",
-        keywords: ["news", "xinwen"],
-        icon: <Tile from="#fecaca" to="#ef4444" glyph="📰" dark/>,
+        id: "audit",
+        label: "Operational Audit",
+        category: "system",
+        keywords: ["shenji", "audit", "audit"],
+        icon: <Tile tone={C5} icon={<FileSearch />}/>,
+    },
+    {
+        id: "settings",
+        label: "System Settings",
+        category: "system",
+        keywords: ["shezhi", "setting", "Settings"],
+        icon: <Tile tone={C6} icon={<Settings />}/>,
+    },
+    {
+        id: "repo",
+        label: "Repositories",
+        category: "dev",
+        keywords: ["cangku", "repo", "repo"],
+        icon: <Tile tone={C2} icon={<GitBranch />}/>,
+    },
+    {
+        id: "pipeline",
+        label: "Pipelines",
+        category: "dev",
+        keywords: ["liushuixian", "pipeline", "ci"],
+        icon: <Tile tone={C4} icon={<Rocket />}/>,
+    },
+    {
+        id: "api",
+        label: "API docs",
+        category: "dev",
+        keywords: ["jiekou", "api", "api"],
+        icon: <Tile tone={C1} icon={<Braces />}/>,
+    },
+    {
+        id: "env",
+        label: "Environment",
+        category: "dev",
+        keywords: ["huanjing", "env", "env"],
+        icon: <Tile tone={C3} icon={<SlidersHorizontal />}/>,
+    },
+    {
+        id: "terminal",
+        label: "Web terminal",
+        category: "dev",
+        keywords: ["zhongduan", "terminal", "terminal"],
+        icon: <Tile tone={C6} icon={<TerminalSquare />}/>,
     },
 ];
 const categories = [
-    { key: "dev", label: "Developer Tools" },
-    { key: "tool", label: "Tools" },
-    { key: "social", label: "Social" },
-    { key: "finance", label: "Efficiency and Finance" },
-    { key: "read", label: "Information and Reading" },
+    { key: "work", label: "Daily work" },
+    { key: "data", label: "Data and analytics" },
+    { key: "system", label: "System Management" },
+    { key: "dev", label: "Engineering" },
 ];
 function Desk({ children }: {
     children: React.ReactNode;
@@ -216,26 +222,64 @@ export const appLauncherShowcase: ShowcaseSpec = {
             description: "badge in the corner of the hanging icon; href makes the entry <a>; disabled cannot be clicked or entered in the tab sequence.",
             code: `<AppLauncher
   items={[
-    { id: "mail", label: "Mail", icon: <MailIcon />, badge: <Dot>9</Dot> },
-    { id: "docs", label: "Documentation", icon: <DocIcon />, href: "/docs" },
-    { id: "old", label: "Offline", icon: <OldIcon />, disabled: true },
+    { id: "tickets", label: "Tickets", icon: <Tile icon={<Inbox />} />, badge: <Dot>9</Dot> },
+    { id: "docs", label: "API docs", icon: <Tile icon={<Braces />} />, href: "#" },
+    { id: "old", label: "Retired", icon: <Tile icon={<Ban />} />, disabled: true },
   ]}
   searchable={false}
   columns={3}
 />`,
             render: () => (<AppLauncher searchable={false} columns={3} className="max-w-xs" items={[
-                    apps.find((a) => a.id === "mail")!,
+                    apps.find((a) => a.id === "tickets")!,
                     {
                         id: "docs",
-                        label: "Documentation",
-                        icon: <Tile from="#e0e7ff" to="#a5b4fc" glyph="📄"/>,
-                        href: "https://example.com/#docs",
+                        label: "API docs",
+                        icon: <Tile tone={C1} icon={<Braces />}/>,
+                        href: "#",
                     },
                     {
                         id: "old",
                         label: "is offline",
-                        icon: <Tile from="#e5e7eb" to="#9ca3af" glyph="🚫"/>,
+                        icon: <Tile tone={C6} icon={<Ban />}/>,
                         disabled: true,
+                    },
+                ]}/>),
+        },
+        {
+            title: "Custom icons: icon accepts any ReactNode",
+            description: "The examples above use line icons because an internal application centre has semantics they can express. For a real third-party App launcher, pass a brand bitmap or custom SVG through icon \u2014 those belong to the caller, not to a general-purpose icon set.",
+            code: `<AppLauncher
+  items={[
+    { id: "brand", label: "In-house app", icon: <img src="/logo.png" alt="" className="size-full object-cover" /> },
+    { id: "svg", label: "Custom SVG", icon: <MyBrandMark className="size-full" /> },
+  ]}
+  searchable={false}
+  columns={3}
+/>`,
+            render: () => (<AppLauncher searchable={false} columns={3} className="max-w-xs" items={[
+                    {
+                        id: "brand",
+                        label: "In-house app",
+                        icon: (<svg viewBox="0 0 64 64" className="size-full" aria-hidden>
+                  <rect width="64" height="64" fill="var(--color-chart-4)"/>
+                  <circle cx="32" cy="26" r="12" fill="var(--color-chart-3)"/>
+                  <rect x="12" y="42" width="40" height="10" rx="5" fill="var(--color-bg)"/>
+                </svg>),
+                    },
+                    {
+                        id: "svg",
+                        label: "Custom SVG",
+                        icon: (<svg viewBox="0 0 64 64" className="size-full" aria-hidden>
+                  <rect width="64" height="64" fill="var(--color-chart-1)"/>
+                  <path d="M18 40 L32 18 L46 40 Z" fill="var(--color-bg)"/>
+                </svg>),
+                    },
+                    {
+                        id: "mono",
+                        label: "Glyph icon",
+                        icon: (<span className="grid size-full place-items-center bg-foreground text-2xl font-semibold text-bg">
+                  Hu
+                </span>),
                     },
                 ]}/>),
         },

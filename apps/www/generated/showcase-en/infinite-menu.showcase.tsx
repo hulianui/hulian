@@ -11,7 +11,7 @@ function Stage({ children }: {
     </div>);
 }
 const DEMO_ITEMS: InfiniteMenuItem[] = [
-    { title: "Overview", description: "Project global view", link: "https://example.com" },
+    { title: "Overview", description: "Project global view", link: "#" },
     { title: "Task", description: "Workflow in progress" },
     { title: "Member", description: "Teams and Permissions" },
     { title: "Documentation", description: "Knowledge Base and Specifications" },
@@ -77,7 +77,7 @@ export const infiniteMenuShowcase: ShowcaseSpec = {
                     title: `Gallery ${i + 1}`,
                     description: "Drag and drop to browse",
                     image: demoImage(`menu-${i}`, 200, 200),
-                    link: "https://example.com",
+                    link: "#",
                 }))}/>
         </Stage>),
         },

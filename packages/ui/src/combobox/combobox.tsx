@@ -335,7 +335,7 @@ export function ComboboxItem({ value, disabled, children, className }: ComboboxI
       disabled={disabled}
       className={cn(
         "relative flex cursor-default select-none items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] py-1.5 pl-2 pr-8 text-sm outline-none",
-        "data-[highlighted]:bg-muted/15 data-[highlighted]:text-foreground",
+        "data-[highlighted]:bg-surface-hover data-[highlighted]:text-foreground",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
@@ -387,7 +387,7 @@ export function ComboboxChip({ children, className }: ComboboxChipProps) {
   return (
     <BaseCombobox.Chip
       className={cn(
-        "inline-flex items-center gap-1 rounded-[calc(var(--radius)-0.25rem)] bg-muted/15 py-0.5 pl-2 pr-1 text-sm text-foreground",
+        "inline-flex items-center gap-1 rounded-[calc(var(--radius)-0.25rem)] bg-subtle py-0.5 pl-2 pr-1 text-sm text-foreground",
         className,
       )}
     >
