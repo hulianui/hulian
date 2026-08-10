@@ -109,6 +109,7 @@ export * from "./animated-gradient-text";
 export * from "./word-rotate";
 export * from "./typing-animation";
 export * from "./sparkles-text";
+export * from "./line-shadow-text";
 // reactbits 文字动画批
 export * from "./split-text";
 export * from "./blur-text";
@@ -124,6 +125,7 @@ export * from "./shimmer-button";
 export * from "./rainbow-button";
 export * from "./pulsating-button";
 export * from "./ripple-button";
+export * from "./interactive-hover-button";
 // effects: MagicUI 特效核心批
 export * from "./border-beam";
 export * from "./shine-border";

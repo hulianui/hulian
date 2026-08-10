@@ -189,6 +189,19 @@
   }
 }
 
+/* typography/LineShadowText 斜线投影流动：投影层是 45° 条纹经 bg-clip-text 裁进字形，
+   平移 background-position 让条纹沿对角走。这里动 background-position 是安全的——投影层
+   只有一行文字大小，且没有 filter:blur 祖先，不存在 Aurora 那种全屏重光栅化的代价。
+   ⚠️ 该动画默认关闭（LineShadowText 的 animated 默认 false），只在显式开启时挂上。 */
+@keyframes hulian-line-shadow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% -100%;
+  }
+}
+
 /* decoration/Aurora 极光流动：渐变纹理静态，只动 transform（translate/rotate/scale）→
    GPU 合成层缓存模糊位图后仅平移，不触发逐帧重绘/重 blur（避免 background-position 动画
    在大面积 filter:blur 下每帧重光栅化的卡顿）。时长由 --hulian-aurora-bg-duration 控。 */

@@ -176,6 +176,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "question-card", name: "QuestionCard", description: "题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 Formula(KaTeX)真排版 · 走 @hulianui/ui/math 独立 subpath 主包不付 KaTeX 体积 · 待复核题亮左警示边条不混进正常题 · dogfood Card/Tag/Chip/Image", category: "data-display", group: "collection", status: "new" },
   { slug: "math", name: "Formula", description: "数学公式排版 · KaTeX 驱动，本库唯一的数学渲染路径 · 分段函数/矩阵/大型定界符/求和积分限真二维排版 · 走 @hulianui/ui/math 独立 subpath 主包不付体积 · 认 $…$ 分隔符，上游没包 $ 的题库数据退到裸记号切分 · 填空槽 ____ 渲染成空位 · 坏数据就地标红不静默吞 · RSC 安全", category: "typography", group: "text", status: "new" },
   { slug: "aurora-text", name: "AuroraText", description: "极光文字 · bg-clip 流动渐变 + chart token + RSC", category: "typography", group: "text", tags: ["animated"], status: "new" },
+  { slug: "line-shadow-text", name: "LineShadowText", description: "斜线投影文字 · 硬边条纹偏移层 + 默认静态 + RSC", category: "typography", group: "text", status: "new" },
   { slug: "animated-shiny-text", name: "AnimatedShinyText", description: "高光文字 · 横扫高光 + 徽标气质 + RSC", category: "typography", group: "text", tags: ["animated"], status: "new" },
   { slug: "animated-gradient-text", name: "AnimatedGradientText", description: "渐变文字 · 行内 chart 渐变流动 + RSC", category: "typography", group: "text", tags: ["animated"], status: "new" },
   { slug: "word-rotate", name: "WordRotate", description: "轮换词 · motion 进出场 + reduced-motion", category: "typography", group: "text", tags: ["animated"], status: "new" },
@@ -197,6 +198,7 @@ export const manifest: ComponentMeta[] = [
   // ── 表单 forms ───────────────────────────────────────────────
   { slug: "button", name: "Button", description: "按钮 · CVA 变体 + press 动效", category: "forms", group: "button", status: "stable" },
   { slug: "shimmer-button", name: "ShimmerButton", description: "微光按钮 · 边缘游走火花(conic) + token + RSC", category: "forms", group: "button", tags: ["animated"], status: "new" },
+  { slug: "interactive-hover-button", name: "InteractiveHoverButton", description: "悬停展开按钮 · 圆点扩成整块底色 + 尾随箭头 CTA", category: "forms", group: "button", tags: ["animated"], status: "new" },
   { slug: "rainbow-button", name: "RainbowButton", description: "彩虹按钮 · chart 流光底 + 模糊光晕 + RSC", category: "forms", group: "button", tags: ["animated"], status: "new" },
   { slug: "pulsating-button", name: "PulsatingButton", description: "脉冲按钮 · 外扩光环(box-shadow) + RSC", category: "forms", group: "button", tags: ["animated"], status: "new" },
   { slug: "ripple-button", name: "RippleButton", description: "波纹按钮 · 点击落点扩散(Material) + reduced-motion", category: "forms", group: "button", tags: ["animated"], status: "new" },

@@ -205,6 +205,11 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Animates a multicolor aurora gradient across inline text.",
     keywords: ["aurora", "text", "typography"],
   },
+  "line-shadow-text": {
+    shortName: "LineShadowText",
+    description: "Offsets a hard-edged striped shadow behind short display text.",
+    keywords: ["line", "shadow", "text", "typography"],
+  },
   "animated-shiny-text": {
     shortName: "AnimatedShinyText",
     description: "Sweeps a restrained highlight across inline text.",
@@ -303,6 +308,11 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     shortName: "ShimmerButton",
     description: "Adds a moving shimmer treatment to a call-to-action button.",
     keywords: ["shimmer", "button", "forms"],
+  },
+  "interactive-hover-button": {
+    shortName: "InteractiveHoverButton",
+    description: "Expands a dot into a full background and reveals a trailing arrow on hover.",
+    keywords: ["interactive", "hover", "button", "forms"],
   },
   "rainbow-button": {
     shortName: "RainbowButton",
