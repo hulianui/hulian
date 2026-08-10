@@ -8,30 +8,51 @@ import type { TextareaProps } from "./textarea.types";
 
 export const textareaVariants = cva(
   [
-    "w-full rounded-[var(--radius)] border border-border bg-surface text-foreground transition-colors",
+    "w-full text-foreground transition-colors",
     "outline-none placeholder:text-muted-foreground",
-    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-    "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
     "disabled:opacity-50 disabled:cursor-not-allowed",
   ],
   {
     variants: {
+      // cell 档的取舍与 Input 同源，见 input.tsx 的注释（#149）。这里多一样：
+      // field-sizing-content —— 让高度跟着内容长，rows 退化成「最少几行」的下限，
+      // 这是浏览器原生做的，没有 autoResize 那条 useLayoutEffect + 读 scrollHeight 的往返。
+      variant: {
+        default: [
+          "rounded-[var(--radius)] border border-border bg-surface",
+          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+          "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
+        ],
+        cell: [
+          "rounded-sm border-0 bg-transparent p-0 field-sizing-content",
+          "focus-visible:bg-primary-subtle focus-visible:shadow-[inset_0_-2px_0_0_var(--color-primary)]",
+          "data-[invalid]:shadow-[inset_0_-2px_0_0_var(--color-danger)]",
+        ],
+      },
       size: {
-        sm: "px-2.5 py-1.5 text-sm",
-        md: "px-3 py-2 text-sm",
-        lg: "px-3.5 py-2.5 text-base",
+        sm: "text-sm",
+        md: "text-sm",
+        lg: "text-base",
       },
     },
-    defaultVariants: { size: "md" },
+    compoundVariants: [
+      { variant: "default", size: "sm", class: "px-2.5 py-1.5" },
+      { variant: "default", size: "md", class: "px-3 py-2" },
+      { variant: "default", size: "lg", class: "px-3.5 py-2.5" },
+    ],
+    defaultVariants: { size: "md", variant: "default" },
   },
 );
 
 export function Textarea({
   className,
   size,
+  variant,
   invalid,
   autoResize,
-  rows = 3,
+  // 单元格里的默认下限是 1 行：3 行下限会把表格行撑成三倍高，于是每个调用处都得补 rows={1}
+  // —— 那正是本变体要消灭的「在调用处打补丁」（#149）。
+  rows = variant === "cell" ? 1 : 3,
   onInput,
   ...props
 }: TextareaProps) {
@@ -70,8 +91,12 @@ export function Textarea({
           {...props}
           {...(invalid && { "data-invalid": "", "aria-invalid": true })}
           className={cn(
-            textareaVariants({ size }),
-            autoResize ? "resize-none overflow-hidden" : "resize-y",
+            textareaVariants({ size, variant }),
+            // cell 与 autoResize 同样是「高度由内容决定」，留着拖拽手柄等于给用户一个
+            // 下一次重测就会被抹掉的操作。两条路都只是把高度交给内容，叠加也不冲突：
+            // autoResize 写的是内联 style.height，优先级高于 field-sizing 的固有尺寸，
+            // 所以在没有 field-sizing 的浏览器上加 autoResize 就是无缝兜底。
+            autoResize || variant === "cell" ? "resize-none overflow-hidden" : "resize-y",
             className,
           )}
         />

@@ -35,6 +35,21 @@ export const textareaShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "单元格内联编辑",
+      description:
+        'variant="cell" 卸掉外壳，高度交给 CSS field-sizing: content 跟随内容（rows 下限默认 1，无需每格再传）。焦点态是浅底 + 内嵌下划线，不会像焦点环那样溢出到相邻格。',
+      code: `<Textarea variant="cell" defaultValue="就地编辑，输入换行会自己长高" aria-label="备注" />`,
+      render: () => (
+        <div className="w-64 rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
+          <Textarea
+            variant="cell"
+            defaultValue={"就地编辑，输入换行会自己长高"}
+            aria-label="备注"
+          />
+        </div>
+      ),
+    },
+    {
       title: "无效态",
       description: "invalid 标红边框与焦点环（独立使用时手动传）。",
       code: `<Textarea invalid defaultValue="错的内容" className="w-64" />`,
@@ -61,6 +76,14 @@ export const textareaShowcase: ShowcaseSpec = {
       name: "autoResize",
       render: () => (
         <Textarea autoResize defaultValue={"随内容长高\n第二行\n第三行\n第四行"} className="w-64" />
+      ),
+    },
+    {
+      name: "cell",
+      render: () => (
+        <div className="w-64 rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
+          <Textarea variant="cell" defaultValue="就地编辑" aria-label="备注" />
+        </div>
       ),
     },
     { name: "invalid", render: () => <Textarea invalid defaultValue="错的内容" className="w-64" /> },

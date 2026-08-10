@@ -27,7 +27,8 @@ Inherit the native `<input>` properties (except `size`/`prefix` are overridden b
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size) |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size). Under `variant="cell"` it only affects font size; height and padding are gone |
+| variant | `"default" \| "cell"` | `"default"` | Shell form. `cell` is the in-place editor for a table cell: no border, transparent background, zero padding, no fixed row height, and focus is shown as a tinted background plus an inset underline instead of a focus ring |
 | invalid | `boolean` | `false` | Marked red when used independently; automatically driven by Field.Root invalid in hulian Field, no need to repeat the transmission |
 | disabled | `boolean` | `false` | Disable |
 | ref | `Ref<HTMLInputElement>` | — | Forward to the inner native `<input>` (not the shell span). `focus()` / `select()` / `register()` from `.value` / react-hook-form all rely on it |
@@ -53,10 +54,30 @@ Inherit the native `<input>` properties (except `size`/`prefix` are overridden b
 {/* Prefix and suffix */}
 <Input prefix="¥" suffix=".00" placeholder="0" className="w-64" />
 ```
+```tsx
+{/* Inline editing in a table: the cell itself is the input, no className needed */}
+const columns: ColumnDef<Row, any>[] = [
+  {
+    accessorKey: "name",
+    header: "Field name",
+    cell: ({ row }) => (
+      <Input
+        variant="cell"
+        value={row.original.name}
+        onChange={(e) => setField(row.original.id, "name", e.target.value)}
+        aria-label="Field name"
+      />
+    ),
+  },
+];
+<Table columns={columns} data={rows} density="compact" />
+```
 
 ## Usage guidelines
 
-Do not pass `invalid` again inside HulianUI Field. `Field.Root` supplies invalid styling automatically, and a manual value can conflict. Pass `invalid` only when Input is used independently.
+- Do not pass `invalid` again inside HulianUI Field. `Field.Root` supplies invalid styling automatically, and a manual value can conflict. Pass `invalid` only when Input is used independently.
+- Use `variant="cell"` for in-place editing in a table instead of writing `className="border-0 bg-transparent p-0 focus-visible:ring-0 …"` at the call site. Beyond being the call-site patching the conventions forbid, two of its effects are hard to spot: `ring-0` does not clear `ring-offset` (a ring of background colour survives), and the default shell's fixed row height (`h-10`) is not padding, so `p-0` cannot remove it and dense rows stay tall.
+- The focus indicator under `variant="cell"` is a tinted background plus an inset underline, not a focus ring: a cell has no padding, so a 2px ring with a 2px offset spills over into the neighbouring cell. If your scenario needs a stronger cue, change the whole cell background on the `<td>` rather than bringing the ring back.
 
 ## Related
 [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)
