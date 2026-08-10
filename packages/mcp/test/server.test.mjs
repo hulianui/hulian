@@ -397,6 +397,8 @@ test("get_component_doc 支持批量与按章节裁剪", async () => {
   assert.match(body, /<!-- tag ·/);
   const only = bodyOf(sliced);
   assert.match(only, /## Props/);
+  // 同 format=json：Slots 跟着 props 走（#150）。
+  assert.match(only, /## Slots/, "要 props 时应一并给出 Slots");
   assert.doesNotMatch(only, /## 示例/, "裁剪后不该带上没要的章节");
   assert.ok(only.length < body.length, "裁剪应真的省 context");
 });
@@ -1255,12 +1257,23 @@ test("get_component_doc format=json 用真实导出名也能反查到组件（IP
 });
 
 test("get_component_doc format=json 支持按 sections 裁剪", async () => {
-  const [res] = await rpc([
+  const [res, only] = await rpc([
     call(62, "get_component_doc", { name: "button", format: "json", sections: ["props"] }),
+    call(64, "get_component_doc", { name: "button", format: "json", sections: ["events"] }),
   ]);
   const component = dataOf(res).components[0];
   assert.ok(Array.isArray(component.props));
-  assert.equal(component.slots, undefined, "没要的章节不该出现");
+  // 要 props 就会带上 slots：`Button.render` 这类字段住在 Slots 里，而它在消费方眼里
+  // 就是个 prop（写在 JSX 属性位、进类型检查）。只给 props 会让人得出「Button 没有
+  // render」的结论，照着写完才回头翻源码发现有（#150）。
+  assert.ok(Array.isArray(component.slots), "要 props 时应一并给出 slots");
+  assert.ok(
+    component.slots.some((slot) => slot.name === "render"),
+    "Button.render 必须能从 props 查询里看到",
+  );
+  assert.equal(component.events, undefined, "其余没要的章节仍然不该出现");
+  // 反向不搭：单独要 events 是明确的窄查询，不该被塞进 slots。
+  assert.equal(dataOf(only).components[0].slots, undefined);
 });
 
 test("get_component_doc 拒绝未知 format", async () => {
