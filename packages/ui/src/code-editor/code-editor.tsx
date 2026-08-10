@@ -74,6 +74,7 @@ export function CodeEditor({
   className,
   onFocus,
   onBlur,
+  ...rest
 }: CodeEditorProps) {
   // 优先级：ariaLabel prop > ConfigProvider 的 locale > 内置中文兜底。
   const labels = useComponentLocale().codeEditor ?? {
@@ -178,6 +179,7 @@ export function CodeEditor({
 
   return (
     <div
+      {...rest}
       data-theme={theme}
       data-slot="code-editor"
       className={cn(

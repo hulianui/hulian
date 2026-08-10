@@ -26,6 +26,7 @@ function RatingImpl({
   icon,
   emptyIcon,
   className,
+  ...rest
 }: RatingProps) {
   const labels = useComponentLocale().rating ?? {
     value: (value, max) => `评分 ${value} / ${max}`,
@@ -79,6 +80,7 @@ function RatingImpl({
 
   return (
     <span
+      {...rest}
       role="radiogroup"
       aria-label={labels.group(max)}
       className={cn("inline-flex items-center gap-0.5", disabled && "opacity-50", className)}

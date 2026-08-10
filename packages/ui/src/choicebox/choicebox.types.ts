@@ -1,6 +1,11 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-export interface ChoiceboxGroupProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface ChoiceboxGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   /** 受控值。单选为 string，多选为 string[]。 */
   value?: string | string[];
   /** 非受控初值。 */
@@ -19,7 +24,7 @@ export interface ChoiceboxGroupProps {
   "aria-label"?: string;
 }
 
-export interface ChoiceboxProps {
+export interface ChoiceboxProps extends Omit<HTMLAttributes<HTMLLabelElement>, "title"> {
   /** 选项值（组内唯一）。 */
   value: string;
   /** 主标题。 */

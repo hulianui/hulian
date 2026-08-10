@@ -19,6 +19,7 @@ export function Listbox({
   className,
   style,
   "aria-label": ariaLabel,
+  ...rest
 }: ListboxProps) {
   const disabledKeys = disabledKeysProp ?? [];
   const defaultSelectedKeys = defaultSelectedKeysProp ?? [];
@@ -118,6 +119,7 @@ export function Listbox({
 
   return (
     <div
+      {...rest}
       role="listbox"
       aria-label={resolvedAriaLabel}
       aria-multiselectable={selectionMode === "multiple" || undefined}

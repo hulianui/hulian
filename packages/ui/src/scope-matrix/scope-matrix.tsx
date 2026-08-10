@@ -202,6 +202,7 @@ function ScopeMatrixImpl({
   denyHint,
   placeholder,
   className,
+  ...rest
 }: ScopeMatrixProps) {
   const suggestions = suggestionsProp ?? [];
   const locale = useComponentLocale().scopeMatrix ?? {
@@ -234,7 +235,7 @@ function ScopeMatrixImpl({
   const emit = (next: { allow: string[]; deny: string[] }) => onChange?.(next);
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div {...rest} className={cn("flex flex-col gap-2", className)}>
       <div className="flex flex-col gap-2 sm:flex-row">
         <Bucket
           kind="allow"

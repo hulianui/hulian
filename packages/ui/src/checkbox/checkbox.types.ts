@@ -1,6 +1,10 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-export interface CheckboxProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 实现早就在往下展开 rest，此前只是类型把口封死了（#157）。
+ */
+export interface CheckboxProps extends HTMLAttributes<HTMLElement> {
   checked?: boolean;
   defaultChecked?: boolean;
   /** 第三态：半选（Base UI 原生 indeterminate）。 */

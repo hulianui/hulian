@@ -1,4 +1,11 @@
-export interface TimeFieldProps {
+import type { HTMLAttributes } from "react";
+
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface TimeFieldProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /**
    * 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`）。24 小时制、定宽补零。
    * 定宽 → 字典序即时间序，`minTime`/`maxTime` 的比较可以直接比字符串。

@@ -18,6 +18,7 @@ export function EmojiPicker({
   recent: recentProp,
   searchPlaceholder,
   className,
+  ...rest
 }: EmojiPickerProps) {
   const copy = useComponentLocale().emojiPicker ?? {
     search: "搜索表情",
@@ -79,6 +80,7 @@ export function EmojiPicker({
 
   return (
     <div
+      {...rest}
       className={cn(
         "flex w-72 flex-col rounded-[var(--radius)] border border-border bg-surface",
         className,

@@ -1,6 +1,11 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-export interface RatingProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface RatingProps extends Omit<HTMLAttributes<HTMLSpanElement>, "color"> {
   value?: number;
   defaultValue?: number;
   /** 瑚琏命名受控回调（替代 MUI onChange(e,v)） */

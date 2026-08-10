@@ -1,6 +1,10 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 
-export interface ElasticSliderProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 实现早就在往下展开 rest，此前只是类型把口封死了（#157）。
+ */
+export interface ElasticSliderProps extends Omit<HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   /**
    * 初始值（非受控）。组件内部维护数值，拖动时更新。默认 50。
    * 仅在挂载与该 prop 变化时同步进内部 state（对齐 React Bits 原行为）。

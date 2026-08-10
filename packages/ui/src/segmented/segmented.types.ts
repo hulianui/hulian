@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 export interface SegmentedItem {
   /** 该段的唯一值（也是选中态的标识）。 */
@@ -11,7 +11,12 @@ export interface SegmentedItem {
   disabled?: boolean;
 }
 
-export interface SegmentedProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface SegmentedProps extends HTMLAttributes<HTMLDivElement> {
   /** 段定义数组。 */
   items: SegmentedItem[];
   /** 受控选中值。 */

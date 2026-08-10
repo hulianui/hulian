@@ -45,6 +45,7 @@ function CalendarImpl({
   readOnly,
   "aria-label": ariaLabelProp,
   className,
+  ...rest
 }: CalendarProps) {
   const locale = useComponentLocale().calendar ?? {
     label: "日历",
@@ -153,6 +154,7 @@ function CalendarImpl({
 
   return (
     <div
+      {...rest}
       aria-label={ariaLabel}
       data-disabled={disabled ? "" : undefined}
       className={cn(

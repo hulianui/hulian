@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 export interface TransferItem {
   /** 唯一键（移动/选中/禁用都用它）。 */
@@ -10,7 +10,12 @@ export interface TransferItem {
   disabled?: boolean;
 }
 
-export interface TransferProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface TransferProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "title"> {
   /** 全量数据源。 */
   dataSource: TransferItem[];
   /** 受控：右侧（目标）面板的键集合。 */

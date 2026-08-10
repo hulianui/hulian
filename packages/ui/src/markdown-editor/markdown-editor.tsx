@@ -47,6 +47,7 @@ export function MarkdownEditor({
   minRows = 6,
   className,
   "aria-label": ariaLabelProp,
+  ...rest
 }: MarkdownEditorProps) {
   const componentLocale = useComponentLocale();
   const ariaLabel = ariaLabelProp ?? componentLocale.markdownEditor?.editor ?? "Markdown 编辑器";
@@ -115,6 +116,7 @@ export function MarkdownEditor({
 
   return (
     <div
+      {...rest}
       {...(invalid && { "data-invalid": "" })}
       className={cn(
         "w-full rounded-[var(--radius)] border border-border bg-surface text-foreground",

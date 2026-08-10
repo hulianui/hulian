@@ -1,3 +1,5 @@
+import type { HTMLAttributes } from "react";
+
 export type SwatchSize = "sm" | "md" | "lg";
 
 /**
@@ -19,7 +21,13 @@ export interface NormalizedColorSwatch {
   label: string;
 }
 
-export interface ColorSwatchPickerProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface ColorSwatchPickerProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "color" | "defaultValue"> {
   /**
    * 预设色块列表。字符串项 = 任意 CSS 颜色串（hex / rgb / hsl / 具名色 / `var(--color-x)`）；
    * 对象项 `{ color, label }` 可另给可读名，作为该色块的 `aria-label` 与 hover 提示。

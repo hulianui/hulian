@@ -23,6 +23,8 @@ import { InputOTP } from "@hulianui/ui"
 
 ## Props
 
+继承根节点（`role="group"` 的 div）原生属性：`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` 都能直接传。
+
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | length | `number` | `6` | 分段数量 |
@@ -32,6 +34,7 @@ import { InputOTP } from "@hulianui/ui"
 | disabled | `boolean` | — | 禁用 |
 | invalid | `boolean` | `false` | 校验失败态 |
 | groupGap | `boolean` | — | 中间插入横线分隔符（3-3 分组视觉，如 XXX–XXX） |
+| name | `string` | — | 提交标识。额外渲染一个持有**完整值**的隐藏 input（槽位各持一位，同名会提交出 N 个字段） |
 | className | `string` | — | 容器类名 |
 | aria-label | `string` | — | 无障碍标签 |
 
@@ -41,6 +44,7 @@ import { InputOTP } from "@hulianui/ui"
 |------|------|------|
 | onChange | `(value: string) => void` | 值变化回调 |
 | onComplete | `(value: string) => void` | 填满时回调 |
+| onBlur | `(e: FocusEvent<HTMLDivElement>) => void` | 焦点**离开整组**时触发；槽位之间跳焦不算。接 RHF `Controller` 时把 `field.onBlur` 传这里 |
 
 ## 示例
 ```tsx
@@ -63,7 +67,8 @@ const [otp, setOtp] = useState("");
 
 - `onComplete` 仅在填满最后一格瞬间触发一次，验证逻辑放这里；不要在 `onChange` 里判 `value.length === length` 重复触发。
 - 受控用 `value` 须配 `onChange`，否则格子无法输入。
-- 暂无其它已知坑。
+- 接 **react-hook-form** 时值是整串而非原生 input，必须走 `Controller`，并且**要把 `field.onBlur` 传进来**——不传的话 `touchedFields` 永不更新，`mode: "onBlur"` / `"onTouched"` 的表单会静默失效（点进点出不校验，只有提交才报错）。
+- `onBlur` 是**整组**语义：槽位之间跳焦不触发。想拿逐格失焦请自己在槽位上做，不要指望这个回调。
 
 ## 相关
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [Rating](../rating/rating.md) · [Upload](../upload/upload.md)

@@ -1,3 +1,5 @@
+import type { HTMLAttributes } from "react";
+
 /**
  * 语言标识：透传给着色器。列出的是有专门规则的几种，
  * `string & Record<never, never>` 保留联合提示又不封死其它语言（未知语言按 JS 家族着色）。
@@ -15,7 +17,13 @@ export type CodeEditorLanguage =
 /** 强制主题：不传时跟随全局 `[data-theme]`。 */
 export type CodeEditorTheme = "light" | "dark";
 
-export interface CodeEditorProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface CodeEditorProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onFocus" | "onBlur"> {
   /** 受控代码文本（必须配合 onChange 回写，否则编辑会被 React 回滚） */
   value: string;
   /** 文本变化回调（键盘增强与普通输入走同一条回调） */

@@ -192,6 +192,7 @@ export function Transfer({
   showSelectAll = false,
   disabled = false,
   className,
+  ...rest
 }: TransferProps) {
   const defaultTargetKeys = defaultTargetKeysProp ?? [];
   const locale = useComponentLocale().transfer ?? {
@@ -257,7 +258,7 @@ export function Transfer({
   };
 
   return (
-    <div className={cn("flex items-stretch gap-3", className)}>
+    <div {...rest} className={cn("flex items-stretch gap-3", className)}>
       <TransferPanel
         title={resolvedTitles[0]}
         items={leftItems}

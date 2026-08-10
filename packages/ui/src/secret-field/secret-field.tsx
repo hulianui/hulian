@@ -32,6 +32,7 @@ function SecretFieldImpl({
   readOnly,
   size = "md",
   className,
+  ...rest
 }: SecretFieldProps) {
   const [revealedState, setRevealedState] = useState(false);
   const revealed = revealedProp ?? revealedState;
@@ -58,6 +59,7 @@ function SecretFieldImpl({
 
   return (
     <span
+      {...rest}
       className={cn(
         "inline-flex items-center gap-2 rounded-[var(--radius)] border border-border bg-surface font-mono",
         size === "sm" ? "h-8 px-2 text-xs" : "h-9 px-2.5 text-sm",

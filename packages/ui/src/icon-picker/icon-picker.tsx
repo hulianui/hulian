@@ -38,6 +38,7 @@ function IconPickerImpl({
   clearable = true,
   emptyMessage,
   className,
+  ...rest
 }: IconPickerProps) {
   const locale = useComponentLocale().iconPicker ?? {
     searchPlaceholder: "搜索图标",
@@ -132,6 +133,7 @@ function IconPickerImpl({
 
   return (
     <div
+      {...rest}
       className={cn(
         "flex w-72 flex-col rounded-[var(--radius)] border border-border bg-surface",
         className,

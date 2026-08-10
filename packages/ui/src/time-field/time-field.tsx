@@ -62,6 +62,7 @@ function TimeFieldImpl({
   readOnly,
   "aria-label": ariaLabelProp,
   className,
+  ...rest
 }: TimeFieldProps) {
   const labels = useComponentLocale().timeField ?? {
     time: "时间",
@@ -177,6 +178,7 @@ function TimeFieldImpl({
 
   return (
     <div
+      {...rest}
       role="group"
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}

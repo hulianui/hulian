@@ -1,4 +1,10 @@
-export interface SwitchProps {
+import type { HTMLAttributes } from "react";
+
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 实现早就在往下展开 rest，此前只是类型把口封死了（#157）。
+ */
+export interface SwitchProps extends HTMLAttributes<HTMLElement> {
   checked?: boolean;
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;

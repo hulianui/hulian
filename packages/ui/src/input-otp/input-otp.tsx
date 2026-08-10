@@ -7,6 +7,7 @@ import {
   type KeyboardEvent,
   type ClipboardEvent,
   type ChangeEvent,
+  type FocusEvent,
 } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
@@ -25,8 +26,11 @@ function InputOTPImpl({
   disabled = false,
   invalid = false,
   groupGap = false,
+  name,
   className,
   "aria-label": ariaLabel,
+  onBlur,
+  ...rest
 }: InputOTPProps) {
   const locale = useComponentLocale().inputOtp ?? { label: "验证码" };
   const resolvedAriaLabel = ariaLabel === undefined ? locale.label : ariaLabel;
@@ -96,11 +100,21 @@ function InputOTPImpl({
     focusAt(Math.min(i + text.length, length - 1));
   };
 
+  // 槽位之间跳焦不算失焦。React 的 onBlur 走 focusout、会冒泡，直接挂根节点的话
+  // 用户每输一位都会触发一次 —— 接 RHF 的 mode="onBlur"/"onTouched" 时等于「还没输完就报错」。
+  // 判据用 relatedTarget 是否仍在本组内；焦点离开窗口时它是 null，contains(null)=false，照常触发。
+  const onGroupBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget)) return;
+    onBlur?.(event);
+  };
+
   return (
     <div
       role="group"
       aria-label={resolvedAriaLabel}
       className={cn("inline-flex items-center gap-2", className)}
+      onBlur={onGroupBlur}
+      {...rest}
     >
       {chars.map((ch, i) => (
         <Fragment key={i}>
@@ -131,6 +145,10 @@ function InputOTPImpl({
           />
         </Fragment>
       ))}
+      {/* 原生提交口：槽位各持一位、同名会提交出 N 个字段，所以整串值单独挂一个隐藏 input。
+          刻意放在**最后**——放前面会让 querySelectorAll("input")[0] 从第一个槽位变成它，
+          悄悄挪动所有按下标取槽位的测试与消费方代码。 */}
+      {name !== undefined && <input type="hidden" name={name} value={raw} />}
     </div>
   );
 }

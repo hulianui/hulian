@@ -1,7 +1,14 @@
+import type { HTMLAttributes } from "react";
+
 /** 选择粒度。决定对外值的形状，以及面板点到哪一层算提交。 */
 export type CalendarPicker = "date" | "month" | "year";
 
-export interface CalendarProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /**
    * 受控值。形状随 `picker` 变化：
    * `"date"` → `"YYYY-MM-DD"`；`"month"` → `"YYYY-MM"`；`"year"` → `"YYYY"`。

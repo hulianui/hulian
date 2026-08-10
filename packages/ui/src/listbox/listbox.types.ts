@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 
 export interface ListboxItemData {
   /** 唯一键（选中/禁用/动作回调都用它）。 */
@@ -13,7 +13,12 @@ export interface ListboxItemData {
   disabled?: boolean;
 }
 
-export interface ListboxProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface ListboxProps extends HTMLAttributes<HTMLDivElement> {
   items: ListboxItemData[];
   /** none=纯动作列表(不持有选中态)；single/multiple=可选。默认 single。 */
   selectionMode?: "none" | "single" | "multiple";

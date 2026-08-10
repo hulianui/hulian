@@ -79,6 +79,46 @@ describe("InputOTP", () => {
     expect(first.className).toContain("border-danger");
   });
 
+  // —— 接 react-hook-form Controller 所需的透传（#157）——
+  it("onBlur 只在焦点离开整组时触发（槽位间跳焦不算）", () => {
+    const onBlur = vi.fn();
+    const { container } = render(<InputOTP length={3} onBlur={onBlur} />);
+    const [a, b] = inputs(container);
+    // 从第 1 格跳到第 2 格：还在组内，不该算失焦，否则 RHF 的 onBlur/onTouched
+    // 模式会在用户刚输一位时就开始报错。
+    fireEvent.blur(a, { relatedTarget: b });
+    expect(onBlur).not.toHaveBeenCalled();
+    // 跳到组外的元素才算
+    const outside = document.createElement("button");
+    document.body.appendChild(outside);
+    fireEvent.blur(b, { relatedTarget: outside });
+    expect(onBlur).toHaveBeenCalledTimes(1);
+    outside.remove();
+  });
+
+  it("焦点离开窗口（relatedTarget=null）照样触发 onBlur", () => {
+    const onBlur = vi.fn();
+    const { container } = render(<InputOTP length={2} onBlur={onBlur} />);
+    fireEvent.blur(inputs(container)[0], { relatedTarget: null });
+    expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it("name 渲染持有完整值的隐藏 input（原生表单提交拿到整串而非 N 个字段）", () => {
+    const { container } = render(<InputOTP length={4} name="otp" defaultValue="1234" />);
+    const hidden = container.querySelector('input[type="hidden"]') as HTMLInputElement;
+    expect(hidden.name).toBe("otp");
+    expect(hidden.value).toBe("1234");
+    // 且必须排在槽位之后，不能挪动按下标取槽位的写法
+    expect(inputs(container)[0].getAttribute("type")).toBe("text");
+  });
+
+  it("id / data-* / 其余根节点属性照常透传", () => {
+    const { getByRole } = render(<InputOTP length={2} id="otp-field" data-testid="otp" />);
+    const group = getByRole("group");
+    expect(group.id).toBe("otp-field");
+    expect(group.getAttribute("data-testid")).toBe("otp");
+  });
+
   it("ConfigProvider locale=enUS localizes the default group label", () => {
     const { getByRole } = render(
       <ConfigProvider locale={enUS}>

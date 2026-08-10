@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 export interface IconPickerIcon {
   /** 图标名。**它就是对外值**（后端存的一般也是这个名字，而不是 SVG 本身）。 */
@@ -23,7 +23,12 @@ export interface IconPickerSource {
   renderIcon: (name: string) => ReactNode;
 }
 
-export interface IconPickerProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
+ */
+export interface IconPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   /** 受控值（图标名）。 */
   value?: string | null;
   /** 非受控初始值。 */

@@ -14,9 +14,11 @@ export function CheckboxGroup({
   orientation = "vertical",
   children,
   "aria-label": ariaLabel,
+  ...rest
 }: CheckboxGroupProps) {
   return (
     <BaseCheckboxGroup
+      {...rest}
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange ? (v) => onValueChange(v as string[]) : undefined}

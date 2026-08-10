@@ -1,6 +1,10 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-export interface RadioGroupProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 实现早就在往下展开 rest，此前只是类型把口封死了（#157）。
+ */
+export interface RadioGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
@@ -14,7 +18,7 @@ export interface RadioGroupProps {
   "aria-label"?: string;
 }
 
-export interface RadioProps {
+export interface RadioProps extends HTMLAttributes<HTMLElement> {
   /** 必填，标识该选项。 */
   value: string;
   disabled?: boolean;

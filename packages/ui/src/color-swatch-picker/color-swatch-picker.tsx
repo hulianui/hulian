@@ -24,12 +24,14 @@ function ColorSwatchPickerImpl({
   disabled = false,
   className,
   "aria-label": ariaLabel,
+  ...rest
 }: ColorSwatchPickerProps) {
   const labels = useComponentLocale().colorSwatchPicker ?? { label: "颜色色板" };
   // 色值是身份、label 只是名字：归一化后 color 仍原样进 value/onValueChange。
   const swatches = normalizeSwatches(colors);
   return (
     <BaseRadioGroup
+      {...rest}
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange ? (v) => onValueChange(v as string) : undefined}

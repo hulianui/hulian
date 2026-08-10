@@ -1,6 +1,10 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-export interface ToggleProps {
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 实现早就在往下展开 rest，此前只是类型把口封死了（#157）。
+ */
+export interface ToggleProps extends HTMLAttributes<HTMLElement> {
   /** 受控按下态。 */
   pressed?: boolean;
   /** 非受控初始按下态。 */
@@ -18,7 +22,7 @@ export interface ToggleProps {
   "aria-label"?: string;
 }
 
-export interface ToggleGroupProps {
+export interface ToggleGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   /** 受控：已按下项 value 数组。 */
   value?: string[];
   /** 非受控初始按下项数组。 */
