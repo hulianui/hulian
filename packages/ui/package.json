@@ -36,8 +36,14 @@
     "access": "public"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./showcase": "./src/showcase.ts",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    },
+    "./showcase": {
+      "types": "./dist/showcase.d.ts",
+      "default": "./src/showcase.ts"
+    },
     "./vitest-preset": {
       "require": {
         "types": "./vitest-preset.d.cts",
@@ -54,10 +60,14 @@
       "types": "./vite.d.ts",
       "default": "./vite.js"
     },
-    "./*": "./src/*/index.ts"
+    "./*": {
+      "types": "./dist/*/index.d.ts",
+      "default": "./src/*/index.ts"
+    }
   },
   "files": [
     "src",
+    "dist",
     "vitest-preset.cjs",
     "vitest-preset.js",
     "vitest-preset.d.cts",
@@ -72,7 +82,10 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:types": "tsc -p tsconfig.build.json",
+    "prepack": "pnpm run build:types",
+    "postpack": "rm -rf dist"
   },
   "peerDependencies": {
     "@base-ui/react": ">=1.0.0",

@@ -63,11 +63,6 @@ UI_TGZ="$(ls "$PKG_DIR"/hulianui-ui-*.tgz)"
 # 而不再是门禁失效的唯一防线。**两代下都保留它**，因为 CONSUMER_TS_VERSION 可切回 5.x。
 # 下面这份 tsconfig 就是 docs/consuming.md「官方支持的 TypeScript 配置矩阵」的**可执行版本**。
 # 改任一边都必须同步另一边，否则那张表就是空头支票。
-#
-# 刻意**不开** noUncheckedIndexedAccess：源码分发下它会让库内约 300 处索引访问在消费方
-# 编译里报 TS2532/TS18048（hulianui/hulian#56）。这不是遗漏，是**已知边界** ——
-# 机械加 `!` 只会把 undefined 风险从编译期挪到运行时，要支持得逐处判断语义，是独立一轮工作。
-# 谁哪天把它加进来，先去 docs/consuming.md 把「目前不承诺」那节一起改掉。
 write_tsconfig() {
   cat > "$1/tsconfig.json" <<'JSON'
 {
@@ -83,6 +78,16 @@ write_tsconfig() {
     // override 修饰符就是消费方的 TS4114 硬失败（hulianui/hulian#31）。
     // 同步在 tsconfig.base.json 也开了，这里是发布产物侧的兜底。
     "noImplicitOverride": true,
+    // 同样是「不在 strict 家族、消费方常开」的一档。库内一个未使用的 import 在源码分发下
+    // 就是消费方 tsc 里的一条 TS6133/TS6196，且 skipLibCheck 救不了（hulianui/hulian#155）。
+    // 这里是发布产物侧的证明；防回归本体开在 packages/ui/tsconfig.json（那里库内当场就红）。
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // 0.28.0 起承诺。源码分发时它会让库内约 300 处索引访问在消费方编译里报
+    // TS2532/TS18048（hulianui/hulian#56），当时只能列为「已知边界」；现在类型走的是
+    // 预编译 .d.ts（#156），声明里没有表达式、也就没有索引访问，这条随之消失。
+    // ⚠️ 它成立的前提是 skipLibCheck: true（本矩阵承诺的档）。
+    "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noEmit": true
@@ -140,6 +145,27 @@ install_and_typecheck() {
       exit 1
     fi
   done
+
+  # 断言 4：预编译 .d.ts 必须进产物，且**类型解析真的走到了它**（#156）。
+  # 两条分开验，因为它们各自都能单独失效：
+  #   - 文件不在 → prepack 没跑，或 files 漏了 dist；
+  #   - 文件在但没被用上 → exports 的 types 条件写错/写漏。这一条特别阴：TS 在
+  #     types 目标不存在时会**静默回落到 default 的源码**，编译照样通过，只是
+  #     悄悄退回 0.27.0 的形态（内存 700MB、耗时 5 倍），门禁不加这条就看不见。
+  for d in dist/index.d.ts dist/showcase.d.ts dist/button/index.d.ts dist/lib/index.d.ts; do
+    if [ ! -f "$app_dir/node_modules/@hulianui/ui/$d" ]; then
+      echo "✗ [$label] 发布产物里没有 $d（prepack 没跑，或 package.json 的 files 漏了 dist）" >&2
+      exit 1
+    fi
+  done
+  # trace 先落盘再 grep，别写成 `tsc | grep -q`：grep -q 命中即退出会给 tsc 一个 SIGPIPE，
+  # 在 `set -o pipefail` 下整条管道判失败 —— 断言明明通过却报错。
+  local trace="$app_dir/.tsc-trace.log"
+  (cd "$app_dir" && ./node_modules/.bin/tsc --noEmit --traceResolution > "$trace" 2>&1) || true
+  if ! grep -qE "Module name '@hulianui/ui' was successfully resolved to '.*/dist/index\.d\.ts'" "$trace"; then
+    echo "✗ [$label] @hulianui/ui 的类型没解析到 dist/*.d.ts（exports 的 types 条件写错了，已静默退回源码分发）" >&2
+    exit 1
+  fi
 
   echo "▶ [$label] 以消费方身份 tsc --noEmit"
   (cd "$app_dir" && ./node_modules/.bin/tsc --noEmit)

@@ -64,12 +64,16 @@ export function Panel() {
 
 ## 源码分发意味着什么
 
-发布的是 `src/`（不编译 dist），所以消费方需要能转译 TSX：
+发布的是 `src/`（`exports` 的 `default` 条件），所以消费方需要能转译 TSX：
 
 - **Next.js**：加 `transpilePackages: ["@hulianui/ui"]`。跑 **webpack dev**（Next 15 及以下）时还须**成对**加上 `experimental.optimizePackageImports: ["@hulianui/ui"]`，否则冷编译会慢数倍（Next 16 的 Turbopack 实测无差异）。
 - **Vite**：一般免配。
 
 换来的是：换肤、tree-shaking、类型跳转都直接指向真实源码，没有中间产物。
+
+**类型是个例外**：0.28.0 起包里另外带一份预编译 `.d.ts`（`dist/`），`exports` 的 `types`
+条件指向它。你的 `tsc` 读声明（走 `skipLibCheck` 快路径，内存与耗时降一个量级），
+打包器照旧读源码，两边互不影响。
 
 ## 导入方式
 

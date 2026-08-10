@@ -1,0 +1,20 @@
+{
+  // 只产 .d.ts 的构建配置（hulianui/hulian#156）。分发形态仍是**源码**：
+  // exports 的 `default` 照旧指向 ./src/*.ts，只有 `types` 条件改指这里产出的 dist/*.d.ts。
+  // 这样消费方的 tsc 走 .d.ts + skipLibCheck 快路径，而 Tailwind 的 @source 扫描、
+  // HMR、「能点进源码看实现」这些源码分发的好处一个都不丢。
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // 本包自查用 types: ["vitest/globals"] 把测试全局拉进来；声明产物里不能带这个，
+    // 否则消费方会被要求解析 vitest 的类型。
+    "types": [],
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  // 测试文件本就不进发布产物（package.json 的 files 里已排除），声明也不必产。
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/**/*.test.tsx"]
+}

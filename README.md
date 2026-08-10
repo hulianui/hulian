@@ -79,11 +79,12 @@ export default function App() {
 > ⚠️ **接进自己的仓库前先读 [docs/consuming.md](docs/consuming.md)**：源码分发会让消费方的 Vitest 容易解析出**第二份 React**（可直接 `import { withHulian } from "@hulianui/ui/vitest-preset"` 一行解决）。
 > 另一条是模块图：源码分发下根 barrel 会把整棵 `src/` 拖进 dev 编译。只用少数几个组件时改子路径 `@hulianui/ui/tag`，Next 消费方则加 `experimental.optimizePackageImports`（见 consuming.md §3）。
 >
-> 还有一条是**类型**：源码分发意味着你的 `tsc` 编译的是我们的 `.tsx`，`skipLibCheck` 跳不过源码，
-> 所以你的严格档直接作用在库内代码上。官方承诺的组合（TS 5.x/7.x × `strict` × `noImplicitOverride` ×
-> `skipLibCheck` × `moduleResolution: Bundler`）每次 CI 都以 `pnpm pack` 产物在仓库外实跑；
-> `noUncheckedIndexedAccess` 等「逐文件语义级」严格项**目前不在承诺内**，
-> 原因与变通见 [consuming.md §6](docs/consuming.md#6-官方支持的-typescript-配置矩阵)。
+> 还有一条是**类型**：0.28.0 起 `exports` 的 `types` 条件指向随包发的预编译 `.d.ts`，
+> 你的 `tsc` 读声明、打包器仍读源码 —— 实测引十二个组件的 tsc 内存从 699 MB 降到 88 MB、
+> 耗时快 5.6 倍，`noUncheckedIndexedAccess` 也随之进入承诺矩阵。官方承诺的组合
+> （TS 5.x/7.x × `strict` × `noImplicitOverride` × `noUnusedLocals` × `noUncheckedIndexedAccess` ×
+> `skipLibCheck` × `moduleResolution: Bundler`）每次 CI 都以 `pnpm pack` 产物在仓库外实跑，
+> 见 [consuming.md §6](docs/consuming.md#6-官方支持的-typescript-配置矩阵)。
 > 自 0.15.0 起没有 optional peer、没有必须挂的第三方 Provider；日期族也回到了根 barrel（`./date-pickers` 子路径已移除）。
 
 ## 🧩 组件与示例

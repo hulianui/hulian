@@ -3,10 +3,14 @@
 > 面向**在自己的仓库里装 `@hulianui/ui`** 的人。
 > 这里只写「不写明就一定会踩」的几条，不是使用教程。
 
-瑚琏是**源码分发**的：`package.json` 的 `exports` 直接指向 `src/index.ts`，你的打包器编译的是
-这份 TypeScript 源码，而不是预编好的产物。好处是 tree-shaking 干净、能直接跳进源码看实现、
-主题变量走你自己的 Tailwind 管线；代价是**瑚琏依赖的第三方包由你的解析器去找**，
-于是模块解析的锅归消费方。下面两条都是这个代价的直接后果。
+瑚琏是**源码分发**的：`package.json` 的 `exports` 里 `default` 条件直接指向 `src/index.ts`，
+你的打包器编译的是这份 TypeScript 源码，而不是预编好的产物。好处是 tree-shaking 干净、
+能直接跳进源码看实现、主题变量走你自己的 Tailwind 管线；代价是**瑚琏依赖的第三方包由你的
+解析器去找**，于是模块解析的锅归消费方。下面两条都是这个代价的直接后果。
+
+**0.28.0 起，`types` 条件另外指向随包发的预编译 `.d.ts`（`dist/`）**：你的 `tsc` 读声明、
+打包器仍读源码。这条改动只影响类型检查那一半 —— 见第 5 节末尾的实测，以及第 6 节
+新承诺的 `noUncheckedIndexedAccess`。
 
 ---
 
@@ -359,14 +363,14 @@ dist（少数大文件），而 motion 发的是细碎 ESM（一个函数一个�
 **27 倍模块。** 耗时和内存给的是区间 —— 它们随机器负载浮动（同一台机器两次跑相差 4 倍），
 模块数才是稳定可比的那个数；但三者同向，量级差距是真的。
 
-### 还有一层：IDE 的类型检查，`optimizeDeps` 救不了
+### 还有一层：IDE 的类型检查 —— 0.28.0 已用预编译 `.d.ts` 解决
 
 打包器的负担可以靠预打包卸掉（`optimizeDeps` / `optimizePackageImports` 都是把源码树塌缩成
-预打包产物），**但 tsserver 吃不到这个好处** —— IDE 里的类型检查永远直面我们发出去的 `.tsx`
-源码，`skipLibCheck` 也只跳 `.d.ts`、跳不过源码。所以「IDE 卡」和「dev server 卡」是两个
-独立的问题。
+预打包产物），**但 tsserver 吃不到这个好处**。0.28.0 之前，IDE 与 `tsc` 里的类型检查直面我们
+发出去的 `.tsx` 源码，`skipLibCheck` 只跳 `.d.ts`、跳不过源码，于是「IDE 卡」是一个独立于
+「dev server 卡」的问题。
 
-实测只 `import` **一个** Button 的固定成本（同机同时段，两个 TypeScript 大版本各跑一次）：
+0.27.0 时代只 `import` **一个** Button 的固定成本（同机同时段，两个 TypeScript 大版本各跑一次）：
 
 | 引入方式 | Files | tsc 内存 | tsc 耗时 |
 |---|---|---|---|
@@ -376,14 +380,25 @@ dist（少数大文件），而 motion 发的是细碎 ESM（一个函数一个�
 | 子路径 · TS 7.0 | 82 | 58 MB | 0.07 s |
 
 一个 Button 就要 700 MB —— 这就是 tsserver 在大项目里常驻 1~2 GB 的来源。
+**TypeScript 7 也不是这件事的解药**：它把耗时打下 6.8 倍（Go 重写的收益，真金白银），
+但**内存只降了 5%、Files 一个没少**（3018 → 3018）—— 内存是按文件数吃的，而 TS7 只是同一套
+类型系统换了实现，program 里该有多少文件还是多少。
 
-**TypeScript 7 不是这件事的解药，别指望升上去就没事了。** 它把耗时打下 6.8 倍（Go 重写的
-收益，真金白银），但**内存只降了 5%、Files 一个没少**（3018 → 3018）。原因是 TS7 只是同一套
-类型系统换了实现，program 里该有多少文件还是多少 —— 而内存是按文件数吃的。所以「引一个
-Button 拖进三千个文件」这条在 TS7 下原样成立。
+**0.28.0 起 `exports` 的 `types` 条件改指随包发的 `dist/*.d.ts`**（`default` 仍是源码，
+所以 Tailwind 的 `@source` 扫描、HMR、点进源码看实现全都不受影响）。同一个工程、
+同机同时段，引 12 个组件（根 barrel）的实测（TS 7.0）：
 
-**结论：子路径引入是唯一同时救打包器和 IDE 的手段。** Next 的 `optimizePackageImports`
-只治前者，IDE 那半边它管不着；换 tsc 实现治的是速度，也不是这一条。
+| 类型入口 | Files | tsc 内存 | tsc 耗时 |
+|---|---|---|---|
+| 源码（0.27.0 形态） | 2242 | **699 MB** | 1.53 s |
+| 预编译 `.d.ts`（0.28.0） | 1872 | **88 MB** | 0.27 s |
+
+**内存降到八分之一，耗时快 5.6 倍**，而且这个收益**不随组件用量增长** —— 声明文件按需引入，
+不再把整棵 `src` 拖进 program。原报告里「只用 10 个组件，typecheck 从 90s 涨到 2m40s」
+（hulianui/hulian#156）说的就是这条。
+
+**打包器那一半没变**：`default` 仍是源码，所以上面「27 倍模块」那张表原样成立。
+**子路径引入依然值得做**，只是理由从「同时救打包器和 IDE」收窄回「救打包器与 dev server」。
 
 自己跑一遍（两层一起量）：
 
@@ -398,9 +413,11 @@ pnpm compile-cost
 
 ## 6. 官方支持的 TypeScript 配置矩阵
 
-瑚琏是**源码分发**：装出去的是 `.tsx`，你的 `tsc` 编译的是我们的源码。
-`skipLibCheck` 只跳 `.d.ts`，跳不过源码 —— 所以「你的严格档」直接作用在库内代码上，
-这件事必须把边界讲清楚，而不是让你装完才发现。
+0.28.0 起，`types` 条件指向随包发的预编译 `.d.ts`，所以**你的严格档不再直接作用在库内源码上**
+（`skipLibCheck` 对 `.d.ts` 生效）。下表因此比 0.27.0 宽了一档。
+
+⚠️ 仍要留意：`default` 条件依然是 `.tsx` 源码，**你的打包器**照旧编译它 ——
+Babel/SWC/esbuild 的语法档、`jsx` 设置、Tailwind `@source` 这些约束一条没少。
 
 ### 承诺支持（CI 每次都跑）
 
@@ -409,7 +426,9 @@ pnpm compile-cost
 | TypeScript | **5.x 与 7.x 双版本**（`scripts/consumer-typecheck.sh` 各跑一遍） |
 | `strict` | `true` |
 | `noImplicitOverride` | `true`（不在 strict 家族里，但消费方常开，故承诺） |
-| `skipLibCheck` | `true` |
+| `noUnusedLocals` / `noUnusedParameters` | `true`（同上；0.28.0 起承诺，见 hulianui/hulian#155） |
+| `noUncheckedIndexedAccess` | `true`（0.28.0 起承诺，见下） |
+| `skipLibCheck` | `true`（**是上一条成立的前提**：类型走 `.d.ts`，靠它整体跳过） |
 | `moduleResolution` | `Bundler` |
 | `jsx` | `react-jsx` |
 | `types` | **不写**（复刻只跑浏览器的消费方；不假设有 `@types/node`） |
@@ -417,26 +436,50 @@ pnpm compile-cost
 门禁走 `pnpm pack` 产物、装在仓库之外、只装声明的 peer，一个可选依赖都不装 ——
 即「装出去的那份」本身能在上述配置下 `tsc --noEmit` 通过。
 
+### `noUncheckedIndexedAccess`：0.27.0 的已知边界，0.28.0 已解除
+
+0.27.0 及以前开了它，库内约 300 处索引访问会在**你的**编译里报 TS2532/TS18048
+（hulianui/hulian#56），而这类错误不能机械加 `!`（那是把真实的 undefined 风险从编译期
+挪到运行时），所以当时只能列为已知边界。
+
+0.28.0 起类型走预编译 `.d.ts`（#156）—— 声明文件里没有表达式，也就没有索引访问，
+这条随之消失，不需要你改任何配置。门禁里已经开着这一项。
+
 ### 目前**不**承诺
 
-- **`noUncheckedIndexedAccess`**：开了它，库内约 300 处索引访问会在你的编译里报
-  TS2532/TS18048（hulianui/hulian#56）。
-- 同类的「逐文件语义级」严格项（`exactOptionalPropertyTypes` 等）同理，未逐一验证。
-
-**为什么不是随手就能修**：这类错误不能机械加 `!` —— 那是把真实的 undefined 风险
-从编译期挪到运行时。要支持就得逐处判断语义，是独立的一轮工作。
-
-**现在怎么办**（按代价从低到高）：
-
-1. 项目级不开 `noUncheckedIndexedAccess`（绝大多数团队的现状）；
-2. 拆两份 tsconfig：自己的 `src/` 用严格档，构建/类型检查入口用承诺矩阵那档；
-3. 等我们发 `.d.ts` —— 那是这类问题的根治路线（`skipLibCheck` 就能整体跳过），
-   但会改变分发形态（多一个构建步骤），尚未启动。
+- 「逐文件语义级」严格项（`exactOptionalPropertyTypes` 等）未逐一验证。
+  它们大概率也随 `.d.ts` 一起不成问题了，但没验过的事不写进承诺表 —— 需要哪一项请提 issue，
+  我们把它加进 `scripts/consumer-typecheck.sh` 再承诺。
+- `skipLibCheck: false`：上面整张表都以它为 `true` 为前提。
 
 改这张表**必须同步改** `scripts/consumer-typecheck.sh` 里的 `write_tsconfig`：
 那份 tsconfig 就是这张表的可执行版本，两边漂了这张表就是空头支票。
 
-## 7. 几个不那么致命但值得先知道的
+## 7. 组件属性透传的口径（0.28.0 起）
+
+封闭的 props 接口是这个库最常见的失效方式：缺一个 `onBlur` 就接不上
+react-hook-form 的 `Controller`，缺一个 `title` 就没法挂 tooltip，于是整块 UI 退回手搓。
+0.28.0 起按下面两条走，写新组件也照这条办：
+
+| 组件类别 | 口径 | 例 |
+|---|---|---|
+| 纯展示件 | 继承根节点的 `HTMLAttributes<T>` | `Tag` / `Badge` / `Chip`（#148） |
+| **表单受控件** | 同上，且 **`onBlur` 必须能传到根**——「能不能接 `Controller`」是验收项 | `InputOTP` / `Rating` / `Segmented` / `Calendar` / `TimeField` …（#157） |
+
+两条注意：
+
+- **同名异义的 prop 会被 `Omit` 掉**，此时以组件自己的语义为准：`Rating.color` 是星色（不是
+  HTML 的 `color` 属性）、`SecretField.onCopy` 回吐的是密钥原值（不是剪贴板事件）、
+  `EmojiPicker.onSelect` 回吐 emoji 字符串（不是原生 `select` 事件）。查该组件文档的 Props 表。
+- **组件自身的 `role` / `aria-*` / 键盘处理赢**：`rest` 展开在根节点属性的**最前面**，
+  所以你传的 `role` 不会顶掉 `Listbox` 的 `role="listbox"`。这是有意的——那些属性一旦被顶掉，
+  组件的无障碍语义与键盘导航当场失效。想换语义请提 issue，不要靠覆盖。
+
+**还没拉平的**：`Cascader` / `TreeSelect` / `CountrySelect` / `RegionCascader` /
+`DatePicker` 族这些 Popover 包壳的选择器 —— 它们的"根"不是一个 DOM 节点，
+`id` / `data-*` 该落触发器还是浮层要逐件定，机械展开会静默落错位置。需要哪个先提 issue。
+
+## 8. 几个不那么致命但值得先知道的
 
 - **`Table` 不开 `rowDraggable` 就不会碰 dnd-kit**（0.11.0 起）。此前 `useSensors` 写在组件顶层，
   任何用了 `Table` 的下游都会拉起整条 dnd-kit 运行时；现在这些 hook 收在只有开了拖拽才挂载的

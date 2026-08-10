@@ -72,6 +72,13 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      # 声明产物必须能干净地 emit（#156）。这一步在 consumer-smoke 里也会经 prepack 跑到，
+      # 但那是另一个 job、排在很后面；放这里是为了让「某个类型写法导致 declaration emit
+      # 失败」在几秒内就红，而不是等到打包阶段。跑完即删，免得 dist 残留下来让后续
+      # 步骤悄悄拿旧声明当类型源（types 条件命中就不会回落到源码了）。
+      - name: Emit declarations
+        run: pnpm --filter @hulianui/ui build:types && rm -rf packages/ui/dist
+
       # vitest 分两个 project 跑（见 packages/ui/vitest.config.ts）：
       #   unit    —— jsdom，props→DOM 契约与纯逻辑，占绝大多数
       #   browser —— 真实 chromium，拖拽/指针捕获/动画/布局定位这些在 jsdom 下结论不可信的部分
