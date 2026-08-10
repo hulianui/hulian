@@ -33,7 +33,17 @@ import { TabBar } from "@hulianui/ui"
 | `aria-label` | `string` | 跟随 locale | 导航区无障碍标签；显式传值优先 |
 | `className` | `string` | — | — |
 
-**TabBarItem**：`key: string` · `label: ReactNode` · `icon?: ReactNode`（默认态图标）· `activeIcon?: ReactNode`（激活态，缺省复用 icon）· `dot?: boolean`（红点）· `badge?: ReactNode`（角标，优先于 dot）· `disabled?: boolean`。
+**TabBarItem**
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是 `value` 的取值 |
+| label * | `ReactNode` | — | 页签文案 |
+| icon | `ReactNode` | — | 默认态图标 |
+| activeIcon | `ReactNode` | 复用 `icon` | 激活态图标 |
+| dot | `boolean` | `false` | 红点提示 |
+| badge | `ReactNode` | — | 角标内容（数字 / 文本），优先于 `dot` |
+| disabled | `boolean` | `false` | 禁用该页签 |
 
 ## Events
 

@@ -33,6 +33,9 @@ import { Sparkline, normalize, linePath, areaPath, barRects } from "@hulianui/ui
 | highlightLast | `boolean` | `false` | 在末点画强调圆点 |
 | min | `number` | — | 归一化下界，不传从数据推 |
 | max | `number` | — | 归一化上界，不传从数据推 |
+| baseline | `number` | — | 基准线：在该数值处画一条横向虚线，让序列有个「对比的参照」而不只是形状。典型用法是上期均值 / 目标值 / 及格线。不传 `min`/`max` 时会把基准值一并纳入归一化域，保证它落在视口内而不是被裁到外面 |
+| baselineTone | `string` | `var(--color-muted-foreground)` | 基准线颜色。取值同 `tone`（语义色名 / 任意 CSS 颜色 / 变量） |
+| baselineLabel | `string` | — | 基准线的原生 tooltip 文案（渲染为 SVG `<title>`） |
 | className | `string` | — | 外层类名 |
 
 继承 `SVGProps<SVGSVGElement>`（除 `data`）。

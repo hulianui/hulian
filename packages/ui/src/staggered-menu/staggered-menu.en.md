@@ -37,7 +37,13 @@ import { StaggeredMenu } from "@hulianui/ui"
 | className | `string` | — | Root class name. |
 | style | `CSSProperties` | — | Root inline styles. |
 
-StaggeredMenuItem is `{ label; link?; ariaLabel? }`; without link it renders a span. StaggeredMenuSocial is `{ label; link }`.
+`StaggeredMenuItem` (`StaggeredMenuSocial` is `{ label; link }`)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label * | `string` | — | Entry text, rendered as a large heading. |
+| link | `string` | — | Link destination; without it the entry renders as a non-navigating `<span>`. |
+| ariaLabel | `string` | Falls back to `label` | Accessible label. |
 
 ## Events
 

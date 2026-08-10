@@ -29,6 +29,15 @@ import { ThreadList } from "@hulianui/ui"
 | bare | `boolean` | `false` | Remove the container border background and use it inline |
 | className | `string` | — | Container additional class |
 
+`ThreadListItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| id * | `string` | — | Unique key, also the argument passed to `onSelect`. |
+| title * | `ReactNode` | — | Thread title. |
+| meta | `ReactNode` | — | Secondary line (relative time or excerpt). |
+| active | `boolean` | `false` | Marks the currently open thread and highlights it. |
+
 ## Events
 
 | Event | Type | Description |

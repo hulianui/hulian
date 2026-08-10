@@ -36,7 +36,16 @@ import { MagicBento } from "@hulianui/ui"
 | className | `string` | — | Class name forwarded to the grid root. |
 | style | `CSSProperties` | — | Inline styles forwarded to the grid root. |
 
-`MagicBentoItem` is `{ label?, title?, description?: ReactNode; children?: ReactNode; colSpan?: number; rowSpan?: number }`. `children` replaces the default label, title, and description layout.
+`MagicBentoItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label | `ReactNode` | — | Small card label at the top, such as "Insights". |
+| title | `ReactNode` | — | Card title. |
+| description | `ReactNode` | — | Card body copy. |
+| children | `ReactNode` | — | Replaces the default label, title, and description layout with custom card content. |
+| colSpan | `number` | `1` | Grid column span, used to build bento layouts of mixed sizes. |
+| rowSpan | `number` | `1` | Grid row span. |
 
 ## Examples
 ```tsx

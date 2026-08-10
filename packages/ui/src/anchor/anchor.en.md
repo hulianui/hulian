@@ -29,7 +29,13 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 | offsetTop | `number` | `0` | Space reserved above the target in pixels, typically for a fixed header. Also moves the upper scrollspy boundary. |
 | getContainer | `() => HTMLElement \| null` | `undefined` (window) | Custom scroll container. Required when the actual scroller is not window. |
 
-`AnchorItem` is `{ href: string; title: ReactNode; children?: AnchorItem[] }`. Each `href`, such as `"#section-id"`, must match an element id on the page.
+`AnchorItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| href * | `string` | — | Target anchor such as `"#section-id"`; it must match an element id on the page. |
+| title * | `ReactNode` | — | Title shown in the table of contents. |
+| children | `AnchorItem[]` | — | Second-level entries (one level only). |
 
 The inherited `aria-label` defaults to the built-in Chinese copy `"\u951a\u70b9\u5bfc\u822a"`, meaning “Anchor navigation.” Pass an English label for an English interface.
 

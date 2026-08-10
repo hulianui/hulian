@@ -23,7 +23,7 @@ import { NavMenu } from "@hulianui/ui"
 
 ## Props
 
-Each `items` entry is a `NavMenuNode = NavMenuItem | NavMenuGroup`. `NavMenuItem` is `{ key; label; icon?; href?; render?; disabled?; actions?; children? }`: an item with `children` expands, an item with `href` renders a native `<a>`, and `render` supplies a framework link or another host element. `NavMenuGroup` is `{ type:"group"; key; label; children }`; it renders a non-collapsible heading whose key does not participate in selection or expansion. NavMenu inherits native `<nav>` attributes except `onSelect`.
+Each `items` entry is a `NavMenuNode = NavMenuItem | NavMenuGroup`. `NavMenuGroup` is `{ type:"group"; key; label; children }`; it renders a non-collapsible heading whose key does not participate in selection or expansion. NavMenu inherits native `<nav>` attributes except `onSelect`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
@@ -34,6 +34,19 @@ Each `items` entry is a `NavMenuNode = NavMenuItem | NavMenuGroup`. `NavMenuItem
 | defaultSelectedKeys | `string[]` | — | Initial selected keys when uncontrolled. |
 | openKeys | `string[]` | — | Controlled expanded keys in inline mode. |
 | defaultOpenKeys | `string[]` | — | Initial expanded keys when uncontrolled. |
+
+`NavMenuItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| key * | `string` | — | Unique key, also the value used by selection and expansion state. |
+| label * | `ReactNode` | — | Row text. |
+| icon | `ReactNode` | — | Leading icon; in `collapsed` mode it is the only visible content. |
+| href | `string` | — | Leaf link: with it the row renders an `<a>`, otherwise a `<button>`. Parent rows ignore it. |
+| render | `ReactElement` | — | Renders a custom element such as a framework link (`<Link to=… />` / `<NextLink href=… />`). Skin classes, ref, keyboard-roving attributes, and the click callback are merged into it, so real link semantics (middle-click, copy address, link announcement) and client-side routing both work. Matches the `render` contract used by Button and Link. Parent rows (those with `children`) ignore it. |
+| disabled | `boolean` | `false` | Not clickable and skipped by keyboard roving. |
+| actions | `ReactNode` | — | Trailing action area such as delete or more buttons. It renders **outside** the row's treeitem button or link (absolutely positioned on the right), which keeps a `<button>` from being nested inside the treeitem button and producing invalid HTML or hydration errors. Use the exposed `group-hover/nav-row` hook for hover-only actions. Only effective in `inline` mode. |
+| children | `NavMenuNode[]` | — | Child entries; their presence makes the row an expandable parent. |
 
 ## Events
 

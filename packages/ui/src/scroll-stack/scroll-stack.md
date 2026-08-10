@@ -38,6 +38,12 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 | className | `string` | — | 追加到滚动容器根节点的类名 |
 | style | `CSSProperties` | — | 透传到滚动容器根节点的内联样式 |
 
+`ScrollStackItemProps`（`<ScrollStackItem>`，每张卡片）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| itemClassName | `string` | — | 追加到单张卡片外层的自定义类名 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

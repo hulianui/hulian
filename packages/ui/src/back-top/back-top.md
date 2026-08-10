@@ -28,6 +28,7 @@ import { BackTop } from "@hulianui/ui"
 | target | `() => HTMLElement \| Window \| null` | `window` | 滚动监听 & 回顶的目标容器（返回容器元素或 window）。 |
 | visibilityHeight | `number` | `400` | 滚动超过该高度(px)才淡入显示。 |
 | className | `string` | — | 默认 `fixed` 贴视口右下；可覆盖为 `absolute` 收进局部容器。 |
+| aria-label | `string` | 跟随 `ConfigProvider` | 回顶按钮的无障碍名；不传时取当前 locale 的默认文案。 |
 
 ## Events
 

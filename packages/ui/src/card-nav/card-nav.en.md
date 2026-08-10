@@ -31,7 +31,14 @@ import { CardNav } from "@hulianui/ui"
 | className | `string` | — | Root class name. |
 | style | `CSSProperties` | — | Root inline styles. |
 
-> CardNavItem is `{ label, links?, bgColor?, textColor? }`; links are `{ label, href?, ariaLabel? }`. Card backgrounds default to surface, while chart tokens work well for branded blocks.
+`CardNavItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label * | `string` | — | Card heading. |
+| links | `CardNavLink[]` | — | Links inside the card, each `{ label, href?, ariaLabel? }`. |
+| bgColor | `string` | The `bg-surface` token | Card background as any CSS color string. Chart tokens such as `var(--color-chart-1)` through `var(--color-chart-5)` work well for branded blocks. |
+| textColor | `string` | The `text-foreground` token | Card text color. |
 
 ## Events
 

@@ -33,7 +33,17 @@ import { TabBar } from "@hulianui/ui"
 | `aria-label` | `string` | Locale value | Accessible navigation landmark label; an explicit value takes precedence. |
 | `className` | `string` | — | — |
 
-**TabBarItem**: `key: string` · `label: ReactNode` · `icon?: ReactNode` (default icon) · `activeIcon?: ReactNode` (activated state, default reuse icon) · `dot?: boolean` (red dot) · `badge?: ReactNode` (corner mark, takes precedence over dot) · `disabled?: boolean`.
+**TabBarItem**
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| key * | `string` | — | Unique key, also the value used by `value`. |
+| label * | `ReactNode` | — | Tab text. |
+| icon | `ReactNode` | — | Default-state icon. |
+| activeIcon | `ReactNode` | Reuses `icon` | Active-state icon. |
+| dot | `boolean` | `false` | Red-dot indicator. |
+| badge | `ReactNode` | — | Corner-mark content (number or text); takes precedence over `dot`. |
+| disabled | `boolean` | `false` | Disables the tab. |
 
 ## Events
 

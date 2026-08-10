@@ -34,7 +34,13 @@ Inherits `Omit<HTMLAttributes<HTMLElement>, "children">` on the root nav.
 | initialLoadAnimation | `boolean` | `true` | Initial logo and pill entrance, skipped under reduced motion. |
 | className | `string` | — | Root nav class name. |
 
-PillNavItem is `{ href: string; label: string; ariaLabel?: string }`; ariaLabel falls back to label.
+`PillNavItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| href * | `string` | — | Link destination (external http/https/mailto/tel/# or an in-app route; the component only renders an `<a>`). |
+| label * | `string` | — | Displayed text. |
+| ariaLabel | `string` | Falls back to `label` | Accessible label. |
 
 ## Slots
 

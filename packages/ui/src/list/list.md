@@ -35,6 +35,20 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 | grid | `boolean \| ListGridConfig` | — | 栅格卡片态(复用 Grid)；传 `true` 用默认配置(3 列) |
 | loadMore | `ListLoadMore` | — | 「加载更多」配置(底部按钮 + loading) |
 
+`ListItemProps`（复合用法里的 `<ListItem>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| actions | `ReactNode[]` | — | 行右侧操作区（按钮组），多个项之间自动加分隔线 |
+
+`ListItemMetaProps`（`<ListItemMeta>`，行左侧的头像 + 标题 + 描述三段式）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| avatar | `ReactNode` | — | 头像 / 图标（dogfood 复用 Avatar） |
+| title | `ReactNode` | — | 标题 |
+| description | `ReactNode` | — | 描述 |
+
 ## Slots
 
 | 插槽 | 类型 | 说明 |

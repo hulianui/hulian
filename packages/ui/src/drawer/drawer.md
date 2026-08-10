@@ -29,6 +29,8 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | 贴边方向 + 对应滑入方向 |
 | `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
+| `DrawerContent.showClose` | `boolean` | `true` | 是否渲染右上角内置关闭按钮 |
+| `DrawerContent.closeLabel` | `string` | 取自 locale | 内置关闭按钮的无障碍名（默认取 `locale.drawer.close`） |
 | `DrawerContent.className` | `string` | — | 内容容器类名 |
 
 ## Events

@@ -41,6 +41,7 @@ import { ShieldBadge, ShieldBadgeGroup, compactCount } from "@hulianui/ui"
 | size | `"sm" \| "md"` | `"md"` | Component size. |
 | href | `string` | — | Makes the whole badge a focusable link. |
 | target | `string` | — | Link target; `_blank` adds `rel="noreferrer noopener"` unless explicitly overridden. |
+| rel | `string` | — | Explicitly overrides the `rel` added above. |
 | className | `string` | — | Custom class plus forwarded native attributes. |
 
 ### ShieldBadgeGroup

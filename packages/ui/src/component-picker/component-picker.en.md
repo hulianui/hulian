@@ -61,11 +61,33 @@ import {
 | labels | Partial\<ComponentPickerLabels\> | — | UI copy overrides, whole object or single keys. Omit it and the picker takes its copy from the ConfigProvider locale. |
 | className | string | — | Wrapper class. **It must establish a height** such as `h-[560px]`; the internal panes then fill it and scroll independently. |
 
-`ComponentPickerItem`: `{ slug, name, description, category, group, tags?, props?, examples? }`.
-`ComponentPickerProp`: `{ name, type?, default?, description?, required? }`.
-`ComponentPickerExample`: `{ title?, lang?, code }`.
+`ComponentPickerItem`
 
-`ComponentPickerCommandProps`: `items` / `open` / `onOpenChange` / `onSelect` / `placeholder` / `emptyMessage` / `maxResults` (default 30) / `groupByCategory` (default `true`) / `shortcut`.
+| Name | Type | Default | Description |
+|------|------|------|------|
+| slug * | `string` | — | Unique key, also the first argument of `onSelect`. |
+| name * | `string` | — | Display name (the PascalCase export name). |
+| description * | `string` | — | One-line summary. |
+| category * | `string` | — | Top-level category (layout / forms / data-display…). |
+| group * | `string` | — | Second-level group (container / advanced / collection…); pass an empty string when there is none. |
+| tags | `string[]` | — | Extra keywords used by search. |
+| props | `ComponentPickerProp[]` | — | Rows for the detail pane's props table, each `{ name, type?, default?, description?, required? }`. |
+| examples | `ComponentPickerExample[]` | — | Example code for the detail pane, each `{ title?, lang?, code }`. |
+
+`ComponentPickerCommandProps` (thin wrapper that puts the catalog inside a Command panel)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| items * | `ComponentPickerItem[]` | — | Same as above. |
+| open * | `boolean` | — | Controlled open state. |
+| onOpenChange * | `(open: boolean) => void` | — | Open-state callback. |
+| onSelect | `(slug: string) => void` | — | Fires when an entry is chosen. |
+| placeholder | `string` | From the locale | Search box placeholder. |
+| emptyMessage | `ReactNode` | From the locale | Copy shown when nothing matches. |
+| maxResults | `number` | `30` | Maximum rendered entries (note this differs from the 60 used by `ComponentPickerProps`). |
+| groupByCategory | `boolean` | `true` | Groups by category with one heading per group. |
+| shortcut | `boolean` | `false` | Built-in ⌘K / Ctrl+K toggle. |
+| aria-label | `string` | From the locale | Accessible name of the panel. |
 
 ## Events
 

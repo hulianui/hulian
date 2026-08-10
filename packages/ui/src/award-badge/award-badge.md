@@ -40,6 +40,7 @@ import { AwardBadge, laurelLeaves, laurelStemPath } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
 | href | `string` | — | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
 | target | `string` | — | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"` |
+| rel | `string` | — | 显式覆盖上面那条自动补的 `rel`（如只想要 `noopener`） |
 | className | `string` | — | 透传类名；其余原生属性一并透传 |
 
 ### laurelLeaves(options?) / laurelStemPath(options?)

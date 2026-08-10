@@ -47,6 +47,7 @@ import { BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, IssueReporter, IssueRep
 | apiRef | MutableRefObject\<IssueReporterApi \| null\> | — | Imperative handle: `submit()` / `getDraft()` / `getUrl()` / `reset()`. |
 | className | string | — | Class name on the form body. |
 | open / defaultOpen | boolean | — | Modal only: controlled / uncontrolled open state. |
+| onOpenChange | (open: boolean) => void | — | Modal only: open-state callback, required in controlled mode. |
 | trigger | ReactElement | — | Modal only: element that opens the dialog. |
 | modalTitle | string | From locale | Modal only: dialog title. Omit it and the modal follows the ConfigProvider locale. |
 | submitText / cancelText | string | — | Modal only: footer button labels. |

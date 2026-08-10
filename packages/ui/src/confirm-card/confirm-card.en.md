@@ -29,6 +29,13 @@ import { ConfirmCard } from "@hulianui/ui"
 | acted | `"confirmed" \| "edited" \| null` | `null` | Controlled result that locks both actions and marks the selected outcome; renders `"\u5df2\u786e\u8ba4"` (Confirmed) or `"\u4fee\u6539\u4e2d"` (Editing) |
 | className | `string` | — | Container additional classes |
 
+`ConfirmCardItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label * | `ReactNode` | — | Field name, rendered as `<dt>`. |
+| value * | `ReactNode` | — | Field value, rendered as `<dd>`. |
+
 ## Events
 
 | Event | Type | Description |

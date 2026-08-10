@@ -32,6 +32,13 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | bordered | `boolean` | `false` | Enables a bordered table-like layout. |
 | items | `DescriptionsItemData[]` | — | Data-driven entries, taking precedence over child items. |
 
+`DescriptionsItemProps` (the `<DescriptionsItem>` used in the compound form)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label | `ReactNode` | — | Key name. |
+| span | `number` | `1` | Number of columns to span. |
+
 ## Slots
 
 | Slot | Type | Description |

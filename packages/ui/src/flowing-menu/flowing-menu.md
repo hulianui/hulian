@@ -29,8 +29,15 @@ import { FlowingMenu } from "@hulianui/ui"
 | speed | `number` | `18` | 跑马灯走完一整屏的秒数，越大越慢 |
 | repeat | `number` | `4` | 单个文字块里重复的份数（撑满并保证无缝循环） |
 
-> `FlowingMenuItem`: `{ link, text, image? }`；`text` 同时作主标题与揭幕跑马灯文字，`image` 留空则只跑文字不渲染图片块。
-> 还继承 `ComponentPropsWithoutRef<"nav">`（除 `children`），可透传 `className`/`style` 等。
+还继承 `ComponentPropsWithoutRef<"nav">`（除 `children`），可透传 `className`/`style` 等。
+
+`FlowingMenuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| link * | `string` | — | 跳转链接 |
+| text * | `string` | — | 文案，同时作主标题与揭幕跑马灯文字 |
+| image | `string` | — | 跑马灯里循环穿插的图片地址。留空则只跑文字，不渲染图片块 |
 
 ## 示例
 ```tsx

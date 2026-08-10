@@ -29,6 +29,7 @@ import { ScrollReveal } from "@hulianui/ui"
 | baseRotation | `number` | `3` | 整段进入时的初始旋转角（deg），随进度回正到 0；设 0 关闭 |
 | enableBlur | `boolean` | `true` | 是否伴随模糊解析：未揭示词带模糊随进度消散 |
 | blurStrength | `number` | `4` | `enableBlur` 为真时词的起始模糊半径（px），随进度降到 0 |
+| scrollContainerRef | `RefObject<HTMLElement ｜ null>` | 自动探测 | 驱动动画的滚动容器。**默认自动探测最近的可滚动祖先**，落在内部滚动区（抽屉 / 弹层 / 画廊预览框）里也能正常走进度，通常不需要传。只有当滚动源不是 DOM 祖先（例如自定义滚动实现）时才需要显式指定 |
 
 其余 `<p>` 原生属性透传；`onDrag/onDragStart/onDragEnd/onAnimationStart` 因与 motion 签名冲突被剔除。
 

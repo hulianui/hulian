@@ -38,6 +38,12 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 | className | `string` | — | Class name added to the scroll root. |
 | style | `CSSProperties` | — | Inline styles forwarded to the scroll root. |
 
+`ScrollStackItemProps` (`<ScrollStackItem>`, a single card)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| itemClassName | `string` | — | Custom class name added to the outer element of a single card. |
+
 ## Events
 
 | Event | Type | Description |

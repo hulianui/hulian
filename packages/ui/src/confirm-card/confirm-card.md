@@ -29,6 +29,13 @@ import { ConfirmCard } from "@hulianui/ui"
 | acted | `"confirmed" \| "edited" \| null` | `null` | 已操作结果：锁定双钮并标记所选项 |
 | className | `string` | — | 容器附加类 |
 
+`ConfirmCardItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `ReactNode` | — | 字段名（渲染为 `<dt>`） |
+| value * | `ReactNode` | — | 字段值（渲染为 `<dd>`） |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

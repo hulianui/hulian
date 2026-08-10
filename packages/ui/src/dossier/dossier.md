@@ -30,6 +30,8 @@ import { Dossier } from "@hulianui/ui"
 | sections * | `DossierSection[]` | — | 分域清单（数据驱动） |
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
 | className | `string` | — | 容器类名 |
+| archivedLabel | `ReactNode` | 取自 locale | 自动进度前缀。服务端渲染场景可显式传入本地化文案 |
+| optionalLabel | `ReactNode` | 取自 locale | 可选域标记。服务端渲染场景可显式传入本地化文案 |
 
 ## Slots
 

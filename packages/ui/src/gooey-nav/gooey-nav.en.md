@@ -35,6 +35,13 @@ import { GooeyNav } from "@hulianui/ui"
 | className | `string` | — | Root class name. |
 | style | `CSSProperties` | — | Root inline styles. |
 
+`GooeyNavItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label * | `string` | — | Displayed text. |
+| href | `string` | `"#"` | Link destination. |
+
 ## Events
 
 | Event | Type | Description |

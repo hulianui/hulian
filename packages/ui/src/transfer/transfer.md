@@ -36,6 +36,15 @@ import { Transfer } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 整体禁用（两侧列表与移动按钮全失效） |
 | className | `string` | — | 容器类名 |
 
+`TransferItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是 `targetKeys` 的取值 |
+| label * | `ReactNode` | — | 条目主文案 |
+| description | `ReactNode` | — | 次级描述（label 下方弱化小字） |
+| disabled | `boolean` | `false` | 该条不可选、不可移动 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

@@ -33,6 +33,9 @@ import { Sparkline, normalize, linePath, areaPath, barRects } from "@hulianui/ui
 | highlightLast | `boolean` | `false` | Draws a marker on the final point. |
 | min | `number` | — | Explicit normalization lower bound. |
 | max | `number` | — | Explicit normalization upper bound. |
+| baseline | `number` | — | Draws a horizontal dashed line at this value so the series has something to compare against instead of only a shape — typically last period's average, a target, or a pass mark. When neither `min` nor `max` is given, the baseline joins the normalization domain so it stays inside the viewport instead of being clipped. |
+| baselineTone | `string` | `var(--color-muted-foreground)` | Baseline color. Accepts the same values as `tone` (semantic color name, any CSS color, or a variable). |
+| baselineLabel | `string` | — | Native tooltip text for the baseline, rendered as an SVG `<title>`. |
 | className | `string` | — | Root class name. |
 
 Inherits `SVGProps<SVGSVGElement>` except `data`.

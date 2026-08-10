@@ -50,6 +50,16 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | labels | Partial\<DesignCanvasLabels\> | — | 覆盖取自 locale 的文案（canvas / item / zoomIn / zoomOut / fitView / resetView）；不传则跟随 ConfigProvider |
 | apiRef | MutableRefObject\<DesignCanvasApi ｜ null\> | — | 命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas） |
 
+`DesignCanvasItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 唯一键，也是 `selectedElement` 的取值 |
+| x * / y * | `number` | — | 左上角在世界坐标里的位置 |
+| width * / height * | `number` | — | 宽高（世界单位） |
+| locked | `boolean` | `false` | 锁定：不可拖动、不出 resize 手柄（仍可选中、仍可 Tab 到） |
+| label | `string` | 回退到 `id` | 无障碍名 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

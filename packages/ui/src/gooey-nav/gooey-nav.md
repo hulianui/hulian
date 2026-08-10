@@ -35,6 +35,13 @@ import { GooeyNav } from "@hulianui/ui"
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
+`GooeyNavItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 显示文案 |
+| href | `string` | `"#"` | 链接地址 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

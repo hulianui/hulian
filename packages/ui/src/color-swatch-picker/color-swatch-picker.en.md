@@ -33,6 +33,13 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 | className | `string` | — | Additional class name for the container. |
 | aria-label | `string` | Locale default | Accessible name; `enUS` provides “Color swatches”, and an explicit value takes precedence. |
 
+`ColorSwatchItem` (the object form of `colors`)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| color * | `string` | — | Any CSS color string. It is also the selection value compared strictly against `value`. |
+| label | `string` | Falls back to `color` itself | Accessible name and hover hint. Always provide it for token colors such as `var(--color-primary)`, otherwise a screen reader announces the variable name. |
+
 ## Events
 
 | Event | Type | Description |

@@ -31,6 +31,13 @@ import { QueueLane, groupByLane } from "@hulianui/ui"
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Lane layout direction. |
 | className | `string` | — | Root class name. |
 
+`QueueItem` (the constraint on `items`; your own row data extends it freely)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| id * | `string` | — | Unique key. |
+| laneId * | `string` | — | Owning lane id. It must match one of `lanes[].id`, otherwise the entry is dropped. |
+
 ## Events
 
 | Event | Type | Description |

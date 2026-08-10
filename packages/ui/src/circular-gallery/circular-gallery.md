@@ -34,7 +34,12 @@ import { CircularGallery } from "@hulianui/ui"
 | font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，离线/RSC 安全 |
 | className | `string` | — | 透传根容器类名 |
 
-`CircularGalleryItem`：`{ image?; text }`，`image` 留空则用 chart token 程序化渐变占位图。
+`CircularGalleryItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| image | `string` | 程序化渐变占位图 | 卡片图片地址（远程 URL / data URI / 本地静态资源均可）。留空则用 chart token 程序化生成渐变占位图，离线可用且随明暗主题 |
+| text * | `string` | — | 卡片下方标题文字 |
 
 ## Slots
 

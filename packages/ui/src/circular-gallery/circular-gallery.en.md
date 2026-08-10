@@ -34,7 +34,12 @@ import { CircularGallery } from "@hulianui/ui"
 | font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | Canvas font shorthand for titles. The default system font stack is offline- and RSC-safe. |
 | className | `string` | — | Class name forwarded to the root container. |
 
-`CircularGalleryItem` is `{ image?; text }`. When `image` is omitted, the component generates a gradient placeholder from chart tokens.
+`CircularGalleryItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| image | `string` | Programmatic gradient placeholder | Card image URL (remote URL, data URI, or local static asset). When omitted, the component generates a gradient placeholder from chart tokens that works offline and follows the light or dark theme. |
+| text * | `string` | — | Title shown below the card. |
 
 ## Slots
 

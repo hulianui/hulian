@@ -34,7 +34,13 @@ import { PillNav } from "@hulianui/ui"
 | initialLoadAnimation | `boolean` | `true` | 首次加载入场动画（logo 弹入 + 胶囊展开），reduced-motion 下自动跳过 |
 | className | `string` | — | 合并到根 `<nav>` 的类名 |
 
-`PillNavItem`：`{ href: string; label: string; ariaLabel?: string }`，`ariaLabel` 缺省回退到 `label`。
+`PillNavItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| href * | `string` | — | 链接地址（http/https/mailto/tel/# 外链或站内路由皆可，组件只渲染 `<a>`） |
+| label * | `string` | — | 显示文案 |
+| ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
 
 ## Slots
 

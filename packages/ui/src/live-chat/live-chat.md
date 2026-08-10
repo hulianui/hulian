@@ -32,6 +32,17 @@ import { LiveChat } from "@hulianui/ui"
 | overlay | `boolean` | `false` | 叠在深色视频上的浅色态（文字改白/半透白 + 文字阴影） |
 | className | `string` | — | 容器自定义类 |
 
+`LiveChatItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 去重键 |
+| type * | `"message" ｜ "gift" ｜ "system" ｜ "enter"` | — | 条目类型，决定渲染成哪一种行 |
+| user | `LiveChatUser` | — | 发送者 `{ name, avatar?, badge?, level? }`；`system` 类型可省 |
+| text | `ReactNode` | — | `message` 类型的正文 |
+| gift | `{ name: string; icon?: ReactNode; combo?: number }` | — | `gift` 类型的礼物信息 |
+| at | `string` | — | 时间戳文本（原样展示，不做格式化） |
+
 ## Slots
 
 | 插槽 | 类型 | 说明 |

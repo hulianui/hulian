@@ -33,7 +33,15 @@ import { BubbleMenu } from "@hulianui/ui"
 | className | `string` | — | 透传根 nav 额外类名 |
 | style | `CSSProperties` | — | 透传根 nav 内联样式 |
 
-> `BubbleMenuItem`: `{ label, href, ariaLabel?, rotation?, hoverStyles? }`；`rotation` 是桌面端胶囊旋转角（移动端归零），`hoverStyles` 为 `{ bgColor?, textColor? }` 悬停反色。
+`BubbleMenuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 链接文案 |
+| href * | `string` | — | 跳转地址 |
+| ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
+| rotation | `number` | — | 桌面端胶囊的旋转角度（度），营造手作错落感；移动端自动归零 |
+| hoverStyles | `{ bgColor?: string; textColor?: string }` | — | 悬停反色配置 |
 
 ## Events
 

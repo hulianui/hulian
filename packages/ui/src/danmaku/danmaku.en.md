@@ -34,7 +34,16 @@ import { Danmaku, allocateTrack, densityGap, estimateWidth, leastBusyTrack, scro
 | paused | `boolean` | `false` | Pauses all animations. |
 | className | `string` | — | Container class. |
 
-`DanmakuItem` is `{ id: string; text: ReactNode; mode?: "scroll"\|"top"\|"bottom"; color?: string; size?: "sm"\|"md"\|"lg"; bold?: boolean }`; mode defaults to scroll, size to md, and color to foreground.
+`DanmakuItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| id * | `string` | — | Deduplication key: it decides whether an item has already entered, so only unseen ids animate in. |
+| text * | `ReactNode` | — | Comment content. |
+| mode | `"scroll" \| "top" \| "bottom"` | `"scroll"` | Scrolling, pinned to the top, or pinned to the bottom. |
+| color | `string` | Inherits the foreground token | Text color. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Font size preset. |
+| bold | `boolean` | `false` | Bold text. |
 
 ## Examples
 ```tsx

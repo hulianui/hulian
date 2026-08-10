@@ -36,6 +36,15 @@ import { Transfer } from "@hulianui/ui"
 | disabled | `boolean` | `false` | Disabled overall (lists and move buttons on both sides are disabled) |
 | className | `string` | — | Container class name |
 
+`TransferItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| key * | `string` | — | Unique key, also the value used by `targetKeys`. |
+| label * | `ReactNode` | — | Primary text of the entry. |
+| description | `ReactNode` | — | Secondary description shown under the label. |
+| disabled | `boolean` | `false` | The entry cannot be selected or moved. |
+
 ## Events
 
 | Event | Type | Description |

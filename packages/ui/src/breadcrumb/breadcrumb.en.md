@@ -27,7 +27,13 @@ import { Breadcrumb } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `BreadcrumbItem[]` | — | Path entries ordered from the root to the current page. |
 
-`BreadcrumbItem` is `{ label: ReactNode; href?: string; current?: boolean }`. Omitting `href` renders a non-interactive item, such as the current page or an ancestor without its own destination. `current` explicitly marks the current page; when no item sets it, the final entry is current.
+`BreadcrumbItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label * | `ReactNode` | — | Displayed content. |
+| href | `string` | — | Link destination. Omitting it renders a non-interactive item, such as the current page or an ancestor without its own destination. |
+| current | `boolean` | — | Explicitly marks the current page; when no item sets it, the final entry is current. |
 
 ## Slots
 

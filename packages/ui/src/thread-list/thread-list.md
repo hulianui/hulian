@@ -29,6 +29,15 @@ import { ThreadList } from "@hulianui/ui"
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
 | className | `string` | — | 容器附加类 |
 
+`ThreadListItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 唯一键，也是 `onSelect` 的入参 |
+| title * | `ReactNode` | — | 会话标题 |
+| meta | `ReactNode` | — | 次行元信息（相对时间 / 摘要） |
+| active | `boolean` | `false` | 当前打开的会话，高亮 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

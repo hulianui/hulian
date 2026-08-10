@@ -29,6 +29,7 @@ import { ScrollReveal } from "@hulianui/ui"
 | baseRotation | `number` | `3` | Initial paragraph rotation in degrees, returning to 0 with progress; set to 0 to disable. |
 | enableBlur | `boolean` | `true` | Blurs unrevealed words and clears them with progress. |
 | blurStrength | `number` | `4` | When `enableBlur` is true, the starting blur radius (px) of the word will decrease to 0 as the progress progresses. |
+| scrollContainerRef | `RefObject<HTMLElement \| null>` | Auto-detected | Scroll container that drives the animation. **The nearest scrollable ancestor is detected automatically**, so the effect also works inside a drawer, popover, or gallery preview and normally needs no value. Pass it only when the scroll source is not a DOM ancestor, such as a custom scrolling implementation. |
 
 The remaining `<p>` native attributes are transparently transmitted; `onDrag/onDragStart/onDragEnd/onAnimationStart` is eliminated due to conflict with the motion signature.
 

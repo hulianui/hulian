@@ -30,6 +30,8 @@ import { Dossier } from "@hulianui/ui"
 | sections * | `DossierSection[]` | — | Domain list (data driven) |
 | bare | `boolean` | `false` | Remove the container border background and use it inline |
 | className | `string` | — | Container class name |
+| archivedLabel | `ReactNode` | From the locale | Prefix for the automatic progress readout. Pass localized copy explicitly when server rendering. |
+| optionalLabel | `ReactNode` | From the locale | Marker for optional domains. Pass localized copy explicitly when server rendering. |
 
 ## Slots
 

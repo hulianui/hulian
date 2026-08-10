@@ -31,7 +31,14 @@ import { CardNav } from "@hulianui/ui"
 | className | `string` | — | 透传根容器额外类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
-> `CardNavItem`: `{ label, links?, bgColor?, textColor? }`；`links` 为 `CardNavLink[]`（`{ label, href?, ariaLabel? }`），`bgColor` 缺省吃 bg-surface，建议用 `var(--color-chart-1..5)` 做品牌色块。
+`CardNavItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 卡片大标题 |
+| links | `CardNavLink[]` | — | 卡片内的链接列表，每项 `{ label, href?, ariaLabel? }` |
+| bgColor | `string` | `bg-surface` 令牌 | 卡片底色，任意 CSS 颜色串。建议用 `var(--color-chart-1)`~`var(--color-chart-5)` 做品牌色块 |
+| textColor | `string` | `text-foreground` 令牌 | 卡片文字色 |
 
 ## Events
 

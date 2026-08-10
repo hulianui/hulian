@@ -31,6 +31,13 @@ import { QueueLane, groupByLane } from "@hulianui/ui"
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 泳道排布方向。horizontal：泳道横向并列，每道竖向排队 |
 | className | `string` | — | 外层类名 |
 
+`QueueItem`（`items` 的元素约束，你的行数据在此之上自由扩展）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 唯一键 |
+| laneId * | `string` | — | 所属泳道 id。须命中某个 `lanes[].id`，否则该项被丢弃 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

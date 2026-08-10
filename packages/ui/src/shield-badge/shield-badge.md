@@ -41,6 +41,7 @@ import { ShieldBadge, ShieldBadgeGroup, compactCount } from "@hulianui/ui"
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
 | href | `string` | — | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
 | target | `string` | — | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"`（显式传 rel 优先） |
+| rel | `string` | — | 显式覆盖上面那条自动补的 `rel` |
 | className | `string` | — | 透传类名；其余原生属性（title / data-* / onClick）一并透传 |
 
 ### ShieldBadgeGroup

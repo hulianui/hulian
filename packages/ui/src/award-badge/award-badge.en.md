@@ -38,6 +38,7 @@ import { AwardBadge, laurelLeaves, laurelStemPath } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Component size. |
 | href | `string` | — | Makes the whole award a focusable link. |
 | target | `string` | — | Link target; `_blank` adds safe `rel` values. |
+| rel | `string` | — | Explicitly overrides the `rel` added above (for example when only `noopener` is wanted). |
 | className | `string` | — | Custom class plus forwarded native attributes. |
 
 ### laurelLeaves(options?) / laurelStemPath(options?)

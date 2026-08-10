@@ -35,7 +35,23 @@ import { RouteTabs } from "@hulianui/ui"
 | disableAutoScroll | `boolean` | `false` | Disables scrolling the active tab into view. |
 | className | `string` | — | Root class name. |
 
-`RouteTabItem` is `{ key, label, icon?, closable?, pinned? }`. Pinned tabs are never closable. Other tabs remain closable only while more than one closable tab exists.
+`RouteTabItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| key * | `string` | — | Unique key, also the value used by `activeKey`. |
+| label * | `ReactNode` | — | Tab text. |
+| icon | `ReactNode` | — | Small icon before the label. |
+| closable | `boolean` | See description | Whether the tab can be closed. By default pinned tabs are never closable, and other tabs stay closable only while more than one closable tab exists (closing down to one stops, so the content area never goes blank). |
+| pinned | `boolean` | `false` | Pinned tab: never closable, sorted first, and unaffected by "close others" or "close all". |
+
+`RouteTabsMenuItem` (entries of `extraMenuItems`)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| key * | `string` | — | Menu-item key used to tell entries apart in the callback. |
+| label * | `ReactNode` | — | Menu-item text. |
+| disabled | `boolean` | `false` | Greyed out and not clickable. |
 
 `RouteTabsAction` is `"close" | "closeOthers" | "closeLeft" | "closeRight" | "closeAll" | "refresh"`.
 

@@ -34,6 +34,9 @@ status: enriched
 | labelIdle | `string` | `"按住说话"` | idle 态文案 |
 | labelRecording | `string` | `"松开结束"` | recording 态文案 |
 | labelProcessing | `string` | `"处理中…"` | processing 态文案 |
+| pressAndHold | `boolean` | `false` | 按住说话模式（GPT-Live 风格）：按下开始、松开结束，走 `onPress` / `onRelease`；`false` 时是点击切换，走 `onToggle` |
+| onPress | `() => void` | — | idle 态按下回调（仅 `pressAndHold` 为真时） |
+| onRelease | `() => void` | — | recording 态松开回调（仅 `pressAndHold` 为真时） |
 
 ## 用法
 

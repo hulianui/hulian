@@ -29,6 +29,12 @@ import { Stepper } from "@hulianui/ui"
 | activeStep* | `number` | — | Controlled zero-based current step. A value at least `steps.length` marks every step complete. |
 | className | `string` | — | Additional class name. |
 
+`StepItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label * | `ReactNode` | — | Step text. |
+
 The progress container has the built-in Chinese `aria-label` `"\u6b65\u9aa4\u8fdb\u5ea6"`, meaning “Step progress.”
 
 ## Example

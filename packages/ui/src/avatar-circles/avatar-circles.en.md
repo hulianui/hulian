@@ -25,10 +25,17 @@ import { AvatarCircles, avatarCirclesItemVariants } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| avatars* | `AvatarCirclesItem[]` | — | Ordered `{ src: string; alt?: string }` images; later items overlap earlier ones. |
+| avatars* | `AvatarCirclesItem[]` | — | Ordered images; later items overlap earlier ones. See the table below. |
 | extraCount | `number` | — | Additional people rendered in a trailing "+N" circle. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Circle diameter preset. |
 | className | `string` | — | Custom class name. |
+
+`AvatarCirclesItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| src * | `string` | — | Avatar image URL. There is no fallback slot here (unlike a single Avatar), so a missing image leaves an empty circle. |
+| alt | `string` | — | Alternative text for the image. |
 
 ## Examples
 ```tsx

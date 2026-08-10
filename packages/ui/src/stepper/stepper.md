@@ -29,6 +29,12 @@ import { Stepper } from "@hulianui/ui"
 | activeStep* | `number` | — | 受控当前步（0-based）。值 ≥ steps.length 表示全部完成。 |
 | className | `string` | — | — |
 
+`StepItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `ReactNode` | — | 步骤文案 |
+
 ## 示例
 ```tsx
 const steps = [{ label: "下单" }, { label: "付款" }, { label: "发货" }, { label: "完成" }];

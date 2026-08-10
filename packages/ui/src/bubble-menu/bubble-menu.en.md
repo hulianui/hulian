@@ -33,7 +33,15 @@ import { BubbleMenu } from "@hulianui/ui"
 | className | `string` | — | Root nav class name. |
 | style | `CSSProperties` | — | Root inline styles. |
 
-> BubbleMenuItem is `{ label, href, ariaLabel?, rotation?, hoverStyles? }`; rotation resets on mobile, and hoverStyles supports `{ bgColor?, textColor? }`.
+`BubbleMenuItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| label * | `string` | — | Link text. |
+| href * | `string` | — | Link destination. |
+| ariaLabel | `string` | Falls back to `label` | Accessible label. |
+| rotation | `number` | — | Desktop pill rotation in degrees for a hand-placed feel; it resets to zero on mobile. |
+| hoverStyles | `{ bgColor?: string; textColor?: string }` | — | Inverted colors on hover. |
 
 ## Events
 

@@ -33,6 +33,7 @@
     "conventions": "node scripts/gen-conventions.mjs",
     "conventions:check": "node scripts/gen-conventions.mjs --check",
     "candidates:check": "node scripts/check-tailwind-candidates.mjs",
+    "docs:check:props": "node scripts/check-component-doc-props.mjs",
     "guard": "node packages/guard/src/cli.mjs",
     "changelog": "node scripts/gen-changelog.mjs",
     "docs:all": "pnpm skill-index && pnpm component-docs && pnpm showcase:generate && pnpm llms-registry && pnpm conventions && pnpm changelog",

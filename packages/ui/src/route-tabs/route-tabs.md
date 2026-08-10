@@ -37,8 +37,23 @@ import { RouteTabs } from "@hulianui/ui"
 | disableAutoScroll | `boolean` | `false` | 关掉「激活页签自动滚入视口」 |
 | className | `string` | — | — |
 
-`RouteTabItem`：`{ key, label, icon?, closable?, pinned? }`。
-`closable` 默认规则：`pinned` 恒不可关；其余在「可关闭页签数 > 1」时可关（关到只剩一个就停手，免得内容区空白）。
+`RouteTabItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是 `activeKey` 的取值 |
+| label * | `ReactNode` | — | 页签文案 |
+| icon | `ReactNode` | — | 标签前的小图标 |
+| closable | `boolean` | 见下 | 是否可关闭。默认规则：`pinned` 的恒不可关；其余在「可关闭页签数 > 1」时可关（关到只剩一个就停手，免得内容区空白） |
+| pinned | `boolean` | `false` | 固定页签：恒不可关、排在最前，且不受「关闭其他 / 全部」影响 |
+
+`RouteTabsMenuItem`（`extraMenuItems` 的元素）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 菜单项键，回调里据此分辨 |
+| label * | `ReactNode` | — | 菜单项文案 |
+| disabled | `boolean` | `false` | 置灰不可点 |
 
 `RouteTabsAction`：`"close" | "closeOthers" | "closeLeft" | "closeRight" | "closeAll" | "refresh"`。
 

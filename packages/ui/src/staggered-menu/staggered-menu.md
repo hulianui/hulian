@@ -37,7 +37,13 @@ import { StaggeredMenu } from "@hulianui/ui"
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
-`StaggeredMenuItem`：`{ label; link?; ariaLabel? }`（`link` 缺省渲染为不可跳转 span）。`StaggeredMenuSocial`：`{ label; link }`。
+`StaggeredMenuItem`（`StaggeredMenuSocial` 为 `{ label; link }`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 条目文案（大号标题） |
+| link | `string` | — | 跳转链接；缺省渲染为不可跳转的 `<span>` |
+| ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
 
 ## Events
 

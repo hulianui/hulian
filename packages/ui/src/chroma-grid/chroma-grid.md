@@ -33,7 +33,19 @@ import { ChromaGrid } from "@hulianui/ui"
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
-`ChromaGridItem`：`{ image?; title?; subtitle?; handle?; location?; borderColor?; gradient?; url?; children? }`。`borderColor` / `gradient` 建议喂 `var(--color-chart-1)`~`var(--color-chart-5)`；`url` 提供时卡片可点击（新标签打开）；`children` 覆盖默认 image+文字布局。
+`ChromaGridItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| image | `string` | — | 卡片头图地址（人像 / 封面）。缺省时只渲染文字区 |
+| title | `string` | — | 主标题（姓名 / 名称） |
+| subtitle | `string` | — | 副标题（角色 / 描述行） |
+| handle | `string` | — | 句柄（如 `@name`），渲染在副标题同行左侧 |
+| location | `string` | — | 补充行（如地点），渲染在副标题同行右侧 |
+| borderColor | `string` | — | 卡片描边色，hover 时亮起为此色。建议喂 `var(--color-chart-1)`~`var(--color-chart-5)` |
+| gradient | `string` | — | 卡片背景渐变，形如 `linear-gradient(145deg, var(--color-chart-1), transparent)`。⚠️ 卡面是**暗色上下文**：组件在这层渐变**下面**恒垫一层中性深色基底，所以 `transparent` 端露出的是深色而不是页面底色，亮色主题下也不会「白字压浅底」（#129） |
+| url | `string` | — | 点击跳转地址。提供时卡片可点击（新标签打开），否则光标为默认态 |
+| children | `ReactNode` | — | 覆盖默认的「头图 + 文字」布局 |
 
 ## 示例
 ```tsx

@@ -32,6 +32,17 @@ import { LiveChat } from "@hulianui/ui"
 | overlay | `boolean` | `false` | Light text and shadow over dark video. |
 | className | `string` | — | Container class. |
 
+`LiveChatItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| id * | `string` | — | Deduplication key. |
+| type * | `"message" \| "gift" \| "system" \| "enter"` | — | Entry type, which decides how the row renders. |
+| user | `LiveChatUser` | — | Sender `{ name, avatar?, badge?, level? }`; the `system` type may omit it. |
+| text | `ReactNode` | — | Body of a `message` entry. |
+| gift | `{ name: string; icon?: ReactNode; combo?: number }` | — | Gift details for a `gift` entry. |
+| at | `string` | — | Timestamp text, shown as-is without formatting. |
+
 ## Slots
 
 | Slot | Type | Description |

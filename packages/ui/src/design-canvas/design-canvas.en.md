@@ -50,6 +50,16 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | labels | Partial\<DesignCanvasLabels\> | — | Overrides the copy taken from the locale (canvas, item, zoomIn, zoomOut, fitView, resetView). Omit it and the canvas follows ConfigProvider. |
 | apiRef | MutableRefObject\<DesignCanvasApi \| null\> | — | Imperative handle (zoomIn, zoomOut, reset, fitView, screenToCanvas). |
 
+`DesignCanvasItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| id * | `string` | — | Unique key, also the value used by `selectedElement`. |
+| x * / y * | `number` | — | Top-left position in canvas coordinates. |
+| width * / height * | `number` | — | Size in canvas units. |
+| locked | `boolean` | `false` | Locked: no dragging and no resize handles, while selection and tab focus still work. |
+| label | `string` | Falls back to `id` | Accessible name. |
+
 ## Events
 
 | Event | Type | Description |

@@ -33,6 +33,13 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 | className | `string` | — | 透传到容器 |
 | aria-label | `string` | — | 无障碍标签 |
 
+`ColorSwatchItem`（`colors` 的对象形态）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| color * | `string` | — | 任意 CSS 颜色串，同时是该色块的选中值（与 `value` 严格相等比较） |
+| label | `string` | 回退到 `color` 本身 | 无障碍名与 hover 提示。喂 token 色（`var(--color-primary)`）时**务必**给，否则读屏会念出变量名 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |

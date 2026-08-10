@@ -32,6 +32,15 @@ import { InfiniteMenu } from "@hulianui/ui"
 | className | `string` | — | Class name forwarded to the root. |
 | style | `CSSProperties` | — | Inline styles forwarded to the root. |
 
+`InfiniteMenuItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| image | `string` | — | Card image URL, cropped to fill the circular card. Without it only the title's first character shows. |
+| title | `string` | — | Title shown in the overlay while the item is active. |
+| description | `string` | — | Secondary copy shown in the overlay while the item is active. |
+| link | `string` | — | Destination for the action arrow. Values starting with `http` open in a new tab; anything else is handed to the `onItemActivate` callback. |
+
 ## Events
 
 | Event | Type | Description |

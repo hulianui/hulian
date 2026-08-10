@@ -32,6 +32,13 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | bordered | `boolean` | `false` | 带边框分隔的表格态 |
 | items | `DescriptionsItemData[]` | — | 数据驱动备选；提供时优先于 `DescriptionsItem` 子节点 |
 
+`DescriptionsItemProps`（复合用法里的 `<DescriptionsItem>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label | `ReactNode` | — | 键名 |
+| span | `number` | `1` | 跨列数 |
+
 ## Slots
 
 | 插槽 | 类型 | 说明 |

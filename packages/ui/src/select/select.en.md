@@ -31,6 +31,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | Name | Type | Default | Description |
 |------|------|------|------|
 | items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | — | Option data used by Base UI to resolve selected labels in the trigger. |
+| defaultValue | `string \| string[] \| null` | `null` | Uncontrolled initial value: `string \| null` for single select, `string[]` when `multiple`. |
 | placeholder | `ReactNode` | — | Content shown without a selection. Single mode injects a `value: null` item; multiple mode renders it through the trigger's functional Value. |
 | multiple | `boolean` | `false` | Enables multiple selection: `value`, `defaultValue`, and `onValueChange` use `string[]`, and the popup stays open after selection. |
 | clearable | `boolean` | `false` | Shows a clear action on trigger hover/focus. Clearing emits `null` in single mode or `[]` in multiple mode. |

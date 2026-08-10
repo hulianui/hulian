@@ -27,7 +27,13 @@ import { Breadcrumb } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `BreadcrumbItem[]` | — | 路径项数组，从根到当前页自左向右 |
 
-`BreadcrumbItem`：`{ label: ReactNode; href?: string; current?: boolean }`。`href` 省略则该项不可点（当前页或不可导航的祖先）；`current` 显式标记当前页，缺省时数组末项即当前页。
+`BreadcrumbItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `ReactNode` | — | 显示内容 |
+| href | `string` | — | 链接地址；省略则该项不可点（当前页或不可导航的祖先） |
+| current | `boolean` | — | 显式标记为当前页；缺省时数组末项即当前页 |
 
 ## Slots
 

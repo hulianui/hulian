@@ -35,6 +35,8 @@ import { LoginForm } from "@hulianui/ui"
 |------|------|------|------|
 | loading | `boolean` | — | External loading override for consumers that own submission state. |
 | showRemember | `boolean` | `true` | Whether to display "Remember Me" |
+| rememberLabel | `ReactNode` | From the locale | Label for the remember-me checkbox. That checkbox is not always convenience sugar: in some systems it is a **refresh-token capability switch** (a refresh token is only issued when it is checked), so the wording is deliberate and locking it into the locale makes it unusable (#64). |
+| rememberDescription | `ReactNode` | — | One line under the checkbox explaining what checking it actually means. |
 | rememberLabel | `ReactNode` | Locale value | Overrides the remember-me label. |
 | rememberDescription | `ReactNode` | — | Supporting text shown directly below the remember-me checkbox. |
 | rules | `{ username?: FormRule[]; password?: FormRule[] }` | — | Field-level validation appended after built-in required rules. `FormRule` matches [Form](../form/form.md): `pattern`/`min`/`max`/`validator`/`message`. |

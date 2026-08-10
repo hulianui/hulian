@@ -57,6 +57,12 @@ jobs:
       - name: Check Tailwind scan candidates
         run: pnpm candidates:check
 
+      # 加 prop 时改 .types.ts 是必须的（不改编译不过），补 md 表格是可选的（漏了没人知道）——
+      # 这个不对称让文档必然滞后于类型，而且滞后是静默的：TS 不报、guard 不报、页面只是少个
+      # label。人还会翻源码兜底，模型基本就信文档（#150）。
+      - name: Check component doc props coverage
+        run: pnpm docs:check:props
+
       # 门禁只扫对外分发的组合源码与组件实现；文档 demo 为展示动画允许局部 style，public
       # 还包含扩展名为 .ts 的 HLS 二进制分片，都不属于业务消费代码。
       - name: Guard distributable UI usage

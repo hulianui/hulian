@@ -61,11 +61,33 @@ import {
 | labels | Partial\<ComponentPickerLabels\> | — | 界面文案覆盖，可整体或逐条；不传则取 ConfigProvider 的 locale（内置兜底 zh-CN） |
 | className | string | — | 外层类名。**须给确定高度**（如 `h-[560px]`），组件内部按 flex 填满、各区独立滚动 |
 
-`ComponentPickerItem`：`{ slug, name, description, category, group, tags?, props?, examples? }`。
-`ComponentPickerProp`：`{ name, type?, default?, description?, required? }`。
-`ComponentPickerExample`：`{ title?, lang?, code }`。
+`ComponentPickerItem`
 
-`ComponentPickerCommandProps`（薄封装）：`items` / `open` / `onOpenChange` / `onSelect` / `placeholder` / `emptyMessage` / `maxResults`（默认 30）/ `groupByCategory`（默认 `true`）/ `shortcut`。
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| slug * | `string` | — | 唯一键，也是 `onSelect` 的第一个入参 |
+| name * | `string` | — | 展示名（PascalCase 导出名） |
+| description * | `string` | — | 一句话说明 |
+| category * | `string` | — | 一级分类（layout / forms / data-display…） |
+| group * | `string` | — | 二级分组（container / advanced / collection…）；无分组给空串 |
+| tags | `string[]` | — | 搜索用的补充关键词 |
+| props | `ComponentPickerProp[]` | — | 详情面板的 Props 表数据，每项 `{ name, type?, default?, description?, required? }` |
+| examples | `ComponentPickerExample[]` | — | 详情面板的示例代码，每项 `{ title?, lang?, code }` |
+
+`ComponentPickerCommandProps`（薄封装：把目录塞进 Command 面板）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| items * | `ComponentPickerItem[]` | — | 同上 |
+| open * | `boolean` | — | 受控开关 |
+| onOpenChange * | `(open: boolean) => void` | — | 开合回调 |
+| onSelect | `(slug: string) => void` | — | 选中某项 |
+| placeholder | `string` | 取 locale | 搜索框占位 |
+| emptyMessage | `ReactNode` | 取 locale | 无匹配结果时的文案 |
+| maxResults | `number` | `30` | 最多渲染多少条（注意与 `ComponentPickerProps` 的 60 不同） |
+| groupByCategory | `boolean` | `true` | 按 category 分组，每组一个 heading |
+| shortcut | `boolean` | `false` | 内置 ⌘K / Ctrl+K 开合 |
+| aria-label | `string` | 取 locale | 面板的无障碍名 |
 
 ## Events
 

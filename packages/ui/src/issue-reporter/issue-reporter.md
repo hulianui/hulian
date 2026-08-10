@@ -47,6 +47,7 @@ import { BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, IssueReporter, IssueRep
 | apiRef | MutableRefObject\<IssueReporterApi ｜ null\> | — | 命令式句柄：`submit()` / `getDraft()` / `getUrl()` / `reset()` |
 | className | string | — | 表单本体外层类名 |
 | open / defaultOpen | boolean | — | 仅 Modal：受控 / 非受控开关 |
+| onOpenChange | (open: boolean) => void | — | 仅 Modal：开合回调（受控时必接） |
 | trigger | ReactElement | — | 仅 Modal：触发元素 |
 | modalTitle | string | 取自 locale | 仅 Modal：弹层标题；不传则跟随 ConfigProvider（内置中文兜底「反馈 issue」） |
 | submitText / cancelText | string | — | 仅 Modal：页脚按钮文案 |

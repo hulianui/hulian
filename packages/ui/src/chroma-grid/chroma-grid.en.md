@@ -33,7 +33,19 @@ import { ChromaGrid } from "@hulianui/ui"
 | className | `string` | — | Root class name. |
 | style | `CSSProperties` | — | Root inline styles. |
 
-ChromaGridItem is `{ image?; title?; subtitle?; handle?; location?; borderColor?; gradient?; url?; children? }`. Use `var(--color-chart-1)` through 5 for color. url opens in a new tab; children replace the default layout.
+`ChromaGridItem`
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| image | `string` | — | Card header image (portrait or cover). Without it only the text area renders. |
+| title | `string` | — | Primary title such as a person or product name. |
+| subtitle | `string` | — | Secondary line such as a role or description. |
+| handle | `string` | — | Handle such as `@name`, rendered on the left of the subtitle row. |
+| location | `string` | — | Extra line such as a location, rendered on the right of the subtitle row. |
+| borderColor | `string` | — | Card outline color, which lights up on hover. `var(--color-chart-1)` through `var(--color-chart-5)` are recommended. |
+| gradient | `string` | — | Card background gradient such as `linear-gradient(145deg, var(--color-chart-1), transparent)`. The card face is a **dark context**: a neutral dark base always sits below this gradient, so the `transparent` end reveals that base rather than the page background, and light themes never end up with white text on a pale surface (#129). |
+| url | `string` | — | Click destination. When present the card is clickable and opens in a new tab; otherwise the cursor stays default. |
+| children | `ReactNode` | — | Replaces the default image-plus-text layout. |
 
 ## Example
 ```tsx

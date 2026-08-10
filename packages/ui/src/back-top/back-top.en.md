@@ -28,6 +28,7 @@ import { BackTop } from "@hulianui/ui"
 | target | `() => HTMLElement \| Window \| null` | `window` | Container to observe and scroll to the top. |
 | visibilityHeight | `number` | `400` | Scroll distance in pixels before the button fades in. |
 | className | `string` | — | The default uses `fixed` at the viewport's lower-right corner; override with `absolute` for a local container. |
+| aria-label | `string` | Follows `ConfigProvider` | Accessible name for the back-to-top action; falls back to the current locale's default wording. |
 
 ## Events
 

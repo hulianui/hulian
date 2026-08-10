@@ -35,6 +35,20 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 | grid | `boolean \| ListGridConfig` | — | Card-grid mode; true uses three columns. |
 | loadMore | `ListLoadMore` | — | Bottom load-more action and loading state. |
 
+`ListItemProps` (the `<ListItem>` used in the compound form)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| actions | `ReactNode[]` | — | Action area on the right of the row; separators are inserted between entries automatically. |
+
+`ListItemMetaProps` (`<ListItemMeta>`, the avatar / title / description trio on the left)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| avatar | `ReactNode` | — | Avatar or icon (reuses Avatar). |
+| title | `ReactNode` | — | Title. |
+| description | `ReactNode` | — | Description. |
+
 ## Slots
 
 | Slot | Type | Description |

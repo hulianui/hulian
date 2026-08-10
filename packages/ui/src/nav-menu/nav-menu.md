@@ -23,7 +23,7 @@ import { NavMenu } from "@hulianui/ui"
 
 ## Props
 
-`items` 元素为 `NavMenuNode = NavMenuItem | NavMenuGroup`。`NavMenuItem` = `{ key; label; icon?; href?; disabled?; actions?; children? }`（有 `children` 即可展开父项，有 `href` 渲染 `<a>` 否则 `<button>`）；`NavMenuGroup` = `{ type:"group"; key; label; children }`（不可折叠小标题，key 不进选中/展开态）。继承 `<nav>` 原生属性（`onSelect` 除外）。
+`items` 元素为 `NavMenuNode = NavMenuItem | NavMenuGroup`；`NavMenuGroup` = `{ type:"group"; key; label; children }`（不可折叠小标题，key 不进选中/展开态）。继承 `<nav>` 原生属性（`onSelect` 除外）。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
@@ -34,6 +34,19 @@ import { NavMenu } from "@hulianui/ui"
 | defaultSelectedKeys | `string[]` | — | 选中态（非受控初值） |
 | openKeys | `string[]` | — | 展开态（受控） |
 | defaultOpenKeys | `string[]` | — | 展开态（非受控初值） |
+
+`NavMenuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是选中 / 展开态的取值 |
+| label * | `ReactNode` | — | 行文案 |
+| icon | `ReactNode` | — | 行首图标；`collapsed` 模式下是收起态唯一可视内容 |
+| href | `string` | — | 叶子链接：提供则渲染 `<a>`（点击导航），否则渲染 `<button>`。父项忽略 |
+| render | `ReactElement` | — | 渲染成自定义元素（框架路由件：`<Link to=… />` / `<NextLink href=… />`）。皮肤 class、ref、键盘漫游属性与点击回调都会合并进去 —— 于是「真链接语义（中键新标签页 / 右键复制 / 读屏播报为链接）」与「客户端路由」可以同时拿到。与 Button / Link 的 `render` 约定一致。父项（有 `children`）忽略 |
+| disabled | `boolean` | `false` | 不可点、不进键盘漫游 |
+| actions | `ReactNode` | — | 行尾操作区（如删除 / 更多按钮）。渲染在该行 treeitem 按钮/链接**之外**（绝对覆盖行右侧），避免把 `<button>` 嵌进 treeitem 按钮造成非法 HTML / hydration 报错。可用组件暴露的 `group-hover/nav-row` 钩子做「hover 才显」。仅 `inline` 态生效 |
+| children | `NavMenuNode[]` | — | 子项；有它即为可展开父项 |
 
 ## Events
 

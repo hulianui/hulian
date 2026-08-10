@@ -34,7 +34,16 @@ import { Danmaku, allocateTrack, densityGap, estimateWidth, leastBusyTrack, scro
 | paused | `boolean` | `false` | 暂停所有动画 |
 | className | `string` | — | 容器自定义类 |
 
-`DanmakuItem`：`{ id: string; text: ReactNode; mode?: "scroll"｜"top"｜"bottom"; color?: string; size?: "sm"｜"md"｜"lg"; bold?: boolean }`。`mode` 默认 `scroll`，`size` 默认 `md`，`color` 默认继承前景 token。
+`DanmakuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 去重键：内部按它判断该条是否已上屏，只对未上屏的做入场 |
+| text * | `ReactNode` | — | 弹幕内容 |
+| mode | `"scroll" ｜ "top" ｜ "bottom"` | `"scroll"` | 滚动 / 顶部悬停 / 底部悬停 |
+| color | `string` | 继承前景 token | 文字色 |
+| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 字号档 |
+| bold | `boolean` | `false` | 加粗 |
 
 ## 示例
 ```tsx
