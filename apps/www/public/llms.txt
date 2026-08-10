@@ -114,7 +114,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Select](https://github.com/hulianui/hulian/blob/master/packages/ui/src/select/select.md): 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label + clearable / searchable / loading / 分组
 - [ShimmerButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shimmer-button/shimmer-button.md): 微光按钮 · 边缘游走火花(conic) + token + RSC · forms/button · #animated
 - [Slider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/slider/slider.md): 滑块 · Base UI 单值/range + 键盘步进
-- [SocialButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/social-button/social-button.md): 第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X 品牌 logo(内联 simple-icons·零依赖) + outline/solid 变体 + 纯 logo 方钮 + …
+- [SocialButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/social-button/social-button.md): 第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X/Discord/GitLab 品牌 logo(内联 simple-icons·零依赖) + 自定义品牌逃生口 + outli…
 - [StepsForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/steps-form/steps-form.md): 分步表单 · 复用 Steps 指示器 + 上一步/下一步/提交导航 + onStepValidate 逐步校验 + 跨步保值(消费者 useForm 持有·文案接 i18n)
 - [Switch](https://github.com/hulianui/hulian/blob/master/packages/ui/src/switch/switch.md): 开关 · Base UI 受控 + ARIA
 - [Textarea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/textarea/textarea.md): 多行输入 · 自适应高度

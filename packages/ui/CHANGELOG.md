@@ -4,6 +4,64 @@
 
 ### Minor Changes
 
+- 随包发预编译 `.d.ts`：消费方 tsc 内存降到八分之一（#156） <!-- parity-id: prebuilt-dts-types-condition -->
+
+  瑚琏是源码分发，`exports` 直指 `src/index.ts`，包里一个 `.d.ts` 都没有。而 `skipLibCheck` 只跳 `.d.ts`、跳不过 `.tsx`，于是消费方**只用十来个组件**也要把 780 个 `.tsx` 全量拖进类型检查。走子路径也救不了——子路径能收窄模块图，但类型检查跟的是**类型引用图**，组件之间 dogfood 得很彻底（`Field` → Base UI、`ProTable` → `Table`/`SearchForm`/`Pagination`），传递依赖很快就接近全库。原报告实测 typecheck 从 90 秒涨到 2 分 40 秒。
+
+  现在 `exports` 的 `types` 条件指向随包发的 `dist/*.d.ts`，`default` 仍是 `src/`。同一个工程引 12 个组件（根 barrel）、TS 7.0 实测：Files 2242 → 1872、**内存 699 MB → 88 MB**、耗时 1.53 s → 0.27 s，而且这个收益**不随组件用量增长**。Tailwind 的 `@source` 扫描、HMR、「能点进源码看实现」一个都不丢，因为打包器读的仍是源码。
+
+  **顺带解除一条已知边界**：`noUncheckedIndexedAccess` 从此进入承诺矩阵。它此前会让库内约 300 处索引访问在消费方编译里报 TS2532/TS18048（#56）——声明文件里没有表达式，也就没有索引访问。同理，库内源码的未使用 import 之类也不再外溢（见下条 #155）。
+
+  声明产物由 `prepack` 生成、`postpack` 清掉，仓库里不留生成物。CI 两侧都盯：`Emit declarations` 步骤保证 emit 不炸，消费方门禁额外断言「类型**确实**解析到了 `dist/*.d.ts`」——TS 在 `types` 目标缺失时会静默回落到源码，编译照样通过，不断言就看不见退回。
+
+- 表单受控件把根节点原生属性透传出去，`InputOTP` 可接 `Controller`（#157） <!-- parity-id: form-control-native-attrs-passthrough -->
+
+  `InputOTPProps` 此前是封闭接口，`field.onBlur` 无处可传。后果不是「少个功能」而是**静默失效**：react-hook-form 的 `touchedFields` 永不更新，`mode: "onBlur"` / `"onTouched"` 的表单点进点出不触发校验，只有提交时才报错——排查起来极难找。
+
+  这一批按一条口径拉平：纯展示件继承根节点 `HTMLAttributes`，**表单受控件在此之上把 `onBlur` 落到根**，「能不能接 `Controller`」当作表单件的验收项。本轮覆盖 21 个：`InputOTP` / `Rating` / `Segmented` / `SecretField` / `Listbox` / `CheckboxGroup` / `Choicebox(Group)` / `ColorSwatchPicker` / `IconPicker` / `EmojiPicker` / `Transfer` / `ScopeMatrix` / `CodeEditor` / `MarkdownEditor` / `Calendar` / `TimeField` / `Checkbox` / `Switch` / `Toggle` / `NumberField` / `ElasticSlider`。
+
+  两条实现口径写在 `docs/consuming.md` 第 7 节：① 同名异义的 prop 会被 `Omit`（`Rating.color` 是星色、`SecretField.onCopy` 回吐密钥原值、`EmojiPicker.onSelect` 回吐 emoji），以组件语义为准；② `rest` 展开在根节点属性**最前面**，组件自身的 `role` / `aria-*` / 键盘处理赢——那些一旦被顶掉，无障碍语义与键盘导航当场失效。
+
+  `InputOTP` 的 `onBlur` 是**整组**语义：槽位之间跳焦不触发（逐格触发的话，`mode: "onBlur"` 会在用户刚输一位时就开始报错）。另新增 `name`，渲染一个持有完整值的隐藏 input，原生 `<form>` 提交拿到的是整串验证码而不是 N 个单字符字段。
+
+  **未拉平的**：`Cascader` / `TreeSelect` / `CountrySelect` / `RegionCascader` / `DatePicker` 族这些 Popover 包壳的选择器——它们的「根」不是一个 DOM 节点，`id` / `data-*` 该落触发器还是浮层要逐件定，机械展开会静默落错位置。
+
+- `Tabs variant="solid"` 与 `Segmented` 的轨道换用新的凹槽令牌，选中项终于分得开（#152） <!-- parity-id: track-token-segmented-contrast -->
+
+  分段控件的轨道此前用 `--color-surface-hover`，与药丸的 `--color-surface` 在浅色档只差 **3.3% 亮度**（对比约 1.06:1），选中态只靠一条 `shadow-sm` 撑着，标签一多就找不到当前项。暗色档更糟：轨道 `gray-800` 比药丸 `gray-900` 还**亮**，等于把凹槽画在了浮起件上面，elevation 方向是反的。
+
+  新增语义令牌 `--color-track`（见 `@hulianui/tokens` 0.7.0）。它的定义是一条**关系**而不是某个灰阶：恒比 `--color-surface` 沉一档，且亮暗两态都保证浮起的药丸更靠近观察者。`Tabs` 的 `solid` 档与 `Segmented` 已接上，消费方无需改任何代码；想整体调深浅只动这一个变量，不会像改 `--color-surface-hover` 那样波及全库 hover 态。
+
+- `Table` 新增 `stickyScrollbar`：宽表在视口底部常驻横向滚动条（#149 附带） <!-- parity-id: table-sticky-horizontal-scrollbar -->
+
+  宽表比视口高时，真正的横向滚动条落在表格底边、被挤到折叠线以下——想横向拖一下得先把整页滚到表底。开启后在表格外壳里挂一条 `position: sticky; bottom: 0` 的代理滚动条，与真容器双向同步。
+
+  只在**需要**时出现：内容确实横向溢出、且表格底边已在视口之下；滚到表底会自动收起，不会上下并排出两条。与冻结列共存（代理条在表格外）。**`virtual` 开启时本项无效**——那种容器是定高的，横向滚动条一直贴在容器底边。关闭时 DOM 与加这个 prop 之前逐字节一致。
+
+  滚动条外观是**显式画**出来的（`::-webkit-scrollbar` + `scrollbar-width`），不是听凭系统：macOS 默认是 overlay 滚动条，平时完全不可见，那样这条就成了一道空白，与「常驻一条」正好相反。
+
+- `SocialButton` 补 Discord / GitLab，并开出自定义平台的逃生口（#154） <!-- parity-id: social-button-custom-brand-escape-hatch -->
+
+  `provider` 此前是封闭枚举。这类组件最常见的失效方式不是「用一半」而是**整组退回**：一列 4 个登录入口只要有一个不在枚举里，混用就会看出两种形态（内置的自带品牌 logo 与文案，退回 `Button` 的那两个要自己塞 SVG、图标尺寸与间距都对不上），于是索性整组手搓。
+
+  `provider` 现在也接 `SocialBrand` 对象（`icon` / `label` / `brandColor?`），拿到与内置品牌完全一致的皮肤——尺寸、形态、loading、按压、焦点环全共用。不传 `brandColor` 即黑白档，与内置 GitHub/X/Apple 同处方（企业自建 IdP 多半只有单色 logo）。
+
+  枚举只补了 Discord 与 GitLab，因为**补不完也补不了**：simple-icons 已应法务要求下架 Microsoft / LinkedIn / Slack / 飞书等 logo，这些在库里根本无法内置；自建 IdP（Keycloak / Authentik / Okta）更是穷举不完。所以逃生口才是解，补枚举只是锦上添花。
+
+  ⚠️ 组件是 `memo` 的，自定义品牌对象请提到模块作用域——写成 `provider={{ … }}` 内联字面量每次渲染都是新引用，memo 当场失效。
+
+- `Field` 的 Label / Description / Error 三段各开一个 className 出口（#153） <!-- parity-id: field-section-classname-outlets -->
+
+  三段的类名此前是硬编码的。存量页面的字段排版往往整页统一（12px / muted），对不齐就只能整页退回「自己的 `div.row` + `span.label`」，连带丢掉 `Field` 提供的 `aria-describedby` 串联、`invalid` 联动与错误渲染——只因为 label 的字号改不了。
+
+  新增 `labelClassName` / `descriptionClassName` / `errorClassName`，走 `cn`（twMerge），传 `text-xs` 能正确顶掉默认的 `text-sm`。出口只动样式，a11y 关系原样保留。
+
+- 清掉库内未使用的 import，并把这条钉进两侧门禁（#155） <!-- parity-id: unused-imports-and-strict-gates -->
+
+  源码分发下，库里一个未使用的 import 就是每个开 `noUnusedLocals` 的消费方编译里的一条 TS6133/TS6196，而 `skipLibCheck` 救不了。原报告点出 `heading.types.ts` / `text.types.ts` 两处，实际全库有 **37 处**——其中 `prose` / `safe-area` / `streaming-text` 三个 `.types.ts` 同样会外溢到消费方，只是报告者没用到那几个组件。
+
+  `noUnusedLocals` / `noUnusedParameters` 已开在 `packages/ui/tsconfig.json`（库内当场就红，这才是防回归本体），消费方门禁的承诺矩阵里也同步加上。顺带清出两处遗留：`Choicebox` 引了 `pressableClass` 却从未使用（它手写的 `active:scale-[0.99]` 是刻意比通用档更轻），`JsonViewer` 的 `isIndex` 一路传到 `JsonNode` 却从不消费。
+
 - `Input` / `Textarea` 新增 `variant="cell"`：表格里的就地编辑器（#149） <!-- parity-id: input-textarea-cell-variant -->
 
   中后台有一类页面是「长得像表格的表单」——表头是字段名，单元格本身就是输入框。此前往 `Table` 的 `cell` 里塞瑚琏 `Input`，拿到的是带边框外壳 + 固定行高的独立控件，密集表格当场变成一片框；要做成能看的样子得在调用处覆盖一长串 `border-0 bg-transparent p-0 focus-visible:ring-0 …`，而那正是约定里明令禁止的调用处补丁。

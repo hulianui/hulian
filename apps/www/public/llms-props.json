@@ -668,7 +668,9 @@
       "github",
       "google",
       "apple",
-      "x"
+      "x",
+      "discord",
+      "gitlab"
     ],
     "SparklineVariant": [
       "line",
@@ -8368,6 +8370,30 @@
           "type": "string",
           "default": null,
           "description": "落在 Field.Root（纵向布局容器）"
+        },
+        {
+          "name": "labelClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到 label（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号"
+        },
+        {
+          "name": "descriptionClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到 description（默认 `text-xs text-muted-foreground`）"
+        },
+        {
+          "name": "errorClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到 error（默认 `text-xs text-danger`）"
         }
       ],
       "events": [],
@@ -8934,6 +8960,14 @@
           "description": "中间插入横线分隔符（3-3 分组视觉，如 XXX–XXX）"
         },
         {
+          "name": "name",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "提交标识。额外渲染一个持有**完整值**的隐藏 input（槽位各持一位，同名会提交出 N 个字段）"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
@@ -8966,6 +9000,14 @@
           "type": "(value: string) => void",
           "default": null,
           "description": "填满时回调"
+        },
+        {
+          "name": "onBlur",
+          "required": false,
+          "kind": "function",
+          "type": "(e: FocusEvent<HTMLDivElement>) => void",
+          "default": null,
+          "description": "焦点**离开整组**时触发；槽位之间跳焦不算。接 RHF `Controller` 时把 `field.onBlur` 传这里"
         }
       ],
       "slots": []
@@ -12539,6 +12581,7 @@
         "SocialButton"
       ],
       "types": [
+        "SocialBrand",
         "SocialButtonProps",
         "SocialProvider"
       ],
@@ -12547,8 +12590,8 @@
         {
           "name": "provider",
           "required": true,
-          "kind": "enum",
-          "type": "\"wechat\" | \"alipay\" | \"qq\" | \"weibo\" | \"github\" | \"google\" | \"apple\" | \"x\"",
+          "kind": "union",
+          "type": "\"wechat\" | \"alipay\" | \"qq\" | \"weibo\" | \"github\" | \"google\" | \"apple\" | \"x\" | \"discord\" | \"gitlab\" | SocialBrand",
           "values": [
             "wechat",
             "alipay",
@@ -12557,11 +12600,13 @@
             "github",
             "google",
             "apple",
-            "x"
+            "x",
+            "discord",
+            "gitlab"
           ],
           "valueType": "string",
           "default": null,
-          "description": "第三方平台，决定 logo、默认文案与品牌色"
+          "description": "第三方平台，决定 logo、默认文案与品牌色。传对象即接入枚举外的平台，字段见下表"
         },
         {
           "name": "variant",
@@ -12618,6 +12663,33 @@
           "type": "string",
           "default": null,
           "description": "透传根节点类名"
+        },
+        {
+          "name": "icon",
+          "owner": "SocialBrand（自定义平台）",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "品牌 logo。内联 `<svg>` / `<img>` / 图标组件皆可，会被约束到当前 `size` 的图标尺寸"
+        },
+        {
+          "name": "label",
+          "owner": "SocialBrand（自定义平台）",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "品牌名。用于默认文案（「{label}登录」）与 `shape=\"icon\"` 时的 `aria-label`"
+        },
+        {
+          "name": "brandColor",
+          "owner": "SocialBrand（自定义平台）",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "品牌主色。outline 时给 logo 着色、solid 时作按钮底色；**不传即黑白档**，与内置 GitHub/X/Apple 同处方"
         }
       ],
       "events": [
@@ -23451,6 +23523,14 @@
           "type": "VirtualOptions",
           "default": "关",
           "description": "虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }`"
+        },
+        {
+          "name": "stickyScrollbar",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 开启时无效**（容器定高，真滚动条一直看得见）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳"
         },
         {
           "name": "className",

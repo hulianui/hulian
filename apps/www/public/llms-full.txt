@@ -4733,6 +4733,9 @@ import { Field } from "@hulianui/ui"
 | name | `string` | — | 提交标识，透传 Field.Root |
 | colSpan | `"full"` | — | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
 | className | `string` | — | 落在 Field.Root（纵向布局容器） |
+| labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
+| descriptionClassName | `string` | — | 追加到 description（默认 `text-xs text-muted-foreground`） |
+| errorClassName | `string` | — | 追加到 error（默认 `text-xs text-danger`） |
 
 ## Slots
 
@@ -5108,6 +5111,8 @@ import { InputOTP } from "@hulianui/ui"
 
 ## Props
 
+继承根节点（`role="group"` 的 div）原生属性：`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` 都能直接传。
+
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | length | `number` | `6` | 分段数量 |
@@ -5117,6 +5122,7 @@ import { InputOTP } from "@hulianui/ui"
 | disabled | `boolean` | — | 禁用 |
 | invalid | `boolean` | `false` | 校验失败态 |
 | groupGap | `boolean` | — | 中间插入横线分隔符（3-3 分组视觉，如 XXX–XXX） |
+| name | `string` | — | 提交标识。额外渲染一个持有**完整值**的隐藏 input（槽位各持一位，同名会提交出 N 个字段） |
 | className | `string` | — | 容器类名 |
 | aria-label | `string` | — | 无障碍标签 |
 
@@ -5126,6 +5132,7 @@ import { InputOTP } from "@hulianui/ui"
 |------|------|------|
 | onChange | `(value: string) => void` | 值变化回调 |
 | onComplete | `(value: string) => void` | 填满时回调 |
+| onBlur | `(e: FocusEvent<HTMLDivElement>) => void` | 焦点**离开整组**时触发；槽位之间跳焦不算。接 RHF `Controller` 时把 `field.onBlur` 传这里 |
 
 ## 示例
 ```tsx
@@ -5148,7 +5155,8 @@ const [otp, setOtp] = useState("");
 
 - `onComplete` 仅在填满最后一格瞬间触发一次，验证逻辑放这里；不要在 `onChange` 里判 `value.length === length` 重复触发。
 - 受控用 `value` 须配 `onChange`，否则格子无法输入。
-- 暂无其它已知坑。
+- 接 **react-hook-form** 时值是整串而非原生 input，必须走 `Controller`，并且**要把 `field.onBlur` 传进来**——不传的话 `touchedFields` 永不更新，`mode: "onBlur"` / `"onTouched"` 的表单会静默失效（点进点出不校验，只有提交才报错）。
+- `onBlur` 是**整组**语义：槽位之间跳焦不触发。想拿逐格失焦请自己在槽位上做，不要指望这个回调。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [Rating](https://hulianui.haloritual.com/zh/components/rating) · [Upload](https://hulianui.haloritual.com/zh/components/upload)
@@ -7353,11 +7361,11 @@ import { Slider } from "@hulianui/ui"
 
 **导出**：`SocialButton`
 
-> 第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X 品牌 logo(内联 simple-icons·零依赖) + outline/solid 变体 + 纯 logo 方钮 + loading · 黑白系品牌 solid 随主题前景避暗色不可见 · forms/button
+> 第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X/Discord/GitLab 品牌 logo(内联 simple-icons·零依赖) + 自定义品牌逃生口 + outline/solid 变体 + 纯 logo 方钮 + loading · 黑白系品牌 solid 随主题前景避暗色不可见 · forms/button
 
 ## 何时用
 
-第三方账号登录/绑定入口（微信、支付宝、QQ、微博、GitHub、Google、Apple、X）。内置品牌 logo、默认文案与品牌色，无需自己接 simple-icons。普通操作按钮用 [Button](https://hulianui.haloritual.com/zh/components/button)；需要把多个登录方式编成一组用 [ButtonGroup](https://hulianui.haloritual.com/zh/components/button-group) 包裹。
+第三方账号登录/绑定入口（微信、支付宝、QQ、微博、GitHub、Google、Apple、X、Discord、GitLab）。内置品牌 logo、默认文案与品牌色，无需自己接 simple-icons。枚举之外的平台（自建 OIDC / Keycloak / Authentik / Okta / 企业 SSO，以及未内置的品牌）给 `provider` 传对象即可，见下方「自定义平台」。普通操作按钮用 [Button](https://hulianui.haloritual.com/zh/components/button)；需要把多个登录方式编成一组用 [ButtonGroup](https://hulianui.haloritual.com/zh/components/button-group) 包裹。
 
 ## 导入
 ```ts
@@ -7370,12 +7378,22 @@ import { SocialButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| provider* | `"wechat" \| "alipay" \| "qq" \| "weibo" \| "github" \| "google" \| "apple" \| "x"` | — | 第三方平台，决定 logo、默认文案与品牌色 |
+| provider* | `"wechat" \| "alipay" \| "qq" \| "weibo" \| "github" \| "google" \| "apple" \| "x" \| "discord" \| "gitlab" \| SocialBrand` | — | 第三方平台，决定 logo、默认文案与品牌色。传对象即接入枚举外的平台，字段见下表 |
 | variant | `"solid" \| "outline"` | `"outline"` | solid=品牌色填充（黑白品牌随主题前景）；outline=描边中性底 + 品牌色 logo（推荐） |
 | shape | `"button" \| "icon"` | `"button"` | button=带文案；icon=纯 logo 方钮 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
 | loading | `boolean` | `false` | 提交中：logo 替换为转圈并禁用 |
 | className | `string` | — | 透传根节点类名 |
+
+### SocialBrand（自定义平台）
+
+`provider` 传对象时的字段。皮肤（尺寸/形态/loading/按压/焦点环）与内置品牌完全共用。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| icon* | `ReactNode` | — | 品牌 logo。内联 `<svg>` / `<img>` / 图标组件皆可，会被约束到当前 `size` 的图标尺寸 |
+| label* | `string` | — | 品牌名。用于默认文案（「{label}登录」）与 `shape="icon"` 时的 `aria-label` |
+| brandColor | `string` | — | 品牌主色。outline 时给 logo 着色、solid 时作按钮底色；**不传即黑白档**，与内置 GitHub/X/Apple 同处方 |
 
 ## Events
 
@@ -7399,10 +7417,19 @@ import { SocialButton } from "@hulianui/ui"
 <SocialButton provider="alipay" shape="icon" />
 <SocialButton provider="github" loading />
 ```
+```tsx
+{/* 自定义平台：必须提到模块作用域，组件是 memo 的 */}
+const KEYCLOAK: SocialBrand = { label: "企业 SSO", icon: <LockIcon /> };
+
+<SocialButton provider={KEYCLOAK} />
+```
 
 ## 禁忌 / 坑
 
-暂无已知坑。`loading` 会自动禁用按钮，无需额外传 `disabled`。github/x/apple 黑白系品牌的 solid 态会跟随主题前景色，避免在暗色下不可见——不要硬写品牌黑覆盖。
+- **自定义品牌对象必须提到模块作用域**（或 `useMemo` 起来）。本组件是 `memo` 的，写成 `provider={{ ... }}` 内联对象字面量，每次渲染都是新引用，memo 当场失效。
+- **别等着枚举补全**：simple-icons 已应法务要求下架 Microsoft / LinkedIn / Slack / 飞书等 logo，这些在库里**无法内置**；自建 IdP 更是穷举不完。碰到没有的平台直接走 `SocialBrand`，不要因为「一组 4 个里坏 2 个」而整组退回 `Button` 自己塞 SVG。
+- `loading` 会自动禁用按钮，无需额外传 `disabled`。
+- github/x/apple 黑白系品牌的 solid 态会跟随主题前景色，避免在暗色下不可见——不要硬写品牌黑覆盖。自定义品牌不传 `brandColor` 时同档。
 
 ## 相关
 [Button](https://hulianui.haloritual.com/zh/components/button) · [ShimmerButton](https://hulianui.haloritual.com/zh/components/shimmer-button) · [RainbowButton](https://hulianui.haloritual.com/zh/components/rainbow-button) · [PulsatingButton](https://hulianui.haloritual.com/zh/components/pulsating-button) · [RippleButton](https://hulianui.haloritual.com/zh/components/ripple-button) · [ButtonGroup](https://hulianui.haloritual.com/zh/components/button-group)
@@ -13784,6 +13811,7 @@ import { Table } from "@hulianui/ui"
 | dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
+| stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 开启时无效**（容器定高，真滚动条一直看得见）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
 | className | `string` | — | 根节点类名 |
 
 ## Events

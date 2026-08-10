@@ -111,6 +111,7 @@
           "--success-subtle",
           "--surface",
           "--surface-hover",
+          "--track",
           "--warning",
           "--warning-border",
           "--warning-foreground",
@@ -4026,6 +4027,20 @@
       "source": "packages/ui/src/input-otp/input-otp.md"
     },
     {
+      "id": "component/input-otp/pitfall/3",
+      "scope": "input-otp",
+      "title": "InputOTP",
+      "rule": "接 **react-hook-form** 时值是整串而非原生 input，必须走 `Controller`，并且**要把 `field.onBlur` 传进来**——不传的话 `touchedFields` 永不更新，`mode: \"onBlur\"` / `\"onTouched\"` 的表单会静默失效（点进点出不校验，只有提交才报错）。",
+      "source": "packages/ui/src/input-otp/input-otp.md"
+    },
+    {
+      "id": "component/input-otp/pitfall/4",
+      "scope": "input-otp",
+      "title": "InputOTP",
+      "rule": "`onBlur` 是**整组**语义：槽位之间跳焦不触发。想拿逐格失焦请自己在槽位上做，不要指望这个回调。",
+      "source": "packages/ui/src/input-otp/input-otp.md"
+    },
+    {
       "id": "component/inspector-panel/pitfall/1",
       "scope": "inspector-panel",
       "title": "InspectorPanel",
@@ -7421,6 +7436,34 @@
       "source": "packages/ui/src/snippet/snippet.md"
     },
     {
+      "id": "component/social-button/pitfall/1",
+      "scope": "social-button",
+      "title": "SocialButton",
+      "rule": "**自定义品牌对象必须提到模块作用域**（或 `useMemo` 起来）。本组件是 `memo` 的，写成 `provider={{ ... }}` 内联对象字面量，每次渲染都是新引用，memo 当场失效。",
+      "source": "packages/ui/src/social-button/social-button.md"
+    },
+    {
+      "id": "component/social-button/pitfall/2",
+      "scope": "social-button",
+      "title": "SocialButton",
+      "rule": "**别等着枚举补全**：simple-icons 已应法务要求下架 Microsoft / LinkedIn / Slack / 飞书等 logo，这些在库里**无法内置**；自建 IdP 更是穷举不完。碰到没有的平台直接走 `SocialBrand`，不要因为「一组 4 个里坏 2 个」而整组退回 `Button` 自己塞 SVG。",
+      "source": "packages/ui/src/social-button/social-button.md"
+    },
+    {
+      "id": "component/social-button/pitfall/3",
+      "scope": "social-button",
+      "title": "SocialButton",
+      "rule": "`loading` 会自动禁用按钮，无需额外传 `disabled`。",
+      "source": "packages/ui/src/social-button/social-button.md"
+    },
+    {
+      "id": "component/social-button/pitfall/4",
+      "scope": "social-button",
+      "title": "SocialButton",
+      "rule": "github/x/apple 黑白系品牌的 solid 态会跟随主题前景色，避免在暗色下不可见——不要硬写品牌黑覆盖。自定义品牌不传 `brandColor` 时同档。",
+      "source": "packages/ui/src/social-button/social-button.md"
+    },
+    {
       "id": "component/soft-aurora/pitfall/1",
       "scope": "soft-aurora",
       "title": "SoftAurora",
@@ -8986,7 +9029,7 @@
   ],
   "stats": {
     "componentDocs": 385,
-    "componentAdvisories": 1250,
-    "totalAdvisories": 1259
+    "componentAdvisories": 1256,
+    "totalAdvisories": 1265
   }
 }

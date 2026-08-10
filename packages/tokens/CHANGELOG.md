@@ -4,6 +4,14 @@
 
 ### Minor Changes
 
+- 新增语义令牌 `--color-track`：分段控件的凹槽轨道底（#152） <!-- parity-id: color-track-token -->
+
+  `Tabs variant="solid"` 与 `Segmented` 的轨道此前借用 `--color-surface-hover`，与药丸的 `--color-surface` 在浅色档只差 **3.3% 亮度**（对比约 1.06:1），选中态只靠一条 `shadow-sm` 撑着；暗色档更糟——轨道 `gray-800` 比药丸 `gray-900` 还**亮**，凹凸方向是反的。
+
+  新令牌的定义是一条**关系**而非某个灰阶：恒比 `--color-surface` 沉一档，且亮暗两态都保证浮起件更靠近观察者。浅色 `gray-200`、暗色 `gray-950`、反色面板档为 4% 白掺色，三处都写全了（自定义属性是代入后才继承的，反色面板不显式重声明会拿到 `:root` 算好的浅灰死值）。
+
+  想整体调轨道深浅只动这一个变量即可，不会像改 `--color-surface-hover` 那样波及全库 hover 态。
+
 - 新增关键帧 `hulian-line-shadow`，供 `LineShadowText` 的斜线流动使用（#151） <!-- parity-id: line-shadow-keyframe -->
 
   默认不挂（该组件的 `animated` 默认 `false`），只在显式开启时生效。

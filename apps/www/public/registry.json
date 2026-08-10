@@ -3009,8 +3009,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
-        "https://hulianui.haloritual.com/zh/r/lib.json",
-        "https://hulianui.haloritual.com/zh/r/motion.json"
+        "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
         "import": "import { ChoiceboxGroup, Choicebox } from \"@hulianui/ui\"",
@@ -5642,7 +5641,7 @@
       "name": "social-button",
       "type": "registry:ui",
       "title": "SocialButton",
-      "description": "第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X 品牌 logo(内联 simple-icons·零依赖) + outline/solid 变体 + 纯 logo 方钮 + …",
+      "description": "第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X/Discord/GitLab 品牌 logo(内联 simple-icons·零依赖) + 自定义品牌逃生口 + outli…",
       "categories": [
         "forms"
       ],
@@ -5659,6 +5658,7 @@
           "SocialButton"
         ],
         "types": [
+          "SocialBrand",
           "SocialButtonProps",
           "SocialProvider"
         ],
@@ -20458,7 +20458,9 @@
         "uncatalogued"
       ],
       "dependencies": [],
-      "registryDependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/social-button.json"
+      ],
       "meta": {
         "import": "import { ConfigProvider, useLocale, zhCN, enUS } from \"@hulianui/ui\"",
         "exports": [

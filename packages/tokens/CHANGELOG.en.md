@@ -4,6 +4,14 @@
 
 ### Minor Changes
 
+- New semantic token `--color-track`, the recessed groove behind segmented controls (#152) <!-- parity-id: color-track-token -->
+
+  The track for `Tabs variant="solid"` and `Segmented` used to borrow `--color-surface-hover`, which sits only **3.3% away in lightness** from the pill's `--color-surface` in the light theme (about 1.06:1), leaving selection to rest on a single `shadow-sm`. The dark theme was worse: the track at `gray-800` was **lighter** than the pill at `gray-900`, inverting the elevation.
+
+  The new token is defined by a **relationship** rather than a fixed grey: always one step deeper than `--color-surface`, with the raised element reading as closer to the viewer in both themes. It is declared in all three places — `gray-200` in light, `gray-950` in dark, and a 4% white mix on inverse panels. The last one matters: custom properties inherit after substitution, so an inverse panel that does not redeclare it would inherit the light grey already computed at `:root`.
+
+  Retuning the depth of every track now means changing one variable, instead of `--color-surface-hover`, which would ripple through every hover state in the library.
+
 - New `hulian-line-shadow` keyframe, used by `LineShadowText` for its drifting stripes (#151) <!-- parity-id: line-shadow-keyframe -->
 
   It is not attached by default (the component's `animated` prop defaults to `false`) and only applies when explicitly enabled.
