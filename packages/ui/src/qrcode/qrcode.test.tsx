@@ -1,6 +1,5 @@
-import { Profiler } from "react";
-import { act, cleanup, render } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import { QRCode } from "./qrcode";
 import { buildQRCode, qrCodeSvgString } from "./qrcode-core";
 import { expectMemoSkipsSubtree } from "../../test/memo-guard";

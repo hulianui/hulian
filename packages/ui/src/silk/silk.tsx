@@ -143,7 +143,7 @@ export function Silk({
 }: SilkProps) {
   const { ref, reduced } = useGlCanvas(
     ({ ogl, canvas }) => {
-      const { Renderer, Program, Mesh, Triangle, Color, Vec2 } = ogl;
+      const { Renderer, Program, Mesh, Triangle, Color } = ogl;
 
       // 设备像素比上限 2，避免 4K 屏性能浪费
       const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2);

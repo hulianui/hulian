@@ -3,7 +3,7 @@ import { useCallback, useRef, type CSSProperties, type PointerEvent } from "reac
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
-import type { VoiceRecordProps, VoiceRecordStatus } from "./voice-record.types";
+import type { VoiceRecordProps } from "./voice-record.types";
 
 // 尺寸（Tailwind v4 标准 spacing）
 const sizeMap = {

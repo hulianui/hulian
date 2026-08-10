@@ -2,7 +2,6 @@
 import { createContext, useContext, useId, useState } from "react";
 import { Check } from "../_icons";
 import { cn } from "../lib/cn";
-import { pressableClass } from "../motion";
 import type { ChoiceboxGroupProps, ChoiceboxProps } from "./choicebox.types";
 
 // Choicebox = 卡片化的单/多选（区别普通 Radio/Checkbox：每项是带标题/描述/图标的可点卡片，
@@ -29,6 +28,7 @@ export function ChoiceboxGroup({
   className,
   children,
   "aria-label": ariaLabel,
+  ...rest
 }: ChoiceboxGroupProps) {
   const autoName = useId();
   const isControlled = value !== undefined;
@@ -59,6 +59,7 @@ export function ChoiceboxGroup({
       value={{ multiple, name: name ?? autoName, groupDisabled: disabled, isSelected, toggle }}
     >
       <div
+        {...rest}
         role={multiple ? "group" : "radiogroup"}
         aria-label={ariaLabel}
         className={cn("grid gap-3", disabled && "opacity-60", className)}
@@ -78,6 +79,7 @@ export function Choicebox({
   children,
   disabled: itemDisabled,
   className,
+  ...rest
 }: ChoiceboxProps) {
   const ctx = useContext(ChoiceboxContext);
   if (!ctx) throw new Error("Choicebox 必须置于 ChoiceboxGroup 内");
@@ -87,6 +89,7 @@ export function Choicebox({
 
   return (
     <label
+      {...rest}
       data-checked={selected ? "" : undefined}
       data-disabled={disabled ? "" : undefined}
       className={cn(

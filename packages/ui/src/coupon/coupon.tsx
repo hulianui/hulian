@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
-import type { CouponProps, CouponStatus, CouponTone } from "./coupon.types";
+import type { CouponProps, CouponTone } from "./coupon.types";
 
 // Coupon = 撕票造型优惠券。左侧面额区(tone 实色) + 中缝虚线撕边/上下半圆穿孔 + 右侧信息/操作区。
 // 穿孔用 bg-[var(--coupon-notch)]（默认页底色）的两个圆叠在中缝端点，营造「凿穿」轮廓；
@@ -28,7 +28,6 @@ function Denomination({
   kind,
   amount,
   discount,
-  threshold,
   size,
   formatDiscount,
   freeShipping,

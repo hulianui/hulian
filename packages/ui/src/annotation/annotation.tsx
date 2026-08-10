@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { cn } from "../lib/cn";
 import { ARROW_H, ARROW_W, ARROWS, annotationGeometry } from "./annotation.geometry";
-import type { AnnotationProps, AnnotationSide, AnnotationTone } from "./annotation.types";
+import type { AnnotationProps, AnnotationTone } from "./annotation.types";
 
 /**
  * tone 只设 `--hl-ann-color` 一个变量：荧光笔底色由它派生（见基础类里的 color-mix），

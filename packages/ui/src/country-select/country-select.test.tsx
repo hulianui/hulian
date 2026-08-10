@@ -1,6 +1,5 @@
-import { Profiler } from "react";
-import { describe, it, expect, vi } from "vitest";
-import { act, render } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { render } from "@testing-library/react";
 import { CountrySelect } from "./country-select";
 import { flagEmoji, filterCountries, getCountry, countrySearchText } from "./country-select.logic";
 import { countries } from "./countries.data";

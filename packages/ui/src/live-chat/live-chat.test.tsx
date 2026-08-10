@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
 import { LiveChat } from "./live-chat";
 import type { LiveChatItem } from "./live-chat.types";
 import { ConfigProvider } from "../config/config-provider";

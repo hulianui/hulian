@@ -67,7 +67,7 @@ describe("EditableTable", () => {
   });
 
   it("点编辑进入编辑态（出现输入框），其他行编辑按钮禁用", () => {
-    const { container, getAllByText } = render(<Harness />);
+    const { container } = render(<Harness />);
     const r1 = rowEl(container, "甲");
     fireEvent.click(within(r1).getByText("编辑"));
     expect(within(r1).getByLabelText("name")).toBeTruthy();
@@ -78,7 +78,7 @@ describe("EditableTable", () => {
 
   it("编辑后保存提交 onChange（新值显示）", () => {
     const spy = vi.fn();
-    const { container, getByDisplayValue, getByText } = render(<Harness onChangeSpy={spy} />);
+    const { container, getByText } = render(<Harness onChangeSpy={spy} />);
     const r1 = rowEl(container, "甲");
     fireEvent.click(within(r1).getByText("编辑"));
     fireEvent.change(within(r1).getByLabelText("name"), { target: { value: "甲改" } });

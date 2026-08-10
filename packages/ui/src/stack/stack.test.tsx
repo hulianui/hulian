@@ -72,6 +72,11 @@ function _typeCheckAsAnchor() {
   return <Stack as="a" href="#anchor" />;
 }
 
+// 它们的价值全在编译期，运行时没有调用点。这两行只为满足 noUnusedLocals ——
+// 别改成删函数：删掉等于撤掉 #62 的类型回归断言。
+void _typeCheckAsForm;
+void _typeCheckAsAnchor;
+
 describe("Stack 响应式断点", () => {
   it("direction 支持 xl / 2xl 档", () => {
     const { container } = render(<Stack direction={{ base: "column", xl: "row", "2xl": "column" }} />);

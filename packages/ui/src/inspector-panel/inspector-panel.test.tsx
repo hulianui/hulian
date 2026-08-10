@@ -404,7 +404,7 @@ describe("InspectorPanel · 窄栏降级（#114）", () => {
     ],
   };
 
-  const renderWith = (width: number) =>
+  const renderWith = (_width: number) =>
     render(
       <InspectorPanel
         selectedElement="Text"

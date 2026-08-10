@@ -1,5 +1,4 @@
-import { Profiler } from "react";
-import { act, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { ConfigProvider, enUS } from "../config";
 import { ContributionGraph } from "./contribution-graph";

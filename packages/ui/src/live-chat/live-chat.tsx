@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "../avatar";
 import type { LiveChatItem, LiveChatProps } from "./live-chat.types";

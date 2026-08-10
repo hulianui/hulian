@@ -169,7 +169,6 @@ describe("Orb reduced-motion fallback", () => {
   });
 
   it("reduced-motion=true 时渲染 div fallback（无 canvas）", () => {
-    const { container } = render(<Orb />);
     // useEffect 内 setReduced(true) 是异步的，初次 SSR-safe 渲染为 false → canvas
     // 但在测试环境同步 act 包装后，reduced state 会更新
     // 此处做软断言：渲染不抛即可；DOM 检查见下一条

@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ElementType, ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 import type { PolymorphicProps } from "../lib/polymorphic";
 
 export interface StreamingTextOwnProps {

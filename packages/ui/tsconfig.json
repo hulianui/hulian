@@ -1,7 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    // 这两条**只开在本包**，不开在 tsconfig.base.json —— 它们防的是「源码分发把库内死代码
+    // 漏成消费方的编译错误」这件事，只有发出去的 .tsx 有这个风险（hulianui/hulian#155：
+    // heading/text 的一个未使用 import 让每个开 noUnusedLocals 的消费方常年带两条红字，
+    // 而 skipLibCheck 只跳 .d.ts、跳不过源码）。文档站 apps/www 不发布，不受此约束。
+    //
+    // 编译期类型断言这类「刻意不调用」的声明，用 `void x;` 引用一下，别删（见 stack.test.tsx）。
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]

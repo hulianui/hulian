@@ -1,4 +1,4 @@
-import type { ElementType, HTMLAttributes } from "react";
+import type { ElementType } from "react";
 import type { PolymorphicProps } from "../lib/polymorphic";
 
 export type SafeAreaEdge = "top" | "right" | "bottom" | "left";

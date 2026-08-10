@@ -53,7 +53,6 @@ function entriesOf(value: unknown, t: JsonValueType): Entry[] {
 
 interface NodeProps {
   name?: string | number;
-  isIndex?: boolean;
   value: unknown;
   depth: number;
   path: string;
@@ -64,7 +63,6 @@ interface NodeProps {
 
 function JsonNode({
   name,
-  isIndex,
   value,
   depth,
   path,
@@ -149,7 +147,6 @@ function JsonNode({
               <JsonNode
                 key={String(k)}
                 name={k}
-                isIndex={idx}
                 value={v}
                 depth={depth + 1}
                 path={jsonPath(path, k, idx)}
@@ -184,7 +181,6 @@ function JsonViewerImpl({
           <JsonNode
             key={String(k)}
             name={k}
-            isIndex={idx}
             value={v}
             depth={1}
             path={jsonPath(rootName ? `$.${rootName}` : "$", k, idx)}

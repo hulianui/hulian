@@ -24,7 +24,6 @@ import {
 } from "./flow-geometry";
 import type {
   FlowApi,
-  FlowEdge,
   FlowHandleSpec,
   FlowNode,
   FlowPoint,

@@ -1,4 +1,4 @@
-import type { ElementType, HTMLAttributes, ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 import type { PolymorphicProps } from "../lib/polymorphic";
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;

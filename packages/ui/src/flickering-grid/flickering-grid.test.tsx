@@ -40,7 +40,7 @@ beforeEach(() => {
   }
   // requestAnimationFrame stub
   if (!globalThis.requestAnimationFrame) {
-    globalThis.requestAnimationFrame = vi.fn().mockImplementation((cb: FrameRequestCallback) => {
+    globalThis.requestAnimationFrame = vi.fn().mockImplementation((_cb: FrameRequestCallback) => {
       // 不真正调用，只返回 id，避免无限循环
       return 1;
     });

@@ -9,7 +9,6 @@ import {
   passphraseEntropy,
   passwordEntropy,
   randomInt,
-  resolvePassphraseOptions,
   resolvePasswordOptions,
   shuffle,
   strengthOf,

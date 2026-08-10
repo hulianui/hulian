@@ -172,7 +172,7 @@ export function MagicRings({
   const burstRef = useRef(0);
 
   const { ref, reduced } = useGlCanvas(({ ogl, canvas }) => {
-    const { Renderer, Program, Mesh, Triangle, Vec2, Vec3, Color } = ogl;
+    const { Renderer, Program, Mesh, Triangle, Vec2, Color } = ogl;
 
     const renderer = new Renderer({
       canvas,

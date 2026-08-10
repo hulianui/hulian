@@ -1,6 +1,5 @@
-import { Profiler } from "react";
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { act, render, cleanup, fireEvent } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 import { Scheduler } from "./scheduler";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
