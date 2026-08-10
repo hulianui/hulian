@@ -51,6 +51,12 @@ jobs:
       - name: Check generated conventions
         run: pnpm conventions:check
 
+      # 消费方按文档加 @source 后，Tailwind v4 直接扫我们的源码文本 —— 它不区分代码与注释，
+      # 一句注释里的类名举例就能生成非法 CSS 让消费方全站 500（#141）。库内自测走不到这条
+      # 路径，typecheck / 单测 / guard 也都看不见，只能靠这个独立门禁。
+      - name: Check Tailwind scan candidates
+        run: pnpm candidates:check
+
       # 门禁只扫对外分发的组合源码与组件实现；文档 demo 为展示动画允许局部 style，public
       # 还包含扩展名为 .ts 的 HLS 二进制分片，都不属于业务消费代码。
       - name: Guard distributable UI usage
