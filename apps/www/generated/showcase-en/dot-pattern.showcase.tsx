@@ -62,9 +62,9 @@ export const dotPatternShowcase: ShowcaseSpec = {
         </Frame>),
         },
         {
-            name: "Sparse points \u00B7 text-muted",
+            name: "Sparse points \u00B7 text-muted-foreground",
             render: () => (<Frame>
-          <DotPattern width={28} height={28} cr={1.4} className="text-muted"/>
+          <DotPattern width={28} height={28} cr={1.4} className="text-muted-foreground"/>
         </Frame>),
         },
     ],

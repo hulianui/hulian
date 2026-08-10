@@ -125,7 +125,7 @@ function AnchorDemo({ offsetTop = 8 }: {
       <div ref={scrollRef} className="h-80 min-w-0 flex-1 space-y-6 overflow-y-auto overscroll-contain pr-2">
         {sections.map((s) => (<section key={s.id} id={s.id} className="scroll-mt-2">
             {s.level === 2 ? (<h3 className="mb-2 text-base font-semibold text-foreground">{s.title}</h3>) : (<h4 className="mb-1.5 font-medium text-foreground">{s.title}</h4>)}
-            {s.paras.map((p, i) => (<p key={i} className="mb-2 text-sm leading-relaxed text-muted">
+            {s.paras.map((p, i) => (<p key={i} className="mb-2 text-sm leading-relaxed text-muted-foreground">
                 {p}
               </p>))}
           </section>))}

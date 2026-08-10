@@ -7,7 +7,7 @@ function CardBody({ title, subtitle, }: {
 }) {
     return (<div className="flex flex-col items-center gap-1 px-6 text-center">
       <p className="text-base font-semibold text-foreground">{title}</p>
-      <p className="text-xs text-muted">{subtitle}</p>
+      <p className="text-xs text-muted-foreground">{subtitle}</p>
     </div>);
 }
 const variantOptions = ["default", "blue", "pink", "amber"] as const;
@@ -19,7 +19,7 @@ export const pixelCardShowcase: ShowcaseSpec = {
             code: `<PixelCard variant="default" className="h-48 w-64">
   <div className="flex flex-col items-center gap-1 px-6 text-center">
     <p className="text-base font-semibold text-foreground">Hulian Component Library</p>
-    <p className="text-xs text-muted">Hover/focus trigger pixel animation</p>
+    <p className="text-xs text-muted-foreground">Hover/focus trigger pixel animation</p>
   </div>
 </PixelCard>`,
             render: () => (<PixelCard variant="default" className="h-48 w-64">

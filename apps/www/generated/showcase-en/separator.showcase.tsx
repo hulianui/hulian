@@ -5,11 +5,11 @@ function Horizontal() {
     return (<div className="w-48">
       <p className="text-sm text-foreground">Hulian Design System</p>
       <Separator className="my-3"/>
-      <p className="text-sm text-muted">Absorption aggregation component library</p>
+      <p className="text-sm text-muted-foreground">Absorption aggregation component library</p>
     </div>);
 }
 function Vertical() {
-    return (<div className="flex h-6 items-center gap-3 text-sm text-muted">
+    return (<div className="flex h-6 items-center gap-3 text-sm text-muted-foreground">
       <span>Documentation</span>
       <Separator orientation="vertical"/>
       <span>Components</span>

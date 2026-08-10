@@ -14,7 +14,7 @@ function ExportDemo() {
         <button type="button" className="w-fit cursor-pointer rounded-[var(--radius)] border border-border px-3 py-1.5 text-xs font-medium hover:bg-surface-hover" onClick={() => qrCodeToPngDataUrl({ value: EXPORT_VALUE, pixelSize: 240 }).then(setPng)}>
           Convert to PNG
         </button>
-        <p className="max-w-xs break-all font-mono text-[10px] text-muted">
+        <p className="max-w-xs break-all font-mono text-[10px] text-muted-foreground">
           {png ? `${png.slice(0, 48)}...(${Math.round(png.length / 1024)} KB)` : `SVG string ${svg.length} Characters`}
         </p>
         {png && <img src={png} alt="Exported PNG" className="size-24 rounded-[var(--radius)] border border-border"/>}

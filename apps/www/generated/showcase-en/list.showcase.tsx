@@ -133,7 +133,7 @@ export const listShowcase: ShowcaseSpec = {
         {
             name: "Frameless + inset (put into sidebar/panel)",
             render: () => (<div className="w-72 max-w-full rounded-[var(--radius)] border border-border bg-surface">
-          <List inset items={PEOPLE} renderItem={(p) => <PersonItem p={p}/>} header={<span className="text-sm text-muted">Team Member</span>}/>
+          <List inset items={PEOPLE} renderItem={(p) => <PersonItem p={p}/>} header={<span className="text-sm text-muted-foreground">Team Member</span>}/>
         </div>),
         },
         { name: "Grid card status", render: () => <GridDemo /> },

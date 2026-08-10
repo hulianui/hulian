@@ -30,7 +30,7 @@ export const lanyardShowcase: ShowcaseSpec = {
   <div className="w-44 rounded-xl border border-border bg-surface p-4 text-center shadow-lg">
     <div className="mx-auto mb-3 size-14 rounded-full bg-gradient-to-br from-primary/30 to-primary/5" />
     <p className="text-sm font-semibold text-foreground">Lin Yu</p>
-    <p className="mt-0.5 text-xs text-muted">Front-end engineer \u00B7 No.0421</p>
+    <p className="mt-0.5 text-xs text-muted-foreground">Front-end engineer \u00B7 No.0421</p>
   </div>
 </Lanyard>`,
             render: () => (<Stage>
@@ -38,7 +38,7 @@ export const lanyardShowcase: ShowcaseSpec = {
             <div className="w-44 rounded-xl border border-border bg-surface p-4 text-center shadow-lg">
               <div className="mx-auto mb-3 size-14 rounded-full bg-gradient-to-br from-primary/30 to-primary/5"/>
               <p className="text-sm font-semibold text-foreground">Lin Yu</p>
-              <p className="mt-0.5 text-xs text-muted">Front-end Engineer · No.0421</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Front-end Engineer · No.0421</p>
             </div>
           </Lanyard>
         </Stage>),
@@ -91,7 +91,7 @@ export const lanyardShowcase: ShowcaseSpec = {
             <div className="w-44 rounded-xl border border-border bg-surface p-4 text-center shadow-lg">
               <div className="mx-auto mb-3 size-14 rounded-full bg-gradient-to-br from-primary/30 to-primary/5"/>
               <p className="text-sm font-semibold text-foreground">Lin Yu</p>
-              <p className="mt-0.5 text-xs text-muted">Front-end Engineer · No.0421</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Front-end Engineer · No.0421</p>
             </div>
           </Lanyard>
         </Stage>),

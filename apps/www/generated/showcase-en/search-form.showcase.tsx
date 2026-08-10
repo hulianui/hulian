@@ -38,7 +38,7 @@ function Demo({ collapsible = true }: {
     const [searched, setSearched] = useState<string | null>(null);
     return (<div className="w-[44rem] max-w-full space-y-3">
       <SearchForm fields={collapsible ? fields : fields.slice(0, 3)} values={values} onChange={setValues} onSearch={(v) => setSearched(JSON.stringify(v))} onReset={() => setSearched(null)} collapsible={collapsible}/>
-      {searched && <p className="text-xs text-muted">Query parameters:{searched}</p>}
+      {searched && <p className="text-xs text-muted-foreground">Query parameters:{searched}</p>}
     </div>);
 }
 export const searchFormShowcase: ShowcaseSpec = {

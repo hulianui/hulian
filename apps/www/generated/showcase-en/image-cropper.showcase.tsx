@@ -17,7 +17,7 @@ function IdPhotoDemo({ aspect = 5 / 7, maxZoom = 3 }: {
     const [result, setResult] = useState<string | null>(null);
     return (<div className="flex w-96 max-w-full flex-col gap-3">
       <ImageCropper image={SAMPLE} aspect={aspect} maxZoom={maxZoom} maxBytes={200 * 1024} onCropped={(blob) => setResult(`Pictured ${blob.type} \u00B7 ${(blob.size / 1024).toFixed(1)} KB`)} onCancel={() => setResult("Canceled")}/>
-      {result && <div className="text-sm text-muted">{result}</div>}
+      {result && <div className="text-sm text-muted-foreground">{result}</div>}
     </div>);
 }
 export const imageCropperShowcase: ShowcaseSpec = {

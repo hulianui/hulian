@@ -17,7 +17,7 @@ function Stage({ children, dark = true, }: {
 }) {
     return (<div className="relative grid h-64 w-full max-w-xl place-items-center overflow-hidden rounded-xl border border-border" style={{ background: dark ? "oklch(0.16 0.02 255)" : "oklch(0.97 0.005 255)" }}>
       {children}
-      <p className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-muted">
+      <p className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-muted-foreground">
         hover Lift · Press and hold for larger · Drag to try
       </p>
     </div>);

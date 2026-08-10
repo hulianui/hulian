@@ -33,7 +33,7 @@ function DemoSider({ collapsed: collapsedProp, collapsible = true, defaultCollap
 function FillerContent() {
     return (<div className="space-y-3">
       <h2 className="text-lg font-semibold text-foreground">Page content</h2>
-      {Array.from({ length: 8 }, (_, i) => (<p key={i} className="text-sm text-muted">
+      {Array.from({ length: 8 }, (_, i) => (<p key={i} className="text-sm text-muted-foreground">
           No. {i + 1} Segment occupancy content - Content area flex-auto is full and scrolls independently, Header can reach the top, and Footer can sink to the bottom.
         </p>))}
     </div>);
@@ -57,7 +57,7 @@ function ClassicShell({ collapsed, collapsible = true, defaultCollapsed, collaps
       <Layout>
         <Layout.Header sticky>
           <span className="font-medium text-foreground">Middle and backend shell</span>
-          <span className="ml-auto text-sm text-muted">user@hulian</span>
+          <span className="ml-auto text-sm text-muted-foreground">user@hulian</span>
         </Layout.Header>
         <Layout.Content>
           <FillerContent />
@@ -86,7 +86,7 @@ export const layoutShowcase: ShowcaseSpec = {
   <Layout>
     <Layout.Header sticky>
       <span className="font-medium">Middle and backend shell</span>
-      <span className="ml-auto text-sm text-muted">user@hulian</span>
+      <span className="ml-auto text-sm text-muted-foreground">user@hulian</span>
     </Layout.Header>
     <Layout.Content>{/* Page content */}</Layout.Content>
     <Layout.Footer>Hulian Layout \u00B7 \u00A9 2026</Layout.Footer>
@@ -98,7 +98,7 @@ export const layoutShowcase: ShowcaseSpec = {
             <Layout>
               <Layout.Header sticky>
                 <span className="font-medium text-foreground">Middle and backend shell</span>
-                <span className="ml-auto text-sm text-muted">user@hulian</span>
+                <span className="ml-auto text-sm text-muted-foreground">user@hulian</span>
               </Layout.Header>
               <Layout.Content>
                 <FillerContent />

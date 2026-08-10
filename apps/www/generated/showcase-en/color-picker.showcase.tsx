@@ -12,7 +12,7 @@ function Demo({ showInput = true, showFormatSwitcher = true, defaultFormat = "he
     const [v, setV] = useState("#3b82f6");
     return (<div className="flex flex-col gap-2">
       <ColorPicker value={v} onValueChange={setV} defaultFormat={defaultFormat} showInput={showInput} showFormatSwitcher={showFormatSwitcher} disabled={disabled}/>
-      <code className="font-mono text-xs text-muted">{v}</code>
+      <code className="font-mono text-xs text-muted-foreground">{v}</code>
     </div>);
 }
 function CommitDemo() {
@@ -21,7 +21,7 @@ function CommitDemo() {
     return (<div className="flex flex-col gap-2">
       <ColorPicker defaultValue="#3b82f6" onValueChange={() => setChanges((n) => n + 1)} onValueCommitted={setCommitted}/>
       <div className="flex flex-col gap-0.5 font-mono text-xs">
-        <span className="text-muted">onValueChange · {changes}</span>
+        <span className="text-muted-foreground">onValueChange · {changes}</span>
         <span className="text-foreground">onValueCommitted · {committed}</span>
       </div>
     </div>);

@@ -8,7 +8,7 @@ function ControlledDemo() {
     const [md, setMd] = useState("# Real-time echo\n\nThe current markdown is displayed below");
     return (<div className="w-[32rem] space-y-2">
       <MarkdownEditor value={md} onChange={setMd}/>
-      <pre className="max-h-32 overflow-auto rounded bg-surface-hover p-2 text-xs text-muted">
+      <pre className="max-h-32 overflow-auto rounded bg-surface-hover p-2 text-xs text-muted-foreground">
         {md}
       </pre>
     </div>);

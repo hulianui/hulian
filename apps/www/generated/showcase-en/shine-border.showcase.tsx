@@ -13,11 +13,11 @@ export const shineBorderShowcase: ShowcaseSpec = {
             title: "Basic usage",
             description: "ShineBorder is the absolute inset-0 streamer frame layer. Put it into the relative + rounded container to get the flowing shimmer of the entire frame. Default chart three-color gradient.",
             code: `<div className="relative h-40 w-72 overflow-hidden rounded-xl bg-surface">
-  <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+  <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
   <ShineBorder />
 </div>`,
             render: () => (<Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
           <ShineBorder />
         </Card>),
         },
@@ -26,7 +26,7 @@ export const shineBorderShowcase: ShowcaseSpec = {
             description: "shineColor passes a single CSS color/token which is a single color streamer; borderWidth adjusts the border thickness.",
             code: `<ShineBorder borderWidth={2} shineColor="var(--color-primary)" />`,
             render: () => (<Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Single</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Single</div>
           <ShineBorder borderWidth={2} shineColor="var(--color-primary)"/>
         </Card>),
         },
@@ -38,7 +38,7 @@ export const shineBorderShowcase: ShowcaseSpec = {
   duration={8}
 />`,
             render: () => (<Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Multi · Fast</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Multi · Fast</div>
           <ShineBorder shineColor={[
                     "var(--color-chart-2)",
                     "var(--color-chart-4)",
@@ -55,20 +55,20 @@ export const shineBorderShowcase: ShowcaseSpec = {
         {
             name: "default (chart streamer edge)",
             render: () => (<Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
           <ShineBorder />
         </Card>),
         },
         {
             name: "Thick edge \u00B7 primary Monochrome",
             render: () => (<Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Single</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Single</div>
           <ShineBorder borderWidth={2} shineColor="var(--color-primary)"/>
         </Card>),
         },
     ],
     renderWithProps: (p) => (<Card>
-      <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+      <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
       <ShineBorder borderWidth={p.borderWidth as number} duration={p.duration as number}/>
     </Card>),
     toCode: (p) => `<div className="relative">

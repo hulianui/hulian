@@ -6,7 +6,7 @@ function Demo() {
     const [log, setLog] = useState<string[]>([]);
     return (<div className="w-full max-w-lg space-y-2">
       <PromptInput onSubmit={(v) => setLog((l) => [...l, v])}/>
-      {log.length > 0 && (<p className="text-xs text-muted">Sent {log.length} Articles:{log.join(" \u00B7 ")}</p>)}
+      {log.length > 0 && (<p className="text-xs text-muted-foreground">Sent {log.length} Articles:{log.join(" \u00B7 ")}</p>)}
     </div>);
 }
 export const promptInputShowcase: ShowcaseSpec = {

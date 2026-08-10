@@ -1,5 +1,41 @@
 # @hulianui/ui
 
+## 0.28.0
+
+### Minor Changes
+
+- `Tag` now extends `HTMLAttributes<HTMLSpanElement>`, and props queries surface slot fields (#148 #150 #147) <!-- parity-id: tag-native-attrs-and-props-doc-visibility -->
+
+  `TagProps` used to be a closed interface, so `title`, `id`, `data-*`, and `aria-*` could not be passed at all — while the sibling `Button`, `Card`, `Empty`, and `Progress` all extend their native attributes. Status tags are exactly where `title` matters most: a table cell reads "Word" while its `title` carries the full MIME type.
+
+  **A props query now returns slot fields as well** (#150). Fields such as `Button.render`, `Upload.label`/`hint`, `Stat.label`/`value`, and `Avatar.fallback` live in the `## Slots` section rather than the Props table, so anyone following the MCP workflow with `sections:["props"]` concluded that "Button has no render" or "Stat has no label" — and the two on `Stat` are **required**. The `props` array under `format="json"` now lists slots too (each tagged `kind:"slot"`), with the separate `slots` array preserved; the markdown path likewise includes `## Slots`. It does not work in reverse: asking only for `slots` or `events` never pulls in props.
+
+  Same batch: `Segmented.label` was documented all along (in the Slots table), so #147's "missing from the props table" was this same visibility issue and the markdown needed no change; `Avatar`'s `size` documentation gains the `xl` and `2xl` steps (the implementation always had five while the docs listed three — an incomplete value range hides better than a missing field, because you believe you are looking at the full set of options).
+
+- `Button` gains `size="iconXs"` (a 20px square), the micro size dense table rows were missing (#146) <!-- parity-id: button-iconxs-and-segmented-doc -->
+
+  The smallest icon size used to be `iconSm` (32px), which pushes `density="compact"` table rows taller. The 20px size has always existed in practice — `Table`'s tree expander and drag handle both hand-wrote the same `size-5` without folding it back into `Button` or exposing it — so "don't write a bare `<button>`" and "the library has no button you can use here" formed a closed loop.
+
+  `Table`'s expander now uses it. The drag handle **deliberately stays hand-written**: when disabled it needs `cursor-not-allowed` to say "this row cannot be dragged", and the `Button` base carries `disabled:pointer-events-none` — no pointer events means no cursor change. Converting it would take three `disabled:` overrides to push the base back, which is longer than the markup it replaces.
+
+  Note that `iconXs` matches **no** text size (the other three, `iconSm`/`icon`/`iconLg`, equal the heights of `sm`/`md`/`lg`), so pairing it with `sm` leaves it 12px shorter. Its corner radius is deliberately `rounded` (4px) rather than `--radius` (10px): a 10px radius on a 20px square is a disc.
+
+  **Docs fix**: the `SegmentedItem` props table now lists `label` (#147). It is a required `ReactNode` that every example passes, yet the table omitted it while the neighbouring `ariaLabel` row described that non-existent prop. Modelling from the props table — including tooling that reads `format="json"` — concluded that `SegmentedItem` has no label.
+
+- **BREAKING**: `text-muted` is renamed to `text-muted-foreground` library-wide, following the semantic flip in `@hulianui/tokens` (#142) <!-- parity-id: muted-rename-and-cjs-tooling -->
+
+  `--color-muted` is now a weak background (matching shadcn/ui) and the secondary text colour is `--color-muted-foreground`. The 2059 call sites inside the library have been rewritten; `text-muted` written in your own code needs the same rename. It no longer maps to any token, and Tailwind neither errors nor emits a rule for an undefined colour, so it **silently falls back to the inherited colour** — secondary copy renders in the same colour as body text. `npx hulian-check` has an error rule that lists every location. `bg-muted` needs no change.
+
+  This also fixes BubbleMenu: the hover background fell back to the secondary text colour, giving a dark fill under dark text. The flip turns that fallback into the correct light tint.
+
+  **Fixed**: `@hulianui/ui/vitest-preset` and `@hulianui/ui/vite` gained CJS entries (#143)
+
+  A project without `"type": "module"` — the shape `create-next-app` generates, and therefore most Next.js consumers — loads `vitest.config.ts` and `vite.config.ts` through CJS `require`. Both entries were ESM-only, so the run died during **config loading** with `"resolved to an ESM file. ESM file cannot be loaded by require"` and not a single test executed. The implementation now lives in `.cjs` with `.js` as its ESM wrapper, so both paths work.
+
+  **Fixed**: a wildcard class name inside a comment broke consumer CSS (#141)
+
+  A JSDoc example in `button-base.ts` contained `[border-radius:var(--hulian-*)]`. The Tailwind v4 scanner only extracts text candidates and does not distinguish code from comments, so it emitted `border-radius: var(--hulian-*)` as a real rule. `*` is not a valid custom property name, so once a consumer added the documented `@source` line the whole stylesheet failed to parse and **every page returned 500**. The comment no longer uses class-name syntax, and a CI gate now guards against a recurrence.
+
 ## 0.27.0
 
 ### Minor Changes

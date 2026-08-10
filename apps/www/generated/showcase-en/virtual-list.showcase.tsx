@@ -6,7 +6,7 @@ function Demo() {
     return (<div className="w-full max-w-md overflow-hidden rounded-[var(--radius)] border border-border">
       <VirtualList items={rows} itemHeight={44} height={320} getKey={(r) => r.id} renderItem={(r) => (<div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 text-sm text-foreground">
             <span>{r.name}</span>
-            <span className="text-xs text-muted">#{r.id}</span>
+            <span className="text-xs text-muted-foreground">#{r.id}</span>
           </div>)}/>
     </div>);
 }
@@ -37,7 +37,7 @@ export const virtualListShowcase: ShowcaseSpec = {
             render: () => (<div className="w-full max-w-md overflow-hidden rounded-[var(--radius)] border border-border">
           <VirtualList items={rows} itemHeight={(i) => (i % 3 === 0 ? 72 : 44)} height={320} getKey={(r) => r.id} renderItem={(r, i) => (<div className="flex items-center justify-between border-b border-border bg-surface px-4 text-sm text-foreground" style={{ height: i % 3 === 0 ? 72 : 44 }}>
                 <span>{r.name}</span>
-                <span className="text-xs text-muted">#{r.id}</span>
+                <span className="text-xs text-muted-foreground">#{r.id}</span>
               </div>)}/>
         </div>),
         },

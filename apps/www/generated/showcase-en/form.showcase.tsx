@@ -19,7 +19,7 @@ function Demo() {
       <Button type="submit" size="sm">
         Submit
       </Button>
-      {submitted && <p className="text-xs text-muted">Submitted:{submitted}</p>}
+      {submitted && <p className="text-xs text-muted-foreground">Submitted:{submitted}</p>}
     </Form>);
 }
 function ValidationDemo() {
@@ -45,7 +45,7 @@ function ValidationDemo() {
       <Button type="submit" size="sm">
         Submit
       </Button>
-      {done && <p className="text-xs text-muted">By:{done}</p>}
+      {done && <p className="text-xs text-muted-foreground">By:{done}</p>}
     </form>);
 }
 function FormListDemo() {

@@ -36,8 +36,8 @@ function Demo() {
           {fields}
         </DrawerForm>
       </div>
-      {submitted && <p className="text-sm text-muted">Submitted:{submitted}</p>}
-      <p className="text-xs text-muted">Submission of unfilled name points will be blocked by verification and the pop-up window will not be closed; if the submission is successful (simulation 600ms), it will be closed automatically.</p>
+      {submitted && <p className="text-sm text-muted-foreground">Submitted:{submitted}</p>}
+      <p className="text-xs text-muted-foreground">Submission of unfilled name points will be blocked by verification and the pop-up window will not be closed; if the submission is successful (simulation 600ms), it will be closed automatically.</p>
     </div>);
 }
 export const formDialogShowcase: ShowcaseSpec = {

@@ -1,5 +1,41 @@
 # @hulianui/ui
 
+## 0.28.0
+
+### Minor Changes
+
+- `Tag` 继承 `HTMLAttributes<HTMLSpanElement>`；props 文档口径修正（#148 #150 #147） <!-- parity-id: tag-native-attrs-and-props-doc-visibility -->
+
+  `TagProps` 此前是封闭接口，`title` / `id` / `data-*` / `aria-*` 一个都传不了，而同库的 `Button` / `Card` / `Empty` / `Progress` 都是继承原生属性的。状态标签恰恰最需要 `title` 做 hover 全文——表格里显示「Word」、`title` 是完整 MIME。
+
+  **props 查询现在会一并给出插槽字段**（#150）。`Button.render`、`Upload.label/hint`、`Stat.label/value`、`Avatar.fallback` 这类字段住在文档的 `## Slots` 章节而不是 Props 表，于是照 MCP 工作流传 `sections:["props"]` 的人会得出「Button 没有 render」「Stat 没有 label」的结论——而 `Stat` 那两个还是**必填**的。现在 `format="json"` 的 `props` 数组会把插槽一并列出（各带 `kind:"slot"`），独立的 `slots` 数组照旧保留；markdown 路径同样会带上 `## Slots`。反向不搭：单独要 `slots` / `events` 时不会被塞进 props。
+
+  同一批修正：`Segmented` 的 `label` 一直有文档（在 Slots 表里），#147 报的「props 表漏了」实为上述口径问题，md 无需改动；`Avatar` 的 `size` 文档补齐 `xl` / `2xl` 两档（实现一直有五档，文档只写了三档，而值域不全比漏字段更隐蔽——你以为看到了完整选项，根本不会起疑）。
+
+- `Button` 新增 `size="iconXs"`（20px 方形），补上密集表格行内的微型操作档（#146） <!-- parity-id: button-iconxs-and-segmented-doc -->
+
+  此前最小的图标档是 `iconSm`（32px），塞进 `density="compact"` 的表格行会把行高撑起来。而这个 20px 档一直真实存在——`Table` 的树形展开器与拖拽手柄都手写了同一份 `size-5`，既没收编回 `Button`，也没导出给消费方：于是「别写裸 `<button>`」的建议和「库里没有能用的按钮」形成闭环。
+
+  `Table` 的展开器已改用这一档。拖拽手柄**刻意保留手写**：它禁用时要用 `cursor-not-allowed` 表达「这行不能拖」，而 `Button` 基座带 `disabled:pointer-events-none`，没有指针事件就没有光标变化——改过去要写三条 `disabled:` 把基座顶回来，比手写还长。
+
+  注意 `iconXs` **不与任何文字档等高**（另外三档 `iconSm`/`icon`/`iconLg` 分别等于 `sm`/`md`/`lg` 的高度），跟 `sm` 混排会矮 12px。圆角也刻意是 `rounded`(4px) 而不是 `--radius`(10px)——10px 圆角落在 20px 方块上就是个圆片。
+
+  **文档修正**：`SegmentedItem` 的 props 表补上 `label`（#147）。它是必填的 `ReactNode`，示例里每一段都在传，表里却没有，而同表的 `ariaLabel` 说明还在描述这个不存在的 prop。按 props 表建模（含 `format="json"` 的工具链）会得出「`SegmentedItem` 没有 label」这个直接出错的结论。
+
+- **破坏性**：全库 `text-muted` 改名 `text-muted-foreground`，跟随 `@hulianui/tokens` 的语义反转（#142） <!-- parity-id: muted-rename-and-cjs-tooling -->
+
+  `--color-muted` 现在是弱背景（对齐 shadcn/ui），次要文字色叫 `--color-muted-foreground`。组件内部 2059 处已机改，消费方自己写的 `text-muted` 需要同样改名——它已无对应 token，Tailwind 对未定义颜色不报错也不生成规则，会**静默回退成继承色**（次要说明文字渲染成正文同色）。`npx hulian-check` 有一条 error 规则逐条列出位置。`bg-muted` 不用改。
+
+  顺带修正 BubbleMenu：悬停底的兜底值原本取的是次要文字色（深底 + 深字），语义反转后自动变成正确的浅底。
+
+  **修复**：`@hulianui/ui/vitest-preset` 与 `@hulianui/ui/vite` 补上 CJS 入口（#143）
+
+  没有 `"type": "module"` 的项目（`create-next-app` 的默认形态，也就是绝大多数 Next.js 消费方）加载 `vitest.config.ts` / `vite.config.ts` 时走的是 CJS `require`，而这两个入口此前只有 ESM，于是在**配置加载阶段**就报 `"resolved to an ESM file. ESM file cannot be loaded by require"`，一个用例都跑不到。现在实现落在 `.cjs`、`.js` 是其 ESM 包装，两条路都走得通。
+
+  **修复**：注释里的通配类名炸掉消费方 CSS（#141）
+
+  `button-base.ts` 的一句 JSDoc 举例写了 `[border-radius:var(--hulian-*)]`。Tailwind v4 的扫描器只做文本候选提取、不区分代码与注释，把它当真类名生成了 `border-radius: var(--hulian-*)`——`*` 不是合法的自定义属性名，消费方按文档加 `@source` 后整份样式表解析失败，**全站 500**。已改成非类名形态，并加了 CI 门禁防复发。
+
 ## 0.27.0
 
 ### Minor Changes

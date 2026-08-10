@@ -62,7 +62,7 @@ const Boom = ({ armed }: {
 }) => {
     if (armed)
         throw new Error("Cannot read properties of undefined (reading 'map')");
-    return (<div className="grid h-full place-items-center p-6 text-sm text-muted">
+    return (<div className="grid h-full place-items-center p-6 text-sm text-muted-foreground">
       Subtree rendering normally
     </div>);
 };

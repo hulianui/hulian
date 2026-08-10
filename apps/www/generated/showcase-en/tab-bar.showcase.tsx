@@ -13,7 +13,7 @@ const items: TabBarItem[] = [
 function TabBarDemo() {
     const [tab, setTab] = useState("home");
     return (<div className="w-72 overflow-hidden rounded-[var(--radius)] border border-border bg-surface">
-      <div className="flex h-44 items-center justify-center text-sm text-muted">
+      <div className="flex h-44 items-center justify-center text-sm text-muted-foreground">
         Current page:{items.find((i) => i.key === tab)?.label}
       </div>
       <TabBar items={items} value={tab} onChange={setTab} fixed={false} safeArea={false}/>

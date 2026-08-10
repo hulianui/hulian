@@ -100,7 +100,7 @@ export const worldMapShowcase: ShowcaseSpec = {
         { name: "Emerald Green", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-2)"/></Frame> },
         { name: "Amber", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-3)"/></Frame> },
         { name: "Violet", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-4)"/></Frame> },
-        { name: "Main color emphasis", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-primary)" dotColor="var(--color-muted)"/></Frame> },
+        { name: "Main color emphasis", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-primary)" dotColor="var(--color-muted-foreground)"/></Frame> },
         { name: "Mixed color connection", render: () => <Frame><WorldMap dots={multiColor}/></Frame> },
         { name: "Node distribution", render: () => <Frame><WorldMap points={NODES}/></Frame> },
         { name: "Node label", render: () => <Frame><WorldMap points={NODES} showLabels/></Frame> },

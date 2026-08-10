@@ -12,7 +12,7 @@ function Removable() {
       {items.map((t) => (<Chip key={t} onClose={() => setItems((s) => s.filter((x) => x !== t))}>
           {t}
         </Chip>))}
-      {items.length === 0 && <span className="text-sm text-muted">Remove all</span>}
+      {items.length === 0 && <span className="text-sm text-muted-foreground">Remove all</span>}
     </div>);
 }
 export const chipShowcase: ShowcaseSpec = {

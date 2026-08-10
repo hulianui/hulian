@@ -8,7 +8,7 @@ const Row = ({ t, d }: {
     <span className="size-9 shrink-0 rounded-full bg-primary/15"/>
     <span className="flex flex-col">
       <span className="text-sm font-medium text-foreground">{t}</span>
-      <span className="text-xs text-muted">{d}</span>
+      <span className="text-xs text-muted-foreground">{d}</span>
     </span>
   </div>);
 function Demo() {

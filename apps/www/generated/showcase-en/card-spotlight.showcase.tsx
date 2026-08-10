@@ -11,7 +11,7 @@ function FeatureCard({ icon, title, description, color, radius, }: {
     return (<CardSpotlight color={color} radius={radius} className="w-64">
       <div className="mb-3 text-3xl">{icon}</div>
       <h3 className="mb-1.5 text-base font-semibold">{title}</h3>
-      <p className="text-sm text-muted">{description}</p>
+      <p className="text-sm text-muted-foreground">{description}</p>
     </CardSpotlight>);
 }
 export const cardSpotlightShowcase: ShowcaseSpec = {
@@ -22,7 +22,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
             code: `<CardSpotlight className="w-64">
   <div className="mb-3 text-3xl">\u2726</div>
   <h3 className="mb-1.5 text-base font-semibold">Hulian Component</h3>
-  <p className="text-sm text-muted">Hover the mouse to feel the soft spotlight. </p>
+  <p className="text-sm text-muted-foreground">Hover the mouse to feel the soft spotlight. </p>
 </CardSpotlight>`,
             render: () => (<FeatureCard icon="✦" title="Hulian component" description="Ancestral temple jade, both beautiful and useful - hover the mouse to feel the soft spotlight."/>),
         },
@@ -32,7 +32,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
             code: `<CardSpotlight color="var(--color-primary)" className="w-64">
   <div className="mb-3 text-3xl">\u26A1</div>
   <h3 className="mb-1.5 text-base font-semibold">Theme color highlight</h3>
-  <p className="text-sm text-muted">Highlights are linked with the theme. </p>
+  <p className="text-sm text-muted-foreground">Highlights are linked with the theme. </p>
 </CardSpotlight>`,
             render: () => (<FeatureCard icon="⚡" title="Theme color highlight" description="color passes to var (--color-primary), the highlight is linked with the theme." color="var(--color-primary)"/>),
         },
@@ -42,7 +42,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
             code: `<CardSpotlight radius={180} color="var(--color-chart-3)" className="w-64">
   <div className="mb-3 text-3xl">\uD83D\uDD0D</div>
   <h3 className="mb-1.5 text-base font-semibold">Focused beam</h3>
-  <p className="text-sm text-muted">radius=180 The halo is tighter. </p>
+  <p className="text-sm text-muted-foreground">radius=180 The halo is tighter. </p>
 </CardSpotlight>`,
             render: () => (<FeatureCard icon="🔍" title="Focused beam" description="radius=180 The halo is tighter, suitable for emphasizing core content areas." radius={180} color="var(--color-chart-3)"/>),
         },
@@ -98,7 +98,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
     renderWithProps: (p) => (<CardSpotlight radius={typeof p.radius === "number" ? p.radius : 350} color={p.color ? String(p.color) : undefined} className="w-64">
       <div className="mb-3 text-3xl">✦</div>
       <h3 className="mb-1.5 text-base font-semibold">CardSpotlight</h3>
-      <p className="text-sm text-muted">Hover to feel the spotlight effect, and move the mouse to track the center of the halo.</p>
+      <p className="text-sm text-muted-foreground">Hover to feel the spotlight effect, and move the mouse to track the center of the halo.</p>
     </CardSpotlight>),
     toCode: (p) => {
         const radius = typeof p.radius === "number" ? p.radius : 350;
@@ -107,7 +107,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
         return `<CardSpotlight${radiusProp}${colorProp} className="w-64">
   <div className="mb-3 text-3xl">\u2726</div>
   <h3 className="mb-1.5 text-base font-semibold">Title</h3>
-  <p className="text-sm text-muted">Card description text. </p>
+  <p className="text-sm text-muted-foreground">Card description text. </p>
 </CardSpotlight>`;
     },
 };

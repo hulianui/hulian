@@ -43,7 +43,7 @@ function Demo({ maskClosable = false }: {
     return (<div className="w-full max-w-xl rounded-[var(--radius)] border border-border bg-surface p-4">
 
       <div className="flex items-center gap-3">
-        <div ref={searchRef} className="flex h-9 flex-1 items-center rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-muted">
+        <div ref={searchRef} className="flex h-9 flex-1 items-center rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-muted-foreground">
           Search resources...
         </div>
         <button ref={filterRef} type="button" className="h-9 rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-foreground">
@@ -55,7 +55,7 @@ function Demo({ maskClosable = false }: {
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <p className="text-sm text-muted">Click the button below to start the novice guide.</p>
+        <p className="text-sm text-muted-foreground">Click the button below to start the novice guide.</p>
         <Button size="sm" onClick={start}>
           Start booting
         </Button>

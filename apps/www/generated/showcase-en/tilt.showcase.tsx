@@ -23,7 +23,7 @@ function ManualDemo() {
       <Tilt manualAngleX={x} manualAngleY={y} glare glareBorderRadius="calc(var(--radius) + 0.25rem)">
         <DarkCard>Slider drive</DarkCard>
       </Tilt>
-      <div className="flex w-56 flex-col gap-3 text-xs text-muted">
+      <div className="flex w-56 flex-col gap-3 text-xs text-muted-foreground">
         <label className="flex flex-col gap-1">
           rotateX {x}°
           <input type="range" min={-30} max={30} value={x} onChange={(e) => setX(Number(e.target.value))}/>
@@ -41,7 +41,7 @@ function ReadoutDemo() {
       <Tilt maxAngleX={16} maxAngleY={16} glare glareBorderRadius="calc(var(--radius) + 0.25rem)" onTiltMove={({ angles, glare }) => setState({ rx: Math.round(angles.rotateX), ry: Math.round(angles.rotateY), op: glare.opacity })}>
         <DarkCard>Move on top of me</DarkCard>
       </Tilt>
-      <p className="font-mono text-xs text-muted">
+      <p className="font-mono text-xs text-muted-foreground">
         rotateX {state.rx}° · rotateY {state.ry}° · glare {state.op.toFixed(2)}
       </p>
     </div>);
@@ -56,7 +56,7 @@ export const tiltShowcase: ShowcaseSpec = {
 </Tilt>`,
             render: () => (<Tilt>
           <Card>
-            <span className="text-sm text-muted">Try hovering</span>
+            <span className="text-sm text-muted-foreground">Try hovering</span>
           </Card>
         </Tilt>),
         },
@@ -87,17 +87,17 @@ export const tiltShowcase: ShowcaseSpec = {
             render: () => (<div className="flex flex-wrap gap-6">
           <Tilt axis="x" maxAngleX={18}>
             <Card>
-              <span className="text-sm text-muted">Only around X</span>
+              <span className="text-sm text-muted-foreground">Only around X</span>
             </Card>
           </Tilt>
           <Tilt reverse>
             <Card>
-              <span className="text-sm text-muted">Reverse</span>
+              <span className="text-sm text-muted-foreground">Reverse</span>
             </Card>
           </Tilt>
           <Tilt initialAngleY={-12} scale={1.06}>
             <Card>
-              <span className="text-sm text-muted">Resting -12°</span>
+              <span className="text-sm text-muted-foreground">Resting -12°</span>
             </Card>
           </Tilt>
         </div>),
@@ -134,7 +134,7 @@ export const tiltShowcase: ShowcaseSpec = {
             name: "Default",
             render: () => (<Tilt>
           <Card>
-            <span className="text-sm text-muted">Try hovering</span>
+            <span className="text-sm text-muted-foreground">Try hovering</span>
           </Card>
         </Tilt>),
         },

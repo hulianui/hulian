@@ -51,7 +51,7 @@ export const deployStatusShowcase: ShowcaseSpec = {
             title: "Small size \u00B7 Inside the line",
             description: "size=\"sm\" Embed text stream.",
             code: `<p>Last deployment <DeployStatus status="ready" size="sm" /></p>`,
-            render: () => (<p className="flex flex-wrap items-center gap-2 text-sm text-muted">
+            render: () => (<p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           Last deployed <DeployStatus status="ready" size="sm"/> , preview environment <DeployStatus status="building" size="sm"/>
         </p>),
         },
@@ -82,7 +82,7 @@ export const deployStatusShowcase: ShowcaseSpec = {
         },
         {
             name: "Small size \u00B7 Inside the line",
-            render: () => (<p className="flex flex-wrap items-center gap-2 text-sm text-muted">
+            render: () => (<p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           Last deployed <DeployStatus status="ready" size="sm"/> , preview environment <DeployStatus status="building" size="sm"/>
         </p>),
         },

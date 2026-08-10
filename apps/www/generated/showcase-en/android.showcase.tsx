@@ -4,7 +4,7 @@ import type { AndroidModel } from "../../../../packages/ui/src/android/android.t
 function Screen() {
     return (<div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-b from-chart-2/30 to-chart-4/30">
       <span className="text-sm font-medium text-foreground">Hulian App</span>
-      <span className="text-xs text-muted">Android screen</span>
+      <span className="text-xs text-muted-foreground">Android screen</span>
     </div>);
 }
 export const androidShowcase: ShowcaseSpec = {

@@ -28,9 +28,9 @@ export const blurTextShowcase: ShowcaseSpec = {
   splitType="char"
   delay={90}
   blur={12}
-  className="text-2xl font-semibold text-muted"
+  className="text-2xl font-semibold text-muted-foreground"
 />`,
-            render: () => (<BlurText text="Enterprise-level components · High quality · Native adaptation" splitType="char" delay={90} blur={12} className="text-2xl font-semibold text-muted"/>),
+            render: () => (<BlurText text="Enterprise-level components · High quality · Native adaptation" splitType="char" delay={90} blur={12} className="text-2xl font-semibold text-muted-foreground"/>),
         },
     ],
     controls: [
@@ -50,7 +50,7 @@ export const blurTextShowcase: ShowcaseSpec = {
         },
         {
             name: "Large size slow peak shifting (hero grade)",
-            render: () => (<BlurText text="Enterprise-level components · High quality · Native adaptation" splitType="char" delay={90} blur={12} className="text-2xl font-semibold text-muted"/>),
+            render: () => (<BlurText text="Enterprise-level components · High quality · Native adaptation" splitType="char" delay={90} blur={12} className="text-2xl font-semibold text-muted-foreground"/>),
         },
     ],
     renderWithProps: (p) => (<BlurText key={`${p.splitType}-${p.direction}-${p.blur}-${p.delay}`} text="Fuzzy parsed title text Blur Text" splitType={p.splitType as "word" | "char"} direction={p.direction as "top" | "bottom"} blur={p.blur as number} delay={p.delay as number} className="text-3xl font-bold text-foreground"/>),

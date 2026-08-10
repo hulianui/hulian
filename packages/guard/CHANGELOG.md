@@ -1,5 +1,19 @@
 # @hulianui/guard
 
+## 0.5.0
+
+### Minor Changes
+
+- 新增迁移门禁 `muted-renamed-to-muted-foreground`（error）：拦截 `text-muted` 等已改名的写法（#142）。 <!-- parity-id: muted-migration-rule-and-help -->
+
+  这条必须是 error 而不是 warning：`--color-muted` 语义反转后 `text-muted` 不再对应任何 token，而 Tailwind 对未定义颜色既不报错也不生成规则，写了会**静默回退成继承色**——typecheck、单测、视觉快照全都看不出来。`bg-muted` 刻意不在拦截范围内，它现在就是合法的弱背景。
+
+  同时退役 `muted-is-a-text-color`（原先警告「muted 当背景用」，语义反转后该写法已经是对的）。
+
+  CLI 补 `--help` / `-h` / `--version` / `-v`，均以 0 退出（#143）。此前任何未知 flag 一律退出码 2，而 CI 里常用 `npx @hulianui/guard --help` 探测「工具装没装」——**已安装**的 guard 被判成未安装，检查静默跳过，门禁变成假绿。
+
+  另：`--format json` 一直就有，给 CI 做棘轮不必去正则解析人类可读的汇总行；已写进 `--help`。
+
 ## 0.4.0
 
 ### Minor Changes

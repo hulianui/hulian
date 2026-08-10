@@ -55,6 +55,24 @@ export const buttonShowcase: ShowcaseSpec = {
         </>),
         },
         {
+            title: "A 20px micro size for dense tables",
+            description: "iconXs is a 20px square meant for expanders and small row actions inside a table: the smallest iconSm (32px) would push compact rows taller. It deliberately matches no text size, so do not pair it with sm.",
+            code: `<Button variant="ghost" tone="neutral" size="iconXs" aria-label="Expand">
+  <ChevronDown className="size-4" />
+</Button>`,
+            render: () => (<>
+          <Button variant="ghost" tone="neutral" size="iconXs" aria-label="Expand">
+            <ChevronDown className="size-4"/>
+          </Button>
+          <Button variant="outline" size="iconXs" aria-label="Expand">
+            <ChevronDown className="size-4"/>
+          </Button>
+          <Button size="iconSm" aria-label="For comparison: iconSm at 32px">
+            <ChevronDown className="size-4"/>
+          </Button>
+        </>),
+        },
+        {
             title: "Semantic tones",
             description: "tone says what kind of action this is, and it is orthogonal to variant. A solid neutral button is inverted, not grey.",
             code: `<Button>Submit</Button>
@@ -130,7 +148,7 @@ export const buttonShowcase: ShowcaseSpec = {
         {
             prop: "size",
             type: "select",
-            options: ["sm", "md", "lg", "icon", "iconSm", "iconLg"],
+            options: ["sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
             defaultValue: "md",
         },
         { prop: "block", type: "boolean", defaultValue: false, label: "Full width" },
@@ -149,7 +167,7 @@ export const buttonShowcase: ShowcaseSpec = {
         { name: "disabled", render: () => <Button disabled>Disabled</Button> },
         { name: "loading", render: () => <Button loading>Loading</Button> },
     ],
-    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg"} block={p.block as boolean} loading={p.loading as boolean}>
+    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"} block={p.block as boolean} loading={p.loading as boolean}>
       {p.children as string}
     </Button>),
     toCode: (p) => `<Button variant="${p.variant}" tone="${p.tone}" size="${p.size}"${p.block ? " block" : ""}${p.loading ? " loading" : ""}>${p.children}</Button>`,

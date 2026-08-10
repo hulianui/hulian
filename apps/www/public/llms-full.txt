@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.27.0 · 383 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.28.0 · 383 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -81,7 +81,7 @@ const [active, setActive] = useState("dashboard");
   defaultSelectedKey="dashboard"
   defaultOpenKeys={["users"]}
   onTabChange={setActive}
-  breadcrumb={<span className="text-sm text-muted">首页 / {active}</span>}
+  breadcrumb={<span className="text-sm text-muted-foreground">首页 / {active}</span>}
   headerExtra={<Avatar fallback="瑚" />}
 >
   <Page k={active} />
@@ -2015,7 +2015,7 @@ import { Kbd } from "@hulianui/ui"
 // 组合键：多个 Kbd 并排
 <span className="inline-flex items-center gap-1">
   <Kbd>⌘</Kbd>
-  <span className="text-muted">+</span>
+  <span className="text-muted-foreground">+</span>
   <Kbd>K</Kbd>
 </span>
 ```
@@ -2659,7 +2659,7 @@ import { TextCursor } from "@hulianui/ui"
 // 默认：在区域内移动光标即留「瑚」字拖尾
 <div className="relative h-64 overflow-hidden rounded-xl">
   <TextCursor>
-    <p className="text-sm text-muted">在此区域内移动光标 →</p>
+    <p className="text-sm text-muted-foreground">在此区域内移动光标 →</p>
   </TextCursor>
 </div>
 
@@ -3060,7 +3060,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" \| "outline" \| "ghost" \| "link"` | `"solid"` | 视觉变体 |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | 语义色调（见下表） |
-| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
+| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用 |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
@@ -3108,6 +3108,17 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | `sm` | 32px | `iconSm` | 32px |
 | `md`（默认） | 40px | `icon` | 40px |
 | `lg` | 48px | `iconLg` | 48px |
+
+`iconXs`（20px）**不在这条刻度上**，它没有配套文字档，跟 `sm` 混排会矮 12px。
+它服务的是密集表格行内的微型操作——树形展开箭头、行内小动作：最小的 `iconSm`（32px）
+塞进 `density="compact"` 的行会把行高撑起来。Table 内建的展开器用的就是这一档。
+
+```tsx
+{/* 表格行内的展开箭头 */}
+<Button variant="ghost" tone="neutral" size="iconXs" aria-label="展开">
+  <ChevronRight className="size-4" />
+</Button>
+```
 
 ```tsx
 {/* ✅ 同名一对，等高 */}
@@ -4166,7 +4177,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
       <ComboboxItem key={item.value} value={item}>
         <span className="flex flex-col">
           <span>{item.label}</span>
-          <span className="text-xs text-muted">{item.value}</span>
+          <span className="text-xs text-muted-foreground">{item.value}</span>
         </span>
       </ComboboxItem>
     )}
@@ -8181,7 +8192,7 @@ import { Avatar } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | 圆直径档位（CVA 变体）。 |
+| size | `"sm" \| "md" \| "lg" \| "xl" \| "2xl"` | `"md"` | 圆直径档位（CVA 变体）：32 / 40 / 48 / 64 / 96px。 |
 | src | `string` | — | 头像图片 URL；加载失败回退到 fallback。 |
 | alt | `string` | — | 图片替代文本。 |
 | className | `string` | — | — |
@@ -9736,7 +9747,7 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | title | `ReactNode` | 标题(左上) |
 | extra | `ReactNode` | 右上操作区 |
 
-`DescriptionsItem` / `DescriptionsItemData`：`label`(键名，text-muted) / `children`(值，text-foreground) / `span`(跨列数，默认 1，超过 `column` 时钳制到 `column`)
+`DescriptionsItem` / `DescriptionsItemData`：`label`(键名，text-muted-foreground) / `children`(值，text-foreground) / `span`(跨列数，默认 1，超过 `column` 时钳制到 `column`)
 
 ## 示例
 ```tsx
@@ -10013,7 +10024,7 @@ DocumentSheetHeader / DocumentSheetFooter：仅排版容器，透传 div 属性�
 ## 禁忌 / 坑
 
 - 打印态靠 `print:hidden` + `data-document-sheet` 钩子隔离工具栏/阴影/外边距；自己往纸面里加的悬浮控件若不希望被打印，也要自行挂 `print:hidden`。
-- 暗色主题下纸面是「近黑纸」而非白纸——若放固定深色文字会看不清，正文颜色用 token（`text-foreground`/`text-muted`）跟随主题。
+- 暗色主题下纸面是「近黑纸」而非白纸——若放固定深色文字会看不清，正文颜色用 token（`text-foreground`/`text-muted-foreground`）跟随主题。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)
@@ -10129,7 +10140,7 @@ import { Dot } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- **`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted`），写的人以为生效了。自定义颜色只走 `color` prop。
+- **`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted-foreground`），写的人以为生效了。自定义颜色只走 `color` prop。
 - `label` 决定无障碍语义：表意圆点（真在传达状态）务必传 `label`，否则它被 `aria-hidden` 当装饰，屏读用户读不到。
 - `tone` 只有五档语义色，接不住图表序列色（默认取值就是 `chart-1..6`）——那是 `color` 存在的原因，别为一个色点去拆 Tag 或裸写 `<span>`。
 
@@ -11844,7 +11855,7 @@ import { MagicCard } from "@hulianui/ui"
 <MagicCard className="h-44 w-72">
   <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
     <span className="text-lg font-semibold text-foreground">Magic Card</span>
-    <span className="text-sm text-muted">把鼠标移上来看高光</span>
+    <span className="text-sm text-muted-foreground">把鼠标移上来看高光</span>
   </div>
 </MagicCard>
 ```
@@ -12079,7 +12090,7 @@ import { PixelCard } from "@hulianui/ui"
 <PixelCard variant="blue" className="h-48 w-64">
   <div className="flex flex-col items-center gap-1 px-6 text-center">
     <p className="text-base font-semibold text-foreground">Pixel Card</p>
-    <p className="text-xs text-muted">悬停 / 聚焦触发像素动画</p>
+    <p className="text-xs text-muted-foreground">悬停 / 聚焦触发像素动画</p>
   </div>
 </PixelCard>
 
@@ -13135,7 +13146,7 @@ const [items, setItems] = useState(fields);
   renderItem={(f) => (
     <div className="flex items-center justify-between gap-3">
       <span className="font-medium text-foreground">{f.label}</span>
-      <span className="shrink-0 text-xs text-muted">{f.hint}</span>
+      <span className="shrink-0 text-xs text-muted-foreground">{f.hint}</span>
     </div>
   )}
 />
@@ -13601,6 +13612,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
 | isDisabled | `boolean` | `false` | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
 | className | `string` | — | — |
+| …HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | — | 透传 span 原生属性。状态标签常用 `title` 挂完整值做 hover 全文（表格里显示「Word」、title 是完整 MIME），以及 `data-testid` / `aria-*` |
 
 ## Events
 
@@ -14090,7 +14102,7 @@ import { Watermark } from "@hulianui/ui"
 | fontSize | `number` | `16` | 文字字号（px） |
 | fontFamily | `string` | `sans-serif` | 字体族 |
 | fontWeight | `number \| string` | `normal` | 字重 |
-| color | `string` | `--color-muted` | 水印颜色，不传读语义 token 随明暗自适应 |
+| color | `string` | `--color-muted-foreground` | 水印颜色，不传读语义 token 随明暗自适应 |
 | opacity | `number` | `0.15` | 整体不透明度 |
 | zIndex | `number` | `9` | 水印层 z-index（pointer-events:none 不挡交互） |
 
@@ -17182,7 +17194,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
       <div className="flex size-10 items-center justify-center rounded-full bg-primary/12 text-primary">瑚</div>
       <div className="space-y-1">
         <p className="text-sm font-semibold text-foreground">瑚琏设计系统</p>
-        <p className="text-xs text-muted">悬停展开 · 移出延迟关闭</p>
+        <p className="text-xs text-muted-foreground">悬停展开 · 移出延迟关闭</p>
       </div>
     </div>
   </HoverCardContent>
@@ -17370,7 +17382,7 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | title | `ReactNode` | 标题（加粗主行） |
-| description | `ReactNode` | 描述（次行，恒 text-muted） |
+| description | `ReactNode` | 描述（次行，恒 text-muted-foreground） |
 | icon | `ReactNode` | 自定义图标，覆盖默认（不传按类型派生） |
 | btn | `ReactNode` | 操作区（按钮等），渲染在描述下方 |
 
@@ -17853,7 +17865,7 @@ import { toast, ToastProvider } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | title | `ReactNode` | 标题（加粗主行） |
-| description | `ReactNode` | 描述（次行，恒 text-muted） |
+| description | `ReactNode` | 描述（次行，恒 text-muted-foreground） |
 
 `ToastProvider` 在根/段落 layout 单挂，承接命令式渲染。`children` 可选且透传渲染：包裹式 `<ToastProvider><App/></ToastProvider>` 与自闭合 `<ToastProvider />`（与页面内容并列兄弟）两种写法均可。
 
@@ -19611,7 +19623,7 @@ import { CardSpotlight } from "@hulianui/ui"
 <CardSpotlight color="var(--color-primary)" radius={350} className="w-64">
   <div className="mb-3 text-3xl">⚡</div>
   <h3 className="mb-1.5 text-base font-semibold">主题色高光</h3>
-  <p className="text-sm text-muted">color 传 var(--color-primary)，高光随主题联动。</p>
+  <p className="text-sm text-muted-foreground">color 传 var(--color-primary)，高光随主题联动。</p>
 </CardSpotlight>
 ```
 
@@ -20077,7 +20089,7 @@ import { DotPattern } from "@hulianui/ui"
 | x | `number` | `0` | pattern 整体 x 偏移 |
 | y | `number` | `0` | pattern 整体 y 偏移 |
 
-> 继承 `ComponentPropsWithoutRef<"svg">`（`className` 等）。颜色取 `currentColor`，用 `text-*` 工具类控制（如 `text-muted`）。
+> 继承 `ComponentPropsWithoutRef<"svg">`（`className` 等）。颜色取 `currentColor`，用 `text-*` 工具类控制（如 `text-muted-foreground`）。
 
 ## 示例
 ```tsx
@@ -20085,7 +20097,7 @@ import { DotPattern } from "@hulianui/ui"
   <DotPattern />
 </div>
 
-<DotPattern width={28} height={28} cr={1.4} className="text-muted" />
+<DotPattern width={28} height={28} cr={1.4} className="text-muted-foreground" />
 ```
 
 ## 禁忌 / 坑
@@ -21214,7 +21226,7 @@ import { GridPattern } from "@hulianui/ui"
   <GridPattern />
 </div>
 
-<GridPattern width={24} height={24} strokeDasharray="3 2" className="text-muted" />
+<GridPattern width={24} height={24} strokeDasharray="3 2" className="text-muted-foreground" />
 ```
 
 ## 禁忌 / 坑
@@ -22487,7 +22499,7 @@ import { Meteors } from "@hulianui/ui"
 // 父容器须 relative + overflow-hidden 裁剪溢出的流星
 <div className="relative overflow-hidden rounded-xl border">
   <Meteors number={20} />
-  <div className="grid h-48 place-items-center text-sm text-muted">Meteors</div>
+  <div className="grid h-48 place-items-center text-sm text-muted-foreground">Meteors</div>
 </div>
 ```
 
@@ -22731,7 +22743,7 @@ import { OrbitingCircles } from "@hulianui/ui"
 ```tsx
 // 双层轨道：内外层反向旋转
 <div className="relative flex size-[340px] items-center justify-center">
-  <span className="text-sm font-medium text-muted">瑚琏</span>
+  <span className="text-sm font-medium text-muted-foreground">瑚琏</span>
   <OrbitingCircles radius={140} duration={20}>
     <Icon /><Icon /><Icon /><Icon />
   </OrbitingCircles>
@@ -24295,7 +24307,7 @@ import { StripedPattern } from "@hulianui/ui"
   <StripedPattern />
 </div>
 
-<StripedPattern angle={90} size={20} className="text-muted" />
+<StripedPattern angle={90} size={20} className="text-muted-foreground" />
 ```
 
 ## 禁忌 / 坑

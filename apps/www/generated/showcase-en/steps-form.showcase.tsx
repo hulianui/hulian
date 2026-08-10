@@ -47,7 +47,7 @@ function Demo() {
               </Field>),
             },
         ]}/>
-      {done && <p className="mt-3 text-sm text-muted">Submitted:{done}</p>}
+      {done && <p className="mt-3 text-sm text-muted-foreground">Submitted:{done}</p>}
     </div>);
 }
 function NavControlDemo() {
@@ -70,7 +70,7 @@ function NavControlDemo() {
             {
                 title: "Execute import",
                 nextText: "Start importing",
-                content: <p className="text-sm text-muted">Click "Start Import" to trigger asynchronous verification, during which button loading.</p>,
+                content: <p className="text-sm text-muted-foreground">Click "Start Import" to trigger asynchronous verification, during which button loading.</p>,
             },
             {
                 title: "Complete",

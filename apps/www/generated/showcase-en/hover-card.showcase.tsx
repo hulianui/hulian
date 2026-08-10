@@ -18,8 +18,8 @@ function Demo({ side = "bottom", align = "center" }: {
           </div>
           <div className="space-y-1">
             <p className="text-sm font-semibold text-foreground">Hulian Design System</p>
-            <p className="text-xs text-muted">Absorb the best implementations from various companies and unify them into a set of Hulian API + light and dark token.</p>
-            <p className="text-xs text-muted">Hover to expand · Remove delayed closing</p>
+            <p className="text-xs text-muted-foreground">Absorb the best implementations from various companies and unify them into a set of Hulian API + light and dark token.</p>
+            <p className="text-xs text-muted-foreground">Hover to expand · Remove delayed closing</p>
           </div>
         </div>
       </HoverCardContent>

@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.27.0",
+  "version": "0.28.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -5752,18 +5752,19 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\"",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\" | \"iconXs\"",
           "values": [
             "sm",
             "md",
             "lg",
             "icon",
             "iconSm",
-            "iconLg"
+            "iconLg",
+            "iconXs"
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）"
+          "description": "尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用"
         },
         {
           "name": "block",
@@ -13885,15 +13886,17 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"sm\" | \"md\" | \"lg\"",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"",
           "values": [
             "sm",
             "md",
-            "lg"
+            "lg",
+            "xl",
+            "2xl"
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "圆直径档位（CVA 变体）。"
+          "description": "圆直径档位（CVA 变体）：32 / 40 / 48 / 64 / 96px。"
         },
         {
           "name": "src",
@@ -22752,6 +22755,14 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "…HTMLAttributes",
+          "required": false,
+          "kind": "other",
+          "type": "HTMLAttributes<HTMLSpanElement>",
+          "default": null,
+          "description": "透传 span 原生属性。状态标签常用 `title` 挂完整值做 hover 全文（表格里显示「Word」、title 是完整 MIME），以及 `data-testid` / `aria-*`"
         }
       ],
       "events": [
@@ -23635,7 +23646,7 @@
           "required": false,
           "kind": "string",
           "type": "string",
-          "default": "--color-muted",
+          "default": "--color-muted-foreground",
           "description": "水印颜色，不传读语义 token 随明暗自适应"
         },
         {
@@ -28129,7 +28140,7 @@
         {
           "name": "description",
           "type": "ReactNode",
-          "description": "描述（次行，恒 text-muted）"
+          "description": "描述（次行，恒 text-muted-foreground）"
         },
         {
           "name": "icon",
@@ -28807,7 +28818,7 @@
         {
           "name": "description",
           "type": "ReactNode",
-          "description": "描述（次行，恒 text-muted）"
+          "description": "描述（次行，恒 text-muted-foreground）"
         }
       ]
     },

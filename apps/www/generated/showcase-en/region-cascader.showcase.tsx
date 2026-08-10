@@ -16,7 +16,7 @@ function Demo({ level = 3, showSearch = true, defaultValue = [], disabled, inval
             setCodes(c);
             setNames(n);
         }} disabled={disabled} invalid={invalid}/>
-      <div className="text-xs text-muted">
+      <div className="text-xs text-muted-foreground">
         {names.length ? `Selected:${names.join(" / ")}(${codes.join(",")})` : "Not selected"}
       </div>
     </div>);

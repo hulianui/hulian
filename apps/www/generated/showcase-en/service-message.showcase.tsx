@@ -7,7 +7,7 @@ const miniProgram = <LayoutGrid className="size-3.5 text-primary" aria-hidden/>;
 function TimeDivider({ children }: {
     children: ReactNode;
 }) {
-    return <div className="py-0.5 text-center text-xs text-muted">{children}</div>;
+    return <div className="py-0.5 text-center text-xs text-muted-foreground">{children}</div>;
 }
 export const serviceMessageShowcase: ShowcaseSpec = {
     examples: [
@@ -52,7 +52,7 @@ export const serviceMessageShowcase: ShowcaseSpec = {
           <p className="text-sm leading-relaxed text-foreground">
             Your shipment has been sent by <span className="font-medium">Me</span> Sign for receipt, thank you for using SF Express. Looking forward to serving you again.
           </p>
-          <p className="mt-2 text-xs text-muted">Tracking number SF1234567890123 · Today 14:32</p>
+          <p className="mt-2 text-xs text-muted-foreground">Tracking number SF1234567890123 · Today 14:32</p>
         </ServiceMessage>),
         },
         {
@@ -118,7 +118,7 @@ export const serviceMessageShowcase: ShowcaseSpec = {
           <p className="text-sm leading-relaxed text-foreground">
             Your shipment has been sent by <span className="font-medium">Me</span> Sign for receipt, thank you for using SF Express. Looking forward to serving you again.
           </p>
-          <p className="mt-2 text-xs text-muted">Tracking number SF1234567890123 · Today 14:32</p>
+          <p className="mt-2 text-xs text-muted-foreground">Tracking number SF1234567890123 · Today 14:32</p>
         </ServiceMessage>),
         },
         {

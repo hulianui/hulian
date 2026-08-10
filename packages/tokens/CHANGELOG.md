@@ -1,5 +1,22 @@
 # @hulianui/tokens
 
+## 0.7.0
+
+### Minor Changes
+
+- **破坏性**：`--color-muted` 与 shadcn/ui 对齐，语义反转（#142） <!-- parity-id: muted-semantics-align-shadcn -->
+
+  - `--color-muted` 现在是**弱背景**（等价 `--color-subtle`），不再是次要文字色
+  - 次要文字色改名 `--color-muted-foreground`
+
+  原先两个名字与 shadcn 生态**同名反义**，而 shadcn 是 React 中后台事实上的起点。代价是双向的：从 shadcn 迁过来的项目一引入瑚琏 token，满屏 `bg-muted`（Skeleton、表格斑马纹、Avatar 占位底）立刻变成深灰色块，且消费方挡不住——这不是覆盖顺序能调的，是同一个名字被两种语义抢用；反过来库自己的贡献者也反复按 shadcn 肌肉记忆写 `text-muted-foreground`。
+
+  **迁移**：`text-muted` → `text-muted-foreground`（`fill-` / `stroke-` / `border-` 等前缀同理）；`bg-muted` 不用改。`text-muted` 已无对应 token，而 Tailwind 对未定义颜色既不报错也不生成规则，写了会**静默回退成继承色**——用 `npx hulian-check` 逐条列出来改，别靠肉眼。
+
+  新增语义浅档 `-subtle` / `-border`（#145）：`--color-primary-subtle`、`--color-primary-border`，`danger` / `success` / `warning` 同构。用于提示条底、选中行、Tag/Badge 浅底、侧栏当前项高亮。配套补齐原始色阶 `--brand-50/100/200/300`（`danger` / `success` / `warning` 同补），全部在 OKLCH 里手工定——sRGB 的 `mix()` 会带色相偏移，且各消费方挑的百分比不一，而浅档恰恰是中后台面积最大的那部分颜色。暗色下浅档**方向翻转**：不是抬亮度，而是把语义色掺进表面色。
+
+  `tailwindcss` 降为**可选**对等依赖（#144）：四个入口里只有 `preset.css` 需要 Tailwind v4，其余三个是纯 CSS 自定义属性。Vue 2 + Element UI、纯 CSS 项目、还没升 v4 的存量仓库现在可以直接 `npm i @hulianui/tokens` 只吃令牌，不再 ERESOLVE 失败。
+
 ## 0.6.0
 
 ### Minor Changes

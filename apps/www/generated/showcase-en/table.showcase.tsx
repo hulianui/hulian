@@ -38,7 +38,7 @@ const columns: ColumnDef<DemoUser, any>[] = [
     {
         accessorKey: "email",
         header: "Email",
-        cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span>,
+        cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span>,
     },
     { accessorKey: "role", header: "Role" },
 ];
@@ -57,7 +57,7 @@ const stickyColumns: ColumnDef<DemoUser, any>[] = [
     { ...columns[0], size: 200, meta: { sticky: "left" } },
     { accessorKey: "email", header: "Email", size: 280, cell: columns[1].cell },
     { accessorKey: "role", header: "Role", size: 160 },
-    { accessorKey: "id", header: "ID", size: 320, cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span> },
+    { accessorKey: "id", header: "ID", size: 320, cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span> },
     {
         id: "actions",
         header: "Actions",
@@ -76,7 +76,7 @@ const geometryColumns: ColumnDef<DemoUser, any>[] = [
         header: "Email",
         size: 180,
         meta: { ellipsis: true },
-        cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span>,
+        cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span>,
     },
     { accessorKey: "role", header: "Role", size: 100, meta: { align: "center" } },
     {
@@ -84,7 +84,7 @@ const geometryColumns: ColumnDef<DemoUser, any>[] = [
         header: "No.",
         size: 120,
         meta: { align: "right", headerAlign: "right" },
-        cell: ({ getValue }) => <span className="tabular-nums text-muted">{getValue() as string}</span>,
+        cell: ({ getValue }) => <span className="tabular-nums text-muted-foreground">{getValue() as string}</span>,
     },
 ];
 function GeometryDemo() {
@@ -110,7 +110,7 @@ function ResizableStickyDemo() {
     return <Table columns={resizableStickyColumns} data={users.slice(0, 5)} resizable/>;
 }
 function ExpandableDemo() {
-    return (<Table columns={columns} data={users} renderExpandedRow={(row) => (<div className="text-sm text-muted">
+    return (<Table columns={columns} data={users} renderExpandedRow={(row) => (<div className="text-sm text-muted-foreground">
           <div>User ID:{row.original.id}</div>
           <div>Email:{row.original.email}</div>
         </div>)}/>);
@@ -132,7 +132,7 @@ const org: OrgNode[] = [
 ];
 const orgColumns: ColumnDef<OrgNode, any>[] = [
     { accessorKey: "name", header: "Name" },
-    { accessorKey: "title", header: "Position", cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span> },
+    { accessorKey: "title", header: "Position", cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span> },
 ];
 function TreeDemo() {
     return <Table columns={orgColumns} data={org} getSubRows={(r) => r.reports}/>;
@@ -151,7 +151,7 @@ function RowClickDemo() {
     ];
     return (<div className="flex flex-col gap-2">
       <Table columns={actionColumns} data={users.slice(0, 4)} onRowClick={(row) => setLast(`Click on the line \u2192 Enter ${row.name} Component library for`)}/>
-      <p className="text-sm text-muted">{last ?? "Click any blank space in the entire line, or click the \"Edit\" button within the line to try"}</p>
+      <p className="text-sm text-muted-foreground">{last ?? "Click any blank space in the entire line, or click the \"Edit\" button within the line to try"}</p>
     </div>);
 }
 function DragSortDemo({ handle = "cell" }: {
@@ -164,7 +164,7 @@ function DragSortDemo({ handle = "cell" }: {
             setRows(e.nextData);
             setLast(`move=${e.activeId} \u00B7 target=${e.overId} \u00B7 direction=${e.position === "after" ? "down" : "up"}`);
         }}/>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         {last ?? (handle === "row" ? "Try pressing and dragging anywhere in the entire row" : "Try dragging the leftmost handle to change the order.")}
       </p>
     </div>);
@@ -249,7 +249,7 @@ export const tableShowcase: ShowcaseSpec = {
   columns={columns}
   data={users}
   renderExpandedRow={(row) => (
-    <div className="text-sm text-muted">
+    <div className="text-sm text-muted-foreground">
       <div>User ID: {row.original.id}</div>
       <div>Email: {row.original.email}</div>
     </div>

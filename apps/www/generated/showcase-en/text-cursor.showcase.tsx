@@ -10,7 +10,7 @@ function Stage({ children, dark = false, }: {
     </div>);
 }
 const hint = (label: string, dark = false) => (<p className={dark
-        ? "text-sm font-medium text-white/50" : "text-sm font-medium text-muted"}>
+        ? "text-sm font-medium text-white/50" : "text-sm font-medium text-muted-foreground"}>
     {label}
   </p>);
 export const textCursorShowcase: ShowcaseSpec = {

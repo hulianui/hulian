@@ -15,7 +15,7 @@ function Quotation({ size = "a4" }: {
       <DocumentSheetHeader>
         <div>
           <div className="text-lg font-bold text-foreground">Hulian Design Studio</div>
-          <div className="mt-1 text-xs text-muted">
+          <div className="mt-1 text-xs text-muted-foreground">
             No. 88, Road, District, Shanghai
             <br />
             contact@hulian.design · 021-8888-8888
@@ -23,7 +23,7 @@ function Quotation({ size = "a4" }: {
         </div>
         <div className="text-right">
           <div className="text-xl font-bold tracking-wide text-foreground">Quote</div>
-          <div className="mt-2 text-xs text-muted">
+          <div className="mt-2 text-xs text-muted-foreground">
             Order number: QT-2026-0604
             <br />
             Date: 2026-06-04
@@ -33,13 +33,13 @@ function Quotation({ size = "a4" }: {
 
       <DocumentSheetSection title="To">
         <div className="font-medium text-foreground">XX Technology Co., Ltd.</div>
-        <div className="text-xs text-muted">Manager Zhang · Purchasing Department</div>
+        <div className="text-xs text-muted-foreground">Manager Zhang · Purchasing Department</div>
       </DocumentSheetSection>
 
       <DocumentSheetSection title="Service details">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="border-b border-border text-xs text-muted">
+            <tr className="border-b border-border text-xs text-muted-foreground">
               <th className="py-2 font-medium">Project</th>
               <th className="py-2 text-center font-medium">Quantity</th>
               <th className="py-2 text-right font-medium">Unit price</th>

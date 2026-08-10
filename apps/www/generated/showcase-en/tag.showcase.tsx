@@ -11,7 +11,7 @@ function Closable() {
       {items.map((t) => (<Tag key={t} onClose={() => setItems((s) => s.filter((x) => x !== t))}>
           {t}
         </Tag>))}
-      {items.length === 0 && <span className="text-sm text-muted">Remove all</span>}
+      {items.length === 0 && <span className="text-sm text-muted-foreground">Remove all</span>}
     </div>);
 }
 export const tagShowcase: ShowcaseSpec = {

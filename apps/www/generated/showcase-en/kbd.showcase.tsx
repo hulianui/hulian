@@ -14,22 +14,22 @@ export const kbdShowcase: ShowcaseSpec = {
             description: "The key combination is spelled out by placing multiple Kbd side by side, connected with separators in the middle.",
             code: `<span className="inline-flex items-center gap-1">
   <Kbd>\u2318</Kbd>
-  <span className="text-muted">+</span>
+  <span className="text-muted-foreground">+</span>
   <Kbd>K</Kbd>
 </span>`,
             render: () => (<span className="inline-flex items-center gap-1">
           <Kbd>⌘</Kbd>
-          <span className="text-muted">+</span>
+          <span className="text-muted-foreground">+</span>
           <Kbd>K</Kbd>
         </span>),
         },
         {
             title: "Embed text",
             description: "The shortcut keys are shown in the text, and the keycaps are aligned with the text baseline.",
-            code: `<span className="text-sm text-muted">
+            code: `<span className="text-sm text-muted-foreground">
   Press <Kbd>\u2318</Kbd> <Kbd>S</Kbd> to save
 </span>`,
-            render: () => (<span className="text-sm text-muted">
+            render: () => (<span className="text-sm text-muted-foreground">
           Press <Kbd>⌘</Kbd> <Kbd>S</Kbd> Save
         </span>),
         },
@@ -41,13 +41,13 @@ export const kbdShowcase: ShowcaseSpec = {
             name: "combo",
             render: () => (<span className="inline-flex items-center gap-1">
           <Kbd>⌘</Kbd>
-          <span className="text-muted">+</span>
+          <span className="text-muted-foreground">+</span>
           <Kbd>K</Kbd>
         </span>),
         },
         {
             name: "in-text",
-            render: () => (<span className="text-sm text-muted">
+            render: () => (<span className="text-sm text-muted-foreground">
           Press <Kbd>⌘</Kbd> <Kbd>S</Kbd> Save
         </span>),
         },

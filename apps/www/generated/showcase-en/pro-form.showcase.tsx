@@ -27,7 +27,7 @@ function Demo() {
           <Input value={email.value as string} onChange={email.onChange} onBlur={email.onBlur} placeholder="Required · Contains @"/>
         </Field>
       </ProForm>
-      {result && <p className="mt-3 text-sm text-muted">Submitted:{result}</p>}
+      {result && <p className="mt-3 text-sm text-muted-foreground">Submitted:{result}</p>}
     </div>);
 }
 function GridDemo() {

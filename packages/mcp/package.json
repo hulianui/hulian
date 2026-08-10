@@ -1,6 +1,6 @@
 {
   "name": "@hulianui/mcp",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "瑚琏 Hulian 的 MCP server —— 让 AI 按需查组件/区块/页面与使用约束，而不是猜签名或整吞 llms-full.txt。",
   "license": "MIT",
   "author": "hulianui",

@@ -13,7 +13,7 @@ const TONE: Record<NodeData["tone"], string> = {
     brand: "before:bg-primary",
     violet: "before:bg-chart-4",
     amber: "before:bg-chart-3",
-    neutral: "before:bg-muted",
+    neutral: "before:bg-muted-foreground",
 };
 const initialNodes: FlowNode<NodeData>[] = [
     { id: "prompt", position: { x: 0, y: 40 }, data: { title: "Prompt word", subtitle: "Cyberpunk city night scene", tone: "brand", io: ["out"] } },
@@ -57,7 +57,7 @@ function FlowDemo({ controls = true, animated = false }: {
         }} isEdgeAnimated={animated ? () => true : undefined} renderNode={(n) => (<div className={`relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] before:absolute before:inset-y-0 before:left-0 before:w-1 ${TONE[n.data.tone]}`}>
             <div className="px-3.5 py-2.5">
               <div className="text-[13px] font-semibold text-foreground">{n.data.title}</div>
-              <div className="mt-0.5 text-xs text-muted">{n.data.subtitle}</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">{n.data.subtitle}</div>
             </div>
           </div>)}/>
     </div>);

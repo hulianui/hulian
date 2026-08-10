@@ -7,7 +7,7 @@ function ResponsiveDemo() {
       <header className="flex flex-col gap-2 @md:flex-row @md:items-center @md:justify-between">
         <div>
           <p className="text-sm font-semibold text-foreground">Data dashboard</p>
-          <p className="text-xs text-muted">The wider the container, the more the layout expands</p>
+          <p className="text-xs text-muted-foreground">The wider the container, the more the layout expands</p>
         </div>
         <div className="flex gap-2">
           <span className="rounded-[var(--radius)] bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
@@ -20,7 +20,7 @@ function ResponsiveDemo() {
       </header>
       <div className="grid grid-cols-1 gap-3 @md:grid-cols-2 @5xl:grid-cols-3">
         {cards.map((t, i) => (<div key={t} className="rounded-[var(--radius)] border border-border bg-surface-hover/40 p-3">
-            <p className="text-xs text-muted">{t}</p>
+            <p className="text-xs text-muted-foreground">{t}</p>
             <p className="mt-1 text-lg font-semibold text-foreground">{(i + 1) * 123}</p>
           </div>))}
       </div>

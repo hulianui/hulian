@@ -20,12 +20,12 @@ function ColumnSettingDemo({ handle = true }: {
 }) {
     const [fields, setFields] = useState(initialFields);
     return (<div className="w-80">
-      <p className="mb-2 text-xs text-muted">Drag to adjust column order (grab Space after handle dragging/focus on the handle·Move with direction keys·Put down Space)</p>
+      <p className="mb-2 text-xs text-muted-foreground">Drag to adjust column order (grab Space after handle dragging/focus on the handle·Move with direction keys·Put down Space)</p>
       <Sortable items={fields} onChange={setFields} handle={handle} renderItem={(f) => (<div className="flex items-center justify-between gap-3">
             <span className="font-medium text-foreground">{f.label}</span>
-            <span className="shrink-0 text-xs text-muted">{f.hint}</span>
+            <span className="shrink-0 text-xs text-muted-foreground">{f.hint}</span>
           </div>)}/>
-      <p className="mt-2 truncate text-xs text-muted">Current order:{fields.map((f) => f.label).join(" \u2192 ")}</p>
+      <p className="mt-2 truncate text-xs text-muted-foreground">Current order:{fields.map((f) => f.label).join(" \u2192 ")}</p>
     </div>);
 }
 interface Question {
@@ -41,12 +41,12 @@ const initialQuestions: Question[] = [
 function QuestionSortDemo() {
     const [list, setList] = useState(initialQuestions);
     return (<div className="w-96">
-      <p className="mb-2 text-xs text-muted">There are input boxes and buttons in the row: dragging them will not trigger sorting, dragging the blank space will sort it.</p>
+      <p className="mb-2 text-xs text-muted-foreground">There are input boxes and buttons in the row: dragging them will not trigger sorting, dragging the blank space will sort it.</p>
       <Sortable items={list} onChange={setList} renderItem={(q, { index }) => (<div className="flex items-center gap-2">
-            <span className="w-14 shrink-0 text-xs text-muted">No. {index + 1} Question</span>
+            <span className="w-14 shrink-0 text-xs text-muted-foreground">No. {index + 1} Question</span>
             <span className="min-w-0 flex-1 truncate font-medium text-foreground">{q.title}</span>
             <input type="number" value={q.score} aria-label={`No. ${index + 1} Question points`} onChange={(e) => setList((prev) => prev.map((it) => (it.id === q.id ? { ...it, score: Number(e.target.value) } : it)))} className="w-16 shrink-0 rounded-[var(--radius)] border border-border bg-surface px-2 py-1 text-xs"/>
-            <button type="button" aria-label={`Delete the ${index + 1} Question`} onClick={() => setList((prev) => prev.filter((it) => it.id !== q.id))} className="shrink-0 rounded px-2 py-1 text-xs text-muted hover:text-danger">
+            <button type="button" aria-label={`Delete the ${index + 1} Question`} onClick={() => setList((prev) => prev.filter((it) => it.id !== q.id))} className="shrink-0 rounded px-2 py-1 text-xs text-muted-foreground hover:text-danger">
               Delete
             </button>
           </div>)}/>
@@ -65,7 +65,7 @@ const initialTags: Tag[] = [
 function TagSortDemo() {
     const [tags, setTags] = useState(initialTags);
     return (<div className="max-w-md">
-      <p className="mb-2 text-xs text-muted">Horizontal drag and drop sorting (kanban column/filter label)</p>
+      <p className="mb-2 text-xs text-muted-foreground">Horizontal drag and drop sorting (kanban column/filter label)</p>
       <Sortable items={tags} orientation="horizontal" onChange={setTags} renderItem={(t) => <span className="font-medium text-foreground">{t.name}</span>}/>
     </div>);
 }
@@ -83,7 +83,7 @@ export const sortableShowcase: ShowcaseSpec = {
   renderItem={(f) => (
     <div className="flex items-center justify-between gap-3">
       <span className="font-medium text-foreground">{f.label}</span>
-      <span className="shrink-0 text-xs text-muted">{f.hint}</span>
+      <span className="shrink-0 text-xs text-muted-foreground">{f.hint}</span>
     </div>
   )}
 />`,
@@ -109,7 +109,7 @@ export const sortableShowcase: ShowcaseSpec = {
   onChange={setList}
   renderItem={(q, { index }) => (
     <div className="flex items-center gap-2">
-      <span className="w-14 shrink-0 text-xs text-muted">Question {index + 1}</span>
+      <span className="w-14 shrink-0 text-xs text-muted-foreground">Question {index + 1}</span>
       <span className="min-w-0 flex-1 truncate">{q.title}</span>
       {/* The input box can be dragged to select text and the button can be clicked, but it will not trigger sorting */}
       <input type="number" value={q.score} aria-label={\`\${index + 1} question score\`} onChange={...} />

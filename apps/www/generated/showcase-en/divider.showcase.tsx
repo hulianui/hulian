@@ -73,9 +73,9 @@ export const dividerShowcase: ShowcaseSpec = {
         {
             name: "Divider only",
             render: () => (<div className="w-full">
-          <p className="text-sm text-muted">Previous paragraph</p>
+          <p className="text-sm text-muted-foreground">Previous paragraph</p>
           <Divider />
-          <p className="text-sm text-muted">Next paragraph</p>
+          <p className="text-sm text-muted-foreground">Next paragraph</p>
         </div>),
         },
         {

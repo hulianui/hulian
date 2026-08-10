@@ -23,7 +23,7 @@ function TokenDemo() {
     const [v, setV] = useState("var(--color-primary)");
     return (<div className="flex flex-col gap-2">
       <ColorSwatchPicker colors={TOKENS} value={v} onValueChange={setV}/>
-      <code className="font-mono text-xs text-muted">{v}</code>
+      <code className="font-mono text-xs text-muted-foreground">{v}</code>
     </div>);
 }
 function Demo({ size = "md", disabled = false }: {
@@ -33,7 +33,7 @@ function Demo({ size = "md", disabled = false }: {
     const [v, setV] = useState("#3b82f6");
     return (<div className="flex flex-col gap-2">
       <ColorSwatchPicker colors={PALETTE} value={v} onValueChange={setV} size={size} disabled={disabled}/>
-      <code className="font-mono text-xs text-muted">{v}</code>
+      <code className="font-mono text-xs text-muted-foreground">{v}</code>
     </div>);
 }
 export const colorSwatchPickerShowcase: ShowcaseSpec = {

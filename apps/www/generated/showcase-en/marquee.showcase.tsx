@@ -13,7 +13,7 @@ function Chip({ children }: {
 function LogoTile({ children }: {
     children: ReactNode;
 }) {
-    return (<span className="flex size-12 items-center justify-center rounded-2xl border border-border bg-surface text-muted shadow-sm">
+    return (<span className="flex size-12 items-center justify-center rounded-2xl border border-border bg-surface text-muted-foreground shadow-sm">
       {children}
     </span>);
 }

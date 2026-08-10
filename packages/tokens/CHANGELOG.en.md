@@ -1,5 +1,22 @@
 # @hulianui/tokens
 
+## 0.7.0
+
+### Minor Changes
+
+- **BREAKING**: `--color-muted` flips its meaning to match shadcn/ui (#142) <!-- parity-id: muted-semantics-align-shadcn -->
+
+  - `--color-muted` is now a **weak background** (identical to `--color-subtle`), no longer the secondary text colour
+  - The secondary text colour is renamed `--color-muted-foreground`
+
+  The two names used to mean the **opposite** of the shadcn/ui vocabulary, and shadcn is where most React admin projects start. The cost ran both ways: a project migrating from shadcn saw every `bg-muted` (Skeleton, table zebra stripes, Avatar placeholders) turn into a dark grey slab the moment Hulian tokens were imported, with no way to stop it — this is not something override order can fix, it is one name claimed by two meanings. Conversely, the library's own contributors kept writing `text-muted-foreground` out of shadcn habit.
+
+  **Migration**: `text-muted` becomes `text-muted-foreground` (same for the `fill-`, `stroke-`, and `border-` prefixes); `bg-muted` stays as it is. `text-muted` no longer maps to a token, and Tailwind neither errors nor emits a rule for an undefined colour, so it **silently falls back to the inherited colour** — run `npx hulian-check` to list every location instead of hunting by eye.
+
+  New semantic tints `-subtle` and `-border` (#145): `--color-primary-subtle` and `--color-primary-border`, mirrored for `danger`, `success`, and `warning`. They cover notice bars, selected rows, Tag and Badge fills, and the active sidebar item. The primitive ramps gained `--brand-50/100/200/300` (and the same steps for `danger`, `success`, and `warning`), all hand-tuned in OKLCH — sRGB `mix()` shifts the hue, every consumer picks a different percentage, and tints cover the largest area of an admin UI. In dark mode the tints **reverse direction**: instead of getting lighter, the semantic colour is mixed into the surface.
+
+  `tailwindcss` is now an **optional** peer dependency (#144): only `preset.css` needs Tailwind v4 out of the four entries, the other three are plain CSS custom properties. Vue 2 with Element UI, plain CSS projects, and codebases still on Tailwind v3 can now run `npm i @hulianui/tokens` and consume tokens only, without an ERESOLVE failure.
+
 ## 0.6.0
 
 ### Minor Changes

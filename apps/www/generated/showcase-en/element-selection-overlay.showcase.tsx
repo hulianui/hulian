@@ -4,7 +4,7 @@ import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { ElementSelectionOverlay } from "../../../../packages/ui/src/element-selection-overlay/element-selection-overlay";
 function HostControl() {
     const [n, setN] = useState(0);
-    return (<div className="flex items-center gap-2 text-xs text-muted">
+    return (<div className="flex items-center gap-2 text-xs text-muted-foreground">
       <button type="button" onClick={() => setN((v) => v + 1)} className="rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2.5 py-1 text-foreground transition-colors hover:bg-surface-hover">
         A button on the host page
       </button>
@@ -17,7 +17,7 @@ function PathBar({ selected, hovered }: {
     selected: string | null;
     hovered: string | null;
 }) {
-    return (<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+    return (<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
       <span>
         Selected:
         <code className="ml-1 rounded-[min(var(--radius),0.25rem)] bg-surface-hover px-1 py-0.5 text-foreground">
@@ -44,15 +44,15 @@ function MarkedDemo({ showLabel = true, enabled = true, highlightSelector = "[da
       <div ref={setRoot} className="space-y-3 rounded-[calc(var(--radius)+0.25rem)] border border-border bg-bg p-4">
         <div data-hulian-component="Hero" data-hulian-path="App/Hero" className="rounded-[var(--radius)] bg-surface p-4">
           <p className="text-base font-semibold text-foreground">Point-and-edit preview area</p>
-          <p className="mt-1 text-sm text-muted">Move the pointer in and click any block to select it.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Move the pointer in and click any block to select it.</p>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div data-hulian-component="StatCard" data-hulian-path="App/Stats/Revenue" className="rounded-[var(--radius)] bg-surface p-3">
-            <p className="text-xs text-muted">Revenue this month</p>
+            <p className="text-xs text-muted-foreground">Revenue this month</p>
             <p className="text-lg font-semibold tabular-nums text-foreground">¥ 128,400</p>
           </div>
           <div data-hulian-component="StatCard" data-hulian-path="App/Stats/Orders" className="rounded-[var(--radius)] bg-surface p-3">
-            <p className="text-xs text-muted">Number of orders</p>
+            <p className="text-xs text-muted-foreground">Number of orders</p>
             <p className="text-lg font-semibold tabular-nums text-foreground">1,204</p>
           </div>
         </div>

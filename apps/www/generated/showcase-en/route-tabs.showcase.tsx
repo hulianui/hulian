@@ -28,7 +28,7 @@ function Demo({ sortable }: {
         }} sortable={sortable} onReorder={sortable
             ? (keys) => setItems((prev) => keys.map((k) => prev.find((t) => t.key === k)!).filter(Boolean))
             : undefined}/>
-      <div className="p-4 text-sm text-muted">
+      <div className="p-4 text-sm text-muted-foreground">
         Current page:{items.find((t) => t.key === active)?.label ?? "(none)"} · Right-click the tab and try to close it in batches
       </div>
     </div>);

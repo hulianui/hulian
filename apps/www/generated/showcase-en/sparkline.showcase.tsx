@@ -20,7 +20,7 @@ function InlineTable() {
     return (<div className="overflow-hidden rounded-[var(--radius)] border border-border">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-border bg-subtle text-left text-muted">
+          <tr className="border-b border-border bg-subtle text-left text-muted-foreground">
             <th className="px-4 py-2 font-medium">Indicators</th>
             <th className="px-4 py-2 font-medium">Current</th>
             <th className="px-4 py-2 font-medium">Recent 8 period trends</th>

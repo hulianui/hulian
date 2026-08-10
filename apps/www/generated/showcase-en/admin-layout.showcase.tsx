@@ -41,12 +41,12 @@ function Page({ k }: {
 }) {
     return (<div className="flex flex-col gap-3">
       <h2 className="text-lg font-semibold text-foreground">{LABEL[k] ?? k}</h2>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         This is "{LABEL[k] ?? k}" page content. Click the menu on the left to open a new tab. The tab above can be switched/closed to experience the middle and backend keep-alive navigation.
       </p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {Array.from({ length: 6 }, (_, i) => (<div key={i} className="rounded-[var(--radius)] border border-border bg-surface p-4">
-            <div className="text-xs text-muted">Indicators {i + 1}</div>
+            <div className="text-xs text-muted-foreground">Indicators {i + 1}</div>
             <div className="mt-1 text-xl font-semibold text-foreground">{((i + 1) * 1234).toLocaleString()}</div>
           </div>))}
       </div>
@@ -55,9 +55,9 @@ function Page({ k }: {
 function Demo() {
     const [active, setActive] = useState("dashboard");
     return (<div className="h-[560px] w-full overflow-hidden rounded-[var(--radius)] border border-border">
-      <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} defaultActiveKey="dashboard" defaultSelectedKey="dashboard" defaultOpenKeys={["users"]} onTabChange={setActive} breadcrumb={<span className="text-sm text-muted">Home / {LABEL[active] ?? active}</span>} headerExtra={<>
+      <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} defaultActiveKey="dashboard" defaultSelectedKey="dashboard" defaultOpenKeys={["users"]} onTabChange={setActive} breadcrumb={<span className="text-sm text-muted-foreground">Home / {LABEL[active] ?? active}</span>} headerExtra={<>
             <Badge count={3} size="sm">
-              <Bell className="size-5 text-muted"/>
+              <Bell className="size-5 text-muted-foreground"/>
             </Badge>
             <Avatar fallback="Hu"/>
           </>}>
@@ -80,15 +80,15 @@ export const adminLayoutShowcase: ShowcaseSpec = {
   logo={<span className="font-bold text-primary">Hulian Admin</span>}
   defaultActiveKey="dashboard"
   defaultSelectedKey="dashboard"
-  breadcrumb={<span className="text-sm text-muted">Home/Dashboard</span>}
+  breadcrumb={<span className="text-sm text-muted-foreground">Home/Dashboard</span>}
   headerExtra={<Avatar fallback="Hu" />}
 >
   <Dashboard />
 </AdminLayout>`,
             render: () => (<div className="h-[480px] w-full overflow-hidden rounded-[var(--radius)] border border-border">
-          <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} defaultActiveKey="dashboard" defaultSelectedKey="dashboard" defaultOpenKeys={["users"]} breadcrumb={<span className="text-sm text-muted">Home / Dashboard</span>} headerExtra={<>
+          <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} defaultActiveKey="dashboard" defaultSelectedKey="dashboard" defaultOpenKeys={["users"]} breadcrumb={<span className="text-sm text-muted-foreground">Home / Dashboard</span>} headerExtra={<>
                 <Badge count={3} size="sm">
-                  <Bell className="size-5 text-muted"/>
+                  <Bell className="size-5 text-muted-foreground"/>
                 </Badge>
                 <Avatar fallback="Hu"/>
               </>}>
@@ -109,7 +109,7 @@ export const adminLayoutShowcase: ShowcaseSpec = {
   <Dashboard />
 </AdminLayout>`,
             render: () => (<div className="h-[480px] w-full overflow-hidden rounded-[var(--radius)] border border-border">
-          <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} defaultCollapsed defaultActiveKey="dashboard" defaultSelectedKey="dashboard" breadcrumb={<span className="text-sm text-muted">Home / Dashboard</span>} headerExtra={<Avatar fallback="Hu"/>}>
+          <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} defaultCollapsed defaultActiveKey="dashboard" defaultSelectedKey="dashboard" breadcrumb={<span className="text-sm text-muted-foreground">Home / Dashboard</span>} headerExtra={<Avatar fallback="Hu"/>}>
             <StaticPage k="dashboard"/>
           </AdminLayout>
         </div>),
@@ -126,7 +126,7 @@ export const adminLayoutShowcase: ShowcaseSpec = {
   <Dashboard />
 </AdminLayout>`,
             render: () => (<div className="h-[480px] w-full overflow-hidden rounded-[var(--radius)] border border-border">
-          <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} showTabs={false} defaultSelectedKey="dashboard" defaultOpenKeys={["users"]} breadcrumb={<span className="text-sm text-muted">Home / Dashboard</span>} headerExtra={<Avatar fallback="Hu"/>}>
+          <AdminLayout fitViewport={false} menuItems={menu} logo={<span className="text-base font-bold text-primary">Hulian Admin</span>} logoCollapsed={<span className="text-base font-bold text-primary">Hu</span>} showTabs={false} defaultSelectedKey="dashboard" defaultOpenKeys={["users"]} breadcrumb={<span className="text-sm text-muted-foreground">Home / Dashboard</span>} headerExtra={<Avatar fallback="Hu"/>}>
             <StaticPage k="dashboard"/>
           </AdminLayout>
         </div>),

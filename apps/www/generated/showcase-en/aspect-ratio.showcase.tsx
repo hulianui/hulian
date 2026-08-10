@@ -3,7 +3,7 @@ import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { AspectRatio } from "../../../../packages/ui/src/aspect-ratio/aspect-ratio";
 const Fill = ({ label }: {
     label: string;
-}) => (<div className="flex h-full w-full items-center justify-center bg-surface-hover text-xs text-muted">
+}) => (<div className="flex h-full w-full items-center justify-center bg-surface-hover text-xs text-muted-foreground">
     {label}
   </div>);
 export const aspectRatioShowcase: ShowcaseSpec = {

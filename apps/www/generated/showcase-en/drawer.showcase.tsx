@@ -13,7 +13,7 @@ function Demo({ side }: {
             <DrawerClose render={<Button>Save</Button>}/>
           </>}>
 
-        <div className="flex flex-col gap-3 text-sm text-muted">
+        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
           {Array.from({ length: 12 }, (_, i) => (<p key={i}>Configuration items {i + 1}: Here is a longer explanatory copy to demonstrate the scrolling behavior when the text exceeds the limit.</p>))}
         </div>
       </DrawerContent>

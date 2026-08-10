@@ -8,7 +8,7 @@ function FabBox({ withActions, label, draggable, }: {
     draggable?: boolean;
 }) {
     return (<div className={`relative ${withActions ? "h-72" : "h-56"} w-full max-w-md overflow-hidden rounded-[var(--radius)] border border-border bg-surface-hover`}>
-      <div className="p-4 text-sm text-muted">
+      <div className="p-4 text-sm text-muted-foreground">
         {draggable
             ? "Press and hold the floating button to drag it away (let go and stop in place)." : `Floating button in the lower right corner${withActions ? "(Click to expand sub-action)" : label ? "(extended capsule form)" : ""}.`}
       </div>

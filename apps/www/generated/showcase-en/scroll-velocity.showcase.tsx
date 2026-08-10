@@ -43,14 +43,14 @@ export const scrollVelocityShowcase: ShowcaseSpec = {
         },
         {
             title: "Weaken the text color",
-            description: "Use text-muted to weaken the text color, slow down the speed, and use it as atmospheric background text.",
+            description: "Use text-muted-foreground to weaken the text color, slow down the speed, and use it as atmospheric background text.",
             code: `<ScrollVelocity
   texts={["Continuous scrolling atmosphere background text"]}
   velocity={50}
-  className="text-muted"
+  className="text-muted-foreground"
 />`,
             render: () => (<Stage>
-          <ScrollVelocity texts={["Continuous scrolling atmosphere background text"]} velocity={50} className="text-muted"/>
+          <ScrollVelocity texts={["Continuous scrolling atmosphere background text"]} velocity={50} className="text-muted-foreground"/>
         </Stage>),
         },
     ],
@@ -82,7 +82,7 @@ export const scrollVelocityShowcase: ShowcaseSpec = {
         {
             name: "Weaken the text color (muted)",
             render: () => (<Stage>
-          <ScrollVelocity texts={["Continuous scrolling atmosphere background text"]} velocity={50} className="text-muted"/>
+          <ScrollVelocity texts={["Continuous scrolling atmosphere background text"]} velocity={50} className="text-muted-foreground"/>
         </Stage>),
         },
     ],

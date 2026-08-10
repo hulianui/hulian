@@ -1,7 +1,7 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Safari } from "../../../../packages/ui/src/safari/safari";
 function Demo() {
-    return (<div className="grid h-44 place-items-center bg-gradient-to-br from-chart-1/20 to-chart-3/20 text-sm text-muted">
+    return (<div className="grid h-44 place-items-center bg-gradient-to-br from-chart-1/20 to-chart-3/20 text-sm text-muted-foreground">
       Put your webpage screenshot here
     </div>);
 }

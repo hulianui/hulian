@@ -6,7 +6,7 @@ function Controlled() {
     const [hex, setHex] = useState("#38e8ff");
     return (<span className="inline-flex items-center gap-3">
       <ColorField value={hex} onValueChange={setHex} className="w-40" aria-label="Main color"/>
-      <span className="font-mono text-sm text-muted">{hex}</span>
+      <span className="font-mono text-sm text-muted-foreground">{hex}</span>
     </span>);
 }
 export const colorFieldShowcase: ShowcaseSpec = {

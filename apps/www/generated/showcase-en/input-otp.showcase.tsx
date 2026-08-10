@@ -11,7 +11,7 @@ function OTPDemo(props: {
     const [v, setV] = useState("");
     return (<div className="flex flex-col items-center gap-2">
       <InputOTP value={v} onChange={setV} {...props}/>
-      <span className="text-xs text-muted">{v || "(Enter verification code)"}</span>
+      <span className="text-xs text-muted-foreground">{v || "(Enter verification code)"}</span>
     </div>);
 }
 export const inputOtpShowcase: ShowcaseSpec = {

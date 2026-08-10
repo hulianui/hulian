@@ -10,7 +10,7 @@ function Demo({ reverse = false }: {
     reverse?: boolean;
 }) {
     return (<div className="relative flex h-[340px] w-[340px] items-center justify-center">
-      <span className="text-sm font-medium text-muted">Hulian</span>
+      <span className="text-sm font-medium text-muted-foreground">Hulian</span>
       <OrbitingCircles radius={140} duration={20} reverse={reverse}>
         <Chip c="A"/>
         <Chip c="B"/>
@@ -29,7 +29,7 @@ export const orbitingCirclesShowcase: ShowcaseSpec = {
             title: "Basic usage",
             description: "Child elements orbit at a constant speed, with a mark or logo in the center.",
             code: `<div className="relative flex size-[340px] items-center justify-center">
-  <span className="text-sm font-medium text-muted">Hulian</span>
+  <span className="text-sm font-medium text-muted-foreground">Hulian</span>
   <OrbitingCircles radius={140} duration={20}>
     <Chip c="A" />
     <Chip c="B" />

@@ -15,11 +15,11 @@ export const meteorsShowcase: ShowcaseSpec = {
             description: "Put Meteors into a relative + overflow-hidden container. By default, 20 meteors will fall diagonally.",
             code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
   <Meteors />
-  <div className="grid h-full place-items-center text-sm text-muted">Meteors</div>
+  <div className="grid h-full place-items-center text-sm text-muted-foreground">Meteors</div>
 </div>`,
             render: () => (<Sky>
           <Meteors />
-          <div className="grid h-full place-items-center text-sm text-muted">Meteors</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Meteors</div>
         </Sky>),
         },
         {
@@ -30,7 +30,7 @@ export const meteorsShowcase: ShowcaseSpec = {
 </div>`,
             render: () => (<Sky>
           <Meteors number={40}/>
-          <div className="grid h-full place-items-center text-sm text-muted">number=40</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">number=40</div>
         </Sky>),
         },
         {
@@ -41,7 +41,7 @@ export const meteorsShowcase: ShowcaseSpec = {
 </div>`,
             render: () => (<Sky>
           <Meteors number={24} minDuration={3} maxDuration={6} minDelay={0} maxDelay={2}/>
-          <div className="grid h-full place-items-center text-sm text-muted">Slow and scattered</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Slow and scattered</div>
         </Sky>),
         },
         {
@@ -52,7 +52,7 @@ export const meteorsShowcase: ShowcaseSpec = {
 </div>`,
             render: () => (<Sky>
           <Meteors number={20} angle={250}/>
-          <div className="grid h-full place-items-center text-sm text-muted">angle=250</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">angle=250</div>
         </Sky>),
         },
         {
@@ -63,7 +63,7 @@ export const meteorsShowcase: ShowcaseSpec = {
 </div>`,
             render: () => (<Sky>
           <Meteors number={24} className="text-primary"/>
-          <div className="grid h-full place-items-center text-sm text-muted">text-primary</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">text-primary</div>
         </Sky>),
         },
     ],
@@ -73,13 +73,13 @@ export const meteorsShowcase: ShowcaseSpec = {
             name: "default (20 meteors)",
             render: () => (<Sky>
           <Meteors />
-          <div className="grid h-full place-items-center text-sm text-muted">Meteors</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Meteors</div>
         </Sky>),
         },
     ],
     renderWithProps: (p) => (<Sky>
       <Meteors number={p.number as number}/>
-      <div className="grid h-full place-items-center text-sm text-muted">Meteors</div>
+      <div className="grid h-full place-items-center text-sm text-muted-foreground">Meteors</div>
     </Sky>),
     toCode: (p) => `<div className="relative overflow-hidden">
   <Meteors number={${p.number}} />

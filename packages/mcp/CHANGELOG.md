@@ -1,5 +1,24 @@
 # @hulianui/mcp
 
+## 0.7.0
+
+### Minor Changes
+
+- `get_component_doc` 查 props 时会一并给出插槽字段（#150）。
+
+  `Button.render`、`Upload.label`/`hint`、`Stat.label`/`value`、`Avatar.fallback` 这类字段住在组件文档的 `## Slots` 章节而不是 Props 表。而本 server 的工作流写着「用到的每个组件在写第一行代码前必须查 props」，于是老老实实传 `sections:["props"]` 的人会得出「Button 没有 render」「Stat 没有 label」的结论——`Stat` 那两个还是**必填**的，一个 KPI 卡片查下来像是没有数据入口。省 context 的初衷不该以「查了等于没查」为代价。
+
+  现在：`format="json"` 的 `props` 数组把插槽一并列出（各带 `kind:"slot"` 可区分），独立的 `slots` 数组照旧保留，两种消费方式都不漏；markdown 路径同样会带上 `## Slots`。反向不成立——单独要 `slots` 或 `events` 是明确的窄查询，不会被塞进 props。
+
+  工作流说明里也点明了「插槽是独立章节且含必填项」，免得下一个人再踩。
+
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @hulianui/guard@0.5.0
+
 ## 0.6.0
 
 ### Minor Changes

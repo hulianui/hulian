@@ -15,7 +15,7 @@ const Hint = ({ light = false }: {
     light?: boolean;
 }) => (<div className="pointer-events-none flex h-full items-center justify-center">
     <span className={light
-        ? "text-sm font-medium text-white/70" : "text-sm font-medium text-muted"}>
+        ? "text-sm font-medium text-white/70" : "text-sm font-medium text-muted-foreground"}>
       Click here to emit sparks
     </span>
   </div>);

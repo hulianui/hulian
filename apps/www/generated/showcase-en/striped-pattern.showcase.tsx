@@ -62,9 +62,9 @@ export const stripedPatternShowcase: ShowcaseSpec = {
         </Frame>),
         },
         {
-            name: "Vertical sparse grain \u00B7 text-muted",
+            name: "Vertical sparse grain \u00B7 text-muted-foreground",
             render: () => (<Frame>
-          <StripedPattern angle={90} size={20} className="text-muted"/>
+          <StripedPattern angle={90} size={20} className="text-muted-foreground"/>
         </Frame>),
         },
     ],

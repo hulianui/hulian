@@ -6,7 +6,7 @@ function DesignBoard({ label }: {
 }) {
     return (<div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-[var(--color-surface-hover)] text-center">
       <div className="text-[120px] font-bold leading-none text-[var(--color-primary)]">1920×1080</div>
-      <div className="text-[40px] text-muted">{label}</div>
+      <div className="text-[40px] text-muted-foreground">{label}</div>
     </div>);
 }
 function Viewport({ children }: {

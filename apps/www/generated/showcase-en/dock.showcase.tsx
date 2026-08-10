@@ -21,7 +21,7 @@ const NAV = [
 function NavDemo() {
     const [active, setActive] = useState("home");
     return (<div className="flex w-full flex-col items-center gap-3">
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         Current: <span className="text-foreground">{NAV.find((i) => i.key === active)?.label}</span>
       </p>
       <Dock aria-label="Main navigation" activeKey={active} onSelect={setActive}>

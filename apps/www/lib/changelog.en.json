@@ -1,8 +1,50 @@
 [
   {
     "pkg": "@hulianui/tokens",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": true,
+        "body": "**BREAKING**: `--color-muted` flips its meaning to match shadcn/ui (#142)\n\n- `--color-muted` is now a **weak background** (identical to `--color-subtle`), no longer the secondary text colour\n- The secondary text colour is renamed `--color-muted-foreground`\n\nThe two names used to mean the **opposite** of the shadcn/ui vocabulary, and shadcn is where most React admin projects start. The cost ran both ways: a project migrating from shadcn saw every `bg-muted` (Skeleton, table zebra stripes, Avatar placeholders) turn into a dark grey slab the moment Hulian tokens were imported, with no way to stop it — this is not something override order can fix, it is one name claimed by two meanings. Conversely, the library's own contributors kept writing `text-muted-foreground` out of shadcn habit.\n\n**Migration**: `text-muted` becomes `text-muted-foreground` (same for the `fill-`, `stroke-`, and `border-` prefixes); `bg-muted` stays as it is. `text-muted` no longer maps to a token, and Tailwind neither errors nor emits a rule for an undefined colour, so it **silently falls back to the inherited colour** — run `npx hulian-check` to list every location instead of hunting by eye.\n\nNew semantic tints `-subtle` and `-border` (#145): `--color-primary-subtle` and `--color-primary-border`, mirrored for `danger`, `success`, and `warning`. They cover notice bars, selected rows, Tag and Badge fills, and the active sidebar item. The primitive ramps gained `--brand-50/100/200/300` (and the same steps for `danger`, `success`, and `warning`), all hand-tuned in OKLCH — sRGB `mix()` shifts the hue, every consumer picks a different percentage, and tints cover the largest area of an admin UI. In dark mode the tints **reverse direction**: instead of getting lighter, the semantic colour is mixed into the surface.\n\n`tailwindcss` is now an **optional** peer dependency (#144): only `preset.css` needs Tailwind v4 out of the four entries, the other three are plain CSS custom properties. Vue 2 with Element UI, plain CSS projects, and codebases still on Tailwind v3 can now run `npm i @hulianui/tokens` and consume tokens only, without an ERESOLVE failure.",
+        "parityId": "muted-semantics-align-shadcn"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.28.0",
+    "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`Tag` now extends `HTMLAttributes<HTMLSpanElement>`, and props queries surface slot fields (#148 #150 #147)\n\n`TagProps` used to be a closed interface, so `title`, `id`, `data-*`, and `aria-*` could not be passed at all — while the sibling `Button`, `Card`, `Empty`, and `Progress` all extend their native attributes. Status tags are exactly where `title` matters most: a table cell reads \"Word\" while its `title` carries the full MIME type.\n\n**A props query now returns slot fields as well** (#150). Fields such as `Button.render`, `Upload.label`/`hint`, `Stat.label`/`value`, and `Avatar.fallback` live in the `## Slots` section rather than the Props table, so anyone following the MCP workflow with `sections:[\"props\"]` concluded that \"Button has no render\" or \"Stat has no label\" — and the two on `Stat` are **required**. The `props` array under `format=\"json\"` now lists slots too (each tagged `kind:\"slot\"`), with the separate `slots` array preserved; the markdown path likewise includes `## Slots`. It does not work in reverse: asking only for `slots` or `events` never pulls in props.\n\nSame batch: `Segmented.label` was documented all along (in the Slots table), so #147's \"missing from the props table\" was this same visibility issue and the markdown needed no change; `Avatar`'s `size` documentation gains the `xl` and `2xl` steps (the implementation always had five while the docs listed three — an incomplete value range hides better than a missing field, because you believe you are looking at the full set of options).",
+        "parityId": "tag-native-attrs-and-props-doc-visibility"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`Button` gains `size=\"iconXs\"` (a 20px square), the micro size dense table rows were missing (#146)\n\nThe smallest icon size used to be `iconSm` (32px), which pushes `density=\"compact\"` table rows taller. The 20px size has always existed in practice — `Table`'s tree expander and drag handle both hand-wrote the same `size-5` without folding it back into `Button` or exposing it — so \"don't write a bare `<button>`\" and \"the library has no button you can use here\" formed a closed loop.\n\n`Table`'s expander now uses it. The drag handle **deliberately stays hand-written**: when disabled it needs `cursor-not-allowed` to say \"this row cannot be dragged\", and the `Button` base carries `disabled:pointer-events-none` — no pointer events means no cursor change. Converting it would take three `disabled:` overrides to push the base back, which is longer than the markup it replaces.\n\nNote that `iconXs` matches **no** text size (the other three, `iconSm`/`icon`/`iconLg`, equal the heights of `sm`/`md`/`lg`), so pairing it with `sm` leaves it 12px shorter. Its corner radius is deliberately `rounded` (4px) rather than `--radius` (10px): a 10px radius on a 20px square is a disc.\n\n**Docs fix**: the `SegmentedItem` props table now lists `label` (#147). It is a required `ReactNode` that every example passes, yet the table omitted it while the neighbouring `ariaLabel` row described that non-existent prop. Modelling from the props table — including tooling that reads `format=\"json\"` — concluded that `SegmentedItem` has no label.",
+        "parityId": "button-iconxs-and-segmented-doc"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": true,
+        "body": "**BREAKING**: `text-muted` is renamed to `text-muted-foreground` library-wide, following the semantic flip in `@hulianui/tokens` (#142)\n\n`--color-muted` is now a weak background (matching shadcn/ui) and the secondary text colour is `--color-muted-foreground`. The 2059 call sites inside the library have been rewritten; `text-muted` written in your own code needs the same rename. It no longer maps to any token, and Tailwind neither errors nor emits a rule for an undefined colour, so it **silently falls back to the inherited colour** — secondary copy renders in the same colour as body text. `npx hulian-check` has an error rule that lists every location. `bg-muted` needs no change.\n\nThis also fixes BubbleMenu: the hover background fell back to the secondary text colour, giving a dark fill under dark text. The flip turns that fallback into the correct light tint.\n\n**Fixed**: `@hulianui/ui/vitest-preset` and `@hulianui/ui/vite` gained CJS entries (#143)\n\nA project without `\"type\": \"module\"` — the shape `create-next-app` generates, and therefore most Next.js consumers — loads `vitest.config.ts` and `vite.config.ts` through CJS `require`. Both entries were ESM-only, so the run died during **config loading** with `\"resolved to an ESM file. ESM file cannot be loaded by require\"` and not a single test executed. The implementation now lives in `.cjs` with `.js` as its ESM wrapper, so both paths work.\n\n**Fixed**: a wildcard class name inside a comment broke consumer CSS (#141)\n\nA JSDoc example in `button-base.ts` contained `[border-radius:var(--hulian-*)]`. The Tailwind v4 scanner only extracts text candidates and does not distinguish code from comments, so it emitted `border-radius: var(--hulian-*)` as a real rule. `*` is not a valid custom property name, so once a consumer added the documented `@source` line the whole stylesheet failed to parse and **every page returned 500**. The comment no longer uses class-name syntax, and a CI gate now guards against a recurrence.",
+        "parityId": "muted-rename-and-cjs-tooling"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
+    "version": "0.6.0",
+    "date": "2026-08-07",
     "entries": [
       {
         "sha": null,
@@ -16,7 +58,7 @@
   {
     "pkg": "@hulianui/ui",
     "version": "0.27.0",
-    "date": null,
+    "date": "2026-08-07",
     "entries": [
       {
         "sha": null,

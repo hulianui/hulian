@@ -6,7 +6,7 @@ import { Spin } from "../../../../packages/ui/src/spin/spin";
 function SampleBox() {
     return (<div className="w-56 rounded-[var(--radius)] border border-border bg-surface p-4 text-sm text-foreground">
       <div className="font-medium">Monthly Report</div>
-      <p className="mt-1 text-muted">Data is being calculated, please wait. Here is the content area covered by the mask.</p>
+      <p className="mt-1 text-muted-foreground">Data is being calculated, please wait. Here is the content area covered by the mask.</p>
     </div>);
 }
 function FullscreenDemo() {

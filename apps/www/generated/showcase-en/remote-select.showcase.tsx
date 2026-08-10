@@ -48,7 +48,7 @@ function RichDemo() {
     return (<div className="w-80">
       <RemoteSelect fetcher={fakeFetch} valueKey="store_id" labelKey="store_name" pageSize={8} placeholder="Search store..." renderOption={(option) => (<span className="flex min-w-0 flex-1 items-center gap-2">
             <span className="truncate text-foreground">{option.label}</span>
-            <span className="ml-auto shrink-0 text-xs text-muted">
+            <span className="ml-auto shrink-0 text-xs text-muted-foreground">
               #{String(option.raw.store_id)}
             </span>
           </span>)}/>
@@ -111,7 +111,7 @@ export const remoteSelectShowcase: ShowcaseSpec = {
   renderOption={(option) => (
     <span className="flex min-w-0 flex-1 items-center gap-2">
       <span className="truncate text-foreground">{option.label}</span>
-      <span className="ml-auto shrink-0 text-xs text-muted">#{String(option.raw.store_id)}</span>
+      <span className="ml-auto shrink-0 text-xs text-muted-foreground">#{String(option.raw.store_id)}</span>
     </span>
   )}
 />`,

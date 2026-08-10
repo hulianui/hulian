@@ -106,7 +106,7 @@ export const textShowcase: ShowcaseSpec = {
             name: "Hue (semantic token, light and dark self-adaptation)",
             render: () => (<div className="flex flex-col gap-1.5">
           <Text>Default text default · text-foreground</Text>
-          <Text tone="muted">Auxiliary instructions muted · text-muted</Text>
+          <Text tone="muted">Auxiliary instructions muted · text-muted-foreground</Text>
           <Text tone="primary">Emphasis text primary · text-primary</Text>
           <Text tone="success">Successful result success · text-success</Text>
           <Text tone="warning">Pay attention to the warning · text-warning</Text>

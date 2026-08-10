@@ -39,7 +39,7 @@ function Demo() {
               <Link href="#">Forgot password</Link>
               <Link href="#">Register an account</Link>
             </div>}/>
-        {user && (<p className="text-center text-sm text-muted" role="status">
+        {user && (<p className="text-center text-sm text-muted-foreground" role="status">
             Logging in:{user}
           </p>)}
       </div>
@@ -53,7 +53,7 @@ function EscapeHatchDemo() {
       <LoginForm rules={{
             username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: "The account number must start with a letter, 3~16 characters/numbers/underscores" }],
             password: [{ min: 6, max: 32, message: "Password 6~32 characters" }],
-        }} values={values} onValuesChange={(_changed, all) => setValues(all)} extra={<label className="flex items-center gap-2 rounded-[var(--radius)] border border-dashed border-border p-3 text-sm text-muted">
+        }} values={values} onValuesChange={(_changed, all) => setValues(all)} extra={<label className="flex items-center gap-2 rounded-[var(--radius)] border border-dashed border-border p-3 text-sm text-muted-foreground">
             <input type="checkbox" checked={passed} onChange={(e) => setPassed(e.target.checked)}/>
             Simulated human-machine verification (real scene ClickCaptcha)
           </label>} beforeSubmit={async () => {
@@ -63,10 +63,10 @@ function EscapeHatchDemo() {
             }
             await new Promise((r) => setTimeout(r, 500));
         }} onFinish={({ username }) => setLog(`onFinish:${username} Logging in`)}/>
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         External real-time value:{values.username || "\u2014"} / {values.password ? "\u2022".repeat(values.password.length) : "\u2014"}
       </p>
-      {log && (<p className="text-xs text-muted" role="status">
+      {log && (<p className="text-xs text-muted-foreground" role="status">
           {log}
         </p>)}
     </div>);

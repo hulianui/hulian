@@ -143,7 +143,7 @@ function SortedWithParams() {
     const [dept, setDept] = useState<string>(DEPTS[0]);
     return (<div className="flex w-full flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted">Department (fixed query parameters)</span>
+        <span className="text-sm text-muted-foreground">Department (fixed query parameters)</span>
         {DEPTS.map((d) => (<Button key={d} size="sm" variant={d === dept ? "solid" : "outline"} onClick={() => setDept(d)}>
             {d}
           </Button>))}

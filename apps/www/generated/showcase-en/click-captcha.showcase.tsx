@@ -49,7 +49,7 @@ function Demo() {
             setStatus("idle");
             setLast(null);
         }}/>
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         {last ? `Return point:${last.map((p) => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`).join(" ")}` : "Click on the three prompts in the picture"}
       </p>
     </div>);
@@ -58,7 +58,7 @@ function ControlledDemo() {
     const [points, setPoints] = useState<CaptchaPoint[]>([]);
     return (<div className="flex w-full flex-col items-center gap-3">
       <ClickCaptcha backgroundSrc={demoImage(3)} points={points} onPointsChange={setPoints} maxPoints={4}/>
-      <ul className="w-full max-w-sm space-y-1 text-xs text-muted">
+      <ul className="w-full max-w-sm space-y-1 text-xs text-muted-foreground">
         {points.length === 0 && <li>Externally held point array, which can be cleared/played back by itself</li>}
         {points.map((p, i) => (<li key={`${p.x}-${p.y}-${i}`}>
             #{i + 1} → x {p.x.toFixed(3)} · y {p.y.toFixed(3)}

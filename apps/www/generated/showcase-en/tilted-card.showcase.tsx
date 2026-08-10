@@ -22,14 +22,14 @@ export const tiltedCardShowcase: ShowcaseSpec = {
 >
   <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
     <p className="text-lg font-semibold text-foreground">Hulian Component Library</p>
-    <p className="text-xs text-muted">Move the mouse to feel 3D tilt</p>
+    <p className="text-xs text-muted-foreground">Move the mouse to feel 3D tilt</p>
   </div>
 </TiltedCard>`,
             render: () => (<Stage>
           <TiltedCard cardWidth="240px" cardHeight="240px" containerWidth="240px" containerHeight="240px" captionText="Hover me">
             <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
               <p className="text-lg font-semibold text-foreground">Hulian component library</p>
-              <p className="text-xs text-muted">Moving mouse experience 3D Tilt</p>
+              <p className="text-xs text-muted-foreground">Moving mouse experience 3D Tilt</p>
             </div>
           </TiltedCard>
         </Stage>),
@@ -102,7 +102,7 @@ export const tiltedCardShowcase: ShowcaseSpec = {
           <TiltedCard cardWidth="240px" cardHeight="240px" captionText="Hover me" containerWidth="240px" containerHeight="240px">
             <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
               <p className="text-lg font-semibold text-foreground">Hulian component library</p>
-              <p className="text-xs text-muted">Moving mouse experience 3D Tilt</p>
+              <p className="text-xs text-muted-foreground">Moving mouse experience 3D Tilt</p>
             </div>
           </TiltedCard>
         </Stage>),

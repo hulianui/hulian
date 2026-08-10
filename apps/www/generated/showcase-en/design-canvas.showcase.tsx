@@ -53,7 +53,7 @@ function ViewportDemo() {
     const [pan, setPan] = useState({ x: 0, y: 0 });
     const [items, setItems] = useState(initial);
     return (<div className="w-full space-y-2">
-      <div className="flex items-center gap-3 text-xs text-muted">
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <span>Zoom {Math.round(zoom * 100)}%</span>
         <span>
           Pan {Math.round(pan.x)} / {Math.round(pan.y)}
@@ -62,7 +62,7 @@ function ViewportDemo() {
       <Shell>
         <DesignCanvas items={items} onItemsChange={setItems} zoom={zoom} onZoomChange={setZoom} pan={pan} onPanChange={setPan} renderItem={(item, s) => (<Block item={item} index={initial.findIndex((i) => i.id === item.id)} selected={s.selected}/>)}>
 
-          <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted">
+          <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted-foreground">
             Board A · 320×280
           </div>
         </DesignCanvas>
@@ -118,7 +118,7 @@ const [pan, setPan] = useState({ x: 0, y: 0 });
   pan={pan}
   onPanChange={setPan}
 >
-  <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted">
+  <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted-foreground">
     Board A \u00B7 320\u00D7280
   </div>
 </DesignCanvas>`,

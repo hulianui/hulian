@@ -20,11 +20,11 @@ export const animatedThemeTogglerShowcase: ShowcaseSpec = {
             description: "The switcher is a standard button that can be placed alongside other elements in the toolbar.",
             code: `<div className="flex items-center gap-3">
   <AnimatedThemeToggler />
-  <span className="text-sm text-muted">Click: Circle Reveal Switch Light and Dark</span>
+  <span className="text-sm text-muted-foreground">Click: Circle Reveal Switch Light and Dark</span>
 </div>`,
             render: () => (<div className="flex items-center gap-3">
           <AnimatedThemeToggler />
-          <span className="text-sm text-muted">Click: Circle reveal switches light and dark</span>
+          <span className="text-sm text-muted-foreground">Click: Circle reveal switches light and dark</span>
         </div>),
         },
     ],
@@ -34,7 +34,7 @@ export const animatedThemeTogglerShowcase: ShowcaseSpec = {
             name: "default",
             render: () => (<div className="flex items-center gap-3">
           <AnimatedThemeToggler />
-          <span className="text-sm text-muted">Click: Circle reveal switches light and dark</span>
+          <span className="text-sm text-muted-foreground">Click: Circle reveal switches light and dark</span>
         </div>),
         },
     ],

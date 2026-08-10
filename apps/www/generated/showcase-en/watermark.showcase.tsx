@@ -7,7 +7,7 @@ function Sheet({ children }: {
 }) {
     return (<div className="h-56 w-full overflow-hidden rounded-[var(--radius)] border border-border bg-surface p-6">
       <h4 className="text-base font-semibold text-foreground">2026 Q2 Financial Presentation (Restricted)</h4>
-      <p className="mt-2 max-w-md text-sm text-muted">
+      <p className="mt-2 max-w-md text-sm text-muted-foreground">
         This page contains business secrets and screenshots are prohibited. The watermark covers the entire area and adapts to the theme. If you delete the watermark layer, it will be automatically restored.
       </p>
       <button type="button" className="mt-4 rounded-[var(--radius)] border border-border px-3 py-1.5 text-sm text-foreground hover:bg-surface-hover">

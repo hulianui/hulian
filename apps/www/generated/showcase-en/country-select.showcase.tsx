@@ -13,7 +13,7 @@ function SingleDemo({ defaultValue = "", showDialCode, showEnglish = true, size,
     const [code, setCode] = useState<string>(defaultValue);
     return (<div className="w-72 space-y-2">
       <CountrySelect value={code} onChange={(v) => setCode(v as string)} showDialCode={showDialCode} showEnglish={showEnglish} size={size} disabled={disabled} invalid={invalid}/>
-      <div className="text-xs text-muted">value:{code || "(empty)"}</div>
+      <div className="text-xs text-muted-foreground">value:{code || "(empty)"}</div>
     </div>);
 }
 function MultiDemo({ defaultValue = [] as string[] }: {
@@ -22,7 +22,7 @@ function MultiDemo({ defaultValue = [] as string[] }: {
     const [codes, setCodes] = useState<string[]>(defaultValue);
     return (<div className="w-80 space-y-2">
       <CountrySelect multiple value={codes} onChange={(v) => setCodes(v as string[])} showDialCode/>
-      <div className="text-xs text-muted">value:[{codes.join(", ") || "(empty)"}]</div>
+      <div className="text-xs text-muted-foreground">value:[{codes.join(", ") || "(empty)"}]</div>
     </div>);
 }
 export const countrySelectShowcase: ShowcaseSpec = {

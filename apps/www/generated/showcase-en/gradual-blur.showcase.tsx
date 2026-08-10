@@ -19,7 +19,7 @@ function Stage({ children, position = "bottom", }: {
         <p className="text-2xl font-semibold text-foreground drop-shadow">
           Hulian component library
         </p>
-        <p className="text-sm text-muted">Enterprise level · High quality · Progressive blur welt</p>
+        <p className="text-sm text-muted-foreground">Enterprise level · High quality · Progressive blur welt</p>
       </div>
       {children}
     </div>);

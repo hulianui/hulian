@@ -9,7 +9,7 @@ function Row({ label, children }: {
     children: React.ReactNode;
 }) {
     return (<div className="flex items-center justify-between gap-6 border-b border-border py-1.5 text-sm last:border-0">
-      <span className="text-muted">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <span className="font-medium">{children}</span>
     </div>);
 }
@@ -90,7 +90,7 @@ export const relativeTimeShowcase: ShowcaseSpec = {
         },
         {
             name: "Real-time refresh (without base \u00B7 Automatic update every minute)",
-            render: () => (<p className="text-sm text-muted">
+            render: () => (<p className="text-sm text-muted-foreground">
           Posted in <RelativeTime value={new Date(Date.now() - 90 * 1000)} className="text-foreground"/>, hover to see the absolute time
         </p>),
         },

@@ -173,7 +173,7 @@ function Desk({ children }: {
 function Controlled() {
     const [q, setQ] = useState("");
     return (<div className="flex w-full flex-col gap-2">
-      <p className="text-xs text-muted">External search terms:{q ? `"${q}"
+      <p className="text-xs text-muted-foreground">External search terms:{q ? `"${q}"
 Edit button for` : "(empty)"}</p>
       <AppLauncher items={apps} categories={categories} title="Application" search={q} onSearchChange={setQ} columns={6} className="h-[26rem]"/>
     </div>);
@@ -194,7 +194,7 @@ export const appLauncherShowcase: ShowcaseSpec = {
             render: () => (<Desk>
           <AppLauncher items={apps} categories={categories} title="Application" logo={<span className="grid size-7 place-items-center rounded-[var(--radius)] bg-foreground/10 text-sm">
                 Hu
-              </span>} actions={<span className="px-2 text-lg leading-none text-muted">···</span>} className="h-[28rem]"/>
+              </span>} actions={<span className="px-2 text-lg leading-none text-muted-foreground">···</span>} className="h-[28rem]"/>
         </Desk>),
         },
         {

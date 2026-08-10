@@ -4,7 +4,7 @@ import type { IPhoneModel } from "../../../../packages/ui/src/iphone/iphone.type
 function Screen() {
     return (<div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-b from-chart-1/30 to-chart-2/30">
       <span className="text-sm font-medium text-foreground">Hulian App</span>
-      <span className="text-xs text-muted">Screen contents</span>
+      <span className="text-xs text-muted-foreground">Screen contents</span>
     </div>);
 }
 export const iphoneShowcase: ShowcaseSpec = {

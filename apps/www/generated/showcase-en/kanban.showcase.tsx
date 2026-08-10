@@ -45,13 +45,13 @@ function BoardDemo() {
           </Tag>
         </div>)} renderItem={(c) => (<div className="rounded-[var(--radius)] border border-hairline bg-surface p-3 shadow-sm">
           <p className="text-sm font-medium text-foreground">{c.title}</p>
-          <p className="mt-1 text-xs text-muted">{c.owner}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{c.owner}</p>
         </div>)}/>);
 }
 function ReadOnlyBoard() {
     return (<Kanban items={INITIAL} columns={COLUMNS} getId={(c) => c.id} getColumnId={(c) => c.status} onMove={() => { }} renderItem={(c) => (<div className="rounded-[var(--radius)] border border-hairline bg-surface p-3 shadow-sm">
           <p className="text-sm font-medium text-foreground">{c.title}</p>
-          <p className="mt-1 text-xs text-muted">{c.owner}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{c.owner}</p>
         </div>)}/>);
 }
 export const kanbanShowcase: ShowcaseSpec = {
@@ -73,7 +73,7 @@ export const kanbanShowcase: ShowcaseSpec = {
   renderItem={(c) => (
     <div className="rounded-[var(--radius)] border border-hairline bg-surface p-3 shadow-sm">
       <p className="text-sm font-medium text-foreground">{c.title}</p>
-      <p className="mt-1 text-xs text-muted">{c.owner}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{c.owner}</p>
     </div>
   )}
 />`,

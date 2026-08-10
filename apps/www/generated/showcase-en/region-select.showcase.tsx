@@ -20,7 +20,7 @@ function Basic({ aspect }: {
     const [box, setBox] = useState<RegionBox | null>([60, 290, 480, 550]);
     return (<div className="flex w-full max-w-xl flex-col gap-2">
       <RegionSelect src={PAGE_SRC} naturalSize={NATURAL} value={box} onChange={setBox} aspect={aspect} maxHeight="22rem" alt="Test paper scan page"/>
-      <p className="font-mono text-xs text-muted">
+      <p className="font-mono text-xs text-muted-foreground">
         box (original image pixels):<span className="text-foreground">{fmt(box)}</span>
       </p>
     </div>);
@@ -32,7 +32,7 @@ function WithOthers() {
             { id: "q1", box: [60, 100, 840, 250], label: "Question 1", color: "chart-2" },
             { id: "q3", box: [520, 860, 840, 1060], label: "Question 3 with pictures", color: "chart-4" },
         ]}/>
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         The dotted line is the existing box on the same page (read-only), and the solid line is the one currently dragged out:{fmt(box)}
       </p>
     </div>);
@@ -114,6 +114,6 @@ function PlaygroundBox({ aspect, minSide, readOnly, }: {
     const [box, setBox] = useState<RegionBox | null>([60, 290, 480, 550]);
     return (<div className="flex w-full max-w-lg flex-col gap-2">
       <RegionSelect src={PAGE_SRC} naturalSize={NATURAL} value={box} onChange={setBox} aspect={aspect} minSide={minSide} readOnly={readOnly} maxHeight="18rem"/>
-      <p className="font-mono text-xs text-muted">{fmt(box)}</p>
+      <p className="font-mono text-xs text-muted-foreground">{fmt(box)}</p>
     </div>);
 }

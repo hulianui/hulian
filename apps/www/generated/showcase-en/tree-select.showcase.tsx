@@ -70,7 +70,7 @@ function Clearable() {
     const [v, setV] = useState<string | string[]>("fe-web");
     return (<div className="w-72 space-y-2">
       <TreeSelect nodes={NODES} clearable value={v} onChange={setV} placeholder="All departments" searchable/>
-      <p className="text-xs text-muted">Current value:{JSON.stringify(v)}</p>
+      <p className="text-xs text-muted-foreground">Current value:{JSON.stringify(v)}</p>
     </div>);
 }
 export const treeSelectShowcase: ShowcaseSpec = {

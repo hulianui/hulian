@@ -26,9 +26,9 @@ const codeLines = [
 ];
 function FileTree() {
     return (<div className="h-full bg-surface p-3">
-      <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">Resource Manager</div>
+      <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Resource Manager</div>
       <ul className="space-y-0.5 font-mono text-xs text-foreground">
-        {fileTree.map((f, i) => (<li key={i} className={f.includes(".") ? "" : "text-muted"} style={{ whiteSpace: "pre" }}>
+        {fileTree.map((f, i) => (<li key={i} className={f.includes(".") ? "" : "text-muted-foreground"} style={{ whiteSpace: "pre" }}>
             {f}
           </li>))}
       </ul>
@@ -36,10 +36,10 @@ function FileTree() {
 }
 function Editor() {
     return (<div className="h-full bg-bg p-3">
-      <div className="mb-2 text-xs text-muted">components/card.tsx</div>
+      <div className="mb-2 text-xs text-muted-foreground">components/card.tsx</div>
       <pre className="overflow-x-auto font-mono text-xs leading-relaxed text-foreground">
         {codeLines.map((l, i) => (<div key={i}>
-            <span className="mr-3 select-none text-muted">{String(i + 1).padStart(2, " ")}</span>
+            <span className="mr-3 select-none text-muted-foreground">{String(i + 1).padStart(2, " ")}</span>
             {l}
           </div>))}
       </pre>
@@ -47,16 +47,16 @@ function Editor() {
 }
 function Preview() {
     return (<div className="h-full space-y-3 bg-surface p-3">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted">Live preview</div>
+      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Live preview</div>
       <section className="rounded-[var(--radius)] border border-border p-3">
         <h3 className="text-sm font-semibold text-foreground">Monthly Overview</h3>
-        <p className="mt-1 text-xs text-muted">There were 1,284 new orders this month, a month-on-month increase of 12%.</p>
+        <p className="mt-1 text-xs text-muted-foreground">There were 1,284 new orders this month, a month-on-month increase of 12%.</p>
       </section>
     </div>);
 }
 function ChatLog() {
     return (<div className="h-full overflow-auto bg-surface p-3">
-      <div className="mb-2 text-xs font-medium text-muted">Session</div>
+      <div className="mb-2 text-xs font-medium text-muted-foreground">Session</div>
       <ul className="space-y-1 text-sm text-foreground">
         <li>Customer · Ms. Wang: Has it been shipped?</li>
         <li>Customer Service · Xiaolian: It has been arranged to be sent out today 📦</li>
@@ -65,7 +65,7 @@ function ChatLog() {
     </div>);
 }
 function LogPanel() {
-    return (<div className="h-full overflow-auto bg-bg p-3 font-mono text-xs leading-relaxed text-muted">
+    return (<div className="h-full overflow-auto bg-bg p-3 font-mono text-xs leading-relaxed text-muted-foreground">
       <div>[12:01:08] INFO session has been connected to agent#7</div>
       <div>[12:01:24] INFO Push logistics order number SF1024...</div>
       <div className="text-foreground">[12:01:31] WARN Customer Satisfaction Questionnaire is not filled in</div>

@@ -15,11 +15,11 @@ export const particlesShowcase: ShowcaseSpec = {
             description: "Put it into the relative container. Particles comes with absolute and inset-0. If color is not transferred, the theme foreground color will be used, and the mouse will be magnetically displaced when approaching it.",
             code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
   <Particles quantity={120} />
-  <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+  <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
 </div>`,
             render: () => (<Stage>
           <Particles quantity={120}/>
-          <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
         </Stage>),
         },
         {
@@ -30,7 +30,7 @@ export const particlesShowcase: ShowcaseSpec = {
 </div>`,
             render: () => (<Stage>
           <Particles quantity={80} staticity={80} ease={80}/>
-          <div className="grid h-full place-items-center text-sm text-muted">staticity=80 ease=80</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">staticity=80 ease=80</div>
         </Stage>),
         },
         {
@@ -41,7 +41,7 @@ export const particlesShowcase: ShowcaseSpec = {
 </div>`,
             render: () => (<Stage>
           <Particles quantity={100} color="#6366f1"/>
-          <div className="grid h-full place-items-center text-sm text-muted">color=#6366f1</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">color=#6366f1</div>
         </Stage>),
         },
         {
@@ -52,7 +52,7 @@ export const particlesShowcase: ShowcaseSpec = {
 </div>`,
             render: () => (<Stage>
           <Particles quantity={50} size={2} vx={0.3} vy={0.1}/>
-          <div className="grid h-full place-items-center text-sm text-muted">size=2 vx=0.3</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">size=2 vx=0.3</div>
         </Stage>),
         },
     ],
@@ -67,14 +67,14 @@ export const particlesShowcase: ShowcaseSpec = {
             name: "default (theme color particles)",
             render: () => (<Stage>
           <Particles quantity={120}/>
-          <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
         </Stage>),
         },
         {
             name: "Slow speed high still",
             render: () => (<Stage>
           <Particles quantity={80} staticity={80} ease={80}/>
-          <div className="grid h-full place-items-center text-sm text-muted">staticity=80 ease=80</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">staticity=80 ease=80</div>
         </Stage>),
         },
         {
@@ -82,20 +82,20 @@ export const particlesShowcase: ShowcaseSpec = {
             render: () => (<Stage>
 
           <Particles quantity={100} color="#6366f1"/>
-          <div className="grid h-full place-items-center text-sm text-muted">color=#6366f1</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">color=#6366f1</div>
         </Stage>),
         },
         {
             name: "Large particles + drift",
             render: () => (<Stage>
           <Particles quantity={50} size={2} vx={0.3} vy={0.1}/>
-          <div className="grid h-full place-items-center text-sm text-muted">size=2 vx=0.3</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">size=2 vx=0.3</div>
         </Stage>),
         },
     ],
     renderWithProps: (p) => (<Stage>
       <Particles quantity={p.quantity as number} staticity={p.staticity as number} ease={p.ease as number} size={p.size as number}/>
-      <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+      <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
     </Stage>),
     toCode: (p) => `<div className="relative overflow-hidden">
   <Particles

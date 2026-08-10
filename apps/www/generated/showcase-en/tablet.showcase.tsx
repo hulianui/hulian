@@ -4,7 +4,7 @@ import type { TabletModel } from "../../../../packages/ui/src/tablet/tablet.type
 function Screen() {
     return (<div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-chart-3/30 to-chart-1/30">
       <span className="text-sm font-medium text-foreground">Hulian App</span>
-      <span className="text-xs text-muted">Tablet screen</span>
+      <span className="text-xs text-muted-foreground">Tablet screen</span>
     </div>);
 }
 export const tabletShowcase: ShowcaseSpec = {

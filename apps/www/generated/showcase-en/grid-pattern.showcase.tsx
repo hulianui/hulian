@@ -62,9 +62,9 @@ export const gridPatternShowcase: ShowcaseSpec = {
         </Frame>),
         },
         {
-            name: "Dense dotted line \u00B7 text-muted",
+            name: "Dense dotted line \u00B7 text-muted-foreground",
             render: () => (<Frame>
-          <GridPattern width={24} height={24} strokeDasharray="3 2" className="text-muted"/>
+          <GridPattern width={24} height={24} strokeDasharray="3 2" className="text-muted-foreground"/>
         </Frame>),
         },
     ],

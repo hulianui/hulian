@@ -18,12 +18,12 @@ function AffixDemo({ offsetTop, offsetBottom, affixedClassName, }: {
       </div>
     </Affix>);
     return (<div ref={ref} className="h-64 w-80 overflow-auto rounded-[var(--radius)] border border-border bg-surface p-4">
-      <p className="mb-3 text-sm text-muted">
+      <p className="mb-3 text-sm text-muted-foreground">
         {toBottom ? "Scroll up \u2191 Let the action bar suck to the bottom" : "Scroll down \u2193 Make the action bar ceiling"}
       </p>
       {!toBottom && bar}
       <div className="mt-3 space-y-2">
-        {ROWS.map((n) => (<p key={n} className="text-sm text-muted">
+        {ROWS.map((n) => (<p key={n} className="text-sm text-muted-foreground">
             Content line {n}
           </p>))}
       </div>
