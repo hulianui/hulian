@@ -28,7 +28,9 @@ export const BUTTON_BASE_CLASS = `${LAYOUT} rounded-[var(--radius)] transition-c
 
 /**
  * 特效按钮的 base：只有排布与交互态。
- * **刻意不含圆角**——特效件各自用 `[border-radius:var(--hulian-*)]` 之类的自定义圆角，
+ * **刻意不含圆角**——特效件各自用 var(--hulian-…) 形态的自定义圆角类，
+ * （这行注释刻意不写成任意值类的方括号形态：Tailwind v4 的扫描器不区分注释与代码，
+ *   带通配符的那一份会被当成真类名，生成 `border-radius: var(--hulian-*)` 让消费方 CSS 解析直接失败）
  * 两条规则都生成 `border-radius` 时谁赢由样式表顺序决定，不由 className 顺序决定，
  * 混在一起就是不可预测的。也不含 `transition-colors`：它们变的是背景动画不是颜色。
  */
